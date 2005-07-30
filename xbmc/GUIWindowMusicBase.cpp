@@ -18,7 +18,7 @@
 #include "GUIFontManager.h"
 #include "GUIDialogMusicScan.h"
 #include "GUIDialogContextMenu.h"
-
+#include "GUIWindowFileManager.h"
 
 #define CONTROL_BTNVIEWASICONS  2
 #define CONTROL_BTNTYPE         6
@@ -1630,38 +1630,8 @@ void CGUIWindowMusicBase::OnDeleteItem(int iItem)
     if (!pDialog->IsConfirmed()) return ;
   }
 
-  if (m_dlgProgress) m_dlgProgress->StartModal(GetID());
-  if (pItem->m_bIsFolder)
-  {
-    CStdString strLog;
-    strLog.Format("delete folder %s\n", strFile.c_str());
-    OutputDebugString(strLog.c_str());
-
-    CDirectory::Remove(strPath.c_str());
-    if (m_dlgProgress)
-    {
-      m_dlgProgress->SetLine(0, 117);
-      m_dlgProgress->SetLine(1, strFile);
-      m_dlgProgress->SetLine(2, L"");
-      m_dlgProgress->Progress();
-    }
-  }
-  else
-  {
-    CStdString strLog;
-    strLog.Format("delete %s\n", strFile.c_str());
-    OutputDebugString(strLog.c_str());
-
-    CFile::Delete(strPath.c_str());
-    if (m_dlgProgress)
-    {
-      m_dlgProgress->SetLine(0, 117);
-      m_dlgProgress->SetLine(1, strFile);
-      m_dlgProgress->SetLine(2, L"");
-      m_dlgProgress->Progress();
-    }
-  }
-  if (m_dlgProgress) m_dlgProgress->Close();
+  CGUIWindowFileManager* pWindow = (CGUIWindowFileManager*)m_gWindowManager.GetWindow(WINDOW_FILES);
+  if (pWindow) pWindow->Delete(pItem);
 
   Update(m_Directory.m_strPath);
   m_viewControl.SetSelectedItem(iItem);

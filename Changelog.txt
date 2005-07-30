@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 30-07-2005 changed: file deletion from the media windows now use the filemanager (so recursive delete works)
  - 30-07-2005 fixed: Original zoom mode was incorrect.
  - 30-07-2005 added: to mplayer.conf, cache prefill (%), before playback starts.
  - 30-07-2005 updated: German language file
