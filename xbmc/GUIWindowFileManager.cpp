@@ -688,6 +688,11 @@ bool CGUIWindowFileManager::DoProcessFile(int iAction, const CStdString& strFile
   {
   case ACTION_COPY:
     {
+      CStdString strLog;
+      strLog.Format("FileManager: copy %s->%s\n", strFile.c_str(), strDestFile.c_str());
+      OutputDebugString(strLog.c_str());
+      CLog::Log(LOGINFO,"%s",strLog.c_str());
+
       const WCHAR *szText = g_localizeStrings.Get(115).c_str();
       if (m_dlgProgress)
       {
@@ -696,12 +701,8 @@ bool CGUIWindowFileManager::DoProcessFile(int iAction, const CStdString& strFile
         m_dlgProgress->SetLine(2, strShortDestFile);
         m_dlgProgress->Progress();
       }
-      CStdString strLog;
-      strLog.Format("copy %s->%s\n", strFile.c_str(), strDestFile.c_str());
-      OutputDebugString(strLog.c_str());
 
       CStdString strDestFileShortened = strDestFile;
-
 
       // shorten file if filename length > 42 chars
       if (g_guiSettings.GetBool("Servers.FTPAutoFatX"))
@@ -720,6 +721,11 @@ bool CGUIWindowFileManager::DoProcessFile(int iAction, const CStdString& strFile
 
   case ACTION_MOVE:
     {
+      CStdString strLog;
+      strLog.Format("FileManager: move %s->%s\n", strFile.c_str(), strDestFile.c_str());
+      OutputDebugString(strLog.c_str());
+      CLog::Log(LOGINFO,"%s",strLog.c_str());
+
       if (m_dlgProgress)
       {
         m_dlgProgress->SetLine(0, 116);
@@ -727,6 +733,7 @@ bool CGUIWindowFileManager::DoProcessFile(int iAction, const CStdString& strFile
         m_dlgProgress->SetLine(2, strShortDestFile);
         m_dlgProgress->Progress();
       }
+
       if (strFile[1] == ':' && strFile[0] == strDestFile[0])
       {
         // quick move on same drive
@@ -744,12 +751,12 @@ bool CGUIWindowFileManager::DoProcessFile(int iAction, const CStdString& strFile
     }
     break;
 
-
   case ACTION_DELETE:
     {
       CStdString strLog;
-      strLog.Format("delete %s\n", strFile.c_str());
+      strLog.Format("FileManager: delete %s\n", strFile.c_str());
       OutputDebugString(strLog.c_str());
+      CLog::Log(LOGINFO,"%s",strLog.c_str());
 
       CFile::Delete(strFile.c_str());
       if (m_dlgProgress)
@@ -765,8 +772,10 @@ bool CGUIWindowFileManager::DoProcessFile(int iAction, const CStdString& strFile
   case ACTION_DELETEFOLDER:
     {
       CStdString strLog;
-      strLog.Format("delete folder %s\n", strFile.c_str());
+      strLog.Format("FileManager: delete folder %s\n", strFile.c_str());
       OutputDebugString(strLog.c_str());
+      CLog::Log(LOGINFO,"%s",strLog.c_str());
+
       CDirectory::Remove(strFile);
       if (m_dlgProgress)
       {
@@ -777,11 +786,14 @@ bool CGUIWindowFileManager::DoProcessFile(int iAction, const CStdString& strFile
       }
     }
     break;
+
   case ACTION_CREATEFOLDER:
     {
       CStdString strLog;
-      strLog.Format("create %s\n", strFile.c_str());
+      strLog.Format("FileManager: create folder %s\n", strFile.c_str());
       OutputDebugString(strLog.c_str());
+      CLog::Log(LOGINFO,"%s",strFile.c_str());
+
       CDirectory::Create(strFile);
 
       if (m_dlgProgress)
@@ -800,18 +812,22 @@ bool CGUIWindowFileManager::DoProcessFile(int iAction, const CStdString& strFile
     }
     break;
   }
+
   if (m_dlgProgress) m_dlgProgress->Progress();
   return !m_dlgProgress->IsCanceled();
 }
 
 bool CGUIWindowFileManager::DoProcessFolder(int iAction, const CStdString& strPath, const CStdString& strDestFile)
 {
+  CLog::Log(LOGDEBUG,"FileManager, processing folder: %s",strPath.c_str());
   CFileItemList items;
-  m_rootDir.GetDirectory(strPath, items);
+  //m_rootDir.GetDirectory(strPath, items);
+  CDirectory::GetDirectory(strPath, items);
   for (int i = 0; i < items.Size(); i++)
   {
     CFileItem* pItem = items[i];
     pItem->Select(true);
+    CLog::Log(LOGDEBUG,"  -- %s",pItem->m_strPath.c_str());
   }
 
   if (!DoProcess(iAction, items, strDestFile)) return false;
@@ -955,6 +971,12 @@ void CGUIWindowFileManager::RenameFile(const CStdString &strFile)
   if (CGUIDialogKeyboard::ShowAndGetInput(strFileName, false))
   {
     strPath += strFileName;
+    
+    CStdString strLog;
+    strLog.Format("FileManager: rename %s->%s\n", strFile.c_str(), strPath.c_str());
+    OutputDebugString(strLog.c_str());
+    CLog::Log(LOGINFO,"%s",strLog.c_str());
+
     CFile::Rename(strFile.c_str(), strPath.c_str());
   }
 }
@@ -1352,4 +1374,27 @@ __int64 CGUIWindowFileManager::CalculateFolderSize(const CStdString &strDirector
       totalSize += items[i]->m_dwSize;
   }
   return totalSize;
+}
+
+bool CGUIWindowFileManager::Delete(const CFileItem *pItem)
+{
+  CFileItem *pItemTemp = new CFileItem;
+  pItemTemp->m_strPath = pItem->m_strPath;
+  pItemTemp->m_bIsFolder = pItem->m_bIsFolder;
+  pItemTemp->Select(true);
+
+  CFileItemList items;
+  items.Add(pItemTemp);
+
+  // initialize the progress dialog
+  m_dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+  if (m_dlgProgress)
+  {
+    m_dlgProgress->SetHeading(126);
+    m_dlgProgress->StartModal(m_gWindowManager.GetActiveWindow());
+  }
+  bool bResult = DoProcess(ACTION_DELETE, items, "");
+  if (m_dlgProgress) m_dlgProgress->Close();
+
+  return bResult;
 }
