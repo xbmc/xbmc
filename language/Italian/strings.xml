@@ -6,7 +6,7 @@
   <string><id>4</id><value>Guida TV</value></string>
   <string><id>5</id><value>Impostazioni</value></string>
   <!-- String with id 6 should not be set here, only in the english language file !-->
-  <string><id>7</id><value>Files</value></string>
+  <string><id>7</id><value>File</value></string>
   <string><id>8</id><value>Meteo</value></string>
   <string><id>11</id><value>Lunedi'</value></string>
   <string><id>12</id><value>Martedi'</value></string>
@@ -29,8 +29,8 @@
   <string><id>32</id><value>Dicembre</value></string>
   <string><id>98</id><value>Vedi: Auto</value></string>
   <string><id>99</id><value>Vedi: Auto Grande</value></string>
-  <string><id>100</id><value>Vedi Icone</value></string>
-  <string><id>101</id><value>Vedi Lista</value></string>
+  <string><id>100</id><value>Visualizza Icone</value></string>
+  <string><id>101</id><value>Visualizza Lista</value></string>
   <string><id>102</id><value>Scansiona</value></string>
   <string><id>103</id><value>Ordina x Nome</value></string>
   <string><id>104</id><value>Ordina x Data</value></string>
@@ -42,8 +42,8 @@
   <string><id>110</id><value>Crea Icone</value></string>
   <string><id>111</id><value>Collegamenti</value></string>
   <string><id>112</id><value>PAUSA</value></string>
-  <string><id>113</id><value>Files: Sorgente</value></string>
-  <string><id>114</id><value>Files: Destinazione</value></string>
+  <string><id>113</id><value>File: Sorgente</value></string>
+  <string><id>114</id><value>File: Destinazione</value></string>
   <string><id>115</id><value>Copia</value></string>
   <string><id>116</id><value>Sostituisci</value></string>
   <string><id>117</id><value>Elimina</value></string>
@@ -65,7 +65,7 @@
   <string><id>133</id><value>Artisti</value></string>
   <string><id>134</id><value>Canzoni</value></string>
   <string><id>135</id><value>Generi</value></string>
-  <string><id>136</id><value>Playlists</value></string>
+  <string><id>136</id><value>Playlist</value></string>
   <string><id>137</id><value>Cerca</value></string>
   <string><id>138</id><value>INFORMAZIONI SISTEMA</value></string>
   <string><id>139</id><value>Temperature:</value></string>
@@ -143,7 +143,7 @@
   <string><id>210</id><value>Precedente</value></string>
   <string><id>211</id><value>Ricerca applicazioni</value></string>
   <string><id>212</id><value>Applicazioni trovate</value></string>
-  <string><id>213</id><value>Centra l'Interfaccia Utente...</value></string>
+  <string><id>213</id><value>Calibrazione Interfaccia Utente...</value></string>
   <string><id>214</id><value>Calibrazione Video...</value></string>
   <string><id>215</id><value>Ammorbidisci</value></string>
   <string><id>216</id><value>Livello di Zoom</value></string>
@@ -169,7 +169,7 @@
   <string><id>236</id><value>Gaussian Cubic</value></string>
   <string><id>237</id><value>Minification</value></string>
   <string><id>238</id><value>Magnification</value></string>
-  <string><id>239</id><value>Cancella playlist alla fine</value></string>
+  <string><id>239</id><value>Cancella Playlist alla Fine</value></string>
   <string><id>240</id><value>Avvio Automatico DVD-Video</value></string>
   <string><id>241</id><value>Avvio Automatico VCD/SVCD</value></string>
   <string><id>242</id><value>Avvio Automatico Audio-CD</value></string>
@@ -181,7 +181,7 @@
   <string><id>248</id><value>Lingua</value></string>
   <string><id>249</id><value>Musica</value></string>
   <string><id>250</id><value>Effetto grafico</value></string>
-  <string><id>251</id><value>Seleziona la directory di destinazione</value></string>
+  <string><id>251</id><value>Seleziona la cartella di destinazione</value></string>
   <string><id>252</id><value>Uscita Stereo su tutte le Casse</value></string>
   <string><id>253</id><value>Numero di canali</value></string>
   <string><id>254</id><value>- Amplificatore con DTS</value></string>
@@ -263,7 +263,7 @@
   <string><id>331</id><value>Compressione archivio...</value></string>
   <string><id>332</id><value>Errore durante la compressione dell'archivio</value></string>
   <string><id>333</id><value>Vuoi riorganizzare l'archivio musicale?</value></string>
-  <string><id>334</id><value>Riorganizzo Archivio Musicale...</value></string>
+  <string><id>334</id><value>Riorganizza Archivio Musicale...</value></string>
   <string><id>335</id><value>Avvia</value></string>
   <string><id>336</id><value>Adatta Framerate</value></string>
   <string><id>337</id><value>Uscita Audio</value></string>
@@ -277,7 +277,7 @@
   <string><id>345</id><value>Anno</value></string>
   <string><id>346</id><value>Unisci</value></string>
   <string><id>347</id><value>Normale</value></string>
-  <string><id>348</id><value>Gerarchia Directory Piatta</value></string>
+  <string><id>348</id><value>Rendi Piatta la Gerarchia delle Cartelle</value></string>
   <string><id>349</id><value>Visualizza solo Default.xbe</value></string>
   <string><id>350</id><value>Programmi</value></string>
   <string><id>351</id><value>Off</value></string>
@@ -286,7 +286,7 @@
   <string><id>354</id><value>Matrix Trails</value></string>
   <string><id>355</id><value>Inattività per Screensaver</value></string>
   <string><id>356</id><value>Modalità Screensaver</value></string>
-  <string><id>357</id><value>Inattività per Autospegnimento</value></string>
+  <string><id>357</id><value>Autospegnimento per Inattività</value></string>
   <string><id>358</id><value>Tutti gli Album</value></string>
   <string><id>359</id><value>Album Recenti</value></string>
   <string><id>360</id><value>Screensaver</value></string>
@@ -327,8 +327,8 @@
   <string><id>395</id><value>Coperto</value></string>
   <string><id>396</id><value>Seleziona Località</value></string>
   <string><id>397</id><value>Aggiornamento</value></string>
-  <string><id>398</id><value>Unità Temp</value></string>
-  <string><id>399</id><value>Unità Vel</value></string>
+  <string><id>398</id><value>Misura di Temperatura</value></string>
+  <string><id>399</id><value>Misura di Velocità</value></string>
   <string><id>400</id><value>Meteo</value></string>
   <string><id>401</id><value>Temperatura</value></string>
   <string><id>402</id><value>Percepiti</value></string>
@@ -401,7 +401,7 @@
   <string><id>469</id><value>Posizione OSD</value></string>
   <string><id>470</id><value>Riconoscimenti</value></string>
   <string><id>471</id><value>Modchip</value></string>
-  <string><id>472</id><value>Timeout OSD Video</value></string>
+  <string><id>472</id><value>Visualizzazione Controllo Video</value></string>
   <string><id>473</id><value>Ricampionamento ad Alta Qualità</value></string>
   <string><id>474</id><value>Spento</value></string>
   <string><id>475</id><value>Solo Musica</value></string>
@@ -424,9 +424,9 @@
   <string><id>492</id><value>Ridimensiona Sottotitoli</value></string>
   <string><id>493</id><value>Opzioni Avanzate (Solo Esperti!)</value></string>
   <string><id>494</id><value>Livello Audio Generale</value></string>
-  <string><id>495</id><value>Adatta i Video alla Risoluzione dell'Interfaccia</value></string>
+  <string><id>495</id><value>Adatta i Video alle Dimensioni dell'Interfaccia</value></string>
   <string><id>496</id><value>Calibrazione</value></string>
-  <string><id>497</id><value>Nascondi le estensioni dei file Multimediali</value></string>
+  <string><id>497</id><value>Nascondi estensioni dei file Multimediali</value></string>
   <string><id>498</id><value>Ordina x Tipo</value></string>
   <string><id>499</id><value>Impossibile collegarsi a www.allmusic.com</value></string>
   <string><id>500</id><value>Impossibile scaricare le informazioni sull'album</value></string>
@@ -434,14 +434,14 @@
   <string><id>502</id><value>Aperto</value></string>
   <string><id>503</id><value>Caricando</value></string>
   <string><id>504</id><value>Vuoto</value></string>
-  <string><id>505</id><value>Caricamento informazioni dai files...</value></string>
-  <string><id>506</id><value>Usa i Nomi delle Directory per la Descrizione</value></string>
+  <string><id>505</id><value>Caricamento informazioni dai file...</value></string>
+  <string><id>506</id><value>Usa i Nomi delle Cartelle per la Descrizione</value></string>
   <string><id>507</id><value>Ordina x Utilizzo</value></string>
-  <string><id>508</id><value>Non usare Shortcuts o Scan</value></string>
-  <string><id>509</id><value>Cache Icone Programmi</value></string>
+  <string><id>508</id><value>Non Usare Shortcut o Scan</value></string>
+  <string><id>509</id><value>Mantieni le Icone dei Programmi nella Cache</value></string>
   <string><id>510</id><value>Attiva Effetto Grafico</value></string>
-  <string><id>511</id><value>Modalità Video automatica in base al Game Region</value></string>
-  <string><id>512</id><value>Schermata di partenza</value></string>
+  <string><id>511</id><value>Modo Video automatico in base al Game Region</value></string>
+  <string><id>512</id><value>Schermata di Partenza</value></string>
   <string><id>513</id><value>Home Window</value></string>
   <string><id>514</id><value>Impostazione Manuale</value></string>
   <string><id>515</id><value>Genere</value></string>
@@ -456,13 +456,13 @@
   <string><id>607</id><value>A:</value></string>
   <string><id>608</id><value>Impossibile rip del CD o della Traccia</value></string>
   <string><id>609</id><value>Percorso CDDARip non settato in XboxMediaCenter.xml</value></string>
-  <string><id>620</id><value>CD Ripping</value></string>
+  <string><id>620</id><value>Copia CD</value></string>
   <string><id>621</id><value>Encoder</value></string>
   <string><id>622</id><value>Qualità</value></string>
   <string><id>623</id><value>Bit Rate</value></string>
   <string><id>624</id><value>Includi Numero Traccia</value></string>
   <string><id>625</id><value>Tutte canzoni di</value></string>
-  <string><id>629</id><value>Modalità di visione</value></string>
+  <string><id>629</id><value>Modalità di Visione</value></string>
   <string><id>630</id><value>Normale</value></string>
   <string><id>631</id><value>Zoom</value></string>
   <string><id>632</id><value>Stretch 4:3</value></string>
@@ -471,20 +471,20 @@
   <string><id>635</id><value>Dimensione originale</value></string>
   <string><id>636</id><value>Personalizzata</value></string>
   <string><id>637</id><value>Replay Gain</value></string> 
-  <string><id>638</id><value>Modalità Replay Gain</value></string> 
+  <string><id>638</id><value>Modalità &quot;Replay Gain&quot;</value></string> 
   <string><id>639</id><value>Usa Livelli Traccia</value></string> 
   <string><id>640</id><value>Usa Livelli Album</value></string> 
-  <string><id>641</id><value>Livello PreAmp - Replay Gained Files</value></string> 
-  <string><id>642</id><value>Livello PreAmp - Non Replay Gained Files</value></string> 
-  <string><id>643</id><value>Evita Clipping nei Replay Gained Files</value></string> 
+  <string><id>641</id><value>Livello PreAmp - File &quot;Replay Gained&quot;</value></string> 
+  <string><id>642</id><value>Livello PreAmp - File &quot;Non Replay Gained&quot;</value></string> 
+  <string><id>643</id><value>Evita Clipping nei File &quot;Replay Gained&quot;</value></string> 
   <string><id>644</id><value>Taglia Barre Nere</value></string>
 
-  <string><id>700</id><value>Riorganizzo l'archivio</value></string>
+  <string><id>700</id><value>Riorganizza l'archivio</value></string>
   <string><id>701</id><value>Eliminazione vecchie canzoni dall' archivio</value></string>
   <string><id>702</id><value>Questo percorso è già stato esaminato in precedenza.</value></string>
   <string><id>703</id><value>Premere Si per aggiornare tutte le canzoni in questo percorso.</value></string>
   <string><id>704</id><value>Premere No per aggiungere solo nuove canzoni.</value></string>
-  <string><id>705</id><value>Network</value></string>
+  <string><id>705</id><value>Rete</value></string>
   <string><id>706</id><value>- HTTP Proxy Host</value></string>
   <string><id>707</id><value>- HTTP Proxy Port</value></string>
   <string><id>708</id><value>Attiva HTTP Proxy</value></string>
@@ -510,7 +510,7 @@
   <string><id>728</id><value>FTP Server</value></string>
   <string><id>729</id><value>Internet Time</value></string>
   <string><id>730</id><value>- Web Server Port</value></string>
-  <string><id>731</id><value>- Time Server Host</value></string>
+  <string><id>731</id><value>- Indirizzo Time Server</value></string>
   <string><id>732</id><value>Salva e Applica</value></string>
   <string><id>733</id><value>- Web Server Password</value></string>
   <string><id>734</id><value>Nessuna Password</value></string>
@@ -523,9 +523,9 @@
   <string><id>741</id><value>Bold Italics</value></string>
   <string><id>742</id><value>Bianco</value></string>
   <string><id>743</id><value>Giallo</value></string>
-  <string><id>744</id><value>Files</value></string>
+  <string><id>744</id><value>File</value></string>
   <string><id>745</id><value>Nessuna informazione dallo scan per questa vista</value></string>
-  <string><id>746</id><value>Passa alla vista Files</value></string>
+  <string><id>746</id><value>Passa alla vista File</value></string>
   <string><id>747</id><value>Errore caricando l'immagine</value></string>
   <string><id>748</id><value>Modifica percorso</value></string>
   <string><id>749</id><value>Aggiungi Condivisione</value></string>
@@ -550,8 +550,8 @@
   <string><id>768</id><value>Reserved</value></string>
   <string><id>769</id><value>Reserved</value></string>
   <string><id>770</id><value>Errore %i: condivisione non disponibile</value></string>
-  <string><id>771</id><value>- Auto Fatx Limiter</value></string>
-  <string><id>772</id><value>Audio hardware</value></string>
+  <string><id>771</id><value>- Limitazione Automatica Fatx</value></string>
+  <string><id>772</id><value>Audio Hardware</value></string>
   <string><id>773</id><value>Cercando</value></string>
   <string><id>998</id><value>XLink KAI</value></string>
   <string><id>999</id><value>Gioco Online</value></string>
@@ -571,21 +571,21 @@
   <string><id>1211</id><value>Musica</value></string>
   <string><id>1212</id><value>Video</value></string>
   <string><id>1213</id><value>Immagini</value></string>
-  <string><id>1214</id><value>Files</value></string>
+  <string><id>1214</id><value>File</value></string>
   <string><id>1215</id><value>Musica e Video </value></string>
   <string><id>1216</id><value>Musica e Immagini</value></string>
-  <string><id>1217</id><value>Musica e Files</value></string>
+  <string><id>1217</id><value>Musica e File</value></string>
   <string><id>1218</id><value>Video e Immagini</value></string>
-  <string><id>1219</id><value>Video e Files</value></string>
-  <string><id>1220</id><value>Immagini e Files</value></string>
+  <string><id>1219</id><value>Video e File</value></string>
+  <string><id>1220</id><value>Immagini e File</value></string>
   <string><id>1221</id><value>Musica, Video e Immagini</value></string>
-  <string><id>1222</id><value>Musica, Video, Immagini e Files</value></string>
+  <string><id>1222</id><value>Musica, Video, Immagini e File</value></string>
   <string><id>1223</id><value>Disattivo</value></string>
   <string><id>1224</id><value>Utente Normale</value></string>
   <string><id>1225</id><value>Utente Esperto</value></string>
-  <string><id>1226</id><value>Files, Musica e Video</value></string> 
-  <string><id>1227</id><value>Files, Immagini e Musica</value></string> 
-  <string><id>1228</id><value>Files, Immagini e Video</value></string> 
+  <string><id>1226</id><value>File, Musica e Video</value></string> 
+  <string><id>1227</id><value>File, Immagini e Musica</value></string> 
+  <string><id>1228</id><value>File, Immagini e Video</value></string> 
 
   <string><id>1229</id><value>Musica e Programmi</value></string>
   <string><id>1230</id><value>Video e Programmi</value></string>
@@ -603,8 +603,8 @@
   <string><id>1251</id><value>XBOX Autodetection</value></string>
   <string><id>1252</id><value>Nick Name</value></string>
   <string><id>1253</id><value>Crea collegamento FTP nel Filemanager</value></string>
-  <string><id>1254</id><value>Popup Notification</value></string>
-  <string><id>1255</id><value>Invia FTP User and Password</value></string>
+  <string><id>1254</id><value>Notificazione Popup</value></string>
+  <string><id>1255</id><value>Invia FTP User e Password</value></string>
   <string><id>1256</id><value>Intervallo Ping</value></string>
 
   <string><id>1396</id><value>Mutevole</value></string>
@@ -641,7 +641,7 @@
   <string><id>10015</id><value>Impostazioni-&gt;Musica</value></string>
   <string><id>10016</id><value>Impostazioni-&gt;Sistema</value></string>
   <string><id>10017</id><value>Impostazioni-&gt;Video</value></string>
-  <string><id>10018</id><value>Impostazioni-&gt;Network</value></string>
+  <string><id>10018</id><value>Impostazioni-&gt;Rete</value></string>
   <string><id>10019</id><value>Impostazioni-&gt;Aspetto</value></string>
   <string><id>10020</id><value>Scripts</value></string>
   <string><id>10021</id><value>Video/Generi</value></string>
@@ -776,21 +776,21 @@
   <string><id>13211</id><value>Allarme!</value></string> 
   <string><id>13212</id><value>Annullato con ancora %im%is</value></string> 
 
-  <string><id>13299</id><value>Temperatura da Raggiungere:</value></string>
-  <string><id>13300</id><value>Velocità Ventola:</value></string>
+  <string><id>13299</id><value>- Temperatura da Raggiungere:</value></string>
+  <string><id>13300</id><value>- Velocità Ventola:</value></string>
   <string><id>13301</id><value>Controllo Automatico Temperatura</value></string>
   <string><id>13302</id><value>Controllo Velocità Ventola</value></string>
-  <string><id>13303</id><value>Skin Fonts</value></string>
+  <string><id>13303</id><value>Font dell'Interfaccia</value></string>
   <string><id>13304</id><value>Abilita Flipping in Stringhe Bidirezionali</value></string>
   <string><id>13305</id><value>Abilita i Feed RSS</value></string>
   <string><id>13306</id><value>Nascondi Oggetti delle Sottocartelle</value></string>
-  <string><id>13307</id><value>Template Nominativo Traccia</value></string>
+  <string><id>13307</id><value>Formato Titolo della Traccia</value></string>
   <string><id>13308</id><value>Vuoi riavviare la tua xbox</value></string>
   <string><id>13309</id><value>invece di XBMC?</value></string>
   <string><id>13310</id><value>Effetto Zoom</value></string>
   <string><id>13311</id><value>Effetto Spostamento</value></string>
   <string><id>13312</id><value>Riduzione Barra Nera</value></string>
-  <string><id>13313</id><value>Reset/Riavvio</value></string>
+  <string><id>13313</id><value>Riavvia</value></string>
   <string><id>13314</id><value>Crossfade</value></string>
   <string><id>13315</id><value>Ricrea Icone</value></string>
   <string><id>13316</id><value>Icone Ricorsive</value></string>
@@ -822,11 +822,11 @@
   <string><id>13342</id><value>Arancione</value></string>
   <string><id>13343</id><value>Rosso</value></string>
   <string><id>13344</id><value>Ciclico</value></string>
-  <string><id>13345</id><value>Spegni il Led durante il Play</value></string>
+  <string><id>13345</id><value>Spegni il Led Durante l'Esecuzione</value></string>
   <string><id>13346</id><value>Informazioni Film</value></string>
   <string><id>13347</id><value>Accoda Oggetto</value></string>
   <string><id>13348</id><value>Cerca in IMDb...</value></string>
-  <string><id>13349</id><value>Cerca Info Per Tutti i Files</value></string>
+  <string><id>13349</id><value>Cerca Info Per Tutti i File</value></string>
   <string><id>13350</id><value>In Riproduzione...</value></string>
   <string><id>13351</id><value>Informazioni Album</value></string>
   <string><id>13352</id><value>Scans.Cartella in Database</value></string>
@@ -864,26 +864,26 @@
   <string><id>13384</id><value>Camuffa Voce - Porta 2</value></string>
   <string><id>13385</id><value>Camuffa Voce - Porta 3</value></string>
   <string><id>13386</id><value>Usa ricerca basata sul tempo</value></string>
-  <string><id>13387</id><value>Template Nominativo Traccia a Destra</value></string>
+  <string><id>13387</id><value>Formato Titolo della Traccia a Destra</value></string>
   <string><id>13388</id><value>Presets</value></string>
   <string><id>13389</id><value>Nessun preset disponibile&#10;per questo effetto grafico</value></string>
   <string><id>13390</id><value>Nessuna impostazione disponibile&#10;per questo effetto grafico</value></string>
-  <string><id>13391</id><value>Eject/Carica</value></string>
+  <string><id>13391</id><value>Apri / Chuidi</value></string>
   <string><id>13392</id><value>Effetto Grafico in Automatico</value></string>
   <string><id>13393</id><value>Calcola Dimensione</value></string> 
   <string><id>13394</id><value>Calcolo Dim. Cartella</value></string> 
 
 
-  <string><id>14000</id><value>Unisci: Spento</value></string>
-  <string><id>14001</id><value>Unisci: Semplice</value></string>
-  <string><id>14002</id><value>Unisci: Esteso</value></string>
+  <string><id>14000</id><value>Unisci Volumi</value></string>
+  <string><id>14001</id><value>Dividi Volumi</value></string>
+  <string><id>14002</id><value>_EMPTY_</value></string>
   <string><id>14003</id><value>Scaricamento file playlist...</value></string>
   <string><id>14004</id><value>Scaricamento lista streams...</value></string>
   <string><id>14005</id><value>Esamino lista streams...</value></string>
   <string><id>14006</id><value>Scaricamento lista streams fallito</value></string>
   <string><id>14007</id><value>Scaricamento file playlist fallito</value></string>
   <string><id>14008</id><value>Abilita notifiche Kai</value></string>
-  <string><id>14009</id><value>Directory Giochi</value></string>
+  <string><id>14009</id><value>Cartella Giochi</value></string>
   <string><id>14010</id><value>Adattamento Vista Icone per</value></string>
   <string><id>14011</id><value>Auto-Adattamento Vista Icone</value></string>
   <string><id>14012</id><value>- Usa Icone Grandi</value></string>
@@ -892,10 +892,10 @@
   <string><id>14015</id><value>Nessun File ed almeno una Icona</value></string>
   <string><id>14016</id><value>Almeno un File ed una Icona</value></string>
   <string><id>14017</id><value>Percentuale di Icone</value></string>
-  <string><id>14018</id><value>Opzioni Veduta</value></string>
-  <string><id>14019</id><value>Area code 1</value></string>
-  <string><id>14020</id><value>Area code 2</value></string>
-  <string><id>14021</id><value>Area code 3</value></string>
+  <string><id>14018</id><value>Cartelle</value></string>
+  <string><id>14019</id><value>Codice Zona 1</value></string>
+  <string><id>14020</id><value>Codice Zona 2</value></string>
+  <string><id>14021</id><value>Codice Zona 3</value></string>
   <string><id>14022</id><value>Archivio</value></string>
   <string><id>14023</id><value>No TV</value></string>
   <string><id>14024</id><value>Inserisci la città più grande vicina a te o US ZIPcode</value></string>
@@ -910,14 +910,14 @@
   <string><id>14033</id><value>DVD Cache    - Harddisk</value></string>
   <string><id>14034</id><value>DVD Cache    - DVDRom</value></string>
   <string><id>14035</id><value>              - Rete Locale</value></string>
-  <string><id>14036</id><value>Servers</value></string>
+  <string><id>14036</id><value>Server</value></string>
   <string><id>14037</id><value>Aspetto</value></string>
   <string><id>14038</id><value>Impostazioni di rete cambiate</value></string>
   <string><id>14039</id><value>XBMC deve essere riavviato per cambiare le</value></string>
   <string><id>14040</id><value>tue impostazioni di rete.  Vuoi riavviare adesso?</value></string>
   <string><id>14041</id><value>Post Processing</value></string>
   <string><id>14042</id><value>Indirizzo IP Engine</value></string>
-  <string><id>14043</id><value>- Spegnimento Durante il Play</value></string>
+  <string><id>14043</id><value>- Spegnimento Durante l'Esecuzione</value></string>
   <string><id>14044</id><value>%i mins</value></string>
   <string><id>14045</id><value>%i secs</value></string>
   <string><id>14046</id><value>%i ms</value></string>
@@ -925,7 +925,7 @@
   <string><id>14048</id><value>%i kbps</value></string>
   <string><id>14049</id><value>%i kb</value></string>
   <string><id>14050</id><value>%i.0 dB</value></string>
-  <string><id>14051</id><value>Mostra orario in 12 ore</value></string>
+  <string><id>14051</id><value>Mostra Orario in 12 Ore</value></string>
   <string><id>14052</id><value>Scambia Mese e Giorno nella Home</value></string>
   <string><id>14053</id><value>Filtri Interfaccia</value></string>
   <string><id>14054</id><value>Attiva Ricerca in Internet</value></string>
@@ -933,7 +933,7 @@
   <string><id>14056</id><value>Ferma Scansione</value></string>
   <string><id>14057</id><value>Impossibile durante scansione informazioni media</value></string>
   <string><id>14058</id><value>Effetto Film Sgranato</value></string>
-  <string><id>14059</id><value>Cerca Icone Personalizzate nelle Condivisioni Remote</value></string>
+  <string><id>14059</id><value>Cerca Icone Personalizzate nelle Cartelle Remote</value></string>
   <string><id>14060</id><value>Cache di tipo Sconosciuto - Internet</value></string>
   <string><id>14061</id><value>Auto</value></string>
   <string><id>14062</id><value>Inserire Nome Utente per</value></string>
@@ -945,6 +945,7 @@
   <string><id>14068</id><value>Inserire Indirizzo IP</value></string>
   <string><id>14069</id><value>Vuoi salvare queste Impostazioni adesso?</value></string>
   <string><id>14070</id><value>Salva Impostazioni</value></string>
+  <string><id>14071</id><value>Consenti Cancellazione File</value></string>
 
   <string><id>15000</id><value>XLink Kai</value></string>
   <string><id>15001</id><value>Il servizio non è connesso, vuoi riprovare</value></string>
@@ -1015,7 +1016,7 @@
   <string><id>15103</id><value>* Tutti gli Artisti</value></string>
   <string><id>15104</id><value>* Tutte le Canzoni</value></string>
   <string><id>15105</id><value>* Tutti i Generi</value></string>
-  <string><id>15106</id><value>Ricorda file selezionato in navigazioni successive</value></string>
+  <string><id>15106</id><value>Ricorda selezione in navigazioni successive</value></string>
   <string><id>15107</id><value>Caricando...</value></string>
   <string><id>15108</id><value>Suoni Navigazione</value></string> 
   <string><id>15109</id><value>Propri della Skin</value></string> 
@@ -1034,7 +1035,7 @@
   <string><id>15211</id><value>Inviando...</value></string>
   <string><id>15212</id><value>Inviato in %i secondi</value></string>
   <string><id>15213</id><value>[CONTENITORE]</value></string>
-  <string><id>15214</id><value>Usa Sincronizzazione A/V Morbida</value></string>
+  <string><id>15214</id><value>Perfezziona Sincronizzazione A/V</value></string>
 
   <string><id>13150</id><value>HDD Key:</value></string>
   <string><id>13151</id><value>HDD Temp:</value></string>
@@ -1062,7 +1063,7 @@
   <string><id>13276</id><value>DVD-ROM</value></string>
   <string><id>13277</id><value>Storage</value></string>
   <string><id>13278</id><value>Default</value></string>
-  <string><id>13279</id><value>Network</value></string>
+  <string><id>13279</id><value>Rete</value></string>
   <string><id>13280</id><value>Video</value></string>
   <string><id>13281</id><value>Hardware</value></string>
   <string><id>13282</id><value>_</value></string>
@@ -1085,6 +1086,8 @@
   <string><id>16000</id><value>Generale</value></string>
   <string><id>16001</id><value>Configura Audio Hardware...</value></string>
   <string><id>16002</id><value>Ricerca CDDB</value></string>
-  <string><id>16003</id><value>Player</value></string>
+  <string><id>16003</id><value>Lettore</value></string>
+  <string><id>16004</id><value>Sincronizza Video Interlacciato</value></string> 
+  <string><id>16005</id><value>- Inverti i Campi</value></string> 
 
 </strings>
