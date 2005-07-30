@@ -17,6 +17,8 @@ public:
   virtual bool OnAction(const CAction &action);
   virtual void Render();
   virtual bool OnFileCallback(void* pContext, int ipercent);
+  bool Delete(const CFileItem *pItem);
+
 protected:
   void GoParentFolder(int iList);
   void UpdateControl(int iList);
