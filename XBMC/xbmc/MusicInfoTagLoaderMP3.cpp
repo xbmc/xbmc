@@ -623,7 +623,6 @@ int CMusicInfoTagLoaderMP3::ReadDuration(const CStdString& strFileName)
           for (int j = 0; j < 100; j++)
             offset[j] = (float)buffer[iOffset + j]/256.0f * nMp3DataSize + m_iID3v2Size;
           offset[100] = (float)nMp3DataSize + m_iID3v2Size;
-          m_seekInfo.SetDuration((float)(frame_count * tpf));
           m_seekInfo.SetOffsets(100, offset);
           delete[] offset;
         }
@@ -721,7 +720,7 @@ int CMusicInfoTagLoaderMP3::ReadDuration(const CStdString& strFileName)
       if (version == MPEG_VERSION2_5 && version == MPEG_VERSION2)
         tpf /= 2;
 
-      if (frequency == 0)
+     if (frequency == 0)
         return 0;
 
       /* Channel mode (stereo/mono) */
@@ -766,7 +765,6 @@ int CMusicInfoTagLoaderMP3::ReadDuration(const CStdString& strFileName)
             for (int j = 0; j < 100; j++)
               offset[j] = (float)xing[iOffset + j]/256.0f * nMp3DataSize + m_iID3v2Size;
             offset[100] = (float)nMp3DataSize + m_iID3v2Size;
-            m_seekInfo.SetDuration((float)(frame_count * tpf));
             m_seekInfo.SetOffsets(100, offset);
             delete[] offset;
           }
@@ -808,7 +806,6 @@ int CMusicInfoTagLoaderMP3::ReadDuration(const CStdString& strFileName)
           offset[j + 1] = offset[j];
         }
         offset[iSeekOffsets] = (float)m_iID3v2Size + nMp3DataSize;
-        m_seekInfo.SetDuration((float)(frame_count * tpf));
         m_seekInfo.SetOffsets(iSeekOffsets, offset);
         delete[] offset;
       }
@@ -821,6 +818,7 @@ int CMusicInfoTagLoaderMP3::ReadDuration(const CStdString& strFileName)
   if (frame_count > 0)
   {
     double d = tpf * frame_count;
+    m_seekInfo.SetDuration((float)d);
     return (int)d;
   }
 
