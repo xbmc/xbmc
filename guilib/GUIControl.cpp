@@ -441,142 +441,71 @@ int CGUIControl::GetGroup(void) const
   return m_iGroup;
 }
 
-CStdString CGUIControl::ParseLabel(CStdString &strLabel)
+CStdString CGUIControl::ParseLabel(CStdString& strLabel)
 {
-  CStdString toString = L"";
-  CStdString queueString = L"";
-  int lastPos = 0;
-  bool lastValid = true;
-
-  // first first parseable item
-  int t = strLabel.Find('$');
-  while ( t >= 0 )
+  CStdString strReturn = "";
+  int iPos1 = 0;
+  int iPos2 = strLabel.Find('$', iPos1);
+  bool bDoneSomething = !(iPos1 == iPos2);
+  while (iPos2 >= 0)
   {
-    int skip = 0;
-    CStdString checkEscape = "";
-
-    // read next character
-		if (t+1 < (int)strLabel.length())
-		{
-			checkEscape = strLabel.substr(t+1,1);
-		}
-    bool emptyInfo = false;
-
-    // $ means escape
-    if (!checkEscape.Equals("$"))
+    if( (iPos2 > iPos1) && bDoneSomething )
     {
-      //write all text since the last parsable item till this one to the literal text queue
-      if (t > lastPos)
+      strReturn += strLabel.Mid(iPos1, iPos2 - iPos1);
+      bDoneSomething = false;  
+    }
+
+    int iPos3 = 0;
+    CStdString str;
+    CStdString strInfo = "INFO[";
+    CStdString strLocalize = "LOCALIZE[";
+
+    // $INFO[something]
+    if (strLabel.Mid(iPos2 + 1,strInfo.size()).Equals(strInfo))
+    {
+      iPos2 += strInfo.size() + 1;
+      iPos3 = strLabel.Find(']', iPos2);
+      CStdString strValue = strLabel.Mid(iPos2,(iPos3 - iPos2));
+      int iInfo = g_infoManager.TranslateString(strValue);
+      if (iInfo)
       {
-        CStdString tempString = strLabel.substr(lastPos,t-lastPos);
-        tempString.Replace("$$","$");
-        queueString.append(tempString);
+        str = g_infoManager.GetLabel(iInfo);
+        if (str.size() > 0)
+          bDoneSomething = true;
       }
+    }
 
-      // look for a type delimiter
-      CStdString infoString = L"";
-      int startData = strLabel.Find('[',t);
-      int endData = strLabel.Find(']',t);
-      if (startData > t && endData > startData)
+    // $LOCALIZE[something]
+    else if (strLabel.Mid(iPos2 + 1,strLocalize.size()).Equals(strLocalize))
+    {
+      iPos2 += strLocalize.size() + 1;
+      iPos3 = strLabel.Find(']', iPos2);
+      CStdString strValue = strLabel.Mid(iPos2,(iPos3 - iPos2));
+      if (CUtil::IsNaturalNumber(strValue))
       {
-        CStdString strType = strLabel.substr(t+1,(startData - t)-1);
-        CStdString strValue = strLabel.substr(startData+1,(endData - startData)-1);
-
-        // info item
-        if (strType.Equals("INFO"))
-        {
-          int info = g_infoManager.TranslateString(strValue);
-          if (info)
-          {
-            infoString = g_infoManager.GetLabel(info);
-            emptyInfo = (infoString.length() == 0);
-          }
-          // just skip ahead if the parameter is bad
-          lastPos = endData + 1;
-          skip = endData - t;
-        }
-
-        // localized string
-        else if (strType.Equals("LOCALIZE"))
-        {
-          int localize = atoi(strValue);
-          if (localize && CUtil::IsNaturalNumber(strValue))
-          {
-            CStdString localizeString = g_localizeStrings.Get(localize);
-            queueString.append(localizeString);
-          }
-          // just skip ahead if the parameter is bad
-          lastPos = endData + 1;
-          skip = endData - t;
-        }
+        int iLocalize = atoi(strValue);
+        str = g_localizeStrings.Get(iLocalize);
+        if (str.size() > 0)
+          bDoneSomething = true;
       }
-
-      // figure out what to write out
-			if (infoString.length() > 0)
-			{
-				// if the previous info item was valid (or if there was none), and this one also, 1st write all queued literal text
-				if (queueString.length() > 0)
-				{
-					toString.append(queueString);
-				}
-				// empty literal text queue string
-				queueString = L"";
-
-				// now write info string
-				toString.append(infoString);
-				lastValid = true;
-			}
-			else if (emptyInfo)
-			{
-				queueString = L"";
-        lastValid = false;
-			}
-      else  // must have had a $ without the necessary INFO() or LOCALIZE() informati
-        queueString = L"";
-      /*
-			else
-			{
-				lastValid = false;
-			}
-      */
     }
 
-    // escape character found, skip ahead one character
-    else
+    // $$ prints $
+    else if (strLabel[iPos2 + 1] == '$')
     {
-      skip = 1;
+      str = '$';
+      bDoneSomething = true;
     }
 
-    // are there anymore characters to test?
-    if (t+skip < (int)strLabel.length())
-    {
-      // find the next parsable item
-      t = strLabel.Find('$',t+skip + 1);
-    }
-
-    // no more characters
-    else
-    {
-      // exit the while loop
-      t = -1;
-    }
+    strReturn += str;
+    iPos1 = iPos3 + 1;
+    iPos2 = strLabel.Find('$', iPos1);
   }
 
-	// if any text was leftover after the last parsable tag, add it to the literal text queue
-  if (lastPos < (int)strLabel.length())
-  {
-    CStdString tempString = strLabel.substr(lastPos,(int)strLabel.length()-lastPos);
-    tempString.Replace("$$","$");
-    queueString.append(tempString.c_str());
-  }
+  if (iPos1 < (int)strLabel.size())
+    strReturn += strLabel.Right(strLabel.size() - iPos1);
 
-	//if the last info item was valid, append the literal text queue to the result string
-	if (lastValid && queueString.length() > 0)
-	{
-		toString.append(queueString.c_str());
-	}
-
-  return toString;
+  return strReturn;
 }
 
 bool CGUIControl::UpdateVisibility()
