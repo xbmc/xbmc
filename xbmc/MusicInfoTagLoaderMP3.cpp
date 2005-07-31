@@ -43,6 +43,58 @@ const uchar* ID3_GetPictureBufferOfPicType(ID3_Tag* tag, ID3_PictureType pictype
   }
 }
 
+//  \brief Some tagging programs may save pictures with a picture type 
+//  outside the id3 specification, this function takes care of them
+bool ID3_GetFirstNonStandardPicType(ID3_Tag* tag, ID3_PictureType& pictype)
+{
+  bool found=false;
+  if (NULL == tag)
+    return false;
+  else
+  {
+    ID3_Frame* frame = NULL;
+    ID3_Tag::Iterator* iter = tag->CreateIterator();
+
+    while (NULL != (frame = iter->GetNext() ))
+    {
+      if (frame->GetID() == ID3FID_PICTURE && 
+          (pictype=(ID3_PictureType)frame->GetField(ID3FN_PICTURETYPE)->Get())>ID3PT_PUBLISHERLOGO)
+      {
+        found=true;
+        break;
+      }
+    }
+    delete iter;
+  }
+
+  return found;
+}
+
+bool ID3_HasPicType(ID3_Tag* tag, ID3_PictureType pictype)
+{
+  bool found=false;
+  if (NULL == tag)
+    return false;
+  else
+  {
+    ID3_Frame* frame = NULL;
+    ID3_Tag::Iterator* iter = tag->CreateIterator();
+
+    while (NULL != (frame = iter->GetNext() ))
+    {
+      if (frame->GetID() == ID3FID_PICTURE && 
+          pictype==(ID3_PictureType)frame->GetField(ID3FN_PICTURETYPE)->Get())
+      {
+        found=true;
+        break;
+      }
+    }
+    delete iter;
+  }
+
+  return found;
+}
+
 #define BYTES2INT(b1,b2,b3,b4) (((b1 & 0xFF) << (3*8)) | \
                                 ((b2 & 0xFF) << (2*8)) | \
                                 ((b3 & 0xFF) << (1*8)) | \
@@ -370,24 +422,19 @@ bool CMusicInfoTagLoaderMP3::ReadTag( ID3_Tag& id3tag, CMusicInfoTag& tag )
   // extract Cover Art and save as album thumb
   if (ID3_HasPicture(&id3tag))
   {
-    ID3_PictureType nPicTyp = ID3PT_COVERFRONT;
-    CStdString strExtension;
     bool bFound = false;
-    auto_aptr<char>pMimeTyp (ID3_GetMimeTypeOfPicType(&id3tag, nPicTyp));
-    if (pMimeTyp.get() == NULL)
+    ID3_PictureType nPicType = ID3PT_COVERFRONT;
+    if (ID3_HasPicType(&m_id3tag, nPicType))
     {
-      nPicTyp = ID3PT_OTHER;
-      auto_aptr<char>pMimeTyp (ID3_GetMimeTypeOfPicType(&id3tag, nPicTyp));
-      if (pMimeTyp.get() != NULL)
-      {
-        strExtension = pMimeTyp.get();
-        bFound = true;
-      }
+      bFound = true;
     }
     else
     {
-      strExtension = pMimeTyp.get();
-      bFound = true;
+      nPicType = ID3PT_OTHER;
+      if (ID3_HasPicType(&m_id3tag, nPicType))
+        bFound = true;
+      else if (ID3_GetFirstNonStandardPicType(&id3tag, nPicType))
+        bFound = true;
     }
 
     CStdString strCoverArt, strPath;
@@ -397,12 +444,17 @@ bool CMusicInfoTagLoaderMP3::ReadTag( ID3_Tag& id3tag, CMusicInfoTag& tag )
     {
       if (!CUtil::ThumbExists(strCoverArt))
       {
+        CStdString strExtension;
+        auto_aptr<char>pMimeTyp (ID3_GetMimeTypeOfPicType(&id3tag, nPicType));
+        if (pMimeTyp.get() != NULL)
+          strExtension = pMimeTyp.get();
+
         int nPos = strExtension.Find('/');
         if (nPos > -1)
           strExtension.Delete(0, nPos + 1);
 
         size_t nBufSize = 0;
-        const BYTE* pPic = ID3_GetPictureBufferOfPicType(&id3tag, nPicTyp, &nBufSize );
+        const BYTE* pPic = ID3_GetPictureBufferOfPicType(&id3tag, nPicType, &nBufSize );
 
         if (pPic != NULL && nBufSize > 0)
         {
