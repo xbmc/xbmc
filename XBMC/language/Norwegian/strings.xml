@@ -1,4 +1,4 @@
-<!-- Based on English XML v1.230. Last updated by vnmartinsen  !-->
+<!-- Based on English XML v1.231. Last updated by vnmartinsen  !-->
 <strings>
   <string><id>0</id><value>Mine Programmer</value></string>
   <string><id>1</id><value>Mine Bilder</value></string>
@@ -159,7 +159,7 @@
   <string><id>225</id><value>Tid mellom overgang</value></string>
   <string><id>226</id><value>Bruk PAL60</value></string>
   <string><id>227</id><value>Bruk CDDB</value></string>
-  <string><id>228</id><value>Blande spillelisten ved lasting</value></string>
+  <string><id>228</id><value>Bland spillelisten ved lasting</value></string>
   <string><id>229</id><value>Slå av harddisk etter (min)</value></string>
   <string><id>230</id><value>Filter</value></string>
   <string><id>231</id><value>Ingen</value></string>
@@ -170,7 +170,7 @@
   <string><id>236</id><value>Gaussisk-kubisk</value></string>
   <string><id>237</id><value>Forminsking</value></string>
   <string><id>238</id><value>Forstørring</value></string>
-  <string><id>239</id><value>Tom spilleliste når ferdigspilt</value></string>
+  <string><id>239</id><value>Tøm spilleliste når ferdigspilt</value></string>
   <string><id>240</id><value>Start DVD'er automatisk</value></string>
   <string><id>241</id><value>Start VCD/SVCD automatisk</value></string>
   <string><id>242</id><value>Start musikk-CD'er automatisk</value></string>
@@ -794,13 +794,13 @@
   <string><id>13310</id><value>Zoom-effekt</value></string>
   <string><id>13311</id><value>Flyt-effekt</value></string>
   <string><id>13312</id><value>Reduksjon av sort felt</value></string>
-  <string><id>13313</id><value>Nullstill/Start på nytt</value></string>
+  <string><id>13313</id><value>Start på nytt</value></string>
   <string><id>13314</id><value>Crossfade</value></string>
   <string><id>13315</id><value>Regenerer miniatyrbilder</value></string>
   <string><id>13316</id><value>Rekursive miniatyrbilder</value></string>
   <string><id>13317</id><value>Se bildevisning</value></string>
   <string><id>13318</id><value>Rekursiv bildevisning</value></string>
-  <string><id>13319</id><value>Tilfeldiggjør</value></string>
+  <string><id>13319</id><value>Tilfeldig</value></string>
   <string><id>13320</id><value>Stereo</value></string>
   <string><id>13321</id><value>Kun venstre</value></string>
   <string><id>13322</id><value>Kun høyre</value></string>
