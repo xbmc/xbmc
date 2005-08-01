@@ -108,7 +108,6 @@
       <width>720</width>
       <height>576</height>
       <texture>4x3home.png</texture>
-      <visible>!Player.HasAudio | ![Player.HasAudio + System.IdleTime(60)]</visible>
     </control>
 
     <control>
@@ -119,422 +118,422 @@
       <posY>0</posY>
       <width>720</width>
       <height>576</height>
-      <texture>4x3home2.png</texture>
-      <visible>Player.HasAudio + System.IdleTime(60)</visible>
-    </control>
-
-    <control>
-      <description>image</description>
-      <type>image</type>
-      <id>1</id>
-      <posX>105</posX>
-      <posY>338</posY>
-      <width>90</width>
-      <height>99</height>
-      <info>MusicPlayer.Cover</info>
-      <visible>System.IdleTime(60)</visible>
-    </control>
-
-    <control>
-      <description>Artist label</description>
-      <type>label</type>
-      <id>1</id>
-      <width>430</width>
-      <posX>210</posX>
-      <posY>340</posY>
-      <info>MusicPlayer.Artist</info>
-      <align>left</align>
-      <font>special12</font>
-      <visible>System.IdleTime(60)</visible>
-    </control>
-
-    <control>
-      <description>Title label</description>
-      <type>label</type>
-      <id>1</id>
-      <width>430</width>
-      <posX>210</posX>
-      <posY>367</posY>
-      <info>MusicPlayer.Title</info>
-      <align>left</align>
-      <font>special13</font>
-      <visible>System.IdleTime(60)</visible>
-    </control>
-
-    <control>
-      <description>Album label</description>
-      <type>label</type>
-      <id>1</id>
-      <width>430</width>
-      <posX>210</posX>
-      <posY>405</posY>
-      <info>MusicPlayer.Album</info>
-      <align>left</align>
-      <font>font10</font>
-      <visible>System.IdleTime(60)</visible>
-    </control>
-
-    <control>
-      <description>gradient</description>
-      <type>image</type>
-      <id>1</id>
-      <visible>Player.HasAudio + !System.IdleTime(60)</visible>
-      <posX>315</posX>
-      <posY>338</posY>
-      <width>400</width>
-      <height>99</height>
-      <texture>gradient.png</texture>
-    </control>
-
-    <control>
-      <description>cover image</description>
-      <type>image</type>
-      <id>1</id>
-      <posX>555</posX>
-      <posY>338</posY>
-      <width>90</width>
-      <height>99</height>
-      <info>MusicPlayer.Cover</info>
-      <visible>!System.IdleTime(60)</visible>
-      <keepaspectratio>true</keepaspectratio>
-    </control>
-
-    <control>
-      <description>Artist label</description>
-      <type>label</type>
-      <id>1</id>
-      <width>255</width>
-      <posX>540</posX>
-      <posY>340</posY>
-      <info>MusicPlayer.Artist</info>
-      <align>right</align>
-      <font>special12</font>
-      <visible>!System.IdleTime(60)</visible>
-    </control>
-
-    <control>
-      <description>Title label</description>
-      <type>label</type>
-      <id>1</id>
-      <width>255</width>
-      <posX>540</posX>
-      <posY>365</posY>
-      <info>MusicPlayer.Title</info>
-      <align>right</align>
-      <font>special13</font>
-      <visible>!System.IdleTime(60)</visible>
-    </control>
-
-    <control>
-      <description>Album label</description>
-      <type>label</type>
-      <id>1</id>
-      <width>255</width>
-      <posX>540</posX>
-      <posY>394</posY>
-      <info>MusicPlayer.Album</info>
-      <align>right</align>
-      <font>font10</font>
-      <visible>!System.IdleTime(60)</visible>
-    </control>
-
-    <control>
-      <description>Time label</description>
-      <type>label</type>
-      <id>1</id>
-      <posX>540</posX>
-      <posY>415</posY>
-      <info>MusicPlayer.Time</info>
-      <align>right</align>
-      <font>font10</font>
-      <visible>!System.IdleTime(60)</visible>
-    </control>
-
-    <controlgroup>
-      <control>
-        <description>My Programs normal push button</description>
-        <type>button</type>
-        <id>2</id>
-        <posX>91</posX>
-        <posY>231</posY>
-        <width>14</width>
-        <height>13</height>
-        <label>0</label>
-        <font>special13</font>
-        <hyperlink>1</hyperlink>
-        <onleft>98</onleft>
-        <onright>99</onright>
-        <onup>9</onup>
-        <ondown>4</ondown>
-        <textureFocus>home-focus.gif</textureFocus>
-        <textureNoFocus>-</textureNoFocus>
-        <textOffsetX>30</textOffsetX>
-      <visible>!Player.HasAudio | ![Player.HasAudio + System.IdleTime(60)]</visible>
+      <texture>home_buttons.png</texture>
+      <visible fade="50">!Player.HasAudio | ![Player.HasAudio + System.IdleTime(60)]</visible>
       </control>
 
       <control>
-        <description>My Pictures normal push button</description>
-        <type>button</type>
-        <id>4</id>
-        <posX>91</posX>
-        <posY>271</posY>
-        <width>14</width>
-        <height>13</height>
-        <label>1</label>
-        <hyperlink>2</hyperlink>
-        <font>special13</font>
-        <onleft>98</onleft>
-        <onright>99</onright>
-        <onup>2</onup>
-        <ondown>5</ondown>
-        <textureFocus>home-focus.gif</textureFocus>
-        <textureNoFocus>-</textureNoFocus>
-        <textOffsetX>30</textOffsetX>
-      <visible>!Player.HasAudio | ![Player.HasAudio + System.IdleTime(60)]</visible>
-      </control>
+        <description>image</description>
+        <type>image</type>
+        <id>1</id>
+        <posX>105</posX>
+        <posY>338</posY>
+        <width>90</width>
+        <height>99</height>
+        <info>MusicPlayer.Cover</info>
+        <visible fade="20" start="hidden">System.IdleTime(63)</visible>
+        </control>
 
-      <control>
-        <description>My Videos normal push button</description>
-        <type>button</type>
-        <id>5</id>
-        <posX>91</posX>
-        <posY>310</posY>
-        <width>14</width>
-        <height>13</height>
-        <label>3</label>
-        <font>special13</font>
-        <hyperlink>6</hyperlink>
-        <onleft>98</onleft>
-        <onright>99</onright>
-        <onup>4</onup>
-        <ondown>3</ondown>
-        <textureFocus>home-focus.gif</textureFocus>
-        <textureNoFocus>-</textureNoFocus>
-        <textOffsetX>30</textOffsetX>
-      <visible>!Player.HasAudio | ![Player.HasAudio + System.IdleTime(60)]</visible>
-      </control>
+        <control>
+          <description>Artist label</description>
+          <type>label</type>
+          <id>1</id>
+          <width>430</width>
+          <posX>210</posX>
+          <posY>340</posY>
+          <info>MusicPlayer.Artist</info>
+          <align>left</align>
+          <font>special12</font>
+          <visible fade="20" start="hidden">System.IdleTime(63)</visible>
+          </control>
 
-      <control>
-        <description>My Music normal push button</description>
-        <type>button</type>
-        <id>3</id>
-        <posX>91</posX>
-        <posY>350</posY>
-        <width>14</width>
-        <height>13</height>
-        <label>2</label>
-        <hyperlink>501</hyperlink>
-        <font>special13</font>
-        <onleft>98</onleft>
-        <onright>99</onright>
-        <onup>5</onup>
-        <ondown>7</ondown>
-        <textureFocus>home-focus.gif</textureFocus>
-        <textureNoFocus>-</textureNoFocus>
-        <textOffsetX>30</textOffsetX>
-      <visible>!Player.HasAudio | ![Player.HasAudio + System.IdleTime(60)]</visible>
-      </control>
+          <control>
+            <description>Title label</description>
+            <type>label</type>
+            <id>1</id>
+            <width>430</width>
+            <posX>210</posX>
+            <posY>367</posY>
+            <info>MusicPlayer.Title</info>
+            <align>left</align>
+            <font>special13</font>
+            <visible fade="20" start="hidden">System.IdleTime(63)</visible>
+            </control>
 
-      <control>
-        <description>My Weather normal push button</description>
-        <type>button</type>
-        <id>7</id>
-        <posX>91</posX>
-        <posY>388</posY>
-        <width>14</width>
-        <height>13</height>
-        <label>8</label>
-        <font>special13</font>
-        <hyperlink>2600</hyperlink>
-        <onleft>98</onleft>
-        <onright>99</onright>
-        <onup>3</onup>
-        <ondown>9</ondown>
-        <textureFocus>home-focus.gif</textureFocus>
-        <textureNoFocus>-</textureNoFocus>
-        <textOffsetX>30</textOffsetX>
-      <visible>!Player.HasAudio | ![Player.HasAudio + System.IdleTime(60)]</visible>
-      </control>
+            <control>
+              <description>Album label</description>
+              <type>label</type>
+              <id>1</id>
+              <width>430</width>
+              <posX>210</posX>
+              <posY>405</posY>
+              <info>MusicPlayer.Album</info>
+              <align>left</align>
+              <font>font10</font>
+              <visible fade="20" start="hidden">System.IdleTime(63)</visible>
+              </control>
 
-      <control>
-        <description>Settings normal push button</description>
-        <type>button</type>
-        <id>9</id>
-        <posX>80</posX>
-        <posY>434</posY>
-        <width>9</width>
-        <height>8</height>
-        <label>5</label>
-        <font>font10</font>
-        <hyperlink>4</hyperlink>
-        <onleft>98</onleft>
-        <onright>6</onright>
-        <onup>7</onup>
-        <ondown>2</ondown>
-        <textureFocus>home-focus.gif</textureFocus>
-        <textureNoFocus>-</textureNoFocus>
-        <textOffsetX>20</textOffsetX>
-      <visible>!Player.HasAudio | ![Player.HasAudio + System.IdleTime(60)]</visible>
-      </control>
+              <control>
+                <description>gradient</description>
+                <type>image</type>
+                <id>1</id>
+                <visible fade="50" start="hidden">Player.HasAudio + !System.IdleTime(60)</visible>
+                  <posX>315</posX>
+                  <posY>338</posY>
+                  <width>400</width>
+                  <height>99</height>
+                  <texture>gradient.png</texture>
+                </control>
 
-      <control>
-        <description>My Files normal push button</description>
-        <type>button</type>
-        <id>6</id>
-        <posX>195</posX>
-        <posY>434</posY>
-        <width>9</width>
-        <height>8</height>
-        <label>7</label>
-        <hyperlink>3</hyperlink>
-        <font>font10</font>
-        <onleft>9</onleft>
-        <onright>99</onright>
-        <onup>7</onup>
-        <ondown>2</ondown>
-        <textureFocus>home-focus.gif</textureFocus>
-        <textureNoFocus>-</textureNoFocus>
-        <textOffsetX>20</textOffsetX>
-      <visible>!Player.HasAudio | ![Player.HasAudio + System.IdleTime(60)]</visible>
-      </control>
+                <control>
+                  <description>cover image</description>
+                  <type>image</type>
+                  <id>1</id>
+                  <posX>555</posX>
+                  <posY>338</posY>
+                  <width>90</width>
+                  <height>99</height>
+                  <info>MusicPlayer.Cover</info>
+                  <visible fade="50" start="hidden">!System.IdleTime(60)</visible>
+                    <keepaspectratio>true</keepaspectratio>
+                  </control>
 
-    </controlgroup>
+                  <control>
+                    <description>Artist label</description>
+                    <type>label</type>
+                    <id>1</id>
+                    <width>255</width>
+                    <posX>540</posX>
+                    <posY>340</posY>
+                    <info>MusicPlayer.Artist</info>
+                    <align>right</align>
+                    <font>special12</font>
+                    <visible fade="50" start="hidden">!System.IdleTime(60)</visible>
+                    </control>
 
-    <control>
-      <type>image</type>
-      <id>102</id>
-        <posX>77</posX>
-        <posY>430</posY>
-        <width>15</width>
-        <height>16</height>
-      <texture>homebutton-small.png</texture>
-      <visible>!Player.HasAudio | ![Player.HasAudio + System.IdleTime(60)]</visible>
-    </control>
+                    <control>
+                      <description>Title label</description>
+                      <type>label</type>
+                      <id>1</id>
+                      <width>255</width>
+                      <posX>540</posX>
+                      <posY>365</posY>
+                      <info>MusicPlayer.Title</info>
+                      <align>right</align>
+                      <font>special13</font>
+                      <visible fade="50" start="hidden">!System.IdleTime(60)</visible>
+                      </control>
 
-    <control>
-      <type>image</type>
-      <id>102</id>
-        <posX>192</posX>
-        <posY>430</posY>
-        <width>15</width>
-        <height>16</height>
-      <texture>homebutton-small.png</texture>
-      <visible>!Player.HasAudio | ![Player.HasAudio + System.IdleTime(60)]</visible>
-    </control>
+                      <control>
+                        <description>Album label</description>
+                        <type>label</type>
+                        <id>1</id>
+                        <width>255</width>
+                        <posX>540</posX>
+                        <posY>394</posY>
+                        <info>MusicPlayer.Album</info>
+                        <align>right</align>
+                        <font>font10</font>
+                        <visible fade="50" start="hidden">!System.IdleTime(60)</visible>
+                        </control>
 
-    <control>
-      <description>date label</description>
-      <type>label</type>
-      <id>0</id>
-      <posX>582</posX>
-      <posY>70</posY>
-      <label>date</label>
-      <info>System.Date</info>
-      <align>right</align>
-      <font>special12</font>
-      <visible>!Player.HasAudio | ![Player.HasAudio + System.IdleTime(60)]</visible>
-    </control>
+                        <control>
+                          <description>Time label</description>
+                          <type>label</type>
+                          <id>1</id>
+                          <posX>540</posX>
+                          <posY>415</posY>
+                          <info>MusicPlayer.Time</info>
+                          <align>right</align>
+                          <font>font10</font>
+                          <visible fade="50" start="hidden">!System.IdleTime(60)</visible>
+                          </control>
 
-    <control>
-      <description>suffix label</description>
-      <type>label</type>
-      <id>1</id>
-      <posX>592</posX>
-      <posY>68</posY>
-      <label>|</label>
-      <align>left</align>
-      <font>special12</font>
-      <textcolor>60ffffff</textcolor>
-      <visible>!Player.HasAudio | ![Player.HasAudio + System.IdleTime(60)]</visible>
-    </control>
+                          <controlgroup>
+                            <control>
+                              <description>My Programs normal push button</description>
+                              <type>button</type>
+                              <id>2</id>
+                              <posX>91</posX>
+                              <posY>231</posY>
+                              <width>14</width>
+                              <height>13</height>
+                              <label>0</label>
+                              <font>special13</font>
+                              <hyperlink>1</hyperlink>
+                              <onleft>98</onleft>
+                              <onright>99</onright>
+                              <onup>9</onup>
+                              <ondown>4</ondown>
+                              <textureFocus>home-focus.gif</textureFocus>
+                              <textureNoFocus>-</textureNoFocus>
+                              <textOffsetX>30</textOffsetX>
+                              <visible  fade="10">!Player.HasAudio | ![Player.HasAudio + System.IdleTime(60)]</visible>
+                              </control>
 
-    <control>
-      <description>time label</description>
-      <type>label</type>
-      <id>0</id>
-      <posX>602</posX>
-      <posY>70</posY>
-      <label>time</label>
-      <info>System.Time</info>
-      <align>left</align>
-      <font>special12</font>
-      <textcolor>60ffffff</textcolor>
-      <visible>!Player.HasAudio | ![Player.HasAudio + System.IdleTime(60)]</visible>
-    </control>
+                              <control>
+                                <description>My Pictures normal push button</description>
+                                <type>button</type>
+                                <id>4</id>
+                                <posX>91</posX>
+                                <posY>271</posY>
+                                <width>14</width>
+                                <height>13</height>
+                                <label>1</label>
+                                <hyperlink>2</hyperlink>
+                                <font>special13</font>
+                                <onleft>98</onleft>
+                                <onright>99</onright>
+                                <onup>2</onup>
+                                <ondown>5</ondown>
+                                <textureFocus>home-focus.gif</textureFocus>
+                                <textureNoFocus>-</textureNoFocus>
+                                <textOffsetX>30</textOffsetX>
+                                <visible  fade="20">!Player.HasAudio | ![Player.HasAudio + System.IdleTime(60)]</visible>
+                                </control>
 
-    <control>
-      <description>rss feed</description>
-      <type>rss</type>
-      <id>1</id>
-      <posX>0</posX>
-      <posY>470</posY>
-      <width>720</width>
-      <font>font13</font>
-      <urlset>1</urlset>
-      <titlecolor>ffD2FF00</titlecolor>
-      <headlinecolor>DDced8da</headlinecolor>
-      <textcolor>ffD2FF00</textcolor>
-      <visible>!Player.HasMedia</visible>
-    </control>
+                                <control>
+                                  <description>My Videos normal push button</description>
+                                  <type>button</type>
+                                  <id>5</id>
+                                  <posX>91</posX>
+                                  <posY>310</posY>
+                                  <width>14</width>
+                                  <height>13</height>
+                                  <label>3</label>
+                                  <font>special13</font>
+                                  <hyperlink>6</hyperlink>
+                                  <onleft>98</onleft>
+                                  <onright>99</onright>
+                                  <onup>4</onup>
+                                  <ondown>3</ondown>
+                                  <textureFocus>home-focus.gif</textureFocus>
+                                  <textureNoFocus>-</textureNoFocus>
+                                  <textOffsetX>30</textOffsetX>
+                                  <visible  fade="30">!Player.HasAudio | ![Player.HasAudio + System.IdleTime(60)]</visible>
+                                  </control>
 
-    <control>
-      <description>xlink kai conditional button</description>
-      <type>conditionalbutton</type>
-      <id>99</id>
-      <posX>544</posX>
-      <posY>503</posY>
-      <width>35</width>
-      <height>35</height>
-      <label>-</label>
-      <textureFocus>home-kai.gif</textureFocus>
-      <textureNoFocus>home-kai.png</textureNoFocus>
-      <hyperlink>2700</hyperlink>
-      <onleft>2</onleft>
-      <onright>100</onright>
-      <onup>2</onup>
-      <ondown>2</ondown>
-      <visible>!Player.HasAudio | ![Player.HasAudio + System.IdleTime(60)]</visible>
-    </control>
+                                  <control>
+                                    <description>My Music normal push button</description>
+                                    <type>button</type>
+                                    <id>3</id>
+                                    <posX>91</posX>
+                                    <posY>350</posY>
+                                    <width>14</width>
+                                    <height>13</height>
+                                    <label>2</label>
+                                    <hyperlink>501</hyperlink>
+                                    <font>special13</font>
+                                    <onleft>98</onleft>
+                                    <onright>99</onright>
+                                    <onup>5</onup>
+                                    <ondown>7</ondown>
+                                    <textureFocus>home-focus.gif</textureFocus>
+                                    <textureNoFocus>-</textureNoFocus>
+                                    <textOffsetX>30</textOffsetX>
+                                    <visible  fade="40">!Player.HasAudio | ![Player.HasAudio + System.IdleTime(60)]</visible>
+                                    </control>
 
-    <control>
-      <description>submenu button</description>
-      <type>button</type>
-      <id>100</id>
-      <posX>577</posX>
-      <posY>503</posY>
-      <width>35</width>
-      <height>35</height>
-      <hyperlink>105</hyperlink>
-      <textureFocus>home-sub.gif</textureFocus>
-      <textureNoFocus>home-sub.png</textureNoFocus>
-      <label>-</label>
-      <onleft>99</onleft>
-      <onright>98</onright>
-      <onup>2</onup>
-      <ondown>2</ondown>
-        <visible>!Player.HasAudio | ![Player.HasAudio + System.IdleTime(60)]</visible>
-    </control>
+                                    <control>
+                                      <description>My Weather normal push button</description>
+                                      <type>button</type>
+                                      <id>7</id>
+                                      <posX>91</posX>
+                                      <posY>388</posY>
+                                      <width>14</width>
+                                      <height>13</height>
+                                      <label>8</label>
+                                      <font>special13</font>
+                                      <hyperlink>2600</hyperlink>
+                                      <onleft>98</onleft>
+                                      <onright>99</onright>
+                                      <onup>3</onup>
+                                      <ondown>9</ondown>
+                                      <textureFocus>home-focus.gif</textureFocus>
+                                      <textureNoFocus>-</textureNoFocus>
+                                      <textOffsetX>30</textOffsetX>
+                                      <visible  fade="50">!Player.HasAudio | ![Player.HasAudio + System.IdleTime(60)]</visible>
+                                      </control>
 
-    <control>
-      <description>submenu button</description>
-      <type>button</type>
-      <id>98</id>
-      <posX>610</posX>
-      <posY>503</posY>
-      <width>35</width>
-      <height>35</height>
-      <hyperlink>111</hyperlink>
-      <textureFocus>home-power.gif</textureFocus>
-      <textureNoFocus>home-power.png</textureNoFocus>
-      <label>-</label>
-      <onleft>100</onleft>
-      <onright>2</onright>
-      <onup>2</onup>
-      <ondown>2</ondown>
-      <visible>!Player.HasAudio | ![Player.HasAudio + System.IdleTime(60)]</visible>
-    </control>
+                                      <control>
+                                        <description>Settings normal push button</description>
+                                        <type>button</type>
+                                        <id>9</id>
+                                        <posX>80</posX>
+                                        <posY>434</posY>
+                                        <width>9</width>
+                                        <height>8</height>
+                                        <label>5</label>
+                                        <font>font10</font>
+                                        <hyperlink>4</hyperlink>
+                                        <onleft>98</onleft>
+                                        <onright>6</onright>
+                                        <onup>7</onup>
+                                        <ondown>2</ondown>
+                                        <textureFocus>home-focus.gif</textureFocus>
+                                        <textureNoFocus>-</textureNoFocus>
+                                        <textOffsetX>20</textOffsetX>
+                                        <visible  fade="50">!Player.HasAudio | ![Player.HasAudio + System.IdleTime(60)]</visible>
+                                        </control>
 
-  </controls>
+                                        <control>
+                                          <description>My Files normal push button</description>
+                                          <type>button</type>
+                                          <id>6</id>
+                                          <posX>195</posX>
+                                          <posY>434</posY>
+                                          <width>9</width>
+                                          <height>8</height>
+                                          <label>7</label>
+                                          <hyperlink>3</hyperlink>
+                                          <font>font10</font>
+                                          <onleft>9</onleft>
+                                          <onright>99</onright>
+                                          <onup>7</onup>
+                                          <ondown>2</ondown>
+                                          <textureFocus>home-focus.gif</textureFocus>
+                                          <textureNoFocus>-</textureNoFocus>
+                                          <textOffsetX>20</textOffsetX>
+                                          <visible  fade="50">!Player.HasAudio | ![Player.HasAudio + System.IdleTime(60)]</visible>
+                                          </control>
 
-</window>
+                                        </controlgroup>
+
+                                        <control>
+                                          <type>image</type>
+                                          <id>102</id>
+                                          <posX>77</posX>
+                                          <posY>430</posY>
+                                          <width>15</width>
+                                          <height>16</height>
+                                          <texture>homebutton-small.png</texture>
+                                          <visible  fade="50">!Player.HasAudio | ![Player.HasAudio + System.IdleTime(60)]</visible>
+                                          </control>
+
+                                          <control>
+                                            <type>image</type>
+                                            <id>102</id>
+                                            <posX>192</posX>
+                                            <posY>430</posY>
+                                            <width>15</width>
+                                            <height>16</height>
+                                            <texture>homebutton-small.png</texture>
+                                            <visible  fade="50">!Player.HasAudio | ![Player.HasAudio + System.IdleTime(60)]</visible>
+                                            </control>
+
+                                            <control>
+                                              <description>date label</description>
+                                              <type>label</type>
+                                              <id>0</id>
+                                              <posX>582</posX>
+                                              <posY>70</posY>
+                                              <label>date</label>
+                                              <info>System.Date</info>
+                                              <align>right</align>
+                                              <font>special12</font>
+                                              <visible fade="50">!Player.HasAudio | ![Player.HasAudio + System.IdleTime(60)]</visible>
+                                              </control>
+
+                                              <control>
+                                                <description>suffix label</description>
+                                                <type>label</type>
+                                                <id>1</id>
+                                                <posX>592</posX>
+                                                <posY>68</posY>
+                                                <label>|</label>
+                                                <align>left</align>
+                                                <font>special12</font>
+                                                <textcolor>60ffffff</textcolor>
+                                                <visible fade="50">!Player.HasAudio | ![Player.HasAudio + System.IdleTime(60)]</visible>
+                                                </control>
+
+                                                <control>
+                                                  <description>time label</description>
+                                                  <type>label</type>
+                                                  <id>0</id>
+                                                  <posX>602</posX>
+                                                  <posY>70</posY>
+                                                  <label>time</label>
+                                                  <info>System.Time</info>
+                                                  <align>left</align>
+                                                  <font>special12</font>
+                                                  <textcolor>60ffffff</textcolor>
+                                                  <visible fade="50">!Player.HasAudio | ![Player.HasAudio + System.IdleTime(60)]</visible>
+                                                  </control>
+
+                                                  <control>
+                                                    <description>rss feed</description>
+                                                    <type>rss</type>
+                                                    <id>1</id>
+                                                    <posX>0</posX>
+                                                    <posY>470</posY>
+                                                    <width>720</width>
+                                                    <font>font13</font>
+                                                    <urlset>1</urlset>
+                                                    <titlecolor>ffD2FF00</titlecolor>
+                                                    <headlinecolor>DDced8da</headlinecolor>
+                                                    <textcolor>ffD2FF00</textcolor>
+                                                    <visible>!Player.HasMedia</visible>
+                                                  </control>
+
+                                                  <control>
+                                                    <description>xlink kai conditional button</description>
+                                                    <type>conditionalbutton</type>
+                                                    <id>99</id>
+                                                    <posX>544</posX>
+                                                    <posY>503</posY>
+                                                    <width>35</width>
+                                                    <height>35</height>
+                                                    <label>-</label>
+                                                    <textureFocus>home-kai.gif</textureFocus>
+                                                    <textureNoFocus>home-kai.png</textureNoFocus>
+                                                    <hyperlink>2700</hyperlink>
+                                                    <onleft>2</onleft>
+                                                    <onright>100</onright>
+                                                    <onup>2</onup>
+                                                    <ondown>2</ondown>
+                                                    <visible fade="50">!Player.HasAudio | ![Player.HasAudio + System.IdleTime(60)]</visible>
+                                                    </control>
+
+                                                    <control>
+                                                      <description>submenu button</description>
+                                                      <type>button</type>
+                                                      <id>100</id>
+                                                      <posX>577</posX>
+                                                      <posY>503</posY>
+                                                      <width>35</width>
+                                                      <height>35</height>
+                                                      <hyperlink>105</hyperlink>
+                                                      <textureFocus>home-sub.gif</textureFocus>
+                                                      <textureNoFocus>home-sub.png</textureNoFocus>
+                                                      <label>-</label>
+                                                      <onleft>99</onleft>
+                                                      <onright>98</onright>
+                                                      <onup>2</onup>
+                                                      <ondown>2</ondown>
+                                                      <visible fade="50">!Player.HasAudio | ![Player.HasAudio + System.IdleTime(60)]</visible>
+                                                      </control>
+
+                                                      <control>
+                                                        <description>submenu button</description>
+                                                        <type>button</type>
+                                                        <id>98</id>
+                                                        <posX>610</posX>
+                                                        <posY>503</posY>
+                                                        <width>35</width>
+                                                        <height>35</height>
+                                                        <hyperlink>111</hyperlink>
+                                                        <textureFocus>home-power.gif</textureFocus>
+                                                        <textureNoFocus>home-power.png</textureNoFocus>
+                                                        <label>-</label>
+                                                        <onleft>100</onleft>
+                                                        <onright>2</onright>
+                                                        <onup>2</onup>
+                                                        <ondown>2</ondown>
+                                                        <visible fade="50">!Player.HasAudio | ![Player.HasAudio + System.IdleTime(60)]</visible>
+                                                        </control>
+
+                                                      </controls>
+
+                                                    </window>
 

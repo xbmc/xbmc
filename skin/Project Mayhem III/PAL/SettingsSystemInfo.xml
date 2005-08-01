@@ -41,7 +41,6 @@
     </control>
 
     <controlgroup>
-
       <control>
         <description>Section Label</description>
         <type>label</type>
@@ -51,13 +50,13 @@
         <font>font13</font>
         <label>139</label>
       </control>
-    
+
       <control>
         <description>Button Default Values</description>
         <type>button</type>
         <id>95</id>
         <posX>50</posX>
-         <posY>120</posY>
+        <posY>120</posY>
         <label>13278</label>
         <font>font13</font>
         <onleft>95</onleft>
@@ -66,7 +65,7 @@
         <ondown>94</ondown>
         <align>Left</align>
       </control>
-      
+
       <control>
         <description>Button Storage</description>
         <type>button</type>
@@ -81,7 +80,7 @@
         <ondown>92</ondown>
         <align>Left</align>
       </control>
-      
+
       <control>
         <description>Button HDD</description>
         <type>button</type>
@@ -270,76 +269,77 @@
     </control>
 
     <!--
-    <control>
-      <description>Label 12</description>
-      <type>label</type>
-      <id>12</id>
-      <posX>220</posX>
-      <posY>425</posY>
-      <label>13282</label>
-      <font>font13</font>
-      <textcolor>70FFFFFF</textcolor>
-    </control>
-    -->
+      <control>
+        <description>Label 12</description>
+        <type>label</type>
+        <id>12</id>
+        <posX>220</posX>
+        <posY>425</posY>
+        <label>13282</label>
+        <font>font13</font>
+        <textcolor>70FFFFFF</textcolor>
+      </control>
 
-    <!-- Add fav values here!
-    <control>
-      <description>TEST Label</description>
-      <type>label</type>
-      <id>1</id>
-      <posX>220</posX>
-      <posY>426</posY>
-      <label>-</label>
-      <info>Network.IPAddress</info>
-      <align>left</align>
-      <font>font12</font>
-    </control>
-    -->
-    
-    <control>
-      <description>Current Time</description>
-      <type>label</type>
-      <id>50</id>
-      <posX>220</posX>
-      <posY>422</posY>
-      <label>143</label>
-      <font>font12</font>
-      <textcolor>70FFFFFF</textcolor>
-    </control>
+      -->
+        <!-- Add fav values here!
+          <control>
+            <description>TEST Label</description>
+            <type>label</type>
+            <id>1</id>
+            <posX>220</posX>
+            <posY>426</posY>
+            <label>-</label>
+            <info>Network.IPAddress</info>
+            <align>left</align>
+            <font>font12</font>
+          </control>
 
-    <control>
-      <description>XBMC Version</description>
-      <type>label</type>
-      <id>51</id>
-      <posX>220</posX>
-      <posY>443</posY>
-      <label>144</label>
-      <font>font12</font>
-      <textcolor>70FFFFFF</textcolor>
-    </control>
+          -->
+            <control>
+              <description>Current Time</description>
+              <type>label</type>
+              <id>50</id>
+              <posX>220</posX>
+              <posY>422</posY>
+              <label>143</label>
+              <font>font12</font>
+              <textcolor>70FFFFFF</textcolor>
+            </control>
 
-    <control>
-      <description>XBMC XBE BUILD Version</description>
-      <type>label</type>
-      <id>52</id>
-      <posX>220</posX>
-      <posY>465</posY>
-      <label>144</label>
-      <font>font12</font>
-      <textcolor>70FFFFFF</textcolor>
-    </control>
+            <control>
+              <description>XBMC Version</description>
+              <type>label</type>
+              <id>51</id>
+              <posX>220</posX>
+              <posY>443</posY>
+              <label>144</label>
+              <font>font12</font>
+              <textcolor>70FFFFFF</textcolor>
+            </control>
 
-    <control>
-      <description>Mplayer DLL Version</description>
-      <type>label</type>
-      <id>53</id>
-      <posX>220</posX>
-      <posY>485</posY>
-      <label>144</label>
-      <font>font12</font>
-      <textcolor>70FFFFFF</textcolor>
-    </control>
+            <control>
+              <description>XBMC XBE BUILD Version</description>
+              <type>label</type>
+              <id>52</id>
+              <posX>220</posX>
+              <posY>465</posY>
+              <label>144</label>
+              <font>font12</font>
+              <textcolor>70FFFFFF</textcolor>
+            </control>
 
-  </controls>
+            <control>
+              <description>Mplayer DLL Version</description>
+              <type>label</type>
+              <id>53</id>
+              <posX>220</posX>
+              <posY>485</posY>
+              <label>144</label>
+              <font>font12</font>
+              <textcolor>70FFFFFF</textcolor>
+            </control>
 
-</window>
+          </controls>
+
+        </window>
+
