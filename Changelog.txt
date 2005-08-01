@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 01-08-2005 added: file and socket tracking for dlls
  - 31-07-2005 changed: cleaned up the $INFO/$LOCALIZE parser
  - 31-07-2005 updated: Norwegian language file (Thnx to vnm)
  - 31-07-2005 fixed: [ 1245983 ] id3 cover art with a picture type outside the id3 specs is not read

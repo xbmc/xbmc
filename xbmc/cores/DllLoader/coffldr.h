@@ -4,7 +4,7 @@
 
 //#pragma message("including coffldr.h")
 #include "coff.h"
-//#include <stdio.h>
+
 #ifndef _FILE_DEFINED
 struct _iobuf {
         char *_ptr;
@@ -19,7 +19,6 @@ struct _iobuf {
 typedef struct _iobuf FILE;
 #define _FILE_DEFINED
 #endif
-//#define DUMPING_DATA 1
 
 class CoffLoader
 {
@@ -47,16 +46,13 @@ protected:
   int NumOfSections;
   int FileHeaderOffset;
 
-#ifdef DUMPING_DATA 
   // Members for printing the structures
-
   void PrintFileHeader(COFF_FileHeader_t *FileHeader);
   void PrintWindowsHeader(WindowsHeader_t *WinHdr);
   void PrintOptionHeader(OptionHeader_t *OptHdr);
   void PrintSection(SectionHeader_t *ScnHdr, char *data);
   void PrintStringTable(void);
   void PrintSymbolTable(void);
-#endif
 
   // Members for Loading the Different structures
   int LoadCoffHModule(FILE * fp);

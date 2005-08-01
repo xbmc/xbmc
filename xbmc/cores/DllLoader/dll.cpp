@@ -161,8 +161,11 @@ extern "C" HMODULE __stdcall dllLoadLibraryExtended(LPCSTR file, LPCSTR sourcedl
 
   CLog::Log(LOGDEBUG, "LoadLibrary('%s') returning: 0x%x", libname, dllhandle);
 
+// this is handled by the constructor of DllLoader
+/*
   // Add dll to m_vecDlls
   g_dlls.RegisterDll(dllhandle);
+*/
   return (HMODULE) dllhandle;
 }
 
@@ -211,9 +214,11 @@ extern "C" BOOL __stdcall dllFreeLibrary(HINSTANCE hLibModule)
   //call "DllMain" with DLL_PROCESS_DETACH
   (*initdll)((HINSTANCE)dllhandle->hModule, DLL_PROCESS_DETACH , 0);
 
+// this is handled by the destructor of DllLoader
+/*
   //Remove dll
   g_dlls.UnRegisterDll(dllhandle);
-
+*/
   if (dllhandle) delete dllhandle;
   return 1;
 }

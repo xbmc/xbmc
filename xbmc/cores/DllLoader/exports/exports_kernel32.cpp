@@ -3,6 +3,7 @@
 #include "..\DllLoaderContainer.h"
 
 #include "emu_kernel32.h"
+#include "../dll_tracker_library.h"
 
 void export_kernel32()
 {
@@ -32,8 +33,8 @@ void export_kernel32()
   g_dlls.kernel32.AddExport("CreateEventA", (unsigned long)CreateEventA); //test
   g_dlls.kernel32.AddExport("ResetEvent", (unsigned long)ResetEvent);
   g_dlls.kernel32.AddExport("WaitForSingleObject", (unsigned long)dllWaitForSingleObject);
-  g_dlls.kernel32.AddExport("LoadLibraryA", (unsigned long)dllLoadLibraryA);
-  g_dlls.kernel32.AddExport("FreeLibrary", (unsigned long)dllFreeLibrary);
+  g_dlls.kernel32.AddExport("LoadLibraryA", (unsigned long)dllLoadLibraryA, (void*)track_LoadLibraryA);
+  g_dlls.kernel32.AddExport("FreeLibrary", (unsigned long)dllFreeLibrary, (void*)track_FreeLibrary);
   g_dlls.kernel32.AddExport("GetProcAddress", (unsigned long)dllGetProcAddress);
   g_dlls.kernel32.AddExport("LeaveCriticalSection", (unsigned long)dllLeaveCriticalSection);
   g_dlls.kernel32.AddExport("EnterCriticalSection", (unsigned long)dllEnterCriticalSection);
@@ -68,7 +69,7 @@ void export_kernel32()
   g_dlls.kernel32.AddExport("GetVersion", (unsigned long) dllGetVersion);
   g_dlls.kernel32.AddExport("MulDiv", (unsigned long) MulDiv);
   g_dlls.kernel32.AddExport("lstrlenA", (unsigned long) lstrlenA);
-  g_dlls.kernel32.AddExport("LoadLibraryExA", (unsigned long)dllLoadLibraryExA);
+  g_dlls.kernel32.AddExport("LoadLibraryExA", (unsigned long)dllLoadLibraryExA, (void*)track_LoadLibraryExA);
 
   g_dlls.kernel32.AddExport("DeleteFileA", (unsigned long) DeleteFileA);
   g_dlls.kernel32.AddExport("GetModuleFileNameA", (unsigned long) dllGetModuleFileNameA);
