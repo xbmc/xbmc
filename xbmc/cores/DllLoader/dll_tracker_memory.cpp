@@ -1,4 +1,3 @@
-
 #include "../../stdafx.h"
 #include "dll_tracker_memory.h"
 #include "dll_tracker.h"
@@ -25,7 +24,7 @@ extern "C" inline void tracker_memory_track(unsigned long caller, void* data_add
   }
 }
 
-extern "C" inline void tracker_memory_free(DllTrackInfo* pInfo, void* data_addr)
+extern "C" inline bool tracker_memory_free(DllTrackInfo* pInfo, void* data_addr)
 {
   if (!pInfo || pInfo->dataList.erase((unsigned)data_addr) < 1)
   {
@@ -37,9 +36,11 @@ extern "C" inline void tracker_memory_free(DllTrackInfo* pInfo, void* data_addr)
     for (TrackedDllsIter it = g_trackedDlls.begin(); it != g_trackedDlls.end(); ++it)
     {
       // try to free the pointer from this list, and break if success
-      if ((*it)->dataList.erase((unsigned)data_addr) > 0) break;
+      if ((*it)->dataList.erase((unsigned)data_addr) > 0) return true;
     }
+    return false;
   }
+  return true;
 }
 
 extern "C" void tracker_memory_free_all(DllTrackInfo* pInfo)
@@ -52,20 +53,28 @@ extern "C" void tracker_memory_free_all(DllTrackInfo* pInfo)
     CallerMapIter itt;
     for (DataListIter p = pInfo->dataList.begin(); p != pInfo->dataList.end(); ++p)
     {
-      total += (p->second).size;
-      free((void*)p->first);
-      if ( ( itt = tempMap.find((p->second).calleraddr) ) != tempMap.end() )
+      try
       {
-        (itt->second).size += (p->second).size;
-        (itt->second).count++;
+        total += (p->second).size;
+        free((void*)p->first);
+        if ( ( itt = tempMap.find((p->second).calleraddr) ) != tempMap.end() )
+        {
+          (itt->second).size += (p->second).size;
+          (itt->second).count++;
+        }
+        else
+        {
+          MSizeCount temp;
+          temp.size = (p->second).size;
+          temp.count = 1;
+          tempMap.insert(std::make_pair( (p->second).calleraddr, temp ) );
+        }
       }
-      else
+      catch(...)
       {
-        MSizeCount temp;
-        temp.size = (p->second).size;
-        temp.count = 1;
-        tempMap.insert(std::make_pair( (p->second).calleraddr, temp ) );
+        CLog::Log(LOGERROR, "failed to free memory. buffer overrun is likely cause");
       }
+
     }
     for ( itt = tempMap.begin(); itt != tempMap.end();++itt )
     {
@@ -147,9 +156,25 @@ extern "C" void __cdecl track_free(void* p)
   __asm mov eax, [ebp + 4]
   __asm mov loc, eax
 
-  tracker_memory_free(tracker_get_dlltrackinfo(loc), p);
-
-  free(p);
+  //Only call free if this is actually something that has been allocated
+  if( tracker_memory_free(tracker_get_dlltrackinfo(loc), p) )
+  {
+    free(p);
+  }
+  else
+  { 
+    //Only do this on memmory that wasn't found in track list.
+    //this should only be an exception and using exception handling
+    //here in the normal case seems overkill
+    try
+    {
+      free(p);
+    }
+    catch(...)
+    {
+      CLog::DebugLog("DLL tried to free memory not allocated by any DLL, skipping");
+    }
+  }
 }
 
 extern "C" char* __cdecl track_strdup(const char* str)
