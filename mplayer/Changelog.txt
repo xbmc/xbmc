@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 25-06-2005 fixed: made sure mplayer begins with uniting the caching thread, so as later crashes won't let that keep running
   - 25-06-2005 fixed: made mplayer set interlaced flag on mpeg2 video when decoding using libmpeg2
   - 25-06-2005 updated: ffmpeg to latest cvs as of now
   - 25-06-2005 added: [ 1236234 ] mplayer_GetAudioInfo returns wrong audio bitrate

@@ -432,6 +432,16 @@ static void uninit_player(unsigned int mask){
 
   mp_msg(MSGT_CPLAYER,MSGL_DBG2,"\n*** uninit(0x%X)\n",mask);
 
+#ifdef _XBOX //Do this as the first thing we do, to keep it from working on unallocated memory
+  // kill the cache process:
+  if(mask&INITED_STREAM){
+    inited_flags&=~INITED_STREAM;
+    current_module="uninit_stream";
+    if(stream) free_stream(stream);
+    stream=NULL;
+  }
+#endif
+
   if(mask&INITED_ACODEC){
     inited_flags&=~INITED_ACODEC;
     current_module="uninit_acodec";
@@ -457,6 +467,7 @@ static void uninit_player(unsigned int mask){
     demuxer=NULL;
   }
 
+#ifndef _XBOX
   // kill the cache process:
   if(mask&INITED_STREAM){
     inited_flags&=~INITED_STREAM;
@@ -464,6 +475,7 @@ static void uninit_player(unsigned int mask){
     if(stream) free_stream(stream);
     stream=NULL;
   }
+#endif
 
   if(mask&INITED_VO){
     inited_flags&=~INITED_VO;
