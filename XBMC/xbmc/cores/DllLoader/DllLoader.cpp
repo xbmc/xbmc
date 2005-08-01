@@ -42,12 +42,14 @@ DllLoader::~DllLoader()
   {
     ExportList* entry = m_pExports;
     m_pExports = entry->pNext;
+    
+    if (entry->pExport->sFunctionName) free(entry->pExport->sFunctionName);
     delete entry->pExport;
     delete entry;
   }
   
   if (!m_bSystemDll) g_dlls.UnRegisterDll(this);
-  tracker_dll_free(this);
+  if (m_bTrack) tracker_dll_free(this);
 
   ImportDirTable = 0;
   free(m_sFileName);
@@ -78,7 +80,11 @@ int DllLoader::Parse()
       iResult = 1;
     }
     fclose(fp);
-  }  
+  }
+  if (iResult == 0)
+  {
+    m_bTrack = false;
+  } 
   return iResult;
 }
 
@@ -250,15 +256,6 @@ int DllLoader::ResolveImports(void)
           }
           else
           {
-            if (m_bTrack)
-            {
-              void* func = tracker_dll_get_function(this, ImpName);
-              if (func)
-              {
-                // alter fixup for tracking
-                Fixup = func;
-              }
-            }
             *Addr = (unsigned long)Fixup;
           }
         }
@@ -305,18 +302,8 @@ int DllLoader::LoadExports()
       int FSctn = RVA2Section(RVA);
       unsigned long Addr = (unsigned long)
                            (SectionData[FSctn] + (RVA - SectionHeader[FSctn].VirtualAddress));
-
-      
-      char* sDllName = strrchr(m_sFileName, '\\');
-      if (sDllName) sDllName += 1;
-      else sDllName = m_sFileName;
-      
-      Exp2Dll* pExport = new Exp2Dll(Name, Addr);
-
-      ExportList* entry = new ExportList;
-      entry->pExport = pExport;
-      entry->pNext = m_pExports;
-      m_pExports = entry;
+    
+      AddExport(Name, Addr);
     }
   }
   return 0;
@@ -328,10 +315,10 @@ int DllLoader::ResolveExport(const char *sName, void **pAddr)
   {
     // system dlls (eg kernel32.dll) have no export table in xbmc
     // so lookup directly in the export list
-    Exp2Dll* exp = GetExportByFunctionName(sName);
+    Export* exp = GetExportByFunctionName(sName);
     if (exp)
     {
-      *pAddr = (void*)exp->m_function;
+      *pAddr = (void*)exp->function;
       return 1;
     }
   }
@@ -386,13 +373,13 @@ int DllLoader::ResolveExport(const char *sName, void **pAddr)
   return 0;
 }
 
-Exp2Dll* DllLoader::GetExportByOrdinal(unsigned long ordinal)
+Export* DllLoader::GetExportByOrdinal(unsigned long ordinal)
 {
   ExportList* it = m_pExports;
   
   while (it)
   {
-    if (ordinal == it->pExport->m_ordinal)
+    if (ordinal == it->pExport->ordinal)
     {
       return it->pExport;
     }
@@ -401,13 +388,13 @@ Exp2Dll* DllLoader::GetExportByOrdinal(unsigned long ordinal)
   return NULL;
 }
 
-Exp2Dll* DllLoader::GetExportByFunctionName(const char* sFunctionName)
+Export* DllLoader::GetExportByFunctionName(const char* sFunctionName)
 {
   ExportList* it = m_pExports;
   
   while (it)
   {
-    if (it->pExport->m_sFunctionName && strcmp(sFunctionName, it->pExport->m_sFunctionName) == 0)
+    if (it->pExport->sFunctionName && strcmp(sFunctionName, it->pExport->sFunctionName) == 0)
     {
       return it->pExport;
     }
@@ -425,10 +412,14 @@ int DllLoader::ResolveOrdinal(char *sName, unsigned long ordinal, void **fixup)
     DllLoader* pDll = g_dlls.GetModule(i);
     if (pDll && stricmp(sName, pDll->GetName()) == 0)
     {
-      Exp2Dll* pExp = pDll->GetExportByOrdinal(ordinal);
+      Export* pExp = pDll->GetExportByOrdinal(ordinal);
       if(pExp)
       {
-        *fixup = (void*)(pExp->m_function);
+        if (m_bTrack && pExp->track_function)
+          *fixup = (void*)(pExp->track_function);
+        else
+          *fixup = (void*)(pExp->function);
+        return 1;
         return 1;
       }
       return 0;
@@ -446,10 +437,13 @@ int DllLoader::ResolveName(char *sName, char* sFunction, void **fixup)
     DllLoader* pDll = g_dlls.GetModule(i);
     if (pDll && stricmp(sName, pDll->GetName()) == 0)
     {
-      Exp2Dll* pExp = pDll->GetExportByFunctionName(sFunction);
+      Export* pExp = pDll->GetExportByFunctionName(sFunction);
       if(pExp)
       {
-        *fixup = (void*)(pExp->m_function);
+        if (m_bTrack && pExp->track_function)
+          *fixup = (void*)(pExp->track_function);
+        else
+          *fixup = (void*)(pExp->function);
         return 1;
       }
       return 0;
@@ -487,26 +481,44 @@ int DllLoader::DecrRef()
   return m_iRefCount;
 }
 
-void DllLoader::AddExport(unsigned long ordinal, unsigned long function)
+void DllLoader::AddExport(unsigned long ordinal, unsigned long function, void* track_function)
 {
+  Export* export = new Export;
+  export->function = function;
+  export->ordinal = ordinal;
+  export->track_function = track_function;
+  export->sFunctionName = NULL;
+  
   ExportList* entry = new ExportList;
-  entry->pExport = new Exp2Dll(ordinal, (unsigned long)function);
+  entry->pExport = export;
   entry->pNext = m_pExports;
   m_pExports = entry;
 }
 
-void DllLoader::AddExport(char* sFunctionName, unsigned long ordinal, unsigned long function)
+void DllLoader::AddExport(char* sFunctionName, unsigned long ordinal, unsigned long function, void* track_function)
 {
+  Export* export = new Export;
+  export->function = function;
+  export->ordinal = ordinal;
+  export->track_function = track_function;
+  export->sFunctionName = strdup(sFunctionName);
+  
   ExportList* entry = new ExportList;
-  entry->pExport = new Exp2Dll(sFunctionName, ordinal, (unsigned long)function);
+  entry->pExport = export;
   entry->pNext = m_pExports;
   m_pExports = entry;
 }
 
-void DllLoader::AddExport(char* sFunctionName, unsigned long function)
+void DllLoader::AddExport(char* sFunctionName, unsigned long function, void* track_function)
 {
+  Export* export = new Export;
+  export->function = function;
+  export->ordinal = -1;
+  export->track_function = track_function;
+  export->sFunctionName = strdup(sFunctionName);
+  
   ExportList* entry = new ExportList;
-  entry->pExport = new Exp2Dll(sFunctionName, (unsigned long)function);
+  entry->pExport = export;
   entry->pNext = m_pExports;
   m_pExports = entry;
 }

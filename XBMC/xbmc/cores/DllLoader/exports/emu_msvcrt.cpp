@@ -17,9 +17,6 @@
 #include "emu_msvcrt.h"
 #include "emu_dummy.h"
 
-extern void DeInitSockets();
-//Fixed __dllonexit, add dll_initterm, dll_beginthreadex;
-
 struct SDirData
 {
   DIRECTORY::IDirectory* Directory;
@@ -37,14 +34,14 @@ static SDirData vecDirsOpen[MAX_OPEN_DIRS];
 bool bVecFilesInited = false;
 bool bVecDirsInited = false;
 extern void update_cache_dialog(const char* tmp);
-extern "C" HANDLE WINAPI CreateThread(
+/*extern "C" HANDLE WINAPI CreateThread(
     LPSECURITY_ATTRIBUTES lpThreadAttributes,
     DWORD dwStackSize,
     LPTHREAD_START_ROUTINE lpStartAddress,
     LPVOID lpParameter,
     DWORD dwCreationFlags,
     LPDWORD lpThreadId
-  );
+  );*/
 
 extern "C"
 {
@@ -62,27 +59,10 @@ extern "C"
     bVecFilesInited = true;
   }
 
-  // FIXME
+  // FIXME, XXX, !!!!!!
   void dllReleaseAll( )
   {
-    // DeInitSockets();, python uses these sockets to, so we can't deinit them
-
-    // no need to free memory here anymore (this is done when unloading a dll)
-    // need todo the same for sockets and files too
-
-    // close all open files...
-    if (bVecFilesInited)
-    {
-      for (int i = 0; i < MAX_OPEN_FILES; ++i)
-      {
-        if (vecFilesOpen[i])
-        {
-          delete vecFilesOpen[i];
-          vecFilesOpen[i] = NULL;
-        }
-      }
-      bVecFilesInited = false;
-    }
+    // close all open dirs...
     if (bVecDirsInited)
     {
       for (int i=0;i < MAX_OPEN_DIRS; ++i)
@@ -111,16 +91,6 @@ extern "C"
   }
 
   void dllfree( void* pPtr )
-  {
-    free(pPtr);
-  }
-
-  void* dllmalloc71( size_t size )
-  {
-    return malloc(size);
-  }
-
-  void dllfree71( void* pPtr )
   {
     free(pPtr);
   }

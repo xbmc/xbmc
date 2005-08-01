@@ -18,25 +18,6 @@ void InitSockets()
   memset(m_sockets , 0 , sizeof(m_sockets));
 }
 
-// we can't just deinit all socket's cause mplayer is not the only dll currently that uses these sockets
-void DeInitSockets()
-{
-  /*
-    //CLog::Log(LOGINFO, "DeinitSockets()");
-    if (!m_bSocketsInit)
-    {
-      InitSockets();
-      m_bSocketsInit=false;
-      return;
-    }
-   
-    for (int i=3; i < MAX_SOCKETS; i++)
-    {
-      if (m_sockets[i]) closesocket(m_sockets[i]);
-    }
-    InitSockets();*/
-}
-
 int GetSocketForIndex(int iIndex)
 {
   if (iIndex < 3 || iIndex >= MAX_SOCKETS)

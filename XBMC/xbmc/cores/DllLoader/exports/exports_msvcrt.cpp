@@ -5,6 +5,9 @@
 #include "..\DllLoader.h"
 //#include "emu_msvcrt.h"
 
+#pragma warning (disable:4391)
+#pragma warning (disable:4392)
+
 extern "C" void* dll_close();
 extern "C" void* dll_lseek();
 extern "C" void* dll_read();
@@ -122,7 +125,6 @@ extern "C" int _purecall();
 extern "C" void* _adjust_fdiv();
 extern "C" void* dll_initterm();
 extern "C" void* swscanf();
-extern "C" void* dllmalloc();
 extern "C" void* dllfree();
 extern "C" void* iswspace();
 extern "C" void* wcscmp();
@@ -227,15 +229,26 @@ extern "C" void* _sys_errlist();
 extern "C" void* dll_getpid();
 extern "C" void* _HUGE();
 extern "C" void* isspace();
-
 extern "C" void* dll_fwrite();
 extern "C" void* _stat();
 extern "C" void* dll_findnext();
 extern "C" void* fsetpos();
 
+// tracker functions
+extern "C" void* track_close();
+extern "C" void* track_open();
+extern "C" void* track_free();
+extern "C" void* track_malloc();
+extern "C" void* track_realloc();
+extern "C" void* track_strdup();
+extern "C" void* track_calloc();
+extern "C" void* track_fclose();
+extern "C" void* track_fopen();
+extern "C" void* track_freopen();
+
 void export_msvcrt()
 {
-  g_dlls.msvcrt.AddExport("_close", (unsigned long)dll_close);
+  g_dlls.msvcrt.AddExport("_close", (unsigned long)dll_close, (void*)track_close);
   g_dlls.msvcrt.AddExport("_lseek", (unsigned long)dll_lseek);
   g_dlls.msvcrt.AddExport("_read", (unsigned long)dll_read);
   g_dlls.msvcrt.AddExport("_write", (unsigned long)dll_write);
@@ -247,7 +260,7 @@ void export_msvcrt()
   g_dlls.msvcrt.AddExport("_iob", (unsigned long)_iob);
   g_dlls.msvcrt.AddExport("_isctype", (unsigned long)_isctype);
   g_dlls.msvcrt.AddExport("_lseeki64", (unsigned long)dll_lseeki64);
-  g_dlls.msvcrt.AddExport("_open", (unsigned long)dll_open);
+  g_dlls.msvcrt.AddExport("_open", (unsigned long)dll_open, (void*)track_open);
   g_dlls.msvcrt.AddExport("_snprintf", (unsigned long)_snprintf);
   g_dlls.msvcrt.AddExport("_stricmp", (unsigned long)_stricmp);
   g_dlls.msvcrt.AddExport("_strnicmp", (unsigned long)_strnicmp);
@@ -261,7 +274,7 @@ void export_msvcrt()
   g_dlls.msvcrt.AddExport("fflush", (unsigned long)dll_fflush);
   g_dlls.msvcrt.AddExport("floor", (unsigned long)floor);
   g_dlls.msvcrt.AddExport("fprintf", (unsigned long)dll_fprintf);
-  g_dlls.msvcrt.AddExport("free", (unsigned long)dllfree);
+  g_dlls.msvcrt.AddExport("free", (unsigned long)dllfree, (void*)track_free);
   g_dlls.msvcrt.AddExport("frexp", (unsigned long)frexp);
   g_dlls.msvcrt.AddExport("fwrite", (unsigned long)fwrite);
   g_dlls.msvcrt.AddExport("gmtime", (unsigned long)gmtime);
@@ -269,7 +282,7 @@ void export_msvcrt()
   g_dlls.msvcrt.AddExport("localtime", (unsigned long)localtime);
   g_dlls.msvcrt.AddExport("log", (unsigned long)log);
   g_dlls.msvcrt.AddExport("log10", (unsigned long)log10);
-  g_dlls.msvcrt.AddExport("malloc", (unsigned long)dllmalloc);
+  g_dlls.msvcrt.AddExport("malloc", (unsigned long)dllmalloc, (void*)track_malloc);
   g_dlls.msvcrt.AddExport("memcpy", (unsigned long)memcpy);
   g_dlls.msvcrt.AddExport("memmove", (unsigned long)memmove);
   g_dlls.msvcrt.AddExport("memset", (unsigned long)memset);
@@ -279,7 +292,7 @@ void export_msvcrt()
   g_dlls.msvcrt.AddExport("putchar", (unsigned long)putchar);
   g_dlls.msvcrt.AddExport("puts", (unsigned long)dllputs);
   g_dlls.msvcrt.AddExport("qsort", (unsigned long)qsort);
-  g_dlls.msvcrt.AddExport("realloc", (unsigned long)dllrealloc);
+  g_dlls.msvcrt.AddExport("realloc", (unsigned long)dllrealloc, (void*)track_realloc);
   g_dlls.msvcrt.AddExport("sin", (unsigned long)sin);
   g_dlls.msvcrt.AddExport("sinh", (unsigned long)sinh);
   g_dlls.msvcrt.AddExport("sprintf", (unsigned long)sprintf);
@@ -306,21 +319,21 @@ void export_msvcrt()
   g_dlls.msvcrt.AddExport("_popen", (unsigned long)_popen);
   g_dlls.msvcrt.AddExport("_sleep", (unsigned long)dll_sleep);
   g_dlls.msvcrt.AddExport("_stat", (unsigned long)dll_stat);
-  g_dlls.msvcrt.AddExport("_strdup", (unsigned long)dll_strdup);
+  g_dlls.msvcrt.AddExport("_strdup", (unsigned long)dll_strdup, (void*)track_strdup);
   g_dlls.msvcrt.AddExport("_swab", (unsigned long)_swab);
   g_dlls.msvcrt.AddExport("_findclose", (unsigned long)_findclose);
   g_dlls.msvcrt.AddExport("_findfirst", (unsigned long)dll_findfirst);
   g_dlls.msvcrt.AddExport("_findnext", (unsigned long)_findnext);
   g_dlls.msvcrt.AddExport("_fullpath", (unsigned long)_fullpath);
   g_dlls.msvcrt.AddExport("_pctype", (unsigned long)_pctype);
-  g_dlls.msvcrt.AddExport("calloc", (unsigned long)dllcalloc);
+  g_dlls.msvcrt.AddExport("calloc", (unsigned long)dllcalloc, (void*)track_calloc);
   g_dlls.msvcrt.AddExport("ceil", (unsigned long)ceil);
   g_dlls.msvcrt.AddExport("ctime", (unsigned long)ctime);
   g_dlls.msvcrt.AddExport("exit", (unsigned long)dllexit);
-  g_dlls.msvcrt.AddExport("fclose", (unsigned long)dll_fclose);
+  g_dlls.msvcrt.AddExport("fclose", (unsigned long)dll_fclose, (void*)track_fclose);
   g_dlls.msvcrt.AddExport("feof", (unsigned long)dll_feof);
   g_dlls.msvcrt.AddExport("fgets", (unsigned long)dll_fgets);
-  g_dlls.msvcrt.AddExport("fopen", (unsigned long)dll_fopen);
+  g_dlls.msvcrt.AddExport("fopen", (unsigned long)dll_fopen, (void*)track_fopen);
   g_dlls.msvcrt.AddExport("fputc", (unsigned long)dll_fputc);
   g_dlls.msvcrt.AddExport("fputs", (unsigned long)dll_fputs);
   g_dlls.msvcrt.AddExport("fread", (unsigned long)dll_fread);
@@ -352,8 +365,8 @@ void export_msvcrt()
   g_dlls.msvcrt.AddExport("_adjust_fdiv", (unsigned long)_adjust_fdiv);
   g_dlls.msvcrt.AddExport("_initterm", (unsigned long)dll_initterm);
   g_dlls.msvcrt.AddExport("swscanf", (unsigned long)swscanf);
-  g_dlls.msvcrt.AddExport("??2@YAPAXI@Z", (unsigned long)dllmalloc);
-  g_dlls.msvcrt.AddExport("??3@YAXPAX@Z", (unsigned long)dllfree);
+  g_dlls.msvcrt.AddExport("??2@YAPAXI@Z", (unsigned long)dllmalloc, (void*)track_malloc);
+  g_dlls.msvcrt.AddExport("??3@YAXPAX@Z", (unsigned long)dllfree, (void*)track_free);
   g_dlls.msvcrt.AddExport("iswspace", (unsigned long)iswspace);
   g_dlls.msvcrt.AddExport("wcscmp", (unsigned long)wcscmp);
   g_dlls.msvcrt.AddExport("vfprintf", (unsigned long)dll_vfprintf);
@@ -384,7 +397,7 @@ void export_msvcrt()
   g_dlls.msvcrt.AddExport("atol", (unsigned long)atol);
   g_dlls.msvcrt.AddExport("bsearch", (unsigned long)bsearch);
   g_dlls.msvcrt.AddExport("ferror", (unsigned long)dll_ferror);
-  g_dlls.msvcrt.AddExport("freopen", (unsigned long)freopen);
+  g_dlls.msvcrt.AddExport("freopen", (unsigned long)freopen, (void*)track_freopen);
   g_dlls.msvcrt.AddExport("fscanf", (unsigned long)fscanf);
   g_dlls.msvcrt.AddExport("localeconv", (unsigned long)localeconv);
   g_dlls.msvcrt.AddExport("raise", (unsigned long)raise);
@@ -411,7 +424,7 @@ void export_msvcrt()
 
 void export_msvcr71()
 {
-  g_dlls.msvcr71.AddExport("_close", (unsigned long)dll_close);
+  g_dlls.msvcr71.AddExport("_close", (unsigned long)dll_close, (void*)track_close);
   g_dlls.msvcr71.AddExport("_lseek", (unsigned long)dll_lseek);
   g_dlls.msvcr71.AddExport("_read", (unsigned long)dll_read);
   g_dlls.msvcr71.AddExport("_write", (unsigned long)dll_write);
@@ -423,7 +436,7 @@ void export_msvcr71()
   g_dlls.msvcr71.AddExport("_iob", (unsigned long)_iob);
   g_dlls.msvcr71.AddExport("_isctype", (unsigned long)_isctype);
   g_dlls.msvcr71.AddExport("_lseeki64", (unsigned long)dll_lseeki64);
-  g_dlls.msvcr71.AddExport("_open", (unsigned long)dll_open);
+  g_dlls.msvcr71.AddExport("_open", (unsigned long)dll_open, (void*)track_open);
   g_dlls.msvcr71.AddExport("_snprintf", (unsigned long)_snprintf);
   g_dlls.msvcr71.AddExport("_stricmp", (unsigned long)_stricmp);
   g_dlls.msvcr71.AddExport("_strnicmp", (unsigned long)_strnicmp);
@@ -437,7 +450,7 @@ void export_msvcr71()
   g_dlls.msvcr71.AddExport("fflush", (unsigned long)dll_fflush);
   g_dlls.msvcr71.AddExport("floor", (unsigned long)floor);
   g_dlls.msvcr71.AddExport("fprintf", (unsigned long)dll_fprintf);
-  g_dlls.msvcr71.AddExport("free", (unsigned long)free);
+  g_dlls.msvcr71.AddExport("free", (unsigned long)free, (void*)track_free);
   g_dlls.msvcr71.AddExport("frexp", (unsigned long)frexp);
   g_dlls.msvcr71.AddExport("fwrite", (unsigned long)dll_fwrite);
   g_dlls.msvcr71.AddExport("gmtime", (unsigned long)gmtime);
@@ -445,7 +458,7 @@ void export_msvcr71()
   g_dlls.msvcr71.AddExport("localtime", (unsigned long)localtime);
   g_dlls.msvcr71.AddExport("log", (unsigned long)log);
   g_dlls.msvcr71.AddExport("log10", (unsigned long)log10);
-  g_dlls.msvcr71.AddExport("malloc", (unsigned long)malloc);
+  g_dlls.msvcr71.AddExport("malloc", (unsigned long)malloc, (void*)track_malloc);
   g_dlls.msvcr71.AddExport("memcpy", (unsigned long)memcpy);
   g_dlls.msvcr71.AddExport("memmove", (unsigned long)memmove);
   g_dlls.msvcr71.AddExport("memset", (unsigned long)memset);
@@ -455,7 +468,7 @@ void export_msvcr71()
   g_dlls.msvcr71.AddExport("putchar", (unsigned long)putchar);
   g_dlls.msvcr71.AddExport("puts", (unsigned long)dllputs);
   g_dlls.msvcr71.AddExport("qsort", (unsigned long)qsort);
-  g_dlls.msvcr71.AddExport("realloc", (unsigned long)realloc);
+  g_dlls.msvcr71.AddExport("realloc", (unsigned long)realloc, (void*)track_realloc);
   g_dlls.msvcr71.AddExport("sin", (unsigned long)sin);
   g_dlls.msvcr71.AddExport("sinh", (unsigned long)sinh);
   g_dlls.msvcr71.AddExport("sprintf", (unsigned long)sprintf);
@@ -483,21 +496,21 @@ void export_msvcr71()
   g_dlls.msvcr71.AddExport("_popen", (unsigned long)_popen);
   g_dlls.msvcr71.AddExport("_sleep", (unsigned long)dll_sleep);
   g_dlls.msvcr71.AddExport("_stat", (unsigned long)_stat);
-  g_dlls.msvcr71.AddExport("_strdup", (unsigned long)_strdup);
+  g_dlls.msvcr71.AddExport("_strdup", (unsigned long)_strdup, (void*)track_strdup);
   g_dlls.msvcr71.AddExport("_swab", (unsigned long)_swab);
   g_dlls.msvcr71.AddExport("_findclose", (unsigned long)_findclose);
   g_dlls.msvcr71.AddExport("_findfirst", (unsigned long)dll_findfirst);
   g_dlls.msvcr71.AddExport("_findnext", (unsigned long)dll_findnext);
   g_dlls.msvcr71.AddExport("_fullpath", (unsigned long)_fullpath);
   g_dlls.msvcr71.AddExport("_pctype", (unsigned long)_pctype);
-  g_dlls.msvcr71.AddExport("calloc", (unsigned long)calloc);
+  g_dlls.msvcr71.AddExport("calloc", (unsigned long)calloc, (void*)track_calloc);
   g_dlls.msvcr71.AddExport("ceil", (unsigned long)ceil);
   g_dlls.msvcr71.AddExport("ctime", (unsigned long)ctime);
   g_dlls.msvcr71.AddExport("exit", (unsigned long)exit);
-  g_dlls.msvcr71.AddExport("fclose", (unsigned long)dll_fclose);
+  g_dlls.msvcr71.AddExport("fclose", (unsigned long)dll_fclose, (void*)track_fclose);
   g_dlls.msvcr71.AddExport("feof", (unsigned long)dll_feof);
   g_dlls.msvcr71.AddExport("fgets", (unsigned long)dll_fgets);
-  g_dlls.msvcr71.AddExport("fopen", (unsigned long)dll_fopen);
+  g_dlls.msvcr71.AddExport("fopen", (unsigned long)dll_fopen, (void*)track_fopen);
   g_dlls.msvcr71.AddExport("fputc", (unsigned long)dll_fputc);
   g_dlls.msvcr71.AddExport("fputs", (unsigned long)dll_fputs);
   g_dlls.msvcr71.AddExport("fread", (unsigned long)dll_fread);
@@ -529,8 +542,8 @@ void export_msvcr71()
   g_dlls.msvcr71.AddExport("_adjust_fdiv", (unsigned long)_adjust_fdiv);
   g_dlls.msvcr71.AddExport("pow", (unsigned long)pow);
   g_dlls.msvcr71.AddExport("fabs", (unsigned long)fabs);
-  g_dlls.msvcr71.AddExport("??2@YAPAXI@Z", (unsigned long)dllmalloc71);
-  g_dlls.msvcr71.AddExport("??3@YAXPAX@Z", (unsigned long)dllfree71);
+  g_dlls.msvcr71.AddExport("??2@YAPAXI@Z", (unsigned long)dllmalloc, (void*)track_malloc);
+  g_dlls.msvcr71.AddExport("??3@YAXPAX@Z", (unsigned long)dllfree, (void*)track_free);
   g_dlls.msvcr71.AddExport("_beginthreadex", (unsigned long)dll_beginthreadex);
   g_dlls.msvcr71.AddExport("_fdopen", (unsigned long)dll_fdopen);
   g_dlls.msvcr71.AddExport("_fileno", (unsigned long)dll_fileno);
@@ -565,7 +578,7 @@ void export_msvcr71()
   g_dlls.msvcr71.AddExport("_wcsnicmp", (unsigned long)_wcsnicmp);
   g_dlls.msvcr71.AddExport("_CIacos", (unsigned long)_CIacos);
   g_dlls.msvcr71.AddExport("_CIasin", (unsigned long)_CIasin);
-  g_dlls.msvcr71.AddExport("??_V@YAXPAX@Z", (unsigned long)dllfree71);
+  g_dlls.msvcr71.AddExport("??_V@YAXPAX@Z", (unsigned long)dllfree, (void*)track_free);
   g_dlls.msvcr71.AddExport("isalpha", (unsigned long)isalpha);
   g_dlls.msvcr71.AddExport("_CxxThrowException", (unsigned long)_CxxThrowException);
   g_dlls.msvcr71.AddExport("__CxxFrameHandler", (unsigned long)__CxxFrameHandler);
@@ -615,14 +628,14 @@ void export_msvcr71()
 
 void export_pncrt()
 {
-  g_dlls.pncrt.AddExport("malloc", (unsigned long)malloc);
-  g_dlls.pncrt.AddExport("??3@YAXPAX@Z", (unsigned long)free);
+  g_dlls.pncrt.AddExport("malloc", (unsigned long)malloc, (void*)track_malloc);
+  g_dlls.pncrt.AddExport("??3@YAXPAX@Z", (unsigned long)free, (void*)track_free);
   g_dlls.pncrt.AddExport("memmove", (unsigned long)memmove);
   g_dlls.pncrt.AddExport("_purecall", (unsigned long)_purecall);
   g_dlls.pncrt.AddExport("_ftol", (unsigned long)_ftol);
   g_dlls.pncrt.AddExport("_CIpow", (unsigned long)_CIpow);
-  g_dlls.pncrt.AddExport("??2@YAPAXI@Z", (unsigned long)malloc);
-  g_dlls.pncrt.AddExport("free", (unsigned long)free);
+  g_dlls.pncrt.AddExport("??2@YAPAXI@Z", (unsigned long)malloc, (void*)track_malloc);
+  g_dlls.pncrt.AddExport("free", (unsigned long)free, (void*)track_free);
   g_dlls.pncrt.AddExport("_initterm", (unsigned long)dll_initterm);
   g_dlls.pncrt.AddExport("_adjust_fdiv", (unsigned long)&_adjust_fdiv);
   g_dlls.pncrt.AddExport("_beginthreadex", (unsigned long)dll_beginthreadex);
@@ -631,7 +644,7 @@ void export_pncrt()
   g_dlls.pncrt.AddExport("floor", (unsigned long)floor);
   g_dlls.pncrt.AddExport("_assert", (unsigned long)_assert);
   g_dlls.pncrt.AddExport("__dllonexit", (unsigned long)dll__dllonexit);
-  g_dlls.pncrt.AddExport("calloc", (unsigned long)calloc);
+  g_dlls.pncrt.AddExport("calloc", (unsigned long)calloc, (void*)track_calloc);
   g_dlls.pncrt.AddExport("strncpy", (unsigned long)strncpy);
   g_dlls.pncrt.AddExport("ldexp", (unsigned long)ldexp);
   g_dlls.pncrt.AddExport("frexp", (unsigned long)frexp);
