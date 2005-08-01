@@ -5,10 +5,25 @@
 //#include <xtl.h>
 
 #include "coffldr.h"
-#include "exp2dll.h"
 
-//#define DUMPING_DATA
+#ifndef NULL
+#define NULL 0
+#endif
 
+typedef struct _Export
+{
+  char* sFunctionName;
+  unsigned long function;
+  void* track_function;
+  unsigned long ordinal;
+} Export;
+
+typedef struct _ExportList
+{
+  Export* pExport;
+  _ExportList* pNext;
+} ExportList;
+  
 class DllLoader : public CoffLoader
 {
 public:
@@ -23,13 +38,13 @@ public:
   int IncrRef();
   int DecrRef();
   
-  Exp2Dll* GetExportByOrdinal(unsigned long ordinal);
-  Exp2Dll* GetExportByFunctionName(const char* sFunctionName);
+  Export* GetExportByOrdinal(unsigned long ordinal);
+  Export* GetExportByFunctionName(const char* sFunctionName);
   bool IsSystemDll() { return m_bSystemDll; };
   
-  void AddExport(unsigned long ordinal, unsigned long function);
-  void AddExport(char* sFunctionName, unsigned long ordinal, unsigned long function);
-  void AddExport(char* sFunctionName, unsigned long function);
+  void AddExport(unsigned long ordinal, unsigned long function, void* track_function = NULL);
+  void AddExport(char* sFunctionName, unsigned long ordinal, unsigned long function, void* track_function = NULL);
+  void AddExport(char* sFunctionName, unsigned long function, void* track_function = NULL);
 
 private:
   // Just pointers; dont' delete...
@@ -39,12 +54,7 @@ private:
   int m_iRefCount;
   bool m_bTrack;
   bool m_bSystemDll; // true if this dll should not be removed
-  typedef struct _ExportList
-  {
-    Exp2Dll* pExport;
-    _ExportList* pNext;
-  } ExportList;
-  ExportList* m_pExports;
+  struct _ExportList* m_pExports;
 
   void PrintImportLookupTable(unsigned long ImportLookupTable_RVA);
   void PrintImportTable(ImportDirTable_t *ImportDirTable);

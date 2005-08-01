@@ -12,8 +12,6 @@ extern "C"
   void dllReleaseAll( );
   void* dllmalloc(size_t size);
   void dllfree( void* pPtr );
-  void* dllmalloc71( size_t size );
-  void dllfree71( void* pPtr );
   void* dllcalloc( size_t num, size_t size );
   void* dllrealloc( void *memblock, size_t size );
   void dllexit(int iCode);

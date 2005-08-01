@@ -51,9 +51,9 @@ COFF_FileHeader_t;
 #ifndef IMAGE_FILE_MACHINE_I386
 #define IMAGE_FILE_MACHINE_I386     0x14c
 #endif 
-/*
- 
- 
+
+
+
 #define IMAGE_FILE_RELOCS_STRIPPED                  0x0001
 #define IMAGE_FILE_EXECUTABLE_IMAGE                 0x0002
 #define IMAGE_FILE_LINE_NUMS_STRIPPED               0x0004
@@ -69,7 +69,7 @@ COFF_FileHeader_t;
 #define IMAGE_FILE_DLL                              0x2000
 #define IMAGE_FILE_UP_SYSTEM_ONLY                   0x4000
 #define IMAGE_FILE_BYTES_REVERSED_HI                0x8000
-*/
+
 #endif
 
 

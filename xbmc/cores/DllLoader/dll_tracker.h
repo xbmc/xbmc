@@ -10,14 +10,38 @@ struct AllocLenCaller
   unsigned calleraddr;
 };
 
+enum TrackedFileType
+{
+  FILE_XBMC_OPEN,
+  FILE_XBMC_FOPEN,
+  FILE_OPEN,
+  FILE_FOPEN
+};
+
+typedef struct _TrackedFile
+{
+  TrackedFileType type;
+  unsigned handle;
+  char* name;
+} TrackedFile;
+
 typedef std::map<unsigned, AllocLenCaller> DataList;
 typedef std::map<unsigned, AllocLenCaller>::iterator DataListIter;
+
+typedef std::list<TrackedFile*> FileList;
+typedef std::list<TrackedFile*>::iterator FileListIter;
 
 typedef std::list<HMODULE> DllList;
 typedef std::list<HMODULE>::iterator DllListIter;
 
 typedef std::list<unsigned long*> DummyList;
 typedef std::list<unsigned long*>::iterator DummyListIter;
+
+typedef std::list<unsigned long*> DummyList;
+typedef std::list<unsigned long*>::iterator DummyListIter;
+
+typedef std::list<SOCKET> SocketList;
+typedef std::list<SOCKET>::iterator SocketListIter;
 
 typedef struct _DllTrackInfo
 {
@@ -32,6 +56,9 @@ typedef struct _DllTrackInfo
   
   // for dummy functions that are created if no exported function could be found
   DummyList dummyList;
+  
+  FileList fileList;
+  SocketList socketList;
 } DllTrackInfo;
 
 typedef std::list<DllTrackInfo*> TrackedDllList;

@@ -4,9 +4,14 @@
 #include <string.h>
 #include <minmax.h>
 #include "coff.h" 
-//#define DUMPING_DATA 1
 #include "coffldr.h"
 
+//#define DUMPING_DATA 1
+
+#pragma warning (disable:4806)
+
+#include "../../utils/log.h"
+#define printf CLog::DebugLog
 
 const char *DATA_DIR_NAME[16] =
   {
@@ -340,8 +345,6 @@ char *CoffLoader::GetSymbolName(int index)
   return GetSymbolName(sym);
 }
 
-#ifdef DUMPING_DATA
-
 void CoffLoader::PrintStringTable(void)
 {
   int size = SizeOfStringTable;
@@ -645,7 +648,7 @@ void CoffLoader::PrintSection(SectionHeader_t *ScnHdr, char* data)
 
   if (ScnHdr->SizeOfRawData > 0)
   {
-    int i;
+    unsigned int i;
     char ch;
     // Print the Raw Data
 
@@ -763,8 +766,6 @@ void CoffLoader::PrintSection(SectionHeader_t *ScnHdr, char* data)
 
   printf("\n");
 }
-
-#endif
 
 int CoffLoader::ParseCoff(FILE *fp)
 {

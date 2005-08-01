@@ -2,6 +2,7 @@
 #include "..\..\..\stdafx.h"
 #include "..\DllLoaderContainer.h"
 #include "emu_socket.h"
+#include "..\dll_tracker_socket.h"
 
 void export_wsock32()
 {
@@ -11,7 +12,7 @@ void export_wsock32()
   g_dlls.wsock32.AddExport("send", 19, (unsigned long)dllsend);
   g_dlls.wsock32.AddExport("sendto", 20, (unsigned long)dllsendto);
   g_dlls.wsock32.AddExport("shutdown", 22, (unsigned long)dllshutdown);
-  g_dlls.wsock32.AddExport("socket", 23, (unsigned long)dllsocket);
+  g_dlls.wsock32.AddExport("socket", 23, (unsigned long)dllsocket, (void*)track_socket);
   g_dlls.wsock32.AddExport("gethostname", 57, (unsigned long)dllgethostname);
   g_dlls.wsock32.AddExport("recv", 16, (unsigned long)dllrecv);
   g_dlls.wsock32.AddExport("inet_addr", 10, (unsigned long)inet_addr);
@@ -23,8 +24,8 @@ void export_wsock32()
   g_dlls.wsock32.AddExport("bind", 2, (unsigned long)dllbind);
   g_dlls.wsock32.AddExport("setsockopt", 21, (unsigned long)dllsetsockopt);
   g_dlls.wsock32.AddExport("select", 18, (unsigned long)dllselect);
-  g_dlls.wsock32.AddExport("accept", 1, (unsigned long)dllaccept);
-  g_dlls.wsock32.AddExport("closesocket", 3, (unsigned long)dllclosesocket);
+  g_dlls.wsock32.AddExport("accept", 1, (unsigned long)dllaccept, (void*)track_accept);
+  g_dlls.wsock32.AddExport("closesocket", 3, (unsigned long)dllclosesocket, (void*)track_closesocket);
   g_dlls.wsock32.AddExport("ioctlsocket", 12, (unsigned long)dllioctlsocket);
   g_dlls.wsock32.AddExport("ntohs", 15, (unsigned long)ntohs);
   g_dlls.wsock32.AddExport("gethostbyname", 52, (unsigned long)dllgethostbyname);
@@ -121,7 +122,7 @@ void export_ws2_32()
   g_dlls.ws2_32.AddExport("WSAGetLastError", 111, (unsigned long)WSAGetLastError);
   g_dlls.ws2_32.AddExport("WSAStartup", 115, (unsigned long)WSAStartup);
   g_dlls.ws2_32.AddExport("bind", 2, (unsigned long)dllbind);
-  g_dlls.ws2_32.AddExport("closesocket", 3, (unsigned long)dllclosesocket);
+  g_dlls.ws2_32.AddExport("closesocket", 3, (unsigned long)dllclosesocket, (void*)track_closesocket);
   g_dlls.ws2_32.AddExport("connect", 4, (unsigned long)dllconnect);
   g_dlls.ws2_32.AddExport("gethostbyname", 52, (unsigned long)dllgethostbyname);
   g_dlls.ws2_32.AddExport("getsockopt", 7, (unsigned long)dllgetsockopt);
@@ -136,8 +137,8 @@ void export_ws2_32()
   g_dlls.ws2_32.AddExport("send", 19, (unsigned long)dllsend);
   g_dlls.ws2_32.AddExport("sendto", 20, (unsigned long)dllsendto);
   g_dlls.ws2_32.AddExport("setsockopt", 21, (unsigned long)dllsetsockopt);
-  g_dlls.ws2_32.AddExport("socket", 23, (unsigned long)dllsocket);
-  g_dlls.ws2_32.AddExport("accept", 1, (unsigned long)dllaccept);
+  g_dlls.ws2_32.AddExport("socket", 23, (unsigned long)dllsocket, (void*)track_socket);
+  g_dlls.ws2_32.AddExport("accept", 1, (unsigned long)dllaccept, (void*)track_accept);
   g_dlls.ws2_32.AddExport("gethostname", 57, (unsigned long)dllgethostname);
   g_dlls.ws2_32.AddExport("getsockname", 6, (unsigned long)dllgetsockname);
   g_dlls.ws2_32.AddExport("listen", 13, (unsigned long)dlllisten);
