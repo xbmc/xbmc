@@ -4,48 +4,49 @@
   <coordinates>
     <system>1</system>
     <posX>70</posX>
-    <posY>35</posY>
+    <posY>27</posY>
   </coordinates>
 
-  <controls>
-    <control>
-      <description>Popup Music Scan Dialog Background</description>
-      <type>image</type>
-      <id>1</id>
-      <posX>0</posX>
-      <posY>0</posY>
-      <width>400</width>
-      <height>90</height>
-      <texture>scan-panel-bg.png</texture>
-    </control>
+  <visible fade="20" start="hidden">Window.IsActive(112)</visible>
+    <controls>
+      <control>
+        <description>Popup Music Scan Dialog Background</description>
+        <type>image</type>
+        <id>1</id>
+        <posX>0</posX>
+        <posY>0</posY>
+        <width>400</width>
+        <height>90</height>
+        <texture>scan-panel-bg.png</texture>
+      </control>
 
-    <control>
-      <description>Caption Label</description>
-      <type>label</type>
-      <id>401</id>
-      <posX>126</posX>
-      <posY>21</posY>
-      <font>font12</font>
-      <align>center</align>
-      <width>160</width>
-      <height>20</height>
-    </control>
+      <control>
+        <description>Caption Label</description>
+        <type>label</type>
+        <id>401</id>
+        <posX>126</posX>
+        <posY>21</posY>
+        <font>font12</font>
+        <align>center</align>
+        <width>160</width>
+        <height>20</height>
+      </control>
 
-    <control>
-      <description>Current Directory Label</description>
-      <type>label</type>
-      <id>402</id>
-      <posX>60</posX>
-      <posY>43</posY>
-      <hasPath>yes</hasPath>
-      <font>font10</font>
-      <onleft>402</onleft>
-      <onright>402</onright>
-      <onup>402</onup>
-      <ondown>402</ondown>
-    </control>
+      <control>
+        <description>Current Directory Label</description>
+        <type>label</type>
+        <id>402</id>
+        <posX>60</posX>
+        <posY>43</posY>
+        <hasPath>yes</hasPath>
+        <font>font10</font>
+        <onleft>402</onleft>
+        <onright>402</onright>
+        <onup>402</onup>
+        <ondown>402</ondown>
+      </control>
 
-  </controls>
+    </controls>
 
-</window>
+  </window>
 

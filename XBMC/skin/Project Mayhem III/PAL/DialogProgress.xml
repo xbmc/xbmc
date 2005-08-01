@@ -1,91 +1,92 @@
 <window>
   <id>101</id>
   <defaultcontrol>10</defaultcontrol>
-  <controls>
-    <control>
-      <type>image</type>
-      <id>0</id>
-      <posX>135</posX>
-      <posY>205</posY>
-      <width>466</width>
-      <height>210</height>
-      <texture>dialog-popup.png</texture>
-    </control>
+  <visible fade="10" start="hidden">Window.IsActive(101)</visible>
+    <controls>
+      <control>
+        <type>image</type>
+        <id>0</id>
+        <posX>135</posX>
+        <posY>205</posY>
+        <width>466</width>
+        <height>210</height>
+        <texture>dialog-popup.png</texture>
+      </control>
 
-    <control>
-      <description>dialog Heading</description>
-      <type>label</type>
-      <id>1</id>
-      <posX>190</posX>
-      <posY>218</posY>
-      <label>0</label>
-      <font>special13</font>
-      <textcolor>DDced8da</textcolor>
-    </control>
+      <control>
+        <description>dialog Heading</description>
+        <type>label</type>
+        <id>1</id>
+        <posX>190</posX>
+        <posY>218</posY>
+        <label>0</label>
+        <font>special13</font>
+        <textcolor>DDced8da</textcolor>
+      </control>
 
-    <control>
-      <description>dialog line 1</description>
-      <type>label</type>
-      <id>2</id>
-      <posX>190</posX>
-      <posY>260</posY>
-      <hasPath>yes</hasPath>
-      <label>0</label>
-      <font>font10</font>
-    </control>
+      <control>
+        <description>dialog line 1</description>
+        <type>label</type>
+        <id>2</id>
+        <posX>190</posX>
+        <posY>260</posY>
+        <hasPath>yes</hasPath>
+        <label>0</label>
+        <font>font10</font>
+      </control>
 
-    <control>
-      <description>dialog line 2</description>
-      <type>label</type>
-      <id>3</id>
-      <posX>190</posX>
-      <posY>280</posY>
-      <hasPath>yes</hasPath>
-      <label>0</label>
-      <font>font10</font>
-    </control>
+      <control>
+        <description>dialog line 2</description>
+        <type>label</type>
+        <id>3</id>
+        <posX>190</posX>
+        <posY>280</posY>
+        <hasPath>yes</hasPath>
+        <label>0</label>
+        <font>font10</font>
+      </control>
 
-    <control>
-      <description>dialog line 3</description>
-      <type>label</type>
-      <id>4</id>
-      <posX>190</posX>
-      <posY>300</posY>
-      <hasPath>yes</hasPath>
-      <label>0</label>
-      <font>font10</font>
-    </control>
+      <control>
+        <description>dialog line 3</description>
+        <type>label</type>
+        <id>4</id>
+        <posX>190</posX>
+        <posY>300</posY>
+        <hasPath>yes</hasPath>
+        <label>0</label>
+        <font>font10</font>
+      </control>
 
-    <control>
-      <description>progress control</description>
-      <type>progress</type>
-      <id>20</id>
-      <posX>190</posX>
-      <posY>346</posY>
-      <width>291</width>
-      <height>13</height>
-      <visible>no</visible>
-      <texturebg>progress_back2.png</texturebg>
-    </control>
+      <control>
+        <description>progress control</description>
+        <type>progress</type>
+        <id>20</id>
+        <posX>190</posX>
+        <posY>346</posY>
+        <width>291</width>
+        <height>13</height>
+        <visible>no</visible>
+        <texturebg>progress_back2.png</texturebg>
+      </control>
 
-    <control>
-      <description>Cancel button</description>
-      <type>button</type>
-      <id>10</id>
-      <posX>493</posX>
-      <posY>335</posY>
-      <width>77</width>
-      <height>32</height>
-      <label>222</label>
-      <font>font10</font>
-      <onleft>10</onleft>
-      <align>center</align>
-      <onright>10</onright>
-      <onup>10</onup>
-      <ondown>10</ondown>
-    </control>
+      <control>
+        <description>Cancel button</description>
+        <type>button</type>
+        <id>10</id>
+        <posX>493</posX>
+        <posY>335</posY>
+        <width>77</width>
+        <height>32</height>
+        <label>222</label>
+        <font>font10</font>
+        <onleft>10</onleft>
+        <align>center</align>
+        <onright>10</onright>
+        <onup>10</onup>
+        <ondown>10</ondown>
+      </control>
 
-  </controls>
+    </controls>
 
-</window>
+  </window>
 

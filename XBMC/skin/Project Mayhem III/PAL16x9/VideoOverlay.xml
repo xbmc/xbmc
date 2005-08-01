@@ -1,55 +1,55 @@
 <window>
   <id>2004</id>
   <defaultcontrol>2</defaultcontrol>
-  <controls>
+  <visible fade="50" start="hidden">Window.IsActive(2004)</visible>
+    <controls>
+      <control>
+        <description>video rectangle</description>
+        <type>image</type>
+        <id>0</id>
+        <posX>60</posX>
+        <posY>380</posY>
+        <width>140</width>
+        <height>118</height>
+        <texture>blue_rectangle_video.png</texture>
+        <colorkey>0</colorkey>
+        <colordiffuse>ffffffff</colordiffuse>
+      </control>
 
-    <control>
-      <description>video rectangle</description>
-      <type>image</type>
-      <id>0</id>
-      <posX>60</posX>
-      <posY>380</posY>
-      <width>140</width>
-      <height>118</height>
-      <texture>blue_rectangle_video.png</texture>
-      <colorkey>0</colorkey>
-      <colordiffuse>ffffffff</colordiffuse>
-    </control>
+      <control>
+        <description>video preview window</description>
+        <type>videowindow</type>
+        <id>1</id>
+        <posX>65</posX>
+        <posY>385</posY>
+        <width>130</width>
+        <height>107</height>
+      </control>
 
-    <control>
-      <description>video preview window</description>
-      <type>videowindow</type>
-      <id>1</id>
-      <posX>65</posX>
-      <posY>385</posY>
-      <width>130</width>
-      <height>107</height>
-    </control>
+      <control>
+        <description>play time label</description>
+        <type>label</type>
+        <id>0</id>
+        <posX>65</posX>
+        <posY>500</posY>
+        <label>-</label>
+        <info>VideoPlayer.Time</info>
+        <align>left</align>
+        <font>font13</font>
+      </control>
 
-    <control>
-      <description>play time label</description>
-      <type>label</type>
-      <id>0</id>
-      <posX>65</posX>
-      <posY>500</posY>
-      <label>-</label>
-      <info>VideoPlayer.Time</info>
-      <align>left</align>
-      <font>font13</font>
-    </control>
+      <control>
+        <description>album/artist/genre etc info label</description>
+        <type>fadelabel</type>
+        <width>130</width>
+        <posX>65</posX>
+        <posY>525</posY>
+        <font>font10</font>
+        <id>0</id>
+        <label>$INFO[VideoPlayer.Title] | $INFO[VideoPlayer.Year] | $INFO[VideoPlayer.Director] | $INFO[VideoPlayer.Genre]</label>
+      </control>
 
-    <control>
-      <description>album/artist/genre etc info label</description>
-      <type>fadelabel</type>
-      <width>130</width>
-      <posX>65</posX>
-      <posY>525</posY>
-      <font>font10</font>
-      <id>0</id>
-      <label>$INFO[VideoPlayer.Title] | $INFO[VideoPlayer.Year] | $INFO[VideoPlayer.Director] | $INFO[VideoPlayer.Genre]</label>
-    </control>
+    </controls>
 
-  </controls>
-
-</window>
+  </window>
 

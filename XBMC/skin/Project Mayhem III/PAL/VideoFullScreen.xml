@@ -2,87 +2,85 @@
   <id>2005</id>
   <defaultcontrol>13</defaultcontrol>
   <controls>
-
     <!-- codec infos -->
+      <control>
+        <description>media info background image</description>
+        <type>image</type>
+        <id>0</id>
+        <posX>-10</posX>
+        <posY>40</posY>
+        <width>740</width>
+        <height>90</height>
+        <texture>osd_menu_bg.png</texture>
+      </control>
 
-    <control>
-      <description>media info background image</description>
-      <type>image</type>
-      <id>0</id>
-      <posX>-10</posX>
-      <posY>40</posY>
-      <width>740</width>
-      <height>90</height>
-      <texture>osd_menu_bg.png</texture>
-    </control>
+      <control>
+        <description>row 1 label</description>
+        <type>label</type>
+        <id>10</id>
+        <posX>70</posX>
+        <posY>50</posY>
+        <label>-</label>
+        <align>left</align>
+        <font>font12</font>
+      </control>
 
-    <control>
-      <description>row 1 label</description>
-      <type>label</type>
-      <id>10</id>
-      <posX>70</posX>
-      <posY>50</posY>
-      <label>-</label>
-      <align>left</align>
-      <font>font12</font>
-    </control>
+      <control>
+        <description>row 2 label</description>
+        <type>label</type>
+        <id>11</id>
+        <posX>70</posX>
+        <posY>75</posY>
+        <label>-</label>
+        <align>left</align>
+        <font>font12</font>
+      </control>
 
-    <control>
-      <description>row 2 label</description>
-      <type>label</type>
-      <id>11</id>
-      <posX>70</posX>
-      <posY>75</posY>
-      <label>-</label>
-      <align>left</align>
-      <font>font12</font>
-    </control>
+      <control>
+        <description>row 3 label</description>
+        <type>label</type>
+        <id>12</id>
+        <posX>70</posX>
+        <posY>100</posY>
+        <label>-</label>
+        <align>left</align>
+        <font>font12</font>
+        <visible>no</visible>
+      </control>
 
-    <control>
-      <description>row 3 label</description>
-      <type>label</type>
-      <id>12</id>
-      <posX>70</posX>
-      <posY>100</posY>
-      <label>-</label>
-      <align>left</align>
-      <font>font12</font>
-      <visible>no</visible>
-    </control>
+      <!-- Dummy! remove after skin version bump -->
+        <control>
+          <description>Progressbar</description>
+          <type>progress</type>
+          <id>23</id>
+          <posX>506</posX>
+          <posY>83</posY>
+          <width>128</width>
+          <height>5</height>
+          <info>Player.Progress</info>
+          <texturebg>progress_back.png</texturebg>
+          <lefttexture>progress_left.png</lefttexture>
+          <midtexture>progress_mid.png</midtexture>
+          <righttexture>progress_right.png</righttexture>
+          <overlaytexture>-</overlaytexture>
+          <visible>!VideoPlayer.IsFullscreen</visible>
+        </control>
 
-    <!-- Dummy! remove after skin version bump -->
-    <control>
-      <description>Progressbar</description>
-      <type>progress</type>
-      <id>23</id>
-      <posX>506</posX>
-      <posY>83</posY>
-      <width>128</width>
-      <height>5</height>
-      <info>Player.Progress</info>
-      <texturebg>progress_back.png</texturebg>
-      <lefttexture>progress_left.png</lefttexture>
-      <midtexture>progress_mid.png</midtexture>
-      <righttexture>progress_right.png</righttexture>
-      <overlaytexture>-</overlaytexture>
-      <visible>!VideoPlayer.IsFullscreen</visible>
-    </control>
+        <!-- buffering dialog -->
+          <control>
+            <description>buffering label</description>
+            <type>label</type>
+            <id>24</id>
+            <posX>210</posX>
+            <posY>520</posY>
+            <label>15107</label>
+            <width>291</width>
+            <align>center</align>
+            <font>font12</font>
+            <textcolor>FFFFFFFF</textcolor>
+          </control>
 
-    <!-- buffering dialog -->
-    <control>
-      <description>buffering label</description>
-      <type>label</type>
-      <id>24</id>
-      <posX>210</posX>
-      <posY>520</posY>
-      <label>15107</label>
-      <width>291</width>
-      <align>center</align>
-      <font>font12</font>
-      <textcolor>FFFFFFFF</textcolor>
-    </control>
+        </controls>
 
-  </controls>
-
-</window>
+      </window>
 

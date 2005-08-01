@@ -8,170 +8,172 @@
     <posY>230</posY>
   </coordinates>
 
-  <controls>
-    <control>
-      <type>image</type>
-      <id>0</id>
-      <posX>-185</posX>
-      <posY>-230</posY>
-      <width>720</width>
-      <height>576</height>
-      <texture>black.png</texture>
-    </control>
+  <visible fade="10" start="hidden">Window.IsActive(111)</visible>
+    <controls>
+      <control>
+        <type>image</type>
+        <id>0</id>
+        <posX>-185</posX>
+        <posY>-230</posY>
+        <width>720</width>
+        <height>576</height>
+        <texture>black.png</texture>
+        <visible fade="100" start="hidden">Window.IsActive(111)</visible>
+        </control>
 
-    <control>
-      <type>image</type>
-      <id>0</id>
-      <posX>-245</posX>
-      <posY>0</posY>
-      <width>805</width>
-      <height>90</height>
-      <texture>sub-background.png</texture>
-    </control>
+        <control>
+          <type>image</type>
+          <id>0</id>
+          <posX>-245</posX>
+          <posY>0</posY>
+          <width>805</width>
+          <height>90</height>
+          <texture>sub-background.png</texture>
+        </control>
 
-    <control>
-      <description>Dashboard button</description>
-      <type>button</type>
-      <id>3110</id>
-      <posX>30</posX>
-      <posY>5</posY>
-      <width>60</width>
-      <height>65</height>
-      <textureFocus>sub-exit-focus.gif</textureFocus>
-      <textureNoFocus>sub-exit-nofocus.png</textureNoFocus>
-      <execute>XBMC.Dashboard()</execute>
-      <pulseonselect>no</pulseonselect>
-      <onleft>3114</onleft>
-      <onright>3111</onright>
-      <onup>3110</onup>
-      <ondown>3110</ondown>
-      <font>-</font>
-      <label>13006</label>
-    </control>
+        <control>
+          <description>Dashboard button</description>
+          <type>button</type>
+          <id>3110</id>
+          <posX>30</posX>
+          <posY>5</posY>
+          <width>60</width>
+          <height>65</height>
+          <textureFocus>sub-exit-focus.gif</textureFocus>
+          <textureNoFocus>sub-exit-nofocus.png</textureNoFocus>
+          <execute>XBMC.Dashboard()</execute>
+          <pulseonselect>no</pulseonselect>
+          <onleft>3114</onleft>
+          <onright>3111</onright>
+          <onup>3110</onup>
+          <ondown>3110</ondown>
+          <font>-</font>
+          <label>13006</label>
+        </control>
 
-    <control>
-      <description>eject button</description>
-      <type>button</type>
-      <id>3111</id>
-      <posX>90</posX>
-      <posY>5</posY>
-      <width>60</width>
-      <height>65</height>
-      <textureFocus>sub-eject-focus.gif</textureFocus>
-      <textureNoFocus>sub-eject-nofocus.png</textureNoFocus>
-      <execute>XBMC.EjectTray()</execute>
-      <pulseonselect>no</pulseonselect>
-      <onleft>3110</onleft>
-      <onright>3112</onright>
-      <onup>3111</onup>
-      <ondown>3111</ondown>
-      <font>-</font>
-      <label>13391</label>
-    </control>
+        <control>
+          <description>eject button</description>
+          <type>button</type>
+          <id>3111</id>
+          <posX>90</posX>
+          <posY>5</posY>
+          <width>60</width>
+          <height>65</height>
+          <textureFocus>sub-eject-focus.gif</textureFocus>
+          <textureNoFocus>sub-eject-nofocus.png</textureNoFocus>
+          <execute>XBMC.EjectTray()</execute>
+          <pulseonselect>no</pulseonselect>
+          <onleft>3110</onleft>
+          <onright>3112</onright>
+          <onup>3111</onup>
+          <ondown>3111</ondown>
+          <font>-</font>
+          <label>13391</label>
+        </control>
 
-    <control>
-      <description>Shutdown button</description>
-      <type>button</type>
-      <id>3112</id>
-      <posX>150</posX>
-      <posY>5</posY>
-      <width>60</width>
-      <height>65</height>
-      <textureFocus>sub-shutdown-focus.gif</textureFocus>
-      <textureNoFocus>sub-shutdown-nofocus.png</textureNoFocus>
-      <execute>XBMC.ShutDown()</execute>
-      <pulseonselect>no</pulseonselect>
-      <onleft>3111</onleft>
-      <onright>3113</onright>
-      <onup>3115</onup>
-      <ondown>3112</ondown>
-      <font>-</font>
-      <label>13005</label>
-    </control>
+        <control>
+          <description>Shutdown button</description>
+          <type>button</type>
+          <id>3112</id>
+          <posX>150</posX>
+          <posY>5</posY>
+          <width>60</width>
+          <height>65</height>
+          <textureFocus>sub-shutdown-focus.gif</textureFocus>
+          <textureNoFocus>sub-shutdown-nofocus.png</textureNoFocus>
+          <execute>XBMC.ShutDown()</execute>
+          <pulseonselect>no</pulseonselect>
+          <onleft>3111</onleft>
+          <onright>3113</onright>
+          <onup>3115</onup>
+          <ondown>3112</ondown>
+          <font>-</font>
+          <label>13005</label>
+        </control>
 
-    <control>
-      <description>System Info button</description>
-      <type>button</type>
-      <id>3113</id>
-      <posX>210</posX>
-      <posY>5</posY>
-      <width>60</width>
-      <height>65</height>
-      <textureFocus>sub-info-focus.gif</textureFocus>
-      <textureNoFocus>sub-info-nofocus.png</textureNoFocus>
-      <execute>XBMC.ActivateWindow(7)</execute>
-      <pulseonselect>no</pulseonselect>
-      <onleft>3112</onleft>
-      <onright>3114</onright>
-      <onup>3113</onup>
-      <ondown>3113</ondown>
-      <font>-</font>
-      <label>130</label>
-    </control>
+        <control>
+          <description>System Info button</description>
+          <type>button</type>
+          <id>3113</id>
+          <posX>210</posX>
+          <posY>5</posY>
+          <width>60</width>
+          <height>65</height>
+          <textureFocus>sub-info-focus.gif</textureFocus>
+          <textureNoFocus>sub-info-nofocus.png</textureNoFocus>
+          <execute>XBMC.ActivateWindow(7)</execute>
+          <pulseonselect>no</pulseonselect>
+          <onleft>3112</onleft>
+          <onright>3114</onright>
+          <onup>3113</onup>
+          <ondown>3113</ondown>
+          <font>-</font>
+          <label>130</label>
+        </control>
 
-    <control>
-      <description>reboot button</description>
-      <type>button</type>
-      <id>3114</id>
-      <posX>270</posX>
-      <posY>5</posY>
-      <width>60</width>
-      <height>65</height>
-      <textureFocus>sub-reboot-focus.gif</textureFocus>
-      <textureNoFocus>sub-reboot-nofocus.png</textureNoFocus>
-      <execute>XBMC.Reset()</execute>
-      <pulseonselect>no</pulseonselect>
-      <onleft>3113</onleft>
-      <onright>3110</onright>
-      <onup>3114</onup>
-      <ondown>3114</ondown>
-      <font>-</font>
-      <label>13313</label>
-    </control>
+        <control>
+          <description>reboot button</description>
+          <type>button</type>
+          <id>3114</id>
+          <posX>270</posX>
+          <posY>5</posY>
+          <width>60</width>
+          <height>65</height>
+          <textureFocus>sub-reboot-focus.gif</textureFocus>
+          <textureNoFocus>sub-reboot-nofocus.png</textureNoFocus>
+          <execute>XBMC.Reset()</execute>
+          <pulseonselect>no</pulseonselect>
+          <onleft>3113</onleft>
+          <onright>3110</onright>
+          <onup>3114</onup>
+          <ondown>3114</ondown>
+          <font>-</font>
+          <label>13313</label>
+        </control>
 
-    <control>
-      <description>Skin reload button</description>
-      <type>button</type>
-      <id>3115</id>
-      <posX>150</posX>
-      <posY>5</posY>
-      <width>60</width>
-      <height>65</height>
-      <textureFocus>sub-shutdown-focus.gif</textureFocus>
-      <textureNoFocus>-</textureNoFocus>
-      <execute>XBMC.ReloadSkin()</execute>
-      <pulseonselect>no</pulseonselect>
-      <onleft>3115</onleft>
-      <onright>3115</onright>
-      <onup>3112</onup>
-      <ondown>3112</ondown>
-      <font>-</font>
-      <label>Reload Skin</label>
-    </control>
+        <control>
+          <description>Skin reload button</description>
+          <type>button</type>
+          <id>3115</id>
+          <posX>150</posX>
+          <posY>5</posY>
+          <width>60</width>
+          <height>65</height>
+          <textureFocus>sub-shutdown-focus.gif</textureFocus>
+          <textureNoFocus>-</textureNoFocus>
+          <execute>XBMC.ReloadSkin()</execute>
+          <pulseonselect>no</pulseonselect>
+          <onleft>3115</onleft>
+          <onright>3115</onright>
+          <onup>3112</onup>
+          <ondown>3112</ondown>
+          <font>-</font>
+          <label>Reload Skin</label>
+        </control>
 
-    <control>
-      <type>image</type>
-      <id>0</id>
-      <posX>-245</posX>
-      <posY>84</posY>
-      <width>805</width>
-      <height>60</height>
-      <texture>sub-background-label.png</texture>
-    </control>
+        <control>
+          <type>image</type>
+          <id>0</id>
+          <posX>-245</posX>
+          <posY>84</posY>
+          <width>805</width>
+          <height>41</height>
+          <texture>sub-background-label.png</texture>
+        </control>
 
-    <control>
-      <description>Label control</description>
-      <type>label</type>
-      <id>3100</id>
-      <posX>19</posX>
-      <posY>91</posY>
-      <width>322</width>
-      <height>35</height>
-      <align>center</align>
-      <font>font13</font>
-    </control>
+        <control>
+          <description>Label control</description>
+          <type>label</type>
+          <id>3100</id>
+          <posX>19</posX>
+          <posY>91</posY>
+          <width>322</width>
+          <height>20</height>
+          <align>center</align>
+          <font>font10</font>
+        </control>
 
-  </controls>
+      </controls>
 
-</window>
+    </window>
 
