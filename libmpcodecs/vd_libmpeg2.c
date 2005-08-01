@@ -29,6 +29,10 @@ LIBVD_EXTERN(libmpeg2)
 
 #include "../cpudetect.h"
 
+#ifdef _XBOX
+  static int g_lastframeflags=0;
+#endif
+
 // to set/get/query special features/parameters
 static int control(sh_video_t *sh,int cmd,void* arg,...){
     mpeg2dec_t * mpeg2dec = sh->context;
@@ -198,6 +202,19 @@ static mp_image_t* decode(sh_video_t *sh,void* data,int len,int flags){
 		mpi_new->fields |= MP_IMGFIELD_REPEAT_FIRST;
 	    else mpi_new->fields &= ~MP_IMGFIELD_REPEAT_FIRST;
 	    mpi_new->fields |= MP_IMGFIELD_ORDERED;
+
+#ifdef _XBOX
+  if( info->current_picture->flags&PIC_FLAG_PROGRESSIVE_FRAME ||
+     info->sequence->flags & SEQ_FLAG_PROGRESSIVE_SEQUENCE )
+  {
+    mpi_new->fields &= ~MP_IMGFIELD_INTERLACED;
+  }
+  else
+  {
+    mpi_new->fields |= MP_IMGFIELD_INTERLACED;
+  }
+#endif
+
 
 #ifdef MPEG12_POSTPROC
 	    if(!mpi_new->qscale){

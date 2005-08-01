@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 25-06-2005 fixed: made mplayer set interlaced flag on mpeg2 video when decoding using libmpeg2
   - 25-06-2005 updated: ffmpeg to latest cvs as of now
   - 25-06-2005 added: [ 1236234 ] mplayer_GetAudioInfo returns wrong audio bitrate
   - 14-06-2005 added: readded a couple of other filters and fixed playback with noise filter
