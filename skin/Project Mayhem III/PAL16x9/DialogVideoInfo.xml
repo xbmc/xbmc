@@ -2,398 +2,398 @@
   <id>2003</id>
   <defaultcontrol>5</defaultcontrol>
   <allowoverlay>no</allowoverlay>
-  <controls>
-    <control>
-      <description>background image</description>
-      <type>image</type>
-      <id>1</id>
-      <posX>0</posX>
-      <posY>0</posY>
-      <width>720</width>
-      <height>576</height>
-      <texture>background-videos.png</texture>
-    </control>
+  <visible fade="50" start="hidden">Window.IsActive(2003)</visible>
+    <controls>
+      <control>
+        <description>background image</description>
+        <type>image</type>
+        <id>1</id>
+        <posX>0</posX>
+        <posY>0</posY>
+        <width>720</width>
+        <height>576</height>
+        <texture>background-videos.png</texture>
+      </control>
 
-    <control>
-      <description>xbox media center label</description>
-      <type>label</type>
-      <id>1</id>
-      <posX>200</posX>
-      <posY>63</posY>
-      <align>right</align>
-      <label>xbox media center</label>
-      <font>special12</font>
-    </control>
+      <control>
+        <description>xbox media center label</description>
+        <type>label</type>
+        <id>1</id>
+        <posX>200</posX>
+        <posY>63</posY>
+        <align>right</align>
+        <label>xbox media center</label>
+        <font>special12</font>
+      </control>
 
-    <control>
-      <description>description label</description>
-      <type>label</type>
-      <id>1</id>
-      <posX>207</posX>
-      <posY>63</posY>
-      <align>left</align>
-      <label>10524</label>
-      <font>special13</font>
-    </control>
+      <control>
+        <description>description label</description>
+        <type>label</type>
+        <id>1</id>
+        <posX>207</posX>
+        <posY>63</posY>
+        <align>left</align>
+        <label>10524</label>
+        <font>special13</font>
+      </control>
 
-    <control>
-      <description>Movie Title value</description>
-      <type>fadelabel</type>
-      <id>20</id>
-      <posX>335</posX>
-      <posY>120</posY>
-      <width>320</width>
-      <label>-</label>
-      <font>special13</font>
-    </control>
+      <control>
+        <description>Movie Title value</description>
+        <type>fadelabel</type>
+        <id>20</id>
+        <posX>335</posX>
+        <posY>120</posY>
+        <width>320</width>
+        <label>-</label>
+        <font>special13</font>
+      </control>
 
-    <control>
-      <description>Director txt</description>
-      <type>label</type>
-      <id>1</id>
-      <posX>335</posX>
-      <posY>160</posY>
-      <width>90</width>
-      <label>199</label>
-      <font>font12</font>
-    </control>
+      <control>
+        <description>Director txt</description>
+        <type>label</type>
+        <id>1</id>
+        <posX>335</posX>
+        <posY>160</posY>
+        <width>90</width>
+        <label>199</label>
+        <font>font12</font>
+      </control>
 
-    <control>
-      <description>Writing Credits txt</description>
-      <type>label</type>
-      <id>1</id>
-      <posX>335</posX>
-      <posY>180</posY>
-      <width>90</width>
-      <label>200</label>
-      <font>font12</font>
-    </control>
+      <control>
+        <description>Writing Credits txt</description>
+        <type>label</type>
+        <id>1</id>
+        <posX>335</posX>
+        <posY>180</posY>
+        <width>90</width>
+        <label>200</label>
+        <font>font12</font>
+      </control>
 
-    <control>
-      <description>Genre txt</description>
-      <type>label</type>
-      <id>1</id>
-      <posX>335</posX>
-      <posY>200</posY>
-      <width>90</width>
-      <label>174</label>
-      <font>font12</font>
-    </control>
+      <control>
+        <description>Genre txt</description>
+        <type>label</type>
+        <id>1</id>
+        <posX>335</posX>
+        <posY>200</posY>
+        <width>90</width>
+        <label>174</label>
+        <font>font12</font>
+      </control>
 
-    <control>
-      <description>Year</description>
-      <type>label</type>
-      <id>1</id>
-      <posX>335</posX>
-      <posY>220</posY>
-      <width>90</width>
-      <label>201</label>
-      <font>font12</font>
-    </control>
+      <control>
+        <description>Year</description>
+        <type>label</type>
+        <id>1</id>
+        <posX>335</posX>
+        <posY>220</posY>
+        <width>90</width>
+        <label>201</label>
+        <font>font12</font>
+      </control>
 
-    <control>
-      <description>TagLine txt</description>
-      <type>label</type>
-      <id>1</id>
-      <posX>335</posX>
-      <posY>240</posY>
-      <width>90</width>
-      <label>202</label>
-      <font>font12</font>
-    </control>
+      <control>
+        <description>TagLine txt</description>
+        <type>label</type>
+        <id>1</id>
+        <posX>335</posX>
+        <posY>240</posY>
+        <width>90</width>
+        <label>202</label>
+        <font>font12</font>
+      </control>
 
-    <control>
-      <description>PlotOutline txt</description>
-      <type>label</type>
-      <id>1</id>
-      <posX>335</posX>
-      <posY>260</posY>
-      <width>90</width>
-      <label>203</label>
-      <font>font12</font>
-    </control>
+      <control>
+        <description>PlotOutline txt</description>
+        <type>label</type>
+        <id>1</id>
+        <posX>335</posX>
+        <posY>260</posY>
+        <width>90</width>
+        <label>203</label>
+        <font>font12</font>
+      </control>
 
-    <control>
-      <description>Rating txt</description>
-      <type>label</type>
-      <id>1</id>
-      <posX>335</posX>
-      <posY>280</posY>
-      <width>90</width>
-      <label>204</label>
-      <font>font12</font>
-    </control>
+      <control>
+        <description>Rating txt</description>
+        <type>label</type>
+        <id>1</id>
+        <posX>335</posX>
+        <posY>280</posY>
+        <width>90</width>
+        <label>204</label>
+        <font>font12</font>
+      </control>
 
-    <control>
-      <description>Runtime txt</description>
-      <type>label</type>
-      <id>1</id>
-      <posX>335</posX>
-      <posY>300</posY>
-      <width>90</width>
-      <label>2050</label>
-      <font>font12</font>
-    </control>
+      <control>
+        <description>Runtime txt</description>
+        <type>label</type>
+        <id>1</id>
+        <posX>335</posX>
+        <posY>300</posY>
+        <width>90</width>
+        <label>2050</label>
+        <font>font12</font>
+      </control>
 
-    <control>
-      <description>Director value</description>
-      <type>fadelabel</type>
-      <id>21</id>
-      <posX>435</posX>
-      <posY>160</posY>
-      <width>220</width>
-      <label>-</label>
-      <font>font12</font>
-    </control>
+      <control>
+        <description>Director value</description>
+        <type>fadelabel</type>
+        <id>21</id>
+        <posX>435</posX>
+        <posY>160</posY>
+        <width>220</width>
+        <label>-</label>
+        <font>font12</font>
+      </control>
 
-    <control>
-      <description>Writing Credits value</description>
-      <type>fadelabel</type>
-      <id>22</id>
-      <posX>435</posX>
-      <posY>180</posY>
-      <width>220</width>
-      <label>-</label>
-      <font>font12</font>
-    </control>
+      <control>
+        <description>Writing Credits value</description>
+        <type>fadelabel</type>
+        <id>22</id>
+        <posX>435</posX>
+        <posY>180</posY>
+        <width>220</width>
+        <label>-</label>
+        <font>font12</font>
+      </control>
 
-    <control>
-      <description>Genre value</description>
-      <type>fadelabel</type>
-      <id>23</id>
-      <posX>435</posX>
-      <posY>200</posY>
-      <width>220</width>
-      <label>-</label>
-      <font>font12</font>
-    </control>
+      <control>
+        <description>Genre value</description>
+        <type>fadelabel</type>
+        <id>23</id>
+        <posX>435</posX>
+        <posY>200</posY>
+        <width>220</width>
+        <label>-</label>
+        <font>font12</font>
+      </control>
 
-    <control>
-      <description>Year value</description>
-      <type>fadelabel</type>
-      <id>24</id>
-      <posX>435</posX>
-      <posY>220</posY>
-      <width>220</width>
-      <label>-</label>
-      <font>font12</font>
-    </control>
+      <control>
+        <description>Year value</description>
+        <type>fadelabel</type>
+        <id>24</id>
+        <posX>435</posX>
+        <posY>220</posY>
+        <width>220</width>
+        <label>-</label>
+        <font>font12</font>
+      </control>
 
-    <control>
-      <description>TagLine value</description>
-      <type>fadelabel</type>
-      <id>25</id>
-      <posX>435</posX>
-      <posY>240</posY>
-      <width>220</width>
-      <label>-</label>
-      <font>font12</font>
-    </control>
+      <control>
+        <description>TagLine value</description>
+        <type>fadelabel</type>
+        <id>25</id>
+        <posX>435</posX>
+        <posY>240</posY>
+        <width>220</width>
+        <label>-</label>
+        <font>font12</font>
+      </control>
 
-    <control>
-      <description>PlotOutline value</description>
-      <type>fadelabel</type>
-      <id>26</id>
-      <posX>435</posX>
-      <posY>260</posY>
-      <width>220</width>
-      <label>-</label>
-      <font>font12</font>
-    </control>
+      <control>
+        <description>PlotOutline value</description>
+        <type>fadelabel</type>
+        <id>26</id>
+        <posX>435</posX>
+        <posY>260</posY>
+        <width>220</width>
+        <label>-</label>
+        <font>font12</font>
+      </control>
 
-    <control>
-      <description>Rating and votes value</description>
-      <type>fadelabel</type>
-      <id>30</id>
-      <posX>435</posX>
-      <posY>280</posY>
-      <width>220</width>
-      <label>-</label>
-      <font>font12</font>
-    </control>
+      <control>
+        <description>Rating and votes value</description>
+        <type>fadelabel</type>
+        <id>30</id>
+        <posX>435</posX>
+        <posY>280</posY>
+        <width>220</width>
+        <label>-</label>
+        <font>font12</font>
+      </control>
 
-    <control>
-      <description>Runtime value</description>
-      <type>fadelabel</type>
-      <id>31</id>
-      <posX>435</posX>
-      <posY>300</posY>
-      <width>220</width>
-      <label>-</label>
-      <font>font12</font>
-    </control>
+      <control>
+        <description>Runtime value</description>
+        <type>fadelabel</type>
+        <id>31</id>
+        <posX>435</posX>
+        <posY>300</posY>
+        <width>220</width>
+        <label>-</label>
+        <font>font12</font>
+      </control>
 
-    <control>
-      <description>start logo</description>
-      <type>image</type>
-      <id>3</id>
-      <posX>220</posX>
-      <posY>120</posY>
-      <width>145</width>
-      <height>205</height>
-      <texture>-</texture>
-    </control>
+      <control>
+        <description>start logo</description>
+        <type>image</type>
+        <id>3</id>
+        <posX>220</posX>
+        <posY>120</posY>
+        <width>145</width>
+        <height>205</height>
+        <texture>-</texture>
+      </control>
 
-    <control>
-      <description>textarea</description>
-      <type>textbox</type>
-      <id>4</id>
-      <posX>220</posX>
-      <posY>335</posY>
-      <width>410</width>
-      <height>200</height>
-      <onleft>5</onleft>
-      <onright>5</onright>
-      <onup>5</onup>
-      <ondown>5</ondown>
-    </control>
+      <control>
+        <description>textarea</description>
+        <type>textbox</type>
+        <id>4</id>
+        <posX>220</posX>
+        <posY>335</posY>
+        <width>410</width>
+        <height>200</height>
+        <onleft>5</onleft>
+        <onright>5</onright>
+        <onup>5</onup>
+        <ondown>5</ondown>
+      </control>
 
-    <control>
-      <description>Tracks/Review</description>
-      <type>button</type>
-      <id>5</id>
-      <posX>50</posX>
-      <posY>120</posY>
-      <label>206</label>
-      <onleft>4</onleft>
-      <onright>4</onright>
-      <onup>7</onup>
-      <ondown>6</ondown>
-    </control>
+      <control>
+        <description>Tracks/Review</description>
+        <type>button</type>
+        <id>5</id>
+        <posX>50</posX>
+        <posY>120</posY>
+        <label>206</label>
+        <onleft>4</onleft>
+        <onright>4</onright>
+        <onup>7</onup>
+        <ondown>6</ondown>
+      </control>
 
-    <control>
-      <description>Refresh</description>
-      <type>button</type>
-      <id>6</id>
-      <posX>50</posX>
-      <posY>158</posY>
-      <label>184</label>
-      <onleft>4</onleft>
-      <onright>4</onright>
-      <onup>5</onup>
-      <ondown>7</ondown>
-    </control>
+      <control>
+        <description>Refresh</description>
+        <type>button</type>
+        <id>6</id>
+        <posX>50</posX>
+        <posY>158</posY>
+        <label>184</label>
+        <onleft>4</onleft>
+        <onright>4</onright>
+        <onup>5</onup>
+        <ondown>7</ondown>
+      </control>
 
-    <!-- <control>
-      <description>disc:</description>
-      <type>label</type>
-      <id>1</id>
-      <posX>106</posX>
-      <posY>495</posY>
-      <label>427</label>
-      <font>font12</font>
-    </control>
+      <!-- <control>
+        <description>disc:</description>
+        <type>label</type>
+        <id>1</id>
+        <posX>106</posX>
+        <posY>495</posY>
+        <label>427</label>
+        <font>font12</font>
+      </control>
 
-    <control>
-      <description>disc select</description>
-      <type>spincontrol</type>
-      <id>7</id>
-      <posX>105</posX>
-      <posY>535</posY>
-      <reverse>yes</reverse>
-      <onup>6</onup>
-      <ondown>5</ondown>
-      <onleft>4</onleft>
-      <onright>4</onright>
-    </control> -->
+      <control>
+        <description>disc select</description>
+        <type>spincontrol</type>
+        <id>7</id>
+        <posX>105</posX>
+        <posY>535</posY>
+        <reverse>yes</reverse>
+        <onup>6</onup>
+        <ondown>5</ondown>
+        <onleft>4</onleft>
+        <onright>4</onright>
+      </control> -->
 
-    <control>
-      <description>video rectangle</description>
-      <type>image</type>
-      <id>0</id>
-      <posX>60</posX>
-      <posY>380</posY>
-      <width>140</width>
-      <height>118</height>
-      <texture>blue_rectangle_video.png</texture>
-      <colorkey>0</colorkey>
-      <colordiffuse>ffffffff</colordiffuse>
-      <visible>Player.HasVideo</visible>
-    </control>
+      <control>
+        <description>video rectangle</description>
+        <type>image</type>
+        <id>0</id>
+        <posX>60</posX>
+        <posY>380</posY>
+        <width>140</width>
+        <height>118</height>
+        <texture>blue_rectangle_video.png</texture>
+        <colorkey>0</colorkey>
+        <colordiffuse>ffffffff</colordiffuse>
+        <visible>Player.HasVideo</visible>
+      </control>
 
-    <control>
-      <description>video preview window</description>
-      <type>videowindow</type>
-      <id>1</id>
-      <posX>65</posX>
-      <posY>385</posY>
-      <width>130</width>
-      <height>107</height>
-    </control>
+      <control>
+        <description>video preview window</description>
+        <type>videowindow</type>
+        <id>1</id>
+        <posX>65</posX>
+        <posY>385</posY>
+        <width>130</width>
+        <height>107</height>
+      </control>
 
-    <control>
-      <description>play time label</description>
-      <type>label</type>
-      <id>0</id>
-      <posX>65</posX>
-      <posY>500</posY>
-      <label>-</label>
-      <info>VideoPlayer.Time</info>
-      <align>left</align>
-      <font>font13</font>
-    </control>
+      <control>
+        <description>play time label</description>
+        <type>label</type>
+        <id>0</id>
+        <posX>65</posX>
+        <posY>500</posY>
+        <label>-</label>
+        <info>VideoPlayer.Time</info>
+        <align>left</align>
+        <font>font13</font>
+      </control>
 
-    <control>
-      <description>album/artist/genre etc info label</description>
-      <type>fadelabel</type>
-      <width>130</width>
-      <posX>65</posX>
-      <posY>525</posY>
-      <font>font10</font>
-      <id>0</id>
-      <label>$INFO[VideoPlayer.Title] | $INFO[VideoPlayer.Year] | $INFO[VideoPlayer.Director] | $INFO[VideoPlayer.Genre]</label>
-    </control>
+      <control>
+        <description>album/artist/genre etc info label</description>
+        <type>fadelabel</type>
+        <width>130</width>
+        <posX>65</posX>
+        <posY>525</posY>
+        <font>font10</font>
+        <id>0</id>
+        <label>$INFO[VideoPlayer.Title] | $INFO[VideoPlayer.Year] | $INFO[VideoPlayer.Director] | $INFO[VideoPlayer.Genre]</label>
+      </control>
 
+      <control>
+        <description>music rectangle</description>
+        <type>image</type>
+        <id>0</id>
+        <posX>60</posX>
+        <posY>381</posY>
+        <width>90</width>
+        <height>120</height>
+        <texture>blue_rectangle_music.png</texture>
+        <visible>Player.HasAudio</visible>
+      </control>
 
-    <control>
-      <description>music rectangle</description>
-      <type>image</type>
-      <id>0</id>
-      <posX>60</posX>
-      <posY>381</posY>
-      <width>90</width>
-      <height>120</height>
-      <texture>blue_rectangle_music.png</texture>
-      <visible>Player.HasAudio</visible>
-    </control>
+      <control>
+        <description>music logo</description>
+        <type>image</type>
+        <id>0</id>
+        <posX>65</posX>
+        <posY>387</posY>
+        <width>80</width>
+        <height>109</height>
+        <texture>music.jpg</texture>
+        <info>MusicPlayer.Cover</info>
+      </control>
 
-    <control>
-      <description>music logo</description>
-      <type>image</type>
-      <id>0</id>
-      <posX>65</posX>
-      <posY>387</posY>
-      <width>80</width>
-      <height>109</height>
-      <texture>music.jpg</texture>
-      <info>MusicPlayer.Cover</info>
-    </control>
+      <control>
+        <description>play time label</description>
+        <type>label</type>
+        <id>0</id>
+        <posX>65</posX>
+        <posY>500</posY>
+        <label>-</label>
+        <info>MusicPlayer.Time</info>
+        <align>left</align>
+        <font>font13</font>
+      </control>
 
-    <control>
-      <description>play time label</description>
-      <type>label</type>
-      <id>0</id>
-      <posX>65</posX>
-      <posY>500</posY>
-      <label>-</label>
-      <info>MusicPlayer.Time</info>
-      <align>left</align>
-      <font>font13</font>
-    </control>
+      <control>
+        <description>album/artist/genre etc info label</description>
+        <type>fadelabel</type>
+        <width>130</width>
+        <posX>65</posX>
+        <posY>525</posY>
+        <font>font10</font>
+        <label>$INFO[MusicPlayer.Artist] | $INFO[MusicPlayer.Title] | $INFO[MusicPlayer.Album] | $INFO[MusicPlayer.Year]</label>
+        <textcolor>FFFFFFFF</textcolor>
+        <id>0</id>
+      </control>
 
-    <control>
-      <description>album/artist/genre etc info label</description>
-      <type>fadelabel</type>
-      <width>130</width>
-      <posX>65</posX>
-      <posY>525</posY>
-      <font>font10</font>
-      <label>$INFO[MusicPlayer.Artist] | $INFO[MusicPlayer.Title] | $INFO[MusicPlayer.Album] | $INFO[MusicPlayer.Year]</label>
-      <textcolor>FFFFFFFF</textcolor>
-      <id>0</id>
-    </control>
+    </controls>
 
-  </controls>
-
-</window>
+  </window>
 

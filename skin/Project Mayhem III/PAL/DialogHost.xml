@@ -1,155 +1,156 @@
 <window>
   <id>108</id>
   <defaultcontrol>3101</defaultcontrol>
-  <controls>
-    <control>
-      <description>Dialog Background</description>
-      <type>image</type>
-      <id>0</id>
-      <posX>137</posX>
-      <posY>177</posY>
-      <width>425</width>
-      <height>290</height>
-      <texture>dialog-invite.png</texture>
-    </control>
+  <visible fade="10" start="hidden">Window.IsActive(108)</visible>
+    <controls>
+      <control>
+        <description>Dialog Background</description>
+        <type>image</type>
+        <id>0</id>
+        <posX>137</posX>
+        <posY>177</posY>
+        <width>425</width>
+        <height>290</height>
+        <texture>dialog-invite.png</texture>
+      </control>
 
-    <control>
-      <description>Dialog Caption</description>
-      <type>label</type>
-      <id>3100</id>
-      <posX>190</posX>
-      <posY>191</posY>
-      <label>15049</label>
-      <font>special13</font>
-    </control>
+      <control>
+        <description>Dialog Caption</description>
+        <type>label</type>
+        <id>3100</id>
+        <posX>190</posX>
+        <posY>191</posY>
+        <label>15049</label>
+        <font>special13</font>
+      </control>
 
-    <control>
-      <description>Hosting type checkmark</description>
-      <type>checkmark</type>
-      <id>3101</id>
-      <posX>190</posX>
-      <posY>230</posY>
-      <font>font13</font>
-      <label>15050</label>
-      <onleft>3101</onleft>
-      <onright>3101</onright>
-      <onup>3108</onup>
-      <ondown>3103</ondown>
-    </control>
+      <control>
+        <description>Hosting type checkmark</description>
+        <type>checkmark</type>
+        <id>3101</id>
+        <posX>190</posX>
+        <posY>230</posY>
+        <font>font13</font>
+        <label>15050</label>
+        <onleft>3101</onleft>
+        <onright>3101</onright>
+        <onup>3108</onup>
+        <ondown>3103</ondown>
+      </control>
 
-    <control>
-      <id>3102</id>
-      <posX>190</posX>
-      <posY>267</posY>
-      <type>label</type>
-      <description>Player Limit label</description>
-      <label>15051</label>
-      <font>font12</font>
-    </control>
+      <control>
+        <id>3102</id>
+        <posX>190</posX>
+        <posY>267</posY>
+        <type>label</type>
+        <description>Player Limit label</description>
+        <label>15051</label>
+        <font>font12</font>
+      </control>
 
-    <control>
-      <id>3103</id>
-      <posX>360</posX>
-      <posY>267</posY>
-      <onleft>3103</onleft>
-      <onright>3103</onright>
-      <onup>3101</onup>
-      <ondown>3105</ondown>
-      <type>spincontrol</type>
-      <description>Player Limit spin control</description>
-      <font>font12</font>
-      <reverse>yes</reverse>
-    </control>
+      <control>
+        <id>3103</id>
+        <posX>360</posX>
+        <posY>267</posY>
+        <onleft>3103</onleft>
+        <onright>3103</onright>
+        <onup>3101</onup>
+        <ondown>3105</ondown>
+        <type>spincontrol</type>
+        <description>Player Limit spin control</description>
+        <font>font12</font>
+        <reverse>yes</reverse>
+      </control>
 
-    <control>
-      <id>3104</id>
-      <posX>190</posX>
-      <posY>303</posY>
-      <type>label</type>
-      <description>Password label</description>
-      <font>font12</font>
-      <label>15052</label>
-    </control>
+      <control>
+        <id>3104</id>
+        <posX>190</posX>
+        <posY>303</posY>
+        <type>label</type>
+        <description>Password label</description>
+        <font>font12</font>
+        <label>15052</label>
+      </control>
 
-    <control>
-      <id>3105</id>
-      <posX>312</posX>
-      <posY>298</posY>
-      <onleft>3105</onleft>
-      <onright>3105</onright>
-      <onup>3103</onup>
-      <ondown>3107</ondown>
-      <type>button</type>
-      <description>Password button</description>
-      <font>font12</font>
-      <width>210</width>
-      <height>33</height>
-      <label>-</label>
-      <alignY>center</alignY>
-      <font>font13</font>
-    </control>
+      <control>
+        <id>3105</id>
+        <posX>312</posX>
+        <posY>298</posY>
+        <onleft>3105</onleft>
+        <onright>3105</onright>
+        <onup>3103</onup>
+        <ondown>3107</ondown>
+        <type>button</type>
+        <description>Password button</description>
+        <font>font12</font>
+        <width>210</width>
+        <height>33</height>
+        <label>-</label>
+        <alignY>center</alignY>
+        <font>font13</font>
+      </control>
 
-    <control>
-      <id>3106</id>
-      <posX>190</posX>
-      <posY>338</posY>
-      <type>label</type>
-      <description>Description label</description>
-      <font>font12</font>
-      <label>15053</label>
-    </control>
+      <control>
+        <id>3106</id>
+        <posX>190</posX>
+        <posY>338</posY>
+        <type>label</type>
+        <description>Description label</description>
+        <font>font12</font>
+        <label>15053</label>
+      </control>
 
-    <control>
-      <id>3107</id>
-      <posX>312</posX>
-      <posY>333</posY>
-      <onleft>3107</onleft>
-      <onright>3107</onright>
-      <onup>3105</onup>
-      <ondown>3108</ondown>
-      <type>button</type>
-      <description>Description button</description>
-      <font>font12</font>
-      <width>210</width>
-      <height>35</height>
-      <label>This is a test</label>
-      <alignY>center</alignY>
-      <font>font12</font>
-    </control>
+      <control>
+        <id>3107</id>
+        <posX>312</posX>
+        <posY>333</posY>
+        <onleft>3107</onleft>
+        <onright>3107</onright>
+        <onup>3105</onup>
+        <ondown>3108</ondown>
+        <type>button</type>
+        <description>Description button</description>
+        <font>font12</font>
+        <width>210</width>
+        <height>35</height>
+        <label>This is a test</label>
+        <alignY>center</alignY>
+        <font>font12</font>
+      </control>
 
-    <control>
-      <description>OK button</description>
-      <type>button</type>
-      <id>3108</id>
-      <posX>360</posX>
-      <posY>380</posY>
-      <width>75</width>
-      <height>33</height>
-      <label>186</label>
-      <align>center</align>
-      <onleft>3108</onleft>
-      <onright>3109</onright>
-      <onup>3107</onup>
-      <ondown>3101</ondown>
-    </control>
+      <control>
+        <description>OK button</description>
+        <type>button</type>
+        <id>3108</id>
+        <posX>360</posX>
+        <posY>380</posY>
+        <width>75</width>
+        <height>33</height>
+        <label>186</label>
+        <align>center</align>
+        <onleft>3108</onleft>
+        <onright>3109</onright>
+        <onup>3107</onup>
+        <ondown>3101</ondown>
+      </control>
 
-    <control>
-      <description>Cancel button</description>
-      <type>button</type>
-      <id>3109</id>
-      <posX>445</posX>
-      <posY>380</posY>
-      <width>75</width>
-      <height>35</height>
-      <label>222</label>
-      <align>center</align>
-      <onleft>3108</onleft>
-      <onright>3109</onright>
-      <onup>3107</onup>
-      <ondown>3101</ondown>
-    </control>
+      <control>
+        <description>Cancel button</description>
+        <type>button</type>
+        <id>3109</id>
+        <posX>445</posX>
+        <posY>380</posY>
+        <width>75</width>
+        <height>35</height>
+        <label>222</label>
+        <align>center</align>
+        <onleft>3108</onleft>
+        <onright>3109</onright>
+        <onup>3107</onup>
+        <ondown>3101</ondown>
+      </control>
 
-  </controls>
+    </controls>
 
-</window>
+  </window>
 

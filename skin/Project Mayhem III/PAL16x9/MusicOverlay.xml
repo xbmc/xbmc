@@ -1,56 +1,56 @@
 <window>
   <id>2004</id>
   <defaultcontrol>2</defaultcontrol>
-  <controls>
+  <visible fade="50" start="hidden">true</visible>
+    <controls>
+      <control>
+        <description>music rectangle</description>
+        <type>image</type>
+        <id>0</id>
+        <posX>60</posX>
+        <posY>381</posY>
+        <width>90</width>
+        <height>120</height>
+        <texture>blue_rectangle_music.png</texture>
+      </control>
 
-    <control>
-      <description>music rectangle</description>
-      <type>image</type>
-      <id>0</id>
-      <posX>60</posX>
-      <posY>381</posY>
-      <width>90</width>
-      <height>120</height>
-      <texture>blue_rectangle_music.png</texture>
-    </control>
+      <control>
+        <description>music logo</description>
+        <type>image</type>
+        <id>0</id>
+        <posX>65</posX>
+        <posY>387</posY>
+        <width>80</width>
+        <height>109</height>
+        <texture>music.jpg</texture>
+        <info>MusicPlayer.Cover</info>
+      </control>
 
-    <control>
-      <description>music logo</description>
-      <type>image</type>
-      <id>0</id>
-      <posX>65</posX>
-      <posY>387</posY>
-      <width>80</width>
-      <height>109</height>
-      <texture>music.jpg</texture>
-      <info>MusicPlayer.Cover</info>
-    </control>
+      <control>
+        <description>play time label</description>
+        <type>label</type>
+        <id>0</id>
+        <posX>65</posX>
+        <posY>500</posY>
+        <label>-</label>
+        <info>MusicPlayer.Time</info>
+        <align>left</align>
+        <font>font13</font>
+      </control>
 
-    <control>
-      <description>play time label</description>
-      <type>label</type>
-      <id>0</id>
-      <posX>65</posX>
-      <posY>500</posY>
-      <label>-</label>
-      <info>MusicPlayer.Time</info>
-      <align>left</align>
-      <font>font13</font>
-    </control>
+      <control>
+        <description>album/artist/genre etc info label</description>
+        <type>fadelabel</type>
+        <width>130</width>
+        <posX>65</posX>
+        <posY>525</posY>
+        <font>font10</font>
+        <label>$INFO[MusicPlayer.Artist] | $INFO[MusicPlayer.Title] | $INFO[MusicPlayer.Album] | $INFO[MusicPlayer.Year]</label>
+        <textcolor>FFFFFFFF</textcolor>
+        <id>0</id>
+      </control>
 
-    <control>
-      <description>album/artist/genre etc info label</description>
-      <type>fadelabel</type>
-      <width>130</width>
-      <posX>65</posX>
-      <posY>525</posY>
-      <font>font10</font>
-      <label>$INFO[MusicPlayer.Artist] | $INFO[MusicPlayer.Title] | $INFO[MusicPlayer.Album] | $INFO[MusicPlayer.Year]</label>
-      <textcolor>FFFFFFFF</textcolor>
-      <id>0</id>
-    </control>
+    </controls>
 
-  </controls>
-
-</window>
+  </window>
 

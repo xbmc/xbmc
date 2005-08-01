@@ -1,76 +1,77 @@
 <window>
   <id>2002</id>
   <defaultcontrol>10</defaultcontrol>
-  <controls>
-    <control>
-      <type>image</type>
-      <id>0</id>
-      <posX>135</posX>
-      <posY>205</posY>
-      <width>466</width>
-      <height>210</height>
-      <texture>dialog-popup.png</texture>
-    </control>
+  <visible fade="10" start="hidden">Window.IsActive(2002)</visible>
+    <controls>
+      <control>
+        <type>image</type>
+        <id>0</id>
+        <posX>135</posX>
+        <posY>205</posY>
+        <width>466</width>
+        <height>210</height>
+        <texture>dialog-popup.png</texture>
+      </control>
 
-    <control>
-      <description>dialog Heading</description>
-      <type>label</type>
-      <id>1</id>
-      <posX>190</posX>
-      <posY>218</posY>
-      <label>0</label>
-      <font>special13</font>
-      <textcolor>DDced8da</textcolor>
-    </control>
+      <control>
+        <description>dialog Heading</description>
+        <type>label</type>
+        <id>1</id>
+        <posX>190</posX>
+        <posY>218</posY>
+        <label>0</label>
+        <font>special13</font>
+        <textcolor>DDced8da</textcolor>
+      </control>
 
-    <control>
-      <description>dialog line 1</description>
-      <type>label</type>
-      <id>2</id>
-      <posX>190</posX>
-      <posY>260</posY>
-      <label>0</label>
-      <font>font10</font>
-    </control>
+      <control>
+        <description>dialog line 1</description>
+        <type>label</type>
+        <id>2</id>
+        <posX>190</posX>
+        <posY>260</posY>
+        <label>0</label>
+        <font>font10</font>
+      </control>
 
-    <control>
-      <description>dialog line 2</description>
-      <type>label</type>
-      <id>3</id>
-      <posX>190</posX>
-      <posY>280</posY>
-      <label>0</label>
-      <font>font10</font>
-    </control>
+      <control>
+        <description>dialog line 2</description>
+        <type>label</type>
+        <id>3</id>
+        <posX>190</posX>
+        <posY>280</posY>
+        <label>0</label>
+        <font>font10</font>
+      </control>
 
-    <control>
-      <description>dialog line 3</description>
-      <type>label</type>
-      <id>4</id>
-      <posX>190</posX>
-      <posY>300</posY>
-      <label>0</label>
-      <font>font10</font>
-    </control>
+      <control>
+        <description>dialog line 3</description>
+        <type>label</type>
+        <id>4</id>
+        <posX>190</posX>
+        <posY>300</posY>
+        <label>0</label>
+        <font>font10</font>
+      </control>
 
-    <control>
-      <description>OK button</description>
-      <type>button</type>
-      <id>10</id>
-      <posX>355</posX>
-      <posY>330</posY>
-      <width>50</width>
-      <height>32</height>
-      <label>186</label>
-      <font>font10</font>
-      <onleft>10</onleft>
-      <align>center</align>
-      <onright>10</onright>
-      <onup>10</onup>
-      <ondown>10</ondown>
-    </control>
+      <control>
+        <description>OK button</description>
+        <type>button</type>
+        <id>10</id>
+        <posX>355</posX>
+        <posY>330</posY>
+        <width>50</width>
+        <height>32</height>
+        <label>186</label>
+        <font>font10</font>
+        <onleft>10</onleft>
+        <align>center</align>
+        <onright>10</onright>
+        <onup>10</onup>
+        <ondown>10</ondown>
+      </control>
 
-  </controls>
+    </controls>
 
-</window>
+  </window>
 

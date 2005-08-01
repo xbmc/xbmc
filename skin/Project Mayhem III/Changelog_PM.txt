@@ -1,3 +1,5 @@
+2005-08-01 added:	fading effects to various dialogs
+
 2005-07-30 changed:	format of sounds.xml
 2005-07-30 changed:	info label tags
 

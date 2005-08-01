@@ -36,17 +36,14 @@
       <font>special13</font>
     </control>
 
-
-
     <controlgroup>
-
       <control>
         <description>profiles</description>
         <type>button</type>
         <id>11</id>
         <posX>50</posX>
         <posY>120</posY>
-	<label>13200</label>
+        <label>13200</label>
         <execute>XBMC.ActivateWindow(34)</execute>
         <onleft>8</onleft>
         <onright>6</onright>

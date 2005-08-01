@@ -1,112 +1,113 @@
 <window>
   <id>102</id>
   <defaultcontrol>30</defaultcontrol>
-  <controls>
-    <control>
-      <description>Dialog Background</description>
-      <type>image</type>
-      <id>0</id>
-      <posX>137</posX>
-      <posY>177</posY>
-      <width>425</width>
-      <height>290</height>
-      <texture>dialog-invite.png</texture>
-    </control>
+  <visible fade="10" start="hidden">Window.IsActive(102)</visible>
+    <controls>
+      <control>
+        <description>Dialog Background</description>
+        <type>image</type>
+        <id>0</id>
+        <posX>137</posX>
+        <posY>177</posY>
+        <width>425</width>
+        <height>290</height>
+        <texture>dialog-invite.png</texture>
+      </control>
 
-    <control>
-      <description>Send Invitation Heading</description>
-      <type>label</type>
-      <id>1</id>
-      <posX>190</posX>
-      <posY>191</posY>
-      <label>15054</label>
-      <font>special13</font>
-    </control>
+      <control>
+        <description>Send Invitation Heading</description>
+        <type>label</type>
+        <id>1</id>
+        <posX>190</posX>
+        <posY>191</posY>
+        <label>15054</label>
+        <font>special13</font>
+      </control>
 
-    <control>
-      <description>Choose Game</description>
-      <type>label</type>
-      <id>1</id>
-      <posX>190</posX>
-      <posY>240</posY>
-      <label>15055</label>
-      <font>font12</font>
-    </control>
+      <control>
+        <description>Choose Game</description>
+        <type>label</type>
+        <id>1</id>
+        <posX>190</posX>
+        <posY>240</posY>
+        <label>15055</label>
+        <font>font12</font>
+      </control>
 
-    <control>
-      <description>Games Spin Control</description>
-      <type>spincontrol</type>
-      <id>30</id>
-      <font>font12</font>
-      <posX>215</posX>
-      <posY>275</posY>
-      <align>left</align>
-      <onleft>30</onleft>
-      <onright>30</onright>
-      <onup>10</onup>
-      <ondown>20</ondown>
-    </control>
+      <control>
+        <description>Games Spin Control</description>
+        <type>spincontrol</type>
+        <id>30</id>
+        <font>font12</font>
+        <posX>215</posX>
+        <posY>275</posY>
+        <align>left</align>
+        <onleft>30</onleft>
+        <onright>30</onright>
+        <onup>10</onup>
+        <ondown>20</ondown>
+      </control>
 
-    <control>
-      <description>Enter Message</description>
-      <type>label</type>
-      <id>4</id>
-      <posX>190</posX>
-      <posY>310</posY>
-      <label>15056</label>
-      <font>font12</font>
-    </control>
+      <control>
+        <description>Enter Message</description>
+        <type>label</type>
+        <id>4</id>
+        <posX>190</posX>
+        <posY>310</posY>
+        <label>15056</label>
+        <font>font12</font>
+      </control>
 
-    <control>
-      <description>Message Field</description>
-      <type>button</type>
-      <id>20</id>
-      <posX>190</posX>
-      <posY>340</posY>
-      <width>330</width>
-      <label>15060</label>
-      <font>font12</font>
-      <textureFocus>list-focus.png</textureFocus>
-      <textureNoFocus>list-nofocus.png</textureNoFocus>
-      <onleft>20</onleft>
-      <onright>20</onright>
-      <onup>30</onup>
-      <ondown>10</ondown>
-    </control>
+      <control>
+        <description>Message Field</description>
+        <type>button</type>
+        <id>20</id>
+        <posX>190</posX>
+        <posY>340</posY>
+        <width>330</width>
+        <label>15060</label>
+        <font>font12</font>
+        <textureFocus>list-focus.png</textureFocus>
+        <textureNoFocus>list-nofocus.png</textureNoFocus>
+        <onleft>20</onleft>
+        <onright>20</onright>
+        <onup>30</onup>
+        <ondown>10</ondown>
+      </control>
 
-    <control>
-      <description>Send button</description>
-      <type>button</type>
-      <id>10</id>
-      <posX>360</posX>
-      <posY>385</posY>
-      <width>75</width>
-      <height>35</height>
-      <label>15057</label>
-      <align>center</align>
-      <onleft>10</onleft>
-      <onright>11</onright>
-      <onup>20</onup>
-      <ondown>30</ondown>
-    </control>
+      <control>
+        <description>Send button</description>
+        <type>button</type>
+        <id>10</id>
+        <posX>360</posX>
+        <posY>385</posY>
+        <width>75</width>
+        <height>35</height>
+        <label>15057</label>
+        <align>center</align>
+        <onleft>10</onleft>
+        <onright>11</onright>
+        <onup>20</onup>
+        <ondown>30</ondown>
+      </control>
 
-    <control>
-      <description>Cancel button</description>
-      <type>button</type>
-      <id>11</id>
-      <posX>445</posX>
-      <posY>385</posY>
-      <width>75</width>
-      <height>35</height>
-      <label>222</label>
-      <align>center</align>
-      <onleft>10</onleft>
-      <onright>11</onright>
-      <onup>20</onup>
-      <ondown>30</ondown>
-    </control>
+      <control>
+        <description>Cancel button</description>
+        <type>button</type>
+        <id>11</id>
+        <posX>445</posX>
+        <posY>385</posY>
+        <width>75</width>
+        <height>35</height>
+        <label>222</label>
+        <align>center</align>
+        <onleft>10</onleft>
+        <onright>11</onright>
+        <onup>20</onup>
+        <ondown>30</ondown>
+      </control>
 
-  </controls>
+    </controls>
 
-</window>
+  </window>
 
