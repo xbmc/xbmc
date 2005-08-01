@@ -7,50 +7,51 @@
     <posY>0</posY>
   </coordinates>
 
-  <controls>
-    <control>
-      <description>background top image</description>
-      <type>image</type>
-      <id>997</id>
-      <posX>0</posX>
-      <posY>-30</posY>
-      <width>238</width>
-      <height>30</height>
-      <texture>dialog-context-top.png</texture>
-    </control>
+  <visible fade="10" start="hidden">Window.IsActive(106)</visible>
+    <controls>
+      <control>
+        <description>background top image</description>
+        <type>image</type>
+        <id>997</id>
+        <posX>0</posX>
+        <posY>-30</posY>
+        <width>238</width>
+        <height>30</height>
+        <texture>dialog-context-top.png</texture>
+      </control>
 
-    <control>
-      <description>background image</description>
-      <type>image</type>
-      <id>999</id>
-      <posX>0</posX>
-      <posY>0</posY>
-      <width>238</width>
-      <texture>dialog-context-middle.png</texture>
-    </control>
+      <control>
+        <description>background image</description>
+        <type>image</type>
+        <id>999</id>
+        <posX>0</posX>
+        <posY>0</posY>
+        <width>238</width>
+        <texture>dialog-context-middle.png</texture>
+      </control>
 
-    <control>
-      <description>background bottom image</description>
-      <type>image</type>
-      <id>998</id>
-      <posX>0</posX>
-      <width>238</width>
-      <height>30</height>
-      <texture>dialog-context-bottom.png</texture>
-    </control>
+      <control>
+        <description>background bottom image</description>
+        <type>image</type>
+        <id>998</id>
+        <posX>0</posX>
+        <width>238</width>
+        <height>30</height>
+        <texture>dialog-context-bottom.png</texture>
+      </control>
 
-    <control>
-      <description>button template</description>
-      <type>button</type>
-      <id>1000</id>
-      <posX>22</posX>
-      <posY>15</posY>
-      <width>200</width>
-      <height>30</height>
-      <align>center</align>
-    </control>
+      <control>
+        <description>button template</description>
+        <type>button</type>
+        <id>1000</id>
+        <posX>22</posX>
+        <posY>15</posY>
+        <width>200</width>
+        <height>30</height>
+        <align>center</align>
+      </control>
 
-  </controls>
+    </controls>
 
-</window>
+  </window>
 

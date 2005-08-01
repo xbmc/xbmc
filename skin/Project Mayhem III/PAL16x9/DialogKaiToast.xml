@@ -7,64 +7,65 @@
     <posY>480</posY>
   </coordinates>
 
-  <controls>
-    <control>
-      <description>Popup Kai Toast Dialog Background</description>
-      <type>image</type>
-      <id>1</id>
-      <posX>0</posX>
-      <posY>0</posY>
-      <width>245</width>
-      <height>75</height>
-      <texture>voulume-panel-bg.png</texture>
-    </control>
+  <visible fade="20" start="hidden">Window.IsActive(107)</visible>
+    <controls>
+      <control>
+        <description>Popup Kai Toast Dialog Background</description>
+        <type>image</type>
+        <id>1</id>
+        <posX>0</posX>
+        <posY>0</posY>
+        <width>245</width>
+        <height>75</height>
+        <texture>voulume-panel-bg.png</texture>
+      </control>
 
-    <control>
-      <description>avatar</description>
-      <type>image</type>
-      <id>400</id>
-      <posX>29</posX>
-      <posY>15</posY>
-      <width>30</width>
-      <height>40</height>
-      <texture>infoicon.png</texture>
-    </control>
+      <control>
+        <description>avatar</description>
+        <type>image</type>
+        <id>400</id>
+        <posX>29</posX>
+        <posY>15</posY>
+        <width>30</width>
+        <height>40</height>
+        <texture>infoicon.png</texture>
+      </control>
 
-    <control>
-      <description>Caption Label</description>
-      <type>button</type>
-      <id>401</id>
-      <posX>66</posX>
-      <posY>17</posY>
-      <font>font12</font>
-      <align>center</align>
-      <label>ChokeManiac</label>
-      <textureFocus>-</textureFocus>
-      <textureNoFocus>-</textureNoFocus>
-      <width>160</width>
-      <height>20</height>
-    </control>
+      <control>
+        <description>Caption Label</description>
+        <type>button</type>
+        <id>401</id>
+        <posX>66</posX>
+        <posY>17</posY>
+        <font>font12</font>
+        <align>center</align>
+        <label>ChokeManiac</label>
+        <textureFocus>-</textureFocus>
+        <textureNoFocus>-</textureNoFocus>
+        <width>160</width>
+        <height>20</height>
+      </control>
 
-    <control>
-      <description>Description Button</description>
-      <type>button</type>
-      <id>402</id>
-      <posX>66</posX>
-      <posY>29</posY>
-      <width>160</width>
-      <height>32</height>
-      <textureFocus>-</textureFocus>
-      <textureNoFocus>-</textureNoFocus>
-      <label>has just signed in</label>
-      <font>font10</font>
-      <onleft>402</onleft>
-      <align>center</align>
-      <onright>402</onright>
-      <onup>402</onup>
-      <ondown>402</ondown>
-    </control>
+      <control>
+        <description>Description Button</description>
+        <type>button</type>
+        <id>402</id>
+        <posX>66</posX>
+        <posY>29</posY>
+        <width>160</width>
+        <height>32</height>
+        <textureFocus>-</textureFocus>
+        <textureNoFocus>-</textureNoFocus>
+        <label>has just signed in</label>
+        <font>font10</font>
+        <onleft>402</onleft>
+        <align>center</align>
+        <onright>402</onright>
+        <onup>402</onup>
+        <ondown>402</ondown>
+      </control>
 
-  </controls>
+    </controls>
 
-</window>
+  </window>
 

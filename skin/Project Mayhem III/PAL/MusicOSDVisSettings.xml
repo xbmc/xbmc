@@ -1,143 +1,145 @@
 <window>
   <id>121</id>
   <defaultcontrol>2</defaultcontrol>
-  <coordinates>
-    <system>1</system>
-    <posX>250</posX>
-    <posY>116</posY>
-  </coordinates>
-  <controls>
-    <control>
-      <description>background image</description>
-      <type>image</type>
-      <id>1</id>
-      <posX>0</posX>
-      <posY>25</posY>
-      <width>420</width>
-      <height>326</height>
-      <texture>osd_menu_bg.png</texture>
-    </control>
+  <visible fade="10" start="hidden">Window.IsActive(121)</visible>
+    <coordinates>
+      <system>1</system>
+      <posX>250</posX>
+      <posY>116</posY>
+    </coordinates>
 
-    <control>
-      <description>background image</description>
-      <type>image</type>
-      <id>0</id>
-      <posX>0</posX>
-      <posY>-5</posY>
-      <width>420</width>
-      <height>31</height>
-      <texture>osd_settings_header.png</texture>
-    </control>
+    <controls>
+      <control>
+        <description>background image</description>
+        <type>image</type>
+        <id>1</id>
+        <posX>0</posX>
+        <posY>25</posY>
+        <width>420</width>
+        <height>326</height>
+        <texture>osd_menu_bg.png</texture>
+      </control>
 
-    <control>
-      <description>Settings Label</description>
-      <type>label</type>
-      <id>2</id>
-      <posX>0</posX>
-      <posY>2</posY>
-      <width>420</width>
-      <align>center</align>
-      <font>font12</font>
-    </control>
+      <control>
+        <description>background image</description>
+        <type>image</type>
+        <id>0</id>
+        <posX>0</posX>
+        <posY>-5</posY>
+        <width>420</width>
+        <height>31</height>
+        <texture>osd_settings_header.png</texture>
+      </control>
 
-    <control>
-      <description>No Settings Label</description>
-      <type>label</type>
-      <id>3</id>
-      <posX>0</posX>
-      <posY>170</posY>
-      <width>420</width>
-      <align>center</align>
-      <label>13390</label>
-    </control>
+      <control>
+        <description>Settings Label</description>
+        <type>label</type>
+        <id>2</id>
+        <posX>0</posX>
+        <posY>2</posY>
+        <width>420</width>
+        <align>center</align>
+        <font>font12</font>
+      </control>
 
-    <control>
-      <description>Next page button</description>
-      <type>spincontrol</type>
-      <id>60</id>
-      <posX>335</posX>
-      <posY>320</posY>
-      <subtype>int</subtype>
-      <font>font13</font>
-      <onleft>60</onleft>
-      <onright>60</onright>
-      <ondown>2</ondown>
-    </control>
+      <control>
+        <description>No Settings Label</description>
+        <type>label</type>
+        <id>3</id>
+        <posX>0</posX>
+        <posY>170</posY>
+        <width>420</width>
+        <align>center</align>
+        <label>13390</label>
+      </control>
 
-    <control>
-      <description>control area</description>
-      <type>image</type>
-      <id>5</id>
-      <posX>5</posX>
-      <posY>30</posY>
-      <width>408</width>
-      <height>290</height>
-      <texture>-</texture>
-    </control>
+      <control>
+        <description>Next page button</description>
+        <type>spincontrol</type>
+        <id>60</id>
+        <posX>335</posX>
+        <posY>320</posY>
+        <subtype>int</subtype>
+        <font>font13</font>
+        <onleft>60</onleft>
+        <onright>60</onright>
+        <ondown>2</ondown>
+      </control>
 
-    <control>
-      <description>control gap</description>
-      <type>image</type>
-      <id>6</id>
-      <width>350</width>
-      <height>33</height>
-      <texture>-</texture>
-    </control>
+      <control>
+        <description>control area</description>
+        <type>image</type>
+        <id>5</id>
+        <posX>5</posX>
+        <posY>30</posY>
+        <width>408</width>
+        <height>290</height>
+        <texture>-</texture>
+      </control>
 
-    <control>
-      <description>Default Button</description>
-      <type>button</type>
-      <id>7</id>
-      <posX>530</posX>
-      <posY>150</posY>
-      <height>31</height>
-      <font>font12</font>
-      <textOffsetX>12</textOffsetX>
-      <alignY>center</alignY>
-      <textureFocus>list-focus.png</textureFocus>
-      <textureNoFocus>-</textureNoFocus>
-    </control>
+      <control>
+        <description>control gap</description>
+        <type>image</type>
+        <id>6</id>
+        <width>350</width>
+        <height>33</height>
+        <texture>-</texture>
+      </control>
 
-    <control>
-      <description>Default RadioButton</description>
-      <type>radiobutton</type>
-      <id>8</id>
-      <posX>530</posX>
-      <posY>150</posY>
-      <height>31</height>
-      <font>font12</font>
-      <textureFocus>list-focus.png</textureFocus>
-      <textureNoFocus>-</textureNoFocus>
-      <textOffsetX>12</textOffsetX>
-      <alignY>center</alignY>
-      <textureRadioFocus>settings-check-box.png</textureRadioFocus>
-      <textureRadioNoFocus>settings-check-boxNF.png</textureRadioNoFocus>
-    </control>
+      <control>
+        <description>Default Button</description>
+        <type>button</type>
+        <id>7</id>
+        <posX>530</posX>
+        <posY>150</posY>
+        <height>31</height>
+        <font>font12</font>
+        <textOffsetX>12</textOffsetX>
+        <alignY>center</alignY>
+        <textureFocus>list-focus.png</textureFocus>
+        <textureNoFocus>-</textureNoFocus>
+      </control>
 
-    <control>
-      <description>Default SpinControlex</description>
-      <type>spincontrolex</type>
-      <id>9</id>
-      <posX>530</posX>
-      <posY>150</posY>
-      <height>31</height>
-      <width>300</width>
-      <textureFocus>list-focus.png</textureFocus>
-      <textureNoFocus>-</textureNoFocus>
-      <textureUp>scroll-up.png</textureUp>
-      <textureDown>scroll-down.png</textureDown>
-      <textureUpFocus>scroll-up-focus.png</textureUpFocus>
-      <textureDownFocus>scroll-down-focus.png</textureDownFocus>
-      <font>font12</font>
-      <textcolor>ffffffff</textcolor>
-      <colordiffuse>ffffffff</colordiffuse>
-      <disabledcolor>60d0d0d0</disabledcolor>
-      <textOffsetX>12</textOffsetX>
-      <alignY>center</alignY>
-      <reverse>yes</reverse>
-    </control>
+      <control>
+        <description>Default RadioButton</description>
+        <type>radiobutton</type>
+        <id>8</id>
+        <posX>530</posX>
+        <posY>150</posY>
+        <height>31</height>
+        <font>font12</font>
+        <textureFocus>list-focus.png</textureFocus>
+        <textureNoFocus>-</textureNoFocus>
+        <textOffsetX>12</textOffsetX>
+        <alignY>center</alignY>
+        <textureRadioFocus>settings-check-box.png</textureRadioFocus>
+        <textureRadioNoFocus>settings-check-boxNF.png</textureRadioNoFocus>
+      </control>
 
-  </controls>
+      <control>
+        <description>Default SpinControlex</description>
+        <type>spincontrolex</type>
+        <id>9</id>
+        <posX>530</posX>
+        <posY>150</posY>
+        <height>31</height>
+        <width>300</width>
+        <textureFocus>list-focus.png</textureFocus>
+        <textureNoFocus>-</textureNoFocus>
+        <textureUp>scroll-up.png</textureUp>
+        <textureDown>scroll-down.png</textureDown>
+        <textureUpFocus>scroll-up-focus.png</textureUpFocus>
+        <textureDownFocus>scroll-down-focus.png</textureDownFocus>
+        <font>font12</font>
+        <textcolor>ffffffff</textcolor>
+        <colordiffuse>ffffffff</colordiffuse>
+        <disabledcolor>60d0d0d0</disabledcolor>
+        <textOffsetX>12</textOffsetX>
+        <alignY>center</alignY>
+        <reverse>yes</reverse>
+      </control>
 
-</window>
+    </controls>
+
+  </window>
 
