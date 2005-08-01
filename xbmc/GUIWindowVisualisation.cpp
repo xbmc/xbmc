@@ -57,8 +57,7 @@ bool CGUIWindowVisualisation::OnAction(const CAction &action)
       if (!m_bShowPreset)
       {
         m_dwLockedTimer = START_FADE_LENGTH;
-        FadeControls(CONTROL_PRESET_LABEL, true, 15);
-        SET_CONTROL_FADE_IN(CONTROL_LOCKED_IMAGE, 15);
+        g_infoManager.SetShowCodec(true);
       }
     }
     break;
@@ -66,16 +65,7 @@ bool CGUIWindowVisualisation::OnAction(const CAction &action)
     {
       if (!m_dwLockedTimer || m_bShowPreset)
         m_bShowPreset = !m_bShowPreset;
-      if (m_bShowPreset)
-      {
-        FadeControls(CONTROL_PRESET_LABEL, true, 15);
-        SET_CONTROL_FADE_IN(CONTROL_LOCKED_IMAGE, 15);
-      }
-      else
-      {
-        FadeControls(CONTROL_PRESET_LABEL, false, 15);
-        SET_CONTROL_FADE_OUT(CONTROL_LOCKED_IMAGE, 15);
-      }
+      g_infoManager.SetShowCodec(m_bShowPreset);
       return true;
     }
     break;
@@ -140,6 +130,8 @@ bool CGUIWindowVisualisation::OnMessage(CGUIMessage& message)
         return true;
       }
 
+      // hide or show the preset button(s)
+      g_infoManager.SetShowCodec(m_bShowPreset);
       CGUIWindow::OnMessage(message);
       m_tag = g_infoManager.GetCurrentSongTag();
       if (g_stSettings.m_bMyMusicSongThumbInVis)
@@ -155,9 +147,6 @@ bool CGUIWindowVisualisation::OnMessage(CGUIMessage& message)
         m_dwInitTimer = START_FADE_LENGTH;
         FadeControls(1, true, 0);
       }
-      // hide or show the preset button(s)
-      FadeControls(CONTROL_PRESET_LABEL, m_bShowPreset, 0);
-      FadeControls(CONTROL_LOCKED_IMAGE, m_bShowPreset, 0);
       return true;
     }
   }
@@ -208,10 +197,7 @@ void CGUIWindowVisualisation::Render()
   {
     m_dwLockedTimer--;
     if (!m_dwLockedTimer && !m_bShowPreset)
-    { // fade out again
-      FadeControls(CONTROL_PRESET_LABEL, false, 15);
-      SET_CONTROL_FADE_OUT(CONTROL_LOCKED_IMAGE, 15);
-    }
+      g_infoManager.SetShowCodec(false);
   }
   CGUIWindow::Render();
 }

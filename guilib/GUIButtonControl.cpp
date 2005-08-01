@@ -39,7 +39,7 @@ void CGUIButtonControl::SetDisabledColor(D3DCOLOR color)
 
 void CGUIButtonControl::Render()
 {
-  if (!UpdateVisibility())
+  if (!UpdateFadeState())
   {
     return ;
   }

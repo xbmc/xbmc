@@ -7,7 +7,7 @@
 #include "TextureManager.h"
 #include "GUILabelControl.h"
 #include "GUIFontManager.h"
-
+#include "utils/GUIInfoManager.h"
 
 #define MAX_RENDER_METHODS 9
 #define MAX_ZOOM_FACTOR    10
@@ -111,7 +111,7 @@ bool CGUIWindowSlideShow::IsPlaying() const
 
 void CGUIWindowSlideShow::Reset()
 {
-  m_bShowInfo = false;
+  g_infoManager.SetShowCodec(false);
   m_bSlideShow = false;
   m_bPause = false;
   m_bErrorMessage = false;
@@ -389,48 +389,30 @@ void CGUIWindowSlideShow::Render()
 
   RenderPause();
 
-  if ( m_bShowInfo )
+  CStdString strSlideInfo;
+  if (m_Image[m_iCurrentPic].IsLoaded())
   {
-    CStdString strSlideInfo;
-    if (m_Image[m_iCurrentPic].IsLoaded())
-    {
-      CStdString strFileInfo;
-      CStdString strFile;
-      strFile = CUtil::GetFileName(m_vecSlides[m_iCurrentSlide]);
-      strFileInfo.Format("%ix%i %s", m_Image[m_iCurrentPic].GetOriginalWidth(), m_Image[m_iCurrentPic].GetOriginalHeight(), strFile.c_str());
-      CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_ROW1);
-      msg.SetLabel(strFileInfo);
-      OnMessage(msg);
-    }
-    strSlideInfo.Format("%i/%i", m_iCurrentSlide + 1 , m_vecSlides.size());
-    {
-      CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_ROW2);
-      msg.SetLabel(strSlideInfo);
-      OnMessage(msg);
-    }
-    {
-      CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_ROW2_EXTRA);
-      msg.SetLabel("");
-      OnMessage(msg);
-    }
+    CStdString strFileInfo;
+    CStdString strFile;
+    strFile = CUtil::GetFileName(m_vecSlides[m_iCurrentSlide]);
+    strFileInfo.Format("%ix%i %s", m_Image[m_iCurrentPic].GetOriginalWidth(), m_Image[m_iCurrentPic].GetOriginalHeight(), strFile.c_str());
+    CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_ROW1);
+    msg.SetLabel(strFileInfo);
+    OnMessage(msg);
+  }
+  strSlideInfo.Format("%i/%i", m_iCurrentSlide + 1 , m_vecSlides.size());
+  {
+    CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_ROW2);
+    msg.SetLabel(strSlideInfo);
+    OnMessage(msg);
+  }
+  {
+    CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_ROW2_EXTRA);
+    msg.SetLabel("");
+    OnMessage(msg);
   }
 
   RenderErrorMessage();
-
-  if (m_bShowInfo)
-  {
-    SET_CONTROL_VISIBLE(BAR_IMAGE);
-    SET_CONTROL_VISIBLE(LABEL_ROW1);
-    SET_CONTROL_VISIBLE(LABEL_ROW2);
-    SET_CONTROL_VISIBLE(LABEL_ROW2_EXTRA);
-  }
-  else
-  {
-    SET_CONTROL_HIDDEN(BAR_IMAGE);
-    SET_CONTROL_HIDDEN(LABEL_ROW1);
-    SET_CONTROL_HIDDEN(LABEL_ROW2);
-    SET_CONTROL_HIDDEN(LABEL_ROW2_EXTRA);
-  }
 
   CGUIWindow::Render();
 }
@@ -474,7 +456,7 @@ bool CGUIWindowSlideShow::OnAction(const CAction &action)
     break;
 
   case ACTION_SHOW_INFO:
-    m_bShowInfo = !m_bShowInfo;
+    g_infoManager.SetShowCodec(!g_infoManager.GetBool(PLAYER_SHOWCODEC));
     break;
 
   case ACTION_PAUSE:

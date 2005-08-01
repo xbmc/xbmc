@@ -52,7 +52,7 @@ CGUIListControl::~CGUIListControl(void)
 void CGUIListControl::Render()
 {
   if (!m_pFont) return ;
-  if (!UpdateVisibility()) return ;
+  if (!UpdateFadeState()) return ;
 
   CGUIControl::Render();
 
@@ -272,7 +272,7 @@ void CGUIListControl::RenderText(float fPosX, float fPosY, float fMaxWidth, DWOR
       m_scrollInfo.Reset();
       iLastItem = iItem;
     }
-    m_pFont->DrawScrollingText(fPosX, fPosY, &dwTextColor, scrollString, fMaxWidth, m_scrollInfo);
+    m_pFont->DrawScrollingText(fPosX, fPosY, &dwTextColor, 1, scrollString, fMaxWidth, m_scrollInfo);
     m_pFont->Begin(); // resume fontbatching
   }
 }

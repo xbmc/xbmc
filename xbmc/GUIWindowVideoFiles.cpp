@@ -635,6 +635,18 @@ void CGUIWindowVideoFiles::OnInfo(int iItem)
           break;
         }
       }
+      else
+      { // check for a dvdfolder
+        if (pItem->m_strPath.CompareNoCase("VIDEO_TS"))
+        { // found a dvd folder - grab the main .ifo file
+          CUtil::AddFileToFolder(pItem->m_strPath, "video_ts.ifo", strFile);
+          if (CFile::Exists(strFile))
+          {
+            bFoundFile = true;
+            break;
+          }
+        }
+      }
     }
     if (!bFoundFile)
     {
@@ -746,10 +758,23 @@ void CGUIWindowVideoFiles::OnRetrieveVideoInfo(CFileItemList& items)
               }
             }
           }
+          CStdString strMovieName;
+          if (pItem->IsDVD() || pItem->IsDVDFile())
+          {
+            // find the name by back-drilling to the folder name
+            CStdString strFolder;
+            CUtil::GetDirectory(pItem->m_strPath, strFolder);
+            int video_ts = strFolder.ReverseFind("VIDEO_TS");
+            if (video_ts == strFolder.size() - 8)
+              CUtil::GetDirectory(strFolder, strFolder);
+            strMovieName = CUtil::GetFileName(strFolder);
+          }
+          else
+          {
+            strMovieName = CUtil::GetFileName(pItem->m_strPath);
+            CUtil::RemoveExtension(strMovieName);
+          }
           // do IMDB lookup...
-          CStdString strMovieName = CUtil::GetFileName(pItem->m_strPath);
-          CUtil::RemoveExtension(strMovieName);
-
           if (m_dlgProgress)
           {
             m_dlgProgress->SetHeading(197);

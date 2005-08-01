@@ -33,7 +33,7 @@ void CGUIFadeLabelControl::SetLabel(const vector<wstring> &vecLabel)
 
 void CGUIFadeLabelControl::Render()
 {
-	if (!UpdateVisibility())
+	if (!UpdateFadeState())
 	{
 		return ;
 	}
@@ -167,7 +167,7 @@ void CGUIFadeLabelControl::RenderText(float fPosX, float fPosY, float fMaxWidth,
     width += spacewidth;
   }
 
-  m_pFont->DrawScrollingText(fPosX, fPosY, &m_dwTextColor, wszOrgText, fMaxWidth, m_scrollInfo);
+  m_pFont->DrawScrollingText(fPosX, fPosY, &m_dwTextColor, 1, wszOrgText, fMaxWidth, m_scrollInfo);
 }
 
 void CGUIFadeLabelControl::SetAlpha(DWORD dwAlpha)
