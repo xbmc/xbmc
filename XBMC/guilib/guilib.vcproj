@@ -345,6 +345,9 @@
 				RelativePath=".\GUISelectButtonControl.cpp">
 			</File>
 			<File
+				RelativePath=".\GUISettingsSliderControl.cpp">
+			</File>
+			<File
 				RelativePath=".\GUISliderControl.cpp">
 			</File>
 			<File
@@ -519,6 +522,9 @@
 			</File>
 			<File
 				RelativePath=".\GUISelectButtonControl.h">
+			</File>
+			<File
+				RelativePath=".\GUISettingsSliderControl.h">
 			</File>
 			<File
 				RelativePath=".\GUISliderControl.h">

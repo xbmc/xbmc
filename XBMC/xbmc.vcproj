@@ -957,6 +957,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\GUIDialogSubMenu.cpp">
 				</File>
 				<File
+					RelativePath=".\xbmc\GUIDialogVideoSettings.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\GUIDialogVideoSettings.h">
+				</File>
+				<File
 					RelativePath=".\xbmc\GUIDialogVisualisationPresetList.cpp">
 				</File>
 				<File

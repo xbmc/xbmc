@@ -95,6 +95,7 @@ CGUIWindowOSD::CGUIWindowOSD(void)
   m_iActiveMenu = 0;
   m_iActiveMenuButtonID = 0;
   m_iCurrentBookmark = 0;
+  m_loadOnDemand = false;
 }
 
 CGUIWindowOSD::~CGUIWindowOSD(void)
@@ -198,6 +199,9 @@ bool CGUIWindowOSD::OnMessage(CGUIMessage& message)
       // don't save the settings here, it's bad for the hd-spindown feature (causes spinup)
       // settings are saved in FreeResources in GUIWindowFullScreen
       //g_settings.Save();
+      // Remove our subdialogs if visible
+      CGUIDialog *pDialog = (CGUIDialog *)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_OSD_SETTINGS);
+      if (pDialog && pDialog->IsRunning()) pDialog->Close();
       return true;
     }
     break;
@@ -205,6 +209,7 @@ bool CGUIWindowOSD::OnMessage(CGUIMessage& message)
   case GUI_MSG_WINDOW_INIT:  // fired when OSD is shown
     {
       OutputDebugString("OSD:INIT\n");
+      CGUIDialog::OnMessage(message);
       //if (g_application.m_pPlayer) g_application.m_pPlayer->ShowOSD(false);
       // position correctly
       int iResolution = g_graphicsContext.GetVideoResolution();

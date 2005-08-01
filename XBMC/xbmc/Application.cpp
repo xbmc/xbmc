@@ -98,6 +98,7 @@
 #include "GUIDialogMusicOSD.h"
 #include "GUIDialogVisualisationSettings.h"
 #include "GUIDialogVisualisationPresetList.h"
+#include "GUIDialogVideoSettings.h"
 #include "GUIWindowOSD.h"
 #include "GUIWindowScriptsInfo.h"
 
@@ -523,7 +524,7 @@ void CApplication::FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetw
       m_pFileZilla->Start();
 
       // Default settings
-      m_pFileZilla->mSettings.SetMaxUsers(1);
+      m_pFileZilla->mSettings.SetMaxUsers(2);
       m_pFileZilla->mSettings.SetWelcomeMessage("XBMC emergency recovery console FTP.");
 
       // default user
@@ -1099,6 +1100,7 @@ HRESULT CApplication::Initialize()
   m_gWindowManager.Add(new CGUIDialogMusicOSD);           // window id = 120
   m_gWindowManager.Add(new CGUIDialogVisualisationSettings);     // window id = 121
   m_gWindowManager.Add(new CGUIDialogVisualisationPresetList);   // window id = 122
+  m_gWindowManager.Add(new CGUIDialogVideoSettings);      // window id = 123
 
   m_gWindowManager.Add(new CGUIWindowMusicPlayList);          // window id = 500
   m_gWindowManager.Add(new CGUIWindowMusicSongs);             // window id = 501
@@ -1479,13 +1481,13 @@ void CApplication::LoadSkin(const CStdString& strSkin)
   CLog::DebugLog("Load Skin XML: %.2fms", 1000.f * (end.QuadPart - start.QuadPart) / freq.QuadPart);
 
   CLog::Log(LOGINFO, "  initialize new skin...");
-  m_guiPointer.AllocResources();
-  m_guiMusicOverlay.AllocResources();
-  m_guiVideoOverlay.AllocResources();
-  m_guiDialogVolumeBar.AllocResources();
-  m_guiDialogSeekBar.AllocResources();
-  m_guiDialogKaiToast.AllocResources();
-  m_guiDialogMuteBug.AllocResources();
+  m_guiPointer.AllocResources(true);
+  m_guiMusicOverlay.AllocResources(true);
+  m_guiVideoOverlay.AllocResources(true);
+  m_guiDialogVolumeBar.AllocResources(true);
+  m_guiDialogSeekBar.AllocResources(true);
+  m_guiDialogKaiToast.AllocResources(true);
+  m_guiDialogMuteBug.AllocResources(true);
   m_gWindowManager.AddMsgTarget(this);
   m_gWindowManager.AddMsgTarget(&g_playlistPlayer);
   m_gWindowManager.SetCallback(*this);
@@ -1506,22 +1508,22 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 
 void CApplication::UnloadSkin()
 {
-  m_guiVideoOverlay.FreeResources();
+  m_guiVideoOverlay.FreeResources(true);
   m_guiVideoOverlay.ClearAll();
 
-  m_guiMusicOverlay.FreeResources();
+  m_guiMusicOverlay.FreeResources(true);
   m_guiMusicOverlay.ClearAll();
 
-  m_guiDialogVolumeBar.FreeResources();
+  m_guiDialogVolumeBar.FreeResources(true);
   m_guiDialogVolumeBar.ClearAll();
-  m_guiDialogSeekBar.FreeResources();
+  m_guiDialogSeekBar.FreeResources(true);
   m_guiDialogSeekBar.ClearAll();
-  m_guiDialogKaiToast.FreeResources();
+  m_guiDialogKaiToast.FreeResources(true);
   m_guiDialogKaiToast.ClearAll();
-  m_guiDialogMuteBug.FreeResources();
+  m_guiDialogMuteBug.FreeResources(true);
   m_guiDialogMuteBug.ClearAll();
 
-  m_guiPointer.FreeResources();
+  m_guiPointer.FreeResources(true);
   m_guiPointer.ClearAll();
 
   CGUIWindow::FlushReferenceCache(); // flush the cache
@@ -1670,11 +1672,9 @@ void CApplication::Render()
   // dont show GUI when playing full screen video
   if (m_gWindowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO)
   {
+    m_guiVideoOverlay.Close(true);
     if ( g_graphicsContext.IsFullScreenVideo() )
     {
-      g_graphicsContext.Lock();
-      g_graphicsContext.Unlock();
-
       if (m_pPlayer)
       {
         if (m_pPlayer->IsPaused())
@@ -1745,13 +1745,25 @@ void CApplication::Render()
     if ( IsPlayingVideo() && m_gWindowManager.GetActiveWindow() != WINDOW_FULLSCREEN_VIDEO)
     {
       // then show video overlay window
-      m_guiVideoOverlay.Render();
+      m_guiVideoOverlay.Show(m_gWindowManager.GetActiveWindow());
+      m_guiMusicOverlay.Close(true);
     }
     else if ( IsPlayingAudio() )
     {
       // audio show audio overlay window
-      m_guiMusicOverlay.Render();
+      m_guiMusicOverlay.Show(m_gWindowManager.GetActiveWindow());
+      m_guiVideoOverlay.Close(true);
     }
+    else
+    {
+      m_guiMusicOverlay.Close(true);
+      m_guiVideoOverlay.Close(true);
+    }
+  }
+  else
+  {
+    m_guiMusicOverlay.Close(true);
+    m_guiVideoOverlay.Close(true);
   }
   // Now render any dialogs
   m_gWindowManager.RenderDialogs();
@@ -1772,8 +1784,10 @@ void CApplication::Render()
       g_TextureManager.Flush();
     }
 
-    // reset image scaling
+    // reset image scaling and fade states
     g_graphicsContext.SetScalingResolution(g_graphicsContext.GetVideoResolution(), 0, 0, false);
+    g_graphicsContext.SetWindowAlpha(255);
+    g_graphicsContext.SetControlAlpha(255);
 
     // If we have the remote codes enabled, then show them
     if (g_stSettings.m_bDisplayRemoteCodes)
@@ -3150,7 +3164,7 @@ bool CApplication::ResetScreenSaverWindow()
     }
     else if (iWin == WINDOW_VISUALISATION && g_guiSettings.GetBool("ScreenSaver.UseMusicVisInstead"))
     {
-      return true;    // don't need to do anything - just stay in vis mode
+      return false;    // don't need to do anything - just stay in vis mode
     }
     // Fade to dim or black screensaver is active
     // fade in

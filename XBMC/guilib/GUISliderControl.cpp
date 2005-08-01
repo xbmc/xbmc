@@ -31,11 +31,10 @@ CGUISliderControl::~CGUISliderControl(void)
 
 void CGUISliderControl::Render()
 {
-  WCHAR strValue[128];
   CGUIFont* pFont13 = g_fontManager.GetFont("font13");
   float fRange, fPos, fPercent;
 
-  if (!UpdateVisibility()) return ;
+  if (!UpdateFadeState()) return ;
   if (IsDisabled()) return ;
 
   switch (m_iType)
@@ -43,9 +42,10 @@ void CGUISliderControl::Render()
   case SPIN_CONTROL_TYPE_FLOAT:
     if(m_iInfoCode) m_fValue = (float)g_infoManager.GetInt(m_iInfoCode);
 
-    swprintf(strValue, L"%2.2f", m_fValue);
-    if (pFont13)
+    if (m_renderText && pFont13)
     {
+      WCHAR strValue[128];
+      swprintf(strValue, L"%2.2f", m_fValue);
       pFont13->DrawShadowText( (float)m_iPosX, (float)m_iPosY, 0xffffffff,
                                strValue, 0,
                                0,
@@ -64,9 +64,10 @@ void CGUISliderControl::Render()
   case SPIN_CONTROL_TYPE_INT:
     if(m_iInfoCode) m_iValue = g_infoManager.GetInt(m_iInfoCode);
 
-    swprintf(strValue, L"%i/%i", m_iValue, m_iEnd);
-    if (pFont13)
+    if (m_renderText && pFont13)
     {
+      WCHAR strValue[128];
+      swprintf(strValue, L"%i/%i", m_iValue, m_iEnd);
       pFont13->DrawShadowText( (float)m_iPosX, (float)m_iPosY, 0xffffffff,
                                strValue, 0,
                                0,
@@ -372,4 +373,16 @@ void CGUISliderControl::OnMouseWheel()
 void CGUISliderControl::SetInfo(int iInfo)
 {
   m_iInfoCode = iInfo;
+}
+
+CStdString CGUISliderControl::GetDescription() const
+{
+  CStdString description;
+  if (m_iType == SPIN_CONTROL_TYPE_FLOAT)
+    description.Format("%2.2f", m_fValue);
+  else if (m_iType == SPIN_CONTROL_TYPE_INT)
+    description.Format("%i", m_iValue);
+  else
+    description.Format("%i%%", m_iPercent);
+  return description;
 }

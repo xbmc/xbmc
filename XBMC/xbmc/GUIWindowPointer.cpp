@@ -8,6 +8,7 @@ CGUIWindowPointer::CGUIWindowPointer(void)
     : CGUIWindow(105, "Pointer.xml")
 {
   m_dwPointer = 0;
+  m_loadOnDemand = false;
 }
 
 CGUIWindowPointer::~CGUIWindowPointer(void)

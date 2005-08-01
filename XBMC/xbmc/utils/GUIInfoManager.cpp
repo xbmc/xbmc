@@ -55,6 +55,7 @@ extern char g_szTitleIP[32];
 #define PLAYER_TIME                  27  
 #define PLAYER_TIME_REMAINING        28
 #define PLAYER_DURATION              29
+//#define PLAYER_SHOWCODEC             30
 
 #define WEATHER_CONDITIONS          100
 #define WEATHER_TEMPERATURE         101
@@ -73,9 +74,10 @@ extern char g_szTitleIP[32];
 #define SYSTEM_BUILD_VERSION        120
 #define SYSTEM_BUILD_DATE           121
 #define SYSTEM_ETHERNET_LINK_ACTIVE 122
-#define SYSTEM_IDLE_TIME            123
-#define SYSTEM_FPS                  124
-#define SYSTEM_KAI_CONNECTED        125
+#define SYSTEM_FPS                  123
+#define SYSTEM_KAI_CONNECTED        124
+#define SYSTEM_ALWAYS_TRUE          125   // useful for <visible fade="10" start="hidden">true</visible>, to fade in a control
+#define SYSTEM_ALWAYS_FALSE         126   // used for <visible fade="10">false</visible>, to fade out a control (ie not particularly useful!)
 
 #define NETWORK_IP_ADDRESS          190
 
@@ -123,6 +125,9 @@ extern char g_szTitleIP[32];
 #define WINDOW_ACTIVE_START         WINDOW_HOME
 #define WINDOW_ACTIVE_END           WINDOW_PYTHON_END
 
+#define SYSTEM_IDLE_TIME_START      20000
+#define SYSTEM_IDLE_TIME_FINISH     21000 // 1000 seconds
+
 #define COMBINED_VALUES_START        100000
 
 CGUIInfoManager g_infoManager;
@@ -143,7 +148,6 @@ CGUIInfoManager::CGUIInfoManager(void)
   m_AfterSeekTimeout = 0;
   m_playerSeeking = false;
   m_performingSeek = false;
-  i_Timer = 0;
 }
 
 CGUIInfoManager::~CGUIInfoManager(void)
@@ -191,7 +195,9 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     strTest.Delete(0, 1);
 
   // check playing conditions...
-  if (strTest.Equals("player.hasmedia")) ret = PLAYER_HAS_MEDIA;
+  if (strTest.Equals("false")) ret = SYSTEM_ALWAYS_FALSE;
+  else if (strTest.Equals("true")) ret = SYSTEM_ALWAYS_TRUE;
+  else if (strTest.Equals("player.hasmedia")) ret = PLAYER_HAS_MEDIA;
   else if (strTest.Equals("player.hasaudio")) ret = PLAYER_HAS_AUDIO;
   else if (strTest.Equals("player.hasvideo")) ret = PLAYER_HAS_VIDEO;
   else if (strTest.Equals("player.playing")) ret = PLAYER_PLAYING;
@@ -217,6 +223,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
   else if (strTest.Equals("player.progress")) ret = PLAYER_PROGRESS;
   else if (strTest.Equals("player.seeking")) ret = PLAYER_SEEKING;
   else if (strTest.Equals("player.showtime")) ret = PLAYER_SHOWTIME;
+  else if (strTest.Equals("player.showcodec")) ret = PLAYER_SHOWCODEC;
   else if (strTest.Equals("player.time")) ret = PLAYER_TIME;
   else if (strTest.Equals("player.timeremaining")) ret = PLAYER_TIME_REMAINING;
   else if (strTest.Equals("player.duration")) ret = PLAYER_DURATION;
@@ -283,9 +290,11 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
   }
   else if (strTest.Left(16).Equals("system.idletime("))
   {
-    int iTemp = atoi((strTest.Mid(16, strTest.GetLength() - 17).c_str()));
-    if (iTemp != 0) i_Timer = iTemp ;
-    ret = SYSTEM_IDLE_TIME;
+    int time = atoi((strTest.Mid(16, strTest.GetLength() - 17).c_str()));
+    if (time > SYSTEM_IDLE_TIME_FINISH - SYSTEM_IDLE_TIME_START)
+      time = SYSTEM_IDLE_TIME_FINISH - SYSTEM_IDLE_TIME_START;
+    if (time > 0)
+      ret = SYSTEM_IDLE_TIME_START + time;
   }
   return bNegate ? -ret : ret;
 }
@@ -467,14 +476,20 @@ bool CGUIInfoManager::GetBool(int condition1) const
   // GeminiServer: Ethernet Link state checking
   // Will check if the Xbox has a Ethernet Link connection! [Cable in!]
   // This can used for the skinner to switch off Network or Inter required functions
-  if( condition == SYSTEM_ETHERNET_LINK_ACTIVE)
+  if ( condition == SYSTEM_ALWAYS_TRUE)
+    bReturn = true;
+  else if (condition == SYSTEM_ALWAYS_FALSE)
+    bReturn = false;
+  else if (condition == SYSTEM_ETHERNET_LINK_ACTIVE)
     bReturn = (XNetGetEthernetLinkStatus() & XNET_ETHERNET_LINK_ACTIVE);
-  else if( condition == SYSTEM_IDLE_TIME)  // GeminiServer: SYSTEM IDLE Timer
-    bReturn = (g_application.GlobalIdleTime() >= i_Timer);
+  else if (condition > SYSTEM_IDLE_TIME_START && condition <= SYSTEM_IDLE_TIME_FINISH)
+    bReturn = (g_application.GlobalIdleTime() >= condition - SYSTEM_IDLE_TIME_START);
   else if (condition >= WINDOW_ACTIVE_START && condition <= WINDOW_ACTIVE_END)// check for Window.IsActive(window)
     bReturn = m_gWindowManager.IsWindowActive(condition);
   else if (condition == SYSTEM_KAI_CONNECTED)
     bReturn = CKaiClient::GetInstance()->IsEngineConnected();
+  else if (condition == PLAYER_SHOWCODEC)
+    bReturn = m_playerShowCodec;
   else if (g_application.IsPlaying())
   {
     switch (condition)

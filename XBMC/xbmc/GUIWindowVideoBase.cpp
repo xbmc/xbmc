@@ -1128,12 +1128,17 @@ void CGUIWindowVideoBase::GetStackedFiles(const CStdString &strFilePath, vector<
   for (int i = 0; i < (int)items.Size(); ++i)
   {
     CFileItem *pItemTmp = items[i];
+    bool stackFile = false;
     if (!pItemTmp->IsNFO() && !pItemTmp->IsPlayList() && pItemTmp->IsVideo())
     {
       CStdString fileNameTemp = CUtil::GetFileName(pItemTmp->m_strPath);
-      bool stackFile = false;
 
-      if (strFileName.Equals(fileNameTemp))
+/*      if (pItemTmp->IsDVDFile())
+      {
+        CFileItem item(strFilePath, true);
+        stackFile = item.IsDVDFile();
+      }
+      else*/ if (strFileName.Equals(fileNameTemp))
       {
         stackFile = true;
       }
@@ -1159,7 +1164,6 @@ void CGUIWindowVideoBase::GetStackedFiles(const CStdString &strFilePath, vector<
           }
         }
       }
-
       if (stackFile)
       {
         movies.push_back(pItemTmp->m_strPath);

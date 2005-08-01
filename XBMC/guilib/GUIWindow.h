@@ -90,8 +90,12 @@ public:
   void SetCoordsRes(RESOLUTION res) { m_coordsRes = res; };
   RESOLUTION GetCoordsRes() const { return m_coordsRes; };
   int GetVisibleCondition() const { return m_visibleCondition; };
+  int GetVisibleFadeTime() const { return m_visibleFadeTime; };
   void SetXMLFile(const CStdString &xmlFile) { m_xmlFile = xmlFile; };
   void LoadOnDemand(bool loadOnDemand) { m_loadOnDemand = loadOnDemand; };
+  void SetAlpha(DWORD alpha) { m_alpha = alpha; };
+  int GetRenderOrder() { return m_renderOrder; };
+  FADE_STATE GetFadeState() { return m_fadeState; };
 
 protected:
   virtual void OnWindowUnload() {}
@@ -134,10 +138,17 @@ protected:
   bool m_WindowAllocated;
   RESOLUTION m_coordsRes; // resolution that the window coordinates are in.
   bool m_needsScaling;
-  int m_visibleCondition;
   CStdString m_xmlFile;  // xml file to load
   bool m_windowLoaded;  // true if the window's xml file has been loaded
   bool m_loadOnDemand;  // true if the window should be loaded only as needed
+  int m_visibleCondition;
+
+  int m_visibleFadeTime;  // for window fading
+  FADE_STATE m_fadeState;
+  DWORD m_alpha;        
+  int m_fadeTimer;
+
+  int m_renderOrder;      // for render order of dialogs
 };
 
 #endif

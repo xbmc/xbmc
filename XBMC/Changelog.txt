@@ -5,6 +5,10 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 01-08-2005 fixed: Extra button press needed to cancel visualisation screensaver mode.
+ - 01-08-2005 added: New conditional visibility tag Player.CodecInfo - true when in Visualisation and the codec info is up, or if you are in Slideshow and the file information is up.
+ - 01-08-2005 added: Fading for controls and dialogs in the GUI.
+ - 01-08-2005 changed: Made the flashing cursor in keyboard dialog nicer.
  - 01-08-2005 added: file and socket tracking for dlls
  - 31-07-2005 changed: cleaned up the $INFO/$LOCALIZE parser
  - 31-07-2005 updated: Norwegian language file (Thnx to vnm)

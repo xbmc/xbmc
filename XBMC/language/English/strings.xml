@@ -875,6 +875,7 @@
   <string><id>13392</id><value>Use Visualisation if playing audio</value></string>
   <string><id>13393</id><value>Calculate Size</value></string>
   <string><id>13394</id><value>Calculating folder size</value></string>
+  <string><id>13395</id><value>Video Settings</value></string>
 
   <string><id>14000</id><value>Stack</value></string>
   <string><id>14001</id><value>Unstack</value></string>
@@ -1092,5 +1093,8 @@
   
   <string><id>16004</id><value>Synchronize Interlaced Video</value></string>
   <string><id>16005</id><value>- Invert Fields</value></string>
-  
+  <string><id>16006</id><value>Synchronized Interlacing</value></string>
+  <string><id>16007</id><value>Reversed Fields</value></string> 
+  <string><id>16008</id><value>On</value></string>
+ 
 </strings>

@@ -16,15 +16,21 @@
 
 
 CGUIWindowVideoOverlay::CGUIWindowVideoOverlay()
-    : CGUIWindow(2004, "VideoOverlay.xml")
-{}
+    : CGUIDialog(2004, "VideoOverlay.xml")
+{
+  m_loadOnDemand = false;
+  m_renderOrder = 0;
+}
 
 CGUIWindowVideoOverlay::~CGUIWindowVideoOverlay()
 {}
 
 void CGUIWindowVideoOverlay::Render()
 {
-  if (!g_application.m_pPlayer) return ;
-  if (!g_application.m_pPlayer->HasVideo()) return ;
-  CGUIWindow::Render();
+  if (m_gWindowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO)
+  { // close immediately
+    Close(true);
+    return;
+  }
+  CGUIDialog::Render();
 }

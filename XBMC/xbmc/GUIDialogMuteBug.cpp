@@ -14,6 +14,7 @@
 CGUIDialogMuteBug::CGUIDialogMuteBug(void)
     : CGUIDialog(WINDOW_DIALOG_MUTE_BUG, "DialogMuteBug.xml")
 {
+  m_loadOnDemand = false;
 }
 
 CGUIDialogMuteBug::~CGUIDialogMuteBug(void)
@@ -23,20 +24,6 @@ bool CGUIDialogMuteBug::OnMessage(CGUIMessage& message)
 {
   switch ( message.GetMessage() )
   {
-  case GUI_MSG_WINDOW_INIT:
-    {
-      //resources are allocated in g_application
-      return true;
-    }
-    break;
-
-  case GUI_MSG_WINDOW_DEINIT:
-    {
-      //don't deinit, g_application handles it
-      return true;
-    }
-    break;
-
   case GUI_MSG_MUTE_OFF:
     {
       Close();

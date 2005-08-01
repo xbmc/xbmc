@@ -19,10 +19,12 @@ public:
 
   virtual bool OnAction(const CAction &action);
   virtual bool OnMessage(CGUIMessage& message);
+  virtual void Render();
 
   void DoModal(DWORD dwParentId); // modal
   void Show(DWORD dwParentId); // modeless
-  virtual void Close();
+
+  virtual void Close(bool forceClose = false);
   virtual bool Load(const CStdString& strFileName, bool bContainsPath = false);
   virtual bool IsRunning() const { return m_bRunning; }
   virtual bool IsDialog() { return true;};
@@ -32,4 +34,5 @@ protected:
   CGUIWindow* m_pParentWindow;
   bool m_bRunning;
   bool m_bModal;
+  unsigned int m_dialogClosing;
 };

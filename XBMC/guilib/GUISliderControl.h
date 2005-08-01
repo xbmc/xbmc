@@ -42,6 +42,7 @@ public:
   void SetFloatValue(float fValue);
   float GetFloatValue() const;
   void SetFloatInterval(float fInterval);
+  void SetType(int iType) { m_iType = iType; };
   int GetType() const;
   const CStdString& GetBackGroundTextureName() const { return m_guiBackground.GetFileName();};
   const CStdString& GetBackTextureMidName() const { return m_guiMid.GetFileName();};
@@ -53,6 +54,7 @@ public:
   virtual void OnMouseClick(DWORD dwButton);
   virtual void OnMouseDrag();
   virtual void OnMouseWheel();
+  virtual CStdString GetDescription() const;
 protected:
   virtual void Update() ;
   virtual void Move(int iNumSteps);
@@ -72,5 +74,6 @@ protected:
   int m_iControlOffsetX;
   int m_iControlOffsetY;
   int m_iInfoCode;
+  bool m_renderText;
 };
 #endif

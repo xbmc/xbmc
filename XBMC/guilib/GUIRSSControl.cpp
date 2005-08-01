@@ -58,7 +58,7 @@ void CGUIRSSControl::SetIntervals(const vector<int>& vecIntervals)
 
 void CGUIRSSControl::Render()
 {
-  if ( (!UpdateVisibility()) || !g_guiSettings.GetBool("Network.EnableRSSFeeds") || !g_guiSettings.GetBool("Network.EnableInternet"))
+  if ( (!UpdateFadeState()) || !g_guiSettings.GetBool("Network.EnableRSSFeeds") || !g_guiSettings.GetBool("Network.EnableInternet"))
   {
     return ;
   }
@@ -112,6 +112,6 @@ void CGUIRSSControl::RenderText()
   dwPalette[1]=m_dwHeadlineColor;
   dwPalette[2]=m_dwChannelColor;
 
-  m_pFont->DrawScrollingText((float)m_iPosX, (float)m_iPosY, dwPalette, m_pwzText, (float)m_dwWidth, m_scrollInfo, m_pbColors);
+  m_pFont->DrawScrollingText((float)m_iPosX, (float)m_iPosY, dwPalette, 3, m_pwzText, (float)m_dwWidth, m_scrollInfo, m_pbColors);
 }
 

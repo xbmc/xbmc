@@ -52,7 +52,7 @@ public:
   void DispatchThreadMessages();
   void AddMsgTarget( IMsgTargetCallback* pMsgTarget );
   int GetActiveWindow() const;
-  bool IsRouted() const;
+  bool IsRouted(bool includeFadeOuts = false) const;
   bool IsModelessAvailable() const;
   void UpdateModelessVisibility();
   bool IsWindowActive(DWORD dwID) const;

@@ -30,7 +30,7 @@ void CGUIProgressControl::SetPosition(int iPosX, int iPosY)
 
 void CGUIProgressControl::Render()
 {
-  if (!UpdateVisibility()) return ;
+  if (!UpdateFadeState()) return ;
   if (IsDisabled()) return ;
 
 

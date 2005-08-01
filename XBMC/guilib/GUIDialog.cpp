@@ -12,6 +12,8 @@ CGUIDialog::CGUIDialog(DWORD dwID, const CStdString &xmlFile)
   m_pParentWindow = NULL;
   m_bModal = true;
   m_bRunning = false;
+  m_dialogClosing = 0;
+  m_renderOrder = 1;
 }
 
 CGUIDialog::~CGUIDialog(void)
@@ -69,14 +71,36 @@ bool CGUIDialog::OnMessage(CGUIMessage& message)
         g_graphicsContext.SetOverlay(pWindow->OverlayAllowed() == 1);
       break;
     }
+  case GUI_MSG_WINDOW_INIT:
+    {
+      CGUIWindow::OnMessage(message);
+      // set the initial fade state of all the controls
+      if (m_visibleFadeTime)
+      {
+        m_fadeState = FADING_IN;
+        m_fadeTimer = m_visibleFadeTime;
+      }
+      return true;
+    }
   }
 
   return CGUIWindow::OnMessage(message);
 }
 
-void CGUIDialog::Close()
+void CGUIDialog::Close(bool forceClose /*= false*/)
 {
   if (!m_bRunning) return;
+
+  // don't close if we should be fading out
+  if (!forceClose && m_visibleFadeTime)
+  {
+    if (m_fadeState != FADING_OUT)
+    {
+      m_fadeState = FADING_OUT;
+      m_fadeTimer = m_visibleFadeTime;
+    }
+    return;
+  }
 
   //  Play the window specific deinit sound
   g_audioManager.PlayWindowSound(GetID(), SOUND_DEINIT);
@@ -149,4 +173,29 @@ void CGUIDialog::Show(DWORD dwParentId)
   OnMessage(msg);
 
   m_bRunning = true;
+}
+
+void CGUIDialog::Render()
+{
+  if (m_fadeState == FADING_IN)
+  {
+    SetAlpha((DWORD)(255.0f * (m_visibleFadeTime - m_fadeTimer) / m_visibleFadeTime));
+    if (m_fadeTimer)
+      m_fadeTimer--;
+    else
+      m_fadeState = FADING_NONE;
+  }
+  if (m_fadeState == FADING_OUT)
+  {
+    SetAlpha((DWORD)(255.0f * m_fadeTimer / m_visibleFadeTime));
+    if (m_fadeTimer)
+      m_fadeTimer--;
+    else
+    {
+      m_fadeState = FADING_NONE;
+      Close(true);  // force the dialog to close
+      return;
+    }
+  }
+  CGUIWindow::Render();
 }
