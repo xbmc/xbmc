@@ -26,8 +26,9 @@
 #include "GUIResizeControl.h"
 #include "GUIButtonScroller.h"
 #include "GUISpinControlEx.h"
-#include "../xbmc/utils/GUIInfoManager.h"
 #include "GUIVisualisationControl.h"
+#include "GUISettingsSliderControl.h"
+#include "../xbmc/utils/GUIInfoManager.h"
 #include "../xbmc/util.h"
 
 
@@ -198,6 +199,22 @@ bool CGUIControlFactory::GetAlignmentY(const TiXmlNode* pRootNode, const char* s
   return true;
 }
 
+bool CGUIControlFactory::GetConditionalVisibility(const TiXmlNode* control, int &condition, int &fadetime, FADE_STATE &starthidden)
+{
+  TiXmlElement* node = control->FirstChildElement("visible");
+  if (!node) return false;
+  node->Attribute("fade", &fadetime);
+  const char *start = node->Attribute("start");
+  if (start && !strcmpi(start, "hidden"))
+    starthidden = FADING_IN;
+  if (start && !strcmpi(start, "visible"))
+    starthidden = FADING_OUT;
+  CStdString visible;
+  if (!node->NoChildren())
+    visible = node->FirstChild()->Value();
+  condition = g_infoManager.TranslateString(visible);
+  return (condition != 0);
+}
 
 CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pControlNode, CGUIControl* pReference, RESOLUTION res)
 {
@@ -263,6 +280,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
   int iTextXOff2 = 0;
   int iTextYOff2 = 0;
   DWORD dwitemWidth = 16, dwitemHeight = 16;
+  DWORD dwSliderWidth = 150, dwSliderHeight = 16;
   DWORD textureWidthBig = 128;
   DWORD textureHeightBig = 128;
   DWORD itemWidthBig = 150;
@@ -307,7 +325,11 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
   bool bWrapAround = true;
   bool bSmoothScrolling = true;
   bool bKeepAspectRatio = false;
+
   int iVisibleCondition = 0;
+  int iVisibleFadeTime = 0;
+  FADE_STATE startHidden = FADING_NONE;
+
   bool bScrollLabel = false;
   bool bPulse = true;
 
@@ -481,6 +503,22 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
       strMid = ((CGUISliderControl*)pReference)->GetBackTextureMidName();
       iControlOffsetX = ((CGUISliderControl*)pReference)->GetControlOffsetX();
       iControlOffsetY = ((CGUISliderControl*)pReference)->GetControlOffsetY();
+    }
+    else if (strType == "sliderex")
+    {
+      dwSliderWidth = ((CGUISettingsSliderControl*)pReference)->GetSliderWidth();
+      dwSliderHeight = ((CGUISettingsSliderControl*)pReference)->GetSliderHeight();
+      strTextureBg = ((CGUISettingsSliderControl*)pReference)->GetBackGroundTextureName();
+      strMid = ((CGUISettingsSliderControl*)pReference)->GetBackTextureMidName();
+      iControlOffsetX = ((CGUISettingsSliderControl*)pReference)->GetControlOffsetX();
+      iControlOffsetY = ((CGUISettingsSliderControl*)pReference)->GetControlOffsetY();
+      strTextureFocus = ((CGUISettingsSliderControl*)pReference)->GetTextureFocusName();
+      strTextureNoFocus = ((CGUISettingsSliderControl*)pReference)->GetTextureNoFocusName();
+      strFont = ((CGUISettingsSliderControl*)pReference)->GetFontName();
+      strLabel = ((CGUISettingsSliderControl*)pReference)->GetLabel();
+      dwTextColor = ((CGUISettingsSliderControl*)pReference)->GetTextColor();
+      dwDisabledColor = ((CGUISettingsSliderControl*)pReference)->GetDisabledColor() ;
+      lTextOffsetX = ((CGUISettingsSliderControl*)pReference)->GetTextOffsetX();
     }
     else if (strType == "progress")
     {
@@ -720,14 +758,9 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
   }
 
   GetHex(pControlNode, "colordiffuse", dwColorDiffuse);
-  if (!GetBoolean(pControlNode, "visible", bVisible))
-  { // try a conditional visibility
-    CStdString strVisible;
-    GetString(pControlNode, "visible", strVisible);
-    int iVisible = g_infoManager.TranslateString(strVisible);
-    if (iVisible != 0)
-      iVisibleCondition = iVisible;
-  }
+  
+  GetConditionalVisibility(pControlNode, iVisibleCondition, iVisibleFadeTime, startHidden);
+
   GetString(pControlNode, "font", strFont);
   GetAlignment(pControlNode, "align", dwAlign);
   GetAlignmentY(pControlNode, "alignY", dwAlignY);
@@ -783,6 +816,8 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
 
   if (GetDWORD(pControlNode, "MarkWidth", dwCheckWidth)) g_graphicsContext.ScaleXCoord(dwCheckWidth, res);
   if (GetDWORD(pControlNode, "MarkHeight", dwCheckHeight)) g_graphicsContext.ScaleYCoord(dwCheckHeight, res);
+  if (GetDWORD(pControlNode, "sliderWidth", dwSliderWidth)) g_graphicsContext.ScaleXCoord(dwSliderWidth, res);
+  if (GetDWORD(pControlNode, "sliderHeight", dwSliderHeight)) g_graphicsContext.ScaleYCoord(dwSliderHeight, res);
   GetPath(pControlNode, "textureCheckmark", strTextureCheckMark);
   GetPath(pControlNode, "textureCheckmarkNoFocus", strTextureCheckMarkNF);
   GetPath(pControlNode, "textureRadioFocus", strTextureRadioFocus);
@@ -959,7 +994,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
 
     pControl->SetColourDiffuse(dwColorDiffuse);
     pControl->SetVisible(bVisible);
-    pControl->SetVisibleCondition(iVisibleCondition);
+    pControl->SetVisibleCondition(iVisibleCondition, iVisibleFadeTime, startHidden);
     pControl->SetInfo(vecInfo);
     pControl->SetWidthControl(bScrollLabel);
     return pControl;
@@ -972,14 +1007,14 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
 
     pControl->SetColourDiffuse(dwColorDiffuse);
     pControl->SetVisible(bVisible);
-    pControl->SetVisibleCondition(iVisibleCondition);
+    pControl->SetVisibleCondition(iVisibleCondition, iVisibleFadeTime, startHidden);
     return pControl;
   }
   else if (strType == "videowindow")
   {
     CGUIVideoControl* pControl = new CGUIVideoControl(
       dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight);
-    pControl->SetVisibleCondition(iVisibleCondition);
+    pControl->SetVisibleCondition(iVisibleCondition, iVisibleFadeTime, startHidden);
     return pControl;
   }
   else if (strType == "fadelabel")
@@ -990,7 +1025,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
 
     pControl->SetColourDiffuse(dwColorDiffuse);
     pControl->SetVisible(bVisible);
-    pControl->SetVisibleCondition(iVisibleCondition);
+    pControl->SetVisibleCondition(iVisibleCondition, iVisibleFadeTime, startHidden);
     pControl->SetLabel(vecLabel);
     pControl->SetInfo(vecInfo);
     return pControl;
@@ -1003,7 +1038,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
 
     pControl->SetColourDiffuse(dwColorDiffuse);
     pControl->SetVisible(bVisible);
-    pControl->SetVisibleCondition(iVisibleCondition);
+    pControl->SetVisibleCondition(iVisibleCondition, iVisibleFadeTime, startHidden);
     std::map<int, std::pair<std::vector<int>,std::vector<wstring> > >::iterator iter=g_settings.m_mapRssUrls.find(iUrlSet);
     if (iter != g_settings.m_mapRssUrls.end())
     {
@@ -1025,7 +1060,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     pControl->SetThumbAttributes(dwThumbWidth, dwThumbHeight, dwThumbSpaceX, dwThumbSpaceY, strDefaultThumb);
     pControl->SetColourDiffuse(dwColorDiffuse);
     pControl->SetVisible(bVisible);
-    pControl->SetVisibleCondition(iVisibleCondition);
+    pControl->SetVisibleCondition(iVisibleCondition, iVisibleFadeTime, startHidden);
     pControl->SetNavigation(up, down, left, right);
     pControl->SetPulseOnSelect(bPulse);
     return pControl;
@@ -1037,7 +1072,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
       strFont, dwTextColor, dwTextColor2, dwTextColor3, dwSelectedColor);
     pControl->SetColourDiffuse(dwColorDiffuse);
     pControl->SetVisible(bVisible);
-    pControl->SetVisibleCondition(iVisibleCondition);
+    pControl->SetVisibleCondition(iVisibleCondition, iVisibleFadeTime, startHidden);
     pControl->SetNavigation(up, down, left, right);
     return pControl;
   }
@@ -1055,7 +1090,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     pControl->SetHyperLink(iHyperLink);
     pControl->SetExecuteAction(strExecuteAction);
     pControl->SetVisible(bVisible);
-    pControl->SetVisibleCondition(iVisibleCondition);
+    pControl->SetVisibleCondition(iVisibleCondition, iVisibleFadeTime, startHidden);
     pControl->SetPulseOnSelect(bPulse);
     return pControl;
   }
@@ -1073,7 +1108,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     pControl->SetHyperLink(iHyperLink);
     pControl->SetExecuteAction(strExecuteAction);
     pControl->SetVisible(bVisible);
-    pControl->SetVisibleCondition(iVisibleCondition);
+    pControl->SetVisibleCondition(iVisibleCondition, iVisibleFadeTime, startHidden);
     pControl->SetPulseOnSelect(bPulse);
     return pControl;
   }
@@ -1091,7 +1126,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     pControl->SetHyperLink(iHyperLink);
     pControl->SetExecuteAction(strExecuteAction);
     pControl->SetVisible(bVisible);
-    pControl->SetVisibleCondition(iVisibleCondition);
+    pControl->SetVisibleCondition(iVisibleCondition, iVisibleFadeTime, startHidden);
     pControl->SetToggleSelect(iToggleSelect);
     pControl->SetPulseOnSelect(bPulse);
     return pControl;
@@ -1108,7 +1143,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     pControl->SetNavigation(up, down, left, right);
     pControl->SetColourDiffuse(dwColorDiffuse);
     pControl->SetVisible(bVisible);
-    pControl->SetVisibleCondition(iVisibleCondition);
+    pControl->SetVisibleCondition(iVisibleCondition, iVisibleFadeTime, startHidden);
     pControl->SetShadow(bShadow);
     pControl->SetPulseOnSelect(bPulse);
     return pControl;
@@ -1127,7 +1162,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     pControl->SetColourDiffuse(dwColorDiffuse);
     pControl->SetHyperLink(iHyperLink);
     pControl->SetVisible(bVisible);
-    pControl->SetVisibleCondition(iVisibleCondition);
+    pControl->SetVisibleCondition(iVisibleCondition, iVisibleFadeTime, startHidden);
     pControl->SetPulseOnSelect(bPulse);
     return pControl;
   }
@@ -1141,7 +1176,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     pControl->SetNavigation(up, down, left, right);
     pControl->SetColourDiffuse(dwColorDiffuse);
     pControl->SetVisible(bVisible);
-    pControl->SetVisibleCondition(iVisibleCondition);
+    pControl->SetVisibleCondition(iVisibleCondition, iVisibleFadeTime, startHidden);
     pControl->SetReverse(bReverse);
     pControl->SetBuddyControlID(dwBuddyControlID);
     pControl->SetDisabledColor(dwDisabledColor);
@@ -1169,12 +1204,29 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
       strTextureBg, strMid, strMidFocus, iType);
 
     pControl->SetVisible(bVisible);
-    pControl->SetVisibleCondition(iVisibleCondition);
+    pControl->SetVisibleCondition(iVisibleCondition, iVisibleFadeTime, startHidden);
     pControl->SetInfo(vecInfo.size() ? vecInfo[0] : 0);
     pControl->SetNavigation(up, down, left, right);
     pControl->SetControlOffsetX(iControlOffsetX);
     pControl->SetControlOffsetY(iControlOffsetY);
     pControl->SetPulseOnSelect(bPulse);
+    return pControl;
+  }
+  else if (strType == "sliderex")
+  {
+    CGUISettingsSliderControl* pControl = new CGUISettingsSliderControl(
+      dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight, dwSliderWidth, dwSliderHeight, strTextureFocus, strTextureNoFocus,
+      strTextureBg, strMid, strMidFocus, lTextOffsetX, iType);
+
+    pControl->SetLabel(strFont, strLabel, dwTextColor);
+    pControl->SetDisabledColor(dwDisabledColor);
+    pControl->SetColourDiffuse(dwColorDiffuse);
+    pControl->SetVisible(bVisible);
+    pControl->SetVisibleCondition(iVisibleCondition, iVisibleFadeTime, startHidden);
+    pControl->SetInfo(vecInfo.size() ? vecInfo[0] : 0);
+    pControl->SetNavigation(up, down, left, right);
+    pControl->SetControlOffsetX(iControlOffsetX);
+    pControl->SetControlOffsetY(iControlOffsetY);
     return pControl;
   }
   else if (strType == "progress")
@@ -1184,7 +1236,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
       strTextureBg, strLeft, strMid, strRight, strOverlay);
 
     pControl->SetVisible(bVisible);
-    pControl->SetVisibleCondition(iVisibleCondition);
+    pControl->SetVisibleCondition(iVisibleCondition, iVisibleFadeTime, startHidden);
     pControl->SetInfo(vecInfo.size() ? vecInfo[0] : 0);
     return pControl;
   }
@@ -1197,7 +1249,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     pControl->SetColourDiffuse(dwColorDiffuse);
     pControl->SetKeepAspectRatio(bKeepAspectRatio);
     pControl->SetVisible(bVisible);
-    pControl->SetVisibleCondition(iVisibleCondition);
+    pControl->SetVisibleCondition(iVisibleCondition, iVisibleFadeTime, startHidden);
     pControl->SetInfo(vecInfo.size() ? vecInfo[0] : 0);
     return pControl;
   }
@@ -1220,7 +1272,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     pControl->SetTextOffsets(iTextXOff, iTextYOff, iTextXOff2, iTextYOff2);
     pControl->SetAlignmentY(dwAlignY);
     pControl->SetVisible(bVisible);
-    pControl->SetVisibleCondition(iVisibleCondition);
+    pControl->SetVisibleCondition(iVisibleCondition, iVisibleFadeTime, startHidden);
     pControl->SetImageDimensions(dwitemWidth, dwitemHeight);
     pControl->SetItemHeight(iTextureHeight);
     pControl->SetSpace(iSpace);
@@ -1246,7 +1298,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     pControl->SetColourDiffuse(dwColorDiffuse);
     pControl->SetScrollySuffix(strSuffix);
     pControl->SetVisible(bVisible);
-    pControl->SetVisibleCondition(iVisibleCondition);
+    pControl->SetVisibleCondition(iVisibleCondition, iVisibleFadeTime, startHidden);
     pControl->SetImageDimensions(dwitemWidth, dwitemHeight);
     pControl->SetItemHeight(iTextureHeight);
     pControl->SetSpace(iSpace);
@@ -1269,7 +1321,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     pControl->SetNavigation(up, down, left, right);
     pControl->SetColourDiffuse(dwColorDiffuse);
     pControl->SetVisible(bVisible);
-    pControl->SetVisibleCondition(iVisibleCondition);
+    pControl->SetVisibleCondition(iVisibleCondition, iVisibleFadeTime, startHidden);
     pControl->SetPulseOnSelect(bPulse);
     return pControl;
   }
@@ -1290,7 +1342,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     pControl->SetColourDiffuse(dwColorDiffuse);
     pControl->SetScrollySuffix(strSuffix);
     pControl->SetVisible(bVisible);
-    pControl->SetVisibleCondition(iVisibleCondition);
+    pControl->SetVisibleCondition(iVisibleCondition, iVisibleFadeTime, startHidden);
     pControl->SetTextureDimensions(iTextureWidth, iTextureHeight);
     pControl->SetThumbDimensions(iThumbXPos, iThumbYPos, iThumbWidth, iThumbHeight);
     pControl->SetTextureWidthBig(textureWidthBig);
@@ -1321,7 +1373,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     pControl->SetNavigation(up, down, left, right);
     pControl->SetColourDiffuse(dwColorDiffuse);
     pControl->SetVisible(bVisible);
-    pControl->SetVisibleCondition(iVisibleCondition);
+    pControl->SetVisibleCondition(iVisibleCondition, iVisibleFadeTime, startHidden);
     pControl->SetPulseOnSelect(bPulse);
     return pControl;
   }
@@ -1362,7 +1414,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     pControl->SetNavigation(up, down, left, right);
     pControl->SetColourDiffuse(dwColorDiffuse);
     pControl->SetVisible(bVisible);
-    pControl->SetVisibleCondition(iVisibleCondition);
+    pControl->SetVisibleCondition(iVisibleCondition, iVisibleFadeTime, startHidden);
     pControl->SetReverse(bReverse);
     pControl->SetDisabledColor(dwDisabledColor);
     pControl->SetLabel(strLabel);
@@ -1372,7 +1424,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
   else if (strType == "visualisation")
   {
     CGUIVisualisationControl* pControl = new CGUIVisualisationControl(dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight);
-    pControl->SetVisibleCondition(iVisibleCondition);
+    pControl->SetVisibleCondition(iVisibleCondition, iVisibleFadeTime, startHidden);
     return pControl;
   }
   return NULL;

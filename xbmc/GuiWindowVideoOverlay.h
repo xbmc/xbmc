@@ -1,7 +1,7 @@
 #pragma once
 #include "GUIWindow.h"
 
-class CGUIWindowVideoOverlay: public CGUIWindow
+class CGUIWindowVideoOverlay: public CGUIDialog
 {
 public:
   CGUIWindowVideoOverlay(void);

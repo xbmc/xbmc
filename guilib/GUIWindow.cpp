@@ -52,9 +52,14 @@ CGUIWindow::CGUIWindow(DWORD dwID, const CStdString &xmlFile)
   m_WindowAllocated = false;
   m_coordsRes = g_guiSettings.m_LookAndFeelResolution;
   m_needsScaling = true;
+  m_visibleFadeTime = 0;
   m_visibleCondition = 0;
   m_windowLoaded = false;
   m_loadOnDemand = true;
+  m_alpha = 255;
+  m_renderOrder = 0;
+  m_fadeState = FADING_NONE;
+  m_fadeTimer = 0;
 }
 
 CGUIWindow::~CGUIWindow(void)
@@ -385,6 +390,8 @@ bool CGUIWindow::Load(const TiXmlElement* pRootElement, RESOLUTION resToUse)
   m_iPosX = m_iPosY = m_dwWidth = m_dwHeight = 0;
   m_iOverlayAllowed = -1;   // Use parent or previous window's state
   m_coordsRes = g_guiSettings.m_LookAndFeelResolution;
+  m_visibleCondition = 0;
+  m_visibleFadeTime = 0;
 
   VECREFERENCECONTOLS referencecontrols;
   IVECREFERENCECONTOLS it;
@@ -403,7 +410,12 @@ bool CGUIWindow::Load(const TiXmlElement* pRootElement, RESOLUTION resToUse)
     }
     else if (strValue == "visible" && pChild->FirstChild())
     {
+      pChild->ToElement()->Attribute("fade", &m_visibleFadeTime);
       m_visibleCondition = g_infoManager.TranslateString(pChild->FirstChild()->Value());
+    }
+    else if (strValue == "zorder" && pChild->FirstChild())
+    {
+      m_renderOrder = atoi(pChild->FirstChild()->Value());
     }
     else if (strValue == "coordinates")
     {
@@ -554,12 +566,15 @@ void CGUIWindow::Render()
   if (!m_WindowAllocated) return;
 
   g_graphicsContext.SetScalingResolution(m_coordsRes, m_iPosX, m_iPosY, m_needsScaling);
+  g_graphicsContext.SetWindowAlpha(m_alpha);
 
   for (int i = 0; i < (int)m_vecControls.size(); i++)
   {
     CGUIControl *pControl = m_vecControls[i];
     if (pControl)
     {
+      // reset control alpha level
+      g_graphicsContext.SetControlAlpha(255);
       pControl->Render();
     }
   }
@@ -751,8 +766,15 @@ DWORD CGUIWindow::GetPreviousWindowID(void) const
 
 void CGUIWindow::OnInitWindow()
 {
+  // set our initial visibility
+  for (unsigned int i=0; i < m_vecControls.size(); i++)
+  {
+    CGUIControl *pControl = m_vecControls[i];
+    if (pControl->GetVisibleCondition())
+      pControl->SetInitialVisibility();
+  }
   CGUIMessage msg(GUI_MSG_SETFOCUS, GetID(), m_dwDefaultFocusControlID);
-  g_graphicsContext.SendMessage(msg);
+  OnMessage(msg);
 
   if (m_iOverlayAllowed > -1) // True, use our own overlay state
     g_graphicsContext.SetOverlay(m_iOverlayAllowed > 0 ? true : false);
@@ -771,6 +793,7 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
       OutputDebugString("------------------- GUI_MSG_WINDOW_INIT ");
       OutputDebugString(strLine.c_str());
       OutputDebugString("------------------- \n");
+      SetAlpha(255);  // initial fade state
       AllocResources();
       if (message.GetParam1() != WINDOW_INVALID)
       {

@@ -23,7 +23,7 @@ CGUIDialogKaiToast::CGUIDialogKaiToast(void)
   m_iIconPosY = 0;
   m_dwIconWidth = 0;
   m_dwIconHeight = 0;
-
+  m_loadOnDemand = false;
   InitializeCriticalSection(&m_critical);
 }
 
@@ -38,7 +38,7 @@ bool CGUIDialogKaiToast::OnMessage(CGUIMessage& message)
   {
   case GUI_MSG_WINDOW_INIT:
     {
-      // resources are allocated in g_application
+      CGUIDialog::OnMessage(message);
 
       CGUIImage* pIcon = (CGUIImage*) GetControl(POPUP_ICON);
 
@@ -57,14 +57,12 @@ bool CGUIDialogKaiToast::OnMessage(CGUIMessage& message)
 
   case GUI_MSG_WINDOW_DEINIT:
     {
-      //don't deinit, g_application handles it
-     if (m_pIcon)
-     {
-       m_pIcon->FreeResources();
-       delete m_pIcon;
-       m_pIcon = NULL;
-     }
-     return true;
+      if (m_pIcon)
+      {
+        m_pIcon->FreeResources();
+        delete m_pIcon;
+        m_pIcon = NULL;
+      }
     }
     break;
   }

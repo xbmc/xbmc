@@ -1,7 +1,7 @@
 #pragma once
 #include "GUIWindow.h"
 
-class CGUIWindowMusicOverlay: public CGUIWindow
+class CGUIWindowMusicOverlay: public CGUIDialog
 {
 public:
   CGUIWindowMusicOverlay(void);

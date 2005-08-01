@@ -85,7 +85,7 @@ void CGUIImage::Render(int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight)
 void CGUIImage::Render()
 {
   // check for conditional visibility
-  bool bVisible = UpdateVisibility();
+  bool bVisible = UpdateFadeState();
 
   // check for conditional information
   if (m_Info)
@@ -155,25 +155,25 @@ void CGUIImage::Render()
   p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, m_fUOffs, 0.0f);
   D3DCOLOR color = m_colDiffuse;
   if (m_dwAlpha[0] != 0xFF) color = (m_dwAlpha[0] << 24) | (m_colDiffuse & 0x00FFFFFF);
-  p3DDevice->SetVertexDataColor(D3DVSDE_DIFFUSE, color);
+  p3DDevice->SetVertexDataColor(D3DVSDE_DIFFUSE, g_graphicsContext.MergeAlpha(color));
   p3DDevice->SetVertexData4f( D3DVSDE_VERTEX, x1, y1, 0, 0 );
 
   p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, m_fUOffs + m_fU, 0.0f);
   color = m_colDiffuse;
   if (m_dwAlpha[1] != 0xFF) color = (m_dwAlpha[1] << 24) | (m_colDiffuse & 0x00FFFFFF);
-  p3DDevice->SetVertexDataColor(D3DVSDE_DIFFUSE, color);
+  p3DDevice->SetVertexDataColor(D3DVSDE_DIFFUSE, g_graphicsContext.MergeAlpha(color));
   p3DDevice->SetVertexData4f( D3DVSDE_VERTEX, x2, y1, 0, 0 );
 
   p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, m_fUOffs + m_fU, m_fV);
   color = m_colDiffuse;
   if (m_dwAlpha[2] != 0xFF) color = (m_dwAlpha[2] << 24) | (m_colDiffuse & 0x00FFFFFF);
-  p3DDevice->SetVertexDataColor(D3DVSDE_DIFFUSE, color);
+  p3DDevice->SetVertexDataColor(D3DVSDE_DIFFUSE, g_graphicsContext.MergeAlpha(color));
   p3DDevice->SetVertexData4f( D3DVSDE_VERTEX, x2, y2, 0, 0 );
 
   p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, m_fUOffs, m_fV);
   color = m_colDiffuse;
   if (m_dwAlpha[3] != 0xFF) color = (m_dwAlpha[3] << 24) | (m_colDiffuse & 0x00FFFFFF);
-  p3DDevice->SetVertexDataColor(D3DVSDE_DIFFUSE, color);
+  p3DDevice->SetVertexDataColor(D3DVSDE_DIFFUSE, g_graphicsContext.MergeAlpha(color));
   p3DDevice->SetVertexData4f( D3DVSDE_VERTEX, x1, y2, 0, 0 );
 
   p3DDevice->End();

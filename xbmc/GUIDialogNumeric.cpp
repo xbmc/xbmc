@@ -235,7 +235,7 @@ void CGUIDialogNumeric::Render()
       fPosX += (pLabel->GetWidth() - pFont->GetTextWidth(strLabel.c_str())) * 0.5f;
     else if (pLabel->m_dwTextAlign & XBFONT_RIGHT)
       fPosX -= pFont->GetTextWidth(strLabel.c_str());
-    pFont->DrawColourTextWidth(fPosX, (float)pLabel->GetYPosition(), palette, strLabel.c_str(), colors, 0);
+    pFont->DrawColourTextWidth(fPosX, (float)pLabel->GetYPosition(), palette, 2, strLabel.c_str(), colors, 0);
     delete[] colors;
   }
 }

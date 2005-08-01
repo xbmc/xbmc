@@ -323,39 +323,27 @@ void CGUIWindowManager::Render()
 //  RenderDialogs();
 }
 
+bool RenderOrderSortFunction(CGUIDialog *first, CGUIDialog *second)
+{
+  return first->GetRenderOrder() < second->GetRenderOrder();
+}
+
 void CGUIWindowManager::RenderDialogs()
 {
-  // render modal windows
-  int nWindow = 0;
-  int nWindowsPre;
+  // find the window with the lowest render order
+  vector<CGUIDialog *> renderList;
+  for (unsigned int i = 0; i < m_vecModalWindows.size(); i++)
+    renderList.push_back((CGUIDialog *)m_vecModalWindows[i]);
+  for (unsigned int i = 0; i < m_vecModelessWindows.size(); i++)
+    renderList.push_back((CGUIDialog *)m_vecModelessWindows[i]);
+  stable_sort(renderList.begin(), renderList.end(), RenderOrderSortFunction);
 
-  // continuously evaluate if there are more windows in our list to process
-  while ( nWindow < (nWindowsPre = m_vecModalWindows.size()) )
+  // iterate through and render if they're running
+  for (unsigned int i = 0; i < renderList.size(); i++)
   {
-    m_vecModalWindows[nWindow]->Render();
-
-    // if the modal dialog hasn't closed, and removed itself from the list
-    if (nWindowsPre == m_vecModalWindows.size())
-    {
-      // try the next window
-      nWindow++;
-    }
-  }
-
-  // render modeless windows
-  nWindow = 0;
-
-  // continuously evaluate if there are more windows in our list to process
-  while ( nWindow < (nWindowsPre = m_vecModelessWindows.size()) )
-  {
-    m_vecModelessWindows[nWindow]->Render();
-
-    // if the modeless dialog hasn't closed, and removed itself from the list
-    if (nWindowsPre == m_vecModelessWindows.size())
-    {
-      // try the next window
-      nWindow++;
-    }
+    CGUIDialog *pDialog = renderList[i];
+    if (pDialog->IsRunning())
+      pDialog->Render();
   }
 }
 
@@ -466,12 +454,21 @@ void CGUIWindowManager::UnRoute(DWORD dwID)
   }
 }
 
-bool CGUIWindowManager::IsRouted() const
+bool CGUIWindowManager::IsRouted(bool includeFadeOuts /*= false */) const
 {
-  if (m_vecModalWindows.size() > 0)
-    return true;
+  if (includeFadeOuts)
+    return m_vecModalWindows.size() > 0;
 
-  return false;
+  bool hasActiveDialog = false;
+  for (unsigned int i = 0; i < m_vecModalWindows.size(); i++)
+  {
+    if (m_vecModalWindows[i]->GetFadeState() != FADING_OUT)
+    {
+      hasActiveDialog = true;
+      break;
+    }
+  }
+  return hasActiveDialog;
 }
 
 bool CGUIWindowManager::IsModelessAvailable() const
@@ -545,8 +542,16 @@ bool CGUIWindowManager::IsWindowActive(DWORD dwID) const
   if (GetActiveWindow() == dwID) return true;
   // run through the modal + modeless windows
   for (unsigned int i = 0; i < m_vecModalWindows.size(); i++)
-    if (dwID == m_vecModalWindows[i]->GetID()) return true;
+  {
+    CGUIWindow *pWindow = m_vecModalWindows[i];
+    if (dwID == pWindow->GetID() && pWindow->GetFadeState() != FADING_OUT)
+      return true;
+  }
   for (unsigned int i = 0; i < m_vecModelessWindows.size(); i++)
-    if (dwID == m_vecModelessWindows[i]->GetID()) return true;
+  {
+    CGUIWindow *pWindow = m_vecModelessWindows[i];
+    if (dwID == pWindow->GetID() && pWindow->GetFadeState() != FADING_OUT)
+      return true;
+  }
   return false; // window isn't active
 }

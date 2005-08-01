@@ -66,7 +66,6 @@ private:
   int m_iZoomFactor;
 
   bool m_bSlideShow;
-  bool m_bShowInfo;
   bool m_bPause;
   bool m_bErrorMessage;
 

@@ -12,7 +12,7 @@ CGUIControl::CGUIControl()
   m_iGroup = -1;
   m_dwParentID = 0;
   m_bVisible = true;
-  m_VisibleCondition = 0;
+  m_visibleCondition = 0;
   m_bDisabled = false;
   m_bSelected = false;
   m_bCalibration = true;
@@ -45,7 +45,8 @@ CGUIControl::CGUIControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPo
   m_iGroup = -1;
   m_dwParentID = dwParentID;
   m_bVisible = true;
-  m_VisibleCondition = 0;
+  m_lastVisible = true;
+  m_visibleCondition = 0;
   m_bDisabled = false;
   m_bSelected = false;
   m_bCalibration = true;
@@ -303,11 +304,7 @@ bool CGUIControl::CanFocus() const
 
 bool CGUIControl::IsVisible() const
 {
-  if (!m_bVisible)
-    return false;
-  if (m_VisibleCondition && !g_infoManager.GetBool(m_VisibleCondition))
-    return false;
-  return true;
+  return m_bVisible;
 }
 
 bool CGUIControl::IsSelected() const
@@ -508,8 +505,36 @@ CStdString CGUIControl::ParseLabel(CStdString& strLabel)
   return strReturn;
 }
 
-bool CGUIControl::UpdateVisibility()
+
+void CGUIControl::UpdateVisibility()
 {
+  bool bVisible = g_infoManager.GetBool(m_visibleCondition);
+  if (!m_lastVisible && bVisible)
+  { // automatic change of visibility - fade in
+    SET_CONTROL_FADE_IN(GetID(), m_visibleFadeTime)
+  }
+  else if (m_lastVisible && !bVisible)
+  { // automatic change of visibility - fade out
+    SET_CONTROL_FADE_OUT(GetID(), m_visibleFadeTime)
+  }
+  m_lastVisible = bVisible;
+}
+
+void CGUIControl::SetInitialVisibility()
+{
+  if (m_visibleStartState == FADING_NONE)
+  {
+    m_lastVisible = m_bVisible = g_infoManager.GetBool(m_visibleCondition);
+    return;
+  }
+  m_lastVisible = m_bVisible = (m_visibleStartState == FADING_OUT);
+  UpdateVisibility();
+}
+
+bool CGUIControl::UpdateFadeState()
+{
+  if (m_visibleCondition)
+    UpdateVisibility();
   // update our alpha values if we're fading
   if (m_fadingState == FADING_IN)
   { // doing a fade in
@@ -520,7 +545,7 @@ bool CGUIControl::UpdateVisibility()
       m_fadingState = FADING_NONE;
     }
     DWORD fadeAmount = (DWORD)(m_fadingPos * 255.0f / m_fadingTime + 0.5f);
-    SetAlpha(255 - fadeAmount);
+    g_graphicsContext.SetControlAlpha(255 - fadeAmount);
   }
   else if (m_fadingState == FADING_OUT)
   {
@@ -532,7 +557,14 @@ bool CGUIControl::UpdateVisibility()
       m_bVisible = false;
     }
     DWORD fadeAmount = (DWORD)(m_fadingPos * 255.0f / m_fadingTime + 0.5f);
-    SetAlpha(fadeAmount);
+    g_graphicsContext.SetControlAlpha(fadeAmount);
   }
   return IsVisible();
+}
+
+void CGUIControl::SetVisibleCondition(int visible, int fadeTime /*= 0*/, FADE_STATE startHidden /*= FADING_NONE*/)
+{
+  m_visibleCondition = visible;
+  m_visibleFadeTime = fadeTime;
+  m_visibleStartState = startHidden;
 }

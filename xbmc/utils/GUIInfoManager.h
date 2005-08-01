@@ -25,6 +25,7 @@
 #define PLAYER_SEEKTIME              24
 #define PLAYER_SEEKING               25
 #define PLAYER_SHOWTIME              26
+#define PLAYER_SHOWCODEC             30
 
 /*!
  \ingroup strings
@@ -75,6 +76,7 @@ public:
   void SetDisplayAfterSeek(DWORD TimeOut = 2500);
   void SetSeeking(bool seeking) { m_playerSeeking = seeking; };
   void SetShowTime(bool showtime) { m_playerShowTime = showtime; };
+  void SetShowCodec(bool showcodec) { m_playerShowCodec = showcodec; };
 
   bool m_performingSeek;
 
@@ -102,7 +104,7 @@ protected:
   DWORD m_AfterSeekTimeout;
   bool m_playerSeeking;
   bool m_playerShowTime;
-  int i_Timer;
+  bool m_playerShowCodec;
 
   // FPS counters
   float m_fps;

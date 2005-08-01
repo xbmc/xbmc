@@ -328,6 +328,7 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
       }
       m_bLastRender = false;
       m_bShowCurrentTime = false;
+      g_infoManager.SetDisplayAfterSeek(0); // Make sure display after seek is off.
 
       //  Disable nav sounds if spindown is active as they are loaded
       //  from HDD all the time.
@@ -463,7 +464,7 @@ bool CGUIWindowFullScreen::NeedRenderFullScreen()
   if (m_bShowCurrentTime) return true;
   if (g_infoManager.GetDisplayAfterSeek()) return true;
   if (g_infoManager.GetBool(PLAYER_SEEKBAR)) return true;
-  if (m_gWindowManager.IsRouted()) return true;
+  if (m_gWindowManager.IsRouted(true)) return true;
   if (m_gWindowManager.IsModelessAvailable()) return true;
   if (g_Mouse.IsActive()) return true;
   if (CUtil::IsUsingTTFSubtitles() && g_application.m_pPlayer->GetSubtitleVisible() && m_subtitleFont)
@@ -649,7 +650,7 @@ void CGUIWindowFullScreen::RenderFullScreen()
     CGUIWindow::Render();
   }
 renderDialogs:
-  if (m_gWindowManager.IsRouted() || m_gWindowManager.IsModelessAvailable())
+  if (m_gWindowManager.IsRouted(true) || m_gWindowManager.IsModelessAvailable())
     m_gWindowManager.RenderDialogs();
   // Render the mouse pointer, if visible...
   if (g_Mouse.IsActive()) g_application.m_guiPointer.Render();
