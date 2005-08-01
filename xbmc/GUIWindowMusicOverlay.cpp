@@ -24,8 +24,10 @@
 #define STEPS 25
 
 CGUIWindowMusicOverlay::CGUIWindowMusicOverlay()
-    : CGUIWindow(2004, "MusicOverlay.xml")
+    : CGUIDialog(2004, "MusicOverlay.xml")
 {
+  m_loadOnDemand = false;
+  m_renderOrder = 0;
 }
 
 CGUIWindowMusicOverlay::~CGUIWindowMusicOverlay()
@@ -45,7 +47,7 @@ bool CGUIWindowMusicOverlay::OnMessage(CGUIMessage& message)
       }
     }
   }
-  return CGUIWindow::OnMessage(message);
+  return CGUIDialog::OnMessage(message);
 }
 
 bool CGUIWindowMusicOverlay::OnMouse()
@@ -75,14 +77,12 @@ bool CGUIWindowMusicOverlay::OnMouse()
   }
   else
   {
-    return CGUIWindow::OnMouse();
+    return CGUIDialog::OnMouse();
   }
 }
 
 void CGUIWindowMusicOverlay::Render()
 {
-  if (!g_application.m_pPlayer) return ;
-  if ( g_application.m_pPlayer->HasVideo()) return ;
-  CGUIWindow::Render();
+  CGUIDialog::Render();
 }
 

@@ -120,10 +120,13 @@ public:
 
   // output scaling
   void SetScalingResolution(RESOLUTION res, int posX, int posY, bool needsScaling);  // sets the input skin resolution.
-  inline float ScaleFinalXCoord(float x);
-  inline float ScaleFinalYCoord(float y);
-  inline float ScaleFinalX() { return m_windowScaleX; };
-  inline float ScaleFinalY() { return m_windowScaleY; };
+  inline float ScaleFinalXCoord(float x) const;
+  inline float ScaleFinalYCoord(float y) const;
+  inline float ScaleFinalX() const { return m_windowScaleX; };
+  inline float ScaleFinalY() const { return m_windowScaleY; };
+  inline DWORD MergeAlpha(DWORD color) const;
+  void SetControlAlpha(DWORD alpha) { m_controlAlpha = alpha; };
+  void SetWindowAlpha(DWORD alpha) { m_windowAlpha = alpha; };
 
 protected:
   CRITICAL_SECTION m_critSection;
@@ -149,6 +152,8 @@ private:
   float m_windowScaleY;
   float m_windowPosX;
   float m_windowPosY;
+  DWORD m_controlAlpha;   // for control fading
+  DWORD m_windowAlpha;
 };
 
 /*!

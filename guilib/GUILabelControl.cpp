@@ -44,7 +44,7 @@ void CGUILabelControl::SetInfo(const vector<int> &vecInfo)
 
 void CGUILabelControl::Render()
 {
-  if (!UpdateVisibility())
+  if (!UpdateFadeState())
   {
     return;
   }
@@ -82,7 +82,7 @@ void CGUILabelControl::Render()
         if (m_dwTextAlign & XBFONT_RIGHT)
           fPosX -= (float)m_dwWidth;
 
-        m_pFont->DrawScrollingText(fPosX, (float)m_iPosY, &m_dwTextColor, strLabelUnicode, (float)m_dwWidth, m_ScrollInfo);
+        m_pFont->DrawScrollingText(fPosX, (float)m_iPosY, &m_dwTextColor, 1, strLabelUnicode, (float)m_dwWidth, m_ScrollInfo);
       }
     }
     if (bNormalDraw)
@@ -103,12 +103,23 @@ void CGUILabelControl::Render()
       {
         if (m_bShowCursor)
         { // show the cursor...
+          strLabelUnicode.Insert(m_iCursorPos, L"|");
+          if (m_dwTextAlign & XBFONT_CENTER_X)
+            fPosX -= m_pFont->GetTextWidth(strLabelUnicode.c_str()) * 0.5f;
+          BYTE *palette = new BYTE[strLabelUnicode.size()];
+          for (unsigned int i=0; i < strLabelUnicode.size(); i++)
+            palette[i] = 0;
+          palette[m_iCursorPos] = 1;
+          DWORD color[2];
+          color[0] = m_dwDisabledColor;
           if ((++m_dwCounter % 50) > 25)
-          {
-            strLabelUnicode.Insert(m_iCursorPos, L"|");
-          }
+            color[1] = m_dwTextColor;
+          else
+            color[1] = 0; // transparent black
+          m_pFont->DrawColourTextWidth(fPosX, fPosY, color, 2, strLabelUnicode.c_str(), palette, (float)m_dwWidth);
         }
-        m_pFont->DrawText(fPosX, fPosY, m_dwTextColor, strLabelUnicode.c_str(), m_dwTextAlign | XBFONT_TRUNCATED, (float)m_dwWidth);
+        else
+          m_pFont->DrawText(fPosX, fPosY, m_dwTextColor, strLabelUnicode.c_str(), m_dwTextAlign | XBFONT_TRUNCATED, (float)m_dwWidth);
       }
     }
   }

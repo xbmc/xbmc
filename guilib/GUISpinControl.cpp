@@ -352,7 +352,7 @@ void CGUISpinControl::DynamicResourceAlloc(bool bOnOff)
 
 void CGUISpinControl::Render()
 {
-  if (!UpdateVisibility())
+  if (!UpdateFadeState())
   {
     m_iTypedPos = 0;
     strcpy(m_szTyped, "");

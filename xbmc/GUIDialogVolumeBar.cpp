@@ -16,6 +16,7 @@
 CGUIDialogVolumeBar::CGUIDialogVolumeBar(void)
     : CGUIDialog(WINDOW_DIALOG_VOLUME_BAR, "DialogVolumeBar.xml")
 {
+  m_loadOnDemand = false;
 }
 
 CGUIDialogVolumeBar::~CGUIDialogVolumeBar(void)
@@ -38,7 +39,7 @@ bool CGUIDialogVolumeBar::OnMessage(CGUIMessage& message)
   case GUI_MSG_WINDOW_INIT:
     {
       //resources are allocated in g_application
-      //CGUIDialog::OnMessage(message);
+      CGUIDialog::OnMessage(message);
       // start timer
       m_dwTimer = timeGetTime();
       // levels are set in Render(), so no need to do them here...
@@ -49,7 +50,7 @@ bool CGUIDialogVolumeBar::OnMessage(CGUIMessage& message)
   case GUI_MSG_WINDOW_DEINIT:
     {
       //don't deinit, g_application handles it
-      return true;
+      return CGUIDialog::OnMessage(message);
     }
     break;
 

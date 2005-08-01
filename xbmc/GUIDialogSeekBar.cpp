@@ -23,6 +23,7 @@ CGUIDialogSeekBar::CGUIDialogSeekBar(void)
 {
   m_fSeekPercentage = 0.0f;
   m_bRequireSeek = false;
+  m_loadOnDemand = true;    // the application class handles our resources
 }
 
 CGUIDialogSeekBar::~CGUIDialogSeekBar(void)
@@ -66,19 +67,8 @@ bool CGUIDialogSeekBar::OnMessage(CGUIMessage& message)
   switch ( message.GetMessage() )
   {
   case GUI_MSG_WINDOW_INIT:
-    {
-      //resources are allocated in g_application
-      //CGUIDialog::OnMessage(message);
-      return true;
-    }
-    break;
-
   case GUI_MSG_WINDOW_DEINIT:
-    {
-      //don't deinit, g_application handles it
-      return true;
-    }
-    break;
+    return CGUIDialog::OnMessage(message);
 
   case GUI_MSG_LABEL_SET:
     {
@@ -107,7 +97,7 @@ void CGUIDialogSeekBar::Render()
 {
   if (!g_application.m_pPlayer)
   {
-    Close();
+    Close(true);
     return;
   }
 

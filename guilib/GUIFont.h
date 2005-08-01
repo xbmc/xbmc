@@ -46,13 +46,13 @@ public:
   void DrawTextWidth(FLOAT fOriginX, FLOAT fOriginY, DWORD dwColor,
                      const WCHAR* strText, float fMaxWidth);
 
-  void DrawColourTextWidth(FLOAT fOriginX, FLOAT fOriginY, DWORD* pdw256ColorPalette,
+  void DrawColourTextWidth(FLOAT fOriginX, FLOAT fOriginY, DWORD* pdw256ColorPalette, int numColors,
                            const WCHAR* strText, BYTE* pbColours, float fMaxWidth);
 
   void DrawText( FLOAT sx, FLOAT sy, DWORD dwColor,
                  const WCHAR* strText, DWORD dwFlags = 0L,
                  FLOAT fMaxPixelWidth = 0.0f );
-  void DrawScrollingText(float x, float y, DWORD* color, const CStdStringW &text, float w, CScrollInfo &scrollInfo, BYTE *pPalette = NULL);
+  void DrawScrollingText(float x, float y, DWORD* color, int numColors, const CStdStringW &text, float w, CScrollInfo &scrollInfo, BYTE *pPalette = NULL);
 
   inline void GetTextExtent( const WCHAR* strText, FLOAT* pWidth, FLOAT* pHeight, BOOL bFirstLineOnly = FALSE);
 

@@ -29,7 +29,7 @@ CGUIMoverControl::~CGUIMoverControl(void)
 
 void CGUIMoverControl::Render()
 {
-  if (!UpdateVisibility() ) return ;
+  if (!UpdateFadeState() ) return ;
 
   if (HasFocus())
   {

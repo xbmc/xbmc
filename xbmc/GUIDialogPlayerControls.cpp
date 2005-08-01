@@ -15,7 +15,7 @@ CGUIDialogPlayerControls::~CGUIDialogPlayerControls(void)
 void CGUIDialogPlayerControls::Render()
 {
   if (!g_application.IsPlaying() || m_gWindowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO)
-    Close();
+    Close(true);
   else
     CGUIDialog::Render();
 }

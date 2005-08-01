@@ -155,7 +155,7 @@ void CGUIThumbnailPanel::RenderItem(bool bFocus, int iPosX, int iPosY, CGUIListI
 void CGUIThumbnailPanel::Render()
 {
   if (!m_pFont) return ;
-  if (!UpdateVisibility()) return ;
+  if (!UpdateFadeState()) return ;
 
   if (!ValidItem(m_iCursorX, m_iCursorY) )
   {
@@ -664,7 +664,7 @@ void CGUIThumbnailPanel::RenderText(float fPosX, float fPosY, DWORD dwTextColor,
       m_scrollInfo.Reset();
       iLastItem = iItem;
     }
-    m_pFont->DrawScrollingText(fPosX, fPosY, &dwTextColor, scrollString, fMaxWidth, m_scrollInfo);
+    m_pFont->DrawScrollingText(fPosX, fPosY, &dwTextColor, 1, scrollString, fMaxWidth, m_scrollInfo);
     m_pFont->Begin(); //resume fontbatching
   }
 }

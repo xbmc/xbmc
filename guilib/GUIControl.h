@@ -12,6 +12,8 @@
 #include "GUICallback.h"
 #include "GUIFont.h"
 
+enum FADE_STATE { FADING_NONE = 0, FADING_IN, FADING_OUT };
+
 /*!
  \ingroup controls
  \brief Base class for controls
@@ -83,9 +85,12 @@ public:
   virtual void SetWidth(int iWidth);
   virtual void SetHeight(int iHeight);
   virtual void SetVisible(bool bVisible);
-  virtual void SetVisibleCondition(int iVisible) { m_VisibleCondition = iVisible; };
-  int GetVisibleCondition() const { return m_VisibleCondition; };
-  virtual bool UpdateVisibility();
+  void SetVisibleCondition(int visible, int fadeTime = 0, FADE_STATE startState = FADING_NONE);
+  int GetVisibleCondition() const { return m_visibleCondition; };
+  int GetVisibleFadeTime() const { return m_visibleFadeTime; };
+  void UpdateVisibility();
+  void SetInitialVisibility();
+  bool UpdateFadeState();
   void SetSelected(bool bSelected);
   virtual void SetEnabled(bool bEnable);
   bool CalibrationEnabled() const;
@@ -114,6 +119,7 @@ public:
     GUICONTROL_RSS,
     GUICONTROL_SELECTBUTTON,
     GUICONTROL_SLIDER,
+    GUICONTROL_SETTINGS_SLIDER,
     GUICONTROL_SPINBUTTON,
     GUICONTROL_SPIN,
     GUICONTROL_SPINEX,
@@ -153,11 +159,13 @@ protected:
   bool m_bAllocated;
   GUICONTROLTYPES ControlType;
   // fading information
-  enum FADE_STATE { FADING_NONE = 0, FADING_IN, FADING_OUT };
   FADE_STATE m_fadingState;
   DWORD m_fadingTime;
   DWORD m_fadingPos;
-  int m_VisibleCondition;
   bool m_pulseOnSelect;
+  int m_visibleCondition;
+  bool m_lastVisible;
+  int m_visibleFadeTime;
+  FADE_STATE m_visibleStartState;
 };
 #endif

@@ -33,5 +33,7 @@ private:
   bool GetAlignmentY(const TiXmlNode* pRootNode, const char* strTag, DWORD& dwAlignment);
   bool GetFloatRange(const TiXmlNode* pRootNode, const char* strTag, float& iMinValue, float& iMaxValue, float& iIntervalValue);
   bool GetIntRange(const TiXmlNode* pRootNode, const char* strTag, int& iMinValue, int& iMaxValue, int& iIntervalValue);
+  bool GetConditionalVisibility(const TiXmlNode* control, int &condition, int &fadetime, FADE_STATE &starthidden);
+
 };
 #endif
