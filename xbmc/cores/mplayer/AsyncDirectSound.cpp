@@ -568,7 +568,7 @@ DWORD CASyncDirectSound::GetBytesInBuffer()
   LARGE_INTEGER llPerfCount;
   QueryPerformanceCounter(&llPerfCount);
 
-  LONGLONG adjustbytes = (llPerfCount.QuadPart-m_LastPacketCompletedAt.QuadPart) * m_uiChannels * m_uiSamplesPerSec / m_TicksPerSec;
+  LONGLONG adjustbytes = (llPerfCount.QuadPart-m_LastPacketCompletedAt.QuadPart) * m_uiChannels * m_uiSamplesPerSec * (m_uiBitsPerSample / 8) / m_TicksPerSec;
   if( adjustbytes < m_dwPacketSize && adjustbytes <= buffered_bytes)
     return buffered_bytes - (DWORD)adjustbytes;
 
