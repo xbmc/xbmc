@@ -8,7 +8,7 @@ public:
   CGUIDialogContextMenu(void);
   virtual ~CGUIDialogContextMenu(void);
   virtual bool OnMessage(CGUIMessage &message);
-  virtual void DoModal(DWORD dwParentId);
+  virtual void DoModal(DWORD dwParentId, int iWindowID = WINDOW_INVALID);
   virtual void OnWindowUnload();
   void ClearButtons();
   int AddButton(int iLabel);

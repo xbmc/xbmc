@@ -55,6 +55,7 @@ public:
   virtual void OnMouseDrag();
   virtual void OnMouseWheel();
   virtual CStdString GetDescription() const;
+  void SetFormatString(const char *format) { if (format) m_formatString = format; };
 protected:
   virtual void Update() ;
   virtual void Move(int iNumSteps);
@@ -75,5 +76,6 @@ protected:
   int m_iControlOffsetY;
   int m_iInfoCode;
   bool m_renderText;
+  CStdString m_formatString;
 };
 #endif

@@ -121,7 +121,7 @@ void CGUIDialog::Close(bool forceClose /*= false*/)
   m_bRunning = false;
 }
 
-void CGUIDialog::DoModal(DWORD dwParentId)
+void CGUIDialog::DoModal(DWORD dwParentId, int iWindowID /*= WINDOW_INVALID */)
 {
   m_dwParentWindowID = dwParentId;
   m_pParentWindow = m_gWindowManager.GetWindow( m_dwParentWindowID);
@@ -139,7 +139,7 @@ void CGUIDialog::DoModal(DWORD dwParentId)
   g_audioManager.PlayWindowSound(GetID(), SOUND_INIT);
 
   // active this window...
-  CGUIMessage msg(GUI_MSG_WINDOW_INIT, 0, 0);
+  CGUIMessage msg(GUI_MSG_WINDOW_INIT, 0, 0, WINDOW_INVALID, iWindowID);
   OnMessage(msg);
 
   m_bRunning = true;
