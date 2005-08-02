@@ -103,7 +103,7 @@ int CGUIDialogContextMenu::AddButton(const wstring &strLabel)
   return m_iNumButtons;
 }
 
-void CGUIDialogContextMenu::DoModal(DWORD dwParentId)
+void CGUIDialogContextMenu::DoModal(DWORD dwParentId, int iWindowID /*= WINDOW_INVALID */)
 {
   // update the navigation of the first and last buttons
   CGUIControl *pControl = (CGUIControl *)GetControl(BUTTON_TEMPLATE + 1);

@@ -23,6 +23,7 @@ public:
   float min;
   float max;
   float interval;
+  CStdString format;
   std::vector<CStdString> entry;
 };
 
@@ -34,6 +35,7 @@ public:
   virtual ~CGUIDialogVideoSettings(void);
   virtual bool OnMessage(CGUIMessage &message);
   virtual void Render();
+  virtual bool HasID(DWORD dwID);
 protected:
   virtual void SetupPage();
   void CreateSettings();
@@ -47,13 +49,16 @@ protected:
   void AddBool(unsigned int id, int label, bool *on);
   void AddSpin(unsigned int id, int label, int *current, unsigned int max, const int *entries);
   void AddSpin(unsigned int id, int label, int *current, unsigned int min, unsigned int max);
-  void AddSlider(unsigned int id, int label, float *current, float min, float interval, float max);
+  void AddSlider(unsigned int id, int label, float *current, float min, float interval, float max, const char *format = NULL);
   void AddSlider(unsigned int id, int label, int *current, int min, int max);
+  void AddAudioStreams(int id);
+  void AddSubtitleStreams(int id);
 
   int m_iLastControl;
   int m_iCurrentPage;
   int m_iNumPages;
   int m_iNumPerPage;
+  int m_iScreen;      // current screen
 
   CGUISpinControlEx *m_pOriginalSpin;
   CGUIRadioButtonControl *m_pOriginalRadioButton;
@@ -64,4 +69,6 @@ protected:
 
   int m_flickerFilter;
   bool m_soften;
+  float m_volume;
+  int m_audioStream;
 };
