@@ -5,6 +5,10 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+<<<<<<< Changelog.txt
+
+ - 02-08-2005 fixed: more menu fixes for the dvd player (dlls in \system\players\dvdplayer\ have to be updated)
+ - 02-08-2005 updated: libdvdcss for dvdplayer to v1.2.9
  - 02-08-2005 added: Initial support for audio and subtitle settings to new video OSD layout (currently disabled)
  - 02-08-2005 fixed: DialogSeekBar was unloaded when it was closed, rather than on app close.
  - 02-08-2005 fixed: SITE HELP command wasn't spec-correct.  Thanks to ljardine.
