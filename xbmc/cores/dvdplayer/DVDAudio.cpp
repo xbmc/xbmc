@@ -114,14 +114,19 @@ DWORD CDVDAudio::AddPackets(unsigned char* data, DWORD len)
 
   if (m_iBufferSize > 0)
   {
-    fast_memcpy(m_pBuffer + m_iBufferSize, data, m_dwPacketSize - m_iBufferSize);
-    data += m_dwPacketSize - m_iBufferSize;
-    len -= m_dwPacketSize - m_iBufferSize;
-    m_iBufferSize = 0;
-    if (m_pAudioDecoder->AddPackets(m_pBuffer, m_dwPacketSize) != m_dwPacketSize)
+    unsigned int iBytesToCopy = m_dwPacketSize - m_iBufferSize;
+    if (iBytesToCopy > len) iBytesToCopy = len;
+    
+    fast_memcpy(m_pBuffer + m_iBufferSize, data, iBytesToCopy);
+    data += iBytesToCopy;
+    len -= iBytesToCopy;
+    m_iBufferSize += iBytesToCopy;
+    
+    if (m_pAudioDecoder->AddPackets(m_pBuffer, m_iBufferSize) != m_dwPacketSize)
     {
       return -1;
     }
+    m_iBufferSize = 0;
   }
 
   DWORD copied = 0;
