@@ -1,10 +1,9 @@
 /* TODO / BUGS
 * - when playing audio only, xbmc renders the screen itself, but we don't get 50 / 60 fps. player bug or general xbmc bug? (XBMC bug, happens in music view only)
 * - create a seperate subtitle class for handling subtitles (we should support seperate vob / srt files too)
-*   and cleanup al SPUInfo realted code in the DVDPlayer class (we should convert it to YUV maybe)
+*   and cleanup al SPUInfo realted code in the DVDPlayer class
 * -
 * - keep track of criticalsections that dll's initialize (DLL Loader)
-* - keep track of file handles that dll's use (DLL Loader)
 * - when stopping a movie, the latest packet that comes from the demuxer is not freed
 */
 
@@ -51,7 +50,6 @@ CDVDPlayer::CDVDPlayer(IPlayerCallback& callback)
   m_dvd.iNAVPackFinish = -1;
   m_dvd.iFlagSentStart = 0;
  
-  m_bReadData = false;
   m_filename[0] = '\0';
   m_bAbortRequest = false;
   m_iCurrentVideoStream = 0;
@@ -73,9 +71,6 @@ bool CDVDPlayer::Load()
   if (!m_pDLLavcodec)
   {
     CLog::Log(LOGNOTICE, "CDVDPlayer::Load() Loading avcodec.dll");
-    // load the dll with memory tracking enabled !!!
-    // this is really needed for avcodec.dll because it doesn't free all memory after closing the codec
-    // there is a function av_free_static() for it, but even that doesn't do it perfectly
     m_pDLLavcodec = new DllLoader("Q:\\system\\players\\dvdplayer\\avcodec.dll", true);
     if ( !m_pDLLavcodec->Parse() )
     {
@@ -283,9 +278,6 @@ void CDVDPlayer::Process()
       continue;
     }
 
-    m_bReadData = true; // used for stutterfree dvd menu navigation
-    static int oldstate = DVDSTATE_STILL; // test variable that should be removed sometimes , cause read error's shouldn't happen
-
     if (m_dvd.state == DVDSTATE_STILL)
     {
       // only send a still state to the video decoder once.
@@ -298,7 +290,6 @@ void CDVDPlayer::Process()
         //m_dvdPlayerVideo.m_pVideoCodec->Flush();
         m_dvdPlayerVideo.m_packetQueue.Put(pPacket, (void*)DVDSTATE_STILL);
         m_dvd.bDisplayedStill = true;
-        oldstate = DVDSTATE_STILL;
       }
       else if (pPacket) CDVDDemuxUtils::FreeDemuxPacket(pPacket);
       continue;
@@ -313,7 +304,6 @@ void CDVDPlayer::Process()
         break;
     }
 
-    oldstate = DVDSTATE_NORMAL;
     iErrorCounter = 0;
 
     CDemuxStream *pStream = m_pDemuxer->GetStream(pPacket->iStreamId);
@@ -536,9 +526,9 @@ void CDVDPlayer::HandleMessages()
           if (pMessage->iMessage == DVDMESSAGE_CHAPTER_PREV) pStream->OnPrevious();
 
           //m_bReadData = false;
-          m_dvd.iDVDStillTime = 0;
-          m_dvd.state = DVDSTATE_NORMAL;
-          m_dvd.iDVDStillStartTime = 0;
+          //m_dvd.iDVDStillTime = 0;
+          //m_dvd.state = DVDSTATE_NORMAL;
+          //m_dvd.iDVDStillStartTime = 0;
           // sleep until the dvd player is reading some data with read_frame
           // while(!m_bReadData) Sleep(1);
           // m_iCommands |= DVDCOMMAND_FLUSH;
@@ -1132,7 +1122,7 @@ int CDVDPlayer::OnDVDNavResult(void* pData, int iMessage)
           if (((GetTickCount() - m_dvd.iDVDStillStartTime) / 1000) >= ((DWORD)m_dvd.iDVDStillTime))
           {
             m_dvd.iDVDStillTime = 0;
-            m_dvd.state = DVDSTATE_NORMAL;
+            //m_dvd.state = DVDSTATE_NORMAL;
             m_dvd.iDVDStillStartTime = 0;
             pStream->SkipStill();
 
@@ -1247,7 +1237,7 @@ int CDVDPlayer::OnDVDNavResult(void* pData, int iMessage)
       // this also means the libdvdnav may not return any data packets after this command
       m_messenger.ResetDemuxer();
       m_bReadAgain = true;
-      
+
       //Force an aspect ratio that is set in the dvdheaders if available
       //techinally wrong place to do, should really be done when next video packet 
       //is decoded.. but won't cause too many problems
@@ -1263,7 +1253,8 @@ int CDVDPlayer::OnDVDNavResult(void* pData, int iMessage)
         m_dvd.iCurrentCell = cell_change_event->pgN;
         // m_iCommands |= DVDCOMMAND_SYNC;
       }
-      // not implemented
+      
+      m_dvd.state = DVDSTATE_NORMAL;
     }
     break;
   case DVDNAV_NAV_PACKET:
@@ -1333,7 +1324,6 @@ bool CDVDPlayer::OnAction(const CAction &action)
       {
         CLog::DebugLog(" - go to menu");
         pStream->OnMenu();
-        m_dvd.state = DVDSTATE_NORMAL;
         return true;
       }
       break;
@@ -1347,14 +1337,12 @@ bool CDVDPlayer::OnAction(const CAction &action)
         {
           CLog::DebugLog(" - menu select");
           pStream->OnMenu();
-          m_dvd.state = DVDSTATE_NORMAL;
         }
         break;
       case ACTION_PREVIOUS_MENU:
         {
           CLog::DebugLog(" - menu back");
           pStream->OnBack();
-          m_dvd.state = DVDSTATE_NORMAL;
         }
         break;
       case ACTION_MOVE_LEFT:
@@ -1390,14 +1378,6 @@ bool CDVDPlayer::OnAction(const CAction &action)
           m_dvd.iSelectedSPUStream = -1;
 
           pStream->ActivateButton();
-          m_dvd.state = DVDSTATE_NORMAL;
-
-          // Wait till we have read some data. 
-          // buffers will have been flushed by
-          // a hopchannel nav command
-          //m_bReadData = false;
-          //while (!m_bReadData) Sleep(1);
-
         }
         break;
       default:
