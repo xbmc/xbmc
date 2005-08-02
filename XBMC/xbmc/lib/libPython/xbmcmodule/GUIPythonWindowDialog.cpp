@@ -29,6 +29,7 @@ void CGUIPythonWindowDialog::Activate(DWORD dwParentId)
   // active this dialog...
   CGUIMessage msg(GUI_MSG_WINDOW_INIT,0,0);
   OnMessage(msg);
+  m_bRunning = true;
 }
 
 bool CGUIPythonWindowDialog::OnMessage(CGUIMessage& message)
