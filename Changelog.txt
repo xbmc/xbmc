@@ -5,7 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
- - 01-08-2008 fixed: async audiorenderer reported somewhat wrong audiodelay to player, caused more early/late frames in mplayer
+ - 01-08-2005 fixed: dvdplayer crashed at the end of certain files
+ - 01-08-2005 fixed: async audiorenderer reported somewhat wrong audiodelay to player, caused more early/late frames in mplayer
  - 01-08-2005 updated: mplayer.dll to cvs version( new ffmpeg, interlaced flag, cache uninit fix)
  - 01-08-2005 added: more memory error handling in DLLLoader, should avoid some hardlocks when mplayer crashes
  - 01-08-2005 fixed: Extra button press needed to cancel visualisation screensaver mode.
