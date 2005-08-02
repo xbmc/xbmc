@@ -34,14 +34,25 @@ static SDirData vecDirsOpen[MAX_OPEN_DIRS];
 bool bVecFilesInited = false;
 bool bVecDirsInited = false;
 extern void update_cache_dialog(const char* tmp);
-/*extern "C" HANDLE WINAPI CreateThread(
-    LPSECURITY_ATTRIBUTES lpThreadAttributes,
-    DWORD dwStackSize,
-    LPTHREAD_START_ROUTINE lpStartAddress,
-    LPVOID lpParameter,
-    DWORD dwCreationFlags,
-    LPDWORD lpThreadId
-  );*/
+
+struct _env
+{
+  const char* name;
+  char* value;
+};
+
+static struct _env environment[] = 
+{
+  // libdvdnav
+  { "DVDREAD_NOKEYS", "1" },
+  
+  // libdvdcss
+  { "DVDCSS_METHOD", "title" },
+  { "DVDCSS_VERBOSE", "3" },
+  { "DVDCSS_CACHE", "T:\\cache" },
+  
+  { NULL, NULL }
+};
 
 extern "C"
 {
@@ -329,7 +340,13 @@ extern "C"
 
   char* dll_getenv(const char* szKey)
   {
-    if (strcmp(szKey, "DVDREAD_NOKEYS") == 0) return "1"; // needed by libdvdnav
+    int i = 0;
+    while (environment[i].name)
+    {
+      if (strcmp(szKey, environment[i].name) == 0) return environment[i].value;
+      i++;
+    }
+    
 	  if (strcmp(szKey, "http_proxy") == 0) // needed by libdemux
 	  {
         // Use a proxy, if the GUI was configured as such
@@ -344,32 +361,6 @@ extern "C"
 		  return opt_proxyurl;
         }
 	  }
-
-     // python environment variables
-    {
-	    if(!strcmp(szKey, "PYTHONPATH"))
-		    return "Q:\\system\\python\\python24.zlib;Q:\\system\\python\\lib;Q:\\system\\python\\spyce;Q:\\system\\python";
-	    else if(!strcmp(szKey, "PYTHONHOME"))
-		    return "Q:\\system\\python";
-	    else if (!strcmp(szKey, "PATH"))
-		    return ".;Q:\\;Q:\\system\\python";
-	    else if (!strcmp(szKey, "PYTHONCASEOK"))
-		    return NULL;
-	    else if (!strcmp(szKey, "PYTHONDEBUG"))
-		    return "1";
-	    else if (!strcmp(szKey, "PYTHONVERBOSE"))
-		    return NULL; // "1" for normal verbose, "2" for more verbose ?
-	    else if (!strcmp(szKey, "PYTHONOPTIMIZE"))
-		    return "1";
-	    else if (!strcmp(szKey, "PYTHONDUMPREFS"))
-		    return NULL;
-	    else if (!strcmp(szKey, "THREADDEBUG"))
-		    return NULL;
-	    else if (!strcmp(szKey, "PYTHONMALLOCSTATS"))
-		    return NULL;
-	    else if (!strcmp(szKey, "PYTHONY2K"))
-		    return NULL;
-		}
 
     return NULL;
   }
