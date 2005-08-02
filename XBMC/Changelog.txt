@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 02-08-2005 updated: kai-vectors.xml (Thx to Puma81)
  - 01-08-2005 fixed: dvdplayer crashed at the end of certain files
  - 01-08-2005 fixed: async audiorenderer reported somewhat wrong audiodelay to player, caused more early/late frames in mplayer
  - 01-08-2005 updated: mplayer.dll to cvs version( new ffmpeg, interlaced flag, cache uninit fix)
