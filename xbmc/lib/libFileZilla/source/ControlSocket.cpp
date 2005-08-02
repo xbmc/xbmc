@@ -2159,13 +2159,7 @@ void CControlSocket::ParseCommand()
 	    if (!GetCommandFromString(args, sitecommand, siteargs))
 		    return;
 
-
-      {
-	      CStdString str;
-	      str.Format("200 FTP SITE command called [command=%s, args=%s]", sitecommand.c_str(), siteargs.c_str());
-	      //Send(str);
-        CLog::Log(LOGNOTICE, str);
-      }
+      CLog::Log(LOGNOTICE, "200 FTP SITE command called [command=%s, args=%s]", sitecommand.c_str(), siteargs.c_str());
 
 	    //Check if command is valid
 	    int nCommandID = -1;
@@ -2206,10 +2200,12 @@ void CControlSocket::ParseCommand()
         {
           CStdString strHelp;
           CUtil::GetBuiltInHelp(strHelp);
+          Send(_T("200-FTP SITE HELP"));
           int iReturn = strHelp.Find("\n");
           while (iReturn >= 0)
           {
-            Send(_T(strHelp.Left(iReturn)));
+            CStdString helpline = "  " + strHelp.Left(iReturn);
+            Send(_T(helpline.c_str()));
             strHelp = strHelp.Mid(iReturn + 1);
             iReturn = strHelp.Find("\n");
           }
