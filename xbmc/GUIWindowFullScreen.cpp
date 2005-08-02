@@ -671,6 +671,9 @@ void CGUIWindowFullScreen::RenderTTFSubtitles()
   {
     CSingleLock lock (m_fontLock);
 
+    g_graphicsContext.SetWindowAlpha(255);
+    g_graphicsContext.SetScalingResolution(g_graphicsContext.GetVideoResolution(), 0, 0, false);
+
     subtitle* sub = mplayer_GetCurrentSubtitle();
 
     if (sub != NULL)
