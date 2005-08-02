@@ -5,8 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
-<<<<<<< Changelog.txt
-
+ - 02-08-2005 added: More stuff for the new video OSD system.
  - 02-08-2005 fixed: more menu fixes for the dvd player (dlls in \system\players\dvdplayer\ have to be updated)
  - 02-08-2005 updated: libdvdcss for dvdplayer to v1.2.9
  - 02-08-2005 added: Initial support for audio and subtitle settings to new video OSD layout (currently disabled)
