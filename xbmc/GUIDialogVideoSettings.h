@@ -9,7 +9,7 @@
 class VideoSetting
 {
 public:
-  enum SETTING_TYPE { NONE=0, BUTTON, CHECK, SPIN, SLIDER, SLIDER_INT };
+  enum SETTING_TYPE { NONE=0, BUTTON, CHECK, SPIN, SLIDER, SLIDER_INT, SEPARATOR };
   VideoSetting()
   {
     id = 0;
@@ -42,7 +42,7 @@ protected:
   void UpdateSetting(unsigned int setting);
   void OnSettingChanged(unsigned int setting);
   virtual void FreeControls();
-  void OnClick(int iControl);
+  void OnClick(int iControlID);
   void AddSetting(VideoSetting &setting, int iPosX, int iPosY, int iWidth, int iControlID);
 
   void AddButton(unsigned int it, int label);
@@ -51,19 +51,22 @@ protected:
   void AddSpin(unsigned int id, int label, int *current, unsigned int min, unsigned int max);
   void AddSlider(unsigned int id, int label, float *current, float min, float interval, float max, const char *format = NULL);
   void AddSlider(unsigned int id, int label, int *current, int min, int max);
-  void AddAudioStreams(int id);
-  void AddSubtitleStreams(int id);
+  void AddAudioStreams(unsigned int id);
+  void AddSubtitleStreams(unsigned int id);
+  void AddSeparator(unsigned int id);
 
   int m_iLastControl;
+  int m_iScreen;      // current screen
+  int m_iPageOffset;  // offset into the settings list of our current page.
   int m_iCurrentPage;
   int m_iNumPages;
   int m_iNumPerPage;
-  int m_iScreen;      // current screen
 
   CGUISpinControlEx *m_pOriginalSpin;
   CGUIRadioButtonControl *m_pOriginalRadioButton;
   CGUIButtonControl *m_pOriginalSettingsButton;
   CGUISettingsSliderControl *m_pOriginalSlider;
+  CGUIImage *m_pOriginalSeparator;
 
   vector<VideoSetting> m_settings;
 
@@ -71,4 +74,5 @@ protected:
   bool m_soften;
   float m_volume;
   int m_audioStream;
+  int m_subtitleStream;
 };
