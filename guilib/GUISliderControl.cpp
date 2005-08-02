@@ -379,10 +379,25 @@ CStdString CGUISliderControl::GetDescription() const
 {
   CStdString description;
   if (m_iType == SPIN_CONTROL_TYPE_FLOAT)
-    description.Format("%2.2f", m_fValue);
+  {
+    if (m_formatString.IsEmpty())
+      description.Format("%2.2f", m_fValue);
+    else
+      description.Format(m_formatString.c_str(), m_fValue);
+  }
   else if (m_iType == SPIN_CONTROL_TYPE_INT)
-    description.Format("%i", m_iValue);
+  {
+    if (m_formatString.IsEmpty())
+      description.Format("%i", m_iValue);
+    else
+      description.Format(m_formatString.c_str(), m_iValue);
+  }
   else
-    description.Format("%i%%", m_iPercent);
+  {
+    if (m_formatString.IsEmpty())
+      description.Format("%i%%", m_iPercent);
+    else
+      description.Format(m_formatString.c_str(), m_iPercent);
+  }
   return description;
 }
