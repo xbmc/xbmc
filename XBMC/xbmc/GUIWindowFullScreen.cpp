@@ -110,12 +110,16 @@ void CGUIWindowFullScreen::AllocResources(bool forceLoad)
   CGUIWindow::AllocResources(forceLoad);
   CGUIWindow *pWindow = m_gWindowManager.GetWindow(WINDOW_OSD);
   if (pWindow) pWindow->AllocResources(true);
+  pWindow = m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_OSD_SETTINGS);
+  if (pWindow) pWindow->AllocResources(true);
 }
 
 void CGUIWindowFullScreen::FreeResources(bool forceUnload)
 {
   g_settings.Save();
   CGUIWindow *pWindow = m_gWindowManager.GetWindow(WINDOW_OSD);
+  if (pWindow) pWindow->FreeResources(true);
+  pWindow = m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_OSD_SETTINGS);
   if (pWindow) pWindow->FreeResources(true);
   CGUIWindow::FreeResources(forceUnload);
 }
@@ -410,6 +414,11 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
 
       if (g_application.m_pPlayer)
         g_application.m_pPlayer->Update();
+
+      CGUIDialog *pDialog = (CGUIDialog *)m_gWindowManager.GetWindow(WINDOW_OSD);
+      if (pDialog) pDialog->Close(true);
+      pDialog = (CGUIDialog *)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_OSD_SETTINGS);
+      if (pDialog) pDialog->Close(true);
 
       g_audioManager.Enable(true);
       return true;

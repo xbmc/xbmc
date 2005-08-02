@@ -2848,7 +2848,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
         // Dialog, dont pass path!
         CGUIDialog *pDialog = (CGUIDialog *)pWindow;
         if (!pDialog->IsRunning())
-          pDialog->DoModal(m_gWindowManager.GetActiveWindow());
+          pDialog->DoModal(m_gWindowManager.GetActiveWindow(), iWindow);
         return -6;
       }
       m_gWindowManager.ActivateWindow(iWindow, strPath);

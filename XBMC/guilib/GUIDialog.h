@@ -21,7 +21,7 @@ public:
   virtual bool OnMessage(CGUIMessage& message);
   virtual void Render();
 
-  void DoModal(DWORD dwParentId); // modal
+  void DoModal(DWORD dwParentId, int iWindowID = WINDOW_INVALID); // modal
   void Show(DWORD dwParentId); // modeless
 
   virtual void Close(bool forceClose = false);
