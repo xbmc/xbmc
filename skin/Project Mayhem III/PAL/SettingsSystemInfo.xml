@@ -42,118 +42,118 @@
 
     <controlgroup>
       <control>
-        <description>Section Label</description>
-        <type>label</type>
-        <id>40</id>
-        <posX>220</posX>
-        <posY>120</posY>
-        <font>font13</font>
-        <label>139</label>
+	<description>Section Label</description>
+	<type>label</type>
+	<id>40</id>
+	<posX>220</posX>
+	<posY>120</posY>
+	<font>font13</font>
+	<label>139</label>
       </control>
 
       <control>
-        <description>Button Default Values</description>
-        <type>button</type>
-        <id>95</id>
-        <posX>50</posX>
-        <posY>120</posY>
-        <label>13278</label>
-        <font>font13</font>
-        <onleft>95</onleft>
-        <onright>95</onright>
-        <onup>98</onup>
-        <ondown>94</ondown>
-        <align>Left</align>
+	<description>Button Default Values</description>
+	<type>button</type>
+	<id>95</id>
+	<posX>50</posX>
+	<posY>120</posY>
+	<label>13278</label>
+	<font>font13</font>
+	<onleft>95</onleft>
+	<onright>95</onright>
+	<onup>98</onup>
+	<ondown>94</ondown>
+	<align>Left</align>
       </control>
 
       <control>
-        <description>Button Storage</description>
-        <type>button</type>
-        <id>94</id>
-        <posX>50</posX>
-        <posY>157</posY>
-        <label>13277</label>
-        <font>font13</font>
-        <onleft>94</onleft>
-        <onright>94</onright>
-        <onup>95</onup>
-        <ondown>92</ondown>
-        <align>Left</align>
+	<description>Button Storage</description>
+	<type>button</type>
+	<id>94</id>
+	<posX>50</posX>
+	<posY>157</posY>
+	<label>13277</label>
+	<font>font13</font>
+	<onleft>94</onleft>
+	<onright>94</onright>
+	<onup>95</onup>
+	<ondown>92</ondown>
+	<align>Left</align>
       </control>
 
       <control>
-        <description>Button HDD</description>
-        <type>button</type>
-        <id>92</id>
-        <posX>50</posX>
-        <posY>194</posY>
-        <label>13275</label>
-        <font>font13</font>
-        <onleft>92</onleft>
-        <onright>92</onright>
-        <onup>94</onup>
-        <ondown>93</ondown>
-        <align>Left</align>
+	<description>Button HDD</description>
+	<type>button</type>
+	<id>92</id>
+	<posX>50</posX>
+	<posY>194</posY>
+	<label>13275</label>
+	<font>font13</font>
+	<onleft>92</onleft>
+	<onright>92</onright>
+	<onup>94</onup>
+	<ondown>93</ondown>
+	<align>Left</align>
       </control>
 
       <control>
-        <description>Button DVD</description>
-        <type>button</type>
-        <id>93</id>
-        <posX>50</posX>
-        <posY>231</posY>
-        <label>13276</label>
-        <font>font13</font>
-        <onleft>93</onleft>
-        <onright>93</onright>
-        <onup>92</onup>
-        <ondown>96</ondown>
-        <align>Left</align>
+	<description>Button DVD</description>
+	<type>button</type>
+	<id>93</id>
+	<posX>50</posX>
+	<posY>231</posY>
+	<label>13276</label>
+	<font>font13</font>
+	<onleft>93</onleft>
+	<onright>93</onright>
+	<onup>92</onup>
+	<ondown>96</ondown>
+	<align>Left</align>
       </control>
 
       <control>
-        <description>Button Network</description>
-        <type>button</type>
-        <id>96</id>
-        <posX>50</posX>
-        <posY>268</posY>
-        <label>13279</label>
-        <font>font13</font>
-        <onleft>96</onleft>
-        <onright>96</onright>
-        <onup>93</onup>
-        <ondown>97</ondown>
-        <align>Left</align>
+	<description>Button Network</description>
+	<type>button</type>
+	<id>96</id>
+	<posX>50</posX>
+	<posY>268</posY>
+	<label>13279</label>
+	<font>font13</font>
+	<onleft>96</onleft>
+	<onright>96</onright>
+	<onup>93</onup>
+	<ondown>97</ondown>
+	<align>Left</align>
       </control>
 
       <control>
-        <description>Button VIDEO</description>
-        <type>button</type>
-        <id>97</id>
-        <posX>50</posX>
-        <posY>305</posY>
-        <label>13280</label>
-        <font>font13</font>
-        <onleft>97</onleft>
-        <onright>97</onright>
-        <onup>96</onup>
-        <ondown>98</ondown>
-        <align>Left</align>
+	<description>Button VIDEO</description>
+	<type>button</type>
+	<id>97</id>
+	<posX>50</posX>
+	<posY>305</posY>
+	<label>13280</label>
+	<font>font13</font>
+	<onleft>97</onleft>
+	<onright>97</onright>
+	<onup>96</onup>
+	<ondown>98</ondown>
+	<align>Left</align>
       </control>
 
       <control>
-        <description>Button XBOX Hardware</description>
-        <type>button</type>
-        <id>98</id>
-        <posX>50</posX>
-        <posY>342</posY>
-        <label>13281</label>
-        <font>font13</font>
-        <onleft>98</onleft>
-        <onright>98</onright>
-        <onup>97</onup>
-        <ondown>95</ondown>
-        <align>Left</align>
+	<description>Button XBOX Hardware</description>
+	<type>button</type>
+	<id>98</id>
+	<posX>50</posX>
+	<posY>342</posY>
+	<label>13281</label>
+	<font>font13</font>
+	<onleft>98</onleft>
+	<onright>98</onright>
+	<onup>97</onup>
+	<ondown>95</ondown>
+	<align>Left</align>
       </control>
 
     </controlgroup>
@@ -269,77 +269,77 @@
     </control>
 
     <!--
-      <control>
-        <description>Label 12</description>
-        <type>label</type>
-        <id>12</id>
-        <posX>220</posX>
-        <posY>425</posY>
-        <label>13282</label>
-        <font>font13</font>
-        <textcolor>70FFFFFF</textcolor>
-      </control>
+    <control>
+      <description>Label 12</description>
+      <type>label</type>
+      <id>12</id>
+      <posX>220</posX>
+      <posY>425</posY>
+      <label>13282</label>
+      <font>font13</font>
+      <textcolor>70FFFFFF</textcolor>
+    </control>
 
-      -->
-        <!-- Add fav values here!
-          <control>
-            <description>TEST Label</description>
-            <type>label</type>
-            <id>1</id>
-            <posX>220</posX>
-            <posY>426</posY>
-            <label>-</label>
-            <info>Network.IPAddress</info>
-            <align>left</align>
-            <font>font12</font>
-          </control>
+    -->
+    <!-- Add fav values here!
+    <control>
+      <description>TEST Label</description>
+      <type>label</type>
+      <id>1</id>
+      <posX>220</posX>
+      <posY>426</posY>
+      <label>-</label>
+      <info>Network.IPAddress</info>
+      <align>left</align>
+      <font>font12</font>
+    </control>
 
-          -->
-            <control>
-              <description>Current Time</description>
-              <type>label</type>
-              <id>50</id>
-              <posX>220</posX>
-              <posY>422</posY>
-              <label>143</label>
-              <font>font12</font>
-              <textcolor>70FFFFFF</textcolor>
-            </control>
+    -->
+    <control>
+      <description>Current Time</description>
+      <type>label</type>
+      <id>50</id>
+      <posX>220</posX>
+      <posY>422</posY>
+      <label>143</label>
+      <font>font12</font>
+      <textcolor>70FFFFFF</textcolor>
+    </control>
 
-            <control>
-              <description>XBMC Version</description>
-              <type>label</type>
-              <id>51</id>
-              <posX>220</posX>
-              <posY>443</posY>
-              <label>144</label>
-              <font>font12</font>
-              <textcolor>70FFFFFF</textcolor>
-            </control>
+    <control>
+      <description>XBMC Version</description>
+      <type>label</type>
+      <id>51</id>
+      <posX>220</posX>
+      <posY>443</posY>
+      <label>144</label>
+      <font>font12</font>
+      <textcolor>70FFFFFF</textcolor>
+    </control>
 
-            <control>
-              <description>XBMC XBE BUILD Version</description>
-              <type>label</type>
-              <id>52</id>
-              <posX>220</posX>
-              <posY>465</posY>
-              <label>144</label>
-              <font>font12</font>
-              <textcolor>70FFFFFF</textcolor>
-            </control>
+    <control>
+      <description>XBMC XBE BUILD Version</description>
+      <type>label</type>
+      <id>52</id>
+      <posX>220</posX>
+      <posY>465</posY>
+      <label>144</label>
+      <font>font12</font>
+      <textcolor>70FFFFFF</textcolor>
+    </control>
 
-            <control>
-              <description>Mplayer DLL Version</description>
-              <type>label</type>
-              <id>53</id>
-              <posX>220</posX>
-              <posY>485</posY>
-              <label>144</label>
-              <font>font12</font>
-              <textcolor>70FFFFFF</textcolor>
-            </control>
+    <control>
+      <description>Mplayer DLL Version</description>
+      <type>label</type>
+      <id>53</id>
+      <posX>220</posX>
+      <posY>485</posY>
+      <label>144</label>
+      <font>font12</font>
+      <textcolor>70FFFFFF</textcolor>
+    </control>
 
-          </controls>
+  </controls>
 
-        </window>
+</window>
 
