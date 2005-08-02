@@ -491,7 +491,7 @@ DWORD video_refresh_thread(void *arg)
       }
       else
         iSleepTime = (int)((vp->pts + pDVDPlayerVideo->m_iVideoDelay - pDVDPlayerVideo->m_pClock->GetClock()) & 0xFFFFFFFF);
-
+      
 
       //Adjust for flippage delay
       iSleepTime = iSleepTime + iFrameTimeError;
@@ -509,7 +509,8 @@ DWORD video_refresh_thread(void *arg)
       // we expect the video device to be initialized here
       // skip this flip should we be later than a full frame
       iTimeStamp = frameclock.GetClock();
-      if( iSleepTime > -(int)vp->iDuration ) 
+      // this won't work in dvd menu's lots of still and pictures are scipped this way
+      //if( iSleepTime > -(int)vp->iDuration ) 
       {
         g_renderManager.FlipPage();
       
