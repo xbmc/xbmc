@@ -7,7 +7,7 @@
     <posY>470</posY>
   </coordinates>
 
-  <visible fade="20" start="hidden">Window.IsActive(402)</visible>
+  <visible fade="20" start="hidden">Window.IsActive(107)</visible>
   <controls>
     <control>
       <description>Popup Kai Toast Dialog Background</description>

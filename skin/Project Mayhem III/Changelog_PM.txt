@@ -1,3 +1,5 @@
+2005-08-03 fixed:	toast dialog disappears to quick in PAL resolution
+
 2005-08-01 added:	fading effects to various dialogs
 
 2005-07-30 changed:	format of sounds.xml
