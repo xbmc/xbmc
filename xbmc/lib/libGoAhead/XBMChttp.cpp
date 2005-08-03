@@ -1313,9 +1313,11 @@ CStdString CXbmcHttp::xbmcAction(int eid, webs_t wp, int numParas, CStdString pa
   switch(theAction)
   {
   case 1:
-    if (pSlideShow) {
-      action.wID = ACTION_PAUSE;
-      pSlideShow->OnAction(action);    
+    if (showingSlideshow) {
+      if (pSlideShow) {
+        action.wID = ACTION_PAUSE;
+        pSlideShow->OnAction(action);    
+      }
     }
     else
       g_applicationMessenger.MediaPause();
