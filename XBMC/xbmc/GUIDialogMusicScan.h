@@ -14,6 +14,7 @@ public:
   virtual void Render();
 
   void StartScanning(const CStdString& strDirectory, bool bUpdateAll);
+  bool IsScanning();
   void StopScanning();
 
   void UpdateState();

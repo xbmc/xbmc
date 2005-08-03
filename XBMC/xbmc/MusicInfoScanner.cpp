@@ -23,11 +23,6 @@ CMusicInfoScanner::~CMusicInfoScanner()
 {
 }
 
-void CMusicInfoScanner::OnStartup()
-{
-  m_bRunning = true;
-}
-
 void CMusicInfoScanner::Process()
 {
   try
@@ -120,6 +115,7 @@ void CMusicInfoScanner::Process()
     strTmp.Format("My Music: Scanning for music info using worker thread, operation took %s", strTmp1);
     CLog::Log(LOGNOTICE, strTmp.c_str());
 
+    m_bRunning = false;
     if (m_pObserver)
       m_pObserver->OnFinished();
   }
@@ -129,17 +125,13 @@ void CMusicInfoScanner::Process()
   }
 }
 
-void CMusicInfoScanner::OnExit()
-{
-  m_bRunning = false;
-}
-
 void CMusicInfoScanner::Start(const CStdString& strDirectory, bool bUpdateAll)
 {
   m_strStartDir = strDirectory;
   m_bUpdateAll = bUpdateAll;
   StopThread();
   Create();
+  m_bRunning = true;
 }
 
 bool CMusicInfoScanner::IsScanning()

@@ -293,8 +293,6 @@ bool CGUIWindowMusicSongs::OnMessage(CGUIMessage& message)
 
   case GUI_MSG_SCAN_FINISHED:
     {
-      //UpdateButtons();
-      Sleep(200);
       Update(m_Directory.m_strPath);
     }
     break;
@@ -485,10 +483,9 @@ void CGUIWindowMusicSongs::GetDirectory(const CStdString &strDirectory, CFileIte
 void CGUIWindowMusicSongs::OnScan()
 {
   CGUIDialogMusicScan *musicScan = (CGUIDialogMusicScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
-  if (musicScan && musicScan->IsRunning())
+  if (musicScan && musicScan->IsScanning())
   {
     musicScan->StopScanning();
-    UpdateButtons();
     return ;
   }
 
@@ -508,8 +505,8 @@ void CGUIWindowMusicSongs::OnScan()
   // Start background loader
   int iControl=GetFocusedControl();
   if (musicScan) musicScan->StartScanning(m_Directory.m_strPath, bUpdateAll);
-  UpdateButtons();
   SET_CONTROL_FOCUS(iControl, 0);
+  UpdateButtons();
   return ;
 }
 
@@ -594,7 +591,7 @@ void CGUIWindowMusicSongs::UpdateButtons()
   }
 
   CGUIDialogMusicScan *musicScan = (CGUIDialogMusicScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
-  if (musicScan && musicScan->IsRunning())
+  if (musicScan && musicScan->IsScanning())
   {
     SET_CONTROL_LABEL(CONTROL_BTNSCAN, 14056); // Stop Scan
   }
