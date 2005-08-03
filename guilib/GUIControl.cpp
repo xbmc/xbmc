@@ -489,7 +489,16 @@ CStdString CGUIControl::ParseLabel(CStdString& strLabel)
 
     // $$ prints $
     else if (strLabel[iPos2 + 1] == '$')
+    { 
+      iPos3 = iPos2 + 1;
+      str = '$';
+      bDoneSomething = true;
+    }
+
+    //Okey, nothing found, just print it right out
+    else
     {
+      iPos3 = iPos2;
       str = '$';
       bDoneSomething = true;
     }

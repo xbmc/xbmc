@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 03-08-2005 fixed: when streaming, if the status bar for mplayer contained $, xbmc would stall
  - 03-08-2005 fixed: Eject after playing media on disk would crash.
  - 03-08-2005 fixed: my music, scan button does not immediately show "Stop Scan" label when scan is started
  - 03-08-2005 fixed: HTTPAPI: Pause command
