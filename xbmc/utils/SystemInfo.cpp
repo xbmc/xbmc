@@ -439,7 +439,7 @@ UCHAR SYSINFO::IdeRead(USHORT port)
 }
 BYTE SYSINFO::GetSmartValues(int SmartREQ)
 {
-	BYTE retVal;
+	BYTE retVal = 0;
 	XKHDD::ATA_COMMAND_OBJ hddcommand;
 	ZeroMemory(&hddcommand, sizeof(XKHDD::ATA_COMMAND_OBJ));
 	
