@@ -672,6 +672,9 @@ void update_cache_dialog(const char* tmp)
     {
       m_dlgCache->ShowProgressBar(false);
     }
+    //Escape are identifiers for infovalues
+    message.Replace("$", "$$");
+
     m_dlgCache->SetMessage(message);
     m_dlgCache->Update();
     if (m_dlgCache->IsCanceled() && !m_bCanceling)
@@ -1193,6 +1196,9 @@ void CMPlayer::Process()
           mplayer_showSubtitle(false);
           m_bSubsVisibleTTF=true;
         }
+
+        //Let other threads do something, should mplayer be occupying full cpu
+        Sleep(0);
       }
       catch (...)
       {
