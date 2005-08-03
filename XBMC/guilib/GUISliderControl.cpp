@@ -22,6 +22,7 @@ CGUISliderControl::CGUISliderControl(DWORD dwParentID, DWORD dwControlId, int iP
   m_iControlOffsetX = 60;
   m_iControlOffsetY = 0;
   ControlType = GUICONTROL_SLIDER;
+  m_renderText = true;
   m_iInfoCode = 0;
 }
 
