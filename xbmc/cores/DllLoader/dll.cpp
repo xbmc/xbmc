@@ -66,7 +66,12 @@ extern "C" HMODULE __stdcall dllLoadLibraryExtended(LPCSTR file, LPCSTR sourcedl
   }
   
   // Check if dll is already loaded and return its handle
-  DllLoader* dll = g_dlls.GetModule(pfile);
+  
+  // first try filename only
+  DllLoader* dll = g_dlls.GetModule((char*)file);
+  // now with base address
+  if (!dll) dll = g_dlls.GetModule(pfile);
+  
   if (dll)
   {
     if (!dll->IsSystemDll())
