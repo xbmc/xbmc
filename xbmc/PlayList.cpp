@@ -201,9 +201,9 @@ void CPlayList::Remove(const CStdString& strFileName)
       iOrder = item.m_iOrder;
       it = m_vecItems.erase(it);
       //CLog::Log(LOGDEBUG,"PLAYLIST, removing item at order %i", iPos);
-      it = m_vecItems.end();
     }
-    ++it;
+    else
+      ++it;
   }
   FixOrder(iOrder);
 }
