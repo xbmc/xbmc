@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 03-08-2005 fixed: my music, scan button does not immediately show "Stop Scan" label when scan is started
  - 03-08-2005 fixed: HTTPAPI: Pause command
  - 03-08-2005 fixed: mplayer was unable to find certain dlls, this resulted in unplayable dvds
  - 02-08-2005 fixed: Position of subs could change with seek or volume change.

@@ -15,16 +15,12 @@ public:
   virtual void OnFinished() = 0;
 };
 
-class CMusicInfoScanner : public CThread
+class CMusicInfoScanner : CThread
 {
 public:
   CMusicInfoScanner();
   virtual ~CMusicInfoScanner();
 
-
-  virtual void OnStartup();
-  virtual void OnExit();
-  virtual void Process();
 
   void Start(const CStdString& strDirectory, bool bUpdateAll);
   bool IsScanning();
@@ -33,6 +29,7 @@ public:
 
 
 protected:
+  virtual void Process();
   int RetrieveMusicInfo(CFileItemList& items, const CStdString& strDirectory);
   bool DoScan(const CStdString& strDirectory);
 

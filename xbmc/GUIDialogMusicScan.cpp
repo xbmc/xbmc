@@ -73,8 +73,11 @@ void CGUIDialogMusicScan::StopScanning()
 {
   if (m_musicInfoScanner.IsScanning())
     m_musicInfoScanner.Stop();
+}
 
-  Close();
+bool CGUIDialogMusicScan::IsScanning()
+{
+  return m_musicInfoScanner.IsScanning();
 }
 
 void CGUIDialogMusicScan::OnDirectoryScanned(const CStdString& strDirectory)
