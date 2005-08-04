@@ -69,7 +69,6 @@ bool CGUIDialogKaiToast::OnMessage(CGUIMessage& message)
   return CGUIDialog::OnMessage(message);
 }
 
-
 void CGUIDialogKaiToast::QueueNotification(const CStdString& aCaption, const CStdString& aDescription)
 {
   EnterCriticalSection(&m_critical);
@@ -108,13 +107,9 @@ bool CGUIDialogKaiToast::DoWork()
 
     g_graphicsContext.Lock();
 
-    CGUIMessage msg1(GUI_MSG_LABEL_SET, GetID(), POPUP_CAPTION_TEXT);
-    msg1.SetLabel(toast.caption);
-    OnMessage(msg1);
+    SET_CONTROL_LABEL(POPUP_CAPTION_TEXT, toast.caption);
 
-    CGUIMessage msg2(GUI_MSG_LABEL_SET, GetID(), POPUP_NOTIFICATION_BUTTON);
-    msg2.SetLabel(toast.description);
-    OnMessage(msg2);
+    SET_CONTROL_LABEL(POPUP_NOTIFICATION_BUTTON, toast.description);
 
     if (m_pIcon)
     {
@@ -163,6 +158,10 @@ void CGUIDialogKaiToast::Render()
       SET_CONTROL_VISIBLE(POPUP_ICON);
       CGUIDialog::Render();
     }
+
+    //  Fading does not count as display time
+    if (m_fadeState!=FADING_NONE)
+      ResetTimer();
 
     // now check if we should exit
     if (timeGetTime() - m_dwTimer > TOAST_DISPLAY_TIME)
