@@ -1472,8 +1472,8 @@ void CUtil::GetFatXQualifiedPath(CStdString& strFileNameAndPath)
   for (vector<CStdString>::iterator token=tokens.begin()+1;token != tokens.end();++token)
   {
     CStdString strToken = token->Left(42);
-    while (token[token.size()-1] == ' ')
-      token.erase(token.size()-1);
+    while (strToken[strToken.size()-1] == ' ')
+      strToken.erase(strToken.size()-1);
     CUtil::RemoveIllegalChars(strToken);
     strFileNameAndPath += "\\"+strToken;
   }
