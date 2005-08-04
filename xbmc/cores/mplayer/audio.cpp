@@ -272,7 +272,6 @@ static float audio_get_delay()
   if (!m_pAudioDecoder) return 0;
   FLOAT fDelay = m_pAudioDecoder->GetDelay();
   // check our output rate...
-  fDelay += (float)pao_data->buffersize / (float)pao_data->bps; //data in pao_data buffer is not resample yet
   if (m_pAudioDecoder->IsResampling())
     fDelay += (float)m_pAudioDecoder->GetBytesInBuffer() / (float)48000 * pao_data->channels * 2;
   else
