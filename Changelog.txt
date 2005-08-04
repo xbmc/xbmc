@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 04-08-2005 fixed: mplayer logged use of unimplemented function fputs
  - 04-08-2005 fixed: when ftp server was stopped (ie reboot, restartapp...), clients were not disconnected
  - 04-08-2005 fixed: audio was 5 ms later using normal audio output and 10 ms with passthrough
  - 04-08-2005 fixed: rar url support. failed to play dvd images in .rar using mplayer.

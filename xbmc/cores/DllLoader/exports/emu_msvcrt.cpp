@@ -171,9 +171,10 @@ extern "C"
   void dllputs(const char* szLine)
   {
     if (!szLine[0]) return ;
-    OutputDebugString(szLine);
     if (szLine[strlen(szLine) - 1] != '\n')
-      OutputDebugString("\n");
+      CLog::Log(LOGDEBUG,"  msg:%s", szLine);
+    else
+      CLog::Log(LOGDEBUG,"  msg:%s\n", szLine);
   }
 
   void dllprintf( const char *format, ... )
@@ -543,9 +544,16 @@ extern "C"
 
   int dll_fputs (const char * szLine , FILE* stream)
   {
-    not_implement("msvcrt.dll fake function dll_fputs() called\n");
-    OutputDebugString(szLine);
-    OutputDebugString("\n");
+    if (stream == stdout || stream == stderr )
+    { //Stdout
+      dllputs(szLine);
+    }
+    else
+    {
+      not_implement("msvcrt.dll fake function dll_fputs() called\n");
+      OutputDebugString(szLine);
+      OutputDebugString("\n");
+    }
 
     return 1;
   }
