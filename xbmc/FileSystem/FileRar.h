@@ -79,6 +79,7 @@ namespace XFILE
     __int64 m_iFileSize;
     // rar stuff
     bool m_bUseFile;
+    bool m_bOpen;
     CFile m_File; // for packed source
     Archive* m_pArc;
     CommandData* m_pCmd;
