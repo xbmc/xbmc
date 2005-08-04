@@ -1,5 +1,7 @@
 #include "rar.hpp"
 
+#include "../../utils/log.h"
+
 #include "coder.cpp"
 #include "suballoc.cpp"
 #include "model.cpp"
@@ -31,7 +33,10 @@ void Unpack::Init(byte *Window)
 {
   if (Window==NULL)
   {
-    Unpack::Window=new byte[MAXWINSIZE];
+    if (UnpIO->UnpackToMemorySize > -1)
+      Unpack::Window = new byte[MAXWINMEMSIZE];
+    else
+      Unpack::Window=new byte[MAXWINSIZE];
 #ifndef ALLOW_EXCEPTIONS
     if (Unpack::Window==NULL)
       ErrHandler.MemoryError();
@@ -387,8 +392,15 @@ void Unpack::Unpack29(bool Solid)
     }
   }
   UnpWriteBuf();
-}
 
+  if (UnpIO->UnpackToMemorySize > -1)
+  {
+    SetEvent(UnpIO->hBufferEmpty);
+    while (WaitForSingleObject(UnpIO->hBufferFilled,1) != WAIT_OBJECT_0)
+      if (WaitForSingleObject(UnpIO->hQuit,1) == WAIT_OBJECT_0)
+        return;
+  }
+}
 
 bool Unpack::ReadEndOfBlock()
 {
@@ -696,7 +708,7 @@ void Unpack::UnpWriteBuf()
       }
     }
   }
-      
+   
   UnpWriteArea(WrittenBorder,UnpPtr);
   WrPtr=UnpPtr;
 }
@@ -857,7 +869,10 @@ void Unpack::UnpInitData(int Solid)
     memset(OldDist,0,sizeof(OldDist));
     OldDistPtr=0;
     LastDist=LastLength=0;
-//    memset(Window,0,MAXWINSIZE);
+    if (UnpIO->UnpackToMemorySize > -1)
+      memset(Window,0,MAXWINMEMSIZE);
+    else
+      memset(Window,0,MAXWINSIZE);
     memset(UnpOldTable,0,sizeof(UnpOldTable));
     UnpPtr=WrPtr=0;
     PPMEscChar=2;

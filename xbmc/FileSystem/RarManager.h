@@ -21,6 +21,7 @@ public:
 	~CFileInfo();
 	CStdString m_strCachedPath;
 	bool	m_bAutoDel;
+  int m_iUsed;
 };
 
 class CRarManager
@@ -28,17 +29,18 @@ class CRarManager
 public:
 	CRarManager();
 	~CRarManager();
-	bool CacheRarredFile(CStdString& strPathInCache, const CStdString& strRarPath, const CStdString& strPathInRar, BYTE bOptions = EXFILE_AUTODELETE, const CStdString& strDir =RAR_DEFAULT_CACHE );
+	bool CacheRarredFile(CStdString& strPathInCache, const CStdString& strRarPath, const CStdString& strPathInRar, BYTE bOptions = EXFILE_AUTODELETE, const CStdString& strDir =RAR_DEFAULT_CACHE, const __int64 iSize=-1);
 	bool GetPathInCache(CStdString& strPathInCache, const CStdString& strRarPath, const CStdString& strPathInRar = "");
 	bool GetFilesInRar(CFileItemList& vecpItems, const CStdString& strRarPath, bool bMask=true, const CStdString& strPathInRar="");
 	bool IsFileInRar(bool& bResult, const CStdString& strRarPath, const CStdString& strPathInRar);
-	void MakeCachedPath(CStdString& strCachedPath, const CStdString& strDir, const CStdString& strFilePath);
-	void ClearCache();
+	void ClearCache(bool force=false);
   void ClearCachedFile(const CStdString& strRarPath, const CStdString& strPathInRar);
   void ExtractArchive(const CStdString& strArchive, const CStdString& strPath);
 protected:
   std::map<CStdString, CFileInfo> m_ExFiles;
 	CCriticalSection m_CritSection;
+
+  __int64 CheckFreeSpace(const CStdString& strDrive);
 };
 
   extern CRarManager g_RarManager;

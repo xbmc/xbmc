@@ -35,7 +35,6 @@ private:
   void Process();
   int m_iArea;
   CWeather *m_pCallback;
-  bool m_bImagesOkay;
 };
 
 class CWeather
@@ -59,9 +58,9 @@ public:
   char *GetCurrentWind() { return m_szCurrentWind; };
   char *GetCurrentDewPoint() { return m_szCurrentDewPoint; };
   char *GetCurrentHumidity() { return m_szCurrentHumidity; };
-
+  
   day_forcast m_dfForcast[NUM_DAYS];
-
+  bool m_bImagesOkay;
 protected:
   bool Download(const CStdString& strWeatherFile);  //download to strWeatherFile
   void GetString(const TiXmlElement* pRootElement, const CStdString& strTagName, char* szValue, const CStdString& strDefaultValue);
@@ -94,6 +93,7 @@ protected:
 
   unsigned int m_iCurWeather;
   bool m_bBusy;
+
   CBackgroundWeatherLoader *m_pBackgroundLoader;
 };
 
