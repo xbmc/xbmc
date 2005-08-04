@@ -550,7 +550,7 @@ void CGUIWindowPictures::OnClick(int iItem)
   else if (pItem->IsRAR()) // mount rar archive
   {
     CShare shareRar;
-    shareRar.strPath.Format("rar://Z:\\,%i,,%s,\\",EXFILE_OVERWRITE|EXFILE_AUTODELETE, pItem->m_strPath.c_str() );
+    shareRar.strPath.Format("rar://Z:\\,%i,,%s,\\",EXFILE_AUTODELETE, pItem->m_strPath.c_str() );
     m_rootDir.AddShare(shareRar);
     m_iItemSelected = -1;
     Update(shareRar.strPath);

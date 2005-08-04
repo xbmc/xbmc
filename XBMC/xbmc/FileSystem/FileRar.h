@@ -11,14 +11,39 @@
 #include "IFile.h"
 #include "File.h"
 #include "RarManager.h"
+#include "../lib/UnrarXLib/rar.hpp"
+#include "../utils/thread.h"
 using namespace XFILE;
 
 namespace XFILE
 {	
-	class CFileRar : public IFile  
+  class CFileRarExtractThread : public CThread
+  {
+  public:
+    CFileRarExtractThread();
+    ~CFileRarExtractThread();
+    
+    void Start(Archive* pArc, CommandData* pCmd, CmdExtract* pExtract, int iSize); 
+    
+    virtual void OnStartup();
+     virtual void OnExit();
+     virtual void Process();
+
+     HANDLE hRunning;
+     HANDLE hRestart;
+     HANDLE hQuit;
+  protected:
+    Archive* m_pArc;
+    CommandData* m_pCmd;
+    CmdExtract* m_pExtract;
+    int m_iSize;
+  };
+  
+  class CFileRar : public IFile  
 	{
 	public:
 		CFileRar();
+    CFileRar(bool bSeekable); // used for caching files
 		virtual ~CFileRar();
 		virtual __int64			  GetPosition();
 		virtual __int64			  GetLength();
@@ -38,14 +63,32 @@ namespace XFILE
 		virtual bool          Delete(const char* strFileName);
 		virtual bool          Rename(const char* strFileName, const char* strNewFileName);
 	protected:
-		CFile			m_File;
 		CStdString	m_strCacheDir;
 		CStdString	m_strRarPath;
 		CStdString m_strPassword;
 		CStdString m_strPathInRar;
+    CStdString m_strUrl;
 		BYTE m_bRarOptions;
 		BYTE m_bFileOptions;
+    void Init();
 		void InitFromUrl(const CURL& url);
+    bool OpenInArchive();
+    void CleanUp();
+    
+    __int64 m_iFilePosition;
+    __int64 m_iFileSize;
+    // rar stuff
+    bool m_bUseFile;
+    CFile m_File; // for packed source
+    Archive* m_pArc;
+    CommandData* m_pCmd;
+    CmdExtract* m_pExtract;
+    int m_iSize; // header size
+    CFileRarExtractThread* m_pExtractThread;
+    byte* m_szBuffer;
+    byte* m_szStartOfBuffer;
+    __int64 m_iDataInBuffer;
+    __int64 m_iBufferStart;
 	};
 
 };

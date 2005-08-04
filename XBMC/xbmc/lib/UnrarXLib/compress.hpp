@@ -5,7 +5,8 @@ class ComprDataIO;
 class PackingFileTable;
 
 #define CODEBUFSIZE     0x4000
-#define MAXWINSIZE      0x400000
+#define MAXWINMEMSIZE      0x40000 // 256k buffer for memory reading
+#define MAXWINSIZE      0x400000 
 #define MAXWINMASK      (MAXWINSIZE-1)
 
 #define LOW_DIST_REP_COUNT 16

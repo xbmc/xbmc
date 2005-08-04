@@ -45,10 +45,10 @@ class CommandData:public RAROptions
     char ArcName[NM];
     wchar ArcNameW[NM];
 
-    StringList *FileArgs;
-    StringList *ExclArgs;
-    StringList *ArcNames;
-    StringList *StoreArgs;
+    ::StringList *FileArgs;
+    ::StringList *ExclArgs;
+    ::StringList *ArcNames;
+    ::StringList *StoreArgs;
 };
 
 #endif

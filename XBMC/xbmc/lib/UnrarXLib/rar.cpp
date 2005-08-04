@@ -204,7 +204,6 @@ int urarlib_get(char *rarfile, char *targetPath, char *fileToExtract, char *libp
 			pCmd->FileArgs->AddString(MASKALL);
 		}
 
-    CLog::Log(LOGDEBUG,"setting password %s",libpassword);
     // Set password for encrypted archives
 		if (libpassword)
       if (strlen(libpassword)!=0)
@@ -214,9 +213,7 @@ int urarlib_get(char *rarfile, char *targetPath, char *fileToExtract, char *libp
 		  }
 
 		// Opent the archive
-
 		Archive * pArc = NULL;
-		
 		pArc = new Archive(pCmd);
 
 		if ( pArc )
@@ -237,7 +234,7 @@ int urarlib_get(char *rarfile, char *targetPath, char *fileToExtract, char *libp
 					if (FindFile::FastFind(rarfile,NULL,&FD))
 						pExtract->GetDataIO().TotalArcSize+=FD.Size;
           pExtract->ExtractArchiveInit(pCmd,*pArc);
-					while (1)
+          while (1)
 					{
             int Size=pArc->ReadHeader();
 						bool Repeat=false;
@@ -272,7 +269,7 @@ int urarlib_get(char *rarfile, char *targetPath, char *fileToExtract, char *libp
 \*-------------------------------------------------------------------------*/
 int urarlib_list(char *rarfile, ArchiveList_struct **ppList, char *libpassword)
 {
-	if (!ppList)
+  if (!ppList)
 		return 0;
 	uint FileCount;
 	InitCRC();
@@ -313,7 +310,7 @@ int urarlib_list(char *rarfile, ArchiveList_struct **ppList, char *libpassword)
 				{
 					if (pArc->GetHeaderType() == FILE_HEAD)
 					{
-						IntToExt(pArc->NewLhd.FileName,pArc->NewLhd.FileName);
+            IntToExt(pArc->NewLhd.FileName,pArc->NewLhd.FileName);
 						ArchiveList_struct *pCurr = (ArchiveList_struct *)malloc(sizeof(ArchiveList_struct));
 						if (!pCurr)
 							break;
@@ -325,7 +322,7 @@ int urarlib_list(char *rarfile, ArchiveList_struct **ppList, char *libpassword)
 						pCurr->item.Name = (char *)malloc(pCurr->item.NameSize + 1);
 						strcpy(pCurr->item.Name, pArc->NewLhd.FileName);
 						pCurr->item.PackSize = pArc->NewLhd.PackSize;
-						pCurr->item.UnpSize = pArc->NewLhd.UnpSize;
+            pCurr->item.UnpSize = int32to64(pArc->NewLhd.HighUnpSize,pArc->NewLhd.UnpSize);
 						pCurr->item.HostOS = pArc->NewLhd.HostOS;
 						pCurr->item.FileCRC = pArc->NewLhd.FileCRC;
 						pCurr->item.FileTime = pArc->NewLhd.FileTime;

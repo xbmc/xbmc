@@ -71,9 +71,9 @@ char* CUtil::GetExtension(const CStdString& strFileName)
 {
   CURL url(strFileName);
   const char* extension;
-  if ((url.GetProtocol() == "rar") || (url.GetProtocol() == "zip"))
+  /*if ((url.GetProtocol() == "rar") || (url.GetProtocol() == "zip"))
     extension = strFileName.c_str()+strFileName.rfind(".");
-  else
+  else*/
     extension = strFileName.c_str()+strFileName.rfind(".");
   return (char*)extension ;
 }
@@ -961,7 +961,23 @@ bool CUtil::IsRAR(const CStdString& strFile)
 {
   CStdString strExtension;
   CUtil::GetExtension(strFile,strExtension);
-  if ( (strExtension.CompareNoCase(".rar") == 0) || (strExtension.Equals(".001")) ) return true; // sometimes the first rar is named .001
+  if (strExtension.Equals(".001")) return true;
+  if (strExtension.CompareNoCase(".rar") == 0)
+  {
+    std::vector<CStdString> tokens;
+    CUtil::Tokenize(strFile,tokens,".");
+    if (tokens.size() < 2)
+      return false;
+    CStdString token = tokens[tokens.size()-2];
+    CLog::Log(LOGDEBUG,"token: %s, comp: %s, comp: %s",token.c_str(),token.Left(4).c_str(),token.Right(4).c_str());
+    if (token.Left(4).CompareNoCase("part") == 0) // only list '.part01.rar'
+    {
+      if (atoi(token.Right(4).c_str()) == 1)
+        return true;
+    }
+    else
+      return true;
+  }
   return false;
 }
 
@@ -1456,6 +1472,8 @@ void CUtil::GetFatXQualifiedPath(CStdString& strFileNameAndPath)
   for (vector<CStdString>::iterator token=tokens.begin()+1;token != tokens.end();++token)
   {
     CStdString strToken = token->Left(42);
+    while (token[token.size()-1] == ' ')
+      token.erase(token.size()-1);
     CUtil::RemoveIllegalChars(strToken);
     strFileNameAndPath += "\\"+strToken;
   }
@@ -1465,6 +1483,8 @@ void CUtil::GetFatXQualifiedPath(CStdString& strFileNameAndPath)
     if (strFileName[0] == '\\') 
       strFileName.erase(0,1);
     CUtil::RemoveIllegalChars(strFileName);
+    while (strFileName[strFileName.size()-1] == ' ')
+      strFileName.erase(strFileName.size()-1);
     strFileNameAndPath += "\\"+strFileName;
   }
 }
@@ -1673,30 +1693,51 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
   if (item.IsPlayList()) return ;
   if (!item.IsVideo()) return ;
 
-  const int iPaths = 2;
-  CStdString strLookInPaths[2];
+  std::vector<CStdString> strLookInPaths;
 
   CStdString strFileName;
   CStdString strFileNameNoExt;
+  CStdString strPath;
 
-  CUtil::Split(strMovie, strLookInPaths[0], strFileName);
+  CUtil::Split(strMovie, strPath, strFileName);
   ReplaceExtension(strFileName, "", strFileNameNoExt);
+  strLookInPaths.push_back(strPath);
 
   if (strlen(g_stSettings.m_szAlternateSubtitleDirectory) != 0)
   {
-    strLookInPaths[1] = g_stSettings.m_szAlternateSubtitleDirectory;
-    if (!HasSlashAtEnd(strLookInPaths[1]))
-      strLookInPaths[1] += "/"; //Should work for both remote and local files
+    strPath = g_stSettings.m_szAlternateSubtitleDirectory;
+    if (!HasSlashAtEnd(strPath))
+      strPath += "/"; //Should work for both remote and local files
+    strLookInPaths.push_back(strPath);
   }
-  else
-    strLookInPaths[1] = "";
-
+  
+  if (item.IsRAR()) // also check dir where rar files is
+  {
+    CURL url(strMovie);
+    CUtil::Split(url.GetHostName(), strPath, strFileName);
+    strLookInPaths.push_back(strPath);
+  }
+  
+  int iSize = strLookInPaths.size();
+  for (int i=0;i<iSize;++i)
+  {
+    strPath = strLookInPaths[i];
+    if (CDirectory::Exists(strLookInPaths[i]+"subs/"))
+      strLookInPaths.push_back(strLookInPaths[i]+"subs/");
+    if (CDirectory::Exists(strLookInPaths[i]+"subtitles/"))
+      strLookInPaths.push_back(strLookInPaths[i]+"subtitles/");
+    CUtil::GetParentPath(strLookInPaths[i],strPath);
+    if (CDirectory::Exists(strPath+"/subs/"))
+      strLookInPaths.push_back(strPath+"/subs/");
+    if (CDirectory::Exists(strPath+"/subtitles/"))
+      strLookInPaths.push_back(strPath+"/subtitles/");
+  }
   CStdString strLExt;
   CStdString strDest;
-  CStdString strItem, strPath;
+  CStdString strItem;
 
   // 2 steps for movie directory and alternate subtitles directory
-  for (int step = 0; step < iPaths; step++)
+  for (unsigned int step = 0; step < strLookInPaths.size(); step++)
   {
     if (strLookInPaths[step].length() != 0)
     {
@@ -1706,6 +1747,10 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
 	    CUtil::ReplaceExtension(strRarPath , ".rar", strRarPath);
       strRarPath.Format("%s%s", strLookInPaths[step].c_str(),strRarPath);
 	    bool bFoundSubs = CacheRarSubtitles( strExtensionCached, strRarPath,  sub_exts ); 
+      strRarPath.Format("%s%s", strLookInPaths[step].c_str(),"subtitles.rar");
+	    bFoundSubs &= CacheRarSubtitles( strExtensionCached, strRarPath,  sub_exts ); 
+      strRarPath.Format("%s%s", strLookInPaths[step].c_str(),"subs.rar");
+	    bFoundSubs &= CacheRarSubtitles( strExtensionCached, strRarPath,  sub_exts ); 
       g_directoryCache.ClearDirectory(strLookInPaths[step]);
 
       CFileItemList items;
@@ -1756,7 +1801,6 @@ bool CUtil::CacheRarSubtitles(CStdString& strExtensionCached, const CStdString& 
   CFileItemList ItemList;
   // Rar is cached to Z:\ by default and will be autodeleted in RarMgr's dtor():
   if( !RarMgr.GetFilesInRar(ItemList, strRarPath, true) ) return false;
-  CLog::Log(LOGDEBUG,"go through list!");
   for (int it= 0 ; it <ItemList.Size();++it)
   {
     CStdString strPathInRar = ItemList[it]->m_strPath;
