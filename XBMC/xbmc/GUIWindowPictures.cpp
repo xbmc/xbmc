@@ -188,7 +188,6 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
 
   case GUI_MSG_WINDOW_INIT:
     {
-      CLog::Log(LOGDEBUG,"windowpictures init!");
       int iLastControl = m_iLastControl;
       CGUIWindow::OnMessage(message);
       if (message.GetParam1() != WINDOW_SLIDESHOW)
@@ -197,9 +196,7 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
       }
 
       m_dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
-      
-      CLog::Log(LOGDEBUG,"size of stuf: %i %i",m_rootDir.GetNumberOfShares(),g_settings.m_vecMyPictureShares.size());
-      
+            
       // check for a passed destination path
       CStdString strDestination = message.GetStringParam();
       if (!strDestination.IsEmpty())
@@ -490,9 +487,7 @@ void CGUIWindowPictures::Update(const CStdString &strDirectory)
   if (m_thumbLoader.IsLoading())
     m_thumbLoader.StopThread();
 
-  CLog::Log(LOGDEBUG,"calling update dir!");
   UpdateDir(strDirectory);
-  CLog::Log(LOGDEBUG,"updatedir returned!");
   if (!m_Directory.IsVirtualDirectoryRoot() && g_guiSettings.GetBool("Pictures.UseAutoSwitching"))
   {
     m_iViewAsIcons = CAutoSwitch::GetView(m_vecItems);
@@ -506,10 +501,8 @@ void CGUIWindowPictures::Update(const CStdString &strDirectory)
 void CGUIWindowPictures::UpdateDir(const CStdString &strDirectory)
 {
   // get selected item
-  CLog::Log(LOGDEBUG,"selecting item1");
   int iItem = m_viewControl.GetSelectedItem();
   CStdString strSelectedItem = "";
-  CLog::Log(LOGDEBUG,"item: %i",iItem);
   if (iItem >= 0 && iItem < (int)m_vecItems.Size())
   {
       CFileItem* pItem = m_vecItems[iItem];
@@ -517,13 +510,10 @@ void CGUIWindowPictures::UpdateDir(const CStdString &strDirectory)
     {
       GetDirectoryHistoryString(pItem, strSelectedItem);
       m_history.Set(strSelectedItem, m_Directory.m_strPath);
-      CLog::Log(LOGDEBUG,"setting history: %s",strSelectedItem.c_str());
     }
   }
-  CLog::Log(LOGDEBUG,"clearing items!");
   ClearFileItems();
 
-  CLog::Log(LOGDEBUG,"listing %s",strDirectory.c_str());
   GetDirectory(strDirectory, m_vecItems);
 
   m_Directory.m_strPath = strDirectory;
@@ -531,9 +521,7 @@ void CGUIWindowPictures::UpdateDir(const CStdString &strDirectory)
   if (g_guiSettings.GetBool("FileLists.HideExtensions"))
     m_vecItems.RemoveExtensions();
   m_vecItems.FillInDefaultIcons();
-  CLog::Log(LOGDEBUG,"sorting");
   OnSort();
-  CLog::Log(LOGDEBUG,"update buttons!");
   UpdateButtons();
 
   strSelectedItem = m_history.Get(m_Directory.m_strPath);
@@ -620,14 +608,12 @@ void CGUIWindowPictures::OnClick(int iItem)
     shareRar.strPath.Format("rar://Z:\\,%i,,%s,\\",EXFILE_AUTODELETE,pItem->m_strPath.c_str() );
     shareRar.strEntryPoint = strPath;
     m_rootDir.AddShare(shareRar);
-    CLog::Log(LOGDEBUG,"update1");
     m_iItemSelected = -1;
     Update(shareRar.strPath);
     if (m_vecItems.Size() > 0)
     {
       if ((m_vecItems.Size() == 1) && (m_vecItems[0]->m_bIsFolder))
       {
-        CLog::Log(LOGDEBUG,"update2");
         m_iItemSelected = -1;
         Update(shareRar.strPath+m_vecItems[0]->GetLabel()+"\\");
       }
