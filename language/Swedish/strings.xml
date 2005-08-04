@@ -227,7 +227,7 @@
   <string><id>294</id><value>Skapa bokmärke</value></string>
   <string><id>295</id><value>Bläddra bokmärke</value></string>
   <string><id>296</id><value>Ta bort bokmärken</value></string>
-  <string><id>297</id><value>A/V-fördröjning</value></string>
+  <string><id>297</id><value>Ljud fördröjning</value></string>
   <string><id>298</id><value>Slider</value></string>
   <string><id>300</id><value>1. Språk</value></string>
   <string><id>301</id><value>2. Volym</value></string>
@@ -552,7 +552,7 @@
   <string><id>769</id><value>Reserverad</value></string>
   <string><id>770</id><value>Fel %i: utdelningen ej tillgänglig</value></string>
   <string><id>771</id><value>Fix för FATX begränsningar i FTP server</value></string>
-  <string><id>772</id><value>A/V Receiver</value></string>
+  <string><id>772</id><value>A/V Förstärkare</value></string>
   <string><id>773</id><value>Söker</value></string>
   <string><id>998</id><value>XLink Kai</value></string>
   <string><id>999</id><value>Online Spel</value></string>
@@ -793,7 +793,7 @@
   <string><id>13310</id><value>Zoomeffekt</value></string>
   <string><id>13311</id><value>Flyteffekt</value></string>
   <string><id>13312</id><value>Reducera svart ram</value></string>
-  <string><id>13313</id><value>Reset/Starta om</value></string>
+  <string><id>13313</id><value>Starta om</value></string>
   <string><id>13314</id><value>Musik OSD timeout</value></string>
   <string><id>13315</id><value>Skapa miniatyrer</value></string>
   <string><id>13316</id><value>Rekursiva miniatyrer</value></string>
@@ -875,6 +875,9 @@
   <string><id>13392</id><value>Visualisering om musik spelas</value></string>
   <string><id>13393</id><value>Kalkylera storlek</value></string>
   <string><id>13394</id><value>Kalkylera mappens storlek</value></string>
+  <string><id>13395</id><value>Video inställningar</value></string>
+  <string><id>13396</id><value>Ljud och Undertext inställningar</value></string>
+  <string><id>13397</id><value>Aktivera undertexter</value></string>
   
   <string><id>14000</id><value>Stapling : Av</value></string>
   <string><id>14001</id><value>Stapling : På</value></string>
@@ -1092,6 +1095,9 @@
 
   <string><id>16004</id><value>Synkronisera interlacerad video</value></string>
   <string><id>16005</id><value>- Invertera fält</value></string>
+  <string><id>16006</id><value>Synkronisera interlacering</value></string>
+  <string><id>16007</id><value>Omvända fält</value></string> 
+  <string><id>16008</id><value>På</value></string>
 </strings>
 
 
