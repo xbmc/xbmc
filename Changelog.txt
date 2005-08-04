@@ -5,6 +5,9 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 04-08-2005 updated: German language file
+ - 04-08-2005 updated: Dutch language file (Thnx to nightspirit)
+ - 04-08-2005 updated: Norwegian language file (Thnx to vnm)
  - 04-08-2005 added: subtitles can reside in "subs/","subtitles/","../subs/" and "../subtitles/".
  - 04-08-2005 fixed: fat-x truncation could result in filenames ending with ' ' making them unreadable.
  - 04-08-2005 fixed: vobsubs with long filenames failed to work due to fat-x limits.
