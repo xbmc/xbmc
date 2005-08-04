@@ -1079,4 +1079,16 @@
 
 <string><id>15213</id><value>[PLACEHOLDER]</value></string>
 <string><id>15214</id><value>Geleidelijk geluid synchroniseren</value></string>
+
+<string><id>16000</id><value>General</value></string>
+<string><id>16001</id><value>Configure Audio Hardware...</value></string>
+<string><id>16002</id><value>CDDB lookup</value></string>
+<string><id>16003</id><value>Player</value></string>
+
+<string><id>16004</id><value>Synchroniseer gefaseerde video</value></string>
+<string><id>16005</id><value>- Keer velden om</value></string>
+<string><id>16006</id><value>Gesynchroniseerde fasering</value></string>
+<string><id>16007</id><value>Omgekeerde velden</value></string> 
+<string><id>16008</id><value>Aan</value></string>
+
 </strings>
