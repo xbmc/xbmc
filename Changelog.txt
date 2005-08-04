@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 04-08-2005 changed: .iso files are now treated as dvd image files just as .img was. (if you want to force old behaviour rename file to .mpg)
  - 04-08-2005 fixed: dialogs with conditional visibility could sometimes end up stuck on screen
  - 04-08-2005 fixed: cbr/cbz support. if pictures was in a folder, playback would fail.
  - 04-08-2005 changed: toast dialog, message display time starts after the fade in of the dialog is done
