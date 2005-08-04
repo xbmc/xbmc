@@ -1,11 +1,12 @@
 #pragma once
 #include "idirectory.h"
+#include "../utils/http.h"
 
 using namespace DIRECTORY;
 namespace DIRECTORY
 {
 class CShoutcastDirectory :
-      public IDirectory
+      public IDirectory, public IRunnable
 {
 public:
   CShoutcastDirectory(void);
@@ -15,5 +16,14 @@ public:
   void CacheItems(CFileItemList &items);
   void LoadCachedItems(CFileItemList &items);
   bool IsCacheValid();
+  virtual void Run();
+
+protected:
+  bool m_Downloaded;
+  bool m_Error;
+  CHTTP m_http;
+
+  CStdString m_strSource;
+  CStdString m_strDestination;
 };
 }

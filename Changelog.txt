@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 04-08-2005 changed: made downloading of "Shoutcast Top 500" cancelable
  - 04-08-2005 updated: German language file
  - 04-08-2005 updated: Dutch language file (Thnx to nightspirit)
  - 04-08-2005 updated: Norwegian language file (Thnx to vnm)

@@ -38,6 +38,19 @@ CThread::CThread()
   m_bAutoDelete = false;
   m_dwThreadId = 0;
   m_ThreadHandle = NULL;
+
+  m_pRunnable=NULL;
+}
+
+CThread::CThread(IRunnable* pRunnable)
+{
+  m_bStop = false;
+
+  m_bAutoDelete = false;
+  m_dwThreadId = 0;
+  m_ThreadHandle = NULL;
+
+  m_pRunnable=pRunnable;
 }
 
 CThread::~CThread()
@@ -151,4 +164,10 @@ bool CThread::WaitForThreadExit(DWORD dwmsTimeOut)
 HANDLE CThread::ThreadHandle()
 {
   return m_ThreadHandle;
+}
+
+void CThread::Process()
+{
+  if(m_pRunnable)
+    m_pRunnable->Run(); 
 }

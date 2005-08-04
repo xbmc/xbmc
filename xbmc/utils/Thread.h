@@ -11,10 +11,17 @@
 
 #include "event.h"
 
+class IRunnable
+{
+public:
+  virtual void Run()=0;
+};
+
 class CThread
 {
 public:
   CThread();
+  CThread(IRunnable* pRunnable);
   virtual ~CThread();
   void Create(bool bAutoDelete = false);
   unsigned long ThreadId() const;
@@ -29,12 +36,13 @@ public:
 protected:
   virtual void OnStartup(){};
   virtual void OnExit(){};
-  virtual void Process(){};
+  virtual void Process();
   CEvent m_eventStop;
   bool m_bAutoDelete;
   bool m_bStop;
   HANDLE m_ThreadHandle;
   DWORD m_dwThreadId;
+  IRunnable* m_pRunnable;
 private:
   static DWORD WINAPI CThread::staticThread(LPVOID* data);
 };
