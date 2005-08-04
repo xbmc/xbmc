@@ -225,10 +225,12 @@ bool CGUIWindowMusicSongs::OnMessage(CGUIMessage& message)
         }
 
         // need file filters or GetDirectory in SetHistoryPath fails
-        m_rootDir.SetMask(g_stSettings.m_szMyMusicExtensions);
-        m_rootDir.SetShares(g_settings.m_vecMyMusicShares);
-
-        SetHistoryForPath(m_Directory.m_strPath);
+        if (m_rootDir.GetNumberOfShares() == 0)
+        {
+          m_rootDir.SetMask(g_stSettings.m_szMyMusicExtensions);
+          m_rootDir.SetShares(g_settings.m_vecMyMusicShares);
+          SetHistoryForPath(m_Directory.m_strPath);
+        }
       }
 
       if (m_Directory.IsCDDA() || m_Directory.IsDVD() || m_Directory.IsISO9660())
@@ -690,7 +692,7 @@ void CGUIWindowMusicSongs::OnClick(int iItem)
   else if (pItem->IsRAR()) // mount rar archive
   {
     CShare shareRar;
-    shareRar.strPath.Format("rar://Z:\\,%i,,%s,\\",EXFILE_AUTODELETE|EXFILE_OVERWRITE, pItem->m_strPath.c_str() );
+    shareRar.strPath.Format("rar://Z:\\,%i,,%s,\\",EXFILE_AUTODELETE, pItem->m_strPath.c_str() );
     m_rootDir.AddShare(shareRar);
     Update(shareRar.strPath);
   }

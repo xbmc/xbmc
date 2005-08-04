@@ -269,8 +269,11 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
 
       m_dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
 
-      m_rootDir.SetMask(g_stSettings.m_szMyMusicExtensions);
-      m_rootDir.SetShares(g_settings.m_vecMyMusicShares);
+      if (m_rootDir.GetNumberOfShares() == 0)
+      {
+        m_rootDir.SetMask(g_stSettings.m_szMyMusicExtensions);
+        m_rootDir.SetShares(g_settings.m_vecMyMusicShares);
+      }
 
       Update(m_Directory.m_strPath);
 

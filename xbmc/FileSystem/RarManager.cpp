@@ -115,7 +115,7 @@ bool CRarManager::GetFilesInRar(CFileItemList& vecpItems, const CStdString& strR
   unsigned int iDepth = vec.size();
   
   ArchiveList_struct* pIterator;
-  for( pIterator = pFileList; pIterator  ; pIterator ? pIterator = pIterator->next : pIterator)
+  for( pIterator = pFileList; pIterator  ; pIterator ? pIterator = pIterator->next : NULL)
 	{
     char cDirDelimiter = (pIterator->item.HostOS==3 ? '/':'\\'); // win32 or unix paths?
     if (bMask)
@@ -127,22 +127,24 @@ bool CRarManager::GetFilesInRar(CFileItemList& vecpItems, const CStdString& strR
       if (!strstr(pIterator->item.Name,strPathInRar.c_str()))
         continue;
     }
-    if ((pIterator->item.FileAttr & 16)) // we have a directory
+    int iMask = (pIterator->item.HostOS==3 ? 0x0040000:16); // win32 or unix attribs?
+    if (((pIterator->item.FileAttr & iMask) == iMask)) // we have a directory
     {
       if (!bMask) continue;
       if (vec.size() == iDepth)
         continue; // remove root of listing
       pFileItem = new CFileItem(pIterator->item.Name+strPathInRar.size());
       pFileItem->m_strPath = pIterator->item.Name+strPathInRar.size();
-      pFileItem->m_strPath += cDirDelimiter;
+      pFileItem->m_strPath += '\\';
+      pFileItem->m_strPath.Replace("/","\\");
       pFileItem->m_bIsFolder = true;
       pFileItem->m_lStartOffset = pIterator->item.Method;
-      CStdString strDirName = pIterator->item.Name;
     }
     else
     {
       pFileItem = new CFileItem(pIterator->item.Name+strPathInRar.size());
 		  pFileItem->m_strPath = pIterator->item.Name+strPathInRar.size();
+      pFileItem->m_strPath.Replace("/","\\");
       pFileItem->m_dwSize = pIterator->item.UnpSize;
       pFileItem->m_lStartOffset = pIterator->item.Method;
     }
