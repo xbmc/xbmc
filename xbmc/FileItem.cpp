@@ -319,7 +319,7 @@ bool CFileItem::IsDVDImage() const
 {
   CStdString strExtension;
   CUtil::GetExtension(m_strPath, strExtension);
-  if (strExtension.Equals(".img")) return true;
+  if (strExtension.Equals(".img") || strExtension.Equals(".iso")) return true;
   return false;
 }
 
