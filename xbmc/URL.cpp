@@ -65,7 +65,7 @@ CURL::CURL(const CStdString& strURL)
   if ((m_strProtocol.CompareNoCase("rar")==0) || (m_strProtocol.CompareNoCase("zip")==0))
 	{
     CRegExp reg;
-    reg.RegComp("...://([^,]*),([0-9]*),([^,]*),(.*),\\\\(.*)$");
+    reg.RegComp("...://([^,]*),([0-9]*),([^,]*),(.*),[\\\\/](.*)$");
     if( (reg.RegFind(strURL.c_str()) >= 0))
     {
       char* szDomain = reg.GetReplaceString("\\1");

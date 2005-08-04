@@ -419,6 +419,7 @@ void CFileRar::InitFromUrl(const CURL& url)
 	m_strPathInRar = url.GetFileName();
 	int iAutoDelMask = url.GetPort();
 
+  	m_strPathInRar.Replace("/","\\");
 	m_bRarOptions = 0;
 
 	bool bAutoDelFile = (iAutoDelMask & EXFILE_AUTODELETE) !=0;
