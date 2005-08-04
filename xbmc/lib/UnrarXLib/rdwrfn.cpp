@@ -1,4 +1,5 @@
 #include "rar.hpp"
+#include "../../utils/log.h"
 
 ComprDataIO::ComprDataIO()
 {
@@ -10,10 +11,11 @@ void ComprDataIO::Init()
 {
   UnpackFromMemory=false;
   UnpackToMemory=false;
+  UnpackToMemorySize=-1;
   UnpPackedSize=0;
   ShowProgress=true;
   TestMode=false;
-  SkipUnpCRC=false;
+  SkipUnpCRC=true;
   PackVolume=false;
   UnpVolume=false;
   NextVolumeMissing=false;
@@ -24,7 +26,7 @@ void ComprDataIO::Init()
   Encryption=0;
   Decryption=0;
   TotalPackRead=0;
-  CurPackRead=CurPackWrite=CurUnpRead=CurUnpWrite=0;
+  CurPackRead=CurPackWrite=CurUnpRead=CurUnpWrite=CurUnpStart=0;
   PackFileCRC=UnpFileCRC=PackedCRC=0xffffffff;
   LastPercent=-1;
   SubHead=NULL;
@@ -32,9 +34,6 @@ void ComprDataIO::Init()
   CurrentCommand=0;
   ProcessedArcSize=TotalArcSize=0;
 }
-
-
-
 
 int ComprDataIO::UnpRead(byte *Addr,uint Count)
 {
@@ -54,12 +53,74 @@ int ComprDataIO::UnpRead(byte *Addr,uint Count)
     }
     else
     {
+      bool bRead = true;
       if (!SrcFile->IsOpened())
         return(-1);
-      RetCode=SrcFile->Read(ReadAddr,ReadSize);
-      FileHeader *hd=SubHead!=NULL ? SubHead:&SrcArc->NewLhd;
-      if (hd->Flags & LHD_SPLIT_AFTER)
-        PackedCRC=CRC(PackedCRC,ReadAddr,ReadSize);
+      if (UnpackToMemory)
+        if (WaitForSingleObject(hSeek,1) == WAIT_OBJECT_0) // we are seeking
+        {
+          if (m_iSeekTo > CurUnpStart+SrcArc->NewLhd.FullPackSize) // need to seek outside this block
+          {
+            TotalRead += SrcArc->NextBlockPos-SrcFile->Tell();
+            CurUnpRead=CurUnpStart+SrcArc->NewLhd.FullPackSize;
+            UnpPackedSize=0;
+            RetCode = 0;
+            bRead = false;
+          }
+          else
+          {
+            Int64 iStartOfFile = SrcArc->NextBlockPos-SrcArc->NewLhd.FullPackSize;
+            m_iStartOfBuffer = CurUnpStart;
+            Int64 iSeekTo=m_iSeekTo-CurUnpStart<MAXWINMEMSIZE/2?iStartOfFile:iStartOfFile+m_iSeekTo-CurUnpStart-MAXWINMEMSIZE/2;
+            if (iSeekTo == iStartOfFile) // front
+            {
+              if (CurUnpStart+MAXWINMEMSIZE>SrcArc->NewLhd.FullUnpSize)
+              {
+                m_iSeekTo=SrcArc->NewLhd.FullUnpSize-iSeekTo+iStartOfFile; // back
+                UnpPackedSize = SrcArc->NewLhd.FullPackSize;
+              }
+              else 
+              {
+                m_iSeekTo=MAXWINMEMSIZE-(m_iSeekTo-CurUnpStart);
+                UnpPackedSize = SrcArc->NewLhd.FullPackSize - (m_iStartOfBuffer - CurUnpStart);
+              }
+            }
+            else
+            {
+              m_iStartOfBuffer = m_iSeekTo-MAXWINMEMSIZE/2; // front
+              if (m_iSeekTo+MAXWINMEMSIZE/2>SrcArc->NewLhd.FullUnpSize)
+              {
+                iSeekTo = iStartOfFile+SrcArc->NewLhd.FullPackSize-MAXWINMEMSIZE;
+                m_iStartOfBuffer = CurUnpStart+SrcArc->NewLhd.FullPackSize-MAXWINMEMSIZE;
+                m_iSeekTo = MAXWINMEMSIZE-(m_iSeekTo-m_iStartOfBuffer);
+                UnpPackedSize = MAXWINMEMSIZE;
+              }
+              else 
+              {
+                m_iSeekTo=MAXWINMEMSIZE/2;
+                UnpPackedSize = SrcArc->NewLhd.FullPackSize - (m_iStartOfBuffer - CurUnpStart);
+              }  
+            }
+
+            SrcFile->Seek(iSeekTo,SEEK_SET);
+            TotalRead = 0;
+            CurUnpRead = CurUnpStart + iSeekTo - iStartOfFile;
+            CurUnpWrite = SrcFile->Tell() - iStartOfFile + CurUnpStart;
+            
+            ResetEvent(hSeek);
+            SetEvent(hSeekDone);
+          }
+        }
+      if (bRead)
+      {
+        ReadSize=(Count>UnpPackedSize) ? int64to32(UnpPackedSize):Count;
+        RetCode=SrcFile->Read(ReadAddr,ReadSize);
+        FileHeader *hd=SubHead!=NULL ? SubHead:&SrcArc->NewLhd;
+        if (hd->Flags & LHD_SPLIT_AFTER)
+        {
+          PackedCRC=CRC(PackedCRC,ReadAddr,ReadSize);
+        }
+      }
     }
     CurUnpRead+=RetCode;
     ReadAddr+=RetCode;
@@ -75,6 +136,7 @@ int ComprDataIO::UnpRead(byte *Addr,uint Count)
         NextVolumeMissing=true;
         return(-1);
       }
+      CurUnpStart = CurUnpRead;
     }
     else
       break;
@@ -106,7 +168,6 @@ int ComprDataIO::UnpRead(byte *Addr,uint Count)
   return(RetCode);
 }
 
-
 void ComprDataIO::UnpWrite(byte *Addr,uint Count)
 {
 #ifdef RARDLL
@@ -134,16 +195,27 @@ void ComprDataIO::UnpWrite(byte *Addr,uint Count)
   UnpWrSize=Count;
   if (UnpackToMemory)
   {
-    if (Count <= UnpackToMemorySize)
+    while(UnpackToMemorySize < Count)
+    {
+      SetEvent(hBufferEmpty);
+      while( WaitForSingleObject(hBufferFilled,1) != WAIT_OBJECT_0) 
+        if (WaitForSingleObject(hQuit,1) == WAIT_OBJECT_0)
+          return;
+    }
+    
+    if (WaitForSingleObject(hSeek,1) != WAIT_OBJECT_0) // we are seeking
     {
       memcpy(UnpackToMemoryAddr,Addr,Count);
       UnpackToMemoryAddr+=Count;
       UnpackToMemorySize-=Count;
     }
+    else
+      return;
   }
   else
     if (!TestMode)
       DestFile->Write(Addr,Count);
+  
   CurUnpWrite+=Count;
   if (!SkipUnpCRC)
 #ifndef SFX_MODULE

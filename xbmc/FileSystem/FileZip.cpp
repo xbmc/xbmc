@@ -25,7 +25,7 @@ bool CFileZip::Open(const CURL&url, bool bBinary)
   
   if ((mZipItem.flags & 64) == 64)
   {
-    CLog::Log(LOGERROR,"FileZip: compressed file, not supported!");
+    CLog::Log(LOGERROR,"FileZip: encrypted file, not supported!");
     return false;
   }
   
@@ -74,27 +74,31 @@ __int64 CFileZip::Seek(__int64 iFilePosition, int iWhence)
 {
   if (mZipItem.method == 0) // this is easy
   {
+    __int64 iResult;
     switch (iWhence)
     {
     case SEEK_SET:
       if (iFilePosition > mZipItem.usize)
         return -1;
       m_iFilePos = iFilePosition;
-      return mFile.Seek(iFilePosition+mZipItem.offset,SEEK_SET);
+      iResult = mFile.Seek(iFilePosition+mZipItem.offset,SEEK_SET)-mZipItem.offset;
+      return iResult;
       break;
 
     case SEEK_CUR:
       if (m_iFilePos+iFilePosition > mZipItem.usize)
         return -1;
       m_iFilePos += iFilePosition;
-      return mFile.Seek(iFilePosition,SEEK_CUR);
+      iResult = mFile.Seek(iFilePosition,SEEK_CUR)-mZipItem.offset;
+      return iResult;
       break;
 
     case SEEK_END:
       if (iFilePosition > mZipItem.usize)
         return -1;
-      m_iFilePos = mZipItem.usize-iFilePosition;
-      return mFile.Seek(mZipItem.offset+mZipItem.usize-iFilePosition,SEEK_SET);
+      m_iFilePos = mZipItem.usize+iFilePosition;
+      iResult = mFile.Seek(mZipItem.offset+mZipItem.usize+iFilePosition,SEEK_SET)-mZipItem.offset;
+      return iResult;
       break;
     }
   }
@@ -181,18 +185,18 @@ __int64 CFileZip::Seek(__int64 iFilePosition, int iWhence)
       // uncompress, minding m_ZStream.total_out
       
       __int64 iStartPos = m_iFilePos;
-      if (iFilePosition-m_iFilePos > 1024*1024) // 1 MB seek
+      if ((GetLength()+iFilePosition)-m_iFilePos > 1024*1024) // 1 MB seek
       {
         StartProgressBar();
         m_bUseProgressBar = true;
       }
 
-      while( m_ZStream.total_out < mZipItem.usize-iFilePosition)
+      while( m_ZStream.total_out < mZipItem.usize+iFilePosition)
       {
-        Read(temp,(mZipItem.usize-iFilePosition-m_ZStream.total_out > 131072)?131072:mZipItem.usize-iFilePosition-m_ZStream.total_out);
+        Read(temp,(mZipItem.usize+iFilePosition-m_ZStream.total_out > 131072)?131072:mZipItem.usize+iFilePosition-m_ZStream.total_out);
         if (m_bUseProgressBar)
         {
-          m_dlgProgress->SetPercentage(static_cast<int>(static_cast<float>(m_iFilePos-iStartPos)/static_cast<float>(mZipItem.usize-iFilePosition)*100));
+          m_dlgProgress->SetPercentage(static_cast<int>(static_cast<float>(m_iFilePos-iStartPos)/static_cast<float>(mZipItem.usize+iFilePosition)*100));
           m_dlgProgress->Progress();
         }
       }

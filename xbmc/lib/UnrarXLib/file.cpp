@@ -3,6 +3,8 @@
 // BE WARNED THIS FILE IS HEAVILY MODIFIED TO BE USED WITH XBMC
 
 #include "../../utils/log.h"
+#include "../../FileSystem/Directory.h"
+#include "../../Util.h"
 
 static File *CreatedFiles[32];
 static int RemoveCreatedActive=0;
@@ -38,7 +40,6 @@ File::~File()
 
 void File::operator = (File &SrcFile)
 {
-  //CLog::Log(LOGDEBUG,"copy files, we have a problem!");
   //hFile=SrcFile.hFile;
   m_File = SrcFile.m_File;
   strcpy(FileName,SrcFile.FileName);
@@ -103,12 +104,10 @@ bool File::Open(const char *Name,const wchar *NameW,bool OpenShared,bool Update)
   SkipClose=false;
   bool Success=hNewFile!=BAD_HANDLE;*/
   bool Success;
-//  CLog::Log(LOGDEBUG,"OPEN FILE %s!!!",Name);
   if (Update)
     Success = m_File.OpenForWrite(Name);
   else
     Success = m_File.Open(Name);
-//  CLog::Log(LOGDEBUG,"success: %i",Success);
   if (Success)
   {
 //    hFile=hNewFile;
@@ -130,7 +129,6 @@ bool File::Open(const char *Name,const wchar *NameW,bool OpenShared,bool Update)
 #if !defined(SHELL_EXT) && !defined(SFX_MODULE)
 void File::TOpen(const char *Name,const wchar *NameW)
 {
-//  CLog::Log(LOGDEBUG,"TOPEN FILE %s!!!",Name);
   if (!WOpen(Name,NameW))
     ErrHandler.Exit(OPEN_ERROR);
 }
@@ -139,7 +137,6 @@ void File::TOpen(const char *Name,const wchar *NameW)
 
 bool File::WOpen(const char *Name,const wchar *NameW)
 {
-//  CLog::Log(LOGDEBUG,"WOPEN FILE %s!!!",Name);
   if (Open(Name,NameW))
     return(true);
   ErrHandler.OpenErrorMsg(Name);
@@ -149,7 +146,6 @@ bool File::WOpen(const char *Name,const wchar *NameW)
 
 bool File::Create(const char *Name,const wchar *NameW)
 {
-//  CLog::Log(LOGDEBUG,"CREATE FILE %s!!!",Name);
 /*#ifdef _WIN_32
 #ifndef _XBOX
   if (WinNT() && NameW!=NULL && *NameW!=0)
@@ -162,6 +158,9 @@ bool File::Create(const char *Name,const wchar *NameW)
 #else
   hFile=fopen(Name,CREATEBINARY);
 #endif*/
+  CStdString strPath;
+  CUtil::GetDirectory(Name,strPath);
+  DIRECTORY::CDirectory::Create(strPath);
   m_File.OpenForWrite(Name,true,true);
   NewFile=true;
   HandleType=FILE_HANDLENORMAL;
@@ -184,7 +183,6 @@ bool File::Create(const char *Name,const wchar *NameW)
 //void File::AddFileToList(FileHandle hFile)
 void File::AddFileToList()
 {
-//  CLog::Log(LOGDEBUG,"ADD TO LIST!!!");
   //if (hFile!=BAD_HANDLE)
     //for (int I=0;I<sizeof(CreatedFiles)/sizeof(CreatedFiles[0]);I++)
     /*for (int I=0;I<32;I++)
@@ -199,7 +197,6 @@ void File::AddFileToList()
 #if !defined(SHELL_EXT) && !defined(SFX_MODULE)
 void File::TCreate(const char *Name,const wchar *NameW)
 {
-//  CLog::Log(LOGDEBUG,"TCREATE FILE %s!!!",Name);
   if (!WCreate(Name,NameW))
     ErrHandler.Exit(FATAL_ERROR);
 }
@@ -208,7 +205,6 @@ void File::TCreate(const char *Name,const wchar *NameW)
 
 bool File::WCreate(const char *Name,const wchar *NameW)
 {
-//  CLog::Log(LOGDEBUG,"WCREAT FILE %s!!!",Name);
   if (Create(Name,NameW))
     return(true);
   ErrHandler.SetErrorCode(CREATE_ERROR);
@@ -219,7 +215,6 @@ bool File::WCreate(const char *Name,const wchar *NameW)
 
 bool File::Close()
 {
-//  CLog::Log(LOGDEBUG,"CLOSE FILE !!");
   bool Success=true;
   /*if (HandleType!=FILE_HANDLENORMAL)
     HandleType=FILE_HANDLENORMAL;
@@ -239,7 +234,6 @@ bool File::Close()
           for (int I=0;I<32;I++)
             if (CreatedFiles[I]==this)
             {
-              CLog::Log(LOGDEBUG,"found this @ %i",I);
               CreatedFiles[I]=NULL;
               break;
             }*/
@@ -249,7 +243,6 @@ bool File::Close()
         ErrHandler.CloseError(FileName);
     //}
   CloseCount++;
-//  CLog::Log(LOGDEBUG,"returning");
   return(Success);
   //return(true);
 }
@@ -257,7 +250,6 @@ bool File::Close()
 
 void File::Flush()
 {
-//  CLog::Log(LOGDEBUG,"FLUSH FILE!!!");
   m_File.Flush();
 /*#ifdef _WIN_32
   FlushFileBuffers(hFile);
@@ -269,7 +261,6 @@ void File::Flush()
 
 bool File::Delete()
 {
-//  CLog::Log(LOGDEBUG,"DELETE FILE !!!");
   /*if (HandleType!=FILE_HANDLENORMAL || !AllowDelete)
     return(false);
   if (hFile!=BAD_HANDLE)
@@ -281,7 +272,6 @@ bool File::Delete()
 
 bool File::Rename(const char *NewName)
 {
-//  CLog::Log(LOGDEBUG,"RENAME FILE %s!!!",NewName);
   bool Success=strcmp(FileName,NewName)==0;
   if (!Success)
     Success=rename(FileName,NewName)==0;
@@ -296,7 +286,6 @@ bool File::Rename(const char *NewName)
 
 void File::Write(const void *Data,int Size)
 {
-//  CLog::Log(LOGDEBUG,"WRITE FILE %i!!!",Size);
   /*if (Size==0)
     return;
 //#ifndef _WIN_CE
@@ -334,8 +323,10 @@ void File::Write(const void *Data,int Size)
         //  break;
     }
     else
+    {
       //Success=WriteFile(hFile,Data,Size,&Written,NULL) != FALSE;
       m_File.Write(Data,Size);
+    }
 #else
     Success=fwrite(Data,1,Size,hFile)==Size && !ferror(hFile);
 #endif
@@ -366,7 +357,6 @@ void File::Write(const void *Data,int Size)
 
 int File::Read(void *Data,int Size)
 {
-//  CLog::Log(LOGDEBUG,"READ FILE %i!!!",Size);
   Int64 FilePos = 0;
   if (IgnoreReadErrors)
     FilePos=Tell();
@@ -404,7 +394,6 @@ int File::Read(void *Data,int Size)
 
 int File::DirectRead(void *Data,int Size)
 {
-//  CLog::Log(LOGDEBUG,"DIRECTREAD FILE %i!!!",Size);
 #ifdef _WIN_32
   const int MaxDeviceRead=20000;
 #endif
@@ -425,7 +414,6 @@ int File::DirectRead(void *Data,int Size)
   DWORD Read;
   //if (!ReadFile(hFile,Data,Size,&Read,NULL))
   Read = m_File.Read(Data,Size);
-//  CLog::Log(LOGDEBUG,"read %i bytes",Read);
   if ((Read != Size) && (m_File.GetPosition() != m_File.GetLength()))
   {
     if (IsDevice() && Size>MaxDeviceRead)
@@ -452,7 +440,6 @@ int File::DirectRead(void *Data,int Size)
 
 void File::Seek(Int64 Offset,int Method)
 {
-//  CLog::Log(LOGDEBUG,"SEEK FILE %li %i!!!",Offset,Method);
   if (!RawSeek(Offset,Method) && AllowExceptions)
     ErrHandler.SeekError(FileName);
 }
@@ -462,7 +449,6 @@ bool File::RawSeek(Int64 Offset,int Method)
 {
   /*if (hFile==BAD_HANDLE)
     return(true);*/
-//  CLog::Log(LOGDEBUG,"RAWSEEK FILE %li %i!!!",Offset,Method);
   /*if (!is64plus(Offset) && Method!=SEEK_SET)
   {
     Offset=(Method==SEEK_CUR ? Tell():FileLength())+Offset;
@@ -473,7 +459,6 @@ bool File::RawSeek(Int64 Offset,int Method)
   //if (SetFilePointer(hFile,int64to32(Offset),&HighDist,Method)==0xffffffff &&
   if (m_File.Seek(Offset,Method) < 0)
   {
-//    CLog::Log(LOGDEBUG,"seek to hell!");
     return(false);
   }
 #else
@@ -485,19 +470,16 @@ bool File::RawSeek(Int64 Offset,int Method)
 #endif
     return(false);
 #endif
-//  CLog::Log(LOGDEBUG,"seek wtf!");
   return(true);
 }
 
 
 Int64 File::Tell()
 {
-//  CLog::Log(LOGDEBUG,"TELL FILE!!!");
 #ifdef _WIN_32
   LONG HighDist=0;
   //uint LowDist=SetFilePointer(hFile,0,&HighDist,FILE_CURRENT);
   Int64 pos = m_File.GetPosition();
-//  CLog::Log(LOGDEBUG,"tell: %li",pos);
   return m_File.GetPosition();
   /*if (LowDist==0xffffffff && GetLastError()!=NO_ERROR)
     if (AllowExceptions)
@@ -517,7 +499,6 @@ Int64 File::Tell()
 
 void File::Prealloc(Int64 Size)
 {
-//  CLog::Log(LOGDEBUG,"PREALLOC FILE %i!!!",Size);
 #ifdef _WIN_32
   if (RawSeek(Size,SEEK_SET))
   {
@@ -530,7 +511,6 @@ void File::Prealloc(Int64 Size)
 
 byte File::GetByte()
 {
-//  CLog::Log(LOGDEBUG,"GETBYTE FILE!!!");
   byte Byte=0;
   Read(&Byte,1);
   return(Byte);
@@ -539,14 +519,12 @@ byte File::GetByte()
 
 void File::PutByte(byte Byte)
 {
-//  CLog::Log(LOGDEBUG,"WRITEBYTE FILE!!!");
   Write(&Byte,1);
 }
 
 
 bool File::Truncate()
 {
-//  CLog::Log(LOGDEBUG,"TRUNC FILE!!!");
 #ifdef _WIN_32
   //return(SetEndOfFile(hFile) != FALSE);
   return true;
@@ -558,7 +536,6 @@ bool File::Truncate()
 
 void File::SetOpenFileTime(RarTime *ftm,RarTime *ftc,RarTime *fta)
 {
-//  CLog::Log(LOGDEBUG,"SETOPENFILETIME!!!");
 #ifdef _WIN_32
   /*bool sm=ftm!=NULL && ftm->IsSet();
   bool sc=ftc!=NULL && ftc->IsSet();
@@ -585,7 +562,6 @@ void File::SetCloseFileTime(RarTime *ftm,RarTime *fta)
 
 void File::SetCloseFileTimeByName(const char *Name,RarTime *ftm,RarTime *fta)
 {
-//  CLog::Log(LOGDEBUG,"SETCLOSEFILETEIMFILE %s!!!",Name);
 #if defined(_UNIX) || defined(_EMX)
   bool setm=ftm!=NULL && ftm->IsSet();
   bool seta=fta!=NULL && fta->IsSet();
@@ -608,7 +584,6 @@ void File::SetCloseFileTimeByName(const char *Name,RarTime *ftm,RarTime *fta)
 
 void File::GetOpenFileTime(RarTime *ft)
 {
-//  CLog::Log(LOGDEBUG,"GETOPENFILETIME!!!");
 #ifdef _WIN_32
 /*  FILETIME FileTime;
   GetFileTime(hFile,NULL,NULL,&FileTime);
@@ -632,7 +607,6 @@ void File::SetOpenFileStat(RarTime *ftm,RarTime *ftc,RarTime *fta)
 
 void File::SetCloseFileStat(RarTime *ftm,RarTime *fta,uint FileAttr)
 {
-//  CLog::Log(LOGDEBUG,"SETCLOSEFILESTATFILE %i!!!",FileAttr);
 #ifdef _WIN_32
   //SetFileAttr(FileName,FileNameW,FileAttr);
 #endif
@@ -649,10 +623,7 @@ void File::SetCloseFileStat(RarTime *ftm,RarTime *fta,uint FileAttr)
 
 Int64 File::FileLength()
 {
-//  CLog::Log(LOGDEBUG,"LENGTHFILE!!!");
-  SaveFilePos SavePos(*this);
-  Seek(0,SEEK_END);
-  return(Tell());
+  return (m_File.GetLength());
 }
 
 

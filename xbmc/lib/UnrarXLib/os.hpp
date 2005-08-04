@@ -25,8 +25,8 @@
 #endif //_XBOX
 #ifdef _WIN_32
 
-#define STRICT
-#define WINVER 0x0400
+//#define STRICT
+//#define WINVER 0x0400
 #define _WIN32_WINNT 0x0300
 
 #define WIN32_LEAN_AND_MEAN

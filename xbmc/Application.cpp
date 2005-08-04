@@ -737,7 +737,7 @@ HRESULT CApplication::Create()
       int iLastSlash = strTemp.rfind('\\');
       strcat(temp2,strTemp.substr(0,iLastSlash).c_str());
       
-      if ((DWVideo == XKEEPROM::VIDEO_STANDARD::NTSC_M) && ((XGetVideoStandard() == XC_VIDEO_STANDARD_PAL_I)) || (XGetVideoStandard() == XC_VIDEO_STANDARD_NTSC_J)) 
+      if ((DWVideo == XKEEPROM::VIDEO_STANDARD::NTSC_M) && ((XGetVideoStandard() == XC_VIDEO_STANDARD_PAL_I) || (XGetVideoStandard() == XC_VIDEO_STANDARD_NTSC_J))) 
       {
         CLog::Log(LOGINFO, "Rebooting to change resolution from %s back to NTSC_M", (XGetVideoStandard() == XC_VIDEO_STANDARD_PAL_I) ? "PAL" : "NTSC_J");
         Destroy();
@@ -2724,6 +2724,9 @@ void CApplication::Stop()
     g_applicationMessenger.Cleanup();
     g_pythonParser.FreeResources();
 
+    CLog::Log(LOGNOTICE, "clean cached files!");
+    g_RarManager.ClearCache(true);
+    
     CLog::Log(LOGNOTICE, "unload skin");
     UnloadSkin();
 
@@ -2909,12 +2912,12 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
     strNewPlayer = m_strForcedNextPlayer;
     m_strForcedNextPlayer = "";
   }
-    /*
-    else if (strcmp(g_stSettings.m_szExternalDVDPlayer, "dvdplayerbeta") == 0 && (item.IsDVD() || item.IsDVDFile() || item.IsDVDImage()))
+  
+  else if (strcmp(g_stSettings.m_szExternalDVDPlayer, "dvdplayerbeta") == 0 && (item.IsDVD() || item.IsDVDFile() || item.IsDVDImage()))
   {
     strNewPlayer = "dvdplayer";
   }
-  */
+  
   else if (ModPlayer::IsSupportedFormat(url.GetFileType()))
   {
     strNewPlayer = "mod";
