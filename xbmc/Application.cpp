@@ -1666,8 +1666,11 @@ void CApplication::Render()
     }
   }
 
+  
   // show/hide any modeless dialogs that need it
+  g_graphicsContext.Lock(); //Need to lock here so it doesn't happen while rendering fullscreen
   m_gWindowManager.UpdateModelessVisibility();
+  g_graphicsContext.Unlock();
 
   // dont show GUI when playing full screen video
   if (m_gWindowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO)
@@ -2821,7 +2824,7 @@ void CApplication::Stop()
   catch (...)
   {}
 
-#ifdef _DEBUG
+#ifdef _CRTDBG_MAP_ALLOC
     _CrtDumpMemoryLeaks();
     while(1); // execution ends
 #endif
