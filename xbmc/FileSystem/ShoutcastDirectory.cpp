@@ -4,11 +4,10 @@
 #include "directorycache.h"
 #include "../lib/libid3/zlib.h"
 #include "../util.h"
-#include "../utils/http.h"
 #include "../PlayListFactory.h"
 
 
-// Quoting shoutcast on how ofter users could update their streams list:
+// Quoting shoutcast on how often users could update their streams list:
 // "You can either choose to cache this data on your own server,
 // or limit the number of requests from your clients to us.
 // We ask that a client not make a request for the XML list more
@@ -20,6 +19,8 @@
 
 CShoutcastDirectory::CShoutcastDirectory(void)
 {
+  m_Downloaded=false;
+  m_Error=false;
 }
 
 CShoutcastDirectory::~CShoutcastDirectory(void)
@@ -29,7 +30,7 @@ CShoutcastDirectory::~CShoutcastDirectory(void)
 bool CShoutcastDirectory::IsCacheValid()
 {
   __stat64 stat;
-  if (CFile::Stat("Z:\\cachedPlaylists.txt", &stat) == 0)
+  if (CFile::Stat("Z:\\cachedPlaylists.fi", &stat) == 0)
   {
     __time64_t time;
     _time64(&time);
@@ -45,64 +46,17 @@ void CShoutcastDirectory::CacheItems(CFileItemList &items)
     return ;
 
   CFile file;
-  if (file.OpenForWrite("Z:\\cachedPlaylists.txt", true, true)) // always overwrite
-  {
-    int i = 0;
-    if (items[0]->GetLabel() == "..")
-      i = 1;
-
-    for (i; i < (int)items.Size(); ++i)
-    {
-      CFileItem* pItem = items[i];
-
-      CStdString strLabel1 = pItem->GetLabel() + "\n";
-      file.Write(strLabel1.c_str(), strLabel1.size());
-
-      CStdString strLabel2 = pItem->GetLabel2() + "\n";
-      file.Write(strLabel2.c_str(), strLabel2.size());
-
-      CStdString strPath = pItem->m_strPath + "\n";
-      file.Write(strPath.c_str(), strPath.size());
-    }
-
-    file.Close();
-  }
+  CArchive ar(&file, CArchive::store);
+  if (file.OpenForWrite("Z:\\cachedPlaylists.fi", true, true)) // always overwrite
+    ar << items;
 }
 
 void CShoutcastDirectory::LoadCachedItems(CFileItemList &items)
 {
   CFile file;
-  if (file.Open("Z:\\cachedPlaylists.txt", false))
-  {
-    for (int i = 0; i < 500; ++i)
-    {
-      CFileItem* pItem = new CFileItem;
-
-      CStdString strLabel1;
-      file.ReadString(strLabel1.GetBuffer(1024), 1024);
-      strLabel1.ReleaseBuffer();
-      strLabel1.TrimRight("\n");
-      pItem->SetLabel(strLabel1);
-
-      CStdString strLabel2;
-      file.ReadString(strLabel2.GetBuffer(1024), 1024);
-      strLabel2.ReleaseBuffer();
-      strLabel2.TrimRight("\n");
-      pItem->SetLabel2(strLabel2);
-
-      CStdString strPath;
-      file.ReadString(strPath.GetBuffer(1024), 1024);
-      strPath.ReleaseBuffer();
-      strPath.TrimRight("\n");
-      pItem->m_strPath = strPath;
-
-      pItem->m_bIsFolder = true;
-
-      items.Add(pItem);
-    }
-
-    file.Close();
-  }
+  CArchive ar(&file, CArchive::load);
+  if (file.Open("Z:\\cachedPlaylists.fi", false))
+    ar >> items;
 }
 
 bool CShoutcastDirectory::DownloadPlaylists(CFileItemList &items)
@@ -119,9 +73,25 @@ bool CShoutcastDirectory::DownloadPlaylists(CFileItemList &items)
     dlgProgress->Progress();
   }
 
+  CThread thread(this);
+  m_strSource="http://shoutcast.com/sbin/xmllister.phtml?service=XBMC&limit=500";
+  m_strDestination="Z:\\xmllister.zli";
+  thread.Create();
 
-  CHTTP http;
-  if (!http.Download("http://shoutcast.com/sbin/xmllister.phtml?service=XBMC&limit=500", "Z:\\xmllister.zli"))
+  while (!m_Downloaded)
+  {
+    dlgProgress->Progress();
+
+    if (dlgProgress->IsCanceled())
+    {
+      m_http.Cancel();
+      thread.StopThread();
+      dlgProgress->Close();
+      return false;
+    }
+  }
+
+  if (!dlgProgress->IsCanceled() && m_Error)
   {
     if (dlgProgress) dlgProgress->Close();
     CGUIDialogOK::ShowAndGetInput(260, 14006, 0, 0);
@@ -324,9 +294,25 @@ bool CShoutcastDirectory::GetDirectory(const CStdString& strPath, CFileItemList 
       dlgProgress->Progress();
     }
 
+    CThread thread(this);
+    m_strSource=strPlayList;
+    m_strDestination="Z:\\playlist.pls";
+    thread.Create();
 
-    CHTTP http;
-    if (!http.Download(strPlayList, "Z:\\playlist.pls"))
+    while (!m_Downloaded)
+    {
+      dlgProgress->Progress();
+
+      if (dlgProgress->IsCanceled())
+      {
+        m_http.Cancel();
+        thread.StopThread();
+        dlgProgress->Close();
+        return false;
+      }
+    }
+
+    if (!dlgProgress->IsCanceled() && m_Error)
     {
       if (dlgProgress) dlgProgress->Close();
       CGUIDialogOK::ShowAndGetInput(260, 14007, 0, 0);
@@ -358,4 +344,12 @@ bool CShoutcastDirectory::GetDirectory(const CStdString& strPath, CFileItemList 
 
   g_directoryCache.SetDirectory(strRoot, vecCacheItems);
   return true;
+}
+
+void CShoutcastDirectory::Run()
+{
+  if (!m_http.Download(m_strSource, m_strDestination))
+      m_Error=true;
+
+  m_Downloaded=true;
 }
