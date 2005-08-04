@@ -957,11 +957,12 @@ bool CUtil::IsDVD(const CStdString& strFile)
   return false;
 }
 
-bool CUtil::IsRAR(const CStdString& strFile)
+bool CUtil::IsRAR(const CStdString& strFile) // also checks for comic books
 {
   CStdString strExtension;
   CUtil::GetExtension(strFile,strExtension);
   if (strExtension.Equals(".001")) return true;
+  if (strExtension.CompareNoCase(".cbr") == 0) return true;
   if (strExtension.CompareNoCase(".rar") == 0)
   {
     std::vector<CStdString> tokens;
@@ -969,7 +970,6 @@ bool CUtil::IsRAR(const CStdString& strFile)
     if (tokens.size() < 2)
       return false;
     CStdString token = tokens[tokens.size()-2];
-    CLog::Log(LOGDEBUG,"token: %s, comp: %s, comp: %s",token.c_str(),token.Left(4).c_str(),token.Right(4).c_str());
     if (token.Left(4).CompareNoCase("part") == 0) // only list '.part01.rar'
     {
       if (atoi(token.Right(4).c_str()) == 1)
@@ -981,11 +981,12 @@ bool CUtil::IsRAR(const CStdString& strFile)
   return false;
 }
 
-bool CUtil::IsZIP(const CStdString& strFile)
+bool CUtil::IsZIP(const CStdString& strFile) // also checks for comic books!
 {
   CStdString strExtension;
   CUtil::GetExtension(strFile,strExtension);
   if (strExtension.CompareNoCase(".zip") == 0) return true;
+  if (strExtension.CompareNoCase(".cbz") == 0) return true;
   return false;
 }
 

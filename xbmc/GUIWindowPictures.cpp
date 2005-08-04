@@ -188,17 +188,18 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
 
   case GUI_MSG_WINDOW_INIT:
     {
+      CLog::Log(LOGDEBUG,"windowpictures init!");
       int iLastControl = m_iLastControl;
       CGUIWindow::OnMessage(message);
       if (message.GetParam1() != WINDOW_SLIDESHOW)
       {
         CSectionLoader::LoadDLL(IMAGE_DLL);
       }
+
       m_dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
-
-      m_rootDir.SetMask(g_stSettings.m_szMyPicturesExtensions);
-      m_rootDir.SetShares(g_settings.m_vecMyPictureShares);
-
+      
+      CLog::Log(LOGDEBUG,"size of stuf: %i %i",m_rootDir.GetNumberOfShares(),g_settings.m_vecMyPictureShares.size());
+      
       // check for a passed destination path
       CStdString strDestination = message.GetStringParam();
       if (!strDestination.IsEmpty())
@@ -212,6 +213,27 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
         m_Directory.m_strPath = strDestination = g_stSettings.m_szDefaultPictures;
         CLog::Log(LOGINFO, "Attempting to default to: %s", strDestination.c_str());
       }
+      
+      if (m_rootDir.GetNumberOfShares() == 0)
+      {
+        m_rootDir.SetMask(g_stSettings.m_szMyPicturesExtensions);
+        m_rootDir.SetShares(g_settings.m_vecMyPictureShares);
+      }
+
+      for (unsigned int i=g_settings.m_vecMyPictureShares.size();i<m_rootDir.GetNumberOfShares();++i)
+      {
+        const CShare& share = m_rootDir[i];
+        if (share.strEntryPoint.IsEmpty()) // do not unmount 'normal' rars/zips
+          continue;
+        
+        CURL url(share.strPath);
+        if (url.GetProtocol() == "zip://")
+          g_ZipManager.release(share.strPath);
+        
+        strDestination = share.strEntryPoint;
+        m_rootDir.RemoveShare(share.strPath);
+      }
+      
       // try to open the destination path
       if (!strDestination.IsEmpty())
       {
@@ -468,7 +490,9 @@ void CGUIWindowPictures::Update(const CStdString &strDirectory)
   if (m_thumbLoader.IsLoading())
     m_thumbLoader.StopThread();
 
+  CLog::Log(LOGDEBUG,"calling update dir!");
   UpdateDir(strDirectory);
+  CLog::Log(LOGDEBUG,"updatedir returned!");
   if (!m_Directory.IsVirtualDirectoryRoot() && g_guiSettings.GetBool("Pictures.UseAutoSwitching"))
   {
     m_iViewAsIcons = CAutoSwitch::GetView(m_vecItems);
@@ -482,19 +506,24 @@ void CGUIWindowPictures::Update(const CStdString &strDirectory)
 void CGUIWindowPictures::UpdateDir(const CStdString &strDirectory)
 {
   // get selected item
+  CLog::Log(LOGDEBUG,"selecting item1");
   int iItem = m_viewControl.GetSelectedItem();
   CStdString strSelectedItem = "";
+  CLog::Log(LOGDEBUG,"item: %i",iItem);
   if (iItem >= 0 && iItem < (int)m_vecItems.Size())
   {
-    CFileItem* pItem = m_vecItems[iItem];
+      CFileItem* pItem = m_vecItems[iItem];
     if (pItem->GetLabel() != "..")
     {
       GetDirectoryHistoryString(pItem, strSelectedItem);
       m_history.Set(strSelectedItem, m_Directory.m_strPath);
+      CLog::Log(LOGDEBUG,"setting history: %s",strSelectedItem.c_str());
     }
   }
+  CLog::Log(LOGDEBUG,"clearing items!");
   ClearFileItems();
 
+  CLog::Log(LOGDEBUG,"listing %s",strDirectory.c_str());
   GetDirectory(strDirectory, m_vecItems);
 
   m_Directory.m_strPath = strDirectory;
@@ -502,7 +531,9 @@ void CGUIWindowPictures::UpdateDir(const CStdString &strDirectory)
   if (g_guiSettings.GetBool("FileLists.HideExtensions"))
     m_vecItems.RemoveExtensions();
   m_vecItems.FillInDefaultIcons();
+  CLog::Log(LOGDEBUG,"sorting");
   OnSort();
+  CLog::Log(LOGDEBUG,"update buttons!");
   UpdateButtons();
 
   strSelectedItem = m_history.Get(m_Directory.m_strPath);
@@ -543,6 +574,7 @@ void CGUIWindowPictures::OnClick(int iItem)
   {
     CShare shareZip;
     shareZip.strPath.Format("zip://Z:\\,%i,,%s,\\",1, pItem->m_strPath.c_str() );
+    shareZip.strEntryPoint.Empty();
     m_rootDir.AddShare(shareZip);
     m_iItemSelected = -1;
     Update(shareZip.strPath);
@@ -551,46 +583,68 @@ void CGUIWindowPictures::OnClick(int iItem)
   {
     CShare shareRar;
     shareRar.strPath.Format("rar://Z:\\,%i,,%s,\\",EXFILE_AUTODELETE, pItem->m_strPath.c_str() );
+    shareRar.strEntryPoint.Empty();
     m_rootDir.AddShare(shareRar);
     m_iItemSelected = -1;
     Update(shareRar.strPath);
   }
   else if (pItem->IsCBZ()) //mount'n'show'n'unmount
   {
+    CUtil::GetDirectory(pItem->m_strPath,strPath);
     CShare shareZip;
     shareZip.strPath.Format("zip://Z:\\filesrar\\,%i,,%s,\\",1, pItem->m_strPath.c_str() );
+    shareZip.strEntryPoint = strPath;
     m_rootDir.AddShare(shareZip);
-    CUtil::GetDirectory(pItem->m_strPath,strPath);
     Update(shareZip.strPath);
     if (m_vecItems.Size() > 0)
     {
+      if ((m_vecItems.Size() == 1) && (m_vecItems[0]->m_bIsFolder))
+        Update(shareZip.strPath+m_vecItems[0]->GetLabel()+"\\"); 
       int iZipItem=0;
       while ((m_vecItems[iZipItem]->m_bIsFolder) && (iZipItem < m_vecItems.Size())) iZipItem++;
       if (iZipItem < m_vecItems.Size())
         OnShowPicture(m_vecItems[iZipItem]->m_strPath);
     }
-    g_ZipManager.release(m_Directory.m_strPath); // release resources
-    m_rootDir.RemoveShare(m_Directory.m_strPath);
     m_iItemSelected = iItem;
+    /*m_iItemSelected = -1;
     Update(strPath);
+    m_iItemSelected = iItem;
+    g_ZipManager.release(shareZip.strPath); // release resources
+    m_rootDir.RemoveShare(shareZip.strPath);*/
+
   }
   else if (pItem->IsCBR()) // mount'n'show'n'unmount
   {
-    CShare shareRar;
-    shareRar.strPath.Format("rar://Z:\\,%i,,%s,\\",EXFILE_AUTODELETE|EXFILE_OVERWRITE,pItem->m_strPath.c_str() );
-    m_rootDir.AddShare(shareRar);
     CUtil::GetDirectory(pItem->m_strPath,strPath);
+    CShare shareRar;
+    shareRar.strPath.Format("rar://Z:\\,%i,,%s,\\",EXFILE_AUTODELETE,pItem->m_strPath.c_str() );
+    shareRar.strEntryPoint = strPath;
+    m_rootDir.AddShare(shareRar);
+    CLog::Log(LOGDEBUG,"update1");
+    m_iItemSelected = -1;
     Update(shareRar.strPath);
     if (m_vecItems.Size() > 0)
     {
+      if ((m_vecItems.Size() == 1) && (m_vecItems[0]->m_bIsFolder))
+      {
+        CLog::Log(LOGDEBUG,"update2");
+        m_iItemSelected = -1;
+        Update(shareRar.strPath+m_vecItems[0]->GetLabel()+"\\");
+      }
       int iRarItem=0;
       while ((m_vecItems[iRarItem]->m_bIsFolder) && (iRarItem < m_vecItems.Size())) iRarItem++; // locate first picture
       if (iRarItem < m_vecItems.Size())
+      {
+        m_viewControl.SetSelectedItem(iRarItem);
         OnShowPicture(m_vecItems[iRarItem]->m_strPath);
+      }
+      else
+      {
+        m_rootDir.RemoveShare(shareRar.strPath);
+        Update(strPath);
+      }
+      m_iItemSelected = iItem;
     }
-    m_rootDir.RemoveShare(m_Directory.m_strPath);
-    m_iItemSelected = iItem;
-    Update(strPath);
   }
   else
   {
