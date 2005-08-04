@@ -16,7 +16,7 @@ class ScanTree
     FindFile *FindStack[MAXSCANDEPTH];
     int Depth;
 
-    StringList *FileMasks;
+    ::StringList *FileMasks;
     int Recurse;
     bool GetLinks;
     int GetDirs;
@@ -31,7 +31,7 @@ class ScanTree
 
     char ErrArcName[NM];
   public:
-    ScanTree(StringList *FileMasks,int Recurse,bool GetLinks,int GetDirs);
+    ScanTree(::StringList *FileMasks,int Recurse,bool GetLinks,int GetDirs);
     ~ScanTree();
     int GetNext(FindData *FindData);
     int GetSpecPathLength() {return(SpecPathLength);};

@@ -579,6 +579,13 @@ void CGUIWindowVideoFiles::OnClick(int iItem)
     m_rootDir.AddShare(shareZip);
     Update(shareZip.strPath);
   }
+  else if (pItem->IsRAR()) // mount rar archive
+  {
+    CShare shareRar;
+    shareRar.strPath.Format("rar://Z:\\temp\\,%i,,%s,\\",1, pItem->m_strPath.c_str() );
+    m_rootDir.AddShare(shareRar);
+    Update(shareRar.strPath);
+  }
   else
   {
     // Reset Playlistplayer, we may have played something

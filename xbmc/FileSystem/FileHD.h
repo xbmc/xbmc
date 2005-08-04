@@ -33,7 +33,6 @@ public:
   virtual void Flush();
 
   virtual bool OpenForWrite(const CURL& url, bool bBinary = true, bool bOverWrite = false);
-  unsigned int Write(void *lpBuf, __int64 uiBufSize);
 
   virtual bool Delete(const char* strFileName);
   virtual bool Rename(const char* strFileName, const char* strNewFileName);

@@ -68,7 +68,7 @@ bool CVirtualDirectory::GetDirectory(const CStdString& strPath, CFileItemList &i
     {
       // Only cache directory we are getting now
       g_directoryCache.Clear();
-
+      
       return CDirectory::GetDirectory(strPath, items, m_strFileMask);
     }
   }
@@ -120,7 +120,7 @@ bool CVirtualDirectory::GetDirectory(const CStdString& strPath, CFileItemList &i
  */
 bool CVirtualDirectory::IsShare(const CStdString& strPath) const
 {
-  if (strPath.Left(6) == "zip://") // fucks up directory navigation otherwise..
+  if (strPath.Left(6) == "zip://" || strPath.Left(6) == "rar://") // fucks up directory navigation otherwise..
     return false; 
 
   CStdString strPathCpy = strPath;

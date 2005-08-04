@@ -8,7 +8,8 @@ struct RAR20_archive_entry                  /* These infos about files are  */
   char          *Name;
   unsigned short NameSize;
   unsigned long  PackSize;
-  unsigned long  UnpSize;
+  //unsigned long  UnpSize;
+  __int64 UnpSize;
   unsigned char  HostOS;                    /* MSDOS=0,OS2=1,WIN32=2,UNIX=3 */
   unsigned long  FileCRC;
   unsigned long  FileTime;

@@ -82,7 +82,6 @@ CBackgroundWeatherLoader::CBackgroundWeatherLoader(CWeather *pCallback, int iAre
 {
   m_pCallback = pCallback;
   m_iArea = iArea;
-  m_bImagesOkay = false;
   CThread::Create(true);
 }
 
@@ -112,13 +111,14 @@ void CBackgroundWeatherLoader::Process()
     if (httpUtil.Download(strURL, strWeatherFile))
     {
       CLog::Log(LOGINFO, "WEATHER: Weather download successful");
-      if (!m_bImagesOkay)
+      if (!m_pCallback->m_bImagesOkay)
       {
+        CDirectory::Create(strBasePath);
         if (bUseZip)
           g_ZipManager.ExtractArchive(strZipFile,strBasePath);
         else if (bUseRar)
           g_RarManager.ExtractArchive(strRarFile,strBasePath);
-        m_bImagesOkay = true;
+        m_pCallback->m_bImagesOkay = true;
       }
       m_pCallback->LoadWeather(strWeatherFile);
     }
@@ -135,6 +135,7 @@ void CBackgroundWeatherLoader::Process()
 CWeather::CWeather(void)
 {
   m_bBusy = false;
+  m_bImagesOkay = false;
   for (int i = 0; i < MAX_LOCATION; i++)
   {
     strcpy(m_szLocation[i], "");

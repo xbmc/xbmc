@@ -48,10 +48,12 @@ protected:
   bool CheckMovie(const CStdString& strFileName);
   void OnQueueItem(int iItem);
   virtual void OnDeleteItem(int iItem);
+
   void OnResumeItem(int iItem);
+
   int  ResumeItemOffset(int iItem);
   void AddItemToPlayList(const CFileItem* pItem);
-  void GetStackedFiles(const CStdString &strFileName, vector<CStdString> &movies);
+  void GetStackedFiles(const CStdString &strFileName, std::vector<CStdString> &movies);
   void PlayMovies(VECMOVIESFILES &movies, long lStartOffset);
   CVirtualDirectory m_rootDir;
   CFileItemList m_vecItems;

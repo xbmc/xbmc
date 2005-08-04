@@ -80,22 +80,18 @@ int CFileHD::Stat(const CURL& url, struct __stat64* buffer)
 bool CFileHD::OpenForWrite(const CURL& url, bool bBinary, bool bOverWrite)
 {
   // make sure it's a legal FATX filename (we are writing to the harddisk)
-  CStdString strFileNameAndPath, strPath, strFileName;
-  url.GetURL(strFileNameAndPath);
+  CStdString strPath;
+  url.GetURL(strPath);
 
-  CUtil::Split(strFileNameAndPath, strPath, strFileName);
-  CStdString strNewFile;
   if (g_guiSettings.GetBool("Servers.FTPAutoFatX")) // allow overriding
-    strNewFile = CUtil::MakeLegalFileName(strFileName.c_str(), true);
-  else
-    strNewFile = strFileName;
-
-  strPath += strNewFile;
+    CUtil::GetFatXQualifiedPath(strPath);
+    
   strPath.Replace("/", "\\");
-
+  
   m_hFile.attach(CreateFile(strPath.c_str(), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ, NULL, bOverWrite ? CREATE_ALWAYS : OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL));
-  if (!m_hFile.isValid()) return false;
-
+  if (!m_hFile.isValid()) 
+    return false;
+  
   m_i64FilePos = 0;
   LARGE_INTEGER i64Size;
   GetFileSizeEx((HANDLE)m_hFile, &i64Size);
@@ -119,14 +115,15 @@ unsigned int CFileHD::Read(void *lpBuf, __int64 uiBufSize)
 }
 
 //*********************************************************************************************
-unsigned int CFileHD::Write(void *lpBuf, __int64 uiBufSize)
+int CFileHD::Write(const void *lpBuf, __int64 uiBufSize)
 {
-  if (!m_hFile.isValid()) return 0;
+  if (!m_hFile.isValid())
+    return 0;
+  
   DWORD nBytesWriten;
   if ( WriteFile((HANDLE)m_hFile, lpBuf, (DWORD)uiBufSize, &nBytesWriten, NULL) )
-  {
     return nBytesWriten;
-  }
+  
   return 0;
 }
 
@@ -177,8 +174,6 @@ __int64 CFileHD::GetLength()
   LARGE_INTEGER i64Size;
   GetFileSizeEx((HANDLE)m_hFile, &i64Size);
   return i64Size.QuadPart;
-
-  // return m_i64FileLength;
 }
 
 //*********************************************************************************************
@@ -245,15 +240,6 @@ bool CFileHD::ReadString(char *szLine, int iLineLength)
     return true;
   }
   return false;
-}
-
-
-int CFileHD::Write(const void* lpBuf, __int64 uiBufSize)
-{
-  if (!m_hFile.isValid()) return -1;
-  DWORD dwNumberOfBytesWritten = 0;
-  WriteFile((HANDLE)m_hFile, lpBuf, (DWORD)uiBufSize, &dwNumberOfBytesWritten, NULL);
-  return (int)dwNumberOfBytesWritten;
 }
 
 bool CFileHD::Delete(const char* strFileName)
