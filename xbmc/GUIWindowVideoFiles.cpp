@@ -212,12 +212,13 @@ bool CGUIWindowVideoFiles::OnMessage(CGUIMessage& message)
         }
 
         // need file filters or GetDirectory in SetHistoryPath fails
-        m_rootDir.SetMask(g_stSettings.m_szMyVideoExtensions);
-        m_rootDir.SetShares(g_settings.m_vecMyVideoShares);
-
-        SetHistoryForPath(m_Directory.m_strPath);
+        if (m_rootDir.GetNumberOfShares() == 0)
+        {
+          m_rootDir.SetMask(g_stSettings.m_szMyVideoExtensions);
+          m_rootDir.SetShares(g_settings.m_vecMyVideoShares);
+          SetHistoryForPath(m_Directory.m_strPath);
+        }
       }
-
 
       if (m_iViewAsIcons == -1 && m_iViewAsIconsRoot == -1)
       {
@@ -1130,7 +1131,8 @@ void CGUIWindowVideoFiles::OnPopupMenu(int iItem)
     // and do the popup menu
     if (CGUIDialogContextMenu::BookmarksMenu("video", m_vecItems[iItem]->GetLabel(), m_vecItems[iItem]->m_strPath, m_vecItems[iItem]->m_iLockMode, bMaxRetryExceeded, iPosX, iPosY))
     {
-      m_rootDir.SetShares(g_settings.m_vecMyVideoShares);
+      if (m_rootDir.GetNumberOfShares() == 0)
+        m_rootDir.SetShares(g_settings.m_vecMyVideoShares);
       Update(m_Directory.m_strPath);
       return ;
     }

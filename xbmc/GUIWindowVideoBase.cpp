@@ -220,8 +220,11 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
       m_database.Open();
       m_dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
 
-      m_rootDir.SetMask(g_stSettings.m_szMyVideoExtensions);
-      m_rootDir.SetShares(g_settings.m_vecMyVideoShares);
+      if (m_rootDir.GetNumberOfShares() == 0)
+      {
+        m_rootDir.SetMask(g_stSettings.m_szMyVideoExtensions);
+        m_rootDir.SetShares(g_settings.m_vecMyVideoShares);
+      }
 
       Update(m_Directory.m_strPath);
 
