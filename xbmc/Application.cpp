@@ -2913,7 +2913,7 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
     m_strForcedNextPlayer = "";
   }
   
-  else if (strcmp(g_stSettings.m_szExternalDVDPlayer, "dvdplayerbeta") == 0 && (item.IsDVD() || item.IsDVDFile() || item.IsDVDImage()))
+  else if (strcmp(g_stSettings.m_szExternalDVDPlayer, "dvdplayerbeta") == 0 && (item.IsDVD()))// || item.IsDVDFile() || item.IsDVDImage()))
   {
     strNewPlayer = "dvdplayer";
   }

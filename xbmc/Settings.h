@@ -76,6 +76,7 @@ public:
   virtual ~CShare(){};
   CStdString strName; ///< Name of the share, can be choosen freely.
   CStdString strPath; ///< Path of the share, eg. iso9660:// or F:
+  CStdString strEntryPoint; ///< entry point of shares, used with archives
   int m_iBufferSize;   ///< Cachesize of the share
   int m_iDepthSize;    ///< Depth for My Programs
 
