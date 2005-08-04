@@ -1238,12 +1238,13 @@ void CApplication::StartFtpServer()
 {
   if ( g_guiSettings.GetBool("Servers.FTPServer") && CUtil::IsNetworkUp())
   {
-    CLog::Log(LOGNOTICE, "start ftpserver");
+    CLog::Log(LOGNOTICE, "XBFileZilla: Starting...");
     if (!m_pFileZilla)
     {
       m_pFileZilla = new CXBFileZilla("Q:\\");
       m_pFileZilla->Start();
     }
+    CLog::Log(LOGNOTICE, "XBFileZilla: Started");
   }
 }
 
@@ -1252,10 +1253,23 @@ void CApplication::StopFtpServer()
   /* filezilla doesn't like to be deleted?  */
   if (m_pFileZilla)
   {
-    CLog::Log(LOGINFO, "stop ftpserver");
+    CLog::Log(LOGINFO, "XBFileZilla: Stopping...");
+    
+    std::vector<SXFConnection> mConnections;
+    std::vector<SXFConnection>::iterator it;
+
+    m_pFileZilla->GetAllConnections(mConnections);
+
+    for(it = mConnections.begin();it != mConnections.end();it++)
+    {
+      m_pFileZilla->CloseConnection(it->mId);
+    }
+
     m_pFileZilla->Stop();
     delete m_pFileZilla;
     m_pFileZilla = NULL;
+
+    CLog::Log(LOGINFO, "XBFileZilla: Stopped");
   }
 
 }
