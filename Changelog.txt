@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 05-08-2005 fixed: cbr/cbz support. failed with dir if hide parent items wasn't enabled.
  - 05-08-2005 fixed: some pal dvd's would be properly detected as interlaced
  - 04-08-2005 fixed: filerar. possible lockup at end of file.
  - 04-08-2005 fixed: navigation issues in media windows when activated and last path was a rar.

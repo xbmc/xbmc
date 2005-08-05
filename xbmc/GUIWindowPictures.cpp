@@ -586,20 +586,16 @@ void CGUIWindowPictures::OnClick(int iItem)
     Update(shareZip.strPath);
     if (m_vecItems.Size() > 0)
     {
-      if ((m_vecItems.Size() == 1) && (m_vecItems[0]->m_bIsFolder))
-        Update(shareZip.strPath+m_vecItems[0]->GetLabel()+"\\"); 
-      int iZipItem=0;
-      while ((m_vecItems[iZipItem]->m_bIsFolder) && (iZipItem < m_vecItems.Size())) iZipItem++;
-      if (iZipItem < m_vecItems.Size())
-        OnShowPicture(m_vecItems[iZipItem]->m_strPath);
+      CStdString strEmpty; strEmpty.Empty();
+      OnShowPictureRecursive(strEmpty);
+    }
+    else
+    {
+      CLog::Log(LOGERROR,"No pictures found in cbz file!");
+      m_rootDir.RemoveShare(shareZip.strPath);
+      Update(strPath);
     }
     m_iItemSelected = iItem;
-    /*m_iItemSelected = -1;
-    Update(strPath);
-    m_iItemSelected = iItem;
-    g_ZipManager.release(shareZip.strPath); // release resources
-    m_rootDir.RemoveShare(shareZip.strPath);*/
-
   }
   else if (pItem->IsCBR()) // mount'n'show'n'unmount
   {
@@ -612,25 +608,16 @@ void CGUIWindowPictures::OnClick(int iItem)
     Update(shareRar.strPath);
     if (m_vecItems.Size() > 0)
     {
-      if ((m_vecItems.Size() == 1) && (m_vecItems[0]->m_bIsFolder))
-      {
-        m_iItemSelected = -1;
-        Update(shareRar.strPath+m_vecItems[0]->GetLabel()+"\\");
-      }
-      int iRarItem=0;
-      while ((m_vecItems[iRarItem]->m_bIsFolder) && (iRarItem < m_vecItems.Size())) iRarItem++; // locate first picture
-      if (iRarItem < m_vecItems.Size())
-      {
-        m_viewControl.SetSelectedItem(iRarItem);
-        OnShowPicture(m_vecItems[iRarItem]->m_strPath);
-      }
-      else
-      {
-        m_rootDir.RemoveShare(shareRar.strPath);
-        Update(strPath);
-      }
-      m_iItemSelected = iItem;
+      CStdString strEmpty; strEmpty.Empty();
+      OnShowPictureRecursive(strEmpty);
     }
+    else
+    {
+      CLog::Log(LOGERROR,"No pictures found in cbr file!");
+      m_rootDir.RemoveShare(shareRar.strPath);
+      Update(strPath);
+    }
+    m_iItemSelected = iItem;
   }
   else
   {
@@ -686,6 +673,32 @@ void CGUIWindowPictures::OnShowPicture(const CStdString& strPicture)
     }
   }
   pSlideShow->Select(strPicture);
+  m_gWindowManager.ActivateWindow(WINDOW_SLIDESHOW);
+}
+
+void CGUIWindowPictures::OnShowPictureRecursive(const CStdString& strPicture)
+{
+  CGUIWindowSlideShow *pSlideShow = (CGUIWindowSlideShow *)m_gWindowManager.GetWindow(WINDOW_SLIDESHOW);
+  if (!pSlideShow)
+    return ;
+  if (g_application.IsPlayingVideo())
+    g_application.StopPlaying();
+
+  pSlideShow->Reset();
+  for (int i = 0; i < (int)m_vecItems.Size();++i)
+  {
+    CFileItem* pItem = m_vecItems[i];
+    if (!pItem->m_bIsFolder)
+    {
+      pSlideShow->Add(pItem->m_strPath);
+    }
+    else
+    {
+      AddDir(pSlideShow,pItem->m_strPath);
+    }
+  }
+  if (!strPicture.IsEmpty())
+    pSlideShow->Select(strPicture);
   m_gWindowManager.ActivateWindow(WINDOW_SLIDESHOW);
 }
 
