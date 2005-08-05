@@ -370,14 +370,17 @@ void CIMDB::GetURL(const CStdString &strMovie, CStdString& strURL)
   if (!imax) imax = strMovie.size();
   for (int i = 0; i < imax;i++)
   {
-    for (int c = 0;isdigit(strMovie[i + c]);c++)
+    // Removing arbitrary numbers like this destroys lookup of movies
+    // such as "1942"
+    // TODO: Redo this routine entirely.
+/*    for (int c = 0;isdigit(strMovie[i + c]);c++)
     {
       if (c == 3)
       {
         i += 4;
         break;
       }
-    }
+    }*/
     char kar = strMovie[i];
     if (kar == '.') kar = ' ';
     if (kar == 32) kar = '+';
