@@ -26,6 +26,7 @@
 #define PLAYER_SEEKING               25
 #define PLAYER_SHOWTIME              26
 #define PLAYER_SHOWCODEC             30
+#define PLAYER_SHOWINFO              31
 
 /*!
  \ingroup strings
@@ -77,6 +78,7 @@ public:
   void SetSeeking(bool seeking) { m_playerSeeking = seeking; };
   void SetShowTime(bool showtime) { m_playerShowTime = showtime; };
   void SetShowCodec(bool showcodec) { m_playerShowCodec = showcodec; };
+  void SetShowInfo(bool showinfo) { m_playerShowInfo = showinfo; };
 
   bool m_performingSeek;
 
@@ -105,6 +107,7 @@ protected:
   bool m_playerSeeking;
   bool m_playerShowTime;
   bool m_playerShowCodec;
+  bool m_playerShowInfo;
 
   // FPS counters
   float m_fps;

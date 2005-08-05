@@ -155,7 +155,7 @@ void CGUIThumbnailPanel::RenderItem(bool bFocus, int iPosX, int iPosY, CGUIListI
 void CGUIThumbnailPanel::Render()
 {
   if (!m_pFont) return ;
-  if (!UpdateFadeState()) return ;
+  if (!UpdateEffectState()) return ;
 
   if (!ValidItem(m_iCursorX, m_iCursorY) )
   {

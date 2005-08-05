@@ -23,7 +23,7 @@
       <width>740</width>
       <height>65</height>
       <texture>osd_menu_bg.png</texture>
-      <visible fade="15">Player.ShowCodec</visible>
+      <visible effect="fade" time="300">Player.ShowCodec</visible>
     </control>
 
     <control>
@@ -36,7 +36,7 @@
       <label>Audio | Codec: $INFO[musicplayer.Codec] - Bitrate: $INFO[musicplayer.Bitrate]kbps - Bits: $INFO[musicplayer.bitspersample]bit - Freq.: $INFO[musicplayer.Samplerate]kHz - Channels: $INFO[musicplayer.Channels]</label>
       <align>left</align>
       <font>font12</font>
-      <visible fade="15">Player.ShowCodec</visible>
+      <visible effect="fade" time="300">Player.ShowCodec</visible>
     </control>
 
     <control>
@@ -49,7 +49,7 @@
       <label>Visuals | fps: $INFO[System.FPS] - </label>
       <font>font12</font>
       <align>left</align>
-      <visible fade="15">Player.ShowCodec</visible>
+      <visible effect="fade" time="300">Player.ShowCodec</visible>
     </control>
 
     <control>
@@ -62,7 +62,7 @@
       <label>$INFO[Visualisation.Name] - $INFO[Visualisation.Preset]</label>
       <font>font12</font>
       <align>left</align>
-      <visible fade="15">Player.ShowCodec</visible>
+      <visible effect="fade" time="300">Player.ShowCodec</visible>
     </control>
 
     <control>
@@ -73,7 +73,7 @@
       <posY>76</posY>
       <width>12</width>
       <height>15</height>
-      <visible fade="15">Visualisation.Locked + Player.ShowCodec</visible>
+      <visible effect="fade" time="300">Visualisation.Locked + Player.ShowCodec</visible>
       <texture>arenaitem-private.png</texture>
     </control>
 
@@ -86,6 +86,7 @@
       <posY>455</posY>
       <width>740</width>
       <height>100</height>
+      <visible effect="fade" time="300">Player.ShowInfo</visible>
       <texture>osd_menu_bg.png</texture>
     </control>
 
@@ -98,6 +99,7 @@
       <width>100</width>
       <height>100</height>
       <info>MusicPlayer.Cover</info>
+      <visible effect="fade" time="300">Player.ShowInfo</visible>
       <keepaspectratio>true</keepaspectratio>
     </control>
 
@@ -109,6 +111,7 @@
       <posX>180</posX>
       <posY>458</posY>
       <info>MusicPlayer.Artist</info>
+      <visible effect="fade" time="300">Player.ShowInfo</visible>
       <align>left</align>
       <font>special12</font>
     </control>
@@ -121,6 +124,7 @@
       <posX>180</posX>
       <posY>479</posY>
       <info>MusicPlayer.Title</info>
+      <visible effect="fade" time="300">Player.ShowInfo</visible>
       <align>left</align>
       <font>special13</font>
     </control>
@@ -133,6 +137,7 @@
       <posX>180</posX>
       <posY>507</posY>
       <info>MusicPlayer.Album</info>
+      <visible effect="fade" time="300">Player.ShowInfo</visible>
       <align>left</align>
       <font>font10</font>
     </control>
@@ -145,6 +150,7 @@
       <posX>180</posX>
       <posY>528</posY>
       <label>$INFO[musicplayer.Time] / $INFO[musicplayer.Duration]</label>
+      <visible effect="fade" time="300">Player.ShowInfo</visible>
       <align>left</align>
       <font>font10</font>
     </control>
@@ -157,6 +163,7 @@
       <posX>660</posX>
       <posY>528</posY>
       <label>Track $INFO[musicplayer.Playlistposition] / $INFO[musicplayer.Playlistlength]</label>
+      <visible effect="fade" time="300">Player.ShowInfo</visible>
       <align>right</align>
       <font>font10</font>
     </control>

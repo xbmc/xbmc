@@ -21,7 +21,6 @@ CGUIWindowVisualisation::CGUIWindowVisualisation(void)
 {
   m_dwInitTimer = 0;
   m_dwLockedTimer = 0;
-  m_bShowInfo = false;
   m_bShowPreset = false;
 }
 
@@ -35,12 +34,9 @@ bool CGUIWindowVisualisation::OnAction(const CAction &action)
   {
   case ACTION_SHOW_INFO:
     {
-      // reset the timer
-      CLog::Log(LOGINFO, "White pressed - current status is: InitTimer = %i, ShowInfo = %i", m_dwInitTimer, m_bShowInfo);
-      if (!m_dwInitTimer || m_bShowInfo)
-        m_bShowInfo = !m_bShowInfo;
-      FadeControls(1, m_bShowInfo, 25);
-      g_stSettings.m_bMyMusicSongThumbInVis = m_bShowInfo;
+      if (!m_dwInitTimer || g_stSettings.m_bMyMusicSongThumbInVis)
+        g_stSettings.m_bMyMusicSongThumbInVis = !g_stSettings.m_bMyMusicSongThumbInVis;
+      g_infoManager.SetShowInfo(g_stSettings.m_bMyMusicSongThumbInVis);
       return true;
     }
     break;
@@ -132,20 +128,17 @@ bool CGUIWindowVisualisation::OnMessage(CGUIMessage& message)
 
       // hide or show the preset button(s)
       g_infoManager.SetShowCodec(m_bShowPreset);
+      g_infoManager.SetShowInfo(true);  // always show the info initially.
       CGUIWindow::OnMessage(message);
       m_tag = g_infoManager.GetCurrentSongTag();
       if (g_stSettings.m_bMyMusicSongThumbInVis)
       { // always on
-        m_bShowInfo = true;
         m_dwInitTimer = 0;
-        FadeControls(1, true, 0);
       }
       else
       {
         // start display init timer (fade out after 3 secs...)
-        m_bShowInfo = false;
         m_dwInitTimer = START_FADE_LENGTH;
-        FadeControls(1, true, 0);
       }
       return true;
     }
@@ -178,18 +171,17 @@ void CGUIWindowVisualisation::Render()
   const CMusicInfoTag &tag = g_infoManager.GetCurrentSongTag();
   if (tag != m_tag)
   { // need to fade in then out again
-    CLog::Log(LOGINFO, "Tag changed - current status is: InitTimer = %i, ShowInfo = %i", m_dwInitTimer, m_bShowInfo);
     m_tag = tag;
     // fade in
     m_dwInitTimer = START_FADE_LENGTH;
-    FadeControls(1, true, 25);
+    g_infoManager.SetShowInfo(true);
   }
   if (m_dwInitTimer)
   {
     m_dwInitTimer--;
     if (!m_dwInitTimer && !g_stSettings.m_bMyMusicSongThumbInVis)
     { // reached end of fade in, fade out again
-      FadeControls(1, false, 25);
+      g_infoManager.SetShowInfo(false);
     }
   }
   // show or hide the locked texture
@@ -217,17 +209,6 @@ void CGUIWindowVisualisation::OnWindowLoaded()
   if (pVisControl)
   {
     m_vecControls.insert(m_vecControls.begin(), pVisControl);
-  }
-}
-
-void CGUIWindowVisualisation::FadeControls(DWORD controlID, bool fadeIn, DWORD length)
-{
-  CGUIMessage msg(fadeIn ? GUI_MSG_VISIBLE : GUI_MSG_HIDDEN, GetID(), controlID, length);
-  for (unsigned int i=0; i < m_vecControls.size(); i++)
-  {
-    CGUIControl *pControl = m_vecControls[i];
-    if (pControl->GetID() == controlID)
-      pControl->OnMessage(msg);
   }
 }
 

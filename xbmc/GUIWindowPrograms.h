@@ -15,6 +15,7 @@ public:
   virtual void Render();
   virtual bool OnAction(const CAction &action);
   virtual void OnWindowLoaded();
+  virtual void OnWindowUnload();
 protected:
   void OnScan(CFileItemList& items, int& iTotalAppsFound) ;
   void Update(const CStdString& strDirectory);

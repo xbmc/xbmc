@@ -42,7 +42,7 @@ CGUISelectButtonControl::~CGUISelectButtonControl(void)
 
 void CGUISelectButtonControl::Render()
 {
-  if (!UpdateFadeState() ) return ;
+  if (!UpdateEffectState() ) return ;
 
 
   // Are we in selection mode

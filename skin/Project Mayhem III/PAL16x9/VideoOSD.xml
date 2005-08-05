@@ -1,7 +1,7 @@
 <window>
   <id>2901</id>
   <defaultcontrol>213</defaultcontrol>
-  <visible fade="10" start="hidden">Window.IsActive(2901)</visible>
+  <visible effect="fade" time="200" start="hidden">Window.IsActive(2901)</visible>
   <controls>
     <control>
       <description>Panel</description>

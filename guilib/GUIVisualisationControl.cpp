@@ -146,7 +146,7 @@ void CGUIVisualisationControl::LoadVisualisation()
 
 void CGUIVisualisationControl::Render()
 {
-  if (!UpdateFadeState())
+  if (!UpdateEffectState())
   {
     if (m_bInitialized)
       FreeVisualisation();

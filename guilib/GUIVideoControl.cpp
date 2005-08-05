@@ -14,7 +14,7 @@ CGUIVideoControl::~CGUIVideoControl(void)
 
 void CGUIVideoControl::Render()
 {
-  if (!UpdateFadeState()) return ;
+  if (!UpdateEffectState()) return ;
 
   if (!g_application.IsPlayingVideo()) return;
 

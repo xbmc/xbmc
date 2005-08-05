@@ -111,7 +111,7 @@ bool CGUIWindowSlideShow::IsPlaying() const
 
 void CGUIWindowSlideShow::Reset()
 {
-  g_infoManager.SetShowCodec(false);
+  g_infoManager.SetShowInfo(false);
   m_bSlideShow = false;
   m_bPause = false;
   m_bErrorMessage = false;
@@ -456,7 +456,7 @@ bool CGUIWindowSlideShow::OnAction(const CAction &action)
     break;
 
   case ACTION_SHOW_INFO:
-    g_infoManager.SetShowCodec(!g_infoManager.GetBool(PLAYER_SHOWCODEC));
+    g_infoManager.SetShowInfo(!g_infoManager.GetBool(PLAYER_SHOWINFO));
     break;
 
   case ACTION_PAUSE:
@@ -645,7 +645,7 @@ void CGUIWindowSlideShow::OnLoadPic(int iPic, int iSlideNumber, D3DTexture *pTex
       if (m_bSlideShow)
         m_Image[iPic].SetTexture(iSlideNumber, pTexture, iWidth, iHeight, iRotate);
       else
-        m_Image[iPic].SetTexture(iSlideNumber, pTexture, iWidth, iHeight, iRotate, EFFECT_NO_TIMEOUT);
+        m_Image[iPic].SetTexture(iSlideNumber, pTexture, iWidth, iHeight, iRotate, CSlideShowPic::EFFECT_NO_TIMEOUT);
       m_Image[iPic].SetOriginalSize(iOriginalWidth, iOriginalHeight, bFullSize);
       m_Image[iPic].Zoom(m_iZoomFactor, true);
     }

@@ -1,7 +1,7 @@
 <window>
   <id>121</id>
   <defaultcontrol>2</defaultcontrol>
-  <visible fade="10" start="hidden">Window.IsActive(121)</visible>
+  <visible effect="fade" time="200" start="hidden">Window.IsActive(121)</visible>
   <coordinates>
     <system>1</system>
     <posX>250</posX>

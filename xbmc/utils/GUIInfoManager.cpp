@@ -10,6 +10,7 @@
 #include "../Visualizations/Visualisation.h"
 #include "../MusicDatabase.h"
 #include "KaiClient.h"
+#include "GUIButtonScroller.h"
 
 #include <stack>
 
@@ -56,6 +57,7 @@ extern char g_szTitleIP[32];
 #define PLAYER_TIME_REMAINING        28
 #define PLAYER_DURATION              29
 //#define PLAYER_SHOWCODEC             30
+//#define PLAYER_SHOWINFO              31
 
 #define WEATHER_CONDITIONS          100
 #define WEATHER_TEMPERATURE         101
@@ -128,6 +130,12 @@ extern char g_szTitleIP[32];
 #define SYSTEM_IDLE_TIME_START      20000
 #define SYSTEM_IDLE_TIME_FINISH     21000 // 1000 seconds
 
+#define CONTROL_HAS_FOCUS_START     30000
+#define CONTROL_HAS_FOCUS_END       31000 // only up to control id 1000
+
+#define BUTTON_SCROLLER_HAS_ICON_START 31000
+#define BUTTON_SCROLLER_HAS_ICON_END   31200  // only allow 100 buttons (normally start at 101)
+
 #define COMBINED_VALUES_START        100000
 
 CGUIInfoManager g_infoManager;
@@ -195,8 +203,8 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     strTest.Delete(0, 1);
 
   // check playing conditions...
-  if (strTest.Equals("false")) ret = SYSTEM_ALWAYS_FALSE;
-  else if (strTest.Equals("true")) ret = SYSTEM_ALWAYS_TRUE;
+  if (strTest.Equals("false") || strTest.Equals("no") || strTest.Equals("off") || strTest.Equals("disabled")) ret = SYSTEM_ALWAYS_FALSE;
+  else if (strTest.Equals("true") || strTest.Equals("yes") || strTest.Equals("on") || strTest.Equals("enabled")) ret = SYSTEM_ALWAYS_TRUE;
   else if (strTest.Equals("player.hasmedia")) ret = PLAYER_HAS_MEDIA;
   else if (strTest.Equals("player.hasaudio")) ret = PLAYER_HAS_AUDIO;
   else if (strTest.Equals("player.hasvideo")) ret = PLAYER_HAS_VIDEO;
@@ -224,6 +232,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
   else if (strTest.Equals("player.seeking")) ret = PLAYER_SEEKING;
   else if (strTest.Equals("player.showtime")) ret = PLAYER_SHOWTIME;
   else if (strTest.Equals("player.showcodec")) ret = PLAYER_SHOWCODEC;
+  else if (strTest.Equals("player.showinfo")) ret = PLAYER_SHOWINFO;
   else if (strTest.Equals("player.time")) ret = PLAYER_TIME;
   else if (strTest.Equals("player.timeremaining")) ret = PLAYER_TIME_REMAINING;
   else if (strTest.Equals("player.duration")) ret = PLAYER_DURATION;
@@ -287,6 +296,18 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     int winID = g_buttonTranslator.TranslateWindowString(strTest.Mid(16, strTest.GetLength() - 17).c_str());
     if (winID != WINDOW_INVALID)
       ret = winID;
+  }
+  else if (strTest.Left(17).Equals("control.hasfocus("))
+  {
+    int controlID = atoi(strTest.Mid(17, strTest.GetLength() - 18).c_str());
+    if (controlID)
+      ret = controlID + CONTROL_HAS_FOCUS_START;
+  }
+  else if (strTest.Left(23).Equals("buttonscroller.hasicon("))
+  {
+    int controlID = atoi(strTest.Mid(23, strTest.GetLength() - 24).c_str());
+    if (controlID)
+      ret = controlID + BUTTON_SCROLLER_HAS_ICON_START;
   }
   else if (strTest.Left(16).Equals("system.idletime("))
   {
@@ -486,10 +507,26 @@ bool CGUIInfoManager::GetBool(int condition1) const
     bReturn = (g_application.GlobalIdleTime() >= condition - SYSTEM_IDLE_TIME_START);
   else if (condition >= WINDOW_ACTIVE_START && condition <= WINDOW_ACTIVE_END)// check for Window.IsActive(window)
     bReturn = m_gWindowManager.IsWindowActive(condition);
+  else if (condition >= CONTROL_HAS_FOCUS_START && condition <= CONTROL_HAS_FOCUS_END)
+  {
+    CGUIWindow *pWindow = m_gWindowManager.GetWindow(m_gWindowManager.GetActiveWindow());
+    if (pWindow) 
+      bReturn = (pWindow->GetFocusedControl() == condition - CONTROL_HAS_FOCUS_START);
+  }
+  else if (condition >= BUTTON_SCROLLER_HAS_ICON_START && condition <= BUTTON_SCROLLER_HAS_ICON_END)
+  {
+    CGUIWindow *pWindow = m_gWindowManager.GetWindow(m_gWindowManager.GetActiveWindow());
+    if (pWindow)
+    {
+      CGUIControl *pControl = (CGUIControl *)pWindow->GetControl(pWindow->GetFocusedControl());
+      if (pControl && pControl->GetControlType() == CGUIControl::GUICONTROL_BUTTONBAR)
+        bReturn = ((CGUIButtonScroller *)pControl)->GetActiveIcon() == condition - BUTTON_SCROLLER_HAS_ICON_START;
+    }
+  }
   else if (condition == SYSTEM_KAI_CONNECTED)
     bReturn = CKaiClient::GetInstance()->IsEngineConnected();
-  else if (condition == PLAYER_SHOWCODEC)
-    bReturn = m_playerShowCodec;
+  else if (condition == PLAYER_SHOWINFO)
+    bReturn = m_playerShowInfo;
   else if (g_application.IsPlaying())
   {
     switch (condition)
@@ -565,6 +602,9 @@ bool CGUIInfoManager::GetBool(int condition1) const
     break;
     case PLAYER_SHOWTIME:
       bReturn = m_playerShowTime;
+    break;
+    case PLAYER_SHOWCODEC:
+      bReturn = m_playerShowCodec;
     break;
     case AUDIOSCROBBLER_ENABLED:
       bReturn = g_guiSettings.GetBool("MyMusic.UseAudioScrobbler");

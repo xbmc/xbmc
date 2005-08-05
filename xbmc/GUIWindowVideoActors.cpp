@@ -179,6 +179,8 @@ void CGUIWindowVideoActors::SortItems(CFileItemList& items)
   {
     SSortVideoActorByName::m_iSortMethod = g_stSettings.m_iMyVideoActorSortMethod;
     SSortVideoActorByName::m_bSortAscending = g_stSettings.m_bMyVideoActorSortAscending;
+    if (g_stSettings.m_iMyVideoActorSortMethod == 1)
+      SSortVideoActorByName::m_bSortAscending = !SSortVideoActorByName::m_bSortAscending;
   }
   items.Sort(SSortVideoActorByName::Sort);
 }
