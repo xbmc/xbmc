@@ -1,7 +1,7 @@
 <window>
   <id>100</id>
   <defaultcontrol>10</defaultcontrol>
-  <visible fade="10" start="hidden">Window.IsActive(100)</visible>
+  <visible effect="fade" time="200" start="hidden">Window.IsActive(100)</visible>
   <controls>
     <control>
       <type>image</type>

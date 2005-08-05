@@ -826,6 +826,8 @@ void CGUIWindowMusicSongs::DoSort(CFileItemList& items)
   {
     SSortMusicSongs::m_iSortMethod = g_stSettings.m_iMyMusicSongsSortMethod;
     SSortMusicSongs::m_bSortAscending = g_stSettings.m_bMyMusicSongsSortAscending;
+    if (g_stSettings.m_iMyMusicSongsSortMethod == 1 || g_stSettings.m_iMyMusicSongsSortMethod == 2)
+      SSortMusicSongs::m_bSortAscending = !SSortMusicSongs::m_bSortAscending;
   }
 
   items.Sort(SSortMusicSongs::Sort);

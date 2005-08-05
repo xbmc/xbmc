@@ -108,6 +108,9 @@ void CGUIWindowManager::AddCustomWindow(CGUIWindow* pWindow)
 
 void CGUIWindowManager::AddModeless(CGUIWindow* pWindow)
 {
+  // only add the window if it's not already added
+  for (unsigned int i = 0; i < m_vecModelessWindows.size(); i++)
+    if (m_vecModelessWindows[i] == pWindow) return;
   m_vecModelessWindows.push_back(pWindow);
 }
 
@@ -462,7 +465,7 @@ bool CGUIWindowManager::IsRouted(bool includeFadeOuts /*= false */) const
   bool hasActiveDialog = false;
   for (unsigned int i = 0; i < m_vecModalWindows.size(); i++)
   {
-    if (m_vecModalWindows[i]->GetFadeState() != FADING_OUT)
+    if (m_vecModalWindows[i]->GetEffectState() != EFFECT_OUT)
     {
       hasActiveDialog = true;
       break;
@@ -544,13 +547,13 @@ bool CGUIWindowManager::IsWindowActive(DWORD dwID) const
   for (unsigned int i = 0; i < m_vecModalWindows.size(); i++)
   {
     CGUIWindow *pWindow = m_vecModalWindows[i];
-    if (dwID == pWindow->GetID() && pWindow->GetFadeState() != FADING_OUT)
+    if (dwID == pWindow->GetID() && pWindow->GetEffectState() != EFFECT_OUT)
       return true;
   }
   for (unsigned int i = 0; i < m_vecModelessWindows.size(); i++)
   {
     CGUIWindow *pWindow = m_vecModelessWindows[i];
-    if (dwID == pWindow->GetID() && pWindow->GetFadeState() != FADING_OUT)
+    if (dwID == pWindow->GetID() && pWindow->GetEffectState() != EFFECT_OUT)
       return true;
   }
   return false; // window isn't active

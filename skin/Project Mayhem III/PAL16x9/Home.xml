@@ -119,7 +119,7 @@
       <width>720</width>
       <height>576</height>
       <texture>home_buttons.png</texture>
-      <visible fade="50">!Player.HasAudio | ![Player.HasAudio + System.IdleTime(60)]</visible>
+      <visible effect="fade" time="1000">!Player.HasAudio | ![Player.HasAudio + System.IdleTime(60)]</visible>
     </control>
 
     <control>
@@ -131,7 +131,7 @@
       <width>75</width>
       <height>99</height>
       <info>MusicPlayer.Cover</info>
-      <visible fade="20" start="hidden">System.IdleTime(64)</visible>
+      <visible effect="fade" time="400" start="hidden">System.IdleTime(64)</visible>
     </control>
 
     <control>
@@ -144,7 +144,7 @@
       <info>MusicPlayer.Artist</info>
       <align>left</align>
       <font>special12</font>
-      <visible fade="20" start="hidden">System.IdleTime(64)</visible>
+      <visible effect="fade" time="400" start="hidden">System.IdleTime(64)</visible>
     </control>
 
     <control>
@@ -157,7 +157,7 @@
       <info>MusicPlayer.Title</info>
       <align>left</align>
       <font>special13</font>
-      <visible fade="20" start="hidden">System.IdleTime(64)</visible>
+      <visible effect="fade" time="400" start="hidden">System.IdleTime(64)</visible>
     </control>
 
     <control>
@@ -170,14 +170,14 @@
       <info>MusicPlayer.Album</info>
       <align>left</align>
       <font>font10</font>
-      <visible fade="20" start="hidden">System.IdleTime(64)</visible>
+      <visible effect="fade" time="400" start="hidden">System.IdleTime(64)</visible>
     </control>
 
     <control>
       <description>gradient</description>
       <type>image</type>
       <id>1</id>
-      <visible fade="50" start="hidden">Player.HasAudio + !System.IdleTime(60)</visible>
+      <visible effect="fade" time="1000" start="hidden">Player.HasAudio + !System.IdleTime(60)</visible>
       <posX>315</posX>
       <posY>338</posY>
       <width>400</width>
@@ -194,7 +194,7 @@
       <width>75</width>
       <height>99</height>
       <info>MusicPlayer.Cover</info>
-      <visible fade="50" start="hidden">!System.IdleTime(60)</visible>
+      <visible effect="fade" time="1000" start="hidden">!System.IdleTime(60)</visible>
     </control>
 
     <control>
@@ -207,7 +207,7 @@
       <info>MusicPlayer.Artist</info>
       <align>right</align>
       <font>special12</font>
-      <visible fade="50" start="hidden">!System.IdleTime(60)</visible>
+      <visible effect="fade" time="1000" start="hidden">!System.IdleTime(60)</visible>
     </control>
 
     <control>
@@ -220,7 +220,7 @@
       <info>MusicPlayer.Title</info>
       <align>right</align>
       <font>special13</font>
-      <visible fade="50" start="hidden">!System.IdleTime(60)</visible>
+      <visible effect="fade" time="1000" start="hidden">!System.IdleTime(60)</visible>
     </control>
 
     <control>
@@ -233,7 +233,7 @@
       <info>MusicPlayer.Album</info>
       <align>right</align>
       <font>font10</font>
-      <visible fade="50" start="hidden">!System.IdleTime(60)</visible>
+      <visible effect="fade" time="1000" start="hidden">!System.IdleTime(60)</visible>
     </control>
 
     <control>
@@ -246,7 +246,7 @@
       <info>MusicPlayer.Time</info>
       <align>right</align>
       <font>font10</font>
-      <visible fade="50" start="hidden">!System.IdleTime(60)</visible>
+      <visible effect="fade" time="1000" start="hidden">!System.IdleTime(60)</visible>
     </control>
 
     <controlgroup>
@@ -268,7 +268,7 @@
 	<textureFocus>home-focus.gif</textureFocus>
 	<textureNoFocus>-</textureNoFocus>
 	<textOffsetX>30</textOffsetX>
-	<visible  fade="10">!Player.HasAudio | ![Player.HasAudio + System.IdleTime(60)]</visible>
+	<visible  effect="fade" time="200">!Player.HasAudio | ![Player.HasAudio + System.IdleTime(60)]</visible>
       </control>
 
       <control>
@@ -289,7 +289,7 @@
 	<textureFocus>home-focus.gif</textureFocus>
 	<textureNoFocus>-</textureNoFocus>
 	<textOffsetX>30</textOffsetX>
-	<visible fade="20">!Player.HasAudio | ![Player.HasAudio + System.IdleTime(60)]</visible>
+	<visible effect="fade" time="400">!Player.HasAudio | ![Player.HasAudio + System.IdleTime(60)]</visible>
       </control>
 
       <control>
@@ -310,7 +310,7 @@
 	<textureFocus>home-focus.gif</textureFocus>
 	<textureNoFocus>-</textureNoFocus>
 	<textOffsetX>30</textOffsetX>
-	<visible fade="30">!Player.HasAudio | ![Player.HasAudio + System.IdleTime(60)]</visible>
+	<visible effect="fade" time="600">!Player.HasAudio | ![Player.HasAudio + System.IdleTime(60)]</visible>
       </control>
 
       <control>
@@ -331,7 +331,7 @@
 	<textureFocus>home-focus.gif</textureFocus>
 	<textureNoFocus>-</textureNoFocus>
 	<textOffsetX>30</textOffsetX>
-	<visible fade="40">!Player.HasAudio | ![Player.HasAudio + System.IdleTime(60)]</visible>
+	<visible effect="fade" time="800">!Player.HasAudio | ![Player.HasAudio + System.IdleTime(60)]</visible>
       </control>
 
       <control>
@@ -352,7 +352,7 @@
 	<textureFocus>home-focus.gif</textureFocus>
 	<textureNoFocus>-</textureNoFocus>
 	<textOffsetX>30</textOffsetX>
-	<visible fade="50">!Player.HasAudio | ![Player.HasAudio + System.IdleTime(60)]</visible>
+	<visible effect="fade" time="1000">!Player.HasAudio | ![Player.HasAudio + System.IdleTime(60)]</visible>
       </control>
 
       <control>
@@ -373,7 +373,7 @@
 	<textureFocus>home-focus.gif</textureFocus>
 	<textureNoFocus>-</textureNoFocus>
 	<textOffsetX>20</textOffsetX>
-	<visible fade="50">!Player.HasAudio | ![Player.HasAudio + System.IdleTime(60)]</visible>
+	<visible effect="fade" time="1000">!Player.HasAudio | ![Player.HasAudio + System.IdleTime(60)]</visible>
       </control>
 
       <control>
@@ -394,7 +394,7 @@
 	<textureFocus>home-focus.gif</textureFocus>
 	<textureNoFocus>-</textureNoFocus>
 	<textOffsetX>20</textOffsetX>
-	<visible fade="50">!Player.HasAudio | ![Player.HasAudio + System.IdleTime(60)]</visible>
+	<visible effect="fade" time="1000">!Player.HasAudio | ![Player.HasAudio + System.IdleTime(60)]</visible>
       </control>
 
     </controlgroup>
@@ -407,7 +407,7 @@
       <width>15</width>
       <height>16</height>
       <texture>homebutton-small.png</texture>
-      <visible fade="50">!Player.HasAudio | ![Player.HasAudio + System.IdleTime(60)]</visible>
+      <visible effect="fade" time="1000">!Player.HasAudio | ![Player.HasAudio + System.IdleTime(60)]</visible>
     </control>
 
     <control>
@@ -418,7 +418,7 @@
       <width>15</width>
       <height>16</height>
       <texture>homebutton-small.png</texture>
-      <visible fade="50">!Player.HasAudio | ![Player.HasAudio + System.IdleTime(60)]</visible>
+      <visible effect="fade" time="1000">!Player.HasAudio | ![Player.HasAudio + System.IdleTime(60)]</visible>
     </control>
 
     <control>
@@ -431,7 +431,7 @@
       <info>System.Date</info>
       <align>right</align>
       <font>special12</font>
-      <visible fade="50">!Player.HasAudio | ![Player.HasAudio + System.IdleTime(60)]</visible>
+      <visible effect="fade" time="1000">!Player.HasAudio | ![Player.HasAudio + System.IdleTime(60)]</visible>
     </control>
 
     <control>
@@ -444,7 +444,7 @@
       <align>left</align>
       <font>special12</font>
       <textcolor>60ffffff</textcolor>
-      <visible fade="50">!Player.HasAudio | ![Player.HasAudio + System.IdleTime(60)]</visible>
+      <visible effect="fade" time="1000">!Player.HasAudio | ![Player.HasAudio + System.IdleTime(60)]</visible>
     </control>
 
     <control>
@@ -458,7 +458,7 @@
       <align>left</align>
       <font>special12</font>
       <textcolor>60ffffff</textcolor>
-      <visible fade="50">!Player.HasAudio | ![Player.HasAudio + System.IdleTime(60)]</visible>
+      <visible effect="fade" time="1000">!Player.HasAudio | ![Player.HasAudio + System.IdleTime(60)]</visible>
     </control>
 
     <control>
@@ -473,7 +473,7 @@
       <titlecolor>ffD2FF00</titlecolor>
       <headlinecolor>DDced8da</headlinecolor>
       <textcolor>ffD2FF00</textcolor>
-      <visible fade="50">!Player.HasMedia</visible>
+      <visible effect="fade" time="1000">!Player.HasMedia</visible>
     </control>
 
     <control>
@@ -492,7 +492,7 @@
       <onright>100</onright>
       <onup>2</onup>
       <ondown>2</ondown>
-      <visible fade="50">!Player.HasAudio | ![Player.HasAudio + System.IdleTime(60)]</visible>
+      <visible effect="fade" time="1000">!Player.HasAudio | ![Player.HasAudio + System.IdleTime(60)]</visible>
     </control>
 
     <control>
@@ -511,7 +511,7 @@
       <onright>98</onright>
       <onup>2</onup>
       <ondown>2</ondown>
-      <visible fade="50">!Player.HasAudio | ![Player.HasAudio + System.IdleTime(60)]</visible>
+      <visible effect="fade" time="1000">!Player.HasAudio | ![Player.HasAudio + System.IdleTime(60)]</visible>
     </control>
 
     <control>
@@ -530,7 +530,7 @@
       <onright>2</onright>
       <onup>2</onup>
       <ondown>2</ondown>
-      <visible fade="50">!Player.HasAudio | ![Player.HasAudio + System.IdleTime(60)]</visible>
+      <visible effect="fade" time="1000">!Player.HasAudio | ![Player.HasAudio + System.IdleTime(60)]</visible>
     </control>
 
   </controls>

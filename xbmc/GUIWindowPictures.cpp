@@ -1068,7 +1068,10 @@ void CGUIWindowPictures::SortItems(CFileItemList& items)
   else
   {
     SSortPicturesByName::m_iSortMethod = g_stSettings.m_iMyPicturesSortMethod;
-    SSortPicturesByName::m_bSortAscending = g_stSettings.m_bMyPicturesSortAscending;
+    if (g_stSettings.m_iMyPicturesSortMethod == 1 || g_stSettings.m_iMyPicturesSortMethod == 2)
+      SSortPicturesByName::m_bSortAscending = !g_stSettings.m_bMyPicturesSortAscending;
+    else
+      SSortPicturesByName::m_bSortAscending = g_stSettings.m_bMyPicturesSortAscending;
   }
   items.Sort(SSortPicturesByName::Sort);
 }
@@ -1082,6 +1085,12 @@ void CGUIWindowPictures::OnWindowLoaded()
   m_viewControl.AddView(VIEW_AS_ICONS, GetControl(CONTROL_THUMBS));
   m_viewControl.AddView(VIEW_AS_LARGE_ICONS, GetControl(CONTROL_THUMBS));
   m_viewControl.SetViewControlID(CONTROL_BTNVIEWASICONS);
+}
+
+void CGUIWindowPictures::OnWindowUnload()
+{
+  CGUIWindow::OnWindowUnload();
+  m_viewControl.Reset();
 }
 
 void CGUIWindowPictures::OnItemLoaded(CFileItem *pItem)

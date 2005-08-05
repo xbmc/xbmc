@@ -182,6 +182,8 @@ void CGUIWindowVideoYear::SortItems(CFileItemList& items)
   {
     SSortVideoYearByName::m_iSortMethod = g_stSettings.m_iMyVideoYearSortMethod;
     SSortVideoYearByName::m_bSortAscending = g_stSettings.m_bMyVideoYearSortAscending;
+    if (g_stSettings.m_iMyVideoYearSortMethod == 1)
+      SSortVideoYearByName::m_bSortAscending = !SSortVideoYearByName::m_bSortAscending;
   }
   items.Sort(SSortVideoYearByName::Sort);
 }

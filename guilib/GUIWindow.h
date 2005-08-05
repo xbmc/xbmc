@@ -90,12 +90,12 @@ public:
   void SetCoordsRes(RESOLUTION res) { m_coordsRes = res; };
   RESOLUTION GetCoordsRes() const { return m_coordsRes; };
   int GetVisibleCondition() const { return m_visibleCondition; };
-  int GetVisibleFadeTime() const { return m_visibleFadeTime; };
   void SetXMLFile(const CStdString &xmlFile) { m_xmlFile = xmlFile; };
   void LoadOnDemand(bool loadOnDemand) { m_loadOnDemand = loadOnDemand; };
   void SetAlpha(DWORD alpha) { m_alpha = alpha; };
   int GetRenderOrder() { return m_renderOrder; };
-  FADE_STATE GetFadeState() { return m_fadeState; };
+  EFFECT_STATE GetEffectState() { return m_effectState; };
+  void SetControlVisibility();
 
 protected:
   virtual void OnWindowUnload() {}
@@ -143,10 +143,12 @@ protected:
   bool m_loadOnDemand;  // true if the window should be loaded only as needed
   int m_visibleCondition;
 
-  int m_visibleFadeTime;  // for window fading
-  FADE_STATE m_fadeState;
+  EFFECT_STATE m_effectState;
+  EFFECT_TYPE m_effectType;
+  int m_effectInTime;  // for window fading
+  int m_effectOutTime;  // for window fading
   DWORD m_alpha;        
-  int m_fadeTimer;
+  int m_effectStart;
 
   int m_renderOrder;      // for render order of dialogs
 };

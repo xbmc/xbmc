@@ -514,3 +514,9 @@ void CGUIWindowScripts::OnWindowLoaded()
   m_viewControl.AddView(VIEW_AS_LARGE_ICONS, GetControl(CONTROL_THUMBS));
   m_viewControl.SetViewControlID(CONTROL_BTNVIEWASICONS);
 }
+
+void CGUIWindowScripts::OnWindowUnload()
+{
+  CGUIWindow::OnWindowUnload();
+  m_viewControl.Reset();
+}

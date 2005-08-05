@@ -52,14 +52,16 @@ CGUIWindow::CGUIWindow(DWORD dwID, const CStdString &xmlFile)
   m_WindowAllocated = false;
   m_coordsRes = g_guiSettings.m_LookAndFeelResolution;
   m_needsScaling = true;
-  m_visibleFadeTime = 0;
   m_visibleCondition = 0;
   m_windowLoaded = false;
   m_loadOnDemand = true;
   m_alpha = 255;
   m_renderOrder = 0;
-  m_fadeState = FADING_NONE;
-  m_fadeTimer = 0;
+  m_effectType = EFFECT_TYPE_NONE;
+  m_effectState = EFFECT_NONE;
+  m_effectStart = 0;
+  m_effectInTime = 0;
+  m_effectOutTime = 0;
 }
 
 CGUIWindow::~CGUIWindow(void)
@@ -391,7 +393,8 @@ bool CGUIWindow::Load(const TiXmlElement* pRootElement, RESOLUTION resToUse)
   m_iOverlayAllowed = -1;   // Use parent or previous window's state
   m_coordsRes = g_guiSettings.m_LookAndFeelResolution;
   m_visibleCondition = 0;
-  m_visibleFadeTime = 0;
+  m_effectType = EFFECT_TYPE_NONE;
+  m_effectInTime = m_effectOutTime = 0;
 
   VECREFERENCECONTOLS referencecontrols;
   IVECREFERENCECONTOLS it;
@@ -410,7 +413,13 @@ bool CGUIWindow::Load(const TiXmlElement* pRootElement, RESOLUTION resToUse)
     }
     else if (strValue == "visible" && pChild->FirstChild())
     {
-      pChild->ToElement()->Attribute("fade", &m_visibleFadeTime);
+      const char *effect = pChild->ToElement()->Attribute("effect");
+      if (effect && strcmpi(effect, "fade")) m_effectType = EFFECT_TYPE_FADE;
+      pChild->ToElement()->Attribute("time", &m_effectInTime);
+      m_effectOutTime = m_effectInTime;
+      int fadetime;
+      if (pChild->ToElement()->Attribute("intime", &fadetime)) m_effectInTime = fadetime;
+      if (pChild->ToElement()->Attribute("outtime", &fadetime)) m_effectOutTime = fadetime;
       m_visibleCondition = g_infoManager.TranslateString(pChild->FirstChild()->Value());
     }
     else if (strValue == "zorder" && pChild->FirstChild())
@@ -767,12 +776,8 @@ DWORD CGUIWindow::GetPreviousWindowID(void) const
 void CGUIWindow::OnInitWindow()
 {
   // set our initial visibility
-  for (unsigned int i=0; i < m_vecControls.size(); i++)
-  {
-    CGUIControl *pControl = m_vecControls[i];
-    if (pControl->GetVisibleCondition())
-      pControl->SetInitialVisibility();
-  }
+  SetControlVisibility();
+
   CGUIMessage msg(GUI_MSG_SETFOCUS, GetID(), m_dwDefaultFocusControlID);
   OnMessage(msg);
 
@@ -1117,4 +1122,14 @@ void CGUIWindow::ResetAllControls()
 void CGUIWindow::Initialize()
 {
   Load(m_xmlFile);
+}
+
+void CGUIWindow::SetControlVisibility()
+{
+  for (unsigned int i=0; i < m_vecControls.size(); i++)
+  {
+    CGUIControl *pControl = m_vecControls[i];
+    if (pControl->GetVisibleCondition())
+      pControl->SetInitialVisibility();
+  }
 }

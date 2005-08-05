@@ -2,7 +2,7 @@
   <id>2003</id>
   <defaultcontrol>5</defaultcontrol>
   <allowoverlay>no</allowoverlay>
-  <visible fade="50" start="hidden">Window.IsActive(2003)</visible>
+  <visible effect="fade" time="1000" start="hidden">Window.IsActive(2003)</visible>
   <controls>
     <control>
       <description>background image</description>

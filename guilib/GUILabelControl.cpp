@@ -44,7 +44,7 @@ void CGUILabelControl::SetInfo(const vector<int> &vecInfo)
 
 void CGUILabelControl::Render()
 {
-  if (!UpdateFadeState())
+  if (!UpdateEffectState())
   {
     return;
   }

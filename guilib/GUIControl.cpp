@@ -24,9 +24,10 @@ CGUIControl::CGUIControl()
   m_dwControlRight = 0;
   m_dwControlUp = 0;
   m_dwControlDown = 0;
-  m_fadingState = FADING_NONE;
-  m_fadingTime = 0;
-  m_fadingPos = 0;
+  m_effectState = EFFECT_NONE;
+  m_effectLength = 0;
+  m_effectStart = 0;
+  m_effectAmount = 255;
   ControlType = GUICONTROL_UNKNOWN;
   m_bInvalidated = true;
   m_bAllocated=false;
@@ -54,9 +55,9 @@ CGUIControl::CGUIControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPo
   m_dwControlRight = 0;
   m_dwControlUp = 0;
   m_dwControlDown = 0;
-  m_fadingState = FADING_NONE;
-  m_fadingTime = 0;
-  m_fadingPos = 0;
+  m_effectState = EFFECT_NONE;
+  m_effectLength = 0;
+  m_effectStart = 0;
   ControlType = GUICONTROL_UNKNOWN;
   m_bInvalidated = true;
   m_bAllocated=false;
@@ -230,23 +231,20 @@ bool CGUIControl::OnMessage(CGUIMessage& message)
       break;
 
     case GUI_MSG_VISIBLE:
-      if (message.GetParam1())  // fade time
+      if (message.GetParam1())  // effect time
       {
-        if (!m_bVisible && m_fadingState != FADING_IN)
+        if (!m_bVisible && m_effectState != EFFECT_IN)
         {
-          m_fadingState = FADING_IN;
-          m_fadingTime = m_fadingPos = message.GetParam1();
+          m_effectState = EFFECT_IN;
+          m_effectLength = message.GetParam1();
+          m_effectStart = timeGetTime();
         }
-        else if (m_bVisible && m_fadingState == FADING_OUT)
-        { // turn around direction of fade
-          m_fadingState = FADING_IN;
-          m_fadingPos = (int)((m_fadingTime - m_fadingPos) * (float)message.GetParam1() / m_fadingTime);
-          m_fadingTime = message.GetParam1();
+        else if (m_bVisible && m_effectState == EFFECT_OUT)
+        { // turn around direction of effect
+          m_effectState = EFFECT_IN;
+          m_effectLength = message.GetParam1();
+          m_effectStart = timeGetTime() - (int)(m_effectLength * m_effectAmount);
         }
-      }
-      else
-      {
-        SetAlpha(255);      // make sure it's fully visible.
       }
       m_bVisible = true;
       return true;
@@ -255,16 +253,17 @@ bool CGUIControl::OnMessage(CGUIMessage& message)
     case GUI_MSG_HIDDEN:
       if (message.GetParam1())  // fade time
       {
-        if (m_bVisible && m_fadingState == FADING_NONE)
+        if (m_bVisible && m_effectState == EFFECT_NONE)
         {
-          m_fadingState = FADING_OUT;
-          m_fadingTime = m_fadingPos = message.GetParam1();
+          m_effectState = EFFECT_OUT;
+          m_effectLength = message.GetParam1();
+          m_effectStart = timeGetTime();
         }
-        else if (m_bVisible && m_fadingState == FADING_IN)
+        else if (m_bVisible && m_effectState == EFFECT_IN)
         { // turn around direction of fade
-          m_fadingState = FADING_OUT;
-          m_fadingPos = (int)((m_fadingTime - m_fadingPos) * (float)message.GetParam1() / m_fadingTime);
-          m_fadingTime = message.GetParam1();
+          m_effectState = EFFECT_OUT;
+          m_effectLength = message.GetParam1();
+          m_effectStart = timeGetTime() - (int)(m_effectLength * (1.0f - m_effectAmount));
         }
       }
       else
@@ -519,61 +518,75 @@ void CGUIControl::UpdateVisibility()
 {
   bool bVisible = g_infoManager.GetBool(m_visibleCondition);
   if (!m_lastVisible && bVisible)
-  { // automatic change of visibility - fade in
-    SET_CONTROL_FADE_IN(GetID(), m_visibleFadeTime)
+  { // automatic change of visibility - do the in effect
+    m_effectLength = m_effectInTime;
+    if (m_effectState == EFFECT_NONE)
+      m_effectStart = timeGetTime();
+    else if (m_effectState == EFFECT_OUT) // turn around direction of effect
+      m_effectStart = timeGetTime() - (int)(m_effectLength * m_effectAmount);
+    m_effectState = EFFECT_IN;
   }
   else if (m_lastVisible && !bVisible)
   { // automatic change of visibility - fade out
-    SET_CONTROL_FADE_OUT(GetID(), m_visibleFadeTime)
+    m_effectLength = m_effectOutTime;
+    if (m_effectState == EFFECT_NONE)
+      m_effectStart = timeGetTime();
+    else if (m_effectState == EFFECT_IN) // turn around direction of effect
+      m_effectStart = timeGetTime() - (int)(m_effectLength * (1.0f - m_effectAmount));
+    m_effectState = EFFECT_OUT;
   }
   m_lastVisible = bVisible;
 }
 
 void CGUIControl::SetInitialVisibility()
 {
-  if (m_visibleStartState == FADING_NONE)
+  if (m_effectStartState == START_NONE)
   {
     m_lastVisible = m_bVisible = g_infoManager.GetBool(m_visibleCondition);
     return;
   }
-  m_lastVisible = m_bVisible = (m_visibleStartState == FADING_OUT);
+  m_lastVisible = m_bVisible = (m_effectStartState == START_VISIBLE);
   UpdateVisibility();
 }
 
-bool CGUIControl::UpdateFadeState()
+bool CGUIControl::UpdateEffectState()
 {
   if (m_visibleCondition)
     UpdateVisibility();
   // update our alpha values if we're fading
-  if (m_fadingState == FADING_IN)
+  DWORD currentTime = timeGetTime();
+  if (m_effectState == EFFECT_IN)
   { // doing a fade in
-    if (m_fadingPos)
-      m_fadingPos--;
-    if (!m_fadingPos)
+    if (currentTime - m_effectStart < m_effectInTime)
+      m_effectAmount = (float)(currentTime - m_effectStart) / m_effectInTime;
+    else
     {
-      m_fadingState = FADING_NONE;
+      m_effectAmount = 1;
+      m_effectState = EFFECT_NONE;
     }
-    DWORD fadeAmount = (DWORD)(m_fadingPos * 255.0f / m_fadingTime + 0.5f);
-    g_graphicsContext.SetControlAlpha(255 - fadeAmount);
+    g_graphicsContext.SetControlAlpha((DWORD)(255 * m_effectAmount));
+    m_bVisible = true;
   }
-  else if (m_fadingState == FADING_OUT)
+  else if (m_effectState == EFFECT_OUT)
   {
-    if (m_fadingPos)
-      m_fadingPos--;
-    if (!m_fadingPos)
+    if (currentTime - m_effectStart < m_effectOutTime)
+      m_effectAmount = (float)(m_effectOutTime - currentTime + m_effectStart) / m_effectOutTime;
+    else
     {
-      m_fadingState = FADING_NONE;
+      m_effectAmount = 0;
+      m_effectState = EFFECT_NONE;
       m_bVisible = false;
     }
-    DWORD fadeAmount = (DWORD)(m_fadingPos * 255.0f / m_fadingTime + 0.5f);
-    g_graphicsContext.SetControlAlpha(fadeAmount);
+    g_graphicsContext.SetControlAlpha((DWORD)(255 * m_effectAmount));
   }
   return IsVisible();
 }
 
-void CGUIControl::SetVisibleCondition(int visible, int fadeTime /*= 0*/, FADE_STATE startHidden /*= FADING_NONE*/)
+void CGUIControl::SetVisibleCondition(int visible, EFFECT_TYPE effectType /*= EFFECT_TYPE_NONE*/, int effectInTime /*= 0*/, int effectOutTime /*= 0*/, START_STATE startHidden /*= START_NONE*/)
 {
   m_visibleCondition = visible;
-  m_visibleFadeTime = fadeTime;
-  m_visibleStartState = startHidden;
+  m_effectType = effectType;
+  m_effectInTime = effectInTime;
+  m_effectOutTime = effectOutTime;
+  m_effectStartState = startHidden;
 }
