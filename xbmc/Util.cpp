@@ -3027,20 +3027,19 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     if( !parameter.IsEmpty() ) 
       fSecs = static_cast<float>(atoi(parameter.c_str())*60);
     else
-    { 
       if( CGUIDialogNumeric::ShowAndGetNumber(strTime, strHeading) )
         fSecs = static_cast<float>(atoi(strTime.c_str())*60);
       else
         return -4;
-    }
+
     if( g_alarmClock.isRunning() )
       g_alarmClock.stop();
+    
     g_alarmClock.start(fSecs);
   }
   else
-  {
     return -1;
-  }
+
   return 0;
 }
 
