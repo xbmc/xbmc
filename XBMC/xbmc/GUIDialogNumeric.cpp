@@ -493,7 +493,7 @@ bool CGUIDialogNumeric::ShowAndGetNumber(CStdString& strInput, const CStdStringW
   CGUIDialogNumeric *pDialog = (CGUIDialogNumeric *)m_gWindowManager.GetWindow(WINDOW_DIALOG_NUMERIC);
   pDialog->SetHeading( strHeading );
 
-  pDialog->SetMode(INPUT_NUMBER, (void *)strInput.c_str());
+  pDialog->SetMode(INPUT_NUMBER, (void *)&strInput);
   pDialog->DoModal(m_gWindowManager.GetActiveWindow());
 
   if (!pDialog->IsConfirmed() || pDialog->IsCanceled())
