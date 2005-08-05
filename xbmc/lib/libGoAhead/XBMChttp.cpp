@@ -485,7 +485,9 @@ bool LoadPlayList(CStdString strPath, int iPlaylist, bool clearList, bool autoSt
   {
     // just 1 song? then play it (no need to have a playlist of 1 song)
     CPlayList::CPlayListItem item = playlist[0];
-    return g_application.PlayFile(CFileItem(item));
+    g_applicationMessenger.MediaPlay(CFileItem(item).m_strPath);
+    //return g_application.PlayFile(CFileItem(item));
+    return true;
   }
 
   if (clearList)
@@ -522,7 +524,8 @@ bool LoadPlayList(CStdString strPath, int iPlaylist, bool clearList, bool autoSt
       const CPlayList::CPlayListItem& item = playlist[0];
       g_playlistPlayer.SetCurrentPlaylist(iPlaylist);
       g_playlistPlayer.Reset();
-      g_playlistPlayer.Play(0);
+      //g_playlistPlayer.Play(0);
+      g_applicationMessenger.PlayListPlayerPlay(0);
       return true;
     } 
     else
@@ -771,7 +774,7 @@ CStdString CXbmcHttp::xbmcGetMovieDetails(int eid, webs_t wp, int numParas, CStd
 
 CStdString CXbmcHttp::xbmcGetCurrentlyPlaying(int eid, webs_t wp)
 {
-  CStdString output="", tmp="";
+  CStdString output="", tmp="", tag="";
   CGUIWindowSlideShow *pSlideShow = (CGUIWindowSlideShow *)m_gWindowManager.GetWindow(WINDOW_SLIDESHOW);
   if (pSlideShow)
     if (m_gWindowManager.GetActiveWindow() == WINDOW_SLIDESHOW)
@@ -800,31 +803,38 @@ CStdString CXbmcHttp::xbmcGetCurrentlyPlaying(int eid, webs_t wp)
         }
       }
       output+="\n<li>Thumb:"+thumb;
-      return flushResult(eid, wp, output);
+      tag="1";
+      //return flushResult(eid, wp, output);
       
     } 
   CStdString fn=g_application.CurrentFile();
   if (fn=="")
-    output="<li>Filename:[Nothing Playing]";
+  {
+    if (tag=="")
+      output="<li>Filename:[Nothing Playing]";
+  }
   else
   { 
-    output="<li>Filename:"+fn;
+    if (tag=="")
+      output="<li>Filename:"+fn;
+    else
+      output+="\n<li>Filename"+tag+":"+fn;
     tmp.Format("%i",g_playlistPlayer.GetCurrentSong());
     output+="\n<li>SongNo:"+tmp;
     __int64 lPTS=-1;
     if (g_application.IsPlayingVideo()) {
       lPTS = g_application.m_pPlayer->GetTime()/100;
-      output+="\n<li>Type:Video" ;
+      output+="\n<li>Type"+tag+":Video" ;
     }
     else if (g_application.IsPlayingAudio()) {
       lPTS = g_application.m_pPlayer->GetTime()/100;
-      output+="\n<li>Type:Audio" ;
+      output+="\n<li>Type"+tag+":Audio" ;
     }
     CStdString thumb;
     CUtil::GetThumbnail(fn,thumb);
     if (!CFile::Exists(thumb))
       thumb = "[None] " + thumb;
-    output+="\n<li>Thumb:"+thumb;
+    output+="\n<li>Thumb"+tag+":"+thumb;
     if (g_application.m_pPlayer->IsPaused()) 
       output+="\n<li>Paused:True" ;
     else
@@ -912,8 +922,8 @@ CStdString CXbmcHttp::xbmcSetVolume(int eid, webs_t wp, int numParas, CStdString
       float fHardwareVolume = ((float)iPercent)/100.0f * (VOLUME_MAXIMUM-VOLUME_MINIMUM) + VOLUME_MINIMUM;
       g_stSettings.m_nVolumeLevel = (long)fHardwareVolume;
       // show visual feedback of volume change...
-      if (!g_application.m_guiDialogVolumeBar.IsRunning())
-        g_application.m_guiDialogVolumeBar.DoModal(m_gWindowManager.GetActiveWindow());
+      //if (!g_application.m_guiDialogVolumeBar.IsRunning())
+      //  g_application.m_guiDialogVolumeBar.DoModal(m_gWindowManager.GetActiveWindow());
       g_application.m_pPlayer->SetVolume(g_stSettings.m_nVolumeLevel);
       return flushResult(eid, wp, "<li>OK");
     }
@@ -958,7 +968,7 @@ CStdString CXbmcHttp::xbmcPlaySlideshow(int eid, webs_t wp, int numParas, CStdSt
   else
   {
     // stop playing file
-    if (g_application.IsPlayingVideo()) g_application.StopPlaying();
+    //if (g_application.IsPlayingVideo()) g_application.StopPlaying();
 
     if (m_gWindowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO)
       m_gWindowManager.PreviousWindow();
@@ -1137,8 +1147,18 @@ CStdString CXbmcHttp::xbmcPlayerPlayFile(int eid, webs_t wp, int numParas, CStdS
   else
   {
     CFileItem item(paras[0], FALSE);
-    g_application.PlayMedia(item, g_playlistPlayer.GetCurrentPlaylist());
-    return flushResult(eid, wp, "<li>OK");
+    //g_application.PlayMedia(item, g_playlistPlayer.GetCurrentPlaylist());
+    if (item.IsPlayList())
+    {
+      LoadPlayList(paras[0], g_playlistPlayer.GetCurrentPlaylist(), false, false);
+      g_applicationMessenger.PlayListPlayerPlay(0);
+      return flushResult(eid, wp, "<li>OK:PlayList");
+    }
+    else
+    {
+      g_applicationMessenger.MediaPlay(paras[0]);
+      return flushResult(eid, wp, "<li>OK");
+    }
   }
 }
 
