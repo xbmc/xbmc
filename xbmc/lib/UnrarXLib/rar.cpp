@@ -193,11 +193,14 @@ int urarlib_get(char *rarfile, char *targetPath, char *fileToExtract, char *libp
 		strncpy(pCmd->ExtrPath, targetPath, sizeof(pCmd->Command) - 2);
 		pCmd->ExtrPath[sizeof(pCmd->Command) - 2] = '\0';
 		AddEndSlash(pCmd->ExtrPath);
-		if (fileToExtract && *fileToExtract)
+		if (fileToExtract)
 		{
-			pCmd->FileArgs->AddString(fileToExtract);
-			// Uncomment this if you want to extract a single file without the full path
-			strcpy(pCmd->Command, "E");
+      if (*fileToExtract)
+      {
+			  pCmd->FileArgs->AddString(fileToExtract);
+			  // Uncomment this if you want to extract a single file without the full path
+			  strcpy(pCmd->Command, "E");
+      }
 		}
 		else
 		{
@@ -237,15 +240,20 @@ int urarlib_get(char *rarfile, char *targetPath, char *fileToExtract, char *libp
           while (1)
 					{
             int Size=pArc->ReadHeader();
+            
+            if (pArc->GetHeaderType() == ENDARC_HEAD)
+              break;
+
 						bool Repeat=false;
-						if (!pExtract->ExtractCurrentFile(pCmd,*pArc,Size,Repeat))
+            if (!pExtract->ExtractCurrentFile(pCmd,*pArc,Size,Repeat))
 						{
-							bRes = FALSE;
-							break;
+               bRes = FALSE;
+						 	 break;
 						}
-						if (fileToExtract && *fileToExtract &&
-							stricmp(pArc->NewLhd.FileName, fileToExtract) == 0)
-								break;
+						if (fileToExtract)
+              if (*fileToExtract)
+                if(stricmp(pArc->NewLhd.FileName, fileToExtract) == 0)
+					  			break;
 					}
 					pExtract->GetDataIO().ProcessedArcSize+=FD.Size;
 					delete pExtract;
