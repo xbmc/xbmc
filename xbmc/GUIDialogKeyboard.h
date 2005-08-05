@@ -20,7 +20,7 @@ public:
   static bool ShowAndGetNewPassword(CStdString& strNewPassword);
   static int ShowAndVerifyPassword(CStdString& strPassword, const CStdStringW& strHeading, int iRetries);
 
-  virtual void Close();
+  virtual void Close(bool forceClose = false);
 
 protected:
 
