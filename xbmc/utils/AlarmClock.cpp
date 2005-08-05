@@ -16,13 +16,11 @@ void CAlarmClock::start(float n_secs)
 }
 void CAlarmClock::stop()
 {
-  CLog::Log(LOGDEBUG,"stopping timer!");
   if( m_bIsRunning ) 
     StopThread();
 }
 void CAlarmClock::OnStartup()
 {
-  CLog::Log(LOGDEBUG,"starting watch");
   watch.StartZero();
   CStdString strAlarmClock = g_localizeStrings.Get(13208);
   CStdString strMessage;
@@ -33,7 +31,6 @@ void CAlarmClock::OnStartup()
 }
 void CAlarmClock::OnExit()
 {
-  CLog::Log(LOGDEBUG,"timer onexit");
   CStdString strAlarmClock = g_localizeStrings.Get(13208);
   CStdString strMessage;
   if( watch.GetElapsedSeconds() > m_fSecs )
@@ -49,5 +46,5 @@ void CAlarmClock::OnExit()
 }
 void CAlarmClock::Process()
 {
-  while( (watch.GetElapsedSeconds() < m_fSecs) && (!m_bStop) ) ;
+  while( (watch.GetElapsedSeconds() < m_fSecs) && (!m_bStop) ) Sleep(100);
 }
