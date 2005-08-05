@@ -1,7 +1,7 @@
 <window>
   <id>2004</id>
   <defaultcontrol>2</defaultcontrol>
-  <visible fade="50" start="hidden">Window.IsActive(2004)</visible>
+  <visible effect="fade" time="1000" start="hidden">Window.IsActive(2004)</visible>
   <controls>
     <control>
       <description>music rectangle</description>

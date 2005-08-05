@@ -37,6 +37,7 @@ public:
   void AddButton(const wstring &strLabel, const CStdString &strExecute, const int iIcon);
   void SetActiveButton(int iButton);
   int GetActiveButton() const;
+  int GetActiveIcon() const;
   void SetFont(const CStdString &strFont, DWORD dwColor);
   CStdString GetTextureFocusName() const { return m_imgFocus.GetFileName(); };
   CStdString GetTextureNoFocusName() const { return m_imgNoFocus.GetFileName(); };

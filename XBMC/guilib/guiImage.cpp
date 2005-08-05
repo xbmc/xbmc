@@ -85,7 +85,7 @@ void CGUIImage::Render(int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight)
 void CGUIImage::Render()
 {
   // check for conditional visibility
-  bool bVisible = UpdateFadeState();
+  bool bVisible = UpdateEffectState();
 
   // check for conditional information
   if (m_Info)

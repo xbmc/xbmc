@@ -67,7 +67,7 @@ bool CGUIConsoleControl::OnAction(const CAction &action)
 
 void CGUIConsoleControl::Render()
 {
-  if (!UpdateFadeState() || !m_pFont)
+  if (!UpdateEffectState() || !m_pFont)
   {
     return ;
   }

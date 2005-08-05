@@ -8,7 +8,7 @@
     <posY>230</posY>
   </coordinates>
 
-  <visible fade="10" start="hidden">Window.IsActive(111)</visible>
+  <visible effect="fade" time="200" start="hidden">Window.IsActive(111)</visible>
   <controls>
     <control>
       <type>image</type>
@@ -18,7 +18,7 @@
       <width>720</width>
       <height>576</height>
       <texture>black.png</texture>
-      <visible fade="100" start="hidden">Window.IsActive(111)</visible>
+      <visible effect="fade" time="2000" start="hidden">Window.IsActive(111)</visible>
     </control>
 
     <control>

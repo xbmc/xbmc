@@ -12,7 +12,9 @@
 #include "GUICallback.h"
 #include "GUIFont.h"
 
-enum FADE_STATE { FADING_NONE = 0, FADING_IN, FADING_OUT };
+enum EFFECT_TYPE { EFFECT_TYPE_NONE = 0, EFFECT_TYPE_FADE };
+enum EFFECT_STATE { EFFECT_NONE = 0, EFFECT_IN, EFFECT_OUT };
+enum START_STATE { START_NONE = 0, START_HIDDEN, START_VISIBLE };
 
 /*!
  \ingroup controls
@@ -85,12 +87,11 @@ public:
   virtual void SetWidth(int iWidth);
   virtual void SetHeight(int iHeight);
   virtual void SetVisible(bool bVisible);
-  void SetVisibleCondition(int visible, int fadeTime = 0, FADE_STATE startState = FADING_NONE);
+  void SetVisibleCondition(int visible, EFFECT_TYPE effectType = EFFECT_TYPE_NONE, int fadeInTime = 0, int fadeOutTime = 0, START_STATE startState = START_NONE);
   int GetVisibleCondition() const { return m_visibleCondition; };
-  int GetVisibleFadeTime() const { return m_visibleFadeTime; };
   void UpdateVisibility();
   void SetInitialVisibility();
-  bool UpdateFadeState();
+  bool UpdateEffectState();
   void SetSelected(bool bSelected);
   virtual void SetEnabled(bool bEnable);
   bool CalibrationEnabled() const;
@@ -157,15 +158,21 @@ protected:
   bool m_bCalibration;
   bool m_bInvalidated;
   bool m_bAllocated;
-  GUICONTROLTYPES ControlType;
-  // fading information
-  FADE_STATE m_fadingState;
-  DWORD m_fadingTime;
-  DWORD m_fadingPos;
   bool m_pulseOnSelect;
+  GUICONTROLTYPES ControlType;
+  // effects information
+  START_STATE m_effectStartState;
+  EFFECT_TYPE m_effectType;
+  DWORD m_effectInTime;
+  DWORD m_effectOutTime;
+  // current effect state
+  EFFECT_STATE m_effectState;
+  DWORD m_effectStart;
+  float m_effectAmount;
+  DWORD m_effectLength;         // TODO: Remove this
+
+  // visibility condition/state
   int m_visibleCondition;
   bool m_lastVisible;
-  int m_visibleFadeTime;
-  FADE_STATE m_visibleStartState;
 };
 #endif

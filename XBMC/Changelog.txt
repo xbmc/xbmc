@@ -5,6 +5,11 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 05-08-2005 changed: Fading changed to timebased rather than framebased.  Skin format also changed.
+ - 05-08-2005 changed: Added Player.ShowInfo - active in fullscreen visualisation when the user presses WHITE for instance.  Removed XBMC's built-in fading of this info.
+ - 05-08-2005 added: Control.HasFocus(controlID) and ButtonScroller.HasIcon(icon) conditional visibility items. 
+ - 05-08-2005 fixed: Lookup on IMDb and cancel the select movie dialog didn't reset that dialog.
+ - 05-08-2005 fixed: IMDb Lookup of numeric movies.
  - 05-08-2005 fixed: httpapi: made it more thread safe
  - 05-08-2005 added: httpapi: GetCurrentlyPlaying now provides both picture and audio information if music is being played during a slideshow
  - 05-08-2005 fixed: guidialognumeric::showandgetnumber was broken (affected the alarmclock).

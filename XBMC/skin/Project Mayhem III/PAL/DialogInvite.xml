@@ -1,7 +1,7 @@
 <window>
   <id>102</id>
   <defaultcontrol>30</defaultcontrol>
-  <visible fade="10" start="hidden">Window.IsActive(102)</visible>
+  <visible effect="fade" time="200" start="hidden">Window.IsActive(102)</visible>
   <controls>
     <control>
       <description>Dialog Background</description>

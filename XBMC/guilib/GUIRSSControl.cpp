@@ -58,7 +58,7 @@ void CGUIRSSControl::SetIntervals(const vector<int>& vecIntervals)
 
 void CGUIRSSControl::Render()
 {
-  if ( (!UpdateFadeState()) || !g_guiSettings.GetBool("Network.EnableRSSFeeds") || !g_guiSettings.GetBool("Network.EnableInternet"))
+  if ( (!UpdateEffectState()) || !g_guiSettings.GetBool("Network.EnableRSSFeeds") || !g_guiSettings.GetBool("Network.EnableInternet"))
   {
     return ;
   }

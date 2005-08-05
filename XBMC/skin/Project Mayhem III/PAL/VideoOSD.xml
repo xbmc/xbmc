@@ -1,7 +1,7 @@
 <window>
   <id>2901</id>
   <defaultcontrol>213</defaultcontrol>
-  <visible fade="10" start="hidden">Window.IsActive(2901)</visible>
+  <visible effect="fade" time="200" start="hidden">Window.IsActive(2901)</visible>
   <controls>
     <control>
       <description>Panel</description>
@@ -209,10 +209,12 @@
       <posY>456</posY>
       <width>41</width>
       <height>37</height>
-      <AltTextureFocus>osd_button_videoFO.png</AltTextureFocus>
+      <textureFocus>osd_button_videoFO.png</textureFocus>
+      <textureNoFocus>-</textureNoFocus>
+      <UseAltTexture>Window.IsActive(123)</UseAltTexture>
+      <AltTextureFocus>osd_button_videoSELNF.png</AltTextureFocus>
       <AltTextureNoFocus>-</AltTextureNoFocus>
-      <textureFocus>osd_button_videoSELFO.png</textureFocus>
-      <textureNoFocus>osd_button_videoSELNF.png</textureNoFocus>
+      <execute>XBMC.ActivateWindow(123)</execute>
       <label>-</label>
       <font>-</font>
       <onleft>211</onleft>
@@ -229,10 +231,12 @@
       <posY>376</posY>
       <width>39</width>
       <height>36</height>
-      <AltTextureFocus>osd_button_audioFO.png</AltTextureFocus>
+      <textureFocus>osd_button_audioFO.png</textureFocus>
+      <textureNoFocus>-</textureNoFocus>
+      <UseAltTexture>Window.IsActive(124)</UseAltTexture>
+      <AltTextureFocus>osd_button_audioSELNF.png</AltTextureFocus>
       <AltTextureNoFocus>-</AltTextureNoFocus>
-      <textureFocus>osd_button_audioSELFO.png</textureFocus>
-      <textureNoFocus>osd_button_audioSELNF.png</textureNoFocus>
+      <execute>XBMC.ActivateWindow(124)</execute>
       <label>-</label>
       <font>-</font>
       <onleft>211</onleft>

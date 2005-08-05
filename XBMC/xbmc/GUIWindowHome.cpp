@@ -23,6 +23,8 @@
 #define CONTROL_BTN_XLINK_KAI  99
 #define CONTROL_BTN_SCROLLER  300
 
+#define HOME_HANDLES_FADES 1
+
 CGUIWindowHome::CGUIWindowHome(void) : CGUIWindow(WINDOW_HOME, "Home.xml")
 {
   m_iLastControl = -1;
@@ -44,6 +46,7 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
 
       CGUIWindow::OnMessage(message);
 
+#ifdef HOME_HANDLES_FADES
       // make controls 102-120 invisible...
       for (int iControl = MENU_BUTTON_IMAGE_BACKGROUND_START; iControl < MENU_BUTTON_IMAGE_BACKGROUND_END; iControl++)
       {
@@ -54,6 +57,7 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
       {
         SET_CONTROL_VISIBLE(m_iLastMenuOption + 100);
       }
+#endif
 
       if (iFocusControl < 0)
       {
@@ -72,6 +76,9 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
       ON_POLL_BUTTON_CONDITION(CONTROL_BTN_XLINK_KAI, CGUIWindowHome, OnPollXLinkClient, 50);
 
       SET_CONTROL_FOCUS(iFocusControl, 0);
+#ifndef HOME_HANDLES_FADES
+      SetControlVisibility();
+#endif
       return true;
     }
     break;
@@ -88,6 +95,7 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
     {
       int iControl = message.GetControlId();
       m_iLastControl = iControl;
+#ifdef HOME_HANDLES_FADES
       const CGUIControl *pControl = GetControl(iControl);
       if (iControl >= MENU_BUTTON_START && iControl <= MENU_BUTTON_END && pControl && pControl->CanFocus())
       {
@@ -157,6 +165,8 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
         }
         break;
       }
+#endif
+      break;
     }
 
   case GUI_MSG_CLICKED:

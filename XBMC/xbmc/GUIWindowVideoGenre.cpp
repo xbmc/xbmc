@@ -182,6 +182,8 @@ void CGUIWindowVideoGenre::SortItems(CFileItemList& items)
   {
     SSortVideoGenreByName::m_iSortMethod = g_stSettings.m_iMyVideoGenreSortMethod;
     SSortVideoGenreByName::m_bSortAscending = g_stSettings.m_bMyVideoGenreSortAscending;
+    if (g_stSettings.m_iMyVideoGenreSortMethod == 1)
+      SSortVideoGenreByName::m_bSortAscending = !SSortVideoGenreByName::m_bSortAscending;
   }
   items.Sort(SSortVideoGenreByName::Sort);
 }

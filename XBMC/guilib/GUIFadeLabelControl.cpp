@@ -33,7 +33,7 @@ void CGUIFadeLabelControl::SetLabel(const vector<wstring> &vecLabel)
 
 void CGUIFadeLabelControl::Render()
 {
-	if (!UpdateFadeState())
+	if (!UpdateEffectState())
 	{
 		return ;
 	}

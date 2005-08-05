@@ -1690,6 +1690,7 @@ void CApplication::Render()
   if (m_gWindowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO)
   {
     m_guiVideoOverlay.Close(true);
+    m_guiMusicOverlay.Close(true);
     if ( g_graphicsContext.IsFullScreenVideo() )
     {
       if (m_pPlayer)
@@ -2102,10 +2103,8 @@ bool CApplication::OnKey(CKey& key)
     if (m_pPlayer)
       m_pPlayer->SetVolume(g_stSettings.m_nVolumeLevel);
     // show visual feedback of volume change...
-    if (!m_guiDialogVolumeBar.IsRunning())
-      m_guiDialogVolumeBar.Show(m_gWindowManager.GetActiveWindow());
-    else
-      m_guiDialogVolumeBar.OnAction(action);
+    m_guiDialogVolumeBar.Show(m_gWindowManager.GetActiveWindow());
+    m_guiDialogVolumeBar.OnAction(action);
     return true;
   }
   // Check for global seek control
