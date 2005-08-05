@@ -31,6 +31,7 @@ protected:
   void Update(const CStdString &strDirectory);
   void UpdateDir(const CStdString &strDirectory);
   void OnShowPicture(const CStdString& strPicture);
+  void OnShowPictureRecursive(const CStdString& strPicture);
   void OnSlideShow(const CStdString& strPicture);
   void OnSlideShow();
   bool HaveDiscOrConnection( CStdString& strPath, int iDriveType );
