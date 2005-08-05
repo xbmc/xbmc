@@ -113,9 +113,9 @@ bool CGUIDialogSelect::OnMessage(CGUIMessage& message)
   return CGUIDialog::OnMessage(message);
 }
 
-void CGUIDialogSelect::Close()
+void CGUIDialogSelect::Close(bool forceClose)
 {
-  CGUIDialog::Close();
+  CGUIDialog::Close(forceClose);
 
   for (int i = 0; i < (int)m_vecList.size(); ++i)
   {
