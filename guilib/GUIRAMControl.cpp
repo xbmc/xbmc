@@ -86,7 +86,7 @@ CGUIRAMControl::~CGUIRAMControl(void)
 
 void CGUIRAMControl::Render()
 {
-  if (!UpdateFadeState() || !g_guiSettings.GetBool("Network.EnableInternet"))
+  if (!UpdateEffectState() || !g_guiSettings.GetBool("Network.EnableInternet"))
   {
     return ;
   }

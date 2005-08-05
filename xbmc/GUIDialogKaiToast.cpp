@@ -160,7 +160,7 @@ void CGUIDialogKaiToast::Render()
     }
 
     //  Fading does not count as display time
-    if (m_fadeState!=FADING_NONE)
+    if (m_effectState != EFFECT_NONE)
       ResetTimer();
 
     // now check if we should exit

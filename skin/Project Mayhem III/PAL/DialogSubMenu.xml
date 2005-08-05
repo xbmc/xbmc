@@ -1,6 +1,6 @@
 <window>
   <id>105</id>
-  <visible fade="10" start="hidden">Window.IsActive(105)</visible>
+  <visible effect="fade" time="200" start="hidden">Window.IsActive(105)</visible>
   <!--  Change the defaultcontrol ID to have another button focussed when  !-->
   <!--  you bring the panel up.                                            !-->
   <!--  (look for this tag: <id>1123</id> on the button u want to focus)   !-->

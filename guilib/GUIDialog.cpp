@@ -73,13 +73,17 @@ bool CGUIDialog::OnMessage(CGUIMessage& message)
     }
   case GUI_MSG_WINDOW_INIT:
     {
-      CGUIWindow::OnMessage(message);
-      // set the initial fade state of all the controls
-      if (m_visibleFadeTime)
+      // set the initial fade state of the dialog
+      if (m_effectInTime)
       {
-        m_fadeState = FADING_IN;
-        m_fadeTimer = m_visibleFadeTime;
+        if (m_effectState == EFFECT_OUT)
+          m_effectStart = timeGetTime() - (int)(m_effectInTime * m_alpha / 255.0f);
+        else
+          m_effectStart = timeGetTime();
+        m_effectState = EFFECT_IN;
       }
+      CGUIWindow::OnMessage(message);
+
       return true;
     }
   }
@@ -92,12 +96,12 @@ void CGUIDialog::Close(bool forceClose /*= false*/)
   if (!m_bRunning) return;
 
   // don't close if we should be fading out
-  if (!forceClose && m_visibleFadeTime)
+  if (!forceClose && m_effectOutTime)
   {
-    if (m_fadeState != FADING_OUT)
+    if (m_effectState != EFFECT_OUT)
     {
-      m_fadeState = FADING_OUT;
-      m_fadeTimer = m_visibleFadeTime;
+      m_effectState = EFFECT_OUT;
+      m_effectStart = timeGetTime() - (int)(m_effectOutTime * (255.0f - m_alpha) / 255.0f);
     }
     return;
   }
@@ -151,7 +155,7 @@ void CGUIDialog::DoModal(DWORD dwParentId, int iWindowID /*= WINDOW_INVALID */)
 
 void CGUIDialog::Show(DWORD dwParentId)
 {
-  if (m_bRunning) return;
+  if (m_bRunning && m_effectState != EFFECT_OUT) return;
 
   m_dwParentWindowID = dwParentId;
   m_pParentWindow = m_gWindowManager.GetWindow( m_dwParentWindowID);
@@ -177,23 +181,26 @@ void CGUIDialog::Show(DWORD dwParentId)
 
 void CGUIDialog::Render()
 {
-  if (m_fadeState == FADING_IN)
+  int currentTime = timeGetTime();
+  if (m_effectState == EFFECT_IN)
   {
-    SetAlpha((DWORD)(255.0f * (m_visibleFadeTime - m_fadeTimer) / m_visibleFadeTime));
-    if (m_fadeTimer)
-      m_fadeTimer--;
-    else
-      m_fadeState = FADING_NONE;
-  }
-  if (m_fadeState == FADING_OUT)
-  {
-    SetAlpha((DWORD)(255.0f * m_fadeTimer / m_visibleFadeTime));
-    if (m_fadeTimer)
-      m_fadeTimer--;
+    if (currentTime - m_effectStart < m_effectInTime)
+      SetAlpha((DWORD)(255.0f * (currentTime - m_effectStart) / m_effectInTime));
     else
     {
-      m_fadeState = FADING_NONE;
+      SetAlpha(255);
+      m_effectState = EFFECT_NONE;
+    }
+  }
+  if (m_effectState == EFFECT_OUT)
+  {
+    if (currentTime - m_effectStart < m_effectOutTime)
+      SetAlpha((DWORD)(255.0f * (m_effectOutTime - currentTime + m_effectStart) / m_effectOutTime));
+    else
+    {
+      SetAlpha(0);
       Close(true);  // force the dialog to close
+      m_effectState = EFFECT_NONE;
       return;
     }
   }

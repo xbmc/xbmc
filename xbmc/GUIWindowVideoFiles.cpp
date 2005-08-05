@@ -334,6 +334,10 @@ void CGUIWindowVideoFiles::SortItems(CFileItemList& items)
   {
     SSortVideoByName::m_iSortMethod = g_stSettings.m_iMyVideoSortMethod;
     SSortVideoByName::m_bSortAscending = g_stSettings.m_bMyVideoSortAscending;
+    // in the case of sort by date or sort by size, it makes sense to have newest or largest
+    // as the default order (ie same as normal alphabetic order)
+    if (g_stSettings.m_iMyVideoSortMethod == 1 || g_stSettings.m_iMyVideoSortMethod == 2)
+      SSortVideoByName::m_bSortAscending = !SSortVideoByName::m_bSortAscending;
   }
   items.Sort(SSortVideoByName::Sort);
 }

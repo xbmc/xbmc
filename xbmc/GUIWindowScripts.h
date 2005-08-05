@@ -15,6 +15,7 @@ public:
   virtual bool OnAction(const CAction &action);
   virtual void Render();
   virtual void OnWindowLoaded();
+  virtual void OnWindowUnload();
 
 protected:
   void GoParentFolder();

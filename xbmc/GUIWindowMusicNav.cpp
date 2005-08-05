@@ -929,7 +929,9 @@ void CGUIWindowMusicNav::DoSort(CFileItemList& items)
     SSortMusicNav::m_iSortMethod = g_stSettings.m_iMyMusicNavSongsSortMethod;
     SSortMusicNav::m_bSortAscending = g_stSettings.m_bMyMusicNavSongsSortAscending;
   }
-
+  // swap order for sort by date and sort by size
+  if (SSortMusicNav::m_iSortMethod == 1 || SSortMusicNav::m_iSortMethod == 2)
+    SSortMusicNav::m_bSortAscending = !SSortMusicNav::m_bSortAscending;
   // skip if directory was returned from cache
   // and the sort parameters match
   if ((m_bGotDirFromCache) && (m_iSortCache == SSortMusicNav::m_iSortMethod) && (m_iAscendCache == SSortMusicNav::m_bSortAscending))

@@ -25,7 +25,7 @@ CGUIToggleButtonControl::~CGUIToggleButtonControl(void)
 
 void CGUIToggleButtonControl::Render()
 {
-  if (!UpdateFadeState() ) return ;
+  if (!UpdateEffectState() ) return ;
 
   // ask our infoManager whether we are selected or not...
   if (m_toggleSelect)

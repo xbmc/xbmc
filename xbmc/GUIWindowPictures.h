@@ -18,7 +18,7 @@ public:
   virtual void Render();
 
   virtual void OnWindowLoaded();
-
+  virtual void OnWindowUnload();
 protected:
   void GoParentFolder();
   void GetDirectory(const CStdString &strDirectory, CFileItemList &items);

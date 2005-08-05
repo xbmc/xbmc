@@ -37,14 +37,14 @@ struct SSortVideoTitleByTitle
     if (rpStart.GetLabel() == "..") return true;
     if (rpEnd.GetLabel() == "..") return false;
     bool bGreater = true;
-    if (g_stSettings.m_bMyVideoTitleSortAscending) bGreater = false;
+    if (m_bSortAscending) bGreater = false;
     if ( rpStart.m_bIsFolder == rpEnd.m_bIsFolder)
     {
       char szfilename1[1024];
       char szfilename2[1024];
       CStdString strStart, strEnd;
 
-      switch ( g_stSettings.m_iMyVideoTitleSortMethod )
+      switch ( m_iSortMethod )
       {
       case 0:  // Sort by name
         strStart = rpStart.GetLabel();
@@ -138,7 +138,7 @@ struct SSortVideoTitleByTitle
         szfilename2[i] = tolower((unsigned char)szfilename2[i]);
       //return (rpStart.strPath.compare( rpEnd.strPath )<0);
 
-      if (g_stSettings.m_bMyVideoTitleSortAscending)
+      if (m_bSortAscending)
         return (strcmp(szfilename1, szfilename2) < 0);
       else
         return (strcmp(szfilename1, szfilename2) >= 0);
@@ -146,7 +146,11 @@ struct SSortVideoTitleByTitle
     if (!rpStart.m_bIsFolder) return false;
     return true;
   }
+  static bool m_bSortAscending;
+  static int m_iSortMethod;
 };
+bool SSortVideoTitleByTitle::m_bSortAscending;
+int SSortVideoTitleByTitle::m_iSortMethod;
 
 //****************************************************************************************************************************
 CGUIWindowVideoTitle::CGUIWindowVideoTitle()
@@ -228,6 +232,10 @@ void CGUIWindowVideoTitle::FormatItemLabels()
 
 void CGUIWindowVideoTitle::SortItems(CFileItemList& items)
 {
+  SSortVideoTitleByTitle::m_iSortMethod = g_stSettings.m_iMyVideoTitleSortMethod;
+  SSortVideoTitleByTitle::m_bSortAscending = g_stSettings.m_bMyVideoTitleSortAscending;
+  if (g_stSettings.m_iMyVideoTitleSortMethod == 1)
+    SSortVideoTitleByTitle::m_bSortAscending = !SSortVideoTitleByTitle::m_bSortAscending;
   items.Sort(SSortVideoTitleByTitle::Sort);
 }
 

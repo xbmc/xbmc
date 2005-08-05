@@ -612,10 +612,16 @@ void CGUIButtonScroller::RenderItem(int &iPosX, int &iPosY, int &iOffset, bool b
 void CGUIButtonScroller::OnChangeFocus()
 {
   // send a message to our parent that our focused button has changed...
-  int iButton = GetActiveButton();
-  if (iButton < 0 || iButton >= (int)m_vecButtons.size()) return ;
-  CGUIMessage msg(GUI_MSG_SETFOCUS, GetID(), GetID(), m_vecButtons[iButton]->iIcon);
+  if (!GetActiveIcon()) return;
+  CGUIMessage msg(GUI_MSG_SETFOCUS, GetID(), GetID(), GetActiveIcon());
   g_graphicsContext.SendMessage(msg);
+}
+
+int CGUIButtonScroller::GetActiveIcon() const
+{
+  int iButton = GetActiveButton();
+  if (iButton < 0 || iButton >= (int)m_vecButtons.size()) return 0;
+  return m_vecButtons[iButton]->iIcon;
 }
 
 int CGUIButtonScroller::GetActiveButton() const

@@ -23,7 +23,7 @@
       <width>740</width>
       <height>65</height>
       <texture>osd_menu_bg.png</texture>
-      <visible fade="15">Player.ShowCodec</visible>
+      <visible effect="fade" time="300">Player.ShowCodec</visible>
     </control>
 
     <control>
@@ -36,7 +36,7 @@
       <label>Audio | Codec: $INFO[musicplayer.Codec] - Bitrate: $INFO[musicplayer.Bitrate]kbps - Bits: $INFO[musicplayer.bitspersample]bit - Freq.: $INFO[musicplayer.Samplerate]kHz - Channels: $INFO[musicplayer.Channels]</label>
       <align>left</align>
       <font>font12</font>
-      <visible fade="15">Player.ShowCodec</visible>
+      <visible effect="fade" time="300">Player.ShowCodec</visible>
     </control>
 
     <control>
@@ -49,7 +49,7 @@
       <label>Visuals | fps: $INFO[System.FPS] - </label>
       <font>font12</font>
       <align>left</align>
-      <visible fade="15">Player.ShowCodec</visible>
+      <visible effect="fade" time="300">Player.ShowCodec</visible>
     </control>
 
     <control>
@@ -62,7 +62,7 @@
       <label>$INFO[Visualisation.Name] - $INFO[Visualisation.Preset]</label>
       <font>font12</font>
       <align>left</align>
-      <visible fade="15">Player.ShowCodec</visible>
+      <visible effect="fade" time="300">Player.ShowCodec</visible>
     </control>
 
     <control>
@@ -73,7 +73,7 @@
       <posY>76</posY>
       <width>12</width>
       <height>15</height>
-      <visible fade="15">Visualisation.Locked + Player.ShowCodec</visible>
+      <visible effect="fade" time="300">Visualisation.Locked + Player.ShowCodec</visible>
       <texture>arenaitem-private.png</texture>
     </control>
 

@@ -835,7 +835,11 @@ struct SSortProgramsByName
     if (rpEnd.GetLabel() == "..")
       return false;
     bool bGreater = true;
-    if (g_stSettings.m_bMyProgramsSortAscending)
+    // Sort ascending is best for view by name only.  Otherwise sort descending.
+    // this makes the direction of sort always the best prefered (or worse preferred) depending
+    // on the sort direction. eg going from sort by name to sort by usage makes sense (ascending alphabet -> descending usage)
+    if ((g_stSettings.m_bMyProgramsSortAscending && g_stSettings.m_iMyProgramsSortMethod == 0) ||
+        (!g_stSettings.m_bMyProgramsSortAscending && g_stSettings.m_iMyProgramsSortMethod != 0))
       bGreater = false;
     if ( rpStart.m_bIsFolder == rpEnd.m_bIsFolder)
     {
@@ -1141,4 +1145,10 @@ void CGUIWindowPrograms::OnWindowLoaded()
   m_viewControl.AddView(VIEW_AS_ICONS, GetControl(CONTROL_THUMBS));
   m_viewControl.AddView(VIEW_AS_LARGE_ICONS, GetControl(CONTROL_THUMBS));
   m_viewControl.SetViewControlID(CONTROL_BTNVIEWAS);
+}
+
+void CGUIWindowPrograms::OnWindowUnload()
+{
+  CGUIWindow::OnWindowUnload();
+  m_viewControl.Reset();
 }

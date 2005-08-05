@@ -11,7 +11,7 @@
       <width>740</width>
       <height>65</height>
       <texture>osd_menu_bg.png</texture>
-      <visible fade="15">Player.ShowCodec</visible>
+      <visible effect="fade" time="300">Player.ShowInfo</visible>
     </control>
 
     <control>
@@ -23,7 +23,7 @@
       <label>-</label>
       <align>left</align>
       <font>font12</font>
-      <visible fade="15">Player.ShowCodec</visible>
+      <visible effect="fade" time="300">Player.ShowInfo</visible>
     </control>
 
     <control>
@@ -35,7 +35,7 @@
       <label>-</label>
       <align>left</align>
       <font>font12</font>
-      <visible fade="15">Player.ShowCodec</visible>
+      <visible effect="fade" time="300">Player.ShowInfo</visible>
     </control>
 
     <control>
@@ -47,7 +47,7 @@
       <label>-</label>
       <align>left</align>
       <font>font12</font>
-      <visible fade="15">Player.ShowCodec</visible>
+      <visible effect="fade" time="300">Player.ShowInfo</visible>
     </control>
 
     <control>
