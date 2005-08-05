@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 05-08-2005 fixed: httpapi: made it more thread safe
+ - 05-08-2005 added: httpapi: GetCurrentlyPlaying now provides both picture and audio information if music is being played during a slideshow
  - 05-08-2005 fixed: guidialognumeric::showandgetnumber was broken (affected the alarmclock).
  - 05-08-2005 fixed: cbr/cbz support. failed with dir if hide parent items wasn't enabled.
  - 05-08-2005 fixed: some pal dvd's would be properly detected as interlaced
