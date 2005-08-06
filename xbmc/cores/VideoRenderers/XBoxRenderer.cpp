@@ -774,20 +774,24 @@ void CXBoxRenderer::SetFieldSync(EFIELDSYNC mSync)
     if( g_stSettings.m_currentVideoSettings.m_FieldSync == VS_FIELDSYNC_INVERTED )
     {
       if( mSync == FS_ODD )
-        m_iFieldSync = FS_EVEN;
+        mSync = FS_EVEN;
       else if( mSync == FS_EVEN )
-        m_iFieldSync = FS_ODD;
+        mSync = FS_ODD;
       else
-        m_iFieldSync = FS_NONE;
+        mSync = FS_NONE;
     }
-    else if( g_stSettings.m_currentVideoSettings.m_FieldSync == VS_FIELDSYNC_STANDARD )
+    else if( g_stSettings.m_currentVideoSettings.m_FieldSync == VS_FIELDSYNC_OFF )
     {
+      mSync = FS_NONE;
+    }
+
+    if( m_iFieldSync != mSync )
+    {
+      g_graphicsContext.Lock(); //Need to lock here as this is not allowed to change while rendering
       m_iFieldSync = mSync;
+      g_graphicsContext.Unlock();
     }
-    else
-    {
-      m_iFieldSync = FS_NONE;
-    }
+
 }
 
 void CXBoxRenderer::FlipPage()
