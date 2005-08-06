@@ -1056,7 +1056,7 @@ void CGUIWindowMusicBase::DoSearch(const CStdString& strSearch, CFileItemList& i
 void CGUIWindowMusicBase::OnSearch()
 {
   CStdString strSearch;
-  if ( !CGUIDialogKeyboard::ShowAndGetInput(strSearch, false) )
+  if ( !CGUIDialogKeyboard::ShowAndGetInput(strSearch, (CStdStringW)g_localizeStrings.Get(16017), false) )
     return ;
 
   strSearch.ToLower();
@@ -1215,7 +1215,7 @@ bool CGUIWindowMusicBase::FindAlbumInfo(const CStdString& strAlbum, CMusicAlbumI
             {
               if (!pDlg->IsButtonPressed()) return false;
               CStdString strNewAlbum = strAlbum;
-              if (!CGUIDialogKeyboard::ShowAndGetInput(strNewAlbum, false)) return false;
+              if (!CGUIDialogKeyboard::ShowAndGetInput(strNewAlbum, (CStdStringW)g_localizeStrings.Get(16011), false)) return false;
               if (strNewAlbum == "") return false;
               if (m_dlgProgress)
               {

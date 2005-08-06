@@ -968,7 +968,7 @@ void CGUIWindowFileManager::RenameFile(const CStdString &strFile)
 {
   CStdString strFileName = CUtil::GetFileName(strFile);
   CStdString strPath = strFile.Left(strFile.size() - strFileName.size());
-  if (CGUIDialogKeyboard::ShowAndGetInput(strFileName, false))
+  if (CGUIDialogKeyboard::ShowAndGetInput(strFileName, (CStdStringW)g_localizeStrings.Get(16013), false))
   {
     strPath += strFileName;
     
@@ -984,7 +984,7 @@ void CGUIWindowFileManager::RenameFile(const CStdString &strFile)
 void CGUIWindowFileManager::OnNewFolder(int iList)
 {
   CStdString strNewFolder = "";
-  if (CGUIDialogKeyboard::ShowAndGetInput(strNewFolder, false))
+  if (CGUIDialogKeyboard::ShowAndGetInput(strNewFolder, (CStdStringW)g_localizeStrings.Get(16014), false))
   {
     CStdString strNewPath = m_Directory[iList].m_strPath;
     if (!CUtil::HasSlashAtEnd(strNewPath) ) strNewPath += "\\";

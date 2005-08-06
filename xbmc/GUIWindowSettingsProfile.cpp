@@ -80,7 +80,7 @@ void CGUIWindowSettingsProfile::DoRename(int iItem)
   if (iItem < (int)g_settings.m_vecProfiles.size())  // do nothing when <new profile> is selected
   {
     CStdString strProfileName;
-    if (CGUIDialogKeyboard::ShowAndGetInput(strProfileName, false))
+    if (CGUIDialogKeyboard::ShowAndGetInput(strProfileName, (CStdStringW)g_localizeStrings.Get(16010), false))
     {
       CProfile& profile = g_settings.m_vecProfiles.at(iItem);
       profile.setName(strProfileName);
@@ -192,7 +192,7 @@ bool CGUIWindowSettingsProfile::OnMessage(CGUIMessage& message)
           {
             //new profile
             CStdString strProfileName;
-            if (CGUIDialogKeyboard::ShowAndGetInput(strProfileName, false))
+            if (CGUIDialogKeyboard::ShowAndGetInput(strProfileName, (CStdStringW)g_localizeStrings.Get(16010), false))
             {
               CProfile profile;
               profile.setName(strProfileName);

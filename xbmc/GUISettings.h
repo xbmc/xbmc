@@ -254,7 +254,7 @@ public:
 class CSettingString : public CSetting
 {
 public:
-  CSettingString(int iOrder, const char *strSetting, int iLabel, const char *strData, int iControlType, bool bAllowEmpty);
+  CSettingString(int iOrder, const char *strSetting, int iLabel, const char *strData, int iControlType, bool bAllowEmpty, int iHeadingString);
   ~CSettingString() {};
 
   virtual int GetType() { return SETTINGS_TYPE_STRING; };
@@ -265,6 +265,7 @@ public:
   CStdString GetData() const { return m_strData; };
 
   bool m_bAllowEmpty;
+  int m_iHeadingString;
 private:
   CStdString m_strData;
 };
@@ -357,7 +358,7 @@ public:
 
   void AddHex(int iOrder, const char *strSetting, int iLabel, int fSetting, int iMin, int iStep, int iMax, int iControlType, const char *strFormat = NULL);
 
-  void AddString(int iOrder, const char *strSetting, int iLabel, const char *strData, int iControlType = BUTTON_CONTROL_INPUT, bool bAllowEmpty = false);
+  void AddString(int iOrder, const char *strSetting, int iLabel, const char *strData, int iControlType = BUTTON_CONTROL_INPUT, bool bAllowEmpty = false, int iHeadingString = -1);
   CStdString GetString(const char *strSetting);
   void SetString(const char *strSetting, const char *strData);
 

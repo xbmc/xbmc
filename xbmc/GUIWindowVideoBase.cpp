@@ -643,7 +643,7 @@ void CGUIWindowVideoBase::ShowIMDB(const CStdString& strMovie, const CStdString&
             if (iSelectedMovie < 0)
             {
               if (!pDlgSelect->IsButtonPressed()) return ;
-              if (!CGUIDialogKeyboard::ShowAndGetInput(strMovieName, false)) return ;
+              if (!CGUIDialogKeyboard::ShowAndGetInput(strMovieName, (CStdStringW)g_localizeStrings.Get(16009), false)) return ;
               bContinue = true;
               bError = false;
             }
@@ -720,7 +720,7 @@ void CGUIWindowVideoBase::ShowIMDB(const CStdString& strMovie, const CStdString&
         else
         {
           pDlgProgress->Close();
-          if (!CGUIDialogKeyboard::ShowAndGetInput(strMovieName, false)) return ;
+          if (!CGUIDialogKeyboard::ShowAndGetInput(strMovieName, (CStdStringW)g_localizeStrings.Get(16009), false)) return ;
           bContinue = true;
           bError = false;
         }
@@ -729,7 +729,7 @@ void CGUIWindowVideoBase::ShowIMDB(const CStdString& strMovie, const CStdString&
       {
         pDlgProgress->Close();
         if (pDlgProgress->IsCanceled()) return;
-        if (!CGUIDialogKeyboard::ShowAndGetInput(strMovieName, false)) return ;
+        if (!CGUIDialogKeyboard::ShowAndGetInput(strMovieName, (CStdStringW)g_localizeStrings.Get(16009), false)) return ;
         bContinue = true;
         bError = false;
       }
@@ -836,7 +836,7 @@ void CGUIWindowVideoBase::GoParentFolder()
 void CGUIWindowVideoBase::OnManualIMDB()
 {
   CStdString strInput;
-  if (!CGUIDialogKeyboard::ShowAndGetInput(strInput, false)) return ;
+  if (!CGUIDialogKeyboard::ShowAndGetInput(strInput, (CStdStringW)g_localizeStrings.Get(16009), false)) return ;
 
   CStdString strThumb;
   CUtil::GetThumbnail("Z:\\", strThumb);

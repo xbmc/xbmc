@@ -347,7 +347,7 @@ void CGUIWindowMusicPlayList::GetDirectory(const CStdString &strDirectory, CFile
 void CGUIWindowMusicPlayList::SavePlayList()
 {
   CStdString strNewFileName;
-  if (CGUIDialogKeyboard::ShowAndGetInput(strNewFileName, false))
+  if (CGUIDialogKeyboard::ShowAndGetInput(strNewFileName, (CStdStringW)g_localizeStrings.Get(16012), false))
   {
     // need 2 rename it
     CStdString strPath = g_stSettings.m_szAlbumDirectory;

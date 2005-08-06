@@ -12,6 +12,7 @@ CGUISpinControlEx::CGUISpinControlEx(DWORD dwParentID, DWORD dwControlId, int iP
   SetTextOffsetY(iTextYOffset);
   SetAlignmentY(dwAlign & XBFONT_CENTER_Y);
   ControlType = GUICONTROL_SPINEX;
+  m_bWrap = true;
 }
 
 CGUISpinControlEx::~CGUISpinControlEx(void)
