@@ -42,6 +42,7 @@ public:
   virtual void CheckScreenSaver() {};
   virtual void SetupScreenshot() {};
   virtual void SetViewMode(int iViewMode);
+  void CreateThumbnail(LPDIRECT3DSURFACE8 surface, unsigned int width, unsigned int height);
 
   // Functions called from mplayer
   virtual void WaitForFlip();

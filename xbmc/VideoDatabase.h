@@ -8,7 +8,14 @@ typedef vector<CStdString> VECMOVIEACTORS;
 typedef vector<CStdString> VECMOVIEGENRES;
 typedef vector<CIMDBMovie> VECMOVIES;
 typedef vector<CStdString> VECMOVIESFILES;
-typedef vector<float> VECBOOKMARKS;
+
+struct CBookmark
+{
+  int timeInSeconds;
+  CStdString thumbNailImage;
+};
+
+typedef vector<CBookmark> VECBOOKMARKS;
 
 #define COMPARE_PERCENTAGE     0.90f // 90%
 #define COMPARE_PERCENTAGE_MIN 0.50f // 50%
@@ -37,7 +44,7 @@ public:
   void GetMoviesByPath(CStdString& strPath1, VECMOVIES& movies);
   void GetMovies(VECMOVIES& movies);
   void GetBookMarksForMovie(const CStdString& strFilenameAndPath, VECBOOKMARKS& bookmarks);
-  void AddBookMarkToMovie(const CStdString& strFilenameAndPath, float fPercentage);
+  void AddBookMarkToMovie(const CStdString& strFilenameAndPath, const CBookmark &bookmark);
   void ClearBookMarksOfMovie(const CStdString& strFilenameAndPath);
   void DeleteMovie(const CStdString& strFilenameAndPath);
   void GetDVDLabel(long lMovieId, CStdString& strDVDLabel);

@@ -423,6 +423,30 @@ void CGUIDialogVideoSettings::AddSeparator(unsigned int id)
   m_settings.push_back(setting);
 }
 
+#define VIDEO_SETTINGS_CROP               1
+#define VIDEO_SETTINGS_VIEW_MODE          2
+#define VIDEO_SETTINGS_ZOOM               3
+#define VIDEO_SETTINGS_PIXEL_RATIO        4
+#define VIDEO_SETTINGS_BRIGHTNESS         5
+#define VIDEO_SETTINGS_CONTRAST           6
+#define VIDEO_SETTINGS_GAMMA              7
+#define VIDEO_SETTINGS_DEINTERLACE        8
+#define VIDEO_SETTINGS_FIELD_SYNC         9
+
+#define VIDEO_SETTINGS_CALIBRATION        10
+#define VIDEO_SETTINGS_FLICKER            11
+#define VIDEO_SETTINGS_SOFTEN             12
+#define VIDEO_SETTINGS_ADJUST_FRAME_RATE  13
+#define VIDEO_SETTINGS_NON_INTERLEAVED    14
+#define VIDEO_SETTINGS_NO_CACHE           15
+
+#define AUDIO_SETTINGS_VOLUME             1
+#define AUDIO_SETTINGS_DELAY              2
+#define AUDIO_SETTINGS_STREAM             3
+#define SUBTITLE_SETTINGS_ENABLE          5
+#define SUBTITLE_SETTINGS_DELAY           6
+#define SUBTITLE_SETTINGS_STREAM          7
+
 void CGUIDialogVideoSettings::CreateSettings()
 {
   // clear out any old settings
@@ -430,42 +454,43 @@ void CGUIDialogVideoSettings::CreateSettings()
   // create our settings
   if (m_iScreen == WINDOW_DIALOG_VIDEO_OSD_SETTINGS)
   { // Video settings
-    AddBool(1, 306, &g_stSettings.m_currentVideoSettings.m_NonInterleaved);
-    AddBool(2, 343, &g_stSettings.m_currentVideoSettings.m_AdjustFrameRate);
-    AddBool(3, 431, &g_stSettings.m_currentVideoSettings.m_NoCache);
-    AddBool(4, 644, &g_stSettings.m_currentVideoSettings.m_Crop);
+    AddBool(VIDEO_SETTINGS_CROP, 644, &g_stSettings.m_currentVideoSettings.m_Crop);
+    {
+      const int entries[] = {630, 631, 632, 633, 634, 635, 636 };
+      AddSpin(VIDEO_SETTINGS_VIEW_MODE, 629, &g_stSettings.m_currentVideoSettings.m_ViewMode, 7, entries);
+    }
+    AddSlider(VIDEO_SETTINGS_ZOOM, 216, &g_stSettings.m_currentVideoSettings.m_CustomZoomAmount, 0.5f, 0.01f, 2.0f);
+    AddSlider(VIDEO_SETTINGS_PIXEL_RATIO, 217, &g_stSettings.m_currentVideoSettings.m_CustomPixelRatio, 0.5f, 0.01f, 2.0f);
+    AddSlider(VIDEO_SETTINGS_BRIGHTNESS, 464, &g_stSettings.m_currentVideoSettings.m_Brightness, 0, 100);
+    AddSlider(VIDEO_SETTINGS_CONTRAST, 465, &g_stSettings.m_currentVideoSettings.m_Contrast, 0, 100);
+    AddSlider(VIDEO_SETTINGS_GAMMA, 466, &g_stSettings.m_currentVideoSettings.m_Gamma, 0, 100);
     if (g_guiSettings.m_LookAndFeelResolution <= HDTV_480p_16x9)
-      AddBool(5, 285, &g_stSettings.m_currentVideoSettings.m_Deinterlace);
+      AddBool(VIDEO_SETTINGS_DEINTERLACE, 285, &g_stSettings.m_currentVideoSettings.m_Deinterlace);
     else
     {
       const int entries[] = {351, 16008, 16007}; 
-      AddSpin(6, 16006, &g_stSettings.m_currentVideoSettings.m_FieldSync, 3, entries);
+      AddSpin(VIDEO_SETTINGS_FIELD_SYNC, 16006, &g_stSettings.m_currentVideoSettings.m_FieldSync, 3, entries);
     }
-    {
-      const int entries[] = {630, 631, 632, 633, 634, 635, 636 };
-      AddSpin(7, 629, &g_stSettings.m_currentVideoSettings.m_ViewMode, 7, entries);
-    }
-    AddSlider(8, 216, &g_stSettings.m_currentVideoSettings.m_CustomZoomAmount, 0.5f, 0.01f, 2.0f);
-    AddSlider(9, 217, &g_stSettings.m_currentVideoSettings.m_CustomPixelRatio, 0.5f, 0.01f, 2.0f);
-    AddSlider(10, 464, &g_stSettings.m_currentVideoSettings.m_Brightness, 0, 100);
-    AddSlider(11, 465, &g_stSettings.m_currentVideoSettings.m_Contrast, 0, 100);
-    AddSlider(12, 466, &g_stSettings.m_currentVideoSettings.m_Gamma, 0, 100);
+
     m_flickerFilter = g_guiSettings.GetInt("Filters.Flicker");
-    AddSpin(13, 13100, &m_flickerFilter, 0, 5);
+    AddSpin(VIDEO_SETTINGS_FLICKER, 13100, &m_flickerFilter, 0, 5);
     m_soften = g_guiSettings.GetBool("Filters.Soften");
-    AddBool(14, 215, &m_soften);
-    AddButton(15, 214);
+    AddBool(VIDEO_SETTINGS_SOFTEN, 215, &m_soften);
+    AddButton(VIDEO_SETTINGS_CALIBRATION, 214);
+    AddBool(VIDEO_SETTINGS_ADJUST_FRAME_RATE, 343, &g_stSettings.m_currentVideoSettings.m_AdjustFrameRate);
+    AddBool(VIDEO_SETTINGS_NON_INTERLEAVED, 306, &g_stSettings.m_currentVideoSettings.m_NonInterleaved);
+    AddBool(VIDEO_SETTINGS_NO_CACHE, 431, &g_stSettings.m_currentVideoSettings.m_NoCache);
   }
   else
   { // Audio and Subtitle settings
     m_volume = g_stSettings.m_nVolumeLevel * 0.01f;
-    AddSlider(1, 13376, &m_volume, VOLUME_MINIMUM * 0.01f, (VOLUME_MAXIMUM - VOLUME_MINIMUM) * 0.0001f, VOLUME_MAXIMUM * 0.01f, "%2.1f dB");
-    AddSlider(2, 297, &g_stSettings.m_currentVideoSettings.m_AudioDelay, -g_stSettings.m_fAudioDelayRange, 0.1f, g_stSettings.m_fAudioDelayRange, "%2.1fs");
-    AddAudioStreams(3);
+    AddSlider(AUDIO_SETTINGS_VOLUME, 13376, &m_volume, VOLUME_MINIMUM * 0.01f, (VOLUME_MAXIMUM - VOLUME_MINIMUM) * 0.0001f, VOLUME_MAXIMUM * 0.01f, "%2.1f dB");
+    AddSlider(AUDIO_SETTINGS_DELAY, 297, &g_stSettings.m_currentVideoSettings.m_AudioDelay, -g_stSettings.m_fAudioDelayRange, 0.1f, g_stSettings.m_fAudioDelayRange, "%2.1fs");
+    AddAudioStreams(AUDIO_SETTINGS_STREAM);
     AddSeparator(4);
-    AddBool(5, 13397, &g_stSettings.m_currentVideoSettings.m_SubtitleOn);
-    AddSlider(6, 303, &g_stSettings.m_currentVideoSettings.m_SubtitleDelay, -g_stSettings.m_fSubsDelayRange, 0.1f, g_stSettings.m_fSubsDelayRange, "%2.1fs");
-    AddSubtitleStreams(7);
+    AddBool(SUBTITLE_SETTINGS_ENABLE, 13397, &g_stSettings.m_currentVideoSettings.m_SubtitleOn);
+    AddSlider(SUBTITLE_SETTINGS_DELAY, 303, &g_stSettings.m_currentVideoSettings.m_SubtitleDelay, -g_stSettings.m_fSubsDelayRange, 0.1f, g_stSettings.m_fSubsDelayRange, "%2.1fs");
+    AddSubtitleStreams(SUBTITLE_SETTINGS_STREAM);
   }
 }
 
@@ -560,34 +585,34 @@ void CGUIDialogVideoSettings::OnSettingChanged(unsigned int num)
   // check and update anything that needs it
   if (m_iScreen == WINDOW_DIALOG_VIDEO_OSD_SETTINGS)
   {
-    if ((setting.id >= 1 && setting.id <= 3) || setting.id == 5)
+    if (setting.id == VIDEO_SETTINGS_ADJUST_FRAME_RATE || setting.id == VIDEO_SETTINGS_NON_INTERLEAVED ||  setting.id == VIDEO_SETTINGS_NO_CACHE || setting.id == VIDEO_SETTINGS_DEINTERLACE)
       g_application.Restart(true);
-    else if (setting.id == 4)
+    else if (setting.id == VIDEO_SETTINGS_CROP)
       g_renderManager.AutoCrop(g_stSettings.m_currentVideoSettings.m_Crop);
-    else if (setting.id == 7)
+    else if (setting.id == VIDEO_SETTINGS_VIEW_MODE)
     {
       g_renderManager.SetViewMode(g_stSettings.m_currentVideoSettings.m_ViewMode);
       g_stSettings.m_currentVideoSettings.m_CustomZoomAmount = g_stSettings.m_fZoomAmount;
       g_stSettings.m_currentVideoSettings.m_CustomPixelRatio = g_stSettings.m_fPixelRatio;
-      UpdateSetting(8);
-      UpdateSetting(9);
+      UpdateSetting(VIDEO_SETTINGS_ZOOM);
+      UpdateSetting(VIDEO_SETTINGS_PIXEL_RATIO);
     }
-    else if (setting.id == 8 || setting.id == 9)
+    else if (setting.id == VIDEO_SETTINGS_ZOOM || setting.id == VIDEO_SETTINGS_PIXEL_RATIO)
     {
       g_stSettings.m_currentVideoSettings.m_ViewMode = VIEW_MODE_CUSTOM;
       g_renderManager.SetViewMode(VIEW_MODE_CUSTOM);
-      UpdateSetting(7);
+      UpdateSetting(VIDEO_SETTINGS_VIEW_MODE);
     }
-    else if (setting.id >= 10 && setting.id <= 12)
+    else if (setting.id == VIDEO_SETTINGS_BRIGHTNESS || setting.id == VIDEO_SETTINGS_CONTRAST || setting.id == VIDEO_SETTINGS_GAMMA)
       CUtil::SetBrightnessContrastGammaPercent(g_stSettings.m_currentVideoSettings.m_Brightness, g_stSettings.m_currentVideoSettings.m_Contrast, g_stSettings.m_currentVideoSettings.m_Gamma, true);
-    else if (setting.id >= 13 && setting.id <= 14)
+    else if (setting.id == VIDEO_SETTINGS_FLICKER || setting.id == VIDEO_SETTINGS_SOFTEN)
     {
       RESOLUTION res = g_graphicsContext.GetVideoResolution();
       g_guiSettings.SetInt("Filters.Flicker", m_flickerFilter);
       g_guiSettings.SetBool("Filters.Soften", m_soften);
       g_graphicsContext.SetVideoResolution(res);
     }
-    else if (setting.id == 15)
+    else if (setting.id == VIDEO_SETTINGS_CALIBRATION)
     {
       // close the OSD
       CGUIDialog *pDialog = (CGUIDialog *)m_gWindowManager.GetWindow(WINDOW_OSD);
@@ -598,14 +623,14 @@ void CGUIDialogVideoSettings::OnSettingChanged(unsigned int num)
   }
   else
   { // audio settings
-    if (setting.id == 1)
+    if (setting.id == AUDIO_SETTINGS_VOLUME)
       g_stSettings.m_nVolumeLevel = (long)(m_volume * 100.0f);
-    else if (setting.id == 2)
+    else if (setting.id == AUDIO_SETTINGS_DELAY)
     {
       if (g_application.m_pPlayer)
         g_application.m_pPlayer->SetAVDelay(g_stSettings.m_currentVideoSettings.m_AudioDelay);
     }
-    else if (setting.id == 3)
+    else if (setting.id == AUDIO_SETTINGS_STREAM)
     {
       // first check if it's a stereo track that we can change between stereo, left and right
       if (g_application.m_pPlayer->GetAudioStreamCount() == 1)
@@ -629,13 +654,13 @@ void CGUIDialogVideoSettings::OnSettingChanged(unsigned int num)
           g_application.Restart(true);  // restart to make new audio track active
       }
     }
-    else if (setting.id == 5)
+    else if (setting.id == SUBTITLE_SETTINGS_ENABLE)
     {
       g_application.m_pPlayer->SetSubtitleVisible(g_stSettings.m_currentVideoSettings.m_SubtitleOn);
     }
-    else if (setting.id == 6)
+    else if (setting.id == SUBTITLE_SETTINGS_DELAY)
       g_application.m_pPlayer->SetSubTitleDelay(g_stSettings.m_currentVideoSettings.m_SubtitleDelay);
-    else if (setting.id == 7 && setting.max > 0)
+    else if (setting.id == SUBTITLE_SETTINGS_STREAM && setting.max > 0)
     {
       g_stSettings.m_currentVideoSettings.m_SubtitleStream = m_subtitleStream;
       g_application.m_pPlayer->SetSubtitle(m_subtitleStream);
@@ -653,13 +678,13 @@ void CGUIDialogVideoSettings::Render()
   if (m_iScreen == WINDOW_DIALOG_AUDIO_OSD_SETTINGS)
   {
     m_volume = g_stSettings.m_nVolumeLevel * 0.01f;
-    UpdateSetting(1);
+    UpdateSetting(AUDIO_SETTINGS_VOLUME);
     if (g_application.m_pPlayer)
     {
       // these settings can change on the fly
-      UpdateSetting(2);
-      UpdateSetting(4);
-      UpdateSetting(5);
+      UpdateSetting(AUDIO_SETTINGS_DELAY);
+      UpdateSetting(SUBTITLE_SETTINGS_ENABLE);
+      UpdateSetting(SUBTITLE_SETTINGS_DELAY);
     }
   }
   CGUIDialog::Render();
