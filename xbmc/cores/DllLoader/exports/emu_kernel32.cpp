@@ -749,3 +749,43 @@ extern "C" UINT WINAPI dllSetConsoleCtrlHandler(PHANDLER_ROUTINE HandlerRoutine,
   SetLastError(ERROR_INVALID_FUNCTION);
   return 0;
 }
+
+/*
+
+The following routine was hacked up by JM while looking at why the DVD player was failing
+in the middle of the movie.  The symptoms were:
+
+1. DVD player returned error about expecting a NAV packet but none found.
+2. Resulted in DVD player closing.
+3. Always occured in the same place.
+4. Occured on every DVD I tried (originals)
+5. Approximately where I would expect the layer change to be (ie just over half way
+   through the movie)
+6. Resulted in the last chunk of the requested data to be NULL'd out completely.  ReadFile()
+   returns correctly, but the last chunk is completely zero'd out.
+
+This routine checks the last chunk for zeros, and re-reads if necessary.
+
+#define CHUNK_SIZE 2048
+
+extern "C" BOOL WINAPI ReadFileCheckLastFile(HANDLE hFile, LPVOID lpBuffer, DWORD nNumberOfBytesToRead, LPDWORD lpNumberOfBytesRead, LPOVERLAPPED lpOverlapped)
+{
+  BOOL ret = ReadFile(hFile, lpBuffer, nNumberOfBytesToRead, lpNumberOfBytesRead, lpOverlapped);
+  if (!ret || !lpNumberOfBytesRead || *lpNumberOfBytesRead < CHUNK_SIZE) return ret;
+  DWORD numChecked = *lpNumberOfBytesRead;
+//  while (numChecked >= CHUNK_SIZE)
+  {
+    int p = *(int *)((BYTE *)lpBuffer + numChecked - CHUNK_SIZE);
+    if (p == 0)
+    {
+      CLog::Log(LOGERROR, "ReadFile() error - returning invalid data, DVD will stop!");
+      DWORD numRead;
+      SetFilePointer(hFile, -CHUNK_SIZE, NULL, FILE_CURRENT);
+      ret = ReadFile(hFile, (BYTE *)lpBuffer + numChecked - CHUNK_SIZE, CHUNK_SIZE, &numRead, lpOverlapped);
+      if (!ret) return FALSE;
+    }
+    numChecked -= CHUNK_SIZE;
+  }
+  return ret;
+}
+*/
