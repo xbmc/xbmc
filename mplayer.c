@@ -528,6 +528,7 @@ static void uninit_player(unsigned int mask){
   }
 
 #ifdef _XBOX
+  current_module="uninit_others";
   free_osd_list();		//fix 4 x 6548bytes memory leak 
   codecs_uninit_free(); 	//fix 70Kbytes codecs mem leak
   m_config_free(mconfig);	//fix 1250 counts of small memory block leaks
@@ -4803,7 +4804,7 @@ if(benchmark){
 
 // time to uninit all, except global stuff:
 #ifdef _XBOX
-printf(" unint_player\n");
+printf(" uninit_player\n");
 uninit_player(INITED_ALL-(INITED_GUI+(fixed_vo?INITED_VO:0)));
 printf(" uninit_player - done\n");
 #else
