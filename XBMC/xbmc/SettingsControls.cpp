@@ -121,9 +121,12 @@ void CButtonSettingControl::OnClick()
 {
   // grab the onscreen keyboard
   CStdString keyboardInput(((CSettingString *)m_pSetting)->GetData());
+  CStdStringW heading;
+  if (((CSettingString *)m_pSetting)->m_iHeadingString > 0)
+    heading = g_localizeStrings.Get(((CSettingString *)m_pSetting)->m_iHeadingString);
   if (m_pSetting->GetControlType() == BUTTON_CONTROL_INPUT || m_pSetting->GetControlType() == BUTTON_CONTROL_HIDDEN_INPUT)
   {
-    if (!CGUIDialogKeyboard::ShowAndGetInput(keyboardInput, ((CSettingString *)m_pSetting)->m_bAllowEmpty))
+    if (!CGUIDialogKeyboard::ShowAndGetInput(keyboardInput, heading, ((CSettingString *)m_pSetting)->m_bAllowEmpty))
       return ;
   }
   if (m_pSetting->GetControlType() == BUTTON_CONTROL_IP_INPUT)

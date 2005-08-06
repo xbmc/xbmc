@@ -488,8 +488,8 @@
   <string><id>703</id><value>Press Yes to update all songs in this path</value></string>
   <string><id>704</id><value>Press No to just add new songs</value></string>
   <string><id>705</id><value>Network</value></string>
-  <string><id>706</id><value>- HTTP Proxy Host</value></string>
-  <string><id>707</id><value>- HTTP Proxy Port</value></string>
+  <string><id>706</id><value>HTTP Proxy Host</value></string>
+  <string><id>707</id><value>HTTP Proxy Port</value></string>
   <string><id>708</id><value>Enable HTTP Proxy</value></string>
   <string><id>709</id><value>XLink Kai XTag</value></string>
   <string><id>710</id><value>XLink Kai Password</value></string>
@@ -512,10 +512,10 @@
   <string><id>727</id><value>Web Server</value></string>
   <string><id>728</id><value>FTP Server</value></string>
   <string><id>729</id><value>Internet Time</value></string>
-  <string><id>730</id><value>- Web Server Port</value></string>
-  <string><id>731</id><value>- Time Server Host</value></string>
+  <string><id>730</id><value>Web Server Port</value></string>
+  <string><id>731</id><value>Time Server Host</value></string>
   <string><id>732</id><value>Save &amp; Apply</value></string>
-  <string><id>733</id><value>- Web Server Password</value></string>
+  <string><id>733</id><value>Web Server Password</value></string>
   <string><id>734</id><value>No Pass</value></string>
   <string><id>735</id><value>- Charset</value></string>
   <string><id>736</id><value>- Style</value></string>
@@ -598,9 +598,9 @@
   <string><id>1234</id><value>Programs &amp; Pictures &amp; Music</value></string>
   <string><id>1235</id><value>Programs &amp; Pictures &amp; Video</value></string>
 
-  <string><id>1245</id><value> - FTP User Name</value></string>
-  <string><id>1246</id><value> - FTP User Password</value></string>
-  <string><id>1247</id><value>FTP Server User Password has been set sucessfully!</value></string>
+  <string><id>1245</id><value>FTP User Name</value></string>
+  <string><id>1246</id><value>FTP User Password</value></string>
+  <string><id>1247</id><value>FTP Server User Password has been set sucessfully</value></string>
 
   <string><id>1250</id><value>Autodetection</value></string>
   <string><id>1251</id><value>XBOX Autodetection</value></string>
@@ -1101,5 +1101,14 @@
   <string><id>16006</id><value>Synchronized Interlacing</value></string>
   <string><id>16007</id><value>Reversed Fields</value></string> 
   <string><id>16008</id><value>On</value></string>
- 
+
+  <string><id>16009</id><value>Enter the Movie Name</value></string>
+  <string><id>16010</id><value>Enter the Profile Name</value></string>
+  <string><id>16011</id><value>Enter the Album Name</value></string>
+  <string><id>16012</id><value>Enter the Playlist Name</value></string>
+  <string><id>16013</id><value>Enter new filename</value></string>
+  <string><id>16014</id><value>Enter folder name</value></string>
+  <string><id>16015</id><value>Enter directory</value></string>
+  <string><id>16016</id><value>Available options: %A, %T, %N, %B, %D, %G, %Y, %F</value></string>
+  <string><id>16017</id><value>Enter Search String</value></string>
 </strings>

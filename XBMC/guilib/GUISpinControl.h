@@ -146,5 +146,7 @@ protected:
   bool m_bBuddyDisabled;
   float m_fMaxTextWidth;
   CRect m_rectHit;   // rect for hit test on the Text
+  bool m_bWrap;     // if true, pressing up while on the last item will take you to the first
+                    // and down on the first item will take you to the last.
 };
 #endif

@@ -119,7 +119,9 @@ void CGUIWindowOSD::Render()
 {
   SetVideoProgress();   // get the percentage of playback complete so far
   Get_TimeInfo();    // show the time elapsed/total playing time
-  if (g_guiSettings.GetInt("MyVideos.OSDTimeout"))
+  if ( g_guiSettings.GetInt("MyVideos.OSDTimeout") &&
+      !m_gWindowManager.IsWindowActive(WINDOW_DIALOG_VIDEO_OSD_SETTINGS) &&
+      !m_gWindowManager.IsWindowActive(WINDOW_DIALOG_VIDEO_BOOKMARKS) )
   {
     if ( (timeGetTime() - m_dwOSDTimeOut) > (DWORD)(g_guiSettings.GetInt("MyVideos.OSDTimeout") * 1000))
     {

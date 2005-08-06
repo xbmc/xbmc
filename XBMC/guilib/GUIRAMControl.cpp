@@ -10,6 +10,7 @@
 #include "..\xbmc\GUIDialogFileStacking.h"
 #include "..\xbmc\GUIDialogKeyboard.h"
 #include "..\xbmc\FileSystem\VirtualDirectory.h"
+#include "LocalizeStrings.h"
 
 extern CApplication g_application;
 
@@ -448,7 +449,7 @@ void CGUIRAMControl::UpdateAllTitles()
 void CGUIRAMControl::UpdateTitle(CStdString& strFilepath, INT nIndex)
 {
   CStdString strFilename = CUtil::GetFileName(strFilepath);
-  if (CGUIDialogKeyboard::ShowAndGetInput(strFilename, false))
+  if (CGUIDialogKeyboard::ShowAndGetInput(strFilename, (CStdStringW)g_localizeStrings.Get(16009), false))
   {
     CMediaMonitor::Command command = {
                                        CMediaMonitor::CommandType::Update,

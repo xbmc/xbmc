@@ -120,11 +120,12 @@ CStdString CSettingHex::ToString()
   return strValue;
 }
 
-CSettingString::CSettingString(int iOrder, const char *strSetting, int iLabel, const char *strData, int iControlType, bool bAllowEmpty)
+CSettingString::CSettingString(int iOrder, const char *strSetting, int iLabel, const char *strData, int iControlType, bool bAllowEmpty, int iHeadingString)
     : CSetting(iOrder, strSetting, iLabel, iControlType)
 {
   m_strData = strData;
   m_bAllowEmpty = bAllowEmpty;
+  m_iHeadingString = iHeadingString;
 }
 
 void CSettingString::FromString(const CStdString &strValue)
@@ -177,9 +178,9 @@ CGUISettings::CGUISettings(void)
 
   AddCategory(1, "XLinkKai", 714);
   AddBool(1, "XLinkKai.EnableNotifications", 14008, true);
-  AddString(2, "XLinkKai.GamesDir", 14009, "f:\\games");
-  AddString(3, "XLinkKai.UserName", 709, "");
-  AddString(4, "XLinkKai.Password", 710, "", BUTTON_CONTROL_HIDDEN_INPUT);
+  AddString(2, "XLinkKai.GamesDir", 14009, "f:\\games", BUTTON_CONTROL_INPUT, false, 16015);
+  AddString(3, "XLinkKai.UserName", 709, "", BUTTON_CONTROL_INPUT, false, 709);
+  AddString(4, "XLinkKai.Password", 710, "", BUTTON_CONTROL_HIDDEN_INPUT, false, 710);
   AddString(5, "XLinkKai.Server", 14042, "", BUTTON_CONTROL_IP_INPUT);
 
   // My Weather settings
@@ -200,12 +201,12 @@ CGUISettings::CGUISettings(void)
   AddString(1, "MyMusic.Visualisation", 250, "milkdrop.vis", SPIN_CONTROL_TEXT);
   AddSeparator(2, "MyMusic.Sep1");
   AddBool(3, "MyMusic.HideParentDirItems", 13306, true);
-  AddString(4, "MyMusic.TrackFormat", 13307, "%N. %A - %T", BUTTON_CONTROL_INPUT);
-  AddString(5, "MyMusic.TrackFormatRight", 13387, "%D", BUTTON_CONTROL_INPUT);
+  AddString(4, "MyMusic.TrackFormat", 13307, "%N. %A - %T", BUTTON_CONTROL_INPUT, false, 16016);
+  AddString(5, "MyMusic.TrackFormatRight", 13387, "%D", BUTTON_CONTROL_INPUT, false, 16016);
   AddSeparator(6, "MyMusic.Sep2");
   AddBool(7, "MyMusic.UseAudioScrobbler", 15201, false);
-  AddString(8,"MyMusic.AudioScrobblerUserName", 15202, "");
-  AddString(9,"MyMusic.AudioScrobblerPassword", 15203, "", BUTTON_CONTROL_HIDDEN_INPUT); 
+  AddString(8,"MyMusic.AudioScrobblerUserName", 15202, "", BUTTON_CONTROL_INPUT, false, 15202);
+  AddString(9,"MyMusic.AudioScrobblerPassword", 15203, "", BUTTON_CONTROL_HIDDEN_INPUT, false, 15203); 
   AddSeparator(10, "MyMusic.Sep3");
   AddString(11, "MyMusic.CleanupMusicLibrary", 334, "", BUTTON_CONTROL_STANDARD);
 
@@ -459,8 +460,8 @@ CGUISettings::CGUISettings(void)
   AddString(5, "Network.DNS", 722, "0.0.0.0", BUTTON_CONTROL_IP_INPUT);
   AddSeparator(6, "Network.Sep1");
   AddBool(7, "Network.UseHTTPProxy", 708, false);
-  AddString(8, "Network.HTTPProxyServer", 706, "");
-  AddString(9, "Network.HTTPProxyPort", 707, "8080");
+  AddString(8, "Network.HTTPProxyServer", 706, "", BUTTON_CONTROL_IP_INPUT);
+  AddString(9, "Network.HTTPProxyPort", 707, "8080", BUTTON_CONTROL_INPUT, false, 707);
   AddSeparator(10, "Network.Sep2");
   AddBool(11, "Network.EnableInternet", 14054, true);
   AddSeparator(12, "Network.Sep3");
@@ -470,17 +471,17 @@ CGUISettings::CGUISettings(void)
   AddCategory(6, "Servers", 14036);
   AddBool(1,  "Servers.FTPServer",        167, true);
   AddString(2,"Servers.FTPServerUser",    1245, "xbox", SPIN_CONTROL_TEXT);
-  AddString(3,"Servers.FTPServerPassword",1246, "xbox", BUTTON_CONTROL_HIDDEN_INPUT, true);
+  AddString(3,"Servers.FTPServerPassword",1246, "xbox", BUTTON_CONTROL_HIDDEN_INPUT, true, 1246);
   AddBool(4,  "Servers.FTPAutoFatX",      771, true);
   AddSeparator(5, "Servers.Sep1");
   AddBool(6,  "Servers.WebServer",        263, false);
-  AddString(7,"Servers.WebServerPort",    730, "80");
-  AddString(8,"Servers.WebServerPassword",733, "", BUTTON_CONTROL_HIDDEN_INPUT, true);
+  AddString(7,"Servers.WebServerPort",    730, "80", BUTTON_CONTROL_INPUT, false, 730);
+  AddString(8,"Servers.WebServerPassword",733, "", BUTTON_CONTROL_HIDDEN_INPUT, true, 733);
 
   //GeminiServer
   AddCategory(6,"Autodetect",           1250  );
   AddBool(1,    "Autodetect.OnOff",     1251, true);
-  AddString(2,  "Autodetect.NickName",  1252, "XBMC-NickName",BUTTON_CONTROL_INPUT);
+  AddString(2,  "Autodetect.NickName",  1252, "XBMC-NickName",BUTTON_CONTROL_INPUT, false, 1252);
   AddInt(3,     "Autodetect.PingTime",  1256, 30, 1, 4, 240, SPIN_CONTROL_INT, MASK_SECS);
   AddBool(4,    "Autodetect.PopUpInfo", 1254, true);
   AddSeparator(5, "Autodetect.Sep1");
@@ -491,12 +492,12 @@ CGUISettings::CGUISettings(void)
   AddCategory(6, "Smb", 1200);
   AddInt(1,    "Smb.SimpAdvance", 1208,   1, 0, 1, 2, SPIN_CONTROL_TEXT);
   AddString(2, "Smb.Ip",          1201,   "192.168.0.5",  BUTTON_CONTROL_IP_INPUT);
-  AddString(3, "Smb.Workgroup",   1202,   "WORKGROUP");
-  AddString(4, "Smb.Username",    1203,   "Username");
-  AddString(5, "Smb.Password",    1204,   "Password", BUTTON_CONTROL_HIDDEN_INPUT, true);
+  AddString(3, "Smb.Workgroup",   1202,   "WORKGROUP", BUTTON_CONTROL_INPUT, false, 1202);
+  AddString(4, "Smb.Username",    1203,   "Username", BUTTON_CONTROL_INPUT, false, 1203);
+  AddString(5, "Smb.Password",    1204,   "Password", BUTTON_CONTROL_HIDDEN_INPUT, true, 1204);
   AddSeparator(6, "Smb.Sep1");
   AddString(7, "Smb.Winsserver",  1207,   "-",  BUTTON_CONTROL_IP_INPUT);
-  AddString(8, "Smb.ShareName",   1205,   "WORKGROUP (SMB) Network");
+  AddString(8, "Smb.ShareName",   1205,   "WORKGROUP (SMB) Network", BUTTON_CONTROL_INPUT, false, 1205);
   AddInt(9,    "Smb.ShareGroup",  1206,   SMB_SHARE_MU_VI_PIC_FIL, SMB_SHARE_MUSIC, 1, SMB_SHARE_MU_VI_PIC_FIL, SPIN_CONTROL_TEXT);
   AddSeparator(10, "Smb.Sep2");
   AddString(11, "Smb.SetSmb",      14070,  "", BUTTON_CONTROL_STANDARD);
@@ -729,9 +730,9 @@ void CGUISettings::SetInt(const char *strSetting, int iSetting)
   CLog::DebugLog("Error: Requested setting (%s) was not found.  It must be case-sensitive", strSetting);
 }
 
-void CGUISettings::AddString(int iOrder, const char *strSetting, int iLabel, const char *strData, int iControlType, bool bAllowEmpty)
+void CGUISettings::AddString(int iOrder, const char *strSetting, int iLabel, const char *strData, int iControlType, bool bAllowEmpty, int iHeadingString)
 {
-  CSettingString* pSetting = new CSettingString(iOrder, strSetting, iLabel, strData, iControlType, bAllowEmpty);
+  CSettingString* pSetting = new CSettingString(iOrder, strSetting, iLabel, strData, iControlType, bAllowEmpty, iHeadingString);
   if (!pSetting) return ;
   settingsMap.insert(pair<CStdString, CSetting*>(strSetting, pSetting));
 }
