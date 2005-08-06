@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 06-08-2005 fixed: after turning off fieldsync in video osd, xbmc would often lockup.
  - 06-08-2005 added: New video OSD settings/bookmarks menus.
  - 05-08-2005 changed: Defaults to sort descending for rating, date, year + size.
  - 05-08-2005 changed: Fading changed to timebased rather than framebased.  Skin format also changed.
