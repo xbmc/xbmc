@@ -1,3 +1,4 @@
+2005-08-06 fixed:	media infos in fs visualisation could not be hidden in 16:9 mode
 2005-08-06 fixed:	minor fix on the shutdown menu
 2005-08-06 changed:	new video OSD dialogs (bookmarks menu with thumbs now too)
 

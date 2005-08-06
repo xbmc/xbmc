@@ -87,6 +87,7 @@
       <width>740</width>
       <height>100</height>
       <texture>osd_menu_bg.png</texture>
+      <visible effect="fade" time="300">Player.ShowInfo</visible>
     </control>
 
     <control>
@@ -99,6 +100,7 @@
       <height>100</height>
       <info>MusicPlayer.Cover</info>
       <keepaspectratio>true</keepaspectratio>
+      <visible effect="fade" time="300">Player.ShowInfo</visible>
     </control>
 
     <control>
@@ -111,6 +113,7 @@
       <info>MusicPlayer.Artist</info>
       <align>left</align>
       <font>special12</font>
+      <visible effect="fade" time="300">Player.ShowInfo</visible>
     </control>
 
     <control>
@@ -123,6 +126,7 @@
       <info>MusicPlayer.Title</info>
       <align>left</align>
       <font>special13</font>
+      <visible effect="fade" time="300">Player.ShowInfo</visible>
     </control>
 
     <control>
@@ -135,6 +139,7 @@
       <info>MusicPlayer.Album</info>
       <align>left</align>
       <font>font10</font>
+      <visible effect="fade" time="300">Player.ShowInfo</visible>
     </control>
 
     <control>
@@ -147,6 +152,7 @@
       <label>$INFO[musicplayer.Time] / $INFO[musicplayer.Duration]</label>
       <align>left</align>
       <font>font10</font>
+      <visible effect="fade" time="300">Player.ShowInfo</visible>
     </control>
 
     <control>
@@ -159,6 +165,7 @@
       <label>Track $INFO[musicplayer.Playlistposition] / $INFO[musicplayer.Playlistlength]</label>
       <align>right</align>
       <font>font10</font>
+      <visible effect="fade" time="300">Player.ShowInfo</visible>
     </control>
 
   </controls>
