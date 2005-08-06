@@ -1,3 +1,6 @@
+2005-08-06 fixed:	minor fix on the shutdown menu
+2005-08-06 changed:	new video OSD dialogs (bookmarks menu with thumbs now too)
+
 2005-08-05 changed:     Updated the format of the fading of controls to latest CVS format.
 
 2005-08-03 fixed:	toast dialog disappears to quick in PAL resolution
