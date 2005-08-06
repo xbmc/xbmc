@@ -10,7 +10,7 @@
 #include "util.h"
 
 
-#define VIDEO_DATABASE_VERSION 1.3f
+#define VIDEO_DATABASE_VERSION 1.4f
 #define VIDEO_DATABASE_NAME "MyVideos31.db"
 
 //********************************************************************************************************************************
@@ -33,7 +33,7 @@ bool CVideoDatabase::CreateTables()
     CDatabase::CreateTables();
 
     CLog::Log(LOGINFO, "create bookmark table");
-    m_pDS->exec("CREATE TABLE bookmark ( idBookmark integer primary key, idFile integer, fPercentage text)\n");
+    m_pDS->exec("CREATE TABLE bookmark ( idBookmark integer primary key, idFile integer, timeInSeconds integer, thumbNailImage text)\n");
 
     CLog::Log(LOGINFO, "create settings table");
     m_pDS->exec("CREATE TABLE settings ( idFile integer, Interleaved bool, NoCache bool, Deinterlace bool, FilmGrain integer,"
@@ -894,6 +894,11 @@ void CVideoDatabase::GetMoviesByYear(CStdString& strYear, VECMOVIES& movies)
   }
 }
 
+bool SortBookmarks(const CBookmark &left, const CBookmark &right)
+{
+  return left.timeInSeconds < right.timeInSeconds;
+}
+
 //********************************************************************************************************************************
 void CVideoDatabase::GetBookMarksForMovie(const CStdString& strFilenameAndPath, VECBOOKMARKS& bookmarks)
 {
@@ -906,14 +911,17 @@ void CVideoDatabase::GetBookMarksForMovie(const CStdString& strFilenameAndPath, 
     if (NULL == m_pDB.get()) return ;
     if (NULL == m_pDS.get()) return ;
 
-    CStdString strSQL=FormatSQL("select * from bookmark where idFile=%i order by fPercentage", lFileId);
+    CStdString strSQL=FormatSQL("select * from bookmark where idFile=%i order by timeInSeconds", lFileId);
     m_pDS->query( strSQL.c_str() );
     while (!m_pDS->eof())
     {
-      float fPercentage = m_pDS->fv("fPercentage").get_asFloat();
-      bookmarks.push_back(fPercentage);
+      CBookmark bookmark;
+      bookmark.timeInSeconds = m_pDS->fv("timeInSeconds").get_asLong();
+      bookmark.thumbNailImage = m_pDS->fv("thumbNailImage").get_asString();
+      bookmarks.push_back(bookmark);
       m_pDS->next();
     }
+    sort(bookmarks.begin(), bookmarks.end(), SortBookmarks);
     m_pDS->close();
   }
   catch (...)
@@ -923,7 +931,7 @@ void CVideoDatabase::GetBookMarksForMovie(const CStdString& strFilenameAndPath, 
 }
 
 //********************************************************************************************************************************
-void CVideoDatabase::AddBookMarkToMovie(const CStdString& strFilenameAndPath, float fPercentage)
+void CVideoDatabase::AddBookMarkToMovie(const CStdString& strFilenameAndPath, const CBookmark &bookmark)
 {
   try
   {
@@ -933,7 +941,7 @@ void CVideoDatabase::AddBookMarkToMovie(const CStdString& strFilenameAndPath, fl
     if (NULL == m_pDB.get()) return ;
     if (NULL == m_pDS.get()) return ;
 
-    CStdString strSQL=FormatSQL("select * from bookmark where idFile=%i and fPercentage=%03.3f", lFileId, fPercentage);
+    CStdString strSQL=FormatSQL("select * from bookmark where idFile=%i and timeInSeconds=%i", lFileId, bookmark.timeInSeconds);
     m_pDS->query( strSQL.c_str() );
     if (m_pDS->num_rows() != 0)
     {
@@ -941,7 +949,7 @@ void CVideoDatabase::AddBookMarkToMovie(const CStdString& strFilenameAndPath, fl
       return ;
     }
     m_pDS->close();
-    strSQL=FormatSQL("insert into bookmark (idBookmark, idFile, fPercentage) values(NULL,%i,%03.3f)", lFileId, fPercentage);
+    strSQL=FormatSQL("insert into bookmark (idBookmark, idFile, timeInSeconds, thumbNailImage) values(NULL,%i,%i,'%s')", lFileId, bookmark.timeInSeconds, bookmark.thumbNailImage.c_str());
     m_pDS->exec(strSQL.c_str());
   }
   catch (...)
@@ -1236,6 +1244,14 @@ bool CVideoDatabase::UpdateOldVersion(float fVersion)
                 "SubtitleDelay float, SubtitlesOn bool, Brightness integer, Contrast integer, Gamma integer,"
                 "AdjustFrameRate integer, AudioDelay float, ResumeTime integer, Crop bool, CropLeft integer,"
                 "CropRight integer, CropTop integer, CropBottom integer)\n");
+  }
+  if (fVersion < 1.4f)
+  { // v 1.3 -> 1.4 (new layout for bookmarks table)
+    // Just delete the old bookmarks table and create it fresh
+    CLog::Log(LOGINFO, "Deleting old bookmarks table");
+    m_pDS->exec("DROP TABLE bookmark");
+    CLog::Log(LOGINFO, "Creating new bookmarks table");
+    m_pDS->exec("CREATE TABLE bookmark ( idBookmark integer primary key, idFile integer, timeInSeconds integer, thumbNailImage text)\n");
   }
   return true;
 }

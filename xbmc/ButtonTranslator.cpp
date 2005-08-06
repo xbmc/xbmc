@@ -389,6 +389,8 @@ WORD CButtonTranslator::TranslateWindowString(const char *szWindow)
   else if (strWindow.Equals("visualisationsettings")) wWindowID = WINDOW_DIALOG_VIS_SETTINGS;
   else if (strWindow.Equals("visualisationpresetlist")) wWindowID = WINDOW_DIALOG_VIS_PRESET_LIST;
   else if (strWindow.Equals("osdvideosettings")) wWindowID = WINDOW_DIALOG_VIDEO_OSD_SETTINGS;
+  else if (strWindow.Equals("osdaudiosettings")) wWindowID = WINDOW_DIALOG_AUDIO_OSD_SETTINGS;
+  else if (strWindow.Equals("videobookmarks")) wWindowID = WINDOW_DIALOG_VIDEO_BOOKMARKS;
 
   else if (strWindow.Equals("mymusicplaylist")) wWindowID = WINDOW_MUSIC_PLAYLIST;
   else if (strWindow.Equals("mymusicfiles")) wWindowID = WINDOW_MUSIC_FILES;

@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 06-08-2005 added: New video OSD settings/bookmarks menus.
  - 05-08-2005 changed: Defaults to sort descending for rating, date, year + size.
  - 05-08-2005 changed: Fading changed to timebased rather than framebased.  Skin format also changed.
  - 05-08-2005 changed: Added Player.ShowInfo - active in fullscreen visualisation when the user presses WHITE for instance.  Removed XBMC's built-in fading of this info.

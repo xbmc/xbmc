@@ -1305,6 +1305,23 @@ void CXBoxRenderer::RenderLowMem()
   m_pD3DDevice->SetScissors(0, FALSE, NULL );
 }
 
+void CXBoxRenderer::CreateThumbnail(LPDIRECT3DSURFACE8 surface, unsigned int width, unsigned int height)
+{
+  g_graphicsContext.Lock();
+  LPDIRECT3DSURFACE8 oldRT;
+  RECT saveSize = rd;
+  rd.left = rd.top = 0;
+  rd.right = width;
+  rd.bottom = height;
+  m_pD3DDevice->GetRenderTarget(&oldRT);
+  m_pD3DDevice->SetRenderTarget(surface, NULL);
+  RenderLowMem();
+  rd = saveSize;
+  m_pD3DDevice->SetRenderTarget(oldRT, NULL);
+  oldRT->Release();
+  g_graphicsContext.Unlock();
+}
+
 //********************************************************************************************************
 // YV12 Texture creation, deletion, copying + clearing
 //********************************************************************************************************

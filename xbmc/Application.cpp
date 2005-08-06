@@ -99,6 +99,7 @@
 #include "GUIDialogVisualisationSettings.h"
 #include "GUIDialogVisualisationPresetList.h"
 #include "GUIDialogVideoSettings.h"
+#include "GUIDialogVideoBookmarks.h"
 #include "GUIWindowOSD.h"
 #include "GUIWindowScriptsInfo.h"
 
@@ -978,6 +979,9 @@ HRESULT CApplication::Initialize()
   CStdString strThumbKai = g_stSettings.szThumbnailsDirectory;
   strThumbKai += "\\kai";
   CreateDirectory(strThumbKai.c_str(), NULL);
+  CStdString strThumbBookmarks = g_stSettings.szThumbnailsDirectory;
+  strThumbBookmarks += "\\bookmarks";
+  CreateDirectory(strThumbBookmarks.c_str(), NULL);
 
   if (!g_guiSettings.GetBool("MyPrograms.NoShortcuts"))
     CreateDirectory(g_stSettings.m_szShortcutDirectory, NULL);
@@ -1100,7 +1104,8 @@ HRESULT CApplication::Initialize()
   m_gWindowManager.Add(new CGUIDialogMusicOSD);           // window id = 120
   m_gWindowManager.Add(new CGUIDialogVisualisationSettings);     // window id = 121
   m_gWindowManager.Add(new CGUIDialogVisualisationPresetList);   // window id = 122
-  m_gWindowManager.Add(new CGUIDialogVideoSettings);      // window id = 123
+  m_gWindowManager.Add(new CGUIDialogVideoSettings);      // window id = 123, 124
+  m_gWindowManager.Add(new CGUIDialogVideoBookmarks);      // window id = 125
 
   m_gWindowManager.Add(new CGUIWindowMusicPlayList);          // window id = 500
   m_gWindowManager.Add(new CGUIWindowMusicSongs);             // window id = 501
