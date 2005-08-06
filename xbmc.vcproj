@@ -1667,6 +1667,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				RelativePath=".\xbmc\FileSystem\cdioSupport.cpp">
 			</File>
 			<File
+				RelativePath=".\xbmc\FileSystem\CurlInterface.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\FileSystem\CurlInterface.h">
+			</File>
+			<File
 				RelativePath=".\xbmc\FileSystem\DAAPDirectory.cpp">
 			</File>
 			<File
@@ -1698,6 +1704,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 			</File>
 			<File
 				RelativePath=".\xbmc\FileSystem\FileCDDA.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\FileSystem\FileCurl.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\FileSystem\FileCurl.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\FileSystem\FileDAAP.cpp">
