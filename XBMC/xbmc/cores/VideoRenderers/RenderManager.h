@@ -19,6 +19,7 @@ public:
   void RenderUpdate(bool clear) { if (!m_bChanging && m_pRenderer) m_pRenderer->RenderUpdate(clear); };
   void CheckScreenSaver() { if (!m_bChanging && m_pRenderer) m_pRenderer->CheckScreenSaver(); };
   void SetupScreenshot();
+  void CreateThumbnail(LPDIRECT3DSURFACE8 surface, unsigned int width, unsigned int height);
   void SetViewMode(int iViewMode) { if (!m_bChanging && m_pRenderer) m_pRenderer->SetViewMode(iViewMode); };
 
   // Functions called from mplayer

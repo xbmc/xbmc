@@ -105,3 +105,9 @@ void CXBoxRenderManager::SetupScreenshot()
   if (m_pRenderer)
     m_pRenderer->SetupScreenshot();
 }
+
+void CXBoxRenderManager::CreateThumbnail(LPDIRECT3DSURFACE8 surface, unsigned int width, unsigned int height)
+{
+  if (m_pRenderer)
+    m_pRenderer->CreateThumbnail(surface, width, height);
+}
