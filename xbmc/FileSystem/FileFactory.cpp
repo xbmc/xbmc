@@ -14,7 +14,7 @@
 #include "FileZip.h"
 #include "FileRar.h"
 #include "FileFTP.h"
-
+#include "FileCurl.h"
 
 using namespace XFILE;
 
@@ -25,6 +25,7 @@ CFileFactory::CFileFactory()
 CFileFactory::~CFileFactory()
 {
 }
+
 IFile* CFileFactory::CreateLoader(const CStdString& strFileName)
 {
   CURL url(strFileName);
@@ -44,5 +45,6 @@ IFile* CFileFactory::CreateLoader(const CStdString& strFileName)
   else if (strProtocol == "zip") return new CFileZip();
   else if (strProtocol == "rar") return new CFileRar();
   else if (strProtocol == "ftp") return new CFileFTP();
+//  else if (strProtocol == "ftp") return new CFileCurl();
   else return new CFileHD();
 }
