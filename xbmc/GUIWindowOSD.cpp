@@ -782,10 +782,11 @@ void CGUIWindowOSD::Handle_ControlSetting(DWORD iControlID, DWORD wID)
 
   case OSD_CREATEBOOKMARK:
     {
-      __int64 lPTS1 = g_application.m_pPlayer->GetTime();   // get the current playing time position
-
+      CBookmark bookmark;
+      bookmark.timeInSeconds = (int)(g_application.m_pPlayer->GetTime() / 1000);
+      bookmark.thumbNailImage.Empty();
       dbs.Open();             // open the bookmark d/b
-      dbs.AddBookMarkToMovie(strMovie, 0.001f * lPTS1);    // add the current timestamp
+      dbs.AddBookMarkToMovie(strMovie, bookmark);    // add the current timestamp
       dbs.Close();            // close the d/b
       PopulateBookmarks();          // refresh our list control
     }
@@ -804,7 +805,7 @@ void CGUIWindowOSD::Handle_ControlSetting(DWORD iControlID, DWORD wID)
         dbs.Close();           // close the d/b
         if (bookmarks.size() <= 0) return ;      // no bookmarks? leave if so ...
 
-        g_application.m_pPlayer->SeekTime((__int64)bookmarks[m_iCurrentBookmark]*1000); // set mplayers play position
+        g_application.m_pPlayer->SeekTime((__int64)bookmarks[m_iCurrentBookmark].timeInSeconds*1000); // set mplayers play position
         PopulateBookmarks();
       }
     }
@@ -880,7 +881,7 @@ void CGUIWindowOSD::PopulateBookmarks()
   for (int i = 0; i < (int)(bookmarks.size()); ++i)
   {
     CStdString strItem;
-    _int64 lPTS1 = (_int64)(10 * bookmarks[i]);
+    _int64 lPTS1 = (_int64)(10 * bookmarks[i].timeInSeconds);
     int hh = (int)(lPTS1 / 36000) % 100;
     int mm = (int)((lPTS1 / 600) % 60);
     int ss = (int)((lPTS1 / 10) % 60);

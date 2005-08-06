@@ -7,6 +7,7 @@ CGUIViewControl::CGUIViewControl(void)
 {
   m_viewAsControl = -1;
   m_parentWindow = WINDOW_INVALID;
+  m_fileItems = NULL;
   Reset();
 }
 
@@ -103,7 +104,7 @@ void CGUIViewControl::SetItems(CFileItemList &items)
 
 void CGUIViewControl::UpdateContents(const CGUIControl *control)
 {
-  if (!control) return;
+  if (!control || !m_fileItems) return;
   // reset the current view
   CGUIMessage msg1(GUI_MSG_LABEL_RESET, m_parentWindow, control->GetID(), 0, 0, NULL);
   g_graphicsContext.SendMessage(msg1);
@@ -140,7 +141,7 @@ void CGUIViewControl::UpdateView()
 
 int CGUIViewControl::GetSelectedItem(const CGUIControl *control)
 {
-  if (!control) return -1;
+  if (!control || !m_fileItems) return -1;
   CGUIMessage msg(GUI_MSG_ITEM_SELECTED, m_parentWindow, control->GetID(), 0, 0, NULL);
   g_graphicsContext.SendMessage(msg);
 
@@ -162,7 +163,7 @@ int CGUIViewControl::GetSelectedItem()
 
 void CGUIViewControl::SetSelectedItem(int item)
 {
-  if (item < 0 || item >= m_fileItems->Size())
+  if (!m_fileItems || item < 0 || item >= m_fileItems->Size())
     return;
 
   map_iter it = m_vecViews.find(m_currentView);
