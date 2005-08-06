@@ -467,8 +467,8 @@ bool CGUIDialogKeyboard::ShowAndGetNewPassword(CStdString& strNewPassword)
 int CGUIDialogKeyboard::ShowAndVerifyPassword(CStdString& strPassword, const CStdStringW& strHeading, int iRetries)
 {
   CStdStringW strHeadingTemp;
-  if (1 > iRetries)
-    strHeadingTemp.Format(L"%s - %s", strHeading.c_str(), g_localizeStrings.Get(12326));
+  if (1 > iRetries && strHeading.size())
+    strHeadingTemp = strHeading;
   else
     strHeadingTemp.Format(L"%s - %i %s", g_localizeStrings.Get(12326).c_str(), g_stSettings.m_iMasterLockMaxRetry - iRetries, g_localizeStrings.Get(12343).c_str());
 

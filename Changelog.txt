@@ -5,6 +5,9 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 06-08-2005 fixed: Many of the virtual keyboard inputs didn't show a heading.
+ - 06-08-2005 fixed: Video OSD could time out while in a submenu.
+ - 06-08-2005 changed: Settings spin controls wrap rather than change direction on start/end.
  - 06-08-2005 fixed: after turning off fieldsync in video osd, xbmc would often lockup.
  - 06-08-2005 added: New video OSD settings/bookmarks menus.
  - 05-08-2005 changed: Defaults to sort descending for rating, date, year + size.
