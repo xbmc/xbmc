@@ -445,6 +445,7 @@
   <string><id>513</id><value>Home Window</value></string>
   <string><id>514</id><value>Manual Settings</value></string>
   <string><id>515</id><value>Genre</value></string>
+  <string><id>516</id><value>Handle Archives</value></string>
 
   <string><id>600</id><value>Rip CD Audio</value></string>
   <string><id>601</id><value>Medium</value></string>
