@@ -177,7 +177,7 @@
       <posX>-245</posX>
       <posY>100</posY>
       <width>805</width>
-      <height>60</height>
+      <height>46</height>
       <texture>sub-background-label.png</texture>
     </control>
 
@@ -186,11 +186,11 @@
       <type>label</type>
       <id>3100</id>
       <posX>19</posX>
-      <posY>107</posY>
+      <posY>110</posY>
       <width>322</width>
-      <height>35</height>
+      <height>20</height>
       <align>center</align>
-      <font>font13</font>
+      <font>fontBL</font>
     </control>
 
   </controls>
