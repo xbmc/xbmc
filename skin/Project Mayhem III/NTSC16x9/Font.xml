@@ -51,6 +51,11 @@
       <filename>special-bold.xpr</filename>
     </font>
 
+    <font>
+      <name>fontBL</name>
+      <filename>common-font10.xpr</filename>
+    </font>
+
   </fontset>
 
   <fontset id="Arial TTF">
@@ -117,6 +122,13 @@
       <name>special13</name>
       <filename>Arial.ttf</filename>
       <size>16</size>
+      <style>bold</style>
+    </font>
+
+    <font>
+      <name>fontBL</name>
+      <filename>Arial.ttf</filename>
+      <size>13</size>
       <style>bold</style>
     </font>
 
