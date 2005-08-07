@@ -1,3 +1,5 @@
+2005-08-07 changed:	adde another font class for the shutdown menu (fontBL) because this certain label was hard to read in PAL
+
 2005-08-06 changed:	home background pictures now disabled on any media instead of just on video (to avoid viz stuttering)
 2005-08-06 added:	hidden functions for developers - press up/down on the shutdown menu to reload skin/restart the app
 2005-08-06 fixed:	media infos in fs visualisation could not be hidden in 16:9 mode
