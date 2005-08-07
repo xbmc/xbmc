@@ -486,8 +486,8 @@
   <string><id>703</id><value>Välj Ja för att uppdatera samtliga låtar.</value></string>
   <string><id>704</id><value>Välj Nej för att bara lägga till nya låtar.</value></string>
   <string><id>705</id><value>Nätverk</value></string>
-  <string><id>706</id><value>- HTTP proxy värd</value></string>
-  <string><id>707</id><value>- HTTP proxy port</value></string>
+  <string><id>706</id><value>HTTP proxy värd</value></string>
+  <string><id>707</id><value>HTTP proxy port</value></string>
   <string><id>708</id><value>Aktivera HTTP proxy</value></string>
   <string><id>709</id><value>XLink Kai XTag</value></string>
   <string><id>710</id><value>XLink Kai lösenord</value></string>
@@ -510,10 +510,10 @@
   <string><id>727</id><value>Webbserver</value></string>
   <string><id>728</id><value>FTP-server</value></string>
   <string><id>729</id><value>Tidsserver</value></string>
-  <string><id>730</id><value>- Webbserver port</value></string>
-  <string><id>731</id><value>- Tidserver</value></string>
+  <string><id>730</id><value>Webbserver port</value></string>
+  <string><id>731</id><value>Tidserver</value></string>
   <string><id>732</id><value>Spara &amp; ange</value></string>
-  <string><id>733</id><value>- Webbserver lösenord</value></string>
+  <string><id>733</id><value>Webbserver lösenord</value></string>
   <string><id>734</id><value>Inget lösenord</value></string>
   <string><id>735</id><value>- Teckenuppsättning</value></string>
   <string><id>736</id><value>- Stil</value></string>
@@ -596,8 +596,8 @@
   <string><id>1234</id><value>Program &amp; Bilder &amp; Musik</value></string>
   <string><id>1235</id><value>Program &amp; Bilder &amp; Film</value></string>
   
-  <string><id>1245</id><value> - FTP Användarnamn</value></string>
-  <string><id>1246</id><value> - FTP Lösenord</value></string>
+  <string><id>1245</id><value>FTP Användarnamn</value></string>
+  <string><id>1246</id><value>FTP Lösenord</value></string>
   <string><id>1247</id><value>FTP användare och lösenord sparade!</value></string>
 
   <string><id>1250</id><value>Autodetektera</value></string>
@@ -878,6 +878,7 @@
   <string><id>13395</id><value>Video inställningar</value></string>
   <string><id>13396</id><value>Ljud och Undertext inställningar</value></string>
   <string><id>13397</id><value>Aktivera undertexter</value></string>
+  <string><id>13398</id><value>Bokmärken</value></string>
   
   <string><id>14000</id><value>Stapling : Av</value></string>
   <string><id>14001</id><value>Stapling : På</value></string>
@@ -1098,6 +1099,16 @@
   <string><id>16006</id><value>Synkronisera interlacering</value></string>
   <string><id>16007</id><value>Omvända fält</value></string> 
   <string><id>16008</id><value>På</value></string>
+
+  <string><id>16009</id><value>Skriv in filmnamet</value></string>
+  <string><id>16010</id><value>Skriv in profilnamnet</value></string>
+  <string><id>16011</id><value>Skriv in Albumet</value></string>
+  <string><id>16012</id><value>Skriv in spelliste namn</value></string>
+  <string><id>16013</id><value>Skriv in nytt filnamn</value></string>
+  <string><id>16014</id><value>Skriv in nytt mappnamn</value></string>
+  <string><id>16015</id><value>Skriv in mapp</value></string>
+  <string><id>16016</id><value>Tillgängliga val: %A, %T, %N, %B, %D, %G, %Y, %F</value></string>
+  <string><id>16017</id><value>Skriv in sökord</value></string>
 </strings>
 
 
