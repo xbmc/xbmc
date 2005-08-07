@@ -577,14 +577,14 @@ void CGUIWindowVideoFiles::OnClick(int iItem)
     }
     Update(strPath);
   }
-  else if (pItem->IsZIP()) // mount zip archive
+  else if (pItem->IsZIP() && g_guiSettings.GetBool("VideoFiles.HandleArchives")) // mount zip archive
   {
     CShare shareZip;
     shareZip.strPath.Format("zip://Z:\\temp\\,%i,,%s,\\",1, pItem->m_strPath.c_str() );
     m_rootDir.AddShare(shareZip);
     Update(shareZip.strPath);
   }
-  else if (pItem->IsRAR()) // mount rar archive
+  else if (pItem->IsRAR() && g_guiSettings.GetBool("VideoFiles.HandleArchives")) // mount rar archive
   {
     CShare shareRar;
     shareRar.strPath.Format("rar://Z:\\temp\\,%i,,%s,\\",1, pItem->m_strPath.c_str() );

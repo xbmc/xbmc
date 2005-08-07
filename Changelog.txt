@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 07-08-2005 added: option to disable archive handling in media windows. useful for ccx+unrar.
  - 06-08-2005 fixed: Many of the virtual keyboard inputs didn't show a heading.
  - 06-08-2005 fixed: Video OSD could time out while in a submenu.
  - 06-08-2005 changed: Settings spin controls wrap rather than change direction on start/end.
