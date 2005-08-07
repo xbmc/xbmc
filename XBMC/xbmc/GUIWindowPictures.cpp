@@ -558,7 +558,7 @@ void CGUIWindowPictures::OnClick(int iItem)
     }
     Update(strPath);
   }
-  else if (pItem->IsZIP()) // mount zip archive
+  else if (pItem->IsZIP() && g_guiSettings.GetBool("Pictures.HandleArchives")) // mount zip archive
   {
     CShare shareZip;
     shareZip.strPath.Format("zip://Z:\\,%i,,%s,\\",1, pItem->m_strPath.c_str() );
@@ -567,7 +567,7 @@ void CGUIWindowPictures::OnClick(int iItem)
     m_iItemSelected = -1;
     Update(shareZip.strPath);
   }
-  else if (pItem->IsRAR()) // mount rar archive
+  else if (pItem->IsRAR() && g_guiSettings.GetBool("Pictures.HandleArchives")) // mount rar archive
   {
     CShare shareRar;
     shareRar.strPath.Format("rar://Z:\\,%i,,%s,\\",EXFILE_AUTODELETE, pItem->m_strPath.c_str() );
