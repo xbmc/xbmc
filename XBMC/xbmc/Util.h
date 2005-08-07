@@ -132,7 +132,7 @@ public:
 
   static void RemoveIllegalChars( CStdString& strText);
   static void CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionCached);
-  static bool CacheRarSubtitles(CStdString& strExtensionCached, const CStdString& strRarPath, const char * const* pSubExts  );
+  static bool CacheRarSubtitles(std::vector<CStdString>& vecExtensionsCached, const CStdString& strRarPath, const char * const* pSubExts  );
   static void ClearSubtitles();
   static void SecondsToHMSString( long lSeconds, CStdString& strHMS, bool bMustUseHHMMSS = false);
   static void PrepareSubtitleFonts();
