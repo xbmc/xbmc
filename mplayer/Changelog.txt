@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 07-08-2005 updated codec.conf [ 1252569 ]
   - 06-08-2005 fixed: OGG files often crashed on exit or failed on open. Updated demux_ogg from mplayerhq cvs.
   - 25-06-2005 added: better way to detect if an mpeg sequence is progressive or not
   - 25-06-2005 fixed: made sure mplayer begins with uniting the caching thread, so as later crashes won't let that keep running
