@@ -473,7 +473,6 @@
       <titlecolor>ffD2FF00</titlecolor>
       <headlinecolor>DDced8da</headlinecolor>
       <textcolor>ffD2FF00</textcolor>
-      <visible effect="fade" time="1000">!Player.HasMedia</visible>
     </control>
 
     <control>
