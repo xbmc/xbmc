@@ -35,7 +35,7 @@
 #include "version.h"
 
 
-#define XBFILEZILLA_VERSION "1.5.5"
+#define XBFILEZILLA_VERSION "1.5.6"
 #define FILEZILLA_VERSION "0.8.8"
 
 CStdString GetVersionString()

@@ -2200,11 +2200,21 @@ void CControlSocket::ParseCommand()
         {
           CStdString strHelp;
           CUtil::GetBuiltInHelp(strHelp);
-          Send(_T("200-FTP SITE HELP"));
+          Send(_T("200 FTP SITE HELP"));
           int iReturn = strHelp.Find("\n");
           while (iReturn >= 0)
           {
             CStdString helpline = "  " + strHelp.Left(iReturn);
+
+            // replace tab with spaces (tab position = 30)
+            //   because ftp command line (at least on windows) does 
+            //   not show tabs well.
+            int iTabPos = helpline.Find("\t");
+            if (iTabPos >= 0)
+            {
+              helpline = helpline.Left(iTabPos) + CStdString(30 - iTabPos, ' ') + helpline.Mid(iTabPos + 1);
+            }
+            
             Send(_T(helpline.c_str()));
             strHelp = strHelp.Mid(iReturn + 1);
             iReturn = strHelp.Find("\n");
