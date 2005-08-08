@@ -233,6 +233,7 @@ extern "C" void* dll_fwrite();
 extern "C" void* _stat();
 extern "C" void* dll_findnext();
 extern "C" void* fsetpos();
+extern "C" void* _strtoi64();
 
 // tracker functions
 extern "C" void* track_close();
@@ -624,6 +625,9 @@ void export_msvcr71()
   g_dlls.msvcr71.AddExport("_purecall", (unsigned long)_purecall);
   g_dlls.msvcr71.AddExport("isalnum", (unsigned long)isalnum);
   g_dlls.msvcr71.AddExport("isspace", (unsigned long)isspace);
+  g_dlls.msvcr71.AddExport("_stati64", (unsigned long)dll_stati64);
+  g_dlls.msvcr71.AddExport("_fstati64", (unsigned long)dll_fstati64);
+  g_dlls.msvcr71.AddExport("_strtoi64", (unsigned long)_strtoi64);
 }
 
 void export_pncrt()

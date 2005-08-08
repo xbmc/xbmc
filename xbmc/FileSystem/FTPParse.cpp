@@ -315,7 +315,14 @@ int ftpparse(struct ftpparse *fp,char *buf,int len)
                 fp->name += 3;
                 fp->namelen -= 3;
               }
-
+      
+      // remove white spaces of file name
+      while (fp->name && fp->name[0] == ' ')
+      {
+        fp->name++;
+        fp->namelen--;
+      }
+      
       return 1;
   }
 
