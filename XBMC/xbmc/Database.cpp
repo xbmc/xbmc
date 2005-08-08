@@ -163,7 +163,7 @@ bool CDatabase::Compress()
   {
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
-    if (!m_pDS->exec("vacuum"))
+    if (!m_pDS->exec("vacuum\n"))
       return false;
   }
   catch (...)
@@ -234,14 +234,14 @@ bool CDatabase::CreateTables()
     //  the page size of the database file to 16k. 
     //  This needs to be done before any table is created.
     CLog::Log(LOGINFO, "Set page size");
-    m_pDS->exec("PRAGMA page_size=16384");
+    m_pDS->exec("PRAGMA page_size=16384\n");
     //  Also set the memory cache size to 16k
     CLog::Log(LOGINFO, "Set default cache size");
-    m_pDS->exec("PRAGMA default_cache_size=16384");
+    m_pDS->exec("PRAGMA default_cache_size=16384\n");
 
     CLog::Log(LOGINFO, "creating version table");
     m_pDS->exec("CREATE TABLE version (idVersion float)\n");
-    CStdString strSQL=FormatSQL("INSERT INTO version (idVersion) values(%f)", m_fVersion);
+    CStdString strSQL=FormatSQL("INSERT INTO version (idVersion) values(%f)\n", m_fVersion);
     m_pDS->exec(strSQL.c_str());
 
     return true;
@@ -256,7 +256,7 @@ bool CDatabase::UpdateVersionNumber()
 {
   try
   {
-    CStdString strSQL=FormatSQL("UPDATE version SET idVersion=%f", m_fVersion);
+    CStdString strSQL=FormatSQL("UPDATE version SET idVersion=%f\n", m_fVersion);
     m_pDS->exec(strSQL.c_str());
   }
   catch(...)
