@@ -68,6 +68,7 @@ CSettings::CSettings(void)
   strcpy( g_stSettings.m_szCDDBIpAdres, "");
   strcpy( g_stSettings.m_szIMDBurl, "");
   strcpy (g_stSettings.m_szMusicRecordingDirectory, "");
+  strcpy(g_stSettings.m_szCacheDirectory,"Z:\\");
 
   g_stSettings.m_bMyMusicSongInfoInVis = true;    // UNUSED - depreciated.
   g_stSettings.m_bMyMusicSongThumbInVis = false;  // used for music info in vis screen
@@ -298,6 +299,7 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
 
   GetString(pRootElement, "albums", g_stSettings.m_szAlbumDirectory, "");
   GetString(pRootElement, "subtitles", g_stSettings.m_szAlternateSubtitleDirectory, "");
+  GetString(pRootElement, "cachepath", g_stSettings.m_szCacheDirectory,"Z:\\");
 
   GetString(pRootElement, "pictureextensions", g_stSettings.m_szMyPicturesExtensions, ".bmp|.jpg|.png|.gif|.pcx|.tif|.jpeg");
 
@@ -402,6 +404,11 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
   strDir = g_stSettings.m_szScreenshotsDirectory;
   ConvertHomeVar(strDir);
   strcpy( g_stSettings.m_szScreenshotsDirectory, strDir.c_str() );
+  
+  strDir = g_stSettings.m_szCacheDirectory;
+  ConvertHomeVar(strDir);
+  strcpy( g_stSettings.m_szScreenshotsDirectory, strDir.c_str() );
+
   while ( CUtil::HasSlashAtEnd(g_stSettings.m_szScreenshotsDirectory) )
   {
     g_stSettings.m_szScreenshotsDirectory[strlen(g_stSettings.m_szScreenshotsDirectory) - 1] = 0;
