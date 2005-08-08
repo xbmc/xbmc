@@ -247,6 +247,7 @@ public:
     char m_szShortcutDirectory[256];
     char m_szAlbumDirectory[256];
     char m_szScreenshotsDirectory[256];
+    char m_szCacheDirectory[256];
 
     bool m_bMyFilesSourceViewAsIcons;
     bool m_bMyFilesSourceRootViewAsIcons;
