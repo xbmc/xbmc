@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 07-08-2005 fixed: Database creation failed
  - 07-08-2005 fixed: finally fixed long filename+vobsubs. never code'n'smoke ;)
  - 07-08-2005 added: option to disable archive handling in media windows. useful for ccx+unrar.
  - 06-08-2005 fixed: Many of the virtual keyboard inputs didn't show a heading.
