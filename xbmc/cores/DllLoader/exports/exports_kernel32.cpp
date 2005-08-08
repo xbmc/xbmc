@@ -18,6 +18,7 @@ void export_kernel32()
   g_dlls.kernel32.AddExport("GetLastError", (unsigned long)GetLastError);
   g_dlls.kernel32.AddExport("SetUnhandledExceptionFilter", (unsigned long)dllSetUnhandledExceptionFilter);
   g_dlls.kernel32.AddExport("Sleep", (unsigned long)dllSleep);
+  g_dlls.kernel32.AddExport("SleepEx", (unsigned long)SleepEx);
   g_dlls.kernel32.AddExport("TerminateThread", (unsigned long)dllTerminateThread);
   g_dlls.kernel32.AddExport("GetCurrentThread", (unsigned long)dllGetCurrentThread);
   g_dlls.kernel32.AddExport("QueryPerformanceCounter", (unsigned long)QueryPerformanceCounter);
@@ -153,4 +154,5 @@ void export_kernel32()
   g_dlls.kernel32.AddExport("GetConsoleCP", (unsigned long)dllGetConsoleCP);
   g_dlls.kernel32.AddExport("GetConsoleOutputCP", (unsigned long)dllGetConsoleOutputCP);
   g_dlls.kernel32.AddExport("SetConsoleCtrlHandler", (unsigned long)dllSetConsoleCtrlHandler);
+  g_dlls.kernel32.AddExport("GetExitCodeThread", (unsigned long)GetExitCodeThread);
 }

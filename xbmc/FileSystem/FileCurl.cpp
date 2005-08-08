@@ -9,6 +9,7 @@
 // need to debug this and find out why it no longer works.
 
 // JM added to CVS 6 Aug 2005 so that others could develop this further.
+// darkie: seemed to be a problem with ftp directory parsing and some missing exports
 
 /* curl calls this routine to debug */
 
@@ -22,7 +23,7 @@ extern "C" int debug_callback(CURL_HANDLE *handle, curl_infotype info, char *out
   CStdString strOut = pOut;
   delete[] pOut;
   strOut.TrimRight("\r\n");
-//  CLog::Log(LOGDEBUG, "Curl:: Debug %s", strOut.c_str());
+  CLog::Log(LOGDEBUG, "Curl:: Debug %s", strOut.c_str());
   return 0;
 }
 
