@@ -202,13 +202,13 @@ int CDVDPlayerAudio::DecodeFrame(BYTE** pAudioBuffer)
     audio_pkt_size = pPacket->iSize;
 
     // if update the audio clock with the pts
-    if (dvdstate == DVDSTATE_RESYNC || first_pkt_pts > pPacket->pts)
+    if ((dvdstate & DVDPACKET_MESSAGE_RESYNC) || first_pkt_pts > pPacket->pts)
     {
       //Okey first packet in this continous stream,
       //Setup clock, and then exit so we player can sync clock
       m_audioClock = pPacket->pts;
       m_pAudioCodec->Reset();
-      return 0;
+      return 0; // should we return here??? not continue?
     }
     else if (pPacket->pts != DVD_NOPTS_VALUE)
     {

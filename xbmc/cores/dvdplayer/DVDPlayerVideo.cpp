@@ -32,10 +32,12 @@ CDVDPlayerVideo::CDVDPlayerVideo(CDVDDemuxSPU* spu, CDVDClock* pClock) : CThread
   m_bRenderSubs = false;
   m_iVideoDelay = 0;
   m_fForcedAspectRatio = 0;
-  
+  m_iNrOfPicturesNotToSkip = 0;
   InitializeCriticalSection(&m_critCodecSection);
   m_packetQueue.SetMaxSize(5 * 256 * 1024); // 1310720
 
+  m_iDroppedFrames = 0;
+  
   // create sections and event for thread sync (should be destroyed at video stop)
   InitializeCriticalSection(&m_critSection);
   m_hEvent = CreateEvent(NULL, false, false, "dvd picture queue event");
@@ -122,6 +124,8 @@ void CDVDPlayerVideo::OnStartup()
   pictq_size = 0;
   pictq_rindex = 0;
   pictq_windex = 0;
+  
+  m_iDroppedFrames = 0;
 }
 
 void CDVDPlayerVideo::Process()
@@ -148,10 +152,18 @@ void CDVDPlayerVideo::Process()
 
     if (m_packetQueue.Get(&pPacket, 1, (void**)&dvdstate) < 0) break;
 
-    if (dvdstate == DVDSTATE_RESYNC)
+    if (dvdstate & DVDPACKET_MESSAGE_RESYNC)
     {
       //Discontinuity found..
       //Audio side normally handles discontinuities so don't do anything here.
+    }
+    if (dvdstate & DVDPACKET_MESSAGE_NOSKIP)
+    {
+      // libmpeg2 is also returning incomplete frames after a dvd cell change
+      // so the first few pictures are not the coreect ones to display in some cases
+      // just display those together with the correct one.
+      // (setting it to 2 will skip some menu stills, 5 is working ok for me).
+      m_iNrOfPicturesNotToSkip = 5;
     }
 
     EnterCriticalSection(&m_critCodecSection);
@@ -181,16 +193,25 @@ void CDVDPlayerVideo::Process()
             }
           }
 
+          if (m_iNrOfPicturesNotToSkip > 0)
+          {
+            picture.iFlags |= DVP_FLAG_NOSKIP;
+            m_iNrOfPicturesNotToSkip--;
+          }
+          
           //Deinterlace if codec said format was interlaced or if we have selected we want to deinterlace
           //this video
-          
-          if( (g_stSettings.m_currentVideoSettings.m_FieldSync == VS_FIELDSYNC_OFF && picture.iFlags & DVP_FLAGS_INTERLACED)
+
+          // software deinterlacing takes about 40% cpu power, so we don't enable it.
+          // and we have hardware deinterlacing now.
+          /*
+          if( (g_stSettings.m_currentVideoSettings.m_FieldSync == VS_FIELDSYNC_OFF && picture.iFlags & DVP_FLAG_INTERLACED)
               || g_stSettings.m_currentVideoSettings.m_Deinterlace )
           {
             mDeinterlace.Process(&picture);
             mDeinterlace.GetPicture(&picture);
           }
-          
+          */
 
           if ((picture.iFrameType == FRAME_TYPE_I || picture.iFrameType == FRAME_TYPE_UNDEF) &&
               pPacket->dts != DVD_NOPTS_VALUE) //Only use pts when we have an I frame, or unknown
@@ -410,6 +431,7 @@ void CDVDPlayerVideo::UpdateMenuPicture()
     EnterCriticalSection(&m_critCodecSection);
     if (m_pVideoCodec->GetPicture(&picture))
     {
+      picture.iFlags |= DVP_FLAG_NOSKIP;
       OutputPicture(&picture, 0);
     }
     LeaveCriticalSection(&m_critCodecSection);
@@ -471,9 +493,9 @@ DWORD video_refresh_thread(void *arg)
       // dequeue the picture
       vp = &pDVDPlayerVideo->pictq[pDVDPlayerVideo->pictq_rindex];
 
-      if( vp->iFlags & DVP_FLAGS_INTERLACED && !g_stSettings.m_currentVideoSettings.m_Deinterlace )
+      if( vp->iFlags & DVP_FLAG_INTERLACED && !g_stSettings.m_currentVideoSettings.m_Deinterlace )
       {
-        if( vp->iFlags & DVP_FLAGS_TOP_FIELD_FIRST )
+        if( vp->iFlags & DVP_FLAG_TOP_FIELD_FIRST )
           g_renderManager.SetFieldSync(FS_ODD);
         else
           g_renderManager.SetFieldSync(FS_EVEN);
@@ -509,8 +531,9 @@ DWORD video_refresh_thread(void *arg)
       // we expect the video device to be initialized here
       // skip this flip should we be later than a full frame
       iTimeStamp = frameclock.GetClock();
-      // this won't work in dvd menu's lots of still and pictures are scipped this way
-      //if( iSleepTime > -(int)vp->iDuration ) 
+      
+      // menu pictures should never be skipped!
+      if ((vp->iFlags & DVP_FLAG_NOSKIP) || iSleepTime > -(int)vp->iDuration) 
       {
         g_renderManager.FlipPage();
       
@@ -531,7 +554,10 @@ DWORD video_refresh_thread(void *arg)
         else if( iFrameTimeError < -(int)vp->iDuration  )
           iFrameTimeError = -(int)vp->iDuration;
       }
-
+      else
+      {
+        pDVDPlayerVideo->m_iDroppedFrames++;
+      }
 
       // update queue size and signal for next picture
       if (++pDVDPlayerVideo->pictq_rindex == VIDEO_PICTURE_QUEUE_SIZE) pDVDPlayerVideo->pictq_rindex = 0;
@@ -540,7 +566,6 @@ DWORD video_refresh_thread(void *arg)
       pDVDPlayerVideo->pictq_size--;
       SetEvent(pDVDPlayerVideo->m_hEvent);
       LeaveCriticalSection(&pDVDPlayerVideo->m_critSection);
-
     }
   }
   CLog::Log(LOGNOTICE, "thread end: video_refresh_thread");
