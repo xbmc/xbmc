@@ -19,6 +19,9 @@ extern "C"
 #define NAVRESULT_SKIPPED_STILL     0x00000002
 #define NAVRESULT_STILL_NOT_SKIPPED 0x00000004
 
+#define LIBDVDNAV_BUTTON_NORMAL 0
+#define LIBDVDNAV_BUTTON_CLICKED 1
+
 class DllLoader;
 class CDVDDemuxSPU;
 struct SPUInfo;
@@ -63,8 +66,9 @@ public:
 
   int GetCurrentButton();
   int GetTotalButtons();
-  bool GetHighLightArea(int* iXStart, int* iXEnd, int* iYStart, int* iYEnd, int iButton);
-  bool GetButtonInfo(struct DVDOverlayPicture* pOverlayPicture, CDVDDemuxSPU* pSPU);
+  
+  bool GetButtonInfo(struct DVDOverlayPicture* pOverlayPicture, CDVDDemuxSPU* pSPU, int iButton, int iButtonType /* 0 = selection, 1 = action (clicked)*/);
+  
   bool IsInMenu();
 
   int GetActiveSubtitleStream();
