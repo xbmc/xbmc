@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 09-08-2005 added: %S to the music track naming template to display the "Part of Set" identifier (aka Disc #)
  - 08-08-2005 added: ability to specify cache path (currently only used for compressed rar files) in xboxmediacenter.xml.
  - 08-08-2005 fixed: ftp directory listing contained a bug that resulted in an extra white space in the file name (at least with filezilla)
  - 07-08-2005 fixed: Database creation failed

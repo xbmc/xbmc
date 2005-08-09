@@ -1484,8 +1484,13 @@ CStdString CGUIWindowMusicBase::ParseFormat(CFileItem *pItem, const CStdString& 
     }
     CStdString str;
     if (strFormat[iPos2 + 1] == 'N' && tag.GetTrackNumber() > 0)
-    { // number
+    { // track number
       str.Format("%02.2i", tag.GetTrackNumber());
+      bDoneSomething = true;
+    }
+    else if (strFormat[iPos2 + 1] == 'S' && tag.GetDiscNumber() > 0)
+    { // disc number
+      str.Format("%02.2i", tag.GetDiscNumber());
       bDoneSomething = true;
     }
     else if (strFormat[iPos2 + 1] == 'A' && tag.GetArtist().size())

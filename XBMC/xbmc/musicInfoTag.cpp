@@ -57,6 +57,11 @@ int CMusicInfoTag::GetTrackNumber() const
   return (m_iTrack & 0xffff);
 }
 
+int CMusicInfoTag::GetDiscNumber() const
+{
+  return (m_iTrack >> 16);
+}
+
 int CMusicInfoTag::GetTrackAndDiskNumber() const
 {
   return m_iTrack;
