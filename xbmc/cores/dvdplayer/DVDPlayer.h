@@ -22,7 +22,10 @@ class CDemuxStreamAudio;
 
 #define DVDSTATE_NORMAL 0x00000001 // normal dvd state
 #define DVDSTATE_STILL  0x00000002 // currently displaying a still frame
-#define DVDSTATE_RESYNC 0x00000004 // will be set in a packet to signal that we have an discontinuity
+
+#define DVDPACKET_MESSAGE_RESYNC 0x00000001 // will be set in a packet to signal that we have an discontinuity
+#define DVDPACKET_MESSAGE_STILL  0x00000002
+#define DVDPACKET_MESSAGE_NOSKIP 0x00000004
 
 typedef struct DVDInfo
 {
@@ -146,7 +149,7 @@ public:
   CDVDPlayerMessenger m_messenger;
   CDVDClock m_clock;
 
-protected:
+private:
   void Unload();
   bool Load();
   virtual void OnStartup();
@@ -168,5 +171,7 @@ protected:
 
   bool m_bReadData;
   bool m_bRenderSubtitle;
+  
+  bool m_bDontSkipNextFrame;
   CRITICAL_SECTION m_critStreamSection; // need to have this lock when switching streams (audio / video)
 };

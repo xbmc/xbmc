@@ -27,9 +27,6 @@
 #include "..\..\util.h"
 #include "../../utils/GUIInfoManager.h"
 
-
-#define RINT(x) ((x) >= 0 ? ((int)((x) + 0.5)) : ((int)((x) - 0.5)))
-
 CDVDPlayer::CDVDPlayer(IPlayerCallback& callback)
     : IPlayer(callback), CThread(), m_dvdPlayerVideo(&m_dvdspus, &m_clock), m_dvdPlayerAudio(&m_clock)
 {
@@ -56,6 +53,7 @@ CDVDPlayer::CDVDPlayer(IPlayerCallback& callback)
   m_iCurrentAudioStream = 0;
   m_iCurrentPhysicalAudioStream = -1;
   m_bRenderSubtitle = false;
+  m_bDontSkipNextFrame = false;
 }
 
 CDVDPlayer::~CDVDPlayer()
@@ -213,7 +211,7 @@ void CDVDPlayer::Process()
   {
     CLog::Log(LOGERROR, "InputStream: Error opening, %s", m_filename);
     // inputstream will be destroyed in OnExit()
-    return ;
+    return;
   }
   if (m_pInputStream->m_streamType == DVDSTREAM_TYPE_DVD) CLog::Log(LOGNOTICE, "DVDPlayer: playing a dvd with menu's");
 
@@ -223,7 +221,7 @@ void CDVDPlayer::Process()
   {
     CLog::Log(LOGERROR, "Demuxer: Error opening, demuxer");
     // inputstream and the demuxer will be destroyed in OnExit()
-    return ;
+    return;
   }
 
   // find first audio / video streams
@@ -286,9 +284,10 @@ void CDVDPlayer::Process()
         // notify the video decoder we recieved a still frame by sending an empty packet
         // bug!, we need todo this cause av_read_frame doesn't seem to send all data needed for the picture
         // maybe this can be fixed by writing the av_read_frame function ourself?
+        //m_dvdPlayerVideo.DontSkipNextPicture();
         if (!pPacket) pPacket = CDVDDemuxUtils::AllocateDemuxPacket();
         //m_dvdPlayerVideo.m_pVideoCodec->Flush();
-        m_dvdPlayerVideo.m_packetQueue.Put(pPacket, (void*)DVDSTATE_STILL);
+        m_dvdPlayerVideo.m_packetQueue.Put(pPacket, (void*)(DVDPACKET_MESSAGE_STILL & DVDPACKET_MESSAGE_NOSKIP));
         m_dvd.bDisplayedStill = true;
       }
       else if (pPacket) CDVDDemuxUtils::FreeDemuxPacket(pPacket);
@@ -298,7 +297,7 @@ void CDVDPlayer::Process()
     {
       CLog::Log(LOGERROR, "Error reading data form demuxer");
       
-      if (++iErrorCounter < 100) //Allow 100 errors in a row before giving up
+      if (++iErrorCounter < 50) //Allow 50 errors in a row before giving up
         continue;
       else
         break;
@@ -325,6 +324,19 @@ void CDVDPlayer::Process()
       LockStreams();
 
       CDemuxStream* pStream = m_pDemuxer->GetStream(pPacket->iStreamId);
+      
+      int iPacketMessage = 0;
+      
+      // For some reason this isn't always found.. not sure why exactly. what should be used?? pts or dts???
+      // darkie: pts should be used, but with ffmpeg the movie is much smoother when using dts.
+      int bResync = (!(m_dvd.iFlagSentStart & 1) && pPacket->pts > m_dvd.iNAVPackStart && pPacket->pts < m_dvd.iNAVPackFinish);
+      if (bResync) iPacketMessage |= DVDPACKET_MESSAGE_RESYNC;
+      if (m_bDontSkipNextFrame)
+      {
+        iPacketMessage |= DVDPACKET_MESSAGE_NOSKIP;
+        m_bDontSkipNextFrame = false;
+      }
+      
       if (pPacket->iStreamId == m_iCurrentAudioStream ||
           (m_iCurrentAudioStream < 0 && pStream->type == STREAM_AUDIO))
       {
@@ -341,12 +353,8 @@ void CDVDPlayer::Process()
 
         if (m_iCurrentAudioStream >= 0)
         {
-          if (!(m_dvd.iFlagSentStart & 1) && pPacket->pts > m_dvd.iNAVPackStart && pPacket->pts < m_dvd.iNAVPackFinish)
-          {
-            m_dvdPlayerAudio.m_packetQueue.Put(pPacket, (void*)DVDSTATE_RESYNC);
-            m_dvd.iFlagSentStart |= 1;
-          }
-          else m_dvdPlayerAudio.m_packetQueue.Put(pPacket);
+          m_dvdPlayerAudio.m_packetQueue.Put(pPacket, (void*)iPacketMessage);
+          if (bResync) m_dvd.iFlagSentStart |= 1;
         }
         else CDVDDemuxUtils::FreeDemuxPacket(pPacket);
       }
@@ -358,13 +366,8 @@ void CDVDPlayer::Process()
 
         if (m_iCurrentVideoStream >= 0)
         {
-          if (!(m_dvd.iFlagSentStart & 2) && pPacket->pts > m_dvd.iNAVPackStart && pPacket->pts < m_dvd.iNAVPackFinish)
-          {
-            //For some reason this isn't always found.. not sure why exactly. what should be used?? pts or dts???
-            m_dvdPlayerVideo.m_packetQueue.Put(pPacket, (void*)DVDSTATE_RESYNC);
-            m_dvd.iFlagSentStart |= 2;
-          }
-          else m_dvdPlayerVideo.m_packetQueue.Put(pPacket);
+          m_dvdPlayerVideo.m_packetQueue.Put(pPacket, (void*)iPacketMessage);
+          if (bResync) m_dvd.iFlagSentStart |= 2;
         }
         else CDVDDemuxUtils::FreeDemuxPacket(pPacket);
       }
@@ -404,14 +407,11 @@ void CDVDPlayer::ProcessSubData(CDVDDemux::DemuxPacket* pPacket)
 
     m_dvdPlayerVideo.m_overlay.Add(pOverlayPicture);
 
-    // JM hack (commented out m_dvd.state == DVDSTATE_STILL)
-    // It's no hack, the timeing of the highlight will be handled by the SPU package
-    if (pSPUInfo->bForced /*&& m_dvd.state == DVDSTATE_STILL*/)
+    if (pSPUInfo->bForced)
     {
       // recieved new menu overlay (button), update the screen when displaying a still
       OnDVDNavResult(NULL, DVDNAV_HIGHLIGHT); // hack
     }
-    // end JM hack
 
     delete pSPUInfo;
   }
@@ -482,8 +482,10 @@ void CDVDPlayer::HandleMessages()
             // need to get the seek based on file positition working in CDVDInputStreamNavigator
             // so that demuxers can control the stream (seeking in this case)
             // for now use time based seeking
+            CLog::Log(LOGDEBUG, "CDVDInputStreamNavigator seek to: %d", pMessage->iValue);
             if (((CDVDInputStreamNavigator*)m_pInputStream)->Seek(pMessage->iValue))
             {
+              CLog::Log(LOGDEBUG, "CDVDInputStreamNavigator seek to: %d, succes", pMessage->iValue);
               FlushBuffers();
               // can't do this this way, because our streampointers (m_pCurrentDemuxStreamAudio and Video)
               // will get invalid
@@ -503,8 +505,10 @@ void CDVDPlayer::HandleMessages()
         }
         else
         {
+          CLog::Log(LOGDEBUG, "demuxer seek to: %d", pMessage->iValue);
           if (m_pDemuxer->Seek(pMessage->iValue)) 
           {
+            CLog::Log(LOGDEBUG, "demuxer seek to: %d, succes", pMessage->iValue);
             FlushBuffers();
           }
           else CLog::Log(LOGWARNING, "error while seeking");
@@ -685,7 +689,9 @@ void CDVDPlayer::GetGeneralInfo(CStdString& strGeneralInfo)
   {
     double dDelay = (double)m_dvdPlayerVideo.GetDelay() / DVD_TIME_BASE;
     double dDiff = (double)m_dvdPlayerVideo.GetDiff() / DVD_TIME_BASE;
-    sprintf(ginftemp, "DVD Player ad:%6.3f, diff:%6.3f", dDelay, dDiff);
+    int iFramesDropped = m_dvdPlayerVideo.GetNrOfDroppedFrames();
+    
+    sprintf(ginftemp, "DVD Player ad:%6.3f, diff:%6.3f, dropped:%d", dDelay, dDiff, iFramesDropped);
     strGeneralInfo = ginftemp;
   }
 }
@@ -958,9 +964,11 @@ int CDVDPlayer::GetTotalTime()
 
 void CDVDPlayer::ToFFRW(int iSpeed)
 {
+/*
   if (iSpeed != 1) m_dvdPlayerAudio.Pause();
   else m_dvdPlayerAudio.Resume();
   m_iSpeed = iSpeed;
+*/
 }
 
 void CDVDPlayer::ShowOSD(bool bOnoff)
@@ -1209,16 +1217,8 @@ int CDVDPlayer::OnDVDNavResult(void* pData, int iMessage)
         //It's the last packet recieved that is of interest currently
         while( pOverlayPicture->pNext ) pOverlayPicture = pOverlayPicture->pNext;
 
-        pStream->GetButtonInfo(pOverlayPicture, &m_dvdspus);
-      }
-
-      if (pStream->GetHighLightArea(&m_dvdPlayerVideo.m_overlay.button_i_x_start, &m_dvdPlayerVideo.m_overlay.button_i_x_end,
-                                    &m_dvdPlayerVideo.m_overlay.button_i_y_start, &m_dvdPlayerVideo.m_overlay.button_i_y_end, iButton))
-      {
-        // need to update the display, so display the last known picture here
-        // only needed if we are in a still, and when we have something else pts need to be
-        // adjusted before we are allowed to update menupicture (first highlight)
-        // Allways output this here.
+        pStream->GetButtonInfo(pOverlayPicture, &m_dvdspus, iButton, LIBDVDNAV_BUTTON_NORMAL);
+        
         if ( pStream->IsInMenu() ) //  && m_dvd.state == DVDSTATE_STILL)
         {
           m_dvdPlayerVideo.UpdateMenuPicture();
@@ -1255,6 +1255,11 @@ int CDVDPlayer::OnDVDNavResult(void* pData, int iMessage)
       }
       
       m_dvd.state = DVDSTATE_NORMAL;
+      
+      // it could be a menu picture arrives after the cell change
+      // that shouldn't be skipped by the renderer.
+      //m_dvdPlayerVideo.DontSkipNextPicture();
+      m_bDontSkipNextFrame = true;
     }
     break;
   case DVDNAV_NAV_PACKET:
@@ -1373,7 +1378,26 @@ bool CDVDPlayer::OnAction(const CAction &action)
         {
           CLog::DebugLog(" - button select");
 
-          // todo, when in menu show the button pushed overlay
+          // show button pushed overlay
+          
+          DVDOverlayPicture* pOverlayPicture = m_dvdPlayerVideo.m_overlay.Get();
+          if (pOverlayPicture)
+          {
+            //It's the last packet recieved that is of interest currently
+            while (pOverlayPicture->pNext) pOverlayPicture = pOverlayPicture->pNext;
+            
+            // make sure its a forced (menu) overlay
+            if (pOverlayPicture->bForced)
+            {
+              int iButton = pStream->GetCurrentButton();
+              pStream->GetButtonInfo(pOverlayPicture, &m_dvdspus, iButton, LIBDVDNAV_BUTTON_CLICKED);
+
+              if (pStream->IsInMenu())
+              {
+                m_dvdPlayerVideo.UpdateMenuPicture();
+              }
+            }
+          }
 
           m_dvd.iSelectedSPUStream = -1;
 
