@@ -29,7 +29,7 @@ public:
 
   void Update(bool bPauseDrawing); // called form xbmc
   void UpdateMenuPicture();
-  
+ 
   void GetVideoRect(RECT& SrcRect, RECT& DestRect);
   float GetAspectRatio();
 
@@ -39,7 +39,7 @@ public:
   __int64 GetDelay();
     void SetDelay(__int64 delay);
   __int64 GetDiff();
-
+  int GetNrOfDroppedFrames() { return m_iDroppedFrames; }
 
   bool InitializedOutputDevice();
   CDVDPacketQueue m_packetQueue;
@@ -59,7 +59,11 @@ public:
 
   int m_iSpeed;
   bool m_bRenderSubs;
+  int m_iNrOfPicturesNotToSkip;
   __int64 m_iVideoDelay;
+  
+  int m_iDroppedFrames;
+  
   CDVDVideoCodec* m_pVideoCodec;
   
 protected:  

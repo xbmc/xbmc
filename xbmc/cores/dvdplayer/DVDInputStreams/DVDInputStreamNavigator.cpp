@@ -645,45 +645,36 @@ int CDVDInputStreamNavigator::GetAudioStreamCount()
   return dvdnav_get_nr_of_audio_streams(m_dvdnav);
 }
 
-bool CDVDInputStreamNavigator::GetHighLightArea(int* iXStart, int* iXEnd, int* iYStart, int* iYEnd, int iButton)
-{
-  dvdnav_highlight_area_t hl;
-  int iCurrentButton = 0;
-
-  if (!m_dvdnav) return false;
-
-  if (DVDNAV_STATUS_OK == dvdnav_get_highlight_area(dvdnav_get_current_nav_pci(m_dvdnav), iButton, 0 /*mode? spu stream?*/, &hl))
-  {
-    // button cropping information
-    *iXStart = hl.sx;
-    *iXEnd = hl.ex;
-    *iYStart = hl.sy;
-    *iYEnd = hl.ey;
-    return true;
-  }
-
-  return false;
-}
-
-bool CDVDInputStreamNavigator::GetButtonInfo(DVDOverlayPicture* pOverlayPicture, CDVDDemuxSPU* pSPU)
+bool CDVDInputStreamNavigator::GetButtonInfo(struct DVDOverlayPicture* pOverlayPicture, CDVDDemuxSPU* pSPU, int iButton, int iButtonType)
 {
   int alpha[2][4];
   int color[2][4];
+  dvdnav_highlight_area_t hl;
+  
+  if (!m_dvdnav) return false;
+  
+  if (dvdnav_get_button_info(m_dvdnav, alpha, color) == 0)
+  {
+    pOverlayPicture->alpha[0] = alpha[iButtonType][0];
+    pOverlayPicture->alpha[1] = alpha[iButtonType][1];
+    pOverlayPicture->alpha[2] = alpha[iButtonType][2];
+    pOverlayPicture->alpha[3] = alpha[iButtonType][3];
 
-  int iButtonType = 0; // 0 = selection, 1 = action (clicked)
-
-  if (!m_dvdnav || dvdnav_get_button_info(m_dvdnav, alpha, color) < 0) return false;
-
-  pOverlayPicture->alpha[0] = alpha[iButtonType][0];
-  pOverlayPicture->alpha[1] = alpha[iButtonType][1];
-  pOverlayPicture->alpha[2] = alpha[iButtonType][2];
-  pOverlayPicture->alpha[3] = alpha[iButtonType][3];
-
-  int i;
-  for (i = 0; i < 3; i++) pOverlayPicture->color[0][i] = pSPU->m_clut[color[iButtonType][0]][i];
-  for (i = 0; i < 3; i++) pOverlayPicture->color[1][i] = pSPU->m_clut[color[iButtonType][1]][i];
-  for (i = 0; i < 3; i++) pOverlayPicture->color[2][i] = pSPU->m_clut[color[iButtonType][2]][i];
-  for (i = 0; i < 3; i++) pOverlayPicture->color[3][i] = pSPU->m_clut[color[iButtonType][3]][i];
+    int i;
+    for (i = 0; i < 3; i++) pOverlayPicture->color[0][i] = pSPU->m_clut[color[iButtonType][0]][i];
+    for (i = 0; i < 3; i++) pOverlayPicture->color[1][i] = pSPU->m_clut[color[iButtonType][1]][i];
+    for (i = 0; i < 3; i++) pOverlayPicture->color[2][i] = pSPU->m_clut[color[iButtonType][2]][i];
+    for (i = 0; i < 3; i++) pOverlayPicture->color[3][i] = pSPU->m_clut[color[iButtonType][3]][i];
+  }
+  
+  if (DVDNAV_STATUS_OK == dvdnav_get_highlight_area(dvdnav_get_current_nav_pci(m_dvdnav), iButton, iButtonType, &hl))
+  {
+    // button cropping information
+    pOverlayPicture->crop_i_x_start = hl.sx;
+    pOverlayPicture->crop_i_x_end = hl.ex;
+    pOverlayPicture->crop_i_y_start = hl.sy;
+    pOverlayPicture->crop_i_y_end = hl.ey;
+  }
 
   return true;
 }
@@ -733,6 +724,8 @@ bool CDVDInputStreamNavigator::Seek(int iTimeInMsec)
 
   //newpos = (uint64_t)iTimeInMsec / 1000 * 2048;
   newpos = (uint64_t)( fDesiredPrecentage * len );
+  CLog::Log(LOGDEBUG, "dvdnav_sector_search pos: %d, len: %d, time %d, totaltime %d, percentage: %d",
+   pos, len, iTimeInMsec, GetTotalTime(), (int)fDesiredPrecentage);
   if (dvdnav_sector_search(m_dvdnav, newpos, SEEK_SET) == DVDNAV_STATUS_ERR)
   {
     CLog::Log(LOGDEBUG, "dvdnav: %s", dvdnav_err_to_string(m_dvdnav));
