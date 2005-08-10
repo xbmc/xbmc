@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 10-08-2005 changed: removed the ftp user limit from the emergency recovery console.
  - 10-08-2005 fixed: dvdplayer sometimes lost button focus in dvd menu's, resulted in crashes and other bugs
  - 10-08-2005 fixed: cache location in xml affected screenshots & not cachepath
  - 09-08-2005 added: dvdplayer menu animation when a menu button is clicked
