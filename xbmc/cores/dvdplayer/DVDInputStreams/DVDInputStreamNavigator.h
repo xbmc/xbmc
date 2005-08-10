@@ -65,9 +65,8 @@ public:
   void OnPrevious();
 
   int GetCurrentButton();
-  int GetTotalButtons();
   
-  bool GetButtonInfo(struct DVDOverlayPicture* pOverlayPicture, CDVDDemuxSPU* pSPU, int iButton, int iButtonType /* 0 = selection, 1 = action (clicked)*/);
+  bool GetCurrentButtonInfo(struct DVDOverlayPicture* pOverlayPicture, CDVDDemuxSPU* pSPU, int iButtonType /* 0 = selection, 1 = action (clicked)*/);
   
   bool IsInMenu();
 
@@ -96,6 +95,9 @@ protected:
 
   int ProcessBlock();
 
+  int GetTotalButtons();
+  void CheckButtons();
+  
   unsigned __int8 m_mem[32 * 1048];
   unsigned __int8 m_temp[32 * 1024];
   int m_pBufferSize;
@@ -107,4 +109,5 @@ protected:
   IDVDPlayer* m_pDVDPlayer;
 
   bool m_bDiscardHop;
+  bool m_bCheckButtons;
 };

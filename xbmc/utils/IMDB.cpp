@@ -6,7 +6,7 @@
 #include "IMDB.h"
 #include "../util.h"
 #include "HTMLUtil.h"
-
+#include "../FileSystem/FileCurl.h"
 
 using namespace HTML;
 
@@ -83,12 +83,13 @@ bool CIMDB::InternalFindMovie(const CStdString &strMovie, IMDB_MOVIELIST& moviel
 
   CStdString strURL, strHTML;
   GetURL(strMovie, strURL);
+
   if (!m_http.Get(strURL, strHTML) || strHTML.size() == 0)
   {
     CLog::Log(LOGERROR, "IMDB: Unable to retrieve web site");
     return false;
   }
-
+  
   char *szXML = new char[80000];  // should be enough for 500 matches (max returned by IMDb)
   if (!IMDbGetSearchResults(szXML, strHTML.c_str(), m_http.m_redirectedURL.c_str()))
   {

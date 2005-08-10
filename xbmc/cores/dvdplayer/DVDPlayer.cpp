@@ -387,6 +387,8 @@ void CDVDPlayer::ProcessSubData(CDVDDemux::DemuxPacket* pPacket)
   {
     CLog::DebugLog("av_read_frame: Got complete SPU packet");
     DVDOverlayPicture* pOverlayPicture = new DVDOverlayPicture;
+    memset(pOverlayPicture, 0, sizeof(DVDOverlayPicture));
+    
     /// XXX /////////
     pOverlayPicture->bForced = pSPUInfo->bForced;
     pOverlayPicture->height = pSPUInfo->height;
@@ -1215,11 +1217,11 @@ int CDVDPlayer::OnDVDNavResult(void* pData, int iMessage)
       if (pOverlayPicture)
       {
         //It's the last packet recieved that is of interest currently
-        while( pOverlayPicture->pNext ) pOverlayPicture = pOverlayPicture->pNext;
+        while (pOverlayPicture->pNext) pOverlayPicture = pOverlayPicture->pNext;
 
-        pStream->GetButtonInfo(pOverlayPicture, &m_dvdspus, iButton, LIBDVDNAV_BUTTON_NORMAL);
+        pStream->GetCurrentButtonInfo(pOverlayPicture, &m_dvdspus, LIBDVDNAV_BUTTON_NORMAL);
         
-        if ( pStream->IsInMenu() ) //  && m_dvd.state == DVDSTATE_STILL)
+        if (pStream->IsInMenu())
         {
           m_dvdPlayerVideo.UpdateMenuPicture();
         }
@@ -1389,8 +1391,7 @@ bool CDVDPlayer::OnAction(const CAction &action)
             // make sure its a forced (menu) overlay
             if (pOverlayPicture->bForced)
             {
-              int iButton = pStream->GetCurrentButton();
-              pStream->GetButtonInfo(pOverlayPicture, &m_dvdspus, iButton, LIBDVDNAV_BUTTON_CLICKED);
+              pStream->GetCurrentButtonInfo(pOverlayPicture, &m_dvdspus, LIBDVDNAV_BUTTON_CLICKED);
 
               if (pStream->IsInMenu())
               {
