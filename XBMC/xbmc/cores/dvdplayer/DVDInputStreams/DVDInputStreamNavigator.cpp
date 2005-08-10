@@ -38,7 +38,6 @@ CDVDInputStreamNavigator::CDVDInputStreamNavigator(IDVDPlayer* player) : CDVDInp
 {
   m_streamType = DVDSTREAM_TYPE_DVD;
   m_dvdnav = 0;
-  m_pBufferSize = 0;
   m_pDVDPlayer = player;
   InitializeCriticalSection(&m_critSection);
   m_bDllLibdvdcssLoaded = false;
@@ -189,24 +188,24 @@ void CDVDInputStreamNavigator::Close()
 int CDVDInputStreamNavigator::Read(BYTE* buf, int buf_size)
 {
   if (!m_dvdnav) return -1;
-
-  int navresult;
-  if (m_pBufferSize == 0)
+  if (buf_size < DVD_VIDEO_BLOCKSIZE)
   {
-    do
-    {
-      navresult = ProcessBlock();
-      if (navresult == DVDNAV_STILL_FRAME) return 0; // return 0 bytes read;
-      if (navresult == DVDNAV_STOP || navresult == -1) return -1;
-    }
-    while (navresult != DVDNAV_BLOCK_OK);
+    CLog::Log(LOGERROR, "CDVDInputStreamNavigator: buffer size is to small, %d bytes, should be 2048 bytes", buf_size);
+    return -1;
   }
+  
+  int navresult;
+  int iBytesRead;
 
-  if (m_pBufferSize > 0) fast_memcpy(buf, m_temp, m_pBufferSize);
+  do
+  {
+    navresult = ProcessBlock(buf, &iBytesRead);
+    if (navresult == DVDNAV_STILL_FRAME) return 0; // return 0 bytes read;
+    if (navresult == DVDNAV_STOP || navresult == -1) return -1;
+  }
+  while (navresult != DVDNAV_BLOCK_OK);
 
-  int temp = m_pBufferSize;
-  m_pBufferSize = 0;
-  return temp;
+  return iBytesRead;
 }
 
 // not working yet, but it is the recommanded way for seeking
@@ -227,26 +226,21 @@ __int64 CDVDInputStreamNavigator::Seek(__int64 offset, int whence)
   return (int)(pos * DVD_VIDEO_LB_LEN);
 }
 
-int CDVDInputStreamNavigator::ProcessBlock()
+int CDVDInputStreamNavigator::ProcessBlock(BYTE* dest_buffer, int* read)
 {
   if (!m_dvdnav) return -1;
 
-  int result, event, len, iNavresult;
-  uint8_t *buf;
+  int result;
+  int event;
+  int len;
+  int iNavresult;
+
   bool bFinished = false;
-
-  if (m_pBufferSize > 0)
-  {
-    //if we still have unreaded mpeg data, just return
-    CLog::DebugLog("CDVDInputStreamNavigator::ProcessBlock, unreaded mpeg data!!");
-    return DVDNAV_BLOCK_OK;
-  }
-
+  uint8_t* buf = m_tempbuffer;
   iNavresult = -1;
-
+  
   while (!bFinished)
   {
-    buf = m_mem;
     // the main reading function
     result = dvdnav_get_next_cache_block(m_dvdnav, &buf, &event, &len);
 
@@ -260,14 +254,14 @@ int CDVDInputStreamNavigator::ProcessBlock()
     switch (event)
     {
     case DVDNAV_BLOCK_OK:
-      // We have received a regular block of the currently playing MPEG stream.
-      // A real player application would now pass this block through demuxing
-      // and decoding.
-      // buf contains the data and len its length (obviously!) (which is always 2048 bytes btw)
-      m_pBufferSize = len;
-      fast_memcpy(m_temp, buf, len);
-      iNavresult = DVDNAV_BLOCK_OK;
-      bFinished = true;
+      {
+        // We have received a regular block of the currently playing MPEG stream.
+        // buf contains the data and len its length (obviously!) (which is always 2048 bytes btw)
+        fast_memcpy(dest_buffer, buf, len);
+        *read = len;
+        iNavresult = DVDNAV_BLOCK_OK;
+        bFinished = true;
+      }
       break;
 
     case DVDNAV_NOP:
@@ -322,8 +316,9 @@ int CDVDInputStreamNavigator::ProcessBlock()
       {
         dvdnav_audio_stream_change_event_t* event = (dvdnav_audio_stream_change_event_t*)buf;
         event->logical = dvdnav_get_audio_logical_stream(m_dvdnav, event->physical);
+        
+        m_pDVDPlayer->OnDVDNavResult(m_tempbuffer, DVDNAV_AUDIO_STREAM_CHANGE);
       }
-      m_pDVDPlayer->OnDVDNavResult(buf, DVDNAV_AUDIO_STREAM_CHANGE);
 
       break;
 
@@ -390,22 +385,24 @@ int CDVDInputStreamNavigator::ProcessBlock()
     case DVDNAV_HOP_CHANNEL:
       // This event is issued whenever a non-seamless operation has been executed.
       // Applications with fifos should drop the fifos content to speed up responsiveness.
-      if (!m_bDiscardHop)
       {
-        m_pDVDPlayer->OnDVDNavResult(NULL, DVDNAV_HOP_CHANNEL);
+        if (!m_bDiscardHop)
+        {
+          m_pDVDPlayer->OnDVDNavResult(NULL, DVDNAV_HOP_CHANNEL);
+        }
+        //Reset skip flag.
+        m_bDiscardHop = false;
+        
+        iNavresult = -1; // return read error
+        bFinished = true;
       }
-      //Reset skip flag.
-      m_bDiscardHop = false;
-      
-      iNavresult = -1; // return read error
-      bFinished = true;
-      
       break;
 
     case DVDNAV_STOP:
       {
+        CLog::Log(LOGDEBUG, "DVDNAV_STOP");
         // Playback should end here.
-        m_pDVDPlayer->OnDVDNavResult(NULL, DVDNAV_STOP);
+        // m_pDVDPlayer->OnDVDNavResult(NULL, DVDNAV_STOP);
         iNavresult = DVDNAV_STOP;
         bFinished = true;
       }
@@ -413,7 +410,7 @@ int CDVDInputStreamNavigator::ProcessBlock()
 
     default:
       {
-        CLog::DebugLog("Unknown event (%i)\n", event);
+        CLog::DebugLog("CDVDInputStreamNavigator: Unknown event (%i)\n", event);
       }
       break;
 
@@ -421,7 +418,6 @@ int CDVDInputStreamNavigator::ProcessBlock()
 
     dvdnav_free_cache_block(m_dvdnav, buf);
   }
-  bFinished = false;
   return iNavresult;
 }
 
@@ -701,10 +697,11 @@ bool CDVDInputStreamNavigator::GetCurrentButtonInfo(struct DVDOverlayPicture* pO
   int alpha[2][4];
   int color[2][4];
   dvdnav_highlight_area_t hl;
-  int iButton = GetCurrentButton();
   
   if (!m_dvdnav) return false;
   
+  int iButton = GetCurrentButton();
+
   if (dvdnav_get_button_info(m_dvdnav, alpha, color) == 0)
   {
     pOverlayPicture->alpha[0] = alpha[iButtonType][0];
