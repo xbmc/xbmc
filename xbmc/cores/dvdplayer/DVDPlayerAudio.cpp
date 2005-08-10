@@ -369,3 +369,8 @@ void CDVDPlayerAudio::SetVolume(long nVolume)
 {
   m_dvdAudio.SetVolume(nVolume);
 }
+
+int CDVDPlayerAudio::GetVolume()
+{
+  return m_dvdAudio.GetVolume();
+}
