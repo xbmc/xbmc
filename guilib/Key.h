@@ -205,6 +205,8 @@
 #define ACTION_VIS_RATE_PRESET_PLUS   132
 #define ACTION_VIS_RATE_PRESET_MINUS  133
 
+#define ACTION_SHOW_VIDEOMENU         134
+
 // Window ID defines to make the code a bit more readable
 #define WINDOW_INVALID                     9999
 #define WINDOW_HOME                       10000
@@ -284,7 +286,7 @@
 #define WINDOW_SCREENSAVER                12900
 #define WINDOW_OSD                        12901
 
-#define WINDOW_MEDIA_MENU                 12902
+#define WINDOW_VIDEO_MENU                 12902
 
 // WINDOW_ID's from 13000 to 13099 reserved for Python
 

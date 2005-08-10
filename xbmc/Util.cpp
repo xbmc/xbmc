@@ -2780,7 +2780,8 @@ const BUILT_IN commands[] = {
   "ReloadSkin", "Reload XBMC's skin",
   "PlayerControl", "Control the music or video player",
   "EjectTray", "Close or open the DVD tray",
-  "AlarmClock", "Prompt for a length of time and start an alarm clock"
+  "AlarmClock", "Prompt for a length of time and start an alarm clock",
+  "Action", "Executes an action for the active window (same as in keymap)"
 };
 
 bool CUtil::IsBuiltIn(const CStdString& execString)
@@ -3015,6 +3016,16 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     else if (parameter.Equals("previous"))
     {
       g_playlistPlayer.PlayPrevious();
+    }
+    else if( parameter.Equals("showvideomenu") )
+    {
+      if( g_application.IsPlaying() && g_application.m_pPlayer )
+      {
+        CAction action;
+        memset(&action, 0, 0);
+        action.wID = ACTION_SHOW_VIDEOMENU;
+        g_application.m_pPlayer->OnAction(action);
+      }
     }
   }
   else if (execute.Equals("ejecttray"))
