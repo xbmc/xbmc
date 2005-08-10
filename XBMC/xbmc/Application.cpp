@@ -525,7 +525,7 @@ void CApplication::FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetw
       m_pFileZilla->Start();
 
       // Default settings
-      m_pFileZilla->mSettings.SetMaxUsers(2);
+      m_pFileZilla->mSettings.SetMaxUsers(0);
       m_pFileZilla->mSettings.SetWelcomeMessage("XBMC emergency recovery console FTP.");
 
       // default user
