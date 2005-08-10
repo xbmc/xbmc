@@ -5,6 +5,14 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 10-08-2005 updated: Finnish language file (Thnx to jutski)
+ - 10-08-2005 updated: Spanish language file (Thnx to chevi)
+ - 10-08-2005 updated: Italian language file (Thnx to kotix)
+ - 10-08-2005 updated: Chinese (Traditional) language file (Thnx to omenpica)
+ - 10-08-2005 updated: German (Austrian) language file (Thnx to CEOMR)
+ - 10-08-2005 updated: Polish language file (Thnx to napek)
+ - 10-08-2005 updated: Norwegian language file (Thnx to vnm)
+ - 10-08-2005 updated: German language file
  - 10-08-2005 fixed: dvdplayer wouldn't detect film (24fps progressive) material correctly, and would enable deinterlacing when not needed
  - 10-08-2005 changed: rewrote parts of the threaded rendering to allow player earlier access to resources after a frame was displayed. Should improve performance.
  - 10-08-2005 changed: removed the ftp user limit from the emergency recovery console.

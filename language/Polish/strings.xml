@@ -306,9 +306,9 @@
   <string><id>369</id><value>Tytu³</value></string>
   <string><id>370</id><value>Burze</value></string>
   <string><id>371</id><value>Czêœciowo</value></string>
-  <string><id>372</id><value>G³ównie</value></string>
-  <string><id>373</id><value>S³onecznie</value></string>
-  <string><id>374</id><value>Pochmurnie</value></string>
+  <string><id>372</id><value>Czeêœciowe</value></string>
+  <string><id>373</id><value>Rozpogodzenia</value></string>
+  <string><id>374</id><value>Zachmurzenie</value></string>
   <string><id>375</id><value>Œnieg</value></string>
   <string><id>376</id><value>Deszcz</value></string>
   <string><id>377</id><value>Pogodnie</value></string>
@@ -336,7 +336,7 @@
   <string><id>399</id><value>Jednostki prêdkoœci</value></string>
   <string><id>400</id><value>Pogoda</value></string>
   <string><id>401</id><value>Temperatura</value></string>
-  <string><id>402</id><value>Temperatura odczuwalna</value></string>
+  <string><id>402</id><value>Odczuwalna</value></string>
   <string><id>403</id><value>WskaŸnik UV</value></string>
   <string><id>404</id><value>Wiatr</value></string>
   <string><id>405</id><value>Punkt rosy</value></string>
@@ -414,7 +414,7 @@
   <string><id>477</id><value>Nie mogê za³adowaæ playlisty</value></string>
   <string><id>478</id><value>OSD</value></string>
   <string><id>479</id><value>Skóry i jêzyk</value></string>
-  <string><id>480</id><value>Interfejs u¿ytkownika</value></string>
+  <string><id>480</id><value>Wygl¹d</value></string>
   <string><id>481</id><value>Opcje dŸwiêku</value></string>
   <string><id>482</id><value>O XBMC...</value></string>
   <string><id>483</id><value>Album</value></string>
@@ -449,6 +449,8 @@
   <string><id>512</id><value>Okienko startowe</value></string>
   <string><id>513</id><value>Okienko domowe</value></string>
   <string><id>514</id><value>Manualne ustawienia</value></string>
+  <string><id>515</id><value>Gatunek</value></string>
+
   <string><id>600</id><value>Zgraj CD</value></string>
   <string><id>601</id><value>Œrednia</value></string>
   <string><id>602</id><value>Standardowa</value></string>
@@ -473,6 +475,7 @@
   <string><id>634</id><value>Proporcje 16:9</value></string>
   <string><id>635</id><value>Oryginalny rozmiar</value></string>
   <string><id>636</id><value>W³asny</value></string>
+
   <string><id>637</id><value>Odtwarzaj ponownie</value></string>
   <string><id>638</id><value>Tryb</value></string>
   <string><id>639</id><value>U¿yj poziomowania œcie¿ek</value></string>
@@ -481,6 +484,7 @@
   <string><id>642</id><value>Wzmocnienie poziomu - Pliki nie odtwarzane ponownie</value></string>
   <string><id>643</id><value>Unikaj obcinania powtórnie odtwarzanych plików</value></string>
   <string><id>644</id><value>Przytnij czarne pasy</value></string>
+
   <string><id>700</id><value>Czyszczenie bazy danych</value></string>
   <string><id>701</id><value>Usuwam stare utwory z bazy danych</value></string>
   <string><id>702</id><value>Ta œcie¿ka by³a ju¿ skanowana.</value></string>
@@ -557,6 +561,7 @@
   <string><id>773</id><value>Poszukujê</value></string>
   <string><id>998</id><value>XLink KAI</value></string>
   <string><id>999</id><value>Rozgrywka Online</value></string>
+
   <string><id>1000</id><value>Podgl¹d wygaszacza</value></string>
   <string><id>1200</id><value>SMB Udzia³</value></string>
   <string><id>1201</id><value>SMB IP</value></string>
@@ -587,6 +592,7 @@
   <string><id>1226</id><value>Pliki &amp; Muzyka &amp; Filmy</value></string>
   <string><id>1227</id><value>Pliki &amp; Obrazy &amp; Muzyka</value></string>
   <string><id>1228</id><value>Pliki &amp; Obrazy &amp; Filmy</value></string>
+
   <string><id>1229</id><value>Muzyka &amp; Programy</value></string>
   <string><id>1230</id><value>Filmy &amp; Programy</value></string>
   <string><id>1231</id><value>Obrazy &amp; Programy</value></string>
@@ -594,6 +600,19 @@
   <string><id>1233</id><value>Programy &amp; Filmy &amp; Muzyka</value></string>
   <string><id>1234</id><value>Programy &amp; Obrazy &amp; Muzyka</value></string>
   <string><id>1235</id><value>Programy &amp; Obrazy &amp; Filmy</value></string>
+
+  <string><id>1245</id><value> - FTP U¿ytkownik</value></string>
+  <string><id>1246</id><value> - FTP Has³o</value></string>
+  <string><id>1247</id><value>Has³o dla serwera FTP zosta³o ustawione pomyœlnie!</value></string>
+
+  <string><id>1250</id><value>Autodetekcja</value></string>
+  <string><id>1251</id><value>Autodetekcja XBox'a</value></string>
+  <string><id>1252</id><value>Ksywa</value></string>
+  <string><id>1253</id><value>Stwórz link do FTP w Moich Plikach</value></string>
+  <string><id>1254</id><value>Wyskakuj¹ce informacje</value></string>
+  <string><id>1255</id><value>Wyœlij u¿ytkownika i has³o do FTP'a</value></string>
+  <string><id>1256</id><value>OpoŸnienie ping'u</value></string>
+
   <string><id>1396</id><value>Zamiecie</value></string>
   <string><id>1397</id><value>i</value></string>
   <string><id>1398</id><value>Œnie¿yce</value></string>
@@ -609,6 +628,7 @@
   <string><id>1408</id><value>Kryszta³ki</value></string>
   <string><id>1409</id><value>lodu</value></string>
   <string><id>1410</id><value>Spokojnie</value></string>
+
   <string><id>10000</id><value>Ekran g³ówny</value></string>
   <string><id>10001</id><value>Gry i Programy</value></string>
   <string><id>10002</id><value>Obrazy</value></string>
@@ -617,34 +637,32 @@
   <string><id>10005</id><value>Muzyka</value></string>
   <string><id>10006</id><value>Filmy</value></string>
   <string><id>10007</id><value>Informacje systemowe</value></string>
-  <string><id>10008</id><value>Ustawienia->Ogólne</value></string>
-  <string><id>10009</id><value>Ustawienia->Ekran</value></string>
-  <string><id>10010</id><value>Ustawienia->Ekran->Kalibracja interfejsu</value></string>
-  <string><id>10011</id><value>Ustawienia->Ekran->Kalibracja ekranu</value></string>
-  <string><id>10012</id><value>Ustawienia->Pokaz slajdów</value></string>
-  <string><id>10013</id><value>Ustawienia->Ekran->Filtry</value></string>
-  <string><id>10014</id><value>Ustawienia->Muzyka</value></string>
-  <string><id>10015</id><value>Ustawienia->Ekran->Napisy</value></string>
-  <string><id>10016</id><value>Ustawienia->Ekran->Wygaszacz</value></string>
-  <string><id>10017</id><value>Ustawienia->Pogoda</value></string>
-  <string><id>10020</id><value>Ustawienia->Skrypty</value></string>
+  <string><id>10008</id><value>Ustawienia-&gt;Ogólne</value></string>
+  <string><id>10009</id><value>Ustawienia-&gt;Ekran</value></string>
+  <string><id>10010</id><value>Ustawienia-&gt;Ekran->Kalibracja interfejsu</value></string>
+  <string><id>10011</id><value>Ustawienia-&gt;Ekran->Kalibracja ekranu</value></string>
+  <string><id>10012</id><value>Ustawienia-&gt;Pokaz slajdów</value></string>
+  <string><id>10013</id><value>Ustawienia-&gt;Ekran->Filtry</value></string>
+  <string><id>10014</id><value>Ustawienia-&gt;Muzyka</value></string>
+  <string><id>10015</id><value>Ustawienia-&gt;Ekran->Napisy</value></string>
+  <string><id>10016</id><value>Ustawienia-&gt;Ekran->Wygaszacz</value></string>
+  <string><id>10017</id><value>Ustawienia-&gt;Pogoda</value></string>
+  <string><id>10018</id><value>Ustawienia-&gt;Sieæ</value></string>
+  <string><id>10019</id><value>Ustawienia-&gt;Wygl¹d</value></string>
+  <string><id>10020</id><value>Ustawienia-&gt;Skrypty</value></string>
   <string><id>10021</id><value>Filmy/gatunek</value></string>
   <string><id>10022</id><value>Filmy/aktor</value></string>
   <string><id>10023</id><value>Filmy/rok</value></string>
-  <string><id>10024</id><value>Ustawienia->Programy</value></string>
   <string><id>10025</id><value>Filmy/tytu³</value></string>
-  <string><id>10026</id><value>Ustawienia->Ogólne->Bufor</value></string>
-  <string><id>10027</id><value>Ustawienia->Ogólne->Autorun</value></string>
   <string><id>10028</id><value>Filmy/playlista</value></string>
-  <string><id>10029</id><value>Ustawienia->Ogólne->LCD</value></string>
+  <string><id>10034</id><value>Ustawienia-&gt;Profile</value></string>
   <string><id>10100</id><value>Tak/nie dialog</value></string>
   <string><id>10101</id><value>Okienko postêpu</value></string>
   <string><id>10500</id><value>Muzyka/playlista</value></string>
   <string><id>10501</id><value>Muzyka/pliki</value></string>
   <string><id>10502</id><value>Muzyka/albumy</value></string>
   <string><id>10503</id><value>Muzyka/artyœci</value></string>
-  <string><id>10504</id><value>Muzyka/gatunki</value></string>
-  <string><id>10505</id><value>Muzyka/top100</value></string>
+
   <string><id>10506</id><value>Aplikacje</value></string>
   <string><id>10507</id><value>Konfiguracja</value></string>
   <string><id>10508</id><value>Prognoza pogody</value></string>
@@ -664,7 +682,6 @@
   <string><id>10522</id><value>Filmy - Playlista</value></string>
   <string><id>10523</id><value>Informacje o albumie</value></string>
   <string><id>10524</id><value>Informacje o filmie</value></string>
-  <string><id>11000</id><value>Klawiatura</value></string>
   <string><id>12000</id><value>Okno wyboru</value></string>
   <string><id>12001</id><value>Muzyka/info</value></string>
   <string><id>12002</id><value>Dialog OK</value></string>
@@ -674,6 +691,8 @@
   <string><id>12006</id><value>Wizualizacja dŸwiêku</value></string>
   <string><id>12007</id><value>Obrazy/pokaz slajdów</value></string>
   <string><id>12008</id><value>Okno grupowania plików</value></string>
+
+
   <string><id>12310</id><value>0</value></string>
   <string><id>12311</id><value>1</value></string>
   <string><id>12312</id><value>2</value></string>
@@ -734,9 +753,11 @@
   <string><id>12369</id><value>Blokada XBMC przy uruchamianiu</value></string>
   <string><id>12370</id><value>Zmieniono tryb zabezpieczenia, kod nie by³ ustawiony!</value></string>
   <string><id>12371</id><value>Proszê wpisaæ nowy kod!</value></string>
+
   <string><id>12372</id><value>Zablokuj ekspoloratora</value></string>
   <string><id>12373</id><value>Zablokuj ustawienia</value></string>
   <string><id>12374</id><value>Zablokuj media</value></string>
+
   <string><id>12600</id><value>Pogoda</value></string>
   <string><id>12900</id><value>Wygaszacz</value></string>
   <string><id>12901</id><value>Pe³noekranowe OSD</value></string>
@@ -756,11 +777,13 @@
   <string><id>13205</id><value>Nieznany</value></string>
   <string><id>13206</id><value>Nadpisz</value></string>
   <string><id>13207</id><value>Nadpisz profil '%s'?</value></string>
+
   <string><id>13208</id><value>Budzik</value></string>
   <string><id>13209</id><value>Przerwa budzika (w minutach)</value></string>
   <string><id>13210</id><value>Uruchomiony, alarm za %im</value></string>
   <string><id>13211</id><value>Alarm!</value></string>
   <string><id>13212</id><value>Anulowano pozosta³o minut %im%</value></string>
+
   <string><id>13299</id><value>Temperatura</value></string>
   <string><id>13300</id><value>Prêdkoœæ wiatraka:</value></string>
   <string><id>13301</id><value>Kontrola temperatury</value></string>
@@ -769,14 +792,14 @@
   <string><id>13304</id><value>Odwróæ znaki</value></string>
   <string><id>13305</id><value>W³¹cz wiadomoœci RSS</value></string>
   <string><id>13306</id><value>Ukryj symbol (..) folderu nadrzêdnego</value></string>
-  <string><id>13307</id><value>Ukryj numery scie¿ek</value></string>
+  <string><id>13307</id><value>Szablon nazywania œcie¿ek</value></string>
   <string><id>13308</id><value>Czy chcesz wykonaæ pe³ny reset</value></string>
   <string><id>13309</id><value>zamiast zwyk³ego resetu?</value></string>
   <string><id>13310</id><value>Efekt powiêkszenia</value></string>
   <string><id>13311</id><value>Efekt unoszenia</value></string>
   <string><id>13312</id><value>Redukcja czarnego paska</value></string>
   <string><id>13313</id><value>Reset/Restart</value></string>
-  <string><id>13314</id><value>Czas wyœwietlania OSD muzyki</value></string>
+  <string><id>13314</id><value>Przenikanie</value></string>
   <string><id>13315</id><value>Utwórz miniaturki</value></string>
   <string><id>13316</id><value>Rekurencyjne miniaturki</value></string>
   <string><id>13317</id><value>Pokaz slajdów</value></string>
@@ -849,11 +872,18 @@
   <string><id>13384</id><value>Maskowanie g³osu - Port 2</value></string>
   <string><id>13385</id><value>Maskowanie g³osu - Port 3</value></string>
   <string><id>13386</id><value>U¿yj poszukiwania bazuj¹cego na czasie</value></string>
-  <string><id>13387</id><value>Prawid³owy szablon nazywania œcie¿ek</value></string>
+  <string><id>13387</id><value>Prawa szablonu nazywania œcie¿ek</value></string>
   <string><id>13388</id><value>Ustawienia</value></string>
   <string><id>13389</id><value>Nie ma dostêpnych ustawieñ &#10;dla tej wizualizacji</value></string>
   <string><id>13390</id><value>Nie ma dostêpnych opcji &#10;dla tej wizualizacji</value></string>
   <string><id>13391</id><value>Wysuñ/Za³aduj</value></string>
+  <string><id>13392</id><value>U¿ywaj wizualizacji gdy odtwarza audio</value></string>
+  <string><id>13393</id><value>Oblicz rozmiar</value></string>
+  <string><id>13394</id><value>Obliczam rozmiar folderu</value></string>
+  <string><id>13395</id><value>Ustawienia obrazu</value></string>
+  <string><id>13396</id><value>Ustawienia dŸwiêku i napisów</value></string>
+  <string><id>13397</id><value>W³¹cz napisy</value></string>
+
   <string><id>14000</id><value>Kaskadowanie wy³.</value></string>
   <string><id>14001</id><value>Kaskadowanie proste</value></string>
   <string><id>14002</id><value>Kaskadowanie rozmyte</value></string>
@@ -915,6 +945,7 @@
   <string><id>14060</id><value>Nieznany typ bufora</value></string>
   <string><id>14061</id><value>Automatycznie</value></string>
   <string><id>14062</id><value>Wpisz nazwê u¿ytkownika dla</value></string>
+
   <string><id>14063</id><value>Data &amp; Czas</value></string>
   <string><id>14064</id><value>Ustaw rok</value></string>
   <string><id>14065</id><value>Ustaw miesi¹c</value></string>
@@ -923,6 +954,8 @@
   <string><id>14068</id><value>Ustaw minuty</value></string>
   <string><id>14069</id><value>Czy chcesz by zmiany obowi¹zywa³y od teraz?</value></string>
   <string><id>14070</id><value>WprowadŸ zmiany</value></string>
+  <string><id>14071</id><value>Zezwól na kasowanie plików</value></string>
+
   <string><id>15000</id><value>XLink Kai</value></string>
   <string><id>15001</id><value>Serwis nie jest pod³¹czony, czy chcesz siê</value></string>
   <string><id>15002</id><value>pod³¹czyæ za pomoc¹ XBMC?</value></string>
@@ -1009,6 +1042,7 @@
   <string><id>15210</id><value>%i utworów w buforze</value></string>
   <string><id>15211</id><value>Przesy³am...</value></string>
   <string><id>15212</id><value>Przes³ano w %i sekund</value></string>
+
   <string><id>13150</id><value>HDD Klucz:</value></string>
   <string><id>13151</id><value>HDD Temp:</value></string>
   <string><id>13152</id><value>DVD Model:</value></string>
@@ -1028,6 +1062,7 @@
   <string><id>13166</id><value>S³uchawki/Mikrofon - Port:</value></string>
   <string><id>13167</id><value>MemoryStick - Port:</value></string>
   <string><id>13168</id><value>Pilot - Port:</value></string>
+
   <string><id>13270</id><value>Sprzêt:</value></string>
   <string><id>13271</id><value>Prêdkoœci CPU:</value></string>
   <string><id>13275</id><value>Dysk twardy</value></string>
@@ -1054,6 +1089,19 @@
   <string><id>13296</id><value>Xbox jest po³¹czony!</value></string>
   <string><id>13297</id><value>Xbox nie jest po³¹czony! SprawdŸ ustawienia sieci!</value></string>
   <string><id>13298</id><value>Klucz XBLIVE:</value></string>
+
   <string><id>15213</id><value>[WYPE£NIACZ]</value></string>
   <string><id>15214</id><value>U¿ywaj p³ynnej synchronizacji A/V</value></string>
+
+  <string><id>16000</id><value>Ogólne</value></string>
+  <string><id>16001</id><value>Konfiguracja sprzêtu audio...</value></string>
+  <string><id>16002</id><value>Przeszukujê CDDB</value></string>
+  <string><id>16003</id><value>Odtwarzacz</value></string>
+  
+  <string><id>16004</id><value>Synchronizuj filmy z przeplotem</value></string>
+  <string><id>16005</id><value>- Odwróæ pola</value></string>
+  <string><id>16006</id><value>Zsynchronizowano przeplatanie</value></string>
+  <string><id>16007</id><value>Odwrócone pola</value></string> 
+  <string><id>16008</id><value>W³.</value></string>
+ 
 </strings>
