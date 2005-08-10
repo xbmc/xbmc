@@ -521,6 +521,8 @@ void CDVDInputStreamNavigator::CheckButtons()
             pci->hli.btnit[i].y_start ||
             pci->hli.btnit[i].y_end)
         {
+          CLog::Log(LOGWARNING, "CDVDInputStreamNavigator: found invalid button(%d)", iCurrentButton);
+          CLog::Log(LOGWARNING, "CDVDInputStreamNavigator: switching to button(%d) instead", i + 1);
           dvdnav_button_select(m_dvdnav, pci, i + 1);
           break;
         }
