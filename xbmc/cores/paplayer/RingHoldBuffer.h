@@ -90,6 +90,7 @@
 #define __RingHoldBuffer_h
 #include "../../utils/criticalsection.h"
 #include "../../utils/singlelock.h"
+#include "../../utils/log.h"
 #if _MSC_VER > 1000
 #pragma once
 #endif // _MSC_VER > 1000
