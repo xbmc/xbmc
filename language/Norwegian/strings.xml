@@ -1,4 +1,4 @@
-<!-- Based on English XML v1.232. Last updated by vnmartinsen  !-->
+<!-- Based on English XML v1.237. Last updated by vnmartinsen  !-->
 <strings>
   <string><id>0</id><value>Mine Programmer</value></string>
   <string><id>1</id><value>Mine Bilder</value></string>
@@ -228,7 +228,7 @@
   <string><id>294</id><value>Lag bokmerke</value></string>
   <string><id>295</id><value>Skift bokmerke</value></string>
   <string><id>296</id><value>Slett bokmerker</value></string>
-  <string><id>297</id><value>AV-forsinkelse</value></string>
+  <string><id>297</id><value>Lydforsinkelse</value></string>
   <string><id>298</id><value>Glidebryter</value></string>
   <string><id>300</id><value>1. Språk</value></string>
   <string><id>301</id><value>2. Volum</value></string>
@@ -446,6 +446,7 @@
   <string><id>513</id><value>Hovedmeny</value></string>
   <string><id>514</id><value>Manuelle innstillinger</value></string>
   <string><id>515</id><value>Sjanger</value></string>
+  <string><id>516</id><value>Behandle arkiver</value></string>
 
   <string><id>600</id><value>Ripp musikk-CD</value></string>
   <string><id>601</id><value>Middels</value></string>
@@ -481,6 +482,8 @@
   <string><id>643</id><value>Unngå klipping i filer med Replay Gain</value></string>
   <string><id>644</id><value>Fjern sorte felt</value></string>
 
+  <string><id>645</id><value>Må cache en stor fil. Fortsette?</value></string>
+
   <string><id>700</id><value>Rydder opp i databasen</value></string>
   <string><id>701</id><value>Fjerner gamle sanger fra databasen</value></string>
   <string><id>702</id><value>Denne katalogen har blitt skannet før.</value></string>
@@ -500,10 +503,10 @@
   <string><id>716</id><value>Automatisk (DHCP)</value></string>
   <string><id>717</id><value>Manuell (statisk)</value></string>
   <string><id>718</id><value>Standard (dashbord)</value></string>
-  <string><id>719</id><value>IP-addresse</value></string>
-  <string><id>720</id><value>Nettmaske</value></string>
-  <string><id>721</id><value>Standard gateway</value></string>
-  <string><id>722</id><value>DNS-tjener</value></string>
+  <string><id>719</id><value>- IP-addresse</value></string>
+  <string><id>720</id><value>- Nettmaske</value></string>
+  <string><id>721</id><value>- Standard gateway</value></string>
+  <string><id>722</id><value>- DNS-tjener</value></string>
   <string><id>723</id><value>Lagre &amp; start om</value></string>
   <string><id>724</id><value>Ugyldig adresse spesifisert. Verdien må være på formen AAA.BBB.CCC.DDD</value></string>
   <string><id>725</id><value>med tall mellom 0 og 255.</value></string>
@@ -516,9 +519,9 @@
   <string><id>732</id><value>Lagre &amp; bruke</value></string>
   <string><id>733</id><value>Webtjener-passord</value></string>
   <string><id>734</id><value>Intet passord</value></string>
-  <string><id>735</id><value>Karaktersett:</value></string>
-  <string><id>736</id><value>Stil:</value></string>
-  <string><id>737</id><value>Farge:</value></string>
+  <string><id>735</id><value>- Karaktersett</value></string>
+  <string><id>736</id><value>- Stil</value></string>
+  <string><id>737</id><value>- Farge</value></string>
   <string><id>738</id><value>Normal</value></string>
   <string><id>739</id><value>Fet</value></string>
   <string><id>740</id><value>Kursiv</value></string>
@@ -597,9 +600,9 @@
   <string><id>1234</id><value>Programmer &amp; Bilder &amp; Musikk</value></string>
   <string><id>1235</id><value>Programmer &amp; Bilder &amp; Video</value></string>
 
-  <string><id>1245</id><value> - FTP brukernavn</value></string>
-  <string><id>1246</id><value> - FTP brukerpassord</value></string>
-  <string><id>1247</id><value>FTP-servers brukerpassord ble endret!</value></string>
+  <string><id>1245</id><value>FTP brukernavn</value></string>
+  <string><id>1246</id><value>FTP passord</value></string>
+  <string><id>1247</id><value>FTP-servers brukerpassord ble endret</value></string>
 
   <string><id>1250</id><value>Autooppdagelse</value></string>
   <string><id>1251</id><value>XBOX Autooppdagelse</value></string>
@@ -877,6 +880,9 @@
   <string><id>13393</id><value>Kalkulér størrelse</value></string>
   <string><id>13394</id><value>Kalkulerer mappestørrelse</value></string>
   <string><id>13395</id><value>Videoinnstillinger</value></string>
+  <string><id>13396</id><value>Lyd- og tekstinnstillinger</value></string>
+  <string><id>13397</id><value>Aktiver tekster</value></string>
+  <string><id>13398</id><value>Bokmerker</value></string>
 
   <string><id>14000</id><value>Stable</value></string>
   <string><id>14001</id><value>Ikke stable</value></string>
@@ -1098,4 +1104,13 @@
   <string><id>16007</id><value>Omvendte felter</value></string> 
   <string><id>16008</id><value>På</value></string>
 
+  <string><id>16009</id><value>Skriv inn filmens navn</value></string>
+  <string><id>16010</id><value>Skriv inn profilnavnet</value></string>
+  <string><id>16011</id><value>Skriv inn albumets navn</value></string>
+  <string><id>16012</id><value>Skriv inn navnet på spillelisten</value></string>
+  <string><id>16013</id><value>Skriv inn nytt filnavn</value></string>
+  <string><id>16014</id><value>Skriv inn navn på mappen</value></string>
+  <string><id>16015</id><value>Skriv inn katalog</value></string>
+  <string><id>16016</id><value>Tilgjengelige valg: %A, %T, %N, %B, %D, %G, %Y, %F</value></string>
+  <string><id>16017</id><value>Skriv inn søketekst</value></string>
 </strings>

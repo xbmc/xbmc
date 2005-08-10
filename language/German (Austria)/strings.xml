@@ -229,12 +229,12 @@
   <string><id>294</id><value>Lesezeichen erst.</value></string>
   <string><id>295</id><value>Lesezeichen tausch</value></string>
   <string><id>296</id><value>Lesezeichen lösch.</value></string>
-  <string><id>297</id><value>AV Verzög.</value></string>
+  <string><id>297</id><value>Audio&#10;verzögerung</value></string>
   <string><id>298</id><value>Suchleiste</value></string>
   <string><id>300</id><value>Sprache</value></string>
   <string><id>301</id><value>Lautstärke</value></string>
   <string><id>302</id><value>Stream</value></string>
-  <string><id>303</id><value>UT Verzög.</value></string>
+  <string><id>303</id><value>Untertitel&#10;verzögerung</value></string>
   <string><id>304</id><value>Sprache</value></string>
   <string><id>305</id><value>Akt./Deakt.</value></string>
   <string><id>306</id><value>paralleles Audio/Video</value></string>
@@ -480,6 +480,7 @@
   <string><id>642</id><value>Ziellautstärke bei unangepassten Dateien</value></string> 
   <string><id>643</id><value>Störgeräusche entfernen bei angepassten Dateien</value></string>
   <string><id>644</id><value>Balken entfernen</value></string>
+  <string><id>645</id><value>Große Dateien in den Zwischenspeicher laden?</value></string>
 
   <string><id>700</id><value>Datenbank säubern</value></string>
   <string><id>701</id><value>Lösche alte Musikdaten</value></string>
@@ -516,7 +517,7 @@
   <string><id>732</id><value>Sichern &amp; Übernehmen</value></string>
   <string><id>733</id><value>- Web Server Kennwort</value></string>
   <string><id>734</id><value>ungesetzt</value></string>
-  <string><id>735</id><value>- Zeichentabelle</value></string>	
+  <string><id>735</id><value>Zeichentabelle</value></string>	
   <string><id>736</id><value>- Stil</value></string>	
   <string><id>737</id><value>- Farbe</value></string>
   <string><id>738</id><value>Normal</value></string>	
@@ -831,7 +832,7 @@
   <string><id>13300</id><value>Lüftergeschwindigkeit:</value></string>
   <string><id>13301</id><value>Automatische Temperaturkontrolle</value></string>
   <string><id>13302</id><value>Manuelle Lüftereinstellung</value></string>
-  <string><id>13303</id><value>- Schriftart</value></string>
+  <string><id>13303</id><value>Schriftart</value></string>
   <string><id>13304</id><value>links-/rechtsläufige Zeichenfolgen ermöglichen</value></string>
   <string><id>13305</id><value>RSS Feed [Newsflash] aktivieren</value></string>
   <string><id>13306</id><value>Link zu übergeordnetem Verzeichnis ausblenden</value></string>
@@ -923,6 +924,9 @@
   <string><id>13392</id><value>Bei Musikwiedergabe -> Visualisierung verwenden</value></string>
   <string><id>13393</id><value>Ordnergröße berechnen</value></string> 
   <string><id>13394</id><value>Größe des Ordners wird berechnet</value></string> 
+  <string><id>13395</id><value>Video Einstellungen</value></string>
+  <string><id>13396</id><value>Audio und Untertitel Einstellungen</value></string> 
+  <string><id>13397</id><value>Untertitel aktivieren</value></string>
 
   <string><id>14000</id><value>Koppeln deakt.</value></string>
   <string><id>14001</id><value>Koppeln aktiv.</value></string>
@@ -943,9 +947,9 @@
   <string><id>14016</id><value>ohne Ordner -> Listenansicht</value></string>
   <string><id>14017</id><value>Anteil der Miniaturansichten</value></string>
   <string><id>14018</id><value>Ansicht</value></string>
-  <string><id>14019</id><value>- Ortskennzahl 1</value></string>
-  <string><id>14020</id><value>- Ortskennzahl 2</value></string>
-  <string><id>14021</id><value>- Ortskennzahl 3</value></string>
+  <string><id>14019</id><value>Ortskennzahl 1</value></string>
+  <string><id>14020</id><value>Ortskennzahl 2</value></string>
+  <string><id>14021</id><value>Ortskennzahl 3</value></string>
   <string><id>14022</id><value>Datenbank</value></string>
   <string><id>14023</id><value>Kein TV</value></string>
   <string><id>14024</id><value>Stadt oder Adresse z.B.[AUXX0008] eingeben:</value></string>
@@ -988,8 +992,8 @@
   <string><id>14061</id><value>Automatisch</value></string>
   <string><id>14062</id><value>Benutzername eingeben</value></string>
   <string><id>14063</id><value>Datum &amp; Uhrzeit</value></string> 
-  <string><id>14064</id><value>> Datum</value></string> 
-  <string><id>14065</id><value>> Uhrzeit</value></string> 
+  <string><id>14064</id><value>- Datum</value></string> 
+  <string><id>14065</id><value>- Uhrzeit</value></string> 
   <string><id>14066</id><value>Uhrzeit HH:MM eingeben</value></string> 
   <string><id>14067</id><value>Datum DD/MM/YYYY eingeben</value></string> 
   <string><id>14068</id><value>IP Adresse eingeben</value></string> 
@@ -1091,8 +1095,10 @@
   <string><id>16002</id><value>CDDB Abfrage</value></string> 
   <string><id>16003</id><value>Optionen</value></string>
   <string><id>16004</id><value>Halbbildverfahren synchronisieren</value></string> 
-  <string><id>16005</id><value>- Halbbilder umkehren</value></string> 
-
+  <string><id>16005</id><value>- Felder umkehren</value></string> 
+  <string><id>16006</id><value>Interlace synchonisieren</value></string> 
+  <string><id>16007</id><value>- Felder umkehren</value></string> 
+  <string><id>16008</id><value>Aktiv</value></string> 
 
   <string><id>20000</id><value>Wechseln zu...</value></string>
   <string><id>20001</id><value>Zu Favoriten hinzuf.</value></string>

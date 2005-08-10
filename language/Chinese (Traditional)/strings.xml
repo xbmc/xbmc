@@ -78,7 +78,7 @@
   <string><id>146</id><value>類型：</value></string>
   <string><id>147</id><value>手動 (靜態分配)</value></string>
   <string><id>148</id><value>自動 (動態分配)</value></string>
-  <string><id>149</id><value>網卡 (MAC) 位址</value></string>
+  <string><id>149</id><value>網卡位址 (MAC)</value></string>
   <string><id>150</id><value>IP 位址</value></string>
   <string><id>151</id><value>連線：</value></string>
   <string><id>152</id><value>半雙工</value></string>
@@ -112,7 +112,7 @@
   <string><id>180</id><value>持續時間</value></string>
   <string><id>181</id><value>選擇專輯</value></string>
   <string><id>182</id><value>音軌</value></string>
-  <string><id>183</id><value>回顧</value></string>
+  <string><id>183</id><value>評論</value></string>
   <string><id>184</id><value>重新整理</value></string>
   <string><id>185</id><value>搜尋專輯</value></string>
   <string><id>186</id><value>確定</value></string>
@@ -204,7 +204,7 @@
   <string><id>271</id><value>排名前 100</value></string>
   <string><id>272</id><value>左上角位置</value></string>
   <string><id>273</id><value>右下角位置</value></string>
-  <string><id>274</id><value>字幕位置</value></string>
+  <string><id>274</id><value>位置</value></string>
   <string><id>275</id><value>像素比值調整</value></string>
   <string><id>276</id><value>設定角落位置</value></string>
   <string><id>277</id><value>改變字幕位置</value></string>
@@ -275,8 +275,8 @@
   <string><id>343</id><value>調整畫面更新率</value></string>
   <string><id>344</id><value>演員</value></string>
   <string><id>345</id><value>年份</value></string>
-  <string><id>346</id><value>過濾</value></string>
-  <string><id>347</id><value>不過濾</value></string>
+  <string><id>346</id><value>堆疊</value></string>
+  <string><id>347</id><value>不堆疊</value></string>
   <string><id>348</id><value>展開目錄</value></string>
   <string><id>349</id><value>只顯示預設的執行檔</value></string>
   <string><id>350</id><value>程式</value></string>
@@ -445,6 +445,7 @@
   <string><id>513</id><value>主界面</value></string>
   <string><id>514</id><value>設定界面</value></string>
   <string><id>515</id><value>類別</value></string>
+  <string><id>516</id><value>檔案管理</value></string>
   
   <string><id>600</id><value>擷取音樂 CD</value></string>
   <string><id>601</id><value>中等</value></string>
@@ -479,6 +480,8 @@
   <string><id>642</id><value>音量 - 不重覆播放的檔案</value></string>
   <string><id>643</id><value>循環播放</value></string>
   <string><id>644</id><value>去除黑邊</value></string>
+  
+  <string><id>645</id><value>大檔案繼續使用緩衝區嗎？</value></string>
 
   <string><id>700</id><value>清除音樂庫</value></string>
   <string><id>701</id><value>清除音樂庫中的舊檔案</value></string>
@@ -559,7 +562,7 @@
   
   <string><id>1000</id><value>螢幕保護預覽</value></string>
   <string><id>1200</id><value>SMB 共享設定</value></string>
-  <string><id>1201</id><value>SMB IP位址</value></string>
+  <string><id>1201</id><value>SMB IP 位址</value></string>
   <string><id>1202</id><value>SMB 工作群</value></string>
   <string><id>1203</id><value>SMB 使用者名稱</value></string>
   <string><id>1204</id><value>SMB 密碼</value></string>
@@ -567,7 +570,7 @@
   <string><id>1206</id><value>SMB 共享群</value></string>
   <string><id>1207</id><value>SMB WINS-伺服器</value></string>
   <string><id>1208</id><value>設定 模式</value></string>
-  <string><id>1209</id><value> SMB 共享設定成功！</value></string>
+  <string><id>1209</id><value>SMB 共享設定成功！</value></string>
   <string><id>1210</id><value>刪除</value></string>
   <string><id>1211</id><value>音樂</value></string>
   <string><id>1212</id><value>影片</value></string>
@@ -683,7 +686,7 @@
   <string><id>12003</id><value>我的影片/資訊</value></string>
   <string><id>12004</id><value>我的劇本/資訊</value></string>
   <string><id>12005</id><value>全螢幕影片</value></string>
-  <string><id>12006</id><value>聲音視覺效果</value></string>
+  <string><id>12006</id><value>音樂視覺效果</value></string>
   <string><id>12007</id><value>我的圖片/幻燈片秀</value></string>
   <string><id>12008</id><value>檔案定位對話</value></string>
   
@@ -874,7 +877,11 @@
   <string><id>13391</id><value>彈出/載入</value></string>
   <string><id>13392</id><value>視覺效果自動全螢幕</value></string>
   <string><id>13393</id><value>計算大小</value></string>
-  <string><id>13394</id><value>計算檔案大小</value></string>
+  <string><id>13394</id><value>計算資料夾大小</value></string>
+  <string><id>13395</id><value>影片設定</value></string>
+  <string><id>13396</id><value>聲音和字幕設定</value></string>
+  <string><id>13397</id><value>開啟字幕</value></string>
+  <string><id>13398</id><value>書籤</value></string>
 
   <string><id>14000</id><value>堆疊：開啟</value></string>
   <string><id>14001</id><value>堆疊：關閉</value></string>
@@ -1092,5 +1099,17 @@
   
   <string><id>16004</id><value>同步影片交錯訊號</value></string>
   <string><id>16005</id><value>- 反轉可視範圍</value></string>
+  <string><id>16006</id><value>同步交錯訊號</value></string>
+  <string><id>16007</id><value>反轉可視範圍</value></string> 
+  <string><id>16008</id><value>開啟</value></string>
   
+  <string><id>16009</id><value>輸入影片名稱</value></string>
+  <string><id>16010</id><value>輸入預設檔名稱</value></string>
+  <string><id>16011</id><value>輸入專輯名稱</value></string>
+  <string><id>16012</id><value>輸入播放列表名稱</value></string>
+  <string><id>16013</id><value>輸入新檔案名稱</value></string>
+  <string><id>16014</id><value>輸入資料夾名稱</value></string>
+  <string><id>16015</id><value>輸入目錄名稱</value></string>
+  <string><id>16016</id><value>可用選項：%A, %T, %N, %B, %D, %G, %Y, %F</value></string>
+  <string><id>16017</id><value>輸入搜尋字串</value></string>
 </strings>
