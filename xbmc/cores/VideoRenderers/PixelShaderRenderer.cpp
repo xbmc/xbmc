@@ -34,16 +34,22 @@ unsigned int CPixelShaderRenderer::Configure(unsigned int width, unsigned int he
   return 0;
 }
 
-void CPixelShaderRenderer::FlipPage()
+void CPixelShaderRenderer::PrepareDisplay()
 {
   ++m_iYV12DecodeBuffer %= m_NumYV12Buffers;
-  CXBoxRenderer::FlipPage();
+  CXBoxRenderer::PrepareDisplay();
 }
 
 void CPixelShaderRenderer::Render()
 {
+
+  ResetEvent(m_eventTexturesDone);
+
   // this is the low memory renderer
   RenderLowMem();
+
+  //Okey, when the gpu is done with the textures here, they are free to be modified again
+  m_pD3DDevice->InsertCallback(D3DCALLBACK_READ,&TextureCallback, (DWORD)m_eventTexturesDone);
 
   RenderOSD();
 

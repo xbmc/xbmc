@@ -56,7 +56,7 @@ public:
   virtual unsigned int PutImage(YV12Image *image);
   virtual unsigned int DrawFrame(unsigned char *src[]);
   virtual unsigned int DrawSlice(unsigned char *src[], int stride[], int w, int h, int x, int y);
-  virtual void FlipPage();
+  virtual void FlipPage(bool bAsync = false);
   virtual unsigned int PreInit();
   virtual void UnInit();
   virtual void DrawAlpha(int x0, int y0, int w, int h, unsigned char *src, unsigned char *srca, int stride);
@@ -67,7 +67,9 @@ public:
   int GetBuffersCount() { return m_NumYV12Buffers; };
 
   void SetFieldSync(EFIELDSYNC mSync);
-  void FlipPageAsync();
+
+  virtual void PrepareDisplay();
+
 
   int GetAsyncFlipTime() { return m_iAsyncFlipTime; } ;
 
@@ -143,9 +145,16 @@ protected:
   // clear colour for "black" bars
   DWORD m_clearColour;
 
+  //When this fence has been passed, textures can be modified again
+  DWORD m_dwTextureFence;
+
+  static void TextureCallback(DWORD dwContext);
+  HANDLE m_eventTexturesDone;
 
   // render thread
   CEvent m_eventFrame;
+  bool m_bPrepared;
+
   int m_iAsyncFlipTime; //Time of an average flip in milliseconds
 
   void Process();

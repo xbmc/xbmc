@@ -39,7 +39,9 @@ CXBoxRenderer::CXBoxRenderer(LPDIRECT3DDEVICE8 pDevice)
     m_VTexture[i] = NULL;
   }
   m_hLowMemShader = 0;
-
+  m_bPrepared=false;
+  m_iAsyncFlipTime = 0;
+  m_eventTexturesDone = CreateEvent(NULL,TRUE,TRUE,NULL);
 }
 
 CXBoxRenderer::~CXBoxRenderer()
@@ -676,6 +678,7 @@ unsigned int CXBoxRenderer::Configure(unsigned int width, unsigned int height, u
   SetViewMode(g_stSettings.m_currentVideoSettings.m_ViewMode);
   ManageDisplay();
   SetupSubtitles();
+
   return 0;
 }
 
@@ -689,29 +692,18 @@ unsigned int CXBoxRenderer::DrawFrame(unsigned char *src[])
 unsigned int CXBoxRenderer::GetImage(YV12Image *image)
 {
   if (!image) return 0;
-  g_graphicsContext.Lock();
 
-  while (m_YTexture[m_iYV12DecodeBuffer]->IsBusy())
-  {
-    if (m_YTexture[m_iYV12DecodeBuffer]->Lock)
-      g_graphicsContext.Get3DDevice()->BlockOnFence(m_YTexture[m_iYV12DecodeBuffer]->Lock);
-    else
-      Sleep(1);
-  }
-  while (m_UTexture[m_iYV12DecodeBuffer]->IsBusy())
-  {
-    if (m_UTexture[m_iYV12DecodeBuffer]->Lock)
-      g_graphicsContext.Get3DDevice()->BlockOnFence(m_UTexture[m_iYV12DecodeBuffer]->Lock);
-    else
-      Sleep(1);
-  }
-  while (m_VTexture[m_iYV12DecodeBuffer]->IsBusy())
-  {
-    if (m_VTexture[m_iYV12DecodeBuffer]->Lock)
-      g_graphicsContext.Get3DDevice()->BlockOnFence(m_VTexture[m_iYV12DecodeBuffer]->Lock);
-    else
-      Sleep(1);
-  }
+  //Don't do anything here that would require locking of grapichcontext
+  //it shouldn't be needed, and locking here will slow down prepared rendering
+  //Probably shouldn't even call blockonfence as it can clash with other blocking calls
+
+  WaitForSingleObject(m_eventTexturesDone, 1000);
+
+  //We know the resources have been used at this point
+  //reset these so the gpu doesn't try to block on these
+  m_YTexture[m_iYV12DecodeBuffer]->Lock = 0;
+  m_UTexture[m_iYV12DecodeBuffer]->Lock = 0;
+  m_VTexture[m_iYV12DecodeBuffer]->Lock = 0;
 
   D3DLOCKED_RECT lr;
 
@@ -730,7 +722,6 @@ unsigned int CXBoxRenderer::GetImage(YV12Image *image)
   image->plane[2] = (BYTE*)lr.pBits;
   image->stride[2] = lr.Pitch;
 
-  g_graphicsContext.Unlock();
   return 1;
 }
 
@@ -794,12 +785,13 @@ void CXBoxRenderer::SetFieldSync(EFIELDSYNC mSync)
 
 }
 
-void CXBoxRenderer::FlipPage()
+void CXBoxRenderer::PrepareDisplay()
 {
   if (g_graphicsContext.IsFullScreenVideo() )
   {
-    ManageDisplay();
     g_graphicsContext.Lock();
+
+    ManageDisplay();
 
     m_pD3DDevice->Clear( 0L, NULL, D3DCLEAR_TARGET, m_clearColour, 1.0f, 0L );
 
@@ -811,11 +803,32 @@ void CXBoxRenderer::FlipPage()
 
     m_pD3DDevice->KickPushBuffer();
 
+    m_bPrepared = true;
 
-    //D3DPRESENT_INTERVAL_IMMIDIATE
+    g_graphicsContext.Unlock();
+  }
+}
+
+void CXBoxRenderer::FlipPage(bool bAsync)
+{
+  if( bAsync )
+  {
+    if( CThread::ThreadHandle() == NULL ) CThread::Create();
+    m_eventFrame.PulseEvent();
+    return;
+  }
+
+  if (g_graphicsContext.IsFullScreenVideo() )
+  {
+    g_graphicsContext.Lock();
+
+    if( !m_bPrepared )
+    {
+      PrepareDisplay();
+    }
 
     //Make sure the push buffer is done before waiting for vblank, otherwise we can get tearing
-    m_pD3DDevice->BlockUntilIdle();
+    while( m_pD3DDevice->IsBusy() ) Sleep(1);
 
     D3DFIELD_STATUS mStatus;
     D3DRASTER_STATUS mRaster;
@@ -855,21 +868,24 @@ void CXBoxRenderer::FlipPage()
         //Not in the right position, sleep 1ms, and check again
         Sleep(1);
       }
-
-
-      //m_pD3DDevice->BlockUntilVerticalBlank();
-      //if( mSync == FS_ODD && mStatus.Field == D3DFIELD_EVEN )
-      //  m_pD3DDevice->BlockUntilVerticalBlank();
-      //else if(  mSync == FS_EVEN && mStatus.Field == D3DFIELD_ODD )
-      //  m_pD3DDevice->BlockUntilVerticalBlank();
     }
     else
     {
-      m_pD3DDevice->BlockUntilVerticalBlank();
+      while(1)
+      {
+        m_pD3DDevice->GetRasterStatus(&mRaster);
+        if( mRaster.InVBlank || (int)mRaster.ScanLine >= rd.bottom ) break;
+        Sleep(1);
+      }
     }
 
-
     m_pD3DDevice->Present( NULL, NULL, NULL, NULL );
+
+    //If textures hasn't been released earlier, release them here
+    SetEvent(m_eventTexturesDone);
+
+    m_bPrepared=false;
+
     g_graphicsContext.Unlock();
   }
 
@@ -909,33 +925,23 @@ unsigned int CXBoxRenderer::DrawSlice(unsigned char *src[], int stride[], int w,
   BYTE *d;
   int i = 0;
 
-  g_graphicsContext.Lock();
+  //Don't do anything here that would require locking of grapichcontext
+  //it shouldn't be needed, and locking here will slow down prepared rendering
+  if( WaitForSingleObject(m_eventTexturesDone, 500) == WAIT_TIMEOUT )
+  {
+    //This should only happen if flippage wasn't called
+    SetEvent(m_eventTexturesDone);
+  }
+
+  //We know the resources have been used at this point
+  //reset these so the gpu doesn't try to block on these
+  m_YTexture[m_iYV12DecodeBuffer]->Lock = 0;
+  m_UTexture[m_iYV12DecodeBuffer]->Lock = 0;
+  m_VTexture[m_iYV12DecodeBuffer]->Lock = 0;
 
   if (!m_YTexture[m_iYV12DecodeBuffer])
   {
     ++m_iYV12DecodeBuffer %= m_NumYV12Buffers;
-  }
-
-  while (m_YTexture[m_iYV12DecodeBuffer]->IsBusy())
-  {
-    if (m_YTexture[m_iYV12DecodeBuffer]->Lock)
-      m_pD3DDevice->BlockOnFence(m_YTexture[m_iYV12DecodeBuffer]->Lock);
-    else
-      Sleep(1);
-  }
-  while (m_UTexture[m_iYV12DecodeBuffer]->IsBusy())
-  {
-    if (m_UTexture[m_iYV12DecodeBuffer]->Lock)
-      m_pD3DDevice->BlockOnFence(m_UTexture[m_iYV12DecodeBuffer]->Lock);
-    else
-      Sleep(1);
-  }
-  while (m_VTexture[m_iYV12DecodeBuffer]->IsBusy())
-  {
-    if (m_VTexture[m_iYV12DecodeBuffer]->Lock)
-      m_pD3DDevice->BlockOnFence(m_VTexture[m_iYV12DecodeBuffer]->Lock);
-    else
-      Sleep(1);
   }
 
   D3DLOCKED_RECT lr;
@@ -977,8 +983,6 @@ unsigned int CXBoxRenderer::DrawSlice(unsigned char *src[], int stride[], int w,
     d += lr.Pitch;
   }
   m_VTexture[m_iYV12DecodeBuffer]->UnlockRect(0);
-
-  g_graphicsContext.Unlock();
 
   return 0;
 }
@@ -1027,7 +1031,6 @@ unsigned int CXBoxRenderer::PreInit()
     pShader->Release();
   }
 
-  Create();
   return 0;
 }
 
@@ -1251,6 +1254,7 @@ void CXBoxRenderer::RenderLowMem()
   {
     g_graphicsContext.ClipToViewWindow();
   }
+  ResetEvent(m_eventTexturesDone);
 
   m_pD3DDevice->SetTexture( 0, m_YTexture[iRenderBuffer]);
   m_pD3DDevice->SetTexture( 1, m_UTexture[iRenderBuffer]);
@@ -1307,6 +1311,10 @@ void CXBoxRenderer::RenderLowMem()
 
   m_pD3DDevice->SetPixelShader( NULL );
   m_pD3DDevice->SetScissors(0, FALSE, NULL );
+
+  //Okey, when the gpu is done with the textures here, they are free to be modified again
+  m_pD3DDevice->InsertCallback(D3DCALLBACK_READ,&TextureCallback, (DWORD)m_eventTexturesDone);
+
 }
 
 void CXBoxRenderer::CreateThumbnail(LPDIRECT3DSURFACE8 surface, unsigned int width, unsigned int height)
@@ -1432,9 +1440,9 @@ bool CXBoxRenderer::CreateYV12Texture(int index)
   return true;
 }
 
-void CXBoxRenderer::FlipPageAsync()
+void CXBoxRenderer::TextureCallback(DWORD dwContext)
 {
-  m_eventFrame.PulseEvent();
+  SetEvent((HANDLE)dwContext);
 }
 
 void CXBoxRenderer::Process()
@@ -1460,7 +1468,7 @@ void CXBoxRenderer::Process()
 
     DWORD dwTimeStamp = GetTickCount();
 
-    FlipPage();
+    CXBoxRenderer::FlipPage(false);
 
     //Calculate the average time for a flip over 10 frames
     dwFlipTime += GetTickCount() - dwTimeStamp;
