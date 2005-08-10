@@ -554,6 +554,8 @@ void CGUIDialogVideoSettings::AddSubtitleStreams(unsigned int id)
   setting.data = &m_subtitleStream;
   m_subtitleStream = g_stSettings.m_currentVideoSettings.m_SubtitleStream;
 
+  if(m_subtitleStream < 0) m_subtitleStream = 0;
+
   // get the number of audio strams for the current movie
   setting.max = (float)g_application.m_pPlayer->GetSubtitleCount() - 1;
 
