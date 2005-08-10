@@ -21,7 +21,7 @@ public:
   virtual void ReleaseImage();
   virtual unsigned int GetImage(YV12Image *image);
   virtual unsigned int DrawSlice(unsigned char *src[], int stride[], int w, int h, int x, int y);
-  virtual void FlipPage();
+  virtual void PrepareDisplay();
   virtual unsigned int PreInit();
   virtual void UnInit();
 

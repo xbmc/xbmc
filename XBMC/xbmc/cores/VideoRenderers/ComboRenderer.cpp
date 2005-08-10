@@ -198,9 +198,6 @@ unsigned int CComboRenderer::GetImage(YV12Image *image)
 void CComboRenderer::ReleaseImage()
 {
   CXBoxRenderer::ReleaseImage();
-  ++m_iYV12DecodeBuffer %= m_NumYV12Buffers;
-  if (g_graphicsContext.IsFullScreenVideo())
-    YV12toYUY2();
 }
 
 void CComboRenderer::Update(bool bPauseDrawing)
@@ -212,27 +209,25 @@ void CComboRenderer::Update(bool bPauseDrawing)
   CXBoxRenderer::Update(bPauseDrawing);
 }
 
-void CComboRenderer::FlipPage()
+void CComboRenderer::PrepareDisplay()
 {
   if (m_NumYUY2Buffers)
+  {
+    ResetEvent( m_eventTexturesDone );
+
+    if (g_graphicsContext.IsFullScreenVideo())
+      YV12toYUY2();
+
     ++m_iYUVDecodeBuffer %= m_NumYUY2Buffers;
+
+  }
   m_bHasDimView = false;
-  CXBoxRenderer::FlipPage();
+  CXBoxRenderer::PrepareDisplay();
 }
 
 unsigned int CComboRenderer::DrawSlice(unsigned char *src[], int stride[], int w, int h, int x, int y)
 {
-  CXBoxRenderer::DrawSlice(src, stride, w, h, x, y);
-  if (y + h + 1 >= (int)m_iSourceHeight)
-  {
-    g_graphicsContext.Lock();
-    // frame finished, output buffer to screen
-    ++m_iYV12DecodeBuffer %= m_NumYV12Buffers;
-    if (g_graphicsContext.IsFullScreenVideo())
-      YV12toYUY2();
-    g_graphicsContext.Unlock();
-  }
-  return 0;
+  return CXBoxRenderer::DrawSlice(src, stride, w, h, x, y);
 }
 
 void CComboRenderer::YV12toYUY2()
@@ -331,6 +326,9 @@ void CComboRenderer::YV12toYUY2()
 
   m_pD3DDevice->KickPushBuffer();
 
+  //Okey, when the gpu is done with the textures here, they are free to be modified again
+  m_pD3DDevice->InsertCallback(D3DCALLBACK_READ,&TextureCallback, (DWORD)m_eventTexturesDone);
+
   g_graphicsContext.Unlock();
 }
 
@@ -356,6 +354,7 @@ void CComboRenderer::Render()
     pSurface->Release();
   }
   RenderOSD();
+
 #ifndef _DEBUG
   if (g_stSettings.m_bShowFreeMem)
 #endif

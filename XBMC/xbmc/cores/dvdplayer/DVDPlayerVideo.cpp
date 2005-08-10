@@ -503,8 +503,11 @@ DWORD video_refresh_thread(void *arg)
       else
         g_renderManager.SetFieldSync( FS_NONE );
       
-      bool bDiscontinuity = pDVDPlayerVideo->m_pClock->HadDiscontinuity(1 * DVD_TIME_BASE);
+      //Prepare image for display, will speed up rendering as it frees resources for decode earlier
+      g_renderManager.PrepareDisplay();
 
+
+      bool bDiscontinuity = pDVDPlayerVideo->m_pClock->HadDiscontinuity(1 * DVD_TIME_BASE);
       if (bDiscontinuity)
       {
         //Playback at normal fps untill 1 sec after discontinuity

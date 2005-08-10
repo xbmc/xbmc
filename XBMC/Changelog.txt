@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 10-08-2005 fixed: dvdplayer wouldn't detect film (24fps progressive) material correctly, and would enable deinterlacing when not needed
+ - 10-08-2005 changed: rewrote parts of the threaded rendering to allow player earlier access to resources after a frame was displayed. Should improve performance.
  - 10-08-2005 changed: removed the ftp user limit from the emergency recovery console.
  - 10-08-2005 fixed: dvdplayer sometimes lost button focus in dvd menu's, resulted in crashes and other bugs
  - 10-08-2005 fixed: cache location in xml affected screenshots & not cachepath

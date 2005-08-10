@@ -63,25 +63,23 @@ public:
     return 0;
   }
 
-  inline void FlipPageAsync()
+  inline void PrepareDisplay()
   {
+    if (m_bPauseDrawing) return;
     if (!m_bChanging && m_pRenderer)
     {
-      if (m_bPauseDrawing)
-        m_pRenderer->RenderBlank();
-      else
-        m_pRenderer->FlipPageAsync();
+      m_pRenderer->PrepareDisplay();
     }
   }
 
-  inline void FlipPage()
+  inline void FlipPage(bool bAsync = false)
   {
     if (!m_bChanging && m_pRenderer)
     {
       if (m_bPauseDrawing)
         m_pRenderer->RenderBlank();
       else
-        m_pRenderer->FlipPage();
+        m_pRenderer->FlipPage(bAsync);
     }
   }
 
