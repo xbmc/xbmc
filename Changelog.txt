@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 10-08-2005 fixed: Overlay Render method wouldn't display picture when in GUI
  - 10-08-2005 fixed: video osd could crash if no subtitle had been selected on a movie
  - 10-08-2005 fixed: dvdplayer had long delay on first menu navigation
  - 10-08-2005 added: proper action codes for entering dvdmenu, Keymap - showvideomenu, Skin - XBMC.PlayerControl(showvideomenu)

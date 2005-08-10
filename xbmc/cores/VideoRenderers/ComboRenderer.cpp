@@ -213,14 +213,15 @@ void CComboRenderer::PrepareDisplay()
 {
   if (m_NumYUY2Buffers)
   {
-    ResetEvent( m_eventTexturesDone );
-
-    if (g_graphicsContext.IsFullScreenVideo())
-      YV12toYUY2();
-
+    YV12toYUY2();
     ++m_iYUVDecodeBuffer %= m_NumYUY2Buffers;
-
   }
+  else
+  {
+    //This is when we not are in fullscreen
+    ++m_iYV12DecodeBuffer %= m_NumYV12Buffers;
+  }
+
   m_bHasDimView = false;
   CXBoxRenderer::PrepareDisplay();
 }
@@ -243,6 +244,8 @@ void CComboRenderer::YV12toYUY2()
   }
 
   g_graphicsContext.Lock();
+
+  ResetEvent( m_eventTexturesDone );
 
   // Do the YV12 -> YUY2 conversion.
   // ALWAYS use buffer 0 in this case (saves 12 bits/pixel)
@@ -334,8 +337,9 @@ void CComboRenderer::YV12toYUY2()
 
 void CComboRenderer::Render()
 {
-  if ( !g_graphicsContext.IsFullScreenVideo() )
+  if ( m_NumYUY2Buffers == 0 )
   {
+    //This is in fullscreen
     RenderLowMem();
   }
   else
