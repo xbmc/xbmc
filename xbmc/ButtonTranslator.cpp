@@ -324,6 +324,9 @@ bool CButtonTranslator::TranslateActionString(const char *szAction, WORD &wActio
   else if (strAction.Equals("randompreset")) wAction = ACTION_VIS_PRESET_RANDOM;
   else if (strAction.Equals("increaserating")) wAction = ACTION_VIS_RATE_PRESET_PLUS;
   else if (strAction.Equals("decreaserating")) wAction = ACTION_VIS_RATE_PRESET_MINUS;
+
+  else if (strAction.Equals("showvideomenu")) wAction = ACTION_SHOW_VIDEOMENU;
+
   else
     CLog::Log(LOGERROR, "Keymapping error: no such action '%s' defined", strAction.c_str());
   return (wAction != ACTION_NONE);
@@ -411,7 +414,7 @@ WORD CButtonTranslator::TranslateWindowString(const char *szWindow)
   else if (strWindow.Equals("xlinkkai")) wWindowID = WINDOW_BUDDIES;
   else if (strWindow.Equals("screensaver")) wWindowID = WINDOW_SCREENSAVER;
   else if (strWindow.Equals("videoosd")) wWindowID = WINDOW_OSD;
-  else if (strWindow.Equals("videomenu")) wWindowID = WINDOW_MEDIA_MENU;
+  else if (strWindow.Equals("videomenu")) wWindowID = WINDOW_VIDEO_MENU;
   else
     CLog::Log(LOGERROR, "Window Translator: Can't find window %s", strWindow.c_str());
 

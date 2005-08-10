@@ -44,7 +44,7 @@ CDVDInputStreamNavigator::CDVDInputStreamNavigator(IDVDPlayer* player) : CDVDInp
   m_bDllLibdvdcssLoaded = false;
   m_bDllLibdvdnavLoaded = false;
   m_bCheckButtons = false;
-
+  m_bDiscardHop = false;
 }
 
 CDVDInputStreamNavigator::~CDVDInputStreamNavigator()

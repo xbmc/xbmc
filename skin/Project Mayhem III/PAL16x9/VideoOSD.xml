@@ -162,7 +162,7 @@
     </control> -->
 
     <control>
-      <description>Subtitles Menu</description>
+      <description>Show Media Menu</description>
       <type>togglebutton</type>
       <id>918</id>
       <posX>130</posX>
@@ -174,7 +174,7 @@
       <UseAltTexture>Window.IsActive(124) | Window.IsActive(123)</UseAltTexture>
       <AltTextureFocus>osd_button_subtitlesSELNF.png</AltTextureFocus>
       <AltTextureNoFocus>-</AltTextureNoFocus>
-      <execute>XBMC.ActivateWindow(124)</execute>
+      <execute>XBMC.PlayerControl(ShowVideoMenu)</execute>
       <label>-</label>
       <font>-</font>
       <onleft>210</onleft>

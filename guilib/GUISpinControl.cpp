@@ -418,7 +418,7 @@ void CGUISpinControl::Render()
   else
   {
     swprintf(wszText, L"");
-    if (m_iValue < (int)m_vecLabels.size() )
+    if (m_iValue >= 0 && m_iValue < (int)m_vecLabels.size() )
     {
       if (m_bShowRange)
       {
