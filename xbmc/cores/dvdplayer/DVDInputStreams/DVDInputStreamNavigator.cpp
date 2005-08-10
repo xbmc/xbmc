@@ -43,6 +43,7 @@ CDVDInputStreamNavigator::CDVDInputStreamNavigator(IDVDPlayer* player) : CDVDInp
   InitializeCriticalSection(&m_critSection);
   m_bDllLibdvdcssLoaded = false;
   m_bDllLibdvdnavLoaded = false;
+  m_bCheckButtons = false;
 
 }
 
@@ -303,12 +304,17 @@ int CDVDInputStreamNavigator::ProcessBlock()
     case DVDNAV_SPU_CLUT_CHANGE:
       // Player applications should pass the new colour lookup table to their
       // SPU decoder. The CLUT is given as 16 uint32_t's in the buffer.
-      m_pDVDPlayer->OnDVDNavResult(buf, DVDNAV_SPU_CLUT_CHANGE);
+      {
+        m_pDVDPlayer->OnDVDNavResult(buf, DVDNAV_SPU_CLUT_CHANGE);
+      }
       break;
 
     case DVDNAV_SPU_STREAM_CHANGE:
       // Player applications should inform their SPU decoder to switch channels
-      m_pDVDPlayer->OnDVDNavResult(buf, DVDNAV_SPU_STREAM_CHANGE);
+      {
+        m_bCheckButtons = true;
+        m_pDVDPlayer->OnDVDNavResult(buf, DVDNAV_SPU_STREAM_CHANGE);
+      }
       break;
 
     case DVDNAV_AUDIO_STREAM_CHANGE:
@@ -332,9 +338,11 @@ int CDVDInputStreamNavigator::ProcessBlock()
       // not change inside a VTS. Therefore this event can be used to query such
       // information only when necessary and update the decoding/displaying
       // accordingly.
-      m_pDVDPlayer->OnDVDNavResult(buf, DVDNAV_VTS_CHANGE);
-      iNavresult = -1; // return read error
-      bFinished = true;
+      {
+        m_pDVDPlayer->OnDVDNavResult(buf, DVDNAV_VTS_CHANGE);
+        iNavresult = -1; // return read error
+        bFinished = true;
+      }
       break;
 
     case DVDNAV_CELL_CHANGE:
@@ -368,6 +376,11 @@ int CDVDInputStreamNavigator::ProcessBlock()
         // functions will already be ahead in the stream which can cause state inconsistencies.
         // Applications with fifos should therefore pass the NAV packet through the fifo
         // and decoding pipeline just like any other data.
+        if (m_bCheckButtons)
+        {
+          CheckButtons();
+          m_bCheckButtons = false;
+        }
         pci_t* pci = dvdnav_get_current_nav_pci(m_dvdnav);
         
         m_pDVDPlayer->OnDVDNavResult((void*)pci, DVDNAV_NAV_PACKET);
@@ -488,46 +501,82 @@ int CDVDInputStreamNavigator::GetCurrentButton()
   return -1;
 }
 
+void CDVDInputStreamNavigator::CheckButtons()
+{
+  if (m_dvdnav)
+  {
+    pci_t* pci = dvdnav_get_current_nav_pci(m_dvdnav);
+    int iCurrentButton = GetCurrentButton();
+    btni_t* button = &(pci->hli.btnit[iCurrentButton]);
+    
+    // menu buttons are always cropped overlays, so if there is no such information
+    // we assume the button is invalid
+    if (!(button->x_start || button->x_end || button->y_start || button->y_end))
+    {
+      for (int i = 0; i < 36; i++)
+      {
+        // select first valid button.
+        if (pci->hli.btnit[i].x_start ||
+            pci->hli.btnit[i].x_end ||
+            pci->hli.btnit[i].y_start ||
+            pci->hli.btnit[i].y_end)
+        {
+          dvdnav_button_select(m_dvdnav, pci, i + 1);
+          break;
+        }
+      }
+    }
+  }
+}
+
 int CDVDInputStreamNavigator::GetTotalButtons()
 {
   if (!m_dvdnav) return 0;
-  return dvdnav_get_current_nav_pci(m_dvdnav)->hli.hl_gi.nsl_btn_ns;
+  
+  pci_t* pci = dvdnav_get_current_nav_pci(m_dvdnav);
+  
+  int counter = 0;
+  for (int i = 0; i < 36; i++)
+  {
+    if (pci->hli.btnit[i].x_start ||
+        pci->hli.btnit[i].x_end ||
+        pci->hli.btnit[i].y_start ||
+        pci->hli.btnit[i].y_end)
+    {
+      counter++;
+    }
+  }
+  return counter;
 }
 
 void CDVDInputStreamNavigator::OnUp()
 {
-  if (!m_dvdnav) return;
-  dvdnav_upper_button_select(m_dvdnav, dvdnav_get_current_nav_pci(m_dvdnav));
+  if (m_dvdnav) dvdnav_upper_button_select(m_dvdnav, dvdnav_get_current_nav_pci(m_dvdnav));    
 }
 
 void CDVDInputStreamNavigator::OnDown()
 {
-  if (!m_dvdnav) return;
-  dvdnav_lower_button_select(m_dvdnav, dvdnav_get_current_nav_pci(m_dvdnav));
+  if (m_dvdnav) dvdnav_lower_button_select(m_dvdnav, dvdnav_get_current_nav_pci(m_dvdnav));
 }
 
 void CDVDInputStreamNavigator::OnLeft()
 {
-  if (!m_dvdnav) return;
-  dvdnav_left_button_select(m_dvdnav, dvdnav_get_current_nav_pci(m_dvdnav));
+  if (m_dvdnav) dvdnav_left_button_select(m_dvdnav, dvdnav_get_current_nav_pci(m_dvdnav));
 }
 
 void CDVDInputStreamNavigator::OnRight()
 {
-  if (!m_dvdnav) return;
-  dvdnav_right_button_select(m_dvdnav, dvdnav_get_current_nav_pci(m_dvdnav));
+  if (m_dvdnav) dvdnav_right_button_select(m_dvdnav, dvdnav_get_current_nav_pci(m_dvdnav));
 }
 
 void CDVDInputStreamNavigator::OnMenu()
 {
-  if (!m_dvdnav) return;
-  dvdnav_menu_call(m_dvdnav, DVD_MENU_Escape);
+  if (m_dvdnav) dvdnav_menu_call(m_dvdnav, DVD_MENU_Escape);
 }
 
 void CDVDInputStreamNavigator::OnBack()
 {
-  if (!m_dvdnav) return;
-  dvdnav_go_up(m_dvdnav);
+  if (!m_dvdnav) dvdnav_go_up(m_dvdnav);
 }
 
 // we don't allow skipping in menu's cause it will remove menu overlays
@@ -645,11 +694,12 @@ int CDVDInputStreamNavigator::GetAudioStreamCount()
   return dvdnav_get_nr_of_audio_streams(m_dvdnav);
 }
 
-bool CDVDInputStreamNavigator::GetButtonInfo(struct DVDOverlayPicture* pOverlayPicture, CDVDDemuxSPU* pSPU, int iButton, int iButtonType)
+bool CDVDInputStreamNavigator::GetCurrentButtonInfo(struct DVDOverlayPicture* pOverlayPicture, CDVDDemuxSPU* pSPU, int iButtonType)
 {
   int alpha[2][4];
   int color[2][4];
   dvdnav_highlight_area_t hl;
+  int iButton = GetCurrentButton();
   
   if (!m_dvdnav) return false;
   

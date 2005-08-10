@@ -11,7 +11,7 @@
 
 #include "../AutoPtrHandle.h"
 using namespace AUTOPTR;
-
+#include "../FileSystem/FileCurl.h"
 class CHTTP
 {
 public:
@@ -60,6 +60,7 @@ private:
 
   char* m_RecvBuffer;
   int m_RecvBytes;
+  CFileCurl m_curl;
 };
 
 #endif // !defined(AFX_HTTP_H__A368CB6F_3D08_4966_9F9F_961A59CB4EC7__INCLUDED_)
