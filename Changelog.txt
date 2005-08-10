@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 10-08-2005 fixed: cache location in xml affected screenshots & not cachepath
  - 09-08-2005 added: dvdplayer menu animation when a menu button is clicked
  - 09-08-2005 fixed: dvdplayer sync issues when deinterlacing was disabled
  - 09-08-2005 added: %S to the music track naming template to display the "Part of Set" identifier (aka Disc #)
