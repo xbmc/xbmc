@@ -9,10 +9,6 @@
 #include "DVDdemuxUtils.h"
 #include "..\DVDClock.h" // for DVD_TIME_BASE
 
-
-#define SWAP(a,b)   { int t; t=a; a=b; b=t; }
-    
-
 // class CDemuxStreamVideoFFmpeg
 void CDemuxStreamVideoFFmpeg::GetStreamInfo(std::string& strInfo)
 {

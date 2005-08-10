@@ -30,7 +30,8 @@ public:
   void DoWork();
 
   void SetVolume(long nVolume);
-
+  int GetVolume();
+  
   CDVDPacketQueue m_packetQueue;
 
   CodecID m_codec;    // codec id of the current active stream

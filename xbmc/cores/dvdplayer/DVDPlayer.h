@@ -67,10 +67,10 @@ public:
   virtual float GetPercentage();
   virtual void SetVolume(long nVolume);
   virtual int GetVolume();
-  virtual void SetContrast(bool bPlus);
-  virtual void SetBrightness(bool bPlus);
-  virtual void SetHue(bool bPlus);
-  virtual void SetSaturation(bool bPlus);
+  virtual void SetContrast(bool bPlus) {}
+  virtual void SetBrightness(bool bPlus) {}
+  virtual void SetHue(bool bPlus) {}
+  virtual void SetSaturation(bool bPlus) {}
   virtual void GetAudioInfo(CStdString& strAudioInfo);
   virtual void GetVideoInfo(CStdString& strVideoInfo);
   virtual void GetGeneralInfo( CStdString& strVideoInfo);
@@ -161,7 +161,8 @@ private:
   void FlushBuffers();
 
   void HandleMessages();
-
+  void UpdateMenuButtons(int iAction);
+  
   DllLoader* m_pDLLavformat;
   DllLoader* m_pDLLavcodec;
 

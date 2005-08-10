@@ -15,6 +15,8 @@ extern "C"
 }
 #endif
 
+#define DVD_VIDEO_BLOCKSIZE         DVD_VIDEO_LB_LEN // 2048 bytes
+
 #define NAVRESULT_OK                0x00000001
 #define NAVRESULT_SKIPPED_STILL     0x00000002
 #define NAVRESULT_STILL_NOT_SKIPPED 0x00000004
@@ -93,14 +95,12 @@ protected:
   bool LoadLibdvdnavDll();
   void UnloadDlls();
 
-  int ProcessBlock();
+  int ProcessBlock(BYTE* buffer, int* read);
 
   int GetTotalButtons();
   void CheckButtons();
   
-  unsigned __int8 m_mem[32 * 1048];
-  unsigned __int8 m_temp[32 * 1024];
-  int m_pBufferSize;
+  unsigned __int8 m_tempbuffer[DVD_VIDEO_BLOCKSIZE];
 
   CRITICAL_SECTION m_critSection;
   struct dvdnav_s* m_dvdnav;
