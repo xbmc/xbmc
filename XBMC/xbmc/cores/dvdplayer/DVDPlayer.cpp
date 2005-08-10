@@ -1327,7 +1327,7 @@ bool CDVDPlayer::OnAction(const CAction &action)
         return true;
       }
       break;
-    case ACTION_ASPECT_RATIO:   // start button 
+    case ACTION_SHOW_VIDEOMENU:   // start button 
       {
         CLog::DebugLog(" - go to menu");
         pStream->OnMenu();
@@ -1340,12 +1340,6 @@ bool CDVDPlayer::OnAction(const CAction &action)
     {
       switch (action.wID)
       {
-      case  ACTION_SHOW_OSD:  // MENU
-        {
-          CLog::DebugLog(" - menu select");
-          pStream->OnMenu();
-        }
-        break;
       case ACTION_PREVIOUS_MENU:
         {
           CLog::DebugLog(" - menu back");
