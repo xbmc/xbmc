@@ -407,7 +407,7 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
   
   strDir = g_stSettings.m_szCacheDirectory;
   ConvertHomeVar(strDir);
-  strcpy( g_stSettings.m_szScreenshotsDirectory, strDir.c_str() );
+  strcpy( g_stSettings.m_szCacheDirectory, strDir.c_str() );
 
   while ( CUtil::HasSlashAtEnd(g_stSettings.m_szScreenshotsDirectory) )
   {
