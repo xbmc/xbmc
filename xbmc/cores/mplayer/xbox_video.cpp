@@ -141,7 +141,7 @@ static unsigned int video_draw_slice(unsigned char *src[], int stride[], int w, 
 static void video_flip_page(void)
 {
   //Do this async to let mplayer keep better sync
-  g_renderManager.FlipPageAsync();
+  g_renderManager.FlipPage(true);
 }
 /********************************************************************************************************
   draw_frame(): this is the older interface, this displays only complete
@@ -335,6 +335,7 @@ static unsigned int video_control(unsigned int request, void *data, ...)
         if (mpi->flags & MP_IMGFLAG_DIRECT)
         {
           // direct rendering.. everything should already be fine
+          g_renderManager.PrepareDisplay();
           return VO_TRUE;
         }
         else
@@ -347,10 +348,14 @@ static unsigned int video_control(unsigned int request, void *data, ...)
 #endif
 
       if (mpi->flags & MP_IMGFLAG_DRAW_CALLBACK)
-          return VO_TRUE;         // done
+      {
+        g_renderManager.PrepareDisplay();
+        return VO_TRUE;         // done
+      }
       if (mpi->flags & MP_IMGFLAG_PLANAR)
       {
         g_renderManager.DrawSlice(mpi->planes, (int*)(mpi->stride), mpi->w, mpi->h, 0, 0);
+        g_renderManager.PrepareDisplay();
         return VO_TRUE;
       }
       return VO_FALSE;

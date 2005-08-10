@@ -1097,13 +1097,11 @@ bool CMPlayer::CloseFile()
       m_bIsMplayeropenfile = false;
       mplayer_close_file();
     }
-    catch(std::exception& e)
-    {
-      CLog::Log(LOGERROR, "CMPlayer::CloseFile() - Exception in mplayer_close_file: %s", e.what());
-    }
     catch(...)
     {
-      CLog::Log(LOGERROR, "CMPlayer::CloseFile() - Unknown Exception in mplayer_close_file()");
+      char buf[255];
+      mplayer_get_current_module(buf, 255);
+      CLog::Log(LOGERROR, "CMPlayer::CloseFile() - Unknown Exception in mplayer_close_file() - %s", buf);
     }
   }
 

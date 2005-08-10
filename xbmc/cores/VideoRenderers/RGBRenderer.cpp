@@ -128,23 +128,26 @@ unsigned int CRGBRenderer::Configure(unsigned int width, unsigned int height, un
   return 0;
 }
 
-void CRGBRenderer::FlipPage()
+void CRGBRenderer::PrepareDisplay()
 {
   ++m_iYV12DecodeBuffer %= m_NumYV12Buffers;
-  CXBoxRenderer::FlipPage();
+  CXBoxRenderer::PrepareDisplay();
 }
 
 void CRGBRenderer::Render()
 {
   if ( !g_graphicsContext.IsFullScreenVideo() )
   {
-    RenderLowMem();
+    RenderLowMem();    
   }
   else
   {
     //always render the buffer that is not currently being decoded to.
     int iRenderBuffer = ((m_iYV12DecodeBuffer + 1) % m_NumYV12Buffers);
     if (!m_YUVTexture) return ;
+
+    ResetEvent(m_eventTexturesDone);
+
     // First do the interleaving YV12->YUV, with chroma upsampling
     // if we are field syncing interlaced material, the chroma upsampling must be done per-field
     // rather than per-frame
@@ -268,6 +271,10 @@ void CRGBRenderer::Render()
     m_pD3DDevice->SetRenderTarget( pOldRT, NULL);
     pOldRT->Release();
     pYUVSurface->Release();
+
+
+    //Okey, when the gpu is done with the textures here, they are free to be modified again
+    m_pD3DDevice->InsertCallback(D3DCALLBACK_READ,&TextureCallback, (DWORD)m_eventTexturesDone);
 
     // Now perform the YUV->RGB conversion in a single pass, and render directly to the screen
     if ( m_iFieldSync != FS_NONE )
@@ -395,6 +402,7 @@ void CRGBRenderer::Render()
     m_pD3DDevice->SetPixelShader( NULL );
   }
   RenderOSD();
+
 
 #ifndef _DEBUG
   if (g_stSettings.m_bShowFreeMem)
