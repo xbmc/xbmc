@@ -1092,6 +1092,11 @@
   <string><id>15213</id><value>[PLACEHOLDER]</value></string>
   <string><id>15214</id><value>Use Smoothed A/V Syncronization</value></string>
 
+  <string><id>15300</id><value>Path not found or invalid</value></string>
+  <string><id>15301</id><value>Could not connect to network server</value></string>
+  <string><id>15302</id><value>No servers found</value></string>
+  <string><id>15303</id><value>Workgroup not found</value></string>
+
   <string><id>16000</id><value>General</value></string>
   <string><id>16001</id><value>Configure Audio Hardware...</value></string>
   <string><id>16002</id><value>CDDB lookup</value></string>
@@ -1110,6 +1115,6 @@
   <string><id>16013</id><value>Enter new filename</value></string>
   <string><id>16014</id><value>Enter folder name</value></string>
   <string><id>16015</id><value>Enter directory</value></string>
-  <string><id>16016</id><value>Available options: %A, %T, %N, %B, %D, %G, %Y, %F</value></string>
+  <string><id>16016</id><value>Available options: %A, %T, %N, %B, %D, %G, %Y, %F, %S</value></string>
   <string><id>16017</id><value>Enter Search String</value></string>
 </strings>
