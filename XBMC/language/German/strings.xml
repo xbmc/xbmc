@@ -448,6 +448,7 @@
   <string><id>513</id><value>Home</value></string>
   <string><id>514</id><value>Manuell einstellen</value></string>
   <string><id>515</id><value>Genre</value></string>
+  <string><id>516</id><value>Archive handhaben</value></string>
 
   <string><id>600</id><value>CD Rippen</value></string>
   <string><id>601</id><value>Medium</value></string>
@@ -491,8 +492,8 @@
   <string><id>703</id><value>Drücke 'Ja' um alle Songs nocheinmal einzulesen.</value></string>
   <string><id>704</id><value>Drücke 'Nein' um nur neue Songs hinzuzufügen.</value></string>
   <string><id>705</id><value>Netzwerk</value></string>
-  <string><id>706</id><value>- HTTP Proxy Host</value></string>
-  <string><id>707</id><value>- HTTP Proxy Port</value></string>
+  <string><id>706</id><value>HTTP Proxy Host</value></string>
+  <string><id>707</id><value>HTTP Proxy Port</value></string>
   <string><id>708</id><value>HTTP Proxy benutzen</value></string>
   <string><id>709</id><value>XLink Kai XTag</value></string>
   <string><id>710</id><value>XLink Kai Passwort</value></string>
@@ -515,14 +516,14 @@
   <string><id>727</id><value>Web Server</value></string>
   <string><id>728</id><value>FTP Server</value></string>
   <string><id>729</id><value>Internet Zeit</value></string>
-  <string><id>730</id><value>- Web Server Port</value></string>
-  <string><id>731</id><value>- Zeit Server Host</value></string>
+  <string><id>730</id><value>Web Server Port</value></string>
+  <string><id>731</id><value>Zeit Server Host</value></string>
   <string><id>732</id><value>Sichern &amp; Übernehmen</value></string>
-  <string><id>733</id><value>- Web Server Passwort</value></string>
+  <string><id>733</id><value>Web Server Passwort</value></string>
   <string><id>734</id><value>Kein Passwort</value></string>
-  <string><id>735</id><value>- Zeichentabelle</value></string>
-  <string><id>736</id><value>- Stil</value></string>
-  <string><id>737</id><value>- Farbe</value></string>
+  <string><id>735</id><value>Zeichentabelle</value></string>
+  <string><id>736</id><value>Stil</value></string>
+  <string><id>737</id><value>Farbe</value></string>
   <string><id>738</id><value>Normal</value></string>
   <string><id>739</id><value>Fett</value></string>
   <string><id>740</id><value>Kursiv</value></string>
@@ -601,8 +602,8 @@
   <string><id>1234</id><value>Programme &amp; Bilder &amp; Musik</value></string>
   <string><id>1235</id><value>Programmes &amp; Bilder &amp; Video</value></string>
 
-  <string><id>1245</id><value> - FTP Benutzername</value></string>
-  <string><id>1246</id><value> - FTP Passwort</value></string>
+  <string><id>1245</id><value>FTP Benutzername</value></string>
+  <string><id>1246</id><value>FTP Passwort</value></string>
   <string><id>1247</id><value>Passwort erfolgreich gesetzt</value></string>
 
   <string><id>1250</id><value>Autodetect</value></string>
@@ -784,8 +785,8 @@
   <string><id>13211</id><value>Alarm!</value></string>
   <string><id>13212</id><value>Abgebrochen, es sind %im%is übrig</value></string>
   
-  <string><id>13299</id><value>- Angestrebte CPU Temperatur</value></string>
-  <string><id>13300</id><value>- Geschwindigkeit</value></string>
+  <string><id>13299</id><value>Angestrebte CPU Temperatur</value></string>
+  <string><id>13300</id><value>Geschwindigkeit</value></string>
   <string><id>13301</id><value>Lüftergeschwindigkeit über CPU Temperatur regeln</value></string>
   <string><id>13302</id><value>Lüftergeschwindigkeit manuell einstellen</value></string>
   <string><id>13303</id><value>Schriftart</value></string>
@@ -883,6 +884,7 @@
   <string><id>13395</id><value>Video Einstellungen</value></string>
   <string><id>13396</id><value>Audio und Untertitel Einstellungen</value></string>
   <string><id>13397</id><value>Untertitel aktivieren</value></string>
+  <string><id>13398</id><value>Bookmarks</value></string>
 
   <string><id>14000</id><value>Stapeln: Aus</value></string>
   <string><id>14001</id><value>Stapeln: Einfach</value></string>
@@ -1104,4 +1106,13 @@
   <string><id>16007</id><value>Felder umkehren</value></string> 
   <string><id>16008</id><value>An</value></string>
  
+  <string><id>16009</id><value>Bitte den Namen des Films eingeben</value></string>
+  <string><id>16010</id><value>Bitte den Namen des Profiles eingeben</value></string>
+  <string><id>16011</id><value>Bitte den Nmaen des Albums eingeben</value></string>
+  <string><id>16012</id><value>Bitte den Namen der Playlist eingeben</value></string>
+  <string><id>16013</id><value>Bitte den neuen Dateinamen eingeben</value></string>
+  <string><id>16014</id><value>Bitte den Ordner Namen eingeben</value></string>
+  <string><id>16015</id><value>Bitte das Verzeichnis</value></string>
+  <string><id>16016</id><value>Verfügbare Optionen: %A, %T, %N, %B, %D, %G, %Y, %F, %S</value></string>
+  <string><id>16017</id><value>Bitte den Suchbegriff eingeben</value></string>
 </strings>

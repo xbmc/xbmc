@@ -94,7 +94,7 @@
   <string><id>163</id><value>Leyendo</value></string>
   <string><id>164</id><value>Sin Disco</value></string>
   <string><id>165</id><value>Disco presente</value></string>
-  <string><id>166</id><value>Tema Visual</value></string>
+  <string><id>166</id><value>Tema visual</value></string>
   <string><id>167</id><value>Activar servidor FTP</value></string>
   <string><id>168</id><value>Activar sincronización horaria desde Internet</value></string>
   <string><id>169</id><value>Resolución</value></string>
@@ -142,8 +142,8 @@
   <string><id>210</id><value>Anterior</value></string>
   <string><id>211</id><value>Buscando aplicaciones</value></string>
   <string><id>212</id><value>Aplicaciones encontradas</value></string>
-  <string><id>213</id><value>Posición Interfaz</value></string>
-  <string><id>214</id><value>Calibrar Pantalla</value></string> 
+  <string><id>213</id><value>Posición de la interfaz (GUI)</value></string>
+  <string><id>214</id><value>Calibrar pantalla</value></string> 
   <string><id>215</id><value>Suavizar</value></string>
   <string><id>216</id><value>Aumentar</value></string>
   <string><id>217</id><value>Ajustar</value></string>
@@ -221,7 +221,7 @@
   <string><id>289</id><value>- Tamaño</value></string>
   <string><id>290</id><value>Amplificación de volumen (dB)</value></string>
   <string><id>291</id><value>Vídeo</value></string>
-  <string><id>292</id><value>Audio</value></string>
+  <string><id>292</id><value>Sonido</value></string>
   <string><id>293</id><value>Subtítulos</value></string>
   <string><id>294</id><value>Crear marcador</value></string>
   <string><id>295</id><value>Siguiente marcador</value></string>
@@ -264,7 +264,7 @@
   <string><id>334</id><value>Limpiar biblioteca musical</value></string>
   <string><id>335</id><value>Inicio</value></string>
   <string><id>336</id><value>Ajustar FPS</value></string>
-  <string><id>337</id><value>Salida de audio</value></string>
+  <string><id>337</id><value>Salida de sonido</value></string>
   <string><id>338</id><value>Analógica</value></string>
   <string><id>339</id><value>Digital</value></string>
   <string><id>340</id><value>Varios Intérpretes</value></string>
@@ -432,6 +432,11 @@
   <string><id>508</id><value>No usar accesos directos ni explorar</value></string> 
   <string><id>509</id><value>Almacenar miniaturas de programas</value></string>
   <string><id>511</id><value>Cambiar modo de video según región del juego</value></string>
+  <string><id>512</id><value>Pantalla de inicio</value></string>
+  <string><id>513</id><value>Pantalla principal</value></string>
+  <string><id>514</id><value>Opciones manuales</value></string>
+  <string><id>515</id><value>Genero</value></string>
+
   <string><id>600</id><value>Comprimir CD de Música</value></string>
   <string><id>601</id><value>Media</value></string>
   <string><id>602</id><value>Estándar</value></string>
@@ -442,7 +447,7 @@
   <string><id>607</id><value>A:</value></string>
   <string><id>608</id><value>No se puede copiar CD o Pista</value></string>
   <string><id>609</id><value>CDDARipPath no está configurado en XboxMediaCenter.xml</value></string>
-  <string><id>620</id><value>Copiar CD de Audio</value></string>
+  <string><id>620</id><value>Copiar CD Audio</value></string>
   <string><id>621</id><value>Codificador</value></string>
   <string><id>622</id><value>Calidad</value></string>
   <string><id>623</id><value>Tasa de bits</value></string>
@@ -514,9 +519,8 @@
   <string><id>755</id><value>Editar Ruta Programa</value></string>
   <string><id>756</id><value>Editar Nombre Programa</value></string>
   <string><id>757</id><value>Editar Profundidad Ruta</value></string>
-  <string><id>758</id><value>Eliminando Enlace a Programa</value></string>  
+  <string><id>758</id><value>Eliminando enlace a programa</value></string>  
   <string><id>759</id><value>Lista Grande</value></string>
-
   <string><id>760</id><value>Amarillo</value></string>
   <string><id>761</id><value>Blanco</value></string>
   <string><id>762</id><value>Azul</value></string>
@@ -527,11 +531,13 @@
   <string><id>767</id><value>Reserved</value></string>
   <string><id>768</id><value>Reserved</value></string>
   <string><id>769</id><value>Reserved</value></string>
-  <string><id>771</id><value>Apañar limites de fatx en servidor FTP</value></string>
+  <string><id>771</id><value>Parchear limites de fatx en servidor FTP</value></string>
+  <string><id>772</id><value>Hardware sonido</value></string>
+  <string><id>773</id><value>Buscando</value></string>
   <string><id>998</id><value>XLink KAI</value></string>
   <string><id>999</id><value>Jugar en línea</value></string>
+  
   <string><id>1000</id><value>Vista previa del protector de pantalla</value></string>
-
   <string><id>1200</id><value>SMB Compartición</value></string>
   <string><id>1201</id><value>SMB IP</value></string>
   <string><id>1202</id><value>SMB Grupo de trabajo</value></string>
@@ -561,6 +567,18 @@
   <string><id>1223</id><value>Deshabilitado</value></string>
   <string><id>1224</id><value>Usuario normal</value></string>
   <string><id>1225</id><value>Usuario avanzado</value></string>
+
+  <string><id>1245</id><value> - FTP Nombre de usuario</value></string>
+  <string><id>1246</id><value> - FTP Contraseña de usuario</value></string>
+  <string><id>1247</id><value>¡Contraseña de usuario del servidor FTP fijada con exito!</value></string>
+
+  <string><id>1250</id><value>Autodetección</value></string>
+  <string><id>1251</id><value>XBOX Autodetección</value></string>
+  <string><id>1252</id><value>Apodo</value></string>
+  <string><id>1253</id><value>Crear enlace al FTP en Archivos</value></string>
+  <string><id>1254</id><value>Mostrar notificación</value></string>
+  <string><id>1255</id><value>Mandar usuario y contraseña de FTP</value></string>
+  <string><id>1256</id><value>Ping Interval</value></string>
 
   <string><id>1396</id><value>A la deriva</value></string>
   <string><id>1397</id><value>y</value></string>
@@ -766,7 +784,7 @@
   <string><id>13352</id><value>Explorar carpeta para la base de datos</value></string>
   <string><id>13353</id><value>Detener la exploración</value></string>
 
-  <string><id>13354</id><value>Método Visualización</value></string>
+  <string><id>13354</id><value>Método de renderizado</value></string>
   <string><id>13355</id><value>Pixel Shader Baja Calidad</value></string>
   <string><id>13356</id><value>Overlays por Hardware</value></string>
   <string><id>13357</id><value>Pixel Shader Alta Calidad</value></string>
@@ -787,17 +805,27 @@
   <string><id>13374</id><value>- Voz Puerto 3 Voz</value></string>
   <string><id>13375</id><value>Habilitar Dispositivo</value></string>
   <string><id>13376</id><value>Volumen</value></string>
-  <string><id>13377</id><value>Modo Vista por Defecto</value></string>
-  <string><id>13378</id><value>Brillo por Defecto</value></string>
-  <string><id>13379</id><value>Contraste por Defecto</value></string>
-  <string><id>13380</id><value>Gamma por Defecto</value></string>
+  <string><id>13377</id><value>Modo de vista por defecto</value></string>
+  <string><id>13378</id><value>Brillo por defecto</value></string>
+  <string><id>13379</id><value>Contraste por defecto</value></string>
+  <string><id>13380</id><value>Gamma por defecto</value></string>
   <string><id>13381</id><value>Reanudar Video</value></string>
   <string><id>13382</id><value>Máscara Voz - Puerto 0</value></string>
   <string><id>13383</id><value>Máscara Voz - Puerto 1</value></string>
   <string><id>13384</id><value>Máscara Voz - Puerto 2</value></string>
   <string><id>13385</id><value>Máscara Voz - Puerto 3</value></string>
   <string><id>13386</id><value>Usar busqueda basada en tiempo</value></string>
-
+  <string><id>13387</id><value>Track Naming Template Right</value></string>
+  <string><id>13388</id><value>Presets</value></string>
+  <string><id>13389</id><value>There are no presets available&#10;for this visualisation</value></string>
+  <string><id>13390</id><value>There are no settings available&#10;for this visualisation</value></string>
+  <string><id>13391</id><value>Eject/Load</value></string>
+  <string><id>13392</id><value>Usar visualización si se está reproduciendo sonido</value></string>
+  <string><id>13393</id><value>Calcular tamaño</value></string>
+  <string><id>13394</id><value>Calcular tamaño de carpeta</value></string>
+  <string><id>13395</id><value>Opciones de video</value></string>
+  <string><id>13396</id><value>Opciones de sonido y subtitulos</value></string>
+  <string><id>13397</id><value>Activar subtitulos</value></string>
 
   <string><id>14000</id><value>Agrupar: No</value></string>
   <string><id>14001</id><value>Agrupar: Simple</value></string>
@@ -865,13 +893,14 @@
   <string><id>14062</id><value>Introduzca nombre de usuario para</value></string>
 
   <string><id>14063</id><value>Fecha y hora</value></string>
-  <string><id>14064</id><value>Establecer Año</value></string>
-  <string><id>14065</id><value>Establecer Mes</value></string>
-  <string><id>14066</id><value>Establecer Dia</value></string>
-  <string><id>14067</id><value>Establecer Hora</value></string>
-  <string><id>14068</id><value>Establecer Minuto</value></string>
+  <string><id>14064</id><value>Fijar fecha</value></string>
+  <string><id>14065</id><value>Fijar hora</value></string>
+  <string><id>14066</id><value>Introduce la hora en formato 24 horas HH:MM</value></string>
+  <string><id>14067</id><value>Introduce la fecha en formato DD/MM/AAAA </value></string>
+  <string><id>14068</id><value>Introduce la dirección IP</value></string>
   <string><id>14069</id><value>¿Quieres aplicar las opciones ahora?</value></string>
   <string><id>14070</id><value>Aplicar cambios ahora</value></string>
+  <string><id>14071</id><value>Permitir borrado de archivos</value></string>
 
   <string><id>15000</id><value>XLink Kai</value></string>
   <string><id>15001</id><value>El servicio no está conectado, ¿Quiere intentar</value></string>
@@ -945,8 +974,8 @@
   <string><id>15105</id><value>* Todos Géneros</value></string>
   <string><id>15106</id><value>Recordar fichero seleccionado en navegación hacia adelante</value></string>
   <string><id>15107</id><value>Almacenando...</value></string>
-  <string><id>15108</id><value>Sonidos de Navegación</value></string>
-  <string><id>15109</id><value>Tema por Defecto</value></string>
+  <string><id>15108</id><value>Sonidos de navegación</value></string>
+  <string><id>15109</id><value>Tema por defecto</value></string>
 
   <string><id>15200</id><value>AudioScrobbler</value></string>
   <string><id>15201</id><value>Enviar información de canciones a AudioScrobbler</value></string>
@@ -1010,4 +1039,14 @@
   <string><id>13298</id><value>Clave de XBLIVE:</value></string>
 
   <string><id>15214</id><value>Usar sincronización A/V suavizada</value></string>
+  <string><id>16000</id><value>General</value></string>
+  <string><id>16001</id><value>Configurar hardware de sonido...</value></string>
+  <string><id>16002</id><value>CDDB lookup</value></string>
+  <string><id>16003</id><value>Reproductor</value></string>
+  
+  <string><id>16004</id><value>Sincronizar video entrelazado</value></string>
+  <string><id>16005</id><value>- Invertir campos</value></string>
+  <string><id>16006</id><value>Entrelazado sincronizado</value></string>
+  <string><id>16007</id><value>Campos invertidos</value></string> 
+  <string><id>16008</id><value>On</value></string>
 </strings>
