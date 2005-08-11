@@ -2815,6 +2815,15 @@ if(!sh_video) {
       //Check if we are still way of the correct frame
       if( ( newpts - v_pts > 0.5 ) ) drop_frame = 1;
   }
+  else if ( ffrw_sstepframes == -1 )
+  {
+      float v_pts = sh_video ? sh_video->pts : d_video->pts;
+      //Check if we are still way of the correct frame
+      drop_frame = 1;
+      
+      //check if we are done
+      if( ( ffrw_startpts - v_pts < 0.0f ) ) ffrw_sstepframes = -2;
+  }
 #endif
 
 
@@ -3278,14 +3287,8 @@ if(auto_quality>0){
 	    vo_osd_changed(OSDTYPE_PROGBAR);
     }
   }
-  else if(ffrw_sstepframes==-1) //Set to tell mplayer to resync audio & video
+  else if(ffrw_sstepframes==-2) //Set to tell mplayer to resync audio & video and reset variables
   {
-
-    //Tell mplayer to seek a short bit ahead. 
-    //Attempt to seek one frame ahead, will likely mean next keyframe
-    rel_seek_secs=1/sh_video->fps + 0.00001f;
-    abs_seek_pos=0;
-
     //The code below tries to sync up audio to current video location but it doesn't
     //work properly so i've reverted it to seeking a short bit instead
 #if 0
@@ -3334,8 +3337,6 @@ if(auto_quality>0){
 	    vo_osd_progbar_value=demuxer_get_percent_pos(demuxer) * 256 / 100;
 	    vo_osd_changed(OSDTYPE_PROGBAR);
     }
-
-    ffrw_sstepframes=0;
   }
 
 #else
@@ -5190,7 +5191,10 @@ void ffrw_setspeed(int iSpeed)
   if (iSpeed == 1)
   {
       if(ffrw_speed != 0) {//We where rewinding or fastforwarding before                
-        ffrw_sstepframes=-1; //Tell our system to resync
+        //Set the start pts we wish to start playing from
+        ffrw_startpts = sh_video ? sh_video->pts : d_video->pts;
+        rel_seek_secs = -1.0f;
+        ffrw_sstepframes=-1; //Tell our system to wait for start pts before playback start
       }
       else {
         ffrw_sstepframes=0;
