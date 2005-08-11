@@ -206,23 +206,21 @@ static mp_image_t* decode(sh_video_t *sh,void* data,int len,int flags){
 #ifdef _XBOX
   if( info->sequence->flags & SEQ_FLAG_PROGRESSIVE_SEQUENCE )
     mpi_new->fields &= ~MP_IMGFIELD_INTERLACED;
-  else if( (info->sequence->flags & SEQ_MASK_VIDEO_FORMAT) == SEQ_VIDEO_FORMAT_NTSC )
+  else if( (info->sequence->flags & SEQ_MASK_VIDEO_FORMAT) == SEQ_VIDEO_FORMAT_NTSC || (info->sequence->flags & SEQ_MASK_VIDEO_FORMAT) == SEQ_VIDEO_FORMAT_UNSPECIFIED)
   {
     //NTSC has some special cases to deal with when it comes to 24 fps material
-    //this can actually be progressive thou as they doesn't have to have the progressive sequence set
-    static int oldflags=0;
+    //this can actually be progressive even thou it doesn't have to progressive sequence set
+    static int m_irffpattern=0;
+
+    m_irffpattern = m_irffpattern << 1;
+    if( info->current_picture->flags & MP_IMGFIELD_REPEAT_FIRST ) m_irffpattern |= 1;
     
     //If progressive frame set, we are good to go    
     if( info->current_picture->flags & PIC_FLAG_PROGRESSIVE_FRAME )
       mpi_new->fields &= ~MP_IMGFIELD_INTERLACED;
 
-    //Check if this frmae has it's repeate_first_field set and last frame had
-    //both repeate_first_field and progressive_frame set. this is a fix 
-    //for a specific encoder wich alternated the progressive frame flag
-    //even thou each frame was progressive. this actually even aught to check
-    //next frame to make sure it has progressive_frame set
-    else if( (info->current_picture->flags & PIC_FLAG_REPEAT_FIRST_FIELD) 
-      && (oldflags & (PIC_FLAG_PROGRESSIVE_FRAME | PIC_FLAG_REPEAT_FIRST_FIELD)) )
+    //Check for alternating repeate flag, it indicates film material (24fps progressive)
+    else if( ((m_irffpattern & 0xff) == 0xaa || (m_irffpattern & 0xff) == 0x55) )
       mpi_new->fields &= ~MP_IMGFIELD_INTERLACED;
 
     //else, nothing is indicating that we have a progressive frame, be on the safe side
