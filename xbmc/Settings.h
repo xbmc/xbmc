@@ -316,6 +316,7 @@ public:
     int m_iMyMusicNavArtistsViewAsIcons;
     int m_iMyMusicNavAlbumsViewAsIcons;
     int m_iMyMusicNavSongsViewAsIcons;
+    int m_iMyMusicNavTopViewAsIcons;
 
     int m_iMyMusicNavRootSortMethod;
     int m_iMyMusicNavAlbumsSortMethod;

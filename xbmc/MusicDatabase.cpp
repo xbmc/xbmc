@@ -1170,6 +1170,49 @@ bool CMusicDatabase::GetTop100(VECSONGS& songs)
   return false;
 }
 
+bool CMusicDatabase::GetTop100Albums(VECALBUMS& albums)
+{
+  try
+  {
+    albums.erase(albums.begin(), albums.end());
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS.get()) return false;
+
+    CStdString strSQL = "select path.*, album.*, artist.strArtist, sum(song.iTimesPlayed) as total ";
+    strSQL += "from song, album, path, artist ";
+    strSQL += "where song.iTimesPlayed>0 ";
+    strSQL += "and song.idAlbum=album.idAlbum ";
+    strSQL += "and album.idPath=path.idPath ";
+    strSQL += "and album.idArtist=artist.idArtist ";
+    strSQL += "group by album.idalbum ";
+    strSQL += "order by total ";
+    strSQL += "desc limit 100 ";
+
+    if (!m_pDS->query(strSQL.c_str())) return false;
+    int iRowsFound = m_pDS->num_rows();
+    if (iRowsFound == 0)
+    {
+      m_pDS->close();
+      return false;
+    }
+    int iCount = 1;
+    while (!m_pDS->eof())
+    {
+      albums.push_back(GetAlbumFromDataset());
+      m_pDS->next();
+    }
+
+    m_pDS->close(); // cleanup recordset data
+    return true;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "CMusicDatabase:GetTop100Albums() failed");
+  }
+
+  return false;
+}
+
 bool CMusicDatabase::IncrTop100CounterByFileName(const CStdString& strFileName)
 {
   try

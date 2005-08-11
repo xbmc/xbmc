@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 10-08-2005 added: integrated the Music Top 100 view into the Music Library at the top level (old window has not been removed yet)
  - 10-08-2005 fixed: Overlay Render method wouldn't display picture when in GUI
  - 10-08-2005 fixed: video osd could crash if no subtitle had been selected on a movie
  - 10-08-2005 fixed: dvdplayer had long delay on first menu navigation
