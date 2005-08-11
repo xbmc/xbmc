@@ -660,6 +660,9 @@
   <string><id>10501</id><value>My Music/Files</value></string>
   <string><id>10502</id><value>My Music/Library</value></string>
   <string><id>10503</id><value>My Music/Top 100</value></string>
+  <string><id>10504</id><value>Top 100 Songs</value></string>
+  <string><id>10505</id><value>Top 100 Albums</value></string>
+
 
   <string><id>10506</id><value>Applications</value></string>
   <string><id>10507</id><value>Configuration</value></string>
