@@ -933,6 +933,7 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile, const bool loadp
       GetInteger(pChild, "navartistsviewicons", g_stSettings.m_iMyMusicNavArtistsViewAsIcons, VIEW_AS_LIST, VIEW_AS_LIST, VIEW_AS_LARGE_ICONS);
       GetInteger(pChild, "navalbumsviewicons", g_stSettings.m_iMyMusicNavAlbumsViewAsIcons, VIEW_AS_LIST, VIEW_AS_LIST, VIEW_AS_LARGE_LIST);
       GetInteger(pChild, "navsongsviewicons", g_stSettings.m_iMyMusicNavSongsViewAsIcons, VIEW_AS_LIST, VIEW_AS_LIST, VIEW_AS_LARGE_ICONS);
+      GetInteger(pChild, "navtopviewicons", g_stSettings.m_iMyMusicNavTopViewAsIcons, VIEW_AS_LIST, VIEW_AS_LIST, VIEW_AS_LARGE_ICONS);
 
       GetInteger(pChild, "navgenressortmethod", g_stSettings.m_iMyMusicNavRootSortMethod, 0, 0, 0);
       GetInteger(pChild, "navalbumssortmethod", g_stSettings.m_iMyMusicNavAlbumsSortMethod, 6, 6, 7);
@@ -1176,6 +1177,7 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile, const bool savep
     SetInteger(pChild, "navartistsviewicons", g_stSettings.m_iMyMusicNavArtistsViewAsIcons);
     SetInteger(pChild, "navalbumsviewicons", g_stSettings.m_iMyMusicNavAlbumsViewAsIcons);
     SetInteger(pChild, "navsongsviewicons", g_stSettings.m_iMyMusicNavSongsViewAsIcons);
+    SetInteger(pChild, "navtopviewicons", g_stSettings.m_iMyMusicNavTopViewAsIcons);
 
     SetInteger(pChild, "navgenressortmethod", g_stSettings.m_iMyMusicNavRootSortMethod);
     SetInteger(pChild, "navalbumssortmethod", g_stSettings.m_iMyMusicNavAlbumsSortMethod);
