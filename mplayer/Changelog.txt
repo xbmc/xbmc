@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 12-08-2005 changed: detection of interlaced material somewhat improved
+  - 12-08-2005 changed: made rewind search for the right time pos after a seek by dropping frames after seek untill at righ position
   - 07-08-2005 updated codec.conf [ 1252569 ]
   - 06-08-2005 fixed: OGG files often crashed on exit or failed on open. Updated demux_ogg from mplayerhq cvs.
   - 25-06-2005 added: better way to detect if an mpeg sequence is progressive or not

@@ -2806,6 +2806,18 @@ if(!sh_video) {
 	    }
 	    ++total_frame_cnt;
 	}
+#ifdef _XBOX
+  if( ffrw_speed < 0.0 )
+  {
+      float v_pts = sh_video ? sh_video->pts : d_video->pts;
+      float newpts = (GetTimerMS() - ffrw_starttime)*ffrw_speed / 1000.0f + (float)ffrw_startpts;     
+
+      //Check if we are still way of the correct frame
+      if( ( newpts - v_pts > 0.5 ) ) drop_frame = 1;
+  }
+#endif
+
+
 	// decode:
 	current_module="decode_video";
 //	printf("Decode! %p  %d  \n",start,in_size);
@@ -5224,7 +5236,7 @@ void ffrw_setspeed(int iSpeed)
       ffrw_startpts=voldpts;
       ffrw_starttime=GetTimerMS();
       ffrw_sstepnum=0;
-      ffrw_sstepframes = 2; //Minimum frames rendered before next seek
+      ffrw_sstepframes = 1; //Minimum frames rendered before next seek
 
       abs_seek_pos   = 0;
       rel_seek_secs  = 0; 
