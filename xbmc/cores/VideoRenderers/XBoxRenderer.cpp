@@ -762,19 +762,17 @@ void CXBoxRenderer::RenderUpdate(bool clear)
 
 void CXBoxRenderer::SetFieldSync(EFIELDSYNC mSync)
 {
-    if( g_stSettings.m_currentVideoSettings.m_FieldSync == VS_FIELDSYNC_INVERTED )
+    EINTERLACEMETHOD mInt = g_stSettings.m_currentVideoSettings.GetInterlaceMethod();
+    if( mInt == VS_INTERLACEMETHOD_SYNC_AUTO )
     {
-      if( mSync == FS_ODD )
-        mSync = FS_EVEN;
-      else if( mSync == FS_EVEN )
-        mSync = FS_ODD;
-      else
-        mSync = FS_NONE;
+        //mSync = mSync;
     }
-    else if( g_stSettings.m_currentVideoSettings.m_FieldSync == VS_FIELDSYNC_OFF )
-    {
+    else if( mInt == VS_INTERLACEMETHOD_SYNC_EVEN )
+      mSync = FS_EVEN;
+    else if( mInt == VS_INTERLACEMETHOD_SYNC_ODD )
+      mSync = FS_ODD;
+    else
       mSync = FS_NONE;
-    }
 
     if( m_iFieldSync != mSync )
     {
@@ -782,7 +780,6 @@ void CXBoxRenderer::SetFieldSync(EFIELDSYNC mSync)
       m_iFieldSync = mSync;
       g_graphicsContext.Unlock();
     }
-
 }
 
 void CXBoxRenderer::PrepareDisplay()
@@ -1453,7 +1450,7 @@ void CXBoxRenderer::Process()
 
   m_iAsyncFlipTime = 10; //Just a guess to what delay we have
 
-  SetPriority(THREAD_PRIORITY_TIME_CRITICAL);
+  SetPriority(THREAD_PRIORITY_HIGHEST);
   while( !m_bStop )
   {
     //Wait for new frame or an stop event

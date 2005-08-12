@@ -9,6 +9,7 @@
 #define TMSG_MEDIA_PLAY           200
 #define TMSG_MEDIA_STOP           201
 #define TMSG_MEDIA_PAUSE          202
+#define TMSG_MEDIA_RESTART        203
 
 #define TMSG_PLAYLISTPLAYER_PLAY  210
 #define TMSG_PLAYLISTPLAYER_NEXT  211
@@ -47,6 +48,7 @@ public:
   void MediaPlay(string filename);
   void MediaStop();
   void MediaPause();
+  void MediaRestart(bool bWait);
 
   void PlayListPlayerPlay(int iSong);
   void PlayListPlayerNext();

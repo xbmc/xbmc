@@ -728,8 +728,6 @@ void CGUIWindowOSD::Handle_ControlSetting(DWORD iControlID, DWORD wID)
         {
           g_application.m_pPlayer->SetAudioStream(msg.GetParam1());    // Set the audio stream to the one selected
           m_bSubMenuOn = false;          // hide the sub menu
-          OutputDebugString("OSD:RESTART1\n");
-          if (g_application.GetCurrentPlayer() == "mplayer") g_application.Restart(true);  // restart to make new audio track active
         }
       }
     }
