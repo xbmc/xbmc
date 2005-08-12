@@ -16,11 +16,11 @@ TITLE XBMC Build Prepare Script
 ECHO Wait while preparing the build.
 ECHO ------------------------------
 rem	CONFIG START
-	set NET="C:\Program Files\Microsoft Visual Studio .NET 2003\Common7\IDE\devenv.com"
+	set NET="%ProgramFiles%\Microsoft Visual Studio .NET 2003\Common7\IDE\devenv.com"
 	set OPTS=xbmc.sln /build release
 	set CLEAN=xbmc.sln /clean release
 	set XBE=xbepatch.exe
-	set RAR="C:\Program Files\Winrar\rar.exe"
+	set RAR="%ProgramFiles%\Winrar\rar.exe"
 	set RAROPS1=a -r -idp -inul -m5 XBMC.rar BUILD
 	set SKINS=..\Skins
 rem	CONFIG END
@@ -57,7 +57,7 @@ del BUILD\system\players\mplayer\codecs\.cvsignore
 
 ECHO ------------------------------
 ECHO Removing CVS directories from build
-FOR /R BUILD %%d IN (CVS) DO @RD /S /Q %%d
+FOR /R BUILD %%d IN (CVS) DO @RD /S /Q "%%d" 2>NUL
 
 ECHO ------------------------------
 ECHO Rarring...
