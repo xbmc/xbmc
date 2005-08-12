@@ -4,7 +4,7 @@
 
 #include "../stdafx.h"
 #include "VideoSettings.h"
-
+#include "GraphicContext.h"
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
@@ -14,8 +14,7 @@ CVideoSettings::CVideoSettings()
 {
   m_NoCache = false;
   m_NonInterleaved = false;
-  m_Deinterlace = false;
-  m_FieldSync = VS_FIELDSYNC_OFF;
+  m_InterlaceMethod = VS_INTERLACEMETHOD_AUTO;
   m_FilmGrain = 0;
   m_ViewMode = VIEW_MODE_NORMAL;
   m_CustomZoomAmount = 1.0f;
@@ -41,8 +40,7 @@ bool CVideoSettings::operator!=(const CVideoSettings &right) const
 {
   if (m_NoCache != right.m_NoCache) return true;
   if (m_NonInterleaved != right.m_NonInterleaved) return true;
-  if (m_Deinterlace != right.m_Deinterlace) return true;
-  if (m_FieldSync != right.m_FieldSync) return true;
+  if (m_InterlaceMethod != right.m_InterlaceMethod) return true;
   if (m_FilmGrain != right.m_FilmGrain) return true;
   if (m_ViewMode != right.m_ViewMode) return true;
   if (m_CustomZoomAmount != right.m_CustomZoomAmount) return true;
@@ -63,4 +61,18 @@ bool CVideoSettings::operator!=(const CVideoSettings &right) const
   if (m_CropLeft != right.m_CropLeft) return true;
   if (m_CropRight != right.m_CropRight) return true;
   return false;
+}
+
+EINTERLACEMETHOD CVideoSettings::GetInterlaceMethod()
+{
+  if( m_InterlaceMethod == VS_INTERLACEMETHOD_AUTO )
+  {
+    int mResolution = g_graphicsContext.GetVideoResolution();
+    if( mResolution == HDTV_480p_16x9 || mResolution == HDTV_480p_4x3 || mResolution == HDTV_720p )
+      return VS_INTERLACEMETHOD_DEINTERLACE_AUTO;
+    else
+      return VS_INTERLACEMETHOD_SYNC_AUTO;
+  }
+  else
+    return m_InterlaceMethod;
 }

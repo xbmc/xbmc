@@ -418,8 +418,6 @@ CGUISettings::CGUISettings(void)
   AddSeparator(5, "VideoPlayer.Sep2");
   AddInt(6, "VideoPlayer.RenderMethod", 13354, RENDER_HQ_RGB_SHADER, RENDER_LQ_RGB_SHADER, 1, RENDER_HQ_RGB_SHADER, SPIN_CONTROL_TEXT);
   AddBool(7, "VideoPlayer.UseGUIResolution", 495, true);
-  AddBool(8, "VideoPlayer.FieldSync", 16004, false);
-  AddBool(9, "VideoPlayer.InvertFieldSync", 16005, false);
   AddSeparator(10, "VideoPlayer.Sep3");
   AddBool(11, "VideoPlayer.UseTimeBasedSeeking", 13386, false);
 
@@ -434,7 +432,6 @@ CGUISettings::CGUISettings(void)
   AddInt(8, "Subtitles.EnlargePercentage", 492, 100, 30, 10, 200, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
 
   AddCategory(5, "PostProcessing", 14041);
-  AddBool(1, "PostProcessing.DeInterlace", 285, false);
   AddBool(2, "PostProcessing.Enable", 286, false);
   AddBool(3, "PostProcessing.Auto", 307, true); // only has effect if PostProcessing.Enable is on.
   AddBool(4, "PostProcessing.VerticalDeBlocking", 308, false);

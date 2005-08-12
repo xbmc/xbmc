@@ -9,9 +9,20 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-#define VS_FIELDSYNC_OFF 0
-#define VS_FIELDSYNC_STANDARD 1
-#define VS_FIELDSYNC_INVERTED 2
+enum EINTERLACEMETHOD
+{
+  VS_INTERLACEMETHOD_NONE=0,
+  VS_INTERLACEMETHOD_AUTO=1,
+  VS_INTERLACEMETHOD_DEINTERLACE=2,
+  VS_INTERLACEMETHOD_SYNC_ODD=3,
+  VS_INTERLACEMETHOD_SYNC_EVEN=4,
+
+  //These are generated from teh above based on current video mode
+  //They should not be user selectable
+  VS_INTERLACEMETHOD_DEINTERLACE_AUTO=5, 
+  VS_INTERLACEMETHOD_SYNC_AUTO=6,
+};
+
 
 class CVideoSettings
 {
@@ -23,8 +34,7 @@ public:
 
   bool m_NoCache;
   bool m_NonInterleaved;
-  bool m_Deinterlace;
-  int m_FieldSync;
+  EINTERLACEMETHOD m_InterlaceMethod;
   int m_FilmGrain;
   int m_ViewMode;   // current view mode
   float m_CustomZoomAmount; // custom setting zoom amount
@@ -44,6 +54,9 @@ public:
   int m_CropBottom;
   int m_CropLeft;
   int m_CropRight;
+
+  EINTERLACEMETHOD GetInterlaceMethod();
+
 private:
 };
 

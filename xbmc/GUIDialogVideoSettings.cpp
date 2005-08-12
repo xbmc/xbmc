@@ -430,8 +430,7 @@ void CGUIDialogVideoSettings::AddSeparator(unsigned int id)
 #define VIDEO_SETTINGS_BRIGHTNESS         5
 #define VIDEO_SETTINGS_CONTRAST           6
 #define VIDEO_SETTINGS_GAMMA              7
-#define VIDEO_SETTINGS_DEINTERLACE        8
-#define VIDEO_SETTINGS_FIELD_SYNC         9
+#define VIDEO_SETTINGS_INTERLACEMETHOD    8
 
 #define VIDEO_SETTINGS_CALIBRATION        10
 #define VIDEO_SETTINGS_FLICKER            11
@@ -464,12 +463,10 @@ void CGUIDialogVideoSettings::CreateSettings()
     AddSlider(VIDEO_SETTINGS_BRIGHTNESS, 464, &g_stSettings.m_currentVideoSettings.m_Brightness, 0, 100);
     AddSlider(VIDEO_SETTINGS_CONTRAST, 465, &g_stSettings.m_currentVideoSettings.m_Contrast, 0, 100);
     AddSlider(VIDEO_SETTINGS_GAMMA, 466, &g_stSettings.m_currentVideoSettings.m_Gamma, 0, 100);
-    if (g_guiSettings.m_LookAndFeelResolution <= HDTV_480p_16x9)
-      AddBool(VIDEO_SETTINGS_DEINTERLACE, 285, &g_stSettings.m_currentVideoSettings.m_Deinterlace);
-    else
+
     {
-      const int entries[] = {351, 16008, 16007}; 
-      AddSpin(VIDEO_SETTINGS_FIELD_SYNC, 16006, &g_stSettings.m_currentVideoSettings.m_FieldSync, 3, entries);
+      const int entries[] = { 16018, 16019, 16020, 16021, 16022 };
+      AddSpin(VIDEO_SETTINGS_INTERLACEMETHOD, 16023, (int*)&g_stSettings.m_currentVideoSettings.m_InterlaceMethod, 5, entries);
     }
 
     m_flickerFilter = g_guiSettings.GetInt("Filters.Flicker");
@@ -587,7 +584,7 @@ void CGUIDialogVideoSettings::OnSettingChanged(unsigned int num)
   // check and update anything that needs it
   if (m_iScreen == WINDOW_DIALOG_VIDEO_OSD_SETTINGS)
   {
-    if (setting.id == VIDEO_SETTINGS_ADJUST_FRAME_RATE || setting.id == VIDEO_SETTINGS_NON_INTERLEAVED ||  setting.id == VIDEO_SETTINGS_NO_CACHE || setting.id == VIDEO_SETTINGS_DEINTERLACE)
+    if (setting.id == VIDEO_SETTINGS_ADJUST_FRAME_RATE || setting.id == VIDEO_SETTINGS_NON_INTERLEAVED ||  setting.id == VIDEO_SETTINGS_NO_CACHE )
       g_application.Restart(true);
     else if (setting.id == VIDEO_SETTINGS_CROP)
       g_renderManager.AutoCrop(g_stSettings.m_currentVideoSettings.m_Crop);
@@ -652,8 +649,6 @@ void CGUIDialogVideoSettings::OnSettingChanged(unsigned int num)
       {
         g_stSettings.m_currentVideoSettings.m_AudioStream = m_audioStream;
         g_application.m_pPlayer->SetAudioStream(m_audioStream);    // Set the audio stream to the one selected
-        if (g_application.GetCurrentPlayer() == "mplayer")
-          g_application.Restart(true);  // restart to make new audio track active
       }
     }
     else if (setting.id == SUBTITLE_SETTINGS_ENABLE)
