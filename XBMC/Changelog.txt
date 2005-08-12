@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 11-08-2005 fixed: Chroma channel when syncing interlaced material was 1/4th of a pixel off.
+ - 11-08-2005 changed: All interlacing/deinterlacing is now handled combined in OSD and saved in video db.
  - 10-08-2005 added: integrated the Music Top 100 view into the Music Library at the top level (old window has not been removed yet)
  - 10-08-2005 fixed: Overlay Render method wouldn't display picture when in GUI
  - 10-08-2005 fixed: video osd could crash if no subtitle had been selected on a movie

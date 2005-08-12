@@ -2895,21 +2895,12 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
     OutputDebugString("new file set audiostream:0\n");
     // Switch to default options
     g_stSettings.m_defaultVideoSettings.m_AdjustFrameRate = g_guiSettings.GetBool("MyVideos.FrameRateConversions");
-    g_stSettings.m_defaultVideoSettings.m_Deinterlace = g_guiSettings.GetBool("PostProcessing.DeInterlace");
     g_stSettings.m_defaultVideoSettings.m_FilmGrain = g_guiSettings.GetBool("Filters.Noise") ? g_guiSettings.GetInt("Filters.NoiseLevel") : 0;
     g_stSettings.m_defaultVideoSettings.m_ViewMode = g_guiSettings.GetInt("MyVideos.ViewMode");
     g_stSettings.m_defaultVideoSettings.m_Brightness = g_guiSettings.GetInt("MyVideos.Brightness");
     g_stSettings.m_defaultVideoSettings.m_Contrast = g_guiSettings.GetInt("MyVideos.Contrast");
     g_stSettings.m_defaultVideoSettings.m_Gamma = g_guiSettings.GetInt("MyVideos.Gamma");
     
-    if( g_guiSettings.GetBool("VideoPlayer.FieldSync") )
-      if( g_guiSettings.GetBool("VideoPlayer.InvertFieldSync") )
-        g_stSettings.m_defaultVideoSettings.m_FieldSync = VS_FIELDSYNC_INVERTED;
-      else
-        g_stSettings.m_defaultVideoSettings.m_FieldSync = VS_FIELDSYNC_STANDARD;
-    else
-      g_stSettings.m_defaultVideoSettings.m_FieldSync = VS_FIELDSYNC_OFF;
-
     g_stSettings.m_currentVideoSettings = g_stSettings.m_defaultVideoSettings;
     // see if we have saved options in the database
     if (item.IsVideo())

@@ -40,6 +40,9 @@ public:
     bool GetLimitedHWAC3();
     void SetLimitedHWAC3(bool bOnOff);
 
+    inline bool GetDeinterlace() { return m_bDeinterlace; };
+    inline void SetDeinterlace(bool mDeint) { m_bDeinterlace = mDeint; };
+      
     const string GetChannelMapping() const;
     void SetChannelMapping(const string& strMapping);
     void SetSpeed(float fSpeed);
@@ -54,6 +57,7 @@ public:
     void SetAutoSync(int iAutoSync);
 
   private:
+    bool m_bDeinterlace;
     bool m_bResampleAudio;
     bool m_bNoCache;
     bool m_bNoIdx;

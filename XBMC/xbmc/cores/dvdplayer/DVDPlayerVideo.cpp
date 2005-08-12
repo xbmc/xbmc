@@ -201,17 +201,13 @@ void CDVDPlayerVideo::Process()
           
           //Deinterlace if codec said format was interlaced or if we have selected we want to deinterlace
           //this video
-
-          // software deinterlacing takes about 40% cpu power, so we don't enable it.
-          // and we have hardware deinterlacing now.
-          /*
-          if( (g_stSettings.m_currentVideoSettings.m_FieldSync == VS_FIELDSYNC_OFF && picture.iFlags & DVP_FLAG_INTERLACED)
-              || g_stSettings.m_currentVideoSettings.m_Deinterlace )
+          EINTERLACEMETHOD mInt = g_stSettings.m_currentVideoSettings.GetInterlaceMethod();
+          if( mInt == VS_INTERLACEMETHOD_DEINTERLACE || (mInt == VS_INTERLACEMETHOD_DEINTERLACE_AUTO && (picture.iFlags & DVP_FLAG_INTERLACED)) )
           {
             mDeinterlace.Process(&picture);
             mDeinterlace.GetPicture(&picture);
           }
-          */
+          
 
           if ((picture.iFrameType == FRAME_TYPE_I || picture.iFrameType == FRAME_TYPE_UNDEF) &&
               pPacket->dts != DVD_NOPTS_VALUE) //Only use pts when we have an I frame, or unknown
@@ -493,7 +489,7 @@ DWORD video_refresh_thread(void *arg)
       // dequeue the picture
       vp = &pDVDPlayerVideo->pictq[pDVDPlayerVideo->pictq_rindex];
 
-      if( vp->iFlags & DVP_FLAG_INTERLACED && !g_stSettings.m_currentVideoSettings.m_Deinterlace )
+      if( vp->iFlags & DVP_FLAG_INTERLACED )
       {
         if( vp->iFlags & DVP_FLAG_TOP_FIELD_FIRST )
           g_renderManager.SetFieldSync(FS_ODD);

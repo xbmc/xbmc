@@ -155,6 +155,10 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
       }
       break;
 
+    case TMSG_MEDIA_RESTART:
+      g_application.Restart(true);
+      break;
+
     case TMSG_PICTURE_SHOW:
       {
         CGUIWindowSlideShow *pSlideShow = (CGUIWindowSlideShow *)m_gWindowManager.GetWindow(WINDOW_SLIDESHOW);
@@ -287,6 +291,12 @@ void CApplicationMessenger::MediaPause()
 {
   ThreadMessage tMsg = {TMSG_MEDIA_PAUSE};
   SendMessage(tMsg, true);
+}
+
+void CApplicationMessenger::MediaRestart(bool bWait)
+{
+  ThreadMessage tMsg = {TMSG_MEDIA_RESTART};
+  SendMessage(tMsg, bWait);
 }
 
 void CApplicationMessenger::PlayListPlayerPlay(int iSong)

@@ -121,6 +121,7 @@ CMPlayer::Options::Options()
   m_strHexRawAudioFormat = "";
 
   m_bLimitedHWAC3 = false;
+  m_bDeinterlace = false;
 }
 void CMPlayer::Options::SetFPS(float fFPS)
 {
@@ -421,7 +422,7 @@ void CMPlayer::Options::GetOptions(int& argc, char* argv[])
     strTmp.Empty();
     vector<CStdString> vecPPOptions;
 
-    if ( g_stSettings.m_currentVideoSettings.m_Deinterlace )
+    if ( m_bDeinterlace )
     {
       vecPPOptions.push_back("ci");
     }
@@ -885,6 +886,12 @@ bool CMPlayer::OpenFile(const CFileItem& file, __int64 iStartTime)
     if( g_guiSettings.GetBool("Filters.UseAutosync") )
       options.SetAutoSync(30);
 
+    if( g_stSettings.m_currentVideoSettings.m_InterlaceMethod == VS_INTERLACEMETHOD_DEINTERLACE )
+      options.SetDeinterlace(true);
+    else
+      options.SetDeinterlace(false);
+
+
     options.GetOptions(argc, argv);
 
 
@@ -1123,6 +1130,7 @@ void CMPlayer::OnExit()
 void CMPlayer::Process()
 {
   bool bHasVideo = HasVideo();
+  bool bWaitingRestart = false;
 
   if (!m_pDLL || !m_bIsPlaying) return;
 
@@ -1193,6 +1201,17 @@ void CMPlayer::Process()
         {
           mplayer_showSubtitle(false);
           m_bSubsVisibleTTF=true;
+        }
+        
+        if( (options.GetDeinterlace() && g_stSettings.m_currentVideoSettings.m_InterlaceMethod != VS_INTERLACEMETHOD_DEINTERLACE) 
+          || (!options.GetDeinterlace() && g_stSettings.m_currentVideoSettings.m_InterlaceMethod == VS_INTERLACEMETHOD_DEINTERLACE) )
+        {
+          if( !bWaitingRestart )
+          {
+            //We need to restart now as interlacing mode has changed
+            bWaitingRestart = true;
+            g_applicationMessenger.MediaRestart(false);
+          }
         }
 
         //Let other threads do something, should mplayer be occupying full cpu
@@ -1734,6 +1753,7 @@ void CMPlayer::SetAudioStream(int iStream)
   g_stSettings.m_currentVideoSettings.m_AudioStream = mplayer_getAudioStreamInfo(iStream, NULL);
   options.SetAudioStream(g_stSettings.m_currentVideoSettings.m_AudioStream);
   //we need to restart after here for change to take effect
+  g_applicationMessenger.MediaRestart(false);
 }
 
 
