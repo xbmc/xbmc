@@ -41,6 +41,7 @@ CXBoxRenderer::CXBoxRenderer(LPDIRECT3DDEVICE8 pDevice)
   m_hLowMemShader = 0;
   m_bPrepared=false;
   m_iAsyncFlipTime = 0;
+  m_iFieldSync = FS_NONE;
   m_eventTexturesDone = CreateEvent(NULL,TRUE,TRUE,NULL);
 }
 
