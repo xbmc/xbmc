@@ -1215,7 +1215,7 @@ void CMPlayer::Process()
         }
 
         //Let other threads do something, should mplayer be occupying full cpu
-        Sleep(0);
+        //Sleep(0);
       }
       catch (...)
       {

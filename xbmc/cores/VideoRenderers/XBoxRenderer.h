@@ -150,6 +150,7 @@ protected:
 
   static void TextureCallback(DWORD dwContext);
   HANDLE m_eventTexturesDone;
+  HANDLE m_eventOSDDone;
 
   // render thread
   CEvent m_eventFrame;

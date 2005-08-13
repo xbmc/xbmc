@@ -128,6 +128,29 @@ public:
   void SetControlAlpha(DWORD alpha) { m_controlAlpha = alpha; };
   void SetWindowAlpha(DWORD alpha) { m_windowAlpha = alpha; };
 
+  class CLock
+  {
+  public:
+    CLock(CGraphicContext &mContext)
+    {
+      m_Section = &mContext.m_critSection;
+      EnterCriticalSection(m_Section);
+    }
+    ~CLock()
+    {
+      Unlock();
+    }
+    void Unlock()
+    {
+      //This is actually not thaat thread safe in itself.. 
+      //but very unlikely that somebody would call unlock on this from two threads
+      if( m_Section ) LeaveCriticalSection(m_Section);
+      m_Section = NULL; 
+    }
+  private:
+    CRITICAL_SECTION *m_Section;
+  };
+
 protected:
   CRITICAL_SECTION m_critSection;
   IMsgSenderCallback* m_pCallback;
