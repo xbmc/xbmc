@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 12-08-2005 fixed: Mute icon dialog would always stay on screen if XBMC started with volume at minimum
  - 12-08-2005 updated: build.bat so it's a bit more universal. (Thx to Pade2)
  - 11-08-2005 fixed: xbmc could deadlock if mplayer called flippage before having rendered anything
  - 11-08-2005 fixed: Chroma channel when syncing interlaced material was 1/4th of a pixel off.
