@@ -1169,7 +1169,7 @@ HRESULT CApplication::Initialize()
 
   //  Show mute symbol
   if (g_stSettings.m_nVolumeLevel==VOLUME_MINIMUM)
-    m_guiDialogMuteBug.Show(m_gWindowManager.GetActiveWindow());
+    Mute();
 
   // if the user shutoff the xbox during music scan
   // restore the settings
