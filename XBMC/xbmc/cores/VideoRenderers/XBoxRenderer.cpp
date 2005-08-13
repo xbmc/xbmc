@@ -236,8 +236,25 @@ void CXBoxRenderer::DrawAlpha(int x0, int y0, int w, int h, unsigned char *src, 
 
   // flip buffers and wait for gpu
   int iOSDBuffer = ((m_iOSDBuffer + 1) % m_NumOSDBuffers);
-  if (m_pOSDYTexture[iOSDBuffer]) while (m_pOSDYTexture[iOSDBuffer]->IsBusy()) Sleep(1);
-  if (m_pOSDATexture[iOSDBuffer]) while (m_pOSDATexture[iOSDBuffer]->IsBusy()) Sleep(1);
+
+  //Don't do anything here that would require locking of grapichcontext
+  //it shouldn't be needed, and locking here will slow down prepared rendering
+
+  if( m_NumOSDBuffers == 1 )
+  {
+    //Only do this when we have 1 buffer (that is in fullscreen)
+    //tearing doesn't matter so much in gui + we have two buffers then
+    if( WaitForSingleObject(m_eventOSDDone, 500) == WAIT_TIMEOUT )
+    {
+      //This should only happen if flippage wasn't called
+      SetEvent(m_eventOSDDone);
+    }
+  }
+
+  //We know the resources have been used at this point
+  //reset these so the gpu doesn't try to block on these
+  m_pOSDYTexture[iOSDBuffer]->Lock = 0;
+  m_pOSDATexture[iOSDBuffer]->Lock = 0;
 
   //if new height is heigher than current osd-texture height, recreate the textures with new height.
   if (h > m_iOSDTextureHeight[iOSDBuffer])
@@ -291,6 +308,8 @@ void CXBoxRenderer::RenderOSD()
     return ;
   if (!m_OSDWidth || !m_OSDHeight)
     return ;
+
+  ResetEvent(m_eventOSDDone);
 
   //copy alle static vars to local vars because they might change during this function by mplayer callbacks
   int buffer = m_iOSDBuffer;
@@ -361,6 +380,10 @@ void CXBoxRenderer::RenderOSD()
   m_pD3DDevice->SetTextureStageState( 1, D3DTSS_ALPHAKILL, D3DTALPHAKILL_DISABLE );
 
   m_pD3DDevice->SetScissors(0, FALSE, NULL);
+
+  //Okey, when the gpu is done with the textures here, they are free to be modified again
+  m_pD3DDevice->InsertCallback(D3DCALLBACK_READ,&TextureCallback, (DWORD)m_eventOSDDone);
+  
 }
 
 //********************************************************************************************************
@@ -881,6 +904,7 @@ void CXBoxRenderer::FlipPage(bool bAsync)
 
     //If textures hasn't been released earlier, release them here
     SetEvent(m_eventTexturesDone);
+    SetEvent(m_eventOSDDone);
 
     m_bPrepared=false;
 
@@ -1451,7 +1475,7 @@ void CXBoxRenderer::Process()
 
   m_iAsyncFlipTime = 10; //Just a guess to what delay we have
 
-  SetPriority(THREAD_PRIORITY_HIGHEST);
+  SetPriority(THREAD_PRIORITY_TIME_CRITICAL);
   while( !m_bStop )
   {
     //Wait for new frame or an stop event
