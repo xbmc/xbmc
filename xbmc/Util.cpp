@@ -3394,28 +3394,29 @@ bool CUtil::XboxAutoDetectionPing(bool bRefresh, CStdString strFTPUserName, CStd
 
 bool CUtil::XboxAutoDetection() // GeminiServer: Xbox Autodetection!
 {
-  static DWORD pingTimer = 0;
-  if( timeGetTime() - pingTimer < (DWORD)g_guiSettings.GetInt("Autodetect.PingTime" ) * 1000)
-    return false;
-  pingTimer = timeGetTime();
-
-  // Todo: Extract Ftp User, PW, Port from Internal FTP Server!
-  // Todo: Create a FTP Client for XBMC!
-  // Todo: Create a Setting for entering FTP Password and Username!
-  CStdString strLabel      = g_localizeStrings.Get(1251); // lbl Xbox Autodetection
-  CStdString strNickName   = g_guiSettings.GetString("Autodetect.NickName");
-  
-  CStdString strSysFtpName = g_guiSettings.GetString("Servers.FTPServerUser");
-  CStdString strSysFtpPw   = g_guiSettings.GetString("Servers.FTPServerPassword");
-
-  if(!g_guiSettings.GetBool("Autodetect.SendUserPw"))
-  {
-    strSysFtpName = "anonymous";
-    strSysFtpPw   = "anonymous";
-  }
-  int iSysFtpPort = 21;
   if (g_guiSettings.GetBool("Autodetect.OnOff"))
   {
+    static DWORD pingTimer = 0;
+    if( timeGetTime() - pingTimer < (DWORD)g_guiSettings.GetInt("Autodetect.PingTime" ) * 1000)
+      return false;
+    pingTimer = timeGetTime();
+
+    // Todo: Extract Ftp User, PW, Port from Internal FTP Server!
+    // Todo: Create a FTP Client for XBMC!
+    // Todo: Create a Setting for entering FTP Password and Username!
+    CStdString strLabel      = g_localizeStrings.Get(1251); // lbl Xbox Autodetection
+    CStdString strNickName   = g_guiSettings.GetString("Autodetect.NickName");
+    
+    CStdString strSysFtpName = g_guiSettings.GetString("Servers.FTPServerUser");
+    CStdString strSysFtpPw   = g_guiSettings.GetString("Servers.FTPServerPassword");
+
+    if(!g_guiSettings.GetBool("Autodetect.SendUserPw"))
+    {
+      strSysFtpName = "anonymous";
+      strSysFtpPw   = "anonymous";
+    }
+    int iSysFtpPort = 21;
+
     bool bget = CUtil::XboxAutoDetectionPing(true, strSysFtpName, strSysFtpPw, strNickName, iSysFtpPort,strHasClientIP,strHasClientInfo, strNewClientIP , strNewClientInfo );
     if ( bget )
     {
