@@ -1686,11 +1686,6 @@ void CApplication::Render()
   }
 
   
-  // show/hide any modeless dialogs that need it
-  g_graphicsContext.Lock(); //Need to lock here so it doesn't happen while rendering fullscreen
-  m_gWindowManager.UpdateModelessVisibility();
-  g_graphicsContext.Unlock();
-
   // dont show GUI when playing full screen video
   if (m_gWindowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO)
   {
@@ -1702,14 +1697,14 @@ void CApplication::Render()
       {
         if (m_pPlayer->IsPaused())
         {
-          g_graphicsContext.Lock();
+          CGraphicContext::CLock lock(g_graphicsContext);
           extern void xbox_video_render_update(bool);
           xbox_video_render_update(true);
+          m_gWindowManager.UpdateModelessVisibility();
           RenderFullScreen();
           m_gWindowManager.Render();
           m_pd3dDevice->BlockUntilVerticalBlank();
           m_pd3dDevice->Present( NULL, NULL, NULL, NULL );
-          g_graphicsContext.Unlock();
           return ;
         }
       }
@@ -1738,6 +1733,8 @@ void CApplication::Render()
   g_graphicsContext.Clear();
   //SWATHWIDTH of 2 improves fillrates (performance investigator)
   m_pd3dDevice->SetRenderState(D3DRS_SWATHWIDTH, 2);
+
+  m_gWindowManager.UpdateModelessVisibility();
 
   // render current window/dialog
   m_gWindowManager.Render();
@@ -3134,6 +3131,7 @@ bool CApplication::NeedRenderFullScreen()
 {
   if (m_gWindowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO)
   {
+    m_gWindowManager.UpdateModelessVisibility();
     CGUIWindowFullScreen *pFSWin = (CGUIWindowFullScreen *)m_gWindowManager.GetWindow(WINDOW_FULLSCREEN_VIDEO);
     if (!pFSWin)
       return false;

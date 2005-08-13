@@ -44,7 +44,8 @@ CTexture::~CTexture()
 
 void CTexture::FreeTexture()
 {
-  g_graphicsContext.Lock();
+  CGraphicContext::CLock lock(g_graphicsContext);
+
   if (m_pTexture)
   {
     if (m_bPacked)
@@ -72,7 +73,6 @@ void CTexture::FreeTexture()
       m_pPalette->Release();
   }
   m_pPalette = NULL;
-  g_graphicsContext.Unlock();
 }
 
 void CTexture::Dump() const
@@ -387,6 +387,9 @@ int CGUITextureManager::Load(const CStdString& strTextureName, DWORD dwColorKey)
       return pMap->size();
     }
   }
+
+  //Lock here, we will do stuff that could break rendering
+  CGraphicContext::CLock lock(g_graphicsContext);
 
 #ifdef ALLOW_TEXTURE_COMPRESSION
   LPDIRECT3DTEXTURE8 pTexture;
@@ -725,6 +728,8 @@ int CGUITextureManager::Load(const CStdString& strTextureName, DWORD dwColorKey)
 
 void CGUITextureManager::ReleaseTexture(const CStdString& strTextureName, int iPicture)
 {
+  CGraphicContext::CLock lock(g_graphicsContext);
+
   MEMORYSTATUS stat;
   GlobalMemoryStatus(&stat);
   DWORD dwMegFree = stat.dwAvailPhys / (1024 * 1024);
@@ -734,6 +739,7 @@ void CGUITextureManager::ReleaseTexture(const CStdString& strTextureName, int iP
     //if (strTextureName.GetAt(1) != ':') return;
     //CLog::Log(LOGINFO, "release:%s", strTextureName.c_str());
   }
+
 
   ivecTextures i;
   i = m_vecTextures.begin();
@@ -765,6 +771,8 @@ void CGUITextureManager::ReleaseTexture(const CStdString& strTextureName, int iP
 
 void CGUITextureManager::Cleanup()
 {
+  CGraphicContext::CLock lock(g_graphicsContext);
+
   ivecTextures i;
   i = m_vecTextures.begin();
   while (i != m_vecTextures.end())
@@ -796,6 +804,8 @@ void CGUITextureManager::Dump() const
 
 void CGUITextureManager::Flush()
 {
+  CGraphicContext::CLock lock(g_graphicsContext);
+
   ivecTextures i;
   i = m_vecTextures.begin();
   while (i != m_vecTextures.end())

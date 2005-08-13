@@ -93,6 +93,10 @@ bool CGUIDialog::OnMessage(CGUIMessage& message)
 
 void CGUIDialog::Close(bool forceClose /*= false*/)
 {
+  //Lock graphic context here as it is sometimes called from non rendering threads
+  //maybe we should have a critical section per window instead??
+  CGraphicContext::CLock lock(g_graphicsContext);
+
   if (!m_bRunning) return;
 
   // don't close if we should be fading out
@@ -127,6 +131,10 @@ void CGUIDialog::Close(bool forceClose /*= false*/)
 
 void CGUIDialog::DoModal(DWORD dwParentId, int iWindowID /*= WINDOW_INVALID */)
 {
+  //Lock graphic context here as it is sometimes called from non rendering threads
+  //maybe we should have a critical section per window instead??
+  CGraphicContext::CLock lock(g_graphicsContext);
+
   m_dwParentWindowID = dwParentId;
   m_pParentWindow = m_gWindowManager.GetWindow( m_dwParentWindowID);
 
@@ -135,7 +143,7 @@ void CGUIDialog::DoModal(DWORD dwParentId, int iWindowID /*= WINDOW_INVALID */)
     m_dwParentWindowID = 0;
     return ;
   }
-
+  
   m_bModal = true;
   m_gWindowManager.RouteToWindow(this);
 
@@ -147,6 +155,8 @@ void CGUIDialog::DoModal(DWORD dwParentId, int iWindowID /*= WINDOW_INVALID */)
   OnMessage(msg);
 
   m_bRunning = true;
+
+  lock.Unlock();
   while (m_bRunning)
   {
     m_gWindowManager.Process();
@@ -155,7 +165,12 @@ void CGUIDialog::DoModal(DWORD dwParentId, int iWindowID /*= WINDOW_INVALID */)
 
 void CGUIDialog::Show(DWORD dwParentId)
 {
+  //Lock graphic context here as it is sometimes called from non rendering threads
+  //maybe we should have a critical section per window instead??
+  CGraphicContext::CLock lock(g_graphicsContext);
+
   if (m_bRunning && m_effectState != EFFECT_OUT) return;
+
 
   m_dwParentWindowID = dwParentId;
   m_pParentWindow = m_gWindowManager.GetWindow( m_dwParentWindowID);
