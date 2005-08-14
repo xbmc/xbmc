@@ -111,16 +111,37 @@ void CGUIWindowFullScreen::AllocResources(bool forceLoad)
   CGUIWindow *pWindow = m_gWindowManager.GetWindow(WINDOW_OSD);
   if (pWindow) pWindow->AllocResources(true);
   pWindow = m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_OSD_SETTINGS);
-  if (pWindow) pWindow->AllocResources(true);
+  if (pWindow) pWindow->AllocResources(false);
+  pWindow = m_gWindowManager.GetWindow(WINDOW_DIALOG_SEEK_BAR);
+  if (pWindow) pWindow->AllocResources(false);
+  pWindow = m_gWindowManager.GetWindow(WINDOW_DIALOG_VOLUME_BAR);
+  if (pWindow) pWindow->AllocResources(false);
 }
 
 void CGUIWindowFullScreen::FreeResources(bool forceUnload)
 {
   g_settings.Save();
   CGUIWindow *pWindow = m_gWindowManager.GetWindow(WINDOW_OSD);
-  if (pWindow) pWindow->FreeResources(true);
+  if (pWindow) {
+    pWindow->FreeResources(true);
+    pWindow->DynamicResourceAlloc(true);
+  }
   pWindow = m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_OSD_SETTINGS);
-  if (pWindow) pWindow->FreeResources(true);
+  if (pWindow) {
+    pWindow->FreeResources(true);
+    pWindow->DynamicResourceAlloc(true);
+  }
+  
+  pWindow = m_gWindowManager.GetWindow(WINDOW_DIALOG_SEEK_BAR);
+  if (pWindow) {
+    pWindow->FreeResources(true);
+    pWindow->DynamicResourceAlloc(true);
+  }
+  pWindow = m_gWindowManager.GetWindow(WINDOW_DIALOG_VOLUME_BAR);
+  if (pWindow) {
+    pWindow->FreeResources(true);
+    pWindow->DynamicResourceAlloc(true);
+  }
   CGUIWindow::FreeResources(forceUnload);
 }
 
@@ -286,9 +307,19 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
 void CGUIWindowFullScreen::OnWindowLoaded()
 {
   CGUIWindow::OnWindowLoaded();
+
   //  Do not free resources of invisible controls
   //  or hdd will spin up when fast forwarding etc.
   DynamicResourceAlloc(false);
+  CGUIWindow *pWindow = m_gWindowManager.GetWindow(WINDOW_OSD);
+  if (pWindow) pWindow->DynamicResourceAlloc(false);
+  pWindow = m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_OSD_SETTINGS);
+  if (pWindow) pWindow->Initialize();
+  if (pWindow) pWindow->DynamicResourceAlloc(false);
+  pWindow = m_gWindowManager.GetWindow(WINDOW_DIALOG_SEEK_BAR);
+  if (pWindow) pWindow->DynamicResourceAlloc(false);
+  pWindow = m_gWindowManager.GetWindow(WINDOW_DIALOG_VOLUME_BAR);
+  if (pWindow) pWindow->DynamicResourceAlloc(false);
 
   CGUIProgressControl* pProgress = (CGUIProgressControl*)GetControl(CONTROL_PROGRESS);
   if(pProgress)
@@ -336,11 +367,13 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
 
       //  Disable nav sounds if spindown is active as they are loaded
       //  from HDD all the time.
-      const CIMDBMovie& movie=g_infoManager.GetCurrentMovie();
-      CFileItem movieItem(movie.m_strPath, false);
-      if ((movieItem.IsRemote() || movieItem.IsDVD() || movieItem.IsISO9660()) 
-        && g_guiSettings.GetInt("System.RemotePlayHDSpinDown")!=SPIN_DOWN_NONE)
+      if (
+        !g_application.CurrentFileItem().IsHD() &&
+        (g_guiSettings.GetInt("System.RemotePlayHDSpinDown") || g_guiSettings.GetInt("System.HDSpinDownTime"))
+      )
+      {
         g_audioManager.Enable(false);
+      }
 
       CGUIWindow::OnMessage(message);
 

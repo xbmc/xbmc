@@ -799,7 +799,7 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
       OutputDebugString(strLine.c_str());
       OutputDebugString("------------------- \n");
       SetAlpha(255);  // initial fade state
-      AllocResources();
+      if (m_dynamicResourceAlloc) AllocResources();
       if (message.GetParam1() != WINDOW_INVALID)
       {
         m_dwPreviousWindowId = message.GetParam1();
@@ -818,7 +818,7 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
       OutputDebugString("------------------- GUI_MSG_WINDOW_DEINIT ");
       OutputDebugString(strLine.c_str());
       OutputDebugString("------------------- \n");
-      FreeResources();
+      if (m_dynamicResourceAlloc) FreeResources();
       return true;
     }
     break;
@@ -1007,6 +1007,7 @@ void CGUIWindow::FreeResources(bool forceUnload /*= FALSE */)
 
 void CGUIWindow::DynamicResourceAlloc(bool bOnOff)
 {
+  m_dynamicResourceAlloc = bOnOff;
   for (ivecControls i = m_vecControls.begin();i != m_vecControls.end(); ++i)
   {
     CGUIControl* pControl = *i;
