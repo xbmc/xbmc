@@ -29,6 +29,7 @@ CPlayListPLS::~CPlayListPLS(void)
 
 bool CPlayListPLS::Load(const CStdString& strFileName)
 {
+  m_vecItems.clear();
   CFileItem item(strFileName, false);
   if (item.IsInternetStream())
   {
@@ -95,6 +96,7 @@ bool CPlayListPLS::Load(const CStdString& strFileName)
     return false;
   }
 
+  int iMaxSize = 0;
   while (file.ReadString(szLine, sizeof(szLine) ) )
   {
     strLine = szLine;
@@ -113,8 +115,11 @@ bool CPlayListPLS::Load(const CStdString& strFileName)
       }
       else if (strLeft.Left(4) == "file")
       {
-        int idx = atoi(strLeft.c_str() + 4);
-        m_vecItems.resize(idx);
+        vector <int>::size_type idx = atoi(strLeft.c_str() + 4);
+        if (idx > m_vecItems.size()) {
+          iMaxSize = idx;
+          m_vecItems.resize(idx);
+        }
         if (m_vecItems[idx - 1].GetDescription().empty())
           m_vecItems[idx - 1].SetDescription(CUtil::GetFileName(strValue));
         CFileItem item(strValue, false);
@@ -125,14 +130,20 @@ bool CPlayListPLS::Load(const CStdString& strFileName)
       }
       else if (strLeft.Left(5) == "title")
       {
-        int idx = atoi(strLeft.c_str() + 5);
-        m_vecItems.resize(idx);
+        vector <int>::size_type idx = atoi(strLeft.c_str() + 5);
+        if (idx > m_vecItems.size()) {
+          iMaxSize = idx;
+          m_vecItems.resize(idx);
+        }
         m_vecItems[idx - 1].SetDescription(strValue);
       }
       else if (strLeft.Left(6) == "length")
       {
-        int idx = atoi(strLeft.c_str() + 6);
-        m_vecItems.resize(idx);
+        vector <int>::size_type idx = atoi(strLeft.c_str() + 6);
+        if (idx > m_vecItems.size()) {
+          iMaxSize = idx;
+          m_vecItems.resize(idx);
+        }
         m_vecItems[idx - 1].SetDuration(atol(strValue.c_str()));
       }
       else if (strLeft == "playlistname")
@@ -142,6 +153,7 @@ bool CPlayListPLS::Load(const CStdString& strFileName)
     }
   }
   file.Close();
+  m_vecItems.resize(iMaxSize);
 
   // check for missing entries
   for (ivecItems p = m_vecItems.begin(); p != m_vecItems.end(); ++p)
