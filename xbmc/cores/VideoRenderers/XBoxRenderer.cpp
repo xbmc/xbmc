@@ -43,6 +43,7 @@ CXBoxRenderer::CXBoxRenderer(LPDIRECT3DDEVICE8 pDevice)
   m_iAsyncFlipTime = 0;
   m_iFieldSync = FS_NONE;
   m_eventTexturesDone = CreateEvent(NULL,TRUE,TRUE,NULL);
+  m_eventOSDDone = CreateEvent(NULL,TRUE,TRUE,NULL);
 }
 
 CXBoxRenderer::~CXBoxRenderer()
@@ -237,9 +238,31 @@ void CXBoxRenderer::DrawAlpha(int x0, int y0, int w, int h, unsigned char *src, 
   // flip buffers and wait for gpu
   int iOSDBuffer = ((m_iOSDBuffer + 1) % m_NumOSDBuffers);
 
+  //if new height is heigher than current osd-texture height, recreate the textures with new height.
+  if (h > m_iOSDTextureHeight[iOSDBuffer])
+  {
+    CGraphicContext::CLock lock(g_graphicsContext);
+
+    DeleteOSDTextures(iOSDBuffer);
+    m_iOSDTextureHeight[iOSDBuffer] = h;
+    // Create osd textures for this buffer with new size
+    if (
+      D3D_OK != m_pD3DDevice->CreateTexture(m_iOSDTextureWidth, m_iOSDTextureHeight[iOSDBuffer], 1, 0, D3DFMT_LIN_L8, 0, &m_pOSDYTexture[iOSDBuffer]) ||
+      D3D_OK != m_pD3DDevice->CreateTexture(m_iOSDTextureWidth, m_iOSDTextureHeight[iOSDBuffer], 1, 0, D3DFMT_LIN_A8, 0, &m_pOSDATexture[iOSDBuffer])
+    )
+    {
+      CLog::Log(LOGERROR, "Could not create OSD/Sub textures");
+      DeleteOSDTextures(iOSDBuffer);
+      return;
+    }
+    else
+    {
+      CLog::Log(LOGDEBUG, "Created OSD textures (%i)", iOSDBuffer);
+    }
+  }
+
   //Don't do anything here that would require locking of grapichcontext
   //it shouldn't be needed, and locking here will slow down prepared rendering
-
   if( m_NumOSDBuffers == 1 )
   {
     //Only do this when we have 1 buffer (that is in fullscreen)
@@ -251,30 +274,10 @@ void CXBoxRenderer::DrawAlpha(int x0, int y0, int w, int h, unsigned char *src, 
     }
   }
 
-  //We know the resources have been used at this point
+  //We know the resources have been used at this point (or they are the second buffer, wich means they aren't in use anyways)
   //reset these so the gpu doesn't try to block on these
   m_pOSDYTexture[iOSDBuffer]->Lock = 0;
   m_pOSDATexture[iOSDBuffer]->Lock = 0;
-
-  //if new height is heigher than current osd-texture height, recreate the textures with new height.
-  if (h > m_iOSDTextureHeight[iOSDBuffer])
-  {
-    DeleteOSDTextures(iOSDBuffer);
-    m_iOSDTextureHeight[iOSDBuffer] = h;
-    // Create osd textures for this buffer with new size
-    if (
-      D3D_OK != m_pD3DDevice->CreateTexture(m_iOSDTextureWidth, m_iOSDTextureHeight[iOSDBuffer], 1, 0, D3DFMT_LIN_L8, 0, &m_pOSDYTexture[iOSDBuffer]) ||
-      D3D_OK != m_pD3DDevice->CreateTexture(m_iOSDTextureWidth, m_iOSDTextureHeight[iOSDBuffer], 1, 0, D3DFMT_LIN_A8, 0, &m_pOSDATexture[iOSDBuffer])
-    )
-    {
-      CLog::Log(LOGERROR, "Could not create OSD/Sub textures");
-      DeleteOSDTextures(iOSDBuffer);
-    }
-    else
-    {
-      CLog::Log(LOGDEBUG, "Created OSD textures (%i)", iOSDBuffer);
-    }
-  }
 
   // draw textures
   D3DLOCKED_RECT lr, lra;
@@ -382,7 +385,9 @@ void CXBoxRenderer::RenderOSD()
   m_pD3DDevice->SetScissors(0, FALSE, NULL);
 
   //Okey, when the gpu is done with the textures here, they are free to be modified again
-  m_pD3DDevice->InsertCallback(D3DCALLBACK_READ,&TextureCallback, (DWORD)m_eventOSDDone);
+  //this is very weird.. D3DCALLBACK_READ is not enough.. if that is used, we start flushing 
+  //the texutures to early.. I have no idea why really
+  m_pD3DDevice->InsertCallback(D3DCALLBACK_WRITE,&TextureCallback, (DWORD)m_eventOSDDone);
   
 }
 
