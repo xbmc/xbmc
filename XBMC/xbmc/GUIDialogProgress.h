@@ -16,6 +16,10 @@ public:
   bool IsCanceled() const { return m_bCanceled; }
   void SetPercentage(int iPercentage);
   void ShowProgressBar(bool bOnOff);
+  void SetHeading(const wstring& strLine);
+  void SetHeading(const string& strLine);
+  void SetHeading(int iString);
 protected:
   bool m_bCanceled;
+  wstring m_strHeading;
 };
