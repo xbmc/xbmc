@@ -93,7 +93,6 @@ const char * dvd_audio_stream_types[8] =
 const char * dvd_audio_stream_channels[6] =
   { "mono", "stereo", "unknown", "unknown", "5.1/6.1", "5.1" };
 
-bool m_bCanceling = false;
 static CDlgCache* m_dlgCache = NULL;
 
 #define MPLAYERBACKBUFFER 20
@@ -649,10 +648,10 @@ bool CMPlayer::load()
 }
 void update_cache_dialog(const char* tmp)
 {
-  //Make sure we lock here as this is called from the cache thread thread
-  g_graphicsContext.Lock();
   if (m_dlgCache)
   {
+    //Make sure we lock here as this is called from the cache thread thread
+    CGraphicContext::CLock lock(g_graphicsContext);
     CStdString message = tmp;
     message.Trim();
     if (int i = message.Find("Cache fill:") >= 0)
@@ -678,13 +677,7 @@ void update_cache_dialog(const char* tmp)
 
     m_dlgCache->SetMessage(message);
     m_dlgCache->Update();
-    if (m_dlgCache->IsCanceled() && !m_bCanceling)
-    {
-      m_bCanceling = true;
-      mplayer_exit_player();
-    }
   }
-  g_graphicsContext.Unlock();
 }
 
 extern void xbox_audio_switch_channel(int iAudioStream, bool bAudioOnAllSpeakers); //lowlevel audio
@@ -695,7 +688,6 @@ bool CMPlayer::OpenFile(const CFileItem& file, __int64 iStartTime)
   CloseFile();
 
   int iRet = -1;
-  m_bCanceling = false;
   int iCacheSize = 1024;
   int iCacheSizeBackBuffer = MPLAYERBACKBUFFER; // 50 % backbuffer is mplayers default
   bool bFileOnHD(false);
@@ -736,7 +728,6 @@ bool CMPlayer::OpenFile(const CFileItem& file, __int64 iStartTime)
     if (bFileOnInternet)
     {
       m_dlgCache = new CDlgCache();
-      m_dlgCache->Update();
       m_bUseFullRecaching = true;
     }
     if (iCacheSize == 0)
@@ -912,7 +903,7 @@ bool CMPlayer::OpenFile(const CFileItem& file, __int64 iStartTime)
       m_bIsMplayeropenfile = true;
       iRet = mplayer_open_file(strFile.c_str());
     }
-    if (iRet <= 0 || m_bCanceling)
+    if (iRet <= 0 || (m_dlgCache && m_dlgCache->IsCanceled()))
     {
       throw iRet;
     }
@@ -1031,7 +1022,7 @@ bool CMPlayer::OpenFile(const CFileItem& file, __int64 iStartTime)
           m_bIsMplayeropenfile = true;
           iRet = mplayer_open_file(strFile.c_str());
         }
-        if (iRet <= 0 || m_bCanceling)
+        if (iRet <= 0 || (m_dlgCache && m_dlgCache->IsCanceled()))
         {
           throw iRet;
         }
