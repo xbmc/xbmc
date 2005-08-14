@@ -5,7 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
- - 13-08-2005 fixed: subtitles could lockup on first display
+ - 14-08-2005 fixed: subtitles could lockup on first display (second fix, first was broken)
  - 13-08-2005 fixed: xbmc would often crash when opening OSD while subtitles was visible
  - 12-08-2005 fixed: Mute icon dialog would always stay on screen if XBMC started with volume at minimum
  - 12-08-2005 updated: build.bat so it's a bit more universal. (Thx to Pade2)
