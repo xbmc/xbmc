@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 14-08-2005 fixed: window resources not being loaded sometimes (black screens)
  - 14-08-2005 fixed: [ 1258328 ] HD Spindown feature broken/Hard drive spins up on standard operations
  - 14-08-2005 fixed: parsing of somewhat corrupt pls files.
  - 14-08-2005 fixed: [ 1255929 ] UTF-8 in Vorbis tags isn't handled properly
