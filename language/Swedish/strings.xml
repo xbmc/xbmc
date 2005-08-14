@@ -658,6 +658,8 @@
   <string><id>10501</id><value>Min Musik/filer</value></string>
   <string><id>10502</id><value>Min Musik/album</value></string>
   <string><id>10503</id><value>Min Musik/artister</value></string>
+  <string><id>10504</id><value>Topp 100 låtar</value></string>
+  <string><id>10505</id><value>Topp 100 Album</value></string>
     
   <string><id>10506</id><value>Program</value></string>
   <string><id>10507</id><value>Konfigurering</value></string>
@@ -1095,12 +1097,6 @@
   <string><id>16002</id><value>CDDB sök</value></string>
   <string><id>16003</id><value>Spelare</value></string>
 
-  <string><id>16004</id><value>Synkronisera interlacerad video</value></string>
-  <string><id>16005</id><value>- Invertera fält</value></string>
-  <string><id>16006</id><value>Synkronisera interlacering</value></string>
-  <string><id>16007</id><value>Omvända fält</value></string> 
-  <string><id>16008</id><value>På</value></string>
-
   <string><id>16009</id><value>Skriv in filmnamet</value></string>
   <string><id>16010</id><value>Skriv in profilnamnet</value></string>
   <string><id>16011</id><value>Skriv in Albumet</value></string>
@@ -1110,6 +1106,13 @@
   <string><id>16015</id><value>Skriv in mapp</value></string>
   <string><id>16016</id><value>Tillgängliga val: %A, %T, %N, %B, %D, %G, %Y, %F</value></string>
   <string><id>16017</id><value>Skriv in sökord</value></string>
+
+  <string><id>16018</id><value>Ingen</value></string>
+  <string><id>16019</id><value>Auto val</value></string>
+  <string><id>16020</id><value>DeInterlace</value></string>
+  <string><id>16021</id><value>Synca udda</value></string>
+  <string><id>16022</id><value>Synca jämn</value></string>
+  <string><id>16023</id><value>Hantera interlacering</value></string>
 </strings>
 
 
