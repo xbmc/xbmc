@@ -120,9 +120,7 @@ bool OGGCodec::Init(const CStdString &strFile1, unsigned int filecache)
     for (int i=0; i < pComments->comments; ++i)
     {
       CStdString strTag=pComments->user_comments[i];
-      CStdString strItem;
-      g_charsetConverter.utf8ToStringCharset(strTag, strItem);
-      oggTag.ParseTagEntry(strItem);
+      oggTag.ParseTagEntry(strTag);
     }
     m_replayGain=oggTag.GetReplayGain();
   }
