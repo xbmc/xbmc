@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 14-08-2005 changed: improved ability to cancel mplayer startup
+ - 14-08-2005 changed: made progressdialogs display when it's canceled state
  - 14-08-2005 fixed: window resources not being loaded sometimes (black screens)
  - 14-08-2005 fixed: [ 1258328 ] HD Spindown feature broken/Hard drive spins up on standard operations
  - 14-08-2005 fixed: parsing of somewhat corrupt pls files.

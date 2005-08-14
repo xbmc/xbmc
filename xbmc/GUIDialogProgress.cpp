@@ -66,6 +66,10 @@ bool CGUIDialogProgress::OnMessage(CGUIMessage& message)
         int iControl = message.GetSenderId();
         if (iControl == 10)
         {
+          wstring strHeading = m_strHeading;
+          strHeading.append(L" : ");
+          strHeading.append(g_localizeStrings.Get(16024));
+          CGUIDialogBoxBase::SetHeading(strHeading);
           m_bCanceled = true;
           return true;
         }
@@ -107,3 +111,24 @@ void CGUIDialogProgress::ShowProgressBar(bool bOnOff)
   }
 }
 
+void CGUIDialogProgress::SetHeading(const wstring& strLine)
+{
+  m_strHeading = strLine;
+  CGUIDialogBoxBase::SetHeading(m_strHeading);
+}
+
+void CGUIDialogProgress::SetHeading(const string& strLine)
+{
+  if (!strLine.size()) return ;
+  WCHAR* wszLabel = new WCHAR[strLine.size() + 1];
+  swprintf(wszLabel, L"%S", strLine.c_str());
+  m_strHeading = wszLabel;
+  delete [] wszLabel;
+  CGUIDialogBoxBase::SetHeading(m_strHeading);
+}
+
+void CGUIDialogProgress::SetHeading(int iString)
+{
+  m_strHeading = g_localizeStrings.Get(iString);;
+  CGUIDialogBoxBase::SetHeading(m_strHeading);
+}
