@@ -76,24 +76,29 @@ void CApplicationMessenger::ProcessMessages()
 {
   // process threadmessages
   CSingleLock lock (m_critSection);
-  if (m_vecMessages.size() > 0)
+  while (m_vecMessages.size() > 0)
   {
     vector<ThreadMessage*>::iterator it = m_vecMessages.begin();
-    while (it != m_vecMessages.end())
+
+    ThreadMessage* pMsg = *it;
+    //first remove the message from the queue, else the message could be processed more then once
+    it = m_vecMessages.erase(it);
+
+    //Leave here as the message might make another
+    //thread call processmessages or sendmessage
+    lock.Leave();
+
+    ProcessMessage(pMsg);
+
+    if (pMsg->hWaitEvent)
     {
-      ThreadMessage* pMsg = *it;
-      //first remove the message from the queue, else the message could be processed more then once
-      it = m_vecMessages.erase(it);
-
-      ProcessMessage(pMsg);
-
-      if (pMsg->hWaitEvent)
-      {
-        PulseEvent(pMsg->hWaitEvent);
-        CloseHandle(pMsg->hWaitEvent);
-      }
-      delete pMsg;
+      PulseEvent(pMsg->hWaitEvent);
+      CloseHandle(pMsg->hWaitEvent);
     }
+    delete pMsg;
+
+    //Reenter here again, to not ruin message vector
+    lock.Enter();
   }
 }
 
