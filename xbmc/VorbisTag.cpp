@@ -149,7 +149,8 @@ void CVorbisTag::SplitEntry(const CStdString& strTagEntry, CStdString& strTagTyp
 
   if ( nPos > -1 )
   {
-    strTagValue = strTagEntry.Mid( nPos + 1 );
+    CStdString strValue=strTagEntry.Mid( nPos + 1 );
+    g_charsetConverter.utf8ToStringCharset(strValue, strTagValue);
     strTagType = strTagEntry.Left( nPos );
     strTagType.ToUpper();
   }
