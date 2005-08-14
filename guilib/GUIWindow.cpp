@@ -62,6 +62,7 @@ CGUIWindow::CGUIWindow(DWORD dwID, const CStdString &xmlFile)
   m_effectStart = 0;
   m_effectInTime = 0;
   m_effectOutTime = 0;
+  m_dynamicResourceAlloc = true;
 }
 
 CGUIWindow::~CGUIWindow(void)
