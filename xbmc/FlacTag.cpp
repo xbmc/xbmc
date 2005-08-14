@@ -132,7 +132,6 @@ void CFlacTag::ProcessVorbisComment(const char *pBuffer)
     strncpy(C1, pBuffer + Pos + 4, I1[0]);
     C1[I1[0]] = '\0';
     CStdString strItem;
-    g_charsetConverter.utf8ToStringCharset(C1, strItem);  // convert UTF-8 to charset string
     // Parse the tag entry
     ParseTagEntry( strItem );
     // Increment our position in the file buffer
