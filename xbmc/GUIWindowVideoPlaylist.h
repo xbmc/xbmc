@@ -19,8 +19,8 @@ protected:
   virtual void FormatItemLabels() {};
 
   void GetDirectoryHistoryString(const CFileItem* pItem, CStdString& strHistoryString);
-  virtual void GetDirectory(const CStdString &strDirectory, CFileItemList &items);
-  virtual void Update(const CStdString &strDirectory);
+  virtual bool GetDirectory(const CStdString &strDirectory, CFileItemList &items);
+  virtual bool Update(const CStdString &strDirectory);
   void ClearPlayList();
   void UpdateListControl();
   void RemovePlayListItem(int iItem);

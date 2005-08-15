@@ -186,7 +186,7 @@ void CGUIWindowVideoActors::SortItems(CFileItemList& items)
 }
 
 //****************************************************************************************************************************
-void CGUIWindowVideoActors::Update(const CStdString &strDirectory)
+bool CGUIWindowVideoActors::Update(const CStdString &strDirectory)
 {
   // get selected item
   int iItem = m_viewControl.GetSelectedItem();
@@ -278,6 +278,8 @@ void CGUIWindowVideoActors::Update(const CStdString &strDirectory)
       break;
     }
   }
+
+  return true;
 }
 
 //****************************************************************************************************************************

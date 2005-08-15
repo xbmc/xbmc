@@ -289,7 +289,7 @@ void CGUIWindowMusicPlayList::MoveCurrentPlayListItem(int iAction)
   }
 }
 
-void CGUIWindowMusicPlayList::GetDirectory(const CStdString &strDirectory, CFileItemList &items)
+bool CGUIWindowMusicPlayList::GetDirectory(const CStdString &strDirectory, CFileItemList &items)
 {
   if (items.Size())
   {
@@ -342,6 +342,8 @@ void CGUIWindowMusicPlayList::GetDirectory(const CStdString &strDirectory, CFile
   // Set default icons first,
   // the tagloader will load the thumbs later
   m_vecItems.FillInDefaultIcons();
+
+  return true;
 }
 
 void CGUIWindowMusicPlayList::SavePlayList()
@@ -562,18 +564,20 @@ void CGUIWindowMusicPlayList::OnItemLoaded(CFileItem* pItem)
   g_graphicsContext.Unlock();
 }
 
-void CGUIWindowMusicPlayList::Update(const CStdString& strDirectory)
+bool CGUIWindowMusicPlayList::Update(const CStdString& strDirectory)
 {
   if (m_tagloader.IsLoading())
     m_tagloader.StopThread();
 
-  CGUIWindowMusicBase::Update(strDirectory);
+  bool bRet=CGUIWindowMusicBase::Update(strDirectory);
 
   m_tagloader.Load(m_vecItems);
+
+  return bRet;
 }
 
 void CGUIWindowMusicPlayList::ClearFileItems()
 {
   m_viewControl.Clear();
-  m_vecItems.ClearKeepPointers();
+  m_vecItems.ClearKeepPointer();
 }

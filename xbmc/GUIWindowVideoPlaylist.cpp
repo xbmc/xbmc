@@ -390,7 +390,7 @@ void CGUIWindowVideoPlaylist::UpdateButtons()
 }
 
 
-void CGUIWindowVideoPlaylist::GetDirectory(const CStdString &strDirectory, CFileItemList &items)
+bool CGUIWindowVideoPlaylist::GetDirectory(const CStdString &strDirectory, CFileItemList &items)
 {
   if (items.Size())
   {
@@ -432,9 +432,11 @@ void CGUIWindowVideoPlaylist::GetDirectory(const CStdString &strDirectory, CFile
     }
     items.Add(pItem);
   }
+
+  return true;
 }
 
-void CGUIWindowVideoPlaylist::Update(const CStdString &strDirectory)
+bool CGUIWindowVideoPlaylist::Update(const CStdString &strDirectory)
 {
   // get selected item
   int iItem = m_viewControl.GetSelectedItem();
@@ -493,6 +495,7 @@ void CGUIWindowVideoPlaylist::Update(const CStdString &strDirectory)
 
   }
 
+  return true;
 }
 
 void CGUIWindowVideoPlaylist::GetDirectoryHistoryString(const CFileItem* pItem, CStdString& strHistoryString)

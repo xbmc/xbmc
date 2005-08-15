@@ -19,7 +19,12 @@ public:
   void SetHeading(const wstring& strLine);
   void SetHeading(const string& strLine);
   void SetHeading(int iString);
+  void SetProgressBarMax(int iMax);
+  void StepProgressBar(int nSteps=1);
 protected:
   bool m_bCanceled;
   wstring m_strHeading;
+
+  int  m_iCurrent;
+  int  m_iMax;
 };

@@ -11,7 +11,7 @@ public:
   virtual bool OnAction(const CAction &action);
 
 protected:
-  virtual void GetDirectory(const CStdString &strDirectory, CFileItemList &items);
+  virtual bool GetDirectory(const CStdString &strDirectory, CFileItemList &items);
   virtual void UpdateButtons();
   virtual void OnFileItemFormatLabel(CFileItem* pItem);
   virtual void OnClick(int iItem);

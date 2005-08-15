@@ -12,7 +12,7 @@ public:
   virtual bool OnAction(const CAction &action);
 
 protected:
-  virtual void GetDirectory(const CStdString &strDirectory, CFileItemList &items);
+  virtual bool GetDirectory(const CStdString &strDirectory, CFileItemList &items);
   virtual void UpdateButtons();
   virtual void OnClick(int iItem);
   virtual void DoSort(CFileItemList& items) {};
@@ -20,7 +20,7 @@ protected:
   virtual void OnRetrieveMusicInfo(CFileItemList& items) {};
   virtual void OnItemLoaded(CFileItem* pItem);
   virtual void ClearFileItems();
-  virtual void Update(const CStdString& strDirectory);
+  virtual bool Update(const CStdString& strDirectory);
 
   void SavePlayList();
   void ClearPlayList();

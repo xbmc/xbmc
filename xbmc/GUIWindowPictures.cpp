@@ -482,12 +482,14 @@ void CGUIWindowPictures::UpdateButtons()
   }
 }
 
-void CGUIWindowPictures::Update(const CStdString &strDirectory)
+bool CGUIWindowPictures::Update(const CStdString &strDirectory)
 {
   if (m_thumbLoader.IsLoading())
     m_thumbLoader.StopThread();
 
-  UpdateDir(strDirectory);
+  if (!UpdateDir(strDirectory))
+    return false;
+
   if (!m_Directory.IsVirtualDirectoryRoot() && g_guiSettings.GetBool("Pictures.UseAutoSwitching"))
   {
     m_iViewAsIcons = CAutoSwitch::GetView(m_vecItems);
@@ -496,9 +498,11 @@ void CGUIWindowPictures::Update(const CStdString &strDirectory)
   }
 
   m_thumbLoader.Load(m_vecItems);
+
+  return true;
 }
 
-void CGUIWindowPictures::UpdateDir(const CStdString &strDirectory)
+bool CGUIWindowPictures::UpdateDir(const CStdString &strDirectory)
 {
   // get selected item
   int iItem = m_viewControl.GetSelectedItem();
@@ -512,12 +516,24 @@ void CGUIWindowPictures::UpdateDir(const CStdString &strDirectory)
       m_history.Set(strSelectedItem, m_Directory.m_strPath);
     }
   }
+
+  CStdString strOldDirectory=m_Directory.m_strPath;
+  m_Directory.m_strPath = strDirectory;
+
+  CFileItemList items;
+  if (!GetDirectory(m_Directory.m_strPath, items))
+  {
+    m_Directory.m_strPath = strOldDirectory;
+    return false;
+  }
+
+  m_history.Set(strSelectedItem, strOldDirectory);
+
   ClearFileItems();
 
-  GetDirectory(strDirectory, m_vecItems);
+  m_vecItems.AppendPointer(items);
+  items.ClearKeepPointer();
 
-  m_Directory.m_strPath = strDirectory;
-//  m_vecItems.SetThumbs();
   if (g_guiSettings.GetBool("FileLists.HideExtensions"))
     m_vecItems.RemoveExtensions();
   m_vecItems.FillInDefaultIcons();
@@ -538,6 +554,7 @@ void CGUIWindowPictures::UpdateDir(const CStdString &strDirectory)
     }
   }
 
+  return true;
 }
 
 void CGUIWindowPictures::OnClick(int iItem)
@@ -556,7 +573,8 @@ void CGUIWindowPictures::OnClick(int iItem)
       if ( !HaveDiscOrConnection( pItem->m_strPath, pItem->m_iDriveType ) )
         return ;
     }
-    Update(strPath);
+    if (!Update(strPath))
+      ShowShareErrorMessage(pItem);
   }
   else if (pItem->IsZIP() && g_guiSettings.GetBool("Pictures.HandleArchives")) // mount zip archive
   {
@@ -897,7 +915,7 @@ void CGUIWindowPictures::SetHistoryForPath(const CStdString& strDirectory)
   }
 }
 
-void CGUIWindowPictures::GetDirectory(const CStdString &strDirectory, CFileItemList &items)
+bool CGUIWindowPictures::GetDirectory(const CStdString &strDirectory, CFileItemList &items)
 {
   if (items.Size())
   {
@@ -940,7 +958,7 @@ void CGUIWindowPictures::GetDirectory(const CStdString &strDirectory, CFileItemL
     }
     m_strParentPath = "";
   }
-  m_rootDir.GetDirectory(strDirectory, items);
+  return m_rootDir.GetDirectory(strDirectory, items);
 
 }
 
@@ -1196,3 +1214,25 @@ void CGUIWindowPictures::OnDeleteItem(int iItem)
   Update(m_Directory.m_strPath);
   m_viewControl.SetSelectedItem(iItem);
 }
+
+void CGUIWindowPictures::ShowShareErrorMessage(CFileItem* pItem)
+{
+  if (pItem->m_bIsShareOrDrive)
+  {
+    int idMessageText=0;
+    CURL url(pItem->m_strPath);
+    const CStdString& strHostName=url.GetHostName();
+
+    if (pItem->m_iDriveType!=SHARE_TYPE_REMOTE) //  Local shares incl. dvd drive
+      idMessageText=15300;
+    else if (url.GetProtocol()=="xbms" && strHostName.IsEmpty()) //  xbms server discover
+      idMessageText=15302;
+    else if (url.GetProtocol()=="smb" && strHostName.IsEmpty()) //  smb workgroup
+      idMessageText=15303;
+    else  //  All other remote shares
+      idMessageText=15301;
+
+    CGUIDialogOK::ShowAndGetInput(220, idMessageText, 0, 0);
+  }
+}
+

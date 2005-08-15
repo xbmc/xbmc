@@ -18,36 +18,18 @@ Todo/BUG: GeminiServer 10.05.2005
 */
 #include "stdafx.h"
 #include "guiwindowsysteminfo.h"
-#include "XBInputEx.h"
-#include "keyboard.h"
-#include "settings.h"
-#include "GUIDialogProgress.h"
-#include "guiWindowManager.h"
-#include "localizestrings.h"
-#include "cores/DllLoader/DllLoader.h"
 #include "xbox/xkeeprom.h"
 #include "utils/GUIInfoManager.h"
 #include "utils/SystemInfo.h"
-#include "utils/FanController.h"
-#include "utils/HTTP.h"
-#include "utils/log.h"
-#include "utils/LED.h"
 #include "Util.h"
-
-
-#ifndef SKIN_VERSION_1_3
-	#include "GUILabelControl.h"
-#endif
 
 #define DEBUG_KEYBOARD
 #define DEBUG_MOUSE
 
 extern char g_szTitleIP[32];
-extern "C"
-{
-	extern		XPP_DEVICE_TYPE XDEVICE_TYPE_IR_REMOTE_TABLE;
-	#define     XDEVICE_TYPE_IR_REMOTE	(&XDEVICE_TYPE_IR_REMOTE_TABLE)
-}
+extern "C" XPP_DEVICE_TYPE XDEVICE_TYPE_IR_REMOTE_TABLE;
+#define     XDEVICE_TYPE_IR_REMOTE	(&XDEVICE_TYPE_IR_REMOTE_TABLE)
+
 XKEEPROM*				m_pXKEEPROM;
 EEPROMDATA				m_EEPROMData;
 BOOL					m_EnryptedRegionValid;
@@ -56,12 +38,18 @@ XBOX_VERSION			m_XBOX_Version;
 DWORD					m_dwlastTime;
 
 char* cTempEEPROMBackUPPath =	"Q:\\System\\SystemInfo\\";
+
 CGUIWindowSystemInfo::CGUIWindowSystemInfo(void)
 :CGUIWindow(WINDOW_SYSTEM_INFORMATION, "SettingsSystemInfo.xml")
-{}
+{
+
+}
 
 CGUIWindowSystemInfo::~CGUIWindowSystemInfo(void)
-{}
+{
+
+}
+
 DWORD WINAPI GetMPlayerVersionW( LPVOID lpParam )
 {
 	DllLoader* mplayerDll;
@@ -90,6 +78,7 @@ DWORD WINAPI GetMPlayerVersionW( LPVOID lpParam )
 	
 	return 0;
 }
+
 void CGUIWindowSystemInfo::BytesToHexStr(LPBYTE SrcBytes, DWORD byteCount, LPSTR DstString, UCHAR Seperator)
 {
 	USHORT Inc = (Seperator == 0x00)?2:3;
@@ -109,7 +98,10 @@ void CGUIWindowSystemInfo::BytesToHexStr(LPBYTE SrcBytes, DWORD byteCount, LPSTR
 }
 
 void CGUIWindowSystemInfo::BytesToHexStr(LPBYTE SrcBytes, DWORD byteCount, LPSTR DstString)
-{	BytesToHexStr(SrcBytes, byteCount, DstString, 0x00); }
+{	
+  BytesToHexStr(SrcBytes, byteCount, DstString, 0x00); 
+}
+
 bool CGUIWindowSystemInfo::OnAction(const CAction &action)
 {
   if (action.wID == ACTION_PREVIOUS_MENU)
@@ -165,9 +157,8 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
 				Render();
 			}
 			break;
-		case GUI_MSG_WINDOW_DEINIT:
-			break;
-		case GUI_MSG_CLICKED:
+
+      case GUI_MSG_CLICKED:
 			{
 				unsigned int iControl=message.GetSenderId();
 				if(iControl == CONTROL_BT_HDD)
@@ -410,6 +401,7 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
 	}
 	return CGUIWindow::OnMessage(message);
 }
+
 void CGUIWindowSystemInfo::Render()
 {
 	if (b_IsHome) 
@@ -454,12 +446,14 @@ void CGUIWindowSystemInfo::SetLabelDummy()
 		SET_CONTROL_LABEL(i,"");
 	}
 }
+
 bool CGUIWindowSystemInfo::GetKernelVersion(CStdString& strKernel)
 {
 	CStdString lblKernel=  g_localizeStrings.Get(13283).c_str();
 	strKernel.Format("%s %d.%d.%d.%d",lblKernel,*((USHORT*)XboxKrnlVersion),*((USHORT*)XboxKrnlVersion+1),*((USHORT*)XboxKrnlVersion+2),*((USHORT*)XboxKrnlVersion+3));
 	return true;
 }
+
 bool CGUIWindowSystemInfo::GetCPUFreqInfo(CStdString& strCPUFreq)
 {
 	// XBOX CPU Frequence Detection
@@ -469,6 +463,7 @@ bool CGUIWindowSystemInfo::GetCPUFreqInfo(CStdString& strCPUFreq)
 	strCPUFreq.Format("%s %4.2f Mhz.",lblCPUSpeed.c_str(), CPUFreq);
 	return true;
 }
+
 bool CGUIWindowSystemInfo::GetMACAdress(CStdString& strMacAdress)
 {
 	//Print MAC Address..
@@ -484,6 +479,7 @@ bool CGUIWindowSystemInfo::GetMACAdress(CStdString& strMacAdress)
 	}
 	else return false;	
 }
+
 bool CGUIWindowSystemInfo::GetBIOSInfo(CStdString& strBiosName)
 {
 	// Get XBOX Bios Informations, BiosDetector!
@@ -500,6 +496,7 @@ bool CGUIWindowSystemInfo::GetBIOSInfo(CStdString& strBiosName)
 		return true;
 	}
 }
+
 bool CGUIWindowSystemInfo::GetVideoEncInfo(CStdString& strItemVideoENC)
 {
 	// XBOX Video Encoder Detection
@@ -508,6 +505,7 @@ bool CGUIWindowSystemInfo::GetVideoEncInfo(CStdString& strItemVideoENC)
 	strItemVideoENC.Format("%s %s", lblVideoEnc.c_str(),VideoEncoder);
 	return true;
 }
+
 bool CGUIWindowSystemInfo::GetResolution(CStdString& strResol)
 {
 	// Set Screen Resolution Info
@@ -520,6 +518,7 @@ bool CGUIWindowSystemInfo::GetResolution(CStdString& strResol)
 			);
 	return true;
 }
+
 bool CGUIWindowSystemInfo::GetXBVerInfo(CStdString& strXBoxVer)
 {
 	// XBOX Version Detection
@@ -533,6 +532,7 @@ bool CGUIWindowSystemInfo::GetXBVerInfo(CStdString& strXBoxVer)
 	}
 	else return false;
 }
+
 bool CGUIWindowSystemInfo::GetXBOXSerial(CStdString& strXBOXSerial)
 {
 	//Detect XBOX Serial Number
@@ -548,6 +548,7 @@ bool CGUIWindowSystemInfo::GetXBOXSerial(CStdString& strXBOXSerial)
 	}
 	else return false;
 }
+
 bool CGUIWindowSystemInfo::GetXBProduceInfo(CStdString& strXBProDate) 
 {
 	// Print XBOX Production Place and Date 
@@ -847,6 +848,7 @@ bool CGUIWindowSystemInfo::GetATAValues(int i_lblp1, int i_lblp2, int i_lblp3, i
 	}
 	return false;
 }
+
 bool CGUIWindowSystemInfo::GetNetwork(int i_lblp1, int i_lblp2, int i_lblp3, int i_lblp4, int i_lblp5, int i_lblp6)
 {
 	// Set Network Informations
@@ -939,6 +941,7 @@ bool CGUIWindowSystemInfo::GetNetwork(int i_lblp1, int i_lblp2, int i_lblp3, int
 	}
 	return true;
 }
+
 bool CGUIWindowSystemInfo::GetStorage(int i_lblp1, int i_lblp2, int i_lblp3, int i_lblp4, int i_lblp5, int i_lblp6, int i_lblp7, int i_lblp8, int i_lblp9, int i_lblp10)
 {
 	// There is something going Wrong during Mapping the Drives in XBMC!
@@ -1482,6 +1485,7 @@ bool CGUIWindowSystemInfo::GetUnits(int i_lblp1, int i_lblp2 )
 	SET_CONTROL_LABEL(i_lblp2, strItem7);	// Remote, Headset & MicroPhone
 	return true;
 }
+
 void CGUIWindowSystemInfo::CreateEEPROMBackup(LPCSTR BackupFilePrefix)
 {
 		//m_pXKEEPROM->ReadFromXBOX();
@@ -1613,6 +1617,7 @@ void CGUIWindowSystemInfo::CreateEEPROMBackup(LPCSTR BackupFilePrefix)
 		//else 
 		//	m_pXKEEPROM->SetDecryptedEEPROMData(m_XBOX_Version, &currentEEPROM);
 }
+
 void CGUIWindowSystemInfo::WriteTXTInfoFile(LPCSTR strFilename)
 {
 	BOOL retVal = FALSE;
