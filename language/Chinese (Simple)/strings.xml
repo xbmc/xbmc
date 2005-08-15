@@ -227,7 +227,7 @@
   <string><id>294</id><value>创建书签</value></string>
   <string><id>295</id><value>循环书签</value></string>
   <string><id>296</id><value>清除书签</value></string>
-  <string><id>297</id><value>AV延迟</value></string>
+  <string><id>297</id><value>声音延迟</value></string>
   <string><id>298</id><value>滑动器</value></string>
   <string><id>300</id><value>1. 语言</value></string>
   <string><id>301</id><value>2. 音量</value></string>
@@ -445,6 +445,7 @@
   <string><id>513</id><value>主界面</value></string>
   <string><id>514</id><value>设置界面</value></string>
   <string><id>515</id><value>流派</value></string>
+  <string><id>516</id><value>文档管理</value></string>
 
   <string><id>600</id><value>压缩音乐CD</value></string>
   <string><id>601</id><value>中等</value></string>
@@ -480,6 +481,8 @@
   <string><id>643</id><value>播放增益时忽略消波失真</value></string>
   <string><id>644</id><value>修剪黑边</value></string>
 
+  <string><id>645</id><value>需要缓存一个大文件，是否继续？</value></string>
+  
   <string><id>700</id><value>清除音乐库</value></string>
   <string><id>701</id><value>清除音乐库中的旧文件</value></string>
   <string><id>702</id><value>目前路径曾被扫瞄过。</value></string>
@@ -657,6 +660,8 @@
   <string><id>10501</id><value>我的音乐/文件</value></string>
   <string><id>10502</id><value>我的音乐/音乐库</value></string>
   <string><id>10503</id><value>我的音乐/Top100</value></string>
+  <string><id>10504</id><value>Top 100（歌曲）</value></string> 
+  <string><id>10505</id><value>Top 100（专辑）</value></string> 
 
   <string><id>10506</id><value>我的程序</value></string>
   <string><id>10507</id><value>系统设置</value></string>
@@ -875,6 +880,10 @@
   <string><id>13392</id><value>在播放音乐时自动启用可视化效果</value></string>
   <string><id>13393</id><value>文件夹大小</value></string> 
   <string><id>13394</id><value>计算文件夹大小</value></string> 
+  <string><id>13395</id><value>视频设置</value></string>
+  <string><id>13396</id><value>声音和字幕设置</value></string> 
+  <string><id>13397</id><value>启用字幕</value></string> 
+  <string><id>13398</id><value>书签</value></string>
 
   <string><id>14000</id><value>堆栈开启</value></string>
   <string><id>14001</id><value>堆栈关闭</value></string>
@@ -1085,12 +1094,32 @@
   <string><id>15213</id><value>【预留位置】</value></string>
   <string><id>15214</id><value>使用平滑的A/V同步</value></string>
 
+  <string><id>15300</id><value>路径错误或无法找到！</value></string>
+  <string><id>15301</id><value>无法连接服务器！</value></string>
+  <string><id>15302</id><value>没有服务器找到！</value></string>
+  <string><id>15303</id><value>没有找到工作组！</value></string>
+
   <string><id>16000</id><value>通用</value></string>
   <string><id>16001</id><value>配置音频硬件…</value></string>
   <string><id>16002</id><value>CDDB 查询</value></string>
   <string><id>16003</id><value>高级设置</value></string>
+ 
+  <string><id>16009</id><value>输入影片名称</value></string>
+  <string><id>16010</id><value>输入配置名称</value></string>
+  <string><id>16011</id><value>输入专辑名称</value></string>
+  <string><id>16012</id><value>输入播放列表名称</value></string>
+  <string><id>16013</id><value>输入新的文件名</value></string>
+  <string><id>16014</id><value>输入文件夹名称</value></string>
+  <string><id>16015</id><value>输入目录</value></string>
+  <string><id>16016</id><value>可使用选项： %A, %T, %N, %B, %D, %G, %Y, %F, %S</value></string>
+  <string><id>16017</id><value>输入查询字符串</value></string>
+
   
-  <string><id>16004</id><value>同步交错视频</value></string> 
-  <string><id>16005</id><value>- 反转域</value></string> 
+  <string><id>16018</id><value>关闭</value></string> 
+  <string><id>16019</id><value>自动选择</value></string> 
+  <string><id>16020</id><value>去交错</value></string> 
+  <string><id>16021</id><value>奇同步</value></string> 
+  <string><id>16022</id><value>偶同步</value></string> 
+  <string><id>16023</id><value>交错设置</value></string> 
 
 </strings>
