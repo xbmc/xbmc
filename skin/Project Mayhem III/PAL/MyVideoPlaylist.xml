@@ -47,7 +47,7 @@
       <font>font10</font>
     </control>
 
-    <controlgroup>
+     <controlgroup>
       <control>
         <description>View As Icons button</description>
         <type>button</type>
@@ -72,6 +72,19 @@
         <onleft>50</onleft>
         <onright>50</onright>
         <onup>2</onup>
+        <ondown>28</ondown>
+      </control>
+
+      <control>
+        <description>Randomize button</description>
+        <type>radiobutton</type>
+        <id>28</id>
+        <posX>50</posX>
+        <posY>194</posY>
+        <label>13319</label>
+        <onleft>50</onleft>
+        <onright>50</onright>
+        <onup>20</onup>
         <ondown>26</ondown>
       </control>
 
@@ -80,11 +93,11 @@
         <type>radiobutton</type>
         <id>26</id>
         <posX>50</posX>
-        <posY>194</posY>
+        <posY>231</posY>
         <label>486</label>
         <onleft>50</onleft>
         <onright>50</onright>
-        <onup>20</onup>
+        <onup>28</onup>
         <ondown>27</ondown>
       </control>
 
@@ -93,8 +106,9 @@
         <type>radiobutton</type>
         <id>27</id>
         <posX>50</posX>
-        <posY>231</posY>
+        <posY>268</posY>
         <label>487</label>
+        <font>font13</font>
         <onleft>50</onleft>
         <onright>50</onright>
         <onup>26</onup>
@@ -106,12 +120,13 @@
         <type>button</type>
         <id>21</id>
         <posX>50</posX>
-        <posY>268</posY>
+        <posY>305</posY>
         <label>190</label>
         <font>font13</font>
-        <onup>27</onup>
         <onleft>50</onleft>
         <onright>50</onright>
+        <onup>27</onup>
+        <ondown>22</ondown>
       </control>
 
       <control>
@@ -119,14 +134,14 @@
         <type>button</type>
         <id>22</id>
         <posX>50</posX>
-        <posY>305</posY>
+        <posY>342</posY>
         <label>192</label>
         <font>font13</font>
         <onleft>50</onleft>
         <onright>50</onright>
+        <onup>21</onup>
         <ondown>2</ondown>
       </control>
-
     </controlgroup>
 
     <control>
