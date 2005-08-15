@@ -648,10 +648,10 @@ bool CMPlayer::load()
 }
 void update_cache_dialog(const char* tmp)
 {
+  //Make sure we lock here as this is called from the cache thread thread
+  CGraphicContext::CLock lock(g_graphicsContext);
   if (m_dlgCache)
   {
-    //Make sure we lock here as this is called from the cache thread thread
-    CGraphicContext::CLock lock(g_graphicsContext);
     CStdString message = tmp;
     message.Trim();
     if (int i = message.Find("Cache fill:") >= 0)
@@ -726,9 +726,13 @@ bool CMPlayer::OpenFile(const CFileItem& file, __int64 iStartTime)
   try
   {
     if (bFileOnInternet)
-    {
-      m_dlgCache = new CDlgCache();
+    {      
+      m_dlgCache = new CDlgCache(1500);
       m_bUseFullRecaching = true;
+    }
+    else
+    {
+      m_dlgCache = new CDlgCache(1000);
     }
     if (iCacheSize == 0)
     {
@@ -741,7 +745,30 @@ bool CMPlayer::OpenFile(const CFileItem& file, __int64 iStartTime)
     // cache (remote) subtitles to HD
     if (!bFileOnInternet && bIsVideo && !bIsDVD)
     {
-      CUtil::CacheSubtitles(strFile, _SubtitleExtension);
+      //Small internal progress class for caching
+      class CProgress : public XFILE::IFileCallback
+      {
+        virtual bool OnFileCallback(void* pContext, int ipercent)
+        {
+          CGraphicContext::CLock lock(g_graphicsContext);
+          m_dlgCache->ShowProgressBar(true);
+          m_dlgCache->SetPercentage(ipercent);
+          m_dlgCache->Update();
+          if( m_dlgCache->IsCanceled() ) 
+          {
+            return false;
+          }
+          else
+            return true;
+        }
+      } progress;
+
+      m_dlgCache->SetMessage("Caching subtitles...");
+      CUtil::CacheSubtitles(strFile, _SubtitleExtension, &progress);
+
+      //If caching was canceled, bail here
+      if( m_dlgCache->IsCanceled() ) throw 0;
+
       CUtil::PrepareSubtitleFonts();
     }
     else
@@ -1065,11 +1092,15 @@ bool CMPlayer::OpenFile(const CFileItem& file, __int64 iStartTime)
     Unload();
   }
 
-  //Lock here to make sure cache thread isn't using the object
-  g_graphicsContext.Lock();
-  if (m_dlgCache) delete m_dlgCache;
-  m_dlgCache = NULL;
-  g_graphicsContext.Unlock();
+  if( m_dlgCache )
+  {
+    //Lock here so that mplayer is not using the the object
+    CGraphicContext::CLock lock(g_graphicsContext);
+    //Only call Close, the object will be deleted when it's thread ends.
+    //this makes sure the object is not deleted while in use
+    m_dlgCache->Close(); 
+    m_dlgCache = NULL;
+  }
 
   // mplayer return values:
   // -1 internal error
