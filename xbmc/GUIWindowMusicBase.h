@@ -40,7 +40,7 @@ protected:
    \param strDirectory Path to read
    \param items Fill with items specified in \e strDirectory
    */
-  virtual void GetDirectory(const CStdString &strDirectory, CFileItemList &items) = 0;
+  virtual bool GetDirectory(const CStdString &strDirectory, CFileItemList &items) = 0;
   /*!
   \brief Will be called when an item in list/thumb control has been clicked
   \param iItem List/thumb control item that has been clicked on
@@ -68,7 +68,7 @@ protected:
   virtual void OnRetrieveMusicInfo(CFileItemList& items);
   virtual void GoParentFolder();
   virtual void ClearFileItems();
-  virtual void Update(const CStdString &strDirectory);
+  virtual bool Update(const CStdString &strDirectory);
   virtual void AddItemToPlayList(const CFileItem* pItem);
   virtual void OnSearchItemFound(const CFileItem* pItem);
   virtual void DoSearch(const CStdString& strSearch, CFileItemList& items);
@@ -94,6 +94,8 @@ protected:
   void DisplayEmptyDatabaseMessage(bool bDisplay);
   void SetLabelFromTag(CFileItem *pItem);
   CStdString ParseFormat(CFileItem *pItem, const CStdString& strFormat);
+
+  void ShowShareErrorMessage(CFileItem* pItem);
 
   CFileItem m_Directory; ///< Holds the current direcotry path after calling Update()
   CVirtualDirectory m_rootDir; ///< Used to get directories from shares and the shares itself

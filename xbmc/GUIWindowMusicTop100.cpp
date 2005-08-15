@@ -74,7 +74,7 @@ bool CGUIWindowMusicTop100::OnAction(const CAction &action)
   return CGUIWindowMusicBase::OnAction(action);
 }
 
-void CGUIWindowMusicTop100::GetDirectory(const CStdString &strDirectory, CFileItemList &items)
+bool CGUIWindowMusicTop100::GetDirectory(const CStdString &strDirectory, CFileItemList &items)
 {
   if (items.Size() )
   {
@@ -103,6 +103,8 @@ void CGUIWindowMusicTop100::GetDirectory(const CStdString &strDirectory, CFileIt
     pFileItem->m_musicInfoTag.SetLoaded(true);
     items.Add(pFileItem);
   }
+
+  return true;
 }
 
 void CGUIWindowMusicTop100::UpdateButtons()

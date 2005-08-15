@@ -1,6 +1,5 @@
 #pragma once
 #include "guiwindow.h"
-#include "GUIDialogProgress.h"
 
 class CGUIWindowSystemInfo :
       public CGUIWindow

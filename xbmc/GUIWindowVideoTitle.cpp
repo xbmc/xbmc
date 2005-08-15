@@ -240,7 +240,7 @@ void CGUIWindowVideoTitle::SortItems(CFileItemList& items)
 }
 
 //****************************************************************************************************************************
-void CGUIWindowVideoTitle::Update(const CStdString &strDirectory)
+bool CGUIWindowVideoTitle::Update(const CStdString &strDirectory)
 {
   // get selected item
   int iItem = m_viewControl.GetSelectedItem();
@@ -308,6 +308,8 @@ void CGUIWindowVideoTitle::Update(const CStdString &strDirectory)
       break;
     }
   }
+
+  return true;
 }
 
 //****************************************************************************************************************************

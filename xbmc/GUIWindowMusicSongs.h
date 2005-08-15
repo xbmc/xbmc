@@ -10,7 +10,7 @@ public:
   virtual bool OnMessage(CGUIMessage& message);
 
 protected:
-  virtual void GetDirectory(const CStdString &strDirectory, CFileItemList &items);
+  virtual bool GetDirectory(const CStdString &strDirectory, CFileItemList &items);
   virtual void UpdateButtons();
   virtual void OnFileItemFormatLabel(CFileItem* pItem);
   virtual void OnClick(int iItem);
@@ -21,7 +21,7 @@ protected:
   virtual void GetDirectoryHistoryString(const CFileItem* pItem, CStdString& strHistoryString);
   virtual void OnRetrieveMusicInfo(CFileItemList& items);
   virtual void OnScan();
-  virtual void Update(const CStdString &strDirectory);
+  virtual bool Update(const CStdString &strDirectory);
 
   // new method
   virtual void PlayItem(int iItem);

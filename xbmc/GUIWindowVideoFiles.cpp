@@ -10,7 +10,6 @@
 #include "PlayListFactory.h"
 #include "Application.h"
 #include "NFOFile.h"
-#include "Utils/fstrcmp.h"
 #include "PlayListPlayer.h"
 #include "GUIThumbnailPanel.h"
 #include "GUIListControl.h"
@@ -342,9 +341,11 @@ void CGUIWindowVideoFiles::SortItems(CFileItemList& items)
   items.Sort(SSortVideoByName::Sort);
 }
 
-void CGUIWindowVideoFiles::Update(const CStdString &strDirectory)
+bool CGUIWindowVideoFiles::Update(const CStdString &strDirectory)
 {
-  UpdateDir(strDirectory);
+  if (!UpdateDir(strDirectory))
+    return false;
+
   if (!m_Directory.IsVirtualDirectoryRoot() && g_guiSettings.GetBool("VideoFiles.UseAutoSwitching"))
   {
     m_iViewAsIcons = CAutoSwitch::GetView(m_vecItems);
@@ -354,9 +355,11 @@ void CGUIWindowVideoFiles::Update(const CStdString &strDirectory)
 //    UpdateThumbPanel();
     UpdateButtons();
   }
+
+  return true;
 }
 
-void CGUIWindowVideoFiles::UpdateDir(const CStdString &strDirectory)
+bool CGUIWindowVideoFiles::UpdateDir(const CStdString &strDirectory)
 {
   // get selected item
   int iItem = m_viewControl.GetSelectedItem();
@@ -370,159 +373,25 @@ void CGUIWindowVideoFiles::UpdateDir(const CStdString &strDirectory)
       m_history.Set(strSelectedItem, m_Directory.m_strPath);
     }
   }
-  ClearFileItems();
 
-  CStdString strParentPath;
-  bool bParentExists = CUtil::GetParentPath(strDirectory, strParentPath);
-
-  // check if current directory is a root share
-  if ( !m_rootDir.IsShare(strDirectory) )
-  {
-    // no, do we got a parent dir?
-    if ( bParentExists )
-    {
-      // yes
-      if (!g_guiSettings.GetBool("MyVideos.HideParentDirItems"))
-      {
-        CFileItem *pItem = new CFileItem("..");
-        pItem->m_strPath = strParentPath;
-        pItem->m_bIsFolder = true;
-        pItem->m_bIsShareOrDrive = false;
-        m_vecItems.Add(pItem);
-      }
-      m_strParentPath = strParentPath;
-    }
-  }
-  else
-  {
-    // yes, this is the root of a share
-    // add parent path to the virtual directory
-    if (!g_guiSettings.GetBool("MyVideos.HideParentDirItems"))
-    {
-      CFileItem *pItem = new CFileItem("..");
-      pItem->m_strPath = "";
-      pItem->m_bIsShareOrDrive = false;
-      pItem->m_bIsFolder = true;
-      m_vecItems.Add(pItem);
-    }
-    m_strParentPath.Empty();
-  }
-
+  CStdString strOldDirectory=m_Directory.m_strPath;
   m_Directory.m_strPath = strDirectory;
 
-  if (g_stSettings.m_iMyVideoVideoStack != STACK_NONE)
+  CFileItemList items;
+  if (!GetDirectory(m_Directory.m_strPath, items))
   {
-    CFileItemList items;
-    m_rootDir.GetDirectory(strDirectory, items);
-    bool bDVDFolder(false);
-    //Figure out first if we are in a folder that contains a dvd
-    for (int i = 0; i < (int)items.Size(); ++i) //Do it this way to avoid an extra roundtrip to files
-    {
-      CFileItem* pItem1 = items[i];
-      if (CStdString(CUtil::GetFileName(pItem1->m_strPath)).Equals("VIDEO_TS.IFO"))
-      {
-        bDVDFolder = true;
-        m_vecItems.Add(new CFileItem(*pItem1));
-        items.Remove(i); //Make sure this is not included in the comeing search as it would have been deleted.
-        break;
-      }
-    }
-
-    for (int i = 0; i < items.Size(); ++i)
-    {
-      bool bAdd(true);
-      CFileItem* pItem1 = items[i];
-      if (pItem1->IsNFO())
-      {
-        bAdd = false;
-      }
-      else if (bDVDFolder && pItem1->IsDVDFile(true, true)) //Hide all dvdfiles
-      {
-        bAdd = false;
-      }
-      else
-      {
-        //don't stack folders and playlists
-        if ((!pItem1->m_bIsFolder) && !pItem1->IsPlayList())
-        {
-          CStdString fileName1 = CUtil::GetFileName(pItem1->m_strPath);
-
-          CStdString fileTitle;
-          CStdString volumeNumber;
-
-          bool searchForStackedFiles = false;
-          if (g_stSettings.m_iMyVideoVideoStack == STACK_FUZZY)
-          {
-            searchForStackedFiles = true;
-          }
-          else
-          {
-            searchForStackedFiles = CUtil::GetVolumeFromFileName(fileName1, fileTitle, volumeNumber);
-          }
-
-          if (searchForStackedFiles)
-          {
-            for (int x = 0; x < (int)items.Size(); ++x)
-            {
-              if (i != x)
-              {
-                CFileItem* pItem2 = items[x];
-                if ((!pItem2->m_bIsFolder) && !pItem2->IsPlayList())
-                {
-                  CStdString fileName2 = CUtil::GetFileName(pItem2->m_strPath);
-
-                  if (g_stSettings.m_iMyVideoVideoStack == STACK_FUZZY)
-                  {
-                    // use "fuzzy" stacking
-
-                    double fPercentage = fstrcmp(fileName1, fileName2, COMPARE_PERCENTAGE_MIN);
-                    if (fPercentage >= COMPARE_PERCENTAGE)
-                    {
-                      int iGreater = strcmp(fileName1, fileName2);
-                      if (iGreater > 0)
-                      {
-                        bAdd = false;
-                        break;
-                      }
-                    }
-                  }
-                  else
-                  {
-                    // use traditional "simple" stacking (like XBMP)
-                    // file name must end in -CD[n], where only the first
-                    // one (-CD1) will be added to the display list
-
-                    CStdString fileTitle2;
-                    CStdString volumeNumber2;
-                    if (CUtil::GetVolumeFromFileName(fileName2, fileTitle2, volumeNumber2))
-                    {
-                      // TODO: check volumePrefix - they should be in the
-                      // same category, but not necessarily equal!
-
-                      if (fileTitle.Equals(fileTitle2) && strcmp(volumeNumber.c_str(), volumeNumber2.c_str()) > 0)
-                      {
-                        bAdd = false;
-                        break;
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-      if (bAdd)
-      {
-        m_vecItems.Add(new CFileItem(*pItem1));
-      }
-    }
+    m_Directory.m_strPath = strOldDirectory;
+    return false;
   }
-  else
-  {
-    CFileItemList items;
-    m_rootDir.GetDirectory(strDirectory, m_vecItems);
-  }
+
+  m_history.Set(strSelectedItem, strOldDirectory);
+
+  ClearFileItems();
+
+  m_vecItems.AppendPointer(items);
+  items.ClearKeepPointer();
+
+  m_vecItems.Stack();
 
   m_iLastControl = GetFocusedControl();
 
@@ -549,6 +418,8 @@ void CGUIWindowVideoFiles::UpdateDir(const CStdString &strDirectory)
       break;
     }
   }
+
+  return true;
 }
 
 void CGUIWindowVideoFiles::OnClick(int iItem)
@@ -575,7 +446,8 @@ void CGUIWindowVideoFiles::OnClick(int iItem)
       if ( !HaveDiscOrConnection( pItem->m_strPath, pItem->m_iDriveType ) )
         return ;
     }
-    Update(strPath);
+    if (!Update(strPath))
+      ShowShareErrorMessage(pItem);
   }
   else if (pItem->IsZIP() && g_guiSettings.GetBool("VideoFiles.HandleArchives")) // mount zip archive
   {
@@ -979,7 +851,7 @@ void CGUIWindowVideoFiles::LoadPlayList(const CStdString& strPlayList)
   }
 }
 
-void CGUIWindowVideoFiles::GetDirectory(const CStdString &strDirectory, CFileItemList &items)
+bool CGUIWindowVideoFiles::GetDirectory(const CStdString &strDirectory, CFileItemList &items)
 {
   if (items.Size() )
   {
@@ -1022,8 +894,8 @@ void CGUIWindowVideoFiles::GetDirectory(const CStdString &strDirectory, CFileIte
     }
     m_strParentPath = "";
   }
-  m_rootDir.GetDirectory(strDirectory, items);
 
+  return m_rootDir.GetDirectory(strDirectory, items);
 }
 
 /// \brief Can be overwritten to build an own history string for \c m_history

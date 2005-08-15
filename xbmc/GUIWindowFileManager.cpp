@@ -485,7 +485,7 @@ void CGUIWindowFileManager::UpdateButtons()
   }
 }
 
-void CGUIWindowFileManager::Update(int iList, const CStdString &strDirectory)
+bool CGUIWindowFileManager::Update(int iList, const CStdString &strDirectory)
 {
   // get selected item
   int iItem = GetSelectedItem(iList);
@@ -501,11 +501,23 @@ void CGUIWindowFileManager::Update(int iList, const CStdString &strDirectory)
     }
   }
 
+  CStdString strOldDirectory=m_Directory[iList].m_strPath;
+  m_Directory[iList].m_strPath = strDirectory;
+
+  CFileItemList items;
+  if (!GetDirectory(iList, m_Directory[iList].m_strPath, items))
+  {
+    m_Directory[iList].m_strPath = strOldDirectory;
+    return false;
+  }
+
+  m_history[iList].Set(strSelectedItem, strOldDirectory);
+
   ClearFileItems(iList);
 
-  GetDirectory(iList, strDirectory, m_vecItems[iList]);
+  m_vecItems[iList].AppendPointer(items);
+  items.ClearKeepPointer();
 
-  m_Directory[iList].m_strPath = strDirectory;
   // if we have a .tbn file, use itself as the thumb
   for (int i = 0; i < (int)m_vecItems[iList].Size(); i++)
   {
@@ -536,6 +548,8 @@ void CGUIWindowFileManager::Update(int iList, const CStdString &strDirectory)
       break;
     }
   }
+
+  return true;
 }
 
 
@@ -563,7 +577,8 @@ void CGUIWindowFileManager::OnClick(int iList, int iItem)
       if ( !HaveDiscOrConnection( strPath, iDriveType ) )
         return ;
     }
-    Update(iList, strPath);
+    if (!Update(iList, strPath))
+      ShowShareErrorMessage(pItem);
   }
   else if (pItem->IsZIP() || pItem->IsCBZ()) // mount zip archive
   {
@@ -1122,7 +1137,7 @@ void CGUIWindowFileManager::GetDirectoryHistoryString(const CFileItem* pItem, CS
   }
 }
 
-void CGUIWindowFileManager::GetDirectory(int iList, const CStdString &strDirectory, CFileItemList &items)
+bool CGUIWindowFileManager::GetDirectory(int iList, const CStdString &strDirectory, CFileItemList &items)
 {
   CStdString strParentPath;
   bool bParentExists = CUtil::GetParentPath(strDirectory, strParentPath);
@@ -1160,7 +1175,7 @@ void CGUIWindowFileManager::GetDirectory(int iList, const CStdString &strDirecto
     m_strParentPath[iList] = "";
   }
 
-  m_rootDir.GetDirectory(strDirectory, items);
+  return m_rootDir.GetDirectory(strDirectory, items);
 }
 
 bool CGUIWindowFileManager::CanRename(int iList)
@@ -1397,4 +1412,25 @@ bool CGUIWindowFileManager::Delete(const CFileItem *pItem)
   if (m_dlgProgress) m_dlgProgress->Close();
 
   return bResult;
+}
+
+void CGUIWindowFileManager::ShowShareErrorMessage(CFileItem* pItem)
+{
+  if (pItem->m_bIsShareOrDrive)
+  {
+    int idMessageText=0;
+    CURL url(pItem->m_strPath);
+    const CStdString& strHostName=url.GetHostName();
+
+    if (pItem->m_iDriveType!=SHARE_TYPE_REMOTE) //  Local shares incl. dvd drive
+      idMessageText=15300;
+    else if (url.GetProtocol()=="xbms" && strHostName.IsEmpty()) //  xbms server discover
+      idMessageText=15302;
+    else if (url.GetProtocol()=="smb" && strHostName.IsEmpty()) //  smb workgroup
+      idMessageText=15303;
+    else  //  All other remote shares
+      idMessageText=15301;
+
+    CGUIDialogOK::ShowAndGetInput(220, idMessageText, 0, 0);
+  }
 }
