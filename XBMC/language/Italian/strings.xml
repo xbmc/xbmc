@@ -445,6 +445,7 @@
   <string><id>513</id><value>Home Window</value></string>
   <string><id>514</id><value>Impostazione Manuale</value></string>
   <string><id>515</id><value>Genere</value></string>
+  <string><id>516</id><value>Modifica Archivi</value></string>
 
   <string><id>600</id><value>Rip CD Audio</value></string>
   <string><id>601</id><value>Medio</value></string>
@@ -486,8 +487,8 @@
   <string><id>703</id><value>Premere Si per aggiornare tutte le canzoni in questo percorso.</value></string>
   <string><id>704</id><value>Premere No per aggiungere solo nuove canzoni.</value></string>
   <string><id>705</id><value>Rete</value></string>
-  <string><id>706</id><value>- HTTP Proxy Host</value></string>
-  <string><id>707</id><value>- HTTP Proxy Port</value></string>
+  <string><id>706</id><value>HTTP Proxy Host</value></string>
+  <string><id>707</id><value>HTTP Proxy Port</value></string>
   <string><id>708</id><value>Attiva HTTP Proxy</value></string>
   <string><id>709</id><value>XLink Kai XTag</value></string>
   <string><id>710</id><value>XLink Kai Password</value></string>
@@ -510,10 +511,10 @@
   <string><id>727</id><value>Web Server</value></string>
   <string><id>728</id><value>FTP Server</value></string>
   <string><id>729</id><value>Internet Time</value></string>
-  <string><id>730</id><value>- Web Server Port</value></string>
-  <string><id>731</id><value>- Indirizzo Time Server</value></string>
+  <string><id>730</id><value>Web Server Port</value></string>
+  <string><id>731</id><value>Indirizzo Time Server</value></string>
   <string><id>732</id><value>Salva e Applica</value></string>
-  <string><id>733</id><value>- Web Server Password</value></string>
+  <string><id>733</id><value>Web Server Password</value></string>
   <string><id>734</id><value>Nessuna Password</value></string>
   <string><id>735</id><value>- Set Caratteri</value></string>
   <string><id>736</id><value>- Stile</value></string>
@@ -596,8 +597,8 @@
   <string><id>1234</id><value>Programmi, Immagini e Musica</value></string>
   <string><id>1235</id><value>Programmi, Immagini e Video</value></string>
   
-  <string><id>1245</id><value> - FTP User Name</value></string>
-  <string><id>1246</id><value> - FTP User Password</value></string>
+  <string><id>1245</id><value>FTP User Name</value></string>
+  <string><id>1246</id><value>FTP User Password</value></string>
   <string><id>1247</id><value>FTP Server User Password salvata con successo!</value></string>
 
   <string><id>1250</id><value>Autodetection</value></string>
@@ -657,6 +658,8 @@
   <string><id>10501</id><value>Musica/File</value></string>
   <string><id>10502</id><value>Musica/Album</value></string>
   <string><id>10503</id><value>Musica/Artisti</value></string>
+  <string><id>10504</id><value>Top 100 Canzoni</value></string> 
+  <string><id>10505</id><value>Top 100 Albums</value></string> 
 
   <string><id>10506</id><value>Applicazioni</value></string>
   <string><id>10507</id><value>Configurazione</value></string>
@@ -876,6 +879,7 @@
   <string><id>13395</id><value>Impostazioni Video</value></string>
   <string><id>13396</id><value>Impostazioni Audio and Sottotitoli</value></string>
   <string><id>13397</id><value>Attiva Sottotitoli</value></string>
+  <string><id>13398</id><value>Bookmarks</value></string>
 
   <string><id>14000</id><value>Unisci Volumi</value></string>
   <string><id>14001</id><value>Dividi Volumi</value></string>
@@ -1037,8 +1041,6 @@
   <string><id>15210</id><value>%i Canzoni Memorizzate</value></string>
   <string><id>15211</id><value>Inviando...</value></string>
   <string><id>15212</id><value>Inviato in %i secondi</value></string>
-  <string><id>15213</id><value>[CONTENITORE]</value></string>
-  <string><id>15214</id><value>Perfezziona Sincronizzazione A/V</value></string>
 
   <string><id>13150</id><value>HDD Key:</value></string>
   <string><id>13151</id><value>HDD Temp:</value></string>
@@ -1086,14 +1088,35 @@
   <string><id>13296</id><value>Xbox è Connessa</value></string>
   <string><id>13297</id><value>Xbox NON è Connessa. Controlla Configurazione Rete!</value></string>
   <string><id>13298</id><value>XBLIVE Key:</value></string>
+
+  <string><id>15213</id><value>[CONTENITORE]</value></string>
+  <string><id>15214</id><value>Perfezziona Sincronizzazione A/V</value></string>
+
+  <string><id>15300</id><value>Percorso non trovato o invalido</value></string>
+  <string><id>15301</id><value>Non è stato possibile connetersi al server</value></string>
+  <string><id>15302</id><value>Nessun server trovato</value></string>
+  <string><id>15303</id><value>Nessun Workgroup trovato</value></string>
+
   <string><id>16000</id><value>Generale</value></string>
   <string><id>16001</id><value>Configura Audio Hardware...</value></string>
   <string><id>16002</id><value>Ricerca CDDB</value></string>
   <string><id>16003</id><value>Lettore</value></string>
-  <string><id>16004</id><value>Sincronizza Video Interlacciato</value></string> 
-  <string><id>16005</id><value>- Inverti i Campi</value></string> 
-  <string><id>16006</id><value>Interlacciamento Sincronizzato</value></string> 
-  <string><id>16007</id><value>Campi Invertiti</value></string> 
-  <string><id>16008</id><value>On</value></string> 
+
+  <string><id>16009</id><value>Inserire Nome del Film</value></string>
+  <string><id>16010</id><value>Inserire Nome del Profilo</value></string>
+  <string><id>16011</id><value>Inserire Nome dell'Album</value></string>
+  <string><id>16012</id><value>Inserire Nome della Playlist</value></string>
+  <string><id>16013</id><value>Inserire nuovo nome del file</value></string>
+  <string><id>16014</id><value>Inserire Nome della cartella</value></string>
+  <string><id>16015</id><value>Inserire directory</value></string>
+  <string><id>16016</id><value>Available options: %A, %T, %N, %B, %D, %G, %Y, %F, %S</value></string>
+  <string><id>16017</id><value>Inserire Stringa da cercare</value></string>
+  
+  <string><id>16018</id><value>Nessuno</value></string>
+  <string><id>16019</id><value>Auto Seleziona</value></string>
+  <string><id>16020</id><value>DeInterlaccia</value></string>
+  <string><id>16021</id><value>Sincronismo Pari</value></string>
+  <string><id>16022</id><value>Sincronismo Dispari</value></string>
+  <string><id>16023</id><value>Modifiche Interlacciate</value></string>
 
 </strings>
