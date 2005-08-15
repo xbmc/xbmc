@@ -11,19 +11,19 @@
 
 
 #define CONTROL_BTNVIEWASICONS  2
-#define CONTROL_BTNSORTBY   3
-#define CONTROL_BTNSORTASC   4
+#define CONTROL_BTNSORTBY       3
+#define CONTROL_BTNSORTASC      4
 
-#define CONTROL_LABELFILES         12
-#define CONTROL_FILTER    15
+#define CONTROL_LABELFILES  12
+#define CONTROL_FILTER      15
+#define CONTROL_BTNSHUFFLE  21
 
-#define CONTROL_BTNSHUFFLE   21
-
-#define CONTROL_LIST    50
+#define CONTROL_LIST      50
 #define CONTROL_THUMBS    51
 #define CONTROL_BIGLIST   52
 
-#define SHOW_PLAYLISTS  32
+#define SHOW_PLAYLISTS  64
+#define SHOW_RECENT     32
 #define SHOW_TOP        16
 #define SHOW_GENRES     8
 #define SHOW_ARTISTS    4
@@ -241,6 +241,112 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
       {
         m_iViewAsIcons = g_stSettings.m_iMyMusicNavRootViewAsIcons;
         m_iViewAsIconsRoot = g_stSettings.m_iMyMusicNavRootViewAsIcons;
+      }
+
+      // check for valid quickpath parameter
+      CStdString strDestination = message.GetStringParam();
+      if (!strDestination.IsEmpty())
+      {
+        message.SetStringParam("");
+        CLog::Log(LOGINFO, "Attempting to quickpath to: %s", strDestination.c_str());
+
+        CStdString strParentPath = "db://";
+        CStdString strGenres = g_localizeStrings.Get(135).c_str();      // Genres
+        CStdString strArtists = g_localizeStrings.Get(133).c_str();     // Artists
+        CStdString strAlbums = g_localizeStrings.Get(132).c_str();      // Albums
+        CStdString strSongs = g_localizeStrings.Get(134).c_str();       // Songs
+        CStdString strTop = g_localizeStrings.Get(271).c_str();         // Top 100
+        CStdString strTopSongs = g_localizeStrings.Get(10504).c_str();  // Top 100 Songs
+        CStdString strTopAlbums = g_localizeStrings.Get(10505).c_str(); // Top 100 Albums
+
+        if (strDestination.Equals("Genres"))
+        {
+          m_iState = SHOW_GENRES;
+          m_iPath = SHOW_GENRES;
+
+          vecPathHistory.clear();
+          vecPathHistory.push_back(strGenres);
+
+          m_Directory.m_strPath = "db://" + strGenres + "/";
+          m_history.Set(m_Directory.m_strPath, strParentPath);
+        }
+        else if (strDestination.Equals("Artists"))
+        {
+          m_iState = SHOW_ARTISTS;
+          m_iPath = SHOW_ARTISTS;
+
+          vecPathHistory.clear();
+          vecPathHistory.push_back(strArtists);
+
+          m_Directory.m_strPath = "db://" + strArtists + "/";
+          m_history.Set(m_Directory.m_strPath, strParentPath);
+        }
+        else if (strDestination.Equals("Albums"))
+        {
+          m_iState = SHOW_ALBUMS;
+          m_iPath = SHOW_ALBUMS;
+
+          vecPathHistory.clear();
+          vecPathHistory.push_back(strAlbums);
+
+          m_Directory.m_strPath = "db://" + strAlbums + "/";
+          m_history.Set(m_Directory.m_strPath, strParentPath);
+        }
+        else if (strDestination.Equals("Songs"))
+        {
+          m_iState = SHOW_SONGS;
+          m_iPath = SHOW_SONGS;
+
+          vecPathHistory.clear();
+          vecPathHistory.push_back(strSongs);
+
+          m_Directory.m_strPath = "db://" + strSongs + "/";
+          m_history.Set(m_Directory.m_strPath, strParentPath);
+        }
+        else if (strDestination.Equals("Top 100 Songs"))
+        {
+          m_iState = SHOW_SONGS;
+          m_iPath = SHOW_TOP + SHOW_SONGS;
+
+          vecPathHistory.clear();
+          vecPathHistory.push_back(strTop);
+          vecPathHistory.push_back(strTopSongs);
+
+          m_Directory.m_strPath = "db://" + strTop + "/";
+          m_history.Set(m_Directory.m_strPath, strParentPath);
+
+          strParentPath = m_Directory.m_strPath;
+          m_Directory.m_strPath += strTopSongs + "/";
+          m_history.Set(m_Directory.m_strPath, strParentPath);
+        }
+        else if (strDestination.Equals("Top 100 Albums"))
+        {
+          m_iState = SHOW_ALBUMS;
+          m_iPath = SHOW_TOP + SHOW_ALBUMS;
+
+          vecPathHistory.clear();
+          vecPathHistory.push_back(strTop);
+          vecPathHistory.push_back(strTopAlbums);
+
+          m_Directory.m_strPath = "db://" + strTop + "/";
+          m_history.Set(m_Directory.m_strPath, strParentPath);
+
+          strParentPath = m_Directory.m_strPath;
+          m_Directory.m_strPath += strTopAlbums + "/";
+          m_history.Set(m_Directory.m_strPath, strParentPath);
+        }
+        else
+        {
+          CLog::Log(LOGERROR, "  Failed! Destination parameter (%s) is not valid!", strDestination.c_str());
+          break;
+        }
+
+        // clear any previous filters as quickpath is valid
+        CLog::Log(LOGINFO, "  Success! Opened destination path: %s", strDestination.c_str());
+        m_strGenre.Empty();
+        m_strArtist.Empty();
+        m_strAlbum.Empty();
+        m_strAlbumPath.Empty();
       }
     }
     break;
