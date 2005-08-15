@@ -444,7 +444,7 @@ void CGUIWindowMusicBase::UpdateListControl()
 
 /// \brief Set window to a specific directory
 /// \param strDirectory The directory to be displayed in list/thumb control
-void CGUIWindowMusicBase::Update(const CStdString &strDirectory)
+bool CGUIWindowMusicBase::Update(const CStdString &strDirectory)
 {
   // get selected item
   int iItem = m_viewControl.GetSelectedItem();
@@ -458,12 +458,22 @@ void CGUIWindowMusicBase::Update(const CStdString &strDirectory)
     }
   }
 
-  ClearFileItems();
-
-  m_history.Set(strSelectedItem, m_Directory.m_strPath);
+  CStdString strOldDirectory=m_Directory.m_strPath;
   m_Directory.m_strPath = strDirectory;
 
-  GetDirectory(m_Directory.m_strPath, m_vecItems);
+  CFileItemList items;
+  if (!GetDirectory(m_Directory.m_strPath, items))
+  {
+    m_Directory.m_strPath = strOldDirectory;
+    return false;
+  }
+
+  m_history.Set(strSelectedItem, strOldDirectory);
+
+  ClearFileItems();
+
+  m_vecItems.AppendPointer(items);
+  items.ClearKeepPointer();
 
   RetrieveMusicInfo();
 
@@ -519,6 +529,8 @@ void CGUIWindowMusicBase::Update(const CStdString &strDirectory)
     }
 
   }
+
+  return true;
 }
 
 /// \brief Call to go to parent folder
@@ -578,6 +590,27 @@ bool CGUIWindowMusicBase::HaveDiscOrConnection( CStdString& strPath, int iDriveT
   }
 
   return true;
+}
+
+void CGUIWindowMusicBase::ShowShareErrorMessage(CFileItem* pItem)
+{
+  if (pItem->m_bIsShareOrDrive)
+  {
+    int idMessageText=0;
+    CURL url(pItem->m_strPath);
+    const CStdString& strHostName=url.GetHostName();
+
+    if (pItem->m_iDriveType!=SHARE_TYPE_REMOTE) //  Local shares incl. dvd drive
+      idMessageText=15300;
+    else if (url.GetProtocol()=="xbms" && strHostName.IsEmpty()) //  xbms server discover
+      idMessageText=15302;
+    else if (url.GetProtocol()=="smb" && strHostName.IsEmpty()) //  smb workgroup
+      idMessageText=15303;
+    else  //  All other remote shares
+      idMessageText=15301;
+
+    CGUIDialogOK::ShowAndGetInput(220, idMessageText, 0, 0);
+  }
 }
 
 /// \brief Retrieves music info for albums from allmusic.com and displays them in CGUIWindowMusicInfo

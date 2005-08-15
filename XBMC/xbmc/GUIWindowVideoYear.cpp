@@ -189,7 +189,7 @@ void CGUIWindowVideoYear::SortItems(CFileItemList& items)
 }
 
 //****************************************************************************************************************************
-void CGUIWindowVideoYear::Update(const CStdString &strDirectory)
+bool CGUIWindowVideoYear::Update(const CStdString &strDirectory)
 {
   // get selected item
   int iItem = m_viewControl.GetSelectedItem();
@@ -280,6 +280,8 @@ void CGUIWindowVideoYear::Update(const CStdString &strDirectory)
       break;
     }
   }
+
+  return true;
 }
 
 //****************************************************************************************************************************

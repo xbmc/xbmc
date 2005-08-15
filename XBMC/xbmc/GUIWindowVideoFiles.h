@@ -20,8 +20,8 @@ protected:
   virtual void FormatItemLabels();
   virtual void SortItems(CFileItemList& items);
   virtual void UpdateButtons();
-  virtual void Update(const CStdString &strDirectory);
-  void UpdateDir(const CStdString &strDirectory);
+  virtual bool Update(const CStdString &strDirectory);
+  bool UpdateDir(const CStdString &strDirectory);
   virtual void OnClick(int iItem);
 
   virtual void OnPopupMenu(int iItem);
@@ -31,7 +31,7 @@ protected:
   bool DoScan(CFileItemList& items);
   void OnRetrieveVideoInfo(CFileItemList& items);
   void LoadPlayList(const CStdString& strFileName);
-  virtual void GetDirectory(const CStdString &strDirectory, CFileItemList &items);
+  virtual bool GetDirectory(const CStdString &strDirectory, CFileItemList &items);
   virtual void GetDirectoryHistoryString(const CFileItem* pItem, CStdString& strHistoryString);
   void SetHistoryForPath(const CStdString& strDirectory);
   void GetIMDBDetails(CFileItem *pItem, CIMDBUrl &url);

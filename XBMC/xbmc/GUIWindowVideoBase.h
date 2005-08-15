@@ -33,9 +33,9 @@ protected:
 
   void ClearFileItems();
   void OnSort();
-  virtual void Update(const CStdString &strDirectory) {}; // CONSOLIDATE??
+  virtual bool Update(const CStdString &strDirectory) { return false; }; // CONSOLIDATE??
   virtual void OnClick(int iItem) {};  // CONSOLIDATE??
-  virtual void GetDirectory(const CStdString &strDirectory, CFileItemList &items) {}; //FIXME - this should be in all classes
+  virtual bool GetDirectory(const CStdString &strDirectory, CFileItemList &items) { return false; }; //FIXME - this should be in all classes
 
   void GoParentFolder();
   virtual void OnInfo(int iItem);
@@ -55,6 +55,8 @@ protected:
   void AddItemToPlayList(const CFileItem* pItem);
   void GetStackedFiles(const CStdString &strFileName, std::vector<CStdString> &movies);
   void PlayMovies(VECMOVIESFILES &movies, long lStartOffset);
+  void ShowShareErrorMessage(CFileItem* pItem);
+
   CVirtualDirectory m_rootDir;
   CFileItemList m_vecItems;
   CFileItem m_Directory;

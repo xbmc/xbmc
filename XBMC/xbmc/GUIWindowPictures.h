@@ -21,15 +21,15 @@ public:
   virtual void OnWindowUnload();
 protected:
   void GoParentFolder();
-  void GetDirectory(const CStdString &strDirectory, CFileItemList &items);
+  bool GetDirectory(const CStdString &strDirectory, CFileItemList &items);
   void OnClick(int iItem);
   void OnPopupMenu(int iItem);
   void OnRegenerateThumbs();
   void OnSort();
   void UpdateButtons();
   void ClearFileItems();
-  void Update(const CStdString &strDirectory);
-  void UpdateDir(const CStdString &strDirectory);
+  bool Update(const CStdString &strDirectory);
+  bool UpdateDir(const CStdString &strDirectory);
   void OnShowPicture(const CStdString& strPicture);
   void OnShowPictureRecursive(const CStdString& strPicture);
   void OnSlideShow(const CStdString& strPicture);
@@ -45,6 +45,7 @@ protected:
   void AddDir(CGUIWindowSlideShow *pSlideShow, const CStdString& strPath);
   virtual void OnItemLoaded(CFileItem* pItem);
   void OnDeleteItem(int iItem);
+  void ShowShareErrorMessage(CFileItem* pItem);
 
   CVirtualDirectory m_rootDir;
   CFileItemList m_vecItems;

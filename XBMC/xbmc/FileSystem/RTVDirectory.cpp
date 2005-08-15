@@ -41,6 +41,7 @@ bool CRTVDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
     // Check to see whether the URL's path is blank or "Video"
     if (url.GetFileName() == "" || url.GetFileName() == "Video")
     {
+      int iOldSize=items.Size();
       struct RTV * rtv = NULL;
       int numRTV;
 
@@ -66,7 +67,7 @@ bool CRTVDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
         items.Add(pItem);
       }
       free(rtv);
-      return true;
+      return (items.Size()>iOldSize);
       // Else the URL's path should be an IP address of the ReplayTV
     }
     else

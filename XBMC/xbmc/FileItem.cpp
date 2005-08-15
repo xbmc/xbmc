@@ -8,7 +8,8 @@
 #include "filesystem/DirectoryCache.h"
 #include "musicInfoTagLoaderFactory.h"
 #include "cuedocument.h"
-
+#include "Utils/fstrcmp.h"
+#include "videodatabase.h"
 
 CFileItem::CFileItem(const CSong& song)
 {
@@ -1026,7 +1027,7 @@ void CFileItemList::Clear()
   }
 }
 
-void CFileItemList::ClearKeepPointers()
+void CFileItemList::ClearKeepPointer()
 {
   if (m_items.size())
   {
@@ -1075,6 +1076,15 @@ void CFileItemList::Append(const CFileItemList& itemlist)
     const CFileItem* pItem = itemlist[i];
     CFileItem* pNewItem = new CFileItem(*pItem);
     Add(pNewItem);
+  }
+}
+
+void CFileItemList::AppendPointer(const CFileItemList& itemlist)
+{
+  for (int i = 0; i < itemlist.Size(); ++i)
+  {
+    CFileItem* pItem = const_cast<CFileItem*>(itemlist[i]);
+    Add(pItem);
   }
 }
 
@@ -1359,4 +1369,125 @@ void CFileItemList::CleanFileNames()
 {
   for (int i = 0; i < Size(); ++i)
     m_items[i]->CleanFileName();
+}
+
+void CFileItemList::Stack()
+{
+  if (g_stSettings.m_iMyVideoVideoStack != STACK_NONE)
+  {
+    CFileItemList items;
+    bool bDVDFolder(false);
+    //Figure out first if we are in a folder that contains a dvd
+    for (int i = 0; i < (int)Size(); ++i) //Do it this way to avoid an extra roundtrip to files
+    {
+      CFileItem* pItem1 = Get(i);
+      if (CStdString(CUtil::GetFileName(pItem1->m_strPath)).Equals("VIDEO_TS.IFO"))
+      {
+        bDVDFolder = true;
+        items.Add(new CFileItem(*pItem1));
+        Remove(i); //Make sure this is not included in the comeing search as it would have been deleted.
+        break;
+      }
+    }
+
+    for (int i = 0; i < Size(); ++i)
+    {
+      bool bAdd(true);
+      CFileItem* pItem1 = Get(i);
+      if (pItem1->IsNFO())
+      {
+        bAdd = false;
+      }
+      else if (bDVDFolder && pItem1->IsDVDFile(true, true)) //Hide all dvdfiles
+      {
+        bAdd = false;
+      }
+      else
+      {
+        //don't stack folders and playlists
+        if ((!pItem1->m_bIsFolder) && !pItem1->IsPlayList())
+        {
+          CStdString fileName1 = CUtil::GetFileName(pItem1->m_strPath);
+
+          CStdString fileTitle;
+          CStdString volumeNumber;
+
+          bool searchForStackedFiles = false;
+          if (g_stSettings.m_iMyVideoVideoStack == STACK_FUZZY)
+          {
+            searchForStackedFiles = true;
+          }
+          else
+          {
+            searchForStackedFiles = CUtil::GetVolumeFromFileName(fileName1, fileTitle, volumeNumber);
+          }
+
+          if (searchForStackedFiles)
+          {
+            for (int x = 0; x < (int)items.Size(); ++x)
+            {
+              if (i != x)
+              {
+                CFileItem* pItem2 = m_items[x];
+                if ((!pItem2->m_bIsFolder) && !pItem2->IsPlayList())
+                {
+                  CStdString fileName2 = CUtil::GetFileName(pItem2->m_strPath);
+
+                  if (g_stSettings.m_iMyVideoVideoStack == STACK_FUZZY)
+                  {
+                    // use "fuzzy" stacking
+
+                    double fPercentage = fstrcmp(fileName1, fileName2, COMPARE_PERCENTAGE_MIN);
+                    if (fPercentage >= COMPARE_PERCENTAGE)
+                    {
+                      int iGreater = strcmp(fileName1, fileName2);
+                      if (iGreater > 0)
+                      {
+                        bAdd = false;
+                        break;
+                      }
+                    }
+                  }
+                  else
+                  {
+                    // use traditional "simple" stacking (like XBMP)
+                    // file name must end in -CD[n], where only the first
+                    // one (-CD1) will be added to the display list
+
+                    CStdString fileTitle2;
+                    CStdString volumeNumber2;
+                    if (CUtil::GetVolumeFromFileName(fileName2, fileTitle2, volumeNumber2))
+                    {
+                      // TODO: check volumePrefix - they should be in the
+                      // same category, but not necessarily equal!
+
+                      if (fileTitle.Equals(fileTitle2) && strcmp(volumeNumber.c_str(), volumeNumber2.c_str()) > 0)
+                      {
+                        bAdd = false;
+                        break;
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+      if (bAdd)
+      {
+        items.Add(new CFileItem(*pItem1));
+      }
+    }
+
+    Clear();
+
+    for (int i=0; i<items.Size(); ++i)
+    {
+      CFileItem* pItem=items[i];
+      Add(pItem);
+    }
+
+    items.ClearKeepPointer();
+  }
 }
