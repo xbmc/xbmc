@@ -55,6 +55,7 @@ bool CXBMSDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
   {
     if (url.GetFileName() == "")
     {
+      int iOldSize=items.Size();
       // Let's do the automatic discovery.
       struct DiscoveryCallbackContext dc_context;
       CStdString strPassword = url.GetPassWord();
@@ -66,7 +67,7 @@ bool CXBMSDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
       ccx_client_discover_servers(DiscoveryCallback, (void *)(&dc_context));
       rv = S_OK;
 
-      return true;
+      return (items.Size()>iOldSize);
     }
   }
 

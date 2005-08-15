@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 15-08-2005 added: A message box is now shown when a share is not available or its configuration is wrong
  - 15-08-2005 fixed: Missed yet another newline in Database.cpp.  Another possible database fix?
  - 14-08-2005 changed: improved ability to cancel mplayer startup
  - 14-08-2005 changed: made progressdialogs display when it's canceled state

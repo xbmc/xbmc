@@ -1254,3 +1254,24 @@ void CGUIWindowVideoBase::OnDeleteItem(int iItem)
   Update(m_Directory.m_strPath);
   m_viewControl.SetSelectedItem(iItem);
 }
+
+void CGUIWindowVideoBase::ShowShareErrorMessage(CFileItem* pItem)
+{
+  if (pItem->m_bIsShareOrDrive)
+  {
+    int idMessageText=0;
+    CURL url(pItem->m_strPath);
+    const CStdString& strHostName=url.GetHostName();
+
+    if (pItem->m_iDriveType!=SHARE_TYPE_REMOTE) //  Local shares incl. dvd drive
+      idMessageText=15300;
+    else if (url.GetProtocol()=="xbms" && strHostName.IsEmpty()) //  xbms server discover
+      idMessageText=15302;
+    else if (url.GetProtocol()=="smb" && strHostName.IsEmpty()) //  smb workgroup
+      idMessageText=15303;
+    else  //  All other remote shares
+      idMessageText=15301;
+
+    CGUIDialogOK::ShowAndGetInput(220, idMessageText, 0, 0);
+  }
+}

@@ -13,8 +13,9 @@ CGUIDialogProgress::CGUIDialogProgress(void)
 }
 
 CGUIDialogProgress::~CGUIDialogProgress(void)
-{}
+{
 
+}
 
 void CGUIDialogProgress::StartModal(DWORD dwParentId)
 {
@@ -34,6 +35,8 @@ void CGUIDialogProgress::StartModal(DWORD dwParentId)
   OnMessage(msg);
   ShowProgressBar(false);
   SetPercentage(0);
+  m_iCurrent=0;
+  m_iMax=0;
   m_bRunning = true;
 }
 
@@ -97,6 +100,26 @@ void CGUIDialogProgress::SetPercentage(int iPercentage)
   CGUIProgressControl* pControl = (CGUIProgressControl*)GetControl(CONTROL_PROGRESS_BAR);
   if (pControl) pControl->SetPercentage((float)iPercentage);
 }
+
+void CGUIDialogProgress::SetProgressBarMax(int iMax)
+{
+  m_iMax=iMax;
+}
+
+void CGUIDialogProgress::StepProgressBar(int nSteps/*=1*/)
+{
+  if (m_iMax==0)
+    return;
+
+  m_iCurrent+=nSteps;
+
+  if (m_iCurrent>m_iMax)
+    m_iCurrent=0;
+
+  SetPercentage((m_iCurrent*100)/m_iMax);
+
+}
+
 void CGUIDialogProgress::ShowProgressBar(bool bOnOff)
 {
   if (bOnOff)

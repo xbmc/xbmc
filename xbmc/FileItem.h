@@ -129,7 +129,7 @@ public:
   CFileItem* operator[] (int iItem);
   const CFileItem* operator[] (int iItem) const;
   void Clear();
-  void ClearKeepPointers();
+  void ClearKeepPointer();
   void Add(CFileItem* pItem);
   void Remove(CFileItem* pItem);
   void Remove(int iItem);
@@ -138,6 +138,7 @@ public:
   int Size() const;
   bool IsEmpty() const;
   void Append(const CFileItemList& itemlist);
+  void AppendPointer(const CFileItemList& itemlist);
   void Reserve(int iCount);
   void Sort(FILEITEMLISTCOMPARISONFUNC func);
   void SetThumbs();
@@ -152,6 +153,7 @@ public:
   void SetFastLookup(bool fastLookup);
   bool Contains(CStdString& fileName);
   bool GetFastLookup() { return m_fastLookup; };
+  void Stack();
 private:
   VECFILEITEMS m_items;
   MAPFILEITEMS m_map;

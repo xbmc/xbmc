@@ -409,7 +409,7 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
   return CGUIWindowMusicBase::OnMessage(message);
 }
 
-void CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, CFileItemList &items)
+bool CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, CFileItemList &items)
 {
   m_bGotDirFromCache = false;
 
@@ -664,6 +664,8 @@ void CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, CFileItemL
     }
     break;
   }
+
+  return true;
 }
 
 void CGUIWindowMusicNav::UpdateButtons()

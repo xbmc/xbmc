@@ -419,7 +419,7 @@ bool CGUIWindowMusicSongs::OnMessage(CGUIMessage& message)
   return CGUIWindowMusicBase::OnMessage(message);
 }
 
-void CGUIWindowMusicSongs::GetDirectory(const CStdString &strDirectory, CFileItemList &items)
+bool CGUIWindowMusicSongs::GetDirectory(const CStdString &strDirectory, CFileItemList &items)
 {
   if (items.Size() )
   {
@@ -470,7 +470,9 @@ void CGUIWindowMusicSongs::GetDirectory(const CStdString &strDirectory, CFileIte
     }
     m_strParentPath = "";
   }
-  m_rootDir.GetDirectory(strDirectory, items);
+
+  if (!m_rootDir.GetDirectory(strDirectory, items))
+    return false;
 
   // check for .CUE files here.
   items.FilterCueItems();
@@ -480,6 +482,7 @@ void CGUIWindowMusicSongs::GetDirectory(const CStdString &strDirectory, CFileIte
     m_strPrevDir = strDirectory;
   }
 
+  return true;
 }
 
 void CGUIWindowMusicSongs::OnScan()
@@ -680,7 +683,8 @@ void CGUIWindowMusicSongs::OnClick(int iItem)
       if ( !HaveDiscOrConnection( pItem->m_strPath, pItem->m_iDriveType ) )
         return ;
     }
-    Update(strPath);
+    if (!Update(strPath))
+      ShowShareErrorMessage(pItem);
   }
   else if (pItem->IsZIP() && g_guiSettings.GetBool("MusicFiles.HandleArchives")) // mount zip archive
   {
@@ -921,22 +925,20 @@ void CGUIWindowMusicSongs::OnRetrieveMusicInfo(CFileItemList& items)
           m_dlgProgress->SetLine(2, strStrippedPath );
           m_dlgProgress->StartModal(GetID());
           m_dlgProgress->ShowProgressBar(true);
-          m_dlgProgress->SetPercentage((i*100) / items.Size());
+          m_dlgProgress->SetProgressBarMax(items.GetFileCount());
+          m_dlgProgress->StepProgressBar(i-iTaglessFiles);
           m_dlgProgress->Progress();
           bProgressVisible = true;
         }
       }
     }
 
-    if (bProgressVisible && ((i % 10) == 0 || i == items.Size() - 1))
+
+    if (bProgressVisible)
     {
-      m_dlgProgress->SetPercentage((i*100) / items.Size());
+      m_dlgProgress->StepProgressBar();
       m_dlgProgress->Progress();
     }
-
-    // Progress key presses from controller or remote
-    if (bProgressVisible && m_dlgProgress)
-      m_dlgProgress->ProgressKeys();
 
     // Canceled by the user, finish
     if (bProgressVisible && m_dlgProgress && m_dlgProgress->IsCanceled())
@@ -1052,14 +1054,18 @@ void CGUIWindowMusicSongs::DoSearch(const CStdString& strSearch, CFileItemList& 
   }
 }
 
-void CGUIWindowMusicSongs::Update(const CStdString &strDirectory)
+bool CGUIWindowMusicSongs::Update(const CStdString &strDirectory)
 {
-  CGUIWindowMusicBase::Update(strDirectory);
+  if (!CGUIWindowMusicBase::Update(strDirectory))
+    return false;
+
   if (!m_Directory.IsVirtualDirectoryRoot() && g_guiSettings.GetBool("MusicFiles.UseAutoSwitching"))
   {
     m_iViewAsIcons = CAutoSwitch::GetView(m_vecItems);
     UpdateButtons();
   }
+
+  return true;
 }
 
 void CGUIWindowMusicSongs::GetDirectoryHistoryString(const CFileItem* pItem, CStdString& strHistoryString)
