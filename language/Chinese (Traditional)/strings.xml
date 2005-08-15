@@ -215,7 +215,7 @@
   <string><id>282</id><value>找到 %i 條</value></string>
   <string><id>283</id><value>搜尋結果</value></string>
   <string><id>284</id><value>無結果</value></string>
-  <string><id>285</id><value>反交錯濾鏡</value></string>
+  <string><id>285</id><value>去交錯濾鏡</value></string>
   <string><id>286</id><value>後期濾鏡</value></string>
   <string><id>287</id><value>字幕</value></string>
   <string><id>288</id><value>字型</value></string>
@@ -227,7 +227,7 @@
   <string><id>294</id><value>建立書籤</value></string>
   <string><id>295</id><value>書籤循環</value></string>
   <string><id>296</id><value>清除書籤</value></string>
-  <string><id>297</id><value>影片延遲</value></string>
+  <string><id>297</id><value>聲音延遲</value></string>
   <string><id>298</id><value>搜尋列</value></string>
   <string><id>300</id><value>1.語言</value></string>
   <string><id>301</id><value>2.音量</value></string>
@@ -245,17 +245,17 @@
   <string><id>313</id><value>清除資料庫</value></string>
   <string><id>314</id><value>準備中...</value></string>
   <string><id>315</id><value>資料庫錯誤！</value></string>
-  <string><id>316</id><value>搜尋歌曲中...</value></string>
+  <string><id>316</id><value>清除歌曲中...</value></string>
   <string><id>317</id><value>清除資料庫成功！</value></string>
   <string><id>318</id><value>清除歌曲...</value></string>
   <string><id>319</id><value>清除歌曲錯誤</value></string>
-  <string><id>320</id><value>搜尋藝人中...</value></string>
+  <string><id>320</id><value>清除藝人中...</value></string>
   <string><id>321</id><value>清除藝人錯誤！</value></string>
-  <string><id>322</id><value>搜尋類別中...</value></string>
+  <string><id>322</id><value>清除類別中...</value></string>
   <string><id>323</id><value>清除類別錯誤！</value></string>
-  <string><id>324</id><value>搜尋路徑...</value></string>
+  <string><id>324</id><value>清除路徑...</value></string>
   <string><id>325</id><value>清除路徑錯誤！</value></string>
-  <string><id>326</id><value>搜尋專輯中...</value></string>
+  <string><id>326</id><value>清除專輯中...</value></string>
   <string><id>327</id><value>清除專輯錯誤！</value></string>
   <string><id>328</id><value>寫入中...</value></string>
   <string><id>329</id><value>寫入錯誤！</value></string>
@@ -479,9 +479,9 @@
   <string><id>641</id><value>音量 - 重覆播放的檔案</value></string>
   <string><id>642</id><value>音量 - 不重覆播放的檔案</value></string>
   <string><id>643</id><value>循環播放</value></string>
-  <string><id>644</id><value>去除黑邊</value></string>
+  <string><id>644</id><value>修剪黑邊</value></string>
   
-  <string><id>645</id><value>大檔案繼續使用緩衝區嗎？</value></string>
+  <string><id>645</id><value>一個大檔案需要緩衝區，是否繼續？</value></string>
 
   <string><id>700</id><value>清除音樂庫</value></string>
   <string><id>701</id><value>清除音樂庫中的舊檔案</value></string>
@@ -606,8 +606,8 @@
   <string><id>1250</id><value>自動檢測</value></string>
   <string><id>1251</id><value>XBOX 自動檢測</value></string>
   <string><id>1252</id><value>暱稱</value></string>
-  <string><id>1253</id><value>在我的文件中建立FTP連接</value></string>
-  <string><id>1254</id><value>顯示通告</value></string>
+  <string><id>1253</id><value>在我的檔案中建立FTP連接</value></string>
+  <string><id>1254</id><value>蹦現通知</value></string>
   <string><id>1255</id><value>發送 FTP 使用者名稱和密碼</value></string>
   <string><id>1256</id><value>Ping 間隔</value></string>
 
@@ -637,7 +637,7 @@
   <string><id>10007</id><value>系統資訊</value></string>
   <string><id>10008</id><value>設定-&gt;一般</value></string>
   <string><id>10009</id><value>設定-&gt;螢幕</value></string>
-  <string><id>10010</id><value>設定-&gt;使用者界面-&gt;界面 校正</value></string>
+  <string><id>10010</id><value>設定-&gt;外觀和主題-&gt;界面 校正</value></string>
   <string><id>10011</id><value>設定-&gt;我的影片-&gt;螢幕 校正</value></string>
   <string><id>10012</id><value>設定-&gt;我的圖片</value></string>
   <string><id>10013</id><value>設定-&gt;所有程式</value></string>
@@ -646,7 +646,7 @@
   <string><id>10016</id><value>設定-&gt;系統設定</value></string>
   <string><id>10017</id><value>設定-&gt;我的影片</value></string>
   <string><id>10018</id><value>設定-&gt;網路設定</value></string>
-  <string><id>10019</id><value>設定-&gt;使用者界面</value></string>
+  <string><id>10019</id><value>設定-&gt;外觀和主題</value></string>
   <string><id>10020</id><value>劇本</value></string>
   <string><id>10021</id><value>我的影片/類別</value></string>
   <string><id>10022</id><value>我的影片/演員</value></string>
@@ -660,6 +660,8 @@
   <string><id>10501</id><value>我的音樂/檔案</value></string>
   <string><id>10502</id><value>我的音樂/音樂庫</value></string>
   <string><id>10503</id><value>我的音樂/排名前 100</value></string>
+  <string><id>10504</id><value>排名前 100 歌曲</value></string>
+  <string><id>10505</id><value>排名前 100 專輯</value></string>
   
   <string><id>10506</id><value>應用程式</value></string>
   <string><id>10507</id><value>系統設定</value></string>
@@ -689,7 +691,6 @@
   <string><id>12006</id><value>音樂視覺效果</value></string>
   <string><id>12007</id><value>我的圖片/幻燈片秀</value></string>
   <string><id>12008</id><value>檔案定位對話</value></string>
-  
   
   <string><id>12310</id><value>0</value></string>
   <string><id>12311</id><value>1</value></string>
@@ -779,7 +780,7 @@
   <string><id>13208</id><value>鬧鈴</value></string>
   <string><id>13209</id><value>鬧鈴間隔 (以分鐘為單位)</value></string>
   <string><id>13210</id><value>鬧鈴啟動， %i分鐘倒數計時。</value></string>
-  <string><id>13211</id><value>鬧鈴響！</value></string>
+  <string><id>13211</id><value>鬧鈴提醒！</value></string>
   <string><id>13212</id><value>鬧鈴取消，剩下%i分%i秒。</value></string>
   
   <string><id>13299</id><value>目標溫度</value></string>
@@ -797,7 +798,7 @@
   <string><id>13311</id><value>浮動效果</value></string>
   <string><id>13312</id><value>縮小黑邊</value></string>
   <string><id>13313</id><value>重新開機</value></string>
-  <string><id>13314</id><value>音樂資訊持續時間</value></string>
+  <string><id>13314</id><value>淡入淡出</value></string>
   <string><id>13315</id><value>建立圖示</value></string>
   <string><id>13316</id><value>循環圖示</value></string>
   <string><id>13317</id><value>觀看圖片</value></string>
@@ -872,10 +873,10 @@
   <string><id>13386</id><value>使用時間搜尋</value></string>
   <string><id>13387</id><value>隱藏音軌號</value></string>
   <string><id>13388</id><value>預設</value></string>
-  <string><id>13389</id><value>該視覺效果沒有預先設定 </value></string>
-  <string><id>13390</id><value>該視覺效果沒有相應設定</value></string>
+  <string><id>13389</id><value>沒有預先設定&#10;該視覺效果</value></string>
+  <string><id>13390</id><value>沒有相應設定&#10;該視覺效果</value></string>
   <string><id>13391</id><value>彈出/載入</value></string>
-  <string><id>13392</id><value>視覺效果自動全螢幕</value></string>
+  <string><id>13392</id><value>撥放音樂時使用視覺效果</value></string>
   <string><id>13393</id><value>計算大小</value></string>
   <string><id>13394</id><value>計算資料夾大小</value></string>
   <string><id>13395</id><value>影片設定</value></string>
@@ -883,8 +884,8 @@
   <string><id>13397</id><value>開啟字幕</value></string>
   <string><id>13398</id><value>書籤</value></string>
 
-  <string><id>14000</id><value>堆疊：開啟</value></string>
-  <string><id>14001</id><value>堆疊：關閉</value></string>
+  <string><id>14000</id><value>堆疊開啟</value></string>
+  <string><id>14001</id><value>堆疊關閉</value></string>
   <string><id>14002</id><value>堆疊：智慧</value></string>
   <string><id>14003</id><value>下載播放列表檔案中...</value></string>
   <string><id>14004</id><value>下載串流媒體列表中...</value></string>
@@ -953,7 +954,7 @@
   <string><id>14068</id><value>輸入 IP 位址</value></string>
   <string><id>14069</id><value>確定要設定這些參數嗎？</value></string>
   <string><id>14070</id><value> - 應用設定</value></string>
-  <string><id>14071</id><value>允許檔案刪除</value></string>
+  <string><id>14071</id><value>允許刪除檔案</value></string>
 
   <string><id>15000</id><value>XLink Kai</value></string>
   <string><id>15001</id><value>目前並沒有連線到執行 XLink Kai 的電腦，</value></string>
@@ -1092,16 +1093,15 @@
   <string><id>15213</id><value>[預留位置]</value></string>
   <string><id>15214</id><value>使用平滑的影音同步</value></string>
   
+  <string><id>15300</id><value>路徑不存在或無效！</value></string>
+  <string><id>15301</id><value>無法連線到網路伺服器！</value></string>
+  <string><id>15302</id><value>找不到伺服器！</value></string>
+  <string><id>15303</id><value>找不到工作群！</value></string>
+  
   <string><id>16000</id><value>一般設定</value></string>
   <string><id>16001</id><value>設定聲音硬體</value></string>
   <string><id>16002</id><value>CDDB 查詢</value></string>
   <string><id>16003</id><value>進階設定</value></string>
-  
-  <string><id>16004</id><value>同步影片交錯訊號</value></string>
-  <string><id>16005</id><value>- 反轉可視範圍</value></string>
-  <string><id>16006</id><value>同步交錯訊號</value></string>
-  <string><id>16007</id><value>反轉可視範圍</value></string> 
-  <string><id>16008</id><value>開啟</value></string>
   
   <string><id>16009</id><value>輸入影片名稱</value></string>
   <string><id>16010</id><value>輸入預設檔名稱</value></string>
@@ -1112,4 +1112,12 @@
   <string><id>16015</id><value>輸入目錄名稱</value></string>
   <string><id>16016</id><value>可用選項：%A, %T, %N, %B, %D, %G, %Y, %F</value></string>
   <string><id>16017</id><value>輸入搜尋字串</value></string>
+  
+  <string><id>16018</id><value>關閉</value></string>
+  <string><id>16019</id><value>自動選擇</value></string>
+  <string><id>16020</id><value>去交錯掃描</value></string>
+  <string><id>16021</id><value>偶數線同步</value></string>
+  <string><id>16022</id><value>奇數線同步</value></string>
+  <string><id>16023</id><value>交錯式掃描</value></string>
+  
 </strings>
