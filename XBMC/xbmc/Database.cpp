@@ -91,7 +91,7 @@ bool CDatabase::Open()
   }
   else
   { // Database exists, check the version number
-    m_pDS->query("SELECT * FROM sqlite_master WHERE type = 'table' AND name = 'version'");
+    m_pDS->query("SELECT * FROM sqlite_master WHERE type = 'table' AND name = 'version'\n");
     float fVersion = 0.0f;
     if (m_pDS->num_rows() > 0)
     {
