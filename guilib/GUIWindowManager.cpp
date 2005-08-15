@@ -505,19 +505,19 @@ void CGUIWindowManager::SendThreadMessage(CGUIMessage& message)
 void CGUIWindowManager::DispatchThreadMessages()
 {
   ::EnterCriticalSection(&m_critSection );
-
-  if ( m_vecThreadMessages.size() > 0 )
+  while ( m_vecThreadMessages.size() > 0 )
   {
     vector<CGUIMessage*>::iterator it = m_vecThreadMessages.begin();
-    while (it != m_vecThreadMessages.end())
-    {
-      CGUIMessage* pMsg = *it;
-      // first remove the message from the queue,
-      // else the message could be processed more then once
-      it = m_vecThreadMessages.erase(it);
-      SendMessage( *pMsg );
-      delete pMsg;
-    }
+    CGUIMessage* pMsg = *it;
+    // first remove the message from the queue,
+    // else the message could be processed more then once
+    it = m_vecThreadMessages.erase(it);
+    
+    //Leave critical section here since this can cause some thread to come back here into dispatch
+    ::LeaveCriticalSection(&m_critSection );
+    SendMessage( *pMsg );
+    delete pMsg;
+    ::EnterCriticalSection(&m_critSection );
   }
 
   ::LeaveCriticalSection(&m_critSection );

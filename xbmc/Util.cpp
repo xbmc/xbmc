@@ -1682,7 +1682,7 @@ void CUtil::ClearSubtitles()
   }
 }
 
-void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionCached )
+void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionCached, XFILE::IFileCallback *pCallback )
 {
   char * sub_exts[] = { ".utf", ".utf8", ".utf-8", ".sub", ".srt", ".smi", ".rt", ".txt", ".ssa", ".aqt", ".jss", ".ass", ".idx", ".ifo", NULL};
   std::vector<CStdString> vecExtensionsCached;
@@ -1736,7 +1736,7 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
   }
   CStdString strLExt;
   CStdString strDest;
-  CStdString strItem;
+  CStdString strItem;  
 
   // 2 steps for movie directory and alternate subtitles directory
   for (unsigned int step = 0; step < strLookInPaths.size(); step++)
@@ -1760,7 +1760,7 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
           {
             strLExt = strItem.Right(strItem.GetLength() - 9);
             strDest.Format("Z:\\subtitle.alt-%s", strLExt);
-            if (CFile::Cache(items[j]->m_strPath, strDest.c_str(), NULL, NULL))
+            if (CFile::Cache(items[j]->m_strPath, strDest.c_str(), pCallback, NULL))
             {
               CLog::Log(LOGINFO, " cached subtitle %s->%s\n", strItem.c_str(), strDest.c_str());
               strExtensionCached = strLExt;
@@ -1774,7 +1774,7 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
             strDest.Format("Z:\\subtitle.%s", strLExt);
             CLog::Log(LOGDEBUG,"normal yo!");
             if (std::find(vecExtensionsCached.begin(),vecExtensionsCached.end(),strLExt) == vecExtensionsCached.end())
-              if (CFile::Cache(items[j]->m_strPath, strDest.c_str(), NULL, NULL))
+              if (CFile::Cache(items[j]->m_strPath, strDest.c_str(), pCallback, NULL))
               {
                 vecExtensionsCached.push_back(strLExt);
                 CLog::Log(LOGINFO, " cached subtitle %s->%s\n", strItem.c_str(), strDest.c_str());
