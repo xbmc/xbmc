@@ -16,9 +16,9 @@ CDlgCache::CDlgCache(DWORD dwDelay)
   Create(true);
 }
 
-void CDlgCache::Close()
+void CDlgCache::Close(bool bForceClose)
 {
-  if (m_pDlg) m_pDlg->Close();
+  if (m_pDlg) m_pDlg->Close(bForceClose);
 
   //Set stop, this will kill this object, when thread stops  
   CThread::m_bStop = true;
@@ -77,6 +77,19 @@ void CDlgCache::SetMessage(const CStdString& strMessage)
     m_pDlg->SetLine(1, strMessage);
   }
   m_strLinePrev = strMessage;
+}
+
+bool CDlgCache::OnFileCallback(void* pContext, int ipercent)
+{
+  CGraphicContext::CLock lock(g_graphicsContext);
+  ShowProgressBar(true);
+  SetPercentage(ipercent);
+  if( IsCanceled() ) 
+  {
+    return false;
+  }
+  else
+    return true;
 }
 
 void CDlgCache::Process()

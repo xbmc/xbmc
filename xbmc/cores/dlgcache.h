@@ -1,6 +1,7 @@
 #pragma once
+#include "../FileSystem/File.h"
 
-class CDlgCache : public CThread
+class CDlgCache : public CThread, public XFILE::IFileCallback
 {
 public:
   CDlgCache(DWORD dwDelay = 0);
@@ -11,9 +12,10 @@ public:
   void ShowProgressBar(bool bOnOff);
   void SetPercentage(int iPercentage);
 
-  void Close();
+  void Close(bool bForceClose = false);
 
   virtual void Process();
+  virtual bool OnFileCallback(void* pContext, int ipercent);
 
 protected:
 
