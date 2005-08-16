@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 16-08-2005 changed: progressdialog will now be closed without fading if we are plying video, should remove stutter on startup
  - 16-08-2005 updated: mplayer.dll (better rewind, no skip after fastforward, better interlaced detection) + codecs.conf
  - 16-08-2005 changed: some fancontroller/temperature-reading optimizations
  - 15-08-2005 updated: Chinese (Simple) language file (Thnx to hibaby)
