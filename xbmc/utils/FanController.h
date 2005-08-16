@@ -29,14 +29,14 @@ private:
 
   int targetTemp;
   int systemFanSpeed;
-  int currentFanSpeed;
+  unsigned long currentFanSpeed;
   int calculatedFanSpeed;
   int tooHotLoopCount;
   int tooColdLoopCount;
   bool inCustomMode;
+  bool bIs16Box;
   float cpuTemp;
   float cpuLastTemp;
-  unsigned short fGPUTemp;
   float gpuTemp;
   float gpuLastTemp;
 
