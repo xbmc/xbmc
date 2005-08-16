@@ -54,7 +54,14 @@ void CDlgCache::Update()
     m_pDlg->Progress();
     if( !bSentCancel && m_pDlg->IsCanceled())
     {
-      mplayer_exit_player();      
+      try 
+      {
+        mplayer_exit_player(); 
+      }
+      catch(...)
+      {
+        CLog::Log(LOGERROR, "CDlgCache::Update - Exception thrown in mplayer_exit_player()");
+      }
     }
   }
   else if( g_graphicsContext.IsFullScreenVideo() )
