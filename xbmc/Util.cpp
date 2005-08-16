@@ -3113,46 +3113,26 @@ CStdString CUtil::TranslateSpecialDir(const CStdString &strSpecial)
   {
     if (strSpecial.Equals("$HOME"))
       strReturn = "Q:\\";
-    if (strSpecial.Equals("$SUBTITLES"))
+    else if (strSpecial.Equals("$SUBTITLES"))
       strReturn = g_stSettings.m_szAlternateSubtitleDirectory;
-    if (strSpecial.Equals("$THUMBNAILS"))
+    else if (strSpecial.Equals("$THUMBNAILS"))
       strReturn = g_stSettings.szThumbnailsDirectory;
-    if (strSpecial.Equals("$SHORTCUTS"))
+    else if (strSpecial.Equals("$SHORTCUTS"))
       strReturn = g_stSettings.m_szShortcutDirectory;
-    if (strSpecial.Equals("$ALBUMS"))
+    else if (strSpecial.Equals("$ALBUMS"))
       strReturn = g_stSettings.m_szAlbumDirectory;
-    if (strSpecial.Equals("$RECORDINGS"))
+    else if (strSpecial.Equals("$RECORDINGS"))
       strReturn = g_stSettings.m_szMusicRecordingDirectory;
-    if (strSpecial.Equals("$SCREENSHOTS"))
+    else if (strSpecial.Equals("$SCREENSHOTS"))
       strReturn = g_stSettings.m_szScreenshotsDirectory;
-    if (strSpecial.Equals("$PLAYLISTS"))
+    else if (strSpecial.Equals("$PLAYLISTS"))
       strReturn = (CStdString)g_stSettings.m_szAlbumDirectory + "\\playlists";
+    else if (strSpecial.Equals("$CDRIPS"))
+      strReturn = g_stSettings.m_strRipPath;
   }
   if (strReturn.IsEmpty())
     CLog::Log(LOGERROR,"Invalid special directory token: %s",strSpecial.c_str());
   return strReturn;
-}     
-void CUtil::TranslateBookmarks(VECSHARES& vecShares)
-{
-  // replace the special dirs
-  VECSHARES vecTemp;
-  for (int i = 0; i < (int)vecShares.size(); ++i)
-  {
-    CShare share = vecShares.at(i);
-    if (!share.strPath.IsEmpty() && share.strPath.at(0) == '$')
-    {
-      share.strPath = TranslateSpecialDir(share.strPath);
-      if (!share.strPath.IsEmpty())
-        vecTemp.push_back(share);
-      else
-        CLog::Log(LOGERROR,"Removing invalid special directory token from bookmarks");
-    }
-    else
-      vecTemp.push_back(share);
-  }
-
-  vecShares.empty();
-  vecShares = vecTemp;
 }
 
 void CUtil::DeleteDatabaseDirectoryCache()

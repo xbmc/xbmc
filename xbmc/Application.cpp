@@ -1179,14 +1179,6 @@ HRESULT CApplication::Initialize()
     RestoreMusicScanSettings();
   }
 
-  // check for special dirs, ie $PLAYLISTS
-  CLog::Log(LOGINFO,"Checking bookmarks for special directories");
-  CUtil::TranslateBookmarks(g_settings.m_vecMyProgramsBookmarks);
-  CUtil::TranslateBookmarks(g_settings.m_vecMyPictureShares);
-  CUtil::TranslateBookmarks(g_settings.m_vecMyFilesShares);
-  CUtil::TranslateBookmarks(g_settings.m_vecMyMusicShares);
-  CUtil::TranslateBookmarks(g_settings.m_vecMyVideoShares);
-
   CLog::Log(LOGNOTICE, "initialize done");
   if (g_guiSettings.GetInt("LCD.Mode") == LCD_MODE_NOTV)
   {
