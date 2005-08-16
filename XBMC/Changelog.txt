@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 16-08-2005 changed: some fancontroller/temperature-reading optimizations
  - 15-08-2005 updated: Chinese (Simple) language file (Thnx to hibaby)
  - 15-08-2005 updated: Chinese (Traditional) language file (Thnx to omenpica)
  - 15-08-2005 updated: Italian language file (Thnx to kotix)
