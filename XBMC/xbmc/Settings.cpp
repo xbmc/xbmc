@@ -518,8 +518,25 @@ void CSettings::GetShares(const TiXmlElement* pRootElement, const CStdString& st
           share.m_iLockMode = LOCK_MODE_EVERYONE;
           share.m_strLockCode = "";
           share.m_iBadPwdCount = 0;
+
+          // translate dir
+          ConvertHomeVar(share.strPath);
           CStdString strPath = share.strPath;
           strPath.ToUpper();
+
+          if (strPath.at(0) == '$')
+          {
+            share.strPath = CUtil::TranslateSpecialDir(strPath);
+            if (!share.strPath.IsEmpty())
+              CLog::Log(LOGDEBUG,"    -> Translated to Path: %s",share.strPath.c_str());
+            else
+            {
+              CLog::Log(LOGDEBUG,"    -> Skipping invalid special directory token.");
+              pChild = pChild->NextSibling();
+              continue;
+            }
+          }
+
           if (strPath.Left(4) == "UDF:")
           {
             share.m_iDriveType = SHARE_TYPE_VIRTUAL_DVD;
@@ -537,7 +554,6 @@ void CSettings::GetShares(const TiXmlElement* pRootElement, const CStdString& st
             share.m_iDriveType = SHARE_TYPE_LOCAL;
           else
             share.m_iDriveType = SHARE_TYPE_UNKNOWN;
-
 
           if (pCacheNode)
           {
@@ -563,8 +579,6 @@ void CSettings::GetShares(const TiXmlElement* pRootElement, const CStdString& st
           {
             share.m_iBadPwdCount = atoi( pBadPwdCount->FirstChild()->Value() );
           }
-
-          ConvertHomeVar(share.strPath);
 
           // check - convert to url and back again to make sure strPath is accurate
           // in terms of what we expect
@@ -1642,8 +1656,24 @@ bool CSettings::AddBookmark(const CStdString &strType, const CStdString &strName
     share.m_iDepthSize = iDepth;
     bSaveDepth = true;
   }
+
+  // translate dir
+  ConvertHomeVar(share.strPath);
   CStdString strPath1 = share.strPath;
   strPath1.ToUpper();
+
+  if (strPath1.at(0) == '$')
+  {
+    share.strPath = CUtil::TranslateSpecialDir(strPath1);
+    if (!share.strPath.IsEmpty())
+      CLog::Log(LOGDEBUG,"AddBookmark: Translated (%s) to Path (%s)",strPath.c_str(),share.strPath.c_str());
+    else
+    {
+      CLog::Log(LOGDEBUG,"AddBookmark: Skipping invalid special directory token: %s",strPath.c_str());
+      return false;
+    }
+  }
+
   if (strPath1.Left(4) == "UDF:")
   {
     share.m_iDriveType = SHARE_TYPE_VIRTUAL_DVD;
