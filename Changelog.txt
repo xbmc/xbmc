@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 16-08-2005 fixed: invalid codecs.conf for passthrough
   - 16-08-2005 added: display progress when parsing vobsubs
   - 12-08-2005 fixed: when resuming normal playback speed, video would jump ahead a couple of seconds
   - 12-08-2005 changed: detection of interlaced material somewhat improved
