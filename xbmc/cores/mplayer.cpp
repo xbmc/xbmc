@@ -676,7 +676,6 @@ void update_cache_dialog(const char* tmp)
     message.Replace("$", "$$");
 
     m_dlgCache->SetMessage(message);
-    m_dlgCache->Update();
   }
 }
 
@@ -745,29 +744,12 @@ bool CMPlayer::OpenFile(const CFileItem& file, __int64 iStartTime)
     // cache (remote) subtitles to HD
     if (!bFileOnInternet && bIsVideo && !bIsDVD)
     {
-      //Small internal progress class for caching
-      class CProgress : public XFILE::IFileCallback
-      {
-        virtual bool OnFileCallback(void* pContext, int ipercent)
-        {
-          CGraphicContext::CLock lock(g_graphicsContext);
-          m_dlgCache->ShowProgressBar(true);
-          m_dlgCache->SetPercentage(ipercent);
-          m_dlgCache->Update();
-          if( m_dlgCache->IsCanceled() ) 
-          {
-            return false;
-          }
-          else
-            return true;
-        }
-      } progress;
 
       m_dlgCache->SetMessage("Caching subtitles...");
-      CUtil::CacheSubtitles(strFile, _SubtitleExtension, &progress);
+      CUtil::CacheSubtitles(strFile, _SubtitleExtension, m_dlgCache);
 
       //If caching was canceled, bail here
-      if( m_dlgCache->IsCanceled() ) throw 0;
+      if( m_dlgCache && m_dlgCache->IsCanceled() ) throw 0;
 
       CUtil::PrepareSubtitleFonts();
     }
@@ -1077,6 +1059,16 @@ bool CMPlayer::OpenFile(const CFileItem& file, __int64 iStartTime)
     bIsVideo = HasVideo();
     bIsAudio = HasAudio();
 
+
+    //Close progress dialog completly without fade if this is video.
+    if( m_dlgCache && bIsVideo)
+    {
+      CGraphicContext::CLock lock(g_graphicsContext);
+      m_dlgCache->Close(true); 
+      m_dlgCache = NULL;
+    }
+
+
     m_bIsPlaying = true;
     if ( ThreadHandle() == NULL)
     {
@@ -1098,7 +1090,7 @@ bool CMPlayer::OpenFile(const CFileItem& file, __int64 iStartTime)
     CGraphicContext::CLock lock(g_graphicsContext);
     //Only call Close, the object will be deleted when it's thread ends.
     //this makes sure the object is not deleted while in use
-    m_dlgCache->Close(); 
+    m_dlgCache->Close(false); 
     m_dlgCache = NULL;
   }
 
