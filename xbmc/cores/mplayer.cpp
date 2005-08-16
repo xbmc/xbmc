@@ -648,10 +648,13 @@ bool CMPlayer::load()
 }
 void update_cache_dialog(const char* tmp)
 {
+  static bool bWroteOutput = false;
   //Make sure we lock here as this is called from the cache thread thread
   CGraphicContext::CLock lock(g_graphicsContext);
   if (m_dlgCache)
   {
+    try {
+
     CStdString message = tmp;
     message.Trim();
     if (int i = message.Find("Cache fill:") >= 0)
@@ -666,16 +669,46 @@ void update_cache_dialog(const char* tmp)
         m_dlgCache->ShowProgressBar(true);
         //assuming here mplayer cache prefill is set to 20%...
         m_dlgCache->SetPercentage(int(fPercentage * (100 / 20)));
+        if(!bWroteOutput)
+        {
+          m_dlgCache->SetMessage("Caching...");
+          bWroteOutput = true;
+        }
+        return;
       }
     }
+    else if(int i = message.Find("VobSub parsing:") >= 0)
+      if (int j = message.Find('%') >= 0)
+      {
+        CStdString strPercentage = message.Mid(i + 15, j - i + 15);
+
+        //filter percentage, update progressbar
+        int iPercentage = 0;
+        sscanf(strPercentage.c_str(), "%d", &iPercentage);
+        m_dlgCache->ShowProgressBar(true);
+        m_dlgCache->SetPercentage(iPercentage);
+        if(!bWroteOutput)
+        {
+          m_dlgCache->SetMessage("Parsing VobSub...");
+          bWroteOutput = true;
+        }
+        return;
+      }
     else
     {
       m_dlgCache->ShowProgressBar(false);
     }
+    bWroteOutput = false;
     //Escape are identifiers for infovalues
     message.Replace("$", "$$");
 
     m_dlgCache->SetMessage(message);
+
+    }
+    catch(...)
+    {
+      CLog::Log(LOGERROR, "Exception in update_cache_dialog()");
+    }
   }
 }
 
@@ -747,9 +780,13 @@ bool CMPlayer::OpenFile(const CFileItem& file, __int64 iStartTime)
 
       m_dlgCache->SetMessage("Caching subtitles...");
       CUtil::CacheSubtitles(strFile, _SubtitleExtension, m_dlgCache);
-
-      //If caching was canceled, bail here
-      if( m_dlgCache && m_dlgCache->IsCanceled() ) throw 0;
+      
+      if( m_dlgCache )
+      {
+        //If caching was canceled, bail here
+        if( m_dlgCache->IsCanceled() ) throw 0;
+        m_dlgCache->ShowProgressBar(false);
+      }
 
       CUtil::PrepareSubtitleFonts();
     }

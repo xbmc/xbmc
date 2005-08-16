@@ -298,16 +298,6 @@ static unsigned int video_control(unsigned int request, void *data, ...)
           //This is a workaround for some stupid encoders that doesn't set the progressive frame flag properly
           g_renderManager.SetFieldSync(FS_NONE);
       }
-#if 1
-      else if( mpi->fields & MP_IMGFIELD_ORDERED )
-      { //Okey, this should probably be removed when mplayer supports the interlaced flag correctly
-        //which propably will be never
-        if( mpi->fields & MP_IMGFIELD_TOP_FIRST )
-          g_renderManager.SetFieldSync(FS_ODD);
-        else
-          g_renderManager.SetFieldSync(FS_EVEN);
-      }
-#endif
       else if( mpi->fields & MP_IMGFIELD_INTERLACED )
       {
         if( mpi->fields & MP_IMGFIELD_ORDERED )
