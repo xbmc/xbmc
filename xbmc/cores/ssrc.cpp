@@ -3139,7 +3139,7 @@ bool Cssrc::InitFilters(void)
     for (i = 0;i < nch;i++)
     {
       buf2[i] = new REAL[n2x + 1 + n1b2];
-      for (int j = 0;j < n2x + n1b2;j++) buf2[i][j] = 0;
+      for (int j = 0;j < n2x + 1 + n1b2;j++) buf2[i][j] = 0;
     }
 
     //  rawinbuf  = new unsigned char [nch*(n1b2/osf+osf+1) * bps];
