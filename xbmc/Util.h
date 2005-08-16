@@ -177,7 +177,6 @@ static void CreateRarPath(CStdString& strUrlPath, const CStdString& strRarPath,
   static void SplitExecFunction(const CStdString &execString, CStdString &strFunction, CStdString &strParam);
   static int GetMatchingShare(const CStdString& strPath, VECSHARES& vecShares, bool& bIsBookmarkName);
   static CStdString TranslateSpecialDir(const CStdString &strSpecial);
-  static void TranslateBookmarks(VECSHARES& vecShares);
   static void DeleteDatabaseDirectoryCache();
 
   //GeminiServer
