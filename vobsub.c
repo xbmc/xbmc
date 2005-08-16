@@ -1286,7 +1286,22 @@ vobsub_open(const char *const name,const char *const ifo,const int force,void** 
 	    } else {
 #ifdef XBMC_VOBSUB
 				unsigned last_sid = 0xffffffff;
-				int n = 0, i = 0;
+				int n = 0, i = 199;
+        off_t size = 0;
+        {
+          off_t pos = rar_tell(mpg->stream);
+          if( rar_seek(mpg->stream, 0, SEEK_END) != -1 )
+          {
+            size = rar_tell(mpg->stream);
+            if( rar_seek(mpg->stream, 0, SEEK_SET) == -1 )
+              mp_msg(MSGT_VOBSUB,MSGL_ERR,"VobSub: Can't seek to beginning of SUB file\n");                          
+          }
+          else
+          {
+            mp_msg(MSGT_VOBSUB,MSGL_ERR,"VobSub: Can't seek to end of SUB file\n");              
+          }
+        }
+        
 #endif
 		long last_pts_diff = 0;
 		while (!mpeg_eof(mpg)) {
@@ -1297,10 +1312,14 @@ vobsub_open(const char *const name,const char *const ifo,const int force,void** 
 			break;
 		    }
 #ifdef XBMC_VOBSUB
-					if (++i == 1000)
+					if (++i == 200)
 					{
-						printf("parsesub: %d", ++n);
-						i = 0;
+            if( size )
+              mp_msg(MSGT_VOBSUB,MSGL_STATUS,"VobSub parsing: %d%%\n", pos * 100 / size);
+            else
+              mp_msg(MSGT_VOBSUB,MSGL_STATUS,"VobSub parsing: %d\n",++n);
+
+            i = 0;
 					}
 #endif
 		    if (mpg->packet_size) {
