@@ -813,8 +813,14 @@ void CXBoxRenderer::SetFieldSync(EFIELDSYNC mSync)
 
 void CXBoxRenderer::PrepareDisplay()
 {
+#ifdef _DEBUG
+  static DWORD dwTime=0;
+  static int iCount=0;
+  DWORD dwTimeStamp = GetTickCount();
+#endif
+
   if (g_graphicsContext.IsFullScreenVideo() )
-  {
+  {    
     g_graphicsContext.Lock();
 
     ManageDisplay();
@@ -833,6 +839,19 @@ void CXBoxRenderer::PrepareDisplay()
 
     g_graphicsContext.Unlock();
   }
+
+#ifdef _DEBUG
+  dwTime += GetTickCount() - dwTimeStamp;
+  iCount++;
+
+  if(iCount == 60)
+  {
+    CLog::DebugLog("RenderTime: %f ms average over last 60 frames", (float)dwTime / iCount);
+    dwTime = 0;
+    iCount = 0;
+  }
+#endif
+
 }
 
 void CXBoxRenderer::FlipPage(bool bAsync)
@@ -840,7 +859,7 @@ void CXBoxRenderer::FlipPage(bool bAsync)
   if( bAsync )
   {
     if( CThread::ThreadHandle() == NULL ) CThread::Create();
-    m_eventFrame.PulseEvent();
+    m_eventFrame.Set();
     return;
   }
 
@@ -1475,8 +1494,9 @@ void CXBoxRenderer::TextureCallback(DWORD dwContext)
 void CXBoxRenderer::Process()
 {
   DWORD dwTimeStamp = 0;
-  DWORD dwFlipTime = 0;
-  int iFlipCount = 0;
+
+  DWORD dwFlipTime = 300;
+  DWORD dwFlipCount = 30;  
 
   m_iAsyncFlipTime = 10; //Just a guess to what delay we have
 
@@ -1490,24 +1510,27 @@ void CXBoxRenderer::Process()
       //Stop was signaled, exit thread
       return;
     }
-    
-    g_graphicsContext.Lock();
 
     DWORD dwTimeStamp = GetTickCount();
 
+    g_graphicsContext.Lock();
+
     CXBoxRenderer::FlipPage(false);
-
-    //Calculate the average time for a flip over 10 frames
-    dwFlipTime += GetTickCount() - dwTimeStamp;
-    iFlipCount++;
-
-    if( iFlipCount==30 )
-    {
-      m_iAsyncFlipTime = (int)(dwFlipTime / iFlipCount);
-      dwFlipTime = 0;
-      iFlipCount = 0;
-    }
     
     g_graphicsContext.Unlock();
+
+    dwFlipTime += GetTickCount() - dwTimeStamp;
+    dwFlipCount++;
+
+    //Keep flipcount around 120-240 to let later frames have more impact.
+    //this is needed should user change framesync during playback
+    if( dwFlipCount >= 240 )
+    {
+      dwFlipTime /= 2;
+      dwFlipCount /= 2;
+    }
+
+    m_iAsyncFlipTime = (int)(dwFlipTime / dwFlipCount);
+
   }
 }
