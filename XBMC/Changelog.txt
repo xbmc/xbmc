@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 16-08-2005 updated: mplayer.dll (better rewind, no skip after fastforward, better interlaced detection) + codecs.conf
  - 16-08-2005 changed: some fancontroller/temperature-reading optimizations
  - 15-08-2005 updated: Chinese (Simple) language file (Thnx to hibaby)
  - 15-08-2005 updated: Chinese (Traditional) language file (Thnx to omenpica)
@@ -12,6 +13,7 @@ added/fixed: (dd-mm-yyyy) (please specify date in CET)
  - 15-08-2005 updated: German language file
  - 15-08-2005 added: A message box is now shown when a share is not available or its configuration is wrong
  - 15-08-2005 fixed: Missed yet another newline in Database.cpp.  Another possible database fix?
+ - 15-08-2005 added: progress dialog automatically pops up after 1.5 seconds of init when using mplayer on all medias, no only online.
  - 14-08-2005 changed: improved ability to cancel mplayer startup
  - 14-08-2005 changed: made progressdialogs display when it's canceled state
  - 14-08-2005 fixed: window resources not being loaded sometimes (black screens)
