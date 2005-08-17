@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 17-08-2005 fixed: ccx+builtin rar support was broken.
  - 17-08-2005 fixed: cdrom gui status. this also fixes add/remove share and autodetect.
  - 17-08-2005 added: if a incomplete rarset is detected, we hand mplayer the '-noidx' switch.
  - 17-08-2005 added: progressbar to rar caching.
