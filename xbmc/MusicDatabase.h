@@ -115,6 +115,7 @@ public:
   bool FindAlbumsByName(const CStdString& strSearch, VECALBUMS& albums);
   bool GetTop100(VECSONGS& songs);
   bool GetTop100Albums(VECALBUMS& albums);
+  bool GetRecentAlbums(VECALBUMS& albums);
   bool IncrTop100CounterByFileName(const CStdString& strFileName1);
   bool GetSubpathsFromPath(const CStdString &strPath, CStdString& strPathIds);
   bool RemoveSongsFromPaths(const CStdString &strPathIds);
