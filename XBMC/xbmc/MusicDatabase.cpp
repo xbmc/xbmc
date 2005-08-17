@@ -1145,6 +1145,7 @@ bool CMusicDatabase::GetTop100(VECSONGS& songs)
     if (NULL == m_pDS.get()) return false;
 
     CStdString strSQL="select * from song,album,path,artist,genre,thumb where song.iTimesPlayed>0 and song.idPath=path.idPath and song.idAlbum=album.idAlbum and song.idArtist=artist.idArtist and song.idGenre=genre.idGenre and song.idThumb=thumb.idThumb order by song.iTimesPlayed desc limit 100";
+    CLog::Log(LOGDEBUG, "CMusicDatabase::GetTop100() query: %s", strSQL.c_str());
     if (!m_pDS->query(strSQL.c_str())) return false;
     int iRowsFound = m_pDS->num_rows();
     if (iRowsFound == 0)
@@ -1188,6 +1189,7 @@ bool CMusicDatabase::GetTop100Albums(VECALBUMS& albums)
     strSQL += "order by total ";
     strSQL += "desc limit 100 ";
 
+    CLog::Log(LOGDEBUG, "CMusicDatabase::GetTop100Albums() query: %s", strSQL.c_str());
     if (!m_pDS->query(strSQL.c_str())) return false;
     int iRowsFound = m_pDS->num_rows();
     if (iRowsFound == 0)
@@ -1208,6 +1210,48 @@ bool CMusicDatabase::GetTop100Albums(VECALBUMS& albums)
   catch (...)
   {
     CLog::Log(LOGERROR, "CMusicDatabase:GetTop100Albums() failed");
+  }
+
+  return false;
+}
+
+bool CMusicDatabase::GetRecentAlbums(VECALBUMS& albums)
+{
+  try
+  {
+    albums.erase(albums.begin(), albums.end());
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS.get()) return false;
+
+    CStdString strSQL = "select path.*, album.*, artist.strArtist ";
+    strSQL += "from album, path, artist ";
+    strSQL += "where album.idPath=path.idPath ";
+    strSQL += "and album.idArtist=artist.idArtist ";
+    strSQL += "group by album.idalbum ";
+    strSQL += "order by album.idalbum ";
+    strSQL += "desc limit 25 ";
+
+    CLog::Log(LOGDEBUG, "CMusicDatabase::GetRecentAlbums() query: %s", strSQL.c_str());
+    if (!m_pDS->query(strSQL.c_str())) return false;
+    int iRowsFound = m_pDS->num_rows();
+    if (iRowsFound == 0)
+    {
+      m_pDS->close();
+      return false;
+    }
+    int iCount = 1;
+    while (!m_pDS->eof())
+    {
+      albums.push_back(GetAlbumFromDataset());
+      m_pDS->next();
+    }
+
+    m_pDS->close(); // cleanup recordset data
+    return true;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "CMusicDatabase:GetRecentAlbums() failed");
   }
 
   return false;

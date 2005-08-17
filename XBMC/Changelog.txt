@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 17-08-2005 added: Recent Albums to Music Library, presents a list of the last 25 albums scanned into the database
  - 16-08-2005 changed: trust interlaced flag from mplayer, now that we can override it
  - 16-08-2005 fixed: renderes now calculated a the fliptime (used to keep sync) over a running total instead of just last 30frames. 
  - 16-08-2005 added: progress for vobsub processing

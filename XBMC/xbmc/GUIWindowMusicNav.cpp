@@ -22,9 +22,9 @@
 #define CONTROL_THUMBS    51
 #define CONTROL_BIGLIST   52
 
-#define SHOW_PLAYLISTS  64
-#define SHOW_RECENT     32
-#define SHOW_TOP        16
+#define SHOW_RECENT     64
+#define SHOW_TOP        32
+#define SHOW_PLAYLISTS  16
 #define SHOW_GENRES     8
 #define SHOW_ARTISTS    4
 #define SHOW_ALBUMS     2
@@ -251,13 +251,14 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
         CLog::Log(LOGINFO, "Attempting to quickpath to: %s", strDestination.c_str());
 
         CStdString strParentPath = "db://";
-        CStdString strGenres = g_localizeStrings.Get(135).c_str();      // Genres
-        CStdString strArtists = g_localizeStrings.Get(133).c_str();     // Artists
-        CStdString strAlbums = g_localizeStrings.Get(132).c_str();      // Albums
-        CStdString strSongs = g_localizeStrings.Get(134).c_str();       // Songs
-        CStdString strTop = g_localizeStrings.Get(271).c_str();         // Top 100
-        CStdString strTopSongs = g_localizeStrings.Get(10504).c_str();  // Top 100 Songs
-        CStdString strTopAlbums = g_localizeStrings.Get(10505).c_str(); // Top 100 Albums
+        CStdString strGenres = g_localizeStrings.Get(135);        // Genres
+        CStdString strArtists = g_localizeStrings.Get(133);       // Artists
+        CStdString strAlbums = g_localizeStrings.Get(132);        // Albums
+        CStdString strSongs = g_localizeStrings.Get(134);         // Songs
+        CStdString strTop = g_localizeStrings.Get(271);           // Top 100
+        CStdString strTopSongs = g_localizeStrings.Get(10504);    // Top 100 Songs
+        CStdString strTopAlbums = g_localizeStrings.Get(10505);   // Top 100 Albums
+        CStdString strRecentAlbums = g_localizeStrings.Get(359);  // Recent Albums
 
         if (strDestination.Equals("Genres"))
         {
@@ -335,6 +336,17 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
           m_Directory.m_strPath += strTopAlbums + "/";
           m_history.Set(m_Directory.m_strPath, strParentPath);
         }
+        else if (strDestination.Equals("Recent Albums"))
+        {
+          m_iState = SHOW_RECENT;
+          m_iPath = SHOW_RECENT;
+
+          vecPathHistory.clear();
+          vecPathHistory.push_back(strRecentAlbums);
+
+          m_Directory.m_strPath = "db://" + strRecentAlbums + "/";
+          m_history.Set(m_Directory.m_strPath, strParentPath);
+        }
         else
         {
           CLog::Log(LOGERROR, "  Failed! Destination parameter (%s) is not valid!", strDestination.c_str());
@@ -361,7 +373,7 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
       int iControl = message.GetSenderId();
       if (iControl == CONTROL_BTNSORTBY) // sort by
       {
-        // root and "Top" items do not allow sorting
+        // root, top, and recent items do not allow sorting
         if (m_iState == SHOW_ROOT || m_iPath >= SHOW_TOP)
           return true;
 
@@ -444,7 +456,7 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
       else if (iControl == CONTROL_BTNVIEWASICONS)
       {
         // First check if we have any additional view ability
-        if (m_iState == SHOW_ALBUMS)
+        if (m_iState == SHOW_ALBUMS || m_iState == SHOW_RECENT)
         { // allow the extra big list view
           m_iViewAsIcons++;
           if (m_iViewAsIcons > VIEW_AS_LARGE_LIST) m_iViewAsIcons = VIEW_AS_LIST;
@@ -474,7 +486,7 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
       }
       else if (iControl == CONTROL_BTNSORTASC) // sort asc
       {
-        // root and "Top" items do not allow sorting
+        // root, top, and recent items do not allow sorting
         if (m_iState == SHOW_ROOT || m_iPath >= SHOW_TOP)
           return true;
         else if (m_iState == SHOW_GENRES)
@@ -520,6 +532,7 @@ bool CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, CFileItemL
   m_bGotDirFromCache = false;
 
   CLog::Log(LOGDEBUG, "CGUIWindowMusicNav::GetDirectory(%s)",strDirectory.c_str());
+  CLog::Log(LOGDEBUG, "  m_iState = [%i], m_iPath = [%i]", m_iState, m_iPath);
   CLog::Log(LOGDEBUG, "  strGenre = [%s], strArtist = [%s], strAlbum = [%s], strAlbumPath = [%s]",m_strGenre.c_str(), m_strArtist.c_str(), m_strAlbum.c_str(), m_strAlbumPath.c_str());
 
   // cleanup items
@@ -543,6 +556,7 @@ bool CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, CFileItemL
       vecRoot.push_back(g_localizeStrings.Get(132));  // Albums
       vecRoot.push_back(g_localizeStrings.Get(134));  // Songs
       vecRoot.push_back(g_localizeStrings.Get(271));  // Top 100
+      vecRoot.push_back(g_localizeStrings.Get(359));  // Recent Albums
       for (int i = 0; i < (int)vecRoot.size();++i)
       {
         CFileItem* pFileItem = new CFileItem(vecRoot[i]);
@@ -671,6 +685,7 @@ bool CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, CFileItemL
     }
     break;
 
+  case SHOW_RECENT:
   case SHOW_ALBUMS:
     {
       m_iViewAsIcons = g_stSettings.m_iMyMusicNavAlbumsViewAsIcons;
@@ -697,6 +712,8 @@ bool CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, CFileItemL
       bool bTest;
       if (m_iPath == (SHOW_TOP + SHOW_ALBUMS))
         bTest = g_musicDatabase.GetTop100Albums(albums);
+      else if (m_iPath == SHOW_RECENT)
+        bTest = g_musicDatabase.GetRecentAlbums(albums);
       else
         bTest = g_musicDatabase.GetAlbumsNav(albums, m_strGenre, m_strArtist);
 
@@ -778,7 +795,7 @@ void CGUIWindowMusicNav::UpdateButtons()
 {
   CGUIWindowMusicBase::UpdateButtons();
 
-  // disallow sorting on the root
+  // root, top, and recent items do not allow sorting
   if (m_iState == SHOW_ROOT || m_iPath >= SHOW_TOP)
   {
     CONTROL_DISABLE(CONTROL_BTNSORTASC);
@@ -790,7 +807,7 @@ void CGUIWindowMusicNav::UpdateButtons()
 
   // Update sorting control
   bool bSortAscending = false;
-  if (m_iState == SHOW_ROOT)
+  if (m_iState == SHOW_ROOT || m_iPath >= SHOW_TOP)
     bSortAscending = false;
   else if (m_iState == SHOW_GENRES)
     bSortAscending = g_stSettings.m_bMyMusicNavGenresSortAscending;
@@ -844,15 +861,18 @@ void CGUIWindowMusicNav::UpdateButtons()
     SET_CONTROL_LABEL(CONTROL_BTNSORTBY, g_stSettings.m_iMyMusicNavSongsSortMethod + 263);
   }
 
-  // make the filter label
+  // set the filter label
   CStdString strLabel;
 
   // "Top 100 Songs"
   if (m_iPath == (SHOW_TOP + SHOW_SONGS))
-    strLabel = CStdString(g_localizeStrings.Get(10504).c_str());
+    strLabel = g_localizeStrings.Get(10504);
   // "Top 100 Albums"
   else if (m_iPath == (SHOW_TOP + SHOW_ALBUMS))
-    strLabel = CStdString(g_localizeStrings.Get(10505).c_str());
+    strLabel = g_localizeStrings.Get(10505);
+  // "Recent Albums"
+  else if (m_iPath >= SHOW_RECENT)
+    strLabel = g_localizeStrings.Get(359);
   // "Genre/Artist/Album"
   else
   {
@@ -914,16 +934,20 @@ void CGUIWindowMusicNav::OnClick(int iItem)
       case SHOW_ROOT:
         {
           // genres
-          if (strPath.Equals(CStdString(g_localizeStrings.Get(135).c_str())))
+          if (strPath.Equals((CStdString)g_localizeStrings.Get(135)))
             m_iState = SHOW_GENRES;
           // artists
-          else if (strPath.Equals(CStdString(g_localizeStrings.Get(133).c_str())))
+          else if (strPath.Equals((CStdString)g_localizeStrings.Get(133)))
             m_iState = SHOW_ARTISTS;
           // albums
-          else if (strPath.Equals(CStdString(g_localizeStrings.Get(132).c_str())))
+          else if (strPath.Equals((CStdString)g_localizeStrings.Get(132)))
             m_iState = SHOW_ALBUMS;
-          else if (strPath.Equals(CStdString(g_localizeStrings.Get(271).c_str())))
+          // top 100
+          else if (strPath.Equals((CStdString)g_localizeStrings.Get(271)))
             m_iState = SHOW_TOP;
+          // recent albums
+          else if (strPath.Equals((CStdString)g_localizeStrings.Get(359)))
+            m_iState = SHOW_RECENT;
           // songs
           else
             m_iState = SHOW_SONGS;
@@ -969,6 +993,7 @@ void CGUIWindowMusicNav::OnClick(int iItem)
         }
         break;
 
+      case SHOW_RECENT:
       case SHOW_ALBUMS:
         {
           m_iState = SHOW_SONGS;
@@ -1035,7 +1060,7 @@ void CGUIWindowMusicNav::OnFileItemFormatLabel(CFileItem* pItem)
   else if (pItem->m_bIsFolder)
   {
     // for albums, set label2 to the artist name
-    if (m_iState == SHOW_ALBUMS)
+    if (m_iState == SHOW_ALBUMS || m_iState == SHOW_RECENT)
     {
       // if filtering use the filtered artist name
       if (!m_strArtist.IsEmpty())
@@ -1071,7 +1096,7 @@ void CGUIWindowMusicNav::OnFileItemFormatLabel(CFileItem* pItem)
 
 void CGUIWindowMusicNav::DoSort(CFileItemList& items)
 {
-  // root and "Top" items do not allow sorting
+  // root, top, and recent items do not allow sorting
   if (m_iState == SHOW_ROOT || m_iPath >= SHOW_TOP)
     return;
 
@@ -1135,7 +1160,7 @@ void CGUIWindowMusicNav::OnSearchItemFound(const CFileItem* pSelItem)
 
     // set path to db://Genres/GENRE/
     // vecPathHistory = ("Genres", "GENRE")
-    CStdString strGenres = g_localizeStrings.Get(135).c_str(); // Genres
+    CStdString strGenres = g_localizeStrings.Get(135); // Genres
     vecPathHistory.push_back(strGenres);
     vecPathHistory.push_back(m_strGenre);
     strPath += strGenres + "/" + m_strGenre + "/";
@@ -1163,7 +1188,7 @@ void CGUIWindowMusicNav::OnSearchItemFound(const CFileItem* pSelItem)
     m_strArtist = pSelItem->m_strPath;
 
     // set path to db://Artists/ARTIST/
-    CStdString strArtists = g_localizeStrings.Get(133).c_str(); // Artists
+    CStdString strArtists = g_localizeStrings.Get(133); // Artists
     vecPathHistory.push_back(strArtists);
     vecPathHistory.push_back(m_strArtist);
     strPath += strArtists + "/" + m_strArtist + "/";
@@ -1197,7 +1222,7 @@ void CGUIWindowMusicNav::OnSearchItemFound(const CFileItem* pSelItem)
       CUtil::GetParentPath(pSelItem->m_strPath,m_strAlbumPath);
 
     // set path to db://Albums/ALBUM - ARTIST/
-    CStdString strAlbums = g_localizeStrings.Get(132).c_str(); // Albums
+    CStdString strAlbums = g_localizeStrings.Get(132); // Albums
     vecPathHistory.push_back(strAlbums);
 
     CStdString strAlbum = m_strAlbum;
@@ -1319,6 +1344,14 @@ void CGUIWindowMusicNav::GoParentFolder()
     m_iState = SHOW_ALBUMS;
     m_strAlbum.Empty();
     m_strAlbumPath.Empty();
+
+    // go back to recent albums
+    if (m_iPath == SHOW_RECENT)
+    {
+      m_iState = SHOW_RECENT;
+      m_strArtist.Empty();
+      m_strGenre.Empty();
+    }
   }
   // or back to artists?
   else if (m_iPath & (1 << 2))
@@ -1337,8 +1370,8 @@ void CGUIWindowMusicNav::GoParentFolder()
     m_strArtist.Empty();
     m_strGenre.Empty();
   }
-  // or back to top?
-  else if (m_iPath & (1 << 4))
+  // or back to top 100?
+  else if (m_iPath & (1 << 5))
   {
     m_iState = SHOW_TOP;
     m_strAlbum.Empty();
@@ -1346,7 +1379,7 @@ void CGUIWindowMusicNav::GoParentFolder()
     m_strArtist.Empty();
     m_strGenre.Empty();
   }
-  // or back to the root?
+  // else just go back to the root
   else
   {
     m_iState = SHOW_ROOT;
