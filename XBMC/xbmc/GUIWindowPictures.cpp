@@ -211,20 +211,20 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
         CLog::Log(LOGINFO, "Attempting to default to: %s", strDestination.c_str());
       }
       
-      if (m_rootDir.GetNumberOfShares() == 0)
-      {
-        m_rootDir.SetMask(g_stSettings.m_szMyPicturesExtensions);
-        m_rootDir.SetShares(g_settings.m_vecMyPictureShares);
-      }
+      m_rootDir.SetMask(g_stSettings.m_szMyPicturesExtensions);
+      m_rootDir.SetShares(g_settings.m_vecMyPictureShares);
 
-      for (unsigned int i=g_settings.m_vecMyPictureShares.size();i<m_rootDir.GetNumberOfShares();++i)
+      for (unsigned int i=0;i<m_rootDir.GetNumberOfShares();++i)
       {
         const CShare& share = m_rootDir[i];
+        CURL url(share.strPath);
+        if ((url.GetProtocol() != "zip") && (url.GetProtocol() != "rar"))
+          continue;
+
         if (share.strEntryPoint.IsEmpty()) // do not unmount 'normal' rars/zips
           continue;
         
-        CURL url(share.strPath);
-        if (url.GetProtocol() == "zip://")
+        if (url.GetProtocol() == "zip")
           g_ZipManager.release(share.strPath);
         
         strDestination = share.strEntryPoint;

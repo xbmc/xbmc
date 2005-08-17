@@ -1,4 +1,5 @@
 #include "rar.hpp"
+#include "../../utils/log.h"
 
 static void GetFirstNewVolName(const char *ArcName,char *VolName,
   Int64 VolSize,Int64 TotalSize);

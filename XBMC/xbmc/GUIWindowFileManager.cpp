@@ -640,6 +640,7 @@ bool CGUIWindowFileManager::HaveDiscOrConnection( CStdString& strPath, int iDriv
   if ( iDriveType == SHARE_TYPE_DVD )
   {
     CDetectDVDMedia::WaitMediaReady();
+    
     if ( !CDetectDVDMedia::IsDiscInDrive() )
     {
       CGUIDialogOK::ShowAndGetInput(218, 219, 0, 0);

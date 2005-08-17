@@ -9,6 +9,10 @@
 #include "../fileitem.h"
 #include "../utils/criticalsection.h"
 #include <map>
+#include "../lib/UnrarXLib/UnrarX.hpp"
+#include "../lib/common/xbstopwatch.h"
+
+#include "../utils/Thread.h"
 
 #define EXFILE_OVERWRITE 1
 #define EXFILE_AUTODELETE 2
@@ -20,8 +24,20 @@ public:
 	CFileInfo();
 	~CFileInfo();
 	CStdString m_strCachedPath;
+  CStdString m_strPathInRar;
 	bool	m_bAutoDel;
   int m_iUsed;
+  bool m_bIsCanceled()
+  {
+    if (watch.IsRunning())
+      if (watch.GetElapsedSeconds() < 3)
+        return true;
+    
+    watch.Stop();
+    return false;
+  }
+  CXBStopWatch watch;
+  int m_iIsSeekable;
 };
 
 class CRarManager
@@ -32,12 +48,15 @@ public:
 	bool CacheRarredFile(CStdString& strPathInCache, const CStdString& strRarPath, const CStdString& strPathInRar, BYTE bOptions = EXFILE_AUTODELETE, const CStdString& strDir =RAR_DEFAULT_CACHE, const __int64 iSize=-1);
 	bool GetPathInCache(CStdString& strPathInCache, const CStdString& strRarPath, const CStdString& strPathInRar = "");
 	bool GetFilesInRar(CFileItemList& vecpItems, const CStdString& strRarPath, bool bMask=true, const CStdString& strPathInRar="");
-	bool IsFileInRar(bool& bResult, const CStdString& strRarPath, const CStdString& strPathInRar);
+	CFileInfo* GetFileInRar(const CStdString& strRarPath, const CStdString& strPathInRar);
+  bool IsFileInRar(bool& bResult, const CStdString& strRarPath, const CStdString& strPathInRar);
 	void ClearCache(bool force=false);
   void ClearCachedFile(const CStdString& strRarPath, const CStdString& strPathInRar);
   void ExtractArchive(const CStdString& strArchive, const CStdString& strPath);
 protected:
-  std::map<CStdString, CFileInfo> m_ExFiles;
+  
+  bool ListArchive(const CStdString& strRarPath, ArchiveList_struct* &pArchiveList);
+  std::map<CStdString, std::pair<ArchiveList_struct*,std::vector<CFileInfo> > > m_ExFiles;
 	CCriticalSection m_CritSection;
 
   __int64 CheckFreeSpace(const CStdString& strDrive);

@@ -408,6 +408,8 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
   strDir = g_stSettings.m_szCacheDirectory;
   ConvertHomeVar(strDir);
   strcpy( g_stSettings.m_szCacheDirectory, strDir.c_str() );
+  if (!CUtil::HasSlashAtEnd(g_stSettings.m_szCacheDirectory))
+    strcat(g_stSettings.m_szCacheDirectory,"/");
 
   while ( CUtil::HasSlashAtEnd(g_stSettings.m_szScreenshotsDirectory) )
   {
@@ -1587,8 +1589,9 @@ bool CSettings::DeleteBookmark(const CStdString &strType, const CStdString &strN
   {
     if ((*it).strName == strName && (*it).strPath == strPath)
     {
+      CLog::Log(LOGDEBUG,"found share, removing!");
       pShares->erase(it);
-       breturn = true;
+      breturn = true;
       break;
     }
   }

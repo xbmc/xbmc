@@ -828,7 +828,7 @@ void CmdExtract::UnstoreFile(ComprDataIO &DataIO,Int64 DestUnpSize)
         return;
       }
       int Code=DataIO.UnpRead(&Buffer[0],Buffer.Size());
-      if (DataIO.UnpackToMemorySize > -1)
+      if (DataIO.UnpackToMemorySize > -1 && !DataIO.NextVolumeMissing)
       {
         if (WaitForSingleObject(DataIO.hSeek,1) == WAIT_OBJECT_0)
           continue;
@@ -842,8 +842,11 @@ void CmdExtract::UnstoreFile(ComprDataIO &DataIO,Int64 DestUnpSize)
       }
       else 
       {
+        if (DataIO.NextVolumeMissing)
+          SetEvent(DataIO.hSeekDone);
+        else 
         if (WaitForSingleObject(DataIO.hSeek,1) == WAIT_OBJECT_0)
-          continue;
+           continue;
         ResetEvent(DataIO.hBufferFilled);
         SetEvent(DataIO.hBufferEmpty);
         while (WaitForSingleObject(DataIO.hBufferFilled,1) != WAIT_OBJECT_0)
@@ -864,7 +867,12 @@ void CmdExtract::UnstoreFile(ComprDataIO &DataIO,Int64 DestUnpSize)
         if (DestUnpSize>=0)
           DestUnpSize-=Code;
       }
-      else 
+      else if (Code == -1)
+      {
+        DataIO.NextVolumeMissing = true;
+        return;
+      }
+      else
         return;
     }
   }

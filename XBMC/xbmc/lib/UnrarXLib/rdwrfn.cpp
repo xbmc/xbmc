@@ -33,7 +33,8 @@ void ComprDataIO::Init()
   SubHeadPos=NULL;
   CurrentCommand=0;
   ProcessedArcSize=TotalArcSize=0;
-}
+  bQuit = false;
+ }
 
 int ComprDataIO::UnpRead(byte *Addr,uint Count)
 {
@@ -55,7 +56,10 @@ int ComprDataIO::UnpRead(byte *Addr,uint Count)
     {
       bool bRead = true;
       if (!SrcFile->IsOpened())
+      {
+        NextVolumeMissing = true;
         return(-1);
+      }
       if (UnpackToMemory)
         if (WaitForSingleObject(hSeek,1) == WAIT_OBJECT_0) // we are seeking
         {
@@ -137,6 +141,11 @@ int ComprDataIO::UnpRead(byte *Addr,uint Count)
         return(-1);
       }
       CurUnpStart = CurUnpRead;
+      if (WaitForSingleObject(hProgressBar,1) == WAIT_OBJECT_0)
+      {
+        m_pDlgProgress->SetLine(2,SrcArc->FileName); // update currently extracted rar file
+        m_pDlgProgress->Progress();
+      }
     }
     else
       break;
@@ -226,6 +235,13 @@ void ComprDataIO::UnpWrite(byte *Addr,uint Count)
       UnpFileCRC=CRC(UnpFileCRC,Addr,Count);
   ShowUnpWrite();
   Wait();
+  if (WaitForSingleObject(hProgressBar,1) == WAIT_OBJECT_0)
+  {
+    m_pDlgProgress->SetPercentage(int(float(CurUnpWrite)/float(((Archive*)SrcFile)->NewLhd.FullUnpSize)*100));
+    m_pDlgProgress->Progress();
+    if (m_pDlgProgress->IsCanceled()) 
+      bQuit = true;
+  }
 }
 
 
