@@ -15,7 +15,12 @@ namespace DIRECTORY
     virtual ~CVirtualDirectory(void);
     virtual bool GetDirectory(const CStdString& strPath, CFileItemList &items);
     void SetShares(VECSHARES& vecShares);
-    inline unsigned int GetNumberOfShares() { return m_vecShares.size(); }
+    inline unsigned int GetNumberOfShares() { 
+      if (m_vecShares)
+        return m_vecShares->size(); 
+      else
+        return 0;
+      }
     void AddShare(const CShare& share);
     bool RemoveShare(const CStdString& strPath);
     bool IsShare(const CStdString& strPath) const;
@@ -23,11 +28,16 @@ namespace DIRECTORY
 
     inline const CShare& operator [](const int index) const
     {
-      return m_vecShares[index];
+      return m_vecShares->at(index);
+    }
+
+    inline CShare& operator[](const int index)
+    {
+      return m_vecShares->at(index);
     }
 
   protected:
     void CacheThumbs(CFileItemList &items);
-    VECSHARES m_vecShares;
+    VECSHARES* m_vecShares;
   };
 };

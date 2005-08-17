@@ -6,7 +6,7 @@
 #include "directorycache.h"
 
 
-CVirtualDirectory::CVirtualDirectory(void)
+CVirtualDirectory::CVirtualDirectory(void) : m_vecShares(NULL)
 {
 }
 
@@ -20,25 +20,29 @@ CVirtualDirectory::~CVirtualDirectory(void)
  */
 void CVirtualDirectory::SetShares(VECSHARES& vecShares)
 {
-  m_vecShares = vecShares;
+  m_vecShares = &vecShares;
 }
 
 void CVirtualDirectory::AddShare(const CShare& share)
 {
+  if (!m_vecShares)
+    return;
   unsigned int i;
-  for (i=0;i<m_vecShares.size();++i ) 
-    if( m_vecShares[i].strPath == share.strPath) // not added before i presume
+  for (i=0;i<m_vecShares->size();++i ) 
+    if( (*m_vecShares)[i].strPath == share.strPath) // not added before i presume
       break;
-  if (i==m_vecShares.size()) // we're safe, then add
-    m_vecShares.push_back(share);
+  if (i==m_vecShares->size()) // we're safe, then add
+    m_vecShares->push_back(share);
 }
 
 bool CVirtualDirectory::RemoveShare(const CStdString& strPath)
 {
-  for (vector<CShare>::iterator it=m_vecShares.begin(); it != m_vecShares.end(); ++it)
+  if (!m_vecShares)
+    return true;
+  for (vector<CShare>::iterator it=m_vecShares->begin(); it != m_vecShares->end(); ++it)
     if (it->strPath == strPath) 
     {
-      m_vecShares.erase(it,it+1);
+      m_vecShares->erase(it,it+1);
       return true;
     }
 
@@ -55,13 +59,15 @@ bool CVirtualDirectory::RemoveShare(const CStdString& strPath)
  */
 bool CVirtualDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
 {
+  if (!m_vecShares)
+    return true;
   CStdString strPath2 = strPath;
   CStdString strPath3 = strPath;
   strPath2 += "/";
   strPath3 += "\\";
-  for (int i = 0; i < (int)m_vecShares.size(); ++i)
+  for (int i = 0; i < (int)m_vecShares->size(); ++i)
   {
-    CShare& share = m_vecShares.at(i);
+    CShare& share = m_vecShares->at(i);
     if ( share.strPath == strPath.Left( share.strPath.size() ) ||
          share.strPath == strPath2.Left( share.strPath.size() ) ||
          share.strPath == strPath3.Left( share.strPath.size() ) ||
@@ -75,9 +81,9 @@ bool CVirtualDirectory::GetDirectory(const CStdString& strPath, CFileItemList &i
   }
 
   items.Clear();
-  for (int i = 0; i < (int)m_vecShares.size(); ++i)
+  for (int i = 0; i < (int)m_vecShares->size(); ++i)
   {
-    CShare& share = m_vecShares.at(i);
+    CShare& share = m_vecShares->at(i);
     if ((share.strPath.substr(0,6) == "rar://") || (share.strPath.substr(0,6) == "zip://")) // do not add the virtual archive shares to list
       continue;
 
@@ -132,9 +138,9 @@ bool CVirtualDirectory::IsShare(const CStdString& strPath) const
   // ie. f:/video and f:\video was not be recognised as the same directory,
   // resulting in navigation to a lower directory then the share.
   strPathCpy.Replace("/", "\\");
-  for (int i = 0; i < (int)m_vecShares.size(); ++i)
+  for (int i = 0; i < (int)m_vecShares->size(); ++i)
   {
-    const CShare& share = m_vecShares.at(i);
+    const CShare& share = m_vecShares->at(i);
     CStdString strShare = share.strPath;
     strShare.TrimRight("/");
     strShare.TrimRight("\\");
@@ -150,9 +156,9 @@ bool CVirtualDirectory::IsShare(const CStdString& strPath) const
  */
 CStdString CVirtualDirectory::GetDVDDriveUrl()
 {
-  for (int i = 0; i < (int)m_vecShares.size(); ++i)
+  for (int i = 0; i < (int)m_vecShares->size(); ++i)
   {
-    const CShare& share = m_vecShares.at(i);
+    const CShare& share = m_vecShares->at(i);
     if (share.m_iDriveType == SHARE_TYPE_DVD)
       return share.strPath;
   }
