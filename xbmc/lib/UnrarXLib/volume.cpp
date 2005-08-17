@@ -87,6 +87,7 @@ bool MergeArchive(Archive &Arc,ComprDataIO *DataIO,bool ShowFileName,char Comman
     if (!Cmd->VolumePause && !IsRemovable(NextName))
     {
       Log(Arc.FileName,St(MAbsNextVol),NextName);
+      CLog::Log(LOGDEBUG,"failedopen1");
       FailedOpen=true;
       break;
     }
@@ -95,6 +96,7 @@ bool MergeArchive(Archive &Arc,ComprDataIO *DataIO,bool ShowFileName,char Comman
     if (Cmd->AllYes || !AskNextVol(NextName))
 #endif
     {
+      CLog::Log(LOGDEBUG,"failedopen2");
       FailedOpen=true;
       break;
     }
@@ -104,6 +106,7 @@ bool MergeArchive(Archive &Arc,ComprDataIO *DataIO,bool ShowFileName,char Comman
   {
     Arc.Open(Arc.FileName,Arc.FileNameW);
     Arc.Seek(PosBeforeClose,SEEK_SET);
+    CLog::Log(LOGDEBUG,"failedopen3");
     return(false);
   }
   Arc.CheckArc(true);

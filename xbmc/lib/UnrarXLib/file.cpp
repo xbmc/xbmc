@@ -388,6 +388,7 @@ int File::Read(void *Data,int Size)
     }
     break;
   }
+  
   return(ReadSize);
 }
 
@@ -457,6 +458,9 @@ bool File::RawSeek(Int64 Offset,int Method)
 #ifdef _WIN_32
   //LONG HighDist=int64to32(Offset>>32);
   //if (SetFilePointer(hFile,int64to32(Offset),&HighDist,Method)==0xffffffff &&
+  if (Offset > FileLength())
+    return false;
+
   if (m_File.Seek(Offset,Method) < 0)
   {
     return(false);
