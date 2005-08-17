@@ -108,7 +108,6 @@ bool CFileXBMSP::Open(const CURL& url, bool bBinary)
   if (fn == NULL)
   {
     cc_xstream_client_disconnect(m_connection);
-
     return false;
   }
   free(fn);
@@ -137,6 +136,7 @@ bool CFileXBMSP::Open(const CURL& url, bool bBinary)
         {
           OutputDebugString("xbms:setdir:");
           OutputDebugString(strDir.c_str());
+
           OutputDebugString("\n");
           if (cc_xstream_client_setcwd(m_connection, strDir.c_str()) != CC_XSTREAM_CLIENT_OK)
           {
@@ -168,7 +168,6 @@ bool CFileXBMSP::Open(const CURL& url, bool bBinary)
     {
       OutputDebugString("xbms:unable set dir\n");
       if (m_connection != NULL) cc_xstream_client_disconnect(m_connection);
-
       return false;
     }
   }
@@ -179,7 +178,6 @@ bool CFileXBMSP::Open(const CURL& url, bool bBinary)
     OutputDebugString(strFile.c_str());
     OutputDebugString("\n");
     cc_xstream_client_disconnect(m_connection);
-
     return false;
   }
 
@@ -240,19 +238,30 @@ int CFileXBMSP::Stat(const CURL& url, struct __stat64* buffer)
 //*********************************************************************************************
 unsigned int CFileXBMSP::Read(void *lpBuf, __int64 uiBufSize)
 {
-  unsigned char *buf;
+  unsigned char *buf, *pBuf;
   size_t buflen;
+  size_t totalbuf = 0;
 
+  pBuf = (unsigned char*)lpBuf;
   if (!m_bOpened) return 0;
-  if (cc_xstream_client_file_read(m_connection, m_handle, (size_t)uiBufSize, &buf, &buflen) !=
-      CC_XSTREAM_CLIENT_OK)
+  __int64 uicBufSize = uiBufSize;
+  while (uicBufSize > 0)
   {
-    return 0;
+    if (cc_xstream_client_file_read(m_connection, m_handle, size_t(uicBufSize>120*1024?120*1024:uicBufSize), &buf, &buflen) !=
+        CC_XSTREAM_CLIENT_OK)
+    {
+      return 0;
+    }
+    uicBufSize -= buflen;
+    totalbuf += buflen;
+    fast_memcpy(pBuf, buf, buflen);
+    pBuf += buflen;
+    free(buf);
+    if (buflen == 0)
+      break;
   }
-  fast_memcpy(lpBuf, buf, buflen);
-  free(buf);
-  m_filePos += buflen;
-  return buflen;
+  m_filePos += totalbuf;
+  return totalbuf;
 }
 
 //*********************************************************************************************
