@@ -10,6 +10,9 @@
 
 #include "GUIControl.h"
 
+#include <map>
+#include <vector>
+
 #define ON_CLICK_MESSAGE(i,c,m) \
 { \
  GUIEventHandler<c, CGUIMessage&> clickHandler(this, m); \
@@ -108,11 +111,11 @@ protected:
   };
 
   typedef GUIEvent<CGUIMessage&> CLICK_EVENT;
-  typedef map<int, CLICK_EVENT> MAPCONTROLCLICKEVENTS;
+  typedef std::map<int, CLICK_EVENT> MAPCONTROLCLICKEVENTS;
   MAPCONTROLCLICKEVENTS m_mapClickEvents;
 
   typedef GUIEvent<CGUIMessage&> SELECTED_EVENT;
-  typedef map<int, SELECTED_EVENT> MAPCONTROLSELECTEDEVENTS;
+  typedef std::map<int, SELECTED_EVENT> MAPCONTROLSELECTEDEVENTS;
   MAPCONTROLSELECTEDEVENTS m_mapSelectedEvents;
 
   typedef vector<struct stReferenceControl> VECREFERENCECONTOLS;
@@ -123,7 +126,7 @@ protected:
   static VECREFERENCECONTOLS ControlsCache;
 
   vector<CGUIControl*> m_vecControls;
-  typedef vector<CGUIControl*>::iterator ivecControls;
+  typedef std::vector<CGUIControl*>::iterator ivecControls;
   DWORD m_dwWindowId;
   DWORD m_dwIDRange;
   DWORD m_dwPreviousWindowId;

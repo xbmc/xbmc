@@ -51,6 +51,8 @@ void Unpack::Unpack20(bool Solid)
 
   while (is64plus(DestUnpSize))
   {
+    if (UnpIO->bQuit) return;
+
     UnpPtr&=MAXWINMASK;
 
     if (InAddr>ReadTop-30)

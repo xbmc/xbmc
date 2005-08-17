@@ -269,11 +269,8 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
 
       m_dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
 
-      if (m_rootDir.GetNumberOfShares() == 0)
-      {
-        m_rootDir.SetMask(g_stSettings.m_szMyMusicExtensions);
-        m_rootDir.SetShares(g_settings.m_vecMyMusicShares);
-      }
+      m_rootDir.SetMask(g_stSettings.m_szMyMusicExtensions);
+      m_rootDir.SetShares(g_settings.m_vecMyMusicShares);
 
       Update(m_Directory.m_strPath);
 
@@ -1655,6 +1652,7 @@ void CGUIWindowMusicBase::OnDeleteItem(int iItem)
 {
   if ( iItem < 0 || iItem >= m_vecItems.Size()) return;
   const CFileItem* pItem = m_vecItems[iItem];
+  CLog::Log(LOGDEBUG,"OnDeleteItem: %s",pItem->GetLabel().c_str());
   CStdString strPath = pItem->m_strPath;
   CStdString strFile = CUtil::GetFileName(strPath);
   if (pItem->m_bIsFolder)

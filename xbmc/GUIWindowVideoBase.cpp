@@ -175,12 +175,13 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
   {
   case GUI_MSG_DVDDRIVE_EJECTED_CD:
     {
+      CLog::Log(LOGDEBUG,"got eject msg!");
       if ( !m_Directory.IsVirtualDirectoryRoot() )
       {
         if ( m_Directory.IsCDDA() || m_Directory.IsDVD() || m_Directory.IsISO9660() )
         {
           // Disc has changed and we are inside a DVD Drive share, get out of here :)
-          m_Directory.m_strPath = "";
+          m_Directory.m_strPath.Empty();
           Update( m_Directory.m_strPath );
         }
       }
@@ -195,6 +196,7 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
 
   case GUI_MSG_DVDDRIVE_CHANGED_CD:
     {
+      CLog::Log(LOGDEBUG,"got changed cd!");
       if ( m_Directory.IsVirtualDirectoryRoot() )
       {
         int iItem = m_viewControl.GetSelectedItem();
@@ -220,11 +222,8 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
       m_database.Open();
       m_dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
 
-      if (m_rootDir.GetNumberOfShares() == 0)
-      {
-        m_rootDir.SetMask(g_stSettings.m_szMyVideoExtensions);
-        m_rootDir.SetShares(g_settings.m_vecMyVideoShares);
-      }
+      m_rootDir.SetMask(g_stSettings.m_szMyVideoExtensions);
+      m_rootDir.SetShares(g_settings.m_vecMyVideoShares);
 
       Update(m_Directory.m_strPath);
 
