@@ -199,6 +199,12 @@ void Unpack::Unpack29(bool Solid)
 
   while (true)
   {
+    if (UnpIO->bQuit) 
+    {
+      FileExtracted=false;
+      return;
+    }
+
     UnpPtr&=MAXWINMASK;
 
     if (InAddr>ReadBorder)

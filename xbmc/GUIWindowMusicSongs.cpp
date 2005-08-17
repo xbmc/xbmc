@@ -225,12 +225,9 @@ bool CGUIWindowMusicSongs::OnMessage(CGUIMessage& message)
         }
 
         // need file filters or GetDirectory in SetHistoryPath fails
-        if (m_rootDir.GetNumberOfShares() == 0)
-        {
-          m_rootDir.SetMask(g_stSettings.m_szMyMusicExtensions);
-          m_rootDir.SetShares(g_settings.m_vecMyMusicShares);
-          SetHistoryForPath(m_Directory.m_strPath);
-        }
+        m_rootDir.SetMask(g_stSettings.m_szMyMusicExtensions);
+        m_rootDir.SetShares(g_settings.m_vecMyMusicShares);
+        SetHistoryForPath(m_Directory.m_strPath);
       }
 
       if (m_Directory.IsCDDA() || m_Directory.IsDVD() || m_Directory.IsISO9660())

@@ -2,7 +2,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_THREAD_H__ACFB7357_B961_4AC1_9FB2_779526219817__INCLUDED_)
+#if !defined(AFX_THREAD_H__ACFB7357_B961_4AC1_9FB2_779526219817__INCLUDED_) && !defined(AFX_THREAD_H__67621B15_8724_4B5D_9343_7667075C89F2__INCLUDED_)
 #define AFX_THREAD_H__ACFB7357_B961_4AC1_9FB2_779526219817__INCLUDED_
 
 #if _MSC_VER > 1000
@@ -16,6 +16,10 @@ class IRunnable
 public:
   virtual void Run()=0;
 };
+
+#ifdef CTHREAD
+#undef CTHREAD
+#endif
 
 class CThread
 {

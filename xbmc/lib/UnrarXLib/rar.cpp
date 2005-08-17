@@ -1,6 +1,7 @@
 #include "rar.hpp"
 #include "unrarx.hpp"
 #include "../../utils/log.h"
+#include "../../../guilib/GUIWindowManager.h"
 
 #include "smallfn.cpp"
 
@@ -179,7 +180,7 @@ int main(int argc, char *argv[])
 int urarlib_get(char *rarfile, char *targetPath, char *fileToExtract, char *libpassword)
 {
 	InitCRC();
-	BOOL bRes = TRUE;
+	int bRes = 1;
 
 	// Set the arguments for the extract command
     CommandData * pCmd = NULL;
@@ -232,6 +233,7 @@ int urarlib_get(char *rarfile, char *targetPath, char *fileToExtract, char *libp
 
 				if ( pExtract )
 				{
+          pExtract->GetDataIO().hProgressBar = CreateEvent(NULL,true,false,NULL);
           pExtract->GetDataIO().SetCurrentCommand(*(pCmd->Command));
 					struct FindData FD;
 					if (FindFile::FastFind(rarfile,NULL,&FD))
@@ -239,23 +241,69 @@ int urarlib_get(char *rarfile, char *targetPath, char *fileToExtract, char *libp
           pExtract->ExtractArchiveInit(pCmd,*pArc);
           while (1)
 					{
+            bool bProgressBar = false;
             int Size=pArc->ReadHeader();
             
             if (pArc->GetHeaderType() == ENDARC_HEAD)
               break;
 
 						bool Repeat=false;
+            
+            if (fileToExtract)
+            {
+              if(stricmp(pArc->NewLhd.FileName, fileToExtract) == 0)
+                bProgressBar = true;
+            }
+            else
+              bProgressBar = true;
+
+#define PROGRESSLIMIT 10*1024*1024 // 10 meg - probably change me
+
+            if (bProgressBar && pArc->NewLhd.FullUnpSize > PROGRESSLIMIT)
+            {
+              SetEvent(pExtract->GetDataIO().hProgressBar);              
+              pExtract->GetDataIO().hQuit = CreateEvent(NULL,true,false,NULL);
+
+              pExtract->GetDataIO().m_pDlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+              pExtract->GetDataIO().m_pDlgProgress->StartModal(m_gWindowManager.GetActiveWindow());
+              pExtract->GetDataIO().m_pDlgProgress->SetPercentage(0);
+              pExtract->GetDataIO().m_pDlgProgress->SetHeading(115);
+              pExtract->GetDataIO().m_pDlgProgress->SetLine(0,pArc->NewLhd.FileName);
+              pExtract->GetDataIO().m_pDlgProgress->SetLine(1,"");
+              pExtract->GetDataIO().m_pDlgProgress->SetLine(2,pArc->FileName);
+              pExtract->GetDataIO().m_pDlgProgress->ShowProgressBar(true);
+            }
+            else
+              bProgressBar = false;
+
             if (!pExtract->ExtractCurrentFile(pCmd,*pArc,Size,Repeat))
 						{
                bRes = FALSE;
 						 	 break;
 						}
-						if (fileToExtract)
+            
+            if (bProgressBar)
+            {
+              pExtract->GetDataIO().m_pDlgProgress->Close();
+              pExtract->GetDataIO().m_pDlgProgress = NULL;
+              ResetEvent(pExtract->GetDataIO().hProgressBar);
+            }
+
+            if (pExtract->GetDataIO().bQuit) 
+            {
+              bRes = 2;
+              break;
+            }
+
+            if (fileToExtract)
               if (*fileToExtract)
                 if(stricmp(pArc->NewLhd.FileName, fileToExtract) == 0)
 					  			break;
 					}
 					pExtract->GetDataIO().ProcessedArcSize+=FD.Size;
+          
+          CloseHandle(pExtract->GetDataIO().hProgressBar);
+         
 					delete pExtract;
 				}
 			}

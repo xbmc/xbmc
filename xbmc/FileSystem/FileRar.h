@@ -43,7 +43,7 @@ namespace XFILE
 	{
 	public:
 		CFileRar();
-    CFileRar(bool bSeekable); // used for caching files
+    	CFileRar(bool bSeekable); // used for caching files
 		virtual ~CFileRar();
 		virtual __int64			  GetPosition();
 		virtual __int64			  GetLength();
@@ -54,7 +54,8 @@ namespace XFILE
 		virtual int						Write(const void* lpBuf, __int64 uiBufSize);
 		virtual bool					ReadString(char *szLine, int iLineLength);
 		virtual __int64			  Seek(__int64 iFilePosition, int iWhence=SEEK_SET);
-		virtual void					Close();
+    virtual bool          CanSeek() { return m_bSeekable; }
+    virtual void					Close();
 		virtual void          Flush();
 
 		virtual bool					OpenForWrite(const CURL& url, bool bBinary=true);
@@ -80,6 +81,7 @@ namespace XFILE
     // rar stuff
     bool m_bUseFile;
     bool m_bOpen;
+    bool m_bSeekable;
     CFile m_File; // for packed source
     Archive* m_pArc;
     CommandData* m_pCmd;

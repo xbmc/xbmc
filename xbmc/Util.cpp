@@ -71,10 +71,7 @@ char* CUtil::GetExtension(const CStdString& strFileName)
 {
   CURL url(strFileName);
   const char* extension;
-  /*if ((url.GetProtocol() == "rar") || (url.GetProtocol() == "zip"))
-    extension = strFileName.c_str()+strFileName.rfind(".");
-  else*/
-    extension = strFileName.c_str()+strFileName.rfind(".");
+  extension = strFileName.c_str()+strFileName.rfind(".");
   return (char*)extension ;
 }
 
@@ -1484,9 +1481,13 @@ void CUtil::GetFatXQualifiedPath(CStdString& strFileNameAndPath)
     if (strFileName[0] == '\\') 
       strFileName.erase(0,1);
     CUtil::RemoveIllegalChars(strFileName);
-    while (strFileName[strFileName.size()-1] == ' ')
-      strFileName.erase(strFileName.size()-1);
-    strFileNameAndPath += "\\"+strFileName;
+    CStdString strExtension;
+    CStdString strNoExt;
+    CUtil::GetExtension(strFileName,strExtension);
+    CUtil::ReplaceExtension(strFileName,"",strNoExt);
+    while (strNoExt[strNoExt.size()-1] == ' ')
+      strNoExt.erase(strNoExt.size()-1);
+    strFileNameAndPath += "\\"+strNoExt+strExtension;
   }
 }
 
@@ -1772,7 +1773,6 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
           {
             strLExt = strItem.Right(strItem.size() - fnl - 1); //Disregard separator char
             strDest.Format("Z:\\subtitle.%s", strLExt);
-            CLog::Log(LOGDEBUG,"normal yo!");
             if (std::find(vecExtensionsCached.begin(),vecExtensionsCached.end(),strLExt) == vecExtensionsCached.end())
               if (CFile::Cache(items[j]->m_strPath, strDest.c_str(), pCallback, NULL))
               {
@@ -1827,7 +1827,6 @@ bool CUtil::CacheRarSubtitles(std::vector<CStdString>& vecExtensionsCached, cons
         CUtil::CreateRarPath(strSourceUrl, strRarPath, strPathInRar); 
         CStdString strDestFile;
         strDestFile.Format("subtitle%s", pSubExts[iPos]);
-        CLog::Log(LOGDEBUG,"rar yo %s",strRarPath.c_str());
         if (std::find(vecExtensionsCached.begin(),vecExtensionsCached.end(),CStdString(pSubExts[iPos]+1)) == vecExtensionsCached.end())
           if (CFile::Cache(strSourceUrl,"Z:\\"+strDestFile))
           {
