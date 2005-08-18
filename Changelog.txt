@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 17-08-2005 changed: HomeScreen now fully rely on fadetime as set in skin
+ - 17-08-2005 fixed: code fade-out/in and skin set fade-out/in was clashing. thus making a control fade-out/in from code wasn't working ( SET_CONTROL_FADE_OUT/IN )
  - 18-08-2005 fixed: queueing in my video title view
  - 18-08-2005 changed: queue item disabled in my videos context menu unless at files or title view
  - 17-08-2005 fixed: ccx+builtin rar support was broken.
