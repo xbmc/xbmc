@@ -528,12 +528,15 @@ static void uninit_player(unsigned int mask){
   }
 
 #ifdef _XBOX
-  current_module="uninit_others";
-  free_osd_list();		//fix 4 x 6548bytes memory leak 
-  codecs_uninit_free(); 	//fix 70Kbytes codecs mem leak
-  m_config_free(mconfig);	//fix 1250 counts of small memory block leaks
-  if(vo_font) free_font_desc(vo_font);	//free font memory  	
-  vo_font = NULL;
+  if(mask&(INITED_ALL-(INITED_GUI+INITED_VO)))
+  { //Not even sure we should do this.. we track memory anyways
+    current_module="uninit_others";
+    free_osd_list();		//fix 4 x 6548bytes memory leak 
+    codecs_uninit_free(); 	//fix 70Kbytes codecs mem leak
+    m_config_free(mconfig);	//fix 1250 counts of small memory block leaks
+    if(vo_font) free_font_desc(vo_font);	//free font memory  	
+    vo_font = NULL;
+  }
 #endif
   current_module=NULL;
 }
