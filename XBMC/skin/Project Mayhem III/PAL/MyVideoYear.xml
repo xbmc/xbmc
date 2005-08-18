@@ -142,7 +142,7 @@
       <type>listcontrol</type>
       <id>50</id>
       <onleft>2</onleft>
-      <onright>2</onright>
+      <onright>50</onright>
       <onup>2</onup>
       <ondown>2</ondown>
     </control>
@@ -152,9 +152,9 @@
       <type>thumbnailpanel</type>
       <id>51</id>
       <onleft>2</onleft>
-      <onright>2</onright>
+      <onright>51</onright>
       <onup>51</onup>
-      <ondown>2</ondown>
+      <ondown>51</ondown>
     </control>
 
   </controls>
