@@ -19,4 +19,5 @@ protected:
   virtual bool Update(const CStdString &strDirectory);
   virtual void OnClick(int iItem);
   virtual void OnDeleteItem(int iItem);
+  virtual void OnQueueItem(int iItem);
 };

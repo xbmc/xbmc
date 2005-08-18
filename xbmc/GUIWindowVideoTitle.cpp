@@ -368,7 +368,6 @@ void CGUIWindowVideoTitle::OnDeleteItem(int iItem)
     return;
 }
 
-
 void CGUIWindowVideoTitle::LoadViewMode()
 {
   m_iViewAsIconsRoot = g_stSettings.m_iMyVideoTitleRootViewAsIcons;
@@ -394,4 +393,30 @@ int CGUIWindowVideoTitle::SortMethod()
 bool CGUIWindowVideoTitle::SortAscending()
 {
   return g_stSettings.m_bMyVideoTitleSortAscending;
+}
+
+void CGUIWindowVideoTitle::OnQueueItem(int iItem)
+{
+  if (iItem < 0 || iItem >= (int)m_vecItems.Size()) return;
+
+  CFileItem* pItem = m_vecItems[iItem];
+  if (pItem->m_bIsFolder) return;
+
+  CLog::Log(LOGDEBUG,"CGUIWindowVideoTitle::OnQueueItem, iItem = %i, movie id = %s", iItem, pItem->m_strPath.c_str());
+
+  VECMOVIESFILES movies;
+  m_database.GetFiles(atol(pItem->m_strPath), movies);
+  if (movies.size() <= 0) return;
+  for (int i = 0; i < (int)movies.size(); ++i)
+  {
+    CFileItem* pMovieFile = new CFileItem(movies[i], false);
+    CStdString strFileNum;
+    strFileNum.Format("(%2.2i)",i+1);
+    pMovieFile->SetLabel(pItem->GetLabel() + " " + strFileNum);
+    CLog::Log(LOGDEBUG,"  file = %s, label = %s", movies[i].c_str(),pMovieFile->GetLabel().c_str());
+    AddItemToPlayList(pMovieFile);
+  }
+
+  //move to next item
+  m_viewControl.SetSelectedItem(iItem + 1);
 }
