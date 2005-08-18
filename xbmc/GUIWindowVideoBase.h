@@ -46,7 +46,7 @@ protected:
   void ShowIMDB(const CStdString& strMovie, const CStdString& strFile, const CStdString& strFolder, bool bFolder);
   void OnManualIMDB();
   bool CheckMovie(const CStdString& strFileName);
-  void OnQueueItem(int iItem);
+  virtual void OnQueueItem(int iItem);
   virtual void OnDeleteItem(int iItem);
 
   void OnResumeItem(int iItem);
