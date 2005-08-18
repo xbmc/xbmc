@@ -148,7 +148,7 @@
       <posX>211</posX>
       <posY>121</posY>
       <onleft>2</onleft>
-      <onright>2</onright>
+      <onright>50</onright>
       <onup>2</onup>
       <ondown>2</ondown>
     </control>
@@ -160,9 +160,9 @@
       <posX>211</posX>
       <posY>121</posY>
       <onleft>2</onleft>
-      <onright>2</onright>
+      <onright>51</onright>
       <onup>51</onup>
-      <ondown>2</ondown>
+      <ondown>51</ondown>
     </control>
 
     <control>
@@ -199,7 +199,7 @@
       <spaceBetweenItems>10</spaceBetweenItems>
       <textureHeight>120</textureHeight>
       <onleft>2</onleft>
-      <onright>2</onright>
+      <onright>52</onright>
       <onup>2</onup>
       <ondown>2</ondown>
     </control>

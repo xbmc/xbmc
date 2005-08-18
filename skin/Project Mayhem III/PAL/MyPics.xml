@@ -136,7 +136,7 @@
       <type>listcontrol</type>
       <id>10</id>
       <onleft>2</onleft>
-      <onright>2</onright>
+      <onright>10</onright>
       <onup>2</onup>
       <ondown>2</ondown>
     </control>
@@ -146,9 +146,9 @@
       <type>thumbnailpanel</type>
       <id>11</id>
       <onleft>2</onleft>
-      <onright>2</onright>
+      <onright>11</onright>
       <onup>11</onup>
-      <ondown>2</ondown>
+      <ondown>11</ondown>
     </control>
 
   </controls>
