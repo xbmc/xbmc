@@ -409,18 +409,25 @@ int CFileSMB::Write(const void* lpBuf, __int64 uiBufSize)
 
 bool CFileSMB::Delete(const char* strFileName)
 {
+  CStdString strFile;
+  strFile = g_passwordManager.GetSMBAuthFilename(strFileName);
+
   smb.Init();
   smb.Lock();
-  int result = smbc_unlink(strFileName);
+  int result = smbc_unlink(strFile.c_str());
   smb.Unlock();
   return (result == 0);
 }
 
 bool CFileSMB::Rename(const char* strFileName, const char* strNewFileName)
 {
+  CStdString strFile, strFileNew;
+  strFile = g_passwordManager.GetSMBAuthFilename(strFileName);
+  strFileNew = g_passwordManager.GetSMBAuthFilename(strNewFileName);
+
   smb.Init();
   smb.Lock();
-  int result = smbc_rename(strFileName, strNewFileName);
+  int result = smbc_rename(strFile.c_str(), strFileNew.c_str());
   smb.Unlock();
   return (result == 0);
 }
