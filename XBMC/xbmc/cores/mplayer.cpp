@@ -759,12 +759,12 @@ bool CMPlayer::OpenFile(const CFileItem& file, __int64 iStartTime)
   {
     if (bFileOnInternet)
     {      
-      m_dlgCache = new CDlgCache(1500);
+      m_dlgCache = new CDlgCache(0);
       m_bUseFullRecaching = true;
     }
     else
     {
-      m_dlgCache = new CDlgCache(1000);
+      m_dlgCache = new CDlgCache(2000);
     }
     if (iCacheSize == 0)
     {

@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 17-08-2005 changed: progressdialog now pops up after 2 seconds of loading time ( instead of 1 wich was set by mistake before )
  - 17-08-2005 fixed: delete and rename over smb, wasn't using default username/password nor when authenticated from gui
  - 17-08-2005 changed: HomeScreen now fully rely on fadetime as set in skin
  - 17-08-2005 fixed: code fade-out/in and skin set fade-out/in was clashing. thus making a control fade-out/in from code wasn't working ( SET_CONTROL_FADE_OUT/IN )
