@@ -246,7 +246,8 @@ bool CGUIControl::OnMessage(CGUIMessage& message)
           m_effectStart = timeGetTime() - (int)(m_effectLength * m_effectAmount);
         }
       }
-      m_bVisible = true;
+      else
+        m_bVisible = true;
       return true;
       break;
 
@@ -557,8 +558,8 @@ bool CGUIControl::UpdateEffectState()
   DWORD currentTime = timeGetTime();
   if (m_effectState == EFFECT_IN)
   { // doing a fade in
-    if (currentTime - m_effectStart < m_effectInTime)
-      m_effectAmount = (float)(currentTime - m_effectStart) / m_effectInTime;
+    if (currentTime - m_effectStart < m_effectLength)
+      m_effectAmount = (float)(currentTime - m_effectStart) / m_effectLength;
     else
     {
       m_effectAmount = 1;
@@ -569,8 +570,8 @@ bool CGUIControl::UpdateEffectState()
   }
   else if (m_effectState == EFFECT_OUT)
   {
-    if (currentTime - m_effectStart < m_effectOutTime)
-      m_effectAmount = (float)(m_effectOutTime - currentTime + m_effectStart) / m_effectOutTime;
+    if (currentTime - m_effectStart < m_effectLength)
+      m_effectAmount = (float)(m_effectLength - currentTime + m_effectStart) / m_effectLength;
     else
     {
       m_effectAmount = 0;

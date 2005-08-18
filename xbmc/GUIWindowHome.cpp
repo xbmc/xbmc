@@ -23,7 +23,8 @@
 #define CONTROL_BTN_XLINK_KAI  99
 #define CONTROL_BTN_SCROLLER  300
 
-#define HOME_HANDLES_FADES 1
+#define HOME_HANDLES_FADES 0
+#define HOME_FADE_TIME 300
 
 CGUIWindowHome::CGUIWindowHome(void) : CGUIWindow(WINDOW_HOME, "Home.xml")
 {
@@ -107,7 +108,7 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
         {
           if (fade)
           {
-            SET_CONTROL_FADE_OUT(i, 10);
+            SET_CONTROL_FADE_OUT(i, HOME_FADE_TIME);
           }
           else
           {
@@ -117,7 +118,7 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
 
         if (fade)
         {
-          SET_CONTROL_FADE_IN(iControl + 100, 10);
+          SET_CONTROL_FADE_IN(iControl + 100, HOME_FADE_TIME);
         }
         else
         {
@@ -146,7 +147,7 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
           {
             if (fade)
             {
-              SET_CONTROL_FADE_OUT(i, 10);
+              SET_CONTROL_FADE_OUT(i, HOME_FADE_TIME);
             }
             else
             {
@@ -156,7 +157,7 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
 
           if (fade)
           {
-            SET_CONTROL_FADE_IN(iIconType, 10);
+            SET_CONTROL_FADE_IN(iIconType, HOME_FADE_TIME);
           }
           else
           {
