@@ -498,8 +498,8 @@ bool CGUIWindow::Load(const TiXmlElement* pRootElement, RESOLUTION resToUse)
     struct stReferenceControl stControl = referencecontrols[i];
     delete stControl.m_pControl;
   }
-  OnWindowLoaded();
   m_windowLoaded = true;
+  OnWindowLoaded();
   return true;
 }
 
@@ -800,7 +800,7 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
       OutputDebugString(strLine.c_str());
       OutputDebugString("------------------- \n");
       SetAlpha(255);  // initial fade state
-      if (m_dynamicResourceAlloc) AllocResources();
+      if (m_dynamicResourceAlloc || !m_WindowAllocated) AllocResources();
       if (message.GetParam1() != WINDOW_INVALID)
       {
         m_dwPreviousWindowId = message.GetParam1();
@@ -959,7 +959,7 @@ void CGUIWindow::AllocResources(bool forceLoad /*= FALSE */)
   QueryPerformanceCounter(&start);
 
   // load skin xml file
-  if (m_xmlFile.size() && (forceLoad || m_loadOnDemand)) Load(m_xmlFile);
+  if (m_xmlFile.size() && (forceLoad || m_loadOnDemand || !m_windowLoaded)) Load(m_xmlFile);
   LARGE_INTEGER slend;
   QueryPerformanceCounter(&slend);
 
@@ -1090,6 +1090,7 @@ void CGUIWindow::ClearAll()
   }
   m_vecControls.erase(m_vecControls.begin(), m_vecControls.end());
   m_windowLoaded = false;
+  m_dynamicResourceAlloc = true;
 }
 
 const CGUIControl* CGUIWindow::GetControl(int iControl) const
