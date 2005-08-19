@@ -25,6 +25,8 @@ private:
   void HideOSD();
   void RenderTTFSubtitles();
   void Seek(bool bPlus, bool bLargeStep);
+  void PreloadDialog(unsigned int windowID);
+  void UnloadDialog(unsigned int windowID);
   bool m_bShowTime;
   bool m_bShowCodecInfo;
   bool m_bShowViewModeInfo;

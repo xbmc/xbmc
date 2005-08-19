@@ -105,43 +105,45 @@ CGUIWindowFullScreen::CGUIWindowFullScreen(void)
 CGUIWindowFullScreen::~CGUIWindowFullScreen(void)
 {}
 
+void CGUIWindowFullScreen::PreloadDialog(unsigned int windowID)
+{
+  CGUIWindow *pWindow = m_gWindowManager.GetWindow(windowID);
+  if (pWindow) 
+  {
+    pWindow->Initialize();
+    pWindow->DynamicResourceAlloc(false);
+    pWindow->AllocResources(false);
+  }
+}
+
+void CGUIWindowFullScreen::UnloadDialog(unsigned int windowID)
+{
+  CGUIWindow *pWindow = m_gWindowManager.GetWindow(windowID);
+  if (pWindow) {
+    pWindow->FreeResources(pWindow->GetLoadOnDemand());
+  }
+}
+
 void CGUIWindowFullScreen::AllocResources(bool forceLoad)
 {
   CGUIWindow::AllocResources(forceLoad);
-  CGUIWindow *pWindow = m_gWindowManager.GetWindow(WINDOW_OSD);
-  if (pWindow) pWindow->AllocResources(true);
-  pWindow = m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_OSD_SETTINGS);
-  if (pWindow) pWindow->AllocResources(false);
-  pWindow = m_gWindowManager.GetWindow(WINDOW_DIALOG_SEEK_BAR);
-  if (pWindow) pWindow->AllocResources(false);
-  pWindow = m_gWindowManager.GetWindow(WINDOW_DIALOG_VOLUME_BAR);
-  if (pWindow) pWindow->AllocResources(false);
+  DynamicResourceAlloc(false);
+  PreloadDialog(WINDOW_OSD);
+  PreloadDialog(WINDOW_DIALOG_VIDEO_OSD_SETTINGS);
+  PreloadDialog(WINDOW_DIALOG_SEEK_BAR);
+  PreloadDialog(WINDOW_DIALOG_VOLUME_BAR);
+  PreloadDialog(WINDOW_DIALOG_MUTE_BUG);
 }
 
 void CGUIWindowFullScreen::FreeResources(bool forceUnload)
 {
   g_settings.Save();
-  CGUIWindow *pWindow = m_gWindowManager.GetWindow(WINDOW_OSD);
-  if (pWindow) {
-    pWindow->FreeResources(true);
-    pWindow->DynamicResourceAlloc(true);
-  }
-  pWindow = m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_OSD_SETTINGS);
-  if (pWindow) {
-    pWindow->FreeResources(true);
-    pWindow->DynamicResourceAlloc(true);
-  }
-  
-  pWindow = m_gWindowManager.GetWindow(WINDOW_DIALOG_SEEK_BAR);
-  if (pWindow) {
-    pWindow->FreeResources(true);
-    pWindow->DynamicResourceAlloc(true);
-  }
-  pWindow = m_gWindowManager.GetWindow(WINDOW_DIALOG_VOLUME_BAR);
-  if (pWindow) {
-    pWindow->FreeResources(true);
-    pWindow->DynamicResourceAlloc(true);
-  }
+  DynamicResourceAlloc(true);
+  UnloadDialog(WINDOW_OSD);
+  UnloadDialog(WINDOW_DIALOG_VIDEO_OSD_SETTINGS);
+  UnloadDialog(WINDOW_DIALOG_SEEK_BAR);
+  UnloadDialog(WINDOW_DIALOG_VOLUME_BAR);
+  UnloadDialog(WINDOW_DIALOG_MUTE_BUG);
   CGUIWindow::FreeResources(forceUnload);
 }
 
@@ -308,19 +310,6 @@ void CGUIWindowFullScreen::OnWindowLoaded()
 {
   CGUIWindow::OnWindowLoaded();
 
-  //  Do not free resources of invisible controls
-  //  or hdd will spin up when fast forwarding etc.
-  DynamicResourceAlloc(false);
-  CGUIWindow *pWindow = m_gWindowManager.GetWindow(WINDOW_OSD);
-  if (pWindow) pWindow->DynamicResourceAlloc(false);
-  pWindow = m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_OSD_SETTINGS);
-  if (pWindow) pWindow->Initialize();
-  if (pWindow) pWindow->DynamicResourceAlloc(false);
-  pWindow = m_gWindowManager.GetWindow(WINDOW_DIALOG_SEEK_BAR);
-  if (pWindow) pWindow->DynamicResourceAlloc(false);
-  pWindow = m_gWindowManager.GetWindow(WINDOW_DIALOG_VOLUME_BAR);
-  if (pWindow) pWindow->DynamicResourceAlloc(false);
-
   CGUIProgressControl* pProgress = (CGUIProgressControl*)GetControl(CONTROL_PROGRESS);
   if(pProgress)
   {
@@ -428,6 +417,8 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
       CSingleLock lock (m_section);
 
       CGUIWindow::OnMessage(message);
+
+      FreeResources(true);
 
       CUtil::RestoreBrightnessContrastGamma();
 
