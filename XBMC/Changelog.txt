@@ -5,6 +5,13 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 19-08-2005 updated: Norwegian language file (Thnx to vnm)
+ - 19-08-2005 updated: German language file
+ - 19-08-2005 updated: Spanish language file (Thnx to jose_t)
+ - 19-08-2005 updated: Finnish language file (Thnx to jutski)
+ - 19-08-2005 updated: Korean language file (Thnx to AkoXko)
+ - 19-08-2005 updated: Chinese (Simple) language file (Thnx to hibaby)
+ - 19-08-2005 updated: Chinese (Traditional) language file (Thnx to omenpica)
  - 17-08-2005 changed: progressdialog now pops up after 2 seconds of loading time ( instead of 1 wich was set by mistake before )
  - 17-08-2005 fixed: delete and rename over smb, wasn't using default username/password nor when authenticated from gui
  - 17-08-2005 changed: HomeScreen now fully rely on fadetime as set in skin
