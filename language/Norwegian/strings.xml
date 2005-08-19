@@ -1,4 +1,4 @@
-<!-- Based on English XML v1.237. Last updated by vnmartinsen  !-->
+<!-- Based on English XML v1.242. Last updated by vnmartinsen  !-->
 <strings>
   <string><id>0</id><value>Mine Programmer</value></string>
   <string><id>1</id><value>Mine Bilder</value></string>
@@ -289,7 +289,7 @@
   <string><id>356</id><value>Skjermbeskytter-modus</value></string>
   <string><id>357</id><value>Skru av etter</value></string>
   <string><id>358</id><value>Alle album</value></string>
-  <string><id>359</id><value>Nyeste album</value></string>
+  <string><id>359</id><value>Nyeste albumer</value></string>
   <string><id>360</id><value>Skjermbeskytter</value></string>
   <string><id>361</id><value>Kjør bildevisning</value></string>
   <string><id>362</id><value>Uttoningsnivå på skjermbeskytter (%)</value></string>
@@ -660,7 +660,10 @@
   <string><id>10500</id><value>Min musikk/spilleliste</value></string>
   <string><id>10501</id><value>Min musikk/filer</value></string>
   <string><id>10502</id><value>Min musikk/bibliotek</value></string>
-  <string><id>10503</id><value>Min musikk/Top 100</value></string>
+  <string><id>10503</id><value>Min musikk/Topp 100</value></string>
+  <string><id>10504</id><value>Topp 100 sanger</value></string>
+  <string><id>10505</id><value>Topp 100 albumer</value></string>
+
 
   <string><id>10506</id><value>Programmer</value></string>
   <string><id>10507</id><value>Konfigurasjon</value></string>
@@ -1093,16 +1096,15 @@
   <string><id>15213</id><value>[PLASSHOLDER]</value></string>													   
   <string><id>15214</id><value>Bruk utjevnet A/V-synkronisering</value></string>
 
+  <string><id>15300</id><value>Bane ikke funnet eller ugyldig</value></string>
+  <string><id>15301</id><value>Kunne ikke koble til nettverksserver</value></string>
+  <string><id>15302</id><value>Ingen servere funnet</value></string>
+  <string><id>15303</id><value>Arbeidsgruppe ikke funnet</value></string>
+
   <string><id>16000</id><value>Generelt</value></string>
   <string><id>16001</id><value>Konfigurer lyd-maskinvare...</value></string>
   <string><id>16002</id><value>CDDB-søk</value></string>
   <string><id>16003</id><value>Spiller</value></string>		  
-
-  <string><id>16004</id><value>Synkroniser video med linjesprang</value></string>
-  <string><id>16005</id><value>- Omvend felter</value></string>
-  <string><id>16006</id><value>Synkronisert sammenfletting</value></string>
-  <string><id>16007</id><value>Omvendte felter</value></string> 
-  <string><id>16008</id><value>På</value></string>
 
   <string><id>16009</id><value>Skriv inn filmens navn</value></string>
   <string><id>16010</id><value>Skriv inn profilnavnet</value></string>
@@ -1111,6 +1113,16 @@
   <string><id>16013</id><value>Skriv inn nytt filnavn</value></string>
   <string><id>16014</id><value>Skriv inn navn på mappen</value></string>
   <string><id>16015</id><value>Skriv inn katalog</value></string>
-  <string><id>16016</id><value>Tilgjengelige valg: %A, %T, %N, %B, %D, %G, %Y, %F</value></string>
+  <string><id>16016</id><value>Tilgjengelige valg: %A, %T, %N, %B, %D, %G, %Y, %F, %S</value></string>
   <string><id>16017</id><value>Skriv inn søketekst</value></string>
+
+  <string><id>16018</id><value>Ingen</value></string>
+  <string><id>16019</id><value>Velg automatisk</value></string>
+  <string><id>16020</id><value>Flettefjerning</value></string>
+  <string><id>16021</id><value>Synkroniser oddetall</value></string>
+  <string><id>16022</id><value>Synkroniser partall</value></string>
+  <string><id>16023</id><value>Behandling av sammenfletting</value></string>
+  
+  <string><id>16024</id><value>Avbryter...</value></string>
+
 </strings>

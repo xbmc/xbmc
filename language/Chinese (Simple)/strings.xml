@@ -885,8 +885,8 @@
   <string><id>13397</id><value>启用字幕</value></string> 
   <string><id>13398</id><value>书签</value></string>
 
-  <string><id>14000</id><value>堆栈开启</value></string>
-  <string><id>14001</id><value>堆栈关闭</value></string>
+  <string><id>14000</id><value>堆栈【已关闭】</value></string>
+  <string><id>14001</id><value>堆栈【已开启】</value></string>
   <string><id>14002</id><value>堆栈：模糊</value></string>
   <string><id>14003</id><value>下载播放列表文件…</value></string>
   <string><id>14004</id><value>下载流媒体列表…</value></string>
@@ -1122,4 +1122,5 @@
   <string><id>16022</id><value>偶同步</value></string> 
   <string><id>16023</id><value>交错设置</value></string> 
 
+  <string><id>16024</id><value>取消中……</value></string>
 </strings>

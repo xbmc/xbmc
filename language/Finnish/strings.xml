@@ -288,9 +288,9 @@
   <string><id>356</id><value>Näytönsäästäjä</value></string>
   <string><id>357</id><value>Torkkuajastimen viive</value></string>
   <string><id>358</id><value>Kaikki</value></string>
-  <string><id>359</id><value>Uusimmat</value></string>
+  <string><id>359</id><value>Uusimmat albumit</value></string>
   <string><id>360</id><value>Näytönsäästäjä</value></string>
-  <string><id>361</id><value>Rekurs. Diaesitys</value></string>
+  <string><id>361</id><value>Rek. diaesitys</value></string>
   <string><id>362</id><value>Näytönsäästäjän tummuus</value></string>
   <string><id>363</id><value>Nimen mukaan</value></string>
   <string><id>364</id><value>- AC3-äänentoistolaite käytössä</value></string>
@@ -658,6 +658,8 @@
   <string><id>10501</id><value>Musiikki/Tiedostot</value></string>
   <string><id>10502</id><value>Musiikki/Kirjasto</value></string>
   <string><id>10503</id><value>Musiikki/Top 100</value></string>
+  <string><id>10504</id><value>Top 100 kappaletta</value></string>
+  <string><id>10505</id><value>Top 100 albumia</value></string>
 
   <string><id>10506</id><value>Sovellukset</value></string>
   <string><id>10507</id><value>Asetukset</value></string>
@@ -1086,16 +1088,15 @@
   <string><id>15213</id><value>[PAIKANPITÄJÄ]</value></string>
   <string><id>15214</id><value>Käytä tasoitettua A/V-synkronointia</value></string>
 
+  <string><id>15300</id><value>Määritettyä polkua ei löydy</value></string>
+  <string><id>15301</id><value>Ei saatu yhteyttä palvelimeen</value></string>
+  <string><id>15302</id><value>Palvelimia ei löytynyt</value></string>
+  <string><id>15303</id><value>Työryhmää ei löytynyt</value></string>
+
   <string><id>16000</id><value>Yleiset</value></string>
   <string><id>16001</id><value>Äänilaitteisto...</value></string>
   <string><id>16002</id><value>CDDB-haku</value></string>
   <string><id>16003</id><value>Soitin</value></string>
-
-  <string><id>16004</id><value>Synkronoi lomitettu video</value></string>
-  <string><id>16005</id><value>- Käännä kentät</value></string>
-  <string><id>16006</id><value>Synkronoitu lomitus</value></string>
-  <string><id>16007</id><value>Kentät käännetty</value></string>
-  <string><id>16008</id><value>päällä</value></string>
 
   <string><id>16009</id><value>Anna elokuvan nimi</value></string>
   <string><id>16010</id><value>Anna profiilin nimi</value></string>
@@ -1104,6 +1105,16 @@
   <string><id>16013</id><value>Anna uusi tiedostonimi</value></string>
   <string><id>16014</id><value>Anna hakemistonimi</value></string>
   <string><id>16015</id><value>Anna hakemisto</value></string>
-  <string><id>16016</id><value>Käytettävissä: %A, %T, %N, %B, %D, %G, %Y, %F</value></string>
+  <string><id>16016</id><value>Käytettävissä: %A, %T, %N, %B, %D, %G, %Y, %F, %S</value></string>
   <string><id>16017</id><value>Anna hakulauseke</value></string>
+
+  <string><id>16018</id><value>Pois</value></string>
+  <string><id>16019</id><value>Automaattinen</value></string>
+  <string><id>16020</id><value>Lomituksenpoisto</value></string>
+  <string><id>16021</id><value>Synk. parittomat</value></string>
+  <string><id>16022</id><value>Synk. parilliset</value></string>
+  <string><id>16023</id><value>Lomituksen käsittely</value></string>
+  
+  <string><id>16024</id><value>Peruutetaan...</value></string>
+  
 </strings>
