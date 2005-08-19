@@ -26,6 +26,7 @@ void CGUIWindowManager::Initialize()
 {
   m_iActiveWindow = -1;
   g_graphicsContext.setMessageSender(this);
+  LoadNotOnDemandWindows();
 }
 
 bool CGUIWindowManager::SendMessage(CGUIMessage& message)
@@ -412,8 +413,9 @@ void CGUIWindowManager::DeInitialize()
 
     CGUIMessage msg(GUI_MSG_WINDOW_DEINIT, 0, 0);
     pWindow->OnMessage(msg);
-    pWindow->ClearAll();
+    pWindow->FreeResources(true);
   }
+  UnloadNotOnDemandWindows();
 
   m_vecMsgTargets.erase( m_vecMsgTargets.begin(), m_vecMsgTargets.end() );
 
@@ -558,3 +560,27 @@ bool CGUIWindowManager::IsWindowActive(DWORD dwID) const
   }
   return false; // window isn't active
 }
+
+void CGUIWindowManager::LoadNotOnDemandWindows()
+{
+  for (int i = 0; i < (int)m_vecWindows.size(); i++)
+  {
+    if (!m_vecWindows[i]->GetLoadOnDemand())
+    {
+      m_vecWindows[i]->FreeResources(true);
+      m_vecWindows[i]->Initialize();
+    }
+  }
+}
+
+void CGUIWindowManager::UnloadNotOnDemandWindows()
+{
+  for (int i = 0; i < (int)m_vecWindows.size(); i++)
+  {
+    if (!m_vecWindows[i]->GetLoadOnDemand())
+    {
+      m_vecWindows[i]->FreeResources(true);
+    }
+  }
+}
+

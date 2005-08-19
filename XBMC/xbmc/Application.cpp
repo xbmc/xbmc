@@ -1519,24 +1519,6 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 
 void CApplication::UnloadSkin()
 {
-  m_guiVideoOverlay.FreeResources(true);
-  m_guiVideoOverlay.ClearAll();
-
-  m_guiMusicOverlay.FreeResources(true);
-  m_guiMusicOverlay.ClearAll();
-
-  m_guiDialogVolumeBar.FreeResources(true);
-  m_guiDialogVolumeBar.ClearAll();
-  m_guiDialogSeekBar.FreeResources(true);
-  m_guiDialogSeekBar.ClearAll();
-  m_guiDialogKaiToast.FreeResources(true);
-  m_guiDialogKaiToast.ClearAll();
-  m_guiDialogMuteBug.FreeResources(true);
-  m_guiDialogMuteBug.ClearAll();
-
-  m_guiPointer.FreeResources(true);
-  m_guiPointer.ClearAll();
-
   CGUIWindow::FlushReferenceCache(); // flush the cache
 
   g_audioManager.DeInitialize();

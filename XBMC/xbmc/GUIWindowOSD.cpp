@@ -109,9 +109,6 @@ bool CGUIWindowOSD::SubMenuVisible()
 void CGUIWindowOSD::OnWindowLoaded()
 {
   CGUIDialog::OnWindowLoaded();
-  //  Do not free resources of invisible controls
-  //  or hdd will spin up when entering a osd submenu
-  DynamicResourceAlloc(false);
   m_bRelativeCoords = true;
 }
 
@@ -204,7 +201,7 @@ bool CGUIWindowOSD::OnMessage(CGUIMessage& message)
       // Remove our subdialogs if visible
       CGUIDialog *pDialog = (CGUIDialog *)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_OSD_SETTINGS);
       if (pDialog && pDialog->IsRunning()) pDialog->Close();
-      return true;
+      //return true;
     }
     break;
 
