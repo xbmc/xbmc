@@ -192,8 +192,8 @@ CGUISettings::CGUISettings(void)
   AddInt(3, "Weather.TemperatureUnits", 398, 0, 0, 1, 1, SPIN_CONTROL_TEXT);
   AddInt(4, "Weather.SpeedUnits", 399, 0, 0, 1, 2, SPIN_CONTROL_TEXT);
   AddSeparator(5, "Weather.Sep2");
-  AddString(6, "Weather.AreaCode1", 14019, "UKXX0085", BUTTON_CONTROL_STANDARD);
-  AddString(7, "Weather.AreaCode2", 14020, "NLXX0002", BUTTON_CONTROL_STANDARD);
+  AddString(6, "Weather.AreaCode1", 14019, "GMXX0154", BUTTON_CONTROL_STANDARD);
+  AddString(7, "Weather.AreaCode2", 14020, "UKXX0085", BUTTON_CONTROL_STANDARD);
   AddString(8, "Weather.AreaCode3", 14021, "CAXX0343", BUTTON_CONTROL_STANDARD);
 
   // My Music Settings
@@ -482,7 +482,7 @@ CGUISettings::CGUISettings(void)
   AddCategory(6,"Autodetect",           1250  );
   AddBool(1,    "Autodetect.OnOff",     1251, true);
   AddString(2,  "Autodetect.NickName",  1252, "XBMC-NickName",BUTTON_CONTROL_INPUT, false, 1252);
-  AddInt(3,     "Autodetect.PingTime",  1256, 30, 1, 4, 240, SPIN_CONTROL_INT, MASK_SECS);
+  AddInt(3,     "Autodetect.PingTime",  1256, 30, 5, 5, 240, SPIN_CONTROL_INT, MASK_SECS);
   AddBool(4,    "Autodetect.PopUpInfo", 1254, true);
   AddSeparator(5, "Autodetect.Sep1");
   AddBool(6,    "Autodetect.CreateLink",1253, true);
@@ -491,7 +491,7 @@ CGUISettings::CGUISettings(void)
   //GeminiServer
   AddCategory(6, "Smb", 1200);
   AddInt(1,    "Smb.SimpAdvance", 1208,   1, 0, 1, 2, SPIN_CONTROL_TEXT);
-  AddString(2, "Smb.Ip",          1201,   "192.168.0.5",  BUTTON_CONTROL_IP_INPUT);
+  AddString(2, "Smb.Ip",          1201,   "192.168.0.106",  BUTTON_CONTROL_IP_INPUT);
   AddString(3, "Smb.Workgroup",   1202,   "WORKGROUP", BUTTON_CONTROL_INPUT, false, 1202);
   AddString(4, "Smb.Username",    1203,   "Username", BUTTON_CONTROL_INPUT, false, 1203);
   AddString(5, "Smb.Password",    1204,   "Password", BUTTON_CONTROL_HIDDEN_INPUT, true, 1204);
