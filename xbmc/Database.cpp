@@ -234,7 +234,7 @@ bool CDatabase::CreateTables()
     //  the page size of the database file to 16k. 
     //  This needs to be done before any table is created.
     CLog::Log(LOGINFO, "Set page size");
-    //m_pDS->exec("PRAGMA page_size=16384\n");
+    m_pDS->exec("PRAGMA page_size=16384\n");
     //  Also set the memory cache size to 16k
     CLog::Log(LOGINFO, "Set default cache size");
     m_pDS->exec("PRAGMA default_cache_size=16384\n");
