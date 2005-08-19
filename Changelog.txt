@@ -5,6 +5,11 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+<<<<<<< Changelog.txt
+ - 20-08-2005 added: System Info: System Uptime [GeminiServer]
+                     Will display the Time that have elapsed since the system was started!
+		     It will display Minutes, Hours and Days! The display values will be Autodetected!
+ - 20-08-2005 fixed: XBMC Nickname setting and detection [GeminiServer]
  - 20-08-2005 fixed: Conditional visible tags broken.
  - 19-08-2005 fixed: OSD menu disappears after skin reload + videowindow was not freeing it's resources.
  - 19-08-2005 updated: Norwegian language file (Thnx to vnm)
