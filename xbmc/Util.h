@@ -188,6 +188,7 @@ static void CreateRarPath(CStdString& strUrlPath, const CStdString& strRarPath,
   static bool CmpNoCase(const char* str1, const char* str2);
   static bool GetFTPServerUserName(int iFTPUserID, CStdString &strFtpUser1, int &iUserMax );
   static bool SetFTPServerUserPassword(CStdString strFtpUserName, CStdString strFtpUserPassword);
+  static bool SetXBOXNickName(CStdString strXboxNickNameIn, CStdString &strXboxNickNameOut);
 
 private:
   static bool m_bNetworkUp;

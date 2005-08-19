@@ -120,37 +120,48 @@ public:
 	}
 
 void SetReadMode2(void)
-	{
-		// 	Unlock stage 1
+{
+	// 	Unlock stage 1
 	Write(FLASH_UNLOCK_ADDR_1,FLASH_UNLOCK_DATA_1); 
 	Write(FLASH_UNLOCK_ADDR_2,FLASH_UNLOCK_DATA_2);
 	Write(FLASH_UNLOCK_ADDR_3,FLASH_UNLOCK_DATA_3);
-		// Issue the reset
+	// Issue the reset
 	Write(FLASH_UNLOCK_ADDR_1,FLASH_COMMAND_RESET);
-	
-    BYTE dummy=Read(FLASH_BASE_ADDRESS); 
-	}
-    
+
+  BYTE dummy=Read(FLASH_BASE_ADDRESS); 
+}   
 fci_t* CheckID2(void)
-	{
-		BYTE manuf,code;
+{
+  BYTE manuf,code;
 
-		// 	Unlock stage 1
-     // detect 29xxxxxx Winbond :)	 
-       Write(FLASH_UNLOCK_ADDR_1,FLASH_UNLOCK_DATA_1);
-       Write(FLASH_UNLOCK_ADDR_2,FLASH_UNLOCK_DATA_2);
-		Write(FLASH_UNLOCK_ADDR_3,FLASH_UNLOCK_DATA_3);
-		// Issue the autroselect
-		Write(FLASH_UNLOCK_ADDR_3,FLASH_UNLOCK_DATA_3);
-		Write(FLASH_UNLOCK_ADDR_4,FLASH_UNLOCK_DATA_4); 
-	//	Detect 28xxxxxx
-		Write(FLASH_UNLOCK_ADDR_1,FLASH_COMMAND_AUTOSELECT);
+  Write(FLASH_UNLOCK_ADDR_1,FLASH_UNLOCK_DATA_1);
+  Write(FLASH_UNLOCK_ADDR_2,FLASH_UNLOCK_DATA_2);
+  Write(FLASH_UNLOCK_ADDR_3,FLASH_UNLOCK_DATA_3);
+  Write(FLASH_UNLOCK_ADDR_3,FLASH_UNLOCK_DATA_3);
+  Write(FLASH_UNLOCK_ADDR_4,FLASH_UNLOCK_DATA_4); 
+  Write(FLASH_UNLOCK_ADDR_1,FLASH_COMMAND_AUTOSELECT);
+  manuf=Read(FLASH_BASE_ADDRESS);
+  code=Read(FLASH_BASE_ADDRESS+1);
 
-		manuf=Read(FLASH_BASE_ADDRESS);
-		code=Read(FLASH_BASE_ADDRESS+1);
-        SetReadMode();
+  SetReadMode();
+  return FindFCI(manuf,code);
+}
+fci_t* CheckID(void) 
+{
+	BYTE manuf,code;
+	// 	Unlock stage 1
+	Write(FLASH_UNLOCK_ADDR_1,FLASH_UNLOCK_DATA_1);
+	Write(FLASH_UNLOCK_ADDR_2,FLASH_UNLOCK_DATA_2);
+	// Issue the autroselect
+	Write(FLASH_UNLOCK_ADDR_1,FLASH_COMMAND_AUTOSELECT);
 
-		return FindFCI(manuf,code);
+	manuf=Read(FLASH_BASE_ADDRESS);
+	code=Read(FLASH_BASE_ADDRESS+1);
+	
+	// All done
+	SetReadMode();
+
+	return FindFCI(manuf,code);
 }
 
 void SetReadMode(void)
@@ -163,25 +174,6 @@ void SetReadMode(void)
 
 		// Leave it in a read mode to avoid any buss contention issues
 		BYTE dummy=Read(FLASH_BASE_ADDRESS);
-	}
-
-	fci_t* CheckID(void) 
-	{
-		BYTE manuf,code;
-
-		// 	Unlock stage 1
-		Write(FLASH_UNLOCK_ADDR_1,FLASH_UNLOCK_DATA_1);
-		Write(FLASH_UNLOCK_ADDR_2,FLASH_UNLOCK_DATA_2);
-		// Issue the autroselect
-		Write(FLASH_UNLOCK_ADDR_1,FLASH_COMMAND_AUTOSELECT);
-
-		manuf=Read(FLASH_BASE_ADDRESS);
-		code=Read(FLASH_BASE_ADDRESS+1);
-		
-		// All done
-		SetReadMode();
-
-		return FindFCI(manuf,code);
 	}
 
 bool EraseBlock(int block)//int block)

@@ -228,11 +228,11 @@ CStdString SYSINFO::GetModCHIPDetected()
 	mbFlash=new(CXBoxFlash);
 	{
 		// Known XBOX ModCHIP IDs&Names
-		mbFlash->AddFCI(0x01,0xad,"XECUTER 3",0x100000);
-		mbFlash->AddFCI(0x01,0xd5,"XECUTER 2",0x100000);
-		mbFlash->AddFCI(0x01,0xc4,"XENIUM",0x100000);
-		mbFlash->AddFCI(0x01,0xc4,"XENIUM",0x000000);
-		mbFlash->AddFCI(0x04,0xba,"ALX2+ R3 FLASH",0x40000);
+		mbFlash->AddFCI(0x01,0xAD,"XECUTER 3",0x100000);
+		mbFlash->AddFCI(0x01,0xD5,"XECUTER 2",0x100000);
+		mbFlash->AddFCI(0x01,0xC4,"XENIUM",0x100000);
+		mbFlash->AddFCI(0x01,0xC4,"XENIUM",0x000000);
+		mbFlash->AddFCI(0x04,0xBA,"ALX2+ R3 FLASH",0x40000);
 		// XBOX Possible FLash CHIPs
 		mbFlash->AddFCI(0x01,0xb0,"AMD Am29F002BT/NBT",0x40000);
 		mbFlash->AddFCI(0x01,0x34,"AMD Am29F002BB/NBB",0x40000);
@@ -388,22 +388,19 @@ CStdString SYSINFO::GetModCHIPDetected()
 		mbFlash->AddFCI(0xda,0xb6,"Winbond W39L040",0x80000);
 		mbFlash->AddFCI(0xda,0x3d,"Winbond W39V040A",0x80000);
 	}
-  CStdString strTemp = "";
-	if (mbFlash->CheckID()!=0) 
+  CStdString strTemp = "", strTemp1 = "", strTemp2 = "";
+  if (mbFlash->CheckID()!=0 || mbFlash->CheckID2()!=0)
 	{	
-    CLog::Log(LOGDEBUG, "- Detected TSOP/ModChip: %s",mbFlash->CheckID()->text);		
-		strTemp = mbFlash->CheckID()->text;
+    CLog::Log(LOGDEBUG, "- Detected TSOP/ModChip: %s",mbFlash->CheckID()->text);
+    CLog::Log(LOGDEBUG, "- Detected TSOP/ModChip: %s",mbFlash->CheckID2()->text);
+    strTemp1 = mbFlash->CheckID()->text;
+    strTemp2 = mbFlash->CheckID2()->text;
 	}
-  else if (mbFlash->CheckID2()!=0) 
-	{	
-    CLog::Log(LOGDEBUG, "- Detected TSOP/ModChip: %s",mbFlash->CheckID2()->text);		
-    strTemp = mbFlash->CheckID2()->text;
-	}
-	else
-	{	
-    CLog::Log(LOGDEBUG, "- Detected TSOP/MOdCHIP: Unknown");	
-		strTemp = "Unknown";
-	}
+  else {	CLog::Log(LOGDEBUG, "- Detected TSOP/MOdCHIP: Unknown");	strTemp2 = "Unknown"; }
+  
+  if (strTemp1 != strTemp2) strTemp.Format("%s %s",strTemp1.c_str(),strTemp2.c_str());
+  else strTemp = strTemp2;
+  
   return strTemp;
 }
 
@@ -1160,4 +1157,23 @@ char* SYSINFO::CheckMD5 (char *Sign)
 	} 
 	while( strcmp(Listone[cntBioses].Name,"\0") != 0);
 	return ("Unknown");
+}
+//GeminiServer: System Up Time in Minutes
+// Will return the time since the system was started!
+// Return Values int: Minutes, Hours, Days
+bool SYSINFO::SystemUpTime(int &iMinutes, int &iHours, int &iDays)
+{
+  iMinutes=0;iHours=0;iDays=0;
+  iMinutes = (int)(timeGetTime() / 60000);
+  if (iMinutes >= 60)
+  {
+    iHours = iMinutes / 60;
+    iMinutes = iMinutes - (iHours *60);
+  }
+  if (iHours >= 24)
+  {
+    iDays = iHours / 24;
+    iHours = iHours - (iDays * 24);
+  }
+  return true;
 }
