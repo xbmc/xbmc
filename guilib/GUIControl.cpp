@@ -566,7 +566,10 @@ bool CGUIControl::UpdateEffectState()
       m_effectState = EFFECT_NONE;
     }
     g_graphicsContext.SetControlAlpha((DWORD)(255 * m_effectAmount));
-    m_bVisible = true;
+    if (m_lastVisible)
+    {
+      m_bVisible = true;
+    }
   }
   else if (m_effectState == EFFECT_OUT)
   {
