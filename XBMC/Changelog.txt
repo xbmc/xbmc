@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 20-08-2005 fixed: Conditional visible tags broken.
  - 19-08-2005 fixed: OSD menu disappears after skin reload + videowindow was not freeing it's resources.
  - 19-08-2005 updated: Norwegian language file (Thnx to vnm)
  - 19-08-2005 updated: German language file
