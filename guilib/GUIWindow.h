@@ -95,6 +95,7 @@ public:
   int GetVisibleCondition() const { return m_visibleCondition; };
   void SetXMLFile(const CStdString &xmlFile) { m_xmlFile = xmlFile; };
   void LoadOnDemand(bool loadOnDemand) { m_loadOnDemand = loadOnDemand; };
+  bool GetLoadOnDemand() { return m_loadOnDemand; }
   void SetAlpha(DWORD alpha) { m_alpha = alpha; };
   int GetRenderOrder() { return m_renderOrder; };
   EFFECT_STATE GetEffectState() { return m_effectState; };

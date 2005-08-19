@@ -33,6 +33,8 @@ public:
   void ActivateWindow(int iWindowID, const CStdString& strPath = "");
   void PreviousWindow();
   void RefreshWindow();
+  void LoadNotOnDemandWindows();
+  void UnloadNotOnDemandWindows();
 
   // OnAction() runs through our active dialogs and windows and sends the message
   // off to the callbacks (application, python, playlist player) and to the
