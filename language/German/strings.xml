@@ -291,7 +291,7 @@
   <string><id>356</id><value>Modus</value></string>
   <string><id>357</id><value>Automatisch ausschalten nach</value></string>
   <string><id>358</id><value>Alle Alben</value></string>
-  <string><id>359</id><value>Favoriten</value></string>
+  <string><id>359</id><value>Zuletzt hinzugefügte Album</value></string>
   <string><id>360</id><value>Bildschirmsch.</value></string>
   <string><id>361</id><value>Rekurs. Diaschau</value></string>
   <string><id>362</id><value>Verdunkelung</value></string>
@@ -663,6 +663,8 @@
   <string><id>10501</id><value>Musik/Dateien</value></string>
   <string><id>10502</id><value>Musik/Bibliothek</value></string>
   <string><id>10503</id><value>Musik/Top100</value></string>
+  <string><id>10504</id><value>Top 100 Songs</value></string>
+  <string><id>10505</id><value>Top 100 Alben</value></string>
 
   <string><id>10506</id><value>Anwendungen</value></string>
   <string><id>10507</id><value>Konfiguration</value></string>

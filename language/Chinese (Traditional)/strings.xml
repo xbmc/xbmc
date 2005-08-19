@@ -27,8 +27,8 @@
   <string><id>30</id><value>10月</value></string>
   <string><id>31</id><value>11月</value></string>
   <string><id>32</id><value>12月</value></string>
-  <string><id>98</id><value>顯示：圖示</value></string>
-  <string><id>99</id><value>顯示：大圖示</value></string>
+  <string><id>98</id><value>顯示：自動</value></string>
+  <string><id>99</id><value>顯示：自動大圖示</value></string>
   <string><id>100</id><value>顯示：圖示</value></string>
   <string><id>101</id><value>顯示：列表</value></string>
   <string><id>102</id><value>重新掃瞄</value></string>
@@ -83,7 +83,7 @@
   <string><id>151</id><value>連線：</value></string>
   <string><id>152</id><value>半雙工</value></string>
   <string><id>153</id><value>全雙工</value></string>
-  <string><id>154</id><value>儲存媒體：</value></string>
+  <string><id>154</id><value>儲存媒體</value></string>
   <string><id>155</id><value>裝置</value></string>
   <string><id>156</id><value>可用</value></string>
   <string><id>157</id><value>影片</value></string>
@@ -123,7 +123,7 @@
   <string><id>191</id><value>隨機</value></string>
   <string><id>192</id><value>清除</value></string>
   <string><id>193</id><value>掃瞄</value></string>
-  <string><id>194</id><value>搜尋...</value></string>
+  <string><id>194</id><value>搜尋…</value></string>
   <string><id>195</id><value>找不到 IMDb 資訊</value></string>
   <string><id>196</id><value>選擇影片：</value></string>
   <string><id>197</id><value>讀取 IMDb 資訊</value></string>
@@ -191,7 +191,7 @@
   <string><id>258</id><value>開啟 ID3 標籤</value></string>
   <string><id>259</id><value>開始</value></string>
   <string><id>260</id><value>捷徑</value></string>
-  <string><id>261</id><value>準備開始...</value></string>
+  <string><id>261</id><value>準備開始…</value></string>
   <string><id>262</id><value>劇本輸出</value></string>
   <string><id>263</id><value>HTTP 伺服器</value></string>
   <string><id>264</id><value>錄音</value></string>
@@ -243,27 +243,27 @@
   <string><id>311</id><value>- 渲染</value></string>
   <string><id>312</id><value>(0=自動)</value></string>
   <string><id>313</id><value>清除資料庫</value></string>
-  <string><id>314</id><value>準備中...</value></string>
+  <string><id>314</id><value>準備中…</value></string>
   <string><id>315</id><value>資料庫錯誤！</value></string>
-  <string><id>316</id><value>清除歌曲中...</value></string>
+  <string><id>316</id><value>搜尋歌曲中…</value></string>
   <string><id>317</id><value>清除資料庫成功！</value></string>
-  <string><id>318</id><value>清除歌曲...</value></string>
+  <string><id>318</id><value>清除歌曲中…</value></string>
   <string><id>319</id><value>清除歌曲錯誤</value></string>
-  <string><id>320</id><value>清除藝人中...</value></string>
+  <string><id>320</id><value>清除藝人中…</value></string>
   <string><id>321</id><value>清除藝人錯誤！</value></string>
-  <string><id>322</id><value>清除類別中...</value></string>
+  <string><id>322</id><value>清除類別中…</value></string>
   <string><id>323</id><value>清除類別錯誤！</value></string>
-  <string><id>324</id><value>清除路徑...</value></string>
+  <string><id>324</id><value>清除路徑中…</value></string>
   <string><id>325</id><value>清除路徑錯誤！</value></string>
-  <string><id>326</id><value>清除專輯中...</value></string>
+  <string><id>326</id><value>清除專輯中…</value></string>
   <string><id>327</id><value>清除專輯錯誤！</value></string>
-  <string><id>328</id><value>寫入中...</value></string>
+  <string><id>328</id><value>寫入中…</value></string>
   <string><id>329</id><value>寫入錯誤！</value></string>
-  <string><id>330</id><value>這需要一些時間...</value></string>
-  <string><id>331</id><value>壓縮資料庫中...</value></string>
+  <string><id>330</id><value>這需要一些時間…</value></string>
+  <string><id>331</id><value>壓縮資料庫中…</value></string>
   <string><id>332</id><value>壓縮資料庫錯誤！</value></string>
   <string><id>333</id><value>你想要清除我的音樂庫？</value></string>
-  <string><id>334</id><value>清除音樂庫數據...</value></string>
+  <string><id>334</id><value>清除音樂庫數據…</value></string>
   <string><id>335</id><value>開始</value></string>
   <string><id>336</id><value>調整畫面更新率</value></string>
   <string><id>337</id><value>聲音輸出</value></string>
@@ -343,7 +343,7 @@
   <string><id>412</id><value>無法取得天氣資料</value></string>
   <string><id>413</id><value>手動查詢</value></string>
   <string><id>414</id><value>此專輯無評論</value></string>
-  <string><id>415</id><value>正在下載圖示...</value></string>
+  <string><id>415</id><value>正在下載圖示…</value></string>
   <string><id>416</id><value>無法使用</value></string>
   <string><id>417</id><value>顯示：大圖示</value></string>
   <string><id>418</id><value>我的影片/類別</value></string>
@@ -418,7 +418,7 @@
   <string><id>486</id><value>重複</value></string>
   <string><id>487</id><value>重複一次</value></string>
   <string><id>488</id><value>重複目錄播放列表</value></string>
-  <string><id>489</id><value>使用歌曲中的播放列表</value></string>
+  <string><id>489</id><value>自動播放下個項目</value></string>
   <string><id>490</id><value>自動選擇歌曲的列表和圖表</value></string>
   <string><id>491</id><value>- 使用大圖示</value></string>
   <string><id>492</id><value>字幕顯示比例</value></string>
@@ -429,12 +429,12 @@
   <string><id>497</id><value>隱藏媒體副檔名</value></string>
   <string><id>498</id><value>排序：類型</value></string>
   <string><id>499</id><value>不能連線到 www.allmusic.com</value></string>
-  <string><id>500</id><value>下載專輯資訊失敗...</value></string>
-  <string><id>501</id><value>搜尋專輯名...</value></string>
+  <string><id>500</id><value>下載專輯資訊失敗…</value></string>
+  <string><id>501</id><value>搜尋專輯名…</value></string>
   <string><id>502</id><value>托盤開啟</value></string>
-  <string><id>503</id><value>讀取中...</value></string>
+  <string><id>503</id><value>讀取中</value></string>
   <string><id>504</id><value>沒有光碟片</value></string>
-  <string><id>505</id><value>讀取媒體資訊檔案...</value></string>
+  <string><id>505</id><value>讀取媒體資訊檔案…</value></string>
   <string><id>506</id><value>使用目錄名作為描述</value></string>
   <string><id>507</id><value>排序：使用數</value></string>
   <string><id>508</id><value>不使用捷徑及掃瞄</value></string>
@@ -452,7 +452,7 @@
   <string><id>602</id><value>標準</value></string>
   <string><id>603</id><value>最高</value></string>
   <string><id>604</id><value>設定頻率</value></string>
-  <string><id>605</id><value>擷取中...</value></string>
+  <string><id>605</id><value>擷取中…</value></string>
   <string><id>606</id><value>音軌號：</value></string>
   <string><id>607</id><value>到：</value></string>
   <string><id>608</id><value>無法擷取 CD 或音軌</value></string>
@@ -663,6 +663,7 @@
   <string><id>10504</id><value>排名前 100 歌曲</value></string>
   <string><id>10505</id><value>排名前 100 專輯</value></string>
   
+  
   <string><id>10506</id><value>應用程式</value></string>
   <string><id>10507</id><value>系統設定</value></string>
   <string><id>10508</id><value>氣象預報</value></string>
@@ -770,7 +771,7 @@
   <string><id>13100</id><value>閃爍過濾</value></string>
   <string><id>13200</id><value>預設檔</value></string>
   <string><id>13201</id><value>刪除預設檔'%s'？</value></string>
-  <string><id>13202</id><value>將目前設定存為預設檔...</value></string>
+  <string><id>13202</id><value>將目前設定存為預設檔…</value></string>
   <string><id>13203</id><value>預設檔'%s'成功載入</value></string>
   <string><id>13204</id><value>最近載入的預設檔：</value></string>
   <string><id>13205</id><value>未知</value></string>
@@ -821,7 +822,7 @@
   <string><id>13334</id><value>編輯標籤</value></string>
   <string><id>13335</id><value>設為預設值</value></string>
   <string><id>13336</id><value>刪除按鍵</value></string>
-  <string><id>13337</id><value>- 2 聲道 PCM 過濾</value></string>
+  <string><id>13337</id><value>- 兩聲道 PCM 過濾</value></string>
   <string><id>13338</id><value>前 LED</value></string>
   <string><id>13339</id><value>前 LED 顏色</value></string>
   <string><id>13340</id><value>預設</value></string>
@@ -832,9 +833,9 @@
   <string><id>13345</id><value>當播放時關閉 LED</value></string>
   <string><id>13346</id><value>影片資訊</value></string>
   <string><id>13347</id><value>加入播放列表</value></string>
-  <string><id>13348</id><value>搜尋 IMDb 資訊...</value></string>
+  <string><id>13348</id><value>搜尋 IMDb 資訊…</value></string>
   <string><id>13349</id><value>搜尋所有檔案資訊</value></string>
-  <string><id>13350</id><value>切換至播放列表...</value></string>
+  <string><id>13350</id><value>切換至播放列表…</value></string>
   <string><id>13351</id><value>專輯資訊</value></string>
   <string><id>13352</id><value>掃瞄資料夾到資料庫</value></string>
   <string><id>13353</id><value>停止搜尋</value></string>
@@ -887,9 +888,9 @@
   <string><id>14000</id><value>堆疊開啟</value></string>
   <string><id>14001</id><value>堆疊關閉</value></string>
   <string><id>14002</id><value>堆疊：智慧</value></string>
-  <string><id>14003</id><value>下載播放列表檔案中...</value></string>
-  <string><id>14004</id><value>下載串流媒體列表中...</value></string>
-  <string><id>14005</id><value>分析串流媒體列表中...</value></string>
+  <string><id>14003</id><value>下載播放列表檔案中…</value></string>
+  <string><id>14004</id><value>下載串流媒體列表中…</value></string>
+  <string><id>14005</id><value>分析串流媒體列表中…</value></string>
   <string><id>14006</id><value>下載串流媒體列表失敗</value></string>
   <string><id>14007</id><value>下載播放列表檔案失敗</value></string>
   <string><id>14008</id><value>開啟 XLink Kai 消息通告</value></string>
@@ -996,8 +997,8 @@
   <string><id>15037</id><value>XBMC 無法確定你的網路是否能夠連線。</value></string>
   <string><id>15038</id><value>你將會很難加入或主持遊戲。</value></string>
   <string><id>15039</id><value>XBMC 無法讓遊戲自動執行。</value></string>
-  <string><id>15040</id><value>放入遊戲片或按'A'取消，並參考遊戲</value></string>
-  <string><id>15041</id><value>相關說明。</value></string>
+  <string><id>15040</id><value>放入遊戲片或按'A'取消，</value></string>
+  <string><id>15041</id><value>並參考遊戲相關說明。</value></string>
   <string><id>15042</id><value>存取被拒</value></string>
   <string><id>15043</id><value>%s 加入聊天室。</value></string>
   <string><id>15044</id><value>%s 離開聊天室。</value></string>
@@ -1026,21 +1027,21 @@
   <string><id>15104</id><value>* 所有歌曲</value></string>
   <string><id>15105</id><value>* 所有類別</value></string>
   <string><id>15106</id><value>向前瀏覽時提醒選擇的檔案</value></string>
-  <string><id>15107</id><value>暫存中...</value></string>
+  <string><id>15107</id><value>暫存中…</value></string>
   <string><id>15108</id><value>按鍵音</value></string>
   <string><id>15109</id><value>主題預設</value></string>
   <string><id>15200</id><value>AudioScrobbler</value></string>
   <string><id>15201</id><value>上傳歌曲資訊到 AudioScrobbler</value></string>
   <string><id>15202</id><value>AudioScrobbler 使用者名稱</value></string>
   <string><id>15203</id><value>AudioScrobbler 密碼</value></string>
-  <string><id>15204</id><value>無法連線：休息中...</value></string>
+  <string><id>15204</id><value>無法連線：休息中…</value></string>
   <string><id>15205</id><value>請更新 XBMC</value></string>
   <string><id>15206</id><value>上傳失敗：無法通過認證。</value></string>
   <string><id>15207</id><value>連線</value></string>
   <string><id>15208</id><value>無法連線</value></string>
   <string><id>15209</id><value>上傳進度 %i</value></string>
   <string><id>15210</id><value>已上傳 %i 首</value></string>
-  <string><id>15211</id><value>上傳中...</value></string>
+  <string><id>15211</id><value>上傳中…</value></string>
   <string><id>15212</id><value>上傳剩餘 %i 秒</value></string>
   
   <string><id>13150</id><value>硬碟 金鑰：</value></string>
@@ -1119,5 +1120,7 @@
   <string><id>16021</id><value>偶數線同步</value></string>
   <string><id>16022</id><value>奇數線同步</value></string>
   <string><id>16023</id><value>交錯式掃描</value></string>
+  
+  <string><id>16024</id><value>取消中…</value></string>
   
 </strings>

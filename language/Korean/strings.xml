@@ -227,7 +227,7 @@
   <string><id>294</id><value>북마크 생성</value></string>
   <string><id>295</id><value>북마크 순환</value></string>
   <string><id>296</id><value>북마크 삭제</value></string>
-  <string><id>297</id><value>AV 지연</value></string>
+  <string><id>297</id><value>오디오 지연</value></string>
   <string><id>298</id><value>슬라이더</value></string>
   <string><id>300</id><value>1. 언어</value></string>
   <string><id>301</id><value>2. 볼륨</value></string>
@@ -445,6 +445,7 @@
   <string><id>513</id><value>홈 윈도우</value></string>
   <string><id>514</id><value>사용자 설정</value></string>
   <string><id>515</id><value>장르</value></string>
+  <string><id>516</id><value>압축파일 사용</value></string>
   
   <string><id>600</id><value>시디 추출</value></string>
   <string><id>601</id><value>중간</value></string>
@@ -479,6 +480,8 @@
   <string><id>642</id><value>프리엠프 레벨 - 게인 정보가 없는 파일</value></string>
   <string><id>643</id><value>리플레이 게인 정보가 있는 파일의 클리핑 방지</value></string>
   <string><id>644</id><value>검은 여백 제거</value></string>
+  
+  <string><id>645</id><value>큰 용량의 캐시 작업이 필요합니다. 계속합니까?</value></string>
 
   <string><id>700</id><value>데이터베이스 정리</value></string>
   <string><id>701</id><value>데이터베이스로부터 오래된 음악 제거</value></string>
@@ -596,8 +599,8 @@
   <string><id>1234</id><value>프로그램 &amp; 사진 &amp; 음악</value></string>
   <string><id>1235</id><value>프로그램 &amp; 사진 &amp; 비디오</value></string>
 
-  <string><id>1245</id><value> - FTP 아이디</value></string>
-  <string><id>1246</id><value> - FTP 비밀번호</value></string>
+  <string><id>1245</id><value>FTP 아이디</value></string>
+  <string><id>1246</id><value>FTP 비밀번호</value></string>
   <string><id>1247</id><value>FTP 서버의 아이디/비밀번호 설정이 완료되었습니다!</value></string>
   <string><id>1250</id><value>자동 탐지</value></string>
   <string><id>1251</id><value>XBOX 자동 탐지</value></string>
@@ -657,6 +660,8 @@
   <string><id>10501</id><value>음악/파일</value></string>
   <string><id>10502</id><value>음악/라이브러리</value></string>
   <string><id>10503</id><value>음악/인기곡 100</value></string>
+  <string><id>10504</id><value>인기곡 100</value></string> 
+  <string><id>10505</id><value>인기앨범 100</value></string 
 
   <string><id>10506</id><value>프로그램</value></string>
   <string><id>10507</id><value>환경설정</value></string>
@@ -792,7 +797,7 @@
   <string><id>13310</id><value>확대 효과</value></string>
   <string><id>13311</id><value>떠다니는 효과</value></string>
   <string><id>13312</id><value>테두리 감소</value></string>
-  <string><id>13313</id><value>리셋/재시작</value></string>
+  <string><id>13313</id><value>재시작</value></string>
   <string><id>13314</id><value>크로스페이드</value></string>
   <string><id>13315</id><value>미리보기 다시 만들기</value></string>
   <string><id>13316</id><value>순환 미리보기</value></string>
@@ -874,6 +879,10 @@
   <string><id>13392</id><value>음악 재생시 시각화 사용</value></string>
   <string><id>13393</id><value>크기 계산</value></string>
   <string><id>13394</id><value>폴더 크기 계산</value></string>
+  <string><id>13395</id><value>비디오 설정</value></string>
+  <string><id>13396</id><value>오디오 및 자막 설정</value></string>
+  <string><id>13397</id><value>자막 활성화</value></string> 
+  <string><id>13398</id><value>북마크</value></string>
 
   <string><id>14000</id><value>연속 재생</value></string>
   <string><id>14001</id><value>연속 재생 해제</value></string>
@@ -1083,13 +1092,34 @@
   
   <string><id>15213</id><value>[PLACEHOLDER]</value></string>
   <string><id>15214</id><value>자동 A/V 싱크 사용</value></string>
+  
+  <string><id>15300</id><value>경로가 없거나 올바르지 않습니다</value></string> 
+  <string><id>15301</id><value>네트워크 서버에 접속할 수 없습니다</value></string> 
+  <string><id>15302</id><value>서버를 찾을 수 없습니다</value></string> 
+  <string><id>15303</id><value>작업그룹을 찾을 수 없습니다</value></string> 
+
 
   <string><id>16000</id><value>일반</value></string>
   <string><id>16001</id><value>오디오 하드웨어 설정...</value></string>
   <string><id>16002</id><value>CDDB 검색</value></string>
   <string><id>16003</id><value>플레이어</value></string>
   
-  <string><id>16004</id><value>인터레이스 비디오 싱크</value></string>
-  <string><id>16005</id><value>- 항목 반전</value></string>  
+  <string><id>16009</id><value>동영상 이름 입력</value></string> 
+  <string><id>16010</id><value>프로파일 이름 입력</value></string> 
+  <string><id>16011</id><value>앨범명 입력</value></string> 
+  <string><id>16012</id><value>재생목록 이름 임력</value></string> 
+  <string><id>16013</id><value>새 파일명 입력</value></string> 
+  <string><id>16014</id><value>폴더명 입력</value></string> 
+  <string><id>16015</id><value>디렉토리 입력</value></string> 
+  <string><id>16016</id><value>사용가능 옵션 : %A, %T, %N, %B, %D, %G, %Y, %F, %S</value></string> 
+  <string><id>16017</id><value>검색어 입력</value></string> 
+
+  <string><id>16018</id><value>사용안함</value></string> 
+  <string><id>16019</id><value>자동 선택</value></string> 
+  <string><id>16020</id><value>디인터레이스</value></string> 
+  <string><id>16021</id><value>Odd 싱크</value></string> 
+  <string><id>16022</id><value>Even 싱크</value></string> 
+  <string><id>16023</id><value>인터레이스 처리</value></string> 
+  <string><id>16024</id><value>취소중...</value></string>
   
 </strings>
