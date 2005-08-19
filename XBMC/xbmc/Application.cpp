@@ -3772,7 +3772,6 @@ int CApplication::GlobalIdleTime()
   }
   return (int)m_idleTimer.GetElapsedSeconds();
 }
-
 void CApplication::Restart(bool bSamePosition)
 {
   // this function gets called when the user changes a setting (like noninterleaved)

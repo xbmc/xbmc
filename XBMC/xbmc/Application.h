@@ -144,6 +144,7 @@ public:
   CStdString m_strPlayListFile;
   
   int GlobalIdleTime();
+  
 
 protected:
   CStdString m_strCurrentPlayer;

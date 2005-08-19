@@ -787,8 +787,13 @@
   <string><id>13211</id><value>Alarm!</value></string>
   <string><id>13212</id><value>Abgebrochen, es sind %im%is übrig</value></string>
   
+<<<<<<< strings.xml
+  <string><id>13299</id><value>Angestrebte CPU Temperatur</value></string>
+  <string><id>13300</id><value>Lüftergeschwindigkeit</value></string>
+=======
   <string><id>13299</id><value>Angestrebte CPU Temperatur</value></string>
   <string><id>13300</id><value>Geschwindigkeit</value></string>
+>>>>>>> 1.83
   <string><id>13301</id><value>Lüftergeschwindigkeit über CPU Temperatur regeln</value></string>
   <string><id>13302</id><value>Lüftergeschwindigkeit manuell einstellen</value></string>
   <string><id>13303</id><value>Schriftart</value></string>

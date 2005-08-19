@@ -709,16 +709,10 @@ void CGUIWindowSettingsCategory::CreateSettings()
     else if (strSetting == "Autodetect.NickName")
     {
       //GeminiServer
-      char pszNickName[MAX_NICKNAME];
-      CStdString strXboxNickName;
-      if (XFindFirstNickname(true,(LPWSTR)pszNickName,MAX_NICKNAME) != INVALID_HANDLE_VALUE)  
-        strXboxNickName = pszNickName; 
-      else 
-      { //Todo: Can be more then One NickName!!
-        strXboxNickName = g_guiSettings.GetString("Autodetect.NickName");
-        XSetNickname((LPCWSTR)strXboxNickName.c_str(), true);
-      }
-      g_guiSettings.SetString("Autodetect.NickName", strXboxNickName.c_str());
+      CStdString strXboxNickNameIn = g_guiSettings.GetString("Autodetect.NickName");
+      CStdString strXboxNickNameOut;
+      if (CUtil::SetXBOXNickName(strXboxNickNameIn, strXboxNickNameOut))
+        g_guiSettings.SetString("Autodetect.NickName", strXboxNickNameOut.c_str());
     }
   }
   // fix first and last navigation
@@ -1462,9 +1456,8 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
   }
   else if (strSetting == "Autodetect.NickName" )
   {
-    CStdString strNickName   = g_guiSettings.GetString("Autodetect.NickName");
-    //Todo: MAX_NICKNAME
-    XSetNickname((LPCWSTR)strNickName.c_str(), true);
+    CStdString strXboxNickNameIn = g_guiSettings.GetString("Autodetect.NickName");
+    CUtil::SetXBOXNickName(strXboxNickNameIn, strXboxNickNameIn);
   }
   else if (strSetting == "Servers.FTPServer")
   {

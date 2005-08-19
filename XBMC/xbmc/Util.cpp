@@ -3494,3 +3494,30 @@ bool CUtil::SetFTPServerUserPassword(CStdString strFtpUserName, CStdString strFt
   }
   return false;
 }
+//GeminiServer SetXBOXNickName
+//strXboxNickNameIn: New NickName
+//strXboxNickNameOut: Same if it is in NICKNAME Cache
+bool CUtil::SetXBOXNickName(CStdString strXboxNickNameIn, CStdString &strXboxNickNameOut)
+{
+  char pszNickName[64];
+  unsigned int uiSize = MAX_NICKNAME;
+  bool bfound= false;
+  HANDLE hNickName = XFindFirstNickname(true,(LPWSTR)pszNickName,MAX_NICKNAME);
+  if (hNickName != INVALID_HANDLE_VALUE)
+  {
+      do
+      { 
+        if (strXboxNickNameIn == pszNickName) 
+        {
+          strXboxNickNameOut = pszNickName; 
+          bfound = true;
+        }
+        else if (strXboxNickNameIn == "") strXboxNickNameOut = "GeminiServer";
+        else strXboxNickNameOut = strXboxNickNameIn;
+      }while(XFindNextNickname(hNickName,((LPWSTR)pszNickName),uiSize) != false);
+      XFindClose(hNickName);
+  }
+  if(bfound==false) XSetNickname((LPCWSTR)strXboxNickNameOut.c_str(), false);
+  
+  return true;
+}

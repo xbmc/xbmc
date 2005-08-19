@@ -758,7 +758,13 @@
   <string><id>12372</id><value>Lock Filemanager</value></string>
   <string><id>12373</id><value>Lock Settings</value></string>
   <string><id>12374</id><value>Lock Media</value></string>
+
+  <string><id>12390</id><value>System Uptime</value></string>
+  <string><id>12391</id><value>Minutes</value></string>
+  <string><id>12392</id><value>Hours</value></string>
+  <string><id>12393</id><value>Days</value></string>
   
+
   <string><id>12600</id><value>My Weather</value></string>
   <string><id>12900</id><value>Screensaver</value></string>
   <string><id>12901</id><value>Fullscreen OSD</value></string>
