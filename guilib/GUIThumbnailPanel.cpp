@@ -2,7 +2,8 @@
 #include "GUIThumbnailPanel.h"
 #include "GUIFontManager.h"
 #include "../xbmc/utils/CharsetConverter.h"
-
+#include "..\xbmc\settings.h"
+#include "GUIWindowManager.h"
 
 #define CONTROL_LIST  0
 #define CONTROL_UPDOWN 1
@@ -23,9 +24,8 @@ width/height of thumbnail
 relative position of thumbnail in the folder icon
   <thumbPosX>4</thumbPosX>
   <thumbPosY>16</thumbPosY>
- 
- 
 */
+
 CGUIThumbnailPanel::CGUIThumbnailPanel(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight,
                                        const CStdString& strFontName,
                                        const CStdString& strImageIcon,
@@ -136,6 +136,10 @@ void CGUIThumbnailPanel::RenderItem(bool bFocus, int iPosX, int iPosY, CGUIListI
   }
   if (iStage == 1) //render text
   {
+    // hide filenames in my pictures in thumbnail panel
+    if (m_gWindowManager.GetActiveWindow() == WINDOW_PICTURES && g_guiSettings.GetBool("Pictures.HideFilenamesInThumbPanel") && !pItem->m_bIsFolder)
+        return;
+
     CStdStringW strItemLabelUnicode;
     g_charsetConverter.stringCharsetToFontCharset(pItem->GetLabel().c_str(), strItemLabelUnicode);
 
