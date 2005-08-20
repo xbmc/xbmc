@@ -1,4 +1,6 @@
-2005-08-10 fixed:	at the end of a thumbpanel the focus jumped to the left buttonpanel
+2005-08-20 fixed:	the 16:9 homescreen background pictures did not have any fading tags
+
+2005-08-16 fixed:	at the end of a thumbpanel the focus jumped to the left buttonpanel
 
 2005-08-10 changed:	top button in videoosd is now used for entering dvdmenu
 
