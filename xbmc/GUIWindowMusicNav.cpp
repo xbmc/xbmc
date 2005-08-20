@@ -304,7 +304,7 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
           m_Directory.m_strPath = "db://" + strSongs + "/";
           m_history.Set(m_Directory.m_strPath, strParentPath);
         }
-        else if (strDestination.Equals("Top 100 Songs"))
+        else if (strDestination.Equals("Top100Songs"))
         {
           m_iState = SHOW_SONGS;
           m_iPath = SHOW_TOP + SHOW_SONGS;
@@ -320,7 +320,7 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
           m_Directory.m_strPath += strTopSongs + "/";
           m_history.Set(m_Directory.m_strPath, strParentPath);
         }
-        else if (strDestination.Equals("Top 100 Albums"))
+        else if (strDestination.Equals("Top100Albums"))
         {
           m_iState = SHOW_ALBUMS;
           m_iPath = SHOW_TOP + SHOW_ALBUMS;
@@ -336,7 +336,7 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
           m_Directory.m_strPath += strTopAlbums + "/";
           m_history.Set(m_Directory.m_strPath, strParentPath);
         }
-        else if (strDestination.Equals("Recent Albums"))
+        else if (strDestination.Equals("RecentAlbums"))
         {
           m_iState = SHOW_RECENT;
           m_iPath = SHOW_RECENT;
