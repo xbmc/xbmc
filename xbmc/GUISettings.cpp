@@ -149,8 +149,9 @@ CGUISettings::CGUISettings(void)
   AddBool(1, "Pictures.HideParentDirItems", 13306, false);
   AddBool(2, "Pictures.UseAutoSwitching", 14011, false);
   AddBool(3, "Pictures.AutoSwitchUseLargeThumbs", 14012, false);
-  AddBool(4, "Pictures.AllowFileDeletion", 14071, false);
-  AddBool(5, "Pictures.HandleArchives", 516, true);
+  AddBool(4, "Pictures.HideFilenamesInThumbPanel",15215,false);
+  AddBool(5, "Pictures.AllowFileDeletion", 14071, false);
+  AddBool(6, "Pictures.HandleArchives", 516, true);
 
   AddCategory(0, "Slideshow", 108);
   AddInt(1, "Slideshow.StayTime", 224, 9, 1, 1, 100, SPIN_CONTROL_INT_PLUS, MASK_SECS);
