@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 20-08-2005 fixed: After reloading or changing skins playing music or switching from fullscreenvideo to gui would crash
  - 20-08-2005 fixed: Local Empty folders was not open able [GeminiServer]
  - 20-08-2005 added: System Info: System Uptime [GeminiServer]
                      Will display the Time that have elapsed since the system was started!

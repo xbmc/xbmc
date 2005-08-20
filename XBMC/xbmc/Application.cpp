@@ -1523,7 +1523,13 @@ void CApplication::UnloadSkin()
 
   g_audioManager.DeInitialize();
 
+  //These windows are not handled by the windowmanager (why not?) so we should unload them manually
+  m_guiPointer.FreeResources(true);
+  m_guiDialogMuteBug.FreeResources(true);
+  m_guiVideoOverlay.FreeResources(true); 	 
+  m_guiMusicOverlay.FreeResources(true);
   m_gWindowManager.DeInitialize();
+
   g_TextureManager.Cleanup();
 
   g_fontManager.Clear();
