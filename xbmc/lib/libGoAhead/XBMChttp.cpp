@@ -33,11 +33,6 @@
 #include "..\..\MusicDatabase.h"
 #include "..\..\GUIWindowSlideShow.h"
 
-//#pragma code_seg("WEB_TEXT")
-//#pragma data_seg("WEB_DATA")
-//#pragma bss_seg("WEB_BSS")
-//#pragma const_seg("WEB_RD")
-
 #define XML_MAX_INNERTEXT_SIZE 256
 #define MAX_PARAS 10
 #define NO_EID -1
@@ -798,14 +793,10 @@ CStdString CXbmcHttp::xbmcGetCurrentlyPlaying(int eid, webs_t wp)
           CUtil::GetThumbnail(picFn,thumb);
         }
         if (!CFile::Exists(thumb))
-        {
-        thumb = "[None] " + thumb;
-        }
+          thumb = "[None] " + thumb;
       }
       output+="\n<li>Thumb:"+thumb;
       tag="1";
-      //return flushResult(eid, wp, output);
-      
     } 
   CStdString fn=g_application.CurrentFile();
   if (fn=="")
@@ -825,16 +816,29 @@ CStdString CXbmcHttp::xbmcGetCurrentlyPlaying(int eid, webs_t wp)
     if (g_application.IsPlayingVideo()) {
       lPTS = g_application.m_pPlayer->GetTime()/100;
       output+="\n<li>Type"+tag+":Video" ;
+      const CIMDBMovie& tagVal=g_infoManager.GetCurrentMovie();
+      if (tagVal.m_strTitle!="")
+        output+="\n<li>Title"+tag+":"+tagVal.m_strTitle ;
     }
     else if (g_application.IsPlayingAudio()) {
       lPTS = g_application.m_pPlayer->GetTime()/100;
       output+="\n<li>Type"+tag+":Audio" ;
+      const CMusicInfoTag& tagVal=g_infoManager.GetCurrentSongTag();
+      if (tagVal.GetTitle()!="")
+        output+="\n<li>Title"+tag+":"+tagVal.GetTitle() ;
+      if (tagVal.GetArtist()!="")
+        output+="\n<li>Artist"+tag+":"+tagVal.GetArtist() ;
+      if (tagVal.GetAlbum()!="")
+        output+="\n<li>Album"+tag+":"+tagVal.GetAlbum() ;
     }
-    CStdString thumb;
-    CUtil::GetThumbnail(fn,thumb);
-    if (!CFile::Exists(thumb))
-      thumb = "[None] " + thumb;
-    output+="\n<li>Thumb"+tag+":"+thumb;
+    if (fn.Find("://")<0)
+    {
+      CStdString thumb;
+      CUtil::GetThumbnail(fn,thumb);
+      if (!CFile::Exists(thumb))
+        thumb = "[None] " + thumb;
+      output+="\n<li>Thumb"+tag+":"+thumb;
+    }
     if (g_application.m_pPlayer->IsPaused()) 
       output+="\n<li>Paused:True" ;
     else
@@ -1355,7 +1359,7 @@ CStdString CXbmcHttp::xbmcAction(int eid, webs_t wp, int numParas, CStdString pa
       }
     }
     else
-      g_playlistPlayer.PlayNext();
+      g_applicationMessenger.PlayListPlayerNext();
     return flushResult(eid, wp, "<li>OK");
     break;
   case 4:
@@ -1366,7 +1370,7 @@ CStdString CXbmcHttp::xbmcAction(int eid, webs_t wp, int numParas, CStdString pa
       }
     }
     else
-      g_playlistPlayer.PlayPrevious();
+      g_applicationMessenger.PlayListPlayerPrevious();
     return flushResult(eid, wp, "<li>OK");
     break;
   case 5:
