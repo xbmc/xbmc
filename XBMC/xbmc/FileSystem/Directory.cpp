@@ -13,15 +13,13 @@ CDirectory::CDirectory()
 CDirectory::~CDirectory()
 {}
 
-bool CDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items, CStdString strMask/*=""*/)
+bool CDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items, CStdString strMask /*=""*/)
 {
   auto_ptr<IDirectory> pDirectory(CFactoryDirectory::Create(strPath));
   if (!pDirectory.get()) return false;
 
   pDirectory->SetMask(strMask);
-
   bool bSuccess = pDirectory->GetDirectory(strPath, items);
-
   if (bSuccess)
   {
     //  Should any of the files we read be treated as a directory?
@@ -36,7 +34,6 @@ bool CDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items, C
       }
     }
   }
-
   return bSuccess;
 }
 
