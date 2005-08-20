@@ -5,6 +5,9 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 20-08-2005 added: ability to jump into the library view at specific locations using "genres", "artists", "albums", "songs",
+              "top100songs", "top100albums", or "recentalbums" in xbmc.activatewindow() as the destination parameter
+              ex: xbmc.activatewindow(mymusiclibrary,top100albums)
  - 20-08-2005 added: option to hide file names in thumbs view in My Pictures
  - 20-08-2005 fixed: HTTPAPI: when playing a stream GetCurrentlyPlaying could cause problems later
  - 20-08-2005 fixed: After reloading or changing skins playing music or switching from fullscreenvideo to gui would crash
