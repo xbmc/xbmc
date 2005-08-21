@@ -1426,9 +1426,9 @@ void CFileItemList::Stack()
           {
             for (int x = 0; x < (int)items.Size(); ++x)
             {
-              if (i != x)
+              CFileItem* pItem2 = items[x];
+              if (pItem1 != pItem2)
               {
-                CFileItem* pItem2 = m_items[x];
                 if ((!pItem2->m_bIsFolder) && !pItem2->IsPlayList())
                 {
                   CStdString fileName2 = CUtil::GetFileName(pItem2->m_strPath);
