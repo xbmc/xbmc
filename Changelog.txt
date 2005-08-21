@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 21-08-2005 fixed: File Manager will start playlist files (m3u, b4s, pls, strm, wpl)
  - 21-08-2005 added: Short crossfade on manual trackchange/skip if crossfading is enabled.
  - 21-08-2005 added: Option to en-/disable albumtrack crossfading if crossfading is enabled. (files must be properly tagged with albumtitle and tracknrs and must be scanned or id3 option enabled)
  - 21-08-2005 added: setting to enable/disable how items starting with "The" are sorted in Music and Video

@@ -10,6 +10,7 @@
 #include "GUIPassword.h"
 #include "lib/libPython/XBPython.h"
 #include "GUIWindowSlideShow.h"
+#include "PlayListFactory.h"
 
 using namespace XFILE;
 
@@ -605,6 +606,23 @@ void CGUIWindowFileManager::OnClick(int iList, int iItem)
 
 void CGUIWindowFileManager::OnStart(CFileItem *pItem)
 {
+  // start playlists from file manager
+  if (pItem->IsPlayList())
+  {
+    CStdString strPlayList = pItem->m_strPath;
+    CPlayListFactory factory;
+    auto_ptr<CPlayList> pPlayList (factory.Create(strPlayList));
+    if (NULL != pPlayList.get())
+    {
+      if (!pPlayList->Load(strPlayList))
+      {
+        CGUIDialogOK::ShowAndGetInput(6, 0, 477, 0);
+        return;
+      }
+    }
+    g_application.ProcessAndStartPlaylist(strPlayList, *pPlayList, PLAYLIST_MUSIC_TEMP);
+    return;
+  }
   if (pItem->IsAudio() || pItem->IsVideo())
   {
     g_application.PlayFile(*pItem);
