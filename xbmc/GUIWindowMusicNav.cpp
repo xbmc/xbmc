@@ -108,9 +108,9 @@ struct SSortMusicNav
         // remove "the" for sorting
         strStart = rpStart.m_musicInfoTag.GetTitle();
         strEnd = rpEnd.m_musicInfoTag.GetTitle();
-        if (strStart.Left(4).Equals("The "))
+        if (g_guiSettings.GetBool("MyMusic.IgnoreTheWhenSorting") && strStart.Left(4).Equals("The "))
           strStart = strStart.Mid(4);
-        if (strEnd.Left(4).Equals("The "))
+        if (g_guiSettings.GetBool("MyMusic.IgnoreTheWhenSorting") && strEnd.Left(4).Equals("The "))
           strEnd = strEnd.Mid(4);
         strcpy(szfilename1, strStart.c_str());
         strcpy(szfilename2, strEnd.c_str());
@@ -120,18 +120,18 @@ struct SSortMusicNav
         // remove "the" for sorting
         strStart = rpStart.m_musicInfoTag.GetArtist();
         strEnd = rpEnd.m_musicInfoTag.GetArtist();
-        if (strStart.Left(4).Equals("The "))
+        if (g_guiSettings.GetBool("MyMusic.IgnoreTheWhenSorting") && strStart.Left(4).Equals("The "))
           strStart = strStart.Mid(4);
-        if (strEnd.Left(4).Equals("The "))
+        if (g_guiSettings.GetBool("MyMusic.IgnoreTheWhenSorting") && strEnd.Left(4).Equals("The "))
           strEnd = strEnd.Mid(4);
         strcpy(szfilename1, strStart.c_str());
         strcpy(szfilename2, strEnd.c_str());
         // concat the album...
         strStart = rpStart.m_musicInfoTag.GetAlbum();
         strEnd = rpEnd.m_musicInfoTag.GetAlbum();
-        if (strStart.Left(4).Equals("The "))
+        if (g_guiSettings.GetBool("MyMusic.IgnoreTheWhenSorting") && strStart.Left(4).Equals("The "))
           strStart = strStart.Mid(4);
-        if (strEnd.Left(4).Equals("The "))
+        if (g_guiSettings.GetBool("MyMusic.IgnoreTheWhenSorting") && strEnd.Left(4).Equals("The "))
           strEnd = strEnd.Mid(4);
         strcat(szfilename1, strStart.c_str());
         strcat(szfilename2, strEnd.c_str());
@@ -146,18 +146,18 @@ struct SSortMusicNav
         // remove "the" for sorting
         strStart = rpStart.m_musicInfoTag.GetAlbum();
         strEnd = rpEnd.m_musicInfoTag.GetAlbum();
-        if (strStart.Left(4).Equals("The "))
+        if (g_guiSettings.GetBool("MyMusic.IgnoreTheWhenSorting") && strStart.Left(4).Equals("The "))
           strStart = strStart.Mid(4);
-        if (strEnd.Left(4).Equals("The "))
+        if (g_guiSettings.GetBool("MyMusic.IgnoreTheWhenSorting") && strEnd.Left(4).Equals("The "))
           strEnd = strEnd.Mid(4);
         strcpy(szfilename1, strStart.c_str());
         strcpy(szfilename2, strEnd.c_str());
         // concat the artist (could have multiple Greatest Hits albums for instance)
         strStart = rpStart.m_musicInfoTag.GetArtist();
         strEnd = rpEnd.m_musicInfoTag.GetArtist();
-        if (strStart.Left(4).Equals("The "))
+        if (g_guiSettings.GetBool("MyMusic.IgnoreTheWhenSorting") && strStart.Left(4).Equals("The "))
           strStart = strStart.Mid(4);
-        if (strEnd.Left(4).Equals("The "))
+        if (g_guiSettings.GetBool("MyMusic.IgnoreTheWhenSorting") && strEnd.Left(4).Equals("The "))
           strEnd = strEnd.Mid(4);
         strcat(szfilename1, strStart.c_str());
         strcat(szfilename2, strEnd.c_str());
@@ -171,9 +171,9 @@ struct SSortMusicNav
       case 8:   // Label without "The "
         strStart = rpStart.GetLabel();
         strEnd = rpEnd.GetLabel();
-        if (strStart.Left(4).Equals("The "))
+        if (g_guiSettings.GetBool("MyMusic.IgnoreTheWhenSorting") && strStart.Left(4).Equals("The "))
           strStart = strStart.Mid(4);
-        if (strEnd.Left(4).Equals("The "))
+        if (g_guiSettings.GetBool("MyMusic.IgnoreTheWhenSorting") && strEnd.Left(4).Equals("The "))
           strEnd = strEnd.Mid(4);
         strcpy(szfilename1, strStart.c_str());
         strcpy(szfilename2, strEnd.c_str());
@@ -218,6 +218,7 @@ CGUIWindowMusicNav::CGUIWindowMusicNav(void)
   m_bGotDirFromCache = false;
   m_iSortCache = -1;
   m_iAscendCache = -1;
+  m_bSkipTheCache = false;
 
   m_iState = SHOW_ROOT;
   m_iPath = m_iState;
@@ -225,7 +226,7 @@ CGUIWindowMusicNav::CGUIWindowMusicNav(void)
   m_strArtist = "";
   m_strAlbum = "";
   m_strAlbumPath = "";
-  m_Directory.m_strPath = "db://";
+  m_Directory.m_strPath = "?";
 }
 CGUIWindowMusicNav::~CGUIWindowMusicNav(void)
 {
@@ -241,6 +242,13 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
       {
         m_iViewAsIcons = g_stSettings.m_iMyMusicNavRootViewAsIcons;
         m_iViewAsIconsRoot = g_stSettings.m_iMyMusicNavRootViewAsIcons;
+      }
+
+      // first time
+      if (m_Directory.m_strPath == "?")
+      {
+        m_Directory.m_strPath = "db://";
+        m_bSkipTheCache = g_guiSettings.GetBool("MyMusic.IgnoreTheWhenSorting");
       }
 
       // check for valid quickpath parameter
@@ -593,7 +601,7 @@ bool CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, CFileItemL
       m_iViewAsIcons = g_stSettings.m_iMyMusicNavGenresViewAsIcons;
 
       // check cache first
-      LoadDatabaseDirectoryCache(strDirectory, items, m_iSortCache, m_iAscendCache);
+      LoadDatabaseDirectoryCache(strDirectory, items, m_iSortCache, m_iAscendCache, m_bSkipTheCache);
       if (items.Size())
       {
         m_bGotDirFromCache = true;
@@ -642,7 +650,7 @@ bool CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, CFileItemL
       m_iViewAsIcons = g_stSettings.m_iMyMusicNavArtistsViewAsIcons;
 
       // check cache first
-      LoadDatabaseDirectoryCache(strDirectory, items, m_iSortCache, m_iAscendCache);
+      LoadDatabaseDirectoryCache(strDirectory, items, m_iSortCache, m_iAscendCache, m_bSkipTheCache);
       if (items.Size())
       {
         m_bGotDirFromCache = true;
@@ -691,7 +699,7 @@ bool CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, CFileItemL
       m_iViewAsIcons = g_stSettings.m_iMyMusicNavAlbumsViewAsIcons;
 
       // check cache first
-      LoadDatabaseDirectoryCache(strDirectory, items, m_iSortCache, m_iAscendCache);
+      LoadDatabaseDirectoryCache(strDirectory, items, m_iSortCache, m_iAscendCache, m_bSkipTheCache);
       if (items.Size())
       {
         m_bGotDirFromCache = true;
@@ -742,7 +750,7 @@ bool CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, CFileItemL
       m_iViewAsIcons = g_stSettings.m_iMyMusicNavSongsViewAsIcons;
 
       // check cache first
-      LoadDatabaseDirectoryCache(strDirectory, items, m_iSortCache, m_iAscendCache);
+      LoadDatabaseDirectoryCache(strDirectory, items, m_iSortCache, m_iAscendCache, m_bSkipTheCache);
       if (items.Size())
       {
         m_bGotDirFromCache = true;
@@ -1127,12 +1135,17 @@ void CGUIWindowMusicNav::DoSort(CFileItemList& items)
     SSortMusicNav::m_bSortAscending = !SSortMusicNav::m_bSortAscending;
   // skip if directory was returned from cache
   // and the sort parameters match
-  if ((m_bGotDirFromCache) && (m_iSortCache == SSortMusicNav::m_iSortMethod) && (m_iAscendCache == SSortMusicNav::m_bSortAscending))
+  if (
+    (m_bGotDirFromCache) && 
+    (m_iSortCache == SSortMusicNav::m_iSortMethod) &&
+    (m_iAscendCache == SSortMusicNav::m_bSortAscending) &&
+    (m_bSkipTheCache == g_guiSettings.GetBool("MyMusic.IgnoreTheWhenSorting"))
+    )
     return;
 
   // else sort the list, and the save it to cache
   items.Sort(SSortMusicNav::Sort);
-  SaveDatabaseDirectoryCache(m_Directory.m_strPath, m_vecItems, SSortMusicNav::m_iSortMethod, SSortMusicNav::m_bSortAscending);
+  SaveDatabaseDirectoryCache(m_Directory.m_strPath, m_vecItems, SSortMusicNav::m_iSortMethod, SSortMusicNav::m_bSortAscending, g_guiSettings.GetBool("MyMusic.IgnoreTheWhenSorting"));
 }
 
 void CGUIWindowMusicNav::OnSearchItemFound(const CFileItem* pSelItem)
@@ -1699,7 +1712,7 @@ void CGUIWindowMusicNav::SetArtistImage(int iItem)
     CLog::Log(LOGERROR,"  Could not cache artist thumb: %s",strSrcThumb.c_str());
 }
 
-void CGUIWindowMusicNav::SaveDatabaseDirectoryCache(const CStdString& strDirectory, CFileItemList& items, int& iSortMethod, int& iAscending)
+void CGUIWindowMusicNav::SaveDatabaseDirectoryCache(const CStdString& strDirectory, CFileItemList& items, int iSortMethod, int iAscending, bool bSkipThe)
 {
   int iSize = items.Size();
   if (iSize <= 0)
@@ -1724,7 +1737,8 @@ void CGUIWindowMusicNav::SaveDatabaseDirectoryCache(const CStdString& strDirecto
     ar << items.Size();
     ar << iSortMethod;
     ar << iAscending;
-    CLog::Log(LOGDEBUG,"  -- items: %i, sort method: %i, ascending: %i",iSize,iSortMethod,iAscending);
+    ar << bSkipThe;
+    CLog::Log(LOGDEBUG,"  -- items: %i, sort method: %i, ascending: %i, skipthe: %i",iSize,iSortMethod,iAscending,(int)bSkipThe);
     for (int i = 0; i < iSize; i++)
     {
       CFileItem* pItem = items[i];
@@ -1735,7 +1749,7 @@ void CGUIWindowMusicNav::SaveDatabaseDirectoryCache(const CStdString& strDirecto
   }
 }
 
-void CGUIWindowMusicNav::LoadDatabaseDirectoryCache(const CStdString& strDirectory, CFileItemList& items, int& iSortMethod, int& iAscending)
+void CGUIWindowMusicNav::LoadDatabaseDirectoryCache(const CStdString& strDirectory, CFileItemList& items, int& iSortMethod, int& iAscending, bool& bSkipThe)
 {
   CLog::Log(LOGDEBUG,"Loading database directory [%s]",strDirectory.c_str());
 
@@ -1757,7 +1771,8 @@ void CGUIWindowMusicNav::LoadDatabaseDirectoryCache(const CStdString& strDirecto
     ar >> iSize;
     ar >> iSortMethod;
     ar >> iAscending;
-    CLog::Log(LOGDEBUG,"  -- items: %i, sort method: %i, ascending: %i",iSize,iSortMethod,iAscending);
+    ar >> bSkipThe;
+      CLog::Log(LOGDEBUG,"  -- items: %i, sort method: %i, ascending: %i, skipthe: %i",iSize,iSortMethod,iAscending,(int)bSkipThe);
     for (int i = 0; i < iSize; i++)
     {
       CFileItem* pItem = new CFileItem();
