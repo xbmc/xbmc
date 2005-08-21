@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 21-08-2005 fixed: Stacking
  - 20-08-2005 added: ability to jump into the library view at specific locations using "genres", "artists", "albums", "songs",
               "top100songs", "top100albums", or "recentalbums" in xbmc.activatewindow() as the destination parameter
               ex: xbmc.activatewindow(mymusiclibrary,top100albums)

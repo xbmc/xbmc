@@ -388,7 +388,14 @@ bool CGUIWindowVideoFiles::UpdateDir(const CStdString &strDirectory)
   m_vecItems.AppendPointer(items);
   items.ClearKeepPointer();
 
-  m_vecItems.Stack();
+  if (g_stSettings.m_iMyVideoVideoStack != STACK_NONE)
+  {
+    //sort list ascending by filename before stacking...
+    SSortVideoByName::m_iSortMethod = 0;
+    SSortVideoByName::m_bSortAscending = 1;
+    m_vecItems.Sort(SSortVideoByName::Sort);
+    m_vecItems.Stack();
+  }
 
   m_iLastControl = GetFocusedControl();
 
