@@ -100,6 +100,7 @@ private:
   __int64 m_SeekTime;
   int     m_IsFFwdRewding;
   __int64 m_timeOffset;
+  bool    m_forceFadeToNext;
 
   int m_currentDecoder;
   CAudioDecoder m_decoder[2]; // our 2 audiodecoders (for crossfading + precaching)
@@ -114,6 +115,9 @@ private:
   bool CreateStream(int stream, int channels, int samplerate, int bitspersample);
   void FlushStreams();
   void SetStreamVolume(int stream, long nVolume);
+  
+  void UpdateCrossFadingTime(const CFileItem& file);
+  bool QueueNextFile(const CFileItem &file, bool checkCrossFading);
 
   int m_currentStream;
   IDirectSoundStream *m_pStream[2];

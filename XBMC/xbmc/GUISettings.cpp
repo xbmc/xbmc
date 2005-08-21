@@ -248,6 +248,8 @@ CGUISettings::CGUISettings(void)
   AddBool(7, "MusicPlayer.ReplayGainAvoidClipping", 643, false);
   AddSeparator(8, "MusicPlayer.Sep2");
   AddInt(9, "MusicPlayer.CrossFade", 13314, 0, 0, 1, 10, SPIN_CONTROL_INT_PLUS, MASK_SECS, TEXT_OFF);
+  AddBool(10, "MusicPlayer.CrossFadeAlbumTracks", 13400, true);
+  
 
   AddCategory(3, "Karaoke", 13327);
   AddBool(1, "Karaoke.Enabled", 13323, false);
