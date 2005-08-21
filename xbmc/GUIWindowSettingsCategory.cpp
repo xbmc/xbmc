@@ -1013,6 +1013,11 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetInt("AudioOutput.Mode") == AUDIO_DIGITAL);
     }
+    else if (strSetting == "MusicPlayer.CrossFadeAlbumTracks")
+    {
+      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+      if (pControl) pControl->SetEnabled(g_guiSettings.GetInt("MusicPlayer.CrossFade") > 0);
+    }
     else if (strSetting == "System.FanSpeed")
     { // only visible if we have fancontrolspeed enabled
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
