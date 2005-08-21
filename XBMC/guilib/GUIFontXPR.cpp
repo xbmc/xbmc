@@ -48,7 +48,7 @@ void CGUIFontXPR::DrawTextImpl(FLOAT fOriginX, FLOAT fOriginY, DWORD dwColor,
                                const WCHAR* strText, DWORD cchText, DWORD dwFlags,
                                FLOAT fMaxPixelWidth)
 {
-  m_font.DrawTextEx(fOriginX, fOriginY, dwColor, strText, cchText, dwFlags, fMaxPixelWidth);
+  m_font.DrawTextEx(fOriginX, fOriginY, dwColor, strText, cchText>2048?2048:cchText, dwFlags, fMaxPixelWidth);
 }
 
 void CGUIFontXPR::GetTextExtentInternal(const WCHAR* strText, FLOAT* pWidth,
@@ -61,7 +61,7 @@ void CGUIFontXPR::DrawColourTextImpl(FLOAT fOriginX, FLOAT fOriginY, DWORD* pdw2
                                      const WCHAR* strText, BYTE* pbColours, DWORD cchText, DWORD dwFlags,
                                      FLOAT fMaxPixelWidth)
 {
-  m_font.DrawColourText(fOriginX, fOriginY, pdw256ColorPalette, strText, pbColours, cchText, dwFlags, fMaxPixelWidth);
+  m_font.DrawColourText(fOriginX, fOriginY, pdw256ColorPalette, strText, pbColours, cchText>2048?2048:cchText, dwFlags, fMaxPixelWidth);
 }
 
 D3DTexture* CGUIFontXPR::CreateTexture( const WCHAR* strText,

@@ -114,7 +114,7 @@ void CGUIFontTTF::DrawTextImpl(FLOAT fOriginX, FLOAT fOriginY, DWORD dwColor,
                           FLOAT fMaxPixelWidth)
 {
   // Draw text as a single colour
-  DrawTextInternal(fOriginX, fOriginY, &dwColor, NULL, strText, cchText, dwFlags, fMaxPixelWidth);
+  DrawTextInternal(fOriginX, fOriginY, &dwColor, NULL, strText, cchText>2048?2048:cchText, dwFlags, fMaxPixelWidth);
 }
 
 void CGUIFontTTF::DrawColourTextImpl(FLOAT fOriginX, FLOAT fOriginY, DWORD* pdw256ColorPalette,
@@ -122,7 +122,7 @@ void CGUIFontTTF::DrawColourTextImpl(FLOAT fOriginX, FLOAT fOriginY, DWORD* pdw2
                                      FLOAT fMaxPixelWidth)
 {
   // Draws text as multi-coloured polygons
-  DrawTextInternal(fOriginX, fOriginY, pdw256ColorPalette, pbColours, strText, cchText, dwFlags, fMaxPixelWidth);
+    DrawTextInternal(fOriginX, fOriginY, pdw256ColorPalette, pbColours, strText, cchText>2048?2048:cchText, dwFlags, fMaxPixelWidth);
 }
 
 void CGUIFontTTF::DrawTextInternal( FLOAT sx, FLOAT sy, DWORD *pdw256ColorPalette, BYTE *pbColours, const WCHAR* strText, DWORD cchText, DWORD dwFlags, FLOAT fMaxPixelWidth )
