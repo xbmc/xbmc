@@ -49,9 +49,9 @@ struct SSortVideoTitleByTitle
       case 0:  // Sort by name
         strStart = rpStart.GetLabel();
         strEnd = rpEnd.GetLabel();
-        if (strStart.Left(4).Equals("The "))
+        if (g_guiSettings.GetBool("MyVideos.IgnoreTheWhenSorting") && strStart.Left(4).Equals("The "))
           strStart = strStart.Mid(4);
-        if (strEnd.Left(4).Equals("The "))
+        if (g_guiSettings.GetBool("MyVideos.IgnoreTheWhenSorting") && strEnd.Left(4).Equals("The "))
           strEnd = strEnd.Mid(4);
         strcpy(szfilename1, strStart.c_str());
         strcpy(szfilename2, strEnd.c_str());
@@ -121,9 +121,9 @@ struct SSortVideoTitleByTitle
       default:  // Sort by Filename by default
         strStart = rpStart.GetLabel();
         strEnd = rpEnd.GetLabel();
-        if (strStart.Left(4).Equals("The "))
+        if (g_guiSettings.GetBool("MyVideos.IgnoreTheWhenSorting") && strStart.Left(4).Equals("The "))
           strStart = strStart.Mid(4);
-        if (strEnd.Left(4).Equals("The "))
+        if (g_guiSettings.GetBool("MyVideos.IgnoreTheWhenSorting") && strEnd.Left(4).Equals("The "))
           strEnd = strEnd.Mid(4);
         strcpy(szfilename1, strStart.c_str());
         strcpy(szfilename2, strEnd.c_str());
