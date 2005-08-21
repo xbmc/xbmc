@@ -892,6 +892,7 @@
   <string><id>13397</id><value>Enable Subtitles</value></string>
   <string><id>13398</id><value>Bookmarks</value></string>
   <string><id>13399</id><value>Ignore "The" when sorting</value></string>
+  <string><id>13400</id><value>Crossfade albumtracks</value></string>
 
   <string><id>14000</id><value>Stack</value></string>
   <string><id>14001</id><value>Unstack</value></string>
