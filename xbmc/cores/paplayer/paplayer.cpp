@@ -47,6 +47,8 @@ PAPlayer::PAPlayer(IPlayerCallback& callback) : IPlayer(callback)
 
   m_visBufferLength = 0;
   m_pCallback = NULL;
+
+  m_forceFadeToNext = false;
 }
 
 PAPlayer::~PAPlayer()
@@ -61,11 +63,28 @@ void PAPlayer::OnExit()
 
 bool PAPlayer::OpenFile(const CFileItem& file, __int64 iStartTime)
 {
+  if (m_currentlyCrossFading) CloseFile(); //user seems to be in a hurry
+
+  if ((m_crossFading = g_guiSettings.GetInt("MusicPlayer.CrossFade")) && IsPlaying())
+  {
+    //do a short crossfade on trackskip
+    //set to max 2 seconds for these prev/next transitions
+    if (m_crossFading > 2) m_crossFading = 2;
+    //queue for crossfading
+    bool result = QueueNextFile(file, false);
+    if (result)
+    {
+      //force to fade to next track immediately
+      m_forceFadeToNext = true;
+    }
+    return result;
+  }
+
+  //normal opening of file, nothing playing or crossfading not enabled
   CloseFile();
 
   // always open the file using the current decoder
   m_currentDecoder = 0;
-  m_crossFading = g_guiSettings.GetInt("MusicPlayer.CrossFade");
 
   if (!m_decoder[m_currentDecoder].Create(file, iStartTime, m_crossFading))
     return false;
@@ -99,6 +118,7 @@ bool PAPlayer::OpenFile(const CFileItem& file, __int64 iStartTime)
   m_bIsPlaying = true;
   m_cachingNextFile = false;
   m_currentlyCrossFading = false;
+  m_forceFadeToNext = false;
 
   m_decoder[m_currentDecoder].Start();  // start playback
   m_pStream[m_currentStream]->Pause(DSSTREAMPAUSE_RESUME);
@@ -106,7 +126,29 @@ bool PAPlayer::OpenFile(const CFileItem& file, __int64 iStartTime)
   return true;
 }
 
+void PAPlayer::UpdateCrossFadingTime(const CFileItem& file)
+{
+  if (m_crossFading = g_guiSettings.GetInt("MusicPlayer.CrossFade"))
+  {
+    if (
+      m_crossFading &&
+      !g_guiSettings.GetBool("MusicPlayer.CrossFadeAlbumTracks") &&
+      (m_currentFile.m_musicInfoTag.GetAlbum() != "") &&
+      (m_currentFile.m_musicInfoTag.GetAlbum() == file.m_musicInfoTag.GetAlbum()) &&
+      (m_currentFile.m_musicInfoTag.GetTrackNumber() == file.m_musicInfoTag.GetTrackNumber() - 1)
+    )
+    {
+      m_crossFading = 0;
+    }
+  }
+}
+
 bool PAPlayer::QueueNextFile(const CFileItem &file)
+{
+  return QueueNextFile(file, true);
+}
+
+bool PAPlayer::QueueNextFile(const CFileItem &file, bool checkCrossFading)
 {
   if (file.m_strPath == m_currentFile.m_strPath &&
       file.m_lStartOffset > 0 && 
@@ -122,6 +164,11 @@ bool PAPlayer::QueueNextFile(const CFileItem &file)
     return false;
   // ok, we're good to go on queuing this one up
   CLog::Log(LOGINFO, "PAP Player: Queuing next file %s", file.m_strPath.c_str());
+
+  if (checkCrossFading)
+  {
+    UpdateCrossFadingTime(file);
+  }
 
   unsigned int channels, samplerate, bitspersample;
   m_decoder[decoder].GetDataFormat(&channels, &samplerate, &bitspersample);
@@ -397,12 +444,20 @@ bool PAPlayer::ProcessPAP()
 
     if (m_crossFading && m_decoder[0].GetChannels() == m_decoder[1].GetChannels())
     {
-      if (GetTotalTime64() - GetTime() < m_crossFading * 1000L && !m_currentlyCrossFading)
+      if (((GetTotalTime64() - GetTime() < m_crossFading * 1000L) || (m_forceFadeToNext)) && !m_currentlyCrossFading)
       { // request the next file from our application
         if (m_decoder[1 - m_currentDecoder].GetStatus() == STATUS_QUEUED && m_pStream[1 - m_currentStream])
         {
           m_currentlyCrossFading = true;
-          m_crossFadeLength = GetTotalTime64() - GetTime();
+          if (m_forceFadeToNext)
+          {
+            m_forceFadeToNext = false;
+            m_crossFadeLength = m_crossFading * 1000L;
+          }
+          else
+          {
+            m_crossFadeLength = GetTotalTime64() - GetTime();
+          }
           m_currentDecoder = 1 - m_currentDecoder;
           m_decoder[m_currentDecoder].Start();
           m_currentStream = 1 - m_currentStream;
