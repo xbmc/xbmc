@@ -338,6 +338,9 @@ WORD CButtonTranslator::TranslateWindowString(const char *szWindow)
   WORD wWindowID = WINDOW_INVALID;
   CStdString strWindow = szWindow;
   strWindow.ToLower();
+  // window12345, for custom window to be keymapped
+  if (strWindow.length() > 6 && strWindow.Left(6).Equals("window"))
+    strWindow = strWindow.Mid(6);
   if (CUtil::IsNaturalNumber(strWindow))
   {
     // allow a full window id or a delta id
@@ -394,12 +397,10 @@ WORD CButtonTranslator::TranslateWindowString(const char *szWindow)
   else if (strWindow.Equals("osdvideosettings")) wWindowID = WINDOW_DIALOG_VIDEO_OSD_SETTINGS;
   else if (strWindow.Equals("osdaudiosettings")) wWindowID = WINDOW_DIALOG_AUDIO_OSD_SETTINGS;
   else if (strWindow.Equals("videobookmarks")) wWindowID = WINDOW_DIALOG_VIDEO_BOOKMARKS;
-
   else if (strWindow.Equals("mymusicplaylist")) wWindowID = WINDOW_MUSIC_PLAYLIST;
   else if (strWindow.Equals("mymusicfiles")) wWindowID = WINDOW_MUSIC_FILES;
   else if (strWindow.Equals("mymusiclibrary")) wWindowID = WINDOW_MUSIC_NAV;
   else if (strWindow.Equals("mymusictop100")) wWindowID = WINDOW_MUSIC_TOP100;
-
 //  else if (strWindow.Equals("virtualkeyboard")) wWindowID = WINDOW_VIRTUAL_KEYBOARD;
   else if (strWindow.Equals("selectdialog")) wWindowID = WINDOW_DIALOG_SELECT;
   else if (strWindow.Equals("musicinformation")) wWindowID = WINDOW_MUSIC_INFO;
