@@ -203,14 +203,15 @@ CGUISettings::CGUISettings(void)
   AddString(1, "MyMusic.Visualisation", 250, "milkdrop.vis", SPIN_CONTROL_TEXT);
   AddSeparator(2, "MyMusic.Sep1");
   AddBool(3, "MyMusic.HideParentDirItems", 13306, true);
-  AddString(4, "MyMusic.TrackFormat", 13307, "%N. %A - %T", BUTTON_CONTROL_INPUT, false, 16016);
-  AddString(5, "MyMusic.TrackFormatRight", 13387, "%D", BUTTON_CONTROL_INPUT, false, 16016);
-  AddSeparator(6, "MyMusic.Sep2");
-  AddBool(7, "MyMusic.UseAudioScrobbler", 15201, false);
-  AddString(8,"MyMusic.AudioScrobblerUserName", 15202, "", BUTTON_CONTROL_INPUT, false, 15202);
-  AddString(9,"MyMusic.AudioScrobblerPassword", 15203, "", BUTTON_CONTROL_HIDDEN_INPUT, false, 15203); 
-  AddSeparator(10, "MyMusic.Sep3");
-  AddString(11, "MyMusic.CleanupMusicLibrary", 334, "", BUTTON_CONTROL_STANDARD);
+  AddBool(4, "MyMusic.IgnoreTheWhenSorting", 13399, true);
+  AddString(5, "MyMusic.TrackFormat", 13307, "%N. %A - %T", BUTTON_CONTROL_INPUT, false, 16016);
+  AddString(6, "MyMusic.TrackFormatRight", 13387, "%D", BUTTON_CONTROL_INPUT, false, 16016);
+  AddSeparator(7, "MyMusic.Sep2");
+  AddBool(8, "MyMusic.UseAudioScrobbler", 15201, false);
+  AddString(9,"MyMusic.AudioScrobblerUserName", 15202, "", BUTTON_CONTROL_INPUT, false, 15202);
+  AddString(10,"MyMusic.AudioScrobblerPassword", 15203, "", BUTTON_CONTROL_HIDDEN_INPUT, false, 15203); 
+  AddSeparator(11, "MyMusic.Sep3");
+  AddString(12, "MyMusic.CleanupMusicLibrary", 334, "", BUTTON_CONTROL_STANDARD);
 
   AddCategory(3, "MusicFiles", 744);
   AddBool(1, "MusicFiles.AutoPlayNextItem", 489, true);
@@ -398,6 +399,7 @@ CGUISettings::CGUISettings(void)
   AddInt(11, "MyVideos.Gamma", 13380, 20, 0, 1, 100, SPIN_CONTROL_INT);
   AddSeparator(12, "MyVideos.Sep3");
   AddBool(13, "MyVideos.HideParentDirItems", 13306, true);
+  AddBool(14, "MyVideos.IgnoreTheWhenSorting", 13399, true);
   // hidden setting for blackbars
   AddInt(0, "Videos.BlackBarColour", 0, 1, 1, 1, 255, SPIN_CONTROL_INT);
 
