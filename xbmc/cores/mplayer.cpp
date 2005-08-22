@@ -1415,12 +1415,9 @@ void CMPlayer::Seek(bool bPlus, bool bLargeStep)
   // Use relative time seeking if we dont know the length of the video
   // or its explicitly enabled, and the length is alteast twice the size of the largest forward seek value
 
-  int iTime = GetTotalTime();
-  int iTest = g_stSettings.m_iMyVideoTimeSeekForward;
-  if (g_stSettings.m_iMyVideoTimeSeekForwardBig > iTest)
-    iTest = g_stSettings.m_iMyVideoTimeSeekForwardBig;
+  __int64 iTime = GetTotalTime();
 
-  if ((iTime == 0) || (g_guiSettings.GetBool("VideoPlayer.UseTimeBasedSeeking") && iTime > 2*iTest))
+  if ((iTime == 0) || (g_guiSettings.GetBool("VideoPlayer.UseTimeBasedSeeking") && iTime > 2*g_stSettings.m_iMyVideoTimeSeekForwardBig))
   {
     if (bLargeStep)
     {
@@ -1439,7 +1436,7 @@ void CMPlayer::Seek(bool bPlus, bool bLargeStep)
   }
   else
   {
-    float percent = GetPercentage();
+    float percent = 0.0f;
     if (bLargeStep)
     {
       if (bPlus)
@@ -1454,9 +1451,27 @@ void CMPlayer::Seek(bool bPlus, bool bLargeStep)
       else
         percent += g_stSettings.m_iMyVideoPercentSeekBackward;
     }
-    if (percent < 0) percent = 0;
-    if (percent > 100) percent = 100;
-    SeekPercentage(percent);
+
+    //If current time isn't bound by the total time, 
+    //we have to seek using absolute percentage instead
+    if( GetTime() > iTime * 1000 )
+    {
+      SeekPercentage(GetPercentage()+percent);
+    }
+    else
+    {
+      percent *= iTime;
+      percent /= 100;
+      
+      //Seek a minimum of 1 second
+      if( percent < 1 && percent > 0 )
+        percent = 1;
+      else if( percent > -1 && percent < 0 )
+        percent = -1;
+
+      SeekRelativeTime( (int)percent );
+
+    }    
   }
 }
 
