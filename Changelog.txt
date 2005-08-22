@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 22-08-2005 fixed: now less fast forward then slowdown after seek, and vts change in dvdplayer
  - 22-08-2005 fixed: dvdplayer, old subtitles were not removed, this resulted in high memory usage and crashes.
  - 22-08-2005 fixed: dvdplayer, some dvds displayed to many audio / subtitle streams in osd.
  - 22-08-2005 fixed: dvdplayer, sometimes menu overlays were removed during menu navigation.

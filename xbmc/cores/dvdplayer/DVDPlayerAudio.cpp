@@ -204,11 +204,8 @@ int CDVDPlayerAudio::DecodeFrame(BYTE** pAudioBuffer)
     // if update the audio clock with the pts
     if ((dvdstate & DVDPACKET_MESSAGE_RESYNC) || first_pkt_pts > pPacket->pts)
     {
-      //Okey first packet in this continous stream,
-      //Setup clock, and then exit so we player can sync clock
-      m_audioClock = pPacket->pts;
-      m_pAudioCodec->Reset();
-      return 0; // should we return here??? not continue?
+      //Okey first packet in this continous stream, make sure we use the time here
+      m_audioClock = pPacket->pts;      
     }
     else if (pPacket->pts != DVD_NOPTS_VALUE)
     {
@@ -282,11 +279,12 @@ void CDVDPlayerAudio::Process()
 
     //Check for discontinuity in the stream, use an average of last two diffs to 
     //eliminate highfreq fluctuations of large packet sizes
-    if (ABS(iAvDiff) > 5000 || len == 0) // sync clock if average diff is bigger than 5 msec 
+    if( ABS(iAvDiff) > 5000 ) // sync clock if average diff is bigger than 5 msec 
     {
-      //len == 0 is an expected discontinuity
-      //Wait untill only one packet is left in buffer to minimize choppyness in video
-      m_dvdAudio.WaitForBuffer(1);
+      //Wait untill only the new audio frame wich triggered the discontinuity is left
+      //then set disc state
+      while( m_dvdAudio.GetBytesInBuffer() > len ) Sleep(5);
+
       m_pClock->Discontinuity(CLOCK_DISC_NORMAL, m_audioClock - m_dvdAudio.GetDelay());
       CLog::DebugLog("CDVDPlayer:: Detected Audio Discontinuity, syncing clock. diff was: %I64d, %I64d, av: %I64d", iClockDiff, iCurrDiff, iAvDiff);
       iClockDiff = 0;
