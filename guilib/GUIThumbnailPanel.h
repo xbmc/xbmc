@@ -110,6 +110,8 @@ public:
   void GetOffsetFromPage();
   virtual CStdString GetDescription() const;
 
+  void HideFileNameLabel(bool bOnOff) { m_bHideFileNameLabel=bOnOff; }
+
 protected:
   void Calculate(bool resetItem);
   void RenderItem(bool bFocus, int iPosX, int iPosY, CGUIListItem* pItem, int iStage);
@@ -166,6 +168,9 @@ protected:
   int m_iThumbYPosBig;
   int m_iThumbWidthBig;
   int m_iThumbHeightBig;
+
+  bool m_bHideFileNameLabel;
+
   CGUIFont* m_pFont;
   CGUISpinControl m_upDown;
   CGUIImage m_imgFolder;
