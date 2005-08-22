@@ -5,7 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
-  - 22-08-2005 updated: matroska demuxer to mplayerhq cvs (demux_mkv.c:1.45), should fix OGG media in matroska container
+  - 22-08-2005 updated: libvorbis interface to mplayer cvs (ad_libvorbis.c:1.18), fixes vorbis decoding in both matroska and ogm containers
+  - 22-08-2005 updated: matroska demuxer to mplayerhq cvs (demux_mkv.c:1.45)
   - 17-08-2005 fixed: mplayer would crash if no video decoder was found for a media that did contain video, instead of just playing the audio
   - 16-08-2005 added: display progress when parsing vobsubs
   - 12-08-2005 fixed: when resuming normal playback speed, video would jump ahead a couple of seconds
