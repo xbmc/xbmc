@@ -79,8 +79,13 @@ public:
   int GetActiveAudioStream();
   std::string GetAudioStreamLanguage(int iId);
   int GetAudioStreamCount();
-  bool SetActiveAudioStream(int iPhysicalId);
-  bool SetActiveSubtitleStream(int iPhysicalId);
+  bool SetActiveAudioStream(int iId);
+  bool SetActiveSubtitleStream(int iId);
+
+  int GetNrOfTitles();
+  int GetNrOfParts(int iTitle);
+  bool PlayTitle(int iTitle);
+  bool PlayPart(int iTitle, int iPart);
 
   int GetTotalTime(); // the total time in milli seconds
   int GetTime(); // the current position in milli seconds
@@ -110,4 +115,5 @@ protected:
 
   bool m_bDiscardHop;
   bool m_bCheckButtons;
+  bool m_bStopped;
 };

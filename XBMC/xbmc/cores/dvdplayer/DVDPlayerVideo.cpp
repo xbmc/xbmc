@@ -296,7 +296,6 @@ void CDVDPlayerVideo::Flush()
 {
   EnterCriticalSection(&m_critCodecSection);
   m_packetQueue.Flush();
-  m_overlay.Clear(); // not thread safe !!!!
   if (m_pVideoCodec)
   {
     //m_pVideoCodec->Reset();
@@ -368,6 +367,7 @@ bool CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, __int64 pts1)
       // remove any overlays that are out of time
       m_overlay.CleanUp(pts);
 
+      m_overlay.Lock();
       DVDOverlayPicture* pOverlayPicture = m_overlay.Get();
 
       //Check all overlays and render those that should be rendered, based on time and forced
@@ -383,7 +383,8 @@ bool CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, __int64 pts1)
 
         pOverlayPicture = pOverlayPicture->pNext;
       }
-
+      m_overlay.Unlock();
+      
       // tell the renderer that we've finished with the image (so it can do any
       // post processing before FlipPage() is called.)
       g_renderManager.ReleaseImage();
