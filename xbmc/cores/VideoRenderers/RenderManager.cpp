@@ -36,6 +36,7 @@ CXBoxRenderManager::CXBoxRenderManager()
 
 CXBoxRenderManager::~CXBoxRenderManager()
 {
+  CGraphicContext::CLock lock(g_graphicsContext);
   m_bChanging = true;
   if (m_pRenderer)
     delete m_pRenderer;
@@ -44,6 +45,7 @@ CXBoxRenderManager::~CXBoxRenderManager()
 
 unsigned int CXBoxRenderManager::Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps)
 {
+  CGraphicContext::CLock lock(g_graphicsContext);
   m_iSourceWidth = width;
   m_iSourceHeight = height;
   unsigned int result = 0;
@@ -58,6 +60,7 @@ unsigned int CXBoxRenderManager::Configure(unsigned int width, unsigned int heig
 
 void CXBoxRenderManager::Update(bool bPauseDrawing)
 {
+  CGraphicContext::CLock lock(g_graphicsContext);
   m_bPauseDrawing = bPauseDrawing;
   if (!m_bChanging && m_pRenderer)
   {
