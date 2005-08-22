@@ -97,7 +97,7 @@
   <string><id>165</id><value>Disco presente</value></string>
   <string><id>166</id><value>Skin</value></string>
   <string><id>167</id><value>Abilita Server FTP</value></string>
-  <string><id>168</id><value>Abilita Sicronizzazione Orario Da Internet</value></string>
+  <string><id>168</id><value>Abilita Sincronizzazione Orario Da Internet</value></string>
   <string><id>169</id><value>Risoluzione</value></string>
   <string><id>170</id><value>Album:</value></string>
   <string><id>171</id><value>Artista:</value></string>
@@ -224,9 +224,9 @@
   <string><id>291</id><value>Video</value></string>
   <string><id>292</id><value>Audio</value></string>
   <string><id>293</id><value>Sottotitoli</value></string>
-  <string><id>294</id><value>Crea bookmark</value></string>
-  <string><id>295</id><value>Cicla bookmarks</value></string>
-  <string><id>296</id><value>Cancella bookmarks</value></string>
+  <string><id>294</id><value>Crea segnalibro</value></string>
+  <string><id>295</id><value>Cicla segnalibri</value></string>
+  <string><id>296</id><value>Cancella segnalibri</value></string>
   <string><id>297</id><value>Ritardo Audio</value></string>
   <string><id>298</id><value>Cursore</value></string>
   <string><id>300</id><value>1. Lingua</value></string>
@@ -755,6 +755,12 @@
   <string><id>12373</id><value>Lock Impostazioni</value></string>
   <string><id>12374</id><value>Lock Media</value></string>
 
+  <string><id>12390</id><value>Tempo di Vita del Sistema</value></string> 
+  <string><id>12391</id><value>Minuti</value></string> 
+  <string><id>12392</id><value>Ore</value></string> 
+  <string><id>12393</id><value>Giorni</value></string> 
+
+
   <string><id>12600</id><value>Meteo</value></string>
   <string><id>12900</id><value>Screensaver</value></string>
   <string><id>12901</id><value>OSD a schermo intero</value></string>
@@ -795,7 +801,7 @@
   <string><id>13311</id><value>Effetto Spostamento</value></string>
   <string><id>13312</id><value>Riduzione Barra Nera</value></string>
   <string><id>13313</id><value>Riavvia</value></string>
-  <string><id>13314</id><value>Crossfade</value></string>
+  <string><id>13314</id><value>Transizione</value></string>
   <string><id>13315</id><value>Ricrea Icone</value></string>
   <string><id>13316</id><value>Icone Ricorsive</value></string>
   <string><id>13317</id><value>Vedi Slideshow</value></string>
@@ -879,11 +885,13 @@
   <string><id>13395</id><value>Impostazioni Video</value></string>
   <string><id>13396</id><value>Impostazioni Audio and Sottotitoli</value></string>
   <string><id>13397</id><value>Attiva Sottotitoli</value></string>
-  <string><id>13398</id><value>Bookmarks</value></string>
+  <string><id>13398</id><value>Segnalibri</value></string>
+  <string><id>13399</id><value>Ignora "The" nell'ordinamento</value></string>
+  <string><id>13400</id><value>Transizione tra le tracce dell'album</value></string>
 
   <string><id>14000</id><value>Unisci Volumi</value></string>
   <string><id>14001</id><value>Dividi Volumi</value></string>
-  <string><id>14002</id><value>_EMPTY_</value></string>
+  <string><id>14002</id><value>_stringalibera_</value></string>
   <string><id>14003</id><value>Scaricamento file playlist...</value></string>
   <string><id>14004</id><value>Scaricamento lista streams...</value></string>
   <string><id>14005</id><value>Esamino lista streams...</value></string>
@@ -1076,7 +1084,7 @@
   <string><id>13284</id><value>CPU Speed:</value></string>
   <string><id>13285</id><value>BIOS Rilevato:</value></string>
   <string><id>13286</id><value>Video Encoder:</value></string>
-  <string><id>13287</id><value>Risolutione Schermo:</value></string>
+  <string><id>13287</id><value>Risoluzione Schermo:</value></string>
   <string><id>13288</id><value>Xbox Version:</value></string>
   <string><id>13289</id><value>Xbox Serialnumber:</value></string>
   <string><id>13290</id><value>XBOX Manufacture:</value></string>
@@ -1090,7 +1098,8 @@
   <string><id>13298</id><value>XBLIVE Key:</value></string>
 
   <string><id>15213</id><value>[CONTENITORE]</value></string>
-  <string><id>15214</id><value>Perfezziona Sincronizzazione A/V</value></string>
+  <string><id>15214</id><value>Perfeziona Sincronizzazione A/V</value></string>
+  <string><id>15215</id><value>Nascondi Nomi dei Files in Vista Icone</value></string>
 
   <string><id>15300</id><value>Percorso non trovato o invalido</value></string>
   <string><id>15301</id><value>Non è stato possibile connetersi al server</value></string>
@@ -1118,5 +1127,6 @@
   <string><id>16021</id><value>Sincronismo Pari</value></string>
   <string><id>16022</id><value>Sincronismo Dispari</value></string>
   <string><id>16023</id><value>Modifiche Interlacciate</value></string>
+  <string><id>16024</id><value>Annullando...</value></string>
 
 </strings>
