@@ -23,6 +23,7 @@ public:
   CDemuxStream()
   {
     iId = 0;
+    iPhysicalId = 0;
     codec = (CodecID)0; // CODEC_ID_NONE
     type = STREAM_NONE;
     iDuration = 0;
@@ -34,8 +35,8 @@ public:
     strInfo = "";
   }
 
-  int iId; // file stream id
-  int iPhysicalId; //Physical Id of audio or video
+  int iId;         // most of the time starting from 0
+  int iPhysicalId; // id
   CodecID codec;
   StreamType type;
 
@@ -136,6 +137,11 @@ public:
    * return nr of video streams, 0 if none
    */
   int GetNrOfVideoStreams();
+  
+  /*
+   * return nr of subtitle streams, 0 if none
+   */
+  int GetNrOfSubtitleStreams();
 
   /*
    * return the audio stream, or NULL if it does not exist
@@ -146,6 +152,11 @@ public:
    * return the video stream, or NULL if it does not exist
    */
   CDemuxStreamVideo* GetStreamFromVideoId(int iVideoIndex);
+  
+  /*
+   * return the subtitle stream, or NULL if it does not exist
+   */
+  CDemuxStream* GetStreamFromSubtitleId(int iSubtitleIndex);
   
 protected:
   CDVDInputStream* m_pInput;

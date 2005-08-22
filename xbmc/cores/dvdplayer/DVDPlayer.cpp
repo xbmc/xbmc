@@ -295,7 +295,7 @@ void CDVDPlayer::Process()
 
     CDemuxStream *pStream = m_pDemuxer->GetStream(pPacket->iStreamId);
 
-    int iFileStreamId = m_pDemuxer->GetStream(pPacket->iStreamId)->iId;
+    int iFileStreamId = m_pDemuxer->GetStream(pPacket->iStreamId)->iPhysicalId;
     if (iFileStreamId == m_dvd.iSelectedSPUStream && pStream->type == STREAM_SUBTITLE)
     {
       ProcessSubData(pPacket);
@@ -367,7 +367,7 @@ void CDVDPlayer::Process()
 
 void CDVDPlayer::ProcessSubData(CDVDDemux::DemuxPacket* pPacket)
 {
-  int iFileStreamId = m_pDemuxer->GetStream(pPacket->iStreamId)->iId;
+  int iFileStreamId = m_pDemuxer->GetStream(pPacket->iStreamId)->iPhysicalId;
   SPUInfo* pSPUInfo = m_dvdspus.AddData(pPacket->pData, pPacket->iSize, iFileStreamId, pPacket->pts);
 
   if (pSPUInfo)
@@ -495,20 +495,6 @@ void CDVDPlayer::HandleMessages()
         // set flag to indicate we have finished a seeking request
         g_infoManager.m_performingSeek = false;
         
-        break;
-      }
-    case DVDMESSAGE_CHAPTER_NEXT:
-    case DVDMESSAGE_CHAPTER_PREV:
-      {
-        if (m_pInputStream->m_streamType == DVDSTREAM_TYPE_DVD)
-        {
-          CDVDInputStreamNavigator* pStream = (CDVDInputStreamNavigator*)m_pInputStream;
-
-          if (pMessage->iMessage == DVDMESSAGE_CHAPTER_NEXT) pStream->OnNext();
-          if (pMessage->iMessage == DVDMESSAGE_CHAPTER_PREV) pStream->OnPrevious();
-
-          FlushBuffers();
-        }
         break;
       }
     case DVDMESSAGE_RESET_DEMUXER:
@@ -728,11 +714,13 @@ float CDVDPlayer::GetSubTitleDelay()
 
 int CDVDPlayer::GetSubtitleCount()
 {
+  /*
   if (m_pInputStream && m_pInputStream->m_streamType == DVDSTREAM_TYPE_DVD)
   {
     CDVDInputStreamNavigator* pStream = (CDVDInputStreamNavigator*)m_pInputStream;
     return pStream->GetSubTitleStreamCount();
-  }
+  }*/
+  if (m_pDemuxer) return m_pDemuxer->GetNrOfSubtitleStreams();
   return 0;
 }
 
@@ -757,11 +745,21 @@ void CDVDPlayer::GetSubtitleName(int iStream, CStdString &strStreamName)
 
 void CDVDPlayer::SetSubtitle(int iStream)
 {
-  m_dvd.iSelectedSPUStream = 0x20 + iStream;
-  if (m_pInputStream && m_pInputStream->m_streamType == DVDSTREAM_TYPE_DVD)
+  if (m_pDemuxer)
   {
-    CDVDInputStreamNavigator* pStream = (CDVDInputStreamNavigator*)m_pInputStream;
-    pStream->SetActiveSubtitleStream(iStream);
+    // get physical id
+    CDemuxStream* pStream = m_pDemuxer->GetStreamFromSubtitleId(iStream);
+    if (pStream)
+    {
+      m_dvd.iSelectedSPUStream = pStream->iPhysicalId;
+      
+      // for dvd's we have to set it to prevent it from changing to default every cell change
+      if (m_pInputStream && m_pInputStream->m_streamType == DVDSTREAM_TYPE_DVD)
+      {
+        CDVDInputStreamNavigator* pStream = (CDVDInputStreamNavigator*)m_pInputStream;
+        pStream->SetActiveSubtitleStream(iStream);
+      }
+    }
   }
 }
 
@@ -1046,6 +1044,10 @@ void CDVDPlayer::FlushBuffers()
   //m_pDemuxer->Flush();
   m_dvdPlayerAudio.Flush();
   m_dvdPlayerVideo.Flush();
+  
+  // clear subtitle and menu overlays
+  m_dvdPlayerVideo.m_overlay.Clear(); 
+  
   m_dvd.iFlagSentStart = 0; //We will have a discontinuity here
   
   //m_bReadAgain = true; // XXX
@@ -1119,9 +1121,6 @@ int CDVDPlayer::OnDVDNavResult(void* pData, int iMessage)
     {
       CLog::Log(LOGDEBUG, "DVDNAV_SPU_STREAM_CHANGE");
 
-      //Make sure we clear all the old overlays here, or else old forced items are left.
-      m_dvdPlayerVideo.m_overlay.Clear();
-
       // update subtitle always in menu, or when no subtitle is selected in the movie
       if (m_dvd.iSelectedSPUStream == -1 || pStream->IsInMenu())
       {
@@ -1163,6 +1162,9 @@ int CDVDPlayer::OnDVDNavResult(void* pData, int iMessage)
       dvdnav_vts_change_event_t* vts_change_event = (dvdnav_vts_change_event_t*)pData;
       CLog::Log(LOGDEBUG, "DVDNAV_VTS_CHANGE");
 
+      //Make sure we clear all the old overlays here, or else old forced items are left.
+      m_dvdPlayerVideo.m_overlay.Clear();
+      
       // reset the demuxer, this also imples closing the video and the audio system
       // this is a bit tricky cause it's the demuxer that's is making this call in the end
       // so we send a message to indicate the main loop that the demuxer needs a reset
@@ -1222,9 +1224,7 @@ int CDVDPlayer::OnDVDNavResult(void* pData, int iMessage)
 
 bool CDVDPlayer::OnAction(const CAction &action)
 {
-  if (!m_pInputStream) return false;
-
-  if (m_pInputStream->m_streamType == DVDSTREAM_TYPE_DVD)
+  if (m_pInputStream && m_pInputStream->m_streamType == DVDSTREAM_TYPE_DVD)
   {
     CDVDInputStreamNavigator* pStream = (CDVDInputStreamNavigator*)m_pInputStream;
 
@@ -1233,14 +1233,14 @@ bool CDVDPlayer::OnAction(const CAction &action)
     case ACTION_PREV_ITEM:  // SKIP-:
       {
         CLog::DebugLog(" - pushed prev");
-        m_messenger.ChapterPrevious();
+        pStream->OnPrevious();
         return true;
       }
       break;
     case ACTION_NEXT_ITEM:  // SKIP+:
       {
         CLog::DebugLog(" - pushed next");
-        m_messenger.ChapterNext();
+        pStream->OnNext();
         return true;
       }
       break;
