@@ -106,7 +106,18 @@ bool CGraphicContext::SetViewPort(float fx, float fy , float fwidth, float fheig
   }
   // check range
   if (newviewport.X + newviewport.Width > (DWORD)m_iScreenWidth) newviewport.Width = m_iScreenWidth - newviewport.X;
-  if (newviewport.Y + newviewport.Height > (DWORD)m_iScreenHeight) newviewport.Height = m_iScreenHeight - newviewport.Y;
+  if (newviewport.Y + newviewport.Height > (DWORD)m_iScreenHeight)
+  {
+    if (newviewport.Y>=(DWORD)m_iScreenHeight)
+    {
+      newviewport.Y=m_iScreenHeight-1;
+      newviewport.Height=1;
+    }
+    else
+    {
+      newviewport.Height=m_iScreenHeight-newviewport.Y;
+    }
+  }
   newviewport.MinZ = 0.0f;
   newviewport.MaxZ = 1.0f;
   Get3DDevice()->SetViewport(&newviewport);
