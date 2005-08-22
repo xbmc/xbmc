@@ -1348,13 +1348,22 @@ void CGUIWindowFileManager::OnPopupMenu(int list, int item)
             progress->SetLine(i, "");
           progress->StartModal(GetID());
         }
-        __int64 folderSize = CalculateFolderSize(m_vecItems[list][item]->m_strPath, progress);
-        if (progress) progress->Close();
-        if (folderSize >= 0)
+
+        //  Calculate folder size for each selected item
+        for (int i=0; i<m_vecItems[list].Size(); ++i)
         {
-          m_vecItems[list][item]->m_dwSize = folderSize;
-          m_vecItems[list][item]->SetFileSizeLabel();
+          CFileItem* pItem=m_vecItems[list][i];
+          if (pItem->m_bIsFolder && pItem->IsSelected())
+          {
+            __int64 folderSize = CalculateFolderSize(pItem->m_strPath, progress);
+            if (folderSize >= 0)
+            {
+              pItem->m_dwSize = folderSize;
+              pItem->SetFileSizeLabel();
+            }
+          }
         }
+        if (progress) progress->Close();
       }
       break;
     default:

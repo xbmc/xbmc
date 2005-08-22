@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 22-08-2005 added: file manager, calculate folder size for multiple selected items
  - 22-08-2005 updated: Italian language file (Thnx to kotix)
  - 22-08-2005 updated: Dutch language file (Thnx to nightspirit)
  - 22-08-2005 updated: Norwegian language file (Thnx to vnm)
