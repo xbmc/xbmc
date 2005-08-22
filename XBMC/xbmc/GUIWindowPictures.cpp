@@ -195,6 +195,10 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
         CSectionLoader::LoadDLL(IMAGE_DLL);
       }
 
+      CGUIThumbnailPanel* pControl=(CGUIThumbnailPanel*)GetControl(CONTROL_THUMBS);
+      if (pControl)
+        pControl->HideFileNameLabel(g_guiSettings.GetBool("Pictures.HideFilenamesInThumbPanel"));
+      
       m_dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
             
       // check for a passed destination path
