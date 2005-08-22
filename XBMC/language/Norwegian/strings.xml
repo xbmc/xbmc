@@ -1,4 +1,4 @@
-<!-- Based on English XML v1.242. Last updated by vnmartinsen  !-->
+<!-- Based on English XML v1.246. Last updated by vnmartinsen  !-->
 <strings>
   <string><id>0</id><value>Mine Programmer</value></string>
   <string><id>1</id><value>Mine Bilder</value></string>
@@ -760,6 +760,12 @@
   <string><id>12373</id><value>Lås innstillinger</value></string>
   <string><id>12374</id><value>Lås media</value></string>
   
+  <string><id>12390</id><value>Systemets oppetid</value></string>
+  <string><id>12391</id><value>Minutter</value></string>
+  <string><id>12392</id><value>Timer</value></string>
+  <string><id>12393</id><value>Dager</value></string>
+
+
   <string><id>12600</id><value>Været</value></string>
   <string><id>12900</id><value>Skjermbeskytter</value></string>
   <string><id>12901</id><value>Fullskjerm OSD</value></string>  
@@ -801,7 +807,7 @@
   <string><id>13311</id><value>Flyt-effekt</value></string>
   <string><id>13312</id><value>Reduksjon av sort felt</value></string>
   <string><id>13313</id><value>Start på nytt</value></string>
-  <string><id>13314</id><value>Crossfade</value></string>
+  <string><id>13314</id><value>Kryssfade</value></string>
   <string><id>13315</id><value>Regenerer miniatyrbilder</value></string>
   <string><id>13316</id><value>Rekursive miniatyrbilder</value></string>
   <string><id>13317</id><value>Se bildevisning</value></string>
@@ -886,6 +892,8 @@
   <string><id>13396</id><value>Lyd- og tekstinnstillinger</value></string>
   <string><id>13397</id><value>Aktiver tekster</value></string>
   <string><id>13398</id><value>Bokmerker</value></string>
+  <string><id>13399</id><value>Ignorer "the" ved sortering</value></string>
+  <string><id>13400</id><value>Kryssfading mellom spor i albumer</value></string>
 
   <string><id>14000</id><value>Stable</value></string>
   <string><id>14001</id><value>Ikke stable</value></string>
@@ -1095,6 +1103,7 @@
 
   <string><id>15213</id><value>[PLASSHOLDER]</value></string>													   
   <string><id>15214</id><value>Bruk utjevnet A/V-synkronisering</value></string>
+  <string><id>15215</id><value>Skjul filnavn i miniatyrvisning</value></string>
 
   <string><id>15300</id><value>Bane ikke funnet eller ugyldig</value></string>
   <string><id>15301</id><value>Kunne ikke koble til nettverksserver</value></string>
