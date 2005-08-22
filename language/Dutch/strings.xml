@@ -444,6 +444,8 @@
 <string><id>512</id><value>Opstartscherm</value></string>
 <string><id>513</id><value>Beginscherm</value></string>
 <string><id>514</id><value>Handmatige instellingen</value></string>
+<string><id>515</id><value>Genre</value></string>
+<string><id>516</id><value>Behandel archieven</value></string>
 
 <string><id>600</id><value>CD kopiëren</value></string>
 <string><id>601</id><value>Middelmatig</value></string>
@@ -753,6 +755,11 @@
 <string><id>12373</id><value>Instellingen vergrendelen</value></string>
 <string><id>12374</id><value>Media vergrendelen</value></string>
 
+<string><id>12390</id><value>Systeem uptime</value></string>
+<string><id>12391</id><value>minuten</value></string>
+<string><id>12392</id><value>uur</value></string>
+<string><id>12393</id><value>dagen</value></string>
+
 <string><id>12600</id><value>Het Weer</value></string>
 <string><id>12900</id><value>Schermbeveiliging</value></string>
 <string><id>12901</id><value>Volledig scherm On Screen Display</value></string>
@@ -943,6 +950,7 @@
 <string><id>14068</id><value>Minuut</value></string>
 <string><id>14069</id><value>Wil je de volgende instellingen nu toepassen?</value></string>
 <string><id>14070</id><value>Instellingen toepassen</value></string>
+<string><id>14071</id><value>Sta bestanden verwijderen toe</value></string>
 
 <string><id>15000</id><value>XLink Kai</value></string>
 <string><id>15001</id><value>De service is niet verbonden, wil je</value></string>
@@ -1050,6 +1058,7 @@
 <string><id>13166</id><value>Headset/Microfoon op poort:</value></string>
 <string><id>13167</id><value>Memorystick op poort:</value></string>
 <string><id>13168</id><value>Afstandsbediening op poort:</value></string>
+
 <string><id>13270</id><value>Hardware:</value></string>
 <string><id>13271</id><value>CPU snelheid:</value></string>
 <string><id>13275</id><value>Harde schijf</value></string>
@@ -1079,16 +1088,35 @@
 
 <string><id>15213</id><value>[PLACEHOLDER]</value></string>
 <string><id>15214</id><value>Geleidelijk geluid synchroniseren</value></string>
+<string><id>15215</id><value>Verberg bestandsnaam bij thumbs</value></string>
 
-<string><id>16000</id><value>General</value></string>
-<string><id>16001</id><value>Configure Audio Hardware...</value></string>
-<string><id>16002</id><value>CDDB lookup</value></string>
-<string><id>16003</id><value>Player</value></string>
+<string><id>15300</id><value>Pad niet gevonden of ongeldig</value></string>
+<string><id>15301</id><value>Kan niet verbinden met netwerk server</value></string>
+<string><id>15302</id><value>Geen servers gevonden</value></string>
+<string><id>15303</id><value>Werkgroep niet gevonden</value></string>
 
-<string><id>16004</id><value>Synchroniseer gefaseerde video</value></string>
-<string><id>16005</id><value>- Keer velden om</value></string>
-<string><id>16006</id><value>Gesynchroniseerde fasering</value></string>
-<string><id>16007</id><value>Omgekeerde velden</value></string> 
-<string><id>16008</id><value>Aan</value></string>
+<string><id>16000</id><value>Algemeen</value></string>
+<string><id>16001</id><value>Configureer audio hardware...</value></string>
+<string><id>16002</id><value>CDDB opzoeken</value></string>
+<string><id>16003</id><value>Speler</value></string>
+
+<string><id>16009</id><value>Geef naam van de film op</value></string>
+<string><id>16010</id><value>Geef profielnaam op</value></string>
+<string><id>16011</id><value>Geef albumnaam op</value></string>
+<string><id>16012</id><value>Geef naam afspeellijst op</value></string>
+<string><id>16013</id><value>Geef nieuwe bestandsnaam op</value></string>
+<string><id>16014</id><value>Geef mapnaam op</value></string>
+<string><id>16015</id><value>Open map</value></string>
+<string><id>16016</id><value>Beschikbare opties: %A, %T, %N, %B, %D, %G, %Y, %F, %S</value></string>
+<string><id>16017</id><value>Geef zoekstring op</value></string>
+
+<string><id>16018</id><value>Geen</value></string>
+<string><id>16019</id><value>Automatisch selecteren</value></string>
+<string><id>16020</id><value>DeInterlace</value></string>
+<string><id>16021</id><value>Synchroniseer oneven</value></string>
+<string><id>16022</id><value>Synchroniseer even</value></string>
+<string><id>16023</id><value>Interlaced handling</value></string>
+
+<string><id>16024</id><value>Bezig met annuleren...</value></string>
 
 </strings>
