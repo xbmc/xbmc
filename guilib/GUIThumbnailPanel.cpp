@@ -65,6 +65,7 @@ CGUIThumbnailPanel::CGUIThumbnailPanel(DWORD dwParentID, DWORD dwControlId, int 
   m_iThumbHeight = 64;
   m_iThumbXPos = 8;
   m_iThumbYPos = 8;
+  m_bHideFileNameLabel = false;
   m_upDown.SetShowRange(true); // show the range by default
   ControlType = GUICONTROL_THUMBNAIL;
 }
@@ -136,8 +137,8 @@ void CGUIThumbnailPanel::RenderItem(bool bFocus, int iPosX, int iPosY, CGUIListI
   }
   if (iStage == 1) //render text
   {
-    // hide filenames in my pictures in thumbnail panel
-    if (m_gWindowManager.GetActiveWindow() == WINDOW_PICTURES && g_guiSettings.GetBool("Pictures.HideFilenamesInThumbPanel") && !pItem->m_bIsFolder)
+    // hide filenames in thumbnail panel
+    if (m_bHideFileNameLabel && !pItem->m_bIsFolder)
         return;
 
     CStdStringW strItemLabelUnicode;
