@@ -51,7 +51,7 @@ SPUInfo* CDVDDemuxSPU::AddData(BYTE* data, int iSize, int iStream, __int64 pts)
 {
   // mpeg spu streams start from 0x20 and end with 0x3f
   int iIndex = iStream - 0x20;
-  if (iIndex < 0 || iIndex > DVD_MAX_SPUSTREAMS || iSize < 2) return NULL;;
+  if (iIndex < 0 || iIndex > DVD_MAX_SPUSTREAMS || iSize < 2) return NULL;
 
   SPUData* pSPUData = &m_spuSreams[iIndex];
 

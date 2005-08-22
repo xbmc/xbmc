@@ -268,7 +268,7 @@ extern "C"
     if (iMode & O_BINARY)
       bBinary = true;
     bool bWrite = false;
-    if (iMode & O_RDWR)
+    if (iMode & O_RDWR || iMode & O_WRONLY)
       bWrite = true;
     // currently always overwrites
     if ((bWrite && pFile->OpenForWrite(str, bBinary, true)) || pFile->Open(str, bBinary) )
