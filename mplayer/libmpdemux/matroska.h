@@ -47,6 +47,7 @@
 #define MKV_V_QUICKTIME  "V_QUICKTIME"
 #define MKV_V_MPEG1      "V_MPEG1"
 #define MKV_V_MPEG2      "V_MPEG2"
+#define MKV_V_MPEG4_AVC  "V_MPEG4/ISO/AVC"
 
 #define MKV_S_TEXTASCII  "S_TEXT/ASCII"
 #define MKV_S_TEXTUTF8   "S_TEXT/UTF8"
@@ -58,6 +59,7 @@
 
 typedef struct {
   char type;                    // t = text, v = VobSub
+  int has_palette;              // If we have a valid palette
   unsigned int palette[16];     // for VobSubs
   int width, height;            // for VobSubs
   int custom_colors;

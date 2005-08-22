@@ -79,10 +79,6 @@ typedef struct mkv_track
   void *private_data;
   unsigned int private_size;
 
-  /* for vorbis audio */
-  unsigned char *headers[3];
-  uint32_t header_sizes[3];
-
   /* stuff for realmedia */
   int realmedia;
   int rv_kf_base, rv_kf_pts;
@@ -101,6 +97,7 @@ typedef struct mkv_track
   int reorder_timecodes;
   demux_packet_t **cached_dps;
   int num_cached_dps, num_allocated_dps;
+  float max_pts;
 
   /* generic content encoding support */
   mkv_content_encoding_t *encodings;
@@ -427,6 +424,7 @@ vobsub_parse_palette (mkv_track_t *t, const char *start)
              t->sh_sub.palette[11], t->sh_sub.palette[12],
              t->sh_sub.palette[13], t->sh_sub.palette[14],
              t->sh_sub.palette[15]);
+      t->sh_sub.has_palette = 1;
       return 2;
     }
   return 0;
@@ -515,6 +513,7 @@ free_cached_dps (demuxer_t *demuxer)
       track->cached_dps = NULL;
       track->num_cached_dps = 0;
       track->num_allocated_dps = 0;
+      track->max_pts = 0;
     }
 }
 
@@ -534,6 +533,7 @@ demux_mkv_parse_idx (mkv_track_t *t)
   memcpy(buf, t->private_data, t->private_size);
   buf[t->private_size] = 0;
   t->sh_sub.type = 'v';
+  t->sh_sub.has_palette = 0;
 
   pos = buf;
   start = buf;
@@ -1096,14 +1096,12 @@ demux_mkv_read_trackentry (demuxer_t *demuxer)
                    || !strcmp (track->codec_id, MKV_S_ASS))
             {
               track->subtitle_type = MATROSKA_SUBTYPE_SSA;
-              sub_utf8 = 1;
             }
           else if (!strcmp (track->codec_id, MKV_S_TEXTASCII))
             track->subtitle_type = MATROSKA_SUBTYPE_TEXT;
           if (!strcmp (track->codec_id, MKV_S_TEXTUTF8))
             {
               track->subtitle_type = MATROSKA_SUBTYPE_TEXT;
-              sub_utf8 = 1;
             }
           mp_msg (MSGT_DEMUX, MSGL_V, "[mkv] |  + Codec ID: %s\n",
                   track->codec_id);
@@ -1728,6 +1726,17 @@ demux_mkv_open_video (demuxer_t *demuxer, mkv_track_t *track)
           bih->biCompression = mmioFOURCC('m', 'p', 'g', '2');
           track->reorder_timecodes = 1;
         }
+      else if (!strcmp(track->codec_id, MKV_V_MPEG4_AVC))
+        {
+          bih->biCompression = mmioFOURCC('a', 'v', 'c', '1');
+          if (track->private_data && (track->private_size > 0))
+            {
+              bih->biSize += track->private_size;
+              bih = (BITMAPINFOHEADER *) realloc (bih, bih->biSize);
+              memcpy (bih + 1, track->private_data, track->private_size);
+            }
+          track->reorder_timecodes = 1;
+        }
       else
         {
           mp_msg (MSGT_DEMUX,MSGL_WARN,"[mkv] Unknown/unsupported CodecID "
@@ -1775,7 +1784,6 @@ demux_mkv_open_audio (demuxer_t *demuxer, mkv_track_t *track)
 {
   sh_audio_t *sh_a = new_sh_audio(demuxer, track->tnum);
   demux_packet_t *dp;
-  int i;
 
   sh_a->ds = demuxer->audio;
   sh_a->wf = (WAVEFORMATEX *) malloc (sizeof (WAVEFORMATEX));
@@ -1824,49 +1832,9 @@ demux_mkv_open_audio (demuxer_t *demuxer, mkv_track_t *track)
         track->a_formattag = mmioFOURCC('M', 'P', '4', 'A');
       else if (!strcmp(track->codec_id, MKV_A_VORBIS))
         {
-          unsigned char *c;
-          uint32_t offset, length;
-
           if (track->private_data == NULL)
             return 1;
-
-          c = (unsigned char *) track->private_data;
-          if (*c != 2)
-            {
-              mp_msg (MSGT_DEMUX, MSGL_WARN, "[mkv] Vorbis track does not "
-                      "contain valid headers.\n");
-              return 1;
-            }
-
-          offset = 1;
-          for (i=0; i < 2; i++)
-            {
-              length = 0;
-              while (c[offset] == (unsigned char) 0xFF
-                     && length < track->private_size)
-                {
-                  length += 255;
-                  offset++;
-                }
-              if (offset >= (track->private_size - 1))
-                {
-                  mp_msg (MSGT_DEMUX, MSGL_WARN, "[mkv] Vorbis track "
-                          "does not contain valid headers.\n");
-                  return 1;
-                }
-              length += c[offset];
-              offset++;
-              track->header_sizes[i] = length;
-            }
-
-          track->headers[0] = &c[offset];
-          track->headers[1] = &c[offset + track->header_sizes[0]];
-          track->headers[2] = &c[offset + track->header_sizes[0] +
-                                 track->header_sizes[1]];
-          track->header_sizes[2] = track->private_size - offset
-            - track->header_sizes[0] - track->header_sizes[1];
-
-          track->a_formattag = 0xFFFE;
+          track->a_formattag = mmioFOURCC('v', 'r', 'b', 's');
         }
       else if (!strcmp(track->codec_id, MKV_A_QDMC))
         track->a_formattag = mmioFOURCC('Q', 'D', 'M', 'C');
@@ -1995,16 +1963,11 @@ demux_mkv_open_audio (demuxer_t *demuxer, mkv_track_t *track)
           track->default_duration = 1024.0 / (float)sh_a->samplerate;
         }
     }
-  else if (track->a_formattag == 0xFFFE)  /* VORBIS */
+  else if (track->a_formattag == mmioFOURCC('v', 'r', 'b', 's'))  /* VORBIS */
     {
-      for (i=0; i < 3; i++)
-        {
-          dp = new_demux_packet (track->header_sizes[i]);
-          memcpy (dp->buffer,track->headers[i],track->header_sizes[i]);
-          dp->pts = 0;
-          dp->flags = 0;
-          ds_add_packet (demuxer->audio, dp);
-        }
+      sh_a->wf->cbSize = track->private_size;
+      sh_a->wf = (WAVEFORMATEX*)realloc(sh_a->wf, sizeof(WAVEFORMATEX) + sh_a->wf->cbSize);
+      memcpy((unsigned char *) (sh_a->wf+1), track->private_data, sh_a->wf->cbSize);
     }
   else if (track->private_size >= sizeof(real_audio_v4_props_t)
            && !strncmp (track->codec_id, MKV_A_REALATRC, 7))
@@ -2164,13 +2127,14 @@ void demux_mkv_seek (demuxer_t *demuxer, float rel_seek_secs, int flags);
 /** \brief Given a matroska track number, find the subtitle number that mplayer would ask for.
  *  \param d The demuxer for which the subtitle id should be returned.
  *  \param num The matroska track number we are looking up.
+ *  \param type The track type.
  */
-static int demux_mkv_sub_reverse_id(mkv_demuxer_t *d, int num)
+static int demux_mkv_reverse_id(mkv_demuxer_t *d, int num, int type)
 {
   int i, id;
   
   for (i=0, id=0; i < d->num_tracks; i++)
-    if (d->tracks[i] != NULL && d->tracks[i]->type == MATROSKA_TRACK_SUBTITLE) {
+    if (d->tracks[i] != NULL && d->tracks[i]->type == type) {
       if (d->tracks[i]->tnum == num)
         return id;
       id++;
@@ -2394,7 +2358,7 @@ demux_mkv_open (demuxer_t *demuxer)
           {
             mp_msg (MSGT_DEMUX, MSGL_INFO,
                     "[mkv] Will display subtitle track %u\n", track->tnum);
-	    dvdsub_id = demux_mkv_sub_reverse_id(mkv_d, track->tnum);
+	    dvdsub_id = demux_mkv_reverse_id(mkv_d, track->tnum, MATROSKA_TRACK_SUBTITLE);
             demuxer->sub->id = track->tnum;
           }
   else
@@ -2446,6 +2410,9 @@ demux_close_mkv (demuxer_t *demuxer)
   if (mkv_d)
     {
       int i;
+#ifdef USE_ICONV
+      subcp_close();
+#endif
       free_cached_dps (demuxer);
       if (mkv_d->tracks)
         {
@@ -2683,6 +2650,7 @@ handle_subtitles(demuxer_t *demuxer, mkv_track_t *track, char *block,
 #ifdef USE_ICONV
   subcp_recode1 (&mkv_d->subs);
 #endif
+  sub_utf8 = 1;
   vo_sub = &mkv_d->subs;
   vo_osd_changed (OSDTYPE_SUBTITLE);
 }
@@ -2907,6 +2875,8 @@ handle_video_bframes (demuxer_t *demuxer, mkv_track_t *track, uint8_t *buffer,
   memcpy(dp->buffer, buffer, size);
   dp->pos = demuxer->filepos;
   dp->pts = mkv_d->last_pts;
+  if ((track->num_cached_dps > 0) && (dp->pts < track->max_pts))
+    block_fref = 1;
   if (block_fref == 0)          /* I or P frame */
     flush_cached_dps (demuxer, track);
   if (block_bref != 0)          /* I frame, don't cache it */
@@ -2920,6 +2890,8 @@ handle_video_bframes (demuxer_t *demuxer, mkv_track_t *track, uint8_t *buffer,
     }
   track->cached_dps[track->num_cached_dps] = dp;
   track->num_cached_dps++;
+  if (dp->pts > track->max_pts)
+    track->max_pts = dp->pts;
 }
 
 static int
@@ -2941,7 +2913,7 @@ handle_block (demuxer_t *demuxer, uint8_t *block, uint64_t length,
   num = ebml_read_vlen_uint (block, &tmp);
   block += tmp;
   /* time (relative to cluster time) */
-  time = be2me_16 (* (int16_t *) block);
+  time = block[0] << 8 | block[1];
   block += 2;
   length -= tmp + 2;
   old_length = length;
@@ -3021,7 +2993,7 @@ handle_block (demuxer_t *demuxer, uint8_t *block, uint64_t length,
 
   if (use_this_block)
     {
-      mkv_d->last_pts = ds->pts = current_pts;
+      mkv_d->last_pts = current_pts;
       mkv_d->last_filepos = demuxer->filepos;
 
       for (i=0; i < laces; i++)
@@ -3369,15 +3341,50 @@ demux_mkv_control (demuxer_t *demuxer, int cmd, void *arg)
     case DEMUXER_CTRL_GET_PERCENT_POS:
       if (mkv_d->duration == 0)
         {
-          if (demuxer->movi_start == demuxer->movi_end)
             return DEMUXER_CTRL_DONTKNOW;
-
-          *((int *)arg) = (int)((demuxer->filepos - demuxer->movi_start) /
-                                ((demuxer->movi_end-demuxer->movi_start)/100));
-          return DEMUXER_CTRL_OK;
         }
 
       *((int *) arg) = (int) (100 * mkv_d->last_pts / mkv_d->duration);
+          return DEMUXER_CTRL_OK;
+
+    case DEMUXER_CTRL_SWITCH_AUDIO:
+      if (demuxer->audio && demuxer->audio->sh) {
+        int i;
+        demux_stream_t *d_audio = demuxer->audio;
+        int idx = d_audio->id - 1; // track ids are 1 based
+        int num = mkv_d->num_tracks;
+        mkv_track_t *otrack = mkv_d->tracks[idx];
+        mkv_track_t *track = 0;
+        if (*((int*)arg) < 0)
+        for (i = 1; i <= num; i++) {
+          track = mkv_d->tracks[(idx+i)%num];
+          if ((track->type == MATROSKA_TRACK_AUDIO) &&
+              !strcmp(track->codec_id, otrack->codec_id) &&
+              (track->private_size == otrack->private_size) &&
+              !memcmp(track->private_data, otrack->private_data, track->private_size) &&
+              (track->a_channels == otrack->a_channels) &&
+              (track->a_bps == otrack->a_bps) &&
+              (track->a_sfreq == otrack->a_sfreq)) {
+            break;
+          }
+        }
+        else {
+          track = demux_mkv_find_track_by_num (mkv_d, *((int*)arg), MATROSKA_TRACK_AUDIO);
+          if (track == NULL ||
+              strcmp (track->codec_id, otrack->codec_id) ||
+              (track->private_size != otrack->private_size) ||
+              memcmp(track->private_data, otrack->private_data, track->private_size) ||
+              track->a_channels != otrack->a_channels ||
+              track->a_bps != otrack->a_bps ||
+              track->a_sfreq != otrack->a_sfreq)
+            track = otrack;
+        }
+        if (track != otrack) {
+          d_audio->id = track->tnum;
+          ds_free_packs(d_audio);
+        }
+      }
+      *((int*)arg) = demux_mkv_reverse_id (mkv_d, demuxer->audio->id, MATROSKA_TRACK_AUDIO);
       return DEMUXER_CTRL_OK; 
 
     default:

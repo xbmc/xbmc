@@ -44,11 +44,15 @@
 #define DEMUXER_TYPE_LMLM4 34
 #define DEMUXER_TYPE_LAVF 35
 #define DEMUXER_TYPE_NSV 36
+#define DEMUXER_TYPE_VQF 37
+#define DEMUXER_TYPE_AVS 38
+#define DEMUXER_TYPE_AAC 39
+#define DEMUXER_TYPE_MPC 40
 
 // This should always match the higest demuxer type number.
 // Unless you want to disallow users to force the demuxer to some types
 #define DEMUXER_TYPE_MIN 0
-#define DEMUXER_TYPE_MAX 36
+#define DEMUXER_TYPE_MAX 40
 
 #define DEMUXER_TYPE_DEMUXERS (1<<16)
 // A virtual demuxer type for the network code
@@ -68,6 +72,7 @@
 #define DEMUXER_CTRL_GUESS 2
 #define DEMUXER_CTRL_GET_TIME_LENGTH 10
 #define DEMUXER_CTRL_GET_PERCENT_POS 11
+#define DEMUXER_CTRL_SWITCH_AUDIO 12
 
 // Holds one packet/frame/whatever
 typedef struct demux_packet_st {
@@ -284,5 +289,6 @@ char *demux_ogg_sub_lang(demuxer_t *demuxer, int index);
 
 extern unsigned long demuxer_get_time_length(demuxer_t *demuxer);
 extern int demuxer_get_percent_pos(demuxer_t *demuxer);
+extern int demuxer_switch_audio(demuxer_t *demuxer, int index);
 
 extern int demuxer_type_by_filename(char* filename);
