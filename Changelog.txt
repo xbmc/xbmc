@@ -5,7 +5,9 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
- - 21-08-2005 fixed: graphic context, view port could be out of screen bound
+ - 22-08-2005 changed: percentage seeking now seeks using relative time from current position. (fixes seeking in some mkv's)
+ - 22-08-2005 updated: mplayer.dll (fixes ogg in mkv's and ogm's)
+ - 22-08-2005 fixed: graphic context, view port could be out of screen bound
  - 22-08-2005 changed: startup sound is not played if nav sounds are turned off 
  - 22-08-2005 added: file manager, calculate folder size for multiple selected items
  - 22-08-2005 updated: Italian language file (Thnx to kotix)
