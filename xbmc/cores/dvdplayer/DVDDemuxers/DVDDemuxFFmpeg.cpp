@@ -463,28 +463,28 @@ void CDVDDemuxFFmpeg::AddStream(int iId)
     if (pStream->duration != AV_NOPTS_VALUE) m_streams[iId]->iDuration = (int)((pStream->duration / AV_TIME_BASE) & 0xFFFFFFFF);
 
     m_streams[iId]->codec = pStream->codec.codec_id;
-    m_streams[iId]->iId = pStream->id;
+    m_streams[iId]->iId = iId;
 
     //FFMPEG has an error doesn't set type properly for DTS
-    if( m_streams[iId]->codec == CODEC_ID_AC3 && (m_streams[iId]->iId >= 136 && m_streams[iId]->iId <= 143) )
+    if( m_streams[iId]->codec == CODEC_ID_AC3 && (pStream->id >= 136 && pStream->id <= 143) )
       m_streams[iId]->codec = CODEC_ID_DTS;
 
     switch(m_streams[iId]->codec)
     {
       case CODEC_ID_AC3:
-        m_streams[iId]->iPhysicalId = m_streams[iId]->iId - 128;
+        m_streams[iId]->iPhysicalId = pStream->id - 128;
         break;
       case CODEC_ID_DTS:
-        m_streams[iId]->iPhysicalId = m_streams[iId]->iId - 136;
+        m_streams[iId]->iPhysicalId = pStream->id - 136;
         break;
       case CODEC_ID_MP2:
-        m_streams[iId]->iPhysicalId = m_streams[iId]->iId - 448;
+        m_streams[iId]->iPhysicalId = pStream->id - 448;
         break;
       case CODEC_ID_PCM_S16BE:
-        m_streams[iId]->iPhysicalId = m_streams[iId]->iId - 160;
+        m_streams[iId]->iPhysicalId = pStream->id - 160;
         break;
       default:
-        m_streams[iId]->iPhysicalId = iId;
+        m_streams[iId]->iPhysicalId = pStream->id;
         break;
     }
 

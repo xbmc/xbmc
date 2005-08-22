@@ -5,6 +5,9 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 22-08-2005 fixed: dvdplayer, old subtitles were not removed, this resulted in high memory usage and crashes.
+ - 22-08-2005 fixed: dvdplayer, some dvds displayed to many audio / subtitle streams in osd.
+ - 22-08-2005 fixed: dvdplayer, sometimes menu overlays were removed during menu navigation.
  - 22-08-2005 changed: percentage seeking now seeks using relative time from current position. (fixes seeking in some mkv's)
  - 22-08-2005 updated: mplayer.dll (fixes ogg in mkv's and ogm's)
  - 22-08-2005 fixed: graphic context, view port could be out of screen bound

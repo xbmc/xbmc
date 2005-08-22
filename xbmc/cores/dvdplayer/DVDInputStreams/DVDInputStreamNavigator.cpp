@@ -106,7 +106,7 @@ void CDVDInputStreamNavigator::UnloadDlls()
 bool CDVDInputStreamNavigator::Open(const char* strFile)
 {
   char* strDVDFile;
-
+  
   if (!CDVDInputStream::Open(strFile)) return false;
   
   // load libdvdnav.dll and libdvdcss
@@ -166,7 +166,8 @@ bool CDVDInputStreamNavigator::Open(const char* strFile)
   }
 
   free(strDVDFile);
-
+  m_bStopped = false;
+  
   return true;
 }
 
@@ -187,7 +188,7 @@ void CDVDInputStreamNavigator::Close()
 
 int CDVDInputStreamNavigator::Read(BYTE* buf, int buf_size)
 {
-  if (!m_dvdnav) return -1;
+  if (!m_dvdnav || m_bStopped) return -1;
   if (buf_size < DVD_VIDEO_BLOCKSIZE)
   {
     CLog::Log(LOGERROR, "CDVDInputStreamNavigator: buffer size is to small, %d bytes, should be 2048 bytes", buf_size);
@@ -402,6 +403,11 @@ int CDVDInputStreamNavigator::ProcessBlock(BYTE* dest_buffer, int* read)
       {
         CLog::Log(LOGDEBUG, "DVDNAV_STOP");
         // Playback should end here.
+        
+        // don't read any further, it could be libdvdnav had some problems reading
+        // the disc. reading further results in a crash
+        m_bStopped = true;
+        
         // m_pDVDPlayer->OnDVDNavResult(NULL, DVDNAV_STOP);
         iNavresult = DVDNAV_STOP;
         bFinished = true;
@@ -421,8 +427,14 @@ int CDVDInputStreamNavigator::ProcessBlock(BYTE* dest_buffer, int* read)
   return iNavresult;
 }
 
-bool CDVDInputStreamNavigator::SetActiveAudioStream(int iPhysicalId)
+bool CDVDInputStreamNavigator::SetActiveAudioStream(int iId)
 {
+  if (m_dvdnav)
+  {
+    return (DVDNAV_STATUS_OK == dvdnav_audio_change(m_dvdnav, iId));
+  }
+  return false; 
+  /*
   vm_t* vm = dvdnav_get_vm(m_dvdnav);
 
   if((vm->state).domain != VTS_DOMAIN)
@@ -442,11 +454,17 @@ bool CDVDInputStreamNavigator::SetActiveAudioStream(int iPhysicalId)
       }
     }
   }
-  return false;
+  return false;*/
 }
 
-bool CDVDInputStreamNavigator::SetActiveSubtitleStream(int iPhysicalId)
+bool CDVDInputStreamNavigator::SetActiveSubtitleStream(int iId)
 {
+  if (m_dvdnav)
+  {
+    return (DVDNAV_STATUS_OK == dvdnav_subpicture_change(m_dvdnav, iId));
+  }
+  return false; 
+/*
   vm_t* vm = dvdnav_get_vm(m_dvdnav);
 
   if((vm->state).domain != VTS_DOMAIN)
@@ -461,14 +479,15 @@ bool CDVDInputStreamNavigator::SetActiveSubtitleStream(int iPhysicalId)
       int streamN0 = ((vm->state).pgc->subp_control[subpN] >> 16) & 0x1f;
       int streamN1 = ((vm->state).pgc->subp_control[subpN] >> 8) & 0x1f;
       int streamN2 = (vm->state).pgc->subp_control[subpN] & 0x1f;
-      if( streamN0 == iPhysicalId || streamN1 == iPhysicalId || streamN2 == iPhysicalId )
+      if( streamN0 == iId || streamN1 == iId || streamN2 == iId )
       {
         (vm->state).SPST_REG = subpN;
         return true;
       }
     }
   }
-  return false;
+  
+  return false;*/
 }
 
 void CDVDInputStreamNavigator::ActivateButton()
@@ -582,7 +601,7 @@ void CDVDInputStreamNavigator::OnNext()
 {
   if (m_dvdnav && !IsInMenu())
   {
-    m_bDiscardHop = true;
+    //m_bDiscardHop = true;
     dvdnav_next_pg_search(m_dvdnav);
   }
 }
@@ -592,7 +611,7 @@ void CDVDInputStreamNavigator::OnPrevious()
 {
   if (m_dvdnav && !IsInMenu())
   {
-    m_bDiscardHop = true;
+    //m_bDiscardHop = true;
     dvdnav_prev_pg_search(m_dvdnav);
   }
 }
@@ -807,3 +826,46 @@ float CDVDInputStreamNavigator::GetVideoAspectRatio()
   }    
 }
 
+int CDVDInputStreamNavigator::GetNrOfTitles()
+{
+  int iTitles = 0;
+  
+  if (m_dvdnav)
+  {
+    dvdnav_get_number_of_titles(m_dvdnav, &iTitles);
+  }
+  
+  return iTitles;
+}
+
+int CDVDInputStreamNavigator::GetNrOfParts(int iTitle)
+{
+  int iParts = 0;
+  
+  if (m_dvdnav)
+  {
+    dvdnav_get_number_of_parts(m_dvdnav, iTitle, &iParts);
+  }
+  
+  return iParts;
+}
+
+bool CDVDInputStreamNavigator::PlayTitle(int iTitle)
+{
+  if (m_dvdnav)
+  {
+    return (DVDNAV_STATUS_OK == dvdnav_title_play(m_dvdnav, iTitle));
+  }
+  
+  return false;
+}
+
+bool CDVDInputStreamNavigator::PlayPart(int iTitle, int iPart)
+{
+  if (m_dvdnav)
+  {
+    return (DVDNAV_STATUS_OK == dvdnav_part_play(m_dvdnav, iTitle, iPart));
+  }
+  
+  return false;
+}
