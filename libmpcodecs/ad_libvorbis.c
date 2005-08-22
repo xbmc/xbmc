@@ -8,10 +8,6 @@
 #include "config.h"
 #include "ad_internal.h"
 
-#ifdef USE_SETLOCALE
-#include <locale.h>
-#endif
-
 #ifdef HAVE_OGGVORBIS
 
 static ad_info_t info = 
@@ -50,13 +46,7 @@ static int read_vorbis_comment( char* ptr, char* comment, char* format, ... ) {
 
   va_start( va, format );
   clen = strlen( comment );
-#ifdef USE_SETLOCALE
-  setlocale( LC_NUMERIC, "C" );
-#endif
   ret = strncasecmp( ptr, comment, clen) == 0 ? vsscanf( ptr+clen, format, va ) : 0;
-#ifdef USE_SETLOCALE
-  setlocale( LC_NUMERIC, "" );
-#endif
   va_end( va );
 
   return ret;
@@ -70,6 +60,8 @@ static int preinit(sh_audio_t *sh)
 
 static int init(sh_audio_t *sh)
 {
+  unsigned int offset, i, length, hsizes[3], *headers[3];
+  unsigned char* extradata;
   ogg_packet op;
   vorbis_comment vc;
   struct ov_struct_st *ov;
@@ -79,30 +71,66 @@ static int init(sh_audio_t *sh)
     free(ov); \
     return 0; \
   }
+
   /// Init the decoder with the 3 header packets
   ov = (struct ov_struct_st*)malloc(sizeof(struct ov_struct_st));
   vorbis_info_init(&ov->vi);
   vorbis_comment_init(&vc);
-  op.bytes = ds_get_packet(sh->ds,&op.packet);
-  op.b_o_s  = 1;
   /// Header
-  if(vorbis_synthesis_headerin(&ov->vi,&vc,&op) <0) {
-    mp_msg(MSGT_DECAUDIO,MSGL_ERR,"OggVorbis: initial (identification) header broken!\n");
+  if(! sh->wf) {
+    mp_msg(MSGT_DECAUDIO,MSGL_ERR,"ad_vorbis, extradata seems to be absent! exit\n");
     ERROR();
   }
-  op.bytes = ds_get_packet(sh->ds,&op.packet);
-  op.b_o_s  = 0;
   /// Comments
-  if(vorbis_synthesis_headerin(&ov->vi,&vc,&op) <0) {
-    mp_msg(MSGT_DECAUDIO,MSGL_ERR,"OggVorbis: comment header broken!\n");
+  if(! sh->wf->cbSize) {
+    mp_msg(MSGT_DECAUDIO,MSGL_ERR,"ad_vorbis, extradata seems to be absent!, exit\n");
     ERROR();
   }
-  op.bytes = ds_get_packet(sh->ds,&op.packet);
-  //// Codebook
-  if(vorbis_synthesis_headerin(&ov->vi,&vc,&op)<0) {
-    mp_msg(MSGT_DECAUDIO,MSGL_WARN,"OggVorbis: codebook header broken!\n");
+
+  mp_msg(MSGT_DECAUDIO,MSGL_V,"ad_vorbis, extradata seems is %d bytes long\n", sh->wf->cbSize);
+  extradata = (char*) (sh->wf+1);
+  if(!extradata) {
+    mp_msg(MSGT_DECAUDIO,MSGL_ERR,"ad_vorbis, extradata seems to be NULL!, exit\n");
     ERROR();
-  } else { /// Print the infos
+  }
+
+  if(*extradata != 2) {
+    mp_msg (MSGT_DEMUX, MSGL_WARN, "ad_vorbis: Vorbis track does not contain valid headers.\n");
+    ERROR();
+  }
+  //// Codebook
+  offset = 1;
+  for (i=0; i < 2; i++) {
+    length = 0;
+    while ((extradata[offset] == (unsigned char) 0xFF) && length < sh->wf->cbSize) {
+      length += 255;
+      offset++;
+    }
+    if(offset >= (sh->wf->cbSize - 1)) {
+      mp_msg (MSGT_DEMUX, MSGL_WARN, "ad_vorbis: Vorbis track does not contain valid headers.\n");
+      ERROR();
+    }
+    length += extradata[offset];
+    offset++;
+    mp_msg (MSGT_DEMUX, MSGL_V, "ad_vorbis, offset: %u, length: %u\n", offset, length);
+    hsizes[i] = length;
+  }
+
+  headers[0] = &extradata[offset];
+  headers[1] = &extradata[offset + hsizes[0]];
+  headers[2] = &extradata[offset + hsizes[0] + hsizes[1]];
+  hsizes[2] = sh->wf->cbSize - offset - hsizes[0] - hsizes[1];
+  mp_msg (MSGT_DEMUX, MSGL_V, "ad_vorbis, header sizes: %d %d %d\n", hsizes[0], hsizes[1], hsizes[2]);
+
+  for(i=0; i<3; i++) {
+    op.bytes = hsizes[i];
+    op.packet = headers[i];
+    op.b_o_s  = (i == 0);
+  if(vorbis_synthesis_headerin(&ov->vi,&vc,&op)<0) {
+      mp_msg(MSGT_DECAUDIO,MSGL_ERR,"OggVorbis: header n. %d broken! len=%d\n", i, op.bytes);
+    ERROR();
+    }
+    if(i == 2) {
     float rg_gain=0.f, rg_peak=0.f;
     char **ptr=vc.user_comments;
     while(*ptr){
@@ -141,6 +169,8 @@ static int init(sh_audio_t *sh)
       mp_msg(MSGT_DECAUDIO,MSGL_V,"OggVorbis: Gain = %+.2f dB, Peak = %.4f, Scale = %.2f\n", rg_gain, rg_peak, ov->rg_scale);
     mp_msg(MSGT_DECAUDIO,MSGL_V,"OggVorbis: Encoded by: %s\n",vc.vendor);
   }
+  }
+
   vorbis_comment_clear(&vc);
 
 //  printf("lower=%d  upper=%d  \n",(int)ov->vi.bitrate_lower,(int)ov->vi.bitrate_upper);
