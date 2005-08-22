@@ -316,8 +316,6 @@ void CDVDPlayer::Process()
       
       // For some reason this isn't always found.. not sure why exactly. what should be used?? pts or dts???
       // darkie: pts should be used, but with ffmpeg the movie is much smoother when using dts.
-      int bResync = (!(m_dvd.iFlagSentStart & 1) && pPacket->pts > m_dvd.iNAVPackStart && pPacket->pts < m_dvd.iNAVPackFinish);
-      if (bResync) iPacketMessage |= DVDPACKET_MESSAGE_RESYNC;
       if (m_bDontSkipNextFrame)
       {
         iPacketMessage |= DVDPACKET_MESSAGE_NOSKIP;
@@ -338,12 +336,17 @@ void CDVDPlayer::Process()
               m_dvdPlayerAudio.m_iSourceChannels != pStreamAudio->iChannels) CloseAudioStream(false);
         }
 
-        if (m_iCurrentAudioStream >= 0)
+        //If this is the first packet after a discontinuity, send it as a resync
+        if( !(m_dvd.iFlagSentStart & 1) ) 
         {
-          m_dvdPlayerAudio.m_packetQueue.Put(pPacket, (void*)iPacketMessage);
-          if (bResync) m_dvd.iFlagSentStart |= 1;
+          m_dvd.iFlagSentStart |= 1;
+          iPacketMessage |= DVDPACKET_MESSAGE_RESYNC;
         }
-        else CDVDDemuxUtils::FreeDemuxPacket(pPacket);
+
+        if (m_iCurrentAudioStream >= 0)
+          m_dvdPlayerAudio.m_packetQueue.Put(pPacket, (void*)iPacketMessage);
+        else 
+          CDVDDemuxUtils::FreeDemuxPacket(pPacket);
       }
       else if (pPacket->iStreamId == m_iCurrentVideoStream ||
                (m_iCurrentVideoStream < 0 && pStream->type == STREAM_VIDEO))
@@ -351,12 +354,18 @@ void CDVDPlayer::Process()
         // if we have no video stream yet, openup the video device now
         if (m_iCurrentVideoStream < 0) OpenVideoStream(pPacket->iStreamId);
 
-        if (m_iCurrentVideoStream >= 0)
+        //If this is the first packet after a discontinuity, send it as a resync
+        if( !(m_dvd.iFlagSentStart & 2) ) 
         {
-          m_dvdPlayerVideo.m_packetQueue.Put(pPacket, (void*)iPacketMessage);
-          if (bResync) m_dvd.iFlagSentStart |= 2;
+          m_dvd.iFlagSentStart |= 2;
+          iPacketMessage |= DVDPACKET_MESSAGE_RESYNC;
         }
-        else CDVDDemuxUtils::FreeDemuxPacket(pPacket);
+
+        if (m_iCurrentVideoStream >= 0)
+          m_dvdPlayerVideo.m_packetQueue.Put(pPacket, (void*)iPacketMessage);
+        else 
+          CDVDDemuxUtils::FreeDemuxPacket(pPacket);
+
       }
       else CDVDDemuxUtils::FreeDemuxPacket(pPacket); // free it since we won't do anything with it
 

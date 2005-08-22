@@ -15,6 +15,8 @@ DWORD video_refresh_thread(void *arg);
 
 #define ABS(a) ((a) >= 0 ? (a) : (-(a)))
 
+//Define to keep something between two boundaries
+#define BOUNDS(a, b, c) ( (b) < (a) ? (a) : ( (b) > (c) ? (c) : (b) ) )
 
 void xbox_dvdplayer_render_update()
 {
@@ -501,22 +503,26 @@ DWORD video_refresh_thread(void *arg)
         g_renderManager.SetFieldSync( FS_NONE );
       
       //Prepare image for display, will speed up rendering as it frees resources for decode earlier
-      g_renderManager.PrepareDisplay();
+      //g_renderManager.PrepareDisplay();
 
 
-      bool bDiscontinuity = pDVDPlayerVideo->m_pClock->HadDiscontinuity(1 * DVD_TIME_BASE);
+      bool bDiscontinuity = pDVDPlayerVideo->m_pClock->HadDiscontinuity(DVD_TIME_BASE / 10);
       if (bDiscontinuity)
       {
-        //Playback at normal fps untill 1 sec after discontinuity
+        //Playback at normal fps until after discontinuity
         iFrameTime = vp->iDuration;
         iSleepTime = iFrameTime - (int)(frameclock.GetClock() - iTimeStamp);
       }
       else
-        iSleepTime = (int)((vp->pts + pDVDPlayerVideo->m_iVideoDelay - pDVDPlayerVideo->m_pClock->GetClock()) & 0xFFFFFFFF);
+      {
+        iSleepTime = (int)((vp->pts - pDVDPlayerVideo->m_pClock->GetClock()) & 0xFFFFFFFF);
       
+        //User set delay
+        iSleepTime += (int)pDVDPlayerVideo->m_iVideoDelay;
+      }
 
       //Adjust for flippage delay
-      iSleepTime = iSleepTime + iFrameTimeError;
+      iSleepTime += iFrameTimeError;
 
 
       if (iSleepTime > 500000) iSleepTime = 500000; // drop to a minimum of 2 frames/sec
@@ -533,26 +539,13 @@ DWORD video_refresh_thread(void *arg)
       iTimeStamp = frameclock.GetClock();
       
       // menu pictures should never be skipped!
-      if ((vp->iFlags & DVP_FLAG_NOSKIP) || iSleepTime > -(int)vp->iDuration) 
+      if ((vp->iFlags & DVP_FLAG_NOSKIP) || iSleepTime > -(int)vp->iDuration*2) 
       {
         g_renderManager.FlipPage();
       
-        if( bDiscontinuity )
-        {
-          //Adjust using the delay in flippage
-          iFrameTimeError = (int)((iTimeStamp - frameclock.GetClock()) & 0xFFFFFFFF);
-        }
-        else
-        {
-          //Recalculate the sleep time, so we can adjust with how much we were off
-          iFrameTimeError = (int)((vp->pts + pDVDPlayerVideo->m_iVideoDelay - frameclock.GetClock()) & 0xFFFFFFFF);
-        }
+        //Adjust using the delay in flippage
+        iFrameTimeError = (int)((iTimeStamp - frameclock.GetClock()) & 0xFFFFFFFF);
 
-        //Check bounds for this as it can be way off sometimes
-        if( iFrameTimeError > (int)vp->iDuration )
-          iFrameTimeError = (int)vp->iDuration ;
-        else if( iFrameTimeError < -(int)vp->iDuration  )
-          iFrameTimeError = -(int)vp->iDuration;
       }
       else
       {
