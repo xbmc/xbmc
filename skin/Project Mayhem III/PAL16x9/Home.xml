@@ -262,7 +262,7 @@
 	<font>special13</font>
 	<hyperlink>1</hyperlink>
 	<onleft>98</onleft>
-	<onright>99</onright>
+	<onright>97</onright>
 	<onup>9</onup>
 	<ondown>4</ondown>
 	<textureFocus>home-focus.gif</textureFocus>
@@ -283,7 +283,7 @@
 	<hyperlink>2</hyperlink>
 	<font>special13</font>
 	<onleft>98</onleft>
-	<onright>99</onright>
+	<onright>97</onright>
 	<onup>2</onup>
 	<ondown>5</ondown>
 	<textureFocus>home-focus.gif</textureFocus>
@@ -304,7 +304,7 @@
 	<font>special13</font>
 	<hyperlink>6</hyperlink>
 	<onleft>98</onleft>
-	<onright>99</onright>
+	<onright>97</onright>
 	<onup>4</onup>
 	<ondown>3</ondown>
 	<textureFocus>home-focus.gif</textureFocus>
@@ -325,7 +325,7 @@
 	<hyperlink>501</hyperlink>
 	<font>special13</font>
 	<onleft>98</onleft>
-	<onright>99</onright>
+	<onright>97</onright>
 	<onup>5</onup>
 	<ondown>7</ondown>
 	<textureFocus>home-focus.gif</textureFocus>
@@ -346,7 +346,7 @@
 	<font>special13</font>
 	<hyperlink>2600</hyperlink>
 	<onleft>98</onleft>
-	<onright>99</onright>
+	<onright>97</onright>
 	<onup>3</onup>
 	<ondown>9</ondown>
 	<textureFocus>home-focus.gif</textureFocus>
@@ -388,7 +388,7 @@
 	<hyperlink>3</hyperlink>
 	<font>font10</font>
 	<onleft>9</onleft>
-	<onright>99</onright>
+	<onright>97</onright>
 	<onup>7</onup>
 	<ondown>2</ondown>
 	<textureFocus>home-focus.gif</textureFocus>
@@ -477,8 +477,8 @@
 
     <control>
       <description>xlink kai conditional button</description>
-      <type>conditionalbutton</type>
-      <id>99</id>
+      <type>button</type>
+      <id>97</id>
       <posX>555</posX>
       <posY>501</posY>
       <width>30</width>
@@ -491,7 +491,7 @@
       <onright>100</onright>
       <onup>2</onup>
       <ondown>2</ondown>
-      <visible effect="fade" time="1000">!Player.HasAudio | ![Player.HasAudio + System.IdleTime(60)]</visible>
+      <visible effect="fade" time="1000">System.KaiConnected + [!Player.HasAudio | ![Player.HasAudio + System.IdleTime(60)]]</visible>
     </control>
 
     <control>
@@ -506,7 +506,7 @@
       <textureFocus>home-sub.gif</textureFocus>
       <textureNoFocus>home-sub.png</textureNoFocus>
       <label>-</label>
-      <onleft>99</onleft>
+      <onleft>97</onleft>
       <onright>98</onright>
       <onup>2</onup>
       <ondown>2</ondown>
