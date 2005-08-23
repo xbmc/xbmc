@@ -152,13 +152,13 @@
     </control>
 
     <control>
-      <description>reload skin button</description>
+      <description>reload xbmc button</description>
       <type>button</type>
       <id>3116</id>
       <posX>150</posX>
       <posY>10</posY>
       <width>60</width>
-      <height>80</height>
+      <height>65</height>
       <textureFocus>sub-shutdown-focus.gif</textureFocus>
       <textureNoFocus>-</textureNoFocus>
       <execute>XBMC.RestartApp()</execute>
