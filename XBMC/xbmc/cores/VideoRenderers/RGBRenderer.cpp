@@ -55,14 +55,13 @@ CRGBRenderer::CRGBRenderer(LPDIRECT3DDEVICE8 pDevice)
 
 void CRGBRenderer::DeleteYUVTexture()
 {
-  g_graphicsContext.Lock();
+  CGraphicContext::CLock lock(g_graphicsContext);
   if (m_YUVTexture)
   {
     m_YUVTexture->Release();
     m_YUVTexture = NULL;
     CLog::Log(LOGDEBUG, "Deleted YUV video texture");
   }
-  g_graphicsContext.Unlock();
 }
 
 void CRGBRenderer::ClearYUVTexture()
@@ -75,13 +74,12 @@ void CRGBRenderer::ClearYUVTexture()
 
 bool CRGBRenderer::CreateYUVTexture()
 {
-  g_graphicsContext.Lock();
+  CGraphicContext::CLock lock(g_graphicsContext);
   if (!m_YUVTexture)
   {
     if (D3D_OK != m_pD3DDevice->CreateTexture(m_iSourceWidth, m_iSourceHeight, 1, 0, D3DFMT_LIN_A8R8G8B8, 0, &m_YUVTexture))
     {
       CLog::Log(LOGERROR, "Could not create YUV interleave texture");
-      g_graphicsContext.Unlock();
       return false;
     }
     CLog::Log(LOGINFO, "Created YUV texture");
@@ -96,7 +94,6 @@ bool CRGBRenderer::CreateYUVTexture()
   m_YUVFieldTexture.Register(lr.pBits);
   m_YUVTexture->UnlockRect(0);
 
-  g_graphicsContext.Unlock();
   return true;
 }
 
@@ -571,7 +568,7 @@ LONG CRGBRenderer::yuv2rgb_ps2(BYTE Y, BYTE U, BYTE V)
 
 void CRGBRenderer::DeleteLookupTextures()
 {
-  g_graphicsContext.Lock();
+  CGraphicContext::CLock lock(g_graphicsContext);
   if (m_UVLookup)
   {
     m_UVLookup->Release();
@@ -582,7 +579,6 @@ void CRGBRenderer::DeleteLookupTextures()
     m_UVErrorLookup->Release();
     m_UVErrorLookup = NULL;
   }
-  g_graphicsContext.Unlock();
 }
 
 bool CRGBRenderer::CreateLookupTextures()
