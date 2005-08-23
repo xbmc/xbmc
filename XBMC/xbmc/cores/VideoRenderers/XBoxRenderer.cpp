@@ -54,7 +54,7 @@ CXBoxRenderer::~CXBoxRenderer()
 //********************************************************************************************************
 void CXBoxRenderer::DeleteOSDTextures(int index)
 {
-  CGraphicContext::CLock lock(g_graphicsContext);
+  CSingleLock lock(g_graphicsContext);
   if (m_pOSDYTexture[index])
   {
     m_pOSDYTexture[index]->Release();
@@ -240,7 +240,7 @@ void CXBoxRenderer::DrawAlpha(int x0, int y0, int w, int h, unsigned char *src, 
   //if new height is heigher than current osd-texture height, recreate the textures with new height.
   if (h > m_iOSDTextureHeight[iOSDBuffer])
   {
-    CGraphicContext::CLock lock(g_graphicsContext);
+    CSingleLock lock(g_graphicsContext);
 
     DeleteOSDTextures(iOSDBuffer);
     m_iOSDTextureHeight[iOSDBuffer] = h;
@@ -775,7 +775,7 @@ void CXBoxRenderer::Update(bool bPauseDrawing)
 {
   if (m_bConfigured)
   {
-    CGraphicContext::CLock lock(g_graphicsContext);
+    CSingleLock lock(g_graphicsContext);
     bool bFullScreen = g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating();
     g_graphicsContext.SetVideoResolution(bFullScreen ? m_iResolution : g_guiSettings.m_LookAndFeelResolution, !bFullScreen);
     RenderUpdate(false);
@@ -786,7 +786,7 @@ void CXBoxRenderer::RenderUpdate(bool clear)
 {
   if (!m_YTexture[0]) return ;
 
-  CGraphicContext::CLock lock(g_graphicsContext);
+  CSingleLock lock(g_graphicsContext);
   ManageDisplay();
   if (clear)
     m_pD3DDevice->Clear( 0L, NULL, D3DCLEAR_TARGET, m_clearColour, 1.0f, 0L );
@@ -810,7 +810,7 @@ void CXBoxRenderer::SetFieldSync(EFIELDSYNC mSync)
     if( m_iFieldSync != mSync )
     {
       //Need to lock here as this is not allowed to change while rendering
-      CGraphicContext::CLock lock(g_graphicsContext);      
+      CSingleLock lock(g_graphicsContext);      
       m_iFieldSync = mSync;
     }
 }
@@ -825,7 +825,7 @@ void CXBoxRenderer::PrepareDisplay()
 
   if (g_graphicsContext.IsFullScreenVideo() )
   {    
-    CGraphicContext::CLock lock(g_graphicsContext);
+    CSingleLock lock(g_graphicsContext);
 
     ManageDisplay();
 
@@ -868,7 +868,7 @@ void CXBoxRenderer::FlipPage(bool bAsync)
 
   if (g_graphicsContext.IsFullScreenVideo() )
   {
-    CGraphicContext::CLock lock(g_graphicsContext);
+    CSingleLock lock(g_graphicsContext);
 
     if( !m_bPrepared )
     {
@@ -1084,7 +1084,7 @@ unsigned int CXBoxRenderer::PreInit()
 
 void CXBoxRenderer::UnInit()
 {
-  CGraphicContext::CLock lock(g_graphicsContext);
+  CSingleLock lock(g_graphicsContext);
 
   m_bStop = true;
   m_eventFrame.PulseEvent();
@@ -1101,7 +1101,7 @@ void CXBoxRenderer::UnInit()
 
 void CXBoxRenderer::RenderBlank()
 { // clear the screen
-  CGraphicContext::CLock lock(g_graphicsContext);
+  CSingleLock lock(g_graphicsContext);
   m_pD3DDevice->Clear( 0L, NULL, D3DCLEAR_TARGET, 0x00000000, 1.0f, 0L );
   m_pD3DDevice->Present( NULL, NULL, NULL, NULL );
 }
@@ -1209,7 +1209,7 @@ void CXBoxRenderer::AutoCrop(bool bCrop)
 
   if (bCrop)
   {
-    CGraphicContext::CLock lock(g_graphicsContext);
+    CSingleLock lock(g_graphicsContext);
     // apply auto-crop filter - only luminance needed, and we run vertically down 'n'
     // runs down the image.
     int min_detect = 8;                                // reasonable amount (what mplayer uses)
@@ -1364,7 +1364,7 @@ void CXBoxRenderer::RenderLowMem()
 
 void CXBoxRenderer::CreateThumbnail(LPDIRECT3DSURFACE8 surface, unsigned int width, unsigned int height)
 {
-  CGraphicContext::CLock lock(g_graphicsContext);
+  CSingleLock lock(g_graphicsContext);
   LPDIRECT3DSURFACE8 oldRT;
   RECT saveSize = rd;
   rd.left = rd.top = 0;
@@ -1383,7 +1383,7 @@ void CXBoxRenderer::CreateThumbnail(LPDIRECT3DSURFACE8 surface, unsigned int wid
 //********************************************************************************************************
 void CXBoxRenderer::DeleteYV12Texture(int index)
 {
-  CGraphicContext::CLock lock(g_graphicsContext);
+  CSingleLock lock(g_graphicsContext);
   if (m_YTexture[index])
   {
     m_YTexture[index]->Release();
@@ -1420,7 +1420,7 @@ void CXBoxRenderer::ClearYV12Texture(int index)
 
 void CXBoxRenderer::CopyYV12Texture(int dest)
 {
-  CGraphicContext::CLock lock(g_graphicsContext);
+  CSingleLock lock(g_graphicsContext);
   int src = 1-dest;
   D3DLOCKED_RECT lr_src, lr_dest;
   m_YTexture[src]->LockRect(0, &lr_src, NULL, 0);
@@ -1444,7 +1444,7 @@ void CXBoxRenderer::CopyYV12Texture(int dest)
 
 bool CXBoxRenderer::CreateYV12Texture(int index)
 {
-  CGraphicContext::CLock lock(g_graphicsContext);
+  CSingleLock lock(g_graphicsContext);
   DeleteYV12Texture(index);
   if (
     D3D_OK != m_pD3DDevice->CreateTexture(m_iSourceWidth, m_iSourceHeight, 1, 0, D3DFMT_LIN_L8, 0, &m_YTexture[index]) ||
@@ -1510,7 +1510,7 @@ void CXBoxRenderer::Process()
     try
     {
 
-      CGraphicContext::CLock lock(g_graphicsContext);
+      CSingleLock lock(g_graphicsContext);
       CXBoxRenderer::FlipPage(false);
     }
     catch(...)

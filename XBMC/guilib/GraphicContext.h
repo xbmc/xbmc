@@ -13,6 +13,8 @@
 
 #include "IMsgSenderCallback.h"
 #include "common/mouse.h"
+#include "../xbmc/utils/CriticalSection.h"
+#include "../xbmc/utils/SingleLock.h"
 
 /*!
  \ingroup graphics
@@ -66,7 +68,7 @@ struct RESOLUTION_INFO
  \ingroup graphics
  \brief 
  */
-class CGraphicContext
+class CGraphicContext : public CCriticalSection
 {
 public:
   CGraphicContext(void);
@@ -102,8 +104,8 @@ public:
   RESOLUTION GetVideoResolution() const;
   void ResetOverscan(RESOLUTION res, OVERSCAN &overscan);
   void ResetScreenParameters(RESOLUTION res);
-  void Lock() { EnterCriticalSection(&m_critSection); }
-  void Unlock() { LeaveCriticalSection(&m_critSection); }
+  void Lock() { EnterCriticalSection(*this); }
+  void Unlock() { LeaveCriticalSection(*this); }
   void EnablePreviewWindow(bool bEnable);
   void ScalePosToScreenResolution(DWORD& x, DWORD& y, RESOLUTION res);
   void ScaleRectToScreenResolution(DWORD& left, DWORD& top, DWORD& right, DWORD& bottom, RESOLUTION res);
@@ -128,31 +130,7 @@ public:
   void SetControlAlpha(DWORD alpha) { m_controlAlpha = alpha; };
   void SetWindowAlpha(DWORD alpha) { m_windowAlpha = alpha; };
 
-  class CLock
-  {
-  public:
-    CLock(CGraphicContext &mContext)
-    {
-      m_Section = &mContext.m_critSection;
-      EnterCriticalSection(m_Section);
-    }
-    ~CLock()
-    {
-      Unlock();
-    }
-    void Unlock()
-    {
-      //This is actually not thaat thread safe in itself.. 
-      //but very unlikely that somebody would call unlock on this from two threads
-      if( m_Section ) LeaveCriticalSection(m_Section);
-      m_Section = NULL; 
-    }
-  private:
-    CRITICAL_SECTION *m_Section;
-  };
-
 protected:
-  CRITICAL_SECTION m_critSection;
   IMsgSenderCallback* m_pCallback;
   LPDIRECT3DDEVICE8 m_pd3dDevice;
   D3DPRESENT_PARAMETERS* m_pd3dParams;
