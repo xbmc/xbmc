@@ -247,7 +247,7 @@ bool CGUIControl::OnMessage(CGUIMessage& message)
         }
       }
       else
-        m_bVisible = true;
+        m_bVisible = m_visibleCondition?g_infoManager.GetBool(m_visibleCondition):true;
       return true;
       break;
 
