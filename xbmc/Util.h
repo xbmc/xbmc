@@ -189,6 +189,7 @@ static void CreateRarPath(CStdString& strUrlPath, const CStdString& strRarPath,
   static bool GetFTPServerUserName(int iFTPUserID, CStdString &strFtpUser1, int &iUserMax );
   static bool SetFTPServerUserPassword(CStdString strFtpUserName, CStdString strFtpUserPassword);
   static bool SetXBOXNickName(CStdString strXboxNickNameIn, CStdString &strXboxNickNameOut);
+  static void GetRecursiveListing(const CStdString& strPath, CFileItemList& items, const CStdString& strMask);
 
 private:
   static bool m_bNetworkUp;
