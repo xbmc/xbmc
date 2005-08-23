@@ -21,6 +21,8 @@ namespace DIRECTORY
       // fill in paths
       for( int iEntry=0;iEntry<items.Size();++iEntry)
       {
+        if (items[iEntry]->GetLabel() == "..")
+          continue;
         if ((IsAllowed(items[iEntry]->m_strPath)) || (items[iEntry]->m_bIsFolder))
         {
           items[iEntry]->m_strPath = strPath+items[iEntry]->m_strPath;
@@ -35,5 +37,19 @@ namespace DIRECTORY
     }
     else
       return( false );
+  }
+
+  bool CRarDirectory::ContainsFiles(const CStdString& strPath)
+  {
+    CFileItemList items;
+    if (g_RarManager.GetFilesInRar(items,strPath))
+    {
+      if (items.Size() > 1)
+        return true;
+      
+      return false;
+    }
+    
+    return false;
   }
 }

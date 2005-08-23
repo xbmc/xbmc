@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 23-08-2005 added: zip/rar support in webserver.
  - 23-08-2005 fixed: dvdplayer would crash if any audio other than AC3 or DTS was available when opening audio osd.
  - 22-08-2005 fixed: graphiccontext was being locked unneccisarily in application thread, caused a minor slowdown
  - 22-08-2005 changed: Ignore "The " while sorting only affects database views, not file views.
