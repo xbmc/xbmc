@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 23-08-2005 changed: made fliptime calculation an moving average, to reduce choppyness in dvdplayer
  - 23-08-2005 added: exception handling to threaded renderer (includes changes to how graphiccontext was locked to allow it to be unlocked properly on an exception)
  - 23-08-2005 fixed: dvdplayer would startup with no video showing. than after a while audio would stop too
  - 23-08-2005 fixed: Volumeslider in video OSD.
