@@ -623,7 +623,10 @@ void CGUIDialogVideoSettings::OnSettingChanged(unsigned int num)
   else
   { // audio settings
     if (setting.id == AUDIO_SETTINGS_VOLUME)
+    {
       g_stSettings.m_nVolumeLevel = (long)(m_volume * 100.0f);
+      g_application.SetVolume(int(((float)(g_stSettings.m_nVolumeLevel - VOLUME_MINIMUM)) / (VOLUME_MAXIMUM - VOLUME_MINIMUM)*100.0f + 0.5f));
+    }
     else if (setting.id == AUDIO_SETTINGS_DELAY)
     {
       if (g_application.m_pPlayer)
