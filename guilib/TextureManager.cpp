@@ -44,7 +44,7 @@ CTexture::~CTexture()
 
 void CTexture::FreeTexture()
 {
-  CGraphicContext::CLock lock(g_graphicsContext);
+  CSingleLock lock(g_graphicsContext);
 
   if (m_pTexture)
   {
@@ -389,7 +389,7 @@ int CGUITextureManager::Load(const CStdString& strTextureName, DWORD dwColorKey)
   }
 
   //Lock here, we will do stuff that could break rendering
-  CGraphicContext::CLock lock(g_graphicsContext);
+  CSingleLock lock(g_graphicsContext);
 
 #ifdef ALLOW_TEXTURE_COMPRESSION
   LPDIRECT3DTEXTURE8 pTexture;
@@ -728,7 +728,7 @@ int CGUITextureManager::Load(const CStdString& strTextureName, DWORD dwColorKey)
 
 void CGUITextureManager::ReleaseTexture(const CStdString& strTextureName, int iPicture)
 {
-  CGraphicContext::CLock lock(g_graphicsContext);
+  CSingleLock lock(g_graphicsContext);
 
   MEMORYSTATUS stat;
   GlobalMemoryStatus(&stat);
@@ -771,7 +771,7 @@ void CGUITextureManager::ReleaseTexture(const CStdString& strTextureName, int iP
 
 void CGUITextureManager::Cleanup()
 {
-  CGraphicContext::CLock lock(g_graphicsContext);
+  CSingleLock lock(g_graphicsContext);
 
   ivecTextures i;
   i = m_vecTextures.begin();
@@ -804,7 +804,7 @@ void CGUITextureManager::Dump() const
 
 void CGUITextureManager::Flush()
 {
-  CGraphicContext::CLock lock(g_graphicsContext);
+  CSingleLock lock(g_graphicsContext);
 
   ivecTextures i;
   i = m_vecTextures.begin();

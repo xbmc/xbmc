@@ -11,7 +11,6 @@ CGraphicContext g_graphicsContext;
 
 CGraphicContext::CGraphicContext(void)
 {
-  InitializeCriticalSection(&m_critSection);
   m_iScreenWidth = 720;
   m_iScreenHeight = 576;
   m_pd3dDevice = NULL;
@@ -42,7 +41,6 @@ CGraphicContext::~CGraphicContext(void)
     m_viewStack.pop();
     if (viewport) delete viewport;
   }
-  DeleteCriticalSection(&m_critSection);
 }
 
 

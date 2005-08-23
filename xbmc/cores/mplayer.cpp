@@ -650,7 +650,7 @@ void update_cache_dialog(const char* tmp)
 {
   static bool bWroteOutput = false;
   //Make sure we lock here as this is called from the cache thread thread
-  CGraphicContext::CLock lock(g_graphicsContext);
+  CSingleLock lock(g_graphicsContext);
   if (m_dlgCache)
   {
     try {
@@ -1100,7 +1100,7 @@ bool CMPlayer::OpenFile(const CFileItem& file, __int64 iStartTime)
     //Close progress dialog completly without fade if this is video.
     if( m_dlgCache && bIsVideo)
     {
-      CGraphicContext::CLock lock(g_graphicsContext);
+      CSingleLock lock(g_graphicsContext);
       m_dlgCache->Close(true); 
       m_dlgCache = NULL;
     }
@@ -1124,7 +1124,7 @@ bool CMPlayer::OpenFile(const CFileItem& file, __int64 iStartTime)
   if( m_dlgCache )
   {
     //Lock here so that mplayer is not using the the object
-    CGraphicContext::CLock lock(g_graphicsContext);
+    CSingleLock lock(g_graphicsContext);
     //Only call Close, the object will be deleted when it's thread ends.
     //this makes sure the object is not deleted while in use
     m_dlgCache->Close(false); 
