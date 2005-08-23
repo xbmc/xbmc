@@ -696,7 +696,7 @@ int CDVDInputStreamNavigator::GetActiveAudioStream()
 std::string CDVDInputStreamNavigator::GetAudioStreamLanguage(int iId)
 {
   if (!m_dvdnav) return NULL;
-
+  
   CStdString strLanguage;
 
   uint16_t lang = dvdnav_audio_stream_to_lang(m_dvdnav, iId);
