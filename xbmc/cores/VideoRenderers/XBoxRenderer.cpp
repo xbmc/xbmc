@@ -54,7 +54,7 @@ CXBoxRenderer::~CXBoxRenderer()
 //********************************************************************************************************
 void CXBoxRenderer::DeleteOSDTextures(int index)
 {
-  g_graphicsContext.Lock();
+  CGraphicContext::CLock lock(g_graphicsContext);
   if (m_pOSDYTexture[index])
   {
     m_pOSDYTexture[index]->Release();
@@ -67,7 +67,6 @@ void CXBoxRenderer::DeleteOSDTextures(int index)
     CLog::Log(LOGDEBUG, "Deleted OSD textures (%i)", index);
   }
   m_iOSDTextureHeight[index] = 0;
-  g_graphicsContext.Unlock();
 }
 
 void CXBoxRenderer::Setup_Y8A8Render()
@@ -708,6 +707,8 @@ unsigned int CXBoxRenderer::Configure(unsigned int width, unsigned int height, u
   ManageDisplay();
   SetupSubtitles();
 
+  SetEvent(m_eventTexturesDone);
+  SetEvent(m_eventOSDDone);
   return 0;
 }
 
@@ -726,7 +727,11 @@ unsigned int CXBoxRenderer::GetImage(YV12Image *image)
   //it shouldn't be needed, and locking here will slow down prepared rendering
   //Probably shouldn't even call blockonfence as it can clash with other blocking calls
 
-  WaitForSingleObject(m_eventTexturesDone, 1000);
+  if( WaitForSingleObject(m_eventTexturesDone, 500) == WAIT_TIMEOUT )
+  {
+    //This should only happen if flippage wasn't called
+    SetEvent(m_eventTexturesDone);
+  }
 
   //We know the resources have been used at this point
   //reset these so the gpu doesn't try to block on these
@@ -770,10 +775,9 @@ void CXBoxRenderer::Update(bool bPauseDrawing)
 {
   if (m_bConfigured)
   {
+    CGraphicContext::CLock lock(g_graphicsContext);
     bool bFullScreen = g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating();
-    g_graphicsContext.Lock();
     g_graphicsContext.SetVideoResolution(bFullScreen ? m_iResolution : g_guiSettings.m_LookAndFeelResolution, !bFullScreen);
-    g_graphicsContext.Unlock();
     RenderUpdate(false);
   }
 }
@@ -781,12 +785,12 @@ void CXBoxRenderer::Update(bool bPauseDrawing)
 void CXBoxRenderer::RenderUpdate(bool clear)
 {
   if (!m_YTexture[0]) return ;
-  g_graphicsContext.Lock();
+
+  CGraphicContext::CLock lock(g_graphicsContext);
   ManageDisplay();
   if (clear)
     m_pD3DDevice->Clear( 0L, NULL, D3DCLEAR_TARGET, m_clearColour, 1.0f, 0L );
   Render();
-  g_graphicsContext.Unlock();
 }
 
 void CXBoxRenderer::SetFieldSync(EFIELDSYNC mSync)
@@ -805,9 +809,9 @@ void CXBoxRenderer::SetFieldSync(EFIELDSYNC mSync)
 
     if( m_iFieldSync != mSync )
     {
-      g_graphicsContext.Lock(); //Need to lock here as this is not allowed to change while rendering
+      //Need to lock here as this is not allowed to change while rendering
+      CGraphicContext::CLock lock(g_graphicsContext);      
       m_iFieldSync = mSync;
-      g_graphicsContext.Unlock();
     }
 }
 
@@ -821,7 +825,7 @@ void CXBoxRenderer::PrepareDisplay()
 
   if (g_graphicsContext.IsFullScreenVideo() )
   {    
-    g_graphicsContext.Lock();
+    CGraphicContext::CLock lock(g_graphicsContext);
 
     ManageDisplay();
 
@@ -837,7 +841,6 @@ void CXBoxRenderer::PrepareDisplay()
 
     m_bPrepared = true;
 
-    g_graphicsContext.Unlock();
   }
 
 #ifdef _DEBUG
@@ -865,7 +868,7 @@ void CXBoxRenderer::FlipPage(bool bAsync)
 
   if (g_graphicsContext.IsFullScreenVideo() )
   {
-    g_graphicsContext.Lock();
+    CGraphicContext::CLock lock(g_graphicsContext);
 
     if( !m_bPrepared )
     {
@@ -932,7 +935,6 @@ void CXBoxRenderer::FlipPage(bool bAsync)
 
     m_bPrepared=false;
 
-    g_graphicsContext.Unlock();
   }
 
   //if no osd was rendered before this call to flip_page make sure it doesn't get
@@ -1082,7 +1084,7 @@ unsigned int CXBoxRenderer::PreInit()
 
 void CXBoxRenderer::UnInit()
 {
-  g_graphicsContext.Lock();
+  CGraphicContext::CLock lock(g_graphicsContext);
 
   m_bStop = true;
   m_eventFrame.PulseEvent();
@@ -1095,15 +1097,13 @@ void CXBoxRenderer::UnInit()
     DeleteYV12Texture(i);
     DeleteOSDTextures(i);
   }
-  g_graphicsContext.Unlock();
 }
 
 void CXBoxRenderer::RenderBlank()
 { // clear the screen
-  g_graphicsContext.Lock();
+  CGraphicContext::CLock lock(g_graphicsContext);
   m_pD3DDevice->Clear( 0L, NULL, D3DCLEAR_TARGET, 0x00000000, 1.0f, 0L );
   m_pD3DDevice->Present( NULL, NULL, NULL, NULL );
-  g_graphicsContext.Unlock();
 }
 
 void CXBoxRenderer::SetViewMode(int iViewMode)
@@ -1209,7 +1209,7 @@ void CXBoxRenderer::AutoCrop(bool bCrop)
 
   if (bCrop)
   {
-    g_graphicsContext.Lock();
+    CGraphicContext::CLock lock(g_graphicsContext);
     // apply auto-crop filter - only luminance needed, and we run vertically down 'n'
     // runs down the image.
     int min_detect = 8;                                // reasonable amount (what mplayer uses)
@@ -1278,7 +1278,6 @@ void CXBoxRenderer::AutoCrop(bool bCrop)
       }
     }
     m_YTexture[0]->UnlockRect(0);
-    g_graphicsContext.Unlock();
   }
   else
   { // reset to defaults
@@ -1365,7 +1364,7 @@ void CXBoxRenderer::RenderLowMem()
 
 void CXBoxRenderer::CreateThumbnail(LPDIRECT3DSURFACE8 surface, unsigned int width, unsigned int height)
 {
-  g_graphicsContext.Lock();
+  CGraphicContext::CLock lock(g_graphicsContext);
   LPDIRECT3DSURFACE8 oldRT;
   RECT saveSize = rd;
   rd.left = rd.top = 0;
@@ -1377,7 +1376,6 @@ void CXBoxRenderer::CreateThumbnail(LPDIRECT3DSURFACE8 surface, unsigned int wid
   rd = saveSize;
   m_pD3DDevice->SetRenderTarget(oldRT, NULL);
   oldRT->Release();
-  g_graphicsContext.Unlock();
 }
 
 //********************************************************************************************************
@@ -1385,7 +1383,7 @@ void CXBoxRenderer::CreateThumbnail(LPDIRECT3DSURFACE8 surface, unsigned int wid
 //********************************************************************************************************
 void CXBoxRenderer::DeleteYV12Texture(int index)
 {
-  g_graphicsContext.Lock();
+  CGraphicContext::CLock lock(g_graphicsContext);
   if (m_YTexture[index])
   {
     m_YTexture[index]->Release();
@@ -1402,7 +1400,6 @@ void CXBoxRenderer::DeleteYV12Texture(int index)
     m_VTexture[index] = NULL;
     CLog::Log(LOGDEBUG, "Deleted YV12 texture (%i)", index);
   }
-  g_graphicsContext.Unlock();
 }
 
 void CXBoxRenderer::ClearYV12Texture(int index)
@@ -1423,7 +1420,7 @@ void CXBoxRenderer::ClearYV12Texture(int index)
 
 void CXBoxRenderer::CopyYV12Texture(int dest)
 {
-  g_graphicsContext.Lock();
+  CGraphicContext::CLock lock(g_graphicsContext);
   int src = 1-dest;
   D3DLOCKED_RECT lr_src, lr_dest;
   m_YTexture[src]->LockRect(0, &lr_src, NULL, 0);
@@ -1443,12 +1440,11 @@ void CXBoxRenderer::CopyYV12Texture(int dest)
   fast_memcpy(lr_dest.pBits, lr_src.pBits, lr_dest.Pitch*(m_iSourceHeight / 2));
   m_VTexture[dest]->UnlockRect(0);
   m_VTexture[src]->UnlockRect(0);
-  g_graphicsContext.Unlock();
 }
 
 bool CXBoxRenderer::CreateYV12Texture(int index)
 {
-  g_graphicsContext.Lock();
+  CGraphicContext::CLock lock(g_graphicsContext);
   DeleteYV12Texture(index);
   if (
     D3D_OK != m_pD3DDevice->CreateTexture(m_iSourceWidth, m_iSourceHeight, 1, 0, D3DFMT_LIN_L8, 0, &m_YTexture[index]) ||
@@ -1456,7 +1452,6 @@ bool CXBoxRenderer::CreateYV12Texture(int index)
     D3D_OK != m_pD3DDevice->CreateTexture(m_iSourceWidth / 2, m_iSourceHeight / 2, 1, 0, D3DFMT_LIN_L8, 0, &m_VTexture[index]))
   {
     CLog::Log(LOGERROR, "Unable to create YV12 texture %i", index);
-    g_graphicsContext.Unlock();
     return false;
   }
   ClearYV12Texture(index);
@@ -1482,7 +1477,6 @@ bool CXBoxRenderer::CreateYV12Texture(int index)
   m_VTexture[index]->UnlockRect(0);
 
   CLog::Log(LOGDEBUG, "created yv12 texture %i", index);
-  g_graphicsContext.Unlock();
   return true;
 }
 
@@ -1513,11 +1507,16 @@ void CXBoxRenderer::Process()
 
     DWORD dwTimeStamp = GetTickCount();
 
-    g_graphicsContext.Lock();
+    try
+    {
 
-    CXBoxRenderer::FlipPage(false);
-    
-    g_graphicsContext.Unlock();
+      CGraphicContext::CLock lock(g_graphicsContext);
+      CXBoxRenderer::FlipPage(false);
+    }
+    catch(...)
+    {
+      CLog::Log(LOGERROR, "CXBoxRenderer::Process() - Exception thrown in flippage");
+    }    
 
     dwFlipTime += GetTickCount() - dwTimeStamp;
     dwFlipCount++;
