@@ -545,7 +545,7 @@ DWORD video_refresh_thread(void *arg)
       
         //Adjust using the delay in flippage
         iFrameTimeError = (int)((iTimeStamp - frameclock.GetClock()) & 0xFFFFFFFF);
-
+        iFrameTimeError = BOUNDS(-(int)vp->iDuration, iFrameTimeError, (int)vp->iDuration);
       }
       else
       {
