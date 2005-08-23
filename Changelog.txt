@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 23-08-2005 added: visualisation.enabled tag to be used in skin conditional visible tags, enabled means a visualisation has been set in settings.
  - 23-08-2005 fixed: In some occasions controls would still be visible even when conditional visible tag would set it to invisible.
  - 23-08-2005 added: zip/rar support in webserver.
  - 23-08-2005 fixed: dvdplayer would crash if any audio other than AC3 or DTS was available when opening audio osd.
