@@ -182,8 +182,27 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
         pSlideShow->Reset();
         if (m_gWindowManager.GetActiveWindow() != WINDOW_SLIDESHOW)
           m_gWindowManager.ActivateWindow(WINDOW_SLIDESHOW);
-        pSlideShow->Add(pMsg->strParam);
-        pSlideShow->Select(pMsg->strParam);
+        if (CUtil::IsZIP(pMsg->strParam) || CUtil::IsRAR(pMsg->strParam)) // actually a cbz/cbr
+        {
+          CFileItemList items;
+          CStdString strPath;
+          if (CUtil::IsZIP(pMsg->strParam))
+            strPath.Format("zip://Z:\\,2,,%s,\\",pMsg->strParam.c_str());
+          else
+            strPath.Format("rar://Z:\\,2,,%s,\\",pMsg->strParam.c_str());
+          CUtil::GetRecursiveListing(strPath,items,g_stSettings.m_szMyPicturesExtensions);
+          if (items.Size() > 0)
+          {
+            for (int i=0;i<items.Size();++i)
+              pSlideShow->Add(items[i]->m_strPath);
+            pSlideShow->Select(items[0]->m_strPath);
+          }
+        }
+        else
+        {
+          pSlideShow->Add(pMsg->strParam);
+          pSlideShow->Select(pMsg->strParam);
+        }
         g_graphicsContext.Unlock();
       }
       break;
