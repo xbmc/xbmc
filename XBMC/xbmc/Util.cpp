@@ -3521,3 +3521,16 @@ bool CUtil::SetXBOXNickName(CStdString strXboxNickNameIn, CStdString &strXboxNic
   
   return true;
 }
+
+void CUtil::GetRecursiveListing(const CStdString& strPath, CFileItemList& items, const CStdString& strMask)
+{
+  CFileItemList myItems;
+  CDirectory::GetDirectory(strPath,myItems,strMask);
+  for (int i=0;i<myItems.Size();++i)
+  {
+    if (myItems[i]->m_bIsFolder)
+      CUtil::GetRecursiveListing(myItems[i]->m_strPath,items,strMask);
+    else if (!myItems[i]->IsRAR() && !myItems[i]->IsZIP())
+      items.Add(new CFileItem(*myItems[i]));
+  }
+}
