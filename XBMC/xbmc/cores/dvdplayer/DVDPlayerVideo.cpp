@@ -477,8 +477,10 @@ DWORD video_refresh_thread(void *arg)
   int iSleepTime = 0;
   CDVDClock frameclock;
   __int64 iTimeStamp = frameclock.GetClock();
-  int iFrameTime;
-  int iFrameTimeError=0;
+  unsigned int iFrameCount=30;
+  unsigned int iFrameTimeError=300 * DVD_TIME_BASE / 1000;
+
+  unsigned int iDroppedInARow=0;
 
   while (pDVDPlayerVideo->m_bRunningVideo)
   {
@@ -510,8 +512,7 @@ DWORD video_refresh_thread(void *arg)
       if (bDiscontinuity)
       {
         //Playback at normal fps until after discontinuity
-        iFrameTime = vp->iDuration;
-        iSleepTime = iFrameTime - (int)(frameclock.GetClock() - iTimeStamp);
+        iSleepTime = vp->iDuration - (int)(frameclock.GetClock() - iTimeStamp);
       }
       else
       {
@@ -522,7 +523,7 @@ DWORD video_refresh_thread(void *arg)
       }
 
       //Adjust for flippage delay
-      iSleepTime += iFrameTimeError;
+      iSleepTime -= (iFrameTimeError / iFrameCount);
 
 
       if (iSleepTime > 500000) iSleepTime = 500000; // drop to a minimum of 2 frames/sec
@@ -539,17 +540,31 @@ DWORD video_refresh_thread(void *arg)
       iTimeStamp = frameclock.GetClock();
       
       // menu pictures should never be skipped!
-      if ((vp->iFlags & DVP_FLAG_NOSKIP) || iSleepTime > -(int)vp->iDuration*2) 
+      if ((vp->iFlags & DVP_FLAG_NOSKIP) || iSleepTime > -(int)vp->iDuration*2 || iDroppedInARow > 15) 
       {
-        g_renderManager.FlipPage();
+        g_renderManager.FlipPage(); 
       
         //Adjust using the delay in flippage
-        iFrameTimeError = (int)((iTimeStamp - frameclock.GetClock()) & 0xFFFFFFFF);
-        iFrameTimeError = BOUNDS(-(int)vp->iDuration, iFrameTimeError, (int)vp->iDuration);
+        __int64 iError = (frameclock.GetClock() - iTimeStamp);
+        if( iError < vp->iDuration*2 )
+        { //Only count when we actually have something that seem valid
+          iFrameTimeError += (unsigned int)iError;
+          iFrameCount++;
+        }
+        
+        if( iFrameCount >= 240 )
+        { //Keep around 120-240 too give new frames more effect
+          iFrameCount /= 2;
+          iFrameTimeError /= 2;
+        }
+
+        //Reset number of frames dropped in a row
+        iDroppedInARow=0;
       }
       else
       {
         pDVDPlayerVideo->m_iDroppedFrames++;
+        iDroppedInARow++;
       }
 
       // update queue size and signal for next picture
