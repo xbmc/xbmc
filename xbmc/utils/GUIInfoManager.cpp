@@ -123,6 +123,7 @@ extern char g_szTitleIP[32];
 #define VISUALISATION_LOCKED        400
 #define VISUALISATION_PRESET        401
 #define VISUALISATION_NAME          402
+#define VISUALISATION_ENABLED       403
 
 #define WINDOW_ACTIVE_START         WINDOW_HOME
 #define WINDOW_ACTIVE_END           WINDOW_PYTHON_END
@@ -291,6 +292,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
   else if (strTest.Equals("visualisation.locked")) ret = VISUALISATION_LOCKED;
   else if (strTest.Equals("visualisation.preset")) ret = VISUALISATION_PRESET;
   else if (strTest.Equals("visualisation.name")) ret = VISUALISATION_NAME;
+  else if (strTest.Equals("visualisation.enabled")) ret = VISUALISATION_ENABLED;
   else if (strTest.Left(16).Equals("window.isactive("))
   {
     int winID = g_buttonTranslator.TranslateWindowString(strTest.Mid(16, strTest.GetLength() - 17).c_str());
@@ -625,6 +627,10 @@ bool CGUIInfoManager::GetBool(int condition1) const
           bReturn = pVis->IsLocked();
         }
       }
+    break;
+    case VISUALISATION_ENABLED:
+      bReturn = g_guiSettings.GetString("MyMusic.Visualisation") != "None";
+    break;
     }
   }
   return (condition1 < 0) ? !bReturn : bReturn;
