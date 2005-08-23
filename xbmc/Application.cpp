@@ -1665,12 +1665,12 @@ void CApplication::Render()
     }
   }
 
-  
+  // don't do anything that would require graphiccontext to be locked before here in fullscreen.
+  // that stuff should go into renderfullscreen instead as that is called from the renderin thread
+
   // dont show GUI when playing full screen video
   if (m_gWindowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO)
   {
-    m_guiVideoOverlay.Close(true);
-    m_guiMusicOverlay.Close(true);
     if ( g_graphicsContext.IsFullScreenVideo() )
     {
       if (m_pPlayer)
@@ -3123,6 +3123,9 @@ void CApplication::RenderFullScreen()
 {
   if (m_gWindowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO)
   {
+    m_guiVideoOverlay.Close(true);
+    m_guiMusicOverlay.Close(true);
+
     CGUIWindowFullScreen *pFSWin = (CGUIWindowFullScreen *)m_gWindowManager.GetWindow(WINDOW_FULLSCREEN_VIDEO);
     if (!pFSWin)
       return ;
