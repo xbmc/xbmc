@@ -88,7 +88,7 @@ void CDlgCache::SetMessage(const CStdString& strMessage)
 
 bool CDlgCache::OnFileCallback(void* pContext, int ipercent)
 {
-  CGraphicContext::CLock lock(g_graphicsContext);
+  CSingleLock lock(g_graphicsContext);
   ShowProgressBar(true);
   SetPercentage(ipercent);
   if( IsCanceled() ) 
@@ -105,7 +105,7 @@ void CDlgCache::Process()
   {
     try 
     {
-      CGraphicContext::CLock lock(g_graphicsContext);
+      CSingleLock lock(g_graphicsContext);
       Update();
     }
     catch(...)

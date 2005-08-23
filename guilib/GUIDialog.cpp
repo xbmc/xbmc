@@ -95,7 +95,7 @@ void CGUIDialog::Close(bool forceClose /*= false*/)
 {
   //Lock graphic context here as it is sometimes called from non rendering threads
   //maybe we should have a critical section per window instead??
-  CGraphicContext::CLock lock(g_graphicsContext);
+  CSingleLock lock(g_graphicsContext);
 
   if (!m_bRunning) return;
 
@@ -133,7 +133,7 @@ void CGUIDialog::DoModal(DWORD dwParentId, int iWindowID /*= WINDOW_INVALID */)
 {
   //Lock graphic context here as it is sometimes called from non rendering threads
   //maybe we should have a critical section per window instead??
-  CGraphicContext::CLock lock(g_graphicsContext);
+  CSingleLock lock(g_graphicsContext);
 
   m_dwParentWindowID = dwParentId;
   m_pParentWindow = m_gWindowManager.GetWindow( m_dwParentWindowID);
@@ -156,7 +156,7 @@ void CGUIDialog::DoModal(DWORD dwParentId, int iWindowID /*= WINDOW_INVALID */)
 
   m_bRunning = true;
 
-  lock.Unlock();
+  lock.Leave();
   while (m_bRunning)
   {
     m_gWindowManager.Process();
@@ -167,7 +167,7 @@ void CGUIDialog::Show(DWORD dwParentId)
 {
   //Lock graphic context here as it is sometimes called from non rendering threads
   //maybe we should have a critical section per window instead??
-  CGraphicContext::CLock lock(g_graphicsContext);
+  CSingleLock lock(g_graphicsContext);
 
   if (m_bRunning && m_effectState != EFFECT_OUT) return;
 
