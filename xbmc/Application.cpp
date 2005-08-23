@@ -1677,7 +1677,7 @@ void CApplication::Render()
       {
         if (m_pPlayer->IsPaused())
         {
-          CGraphicContext::CLock lock(g_graphicsContext);
+          CSingleLock lock(g_graphicsContext);
           extern void xbox_video_render_update(bool);
           xbox_video_render_update(true);
           m_gWindowManager.UpdateModelessVisibility();

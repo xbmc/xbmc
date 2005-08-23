@@ -35,7 +35,7 @@ CComboRenderer::CComboRenderer(LPDIRECT3DDEVICE8 pDevice)
 
 void CComboRenderer::DeleteYUY2Textures()
 {
-  CGraphicContext::CLock lock(g_graphicsContext);
+  CSingleLock lock(g_graphicsContext);
   for (int index = 0; index < NUM_BUFFERS; index++)
   {
     if (m_RGBTexture[index])
@@ -60,7 +60,7 @@ void CComboRenderer::ClearYUY2Textures()
 
 bool CComboRenderer::CreateYUY2Textures()
 {
-  CGraphicContext::CLock lock(g_graphicsContext);
+  CSingleLock lock(g_graphicsContext);
   DeleteYUY2Textures();
   // Create our textures...
   if (D3D_OK != m_pD3DDevice->CreateTexture(m_iSourceWidth / 2, m_iSourceHeight, 1, 0, D3DFMT_LIN_A8R8G8B8, 0, &m_RGBTexture[0]) ||
@@ -199,7 +199,7 @@ void CComboRenderer::ReleaseImage()
 
 void CComboRenderer::Update(bool bPauseDrawing)
 {
-  CGraphicContext::CLock lock(g_graphicsContext);
+  CSingleLock lock(g_graphicsContext);
   m_pD3DDevice->EnableOverlay(!bPauseDrawing);
   if (bPauseDrawing) return ;
   CXBoxRenderer::Update(bPauseDrawing);
@@ -239,7 +239,7 @@ void CComboRenderer::YV12toYUY2()
       Sleep(1);
   }
 
-  CGraphicContext::CLock lock(g_graphicsContext);
+  CSingleLock lock(g_graphicsContext);
   
   ResetEvent( m_eventTexturesDone );
 
@@ -439,7 +439,7 @@ void CComboRenderer::CheckScreenSaver()
       m_YUY2Texture[m_iYUVRenderBuffer].UnlockRect(0);
 
       // Commit to screen
-      CGraphicContext::CLock lock(g_graphicsContext);
+      CSingleLock lock(g_graphicsContext);
 
       while (!m_pD3DDevice->GetOverlayUpdateStatus()) Sleep(1);
       LPDIRECT3DSURFACE8 pSurface;
@@ -456,7 +456,7 @@ void CComboRenderer::SetupScreenshot()
 {
   if (!g_graphicsContext.IsFullScreenVideo())
     return;
-  CGraphicContext::CLock lock(g_graphicsContext);
+  CSingleLock lock(g_graphicsContext);
   // first, grab the current overlay texture and convert it to RGB
   LPDIRECT3DTEXTURE8 pRGB = NULL;
   if (D3D_OK != m_pD3DDevice->CreateTexture(m_iSourceWidth, m_iSourceHeight, 1, 0, D3DFMT_LIN_A8R8G8B8, 0, &pRGB))
