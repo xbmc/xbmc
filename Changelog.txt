@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 22-08-2005 changed: Ignore "The " while sorting only affects database views, not file views.
  - 22-08-2005 fixed: FLAC tags broken
  - 22-08-2005 fixed: now less fast forward then slowdown after seek, and vts change in dvdplayer
  - 22-08-2005 fixed: dvdplayer, old subtitles were not removed, this resulted in high memory usage and crashes.
