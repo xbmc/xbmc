@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 23-08-2005 added: exception handling to threaded renderer (includes changes to how graphiccontext was locked to allow it to be unlocked properly on an exception)
+ - 23-08-2005 fixed: dvdplayer would startup with no video showing. than after a while audio would stop too
  - 23-08-2005 fixed: Volumeslider in video OSD.
  - 23-08-2005 added: visualisation.enabled tag to be used in skin conditional visible tags, enabled means a visualisation has been set in settings.
  - 23-08-2005 fixed: In some occasions controls would still be visible even when conditional visible tag would set it to invisible.
