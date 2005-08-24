@@ -23,6 +23,13 @@
 #include "../../util.h"
 #include "../../XBVideoConfig.h"
 
+//VBlank information
+HANDLE g_eventVBlank=NULL;
+void VBlankCallback(D3DVBLANKDATA *pData)
+{
+  PulseEvent(g_eventVBlank);
+}
+
 
 CXBoxRenderer::CXBoxRenderer(LPDIRECT3DDEVICE8 pDevice)
 {
@@ -44,11 +51,21 @@ CXBoxRenderer::CXBoxRenderer(LPDIRECT3DDEVICE8 pDevice)
   m_iFieldSync = FS_NONE;
   m_eventTexturesDone = CreateEvent(NULL,TRUE,TRUE,NULL);
   m_eventOSDDone = CreateEvent(NULL,TRUE,TRUE,NULL);
+
+  if(!g_eventVBlank)
+  {
+    //Only do this on first run
+    g_eventVBlank = CreateEvent(NULL,FALSE,FALSE,NULL);
+    m_pD3DDevice->SetVerticalBlankCallback((D3DVBLANKCALLBACK)VBlankCallback);    
+  }
 }
 
 CXBoxRenderer::~CXBoxRenderer()
 {
   UnInit();
+
+  CloseHandle(m_eventTexturesDone);
+  CloseHandle(m_eventOSDDone);
 }
 
 //********************************************************************************************************
@@ -709,6 +726,7 @@ unsigned int CXBoxRenderer::Configure(unsigned int width, unsigned int height, u
 
   SetEvent(m_eventTexturesDone);
   SetEvent(m_eventOSDDone);
+
   return 0;
 }
 
@@ -878,54 +896,35 @@ void CXBoxRenderer::FlipPage(bool bAsync)
     //Make sure the push buffer is done before waiting for vblank, otherwise we can get tearing
     while( m_pD3DDevice->IsBusy() ) Sleep(1);
 
-    D3DFIELD_STATUS mStatus;
     D3DRASTER_STATUS mRaster;
+    D3DFIELD_STATUS mStatus;
     m_pD3DDevice->GetDisplayFieldStatus(&mStatus);
     m_pD3DDevice->GetRasterStatus(&mRaster);
 
-    if( m_iFieldSync != FS_NONE && mStatus.Field != D3DFIELD_PROGRESSIVE )
-    {
-      //If we have interlaced video, we have to sync to only render on even fields
-    
-      while(1)
-      {
-        m_pD3DDevice->GetDisplayFieldStatus(&mStatus);
-        m_pD3DDevice->GetRasterStatus(&mRaster);
-    
-        if( mRaster.InVBlank )
-        {
-          //In vblank, check if it is the correct one
+    bool bSync = (m_iFieldSync != FS_NONE && mStatus.Field != D3DFIELD_PROGRESSIVE);
 
-          if( (mStatus.Field == D3DFIELD_EVEN && m_iFieldSync == FS_EVEN) 
-            || (mStatus.Field == D3DFIELD_ODD && m_iFieldSync == FS_ODD) )
-          {
-            //Perfect allready in the correct vblank
-            break;
-          }
-        }
-        else
-        {
-          if( (mStatus.Field == D3DFIELD_EVEN && m_iFieldSync == FS_ODD) ||
-              (mStatus.Field == D3DFIELD_ODD && m_iFieldSync == FS_EVEN) )
-          {
-            //Okey, not in vblank or in the correct field
-            //check if we have passed active render area to avoid tearing
-            if( (int)mRaster.ScanLine >= rd.bottom ) break;
-          }
-        }
-        //Not in the right position, sleep 1ms, and check again
-        Sleep(1);
-      }
-    }
-    else
+
+    if( mRaster.InVBlank == 0 )
     {
-      while(1)
+      if( WaitForSingleObject(g_eventVBlank, 500) == WAIT_TIMEOUT )
+        CLog::Log(LOGERROR, "CXBoxRenderer::FlipPage() - Waiting for vertical-blank timed out");
+
+      m_pD3DDevice->GetDisplayFieldStatus(&mStatus);
+    }
+
+    //If we have interlaced video, we have to sync to only render on even fields
+    if( bSync )
+    {
+
+      //If this was not the correct field. we have to wait for the next one.. damn
+      if( (mStatus.Field == D3DFIELD_EVEN && m_iFieldSync == FS_ODD) ||
+          (mStatus.Field == D3DFIELD_ODD && m_iFieldSync == FS_EVEN) )
       {
-        m_pD3DDevice->GetRasterStatus(&mRaster);
-        if( mRaster.InVBlank || (int)mRaster.ScanLine >= rd.bottom ) break;
-        Sleep(1);
+        if( WaitForSingleObject(g_eventVBlank, 500) == WAIT_TIMEOUT )
+          CLog::Log(LOGERROR, "CXBoxRenderer::FlipPage() - Waiting for vertical-blank timed out");
       }
     }
+
 
     m_pD3DDevice->Present( NULL, NULL, NULL, NULL );
 
@@ -1533,3 +1532,4 @@ void CXBoxRenderer::Process()
 
   }
 }
+
