@@ -527,6 +527,7 @@ bool CGUIWindowSlideShow::OnMessage(CGUIMessage& message)
       g_graphicsContext.SetFullScreenVideo(false);
       g_graphicsContext.SetVideoResolution(g_guiSettings.m_LookAndFeelResolution, TRUE);
       g_graphicsContext.Unlock();
+      FreeResources();
     }
     break;
 
