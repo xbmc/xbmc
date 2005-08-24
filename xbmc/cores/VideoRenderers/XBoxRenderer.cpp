@@ -854,7 +854,6 @@ void CXBoxRenderer::PrepareDisplay()
     { // render our subtitles and osd
       g_application.RenderFullScreen();
     }
-
     m_pD3DDevice->KickPushBuffer();
 
     m_bPrepared = true;
