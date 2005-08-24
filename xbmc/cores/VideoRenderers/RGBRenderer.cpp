@@ -276,7 +276,7 @@ void CRGBRenderer::Render()
 
 
     //Okey, when the gpu is done with the textures here, they are free to be modified again
-    m_pD3DDevice->InsertCallback(D3DCALLBACK_READ,&TextureCallback, (DWORD)m_eventTexturesDone);
+    m_pD3DDevice->InsertCallback(D3DCALLBACK_WRITE,&TextureCallback, (DWORD)m_eventTexturesDone);
 
     // Now perform the YUV->RGB conversion in a single pass, and render directly to the screen
     if ( m_iFieldSync != FS_NONE )
