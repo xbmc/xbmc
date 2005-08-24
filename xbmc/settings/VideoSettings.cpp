@@ -70,10 +70,8 @@ EINTERLACEMETHOD CVideoSettings::GetInterlaceMethod()
     int mResolution = g_graphicsContext.GetVideoResolution();
     if( mResolution == HDTV_480p_16x9 || mResolution == HDTV_480p_4x3 || mResolution == HDTV_720p || mResolution == HDTV_1080i)
       return VS_INTERLACEMETHOD_DEINTERLACE_AUTO;
-    else if( g_guiSettings.GetInt("VideoPlayer.RenderMethod") == RENDER_HQ_RGB_SHADER )
-      return VS_INTERLACEMETHOD_SYNC_AUTO;
     else
-      return VS_INTERLACEMETHOD_DEINTERLACE_AUTO;
+      return VS_INTERLACEMETHOD_SYNC_AUTO;
   }
   else
     return m_InterlaceMethod;
