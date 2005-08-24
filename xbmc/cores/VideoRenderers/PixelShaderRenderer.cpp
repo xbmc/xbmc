@@ -49,7 +49,7 @@ void CPixelShaderRenderer::Render()
   RenderLowMem();
 
   //Okey, when the gpu is done with the textures here, they are free to be modified again
-  m_pD3DDevice->InsertCallback(D3DCALLBACK_READ,&TextureCallback, (DWORD)m_eventTexturesDone);
+  m_pD3DDevice->InsertCallback(D3DCALLBACK_WRITE,&TextureCallback, (DWORD)m_eventTexturesDone);
 
   RenderOSD();
 
