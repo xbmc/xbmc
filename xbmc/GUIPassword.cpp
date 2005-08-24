@@ -47,9 +47,9 @@ bool CGUIPassword::IsItemUnlocked(CFileItem* pItem, const CStdString &strType)
     // show the appropriate lock dialog
     CStdStringW strHeading = L"";
     if (pItem->m_bIsFolder)
-      strHeading = L"12325";
+      strHeading = g_localizeStrings.Get(12325);
     else
-      strHeading = L"12348";
+      strHeading = g_localizeStrings.Get(12348);
 
     switch (pItem->m_iLockMode)
     {
@@ -142,7 +142,7 @@ bool CGUIPassword::IsItemUnlocked(CShare* pItem, const CStdString &strType)
       strHeading = L"12325";
     else
     */
-    strHeading = L"12348";
+    strHeading = g_localizeStrings.Get(12348);
 
     switch (pItem->m_iLockMode)
     {
@@ -169,8 +169,8 @@ bool CGUIPassword::IsItemUnlocked(CShare* pItem, const CStdString &strType)
     case -1:
       {
         // user canceled out
-        return false;
-        break;
+        break; return false;
+        
       }
     case 0:
       {
@@ -193,8 +193,7 @@ bool CGUIPassword::IsItemUnlocked(CShare* pItem, const CStdString &strType)
     default:
       {
         // this should never happen, but if it does, do nothing
-        return false;
-        break;
+        break; return false;
       }
     }
   }
@@ -263,8 +262,6 @@ bool CGUIPassword::IsMasterLockUnlocked(bool bPromptUser)
   }
   return true;
 }
-
-
 bool CGUIPassword::IsMasterLockLocked(bool bPromptUser)
 {
   if ((LOCK_MODE_EVERYONE < g_stSettings.m_iMasterLockMode) && !bPromptUser)
