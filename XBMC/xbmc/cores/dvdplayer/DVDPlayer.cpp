@@ -854,7 +854,7 @@ void CDVDPlayer::GetAudioStreamName(int iStream, CStdString& strStreamName)
     else
     {
       CLog::Log(LOGERROR, "libdvdnav reported an audio channel that does not exist: id %i", iStream);
-      strStreamName.Format("%d. %s", "no such stream, libdvdnav error");
+      strStreamName.Format("%d. %s", iStream, "no such stream, libdvdnav error");
     }
   }
 }
