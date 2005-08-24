@@ -549,17 +549,9 @@ int CGUIDialogNumeric::ShowAndVerifyPassword(CStdString& strPassword, const CStd
   // make a copy of strPassword to prevent from overwriting it later
   CStdString strPassTemp = strPassword;
   if (ShowAndVerifyInput(strPassTemp, strTempHeading, true))
-  {
-    // user entered correct password
-    return 0;
-  }
-
-  if (strPassTemp.IsEmpty())
-    // user canceled out
-    return -1;
-
-  // user must have entered an incorrect password
-  return 1;
+    return 0;   // user entered correct password
+  if (strPassTemp.IsEmpty()) return -1;   // user canceled out
+  return 1; // user must have entered an incorrect password
 }
 
 // \brief Show numeric keypad and verify user input against strToVerify.
@@ -584,6 +576,7 @@ bool CGUIDialogNumeric::ShowAndVerifyInput(CStdString& strToVerify, const CStdSt
   if (!pDialog->IsConfirmed() || pDialog->IsCanceled())
   {
     // user canceled out
+    strToVerify ="";
     return false;
   }
 
