@@ -45,7 +45,6 @@
       <label>-</label>
       <align>left</align>
       <font>font12</font>
-      <visible>no</visible>
     </control>
 
     <!-- Dummy! remove after skin version bump -->
