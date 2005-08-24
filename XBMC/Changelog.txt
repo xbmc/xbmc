@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 24-08-2005 fixed: infrequent tearing on top of screen when rendering high rez material. (something seem to be wrong with the GPU callbacks)
  - 24-08-2005 changed: when in 1080i, default method interlace handling when in auto is nolonger syncing, but deinterlacing (only affects dvdplayer right now)
  - 24-08-2005 changed: small speedup of interlaced rendering, (less issues in 1080i, still too slow thou)
  - 24-08-2005 fixed: playback in 1080i was a slideshow. (still issues with interlaced rendering thou)

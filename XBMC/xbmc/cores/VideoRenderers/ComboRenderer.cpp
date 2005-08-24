@@ -326,7 +326,7 @@ void CComboRenderer::YV12toYUY2()
   m_pD3DDevice->KickPushBuffer();
 
   //Okey, when the gpu is done with the textures here, they are free to be modified again
-  m_pD3DDevice->InsertCallback(D3DCALLBACK_READ,&TextureCallback, (DWORD)m_eventTexturesDone);
+  m_pD3DDevice->InsertCallback(D3DCALLBACK_WRITE,&TextureCallback, (DWORD)m_eventTexturesDone);
 }
 
 void CComboRenderer::Render()
