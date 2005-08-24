@@ -149,6 +149,7 @@ protected:
   DWORD m_dwTextureFence;
 
   static void TextureCallback(DWORD dwContext);
+
   HANDLE m_eventTexturesDone;
   HANDLE m_eventOSDDone;
 

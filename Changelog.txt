@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 24-08-2005 fixed: playback in 1080i was a slideshow. (still issues with interlaced rendering thou)
+ - 24-08-2005 fixed: dvdplayer would crash or output nonsense name for audiostream if it was nonexisting
  - 24-08-2005 fixed: Share lock - numeric Password: cancel was brocken [ifinite loop] [GeminiServer]
  - 24-08-2005 fixed: Share lock - numeric Password: dialog descriptions was brocken   [GeminiServer]
  - 24-08-2005 fixed: slideshow sometimes showed the wrong second image
