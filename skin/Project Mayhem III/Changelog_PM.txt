@@ -1,3 +1,4 @@
+2005-08-25 changed: Visualisation Select Button was not visible as it was set to visibility false
 2005-08-25 changed: progressbar was not visible as it was set to visibility no
 2005-08-23 changed: third line in fullscreen info was not visible as it was set to visibility no
 

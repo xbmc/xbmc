@@ -200,7 +200,6 @@
       <description>Visualisation Select Button</description>
       <type>selectbutton</type>
       <id>503</id>
-      <visible>false</visible>
       <posX>250</posX>
       <posY>431</posY>
       <width>420</width>
