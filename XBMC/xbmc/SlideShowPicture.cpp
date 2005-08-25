@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "SlideShowPicture.h"
 #include "cores/ssrc.h"         // for M_PI
+#include "utils/GUIInfoManager.h"
 
 #define IMMEDIATE_TRANSISTION_TIME 20
 
@@ -55,10 +56,11 @@ void CSlideShowPic::SetTexture(int iSlideNumber, D3DTexture *pTexture, int iWidt
   // initialize our transistion effect
   m_transistionStart.type = transEffect;
   m_transistionStart.start = 0;
-  m_transistionStart.length = 2 * g_guiSettings.GetInt("Slideshow.TransistionTime") / (1000 / FPS);
+  m_transistionStart.length = (int)g_infoManager.GetFPS() * (g_guiSettings.GetInt("Slideshow.TransistionTime") / 1000); // transition time in msec
   m_transistionEnd.type = transEffect;
-  m_transistionEnd.start = m_transistionStart.length + g_guiSettings.GetInt("Slideshow.StayTime") * FPS;
-  m_transistionEnd.length = 2 * g_guiSettings.GetInt("Slideshow.TransistionTime") / (1000 / FPS);
+  m_transistionEnd.start = m_transistionStart.length + ((int)g_infoManager.GetFPS() * g_guiSettings.GetInt("Slideshow.StayTime"));
+  m_transistionEnd.length = (int)g_infoManager.GetFPS() * (g_guiSettings.GetInt("Slideshow.TransistionTime") / 1000); // transition time in msec
+  CLog::Log(LOGDEBUG,"Duration: %i", m_transistionEnd.start);
   m_transistionTemp.type = TRANSISTION_NONE;
   m_fTransistionAngle = 0;
   m_fTransistionZoom = 0;
@@ -74,7 +76,7 @@ void CSlideShowPic::SetTexture(int iSlideNumber, D3DTexture *pTexture, int iWidt
   m_fZoomAmount = 1;
   m_fZoomLeft = 0;
   m_fZoomTop = 0;
-  m_iTotalFrames = m_transistionStart.length + m_transistionEnd.length + g_guiSettings.GetInt("Slideshow.StayTime") * FPS;
+  m_iTotalFrames = m_transistionStart.length + m_transistionEnd.length + ((int)g_infoManager.GetFPS() * g_guiSettings.GetInt("Slideshow.StayTime"));
   // initialize our display effect
   if (dispEffect == EFFECT_RANDOM)
     m_displayEffect = (DISPLAY_EFFECT)((rand() % (EFFECT_RANDOM - 1)) + 1);
@@ -266,7 +268,7 @@ void CSlideShowPic::Process()
     }
   }
   if (m_displayEffect != EFFECT_NO_TIMEOUT || m_iCounter < m_transistionStart.length || m_iCounter >= m_transistionEnd.start || (m_iCounter >= m_transistionTemp.start && m_iCounter < m_transistionTemp.start + m_transistionTemp.length))
-    m_iCounter ++;
+    m_iCounter++;
   if (m_iCounter > m_transistionEnd.start + m_transistionEnd.length)
     m_bIsFinished = true;
 }
@@ -321,7 +323,7 @@ void CSlideShowPic::Rotate(int iRotate)
   m_transistionTemp.length = IMMEDIATE_TRANSISTION_TIME;
   m_fTransistionAngle = (float)(iRotate - m_fAngle) / (float)m_transistionTemp.length;
   // reset the timer
-  m_transistionEnd.start = m_iCounter + m_transistionStart.length + g_guiSettings.GetInt("Slideshow.StayTime") * FPS;
+  m_transistionEnd.start = m_iCounter + m_transistionStart.length + ((int)g_infoManager.GetFPS() * g_guiSettings.GetInt("Slideshow.StayTime"));
 }
 
 void CSlideShowPic::Zoom(int iZoom, bool immediate /*= false*/)
@@ -338,7 +340,7 @@ void CSlideShowPic::Zoom(int iZoom, bool immediate /*= false*/)
   m_transistionTemp.length = IMMEDIATE_TRANSISTION_TIME;
   m_fTransistionZoom = (float)(zoomamount[iZoom - 1] - m_fZoomAmount) / (float)m_transistionTemp.length;
   // reset the timer
-  m_transistionEnd.start = m_iCounter + m_transistionStart.length + g_guiSettings.GetInt("Slideshow.StayTime") * FPS;
+  m_transistionEnd.start = m_iCounter + m_transistionStart.length + ((int)g_infoManager.GetFPS() * g_guiSettings.GetInt("Slideshow.StayTime"));
   // turn off the render effects until we're back down to normal zoom
   m_bNoEffect = true;
 }
@@ -348,7 +350,7 @@ void CSlideShowPic::Move(float fDeltaX, float fDeltaY)
   m_fZoomLeft += fDeltaX;
   m_fZoomTop += fDeltaY;
   // reset the timer
-  m_transistionEnd.start = m_iCounter + m_transistionStart.length + g_guiSettings.GetInt("Slideshow.StayTime") * FPS;
+  m_transistionEnd.start = m_iCounter + m_transistionStart.length + ((int)g_infoManager.GetFPS() * g_guiSettings.GetInt("Slideshow.StayTime"));
 }
 
 void CSlideShowPic::Render()
