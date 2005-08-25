@@ -171,6 +171,9 @@ inline void CGUIFont::GetTextExtent(const WCHAR *strText, FLOAT *pWidth, FLOAT *
 void CGUIFont::DrawScrollingText(float x, float y, DWORD *color, int numColors, const CStdStringW &text, float w, CScrollInfo &scrollInfo, BYTE *pPalette /* = NULL */)
 {
   float unneeded, h;
+  float sw = 0;
+  GetTextExtent(L" ", &sw, &unneeded);
+  unsigned int maxChars = min(text.size(), unsigned int((w*1.05f)/sw)); //max chars on screen + extra marginchars
   GetTextExtent(L"W", &unneeded, &h);
   if (!g_graphicsContext.SetViewPort(x, y, w, h))
     return; // nothing to render
@@ -207,42 +210,42 @@ void CGUIFont::DrawScrollingText(float x, float y, DWORD *color, int numColors, 
   }
   else
     scrollInfo.waitTime--;
-  // Now rotate our string as needed
-  WCHAR *pOutput = new WCHAR[text.size()+2];
+  // Now rotate our string as needed, only take a slightly larger then visible part of the text.
+  WCHAR *pOutput = new WCHAR[maxChars+2];
   WCHAR *pChar = pOutput;
   BYTE *pOutPalette = NULL;
   if (pPalette)
-    pOutPalette = new BYTE[text.size()+2];
+    pOutPalette = new BYTE[maxChars+2];
   BYTE *pPal = pOutPalette;
-  for (unsigned int i = scrollInfo.characterPos; i < text.size() + 1; i++)
+  unsigned int pos = scrollInfo.characterPos;
+  for (unsigned int i = 0; i <= maxChars; i++)
   {
-    if (i < text.size())
-      *pChar++ = text[i];
+    if (pos < text.size())
+    {
+      *pChar++ = text[pos];
+      pos++;
+    }
     else
+    {
       *pChar++ = L' ';
-  }
-  for (unsigned int i = 0; i < scrollInfo.characterPos; i++)
-  {
-    if (i < text.size())
-      *pChar++ = text[i];
-    else
-      *pChar++ = L' ';
+      pos = 0;
+    }
   }
   if (pPalette)
   {
-    for (unsigned int i = scrollInfo.characterPos; i < text.size() + 1; i++)
+    pos = scrollInfo.characterPos;
+    for (unsigned int i = 0; i <= maxChars; i++)
     {
-      if (i < text.size())
-        *pPal++ = pPalette[i];
+      if (pos < text.size())
+      {
+        *pPal++ = pPalette[pos];
+        pos++;
+      }
       else
+      {
         *pPal++ =0;
-    }
-    for (unsigned int i = 0; i < scrollInfo.characterPos; i++)
-    {
-      if (i < text.size())
-        *pPal++ = pPalette[i];
-      else
-        *pPal++ = L' ';
+        pos = 0;
+      }
     }
   }
   *pChar = L'\0';
