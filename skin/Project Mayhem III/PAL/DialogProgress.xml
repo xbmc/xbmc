@@ -65,7 +65,6 @@
       <posY>346</posY>
       <width>291</width>
       <height>13</height>
-      <visible>no</visible>
       <texturebg>progress_back2.png</texturebg>
     </control>
 

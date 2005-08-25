@@ -286,7 +286,6 @@
     <midtexture>progress_mid.png</midtexture>
     <righttexture>progress_right.png</righttexture>
     <overlaytexture>progress_over.png</overlaytexture>
-    <visible>no</visible>
   </control>
 
   <control>
