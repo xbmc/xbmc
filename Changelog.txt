@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 25-08-2005 fixed: dvdplayer would crash due to one thread deleting renderer, while one was using it
+ - 25-08-2005 added: new classes CSharedSection, CSharedLock, CExclusiveLock - used to protect resources, when multiply threads are allowed to read. 
  - 25-08-2005 changed: optimized scolling text rendering, the rss-control was drawing the entire feedinfo while only a small part is visible.
  - 25-08-2005 added: [ 1237903 ] Use custom thumbnails for shares - (with minor modification)
  - 25-08-2005 fixed: slideshow image duration
