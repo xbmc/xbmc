@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 25-08-2005 added: [ 1237903 ] Use custom thumbnails for shares - (with minor modification)
  - 25-08-2005 fixed: slideshow image duration
  - 24-08-2005 fixed: infrequent tearing on top of screen when rendering high rez material. (something seem to be wrong with the GPU callbacks)
  - 24-08-2005 changed: when in 1080i, default method interlace handling when in auto is nolonger syncing, but deinterlacing (only affects dvdplayer right now)

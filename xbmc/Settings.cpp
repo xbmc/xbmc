@@ -505,6 +505,7 @@ void CSettings::GetShares(const TiXmlElement* pRootElement, const CStdString& st
         const TiXmlNode *pLockMode = pChild->FirstChild("lockmode");
         const TiXmlNode *pLockCode = pChild->FirstChild("lockcode");
         const TiXmlNode *pBadPwdCount = pChild->FirstChild("badpwdcount");
+        const TiXmlNode *pThumbnailNode = pChild->FirstChild("thumbnail");
         if (pNodeName && pPathName)
         {
           const char* szName = pNodeName->FirstChild()->Value();
@@ -581,6 +582,12 @@ void CSettings::GetShares(const TiXmlElement* pRootElement, const CStdString& st
           {
             share.m_iBadPwdCount = atoi( pBadPwdCount->FirstChild()->Value() );
           }
+
+          if (pThumbnailNode)
+          {
+            share.m_strThumbnailImage = pThumbnailNode->FirstChild()->Value();
+          }
+
 
           // check - convert to url and back again to make sure strPath is accurate
           // in terms of what we expect
