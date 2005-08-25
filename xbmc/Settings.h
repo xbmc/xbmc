@@ -119,6 +119,8 @@ public:
   int m_iLockMode;
   CStdString m_strLockCode;  ///< Input code for Lock UI to verify, can be chosen freely.
   int m_iBadPwdCount; ///< Number of wrong passwords user has entered since share was last unlocked
+
+  CStdString m_strThumbnailImage; ///< Path to a thumbnail image for the share, or blank for default
 };
 /*!
 \ingroup windows
