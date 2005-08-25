@@ -26,8 +26,8 @@ extern "C"
 
 class DllLoader;
 class CDVDDemuxSPU;
-struct SPUInfo;
-struct DVDOverlayPicture;
+class CSPUInfo;
+class CDVDOverlayPicture;
 
 struct dvdnav_s;
 
@@ -68,7 +68,7 @@ public:
 
   int GetCurrentButton();
   
-  bool GetCurrentButtonInfo(struct DVDOverlayPicture* pOverlayPicture, CDVDDemuxSPU* pSPU, int iButtonType /* 0 = selection, 1 = action (clicked)*/);
+  bool GetCurrentButtonInfo(CDVDOverlayPicture* pOverlayPicture, CDVDDemuxSPU* pSPU, int iButtonType /* 0 = selection, 1 = action (clicked)*/);
   
   bool IsInMenu();
 
