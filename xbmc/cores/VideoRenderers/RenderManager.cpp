@@ -29,14 +29,14 @@ CXBoxRenderManager g_renderManager;
 
 CXBoxRenderManager::CXBoxRenderManager()
 {
-  m_bChanging = false;
+  CExclusiveLock lock(m_sharedSection);
   m_pRenderer = NULL;
   m_bPauseDrawing = false;
 }
 
 CXBoxRenderManager::~CXBoxRenderManager()
 {
-  m_bChanging = true;
+  CExclusiveLock lock(m_sharedSection);
   if (m_pRenderer)
     delete m_pRenderer;
   m_pRenderer = NULL;
@@ -44,10 +44,11 @@ CXBoxRenderManager::~CXBoxRenderManager()
 
 unsigned int CXBoxRenderManager::Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps)
 {
+  CExclusiveLock lock(m_sharedSection);
   m_iSourceWidth = width;
   m_iSourceHeight = height;
   unsigned int result = 0;
-  if (!m_bChanging && m_pRenderer)
+  if (m_pRenderer)
   {
     result = m_pRenderer->Configure(width, height, d_width, d_height, fps);
     Update(false);
@@ -58,8 +59,9 @@ unsigned int CXBoxRenderManager::Configure(unsigned int width, unsigned int heig
 
 void CXBoxRenderManager::Update(bool bPauseDrawing)
 {
+  CSharedLock lock(m_sharedSection);
   m_bPauseDrawing = bPauseDrawing;
-  if (!m_bChanging && m_pRenderer)
+  if (m_pRenderer)
   {
     m_pRenderer->Update(bPauseDrawing);
   }
@@ -67,32 +69,30 @@ void CXBoxRenderManager::Update(bool bPauseDrawing)
 
 unsigned int CXBoxRenderManager::PreInit()
 {
+  CExclusiveLock lock(m_sharedSection);
   m_bIsStarted = false;
   m_bPauseDrawing = false;
-  if (!m_bChanging)
-  {
-    if (!m_pRenderer)
-    { // no renderer
-      if (g_guiSettings.GetInt("VideoPlayer.RenderMethod") == RENDER_OVERLAYS)
-      {
-        m_pRenderer = new CComboRenderer(g_graphicsContext.Get3DDevice());
-      }
-      else if (g_guiSettings.GetInt("VideoPlayer.RenderMethod") == RENDER_HQ_RGB_SHADER)
-      {
-        m_pRenderer = new CRGBRenderer(g_graphicsContext.Get3DDevice());
-      }
-      else // if (g_guiSettings.GetInt("VideoPlayer.RenderMethod") == RENDER_LQ_RGB_SHADER)
-        m_pRenderer = new CPixelShaderRenderer(g_graphicsContext.Get3DDevice());
+  if (!m_pRenderer)
+  { // no renderer
+    if (g_guiSettings.GetInt("VideoPlayer.RenderMethod") == RENDER_OVERLAYS)
+    {
+      m_pRenderer = new CComboRenderer(g_graphicsContext.Get3DDevice());
     }
-    if (m_pRenderer)
-      return m_pRenderer->PreInit();
+    else if (g_guiSettings.GetInt("VideoPlayer.RenderMethod") == RENDER_HQ_RGB_SHADER)
+    {
+      m_pRenderer = new CRGBRenderer(g_graphicsContext.Get3DDevice());
+    }
+    else // if (g_guiSettings.GetInt("VideoPlayer.RenderMethod") == RENDER_LQ_RGB_SHADER)
+      m_pRenderer = new CPixelShaderRenderer(g_graphicsContext.Get3DDevice());
   }
-  return 0;
+
+  return m_pRenderer->PreInit();
 }
 
 void CXBoxRenderManager::UnInit()
 {
-  if (!m_bChanging && m_pRenderer)
+  CExclusiveLock lock(m_sharedSection);
+  if (m_pRenderer)
   {
     m_pRenderer->UnInit();
     delete m_pRenderer;
@@ -102,12 +102,14 @@ void CXBoxRenderManager::UnInit()
 
 void CXBoxRenderManager::SetupScreenshot()
 {
+  CSharedLock lock(m_sharedSection);
   if (m_pRenderer)
     m_pRenderer->SetupScreenshot();
 }
 
 void CXBoxRenderManager::CreateThumbnail(LPDIRECT3DSURFACE8 surface, unsigned int width, unsigned int height)
 {
+  CSharedLock lock(m_sharedSection);
   if (m_pRenderer)
     m_pRenderer->CreateThumbnail(surface, width, height);
 }

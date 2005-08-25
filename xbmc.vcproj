@@ -1967,6 +1967,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				RelativePath=".\xbmc\utils\Mutex.cpp">
 			</File>
 			<File
+				RelativePath=".\xbmc\utils\SharedSection.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\utils\SharedSection.h">
+			</File>
+			<File
 				RelativePath=".\xbmc\utils\SingleLock.cpp">
 			</File>
 			<File
@@ -2185,10 +2191,10 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\cores\sidplayer\audio\AudioDrv.h">
 				</File>
 				<File
-					RelativePath=".\xbmc\cores\sidplayer\audio\config.h">
+					RelativePath=".\xbmc\cores\sidplayer\config.h">
 				</File>
 				<File
-					RelativePath=".\xbmc\cores\sidplayer\config.h">
+					RelativePath=".\xbmc\cores\sidplayer\audio\config.h">
 				</File>
 				<File
 					RelativePath=".\xbmc\cores\sidplayer\IniConfig.cpp">
