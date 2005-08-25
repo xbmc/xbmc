@@ -312,7 +312,7 @@ bool CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, __int64 pts1)
   
   __int64 pts = pts1;
 
-  // wait  until we have space to put a new picture
+  // wait until we have space to put a new picture
   EnterCriticalSection(&m_critSection);
   while (pictq_size >= VIDEO_PICTURE_QUEUE_SIZE && !m_packetQueue.RecievedAbortRequest())
   {
@@ -370,7 +370,7 @@ bool CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, __int64 pts1)
       m_overlay.CleanUp(pts);
 
       m_overlay.Lock();
-      DVDOverlayPicture* pOverlayPicture = m_overlay.Get();
+      CDVDOverlayPicture* pOverlayPicture = m_overlay.Get();
 
       //Check all overlays and render those that should be rendered, based on time and forced
       //Both forced and subs should check timeing, pts == 0 in the stillframe case

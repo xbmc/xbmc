@@ -711,7 +711,7 @@ int CDVDInputStreamNavigator::GetAudioStreamCount()
   return dvdnav_get_nr_of_audio_streams(m_dvdnav);
 }
 
-bool CDVDInputStreamNavigator::GetCurrentButtonInfo(struct DVDOverlayPicture* pOverlayPicture, CDVDDemuxSPU* pSPU, int iButtonType)
+bool CDVDInputStreamNavigator::GetCurrentButtonInfo(CDVDOverlayPicture* pOverlayPicture, CDVDDemuxSPU* pSPU, int iButtonType)
 {
   int alpha[2][4];
   int color[2][4];
