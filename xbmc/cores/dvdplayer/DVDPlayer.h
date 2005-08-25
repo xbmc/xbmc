@@ -48,8 +48,8 @@ class CDVDPlayer : public IPlayer, public CThread, public IDVDPlayer
 public:
   CDVDPlayer(IPlayerCallback& callback);
   virtual ~CDVDPlayer();
-  virtual void RegisterAudioCallback(IAudioCallback* pCallback);
-  virtual void UnRegisterAudioCallback();
+  virtual void RegisterAudioCallback(IAudioCallback* pCallback) { m_dvdPlayerAudio.RegisterAudioCallback(pCallback); }
+  virtual void UnRegisterAudioCallback()                        { m_dvdPlayerAudio.UnRegisterAudioCallback(); }
   virtual bool OpenFile(const CFileItem& file, __int64 iStartTime);
   virtual bool CloseFile();
   virtual bool IsPlaying() const;
@@ -65,8 +65,8 @@ public:
   virtual void Seek(bool bPlus, bool bLargeStep);
   virtual void SeekPercentage(float iPercent);
   virtual float GetPercentage();
-  virtual void SetVolume(long nVolume);
-  virtual int GetVolume();
+  virtual void SetVolume(long nVolume)                          { m_dvdPlayerAudio.SetVolume(nVolume); }
+  virtual int GetVolume()                                       { return m_dvdPlayerAudio.GetVolume(); }
   virtual void SetContrast(bool bPlus) {}
   virtual void SetBrightness(bool bPlus) {}
   virtual void SetHue(bool bPlus) {}
@@ -74,9 +74,9 @@ public:
   virtual void GetAudioInfo(CStdString& strAudioInfo);
   virtual void GetVideoInfo(CStdString& strVideoInfo);
   virtual void GetGeneralInfo( CStdString& strVideoInfo);
-  virtual void Update(bool bPauseDrawing);
-  virtual void GetVideoRect(RECT& SrcRect, RECT& DestRect);
-  virtual void GetVideoAspectRatio(float& fAR);
+  virtual void Update(bool bPauseDrawing)                       { m_dvdPlayerVideo.Update(bPauseDrawing); }
+  virtual void GetVideoRect(RECT& SrcRect, RECT& DestRect)      { m_dvdPlayerVideo.GetVideoRect(SrcRect, DestRect); }
+  virtual void GetVideoAspectRatio(float& fAR)                  { fAR = m_dvdPlayerVideo.GetAspectRatio(); }
   virtual void AudioOffset(bool bPlus);
   virtual void SwitchToNextAudioLanguage();
   virtual void UpdateSubtitlePosition();
@@ -104,74 +104,64 @@ public:
 
   virtual void SeekTime(__int64 iTime);
   virtual __int64 GetTime();
-  __int64 GetTotalTimeInMsec();
   virtual int GetTotalTime();
   virtual void ToFFRW(int iSpeed);
   virtual void ShowOSD(bool bOnoff);
-
-  virtual void DoAudioWork();
+  virtual void DoAudioWork()                                    { m_dvdPlayerAudio.DoWork(); }
   virtual bool OnAction(const CAction &action);
 
-  virtual bool IsInMenu() const;
+  int OnDVDNavResult(void* pData, int iMessage);
 
-  int OutputPicture(DVDVideoPicture* pPicture, double pts1);
+private:
+  void LockStreams()   { EnterCriticalSection(&m_critStreamSection); }
+  void UnlockStreams() { LeaveCriticalSection(&m_critStreamSection); }
+  
+  bool Load();
+  void Unload();
+  virtual void OnStartup();
+  virtual void OnExit();
+  virtual void Process();
 
   bool OpenDefaultAudioStream();
   bool OpenAudioStream(int iStream);
   bool OpenVideoStream(int iStream);
   bool CloseAudioStream(bool bWaitForBuffers);
   bool CloseVideoStream(bool bWaitForBuffers);
+  
+  void ProcessSubData(CDVDDemux::DemuxPacket* pPacket);
+  __int64 GetTotalTimeInMsec();
+  void FlushBuffers();
 
-  void UnlockStreams();
-  void LockStreams();
+  void HandleMessages();
+  bool IsInMenu() const;
+  void UpdateOverlayInfo(int iAction);
 
-  virtual int OnDVDNavResult(void* pData, int iMessage);
-
-  CDVDDemuxSPU m_dvdspus; // dvd subtitle demuxer
-  DVDInfo m_dvd;
-
-  CDVDInputStream* m_pInputStream;
-  int m_iSpeed; // 1 is normal speed, 0 is paused
-  int m_bAbortRequest;
-
-  CDVDDemux* m_pDemuxer;
-
+  bool m_bRenderSubtitle;
+  bool m_bDontSkipNextFrame;
   bool m_bReadAgain; // tricky, if set to true, the main loop will start over again
-  bool m_bDrawedFrame;
+  bool m_bAbortRequest;
+
+  char m_filename[1024];
 
   int m_iCurrentStreamVideo;
   int m_iCurrentStreamAudio;
   int m_iCurrentPhysicalAudioStream; //The x:th audio stream will be opened by default
+  int m_iSpeed; // 1 is normal speed, 0 is paused
   
-  CDVDPlayerAudio m_dvdPlayerAudio;
-  CDVDPlayerVideo m_dvdPlayerVideo;
-  CDVDPlayerMessenger m_messenger;
-  CDVDClock m_clock;
+  // classes
+  CDVDPlayerAudio m_dvdPlayerAudio; // audio part
+  CDVDPlayerVideo m_dvdPlayerVideo; // video part
+  CDVDPlayerMessenger m_messenger;  // thread messenger
+  CDVDClock m_clock;                // master clock
+  CDVDDemuxSPU m_dvdspus;           // dvd subtitle demuxer
 
-private:
-  void Unload();
-  bool Load();
-  virtual void OnStartup();
-  virtual void OnExit();
-  virtual void Process();
-
-  void ProcessSubData(CDVDDemux::DemuxPacket* pPacket);
+  CDVDInputStream* m_pInputStream;  // input stream for current playing file
+  CDVDDemux* m_pDemuxer;            // demuxer for current playing file
+  DllLoader* m_pDLLavformat;        // avformat.dll handle
+  DllLoader* m_pDLLavcodec;         // avcodec.dll handle
   
-  void FlushBuffers();
-
-  void HandleMessages();
-  void UpdateMenuButtons(int iAction);
+  DVDInfo m_dvd;
   
-  DllLoader* m_pDLLavformat;
-  DllLoader* m_pDLLavcodec;
-
   HANDLE m_hReadyEvent;
-
-  char m_filename[1024];
-
-  bool m_bReadData;
-  bool m_bRenderSubtitle;
-  
-  bool m_bDontSkipNextFrame;
   CRITICAL_SECTION m_critStreamSection; // need to have this lock when switching streams (audio / video)
 };

@@ -1,13 +1,9 @@
-/* TODO:
-* - add the autocrop idea from vlc
-*/
 
 #include "../../stdafx.h"
 #include "DVDDemuxSPU.h"
 #include "..\..\util.h"
 #include "DVDPlayerDLL.h"
 #include "DVDClock.h"
-
 
 // #define SPU_DEBUG
 
@@ -27,46 +23,34 @@ void DebugLog(const char *format, ...)
 
 CDVDDemuxSPU::CDVDDemuxSPU()
 {
-  for (int i = 0; i < DVD_MAX_SPUSTREAMS; i++)
-  {
-    m_spuSreams[i].data = NULL;
-    m_spuSreams[i].iSize = 0;
-    m_spuSreams[i].iAllocatedSize = 0;
-    m_spuSreams[i].iNeededSize = 0;
-  }
-
+  memset(&m_spuData, 0, sizeof(m_spuData));
   memset(m_clut, 0, sizeof(m_clut));
   m_bHasClut = false;
 }
 
 CDVDDemuxSPU::~CDVDDemuxSPU()
 {
-  for (int i = 0; i < DVD_MAX_SPUSTREAMS; i++)
-  {
-    if (m_spuSreams[i].data) delete[] m_spuSreams[i].data;
-  }
+  if (m_spuData.data) delete[] m_spuData.data;
 }
 
-SPUInfo* CDVDDemuxSPU::AddData(BYTE* data, int iSize, int iStream, __int64 pts)
+CSPUInfo* CDVDDemuxSPU::AddData(BYTE* data, int iSize, __int64 pts)
 {
-  // mpeg spu streams start from 0x20 and end with 0x3f
-  int iIndex = iStream - 0x20;
-  if (iIndex < 0 || iIndex > DVD_MAX_SPUSTREAMS || iSize < 2) return NULL;
-
-  SPUData* pSPUData = &m_spuSreams[iIndex];
+  SPUData* pSPUData = &m_spuData;
 
   if (pSPUData->iNeededSize > 0 &&
       (pSPUData->iSize != pSPUData->iNeededSize) &&
       ((pSPUData->iSize + iSize) > pSPUData->iNeededSize))
   {
     DebugLog("corrupt spu data: packet does not fit");
+    m_spuData.iNeededSize = 0;
+    m_spuData.iSize = 0;
     return NULL;
   }
 
   // check if we are about to start a new packet
   if (pSPUData->iSize == pSPUData->iNeededSize)
   {
-    // for now we don't delete the memory assosiated with m_spuSreams[i].data
+    // for now we don't delete the memory assosiated with m_spuData.data
     pSPUData->iSize = 0;
 
     // check spu data lenght, only needed / possible in the first spu pakcet
@@ -75,7 +59,9 @@ SPUInfo* CDVDDemuxSPU::AddData(BYTE* data, int iSize, int iStream, __int64 pts)
     if (lenght == 0)
     {
       DebugLog("corrupt spu data: zero packet");
-      return NULL;;
+      m_spuData.iNeededSize = 0;
+      m_spuData.iSize = 0;
+      return NULL;
     }
     if (lenght > iSize) pSPUData->iNeededSize = lenght;
     else pSPUData->iNeededSize = iSize;
@@ -114,17 +100,12 @@ SPUInfo* CDVDDemuxSPU::AddData(BYTE* data, int iSize, int iStream, __int64 pts)
     pSPUData->data[pSPUData->iSize] = 0xff;
     pSPUData->iSize++;
   }
+  
   if (pSPUData->iSize == pSPUData->iNeededSize)
   {
-    DebugLog("got complete spu packet\n  lenght: %i bytes\n  stream: %i\n", pSPUData->iSize, iStream);
+    DebugLog("got complete spu packet\n  lenght: %i bytes\n  stream: %i\n", pSPUData->iSize);
 
-    SPUInfo* pSPUInfo = ParsePacket(pSPUData);
-    if (!pSPUInfo) return NULL;
-
-    // fill missing vars in SPUInfo
-    pSPUInfo->iStream = iStream;
-
-    return pSPUInfo;
+    return ParsePacket(pSPUData);
   }
 
   return NULL;
@@ -140,10 +121,11 @@ SPUInfo* CDVDDemuxSPU::AddData(BYTE* data, int iSize, int iStream, __int64 pts)
 #define SET_DSPXA   0x06
 #define CHG_COLCON  0x07
 
-SPUInfo* CDVDDemuxSPU::ParsePacket(SPUData* pSPUData)
+CSPUInfo* CDVDDemuxSPU::ParsePacket(SPUData* pSPUData)
 {
   unsigned int alpha[4];
-
+  BYTE* pUnparsedData = NULL;
+  
   if (pSPUData->iNeededSize != pSPUData->iSize)
   {
     DebugLog("GetPacket, packet is incomplete, missing: %i bytes", (pSPUData->iNeededSize - pSPUData->iSize));
@@ -154,16 +136,13 @@ SPUInfo* CDVDDemuxSPU::ParsePacket(SPUData* pSPUData)
     DebugLog("GetPacket, missing end of data 0xff");
   }
 
-  SPUInfo* pSPUInfo = new SPUInfo;
-  fast_memset(pSPUInfo, 0, sizeof(SPUInfo));
-
+  CSPUInfo* pSPUInfo = new CSPUInfo;
   BYTE* p = pSPUData->data; // pointer to walk through all data
 
   // get data length
   unsigned __int16 datalenght = p[2] << 8 | p[3]; // datalength + 4 control bytes
 
-  pSPUInfo->iSPUSize = datalenght - 4;
-  pSPUInfo->pData = pSPUData->data + 4;
+  pUnparsedData = pSPUData->data + 4;
 
   // if it is set to 0 it means it's a menu overlay by defualt
   // this is not what we want too, cause you get strange results on a parse error
@@ -324,7 +303,7 @@ SPUInfo* CDVDDemuxSPU::ParsePacket(SPUData* pSPUData)
 
   // parse the rle.
   // this should be chnaged so it get's converted to a yuv overlay
-  return ParseRLE(pSPUInfo);
+  return ParseRLE(pSPUInfo, pUnparsedData);
 }
 
 /*****************************************************************************
@@ -349,9 +328,9 @@ inline unsigned int AddNibble( unsigned int i_code, BYTE* p_src, unsigned int* p
  * convenient structure for later decoding. For more information on the
  * subtitles format, see http://sam.zoy.org/doc/dvd/subtitles/index.html
  *****************************************************************************/
-SPUInfo* CDVDDemuxSPU::ParseRLE(SPUInfo* pSPU)
+CSPUInfo* CDVDDemuxSPU::ParseRLE(CSPUInfo* pSPU, BYTE* pUnparsedData)
 {
-  BYTE* p_src = pSPU->pData;
+  BYTE* p_src = pUnparsedData;
 
   unsigned int i_code = 0;
 
@@ -359,11 +338,12 @@ SPUInfo* CDVDDemuxSPU::ParseRLE(SPUInfo* pSPU)
   unsigned int i_height = pSPU->height;
   unsigned int i_x, i_y;
 
+  // allocate a buffer for the result
   unsigned __int16* p_dest = (unsigned __int16*)pSPU->result;
 
   /* The subtitles are interlaced, we need two offsets */
   unsigned int i_id = 0;                   /* Start on the even SPU layer */
-  unsigned int pi_table[ 2 ];
+  unsigned int pi_table[2];
   unsigned int *pi_offset;
 
   /* Colormap statistics */
