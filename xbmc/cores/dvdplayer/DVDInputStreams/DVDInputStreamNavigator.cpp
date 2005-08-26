@@ -130,13 +130,29 @@ bool CDVDInputStreamNavigator::Open(const char* strFile)
   // open up the DVD device
   if (dvdnav_open(&m_dvdnav, strDVDFile) != DVDNAV_STATUS_OK)
   {
+    free(strDVDFile);
+
     CLog::DebugLog("Error on dvdnav_open\n");
     Close();
     return false;
   }
+  free(strDVDFile);
 
-  // set region flag (0xff = all regions ?)
-  dvdnav_set_region_mask(m_dvdnav, 0xff);
+  vm_t* vm = dvdnav_get_vm(m_dvdnav);
+  if (vm && vm->vmgi && vm->vmgi->vmgi_mat)
+  {
+    // find out what region dvd reports itself to be from, and use that as mask if available
+    int mask = ~(vm->vmgi->vmgi_mat->vmg_category >> 16);
+    if( mask != 0 )
+      dvdnav_set_region_mask(m_dvdnav, mask);
+    else
+      dvdnav_set_region_mask(m_dvdnav, 0xff);
+  }
+  else
+  {
+    // set region flag (0xff = all regions ?)
+    dvdnav_set_region_mask(m_dvdnav, 0xff);
+  }
 
   // set defaults
   if (dvdnav_menu_language_select(m_dvdnav, "en") != DVDNAV_STATUS_OK ||
@@ -165,7 +181,6 @@ bool CDVDInputStreamNavigator::Open(const char* strFile)
     return false;
   }
 
-  free(strDVDFile);
   m_bStopped = false;
   
   return true;
