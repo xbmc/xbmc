@@ -147,13 +147,13 @@ namespace PYXBMC
 		char *cLine;
     CStdString ret;
 		if (!PyArg_ParseTuple(args, "s", &cLine))	return NULL;
-    if (!pXbmcHttp)
+    if (!pXbmcHttpShim)
     {
-      pXbmcHttp = new CXbmcHttp();
-      if (!pXbmcHttp)
+      pXbmcHttpShim = new CXbmcHttpShim();
+      if (!pXbmcHttpShim)
         return NULL;
     }
-    ret=pXbmcHttp->xbmcExternalCall(cLine);
+    ret=pXbmcHttpShim->xbmcExternalCall(cLine);
 
 		return PyString_FromString(ret.c_str());
 	}

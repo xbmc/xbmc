@@ -55,7 +55,8 @@ CWebServer::CWebServer()
 {
   pXbmcWeb = new CXbmcWeb();
   pXbmcWebConfig = new CXbmcConfiguration();
-  pXbmcHttp = new CXbmcHttp();
+  if (!pXbmcHttpShim)
+    pXbmcHttpShim = new CXbmcHttpShim();
   m_port = 80;					/* Server port */
   m_szPassword[0] = '\0';
 
@@ -68,10 +69,10 @@ CWebServer::~CWebServer()
   CloseHandle(m_hEvent);
   if (pXbmcWeb) delete pXbmcWeb;
   if (pXbmcWebConfig) delete pXbmcWebConfig;
-  if (pXbmcHttp)
+  if (pXbmcHttpShim)
   {
-    delete pXbmcHttp;
-    pXbmcHttp=NULL;
+    delete pXbmcHttpShim;
+    pXbmcHttpShim=NULL;
   }
 }
 
@@ -477,14 +478,14 @@ void formTest(webs_t wp, char_t *path, char_t *query)
 
 void  XbmcHttpCommand(webs_t wp, char_t *path, char_t *query) 
 {																
-	if (!pXbmcHttp) return ;
-	return pXbmcHttp->xbmcForm(wp, path, query);	
+	if (!pXbmcHttpShim) return ;
+	return pXbmcHttpShim->xbmcForm(wp, path, query);	
 }			
 
 int XbmcAPIAspCommand(int eid, webs_t wp, int argc, char_t **argv) 
 {																
-	if (!pXbmcHttp) return -1;
-	return pXbmcHttp->xbmcCommand(eid, wp, argc, argv);	
+	if (!pXbmcHttpShim) return -1;
+	return pXbmcHttpShim->xbmcCommand(eid, wp, argc, argv);	
 }		
 
 int XbmcWebsAspCommand(int eid, webs_t wp, int argc, char_t **argv)
@@ -502,14 +503,26 @@ void XbmcWebsForm(webs_t wp, char_t *path, char_t *query)
 /*
  * wrappers for xbmcConfig
  */
-int XbmcWebsAspConfigBookmarkSize(int eid, webs_t wp, int argc, char_t **argv) { return pXbmcWebConfig ? pXbmcWebConfig->BookmarkSize(eid, wp, argc, argv) : -1; }
-int XbmcWebsAspConfigGetBookmark( int eid, webs_t wp, int argc, char_t **argv) { return pXbmcWebConfig ? pXbmcWebConfig->GetBookmark(eid, wp, argc, argv) : -1; }
-int XbmcWebsAspConfigAddBookmark( int eid, webs_t wp, int argc, char_t **argv) { return pXbmcWebConfig ? pXbmcWebConfig->AddBookmark(eid, wp, argc, argv) : -1; }
-int XbmcWebsAspConfigSaveBookmark( int eid, webs_t wp, int argc, char_t **argv) { return pXbmcWebConfig ? pXbmcWebConfig->SaveBookmark(eid, wp, argc, argv) : -1; }
-int XbmcWebsAspConfigRemoveBookmark( int eid, webs_t wp, int argc, char_t **argv) { return pXbmcWebConfig ? pXbmcWebConfig->RemoveBookmark(eid, wp, argc, argv) : -1; }
-int XbmcWebsAspConfigSaveConfiguration( int eid, webs_t wp, int argc, char_t **argv) { return pXbmcWebConfig ? pXbmcWebConfig->SaveConfiguration(eid, wp, argc, argv) : -1; }
-int XbmcWebsAspConfigGetOption( int eid, webs_t wp, int argc, char_t **argv) { return pXbmcWebConfig ? pXbmcWebConfig->GetOption(eid, wp, argc, argv) : -1; }
-int XbmcWebsAspConfigSetOption( int eid, webs_t wp, int argc, char_t **argv) { return pXbmcWebConfig ? pXbmcWebConfig->SetOption(eid, wp, argc, argv) : -1; }
+int XbmcWebsAspConfigBookmarkSize(int eid, webs_t wp, int argc, char_t **argv) { return pXbmcWebConfig ? pXbmcWebConfig->BookmarkSize(eid, wp, (CStdString) "", argc, argv) : -1; }
+int XbmcWebsAspConfigGetBookmark(int eid, webs_t wp, int argc, char_t **argv) { return pXbmcWebConfig ? pXbmcWebConfig->GetBookmark(eid, wp, (CStdString) "", argc, argv) : -1; }
+int XbmcWebsAspConfigAddBookmark(int eid, webs_t wp, int argc, char_t **argv) { return pXbmcWebConfig ? pXbmcWebConfig->AddBookmark(eid, wp, (CStdString) "", argc, argv) : -1; }
+int XbmcWebsAspConfigSaveBookmark(int eid, webs_t wp, int argc, char_t **argv) { return pXbmcWebConfig ? pXbmcWebConfig->SaveBookmark(eid, wp, (CStdString) "", argc, argv) : -1; }
+int XbmcWebsAspConfigRemoveBookmark(int eid, webs_t wp, int argc, char_t **argv) { return pXbmcWebConfig ? pXbmcWebConfig->RemoveBookmark(eid, wp, (CStdString) "", argc, argv) : -1; }
+int XbmcWebsAspConfigSaveConfiguration(int eid, webs_t wp, int argc, char_t **argv) { return pXbmcWebConfig ? pXbmcWebConfig->SaveConfiguration(eid, wp, (CStdString) "", argc, argv) : -1; }
+int XbmcWebsAspConfigGetOption(int eid, webs_t wp, int argc, char_t **argv) { return pXbmcWebConfig ? pXbmcWebConfig->GetOption(eid, wp, (CStdString) "", argc, argv) : -1; }
+int XbmcWebsAspConfigSetOption(int eid, webs_t wp, int argc, char_t **argv) { return pXbmcWebConfig ? pXbmcWebConfig->SetOption(eid, wp, (CStdString) "", argc, argv) : -1; }
+
+/*
+ * wrappers for HttpAPI xbmcConfig
+ */
+int XbmcWebsHttpAPIConfigBookmarkSize(CStdString& response, int argc, char_t **argv) { return pXbmcWebConfig ? pXbmcWebConfig->BookmarkSize(-1, NULL, response, argc, argv) : -1; }
+int XbmcWebsHttpAPIConfigGetBookmark(CStdString& response, int argc, char_t **argv) { return pXbmcWebConfig ? pXbmcWebConfig->GetBookmark(-1, NULL, response, argc, argv) : -1; }
+int XbmcWebsHttpAPIConfigAddBookmark(CStdString& response, int argc, char_t **argv) { return pXbmcWebConfig ? pXbmcWebConfig->AddBookmark(-1, NULL, response, argc, argv) : -1; }
+int XbmcWebsHttpAPIConfigSaveBookmark(CStdString& response, int argc, char_t **argv) { return pXbmcWebConfig ? pXbmcWebConfig->SaveBookmark(-1, NULL, response, argc, argv) : -1; }
+int XbmcWebsHttpAPIConfigRemoveBookmark(CStdString& response, int argc, char_t **argv) { return pXbmcWebConfig ? pXbmcWebConfig->RemoveBookmark(-1, NULL, response, argc, argv) : -1; }
+int XbmcWebsHttpAPIConfigSaveConfiguration(CStdString& response, int argc, char_t **argv) { return pXbmcWebConfig ? pXbmcWebConfig->SaveConfiguration(-1, NULL, response, argc, argv) : -1; }
+int XbmcWebsHttpAPIConfigGetOption(CStdString& response, int argc, char_t **argv) { return pXbmcWebConfig ? pXbmcWebConfig->GetOption(-1, NULL, response, argc, argv) : -1; }
+int XbmcWebsHttpAPIConfigSetOption(CStdString& response, int argc, char_t **argv) { return pXbmcWebConfig ? pXbmcWebConfig->SetOption(-1, NULL, response, argc, argv) : -1; }
 
   
 #if defined(__cplusplus)

@@ -8,6 +8,7 @@
 #include "util.h"
 #include "lib/libPython/XBPython.h"
 #include "GUIWindowSlideShow.h"
+#include "lib/libGoAhead/xbmchttp.h"
 
 CApplicationMessenger g_applicationMessenger;
 
@@ -42,8 +43,8 @@ void CApplicationMessenger::SendMessage(ThreadMessage& message, bool wait)
       message.hWaitEvent = CreateEvent(NULL, false, false, "threadWaitEvent");
     else
     {
-      OutputDebugString("Attempting to wait on a SendMessage() from our application thread will cause lockup!\n");
-      OutputDebugString("Sending immediately\n");
+      //OutputDebugString("Attempting to wait on a SendMessage() from our application thread will cause lockup!\n");
+      //OutputDebugString("Sending immediately\n");
       ProcessMessage(&message);
       return;
     }
@@ -232,6 +233,14 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
       }
       break;
 
+    case TMSG_HTTPAPI:
+      if (!pXbmcHttp)
+      {
+        pXbmcHttp = new CXbmcHttp();
+      }
+      pXbmcHttp->xbmcCommand(pMsg->strParam);
+      break;
+
     case TMSG_EXECUTE_SCRIPT:
       g_pythonParser.evalFile(pMsg->strParam.c_str());
       break;
@@ -296,6 +305,31 @@ void CApplicationMessenger::ProcessWindowMessages()
     }
   }
   lock.Leave();
+}
+
+int CApplicationMessenger::SetResponse(CStdString response)
+{
+  CSingleLock lock (m_critBuffer);
+  bufferResponse=response;
+  lock.Leave();
+  return 0;
+}
+
+CStdString CApplicationMessenger::GetResponse()
+{
+  CStdString tmp;
+  CSingleLock lock (m_critBuffer);
+  tmp=bufferResponse;
+  lock.Leave();
+  return tmp;
+}
+
+void CApplicationMessenger::HttpApi(string cmd)
+{
+  SetResponse("");
+  ThreadMessage tMsg = {TMSG_HTTPAPI};
+  tMsg.strParam = cmd;
+  SendMessage(tMsg, true);
 }
 
 void CApplicationMessenger::MediaPlay(string filename)

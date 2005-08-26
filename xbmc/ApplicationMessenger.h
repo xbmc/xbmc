@@ -23,6 +23,8 @@
 #define TMSG_RESET                303
 #define TMSG_RESTARTAPP           304
 
+#define TMSG_HTTPAPI              400
+
 typedef struct
 {
   DWORD dwMessage;
@@ -60,12 +62,19 @@ public:
   void RestartApp();
   void Reset();
 
+  CStdString GetResponse();
+  int SetResponse(CStdString response);
+  void HttpApi(string cmd);
+
 private:
   void ProcessMessage(ThreadMessage *pMsg);
+
 
   vector<ThreadMessage*> m_vecMessages;
   vector<ThreadMessage*> m_vecWindowMessages;
   CCriticalSection m_critSection;
+  CCriticalSection m_critBuffer;
+  CStdString bufferResponse;
 
 };
 
