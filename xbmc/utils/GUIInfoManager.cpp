@@ -113,6 +113,7 @@ extern char g_szTitleIP[32];
 #define VIDEOPLAYER_COVER           258
 #define VIDEOPLAYER_USING_OVERLAYS  259
 #define VIDEOPLAYER_ISFULLSCREEN    260
+#define VIDEOPLAYER_HASMENU         261
 
 #define AUDIOSCROBBLER_ENABLED      300
 #define AUDIOSCROBBLER_CONN_STATE   301
@@ -284,6 +285,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
   else if (strTest.Equals("videoplayer.cover")) ret = VIDEOPLAYER_COVER;
   else if (strTest.Equals("videoplayer.usingoverlays")) ret = VIDEOPLAYER_USING_OVERLAYS;
   else if (strTest.Equals("videoplayer.isfullscreen")) ret = VIDEOPLAYER_ISFULLSCREEN;
+  else if (strTest.Equals("videoplayer.hasmenu")) ret = VIDEOPLAYER_HASMENU;
   else if (strTest.Equals("audioscrobbler.enabled")) ret = AUDIOSCROBBLER_ENABLED;
   else if (strTest.Equals("audioscrobbler.connectstate")) ret = AUDIOSCROBBLER_CONN_STATE;
   else if (strTest.Equals("audioscrobbler.submitinterval")) ret = AUDIOSCROBBLER_SUBMIT_INT;
@@ -616,6 +618,9 @@ bool CGUIInfoManager::GetBool(int condition1) const
     break;
     case VIDEOPLAYER_ISFULLSCREEN:
       bReturn = m_gWindowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO;
+    break;
+    case VIDEOPLAYER_HASMENU:
+      bReturn = g_application.m_pPlayer->HasMenu();
     break;
     case VISUALISATION_LOCKED:
       {
