@@ -10,6 +10,8 @@ public:
   virtual ~CGUIWindowMusicNav(void);
 
   virtual bool OnMessage(CGUIMessage& message);
+  CFileItem CurrentDirectory() const { return m_Directory;};
+
 
 protected:
   // override base class methods
