@@ -109,6 +109,7 @@ public:
   virtual void ShowOSD(bool bOnoff);
   virtual void DoAudioWork()                                    { m_dvdPlayerAudio.DoWork(); }
   virtual bool OnAction(const CAction &action);
+  virtual bool HasMenu();
 
   int OnDVDNavResult(void* pData, int iMessage);
 
