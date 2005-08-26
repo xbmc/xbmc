@@ -16,6 +16,8 @@ public:
   virtual bool OnAction(const CAction &action);
   virtual void OnWindowLoaded();
   virtual void OnWindowUnload();
+  CFileItem CurrentDirectory() const { return m_Directory;};
+
 protected:
   void OnScan(CFileItemList& items, int& iTotalAppsFound) ;
   void Update(const CStdString& strDirectory);
