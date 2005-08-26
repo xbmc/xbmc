@@ -32,6 +32,12 @@
 #include "..\..\utils\MusicInfoScraper.h"
 #include "..\..\MusicDatabase.h"
 #include "..\..\GUIWindowSlideShow.h"
+#include "..\..\GUIWindowVideoFiles.h"
+#include "..\..\GUIWindowMusicNav.h"
+#include "..\..\GUIWindowFileManager.h"
+#include "..\..\GUIWindowPictures.h"
+#include "..\..\GUIWindowPrograms.h"
+#include "..\..\guilib\GUIButtonScroller.h"
 
 #define XML_MAX_INNERTEXT_SIZE 256
 #define MAX_PARAS 10
@@ -974,26 +980,6 @@ int CXbmcHttp::xbmcClearSlideshow()
 
 int CXbmcHttp::xbmcPlaySlideshow(int numParas, CStdString paras[] )
 { // (filename(;1)) -> 1 indicates recursive
-  //bool recursive=false;
-
-    //CGUIWindowSlideShow *pSlideShow = (CGUIWindowSlideShow *)m_gWindowManager.GetWindow(WINDOW_SLIDESHOW);
-  //if (!pSlideShow)
-  //{
-  //  return g_applicationMessenger.SetResponse("<li>Error");
-  //}
-  //else
-  //{
-    // stop playing file
-    //if (g_application.IsPlayingVideo()) g_application.StopPlaying();
-
-    //if (m_gWindowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO)
-    //  m_gWindowManager.PreviousWindow();
-
-    //g_application.ResetScreenSaver();
-    //g_application.ResetScreenSaverWindow();
-
-    //g_graphicsContext.Lock();
-
     int recursive;
     if (numParas>1)
       recursive=atoi(paras[1].c_str());
@@ -1006,23 +992,7 @@ int CXbmcHttp::xbmcPlaySlideshow(int numParas, CStdString paras[] )
       msg.SetStringParam(paras[0]);
     CGUIWindow *pWindow = m_gWindowManager.GetWindow(WINDOW_SLIDESHOW);
     if (pWindow) pWindow->OnMessage(msg);
-
-
-
-    //if (numParas==0)
-    //  pSlideShow->RunSlideShow("",false);
-    //else
-    //{
-    //  if (numParas>1)
-    //    recursive=(atoi(paras[1].c_str())==1);
-    //  pSlideShow->RunSlideShow(paras[0], recursive);
-    //}
-
-
-
-    //g_graphicsContext.Unlock();
     return g_applicationMessenger.SetResponse("<li>OK");
-  //}
 }
 
 int CXbmcHttp::xbmcSlideshowSelect(int numParas, CStdString paras[])
@@ -1093,14 +1063,18 @@ int CXbmcHttp::xbmcGetGUIDescription()
 
 int CXbmcHttp::xbmcGetGUIStatus()
 {
-  CStdString output, tmp;
-  int iWin=m_gWindowManager.GetActiveWindow();
-  tmp.Format("%i", iWin);
-  output = "<li>ActiveWindow:" + tmp;
-  CStdString strTmp;
-  CGUIWindow* pWindow=m_gWindowManager.GetWindow(iWin);
+  CStdString output, tmp, strTmp;
 
-  
+  output = "\n<li>MusicPath:" + ((CGUIWindowMusicNav *)m_gWindowManager.GetWindow(WINDOW_MUSIC_FILES))->CurrentDirectory().m_strPath;
+  output += "\n<li>VideoPath:" + ((CGUIWindowVideoFiles *)m_gWindowManager.GetWindow(WINDOW_VIDEOS))->CurrentDirectory().m_strPath;
+  output += "\n<li>PicturePath:" + ((CGUIWindowPictures *)m_gWindowManager.GetWindow(WINDOW_PICTURES))->CurrentDirectory().m_strPath;
+  output += "\n<li>ProgramsPath:" + ((CGUIWindowPrograms *)m_gWindowManager.GetWindow(WINDOW_PROGRAMS))->CurrentDirectory().m_strPath;
+  output += "\n<li>FilesPath1:" + ((CGUIWindowFileManager *)m_gWindowManager.GetWindow(WINDOW_FILES))->CurrentDirectory(0).m_strPath;
+  output += "\n<li>FilesPath1:" + ((CGUIWindowFileManager *)m_gWindowManager.GetWindow(WINDOW_FILES))->CurrentDirectory(1).m_strPath;
+  int iWin=m_gWindowManager.GetActiveWindow();
+  CGUIWindow* pWindow=m_gWindowManager.GetWindow(iWin);  
+  tmp.Format("%i", iWin);
+  output += "<li>ActiveWindow:" + tmp;
   if (pWindow)
   {
     CStdString strLine;
@@ -1118,19 +1092,39 @@ int CXbmcHttp::xbmcGetGUIStatus()
       strTmp = pControl->GetDescription();
       if (pControl->GetControlType() == CGUIControl::GUICONTROL_BUTTON)
       {
-        output += "\n<li>ControlButton:" + strTmp;
+        output += "\n<li>Type:Button";
+        if (strTmp!="")
+          output += "\n<li>Description:" + strTmp;
+        long lHyperLinkWindowID = ((CGUIButtonControl *)pControl)->GetHyperLink();
+        if (lHyperLinkWindowID != WINDOW_INVALID)
+        {
+          CGUIWindow *pHyperWindow = m_gWindowManager.GetWindow(lHyperLinkWindowID);
+          if (pHyperWindow)
+          {
+            int iHyperControl=pHyperWindow->GetFocusedControl();
+            CGUIControl* pHyperControl=(CGUIControl* )pHyperWindow->GetControl(iHyperControl);
+            if (pHyperControl)
+              output += "\n<li>DescriptionSub:" + (CStdString) ((CGUIButtonControl *)pHyperControl)->GetLabel();
+          }
+        }
+      }
+      else if (pControl->GetControlType() == CGUIControl::GUICONTROL_BUTTONBAR)
+      {
+        output += "\n<li>Type:ButtonBar\n<li>Description:" + strTmp;
+        strLine.Format("%d",((CGUIButtonScroller *)pControl)->GetActiveButton());
+        output += "\n<li>ActiveButton:" + strLine;
       }
       else if (pControl->GetControlType() == CGUIControl::GUICONTROL_SPIN)
       {
-        output += "\n<li>ControlSpin:" + strTmp;
+        output += "\n<li>Type:Spin\n<li>Description:" + strTmp;
       }
       else if (pControl->GetControlType() == CGUIControl::GUICONTROL_THUMBNAIL)
       {
-        output += "\n<li>ControlThumNail:" + strTmp;
+        output += "\n<li>Type:ThumbNail\n<li>Description:" + strTmp;
       }
       else if (pControl->GetControlType() == CGUIControl::GUICONTROL_LIST)
       {
-        output += "\n<li>ControlList:" + strTmp;
+        output += "\n<li>Type:List\n<li>Description:" + strTmp;
       }
     }
   }

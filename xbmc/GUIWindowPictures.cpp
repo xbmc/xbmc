@@ -1239,4 +1239,3 @@ void CGUIWindowPictures::ShowShareErrorMessage(CFileItem* pItem)
     CGUIDialogOK::ShowAndGetInput(220, idMessageText, 0, 0);
   }
 }
-

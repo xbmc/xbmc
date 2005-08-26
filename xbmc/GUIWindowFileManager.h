@@ -18,6 +18,7 @@ public:
   virtual void Render();
   virtual bool OnFileCallback(void* pContext, int ipercent);
   bool Delete(const CFileItem *pItem);
+  CFileItem CurrentDirectory(int indx) const { return m_Directory[indx];};
 
 protected:
   void GoParentFolder(int iList);

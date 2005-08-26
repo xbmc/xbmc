@@ -19,6 +19,8 @@ public:
 
   virtual void OnWindowLoaded();
   virtual void OnWindowUnload();
+  CFileItem CurrentDirectory() const { return m_Directory;};
+
 protected:
   void GoParentFolder();
   bool GetDirectory(const CStdString &strDirectory, CFileItemList &items);
