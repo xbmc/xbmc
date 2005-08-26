@@ -88,6 +88,7 @@ public:
   virtual int GetCacheLevel() const {return -1;}; 
 
   virtual bool IsInMenu() const {return false;};
+  virtual bool HasMenu() { return false; };
 
   virtual void DoAudioWork(){};
   virtual bool OnAction(const CAction &action) { return false; };

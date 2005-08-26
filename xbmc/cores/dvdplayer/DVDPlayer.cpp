@@ -1299,3 +1299,11 @@ void CDVDPlayer::UpdateOverlayInfo(int iAction)
     }
   }
 }
+
+bool CDVDPlayer::HasMenu()
+{
+  if (m_pInputStream && m_pInputStream->m_streamType == DVDSTREAM_TYPE_DVD)
+    return true;
+  else
+    return false;
+}
