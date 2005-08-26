@@ -32,13 +32,23 @@ int		XbmcAPIAspCommand(int eid, webs_t wp, int argc, char_t **argv);
 
 // wrapers for XBMCConfiguration
 int XbmcWebsAspConfigBookmarkSize(int eid, webs_t wp, int argc, char_t **argv);
-int XbmcWebsAspConfigGetBookmark( int eid, webs_t wp, int argc, char_t **argv);
-int XbmcWebsAspConfigAddBookmark( int eid, webs_t wp, int argc, char_t **argv);
-int XbmcWebsAspConfigSaveBookmark( int eid, webs_t wp, int argc, char_t **argv);
-int XbmcWebsAspConfigRemoveBookmark( int eid, webs_t wp, int argc, char_t **argv);
-int XbmcWebsAspConfigSaveConfiguration( int eid, webs_t wp, int argc, char_t **argv);
-int XbmcWebsAspConfigGetOption( int eid, webs_t wp, int argc, char_t **argv);
-int XbmcWebsAspConfigSetOption( int eid, webs_t wp, int argc, char_t **argv);
+int XbmcWebsAspConfigGetBookmark(int eid, webs_t wp, int argc, char_t **argv);
+int XbmcWebsAspConfigAddBookmark(int eid, webs_t wp, int argc, char_t **argv);
+int XbmcWebsAspConfigSaveBookmark(int eid, webs_t wp, int argc, char_t **argv);
+int XbmcWebsAspConfigRemoveBookmark(int eid, webs_t wp, int argc, char_t **argv);
+int XbmcWebsAspConfigSaveConfiguration(int eid, webs_t wp, int argc, char_t **argv);
+int XbmcWebsAspConfigGetOption(int eid, webs_t wp, int argc, char_t **argv);
+int XbmcWebsAspConfigSetOption(int eid, webs_t wp, int argc, char_t **argv);
+
+// wrapers for HttpAPI XBMCConfiguration
+int XbmcWebsHttpAPIConfigBookmarkSize(CStdString& response, int argc, char_t **argv);
+int XbmcWebsHttpAPIConfigGetBookmark(CStdString& response, int argc, char_t **argv);
+int XbmcWebsHttpAPIConfigAddBookmark(CStdString& response, int argc, char_t **argv);
+int XbmcWebsHttpAPIConfigSaveBookmark(CStdString& response, int argc, char_t **argv);
+int XbmcWebsHttpAPIConfigRemoveBookmark(CStdString& response, int argc, char_t **argv);
+int XbmcWebsHttpAPIConfigSaveConfiguration(CStdString& response, int argc, char_t **argv);
+int XbmcWebsHttpAPIConfigGetOption(CStdString& response, int argc, char_t **argv);
+int XbmcWebsHttpAPIConfigSetOption(CStdString& response, int argc, char_t **argv);
 
 #if defined(__cplusplus)
 }
