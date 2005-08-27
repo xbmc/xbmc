@@ -17,25 +17,25 @@ public:
   CDVDPlayerAudio(CDVDClock* pClock);
   virtual ~CDVDPlayerAudio();
 
-  void RegisterAudioCallback(IAudioCallback* pCallback);
-  void UnRegisterAudioCallback();
+  void RegisterAudioCallback(IAudioCallback* pCallback) { m_dvdAudio.RegisterAudioCallback(pCallback); }
+  void UnRegisterAudioCallback()                        { m_dvdAudio.UnRegisterAudioCallback(); }
 
   bool OpenStream(CodecID codecID, int iChannels, int iSampleRate);
   void CloseStream(bool bWaitForBuffers);
 
-  void Pause();
-  void Resume();
+  void Pause()                                          { m_dvdAudio.Pause(); }
+  void Resume()                                         { m_dvdAudio.Resume(); }
   void Flush();
 
-  void DoWork();
+  void DoWork()                                         { m_dvdAudio.DoWork(); }
 
-  void SetVolume(long nVolume);
-  int GetVolume();
-  
-  CDVDPacketQueue m_packetQueue;
+  void SetVolume(long nVolume)                          { m_dvdAudio.SetVolume(nVolume); }
+  int GetVolume()                                       { return m_dvdAudio.GetVolume(); }
 
   CodecID m_codec;    // codec id of the current active stream
   int m_iSourceChannels; // number of audio channels for the current active stream
+  
+  CDVDPacketQueue m_packetQueue;
 
 protected:
 
@@ -46,19 +46,17 @@ protected:
   bool InitializeOutputDevice();
   int DecodeFrame(BYTE** audio_buf);
 
-  CRITICAL_SECTION m_critCodecSection;
-  CDVDClock* m_pClock; // dvd master clock
-  CDVDAudio m_dvdAudio; // audio output device
-
   bool m_bInitializedOutputDevice;
-
-  CDVDAudioCodec* m_pAudioCodec; // audio codec
-
+  __int64 m_audioClock;
+  
   // for audio decoding
   CDVDDemux::DemuxPacket* pAudioPacket;
   BYTE* audio_pkt_data; // current audio packet
   int audio_pkt_size; // and current audio packet size
-
-  __int64 m_audioClock;
-
+  
+  CDVDAudio m_dvdAudio; // audio output device
+  CDVDClock* m_pClock; // dvd master clock
+  CDVDAudioCodec* m_pAudioCodec; // audio codec
+  
+  CRITICAL_SECTION m_critCodecSection;
 };

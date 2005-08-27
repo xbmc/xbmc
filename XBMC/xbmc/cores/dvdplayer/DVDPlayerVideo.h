@@ -1,16 +1,16 @@
-#pragma once
-#include "../../utils/thread.h"
 
-#include "../VideoRenderers/RenderManager.h"
+#pragma once
+
+#include "../../utils/thread.h"
 #include "DVDDemuxers\DVDPacketQueue.h"
-#include "DVDDemuxers\DVDDemuxUtils.h"
-#include "DVDDemuxers\DVDDemux.h"
 #include "DVDCodecs\DVDVideoCodec.h"
 #include "DVDClock.h"
 #include "DVDOverlay.h"
+#include "../VideoRenderers/RenderManager.h"
 
 enum CodecID;
 class CDVDDemuxSPU;
+class CDemuxStreamVideo;
 
 #define VIDEO_PICTURE_QUEUE_SIZE 1
 
@@ -27,11 +27,12 @@ public:
   void Resume();
   void Flush();
 
-  void Update(bool bPauseDrawing); // called form xbmc
+  void Update(bool bPauseDrawing)                   { g_renderManager.Update(bPauseDrawing); }
   void UpdateMenuPicture();
  
-  void GetVideoRect(RECT& SrcRect, RECT& DestRect);
-  float GetAspectRatio();
+  void EnableSubtitle(bool bEnable)                 { m_bRenderSubs = bEnable; }
+  void GetVideoRect(RECT& SrcRect, RECT& DestRect)  { g_renderManager.GetVideoRect(SrcRect, DestRect); }
+  float GetAspectRatio()                            { return g_renderManager.GetAspectRatio(); }
 
   //Set a forced aspect ratio
   void SetAspectRatio(float fAspectRatio);
@@ -39,48 +40,46 @@ public:
   __int64 GetDelay();
     void SetDelay(__int64 delay);
   __int64 GetDiff();
-  int GetNrOfDroppedFrames() { return m_iDroppedFrames; }
+  int GetNrOfDroppedFrames()                        { return m_iDroppedFrames; }
 
   bool InitializedOutputDevice();
-  CDVDPacketQueue m_packetQueue;
-
-  CodecID m_codec;    // codec id of the current active stream
-
+  
+  // used for picture handling between the class and video_refresh_thread()
   CRITICAL_SECTION m_critSection;
   HANDLE m_hEvent;
-
-  bool m_bRunningVideo;
-  CDVDClock* m_pClock;
-
-  CDVDOverlay m_overlay;
-
   DVDVideoPicture pictq[VIDEO_PICTURE_QUEUE_SIZE];
   int pictq_size, pictq_rindex, pictq_windex;
-
-  int m_iSpeed;
-  bool m_bRenderSubs;
-  int m_iNrOfPicturesNotToSkip;
-  __int64 m_iVideoDelay;
+  
+  bool m_bRunningVideo;
   
   int m_iDroppedFrames;
+  int m_iSpeed;
+  __int64 m_iVideoDelay;
+
+  // classes
+  CDVDPacketQueue m_packetQueue;
+  CDVDOverlay m_overlay;
   
-  CDVDVideoCodec* m_pVideoCodec;
-  
+  CDVDClock* m_pClock;
+
 protected:  
   virtual void OnStartup();
   virtual void OnExit();
   virtual void Process();
 
   bool OutputPicture(DVDVideoPicture* pPicture, __int64 pts1);
-
-  CRITICAL_SECTION m_critCodecSection;
-
   
   bool m_bInitializedOutputDevice;
+  bool m_bRenderSubs;
+  
   float m_fForcedAspectRatio;
-  DVDVideoPicture* m_pOverlayPicture;
-
+  
+  int m_iNrOfPicturesNotToSkip;
+  
+  // classes
   CDVDDemuxSPU* m_pDVDSpu;
-
   CDemuxStreamVideo* m_pDemuxStreamVideo;
+  CDVDVideoCodec* m_pVideoCodec;
+  
+  CRITICAL_SECTION m_critCodecSection;
 };
