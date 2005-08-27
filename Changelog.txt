@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 27-08-2005 updated: mplayer.conf's user-agent, may fix non working shoutcast stations
  - 26-08-2005 added: httpapi exposed more values to GetGuiStatus
  - 26-08-2005 fixed: dvdplayer wouldn't play fightclub r1. now sets region mask to what disc reports it's from if available
  - 26-08-2005 chaged: httpapi to be more thread safe
