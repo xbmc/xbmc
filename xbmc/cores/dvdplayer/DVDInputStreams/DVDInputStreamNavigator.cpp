@@ -22,7 +22,7 @@ extern "C"
  #define HAVE_CONFIG_H
  #include "dvdnav/dvdnav_internal.h"
  #include "dvdnav/vm.h"
- #include "dvdnav/ifo_types.h"
+ // #include "dvdnav/ifo_types.h"
  
   // forward declarations
   vm_t* dvdnav_get_vm(dvdnav_t *self);
@@ -641,17 +641,6 @@ void CDVDInputStreamNavigator::SkipWait()
 {
   if (!m_dvdnav) return ;
   dvdnav_wait_skip(m_dvdnav);
-}
-
-void CDVDInputStreamNavigator::Lock()
-{
-  EnterCriticalSection(&m_critSection);
-}
-
-
-void CDVDInputStreamNavigator::Unlock()
-{
-  LeaveCriticalSection(&m_critSection);
 }
 
 bool CDVDInputStreamNavigator::IsInMenu()

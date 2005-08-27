@@ -50,9 +50,7 @@ public:
   virtual void Close();
   virtual int Read(BYTE* buf, int buf_size);
   virtual __int64 Seek(__int64 offset, int whence);
-  void Lock();
-  void Unlock();
-
+  
   void ActivateButton();
   void SelectButton(int iButton);
   void SkipStill();
@@ -105,15 +103,19 @@ protected:
   int GetTotalButtons();
   void CheckButtons();
   
-  unsigned __int8 m_tempbuffer[DVD_VIDEO_BLOCKSIZE];
-
-  CRITICAL_SECTION m_critSection;
-  struct dvdnav_s* m_dvdnav;
+  void Lock()   { EnterCriticalSection(&m_critSection); }
+  void Unlock() { LeaveCriticalSection(&m_critSection); }
+  
   bool m_bDllLibdvdnavLoaded;
   bool m_bDllLibdvdcssLoaded;
-  IDVDPlayer* m_pDVDPlayer;
-
   bool m_bDiscardHop;
   bool m_bCheckButtons;
   bool m_bStopped;
+  
+  struct dvdnav_s* m_dvdnav;
+  
+  IDVDPlayer* m_pDVDPlayer;
+  
+  BYTE m_tempbuffer[DVD_VIDEO_BLOCKSIZE];
+  CRITICAL_SECTION m_critSection;
 };

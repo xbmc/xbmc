@@ -730,7 +730,7 @@ bool CDVDPlayer::GetSubtitleVisible()
 void CDVDPlayer::SetSubtitleVisible(bool bVisible)
 {
   m_bRenderSubtitle = bVisible;
-  m_dvdPlayerVideo.m_bRenderSubs = bVisible;
+  m_dvdPlayerVideo.EnableSubtitle(bVisible);
 }
 
 int CDVDPlayer::GetAudioStreamCount()
