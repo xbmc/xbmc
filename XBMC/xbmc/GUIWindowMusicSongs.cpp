@@ -528,10 +528,11 @@ void CGUIWindowMusicSongs::LoadPlayList(const CStdString& strPlayList)
     }
   }
 
+  int iSize = pPlayList->size();
   if (g_application.ProcessAndStartPlaylist(strPlayList, *pPlayList, PLAYLIST_MUSIC))
   {
     // activate the playlist window if its not activated yet
-    if (GetID() == m_gWindowManager.GetActiveWindow())
+    if (GetID() == m_gWindowManager.GetActiveWindow() && iSize > 1)
     {
       m_gWindowManager.ActivateWindow(WINDOW_MUSIC_PLAYLIST);
     }
