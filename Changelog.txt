@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 27-08-2005 fixed: shoutcast pls files with a single entry would not inherit a thumbnail (folder.jpg or filename.tbn)
  - 27-08-2005 updated: reverted the same "fix" to mplayer.conf
  - 27-08-2005 updated: mplayer.conf's user-agent, may fix non working shoutcast stations
  - 26-08-2005 added: httpapi exposed more values to GetGuiStatus
