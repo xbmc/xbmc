@@ -7,17 +7,11 @@
 #include "DVDCodecs\dvdaudiocodecpassthrough.h"
 
 #include "..\..\util.h"
-#include "DVDClock.h"
 
 #define EMULATE_INTTYPES
 #include "ffmpeg\avcodec.h"
 
-
-#define ROUNDED_DIV(a,b) (((a)>0 ? (a) + ((b)>>1) : (a) - ((b)>>1))/(b))
 #define ABS(a) ((a) >= 0 ? (a) : (-(a)))
-
-#define FFMAX(a,b) ((a) > (b) ? (a) : (b))
-#define FFMIN(a,b) ((a) > (b) ? (b) : (a))
 
 CDVDPlayerAudio::CDVDPlayerAudio(CDVDClock* pClock) : CThread()
 {
@@ -36,16 +30,6 @@ CDVDPlayerAudio::~CDVDPlayerAudio()
   // close the stream, and don't wait for the audio to be finished
   // CloseStream(true);
   DeleteCriticalSection(&m_critCodecSection);
-}
-
-void CDVDPlayerAudio::RegisterAudioCallback(IAudioCallback* pCallback)
-{
-  m_dvdAudio.RegisterAudioCallback(pCallback);
-}
-
-void CDVDPlayerAudio::UnRegisterAudioCallback()
-{
-  m_dvdAudio.UnRegisterAudioCallback();
 }
 
 bool CDVDPlayerAudio::OpenStream(CodecID codecID, int iChannels, int iSampleRate)
@@ -240,7 +224,7 @@ void CDVDPlayerAudio::OnStartup()
 
 void CDVDPlayerAudio::Process()
 {
-  CLog::Log(LOGNOTICE, "running thread: audio_thread");
+  CLog::Log(LOGNOTICE, "running thread: CDVDPlayerAudio::Process()");
 
   int len;
 
@@ -295,8 +279,6 @@ void CDVDPlayerAudio::Process()
       //m_pClock->AdjustSpeedToMatch(iClock + iAvDiff);
       iClockDiff = iCurrDiff;
     }
-
-    
   }
 }
 
@@ -307,17 +289,7 @@ void CDVDPlayerAudio::OnExit()
   m_dvdAudio.Destroy();
   m_bInitializedOutputDevice = false;
 
-  CLog::Log(LOGNOTICE, "thread end: audio_thread");
-}
-
-void CDVDPlayerAudio::Pause()
-{
-  m_dvdAudio.Pause();
-}
-
-void CDVDPlayerAudio::Resume()
-{
-  m_dvdAudio.Resume();
+  CLog::Log(LOGNOTICE, "thread end: CDVDPlayerAudio::OnExit()");
 }
 
 void CDVDPlayerAudio::Flush()
@@ -333,11 +305,6 @@ void CDVDPlayerAudio::Flush()
     m_pAudioCodec->Reset();
     LeaveCriticalSection(&m_critCodecSection);
   }
-}
-
-void CDVDPlayerAudio::DoWork()
-{
-  m_dvdAudio.DoWork();
 }
 
 bool CDVDPlayerAudio::InitializeOutputDevice()
@@ -361,14 +328,4 @@ bool CDVDPlayerAudio::InitializeOutputDevice()
 
   CLog::Log(LOGERROR, "Failed Creating audio device with codec id: %i, channels: %i, sample rate: %i", m_codec, iChannels, iSampleRate);
   return false;
-}
-
-void CDVDPlayerAudio::SetVolume(long nVolume)
-{
-  m_dvdAudio.SetVolume(nVolume);
-}
-
-int CDVDPlayerAudio::GetVolume()
-{
-  return m_dvdAudio.GetVolume();
 }
