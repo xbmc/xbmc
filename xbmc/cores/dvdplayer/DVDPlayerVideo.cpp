@@ -5,23 +5,14 @@
 #include "DVDCodecs\DVDFactoryCodec.h"
 #include "DVDCodecs\DVDCodecUtils.h"
 #include "DVDCodecs\DVDVideoPPFFmpeg.h"
+#include "DVDDemuxers\DVDDemux.h"
+#include "DVDDemuxers\DVDDemuxUtils.h"
 #include "..\..\util.h"
-
-
-DWORD video_refresh_thread(void *arg);
 
 #define EMULATE_INTTYPES
 #include "ffmpeg\avcodec.h"
 
-#define ABS(a) ((a) >= 0 ? (a) : (-(a)))
-
-//Define to keep something between two boundaries
-#define BOUNDS(a, b, c) ( (b) < (a) ? (a) : ( (b) > (c) ? (c) : (b) ) )
-
-void xbox_dvdplayer_render_update()
-{
-  g_renderManager.Update(false);
-}
+DWORD video_refresh_thread(void *arg);
 
 CDVDPlayerVideo::CDVDPlayerVideo(CDVDDemuxSPU* spu, CDVDClock* pClock) : CThread()
 {
@@ -29,7 +20,6 @@ CDVDPlayerVideo::CDVDPlayerVideo(CDVDDemuxSPU* spu, CDVDClock* pClock) : CThread
   m_pClock = pClock;
   m_pVideoCodec = NULL;
   m_bInitializedOutputDevice = false;
-  m_pOverlayPicture = NULL;
   m_iSpeed = 1;
   m_bRenderSubs = false;
   m_iVideoDelay = 0;
@@ -266,13 +256,6 @@ void CDVDPlayerVideo::Process()
 
 void CDVDPlayerVideo::OnExit()
 {
-  if (m_pOverlayPicture)
-  {
-    CLog::Log(LOGNOTICE, "CDVDPlayer::OnExit() freeing overlay picture");
-    CDVDCodecUtils::FreePicture(m_pOverlayPicture);
-  }
-  m_pOverlayPicture = NULL;
-
   g_renderManager.UnInit();
   m_bInitializedOutputDevice = false;
 
@@ -353,13 +336,6 @@ bool CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, __int64 pts1)
 
   if (m_bInitializedOutputDevice)
   {
-
-    // create overlay picture if not already done
-    if (!m_pOverlayPicture)
-    {
-      m_pOverlayPicture = CDVDCodecUtils::AllocatePicture(pPicture->iWidth, pPicture->iHeight);
-    }
-
     // copy picture to overlay
     YV12Image image;
     if (g_renderManager.GetImage(&image))
@@ -417,11 +393,6 @@ bool CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, __int64 pts1)
   return true;
 }
 
-void CDVDPlayerVideo::Update(bool bPauseDrawing)
-{
-  g_renderManager.Update(bPauseDrawing);
-}
-
 void CDVDPlayerVideo::UpdateMenuPicture()
 {
   if (m_pVideoCodec)
@@ -435,16 +406,6 @@ void CDVDPlayerVideo::UpdateMenuPicture()
     }
     LeaveCriticalSection(&m_critCodecSection);
   }
-}
-
-void CDVDPlayerVideo::GetVideoRect(RECT& SrcRect, RECT& DestRect)
-{
-  g_renderManager.GetVideoRect(SrcRect, DestRect);
-}
-
-float CDVDPlayerVideo::GetAspectRatio()
-{
-  return g_renderManager.GetAspectRatio();
 }
 
 __int64 CDVDPlayerVideo::GetDelay()
