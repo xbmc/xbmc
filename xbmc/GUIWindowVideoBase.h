@@ -16,6 +16,8 @@ public:
   virtual void OnWindowLoaded();
   virtual void OnWindowUnload();
 
+  void PlayMovies(VECMOVIESFILES &movies, long lStartOffset);
+
 private:
   bool IsCorrectDiskInDrive(const CStdString& strFileName, const CStdString& strDVDLabel);
 protected:
@@ -54,7 +56,6 @@ protected:
   int  ResumeItemOffset(int iItem);
   void AddItemToPlayList(const CFileItem* pItem);
   void GetStackedFiles(const CStdString &strFileName, std::vector<CStdString> &movies);
-  void PlayMovies(VECMOVIESFILES &movies, long lStartOffset);
   void ShowShareErrorMessage(CFileItem* pItem);
 
   CVirtualDirectory m_rootDir;
