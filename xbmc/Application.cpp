@@ -185,6 +185,7 @@ CApplication::CApplication(void)
   m_iMasterLockRetriesRemaining = 0;
   m_bMasterLockPreviouslyEntered = false;
   m_bMasterLockOverridesLocalPasswords = false;
+  m_MasterUserModeCounter = 2;
   m_bInitializing = true;
   m_strForcedNextPlayer = "";
   m_strPlayListFile = "";
