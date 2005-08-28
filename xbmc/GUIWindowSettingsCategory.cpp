@@ -1278,7 +1278,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
         }
       }
     }
-    else if (strSetting == "Masterlock.MasterUser" || "Masterlock.Enableshutdown" || strSetting == "Masterlock.Protectshares" || strSetting == "Masterlock.Maxretry" || strSetting == "Masterlock.Mastercode" || strSetting == "Masterlock.SetMasterlock" || strSetting == "Masterlock.StartupLock" || strSetting =="Masterlock.LockSettingsFilemanager" || strSetting =="Masterlock.LockHomeMedia")
+    else if (strSetting == "Masterlock.MasterUser" || strSetting == "Masterlock.Enableshutdown" || strSetting == "Masterlock.Protectshares" || strSetting == "Masterlock.Maxretry" || strSetting == "Masterlock.Mastercode" || strSetting == "Masterlock.SetMasterlock" || strSetting == "Masterlock.StartupLock" || strSetting =="Masterlock.LockSettingsFilemanager" || strSetting =="Masterlock.LockHomeMedia")
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       bool bState;
