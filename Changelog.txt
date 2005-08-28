@@ -5,13 +5,14 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 29-08-2005 changed: Patch [1105861] (thx to slacker) quite a few changes to Build.bat
  - 28-08-2005 added: cross-linking of cast information in the movie info dialog window.
  - 28-08-2005 changed: Master Lock: Lock Settings and Lock Filemanger are now in one selectable setting. [GeminiServer]
  - 28-08-2005 added: Master Lock: Master User Mode: If its true: the master user can access to all shares with the Master code! After 3rd time entered it will ask for opening all shares! [GeminiServer]
  - 28-08-2005 changed: Shoutcast Top500 is now (temporarily) retreived in uncompressed form.
  - 27-08-2005 fixed: shoutcast pls files with a single entry would not inherit a thumbnail (folder.jpg or filename.tbn)
- - 27-08-2005 updated: reverted the same "fix" to mplayer.conf
- - 27-08-2005 updated: mplayer.conf's user-agent, may fix non working shoutcast stations
+ - 27-08-2005 changed: reverted the same "fix" to mplayer.conf
+ - 27-08-2005 changed: mplayer.conf's user-agent, may fix non working shoutcast stations
  - 26-08-2005 added: httpapi exposed more values to GetGuiStatus
  - 26-08-2005 fixed: dvdplayer wouldn't play fightclub r1. now sets region mask to what disc reports it's from if available
  - 26-08-2005 chaged: httpapi to be more thread safe
