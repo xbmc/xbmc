@@ -140,6 +140,7 @@ public:
   bool m_bMasterLockPreviouslyEntered;
   int m_iMasterLockRetriesRemaining;
   bool m_bMasterLockOverridesLocalPasswords;
+  int m_MasterUserModeCounter;
   CStdString m_strForcedNextPlayer;
   CStdString m_strPlayListFile;
   

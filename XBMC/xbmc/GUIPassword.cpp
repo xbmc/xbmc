@@ -5,7 +5,6 @@
 #include "GUIDialogGamepad.h"
 #include "xbox/xkutils.h"
 
-
 CGUIPassword g_passwordManager;
 
 CGUIPassword::CGUIPassword(void)
@@ -30,53 +29,59 @@ bool CGUIPassword::IsItemUnlocked(CFileItem* pItem, const CStdString &strType)
     bool bCanceled = false;
     int iResult = 0;  // init to user succeeded state, doing this to optimize switch statement below
     char buffer[33]; // holds 32 places plus sign character
-
     int iRetries = 0;
-    if (!(1 > pItem->m_iBadPwdCount))
+    
+    //
+    if(g_guiSettings.GetBool("Masterlock.MasterUser") && (g_guiSettings.GetInt("Masterlock.Mastermode") > 0) )// Check if we are the MasterUser!
     {
-      iRetries = g_stSettings.m_iMasterLockMaxRetry - pItem->m_iBadPwdCount;
+      if(MasterUser()) iResult = 0; 
+      else iResult = -1;
     }
-
-    if (0 != g_stSettings.m_iMasterLockMaxRetry && pItem->m_iBadPwdCount >= g_stSettings.m_iMasterLockMaxRetry)
-    {
-      // user previously exhausted all retries, show access denied error
-      CGUIDialogOK::ShowAndGetInput(12345, 12346, 0, 0);
-      return false;
-    }
-
-    // show the appropriate lock dialog
-    CStdStringW strHeading = L"";
-    if (pItem->m_bIsFolder)
-      strHeading = g_localizeStrings.Get(12325);
     else
-      strHeading = g_localizeStrings.Get(12348);
-
-    switch (pItem->m_iLockMode)
     {
-    case LOCK_MODE_NUMERIC:
-      if (!g_application.m_bMasterLockOverridesLocalPasswords)
-        iResult = CGUIDialogNumeric::ShowAndVerifyPassword(pItem->m_strLockCode, strHeading, iRetries);
-      break;
-    case LOCK_MODE_GAMEPAD:
-      if (!g_application.m_bMasterLockOverridesLocalPasswords)
-        iResult = CGUIDialogGamepad::ShowAndVerifyPassword(pItem->m_strLockCode, strHeading, iRetries);
-      break;
-    case LOCK_MODE_QWERTY:
-      if (!g_application.m_bMasterLockOverridesLocalPasswords)
-        iResult = CGUIDialogKeyboard::ShowAndVerifyPassword(pItem->m_strLockCode, strHeading, iRetries);
-      break;
-    default:
-      // pItem->m_iLockMode isn't set to an implemented lock mode, so treat as unlocked
-      return true;
-      break;
+    //
+      if (!(1 > pItem->m_iBadPwdCount))
+        iRetries = g_stSettings.m_iMasterLockMaxRetry - pItem->m_iBadPwdCount;
+      if (0 != g_stSettings.m_iMasterLockMaxRetry && pItem->m_iBadPwdCount >= g_stSettings.m_iMasterLockMaxRetry)
+      { // user previously exhausted all retries, show access denied error
+        CGUIDialogOK::ShowAndGetInput(12345, 12346, 0, 0);
+        return false;
+      }
+      
+      // show the appropriate lock dialog
+      CStdStringW strHeading = L"";
+      if (pItem->m_bIsFolder) strHeading = g_localizeStrings.Get(12325);
+      else strHeading = g_localizeStrings.Get(12348);
+      
+      switch (pItem->m_iLockMode)
+      {
+      case LOCK_MODE_NUMERIC:
+        if (!g_application.m_bMasterLockOverridesLocalPasswords)
+          iResult = CGUIDialogNumeric::ShowAndVerifyPassword(pItem->m_strLockCode, strHeading, iRetries);
+        break;
+      case LOCK_MODE_GAMEPAD:
+        if (!g_application.m_bMasterLockOverridesLocalPasswords)
+          iResult = CGUIDialogGamepad::ShowAndVerifyPassword(pItem->m_strLockCode, strHeading, iRetries);
+        break;
+      case LOCK_MODE_QWERTY:
+        if (!g_application.m_bMasterLockOverridesLocalPasswords)
+          iResult = CGUIDialogKeyboard::ShowAndVerifyPassword(pItem->m_strLockCode, strHeading, iRetries);
+        break;
+      default:
+        // pItem->m_iLockMode isn't set to an implemented lock mode, so treat as unlocked
+        return true;
+        break;
+      }
+    //
     }
+    //
+
 
     switch (iResult)
     {
     case -1:
-      {
-        // user canceled out
-        return false;
+      { // user canceled out
+        return false; 
         break;
       }
     case 0:
@@ -100,8 +105,7 @@ bool CGUIPassword::IsItemUnlocked(CFileItem* pItem, const CStdString &strType)
     default:
       {
         // this should never happen, but if it does, do nothing
-        return false;
-        break;
+        return false; break;
       }
     }
   }
@@ -121,56 +125,58 @@ bool CGUIPassword::IsItemUnlocked(CShare* pItem, const CStdString &strType)
     bool bCanceled = false;
     int iResult = 0;  // init to user succeeded state, doing this to optimize switch statement below
     char buffer[33]; // holds 32 places plus sign character
-
     int iRetries = 0;
     if (!(1 > pItem->m_iBadPwdCount))
     {
       iRetries = g_stSettings.m_iMasterLockMaxRetry - pItem->m_iBadPwdCount;
     }
-
     if (0 != g_stSettings.m_iMasterLockMaxRetry && pItem->m_iBadPwdCount >= g_stSettings.m_iMasterLockMaxRetry)
     {
       // user previously exhausted all retries, show access denied error
       CGUIDialogOK::ShowAndGetInput(12345, 12346, 0, 0);
       return false;
     }
-
-    // show the appropriate lock dialog
-    CStdStringW strHeading = L"";
-    /* CShares don't have this attribute
-    if (pItem->m_bIsFolder)
-      strHeading = L"12325";
-    else
-    */
-    strHeading = g_localizeStrings.Get(12348);
-
-    switch (pItem->m_iLockMode)
+    
+    //
+    if(g_guiSettings.GetBool("Masterlock.MasterUser") && (g_guiSettings.GetInt("Masterlock.Mastermode") > 0) )// Check if we are the MasterUser!
     {
-    case LOCK_MODE_NUMERIC:
-      if (!g_application.m_bMasterLockOverridesLocalPasswords)
-        iResult = CGUIDialogNumeric::ShowAndVerifyPassword(pItem->m_strLockCode, strHeading, iRetries);
-      break;
-    case LOCK_MODE_GAMEPAD:
-      if (!g_application.m_bMasterLockOverridesLocalPasswords)
-        iResult = CGUIDialogGamepad::ShowAndVerifyPassword(pItem->m_strLockCode, strHeading, iRetries);
-      break;
-    case LOCK_MODE_QWERTY:
-      if (!g_application.m_bMasterLockOverridesLocalPasswords)
-        iResult = CGUIDialogKeyboard::ShowAndVerifyPassword(pItem->m_strLockCode, strHeading, iRetries);
-      break;
-    default:
-      // pItem->m_iLockMode isn't set to an implemented lock mode, so treat as unlocked
-      return true;
-      break;
+      if(MasterUser()) iResult = 0; 
+      else iResult = -1;
     }
-
+    else
+    {
+    //
+      // show the appropriate lock dialog
+      CStdStringW strHeading = L""; /* CShares don't have this attribute if (pItem->m_bIsFolder) strHeading = g_localizeStrings.Get(12325); else  */
+      strHeading = g_localizeStrings.Get(12348);
+      switch (pItem->m_iLockMode)
+      {
+      case LOCK_MODE_NUMERIC:
+        if (!g_application.m_bMasterLockOverridesLocalPasswords)
+          iResult = CGUIDialogNumeric::ShowAndVerifyPassword(pItem->m_strLockCode, strHeading, iRetries);
+        break;
+      case LOCK_MODE_GAMEPAD:
+        if (!g_application.m_bMasterLockOverridesLocalPasswords)
+          iResult = CGUIDialogGamepad::ShowAndVerifyPassword(pItem->m_strLockCode, strHeading, iRetries);
+        break;
+      case LOCK_MODE_QWERTY:
+        if (!g_application.m_bMasterLockOverridesLocalPasswords)
+          iResult = CGUIDialogKeyboard::ShowAndVerifyPassword(pItem->m_strLockCode, strHeading, iRetries);
+        break;
+      default:
+        return true;
+        break;
+      }
+    //
+    }
+    //
     switch (iResult)
     {
     case -1:
       {
         // user canceled out
-        break; return false;
-        
+        return false;
+        break; 
       }
     case 0:
       {
@@ -185,21 +191,19 @@ bool CGUIPassword::IsItemUnlocked(CShare* pItem, const CStdString &strType)
     case 1:
       {
         // password entry failed
-        if (0 != g_stSettings.m_iMasterLockMaxRetry)
-          pItem->m_iBadPwdCount++;
+        if (0 != g_stSettings.m_iMasterLockMaxRetry)  pItem->m_iBadPwdCount++;
         g_settings.UpdateBookmark(strType, strLabel, "badpwdcount", itoa(pItem->m_iBadPwdCount, buffer, 10));
         break;
       }
     default:
       {
-        // this should never happen, but if it does, do nothing
-        break; return false;
+        return false;
+        break;
       }
     }
   }
   return true;
 }
-
 bool CGUIPassword::IsMasterLockUnlocked(bool bPromptUser)
 {
   // \brief Verify whether Master Lock is currently unlocked.
@@ -215,12 +219,18 @@ bool CGUIPassword::IsMasterLockUnlocked(bool bPromptUser)
     return true;
   }
 
-  if (0 < g_stSettings.m_iMasterLockMaxRetry && 1 > g_application.m_iMasterLockRetriesRemaining)
+  if(!g_guiSettings.GetBool("Masterlock.MasterUser"))
   {
-    // user has previously exhausted all their attempts, so don't prompt them again
-    UpdateMasterLockRetryCount(false);
-    return false;
+    if (0 < g_stSettings.m_iMasterLockMaxRetry && 1 > g_application.m_iMasterLockRetriesRemaining)
+    {
+      // user has previously exhausted all their attempts, so don't prompt them again
+      UpdateMasterLockRetryCount(false);
+      return false;
+    }
   }
+  
+  // Are we in MasterUser Mode ?
+  if (g_application.m_bMasterLockOverridesLocalPasswords) return true; 
 
   int iVerifyPasswordResult = -1;
   CStdStringW strHeading = g_localizeStrings.Get(12324);
@@ -240,26 +250,39 @@ bool CGUIPassword::IsMasterLockUnlocked(bool bPromptUser)
     break;
   }
 
-  if (1 == iVerifyPasswordResult)
+  if ( iVerifyPasswordResult == -1 ) return false;
+  if ( iVerifyPasswordResult != 0 && iVerifyPasswordResult == 1) 
+  {
     UpdateMasterLockRetryCount(false);
-  if (0 != iVerifyPasswordResult)
     return false;
-
-  // user successfully entered mastercode
+  }
   UpdateMasterLockRetryCount(true);
   if (!g_application.m_bMasterLockPreviouslyEntered)
   {
     g_application.m_bMasterLockPreviouslyEntered = true;
-    // TODO: change dlgLine1 and dlgLine2 to show 12350 and 12351. hook up Settings items to clear
-    //       m_bMasterLockPreviouslyEntered and m_bMasterLockOverridesLocalPasswords, then prompt for mastercode
-    if (CGUIDialogYesNo::ShowAndGetInput(12324, 12349, 0, 0))
-    {  // invert cached mastermode setting to make it stay unlocked (this doesn't persist through a reboot)
-      g_stSettings.m_iMasterLockMode = g_stSettings.m_iMasterLockMode * -1;
-      // TODO: change dlgLine1 and dlgLine2 to show 12350 and 12355 after the TODO: listed above is completed
-      if (CGUIDialogYesNo::ShowAndGetInput(12324, 12354, 0, 0))
-        g_application.m_bMasterLockOverridesLocalPasswords = true;
-    }
   }
+
+  // Let's count the Overwrite the local Pass stuff!
+  if ((g_application.m_MasterUserModeCounter == 0) && (g_guiSettings.GetBool("Masterlock.MasterUser")))
+    {
+      if (CGUIDialogYesNo::ShowAndGetInput(12324, 12354, 0, 0)) // remove all share lock
+      {
+        g_application.m_bMasterLockOverridesLocalPasswords = true;
+        /*
+        if (CGUIDialogYesNo::ShowAndGetInput(12324, 12349, 0, 0)) // remove Temp. MasterCode stuff! [will be defulat after reboot]
+        {
+          g_stSettings.m_iMasterLockMode = g_stSettings.m_iMasterLockMode * -1;
+        }
+        */
+        return true;
+      }
+      else 
+      {
+        g_application.m_MasterUserModeCounter = -1 ;
+        return true;
+      }
+    }
+  else if (g_application.m_MasterUserModeCounter >=0) g_application.m_MasterUserModeCounter--;
   return true;
 }
 bool CGUIPassword::IsMasterLockLocked(bool bPromptUser)
@@ -455,6 +478,62 @@ bool CGUIPassword::CheckStartUpLock()   // GeminiServer
     return false;
   }
 }
+bool CGUIPassword::MasterUser()   // GeminiServer
+{
+  return (IsMasterLockUnlocked(true));
+  
+  /*
+  if(g_guiSettings.GetInt("Masterlock.Mastermode") != 0)
+  {
+    if(g_guiSettings.GetBool("Masterlock.MasterUser")) // default: false
+    {
+      int iVerifyPasswordResult = -1;
+      CStdString strHeader = g_localizeStrings.Get(12324);
+      if (!g_application.m_bMasterLockOverridesLocalPasswords)
+      {
+        
+        for (int i=0; i <= g_application.m_iMasterLockRetriesRemaining; i++)
+        {
+          switch (g_stSettings.m_iMasterLockMode)
+          { // Prompt user for mastercode
+            case LOCK_MODE_NUMERIC:
+              iVerifyPasswordResult = CGUIDialogNumeric::ShowAndVerifyPassword(g_stSettings.m_masterLockCode, strHeader, 0);
+              break;
+            case LOCK_MODE_GAMEPAD:
+              iVerifyPasswordResult = CGUIDialogGamepad::ShowAndVerifyPassword(g_stSettings.m_masterLockCode, strHeader, 0);
+              break;
+            case LOCK_MODE_QWERTY:
+              iVerifyPasswordResult = CGUIDialogKeyboard::ShowAndVerifyPassword(g_stSettings.m_masterLockCode, strHeader, 0);
+              break;
+          }
+        }
+        if (iVerifyPasswordResult == 0)
+        {
+          if (g_application.m_MasterUserModeCounter == 0)
+          {
+            UpdateMasterLockRetryCount(true);
+            if (!g_application.m_bMasterLockPreviouslyEntered)
+            {
+              g_application.m_bMasterLockPreviouslyEntered = true;
+              if (CGUIDialogYesNo::ShowAndGetInput(12324, 12354, 0, 0))
+              {
+                g_application.m_bMasterLockOverridesLocalPasswords = true;
+                return true;
+              }
+            }
+          }
+          else g_application.m_MasterUserModeCounter = g_application.m_MasterUserModeCounter -1;
+          return true;
+        }
+        else return false; //The MasterCode is wrong!
+      }
+      else return true;  // OK The MasterCode Accepted!
+    }
+  }
+  return false; //The MasterUser is Disabled!
+  */
+}
+
 bool CGUIPassword::CheckMenuLock(int iWindowID)
 {
   bool bCheckPW         = false;
@@ -466,6 +545,35 @@ bool CGUIPassword::CheckMenuLock(int iWindowID)
     case WINDOW_SETTINGS_MENU:  // Settings 
       if (iLockSettings == 1) bCheckPW = true;
       break;
+    
+    // Sub Settings: Todo: needs a new Section Lock SubSettings! Disabling for now
+    /*
+    case WINDOW_SETTINGS_MYPICTURES:
+      if (iLockSettings == 1) bCheckPW = true;
+      break;
+    case WINDOW_SETTINGS_MYPROGRAMS:
+      if (iLockSettings == 1) bCheckPW = true;
+      break;
+    case WINDOW_SETTINGS_MYWEATHER:
+      if (iLockSettings == 1) bCheckPW = true;
+      break;
+    case WINDOW_SETTINGS_MYMUSIC:
+      if (iLockSettings == 1) bCheckPW = true;
+      break;
+    case WINDOW_SETTINGS_SYSTEM:
+      if (iLockSettings == 1) bCheckPW = true;
+      break;
+    case WINDOW_SETTINGS_MYVIDEOS:
+      if (iLockSettings == 1) bCheckPW = true;
+      break;
+    case WINDOW_SETTINGS_NETWORK:
+      if (iLockSettings == 1) bCheckPW = true;
+      break;
+    case WINDOW_SETTINGS_APPEARANCE:
+      if (iLockSettings == 1) bCheckPW = true;
+      break;
+    */
+
     case WINDOW_FILES:          // Files
       if (iLockFilemanager == 1) bCheckPW = true;
       break;
@@ -500,8 +608,9 @@ bool CGUIPassword::CheckMenuLock(int iWindowID)
   //Now let's check the PW if we need!
   if (bCheckPW)
   {
-    if(IsMasterLockLocked(true))return true;
-    else  return false; 
+    //if(g_guiSettings.GetBool("Masterlock.MasterUser")) return MasterUser(); // Check if we are the MasterUser!
+    //return IsMasterLockLocked(true);
+    return MasterUser();
   }
   else return true;
 }
