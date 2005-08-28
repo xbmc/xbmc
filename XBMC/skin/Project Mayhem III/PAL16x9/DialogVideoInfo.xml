@@ -263,15 +263,28 @@
     </control>
 
     <control>
+      <description>Play</description>
+      <type>button</type>
+      <id>8</id>
+      <posX>50</posX>
+      <posY>158</posY>
+      <label>208</label>
+      <onleft>4</onleft>
+      <onright>4</onright>
+      <onup>5</onup>
+      <ondown>6</ondown>
+    </control>
+
+    <control>
       <description>Refresh</description>
       <type>button</type>
       <id>6</id>
       <posX>50</posX>
-      <posY>158</posY>
+      <posY>196</posY>
       <label>184</label>
       <onleft>4</onleft>
       <onright>4</onright>
-      <onup>5</onup>
+      <onup>8</onup>
       <ondown>7</ondown>
     </control>
 

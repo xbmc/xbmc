@@ -630,11 +630,12 @@ void CVideoDatabase::GetMoviesByActor(CStdString& strActor, VECMOVIES& movies)
 
 
 //********************************************************************************************************************************
-void CVideoDatabase::GetMovieInfo(const CStdString& strFilenameAndPath, CIMDBMovie& details)
+void CVideoDatabase::GetMovieInfo(const CStdString& strFilenameAndPath, CIMDBMovie& details, long lMovieId /* = -1 */)
 {
   try
   {
-    long lMovieId = GetMovie(strFilenameAndPath);
+    if (lMovieId < 0)
+      lMovieId = GetMovie(strFilenameAndPath);
     if (lMovieId < 0) return ;
 
     CStdString strSQL=FormatSQL("select * from movieinfo,actors,movie,path where path.idpath=movie.idpath and movie.idMovie=movieinfo.idMovie and movieinfo.idmovie=%i and idDirector=idActor", lMovieId);

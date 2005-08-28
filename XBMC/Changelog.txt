@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 28-08-2005 added: cross-linking of cast information in the movie info dialog window.
  - 28-08-2005 changed: Master Lock: Lock Settings and Lock Filemanger are now in one selectable setting. [GeminiServer]
  - 28-08-2005 added: Master Lock: Master User Mode: If its true: the master user can access to all shares with the Master code! After 3rd time entered it will ask for opening all shares! [GeminiServer]
  - 28-08-2005 changed: Shoutcast Top500 is now (temporarily) retreived in uncompressed form.
