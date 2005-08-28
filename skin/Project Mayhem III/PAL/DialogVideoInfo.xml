@@ -250,15 +250,42 @@
     </control>
 
     <control>
+      <description>cast listcontrol</description>
+      <type>listcontrol</type>
+      <id>50</id>
+      <posX>220</posX>
+      <posY>335</posY>
+      <width>410</width>
+      <height>200</height>
+      <onleft>5</onleft>
+      <onright>5</onright>
+      <onup>5</onup>
+      <ondown>5</ondown>
+    </control>
+
+    <control>
       <description>Tracks/Review</description>
       <type>button</type>
       <id>5</id>
       <posX>50</posX>
       <posY>120</posY>
       <label>206</label>
+      <onleft>50</onleft>
+      <onright>50</onright>
+      <onup>7</onup>
+      <ondown>8</ondown>
+    </control>
+
+    <control>
+      <description>Play</description>
+      <type>button</type>
+      <id>8</id>
+      <posX>50</posX>
+      <posY>158</posY>
+      <label>208</label>
       <onleft>4</onleft>
       <onright>4</onright>
-      <onup>7</onup>
+      <onup>5</onup>
       <ondown>6</ondown>
     </control>
 
@@ -267,11 +294,11 @@
       <type>button</type>
       <id>6</id>
       <posX>50</posX>
-      <posY>158</posY>
+      <posY>196</posY>
       <label>184</label>
       <onleft>4</onleft>
       <onright>4</onright>
-      <onup>5</onup>
+      <onup>8</onup>
       <ondown>7</ondown>
     </control>
 
