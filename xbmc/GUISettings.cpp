@@ -553,16 +553,18 @@ CGUISettings::CGUISettings(void)
   AddCategory(7, "Masterlock", 12360);
   AddInt(1,   "Masterlock.Mastermode"       , 12364, LOCK_MODE_EVERYONE, LOCK_MODE_EVERYONE, 1, LOCK_MODE_QWERTY, SPIN_CONTROL_TEXT); // 0:always Unlocked, 1:Numeric, 2:Gamepad, 3:Text
   AddString(2,"Masterlock.Mastercode"       , 12365, "-", BUTTON_CONTROL_STANDARD); // This is the CODE, Changing in addition with Mastermode!
-  AddInt(3,   "Masterlock.Maxretry"         , 12361, 0, 0, 1, 9, SPIN_CONTROL_TEXT); //Max Retry is 3, 0 is off
-  AddBool(4,  "Masterlock.Enableshutdown"   , 12362,false); //talse:0 is off, true:1 will shutdows if Maxrety is reached
-  AddSeparator(5, "Masterlock.Sep1");
-  AddBool(6,  "Masterlock.Protectshares"    , 12363,false); //false:0 is Normal user Mode, true:1 is Mastermode
-  AddBool(7,  "Masterlock.StartupLock"      , 12369,false); //false:0 is no ask StarupCode, true:1 ask for MasterCode if is false switxh off xbmc
-  AddSeparator(8, "Masterlock.Sep2");
-  AddBool(9,  "Masterlock.LockFilemanager"  , 12372,false); //false:0 if off, true:1 will ask for MasterCode on Filemanager Window
-  AddBool(10,  "Masterlock.LockSettings"     , 12373,false); //false:0 if off, true:1 will ask for MasterCode on Settings Window
-  AddInt(11,   "Masterlock.LockHomeMedia"    , 12374, LOCK_DISABLED, LOCK_DISABLED, 1, LOCK_MU_VI_PIC_PROG, SPIN_CONTROL_TEXT); // LockHomeMedia, for lock the Video/Music/Programs/Pictures
-  AddSeparator(12, "Masterlock.Sep3");
+  AddBool(3,  "Masterlock.MasterUser"       , 12375,false); //true: master user can open all shares without cheking the fixed share lock in xml
+  AddSeparator(4, "Masterlock.Sep1");
+  AddInt(5,   "Masterlock.Maxretry"         , 12361, 0, 0, 1, 9, SPIN_CONTROL_TEXT); //Max Retry is 3, 0 is off
+  AddBool(6,  "Masterlock.Enableshutdown"   , 12362,false); //talse:0 is off, true:1 will shutdows if Maxrety is reached
+  AddSeparator(7, "Masterlock.Sep2");     // The seperator is cool but this section needs space!
+  AddBool(8,  "Masterlock.Protectshares"    , 12363,false); //false:0 is Normal user Mode, true:1 is Mastermode
+  AddBool(9,  "Masterlock.StartupLock"      , 12369,false); //false:0 is no ask StarupCode, true:1 ask for MasterCode if is false switxh off xbmc
+  AddSeparator(10, "Masterlock.Sep3");     // The seperator is cool but this section needs space!
+  AddInt(11,   "Masterlock.LockSettingsFilemanager"    , 12372, 0, 0, 1, 3, SPIN_CONTROL_TEXT);
+  AddInt(12,   "Masterlock.LockHomeMedia"    , 12374, LOCK_DISABLED, LOCK_DISABLED, 1, LOCK_MU_VI_PIC_PROG, SPIN_CONTROL_TEXT); // LockHomeMedia, for lock the Video/Music/Programs/Pictures
+
+  AddSeparator(12, "Masterlock.Sep4");
   AddString(13,"Masterlock.SetMasterlock"   , 14070, "", BUTTON_CONTROL_STANDARD);
   
   AddInt( -1, "UIOffset.X", 0, 0, -128, 1, 128, SPIN_CONTROL_INT);
@@ -570,9 +572,7 @@ CGUISettings::CGUISettings(void)
 }
 
 CGUISettings::~CGUISettings(void)
-{
-
-}
+{}
 
 void CGUISettings::AddGroup(DWORD dwGroupID, DWORD dwLabelID)
 {
