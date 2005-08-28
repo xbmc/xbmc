@@ -670,13 +670,27 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->AddLabel(g_localizeStrings.Get(3),    5 );  // 6    My Video
       pControl->SetValue(pSettingInt->GetData());
     }
-    else if (strSetting == "Masterlock.LockFilemanager" || strSetting == "Masterlock.LockSettings")
+    else if (strSetting == "Masterlock.LockSettingsFilemanager")
     {
-      bool bLFState, bLSState;
-      if (g_stSettings.m_iMasterLockFilemanager == 0) bLFState = false;  else bLFState = true;
-      if (g_stSettings.m_iMasterLockSettings    == 0) bLSState = false;  else bLSState = true;
-      g_guiSettings.SetBool("Masterlock.LockFilemanager", bLFState);
-      g_guiSettings.SetBool("Masterlock.LockSettings", bLSState);
+      int iLFState, iLSState, iTmpState;
+      iLFState = g_stSettings.m_iMasterLockFilemanager;
+      iLSState = g_stSettings.m_iMasterLockSettings;
+      
+      if(iLFState == 0 && iLSState == 0) iTmpState = 0;
+      else if(iLFState == 0 && iLSState == 1) iTmpState = 1;
+      else if(iLFState == 1 && iLSState == 0) iTmpState = 2;
+      else if(iLFState == 1 && iLSState == 1) iTmpState = 3;
+      else iTmpState = 0;
+      
+      g_guiSettings.SetInt("Masterlock.LockSettingsFilemanager", iTmpState);
+
+      CSettingInt *pSettingInt = (CSettingInt*)pSetting;
+      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
+      pControl->AddLabel(g_localizeStrings.Get(1223)  , 0 );  // 0 Disabled
+      pControl->AddLabel(g_localizeStrings.Get(5)     , 1 );  // 1 Settings
+      pControl->AddLabel(g_localizeStrings.Get(7)     , 2 );  // 2 Filemanager
+      pControl->AddLabel(g_localizeStrings.Get(12373) , 3 );  // 3 Settings and Filemanager
+      pControl->SetValue(pSettingInt->GetData());
     }
     else if (strSetting == "Masterlock.LockHomeMedia")
     {
@@ -1243,6 +1257,8 @@ void CGUIWindowSettingsCategory::UpdateSettings()
           g_stSettings.m_iMasterLockFilemanager           = 0;
           g_stSettings.m_iMasterLockSettings              = 0;
           g_stSettings.m_iMasterLockHomeMedia             = 0;
+
+          g_guiSettings.SetBool("Masterlock.MasterUser",false);
           
           g_settings.UpDateXbmcXML("masterlock", "mastermode",      "0");
           g_settings.UpDateXbmcXML("masterlock", "mastercode",      "-");
@@ -1262,13 +1278,21 @@ void CGUIWindowSettingsCategory::UpdateSettings()
         }
       }
     }
-    else if (strSetting == "Masterlock.Enableshutdown" || strSetting == "Masterlock.Protectshares" || strSetting == "Masterlock.Maxretry" || strSetting == "Masterlock.Mastercode" || strSetting == "Masterlock.SetMasterlock" || strSetting == "Masterlock.StartupLock" || strSetting =="Masterlock.LockFilemanager" || strSetting =="Masterlock.LockSettings" || strSetting =="Masterlock.LockHomeMedia")
+    else if (strSetting == "Masterlock.MasterUser" || "Masterlock.Enableshutdown" || strSetting == "Masterlock.Protectshares" || strSetting == "Masterlock.Maxretry" || strSetting == "Masterlock.Mastercode" || strSetting == "Masterlock.SetMasterlock" || strSetting == "Masterlock.StartupLock" || strSetting =="Masterlock.LockSettingsFilemanager" || strSetting =="Masterlock.LockHomeMedia")
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       bool bState;
       if (g_guiSettings.GetInt("Masterlock.Mastermode") == 0) bState = false; //Disable
         else bState = true;
       if (pControl) pControl->SetEnabled(bState);
+      if (strSetting == "Masterlock.MasterUser")
+      {
+        if ((!g_guiSettings.GetBool("Masterlock.MasterUser")) && g_application.m_bMasterLockOverridesLocalPasswords)
+        {
+          g_application.m_bMasterLockOverridesLocalPasswords = false;
+          g_application.m_MasterUserModeCounter = 2;  // reset the count "to Overwrite the local Pass stuff!"
+        }
+      }
     }
     else if (strSetting == "Autodetect.NickName" || strSetting == "Autodetect.CreateLink" || strSetting == "Autodetect.PopUpInfo" || strSetting == "Autodetect.SendUserPw" || strSetting == "Autodetect.PingTime")
     {
@@ -1923,8 +1947,26 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     if (g_guiSettings.GetBool("Masterlock.Enableshutdown")) { iStateSD = 1; csStateSD = "1"; } else { iStateSD = 0; csStateSD = "0"; }
     if (g_guiSettings.GetBool("Masterlock.Protectshares"))  { iStatePS = 1; csStatePS = "1"; } else { iStatePS = 0; csStatePS = "0"; }
     if (g_guiSettings.GetBool("Masterlock.StartupLock"))    { iStateSL = 1; csStateSL = "1"; } else { iStateSL = 0; csStateSL = "0"; }
-    if (g_guiSettings.GetBool("Masterlock.LockFilemanager")){ iLFState = 1; csLFState = "1"; } else { iLFState = 0; csLFState = "0"; }
-    if (g_guiSettings.GetBool("Masterlock.LockSettings"))   { iLSState = 1; csLSState = "1"; } else { iLSState = 0; csLSState = "0"; }
+
+    switch (g_guiSettings.GetInt("Masterlock.LockSettingsFilemanager"))
+    {
+      case 0: //Disabled
+        iLFState = 0; csLFState = "0";
+        iLSState = 0; csLSState = "0";
+        break;
+      case 1: // Settings 
+        iLFState = 0; csLFState = "0";
+        iLSState = 1; csLSState = "1";
+        break;
+      case 2: // Filemanager 
+        iLFState = 1; csLFState = "1";
+        iLSState = 0; csLSState = "0";
+        break;
+      case 3: // Settings and File Manager
+        iLFState = 1; csLFState = "1";
+        iLSState = 1; csLSState = "1";
+        break;
+    }
     
     if((iLockModeP == iLockModeN && csMCode == strMLC)||(iLockModeP != iLockModeN && csMCode != strMLC)||(iLockModeP == iLockModeN && csMCode != strMLC))
     {

@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 28-08-2005 changed: Master Lock: Lock Settings and Lock Filemanger are now in one selectable setting. [GeminiServer]
+ - 28-08-2005 added: Master Lock: Master User Mode: If its true: the master user can access to all shares with the Master code! After 3rd time entered it will ask for opening all shares! [GeminiServer]
  - 28-08-2005 changed: Shoutcast Top500 is now (temporarily) retreived in uncompressed form.
  - 27-08-2005 fixed: shoutcast pls files with a single entry would not inherit a thumbnail (folder.jpg or filename.tbn)
  - 27-08-2005 updated: reverted the same "fix" to mplayer.conf
@@ -22,7 +24,7 @@ added/fixed: (dd-mm-yyyy) (please specify date in CET)
  - 24-08-2005 changed: small speedup of interlaced rendering, (less issues in 1080i, still too slow thou)
  - 24-08-2005 fixed: playback in 1080i was a slideshow. (still issues with interlaced rendering thou)
  - 24-08-2005 fixed: dvdplayer would crash or output nonsense name for audiostream if it was nonexisting
- - 24-08-2005 fixed: Share lock - numeric Password: cancel was brocken [ifinite loop] [GeminiServer]
+ - 24-08-2005 fixed: Share lock - numeric Password: cancel was broken [ifinite loop] [GeminiServer]
  - 24-08-2005 fixed: Share lock - numeric Password: dialog descriptions was brocken   [GeminiServer]
  - 24-08-2005 fixed: slideshow sometimes showed the wrong second image
  - 23-08-2005 fixed: dvdplayer code cleanup and a fix for incrorrect nr of audio channels being displayed

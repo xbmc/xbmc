@@ -21,6 +21,7 @@ public:
   CStdString GetSMBShare();
   bool CheckStartUpLock();
   bool CheckMenuLock(int iWindowID);
+  bool MasterUser();
 
   CStdString CGUIPassword::GetSMBAuthFilename(const CStdString& strAuth);
 

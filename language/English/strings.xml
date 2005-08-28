@@ -754,10 +754,10 @@
   <string><id>12369</id><value>XBMC Startup Lock</value></string>
   <string><id>12370</id><value>Master Lock Mode changed, the Master Code wasn't set!</value></string>
   <string><id>12371</id><value>Please Set a new Master Code!</value></string>
-
-  <string><id>12372</id><value>Lock Filemanager</value></string>
-  <string><id>12373</id><value>Lock Settings</value></string>
+  <string><id>12372</id><value>Lock Settings &amp; My Files</value></string>
+  <string><id>12373</id><value>Settings &amp;  My Files</value></string>
   <string><id>12374</id><value>Lock Media</value></string>
+  <string><id>12375</id><value>Master User Mode</value></string>
 
   <string><id>12390</id><value>System Uptime</value></string>
   <string><id>12391</id><value>Minutes</value></string>
