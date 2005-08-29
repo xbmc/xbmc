@@ -1,6 +1,6 @@
-2005-08-25 changed: Visualisation Select Button was not visible as it was set to visibility false
-2005-08-25 changed: progressbar was not visible as it was set to visibility no
-2005-08-23 changed: third line in fullscreen info was not visible as it was set to visibility no
+2005-08-25 fixed: 	Visualisation Select Button was not visible as it was set to visibility false
+2005-08-25 fixed: 	progressbar was not visible as it was set to visibility no
+2005-08-25 fixed: 	third line in fullscreen info was not visible as it was set to visibility no
 
 2005-08-23 changed:	KAI button in the homescreen now completly relying on visible tags (also hiding properly now)
 2005-08-23 fixed:	hidden Restart Application button had the wrong size in 4:3 resolutions 
