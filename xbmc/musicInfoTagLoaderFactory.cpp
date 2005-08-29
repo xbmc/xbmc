@@ -91,8 +91,9 @@ IMusicInfoTagLoader* CMusicInfoTagLoaderFactory::CreateLoader(const CStdString& 
     CMusicInfoTagLoaderSid *pTagLoader = new CMusicInfoTagLoaderSid();
     return (IMusicInfoTagLoader*)pTagLoader;
   } 
-  else if (ModPlayer::IsSupportedFormat(strExtension))
+  else if (ModPlayer::IsSupportedFormat(strExtension) || strExtension == "mod" || strExtension == "it" || strExtension == "s3m")
   {
+    CLog::Log(LOGDEBUG,"loading tag for module file!");
     CMusicInfoTagLoaderMod *pTagLoader = new CMusicInfoTagLoaderMod();
     return (IMusicInfoTagLoader*)pTagLoader;
   } 

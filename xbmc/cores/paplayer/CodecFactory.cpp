@@ -10,7 +10,7 @@
 #include "WAVCodec.h"
 #include "AACCodec.h"
 #include "WAVPackCodec.h"
-
+#include "ModuleCodec.h"
 
 ICodec* CodecFactory::CreateCodec(const CStdString& strFileType)
 {
@@ -34,6 +34,8 @@ ICodec* CodecFactory::CreateCodec(const CStdString& strFileType)
     return new AACCodec();
   else if (strFileType.Equals("wv"))
     return new WAVPackCodec();
+  else if (ModuleCodec::IsSupportedFormat(strFileType))
+    return new ModuleCodec();
 
   return NULL;
 }

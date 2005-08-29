@@ -15,19 +15,16 @@ bool ModPlayer::IsSupportedFormat(const CStdString& strFmt)
 {
   CStdString fmt(strFmt);
   fmt.Normalize();
-  if (fmt == "mod" ||
-      fmt == "amf" ||
+  if (fmt == "amf" ||
       fmt == "669" ||
       fmt == "dmf" ||
       fmt == "dsm" ||
       fmt == "far" ||
       fmt == "gdm" ||
       fmt == "imf" ||
-      fmt == "it" ||
       fmt == "m15" ||
       fmt == "med" ||
       fmt == "okt" ||
-      fmt == "s3m" ||
       fmt == "stm" ||
       fmt == "sfx" ||
       fmt == "ult" ||
