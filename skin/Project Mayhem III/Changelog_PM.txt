@@ -1,3 +1,5 @@
+2005-08-29 removed:	removed buttons from the left panel in My Music and My Videos as the functions are in the context menu anyways
+
 2005-08-25 fixed: 	Visualisation Select Button was not visible as it was set to visibility false
 2005-08-25 fixed: 	progressbar was not visible as it was set to visibility no
 2005-08-25 fixed: 	third line in fullscreen info was not visible as it was set to visibility no
