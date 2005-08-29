@@ -67,8 +67,8 @@ bool CGUIDialog::OnMessage(CGUIMessage& message)
   case GUI_MSG_WINDOW_DEINIT:
     {
       CGUIWindow *pWindow = m_gWindowManager.GetWindow(m_gWindowManager.GetActiveWindow());
-      if (pWindow && pWindow->OverlayAllowed() >= 0)
-        g_graphicsContext.SetOverlay(pWindow->OverlayAllowed() == 1);
+      if (pWindow && pWindow->GetOverlayState()!=OVERLAY_STATE_PARENT_WINDOW)
+        m_gWindowManager.ShowOverlay(pWindow->GetOverlayState()==OVERLAY_STATE_SHOWN);
       break;
     }
   case GUI_MSG_WINDOW_INIT:

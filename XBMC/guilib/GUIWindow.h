@@ -89,7 +89,6 @@ public:
   virtual void ResetAllControls();
   static void FlushReferenceCache();
   virtual bool IsDialog() { return false;};
-  int OverlayAllowed() const { return m_iOverlayAllowed; };
   void SetCoordsRes(RESOLUTION res) { m_coordsRes = res; };
   RESOLUTION GetCoordsRes() const { return m_coordsRes; };
   int GetVisibleCondition() const { return m_visibleCondition; };
@@ -100,6 +99,10 @@ public:
   int GetRenderOrder() { return m_renderOrder; };
   EFFECT_STATE GetEffectState() { return m_effectState; };
   void SetControlVisibility();
+
+  enum OVERLAY_STATE { OVERLAY_STATE_PARENT_WINDOW=0, OVERLAY_STATE_SHOWN, OVERLAY_STATE_HIDDEN };
+
+  OVERLAY_STATE GetOverlayState() const { return m_overlayState; };
 
 protected:
   virtual void OnWindowUnload() {}
@@ -138,7 +141,7 @@ protected:
   DWORD m_dwWidth;
   DWORD m_dwHeight;
   vector<int> m_vecGroups;
-  int m_iOverlayAllowed;
+  OVERLAY_STATE m_overlayState;
   bool m_WindowAllocated;
   RESOLUTION m_coordsRes; // resolution that the window coordinates are in.
   bool m_needsScaling;
