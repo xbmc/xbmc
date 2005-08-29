@@ -2614,6 +2614,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\cores\paplayer\ICodec.h">
 				</File>
 				<File
+					RelativePath=".\xbmc\cores\paplayer\ModuleCodec.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\paplayer\ModuleCodec.h">
+				</File>
+				<File
 					RelativePath=".\xbmc\cores\paplayer\MP3codec.cpp">
 				</File>
 				<File

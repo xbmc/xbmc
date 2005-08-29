@@ -5,15 +5,19 @@
 
 #include <fstream>
 
-
 using namespace MUSIC_INFO;
 
 CMusicInfoTagLoaderMod::CMusicInfoTagLoaderMod(void)
 {
+  CSectionLoader::Load("MOD_RX");
+  CSectionLoader::Load("MOD_RW");
+	MikMod_RegisterAllLoaders();
 }
 
 CMusicInfoTagLoaderMod::~CMusicInfoTagLoaderMod()
 {
+  CSectionLoader::Unload("MOD_RW");
+	CSectionLoader::Unload("MOD_RX");
 }
 
 bool CMusicInfoTagLoaderMod::Load(const CStdString& strFileName, CMusicInfoTag& tag)
@@ -55,24 +59,26 @@ bool CMusicInfoTagLoaderMod::Load(const CStdString& strFileName, CMusicInfoTag& 
 		return( tag.Loaded() );
 	} else {
 		// no, then try to atleast fetch the title
-		CStdString strMod;
-		if( !getFile(strMod,strFileName) ) {
-			tag.SetLoaded(false);
-			return( false );
-		}
-		char* szTitle = Mod_Player_LoadTitle(reinterpret_cast<CHAR*>(const_cast<char*>(strMod.c_str())));
-
-		if( szTitle ) {
-			if( !CStdString(szTitle).empty() ) {
-				tag.SetTitle(szTitle);
-				free(szTitle);
-				tag.SetLoaded(true);
-				return( true );
-			}
-		}
+	  
+    CStdString strMod;
+    tag.SetLoaded(false);
+    if( getFile(strMod,strFileName) ) 
+    {
+      CLog::Log(LOGDEBUG,"got file %s",strMod.c_str());
+      char* szTitle = Mod_Player_LoadTitle(reinterpret_cast<CHAR*>(const_cast<char*>(strMod.c_str())));
+      
+      if( szTitle ) {
+        CLog::Log(LOGDEBUG,"got title %s",szTitle);
+        if( !CStdString(szTitle).empty() ) {
+          tag.SetTitle(szTitle);
+          free(szTitle);
+          tag.SetLoaded(true);
+        }
+      }
+    }
 	}
-	tag.SetLoaded(false);
-	return( false );
+    
+  return tag.Loaded();
 }
 
 bool CMusicInfoTagLoaderMod::getFile(CStdString& strFile, const CStdString& strSource)
