@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 29-08-2005 fixed: year failed to be read from id3v1 tags.
  - 29-08-2005 added: codec to paplayer for .it, .s3m and .mod. Based on dumb.
  - 29-08-2005 cleanup: code to show/hide overlay per window
  - 29-08-2005 fixed: dvdplayer, libdvdcss data corruption when opening a dvd more then once
