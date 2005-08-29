@@ -3,6 +3,7 @@
   <defaultcontrol>50</defaultcontrol>
   <allowoverlay>yes</allowoverlay>
   <controls>
+
     <control>
       <description>background image</description>
       <type>image</type>
@@ -135,6 +136,7 @@
         <onright>50</onright>
         <onup>7</onup>
         <ondown>9</ondown>
+        <visible>no</visible>
       </control>
 
       <control>
@@ -148,6 +150,7 @@
         <onright>50</onright>
         <onup>8</onup>
         <ondown>2</ondown>
+        <visible>no</visible>
       </control>
 
     </controlgroup>
