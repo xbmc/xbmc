@@ -512,6 +512,7 @@ void export_msvcr71()
   g_dlls.msvcr71.AddExport("feof", (unsigned long)dll_feof);
   g_dlls.msvcr71.AddExport("fgets", (unsigned long)dll_fgets);
   g_dlls.msvcr71.AddExport("fopen", (unsigned long)dll_fopen, (void*)track_fopen);
+  g_dlls.msvcr71.AddExport("fgetc", (unsigned long)dll_getc);
   g_dlls.msvcr71.AddExport("fputc", (unsigned long)dll_fputc);
   g_dlls.msvcr71.AddExport("fputs", (unsigned long)dll_fputs);
   g_dlls.msvcr71.AddExport("fread", (unsigned long)dll_fread);
