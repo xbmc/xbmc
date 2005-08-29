@@ -42,14 +42,14 @@ bool CGUIPythonWindow::OnMessage(CGUIMessage& message)
   {
 		case GUI_MSG_WINDOW_DEINIT:
 		{
-      g_graphicsContext.SetOverlay(true);
+      m_gWindowManager.ShowOverlay(true);
 		}
 		break;
 
     case GUI_MSG_WINDOW_INIT:
     {
 			CGUIWindow::OnMessage(message);
-      g_graphicsContext.SetOverlay(false);
+      m_gWindowManager.ShowOverlay(false);
 			return true;
     }
 		break;

@@ -1740,7 +1740,7 @@ void CApplication::Render()
     }
   }
   // check if we're playing a file
-  if (g_graphicsContext.IsOverlayAllowed())
+  if (m_gWindowManager.IsOverlayAllowed())
   {
     // if we're playing a movie
     if ( IsPlayingVideo() && m_gWindowManager.GetActiveWindow() != WINDOW_FULLSCREEN_VIDEO)
@@ -2330,7 +2330,7 @@ void CApplication::FrameMove()
     action.fAmount1 = (float) m_guiPointer.GetPosX();
     action.fAmount2 = (float) m_guiPointer.GetPosY();
     // send mouse event to the music + video overlays, if they're enabled
-    if (g_graphicsContext.IsOverlayAllowed())
+    if (m_gWindowManager.IsOverlayAllowed())
     {
       // if we're playing a movie
       if ( IsPlayingVideo() && m_gWindowManager.GetActiveWindow() != WINDOW_FULLSCREEN_VIDEO)
@@ -2365,7 +2365,7 @@ void CApplication::FrameMove()
         action.fAmount1 = keyHttp.GetLeftThumbX();
         action.fAmount2 = keyHttp.GetLeftThumbY();
         // send mouse event to the music + video overlays, if they're enabled
-        if (g_graphicsContext.IsOverlayAllowed())
+        if (m_gWindowManager.IsOverlayAllowed())
         {
           // if we're playing a movie
           if ( IsPlayingVideo() && m_gWindowManager.GetActiveWindow() != WINDOW_FULLSCREEN_VIDEO)

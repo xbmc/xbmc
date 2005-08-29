@@ -94,7 +94,7 @@ bool CGUIWindowScreensaver::OnMessage(CGUIMessage& message)
  //     g_graphicsContext.SetVideoResolution(res, FALSE);
 
       // enable the overlay
-      g_graphicsContext.SetOverlay(true);
+      m_gWindowManager.ShowOverlay(true);
     }
     break;
 
@@ -130,7 +130,7 @@ bool CGUIWindowScreensaver::OnMessage(CGUIMessage& message)
 //      g_graphicsContext.SetVideoResolution(res, TRUE);
 
       // disable the overlay
-      g_graphicsContext.SetOverlay(false);
+      m_gWindowManager.ShowOverlay(false);
       return true;
     }
   }
