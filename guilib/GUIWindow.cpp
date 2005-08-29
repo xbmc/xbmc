@@ -1,5 +1,6 @@
 #include "include.h"
 #include "GUIWindow.h"
+#include "GUIWindowManager.h"
 #include "LocalizeStrings.h"
 #include "TextureManager.h"
 #include "../xbmc/util.h"
@@ -48,7 +49,7 @@ CGUIWindow::CGUIWindow(DWORD dwID, const CStdString &xmlFile)
   m_dwDefaultFocusControlID = 0;
   m_bRelativeCoords = false;
   m_iPosX = m_iPosY = m_dwWidth = m_dwHeight = 0;
-  m_iOverlayAllowed = -1;   // Use parent or previous window's state
+  m_overlayState = OVERLAY_STATE_PARENT_WINDOW;   // Use parent or previous window's state
   m_WindowAllocated = false;
   m_coordsRes = g_guiSettings.m_LookAndFeelResolution;
   m_needsScaling = true;
@@ -391,7 +392,7 @@ bool CGUIWindow::Load(const TiXmlElement* pRootElement, RESOLUTION resToUse)
   m_dwDefaultFocusControlID = 0;
   m_bRelativeCoords = false;
   m_iPosX = m_iPosY = m_dwWidth = m_dwHeight = 0;
-  m_iOverlayAllowed = -1;   // Use parent or previous window's state
+  m_overlayState = OVERLAY_STATE_PARENT_WINDOW;   // Use parent or previous window's state
   m_coordsRes = g_guiSettings.m_LookAndFeelResolution;
   m_visibleCondition = 0;
   m_effectType = EFFECT_TYPE_NONE;
@@ -481,13 +482,13 @@ bool CGUIWindow::Load(const TiXmlElement* pRootElement, RESOLUTION resToUse)
       strValue.MakeLower();
 
       if (strValue == "yes")
-        m_iOverlayAllowed = 1;
+        m_overlayState = OVERLAY_STATE_SHOWN;
       else if (strValue == "true")
-        m_iOverlayAllowed = 1;
+        m_overlayState = OVERLAY_STATE_SHOWN;
       else if (strValue == "no")
-        m_iOverlayAllowed = 0;
+        m_overlayState = OVERLAY_STATE_HIDDEN;
       else if (strValue == "false")
-        m_iOverlayAllowed = 0;
+        m_overlayState = OVERLAY_STATE_HIDDEN;
     }
 
     pChild = pChild->NextSibling();
@@ -782,8 +783,8 @@ void CGUIWindow::OnInitWindow()
   CGUIMessage msg(GUI_MSG_SETFOCUS, GetID(), m_dwDefaultFocusControlID);
   OnMessage(msg);
 
-  if (m_iOverlayAllowed > -1) // True, use our own overlay state
-    g_graphicsContext.SetOverlay(m_iOverlayAllowed > 0 ? true : false);
+  if (m_overlayState!=OVERLAY_STATE_PARENT_WINDOW) // True, use our own overlay state
+    m_gWindowManager.ShowOverlay(m_overlayState==OVERLAY_STATE_SHOWN ? true : false);
 }
 
 bool CGUIWindow::OnMessage(CGUIMessage& message)

@@ -95,8 +95,6 @@ public:
   bool IsFullScreenVideo() const;
   bool IsCalibrating() const;
   void SetCalibrating(bool bOnOff);
-  bool IsOverlayAllowed() const;
-  void SetOverlay(bool bOnOff);
   void SetGUIResolution(RESOLUTION &res);
   void GetAllowedResolutions(std::vector<RESOLUTION> &res, bool bAllowPAL60 = false);
   bool IsValidResolution(RESOLUTION res);
@@ -144,7 +142,6 @@ protected:
   bool m_bFullScreenVideo;
   bool m_bShowPreviewWindow;
   bool m_bCalibrating;
-  bool m_bShowOverlay;
   RESOLUTION m_Resolution;
   DWORD m_stateBlock;
 

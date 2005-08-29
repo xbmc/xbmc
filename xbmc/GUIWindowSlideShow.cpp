@@ -521,7 +521,7 @@ bool CGUIWindowSlideShow::OnMessage(CGUIMessage& message)
         CSectionLoader::UnloadDLL(IMAGE_DLL);
       }
       g_graphicsContext.Lock();
-      g_graphicsContext.SetOverlay(true);
+      m_gWindowManager.ShowOverlay(true);
       g_graphicsContext.Get3DDevice()->EnableOverlay(FALSE);
       // reset to gui mode so that we use it's filters
       g_graphicsContext.SetFullScreenVideo(false);
@@ -543,7 +543,7 @@ bool CGUIWindowSlideShow::OnMessage(CGUIMessage& message)
         CSectionLoader::LoadDLL(IMAGE_DLL);
       }
       g_graphicsContext.Lock();
-      g_graphicsContext.SetOverlay(false);
+      m_gWindowManager.ShowOverlay(false);
       g_graphicsContext.Get3DDevice()->EnableOverlay(TRUE);
       // set to video mode so that we use it's filters (to make pics sharper)
       g_graphicsContext.SetFullScreenVideo(true);
