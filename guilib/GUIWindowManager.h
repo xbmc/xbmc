@@ -58,6 +58,8 @@ public:
   bool IsModelessAvailable() const;
   void UpdateModelessVisibility();
   bool IsWindowActive(DWORD dwID) const;
+  bool IsOverlayAllowed() const;
+  void ShowOverlay(bool bOnOff);
 
 private:
   vector <CGUIWindow*> m_vecWindows;
@@ -71,6 +73,7 @@ private:
   CRITICAL_SECTION m_critSection;
   vector <IMsgTargetCallback*> m_vecMsgTargets;
 
+  bool m_bShowOverlay;
 };
 
 /*!

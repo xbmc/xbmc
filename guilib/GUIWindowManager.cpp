@@ -15,6 +15,7 @@ CGUIWindowManager::CGUIWindowManager(void)
 
   m_pCallback = NULL;
   m_iActiveWindow = -1;
+  m_bShowOverlay = true;
 }
 
 CGUIWindowManager::~CGUIWindowManager(void)
@@ -582,5 +583,15 @@ void CGUIWindowManager::UnloadNotOnDemandWindows()
       m_vecWindows[i]->FreeResources(true);
     }
   }
+}
+
+bool CGUIWindowManager::IsOverlayAllowed() const
+{
+  return m_bShowOverlay;
+}
+
+void CGUIWindowManager::ShowOverlay(bool bOnOff)
+{
+  m_bShowOverlay = bOnOff;
 }
 
