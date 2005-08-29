@@ -507,15 +507,17 @@ extern "C"
   int dll_getc (FILE * stream)
   {
     char szString[10];
+    
+    if (dll_feof(stream))
+    {
+      return EOF;
+    }
+
     if (dll_fread(&szString[0], 1, 1, stream) <= 0)
     {
       return -1;
     }
-    if (dll_feof(stream))
-    {
-      return -1;
-    }
-
+    
     byte byKar = (byte)szString[0];
     int iKar = byKar;
     return iKar;
@@ -560,8 +562,10 @@ extern "C"
   int dll_fseek ( FILE * stream , long offset , int origin )
   {
     int iFile = (int)stream - 1;
-    dll_lseek(iFile, offset, origin);
-    return 0;
+    if (dll_lseek(iFile, offset, origin) != -1)
+      return 0;
+    
+    return -1;
   }
 
   int dll_ungetc (int c, FILE * stream)
