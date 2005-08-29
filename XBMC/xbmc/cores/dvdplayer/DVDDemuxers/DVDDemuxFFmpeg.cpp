@@ -304,50 +304,35 @@ CDVDDemux::DemuxPacket* CDVDDemuxFFmpeg::Read()
       // XXX, in some cases ffmpeg returns a negative packet size
       if (pkt.size <= 0) return NULL;
       
-      pPacket = CDVDDemuxUtils::AllocateDemuxPacket();
-
-      // copy contents into our own packet
-      
-      // pkt.pts is not the real pts, but a frame number.
-      // to get our pts we need to multiply the frame delay with that number
-      int num = m_pFormatContext->streams[pkt.stream_index]->time_base.num;
-      int den = m_pFormatContext->streams[pkt.stream_index]->time_base.den;
-      
-      if (pkt.pts == AV_NOPTS_VALUE) pPacket->pts = DVD_NOPTS_VALUE;
-      else pPacket->pts = (num * pkt.pts * DVD_TIME_BASE) / den;
-      if (pkt.dts == AV_NOPTS_VALUE) pPacket->dts = DVD_NOPTS_VALUE;
-      else pPacket->dts = (num * pkt.dts * DVD_TIME_BASE) / den;
-
-      pPacket->iStreamId = pkt.stream_index; // XXX just for now
-
-      // maybe we can avoid a memcpy here by detecting where pkt.destruct is pointing too?
-      pPacket->iSize = pkt.size;
-      // need to allocate a few bytes more.
-      // From avcodec.h (ffmpeg)
-      /**
-        * Required number of additionally allocated bytes at the end of the input bitstream for decoding.
-        * this is mainly needed because some optimized bitstream readers read 
-        * 32 or 64 bit at once and could read over the end<br>
-        * Note, if the first 23 bits of the additional bytes are not 0 then damaged
-        * MPEG bitstreams could cause overread and segfault
-        */ 
-      // #define FF_INPUT_BUFFER_PADDING_SIZE 8
-      pPacket->pData = new BYTE[pPacket->iSize + 8];
-      if (!pPacket->pData)
+      pPacket = CDVDDemuxUtils::AllocateDemuxPacket(pkt.size);
+      if (pPacket)
       {
-        // out of memory, free as much as possible and return NULL (read error)
-        CDVDDemuxUtils::FreeDemuxPacket(pPacket);
-        av_free_packet(&pkt);
-        Unlock();
-        return NULL;
-      }
-      fast_memcpy(pPacket->pData, pkt.data, pPacket->iSize);
+        // copy contents into our own packet
+        
+        pPacket->iSize = pkt.size;
+        
+        // maybe we can avoid a memcpy here by detecting where pkt.destruct is pointing too?
+        fast_memcpy(pPacket->pData, pkt.data, pPacket->iSize);
+        
+        // pkt.pts is not the real pts, but a frame number.
+        // to get our pts we need to multiply the frame delay with that number
+        int num = m_pFormatContext->streams[pkt.stream_index]->time_base.num;
+        int den = m_pFormatContext->streams[pkt.stream_index]->time_base.den;
+        
+        if (pkt.pts == AV_NOPTS_VALUE) pPacket->pts = DVD_NOPTS_VALUE;
+        else pPacket->pts = (num * pkt.pts * DVD_TIME_BASE) / den;
+        if (pkt.dts == AV_NOPTS_VALUE) pPacket->dts = DVD_NOPTS_VALUE;
+        else pPacket->dts = (num * pkt.dts * DVD_TIME_BASE) / den;
 
+        pPacket->iStreamId = pkt.stream_index; // XXX just for now
+      }
       av_free_packet(&pkt);
     }
   }
   Unlock();
 
+  if (!pPacket) return NULL;
+  
   // check streams, can we make this a bit more simple?
   if (pPacket && pPacket->iStreamId >= 0 && pPacket->iStreamId <= MAX_STREAMS)
   {
