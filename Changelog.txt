@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 30-08-2005 changed: Shoutcast Top500 back to compressed form.
  - 29-08-2005 fixed: year failed to be read from id3v1 tags.
  - 29-08-2005 added: codec to paplayer for .it, .s3m and .mod. Based on dumb.
  - 29-08-2005 cleanup: code to show/hide overlay per window
