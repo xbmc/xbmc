@@ -75,9 +75,7 @@ bool CShoutcastDirectory::DownloadPlaylists(CFileItemList &items)
 
   CThread thread(this);
 
-  //temporarily use no compression as the compressed version is not correct for the moment
-  //m_strSource="http://www.shoutcast.com/sbin/xmllister.phtml?service=XBMC&limit=500";
-  m_strSource="http://www.shoutcast.com/sbin/xmllister.phtml?service=XBMC&limit=500&no_compress=1";
+  m_strSource="http://www.shoutcast.com/sbin/xmllister.phtml?service=XBMC&limit=500";
   m_strDestination="Z:\\xmllister.zli";
   thread.Create();
 
@@ -111,8 +109,7 @@ bool CShoutcastDirectory::DownloadPlaylists(CFileItemList &items)
     return false;
   }
 
-  //temporarily use no compression as the compressed version is not correct for the moment
-  /*uLongf iCompressedLenght = (uLongf)file.GetLength() + 1;
+  uLongf iCompressedLenght = (uLongf)file.GetLength() + 1;
   uLongf iUncompressedLenght = (uLongf)(file.GetLength() * 6) + 1;  // FIXME: Just a guess
 
   auto_aptr<Bytef> pCompressed(new Bytef[iCompressedLenght]);
@@ -133,7 +130,6 @@ bool CShoutcastDirectory::DownloadPlaylists(CFileItemList &items)
     CLog::Log(LOGERROR, "zlib uncompress returned error %i", iError);
     return false;
   }
-  */
 
   if (dlgProgress)
   {
@@ -141,21 +137,14 @@ bool CShoutcastDirectory::DownloadPlaylists(CFileItemList &items)
     dlgProgress->Progress();
   }
 
-  //temporarily use no compression as the compressed version is not correct for the moment
-  char* str = new char[(unsigned int)file.GetLength()];
-  file.Read(str, file.GetLength());
-  //---
   TiXmlDocument xmlDoc;
-  //if (!xmlDoc.Parse((char*)pUncompressed.get()))
-  if (!xmlDoc.Parse(str))
+  if (!xmlDoc.Parse((char*)pUncompressed.get()))
   {
-    delete[] str;
     if (dlgProgress) dlgProgress->Close();
     CGUIDialogOK::ShowAndGetInput(260, 14006, 0, 0);
     CLog::Log(LOGERROR, "Error parsing file from shoutcast, Line %d\n%s", xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
     return false;
   }
-  delete[] str;
 
   //  Is this a WinampXML file
   TiXmlElement* pRootElement = xmlDoc.RootElement();
