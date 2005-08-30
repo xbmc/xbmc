@@ -1,3 +1,6 @@
+2005-08-30 fixed:	playlist indicaors in fullscreen viz media infos coulnt display all numbers (eg 1005/29..)
+2005-08-30 fixed:	some sttings items didnt fit on the panel properly
+
 2005-08-29 removed:	removed buttons from the left panel in My Music and My Videos as the functions are in the context menu anyways
 
 2005-08-25 fixed: 	Visualisation Select Button was not visible as it was set to visibility false

@@ -159,7 +159,7 @@
       <description>Playlist</description>
       <type>label</type>
       <id>1</id>
-      <width>100</width>
+      <width>200</width>
       <posX>660</posX>
       <posY>528</posY>
       <label>Track $INFO[musicplayer.Playlistposition] / $INFO[musicplayer.Playlistlength]</label>
