@@ -28,8 +28,8 @@ bool ModPlayer::IsSupportedFormat(const CStdString& strFmt)
       fmt == "stm" ||
       fmt == "sfx" ||
       fmt == "ult" ||
-      fmt == "uni" ||
-      fmt == "xm")
+      fmt == "uni")// ||
+      //fmt == "xm")
   {
     return true;
   }

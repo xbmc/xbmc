@@ -6,7 +6,7 @@ const CStdString strModuleDLL = "Q:\\system\\players\\paplayer\\dumb.dll";
 
 bool ModuleCodec::IsSupportedFormat(const CStdString& strExt)
 {
-  if (strExt == "mod" || strExt == "it" || strExt == "s3m" || strExt == "duh")
+  if (strExt == "mod" || strExt == "it" || strExt == "s3m" || strExt == "duh" || strExt == "xm")
     return true;
   
   return false;
@@ -31,7 +31,12 @@ bool ModuleCodec::Init(const CStdString &strFile, unsigned int filecache)
 
   if (!LoadDLL())
     return false; // error logged previously
-  
+
+  // set correct codec name
+  CUtil::GetExtension(strFile,m_CodecName);
+  m_CodecName.erase(0,1);
+  m_CodecName.ToUpper();
+
   CStdString strLoadFile = "Z:\\cachedmod";
   if (!CUtil::IsHD(strFile))
     CFile::Cache(strFile,"Z:\\cachedmod");
