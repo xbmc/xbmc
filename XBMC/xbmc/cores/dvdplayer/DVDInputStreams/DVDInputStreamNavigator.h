@@ -111,6 +111,9 @@ protected:
   bool m_bDiscardHop;
   bool m_bCheckButtons;
   bool m_bStopped;
+
+  int m_iTotalTime;
+  int m_iTime;
   
   struct dvdnav_s* m_dvdnav;
   
