@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 01-09-2005 fixed: [ 1276498 ] Build.bat didn't work for all Windows languages. Thx to Pade2
  - 01-09-2005 fixed: dvdplayer would stutter when OSD was up (due to criticalsections stalling renderthread)
  - 01-09-2005 fixed: dvdplayer would lockup if OSD was open and player came across a stillframe
  - 01-09-2005 fixed: thumbnails for .strm files
