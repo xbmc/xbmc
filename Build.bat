@@ -32,9 +32,9 @@ rem	CONFIG START
 rem	CONFIG END
 rem ---------------------------------------------
 ECHO Compiling Solution...
-%NET% %CLEAN%
-del release\xbmc.map
-%NET% %OPTS%
+rem %NET% %CLEAN%
+rem del release\xbmc.map
+rem %NET% %OPTS%
 IF NOT EXIST release\default.xbe (
 	set DIETEXT=Default.xbe failed to build!  See .\Release\BuildLog.htm for details.
 	goto DIE
@@ -86,16 +86,12 @@ set DIETEXT=ERROR: %DIETEXT%
 echo %DIETEXT%
 
 :VIEWLOG
-REM use a DOS trick to get a y/n user prompt without choice.exe
-REM Credit goes to http://www.robvanderwoude.com/amb_userinput_yn.html
-type nul>"%temp%\~Yes~No~.tmp"
-ECHO View the build log in your HTML browser? [y/n]
-del /p "%temp%\~Yes~No~.tmp">nul
-if exist "%temp%\~Yes~No~.tmp" goto END
-del "%temp%\~Yes~No~.tmp" > NUL: 2>&1
-start %~dps0\Release\BuildLog.htm
+set /P XBMC_BUILD_ANSWER=View the build log in your HTML browser? [y/n]
+if /I %XBMC_BUILD_ANSWER% NEQ y goto END
+start /D"%~dp0Release" BuildLog.htm"
 goto END
 
 :END
+set XBMC_BUILD_ANSWER=
 ECHO Press any key to exit...
-pause > NUL:
+pause > NUL
