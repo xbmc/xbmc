@@ -1044,8 +1044,8 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile, const bool loadp
     GetBoolean(pElement, "yearsortascending", g_stSettings.m_bMyVideoYearSortAscending);
     GetBoolean(pElement, "yearsortascendingroot", g_stSettings.m_bMyVideoYearRootSortAscending);
 
-    GetInteger(pElement, "titleviewicons", g_stSettings.m_iMyVideoTitleViewAsIcons, VIEW_AS_LIST, VIEW_AS_LIST, VIEW_AS_LARGE_ICONS);
-    GetInteger(pElement, "titlerooticons", g_stSettings.m_iMyVideoTitleRootViewAsIcons, VIEW_AS_LIST, VIEW_AS_LIST, VIEW_AS_LARGE_ICONS);
+    GetInteger(pElement, "titleviewicons", g_stSettings.m_iMyVideoTitleViewAsIcons, VIEW_AS_LIST, VIEW_AS_LIST,  VIEW_AS_LARGE_LIST);
+    GetInteger(pElement, "titlerooticons", g_stSettings.m_iMyVideoTitleRootViewAsIcons, VIEW_AS_LIST, VIEW_AS_LIST,  VIEW_AS_LARGE_LIST);
     GetInteger(pElement, "titlesortmethod", g_stSettings.m_iMyVideoTitleSortMethod, 0, 0, 3);
     GetBoolean(pElement, "titlesortascending", g_stSettings.m_bMyVideoTitleSortAscending);
 

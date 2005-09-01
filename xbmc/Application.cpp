@@ -4053,6 +4053,8 @@ void CApplication::CheckAudioScrobblerStatus()
 
 bool CApplication::ProcessAndStartPlaylist(const CStdString& strPlayList, CPlayList& playlist, int iPlaylist)
 {
+  CLog::Log(LOGDEBUG,"CApplication::ProcessAndStartPlaylist(%s, %i)",strPlayList.c_str(), iPlaylist);
+
   // initial exit conditions
   // no songs in playlist just return
   if (playlist.size() == 0)

@@ -996,6 +996,7 @@ void CGUIInfoManager::SetCurrentItem(CFileItem &item)
 
 void CGUIInfoManager::SetCurrentSong(CFileItem &item)
 {
+  CLog::Log(LOGDEBUG,"CGUIInfoManager::SetCurrentSong(%s)",item.m_strPath.c_str());
   m_currentSong = item;
 
   // Get a reference to the item's tag
@@ -1069,7 +1070,8 @@ void CGUIInfoManager::SetCurrentSong(CFileItem &item)
   {
     CLog::Log(LOGDEBUG,"Streaming media detected... using %s to find a thumb", g_application.m_strPlayListFile.c_str());
     CFileItem* pItemTemp = new CFileItem(g_application.m_strPlayListFile,false);
-    pItemTemp->SetMusicThumb();
+    //pItemTemp->SetMusicThumb();
+    pItemTemp->SetThumb();
     CStdString strThumb = pItemTemp->GetThumbnailImage();
     if (CFile::Exists(strThumb))
       m_currentSong.SetThumbnailImage(strThumb);
@@ -1081,6 +1083,8 @@ void CGUIInfoManager::SetCurrentSong(CFileItem &item)
 
 void CGUIInfoManager::SetCurrentMovie(CFileItem &item)
 {
+  CLog::Log(LOGDEBUG,"CGUIInfoManager::SetCurrentMovie(%s)",item.m_strPath.c_str());
+
   CVideoDatabase dbs;
   dbs.Open();
   if (dbs.HasMovieInfo(item.m_strPath))
@@ -1106,6 +1110,25 @@ void CGUIInfoManager::SetCurrentMovie(CFileItem &item)
     if (CFile::Exists(strThumb))
       item.SetThumbnailImage(strThumb);
   }
+  // find a thumb for this stream
+  if (item.IsInternetStream())
+  {
+    // case where .strm is used to start an audio stream
+    if (g_application.IsPlayingAudio())
+    {
+      SetCurrentSong(item);
+      return;
+    }
+
+    // else its a video
+    CLog::Log(LOGDEBUG,"Streaming media detected... using %s to find a thumb", g_application.m_strPlayListFile.c_str());
+    CFileItem* pItemTemp = new CFileItem(g_application.m_strPlayListFile,false);
+    pItemTemp->SetThumb();
+    CStdString strThumb = pItemTemp->GetThumbnailImage();
+    if (CFile::Exists(strThumb))
+      item.SetThumbnailImage(strThumb);
+  }
+
   item.FillInDefaultIcon();
   m_currentMovieThumb = item.GetThumbnailImage();
 }
