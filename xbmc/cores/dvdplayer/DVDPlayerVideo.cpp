@@ -12,6 +12,9 @@
 #define EMULATE_INTTYPES
 #include "ffmpeg\avcodec.h"
 
+#define PACKETTIMEOUT_STILL 40
+#define PACKETTIMEOUT_NORMAL 200
+
 DWORD video_refresh_thread(void *arg);
 
 CDVDPlayerVideo::CDVDPlayerVideo(CDVDDemuxSPU* spu, CDVDClock* pClock) : CThread()
@@ -135,6 +138,8 @@ void CDVDPlayerVideo::Process()
 
   m_bRunningVideo = true;
 
+  int iPacketTimeout = PACKETTIMEOUT_NORMAL;
+
   hVideoRefreshThread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)video_refresh_thread, this, 0, NULL);
   SetThreadPriority(hVideoRefreshThread, THREAD_PRIORITY_TIME_CRITICAL);
 
@@ -142,7 +147,31 @@ void CDVDPlayerVideo::Process()
   {
     while (m_iSpeed == 0 && !m_packetQueue.RecievedAbortRequest()) Sleep(5);
 
-    if (m_packetQueue.Get(&pPacket, 1, (void**)&dvdstate) < 0) break;
+
+    int ret = m_packetQueue.Get(&pPacket, iPacketTimeout, (void**)&dvdstate);
+    if( ret < 0 ) break;
+    else if( ret == 0 )
+    {
+      //Waiting timed out, output last picture
+      if( picture.iFlags & DVP_FLAG_ALLOCATED )
+        OutputPicture(&picture, 0);
+
+      //Okey, start rendering at 25fps now instead, we are likely in a stillframe
+      if( iPacketTimeout != PACKETTIMEOUT_STILL )
+      {
+        CLog::Log(LOGINFO, "CDVDPlayerVideo - Stillframe detected, switching to forced %d fps", (1000/PACKETTIMEOUT_STILL) );
+        iPacketTimeout = PACKETTIMEOUT_STILL; 
+      }
+      continue;
+    }
+
+    if( iPacketTimeout != PACKETTIMEOUT_NORMAL )
+    {
+      CLog::Log(LOGINFO, "CDVDPlayerVideo - Stillframe left, switching to normal playback");
+      iPacketTimeout = PACKETTIMEOUT_NORMAL;
+    }
+
+    EnterCriticalSection(&m_critCodecSection);
 
     if (dvdstate & DVDPACKET_MESSAGE_RESYNC)
     {
@@ -158,9 +187,7 @@ void CDVDPlayerVideo::Process()
       m_iNrOfPicturesNotToSkip = 5;
     }
 
-    EnterCriticalSection(&m_critCodecSection);
     int iDecoderState = m_pVideoCodec->Decode(pPacket->pData, pPacket->iSize);
-
 
     // loop while no error
     while (!(iDecoderState & VC_ERROR))

@@ -177,7 +177,7 @@ int CDVDPlayerAudio::DecodeFrame(BYTE** pAudioBuffer)
     // read next packet and return -1 on error
     int dvdstate=0, packstate=0;
     LeaveCriticalSection(&m_critCodecSection); //Leave here as this might stall a while
-    packstate = m_packetQueue.Get(&pPacket, 1, (void**)&dvdstate);
+    packstate = m_packetQueue.Get(&pPacket, INFINITE, (void**)&dvdstate);
     EnterCriticalSection(&m_critCodecSection);
     if (packstate < 0) return -1;
 
