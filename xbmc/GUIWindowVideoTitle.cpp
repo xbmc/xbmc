@@ -24,6 +24,7 @@
 #define CONTROL_IMDB        9
 #define CONTROL_LIST       50
 #define CONTROL_THUMBS      51
+#define CONTROL_BIGLIST   52
 #define CONTROL_LABELFILES        12
 #define LABEL_TITLE              100
 
@@ -188,6 +189,23 @@ bool CGUIWindowVideoTitle::OnMessage(CGUIMessage& message)
         g_settings.Save();
         UpdateButtons();
         OnSort();
+      }
+      else if (iControl == CONTROL_BTNVIEWASICONS)
+      {
+        if (m_Directory.IsVirtualDirectoryRoot())
+        {
+          m_iViewAsIconsRoot++;
+          if (m_iViewAsIconsRoot > VIEW_AS_LARGE_LIST) m_iViewAsIconsRoot = VIEW_AS_LIST;
+        }
+        else
+        {
+          m_iViewAsIcons++;
+          if (m_iViewAsIcons > VIEW_AS_LARGE_LIST) m_iViewAsIcons = VIEW_AS_LIST;
+        }
+
+        SaveViewMode();
+        UpdateButtons();
+        return true;
       }
       else
         return CGUIWindowVideoBase::OnMessage(message);
