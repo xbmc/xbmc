@@ -273,6 +273,16 @@ int CDVDInputStreamNavigator::ProcessBlock(BYTE* dest_buffer, int* read)
       {
         // We have received a regular block of the currently playing MPEG stream.
         // buf contains the data and len its length (obviously!) (which is always 2048 bytes btw)
+
+
+        //Calculate current time
+        if (m_dvdnav)
+        {
+          unsigned int pos, len;
+          dvdnav_get_position(m_dvdnav, &pos, &len);
+          m_iTime = (int)(((__int64)m_iTotalTime * pos) / len);
+        }
+
         fast_memcpy(dest_buffer, buf, len);
         *read = len;
         iNavresult = DVDNAV_BLOCK_OK;
@@ -370,6 +380,16 @@ int CDVDInputStreamNavigator::ProcessBlock(BYTE* dest_buffer, int* read)
         dvdnav_get_position(m_dvdnav, &pos, &len);
         CLog::DebugLog("Cell change: Title %d, Chapter %d\n", tt, ptt);
         CLog::DebugLog("At position %.0f%% inside the feature\n", 100 * (double)pos / (double)len);
+
+        //Get total segment time
+        vm_t* vm = dvdnav_get_vm(m_dvdnav);        
+        if (vm)
+        {
+          m_iTotalTime = vm->state.pgc->playback_time.hour * 3600;
+          m_iTotalTime += vm->state.pgc->playback_time.minute * 60;
+          m_iTotalTime += vm->state.pgc->playback_time.second;
+          m_iTotalTime *= 1000;
+        }
 
         m_pDVDPlayer->OnDVDNavResult(buf, DVDNAV_CELL_CHANGE);
       }
@@ -753,33 +773,14 @@ bool CDVDInputStreamNavigator::GetCurrentButtonInfo(CDVDOverlayPicture* pOverlay
 
 int CDVDInputStreamNavigator::GetTotalTime()
 {
-  int iTotalTime = 0;
-  
-  if (m_dvdnav)
-  {
-    vm_t* vm = dvdnav_get_vm(m_dvdnav);
-    
-    if (vm)
-    {
-      iTotalTime = vm->state.pgc->playback_time.hour * 3600;
-      iTotalTime += vm->state.pgc->playback_time.minute * 60;
-      iTotalTime += vm->state.pgc->playback_time.second;
-      iTotalTime *= 1000;
-    }
-  }
-  return iTotalTime;
+  //We use buffers of this as they can get called from multiple threads, and could block if we are currently reading data
+  return m_iTotalTime;
 }
 
 int CDVDInputStreamNavigator::GetTime()
 {
-  int iTime = 0;
-  if (m_dvdnav)
-  {
-    unsigned int pos, len;
-    dvdnav_get_position(m_dvdnav, &pos, &len);
-    iTime = (int)(((__int64)GetTotalTime() * pos) / len);
-  }
-  return iTime;
+  //We use buffers of this as they can get called from multiple threads, and could block if we are currently reading data
+  return m_iTime;
 }
 
 bool CDVDInputStreamNavigator::Seek(int iTimeInMsec)
