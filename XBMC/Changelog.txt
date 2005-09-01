@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 01-09-2005 fixed: thumbnails for .strm files
+ - 01-09-2005 added: big list view to my video title view
  - 31-08-2005 changed: new version of dumb module codec. now also enabled for .xm's.
  - 30-08-2005 changed: Shoutcast Top500 back to compressed form.
  - 29-08-2005 fixed: year failed to be read from id3v1 tags.
