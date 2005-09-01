@@ -157,6 +157,46 @@
       <ondown>51</ondown>
     </control>
 
+    <control>
+      <description>big listcontrol</description>
+      <type>listcontrol</type>
+      <id>52</id>
+      <posY>121</posY>
+      <height>430</height>
+      <spinWidth>16</spinWidth>
+      <spinHeight>16</spinHeight>
+      <spinColor>ddffffff</spinColor>
+      <spinPosX>630</spinPosX>
+      <spinPosY>527</spinPosY>
+      <textureUp>scroll-up.png</textureUp>
+      <textureDown>scroll-down.png</textureDown>
+      <textureUpFocus>scroll-up-focus.gif</textureUpFocus>
+      <textureDownFocus>scroll-down-focus.gif</textureDownFocus>
+      <textureFocus>blue-rectangle.png</textureFocus>
+      <textureNoFocus>blue-rectangleNF.png</textureNoFocus>
+      <font>font14</font>
+      <font2>font13</font2>
+      <selectedColor>FFFFffff</selectedColor>
+      <textcolor>0xd0ffffff</textcolor>
+      <selectedColor2>0xFFFFffff</selectedColor2>
+      <textcolor2>0xd0ffffff</textcolor2>
+      <colordiffuse>ffffffff</colordiffuse>
+      <suffix>|</suffix>
+      <textXOff>10</textXOff>
+      <textYOff>10</textYOff>
+      <textXOff2>445</textXOff2>
+      <textYOff2>94</textYOff2>
+      <alignY>top</alignY>
+      <itemWidth>100</itemWidth>
+      <itemHeight>110</itemHeight>
+      <spaceBetweenItems>10</spaceBetweenItems>
+      <textureHeight>120</textureHeight>
+      <onleft>2</onleft>
+      <onright>52</onright>
+      <onup>2</onup>
+      <ondown>2</ondown>
+    </control>
+
   </controls>
 
 </window>

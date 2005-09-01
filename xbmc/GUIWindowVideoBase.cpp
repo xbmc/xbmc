@@ -31,6 +31,7 @@
 #define CONTROL_IMDB              9
 #define CONTROL_LIST       50
 #define CONTROL_THUMBS      51
+#define CONTROL_BIGLIST   52
 #define CONTROL_LABELFILES         12
 
 struct SSortVideoListByName
@@ -366,6 +367,7 @@ void CGUIWindowVideoBase::OnWindowLoaded()
   m_viewControl.AddView(VIEW_AS_LIST, GetControl(CONTROL_LIST));
   m_viewControl.AddView(VIEW_AS_ICONS, GetControl(CONTROL_THUMBS));
   m_viewControl.AddView(VIEW_AS_LARGE_ICONS, GetControl(CONTROL_THUMBS));
+  m_viewControl.AddView(VIEW_AS_LARGE_LIST, GetControl(CONTROL_BIGLIST));
   m_viewControl.SetViewControlID(CONTROL_BTNVIEWASICONS);
 }
 
