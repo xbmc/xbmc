@@ -273,16 +273,6 @@ int CDVDInputStreamNavigator::ProcessBlock(BYTE* dest_buffer, int* read)
       {
         // We have received a regular block of the currently playing MPEG stream.
         // buf contains the data and len its length (obviously!) (which is always 2048 bytes btw)
-
-
-        //Calculate current time
-        if (m_dvdnav)
-        {
-          unsigned int pos, len;
-          dvdnav_get_position(m_dvdnav, &pos, &len);
-          m_iTime = (int)(((__int64)m_iTotalTime * pos) / len);
-        }
-
         fast_memcpy(dest_buffer, buf, len);
         *read = len;
         iNavresult = DVDNAV_BLOCK_OK;
@@ -407,6 +397,12 @@ int CDVDInputStreamNavigator::ProcessBlock(BYTE* dest_buffer, int* read)
         // functions will already be ahead in the stream which can cause state inconsistencies.
         // Applications with fifos should therefore pass the NAV packet through the fifo
         // and decoding pipeline just like any other data.
+
+        // Calculate current time
+        unsigned int pos, len;
+        dvdnav_get_position(m_dvdnav, &pos, &len);
+        m_iTime = (int)(((__int64)m_iTotalTime * pos) / len);
+
         if (m_bCheckButtons)
         {
           CheckButtons();
