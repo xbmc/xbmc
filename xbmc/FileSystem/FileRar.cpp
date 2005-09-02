@@ -580,15 +580,21 @@ bool CFileRar::OpenInArchive()
     m_pExtract->GetDataIO().TotalArcSize+=FD.Size;
   m_pExtract->ExtractArchiveInit(m_pCmd,*m_pArc);
   bool bRes = false;
+  bool Repeat=false;
+
   while(1)
   {
    m_iSize=m_pArc->ReadHeader();
     if (stricmp(m_pArc->NewLhd.FileName,m_strPathInRar.c_str()) == 0)
     {
+      while (m_pArc->GetHeaderType() != FILE_HEAD) 
+      {
+        m_pExtract->ExtractCurrentFile(m_pCmd,*m_pArc,m_iSize,Repeat);
+        m_iSize = m_pArc->ReadHeader();
+      }
       bRes = true;
       break;
     }
-    bool Repeat=false;
     if (!m_pExtract->ExtractCurrentFile(m_pCmd,*m_pArc,m_iSize,Repeat)) // this does NO extraction, only skips and handles solid volumes
     {
       bRes = FALSE;
