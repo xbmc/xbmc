@@ -1,6 +1,5 @@
 #include "../stdafx.h"
 #include "ZipDirectory.h"
-#include "../application.h"
 #include "../utils/log.h"
 #include "../util.h"
 #include "zlib.h"

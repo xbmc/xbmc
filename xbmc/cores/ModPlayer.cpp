@@ -2,8 +2,6 @@
 #include "../stdafx.h"
 #include "modplayer.h"
 #include "../util.h"
-#include "../application.h"
-
 
 #pragma comment(linker,"/merge:MOD_RD=MOD_RX")
 #pragma comment(linker,"/section:MOD_RX,REN")

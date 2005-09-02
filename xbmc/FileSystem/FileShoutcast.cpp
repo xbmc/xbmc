@@ -13,7 +13,6 @@
 #include "../lib/libshout/rip_manager.h"
 #include "../lib/libshout/util.h"
 #include "../lib/libshout/filelib.h"
-#include "../application.h"
 #include "ringbuffer.h"
 #include "ShoutcastRipFile.h"
 #include "../MusicInfoTagLoaderMP3.h"
