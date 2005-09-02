@@ -1095,6 +1095,9 @@ int CXbmcHttp::xbmcGetGUIStatus()
         output += "\n<li>Type:Button";
         if (strTmp!="")
           output += "\n<li>Description:" + strTmp;
+        strTmp = ((CGUIButtonControl *)pControl)->GetExecuteAction();
+        if (strTmp!="")
+          output += "\n<li>ExecutionSub:" + strTmp;
         long lHyperLinkWindowID = ((CGUIButtonControl *)pControl)->GetHyperLink();
         if (lHyperLinkWindowID != WINDOW_INVALID)
         {
@@ -1104,7 +1107,12 @@ int CXbmcHttp::xbmcGetGUIStatus()
             int iHyperControl=pHyperWindow->GetFocusedControl();
             CGUIControl* pHyperControl=(CGUIControl* )pHyperWindow->GetControl(iHyperControl);
             if (pHyperControl)
+            {
               output += "\n<li>DescriptionSub:" + (CStdString) ((CGUIButtonControl *)pHyperControl)->GetLabel();
+              strTmp.Format("%d", ((CGUIButtonControl *)pHyperControl)->GetID());
+              output += "\n<li>ControlIdSub:" + strTmp;
+              output += "\n<li>ExecutionSub:" + ((CGUIButtonControl *)pHyperControl)->GetExecuteAction();
+            }
           }
         }
       }
