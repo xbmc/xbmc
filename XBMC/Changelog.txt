@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 03-09-2005 fixed: filerar would fail to open first file in an archive if the archive had a comment.
  - 02-09-2005 fixed: filerar would fail if seek was called immediately after construction (broke e.g. mp3s with id3v2-tags).
  - 02-09-2005 added: httpapi exposed more values to GetGuiStatus
  - 02-09-2005 fixed: Build.bat now works again *blush*, works better if it actually builds...
