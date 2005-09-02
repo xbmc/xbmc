@@ -1,7 +1,6 @@
 
 #include "../stdafx.h"
 #include "RarDirectory.h"
-#include "../application.h"
 #include "../utils/log.h"
 
 
