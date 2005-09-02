@@ -22,7 +22,7 @@
 #include "FileDAAP.h"
 #include "../util.h"
 #include <sys/stat.h>
-
+#include "../application.h"
 
 static UINT64 strtouint64(const char *s)
 {
