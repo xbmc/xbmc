@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "GUIWindowScreensaver.h"
-#include "application.h"
 #include "util.h"
 #include "screensavers/ScreenSaverFactory.h"
 

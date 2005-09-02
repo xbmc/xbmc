@@ -2,8 +2,6 @@
 #include "stdafx.h"
 #include "AutoSwitch.h"
 #include "util.h"
-#include "application.h"
-
 
 #define VIEW_AS_LIST     0
 #define VIEW_AS_ICONS     1

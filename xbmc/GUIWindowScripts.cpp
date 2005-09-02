@@ -2,7 +2,7 @@
 #include "stdafx.h"
 #include "guiwindowscripts.h"
 #include "util.h"
-#include "application.h"
+#include "detectdvdtype.h"
 #include "lib/libPython/XBPython.h"
 #include "GUIWindowScriptsInfo.h"
 
@@ -453,8 +453,8 @@ bool CGUIWindowScripts::HaveDiscOrConnection( CStdString& strPath, int iDriveTyp
 {
   if ( iDriveType == SHARE_TYPE_DVD )
   {
-    CDetectDVDMedia::WaitMediaReady();
-    if ( !CDetectDVDMedia::IsDiscInDrive() )
+    MEDIA_DETECT::CDetectDVDMedia::WaitMediaReady();
+    if ( !MEDIA_DETECT::CDetectDVDMedia::IsDiscInDrive() )
     {
       CGUIDialogOK::ShowAndGetInput(218, 219, 0, 0);
       return false;

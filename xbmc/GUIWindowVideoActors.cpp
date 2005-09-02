@@ -7,10 +7,8 @@
 #include "GUIWindowVideoActors.h"
 #include "Util.h"
 #include "GUIWindowVideoInfo.h"
-#include "application.h"
 #include "nfofile.h"
 #include "GUIPassword.h"
-
 
 #define CONTROL_BTNVIEWASICONS   2
 #define CONTROL_BTNSORTBY      3
