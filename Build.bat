@@ -32,9 +32,9 @@ rem	CONFIG START
 rem	CONFIG END
 rem ---------------------------------------------
 ECHO Compiling Solution...
-rem %NET% %CLEAN%
-rem del release\xbmc.map
-rem %NET% %OPTS%
+%NET% %CLEAN%
+del release\xbmc.map
+%NET% %OPTS%
 IF NOT EXIST release\default.xbe (
 	set DIETEXT=Default.xbe failed to build!  See .\Release\BuildLog.htm for details.
 	goto DIE
