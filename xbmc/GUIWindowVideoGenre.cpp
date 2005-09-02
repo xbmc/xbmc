@@ -8,7 +8,6 @@
 #include "Util.h"
 #include "Utils/imdb.h"
 #include "GUIWindowVideoInfo.h"
-#include "Application.h"
 #include "NFOFile.h"
 #include "PlayListPlayer.h"
 #include "GUIThumbnailPanel.h"

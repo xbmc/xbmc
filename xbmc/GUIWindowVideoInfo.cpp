@@ -4,7 +4,6 @@
 #include "GUIWindowVideoInfo.h"
 #include "util.h"
 #include "picture.h"
-#include "application.h"
 #include "VideoDatabase.h"
 #include "GUIImage.h"
 #include "StringUtils.h"
