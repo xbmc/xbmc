@@ -156,6 +156,7 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
       CLog::DebugLog("error reading from input stream, %s", strFile);
       return false;
     }
+    
     // and reset to the beginning
     m_pInput->Seek(0, SEEK_SET);
 

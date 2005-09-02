@@ -39,7 +39,8 @@ CDVDAudioCodec* CDVDFactoryCodec::CreateAudioCodec(CodecID codecID)
       pAudioCodec = new CDVDAudioCodecLiba52();
       break;
     }
-    //case CODEC_ID_AAC:
+  //case CODEC_ID_AAC:
+  //case CODEC_ID_MPEG4AAC:
   case CODEC_ID_MP2:
   case CODEC_ID_PCM_S16BE:
   case CODEC_ID_PCM_S16LE:

@@ -186,29 +186,32 @@ int CDVDPlayerAudio::DecodeFrame(BYTE** pAudioBuffer)
     audio_pkt_size = pPacket->iSize;
 
     // if update the audio clock with the pts
-    if ((dvdstate & DVDPACKET_MESSAGE_RESYNC) || first_pkt_pts > pPacket->pts)
+    if (pPacket->pts != DVD_NOPTS_VALUE)
     {
-      //Okey first packet in this continous stream, make sure we use the time here
-      m_audioClock = pPacket->pts;      
-    }
-    else if (pPacket->pts != DVD_NOPTS_VALUE)
-    {
-      if (first_pkt_size == 0) 
+      if ((dvdstate & DVDPACKET_MESSAGE_RESYNC) || first_pkt_pts > pPacket->pts)
       {
-        m_audioClock = pPacket->pts;
-        continue;
+        //Okey first packet in this continous stream, make sure we use the time here
+        m_audioClock = pPacket->pts;      
       }
+      else
+      {
+        if (first_pkt_size == 0) 
+        {
+          m_audioClock = pPacket->pts;
+          continue;
+        }
 
-      if((unsigned __int64)m_audioClock < first_pkt_pts || (unsigned __int64)m_audioClock > pPacket->pts)
-      {
-        //crap, moved outsided correct pts
-        //Use pts from current packet, untill we find a better value for it.
-        //Should be ok after a couple of frames, as soon as it starts clean on a packet
-        m_audioClock = pPacket->pts;
-      }
-      else if(first_pkt_size == first_pkt_used)
-      { //Nice starting up freshly on the start of a packet, use pts from it
-        m_audioClock = pPacket->pts;
+        if((unsigned __int64)m_audioClock < first_pkt_pts || (unsigned __int64)m_audioClock > pPacket->pts)
+        {
+          //crap, moved outsided correct pts
+          //Use pts from current packet, untill we find a better value for it.
+          //Should be ok after a couple of frames, as soon as it starts clean on a packet
+          m_audioClock = pPacket->pts;
+        }
+        else if(first_pkt_size == first_pkt_used)
+        { //Nice starting up freshly on the start of a packet, use pts from it
+          m_audioClock = pPacket->pts;
+        }
       }
     }
   }
