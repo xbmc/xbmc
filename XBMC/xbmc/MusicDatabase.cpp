@@ -2,7 +2,6 @@
 #include "musicdatabase.h"
 #include "filesystem/cddb.h"
 #include "filesystem/directorycache.h"
-#include "application.h"
 #include "GUIDialogMusicScan.h"
 
 #define MUSIC_DATABASE_VERSION 1.2f

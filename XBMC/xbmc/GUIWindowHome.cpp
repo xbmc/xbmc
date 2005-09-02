@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "GUIWindowHome.h"
 #include "Util.h"
-#include "application.h"
 #include "Credits.h"
 #include "GUIButtonScroller.h"
 #include "GUIConditionalButtonControl.h"

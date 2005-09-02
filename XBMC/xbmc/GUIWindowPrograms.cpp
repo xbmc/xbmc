@@ -4,7 +4,6 @@
 #include "Xbox\IoSupport.h"
 #include "Xbox\Undocumented.h"
 #include "Shortcut.h"
-#include "application.h"
 #include "filesystem/HDDirectory.h"
 #include "filesystem/directorycache.h"
 #include "GUIThumbnailPanel.h"
