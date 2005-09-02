@@ -1,0 +1,170 @@
+
+#include "../../../stdafx.h"
+#include "..\DVDPlayerDLL.h"
+
+#include "..\ffmpeg\ffmpeg.h"
+#include "..\DVDInputStreams\DVDInputStreamHttp.h"
+#include "DVDDemuxShoutcast.h"
+#include "DVDdemuxUtils.h"
+#include "..\DVDClock.h" // for DVD_TIME_BASE
+#include "..\..\..\utils\HttpHeader.h"
+
+#define ICY_NOTICE1      "icy-notice1" // string
+#define ICY_NOTICE2      "icy-notice2" // string
+#define ICY_NAME         "icy-name"    // string
+#define ICY_GENRE        "icy-genre"   // string
+#define ICY_URL          "icy-url"     // string
+#define ICY_PUBLIC       "icy-pub"     // int (1 / 0)
+#define ICY_BITRATE      "icy-br"      // int (bitrate = val * 1000 ?)
+#define ICY_METAINTERVAL "icy-metaint" // int
+
+#define CONTENT_TYPE_MP3  "audio/mpeg"
+#define CONTENT_TYPE_AAC  "audio/aac"
+
+// class CDemuxStreamVideoFFmpeg
+void CDemuxStreamAudioShoutcast::GetStreamInfo(std::string& strInfo)
+{
+  strInfo = "Shoutcast";
+}
+
+CDVDDemuxShoutcast::CDVDDemuxShoutcast() : CDVDDemux()
+{
+  m_pInput = NULL;
+  m_pDemuxStream = NULL;
+}
+
+CDVDDemuxShoutcast::~CDVDDemuxShoutcast()
+{
+  Dispose();
+}
+
+bool CDVDDemuxShoutcast::Open(CDVDInputStream* pInput)
+{
+  Dispose();
+  
+  m_pInput = pInput;
+  
+  // the input stream should be a http stream
+  if (pInput->m_streamType != DVDSTREAM_TYPE_HTTP) return false;
+  CDVDInputStreamHttp* pInputStreamHttp = (CDVDInputStreamHttp*)pInput;
+  
+  CHttpHeader* pHeader = pInputStreamHttp->GetHttpHeader();
+  
+  std::string strMetaInt = pHeader->GetValue(ICY_METAINTERVAL);
+  std::string strContentType = pHeader->GetContentType();
+  
+  // create new demuxer stream
+  m_pDemuxStream = new CDemuxStreamAudioShoutcast();
+  m_pDemuxStream->iId = 0;
+  m_pDemuxStream->iPhysicalId = 0;
+  m_pDemuxStream->iDuration = 0;
+  m_pDemuxStream->iChannels = 2;
+  m_pDemuxStream->iSampleRate = 0;
+  
+  // set meta interval
+  m_iMetaStreamInterval = atoi(strMetaInt.c_str());
+  
+  if (stricmp(strContentType.c_str(), CONTENT_TYPE_AAC) == 0)
+  {
+    // need an aac decoder first
+    m_pDemuxStream->codec = CODEC_ID_AAC;
+    //m_pDemuxStream->codec = CODEC_ID_NONE;
+  }
+  else // (stricmp(strContentType, CONTENT_TYPE_MP3) == 0)
+  {
+    // default to mp3
+    m_pDemuxStream->codec = CODEC_ID_MP3;
+  }
+
+  return true;
+}
+
+void CDVDDemuxShoutcast::Dispose()
+{
+  if (m_pDemuxStream) delete m_pDemuxStream;
+  m_pDemuxStream = NULL;
+  
+  m_pInput = NULL;
+}
+
+void CDVDDemuxShoutcast::Reset()
+{
+  CDVDInputStream* pInputStream = m_pInput;
+  Dispose();
+  Open(pInputStream);
+}
+
+void CDVDDemuxShoutcast::Flush()
+{
+}
+
+CDVDDemux::DemuxPacket* CDVDDemuxShoutcast::Read()
+{
+  int iRead = 0;
+  
+  int iDataToRead = SHOUTCAST_BUFFER_SIZE;
+  if (m_iMetaStreamInterval > 0) iDataToRead = m_iMetaStreamInterval;
+  
+  CDVDDemux::DemuxPacket* pPacket;
+  pPacket = CDVDDemuxUtils::AllocateDemuxPacket(iDataToRead);
+  if (pPacket)
+  {
+    pPacket->dts = DVD_NOPTS_VALUE;
+    pPacket->pts = DVD_NOPTS_VALUE;
+    pPacket->iStreamId = 0;
+    
+    // read the data
+    int iRead = m_pInput->Read(pPacket->pData, iDataToRead);
+    
+    pPacket->iSize = iRead;
+    
+    if (iRead <= 0)
+    {
+      CDVDDemuxUtils::FreeDemuxPacket(pPacket);
+      pPacket = NULL;
+    }
+  }
+  
+  if (m_iMetaStreamInterval > 0)
+  {
+    // we already have read m_iMetaStreamInterval bytes of streaming data
+    // metadata follows
+    BYTE l;
+    iRead = m_pInput->Read(&l, 1);
+    if (iRead > 0)
+    {
+      int iMetaLength = l * 16;
+      
+      if (iMetaLength > 0)
+      {
+        // iMetaLength cannot be larger then 16 * 255
+        BYTE buffer[16 * 255];
+        
+        // skip meta data for now
+        m_pInput->Read(buffer, iMetaLength);
+      }
+    }
+  }
+
+  return pPacket;
+}
+
+bool CDVDDemuxShoutcast::Seek(int iTime)
+{
+  return false;
+}
+
+int CDVDDemuxShoutcast::GetStreamLenght()
+{
+  return 0;
+}
+
+CDemuxStream* CDVDDemuxShoutcast::GetStream(int iStreamId)
+{
+  return m_pDemuxStream;
+}
+
+int CDVDDemuxShoutcast::GetNrOfStreams()
+{
+  return 1;
+}

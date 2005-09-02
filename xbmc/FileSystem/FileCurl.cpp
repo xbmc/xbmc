@@ -37,7 +37,34 @@ extern "C" size_t write_callback(char *buffer,
   return file->WriteCallback(buffer, size, nitems);
 }
 
+extern "C" size_t header_callback(void *ptr, size_t size, size_t nmemb, void *stream)
+{
+  CFileCurl *file = (CFileCurl *)stream;
+  return file->HeaderCallback(ptr, size, nmemb);
+}
+
 extern "C" int __stdcall dllselect(int ntfs, fd_set *readfds, fd_set *writefds, fd_set *errorfds, const timeval *timeout);
+
+size_t CFileCurl::HeaderCallback(void *ptr, size_t size, size_t nmemb)
+{
+  // libcurl doc says that this info is not always \0 terminated
+  char* strData = (char*)ptr;
+  int iSize = size * nmemb;
+  
+  if (strData[iSize] != 0)
+  {
+    strData = (char*)malloc(iSize + 1);
+    strncpy(strData, (char*)ptr, iSize);
+    strData[iSize] = 0;
+  }
+  else strData = strdup((char*)ptr);
+  
+  if (m_pHeaderCallback) m_pHeaderCallback->ParseHeaderData(strData);
+  
+  free(strData);
+  
+  return iSize;
+}
 
 size_t CFileCurl::WriteCallback(char *buffer, size_t size, size_t nitems)
 {
@@ -97,9 +124,13 @@ CFileCurl::CFileCurl()
 	m_fileSize = 0;
   m_easyHandle = NULL;
   m_multiHandle = NULL;
+  m_curlAliasList = NULL;
+  m_curlHeaderList = NULL;
   m_opened = false;
+  m_useOldHttpVersion = false;
   m_overflowBuffer = NULL;
   m_overflowSize = 0;
+  m_pHeaderCallback = NULL;
 }
 
 void CFileCurl::Close()
@@ -118,11 +149,17 @@ void CFileCurl::Close()
     g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_TIMEOUT, 1);
 
   m_url.Empty();
+  
   /* cleanup */
   g_curlInterface.easy_cleanup(m_easyHandle);
+  g_curlInterface.slist_free_all(m_curlAliasList);
+  g_curlInterface.slist_free_all(m_curlHeaderList);
+  
   m_multiHandle = NULL;
   m_easyHandle = NULL;
-
+  m_curlAliasList = NULL;
+  m_curlHeaderList = NULL;
+  
   m_buffer.Destroy();
   if (m_overflowBuffer)
     free(m_overflowBuffer);
@@ -143,12 +180,44 @@ bool CFileCurl::Open(const CURL& url, bool bBinary)
   url.GetURL(m_url);
   CLog::Log(LOGDEBUG, "FileCurl::Open(%p) %s", this, m_url.c_str());
   g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_URL, m_url.c_str());
-  g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_WRITEDATA, this);
-  g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_VERBOSE, TRUE);
-  g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_FTP_USE_EPSV, 0); // turn off epsv
-  g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_WRITEFUNCTION, write_callback);
+  
   g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_DEBUGFUNCTION, debug_callback);
+  g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_VERBOSE, TRUE);
+  
+  g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_WRITEDATA, this);
+  g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_WRITEFUNCTION, write_callback);
+  
+  // make sure headers are seperated from the data stream
+  g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_WRITEHEADER, this);
+  g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_HEADERFUNCTION, header_callback);
+  g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_HEADER, FALSE);
+  
+  g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_FTP_USE_EPSV, 0); // turn off epsv
+  g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_FOLLOWLOCATION, TRUE);
+  if (!bBinary) g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_TRANSFERTEXT, TRUE);
 
+  // When using multiple threads you should set the CURLOPT_NOSIGNAL option to
+  // TRUE for all handles. Everything will work fine except that timeouts are not
+  // honored during the DNS lookup - which you can work around by building libcurl
+  // with c-ares support. c-ares is a library that provides asynchronous name
+  // resolves. Unfortunately, c-ares does not yet support IPv6.
+  g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_NOSIGNAL, TRUE);
+
+  // enable support for icecast / shoutcast streams
+  m_curlAliasList = g_curlInterface.slist_append(m_curlAliasList, "ICY 200 OK"); 
+  g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_HTTP200ALIASES, m_curlAliasList); 
+
+  // add user defined headers
+  if (m_curlHeaderList)
+    g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_HTTPHEADER, m_curlHeaderList); 
+  
+  if (m_userAgent.length() > 0)
+    g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_USERAGENT, m_userAgent.c_str());
+  
+  if (m_useOldHttpVersion)
+    g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_0);
+
+  
   m_multiHandle = g_curlInterface.multi_init();
 
   g_curlInterface.multi_add_handle(m_multiHandle, m_easyHandle);
@@ -163,13 +232,15 @@ bool CFileCurl::Open(const CURL& url, bool bBinary)
 
   if (m_buffer.GetMaxReadSize() == 0 && !m_stillRunning)
   {
-    /* if still_running is 0 now, we should return NULL */
+    // if still_running is 0 now, we should return NULL
     Close();
     return false;
   }
+  
   double length;
   if (CURLE_OK == g_curlInterface.easy_getinfo(m_easyHandle, CURLINFO_CONTENT_LENGTH_DOWNLOAD, &length))
     m_fileSize = (__int64)length;
+  
   m_opened = true;
   return true;
 }
@@ -291,7 +362,7 @@ int CFileCurl::FillBuffer(unsigned int want, int waittime)
 {
   // only attempt to fill buffer if transactions still running and buffer
   // doesnt exceed required size already
-  while (m_stillRunning && m_buffer.GetMaxReadSize() < want + BUFFER_SIZE)
+  while (m_stillRunning && m_buffer.GetMaxReadSize() < want + BUFFER_SIZE && m_buffer.GetMaxWriteSize() > 0)
   {
     // fill buffer
     while(g_curlInterface.multi_perform(m_multiHandle, &m_stillRunning) == CURLM_CALL_MULTI_PERFORM)
@@ -300,4 +371,10 @@ int CFileCurl::FillBuffer(unsigned int want, int waittime)
     }
   }
   return 1;
+}
+
+void CFileCurl::AddHeaderParam(const char* sParam)
+{
+  // libcurl is already initialized in the constructor
+  m_curlHeaderList = g_curlInterface.slist_append(m_curlHeaderList, sParam); 
 }

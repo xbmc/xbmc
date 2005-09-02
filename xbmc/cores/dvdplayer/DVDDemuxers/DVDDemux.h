@@ -51,6 +51,9 @@ public:
   {
     iFpsScale = 0;
     iFpsRate = 0;
+    iHeight = 0;
+    iWidth = 0;
+    type = STREAM_VIDEO;
   }
 
   int iFpsScale; // scale of 1000 and a rate of 29970 will result in 29.97 fps
@@ -66,6 +69,7 @@ public:
   {
     iChannels = 0;
     iSampleRate = 0;
+    type = STREAM_AUDIO;
   }
 
   void GetStreamType(std::string& strInfo);
