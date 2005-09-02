@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 05-09-2005 added: httpapi exposed more values to GetGuiStatus
  - 02-09-2005 fixed: Build.bat now works again *blush*, works better if it actually builds...
  - 01-09-2005 fixed: music .pls and .strm files inheriting folder.jpg
  - 01-09-2005 fixed: [ 1276498 ] Build.bat didn't work for all Windows languages. Thx to Pade2
