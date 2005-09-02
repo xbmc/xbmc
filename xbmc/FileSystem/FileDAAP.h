@@ -18,8 +18,6 @@ extern "C"
  #include "../lib/libXDAAP/private.h"
 }
 
-#include "../application.h"
-
 namespace XFILE
 {
 class CFileDAAP : public IFile
