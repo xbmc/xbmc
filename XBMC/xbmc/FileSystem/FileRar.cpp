@@ -354,7 +354,7 @@ __int64 CFileRar::Seek(__int64 iFilePosition, int iWhence)
   if (iFilePosition == m_iFilePosition) // happens a lot
     return m_iFilePosition; 
   
-  if ((iFilePosition >= m_iBufferStart) && (iFilePosition < m_iBufferStart+MAXWINMEMSIZE)) // we are within current buffer
+  if ((iFilePosition >= m_iBufferStart) && (iFilePosition < m_iBufferStart+MAXWINMEMSIZE) && (m_iDataInBuffer > 0)) // we are within current buffer
   {
     m_iDataInBuffer = MAXWINMEMSIZE-(iFilePosition-m_iBufferStart);
     m_szStartOfBuffer = m_szBuffer+MAXWINMEMSIZE-m_iDataInBuffer;
