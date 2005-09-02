@@ -2,7 +2,8 @@
 #pragma once
 
 #define DVDSTREAM_TYPE_FILE 1
-#define DVDSTREAM_TYPE_DVD 2
+#define DVDSTREAM_TYPE_DVD  2
+#define DVDSTREAM_TYPE_HTTP 3
 
 class CDVDInputStream
 {
@@ -13,7 +14,7 @@ public:
   virtual void Close() = 0;
   virtual int Read(BYTE* buf, int buf_size) = 0;
   virtual __int64 Seek(__int64 offset, int whence) = 0;
-
+  
   const char* GetFileName();
   bool HasExtension(char* sExtension);
 

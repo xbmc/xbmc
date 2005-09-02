@@ -139,6 +139,7 @@ void CDVDPlayer::Unload()
 bool CDVDPlayer::OpenFile(const CFileItem& file, __int64 iStartTime)
 {
   CStdString strFile = file.m_strPath;
+  
   CLog::Log(LOGNOTICE, "DVDPlayer: Opening: %s", strFile.c_str());
 
   // if playing a file close it first
@@ -212,7 +213,7 @@ void CDVDPlayer::Process()
     return;
   }
   if (m_pInputStream->m_streamType == DVDSTREAM_TYPE_DVD) CLog::Log(LOGNOTICE, "DVDPlayer: playing a dvd with menu's");
-
+  
   CLog::Log(LOGNOTICE, "Creating Demuxer");
   m_pDemuxer = CDVDFactoryDemuxer::CreateDemuxer(m_pInputStream);
   if (!m_pDemuxer || !m_pDemuxer->Open(m_pInputStream))
@@ -236,7 +237,7 @@ void CDVDPlayer::Process()
 
   // if we use libdvdnav, streaminfo is not avaiable, we will find this later on
   if (m_iCurrentStreamVideo < 0 && m_iCurrentStreamAudio < 0 &&
-      m_pInputStream->m_streamType != DVDSTREAM_TYPE_DVD &&
+      m_pInputStream->m_streamType == DVDSTREAM_TYPE_FILE &&
       !m_pInputStream->HasExtension("vob"))
   {
     CLog::Log(LOGERROR, "%s: could not open codecs\n", m_filename);
@@ -281,7 +282,7 @@ void CDVDPlayer::Process()
     }
     else if (!pPacket)
     {
-      CLog::Log(LOGERROR, "Error reading data form demuxer");
+      CLog::Log(LOGERROR, "Error reading data from demuxer");
       
       if (++iErrorCounter < 50) //Allow 50 errors in a row before giving up
         continue;
@@ -1307,3 +1308,14 @@ bool CDVDPlayer::HasMenu()
   else
     return false;
 }
+
+//IChapterProvider* CDVDPlayer::GetChapterProvider()
+//{
+//  if (m_pInputStream && m_pInputStream->m_streamType == DVDSTREAM_TYPE_DVD)
+//  {
+//    m_chapterReader.SetFile(m_filename);
+//    m_chapterReader.SetCurrentTitle(1);
+//    return (&m_chapterReader);
+//  }
+//  return NULL;
+//}

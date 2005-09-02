@@ -6,6 +6,7 @@
 CDVDInputStream::CDVDInputStream()
 {
   m_strFileName = NULL;
+  m_streamType = -1;
 }
 
 CDVDInputStream::~CDVDInputStream()
