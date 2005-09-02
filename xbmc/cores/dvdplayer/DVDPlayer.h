@@ -10,6 +10,7 @@
 #include "DVDPlayerAudio.h"
 #include "DVDPlayerVideo.h"
 #include "DVDPlayerMessenger.h"
+//#include "DVDChapterReader.h"
 
 class DllLoader;
 class CDVDTimerThread;
@@ -110,9 +111,10 @@ public:
   virtual void DoAudioWork()                                    { m_dvdPlayerAudio.DoWork(); }
   virtual bool OnAction(const CAction &action);
   virtual bool HasMenu();
+  virtual IChapterProvider* GetChapterProvider();
 
-  int OnDVDNavResult(void* pData, int iMessage);
-
+  virtual int OnDVDNavResult(void* pData, int iMessage);
+  
 private:
   void LockStreams()   { EnterCriticalSection(&m_critStreamSection); }
   void UnlockStreams() { LeaveCriticalSection(&m_critStreamSection); }
@@ -155,7 +157,8 @@ private:
   CDVDPlayerMessenger m_messenger;  // thread messenger
   CDVDClock m_clock;                // master clock
   CDVDDemuxSPU m_dvdspus;           // dvd subtitle demuxer
-
+  //CDVDChapterReader m_chapterReader;// dvd chapter provider
+  
   CDVDInputStream* m_pInputStream;  // input stream for current playing file
   CDVDDemux* m_pDemuxer;            // demuxer for current playing file
   DllLoader* m_pDLLavformat;        // avformat.dll handle

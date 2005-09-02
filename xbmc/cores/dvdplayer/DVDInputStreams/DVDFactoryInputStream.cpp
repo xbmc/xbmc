@@ -4,7 +4,7 @@
 #include "DVDInputStream.h"
 #include "DVDInputStreamFile.h"
 #include "DVDInputStreamNavigator.h"
-
+#include "DVDInputStreamHttp.h"
 
 CDVDInputStream* CDVDFactoryInputStream::CreateInputStream(IDVDPlayer* pPlayer, const char* strFile)
 {
@@ -14,6 +14,10 @@ CDVDInputStream* CDVDFactoryInputStream::CreateInputStream(IDVDPlayer* pPlayer, 
   {
     return (new CDVDInputStreamNavigator(pPlayer));
   }
-
+  else if (item.IsInternetStream())
+  {
+    return (new CDVDInputStreamHttp());
+  }
+  
   return (new CDVDInputStreamFile());
 }
