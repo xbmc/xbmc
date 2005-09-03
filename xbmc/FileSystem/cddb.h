@@ -1,4 +1,3 @@
-
 #pragma once
 #include "../util.h"
 #include <sstream>
@@ -9,27 +8,19 @@
 namespace CDDB
 {
 
-#define IN_PROGRESS           -1
- #define OK                0
- #define E_FAILED             1
- #define E_TOC_INCORRECT           2
- #define E_NETWORK_ERROR_OPEN_SOCKET     3
- #define E_NETWORK_ERROR_SEND       4
- #define E_WAIT_FOR_INPUT         5
- #define E_PARAMETER_WRONG         6
- #define QUERRY_OK             7
+//Can be removed if/when removing Xcddb::queryCDinfo(int real_track_count, toc cdtoc[])
+//#define IN_PROGRESS           -1
+//#define QUERRY_OK             7
+//#define E_INEXACT_MATCH_FOUND      211
+//#define W_CDDB_already_shook_hands      402
+//#define E_CDDB_Handshake_not_successful 431
 
+#define E_TOC_INCORRECT           2
+#define E_NETWORK_ERROR_OPEN_SOCKET     3
+#define E_NETWORK_ERROR_SEND       4
+#define E_WAIT_FOR_INPUT         5
+#define E_PARAMETER_WRONG         6
 #define E_NO_MATCH_FOUND        202
- #define E_INEXACT_MATCH_FOUND      211
-
-#define W_CDDB_already_shook_hands      402
- #define E_CDDB_Handshake_not_successful 431
- #define E_CDDB_permission_denied    432
- #define E_CDDB_max_users_reached    433
- #define E_CDDB_system_load_too_high     434
-
-// Errors for proto command
-#define E_CDDB_illegal_protocol_level  501
 
 #define CDDB_PORT 8880
 
@@ -52,9 +43,9 @@ public:
   void setCDDBIpAdress(const CStdString& ip_adress);
   void setCacheDir(const CStdString& pCacheDir );
 
-  int queryCDinfo(int real_track_count, toc cdtoc[]);
-  int queryCDinfo(CCdInfo* pInfo, int inexact_list_select);
-  int queryCDinfo(CCdInfo* pInfo);
+//  int queryCDinfo(int real_track_count, toc cdtoc[]);
+  bool queryCDinfo(CCdInfo* pInfo, int inexact_list_select);
+  bool queryCDinfo(CCdInfo* pInfo);
   int getLastError() const;
   const char * getLastErrorText() const;
   const CStdString& getYear() const;
@@ -104,7 +95,7 @@ protected:
   void addInexactList(const char *list);
   void addInexactListLine(int line_cnt, const char *line, int len);
   const CStdString& getInexactCommand(int select) const;
-  CStdString cddb_ip_adress;
+  CStdString m_cddb_ip_adress;
   CStdString cCacheDir;
 };
 };
