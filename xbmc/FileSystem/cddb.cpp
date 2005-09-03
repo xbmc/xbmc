@@ -22,7 +22,7 @@ Xcddb::Xcddb()
     : m_cddb_socket(INVALID_SOCKET)
 {
   m_lastError = 0;
-  cddb_ip_adress = "freedb.freedb.org";
+  m_cddb_ip_adress = g_stSettings.m_szCDDBIpAdres;
   cCacheDir = "";
   m_strNull = "";
 }
@@ -43,8 +43,12 @@ bool Xcddb::openSocket()
 
   // connect to site directly
   CStdString strIpadres;
-  CDNSNameCache::Lookup(cddb_ip_adress, strIpadres);
-  if (strIpadres == "") strIpadres = "130.179.31.49"; //"64.71.163.204";
+  CDNSNameCache::Lookup(m_cddb_ip_adress, strIpadres); 
+  if (strIpadres == "") 
+  {
+    strIpadres = "130.179.31.49"; //"64.71.163.204";
+    CLog::Log(LOGERROR, "Xcddb::openSocket DNS lookup for %s failed. Trying to use %s instead", m_cddb_ip_adress.c_str(), strIpadres.c_str());
+  }
   service.sin_addr.s_addr = inet_addr(strIpadres.c_str());
   service.sin_port = htons(port);
   m_cddb_socket.attach( socket(AF_INET, SOCK_STREAM, IPPROTO_TCP));
@@ -99,471 +103,437 @@ bool Xcddb::Send( const char *buffer)
 //-------------------------------------------------------------------------------------------------------------------
 string Xcddb::Recv(bool wait4point)
 {
-  std::strstream buffer;
-  WCHAR b;
-  char tmpbuffer[3];
+  char tmpbuffer[1];
+  char prevChar;
   int counter = 0;
-  bool new_line = false;
-  bool found_211 = false;
-  while (true)
+  string str_buffer;
+
+
+  //##########################################################
+  // Read the buffer. Character by character
+  tmpbuffer[0]=0;
+  do
   {
-    long lenRead = recv((SOCKET)m_cddb_socket, (char*) & tmpbuffer, 1, 0);
-    b = tmpbuffer[0];
-    buffer.write(tmpbuffer, 1);
-    if (counter == 0 && b == '2')
-      found_211 = true;
-    else if (counter == 0)
-      found_211 = false;
+    int lenRead;
+    
+    prevChar=tmpbuffer[0]; 
+    lenRead = recv((SOCKET)m_cddb_socket, (char*) & tmpbuffer, 1, 0);
 
-    if (counter == 1 && b == '1')
-      found_211 = found_211 & true;
-    else if (counter == 1)
-      found_211 = false;
-
-    if (counter == 2 && b == '1')
-      found_211 = found_211 & true;
-    else if (counter == 2)
-      found_211 = false;
-
-    if (counter == 2 && found_211)
+    //Check if there was any error reading the buffer
+    if(lenRead == 0 || lenRead == SOCKET_ERROR  || WSAGetLastError() == WSAECONNRESET)
     {
-      //   //writeLog("Found 211: wait4point=true");
-      wait4point = true;
+      CLog::Log(LOGERROR, "Xcddb::Recv Error reading buffer. lenRead = [%d] and WSAGetLastError = [%d]", lenRead, WSAGetLastError());
+      break;
     }
+
+    //Write received data to the return string
+    str_buffer.push_back(tmpbuffer[0]);
     counter++;
-    if (new_line && b == '.')
-      break;
-    new_line = (b == 0x0a);
-    if (!wait4point && b == 0x0a)
-    {
-      break;
-    }
-  }
-  // //writeLog("-=00000 receive_e 00000=-");
+  }while(wait4point ? prevChar != '\n' || tmpbuffer[0] != '.' : tmpbuffer[0] != '\n');
+  
 
-  // Page fault function
-  // buffer.write(0x00,1);
+  //##########################################################
+  // Write captured data information to the xbmc log file
+  CLog::Log(LOGDEBUG,"Xcddb::Recv Captured %d bytes // Buffer= %d bytes. Captured data follows on next line\n%s", counter, str_buffer.size(),(char *)str_buffer.c_str());
+  
 
-  string str_buffer = std::string(buffer.str(), buffer.pcount());
-
-  char str[4096];
-  sprintf(str, "Empfangen %d bytes // Buffer= %d bytes", counter, str_buffer.size());
-  // //writeLog(str);
-
-  // //writeLog("Empfangen");
-  // //writeLog((char *)str_buffer.c_str());
   return str_buffer;
 }
 
 //-------------------------------------------------------------------------------------------------------------------
-int Xcddb::queryCDinfo(CCdInfo* pInfo, int inexact_list_select)
+bool Xcddb::queryCDinfo(CCdInfo* pInfo, int inexact_list_select)
 {
-  CStdString strCmd = getInexactCommand(inexact_list_select);
-  if (strCmd.size() == 0)
+  if ( pInfo == NULL )
   {
     m_lastError = E_PARAMETER_WRONG;
     return false;
   }
-  char read_buffer[1024];
-  sprintf(read_buffer, "%s", strCmd.c_str());
 
   unsigned long discid = pInfo->GetCddbDiscId();
 
-  //erstmal den Müll abholen
-  Recv(false);
-
-  if ( ! Send(read_buffer) )
-  {
-    //writeLog("Send Failed");
-    //writeLog(read_buffer);
-    return false;
-  }
-
-
-  // cddb read Antwort
-  string recv_buffer = Recv(true);
-  // //writeLog("XXXXXXXXXXXXXXXX");
-  /*
-  210 OK, CDDB database entry follows (until terminating marker)
-  401 Specified CDDB entry not found.
-  402 Server error.
-  403 Database entry is corrupt.
-  409 No handshake.
-  */
-  char *tmp_str2;
-  tmp_str2 = (char *)recv_buffer.c_str();
-  // //writeLog("------------------------------");
-  // //writeLog(tmp_str2);
-  // //writeLog("------------------------------");
-  switch (tmp_str2[0] - 48)
-  {
-  case 2:
-    //   //writeLog("2-- XXXXXXXXXXXXXXXX");
-    // Cool, I got it ;-)
-    writeCacheFile( tmp_str2, discid );
-    parseData(tmp_str2);
-    break;
-  case 4:
-    //   //writeLog("4-- XXXXXXXXXXXXXXXX");
-    switch (tmp_str2[2] - 48)
-    {
-    case 1:  //401
-      //     //writeLog("401 XXXXXXXXXXXXXXXX");
-      m_lastError = 401;
-      break;
-    case 2:  //402
-      //     //writeLog("402 XXXXXXXXXXXXXXXX");
-      m_lastError = 402;
-      break;
-    case 3:  //403
-      //     //writeLog("403 XXXXXXXXXXXXXXXX");
-      m_lastError = 403;
-      break;
-    case 9:  //409
-      //     //writeLog("409 XXXXXXXXXXXXXXXX");
-      m_lastError = 409;
-      break;
-    default:
-      m_lastError = -1;
-      return false;
-    }
-    break;
-  default:
-    m_lastError = -1;
-    return false;
-  }
 
   //##########################################################
-  // Abmelden 2x Senden kommt sonst zu fehler
+  // Compose the cddb query string
+  CStdString read_buffer = getInexactCommand(inexact_list_select);
+  if (read_buffer.size() == 0)
+  {
+    CLog::Log(LOGERROR, "Xcddb::queryCDinfo_inexaxt_list_select Size of inexaxt_list_select are 0");
+    m_lastError = E_PARAMETER_WRONG;
+    return false;
+  }
+
+
+  //##########################################################
+  // Read the data from cddb
+  Recv(false); //erstmal den Müll abholen
+  if ( !Send(read_buffer) )
+  {
+    CLog::Log(LOGERROR, "Xcddb::queryCDinfo_inexaxt_list_select Error sending \"%s\"", read_buffer.c_str());
+    CLog::Log(LOGERROR, "Xcddb::queryCDinfo_inexaxt_list_select pInfo == NULL");
+    m_lastError = E_NETWORK_ERROR_SEND;
+    return false;
+  }
+  CStdString recv_buffer = Recv(true);
+  m_lastError = atoi(recv_buffer.c_str());
+  switch(m_lastError)
+  {
+  case 210: //OK, CDDB database entry follows (until terminating marker)
+    // Cool, I got it ;-)
+    writeCacheFile( recv_buffer.c_str(), discid );
+    parseData(recv_buffer.c_str());
+    break;
+
+  case 401: //Specified CDDB entry not found.
+  case 402: //Server error.
+  case 403: //Database entry is corrupt.
+  case 409: //No handshake.
+  default:
+    CLog::Log(LOGERROR, "Xcddb::queryCDinfo_inexaxt_list_select Error: \"%s\"", recv_buffer.c_str());
+    return false;
+  }
+
+  
+  //##########################################################
+  // Quit
   if ( ! Send("quit") )
   {
-    //writeLog("Send Failed");
+    CLog::Log(LOGERROR, "Xcddb::queryCDinfo_inexaxt_list_select Error sending \"%s\"", "quit");
+    m_lastError = E_NETWORK_ERROR_SEND;
+    return false;
+  }
+  recv_buffer = Recv(false);
+  m_lastError = atoi(recv_buffer.c_str());
+  switch(m_lastError)
+  {
+  case 0: //By some reason, also 0 is a valid value. This is not documented, and might depend on that no string was found and atoi then returns 0
+  case 230: //Closing connection.  Goodbye.
+    break;
+
+  case 530: //error, closing connection.
+  default:
+    CLog::Log(LOGERROR, "Xcddb::queryCDinfo_inexaxt_list_select Error: \"%s\"", recv_buffer.c_str());
     return false;
   }
 
-  // quit Antwort
-  Recv(false);
 
-  // Socket schliessen
-  if ( ! closeSocket() )
+  //##########################################################
+  // Close connection
+  if ( !closeSocket() )
   {
-    //writeLog("closeSocket Failed");
+    CLog::Log(LOGERROR, "Xcddb::queryCDinfo_inexaxt_list_select Error closing socket");
+    m_lastError = E_NETWORK_ERROR_SEND;
     return false;
-  }
-  else
-  {
-    ////writeLog("closeSocket OK");
   }
   return true;
 }
 
 //-------------------------------------------------------------------------------------------------------------------
-int Xcddb::queryCDinfo(int real_track_count, toc cdtoc[])
-{
-  // //writeLog("Xcddb::queryCDinfo - Start");
-
-  /* //writeLog("getHostByName start");
-   struct hostent* hp=gethostbyname("freedb.freedb.org");
-   //writeLog("hp->h_name=%s",hp->h_name);
-   //writeLog("hp->h_aliases=%s",hp->h_aliases);
-   //writeLog("hp->h_addr_list=%s",hp->h_addr_list);
-   //writeLog("getHostByName end");
-  */
-  int lead_out = real_track_count;
-  unsigned long discid = calc_disc_id(real_track_count, cdtoc);
-  unsigned long frames[100];
-
-  bool bLoaded = queryCache( discid );
-
-  if ( bLoaded )
-    return true;
-
-  for (int i = 0;i <= lead_out;i++)
-  {
-    frames[i] = (cdtoc[i].min * 75 * 60) + (cdtoc[i].sec * 75) + cdtoc[i].frame;
-    if (i > 0 && frames[i] < frames[i - 1])
-    {
-      m_lastError = E_TOC_INCORRECT;
-      return false;
-    }
-  }
-  unsigned long complete_length = frames[lead_out] / 75;
-
-  // Socket öffnen
-  if ( !openSocket() )
-  {
-    //writeLog("openSocket Failed");
-    m_lastError = E_NETWORK_ERROR_OPEN_SOCKET;
-    return false;
-  }
-
-  // Erst mal was empfangen
-  string recv_buffer = Recv(false);
-  /*
-  200 OK, read/write allowed
-  201 OK, read only
-  432 No connections allowed: permission denied
-  433 No connections allowed: X users allowed, Y currently active
-  434 No connections allowed: system load too high
-  */
-  if (recv_buffer.c_str()[0] == '2')
-  {
-    //OK
-    //  //writeLog("Connection 2 cddb: OK");
-    m_lastError = IN_PROGRESS;
-  }
-  else if (recv_buffer.c_str()[0] == '4')
-  {
-    //No connections allowed
-    //writeLog("Connection 2 cddb: No connections allowed");
-    m_lastError = 430 + (recv_buffer.c_str()[3] - 48);
-    return false;
-  }
-
-  // Jetzt hello Senden
-  if ( ! Send("cddb hello xbox xbox xcddb 00.00.01"))
-  {
-    //writeLog("Send Failed");
-    m_lastError = E_NETWORK_ERROR_SEND;
-    return false;
-  }
-
-  // hello Antwort
-  recv_buffer = Recv(false);
-  /*
-  200 Handshake successful
-  431 Handshake not successful, closing connection
-  402 Already shook hands
-  */
-  if (recv_buffer.c_str()[0] == '2')
-  {
-    //OK
-    ////writeLog("Hello 2 cddb: OK");
-    m_lastError = IN_PROGRESS;
-  }
-  else if (recv_buffer.c_str()[0] == '4' && recv_buffer.c_str()[1] == '3')
-  {
-    //No connections allowed
-    //writeLog("Hello 2 cddb: Handshake not successful, closing connection");
-    m_lastError = E_CDDB_Handshake_not_successful;
-    return false;
-  }
-  else if (recv_buffer.c_str()[0] == '4' && recv_buffer.c_str()[1] == '0')
-  {
-    //  //writeLog("Hello 2 cddb: Already shook hands, but it's OK");
-    m_lastError = W_CDDB_already_shook_hands;
-  }
-
-
-  // Hier jetzt die CD abfragen
-  //##########################################################
-  char query_buffer[1024];
-  strcpy(query_buffer, "");
-  strcat(query_buffer, "cddb query");
-  {
-    char tmp_buffer[256];
-    sprintf(tmp_buffer, " %08x", discid);
-    strcat(query_buffer, tmp_buffer);
-  }
-  {
-    char tmp_buffer[256];
-    sprintf(tmp_buffer, " %u", real_track_count);
-    strcat(query_buffer, tmp_buffer);
-  }
-  for (int i = 0;i < lead_out;i++)
-  {
-    char tmp_buffer[256];
-    sprintf(tmp_buffer, " %u", frames[i]);
-    strcat(query_buffer, tmp_buffer);
-  }
-  {
-    char tmp_buffer[256];
-    sprintf(tmp_buffer, " %u", complete_length);
-    strcat(query_buffer, tmp_buffer);
-  }
-
-  //cddb query
-  if ( ! Send(query_buffer))
-  {
-    //writeLog("Send Failed");
-    m_lastError = E_NETWORK_ERROR_SEND;
-    return false;
-  }
-
-  // Antwort
-  // 200 rock d012180e Soundtrack / Hackers
-  char read_buffer[1024];
-  recv_buffer = Recv(false);
-  // Hier antwort auswerten
-  /*
-  200 Found exact match
-  211 Found inexact matches, list follows (until terminating marker)
-  202 No match found
-  403 Database entry is corrupt
-  409 No handshake
-  */
-  char *tmp_str;
-  tmp_str = (char *)recv_buffer.c_str();
-  switch (tmp_str[0] - 48)
-  {
-  case 2:
-    switch (tmp_str[1] - 48)
-    {
-    case 0:
-      switch (tmp_str[2] - 48)
-      {
-      case 0:  //200
-        strtok(tmp_str, " ");
-        strcpy(read_buffer, "");
-        strcat(read_buffer, "cddb read ");
-        // categ
-        strcat(read_buffer, strtok(0, " "));
-        {
-          char tmp_buffer[256];
-          sprintf(tmp_buffer, " %08x", discid);
-          strcat(read_buffer, tmp_buffer);
-        }
-        m_lastError = IN_PROGRESS;
-        break;
-      case 2:  //202
-        m_lastError = E_NO_MATCH_FOUND;
-        return false;
-        break;
-      default:
-        m_lastError = false;
-        return false;
-      }
-      break;
-    case 1:
-      switch (tmp_str[2] - 48)
-      {
-      case 1:  //211
-        m_lastError = E_INEXACT_MATCH_FOUND;
-        /*
-        211 Found inexact matches, list follows (until terminating `.')
-        soundtrack bf0cf90f Modern Talking / Victory - The 11th Album
-        rock c90cf90f Modern Talking / Album: Victory (The 11th Album)
-        misc de0d020f Modern Talking / Ready for the victory
-        rock e00d080f Modern Talking / Album: Victory (The 11th Album)
-        rock c10d150f Modern Talking / Victory (The 11th Album)
-        .
-        */
-        addInexactList(tmp_str);
-        m_lastError = E_WAIT_FOR_INPUT;
-        return false;
-        break;
-      default:
-        m_lastError = -1;
-        return false;
-      }
-      break;
-    default:
-      m_lastError = -1;
-      return false;
-    }
-    break;
-  case 4:
-    switch (tmp_str[2] - 48)
-    {
-    case 3:  //403
-      m_lastError = 403;
-      break;
-    case 9:  //409
-      m_lastError = 409;
-      break;
-    default:
-      m_lastError = -1;
-      return false;
-    }
-    break;
-  default:
-    m_lastError = -1;
-    return false;
-  }
-
-
-  //##########################################################
-  if ( !Send(read_buffer) )
-  {
-    //writeLog("Send Failed");
-    //writeLog(read_buffer);
-    return false;
-  }
-
-
-  // cddb read Antwort
-  recv_buffer = Recv(true);
-  /*
-  210 OK, CDDB database entry follows (until terminating marker)
-  401 Specified CDDB entry not found.
-  402 Server error.
-  403 Database entry is corrupt.
-  409 No handshake.
-  */
-  char *tmp_str2;
-  tmp_str2 = (char *)recv_buffer.c_str();
-  switch (tmp_str2[0] - 48)
-  {
-  case 2:
-    //   //writeLog("2-- XXXXXXXXXXXXXXXX");
-    // Cool, I got it ;-)
-    writeCacheFile( tmp_str2, discid );
-    parseData(tmp_str2);
-    break;
-  case 4:
-    //   //writeLog("4-- XXXXXXXXXXXXXXXX");
-    switch (tmp_str2[2] - 48)
-    {
-    case 1:  //401
-      //     //writeLog("401 XXXXXXXXXXXXXXXX");
-      m_lastError = 401;
-      break;
-    case 2:  //402
-      //     //writeLog("402 XXXXXXXXXXXXXXXX");
-      m_lastError = 402;
-      break;
-    case 3:  //403
-      //     //writeLog("403 XXXXXXXXXXXXXXXX");
-      m_lastError = 403;
-      break;
-    case 9:  //409
-      //     //writeLog("409 XXXXXXXXXXXXXXXX");
-      m_lastError = 409;
-      break;
-    default:
-      m_lastError = -1;
-      return false;
-    }
-    break;
-  default:
-    m_lastError = -1;
-    return false;
-  }
-
-  //##########################################################
-  // Abmelden 2x Senden kommt sonst zu fehler
-  if ( ! Send("quit") )
-  {
-    //writeLog("Send Failed");
-    return false;
-  }
-
-  // quit Antwort
-  Recv(false);
-
-  // Socket schliessen
-  if ( !closeSocket() )
-  {
-    //writeLog("closeSocket Failed");
-    return false;
-  }
-  else
-  {
-    //  //writeLog("closeSocket OK");
-  }
-  m_lastError = QUERRY_OK;
-  return true;
-}
+//int Xcddb::queryCDinfo(int real_track_count, toc cdtoc[])
+//{
+//  // //writeLog("Xcddb::queryCDinfo - Start");
+//
+//  /* //writeLog("getHostByName start");
+//   struct hostent* hp=gethostbyname("freedb.freedb.org");
+//   //writeLog("hp->h_name=%s",hp->h_name);
+//   //writeLog("hp->h_aliases=%s",hp->h_aliases);
+//   //writeLog("hp->h_addr_list=%s",hp->h_addr_list);
+//   //writeLog("getHostByName end");
+//  */
+//  int lead_out = real_track_count;
+//  unsigned long discid = calc_disc_id(real_track_count, cdtoc);
+//  unsigned long frames[100];
+//
+//  bool bLoaded = queryCache( discid );
+//
+//  if ( bLoaded )
+//    return true;
+//
+//  for (int i = 0;i <= lead_out;i++)
+//  {
+//    frames[i] = (cdtoc[i].min * 75 * 60) + (cdtoc[i].sec * 75) + cdtoc[i].frame;
+//    if (i > 0 && frames[i] < frames[i - 1])
+//    {
+//      m_lastError = E_TOC_INCORRECT;
+//      return false;
+//    }
+//  }
+//  unsigned long complete_length = frames[lead_out] / 75;
+//
+//  // Socket öffnen
+//  if ( !openSocket() )
+//  {
+//    //writeLog("openSocket Failed");
+//    m_lastError = E_NETWORK_ERROR_OPEN_SOCKET;
+//    return false;
+//  }
+//
+//  // Erst mal was empfangen
+//  string recv_buffer = Recv(false);
+//  /*
+//  200 OK, read/write allowed
+//  201 OK, read only
+//  432 No connections allowed: permission denied
+//  433 No connections allowed: X users allowed, Y currently active
+//  434 No connections allowed: system load too high
+//  */
+//  if (recv_buffer.c_str()[0] == '2')
+//  {
+//    //OK
+//    //  //writeLog("Connection 2 cddb: OK");
+//    m_lastError = IN_PROGRESS;
+//  }
+//  else if (recv_buffer.c_str()[0] == '4')
+//  {
+//    //No connections allowed
+//    //writeLog("Connection 2 cddb: No connections allowed");
+//    m_lastError = 430 + (recv_buffer.c_str()[3] - 48);
+//    return false;
+//  }
+//
+//  // Jetzt hello Senden
+//  if ( ! Send("cddb hello xbox xbox xcddb 00.00.01"))
+//  {
+//    //writeLog("Send Failed");
+//    m_lastError = E_NETWORK_ERROR_SEND;
+//    return false;
+//  }
+//
+//  // hello Antwort
+//  recv_buffer = Recv(false);
+//  /*
+//  200 Handshake successful
+//  431 Handshake not successful, closing connection
+//  402 Already shook hands
+//  */
+//  if (recv_buffer.c_str()[0] == '2')
+//  {
+//    //OK
+//    ////writeLog("Hello 2 cddb: OK");
+//    m_lastError = IN_PROGRESS;
+//  }
+//  else if (recv_buffer.c_str()[0] == '4' && recv_buffer.c_str()[1] == '3')
+//  {
+//    //No connections allowed
+//    //writeLog("Hello 2 cddb: Handshake not successful, closing connection");
+//    m_lastError = E_CDDB_Handshake_not_successful;
+//    return false;
+//  }
+//  else if (recv_buffer.c_str()[0] == '4' && recv_buffer.c_str()[1] == '0')
+//  {
+//    //  //writeLog("Hello 2 cddb: Already shook hands, but it's OK");
+//    m_lastError = W_CDDB_already_shook_hands;
+//  }
+//
+//
+//  // Hier jetzt die CD abfragen
+//  //##########################################################
+//  char query_buffer[1024];
+//  strcpy(query_buffer, "");
+//  strcat(query_buffer, "cddb query");
+//  {
+//    char tmp_buffer[256];
+//    sprintf(tmp_buffer, " %08x", discid);
+//    strcat(query_buffer, tmp_buffer);
+//  }
+//  {
+//    char tmp_buffer[256];
+//    sprintf(tmp_buffer, " %u", real_track_count);
+//    strcat(query_buffer, tmp_buffer);
+//  }
+//  for (int i = 0;i < lead_out;i++)
+//  {
+//    char tmp_buffer[256];
+//    sprintf(tmp_buffer, " %u", frames[i]);
+//    strcat(query_buffer, tmp_buffer);
+//  }
+//  {
+//    char tmp_buffer[256];
+//    sprintf(tmp_buffer, " %u", complete_length);
+//    strcat(query_buffer, tmp_buffer);
+//  }
+//
+//  //cddb query
+//  if ( ! Send(query_buffer))
+//  {
+//    //writeLog("Send Failed");
+//    m_lastError = E_NETWORK_ERROR_SEND;
+//    return false;
+//  }
+//
+//  // Antwort
+//  // 200 rock d012180e Soundtrack / Hackers
+//  char read_buffer[1024];
+//  recv_buffer = Recv(false);
+//  // Hier antwort auswerten
+//  /*
+//  200 Found exact match
+//  211 Found inexact matches, list follows (until terminating marker)
+//  202 No match found
+//  403 Database entry is corrupt
+//  409 No handshake
+//  */
+//  char *tmp_str;
+//  tmp_str = (char *)recv_buffer.c_str();
+//  switch (tmp_str[0] - 48)
+//  {
+//  case 2:
+//    switch (tmp_str[1] - 48)
+//    {
+//    case 0:
+//      switch (tmp_str[2] - 48)
+//      {
+//      case 0:  //200
+//        strtok(tmp_str, " ");
+//        strcpy(read_buffer, "");
+//        strcat(read_buffer, "cddb read ");
+//        // categ
+//        strcat(read_buffer, strtok(0, " "));
+//        {
+//          char tmp_buffer[256];
+//          sprintf(tmp_buffer, " %08x", discid);
+//          strcat(read_buffer, tmp_buffer);
+//        }
+//        m_lastError = IN_PROGRESS;
+//        break;
+//      case 2:  //202
+//        m_lastError = E_NO_MATCH_FOUND;
+//        return false;
+//        break;
+//      default:
+//        m_lastError = false;
+//        return false;
+//      }
+//      break;
+//    case 1:
+//      switch (tmp_str[2] - 48)
+//      {
+//      case 1:  //211
+//        m_lastError = E_INEXACT_MATCH_FOUND;
+//        /*
+//        211 Found inexact matches, list follows (until terminating `.')
+//        soundtrack bf0cf90f Modern Talking / Victory - The 11th Album
+//        rock c90cf90f Modern Talking / Album: Victory (The 11th Album)
+//        misc de0d020f Modern Talking / Ready for the victory
+//        rock e00d080f Modern Talking / Album: Victory (The 11th Album)
+//        rock c10d150f Modern Talking / Victory (The 11th Album)
+//        .
+//        */
+//        addInexactList(tmp_str);
+//        m_lastError = E_WAIT_FOR_INPUT;
+//        return false;
+//        break;
+//      default:
+//        m_lastError = -1;
+//        return false;
+//      }
+//      break;
+//    default:
+//      m_lastError = -1;
+//      return false;
+//    }
+//    break;
+//  case 4:
+//    switch (tmp_str[2] - 48)
+//    {
+//    case 3:  //403
+//      m_lastError = 403;
+//      break;
+//    case 9:  //409
+//      m_lastError = 409;
+//      break;
+//    default:
+//      m_lastError = -1;
+//      return false;
+//    }
+//    break;
+//  default:
+//    m_lastError = -1;
+//    return false;
+//  }
+//
+//
+//  //##########################################################
+//  if ( !Send(read_buffer) )
+//  {
+//    //writeLog("Send Failed");
+//    //writeLog(read_buffer);
+//    return false;
+//  }
+//
+//
+//  // cddb read Antwort
+//  recv_buffer = Recv(true);
+//  /*
+//  210 OK, CDDB database entry follows (until terminating marker)
+//  401 Specified CDDB entry not found.
+//  402 Server error.
+//  403 Database entry is corrupt.
+//  409 No handshake.
+//  */
+//  char *tmp_str2;
+//  tmp_str2 = (char *)recv_buffer.c_str();
+//  switch (tmp_str2[0] - 48)
+//  {
+//  case 2:
+//    //   //writeLog("2-- XXXXXXXXXXXXXXXX");
+//    // Cool, I got it ;-)
+//    writeCacheFile( tmp_str2, discid );
+//    parseData(tmp_str2);
+//    break;
+//  case 4:
+//    //   //writeLog("4-- XXXXXXXXXXXXXXXX");
+//    switch (tmp_str2[2] - 48)
+//    {
+//    case 1:  //401
+//      //     //writeLog("401 XXXXXXXXXXXXXXXX");
+//      m_lastError = 401;
+//      break;
+//    case 2:  //402
+//      //     //writeLog("402 XXXXXXXXXXXXXXXX");
+//      m_lastError = 402;
+//      break;
+//    case 3:  //403
+//      //     //writeLog("403 XXXXXXXXXXXXXXXX");
+//      m_lastError = 403;
+//      break;
+//    case 9:  //409
+//      //     //writeLog("409 XXXXXXXXXXXXXXXX");
+//      m_lastError = 409;
+//      break;
+//    default:
+//      m_lastError = -1;
+//      return false;
+//    }
+//    break;
+//  default:
+//    m_lastError = -1;
+//    return false;
+//  }
+//
+//  //##########################################################
+//  // Abmelden 2x Senden kommt sonst zu fehler
+//  if ( ! Send("quit") )
+//  {
+//    //writeLog("Send Failed");
+//    return false;
+//  }
+//
+//  // quit Antwort
+//  Recv(false);
+//
+//  // Socket schliessen
+//  if ( !closeSocket() )
+//  {
+//    //writeLog("closeSocket Failed");
+//    return false;
+//  }
+//  else
+//  {
+//    //  //writeLog("closeSocket OK");
+//  }
+//  m_lastError = QUERRY_OK;
+//  return true;
+//}
 
 
 
@@ -580,15 +550,10 @@ const char *Xcddb::getLastErrorText() const
 {
   switch (getLastError())
   {
-  case IN_PROGRESS:
-    return "in Progress";
-    break;
-  case OK:
-    return "OK";
-    break;
-  case E_FAILED:
-    return "Failed";
-    break;
+//Can be removed if/when removing Xcddb::queryCDinfo(int real_track_count, toc cdtoc[])
+//  case IN_PROGRESS:
+//    return "in Progress";
+//    break;
   case E_TOC_INCORRECT:
     return "TOC Incorrect";
     break;
@@ -604,32 +569,39 @@ const char *Xcddb::getLastErrorText() const
   case E_PARAMETER_WRONG:
     return "Error Parameter Wrong";
     break;
-  case E_NO_MATCH_FOUND:
-    return "No Match found";
-    break;
-  case E_INEXACT_MATCH_FOUND:
-    return "Inexact Match found";
-    break;
-  case W_CDDB_already_shook_hands:
-    return "Warning already shook hands";
-    break;
-  case E_CDDB_Handshake_not_successful:
-    return "Error Handshake not successful";
-    break;
-  case E_CDDB_permission_denied:
-    return "Error permission denied";
-    break;
-  case E_CDDB_max_users_reached:
-    return "Error max cddb users reached";
-    break;
-  case E_CDDB_system_load_too_high:
-    return "Error cddb system load too high";
-    break;
-  case QUERRY_OK:
-    return "Query OK";
-    break;
+//Can be removed if/when removing Xcddb::queryCDinfo(int real_track_count, toc cdtoc[])
+//  case E_NO_MATCH_FOUND:
+//    return "No Match found";
+//    break;
+//  case E_INEXACT_MATCH_FOUND:
+//    return "Inexact Match found";
+//    break;
+//  case W_CDDB_already_shook_hands:
+//    return "Warning already shook hands";
+//    break;
+//  case E_CDDB_Handshake_not_successful:
+//    return "Error Handshake not successful";
+//    break;
+//  case QUERRY_OK:
+//    return "Query OK";
+//    break;
+  case 202: return "No match found";
+  case 210: return "Found exact matches, list follows (until terminating marker)";
+  case 211: return "Found inexact matches, list follows (until terminating marker)";
+  case 401: return "Specified CDDB entry not found";
+  case 402: return "Server error";
+  case 403: return "Database entry is corrupt";
+  case 408: return "CGI environment error";
+  case 409: return "No handshake";
+  case 431: return "Handshake not successful, closing connection";
+  case 432: return "No connections allowed: permission denied";
+  case 433: return "No connections allowed: X users allowed, Y currently active";
+  case 434: return "No connections allowed: system load too high";
+  case 500: return "Command syntax error, command unknown, command unimplemented";
+  case 501: return "Illegal protocol level";
+  case 530: return "error, closing connection, Server error, server timeout";
+  default:  return "Unknown Error";
   }
-  return "Unknown Error";
 }
 
 
@@ -1047,7 +1019,7 @@ void Xcddb::addInexactListLine(int line_cnt, const char *line, int len)
 //-------------------------------------------------------------------------------------------------------------------
 void Xcddb::setCDDBIpAdress(const CStdString& ip_adress)
 {
-  cddb_ip_adress = ip_adress;
+  m_cddb_ip_adress = ip_adress;
 }
 
 //-------------------------------------------------------------------------------------------------------------------
@@ -1138,142 +1110,118 @@ const CStdString& Xcddb::getGenre() const
 }
 
 //-------------------------------------------------------------------------------------------------------------------
-int Xcddb::queryCDinfo(CCdInfo* pInfo)
+bool Xcddb::queryCDinfo(CCdInfo* pInfo)
 {
   if ( pInfo == NULL )
-    return E_FAILED;
-  // //writeLog("Xcddb::queryCDinfo - Start");
+  {
+    CLog::Log(LOGERROR, "Xcddb::queryCDinfo pInfo == NULL");
+    m_lastError = E_PARAMETER_WRONG;
+    return false;
+  }
 
-  /* //writeLog("getHostByName start");
-   struct hostent* hp=gethostbyname("freedb.freedb.org");
-   //writeLog("hp->h_name=%s",hp->h_name);
-   //writeLog("hp->h_aliases=%s",hp->h_aliases);
-   //writeLog("hp->h_addr_list=%s",hp->h_addr_list);
-   //writeLog("getHostByName end");
-  */
   int lead_out = pInfo->GetTrackCount();
   int real_track_count = pInfo->GetTrackCount();
   unsigned long discid = pInfo->GetCddbDiscId();
   unsigned long frames[100];
 
-  bool bLoaded = queryCache( discid );
-
-  if ( bLoaded )
+  
+  //##########################################################
+  // 
+  if ( queryCache(discid) )
+  {
+    CLog::Log(LOGDEBUG, "Xcddb::queryCDinfo discid [%08x] already cached", discid);
     return true;
+  }
 
+  //##########################################################
+  // 
   for (int i = 0;i < lead_out;i++)
   {
     frames[i] = pInfo->GetTrackInformation( i + 1 ).nFrames;
     if (i > 0 && frames[i] < frames[i - 1])
     {
+      CLog::Log(LOGERROR, "Xcddb::queryCDinfo E_TOC_INCORRECT");
       m_lastError = E_TOC_INCORRECT;
       return false;
     }
   }
   unsigned long complete_length = pInfo->GetDiscLength();
 
-  // Socket öffnen
+
+  //##########################################################
+  // Open socket to cddb database
   if ( !openSocket() )
   {
-    //writeLog("openSocket Failed");
+    CLog::Log(LOGERROR, "Xcddb::queryCDinfo Error opening socket");
     m_lastError = E_NETWORK_ERROR_OPEN_SOCKET;
     return false;
   }
-
-  // Erst mal was empfangen
   CStdString recv_buffer = Recv(false);
-  /*
-  200 OK, read/write allowed
-  201 OK, read only
-  432 No connections allowed: permission denied
-  433 No connections allowed: X users allowed, Y currently active
-  434 No connections allowed: system load too high
-  */
-  if (recv_buffer.c_str()[0] == '2')
+  m_lastError = atoi(recv_buffer.c_str());
+  switch(m_lastError)
   {
-    //OK
-    //  //writeLog("Connection 2 cddb: OK");
-    m_lastError = IN_PROGRESS;
-  }
-  else if (recv_buffer.c_str()[0] == '4')
-  {
-    //No connections allowed
-    //writeLog("Connection 2 cddb: No connections allowed");
-    m_lastError = 430 + (recv_buffer.c_str()[3] - 48);
+  case 200: //OK, read/write allowed
+  case 201: //OK, read only
+    break;
+
+  case 432: //No connections allowed: permission denied
+  case 433: //No connections allowed: X users allowed, Y currently active
+  case 434: //No connections allowed: system load too high
+  default:
+    CLog::Log(LOGERROR, "Xcddb::queryCDinfo Error: \"%s\"", recv_buffer.c_str());
     return false;
   }
 
-  // Jetzt hello Senden
+
+  //##########################################################
+  // Send the Hello message
   if ( ! Send("cddb hello xbox xbox XboxMediaCenter 1.1.0"))
   {
-    //writeLog("Send Failed");
+    CLog::Log(LOGERROR, "Xcddb::queryCDinfo Error sending \"%s\"", "cddb hello xbox xbox XboxMediaCenter 1.1.0");
     m_lastError = E_NETWORK_ERROR_SEND;
     return false;
   }
-
-  // hello Antwort
   recv_buffer = Recv(false);
-  /*
-  200 Handshake successful
-  431 Handshake not successful, closing connection
-  402 Already shook hands
-  */
-  if (recv_buffer.c_str()[0] == '2')
+  m_lastError = atoi(recv_buffer.c_str());
+  switch(m_lastError)
   {
-    //OK
-    ////writeLog("Hello 2 cddb: OK");
-    m_lastError = IN_PROGRESS;
-  }
-  else if (recv_buffer.c_str()[0] == '4' && recv_buffer.c_str()[1] == '3')
-  {
-    //No connections allowed
-    //writeLog("Hello 2 cddb: Handshake not successful, closing connection");
-    m_lastError = E_CDDB_Handshake_not_successful;
+  case 200: //Handshake successful
+  case 402: //Already shook hands
+    break;
+  
+  case 431: //Handshake not successful, closing connection
+  default:
+    CLog::Log(LOGERROR, "Xcddb::queryCDinfo Error: \"%s\"", recv_buffer.c_str());
     return false;
   }
-  else if (recv_buffer.c_str()[0] == '4' && recv_buffer.c_str()[1] == '0')
-  {
-    //  //writeLog("Hello 2 cddb: Already shook hands, but it's OK");
-    m_lastError = W_CDDB_already_shook_hands;
-  }
 
+
+  //##########################################################
   // Set CDDB protocol-level to 6
   if ( ! Send("proto 6"))
   {
-    //writeLog("Send Failed");
+    CLog::Log(LOGERROR, "Xcddb::queryCDinfo Error sending \"%s\"", "proto 6");
     m_lastError = E_NETWORK_ERROR_SEND;
     return false;
   }
-
-  // hello Antwort
   recv_buffer = Recv(false);
-  /*
-  200 CDDB protocol level: current cur_level, supported supp_level
-  201 OK, protocol version now: cur_level
-  501 Illegal protocol level.
-  502 Protocol level already cur_level.
-  */
-  if (recv_buffer.c_str()[0] == '2' && recv_buffer.c_str()[1] == '0' && recv_buffer.c_str()[2] == '1')
+  m_lastError = atoi(recv_buffer.c_str());
+  switch(m_lastError)
   {
-    //OK
-    ////writeLog("Set to protocol-level 6: OK");
-    m_lastError = IN_PROGRESS;
-  }
-  else if (recv_buffer.c_str()[0] == '5' && recv_buffer.c_str()[1] == '0' && recv_buffer.c_str()[2] == '1')
-  {
-    //writeLog("Protocol level illegal");
-    m_lastError = E_CDDB_illegal_protocol_level;
+  case 200: //CDDB protocol level: current cur_level, supported supp_level
+  case 201:	//OK, protocol version now: cur_level
+  case 502: //Protocol level already cur_level
+    break;
+  
+  case 501:	//Illegal protocol level.
+  default:
+    CLog::Log(LOGERROR, "Xcddb::queryCDinfo Error: \"%s\"", recv_buffer.c_str());
     return false;
   }
-  else if (recv_buffer.c_str()[0] == '5' && recv_buffer.c_str()[1] == '0' && recv_buffer.c_str()[2] == '2')
-  {
-    //  //writeLog("Protocol-level already set to 6");
-    m_lastError = IN_PROGRESS;
-  }
 
 
-  // Hier jetzt die CD abfragen
   //##########################################################
+  // Compose the cddb query string
   char query_buffer[1024];
   strcpy(query_buffer, "");
   strcat(query_buffer, "cddb query");
@@ -1299,196 +1247,110 @@ int Xcddb::queryCDinfo(CCdInfo* pInfo)
     strcat(query_buffer, tmp_buffer);
   }
 
-  //cddb query
+
+  //##########################################################
+  // Query for matches
   if ( ! Send(query_buffer))
   {
-    //writeLog("Send Failed");
+    CLog::Log(LOGERROR, "Xcddb::queryCDinfo Error sending \"%s\"", query_buffer);
     m_lastError = E_NETWORK_ERROR_SEND;
     return false;
   }
-
-  // Antwort
   // 200 rock d012180e Soundtrack / Hackers
-  char read_buffer[1024];
+  CStdString read_buffer;
   recv_buffer = Recv(false);
-  // Hier antwort auswerten
-  /*
-  200 Found exact match
-  210 Found exact matches, list follows (until terminating marker)
-  211 Found inexact matches, list follows (until terminating marker)
-  202 No match found
-  403 Database entry is corrupt
-  409 No handshake
-  */
-  char *tmp_str;
-  tmp_str = (char *)recv_buffer.c_str();
-  switch (tmp_str[0] - 48)
+  m_lastError = atoi(recv_buffer.c_str());
+  switch(m_lastError)
   {
-  case 2:
-    switch (tmp_str[1] - 48)
-    {
-    case 0:
-      switch (tmp_str[2] - 48)
-      {
-      case 0:  //200
-        strtok(tmp_str, " ");
-        strcpy(read_buffer, "");
-        strcat(read_buffer, "cddb read ");
-        // categ
-        strcat(read_buffer, strtok(0, " "));
-        {
-          char tmp_buffer[256];
-          sprintf(tmp_buffer, " %08x", discid);
-          strcat(read_buffer, tmp_buffer);
-        }
-        m_lastError = IN_PROGRESS;
-        break;
-      case 2:  //202
-        m_lastError = E_NO_MATCH_FOUND;
-        return false;
-        break;
-      default:
-        m_lastError = false;
-        return false;
-      }
-      break;
-    case 1:
-      switch (tmp_str[2] - 48)
-      {
-      case 0:  //210
-        {
-          // 210 Found exact matches, list follows (until terminating `.')
+  case 200: //Found exact match
+    strtok((char *)recv_buffer.c_str(), " ");
+    read_buffer.Format("cddb read %s %08x", strtok(NULL, " "), discid);
+    break;
 
-          // Ugly but works to get the 210 response
-          CStdString buffer = Recv(true);
-          recv_buffer += buffer;
-          tmp_str = (char *)recv_buffer.c_str();
-        }
-      case 1:  //211
-        m_lastError = E_INEXACT_MATCH_FOUND;
-        /*
-        211 Found inexact matches, list follows (until terminating `.')
-        soundtrack bf0cf90f Modern Talking / Victory - The 11th Album
-        rock c90cf90f Modern Talking / Album: Victory (The 11th Album)
-        misc de0d020f Modern Talking / Ready for the victory
-        rock e00d080f Modern Talking / Album: Victory (The 11th Album)
-        rock c10d150f Modern Talking / Victory (The 11th Album)
-        .
-        */
-        addInexactList(tmp_str);
-        m_lastError = E_WAIT_FOR_INPUT;
-        return false;
-        break;
-      default:
-        m_lastError = -1;
-        return false;
-      }
-      break;
-    default:
-      m_lastError = -1;
-      return false;
-    }
-    break;
-  case 4:
-    switch (tmp_str[2] - 48)
-    {
-    case 3:  //403
-      m_lastError = 403;
-      break;
-    case 9:  //409
-      m_lastError = 409;
-      break;
-    default:
-      m_lastError = -1;
-      return false;
-    }
-    break;
+  case 210: //Found exact matches, list follows (until terminating marker)
+  case 211: //Found inexact matches, list follows (until terminating marker)
+    /*
+    soundtrack bf0cf90f Modern Talking / Victory - The 11th Album
+    rock c90cf90f Modern Talking / Album: Victory (The 11th Album)
+    misc de0d020f Modern Talking / Ready for the victory
+    rock e00d080f Modern Talking / Album: Victory (The 11th Album)
+    rock c10d150f Modern Talking / Victory (The 11th Album)
+    .
+    */
+    recv_buffer += Recv(true);
+    addInexactList(recv_buffer.c_str());
+    m_lastError=E_WAIT_FOR_INPUT;   
+    return false; //This is actually good. The calling method will handle this
+
+  case 202: //No match found
+    CLog::Log(LOGNOTICE, "Xcddb::queryCDinfo No match found in CDDB database when doing the query shown below:\n%s",query_buffer);
+  case 403: //Database entry is corrupt
+  case 409: //No handshake
   default:
-    m_lastError = -1;
+    CLog::Log(LOGERROR, "Xcddb::queryCDinfo Error: \"%s\"", recv_buffer.c_str());
     return false;
   }
 
 
   //##########################################################
+  // Read the data from cddb
   if ( !Send(read_buffer) )
   {
-    //writeLog("Send Failed");
-    //writeLog(read_buffer);
+    CLog::Log(LOGERROR, "Xcddb::queryCDinfo Error sending \"%s\"", read_buffer.c_str());
+    m_lastError = E_NETWORK_ERROR_SEND;
     return false;
   }
-
-
-  // cddb read Antwort
   recv_buffer = Recv(true);
-  /*
-  210 OK, CDDB database entry follows (until terminating marker)
-  401 Specified CDDB entry not found.
-  402 Server error.
-  403 Database entry is corrupt.
-  409 No handshake.
-  */
-  char *tmp_str2;
-  tmp_str2 = (char *)recv_buffer.c_str();
-  switch (tmp_str2[0] - 48)
+  m_lastError = atoi(recv_buffer.c_str());
+  switch(m_lastError)
   {
-  case 2:
-    //   //writeLog("2-- XXXXXXXXXXXXXXXX");
+  case 210: //OK, CDDB database entry follows (until terminating marker)
     // Cool, I got it ;-)
-    writeCacheFile( tmp_str2, discid );
-    parseData(tmp_str2);
+    writeCacheFile( recv_buffer.c_str(), discid );
+    parseData(recv_buffer.c_str());
     break;
-  case 4:
-    //   //writeLog("4-- XXXXXXXXXXXXXXXX");
-    switch (tmp_str2[2] - 48)
-    {
-    case 1:  //401
-      //     //writeLog("401 XXXXXXXXXXXXXXXX");
-      m_lastError = 401;
-      break;
-    case 2:  //402
-      //     //writeLog("402 XXXXXXXXXXXXXXXX");
-      m_lastError = 402;
-      break;
-    case 3:  //403
-      //     //writeLog("403 XXXXXXXXXXXXXXXX");
-      m_lastError = 403;
-      break;
-    case 9:  //409
-      //     //writeLog("409 XXXXXXXXXXXXXXXX");
-      m_lastError = 409;
-      break;
-    default:
-      m_lastError = -1;
-      return false;
-    }
-    break;
+
+  case 401: //Specified CDDB entry not found.
+  case 402: //Server error.
+  case 403: //Database entry is corrupt.
+  case 409: //No handshake.
   default:
-    m_lastError = -1;
+    CLog::Log(LOGERROR, "Xcddb::queryCDinfo Error: \"%s\"", recv_buffer.c_str());
     return false;
   }
+
 
   //##########################################################
-  // Abmelden 2x Senden kommt sonst zu fehler
+  // Quit
   if ( ! Send("quit") )
   {
-    //writeLog("Send Failed");
+    CLog::Log(LOGERROR, "Xcddb::queryCDinfo Error sending \"%s\"", "quit");
+    m_lastError = E_NETWORK_ERROR_SEND;
+    return false;
+  }
+  recv_buffer = Recv(false);
+  m_lastError = atoi(recv_buffer.c_str());
+  switch(m_lastError)
+  {
+  case 0: //By some reason, also 0 is a valid value. This is not documented, and might depend on that no string was found and atoi then returns 0
+  case 230: //Closing connection.  Goodbye.
+    break;
+
+  case 530: //error, closing connection.
+  default:
+    CLog::Log(LOGERROR, "Xcddb::queryCDinfo Error: \"%s\"", recv_buffer.c_str());
     return false;
   }
 
-  // quit Antwort
-  Recv(false);
 
-  // Socket schliessen
+  //##########################################################
+  // Close connection
   if ( !closeSocket() )
   {
-    //writeLog("closeSocket Failed");
+    CLog::Log(LOGERROR, "Xcddb::queryCDinfo Error closing socket");
+    m_lastError = E_NETWORK_ERROR_SEND;
     return false;
   }
-  else
-  {
-    //  //writeLog("closeSocket OK");
-  }
-  m_lastError = QUERRY_OK;
   return true;
 }
 
@@ -1515,3 +1377,6 @@ bool Xcddb::isCDCached( CCdInfo* pInfo )
 
   return false;
 }
+
+
+
