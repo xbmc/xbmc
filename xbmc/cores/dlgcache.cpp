@@ -8,8 +8,12 @@ CDlgCache::CDlgCache(DWORD dwDelay)
 {
   m_pDlg = NULL;
   m_strLinePrev = "";
-  if(dwDelay == 0) 
+  m_bOpenTried = false;
+  if(dwDelay == 0)
+  {
     OpenDialog();
+    m_bOpenTried = true;
+  }
   else
     m_dwTimeStamp = GetTickCount() + dwDelay;
 
@@ -33,7 +37,11 @@ CDlgCache::~CDlgCache()
 
 void CDlgCache::OpenDialog()
 {
-
+  if (m_gWindowManager.IsRouted(true))
+  {
+    m_pDlg = NULL;
+    return;
+  }
   m_pDlg = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
   if (m_pDlg)
   {
@@ -69,10 +77,11 @@ void CDlgCache::Update()
     //Could be used to display some progress while in fullscreen
     return;
   }
-  else if( GetTickCount() > m_dwTimeStamp )
+  else if( GetTickCount() > m_dwTimeStamp  && !m_bOpenTried )
   {
+    m_bOpenTried = true;
     OpenDialog();
-    m_pDlg->Progress();
+    if (m_pDlg) m_pDlg->Progress();
   }
 }
 
