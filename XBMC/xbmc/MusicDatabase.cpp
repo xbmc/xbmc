@@ -2293,8 +2293,10 @@ bool CMusicDatabase::LookupCDDBInfo(bool bRequery/*=false*/)
     pDialogProgress->SetLine(0, ""); // Querying freedb for CDDB info
     pDialogProgress->SetLine(1, 256);
     pDialogProgress->SetLine(2, "");
+    pDialogProgress->ShowProgressBar(false);
     pDialogProgress->StartModal(m_gWindowManager.GetActiveWindow());
-    pDialogProgress->Progress();
+    while (pDialogProgress->GetEffectState() == EFFECT_IN)
+      pDialogProgress->Progress();
 
     // get cddb information
     if (!cddb.queryCDinfo(pCdInfo))
@@ -2337,6 +2339,11 @@ bool CMusicDatabase::LookupCDDBInfo(bool bRequery/*=false*/)
 
         pDialogProgress->Close();
       }
+      else if (lasterror == E_NO_MATCH_FOUND)
+      {
+        pCdInfo->SetNoCDDBInfo();
+        pDialogProgress->Close();
+      }
       else
       {
         pCdInfo->SetNoCDDBInfo();
@@ -2345,9 +2352,12 @@ bool CMusicDatabase::LookupCDDBInfo(bool bRequery/*=false*/)
         CGUIDialogOK *pDialogOK = (CGUIDialogOK *)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
         if (pDialogOK)
         {
+          CStdString strErrorText;
+          strErrorText.Format("[%d] %s", cddb.getLastError(), cddb.getLastErrorText());
+
           pDialogOK->SetHeading(255);
           pDialogOK->SetLine(0, 257); //ERROR
-          pDialogOK->SetLine(1, cddb.getLastErrorText() );
+          pDialogOK->SetLine(1, strErrorText.c_str() );
           pDialogOK->SetLine(2, "");
           pDialogOK->DoModal(m_gWindowManager.GetActiveWindow() );
         }
