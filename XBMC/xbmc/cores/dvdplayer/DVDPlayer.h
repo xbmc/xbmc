@@ -111,7 +111,7 @@ public:
   virtual void DoAudioWork()                                    { m_dvdPlayerAudio.DoWork(); }
   virtual bool OnAction(const CAction &action);
   virtual bool HasMenu();
-  virtual IChapterProvider* GetChapterProvider();
+  // virtual IChapterProvider* GetChapterProvider();
 
   virtual int OnDVDNavResult(void* pData, int iMessage);
   
