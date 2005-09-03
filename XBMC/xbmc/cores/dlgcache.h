@@ -26,4 +26,5 @@ protected:
   CGUIDialogProgress* m_pDlg;
   CStdString m_strLinePrev;  
   bool bSentCancel;
+  bool m_bOpenTried;
 };
