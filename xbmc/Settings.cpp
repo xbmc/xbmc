@@ -286,9 +286,7 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
   }
   GetString(pRootElement, "dashboard", g_stSettings.szDashboard, "C:\\xboxdash.xbe");
 
-  GetString(pRootElement, "CDDBIpAdres", g_stSettings.m_szCDDBIpAdres, "194.97.4.18");
-  if (g_stSettings.m_szCDDBIpAdres == "194.97.4.18")
-    GetString(pRootElement, "CDDBIpAddress", g_stSettings.m_szCDDBIpAdres, "194.97.4.18");
+  GetString(pRootElement, "CDDBIpAddress", g_stSettings.m_szCDDBIpAdres, "freedb.freedb.org");
   //g_stSettings.m_bUseCDDB=GetBoolean(pRootElement, "CDDBEnabled");
   GetString(pRootElement, "IMDBAddress", g_stSettings.m_szIMDBurl, "akas.imdb.com");
 
