@@ -1097,7 +1097,7 @@ int CXbmcHttp::xbmcGetGUIStatus()
           output += "\n<li>Description:" + strTmp;
         strTmp = ((CGUIButtonControl *)pControl)->GetExecuteAction();
         if (strTmp!="")
-          output += "\n<li>ExecutionSub:" + strTmp;
+          output += "\n<li>Execution:" + strTmp;
         long lHyperLinkWindowID = ((CGUIButtonControl *)pControl)->GetHyperLink();
         if (lHyperLinkWindowID != WINDOW_INVALID)
         {
