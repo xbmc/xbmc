@@ -9,6 +9,7 @@
 #include "Video\DVDVideoCodecLibMpeg2.h"
 #include "Audio\DVDAudioCodecFFmpeg.h"
 #include "Audio\DVDAudioCodecLiba52.h"
+#include "Audio\DVDAudioCodecLibMad.h"
 
 #define EMULATE_INTTYPES
 #include "..\ffmpeg\avcodec.h"
@@ -39,12 +40,17 @@ CDVDAudioCodec* CDVDFactoryCodec::CreateAudioCodec(CodecID codecID)
       pAudioCodec = new CDVDAudioCodecLiba52();
       break;
     }
+  case CODEC_ID_MP2:
+  case CODEC_ID_MP3:
+    {
+      pAudioCodec = new CDVDAudioCodecLibMad();
+      break;
+    }
   //case CODEC_ID_AAC:
   //case CODEC_ID_MPEG4AAC:
-  case CODEC_ID_MP2:
   case CODEC_ID_PCM_S16BE:
   case CODEC_ID_PCM_S16LE:
-  case CODEC_ID_MP3:
+
     {
       pAudioCodec = new CDVDAudioCodecFFmpeg();
       break;

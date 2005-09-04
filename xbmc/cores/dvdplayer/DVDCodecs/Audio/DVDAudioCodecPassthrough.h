@@ -17,7 +17,8 @@ public:
   virtual int GetChannels();
   virtual int GetSampleRate();
   virtual int GetBitsPerSample();
-  virtual bool NeedPasstrough() {return true;};
+  virtual bool NeedPasstrough() { return true; }
+  
 private:
 
   bool SyncDTSHeader( BYTE* pData, int iDataSize, int* iOffset, int* iFrameSize );

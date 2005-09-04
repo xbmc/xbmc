@@ -44,5 +44,5 @@ public:
   /*
    * returns if the codec requests to use passtrough
    */
-  virtual bool NeedPasstrough() = false;
+  virtual bool NeedPasstrough() { return false; }
 };
