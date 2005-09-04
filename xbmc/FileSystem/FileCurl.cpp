@@ -4,15 +4,9 @@
 #include "../Util.h"
 #include <sys/Stat.h>
 
-// TODO: This did once work, but it looks like one of the functions I was relying
-// on in the dllLoader has been rewritten (probably to work properly!)
-// need to debug this and find out why it no longer works.
+extern "C" int __stdcall dllselect(int ntfs, fd_set *readfds, fd_set *writefds, fd_set *errorfds, const timeval *timeout);
 
-// JM added to CVS 6 Aug 2005 so that others could develop this further.
-// darkie: seemed to be a problem with ftp directory parsing and some missing exports
-
-/* curl calls this routine to debug */
-
+// curl calls this routine to debug
 extern "C" int debug_callback(CURL_HANDLE *handle, curl_infotype info, char *output, size_t size, void *data)
 {
   if (info == CURLINFO_DATA_IN || info == CURLINFO_DATA_OUT)
@@ -42,8 +36,6 @@ extern "C" size_t header_callback(void *ptr, size_t size, size_t nmemb, void *st
   CFileCurl *file = (CFileCurl *)stream;
   return file->HeaderCallback(ptr, size, nmemb);
 }
-
-extern "C" int __stdcall dllselect(int ntfs, fd_set *readfds, fd_set *writefds, fd_set *errorfds, const timeval *timeout);
 
 size_t CFileCurl::HeaderCallback(void *ptr, size_t size, size_t nmemb)
 {
@@ -360,10 +352,30 @@ unsigned int CFileCurl::Read(void *lpBuf, __int64 uiBufSize)
 /* use to attempt to fill the read buffer up to requested number of bytes */
 int CFileCurl::FillBuffer(unsigned int want, int waittime)
 {
+  int maxfd;
+  fd_set fdread;
+  fd_set fdwrite;
+  fd_set fdexcep;
+
+  FD_ZERO(&fdread);
+  FD_ZERO(&fdwrite);
+  FD_ZERO(&fdexcep);
+
+  // 500 msec timeout
+  struct timeval timeout;
+  timeout.tv_sec = 0;
+  timeout.tv_usec = 500 * 1000;
+    
   // only attempt to fill buffer if transactions still running and buffer
   // doesnt exceed required size already
   while (m_stillRunning && m_buffer.GetMaxReadSize() < want + BUFFER_SIZE && m_buffer.GetMaxWriteSize() > 0)
   {
+    // get file descriptors from the transfers
+    g_curlInterface.multi_fdset(m_multiHandle, &fdread, &fdwrite, &fdexcep, &maxfd);
+
+    // wait until data is avialable or a timeout occours
+    int rc = dllselect(maxfd + 1, &fdread, &fdwrite, &fdexcep, &timeout);
+    
     // fill buffer
     while(g_curlInterface.multi_perform(m_multiHandle, &m_stillRunning) == CURLM_CALL_MULTI_PERFORM)
     {
