@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 04-09-2005 fixed: libcurl consumed 100% cpu when downloading data
  - 03-09-2005 fixed: clashes between mplayer and filerar progressbars.
  - 03-09-2005 added: sf.net patch [ 1257055 ] - instable behaivour in cddb.cpp - thanks to pade2!
  - 03-09-2005 fixed: filerar would fail to open first file in an archive if the archive had a comment.
