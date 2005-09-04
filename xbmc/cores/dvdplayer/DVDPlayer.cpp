@@ -1,10 +1,9 @@
 /* TODO / BUGS
-* - when playing audio only, xbmc renders the screen itself, but we don't get 50 / 60 fps. player bug or general xbmc bug? (XBMC bug, happens in music view only)
 * - create a seperate subtitle class for handling subtitles (we should support seperate vob / srt files too)
 *   and cleanup al SPUInfo realted code in the DVDPlayer class
 * -
 * - keep track of criticalsections that dll's initialize (DLL Loader)
-* - when stopping a movie, the latest packet that comes from the demuxer is not freed
+* - when stopping a movie, the latest packet that comes from the demuxer is not freed???
 */
 
 #include "../../stdafx.h"
@@ -19,7 +18,7 @@
 #include "DVDDemuxers\DVDDemuxUtils.h"
 #include "DVDDemuxers\DVDFactoryDemuxer.h"
 
-#include "DVDCodecs\DVDVideoCodec.h"
+#include "DVDCodecs\Video\DVDVideoCodec.h"
 
 #include "DVDCodecs\DVDFactoryCodec.h"
 #include "DVDCodecs\DVDCodecUtils.h"
