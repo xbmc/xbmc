@@ -3,7 +3,7 @@
 
 #include "../../utils/thread.h"
 #include "DVDDemuxers\DVDPacketQueue.h"
-#include "DVDCodecs\DVDVideoCodec.h"
+#include "DVDCodecs\Video\DVDVideoCodec.h"
 #include "DVDClock.h"
 #include "DVDOverlay.h"
 #include "../VideoRenderers/RenderManager.h"
