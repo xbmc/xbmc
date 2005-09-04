@@ -2,13 +2,13 @@
 #include "../../../stdafx.h"
 #include "DVDFactoryCodec.h"
 
-#include "DVDVideoCodec.h"
-#include "DVDAudioCodec.h"
+#include "Video\DVDVideoCodec.h"
+#include "Audio\DVDAudioCodec.h"
 
-#include "DVDVideoCodecFFmpeg.h"
-#include "DVDVideoCodecLibMpeg2.h"
-#include "DVDAudioCodecFFmpeg.h"
-#include "DVDAudioCodecLiba52.h"
+#include "Video\DVDVideoCodecFFmpeg.h"
+#include "Video\DVDVideoCodecLibMpeg2.h"
+#include "Audio\DVDAudioCodecFFmpeg.h"
+#include "Audio\DVDAudioCodecLiba52.h"
 
 #define EMULATE_INTTYPES
 #include "..\ffmpeg\avcodec.h"

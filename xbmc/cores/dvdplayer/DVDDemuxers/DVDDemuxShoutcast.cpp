@@ -102,6 +102,10 @@ CDVDDemux::DemuxPacket* CDVDDemuxShoutcast::Read()
 {
   int iRead = 0;
   
+  // XXX
+  // if meta interval is greater than FileCurl's max read size (currently 64k)
+  // it will simply fail becuse the meta-interval will get incorrect
+  
   int iDataToRead = SHOUTCAST_BUFFER_SIZE;
   if (m_iMetaStreamInterval > 0) iDataToRead = m_iMetaStreamInterval;
   
