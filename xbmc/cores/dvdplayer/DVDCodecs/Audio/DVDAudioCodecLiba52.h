@@ -20,7 +20,6 @@ public:
   virtual int GetChannels();
   virtual int GetSampleRate();
   virtual int GetBitsPerSample();
-  virtual bool NeedPasstrough() {return false;};
 
   bool SyncAC3Header(BYTE* pData, int iDataSize, int* iOffset, int* iFrameSize );
 
