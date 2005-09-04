@@ -2,9 +2,9 @@
 #include "../../stdafx.h"
 #include "DVDPlayerAudio.h"
 #include "DVDPlayer.h"
-#include "DVDCodecs\DVDAudioCodec.h"
+#include "DVDCodecs\Audio\DVDAudioCodec.h"
 #include "DVDCodecs\DVDFactoryCodec.h"
-#include "DVDCodecs\dvdaudiocodecpassthrough.h"
+#include "DVDCodecs\Audio\dvdaudiocodecpassthrough.h"
 
 #include "..\..\util.h"
 

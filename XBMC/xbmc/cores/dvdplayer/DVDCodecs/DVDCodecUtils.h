@@ -1,8 +1,9 @@
 
 #pragma once
 
-#include "DVDVideoCodec.h"
-#include "../../VideoRenderers/XBoxRenderer.h" // for YV12Image definition
+#include "Video\DVDVideoCodec.h"
+
+struct YV12Image;
 
 class CDVDCodecUtils
 {

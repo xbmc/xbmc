@@ -1,7 +1,7 @@
 
 #include "../../../stdafx.h"
 #include "DVDCodecUtils.h"
-
+#include "..\..\VideoRenderers\XBoxRenderer.h" // for YV12Image definition
 
 // forward declarations
 void fast_memcpy(void* d, const void* s, unsigned n);
