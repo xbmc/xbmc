@@ -21,7 +21,6 @@ public:
   virtual int GetChannels();
   virtual int GetSampleRate();
   virtual int GetBitsPerSample();
-  virtual bool NeedPasstrough() {return false;};
 
 protected:
   AVCodecContext* m_pCodecContext;
