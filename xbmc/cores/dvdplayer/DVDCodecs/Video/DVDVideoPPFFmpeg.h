@@ -3,7 +3,6 @@
 
 #include "DVDVideoCodec.h"
 
-
 class CDVDVideoPPFFmpeg
 {
 public:

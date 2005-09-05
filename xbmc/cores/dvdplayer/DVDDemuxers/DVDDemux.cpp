@@ -1,8 +1,7 @@
 
 #include "../../../stdafx.h"
 #include "DVDDemux.h"
-#include "..\ffmpeg\ffmpeg.h"
-
+#include "..\DVDCodecs\DVDCodecs.h"
 
 void CDemuxStreamAudio::GetStreamType(std::string& strInfo)
 {

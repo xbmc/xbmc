@@ -92,6 +92,8 @@ CDVDDemuxFFmpeg::CDVDDemuxFFmpeg() : CDVDDemux()
   m_pInput = NULL;
   InitializeCriticalSection(&m_critSection);
   for (int i = 0; i < MAX_STREAMS; i++) m_streams[i] = NULL;
+  m_bLoadedDllAvFormat = false;
+  m_bLoadedDllAvCodec = false;
 }
 
 CDVDDemuxFFmpeg::~CDVDDemuxFFmpeg()
@@ -100,16 +102,63 @@ CDVDDemuxFFmpeg::~CDVDDemuxFFmpeg()
   DeleteCriticalSection(&m_critSection);
 }
 
-void CDVDDemuxFFmpeg::Lock()
+bool CDVDDemuxFFmpeg::LoadDlls()
 {
-  EnterCriticalSection(&m_critSection);
+  if (!m_bLoadedDllAvCodec)
+  {
+    DllLoader* pDll = g_sectionLoader.LoadDLL(DVD_AVCODEC_DLL);
+    if (!pDll)
+    {
+      CLog::Log(LOGERROR, "CDVDDemuxFFmpeg: Unable to load dll %s", DVD_AVCODEC_DLL);
+      return false;
+    }
+    
+    if (!dvdplayer_load_dll_avcodec(*pDll))
+    {
+      CLog::Log(LOGERROR, "CDVDDemuxFFmpeg: Unable to resolve exports from %s", DVD_AVFORMAT_DLL);
+      UnloadDlls();
+      return false;
+    }
+    m_bLoadedDllAvCodec = true;
+  }
+  
+  if (!m_bLoadedDllAvFormat)
+  {
+    DllLoader* pDll = g_sectionLoader.LoadDLL(DVD_AVFORMAT_DLL);
+    if (!pDll)
+    {
+      CLog::Log(LOGERROR, "CDVDDemuxFFmpeg: Unable to load dll %s", DVD_AVFORMAT_DLL);
+      UnloadDlls();
+      return false;
+    }
+    
+    if (!dvdplayer_load_dll_avformat(*pDll))
+    {
+      CLog::Log(LOGERROR, "CDVDDemuxFFmpeg: Unable to resolve exports from %s", DVD_AVCODEC_DLL);
+      UnloadDlls();
+      return false;
+    }
+    m_bLoadedDllAvFormat = true;
+  }
+  
+  return true;
 }
 
-void CDVDDemuxFFmpeg::Unlock()
+void CDVDDemuxFFmpeg::UnloadDlls()
 {
-  LeaveCriticalSection(&m_critSection);
-}
+  if (m_bLoadedDllAvCodec)
+  {
+    g_sectionLoader.UnloadDLL(DVD_AVCODEC_DLL);
+    m_bLoadedDllAvCodec = false;
+  }
 
+  if (m_bLoadedDllAvFormat)
+  {
+    g_sectionLoader.UnloadDLL(DVD_AVFORMAT_DLL);
+    m_bLoadedDllAvFormat = false;
+  }
+}
+  
 bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
 {
   AVInputFormat* iformat = NULL;
@@ -117,6 +166,8 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
 
   if (!pInput) return false;
 
+  if (!LoadDlls()) return false;
+  
   // set ffmpeg logging, dvdplayer_log is staticly defined in ffmpeg.h
   av_log_set_callback(dvdplayer_log);
 
@@ -232,6 +283,8 @@ void CDVDDemuxFFmpeg::Dispose()
   m_pInput = NULL;
 
   ContextDeInit();
+  
+  UnloadDlls();
 }
 
 /*

@@ -1,6 +1,7 @@
 
 #include "../../../stdafx.h"
 #include "DVDFactoryDemuxer.h"
+#include "..\DVDCodecs\DVDCodecs.h"
 
 #include "..\DVDInputStreams\DVDInputStream.h"
 #include "..\DVDInputStreams\DVDInputStreamHttp.h"
@@ -20,3 +21,4 @@ CDVDDemux* CDVDFactoryDemuxer::CreateDemuxer(CDVDInputStream* pInputStream)
   
   return new CDVDDemuxFFmpeg();
 }
+

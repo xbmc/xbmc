@@ -8,7 +8,6 @@
 
 #include "../../stdafx.h"
 #include "DVDPlayer.h"
-#include "DVDPlayerDLL.h"
 
 #include "DVDInputStreams\DVDInputStream.h"
 #include "DVDInputStreams\DVDFactoryInputStream.h"
@@ -29,9 +28,6 @@
 CDVDPlayer::CDVDPlayer(IPlayerCallback& callback)
     : IPlayer(callback), CThread(), m_dvdPlayerVideo(&m_dvdspus, &m_clock), m_dvdPlayerAudio(&m_clock)
 {
-  m_pDLLavformat = NULL;
-  m_pDLLavcodec = NULL;
-
   m_pDemuxer = NULL;
   m_pInputStream = NULL;
 
@@ -61,80 +57,6 @@ CDVDPlayer::~CDVDPlayer()
   DeleteCriticalSection(&m_critStreamSection);
 }
 
-bool CDVDPlayer::Load()
-{
-  if (!m_pDLLavcodec)
-  {
-    CLog::Log(LOGNOTICE, "CDVDPlayer::Load() Loading avcodec.dll");
-    m_pDLLavcodec = new DllLoader("Q:\\system\\players\\dvdplayer\\avcodec.dll", true);
-    if ( !m_pDLLavcodec->Parse() )
-    {
-      CLog::Log(LOGERROR, "CDVDPlayer::Load() parse avcodec.dll failed");
-      delete m_pDLLavcodec;
-      m_pDLLavcodec = NULL;
-      return false;
-    }
-    CLog::Log(LOGNOTICE, "CDVDPlayer::Load() resolving imports for avcodec.dll");
-    if ( !m_pDLLavcodec->ResolveImports() )
-    {
-      CLog::Log(LOGERROR, "CDVDPlayer::Load() resolving imports for avcodec.dll failed");
-    }
-    CLog::Log(LOGNOTICE, "CDVDPlayer::Load() resolving exports for avcodec.dll");
-    if (!dvdplayer_load_dll_avcodec(*m_pDLLavcodec))
-    {
-      CLog::Log(LOGERROR, "CDVDPlayer::Load() resolving exports for avcodec.dll failed");
-      Unload();
-      return false;
-    }
-  }
-
-  if (!m_pDLLavformat)
-  {
-    CLog::Log(LOGNOTICE, "CDVDPlayer::Load() Loading avformat.dll");
-    m_pDLLavformat = new DllLoader("Q:\\system\\players\\dvdplayer\\avformat.dll", true);
-    if (!m_pDLLavformat->Parse())
-    {
-      CLog::Log(LOGERROR, "CDVDPlayer::Load() parse avformat.dll failed");
-      delete m_pDLLavformat;
-      m_pDLLavformat = NULL;
-      return false;
-    }
-    CLog::Log(LOGNOTICE, "CDVDPlayer::Load() resolving imports for avformat.dll");
-    if (!m_pDLLavformat->ResolveImports() )
-    {
-      CLog::Log(LOGERROR, "CDVDPlayer::Load() resolving imports for avformat.dll failed");
-    }
-    CLog::Log(LOGNOTICE, "CDVDPlayer::Load() resolving exports for avformat.dll");
-    if (!dvdplayer_load_dll_avformat(*m_pDLLavformat))
-    {
-      CLog::Log(LOGERROR, "CDVDPlayer::Load() resolving exports for avformat.dll failed");
-      Unload();
-      return false;
-    }
-  }
-
-  return true;
-}
-
-void CDVDPlayer::Unload()
-{
-  if (m_pDLLavformat)
-  {
-    CLog::Log(LOGNOTICE, "CDVDPlayer::Unload() Unloading avformat.dll");
-    delete m_pDLLavformat;
-    m_pDLLavformat = NULL;
-  }
-
-  if (m_pDLLavcodec)
-  {
-    CLog::Log(LOGNOTICE, "CDVDPlayer::Unload() Unloading avcodec.dll");
-    delete m_pDLLavcodec;
-    m_pDLLavcodec = NULL;
-  }
-
-  CLog::Log(LOGNOTICE, "CDVDPlayer::Unload() Done unloading dll's");
-}
-
 bool CDVDPlayer::OpenFile(const CFileItem& file, __int64 iStartTime)
 {
   CStdString strFile = file.m_strPath;
@@ -147,8 +69,6 @@ bool CDVDPlayer::OpenFile(const CFileItem& file, __int64 iStartTime)
 
   m_bAbortRequest = false;
   m_iSpeed = 1;
-
-  if (!Load()) return false;
 
   m_dvd.state = DVDSTATE_NORMAL;
   m_dvd.iSelectedSPUStream = -1;
@@ -429,9 +349,6 @@ void CDVDPlayer::OnExit()
     delete m_pInputStream;
   }
   m_pInputStream = NULL;
-
-  // unload our dll's
-  Unload();
 
   // if we didn't stop playing, advance to the next item in xbmc's playlist
   if (!m_bAbortRequest) m_callback.OnPlayBackEnded();
