@@ -982,33 +982,41 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem)
     iPosX = pList->GetXPosition() + pList->GetWidth() / 2;
     iPosY = pList->GetYPosition() + pList->GetHeight() / 2;
   }
-  bool bEnabledDVD = strcmp(g_stSettings.m_szExternalDVDPlayer, "dvdplayerbeta") == 0;
   // mark the item
   bool bSelected = m_vecItems[iItem]->IsSelected(); // item maybe selected (playlistitem)
   m_vecItems[iItem]->Select(true);
+
   // popup the context menu
   CGUIDialogContextMenu *pMenu = (CGUIDialogContextMenu *)m_gWindowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
   if (!pMenu) return ;
   // load our menu
   pMenu->Initialize();
+
   // add the needed buttons
   int btn_Show_Info     = pMenu->AddButton(13346); // Show Video Information
   int btn_Resume        = pMenu->AddButton(13381); // Resume Video
   int btn_Queue         = pMenu->AddButton(13347); // Add to Playlist
   int btn_Now_Playing   = pMenu->AddButton(13350); // Now Playing...
-  int btn_Query         = pMenu->AddButton(13349); // Query Info For All Files
+
+  // hide scan button unless we're in files window
+  int btn_Query = 0;
+  if (GetID() == WINDOW_VIDEOS)
+    btn_Query = pMenu->AddButton(13349); // Query Info For All Files
+
   int btn_Search_IMDb   = pMenu->AddButton(13348); // Search IMDb...
+
   // dvd player placeholder
+  bool bEnabledDVD = strcmp(g_stSettings.m_szExternalDVDPlayer, "dvdplayerbeta") == 0;
   int btn_DVD = 0;
-  if(bEnabledDVD)
+  if (bEnabledDVD)
     btn_DVD = pMenu->AddButton(15213);
 
+  // hide delete button unless enabled, or in title window
   int btn_Delete = 0;
   if ((GetID() == WINDOW_VIDEOS && g_guiSettings.GetBool("VideoFiles.AllowFileDeletion")) || GetID() == WINDOW_VIDEO_TITLE)
     btn_Delete = pMenu->AddButton(117);             // Delete
 
   int btn_Settings      = pMenu->AddButton(5);      // Settings
-
 
   // check to see if the Resume Video button is applicable
   pMenu->EnableButton(btn_Resume, ResumeItemOffset(iItem)>0);
@@ -1038,10 +1046,8 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem)
   // position it correctly
   pMenu->SetPosition(iPosX - pMenu->GetWidth() / 2, iPosY - pMenu->GetHeight() / 2);
   pMenu->DoModal(GetID());
-  // Skip the DVD button if it doesn't exist
-
+  
   int btnid = pMenu->GetButton();
-
   if (btnid>0)
   {
     if (btnid == btn_Show_Info)

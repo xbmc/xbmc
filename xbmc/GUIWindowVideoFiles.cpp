@@ -590,7 +590,6 @@ void CGUIWindowVideoFiles::AddFileToDatabase(const CFileItem* pItem)
 
 void CGUIWindowVideoFiles::OnRetrieveVideoInfo(CFileItemList& items)
 {
-
   // for every file found
   for (int i = 0; i < (int)items.Size(); ++i)
   {
@@ -696,13 +695,23 @@ void CGUIWindowVideoFiles::OnRetrieveVideoInfo(CFileItemList& items)
 
 void CGUIWindowVideoFiles::OnScan()
 {
-  DoScan(m_vecItems);
+  // force stacking on for best results
+  // save stack state
+  int iStack = g_stSettings.m_iMyVideoVideoStack;
+  g_stSettings.m_iMyVideoVideoStack = STACK_SIMPLE;
+
+  CFileItemList items;
+  GetStackedDirectory(m_Directory.m_strPath, items);
+  DoScan(m_Directory.m_strPath, items);
+
+  // restore stack state
+  g_stSettings.m_iMyVideoVideoStack = iStack;
 }
 
-bool CGUIWindowVideoFiles::DoScan(CFileItemList& items)
+bool CGUIWindowVideoFiles::DoScan(const CStdString &strPath, CFileItemList& items)
 {
-  // remove username + password from m_strDirectory for display in Dialog
-  CURL url(m_Directory.m_strPath);
+  // remove username + password from strPath for display in Dialog
+  CURL url(strPath);
   CStdString strStrippedPath;
   url.GetURLWithoutUserDetails(strStrippedPath);
 
@@ -745,18 +754,14 @@ bool CGUIWindowVideoFiles::DoScan(CFileItemList& items)
         if (pItem->GetLabel() != "..")
         {
           // load subfolder
-          CStdString strDir = m_Directory.m_strPath;
-          m_Directory.m_strPath = pItem->m_strPath;
           CFileItemList subDirItems;
-          m_rootDir.GetDirectory(pItem->m_strPath, subDirItems);
+          GetStackedDirectory(pItem->m_strPath, subDirItems);
           if (m_dlgProgress)
             m_dlgProgress->Close();
-          if (!DoScan(subDirItems))
+          if (!DoScan(pItem->m_strPath, subDirItems))
           {
             bCancel = true;
           }
-
-          m_Directory.m_strPath = strDir;
           if (bCancel) break;
         }
       }
@@ -765,6 +770,26 @@ bool CGUIWindowVideoFiles::DoScan(CFileItemList& items)
 
   if (m_dlgProgress) m_dlgProgress->Close();
   return !bCancel;
+}
+
+void CGUIWindowVideoFiles::GetStackedDirectory(const CStdString &strPath, CFileItemList &items)
+{
+  items.Clear();
+  m_rootDir.GetDirectory(strPath, items);
+
+  // force stacking to be enabled
+  // save stack state
+  int iStack = g_stSettings.m_iMyVideoVideoStack;
+  g_stSettings.m_iMyVideoVideoStack = STACK_SIMPLE;
+
+  //sort list ascending by filename before stacking...
+  SSortVideoByName::m_iSortMethod = 0;
+  SSortVideoByName::m_bSortAscending = 1;
+  items.Sort(SSortVideoByName::Sort);
+  items.Stack();
+
+  // restore stack
+  g_stSettings.m_iMyVideoVideoStack = iStack;
 }
 
 void CGUIWindowVideoFiles::SetIMDBThumbs(CFileItemList& items)
