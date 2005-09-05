@@ -12,7 +12,6 @@
 #include "DVDPlayerMessenger.h"
 //#include "DVDChapterReader.h"
 
-class DllLoader;
 class CDVDTimerThread;
 class CDVDInputStream;
 class CDVDVideoCodec;
@@ -119,8 +118,6 @@ private:
   void LockStreams()   { EnterCriticalSection(&m_critStreamSection); }
   void UnlockStreams() { LeaveCriticalSection(&m_critStreamSection); }
   
-  bool Load();
-  void Unload();
   virtual void OnStartup();
   virtual void OnExit();
   virtual void Process();
@@ -161,8 +158,6 @@ private:
   
   CDVDInputStream* m_pInputStream;  // input stream for current playing file
   CDVDDemux* m_pDemuxer;            // demuxer for current playing file
-  DllLoader* m_pDLLavformat;        // avformat.dll handle
-  DllLoader* m_pDLLavcodec;         // avcodec.dll handle
   
   DVDInfo m_dvd;
   

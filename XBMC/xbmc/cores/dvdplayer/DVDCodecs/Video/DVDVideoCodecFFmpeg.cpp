@@ -6,7 +6,6 @@
 
 #include "..\..\ffmpeg\ffmpeg.h"
 
-
 #define RINT(x) ((x) >= 0 ? ((int)((x) + 0.5)) : ((int)((x) - 0.5)))
 
 CDVDVideoCodecFFmpeg::CDVDVideoCodecFFmpeg() : CDVDVideoCodec()
@@ -20,6 +19,8 @@ CDVDVideoCodecFFmpeg::CDVDVideoCodecFFmpeg() : CDVDVideoCodec()
 
   m_iScreenWidth = 0;
   m_iScreenHeight = 0;
+  
+  m_bDllLoaded = false;
 }
 
 CDVDVideoCodecFFmpeg::~CDVDVideoCodecFFmpeg()
@@ -31,7 +32,25 @@ bool CDVDVideoCodecFFmpeg::Open(CodecID codecID, int iWidth, int iHeight)
 {
   AVCodec* pCodec;
 
-  /* register all codecs, demux and protocols */
+  if (!m_bDllLoaded)
+  {
+    DllLoader* pDll = g_sectionLoader.LoadDLL(DVD_AVCODEC_DLL);
+    if (!pDll)
+    {
+      CLog::Log(LOGERROR, "CDVDVideoCodecFFmpeg: Unable to load dll %s", DVD_AVCODEC_DLL);
+      return false;
+    }
+    
+    if (!dvdplayer_load_dll_avcodec(*pDll))
+    {
+      CLog::Log(LOGERROR, "CDVDVideoCodecFFmpeg: Unable to resolve exports from %s", DVD_AVCODEC_DLL);
+      Dispose();
+      return false;
+    }
+    m_bDllLoaded = true;
+  }
+  
+  // register all codecs, demux and protocols
   av_log_set_callback(dvdplayer_log);
   av_register_all();
 
@@ -97,6 +116,12 @@ void CDVDVideoCodecFFmpeg::Dispose()
     if (m_pCodecContext->codec) avcodec_close(m_pCodecContext);
     av_free(m_pCodecContext);
     m_pCodecContext = NULL;
+  }
+  
+  if (m_bDllLoaded)
+  {
+    g_sectionLoader.UnloadDLL(DVD_AVCODEC_DLL);
+    m_bDllLoaded = false;
   }
 }
 

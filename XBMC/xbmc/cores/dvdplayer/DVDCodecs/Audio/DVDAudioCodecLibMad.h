@@ -4,8 +4,6 @@
 #include "DVDAudioCodec.h"
 #include "libmad\mad.h"
 
-class DllLoader;
-
 #define MAD_INPUT_SIZE (8 * 1024)
 #define MAD_DECODED_SIZE (16 * MAD_INPUT_SIZE)
 

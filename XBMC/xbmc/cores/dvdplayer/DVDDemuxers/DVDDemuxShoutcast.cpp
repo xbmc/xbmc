@@ -1,8 +1,7 @@
 
 #include "../../../stdafx.h"
 #include "..\DVDPlayerDLL.h"
-
-#include "..\ffmpeg\ffmpeg.h"
+#include "..\DVDCodecs\DVDCodecs.h"
 #include "..\DVDInputStreams\DVDInputStreamHttp.h"
 #include "DVDDemuxShoutcast.h"
 #include "DVDdemuxUtils.h"
