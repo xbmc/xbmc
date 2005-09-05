@@ -48,9 +48,12 @@ public:
 protected:
   int ReadFrame(AVPacket *packet);
   void AddStream(int iId);
-  void Lock();
-  void Unlock();
+  void Lock()   { EnterCriticalSection(&m_critSection); }
+  void Unlock() { LeaveCriticalSection(&m_critSection); }
 
+  bool LoadDlls();
+  void UnloadDlls();
+  
   bool ContextInit(const char* strFile, BYTE* buffer, int iBufferSize);
   void ContextDeInit();
 
@@ -61,4 +64,7 @@ protected:
   BYTE m_ffmpegBuffer[FFMPEG_FILE_BUFFER_SIZE];
   ByteIOContext m_ioContext;
   URLContext* m_pUrlContext;
+  
+  bool m_bLoadedDllAvFormat;
+  bool m_bLoadedDllAvCodec;
 };

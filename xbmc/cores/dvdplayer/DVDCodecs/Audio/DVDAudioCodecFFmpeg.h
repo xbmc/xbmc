@@ -28,4 +28,5 @@ protected:
   unsigned char m_buffer[AVCODEC_MAX_AUDIO_FRAME_SIZE];
   int m_iBufferSize;
   bool m_bOpenedCodec;
+  bool m_bDllLoaded;
 };

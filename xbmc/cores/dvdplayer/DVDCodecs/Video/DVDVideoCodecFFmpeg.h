@@ -31,4 +31,6 @@ protected:
 
   int m_iScreenWidth;
   int m_iScreenHeight;
+  
+  bool m_bDllLoaded;
 };
