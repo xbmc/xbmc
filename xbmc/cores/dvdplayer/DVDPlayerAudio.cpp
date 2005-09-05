@@ -45,9 +45,10 @@ bool CDVDPlayerAudio::OpenStream(CodecID codecID, int iChannels, int iSampleRate
   if (iWantedChannels == 5) iWantedChannels = 6;
 
   //Let codec downmix for us int the case of ac3
-  if( codecID == CODEC_ID_AC3 )
+  if (codecID == CODEC_ID_AC3 || codecID == CODEC_ID_DTS)
+  {
     iWantedChannels = 2;
-
+  }
 
   CLog::Log(LOGNOTICE, "Opening passtrough codec for: %i", codecID);
   m_pAudioCodec = new CDVDAudioCodecPassthrough();
