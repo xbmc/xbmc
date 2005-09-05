@@ -5,9 +5,10 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
- - 04-09-2005 fixed: when dvdplayer was paused, its timer was not paused.
- - 04-09-2005 fixed: when deleting an item from my video title view, the top item would be the selected item
- - 04-09-2005 added: libmad decoder to dvdplayer
+ - 05-09-2005 fixed [ 1281328 ] + [ 1281330 ] fixed navigation in imdb lookup thx to bubbadood
+ - 05-09-2005 fixed: when dvdplayer was paused, its timer was not paused.
+ - 05-09-2005 fixed: when deleting an item from my video title view, the top item would be the selected item
+ - 05-09-2005 added: libmad decoder to dvdplayer
  - 04-09-2005 fixed: libcurl consumed 100% cpu when downloading data
  - 03-09-2005 fixed: clashes between mplayer and filerar progressbars.
  - 03-09-2005 added: sf.net patch [ 1257055 ] - instable behaivour in cddb.cpp - thanks to pade2!
