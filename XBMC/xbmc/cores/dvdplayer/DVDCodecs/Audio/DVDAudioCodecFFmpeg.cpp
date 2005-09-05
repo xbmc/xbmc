@@ -23,7 +23,8 @@ CDVDAudioCodecFFmpeg::~CDVDAudioCodecFFmpeg()
 bool CDVDAudioCodecFFmpeg::Open(CodecID codecID, int iChannels, int iSampleRate, int iBits)
 {
   AVCodec* pCodec;
-
+  m_bOpenedCodec = false;
+      
   if (!m_bDllLoaded)
   {
     DllLoader* pDll = g_sectionLoader.LoadDLL(DVD_AVCODEC_DLL);
@@ -76,7 +77,6 @@ bool CDVDAudioCodecFFmpeg::Open(CodecID codecID, int iChannels, int iSampleRate,
   if (avcodec_open(m_pCodecContext, pCodec) < 0)
   {
     CLog::DebugLog("CDVDAudioCodecFFmpeg::Open() Unable to open codec");
-    m_bOpenedCodec = false;
     Dispose();
     return false;
   }
@@ -92,8 +92,8 @@ void CDVDAudioCodecFFmpeg::Dispose()
     if (m_bOpenedCodec) avcodec_close(m_pCodecContext);
     m_bOpenedCodec = false;
     av_free(m_pCodecContext);
+    m_pCodecContext = NULL;
   }
-  m_pCodecContext = NULL;
 
   if (m_bDllLoaded)
   {
