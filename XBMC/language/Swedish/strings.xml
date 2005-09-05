@@ -755,9 +755,10 @@
   <string><id>12370</id><value>Huvudlåsläge ändrat, huvudkoden inte angiven!</value></string>
   <string><id>12371</id><value>Var god ange ny huvudkod!</value></string>  
     
-  <string><id>12372</id><value>Lås filhanterare</value></string>
-  <string><id>12373</id><value>Låsinställningar</value></string>
-  <string><id>12374</id><value>Lås media</value></string>    
+  <string><id>12372</id><value>Lås Inställningar &amp; Mina Filer</value></string>
+  <string><id>12373</id><value>Inställningar &amp; Mina Filer</value></string>
+  <string><id>12374</id><value>Lås media</value></string>
+  <string><id>12375</id><value>Huvudanvändar läge</value></string>    
       
   <string><id>12600</id><value>Mitt väder</value></string>
   <string><id>12900</id><value>Skärmsläckare</value></string>
@@ -885,6 +886,8 @@
   <string><id>13396</id><value>Text- och ljud-inställningar</value></string>
   <string><id>13397</id><value>Aktivera undertexter</value></string>
   <string><id>13398</id><value>Bokmärken</value></string>
+  <string><id>13399</id><value>Ignorera "The" vid sortering</value></string>
+  <string><id>13400</id><value>Crossfade låtar från album</value></string>
   
   <string><id>14000</id><value>Stapling: Av</value></string>
   <string><id>14001</id><value>Stapling: Enkel</value></string>
