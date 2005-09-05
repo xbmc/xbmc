@@ -21,12 +21,17 @@ public:
   
   bool HadDiscontinuity(__int64 delay);
   void AdjustSpeedToMatch(__int64 currPts );
+  
+  void Pause();
+  void Resume();
+  
 protected:
 
   LARGE_INTEGER m_systemUsed;
   LARGE_INTEGER m_systemFrequency;
   LARGE_INTEGER m_startClock;
   __int64 m_iDisc;
+  __int64 m_iPaused;
   bool m_bReset;
 
   __int64 m_lastPts;
