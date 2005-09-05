@@ -429,13 +429,15 @@ void CDVDPlayer::Pause()
   if (m_iSpeed == 1)
   {
     //m_clock.Discontinuity(CLOCK_DISC_NORMAL, m_dvdPlayerAudio.GetClock());
-    m_dvdPlayerAudio.Resume();
+    m_clock.Resume();
     m_dvdPlayerVideo.Resume();
+    m_dvdPlayerAudio.Resume();
   }
   else
   {
     m_dvdPlayerAudio.Pause(); // XXX, this won't work for ffwd or ffrw
     m_dvdPlayerVideo.Pause();
+    m_clock.Pause();
   }
 }
 

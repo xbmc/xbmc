@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 04-09-2005 fixed: when dvdplayer was paused, its timer was not paused.
  - 04-09-2005 fixed: when deleting an item from my video title view, the top item would be the selected item
  - 04-09-2005 added: libmad decoder to dvdplayer
  - 04-09-2005 fixed: libcurl consumed 100% cpu when downloading data
