@@ -29,7 +29,8 @@ protected:
   virtual void OnInfo(int iItem);
 
   virtual void OnScan();
-  bool DoScan(CFileItemList& items);
+  bool DoScan(const CStdString& strPath, CFileItemList& items);
+  void GetStackedDirectory(const CStdString &strPath, CFileItemList &items);
   void OnRetrieveVideoInfo(CFileItemList& items);
   void LoadPlayList(const CStdString& strFileName);
   virtual bool GetDirectory(const CStdString &strDirectory, CFileItemList &items);
