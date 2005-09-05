@@ -55,7 +55,7 @@ bool CDVDAudioCodecPassthrough::SyncDTSHeader(BYTE* pData, int iDataSize, int* i
 
     while (i <= (iDataSize - 10))
     {
-      iLen = dts_syncinfo(pData, NULL, &iSampleRate, &m_BitRate);
+      iLen = helper_dts_syncinfo(pData, NULL, &iSampleRate, &m_BitRate);
       if (iLen > 0)
       {
         (*iFrameSize) = iLen;
