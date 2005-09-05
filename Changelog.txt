@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 05-09-2005 changed: video scan enables stacking for best results. this should fix the issues with dvd folders being added to the database multiple times.
+ - 05-09-2005 added: video scan button is hidden in context menu unless in files view
  - 05-09-2005 fixed [ 1281328 ] + [ 1281330 ] fixed navigation in imdb lookup thx to bubbadood
  - 05-09-2005 fixed: when dvdplayer was paused, its timer was not paused.
  - 05-09-2005 fixed: when deleting an item from my video title view, the top item would be the selected item
