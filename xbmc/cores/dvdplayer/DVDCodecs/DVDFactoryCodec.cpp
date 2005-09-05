@@ -9,6 +9,7 @@
 #include "Video\DVDVideoCodecLibMpeg2.h"
 #include "Audio\DVDAudioCodecFFmpeg.h"
 #include "Audio\DVDAudioCodecLiba52.h"
+#include "Audio\DVDAudioCodecLibDts.h"
 #include "Audio\DVDAudioCodecLibMad.h"
 
 #define EMULATE_INTTYPES
@@ -40,6 +41,11 @@ CDVDAudioCodec* CDVDFactoryCodec::CreateAudioCodec(CodecID codecID)
       pAudioCodec = new CDVDAudioCodecLiba52();
       break;
     }
+  case CODEC_ID_DTS:
+    {
+      pAudioCodec = new CDVDAudioCodecLibDts();
+      break;
+    }
   case CODEC_ID_MP2:
   case CODEC_ID_MP3:
     {
@@ -48,6 +54,7 @@ CDVDAudioCodec* CDVDFactoryCodec::CreateAudioCodec(CodecID codecID)
     }
   //case CODEC_ID_AAC:
   //case CODEC_ID_MPEG4AAC:
+  //case CODEC_ID_DTS:
   case CODEC_ID_PCM_S16BE:
   case CODEC_ID_PCM_S16LE:
 
@@ -55,7 +62,7 @@ CDVDAudioCodec* CDVDFactoryCodec::CreateAudioCodec(CodecID codecID)
       pAudioCodec = new CDVDAudioCodecFFmpeg();
       break;
     }
-  case CODEC_ID_DTS:
+  //case CODEC_ID_DTS:
     {
       // dts stream
       // asyncaudiostream is unable to open dts streams, use ac97 for this
