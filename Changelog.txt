@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 07-09-2005 changed: increased progressbar timeout to 3 seconds on startup instead of 2
+ - 07-09-2005 fixed: audio stutters when playback is started.
  - 06-09-2005 fixed: mplayer would leak about 300k on each run, du to UnrarXLib not cleaning up when failing
  - 06-09-2005 updated: mplayer.dll (reverted change for no seek after fastforward)
  - 06-09-2005 changed: iso9660 now prefers rockridge extension instead of joliet extension.

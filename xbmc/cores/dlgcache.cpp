@@ -110,17 +110,23 @@ bool CDlgCache::OnFileCallback(void* pContext, int ipercent)
 
 void CDlgCache::Process()
 {
-  while(!CThread::m_bStop )
+  while( true )
   {
-    try 
-    {
+    
+    { //Section to make the lock go out of scope before sleep
       CSingleLock lock(g_graphicsContext);
-      Update();
+      if( CThread::m_bStop ) break;
+
+      try 
+      {        
+        Update();
+      }
+      catch(...)
+      {
+        CLog::Log(LOGERROR, "Exception in CDlgCache::Process()");
+      }
     }
-    catch(...)
-    {
-      CLog::Log(LOGERROR, "Exception in CDlgCache::Process()");
-    }
+
     Sleep(10);
   }
 };
