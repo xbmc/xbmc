@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 06-09-2005 updated: mplayer.dll (reverted change for no seek after fastforward)
  - 06-09-2005 changed: iso9660 now prefers rockridge extension instead of joliet extension.
  - 05-09-2005 added: libdts to dvdplayer
  - 05-09-2005 changed: video scan enables stacking for best results. this should fix the issues with dvd folders being added to the database multiple times.
