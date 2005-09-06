@@ -183,11 +183,9 @@ int urarlib_get(char *rarfile, char *targetPath, char *fileToExtract, char *libp
 	int bRes = 1;
 
 	// Set the arguments for the extract command
-    CommandData * pCmd = NULL;
+  auto_ptr<CommandData> pCmd (new CommandData);
 
-	pCmd = new CommandData;
-
-	if ( pCmd )
+  if( pCmd.get() )
 	{
 		strcpy(pCmd->Command, "X");
 		pCmd->AddArcName(rarfile,NULL);
@@ -216,29 +214,26 @@ int urarlib_get(char *rarfile, char *targetPath, char *fileToExtract, char *libp
 			  pCmd->Password[sizeof(pCmd->Password) - 1] = '\0';
 		  }
 
-		// Opent the archive
-		Archive * pArc = NULL;
-		pArc = new Archive(pCmd);
-
-		if ( pArc )
+		// Opent the archive    
+		auto_ptr<Archive> pArc( new Archive(pCmd.get()) );
+    
+    if( pArc.get() )
 		{
 			if (!pArc->WOpen(rarfile,NULL))
 				return 0;
 
 			if (pArc->IsOpened() && pArc->IsArchive(true))
 			{
-				CmdExtract * pExtract = NULL;
-
-				pExtract = new CmdExtract;
-
-				if ( pExtract )
+				auto_ptr<CmdExtract> pExtract( new CmdExtract );
+        
+        if( pExtract.get() )
 				{
           pExtract->GetDataIO().hProgressBar = CreateEvent(NULL,true,false,NULL);
           pExtract->GetDataIO().SetCurrentCommand(*(pCmd->Command));
 					struct FindData FD;
 					if (FindFile::FastFind(rarfile,NULL,&FD))
 						pExtract->GetDataIO().TotalArcSize+=FD.Size;
-          pExtract->ExtractArchiveInit(pCmd,*pArc);
+          pExtract->ExtractArchiveInit(pCmd.get(),*pArc);
           while (1)
 					{
             bool bProgressBar = false;
@@ -276,7 +271,7 @@ int urarlib_get(char *rarfile, char *targetPath, char *fileToExtract, char *libp
             else
               bProgressBar = false;
 
-            if (!pExtract->ExtractCurrentFile(pCmd,*pArc,Size,Repeat))
+            if (!pExtract->ExtractCurrentFile(pCmd.get(),*pArc,Size,Repeat))
 						{
                bRes = FALSE;
 						 	 break;
@@ -304,12 +299,9 @@ int urarlib_get(char *rarfile, char *targetPath, char *fileToExtract, char *libp
           
           CloseHandle(pExtract->GetDataIO().hProgressBar);
          
-					delete pExtract;
 				}
 			}
-			delete pArc;
 		}
-		delete pCmd;
 	}
 
 	File::RemoveCreated();
@@ -331,9 +323,8 @@ int urarlib_list(char *rarfile, ArchiveList_struct **ppList, char *libpassword)
 	InitCRC();
 
 	// Set the arguments for the extract command
-    CommandData * pCmd = new CommandData;
+  auto_ptr<CommandData> pCmd( new CommandData );
 
-	if ( pCmd )
 	{
 		strcpy(pCmd->Command, "L");
 		pCmd->AddArcName(rarfile, NULL);
@@ -347,8 +338,8 @@ int urarlib_list(char *rarfile, ArchiveList_struct **ppList, char *libpassword)
 		}
 
 		// Opent the archive
-		Archive * pArc = new Archive(pCmd);
-		if ( pArc )
+		auto_ptr<Archive> pArc( new Archive(pCmd.get()) );
+		if ( pArc.get() )
 		{
 			if (!pArc->WOpen(rarfile,NULL))
 				return 0;
@@ -392,9 +383,7 @@ int urarlib_list(char *rarfile, ArchiveList_struct **ppList, char *libpassword)
 					pArc->SeekToNext();
 				}
 			}
-			delete pArc;
 		}
-		delete pCmd;
 	}
 
 	File::RemoveCreated();

@@ -1784,14 +1784,22 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
       }
       
       // check for rarred subtitles
+      bool bFoundSubs=false;
+
       CStdString strRarPath = CUtil::GetFileName(strMovie);
-	    CUtil::ReplaceExtension(strRarPath , ".rar", strRarPath);
-      strRarPath.Format("%s%s", strLookInPaths[step].c_str(),strRarPath);
-	    bool bFoundSubs = CacheRarSubtitles( vecExtensionsCached, strRarPath,  sub_exts ); 
+	    CUtil::ReplaceExtension(strRarPath , ".rar", strDest);
+      strRarPath.Format("%s%s", strLookInPaths[step].c_str(),strDest.c_str());
+      if( CFile::Exists(strRarPath) )
+	      bFoundSubs |= CacheRarSubtitles( vecExtensionsCached, strRarPath,  sub_exts ); 
+      
       strRarPath.Format("%s%s", strLookInPaths[step].c_str(),"subtitles.rar");
-	    bFoundSubs &= CacheRarSubtitles( vecExtensionsCached, strRarPath,  sub_exts ); 
+	    if( CFile::Exists(strRarPath) )
+        bFoundSubs |= CacheRarSubtitles( vecExtensionsCached, strRarPath,  sub_exts ); 
+
       strRarPath.Format("%s%s", strLookInPaths[step].c_str(),"subs.rar");
-	    bFoundSubs &= CacheRarSubtitles( vecExtensionsCached, strRarPath,  sub_exts ); 
+	    if( CFile::Exists(strRarPath) )
+        bFoundSubs |= CacheRarSubtitles( vecExtensionsCached, strRarPath,  sub_exts ); 
+  
       g_directoryCache.ClearDirectory(strLookInPaths[step]);
     }
   }
