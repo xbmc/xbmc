@@ -41,6 +41,7 @@ const string iso9660::ParseName(struct iso9660_Directory& isodir)
   {
     iPos++;
   }
+
   if (isodir.FileName[iPos] == 'R' && isodir.FileName[iPos + 1] == 'R')
   {
     // rockridge
@@ -72,6 +73,23 @@ const string iso9660::ParseName(struct iso9660_Directory& isodir)
   }
   return temp_text;
 }
+
+bool iso9660::IsRockRidge(struct iso9660_Directory& isodir)
+{
+  int iPos = isodir.Len_Fi;
+
+  if (isodir.FileName[iPos] == 0)
+  {
+    iPos++;
+  }
+
+  // found rock ridge in system use field
+  if (isodir.FileName[iPos] == 'R' && isodir.FileName[iPos + 1] == 'R')
+    return true;
+
+  return false;
+}
+
 //******************************************************************************************************************
 struct iso_dirtree *iso9660::ReadRecursiveDirFromSector( DWORD sector, const char *path )
 {
@@ -214,6 +232,7 @@ struct iso_dirtree *iso9660::ReadRecursiveDirFromSector( DWORD sector, const cha
       {
         string temp_text ;
         bool bContinue = false;
+
         if ( m_info.joliet )
         {
           bContinue = true;
@@ -419,9 +438,28 @@ void iso9660::Scan()
     m_info.HeaderPos = 0x8000;
     int current = 0x8000;
 
-    while ( m_info.iso.byOne != 255 )
+    // first check if first file in the current VD has a rock-ridge NM. if it has, disable joliet
+    ::SetFilePointer( m_info.ISO_HANDLE, m_info.iso.wSectorSizeLE * ((iso9660_Directory*)(&m_info.iso.szRootDir))->dwFileLocationLE, 0, FILE_BEGIN );
+    
+    DWORD lpNumberOfBytesRead;
+    char* pCurr_dir_cache = (char*)malloc( 16*m_info.iso.wSectorSizeLE );
+    iso9660_Directory isodir;
+    BOOL bResult = ::ReadFile( m_info.ISO_HANDLE, pCurr_dir_cache, m_info.iso.wSectorSizeLE, &lpNumberOfBytesRead, NULL );
+    memcpy( &isodir, pCurr_dir_cache, sizeof(isodir));
+
+    int iso9660searchpointer=0;
+    if ( isodir.ucRecordLength )
+      iso9660searchpointer += isodir.ucRecordLength;
+    else
+      iso9660searchpointer = (iso9660searchpointer - (iso9660searchpointer % m_info.iso.wSectorSizeLE)) + m_info.iso.wSectorSizeLE;
+    
+    memcpy( &isodir, pCurr_dir_cache + iso9660searchpointer,min(sizeof(isodir), sizeof(m_info.isodir)));
+    free(pCurr_dir_cache);
+    if (bResult && lpNumberOfBytesRead == m_info.iso.wSectorSizeLE)
+      bResult = IsRockRidge(isodir);
+    while ( m_info.iso.byOne != 255)
     {
-      if ( ( m_info.iso.byZero3[0] == 0x25 ) && ( m_info.iso.byZero3[1] == 0x2f ) )
+      if ( ( m_info.iso.byZero3[0] == 0x25 ) && ( m_info.iso.byZero3[1] == 0x2f ) && !bResult )
       {
         switch ( m_info.iso.byZero3[2] )
         {
