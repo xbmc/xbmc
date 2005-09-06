@@ -42,14 +42,8 @@ void CPixelShaderRenderer::PrepareDisplay()
 
 void CPixelShaderRenderer::Render()
 {
-
-  ResetEvent(m_eventTexturesDone);
-
   // this is the low memory renderer
   RenderLowMem();
-
-  //Okey, when the gpu is done with the textures here, they are free to be modified again
-  m_pD3DDevice->InsertCallback(D3DCALLBACK_WRITE,&TextureCallback, (DWORD)m_eventTexturesDone);
 
   RenderOSD();
 
