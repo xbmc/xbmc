@@ -133,14 +133,17 @@ bool CRarManager::GetFilesInRar(CFileItemList& vecpItems, const CStdString& strR
 {
   CSingleLock lock(m_CritSection);
   
-  ArchiveList_struct* pFileList;
+  ArchiveList_struct* pFileList = NULL;
   std::map<CStdString,std::pair<ArchiveList_struct*,std::vector<CFileInfo> > >::iterator it = m_ExFiles.find(strRarPath);
   if (it == m_ExFiles.end())
   {
     if( urarlib_list((char*) strRarPath.c_str(), &pFileList, NULL) ) 
       m_ExFiles.insert(std::make_pair<CStdString,std::pair<ArchiveList_struct*,std::vector<CFileInfo> > >(strRarPath,std::make_pair<ArchiveList_struct*,std::vector<CFileInfo> >(pFileList,std::vector<CFileInfo>())));
     else
+    {
+      if( pFileList ) urarlib_freelist(pFileList);
       return false;
+    }
   }
   else
     pFileList = it->second.first;
