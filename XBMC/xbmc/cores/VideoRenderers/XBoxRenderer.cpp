@@ -809,6 +809,9 @@ void CXBoxRenderer::RenderUpdate(bool clear)
   if (clear)
     m_pD3DDevice->Clear( 0L, NULL, D3DCLEAR_TARGET, m_clearColour, 1.0f, 0L );
   Render();
+
+  //Kick commands out to the GPU, or we won't get the callback for textures being done
+  m_pD3DDevice->KickPushBuffer();
 }
 
 void CXBoxRenderer::SetFieldSync(EFIELDSYNC mSync)
@@ -1356,7 +1359,7 @@ void CXBoxRenderer::RenderLowMem()
   m_pD3DDevice->SetScissors(0, FALSE, NULL );
 
   //Okey, when the gpu is done with the textures here, they are free to be modified again
-  m_pD3DDevice->InsertCallback(D3DCALLBACK_READ,&TextureCallback, (DWORD)m_eventTexturesDone);
+  m_pD3DDevice->InsertCallback(D3DCALLBACK_WRITE,&TextureCallback, (DWORD)m_eventTexturesDone);
 
 }
 

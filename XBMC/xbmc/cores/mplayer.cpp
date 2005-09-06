@@ -764,7 +764,7 @@ bool CMPlayer::OpenFile(const CFileItem& file, __int64 iStartTime)
     }
     else
     {
-      m_dlgCache = new CDlgCache(2000);
+      m_dlgCache = new CDlgCache(3000);
     }
     if (iCacheSize == 0)
     {
