@@ -2,7 +2,7 @@
 #include "MP3Codec.h"
 
 
-#define MP3_DLL "Q:\\system\\players\\PAPlayer\\in_mp3.dll"
+#define MP3_DLL "Q:\\system\\players\\PAPlayer\\MADCodec.dll"
 
 #define DECODER_DELAY 529 // decoder delay in samples
 
@@ -194,8 +194,17 @@ int MP3Codec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
       m_CallAgainWithSameBuffer = false;
       unsigned int formatdata[8];
       int outputsize = m_OutputBufferSize - m_OutputBufferPos;
+      //MAD needs padding at the end of the stream to decode the last frame, this doesn't hurt winamps in_mp3.dll
+      int madguard = 0;
+      if (m_eof) 
+      {
+        madguard = 8;
+        if (m_InputBufferPos + madguard > m_InputBufferSize)
+          madguard = m_InputBufferSize - m_InputBufferPos;
+        memset(m_InputBuffer + m_InputBufferPos, 0, madguard);
+      }
       // Now decode data into the vacant frame buffer
-      result = m_pDecoder->decode( m_InputBuffer, m_InputBufferPos, m_OutputBuffer + m_OutputBufferPos, &outputsize, (unsigned int *)&formatdata);
+      result = m_pDecoder->decode( m_InputBuffer, m_InputBufferPos + madguard, m_OutputBuffer + m_OutputBufferPos, &outputsize, (unsigned int *)&formatdata);
       if ( result == 1 || result == 0) 
       {
         // let's check if we need to ignore the decoded data.

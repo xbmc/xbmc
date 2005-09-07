@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 07-09-2005 added: MP2 audio for Paplayer
+ - 07-09-2005 added: MP3 decoder based on libMAD for Paplayer, this replaces winamp's in_mp3.dll for mp3 decoding. If you still want to use in_mp3.dll instead rename in_mp3.dll to MADCodec.dll
  - 07-09-2005 added: Startwindow examples to xboxmediacenter.xml
  - 07-09-2005 changed: increased progressbar timeout to 3 seconds on startup instead of 2
  - 07-09-2005 fixed: audio stutters when playback is started.
