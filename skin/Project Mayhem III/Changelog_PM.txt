@@ -1,3 +1,5 @@
+2005-09-07 fixed:	navigation in the Video Info dialog wasnt working properly
+
 2005-08-30 fixed:	playlist indicaors in fullscreen viz media infos coulnt display all numbers (eg 1005/29..)
 2005-08-30 fixed:	some sttings items didnt fit on the panel properly
 
