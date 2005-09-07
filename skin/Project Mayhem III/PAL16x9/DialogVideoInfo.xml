@@ -258,7 +258,7 @@
       <label>206</label>
       <onleft>4</onleft>
       <onright>4</onright>
-      <onup>7</onup>
+      <onup>6</onup>
       <ondown>8</ondown>
     </control>
 
@@ -285,7 +285,7 @@
       <onleft>4</onleft>
       <onright>4</onright>
       <onup>8</onup>
-      <ondown>7</ondown>
+      <ondown>5</ondown>
     </control>
 
     <!-- <control>
