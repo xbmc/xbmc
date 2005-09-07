@@ -3763,8 +3763,8 @@ void CApplication::Process()
   //  Check if we should submit a song to audioscrobbler
   CheckAudioScrobblerStatus();
 
-  //  check if we can unload any unreferenced dlls
-  CSectionLoader::UnloadDLLsDelayed();
+  //  check if we can unload any unreferenced dlls or sections
+  CSectionLoader::UnloadDelayed();
 
   // GeminiServer Xbox Autodetection // Send in X sec PingTime Interval
   CUtil::XboxAutoDetection();
