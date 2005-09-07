@@ -14,7 +14,7 @@
 
 ICodec* CodecFactory::CreateCodec(const CStdString& strFileType)
 {
-  if (strFileType.Equals("mp3"))
+  if (strFileType.Equals("mp3") || strFileType.Equals("mp2"))
     return new MP3Codec();
   else if (strFileType.Equals("ape") || strFileType.Equals("mac"))
     return new APECodec();
