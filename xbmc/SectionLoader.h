@@ -8,6 +8,7 @@
 #define MPC_DLL "Q:\\system\\players\\PAPlayer\\MPCcodec.dll"
 #define OGG_DLL "Q:\\system\\players\\PAPlayer\\vorbisfile.dll"
 #define AAC_DLL "Q:\\system\\players\\paplayer\\aaccodec.dll"
+#define NSF_DLL "q:\\system\\players\\paplayer\\nosefart.dll"
 #define IMAGE_DLL "Q:\\system\\ImageLib.dll"
 
 #define DVD_LIBMPEG2_DLL  "Q:\\system\\players\\dvdplayer\\libmpeg2.dll"
