@@ -751,6 +751,15 @@
   <string><id>12369</id><value>XBMC käynnistyslukitus</value></string>
   <string><id>12370</id><value>Yleislukitustila muuttunut, yleiskoodia ei asetettu!</value></string>
   <string><id>12371</id><value>Aseta uusi yleiskoodi!</value></string>
+  <string><id>12372</id><value>Lukitse Asetukset &amp; Tiedostot</value></string>
+  <string><id>12373</id><value>Asetukset &amp; Tiedostot</value></string>
+  <string><id>12374</id><value>Lukitse media</value></string>
+  <string><id>12374</id><value>Pääkäyttäjä-tila</value></string>
+
+  <string><id>12390</id><value>Uptime</value></string>
+  <string><id>12391</id><value>minuuttia</value></string>
+  <string><id>12392</id><value>tuntia</value></string>
+  <string><id>12393</id><value>päivää</value></string>
 
   <string><id>12600</id><value>Säätila</value></string>
   <string><id>12900</id><value>Näytönsäästäjä</value></string>
@@ -878,6 +887,8 @@
   <string><id>13396</id><value>Ääni- ja tekstiasetukset</value></string>
   <string><id>13397</id><value>Tekstitys käytössä</value></string>
   <string><id>13398</id><value>Kirjanmerkit</value></string>
+  <string><id>13399</id><value>Jätä "The" huomioimatta järjestettäessä</value></string>
+  <string><id>13400</id><value>Kirjanmerkit</value></string>
 
   <string><id>14000</id><value>Älä yhdistä osia</value></string>
   <string><id>14001</id><value>Pinoa</value></string>
@@ -1087,6 +1098,7 @@
 
   <string><id>15213</id><value>[PAIKANPITÄJÄ]</value></string>
   <string><id>15214</id><value>Käytä tasoitettua A/V-synkronointia</value></string>
+  <string><id>15215</id><value>Piilota tiedostonimet pikkukuvissa</value></string>
 
   <string><id>15300</id><value>Määritettyä polkua ei löydy</value></string>
   <string><id>15301</id><value>Ei saatu yhteyttä palvelimeen</value></string>

@@ -661,7 +661,7 @@
   <string><id>10502</id><value>음악/라이브러리</value></string>
   <string><id>10503</id><value>음악/인기곡 100</value></string>
   <string><id>10504</id><value>인기곡 100</value></string> 
-  <string><id>10505</id><value>인기앨범 100</value></string 
+  <string><id>10505</id><value>인기앨범 100</value></string>
 
   <string><id>10506</id><value>프로그램</value></string>
   <string><id>10507</id><value>환경설정</value></string>
@@ -752,10 +752,16 @@
   <string><id>12369</id><value>XBMC 시작 잠금</value></string> 
   <string><id>12370</id><value>마스터 잠금 모드가 변경되지만 마스터 코드가 설정되지 않았습니다.</value></string> 
   <string><id>12371</id><value>새로운 마스터 코드를 설정해 주십시오!</value></string>
+  <string><id>12372</id><value>잠금 설정 &amp; 파일</value></string> 
+  <string><id>12373</id><value>설정 &amp; 파일</value></string> 
+  
+  <string><id>12374</id><value>미디어 잠금</value></string>
+  <string><id>12375</id><value>마스터 사용자 모드</value></string>
 
-  <string><id>12372</id><value>파일 관리자 잠금</value></string> 
-  <string><id>12373</id><value>잠금 설정</value></string> 
-  <string><id>12374</id><value>미디어 잠금</value></string> 
+  <string><id>12390</id><value>시스템 운용시간</value></string> 
+  <string><id>12391</id><value>분</value></string> 
+  <string><id>12392</id><value>시간</value></string> 
+  <string><id>12393</id><value>일</value></string> 
   
   <string><id>12600</id><value>날씨</value></string>
   <string><id>12900</id><value>화면 보호기</value></string>
@@ -883,6 +889,8 @@
   <string><id>13396</id><value>오디오 및 자막 설정</value></string>
   <string><id>13397</id><value>자막 활성화</value></string> 
   <string><id>13398</id><value>북마크</value></string>
+  <string><id>13399</id><value>정렬시 정관사 "The" 무시</value></string>
+  <string><id>13400</id><value>앨범 트랙에 크로스페이드 효과</value></string>
 
   <string><id>14000</id><value>연속 재생</value></string>
   <string><id>14001</id><value>연속 재생 해제</value></string>
@@ -1092,6 +1100,7 @@
   
   <string><id>15213</id><value>[PLACEHOLDER]</value></string>
   <string><id>15214</id><value>자동 A/V 싱크 사용</value></string>
+  <string><id>15215</id><value>미리보기 화면에서 파일명 숨김</value></string>
   
   <string><id>15300</id><value>경로가 없거나 올바르지 않습니다</value></string> 
   <string><id>15301</id><value>네트워크 서버에 접속할 수 없습니다</value></string> 
