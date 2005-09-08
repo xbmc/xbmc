@@ -662,8 +662,8 @@
   <string><id>10503</id><value>我的音樂/排名前 100</value></string>
   <string><id>10504</id><value>排名前 100 歌曲</value></string>
   <string><id>10505</id><value>排名前 100 專輯</value></string>
-  
-  
+   
+   
   <string><id>10506</id><value>應用程式</value></string>
   <string><id>10507</id><value>系統設定</value></string>
   <string><id>10508</id><value>氣象預報</value></string>
@@ -692,6 +692,7 @@
   <string><id>12006</id><value>音樂視覺效果</value></string>
   <string><id>12007</id><value>我的圖片/幻燈片秀</value></string>
   <string><id>12008</id><value>檔案定位對話</value></string>
+  
   
   <string><id>12310</id><value>0</value></string>
   <string><id>12311</id><value>1</value></string>
@@ -757,6 +758,12 @@
   <string><id>12372</id><value>鎖定 我的檔案</value></string>
   <string><id>12373</id><value>鎖定 系統設定</value></string>
   <string><id>12374</id><value>鎖定 其他項目</value></string>
+  
+  <string><id>12390</id><value>系統啟動時間</value></string>
+  <string><id>12391</id><value>分鐘</value></string>
+  <string><id>12392</id><value>小時</value></string>
+  <string><id>12393</id><value>天</value></string>
+  
   
   <string><id>12600</id><value>氣象報告</value></string>
   <string><id>12900</id><value>螢幕保護</value></string>
@@ -884,6 +891,8 @@
   <string><id>13396</id><value>聲音和字幕設定</value></string>
   <string><id>13397</id><value>開啟字幕</value></string>
   <string><id>13398</id><value>書籤</value></string>
+  <string><id>13399</id><value>當排序時忽略 "The" 字串</value></string>
+  <string><id>13400</id><value>專輯音軌淡入淡出</value></string>
 
   <string><id>14000</id><value>堆疊開啟</value></string>
   <string><id>14001</id><value>堆疊關閉</value></string>
@@ -1093,6 +1102,7 @@
   
   <string><id>15213</id><value>[預留位置]</value></string>
   <string><id>15214</id><value>使用平滑的影音同步</value></string>
+  <string><id>15215</id><value>圖示顯示模式時隱藏檔案名</value></string>
   
   <string><id>15300</id><value>路徑不存在或無效！</value></string>
   <string><id>15301</id><value>無法連線到網路伺服器！</value></string>
