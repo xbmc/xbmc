@@ -5,6 +5,14 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 08-09-2005 updated: Dutch language file (Thnx to nightspirit)
+ - 08-09-2005 updated: German (Austrian) language file (Thnx to CEOMR)
+ - 08-09-2005 updated: Spanish language file (Thnx to jose_t)
+ - 08-09-2005 updated: Finnish language file (Thnx to jutski)
+ - 08-09-2005 updated: Korean language file (Thnx to AkoXko)
+ - 08-09-2005 updated: Chinese (Traditional) language file (Thnx to omenpica)
+ - 08-09-2005 updated: Norwegian language file (Thnx to vnm)
+ - 08-09-2005 updated: German language file
  - 07-09-2005 changed: made section unloading delayed same as dll unloading. (speeds up filelisting over daap://)
  - 07-09-2005 added: MP2 audio for Paplayer
  - 07-09-2005 added: MP3 decoder based on libMAD for Paplayer, this replaces winamp's in_mp3.dll for mp3 decoding. If you still want to use in_mp3.dll instead rename in_mp3.dll to MADCodec.dll

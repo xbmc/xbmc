@@ -1,4 +1,4 @@
-<!-- Based on English XML v1.246. Last updated by vnmartinsen  !-->
+<!-- Based on English XML v1.247. Last updated by vnmartinsen  !-->
 <strings>
   <string><id>0</id><value>Mine Programmer</value></string>
   <string><id>1</id><value>Mine Bilder</value></string>
@@ -754,11 +754,11 @@
   <string><id>12368</id><value>Vennligst skriv inn en gyldig masterkode!</value></string>
   <string><id>12369</id><value>XBMC Oppstartslås</value></string>
   <string><id>12370</id><value>Masterlås-modus forandret, masterkoden ble ikke angitt!</value></string>
-  <string><id>12371</id><value>Vennligst angi en ny masterkode!</value></string>
-	
-  <string><id>12372</id><value>Lås filbehandler</value></string>
-  <string><id>12373</id><value>Lås innstillinger</value></string>
+  <string><id>12371</id><value>Vennligst angi en ny masterkode!</value></string>	
+  <string><id>12372</id><value>Lås innstillinger &amp; Mine filer</value></string>
+  <string><id>12373</id><value>Innstillinger &amp; Mine filer</value></string>
   <string><id>12374</id><value>Lås media</value></string>
+  <string><id>12375</id><value>Master brukermodus</value></string>
   
   <string><id>12390</id><value>Systemets oppetid</value></string>
   <string><id>12391</id><value>Minutter</value></string>
