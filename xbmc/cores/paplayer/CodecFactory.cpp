@@ -11,6 +11,7 @@
 #include "AACCodec.h"
 #include "WAVPackCodec.h"
 #include "ModuleCodec.h"
+#include "NSFCodec.h"
 
 ICodec* CodecFactory::CreateCodec(const CStdString& strFileType)
 {
@@ -36,6 +37,8 @@ ICodec* CodecFactory::CreateCodec(const CStdString& strFileType)
     return new WAVPackCodec();
   else if (ModuleCodec::IsSupportedFormat(strFileType))
     return new ModuleCodec();
+  else if (strFileType.Equals("nsf") || strFileType.Equals("nsfstream"))
+    return new NSFCodec();
 
   return NULL;
 }

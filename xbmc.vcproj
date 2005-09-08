@@ -639,6 +639,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\MusicInfoTagLoaderMPC.h">
 				</File>
 				<File
+					RelativePath=".\xbmc\MusicInfoTagLoaderNSF.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\MusicInfoTagLoaderNSF.h">
+				</File>
+				<File
 					RelativePath=".\xbmc\MusicInfoTagLoaderOgg.cpp">
 				</File>
 				<File
@@ -1793,6 +1799,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				RelativePath=".\xbmc\FileSystem\ISO9660Directory.cpp">
 			</File>
 			<File
+				RelativePath=".\xbmc\FileSystem\NSFFileDirectory.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\FileSystem\NSFFileDirectory.h">
+			</File>
+			<File
 				RelativePath=".\xbmc\FileSystem\OGGFileDirectory.cpp">
 			</File>
 			<File
@@ -2197,10 +2209,10 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\cores\sidplayer\audio\AudioDrv.h">
 				</File>
 				<File
-					RelativePath=".\xbmc\cores\sidplayer\audio\config.h">
+					RelativePath=".\xbmc\cores\sidplayer\config.h">
 				</File>
 				<File
-					RelativePath=".\xbmc\cores\sidplayer\config.h">
+					RelativePath=".\xbmc\cores\sidplayer\audio\config.h">
 				</File>
 				<File
 					RelativePath=".\xbmc\cores\sidplayer\IniConfig.cpp">
@@ -2671,6 +2683,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				</File>
 				<File
 					RelativePath=".\xbmc\cores\paplayer\MPCcodec.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\paplayer\NSFCodec.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\paplayer\NSFCodec.h">
 				</File>
 				<File
 					RelativePath=".\xbmc\cores\paplayer\OGGcodec.cpp">

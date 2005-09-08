@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 08-09-2005 added: NSF (Nintendo Sound File) codec to paplayer. Based on nosefart.
  - 08-09-2005 updated: Dutch language file (Thnx to nightspirit)
  - 08-09-2005 updated: German (Austrian) language file (Thnx to CEOMR)
  - 08-09-2005 updated: Spanish language file (Thnx to jose_t)
