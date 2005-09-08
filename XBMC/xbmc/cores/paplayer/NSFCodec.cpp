@@ -1,0 +1,172 @@
+#include "../../stdafx.h"
+#include "../../util.h"
+#include "../../utils/regexp.h"
+#include "NSFCodec.h"
+
+NSFCodec::NSFCodec()
+{
+  m_CodecName = L"NSF";
+  m_nsf = 0;
+  m_bDllLoaded = false;
+  m_bIsPlaying = false;
+  m_iDataInBuffer = 0;
+  m_szBuffer = NULL;
+}
+
+NSFCodec::~NSFCodec()
+{
+  DeInit();
+}
+
+bool NSFCodec::Init(const CStdString &strFile, unsigned int filecache)
+{
+  DeInit();
+
+  if (!LoadDLL())
+    return false; // error logged previously
+  
+  CStdString strFileToLoad = strFile;
+  m_iTrack = 0;
+  CStdString strExtension;
+  CUtil::GetExtension(strFile,strExtension);
+  strExtension.MakeLower();
+  if (strExtension==".nsfstream")
+  {
+    //  Extract the track to play
+    CStdString strFileName=CUtil::GetFileName(strFile);
+    int iStart=strFileName.ReverseFind("-")+1;
+    m_iTrack = atoi(strFileName.substr(iStart, strFileName.size()-iStart-10).c_str());
+    //  The directory we are in, is the file
+    //  that contains the bitstream to play,
+    //  so extract it
+    CStdString strPath=strFile;
+    CUtil::GetDirectory(strPath, strFileToLoad);
+    if (CUtil::HasSlashAtEnd(strFileToLoad))
+      strFileToLoad.Delete(strFileToLoad.size()-1);
+  }
+  
+  m_nsf = m_dll.DLL_LoadNSF(strFileToLoad.c_str());
+  if (!m_nsf)
+  {
+    CLog::Log(LOGERROR,"NSFCodec: error opening file %s!",strFile.c_str());
+    return false;
+  }
+  m_Channels = 2;
+  m_SampleRate = 48000;
+  m_BitsPerSample = 16;
+  m_TotalTime = 4*60*1000; // fixme?
+
+  return true;
+}
+
+void NSFCodec::DeInit()
+{
+  if (m_bDllLoaded)
+  {
+    if (m_nsf)
+      m_dll.DLL_FreeNSF(m_nsf);
+
+    CSectionLoader::UnloadDLL(NSF_DLL);
+    m_nsf = 0;
+    m_bDllLoaded = false;
+    m_bIsPlaying = false;
+    if (m_szBuffer)
+      delete[] m_szBuffer;
+    m_szBuffer = NULL;
+  }
+}
+
+__int64 NSFCodec::Seek(__int64 iSeekTime)
+{
+  if (m_iDataPos > iSeekTime/1000*48000*4)
+  {
+    m_dll.DLL_StartPlayback(m_nsf,m_iTrack);
+    m_iDataPos = 0;
+  }
+  while (m_iDataPos+2*48000/m_dll.DLL_GetPlaybackRate(m_nsf)*4 < iSeekTime/1000*48000*4)
+  {
+    //m_dll.DLL_FillBuffer(m_nsf,m_szBuffer,48000/m_dll.DLL_GetPlaybackRate(m_nsf)*2); // *2 since two channels
+    m_dll.DLL_FrameAdvance(m_nsf);
+    
+    m_iDataInBuffer = 48000/m_dll.DLL_GetPlaybackRate(m_nsf)*4;
+    m_szStartOfBuffer = m_szBuffer;
+    m_iDataPos += 48000/m_dll.DLL_GetPlaybackRate(m_nsf)*4;
+  }
+  m_dll.DLL_FillBuffer(m_nsf,m_szBuffer,48000/m_dll.DLL_GetPlaybackRate(m_nsf)*2); // *2 since two channels
+  m_iDataPos += 48000/m_dll.DLL_GetPlaybackRate(m_nsf)*4;
+  m_iDataInBuffer -= int(iSeekTime/1000*48000*4-m_iDataPos);
+  m_szStartOfBuffer += (iSeekTime/1000*48000*4-m_iDataPos);
+
+  return iSeekTime;
+}
+
+int NSFCodec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
+{
+  if (!m_nsf)
+    return READ_ERROR;
+  
+  if (!m_bIsPlaying)
+  {
+    m_dll.DLL_StartPlayback(m_nsf,m_iTrack);
+    m_bIsPlaying = true;
+    m_szBuffer = new char[48000/m_dll.DLL_GetPlaybackRate(m_nsf)*4];
+    m_szStartOfBuffer = m_szBuffer;
+    m_iDataPos = 0;
+  }
+
+  if (m_iDataInBuffer <= 0)
+  {
+    m_dll.DLL_FillBuffer(m_nsf,m_szBuffer,48000/m_dll.DLL_GetPlaybackRate(m_nsf)*2); // *2 since two channels
+    m_iDataInBuffer = 48000/m_dll.DLL_GetPlaybackRate(m_nsf)*4;
+    
+    m_szStartOfBuffer = m_szBuffer;
+  }
+
+  *actualsize = size<m_iDataInBuffer?size:m_iDataInBuffer;
+  memcpy(pBuffer,m_szStartOfBuffer,*actualsize);
+  m_szStartOfBuffer += *actualsize;
+  m_iDataInBuffer -= *actualsize;
+  m_iDataPos += *actualsize;
+  
+  return READ_SUCCESS;    
+}
+
+bool NSFCodec::CanInit()
+{
+  return CFile::Exists(NSF_DLL);
+}
+
+bool NSFCodec::LoadDLL()
+{
+   if (m_bDllLoaded)
+    return true;
+
+  DllLoader* pDll = CSectionLoader::LoadDLL(NSF_DLL);
+  if (!pDll)
+  {
+    CLog::Log(LOGERROR, "NSFCodec: Unable to load dll %s", NSF_DLL);
+    return false;
+  }
+
+  // get handle to the functions in the dll
+  pDll->ResolveExport("DLL_LoadNSF", (void**)&m_dll.DLL_LoadNSF);
+  pDll->ResolveExport("DLL_FreeNSF", (void**)&m_dll.DLL_FreeNSF);
+ 
+  pDll->ResolveExport("DLL_StartPlayback", (void**)&m_dll.DLL_StartPlayback);
+  pDll->ResolveExport("DLL_FillBuffer", (void**)&m_dll.DLL_FillBuffer);
+  pDll->ResolveExport("DLL_FrameAdvance", (void**)&m_dll.DLL_FrameAdvance);
+
+  pDll->ResolveExport("DLL_GetPlaybackRate", (void**)&m_dll.DLL_GetPlaybackRate);
+  pDll->ResolveExport("DLL_GetNumberOfSongs", (void**)&m_dll.DLL_GetNumberOfSongs);
+ 
+  // Check resolves + version number
+  if ( !m_dll.DLL_FillBuffer || !m_dll.DLL_FreeNSF || ! m_dll.DLL_LoadNSF || !m_dll.DLL_StartPlayback || !m_dll.DLL_GetPlaybackRate || !m_dll.DLL_GetNumberOfSongs)
+  {
+    CLog::Log(LOGERROR, "NSFCodec: Unable to resolve exports from %s", NSF_DLL);
+    CSectionLoader::UnloadDLL(NSF_DLL);
+    return false;
+  }
+
+  m_bDllLoaded = true;
+  return true;
+}
