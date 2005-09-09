@@ -2450,6 +2450,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 							RelativePath=".\xbmc\cores\dvdplayer\DVDCodecs\Audio\DVDAudioCodecLibDts.h">
 						</File>
 						<File
+							RelativePath=".\xbmc\cores\dvdplayer\DVDCodecs\Audio\DVDAudioCodecLibFaad.cpp">
+						</File>
+						<File
+							RelativePath=".\xbmc\cores\dvdplayer\DVDCodecs\Audio\DVDAudioCodecLibFaad.h">
+						</File>
+						<File
 							RelativePath=".\xbmc\cores\dvdplayer\DVDCodecs\Audio\DVDAudioCodecLibMad.cpp">
 						</File>
 						<File
