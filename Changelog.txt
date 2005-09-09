@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 09-09-2005 added: libfaad to dvdplayer
  - 09-09-2005 fixed: replay gain info from an id3v2 tag was never read
  - 09-09-2005 changed: replaced id3lib with libid3tag (much smaller and better performance), needs libid3tag.dll in q:\system
  - 09-09-2005 fixed: replay gain info created with MP3gain was never read
