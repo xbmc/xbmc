@@ -85,7 +85,7 @@ bool FLACCodec::Init(const CStdString &strFile, unsigned int filecache)
 
   //  Extract ReplayGain info
   CFlacTag tag;
-  if (tag.ReadTag(strFile))
+  if (tag.Read(strFile))
     m_replayGain=tag.GetReplayGain();
 
   m_Bitrate = (int)((m_file.GetLength() * 8) / (m_TotalTime/1000));

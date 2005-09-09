@@ -104,7 +104,7 @@ extern "C" void* dll_getenv();
 extern "C" void* putc();
 extern "C" void* rand();
 extern "C" void* remove();
-extern "C" void* rewind();
+extern "C" void* dll_rewind();
 extern "C" void* setlocale();
 extern "C" void* dll_signal();
 extern "C" void* srand();
@@ -234,6 +234,7 @@ extern "C" void* _stat();
 extern "C" void* dll_findnext();
 extern "C" void* fsetpos();
 extern "C" void* _strtoi64();
+extern "C" void* dll_clearerr();
 
 // tracker functions
 extern "C" void* track_close();
@@ -345,7 +346,7 @@ void export_msvcrt()
   g_dlls.msvcrt.AddExport("putc", (unsigned long)putc);
   g_dlls.msvcrt.AddExport("rand", (unsigned long)rand);
   g_dlls.msvcrt.AddExport("remove", (unsigned long)remove);
-  g_dlls.msvcrt.AddExport("rewind", (unsigned long)rewind);
+  g_dlls.msvcrt.AddExport("rewind", (unsigned long)dll_rewind);
   g_dlls.msvcrt.AddExport("setlocale", (unsigned long)setlocale);
   g_dlls.msvcrt.AddExport("signal", (unsigned long)dll_signal);
   g_dlls.msvcrt.AddExport("srand", (unsigned long)srand);
@@ -421,6 +422,7 @@ void export_msvcrt()
   g_dlls.msvcrt.AddExport("memcmp", (unsigned long)memcmp);
   g_dlls.msvcrt.AddExport("_except_handler3", (unsigned long)_except_handler3);
   g_dlls.msvcrt.AddExport("__CxxFrameHandler", (unsigned long)__CxxFrameHandler);
+  g_dlls.msvcrt.AddExport("clearerr", (unsigned long)dll_clearerr);
 }
 
 void export_msvcr71()
@@ -523,7 +525,7 @@ void export_msvcr71()
   g_dlls.msvcr71.AddExport("putc", (unsigned long)putc);
   g_dlls.msvcr71.AddExport("rand", (unsigned long)rand);
   g_dlls.msvcr71.AddExport("remove", (unsigned long)remove);
-  g_dlls.msvcr71.AddExport("rewind", (unsigned long)rewind);
+  g_dlls.msvcr71.AddExport("rewind", (unsigned long)dll_rewind);
   g_dlls.msvcr71.AddExport("setlocale", (unsigned long)setlocale);
   g_dlls.msvcr71.AddExport("signal", (unsigned long)dll_signal);
   g_dlls.msvcr71.AddExport("srand", (unsigned long)srand);
@@ -585,7 +587,7 @@ void export_msvcr71()
   g_dlls.msvcr71.AddExport("_CxxThrowException", (unsigned long)_CxxThrowException);
   g_dlls.msvcr71.AddExport("__CxxFrameHandler", (unsigned long)__CxxFrameHandler);
   g_dlls.msvcr71.AddExport("memcmp", (unsigned long)memcmp);
-  g_dlls.msvcr71.AddExport("fsetpos", (unsigned long)fsetpos);
+  g_dlls.msvcr71.AddExport("fsetpos", (unsigned long)dll_fsetpos);
   g_dlls.msvcr71.AddExport("_setjmp3", (unsigned long)_setjmp3);
   g_dlls.msvcr71.AddExport("longjmp", (unsigned long)longjmp);
   g_dlls.msvcr71.AddExport("isprint", (unsigned long)isprint);
@@ -629,6 +631,7 @@ void export_msvcr71()
   g_dlls.msvcr71.AddExport("_stati64", (unsigned long)dll_stati64);
   g_dlls.msvcr71.AddExport("_fstati64", (unsigned long)dll_fstati64);
   g_dlls.msvcr71.AddExport("_strtoi64", (unsigned long)_strtoi64);
+  g_dlls.msvcr71.AddExport("clearerr", (unsigned long)dll_clearerr);
 }
 
 void export_pncrt()

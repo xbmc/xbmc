@@ -1,8 +1,7 @@
 
 #include "../stdafx.h"
 #include "ShoutcastRipFile.h"
-#include "../util.h"
-#include "../MusicInfoTagLoaderMP3.h"
+#include "../id3tag.h"
 
 
 CShoutcastRipFile::CShoutcastRipFile()
@@ -156,19 +155,12 @@ void CShoutcastRipFile::StopRecording()
     fclose(m_ripFile);
     m_ripFile = NULL;
     // Write collected ID3 Data to file
-    CFile file;
-    if ( file.Open( m_szFilteredFileName ) )
+    CID3Tag id3tag;
+    if (id3tag.Read(m_szFilteredFileName))
     {
-      ID3_XIStreamReader reader( file );
-      ID3_Tag id3TagFile;
-      id3TagFile.Clear();
-      id3TagFile.Link( reader );
-      id3TagFile = m_id3Tag;
-//      id3TagFile.Update();
-      file.Close();
-      id3TagFile.Update(m_szFilteredFileName);
+      id3tag.SetMusicInfoTag(m_Tag);
+      id3tag.Write();
     }
-
   }
 }
 
@@ -207,7 +199,7 @@ void CShoutcastRipFile::SetTrackname( const char *trackName )
 void CShoutcastRipFile::PrepareRecording( )
 {
   //"init"
-  m_id3Tag.Clear();
+  m_Tag.Clear();
   memset( m_szFilteredFileName, '\0', sizeof(m_szFilteredFileName)); //clear buffer
 
 
@@ -276,10 +268,10 @@ void CShoutcastRipFile::PrepareRecording( )
       cursor = strtok (NULL, "-");
     }
     if ( foundTrackName )         //lets hope we found a track name, else it will be unknown
-      ID3_AddTitle( &m_id3Tag, szTrackName);
+      m_Tag.SetTitle(szTrackName);
     if ( foundArtist )          //lets hope we found an artist, else it will be unknown
-      ID3_AddArtist(&m_id3Tag, szArtist);
-    ID3_AddAlbum( &m_id3Tag, directoryName );  //Jazzmusique (Album is like Directory)
+      m_Tag.SetArtist(szArtist);
+    m_Tag.SetAlbum(directoryName);  //Jazzmusique (Album is like Directory)
   }
   else
   {
@@ -297,9 +289,9 @@ void CShoutcastRipFile::PrepareRecording( )
     strcpy(szTemp, directoryName );
     strcat(szTemp, " %i");
     sprintf(szTitle, szTemp, m_iTrackCount);
-    ID3_AddTitle( &m_id3Tag, szTitle );       //Jazzmusique 3
-    ID3_AddAlbum( &m_id3Tag, directoryName );      //Jazzmusique (Album is like Directory)
-    ID3_AddArtist( &m_id3Tag, "Shoutcast");     //Shoutcast
+    m_Tag.SetTitle(szTitle );       //Jazzmusique 3
+    m_Tag.SetAlbum(directoryName );      //Jazzmusique (Album is like Directory)
+    m_Tag.SetArtist("Shoutcast");     //Shoutcast
   }
 }
 
@@ -356,7 +348,7 @@ void CShoutcastRipFile::SetFilename( const char* filePath, const char* fileName 
       strcpy( m_szFilteredFileName, szNewFileName );
       FindClose( hFind );
       //set the appropriate trackNumber
-      ID3_AddTrack( &m_id3Tag, i );
+      m_Tag.SetTrackNumber(i);
       if ( !m_recState.bHasMetaData )
         m_iTrackCount = i;
 
@@ -421,14 +413,14 @@ void CShoutcastRipFile::RemoveLastSpace( char* szToBeRemoved )
     szToBeRemoved[strlen(szToBeRemoved) - 1] = '\0';
 }
 
-void CShoutcastRipFile::GetID3Tag(ID3_Tag &tag)
+void CShoutcastRipFile::GetMusicInfoTag(CMusicInfoTag& tag)
 {
   if ( m_recState.bFilenameSet && m_recState.bStreamSet )
   {
+    tag.Clear();
     //now distinguish between
     if ( m_recState.bHasMetaData )
     {
-      tag.Clear(); //tag.SetAllUnknown();
       //The filename of RM will be something like "Oasis - Champagne Supernova", thus
       //So, we will make a file i.e "f:music\Record\Limbik Frequencies\Oasis - Champagne Supernova.mp3"
       //get the artist and trackname
@@ -471,17 +463,17 @@ void CShoutcastRipFile::GetID3Tag(ID3_Tag &tag)
         //if (!cursor) cursor=strtok(NULL,",");
       }
       if ( foundTrackName )         //lets hope we found a track name, else it will be unknown
-        ID3_AddTitle( &tag, szTrackName );
+        tag.SetTitle(szTrackName);
       else
-        ID3_AddTitle( &tag, m_szStreamName );
+        tag.SetTitle(m_szStreamName);
       if ( foundArtist )          //lets hope we found an artist, else it will be unknown
-        ID3_AddArtist( &tag, szArtist );
-      ID3_AddAlbum( &tag, m_szStreamName );  //Jazzmusique (Album is like Directory)
+        tag.SetArtist(szArtist);
+      tag.SetAlbum(m_szStreamName);  //Jazzmusique (Album is like Directory)
     }
     else
     {
       tag.Clear();
-      ID3_AddTitle( &tag, m_szStreamName );
+      tag.SetTitle(m_szStreamName);
     }
 
   }

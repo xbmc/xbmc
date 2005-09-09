@@ -3,9 +3,6 @@
 
 #include "../lib/libshout/rip_manager.h"
 
-#include "../lib/libid3/id3.h"
-#include "../lib/libid3/misc_support.h"
-
 typedef struct RecStateSt
 {
   bool bRecording;
@@ -39,7 +36,7 @@ public:
   bool IsRecording();
   void Write( char *buf, unsigned long size );
   void Reset();
-  void GetID3Tag(ID3_Tag &tag);
+  void GetMusicInfoTag(CMusicInfoTag& tag);
 protected:
 
 
@@ -60,7 +57,7 @@ private:
   char m_szStreamName[1024];
   FILE* m_ripFile;
   FILE* m_logFile;
-  ID3_Tag m_id3Tag;
+  CMusicInfoTag m_Tag;
 };
 
 

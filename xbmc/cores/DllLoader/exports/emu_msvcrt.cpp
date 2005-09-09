@@ -270,8 +270,11 @@ extern "C"
     bool bWrite = false;
     if (iMode & O_RDWR || iMode & O_WRONLY)
       bWrite = true;
+    bool bOverwrite=false;
+    if (iMode & _O_TRUNC)
+      bOverwrite = true;
     // currently always overwrites
-    if ((bWrite && pFile->OpenForWrite(str, bBinary, true)) || pFile->Open(str, bBinary) )
+    if ((bWrite && pFile->OpenForWrite(str, bBinary, bOverwrite)) || pFile->Open(str, bBinary) )
     {
       vecFilesOpen[fd] = pFile;
       return fd;
@@ -337,6 +340,11 @@ extern "C"
   {
     //OutputDebugString("dll_seek\n");
     return (long) dll_lseeki64(fd, (__int64)lPos, iWhence);
+  }
+
+  void dll_rewind(FILE* stream)
+  {
+    dll_fseek(stream, 0L, SEEK_SET);
   }
 
   char* dll_getenv(const char* szKey)
@@ -528,8 +536,14 @@ extern "C"
     int iMode = O_TEXT;
     if (strchr(mode, 'b') )
       iMode = O_BINARY;
-    if (strchr(mode, 'w'))
-      iMode |= O_RDWR | O_CREAT;
+    if (strstr(mode, "r+"))
+      iMode |= O_RDWR;
+    else if (strchr(mode, 'r'))
+      iMode |= _O_RDONLY;
+    if (strstr(mode, "w+"))
+      iMode |= O_RDWR | _O_TRUNC;
+    else if (strchr(mode, 'w'))
+      iMode |= _O_WRONLY  | O_CREAT;
     int iFile = dll_open(filename, iMode);
     if (iFile < 0)
     {
@@ -736,6 +750,11 @@ extern "C"
   int dll_fileno(FILE* stream)
   {
     return (int)stream;
+  }
+
+  void dll_clearerr(FILE* stream)
+  {
+    int iFile = (int)stream - 1;
   }
 
   char* dll_strdup( const char* str)

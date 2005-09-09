@@ -2,7 +2,7 @@
 #include "../stdafx.h"
 #include "shoutcastdirectory.h"
 #include "directorycache.h"
-#include "../lib/libid3/zlib.h"
+#include "zlib.h"
 #include "../util.h"
 #include "../PlayListFactory.h"
 

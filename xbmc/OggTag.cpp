@@ -22,10 +22,12 @@ COggTag::~COggTag()
     CSectionLoader::UnloadDLL(OGG_DLL);
 }
 
-bool COggTag::ReadTag(const CStdString& strFile1)
+bool COggTag::Read(const CStdString& strFile1)
 {
   if (!LoadDLL())
     return false;
+
+  CVorbisTag::Read(strFile1);
 
   CStdString strFile=strFile1;
   int currentStream=0;

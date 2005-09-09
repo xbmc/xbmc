@@ -15,7 +15,6 @@
 #include "../lib/libshout/filelib.h"
 #include "ringbuffer.h"
 #include "ShoutcastRipFile.h"
-#include "../MusicInfoTagLoaderMP3.h"
 #include "../utils/GUIInfoManager.h"
 
 
@@ -290,12 +289,8 @@ unsigned int CFileShoutcast::Read(void* lpBuf, __int64 uiBufSize)
   if (timeGetTime() - m_dwLastTime > 500)
   {
     m_dwLastTime = timeGetTime();
-    ID3_Tag id3tag;
-    GetID3TagInfo(id3tag);
-    // convert to a standard tag, and update our new info
     CMusicInfoTag tag;
-    CMusicInfoTagLoaderMP3 ldr;
-    ldr.ReadTag(id3tag, tag);
+    GetMusicInfoTag(tag);
     g_infoManager.SetCurrentSongTag(tag);
   }
   return iRead;
@@ -337,8 +332,8 @@ bool CFileShoutcast::IsRecording()
 
 
 
-bool CFileShoutcast::GetID3TagInfo(ID3_Tag& tag)
+bool CFileShoutcast::GetMusicInfoTag(CMusicInfoTag& tag)
 {
-  m_ripFile.GetID3Tag(tag);
+  m_ripFile.GetMusicInfoTag(tag);
   return true;
 }
