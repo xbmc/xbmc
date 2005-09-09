@@ -36,6 +36,7 @@ void CDVDAudio::RegisterAudioCallback(IAudioCallback* pCallback)
 void CDVDAudio::UnRegisterAudioCallback()
 {
   m_pCallback = NULL;
+  if (m_pAudioDecoder) m_pAudioDecoder->UnRegisterAudioCallback();
 }
 
 bool CDVDAudio::Create(int iChannels, int iBitrate, int iBitsPerSample, bool bPasstrough)
