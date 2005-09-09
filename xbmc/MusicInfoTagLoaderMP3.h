@@ -1,11 +1,6 @@
 #pragma once
 
 #include "IMusicInfoTagLoader.h"
-
-#include "lib/libID3/id3.h"
-#include "lib/libID3/tag.h"
-#include "lib/libID3/readers.h"
-#include "XIStreamReader.h"
 #include "cores/paplayer/ReplayGain.h"
 
 using namespace MUSIC_INFO;
@@ -101,36 +96,17 @@ public:
   CMusicInfoTagLoaderMP3(void);
   virtual ~CMusicInfoTagLoaderMP3();
   virtual bool Load(const CStdString& strFileName, CMusicInfoTag& tag);
-  bool ReadTag(ID3_Tag& id3tag, CMusicInfoTag& tag);
-  void GetSeekInfo(CVBRMP3SeekHelper &info);
-  bool GetReplayGain(CReplayGain &info);
-  int GetID3v2Size() const { return m_iID3v2Size; }
+  void GetSeekInfo(CVBRMP3SeekHelper &info) const;
+  bool GetReplayGain(CReplayGain &info) const;
   bool ReadSeekAndReplayGainInfo(const CStdString &strFileName);
 
 protected:
   virtual int ReadDuration(const CStdString& strFileName);
   bool ReadLAMETagInfo(BYTE *p);
   bool IsMp3FrameHeader(unsigned long head);
-  char* GetString(const ID3_Frame *frame, ID3_FieldID fldName);
-  char* GetArtist(const ID3_Tag *tag);
-  char* GetAlbum(const ID3_Tag *tag);
-  char* GetTitle(const ID3_Tag *tag);
-  char* GetMusicBrainzTrackID(const ID3_Tag *tag);
-  char* GetMusicBrainzArtistID(const ID3_Tag *tag);
-  char* GetMusicBrainzAlbumID(const ID3_Tag *tag);
-  char* GetMusicBrainzAlbumArtistID(const ID3_Tag *tag);
-  char* GetMusicBrainzTRMID(const ID3_Tag *tag);
-  void  GetReplayGainInfo(const ID3_Tag *tag);
 
 private:
-  char* GetUniqueFileID(const ID3_Tag *tag, const CStdString& strUfidOwner);
-  char* GetUserText(const ID3_Tag *tag, const CStdString& strDescription);
-  CStdString ParseMP3Genre(const CStdString& str);
-
   CVBRMP3SeekHelper m_seekInfo;
   CReplayGain       m_replayGainInfo;
-  int m_iID3v2Size;
-  CFile m_file;
-  ID3_Tag m_id3tag;
 };
 };

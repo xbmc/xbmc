@@ -42,7 +42,6 @@ CGUIWindowMusicBase::CGUIWindowMusicBase(DWORD dwID, const CStdString &xmlFile)
   m_iLastControl = -1;
   m_bDisplayEmptyDatabaseMessage = false;
   m_Directory.m_bIsFolder = true;
-  m_bSectionsLoaded=false;
 }
 
 CGUIWindowMusicBase::~CGUIWindowMusicBase ()
@@ -247,12 +246,6 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
       m_iLastControl = GetFocusedControl();
       ClearFileItems();
       g_musicDatabase.Close();
-      if (m_bSectionsLoaded)
-      {
-        CSectionLoader::Unload("LIBID3");
-//        CSectionLoader::Unload("LIBMP4");
-        m_bSectionsLoaded=false;
-      }
     }
     break;
 
@@ -260,10 +253,6 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
     {
       int iLastControl = m_iLastControl;
       CGUIWindow::OnMessage(message);
-
-      CSectionLoader::Load("LIBID3");
-//      CSectionLoader::Load("LIBMP4");
-      m_bSectionsLoaded=true;
 
       g_musicDatabase.Open();
 

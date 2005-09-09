@@ -2,98 +2,11 @@
 #include "stdafx.h"
 #include "musicinfotagloadermp3.h"
 #include "Util.h"
-#include "picture.h"
-#include "lib/libID3/misc_support.h"
 #include "apev2tag.h"
-#include "cores/paplayer/aaccodec.h"
+#include "id3tag.h"
 
 
 using namespace MUSIC_INFO;
-
-const uchar* ID3_GetPictureBufferOfPicType(ID3_Tag* tag, ID3_PictureType pictype, size_t* pBufSize )
-{
-  if (NULL == tag)
-    return NULL;
-  else
-  {
-    ID3_Frame* frame = NULL;
-    ID3_Tag::Iterator* iter = tag->CreateIterator();
-
-    while (NULL != (frame = iter->GetNext() ))
-    {
-      if (frame->GetID() == ID3FID_PICTURE)
-      {
-        if (frame->GetField(ID3FN_PICTURETYPE)->Get() == (uint32)pictype)
-          break;
-      }
-    }
-    delete iter;
-
-    if (frame != NULL)
-    {
-      ID3_Field* myField = frame->GetField(ID3FN_DATA);
-      if (myField != NULL)
-      {
-        *pBufSize = myField->Size();
-        return myField->GetRawBinary();
-      }
-      else return NULL;
-    }
-    else return NULL;
-  }
-}
-
-//  \brief Some tagging programs may save pictures with a picture type 
-//  outside the id3 specification, this function takes care of them
-bool ID3_GetFirstNonStandardPicType(ID3_Tag* tag, ID3_PictureType& pictype)
-{
-  bool found=false;
-  if (NULL == tag)
-    return false;
-  else
-  {
-    ID3_Frame* frame = NULL;
-    ID3_Tag::Iterator* iter = tag->CreateIterator();
-
-    while (NULL != (frame = iter->GetNext() ))
-    {
-      if (frame->GetID() == ID3FID_PICTURE && 
-          (pictype=(ID3_PictureType)frame->GetField(ID3FN_PICTURETYPE)->Get())>ID3PT_PUBLISHERLOGO)
-      {
-        found=true;
-        break;
-      }
-    }
-    delete iter;
-  }
-
-  return found;
-}
-
-bool ID3_HasPicType(ID3_Tag* tag, ID3_PictureType pictype)
-{
-  bool found=false;
-  if (NULL == tag)
-    return false;
-  else
-  {
-    ID3_Frame* frame = NULL;
-    ID3_Tag::Iterator* iter = tag->CreateIterator();
-
-    while (NULL != (frame = iter->GetNext() ))
-    {
-      if (frame->GetID() == ID3FID_PICTURE && 
-          pictype==(ID3_PictureType)frame->GetField(ID3FN_PICTURETYPE)->Get())
-      {
-        found=true;
-        break;
-      }
-    }
-    delete iter;
-  }
-
-  return found;
-}
 
 #define BYTES2INT(b1,b2,b3,b4) (((b1 & 0xFF) << (3*8)) | \
                                 ((b2 & 0xFF) << (2*8)) | \
@@ -134,352 +47,11 @@ using namespace XFILE;
 
 CMusicInfoTagLoaderMP3::CMusicInfoTagLoaderMP3(void)
 {
-  m_iID3v2Size=0;
+
 }
 
 CMusicInfoTagLoaderMP3::~CMusicInfoTagLoaderMP3()
 {
-}
-
-char* CMusicInfoTagLoaderMP3::GetString(const ID3_Frame *frame, ID3_FieldID fldName)
-{
-  char *text = NULL;
-
-  ID3_Field* fld;
-  if (NULL != frame && NULL != (fld = frame->GetField(fldName)))
-  {
-    ID3_TextEnc enc = fld->GetEncoding();
-
-    if (enc == ID3TE_ISO8859_1)
-    {
-      size_t nText = fld->Size();
-      text = LEAKTESTNEW(char[nText + 1]);
-      fld->Get(text, nText + 1);
-      text[nText] = '\0';
-    }
-    else if (enc == ID3TE_UTF16 || enc == ID3TE_UTF16BE)
-    {
-      size_t nText = fld->Size()/2;
-      unicode_t* textW = LEAKTESTNEW(unicode_t[nText + 1]);
-      fld->Get(textW, nText);
-      textW[nText] = '\0';
-
-      CStdStringW s((wchar_t*) textW, nText);
-      CStdStringA ansiString;
-      g_charsetConverter.ucs2CharsetToStringCharset(s, ansiString, true);
-      delete [] textW;
-
-      nText = strlen(ansiString.c_str());
-      text = LEAKTESTNEW(char[nText + 1]);
-      strncpy(text, ansiString.c_str(), nText);
-      text[nText] = '\0';
-    }
-    else if (enc == ID3TE_UTF8)
-    {
-      size_t nText = fld->Size();
-      text = LEAKTESTNEW(char[nText + 1]);
-      fld->Get(text, nText);
-      text[nText] = '\0';
-
-      CStdStringA s(text, nText);
-      CStdStringA ansiString;
-      g_charsetConverter.utf8ToStringCharset(s, ansiString);
-
-      nText = strlen(ansiString.c_str());
-      strncpy(text, ansiString.c_str(), nText);
-      text[nText] = '\0';
-    }
-  }
-  return text;
-}
-
-char* CMusicInfoTagLoaderMP3::GetArtist(const ID3_Tag *tag)
-{
-  char *sArtist = NULL;
-  if (NULL == tag)
-  {
-    return sArtist;
-  }
-
-  ID3_Frame *frame = NULL;
-  if ((frame = tag->Find(ID3FID_LEADARTIST)) ||
-      (frame = tag->Find(ID3FID_BAND)) ||
-      (frame = tag->Find(ID3FID_CONDUCTOR)) ||
-      (frame = tag->Find(ID3FID_COMPOSER)))
-  {
-    sArtist = GetString(frame, ID3FN_TEXT);
-  }
-  return sArtist;
-}
-
-char* CMusicInfoTagLoaderMP3::GetAlbum(const ID3_Tag *tag)
-{
-  char *sAlbum = NULL;
-  if (NULL == tag)
-  {
-    return sAlbum;
-  }
-
-  ID3_Frame *frame = tag->Find(ID3FID_ALBUM);
-  if (frame != NULL)
-  {
-    sAlbum = GetString(frame, ID3FN_TEXT);
-  }
-  return sAlbum;
-}
-
-char* CMusicInfoTagLoaderMP3::GetTitle(const ID3_Tag *tag)
-{
-  char *sTitle = NULL;
-  if (NULL == tag)
-  {
-    return sTitle;
-  }
-
-  ID3_Frame *frame = tag->Find(ID3FID_TITLE);
-  if (frame != NULL)
-  {
-    sTitle = GetString(frame, ID3FN_TEXT);
-  }
-  return sTitle;
-}
-
-char* CMusicInfoTagLoaderMP3::GetUniqueFileID(const ID3_Tag *tag, const CStdString& strUfidOwner)
-{
-  if (NULL == tag)
-    return NULL;
-
-  //  Iterate through all frames, there can be more 
-  //  then one ID3FID_UNIQUEFILEID frame
-  ID3_Tag::ConstIterator* itTag=tag->CreateIterator();
-  const ID3_Frame *frame=NULL;
-  while (frame=itTag->GetNext())
-  {
-    ID3_FrameID frameid=frame->GetID();
-    if (frameid!=ID3FID_UNIQUEFILEID)
-      continue;
-
-    //  Extract the owner of this file id
-    ID3_Field* fld=frame->GetField(ID3FN_OWNER);
-    if (fld != NULL)
-    {
-      CStdString strIdentifier=fld->GetRawText();
-      if (strIdentifier!=strUfidOwner)
-        continue;
-    }
-
-    //  Extract the owner data of this file id
-    fld=frame->GetField(ID3FN_DATA);
-    if (fld != NULL)
-    {
-      size_t nText = fld->Size();
-      char* text = LEAKTESTNEW(char[nText+1]);
-      memset(text, 0, nText+1);
-      memcpy(text, fld->GetRawBinary(), nText);
-      return text;
-    }
-  }
-
-  delete itTag;
-
-  return NULL;
-}
-
-char* CMusicInfoTagLoaderMP3::GetUserText(const ID3_Tag *tag, const CStdString& strDescription)
-{
-  if (NULL == tag)
-    return NULL;
-
-  //  Iterate through all frames, there can be more 
-  //  then one ID3FID_UNIQUEFILEID frame
-  ID3_Tag::ConstIterator* itTag=tag->CreateIterator();
-  const ID3_Frame *frame=NULL;
-  while (frame=itTag->GetNext())
-  {
-    ID3_FrameID frameid=frame->GetID();
-    if (frameid!=ID3FID_USERTEXT)
-      continue;
-
-    //  Extract the owner of this file id
-    ID3_Field* fld=frame->GetField(ID3FN_DESCRIPTION);
-    if (fld != NULL)
-    {
-      CStdString strIdentifier=fld->GetRawText();
-      if (strIdentifier!=strDescription)
-        continue;
-    }
-
-    //  Extract the owner data of this file id
-    fld=frame->GetField(ID3FN_TEXT);
-    if (fld != NULL)
-    {
-      size_t nText = fld->Size();
-      char* text = LEAKTESTNEW(char[nText+1]);
-      memset(text, 0, nText+1);
-      memcpy(text, fld->GetRawText(), nText);
-      return text;
-    }
-  }
-
-  delete itTag;
-
-  return NULL;
-}
-
-char* CMusicInfoTagLoaderMP3::GetMusicBrainzTrackID(const ID3_Tag *tag)
-{
-  return GetUniqueFileID(tag, "http://musicbrainz.org");
-}
-
-char* CMusicInfoTagLoaderMP3::GetMusicBrainzArtistID(const ID3_Tag *tag)
-{
-  return GetUserText(tag, "MusicBrainz Artist Id");
-}
-
-char* CMusicInfoTagLoaderMP3::GetMusicBrainzAlbumID(const ID3_Tag *tag)
-{
-  return GetUserText(tag, "MusicBrainz Album Id");
-}
-
-char* CMusicInfoTagLoaderMP3::GetMusicBrainzAlbumArtistID(const ID3_Tag *tag)
-{
-  return GetUserText(tag, "MusicBrainz Album Artist Id");
-}
-
-char* CMusicInfoTagLoaderMP3::GetMusicBrainzTRMID(const ID3_Tag *tag)
-{
-  return GetUserText(tag, "MusicBrainz TRM Id");
-}
-
-bool CMusicInfoTagLoaderMP3::ReadTag( ID3_Tag& id3tag, CMusicInfoTag& tag )
-{
-  bool bResult = false;
-
-  SYSTEMTIME dateTime;
-  auto_aptr<char>pYear    (ID3_GetYear(&id3tag));
-  auto_aptr<char>pTitle   (GetTitle(&id3tag));
-  auto_aptr<char>pArtist  (GetArtist(&id3tag));
-  auto_aptr<char>pAlbum   (GetAlbum(&id3tag));
-  auto_aptr<char>pGenre   (ID3_GetGenre(&id3tag));
-  auto_aptr<char>pMBTID   (GetMusicBrainzTrackID(&id3tag));
-  auto_aptr<char>pMBAID   (GetMusicBrainzArtistID(&id3tag));
-  auto_aptr<char>pMBBID   (GetMusicBrainzAlbumID(&id3tag));
-  auto_aptr<char>pMBABID  (GetMusicBrainzAlbumArtistID(&id3tag));
-  auto_aptr<char>pMBTRMID (GetMusicBrainzTRMID(&id3tag));
-
-  GetReplayGainInfo(&id3tag);
-
-  tag.SetTrackNumber(ID3_GetTrackNum(&id3tag));
-  tag.SetPartOfSet(ID3_GetPartInSetNum(&id3tag));
-
-  if (NULL != pGenre.get())
-  {
-    tag.SetGenre(ParseMP3Genre(pGenre.get()));
-  }
-  if (NULL != pTitle.get())
-  {
-    if (strlen(pTitle.get()))
-    {
-      tag.SetLoaded(true);
-      bResult = true;
-    }
-    tag.SetTitle(pTitle.get());
-  }
-  if (NULL != pArtist.get())
-  {
-    tag.SetArtist(pArtist.get());
-  }
-  if (NULL != pAlbum.get())
-  {
-    tag.SetAlbum(pAlbum.get());
-  }
-  if (NULL != pYear.get())
-  {
-    dateTime.wYear = atoi(pYear.get());
-    tag.SetReleaseDate(dateTime);
-  }
-  if (NULL != pMBTID.get())
-  {
-    tag.SetMusicBrainzTrackID(pMBTID.get());
-  }
-  if (NULL != pMBAID.get())
-  {
-    tag.SetMusicBrainzArtistID(pMBAID.get());
-  }
-  if (NULL != pMBBID.get())
-  {
-    tag.SetMusicBrainzAlbumID(pMBBID.get());
-  }
-  if (NULL != pMBABID.get())
-  {
-    tag.SetMusicBrainzAlbumArtistID(pMBABID.get());
-  }
-  if (NULL != pMBTRMID.get())
-  {
-    tag.SetMusicBrainzTRMID(pMBTRMID.get());
-  }
-
-  // extract Cover Art and save as album thumb
-  if (ID3_HasPicture(&id3tag))
-  {
-    bool bFound = false;
-    ID3_PictureType nPicType = ID3PT_COVERFRONT;
-    if (ID3_HasPicType(&m_id3tag, nPicType))
-    {
-      bFound = true;
-    }
-    else
-    {
-      nPicType = ID3PT_OTHER;
-      if (ID3_HasPicType(&m_id3tag, nPicType))
-        bFound = true;
-      else if (ID3_GetFirstNonStandardPicType(&id3tag, nPicType))
-        bFound = true;
-    }
-
-    CStdString strCoverArt, strPath;
-    CUtil::GetDirectory(tag.GetURL(), strPath);
-    CUtil::GetAlbumThumb(tag.GetAlbum(), strPath, strCoverArt, true);
-    if (bFound)
-    {
-      if (!CUtil::ThumbExists(strCoverArt))
-      {
-        CStdString strExtension;
-        auto_aptr<char>pMimeTyp (ID3_GetMimeTypeOfPicType(&id3tag, nPicType));
-        if (pMimeTyp.get() != NULL)
-          strExtension = pMimeTyp.get();
-
-        int nPos = strExtension.Find('/');
-        if (nPos > -1)
-          strExtension.Delete(0, nPos + 1);
-
-        size_t nBufSize = 0;
-        const BYTE* pPic = ID3_GetPictureBufferOfPicType(&id3tag, nPicType, &nBufSize );
-
-        if (pPic != NULL && nBufSize > 0)
-        {
-          CPicture pic;
-          if (pic.CreateAlbumThumbnailFromMemory(pPic, nBufSize, strExtension, strCoverArt))
-          {
-            CUtil::ThumbCacheAdd(strCoverArt, true);
-          }
-          else
-          {
-            CUtil::ThumbCacheAdd(strCoverArt, false);
-            CLog::Log(LOGERROR, "Tag loader mp3: Unable to create album art for %s (extension=%s, size=%d)", tag.GetURL().c_str(), strExtension.c_str(), nBufSize);
-          }
-        }
-      }
-    }
-    else
-    {
-      // id3 has no cover, so add to cache
-      // that it does not exist
-      CUtil::ThumbCacheAdd(strCoverArt, false);
-    }
-  }
-
-  return bResult;
 }
 
 bool CMusicInfoTagLoaderMP3::Load(const CStdString& strFileName, CMusicInfoTag& tag)
@@ -488,63 +60,46 @@ bool CMusicInfoTagLoaderMP3::Load(const CStdString& strFileName, CMusicInfoTag& 
   {
     // retrieve the ID3 Tag info from strFileName
     // and put it in tag
-    bool bResult = false;
-    // CSectionLoader::Load("LIBID3");
-    tag.SetURL(strFileName);
-    if ( m_file.Open( strFileName ) )
+    CID3Tag id3tag;
+    if (id3tag.Read(strFileName))
     {
-      // Do not use ID3TT_ALL, because
-      // id3lib reads the ID3V1 tag first
-      // then ID3V2 tag is blocked.
-      ID3_XIStreamReader reader( m_file );
-      if ( m_id3tag.Link(reader, ID3TT_ID3V2) >= 0)
-      {
-        if ( !(bResult = ReadTag( m_id3tag, tag )) )
-        {
-          m_id3tag.Clear();
-          if ( m_id3tag.Link(reader, ID3TT_ID3V1 ) >= 0 )
-          {
-            bResult = ReadTag( m_id3tag, tag );
-          }
-        }
-      }
-      // Check for an APEv2 tag
-      CAPEv2Tag apeTag;
-      if (apeTag.ReadTag(strFileName.c_str()))
-      { // found - let's copy over the additional info (if any)
-        if (apeTag.GetArtist().size())
-          tag.SetArtist(apeTag.GetArtist());
-        if (apeTag.GetAlbum().size())
-          tag.SetAlbum(apeTag.GetAlbum());
-        if (apeTag.GetTitle().size())
-        {
-          bResult = true;
-          tag.SetTitle(apeTag.GetTitle());
-          tag.SetLoaded();
-        }
-        if (apeTag.GetGenre().size())
-          tag.SetGenre(apeTag.GetGenre());
-        if (apeTag.GetYear().size())
-        {
-          SYSTEMTIME time;
-          ZeroMemory(&time, sizeof(SYSTEMTIME));
-          time.wYear = atoi(apeTag.GetYear().c_str());
-          tag.SetReleaseDate(time);
-        }
-        if (apeTag.GetTrackNum())
-          tag.SetTrackNumber(apeTag.GetTrackNum());
-        if (apeTag.GetDiscNum())
-          tag.SetPartOfSet(apeTag.GetDiscNum());
-        if (apeTag.GetReplayGain().iHasGainInfo)
-          m_replayGainInfo = apeTag.GetReplayGain();
-      }
-
-      tag.SetDuration(ReadDuration(strFileName));
-      m_file.Close();
+      id3tag.GetMusicInfoTag(tag);
+      m_replayGainInfo=id3tag.GetReplayGain();
     }
 
-    // CSectionLoader::Unload("LIBID3");
-    return bResult;
+    // Check for an APEv2 tag
+    CAPEv2Tag apeTag;
+    if (apeTag.ReadTag(strFileName.c_str()))
+    { // found - let's copy over the additional info (if any)
+      if (apeTag.GetArtist().size())
+        tag.SetArtist(apeTag.GetArtist());
+      if (apeTag.GetAlbum().size())
+        tag.SetAlbum(apeTag.GetAlbum());
+      if (apeTag.GetTitle().size())
+      {
+        tag.SetTitle(apeTag.GetTitle());
+        tag.SetLoaded();
+      }
+      if (apeTag.GetGenre().size())
+        tag.SetGenre(apeTag.GetGenre());
+      if (apeTag.GetYear().size())
+      {
+        SYSTEMTIME time;
+        ZeroMemory(&time, sizeof(SYSTEMTIME));
+        time.wYear = atoi(apeTag.GetYear().c_str());
+        tag.SetReleaseDate(time);
+      }
+      if (apeTag.GetTrackNum())
+        tag.SetTrackNumber(apeTag.GetTrackNum());
+      if (apeTag.GetDiscNum())
+        tag.SetPartOfSet(apeTag.GetDiscNum());
+      if (apeTag.GetReplayGain().iHasGainInfo)
+        m_replayGainInfo = apeTag.GetReplayGain();
+    }
+
+    tag.SetDuration(ReadDuration(strFileName));
+
+    return tag.Loaded();
   }
   catch (...)
   {
@@ -564,14 +119,21 @@ bool CMusicInfoTagLoaderMP3::ReadSeekAndReplayGainInfo(const CStdString &strFile
     if (apeTag.GetReplayGain().iHasGainInfo)
       m_replayGainInfo = apeTag.GetReplayGain();
   }
-  // now read the duration
-  if (m_file.Open(strFileName, true))
-  {
-    int duration = ReadDuration(strFileName);
-    if (duration)
-      return true;
+
+  if (!m_replayGainInfo.iHasGainInfo)
+  { // Nothing found query id3 tag
+    CID3Tag id3tag;
+    if (id3tag.Read(strFileName))
+    {
+      if (id3tag.GetReplayGain().iHasGainInfo)
+        m_replayGainInfo = id3tag.GetReplayGain();
+    }
   }
-  return false;
+
+  // now read the duration
+  int duration = ReadDuration(strFileName);
+
+  return duration>0 ? true : false;
 }
 
 /* check if 'head' is a valid mp3 frame header */
@@ -608,27 +170,38 @@ int CMusicInfoTagLoaderMP3::ReadDuration(const CStdString& strFileName)
   unsigned char* vbri;
   unsigned char buffer[8193];
 
-  /* Make sure file has a ID3v2 tag */
-  m_file.Seek(0, SEEK_SET);
-  m_file.Read(buffer, 6);
+  CFile file;
+  if (!file.Open(strFileName))
+    return 0;
 
-  while (buffer[0] == 'I' &&
+  /* Make sure file has a ID3v2 tag */
+  file.Read(buffer, 10);
+
+  int id3v2Size=0;
+  if (buffer[0] == 'I' &&
       buffer[1] == 'D' &&
       buffer[2] == '3')
   {
     /* Now check what the ID3v2 size field says */
-    m_file.Read(buffer, 4);
-    nPrependedBytes = UNSYNC(buffer[0], buffer[1], buffer[2], buffer[3]) + 10;
-    m_iID3v2Size += nPrependedBytes;
-    // Skip ID3V2 tag when reading mp3 data
-    m_file.Seek(m_iID3v2Size, SEEK_SET);
-    m_file.Read(buffer, 6);
+    id3v2Size += UNSYNC(buffer[6], buffer[7], buffer[8], buffer[9]) + 10;
+  }
+
+  /* Make sure file has a ID3v1 tag */
+  file.Seek(file.GetLength()-128, SEEK_SET);
+  file.Read(buffer, 3);
+
+  bool hasid3v1=false;
+  if (buffer[0] == 'T' &&
+      buffer[1] == 'A' &&
+      buffer[2] == 'G')
+  {
+    hasid3v1=true;
   }
 
   //raw mp3Data = FileSize - ID3v1 tag - ID3v2 tag
-  int nMp3DataSize = (int)m_file.GetLength() - m_iID3v2Size;
-  if (m_id3tag.HasV1Tag())
-    nMp3DataSize -= m_id3tag.GetAppendedBytes();
+  int nMp3DataSize = (int)file.GetLength() - id3v2Size;
+  if (hasid3v1)
+    nMp3DataSize -= 128;
 
   const int freqtab[][4] =
     {
@@ -639,8 +212,8 @@ int CMusicInfoTagLoaderMP3::ReadDuration(const CStdString& strFileName)
     };
 
   // Skip ID3V2 tag when reading mp3 data
-  m_file.Seek(m_iID3v2Size, SEEK_SET);
-  m_file.Read(buffer, 8192);
+  file.Seek(id3v2Size, SEEK_SET);
+  file.Read(buffer, 8192);
 
   int frequency = 0, bitrate = 0, bittable = 0;
   int frame_count = 0;
@@ -673,8 +246,8 @@ int CMusicInfoTagLoaderMP3::ReadDuration(const CStdString& strFileName)
           }
           float *offset = new float[101];
           for (int j = 0; j < 100; j++)
-            offset[j] = (float)buffer[iOffset + j]/256.0f * nMp3DataSize + m_iID3v2Size;
-          offset[100] = (float)nMp3DataSize + m_iID3v2Size;
+            offset[j] = (float)buffer[iOffset + j]/256.0f * nMp3DataSize + id3v2Size;
+          offset[100] = (float)nMp3DataSize + id3v2Size;
           m_seekInfo.SetOffsets(100, offset);
           delete[] offset;
         }
@@ -815,8 +388,8 @@ int CMusicInfoTagLoaderMP3::ReadDuration(const CStdString& strFileName)
             }
             float *offset = new float[101];
             for (int j = 0; j < 100; j++)
-              offset[j] = (float)xing[iOffset + j]/256.0f * nMp3DataSize + m_iID3v2Size;
-            offset[100] = (float)nMp3DataSize + m_iID3v2Size;
+              offset[j] = (float)xing[iOffset + j]/256.0f * nMp3DataSize + id3v2Size;
+            offset[100] = (float)nMp3DataSize + id3v2Size;
             m_seekInfo.SetOffsets(100, offset);
             delete[] offset;
           }
@@ -845,7 +418,7 @@ int CMusicInfoTagLoaderMP3::ReadDuration(const CStdString& strFileName)
         float *offset = new float[iSeekOffsets + 1];
         int iScaleFactor = ((vbri[20] & 0xFF) << 8) | (vbri[21] & 0xFF);
         int iOffsetSize = ((vbri[22] & 0xFF) << 8) | (vbri[23] & 0xFF);
-        offset[0] = (float)m_iID3v2Size;
+        offset[0] = (float)id3v2Size;
         for (int j = 0; j < iSeekOffsets; j++)
         {
           DWORD dwOffset = 0;
@@ -857,7 +430,7 @@ int CMusicInfoTagLoaderMP3::ReadDuration(const CStdString& strFileName)
           offset[j] += (float)dwOffset * iScaleFactor;
           offset[j + 1] = offset[j];
         }
-        offset[iSeekOffsets] = (float)m_iID3v2Size + nMp3DataSize;
+        offset[iSeekOffsets] = (float)id3v2Size + nMp3DataSize;
         m_seekInfo.SetOffsets(iSeekOffsets, offset);
         delete[] offset;
       }
@@ -881,112 +454,18 @@ int CMusicInfoTagLoaderMP3::ReadDuration(const CStdString& strFileName)
    d = (double)(nMp3DataSize / ((bitrate * 1000) / 8));
   m_seekInfo.SetDuration((float)d);
   float offset[2];
-  offset[0] = (float)m_iID3v2Size;
-  offset[1] = (float)m_iID3v2Size + nMp3DataSize;
+  offset[0] = (float)id3v2Size;
+  offset[1] = (float)id3v2Size + nMp3DataSize;
   m_seekInfo.SetOffsets(1, offset);
   return (int)d;
 }
 
-void CMusicInfoTagLoaderMP3::GetSeekInfo(CVBRMP3SeekHelper &info)
+void CMusicInfoTagLoaderMP3::GetSeekInfo(CVBRMP3SeekHelper &info) const
 {
   info.SetDuration(m_seekInfo.GetDuration());
   info.SetOffsets(m_seekInfo.GetNumOffsets(), m_seekInfo.GetOffsets());
   info.SetSampleRange(m_seekInfo.GetFirstSample(), m_seekInfo.GetLastSample());
   return;
-}
-
-CStdString CMusicInfoTagLoaderMP3::ParseMP3Genre (const CStdString& str)
-{
-  CStdString strTemp = str;
-  //vector<CStdString> vecGenres;
-  set<CStdString> setGenres;
-
-  while (!strTemp.IsEmpty())
-  {
-    // remove any leading spaces
-    int i = strTemp.find_first_not_of(" ");
-    if (i > 0) strTemp.erase(0, i);
-
-    // pull off the first character
-    char p = strTemp[0];
-
-    // start off looking for (something)
-    if (p == '(')
-    {
-      strTemp.erase(0, 1);
-
-      // now look for ((something))
-      p = strTemp[0];
-      if (p == '(')
-      {
-        // remove ((something))
-        i = strTemp.find_first_of("))");
-        strTemp.erase(0, i + 2);
-      }
-    }
-
-    // no parens, so we have a start of a string
-    // push chars into temp string until valid terminator found
-    // valid terminators are ) or , or ;
-    else
-    {
-      CStdString t;
-      while ((!strTemp.IsEmpty()) && (p != ')') && (p != ',') && (p != ';'))
-      {
-        strTemp.erase(0, 1);
-        t.push_back(p);
-        p = strTemp[0];
-      }
-      // loop exits when terminator is found
-      // be sure to remove the terminator
-      strTemp.erase(0, 1);
-
-      // remove any leading or trailing white space
-      // from temp string
-      t.Trim();
-      if (!t.size()) continue;
-
-      // if the temp string is natural number try to convert it to a genre string
-      if (CUtil::IsNaturalNumber(t))
-      {
-        char * pEnd;
-        long l = strtol(t.c_str(), &pEnd, 0);
-        if (l < ID3_NR_OF_V1_GENRES)
-        {
-          // convert to genre string
-          t = ID3_v1_genre_description[l];
-        }
-      }
-
-      // convert RX to Remix as per ID3 V2.3 spec
-      else if ((t == "RX") || (t == "Rx") || (t == "rX") || (t == "rx"))
-      {
-        t = "Remix";
-      }
-
-      // convert CR to Cover as per ID3 V2.3 spec
-      else if ((t == "CR") || (t == "Cr") || (t == "cR") || (t == "cr"))
-      {
-        t = "Cover";
-      }
-
-      // insert genre name in set
-      setGenres.insert(t);
-    }
-
-  }
-
-  // return a " / " seperated string
-  CStdString strGenre;
-  set<CStdString>::iterator it;
-  for (it = setGenres.begin(); it != setGenres.end(); it++)
-  {
-    CStdString strTemp = *it;
-    if (!strGenre.IsEmpty())
-      strGenre += " / ";
-    strGenre += strTemp;
-  }
-  return strGenre;
 }
 
 bool CMusicInfoTagLoaderMP3::ReadLAMETagInfo(BYTE *b)
@@ -1038,39 +517,7 @@ bool CMusicInfoTagLoaderMP3::ReadLAMETagInfo(BYTE *b)
   return true;
 }
 
-void CMusicInfoTagLoaderMP3::GetReplayGainInfo(const ID3_Tag *tag)
-{
-  char *szGain = GetUserText(tag, "replaygain_track_gain");
-  if (szGain)
-  {
-    m_replayGainInfo.iTrackGain = (int)(atof(szGain) * 100 + 0.5);
-    m_replayGainInfo.iHasGainInfo |= REPLAY_GAIN_HAS_TRACK_INFO;
-    delete[] szGain;
-  }
-  szGain = GetUserText(tag, "replaygain_album_gain");
-  if (szGain)
-  {
-    m_replayGainInfo.iAlbumGain = (int)(atof(szGain) * 100 + 0.5);
-    m_replayGainInfo.iHasGainInfo |= REPLAY_GAIN_HAS_ALBUM_INFO;
-    delete[] szGain;
-  }
-  szGain = GetUserText(tag, "replaygain_track_peak");
-  if (szGain)
-  {
-    m_replayGainInfo.fTrackPeak = (float)atof(szGain);
-    m_replayGainInfo.iHasGainInfo |= REPLAY_GAIN_HAS_TRACK_PEAK;
-    delete[] szGain;
-  }
-  szGain = GetUserText(tag, "replaygain_album_peak");
-  if (szGain)
-  {
-    m_replayGainInfo.fAlbumPeak = (float)atof(szGain);
-    m_replayGainInfo.iHasGainInfo |= REPLAY_GAIN_HAS_ALBUM_PEAK;
-    delete[] szGain;
-  }
-}
-
-bool CMusicInfoTagLoaderMP3::GetReplayGain(CReplayGain &info)
+bool CMusicInfoTagLoaderMP3::GetReplayGain(CReplayGain &info) const
 {
   if (!m_replayGainInfo.iHasGainInfo)
     return false;
