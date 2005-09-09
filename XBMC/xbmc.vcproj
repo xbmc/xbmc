@@ -591,6 +591,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\FlacTag.h">
 				</File>
 				<File
+					RelativePath=".\xbmc\Id3Tag.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\Id3Tag.h">
+				</File>
+				<File
 					RelativePath=".\xbmc\MusicInfoLoader.cpp">
 				</File>
 				<File
@@ -676,6 +682,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				</File>
 				<File
 					RelativePath=".\xbmc\OggTag.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\OggTag.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\Tag.h">
 				</File>
 				<File
 					RelativePath=".\xbmc\VorbisTag.cpp">
@@ -1483,9 +1495,6 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				RelativePath=".\xbmc\NfoFile.h">
 			</File>
 			<File
-				RelativePath=".\xbmc\OggTag.h">
-			</File>
-			<File
 				RelativePath=".\xbmc\Picture.h">
 			</File>
 			<File
@@ -2209,10 +2218,10 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\cores\sidplayer\audio\AudioDrv.h">
 				</File>
 				<File
-					RelativePath=".\xbmc\cores\sidplayer\config.h">
+					RelativePath=".\xbmc\cores\sidplayer\audio\config.h">
 				</File>
 				<File
-					RelativePath=".\xbmc\cores\sidplayer\audio\config.h">
+					RelativePath=".\xbmc\cores\sidplayer\config.h">
 				</File>
 				<File
 					RelativePath=".\xbmc\cores\sidplayer\IniConfig.cpp">

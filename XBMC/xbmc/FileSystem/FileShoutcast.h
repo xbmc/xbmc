@@ -10,13 +10,10 @@
 #endif // _MSC_VER > 1000
 
 #include "IFile.h"
-#include "../lib/libid3/id3.h"
-#include "../lib/libid3/misc_support.h"
+
 using namespace XFILE;
 namespace XFILE
 {
-
-
 typedef struct FileStateSt
 {
   bool bBuffering;
@@ -25,6 +22,7 @@ typedef struct FileStateSt
   bool bRipError;
 }
 FileState;
+
 class CFileShoutcast : public IFile
 {
 public:
@@ -44,7 +42,7 @@ public:
   virtual bool Record();
   virtual void StopRecording();
   virtual bool IsRecording();
-  virtual bool GetID3TagInfo(ID3_Tag& tag);
+  virtual bool GetMusicInfoTag(CMusicInfoTag& tag);
 protected:
   void outputTimeoutMessage(const char* message);
   DWORD m_dwLastTime;

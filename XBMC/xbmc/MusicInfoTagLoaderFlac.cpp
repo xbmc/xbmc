@@ -18,14 +18,12 @@ bool CMusicInfoTagLoaderFlac::Load(const CStdString& strFileName, CMusicInfoTag&
   {
     // retrieve the Flac Tag info from strFileName
     // and put it in tag
-    tag.SetURL(strFileName);
     CFlacTag myTag;
-    if (myTag.ReadTag(strFileName))
+    if (myTag.Read(strFileName))
     {
       myTag.GetMusicInfoTag(tag);
-      return true;
     }
-    return false;
+    return tag.Loaded();
   }
   catch (...)
   {

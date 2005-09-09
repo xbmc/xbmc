@@ -119,7 +119,9 @@ bool MP3Codec::Init(const CStdString &strFile, unsigned int filecache)
   // This needs to be made more intelligent - possibly use a temp output buffer
   // and cycle around continually reading until we have the necessary data
   // as a first workaround skip the id3v2 tag at the beginning of the file
-  m_file.Seek(mp3info.GetID3v2Size());
+  const float* offsets=m_seekInfo.GetOffsets();
+  int id3v2Size=(int)offsets[0];
+  m_file.Seek(id3v2Size);
   m_file.Read(m_InputBuffer, 8192);
   int sendsize = 8192;
   unsigned int formatdata[8];
@@ -139,7 +141,7 @@ bool MP3Codec::Init(const CStdString &strFile, unsigned int filecache)
     return false;
   }
   m_pDecoder->flush();
-  m_file.Seek(mp3info.GetID3v2Size());
+  m_file.Seek(id3v2Size);
   return true;
 }
 

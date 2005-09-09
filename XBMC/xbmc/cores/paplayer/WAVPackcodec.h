@@ -1,7 +1,6 @@
 #pragma once
 #include "ICodec.h"
 #include "FileReader.h"
-#undef ID3_tag
 #include "WavPack/WavPack.h"
 
 class WAVPackCodec : public ICodec

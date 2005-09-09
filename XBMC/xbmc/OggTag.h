@@ -54,7 +54,7 @@ class COggTag : public CVorbisTag
 public:
   COggTag(void);
   virtual ~COggTag(void);
-  virtual bool ReadTag(const CStdString& strFile);
+  virtual bool Read(const CStdString& strFile);
           int  GetStreamCount(const CStdString& strFile);
 protected:
   bool LoadDLL();                     // load the DLL in question
