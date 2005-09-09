@@ -114,7 +114,6 @@
 #if defined(_DEBUG) && !defined(USE_RELEASE_LIBS)
  #pragma comment (lib,"xbmc/lib/libXBMS/libXBMSd.lib")    // SECTIONNAME=LIBXBMS
  #pragma comment (lib,"xbmc/lib/libsmb/libsmbd.lib")      // SECTIONNAME=LIBSMB
- #pragma comment (lib,"xbmc/lib/libID3/id3libd.lib")    // SECTIONNAME=LIBID3
  #pragma comment (lib,"xbmc/lib/libPython/pythond.lib")  // SECTIONNAME=PYTHON,PY_RW
  #pragma comment (lib,"xbmc/lib/libGoAhead/goaheadd.lib") // SECTIONNAME=LIBHTTP
  #pragma comment (lib,"xbmc/lib/sqlLite/libSQLite3d.lib")
@@ -125,7 +124,6 @@
  #pragma comment (lib,"xbmc/lib/libsidplay/libsidplayd.lib")   // SECTIONNAME=SID_RW,SID_RX
  #pragma comment (lib,"xbmc/lib/libsidplay/libsidutilsd.lib")  // SECTIONNAME=SID_RW,SID_RX
  #pragma comment (lib,"xbmc/lib/libsidplay/resid_builderd.lib") // SECTIONNAME=SID_RW,SID_RX
- //#pragma comment (lib,"xbmc/lib/libmp4/libmp4v2d.lib") // SECTIONNAME=LIBMP4
  #pragma comment (lib,"xbmc/lib/libxdaap/libxdaapd.lib") // SECTIONNAME=LIBXDAAP
  #pragma comment (lib,"xbmc/lib/libiconv/libiconvd.lib")
  #pragma comment (lib,"xbmc/lib/libfribidi/libfribidid.lib")
@@ -133,7 +131,6 @@
 #else
  #pragma comment (lib,"xbmc/lib/libXBMS/libXBMS.lib")
  #pragma comment (lib,"xbmc/lib/libsmb/libsmb.lib")
- #pragma comment (lib,"xbmc/lib/libID3/id3lib.lib")
  #pragma comment (lib,"xbmc/lib/libPython/python.lib")
  #pragma comment (lib,"xbmc/lib/libGoAhead/goahead.lib")
  #pragma comment (lib,"xbmc/lib/sqlLite/libSQLite3.lib")
@@ -144,7 +141,6 @@
  #pragma comment (lib,"xbmc/lib/libsidplay/libsidplay.lib")    // SECTIONNAME=SID_RW,SID_RX
  #pragma comment (lib,"xbmc/lib/libsidplay/libsidutils.lib")   // SECTIONNAME=SID_RW,SID_RX
  #pragma comment (lib,"xbmc/lib/libsidplay/resid_builder.lib") // SECTIONNAME=SID_RW,SID_RX
- //#pragma comment (lib,"xbmc/lib/libmp4/libmp4v2.lib") // SECTIONNAME=LIBMP4
  #pragma comment (lib,"xbmc/lib/libxdaap/libxdaap.lib") // SECTIONNAME=LIBXDAAP
  #pragma comment (lib,"xbmc/lib/libiconv/libiconv.lib")
  #pragma comment (lib,"xbmc/lib/libfribidi/libfribidi.lib")

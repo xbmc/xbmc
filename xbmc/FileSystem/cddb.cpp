@@ -11,7 +11,7 @@
 #include "../stdafx.h"
 #include "cddb.h"
 #include "../dnsnamecache.h"
-#include "../lib/libID3/id3.h"
+#include "../id3tag.h"
 #include "../util.h"
 
 
@@ -853,14 +853,8 @@ void Xcddb::parseData(const char *buffer)
             strGenre.TrimLeft(' ');
             if (CUtil::IsNaturalNumber(strGenre))
             {
-              char * pEnd;
-              long l = strtol(strGenre.c_str(), &pEnd, 0);
-              if (l < ID3_NR_OF_V1_GENRES)
-              {
-                // convert to genre string
-                strGenre = ID3_v1_genre_description[l];
-                g_charsetConverter.utf8ToStringCharset(strGenre, m_strGenre);  // convert UTF-8 to charset string
-              }
+              CID3Tag tag;
+              m_strGenre=tag.ParseMP3Genre(strGenre);
             }
           }
         }

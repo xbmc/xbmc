@@ -19,12 +19,11 @@ CFlacTag::~CFlacTag()
 {}
 
 // overridden from COggTag
-bool CFlacTag::ReadTag(const CStdString& strFile)
+bool CFlacTag::Read(const CStdString& strFile)
 {
+  CVorbisTag::Read(strFile);
+
   CFile file;
-
-  m_musicInfoTag.SetURL(strFile);
-
   if (!file.Open(strFile))
     return false;
 
