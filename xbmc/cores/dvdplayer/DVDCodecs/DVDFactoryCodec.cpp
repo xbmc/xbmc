@@ -11,6 +11,7 @@
 #include "Audio\DVDAudioCodecLiba52.h"
 #include "Audio\DVDAudioCodecLibDts.h"
 #include "Audio\DVDAudioCodecLibMad.h"
+#include "Audio\DVDAudioCodecLibFaad.h"
 
 #define EMULATE_INTTYPES
 #include "..\ffmpeg\avcodec.h"
@@ -52,21 +53,16 @@ CDVDAudioCodec* CDVDFactoryCodec::CreateAudioCodec(CodecID codecID)
       pAudioCodec = new CDVDAudioCodecLibMad();
       break;
     }
-  //case CODEC_ID_AAC:
+  case CODEC_ID_AAC:
   //case CODEC_ID_MPEG4AAC:
-  //case CODEC_ID_DTS:
-  case CODEC_ID_PCM_S16BE:
-  case CODEC_ID_PCM_S16LE:
-
     {
-      pAudioCodec = new CDVDAudioCodecFFmpeg();
+      pAudioCodec = new CDVDAudioCodecLibFaad();
       break;
     }
-  //case CODEC_ID_DTS:
+  case CODEC_ID_PCM_S16BE:
+  case CODEC_ID_PCM_S16LE:
     {
-      // dts stream
-      // asyncaudiostream is unable to open dts streams, use ac97 for this
-      CLog::Log(LOGWARNING, "CODEC_ID_DTS is currently not supported");
+      pAudioCodec = new CDVDAudioCodecFFmpeg();
       break;
     }
   default:
