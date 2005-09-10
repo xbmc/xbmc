@@ -1336,6 +1336,8 @@ void CGUIWindowMusicBase::OnPopupMenu(int iItem)
   int btn_Info          = pMenu->AddButton(13351);    // Music Information
   int btn_Play          = pMenu->AddButton(13358);    // Play Item
   int btn_Queue         = pMenu->AddButton(13347);    // Queue Item
+
+
   int btn_Playlist      = pMenu->AddButton(13350);    // Now Playing...
 
   int btn_Scan = 0;
@@ -1348,13 +1350,16 @@ void CGUIWindowMusicBase::OnPopupMenu(int iItem)
   int btn_Search        = pMenu->AddButton(137);      // Search...
   int btn_Rip           = pMenu->AddButton(600);      // Rip CD Audio
   int btn_CDDB          = pMenu->AddButton(16002);    // CDDB lookup
+
   
   int btn_Delete = 0;
   CStdString strDirectory;
   strDirectory.Format("%s\\playlists", g_stSettings.m_szAlbumDirectory);
   if (strDirectory.Equals(m_Directory.m_strPath) || g_guiSettings.GetBool("MusicFiles.AllowFileDeletion"))
     btn_Delete = pMenu->AddButton(117);               // Delete
-  
+
+  int btn_PlayWith = pMenu->AddButton(15213);         // Play using alternate player
+
   int btn_Settings      = pMenu->AddButton(5);        // Settings...
 
   // turn off info/queue/play if the current item is goto parent ..
@@ -1365,6 +1370,11 @@ void CGUIWindowMusicBase::OnPopupMenu(int iItem)
     pMenu->EnableButton(btn_Play, false);
     pMenu->EnableButton(btn_Queue, false);
   }
+
+  // check what players we have, if we have multiple display play with option
+  VECPLAYERCORES vecCores;
+  CPlayerCoreFactory::GetPlayers(*m_vecItems[iItem], vecCores);
+  pMenu->EnableButton(btn_PlayWith, vecCores.size() >= 1 );
 
   // turn off the now playing button if playlist is empty
   if (g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).size() <= 0)
@@ -1443,6 +1453,12 @@ void CGUIWindowMusicBase::OnPopupMenu(int iItem)
       m_gWindowManager.ActivateWindow(WINDOW_SETTINGS_MYMUSIC);
       return;
     }
+    else if( btnid == btn_PlayWith )
+    {
+      g_application.m_eForcedNextPlayer = CPlayerCoreFactory::SelectPlayerDialog(vecCores, iPosX, iPosY);
+      if( g_application.m_eForcedNextPlayer != EPC_NONE )
+        PlayItem(iItem);
+    }  
   }
   m_vecItems[iItem]->Select(bSelected);
 }

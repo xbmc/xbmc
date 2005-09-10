@@ -1005,21 +1005,23 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem)
 
   int btn_Search_IMDb   = pMenu->AddButton(13348); // Search IMDb...
 
-  // dvd player placeholder
-  bool bEnabledDVD = strcmp(g_stSettings.m_szExternalDVDPlayer, "dvdplayerbeta") == 0;
-  int btn_DVD = 0;
-  if (bEnabledDVD)
-    btn_DVD = pMenu->AddButton(15213);
-
   // hide delete button unless enabled, or in title window
   int btn_Delete = 0;
   if ((GetID() == WINDOW_VIDEOS && g_guiSettings.GetBool("VideoFiles.AllowFileDeletion")) || GetID() == WINDOW_VIDEO_TITLE)
     btn_Delete = pMenu->AddButton(117);             // Delete
 
+  int btn_PlayWith      = pMenu->AddButton(15213);  // Play using alternate player
+
   int btn_Settings      = pMenu->AddButton(5);      // Settings
 
   // check to see if the Resume Video button is applicable
   pMenu->EnableButton(btn_Resume, ResumeItemOffset(iItem)>0);
+
+  // check what players we have
+  VECPLAYERCORES vecCores;
+  CPlayerCoreFactory::GetPlayers(*m_vecItems[iItem], vecCores);
+  pMenu->EnableButton(btn_PlayWith, vecCores.size() >= 1 );
+
 
   // turn off the now playing button if playlist is empty
   if (g_playlistPlayer.GetPlaylist(PLAYLIST_VIDEO).size() <= 0)
@@ -1035,13 +1037,6 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem)
   // turn off the query info button if we are in playlists view
   if (GetID() == WINDOW_VIDEO_PLAYLIST || GetID() != WINDOW_VIDEOS && m_vecItems[iItem]->m_bIsFolder)
     pMenu->EnableButton(btn_Show_Info, false);
-
-  if(bEnabledDVD && !(m_vecItems[iItem]->IsDVDFile(true, true) 
-      || m_vecItems[iItem]->IsDVD() 
-      || m_vecItems[iItem]->IsDVDImage() 
-      || m_vecItems[iItem]->IsVideo() 
-      || m_vecItems[iItem]->IsAudio() ) )
-    pMenu->EnableButton(btn_DVD, false);
 
   // position it correctly
   pMenu->SetPosition(iPosX - pMenu->GetWidth() / 2, iPosY - pMenu->GetHeight() / 2);
@@ -1080,14 +1075,15 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem)
       m_gWindowManager.ActivateWindow(WINDOW_SETTINGS_MYVIDEOS);
       return;
     }
-    else if (btnid == btn_DVD)
-    {
-      g_application.m_strForcedNextPlayer = "dvdplayer";
-      OnClick(iItem);
-    }
     else if (btnid == btn_Delete)
     {
       OnDeleteItem(iItem);
+    }
+    else if( btnid == btn_PlayWith )
+    {
+      g_application.m_eForcedNextPlayer = CPlayerCoreFactory::SelectPlayerDialog(vecCores, iPosX, iPosY);
+      if( g_application.m_eForcedNextPlayer != EPC_NONE )
+        OnClick(iItem);
     }
   }
   m_vecItems[iItem]->Select(bSelected);
