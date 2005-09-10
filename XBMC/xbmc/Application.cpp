@@ -183,7 +183,7 @@ CApplication::CApplication(void)
   m_bMasterLockOverridesLocalPasswords = false;
   m_MasterUserModeCounter = 2;
   m_bInitializing = true;
-  m_strForcedNextPlayer = "";
+  m_eForcedNextPlayer = EPC_NONE;
   m_strPlayListFile = "";
   m_nextPlaylistItem = -1;
 }
@@ -1987,7 +1987,7 @@ bool CApplication::OnKey(CKey& key)
       }
       if (action.wID == ACTION_PLAYER_FORWARD || action.wID == ACTION_PLAYER_REWIND)
       {
-        if (m_strCurrentPlayer == "sid")
+        if (m_eCurrentPlayer == EPC_SIDPLAYER )
         {
           // sid uses these to track skip
           m_pPlayer->Seek(action.wID == ACTION_PLAYER_FORWARD);
@@ -2891,43 +2891,29 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
     AVDelay = m_pPlayer->GetAVDelay();
   }
 
-  CURL url(item.m_strPath);
-  CStdString strNewPlayer = "mplayer";
-  if (m_strForcedNextPlayer.length() != 0)
-  {
-    strNewPlayer = m_strForcedNextPlayer;
-    m_strForcedNextPlayer = "";
-  }
+
   
-  else if (strcmp(g_stSettings.m_szExternalDVDPlayer, "dvdplayerbeta") == 0 && (item.IsDVD()))// || item.IsDVDFile() || item.IsDVDImage()))
+
+  EPLAYERCORES eNewCore = EPC_NONE;
+
+  if (m_eForcedNextPlayer != EPC_NONE)
   {
-    strNewPlayer = "dvdplayer";
+    eNewCore = m_eForcedNextPlayer;
+    m_eForcedNextPlayer = EPC_NONE;
   }
-  
-  else if (ModPlayer::IsSupportedFormat(url.GetFileType()))
+  else
   {
-    strNewPlayer = "mod";
+    eNewCore = CPlayerCoreFactory::GetDefaultPlayer(item);
   }
-  else if (url.GetFileType() == "sid")
-  {
-    strNewPlayer = "sid";
-  }
-  // workaround so streaming works again
-  else if (item.IsInternetStream() /* && !CUtil::IsFTP(item.m_strPath)*/)
-  {
-    strNewPlayer = "mplayer";
-  }
-  else if (PAPlayer::HandlesType(url.GetFileType()))
-  {
-    strNewPlayer = "paplayer";
-  }
+
   //We have to stop parsing a cdg before mplayer is deallocated
   m_CdgParser.Stop();
+
   // We should restart the player, unless the previous and next tracks are using
   // one of the players that allows gapless playback (paplayer, dvdplayer)
-  if (m_pPlayer && !(m_strCurrentPlayer == strNewPlayer && (m_strCurrentPlayer == "dvdplayer" || m_strCurrentPlayer == "paplayer")))
+  if (m_pPlayer)
   {
-    if (1 || m_strCurrentPlayer != strNewPlayer || !m_itemCurrentFile.IsAudio() )
+    if ( !(m_eCurrentPlayer == eNewCore && (m_eCurrentPlayer == EPC_DVDPLAYER || m_eCurrentPlayer  == EPC_PAPLAYER)) )
     {
       delete m_pPlayer;
       m_pPlayer = NULL;
@@ -2936,11 +2922,11 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
 
   m_itemCurrentFile = item;
   m_nextPlaylistItem = -1;
-  m_strCurrentPlayer = strNewPlayer;
+
   if (!m_pPlayer)
   {
-    CPlayerCoreFactory factory;
-    m_pPlayer = factory.CreatePlayer(strNewPlayer, *this);
+    m_eCurrentPlayer = eNewCore;
+    m_pPlayer = CPlayerCoreFactory::CreatePlayer(eNewCore, *this);
   }
 
   bool bResult = m_pPlayer->OpenFile(m_itemCurrentFile, m_itemCurrentFile.m_lStartOffset * 1000 / 75);
@@ -3984,9 +3970,9 @@ bool CApplication::SwitchToFullScreen()
   return false;
 }
 
-const CStdString& CApplication::GetCurrentPlayer()
+const EPLAYERCORES CApplication::GetCurrentPlayer()
 {
-  return m_strCurrentPlayer;
+  return m_eCurrentPlayer;
 }
 
 // when a scan is initiated, save current settings
