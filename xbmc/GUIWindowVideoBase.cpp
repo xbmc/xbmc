@@ -996,6 +996,7 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem)
   int btn_Show_Info     = pMenu->AddButton(13346); // Show Video Information
   int btn_Resume        = pMenu->AddButton(13381); // Resume Video
   int btn_Queue         = pMenu->AddButton(13347); // Add to Playlist
+  int btn_PlayWith      = pMenu->AddButton(15213); // Play using alternate player
   int btn_Now_Playing   = pMenu->AddButton(13350); // Now Playing...
 
   // hide scan button unless we're in files window
@@ -1009,8 +1010,6 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem)
   int btn_Delete = 0;
   if ((GetID() == WINDOW_VIDEOS && g_guiSettings.GetBool("VideoFiles.AllowFileDeletion")) || GetID() == WINDOW_VIDEO_TITLE)
     btn_Delete = pMenu->AddButton(117);             // Delete
-
-  int btn_PlayWith      = pMenu->AddButton(15213);  // Play using alternate player
 
   int btn_Settings      = pMenu->AddButton(5);      // Settings
 
