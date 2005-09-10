@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 10-09-2005 CRITCAL FIX: After libid3tag was added, music files opened over smb could be destroyed if write access was enabled on the share. It is sometimes enough to enter directory....
  - 10-09-2005 changed: added display of default player when selectring player. moved Play Using... up in context menu
  - 10-09-2005 added: ability to select player for music and video from context menu
  - 09-09-2005 fixed: when playing an audio file with the dvdplayer, switching between visualisation and menu resulted in a crash
