@@ -139,11 +139,19 @@ EPLAYERCORES CPlayerCoreFactory::SelectPlayerDialog(VECPLAYERCORES &vecCores, in
     btn_Cores = new int[ vecCores.size() ];
     btn_Cores[0] = 0;
 
-    //Add all players
-    for( unsigned int i = 0; i < vecCores.size(); i++ )
+    CStdStringW strCaption;
+
+    //Add default player
+    strCaption = CPlayerCoreFactory::GetPlayerName(vecCores[0]);
+    strCaption += " (";
+    strCaption += g_localizeStrings.Get(13278);
+    strCaption += ")";
+    btn_Cores[0] = pMenu->AddButton(strCaption);
+
+    //Add all other players
+    for( unsigned int i = 1; i < vecCores.size(); i++ )
     {
-      CStdStringW strCaption;
-      strCaption += CPlayerCoreFactory::GetPlayerName(vecCores[i]);
+      strCaption = CPlayerCoreFactory::GetPlayerName(vecCores[i]);
       btn_Cores[i] = pMenu->AddButton(strCaption);
     }
   }
