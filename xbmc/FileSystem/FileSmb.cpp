@@ -449,9 +449,15 @@ bool CFileSMB::OpenForWrite(const CURL& url, bool bBinary, bool bOverWrite)
 
   smb.Lock();
 
-  if (!bOverWrite)
-    CLog::Log(LOGWARNING, "FileSmb::OpenForWrite() called with no overwriting, yet we are overwriting anyway!");
-  m_fd = smbc_creat(strFileName.c_str(), 0);
+  if (bOverWrite)
+  {
+    CLog::Log(LOGWARNING, "FileSmb::OpenForWrite() called with overwriting enabled! - %s", strFileName.c_str());
+    m_fd = smbc_creat(strFileName.c_str(), 0);
+  }
+  else
+  {
+    m_fd = smbc_open(strFileName.c_str(), O_RDWR, 0);
+  }
 
   if (m_fd == -1)
   {
