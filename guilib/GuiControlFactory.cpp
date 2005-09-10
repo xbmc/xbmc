@@ -30,7 +30,7 @@
 #include "GUISettingsSliderControl.h"
 #include "../xbmc/utils/GUIInfoManager.h"
 #include "../xbmc/util.h"
-
+#include "../xbmc/ButtonTranslator.h"
 
 CGUIControlFactory::CGUIControlFactory(void)
 {}
@@ -775,9 +775,12 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
   GetString(pControlNode, "font", strFont);
   GetAlignment(pControlNode, "align", dwAlign);
   GetAlignmentY(pControlNode, "alignY", dwAlignY);
-  GetInt(pControlNode, "hyperlink", iHyperLink);
-  // windows are referenced from WINDOW_HOME
-  if (iHyperLink != WINDOW_INVALID) iHyperLink += WINDOW_HOME;
+
+  CStdString strWindow;
+  GetString(pControlNode, "hyperlink", strWindow);
+  iHyperLink = WINDOW_INVALID;
+  if (!strWindow.IsEmpty())
+    iHyperLink = g_buttonTranslator.TranslateWindowString(strWindow.c_str());
 
   GetString(pControlNode, "script", strExecuteAction); // left in for backwards compatibility.
   GetString(pControlNode, "execute", strExecuteAction);
