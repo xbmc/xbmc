@@ -6,7 +6,7 @@
 #include "GUIWindowMusicBase.h"
 #include "utils/FanController.h"
 #include "LangCodeExpander.h"
-
+#include "../xbmc/ButtonTranslator.h"
 
 class CSettings g_settings;
 struct CSettings::stSettings g_stSettings;
@@ -364,8 +364,14 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
     }
   }
 
+  /*
   GetInteger(pRootElement, "startwindow", g_stSettings.m_iStartupWindow, 0, 0, INT_MAX);
   g_stSettings.m_iStartupWindow += WINDOW_HOME; // windows referenced from WINDOW_HOME
+  */
+
+  CStdString strWindow;
+  GetString(pRootElement, "startwindow", strWindow, "0");
+  g_stSettings.m_iStartupWindow = g_buttonTranslator.TranslateWindowString(strWindow.c_str());
 
   GetBoolean(pRootElement, "autodetectFG", g_stSettings.m_bAutoDetectFG);
   GetBoolean(pRootElement, "useFDrive", g_stSettings.m_bUseFDrive);

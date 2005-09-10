@@ -276,6 +276,10 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
       {
         m_viewControl.SetSelectedItem(m_nSelectedItem);
       }
+
+      // save current window
+      g_stSettings.m_iMyMusicStartWindow = GetID();
+
       return true;
     }
     break;

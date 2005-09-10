@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "ButtonTranslator.h"
 #include "util.h"
-
+#include "settings.h"
 
 CButtonTranslator g_buttonTranslator;
 extern CStdString g_LoadErrorStr;
@@ -334,10 +334,11 @@ bool CButtonTranslator::TranslateActionString(const char *szAction, WORD &wActio
 
 WORD CButtonTranslator::TranslateWindowString(const char *szWindow)
 {
-  if (!szWindow) return WINDOW_INVALID;
   WORD wWindowID = WINDOW_INVALID;
   CStdString strWindow = szWindow;
+  if (strWindow.IsEmpty()) return wWindowID;
   strWindow.ToLower();
+
   // window12345, for custom window to be keymapped
   if (strWindow.length() > 6 && strWindow.Left(6).Equals("window"))
     strWindow = strWindow.Mid(6);
@@ -355,7 +356,8 @@ WORD CButtonTranslator::TranslateWindowString(const char *szWindow)
   else if (strWindow.Equals("mypictures")) wWindowID = WINDOW_PICTURES;
   else if (strWindow.Equals("myfiles")) wWindowID = WINDOW_FILES;
   else if (strWindow.Equals("settings")) wWindowID = WINDOW_SETTINGS_MENU;
-  else if (strWindow.Equals("mymusic")) wWindowID = WINDOW_MUSIC_FILES;
+  else if (strWindow.Equals("mymusic")) wWindowID = WINDOW_MUSIC;
+  else if (strWindow.Equals("mymusicfiles")) wWindowID = WINDOW_MUSIC_FILES;
   else if (strWindow.Equals("myvideos")) wWindowID = WINDOW_VIDEOS;
   else if (strWindow.Equals("systeminfo")) wWindowID = WINDOW_SYSTEM_INFORMATION;
   else if (strWindow.Equals("guicalibration")) wWindowID = WINDOW_UI_CALIBRATION;
@@ -419,6 +421,11 @@ WORD CButtonTranslator::TranslateWindowString(const char *szWindow)
   else
     CLog::Log(LOGERROR, "Window Translator: Can't find window %s", strWindow.c_str());
 
+  // virtual window which returns the last open music window (aka the music start window)
+  if (wWindowID == WINDOW_MUSIC)
+    wWindowID = g_stSettings.m_iMyMusicStartWindow;
+
+  //CLog::Log(LOGDEBUG,"CButtonTranslator::TranslateWindowString(%s) returned Window ID (%i)", szWindow, wWindowID);
   return wWindowID;
 }
 
