@@ -168,31 +168,15 @@ bool CGUIWindowMusicSongs::OnMessage(CGUIMessage& message)
   {
   case GUI_MSG_WINDOW_INIT:
     {
-      /*
-      // This window is started by the home window.
-      // Now we decide which my music window has to be shown and
-      // switch to the my music window the user last activated.
-      if (g_stSettings.m_iMyMusicStartWindow!=GetID())
-      {
-       m_gWindowManager.ActivateWindow(g_stSettings.m_iMyMusicStartWindow);
-       return false;
-      }
-      */
+      // removed the start window check from files view
+      // the window translator does it by using a virtual window id (5)
 
       // check for a passed destination path
       CStdString strDestination = message.GetStringParam();
       if (!strDestination.IsEmpty())
       {
         message.SetStringParam("");
-        g_stSettings.m_iMyMusicStartWindow = GetID();
         CLog::Log(LOGINFO, "Attempting to quickpath to: %s", strDestination.c_str());
-      }
-
-      // unless we have a destination path, switch to the last my music window
-      if (g_stSettings.m_iMyMusicStartWindow != GetID())
-      {
-        m_gWindowManager.ActivateWindow(g_stSettings.m_iMyMusicStartWindow);
-        return false;
       }
 
       // is this the first time the window is opened?
