@@ -3949,9 +3949,18 @@ CIMDBMovie* CApplication::GetCurrentMovie()
 
 // SwitchToFullScreen() returns true if a switch is made, else returns false
 bool CApplication::SwitchToFullScreen()
-{ // don't switch if there is a dialog on screen or the slideshow is active
+{
+  // if playing from the video info window, close it first!
+  if (m_gWindowManager.IsRouted() && m_gWindowManager.GetTopMostRoutedWindowID() == WINDOW_VIDEO_INFO)
+  {
+    CGUIWindowVideoInfo* pDialog = (CGUIWindowVideoInfo*)m_gWindowManager.GetWindow(WINDOW_VIDEO_INFO);
+    if (pDialog) pDialog->Close(true);
+  }
+
+  // don't switch if there is a dialog on screen or the slideshow is active
   if (m_gWindowManager.IsRouted() || m_gWindowManager.GetActiveWindow() == WINDOW_SLIDESHOW)
     return false;
+
   // See if we're playing a video, and are in GUI mode
   if ( IsPlayingVideo() && m_gWindowManager.GetActiveWindow() != WINDOW_FULLSCREEN_VIDEO)
   {
