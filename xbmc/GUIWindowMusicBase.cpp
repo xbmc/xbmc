@@ -1334,8 +1334,9 @@ void CGUIWindowMusicBase::OnPopupMenu(int iItem)
   pMenu->Initialize();
   // add the needed buttons
   int btn_Info          = pMenu->AddButton(13351);    // Music Information
-  int btn_Play          = pMenu->AddButton(13358);    // Play Item
+  //int btn_Play          = pMenu->AddButton(13358);    // Play Item
   int btn_Queue         = pMenu->AddButton(13347);    // Queue Item
+  int btn_PlayWith = pMenu->AddButton(15213);         // Play using alternate player
 
 
   int btn_Playlist      = pMenu->AddButton(13350);    // Now Playing...
@@ -1358,23 +1359,26 @@ void CGUIWindowMusicBase::OnPopupMenu(int iItem)
   if (strDirectory.Equals(m_Directory.m_strPath) || g_guiSettings.GetBool("MusicFiles.AllowFileDeletion"))
     btn_Delete = pMenu->AddButton(117);               // Delete
 
-  int btn_PlayWith = pMenu->AddButton(15213);         // Play using alternate player
-
   int btn_Settings      = pMenu->AddButton(5);        // Settings...
+
+
+  VECPLAYERCORES vecCores;
+  CPlayerCoreFactory::GetPlayers(*m_vecItems[iItem], vecCores);
 
   // turn off info/queue/play if the current item is goto parent ..
   bool bIsGotoParent = m_vecItems[iItem]->GetLabel() == "..";
   if (bIsGotoParent)
   {
     pMenu->EnableButton(btn_Info, false);
-    pMenu->EnableButton(btn_Play, false);
+    pMenu->EnableButton(btn_PlayWith, false);
+    //pMenu->EnableButton(btn_Play, false);
     pMenu->EnableButton(btn_Queue, false);
   }
-
-  // check what players we have, if we have multiple display play with option
-  VECPLAYERCORES vecCores;
-  CPlayerCoreFactory::GetPlayers(*m_vecItems[iItem], vecCores);
-  pMenu->EnableButton(btn_PlayWith, vecCores.size() >= 1 );
+  else
+  {
+    // check what players we have, if we have multiple display play with option
+    pMenu->EnableButton(btn_PlayWith, vecCores.size() >= 1 );
+  }
 
   // turn off the now playing button if playlist is empty
   if (g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).size() <= 0)
@@ -1406,10 +1410,10 @@ void CGUIWindowMusicBase::OnPopupMenu(int iItem)
       OnInfo(iItem);
     }
     // Play Item
-    else if (btnid == btn_Play)
-    {
-      PlayItem(iItem);
-    }
+    //else if (btnid == btn_Play)
+    //{
+    //  PlayItem(iItem);
+    //}
     // Queue Item
     else if (btnid == btn_Queue)
     {

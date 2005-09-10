@@ -1634,14 +1634,14 @@ void CGUIWindowMusicNav::OnPopupMenu(int iItem)
   // load our menu
   pMenu->Initialize();
   // add the needed buttons
-  pMenu->AddButton(13351);    // 1: Music Information
-  pMenu->AddButton(13347);    // 2: Queue Item
-  pMenu->AddButton(13358);    // 3: Play Item
-  pMenu->AddButton(13350);    // 4: Now Playing...
-  pMenu->AddButton(137);      // 5: Search...
-  pMenu->AddButton(13359);    // 6: Set Artist Thumb
-  pMenu->AddButton(15213);    // 7: Play using alternate player
-  pMenu->AddButton(5);        // 8: Settings...
+  int btn_Info = pMenu->AddButton(13351);     // Music Information
+  int btn_Queue = pMenu->AddButton(13347);    // Queue Item
+  //int btn_Play = pMenu->AddButton(13358);   // Play Item
+  int btn_PlayWith = pMenu->AddButton(15213); // Play using alternate player
+  int btn_NowPlay = pMenu->AddButton(13350);  // Now Playing...
+  int btn_Search = pMenu->AddButton(137);     // Search...
+  int btn_Thumb = pMenu->AddButton(13359);    // Set Artist Thumb  
+  int btn_Settings = pMenu->AddButton(5);     // Settings...
 
   // check what players we have, if we have multiple display play with option
   VECPLAYERCORES vecCores;
@@ -1651,25 +1651,25 @@ void CGUIWindowMusicNav::OnPopupMenu(int iItem)
   bool bIsGotoParent = m_vecItems[iItem]->GetLabel() == "..";
   if (bIsGotoParent)
   {
-    pMenu->EnableButton(1, false);
-    pMenu->EnableButton(2, false);
-    pMenu->EnableButton(3, false);
-    pMenu->EnableButton(7, false );
-    pMenu->EnableButton(8, false);
+    pMenu->EnableButton(btn_Info, false);
+    pMenu->EnableButton(btn_Queue, false);
+    //pMenu->EnableButton(btn_Play, false);
+    pMenu->EnableButton(btn_PlayWith, false );
+    pMenu->EnableButton(btn_Settings, false);
   }
   else
   {
     // only enable play using if we have more than one player available
-    pMenu->EnableButton(7, vecCores.size() >= 1 );
+    pMenu->EnableButton(btn_PlayWith, vecCores.size() >= 1 );
   }
 
   // turn off the music info button on non-album-able items
   if (m_vecItems[iItem]->m_strPath.IsEmpty() || m_iState == SHOW_ROOT || m_iState == SHOW_GENRES || m_iState == SHOW_ARTISTS)
-    pMenu->EnableButton(1, false);
+    pMenu->EnableButton(btn_Info, false);
 
   // turn off the now playing button if playlist is empty
   if (g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).size() <= 0)
-    pMenu->EnableButton(4, false);
+    pMenu->EnableButton(btn_NowPlay, false);
 
   // turn off set artist image if artist is not being filtered
   // or if the source is an "all" item (path is empty)
@@ -1680,36 +1680,43 @@ void CGUIWindowMusicNav::OnPopupMenu(int iItem)
   // position it correctly
   pMenu->SetPosition(iPosX - pMenu->GetWidth() / 2, iPosY - pMenu->GetHeight() / 2);
   pMenu->DoModal(GetID());
-  switch (pMenu->GetButton())
+
+  int btnid = pMenu->GetButton();
+  if( btnid  == btn_Info ) // Music Information
   {
-  case 1:  // Music Information
     OnInfo(iItem);
-    break;
-  case 2:  // Queue Item
+  }
+  else if( btnid  == btn_Queue )  // Queue Item
+  {
     OnQueueItem(iItem);
-    break;
-  case 3:  // Play Item
-    PlayItem(iItem);
-    break;
-  case 4:  // Now Playing...
+  }
+  //else if( btnid == btn_Play )
+  //{
+  //  PlayItem(iItem);
+  //}
+  else if( btnid  == btn_NowPlay )  // Now Playing...
+  {
     m_gWindowManager.ActivateWindow(WINDOW_MUSIC_PLAYLIST);
     return;
-    break;
-  case 5:  // Search
+  }
+  else if( btnid  == btn_Search )  // Search
+  {
     OnSearch();
-    break;
-  case 6:  // Set Artist Image
+  }
+  else if( btnid  == btn_Thumb )  // Set Artist Image
+  {
     SetArtistImage(iItem);
-    break;
-  case 7:
+  }
+  else if( btnid  == btn_PlayWith )
+  {
     g_application.m_eForcedNextPlayer = CPlayerCoreFactory::SelectPlayerDialog(vecCores, iPosX, iPosY);
     if( g_application.m_eForcedNextPlayer != EPC_NONE )
       PlayItem(iItem);
-    break;
-  case 8:  // Settings
+  }
+  else if( btnid  == btn_Settings )  // Settings
+  {
     m_gWindowManager.ActivateWindow(WINDOW_SETTINGS_MYMUSIC);
     return;
-    break;
   }
   m_vecItems[iItem]->Select(bSelected);
 }
