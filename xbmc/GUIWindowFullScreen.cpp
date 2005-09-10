@@ -691,7 +691,7 @@ renderDialogs:
 
 void CGUIWindowFullScreen::RenderTTFSubtitles()
 {
-  if ( g_application.GetCurrentPlayer() == "mplayer" && CUtil::IsUsingTTFSubtitles() && g_application.m_pPlayer->GetSubtitleVisible() && m_subtitleFont)
+  if ( g_application.GetCurrentPlayer() == EPC_MPLAYER && CUtil::IsUsingTTFSubtitles() && g_application.m_pPlayer->GetSubtitleVisible() && m_subtitleFont)
   {
     CSingleLock lock (m_fontLock);
 

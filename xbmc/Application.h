@@ -17,6 +17,7 @@
 #include "lib/libGoAhead/webserver.h"
 #include "lib/libfilezilla/xbfilezilla.h"
 #include "cores/IPlayer.h"
+#include "cores/playercorefactory.h"
 #include "DetectDVDType.h"
 #include "Autorun.h"
 #include "CdgParser.h"
@@ -59,7 +60,7 @@ public:
   void CancelDelayLoadSkin();
   const CStdString& CurrentFile();
   const CFileItem& CurrentFileItem();
-  const CStdString& GetCurrentPlayer();
+  const EPLAYERCORES GetCurrentPlayer();
   virtual bool OnMessage(CGUIMessage& message);
   virtual void OnPlayBackEnded();
   virtual void OnPlayBackStarted();
@@ -140,15 +141,16 @@ public:
   bool m_bMasterLockPreviouslyEntered;
   int m_iMasterLockRetriesRemaining;
   bool m_bMasterLockOverridesLocalPasswords;
-  int m_MasterUserModeCounter;
-  CStdString m_strForcedNextPlayer;
+  int m_MasterUserModeCounter;  
+  EPLAYERCORES m_eForcedNextPlayer;
+
   CStdString m_strPlayListFile;
   
   int GlobalIdleTime();
   
 
 protected:
-  CStdString m_strCurrentPlayer;
+  EPLAYERCORES m_eCurrentPlayer;
   void UpdateLCD();
   bool SwitchToFullScreen();
   void FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetwork);

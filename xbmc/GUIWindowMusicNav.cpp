@@ -1640,7 +1640,12 @@ void CGUIWindowMusicNav::OnPopupMenu(int iItem)
   pMenu->AddButton(13350);    // 4: Now Playing...
   pMenu->AddButton(137);      // 5: Search...
   pMenu->AddButton(13359);    // 6: Set Artist Thumb
-  pMenu->AddButton(5);        // 7: Settings...
+  pMenu->AddButton(15213);    // 7: Play using alternate player
+  pMenu->AddButton(5);        // 8: Settings...
+
+  // check what players we have, if we have multiple display play with option
+  VECPLAYERCORES vecCores;
+  CPlayerCoreFactory::GetPlayers(*m_vecItems[iItem], vecCores);
 
   // turn off info/queue/play/set artist thumb if the current item is goto parent ..
   bool bIsGotoParent = m_vecItems[iItem]->GetLabel() == "..";
@@ -1649,7 +1654,13 @@ void CGUIWindowMusicNav::OnPopupMenu(int iItem)
     pMenu->EnableButton(1, false);
     pMenu->EnableButton(2, false);
     pMenu->EnableButton(3, false);
-    pMenu->EnableButton(6, false);
+    pMenu->EnableButton(7, false );
+    pMenu->EnableButton(8, false);
+  }
+  else
+  {
+    // only enable play using if we have more than one player available
+    pMenu->EnableButton(7, vecCores.size() >= 1 );
   }
 
   // turn off the music info button on non-album-able items
@@ -1690,7 +1701,12 @@ void CGUIWindowMusicNav::OnPopupMenu(int iItem)
   case 6:  // Set Artist Image
     SetArtistImage(iItem);
     break;
-  case 7:  // Settings
+  case 7:
+    g_application.m_eForcedNextPlayer = CPlayerCoreFactory::SelectPlayerDialog(vecCores, iPosX, iPosY);
+    if( g_application.m_eForcedNextPlayer != EPC_NONE )
+      PlayItem(iItem);
+    break;
+  case 8:  // Settings
     m_gWindowManager.ActivateWindow(WINDOW_SETTINGS_MYMUSIC);
     return;
     break;
