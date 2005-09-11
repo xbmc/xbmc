@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 11-09-2005 changed: my music files view now uses a true numeric sort for starting digits, like the library
  - 10-09-2005 fixed: play button in movie info screen now plays back in full screen
  - 10-09-2005 changed: my music files is now strictly the files view.  if you want to open up to the LAST open music window, use window ID of 5, or the window name "mymusic".  this is a virtual window which will open up music to the last window.
  - 10-09-2005 added: skin <hyperlink> and xboxmediacenter <startwindow> tags now accept window names

@@ -189,9 +189,7 @@ struct SSortMusicNav
         szfilename1[i] = tolower((unsigned char)szfilename1[i]);
 
       for (int i = 0; i < (int)strlen(szfilename2); i++)
-      {
         szfilename2[i] = tolower((unsigned char)szfilename2[i]);
-      }
 
       if (m_bSortAscending)
         return StringUtils::AlphaNumericCompare(szfilename1, szfilename2);
