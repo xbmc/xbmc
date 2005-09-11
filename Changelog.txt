@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 11-09-2005 fixed: charset conversion from id3 tags was wrong
  - 11-09-2005 changed: libid3tag closes files immediately after reading and writing
  - 11-09-2005 changed: libid3tag only opens files on the hdd with write access
  - 11-09-2005 changed: my music files view now uses a true numeric sort for starting digits, like the library
