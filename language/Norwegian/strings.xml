@@ -1,4 +1,4 @@
-<!-- Based on English XML v1.247. Last updated by vnmartinsen  !-->
+<!-- Based on English XML v1.248. Last updated by vnmartinsen  !-->
 <strings>
   <string><id>0</id><value>Mine Programmer</value></string>
   <string><id>1</id><value>Mine Bilder</value></string>
@@ -1101,7 +1101,7 @@
   <string><id>13297</id><value>Xbox er ikke tilkoblet. Sjekk nettverksinstillinger.</value></string>
   <string><id>13298</id><value>XBLIVE nøkkel:</value></string>
 
-  <string><id>15213</id><value>[PLASSHOLDER]</value></string>													   
+  <string><id>15213</id><value>Spill med...</value></string>													   
   <string><id>15214</id><value>Bruk utjevnet A/V-synkronisering</value></string>
   <string><id>15215</id><value>Skjul filnavn i miniatyrvisning</value></string>
 
