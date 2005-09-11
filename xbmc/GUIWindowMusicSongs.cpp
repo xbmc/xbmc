@@ -120,21 +120,25 @@ struct SSortMusicSongs
         break;
       }
 
-
       for (int i = 0; i < (int)strlen(szfilename1); i++)
         szfilename1[i] = tolower((unsigned char)szfilename1[i]);
 
       for (int i = 0; i < (int)strlen(szfilename2); i++)
-      {
         szfilename2[i] = tolower((unsigned char)szfilename2[i]);
-      }
-      //return (rpStart.strPath.compare( rpEnd.strPath )<0);
 
+      /*
       if (m_bSortAscending)
         return (strcmp(szfilename1, szfilename2) < 0);
       else
         return (strcmp(szfilename1, szfilename2) >= 0);
+      */
+
+      if (m_bSortAscending)
+        return StringUtils::AlphaNumericCompare(szfilename1, szfilename2);
+      else
+        return !StringUtils::AlphaNumericCompare(szfilename1, szfilename2);
     }
+
     if (!rpStart.m_bIsFolder) return false;
     return true;
   }
