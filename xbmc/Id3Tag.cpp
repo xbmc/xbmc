@@ -30,12 +30,13 @@ CStdString CID3Tag::Ucs4ToStringCharset(const id3_ucs4_t* ucs4) const
   if (!ucs4 || ucs4[0]==0)
     return "";
 
-  id3_utf16_t* utf16=m_dll.id3_ucs4_utf16duplicate(ucs4);
+  id3_utf8_t* utf8=m_dll.id3_ucs4_utf8duplicate(ucs4);
 
   CStdString strValue;
-  g_charsetConverter.ucs2CharsetToStringCharset(utf16, strValue);
+  CStdString strSource=(LPCSTR)utf8;
+  g_charsetConverter.utf8ToStringCharset(strSource, strValue);
 
-  m_dll.id3_utf16_free(utf16);
+  m_dll.id3_utf8_free(utf8);
 
   return strValue;
 }
