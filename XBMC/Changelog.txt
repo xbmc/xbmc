@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 11-09-2005 updated: Norwegian language file (Thnx to vnm)
+ - 11-09-2005 updated: German language file
  - 11-09-2005 fixed: charset conversion from id3 tags was wrong
  - 11-09-2005 changed: libid3tag closes files immediately after reading and writing
  - 11-09-2005 changed: libid3tag only opens files on the hdd with write access
