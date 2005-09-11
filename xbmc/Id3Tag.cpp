@@ -15,15 +15,12 @@ CID3Tag::CID3Tag()
   m_bDllLoaded = false;
 
   m_tag=NULL;
-  m_id3file=NULL;
 
   LoadDLL();
 }
 
 CID3Tag::~CID3Tag()
 {
-  Close();
-
   if (m_bDllLoaded)
     CSectionLoader::UnloadDLL(ID3_DLL);
 }
@@ -53,15 +50,13 @@ id3_ucs4_t* CID3Tag::StringCharsetToUcs4(const CStdString& str) const
 
 bool CID3Tag::Read(const CStdString& strFile)
 {
-  Close();
-
   CTag::Read(strFile);
 
-  m_id3file = m_dll.id3_file_open(strFile.c_str(), CUtil::IsHD(strFile) ? ID3_FILE_MODE_READWRITE : ID3_FILE_MODE_READONLY);
-  if (!m_id3file)
+  id3_file* id3file = m_dll.id3_file_open(strFile.c_str(), ID3_FILE_MODE_READONLY);
+  if (!id3file)
     return false;
 	
-  m_tag = m_dll.id3_file_tag(m_id3file);
+  m_tag = m_dll.id3_file_tag(id3file);
   if (!m_tag)
     return false;
 
@@ -69,6 +64,7 @@ bool CID3Tag::Read(const CStdString& strFile)
 
   Parse();
 
+  m_dll.id3_file_close(id3file);
   return true;
 }
 
@@ -166,28 +162,34 @@ bool CID3Tag::Parse()
   return tag.Loaded();
 }
 
-bool CID3Tag::Write()
+bool CID3Tag::Write(const CStdString& strFile)
 {
-  if (!m_id3file)
+  CTag::Read(strFile);
+
+  id3_file* id3file = m_dll.id3_file_open(strFile.c_str(), ID3_FILE_MODE_READWRITE);
+  if (!id3file)
     return false;
+	
+  m_tag = m_dll.id3_file_tag(id3file);
+  if (!m_tag)
+    return false;
+
+  SetTitle(m_musicInfoTag.GetTitle());
+  SetArtist(m_musicInfoTag.GetArtist());
+  SetAlbum(m_musicInfoTag.GetAlbum());
+  SetTrack(m_musicInfoTag.GetTrackNumber());
+  SetEncodedBy("XboxMediaCenter");
 
   m_dll.id3_tag_options(m_tag, ID3_TAG_OPTION_COMPRESSION, 0);
   m_dll.id3_tag_options(m_tag, ID3_TAG_OPTION_CRC, 0);
   m_dll.id3_tag_options(m_tag, ID3_TAG_OPTION_UNSYNCHRONISATION, 0);
   m_dll.id3_tag_options(m_tag, ID3_TAG_OPTION_ID3V1, 1);
 
-  return (m_dll.id3_file_update(m_id3file)!=-1) ? true : false;
-}
+  bool success=(m_dll.id3_file_update(id3file)!=-1) ? true : false;
 
-void CID3Tag::Close()
-{
-  if (!m_id3file)
-    return;
+  m_dll.id3_file_close(id3file);
 
-  if (m_id3file)
-    m_dll.id3_file_close(m_id3file);
-
-  m_id3file=NULL;
+  return success;
 }
 
 CStdString CID3Tag::GetArtist() const
@@ -445,15 +447,6 @@ void CID3Tag::ParseReplayGainInfo()
     m_replayGain.fAlbumPeak = (float)atof(strGain.c_str());
     m_replayGain.iHasGainInfo |= REPLAY_GAIN_HAS_ALBUM_PEAK;
   }
-}
-
-void CID3Tag::SetMusicInfoTag(CMusicInfoTag& tag)
-{
-  SetTitle(tag.GetTitle());
-  SetArtist(tag.GetArtist());
-  SetAlbum(tag.GetAlbum());
-  SetTrack(tag.GetTrackNumber());
-  SetEncodedBy("XboxMediaCenter");
 }
 
 bool CID3Tag::LoadDLL()

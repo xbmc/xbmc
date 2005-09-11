@@ -116,16 +116,13 @@ public:
   CID3Tag(void);
   virtual ~CID3Tag(void);
   virtual bool Read(const CStdString& strFile);
-  virtual bool Write();
-
-  virtual void SetMusicInfoTag(CMusicInfoTag& tag);
+  virtual bool Write(const CStdString& strFile);
 
   CStdString ParseMP3Genre(const CStdString& str) const;
 
 protected:
   bool Parse();
   void ParseReplayGainInfo();
-  void Close();
 
   CStdString GetArtist() const;
   CStdString GetAlbum() const;
@@ -161,6 +158,5 @@ protected:
   ID3dll m_dll;
 
   id3_tag* m_tag;
-  id3_file* m_id3file;
 };
 };
