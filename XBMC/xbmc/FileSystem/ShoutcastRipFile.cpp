@@ -156,11 +156,8 @@ void CShoutcastRipFile::StopRecording()
     m_ripFile = NULL;
     // Write collected ID3 Data to file
     CID3Tag id3tag;
-    if (id3tag.Read(m_szFilteredFileName))
-    {
-      id3tag.SetMusicInfoTag(m_Tag);
-      id3tag.Write();
-    }
+    id3tag.SetMusicInfoTag(m_Tag);
+    id3tag.Write(m_szFilteredFileName);
   }
 }
 
