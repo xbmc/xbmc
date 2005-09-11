@@ -450,6 +450,7 @@
   <string><id>513</id><value>Okienko domowe</value></string>
   <string><id>514</id><value>Manualne ustawienia</value></string>
   <string><id>515</id><value>Gatunek</value></string>
+  <string><id>516</id><value>Obs³uga archiwów</value></string>
 
   <string><id>600</id><value>Zgraj CD</value></string>
   <string><id>601</id><value>Œrednia</value></string>
@@ -484,6 +485,8 @@
   <string><id>642</id><value>Wzmocnienie poziomu - Pliki nie odtwarzane ponownie</value></string>
   <string><id>643</id><value>Unikaj obcinania powtórnie odtwarzanych plików</value></string>
   <string><id>644</id><value>Przytnij czarne pasy</value></string>
+
+  <string><id>645</id><value>Muszê buforowaæ du¿e pliki. Kontynuowaæ?</value></string>
 
   <string><id>700</id><value>Czyszczenie bazy danych</value></string>
   <string><id>701</id><value>Usuwam stare utwory z bazy danych</value></string>
@@ -662,6 +665,9 @@
   <string><id>10501</id><value>Muzyka/pliki</value></string>
   <string><id>10502</id><value>Muzyka/albumy</value></string>
   <string><id>10503</id><value>Muzyka/artyœci</value></string>
+  <string><id>10504</id><value>Top 100 Piosenki</value></string>
+  <string><id>10505</id><value>Top 100 Albumy</value></string>
+
 
   <string><id>10506</id><value>Aplikacje</value></string>
   <string><id>10507</id><value>Konfiguracja</value></string>
@@ -753,10 +759,16 @@
   <string><id>12369</id><value>Blokada XBMC przy uruchamianiu</value></string>
   <string><id>12370</id><value>Zmieniono tryb zabezpieczenia, kod nie by³ ustawiony!</value></string>
   <string><id>12371</id><value>Proszê wpisaæ nowy kod!</value></string>
-
   <string><id>12372</id><value>Zablokuj ekspoloratora</value></string>
   <string><id>12373</id><value>Zablokuj ustawienia</value></string>
   <string><id>12374</id><value>Zablokuj media</value></string>
+  <string><id>12375</id><value>Tryb administratora</value></string>
+
+  <string><id>12390</id><value>System pracuje</value></string>
+  <string><id>12391</id><value>Minut</value></string>
+  <string><id>12392</id><value>Godzin</value></string>
+  <string><id>12393</id><value>Dni</value></string>
+  
 
   <string><id>12600</id><value>Pogoda</value></string>
   <string><id>12900</id><value>Wygaszacz</value></string>
@@ -883,6 +895,9 @@
   <string><id>13395</id><value>Ustawienia obrazu</value></string>
   <string><id>13396</id><value>Ustawienia dŸwiêku i napisów</value></string>
   <string><id>13397</id><value>W³¹cz napisy</value></string>
+  <string><id>13398</id><value>Zak³adki</value></string>
+  <string><id>13399</id><value>Ignoruj "The" kiedy sortujesz</value></string>
+  <string><id>13400</id><value>Przenikanie utworów</value></string>
 
   <string><id>14000</id><value>Kaskadowanie wy³.</value></string>
   <string><id>14001</id><value>Kaskadowanie proste</value></string>
@@ -1092,16 +1107,35 @@
 
   <string><id>15213</id><value>[WYPE£NIACZ]</value></string>
   <string><id>15214</id><value>U¿ywaj p³ynnej synchronizacji A/V</value></string>
+  <string><id>15215</id><value>Ukrywaj nazwy plików w widoku miniatór</value></string>
+
+  <string><id>15300</id><value>Niepoprawna œcie¿ka</value></string>
+  <string><id>15301</id><value>Nie mogê po³¹czyæ siê z serwerem</value></string>
+  <string><id>15302</id><value>Nie znaleziono serwerów</value></string>
+  <string><id>15303</id><value>Grupa robocza nie zosta³a odnaleziona</value></string>
 
   <string><id>16000</id><value>Ogólne</value></string>
   <string><id>16001</id><value>Konfiguracja sprzêtu audio...</value></string>
   <string><id>16002</id><value>Przeszukujê CDDB</value></string>
   <string><id>16003</id><value>Odtwarzacz</value></string>
   
-  <string><id>16004</id><value>Synchronizuj filmy z przeplotem</value></string>
-  <string><id>16005</id><value>- Odwróæ pola</value></string>
-  <string><id>16006</id><value>Zsynchronizowano przeplatanie</value></string>
-  <string><id>16007</id><value>Odwrócone pola</value></string> 
-  <string><id>16008</id><value>W³.</value></string>
- 
+  <string><id>16009</id><value>Wpisz nazwê filmu</value></string>
+  <string><id>16010</id><value>Wpisz nazwê profilu</value></string>
+  <string><id>16011</id><value>Wpisz nazwê albumu</value></string>
+  <string><id>16012</id><value>Wpisz nazwê playlisty</value></string>
+  <string><id>16013</id><value>Wpisz now¹ nazwê</value></string>
+  <string><id>16014</id><value>Wpisz nazwê folderu</value></string>
+  <string><id>16015</id><value>Wpisz katalog</value></string>
+  <string><id>16016</id><value>Dostêpne opcje: %A, %T, %N, %B, %D, %G, %Y, %F</value></string>
+  <string><id>16017</id><value>Wpisz poszukiwany ci¹g</value></string>
+  
+  <string><id>16018</id><value>¯aden</value></string>
+  <string><id>16019</id><value>Automatyczny wybór</value></string>
+  <string><id>16020</id><value>DeInterlace</value></string>
+  <string><id>16021</id><value>Synchronizuj niepa¿yste</value></string>
+  <string><id>16022</id><value>Synchronizuj parzyste</value></string>
+  <string><id>16023</id><value>Obs³uga przeplotu</value></string>
+  
+  <string><id>16024</id><value>Anulujê...</value></string>
+  
 </strings>
