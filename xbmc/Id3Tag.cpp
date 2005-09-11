@@ -57,7 +57,7 @@ bool CID3Tag::Read(const CStdString& strFile)
 
   CTag::Read(strFile);
 
-  m_id3file = m_dll.id3_file_open(strFile.c_str(), ID3_FILE_MODE_READWRITE);
+  m_id3file = m_dll.id3_file_open(strFile.c_str(), CUtil::IsHD(strFile) ? ID3_FILE_MODE_READWRITE : ID3_FILE_MODE_READONLY);
   if (!m_id3file)
     return false;
 	
