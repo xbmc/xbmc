@@ -5,8 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
- - 11-09-2005 changed: XBMC DVD-Player is public now, and is now used by default when playing dvd's
- - 11-09-2005 fixed: id3 tags with ISO 8859 1 textencoding may not display correct, q:\system\libid3tag.dll got updated
+ - 12-09-2005 changed: XBMC DVD-Player is public now, and is now used by default when playing dvd's
+ - 12-09-2005 fixed: id3 tags with ISO 8859 1 textencoding may not display correct, q:\system\libid3tag.dll got updated
  - 11-09-2005 updated: Polish language file (Thnx to napek)
  - 11-09-2005 updated: Norwegian language file (Thnx to vnm)
  - 11-09-2005 updated: German language file
