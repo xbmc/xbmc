@@ -87,15 +87,15 @@ namespace MUSIC_INFO
     void (_cdecl* id3_utf8_free)(id3_utf8_t *);
 
     /* metadata interface */
-    const id3_ucs4_t* (_cdecl* id3_metadata_getartist)(const struct id3_tag*);
-    const id3_ucs4_t* (_cdecl* id3_metadata_getalbum)(const struct id3_tag*);
-    const id3_ucs4_t* (_cdecl* id3_metadata_gettitle)(const struct id3_tag*);
-    const id3_ucs4_t* (_cdecl* id3_metadata_gettrack)(const struct id3_tag*);
-    const id3_ucs4_t* (_cdecl* id3_metadata_getpartofset)(const struct id3_tag* tag);
-    const id3_ucs4_t* (_cdecl* id3_metadata_getyear)(const struct id3_tag*);
-    const id3_ucs4_t* (_cdecl* id3_metadata_getgenre)(const struct id3_tag*);
-    const id3_ucs4_t* (_cdecl* id3_metadata_getcomment)(const struct id3_tag*);
-    const id3_ucs4_t* (_cdecl* id3_metadata_getencodedby)(const struct id3_tag* tag);
+    const id3_ucs4_t* (_cdecl* id3_metadata_getartist)(const struct id3_tag*, enum id3_field_textencoding*);
+    const id3_ucs4_t* (_cdecl* id3_metadata_getalbum)(const struct id3_tag*, enum id3_field_textencoding*);
+    const id3_ucs4_t* (_cdecl* id3_metadata_gettitle)(const struct id3_tag*, enum id3_field_textencoding*);
+    const id3_ucs4_t* (_cdecl* id3_metadata_gettrack)(const struct id3_tag*, enum id3_field_textencoding*);
+    const id3_ucs4_t* (_cdecl* id3_metadata_getpartofset)(const struct id3_tag* tag, enum id3_field_textencoding*);
+    const id3_ucs4_t* (_cdecl* id3_metadata_getyear)(const struct id3_tag*, enum id3_field_textencoding*);
+    const id3_ucs4_t* (_cdecl* id3_metadata_getgenre)(const struct id3_tag*, enum id3_field_textencoding*);
+    const id3_ucs4_t* (_cdecl* id3_metadata_getcomment)(const struct id3_tag*, enum id3_field_textencoding*);
+    const id3_ucs4_t* (_cdecl* id3_metadata_getencodedby)(const struct id3_tag* tag, enum id3_field_textencoding*);
     int (_cdecl* id3_metadata_haspicture)(const struct id3_tag*, enum id3_picture_type);
     const id3_latin1_t* (_cdecl* id3_metadata_getpicturemimetype)(const struct id3_tag*, enum id3_picture_type);
     id3_byte_t const *(_cdecl* id3_metadata_getpicturedata)(const struct id3_tag*, enum id3_picture_type, id3_length_t*);
@@ -150,7 +150,7 @@ protected:
   void SetGenre(const CStdString& strValue);
   void SetEncodedBy(const CStdString& strValue);
 
-  CStdString Ucs4ToStringCharset(const id3_ucs4_t* ucs4) const;
+  CStdString ToStringCharset(const id3_ucs4_t* ucs4, id3_field_textencoding encoding) const;
   id3_ucs4_t* StringCharsetToUcs4(const CStdString& str) const;
 
   bool LoadDLL();                     // load the DLL in question

@@ -25,18 +25,23 @@ CID3Tag::~CID3Tag()
     CSectionLoader::UnloadDLL(ID3_DLL);
 }
 
-CStdString CID3Tag::Ucs4ToStringCharset(const id3_ucs4_t* ucs4) const
+CStdString CID3Tag::ToStringCharset(const id3_ucs4_t* ucs4, id3_field_textencoding encoding) const
 {
   if (!ucs4 || ucs4[0]==0)
     return "";
 
-  id3_utf8_t* utf8=m_dll.id3_ucs4_utf8duplicate(ucs4);
-
   CStdString strValue;
-  CStdString strSource=(LPCSTR)utf8;
-  g_charsetConverter.utf8ToStringCharset(strSource, strValue);
 
-  m_dll.id3_utf8_free(utf8);
+  if (encoding==ID3_FIELD_TEXTENCODING_ISO_8859_1)
+  {
+    id3_latin1_t* latin1=m_dll.id3_ucs4_latin1duplicate(ucs4);
+    strValue=(LPCSTR)latin1;
+    m_dll.id3_latin1_free(latin1);
+  }
+  else
+  {
+    g_charsetConverter.utf32ToStringCharset(ucs4, strValue);
+  }
 
   return strValue;
 }
@@ -195,47 +200,66 @@ bool CID3Tag::Write(const CStdString& strFile)
 
 CStdString CID3Tag::GetArtist() const
 {
-  return Ucs4ToStringCharset(m_dll.id3_metadata_getartist(m_tag));
+  id3_field_textencoding encoding=ID3_FIELD_TEXTENCODING_ISO_8859_1;
+  const id3_ucs4_t* ucs4=m_dll.id3_metadata_getartist(m_tag, &encoding);
+  return ToStringCharset(ucs4, encoding);
 }
 
 CStdString CID3Tag::GetAlbum() const
 {
-  return Ucs4ToStringCharset(m_dll.id3_metadata_getalbum(m_tag));
+  id3_field_textencoding encoding=ID3_FIELD_TEXTENCODING_ISO_8859_1;
+  const id3_ucs4_t* ucs4=m_dll.id3_metadata_getalbum(m_tag, &encoding);
+  return ToStringCharset(ucs4, encoding);
 }
 
 CStdString CID3Tag::GetTitle() const
 {
-  return Ucs4ToStringCharset(m_dll.id3_metadata_gettitle(m_tag));
+  id3_field_textencoding encoding=ID3_FIELD_TEXTENCODING_ISO_8859_1;
+  const id3_ucs4_t* ucs4=m_dll.id3_metadata_gettitle(m_tag, &encoding);
+  return ToStringCharset(ucs4, encoding);
 }
 
 int CID3Tag::GetTrack() const
 {
-  return atoi(Ucs4ToStringCharset(m_dll.id3_metadata_gettrack(m_tag)));
+  id3_field_textencoding encoding=ID3_FIELD_TEXTENCODING_ISO_8859_1;
+  const id3_ucs4_t* ucs4=m_dll.id3_metadata_gettrack(m_tag, &encoding);
+  return atoi(ToStringCharset(ucs4, encoding));
 }
 
 int CID3Tag::GetPartOfSet() const
 {
-  return atoi(Ucs4ToStringCharset(m_dll.id3_metadata_getpartofset(m_tag)));
+  id3_field_textencoding encoding=ID3_FIELD_TEXTENCODING_ISO_8859_1;
+  const id3_ucs4_t* ucs4=m_dll.id3_metadata_getpartofset(m_tag, &encoding);
+  return atoi(ToStringCharset(ucs4, encoding));
 }
 
 CStdString CID3Tag::GetYear() const
 {
-  return Ucs4ToStringCharset(m_dll.id3_metadata_getyear(m_tag));
+  id3_field_textencoding encoding=ID3_FIELD_TEXTENCODING_ISO_8859_1;
+  const id3_ucs4_t* ucs4=m_dll.id3_metadata_getyear(m_tag, &encoding);
+  return ToStringCharset(ucs4, encoding);
 }
 
 CStdString CID3Tag::GetGenre() const
 {
-  return ParseMP3Genre(Ucs4ToStringCharset(m_dll.id3_metadata_getgenre(m_tag)));
+  id3_field_textencoding encoding=ID3_FIELD_TEXTENCODING_ISO_8859_1;
+  const id3_ucs4_t* ucs4=m_dll.id3_metadata_getgenre(m_tag, &encoding);
+  CStdString strGenre=ToStringCharset(ucs4, encoding);
+  return ParseMP3Genre(strGenre);
 }
 
 CStdString CID3Tag::GetComment() const
 {
-  return Ucs4ToStringCharset(m_dll.id3_metadata_getcomment(m_tag));
+  id3_field_textencoding encoding=ID3_FIELD_TEXTENCODING_ISO_8859_1;
+  const id3_ucs4_t* ucs4=m_dll.id3_metadata_getcomment(m_tag, &encoding);
+  return ToStringCharset(ucs4, encoding);
 }
 
 CStdString CID3Tag::GetEncodedBy() const
 {
-  return Ucs4ToStringCharset(m_dll.id3_metadata_getencodedby(m_tag));
+  id3_field_textencoding encoding=ID3_FIELD_TEXTENCODING_ISO_8859_1;
+  const id3_ucs4_t* ucs4=m_dll.id3_metadata_getencodedby(m_tag, &encoding);
+  return ToStringCharset(ucs4, encoding);
 }
 
 bool CID3Tag::HasPicture(id3_picture_type pictype) const
@@ -260,7 +284,7 @@ const BYTE* CID3Tag::GetUniqueFileIdentifier(const CStdString& strOwnerIdentifie
 
 CStdString CID3Tag::GetUserText(const CStdString& strDescription) const
 {
-  return Ucs4ToStringCharset(m_dll.id3_metadata_getusertext(m_tag, strDescription.c_str()));
+  return ToStringCharset(m_dll.id3_metadata_getusertext(m_tag, strDescription.c_str()), ID3_FIELD_TEXTENCODING_ISO_8859_1);
 }
 
 bool CID3Tag::GetFirstNonStandardPictype(id3_picture_type* pictype) const
@@ -387,7 +411,7 @@ CStdString CID3Tag::ParseMP3Genre(const CStdString& str) const
         id3_ucs4_t* ucs4=m_dll.id3_latin1_ucs4duplicate((id3_latin1_t*)t.c_str());
         const id3_ucs4_t* genre=m_dll.id3_genre_name(ucs4);
         m_dll.id3_ucs4_free(ucs4);
-        t=Ucs4ToStringCharset(genre);
+        t=ToStringCharset(genre, ID3_FIELD_TEXTENCODING_ISO_8859_1);
       }
 
       // convert RX to Remix as per ID3 V2.3 spec
