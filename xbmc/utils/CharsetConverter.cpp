@@ -132,6 +132,7 @@ void CCharsetConverter::reset(void)
   m_iconvUcs2CharsetToStringCharset = (iconv_t) - 1;
   m_iconvSubtitleCharsetToFontCharset = (iconv_t) - 1;
   m_iconvUtf16toUtf8 = (iconv_t) - 1;
+  m_iconvUtf32ToStringCharset = (iconv_t) - 1;
   m_stringFribidiCharset = FRIBIDI_CHARSET_NOT_FOUND;
 
   for (unsigned int i = 0; i < m_vecBidiCharsetNames.size(); i++)
@@ -342,6 +343,27 @@ void CCharsetConverter::ucs2CharsetToStringCharset(const CStdStringW& strSource,
     size_t outBytes = inBytes;
 
     iconv(m_iconvUcs2CharsetToStringCharset, &src, &inBytes, &dst, &outBytes);
+  }
+}
+
+void CCharsetConverter::utf32ToStringCharset(const unsigned long* strSource, CStdStringA& strDest)
+{
+  if (m_iconvUtf32ToStringCharset == (iconv_t) - 1)
+  {
+    m_iconvUtf32ToStringCharset = iconv_open(g_guiSettings.GetString("LookAndFeel.CharSet").c_str(), "UTF-32LE");
+  }
+
+  if (m_iconvUtf32ToStringCharset != (iconv_t) - 1)
+  {
+    const unsigned long* ptr=strSource;
+    while (*ptr) ptr++;
+    const char* src = (const char*) strSource;
+    size_t inBytes = (ptr-strSource+1)*4;
+
+    char *dst = strDest.SetBuf(inBytes);
+    size_t outBytes = inBytes;
+
+    iconv(m_iconvUtf32ToStringCharset, &src, &inBytes, &dst, &outBytes);
   }
 }
 
