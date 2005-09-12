@@ -72,7 +72,7 @@ void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecC
   CURL url(item.m_strPath);
   bool bMPlayer(false), bDVDPlayer(false);
 
-  bool bAllowDVD = strcmp(g_stSettings.m_szExternalDVDPlayer, "dvdplayerbeta") == 0;
+  bool bAllowDVD = true;
 
   //Only mplayer can handle internetstreams for now
   if ( item.IsInternetStream() )
