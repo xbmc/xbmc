@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 13-09-2005 added: Alternative ascii-gfx Filezilla (FTP) Welcome MSG. Disabled by default, to enable, first disable (comment) org. MSG, then uncomment new MSG. Use an ASCII capable font for display in ftpCLIENT. Thx to h8!
  - 12-09-2005 changed: XBMC DVD-Player is public now, and is now used by default when playing dvd's
  - 12-09-2005 fixed: id3 tags with ISO 8859 1 textencoding may not display correct, q:\system\libid3tag.dll got updated
  - 11-09-2005 updated: Polish language file (Thnx to napek)
