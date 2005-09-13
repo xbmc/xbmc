@@ -273,9 +273,9 @@ void CDVDPlayer::Process()
         if (m_iCurrentStreamVideo < 0) OpenVideoStream(pPacket->iStreamId);
 
         //If this is the first packet after a discontinuity, send it as a resync
-        if( !(m_dvd.iFlagSentStart & 2) ) 
+        if( !(m_dvd.iFlagSentStart & 1) ) 
         {
-          m_dvd.iFlagSentStart |= 2;
+          m_dvd.iFlagSentStart |= 1;
           iPacketMessage |= DVDPACKET_MESSAGE_RESYNC;
         }
 
