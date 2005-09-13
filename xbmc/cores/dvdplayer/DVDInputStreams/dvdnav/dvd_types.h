@@ -66,7 +66,8 @@ typedef struct {
 
 /* the following types are currently unused */
 
-#if 0
+//XBMC Needs some of these
+#if 1
 
 /* Domain */
 typedef enum {
@@ -228,6 +229,10 @@ typedef enum {
   DVD_DISPLAY_MODE_4x3Letterboxed = 3  
 } DVDDisplayMode_t;
 
+typedef int DVDAudioSampleFreq_t;
+typedef int DVDAudioSampleQuant_t;
+typedef int DVDChannelNumber_t;
+
 /* Audio attributes */
 typedef struct {
   DVDAudioAppMode_t     AppMode;
@@ -239,9 +244,6 @@ typedef struct {
   DVDAudioSampleQuant_t SampleQuantization;
   DVDChannelNumber_t    NumberOfChannels;
 } DVDAudioAttributes_t;
-typedef int DVDAudioSampleFreq_t;
-typedef int DVDAudioSampleQuant_t;
-typedef int DVDChannelNumber_t;
 
 /* Subpicture attributes */
 typedef enum {
@@ -261,6 +263,7 @@ typedef struct {
   DVDSubpictureLangExt_t LanguageExtension;
 } DVDSubpictureAttributes_t;
 
+typedef int DVDVideoCompression_t;
 /* Video attributes */
 typedef struct {
   DVDBool_t PanscanPermitted;
@@ -274,7 +277,7 @@ typedef struct {
   DVDBool_t Line21Field2InGop;
   int more_to_come;
 } DVDVideoAttributes_t;
-typedef int DVDVideoCompression_t;
+
 
 #endif
 
