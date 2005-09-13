@@ -857,11 +857,10 @@ void CXBoxRenderer::PrepareDisplay()
     { // render our subtitles and osd
       g_application.RenderFullScreen();
     }
-    m_pD3DDevice->KickPushBuffer();
-
-    m_bPrepared = true;
-
+    m_pD3DDevice->KickPushBuffer();    
   }
+
+  m_bPrepared = true;
 
 #ifdef _DEBUG
   dwTime += GetTickCount() - dwTimeStamp;
@@ -886,14 +885,17 @@ void CXBoxRenderer::FlipPage(bool bAsync)
     return;
   }
 
-  if (g_graphicsContext.IsFullScreenVideo() )
+  CSingleLock lock(g_graphicsContext);
+  if( !m_bPrepared )
   {
-    CSingleLock lock(g_graphicsContext);
+    //This will prepare for rendering, ie swapping buffers and in fullscreen even rendering
+    //it can have been done way earlier
+    PrepareDisplay();
+  }
+  m_bPrepared=false;
 
-    if( !m_bPrepared )
-    {
-      PrepareDisplay();
-    }
+  if (g_graphicsContext.IsFullScreenVideo() )
+  {    
 
     //Make sure the push buffer is done before waiting for vblank, otherwise we can get tearing
     while( m_pD3DDevice->IsBusy() ) Sleep(1);
@@ -932,11 +934,9 @@ void CXBoxRenderer::FlipPage(bool bAsync)
 
     //If textures hasn't been released earlier, release them here
     SetEvent(m_eventTexturesDone);
-    SetEvent(m_eventOSDDone);
+    SetEvent(m_eventOSDDone);    
 
-    m_bPrepared=false;
-
-  }
+  }  
 
   //if no osd was rendered before this call to flip_page make sure it doesn't get
   //rendered the next call to render not initialized by mplayer (like previewwindow + calibrationwindow);
