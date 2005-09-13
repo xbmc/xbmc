@@ -73,13 +73,18 @@ public:
   int GetActiveSubtitleStream();
   std::string GetSubtitleStreamLanguage(int iId);
   int GetSubTitleStreamCount();
+  bool SetActiveSubtitleStream(int iId);
+  int GetMpegSubtitleStream(int iId);
+
 
   int GetActiveAudioStream();
   std::string GetAudioStreamLanguage(int iId);
   int GetAudioStreamCount();
   bool SetActiveAudioStream(int iId);
-  bool SetActiveSubtitleStream(int iId);
+  int GetMpegAudioStream(int iId);
 
+  
+  
   int GetNrOfTitles();
   int GetNrOfParts(int iTitle);
   bool PlayTitle(int iTitle);
