@@ -504,6 +504,8 @@ void CGUIDialogVideoSettings::AddAudioStreams(unsigned int id)
   setting.max = (float)g_application.m_pPlayer->GetAudioStreamCount() - 1;
   m_audioStream = g_application.m_pPlayer->GetAudioStream();
 
+  if( m_audioStream < 0 ) m_audioStream = 0;
+
   // check if we have a single, stereo stream, and if so, allow us to split into
   // left, right or both
   if (!setting.max)
@@ -538,6 +540,13 @@ void CGUIDialogVideoSettings::AddAudioStreams(unsigned int id)
       strItem.Format("%2i", i + 1);
     setting.entry.push_back(strItem);
   }
+
+  if( setting.max < 0 )
+  {
+    setting.max = 0;
+    setting.entry.push_back(g_localizeStrings.Get(231).c_str());
+  }
+
   m_settings.push_back(setting);
 }
 
@@ -549,7 +558,7 @@ void CGUIDialogVideoSettings::AddSubtitleStreams(unsigned int id)
   setting.type = VideoSetting::SPIN;
   setting.min = 0;
   setting.data = &m_subtitleStream;
-  m_subtitleStream = g_stSettings.m_currentVideoSettings.m_SubtitleStream;
+  m_subtitleStream = g_application.m_pPlayer->GetSubtitle();
 
   if(m_subtitleStream < 0) m_subtitleStream = 0;
 
