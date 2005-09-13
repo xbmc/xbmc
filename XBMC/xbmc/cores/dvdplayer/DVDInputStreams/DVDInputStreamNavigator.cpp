@@ -22,7 +22,7 @@ extern "C"
  #define HAVE_CONFIG_H
  #include "dvdnav/dvdnav_internal.h"
  #include "dvdnav/vm.h"
- // #include "dvdnav/ifo_types.h"
+ #include "dvdnav/dvd_types.h"
  
   // forward declarations
   vm_t* dvdnav_get_vm(dvdnav_t *self);
@@ -701,9 +701,13 @@ int CDVDInputStreamNavigator::GetActiveSubtitleStream()
   if( vm )
   {
     if((vm->state).domain != VTS_DOMAIN)
-      return -1;
+      return 0;
 
     int subpN = (vm->state).SPST_REG & ~0x40;
+
+    // If stream is larger than number of streams we have, use report first one
+    if( subpN >= vm->vtsi->vtsi_mat->nr_of_vts_subp_streams )
+      return 0;
     // If it has info, it is an ok stream.. otherwise just use first as stream
     if((vm->state).pgc->subp_control[subpN] & (1<<31))
       return subpN;
@@ -733,10 +737,44 @@ std::string CDVDInputStreamNavigator::GetSubtitleStreamLanguage(int iId)
 {
   if (!m_dvdnav) return NULL;
 
-  CStdString strLanguage;
+  CStdString strLanguage;  
 
-  uint16_t lang = dvdnav_spu_stream_to_lang(m_dvdnav, iId);
-  if (!g_LangCodeExpander.LookupDVDLangCode(strLanguage, lang)) strLanguage = "Unknown";
+  subp_attr_t subp_attributes;
+  if( dvdnav_get_stitle_info(m_dvdnav, iId, &subp_attributes) == DVDNAV_STATUS_OK )
+  {
+    
+    if( subp_attributes.type == DVD_SUBPICTURE_TYPE_Language )
+    {
+      if (!g_LangCodeExpander.LookupDVDLangCode(strLanguage, subp_attributes.lang_code)) strLanguage = "Unknown";
+
+      switch( subp_attributes.lang_extension )
+      {
+        case DVD_SUBPICTURE_LANG_EXT_NotSpecified:
+        case DVD_SUBPICTURE_LANG_EXT_NormalCaptions:
+        case DVD_SUBPICTURE_LANG_EXT_BigCaptions:
+        case DVD_SUBPICTURE_LANG_EXT_ChildrensCaptions:
+          break;
+
+        case DVD_SUBPICTURE_LANG_EXT_NormalCC:
+        case DVD_SUBPICTURE_LANG_EXT_BigCC:
+        case DVD_SUBPICTURE_LANG_EXT_ChildrensCC:
+          strLanguage+= " (CC)";
+          break;
+        case DVD_SUBPICTURE_LANG_EXT_Forced:
+          strLanguage+= " (Forced)";
+          break;
+        case DVD_SUBPICTURE_LANG_EXT_NormalDirectorsComments:
+        case DVD_SUBPICTURE_LANG_EXT_BigDirectorsComments:
+        case DVD_SUBPICTURE_LANG_EXT_ChildrensDirectorsComments:
+          strLanguage+= " (Directors Comments)";
+          break;
+      }
+    }
+    else
+    {
+      strLanguage = "Unknown";
+    }
+  }
 
   return strLanguage;
 }
@@ -758,8 +796,12 @@ int CDVDInputStreamNavigator::GetActiveAudioStream()
       return -1;
 
     int audioN = (vm->state).AST_REG;
+
+    // If stream is larger than number of streams we have, use report first one
+    if( audioN >= vm->vtsi->vtsi_mat->nr_of_vts_audio_streams )
+      return 0;
     // If it has info, it is an ok stream.. otherwise just use first as stream
-    if((vm->state).pgc->audio_control[audioN] & (1<<15))
+    else if((vm->state).pgc->audio_control[audioN] & (1<<15))
       return audioN;
     else
       return 0;
@@ -781,8 +823,28 @@ std::string CDVDInputStreamNavigator::GetAudioStreamLanguage(int iId)
   
   CStdString strLanguage;
 
-  uint16_t lang = dvdnav_audio_stream_to_lang(m_dvdnav, iId);
-  if (!g_LangCodeExpander.LookupDVDLangCode(strLanguage, lang)) strLanguage = "Unknown";
+  audio_attr_t audio_attributes;
+  if( dvdnav_get_audio_info(m_dvdnav, iId, &audio_attributes) == DVDNAV_STATUS_OK )
+  {
+    if (!g_LangCodeExpander.LookupDVDLangCode(strLanguage, audio_attributes.lang_code)) strLanguage = "Unknown";
+
+    switch( audio_attributes.lang_extension )
+    {
+      case DVD_AUDIO_LANG_EXT_VisuallyImpaired:
+        strLanguage+= " (Visually Impaired)";
+        break;
+      case DVD_AUDIO_LANG_EXT_DirectorsComments1:
+        strLanguage+= " (Directors Comments)";
+        break;
+      case DVD_AUDIO_LANG_EXT_DirectorsComments2:
+        strLanguage+= " (Directors Comments 2)";
+        break;
+      case DVD_AUDIO_LANG_EXT_NotSpecified:
+      case DVD_AUDIO_LANG_EXT_NormalCaptions:
+      default:
+        break;
+    }
+  }
 
   return strLanguage;
 }
