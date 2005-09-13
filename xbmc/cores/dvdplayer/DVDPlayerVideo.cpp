@@ -175,8 +175,8 @@ void CDVDPlayerVideo::Process()
 
     if (dvdstate & DVDPACKET_MESSAGE_RESYNC)
     {
-      //Discontinuity found..
-      //Audio side normally handles discontinuities so don't do anything here.
+      //DVDPlayer asked us to sync playback clock
+      m_pClock->Discontinuity(CLOCK_DISC_NORMAL, pPacket->dts);      
     }
     if (dvdstate & DVDPACKET_MESSAGE_NOSKIP)
     {
