@@ -322,6 +322,11 @@ int CDVDInputStreamNavigator::ProcessBlock(BYTE* dest_buffer, int* read)
     case DVDNAV_SPU_STREAM_CHANGE:
       // Player applications should inform their SPU decoder to switch channels
       {
+        dvdnav_spu_stream_change_event_t* event = (dvdnav_spu_stream_change_event_t*)buf;
+        
+        //libdvdnav never sets logical, why.. don't know..
+        event->logical = GetActiveSubtitleStream();
+
         m_bCheckButtons = true;
         m_pDVDPlayer->OnDVDNavResult(buf, DVDNAV_SPU_STREAM_CHANGE);
       }
@@ -330,8 +335,18 @@ int CDVDInputStreamNavigator::ProcessBlock(BYTE* dest_buffer, int* read)
     case DVDNAV_AUDIO_STREAM_CHANGE:
       // Player applications should inform their audio decoder to switch channels
       {
+        
+        //dvdnav_get_audio_logical_stream actually does the oposite to the docs.. 
+        //taking a audiostream as given on dvd, it gives the physical stream that
+        //refers to in the mpeg file
+
         dvdnav_audio_stream_change_event_t* event = (dvdnav_audio_stream_change_event_t*)buf;
-        event->logical = dvdnav_get_audio_logical_stream(m_dvdnav, event->physical);
+        
+        //wroong... stupid docs..
+        //event->logical = dvdnav_get_audio_logical_stream(m_dvdnav, event->physical);
+        //logical should actually be set to the (vm->state).AST_REG
+
+        event->logical = GetActiveAudioStream();
         
         m_pDVDPlayer->OnDVDNavResult(m_tempbuffer, DVDNAV_AUDIO_STREAM_CHANGE);
       }
@@ -680,12 +695,38 @@ bool CDVDInputStreamNavigator::IsInMenu()
 
 int CDVDInputStreamNavigator::GetActiveSubtitleStream()
 {
-  int iStream;
   if (!m_dvdnav) return -1;
 
-  iStream = (dvdnav_get_active_spu_stream(m_dvdnav) & 0xff);
-  if (iStream == 0x80) return -1;
-  return (iStream & ~0x80);
+  vm_t* vm = dvdnav_get_vm(m_dvdnav);
+  if( vm )
+  {
+    if((vm->state).domain != VTS_DOMAIN)
+      return -1;
+
+    int subpN = (vm->state).SPST_REG & ~0x40;
+    // If it has info, it is an ok stream.. otherwise just use first as stream
+    if((vm->state).pgc->subp_control[subpN] & (1<<31))
+      return subpN;
+    else //If it was invalid, just set first as active
+      return 0;
+  }
+  return -1;
+
+  //dvdnav_get_active_spu_stream will return the stream counted as the physical streams in the mpeg
+  //however all other subtitle functions count based on subpictures in the dvd, each subpicture can have multiple
+  //mpeg streams associated.
+
+  //iStream = (dvdnav_get_active_spu_stream(m_dvdnav) & 0xff);
+  //if (iStream == 0x80) return -1;
+  //return (iStream & ~0x80);
+}
+
+// This will return the mpeg subtitle stream that a certain subpicture channel refers to
+// It will give the 4:3 version if material is 4:3 and the Widescreen version if material is 16:9. (Letterbox, Pan&Scan is not available this way)
+//GetMpegSubtitleStream(GetActiveSubtitleStream) will return the same as dvdnav_get_active_audio_stream(m_dvdnav)
+int CDVDInputStreamNavigator::GetMpegSubtitleStream(int iSubtitle)
+{
+  return dvdnav_get_spu_logical_stream(m_dvdnav, iSubtitle);
 }
 
 std::string CDVDInputStreamNavigator::GetSubtitleStreamLanguage(int iId)
@@ -710,8 +751,29 @@ int CDVDInputStreamNavigator::GetActiveAudioStream()
 {
   if (!m_dvdnav) return -1;
 
-  return dvdnav_get_active_audio_stream(m_dvdnav);
+  vm_t* vm = dvdnav_get_vm(m_dvdnav);
+  if( vm )
+  {
+    if((vm->state).domain != VTS_DOMAIN)
+      return -1;
+
+    int audioN = (vm->state).AST_REG;
+    // If it has info, it is an ok stream.. otherwise just use first as stream
+    if((vm->state).pgc->audio_control[audioN] & (1<<15))
+      return audioN;
+    else
+      return 0;
+  }
+  
+  return -1;
 }
+
+//GetMpegAudioStream(GetActiveAudioStream) will return the same as dvdnav_get_active_audio_stream(m_dvdnav)
+int CDVDInputStreamNavigator::GetMpegAudioStream(int iId)
+{
+  return dvdnav_get_audio_logical_stream(m_dvdnav, iId);
+}
+
 
 std::string CDVDInputStreamNavigator::GetAudioStreamLanguage(int iId)
 {
