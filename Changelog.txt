@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 13-09-2005 fixed: DVDPlayer wouldn't display subtitles unless the subtitles visible option was toggled of and on in osd
+ - 13-09-2005 fixed: DVDPlayer didn't display anything when in the background
  - 13-09-2005 fixed: DVDPlayer would play horribly choppy when there was no audio stream present
  - 13-09-2005 added: Display of type of audiostream (Commentary, For Hearing impaired on those dvd's that support it)
  - 13-09-2005 changed: dvdplayer now select and show audio and subtitle streams, soly based on what's specifed in ifo files. mapping of this to the mpeg streams should now be correct too

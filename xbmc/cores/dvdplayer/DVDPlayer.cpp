@@ -81,6 +81,8 @@ bool CDVDPlayer::OpenFile(const CFileItem& file, __int64 iStartTime)
   Create();
   WaitForSingleObject(m_hReadyEvent, INFINITE);
 
+  m_dvdPlayerVideo.EnableSubtitle(g_stSettings.m_currentVideoSettings.m_SubtitleOn);
+
   // if we are playing a media file with pictures, we should wait for the video output device to be initialized
   // if we don't wait, the fullscreen window will init with a picture that is 0 pixels width and high
   if (m_iCurrentStreamVideo >= 0 ||
