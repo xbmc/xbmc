@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 13-09-2005 fixed: DVDPlayer was unable to play .ac3 files
  - 13-09-2005 fixed: DVDPlayer wouldn't display subtitles unless the subtitles visible option was toggled of and on in osd
  - 13-09-2005 fixed: DVDPlayer didn't display anything when in the background
  - 13-09-2005 fixed: DVDPlayer would play horribly choppy when there was no audio stream present
