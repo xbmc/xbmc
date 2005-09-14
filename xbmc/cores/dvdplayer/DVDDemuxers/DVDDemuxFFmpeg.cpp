@@ -252,8 +252,15 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
     if (iErr < 0)
     {
       CLog::DebugLog("could not find codec parameters for %s", strFile);
-      Dispose();
-      return false;
+      if (m_pFormatContext->nb_streams == 1 && m_pFormatContext->streams[0]->codec.codec_id == CODEC_ID_AC3)
+      {
+        // special case, our codecs can still handle it.
+      }
+      else
+      {
+        Dispose();
+        return false;
+      }
     }
   }
 
