@@ -139,7 +139,7 @@ void CPlayListPlayer::PlayPrevious()
   if (iSong < 0)
     iSong = playlist.size() - 1;
 
-  Play(iSong);
+  Play(iSong, false, true);
 
 }
 
@@ -160,7 +160,7 @@ void CPlayListPlayer::Play()
 
 /// \brief Start playing entry \e iSong in current playlist
 /// \param iSong Song in playlist
-void CPlayListPlayer::Play(int iSong, bool bAutoPlay)
+void CPlayListPlayer::Play(int iSong, bool bAutoPlay /* = false */, bool bPlayPrevious /* = false */)
 {
   if (m_iCurrentPlayList == PLAYLIST_NONE)
     return ;
@@ -177,10 +177,12 @@ void CPlayListPlayer::Play(int iSong, bool bAutoPlay)
 
   if (!g_application.PlayFile(item, bAutoPlay))
   {
-    CGUIMessage msg(GUI_MSG_PLAYLISTPLAYER_STOPPED, 0, 0, m_iCurrentPlayList, m_iCurrentSong);
-    m_gWindowManager.SendThreadMessage(msg);
-    Reset();
-    m_iCurrentPlayList = PLAYLIST_NONE;
+    CLog::Log(LOGERROR,"Playlist Player: skipping unplayable item: %i, path [%s]", m_iCurrentSong, item.m_strPath.c_str());
+
+    if (bPlayPrevious)
+      PlayPrevious();
+    else
+      PlayNext();
     return;
   }
 
