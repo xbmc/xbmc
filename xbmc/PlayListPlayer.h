@@ -26,7 +26,7 @@ public:
   void PlayNext(bool bAutoPlay = false);
   void PlayPrevious();
   void Play();
-  void Play(int iSong, bool bAutoPlay = false);
+  void Play(int iSong, bool bAutoPlay = false, bool bPlayPrevious = false);
   int GetCurrentSong() const;
   int GetNextSong();
   void SetCurrentSong(int iSong);
