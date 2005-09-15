@@ -174,6 +174,7 @@ void CPlayListPlayer::Play(int iSong, bool bAutoPlay /* = false */, bool bPlayPr
   int iPreviousSong = m_iCurrentSong;
   m_iCurrentSong = iSong;
   const CPlayList::CPlayListItem& item = playlist[m_iCurrentSong];
+  playlist.SetPlayed(m_iCurrentSong);
 
   if (!g_application.PlayFile(item, bAutoPlay))
   {
@@ -201,8 +202,6 @@ void CPlayListPlayer::Play(int iSong, bool bAutoPlay /* = false */, bool bPlayPr
       m_gWindowManager.SendThreadMessage(msg);
     }
   }
-
-  playlist.SetPlayed(m_iCurrentSong);
 }
 
 /// \brief Change the current song in playlistplayer.
