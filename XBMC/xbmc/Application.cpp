@@ -781,6 +781,11 @@ HRESULT CApplication::Create()
     helper.Remap("G:,Harddisk0\\Partition7");
     g_stSettings.m_bUseGDrive = true;
   }
+
+  helper.Remap("X:,Harddisk0\\Partition3");
+  helper.Remap("Y:,Harddisk0\\Partition4");
+  helper.Remap("Z:,Harddisk0\\Partition5");
+  
   CLog::Log(LOGINFO, "Drives are mapped");
 
   // check settings to see if another home dir is defined.
