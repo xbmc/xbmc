@@ -1634,7 +1634,7 @@ bool CUtil::IsHD(const CStdString& strFileName)
 {
   if (strFileName.size() <= 2) return false;
   char szDriveletter = tolower(strFileName.GetAt(0));
-  if ( (szDriveletter >= 'c' && szDriveletter <= 'g' && szDriveletter != 'd') || (szDriveletter == 'q') || (szDriveletter == 'z') )
+  if ( (szDriveletter >= 'c' && szDriveletter <= 'g' && szDriveletter != 'd') || (szDriveletter == 'q') || (szDriveletter == 'z') || (szDriveletter == 'y') || (szDriveletter == 'x') )
   {
     if (strFileName.GetAt(1) == ':') return true;
   }
@@ -2788,7 +2788,8 @@ const BUILT_IN commands[] = {
   "PlayerControl", "Control the music or video player",
   "EjectTray", "Close or open the DVD tray",
   "AlarmClock", "Prompt for a length of time and start an alarm clock",
-  "Action", "Executes an action for the active window (same as in keymap)"
+  "Action", "Executes an action for the active window (same as in keymap)",
+  "Notificaton", "Shows a notification on screen, specify header, then message."
 };
 
 bool CUtil::IsBuiltIn(const CStdString& execString)
@@ -2809,14 +2810,32 @@ bool CUtil::IsBuiltIn(const CStdString& execString)
 
 void CUtil::SplitExecFunction(const CStdString &execString, CStdString &strFunction, CStdString &strParam)
 {
+  CRegExp reg;
+  reg.RegComp("([XBMCxbmc]*)\\.([^(]*)\\(?(.*)\\)$");
   strParam = "";
-  strFunction = execString.Mid(5);
-  int iPos = strFunction.Find("(");
-  int iPos2 = strFunction.Find(")", iPos);
-  if (iPos > 0 && iPos2 > 0)
-  { // got a parameter
-    strParam = strFunction.Mid(iPos + 1, iPos2 - iPos - 1).ToLower();
-    strFunction = strFunction.Left(iPos).ToLower();
+  if (reg.RegFind(execString.c_str()) == 0)
+  {
+    char* szParam = reg.GetReplaceString("\\1");
+    CStdString strTemp = szParam;
+    free(szParam);
+    strTemp.ToLower();
+    if (strTemp != "xbmc")
+    {
+      strFunction = strParam = "";
+      return;
+    }
+
+    szParam = reg.GetReplaceString("\\2");
+    strFunction = szParam;
+    free(szParam);
+    strFunction.ToLower();
+    
+    szParam = reg.GetReplaceString("\\3");
+    if (szParam)
+    {
+      strParam = szParam;
+      free(szParam);
+    }
   }
 }
 
@@ -2839,6 +2858,8 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   // Get the text after the "XBMC."
   CStdString execute, parameter;
   SplitExecFunction(execString, execute, parameter);
+  CStdString strParameterCaseIntact = parameter;
+  parameter.ToLower();
 
   if (execute.Equals("reboot") || execute.Equals("restart"))  //Will reboot the xbox, aka cold reboot
   {
@@ -3045,21 +3066,50 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   }
   else if( execute.Equals("alarmclock") ) 
   {	
-    CStdString strTime;
-    CStdString strHeading = g_localizeStrings.Get(13209);
-    float fSecs;
-    if( !parameter.IsEmpty() ) 
-      fSecs = static_cast<float>(atoi(parameter.c_str())*60);
-    else
+    float fSecs = -1.f;
+    CStdString strCommand;
+    if (!parameter.IsEmpty())
+    {
+      CRegExp reg;
+      if (!reg.RegComp("([^\\)]*\\))?,?(.*)"))
+        return -1; // whatever
+      if (reg.RegFind(strParameterCaseIntact.c_str()) > -1)
+      {
+        char *szParam = reg.GetReplaceString("\\1");
+        strCommand = szParam;
+        free(szParam);
+        szParam = reg.GetReplaceString("\\2");
+        if (szParam)
+          if (strlen(szParam))
+          {
+            fSecs = fSecs = static_cast<float>(atoi(szParam)*60);
+            free(szParam);
+          }
+      }
+    }
+    
+    if (fSecs == -1.f)
+    {
+      CStdString strTime;
+      CStdString strHeading = g_localizeStrings.Get(13209);
       if( CGUIDialogNumeric::ShowAndGetNumber(strTime, strHeading) )
         fSecs = static_cast<float>(atoi(strTime.c_str())*60);
       else
         return -4;
-
+    }
     if( g_alarmClock.isRunning() )
       g_alarmClock.stop();
     
-    g_alarmClock.start(fSecs);
+    g_alarmClock.start(fSecs,strCommand);
+  }
+  else if (execute.Equals("notification"))
+  {
+    std::vector<CStdString> params;
+    StringUtils::SplitString(strParameterCaseIntact,",",params);
+    if (params.size() < 2)
+      return -1;
+
+    g_application.m_guiDialogKaiToast.QueueNotification(params[0],params[1]);
   }
   else
     return -1;
@@ -3541,4 +3591,20 @@ void CUtil::GetRecursiveListing(const CStdString& strPath, CFileItemList& items,
     else if (!myItems[i]->IsRAR() && !myItems[i]->IsZIP())
       items.Add(new CFileItem(*myItems[i]));
   }
+}
+
+void CUtil::GetRecursiveDirsListing(const CStdString& strPath, CFileItemList& item)
+{
+  CFileItemList myItems;
+  CDirectory::GetDirectory(strPath,myItems,"");
+  for (int i=0;i<myItems.Size();++i)
+  {
+    if (myItems[i]->m_bIsFolder && !myItems[i]->m_strPath.Equals(".."))
+    {
+      CFileItem* pItem = new CFileItem(*myItems[i]);
+      item.Add(pItem);
+      CUtil::GetRecursiveListing(myItems[i]->m_strPath,item,"");
+    }   
+  }
+  CLog::Log(LOGDEBUG,"done listing!");
 }
