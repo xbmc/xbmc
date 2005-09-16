@@ -8,7 +8,7 @@ class CAlarmClock : public CThread
 public:
 	CAlarmClock();
 	~CAlarmClock();
-	void start(float n_secs);
+	void start(float n_secs, const CStdString& strCommand);
 	inline bool isRunning()
 	{
 		return( m_bIsRunning );
@@ -21,5 +21,6 @@ private:
 	CXBStopWatch watch;
 	double m_fSecs;
 	bool m_bIsRunning;
+  CStdString m_strCommand;
 };
 extern CAlarmClock g_alarmClock;
