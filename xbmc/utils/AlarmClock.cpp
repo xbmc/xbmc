@@ -1,5 +1,6 @@
 #include "AlarmClock.h"
 #include "../application.h"
+#include "../Util.h"
 
 CAlarmClock g_alarmClock;
 CAlarmClock::CAlarmClock() : m_bIsRunning(false), m_fSecs(0)
@@ -8,10 +9,11 @@ CAlarmClock::CAlarmClock() : m_bIsRunning(false), m_fSecs(0)
 CAlarmClock::~CAlarmClock()
 {
 }
-void CAlarmClock::start(float n_secs)
+void CAlarmClock::start(float n_secs, const CStdString& strCommand)
 {
   StopThread();
   m_fSecs = n_secs;
+  m_strCommand = strCommand;
   Create();
 }
 void CAlarmClock::stop()
@@ -40,7 +42,10 @@ void CAlarmClock::OnExit()
     CStdString strStarted = g_localizeStrings.Get(13212);
     strMessage.Format(strStarted.c_str(),static_cast<int>(remaining)/60,static_cast<int>(remaining)%60);
   }
-  g_application.m_guiDialogKaiToast.QueueNotification(strAlarmClock,strMessage);
+  if (m_strCommand.IsEmpty())
+    g_application.m_guiDialogKaiToast.QueueNotification(strAlarmClock,strMessage);
+  else
+    CUtil::ExecBuiltIn(m_strCommand);
   watch.Stop();
   m_bIsRunning = false;
 }

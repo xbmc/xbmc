@@ -5,6 +5,9 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 16-09-2005 fixed: z: is now mapped to the correct drive.
+ - 16-09-2005 added: New builtin command: XBMC.Notification(<header>,<message>). Will show a KAI toast dialog with the specified header and message.
+ - 16-09-2005 changed: XBMC.AlarmClock() can now execute any builtin. NEW SYNTAX! XBMC.AlarmClock(<builtincommand>,<time>).
  - 14-09-2005 changed: Playlists skip to next song when it an unplayable item is encountered
  - 13-09-2005 fixed: DVDPlayer was unable to play .ac3 files
  - 13-09-2005 fixed: DVDPlayer wouldn't display subtitles unless the subtitles visible option was toggled of and on in osd
