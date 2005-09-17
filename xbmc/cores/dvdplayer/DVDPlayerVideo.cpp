@@ -158,6 +158,7 @@ void CDVDPlayerVideo::Process()
         //Remove interlaced flag before outputting
         //no need to output this as if it was interlaced
         picture.iFlags &= ~DVP_FLAG_INTERLACED;
+        picture.iFlags |= DVP_FLAG_NOSKIP;
         OutputPicture(&picture, 0);
       }
 
