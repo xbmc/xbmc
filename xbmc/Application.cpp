@@ -634,11 +634,42 @@ HRESULT CApplication::Create()
   helper.Unmount("Q:");
   helper.Mount("Q:", szDevicePath);
 
-  ::DeleteFile("Q:\\xbmc.old.log");
-  ::MoveFile("Q:\\xbmc.log", "Q:\\xbmc.old.log");
+  //
+  CStdString strLogFile, strLogFileOld;
+  CSettings c_settings;
+  if (c_settings.QuickLoad())
+  {
+    CStdString strLogPath = g_stSettings.m_szlogpath;
+    if (!strLogPath.IsEmpty()){
+      //We need to mount before we can start the log File!
+      helper.Remap("C:,Harddisk0\\Partition2");
+      helper.Remap("E:,Harddisk0\\Partition1");
+      if ((g_stSettings.m_bAutoDetectFG && helper.IsDrivePresent("F:")) || g_stSettings.m_bUseFDrive) helper.Remap("F:,Harddisk0\\Partition6");
+      if ((g_stSettings.m_bAutoDetectFG && helper.IsDrivePresent("G:")) || g_stSettings.m_bUseGDrive) helper.Remap("G:,Harddisk0\\Partition7");
+      helper.Remap("X:,Harddisk0\\Partition3");
+      helper.Remap("Y:,Harddisk0\\Partition4");
+      helper.Remap("Z:,Harddisk0\\Partition5");
+
+      strLogFile.Format("%sxbmc.log", strLogPath.c_str());
+      strLogFileOld.Format("%sxbmc.old.log", strLogPath.c_str());
+    }
+    else{
+      strLogFile.Format("Q:\\xbmc.log");
+      strLogFileOld.Format("Q:\\xbmc.old.log");
+    }
+  }else{
+      strLogFile.Format("Q:\\xbmc.log");
+      strLogFileOld.Format("Q:\\xbmc.old.log");
+    }
+  //
+  ::DeleteFile(strLogFileOld.c_str());
+  ::MoveFile(strLogFile.c_str(), strLogFileOld.c_str());
+  
   CLog::Log(LOGNOTICE, "-----------------------------------------------------------------------");
   CLog::Log(LOGNOTICE, "Starting XBoxMediaCenter.  Built on %s", __DATE__);
   CLog::Log(LOGNOTICE, "Q is mapped to:%s", szDevicePath);
+  CLog::Log(LOGNOTICE, "Log File is located: %s", strLogFile.c_str());
+  CLog::Log(LOGNOTICE, "-----------------------------------------------------------------------");
 
   // Initialize core peripheral port support. Note: If these parameters
   // are 0 and NULL, respectively, then the default number and types of
@@ -808,8 +839,10 @@ HRESULT CApplication::Create()
       CLog::Close();
       helper.Unmount("Q:");
       helper.Mount("Q:", szDevicePath);
-      ::DeleteFile("Q:\\xbmc.old.log");
-      ::MoveFile("Q:\\xbmc.log", "Q:\\xbmc.old.log");
+      
+      ::DeleteFile(strLogFileOld.c_str());
+      ::MoveFile(strLogFile.c_str(), strLogFileOld.c_str());
+
       CLog::Close();
       CLog::Log(LOGNOTICE, "Q is mapped to:%s", szDevicePath);
     }
@@ -841,8 +874,10 @@ HRESULT CApplication::Create()
       CLog::Close();
       helper.Unmount("Q:");
       helper.Mount("Q:", szDevicePath);
-      ::DeleteFile("Q:\\xbmc.old.log");
-      ::MoveFile("Q:\\xbmc.log", "Q:\\xbmc.old.log");
+      
+      ::DeleteFile(strLogFileOld.c_str());
+      ::MoveFile(strLogFile.c_str(), strLogFileOld.c_str());
+
       CLog::Close();
       CLog::Log(LOGNOTICE, "Q is mapped to:%s", szDevicePath);
     }
