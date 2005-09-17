@@ -191,80 +191,93 @@ void CRGBRenderer::Render()
       m_YUVTexture->GetSurfaceLevel(0, &pYUVSurface);
     m_pD3DDevice->SetRenderTarget(pYUVSurface, NULL);
 
+
+    //Set this to get the -0.5 offset on all vertices to let unscaled textures be point sampled
+    //when written to their target. 
+    m_pD3DDevice->SetScreenSpaceOffset(-0.5f, -0.5f);
+
+    //UV in interlaced video is seen as being closer to first line in first field and closer to second line in second field
+    //we shift it with an offset of 1/4th pixel (1/8 in UV planes)
+    //This need only be done when field scaling
+    #define CHROMAOFFSET_VERT 0.125f
+    
+    //Each chroma sample is not said to be between the first and second sample as in the vertical case
+    //first Y(1) <=> UV(1), Y(2) <=> ( UV(1)+UV(2) ) / 2, Y(3) <=> UV(2)
+    //we wish to offset this by 1/2 pxiel to le left, which in the half rez of UV planes means 1/4th
+    #define CHROMAOFFSET_HORIZ 0.25f
+
     // Render the image
     m_pD3DDevice->Begin(D3DPT_QUADLIST);
     if( m_iFieldSync != FS_NONE )
     {
-      //UV in interlaced video is seen as being closer to first line in first field and closer to second line in second field
-      //we shift it with and offset of 1/4th pixel as counted in U height. meaning 1/8 in UV
-      #define CHROMAOFFSET 0.125f
 
-
-      // first feild is the left side of our textures
-      m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, 0.5f, 0.5f );
-      m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD1, 0.5f, 0.5f + CHROMAOFFSET );
-      m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD2, 0.5f, 0.5f + CHROMAOFFSET );
+      // first field is the left side of our textures
+      m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, 0.0f, 0.0f );
+      m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD1, 0.0f + CHROMAOFFSET_HORIZ, 0.0f + CHROMAOFFSET_VERT );
+      m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD2, 0.0f + CHROMAOFFSET_HORIZ, 0.0f + CHROMAOFFSET_VERT );
       m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, 0.0f, 0.0f, 0, 1.0f );
 
-      m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)m_iSourceWidth + 0.5f, 0.5f );
-      m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD1, (float)m_iSourceWidth*0.5f + 0.5f, 0.5f + CHROMAOFFSET );
-      m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD2, (float)m_iSourceWidth*0.5f + 0.5f, 0.5f + CHROMAOFFSET);
+      m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)m_iSourceWidth, 0.0f );
+      m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD1, (float)m_iSourceWidth*0.5f + CHROMAOFFSET_HORIZ, 0.0f + CHROMAOFFSET_VERT );
+      m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD2, (float)m_iSourceWidth*0.5f + CHROMAOFFSET_HORIZ, 0.0f + CHROMAOFFSET_VERT );
       m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, (float)m_iSourceWidth, 0.0f, 0, 1.0f );
 
-      m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)m_iSourceWidth + 0.5f, (float)m_iSourceHeight*0.5f + 0.5f );
-      m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD1, (float)m_iSourceWidth*0.5f + 0.5f, (float)m_iSourceHeight*0.25f + 0.5f + CHROMAOFFSET  );
-      m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD2, (float)m_iSourceWidth*0.5f + 0.5f, (float)m_iSourceHeight*0.25f + 0.5f + CHROMAOFFSET  );
+      m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)m_iSourceWidth, (float)m_iSourceHeight*0.5f );
+      m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD1, (float)m_iSourceWidth*0.5f + CHROMAOFFSET_HORIZ, (float)m_iSourceHeight*0.25f + CHROMAOFFSET_VERT  );
+      m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD2, (float)m_iSourceWidth*0.5f + CHROMAOFFSET_HORIZ, (float)m_iSourceHeight*0.25f + CHROMAOFFSET_VERT  );
       m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, (float)m_iSourceWidth, (float)m_iSourceHeight*0.5f, 0, 1.0f );
 
-      m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, 0.5f, (float)m_iSourceHeight*0.5f + 0.5f );
-      m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD1, 0.5f, (float)m_iSourceHeight*0.25f + 0.5f + CHROMAOFFSET );
-      m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD2, 0.5f, (float)m_iSourceHeight*0.25f + 0.5f + CHROMAOFFSET );
+      m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, 0.0f, (float)m_iSourceHeight*0.5f );
+      m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD1, 0.0f + CHROMAOFFSET_HORIZ, (float)m_iSourceHeight*0.25f + CHROMAOFFSET_VERT );
+      m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD2, 0.0f + CHROMAOFFSET_HORIZ, (float)m_iSourceHeight*0.25f + CHROMAOFFSET_VERT );
       m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, 0.0f, (float)m_iSourceHeight*0.5f, 0, 1.0f );
       
       // second field is the right side of our textures
-      m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)m_YFieldPitch + 0.5f, 0.5f );
-      m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD1, (float)m_UVFieldPitch + 0.5f, 0.5f - CHROMAOFFSET );
-      m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD2, (float)m_UVFieldPitch + 0.5f, 0.5f - CHROMAOFFSET );
+      m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)m_YFieldPitch, 0.0f );
+      m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD1, (float)m_UVFieldPitch + CHROMAOFFSET_HORIZ, 0.0f - CHROMAOFFSET_VERT );
+      m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD2, (float)m_UVFieldPitch + CHROMAOFFSET_HORIZ, 0.0f - CHROMAOFFSET_VERT );
       m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, (float)m_YUVFieldPitch, 0.0f, 0, 1.0f );
 
-      m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)m_YFieldPitch + m_iSourceWidth + 0.5f, 0.5f );
-      m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD1, (float)m_UVFieldPitch + m_iSourceWidth*0.5f + 0.5f, 0.5f - CHROMAOFFSET );
-      m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD2, (float)m_UVFieldPitch + m_iSourceWidth*0.5f + 0.5f, 0.5f - CHROMAOFFSET );
+      m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)m_YFieldPitch + m_iSourceWidth, 0.0f );
+      m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD1, (float)m_UVFieldPitch + m_iSourceWidth*0.5f + CHROMAOFFSET_HORIZ, 0.0f - CHROMAOFFSET_VERT );
+      m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD2, (float)m_UVFieldPitch + m_iSourceWidth*0.5f + CHROMAOFFSET_HORIZ, 0.0f - CHROMAOFFSET_VERT );
       m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, (float)m_YUVFieldPitch + m_iSourceWidth, 0.0f, 0, 1.0f );
 
-      m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)m_YFieldPitch + m_iSourceWidth + 0.5f, (float)m_iSourceHeight*0.5f + 0.5f );
-      m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD1, (float)m_UVFieldPitch + m_iSourceWidth*0.5f + 0.5f, (float)m_iSourceHeight*0.25f + 0.5f - CHROMAOFFSET );
-      m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD2, (float)m_UVFieldPitch + m_iSourceWidth*0.5f + 0.5f, (float)m_iSourceHeight*0.25f + 0.5f - CHROMAOFFSET );
+      m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)m_YFieldPitch + m_iSourceWidth, (float)m_iSourceHeight*0.5f );
+      m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD1, (float)m_UVFieldPitch + m_iSourceWidth*0.5f + CHROMAOFFSET_HORIZ, (float)m_iSourceHeight*0.25f - CHROMAOFFSET_VERT );
+      m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD2, (float)m_UVFieldPitch + m_iSourceWidth*0.5f + CHROMAOFFSET_HORIZ, (float)m_iSourceHeight*0.25f - CHROMAOFFSET_VERT );
       m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, (float)m_YUVFieldPitch + m_iSourceWidth, (float)m_iSourceHeight*0.5f, 0, 1.0f );
 
-      m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)m_YFieldPitch + 0.5f, (float)m_iSourceHeight*0.5f + 0.5f );
-      m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD1, (float)m_UVFieldPitch + 0.5f, (float)m_iSourceHeight*0.25f + 0.5f - CHROMAOFFSET );
-      m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD2, (float)m_UVFieldPitch + 0.5f, (float)m_iSourceHeight*0.25f + 0.5f - CHROMAOFFSET );
+      m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)m_YFieldPitch, (float)m_iSourceHeight*0.5f );
+      m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD1, (float)m_UVFieldPitch + CHROMAOFFSET_HORIZ, (float)m_iSourceHeight*0.25f - CHROMAOFFSET_VERT );
+      m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD2, (float)m_UVFieldPitch + CHROMAOFFSET_HORIZ, (float)m_iSourceHeight*0.25f - CHROMAOFFSET_VERT );
       m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, (float)m_YUVFieldPitch, (float)m_iSourceHeight*0.5f, 0, 1.0f );
     }
     else
     {
-      m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, 0.5f, 0.5f );
-      m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD1, 0.5f, 0.5f );
-      m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD2, 0.5f, 0.5f );
+      m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, 0.0f, 0.0f );
+      m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD1, 0.0f + CHROMAOFFSET_HORIZ, 0.0f );
+      m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD2, 0.0f + CHROMAOFFSET_HORIZ, 0.0f );
       m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, 0.0f, 0.0f, 0, 1.0f );
 
-      m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)m_iSourceWidth + 0.5f, 0.5f );
-      m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD1, (float)m_iSourceWidth*0.5f + 0.5f, 0.5f );
-      m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD2, (float)m_iSourceWidth*0.5f + 0.5f, 0.5f );
+      m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)m_iSourceWidth, 0.0f );
+      m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD1, (float)m_iSourceWidth*0.5f + CHROMAOFFSET_HORIZ, 0.0f );
+      m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD2, (float)m_iSourceWidth*0.5f + CHROMAOFFSET_HORIZ, 0.0f );
       m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, (float)m_iSourceWidth, 0.0f, 0, 1.0f );
 
-      m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)m_iSourceWidth + 0.5f, (float)m_iSourceHeight + 0.5f );
-      m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD1, (float)m_iSourceWidth*0.5f + 0.5f, (float)m_iSourceHeight*0.5f + 0.5f );
-      m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD2, (float)m_iSourceWidth*0.5f + 0.5f, (float)m_iSourceHeight*0.5f + 0.5f );
+      m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)m_iSourceWidth, (float)m_iSourceHeight );
+      m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD1, (float)m_iSourceWidth*0.5f + CHROMAOFFSET_HORIZ, (float)m_iSourceHeight*0.5f );
+      m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD2, (float)m_iSourceWidth*0.5f + CHROMAOFFSET_HORIZ, (float)m_iSourceHeight*0.5f );
       m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, (float)m_iSourceWidth, (float)m_iSourceHeight, 0, 1.0f );
 
-      m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, 0.5f, (float)m_iSourceHeight + 0.5f );
-      m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD1, 0.5f, (float)m_iSourceHeight*0.5f + 0.5f );
-      m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD2, 0.5f, (float)m_iSourceHeight*0.5f + 0.5f );
+      m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, 0.0f, (float)m_iSourceHeight );
+      m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD1, 0.0f + CHROMAOFFSET_HORIZ, (float)m_iSourceHeight*0.5f );
+      m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD2, 0.0f + CHROMAOFFSET_HORIZ, (float)m_iSourceHeight*0.5f );
       m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, 0.0f, (float)m_iSourceHeight, 0, 1.0f );
     }
     m_pD3DDevice->End();
+
+    m_pD3DDevice->SetScreenSpaceOffset(0.0f, 0.0f);
 
     m_pD3DDevice->SetTexture(0, NULL);
     m_pD3DDevice->SetTexture(1, NULL);
@@ -308,6 +321,8 @@ void CRGBRenderer::Render()
     m_pD3DDevice->SetVertexShader( FVF_YUVRGBVERTEX );
     m_pD3DDevice->SetPixelShader( m_hYUVtoRGBLookup );
 
+    m_pD3DDevice->SetScreenSpaceOffset(-0.5f, -0.5f);
+
     // If we are interlacing, we split the render range up into separate quads - one
     // per line, and render from alternating fields into each quad.
     m_pD3DDevice->Begin(D3DPT_QUADLIST);
@@ -337,63 +352,63 @@ void CRGBRenderer::Render()
       for (int i = 0; i < middleSource; i++)
       {
 
-        float sTop = sourceScale * i + rs.top * 0.5f + 0.5f;
+        float sTop = sourceScale * i + rs.top * 0.5f;
         // Render the first field
-        m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)rs.left + 0.5f, sTop );
+        m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)rs.left, sTop );
         m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, (float)rd.left, (float)i*2 + rd.top, 0, 1.0f );
 
-        m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)rs.right + 0.5f, sTop );
+        m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)rs.right, sTop );
         m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, (float)rd.right, (float)i*2 + rd.top, 0, 1.0f );
 
-        m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)rs.right + 0.5f, sTop + sourceScale );
+        m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)rs.right, sTop + sourceScale );
         m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, (float)rd.right, (float)i*2 + 1 + rd.top, 0, 1.0f );
 
-        m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)rs.left + 0.5f, sTop + sourceScale );
+        m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)rs.left, sTop + sourceScale );
         m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, (float)rd.left, (float)i*2 + 1 + rd.top, 0, 1.0f );
 
         // Render the second feild from the right hand side of the texture
-        m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)rs.left + m_YUVFieldPitch + 0.5f, sTop );
+        m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)rs.left + m_YUVFieldPitch, sTop );
         m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, (float)rd.left, (float)i*2 + 1 + rd.top, 0, 1.0f );
 
-        m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)rs.right + m_YUVFieldPitch + 0.5f, sTop );
+        m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)rs.right + m_YUVFieldPitch, sTop );
         m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, (float)rd.right, (float)i*2 + 1 + rd.top, 0, 1.0f );
 
-        m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)rs.right + m_YUVFieldPitch + 0.5f, sTop + sourceScale );
+        m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)rs.right + m_YUVFieldPitch, sTop + sourceScale );
         m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, (float)rd.right, (float)i*2 + 2 + rd.top, 0, 1.0f );
 
-        m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)rs.left + m_YUVFieldPitch + 0.5f, sTop + sourceScale );
+        m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)rs.left + m_YUVFieldPitch, sTop + sourceScale );
         m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, (float)rd.left, (float)i*2 + 2 + rd.top, 0, 1.0f );
 
       }
     }
     else
     {
-      m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)rs.left + 0.5f, (float)rs.top + 0.5f );
+      m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)rs.left, (float)rs.top );
       m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD1, 0.0f, 0.0f );
       m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD2, 0.0f, 0.0f );
       m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD3, 0.0f, 0.0f );
       m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, (float)rd.left, (float)rd.top, 0, 1.0f );
 
-      m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)rs.right + 0.5f, (float)rs.top + 0.5f );
+      m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)rs.right, (float)rs.top );
       m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD1, 1.0f, 0.0f );
       m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD2, 1.0f, 0.0f );
       m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD3, 1.0f, 0.0f );
       m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, (float)rd.right, (float)rd.top, 0, 1.0f );
 
-      m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)rs.right + 0.5f, (float)rs.bottom + 0.5f );
+      m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)rs.right, (float)rs.bottom );
       m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD1, 1.0f, 1.0f );
       m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD2, 1.0f, 1.0f );
       m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD3, 1.0f, 1.0f );
       m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, (float)rd.right, (float)rd.bottom, 0, 1.0f );
 
-      m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)rs.left + 0.5f, (float)rs.bottom + 0.5f );
+      m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)rs.left, (float)rs.bottom );
       m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD1, 0.0f, 1.0f );
       m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD2, 0.0f, 1.0f );
       m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD3, 0.0f, 1.0f );
       m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, (float)rd.left, (float)rd.bottom, 0, 1.0f );
     }
     m_pD3DDevice->End();
-
+    m_pD3DDevice->SetScreenSpaceOffset(0.0f, 0.0f);
 
     m_pD3DDevice->SetTexture(0, NULL);
     m_pD3DDevice->SetTexture(1, NULL);
