@@ -183,6 +183,21 @@ void CSettings::Save() const
   }
 }
 
+bool CSettings::QuickLoad()
+{
+  // load xml file...
+  CStdString strXMLFile = "Q:\\XboxMediaCenter.xml";
+  TiXmlDocument xmlDoc;
+  if ( !xmlDoc.LoadFile( strXMLFile.c_str() ) ) return false;
+  CStdString strValue;
+  TiXmlElement* pRootElement = xmlDoc.RootElement();
+  if (pRootElement) strValue = pRootElement->Value();
+  if ( strValue != "xboxmediacenter") return false;
+  //
+  GetString(pRootElement, "logpath", g_stSettings.m_szlogpath, "");
+  return true;
+  //
+}
 bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
 {
   // load settings file...
@@ -219,6 +234,10 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
   GetInteger(pRootElement, "loglevel", g_stSettings.m_iLogLevel, LOGWARNING, LOGDEBUG, LOGNONE);
   GetBoolean(pRootElement, "haltonfatalerrors", g_stSettings.m_bUnhandledExceptionToFatalError);
   GetBoolean(pRootElement, "showfreemem", g_stSettings.m_bShowFreeMem);
+  //
+  GetString(pRootElement, "logpath", g_stSettings.m_szlogpath, "");
+  //
+  
 
   TiXmlElement* pFileTypeIcons = pRootElement->FirstChildElement("filetypeicons");
   TiXmlNode* pFileType = pFileTypeIcons->FirstChild();
