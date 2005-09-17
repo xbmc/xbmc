@@ -5,7 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
- - 13-09-2005 changed: minor improvement for vertical chroma alignment in HQ Renderer. it was off by half a pixel.
+ - 17-09-2005 changed: minor improvement for vertical chroma alignment in PixelShader Renderers. it was off by half a pixel.
  - 17-09-2005 added: logpath for xbmc.log file! Set the path where the log file should be created. [GeminiServer]
                      If no path is set the Default Q:\ path will be used. Example: <logpath>E:\TDATA\0face008\</logpath>
  - 16-09-2005 fixed: z: is now mapped to the correct drive.
