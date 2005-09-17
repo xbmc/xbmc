@@ -206,6 +206,31 @@ void CRGBRenderer::Render()
     //we wish to offset this by 1/2 pxiel to le left, which in the half rez of UV planes means 1/4th
     #define CHROMAOFFSET_HORIZ 0.25f
 
+
+    //Example of how YUV has it's Luma and Chroma data stored
+    //for progressive video
+    //L L L L L L L L L L
+    //C   C   C   C   C
+    //L L L L L L L L L L
+
+    //Example of how YUV has Chroma subsampled in interlaced displays
+    //FIELD 1               FIELD 2
+    //L L L L L L L L L L   
+    //C   C   C   C   C     
+    //                      L L L L L L L L L L L
+    //
+    //L L L L L L L L L L 
+    //                      C   C   C   C   C   C
+    //                      L L L L L L L L L L L
+    //
+    //L L L L L L L L L L
+    //C   C   C   C   C
+    //                      L L L L L L L L L L L
+    //                      
+    //...........................................
+    //...........................................
+
+
     // Render the image
     m_pD3DDevice->Begin(D3DPT_QUADLIST);
     if( m_iFieldSync != FS_NONE )
