@@ -1326,27 +1326,30 @@ void CXBoxRenderer::RenderLowMem()
   m_pD3DDevice->SetVertexShader( FVF_YV12VERTEX );
   m_pD3DDevice->SetPixelShader( m_hLowMemShader );
 
+  //See RGB renderer for comment on this
+  #define CHROMAOFFSET_HORIZ 0.25f
+
   // Render the image
   m_pD3DDevice->SetScreenSpaceOffset( -0.5f, -0.5f); // fix texel align
   m_pD3DDevice->Begin(D3DPT_QUADLIST);
   m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)rs.left, (float)rs.top );
-  m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD1, (float)rs.left / 2.0f, (float)rs.top / 2.0f);
-  m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD2, (float)rs.left / 2.0f, (float)rs.top / 2.0f );
+  m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD1, (float)rs.left / 2.0f + CHROMAOFFSET_HORIZ, (float)rs.top / 2.0f);
+  m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD2, (float)rs.left / 2.0f + CHROMAOFFSET_HORIZ, (float)rs.top / 2.0f );
   m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, (float)rd.left, (float)rd.top, 0, 1.0f );
 
   m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)rs.right, (float)rs.top );
-  m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD1, (float)rs.right / 2.0f, (float)rs.top / 2.0f );
-  m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD2, (float)rs.right / 2.0f, (float)rs.top / 2.0f );
+  m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD1, (float)rs.right / 2.0f + CHROMAOFFSET_HORIZ, (float)rs.top / 2.0f );
+  m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD2, (float)rs.right / 2.0f + CHROMAOFFSET_HORIZ, (float)rs.top / 2.0f );
   m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, (float)rd.right, (float)rd.top, 0, 1.0f );
 
   m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)rs.right, (float)rs.bottom );
-  m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD1, (float)rs.right / 2.0f, (float)rs.bottom / 2.0f );
-  m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD2, (float)rs.right / 2.0f, (float)rs.bottom / 2.0f );
+  m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD1, (float)rs.right / 2.0f + CHROMAOFFSET_HORIZ, (float)rs.bottom / 2.0f );
+  m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD2, (float)rs.right / 2.0f + CHROMAOFFSET_HORIZ, (float)rs.bottom / 2.0f );
   m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, (float)rd.right, (float)rd.bottom, 0, 1.0f );
 
   m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)rs.left, (float)rs.bottom );
-  m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD1, (float)rs.left / 2.0f, (float)rs.bottom / 2.0f );
-  m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD2, (float)rs.left / 2.0f, (float)rs.bottom / 2.0f );
+  m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD1, (float)rs.left / 2.0f + CHROMAOFFSET_HORIZ, (float)rs.bottom / 2.0f );
+  m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD2, (float)rs.left / 2.0f + CHROMAOFFSET_HORIZ, (float)rs.bottom / 2.0f );
   m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, (float)rd.left, (float)rd.bottom, 0, 1.0f );
   m_pD3DDevice->End();
   m_pD3DDevice->SetScreenSpaceOffset(0, 0);
