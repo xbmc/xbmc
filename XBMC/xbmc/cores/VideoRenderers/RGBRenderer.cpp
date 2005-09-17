@@ -217,18 +217,18 @@ void CRGBRenderer::Render()
     //FIELD 1               FIELD 2
     //L L L L L L L L L L   
     //C   C   C   C   C     
-    //                      L L L L L L L L L L L
+    //                      L L L L L L L L L L
     //
     //L L L L L L L L L L 
-    //                      C   C   C   C   C   C
-    //                      L L L L L L L L L L L
+    //                      C   C   C   C   C
+    //                      L L L L L L L L L L
     //
     //L L L L L L L L L L
     //C   C   C   C   C
-    //                      L L L L L L L L L L L
+    //                      L L L L L L L L L L
     //                      
-    //...........................................
-    //...........................................
+    //.........................................
+    //.........................................
 
 
     // Render the image
