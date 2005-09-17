@@ -201,6 +201,7 @@ public:
   virtual ~CSettings(void);
 
   bool Load(bool& bXboxMediacenter, bool& bSettings);
+  bool QuickLoad();
   void Save() const;
 
   void Clear();
@@ -282,6 +283,7 @@ public:
     float m_fAnalogDeadzoneController;
 
     int m_iLogLevel;
+    char m_szlogpath[128];
     bool m_bDisplayRemoteCodes;
     bool m_bShowFreeMem;
     bool m_bUnhandledExceptionToFatalError;
@@ -297,6 +299,7 @@ public:
 
     char m_strRipPath[MAX_PATH + 1];
     char m_szMusicRecordingDirectory[128];
+   
     bool m_bMyMusicSongInfoInVis;
     bool m_bMyMusicSongThumbInVis;
 
