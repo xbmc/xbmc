@@ -12,9 +12,6 @@
 #define EMULATE_INTTYPES
 #include "ffmpeg\avcodec.h"
 
-#define PACKETTIMEOUT_STILL 40
-#define PACKETTIMEOUT_NORMAL 200
-
 DWORD video_refresh_thread(void *arg);
 
 CDVDPlayerVideo::CDVDPlayerVideo(CDVDDemuxSPU* spu, CDVDClock* pClock) : CThread()
@@ -138,7 +135,10 @@ void CDVDPlayerVideo::Process()
 
   m_bRunningVideo = true;
 
-  int iPacketTimeout = PACKETTIMEOUT_NORMAL;
+  unsigned int iFrameTime = (((__int64)(DVD_TIME_BASE/1000) * m_pDemuxStreamVideo->iFpsScale) / m_pDemuxStreamVideo->iFpsRate);
+  if( iFrameTime == 0 ) iFrameTime = 40; //25 fps as a safety
+
+  bool bDetectedStill = false;
 
   hVideoRefreshThread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)video_refresh_thread, this, 0, NULL);
   SetThreadPriority(hVideoRefreshThread, THREAD_PRIORITY_TIME_CRITICAL);
@@ -148,27 +148,32 @@ void CDVDPlayerVideo::Process()
     while (m_iSpeed == 0 && !m_packetQueue.RecievedAbortRequest()) Sleep(5);
 
 
-    int ret = m_packetQueue.Get(&pPacket, iPacketTimeout, (void**)&dvdstate);
+    int ret = m_packetQueue.Get(&pPacket, bDetectedStill ? iFrameTime : iFrameTime * 4, (void**)&dvdstate);
     if( ret < 0 ) break;
     else if( ret == 0 )
     {
       //Waiting timed out, output last picture
       if( picture.iFlags & DVP_FLAG_ALLOCATED )
-        OutputPicture(&picture, 0);
-
-      //Okey, start rendering at 25fps now instead, we are likely in a stillframe
-      if( iPacketTimeout != PACKETTIMEOUT_STILL )
       {
-        CLog::Log(LOGINFO, "CDVDPlayerVideo - Stillframe detected, switching to forced %d fps", (1000/PACKETTIMEOUT_STILL) );
-        iPacketTimeout = PACKETTIMEOUT_STILL; 
+        //Remove interlaced flag before outputting
+        //no need to output this as if it was interlaced
+        picture.iFlags &= ~DVP_FLAG_INTERLACED;
+        OutputPicture(&picture, 0);
+      }
+
+      //Okey, start rendering at stream fps now instead, we are likely in a stillframe
+      if( !bDetectedStill )
+      {
+        CLog::Log(LOGINFO, "CDVDPlayerVideo - Stillframe detected, switching to forced %d fps", ( 1000 / iFrameTime ));
+        bDetectedStill = true;
       }
       continue;
     }
 
-    if( iPacketTimeout != PACKETTIMEOUT_NORMAL )
+    if( bDetectedStill )
     {
-      CLog::Log(LOGINFO, "CDVDPlayerVideo - Stillframe left, switching to normal playback");
-      iPacketTimeout = PACKETTIMEOUT_NORMAL;
+      CLog::Log(LOGINFO, "CDVDPlayerVideo - Stillframe left, switching to normal playback");      
+      bDetectedStill = false;
     }
 
     EnterCriticalSection(&m_critCodecSection);

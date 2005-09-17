@@ -1039,10 +1039,12 @@ int CDVDPlayer::OnDVDNavResult(void* pData, int iMessage)
         CLog::Log(LOGDEBUG, "DVDNAV_HIGHLIGHT: Highlight button %d\n", iButton);
 
         UpdateOverlayInfo(LIBDVDNAV_BUTTON_NORMAL);
-        if (pStream->IsInMenu())
-        {
-          m_dvdPlayerVideo.UpdateMenuPicture();
-        }
+
+        //This shouldn't be needed.. all still are now also rendered as stream fps
+        //if (pStream->IsInMenu())
+        //{
+        //  m_dvdPlayerVideo.UpdateMenuPicture();
+        //}
       }
       break;
     case DVDNAV_VTS_CHANGE:
@@ -1182,10 +1184,12 @@ bool CDVDPlayer::OnAction(const CAction &action)
 
           // show button pushed overlay
           UpdateOverlayInfo(LIBDVDNAV_BUTTON_CLICKED);
-          if (pStream->IsInMenu())
-          {
-            m_dvdPlayerVideo.UpdateMenuPicture();
-          }
+
+          //not needed anympre
+          //if (pStream->IsInMenu())
+          //{
+          //  m_dvdPlayerVideo.UpdateMenuPicture();
+          //}
           
           m_dvd.iSelectedSPUStream = -1;
 
