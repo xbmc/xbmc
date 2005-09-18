@@ -1,3 +1,6 @@
+2005-09-18 fixed:	GUI calibration labels didnt show in 1080i
+2005-09-18 fixed:	restart xbmc button was in the wrong position
+
 2005-09-07 fixed:	navigation in the Video Info dialog wasnt working properly
 
 2005-08-30 fixed:	playlist indicaors in fullscreen viz media infos coulnt display all numbers (eg 1005/29..)
