@@ -156,7 +156,7 @@
       <type>button</type>
       <id>3116</id>
       <posX>150</posX>
-      <posY>10</posY>
+      <posY>5</posY>
       <width>60</width>
       <height>65</height>
       <textureFocus>sub-shutdown-focus.gif</textureFocus>
