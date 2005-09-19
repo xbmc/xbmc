@@ -973,15 +973,16 @@ void CGUIWindowVideoBase::OnResumeItem(int iItem)
 void CGUIWindowVideoBase::OnPopupMenu(int iItem)
 {
   if (iItem < 0 || iItem >= m_vecItems.Size()) return ;
+  
   // calculate our position
-  int iPosX = 200;
-  int iPosY = 100;
+  int iPosX = 200, iPosY = 100;
   CGUIListControl *pList = (CGUIListControl *)GetControl(CONTROL_LIST);
   if (pList)
   {
     iPosX = pList->GetXPosition() + pList->GetWidth() / 2;
     iPosY = pList->GetYPosition() + pList->GetHeight() / 2;
   }
+
   // mark the item
   bool bSelected = m_vecItems[iItem]->IsSelected(); // item maybe selected (playlistitem)
   m_vecItems[iItem]->Select(true);
@@ -989,53 +990,57 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem)
   // popup the context menu
   CGUIDialogContextMenu *pMenu = (CGUIDialogContextMenu *)m_gWindowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
   if (!pMenu) return ;
+
   // load our menu
   pMenu->Initialize();
 
-  // add the needed buttons
-  int btn_Show_Info     = pMenu->AddButton(13346); // Show Video Information
-  int btn_Resume        = pMenu->AddButton(13381); // Resume Video
-  int btn_Queue         = pMenu->AddButton(13347); // Add to Playlist
-  int btn_PlayWith      = pMenu->AddButton(15213); // Play using alternate player
-  int btn_Now_Playing   = pMenu->AddButton(13350); // Now Playing...
-
-  // hide scan button unless we're in files window
-  int btn_Query = 0;
-  if (GetID() == WINDOW_VIDEOS)
-    btn_Query = pMenu->AddButton(13349); // Query Info For All Files
-
-  int btn_Search_IMDb   = pMenu->AddButton(13348); // Search IMDb...
-
-  // hide delete button unless enabled, or in title window
-  int btn_Delete = 0;
-  if ((GetID() == WINDOW_VIDEOS && g_guiSettings.GetBool("VideoFiles.AllowFileDeletion")) || GetID() == WINDOW_VIDEO_TITLE)
-    btn_Delete = pMenu->AddButton(117);             // Delete
-
-  int btn_Settings      = pMenu->AddButton(5);      // Settings
-
-  // check to see if the Resume Video button is applicable
-  pMenu->EnableButton(btn_Resume, ResumeItemOffset(iItem)>0);
+  int btn_Show_Info     = 0; // Show Video Information
+  int btn_Resume        = 0; // Resume Video
+  int btn_Queue         = 0; // Add to Playlist
+  bool bIsGotoParent = m_vecItems[iItem]->GetLabel() == "..";
+  if (!bIsGotoParent)
+  {
+    // turn off the query info button if we are in playlists view
+    if (GetID() != WINDOW_VIDEO_PLAYLIST || GetID() == WINDOW_VIDEOS && m_vecItems[iItem]->m_bIsFolder)
+      btn_Show_Info = pMenu->AddButton(13346);  // Show Video Information
+    
+    // check to see if the Resume Video button is applicable
+    if(ResumeItemOffset(iItem)>0)               
+      btn_Resume = pMenu->AddButton(13381);     // Resume Video
+    
+    // don't show the add to playlist button in playlist window
+    if (GetID() != WINDOW_VIDEO_PLAYLIST )
+      btn_Queue = pMenu->AddButton(13347);        // Add to Playlist
+  }
 
   // check what players we have
   VECPLAYERCORES vecCores;
   CPlayerCoreFactory::GetPlayers(*m_vecItems[iItem], vecCores);
-  pMenu->EnableButton(btn_PlayWith, vecCores.size() >= 1 );
+  int btn_PlayWith  = 0;
+  if( vecCores.size() >= 1 ) btn_PlayWith = pMenu->AddButton(15213);
 
+  // turn off the now playing button if playlist is empty or if we are in playlist window
+  int btn_Now_Playing = 0;                          
+  if ((GetID() != WINDOW_VIDEO_PLAYLIST ) && (g_playlistPlayer.GetPlaylist(PLAYLIST_VIDEO).size() > 0) )
+    btn_Now_Playing   = pMenu->AddButton(13350);    // Now Playing...
 
-  // turn off the now playing button if playlist is empty
-  if (g_playlistPlayer.GetPlaylist(PLAYLIST_VIDEO).size() <= 0)
-    pMenu->EnableButton(btn_Now_Playing, false);
+  // hide scan button unless we're in files window
+  int btn_Query = 0;
+  if (GetID() == WINDOW_VIDEOS)
+    btn_Query = pMenu->AddButton(13349);            // Query Info For All Files
 
-  bool bIsGotoParent = m_vecItems[iItem]->GetLabel() == "..";
-  if (bIsGotoParent)
+  int btn_Search_IMDb = 0;
+  int btn_Delete = 0;
+  if (!bIsGotoParent)
   {
-    pMenu->EnableButton(btn_Show_Info, false);
-    pMenu->EnableButton(btn_Resume, false);
-    pMenu->EnableButton(btn_Queue, false);
+    btn_Search_IMDb   = pMenu->AddButton(13348);  // Search IMDb...
+    // hide delete button unless enabled, or in title window
+    if ((GetID() == WINDOW_VIDEOS && g_guiSettings.GetBool("VideoFiles.AllowFileDeletion")) || GetID() == WINDOW_VIDEO_TITLE)
+      btn_Delete = pMenu->AddButton(117);             // Delete
   }
-  // turn off the query info button if we are in playlists view
-  if (GetID() == WINDOW_VIDEO_PLAYLIST || GetID() != WINDOW_VIDEOS && m_vecItems[iItem]->m_bIsFolder)
-    pMenu->EnableButton(btn_Show_Info, false);
+
+  // GeminiServer Todo: Set a MasterLock Option to Enable or disable Settings incontext menu!
+  int btn_Settings      = pMenu->AddButton(5);      // Settings
 
   // position it correctly
   pMenu->SetPosition(iPosX - pMenu->GetWidth() / 2, iPosY - pMenu->GetHeight() / 2);
@@ -1071,7 +1076,14 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem)
     }
     else if (btnid == btn_Settings)
     {
-      m_gWindowManager.ActivateWindow(WINDOW_SETTINGS_MYVIDEOS);
+      //MasterPassword
+      int iLockSettings = g_guiSettings.GetInt("Masterlock.LockSettingsFilemanager");
+      if (iLockSettings == 1 || iLockSettings == 3) 
+      {
+        if (g_passwordManager.IsMasterLockLocked(true))
+          m_gWindowManager.ActivateWindow(WINDOW_SETTINGS_MYVIDEOS);
+      }
+      else m_gWindowManager.ActivateWindow(WINDOW_SETTINGS_MYVIDEOS); 
       return;
     }
     else if (btnid == btn_Delete)

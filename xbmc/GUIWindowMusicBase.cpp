@@ -1320,86 +1320,98 @@ void CGUIWindowMusicBase::OnPopupMenu(int iItem)
 {
   if ( iItem < 0 || iItem >= m_vecItems.Size() ) return ;
   // calculate our position
-  int iPosX = 200;
-  int iPosY = 100;
+  int iPosX = 200, iPosY = 100;
   CGUIListControl *pList = (CGUIListControl *)GetControl(CONTROL_LIST);
   if (pList)
   {
     iPosX = pList->GetXPosition() + pList->GetWidth() / 2;
     iPosY = pList->GetYPosition() + pList->GetHeight() / 2;
   }
+  
   // mark the item
   bool bSelected = m_vecItems[iItem]->IsSelected(); // item maybe selected (playlistitem)
   m_vecItems[iItem]->Select(true);
+  
   // popup the context menu
   CGUIDialogContextMenu *pMenu = (CGUIDialogContextMenu *)m_gWindowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
   if (!pMenu) return ;
+  
   // initialize the menu (loaded on demand)
   pMenu->Initialize();
+  
   // add the needed buttons
-  int btn_Info          = pMenu->AddButton(13351);    // Music Information
-  //int btn_Play          = pMenu->AddButton(13358);    // Play Item
-  int btn_Queue         = pMenu->AddButton(13347);    // Queue Item
-  int btn_PlayWith = pMenu->AddButton(15213);         // Play using alternate player
+  int btn_Info      = 0; // Music Information
+  int btn_PlayWith  = 0; // Play using alternate player
+  //int btn_Play    = 0; // Play Item
+  int btn_Queue     = 0; // Queue Item
+  
+  VECPLAYERCORES vecCores;
+  CPlayerCoreFactory::GetPlayers(*m_vecItems[iItem], vecCores);
+  
+  // turn off info/queue/play if the current item is goto parent ..
+  bool bIsGotoParent = m_vecItems[iItem]->GetLabel() == "..";
+  if (!bIsGotoParent)
+  {
+    btn_Info       = pMenu->AddButton(13351);    // Music Information
+    btn_Queue      = pMenu->AddButton(13347);    // Queue Item
+    //btn_PlayWith   = pMenu->AddButton(15213);    // Play using alternate player
+    //int btn_Play = pMenu->AddButton(13358);    // Play Item
 
+  }
+  
+  // check what players we have, if we have multiple display play with option
+  if (!bIsGotoParent && vecCores.size() >= 1) 
+    btn_PlayWith   = pMenu->AddButton(15213);    // Play using alternate player
 
-  int btn_Playlist      = pMenu->AddButton(13350);    // Now Playing...
+  // turn off the now playing button if playlist is empty
+  int btn_Playlist = 0;                           // Now Playing...
+  if (bIsGotoParent || g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).size() > 0)
+  {
+    btn_Playlist = pMenu->AddButton(13350);       // Now Playing...
+  }
+    
 
   int btn_Scan = 0;
   CGUIDialogMusicScan *pScanDlg = (CGUIDialogMusicScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
   if (pScanDlg && pScanDlg->IsRunning())
-    btn_Scan = pMenu->AddButton(13353);               // Stop Scanning
+  {
+    // turn off the Scan button if we're not in files view or a internet stream
+    if (GetID() == WINDOW_MUSIC_FILES || !m_Directory.IsInternetStream() )
+      btn_Scan = pMenu->AddButton(13353);         // Stop Scanning
+  }
   else
-    btn_Scan = pMenu->AddButton(13352);               // Scan Folder to Database
-
-  int btn_Search        = pMenu->AddButton(137);      // Search...
-  int btn_Rip           = pMenu->AddButton(600);      // Rip CD Audio
-  int btn_CDDB          = pMenu->AddButton(16002);    // CDDB lookup
-
+  {
+    if (GetID() == WINDOW_MUSIC_FILES || !m_Directory.IsInternetStream() )
+      btn_Scan = pMenu->AddButton(13352);         // Scan Folder to Database
+  }
+    
+  int btn_Search = pMenu->AddButton(137);   // Search...
   
-  int btn_Delete = 0;
-  CStdString strDirectory;
-  strDirectory.Format("%s\\playlists", g_stSettings.m_szAlbumDirectory);
-  if (strDirectory.Equals(m_Directory.m_strPath) || g_guiSettings.GetBool("MusicFiles.AllowFileDeletion"))
-    btn_Delete = pMenu->AddButton(117);               // Delete
-
-  int btn_Settings      = pMenu->AddButton(5);        // Settings...
-
-
-  VECPLAYERCORES vecCores;
-  CPlayerCoreFactory::GetPlayers(*m_vecItems[iItem], vecCores);
-
-  // turn off info/queue/play if the current item is goto parent ..
-  bool bIsGotoParent = m_vecItems[iItem]->GetLabel() == "..";
-  if (bIsGotoParent)
-  {
-    pMenu->EnableButton(btn_Info, false);
-    pMenu->EnableButton(btn_PlayWith, false);
-    //pMenu->EnableButton(btn_Play, false);
-    pMenu->EnableButton(btn_Queue, false);
-  }
-  else
-  {
-    // check what players we have, if we have multiple display play with option
-    pMenu->EnableButton(btn_PlayWith, vecCores.size() >= 1 );
-  }
-
-  // turn off the now playing button if playlist is empty
-  if (g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).size() <= 0)
-    pMenu->EnableButton(btn_Playlist, false);
-
-  // turn off the Scan button if we're not in files view or a internet stream
-  if (GetID() != WINDOW_MUSIC_FILES || m_Directory.IsInternetStream())
-    pMenu->EnableButton(btn_Scan, false);
-
   // turn off Rip CD Audio button if we don't have a CDDA disk in
-  CCdInfo *pCdInfo = CDetectDVDMedia::GetCdInfo();
-  if (!CDetectDVDMedia::IsDiscInDrive() || !pCdInfo || !pCdInfo->IsAudio(1))
-    pMenu->EnableButton(btn_Rip, false);
-
+  int btn_Rip  = 0; // Rip CD Audio
+  if (CDetectDVDMedia::IsDiscInDrive())     // Let's check if a CD is in Drive!
+  {
+    // GeminiServer those cd's can also include Audio Tracks: CDExtra and MixedMode!
+    CCdInfo *pCdInfo = CDetectDVDMedia::GetCdInfo(); 
+    if ( pCdInfo->IsAudio(1) || pCdInfo->IsCDExtra(1) || pCdInfo->IsMixedMode(1) )
+      btn_Rip = pMenu->AddButton(600);      // Rip CD Audio
+  }
+    
   // turn off CDDB lookup, if the current dir is not CDDA
-  if (!m_Directory.IsCDDA())
-    pMenu->EnableButton(btn_CDDB, false);
+  int btn_CDDB   = 0; // CDDB lookup
+  int btn_Delete = 0; // Delete 
+  if (!bIsGotoParent)
+  {
+    if (!m_Directory.IsCDDA()) btn_CDDB = pMenu->AddButton(16002);    // CDDB lookup
+    
+    CStdString strDirectory;
+    strDirectory.Format("%s\\playlists", g_stSettings.m_szAlbumDirectory);
+    if (strDirectory.Equals(m_Directory.m_strPath) || g_guiSettings.GetBool("MusicFiles.AllowFileDeletion"))
+      btn_Delete = pMenu->AddButton(117);               // Delete
+  }
+
+  // GeminiServer Todo: Set a MasterLock Option to Enable or disable Settings incontext menu!
+  int btn_Settings = pMenu->AddButton(5);    // Settings...
 
   // position it correctly
   pMenu->SetPosition(iPosX - pMenu->GetWidth() / 2, iPosY - pMenu->GetHeight() / 2);
@@ -1458,7 +1470,15 @@ void CGUIWindowMusicBase::OnPopupMenu(int iItem)
     // Settings
     else if (btnid == btn_Settings)
     {
-      m_gWindowManager.ActivateWindow(WINDOW_SETTINGS_MYMUSIC);
+      //MasterPassword
+      int iLockSettings = g_guiSettings.GetInt("Masterlock.LockSettingsFilemanager");
+      if (iLockSettings == 1 || iLockSettings == 3) 
+      {
+        if (g_passwordManager.IsMasterLockLocked(true))
+          m_gWindowManager.ActivateWindow(WINDOW_SETTINGS_MYMUSIC); 
+          
+      }
+      else m_gWindowManager.ActivateWindow(WINDOW_SETTINGS_MYMUSIC); 
       return;
     }
     else if( btnid == btn_PlayWith )
