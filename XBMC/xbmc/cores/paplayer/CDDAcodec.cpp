@@ -33,22 +33,21 @@ CDDACodec::~CDDACodec()
 
 bool CDDACodec::Init(const CStdString &strFile, unsigned int filecache)
 {
-  // we don't use a filereader class here (so no need to respect the filecache var)
-  // as we are always reading from a local cd.
+  m_file.Initialize(filecache);
 
-  if (!m_fileCDDA.Open(strFile))
+  if (!m_file.Open(strFile))
     return false;
 
   //  Calculate total time of the track
-  m_TotalTime=(m_fileCDDA.GetLength()/CDIO_CD_FRAMESIZE_RAW)/CDIO_CD_FRAMES_PER_SEC;
-  m_Bitrate = (int)((m_fileCDDA.GetLength() * 8) / m_TotalTime); 
+  m_TotalTime=(m_file.GetLength()/CDIO_CD_FRAMESIZE_RAW)/CDIO_CD_FRAMES_PER_SEC;
+  m_Bitrate = (int)((m_file.GetLength() * 8) / m_TotalTime); 
   m_TotalTime*=1000; // ms
   return true;
 }
 
 void CDDACodec::DeInit()
 {
-  m_fileCDDA.Close();
+  m_file.Close();
 }
 
 __int64 CDDACodec::Seek(__int64 iSeekTime)
@@ -60,7 +59,7 @@ __int64 CDDACodec::Seek(__int64 iSeekTime)
   lsn_t lsnSeek=iSeekTimeFullSec*CDIO_CD_FRAMES_PER_SEC;
 
   //  ... then seek to its position...
-  int iNewOffset=(int)m_fileCDDA.Seek(lsnSeek*CDIO_CD_FRAMESIZE_RAW, SEEK_SET);
+  int iNewOffset=(int)m_file.Seek(lsnSeek*CDIO_CD_FRAMESIZE_RAW, SEEK_SET);
   m_BufferSize=m_BufferPos=0;
 
   // ... and look if we really got there.
@@ -74,7 +73,7 @@ int CDDACodec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
 
   bool bEof=false;
   //  Reached end of track?
-  if (m_fileCDDA.GetLength()==m_fileCDDA.GetPosition())
+  if (m_file.GetLength()==m_file.GetPosition())
     bEof=true;
 
   //  Do we have to refill our audio buffer?
@@ -86,7 +85,7 @@ int CDDACodec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
     m_BufferPos = 0;
 
     //  Fill our buffer with a chunk of audio data
-    int iAmountRead=m_fileCDDA.Read(m_Buffer+m_BufferSize, MAX_BUFFER_SIZE/2);
+    int iAmountRead=m_file.Read(m_Buffer+m_BufferSize, MAX_BUFFER_SIZE/2);
     if (iAmountRead<=0)
       return READ_ERROR;
 

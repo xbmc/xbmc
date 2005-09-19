@@ -9,6 +9,7 @@ CFileReader::CFileReader()
 {
   m_bufferedDataPos = 0;
   m_readError = false;
+  m_chunkBuffer = NULL;
 }
 
 CFileReader::~CFileReader()
@@ -21,18 +22,31 @@ void CFileReader::Initialize(unsigned int bufferSize)
   m_ringBuffer.Create(bufferSize + DATA_TO_KEEP_BEHIND, DATA_TO_KEEP_BEHIND);
 }
 
-bool CFileReader::Open(const CStdString &strFile)
+bool CFileReader::Open(const CStdString &strFile, bool autoBuffer)
 {
   Close();
   if (!m_file.Open(strFile))
     return false;
 
+  if (!(m_chunk_size = m_file.GetChunkSize()))
+    m_chunk_size = 16384;
+  if (m_chunk_size > m_ringBuffer.GetMaxWriteSize())
+    Initialize(8 * m_chunk_size); //re-initialize with bigger buffersize
+  m_chunkBuffer = new char[m_chunk_size];
+
   m_bufferedDataPos = 0;
   m_ringBuffer.Clear();
   m_readError = false;
-  // start our thread process to start buffering the file
-  if (ThreadHandle() == NULL)
-    Create();
+  if (autoBuffer)
+  {
+    StartBuffering();
+  }
+  else
+  {
+    //read one chunk to start with
+    if (BufferChunk() == -1)
+      return false;
+  }
   return true;
 }
 
@@ -42,6 +56,13 @@ void CFileReader::Close()
   StopThread();
   // and close the file
   m_file.Close();
+  if (m_chunkBuffer) SAFE_DELETE_ARRAY(m_chunkBuffer);
+}
+
+void CFileReader::StartBuffering()
+{
+  if (ThreadHandle() == NULL)
+    Create();
 }
 
 __int64 CFileReader::GetPosition()
@@ -90,14 +111,23 @@ int CFileReader::Read(void *out, __int64 size)
       }
     }
     else
-    { // nothing to copy yet - sleep while we wait for our reader thread to read the data in.
-      // check we don't reach EOF and loop forever
-      if (m_bufferedDataPos == m_file.GetLength())
-      { // end of file reached
-        return (int)(size - sizeleft);
+    { // nothing to copy yet
+      //if not autobuffering just buffer a chunk
+      if (!ThreadHandle())
+      {
+        BufferChunk();
       }
-      Sleep(1);
-      sleeptime++;
+      else
+      {
+        //- sleep while we wait for our reader thread to read the data in.
+        // check we don't reach EOF and loop forever
+        if (m_bufferedDataPos == m_file.GetLength())
+        { // end of file reached
+          return (int)(size - sizeleft);
+        }
+        Sleep(1);
+        sleeptime++;
+      }
     }
   }
   return (int)size;
@@ -105,7 +135,7 @@ int CFileReader::Read(void *out, __int64 size)
 
 // Seek.  We must seek to the appropriate position and update our buffers (flushing them
 // if necessary).
-int CFileReader::Seek(__int64 pos, int whence)
+__int64 CFileReader::Seek(__int64 pos, int whence)
 {
   CSingleLock lock(m_fileLock);
   // calculate our new position
@@ -123,44 +153,53 @@ int CFileReader::Seek(__int64 pos, int whence)
   else
   { // no valid data exists - flush our buffer and seek
     m_ringBuffer.Clear();
-    m_bufferedDataPos = newBufferedDataPos;
-    m_file.Seek(m_bufferedDataPos, SEEK_SET);
+    m_bufferedDataPos = m_file.Seek(newBufferedDataPos, SEEK_SET);
   }
   return (int)m_bufferedDataPos;
 }
 
-void CFileReader::Process()
+int CFileReader::BufferChunk()
 {
-  while (!m_bStop)
+  // calculate whether we have more space to read data in
+  if (m_chunk_size <= m_ringBuffer.GetMaxWriteSize())
   {
-    // calculate whether we have more space to read data in
-    if (m_ringBuffer.GetMaxWriteSize())
+    // grab a file lock
+    CSingleLock lock(m_fileLock);
+    unsigned int amountToRead = m_chunk_size;
+    if (amountToRead > m_file.GetLength() - m_file.GetPosition())
+      amountToRead = (unsigned int)(m_file.GetLength() - m_file.GetPosition());
+    // check the range of our valid data
+    if (amountToRead)
     {
-      // grab a file lock
-      CSingleLock lock(m_fileLock);
-      unsigned int amountToRead = min(chunk_size, m_ringBuffer.GetMaxWriteSize());
-      if (amountToRead > m_file.GetLength() - m_file.GetPosition())
-        amountToRead = (unsigned int)(m_file.GetLength() - m_file.GetPosition());
-      // check the range of our valid data
-      if (amountToRead)
+      unsigned int amountRead = m_file.Read(m_chunkBuffer, amountToRead);
+      if (amountRead > 0)
       {
-        unsigned int amountRead = m_file.Read(m_chunkBuffer, amountToRead);
-        if (amountRead > 0)
+        if (!m_ringBuffer.WriteBinary(m_chunkBuffer, amountRead))
         {
-          if (!m_ringBuffer.WriteBinary(m_chunkBuffer, amountRead))
-          {
-            throw 1;  // should never get here!
-          }
-          continue; // read some more immediately
+          throw 1;  // should never get here!
         }
-        else if (m_file.GetPosition() != m_file.GetLength())
-        { // uh oh!
-          m_readError = true;
-          break;
-        }
+        return 1; // read some more immediately
+      }
+      else if (m_file.GetPosition() != m_file.GetLength())
+      { // uh oh!
+        m_readError = true;
+        return -1;
       }
     }
-    // no space to read data into right now, or at end of file - sleep
-    Sleep(1);
+  }
+  return 0;
+}
+
+void CFileReader::Process()
+{
+  int rc;
+  while (!m_bStop)
+  {
+    rc = BufferChunk();
+    if (rc == -1)
+      break; //read error
+    if (rc == 0)
+      // no space to read data into right now, or at end of file - sleep
+      Sleep(1);
   }
 }
