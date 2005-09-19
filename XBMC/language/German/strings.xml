@@ -897,7 +897,7 @@
   <string><id>13400</id><value>Crossfade bei Songs eines Albums</value></string>
 
   <string><id>14000</id><value>Stapeln: Aus</value></string>
-  <string><id>14001</id><value>Stapeln: Einfach</value></string>
+  <string><id>14001</id><value>Stapeln: An</value></string>
   <string><id>14002</id><value>Stapeln: Fuzzy</value></string>
   <string><id>14003</id><value>Playlist wird heruntergeladen...</value></string>
   <string><id>14004</id><value>Liste mit Streams wird heruntergeladen...</value></string>

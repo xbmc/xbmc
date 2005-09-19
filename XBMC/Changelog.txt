@@ -5,6 +5,11 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+
+
+ - 19-09-2005 changed: context menu Audio & Video & Picture -> to avoid large context menu,  grayed out context menu items are now removed! They will displayed if required!
+ - 19-09-2005 added: MasterPassword: Audio & Video & Picture -> Context menu - Settings will now also check for MasterPassword if Lock Settings is enabled! [GeminiServer]
+ - 19-09-2005 fixed: Audio Context menu - Rip CD Audio: AudioCD Detection was brocken/wrong. Also add. CDExtra and MixedMode detection to enable Rip CD Audio! [GeminiServer]
  - 17-09-2005 fixed: dvdmenu jumps when selection is changed
  - 17-09-2005 changed: minor improvement for vertical chroma alignment in PixelShader Renderers. it was off by half a pixel.
  - 17-09-2005 added: logpath for xbmc.log file! Set the path where the log file should be created. [GeminiServer]
