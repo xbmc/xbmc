@@ -1,4 +1,5 @@
 #include "../../stdafx.h"
+#include "../../XBAudioConfig.h"
 #include "CodecFactory.h"
 #include "MP3Codec.h"
 #include "APECodec.h"
@@ -12,6 +13,10 @@
 #include "WAVPackCodec.h"
 #include "ModuleCodec.h"
 #include "NSFCodec.h"
+#include "DTSCodec.h"
+#include "DTSCDDACodec.h"
+#include "AC3Codec.h"
+#include "AC3CDDACodec.h"
 
 ICodec* CodecFactory::CreateCodec(const CStdString& strFileType)
 {
@@ -31,6 +36,10 @@ ICodec* CodecFactory::CreateCodec(const CStdString& strFileType)
     return new FLACCodec();
   else if (strFileType.Equals("wav"))
     return new WAVCodec();
+  else if (strFileType.Equals("dts") && ((g_guiSettings.GetInt("AudioOutput.Mode") == AUDIO_ANALOG) || (!g_audioConfig.GetDTSEnabled())))
+    return new DTSCodec();
+  else if (strFileType.Equals("ac3") && ((g_guiSettings.GetInt("AudioOutput.Mode") == AUDIO_ANALOG) || (!g_audioConfig.GetAC3Enabled())))
+    return new AC3Codec();
   else if (strFileType.Equals("m4a") || strFileType.Equals("aac"))
     return new AACCodec();
   else if (strFileType.Equals("wv"))
@@ -41,4 +50,49 @@ ICodec* CodecFactory::CreateCodec(const CStdString& strFileType)
     return new NSFCodec();
 
   return NULL;
+}
+
+ICodec* CodecFactory::CreateCodecDemux(const CStdString& strFile, unsigned int filecache)
+{
+  CURL urlFile(strFile);
+  if (urlFile.GetFileType().Equals("wav"))
+  {
+    //lets see what it contains...
+    //this kinda sucks 'cause if it's a plain wav file the file
+    //will be opened, sniffed and closed 2 times before it is opened *again* for wav
+    //would be better if the papcodecs could work with bitstreams instead of filenames.
+    ICodec* codec = new DTSCodec();
+    if (codec->Init(strFile, filecache))
+    {
+      return codec;
+    }
+    delete codec;
+    codec = new AC3Codec();
+    if (codec->Init(strFile, filecache))
+    {
+      return codec;
+    }
+    delete codec;
+  }
+  if (urlFile.GetFileType().Equals("cdda"))
+  {
+    //lets see what it contains...
+    //this kinda sucks 'cause if it's plain cdda the file
+    //will be opened, sniffed and closed 2 times before it is opened *again* for cdda
+    //would be better if the papcodecs could work with bitstreams instead of filenames.
+    ICodec* codec = new DTSCDDACodec();
+    if (codec->Init(strFile, filecache))
+    {
+      return codec;
+    }
+    delete codec;
+    codec = new AC3CDDACodec();
+    if (codec->Init(strFile, filecache))
+    {
+      return codec;
+    }
+    delete codec;
+  }
+  //default
+  return CreateCodec(urlFile.GetFileType());
 }
