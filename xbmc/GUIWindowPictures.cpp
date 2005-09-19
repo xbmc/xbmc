@@ -969,8 +969,7 @@ bool CGUIWindowPictures::GetDirectory(const CStdString &strDirectory, CFileItemL
 void CGUIWindowPictures::OnPopupMenu(int iItem)
 {
   // calculate our position
-  int iPosX = 200;
-  int iPosY = 100;
+  int iPosX = 200, iPosY = 100;
   const CGUIControl *pList = GetControl(CONTROL_LIST);
   if (pList)
   {
@@ -1007,16 +1006,20 @@ void CGUIWindowPictures::OnPopupMenu(int iItem)
     // load our menu
     pMenu->Initialize();
     // add the needed buttons
-    int btn_SlideShow = pMenu->AddButton(13317);    // View Slideshow
-    int btn_RecSlideShow = pMenu->AddButton(13318); // Recursive Slideshow
-    int btn_Thumbs = pMenu->AddButton(13315);       // Create Thumbnails
+    
+    int btn_Thumbs       = 0; // Create Thumbnails
+    int btn_SlideShow    = 0; // View Slideshow
+    int btn_RecSlideShow = 0; // Recursive Slideshow
 
     // this could be done like the delete button too
-    if (m_vecItems.GetFileCount() == 0)
-      pMenu->EnableButton(btn_SlideShow, false);
-    if (m_thumbLoader.IsLoading())
-      pMenu->EnableButton(btn_Thumbs, false);
-
+    if (m_vecItems.GetFileCount() != 0) 
+      btn_SlideShow = pMenu->AddButton(13317);      // View Slideshow
+    
+    btn_RecSlideShow = pMenu->AddButton(13318);     // Recursive Slideshow
+    
+    if (!m_thumbLoader.IsLoading()) 
+      btn_Thumbs = pMenu->AddButton(13315);         // Create Thumbnails
+    
     int btn_Delete = 0;
     if (g_guiSettings.GetBool("Pictures.AllowFileDeletion"))
       btn_Delete = pMenu->AddButton(117);           // Delete
@@ -1051,7 +1054,14 @@ void CGUIWindowPictures::OnPopupMenu(int iItem)
       }
       else if (btnid == btn_Settings)
       {
-        m_gWindowManager.ActivateWindow(WINDOW_SETTINGS_MYPICTURES);
+        //MasterPassword
+        int iLockSettings = g_guiSettings.GetInt("Masterlock.LockSettingsFilemanager");
+        if (iLockSettings == 1 || iLockSettings == 3) 
+        {
+          if (g_passwordManager.IsMasterLockLocked(true))
+            m_gWindowManager.ActivateWindow(WINDOW_SETTINGS_MYPICTURES);
+        }
+        else m_gWindowManager.ActivateWindow(WINDOW_SETTINGS_MYPICTURES); 
         return;
       }
     }
