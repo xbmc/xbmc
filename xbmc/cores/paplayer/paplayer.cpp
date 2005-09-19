@@ -65,7 +65,9 @@ bool PAPlayer::OpenFile(const CFileItem& file, __int64 iStartTime)
 {
   if (m_currentlyCrossFading) CloseFile(); //user seems to be in a hurry
 
-  if ((m_crossFading = g_guiSettings.GetInt("MusicPlayer.CrossFade")) && IsPlaying())
+  m_crossFading = g_guiSettings.GetInt("MusicPlayer.CrossFade");
+  if (file.IsCDDA()) m_crossFading = 0; //no crossfading for cdda, cd-reading goes mad
+  if (m_crossFading && IsPlaying())
   {
     //do a short crossfade on trackskip
     //set to max 2 seconds for these prev/next transitions
@@ -74,8 +76,11 @@ bool PAPlayer::OpenFile(const CFileItem& file, __int64 iStartTime)
     bool result = QueueNextFile(file, false);
     if (result)
     {
-      //force to fade to next track immediately
-      m_forceFadeToNext = true;
+      //crossfading value may be update by QueueNextFile when nr of channels changed
+      if (!m_crossFading) // swap to next track
+        m_decoder[m_currentDecoder].SetStatus(STATUS_ENDED);
+      else //force to fade to next track immediately
+        m_forceFadeToNext = true;
     }
     return result;
   }
@@ -132,10 +137,15 @@ void PAPlayer::UpdateCrossFadingTime(const CFileItem& file)
   {
     if (
       m_crossFading &&
-      !g_guiSettings.GetBool("MusicPlayer.CrossFadeAlbumTracks") &&
-      (m_currentFile.m_musicInfoTag.GetAlbum() != "") &&
-      (m_currentFile.m_musicInfoTag.GetAlbum() == file.m_musicInfoTag.GetAlbum()) &&
-      (m_currentFile.m_musicInfoTag.GetTrackNumber() == file.m_musicInfoTag.GetTrackNumber() - 1)
+      (
+        file.IsCDDA() ||
+        (
+          !g_guiSettings.GetBool("MusicPlayer.CrossFadeAlbumTracks") &&
+          (m_currentFile.m_musicInfoTag.GetAlbum() != "") &&
+          (m_currentFile.m_musicInfoTag.GetAlbum() == file.m_musicInfoTag.GetAlbum()) &&
+          (m_currentFile.m_musicInfoTag.GetTrackNumber() == file.m_musicInfoTag.GetTrackNumber() - 1)
+        )
+      )
     )
     {
       m_crossFading = 0;
@@ -181,6 +191,10 @@ bool PAPlayer::QueueNextFile(const CFileItem &file, bool checkCrossFading)
       m_decoder[decoder].Destroy();
       CLog::Log(LOGERROR, "PAPlayer::Unable to create audio stream");
     }
+  }
+  else
+  { // no crossfading if nr of channels is not the same
+    m_crossFading = 0;
   }
 
   m_nextFile = file;
@@ -260,8 +274,10 @@ bool PAPlayer::CreateStream(int num, int channels, int samplerate, int bitspersa
     m_packet[num][i].packet = m_packet[num][i - 1].packet + PACKET_SIZE;
 
   // create our resampler
-  m_resampler[num].InitConverter(samplerate, bitspersample, channels, 48000, 16, PACKET_SIZE);
-  samplerate = 48000;
+  // upsample to 48000, only do this for sources with 1 or 2 channels
+  int targetSR = channels>2?samplerate:48000;
+  m_resampler[num].InitConverter(samplerate, bitspersample, channels, targetSR, 16, PACKET_SIZE);
+  samplerate = targetSR;
   bitspersample = 16;
 
   // our wave format
@@ -904,6 +920,8 @@ bool PAPlayer::HandlesType(const CStdString &type)
     delete codec;   
     return true;
   }
+  if (codec)
+    delete codec;
 
   return false;
 }

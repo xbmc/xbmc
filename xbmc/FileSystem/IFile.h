@@ -34,6 +34,7 @@ public:
   virtual bool CanSeek() { return true; }
   virtual char GetDirectorySeperator() { return '\\'; }
   virtual void Flush() { }
+  virtual int GetChunkSize() { return 16384; }
 
   virtual bool Delete(const char* strFileName) { return false; }
   virtual bool Rename(const char* strFileName, const char* strNewFileName) { return false; }
