@@ -6,6 +6,7 @@
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
 
+ - 19-09-2005 added: Milkdrop now supports stereo 3d mode.
  - 19-09-2005 added: AC3-wav, AC3-cdda, DTS-wav and DTS-cdda playback to paplayer.
                      NOTE: DTS-wav and DTS-cdda will always output as AC3.
  - 19-09-2005 changed: disabled upsampling for multichannel audio (>2).
