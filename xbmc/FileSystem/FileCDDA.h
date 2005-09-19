@@ -20,6 +20,7 @@ public:
   virtual __int64 GetPosition();
   virtual __int64 GetLength();
   virtual char GetDirectorySeperator() { return '/'; }
+  virtual int GetChunkSize();
 
 protected:
   bool IsValidFile(const CURL& url);

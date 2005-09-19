@@ -2643,6 +2643,18 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\cores\paplayer\AACcodec.h">
 				</File>
 				<File
+					RelativePath=".\xbmc\cores\paplayer\AC3CDDACodec.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\paplayer\AC3CDDACodec.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\paplayer\AC3Codec.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\paplayer\AC3Codec.h">
+				</File>
+				<File
 					RelativePath=".\xbmc\cores\paplayer\APEcodec.cpp">
 				</File>
 				<File
@@ -2665,6 +2677,18 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				</File>
 				<File
 					RelativePath=".\xbmc\cores\paplayer\CodecFactory.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\paplayer\DTSCDDACodec.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\paplayer\DTSCDDACodec.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\paplayer\DTSCodec.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\paplayer\DTSCodec.h">
 				</File>
 				<File
 					RelativePath=".\xbmc\cores\paplayer\FileReader.cpp">

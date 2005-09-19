@@ -9,17 +9,17 @@
 // using a separate thread.
 class CFileReader : public CThread
 {
-  const static int chunk_size = 16384;
 public:
   CFileReader();
   virtual ~CFileReader();
 
   void Initialize(unsigned int bufferSize);
-  virtual bool Open(const CStdString &strFile);
+  virtual bool Open(const CStdString &strFile, bool autoBuffer = true);
   virtual void Close();
+  virtual void StartBuffering();
   virtual int Read(void *out, __int64 size);
   virtual __int64 GetPosition();
-  virtual int Seek(__int64 pos, int whence = SEEK_SET);
+  virtual __int64 Seek(__int64 pos, int whence = SEEK_SET);
   virtual __int64 GetLength();
 
 protected:
@@ -29,6 +29,8 @@ protected:
   virtual void OnExit() {};
 
 private:
+  int BufferChunk();
+
   CFile   m_file;
   __int64 m_bufferedDataPos;      // the position our client thinks we're at
 
@@ -36,6 +38,7 @@ private:
 
   CCriticalSection m_fileLock;
   
-  char m_chunkBuffer[chunk_size];   // buffer that we read chunks of our file into.
-  CRingHoldBuffer m_ringBuffer;     // ring buffer that holds our read-in data
+  unsigned int m_chunk_size;
+  char* m_chunkBuffer;          // buffer that we read chunks of our file into.
+  CRingHoldBuffer m_ringBuffer; // ring buffer that holds our read-in data
 };

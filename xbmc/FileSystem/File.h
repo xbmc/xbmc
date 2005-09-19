@@ -35,6 +35,7 @@ public:
   __int64 GetPosition();
   __int64 GetLength();
   void Close();
+  int GetChunkSize() {if (m_pFile) return m_pFile->GetChunkSize(); return 0;}
 
 
   static bool Exists(const CStdString& strFileName);
