@@ -3,8 +3,6 @@
 #include "../../FLACtag.h"
 
 
-#define FLAC_DLL "Q:\\system\\players\\PAPlayer\\libFlac.dll"
-
 FLACCodec::FLACCodec()
 {
   m_SampleRate = 0;
@@ -20,23 +18,18 @@ FLACCodec::FLACCodec()
   m_BufferSize=0; 
   m_MaxFrameSize=0;
 
-  // dll stuff
-  ZeroMemory(&m_dll, sizeof(FLACdll));
-  m_bDllLoaded = false;
 }
 
 FLACCodec::~FLACCodec()
 {
   DeInit();
-  if (m_bDllLoaded)
-    CSectionLoader::UnloadDLL(FLAC_DLL);
 }
 
 bool FLACCodec::Init(const CStdString &strFile, unsigned int filecache)
 {
   m_file.Initialize(filecache);
 
-  if (!LoadDLL())
+  if (!m_dll.Load())
     return false;
 
   if (!m_file.Open(strFile))
@@ -168,95 +161,9 @@ int FLACCodec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
   return READ_SUCCESS;
 }
 
-bool FLACCodec::LoadDLL()
-{
-  if (m_bDllLoaded)
-    return true;
-
-  DllLoader* pDll=CSectionLoader::LoadDLL(FLAC_DLL);
-
-  if (!pDll)
-  {
-    CLog::Log(LOGERROR, "FLACCodec: Unable to load dll %s", FLAC_DLL);
-    return false;
-  }
-
-  pDll->ResolveExport("FLAC__seekable_stream_decoder_new", (void**)&m_dll.FLAC__seekable_stream_decoder_new);
-  pDll->ResolveExport("FLAC__seekable_stream_decoder_delete", (void**)&m_dll.FLAC__seekable_stream_decoder_delete);
-
-  pDll->ResolveExport("FLAC__seekable_stream_decoder_set_md5_checking", (void**)&m_dll.FLAC__seekable_stream_decoder_set_md5_checking);
-  pDll->ResolveExport("FLAC__seekable_stream_decoder_set_read_callback", (void**)&m_dll.FLAC__seekable_stream_decoder_set_read_callback);
-  pDll->ResolveExport("FLAC__seekable_stream_decoder_set_seek_callback", (void**)&m_dll.FLAC__seekable_stream_decoder_set_seek_callback);
-  pDll->ResolveExport("FLAC__seekable_stream_decoder_set_tell_callback", (void**)&m_dll.FLAC__seekable_stream_decoder_set_tell_callback);
-  pDll->ResolveExport("FLAC__seekable_stream_decoder_set_length_callback", (void**)&m_dll.FLAC__seekable_stream_decoder_set_length_callback);
-  pDll->ResolveExport("FLAC__seekable_stream_decoder_set_eof_callback", (void**)&m_dll.FLAC__seekable_stream_decoder_set_eof_callback);
-  pDll->ResolveExport("FLAC__seekable_stream_decoder_set_write_callback", (void**)&m_dll.FLAC__seekable_stream_decoder_set_write_callback);
-  pDll->ResolveExport("FLAC__seekable_stream_decoder_set_metadata_callback", (void**)&m_dll.FLAC__seekable_stream_decoder_set_metadata_callback);
-  pDll->ResolveExport("FLAC__seekable_stream_decoder_set_error_callback", (void**)&m_dll.FLAC__seekable_stream_decoder_set_error_callback);
-  pDll->ResolveExport("FLAC__seekable_stream_decoder_set_client_data", (void**)&m_dll.FLAC__seekable_stream_decoder_set_client_data);
-
-  pDll->ResolveExport("FLAC__seekable_stream_decoder_set_metadata_respond", (void**)&m_dll.FLAC__seekable_stream_decoder_set_metadata_respond);
-  pDll->ResolveExport("FLAC__seekable_stream_decoder_set_metadata_respond_application", (void**)&m_dll.FLAC__seekable_stream_decoder_set_metadata_respond_application);
-  pDll->ResolveExport("FLAC__seekable_stream_decoder_set_metadata_respond_all", (void**)&m_dll.FLAC__seekable_stream_decoder_set_metadata_respond_all);
-  pDll->ResolveExport("FLAC__seekable_stream_decoder_set_metadata_ignore", (void**)&m_dll.FLAC__seekable_stream_decoder_set_metadata_ignore);
-  pDll->ResolveExport("FLAC__seekable_stream_decoder_set_metadata_ignore_application", (void**)&m_dll.FLAC__seekable_stream_decoder_set_metadata_ignore_application);
-  pDll->ResolveExport("FLAC__seekable_stream_decoder_set_metadata_ignore_all", (void**)&m_dll.FLAC__seekable_stream_decoder_set_metadata_ignore_all);
-
-  pDll->ResolveExport("FLAC__seekable_stream_decoder_get_state", (void**)&m_dll.FLAC__seekable_stream_decoder_get_state);
-  pDll->ResolveExport("FLAC__seekable_stream_decoder_get_stream_decoder_state", (void**)&m_dll.FLAC__seekable_stream_decoder_get_stream_decoder_state);
-  pDll->ResolveExport("FLAC__seekable_stream_decoder_get_resolved_state_string", (void**)&m_dll.FLAC__seekable_stream_decoder_get_resolved_state_string);
-  pDll->ResolveExport("FLAC__seekable_stream_decoder_get_md5_checking", (void**)&m_dll.FLAC__seekable_stream_decoder_get_md5_checking);
-  pDll->ResolveExport("FLAC__seekable_stream_decoder_get_channels", (void**)&m_dll.FLAC__seekable_stream_decoder_get_channels);
-  pDll->ResolveExport("FLAC__seekable_stream_decoder_get_channel_assignment", (void**)&m_dll.FLAC__seekable_stream_decoder_get_channel_assignment);
-  pDll->ResolveExport("FLAC__seekable_stream_decoder_get_bits_per_sample", (void**)&m_dll.FLAC__seekable_stream_decoder_get_bits_per_sample);
-  pDll->ResolveExport("FLAC__seekable_stream_decoder_get_sample_rate", (void**)&m_dll.FLAC__seekable_stream_decoder_get_sample_rate);
-  pDll->ResolveExport("FLAC__seekable_stream_decoder_get_blocksize", (void**)&m_dll.FLAC__seekable_stream_decoder_get_blocksize);
-  pDll->ResolveExport("FLAC__seekable_stream_decoder_get_decode_position", (void**)&m_dll.FLAC__seekable_stream_decoder_get_decode_position);
-
-  pDll->ResolveExport("FLAC__seekable_stream_decoder_init", (void**)&m_dll.FLAC__seekable_stream_decoder_init);
-  pDll->ResolveExport("FLAC__seekable_stream_decoder_finish", (void**)&m_dll.FLAC__seekable_stream_decoder_finish);
-  pDll->ResolveExport("FLAC__seekable_stream_decoder_flush", (void**)&m_dll.FLAC__seekable_stream_decoder_flush);
-  pDll->ResolveExport("FLAC__seekable_stream_decoder_reset", (void**)&m_dll.FLAC__seekable_stream_decoder_reset);
-
-  pDll->ResolveExport("FLAC__seekable_stream_decoder_process_single", (void**)&m_dll.FLAC__seekable_stream_decoder_process_single);
-  pDll->ResolveExport("FLAC__seekable_stream_decoder_process_until_end_of_metadata", (void**)&m_dll.FLAC__seekable_stream_decoder_process_until_end_of_metadata);
-  pDll->ResolveExport("FLAC__seekable_stream_decoder_process_until_end_of_stream", (void**)&m_dll.FLAC__seekable_stream_decoder_process_until_end_of_stream);
-  pDll->ResolveExport("FLAC__seekable_stream_decoder_skip_single_frame", (void**)&m_dll.FLAC__seekable_stream_decoder_skip_single_frame);
-  pDll->ResolveExport("FLAC__seekable_stream_decoder_seek_absolute", (void**)&m_dll.FLAC__seekable_stream_decoder_seek_absolute);
-
-  // Check resolves
-  if (!m_dll.FLAC__seekable_stream_decoder_new || !m_dll.FLAC__seekable_stream_decoder_delete || 
-      !m_dll.FLAC__seekable_stream_decoder_set_md5_checking || !m_dll.FLAC__seekable_stream_decoder_set_read_callback || 
-      !m_dll.FLAC__seekable_stream_decoder_set_seek_callback || !m_dll.FLAC__seekable_stream_decoder_set_tell_callback || 
-      !m_dll.FLAC__seekable_stream_decoder_set_length_callback || !m_dll.FLAC__seekable_stream_decoder_set_eof_callback || 
-      !m_dll.FLAC__seekable_stream_decoder_set_write_callback || !m_dll.FLAC__seekable_stream_decoder_set_metadata_callback || 
-      !m_dll.FLAC__seekable_stream_decoder_set_error_callback || !m_dll.FLAC__seekable_stream_decoder_set_client_data || 
-      !m_dll.FLAC__seekable_stream_decoder_set_metadata_respond || !m_dll.FLAC__seekable_stream_decoder_set_metadata_respond_application || 
-      !m_dll.FLAC__seekable_stream_decoder_set_metadata_respond_all || !m_dll.FLAC__seekable_stream_decoder_set_metadata_ignore || 
-      !m_dll.FLAC__seekable_stream_decoder_set_metadata_ignore_application || !m_dll.FLAC__seekable_stream_decoder_set_metadata_ignore_all || 
-      !m_dll.FLAC__seekable_stream_decoder_get_state || !m_dll.FLAC__seekable_stream_decoder_get_stream_decoder_state || 
-      !m_dll.FLAC__seekable_stream_decoder_get_resolved_state_string || !m_dll.FLAC__seekable_stream_decoder_get_md5_checking || 
-      !m_dll.FLAC__seekable_stream_decoder_get_channels || !m_dll.FLAC__seekable_stream_decoder_get_channel_assignment || 
-      !m_dll.FLAC__seekable_stream_decoder_get_bits_per_sample || !m_dll.FLAC__seekable_stream_decoder_get_sample_rate || 
-      !m_dll.FLAC__seekable_stream_decoder_get_blocksize || !m_dll.FLAC__seekable_stream_decoder_get_decode_position || 
-      !m_dll.FLAC__seekable_stream_decoder_init || !m_dll.FLAC__seekable_stream_decoder_finish || 
-      !m_dll.FLAC__seekable_stream_decoder_flush || !m_dll.FLAC__seekable_stream_decoder_reset || 
-      !m_dll.FLAC__seekable_stream_decoder_process_single || !m_dll.FLAC__seekable_stream_decoder_process_until_end_of_metadata || 
-      !m_dll.FLAC__seekable_stream_decoder_process_until_end_of_stream || !m_dll.FLAC__seekable_stream_decoder_skip_single_frame || 
-      !m_dll.FLAC__seekable_stream_decoder_seek_absolute)
-  {
-    CLog::Log(LOGERROR, "FLACCodec: Unable to resolve exports from %s", FLAC_DLL);
-    CSectionLoader::UnloadDLL(FLAC_DLL);
-    return false;
-  }
-
-  m_bDllLoaded = true;
-  return true;
-}
-
 bool FLACCodec::CanInit()
 {
-  return CFile::Exists(FLAC_DLL);
+  return m_dll.CanLoad();
 }
 
 void FLACCodec::FreeDecoder()

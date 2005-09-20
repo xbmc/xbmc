@@ -53,16 +53,15 @@ enum id3_picture_type
   ID3_PICTURE_TYPE_PUBLISHERLOGO = 20 // Publisher/Studio logotype
 };
 
-ID3_EXPORT const id3_ucs4_t* id3_metadata_getartist(const struct id3_tag*);
-ID3_EXPORT const id3_ucs4_t* id3_metadata_getalbum(const struct id3_tag*);
-//ID3_EXPORT const id3_ucs4_t* id3_metadata_gettitle(const struct id3_tag*);
-ID3_EXPORT void id3_metadata_gettitle(const struct id3_tag* tag, id3_ucs4_t** ucs4);
-ID3_EXPORT const id3_ucs4_t* id3_metadata_gettrack(const struct id3_tag*);
-ID3_EXPORT const id3_ucs4_t* id3_metadata_getpartofset(const struct id3_tag* tag);
-ID3_EXPORT const id3_ucs4_t* id3_metadata_getyear(const struct id3_tag*);
-ID3_EXPORT const id3_ucs4_t* id3_metadata_getgenre(const struct id3_tag*);
-ID3_EXPORT const id3_ucs4_t* id3_metadata_getcomment(const struct id3_tag*);
-ID3_EXPORT const id3_ucs4_t* id3_metadata_getencodedby(const struct id3_tag* tag);
+ID3_EXPORT const id3_ucs4_t* id3_metadata_getartist(const struct id3_tag*, enum id3_field_textencoding*);
+ID3_EXPORT const id3_ucs4_t* id3_metadata_getalbum(const struct id3_tag*, enum id3_field_textencoding*);
+ID3_EXPORT const id3_ucs4_t* id3_metadata_gettitle(const struct id3_tag*, enum id3_field_textencoding*);
+ID3_EXPORT const id3_ucs4_t* id3_metadata_gettrack(const struct id3_tag*, enum id3_field_textencoding*);
+ID3_EXPORT const id3_ucs4_t* id3_metadata_getpartofset(const struct id3_tag* tag, enum id3_field_textencoding*);
+ID3_EXPORT const id3_ucs4_t* id3_metadata_getyear(const struct id3_tag*, enum id3_field_textencoding*);
+ID3_EXPORT const id3_ucs4_t* id3_metadata_getgenre(const struct id3_tag*, enum id3_field_textencoding*);
+ID3_EXPORT const id3_ucs4_t* id3_metadata_getcomment(const struct id3_tag*, enum id3_field_textencoding*);
+ID3_EXPORT const id3_ucs4_t* id3_metadata_getencodedby(const struct id3_tag* tag, enum id3_field_textencoding*);
 ID3_EXPORT int id3_metadata_haspicture(const struct id3_tag*, enum id3_picture_type);
 ID3_EXPORT const id3_latin1_t* id3_metadata_getpicturemimetype(const struct id3_tag*, enum id3_picture_type);
 ID3_EXPORT id3_byte_t const *id3_metadata_getpicturedata(const struct id3_tag*, enum id3_picture_type, id3_length_t*);

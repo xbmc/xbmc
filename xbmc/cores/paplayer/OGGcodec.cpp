@@ -4,8 +4,6 @@
 #include "../../Util.h"
 
 
-//  Note: the vorbisfile.dll has the ogg.dll and vorbis.dll statically linked 
-
 OGGCodec::OGGCodec()
 {
   m_SampleRate = 0;
@@ -16,17 +14,11 @@ OGGCodec::OGGCodec()
   m_TimeOffset = 0;
   m_CurrentStream=0;
   m_VorbisFile.datasource = NULL;
-
-  // dll stuff
-  ZeroMemory(&m_dll, sizeof(OGGdll));
-  m_bDllLoaded = false;
 }
 
 OGGCodec::~OGGCodec()
 {
   DeInit();
-  if (m_bDllLoaded)
-    CSectionLoader::UnloadDLL(OGG_DLL);
 }
 
 bool OGGCodec::Init(const CStdString &strFile1, unsigned int filecache)
@@ -34,7 +26,7 @@ bool OGGCodec::Init(const CStdString &strFile1, unsigned int filecache)
   m_file.Initialize(filecache);
 
   CStdString strFile=strFile1;
-  if (!LoadDLL())
+  if (!m_dll.Load())
     return false;
   
   m_CurrentStream=0;
@@ -181,74 +173,9 @@ int OGGCodec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
   return READ_SUCCESS;
 }
 
-bool OGGCodec::LoadDLL()
-{
-  if (m_bDllLoaded)
-    return true;
-
-  DllLoader* pDll=CSectionLoader::LoadDLL(OGG_DLL);
-
-  if (!pDll)
-  {
-    CLog::Log(LOGERROR, "OGGCodec: Unable to load dll %s", OGG_DLL);
-    return false;
-  }
-
-  pDll->ResolveExport("ov_clear", (void**)&m_dll.ov_clear);
-  pDll->ResolveExport("ov_open", (void**)&m_dll.ov_open);
-  pDll->ResolveExport("ov_open_callbacks", (void**)&m_dll.ov_open_callbacks);
-
-  pDll->ResolveExport("ov_test", (void**)&m_dll.ov_test);
-  pDll->ResolveExport("ov_test_callbacks", (void**)&m_dll.ov_test_callbacks);
-  pDll->ResolveExport("ov_test_open", (void**)&m_dll.ov_test_open);
-
-  pDll->ResolveExport("ov_bitrate", (void**)&m_dll.ov_bitrate);
-  pDll->ResolveExport("ov_bitrate_instant", (void**)&m_dll.ov_bitrate_instant);
-  pDll->ResolveExport("ov_streams", (void**)&m_dll.ov_streams);
-  pDll->ResolveExport("ov_seekable", (void**)&m_dll.ov_seekable);
-  pDll->ResolveExport("ov_serialnumber", (void**)&m_dll.ov_serialnumber);
-
-  pDll->ResolveExport("ov_raw_total", (void**)&m_dll.ov_raw_total);
-  pDll->ResolveExport("ov_pcm_total", (void**)&m_dll.ov_pcm_total);
-  pDll->ResolveExport("ov_time_total", (void**)&m_dll.ov_time_total);
-
-  pDll->ResolveExport("ov_raw_seek", (void**)&m_dll.ov_raw_seek);
-  pDll->ResolveExport("ov_pcm_seek", (void**)&m_dll.ov_pcm_seek);
-  pDll->ResolveExport("ov_pcm_seek_page", (void**)&m_dll.ov_pcm_seek_page);
-  pDll->ResolveExport("ov_time_seek", (void**)&m_dll.ov_time_seek);
-  pDll->ResolveExport("ov_time_seek_page", (void**)&m_dll.ov_time_seek_page);
-
-  pDll->ResolveExport("ov_raw_tell", (void**)&m_dll.ov_raw_tell);
-  pDll->ResolveExport("ov_pcm_tell", (void**)&m_dll.ov_pcm_tell);
-  pDll->ResolveExport("ov_time_tell", (void**)&m_dll.ov_time_tell);
-
-  pDll->ResolveExport("ov_info", (void**)&m_dll.ov_info);
-  pDll->ResolveExport("ov_comment", (void**)&m_dll.ov_comment);
-
-  pDll->ResolveExport("ov_read", (void**)&m_dll.ov_read);
-
-  // Check resolves
-  if (!m_dll.ov_clear || !m_dll.ov_open || !m_dll.ov_open_callbacks || 
-      !m_dll.ov_test || !m_dll.ov_test_callbacks || !m_dll.ov_test_open || 
-      !m_dll.ov_bitrate || !m_dll.ov_bitrate_instant || !m_dll.ov_streams || 
-      !m_dll.ov_seekable ||   !m_dll.ov_serialnumber || !m_dll.ov_raw_total || 
-      !m_dll.ov_pcm_total || !m_dll.ov_time_total || !m_dll.ov_raw_seek || 
-      !m_dll.ov_pcm_seek || !m_dll.ov_pcm_seek_page || !m_dll.ov_time_seek || 
-      !m_dll.ov_time_seek_page || !m_dll.ov_raw_tell || !m_dll.ov_pcm_tell || 
-      !m_dll.ov_time_tell || !m_dll.ov_info || !m_dll.ov_comment || !m_dll.ov_read) 
-  {
-    CLog::Log(LOGERROR, "OGGCodec: Unable to resolve exports from %s", OGG_DLL);
-    CSectionLoader::UnloadDLL(OGG_DLL);
-    return false;
-  }
-
-  m_bDllLoaded = true;
-  return true;
-}
-
 bool OGGCodec::CanInit()
 {
-  return CFile::Exists(OGG_DLL);
+  return m_dll.CanLoad();
 }
 
 // OGG order : L, C, R, L", R", LFE

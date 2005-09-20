@@ -1,43 +1,15 @@
 #include "../stdafx.h"
 #include "EncoderVorbis.h"
 #include "..\util.h"
-#include "..\cores\DllLoader\Dll.h"
-#include "EncoderDLL.h"
-
 
 CEncoderVorbis::CEncoderVorbis()
 {
-  m_pDLLOgg = NULL;
-  m_pDLLVorbis = NULL;
   m_pBuffer = NULL;
 }
 
 CEncoderVorbis::~CEncoderVorbis()
 {
   FileClose();
-}
-
-DllLoader* CEncoderVorbis::LoadDLL(const char* strFile)
-{
-  DllLoader* pDLL = NULL;
-
-  if (!strFile) return false;
-
-  CLog::Log(LOGNOTICE, "CDVDPlayer::LoadDLL() Loading %s", strFile);
-  pDLL = new DllLoader(strFile, false);
-  if (!pDLL->Parse())
-  {
-    CLog::Log(LOGERROR, "CEncoderVorbis::LoadDLL() parse %s failed", strFile);
-    delete pDLL;
-    return NULL;
-  }
-  CLog::Log(LOGNOTICE, "CEncoderVorbis::LoadDLL() resolving imports for %s", strFile);
-  if (!pDLL->ResolveImports())
-  {
-    CLog::Log(LOGERROR, "CEncoderVorbis::LoadDLL() resolving imports for vorbis.dll failed", strFile);
-  }
-
-  return pDLL;
 }
 
 bool CEncoderVorbis::Init(const char* strFile, int iInChannels, int iInRate, int iInBits)
@@ -53,72 +25,64 @@ bool CEncoderVorbis::Init(const char* strFile, int iInChannels, int iInRate, int
   if (g_guiSettings.GetInt("CDDARipper.Quality") == CDDARIP_QUALITY_STANDARD) fQuality = 0.5f;
   if (g_guiSettings.GetInt("CDDARipper.Quality") == CDDARIP_QUALITY_EXTREME) fQuality = 0.7f;
 
-  // load the dll
-  if (!m_pDLLOgg) m_pDLLOgg = LoadDLL("Q:\\system\\cdrip\\ogg.dll");
-  if (!m_pDLLVorbis) m_pDLLVorbis = LoadDLL("Q:\\system\\cdrip\\vorbis.dll");
-
-  if (!m_pDLLOgg || !m_pDLLVorbis || !cdripper_load_dll_ogg(*m_pDLLOgg) || !cdripper_load_dll_vorbis(*m_pDLLVorbis))
+  if (!m_OggDll.Load() || !m_VorbisDll.Load())
   {
     // failed loading the dll's, unload it all
     CLog::Log(LOGERROR, "CEncoderVorbis::Init() Error while loading ogg.dll and or vorbis.dll");
-    if (m_pDLLOgg) delete m_pDLLOgg;
-    m_pDLLOgg = NULL;
-    if (m_pDLLVorbis) delete m_pDLLVorbis;
-    m_pDLLVorbis = NULL;
     return false;
   }
 
-  vorbis_info_init(&m_sVorbisInfo);
+  m_VorbisDll.vorbis_info_init(&m_sVorbisInfo);
   if (g_guiSettings.GetInt("CDDARipper.Quality") == CDDARIP_QUALITY_CBR)
   {
     // not realy cbr, but abr in this case
     int iBitRate = g_guiSettings.GetInt("CDDARipper.Bitrate") * 1000;
-    vorbis_encode_init(&m_sVorbisInfo, m_iInChannels, m_iInSampleRate, -1, iBitRate, -1);
+    m_VorbisDll.vorbis_encode_init(&m_sVorbisInfo, m_iInChannels, m_iInSampleRate, -1, iBitRate, -1);
   }
   else
   {
-    if (vorbis_encode_init_vbr(&m_sVorbisInfo, m_iInChannels, m_iInSampleRate, fQuality)) return false;
+    if (m_VorbisDll.vorbis_encode_init_vbr(&m_sVorbisInfo, m_iInChannels, m_iInSampleRate, fQuality)) return false;
   }
 
   /* add a comment */
-  vorbis_comment_init(&m_sVorbisComment);
-  vorbis_comment_add_tag(&m_sVorbisComment, "comment", (char*)m_strComment.c_str());
-  vorbis_comment_add_tag(&m_sVorbisComment, "artist", (char*)m_strArtist.c_str());
-  vorbis_comment_add_tag(&m_sVorbisComment, "title", (char*)m_strTitle.c_str());
-  vorbis_comment_add_tag(&m_sVorbisComment, "album", (char*)m_strAlbum.c_str());
-  vorbis_comment_add_tag(&m_sVorbisComment, "genre", (char*)m_strGenre.c_str());
-  vorbis_comment_add_tag(&m_sVorbisComment, "tracknumber", (char*)m_strTrack.c_str());
-  vorbis_comment_add_tag(&m_sVorbisComment, "date", (char*)m_strYear.c_str());
+  m_VorbisDll.vorbis_comment_init(&m_sVorbisComment);
+  m_VorbisDll.vorbis_comment_add_tag(&m_sVorbisComment, "comment", (char*)m_strComment.c_str());
+  m_VorbisDll.vorbis_comment_add_tag(&m_sVorbisComment, "artist", (char*)m_strArtist.c_str());
+  m_VorbisDll.vorbis_comment_add_tag(&m_sVorbisComment, "title", (char*)m_strTitle.c_str());
+  m_VorbisDll.vorbis_comment_add_tag(&m_sVorbisComment, "album", (char*)m_strAlbum.c_str());
+  m_VorbisDll.vorbis_comment_add_tag(&m_sVorbisComment, "genre", (char*)m_strGenre.c_str());
+  m_VorbisDll.vorbis_comment_add_tag(&m_sVorbisComment, "tracknumber", (char*)m_strTrack.c_str());
+  m_VorbisDll.vorbis_comment_add_tag(&m_sVorbisComment, "date", (char*)m_strYear.c_str());
 
   /* set up the analysis state and auxiliary encoding storage */
-  vorbis_analysis_init(&m_sVorbisDspState, &m_sVorbisInfo);
+  m_VorbisDll.vorbis_analysis_init(&m_sVorbisDspState, &m_sVorbisInfo);
 
-  vorbis_block_init(&m_sVorbisDspState, &m_sVorbisBlock);
+  m_VorbisDll.vorbis_block_init(&m_sVorbisDspState, &m_sVorbisBlock);
 
   /* set up our packet->stream encoder */
   /* pick a random serial number; that way we can more likely build
   chained streams just by concatenation */
   srand(time(NULL));
-  ogg_stream_init(&m_sOggStreamState, rand());
+  m_OggDll.ogg_stream_init(&m_sOggStreamState, rand());
 
   {
     ogg_packet header;
     ogg_packet header_comm;
     ogg_packet header_code;
 
-    vorbis_analysis_headerout(&m_sVorbisDspState, &m_sVorbisComment,
+    m_VorbisDll.vorbis_analysis_headerout(&m_sVorbisDspState, &m_sVorbisComment,
                               &header, &header_comm, &header_code);
 
-    ogg_stream_packetin(&m_sOggStreamState, &header);
-    ogg_stream_packetin(&m_sOggStreamState, &header_comm);
-    ogg_stream_packetin(&m_sOggStreamState, &header_code);
+    m_OggDll.ogg_stream_packetin(&m_sOggStreamState, &header);
+    m_OggDll.ogg_stream_packetin(&m_sOggStreamState, &header_comm);
+    m_OggDll.ogg_stream_packetin(&m_sOggStreamState, &header_code);
 
     /* This ensures the actual
     * audio data will start on a new page, as per spec
     */
     while (1)
     {
-      int result = ogg_stream_flush(&m_sOggStreamState, &m_sOggPage);
+      int result = m_OggDll.ogg_stream_flush(&m_sOggStreamState, &m_sOggPage);
       if (result == 0)break;
       FileWrite(m_sOggPage.header, m_sOggPage.header_len);
       FileWrite(m_sOggPage.body, m_sOggPage.body_len);
@@ -147,7 +111,7 @@ int CEncoderVorbis::Encode(int nNumBytesRead, BYTE* pbtStream)
     }
 
     /* expose the buffer to submit data */
-    float **buffer = vorbis_analysis_buffer(&m_sVorbisDspState, 1024);
+    float **buffer = m_VorbisDll.vorbis_analysis_buffer(&m_sVorbisDspState, 1024);
 
     /* uninterleave samples */
     fast_memcpy(m_pBuffer, pbtStream, block);
@@ -162,33 +126,33 @@ int CEncoderVorbis::Encode(int nNumBytesRead, BYTE* pbtStream)
     }
 
     /* tell the library how much we actually submitted */
-    vorbis_analysis_wrote(&m_sVorbisDspState, iSamples);
+    m_VorbisDll.vorbis_analysis_wrote(&m_sVorbisDspState, iSamples);
 
     /* vorbis does some data preanalysis, then divvies up blocks for
     more involved (potentially parallel) processing.  Get a single
     block for encoding now */
-    while (vorbis_analysis_blockout(&m_sVorbisDspState, &m_sVorbisBlock) == 1)
+    while (m_VorbisDll.vorbis_analysis_blockout(&m_sVorbisDspState, &m_sVorbisBlock) == 1)
     {
       /* analysis, assume we want to use bitrate management */
-      vorbis_analysis(&m_sVorbisBlock, NULL);
-      vorbis_bitrate_addblock(&m_sVorbisBlock);
+      m_VorbisDll.vorbis_analysis(&m_sVorbisBlock, NULL);
+      m_VorbisDll.vorbis_bitrate_addblock(&m_sVorbisBlock);
 
-      while (vorbis_bitrate_flushpacket(&m_sVorbisDspState, &m_sOggPacket))
+      while (m_VorbisDll.vorbis_bitrate_flushpacket(&m_sVorbisDspState, &m_sOggPacket))
       {
         /* weld the packet into the bitstream */
-        ogg_stream_packetin(&m_sOggStreamState, &m_sOggPacket);
+        m_OggDll.ogg_stream_packetin(&m_sOggStreamState, &m_sOggPacket);
 
         /* write out pages (if any) */
         while (!eos)
         {
-          int result = ogg_stream_pageout(&m_sOggStreamState, &m_sOggPage);
+          int result = m_OggDll.ogg_stream_pageout(&m_sOggStreamState, &m_sOggPage);
           if (result == 0)break;
           WriteStream(m_sOggPage.header, m_sOggPage.header_len);
           WriteStream(m_sOggPage.body, m_sOggPage.body_len);
 
           /* this could be set above, but for illustrative purposes, I do
           it here (to show that vorbis does know where the stream ends) */
-          if (ogg_page_eos(&m_sOggPage)) eos = 1;
+          if (m_OggDll.ogg_page_eos(&m_sOggPage)) eos = 1;
         }
       }
     }
@@ -201,39 +165,39 @@ bool CEncoderVorbis::Close()
 {
   int eos = 0;
   // tell vorbis we are encoding the end of the stream
-  vorbis_analysis_wrote(&m_sVorbisDspState, 0);
-  while (vorbis_analysis_blockout(&m_sVorbisDspState, &m_sVorbisBlock) == 1)
+  m_VorbisDll.vorbis_analysis_wrote(&m_sVorbisDspState, 0);
+  while (m_VorbisDll.vorbis_analysis_blockout(&m_sVorbisDspState, &m_sVorbisBlock) == 1)
   {
     /* analysis, assume we want to use bitrate management */
-    vorbis_analysis(&m_sVorbisBlock, NULL);
-    vorbis_bitrate_addblock(&m_sVorbisBlock);
+    m_VorbisDll.vorbis_analysis(&m_sVorbisBlock, NULL);
+    m_VorbisDll.vorbis_bitrate_addblock(&m_sVorbisBlock);
 
-    while (vorbis_bitrate_flushpacket(&m_sVorbisDspState, &m_sOggPacket))
+    while (m_VorbisDll.vorbis_bitrate_flushpacket(&m_sVorbisDspState, &m_sOggPacket))
     {
       /* weld the packet into the bitstream */
-      ogg_stream_packetin(&m_sOggStreamState, &m_sOggPacket);
+      m_OggDll.ogg_stream_packetin(&m_sOggStreamState, &m_sOggPacket);
 
       /* write out pages (if any) */
       while (!eos)
       {
-        int result = ogg_stream_pageout(&m_sOggStreamState, &m_sOggPage);
+        int result = m_OggDll.ogg_stream_pageout(&m_sOggStreamState, &m_sOggPage);
         if (result == 0)break;
         WriteStream(m_sOggPage.header, m_sOggPage.header_len);
         WriteStream(m_sOggPage.body, m_sOggPage.body_len);
 
         /* this could be set above, but for illustrative purposes, I do
         it here (to show that vorbis does know where the stream ends) */
-        if (ogg_page_eos(&m_sOggPage)) eos = 1;
+        if (m_OggDll.ogg_page_eos(&m_sOggPage)) eos = 1;
       }
     }
   }
 
   /* clean up and exit.  vorbis_info_clear() must be called last */
-  ogg_stream_clear(&m_sOggStreamState);
-  vorbis_block_clear(&m_sVorbisBlock);
-  vorbis_dsp_clear(&m_sVorbisDspState);
-  vorbis_comment_clear(&m_sVorbisComment);
-  vorbis_info_clear(&m_sVorbisInfo);
+  m_OggDll.ogg_stream_clear(&m_sOggStreamState);
+  m_VorbisDll.vorbis_block_clear(&m_sVorbisBlock);
+  m_VorbisDll.vorbis_dsp_clear(&m_sVorbisDspState);
+  m_VorbisDll.vorbis_comment_clear(&m_sVorbisComment);
+  m_VorbisDll.vorbis_info_clear(&m_sVorbisInfo);
 
   /* ogg_page and ogg_packet structs always point to storage in
      libvorbis.  They're never freed or manipulated directly */
@@ -243,19 +207,9 @@ bool CEncoderVorbis::Close()
   delete []m_pBuffer;
   m_pBuffer = NULL;
 
-  if (m_pDLLOgg)
-  {
-    CLog::Log(LOGNOTICE, "CEncoderVorbis::Close() Unloading ogg.dll");
-    delete m_pDLLOgg;
-    m_pDLLOgg = NULL;
-  }
+  m_OggDll.Unload();
 
-  if (m_pDLLVorbis)
-  {
-    CLog::Log(LOGNOTICE, "CEncoderVorbis::Close() Unloading vorbis.dll");
-    delete m_pDLLVorbis;
-    m_pDLLVorbis = NULL;
-  }
+  m_VorbisDll.Unload();
 
   return true;
 }

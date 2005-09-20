@@ -1,23 +1,16 @@
 #include "../../stdafx.h"
 #include "MP3Codec.h"
 
-
-#define MP3_DLL "Q:\\system\\players\\PAPlayer\\MADCodec.dll"
-
 #define DECODER_DELAY 529 // decoder delay in samples
 
 MP3Codec::MP3Codec()
 {
-  CreateDecoder = NULL;
   m_SampleRate = 0;
   m_Channels = 0;
   m_BitsPerSample = 0;
   m_TotalTime = 0;
   m_Bitrate = 0;
   m_CodecName = L"MP3";
-
-  // dll stuff
-  m_bDllLoaded = false;
 
   // mp3 related
   m_pDecoder = NULL;
@@ -56,17 +49,14 @@ MP3Codec::~MP3Codec()
   if ( m_OutputBuffer )
     delete[] m_OutputBuffer;
   m_OutputBuffer = NULL;
-
-  if (m_bDllLoaded)
-    CSectionLoader::UnloadDLL(MP3_DLL);
 }
 
 bool MP3Codec::Init(const CStdString &strFile, unsigned int filecache)
 {
   m_file.Initialize(filecache);
 
-  if (!LoadDLL())
-    return false;
+  if (!m_dll.IsLoaded())
+    m_dll.Load();
 
   // TODO:  add file extension checking and HTTP/Icecast/Shoutcast reading
   if (m_pDecoder)
@@ -74,7 +64,7 @@ bool MP3Codec::Init(const CStdString &strFile, unsigned int filecache)
     delete m_pDecoder;
     m_pDecoder = NULL;
   }
-  m_pDecoder = CreateDecoder(' 3PM',NULL);
+  m_pDecoder = m_dll.CreateAudioDecoder(' 3PM',NULL);
 
   if ( m_pDecoder )
     CLog::Log(LOGINFO, "MP3Codec: Loaded decoder at %p", m_pDecoder);
@@ -282,34 +272,7 @@ int MP3Codec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
   return READ_SUCCESS;
 }
 
-bool MP3Codec::LoadDLL()
-{
-  if (m_bDllLoaded)
-    return true;
-
-  DllLoader* pDll = CSectionLoader::LoadDLL(MP3_DLL);
-  if (!pDll)
-  {
-    CLog::Log(LOGERROR, "MP3Codec: Unable to load dll %s", MP3_DLL);
-    return false;
-  }
-
-  // get handle to the functions in the dll
-  pDll->ResolveExport("CreateAudioDecoder", (void**)&CreateDecoder);
-
-  // Check resolves + version number
-  if ( !CreateDecoder )
-  {
-    CLog::Log(LOGERROR, "MP3Codec: Unable to resolve exports from %s", MP3_DLL);
-    CSectionLoader::UnloadDLL(MP3_DLL);
-    return false;
-  }
-
-  m_bDllLoaded = true;
-  return true;
-}
-
 bool MP3Codec::CanInit()
 {
-  return CFile::Exists(MP3_DLL);
+  return m_dll.CanLoad();
 }

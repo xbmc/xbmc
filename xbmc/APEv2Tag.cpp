@@ -9,25 +9,20 @@ CAPEv2Tag::CAPEv2Tag()
 {
   m_nTrackNum = 0;
   m_nDiscNum = 0;
-  m_bDllLoaded = false;
-  m_pDll = NULL;
-  GetAPETag = NULL;
 }
 
 CAPEv2Tag::~CAPEv2Tag()
 {
-  if (m_pDll)
-    CSectionLoader::UnloadDLL(APE_DLL);
-  m_pDll = NULL;
+
 }
 
 bool CAPEv2Tag::ReadTag(const char* filename, bool checkID3Tag)
 {
-  if (!filename || !LoadDLL())
+  if (!filename || !m_dll.Load())
     return false;
 
   // Read in our tag using our dll
-  IAPETag *tag = GetAPETag(filename, checkID3Tag);
+  IAPETag *tag = m_dll.GetAPETag(filename, checkID3Tag);
   if (!tag)
     return false;
 
@@ -123,32 +118,5 @@ void CAPEv2Tag::GetReplayGainFromTag(IAPETag *tag)
     m_replayGain.fAlbumPeak = (float)atof(buffer);
     m_replayGain.iHasGainInfo |= REPLAY_GAIN_HAS_ALBUM_PEAK;
   }
-}
-
-bool CAPEv2Tag::LoadDLL()
-{
-  if (m_bDllLoaded)
-    return true;
-  m_pDll = CSectionLoader::LoadDLL(APE_DLL);
-  if (!m_pDll)
-  {
-    CLog::Log(LOGERROR, "CAPEv2Tag::Unable to load dll %s", APE_DLL);
-    return false;
-  }
-
-  // get handle to the functions in the dll
-  m_pDll->ResolveExport("_GetAPETag@8", (void**)&GetAPETag);
-
-  // Check resolves + version number
-  if ( !GetAPETag )
-  {
-    CLog::Log(LOGERROR, "CApeTag: Unable to get needed export functions from our dll %s", APE_DLL);
-    CSectionLoader::UnloadDLL(APE_DLL);
-    m_pDll = NULL;
-    return false;
-  }
-
-  m_bDllLoaded = true;
-  return true;
 }
 

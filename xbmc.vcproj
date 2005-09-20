@@ -585,6 +585,9 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\APEv2Tag.h">
 				</File>
 				<File
+					RelativePath=".\xbmc\DllLibid3tag.h">
+				</File>
+				<File
 					RelativePath=".\xbmc\FlacTag.cpp">
 				</File>
 				<File
@@ -739,6 +742,9 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\DetectDVDType.cpp">
 				</File>
 				<File
+					RelativePath=".\xbmc\DllImageLib.h">
+				</File>
+				<File
 					RelativePath=".\xbmc\DNSNameCache.cpp">
 				</File>
 				<File
@@ -746,6 +752,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				</File>
 				<File
 					RelativePath=".\xbmc\utils\DownloadQueueManager.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\DynamicDll.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\DynamicDll.h">
 				</File>
 				<File
 					RelativePath=".\xbmc\utils\FanController.cpp">
@@ -1676,12 +1688,6 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				RelativePath=".\xbmc\FileSystem\cdioSupport.cpp">
 			</File>
 			<File
-				RelativePath=".\xbmc\FileSystem\CurlInterface.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\FileSystem\CurlInterface.h">
-			</File>
-			<File
 				RelativePath=".\xbmc\FileSystem\DAAPDirectory.cpp">
 			</File>
 			<File
@@ -1698,6 +1704,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 			</File>
 			<File
 				RelativePath=".\xbmc\FileSystem\DirectoryHistory.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\FileSystem\DllLibCurl.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\FileSystem\DllLibCurl.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\FileSystem\FactoryDirectory.cpp">
@@ -2218,10 +2230,10 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\cores\sidplayer\audio\AudioDrv.h">
 				</File>
 				<File
-					RelativePath=".\xbmc\cores\sidplayer\audio\config.h">
+					RelativePath=".\xbmc\cores\sidplayer\config.h">
 				</File>
 				<File
-					RelativePath=".\xbmc\cores\sidplayer\config.h">
+					RelativePath=".\xbmc\cores\sidplayer\audio\config.h">
 				</File>
 				<File
 					RelativePath=".\xbmc\cores\sidplayer\IniConfig.cpp">
@@ -2423,6 +2435,18 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 						Name="Audio"
 						Filter="">
 						<File
+							RelativePath=".\xbmc\cores\dvdplayer\DVDCodecs\Audio\DllLiba52.h">
+						</File>
+						<File
+							RelativePath=".\xbmc\cores\dvdplayer\DVDCodecs\Audio\DllLibDts.h">
+						</File>
+						<File
+							RelativePath=".\xbmc\cores\dvdplayer\DVDCodecs\Audio\DllLibFaad.h">
+						</File>
+						<File
+							RelativePath=".\xbmc\cores\dvdplayer\DVDCodecs\Audio\DllLibMad.h">
+						</File>
+						<File
 							RelativePath=".\xbmc\cores\dvdplayer\DVDCodecs\Audio\DTSHelper.c">
 						</File>
 						<File
@@ -2471,6 +2495,15 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					<Filter
 						Name="Video"
 						Filter="">
+						<File
+							RelativePath=".\xbmc\cores\dvdplayer\DVDCodecs\Video\DllAvCodec.h">
+						</File>
+						<File
+							RelativePath=".\xbmc\cores\dvdplayer\DVDCodecs\Video\DllAvFormat.h">
+						</File>
+						<File
+							RelativePath=".\xbmc\cores\dvdplayer\DVDCodecs\Video\DllLibMpeg2.h">
+						</File>
 						<File
 							RelativePath=".\xbmc\cores\dvdplayer\DVDCodecs\Video\DVDVideoCodec.h">
 						</File>
@@ -2537,6 +2570,9 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				<Filter
 					Name="DVDInputStreams"
 					Filter="">
+					<File
+						RelativePath=".\xbmc\cores\dvdplayer\DVDInputStreams\DllDvdNav.h">
+					</File>
 					<File
 						RelativePath=".\xbmc\cores\dvdplayer\DVDInputStreams\DVDFactoryInputStream.cpp">
 					</File>
@@ -2677,6 +2713,42 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				</File>
 				<File
 					RelativePath=".\xbmc\cores\paplayer\CodecFactory.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\paplayer\DllAACCodec.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\paplayer\DllAc3codec.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\paplayer\DllDCACodec.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\paplayer\DllDumb.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\paplayer\DllLibFlac.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\paplayer\DllLibshnplay.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\paplayer\DllMACDll.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\paplayer\DllMadCodec.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\paplayer\DllMpcCodec.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\paplayer\DllNosefart.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\paplayer\DllVorbisfile.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\paplayer\DllWAVPack.h">
 				</File>
 				<File
 					RelativePath=".\xbmc\cores\paplayer\DTSCDDACodec.cpp">
@@ -2917,6 +2989,9 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 			<Filter
 				Name="Visualisations"
 				Filter="">
+				<File
+					RelativePath=".\xbmc\visualizations\DllVisualisation.h">
+				</File>
 				<File
 					RelativePath=".\xbmc\visualizations\fft.cpp">
 				</File>
@@ -3163,16 +3238,19 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				RelativePath=".\xbmc\cdrip\CDDARipper.h">
 			</File>
 			<File
+				RelativePath=".\xbmc\cdrip\DllLameenc.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\cdrip\DllOgg.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\cdrip\DllVorbis.h">
+			</File>
+			<File
 				RelativePath=".\xbmc\cdrip\Encoder.cpp">
 			</File>
 			<File
 				RelativePath=".\xbmc\cdrip\Encoder.h">
-			</File>
-			<File
-				RelativePath=".\xbmc\cdrip\EncoderDLL.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\cdrip\EncoderDLL.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\cdrip\EncoderLame.cpp">
@@ -3196,6 +3274,9 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 		<Filter
 			Name="Screensavers"
 			Filter="">
+			<File
+				RelativePath=".\xbmc\screensavers\DllScreenSaver.h">
+			</File>
 			<File
 				RelativePath=".\xbmc\screensavers\Screensaver.cpp">
 			</File>

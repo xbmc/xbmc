@@ -1,18 +1,8 @@
 //------------------------------
 // CApeTag in 2005 by JMarshall
 //------------------------------
-#include "cores/DllLoader/DllLoader.h"
 #include "cores/paplayer/ReplayGain.h"
-
-typedef wchar_t str_utf16;
-typedef char str_ansi;
-
-class IAPETag
-{
-public:
-    virtual ~IAPETag() {}
-    virtual int GetFieldString(const str_utf16 * pFieldName, str_ansi * pBuffer, int * pBufferCharacters, BOOL bUTF8Encode = FALSE)=0;
-};
+#include "cores/paplayer/dllMACDll.h"
 
 namespace MUSIC_INFO
 {
@@ -54,10 +44,7 @@ protected:
   CStdString m_strMusicBrainzTRMID;
   CReplayGain m_replayGain;
   __int64 m_nDuration;
-private:
-  DllLoader *m_pDll;
-  IAPETag * (__stdcall* GetAPETag)(const char *filename, BOOL bCheckID3Tag);
-  bool LoadDLL();                     // load the DLL in question
-  bool m_bDllLoaded;                  // whether our dll is loaded
+
+  DllMACDll m_dll;
 };
 };

@@ -1,59 +1,42 @@
 #include "../stdafx.h"
 #include "EncoderLame.h"
-#include "..\cores\DllLoader\Dll.h"
-#include "EncoderDLL.h"
 
+// taken from Lame from main.c
+int CEncoderLame::parse_args_from_string(lame_global_flags * const gfp, const char *p,
+                            char *inPath, char *outPath)
+{                       /* Quick & very Dirty */
+  char *q;
+  char *f;
+  char *r[128];
+  int c = 0;
+  int ret;
 
-#ifdef __cplusplus
-extern "C"
-{
-#endif
+  CLog::Log(LOGINFO, "Encoder: Encoding with %s", p);
+  if (p == NULL || *p == '\0')
+    return 0;
 
-  // forward declaration
-  int parse_args(lame_global_flags* gfp, int argc, char** argv, char * const inPath, char * const outPath, char * nogap_inPath[], int *max_nogap);
+  f = q = (char*)malloc(strlen(p) + 1);
+  strcpy(q, p);
 
-  // taken from Lame from main.c
-  int parse_args_from_string(lame_global_flags * const gfp, const char *p,
-                             char *inPath, char *outPath)
-  {                       /* Quick & very Dirty */
-    char *q;
-    char *f;
-    char *r[128];
-    int c = 0;
-    int ret;
-
-    CLog::Log(LOGINFO, "Encoder: Encoding with %s", p);
-    if (p == NULL || *p == '\0')
-      return 0;
-
-    f = q = (char*)malloc(strlen(p) + 1);
-    strcpy(q, p);
-
-    r[c++] = "lhama";
-    while (1)
-    {
-      r[c++] = q;
-      while (*q != ' ' && *q != '\0')
-        q++;
-      if (*q == '\0')
-        break;
-      *q++ = '\0';
-    }
-    r[c] = NULL;
-
-    ret = parse_args(gfp, c, r, inPath, outPath, NULL, NULL);
-    free(f);
-    return ret;
+  r[c++] = "lhama";
+  while (1)
+  {
+    r[c++] = q;
+    while (*q != ' ' && *q != '\0')
+      q++;
+    if (*q == '\0')
+      break;
+    *q++ = '\0';
   }
+  r[c] = NULL;
 
-#ifdef __cplusplus
+  ret = m_dll.parse_args(gfp, c, r, inPath, outPath, NULL, NULL);
+  free(f);
+  return ret;
 }
-#endif
 
 CEncoderLame::CEncoderLame()
 {
-  m_pDLLLame = NULL;
-
   memset(m_inPath, 0, XBMC_MAX_PATH + 1);
   memset(m_outPath, 0, XBMC_MAX_PATH + 1);
 }
@@ -67,31 +50,10 @@ bool CEncoderLame::Init(const char* strFile, int iInChannels, int iInRate, int i
   if (!CEncoder::Init(strFile, iInChannels, iInRate, iInBits)) return false;
 
   // load the lame dll
-  if (!m_pDLLLame)
-  {
-    CLog::Log(LOGNOTICE, "CEncoderLame::Init() Loading lame_enc.dll");
-    m_pDLLLame = new DllLoader("Q:\\system\\cdrip\\lame_enc.dll", false);
-    if (!m_pDLLLame->Parse())
-    {
-      CLog::Log(LOGERROR, "CEncoderLame::Init() parse lame_enc.dll failed");
-      delete m_pDLLLame;
-      m_pDLLLame = NULL;
-      return false;
-    }
-    if (!m_pDLLLame->ResolveImports() )
-    {
-      CLog::Log(LOGERROR, "CDVDPlayer::Load() resolving imports for lame_enc.dll failed");
-    }
-    if (!cdripper_load_dll_lame(*m_pDLLLame))
-    {
-      CLog::Log(LOGERROR, "CDVDPlayer::Load() resolving exports for lame_enc.dll failed");
-      delete m_pDLLLame;
-      m_pDLLLame = NULL;
-      return false;
-    }
-  }
+  if (!m_dll.Load())
+    return false;
 
-  m_pGlobalFlags = lame_init();
+  m_pGlobalFlags = m_dll.lame_init();
   if (!m_pGlobalFlags)
   {
     CLog::Log(LOGERROR, "Error: lame_init() failed");
@@ -121,36 +83,36 @@ bool CEncoderLame::Init(const char* strFile, int iInChannels, int iInRate, int i
     parse_args_from_string(m_pGlobalFlags, strSettings.c_str(), m_inPath, m_outPath);
   }
 
-  lame_set_asm_optimizations(m_pGlobalFlags, MMX, 1);
-  lame_set_asm_optimizations(m_pGlobalFlags, SSE, 1);
-  lame_set_in_samplerate(m_pGlobalFlags, 44100);
+  m_dll.lame_set_asm_optimizations(m_pGlobalFlags, MMX, 1);
+  m_dll.lame_set_asm_optimizations(m_pGlobalFlags, SSE, 1);
+  m_dll.lame_set_in_samplerate(m_pGlobalFlags, 44100);
 
   // add id3v2 tags
   // id3tag_add_v2(pGlobalFlags);
 
   // Now that all the options are set, lame needs to analyze them and
   // set some more internal options and check for problems
-  if (lame_init_params(m_pGlobalFlags) < 0)
+  if (m_dll.lame_init_params(m_pGlobalFlags) < 0)
   {
     CLog::Log(LOGERROR, "Error: Cannot init Lame params");
     return false;
   }
 
   // add tags
-  id3tag_set_artist(m_pGlobalFlags, m_strArtist.c_str());
-  id3tag_set_title(m_pGlobalFlags, m_strTitle.c_str());
-  id3tag_set_album(m_pGlobalFlags, m_strAlbum.c_str());
-  id3tag_set_year(m_pGlobalFlags, m_strYear.c_str());
-  id3tag_set_comment(m_pGlobalFlags, m_strComment.c_str());
-  id3tag_set_track(m_pGlobalFlags, m_strTrack.c_str());
-  id3tag_set_genre(m_pGlobalFlags, m_strGenre.c_str());
+  m_dll.id3tag_set_artist(m_pGlobalFlags, m_strArtist.c_str());
+  m_dll.id3tag_set_title(m_pGlobalFlags, m_strTitle.c_str());
+  m_dll.id3tag_set_album(m_pGlobalFlags, m_strAlbum.c_str());
+  m_dll.id3tag_set_year(m_pGlobalFlags, m_strYear.c_str());
+  m_dll.id3tag_set_comment(m_pGlobalFlags, m_strComment.c_str());
+  m_dll.id3tag_set_track(m_pGlobalFlags, m_strTrack.c_str());
+  m_dll.id3tag_set_genre(m_pGlobalFlags, m_strGenre.c_str());
 
   return true;
 }
 
 int CEncoderLame::Encode(int nNumBytesRead, BYTE* pbtStream)
 {
-  int iBytes = lame_encode_buffer_interleaved(m_pGlobalFlags, (short*)pbtStream, nNumBytesRead / 4, m_buffer, sizeof(m_buffer));
+  int iBytes = m_dll.lame_encode_buffer_interleaved(m_pGlobalFlags, (short*)pbtStream, nNumBytesRead / 4, m_buffer, sizeof(m_buffer));
 
   if (iBytes < 0)
   {
@@ -170,7 +132,7 @@ int CEncoderLame::Encode(int nNumBytesRead, BYTE* pbtStream)
 bool CEncoderLame::Close()
 {
   // may return one more mp3 frames
-  int iBytes = lame_encode_flush(m_pGlobalFlags, m_buffer, sizeof(m_buffer));
+  int iBytes = m_dll.lame_encode_flush(m_pGlobalFlags, m_buffer, sizeof(m_buffer));
 
   if (iBytes < 0)
   {
@@ -190,18 +152,13 @@ bool CEncoderLame::Close()
     return false;
   }
 
-  lame_mp3_tags_fid(m_pGlobalFlags, file); /* add VBR tags to mp3 file */
+  m_dll.lame_mp3_tags_fid(m_pGlobalFlags, file); /* add VBR tags to mp3 file */
   fclose(file);
 
-  lame_close(m_pGlobalFlags);
+  m_dll.lame_close(m_pGlobalFlags);
 
   // unload tle lame dll
-  if (m_pDLLLame)
-  {
-    CLog::Log(LOGNOTICE, "CEncoderVorbis::Close() Unloading lame_enc.dll");
-    delete m_pDLLLame;
-    m_pDLLLame = NULL;
-  }
+  m_dll.Unload();
 
   return true;
 }

@@ -3,12 +3,7 @@
 
 #include "DVDVideoCodec.h"
 
-// some typedef's here to prevent mpeg.h include
-typedef struct mpeg2dec_s mpeg2dec_t;
-typedef struct mpeg2_info_s mpeg2_info_t;
-typedef struct mpeg2_sequence_s mpeg2_sequence_t;
-
-class DllLoader;
+#include "DllLibMpeg2.h"
 
 class CDVDVideoCodecLibMpeg2 : public CDVDVideoCodec
 {
@@ -31,7 +26,7 @@ protected:
 
   mpeg2dec_t* m_pHandle;
   const mpeg2_info_t* m_pInfo;
-  bool  m_bDllLoaded;
+  DllLibMpeg2 m_dll;
 
   unsigned int m_irffpattern;
   bool m_bFilm; //Signals that we have film material

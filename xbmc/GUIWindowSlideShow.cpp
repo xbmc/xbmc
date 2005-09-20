@@ -518,7 +518,7 @@ bool CGUIWindowSlideShow::OnMessage(CGUIMessage& message)
       //   Reset();
       if (message.GetParam1() != WINDOW_PICTURES)
       {
-        CSectionLoader::UnloadDLL(IMAGE_DLL);
+        m_ImageLib.Unload();
       }
       g_graphicsContext.Lock();
       m_gWindowManager.ShowOverlay(true);
@@ -540,7 +540,7 @@ bool CGUIWindowSlideShow::OnMessage(CGUIMessage& message)
       g_TextureManager.Flush();
       if (message.GetParam1() != WINDOW_PICTURES)
       {
-        CSectionLoader::LoadDLL(IMAGE_DLL);
+        m_ImageLib.Load();
       }
       g_graphicsContext.Lock();
       m_gWindowManager.ShowOverlay(false);

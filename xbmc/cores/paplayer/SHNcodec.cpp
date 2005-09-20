@@ -60,24 +60,19 @@ SHNCodec::SHNCodec()
   m_Bitrate = 0;
   m_CodecName = L"SHN";
 
-  // dll stuff
-  m_bDllLoaded = false;
-  ZeroMemory(&m_dll, sizeof(SHNdll));
   m_handle = NULL;
 }
 
 SHNCodec::~SHNCodec()
 {
   DeInit();
-  if (m_bDllLoaded)
-    CSectionLoader::UnloadDLL(SHN_DLL);
 }
 
 bool SHNCodec::Init(const CStdString &strFile, unsigned int filecache)
 {
   m_file.Initialize(filecache);
 
-  if (!LoadDLL())
+  if (!m_dll.Load())
     return false;
 
   if (!m_file.Open(strFile))
@@ -159,38 +154,5 @@ int SHNCodec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
 
 bool SHNCodec::CanInit()
 {
-  return CFile::Exists(SHN_DLL);
+  return m_dll.CanLoad();
 }
-
-bool SHNCodec::LoadDLL()
-{
-  if (m_bDllLoaded)
-    return true;
-  DllLoader* pDll = CSectionLoader::LoadDLL(SHN_DLL);
-  if (!pDll)
-  {
-    CLog::Log(LOGERROR, "SHNCodec: Unable to load dll %s", SHN_DLL);
-    return false;
-  }
-
-  // get handle to the functions in the dll
-  pDll->ResolveExport("ShnPlay_OpenStream", (void **)&m_dll.OpenStream);
-  pDll->ResolveExport("ShnPlay_Close", (void **)&m_dll.Close);
-  pDll->ResolveExport("ShnPlay_GetInfo", (void **)&m_dll.GetInfo);
-  pDll->ResolveExport("ShnPlay_ErrorMessage", (void **)&m_dll.ErrorMessage);
-  pDll->ResolveExport("ShnPlay_Read", (void **)&m_dll.Read);
-  pDll->ResolveExport("ShnPlay_Seek", (void **)&m_dll.Seek);
-
-  // Check resolves + version number
-  if (!m_dll.OpenStream || !m_dll.Close || !m_dll.GetInfo ||
-      !m_dll.ErrorMessage || !m_dll.Read || !m_dll.Seek)
-  {
-    CLog::Log(LOGERROR, "SHNCodec: Unable to resolve exports from %s", SHN_DLL);
-    CSectionLoader::UnloadDLL(SHN_DLL);
-    return false;
-  }
-
-  m_bDllLoaded = true;
-  return true;
-}
-

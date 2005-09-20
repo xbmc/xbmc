@@ -3,8 +3,8 @@
 
 #include "Encoder.h"
 #include "oggvorbis\vorbisenc.h"
-
-class DllLoader;
+#include "DllOgg.h"
+#include "DllVorbis.h"
 
 class CEncoderVorbis : public CEncoder
 {
@@ -17,8 +17,6 @@ public:
   void AddTag(int key, const char* value);
 
 protected:
-  DllLoader* LoadDLL(const char* strFile);
-
   vorbis_info m_sVorbisInfo; /* struct that stores all the static vorbis bitstream settings */
   vorbis_dsp_state m_sVorbisDspState; /* central working state for the packet->PCM decoder */
   vorbis_block m_sVorbisBlock; /* local working space for packet->PCM decode */
@@ -30,8 +28,8 @@ protected:
 
   BYTE* m_pBuffer;
 
-  DllLoader* m_pDLLOgg;
-  DllLoader* m_pDLLVorbis;
+  DllOgg m_OggDll;
+  DllVorbis m_VorbisDll;
 };
 
 #endif // _ENCODERVORBIS_H

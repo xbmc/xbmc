@@ -8,63 +8,8 @@
 #if _MSC_VER > 1000
 #pragma once
 #endif // _MSC_VER > 1000
-#include "../cores/DllLoader/DllLoader.h"
 #include "../../guilib/key.h"
-
-#ifdef __cplusplus
-extern "C"
-{
-#endif
-
-  struct VIS_INFO
-  {
-    bool bWantsFreq;
-    int iSyncDelay;
-    //  int iAudioDataLength;
-    //  int iFreqDataLength;
-  };
-
-  // The VisSetting class for GUI settings for vis.
-  class VisSetting
-  {
-  public:
-    enum SETTING_TYPE { NONE=0, CHECK, SPIN };
-    VisSetting()
-    {
-      name = NULL;
-      current = 0;
-      type = NONE;
-    };
-    ~VisSetting()
-    {
-      if (name)
-        delete[] name;
-      name = NULL;
-    }
-    SETTING_TYPE type;
-    char *name;
-    int  current;
-    vector<const char *> entry;
-  };
-
-  struct Visualisation
-  {
-public:
-    void (__cdecl* Create)(LPDIRECT3DDEVICE8 pd3dDevice, int iPosX, int iPosY, int iWidth, int iHeight, const char* szVisualisation, float pixelRatio);
-    void (__cdecl* Start)(int iChannels, int iSamplesPerSec, int iBitsPerSample, const char* szSongName);
-    void (__cdecl* AudioData)(short* pAudioData, int iAudioDataLength, float *pFreqData, int iFreqDataLength);
-    void (__cdecl* Render) ();
-    void (__cdecl* Stop)();
-    void (__cdecl* GetInfo)(VIS_INFO *info);
-    bool (__cdecl* OnAction)(long flags, void *param);
-    void (__cdecl *GetSettings)(vector<VisSetting> **vecSettings);
-    void (__cdecl *UpdateSetting)(int num);
-    void (__cdecl *GetPresets)(char ***pPresets, int *currentPreset, int *numPresets, bool *locked);
-  } ;
-
-#ifdef __cplusplus
-};
-#endif
+#include "DllVisualisation.h"
 
 class CVisualisation
 {
@@ -77,7 +22,7 @@ public:
                     VIS_ACTION_LOCK_PRESET,
                     VIS_ACTION_RATE_PRESET_PLUS,
                     VIS_ACTION_RATE_PRESET_MINUS };
-  CVisualisation(struct Visualisation* pVisz, DllLoader* pLoader, const CStdString& strVisualisationName);
+  CVisualisation(struct Visualisation* pVisz, DllVisualisation* pDll, const CStdString& strVisualisationName);
   ~CVisualisation();
 
   void Create(int posx, int posy, int width, int height);
@@ -96,7 +41,7 @@ public:
 
 protected:
   auto_ptr<struct Visualisation> m_pVisz;
-  auto_ptr<DllLoader> m_pLoader;
+  auto_ptr<DllVisualisation> m_pDll;
   CStdString m_strVisualisationName;
 };
 

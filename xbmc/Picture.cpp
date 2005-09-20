@@ -13,28 +13,17 @@
 
 CPicture::CPicture(void)
 {
-  m_bDllLoaded = false;
   ZeroMemory(&m_info, sizeof(ImageInfo));
-  ZeroMemory(&m_dll, sizeof(ImageDLL));
 }
 
 CPicture::~CPicture(void)
 {
-  Free();
-}
 
-void CPicture::Free()
-{
-  if (m_bDllLoaded)
-  {
-    CSectionLoader::Unload(IMAGE_DLL);
-    m_bDllLoaded = false;
-  }
 }
 
 IDirect3DTexture8* CPicture::Load(const CStdString& strFileName, int iMaxWidth, int iMaxHeight)
 {
-  if (!LoadDLL()) return NULL;
+  if (!m_dll.Load()) return NULL;
 
   memset(&m_info, 0, sizeof(ImageInfo));
   if (!m_dll.LoadImage(strFileName.c_str(), iMaxWidth, iMaxHeight, &m_info))
@@ -69,7 +58,7 @@ bool CPicture::DoCreateThumbnail(const CStdString& strFileName, const CStdString
   CLog::Log(LOGINFO, "Creating thumb from: %s as: %s", strFileName.c_str(),strThumbFileName.c_str());
   
   // load our dll
-  if (!LoadDLL()) return false;
+  if (!m_dll.Load()) return false;
 
   memset(&m_info, 0, sizeof(ImageInfo));
   if (!m_dll.CreateThumbnail(strFileName.c_str(), strThumbFileName.c_str()))
@@ -83,7 +72,7 @@ bool CPicture::DoCreateThumbnail(const CStdString& strFileName, const CStdString
 bool CPicture::CreateAlbumThumbnailFromMemory(const BYTE* pBuffer, int nBufSize, const CStdString& strExtension, const CStdString& strThumbFileName)
 {
   CLog::Log(LOGINFO, "Creating album thumb from memory: %s", strThumbFileName.c_str());
-  if (!LoadDLL()) return false;
+  if (!m_dll.Load()) return false;
   if (!m_dll.CreateThumbnailFromMemory((BYTE *)pBuffer, nBufSize, strExtension.c_str(), strThumbFileName.c_str()))
   {
     CLog::Log(LOGERROR, "PICTURE::CreateAlbumThumbnailFromMemory: exception: memfile FileType: %s\n", strExtension.c_str());
@@ -165,7 +154,7 @@ bool CPicture::Convert(const CStdString& strSource, const CStdString& strDest)
 
 void CPicture::CreateFolderThumb(CStdString &strFolder, CStdString *strThumbs)
 { // we want to mold the thumbs together into one single one
-  if (!LoadDLL()) return;
+  if (!m_dll.Load()) return;
   CStdString strFolderThumbnail;
   CUtil::GetThumbnail(strFolder, strFolderThumbnail);
   if (CFile::Exists(strFolderThumbnail))
@@ -191,19 +180,19 @@ void CPicture::CreateFolderThumb(CStdString &strFolder, CStdString *strThumbs)
 
 bool CPicture::CreateExifThumbnail(const CStdString &strFile, const CStdString &strCachedThumb)
 {
-  if (!LoadDLL()) return false;
+  if (!m_dll.Load()) return false;
   return m_dll.CreateExifThumbnail(strFile.c_str(), strCachedThumb.c_str());
 }
 
 bool CPicture::CreateThumbnailFromSurface(BYTE* pBuffer, int width, int height, int stride, const CStdString &strThumbFileName)
 {
-  if (!pBuffer || !LoadDLL()) return false;
+  if (!pBuffer || !m_dll.Load()) return false;
   return m_dll.CreateThumbnailFromSurface(pBuffer, width, height, stride, strThumbFileName.c_str());
 }
 
 int CPicture::ConvertFile(const CStdString &srcFile, const CStdString &destFile, float rotateDegrees, int width, int height, unsigned int quality)
 { 
-  if (!LoadDLL()) return false;
+  if (!m_dll.Load()) return false;
   int ret;
   ret=m_dll.ConvertFile(srcFile.c_str(), destFile.c_str(), rotateDegrees, width, height, quality);
   if (ret!=0)
@@ -212,31 +201,4 @@ int CPicture::ConvertFile(const CStdString &srcFile, const CStdString &destFile,
     return ret;
   }
   return ret;
-}
-bool CPicture::LoadDLL()
-{
-  if (m_bDllLoaded) return true;
-  DllLoader *pDll = CSectionLoader::LoadDLL(IMAGE_DLL);
-  if (!pDll)
-  {
-    CLog::Log(LOGERROR, "PICTURE: Unable to load the dll %s",IMAGE_DLL);
-    return false;
-  }
-  // resolve exports
-  pDll->ResolveExport("LoadImage", (void **)&m_dll.LoadImage);
-  pDll->ResolveExport("CreateThumbnail", (void **)&m_dll.CreateThumbnail);
-  pDll->ResolveExport("CreateThumbnailFromMemory", (void **)&m_dll.CreateThumbnailFromMemory);
-  pDll->ResolveExport("CreateFolderThumbnail", (void **)&m_dll.CreateFolderThumbnail);
-  pDll->ResolveExport("CreateExifThumbnail", (void **)&m_dll.CreateExifThumbnail);
-  pDll->ResolveExport("CreateThumbnailFromSurface", (void **)&m_dll.CreateThumbnailFromSurface);
-  pDll->ResolveExport("ConvertFile", (void **)&m_dll.ConvertFile);
-
-  // verify exports
-  if (!m_dll.LoadImage || !m_dll.CreateThumbnail || !m_dll.CreateThumbnailFromMemory || !m_dll.CreateFolderThumbnail || !m_dll.CreateThumbnailFromSurface || !m_dll.ConvertFile)
-  {
-    CLog::Log(LOGERROR, "PICTURE: Unable to resolve functions in the dll %s", IMAGE_DLL);
-    return false;
-  }
-  m_bDllLoaded = true;
-  return true;
 }
