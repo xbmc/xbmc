@@ -1,6 +1,5 @@
 #include "../stdafx.h"
 #include "ScreenSaverFactory.h"
-#include "../cores/DllLoader/DllLoader.h"
 #include "../util.h"
 
 
@@ -18,30 +17,19 @@ CScreenSaver* CScreenSaverFactory::LoadScreenSaver(const CStdString& strScr) con
   strName = strName.Left(strName.size() - 4);
 
   // load visualisation
-  DllLoader* pDLL = new DllLoader(strScr.c_str(), true);
-  if ( !pDLL->Parse() )
+  DllScreensaver* pDll = new DllScreensaver;
+  pDll->SetFile(strScr);
+  pDll->EnableDelayedUnload(false);
+  if (!pDll->Load())
   {
-    // failed,
-    delete pDLL;
+    delete pDll;
     return NULL;
   }
-  pDLL->ResolveImports();
 
-  // get handle to the get_module() function from the screensaver
-  void (__cdecl* pGetModule)(struct ScreenSaver*);
   struct ScreenSaver* pScr = (struct ScreenSaver*)malloc(sizeof(struct ScreenSaver));
-  void* pProc;
-  pDLL->ResolveExport("get_module", &pProc);
-  if (!pProc)
-  {
-    // get_module() not found in screensaver
-    delete pDLL;
-    return NULL;
-  }
-  // call get_module() to get the ScreenSaver struct from the screensaver
-  pGetModule = (void (__cdecl*)(struct ScreenSaver*))pProc;
-  pGetModule(pScr);
+  ZeroMemory(pScr, sizeof(struct ScreenSaver));
+  pDll->GetModule(pScr);
 
   // and pass it to a new instance of CScreenSaver() which will handle the screensaver
-  return new CScreenSaver(pScr, pDLL, strName);
+  return new CScreenSaver(pScr, pDll, strName);
 }

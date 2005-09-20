@@ -3,6 +3,7 @@
 #include "GUIWindow.h"
 #include "Utils/Thread.h"
 #include "SlideShowPicture.h"
+#include "dllImageLib.h"
 
 class CGUIWindowSlideShow;
 
@@ -79,5 +80,5 @@ private:
   bool m_bWaitForNextPic;
   bool m_bLoadNextPic;
   bool m_bReloadImage;
-
+  DllImageLib m_ImageLib;
 };

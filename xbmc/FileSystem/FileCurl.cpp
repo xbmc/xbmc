@@ -1,6 +1,6 @@
 #include "../stdafx.h"
 #include "FileCurl.h"
-#include "CurlInterface.h"
+#include "dlllibcurl.h"
 #include "../Util.h"
 #include <sys/Stat.h>
 
@@ -111,7 +111,7 @@ CFileCurl::~CFileCurl()
 
 CFileCurl::CFileCurl()
 {
-  g_curlInterface.Create(); // loads the curl dll and resolves exports etc.
+  g_curlInterface.Load(); // loads the curl dll and resolves exports etc.
 	m_filePos = 0;
 	m_fileSize = 0;
   m_easyHandle = NULL;

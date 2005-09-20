@@ -1,20 +1,10 @@
 #pragma once
 #include "ICodec.h"
 #include "FileReader.h"
-#include "aac/aaccodec.h"
+#include "dllaaccodec.h"
 
 class AACCodec : public ICodec
 {
-  struct AACdll
-  {
-    AACHandle (__cdecl *AACOpen)(const char *fn, AACIOCallbacks callbacks);
-    int (__cdecl *AACRead)(AACHandle handle, BYTE* pBuffer, int iSize);
-    int (__cdecl *AACSeek)(AACHandle handle, int iTimeMs);
-    void (__cdecl *AACClose)(AACHandle handle);
-    const char* (__cdecl *AACGetErrorMessage)();
-    int (__cdecl *AACGetInfo)(AACHandle handle, AACInfo* info);
-  };
-
 public:
   AACCodec();
   virtual ~AACCodec();
@@ -38,7 +28,5 @@ private:
 
   CFileReader m_file;
   // Our dll
-  bool LoadDLL();
-  bool m_bDllLoaded;
-  AACdll m_dll;
+  DllAACCodec m_dll;
 };

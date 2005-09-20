@@ -1,10 +1,8 @@
 #pragma once
 #include "ICodec.h"
-#include "../../cores/DllLoader/DllLoader.h"
 #include "../../MusicInfoTagLoaderMP3.h"
 #include "FileReader.h"
-
-#include "dec_if.h"
+#include "Dllmadcodec.h"
 
 class MP3Codec : public ICodec
 {
@@ -48,7 +46,5 @@ private:
   bool m_IgnoreLast;      // Ignore first samples if this is true (for gapless playback)
   int m_IgnoredBytes;     // amount of samples ignored thus far
 
-  IAudioDecoder* (__cdecl* CreateDecoder)(unsigned int, IAudioOutput **); // our decode function
-  bool LoadDLL();                     // load the DLL in question
-  bool m_bDllLoaded;                  // whether our dll is loaded
+  DllMadCodec m_dll;
 };

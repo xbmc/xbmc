@@ -11,9 +11,9 @@
 #endif // _MSC_VER > 1000
 
 #include "http.h"
-#include "../cores/DllLoader/DllLoader.h"
 #include "thread.h"
 #include "../GUIDialogProgress.h"
+#include "DllHtmlScraper.h"
 
 class CIMDBUrl
 {
@@ -75,7 +75,7 @@ protected:
   bool GetString(const TiXmlNode* pRootNode, const char* strTag, CStdString& strStringValue);
   CHTTP m_http;
 
-  DllLoader *m_pDll;
+  DllHtmlScraper m_dll;
 
   // threaded stuff
   void Process();

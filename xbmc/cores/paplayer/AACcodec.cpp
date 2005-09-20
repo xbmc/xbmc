@@ -17,23 +17,18 @@ AACCodec::AACCodec()
   m_BufferPos = 0;
   m_Buffer=NULL;
 
-  // dll stuff
-  m_bDllLoaded = false;
-  ZeroMemory(&m_dll, sizeof(AACdll));
 }
 
 AACCodec::~AACCodec()
 {
   DeInit();
-  if (m_bDllLoaded)
-    CSectionLoader::UnloadDLL(AAC_DLL);
 }
 
 bool AACCodec::Init(const CStdString &strFile, unsigned int filecache)
 {
   m_file.Initialize(filecache);
 
-  if (!LoadDLL())
+  if (!m_dll.Load())
     return false;
 
   // setup our callbacks
@@ -190,39 +185,7 @@ int AACCodec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
 
 bool AACCodec::CanInit()
 {
-  return CFile::Exists(AAC_DLL);
-}
-
-bool AACCodec::LoadDLL()
-{
-  if (m_bDllLoaded)
-    return true;
-  DllLoader* pDll = CSectionLoader::LoadDLL(AAC_DLL);
-  if (!pDll)
-  {
-    CLog::Log(LOGERROR, "AACCodec: Unable to load dll %s", AAC_DLL);
-    return false;
-  }
-
-  // get handle to the functions in the dll
-  pDll->ResolveExport("AACOpen", (void **)&m_dll.AACOpen);
-  pDll->ResolveExport("AACClose", (void **)&m_dll.AACClose);
-  pDll->ResolveExport("AACGetInfo", (void **)&m_dll.AACGetInfo);
-  pDll->ResolveExport("AACGetErrorMessage", (void **)&m_dll.AACGetErrorMessage);
-  pDll->ResolveExport("AACRead", (void **)&m_dll.AACRead);
-  pDll->ResolveExport("AACSeek", (void **)&m_dll.AACSeek);
-
-  // Check resolves
-  if (!m_dll.AACOpen || !m_dll.AACClose || !m_dll.AACGetInfo ||
-      !m_dll.AACGetErrorMessage || !m_dll.AACRead || !m_dll.AACSeek)
-  {
-    CLog::Log(LOGERROR, "AACCodec: Unable to resolve exports from %s", AAC_DLL);
-    CSectionLoader::UnloadDLL(AAC_DLL);
-    return false;
-  }
-
-  m_bDllLoaded = true;
-  return true;
+  return m_dll.CanLoad();
 }
 
 unsigned __int32 AACCodec::AACOpenCallback(const char *pName, const char *mode, void *userData)

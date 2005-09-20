@@ -2,7 +2,7 @@
 #pragma once
 
 #include "DVDAudioCodec.h"
-#include "libfaad\faad.h"
+#include "DllLibFaad.h"
 
 #define LIBFAAD_INPUT_SIZE (FAAD_MIN_STREAMSIZE * 8)   // 6144 bytes / 6k
 #define LIBFAAD_DECODED_SIZE (16 * LIBFAAD_INPUT_SIZE)
@@ -30,7 +30,6 @@ private:
   int m_iSourceChannels;
   int m_iSourceBitrate;
   
-  bool m_bDllLoaded;
   bool m_bInitializedDecoder;
   
   faacDecHandle m_pHandle;
@@ -41,4 +40,6 @@ private:
   
   BYTE m_inputBuffer[LIBFAAD_INPUT_SIZE];
   int m_iInputBufferSize;
+
+  DllLibFaad m_dll;
 };

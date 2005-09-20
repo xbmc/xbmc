@@ -5,28 +5,22 @@
 
 APECodec::APECodec()
 {
-  ZeroMemory(&m_dll, sizeof(APEdll));
   m_handle = NULL;
   m_SampleRate = 0;
   m_Channels = 0;
   m_BitsPerSample = 0;
   m_Bitrate = 0;
   m_CodecName = L"APE";
-
-  // dll stuff
-  m_bDllLoaded = false;
 }
 
 APECodec::~APECodec()
 {
   DeInit();
-  if (m_bDllLoaded)
-    CSectionLoader::UnloadDLL(APE_DLL);
 }
 
 bool APECodec::Init(const CStdString &strFile, unsigned int filecache)
 {
-  if (!LoadDLL())
+  if (!m_dll.Load())
     return false;
 
   int nRetVal = 0;
@@ -93,38 +87,7 @@ int APECodec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
   return READ_SUCCESS;
 }
 
-bool APECodec::LoadDLL()
-{
-  if (m_bDllLoaded)
-    return true;
-  DllLoader* pDll = CSectionLoader::LoadDLL(APE_DLL);
-  if (!pDll)
-  {
-    CLog::Log(LOGERROR, "APECodec: Unable to load dll %s", APE_DLL);
-    return false;
-  }
-  // get handle to the functions in the dll
-  pDll->ResolveExport("GetVersionNumber", (void**)&m_dll.GetVersionNumber);
-  pDll->ResolveExport("c_APEDecompress_Create", (void**)&m_dll.Create);
-  pDll->ResolveExport("c_APEDecompress_Destroy", (void**)&m_dll.Destroy);
-  pDll->ResolveExport("c_APEDecompress_GetData", (void**)&m_dll.GetData);
-  pDll->ResolveExport("c_APEDecompress_Seek", (void**)&m_dll.Seek);
-  pDll->ResolveExport("c_APEDecompress_GetInfo", (void**)&m_dll.GetInfo);
-
-  // Check resolves + version number
-  if (!m_dll.GetVersionNumber || !m_dll.Create || !m_dll.Destroy ||
-      !m_dll.GetData || !m_dll.Seek || !m_dll.GetInfo || m_dll.GetVersionNumber() != MAC_VERSION_NUMBER)
-  {
-    CLog::Log(LOGERROR, "APECodec: Unable to resolve exports from %s", APE_DLL);
-    CSectionLoader::UnloadDLL(APE_DLL);
-    return false;
-  }
-
-  m_bDllLoaded = true;
-  return true;
-}
-
 bool APECodec::CanInit()
 {
-  return CFile::Exists(APE_DLL);
+  return m_dll.CanLoad();
 }

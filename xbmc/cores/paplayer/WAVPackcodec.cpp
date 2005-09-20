@@ -2,8 +2,6 @@
 #include "WAVPackCodec.h"
 
 
-#define WAVPACK_DLL "Q:\\system\\players\\paplayer\\WAVPack.dll"
-
 WAVPackCodec::WAVPackCodec()
 {
   m_SampleRate = 0;
@@ -18,24 +16,18 @@ WAVPackCodec::WAVPackCodec()
   m_BufferPos = 0;
   m_Buffer=NULL;
   m_ReadBuffer=NULL;
-
-  // dll stuff
-  ZeroMemory(&m_dll, sizeof(WAVPackdll));
-  m_bDllLoaded = false;
 }
 
 WAVPackCodec::~WAVPackCodec()
 {
   DeInit();
-  if (m_bDllLoaded)
-    CSectionLoader::UnloadDLL(WAVPACK_DLL);
 }
 
 bool WAVPackCodec::Init(const CStdString &strFile, unsigned int filecache)
 {
   m_file.Initialize(filecache);
 
-  if (!LoadDLL())
+  if (!m_dll.Load())
     return false;
   
   //  Open the file to play
@@ -181,83 +173,9 @@ int WAVPackCodec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
   return READ_SUCCESS;
 }
 
-bool WAVPackCodec::LoadDLL()
-{
-  if (m_bDllLoaded)
-    return true;
-
-  DllLoader* pDll=CSectionLoader::LoadDLL(WAVPACK_DLL);
-
-  if (!pDll)
-  {
-    CLog::Log(LOGERROR, "WAVPackCodec: Unable to load dll %s", WAVPACK_DLL);
-    return false;
-  }
-
-  pDll->ResolveExport("WavpackOpenFileInputEx", (void**)&m_dll.WavpackOpenFileInputEx);
-  pDll->ResolveExport("WavpackOpenFileInput", (void**)&m_dll.WavpackOpenFileInput);
-  pDll->ResolveExport("WavpackGetVersion", (void**)&m_dll.WavpackGetVersion);
-  pDll->ResolveExport("WavpackUnpackSamples", (void**)&m_dll.WavpackUnpackSamples);
-  pDll->ResolveExport("WavpackGetNumSamples", (void**)&m_dll.WavpackGetNumSamples);
-  pDll->ResolveExport("WavpackGetSampleIndex", (void**)&m_dll.WavpackGetSampleIndex);
-  pDll->ResolveExport("WavpackGetNumErrors", (void**)&m_dll.WavpackGetNumErrors);
-  pDll->ResolveExport("WavpackLossyBlocks", (void**)&m_dll.WavpackLossyBlocks);
-  pDll->ResolveExport("WavpackSeekSample", (void**)&m_dll.WavpackSeekSample);
-  pDll->ResolveExport("WavpackCloseFile", (void**)&m_dll.WavpackCloseFile);
-  pDll->ResolveExport("WavpackGetSampleRate", (void**)&m_dll.WavpackGetSampleRate);
-  pDll->ResolveExport("WavpackGetBitsPerSample", (void**)&m_dll.WavpackGetBitsPerSample);
-  pDll->ResolveExport("WavpackGetBytesPerSample", (void**)&m_dll.WavpackGetBytesPerSample);
-  pDll->ResolveExport("WavpackGetNumChannels", (void**)&m_dll.WavpackGetNumChannels);
-  pDll->ResolveExport("WavpackGetReducedChannels", (void**)&m_dll.WavpackGetReducedChannels);
-  pDll->ResolveExport("WavpackGetMD5Sum", (void**)&m_dll.WavpackGetMD5Sum);
-  pDll->ResolveExport("WavpackGetWrapperBytes", (void**)&m_dll.WavpackGetWrapperBytes);
-  pDll->ResolveExport("WavpackGetWrapperData", (void**)&m_dll.WavpackGetWrapperData);
-  pDll->ResolveExport("WavpackFreeWrapper", (void**)&m_dll.WavpackFreeWrapper);
-  pDll->ResolveExport("WavpackGetProgress", (void**)&m_dll.WavpackGetProgress);
-  pDll->ResolveExport("WavpackGetFileSize", (void**)&m_dll.WavpackGetFileSize);
-  pDll->ResolveExport("WavpackGetRatio", (void**)&m_dll.WavpackGetRatio);
-  pDll->ResolveExport("WavpackGetAverageBitrate", (void**)&m_dll.WavpackGetAverageBitrate);
-  pDll->ResolveExport("WavpackGetInstantBitrate", (void**)&m_dll.WavpackGetInstantBitrate);
-  pDll->ResolveExport("WavpackGetTagItem", (void**)&m_dll.WavpackGetTagItem);
-  pDll->ResolveExport("WavpackAppendTagItem", (void**)&m_dll.WavpackAppendTagItem);
-  pDll->ResolveExport("WavpackWriteTag", (void**)&m_dll.WavpackWriteTag);
-
-  pDll->ResolveExport("WavpackOpenFileOutput", (void**)&m_dll.WavpackOpenFileOutput);
-  pDll->ResolveExport("WavpackSetConfiguration", (void**)&m_dll.WavpackSetConfiguration);
-  pDll->ResolveExport("WavpackAddWrapper", (void**)&m_dll.WavpackAddWrapper);
-  pDll->ResolveExport("WavpackStoreMD5Sum", (void**)&m_dll.WavpackStoreMD5Sum);
-  pDll->ResolveExport("WavpackPackInit", (void**)&m_dll.WavpackPackInit);
-  pDll->ResolveExport("WavpackPackSamples", (void**)&m_dll.WavpackPackSamples);
-  pDll->ResolveExport("WavpackFlushSamples", (void**)&m_dll.WavpackFlushSamples);
-  pDll->ResolveExport("WavpackUpdateNumSamples", (void**)&m_dll.WavpackUpdateNumSamples);
-  pDll->ResolveExport("WavpackGetWrapperLocation", (void**)&m_dll.WavpackGetWrapperLocation);
-
-  // Check resolves
-  if (!m_dll.WavpackGetVersion || !m_dll.WavpackUnpackSamples || !m_dll.WavpackGetNumSamples || 
-      !m_dll.WavpackGetSampleIndex || !m_dll.WavpackGetNumErrors || !m_dll.WavpackLossyBlocks || 
-      !m_dll.WavpackSeekSample || !m_dll.WavpackCloseFile || !m_dll.WavpackGetSampleRate || 
-      !m_dll.WavpackGetBitsPerSample ||   !m_dll.WavpackGetBytesPerSample || !m_dll.WavpackGetNumChannels || 
-      !m_dll.WavpackGetReducedChannels || !m_dll.WavpackGetMD5Sum || !m_dll.WavpackGetWrapperBytes || 
-      !m_dll.WavpackGetWrapperData || !m_dll.WavpackFreeWrapper || !m_dll.WavpackGetProgress || 
-      !m_dll.WavpackGetFileSize || !m_dll.WavpackGetRatio || !m_dll.WavpackGetAverageBitrate || 
-      !m_dll.WavpackGetInstantBitrate || !m_dll.WavpackGetTagItem || !m_dll.WavpackAppendTagItem || 
-      !m_dll.WavpackWriteTag || !m_dll.WavpackOpenFileOutput || !m_dll.WavpackSetConfiguration || 
-      !m_dll.WavpackAddWrapper || !m_dll.WavpackStoreMD5Sum || !m_dll.WavpackPackInit || 
-      !m_dll.WavpackPackSamples || !m_dll.WavpackFlushSamples || !m_dll.WavpackUpdateNumSamples || 
-      !m_dll.WavpackOpenFileInputEx || !m_dll.WavpackOpenFileInput || !m_dll.WavpackGetWrapperLocation) 
-  {
-    CLog::Log(LOGERROR, "WAVPackCodec: Unable to resolve exports from %s", WAVPACK_DLL);
-    CSectionLoader::UnloadDLL(WAVPACK_DLL);
-    return false;
-  }
-
-  m_bDllLoaded = true;
-  return true;
-}
-
 bool WAVPackCodec::CanInit()
 {
-  return CFile::Exists(WAVPACK_DLL);
+  return m_dll.CanLoad();
 }
 
 void WAVPackCodec::FormatSamples (BYTE *dst, int bps, long *src, unsigned long samcnt)

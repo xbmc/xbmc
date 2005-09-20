@@ -5,6 +5,7 @@
 #include "GUIWindowSlideShow.h"
 #include "GUIViewControl.h"
 #include "PictureThumbLoader.h"
+#include "DllImageLib.h"
 
 using namespace DIRECTORY;
 
@@ -57,6 +58,7 @@ protected:
   int m_iItemSelected;
   int m_iLastControl;
   CStdString m_strParentPath;
+  DllImageLib m_ImageLib;
 
   int m_iViewAsIcons;
   int m_iViewAsIconsRoot;
