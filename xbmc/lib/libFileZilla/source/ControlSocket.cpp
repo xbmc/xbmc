@@ -2200,7 +2200,7 @@ void CControlSocket::ParseCommand()
         {
           CStdString strHelp;
           CUtil::GetBuiltInHelp(strHelp);
-          Send(_T("200 FTP SITE HELP"));
+          Send(_T("200-FTP SITE HELP"));
           int iReturn = strHelp.Find("\n");
           while (iReturn >= 0)
           {
