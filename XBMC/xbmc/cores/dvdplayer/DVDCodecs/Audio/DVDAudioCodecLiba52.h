@@ -2,10 +2,7 @@
 #pragma once
 
 #include "DVDAudioCodec.h"
-
-class DllLoader;
-struct a52_state_s;
-typedef struct a52_state_s a52_state_t;
+#include "DllLiba52.h"
 
 class CDVDAudioCodecLiba52 : public CDVDAudioCodec
 {
@@ -26,7 +23,6 @@ public:
 protected:
   virtual void SetDefault();
 
-  bool m_bDllLoaded;
   a52_state_t* m_pState;
 
   BYTE m_inputBuffer[4096];
@@ -47,4 +43,5 @@ protected:
   int m_iSourceBitrate;
 
   int m_iOutputChannels;
+  DllLiba52 m_dll;
 };

@@ -2,7 +2,7 @@
 #pragma once
 
 #include "DVDAudioCodec.h"
-#include "libmad\mad.h"
+#include "DllLibMad.h"
 
 #define MAD_INPUT_SIZE (8 * 1024)
 #define MAD_DECODED_SIZE (16 * MAD_INPUT_SIZE)
@@ -27,7 +27,6 @@ private:
   int m_iSourceChannels;
   int m_iSourceBitrate;
   
-  bool m_bDllLoaded;
   bool m_bInitialized;
   
   struct mad_synth m_synth; 
@@ -39,4 +38,6 @@ private:
   
   BYTE m_inputBuffer[MAD_INPUT_SIZE];
   int m_iInputBufferSize;
+
+  DllLibMad m_dll;
 };

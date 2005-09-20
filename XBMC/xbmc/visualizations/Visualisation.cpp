@@ -11,8 +11,8 @@
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
-CVisualisation::CVisualisation(struct Visualisation* pVisz, DllLoader* pLoader, const CStdString& strVisualisationName)
-    : m_pLoader(pLoader)
+CVisualisation::CVisualisation(struct Visualisation* pVisz, DllVisualisation* pDll, const CStdString& strVisualisationName)
+    : m_pDll(pDll)
     , m_pVisz(pVisz)
     , m_strVisualisationName(strVisualisationName)
 {}

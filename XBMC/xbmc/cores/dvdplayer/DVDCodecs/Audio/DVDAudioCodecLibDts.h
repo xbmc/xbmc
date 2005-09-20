@@ -2,30 +2,7 @@
 #pragma once
 
 #include "DVDAudioCodec.h"
-
-class DllLoader;
-
-typedef unsigned __int32 uint32_t;
-typedef unsigned __int16 uint16_t;
-typedef unsigned __int8  uint8_t;
-typedef __int32          int32_t;
-typedef __int16          int16_t;
-
-#ifdef __cplusplus
-extern "C"
-{
-#endif
-
-#include "libdts\dts.h"
-#ifdef LIBDTS_DOUBLE
-typedef float convert_t;
-#else
-typedef sample_t convert_t;
-#endif
-
-#ifdef __cplusplus
-}
-#endif
+#include "DllLibDts.h"
 
 class CDVDAudioCodecLibDts : public CDVDAudioCodec
 {
@@ -55,7 +32,6 @@ protected:
   static void s16_swap(int16_t * s16, int channels);
   static void s32_swap(int32_t * s32, int channels);
 
-  bool m_bDllLoaded;
   dts_state_t* m_pState;
 
   BYTE m_inputBuffer[4096];
@@ -74,4 +50,5 @@ protected:
   int m_iSourceBitrate;
 
   int m_iOutputChannels;
+  DllLibDts m_dll;
 };

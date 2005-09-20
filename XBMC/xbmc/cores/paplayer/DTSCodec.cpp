@@ -1,9 +1,5 @@
 #include "../../stdafx.h"
-
 #include "DTSCodec.h"
-
-#define DLL_LIBDTS "Q:\\system\\players\\paplayer\\DCACodec.dll"
-
 
 static inline int16_t convert(int32_t i)
 {
@@ -202,7 +198,6 @@ DTSCodec::DTSCodec()
   m_CodecName         = L"DTS";
   m_IsInitialized     = false;
   m_pState            = NULL;
-  m_bDllLoaded        = false;
   m_iSourceChannels   = 0;
   m_iSourceSampleRate = 0;
   m_iSourceBitrate    = 0;
@@ -213,17 +208,11 @@ DTSCodec::DTSCodec()
   m_decodedData       = NULL;
   m_readBufferPos     = 0;
   m_iOutputChannels   = 0;
-  ZeroMemory(&m_dll, sizeof(dtsdll));
 }
 
 DTSCodec::~DTSCodec()
 {
   DeInit();
-  if (m_bDllLoaded)
-  {
-    CSectionLoader::UnloadDLL(DLL_LIBDTS);
-    m_bDllLoaded = false;
-  }
 }
 
 void DTSCodec::DeInit()
@@ -254,7 +243,7 @@ __int64 DTSCodec::Seek(__int64 iSeekTime)
 
 bool DTSCodec::CanInit()
 {
-  return CFile::Exists(DLL_LIBDTS);
+  return m_dll.CanLoad();
 }
 
 
@@ -292,31 +281,8 @@ bool DTSCodec::Init(const CStdString &strFile, unsigned int filecache)
     CLog::Log(LOGERROR, "DTSCodec: Can't open %s", strFile.c_str());
     return false;
   }
-  if (!m_bDllLoaded)
-  {
-    DllLoader* pDll = g_sectionLoader.LoadDLL(DLL_LIBDTS);
-    if (!pDll)
-    {
-      CLog::Log(LOGERROR, "DTSCodec: Unable to load dll %s", DLL_LIBDTS);
-      return false;
-    }
-    
-    bool bResult = (
-                pDll->ResolveExport("dts_init", (void**)&m_dll.dts_init) &&
-                pDll->ResolveExport("dts_syncinfo", (void**)&m_dll.dts_syncinfo) &&
-                pDll->ResolveExport("dts_frame", (void**)&m_dll.dts_frame) &&
-                pDll->ResolveExport("dts_dynrng", (void**)&m_dll.dts_dynrng) &&
-                pDll->ResolveExport("dts_free", (void**)&m_dll.dts_free) &&
-                pDll->ResolveExport("dts_samples", (void**)&m_dll.dts_samples) &&
-                pDll->ResolveExport("dts_blocks_num", (void**)&m_dll.dts_blocks_num) &&
-                pDll->ResolveExport("dts_block", (void**)&m_dll.dts_block));
-    if (!bResult)
-    {
-      CLog::Log(LOGERROR, "DTSCodec: Unable to resolve exports from %s", DLL_LIBDTS);
-      return false;
-    }
-    m_bDllLoaded = true;
-  }
+  if (!m_dll.Load())
+    return false;
 
   SetDefault();
 

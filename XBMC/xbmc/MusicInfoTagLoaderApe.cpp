@@ -1,7 +1,7 @@
 
 #include "stdafx.h"
 #include "musicinfotagloaderape.h"
-#include "cores/DllLoader/DllLoader.h"
+#include "cores/paplayer/DllMACDll.h"
 
 // MPC stuff
 #include "util.h"
@@ -55,15 +55,9 @@ bool CMusicInfoTagLoaderApe::Load(const CStdString& strFileName, CMusicInfoTag& 
 int CMusicInfoTagLoaderApe::ReadDuration(const CStdString &strFileName)
 {
   // load the ape dll if we need it
-  DllLoader *pDll = CSectionLoader::LoadDLL(APE_DLL);
-  if (!pDll) return 0;
-  // resolve the export we need
-  __int64 (__stdcall* GetAPEDuration)(const char *filename) = NULL;
-  pDll->ResolveExport("_GetAPEDuration@4", (void **)&GetAPEDuration);
-  // Read the duration
-  int duration = 0;
-  if (GetAPEDuration)
-    duration = (int)(GetAPEDuration(strFileName.c_str()) / 1000);
-  CSectionLoader::UnloadDLL(APE_DLL);
-  return duration;
+  DllMACDll dll;
+  if (!dll.Load())
+    return 0;
+
+  return (int)(dll.GetDuration(strFileName.c_str()) / 1000);
 }

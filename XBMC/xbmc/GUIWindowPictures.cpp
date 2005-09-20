@@ -181,7 +181,7 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
       ClearFileItems();
       if (message.GetParam1() != WINDOW_SLIDESHOW)
       {
-        CSectionLoader::UnloadDLL(IMAGE_DLL);
+        m_ImageLib.Unload();
       }
     }
     break;
@@ -192,7 +192,7 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
       CGUIWindow::OnMessage(message);
       if (message.GetParam1() != WINDOW_SLIDESHOW)
       {
-        CSectionLoader::LoadDLL(IMAGE_DLL);
+        m_ImageLib.Load();
       }
 
       CGUIThumbnailPanel* pControl=(CGUIThumbnailPanel*)GetControl(CONTROL_THUMBS);

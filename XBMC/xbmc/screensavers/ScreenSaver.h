@@ -9,27 +9,12 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-#include "../cores/DllLoader/DllLoader.h"
+#include "DllScreensaver.h"
 
 #ifdef __cplusplus
 extern "C"
 {
 #endif
-
-  struct SCR_INFO
-  {
-    int dummy;
-  };
-
-  struct ScreenSaver
-  {
-public:
-    void (__cdecl* Create)(LPDIRECT3DDEVICE8 pd3dDevice, int iWidth, int iHeight, const char* szScreensaver);
-    void (__cdecl* Start) ();
-    void (__cdecl* Render) ();
-    void (__cdecl* Stop) ();
-    void (__cdecl* GetInfo)(SCR_INFO *info);
-  } ;
 
 #ifdef __cplusplus
 };
@@ -38,7 +23,7 @@ public:
 class CScreenSaver
 {
 public:
-  CScreenSaver(struct ScreenSaver* pScr, DllLoader* pLoader, const CStdString& strScreenSaverName);
+  CScreenSaver(struct ScreenSaver* pScr, DllScreensaver* pDll, const CStdString& strScreenSaverName);
   ~CScreenSaver();
 
   // Things that MUST be supplied by the child classes
@@ -50,7 +35,7 @@ public:
 
 protected:
   auto_ptr<struct ScreenSaver> m_pScr;
-  auto_ptr<DllLoader> m_pLoader;
+  auto_ptr<DllScreensaver> m_pDll;
   CStdString m_strScreenSaverName;
 };
 

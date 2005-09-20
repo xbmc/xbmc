@@ -1,8 +1,5 @@
 #include "../../stdafx.h"
-
 #include "AC3Codec.h"
-
-#define DLL_LIBAC3 "Q:\\system\\players\\paplayer\\AC3Codec.dll"
 
 
 static inline int16_t convert(int32_t i)
@@ -149,7 +146,6 @@ AC3Codec::AC3Codec()
   m_CodecName         = L"AC3";
   m_IsInitialized     = false;
   m_pState            = NULL;
-  m_bDllLoaded        = false;
   m_iSourceChannels   = 0;
   m_iSourceSampleRate = 0;
   m_iSourceBitrate    = 0;
@@ -160,17 +156,11 @@ AC3Codec::AC3Codec()
   m_decodedData       = NULL;
   m_readBufferPos     = 0;
   m_iOutputChannels   = 0;
-  ZeroMemory(&m_dll, sizeof(a52dll));
 }
 
 AC3Codec::~AC3Codec()
 {
   DeInit();
-  if (m_bDllLoaded)
-  {
-    CSectionLoader::UnloadDLL(DLL_LIBAC3);
-    m_bDllLoaded = false;
-  }
 }
 
 void AC3Codec::DeInit()
@@ -199,7 +189,7 @@ __int64 AC3Codec::Seek(__int64 iSeekTime)
 
 bool AC3Codec::CanInit()
 {
-  return CFile::Exists(DLL_LIBAC3);
+  return m_dll.CanLoad();
 }
 
 
@@ -235,31 +225,8 @@ bool AC3Codec::Init(const CStdString &strFile, unsigned int filecache)
     CLog::Log(LOGERROR, "AC3Codec: Can't open %s", strFile.c_str());
     return false;
   }
-  if (!m_bDllLoaded)
-  {
-    DllLoader* pDll = g_sectionLoader.LoadDLL(DLL_LIBAC3);
-    if (!pDll)
-    {
-      CLog::Log(LOGERROR, "AC3Codec: Unable to load dll %s", DLL_LIBAC3);
-      return false;
-    }
-    
-    bool bResult = (
-                pDll->ResolveExport("a52_init", (void**)&m_dll.a52_init) &&
-                pDll->ResolveExport("a52_syncinfo", (void**)&m_dll.a52_syncinfo) &&
-                pDll->ResolveExport("a52_frame", (void**)&m_dll.a52_frame) &&
-                pDll->ResolveExport("a52_dynrng", (void**)&m_dll.a52_dynrng) &&
-                pDll->ResolveExport("a52_free", (void**)&m_dll.a52_free) &&
-                pDll->ResolveExport("a52_samples", (void**)&m_dll.a52_samples) &&
-                //pDll->ResolveExport("a52_blocks_num", (void**)&m_dll.a52_blocks_num) &&
-                pDll->ResolveExport("a52_block", (void**)&m_dll.a52_block));
-    if (!bResult)
-    {
-      CLog::Log(LOGERROR, "AC3Codec: Unable to resolve exports from %s", DLL_LIBAC3);
-      return false;
-    }
-    m_bDllLoaded = true;
-  }
+  if (!m_dll.Load())
+    return false;
 
   SetDefault();
 

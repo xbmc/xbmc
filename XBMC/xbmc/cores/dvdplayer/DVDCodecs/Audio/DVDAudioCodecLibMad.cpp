@@ -3,8 +3,6 @@
 #include "DVDAudioCodecLibMad.h"
 #include "..\..\DVDPLayerDLL.h"
 
-#define DLL_LIBMAD "Q:\\system\\players\\dvdplayer\\libmad.dll"
-
 static inline signed int scale(mad_fixed_t sample)
 {
   /* round */
@@ -22,7 +20,6 @@ static inline signed int scale(mad_fixed_t sample)
 
 CDVDAudioCodecLibMad::CDVDAudioCodecLibMad() : CDVDAudioCodec()
 {
-  m_bDllLoaded = false;
   m_bInitialized = false;
 }
 
@@ -35,31 +32,16 @@ bool CDVDAudioCodecLibMad::Open(CodecID codecID, int iChannels, int iSampleRate,
 {
   if (m_bInitialized) Dispose();
   
-  if (!m_bDllLoaded)
-  {
-    DllLoader* pDll = g_sectionLoader.LoadDLL(DLL_LIBMAD);
-    if (!pDll)
-    {
-      CLog::Log(LOGERROR, "CDVDAudioCodecLibMad: Unable to load dll %s", DLL_LIBMAD);
-      return false;
-    }
-    
-    if (!dvdplayer_load_dll_libmad(*pDll))
-    {
-      CLog::Log(LOGERROR, "CDVDAudioCodecLibMad: Unable to resolve exports from %s", DLL_LIBMAD);
-      Dispose();
-      return false;
-    }
-    m_bDllLoaded = true;
-  }
+  if (!m_dll.Load())
+    return false;
   
   memset(&m_synth, 0, sizeof(m_synth));
   memset(&m_stream, 0, sizeof(m_stream));
   memset(&m_frame, 0, sizeof(m_frame));
 
-  mad_synth_init(&m_synth);
-  mad_stream_init(&m_stream);
-  mad_frame_init(&m_frame);
+  m_dll.mad_synth_init(&m_synth);
+  m_dll.mad_stream_init(&m_stream);
+  m_dll.mad_frame_init(&m_frame);
   m_stream.options = MAD_OPTION_IGNORECRC;
   
   m_iDecodedDataSize = 0;
@@ -79,15 +61,9 @@ void CDVDAudioCodecLibMad::Dispose()
   if (m_bInitialized)
   {
     mad_synth_finish (&m_synth);
-    mad_stream_finish(&m_stream);
-    mad_frame_finish (&m_frame);
+    m_dll.mad_stream_finish(&m_stream);
+    m_dll.mad_frame_finish (&m_frame);
     m_bInitialized = false;
-  }
-  
-  if (m_bDllLoaded)
-  {
-    g_sectionLoader.UnloadDLL(DLL_LIBMAD);
-    m_bDllLoaded = false;
   }
 }
 
@@ -112,11 +88,11 @@ int CDVDAudioCodecLibMad::Decode(BYTE* pData, int iSize)
 
   if (m_bInitialized)
   {
-    mad_stream_buffer(&m_stream, pBuffer, m_iInputBufferSize);
+    m_dll.mad_stream_buffer(&m_stream, pBuffer, m_iInputBufferSize);
 
     while (true)
     {
-      if (bFullOutputBuffer || mad_frame_decode(&m_frame, &m_stream) != MAD_ERROR_NONE)
+      if (bFullOutputBuffer || m_dll.mad_frame_decode(&m_frame, &m_stream) != MAD_ERROR_NONE)
       {
         if (m_stream.error == MAD_ERROR_BUFLEN || bFullOutputBuffer)
         {
@@ -148,7 +124,7 @@ int CDVDAudioCodecLibMad::Decode(BYTE* pData, int iSize)
         }
         
 	      // buffer again after a sync
-	      mad_stream_buffer(&m_stream, pBuffer, m_iInputBufferSize);
+	      m_dll.mad_stream_buffer(&m_stream, pBuffer, m_iInputBufferSize);
       }
       else
       {
@@ -177,7 +153,7 @@ int CDVDAudioCodecLibMad::Decode(BYTE* pData, int iSize)
                   "MPEG audio (lib: MAD)");
               }
   */
-        mad_synth_frame(&m_synth, &m_frame);
+        m_dll.mad_synth_frame(&m_synth, &m_frame);
         
         {
           unsigned int nchannels, nsamples;
@@ -232,12 +208,12 @@ void CDVDAudioCodecLibMad::Reset()
   if (m_bInitialized)
   {
     mad_synth_finish(&m_synth);
-    mad_stream_finish(&m_stream);
-    mad_frame_finish(&m_frame);
+    m_dll.mad_stream_finish(&m_stream);
+    m_dll.mad_frame_finish(&m_frame);
     
-    mad_synth_init(&m_synth);
-    mad_stream_init(&m_stream);
-    mad_frame_init(&m_frame);
+    m_dll.mad_synth_init(&m_synth);
+    m_dll.mad_stream_init(&m_stream);
+    m_dll.mad_frame_init(&m_frame);
     m_stream.options = MAD_OPTION_IGNORECRC;
     
     m_iDecodedDataSize = 0;

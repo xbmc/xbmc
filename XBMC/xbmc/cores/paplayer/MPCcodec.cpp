@@ -60,9 +60,6 @@ MPCCodec::MPCCodec()
   m_Bitrate = 0;
   m_CodecName = L"MPC";
 
-  // dll stuff
-  m_bDllLoaded = false;
-  ZeroMemory(&m_dll, sizeof(MPCdll));
   m_sampleBufferSize = 0;
   m_handle = NULL;
 }
@@ -70,15 +67,13 @@ MPCCodec::MPCCodec()
 MPCCodec::~MPCCodec()
 {
   DeInit();
-  if (m_bDllLoaded)
-    CSectionLoader::UnloadDLL(MPC_DLL);
 }
 
 bool MPCCodec::Init(const CStdString &strFile, unsigned int filecache)
 {
   m_file.Initialize(filecache);
 
-  if (!LoadDLL())
+  if (!m_dll.Load())
     return false;
 
   if (!m_file.Open(strFile))
@@ -210,35 +205,5 @@ int MPCCodec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
 
 bool MPCCodec::CanInit()
 {
-  return CFile::Exists(MPC_DLL);
-}
-
-bool MPCCodec::LoadDLL()
-{
-  if (m_bDllLoaded)
-    return true;
-
-  DllLoader* pDll = CSectionLoader::LoadDLL(MPC_DLL);
-  if (!pDll)
-  {
-    CLog::Log(LOGERROR, "MPCCodec: Unable to load dll %s", MPC_DLL);
-    return false;
-  }
-
-  // get handle to the functions in the dll
-  pDll->ResolveExport("Open", (void**)&m_dll.Open);
-  pDll->ResolveExport("Close", (void**)&m_dll.Close);
-  pDll->ResolveExport("Read", (void**)&m_dll.Read);
-  pDll->ResolveExport("Seek", (void**)&m_dll.Seek);
-
-  // Check resolves + version number
-  if (!m_dll.Open || !m_dll.Close || !m_dll.Read || !m_dll.Seek)
-  {
-    CLog::Log(LOGERROR, "MPCCodec: Unable to resolve exports from %s", MPC_DLL);
-    CSectionLoader::UnloadDLL(MPC_DLL);
-    return false;
-  }
-
-  m_bDllLoaded = true;
-  return true;
+  return m_dll.CanLoad();
 }

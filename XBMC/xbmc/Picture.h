@@ -1,18 +1,9 @@
 #pragma once
+#include "DllImageLib.h"
 
 class CPicture
 {
 public:
-  struct ImageInfo
-  {
-    unsigned int width;
-    unsigned int height;
-    unsigned int originalwidth;
-    unsigned int originalheight;
-    int rotation;
-    LPDIRECT3DTEXTURE8 texture;
-  };
-
   CPicture(void);
   virtual ~CPicture(void);
   IDirect3DTexture8* Load(const CStdString& strFilename, int iMaxWidth = 128, int iMaxHeight = 128);
@@ -47,21 +38,7 @@ private:
   };
   static const DWORD FVF_VERTEX = D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_TEX1;
 
-  struct ImageDLL
-  {
-    bool (__cdecl*  LoadImage)(const char *, unsigned int, unsigned int, ImageInfo *);
-    bool (__cdecl*  CreateThumbnail)(const char *, const char *);
-    bool (__cdecl*  CreateThumbnailFromMemory)(BYTE *, unsigned int, const char *, const char *);
-    bool (__cdecl*  CreateFolderThumbnail)(const char **, const char *);
-    bool (__cdecl*  CreateExifThumbnail)(const char *, const char *);
-    bool (__cdecl*  CreateThumbnailFromSurface)(BYTE *, unsigned int, unsigned int, unsigned int, const char *);
-    int  (__cdecl*  ConvertFile)(const char *, const char *, float, int, int, unsigned int);
-  };
-  bool LoadDLL();
-  bool m_bDllLoaded;
-  ImageDLL m_dll;
-
-  void Free();
+  DllImageLib m_dll;
 
   ImageInfo m_info;
 };

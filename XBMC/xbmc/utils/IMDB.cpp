@@ -15,68 +15,24 @@ using namespace HTML;
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
-int (__cdecl* IMDbGetSearchResults)(char *, const char *, const char *);
-int (__cdecl* IMDbGetDetails)(char *, const char *, const char *);
-
 CIMDB::CIMDB()
 {
-  m_pDll = NULL;
 }
 
 CIMDB::CIMDB(const CStdString& strProxyServer, int iProxyPort)
     : m_http(strProxyServer, iProxyPort)
 {
-  m_pDll = NULL;
 }
 
 CIMDB::~CIMDB()
 {
-  if (m_pDll)
-    delete m_pDll;
-  m_pDll = NULL;
-}
-
-bool CIMDB::LoadDLL()
-{
-  CStdString strDll = "Q:\\system\\HTMLScraper.dll";
-  m_pDll = new DllLoader(strDll.c_str(), true);
-  if (!m_pDll)
-  {
-    CLog::Log(LOGERROR, "IMDB: Unable to load dll %s", strDll.c_str());
-    return false;
-  }
-  if (!m_pDll->Parse())
-  {
-    // failed,
-    CLog::Log(LOGERROR, "IMDB: Unable to load dll %s", strDll.c_str());
-    delete m_pDll;
-    m_pDll = NULL;
-    return false;
-  }
-  m_pDll->ResolveImports();
-
-  // get handle to the functions in the dll
-  m_pDll->ResolveExport("IMDbGetSearchResults", (void**)&IMDbGetSearchResults);
-  m_pDll->ResolveExport("IMDbGetDetails", (void**)&IMDbGetDetails);
-
-  if (!IMDbGetSearchResults || !IMDbGetDetails)
-  {
-    CLog::Log(LOGERROR, "IMDB: Unable to load dll %s", strDll.c_str());
-    delete m_pDll;
-    m_pDll = NULL;
-    return false;
-  }
-  return true;
 }
 
 bool CIMDB::InternalFindMovie(const CStdString &strMovie, IMDB_MOVIELIST& movielist)
 {
   // load our dll if need be
-  if (!m_pDll)
-  {
-    if (!LoadDLL())
-      return false;
-  }
+  if (!m_dll.Load())
+    return false;
 
   CIMDBUrl url;
   movielist.clear();
@@ -91,7 +47,7 @@ bool CIMDB::InternalFindMovie(const CStdString &strMovie, IMDB_MOVIELIST& moviel
   }
   
   char *szXML = new char[80000];  // should be enough for 500 matches (max returned by IMDb)
-  if (!IMDbGetSearchResults(szXML, strHTML.c_str(), m_http.m_redirectedURL.c_str()))
+  if (!m_dll.IMDbGetSearchResults(szXML, strHTML.c_str(), m_http.m_redirectedURL.c_str()))
   {
     CLog::Log(LOGERROR, "IMDB: Unable to parse web site");
     return false;
@@ -137,7 +93,7 @@ bool CIMDB::GetString(const TiXmlNode* pRootNode, const char* strTag, CStdString
 bool CIMDB::InternalGetDetails(const CIMDBUrl& url, CIMDBMovie& movieDetails)
 {
   // load our dll if need be
-  if (!m_pDll && !LoadDLL())
+  if (!m_dll.Load())
     return false;
 
   CStdString strHTML, strPlotHTML;
@@ -186,7 +142,7 @@ bool CIMDB::InternalGetDetails(const CIMDBUrl& url, CIMDBMovie& movieDetails)
 
   // now grab our details using the dll
   char szXML[50000];
-  if (!IMDbGetDetails(szXML, strHTML.c_str(), strPlotHTML.c_str()))
+  if (!m_dll.IMDbGetDetails(szXML, strHTML.c_str(), strPlotHTML.c_str()))
   {
     CLog::Log(LOGERROR, "IMDB: Unable to parse web site");
     return false;
