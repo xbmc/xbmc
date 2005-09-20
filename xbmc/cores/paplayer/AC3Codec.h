@@ -2,31 +2,8 @@
 #pragma once
 
 #include "ICodec.h"
-#include "../../cores/DllLoader/DllLoader.h"
 #include "FileReader.h"
-
-
-typedef unsigned __int32 uint32_t;
-typedef unsigned __int16 uint16_t;
-typedef unsigned __int8  uint8_t;
-typedef __int32          int32_t;
-typedef __int16          int16_t;
-
-#ifdef __cplusplus
-extern "C"
-{
-#endif
-
-#include "..\dvdplayer\dvdcodecs\audio\liba52\a52.h"
-#ifdef LIBA52_DOUBLE
-typedef float convert_t;
-#else
-typedef sample_t convert_t;
-#endif
-
-#ifdef __cplusplus
-}
-#endif
+#include "DllAC3Codec.h"
 
 class AC3Codec : public ICodec
 {
@@ -58,7 +35,6 @@ protected:
   int  GetNrOfChannels(int flags);
   
   CFileReader m_file;
-  bool m_bDllLoaded;
   a52_state_t* m_pState;
 
   BYTE m_inputBuffer[3840];
@@ -86,16 +62,5 @@ protected:
 
   int m_iOutputChannels;
 
-  struct a52dll
-  {
-    a52_state_t * (__cdecl *a52_init) (uint32_t mm_accel);
-    sample_t * (__cdecl *a52_samples) (a52_state_t * state);
-    int (__cdecl *a52_syncinfo) (a52_state_t * state, uint8_t * buf, int * flags, int * sample_rate, int * bit_rate);
-    int (__cdecl *a52_frame) (a52_state_t * state, uint8_t * buf, int * flags, level_t * level, sample_t bias);
-    void (__cdecl *a52_dynrng) (a52_state_t * state, level_t (* call) (level_t, void *), void * data);
-    int (__cdecl *a52_block) (a52_state_t * state);
-    void (__cdecl *a52_free) (a52_state_t * state);
-  };
-  a52dll m_dll;
-
+  DllAc3Codec m_dll;
 };

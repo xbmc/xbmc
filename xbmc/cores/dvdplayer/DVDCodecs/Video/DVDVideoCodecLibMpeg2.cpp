@@ -39,7 +39,6 @@ CDVDVideoCodecLibMpeg2::CDVDVideoCodecLibMpeg2()
   m_pCurrentBuffer = NULL;
   m_irffpattern = 0;
   m_bFilm = false;
-  m_bDllLoaded = false;
 }
 
 CDVDVideoCodecLibMpeg2::~CDVDVideoCodecLibMpeg2()
@@ -140,45 +139,24 @@ void CDVDVideoCodecLibMpeg2::ReleaseBuffer(DVDVideoPicture* pPic)
 
 bool CDVDVideoCodecLibMpeg2::Open(CodecID codecID, int iWidth, int iHeight)
 {
-  if (!m_bDllLoaded)
-  {
-    DllLoader* pDll = g_sectionLoader.LoadDLL(DVD_LIBMPEG2_DLL);
-    if (!pDll)
-    {
-      CLog::Log(LOGERROR, "CDVDVideoCodecLibMpeg2: Unable to load dll %s", DVD_LIBMPEG2_DLL);
-      return false;
-    }
-    
-    if (!dvdplayer_load_dll_libmpeg2(*pDll))
-    {
-      CLog::Log(LOGERROR, "CDVDVideoCodecLibMpeg2: Unable to resolve exports from %s", DVD_LIBA52_DLL);
-      Dispose();
-      return false;
-    }
-    m_bDllLoaded = true;
-  }
+  if (!m_dll.Load())
+    return false;
 
-  // mpeg2_accel(MPEG2_ACCEL_DETECT);
+  // m_dll.mpeg2_accel(MPEG2_ACCEL_DETECT);
 
-  m_pHandle = mpeg2_init();
+  m_pHandle = m_dll.mpeg2_init();
   if (!m_pHandle) return false;
 
-  m_pInfo = mpeg2_info(m_pHandle);
+  m_pInfo = m_dll.mpeg2_info(m_pHandle);
 
   return true;
 }
 
 void CDVDVideoCodecLibMpeg2::Dispose()
 {
-  if (m_pHandle) mpeg2_close(m_pHandle);
+  if (m_pHandle) m_dll.mpeg2_close(m_pHandle);
   m_pHandle = NULL;
   m_pInfo = NULL;
-
-  if (m_bDllLoaded)
-  {
-    g_sectionLoader.UnloadDLL(DVD_LIBMPEG2_DLL);
-    m_bDllLoaded = false;
-  }
 
   DeleteBuffer(NULL);
   m_pCurrentBuffer = NULL;
@@ -194,13 +172,13 @@ int CDVDVideoCodecLibMpeg2::Decode(BYTE* pData, int iSize)
   if (pData != NULL || iSize != 0)
   {
     //buffer more data
-    iState = mpeg2_parse(m_pHandle);
+    iState = m_dll.mpeg2_parse(m_pHandle);
     if (iState == STATE_BUFFER)
     {
       if (!pData || iSize < 1) return VC_ERROR;
       // libmpeg2 needs more data. Give it and parse the data again
-      mpeg2_buffer(m_pHandle, pData, pData + iSize);
-      iState = mpeg2_parse(m_pHandle);
+      m_dll.mpeg2_buffer(m_pHandle, pData, pData + iSize);
+      iState = m_dll.mpeg2_parse(m_pHandle);
     }
     else
     {
@@ -210,7 +188,7 @@ int CDVDVideoCodecLibMpeg2::Decode(BYTE* pData, int iSize)
   }
   else
   {
-    iState = mpeg2_parse(m_pHandle);
+    iState = m_dll.mpeg2_parse(m_pHandle);
   }
 
   DVDVideoPicture* pBuffer;
@@ -229,7 +207,7 @@ int CDVDVideoCodecLibMpeg2::Decode(BYTE* pData, int iSize)
         {
           //Setup all buffers we wish to use.
           pBuffer = GetBuffer(m_pInfo->sequence->width, m_pInfo->sequence->height);
-          mpeg2_set_buf(m_pHandle, pBuffer->data, pBuffer);
+          m_dll.mpeg2_set_buf(m_pHandle, pBuffer->data, pBuffer);
         }
         break;
       }
@@ -390,7 +368,7 @@ int CDVDVideoCodecLibMpeg2::Decode(BYTE* pData, int iSize)
       }
     default: break;
     }
-    iState = mpeg2_parse(m_pHandle);
+    iState = m_dll.mpeg2_parse(m_pHandle);
   }
 
   if (iState == STATE_BUFFER) return VC_BUFFER;
@@ -406,9 +384,9 @@ bool CDVDVideoCodecLibMpeg2::Flush()
   int iState = 0;
   while (iState != STATE_SLICE || iState != STATE_END || iState != STATE_INVALID_END)
   {
-    iState = mpeg2_parse(m_pHandle);
+    iState = m_dll.mpeg2_parse(m_pHandle);
     if (iState == STATE_BUFFER)
-    mpeg2_buffer(m_pHandle, blanc, blanc + 2048);
+    m_dll.mpeg2_buffer(m_pHandle, blanc, blanc + 2048);
   }*/
   return false;
 }
@@ -416,7 +394,7 @@ bool CDVDVideoCodecLibMpeg2::Flush()
 void CDVDVideoCodecLibMpeg2::Reset()
 {
   CLog::DebugLog("RESET(LIBMPEG2)");
-  if (m_pHandle) mpeg2_reset(m_pHandle, 1);
+  if (m_pHandle) m_dll.mpeg2_reset(m_pHandle, 1);
 
   ReleaseBuffer(NULL);
   m_pCurrentBuffer = NULL;

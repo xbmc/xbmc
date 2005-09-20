@@ -5,15 +5,8 @@
 #include "..\IDVDPlayer.h"
 #include <string>
 
-#ifdef __cplusplus
-extern "C"
-{
-#endif
- #define DVDNAV_COMPILE
- #include "dvdnav/dvdnav.h"
-#ifdef __cplusplus
-}
-#endif
+#include "DllDvdNav.h"
+#include "DllDvdCss.h"
 
 #define DVD_VIDEO_BLOCKSIZE         DVD_VIDEO_LB_LEN // 2048 bytes
 
@@ -24,7 +17,6 @@ extern "C"
 #define LIBDVDNAV_BUTTON_NORMAL 0
 #define LIBDVDNAV_BUTTON_CLICKED 1
 
-class DllLoader;
 class CDVDDemuxSPU;
 class CSPUInfo;
 class CDVDOverlayPicture;
@@ -99,10 +91,6 @@ public:
 
 protected:
 
-  bool LoadLibdvdcssDll();
-  bool LoadLibdvdnavDll();
-  void UnloadDlls();
-
   int ProcessBlock(BYTE* buffer, int* read);
 
   int GetTotalButtons();
@@ -111,8 +99,8 @@ protected:
   void Lock()   { EnterCriticalSection(&m_critSection); }
   void Unlock() { LeaveCriticalSection(&m_critSection); }
   
-  bool m_bDllLibdvdnavLoaded;
-  bool m_bDllLibdvdcssLoaded;
+  DllDvdNav m_dll;
+  DllDvdCss m_dllDvdCss;  // Just a dummy for loading/unloading
   bool m_bDiscardHop;
   bool m_bCheckButtons;
   bool m_bStopped;

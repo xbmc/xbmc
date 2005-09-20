@@ -11,8 +11,8 @@
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
-CScreenSaver::CScreenSaver(struct ScreenSaver* pScr, DllLoader* pLoader, const CStdString& strScreenSaverName)
-    : m_pLoader(pLoader)
+CScreenSaver::CScreenSaver(struct ScreenSaver* pScr, DllScreensaver* pDll, const CStdString& strScreenSaverName)
+    : m_pDll(pDll)
     , m_pScr(pScr)
     , m_strScreenSaverName(strScreenSaverName)
 {}

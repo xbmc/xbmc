@@ -3,20 +3,6 @@
 #include "DVDAudioCodecLiba52.h"
 #include "..\..\DVDPLayerDLL.h"
 
-
-typedef unsigned __int32 uint32_t;
-typedef unsigned __int8 uint8_t;
-typedef __int16 int16_t;
-
-#ifdef __cplusplus
-extern "C"
-{
-#endif
-#  include "liba52\a52.h"
-#ifdef __cplusplus
-}
-#endif
-
 // forward declarations
 void fast_memcpy(void* d, const void* s, unsigned n);
 
@@ -49,7 +35,6 @@ static inline void float_to_int (float * _f, __int16 * s16, int nchannels)
 CDVDAudioCodecLiba52::CDVDAudioCodecLiba52() : CDVDAudioCodec()
 {
   m_pState = NULL;
-  m_bDllLoaded = false;
   m_iSourceChannels = 0;
   m_iSourceSampleRate = 0;
   m_iSourceBitrate = 0;
@@ -64,34 +49,19 @@ CDVDAudioCodecLiba52::~CDVDAudioCodecLiba52()
 
 bool CDVDAudioCodecLiba52::Open(CodecID codecID, int iChannels, int iSampleRate, int iBits)
 {
-  if (!m_bDllLoaded)
-  {
-    DllLoader* pDll = g_sectionLoader.LoadDLL(DVD_LIBA52_DLL);
-    if (!pDll)
-    {
-      CLog::Log(LOGERROR, "CDVDAudioCodecLiba52: Unable to load dll %s", DVD_LIBA52_DLL);
-      return false;
-    }
-    
-    if (!dvdplayer_load_dll_liba52(*pDll))
-    {
-      CLog::Log(LOGERROR, "CDVDAudioCodecLiba52: Unable to resolve exports from %s", DVD_LIBA52_DLL);
-      Dispose();
-      return false;
-    }
-    m_bDllLoaded = true;
-  }
+  if (!m_dll.Load())
+    return false;
 
   SetDefault();
 
-  m_pState = a52_init(0);
+  m_pState = m_dll.a52_init(0);
   if (!m_pState)
   {
     Dispose();
     return false;
   }
 
-  m_fSamples = a52_samples(m_pState);
+  m_fSamples = m_dll.a52_samples(m_pState);
 
   // set desired output
   m_iOutputChannels = iChannels;
@@ -101,14 +71,8 @@ bool CDVDAudioCodecLiba52::Open(CodecID codecID, int iChannels, int iSampleRate,
 
 void CDVDAudioCodecLiba52::Dispose()
 {
-  if (m_pState) a52_free(m_pState);
+  if (m_pState) m_dll.a52_free(m_pState);
   m_pState = NULL;
-
-  if (m_bDllLoaded)
-  {
-    g_sectionLoader.UnloadDLL(DVD_LIBA52_DLL);
-    m_bDllLoaded = false;
-  }
 }
 
 #define HEADER_SIZE 7
@@ -135,7 +99,7 @@ int CDVDAudioCodecLiba52::Decode(BYTE* pData, int iSize)
             iSize -= len;
             if ((m_pInputBuffer - m_inputBuffer) == HEADER_SIZE)
             {
-                len = a52_syncinfo(m_inputBuffer, &m_iFlags, &m_iSourceSampleRate, &m_iSourceBitrate);
+                len = m_dll.a52_syncinfo(m_inputBuffer, &m_iFlags, &m_iSourceSampleRate, &m_iSourceBitrate);
                 if (len == 0)
                 {
                    // no sync found : move by one byte (inefficient, but simple!)
@@ -177,7 +141,7 @@ int CDVDAudioCodecLiba52::Decode(BYTE* pData, int iSize)
                 iFlags |= A52_ADJUST_LEVEL;
 
             float fLevel = 1.0f;
-            if (a52_frame(m_pState, m_inputBuffer, &iFlags, &fLevel, 384))
+            if (m_dll.a52_frame(m_pState, m_inputBuffer, &iFlags, &fLevel, 384))
             {
             fail:
                 m_pInputBuffer = m_inputBuffer;
@@ -186,7 +150,7 @@ int CDVDAudioCodecLiba52::Decode(BYTE* pData, int iSize)
             }
             for (i = 0; i < 6; i++)
             {
-                if (a52_block(m_pState) != 0) goto fail;
+                if (m_dll.a52_block(m_pState) != 0) goto fail;
                 float_to_int(m_fSamples, (short*)m_decodedData + i * 256 * m_iChannels, m_iChannels);
             }
             m_pInputBuffer = m_inputBuffer;
@@ -214,7 +178,7 @@ int CDVDAudioCodecLiba52::Decode(BYTE* pData, int iSize)
         // so use m_pInputBuffer to copy the rest of the data. We must rest it after a52_syncinfo though!!
         for (int u = 0; u < 7; u++) m_pInputBuffer[u] = pData[u];
 
-        iLen = a52_syncinfo(m_inputBuffer, &m_iFlags, &m_iSourceSampleRate, &m_iSourceBitrate);
+        iLen = m_dll.a52_syncinfo(m_inputBuffer, &m_iFlags, &m_iSourceSampleRate, &m_iSourceBitrate);
         if (iLen > 0)
         {
           if (m_iSourceChannels == 0)
@@ -275,12 +239,12 @@ int CDVDAudioCodecLiba52::Decode(BYTE* pData, int iSize)
         iFlags |= A52_ADJUST_LEVEL;
       };
 
-      a52_frame(m_pState, m_inputBuffer, &iFlags, &fLevel, 384);
+      m_dll.a52_frame(m_pState, m_inputBuffer, &iFlags, &fLevel, 384);
 
       // [a52_dynrng (state, ...); this is only optional]
       for (int i = 0; i < 6; i++)
       {
-        if (a52_block(m_pState) != 0)
+        if (m_dll.a52_block(m_pState) != 0)
         {
           OutputDebugString("Error!!!!!!!!!!");
           m_pInputBuffer = m_inputBuffer;
@@ -307,7 +271,7 @@ bool CDVDAudioCodecLiba52::SyncAC3Header(BYTE* pData, int iDataSize, int* iOffse
     int i = 0, iLen = 0;
     while (i <= (iDataSize - 7))
     {
-      iLen = a52_syncinfo(pData, &m_iFlags, &m_iSourceSampleRate, &m_iSourceBitrate);
+      iLen = m_dll.a52_syncinfo(pData, &m_iFlags, &m_iSourceSampleRate, &m_iSourceBitrate);
       if (iLen > 0)
       {
         if (m_iSourceChannels == 0)
@@ -346,12 +310,12 @@ void CDVDAudioCodecLiba52::SetDefault()
 
 void CDVDAudioCodecLiba52::Reset()
 {
-  if (m_pState) a52_free(m_pState);
+  if (m_pState) m_dll.a52_free(m_pState);
 
   SetDefault();
 
-  m_pState = a52_init(0);
-  m_fSamples = a52_samples(m_pState);
+  m_pState = m_dll.a52_init(0);
+  m_fSamples = m_dll.a52_samples(m_pState);
 }
 
 int CDVDAudioCodecLiba52::GetChannels()

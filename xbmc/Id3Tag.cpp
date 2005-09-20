@@ -4,25 +4,15 @@
 #include "util.h"
 #include "picture.h"
 
-#define ID3_DLL "Q:\\system\\libid3tag.dll"
-
 using namespace MUSIC_INFO;
 
 CID3Tag::CID3Tag()
 {
-  // dll stuff
-  ZeroMemory(&m_dll, sizeof(ID3dll));
-  m_bDllLoaded = false;
-
   m_tag=NULL;
-
-  LoadDLL();
 }
 
 CID3Tag::~CID3Tag()
 {
-  if (m_bDllLoaded)
-    CSectionLoader::UnloadDLL(ID3_DLL);
 }
 
 CStdString CID3Tag::ToStringCharset(const id3_ucs4_t* ucs4, id3_field_textencoding encoding) const
@@ -56,6 +46,9 @@ id3_ucs4_t* CID3Tag::StringCharsetToUcs4(const CStdString& str) const
 
 bool CID3Tag::Read(const CStdString& strFile)
 {
+  if (!m_dll.IsLoaded())
+    m_dll.Load();
+
   CTag::Read(strFile);
 
   id3_file* id3file = m_dll.id3_file_open(strFile.c_str(), ID3_FILE_MODE_READONLY);
@@ -170,6 +163,9 @@ bool CID3Tag::Parse()
 
 bool CID3Tag::Write(const CStdString& strFile)
 {
+  if (!m_dll.IsLoaded())
+    m_dll.Load();
+
   CTag::Read(strFile);
 
   id3_file* id3file = m_dll.id3_file_open(strFile.c_str(), ID3_FILE_MODE_READWRITE);
@@ -354,6 +350,9 @@ void CID3Tag::SetEncodedBy(const CStdString& strValue)
 
 CStdString CID3Tag::ParseMP3Genre(const CStdString& str) const
 {
+  if (!m_dll.IsLoaded())
+    m_dll.Load();
+
   CStdString strTemp = str;
   set<CStdString> setGenres;
 
@@ -472,118 +471,4 @@ void CID3Tag::ParseReplayGainInfo()
     m_replayGain.fAlbumPeak = (float)atof(strGain.c_str());
     m_replayGain.iHasGainInfo |= REPLAY_GAIN_HAS_ALBUM_PEAK;
   }
-}
-
-bool CID3Tag::LoadDLL()
-{
-  if (m_bDllLoaded)
-    return true;
-
-  DllLoader* pDll=CSectionLoader::LoadDLL(ID3_DLL);
-
-  bool bResult = (
-                    /* file interface */
-                    pDll->ResolveExport("id3_file_open", (void**)&m_dll.id3_file_open) && 
-                    pDll->ResolveExport("id3_file_fdopen", (void**)&m_dll.id3_file_fdopen) && 
-                    pDll->ResolveExport("id3_file_close", (void**)&m_dll.id3_file_close) && 
-                    pDll->ResolveExport("id3_file_tag", (void**)&m_dll.id3_file_tag) && 
-                    pDll->ResolveExport("id3_file_update", (void**)&m_dll.id3_file_update) && 
-
-                    /* tag interface */
-                    pDll->ResolveExport("id3_tag_new", (void**)&m_dll.id3_tag_new) && 
-                    pDll->ResolveExport("id3_tag_delete", (void**)&m_dll.id3_tag_delete) && 
-                    pDll->ResolveExport("id3_tag_version", (void**)&m_dll.id3_tag_version) && 
-                    pDll->ResolveExport("id3_tag_options", (void**)&m_dll.id3_tag_options) && 
-                    pDll->ResolveExport("id3_tag_setlength", (void**)&m_dll.id3_tag_setlength) && 
-                    pDll->ResolveExport("id3_tag_clearframes", (void**)&m_dll.id3_tag_clearframes) && 
-                    pDll->ResolveExport("id3_tag_attachframe", (void**)&m_dll.id3_tag_attachframe) && 
-                    pDll->ResolveExport("id3_tag_detachframe", (void**)&m_dll.id3_tag_detachframe) && 
-                    pDll->ResolveExport("id3_tag_findframe", (void**)&m_dll.id3_tag_findframe) && 
-                    pDll->ResolveExport("id3_tag_query", (void**)&m_dll.id3_tag_query) && 
-                    pDll->ResolveExport("id3_tag_parse", (void**)&m_dll.id3_tag_parse) && 
-                    pDll->ResolveExport("id3_tag_render", (void**)&m_dll.id3_tag_render) && 
-
-                    /* frame interface */
-                    pDll->ResolveExport("id3_frame_new", (void**)&m_dll.id3_frame_new) && 
-                    pDll->ResolveExport("id3_frame_delete", (void**)&m_dll.id3_frame_delete) && 
-                    pDll->ResolveExport("id3_frame_field", (void**)&m_dll.id3_frame_field) && 
-
-                    /* field interface */
-                    pDll->ResolveExport("id3_field_type", (void**)&m_dll.id3_field_type) && 
-                    pDll->ResolveExport("id3_field_setint", (void**)&m_dll.id3_field_setint) && 
-                    pDll->ResolveExport("id3_field_settextencoding", (void**)&m_dll.id3_field_settextencoding) && 
-                    pDll->ResolveExport("id3_field_setstrings", (void**)&m_dll.id3_field_setstrings) && 
-                    pDll->ResolveExport("id3_field_addstring", (void**)&m_dll.id3_field_addstring) && 
-                    pDll->ResolveExport("id3_field_setlanguage", (void**)&m_dll.id3_field_setlanguage) && 
-                    pDll->ResolveExport("id3_field_setlatin1", (void**)&m_dll.id3_field_setlatin1) && 
-                    pDll->ResolveExport("id3_field_setfulllatin1", (void**)&m_dll.id3_field_setfulllatin1) && 
-                    pDll->ResolveExport("id3_field_setstring", (void**)&m_dll.id3_field_setstring) && 
-                    pDll->ResolveExport("id3_field_setfullstring", (void**)&m_dll.id3_field_setfullstring) && 
-                    pDll->ResolveExport("id3_field_setframeid", (void**)&m_dll.id3_field_setframeid) && 
-                    pDll->ResolveExport("id3_field_setbinarydata", (void**)&m_dll.id3_field_setbinarydata) && 
-                    pDll->ResolveExport("id3_field_getint", (void**)&m_dll.id3_field_getint) && 
-                    pDll->ResolveExport("id3_field_gettextencoding", (void**)&m_dll.id3_field_gettextencoding) && 
-                    pDll->ResolveExport("id3_field_getlatin1", (void**)&m_dll.id3_field_getlatin1) && 
-                    pDll->ResolveExport("id3_field_getfulllatin1", (void**)&m_dll.id3_field_getfulllatin1) && 
-                    pDll->ResolveExport("id3_field_getstring", (void**)&m_dll.id3_field_getstring) && 
-                    pDll->ResolveExport("id3_field_getfullstring", (void**)&m_dll.id3_field_getfullstring) && 
-                    pDll->ResolveExport("id3_field_getnstrings", (void**)&m_dll.id3_field_getnstrings) && 
-                    pDll->ResolveExport("id3_field_getstrings", (void**)&m_dll.id3_field_getstrings) && 
-                    pDll->ResolveExport("id3_field_getframeid", (void**)&m_dll.id3_field_getframeid) && 
-                    pDll->ResolveExport("id3_field_getbinarydata", (void**)&m_dll.id3_field_getbinarydata) && 
-
-                    /* genre interface */
-                    pDll->ResolveExport("id3_genre_index", (void**)&m_dll.id3_genre_index) && 
-                    pDll->ResolveExport("id3_genre_name", (void**)&m_dll.id3_genre_name) && 
-                    pDll->ResolveExport("id3_genre_number", (void**)&m_dll.id3_genre_number) && 
-
-                    /* ucs4 interface */
-                    pDll->ResolveExport("id3_ucs4_latin1duplicate", (void**)&m_dll.id3_ucs4_latin1duplicate) && 
-                    pDll->ResolveExport("id3_ucs4_utf16duplicate", (void**)&m_dll.id3_ucs4_utf16duplicate) && 
-                    pDll->ResolveExport("id3_ucs4_utf8duplicate", (void**)&m_dll.id3_ucs4_utf8duplicate) && 
-                    pDll->ResolveExport("id3_ucs4_putnumber", (void**)&m_dll.id3_ucs4_putnumber) && 
-                    pDll->ResolveExport("id3_ucs4_getnumber", (void**)&m_dll.id3_ucs4_getnumber) && 
-                    pDll->ResolveExport("id3_ucs4_free", (void**)&m_dll.id3_ucs4_free) && 
-
-                    /* latin1/utf16/utf8 interfaces */
-                    pDll->ResolveExport("id3_latin1_ucs4duplicate", (void**)&m_dll.id3_latin1_ucs4duplicate) && 
-                    pDll->ResolveExport("id3_utf16_ucs4duplicate", (void**)&m_dll.id3_utf16_ucs4duplicate) && 
-                    pDll->ResolveExport("id3_utf8_ucs4duplicate", (void**)&m_dll.id3_utf8_ucs4duplicate) && 
-                    pDll->ResolveExport("id3_latin1_free", (void**)&m_dll.id3_latin1_free) && 
-                    pDll->ResolveExport("id3_utf16_free", (void**)&m_dll.id3_utf16_free) && 
-                    pDll->ResolveExport("id3_utf8_free", (void**)&m_dll.id3_utf8_free) && 
-
-                    /* metadata interface */
-                    pDll->ResolveExport("id3_metadata_getartist", (void**)&m_dll.id3_metadata_getartist) && 
-                    pDll->ResolveExport("id3_metadata_getalbum", (void**)&m_dll.id3_metadata_getalbum) && 
-                    pDll->ResolveExport("id3_metadata_gettitle", (void**)&m_dll.id3_metadata_gettitle) && 
-                    pDll->ResolveExport("id3_metadata_gettrack", (void**)&m_dll.id3_metadata_gettrack) && 
-                    pDll->ResolveExport("id3_metadata_getpartofset", (void**)&m_dll.id3_metadata_getpartofset) && 
-                    pDll->ResolveExport("id3_metadata_getyear", (void**)&m_dll.id3_metadata_getyear) && 
-                    pDll->ResolveExport("id3_metadata_getgenre", (void**)&m_dll.id3_metadata_getgenre) && 
-                    pDll->ResolveExport("id3_metadata_getcomment", (void**)&m_dll.id3_metadata_getcomment) && 
-                    pDll->ResolveExport("id3_metadata_getencodedby", (void**)&m_dll.id3_metadata_getencodedby) && 
-                    pDll->ResolveExport("id3_metadata_haspicture", (void**)&m_dll.id3_metadata_haspicture) && 
-                    pDll->ResolveExport("id3_metadata_getpicturemimetype", (void**)&m_dll.id3_metadata_getpicturemimetype) && 
-                    pDll->ResolveExport("id3_metadata_getpicturedata", (void**)&m_dll.id3_metadata_getpicturedata) && 
-                    pDll->ResolveExport("id3_metadata_getuniquefileidentifier", (void**)&m_dll.id3_metadata_getuniquefileidentifier) && 
-                    pDll->ResolveExport("id3_metadata_getusertext", (void**)&m_dll.id3_metadata_getusertext) && 
-                    pDll->ResolveExport("id3_metadata_getfirstnonstandardpictype", (void**)&m_dll.id3_metadata_getfirstnonstandardpictype) && 
-                    pDll->ResolveExport("id3_metadata_setartist", (void**)&m_dll.id3_metadata_setartist) && 
-                    pDll->ResolveExport("id3_metadata_setalbum", (void**)&m_dll.id3_metadata_setalbum) && 
-                    pDll->ResolveExport("id3_metadata_settitle", (void**)&m_dll.id3_metadata_settitle) && 
-                    pDll->ResolveExport("id3_metadata_settrack", (void**)&m_dll.id3_metadata_settrack) && 
-                    pDll->ResolveExport("id3_metadata_setpartofset", (void**)&m_dll.id3_metadata_setpartofset) && 
-                    pDll->ResolveExport("id3_metadata_setyear", (void**)&m_dll.id3_metadata_setyear) && 
-                    pDll->ResolveExport("id3_metadata_setgenre", (void**)&m_dll.id3_metadata_setgenre) && 
-                    pDll->ResolveExport("id3_metadata_setencodedby", (void**)&m_dll.id3_metadata_setencodedby));
-
-  if (!bResult)
-  {
-    CLog::Log(LOGERROR, "ID3Tag: Unable to load our dll %s", ID3_DLL);
-    return false;
-  }
-
-  m_bDllLoaded = true;
-  return true;
 }

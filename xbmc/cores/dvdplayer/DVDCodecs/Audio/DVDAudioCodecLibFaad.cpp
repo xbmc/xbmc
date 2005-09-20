@@ -3,11 +3,8 @@
 #include "DVDAudioCodecLibFaad.h"
 #include "..\..\DVDPLayerDLL.h"
 
-#define DLL_LIBFAAD "Q:\\system\\players\\dvdplayer\\libfaad.dll"
-
 CDVDAudioCodecLibFaad::CDVDAudioCodecLibFaad() : CDVDAudioCodec()
 {
-  m_bDllLoaded = false;
   m_bInitializedDecoder = false;
   
   m_pHandle = NULL;
@@ -23,23 +20,8 @@ bool CDVDAudioCodecLibFaad::Open(CodecID codecID, int iChannels, int iSampleRate
   // for safety
   if (m_pHandle) Dispose();
   
-  if (!m_bDllLoaded)
-  {
-    DllLoader* pDll = g_sectionLoader.LoadDLL(DLL_LIBFAAD);
-    if (!pDll)
-    {
-      CLog::Log(LOGERROR, "CDVDAudioCodecLibFaad: Unable to load dll %s", DLL_LIBFAAD);
-      return false;
-    }
-    
-    if (!dvdplayer_load_dll_libfaad(*pDll))
-    {
-      CLog::Log(LOGERROR, "CDVDAudioCodecLibFaad: Unable to resolve exports from %s", DLL_LIBFAAD);
-      Dispose();
-      return false;
-    }
-    m_bDllLoaded = true;
-  }
+  if (!m_dll.Load())
+    return false;
   
   memset(&m_frameInfo, 0, sizeof(m_frameInfo));
   
@@ -49,12 +31,6 @@ bool CDVDAudioCodecLibFaad::Open(CodecID codecID, int iChannels, int iSampleRate
 void CDVDAudioCodecLibFaad::Dispose()
 {
   CloseDecoder();
-  
-  if (m_bDllLoaded)
-  {
-    g_sectionLoader.UnloadDLL(DLL_LIBFAAD);
-    m_bDllLoaded = false;
-  }
 }
 
 int CDVDAudioCodecLibFaad::Decode(BYTE* pData, int iSize)
@@ -83,7 +59,7 @@ int CDVDAudioCodecLibFaad::Decode(BYTE* pData, int iSize)
       unsigned long samplerate;
       unsigned char channels;
       
-      int res = faacDecInit(m_pHandle, m_inputBuffer, m_iInputBufferSize, &samplerate, &channels);
+      int res = m_dll.faacDecInit(m_pHandle, m_inputBuffer, m_iInputBufferSize, &samplerate, &channels);
       if (0 == res)
       {
         m_iSourceSampleRate = samplerate;
@@ -101,7 +77,7 @@ int CDVDAudioCodecLibFaad::Decode(BYTE* pData, int iSize)
     // the output buffer has enough free bytes to save the decoded data
     while (m_iInputBufferSize >= FAAD_MIN_STREAMSIZE && !bFullDecodedBuffer)
     {
-      void* pSamples = faacDecDecode(m_pHandle, &m_frameInfo, pInputData, m_iInputBufferSize);
+      void* pSamples = m_dll.faacDecDecode(m_pHandle, &m_frameInfo, pInputData, m_iInputBufferSize);
       if (!m_frameInfo.error && pSamples)
       {
         // we set this info again, it could be this info changed 
@@ -133,7 +109,7 @@ int CDVDAudioCodecLibFaad::Decode(BYTE* pData, int iSize)
         
         if (m_frameInfo.error)
         {
-          char* strError = faacDecGetErrorMessage(m_frameInfo.error);
+          char* strError = m_dll.faacDecGetErrorMessage(m_frameInfo.error);
           CLog::Log(LOGERROR, "CDVDAudioCodecLibFaad() : %s", strError);
         }
       }
@@ -167,7 +143,7 @@ void CDVDAudioCodecLibFaad::CloseDecoder()
 {
   if (m_pHandle)
   {
-    faacDecClose(m_pHandle);
+    m_dll.faacDecClose(m_pHandle);
     m_pHandle = NULL;
   }
 }
@@ -189,17 +165,17 @@ bool CDVDAudioCodecLibFaad::OpenDecoder()
   m_iSourceChannels = 0;
   m_iSourceBitrate = 0;
   
-  m_pHandle = faacDecOpen();
+  m_pHandle = m_dll.faacDecOpen();
   
   if (m_pHandle)
   {
     faacDecConfigurationPtr pConfiguration;
-    pConfiguration = faacDecGetCurrentConfiguration(m_pHandle);
+    pConfiguration = m_dll.faacDecGetCurrentConfiguration(m_pHandle);
     
     // modify some stuff here
     pConfiguration->outputFormat = FAAD_FMT_16BIT; // already default
     
-    faacDecSetConfiguration(m_pHandle, pConfiguration);
+    m_dll.faacDecSetConfiguration(m_pHandle, pConfiguration);
     
     return true;
   }
