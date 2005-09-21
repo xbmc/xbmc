@@ -25,7 +25,7 @@
 #include "memutil.h"
 using namespace std;
 
-#ifdef _DEBUG
+#if defined(_DEBUG) && defined(_MEMTRACKING)
 #define _CRTDBG_MAP_ALLOC
 #include <FStream>
 #include <stdlib.h>
