@@ -179,7 +179,7 @@ static int audio_init(int rate, int channels, int format, int flags)
   { // check if we should resample this audio
     // currently we don't do this for videos for fear of CPU issues
     bool bResample(false);
-    if( !mplayer_HasVideo())
+    if( !mplayer_HasVideo() && channels <= 2 )
     {
       bResample = true;
     }
