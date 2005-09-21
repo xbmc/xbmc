@@ -200,6 +200,7 @@ int CSMBDirectory::OpenDir(CStdString& strAuth)
   }
 
   
+  urlIn.GetURL(strPath);
 
   // for a finite number of attempts use the following instead of the while loop:
   // for(int i = 0; i < 3, fd < 0; i++)
@@ -222,11 +223,9 @@ int CSMBDirectory::OpenDir(CStdString& strAuth)
         urlIn.SetPassword("");
       }
 
+      urlIn.GetURL(strPath);
       iTryAutomatic--;
     }
-
-    //Get URI here, wich we will use from here on
-    urlIn.GetURL(strPath);   
 
     smb.Lock();
     fd = smbc_opendir(strPath.c_str());
