@@ -664,6 +664,7 @@ HRESULT CApplication::Create()
   ::DeleteFile(strLogFileOld.c_str());
   ::MoveFile(strLogFile.c_str(), strLogFileOld.c_str());
   
+  /*
   //
   CStdString strHomePath = "Q:";
   if (g_settings.QuickXMLLoad("home"))
@@ -695,13 +696,15 @@ HRESULT CApplication::Create()
       CLog::Log(LOGNOTICE, "-----------------------------------------------------------------------");
     }
   }
+  */
   CLog::Log(LOGNOTICE, "-----------------------------------------------------------------------");
   CLog::Log(LOGNOTICE, "Starting XBoxMediaCenter.  Built on %s", __DATE__);
-  CLog::Log(LOGNOTICE, "Home Path Q is mapped to: %s (%s)", strHomePath.c_str(), szDevicePath );
+  CLog::Log(LOGNOTICE, "Q is mapped to: %s",szDevicePath );
+  //CLog::Log(LOGNOTICE, "Home Path Q is mapped to: %s (%s)", strHomePath.c_str(), szDevicePath );
   CLog::Log(LOGNOTICE, "Log File is located: %s", strLogFile.c_str());
   CLog::Log(LOGNOTICE, "-----------------------------------------------------------------------");
   // reset our strHomePath to Q:, so it can be checked again!
-  strHomePath = "Q:";
+  //strHomePath = "Q:";
   // Initialize core peripheral port support. Note: If these parameters
   // are 0 and NULL, respectively, then the default number and types of
   // controllers will be initialized.
@@ -850,14 +853,16 @@ HRESULT CApplication::Create()
 
   // check settings to see if another home dir is defined.
   // if there is, we check if it's a xbmc dir and map to it Q:
-/*  CStdString strHomePath = "Q:";
+  CStdString strHomePath = "Q:";
   if (strlen(g_stSettings.szHomeDir) > 1)
   {
-    CLog::Log(LOGNOTICE, "remap Q: to homedir:%s...", g_stSettings.szHomeDir);
+     CLog::Log(LOGNOTICE, "-----------------------------------------------------------------------");
+     CLog::Log(LOGNOTICE, "New Home Path! Q is mapped to: %s", szDevicePath);
+     CLog::Log(LOGNOTICE, "-----------------------------------------------------------------------");
     // home dir is defined in xboxmediacenter.xml
     strHomePath = g_stSettings.szHomeDir;
   }
-*/
+
   CLog::Log(LOGINFO, "Checking skinpath existance, and existence of keymap.xml:%s...", (strHomePath + "\\skin").c_str());
   if (!access(strHomePath + "\\skin", 0) && !access(strHomePath + "\\keymap.xml", 0))
   {
@@ -874,7 +879,9 @@ HRESULT CApplication::Create()
       ::MoveFile(strLogFile.c_str(), strLogFileOld.c_str());
 
       CLog::Close();
-      CLog::Log(LOGNOTICE, "Q is mapped to:%s", szDevicePath);
+      CLog::Log(LOGNOTICE, "-----------------------------------------------------------------------");
+      CLog::Log(LOGNOTICE, "New Home Path! Q is mapped to: %s", szDevicePath);
+      CLog::Log(LOGNOTICE, "-----------------------------------------------------------------------");
     }
   }
   else
@@ -897,7 +904,9 @@ HRESULT CApplication::Create()
     }
     if (bFoundHomePath)
     {
-      CLog::Log(LOGINFO, "Found homepath:%s...", strHomePath.c_str());
+      CLog::Log(LOGNOTICE, "-----------------------------------------------------------------------");
+      CLog::Log(LOGNOTICE, "Home Path! Q is mapped to: %s", szDevicePath);
+      CLog::Log(LOGNOTICE, "-----------------------------------------------------------------------");
       helper.GetPartition(strHomePath, szDevicePath);
       strcat(szDevicePath, &strHomePath.c_str()[2]);
       strcpy(g_stSettings.szHomeDir, strHomePath.c_str());
@@ -909,7 +918,6 @@ HRESULT CApplication::Create()
       ::MoveFile(strLogFile.c_str(), strLogFileOld.c_str());
 
       CLog::Close();
-      CLog::Log(LOGNOTICE, "Q is mapped to:%s", szDevicePath);
     }
     else
     {
@@ -918,7 +926,11 @@ HRESULT CApplication::Create()
     }
   }
 
+  CLog::Log(LOGNOTICE, "-----------------------------------------------------------------------");
   CLog::Log(LOGNOTICE, "Starting XBoxMediaCenter.  Built on %s", __DATE__);
+  CLog::Log(LOGNOTICE, "Home Path Q is mapped to: %s (%s)", strHomePath.c_str(), szDevicePath );
+  CLog::Log(LOGNOTICE, "Log File is located: %s", strLogFile.c_str());
+  CLog::Log(LOGNOTICE, "-----------------------------------------------------------------------");
 
   if (!g_graphicsContext.IsValidResolution(g_guiSettings.m_LookAndFeelResolution))
   {
