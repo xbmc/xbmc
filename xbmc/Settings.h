@@ -201,7 +201,7 @@ public:
   virtual ~CSettings(void);
 
   bool Load(bool& bXboxMediacenter, bool& bSettings);
-  bool QuickLoad();
+  bool QuickXMLLoad(CStdString strElement);
   void Save() const;
 
   void Clear();

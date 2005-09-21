@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 21-09-2005 fixed: reading settings from xboxmediacenter.xml  was broken! This should solve other issues! [GeminiServer]
+ - 21-09-2005 changed: reorganized the Homedir log structure! [GeminiServer]
  - 21-09-2005 changed: disabled software upsampling for multichannel audio (>2). (MPlayer, DVDPlayer)
  - 21-09-2005 fixed: manual authentiction for smb wasn't working
  - 21-09-2005 fixed: when set to dhcp, samba wouldn't be set to use the correct interface. 
