@@ -45,8 +45,7 @@ void CLog::Log(int loglevel, const char *format, ... )
     if (!fd)
     {
       char LogFile[1024];
-      CSettings c_settings;
-      if (c_settings.QuickLoad())
+      if (g_settings.QuickXMLLoad("logpath"))
       {
         CStdString strLogPath = g_stSettings.m_szlogpath;
         if (!strLogPath.IsEmpty())
