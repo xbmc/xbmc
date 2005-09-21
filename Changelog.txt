@@ -5,13 +5,14 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 21-09-2005 changed: disabled upsampling for multichannel audio (>2). (MPlayer, DVDPlayer)
  - 21-09-2005 fixed: manual authentiction for smb wasn't working
  - 21-09-2005 fixed: when set to dhcp, samba wouldn't be set to use the correct interface. 
  - 19-09-2005 added: wrapper class for dll's (See DynamicDll.h for more info)
  - 19-09-2005 added: Milkdrop now supports stereo 3d mode.
  - 19-09-2005 added: AC3-wav, AC3-cdda, DTS-wav and DTS-cdda playback to paplayer.
                      NOTE: DTS-wav and DTS-cdda will always output as AC3.
- - 19-09-2005 changed: disabled upsampling for multichannel audio (>2).
+ - 19-09-2005 changed: disabled upsampling for multichannel audio (>2). (PAPlayer)
  - 19-09-2005 changed: disabled crossfading for cdda.
  - 19-09-2005 fixed: with crossfading enabled a new track with a different amount of channels as the currently playing file could not be started.
  - 19-09-2005 changed: context menu Audio & Video & Picture -> to avoid large context menu,  grayed out context menu items are now removed! They will displayed if required!
