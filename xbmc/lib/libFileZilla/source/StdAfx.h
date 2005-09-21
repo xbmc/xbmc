@@ -56,7 +56,7 @@
 #include <list>
 #include <vector>
 
-#ifdef _XBOX
+#if defined(_XBOX) && defined(_MEMTRACKING)
 #ifdef _DEBUG
 #define _CRTDBG_MAP_ALLOC
 #include <FStream>
