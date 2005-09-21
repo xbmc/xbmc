@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 21-09-2005 changed: reversed and fixed double xboxmediacenter.xml settings issue if home path was set [GeminiServer]
  - 21-09-2005 fixed: reading settings from xboxmediacenter.xml  was broken! This should solve other issues! [GeminiServer]
  - 21-09-2005 changed: reorganized the Homedir log structure! [GeminiServer]
  - 21-09-2005 changed: disabled software upsampling for multichannel audio (>2). (MPlayer, DVDPlayer)
