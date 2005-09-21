@@ -6,7 +6,7 @@
 #include "FileSmb.h"
 #include "../GUIPassword.h"
 #include "SMBDirectory.h"
-
+#include "../util.h"
 
 void xb_smbc_log(const char* msg)
 {
@@ -35,10 +35,14 @@ void CSMB::Init()
   if (!binitialized)
   {
     // set ip and subnet
+    CStdString strTitleIP;
+    CUtil::GetTitleIP(strTitleIP);
+
     char szIPAddress[20];
     char szNetMask[20];
-    strcpy(szIPAddress, g_guiSettings.GetString("Network.IPAddress").c_str());
-    strcpy(szNetMask, g_guiSettings.GetString("Network.IPAddress").c_str());
+    strcpy(szIPAddress, strTitleIP.c_str());
+    strcpy(szNetMask, strTitleIP.c_str()); //Weird, we really should have the subnetmask here
+
     set_xbox_interface(szIPAddress, szNetMask);
     // set log function
     set_log_callback(xb_smbc_log);
