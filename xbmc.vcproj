@@ -28,13 +28,14 @@
 				SmallerTypeCheck="TRUE"
 				RuntimeLibrary="1"
 				BufferSecurityCheck="TRUE"
+				EnableFunctionLevelLinking="TRUE"
 				EnableEnhancedInstructionSet="1"
 				RuntimeTypeInfo="TRUE"
 				UsePrecompiledHeader="2"
 				AssemblerOutput="4"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="FALSE"
-				DebugInformationFormat="3"/>
+				DebugInformationFormat="4"/>
 			<Tool
 				Name="VCCustomBuildTool"/>
 			<Tool
@@ -56,7 +57,8 @@
 				Name="VCPreLinkEventTool"/>
 			<Tool
 				Name="XboxDeploymentTool"
-				RemotePath="xe:\xbmc\xbmcd.xbe"/>
+				RemotePath="xe:\xbmc\xbmcd.xbe"
+				Progress="FALSE"/>
 			<Tool
 				Name="XboxImageTool"
 				FileName="$(TargetDir)default.xbe"
@@ -64,7 +66,7 @@
 				IncludeDebugInfo="TRUE"
 				InsertFile=".\media\dsstdfx.bin,dsstdfx,r"
 				NoLibWarn="TRUE"
-				NoPreload="LIBXBMS;LIBSMB;ISO9660;PYTHON;PY_RW;LIBHTTP;LIBMP4;LIBXDAAP"
+				NoPreload="LIBXBMS;LIBSMB;ISO9660;PYTHON;PY_RW;LIBHTTP"
 				TitleID="0xFACE008"
 				MediaTypes="0x80000007"
 				TitleName="Xbox Media Center Debug"/>
@@ -77,16 +79,19 @@
 			CharacterSet="2">
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/Oy-"
 				Optimization="3"
 				GlobalOptimizations="TRUE"
 				FavorSizeOrSpeed="2"
-				OmitFramePointers="TRUE"
+				OmitFramePointers="FALSE"
 				OptimizeForProcessor="2"
-				PreprocessorDefinitions="NDEBUG;_XBOX;PROFILE"
-				StringPooling="TRUE"
+				AdditionalIncludeDirectories="guilib;guilib/common;guilib/tinyxml;&quot;$(XDK)\Samples\Xbox\Common\Include&quot;"
+				PreprocessorDefinitions="NDEBUG;_XBOX;PROFILE;HAVE_MSWINDOWS"
+				StringPooling="FALSE"
 				RuntimeLibrary="0"
-				EnableFunctionLevelLinking="TRUE"
+				EnableFunctionLevelLinking="FALSE"
 				EnableEnhancedInstructionSet="1"
+				RuntimeTypeInfo="TRUE"
 				UsePrecompiledHeader="2"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="FALSE"
@@ -98,6 +103,7 @@
 				AdditionalDependencies="xapilib.lib d3d8i.lib d3dx8.lib xgraphics.lib dsound.lib dmusici.lib xactengi.lib xsndtrk.lib xvoice.lib xonlines.lib xboxkrnl.lib xbdm.lib xperf.lib xkbd.lib"
 				OutputFile="$(OutDir)/$(ProjectName).exe"
 				LinkIncremental="1"
+				IgnoreDefaultLibraryNames="libc"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile="$(OutDir)/$(ProjectName).pdb"
 				SubSystem="2"
@@ -113,15 +119,18 @@
 			<Tool
 				Name="VCPreLinkEventTool"/>
 			<Tool
-				Name="XboxDeploymentTool"/>
+				Name="XboxDeploymentTool"
+				RemotePath="xe:\xbmc\profile.xbe"/>
 			<Tool
 				Name="XboxImageTool"
 				StackSize="65536"
 				IncludeDebugInfo="TRUE"
+				InsertFile=".\media\dsstdfx.bin,dsstdfx,r"
 				NoLibWarn="TRUE"
+				NoPreload="LIBXBMS;LIBSMB;ISO9660;PYTHON;PY_RW;LIBHTTP"
 				TitleID="0xFACE008"
 				MediaTypes="0x80000007"
-				TitleName="Xbox Media Center"/>
+				TitleName="Xbox Media Center Profile"/>
 		</Configuration>
 		<Configuration
 			Name="Profile_FastCap|Xbox"
@@ -131,14 +140,16 @@
 			CharacterSet="2">
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/Oy-"
 				Optimization="3"
-				OmitFramePointers="TRUE"
+				GlobalOptimizations="TRUE"
+				OmitFramePointers="FALSE"
 				OptimizeForProcessor="2"
-				AdditionalIncludeDirectories="guilib;guilib/common;guilib/tinyxml"
+				AdditionalIncludeDirectories="guilib;guilib/common;guilib/tinyxml;&quot;$(XDK)\Samples\Xbox\Common\Include&quot;"
 				PreprocessorDefinitions="NDEBUG;_XBOX;PROFILE;FASTCAP;HAVE_MSWINDOWS"
-				StringPooling="TRUE"
+				StringPooling="FALSE"
 				RuntimeLibrary="0"
-				EnableFunctionLevelLinking="TRUE"
+				EnableFunctionLevelLinking="FALSE"
 				EnableEnhancedInstructionSet="1"
 				RuntimeTypeInfo="TRUE"
 				UsePrecompiledHeader="2"
@@ -170,18 +181,17 @@
 				Name="VCPreLinkEventTool"/>
 			<Tool
 				Name="XboxDeploymentTool"
-				RemotePath="xe:\xbmc\xbmcfc.xbe"/>
+				RemotePath="xe:\xbmc\profilefc.xbe"/>
 			<Tool
 				Name="XboxImageTool"
-				FileName="$(TargetDir)default.xbe"
 				StackSize="0x80000"
 				IncludeDebugInfo="TRUE"
 				InsertFile=".\media\dsstdfx.bin,dsstdfx,r"
 				NoLibWarn="TRUE"
-				NoPreload="LIBXBMS;LIBSMB;ISO9660;PYTHON"
+				NoPreload="LIBXBMS;LIBSMB;ISO9660;PYTHON;PY_RW;LIBHTTP"
 				TitleID="0xFACE008"
 				MediaTypes="0x80000007"
-				TitleName="Xbox Media Center"/>
+				TitleName="Xbox Media Center Profile_FastCap"/>
 		</Configuration>
 		<Configuration
 			Name="Release|Xbox"
@@ -193,7 +203,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="3"
 				GlobalOptimizations="TRUE"
-				InlineFunctionExpansion="1"
+				InlineFunctionExpansion="0"
 				EnableIntrinsicFunctions="TRUE"
 				ImproveFloatingPointConsistency="FALSE"
 				FavorSizeOrSpeed="2"
@@ -214,7 +224,7 @@
 				PrecompiledHeaderThrough="StdAfx.h"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="FALSE"
-				DebugInformationFormat="0"/>
+				DebugInformationFormat="3"/>
 			<Tool
 				Name="VCCustomBuildTool"/>
 			<Tool
@@ -223,7 +233,7 @@
 				OutputFile="$(OutDir)/$(ProjectName).exe"
 				LinkIncremental="1"
 				IgnoreDefaultLibraryNames="libc"
-				GenerateDebugInformation="FALSE"
+				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile="$(OutDir)/$(ProjectName).pdb"
 				SubSystem="2"
 				OptimizeReferences="2"
@@ -272,6 +282,7 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="TRUE"
 				EnableEnhancedInstructionSet="1"
+				RuntimeTypeInfo="TRUE"
 				UsePrecompiledHeader="2"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="FALSE"
@@ -302,68 +313,8 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 			<Tool
 				Name="XboxImageTool"
 				StackSize="65536"
-				TitleID="0xFACE008"
-				MediaTypes="0x80000007"
-				TitleName="Xbox Media Center"/>
-		</Configuration>
-		<Configuration
-			Name="Release Xbox  Debugging|Xbox"
-			OutputDirectory="$(ConfigurationName)"
-			IntermediateDirectory="$(ConfigurationName)"
-			ConfigurationType="1"
-			CharacterSet="2">
-			<Tool
-				Name="VCCLCompilerTool"
-				Optimization="3"
-				GlobalOptimizations="TRUE"
-				FavorSizeOrSpeed="2"
-				OmitFramePointers="TRUE"
-				OptimizeForProcessor="2"
-				AdditionalIncludeDirectories="guilib;guilib/common;guilib/tinyxml;&quot;$(XDK)\Samples\Xbox\Common\Include&quot;"
-				PreprocessorDefinitions="NDEBUG;_XBOX;HAVE_MSWINDOWS"
-				StringPooling="FALSE"
-				BasicRuntimeChecks="0"
-				SmallerTypeCheck="FALSE"
-				RuntimeLibrary="0"
-				BufferSecurityCheck="FALSE"
-				EnableFunctionLevelLinking="FALSE"
-				EnableEnhancedInstructionSet="1"
-				RuntimeTypeInfo="TRUE"
-				UsePrecompiledHeader="2"
-				WarningLevel="3"
-				Detect64BitPortabilityProblems="FALSE"
-				DebugInformationFormat="3"/>
-			<Tool
-				Name="VCCustomBuildTool"/>
-			<Tool
-				Name="VCLinkerTool"
-				AdditionalDependencies="xapilib.lib d3dx8.lib d3d8.lib xgraphics.lib dsound.lib xboxkrnl.lib xonline.lib  xkbd.lib xvoice.lib"
-				OutputFile="$(OutDir)/$(ProjectName).exe"
-				LinkIncremental="1"
-				IgnoreDefaultLibraryNames="libc"
-				GenerateDebugInformation="TRUE"
-				ProgramDatabaseFile="$(OutDir)/$(ProjectName).pdb"
-				SubSystem="2"
-				OptimizeReferences="2"
-				EnableCOMDATFolding="2"
-				OptimizeForWindows98="1"
-				SetChecksum="TRUE"
-				TargetMachine="1"/>
-			<Tool
-				Name="VCPostBuildEventTool"/>
-			<Tool
-				Name="VCPreBuildEventTool"/>
-			<Tool
-				Name="VCPreLinkEventTool"/>
-			<Tool
-				Name="XboxDeploymentTool"
-				RemotePath="xe:\xbmc\defaultd.xbe"/>
-			<Tool
-				Name="XboxImageTool"
-				FileName="$(TargetDir)default.xbe"
-				StackSize="0x80000"
 				InsertFile=".\media\dsstdfx.bin,dsstdfx,r"
-				NoPreload="LIBXBMS;LIBSMB;ISO9660;PYTHON"
+				NoPreload="LIBXBMS;LIBSMB;ISO9660;PYTHON;PY_RW;LIBHTTP"
 				TitleID="0xFACE008"
 				MediaTypes="0x80000007"
 				TitleName="Xbox Media Center"/>
@@ -1936,6 +1887,9 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 			Name="common"
 			Filter="">
 			<File
+				RelativePath=".\xbmc\lib\common\xbprofiling.cpp">
+			</File>
+			<File
 				RelativePath=".\xbmc\lib\common\xbstopwatch.cpp">
 			</File>
 		</Filter>
@@ -2076,7 +2030,13 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					Name="Debug|Xbox">
 					<Tool
 						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories="xbmc/lib/libsidplay/libsidplay/include,xbmc/lib/libsidplay/libsidutils/include"/>
+						AdditionalIncludeDirectories="xbmc/lib/libsidplay/libsidplay/include,xbmc/lib/libsidplay/libsidutils/include,xbmc\lib\libsidplay\builders\resid-builder\include"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Profile|Xbox">
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories="xbmc/lib/libsidplay/libsidplay/include,xbmc/lib/libsidplay/libsidutils/include,xbmc\lib\libsidplay\builders\resid-builder\include"/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Profile_FastCap|Xbox">
@@ -2091,7 +2051,13 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 						AdditionalIncludeDirectories="xbmc/lib/libsidplay/libsidplay/include,xbmc/lib/libsidplay/libsidutils/include,xbmc\lib\libsidplay\builders\resid-builder\include"/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release Xbox  Debugging|Xbox">
+					Name="Release_LTCG|Xbox">
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories="xbmc/lib/libsidplay/libsidplay/include,xbmc/lib/libsidplay/libsidutils/include,xbmc\lib\libsidplay\builders\resid-builder\include"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug Xbox No Memory Tracking|Xbox">
 					<Tool
 						Name="VCCLCompilerTool"
 						AdditionalIncludeDirectories="xbmc/lib/libsidplay/libsidplay/include,xbmc/lib/libsidplay/libsidutils/include,xbmc\lib\libsidplay\builders\resid-builder\include"/>
@@ -2103,8 +2069,13 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					Name="Debug|Xbox">
 					<Tool
 						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories="xbmc/lib/libsidplay/libsidplay/include,xbmc/lib/libsidplay/libsidutils/include,xbmc\lib\libsidplay\builders\resid-builder\include"
-						PreprocessorDefinitions="_XBOX;_DEBUG;HAVE_MSWINDOWS"/>
+						AdditionalIncludeDirectories="xbmc/lib/libsidplay/libsidplay/include,xbmc/lib/libsidplay/libsidutils/include,xbmc\lib\libsidplay\builders\resid-builder\include"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Profile|Xbox">
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories="xbmc/lib/libsidplay/libsidplay/include,xbmc/lib/libsidplay/libsidutils/include,xbmc\lib\libsidplay\builders\resid-builder\include"/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Profile_FastCap|Xbox">
@@ -2116,22 +2087,19 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					Name="Release|Xbox">
 					<Tool
 						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories="xbmc/lib/libsidplay/libsidplay/include,xbmc/lib/libsidplay/libsidutils/include,xbmc\lib\libsidplay\builders\resid-builder\include"
-						PreprocessorDefinitions="_XBOX;NDEBUG;HAVE_MSWINDOWS"/>
+						AdditionalIncludeDirectories="xbmc/lib/libsidplay/libsidplay/include,xbmc/lib/libsidplay/libsidutils/include,xbmc\lib\libsidplay\builders\resid-builder\include"/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release Xbox  Debugging|Xbox">
+					Name="Release_LTCG|Xbox">
 					<Tool
 						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories="xbmc/lib/libsidplay/libsidplay/include,xbmc/lib/libsidplay/libsidutils/include,xbmc\lib\libsidplay\builders\resid-builder\include"
-						PreprocessorDefinitions="_XBOX;NDEBUG;HAVE_MSWINDOWS"/>
+						AdditionalIncludeDirectories="xbmc/lib/libsidplay/libsidplay/include,xbmc/lib/libsidplay/libsidutils/include,xbmc\lib\libsidplay\builders\resid-builder\include"/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Debug Xbox No Memory Tracking|Xbox">
 					<Tool
 						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories="xbmc/lib/libsidplay/libsidplay/include,xbmc/lib/libsidplay/libsidutils/include,xbmc\lib\libsidplay\builders\resid-builder\include"
-						PreprocessorDefinitions="_XBOX;_DEBUG;HAVE_MSWINDOWS"/>
+						AdditionalIncludeDirectories="xbmc/lib/libsidplay/libsidplay/include,xbmc/lib/libsidplay/libsidutils/include,xbmc\lib\libsidplay\builders\resid-builder\include"/>
 				</FileConfiguration>
 			</File>
 			<File
@@ -2188,12 +2156,6 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release Xbox  Debugging|Xbox">
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-					</FileConfiguration>
-					<FileConfiguration
 						Name="Debug Xbox No Memory Tracking|Xbox">
 						<Tool
 							Name="VCCLCompilerTool"
@@ -2230,10 +2192,10 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\cores\sidplayer\audio\AudioDrv.h">
 				</File>
 				<File
-					RelativePath=".\xbmc\cores\sidplayer\config.h">
+					RelativePath=".\xbmc\cores\sidplayer\audio\config.h">
 				</File>
 				<File
-					RelativePath=".\xbmc\cores\sidplayer\audio\config.h">
+					RelativePath=".\xbmc\cores\sidplayer\config.h">
 				</File>
 				<File
 					RelativePath=".\xbmc\cores\sidplayer\IniConfig.cpp">
@@ -2241,34 +2203,42 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 						Name="Debug|Xbox">
 						<Tool
 							Name="VCCLCompilerTool"
+							AdditionalIncludeDirectories="xbmc/lib/libsidplay/libsidplay/include,xbmc/lib/libsidplay/libsidutils/include"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Profile|Xbox">
+						<Tool
+							Name="VCCLCompilerTool"
 							AdditionalIncludeDirectories="xbmc/lib/libsidplay/libsidplay/include,xbmc/lib/libsidplay/libsidutils/include"
-							PreprocessorDefinitions="_XBOX;_DEBUG;HAVE_MSWINDOWS"/>
+							PreprocessorDefinitions="HAVE_MSWINDOWS"/>
 					</FileConfiguration>
 					<FileConfiguration
 						Name="Profile_FastCap|Xbox">
 						<Tool
 							Name="VCCLCompilerTool"
-							AdditionalIncludeDirectories="xbmc/lib/libsidplay/libsidplay/include,xbmc/lib/libsidplay/libsidutils/include"/>
+							AdditionalIncludeDirectories="xbmc/lib/libsidplay/libsidplay/include,xbmc/lib/libsidplay/libsidutils/include"
+							PreprocessorDefinitions="HAVE_MSWINDOWS"/>
 					</FileConfiguration>
 					<FileConfiguration
 						Name="Release|Xbox">
 						<Tool
 							Name="VCCLCompilerTool"
 							AdditionalIncludeDirectories="xbmc/lib/libsidplay/libsidplay/include,xbmc/lib/libsidplay/libsidutils/include"
-							PreprocessorDefinitions="_XBOX;NDEBUG;HAVE_MSWINDOWS"/>
+							PreprocessorDefinitions="HAVE_MSWINDOWS"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release Xbox  Debugging|Xbox">
+						Name="Release_LTCG|Xbox">
 						<Tool
 							Name="VCCLCompilerTool"
 							AdditionalIncludeDirectories="xbmc/lib/libsidplay/libsidplay/include,xbmc/lib/libsidplay/libsidutils/include"
-							PreprocessorDefinitions="_XBOX;NDEBUG;HAVE_MSWINDOWS"/>
+							PreprocessorDefinitions="HAVE_MSWINDOWS"/>
 					</FileConfiguration>
 					<FileConfiguration
 						Name="Debug Xbox No Memory Tracking|Xbox">
 						<Tool
 							Name="VCCLCompilerTool"
-							PreprocessorDefinitions="_XBOX;_DEBUG;HAVE_MSWINDOWS"/>
+							AdditionalIncludeDirectories="xbmc/lib/libsidplay/libsidplay/include,xbmc/lib/libsidplay/libsidutils/include"
+							PreprocessorDefinitions="HAVE_MSWINDOWS"/>
 					</FileConfiguration>
 				</File>
 				<File
@@ -2280,34 +2250,42 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 						Name="Debug|Xbox">
 						<Tool
 							Name="VCCLCompilerTool"
+							AdditionalIncludeDirectories="xbmc/lib/libsidplay/libsidplay/include,xbmc/lib/libsidplay/libsidutils/include"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Profile|Xbox">
+						<Tool
+							Name="VCCLCompilerTool"
 							AdditionalIncludeDirectories="xbmc/lib/libsidplay/libsidplay/include,xbmc/lib/libsidplay/libsidutils/include"
-							PreprocessorDefinitions="_XBOX;_DEBUG;HAVE_MSWINDOWS"/>
+							PreprocessorDefinitions="HAVE_MSWINDOWS"/>
 					</FileConfiguration>
 					<FileConfiguration
 						Name="Profile_FastCap|Xbox">
 						<Tool
 							Name="VCCLCompilerTool"
-							AdditionalIncludeDirectories="xbmc/lib/libsidplay/libsidplay/include,xbmc/lib/libsidplay/libsidutils/include"/>
+							AdditionalIncludeDirectories="xbmc/lib/libsidplay/libsidplay/include,xbmc/lib/libsidplay/libsidutils/include"
+							PreprocessorDefinitions="HAVE_MSWINDOWS"/>
 					</FileConfiguration>
 					<FileConfiguration
 						Name="Release|Xbox">
 						<Tool
 							Name="VCCLCompilerTool"
 							AdditionalIncludeDirectories="xbmc/lib/libsidplay/libsidplay/include,xbmc/lib/libsidplay/libsidutils/include"
-							PreprocessorDefinitions="_XBOX;NDEBUG;HAVE_MSWINDOWS"/>
+							PreprocessorDefinitions="HAVE_MSWINDOWS"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release Xbox  Debugging|Xbox">
+						Name="Release_LTCG|Xbox">
 						<Tool
 							Name="VCCLCompilerTool"
 							AdditionalIncludeDirectories="xbmc/lib/libsidplay/libsidplay/include,xbmc/lib/libsidplay/libsidutils/include"
-							PreprocessorDefinitions="_XBOX;NDEBUG;HAVE_MSWINDOWS"/>
+							PreprocessorDefinitions="HAVE_MSWINDOWS"/>
 					</FileConfiguration>
 					<FileConfiguration
 						Name="Debug Xbox No Memory Tracking|Xbox">
 						<Tool
 							Name="VCCLCompilerTool"
-							PreprocessorDefinitions="_XBOX;_DEBUG;HAVE_MSWINDOWS"/>
+							AdditionalIncludeDirectories="xbmc/lib/libsidplay/libsidplay/include,xbmc/lib/libsidplay/libsidutils/include"
+							PreprocessorDefinitions="HAVE_MSWINDOWS"/>
 					</FileConfiguration>
 				</File>
 				<File
@@ -2319,34 +2297,42 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 						Name="Debug|Xbox">
 						<Tool
 							Name="VCCLCompilerTool"
+							AdditionalIncludeDirectories="xbmc/lib/libsidplay/libsidplay/include,xbmc/lib/libsidplay/libsidutils/include"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Profile|Xbox">
+						<Tool
+							Name="VCCLCompilerTool"
 							AdditionalIncludeDirectories="xbmc/lib/libsidplay/libsidplay/include,xbmc/lib/libsidplay/libsidutils/include"
-							PreprocessorDefinitions="_XBOX;_DEBUG;HAVE_MSWINDOWS"/>
+							PreprocessorDefinitions="HAVE_MSWINDOWS"/>
 					</FileConfiguration>
 					<FileConfiguration
 						Name="Profile_FastCap|Xbox">
 						<Tool
 							Name="VCCLCompilerTool"
-							AdditionalIncludeDirectories="xbmc/lib/libsidplay/libsidplay/include,xbmc/lib/libsidplay/libsidutils/include"/>
+							AdditionalIncludeDirectories="xbmc/lib/libsidplay/libsidplay/include,xbmc/lib/libsidplay/libsidutils/include"
+							PreprocessorDefinitions="HAVE_MSWINDOWS"/>
 					</FileConfiguration>
 					<FileConfiguration
 						Name="Release|Xbox">
 						<Tool
 							Name="VCCLCompilerTool"
 							AdditionalIncludeDirectories="xbmc/lib/libsidplay/libsidplay/include,xbmc/lib/libsidplay/libsidutils/include"
-							PreprocessorDefinitions="_XBOX;NDEBUG;HAVE_MSWINDOWS"/>
+							PreprocessorDefinitions="HAVE_MSWINDOWS"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release Xbox  Debugging|Xbox">
+						Name="Release_LTCG|Xbox">
 						<Tool
 							Name="VCCLCompilerTool"
 							AdditionalIncludeDirectories="xbmc/lib/libsidplay/libsidplay/include,xbmc/lib/libsidplay/libsidutils/include"
-							PreprocessorDefinitions="_XBOX;NDEBUG;HAVE_MSWINDOWS"/>
+							PreprocessorDefinitions="HAVE_MSWINDOWS"/>
 					</FileConfiguration>
 					<FileConfiguration
 						Name="Debug Xbox No Memory Tracking|Xbox">
 						<Tool
 							Name="VCCLCompilerTool"
-							PreprocessorDefinitions="_XBOX;_DEBUG;HAVE_MSWINDOWS"/>
+							AdditionalIncludeDirectories="xbmc/lib/libsidplay/libsidplay/include,xbmc/lib/libsidplay/libsidutils/include"
+							PreprocessorDefinitions="HAVE_MSWINDOWS"/>
 					</FileConfiguration>
 				</File>
 				<File
