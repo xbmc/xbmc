@@ -836,6 +836,37 @@ char *CRegExp::regnext(char *p)
 	return((OP(p) == BACK) ? p-offset : p+offset);
 }
 
+
+// GetValueCount - Get the number of subvalues available
+int CRegExp::GetSubCount()
+{
+  int i=0;
+  for(int no=1;no<NSUBEXP;no++)
+  {
+    if( startp[no] != NULL && endp[no] != NULL )
+      i++;
+    else
+      break;
+  }
+  return i;
+}
+
+int CRegExp::GetSubStart(int iSub)
+{
+  if( startp[iSub] != NULL )
+    return startp[iSub]-startp[0];
+  else
+    return 0;
+}
+
+int CRegExp::GetSubLenght(int iSub)
+{
+  if( startp[iSub] != NULL && endp[iSub] != NULL )
+    return endp[iSub]-startp[iSub];
+  else
+    return 0;
+}
+
 // GetReplaceString	- Converts a replace expression to a string
 // Returns			- Pointer to newly allocated string
 //					  Caller is responsible for deleting it
