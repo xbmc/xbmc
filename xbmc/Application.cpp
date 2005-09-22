@@ -634,32 +634,37 @@ HRESULT CApplication::Create()
   helper.Unmount("Q:");
   helper.Mount("Q:", szDevicePath);
 
-  //
+  // check logpath
   CStdString strLogFile, strLogFileOld;
+  strLogFile.Format("Q:\\xbmc.log");
+  strLogFileOld.Format("Q:\\xbmc.old.log");
+
   if (g_settings.QuickXMLLoad("logpath"))
   {
     CStdString strLogPath = g_stSettings.m_szlogpath;
-    if (!strLogPath.IsEmpty()){
-      //We need to mount before we can start the log File!
-      helper.Remap("C:,Harddisk0\\Partition2");
-      helper.Remap("E:,Harddisk0\\Partition1");
-      if ((g_stSettings.m_bAutoDetectFG && helper.IsDrivePresent("F:")) || g_stSettings.m_bUseFDrive) helper.Remap("F:,Harddisk0\\Partition6");
-      if ((g_stSettings.m_bAutoDetectFG && helper.IsDrivePresent("G:")) || g_stSettings.m_bUseGDrive) helper.Remap("G:,Harddisk0\\Partition7");
-      helper.Remap("X:,Harddisk0\\Partition3");
-      helper.Remap("Y:,Harddisk0\\Partition4");
-      helper.Remap("Z:,Harddisk0\\Partition5");
+    if (!strLogPath.IsEmpty())
+    {
+      // proper parameter checking, make sure its an HD path
+      if (CUtil::IsHD(strLogPath))
+      {
+        //ensure there's a '\' on the end
+        if (!CUtil::HasSlashAtEnd(strLogPath))
+          strLogPath += "\\";
 
-      strLogFile.Format("%sxbmc.log", strLogPath.c_str());
-      strLogFileOld.Format("%sxbmc.old.log", strLogPath.c_str());
+        //We need to mount before we can start the log File!
+        helper.Remap("C:,Harddisk0\\Partition2");
+        helper.Remap("E:,Harddisk0\\Partition1");
+        if ((g_stSettings.m_bAutoDetectFG && helper.IsDrivePresent("F:")) || g_stSettings.m_bUseFDrive) helper.Remap("F:,Harddisk0\\Partition6");
+        if ((g_stSettings.m_bAutoDetectFG && helper.IsDrivePresent("G:")) || g_stSettings.m_bUseGDrive) helper.Remap("G:,Harddisk0\\Partition7");
+        helper.Remap("X:,Harddisk0\\Partition3");
+        helper.Remap("Y:,Harddisk0\\Partition4");
+        helper.Remap("Z:,Harddisk0\\Partition5");
+        
+        strLogFile.Format("%sxbmc.log", strLogPath.c_str());
+        strLogFileOld.Format("%sxbmc.old.log", strLogPath.c_str());
+      }
     }
-    else{
-      strLogFile.Format("Q:\\xbmc.log");
-      strLogFileOld.Format("Q:\\xbmc.old.log");
-    }
-  }else{
-      strLogFile.Format("Q:\\xbmc.log");
-      strLogFileOld.Format("Q:\\xbmc.old.log");
-    }
+  }
 
   ::DeleteFile(strLogFileOld.c_str());
   ::MoveFile(strLogFile.c_str(), strLogFileOld.c_str());
