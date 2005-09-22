@@ -135,18 +135,43 @@ bool CUtil::GetVolumeFromFileName(const CStdString& strFileName, CStdString& str
     if (iFoundToken >= 0)
     { // found this token
       int iRegLength = reg.GetFindLen();
-      char *pReplace = reg.GetReplaceString("\\1");
-      if (pReplace)
+      int iCount = reg.GetSubCount();
+      if( 1 == iCount )
       {
-        strVolumeNumber = pReplace;
-        free(pReplace);
-        // remove the extension (if any).  We do this on the base filename, as the regexp
-        // match may include some of the extension (eg the "." in particular).
-        RemoveExtension(strFileNameTemp);
-        CStdString strFileRight = strFileNameTemp.Mid(iFoundToken + iRegLength);
-        strFileTitle = strFileName.Left(iFoundToken) + strFileRight;
+        char *pReplace = reg.GetReplaceString("\\1");
+
+        if (pReplace)
+        {
+          strVolumeNumber = pReplace;
+          free(pReplace);
+
+          // remove the extension (if any).  We do this on the base filename, as the regexp
+          // match may include some of the extension (eg the "." in particular).
+
+          //Why should the extension be removed here.. that is a display problem not stacking problem
+          RemoveExtension(strFileNameTemp);
+          CStdString strFileRight = strFileNameTemp.Mid(iFoundToken + iRegLength);
+          strFileTitle = strFileName.Left(iFoundToken) + strFileRight;
+          return true;
+        }
+
+      }
+      else if( iCount > 1 )
+      {        
+        //Second Sub value contains the stacking
+        strVolumeNumber = strFileName.Mid(iFoundToken + reg.GetSubStart(2), reg.GetSubLenght(2));
+
+        strFileTitle = strFileName.Left(iFoundToken);
+
+        //First Sub value contains prefix
+        strFileTitle += strFileName.Mid(iFoundToken + reg.GetSubStart(1), reg.GetSubLenght(1));
+
+        //Third Sub value contains suffix
+        strFileTitle += strFileName.Mid(iFoundToken + reg.GetSubStart(3), reg.GetSubLenght(3));
+        strFileTitle += strFileNameTemp.Mid(iFoundToken + iRegLength);
         return true;
       }
+
     }
   }
   return false;
@@ -178,13 +203,17 @@ void CUtil::CleanFileName(CStdString& strFileName)
 {
   bool result = false;
 
-  // assume extension has already been removed
-
   // remove volume indicator from stacked files
   CStdString strFileTitle;
   CStdString strVolumeNumber;
   if (GetVolumeFromFileName(strFileName, strFileTitle, strVolumeNumber))
+  {
+    //If we have same extension as before (ie GetVolumeFromFileName didn't remove it). remove it now
+    if( strcmp( GetExtension(strFileName.c_str()), GetExtension(strFileTitle.c_str()) ) == 0 )
+      RemoveExtension(strFileTitle);
+
     strFileName = strFileTitle;
+  }
   else
     RemoveExtension(strFileName);
 
