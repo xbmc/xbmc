@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 23-09-2005 fixed: AlarmClock command parser.
  - 23-09-2005 fixed: Release build wouldn't compile due to missing file
  - 23-09-2005 fixed: very short wavs (< 1 second) could not be played (PAPlayer)
  - 23-09-2005 fixed: mono mp3's could not be played (PAPlayer, MadCodec.dll)
