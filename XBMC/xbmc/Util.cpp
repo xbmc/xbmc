@@ -135,43 +135,18 @@ bool CUtil::GetVolumeFromFileName(const CStdString& strFileName, CStdString& str
     if (iFoundToken >= 0)
     { // found this token
       int iRegLength = reg.GetFindLen();
-      int iCount = reg.GetSubCount();
-      if( 1 == iCount )
+      char *pReplace = reg.GetReplaceString("\\1");
+      if (pReplace)
       {
-        char *pReplace = reg.GetReplaceString("\\1");
-
-        if (pReplace)
-        {
-          strVolumeNumber = pReplace;
-          free(pReplace);
-
-          // remove the extension (if any).  We do this on the base filename, as the regexp
-          // match may include some of the extension (eg the "." in particular).
-
-          //Why should the extension be removed here.. that is a display problem not stacking problem
-          RemoveExtension(strFileNameTemp);
-          CStdString strFileRight = strFileNameTemp.Mid(iFoundToken + iRegLength);
-          strFileTitle = strFileName.Left(iFoundToken) + strFileRight;
-          return true;
-        }
-
-      }
-      else if( iCount > 1 )
-      {        
-        //Second Sub value contains the stacking
-        strVolumeNumber = strFileName.Mid(iFoundToken + reg.GetSubStart(2), reg.GetSubLenght(2));
-
-        strFileTitle = strFileName.Left(iFoundToken);
-
-        //First Sub value contains prefix
-        strFileTitle += strFileName.Mid(iFoundToken + reg.GetSubStart(1), reg.GetSubLenght(1));
-
-        //Third Sub value contains suffix
-        strFileTitle += strFileName.Mid(iFoundToken + reg.GetSubStart(3), reg.GetSubLenght(3));
-        strFileTitle += strFileNameTemp.Mid(iFoundToken + iRegLength);
+        strVolumeNumber = pReplace;
+        free(pReplace);
+        // remove the extension (if any).  We do this on the base filename, as the regexp
+        // match may include some of the extension (eg the "." in particular).
+        RemoveExtension(strFileNameTemp);
+        CStdString strFileRight = strFileNameTemp.Mid(iFoundToken + iRegLength);
+        strFileTitle = strFileName.Left(iFoundToken) + strFileRight;
         return true;
       }
-
     }
   }
   return false;
@@ -203,17 +178,13 @@ void CUtil::CleanFileName(CStdString& strFileName)
 {
   bool result = false;
 
+  // assume extension has already been removed
+
   // remove volume indicator from stacked files
   CStdString strFileTitle;
   CStdString strVolumeNumber;
   if (GetVolumeFromFileName(strFileName, strFileTitle, strVolumeNumber))
-  {
-    //If we have same extension as before (ie GetVolumeFromFileName didn't remove it). remove it now
-    if( strcmp( GetExtension(strFileName.c_str()), GetExtension(strFileTitle.c_str()) ) == 0 )
-      RemoveExtension(strFileTitle);
-
     strFileName = strFileTitle;
-  }
   else
     RemoveExtension(strFileName);
 
@@ -2823,8 +2794,12 @@ const BUILT_IN commands[] = {
 
 bool CUtil::IsBuiltIn(const CStdString& execString)
 {
+  CStdString execute = execString;
+  execute.ToLower();
+  if (!execute.Left(5).Equals("xbmc."))
+    return false;
   CStdString function, param;
-  SplitExecFunction(execString, function, param);
+  SplitExecFunction(execute, function, param);
   for (int i = 0; i < sizeof(commands)/sizeof(BUILT_IN); i++)
   {
     if (function.CompareNoCase(commands[i].command) == 0)
@@ -2835,22 +2810,33 @@ bool CUtil::IsBuiltIn(const CStdString& execString)
 
 void CUtil::SplitExecFunction(const CStdString &execString, CStdString &strFunction, CStdString &strParam)
 {
+  CRegExp reg;
+  reg.RegComp("([XBMCxbmc]*)\\.([^(]*)\\(?(.*)\\)$");
   strParam = "";
-
-  int iPos = execString.Find("(");
-  int iPos2 = execString.ReverseFind(")");
-  if (iPos > 0 && iPos2 > 0)
+  if (reg.RegFind(execString.c_str()) == 0)
   {
-    strParam = execString.Mid(iPos + 1, iPos2 - iPos - 1);
-    strFunction = execString.Left(iPos);
-  }
-  else
-    strFunction = execString;
+    char* szParam = reg.GetReplaceString("\\1");
+    CStdString strTemp = szParam;
+    free(szParam);
+    strTemp.ToLower();
+    if (strTemp != "xbmc")
+    {
+      strFunction = strParam = "";
+      return;
+    }
 
-  //xbmc is the standard prefix.. so allways remove this
-  //all other commands with go through in full
-  if( strFunction.Left(5).Equals("xbmc.", false) )
-    strFunction.Delete(0, 5);
+    szParam = reg.GetReplaceString("\\2");
+    strFunction = szParam;
+    free(szParam);
+    strFunction.ToLower();
+    
+    szParam = reg.GetReplaceString("\\3");
+    if (szParam)
+    {
+      strParam = szParam;
+      free(szParam);
+    }
+  }
 }
 
 void CUtil::GetBuiltInHelp(CStdString &help)
@@ -2874,7 +2860,6 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   SplitExecFunction(execString, execute, parameter);
   CStdString strParameterCaseIntact = parameter;
   parameter.ToLower();
-  execute.ToLower();
 
   if (execute.Equals("reboot") || execute.Equals("restart"))  //Will reboot the xbox, aka cold reboot
   {
@@ -3086,20 +3071,23 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     if (!parameter.IsEmpty())
     {
       CRegExp reg;
-      if (!reg.RegComp("([^\\)]*\\))?,?(.*)"))
+      if (!reg.RegComp("([^\\(,]*)(\\([^\\)]*\\)?)?,?(.*)?$"))
         return -1; // whatever
       if (reg.RegFind(strParameterCaseIntact.c_str()) > -1)
       {
-        char *szParam = reg.GetReplaceString("\\1");
-        strCommand = szParam;
-        free(szParam);
-        szParam = reg.GetReplaceString("\\2");
+        char* szParam = reg.GetReplaceString("\\1\\2");
         if (szParam)
+        {
+          strCommand = szParam;
+          free(szParam);
+        }
+        szParam = reg.GetReplaceString("\\3");
+        if (szParam)
+        {
           if (strlen(szParam))
-          {
             fSecs = fSecs = static_cast<float>(atoi(szParam)*60);
-            free(szParam);
-          }
+          free(szParam);
+        }
       }
     }
     
