@@ -21,7 +21,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				OptimizeForProcessor="2"
-				AdditionalIncludeDirectories="guilib;guilib/common;guilib/tinyxml;&quot;$(XDK)\Samples\Xbox\Common\Include&quot;;&quot;$(XDK)\Samples\Xbox\Common\Src\&quot;"
+				AdditionalIncludeDirectories="guilib;guilib/common;guilib/tinyxml;&quot;$(XDK)\Samples\Xbox\Common\Include&quot;"
 				PreprocessorDefinitions="_XBOX;_DEBUG;HAVE_MSWINDOWS"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
@@ -277,6 +277,7 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				Optimization="3"
 				OmitFramePointers="TRUE"
 				OptimizeForProcessor="2"
+				AdditionalIncludeDirectories="guilib;guilib/common;guilib/tinyxml;&quot;$(XDK)\Samples\Xbox\Common\Include&quot;"
 				PreprocessorDefinitions="NDEBUG;_XBOX;LTCG"
 				StringPooling="TRUE"
 				RuntimeLibrary="0"
@@ -329,7 +330,7 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				OptimizeForProcessor="2"
-				AdditionalIncludeDirectories="guilib;guilib/common;guilib/tinyxml"
+				AdditionalIncludeDirectories="guilib;guilib/common;guilib/tinyxml;&quot;$(XDK)\Samples\Xbox\Common\Include&quot;"
 				PreprocessorDefinitions="_XBOX;_DEBUG;HAVE_MSWINDOWS"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
@@ -1894,6 +1895,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 						Name="VCCLCompilerTool"
 						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
+				<FileConfiguration
+					Name="Release_LTCG|Xbox">
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories="$(XDK)\Samples\Xbox\Common\Src\"/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\xbmc\lib\common\xbstopwatch.cpp">
@@ -2198,10 +2205,10 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\cores\sidplayer\audio\AudioDrv.h">
 				</File>
 				<File
-					RelativePath=".\xbmc\cores\sidplayer\audio\config.h">
+					RelativePath=".\xbmc\cores\sidplayer\config.h">
 				</File>
 				<File
-					RelativePath=".\xbmc\cores\sidplayer\config.h">
+					RelativePath=".\xbmc\cores\sidplayer\audio\config.h">
 				</File>
 				<File
 					RelativePath=".\xbmc\cores\sidplayer\IniConfig.cpp">
