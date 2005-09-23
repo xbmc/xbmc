@@ -1095,3 +1095,30 @@ void CGUIWindowVideoFiles::GetIMDBDetails(CFileItem *pItem, CIMDBUrl &url)
     }
   }
 }
+
+void CGUIWindowVideoFiles::OnQueueItem(int iItem)
+{
+  if (iItem < 0 || iItem >= (int)m_vecItems.Size()) return;
+
+  CFileItem* pItem = m_vecItems[iItem];
+  if (pItem->m_bIsFolder || g_stSettings.m_iMyVideoVideoStack == STACK_NONE)
+  {
+    CGUIWindowVideoBase::OnQueueItem(iItem);
+    return;
+  }
+
+  vector<CStdString> movies;
+  GetStackedFiles(pItem->m_strPath, movies);
+  if (movies.size() <= 0) return;
+  for (int i = 0; i < (int)movies.size(); ++i)
+  {
+    CFileItem* pMovieFile = new CFileItem(movies[i], false);
+    CStdString strFileNum;
+    strFileNum.Format("(%2.2i)",i+1);
+    pMovieFile->SetLabel(pItem->GetLabel() + " " + strFileNum);
+    AddItemToPlayList(pMovieFile);
+  }
+
+  //move to next item
+  m_viewControl.SetSelectedItem(iItem + 1);
+}
