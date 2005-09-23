@@ -1,6 +1,10 @@
+2005-09-23 fixed:	SF bug [ 1254394 ] PM3 skin, weather; unable to view city in 1080i
+2005-09-23 fixed:	SF bug [ 1295196 ] Unable to view IMDb info cast in 16:9 skin
+
 2005-09-23 added:       common-font18.xpr font, needed for 1080i
-2005-09-18 fixed:	GUI calibration labels didnt show in 1080i
-2005-09-18 fixed:	restart xbmc button was in the wrong position
+
+2005-09-18 fixed:	SF bug [ 1290635 ] PM Skin 1080i Screen Adjustment
+2005-09-18 fixed:	SF bug [ 1267376 ] Restart XBMC Button Stretched
 
 2005-09-07 fixed:	navigation in the Video Info dialog wasnt working properly
 
