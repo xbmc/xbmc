@@ -75,7 +75,8 @@ void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecC
   bool bAllowDVD = true;
 
   //Only mplayer can handle internetstreams for now
-  if ( item.IsInternetStream() )
+  //and daap bookmarks
+  if ( item.IsInternetStream() || url.GetProtocol().Equals("daap") )
   {
     vecCores.push_back(EPC_MPLAYER);
     bMPlayer = true;

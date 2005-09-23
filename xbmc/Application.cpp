@@ -3737,11 +3737,10 @@ bool CApplication::OnMessage(CGUIMessage& message)
     break;
   case GUI_MSG_PLAYLISTPLAYER_STOPPED:
     {
-      if (message.GetParam1() == PLAYLIST_MUSIC || message.GetParam1() == PLAYLIST_MUSIC_TEMP)
-      {
-        if (m_gWindowManager.GetActiveWindow() == WINDOW_VISUALISATION)
+      // if in visualisation or fullscreen video, go back to gui
+      if (m_gWindowManager.GetActiveWindow() == WINDOW_VISUALISATION || m_gWindowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO)
           m_gWindowManager.PreviousWindow();
-      }
+
       m_CdgParser.Free();
       SAFE_DELETE(m_pPlayer);
       return true;
