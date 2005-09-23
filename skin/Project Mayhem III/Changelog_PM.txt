@@ -1,3 +1,4 @@
+2005-09-23 added:       common-font18.xpr font, needed for 1080i
 2005-09-18 fixed:	GUI calibration labels didnt show in 1080i
 2005-09-18 fixed:	restart xbmc button was in the wrong position
 
