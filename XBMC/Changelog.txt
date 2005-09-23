@@ -5,6 +5,9 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 23-09-2005 fixed: playback from daap bookmarks, mplayer is used as workaround
+ - 23-09-2005 fixed: "skipnext" on the last item of a video playlist returns back to gui
+ - 23-09-2005 fixed: queuing of stacked items in my video files view
  - 22-09-2005 added: support for prefix and suffix in regexp matching. (specific matches without removing what was matched from displayed name)
  - 22-09-2005 added: parameter validation for logpath
  - 21-09-2005 changed: reversed and fixed double xboxmediacenter.xml settings issue if home path was set [GeminiServer]

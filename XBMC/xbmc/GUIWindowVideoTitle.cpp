@@ -421,8 +421,6 @@ void CGUIWindowVideoTitle::OnQueueItem(int iItem)
   CFileItem* pItem = m_vecItems[iItem];
   if (pItem->m_bIsFolder) return;
 
-  CLog::Log(LOGDEBUG,"CGUIWindowVideoTitle::OnQueueItem, iItem = %i, movie id = %s", iItem, pItem->m_strPath.c_str());
-
   VECMOVIESFILES movies;
   m_database.GetFiles(atol(pItem->m_strPath), movies);
   if (movies.size() <= 0) return;
@@ -432,7 +430,6 @@ void CGUIWindowVideoTitle::OnQueueItem(int iItem)
     CStdString strFileNum;
     strFileNum.Format("(%2.2i)",i+1);
     pMovieFile->SetLabel(pItem->GetLabel() + " " + strFileNum);
-    CLog::Log(LOGDEBUG,"  file = %s, label = %s", movies[i].c_str(),pMovieFile->GetLabel().c_str());
     AddItemToPlayList(pMovieFile);
   }
 
