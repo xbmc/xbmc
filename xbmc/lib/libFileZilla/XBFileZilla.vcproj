@@ -70,6 +70,7 @@
 				AdditionalIncludeDirectories=".,$(XDK)\samples\xbox\common\include,source,modified"
 				PreprocessorDefinitions="WIN32;_XBOX;_DEBUG;NOLAYERS"
 				RuntimeLibrary="1"
+				EnableFunctionLevelLinking="TRUE"
 				UsePrecompiledHeader="2"
 				PrecompiledHeaderFile=".\Debug/XBFileZilla.pch"
 				AssemblerListingLocation=".\Debug/"
@@ -78,7 +79,7 @@
 				BrowseInformation="1"
 				WarningLevel="3"
 				SuppressStartupBanner="TRUE"
-				DebugInformationFormat="4"
+				DebugInformationFormat="3"
 				CompileAs="0"/>
 			<Tool
 				Name="VCCustomBuildTool"/>
