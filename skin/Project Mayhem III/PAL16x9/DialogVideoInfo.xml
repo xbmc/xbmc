@@ -250,6 +250,20 @@
     </control>
 
     <control>
+      <description>cast listcontrol</description>
+      <type>listcontrol</type>
+      <id>50</id>
+      <posX>220</posX>
+      <posY>335</posY>
+      <width>410</width>
+      <height>200</height>
+      <onleft>5</onleft>
+      <onright>5</onright>
+      <onup>5</onup>
+      <ondown>8</ondown>
+    </control>
+
+    <control>
       <description>Tracks/Review</description>
       <type>button</type>
       <id>5</id>
