@@ -1893,13 +1893,37 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					Name="Debug|Xbox">
 					<Tool
 						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""/>
+						AdditionalIncludeDirectories="&quot;$(XDK)\Samples\Xbox\Common\Src&quot;"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Profile|Xbox">
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories="&quot;$(XDK)\Samples\Xbox\Common\Src&quot;"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Profile_FastCap|Xbox">
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories="&quot;$(XDK)\Samples\Xbox\Common\Src&quot;"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Xbox">
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories="&quot;$(XDK)\Samples\Xbox\Common\Src&quot;"/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Release_LTCG|Xbox">
 					<Tool
 						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories="$(XDK)\Samples\Xbox\Common\Src\"/>
+						AdditionalIncludeDirectories="&quot;$(XDK)\Samples\Xbox\Common\Src&quot;"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug Xbox No Memory Tracking|Xbox">
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories="&quot;$(XDK)\Samples\Xbox\Common\Src&quot;"/>
 				</FileConfiguration>
 			</File>
 			<File
@@ -2205,10 +2229,10 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\cores\sidplayer\audio\AudioDrv.h">
 				</File>
 				<File
-					RelativePath=".\xbmc\cores\sidplayer\config.h">
+					RelativePath=".\xbmc\cores\sidplayer\audio\config.h">
 				</File>
 				<File
-					RelativePath=".\xbmc\cores\sidplayer\audio\config.h">
+					RelativePath=".\xbmc\cores\sidplayer\config.h">
 				</File>
 				<File
 					RelativePath=".\xbmc\cores\sidplayer\IniConfig.cpp">
