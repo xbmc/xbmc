@@ -28,14 +28,14 @@
 				SmallerTypeCheck="TRUE"
 				RuntimeLibrary="1"
 				BufferSecurityCheck="TRUE"
-				EnableFunctionLevelLinking="FALSE"
+				EnableFunctionLevelLinking="TRUE"
 				EnableEnhancedInstructionSet="1"
 				RuntimeTypeInfo="TRUE"
 				UsePrecompiledHeader="2"
 				AssemblerOutput="4"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="FALSE"
-				DebugInformationFormat="4"/>
+				DebugInformationFormat="3"/>
 			<Tool
 				Name="VCCustomBuildTool"/>
 			<Tool
@@ -66,7 +66,7 @@
 				IncludeDebugInfo="TRUE"
 				InsertFile=".\media\dsstdfx.bin,dsstdfx,r"
 				NoLibWarn="TRUE"
-				NoPreload="LIBXBMS;LIBSMB;ISO9660;PYTHON;PY_RW;LIBHTTP"
+				NoPreload="LIBXBMS;LIBSMB;ISO9660;PYTHON;PY_RW;LIBHTTP;LIBMP4;LIBXDAAP"
 				TitleID="0xFACE008"
 				MediaTypes="0x80000007"
 				TitleName="Xbox Media Center Debug"/>
@@ -127,7 +127,7 @@
 				IncludeDebugInfo="TRUE"
 				InsertFile=".\media\dsstdfx.bin,dsstdfx,r"
 				NoLibWarn="TRUE"
-				NoPreload="LIBXBMS;LIBSMB;ISO9660;PYTHON;PY_RW;LIBHTTP"
+				NoPreload="LIBXBMS;LIBSMB;ISO9660;PYTHON;PY_RW;LIBHTTP;LIBMP4;LIBXDAAP"
 				TitleID="0xFACE008"
 				MediaTypes="0x80000007"
 				TitleName="Xbox Media Center Profile"/>
@@ -188,7 +188,7 @@
 				IncludeDebugInfo="TRUE"
 				InsertFile=".\media\dsstdfx.bin,dsstdfx,r"
 				NoLibWarn="TRUE"
-				NoPreload="LIBXBMS;LIBSMB;ISO9660;PYTHON;PY_RW;LIBHTTP"
+				NoPreload="LIBXBMS;LIBSMB;ISO9660;PYTHON;PY_RW;LIBHTTP;LIBMP4;LIBXDAAP"
 				TitleID="0xFACE008"
 				MediaTypes="0x80000007"
 				TitleName="Xbox Media Center Profile_FastCap"/>
@@ -203,7 +203,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="3"
 				GlobalOptimizations="TRUE"
-				InlineFunctionExpansion="0"
+				InlineFunctionExpansion="1"
 				EnableIntrinsicFunctions="TRUE"
 				ImproveFloatingPointConsistency="FALSE"
 				FavorSizeOrSpeed="2"
@@ -258,7 +258,7 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				FileName="$(TargetDir)default.xbe"
 				StackSize="0x80000"
 				InsertFile=".\media\dsstdfx.bin,dsstdfx,r"
-				NoPreload="LIBXBMS;LIBSMB;ISO9660;PYTHON;PY_RW;LIBHTTP"
+				NoPreload="LIBXBMS;LIBSMB;ISO9660;PYTHON;PY_RW;LIBHTTP;LIBMP4;LIBXDAAP"
 				TitleID="0xFACE008"
 				MediaTypes="0x80000007"
 				TitleName="Xbox Media Center"
@@ -315,7 +315,7 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				Name="XboxImageTool"
 				StackSize="65536"
 				InsertFile=".\media\dsstdfx.bin,dsstdfx,r"
-				NoPreload="LIBXBMS;LIBSMB;ISO9660;PYTHON;PY_RW;LIBHTTP"
+				NoPreload="LIBXBMS;LIBSMB;ISO9660;PYTHON;PY_RW;LIBHTTP;LIBMP4;LIBXDAAP"
 				TitleID="0xFACE008"
 				MediaTypes="0x80000007"
 				TitleName="Xbox Media Center"/>
@@ -372,7 +372,7 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				IncludeDebugInfo="TRUE"
 				InsertFile=".\media\dsstdfx.bin,dsstdfx,r"
 				NoLibWarn="TRUE"
-				NoPreload="LIBXBMS;LIBSMB;ISO9660;PYTHON;PY_RW;LIBHTTP"
+				NoPreload="LIBXBMS;LIBSMB;ISO9660;PYTHON;PY_RW;LIBHTTP;LIBMP4;LIBXDAAP"
 				TitleID="0xFACE008"
 				MediaTypes="0x80000007"
 				TitleName="Xbox Media Center"/>
@@ -2229,10 +2229,10 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\cores\sidplayer\audio\AudioDrv.h">
 				</File>
 				<File
-					RelativePath=".\xbmc\cores\sidplayer\config.h">
+					RelativePath=".\xbmc\cores\sidplayer\audio\config.h">
 				</File>
 				<File
-					RelativePath=".\xbmc\cores\sidplayer\audio\config.h">
+					RelativePath=".\xbmc\cores\sidplayer\config.h">
 				</File>
 				<File
 					RelativePath=".\xbmc\cores\sidplayer\IniConfig.cpp">
