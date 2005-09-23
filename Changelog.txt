@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 23-09-2005 fixed: very short wavs (< 1 second) could not be played (PAPlayer)
+ - 23-09-2005 fixed: mono mp3's could not be played (PAPlayer, MadCodec.dll)
  - 23-09-2005 changed: [ 1286764 ] slightly modified, added E:\Games\ & G:\Games\ to Myprograms Games bookmark.
  - 23-09-2005 fixed: site help or any xbmc.* command without parameters had to be called as site() to work. alarmclock's parameters still has this "bug"
  - 23-09-2005 fixed: playback from daap bookmarks, mplayer is used as workaround
