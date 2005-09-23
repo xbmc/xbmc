@@ -269,7 +269,7 @@ bool DTSCodec::CalculateTotalTime()
   //instead of this one
   //m_TotalTime = (((m_file.GetLength() - m_iDataStart) * 8) / m_Bitrate) * 1000;
   m_TotalTime = (m_file.GetLength() - m_iDataStart) / (m_SampleRate * 2 * (m_BitsPerSample / 8)) * 1000;
-  m_Bitrate = (int)(((m_file.GetLength() - m_iDataStart) * 8) / (m_TotalTime / 1000));
+  m_Bitrate = (int)(((m_file.GetLength() - m_iDataStart) * 8) / float(m_TotalTime / 1000));
   return m_TotalTime > 0;
 }
 
