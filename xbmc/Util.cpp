@@ -2823,12 +2823,8 @@ const BUILT_IN commands[] = {
 
 bool CUtil::IsBuiltIn(const CStdString& execString)
 {
-  CStdString execute = execString;
-  execute.ToLower();
-  if (!execute.Left(5).Equals("xbmc."))
-    return false;
   CStdString function, param;
-  SplitExecFunction(execute, function, param);
+  SplitExecFunction(execString, function, param);
   for (int i = 0; i < sizeof(commands)/sizeof(BUILT_IN); i++)
   {
     if (function.CompareNoCase(commands[i].command) == 0)
@@ -2839,33 +2835,22 @@ bool CUtil::IsBuiltIn(const CStdString& execString)
 
 void CUtil::SplitExecFunction(const CStdString &execString, CStdString &strFunction, CStdString &strParam)
 {
-  CRegExp reg;
-  reg.RegComp("([XBMCxbmc]*)\\.([^(]*)\\(?(.*)\\)$");
   strParam = "";
-  if (reg.RegFind(execString.c_str()) == 0)
-  {
-    char* szParam = reg.GetReplaceString("\\1");
-    CStdString strTemp = szParam;
-    free(szParam);
-    strTemp.ToLower();
-    if (strTemp != "xbmc")
-    {
-      strFunction = strParam = "";
-      return;
-    }
 
-    szParam = reg.GetReplaceString("\\2");
-    strFunction = szParam;
-    free(szParam);
-    strFunction.ToLower();
-    
-    szParam = reg.GetReplaceString("\\3");
-    if (szParam)
-    {
-      strParam = szParam;
-      free(szParam);
-    }
+  int iPos = execString.Find("(");
+  int iPos2 = execString.ReverseFind(")");
+  if (iPos > 0 && iPos2 > 0)
+  {
+    strParam = execString.Mid(iPos + 1, iPos2 - iPos - 1);
+    strFunction = execString.Left(iPos);
   }
+  else
+    strFunction = execString;
+
+  //xbmc is the standard prefix.. so allways remove this
+  //all other commands with go through in full
+  if( strFunction.Left(5).Equals("xbmc.", false) )
+    strFunction.Delete(0, 5);
 }
 
 void CUtil::GetBuiltInHelp(CStdString &help)
@@ -2889,6 +2874,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   SplitExecFunction(execString, execute, parameter);
   CStdString strParameterCaseIntact = parameter;
   parameter.ToLower();
+  execute.ToLower();
 
   if (execute.Equals("reboot") || execute.Equals("restart"))  //Will reboot the xbox, aka cold reboot
   {

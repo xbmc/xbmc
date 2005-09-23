@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 23-09-2005 fixed: site help or any xbmc.* command without parameters had to be called as site() to work. alarmclock's parameters still has this "bug"
  - 23-09-2005 fixed: playback from daap bookmarks, mplayer is used as workaround
  - 23-09-2005 fixed: "skipnext" on the last item of a video playlist returns back to gui
  - 23-09-2005 fixed: queuing of stacked items in my video files view

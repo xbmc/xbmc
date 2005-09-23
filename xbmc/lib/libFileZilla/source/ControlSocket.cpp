@@ -2196,7 +2196,7 @@ void CControlSocket::ParseCommand()
           Send(_T("500 Invalid built-in function.  Use SITE HELP for a list of valid SITE commands"));
           return;
         }
-        if (!strBuiltIn.CompareNoCase("xbmc.help"))
+        if (strBuiltIn.Equals("xbmc.help", false) || strBuiltIn.Equals("help", false))
         {
           CStdString strHelp;
           CUtil::GetBuiltInHelp(strHelp);
