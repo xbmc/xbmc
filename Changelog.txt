@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 24-09-2005 updated: kai-vectors.xml
  - 24-09-2005 changed: added more default paths for MyPrograms bookmarks (emulators/apps).
  - 24-09-2005 fixed: Potential crash in NSF codec.
  - 24-09-2005 added: SPC (Super NES sound file) codec for paplayer. Based on snes9x's APU.
