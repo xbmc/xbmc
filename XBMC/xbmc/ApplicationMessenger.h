@@ -16,6 +16,7 @@
 #define TMSG_PLAYLISTPLAYER_PREV  212
 
 #define TMSG_PICTURE_SHOW     220
+#define TMSG_PICTURE_SLIDESHOW     221
 
 #define TMSG_SHUTDOWN             300
 #define TMSG_DASHBOARD            301
@@ -56,6 +57,7 @@ public:
   void PlayListPlayerNext();
   void PlayListPlayerPrevious();
   void PictureShow(string filename);
+  void PictureSlideShow(string pathname);
   void Shutdown();
   void Restart();
   void RebootToDashBoard();
