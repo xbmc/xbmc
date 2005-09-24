@@ -208,6 +208,29 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
       }
       break;
 
+    case TMSG_PICTURE_SLIDESHOW:
+      {
+        CGUIWindowSlideShow *pSlideShow = (CGUIWindowSlideShow *)m_gWindowManager.GetWindow(WINDOW_SLIDESHOW);
+        if (!pSlideShow) return ;
+
+        g_graphicsContext.Lock();
+        pSlideShow->Reset();
+        if (m_gWindowManager.GetActiveWindow() != WINDOW_SLIDESHOW)
+          m_gWindowManager.ActivateWindow(WINDOW_SLIDESHOW);
+        
+        CFileItemList items;
+        CStdString strPath = pMsg->strParam;
+        CUtil::GetRecursiveListing(strPath,items,g_stSettings.m_szMyPicturesExtensions);
+        if (items.Size() > 0)
+        {
+          for (int i=0;i<items.Size();++i)
+            pSlideShow->Add(items[i]->m_strPath);
+          pSlideShow->StartSlideShow(); //Start the slideshow!
+        }
+        g_graphicsContext.Unlock();
+      }
+      break;
+
     case TMSG_MEDIA_STOP:
       {
         // restore to previous window if needed
@@ -379,6 +402,12 @@ void CApplicationMessenger::PictureShow(string filename)
 {
   ThreadMessage tMsg = {TMSG_PICTURE_SHOW};
   tMsg.strParam = filename;
+  SendMessage(tMsg);
+}
+void CApplicationMessenger::PictureSlideShow(string pathname)
+{
+  ThreadMessage tMsg = {TMSG_PICTURE_SLIDESHOW};
+  tMsg.strParam = pathname;
   SendMessage(tMsg);
 }
 

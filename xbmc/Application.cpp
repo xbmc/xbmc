@@ -3240,6 +3240,10 @@ bool CApplication::ResetScreenSaverWindow()
     {
       fFadeLevel = (float)g_guiSettings.GetInt("ScreenSaver.DimLevel") / 100;
     }
+    else if (strScreenSaver == "PSlide")
+    {
+      m_gWindowManager.PreviousWindow();
+    }
     else if (strScreenSaver == "Fade")
     {
       fFadeLevel = 0;
@@ -3334,6 +3338,11 @@ void CApplication::ActivateScreenSaver()
   if (strScreenSaver == "Dim")
   {
     fFadeLevel = (FLOAT) g_guiSettings.GetInt("ScreenSaver.DimLevel") / 100; // 0.07f;
+  }
+  else if (strScreenSaver == "PSlide") // Picture slideshow
+  {
+    fFadeLevel = 100;
+    g_applicationMessenger.PictureSlideShow(g_guiSettings.GetString("ScreenSaver.PSlidePath"));
   }
   else if (strScreenSaver == "Black")
   {

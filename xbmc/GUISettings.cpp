@@ -532,7 +532,9 @@ CGUISettings::CGUISettings(void)
   AddString(2, "ScreenSaver.Preview", 1000, "", BUTTON_CONTROL_STANDARD);
   AddBool(3, "ScreenSaver.UseMusicVisInstead", 13392, true);
   AddInt(4, "ScreenSaver.Time", 355, 3, 1, 1, 60, SPIN_CONTROL_INT_PLUS, MASK_MINS);
-  AddInt(5, "ScreenSaver.DimLevel", 362, 20, 10, 10, 80, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
+  AddSeparator(5, "ScreenSaver.Sep1");
+  AddInt(6, "ScreenSaver.DimLevel", 362, 20, 10, 10, 80, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
+  AddString(7, "ScreenSaver.PSlidePath", 108, "F:\\Pictures\\", BUTTON_CONTROL_INPUT, false, 774  ); // GeminiServer: PictureSlideShow
 
   AddCategory(7, "UIFilters", 14053);
   AddInt(1, "UIFilters.Flicker", 13100, 5, 0, 1, 5, SPIN_CONTROL_INT);
