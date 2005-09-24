@@ -1161,6 +1161,11 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(GetSetting(strSetting)->GetID());
       pControl->SetEnabled(g_guiSettings.GetString("ScreenSaver.Mode") == "Dim");
     }
+    else if (strSetting == "ScreenSaver.PSlidePath")
+    {
+      CGUIControl *pControl = (CGUIControl *)GetControl(GetSetting(strSetting)->GetID());
+      pControl->SetEnabled(g_guiSettings.GetString("ScreenSaver.Mode") == "PSlide");
+    }
     else if (strSetting == "ScreenSaver.Preview")
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(GetSetting(strSetting)->GetID());
@@ -1679,6 +1684,8 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
       strScreenSaver = "Dim";
     else if (iValue == 2)
       strScreenSaver = "Black";
+    else if (iValue == 3)
+      strScreenSaver = "PSlide"; // PictureSlideShow
     else
       strScreenSaver = pControl->GetCurrentLabel() + ".xbs";
     pSettingString->SetData(strScreenSaver);
@@ -2874,6 +2881,7 @@ void CGUIWindowSettingsCategory::FillInScreenSavers(CSetting *pSetting)
   pControl->AddLabel(g_localizeStrings.Get(351), 0); // Off
   pControl->AddLabel(g_localizeStrings.Get(352), 1); // Dim
   pControl->AddLabel(g_localizeStrings.Get(353), 2); // Black
+  pControl->AddLabel(g_localizeStrings.Get(108), 3); // PictureSlideShow
 
   //find screensavers ....
   CHDDirectory directory;
@@ -2911,9 +2919,9 @@ void CGUIWindowSettingsCategory::FillInScreenSavers(CSetting *pSetting)
     CStdString strScr = vecScr[i];
 
     if (strcmpi(strScr.c_str(), strDefaultScr.c_str()) == 0)
-      iCurrentScr = i + 3;
+      iCurrentScr = i + 4;  // 4: is the number of the predefined Screensavers!
 
-    pControl->AddLabel(strScr, i + 3);
+    pControl->AddLabel(strScr, i + 4); // // 4: is the number of the predefined Screensavers!
   }
 
   // if we can't find the screensaver previously configured
@@ -2924,6 +2932,8 @@ void CGUIWindowSettingsCategory::FillInScreenSavers(CSetting *pSetting)
       iCurrentScr = 1;
     else if (strDefaultScr == "Black")
       iCurrentScr = 2;
+    else if (strDefaultScr == "PSlide") // GeminiServer: PictureSlideShow
+      iCurrentScr = 3;
     else
     {
       iCurrentScr = 0;

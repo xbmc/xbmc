@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 24-09-2005 added: New Screensaver: "Slideshow"! You can define the folder, where your pictures are.  Recursive Slideshow! [GeminiServer]
  - 23-09-2005 fixed: AlarmClock command parser.
  - 23-09-2005 fixed: Release build wouldn't compile due to missing file
  - 23-09-2005 fixed: very short wavs (< 1 second) could not be played (PAPlayer)
