@@ -17,6 +17,7 @@
 #include "DTSCDDACodec.h"
 #include "AC3Codec.h"
 #include "AC3CDDACodec.h"
+#include "SPCCodec.h"
 
 ICodec* CodecFactory::CreateCodec(const CStdString& strFileType)
 {
@@ -48,6 +49,8 @@ ICodec* CodecFactory::CreateCodec(const CStdString& strFileType)
     return new ModuleCodec();
   else if (strFileType.Equals("nsf") || strFileType.Equals("nsfstream"))
     return new NSFCodec();
+  else if (strFileType.Equals("spc") || strFileType.Equals("spcstream"))
+    return new SPCCodec();
 
   return NULL;
 }

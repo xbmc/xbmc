@@ -16,6 +16,7 @@
 #include "MusicInfoTagLoaderWAVPack.h" 
 #include "cores/ModPlayer.h" 
 #include "MusicInfoTagLoaderNSF.h"
+#include "MusicInfoTagLoaderSPC.h"
 #include "util.h"
 
 
@@ -115,6 +116,11 @@ IMusicInfoTagLoader* CMusicInfoTagLoaderFactory::CreateLoader(const CStdString& 
   else if (strExtension == "nsf")
   {
     CMusicInfoTagLoaderNSF *pTagLoader = new CMusicInfoTagLoaderNSF();
+    return (IMusicInfoTagLoader*)pTagLoader;
+  } 
+  else if (strExtension == "spc")
+  {
+    CMusicInfoTagLoaderSPC *pTagLoader = new CMusicInfoTagLoaderSPC();
     return (IMusicInfoTagLoader*)pTagLoader;
   } 
 
