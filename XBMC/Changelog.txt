@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 24-09-2005 fixed: Potential crash in NSF codec.
+ - 24-09-2005 added: SPC (Super NES sound file) codec for paplayer. Based on snes9x's APU.
  - 24-09-2005 added: New Screensaver: "Slideshow"! You can define the folder, where your pictures are.  Recursive Slideshow! [GeminiServer]
  - 23-09-2005 fixed: AlarmClock command parser.
  - 23-09-2005 fixed: Release build wouldn't compile due to missing file
