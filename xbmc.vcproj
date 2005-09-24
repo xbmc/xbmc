@@ -621,6 +621,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\MusicInfoTagLoaderSid.h">
 				</File>
 				<File
+					RelativePath=".\xbmc\MusicInfoTagLoaderSPC.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\MusicInfoTagLoaderSPC.h">
+				</File>
+				<File
 					RelativePath=".\xbmc\MusicInfoTagLoaderWav.cpp">
 				</File>
 				<File
@@ -2729,6 +2735,9 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\cores\paplayer\DllNosefart.h">
 				</File>
 				<File
+					RelativePath=".\xbmc\cores\paplayer\DllSnes9xApu.h">
+				</File>
+				<File
 					RelativePath=".\xbmc\cores\paplayer\DllVorbisfile.h">
 				</File>
 				<File
@@ -2808,6 +2817,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				</File>
 				<File
 					RelativePath=".\xbmc\cores\paplayer\SHNcodec.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\paplayer\SPCCodec.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\paplayer\SPCCodec.h">
 				</File>
 				<File
 					RelativePath=".\xbmc\cores\paplayer\WAVcodec.cpp">

@@ -61,7 +61,10 @@ bool CNSFFileDirectory::ContainsFiles(const CStdString& strPath)
 {
   CMusicInfoTagLoaderNSF nsf;
   if (nsf.GetStreamCount(strPath) > 1)
+  {
+    CLog::Log(LOGDEBUG,"contains files!");
     return true;
+  }
 
   return false;
 }

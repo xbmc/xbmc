@@ -79,7 +79,6 @@ __int64 NSFCodec::Seek(__int64 iSeekTime)
   }
   while (m_iDataPos+2*48000/m_dll.GetPlaybackRate(m_nsf)*4 < iSeekTime/1000*48000*4)
   {
-    //m_dll.FillBuffer(m_nsf,m_szBuffer,48000/m_dll.GetPlaybackRate(m_nsf)*2); // *2 since two channels
     m_dll.FrameAdvance(m_nsf);
     
     m_iDataInBuffer = 48000/m_dll.GetPlaybackRate(m_nsf)*4;
@@ -87,9 +86,13 @@ __int64 NSFCodec::Seek(__int64 iSeekTime)
     m_iDataPos += 48000/m_dll.GetPlaybackRate(m_nsf)*4;
   }
   m_dll.FillBuffer(m_nsf,m_szBuffer,48000/m_dll.GetPlaybackRate(m_nsf)*2); // *2 since two channels
-  m_iDataPos += 48000/m_dll.GetPlaybackRate(m_nsf)*4;
+  if (iSeekTime/1000*48000*4 > 48000/m_dll.GetPlaybackRate(m_nsf)*4)
+    m_iDataPos += 48000/m_dll.GetPlaybackRate(m_nsf)*4;
+  else
+    m_iDataPos = 0;
   m_iDataInBuffer -= int(iSeekTime/1000*48000*4-m_iDataPos);
   m_szStartOfBuffer += (iSeekTime/1000*48000*4-m_iDataPos);
+  m_iDataPos = iSeekTime/1000*48000*4;
 
   return iSeekTime;
 }
