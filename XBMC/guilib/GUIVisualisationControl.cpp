@@ -96,7 +96,6 @@ void CGUIVisualisationControl::FreeVisualisation()
 
 void CGUIVisualisationControl::LoadVisualisation()
 {
-  CLog::Log(LOGDEBUG, "LoadVisualisation() started");
   CSingleLock lock (m_critSection);
   if (m_pVisualisation)
   {
@@ -111,10 +110,11 @@ void CGUIVisualisationControl::LoadVisualisation()
   m_bInitialized = false;
   CVisualisationFactory factory;
   CStdString strVisz;
-  OutputDebugString("Load Visualisation\n");
   m_currentVis = g_guiSettings.GetString("MyMusic.Visualisation");
   if (m_currentVis.Equals("None"))
     return;
+  CLog::Log(LOGDEBUG, "LoadVisualisation() started");
+  OutputDebugString("Load Visualisation\n");
   strVisz.Format("Q:\\visualisations\\%s", m_currentVis.c_str());
   m_pVisualisation = factory.LoadVisualisation(strVisz.c_str());
   if (m_pVisualisation)
