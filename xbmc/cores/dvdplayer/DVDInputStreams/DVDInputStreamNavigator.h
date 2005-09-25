@@ -6,7 +6,6 @@
 #include <string>
 
 #include "DllDvdNav.h"
-#include "DllDvdCss.h"
 
 #define DVD_VIDEO_BLOCKSIZE         DVD_VIDEO_LB_LEN // 2048 bytes
 
@@ -100,7 +99,6 @@ protected:
   void Unlock() { LeaveCriticalSection(&m_critSection); }
   
   DllDvdNav m_dll;
-  DllDvdCss m_dllDvdCss;  // Just a dummy for loading/unloading
   bool m_bDiscardHop;
   bool m_bCheckButtons;
   bool m_bStopped;
