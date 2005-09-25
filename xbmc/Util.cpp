@@ -123,6 +123,8 @@ bool CUtil::GetVolumeFromFileName(const CStdString& strFileName, CStdString& str
   CStdString strTestString;
   CRegExp reg;
 
+  //CLog::Log(LOGNOTICE, "GetVolumeFromFileName : 1 : " + strFileName);
+
   for (unsigned int i = 0; i < regexps.size(); i++)
   {
     CStdString strRegExp = regexps[i];
@@ -136,6 +138,7 @@ bool CUtil::GetVolumeFromFileName(const CStdString& strFileName, CStdString& str
     { // found this token
       int iRegLength = reg.GetFindLen();
       int iCount = reg.GetSubCount();
+      //CLog::Log(LOGNOTICE, "GetVolumeFromFileName : 2 : " + strFileName + " : " + strRegExp + " : iRegLength=%i : iCount=%i", iRegLength, iCount);
       if( 1 == iCount )
       {
         char *pReplace = reg.GetReplaceString("\\1");
@@ -144,14 +147,19 @@ bool CUtil::GetVolumeFromFileName(const CStdString& strFileName, CStdString& str
         {
           strVolumeNumber = pReplace;
           free(pReplace);
-        // remove the extension (if any).  We do this on the base filename, as the regexp
+
           // remove the extension (if any).  We do this on the base filename, as the regexp
           // match may include some of the extension (eg the "." in particular).
 
-          //Why should the extension be removed here.. that is a display problem not stacking problem
-          RemoveExtension(strFileNameTemp);
-          CStdString strFileRight = strFileNameTemp.Mid(iFoundToken + iRegLength);
-          strFileTitle = strFileName.Left(iFoundToken) + strFileRight;
+          // the extension will then be added back on at the end - there is no reason 
+          // to clean it off here. It will be cleaned off during the display routine, if 
+          // the settings to hide extensions are turned on.
+          CStdString strFileNoExt = strFileNameTemp;
+          RemoveExtension(strFileNoExt);
+          CStdString strFileExt = strFileNameTemp.Right(strFileNameTemp.length() - strFileNoExt.length());
+          CStdString strFileRight = strFileNoExt.Mid(iFoundToken + iRegLength);
+          strFileTitle = strFileName.Left(iFoundToken) + strFileRight + strFileExt;
+          //CLog::Log(LOGNOTICE, "GetVolumeFromFileName : 3 : " + strFileName + " : " + strVolumeNumber + " : " + strFileTitle + " : " + strFileExt + " : " + strFileRight + " : " + strFileTitle);
           return true;
         }
 
@@ -169,11 +177,13 @@ bool CUtil::GetVolumeFromFileName(const CStdString& strFileName, CStdString& str
         //Third Sub value contains suffix
         strFileTitle += strFileName.Mid(iFoundToken + reg.GetSubStart(3), reg.GetSubLenght(3));
         strFileTitle += strFileNameTemp.Mid(iFoundToken + iRegLength);
+        //CLog::Log(LOGNOTICE, "GetVolumeFromFileName : 4 : " + strFileName + " : " + strVolumeNumber + " : " + strFileTitle);
         return true;
       }
 
     }
   }
+  //CLog::Log(LOGNOTICE, "GetVolumeFromFileName : 5 : " + strFileName);
   return false;
 }
 
@@ -203,19 +213,29 @@ void CUtil::CleanFileName(CStdString& strFileName)
 {
   bool result = false;
 
-  // assume extension has already been removed
+  //CLog::Log(LOGNOTICE, "CleanFileName : 1 : " + strFileName);
+
+  // remove volume indicator from stacked files
   CStdString strFileTitle;
   CStdString strVolumeNumber;
   if (GetVolumeFromFileName(strFileName, strFileTitle, strVolumeNumber))
   {
+    //CLog::Log(LOGNOTICE, "CleanFileName : 2 : " + strFileName + " : " + strFileTitle + " : " + strVolumeNumber);
     //If we have same extension as before (ie GetVolumeFromFileName didn't remove it). remove it now
-    if( strcmp( GetExtension(strFileName.c_str()), GetExtension(strFileTitle.c_str()) ) == 0 )
+    if(g_guiSettings.GetBool("FileLists.HideExtensions") 
+    	&& (strcmp(GetExtension(strFileName.c_str()), GetExtension(strFileTitle.c_str()) ) == 0))
+    {
       RemoveExtension(strFileTitle);
+    }
 
     strFileName = strFileTitle;
   }
-  else
+  else if (g_guiSettings.GetBool("FileLists.HideExtensions"))
+  {
     RemoveExtension(strFileName);
+  }
+
+  //CLog::Log(LOGNOTICE, "CleanFileName : 3 : " + strFileName);
 
   // remove known tokens:      { "divx", "xvid", "3ivx", "ac3", "ac351", "mp3", "wma", "m4a", "mp4", "ogg", "SCR", "TS", "sharereactor" }
   // including any separators: { ' ', '-', '_', '.', '[', ']', '(', ')' }
@@ -232,11 +252,9 @@ void CUtil::CleanFileName(CStdString& strFileName)
   // want to see, such as language codes.
 
   {
-    //const CStdString separatorsString = " -_.[]()+";
+    //m_szMyVideoCleanSeparatorsString = " -_.[]()+";
 
-    //const CStdString tokensString = "divx|xvid|3ivx|ac3|ac351|mp3|wma|m4a|mp4|ogg|scr|ts|sharereactor";
-    //CStdStringArray tokens;
-    //StringUtils::SplitString(tokensString, "|", tokens);
+    //m_szMyVideoCleanTokensArray = "divx|xvid|3ivx|ac3|ac351|mp3|wma|m4a|mp4|ogg|scr|ts|sharereactor";
 
     const CStdString & separatorsString = g_settings.m_szMyVideoCleanSeparatorsString;
     const CStdStringArray & tokens = g_settings.m_szMyVideoCleanTokensArray;
@@ -263,7 +281,7 @@ void CUtil::CleanFileName(CStdString& strFileName)
           itoa(pos, buffer, 10);
           char buffer2[10];
           itoa(maxPos, buffer2, 10);
-          //CLog::Log(LOGERROR, "CleanFileName : 1 : " + strFileName + " : " + token + " : " + buffer + " : " + separator + " : " + buffer2 + " : " + separatorsString);
+          //CLog::Log(LOGNOTICE, "CleanFileName : 4 : " + strFileName + " : " + token + " : " + buffer + " : " + separator + " : " + buffer2 + " : " + separatorsString);
           if (separatorsString.Find(separator) > -1)
           {
             // token has some separator before it - now look for the
@@ -282,9 +300,9 @@ void CUtil::CleanFileName(CStdString& strFileName)
             if (tokenFoundWithSeparator)
               pos = pos2;
             //if (tokenFoundWithSeparator)
-            //  CLog::Log(LOGERROR, "CleanFileName : 2 : " + strFileName + " : " + token + " : " + buffer + " : " + separator + " : " + buffer2);
+              //CLog::Log(LOGNOTICE, "CleanFileName : 5 : " + strFileName + " : " + token + " : " + buffer + " : " + separator + " : " + buffer2);
             //else
-            //  CLog::Log(LOGERROR, "CleanFileName : 3 : " + strFileName + " : " + token + " : " + buffer + " : " + separator + " : " + buffer2);
+              //CLog::Log(LOGNOTICE, "CleanFileName : 6 : " + strFileName + " : " + token + " : " + buffer + " : " + separator + " : " + buffer2);
           }
 
           if (tokenFoundWithSeparator)
@@ -322,13 +340,25 @@ void CUtil::CleanFileName(CStdString& strFileName)
   // if the file contains no spaces, all '.' tokens should be replaced by
   // spaces - one possibility of a mistake here could be something like:
   // "Dr..StrangeLove" - hopefully no one would have anything like this.
+  // if the extension is shown, the '.' before the extension should be 
+  // left as is.
 
   strFileName = strFileName.Trim();
+  //CLog::Log(LOGNOTICE, "CleanFileName : 7 : " + strFileName);
+
+  int extPos = (int)strFileName.size();
+  if (!g_guiSettings.GetBool("FileLists.HideExtensions"))
+  {
+    CStdString strFileNameTemp = strFileName;
+    RemoveExtension(strFileNameTemp);
+    //CLog::Log(LOGNOTICE, "CleanFileName : 8 : " + strFileName + " : " + strFileNameTemp);
+    extPos = strFileNameTemp.size();
+  }
 
   {
     bool alreadyContainsSpace = (strFileName.Find(' ') >= 0);
 
-    for (int i = 0; i < (int)strFileName.size(); i++)
+    for (int i = 0; i < extPos; i++)
     {
       char c = strFileName.GetAt(i);
       if ((c == '_') || ((!alreadyContainsSpace) && (c == '.')))
@@ -339,6 +369,7 @@ void CUtil::CleanFileName(CStdString& strFileName)
   }
 
   strFileName = strFileName.Trim();
+  //CLog::Log(LOGNOTICE, "CleanFileName : 9 : " + strFileName);
 }
 
 bool CUtil::GetParentPath(const CStdString& strPath, CStdString& strParent)
