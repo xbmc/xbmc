@@ -751,9 +751,10 @@
   <string><id>12370</id><value>Master Lock Mode è cambiato, il Master Code non era impostato!</value></string>
   <string><id>12371</id><value>Inserire un nuovo Master Code!</value></string>
 
-  <string><id>12372</id><value>Lock Filemanager</value></string>
-  <string><id>12373</id><value>Lock Impostazioni</value></string>
+  <string><id>12372</id><value>Lock Impostazioni &amp; Files</value></string>
+  <string><id>12373</id><value>Impostazioni &amp;  Files</value></string>
   <string><id>12374</id><value>Lock Media</value></string>
+  <string><id>12375</id><value>Modalità Master User</value></string>
 
   <string><id>12390</id><value>Tempo di Vita del Sistema</value></string> 
   <string><id>12391</id><value>Minuti</value></string> 
@@ -801,7 +802,7 @@
   <string><id>13311</id><value>Effetto Spostamento</value></string>
   <string><id>13312</id><value>Riduzione Barra Nera</value></string>
   <string><id>13313</id><value>Riavvia</value></string>
-  <string><id>13314</id><value>Transizione</value></string>
+  <string><id>13314</id><value>Dissolvenza</value></string>
   <string><id>13315</id><value>Ricrea Icone</value></string>
   <string><id>13316</id><value>Icone Ricorsive</value></string>
   <string><id>13317</id><value>Vedi Slideshow</value></string>
@@ -887,7 +888,7 @@
   <string><id>13397</id><value>Attiva Sottotitoli</value></string>
   <string><id>13398</id><value>Segnalibri</value></string>
   <string><id>13399</id><value>Ignora "The" nell'ordinamento</value></string>
-  <string><id>13400</id><value>Transizione tra le tracce dell'album</value></string>
+  <string><id>13400</id><value>Dissolvenza tra le tracce dell'album</value></string>
 
   <string><id>14000</id><value>Unisci Volumi</value></string>
   <string><id>14001</id><value>Dividi Volumi</value></string>
@@ -1097,7 +1098,7 @@
   <string><id>13297</id><value>Xbox NON è Connessa. Controlla Configurazione Rete!</value></string>
   <string><id>13298</id><value>XBLIVE Key:</value></string>
 
-  <string><id>15213</id><value>[CONTENITORE]</value></string>
+  <string><id>15213</id><value>Play con...</value></string>
   <string><id>15214</id><value>Perfeziona Sincronizzazione A/V</value></string>
   <string><id>15215</id><value>Nascondi Nomi dei Files in Vista Icone</value></string>
 
