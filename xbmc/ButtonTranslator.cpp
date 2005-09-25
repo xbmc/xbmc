@@ -421,10 +421,6 @@ WORD CButtonTranslator::TranslateWindowString(const char *szWindow)
   else
     CLog::Log(LOGERROR, "Window Translator: Can't find window %s", strWindow.c_str());
 
-  // virtual window which returns the last open music window (aka the music start window)
-  if (wWindowID == WINDOW_MUSIC)
-    wWindowID = g_stSettings.m_iMyMusicStartWindow;
-
   //CLog::Log(LOGDEBUG,"CButtonTranslator::TranslateWindowString(%s) returned Window ID (%i)", szWindow, wWindowID);
   return wWindowID;
 }
