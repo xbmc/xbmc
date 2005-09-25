@@ -262,7 +262,10 @@ bool CGUIWindowVideoFiles::OnMessage(CGUIMessage& message)
         //   1 : simple stacking
         //   2 : fuzzy stacking
         g_stSettings.m_iMyVideoVideoStack++;
-        if (g_stSettings.m_iMyVideoVideoStack > STACK_SIMPLE) g_stSettings.m_iMyVideoVideoStack = STACK_NONE;
+        
+        if (g_stSettings.m_iMyVideoVideoStack > STACK_SIMPLE) 
+          g_stSettings.m_iMyVideoVideoStack = STACK_NONE;
+
         if (g_stSettings.m_iMyVideoVideoStack != STACK_NONE)
           g_stSettings.m_bMyVideoCleanTitles = true;
         else
@@ -392,10 +395,10 @@ bool CGUIWindowVideoFiles::UpdateDir(const CStdString &strDirectory)
   m_iLastControl = GetFocusedControl();
 
   m_vecItems.SetThumbs();
-  if ((g_guiSettings.GetBool("FileLists.HideExtensions"))/* || (g_stSettings.m_bMyVideoCleanTitles)*/)
-    m_vecItems.RemoveExtensions();
   if (g_stSettings.m_bMyVideoCleanTitles)
     m_vecItems.CleanFileNames();
+  else if (g_guiSettings.GetBool("FileLists.HideExtensions"))
+    m_vecItems.RemoveExtensions();
 
   SetIMDBThumbs(m_vecItems);
   m_vecItems.FillInDefaultIcons();
