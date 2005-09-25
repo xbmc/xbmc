@@ -36,17 +36,25 @@ public:
   DllLoader python23;
   
   void Clear();
-  HMODULE GetModuleAddress(char* sName);
+  HMODULE GetModuleAddress(const char* sName);
   int GetNrOfModules();
   DllLoader* GetModule(int iPos);
-  DllLoader* GetModule(char* sName);
+  DllLoader* GetModule(const char* sName);
+  
+  DllLoader* LoadModule(const char* sName, const char* sCurrentDir=NULL);
+  void ReleaseModule(DllLoader*& pDll);
+
   void RegisterDll(DllLoader* pDll);
   void UnRegisterDll(DllLoader* pDll);
   
 private:
-  
+  DllLoader* FindModule(const char* sName, const char* sCurrentDir);
+  DllLoader* LoadDll(const char* sName);
+  bool IsSystemDll(const char* sName);
   DllLoader* m_dlls[64];
   int m_iNrOfDlls;
+
+  bool m_bTrack;
 };
 
 extern DllLoaderContainer g_dlls;
