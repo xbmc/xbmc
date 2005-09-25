@@ -5,6 +5,10 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 25-09-2005 updated: German language file
+ - 25-09-2005 updated: Italian language file (Thnx to kotix)
+ - 25-09-2005 updated: Norwegian language file (Thnx to vnm)
+ - 25-09-2005 updated: French language file (Thnx to lacrevette)
  - 25-09-2005 changed: removed load of libdvdcss-2.dll from InputStreamNavigator
  - 25-09-2005 changed: cdripper now uses original vorbis dlls ( dlls in \system\cdrip got updated)
  - 25-09-2005 fixed: my music files not filtering files by extension

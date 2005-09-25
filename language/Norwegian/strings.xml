@@ -1,4 +1,4 @@
-<!-- Based on English XML v1.248. Last updated by vnmartinsen  !-->
+<!-- Based on English XML v1.249. Last updated by vnmartinsen  !-->
 <strings>
   <string><id>0</id><value>Mine Programmer</value></string>
   <string><id>1</id><value>Mine Bilder</value></string>
@@ -558,6 +558,7 @@
   <string><id>771</id><value>- Automatisk FATX-begrensning</value></string>
   <string><id>772</id><value>Lyd-maskinvare</value></string>
   <string><id>773</id><value>Søker</value></string>
+  <string><id>774</id><value>Mappe til bildevisningsskjermsparer</value></string>
   <string><id>998</id><value>XLink Kai</value></string>
   <string><id>999</id><value>Spill på nettet</value></string>
 

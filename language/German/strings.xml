@@ -1,6 +1,3 @@
-<!-- German language for XBMC -->
-<!-- Based on translation German (AUSTRIAN) done by CEOMR -->
-<!-- Translation by Bobbin007 -->
 <strings>
   <string><id>0</id><value>Programme</value></string>
   <string><id>1</id><value>Bilder</value></string>
@@ -1081,7 +1078,7 @@
   <string><id>13275</id><value>Festplatte</value></string>
   <string><id>13276</id><value>DVD-ROM</value></string>
   <string><id>13277</id><value>Speicher</value></string>
-  <string><id>13278</id><value>Default</value></string>
+  <string><id>13278</id><value>Standard</value></string>
   <string><id>13279</id><value>Netzwerk</value></string>
   <string><id>13280</id><value>Video</value></string>
   <string><id>13281</id><value>Hardware</value></string>
