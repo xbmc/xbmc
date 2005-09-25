@@ -12,11 +12,23 @@ DllLoader::DllLoader(const char *sDll, bool bTrack, bool bSystemDll)
 {
   ImportDirTable = 0;
   m_sFileName = strdup(sDll);
-  
+
+  char* sPath = strrchr(m_sFileName, '\\');
+  if (sPath)
+  {
+    sPath++;
+    m_sPath=(char*)malloc(sPath - m_sFileName+1);
+    strncpy(m_sPath, m_sFileName, sPath - m_sFileName);
+    m_sPath[sPath - m_sFileName] = 0;
+  }
+  else 
+    m_sPath=NULL;
+
   m_iRefCount = 1;
   m_pExports = NULL;
   m_bTrack = bTrack;
   m_bSystemDll = bSystemDll;
+  m_pDlls = NULL;
   
   // Initialize FS segment, important for quicktime dll's
   if (fs_seg == NULL)
@@ -47,12 +59,21 @@ DllLoader::~DllLoader()
     delete entry->pExport;
     delete entry;
   }
+
+  while (m_pDlls)
+  {
+    LoadedList* entry = m_pDlls;
+    m_pDlls = entry->pNext;
+    if (entry->pDll) g_dlls.ReleaseModule(entry->pDll);
+    delete entry;
+  }
   
   if (!m_bSystemDll) g_dlls.UnRegisterDll(this);
   if (m_bTrack) tracker_dll_free(this);
 
   ImportDirTable = 0;
   free(m_sFileName);
+  if (m_sPath) free(m_sPath);
 }
 
 int DllLoader::Parse()
@@ -114,7 +135,7 @@ void DllLoader::PrintImportTable(ImportDirTable_t *ImportDirTable)
   ImportDirTable_t *Imp = ImportDirTable;
   int HavePrinted = 0;
 
-  printf("The Coff Image contains the following imports:\n\n");
+  CLog::Log(LOGDEBUG, "The Coff Image contains the following imports:\n\n");
   while ( Imp->ImportLookupTable_RVA != 0 ||
           Imp->TimeStamp != 0 ||
           Imp->ForwarderChain != 0 ||
@@ -158,31 +179,31 @@ void DllLoader::PrintExportTable(ExportDirTable_t *ExportDirTable)
                                  (SectionData[Sctn] + (ExportDirTable->OrdinalTable_RVA - SectionHeader[Sctn].VirtualAddress));
 
 
-  printf("Export Table for %s:\n", Name);
+  CLog::Log(LOGDEBUG, "Export Table for %s:\n", Name);
 
-  printf("ExportFlags:    %04X\n", ExportDirTable->ExportFlags);
-  printf("TimeStamp:      %04X\n", ExportDirTable->TimeStamp);
-  printf("Major Ver:      %02X\n", ExportDirTable->MajorVersion);
-  printf("Minor Ver:      %02X\n", ExportDirTable->MinorVersion);
-  printf("Name RVA:       %04X\n", ExportDirTable->Name_RVA);
-  printf("OrdinalBase     %d\n", ExportDirTable->OrdinalBase);
-  printf("NumAddrTable    %d\n", ExportDirTable->NumAddrTable);
-  printf("NumNamePtrs     %d\n", ExportDirTable->NumNamePtrs);
-  printf("ExportAddressTable_RVA  %04X\n", ExportDirTable->ExportAddressTable_RVA);
-  printf("NamePointerTable_RVA    %04X\n", ExportDirTable->NamePointerTable_RVA);
-  printf("OrdinalTable_RVA        %04X\n\n", ExportDirTable->OrdinalTable_RVA);
+  CLog::Log(LOGDEBUG, "ExportFlags:    %04X\n", ExportDirTable->ExportFlags);
+  CLog::Log(LOGDEBUG, "TimeStamp:      %04X\n", ExportDirTable->TimeStamp);
+  CLog::Log(LOGDEBUG, "Major Ver:      %02X\n", ExportDirTable->MajorVersion);
+  CLog::Log(LOGDEBUG, "Minor Ver:      %02X\n", ExportDirTable->MinorVersion);
+  CLog::Log(LOGDEBUG, "Name RVA:       %04X\n", ExportDirTable->Name_RVA);
+  CLog::Log(LOGDEBUG, "OrdinalBase     %d\n", ExportDirTable->OrdinalBase);
+  CLog::Log(LOGDEBUG, "NumAddrTable    %d\n", ExportDirTable->NumAddrTable);
+  CLog::Log(LOGDEBUG, "NumNamePtrs     %d\n", ExportDirTable->NumNamePtrs);
+  CLog::Log(LOGDEBUG, "ExportAddressTable_RVA  %04X\n", ExportDirTable->ExportAddressTable_RVA);
+  CLog::Log(LOGDEBUG, "NamePointerTable_RVA    %04X\n", ExportDirTable->NamePointerTable_RVA);
+  CLog::Log(LOGDEBUG, "OrdinalTable_RVA        %04X\n\n", ExportDirTable->OrdinalTable_RVA);
 
-  printf("Public Exports:\n");
-  printf("    ordinal hint RVA      name\n");
+  CLog::Log(LOGDEBUG, "Public Exports:\n");
+  CLog::Log(LOGDEBUG, "    ordinal hint RVA      name\n");
   for (unsigned int i = 0; i < ExportDirTable->NumAddrTable; i++)
   {
     int Sctn = RVA2Section(NamePointerTable[i]);
     char *Name = SectionData[Sctn] + (NamePointerTable[i] - SectionHeader[Sctn].VirtualAddress);
 
-    printf("          %d", OrdinalTable[i] + ExportDirTable->OrdinalBase);
-    printf("    %d", OrdinalTable[i]);
-    printf(" %08X", ExportAddressTable[OrdinalTable[i]]);
-    printf(" %s\n", Name);
+    CLog::Log(LOGDEBUG, "          %d", OrdinalTable[i] + ExportDirTable->OrdinalBase);
+    CLog::Log(LOGDEBUG, "    %d", OrdinalTable[i]);
+    CLog::Log(LOGDEBUG, " %08X", ExportAddressTable[OrdinalTable[i]]);
+    CLog::Log(LOGDEBUG, " %s\n", Name);
   }
 }
 
@@ -212,6 +233,11 @@ int DllLoader::ResolveImports(void)
       Sctn = RVA2Section(Imp->Name_RVA);
       Name = SectionData[Sctn] + (Imp->Name_RVA - SectionHeader[Sctn].VirtualAddress);
 
+      char* FileName=ResolveReferencedDll(Name);
+      //  If possible use the dll name WITH path to resolve exports. We could have loaded 
+      //  a dll with the same name as another dll but from a different directory
+      if (FileName) Name=FileName;
+
       int SctnTbl = RVA2Section(Imp->ImportLookupTable_RVA);
       unsigned long *Table = (unsigned long*)
                              (SectionData[SctnTbl] + (Imp->ImportLookupTable_RVA - SectionHeader[SctnTbl].VirtualAddress));
@@ -229,8 +255,7 @@ int DllLoader::ResolveImports(void)
           {
             bResult = 0;
             char szBuf[128];
-            sprintf(szBuf, "unable to resolve ordinal %s %d\n", Name, *Table&0x7ffffff);
-            OutputDebugString(szBuf);
+            CLog::DebugLog("Unable to resolve ordinal %s %d\n", Name, *Table&0x7ffffff);
             sprintf(szBuf, "%d", *Table&0x7ffffff);
             *Addr = create_dummy_function(Name, szBuf);
             tracker_dll_data_track(this, *Addr);
@@ -266,6 +291,26 @@ int DllLoader::ResolveImports(void)
     }
   }
   return bResult;
+}
+
+char* DllLoader::ResolveReferencedDll(char* dll)
+{
+  DllLoader* pDll = g_dlls.LoadModule(dll, GetPath());
+
+  if (!pDll)
+  {
+    CLog::Log(LOGERROR, "Unable to load referenced dll %s - Dll: %s", dll, GetFileName());
+    return NULL;
+  }
+  else if (!pDll->IsSystemDll())
+  {
+    LoadedList* entry=new LoadedList;
+    entry->pDll=pDll;
+    entry->pNext=m_pDlls;
+    m_pDlls=entry;
+  }
+
+  return pDll->GetFileName();
 }
 
 int DllLoader::LoadExports()
@@ -311,58 +356,16 @@ int DllLoader::LoadExports()
 
 int DllLoader::ResolveExport(const char *sName, void **pAddr)
 {
-  if (m_bSystemDll)
+  Export* pExport=GetExportByFunctionName(sName);
+
+  if (pExport)
   {
-    // system dlls (eg kernel32.dll) have no export table in xbmc
-    // so lookup directly in the export list
-    Export* exp = GetExportByFunctionName(sName);
-    if (exp)
-    {
-      *pAddr = (void*)exp->function;
-      return 1;
-    }
-  }
-  else
-  {
-    if ( NumOfDirectories >= 1 )
-    {
-      int Sctn = RVA2Section(Directory[EXPORT_TABLE].RVA);
-      ExportDirTable = (ExportDirTable_t*)
-                      (SectionData[Sctn] + (Directory[EXPORT_TABLE].RVA - SectionHeader[Sctn].VirtualAddress));
-                       
-  #ifdef DUMPING_DATA
-      PrintExportTable(ExportDirTable);
-  #endif
+    if (m_bTrack && pExport->track_function)
+      *pAddr=(void*)pExport->track_function;
+    else
+      *pAddr=(void*)pExport->function;
 
-      Sctn = RVA2Section(ExportDirTable->Name_RVA);
-      char *Name = SectionData[Sctn] + (ExportDirTable->Name_RVA - SectionHeader[Sctn].VirtualAddress);
-
-      Sctn = RVA2Section(ExportDirTable->ExportAddressTable_RVA);
-      unsigned long *ExportAddressTable = (unsigned long*)
-          (SectionData[Sctn] + (ExportDirTable->ExportAddressTable_RVA - SectionHeader[Sctn].VirtualAddress));
-
-      Sctn = RVA2Section(ExportDirTable->NamePointerTable_RVA);
-      unsigned long *NamePointerTable = (unsigned long*)
-          (SectionData[Sctn] + (ExportDirTable->NamePointerTable_RVA - SectionHeader[Sctn].VirtualAddress));
-
-      Sctn = RVA2Section(ExportDirTable->OrdinalTable_RVA);
-      unsigned short *OrdinalTable = (unsigned short*)
-          (SectionData[Sctn] + (ExportDirTable->OrdinalTable_RVA - SectionHeader[Sctn].VirtualAddress));
-
-      for (unsigned int i = 0; i < ExportDirTable->NumAddrTable; i++)
-      {
-        int Sctn = RVA2Section(NamePointerTable[i]);
-        char *Name = SectionData[Sctn] + (NamePointerTable[i] - SectionHeader[Sctn].VirtualAddress);
-
-        if (stricmp(Name, sName) == 0 && pAddr)
-        {
-          unsigned long RVA = ExportAddressTable[OrdinalTable[i]];
-          int FSctn = RVA2Section(RVA);
-          *pAddr = (void*)(SectionData[FSctn] + (RVA - SectionHeader[FSctn].VirtualAddress));
-          return 1;
-        }
-      }
-    }
+    return 1;
   }
   
   char* sDllName = strrchr(m_sFileName, '\\');
@@ -405,50 +408,42 @@ Export* DllLoader::GetExportByFunctionName(const char* sFunctionName)
   
 int DllLoader::ResolveOrdinal(char *sName, unsigned long ordinal, void **fixup)
 {
-  int iSize = g_dlls.GetNrOfModules();
+  DllLoader* pDll = g_dlls.GetModule(sName);
 
-  for (int i = 0; i < iSize; i++)
+  if (pDll)
   {
-    DllLoader* pDll = g_dlls.GetModule(i);
-    if (pDll && stricmp(sName, pDll->GetName()) == 0)
+    Export* pExp = pDll->GetExportByOrdinal(ordinal);
+    if(pExp)
     {
-      Export* pExp = pDll->GetExportByOrdinal(ordinal);
-      if(pExp)
-      {
-        if (m_bTrack && pExp->track_function)
-          *fixup = (void*)(pExp->track_function);
-        else
-          *fixup = (void*)(pExp->function);
-        return 1;
-        return 1;
-      }
-      return 0;
+      if (m_bTrack && pExp->track_function)
+        *fixup = (void*)(pExp->track_function);
+      else
+        *fixup = (void*)(pExp->function);
+
+      return 1;
     }
   }
+
   return 0;
 }
 
 int DllLoader::ResolveName(char *sName, char* sFunction, void **fixup)
 {
-  int iSize = g_dlls.GetNrOfModules();
+  DllLoader* pDll = g_dlls.GetModule(sName);
 
-  for (int i = 0; i < iSize; i++)
+  if (pDll)
   {
-    DllLoader* pDll = g_dlls.GetModule(i);
-    if (pDll && stricmp(sName, pDll->GetName()) == 0)
+    Export* pExp = pDll->GetExportByFunctionName(sFunction);
+    if(pExp)
     {
-      Export* pExp = pDll->GetExportByFunctionName(sFunction);
-      if(pExp)
-      {
-        if (m_bTrack && pExp->track_function)
-          *fixup = (void*)(pExp->track_function);
-        else
-          *fixup = (void*)(pExp->function);
-        return 1;
-      }
-      return 0;
+      if (m_bTrack && pExp->track_function)
+        *fixup = (void*)(pExp->track_function);
+      else
+        *fixup = (void*)(pExp->function);
+      return 1;
     }
   }
+
   return 0;
 }
 
@@ -466,6 +461,12 @@ char* DllLoader::GetName()
 char* DllLoader::GetFileName()
 {
   if (m_sFileName) return m_sFileName;
+  return "";
+}
+
+char* DllLoader::GetPath()
+{
+  if (m_sPath) return m_sPath;
   return "";
 }
   

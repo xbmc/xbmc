@@ -4,15 +4,7 @@
 #include "DllLoader.h"
 #include "DllLoaderContainer.h"
 
-#define DLL_PROCESS_DETACH   0
-#define DLL_PROCESS_ATTACH   1
-#define DLL_THREAD_ATTACH    2
-#define DLL_THREAD_DETACH    3
-#define DLL_PROCESS_VERIFIER 4
-  
 #define DEFAULT_DLLPATH "Q:\\system\\players\\mplayer\\codecs"
-
-typedef BOOL WINAPI EntryFunc(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved);
 
 char* getpath(char *buf, const char *full)
 {
@@ -68,110 +60,19 @@ extern "C" HMODULE __stdcall dllLoadLibraryExtended(LPCSTR file, LPCSTR sourcedl
   // Check if dll is already loaded and return its handle
   
   // first try filename only
-  DllLoader* dll = g_dlls.GetModule((char*)file);
+  
+  DllLoader* dll = g_dlls.LoadModule(file);
   // now with base address
-  if (!dll) dll = g_dlls.GetModule(pfile);
+  if (!dll) dll = g_dlls.LoadModule(pfile);
   
   if (dll)
   {
-    if (!dll->IsSystemDll())
-    {
-      CLog::Log(LOGDEBUG, "%s already loaded -> 0x%x", dll->GetFileName(), dll);
-      dll->IncrRef();
-    }
+    CLog::Log(LOGDEBUG, "LoadLibrary('%s') returning: 0x%x", libname, dll);
     return (HMODULE)dll;
   }
 
-  // enable memory tracking by default
-  DllLoader * dllhandle = new DllLoader(pfile, true);
-
-  int hr = dllhandle->Parse();
-  if (hr == 0)
-  {
-    CLog::Log(LOGERROR, "Failed to open %s, check codecs.conf and file existence.\n", pfile);
-    delete dllhandle;
-    return NULL;
-  }
-
-  dllhandle->ResolveImports();
-
-  // only execute DllMain if no EntryPoint is found
-  if (!dllhandle->EntryAddress)
-  {
-    void* address = NULL;
-    dllhandle->ResolveExport("DllMain", &address);
-    if (address) dllhandle->EntryAddress = (unsigned long)address;
-  }
-  else
-  {
-    CLog::Log(LOGDEBUG, "Executing EntryPoint at: 0x%x - Dll: %s", dllhandle->EntryAddress, libname);
-  }
-
-  // patch some unwanted calls in memory
-  if (strstr(libname, "QuickTime.qts") && dllhandle)
-  {
-    int i;
-    DWORD dispatch_addr;
-    DWORD imagebase_addr;
-    DWORD dispatch_rva;
-
-    dllhandle->ResolveExport("theQuickTimeDispatcher", (void **)&dispatch_addr);
-    imagebase_addr = (DWORD)dllhandle->hModule;
-    CLog::Log(LOGDEBUG, "Virtual Address of theQuickTimeDispatcher = 0x%x", dispatch_addr);
-    CLog::Log(LOGDEBUG, "ImageBase of %s = 0x%x", libname, imagebase_addr);
-
-    dispatch_rva = dispatch_addr - imagebase_addr;
-
-    CLog::Log(LOGDEBUG, "Relative Virtual Address of theQuickTimeDispatcher = %p", dispatch_rva);
-
-    DWORD base = imagebase_addr;
-    if (dispatch_rva == 0x124C30)
-    {
-      CLog::Log(LOGINFO, "QuickTime5 DLLs found\n");
-      for (i = 0;i < 5;i++) ((BYTE*)base + 0x19e842)[i] = 0x90; // make_new_region ?
-      for (i = 0;i < 28;i++) ((BYTE*)base + 0x19e86d)[i] = 0x90; // call__call_CreateCompatibleDC ?
-      for (i = 0;i < 5;i++) ((BYTE*)base + 0x19e898)[i] = 0x90; // jmp_to_call_loadbitmap ?
-      for (i = 0;i < 9;i++) ((BYTE*)base + 0x19e8ac)[i] = 0x90; // call__calls_OLE_shit ?
-      for (i = 0;i < 106;i++) ((BYTE*)base + 0x261B10)[i] = 0x90; // disable threads
-    }
-    else if (dispatch_rva == 0x13B330)
-    {
-      CLog::Log(LOGINFO, "QuickTime6 DLLs found\n");
-      for (i = 0;i < 5;i++) ((BYTE*)base + 0x2730CC)[i] = 0x90; // make_new_region
-      for (i = 0;i < 28;i++) ((BYTE*)base + 0x2730f7)[i] = 0x90; // call__call_CreateCompatibleDC
-      for (i = 0;i < 5;i++) ((BYTE*)base + 0x273122)[i] = 0x90; // jmp_to_call_loadbitmap
-      for (i = 0;i < 9;i++) ((BYTE*)base + 0x273131)[i] = 0x90; // call__calls_OLE_shit
-      for (i = 0;i < 96;i++) ((BYTE*)base + 0x2AC852)[i] = 0x90; // disable threads
-    }
-    else if (dispatch_rva == 0x13C3E0)
-    {
-      CLog::Log(LOGINFO, "QuickTime6.3 DLLs found\n");
-      for (i = 0;i < 5;i++) ((BYTE*)base + 0x268F6C)[i] = 0x90; // make_new_region
-      for (i = 0;i < 28;i++) ((BYTE*)base + 0x268F97)[i] = 0x90; // call__call_CreateCompatibleDC
-      for (i = 0;i < 5;i++) ((BYTE*)base + 0x268FC2)[i] = 0x90; // jmp_to_call_loadbitmap
-      for (i = 0;i < 9;i++) ((BYTE*)base + 0x268FD1)[i] = 0x90; // call__calls_OLE_shit
-      for (i = 0;i < 96;i++) ((BYTE*)base + 0x2B4722)[i] = 0x90; // disable threads
-    }
-    else
-    {
-      CLog::Log(LOGERROR, "Unsupported QuickTime version");
-      //return 0;
-    }
-
-    CLog::Log(LOGINFO, "QuickTime.qts patched!!!\n");
-  }
-
-  EntryFunc* initdll = (EntryFunc *)dllhandle->EntryAddress;
-  (*initdll)((HINSTANCE) dllhandle, DLL_PROCESS_ATTACH , 0); //call "DllMain" with DLL_PROCESS_ATTACH
-
-  CLog::Log(LOGDEBUG, "LoadLibrary('%s') returning: 0x%x", libname, dllhandle);
-
-// this is handled by the constructor of DllLoader
-/*
-  // Add dll to m_vecDlls
-  g_dlls.RegisterDll(dllhandle);
-*/
-  return (HMODULE) dllhandle;
+  CLog::Log(LOGERROR, "LoadLibrary('%s') failed", libname);
+  return NULL;
 }
 
 extern "C" HMODULE __stdcall dllLoadLibraryA(LPCSTR file)
@@ -201,30 +102,15 @@ extern "C" HMODULE __stdcall dllLoadLibraryExA(LPCSTR lpLibFileName, HANDLE hFil
 
 extern "C" BOOL __stdcall dllFreeLibrary(HINSTANCE hLibModule)
 {
-  CLog::Log(LOGDEBUG, "FreeLibrary(0x%x)", hLibModule);
-
   DllLoader* dllhandle = (DllLoader*)hLibModule;
   
   // to make sure systems dlls are never deleted
   if (dllhandle->IsSystemDll()) return 1;
   
-  if (dllhandle->DecrRef() > 0)
-  {
-    CLog::Log(LOGDEBUG, "Cannot FreeLibrary(%s), refcount > 0", dllhandle->GetFileName());
-    return 0;
-  }
+  CLog::Log(LOGDEBUG, "FreeLibrary(%s) -> 0x%x", dllhandle->GetName(), dllhandle);
 
-  EntryFunc* initdll = (EntryFunc*)dllhandle->EntryAddress;
-  
-  //call "DllMain" with DLL_PROCESS_DETACH
-  (*initdll)((HINSTANCE)dllhandle->hModule, DLL_PROCESS_DETACH , 0);
+  g_dlls.ReleaseModule(dllhandle);
 
-// this is handled by the destructor of DllLoader
-/*
-  //Remove dll
-  g_dlls.UnRegisterDll(dllhandle);
-*/
-  if (dllhandle) delete dllhandle;
   return 1;
 }
 

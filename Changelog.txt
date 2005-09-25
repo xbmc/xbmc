@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 25-09-2005 added: dlls load referenced dlls when a dll is loaded
  - 25-09-2005 updated: Xboxmediacenter.xml, added .SPC to music extensions
  - 24-09-2005 fixed: Visualization NONE resulted in 1 logentry / frame
  - 24-09-2005 updated: kai-vectors.xml

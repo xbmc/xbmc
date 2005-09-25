@@ -35,7 +35,7 @@ extern "C" ATOM WINAPI dllFindAtomA( LPCTSTR lpString)
 extern "C" ATOM WINAPI dllAddAtomA( LPCTSTR lpString)
 {
   m_vecAtoms.push_back(lpString);
-  return m_vecAtoms.size() + 1;
+  return m_vecAtoms.size();
 }
 
 extern "C" BOOL WINAPI dllFindClose(HANDLE hFile)
