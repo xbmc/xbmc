@@ -218,6 +218,11 @@ void CGUIWindowManager::RefreshWindow()
 
 void CGUIWindowManager::ActivateWindow(int iWindowID, const CStdString& strPath)
 {
+  // translate virtual windows
+  // virtual music window which returns the last open music window (aka the music start window)
+  if (iWindowID == WINDOW_MUSIC)
+    iWindowID = g_stSettings.m_iMyMusicStartWindow;
+
   // first check existence of the window we wish to activate.
   CGUIWindow *pNewWindow = GetWindow(iWindowID);
   if (!pNewWindow)
@@ -225,6 +230,7 @@ void CGUIWindowManager::ActivateWindow(int iWindowID, const CStdString& strPath)
     CLog::Log(LOGERROR, "Unable to locate window with id %d.  Check skin files", iWindowID - WINDOW_HOME);
     return ;
   }
+
    // GeminiServer HomeMenuLock with MasterCode!
   if(!g_passwordManager.CheckMenuLock(iWindowID))
   {
