@@ -17,6 +17,7 @@
 #include "cores/ModPlayer.h" 
 #include "MusicInfoTagLoaderNSF.h"
 #include "MusicInfoTagLoaderSPC.h"
+#include "MusicInfoTagLoaderGYM.h"
 #include "util.h"
 
 
@@ -121,6 +122,11 @@ IMusicInfoTagLoader* CMusicInfoTagLoaderFactory::CreateLoader(const CStdString& 
   else if (strExtension == "spc")
   {
     CMusicInfoTagLoaderSPC *pTagLoader = new CMusicInfoTagLoaderSPC();
+    return (IMusicInfoTagLoader*)pTagLoader;
+  } 
+  else if (strExtension == "gym")
+  {
+    CMusicInfoTagLoaderGYM *pTagLoader = new CMusicInfoTagLoaderGYM();
     return (IMusicInfoTagLoader*)pTagLoader;
   } 
 
