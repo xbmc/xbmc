@@ -265,11 +265,9 @@ bool DTSCodec::InitFile(const CStdString &strFile, unsigned int filecache)
 
 bool DTSCodec::CalculateTotalTime()
 {
-  //libdca gives us half the samplerate sometimes for some reason, thus the below calculation
-  //instead of this one
-  //m_TotalTime = (((m_file.GetLength() - m_iDataStart) * 8) / m_Bitrate) * 1000;
-  m_TotalTime = (m_file.GetLength() - m_iDataStart) / (m_SampleRate * 2 * (m_BitsPerSample / 8)) * 1000;
-  m_Bitrate = (int)(((m_file.GetLength() - m_iDataStart) * 8) / float(m_TotalTime / 1000));
+  //libdts gives half the actual bitrate sometime causing the total time to double
+  //don't know why this is, vlc has the same problem
+  m_TotalTime = (((m_file.GetLength() - m_iDataStart) * 8) / m_Bitrate) * 1000;
   return m_TotalTime > 0;
 }
 
@@ -294,7 +292,14 @@ bool DTSCodec::Init(const CStdString &strFile, unsigned int filecache)
 
   PrepairBuffers();
 
-  Decode(m_readBuffer, m_readBufferPos);
+  int istart = 0;
+  do
+  {
+    m_iDataStart = -1;
+    Decode(m_readBuffer + istart, m_readBufferPos - istart);
+    //decoding error, could still be a valid dts-stream, try again at next byte
+    istart += m_iDataStart + 1;
+  } while (m_DecoderError && (m_decodedDataSize == 0) && (m_readBufferPos - istart > 0) );
   if (m_decodedDataSize == 0)
   {
     return false;
@@ -407,7 +412,8 @@ int DTSCodec::Decode(BYTE* pData, int iSize)
 {
   level_t level = 1.0f;
   sample_t bias = 384;
-  
+  m_DecoderError = false;
+
   int iLen = 0;
   BYTE* pOldDataPointer = pData;
   while (iSize > 0)
@@ -494,12 +500,11 @@ int DTSCodec::Decode(BYTE* pData, int iSize)
         if (m_dll.dts_block(m_pState) != 0)
         {
           OutputDebugString("Not a valid DTS frame\n");
-          m_pInputBuffer    = m_inputBuffer;
-          m_iFrameSize      = 0;
-          m_decodedDataSize = 0;
-          return -1;
+          m_pInputBuffer = m_inputBuffer;
+          m_iFrameSize   = 0;
+          m_DecoderError = true;
+          return (pData - pOldDataPointer);
         }
-        
         m_fSamples = m_dll.dts_samples(m_pState);
         convert2s16_multi(m_fSamples, (short*)(m_decodedData + m_decodedDataSize), iFlags & (DTS_CHANNEL_MASK | DTS_LFE));
         m_decodedDataSize += 256 * sizeof(short) * m_iOutputChannels;

@@ -211,9 +211,9 @@ bool AC3Codec::InitFile(const CStdString &strFile, unsigned int filecache)
 
 bool AC3Codec::CalculateTotalTime()
 {
-  //m_TotalTime = (((m_file.GetLength() - m_iDataStart) * 8) / m_Bitrate) * 1000;
-  m_TotalTime = (m_file.GetLength() - m_iDataStart) / (m_SampleRate * 2 * (m_BitsPerSample / 8)) * 1000;
-  m_Bitrate = (int)(((m_file.GetLength() - m_iDataStart) * 8) / float(m_TotalTime / 1000));
+  //liba52 gives half the actual bitrate sometime causing the total time to double
+  //don't know why this is, vlc has the same problem
+  m_TotalTime = (((m_file.GetLength() - m_iDataStart) * 8) / m_Bitrate) * 1000;
   return m_TotalTime > 0;
 }
 
@@ -238,7 +238,14 @@ bool AC3Codec::Init(const CStdString &strFile, unsigned int filecache)
 
   PrepairBuffers();
 
-  Decode(m_readBuffer, m_readBufferPos);
+  int istart = 0;
+  do
+  {
+    m_iDataStart = -1;
+    Decode(m_readBuffer + istart, m_readBufferPos - istart);
+    //decoding error, could still be a valid ac3-stream, try again at next byte
+    istart += m_iDataStart + 1;
+  } while (m_DecoderError && (m_decodedDataSize == 0) && (m_readBufferPos - istart > 0) );
   if (m_decodedDataSize == 0)
   {
     return false;
@@ -336,6 +343,7 @@ int AC3Codec::Decode(BYTE* pData, int iSize)
 {
   level_t level = 1.0f;
   sample_t bias = 384;
+  m_DecoderError = false;
   
   int iLen = 0;
   BYTE* pOldDataPointer = pData;
@@ -425,8 +433,8 @@ int AC3Codec::Decode(BYTE* pData, int iSize)
           OutputDebugString("Not a valid AC3 frame\n");
           m_pInputBuffer    = m_inputBuffer;
           m_iFrameSize      = 0;
-          m_decodedDataSize = 0;
-          return -1;
+          m_DecoderError = true;
+          return (pData - pOldDataPointer);
         }
         
         m_fSamples = m_dll.a52_samples(m_pState);
