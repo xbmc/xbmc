@@ -29,8 +29,8 @@ bool CDVDInputStreamNavigator::Open(const char* strFile)
   
   if (!CDVDInputStream::Open(strFile)) return false;
   
-  // load libdvdnav.dll and libdvdcss
-  if (!m_dllDvdCss.Load() || !m_dll.Load())
+  // load libdvdnav.dll
+  if (!m_dll.Load())
     return false;
   
   // load the dvd language codes
