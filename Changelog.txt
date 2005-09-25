@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 25-09-2005 added: rar files can now be extracted using filemanager.
  - 25-09-2005 updated: German language file
  - 25-09-2005 updated: Italian language file (Thnx to kotix)
  - 25-09-2005 updated: Norwegian language file (Thnx to vnm)
