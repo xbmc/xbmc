@@ -395,8 +395,10 @@ void CGUIWindowFileManager::OnSort(int iList)
     // Set free space on disc
     if (pItem->m_bIsShareOrDrive)
     {
+      CLog::Log(LOGDEBUG,"item %s",pItem->m_strPath.c_str());
       if (pItem->IsHD())
       {
+        CLog::Log(LOGDEBUG,"ishd!");
         ULARGE_INTEGER ulBytesFree;
         if (GetDiskFreeSpaceEx(pItem->m_strPath.c_str(), &ulBytesFree, NULL, NULL))
         {
@@ -588,13 +590,13 @@ void CGUIWindowFileManager::OnClick(int iList, int iItem)
     m_rootDir.AddShare(shareZip);
     Update(iList, shareZip.strPath);
   }
-  /*else if (pItem->IsRAR())
+  else if (pItem->IsRAR() || pItem->IsCBR())
   {
     CShare shareRar;
-    shareRar.strPath.Format("rar://Z:\\filestemp\\,%i,,%s,\\",EXFILE_AUTODELETE,pItem->m_strPath.c_str() );
+    shareRar.strPath.Format("rar://Z:\\,%i,,%s,\\",EXFILE_AUTODELETE,pItem->m_strPath.c_str() );
     m_rootDir.AddShare(shareRar);
     Update(iList, shareRar.strPath);
-  }*/
+  }
   else
   {
     m_iItemSelected = GetSelectedItem(iList);
@@ -728,27 +730,40 @@ bool CGUIWindowFileManager::DoProcessFile(int iAction, const CStdString& strFile
       CLog::Log(LOGINFO,"%s",strLog.c_str());
 
       const WCHAR *szText = g_localizeStrings.Get(115).c_str();
-      if (m_dlgProgress)
-      {
-        m_dlgProgress->SetLine(0, 115);
-        m_dlgProgress->SetLine(1, strShortSourceFile);
-        m_dlgProgress->SetLine(2, strShortDestFile);
-        m_dlgProgress->Progress();
-      }
-
-      CStdString strDestFileShortened = strDestFile;
-
-      // shorten file if filename length > 42 chars
-      if (g_guiSettings.GetBool("Servers.FTPAutoFatX"))
-      {
-        CUtil::ShortenFileName(strDestFileShortened);
-        for (int i = 0; i < (int)strDestFileShortened.size(); ++i)
+      CURL url(strFile);
+      if (!(url.GetProtocol() == "rar://"))
+        if (m_dlgProgress)
         {
-          if (strDestFileShortened.GetAt(i) == ',') strDestFileShortened.SetAt(i, '_');
+          m_dlgProgress->SetLine(0, 115);
+          m_dlgProgress->SetLine(1, strShortSourceFile);
+          m_dlgProgress->SetLine(2, strShortDestFile);
+          m_dlgProgress->Progress();
         }
-      }
-      if (!CFile::Cache(strFile.c_str(), strDestFileShortened.c_str(), this, NULL))
-        return false;
+
+        CStdString strDestFileShortened = strDestFile;
+
+        // shorten file if filename length > 42 chars
+        if (g_guiSettings.GetBool("Servers.FTPAutoFatX"))
+        {
+          CUtil::ShortenFileName(strDestFileShortened);
+          for (int i = 0; i < (int)strDestFileShortened.size(); ++i)
+          {
+            if (strDestFileShortened.GetAt(i) == ',') strDestFileShortened.SetAt(i, '_');
+          }
+        }
+        if (url.GetProtocol() == "rar://")
+        {
+          CStdString strOriginalCachePath = g_stSettings.m_szCacheDirectory;
+          CStdString strDestPath;
+          CUtil::GetDirectory(strDestFileShortened,strDestPath);
+          strcpy(g_stSettings.m_szCacheDirectory,strDestPath.c_str());
+          bool bResult = g_RarManager.CacheRarredFile(strDestPath,url.GetHostName(),url.GetFileName(),0,strDestPath,1);
+          strcpy(g_stSettings.m_szCacheDirectory,strOriginalCachePath.c_str());
+          return bResult;
+        }
+        else
+        if (!CFile::Cache(strFile.c_str(), strDestFileShortened.c_str(), this, NULL))
+          return false;
     }
     break;
 
