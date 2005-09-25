@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "sectionloader.h"
-#include "cores/DllLoader/DllLoader.h"
+#include "cores/DllLoader/DllLoaderContainer.h"
 
 
 class CSectionLoader g_sectionLoader;
@@ -8,7 +8,7 @@ class CSectionLoader g_sectionLoader;
 //  delay for unloading dll's
 #define UNLOAD_DELAY 30*1000 // 30 sec.
 
-//Define this to get loggin on all calls to load/unload section
+//Define this to get loggin on all calls to load/unload sections/dlls
 //#define LOGALL
 
 CSectionLoader::CSectionLoader(void)
@@ -99,34 +99,26 @@ DllLoader *CSectionLoader::LoadDLL(const CStdString &dllname, bool bDelayUnload 
   for (int i = 0; i < (int)g_sectionLoader.m_vecLoadedDLLs.size(); ++i)
   {
     CDll& dll = g_sectionLoader.m_vecLoadedDLLs[i];
-    if (dll.m_strDllName == dllname)
+    if (dll.m_strDllName.Equals(dllname))
     {
       dll.m_lReferenceCount++;
       return dll.m_pDll;
     }
   }
-  // ok, now load the dll and resolve imports as necessary
+
+  // ok, now load the dll
+  CLog::DebugLog("SECTION:LoadDLL(%s)\n", dllname.c_str());
+  DllLoader* pDll = g_dlls.LoadModule(dllname.c_str());
+  if (!pDll)
+    return NULL;
+
   CDll newDLL;
   newDLL.m_strDllName = dllname;
   newDLL.m_lReferenceCount = 1;
-  newDLL.m_pDll = new DllLoader(dllname, true);
   newDLL.m_bDelayUnload=bDelayUnload;
-  if (!newDLL.m_pDll)
-  {
-    CLog::Log(LOGERROR, "CSectionLoader: Unable to load dll %s", dllname.c_str());
-    return NULL;
-  }
-
-  if (!newDLL.m_pDll->Parse())
-  {
-    CLog::Log(LOGERROR, "CSectionLoader: Unable to parse dll %s", dllname.c_str());
-    delete newDLL.m_pDll;
-    return NULL;
-  }
-
-  newDLL.m_pDll->ResolveImports();
+  newDLL.m_pDll=pDll;
   g_sectionLoader.m_vecLoadedDLLs.push_back(newDLL);
-  CLog::DebugLog("SECTION:LoadDLL(%s)\n", dllname.c_str());
+
   return newDLL.m_pDll;
 }
 
@@ -139,7 +131,7 @@ void CSectionLoader::UnloadDLL(const CStdString &dllname)
   for (int i = 0; i < (int)g_sectionLoader.m_vecLoadedDLLs.size(); ++i)
   {
     CDll& dll = g_sectionLoader.m_vecLoadedDLLs[i];
-    if (dll.m_strDllName == dllname)
+    if (dll.m_strDllName.Equals(dllname))
     {
       dll.m_lReferenceCount--;
       if (0 == dll.m_lReferenceCount)
@@ -149,7 +141,8 @@ void CSectionLoader::UnloadDLL(const CStdString &dllname)
         else
         {
           CLog::DebugLog("SECTION:UnloadDll(%s)", dllname.c_str());
-          if (dll.m_pDll) delete dll.m_pDll;
+          if (dll.m_pDll)
+            g_dlls.ReleaseModule(dll.m_pDll);
           g_sectionLoader.m_vecLoadedDLLs.erase(g_sectionLoader.m_vecLoadedDLLs.begin() + i);
         }
 
@@ -184,7 +177,9 @@ void CSectionLoader::UnloadDelayed()
     if (dll.m_lReferenceCount == 0 && GetTickCount() - dll.m_lUnloadDelayStartTick > UNLOAD_DELAY)
     {
       CLog::DebugLog("SECTION:UnloadDelayed(DLL: %s)", dll.m_strDllName.c_str());
-      if (dll.m_pDll) delete dll.m_pDll;
+
+      if (dll.m_pDll)
+        g_dlls.ReleaseModule(dll.m_pDll);
       g_sectionLoader.m_vecLoadedDLLs.erase(g_sectionLoader.m_vecLoadedDLLs.begin() + i);
       return;
     }
@@ -212,7 +207,7 @@ void CSectionLoader::UnloadAll()
     CDll& dll = *it;
     CLog::DebugLog("SECTION:UnloadAll(DLL: %s)", dll.m_strDllName.c_str());
     if (dll.m_pDll)
-      delete dll.m_pDll;
+      g_dlls.ReleaseModule(dll.m_pDll);
     it = g_sectionLoader.m_vecLoadedDLLs.erase(it);
   }
 }
