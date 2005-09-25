@@ -37,7 +37,7 @@ protected:
   CFileReader m_file;
   dts_state_t* m_pState;
 
-  BYTE m_inputBuffer[4096];
+  BYTE m_inputBuffer[12288];
   BYTE* m_pInputBuffer;
 
   BYTE* m_readBuffer;
@@ -51,6 +51,7 @@ protected:
   bool m_eof;
   int  m_iDataStart;
   bool m_IsInitialized;
+  bool m_DecoderError;
 
   int    m_iFrameSize;
   int    m_iFlags;

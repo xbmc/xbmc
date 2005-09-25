@@ -51,6 +51,7 @@ protected:
   bool m_eof;
   int  m_iDataStart;
   bool m_IsInitialized;
+  bool m_DecoderError;
 
   int    m_iFrameSize;
   int    m_iFlags;
