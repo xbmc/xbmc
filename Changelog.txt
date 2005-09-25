@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 25-09-2005 changed: cdripper now uses original vorbis dlls ( dlls in \system\cdrip got updated)
  - 25-09-2005 fixed: my music files not filtering files by extension
  - 25-09-2005 fixed: problems using window ID 5
  - 25-09-2005 added: dlls load referenced dlls when a dll is loaded

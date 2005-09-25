@@ -2,9 +2,9 @@
 #define _ENCODERVORBIS_H
 
 #include "Encoder.h"
-#include "oggvorbis\vorbisenc.h"
 #include "DllOgg.h"
 #include "DllVorbis.h"
+#include "DllVorbisEnc.h"
 
 class CEncoderVorbis : public CEncoder
 {
@@ -30,6 +30,7 @@ protected:
 
   DllOgg m_OggDll;
   DllVorbis m_VorbisDll;
+  DllVorbisEnc m_VorbisEncDll;
 };
 
 #endif // _ENCODERVORBIS_H

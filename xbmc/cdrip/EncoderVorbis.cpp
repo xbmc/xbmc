@@ -25,7 +25,7 @@ bool CEncoderVorbis::Init(const char* strFile, int iInChannels, int iInRate, int
   if (g_guiSettings.GetInt("CDDARipper.Quality") == CDDARIP_QUALITY_STANDARD) fQuality = 0.5f;
   if (g_guiSettings.GetInt("CDDARipper.Quality") == CDDARIP_QUALITY_EXTREME) fQuality = 0.7f;
 
-  if (!m_OggDll.Load() || !m_VorbisDll.Load())
+  if (!m_VorbisEncDll.Load() || !m_OggDll.Load() || !m_VorbisDll.Load())
   {
     // failed loading the dll's, unload it all
     CLog::Log(LOGERROR, "CEncoderVorbis::Init() Error while loading ogg.dll and or vorbis.dll");
@@ -37,11 +37,11 @@ bool CEncoderVorbis::Init(const char* strFile, int iInChannels, int iInRate, int
   {
     // not realy cbr, but abr in this case
     int iBitRate = g_guiSettings.GetInt("CDDARipper.Bitrate") * 1000;
-    m_VorbisDll.vorbis_encode_init(&m_sVorbisInfo, m_iInChannels, m_iInSampleRate, -1, iBitRate, -1);
+    m_VorbisEncDll.vorbis_encode_init(&m_sVorbisInfo, m_iInChannels, m_iInSampleRate, -1, iBitRate, -1);
   }
   else
   {
-    if (m_VorbisDll.vorbis_encode_init_vbr(&m_sVorbisInfo, m_iInChannels, m_iInSampleRate, fQuality)) return false;
+    if (m_VorbisEncDll.vorbis_encode_init_vbr(&m_sVorbisInfo, m_iInChannels, m_iInSampleRate, fQuality)) return false;
   }
 
   /* add a comment */
@@ -206,6 +206,8 @@ bool CEncoderVorbis::Close()
 
   delete []m_pBuffer;
   m_pBuffer = NULL;
+
+  m_VorbisEncDll.Unload();
 
   m_OggDll.Unload();
 
