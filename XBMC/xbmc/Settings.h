@@ -244,9 +244,9 @@ public:
     int m_iMyPicturesRootViewAsIcons;
 
     char szThumbnailsDirectory[1024];
-    char m_szMyPicturesExtensions[256];
-    char m_szMyMusicExtensions[256];
-    char m_szMyVideoExtensions[256];
+    char m_szMyPicturesExtensions[512];
+    char m_szMyMusicExtensions[512];
+    char m_szMyVideoExtensions[512];
     char m_szShortcutDirectory[256];
     char m_szAlbumDirectory[256];
     char m_szScreenshotsDirectory[256];
