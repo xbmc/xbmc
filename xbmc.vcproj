@@ -582,6 +582,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\MusicInfoTagLoaderFlac.cpp">
 				</File>
 				<File
+					RelativePath=".\xbmc\MusicInfoTagLoaderGYM.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\MusicInfoTagLoaderGYM.h">
+				</File>
+				<File
 					RelativePath=".\xbmc\MusicInfoTagLoaderMod.cpp">
 				</File>
 				<File
@@ -2196,10 +2202,10 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\cores\sidplayer\audio\AudioDrv.h">
 				</File>
 				<File
-					RelativePath=".\xbmc\cores\sidplayer\audio\config.h">
+					RelativePath=".\xbmc\cores\sidplayer\config.h">
 				</File>
 				<File
-					RelativePath=".\xbmc\cores\sidplayer\config.h">
+					RelativePath=".\xbmc\cores\sidplayer\audio\config.h">
 				</File>
 				<File
 					RelativePath=".\xbmc\cores\sidplayer\IniConfig.cpp">
@@ -2717,6 +2723,9 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\cores\paplayer\DllDumb.h">
 				</File>
 				<File
+					RelativePath=".\xbmc\cores\paplayer\DllGensApu.h">
+				</File>
+				<File
 					RelativePath=".\xbmc\cores\paplayer\DllLibFlac.h">
 				</File>
 				<File
@@ -2766,6 +2775,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				</File>
 				<File
 					RelativePath=".\xbmc\cores\paplayer\FLACcodec.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\paplayer\GYMCodec.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\paplayer\GYMCodec.h">
 				</File>
 				<File
 					RelativePath=".\xbmc\cores\paplayer\ICodec.h">
