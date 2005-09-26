@@ -38,7 +38,7 @@ using namespace std;
 #ifdef QueryPerformanceFrequency
 #undef QueryPerformanceFrequency
 #endif
-BOOL QueryPerformanceFrequencyXbox(LARGE_INTEGER *lpFrequency);
+WINBASEAPI BOOL WINAPI QueryPerformanceFrequencyXbox(LARGE_INTEGER *lpFrequency);
 #define QueryPerformanceFrequency(a) QueryPerformanceFrequencyXbox(a)
 
 // TODO: reference additional headers your program requires here
