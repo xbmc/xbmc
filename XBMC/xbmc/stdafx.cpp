@@ -6,7 +6,7 @@
 #undef QueryPerformanceFrequency
 
 __int64 lFrequency = 0LL;
-BOOL QueryPerformanceFrequencyXbox(LARGE_INTEGER *lpFrequency)
+WINBASEAPI BOOL WINAPI QueryPerformanceFrequencyXbox(LARGE_INTEGER *lpFrequency)
 {
   if( lFrequency == 0LL )
   {

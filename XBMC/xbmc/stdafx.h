@@ -73,7 +73,7 @@ using namespace AUTOPTR;
 #ifdef QueryPerformanceFrequency
 #undef QueryPerformanceFrequency
 #endif
-BOOL QueryPerformanceFrequencyXbox(LARGE_INTEGER *lpFrequency);
+WINBASEAPI BOOL WINAPI QueryPerformanceFrequencyXbox(LARGE_INTEGER *lpFrequency);
 #define QueryPerformanceFrequency(a) QueryPerformanceFrequencyXbox(a)
 
 

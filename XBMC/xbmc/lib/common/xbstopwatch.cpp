@@ -10,7 +10,7 @@
 #include "XbStopWatch.h"
 
 //Fix for invalid frequency on DreamX
-BOOL QueryPerformanceFrequencyXbox(LARGE_INTEGER *lpFrequency);
+WINBASEAPI BOOL WINAPI QueryPerformanceFrequencyXbox(LARGE_INTEGER *lpFrequency);
 #define QueryPerformanceFrequency(a) QueryPerformanceFrequencyXbox(a)
 
 
