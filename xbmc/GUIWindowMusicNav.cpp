@@ -1428,7 +1428,7 @@ void CGUIWindowMusicNav::GetDirectoryHistoryString(const CFileItem* pItem, CStdS
 
 /// \brief Add file or folder and its subfolders to playlist
 /// \param pItem The file item to add
-void CGUIWindowMusicNav::AddItemToPlayList(const CFileItem* pItem)
+void CGUIWindowMusicNav::AddItemToPlayList(const CFileItem* pItem, int iPlayList /* = PLAYLIST_MUSIC*/)
 {
   // cant do it from the root
   if (m_iState == SHOW_ROOT) return ;
@@ -1489,7 +1489,7 @@ void CGUIWindowMusicNav::AddItemToPlayList(const CFileItem* pItem)
     for (int i = 0; i < items.Size(); ++i)
     {
       if (!items[i]->m_strPath.IsEmpty())
-        AddItemToPlayList(items[i]);
+        AddItemToPlayList(items[i], iPlayList);
     }
 
     // restore old state
@@ -1509,7 +1509,9 @@ void CGUIWindowMusicNav::AddItemToPlayList(const CFileItem* pItem)
     {
       CPlayList::CPlayListItem playlistItem;
       CUtil::ConvertFileItemToPlayListItem(pItem, playlistItem);
-      g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).Add(playlistItem);
+      if (g_guiSettings.GetBool("FileLists.HideExtensions"))
+        playlistItem.RemoveExtension();
+      g_playlistPlayer.GetPlaylist(iPlayList).Add(playlistItem);
     }
   }
 }
@@ -1518,6 +1520,9 @@ void CGUIWindowMusicNav::AddItemToPlayList(const CFileItem* pItem)
 /// \param pItem The file item to add
 void CGUIWindowMusicNav::AddItemToTempPlayList(const CFileItem* pItem)
 {
+  AddItemToPlayList(pItem, PLAYLIST_MUSIC_TEMP);
+
+  /*
   if (pItem->m_bIsFolder)
   {
     // save state
@@ -1595,6 +1600,7 @@ void CGUIWindowMusicNav::AddItemToTempPlayList(const CFileItem* pItem)
       g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC_TEMP).Add(playlistItem);
     }
   }
+  */
 }
 
 
