@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 26-09-2005 fixed: DVDPlayer playback failed on DreamX 1480. (Also more early/late using mplayer on those boxes)
  - 26-09-2005 fixed: GYM should play now and not crash xbox.
  - 25-09-2005 added: GYM (Genesis music file) codec to paplayer. Based on gens' apu.
  - 25-09-2005 fixed: Minor big/little-endian issue in AC3Codec. (PAPlayer)
