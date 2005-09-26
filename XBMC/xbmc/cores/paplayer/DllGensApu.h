@@ -16,8 +16,7 @@ public:
 
 class DllGensApu : public DllDynamic, DllGensApuInterface
 {
-  //DECLARE_DLL_WRAPPER(DllGensApu, q:\\system\\players\\paplayer\\gensapu.dll)
-  DECLARE_DLL_WRAPPER(DllGensApu, q:\\gensapu.dll)
+  DECLARE_DLL_WRAPPER(DllGensApu, q:\\system\\players\\paplayer\\gensapu.dll)
   DEFINE_METHOD0(int, Init)
   DEFINE_METHOD1(int, LoadGYM, (const char* p1))
   DEFINE_METHOD1(void, FreeGYM, (int p1))
