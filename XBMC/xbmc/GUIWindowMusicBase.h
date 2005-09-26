@@ -12,6 +12,7 @@
 #include "MusicInfoTagLoaderFactory.h"
 #include "Utils/MusicInfoScraper.h"
 #include "GUIViewControl.h"
+#include "playlistplayer.h"
 
 using namespace DIRECTORY;
 using namespace PLAYLIST;
@@ -69,7 +70,7 @@ protected:
   virtual void GoParentFolder();
   virtual void ClearFileItems();
   virtual bool Update(const CStdString &strDirectory);
-  virtual void AddItemToPlayList(const CFileItem* pItem);
+  virtual void AddItemToPlayList(const CFileItem* pItem, int iPlayList = PLAYLIST_MUSIC);
   virtual void OnSearchItemFound(const CFileItem* pItem);
   virtual void DoSearch(const CStdString& strSearch, CFileItemList& items);
   virtual void OnScan() {};

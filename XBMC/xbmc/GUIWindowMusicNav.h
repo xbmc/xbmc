@@ -1,6 +1,5 @@
 #pragma once
 #include "GUIWindowMusicBase.h"
-#include "GUIViewControl.h"
 
 class CGUIWindowMusicNav : public CGUIWindowMusicBase
 {
@@ -24,7 +23,7 @@ protected:
   virtual void DoSearch(const CStdString& strSearch, CFileItemList& items);
   virtual void OnSearchItemFound(const CFileItem* pItem);
   virtual void GetDirectoryHistoryString(const CFileItem* pItem, CStdString& strHistoryString);
-  virtual void AddItemToPlayList(const CFileItem* pItem);
+  virtual void AddItemToPlayList(const CFileItem* pItem, int iPlayList = PLAYLIST_MUSIC);
   virtual void PlayItem(int iItem);
   virtual void AddItemToTempPlayList(const CFileItem* pItem);
   virtual void OnPopupMenu(int iItem);

@@ -1034,7 +1034,7 @@ void CGUIWindowMusicBase::OnQueueItem(int iItem)
 
 /// \brief Add file or folder and its subfolders to playlist
 /// \param pItem The file item to add
-void CGUIWindowMusicBase::AddItemToPlayList(const CFileItem* pItem)
+void CGUIWindowMusicBase::AddItemToPlayList(const CFileItem* pItem, int iPlayList /* = PLAYLIST_MUSIC */)
 {
   if (pItem->m_bIsFolder)
   {
@@ -1054,7 +1054,7 @@ void CGUIWindowMusicBase::AddItemToPlayList(const CFileItem* pItem)
     GetDirectory(m_Directory.m_strPath, items);
     DoSort(items);
     for (int i = 0; i < items.Size(); ++i)
-      AddItemToPlayList(items[i]);
+      AddItemToPlayList(items[i], iPlayList);
     m_Directory.m_strPath = strDirectory;
   }
   else
@@ -1063,7 +1063,9 @@ void CGUIWindowMusicBase::AddItemToPlayList(const CFileItem* pItem)
     {
       CPlayList::CPlayListItem playlistItem;
       CUtil::ConvertFileItemToPlayListItem(pItem, playlistItem);
-      g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).Add(playlistItem);
+      if (g_guiSettings.GetBool("FileLists.HideExtensions"))
+        playlistItem.RemoveExtension();
+      g_playlistPlayer.GetPlaylist(iPlayList).Add(playlistItem);
     }
   }
 }
@@ -1609,6 +1611,9 @@ CStdString CGUIWindowMusicBase::ParseFormat(CFileItem *pItem, const CStdString& 
 
 void CGUIWindowMusicBase::AddItemToTempPlayList(const CFileItem* pItem)
 {
+  AddItemToPlayList(pItem, PLAYLIST_MUSIC_TEMP);
+
+  /*
   if (pItem->m_bIsFolder)
   {
     // Check if we add a locked share
@@ -1641,6 +1646,7 @@ void CGUIWindowMusicBase::AddItemToTempPlayList(const CFileItem* pItem)
       g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC_TEMP).Add(playlistItem);
     }
   }
+  */
 }
 
 void CGUIWindowMusicBase::PlayItem(int iItem)
