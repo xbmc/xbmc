@@ -70,5 +70,14 @@ using namespace AUTOPTR;
 #include "Settings.h"
 #include "GuiUserMessages.h"
 
+#ifdef QueryPerformanceFrequency
+#undef QueryPerformanceFrequency
+#endif
+BOOL QueryPerformanceFrequencyXbox(LARGE_INTEGER *lpFrequency);
+#define QueryPerformanceFrequency(a) QueryPerformanceFrequencyXbox(a)
+
+
+
+
 
 // TODO: reference additional headers your program requires here

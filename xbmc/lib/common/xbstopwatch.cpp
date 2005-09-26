@@ -7,10 +7,11 @@
 //
 // Copyright (c) Microsoft Corporation. All rights reserved.
 //-----------------------------------------------------------------------------
-#include "../../stdafx.h"
 #include "XbStopWatch.h"
 
-
+//Fix for invalid frequency on DreamX
+BOOL QueryPerformanceFrequencyXbox(LARGE_INTEGER *lpFrequency);
+#define QueryPerformanceFrequency(a) QueryPerformanceFrequencyXbox(a)
 
 
 //-----------------------------------------------------------------------------
