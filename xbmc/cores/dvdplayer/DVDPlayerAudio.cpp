@@ -162,10 +162,14 @@ int CDVDPlayerAudio::DecodeFrame(BYTE** pAudioBuffer)
       
       // compute pts.
       n = m_pAudioCodec->GetChannels() * m_pAudioCodec->GetBitsPerSample() / 8 * m_pAudioCodec->GetSampleRate();
-      m_audioClock += ((__int64)data_size * (__int64)DVD_TIME_BASE) / (__int64)n;
+      if (n > 0)
+      {
+        // safety check, if channels == 0, n will result in 0, and that will result in a nice devide exception
+        m_audioClock += ((__int64)data_size * (__int64)DVD_TIME_BASE) / (__int64)n;
+      }
       return data_size;
     }
-    /* free the current packet */
+    // free the current packet
     if (pPacket)
     {
       CDVDDemuxUtils::FreeDemuxPacket(pPacket);
