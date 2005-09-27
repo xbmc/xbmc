@@ -85,6 +85,9 @@ __int64 SPCCodec::Seek(__int64 iSeekTime)
 
 int SPCCodec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
 {
+  if (m_iDataPos >= m_TotalTime/1000*48000*4)
+    return READ_EOF;
+  
   if (m_iDataInBuffer <= 0)
   {
     m_dll.FillBuffer(m_spc,m_szBuffer);

@@ -54,6 +54,7 @@ bool NSFCodec::Init(const CStdString &strFile, unsigned int filecache)
   m_SampleRate = 48000;
   m_BitsPerSample = 16;
   m_TotalTime = 4*60*1000; // fixme?
+  m_iDataPos = 0;
 
   return true;
 }
@@ -102,6 +103,9 @@ int NSFCodec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
   if (!m_nsf)
     return READ_ERROR;
   
+  if (m_iDataPos >= m_TotalTime/1000*48000*4)
+    return READ_EOF;
+    
   if (!m_bIsPlaying)
   {
     m_dll.StartPlayback(m_nsf,m_iTrack);
