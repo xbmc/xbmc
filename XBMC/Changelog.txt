@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 27-09-2005 fixed: nsf/spc/gym codecs. last song in a directory would play forever.
+ - 27-09-2005 fixed: bugs in cachepath handling.
  - 26-09-2005 fixed: when adding a music folder to playlist, extensions are removed if hide media extensions is enabled (atleast until the background loader renames the item)
  - 26-09-2005 fixed: DVDPlayer playback failed on DreamX 1480. (Also more early/late using mplayer on those boxes) (updated)
  - 26-09-2005 fixed: GYM should play now and not crash xbox.
