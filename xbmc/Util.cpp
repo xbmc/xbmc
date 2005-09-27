@@ -1523,9 +1523,10 @@ void CUtil::GetFatXQualifiedPath(CStdString& strFileNameAndPath)
 {
   vector<CStdString> tokens;
   CStdString strBasePath;
+  strFileNameAndPath.Replace("/","\\");
   CUtil::GetDirectory(strFileNameAndPath,strBasePath);
   CStdString strFileName = CUtil::GetFileName(strFileNameAndPath);
-  CUtil::Tokenize(strBasePath,tokens,"\\/");
+  CUtil::Tokenize(strBasePath,tokens,"\\");
   strFileNameAndPath = tokens.front();
   for (vector<CStdString>::iterator token=tokens.begin()+1;token != tokens.end();++token)
   {
