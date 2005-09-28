@@ -16,6 +16,8 @@ class CAutorun
 public:
   CAutorun();
   virtual ~CAutorun();
+  static bool PlayDisc();
+  static bool PlayRunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAddedToPlaylist, bool bRoot);
   void HandleAutorun();
   void Enable();
   void Disable();
@@ -26,7 +28,6 @@ protected:
   void RunCdda();
   void RunISOMedia();
   bool RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAddedToPlaylist, bool bRoot);
-
   bool m_bEnable;
 };
 }

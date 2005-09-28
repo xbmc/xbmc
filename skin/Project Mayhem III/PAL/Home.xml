@@ -262,7 +262,7 @@
 	<font>special13</font>
 	<hyperlink>1</hyperlink>
 	<onleft>98</onleft>
-	<onright>97</onright>
+	<onright>400</onright>
 	<onup>9</onup>
 	<ondown>4</ondown>
 	<textureFocus>home-focus.gif</textureFocus>
@@ -283,7 +283,7 @@
 	<hyperlink>2</hyperlink>
 	<font>special13</font>
 	<onleft>98</onleft>
-	<onright>97</onright>
+	<onright>400</onright>
 	<onup>2</onup>
 	<ondown>5</ondown>
 	<textureFocus>home-focus.gif</textureFocus>
@@ -304,7 +304,7 @@
 	<font>special13</font>
 	<hyperlink>6</hyperlink>
 	<onleft>98</onleft>
-	<onright>97</onright>
+	<onright>400</onright>
 	<onup>4</onup>
 	<ondown>3</ondown>
 	<textureFocus>home-focus.gif</textureFocus>
@@ -325,7 +325,7 @@
 	<hyperlink>5</hyperlink>
 	<font>special13</font>
 	<onleft>98</onleft>
-	<onright>97</onright>
+	<onright>400</onright>
 	<onup>5</onup>
 	<ondown>7</ondown>
 	<textureFocus>home-focus.gif</textureFocus>
@@ -346,7 +346,7 @@
 	<font>special13</font>
 	<hyperlink>2600</hyperlink>
 	<onleft>98</onleft>
-	<onright>97</onright>
+	<onright>400</onright>
 	<onup>3</onup>
 	<ondown>9</ondown>
 	<textureFocus>home-focus.gif</textureFocus>
@@ -388,7 +388,7 @@
 	<hyperlink>3</hyperlink>
 	<font>font10</font>
 	<onleft>9</onleft>
-	<onright>97</onright>
+	<onright>400</onright>
 	<onup>7</onup>
 	<ondown>2</ondown>
 	<textureFocus>home-focus.gif</textureFocus>
@@ -474,6 +474,25 @@
       <headlinecolor>DDced8da</headlinecolor>
       <textcolor>ffD2FF00</textcolor>
     </control>
+    
+    <control>
+      <description>dvd media state and start button</description>
+      <type>button</type>
+      <id>400</id>
+      <posX>511</posX>
+      <posY>503</posY>
+      <width>35</width>
+      <height>35</height>
+      <label>-</label>
+      <hyperlink>-</hyperlink>
+      <textureFocus>defaultDVDRom.png</textureFocus>
+      <textureNoFocus>defaultDVDRom.png</textureNoFocus>
+      <onleft>2</onleft>
+      <onright>97</onright>
+      <onup>2</onup>
+      <ondown>2</ondown>
+      <visible effect="fade" time="1000">System.hasmediadvd + [!Player.HasAudio | ![Player.HasAudio + System.IdleTime(60)]]</visible>
+    </control>
 
     <control>
       <description>xlink kai conditional button</description>
@@ -487,7 +506,7 @@
       <textureFocus>home-kai.gif</textureFocus>
       <textureNoFocus>home-kai.png</textureNoFocus>
       <hyperlink>2700</hyperlink>
-      <onleft>2</onleft>
+      <onleft>400</onleft>
       <onright>100</onright>
       <onup>2</onup>
       <ondown>2</ondown>
@@ -535,4 +554,3 @@
   </controls>
 
 </window>
-
