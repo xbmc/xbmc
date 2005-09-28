@@ -1205,7 +1205,8 @@ HRESULT CApplication::Initialize()
   m_gWindowManager.Add(new CGUIWindowVisualisation);      // window id = 2006
   m_gWindowManager.Add(new CGUIWindowSlideShow);          // window id = 2007
   m_gWindowManager.Add(new CGUIDialogFileStacking);       // window id = 2008
-  m_gWindowManager.Add(new CGUIWindowOSD);                // window id = 2901
+
+    m_gWindowManager.Add(new CGUIWindowOSD);                // window id = 2901
   m_gWindowManager.Add(new CGUIWindowScreensaver);        // window id = 2900 Screensaver
   m_gWindowManager.Add(new CGUIWindowWeather);                // window id = 2600 WEATHER
   CGUIWindowBuddies *pKai = new CGUIWindowBuddies;
