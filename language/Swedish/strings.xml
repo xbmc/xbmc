@@ -1,3 +1,6 @@
+
+
+
 <strings>
   <string><id>0</id><value>Mina Program</value></string>
   <string><id>1</id><value>Mina Bilder</value></string>
@@ -67,7 +70,7 @@
   <string><id>135</id><value>Genre</value></string>
   <string><id>136</id><value>Spelningslistor</value></string>
   <string><id>137</id><value>Sök</value></string>
-  <string><id>138</id><value>SYSTEM INFORMATION</value></string>
+  <string><id>138</id><value>SYSTEMINFORMATION</value></string>
   <string><id>139</id><value>Temperaturer</value></string>
   <string><id>140</id><value>CPU:</value></string>
   <string><id>141</id><value>GPU:</value></string>
@@ -557,7 +560,7 @@
   <string><id>771</id><value>Automatisk FATX begränsare</value></string>
   <string><id>772</id><value>A/V Receiver</value></string>
   <string><id>773</id><value>Söker</value></string>
-  <string><id>774</id><value>Mapp för bildspels skärmsläckare</value></string>
+  <string><id>774</id><value>Bildspelsmapp för skärmsläckare</value></string>
   <string><id>998</id><value>XLink Kai</value></string>
   <string><id>999</id><value>Online Spel</value></string>
   
@@ -786,7 +789,11 @@
   <string><id>13210</id><value>Startad, alarm om %im</value></string>
   <string><id>13211</id><value>Alarm!</value></string>
   <string><id>13212</id><value>Avbruten med %im%is kvar</value></string>
-  
+  <string><id>15213</id><value>Spela upp med...</value></string>
+  <string><id>15214</id><value>Använd mjuk A/V synkronisering</value></string>
+  <string><id>15215</id><value>Göm filnamn i miniatyrläget</value></string>
+  <string><id>13297</id><value>Xbox ej uppkopplad. Kontrollera nätverksinställningar</value></string>
+  <string><id>13298</id><value>XBLIVE nyckel:</value></string>
   <string><id>13299</id><value>Måltemperatur</value></string>
   <string><id>13300</id><value>Fläktfart</value></string>
   <string><id>13301</id><value>Automatisk temp. kontroll</value></string>
@@ -1096,7 +1103,7 @@
   <string><id>13297</id><value>Xbox ej uppkopplad. Kontrollera nätverksinställningar.</value></string>
   <string><id>13298</id><value>XBLIVE nyckel:</value></string>
 
-  <string><id>15213</id><value>Spela upp med</value></string>
+  <string><id>15213</id><value>[PLACEHOLDER]</value></string>
   <string><id>15214</id><value>Använd mjuk A/V synkronisering</value></string>
   <string><id>15215</id><value>Göm filnamn i miniatyrläget</value></string>
   
