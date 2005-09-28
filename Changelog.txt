@@ -5,6 +5,10 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 28-09-2005 added: Home window: DVD-Drive button [icon] will appear if a media is present! On click it will play the inserted media disc! in addition with new Infomanager: system.hasmediadvd [GeminiServer]
+ - 28-09-2005 added: new Infomanager: system.hasmediadvd will be true if a media is present in the DVD-Drive [GeminiServer]
+ - 28-09-2005 added: Play CD/DVD function to the DVD-Drive context menu in all sections! Play CD/DVD function is availible if a CD/DVD is inserted else no play item in context menu availible! [GeminiServer]
+ - 28-09-2005 added: Eject and Load Tray function to DVD-Drive context menu in all sections! [GeminiServer]
  - 27-09-2005 fixed: nsf/spc/gym codecs. last song in a directory would play forever.
  - 27-09-2005 fixed: bugs in cachepath handling.
  - 26-09-2005 fixed: when adding a music folder to playlist, extensions are removed if hide media extensions is enabled (atleast until the background loader renames the item)

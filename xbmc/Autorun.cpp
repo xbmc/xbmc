@@ -1,11 +1,9 @@
-
 #include "stdafx.h"
 #include "autorun.h"
 #include "application.h"
 #include "DetectDVDType.h"
 #include "util.h"
 #include "playlistplayer.h"
-
 
 using namespace PLAYLIST;
 using namespace MEDIA_DETECT;
@@ -16,9 +14,7 @@ CAutorun::CAutorun()
 }
 
 CAutorun::~CAutorun()
-{
-}
-
+{}
 void CAutorun::ExecuteAutorun()
 {
   if ( g_application.IsPlayingAudio() || g_application.IsPlayingVideo() || m_gWindowManager.IsRouted())
@@ -325,4 +321,249 @@ void CAutorun::Disable()
 bool CAutorun::IsEnabled()
 {
   return m_bEnable;
+}
+// GeminiServer: PlayDisc()
+// Will Play, if a disc is inserted! Has nothing todo with Autorun, therefore no autorun settings will be used!
+// Can be executed from the Context menu!
+bool CAutorun::PlayDisc()
+{
+  CCdInfo* pInfo = CDetectDVDMedia::GetCdInfo();
+  if ( pInfo == NULL ) return false ;
+  if ( pInfo->IsAudio( 1 ) )
+  {
+    CFileItemList vecItems;
+    if (g_stSettings.m_szExternalCDDAPlayer[0])
+      CUtil::RunXBE(g_stSettings.m_szExternalCDDAPlayer);
+    else
+    {
+      auto_ptr<IDirectory> pDir ( CFactoryDirectory::Create( "cdda://local/" ) );
+      if ( !pDir->GetDirectory( "cdda://local/", vecItems ) ) return false;
+      if ( vecItems.Size() <= 0 ) return false;
+      int nSize = g_playlistPlayer.GetPlaylist( PLAYLIST_MUSIC ).size();
+      for (int i = 0; i < vecItems.Size(); i++)
+      {
+        CFileItem* pItem = vecItems[i];
+        CPlayList::CPlayListItem playlistItem;
+        playlistItem.SetFileName(pItem->m_strPath);
+        playlistItem.SetDescription(pItem->GetLabel());
+        playlistItem.SetDuration(pItem->m_musicInfoTag.GetDuration());
+        g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).Add(playlistItem);
+      }
+      CGUIMessage msg( GUI_MSG_PLAYLIST_CHANGED, 0, 0, 0, 0, NULL );
+      m_gWindowManager.SendMessage( msg );
+
+      g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_MUSIC);
+      g_playlistPlayer.Play(nSize);
+    }
+  }
+  else if (pInfo->IsUDFX( 1 ) || pInfo->IsUDF(1))
+  {
+    if ( CFile::Exists("D:\\default.xbe") )
+    {
+      g_application.Stop();
+
+      CUtil::LaunchXbe( "Cdrom0", "D:\\default.xbe", NULL );
+      return false;
+    }
+    int nSize = g_playlistPlayer.GetPlaylist( PLAYLIST_MUSIC ).size();
+    int nAddedToPlaylist = 0;
+    auto_ptr<IDirectory> pDir ( CFactoryDirectory::Create( "D:\\" ) );
+    bool bPlaying = PlayRunDisc(pDir.get(), "D:\\", nAddedToPlaylist, true);
+    if ( !bPlaying && nAddedToPlaylist > 0 )
+    {
+      CGUIMessage msg( GUI_MSG_PLAYLIST_CHANGED, 0, 0, 0, 0, NULL );
+      m_gWindowManager.SendMessage( msg );
+      g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_MUSIC);
+      // Start playing the items we inserted
+      g_playlistPlayer.Play( nSize );
+    }
+  }
+  else if (pInfo->IsISOUDF(1) || pInfo->IsISOHFS(1) || pInfo->IsIso9660(1) || pInfo->IsIso9660Interactive(1))
+  {
+    int nSize = g_playlistPlayer.GetPlaylist( PLAYLIST_MUSIC ).size();
+    int nAddedToPlaylist = 0;
+    auto_ptr<IDirectory> pDir ( CFactoryDirectory::Create( "iso9660://" ));
+    bool bPlaying = PlayRunDisc(pDir.get(), "iso9660://", nAddedToPlaylist, true);
+    if ( !bPlaying && nAddedToPlaylist > 0 )
+    {
+      CGUIMessage msg( GUI_MSG_PLAYLIST_CHANGED, 0, 0, 0, 0, NULL );
+      m_gWindowManager.SendMessage( msg );
+      g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_MUSIC);
+      // Start playing the items we inserted
+      g_playlistPlayer.Play(nSize);
+    }
+  }
+  else
+  {
+    if ( CFile::Exists("D:\\default.xbe") )
+    {
+      g_application.Stop();
+      CUtil::LaunchXbe( "Cdrom0", "D:\\default.xbe", NULL );
+      return false;
+    }
+    int nSize = g_playlistPlayer.GetPlaylist( PLAYLIST_MUSIC ).size();
+    int nAddedToPlaylist = 0;
+    auto_ptr<IDirectory> pDir ( CFactoryDirectory::Create( "D:\\" ) );
+    bool bPlaying = PlayRunDisc(pDir.get(), "D:\\", nAddedToPlaylist, true);
+    if ( !bPlaying && nAddedToPlaylist > 0 )
+    {
+      CGUIMessage msg( GUI_MSG_PLAYLIST_CHANGED, 0, 0, 0, 0, NULL );
+      m_gWindowManager.SendMessage( msg );
+      g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_MUSIC);
+      // Start playing the items we inserted
+      g_playlistPlayer.Play( nSize );
+    }
+  }
+}
+// GeminiServer: PlayRunDisc()
+// Will Play, if a disc is inserted! Has nothing todo with Autorun, therefore no autorun settings will be used!
+// Can be executed from the Context menu!
+bool CAutorun::PlayRunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAddedToPlaylist, bool bRoot)
+{
+  bool bPlaying(false);
+  CFileItemList vecItems;
+  CFileItemList itemlist(vecItems);
+  char szSlash = '\\';
+  if (strDrive.Find("iso9660") != -1) szSlash = '/';
+
+  if ( !pDir->GetDirectory( strDrive, vecItems ) )
+  {
+    return false;
+  }
+  // check root...
+  for (int i = 0; i < vecItems.Size(); i++)
+  {
+    CFileItem* pItem = vecItems[i];
+    if (pItem->m_bIsFolder)
+    {
+      if (pItem->m_strPath != "." && pItem->m_strPath != ".." )
+      {
+        if (bRoot && pItem->m_strPath.Find( "VIDEO_TS" ) != -1 )
+        {
+            CUtil::PlayDVD();
+            bPlaying = true;
+            break;
+        }
+        else if (bRoot && pItem->m_strPath.Find("MPEGAV") != -1 )
+        {
+          CFileItemList items;
+          CDirectory::GetDirectory(pItem->m_strPath, items, ".dat");
+          if (items.Size())
+          {
+            g_playlistPlayer.GetPlaylist( PLAYLIST_VIDEO_TEMP ).Clear();
+            CUtil::SortFileItemsByName(items);
+            for (int i=0; i<items.Size(); ++i)
+            {
+              CFileItem* pItem=items[i];
+              CPlayList::CPlayListItem playlistItem;
+              CUtil::ConvertFileItemToPlayListItem(pItem, playlistItem);
+              g_playlistPlayer.GetPlaylist( PLAYLIST_VIDEO_TEMP ).Add(playlistItem);
+            }
+
+            g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_VIDEO_TEMP);
+            g_playlistPlayer.Play(0);
+            bPlaying = true;
+          }
+          break;
+        }
+        else if (bRoot && pItem->m_strPath.Find("MPEG2") != -1 )
+        {
+          CFileItemList items;
+          CDirectory::GetDirectory(pItem->m_strPath, items, ".mpg");
+          if (items.Size())
+          {
+            g_playlistPlayer.GetPlaylist( PLAYLIST_VIDEO_TEMP ).Clear();
+            CUtil::SortFileItemsByName(items);
+            for (int i=0; i<items.Size(); ++i)
+            {
+              CFileItem* pItem=items[i];
+              CPlayList::CPlayListItem playlistItem;
+              CUtil::ConvertFileItemToPlayListItem(pItem, playlistItem);
+              g_playlistPlayer.GetPlaylist( PLAYLIST_VIDEO_TEMP ).Add(playlistItem);
+            }
+            g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_VIDEO_TEMP);
+            g_playlistPlayer.Play(0);
+            bPlaying = true;
+          }
+          break;
+        }
+        else if (bRoot && pItem->m_strPath.Find("PICTURES") != -1 )
+        {
+          bPlaying = true;
+          CStdString strExec;
+          strExec.Format("XBMC.RecursiveSlideShow(%s)", pItem->m_strPath.c_str());
+          CUtil::ExecBuiltIn(strExec);
+          break;
+        }
+      }
+    }
+  }
+  // check video first
+  if (!nAddedToPlaylist && !bPlaying )
+  {
+    for (int i = 0; i < vecItems.Size(); i++)
+    {
+      CFileItem *pItem = vecItems[i];
+      if (!pItem->m_bIsFolder && pItem->IsVideo())
+      {
+        bPlaying = true;
+        g_application.PlayFile( *pItem );
+        break;
+      }
+    }
+  }
+  // then music
+  if (!bPlaying )
+  {
+    for (int i = 0; i < vecItems.Size(); i++)
+    {
+      CFileItem *pItem = vecItems[i];
+      if (!pItem->m_bIsFolder && pItem->IsAudio())
+      {
+        nAddedToPlaylist++;
+        CPlayList::CPlayListItem playlistItem;
+        playlistItem.SetFileName(pItem->m_strPath);
+        playlistItem.SetDescription(pItem->GetLabel());
+        playlistItem.SetDuration( pItem->m_musicInfoTag.GetDuration() );
+        g_playlistPlayer.GetPlaylist( PLAYLIST_MUSIC ).Add(playlistItem);
+      }
+    }
+  }
+  // and finally pictures
+  if (!nAddedToPlaylist && !bPlaying )
+  {
+    for (int i = 0; i < vecItems.Size(); i++)
+    {
+      CFileItem *pItem = vecItems[i];
+      if (!pItem->m_bIsFolder && pItem->IsPicture())
+      {
+        bPlaying = true;
+        CStdString strExec;
+        strExec.Format("XBMC.RecursiveSlideShow(%s)", strDrive.c_str());
+        CUtil::ExecBuiltIn(strExec);
+        break;
+      }
+    }
+  }
+
+  // check subdirs
+  if (!bPlaying)
+  {
+    for (int i = 0; i < vecItems.Size(); i++)
+    {
+      CFileItem* pItem = vecItems[i];
+      if (pItem->m_bIsFolder)
+      {
+        if (pItem->m_strPath != "." && pItem->m_strPath != ".." )
+        {
+          if (PlayRunDisc(pDir, pItem->m_strPath, nAddedToPlaylist, false))
+          {
+            bPlaying = true;
+            break;
+          }
+        }
+      }
+    }
+  }
+  return bPlaying;
 }
