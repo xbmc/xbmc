@@ -80,6 +80,7 @@ extern char g_szTitleIP[32];
 #define SYSTEM_KAI_CONNECTED        124
 #define SYSTEM_ALWAYS_TRUE          125   // useful for <visible fade="10" start="hidden">true</visible>, to fade in a control
 #define SYSTEM_ALWAYS_FALSE         126   // used for <visible fade="10">false</visible>, to fade out a control (ie not particularly useful!)
+#define SYSTEM_MEDIA_DVD            127
 
 #define NETWORK_IP_ADDRESS          190
 
@@ -255,6 +256,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
   else if (strTest.Equals("system.hasnetwork")) ret = SYSTEM_ETHERNET_LINK_ACTIVE;
   else if (strTest.Equals("system.fps")) ret = SYSTEM_FPS;
   else if (strTest.Equals("system.kaiconnected")) ret = SYSTEM_KAI_CONNECTED;
+  else if (strTest.Equals("system.hasmediadvd")) ret = SYSTEM_MEDIA_DVD;
   else if (strTest.Equals("network.ipaddress")) ret = NETWORK_IP_ADDRESS;
   else if (strTest.Equals("musicplayer.title")) ret = MUSICPLAYER_TITLE;
   else if (strTest.Equals("musicplayer.album")) ret = MUSICPLAYER_ALBUM;
@@ -529,6 +531,16 @@ bool CGUIInfoManager::GetBool(int condition1) const
   }
   else if (condition == SYSTEM_KAI_CONNECTED)
     bReturn = CKaiClient::GetInstance()->IsEngineConnected();
+  else if (condition == SYSTEM_MEDIA_DVD)
+  {
+    // GeminiServer: DVD Drive state
+    CIoSupport TrayIO;
+    int iTrayState = TrayIO.GetTrayState();
+    if ( iTrayState == DRIVE_CLOSED_MEDIA_PRESENT || iTrayState == TRAY_CLOSED_MEDIA_PRESENT )
+      bReturn = true;
+    else 
+      bReturn = false;
+  }
   else if (condition == PLAYER_SHOWINFO)
     bReturn = m_playerShowInfo;
   else if (g_application.IsPlaying())

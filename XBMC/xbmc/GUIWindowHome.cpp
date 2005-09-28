@@ -8,6 +8,8 @@
 #include "GUIDialogContextMenu.h"
 #include "utils/KaiClient.h"
 
+#include "application.h"
+
 #define MENU_BUTTON_START 2    // normal buttons
 #define MENU_BUTTON_END   20
 
@@ -21,6 +23,8 @@
 
 #define CONTROL_BTN_XLINK_KAI  99
 #define CONTROL_BTN_SCROLLER  300
+#define CONTROL_DVDDRIVE_START  400
+
 
 #define HOME_HANDLES_FADES 0
 #define HOME_FADE_TIME 300
@@ -179,6 +183,11 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
         {
           OnPopupContextMenu();
         }
+      }
+      else if (iControl == CONTROL_DVDDRIVE_START)
+      {
+        //GeminiServer: to play a inserted media dvd
+        CAutorun::PlayDisc();
       }
       m_iLastControl = message.GetSenderId();
       break;
