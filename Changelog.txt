@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 29-05-2005 fixed: subtitles in subtitles/ wouldn't work on hdd.
  - 28-09-2005 added: new buildin function: <execute>XBMC.PlayDVD()</execute>, will play/run a CD/DVD if a media is present in the DVD-Drive! [GeminiServer]
  - 28-09-2005 added: Home window: DVD-Drive button [icon] will appear if a media is present! On click it will play the inserted media disc! in addition with new Infomanager: system.hasmediadvd [GeminiServer]
  - 28-09-2005 added: new Infomanager: system.hasmediadvd will be true if a media is present in the DVD-Drive [GeminiServer]
