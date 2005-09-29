@@ -104,7 +104,9 @@ bool CHDDirectory::Remove(const char* strPath)
 
 bool CHDDirectory::Exists(const char* strPath)
 {
-  DWORD attributes = GetFileAttributes(strPath);
+  CStdString strReplaced = strPath;
+  strReplaced.Replace("/","\\");
+  DWORD attributes = GetFileAttributes(strReplaced);
   if (FILE_ATTRIBUTE_DIRECTORY == attributes) return true;
   return false;
 }
