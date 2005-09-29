@@ -1,4 +1,3 @@
-
 #include "stdafx.h"
 #include "application.h"
 #include "util.h"
@@ -20,6 +19,7 @@
 #include "ButtonTranslator.h"
 #include "Picture.h"
 #include "GUIDialogNumeric.h"
+#include "autorun.h"
 
 #define clamp(x) (x) > 255.f ? 255 : ((x) < 0 ? 0 : (BYTE)(x+0.5f)) // Valid ranges: brightness[-1 -> 1 (0 is default)] contrast[0 -> 2 (1 is default)]  gamma[0.5 -> 3.5 (1 is default)] default[ramp is linear]
 static const __int64 SECS_BETWEEN_EPOCHS = 11644473600;
@@ -2826,7 +2826,7 @@ bool CUtil::IsUsingTTFSubtitles()
 
 typedef struct
 {
-  char command[19];
+  char command[20];
   char description[128];
 } BUILT_IN;
 
@@ -2850,7 +2850,8 @@ const BUILT_IN commands[] = {
   "EjectTray", "Close or open the DVD tray",
   "AlarmClock", "Prompt for a length of time and start an alarm clock",
   "Action", "Executes an action for the active window (same as in keymap)",
-  "Notificaton", "Shows a notification on screen, specify header, then message."
+  "Notificaton", "Shows a notification on screen, specify header, then message.",
+  "PlayDVD"," Plays the inserted CD or DVD media from the DVD-ROM Drive!"
 };
 
 bool CUtil::IsBuiltIn(const CStdString& execString)
@@ -3161,12 +3162,14 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
 
     g_application.m_guiDialogKaiToast.QueueNotification(params[0],params[1]);
   }
+  else if (execute.Equals("playdvd"))
+  {
+    CAutorun::PlayDisc();
+  }
   else
     return -1;
-
   return 0;
 }
-
 int CUtil::GetMatchingShare(const CStdString& strPath, VECSHARES& vecShares, bool& bIsBookmarkName)
 {
   bIsBookmarkName = false;
