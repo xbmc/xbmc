@@ -77,8 +77,12 @@ bool CZipManager::GetZipList(const CStdString& strPath, std::vector<SZipEntry>& 
       mFile.Seek(ze.elength,SEEK_CUR);
       ze.offset = mFile.GetPosition();
       mFile.Seek(ze.csize,SEEK_CUR);
-      if (ze.flags & 4)
-        mFile.Seek(12,SEEK_CUR); // wtf
+      if (ze.flags & 8)
+      {
+        mFile.Read(&ze.crc32,4);
+        mFile.Read(&ze.csize,4);
+        mFile.Read(&ze.usize,4);
+      }
       items.push_back(ze);
   }
   mFile.Close();
