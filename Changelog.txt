@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 30-05-2005 added: Milkdrop - can now select different preset packs from the settings menu. (Defaults to looking in visualisations\Milkdrop for zips and folders)
+ - 30-05-2005 fixed: Milkdrop - xml settings file was getting corrupted.
  - 30-05-2005 fixed: Problem reading some compressed zip files.
  - 29-05-2005 added: START on the controller or PLAY on the remote now plays media from DVD-ROM if present (home screen only)
  - 29-05-2005 fixed: subtitles in subtitles/ wouldn't work on hdd.
