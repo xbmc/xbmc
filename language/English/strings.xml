@@ -1114,6 +1114,7 @@
   <string><id>16001</id><value>Configure Audio Hardware...</value></string>
   <string><id>16002</id><value>CDDB lookup</value></string>
   <string><id>16003</id><value>Player</value></string>
+  <string><id>16004</id><value>Play media from disc</value></string>
   
   <string><id>16009</id><value>Enter the Movie Name</value></string>
   <string><id>16010</id><value>Enter the Profile Name</value></string>
