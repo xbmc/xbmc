@@ -645,7 +645,7 @@
       <description>dvd-rom status label</description>
       <type>button</type>
       <id>0</id>
-      <posX>70</posX>
+      <posX>77</posX>
       <posY>503</posY>
       <width>22</width>
       <height>30</height>
