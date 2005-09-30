@@ -1,3 +1,6 @@
+2005-09-30 changed:	new homescreen pictures incl slideshow
+2005-09-30 added:	label to support direct DVD start 
+
 2005-09-23 fixed:	SF bug [ 1254394 ] PM3 skin, weather; unable to view city in 1080i
 2005-09-23 fixed:	SF bug [ 1295196 ] Unable to view IMDb info cast in 16:9 skin
 
