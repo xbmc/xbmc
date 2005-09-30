@@ -16,6 +16,28 @@
 
     <control>
       <type>image</type>
+      <id>0</id>
+      <posX>182</posX>
+      <posY>105</posY>
+      <width>538</width>
+      <height>362</height>
+      <texture>16x9home-myPrograms.png</texture>
+      <visible effect="fade" time="2000">!Player.HasMedia + [Control.HasFocus(2) + System.IdleTime(5) + !System.IdleTime(20)]</visible>
+    </control>
+
+    <control>
+      <type>image</type>
+      <id>0</id>
+      <posX>182</posX>
+      <posY>105</posY>
+      <width>538</width>
+      <height>362</height>
+      <texture>16x9home-myPrograms3.png</texture>
+     <visible effect="fade" time="2000">!Player.HasMedia + [Control.HasFocus(2) + System.IdleTime(10)+ !System.IdleTime(15)]</visible>
+    </control>
+
+    <control>
+      <type>image</type>
       <id>106</id>
       <posX>182</posX>
       <posY>105</posY>
@@ -27,24 +49,90 @@
 
     <control>
       <type>image</type>
+      <id>0</id>
+      <posX>182</posX>
+      <posY>105</posY>
+      <width>538</width>
+      <height>362</height>
+      <texture>16x9home-myfiles2.png</texture>
+      <visible effect="fade" time="2000">!Player.HasMedia + [Control.HasFocus(6) + System.IdleTime(5) + !System.IdleTime(20)]</visible>
+    </control>
+
+    <control>
+      <type>image</type>
+      <id>0</id>
+      <posX>182</posX>
+      <posY>105</posY>
+      <width>538</width>
+      <height>362</height>
+      <texture>16x9home-myfiles3.png</texture>
+      <visible effect="fade" time="2000">!Player.HasMedia + [Control.HasFocus(6) + System.IdleTime(10) + !System.IdleTime(15)]</visible>
+    </control>
+
+    <control>
+      <type>image</type>
       <id>103</id>
       <posX>182</posX>
       <posY>105</posY>
       <width>538</width>
       <height>362</height>
-      <texture>4x3home-mymusic.png</texture>
+      <texture>16x9home-mymusic.png</texture>
       <visible effect="fade" time="200">!Player.HasMedia</visible>
     </control>
 
     <control>
       <type>image</type>
-      <id>104</id>
+      <id>0</id>
       <posX>182</posX>
       <posY>105</posY>
       <width>538</width>
       <height>362</height>
+      <texture>16x9home-mymusic2.png</texture>
+      <visible effect="fade" time="2000">!Player.HasMedia + [Control.HasFocus(3) + System.IdleTime(5) + !System.IdleTime(20)]</visible>
+    </control>
+
+    <control>
+      <type>image</type>
+      <id>0</id>
+      <posX>182</posX>
+      <posY>105</posY>
+      <width>538</width>
+      <height>362</height>
+      <texture>4x3home-mymusic3.png</texture>
+     <visible effect="fade" time="2000">!Player.HasMedia + [Control.HasFocus(3) + System.IdleTime(10)+ !System.IdleTime(15)]</visible>
+    </control>
+
+    <control>
+      <type>image</type>
+      <id>104</id>
+      <posX>222</posX>
+      <posY>105</posY>
+      <width>498</width>
+      <height>362</height>
       <texture>4x3home-mypictures.png</texture>
       <visible effect="fade" time="200">!Player.HasMedia</visible>
+    </control>
+
+    <control>
+      <type>image</type>
+      <id>0</id>
+      <posX>182</posX>
+      <posY>105</posY>
+      <width>538</width>
+      <height>362</height>
+      <texture>4x3home-mypictures2.png</texture>
+      <visible effect="fade" time="2000">!Player.HasMedia + [Control.HasFocus(4) + System.IdleTime(5) + !System.IdleTime(20)]</visible>
+    </control>
+
+    <control>
+      <type>image</type>
+      <id>0</id>
+      <posX>182</posX>
+      <posY>105</posY>
+      <width>538</width>
+      <height>362</height>
+      <texture>4x3home-mypictures3.png</texture>
+     <visible effect="fade" time="2000">!Player.HasMedia + [Control.HasFocus(4) + System.IdleTime(10)+ !System.IdleTime(15)]</visible>
     </control>
 
     <control>
@@ -60,6 +148,28 @@
 
     <control>
       <type>image</type>
+      <id>0</id>
+      <posX>182</posX>
+      <posY>105</posY>
+      <width>538</width>
+      <height>362</height>
+      <texture>16x9home-myvideos2.png</texture>
+      <visible effect="fade" time="2000">!Player.HasMedia + [Control.HasFocus(5) + System.IdleTime(5) + !System.IdleTime(20)]</visible>
+    </control>
+
+    <control>
+      <type>image</type>
+      <id>0</id>
+      <posX>182</posX>
+      <posY>105</posY>
+      <width>538</width>
+      <height>362</height>
+      <texture>16x9home-myvideos3.png</texture>
+     <visible effect="fade" time="2000">!Player.HasMedia + [Control.HasFocus(5) + System.IdleTime(10)+ !System.IdleTime(15)]</visible>
+    </control>
+
+    <control>
+      <type>image</type>
       <id>107</id>
       <posX>182</posX>
       <posY>105</posY>
@@ -71,6 +181,39 @@
 
     <control>
       <type>image</type>
+      <id>0</id>
+      <posX>182</posX>
+      <posY>105</posY>
+      <width>538</width>
+      <height>362</height>
+      <texture>16x9home-myweather2.png</texture>
+      <visible effect="fade" time="2000">!Player.HasMedia + [Control.HasFocus(7) + System.IdleTime(5) + !System.IdleTime(30)]</visible>
+    </control>
+
+    <control>
+      <type>image</type>
+      <id>0</id>
+      <posX>182</posX>
+      <posY>105</posY>
+      <width>538</width>
+      <height>362</height>
+      <texture>16x9home-myweather3.png</texture>
+     <visible effect="fade" time="2000">!Player.HasMedia + [Control.HasFocus(7) + System.IdleTime(10)+ !System.IdleTime(25)]</visible>
+    </control>
+
+    <control>
+      <type>image</type>
+      <id>0</id>
+      <posX>182</posX>
+      <posY>105</posY>
+      <width>538</width>
+      <height>362</height>
+      <texture>16x9home-myweather4.png</texture>
+      <visible effect="fade" time="2000">!Player.HasMedia + [Control.HasFocus(7) + System.IdleTime(15) + !System.IdleTime(20)]</visible>
+    </control>
+
+    <control>
+      <type>image</type>
       <id>109</id>
       <posX>182</posX>
       <posY>105</posY>
@@ -78,6 +221,28 @@
       <height>362</height>
       <texture>16x9home-settings.png</texture>
       <visible effect="fade" time="200">!Player.HasMedia</visible>
+    </control>
+
+    <control>
+      <type>image</type>
+      <id>0</id>
+      <posX>182</posX>
+      <posY>105</posY>
+      <width>538</width>
+      <height>362</height>
+      <texture>16x9home-settings2.png</texture>
+      <visible effect="fade" time="2000">!Player.HasMedia + [Control.HasFocus(9) + System.IdleTime(5) + !System.IdleTime(20)]</visible>
+    </control>
+
+    <control>
+      <type>image</type>
+      <id>0</id>
+      <posX>182</posX>
+      <posY>105</posY>
+      <width>538</width>
+      <height>362</height>
+      <texture>4x3home-settings3.png</texture>
+      <visible effect="fade" time="2000">!Player.HasMedia + [Control.HasFocus(9) + System.IdleTime(10) + !System.IdleTime(15)]</visible>
     </control>
 
     <control>
@@ -262,7 +427,7 @@
 	<font>special13</font>
 	<hyperlink>1</hyperlink>
 	<onleft>98</onleft>
-	<onright>400</onright>
+	<onright>97</onright>
 	<onup>9</onup>
 	<ondown>4</ondown>
 	<textureFocus>home-focus.gif</textureFocus>
@@ -283,7 +448,7 @@
 	<hyperlink>2</hyperlink>
 	<font>special13</font>
 	<onleft>98</onleft>
-	<onright>400</onright>
+	<onright>97</onright>
 	<onup>2</onup>
 	<ondown>5</ondown>
 	<textureFocus>home-focus.gif</textureFocus>
@@ -304,7 +469,7 @@
 	<font>special13</font>
 	<hyperlink>6</hyperlink>
 	<onleft>98</onleft>
-	<onright>400</onright>
+	<onright>97</onright>
 	<onup>4</onup>
 	<ondown>3</ondown>
 	<textureFocus>home-focus.gif</textureFocus>
@@ -322,10 +487,10 @@
 	<width>14</width>
 	<height>13</height>
 	<label>2</label>
-	<hyperlink>5</hyperlink>
+	<hyperlink>501</hyperlink>
 	<font>special13</font>
 	<onleft>98</onleft>
-	<onright>400</onright>
+	<onright>97</onright>
 	<onup>5</onup>
 	<ondown>7</ondown>
 	<textureFocus>home-focus.gif</textureFocus>
@@ -346,7 +511,7 @@
 	<font>special13</font>
 	<hyperlink>2600</hyperlink>
 	<onleft>98</onleft>
-	<onright>400</onright>
+	<onright>97</onright>
 	<onup>3</onup>
 	<ondown>9</ondown>
 	<textureFocus>home-focus.gif</textureFocus>
@@ -388,7 +553,7 @@
 	<hyperlink>3</hyperlink>
 	<font>font10</font>
 	<onleft>9</onleft>
-	<onright>400</onright>
+	<onright>97</onright>
 	<onup>7</onup>
 	<ondown>2</ondown>
 	<textureFocus>home-focus.gif</textureFocus>
@@ -474,24 +639,21 @@
       <headlinecolor>DDced8da</headlinecolor>
       <textcolor>ffD2FF00</textcolor>
     </control>
-    
+
     <control>
-      <description>dvd media state and start button</description>
+      <description>dvd-rom status label</description>
       <type>button</type>
-      <id>400</id>
-      <posX>511</posX>
+      <id>0</id>
+      <posX>77</posX>
       <posY>503</posY>
-      <width>35</width>
-      <height>35</height>
-      <label>-</label>
-      <hyperlink>-</hyperlink>
-      <textureFocus>defaultDVDRom.png</textureFocus>
-      <textureNoFocus>defaultDVDRom.png</textureNoFocus>
-      <onleft>2</onleft>
-      <onright>97</onright>
-      <onup>2</onup>
-      <ondown>2</ondown>
-      <visible effect="fade" time="1000">System.hasmediadvd + [!Player.HasAudio | ![Player.HasAudio + System.IdleTime(60)]]</visible>
+      <width>30</width>
+      <height>30</height>
+      <textureFocus>startbutton.png</textureFocus>
+      <textureNoFocus>startbutton.png</textureNoFocus>
+      <font>font12</font>
+      <textOffsetX>32</textOffsetX>
+      <label>16004</label>
+      <visible effect="fade" time="500">System.hasmediadvd + System.IdleTime(4) + !System.IdleTime(9)</visible>
     </control>
 
     <control>
@@ -506,7 +668,7 @@
       <textureFocus>home-kai.gif</textureFocus>
       <textureNoFocus>home-kai.png</textureNoFocus>
       <hyperlink>2700</hyperlink>
-      <onleft>400</onleft>
+      <onleft>2</onleft>
       <onright>100</onright>
       <onup>2</onup>
       <ondown>2</ondown>
@@ -554,3 +716,4 @@
   </controls>
 
 </window>
+
