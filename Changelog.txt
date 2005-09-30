@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 30-05-2005 fixed: Problem reading some compressed zip files.
  - 29-05-2005 added: START on the controller or PLAY on the remote now plays media from DVD-ROM if present (home screen only)
  - 29-05-2005 fixed: subtitles in subtitles/ wouldn't work on hdd.
  - 28-09-2005 added: new buildin function: <execute>XBMC.PlayDVD()</execute>, will play/run a CD/DVD if a media is present in the DVD-Drive! [GeminiServer]
