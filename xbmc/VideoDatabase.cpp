@@ -8,8 +8,7 @@
 #include "videodatabase.h"
 #include "utils/fstrcmp.h"
 #include "util.h"
-#include "application.h"
-
+#include "GUIPassword.h"
 
 #define VIDEO_DATABASE_VERSION 1.4f
 #define VIDEO_DATABASE_NAME "MyVideos31.db"
@@ -457,16 +456,45 @@ void CVideoDatabase::GetGenres(VECMOVIEGENRES& genres)
   try
   {
     genres.erase(genres.begin(), genres.end());
+    map<long, CStdString> mapGenres;
+    map<long, CStdString>::iterator it;
+
     if (NULL == m_pDB.get()) return ;
     if (NULL == m_pDS.get()) return ;
-    //m_pDS->query("select * from genre join genrelinkmovie on genre.idGenre = genrelinkmovie.idGenre");
-    m_pDS->query("select distinct genre.strGenre from genre join genrelinkmovie on genre.idGenre = genrelinkmovie.idGenre join movie on genrelinkmovie.idMovie = movie.idMovie");
+    //m_pDS->query("select distinct genre.strGenre from genre join genrelinkmovie on genre.idGenre = genrelinkmovie.idGenre join movie on genrelinkmovie.idMovie = movie.idMovie");
+    m_pDS->query("select * from genrelinkmovie,genre,movie,movieinfo,actors,path where path.idpath=movie.idpath and genrelinkmovie.idGenre=genre.idGenre and genrelinkmovie.idmovie=movie.idmovie and movieinfo.idmovie=movie.idmovie and movieinfo.iddirector=actors.idActor order by path.idpath");
+    long lLastPathId = -1;
     while (!m_pDS->eof())
     {
-      genres.push_back( m_pDS->fv("genre.strGenre").get_asString() );
+      long lGenreId = m_pDS->fv("genre.idgenre").get_asLong();
+      CStdString strGenre = m_pDS->fv("genre.strgenre").get_asString();
+      it = mapGenres.find(lGenreId);
+      // was this genre already found?
+      if (it == mapGenres.end())
+      {
+        // is the current path the same as the previous path?
+        long lPathId = m_pDS->fv("path.idpath").get_asLong();
+        if (lPathId == lLastPathId)
+          mapGenres.insert(pair<long, CStdString>(lGenreId, strGenre));
+        // test path
+        else
+        {
+          CStdString strPath = m_pDS->fv("path.strPath").get_asString();
+          if (g_passwordManager.IsDatabasePathUnlocked(strPath, g_settings.m_vecMyVideoShares))
+          {
+            // the path is unlocked so set last path to current path
+            lLastPathId = lPathId;
+            mapGenres.insert(pair<long, CStdString>(lGenreId, strGenre));
+          }
+        }
+      }
       m_pDS->next();
     }
     m_pDS->close();
+
+    // convert map back to vector
+    for (it = mapGenres.begin(); it != mapGenres.end(); it++)
+      genres.push_back(it->second);
   }
   catch (...)
   {
@@ -590,11 +618,27 @@ void CVideoDatabase::GetMoviesByGenre(CStdString& strGenre, VECMOVIES& movies)
     if (NULL == m_pDS.get()) return ;
 
     CStdString strSQL=FormatSQL("select * from genrelinkmovie,genre,movie,movieinfo,actors,path where path.idpath=movie.idpath and genrelinkmovie.idGenre=genre.idGenre and genrelinkmovie.idmovie=movie.idmovie and movieinfo.idmovie=movie.idmovie and genre.strGenre='%s' and movieinfo.iddirector=actors.idActor", strGenre.c_str());
-
     m_pDS->query( strSQL.c_str() );
+
+    int lLastPathId = -1;
     while (!m_pDS->eof())
     {
-      movies.push_back(GetDetailsFromDataset(m_pDS));
+      // if the current path is the same as the last path tested and unlocked,
+      // just add the movie without retesting
+      long lPathId = m_pDS->fv("path.idPath").get_asLong();
+      if (lPathId == lLastPathId)
+        movies.push_back(GetDetailsFromDataset(m_pDS));
+      // we have a new path so test it.
+      else
+      {
+        CStdString strPath = m_pDS->fv("path.strPath").get_asString();
+        if (g_passwordManager.IsDatabasePathUnlocked(strPath, g_settings.m_vecMyVideoShares))
+        {
+          // the path is unlocked so set last path to current path
+          lLastPathId = lPathId;
+          movies.push_back(GetDetailsFromDataset(m_pDS));
+        }
+      }
       m_pDS->next();
     }
     m_pDS->close();
@@ -1004,18 +1048,7 @@ void CVideoDatabase::GetMovies(VECMOVIES& movies)
       else
       {
         CStdString strPath = m_pDS->fv("path.strPath").get_asString();
-        bool bName = false;
-        int iIndex = CUtil::GetMatchingShare(strPath, g_settings.m_vecMyVideoShares, bName);
-        // are lockmodes LOCK_MODE_SAMBA and LOCK_MODE_EEPROM_PARENTAL in use?
-        // to be safe, ignore them for now and only test for 1,2,3
-        if (iIndex > -1 &&
-          /* bookmark is unlocked */
-          (g_settings.m_vecMyVideoShares[iIndex].m_iLockMode <= LOCK_MODE_EVERYONE ||
-          /* bookmark is locked with LOCK_MODE_SAMBA or LOCK_MODE_EEPROM_PARENTAL */
-          g_settings.m_vecMyVideoShares[iIndex].m_iLockMode > LOCK_MODE_QWERTY || 
-          /* we're in master user mode */
-          (g_application.m_bMasterLockOverridesLocalPasswords && g_stSettings.m_iMasterLockMode <= LOCK_MODE_EVERYONE))
-          )
+        if (g_passwordManager.IsDatabasePathUnlocked(strPath, g_settings.m_vecMyVideoShares))
         {
           // the path is unlocked so set last path to current path
           lLastPathId = lPathId;
