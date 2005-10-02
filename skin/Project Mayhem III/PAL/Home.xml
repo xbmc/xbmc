@@ -318,7 +318,7 @@
       <id>1</id>
       <width>430</width>
       <posX>210</posX>
-      <posY>367</posY>
+      <posY>365</posY>
       <info>MusicPlayer.Title</info>
       <align>left</align>
       <font>special13</font>
@@ -331,8 +331,20 @@
       <id>1</id>
       <width>430</width>
       <posX>210</posX>
-      <posY>405</posY>
+      <posY>394</posY>
       <info>MusicPlayer.Album</info>
+      <align>left</align>
+      <font>font10</font>
+      <visible effect="fade" time="400" start="hidden">System.IdleTime(63)</visible>
+    </control>
+
+    <control>
+      <description>Time label</description>
+      <type>label</type>
+      <id>1</id>
+      <posX>210</posX>
+      <posY>415</posY>
+      <info>MusicPlayer.Time</info>
       <align>left</align>
       <font>font10</font>
       <visible effect="fade" time="400" start="hidden">System.IdleTime(63)</visible>
@@ -427,7 +439,7 @@
 	<font>special13</font>
 	<hyperlink>1</hyperlink>
 	<onleft>98</onleft>
-	<onright>97</onright>
+	<onright>96</onright>
 	<onup>9</onup>
 	<ondown>4</ondown>
 	<textureFocus>home-focus.gif</textureFocus>
@@ -448,7 +460,7 @@
 	<hyperlink>2</hyperlink>
 	<font>special13</font>
 	<onleft>98</onleft>
-	<onright>97</onright>
+	<onright>96</onright>
 	<onup>2</onup>
 	<ondown>5</ondown>
 	<textureFocus>home-focus.gif</textureFocus>
@@ -469,7 +481,7 @@
 	<font>special13</font>
 	<hyperlink>6</hyperlink>
 	<onleft>98</onleft>
-	<onright>97</onright>
+	<onright>96</onright>
 	<onup>4</onup>
 	<ondown>3</ondown>
 	<textureFocus>home-focus.gif</textureFocus>
@@ -490,7 +502,7 @@
 	<hyperlink>5</hyperlink>
 	<font>special13</font>
 	<onleft>98</onleft>
-	<onright>97</onright>
+	<onright>96</onright>
 	<onup>5</onup>
 	<ondown>7</ondown>
 	<textureFocus>home-focus.gif</textureFocus>
@@ -511,7 +523,7 @@
 	<font>special13</font>
 	<hyperlink>2600</hyperlink>
 	<onleft>98</onleft>
-	<onright>97</onright>
+	<onright>96</onright>
 	<onup>3</onup>
 	<ondown>9</ondown>
 	<textureFocus>home-focus.gif</textureFocus>
@@ -553,7 +565,7 @@
 	<hyperlink>3</hyperlink>
 	<font>font10</font>
 	<onleft>9</onleft>
-	<onright>97</onright>
+	<onright>96</onright>
 	<onup>7</onup>
 	<ondown>2</ondown>
 	<textureFocus>home-focus.gif</textureFocus>
@@ -591,7 +603,7 @@
       <type>label</type>
       <id>0</id>
       <posX>582</posX>
-      <posY>70</posY>
+      <posY>75</posY>
       <label>date</label>
       <info>System.Date</info>
       <align>right</align>
@@ -604,7 +616,7 @@
       <type>label</type>
       <id>1</id>
       <posX>592</posX>
-      <posY>68</posY>
+      <posY>73</posY>
       <label>|</label>
       <align>left</align>
       <font>special12</font>
@@ -617,7 +629,7 @@
       <type>label</type>
       <id>0</id>
       <posX>602</posX>
-      <posY>70</posY>
+      <posY>75</posY>
       <label>time</label>
       <info>System.Time</info>
       <align>left</align>
@@ -638,22 +650,49 @@
       <titlecolor>ffD2FF00</titlecolor>
       <headlinecolor>DDced8da</headlinecolor>
       <textcolor>ffD2FF00</textcolor>
+      <visible>!Player.HasVideo</visible>
     </control>
 
     <control>
-      <description>dvd-rom status label</description>
+      <description>dvd-rom launch button</description>
       <type>button</type>
-      <id>0</id>
-      <posX>77</posX>
+      <id>95</id>
+      <posX>511</posX>
       <posY>503</posY>
-      <width>30</width>
-      <height>30</height>
-      <textureFocus>startbutton.png</textureFocus>
-      <textureNoFocus>startbutton.png</textureNoFocus>
+      <width>35</width>
+      <height>35</height>
+      <label>-</label>
+      <textureFocus>home-dvd-l.gif</textureFocus>
+      <textureNoFocus>home-dvd-lnf.gif</textureNoFocus>
       <font>font12</font>
-      <textOffsetX>32</textOffsetX>
+      <textOffsetX>26</textOffsetX>
       <label>16004</label>
-      <visible effect="fade" time="500">System.hasmediadvd + System.IdleTime(4) + !System.IdleTime(9)</visible>
+      <visible effect="fade" time="1000">System.hasmediadvd + System.KaiConnected + [!Player.HasAudio | ![Player.HasAudio + System.IdleTime(60)]]</visible>
+      <onleft>96</onleft>
+      <onright>97</onright>
+      <onup>2</onup>
+      <ondown>2</ondown>
+    </control>
+
+    <control>
+      <description>dvd-rom launch button 2</description>
+      <type>button</type>
+      <id>96</id>
+      <posX>544</posX>
+      <posY>503</posY>
+      <width>35</width>
+      <height>35</height>
+      <label>-</label>
+      <textureFocus>home-dvd-r.gif</textureFocus>
+      <textureNoFocus>home-dvd-rnf.gif</textureNoFocus>
+      <font>font12</font>
+      <textOffsetX>26</textOffsetX>
+      <label>16004</label>
+      <visible effect="fade" time="1000">System.hasmediadvd + !System.KaiConnected + [!Player.HasAudio | ![Player.HasAudio + System.IdleTime(60)]]</visible>
+      <onleft>2</onleft>
+      <onright>95</onright>
+      <onup>2</onup>
+      <ondown>2</ondown>
     </control>
 
     <control>
@@ -668,7 +707,7 @@
       <textureFocus>home-kai.gif</textureFocus>
       <textureNoFocus>home-kai.png</textureNoFocus>
       <hyperlink>2700</hyperlink>
-      <onleft>2</onleft>
+      <onleft>95</onleft>
       <onright>100</onright>
       <onup>2</onup>
       <ondown>2</ondown>
