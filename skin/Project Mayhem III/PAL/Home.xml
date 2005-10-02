@@ -331,7 +331,7 @@
       <id>1</id>
       <width>430</width>
       <posX>210</posX>
-      <posY>394</posY>
+      <posY>393</posY>
       <info>MusicPlayer.Album</info>
       <align>left</align>
       <font>font10</font>
@@ -407,7 +407,7 @@
       <id>1</id>
       <width>255</width>
       <posX>540</posX>
-      <posY>394</posY>
+      <posY>393</posY>
       <info>MusicPlayer.Album</info>
       <align>right</align>
       <font>font10</font>
