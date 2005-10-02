@@ -508,16 +508,45 @@ void CVideoDatabase::GetActors(VECMOVIEACTORS& actors)
   try
   {
     actors.erase(actors.begin(), actors.end());
+    map<long, CStdString> mapActors;
+    map<long, CStdString>::iterator it;
+
     if (NULL == m_pDB.get()) return ;
     if (NULL == m_pDS.get()) return ;
-    //m_pDS->query("select * from actors join actorlinkmovie on actors.idActor = actorlinkmovie.idActor");
-    m_pDS->query("select distinct actors.strActor from actors join actorlinkmovie on actors.idActor = actorlinkmovie.idActor join movie on actorlinkmovie.idMovie = movie.idMovie");
+    //m_pDS->query("select distinct actors.strActor from actors join actorlinkmovie on actors.idActor = actorlinkmovie.idActor join movie on actorlinkmovie.idMovie = movie.idMovie");
+    m_pDS->query("select * from actorlinkmovie,actors,movie,movieinfo,path where path.idpath=movie.idpath and actors.idActor=actorlinkmovie.idActor and actorlinkmovie.idmovie=movie.idmovie and movieinfo.idmovie=movie.idmovie order by path.idpath");
+    long lLastPathId = -1;
     while (!m_pDS->eof())
     {
-      actors.push_back( m_pDS->fv("actors.strActor").get_asString() );
+      long lActorId = m_pDS->fv("actors.idactor").get_asLong();
+      CStdString strActor = m_pDS->fv("actors.strActor").get_asString();
+      it = mapActors.find(lActorId);
+      // is this actor already known?
+      if (it == mapActors.end())
+      {
+        // is this the same path as previous path?
+        long lPathId = m_pDS->fv("path.idpath").get_asLong();
+        if (lPathId == lLastPathId)
+          mapActors.insert(pair<long, CStdString>(lActorId, strActor));
+        // test path
+        else
+        {
+          CStdString strPath = m_pDS->fv("path.strPath").get_asString();
+          if (g_passwordManager.IsDatabasePathUnlocked(strPath, g_settings.m_vecMyVideoShares))
+          {
+            // the path is unlocked so set last path to current path
+            lLastPathId = lPathId;
+            mapActors.insert(pair<long, CStdString>(lActorId, strActor));
+          }
+        }
+      }
       m_pDS->next();
     }
     m_pDS->close();
+
+    // convert map back to vector
+    for (it = mapActors.begin(); it != mapActors.end(); it++)
+      actors.push_back(it->second);
   }
   catch (...)
   {
@@ -620,7 +649,7 @@ void CVideoDatabase::GetMoviesByGenre(CStdString& strGenre, VECMOVIES& movies)
     CStdString strSQL=FormatSQL("select * from genrelinkmovie,genre,movie,movieinfo,actors,path where path.idpath=movie.idpath and genrelinkmovie.idGenre=genre.idGenre and genrelinkmovie.idmovie=movie.idmovie and movieinfo.idmovie=movie.idmovie and genre.strGenre='%s' and movieinfo.iddirector=actors.idActor", strGenre.c_str());
     m_pDS->query( strSQL.c_str() );
 
-    int lLastPathId = -1;
+    long lLastPathId = -1;
     while (!m_pDS->eof())
     {
       // if the current path is the same as the last path tested and unlocked,
@@ -660,9 +689,26 @@ void CVideoDatabase::GetMoviesByActor(CStdString& strActor, VECMOVIES& movies)
 
     CStdString strSQL=FormatSQL("select * from actorlinkmovie,actors,movie,movieinfo,path where path.idpath=movie.idpath and actors.idActor=actorlinkmovie.idActor and actorlinkmovie.idmovie=movie.idmovie and movieinfo.idmovie=movie.idmovie and actors.stractor='%s'", strActor.c_str());
     m_pDS->query( strSQL.c_str() );
+
+    long lLastPathId = -1;
     while (!m_pDS->eof())
     {
-      movies.push_back(GetDetailsFromDataset(m_pDS));
+      // if the current path is the same as the last path tested and unlocked,
+      // just add the movie without retesting
+      long lPathId = m_pDS->fv("path.idPath").get_asLong();
+      if (lPathId == lLastPathId)
+        movies.push_back(GetDetailsFromDataset(m_pDS));
+      // we have a new path so test it.
+      else
+      {
+        CStdString strPath = m_pDS->fv("path.strPath").get_asString();
+        if (g_passwordManager.IsDatabasePathUnlocked(strPath, g_settings.m_vecMyVideoShares))
+        {
+          // the path is unlocked so set last path to current path
+          lLastPathId = lPathId;
+          movies.push_back(GetDetailsFromDataset(m_pDS));
+        }
+      }
       m_pDS->next();
     }
     m_pDS->close();
@@ -887,26 +933,44 @@ void CVideoDatabase::GetYears(VECMOVIEYEARS& years)
   try
   {
     years.erase(years.begin(), years.end());
+    map<long, CStdString> mapYears;
+    map<long, CStdString>::iterator it;
+
     if (NULL == m_pDB.get()) return ;
     if (NULL == m_pDS.get()) return ;
-    //m_pDS->query("select * from movieinfo");
-    m_pDS->query("select distinct movieinfo.iYear from movieinfo join movie on movieinfo.idMovie = movie.idMovie");
+    //m_pDS->query("select distinct movieinfo.iYear from movieinfo join movie on movieinfo.idMovie = movie.idMovie");
+    m_pDS->query("select * from movie,movieinfo,actors,path where path.idpath=movie.idpath and movieinfo.idmovie=movie.idmovie and movieinfo.iddirector=actors.idActor order by path.idpath");
+    long lLastPathId = -1;
     while (!m_pDS->eof())
     {
-      /*
-      CStdString strYear = m_pDS->fv("iYear").get_asString();
-      bool bAdd = true;
-      for (int i = 0; i < (int)years.size();++i)
+      CStdString strYear = m_pDS->fv("movieinfo.iYear").get_asString();
+      long lYear = atol(strYear.c_str());
+      it = mapYears.find(lYear);
+      if (it == mapYears.end())
       {
-        if (strYear == years[i]) bAdd = false;
+        // is the path the same as the previous path?
+        long lPathId = m_pDS->fv("path.idpath").get_asLong();
+        if (lPathId == lLastPathId)
+          mapYears.insert(pair<long, CStdString>(lYear, strYear));
+        // test path
+        else
+        {
+          CStdString strPath = m_pDS->fv("path.strPath").get_asString();
+          if (g_passwordManager.IsDatabasePathUnlocked(strPath, g_settings.m_vecMyVideoShares))
+          {
+            // the path is unlocked so set last path to current path
+            lLastPathId = lPathId;
+            mapYears.insert(pair<long, CStdString>(lYear, strYear));
+          }
+        }
       }
-      if (bAdd) years.push_back( strYear);
-      */
-      years.push_back(m_pDS->fv("movieinfo.iYear").get_asString());
       m_pDS->next();
     }
     m_pDS->close();
 
+    // convert map back to vector
+    for (it = mapYears.begin(); it != mapYears.end(); it++)
+      years.push_back(it->second);
   }
   catch (...)
   {
@@ -925,11 +989,27 @@ void CVideoDatabase::GetMoviesByYear(CStdString& strYear, VECMOVIES& movies)
     if (NULL == m_pDS.get()) return ;
 
     CStdString strSQL=FormatSQL("select * from movie,movieinfo,actors,path where path.idpath=movie.idpath and movieinfo.idmovie=movie.idmovie and movieinfo.iddirector=actors.idActor and movieinfo.iYear=%i", iYear);
-
     m_pDS->query( strSQL.c_str() );
+
+    long lLastPathId = -1;
     while (!m_pDS->eof())
     {
-      movies.push_back(GetDetailsFromDataset(m_pDS));
+      // if the current path is the same as the last path tested and unlocked,
+      // just add the movie without retesting
+      long lPathId = m_pDS->fv("path.idPath").get_asLong();
+      if (lPathId == lLastPathId)
+        movies.push_back(GetDetailsFromDataset(m_pDS));
+      // we have a new path so test it.
+      else
+      {
+        CStdString strPath = m_pDS->fv("path.strPath").get_asString();
+        if (g_passwordManager.IsDatabasePathUnlocked(strPath, g_settings.m_vecMyVideoShares))
+        {
+          // the path is unlocked so set last path to current path
+          lLastPathId = lPathId;
+          movies.push_back(GetDetailsFromDataset(m_pDS));
+        }
+      }
       m_pDS->next();
     }
     m_pDS->close();
@@ -1036,7 +1116,7 @@ void CVideoDatabase::GetMovies(VECMOVIES& movies)
     CStdString strSQL="select * from movie,movieinfo,actors,path where movieinfo.idmovie=movie.idmovie and movieinfo.iddirector=actors.idActor and movie.idpath=path.idpath order by path.idpath";
     m_pDS->query( strSQL.c_str() );
 
-    int lLastPathId = -1;
+    long lLastPathId = -1;
     while (!m_pDS->eof())
     {
       // if the current path is the same as the last path tested and unlocked,
