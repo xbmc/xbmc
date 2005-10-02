@@ -5,13 +5,14 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
- - 02-08-2005 added: Movies found in Locked bookmarks are hidden from Title view until the bookmark is unlocked from Files view
- - 30-05-2005 added: WA51-presets(265).zip, now default Presetpack in Milkdrop. Contains presets 20fps > faster (tested in PAL720x576)
- - 30-05-2005 added: Milkdrop - can now select different preset packs from the settings menu. (Defaults to looking in visualisations\Milkdrop for zips and folders)
- - 30-05-2005 fixed: Milkdrop - xml settings file was getting corrupted.
- - 30-05-2005 fixed: Problem reading some compressed zip files.
- - 29-05-2005 added: START on the controller or PLAY on the remote now plays media from DVD-ROM if present (home screen only)
- - 29-05-2005 fixed: subtitles in subtitles/ wouldn't work on hdd.
+ - 02-08-2005 added: Movies & Genres found in Locked bookmarks are hidden from My Videos Genre View until unlocked from My Videos Files view
+ - 02-08-2005 added: Movies found in Locked bookmarks are hidden from My Videos Title view until the bookmark is unlocked from My Videos Files view
+ - 30-09-2005 added: WA51-presets(265).zip, now default Presetpack in Milkdrop. Contains presets 20fps > faster (tested in PAL720x576)
+ - 30-09-2005 added: Milkdrop - can now select different preset packs from the settings menu. (Defaults to looking in visualisations\Milkdrop for zips and folders)
+ - 30-09-2005 fixed: Milkdrop - xml settings file was getting corrupted.
+ - 30-09-2005 fixed: Problem reading some compressed zip files.
+ - 29-09-2005 added: START on the controller or PLAY on the remote now plays media from DVD-ROM if present (home screen only)
+ - 29-09-2005 fixed: subtitles in subtitles/ wouldn't work on hdd.
  - 28-09-2005 added: new buildin function: <execute>XBMC.PlayDVD()</execute>, will play/run a CD/DVD if a media is present in the DVD-Drive! [GeminiServer]
  - 28-09-2005 added: Home window: DVD-Drive button [icon] will appear if a media is present! On click it will play the inserted media disc! in addition with new Infomanager: system.hasmediadvd [GeminiServer]
  - 28-09-2005 added: new Infomanager: system.hasmediadvd will be true if a media is present in the DVD-Drive [GeminiServer]

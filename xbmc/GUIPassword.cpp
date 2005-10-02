@@ -4,6 +4,7 @@
 #include "GUIDialogNumeric.h"
 #include "GUIDialogGamepad.h"
 #include "xbox/xkutils.h"
+#include "util.h"
 
 CGUIPassword g_passwordManager;
 
@@ -548,4 +549,25 @@ CStdString CGUIPassword::GetSMBAuthFilename(const CStdString& strAuth)
     urlIn.GetURL(strPath);
   }  
   return strPath;
+}
+
+bool CGUIPassword::IsDatabasePathUnlocked(CStdString& strPath, VECSHARES& vecShares)
+{
+  // try to find the best matching bookmark
+  bool bName = false;
+  int iIndex = CUtil::GetMatchingShare(strPath, vecShares, bName);
+
+  // are lockmodes LOCK_MODE_SAMBA and LOCK_MODE_EEPROM_PARENTAL in use?
+  // to be safe, ignore them for now and only test for 1,2,3
+  if (iIndex > -1 &&
+    /* bookmark is unlocked */
+    (g_settings.m_vecMyVideoShares[iIndex].m_iLockMode <= LOCK_MODE_EVERYONE ||
+    /* bookmark is locked with LOCK_MODE_SAMBA or LOCK_MODE_EEPROM_PARENTAL */
+    g_settings.m_vecMyVideoShares[iIndex].m_iLockMode > LOCK_MODE_QWERTY || 
+    /* we're in master user mode */
+    (g_application.m_bMasterLockOverridesLocalPasswords && g_stSettings.m_iMasterLockMode <= LOCK_MODE_EVERYONE))
+    )
+    return true;
+
+  return false;
 }
