@@ -1,3 +1,8 @@
+2005-10-02 fixed:	my music keeps its settings.  (buttons need to reference ID 5, not 50)
+2005-10-02 changed:	removed no-focus textures from thumbnailpanels and lists
+2005-10-02 changed:	some other minor homescreen changes
+2005-10-02 changed:	made the DVD launcher in the homescreen a button since there were no good buttons free on the remote control
+
 2005-09-30 changed:	new homescreen pictures incl slideshow
 2005-09-30 added:	label to support direct DVD start 
 
