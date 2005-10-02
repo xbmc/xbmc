@@ -3172,7 +3172,25 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
 }
 int CUtil::GetMatchingShare(const CStdString& strPath, VECSHARES& vecShares, bool& bIsBookmarkName)
 {
+  //CLog::Log(LOGDEBUG,"CUtil::GetMatchingShare, testing [%s]", strPath.c_str());
+
+  // remove user details, and ensure pathes ends in 
+  // a trailing slash so as not to match a substring
+  CURL urlDest(strPath);
+  CStdString strDest;
+  urlDest.GetURLWithoutUserDetails(strDest);
+  if (!HasSlashAtEnd(strDest))
+  {
+    if (IsHD(strDest))
+      strDest += "\\";
+    else
+      strDest += "/";
+  }
+  int iLenPath = strDest.size();
+
   bIsBookmarkName = false;
+  int iIndex = -1;
+  int iLength = -1;
   for (int i = 0; i < (int)vecShares.size(); ++i)
   {
     CShare share = vecShares.at(i);
@@ -3184,20 +3202,12 @@ int CUtil::GetMatchingShare(const CStdString& strPath, VECSHARES& vecShares, boo
       return i;
     }
 
-    // does it match a subdir off a bookmark path?
-    // add trailing slash so as not to match a substring
-    // ie, Q:\Scripts123 matching Q:\Scripts
-    CStdString strDest = strPath;
-    if (!HasSlashAtEnd(strDest))
-    {
-      if (IsHD(strDest))
-        strDest += "\\";
-      else
-        strDest += "/";
-    }
-    int iLenPath = strDest.size();
-
-    CStdString strShare = share.strPath;
+    // doesnt match a name, so try the bookmark path
+    // remove user details, and ensure pathes ends in 
+    // a trailing slash so as not to match a substring
+    CURL urlShare(share.strPath);
+    CStdString strShare;
+    urlShare.GetURLWithoutUserDetails(strShare);
     if (!HasSlashAtEnd(strShare))
     {
       if (IsHD(strShare))
@@ -3207,13 +3217,18 @@ int CUtil::GetMatchingShare(const CStdString& strPath, VECSHARES& vecShares, boo
     }
     int iLenShare = strShare.size();
 
-    //CLog::Log(LOGDEBUG,"Destination = [%s], Bookmark = [%s]",strDest.c_str(),strShare.c_str());
-    if (iLenPath >= iLenShare)
+    if ((iLenPath >= iLenShare) && (strDest.Left(iLenShare).Equals(strShare)) && (iLenShare > iLength))
     {
-      if (strDest.Left(iLenShare).Equals(strShare)) return i;
+      //CLog::Log(LOGDEBUG,"Found matching bookmark [%s], Len = [%i]", strShare.c_str(), iLenShare);
+      iIndex = i;
+      iLength = iLenShare;
     }
   }
-  return -1;
+
+  // return the index of the share with the longest match
+  if (iIndex == -1)
+    CLog::Log(LOGERROR,"CUtil::GetMatchingShare... no matching bookmark found for [%s]", strDest.c_str());
+  return iIndex;
 }
 
 CStdString CUtil::TranslateSpecialDir(const CStdString &strSpecial)
