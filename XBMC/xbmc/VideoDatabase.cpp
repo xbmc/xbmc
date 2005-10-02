@@ -8,6 +8,7 @@
 #include "videodatabase.h"
 #include "utils/fstrcmp.h"
 #include "util.h"
+#include "application.h"
 
 
 #define VIDEO_DATABASE_VERSION 1.4f
@@ -988,12 +989,39 @@ void CVideoDatabase::GetMovies(VECMOVIES& movies)
     if (NULL == m_pDB.get()) return ;
     if (NULL == m_pDS.get()) return ;
 
-    CStdString strSQL="select * from movie,movieinfo,actors,path where movieinfo.idmovie=movie.idmovie and movieinfo.iddirector=actors.idActor and movie.idpath=path.idpath";
+    CStdString strSQL="select * from movie,movieinfo,actors,path where movieinfo.idmovie=movie.idmovie and movieinfo.iddirector=actors.idActor and movie.idpath=path.idpath order by path.idpath";
     m_pDS->query( strSQL.c_str() );
 
+    int lLastPathId = -1;
     while (!m_pDS->eof())
     {
-      movies.push_back(GetDetailsFromDataset(m_pDS));
+      // if the current path is the same as the last path tested and unlocked,
+      // just add the movie without retesting
+      long lPathId = m_pDS->fv("path.idPath").get_asLong();
+      if (lPathId == lLastPathId)
+        movies.push_back(GetDetailsFromDataset(m_pDS));
+      // we have a new path so test it.
+      else
+      {
+        CStdString strPath = m_pDS->fv("path.strPath").get_asString();
+        bool bName = false;
+        int iIndex = CUtil::GetMatchingShare(strPath, g_settings.m_vecMyVideoShares, bName);
+        // are lockmodes LOCK_MODE_SAMBA and LOCK_MODE_EEPROM_PARENTAL in use?
+        // to be safe, ignore them for now and only test for 1,2,3
+        if (iIndex > -1 &&
+          /* bookmark is unlocked */
+          (g_settings.m_vecMyVideoShares[iIndex].m_iLockMode <= LOCK_MODE_EVERYONE ||
+          /* bookmark is locked with LOCK_MODE_SAMBA or LOCK_MODE_EEPROM_PARENTAL */
+          g_settings.m_vecMyVideoShares[iIndex].m_iLockMode > LOCK_MODE_QWERTY || 
+          /* we're in master user mode */
+          (g_application.m_bMasterLockOverridesLocalPasswords && g_stSettings.m_iMasterLockMode <= LOCK_MODE_EVERYONE))
+          )
+        {
+          // the path is unlocked so set last path to current path
+          lLastPathId = lPathId;
+          movies.push_back(GetDetailsFromDataset(m_pDS));
+        }
+      }
       m_pDS->next();
     }
     m_pDS->close();
