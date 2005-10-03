@@ -663,7 +663,7 @@
       <height>35</height>
       <label>-</label>
       <textureFocus>home-dvd-l.gif</textureFocus>
-      <textureNoFocus>home-dvd-lnf.gif</textureNoFocus>
+      <textureNoFocus>home-dvd-l.png</textureNoFocus>
       <font>font12</font>
       <textOffsetX>26</textOffsetX>
       <label>16004</label>
@@ -684,7 +684,7 @@
       <height>35</height>
       <label>-</label>
       <textureFocus>home-dvd-r.gif</textureFocus>
-      <textureNoFocus>home-dvd-rnf.gif</textureNoFocus>
+      <textureNoFocus>home-dvd-r.png</textureNoFocus>
       <font>font12</font>
       <textOffsetX>26</textOffsetX>
       <label>16004</label>
