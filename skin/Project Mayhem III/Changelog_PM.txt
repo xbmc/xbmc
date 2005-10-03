@@ -1,3 +1,5 @@
+2005-10-03 fixed:	xbmctex.exe couldnt handle the no-focus textures of the new dvd buttons - made them *.png
+
 2005-10-02 fixed:	my music keeps its settings.  (buttons need to reference ID 5, not 50)
 2005-10-02 changed:	removed no-focus textures from thumbnailpanels and lists
 2005-10-02 changed:	some other minor homescreen changes
