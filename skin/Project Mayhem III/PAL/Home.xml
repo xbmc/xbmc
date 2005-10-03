@@ -666,7 +666,6 @@
       <textureNoFocus>home-dvd-l.png</textureNoFocus>
       <font>font12</font>
       <textOffsetX>26</textOffsetX>
-      <label>16004</label>
       <visible effect="fade" time="1000">System.hasmediadvd + System.KaiConnected + [!Player.HasAudio | ![Player.HasAudio + System.IdleTime(60)]]</visible>
       <onleft>96</onleft>
       <onright>97</onright>
@@ -687,7 +686,6 @@
       <textureNoFocus>home-dvd-r.png</textureNoFocus>
       <font>font12</font>
       <textOffsetX>26</textOffsetX>
-      <label>16004</label>
       <visible effect="fade" time="1000">System.hasmediadvd + !System.KaiConnected + [!Player.HasAudio | ![Player.HasAudio + System.IdleTime(60)]]</visible>
       <onleft>2</onleft>
       <onright>95</onright>
