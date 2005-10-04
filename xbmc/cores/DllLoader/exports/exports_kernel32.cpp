@@ -22,7 +22,7 @@ void export_kernel32()
   g_dlls.kernel32.AddExport("TerminateThread", (unsigned long)dllTerminateThread);
   g_dlls.kernel32.AddExport("GetCurrentThread", (unsigned long)dllGetCurrentThread);
   g_dlls.kernel32.AddExport("QueryPerformanceCounter", (unsigned long)QueryPerformanceCounter);
-  g_dlls.kernel32.AddExport("QueryPerformanceFrequency", (unsigned long)QueryPerformanceFrequency);
+  g_dlls.kernel32.AddExport("QueryPerformanceFrequency", (unsigned long)QueryPerformanceFrequencyXbox);
   g_dlls.kernel32.AddExport("SetThreadPriority", (unsigned long)SetThreadPriority);
   g_dlls.kernel32.AddExport("GetTickCount", (unsigned long)GetTickCount);
   g_dlls.kernel32.AddExport("GetCurrentThreadId", (unsigned long)GetCurrentThreadId); //test
