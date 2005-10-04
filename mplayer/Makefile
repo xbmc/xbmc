@@ -8,6 +8,14 @@ include config.mak
 
 PRG_CFG = codec-cfg
 
+LIBAV_INC =
+ifeq ($(CONFIG_LIBAVUTIL),yes)
+LIBAV_INC += -I./libavutil
+endif
+ifeq ($(CONFIG_LIBAVCODEC),yes)
+LIBAV_INC += -I./libavcodec
+endif
+
 # Do not strip the binaries at installation
 ifeq ($(STRIPBINARIES),yes)
 INSTALLSTRIP = -s
@@ -36,13 +44,38 @@ AO_LIBS = $(ARTS_LIB) $(ESD_LIB) $(JACK_LIB) $(NAS_LIB) $(SGIAUDIO_LIB) $(POLYP_
 CODEC_LIBS = $(AV_LIB) $(FAME_LIB) $(MAD_LIB) $(VORBIS_LIB) $(THEORA_LIB) $(FAAD_LIB) $(LIBLZO_LIB) $(DECORE_LIB) $(XVID_LIB) $(DTS_LIB) $(PNG_LIB) $(Z_LIB) $(JPEG_LIB) $(ALSA_LIB) $(XMMS_LIB) $(X264_LIB)
 COMMON_LIBS = libmpcodecs/libmpcodecs.a $(W32_LIB) $(DS_LIB) libaf/libaf.a libmpdemux/libmpdemux.a input/libinput.a postproc/libswscale.a osdep/libosdep.a $(DVDREAD_LIB) $(CODEC_LIBS) $(FREETYPE_LIB) $(TERMCAP_LIB) $(CDPARANOIA_LIB) $(MPLAYER_NETWORK_LIB) $(WIN32_LIB) $(GIF_LIB) $(MACOSX_FRAMEWORKS) $(SMBSUPPORT_LIB) $(FRIBIDI_LIB) $(FONTCONFIG_LIB) $(ENCA_LIB)
 
-CFLAGS = $(OPTFLAGS) -I. $(FREETYPE_INC) $(EXTRA_INC) $(CDPARANOIA_INC) $(SDL_INC) $(X11_INC) $(FRIBIDI_INC) $(DVB_INC) $(XVID_INC) $(FONTCONFIG_INC) $(CACA_INC) # -Wall
+CFLAGS = $(OPTFLAGS) -I. \
+         $(CACA_INC) \
+         $(CDPARANOIA_INC) \
+         $(DVB_INC) \
+         $(EXTRA_INC) \
+         $(FONTCONFIG_INC) \
+         $(FREETYPE_INC) \
+         $(FRIBIDI_INC) \
+         $(SDL_INC) \
+         $(X11_INC) \
+         $(XVID_INC) \
+         $(LIBAV_INC) \
+
+#CFLAGS += -Wall
+
 ifeq ($(TOOLAME),yes)
 CFLAGS += $(TOOLAME_EXTRAFLAGS) 
 CODEC_LIBS += $(TOOLAME_LIB)
 endif
 
-PARTS = libmpdemux libmpcodecs libavcodec libavformat libao2 drivers osdep postproc input libvo libaf
+PARTS = libmpdemux \
+        libmpcodecs \
+        libavutil \
+        libavcodec \
+        libavformat \
+        libao2 \
+        osdep \
+        postproc \
+        input \
+        libvo \
+        libaf \
+
 ifeq ($(MP3LIB),yes)
 PARTS += mp3lib
 endif
@@ -160,6 +193,9 @@ loader/dshow/libDS_Filter.a:
 
 loader/dmo/libDMO_Filter.a:
 	$(MAKE) -C loader/dmo
+
+libavutil/libavutil.a:
+	$(MAKE) -C libavutil LIBPREF=lib LIBSUF=.a
 
 libavcodec/libavcodec.a:
 	$(MAKE) -C libavcodec LIBPREF=lib LIBSUF=.a

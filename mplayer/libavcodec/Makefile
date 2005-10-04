@@ -7,7 +7,7 @@ include ../config.mak
 VPATH=$(SRC_PATH)/libavcodec
 
 # NOTE: -I.. is needed to include config.h
-CFLAGS=$(OPTFLAGS) -DHAVE_AV_CONFIG_H -I.. -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_GNU_SOURCE $(AMR_CFLAGS)
+CFLAGS=$(OPTFLAGS) -DHAVE_AV_CONFIG_H -I.. -I$(SRC_PATH)/libavutil -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_GNU_SOURCE $(AMR_CFLAGS)
 
 OBJS= bitstream.o utils.o mem.o allcodecs.o \
       mpegvideo.o jrevdct.o jfdctfst.o jfdctint.o\
@@ -16,8 +16,9 @@ OBJS= bitstream.o utils.o mem.o allcodecs.o \
       mpeg12.o mpegaudiodec.o pcm.o simple_idct.o \
       ratecontrol.o adpcm.o eval.o error_resilience.o \
       fft.o mdct.o raw.o golomb.o cabac.o\
-      dpcm.o adx.o rational.o faandct.o parser.o g726.o \
-      vp3dsp.o integer.o h264idct.o rangecoder.o pnm.o h263.o msmpeg4.o h263dec.o dvdsub.o dvbsub.o dvbsubdec.o
+      dpcm.o adx.o faandct.o parser.o g726.o \
+      vp3dsp.o h264idct.o rangecoder.o pnm.o h263.o msmpeg4.o h263dec.o dvdsub.o dvbsub.o dvbsubdec.o\
+      opt.o
 
 ifeq ($(CONFIG_AASC_DECODER),yes)
     OBJS+= aasc.o
@@ -234,35 +235,27 @@ OBJS+= liba52/bit_allocate.o liba52/bitstream.o liba52/downmix.o \
 endif
 endif
 
+EXTRALIBS += -L../libavutil -lavutil$(BUILDSUF)
+
 # currently using libdts for dts decoding
 ifeq ($(CONFIG_DTS),yes)
 OBJS+= dtsdec.o
-CFLAGS += $(DTS_INC)
-EXTRALIBS += -ldts
 endif
 
 ifeq ($(CONFIG_FAAD),yes)
 OBJS+= faad.o
-ifeq ($(CONFIG_FAADBIN),yes)
-# no libs needed
-else
-EXTRALIBS += -lfaad
-endif
 endif
 
 ifeq ($(CONFIG_FAAC),yes)
 OBJS+= faac.o
-EXTRALIBS += -lfaac
 endif
 
 ifeq ($(CONFIG_XVID),yes)
 OBJS+= xvidff.o
-EXTRALIBS += -lxvidcore
 endif
 
 ifeq ($(CONFIG_X264),yes)
 OBJS+= x264.o
-EXTRALIBS += -lx264
 endif
 
 ifeq ($(CONFIG_PP),yes)
@@ -276,24 +269,19 @@ endif
 
 ifeq ($(CONFIG_MP3LAME),yes)
 OBJS += mp3lameaudio.o
-EXTRALIBS += -lmp3lame
 endif
 
 ifeq ($(CONFIG_LIBOGG),yes)
 ifeq ($(CONFIG_LIBVORBIS),yes)
 OBJS += oggvorbis.o
-EXTRALIBS += -lvorbisenc -lvorbis
 endif
 ifeq ($(CONFIG_LIBTHEORA), yes)
 OBJS += oggtheora.o
-EXTRALIBS += -ltheora
 endif
-EXTRALIBS += -logg
 endif
 
 ifeq ($(CONFIG_LIBGSM),yes)
 OBJS += libgsm.o
-EXTRALIBS += -lgsm
 endif
 
 ifeq ($(TARGET_GPROF),yes)
@@ -308,6 +296,9 @@ OBJS += i386/fdct_mmx.o i386/cputest.o \
 	i386/idct_mmx.o i386/motion_est_mmx.o \
 	i386/simple_idct_mmx.o i386/fft_sse.o i386/vp3dsp_mmx.o \
 	i386/vp3dsp_sse2.o
+ifeq ($(CONFIG_GPL),yes)
+OBJS += i386/idct_mmx_xvid.o
+endif
 ifdef TARGET_BUILTIN_VECTOR
 i386/fft_sse.o: CFLAGS+= -msse
 depend: CFLAGS+= -msse
@@ -371,16 +362,22 @@ ifeq ($(TARGET_ARCH_SPARC64),yes)
 CFLAGS+= -mcpu=ultrasparc -mtune=ultrasparc
 endif
 
+# Darwin specific stuff
+ifeq ($(CONFIG_DARWIN),yes)
+SHFLAGS += -Wl,-install_name,$(libdir)/$(SLIBPREF)avcodec$(SLIBSUF),-current_version,$(SPPVERSION),-compatibility_version,$(SPPVERSION)
+endif
+
 SRCS := $(OBJS:.o=.c) $(ASM_OBJS:.o=.S)
 OBJS := $(OBJS) $(ASM_OBJS)
 
 LIB= $(LIBPREF)avcodec$(LIBSUF)
+LIBAVUTIL= $(SRC_PATH)/libavutil/$(LIBPREF)avutil$(LIBSUF)
 ifeq ($(BUILD_SHARED),yes)
-SLIB= $(SLIBPREF)avcodec$(SLIBSUF)
+SLIBNAME= $(SLIBPREF)avcodec$(SLIBSUF)
 endif
 TESTS= imgresample-test dct-test motion-test fft-test
 
-all: $(LIB) $(SLIB)
+all: $(LIB) $(SLIBNAME)
 
 amrlibs:
 	$(MAKE) -C amr spclib fipoplib
@@ -392,7 +389,7 @@ $(LIB): $(OBJS) $(AMRLIBS)
 	$(AR) rc $@ $(OBJS) $(AMREXTRALIBS)
 	$(RANLIB) $@
 
-$(SLIB): $(OBJS)
+$(SLIBNAME): $(OBJS)
 ifeq ($(CONFIG_PP),yes)
 	$(MAKE) -C libpostproc
 endif
@@ -400,7 +397,7 @@ ifeq ($(CONFIG_WIN32),yes)
 	$(CC) $(SHFLAGS) -Wl,--output-def,$(@:.dll=.def) -o $@ $(OBJS) $(EXTRALIBS) $(AMREXTRALIBS)
 	-lib /machine:i386 /def:$(@:.dll=.def)
 else
-	$(CC) $(SHFLAGS) -o $@ $(OBJS) $(EXTRALIBS) $(AMREXTRALIBS) $(LDFLAGS)
+	$(CC) $(SHFLAGS) $(LDFLAGS) -o $@ $(OBJS) $(EXTRALIBS) $(AMREXTRALIBS)
 endif
 
 dsputil.o: dsputil.c dsputil.h
@@ -420,7 +417,7 @@ depend: $(SRCS)
 dep:	depend
 
 clean: $(CLEANAMR)
-	rm -f *.o *.d *~ .depend $(LIB) $(SLIB) *.so i386/*.o i386/*~ \
+	rm -f *.o *.d *~ .depend $(LIB) $(SLIBNAME) *$(SLIBSUF) i386/*.o i386/*~ \
 	   armv4l/*.o armv4l/*~ \
 	   mlib/*.o mlib/*~ \
 	   alpha/*.o alpha/*~ \
@@ -446,7 +443,7 @@ cleanamrwbfloat:
 
 # api example program
 apiexample: apiexample.c $(LIB)
-	$(CC) $(CFLAGS) -o $@ $< $(LIB) $(EXTRALIBS) -lm
+	$(CC) $(CFLAGS) -o $@ $< $(LIB) $(LIBAVUTIL) $(EXTRALIBS) -lm
 
 # cpuid test
 cpuid_test: i386/cputest.c
@@ -458,22 +455,22 @@ imgresample-test: imgresample.c
 	$(CC) $(CFLAGS) -DTEST -o $@ $^ -lm
 
 dct-test: dct-test.o fdctref.o $(LIB)
-	$(CC) -o $@ $^ -lm
+	$(CC) -o $@ $^ -lm $(LIBAVUTIL)
 
 motion-test: motion_test.o $(LIB)
 	$(CC) -o $@ $^ -lm
 
 fft-test: fft-test.o $(LIB)
-	$(CC) -o $@ $^ -lm
+	$(CC) -o $@ $^ $(LIBAVUTIL) -lm
 
 ifeq ($(BUILD_SHARED),yes)
 install: all install-headers
 ifeq ($(CONFIG_WIN32),yes)
-	install $(INSTALLSTRIP) -m 755 $(SLIB) "$(prefix)"
+	install $(INSTALLSTRIP) -m 755 $(SLIBNAME) "$(prefix)"
 else
 	install -d $(libdir)
-	install $(INSTALLSTRIP) -m 755 $(SLIB) $(libdir)/libavcodec-$(VERSION).so
-	ln -sf libavcodec-$(VERSION).so $(libdir)/libavcodec.so
+	install $(INSTALLSTRIP) -m 755 $(SLIBNAME) $(libdir)/libavcodec-$(VERSION)$(SLIBSUF)
+	ln -sf libavcodec-$(VERSION)$(SLIBSUF) $(libdir)/libavcodec$(SLIBSUF)
 	$(LDCONFIG) || true
 endif
 ifeq ($(CONFIG_PP),yes)
@@ -489,8 +486,6 @@ installlib: all install-headers
 install-headers:
 	mkdir -p "$(prefix)/include/ffmpeg"
 	install -m 644 $(SRC_PATH)/libavcodec/avcodec.h \
-	               $(SRC_PATH)/libavcodec/common.h \
-	               $(SRC_PATH)/libavcodec/rational.h \
                 "$(prefix)/include/ffmpeg"
 	install -d $(libdir)/pkgconfig
 	install -m 644 ../libavcodec.pc $(libdir)/pkgconfig

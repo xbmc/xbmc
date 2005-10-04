@@ -30,6 +30,11 @@ typedef struct OggVorbisContext {
 
 static int oggvorbis_init_encoder(vorbis_info *vi, AVCodecContext *avccontext) {
 
+    if(avccontext->flags & CODEC_FLAG_QSCALE) {
+        return vorbis_encode_init_vbr(vi, avccontext->channels,
+                avccontext->sample_rate,
+                avccontext->global_quality / (float)FF_QP2LAMBDA);
+    }
 #ifdef OGGVORBIS_VBR_BY_ESTIMATE
     /* variable bitrate by estimate */
 
@@ -140,7 +145,8 @@ static int oggvorbis_encode_frame(AVCodecContext *avccontext,
         op2->packet = context->buffer + sizeof(ogg_packet);
 
         l=  op2->bytes;
-        avccontext->coded_frame->pts= op2->granulepos;
+        avccontext->coded_frame->pts= av_rescale_q(op2->granulepos, (AVRational){1, avccontext->sample_rate}, avccontext->time_base);
+        //FIXME we should reorder the user supplied pts and not assume that they are spaced by 1/sample_rate
 
         memcpy(packets, op2->packet, l);
         context->buffer_index -= l + sizeof(ogg_packet);
@@ -288,7 +294,7 @@ static int oggvorbis_decode_frame(AVCodecContext *avccontext,
     OggVorbisContext *context = avccontext->priv_data ;
     float **pcm ;
     ogg_packet *op= &context->op;    
-    int samples, total_samples, total_bytes,i;
+    int samples, total_samples, total_bytes;
  
     if(!buf_size){
     //FIXME flush

@@ -11,21 +11,21 @@
 extern "C" {
 #endif
 
-#include "common.h"
-#include "rational.h"
+#include "avutil.h"
 #include <sys/types.h> /* size_t */
 
+//FIXME the following 2 really dont belong in here
 #define FFMPEG_VERSION_INT     0x000409
 #define FFMPEG_VERSION         "CVS"
-#define LIBAVCODEC_BUILD       4759
-
-
-#define LIBAVCODEC_VERSION_INT FFMPEG_VERSION_INT
-#define LIBAVCODEC_VERSION     FFMPEG_VERSION
 
 #define AV_STRINGIFY(s)	AV_TOSTRING(s)
 #define AV_TOSTRING(s) #s
-#define LIBAVCODEC_IDENT	"FFmpeg" LIBAVCODEC_VERSION "b" AV_STRINGIFY(LIBAVCODEC_BUILD)
+
+#define LIBAVCODEC_VERSION_INT ((50<<16)+(0<<8)+0)
+#define LIBAVCODEC_VERSION     50.0.0
+#define LIBAVCODEC_BUILD       LIBAVCODEC_VERSION_INT
+
+#define LIBAVCODEC_IDENT       "Lavc" AV_STRINGIFY(LIBAVCODEC_VERSION)
 
 #define AV_NOPTS_VALUE int64_t_C(0x8000000000000000)
 #define AV_TIME_BASE 1000000
@@ -121,6 +121,15 @@ enum CodecID {
     CODEC_ID_PCM_U8,
     CODEC_ID_PCM_MULAW,
     CODEC_ID_PCM_ALAW,
+    CODEC_ID_PCM_S32LE,
+    CODEC_ID_PCM_S32BE,
+    CODEC_ID_PCM_U32LE,
+    CODEC_ID_PCM_U32BE,
+    CODEC_ID_PCM_S24LE,
+    CODEC_ID_PCM_S24BE,
+    CODEC_ID_PCM_U24LE,
+    CODEC_ID_PCM_U24BE,
+    CODEC_ID_PCM_S24DAUD,
 
     /* various adpcm codecs */
     CODEC_ID_ADPCM_IMA_QT= 0x11000,
@@ -276,14 +285,6 @@ enum Motion_Est_ID {
     ME_PHODS,
     ME_EPZS,
     ME_X1
-};
-
-enum AVRounding {
-    AV_ROUND_ZERO     = 0, ///< round toward zero
-    AV_ROUND_INF      = 1, ///< round away from zero
-    AV_ROUND_DOWN     = 2, ///< round toward -infinity
-    AV_ROUND_UP       = 3, ///< round toward +infinity
-    AV_ROUND_NEAR_INF = 5, ///< round to nearest and halfway cases away from zero
 };
 
 enum AVDiscard{
@@ -680,6 +681,7 @@ struct AVCLASS {
 					or AVFormatContext, which begin with an AVClass.
 					Needed because av_log is in libavcodec and has no visibility
 					of AVIn/OutputFormat */
+    struct AVOption *option;
 };
 
 /**
@@ -740,14 +742,17 @@ typedef struct AVCodecContext {
     void *extradata;
     int extradata_size;
     
-    /* video only */
     /**
-     * time base in which the timestamps are specified.
+     * this is the fundamental unit of time (in seconds) in terms
+     * of which frame timestamps are represented. for fixed-fps content,
+     * timebase should be 1/framerate and timestamp increments should be
+     * identically 1.
      * - encoding: MUST be set by user
      * - decoding: set by lavc.
      */
     AVRational time_base;
     
+    /* video only */
     /**
      * picture width / height.
      * - encoding: MUST be set by user. 
@@ -1000,7 +1005,7 @@ typedef struct AVCodecContext {
      * - decoding: set by user
      */
     int error_resilience;
-#define FF_ER_CAREFULL        1
+#define FF_ER_CAREFUL         1
 #define FF_ER_COMPLIANT       2
 #define FF_ER_AGGRESSIVE      3
 #define FF_ER_VERY_AGGRESSIVE 4
@@ -1207,6 +1212,7 @@ typedef struct AVCodecContext {
 #define FF_IDCT_H264         11
 #define FF_IDCT_VP3          12
 #define FF_IDCT_IPP          13
+#define FF_IDCT_XVIDMMX      14
 
     /**
      * slice count.
@@ -1843,42 +1849,6 @@ typedef struct AVCodecContext {
     enum AVDiscard skip_frame;
 } AVCodecContext;
 
-
-/**
- * AVOption.
- */
-typedef struct AVOption {
-    /** options' name */
-    const char *name; /* if name is NULL, it indicates a link to next */
-    /** short English text help or const struct AVOption* subpointer */
-    const char *help; //	const struct AVOption* sub;
-    /** offset to context structure where the parsed value should be stored */
-    int offset;
-    /** options' type */
-    int type;
-#define FF_OPT_TYPE_BOOL 1      ///< boolean - true,1,on  (or simply presence)
-#define FF_OPT_TYPE_DOUBLE 2    ///< double
-#define FF_OPT_TYPE_INT 3       ///< integer
-#define FF_OPT_TYPE_STRING 4    ///< string (finished with \0)
-#define FF_OPT_TYPE_MASK 0x1f	///< mask for types - upper bits are various flags
-//#define FF_OPT_TYPE_EXPERT 0x20 // flag for expert option
-#define FF_OPT_TYPE_FLAG (FF_OPT_TYPE_BOOL | 0x40)
-#define FF_OPT_TYPE_RCOVERRIDE (FF_OPT_TYPE_STRING | 0x80)
-    /** min value  (min == max   ->  no limits) */
-    double min;
-    /** maximum value for double/int */
-    double max;
-    /** default boo [0,1]l/double/int value */
-    double defval;
-    /**
-     * default string value (with optional semicolon delimited extra option-list
-     * i.e.   option1;option2;option3
-     * defval might select other then first argument as default
-     */
-    const char *defstr;
-#define FF_OPT_MAX_DEPTH 10
-} AVOption;
-
 /**
  * AVCodec.
  */
@@ -1893,7 +1863,9 @@ typedef struct AVCodec {
     int (*decode)(AVCodecContext *, void *outdata, int *outdata_size,
                   uint8_t *buf, int buf_size);
     int capabilities;
+#if LIBAVCODEC_VERSION_INT < ((50<<16)+(0<<8)+0)
     void *dummy; // FIXME remove next time we break binary compatibility
+#endif
     struct AVCodec *next;
     void (*flush)(AVCodecContext *);
     const AVRational *supported_framerates; ///array of supported framerates, or NULL if any, array is terminated by {0,0}
@@ -2100,6 +2072,15 @@ extern AVCodec libgsm_decoder;
 extern AVCodec name ## _decoder; \
 extern AVCodec name ## _encoder
 
+PCM_CODEC(CODEC_ID_PCM_S32LE, pcm_s32le);
+PCM_CODEC(CODEC_ID_PCM_S32BE, pcm_s32be);
+PCM_CODEC(CODEC_ID_PCM_U32LE, pcm_u32le);
+PCM_CODEC(CODEC_ID_PCM_U32BE, pcm_u32be);
+PCM_CODEC(CODEC_ID_PCM_S24LE, pcm_s24le);
+PCM_CODEC(CODEC_ID_PCM_S24BE, pcm_s24be);
+PCM_CODEC(CODEC_ID_PCM_U24LE, pcm_u24le);
+PCM_CODEC(CODEC_ID_PCM_U24BE, pcm_u24be);
+PCM_CODEC(CODEC_ID_PCM_S24DAUD, pcm_s24daud);
 PCM_CODEC(CODEC_ID_PCM_S16LE, pcm_s16le);
 PCM_CODEC(CODEC_ID_PCM_S16BE, pcm_s16be);
 PCM_CODEC(CODEC_ID_PCM_U16LE, pcm_u16le);
@@ -2307,30 +2288,6 @@ void avcodec_default_free_buffers(AVCodecContext *s);
  */
 char av_get_pict_type_char(int pict_type);
 
-/**
- * reduce a fraction.
- * this is usefull for framerate calculations
- * @param max the maximum allowed for dst_nom & dst_den
- * @return 1 if exact, 0 otherwise
- */
-int av_reduce(int *dst_nom, int *dst_den, int64_t nom, int64_t den, int64_t max);
-
-/**
- * rescale a 64bit integer with rounding to nearest.
- * a simple a*b/c isn't possible as it can overflow
- */
-int64_t av_rescale(int64_t a, int64_t b, int64_t c);
-
-/**
- * rescale a 64bit integer with specified rounding.
- * a simple a*b/c isn't possible as it can overflow
- */
-int64_t av_rescale_rnd(int64_t a, int64_t b, int64_t c, enum AVRounding);
-
-/**
- * rescale a 64bit integer by 2 rational numbers.
- */
-int64_t av_rescale_q(int64_t a, AVRational bq, AVRational cq);
 
 /* frame parsing */
 typedef struct AVCodecParserContext {
@@ -2356,6 +2313,9 @@ typedef struct AVCodecParserContext {
     int64_t cur_frame_offset[AV_PARSER_PTS_NB];
     int64_t cur_frame_pts[AV_PARSER_PTS_NB];
     int64_t cur_frame_dts[AV_PARSER_PTS_NB];
+    
+    int flags;
+#define PARSER_FLAG_COMPLETE_FRAMES           0x0001
 } AVCodecParserContext;
 
 typedef struct AVCodecParser {

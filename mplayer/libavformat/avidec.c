@@ -302,6 +302,7 @@ static int avi_read_header(AVFormatContext *s, AVFormatParameters *ap)
                     st->codec->codec_id = codec_get_id(codec_bmp_tags, tag1);
                     if (st->codec->codec_id == CODEC_ID_XAN_WC4)
                         xan_video = 1;
+                    st->need_parsing = 2; //only parse headers dont do slower repacketization, this is needed to get the pict type which is needed for generating correct pts
 //                    url_fskip(pb, size - 5 * 4);
                     break;
                 case CODEC_TYPE_AUDIO:
@@ -365,7 +366,7 @@ static int avi_read_packet(AVFormatContext *s, AVPacket *pkt)
     }
     
     if(avi->non_interleaved){
-        int best_stream_index;
+        int best_stream_index = 0;
         AVStream *best_st= NULL;
         AVIStream *best_ast;
         int64_t best_ts= INT64_MAX;
@@ -644,14 +645,12 @@ static int avi_read_idx1(AVFormatContext *s, int size)
 }
 
 static int guess_ni_flag(AVFormatContext *s){
-    AVIContext *avi = s->priv_data;
     int i;
     int64_t last_start=0;
     int64_t first_end= INT64_MAX;
     
     for(i=0; i<s->nb_streams; i++){
         AVStream *st = s->streams[i];
-        AVIStream *ast = st->priv_data;
         int n= st->nb_index_entries;
 
         if(n <= 0)

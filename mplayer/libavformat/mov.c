@@ -640,6 +640,7 @@ static int mov_read_mdhd(MOVContext *c, ByteIOContext *pb, MOV_atom_t atom)
     get_be32(pb); /* modification time */
 
     c->streams[c->fc->nb_streams-1]->time_scale = get_be32(pb);
+    av_set_pts_info(c->fc->streams[c->fc->nb_streams-1], 64, 1, c->streams[c->fc->nb_streams-1]->time_scale);
 
 #ifdef DEBUG
     av_log(NULL, AV_LOG_DEBUG, "track[%i].time_scale = %i\n", c->fc->nb_streams-1, c->streams[c->fc->nb_streams-1]->time_scale); /* time scale */
@@ -781,7 +782,7 @@ static int mov_read_stco(MOVContext *c, ByteIOContext *pb, MOV_atom_t atom)
 static int mov_read_stsd(MOVContext *c, ByteIOContext *pb, MOV_atom_t atom)
 {
     AVStream *st = c->fc->streams[c->fc->nb_streams-1];
-    //MOVStreamContext *sc = (MOVStreamContext *)st->priv_data;
+    MOVStreamContext *sc = (MOVStreamContext *)st->priv_data;
     int entries, frames_per_sample;
     uint32_t format;
     uint8_t codec_name[32];
@@ -1071,6 +1072,9 @@ static int mov_read_stsd(MOVContext *c, ByteIOContext *pb, MOV_atom_t atom)
                 st->codec->bits_per_sample = get_be16(pb); /* bits per sample */
                 get_be32(pb);
                 st->codec->sample_rate = get_be16(pb); /* sample rate, not always correct */
+                if(st->codec->sample_rate == 1) //nonsese rate? -> ignore
+                    st->codec->sample_rate= 0;
+
                 get_be16(pb);
                 c->mp4=1;
                 
@@ -1195,6 +1199,10 @@ static int mov_read_stsd(MOVContext *c, ByteIOContext *pb, MOV_atom_t atom)
                 url_fskip(pb, size);
             }
         }
+    }
+    
+    if(st->codec->codec_type==CODEC_TYPE_AUDIO && st->codec->sample_rate==0 && sc->time_scale>1) {
+        st->codec->sample_rate= sc->time_scale;
     }
 
     return 0;
@@ -1338,9 +1346,6 @@ av_log(NULL, AV_LOG_DEBUG, "track[%i].stts.entries = %i\n", c->fc->nb_streams-1,
         total_sample_count+=sample_count;
     }
 
-    av_set_pts_info(st, 64, 1, c->streams[c->fc->nb_streams-1]->time_scale);
-//    st->codec->time_base.num = 1;
-//    st->codec->time_base.den = c->streams[c->fc->nb_streams-1]->time_scale;
     st->nb_frames= total_sample_count;
     if(duration)
         st->duration= duration;

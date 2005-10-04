@@ -328,9 +328,9 @@ static int get_packetheader(NUTContext *nut, ByteIOContext *bc, int calculate_ch
     int64_t start, size;
     start= url_ftell(bc) - 8;
 
-    init_checksum(bc, calculate_checksum ? update_adler32 : NULL, 0);
-
     size= get_v(bc);
+
+    init_checksum(bc, calculate_checksum ? update_adler32 : NULL, 0);
 
     nut->packet_start[2] = start;
     nut->written_packet_size= size;
@@ -394,7 +394,7 @@ static int64_t find_startcode(ByteIOContext *bc, uint64_t code, int64_t pos){
     }
 }
 
-#ifdef CONFIG_ENCODERS
+#ifdef CONFIG_MUXERS
 
 static void put_v(ByteIOContext *bc, uint64_t val)
 {
@@ -462,23 +462,26 @@ static inline void put_vb_trace(ByteIOContext *bc, uint64_t v, char *file, char 
 static int put_packetheader(NUTContext *nut, ByteIOContext *bc, int max_size, int calculate_checksum)
 {
     put_flush_packet(bc);
-    nut->packet_start[2]+= nut->written_packet_size;
-    assert(url_ftell(bc) - 8 == nut->packet_start[2]);
+    nut->packet_start[2]= url_ftell(bc) - 8;
     nut->written_packet_size = max_size;
     
-    if(calculate_checksum)
-        init_checksum(bc, update_adler32, 0);
-
     /* packet header */
     put_v(bc, nut->written_packet_size); /* forward ptr */
+
+    if(calculate_checksum)
+        init_checksum(bc, update_adler32, 0);
 
     return 0;
 }
 
+/**
+ *
+ * must not be called more then once per packet
+ */
 static int update_packetheader(NUTContext *nut, ByteIOContext *bc, int additional_size, int calculate_checksum){
     int64_t start= nut->packet_start[2];
     int64_t cur= url_ftell(bc);
-    int size= cur - start + additional_size;
+    int size= cur - start - get_length(nut->written_packet_size)/7 - 8;
     
     if(calculate_checksum)
         size += 4;
@@ -840,7 +843,7 @@ static int nut_write_trailer(AVFormatContext *s)
 
     return 0;
 }
-#endif //CONFIG_ENCODERS
+#endif //CONFIG_MUXERS
 
 static int nut_probe(AVProbeData *p)
 {
@@ -1276,7 +1279,7 @@ static int nut_read_packet(AVFormatContext *s, AVPacket *pkt)
         case INDEX_STARTCODE:
             get_packetheader(nut, bc, 0);
             assert(nut->packet_start[2] == pos);
-            url_fseek(bc, nut->written_packet_size + nut->packet_start[2], SEEK_SET);
+            url_fseek(bc, nut->written_packet_size, SEEK_CUR);
             break;
         case INFO_STARTCODE:
             if(decode_info_header(nut)<0)
@@ -1357,7 +1360,7 @@ av_log(s, AV_LOG_DEBUG, "read_timestamp(X,%d,%lld,%lld)\n", stream_index, *pos_a
         case INFO_STARTCODE:
             get_packetheader(nut, bc, 0);
             assert(nut->packet_start[2]==pos);
-            url_fseek(bc, nut->written_packet_size + pos, SEEK_SET);
+            url_fseek(bc, nut->written_packet_size, SEEK_CUR);
             break;
         case KEYFRAME_STARTCODE:
             frame_type=2;
@@ -1427,7 +1430,7 @@ static AVInputFormat nut_iformat = {
     .extensions = "nut",
 };
 
-#ifdef CONFIG_ENCODERS
+#ifdef CONFIG_MUXERS
 static AVOutputFormat nut_oformat = {
     "nut",
     "nut format",
@@ -1447,13 +1450,13 @@ static AVOutputFormat nut_oformat = {
     nut_write_trailer,
     .flags = AVFMT_GLOBALHEADER,
 };
-#endif //CONFIG_ENCODERS
+#endif //CONFIG_MUXERS
 
 int nut_init(void)
 {
     av_register_input_format(&nut_iformat);
-#ifdef CONFIG_ENCODERS
+#ifdef CONFIG_MUXERS
     av_register_output_format(&nut_oformat);
-#endif //CONFIG_ENCODERS
+#endif //CONFIG_MUXERS
     return 0;
 }

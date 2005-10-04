@@ -24,7 +24,7 @@
  *  - fill all fields if non streamed (nb_frames for example)
  */
 
-#ifdef CONFIG_ENCODERS
+#ifdef CONFIG_MUXERS
 typedef struct AVIIentry {
     unsigned int flags, pos, len;
 } AVIIentry;
@@ -71,7 +71,7 @@ void end_tag(ByteIOContext *pb, offset_t start)
     put_le32(pb, (uint32_t)(pos - start));
     url_fseek(pb, pos, SEEK_SET);
 }
-#endif //CONFIG_ENCODERS
+#endif //CONFIG_MUXERS
 
 /* Note: when encoding, the first matching tag is used, so order is
    important if multiple tags possible for a given codec. */
@@ -145,8 +145,11 @@ const CodecTag codec_bmp_tags[] = {
     { CODEC_ID_HUFFYUV, MKTAG('H', 'F', 'Y', 'U') },
     { CODEC_ID_FFVHUFF, MKTAG('F', 'F', 'V', 'H') },
     { CODEC_ID_CYUV, MKTAG('C', 'Y', 'U', 'V') },
-    { CODEC_ID_RAWVIDEO, MKTAG('Y', '4', '2', '2') },
     { CODEC_ID_RAWVIDEO, MKTAG('I', '4', '2', '0') },
+    { CODEC_ID_RAWVIDEO, MKTAG('Y', 'U', 'Y', '2') },
+    { CODEC_ID_RAWVIDEO, MKTAG('Y', '4', '2', '2') },
+    { CODEC_ID_RAWVIDEO, MKTAG('U', 'Y', 'V', 'Y') },
+    { CODEC_ID_RAWVIDEO, MKTAG('I', 'Y', 'U', 'V') },
     { CODEC_ID_INDEO3, MKTAG('I', 'V', '3', '1') },
     { CODEC_ID_INDEO3, MKTAG('I', 'V', '3', '2') },
     { CODEC_ID_VP3, MKTAG('V', 'P', '3', '1') },
@@ -242,7 +245,7 @@ enum CodecID codec_get_wav_id(unsigned int tag)
     return codec_get_id(codec_wav_tags, tag);
 }
 
-#ifdef CONFIG_ENCODERS
+#ifdef CONFIG_MUXERS
 /* BITMAPINFOHEADER header */
 void put_bmp_header(ByteIOContext *pb, AVCodecContext *enc, const CodecTag *tags, int for_asf)
 {
@@ -749,4 +752,4 @@ int avienc_init(void)
     av_register_output_format(&avi_oformat);
     return 0;
 }
-#endif //CONFIG_ENCODERS
+#endif //CONFIG_MUXERS

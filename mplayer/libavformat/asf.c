@@ -51,6 +51,7 @@ static void print_guid(const GUID *g)
     else PRINT_IF_GUID(g, audio_conceal_none);
     else PRINT_IF_GUID(g, video_stream);
     else PRINT_IF_GUID(g, video_conceal_none);
+    else PRINT_IF_GUID(g, command_stream);
     else PRINT_IF_GUID(g, comment_header);
     else PRINT_IF_GUID(g, codec_comment_header);
     else PRINT_IF_GUID(g, codec_comment1_header);
@@ -204,6 +205,8 @@ static int asf_read_header(AVFormatContext *s, AVFormatParameters *ap)
                 type = CODEC_TYPE_AUDIO;
             } else if (!memcmp(&g, &video_stream, sizeof(GUID))) {
                 type = CODEC_TYPE_VIDEO;
+            } else if (!memcmp(&g, &command_stream, sizeof(GUID))) {
+                type = CODEC_TYPE_UNKNOWN;
             } else {
                 goto fail;
             }
@@ -422,8 +425,6 @@ static int asf_get_packet(AVFormatContext *s)
     int rsize = 9;
     int c;
     
-    if((url_ftell(&s->pb) - s->data_offset) % asf->packet_size)
-        return -1;
     assert((url_ftell(&s->pb) - s->data_offset) % asf->packet_size == 0);
     
     c = get_byte(pb);
@@ -485,6 +486,8 @@ static int asf_read_packet(AVFormatContext *s, AVPacket *pkt)
 	    //asf->packet_size_left <= asf->packet_padsize) {
 	    int ret = asf->packet_size_left + asf->packet_padsize;
 	    //printf("PacketLeftSize:%d  Pad:%d Pos:%Ld\n", asf->packet_size_left, asf->packet_padsize, url_ftell(pb));
+            if((url_ftell(&s->pb) + ret - s->data_offset) % asf->packet_size)
+                ret += asf->packet_size - ((url_ftell(&s->pb) + ret - s->data_offset) % asf->packet_size);
 	    /* fail safe */
 	    url_fskip(pb, ret);
             asf->packet_pos= url_ftell(&s->pb);
@@ -789,17 +792,17 @@ static AVInputFormat asf_iformat = {
     asf_read_pts,
 };
 
-#ifdef CONFIG_ENCODERS
+#ifdef CONFIG_MUXERS
     extern AVOutputFormat asf_oformat;
     extern AVOutputFormat asf_stream_oformat;
-#endif //CONFIG_ENCODERS
+#endif //CONFIG_MUXERS
 
 int asf_init(void)
 {
     av_register_input_format(&asf_iformat);
-#ifdef CONFIG_ENCODERS
+#ifdef CONFIG_MUXERS
     av_register_output_format(&asf_oformat);
     av_register_output_format(&asf_stream_oformat);
-#endif //CONFIG_ENCODERS
+#endif //CONFIG_MUXERS
     return 0;
 }

@@ -5601,24 +5601,45 @@ else
   _noinputmodules="live.com $_noinputmodules"
 fi
 
+echocheck "FFmpeg libavutil (static)"
+if test -d libavutil ; then
+  _libavutil=yes
+else
+  _libavutil=no
+fi
+echores "$_libavutil"
 
 echocheck "FFmpeg libavcodec (static)"
 if test "$_libavcodec" = auto ; then
   # Note: static linking is preferred to dynamic linking
   _libavcodec=no
+  _res_comment="see DOCS/HTML/$_doc_lang/codecs.html"
   if test -d libavcodec && test -f libavcodec/utils.c ; then
+    _res_comment="old ffmpeg version, use CVS !"
     if grep avcodec_find_encoder_by_name libavcodec/utils.c > /dev/null 2>&1 ; then
-      _libavcodec=yes
-      echores "yes"
+      # check if libavutil is a required
+      cat > $TMPC << EOF
+#include "libavcodec/avcodec.h"
+#if LIBAVCODEC_BUILD >= 3211265
+#error We need libavutil!
+#endif
+int main(void) { return 0; }
+EOF
+      
+      if cc_check -I. -I./libavutil; then
+        _libavutil_required="no"
     else
-      echores "no (old ffmpeg version, use CVS !)"
+        _libavutil_required="yes"
     fi
-  else
-    echores "no (see DOCS/HTML/$_doc_lang/codecs.html)"
+      _res_comment="libavutil availability does not fit libavcodec version"
+      if test "$_libavutil_required" = "$_libavutil"; then
+        _libavcodec="yes"
+        _res_comment=""
   fi
-else
-  echores "$_libavcodec"
 fi
+  fi
+fi
+echores "$_libavcodec"
 
 echocheck "FFmpeg libavformat (static)"
 if test "$_libavformat" = auto ; then
@@ -5626,13 +5647,9 @@ if test "$_libavformat" = auto ; then
   _libavformat=no
   if test -d libavformat && test -f libavformat/utils.c ; then
     _libavformat=yes
-    echores "yes"
-  else
-    echores "no"
   fi
-else
-  echores "$_libavformat"
 fi
+echores "$_libavformat"
 
 _def_haveffpostprocess='no'
 if test -d libavcodec && test -f libavcodec/libpostproc/postprocess.h ; then
@@ -5643,6 +5660,7 @@ if test "$_libavcodec" != yes ; then
 echocheck "FFmpeg libavcodec (dynamic)"
 if test "$_libavcodecso" = auto ; then
   _libavcodecso=no
+  _res_comment="libavcodec.so is broken/obsolete"
 # FIXME : check for avcodec_find_encoder_by_name() for mencoder
   cat > $TMPC << EOF
 #define FF_POSTPROCESS 1 
@@ -5654,13 +5672,10 @@ int main(void) {
 EOF
   if cc_check -lavcodec $_ld_lm ; then
     _libavcodecso=yes
-    echores "yes (using libavcodec.so)"
-  else
-    echores "no (libavcodec.so is broken/obsolete)"
+    _res_comment="using libavcodec.so, but static libavcodec is recommended"
   fi
-else
-  echores "$_libavcodecso"
 fi
+echores "$_libavcodecso"
 fi
 
 _def_libavcodec='#undef USE_LIBAVCODEC'
@@ -5672,6 +5687,10 @@ if test "$_libavcodec" = yes ; then
   _dep_libavcodec='libavcodec/libavcodec.a'
   _def_ffpostprocess='#define FF_POSTPROCESS 1'
   _codecmodules="libavcodec $_codecmodules"
+  if test "$_libavutil" = yes; then
+    _ld_libavutil='libavutil/libavutil.a'
+    _dep_libavutil='libavutil/libavutil.a'
+  fi
 elif test "$_libavcodecso" = yes ; then
   _def_libavcodec='#define USE_LIBAVCODEC 1'
   _def_libavcodecso='#define USE_LIBAVCODEC_SO 1'
@@ -6639,8 +6658,9 @@ W32_DEP = $_dep_win32
 W32_LIB = $_ld_win32
 DS_DEP = $_dep_dshow
 DS_LIB = $_ld_dshow
-AV_DEP = $_dep_libavcodec $_dep_libavformat
-AV_LIB = $_ld_libavcodec $_ld_libavformat
+AV_DEP = $_dep_libavutil $_dep_libavcodec $_dep_libavformat
+AV_LIB = $_ld_libavformat $_ld_libavcodec $_ld_libavutil 
+CONFIG_LIBAVUTIL = $_libavutil
 CONFIG_LIBAVCODEC = $_libavcodec
 CONFIG_LIBAVFORMAT = $_libavformat
 ZORAN = $_zr
@@ -6687,6 +6707,7 @@ TOOLAME=$_toolame
 TOOLAME_EXTRAFLAGS=$_toolame_extraflags
 TOOLAME_LIB=$_toolame_lib
 `echo $_libavcodecs | tr 'a-z ' 'A-Z\n' | sed 's/^/CONFIG_/;s/$/=yes/'`
+CONFIG_GPL=yes
 
 # --- Some stuff for autoconfigure ----
 $_target_arch
@@ -7015,7 +7036,14 @@ $_def_libavformat_win32
 /* Use libavcodec's encoders */
 $_def_ffencoders
 
+/* Use libavformat's demuxers */
+#define CONFIG_DEMUXERS 1
+/* Use libavformat's muxers */
+#define CONFIG_MUXERS 1
+
 #define CONFIG_MPEGAUDIO_HP 1
+
+#define CONFIG_GPL 1
 
 /* Use specific codecs from libavcodec */
 `echo $_libavcodecs | tr 'a-z ' 'A-Z\n' | sed 's/^/#define CONFIG_/;s/$/ 1/'`

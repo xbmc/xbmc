@@ -5,11 +5,11 @@
 extern "C" {
 #endif
 
-#define LIBAVFORMAT_BUILD       4629
+#define LIBAVFORMAT_VERSION_INT ((49<<16)+(1<<8)+0)
+#define LIBAVFORMAT_VERSION     49.1.0
+#define LIBAVFORMAT_BUILD       LIBAVFORMAT_VERSION_INT
 
-#define LIBAVFORMAT_VERSION_INT FFMPEG_VERSION_INT
-#define LIBAVFORMAT_VERSION     FFMPEG_VERSION
-#define LIBAVFORMAT_IDENT	"FFmpeg" FFMPEG_VERSION "b" AV_STRINGIFY(LIBAVFORMAT_BUILD)
+#define LIBAVFORMAT_IDENT       "Lavf" AV_STRINGIFY(LIBAVFORMAT_VERSION)
 
 #include <time.h>
 #include <stdio.h>  /* FILE */
@@ -229,6 +229,13 @@ typedef struct AVStream {
     int codec_info_nb_frames;
     /* encoding: PTS generation when outputing stream */
     AVFrac pts;
+
+    /**
+     * this is the fundamental unit of time (in seconds) in terms
+     * of which frame timestamps are represented. for fixed-fps content,
+     * timebase should be 1/framerate and timestamp increments should be
+     * identically 1.
+     */
     AVRational time_base;
     int pts_wrap_bits; /* number of bits in pts (used for wrapping control) */
     /* ffmpeg.c private use */
@@ -248,7 +255,7 @@ typedef struct AVStream {
     char language[4]; /* ISO 639 3-letter language code (empty string if undefined) */
 
     /* av_read_frame() support */
-    int need_parsing;
+    int need_parsing;                  ///< 1->full parsing needed, 2->only parse headers dont repack
     struct AVCodecParserContext *parser;
 
     int64_t cur_dts;
@@ -332,6 +339,8 @@ typedef struct AVFormatContext {
     /* number of times to loop output in formats that support it */
     int loop_output;
     
+    int flags;
+#define AVFMT_FLAG_GENPTS       0x0001 ///< generate pts if missing even if it requires parsing future frames
 } AVFormatContext;
 
 typedef struct AVPacketList {
@@ -536,6 +545,9 @@ int ea_init(void);
 
 /* nsvdec.c */
 int nsvdec_init(void);
+
+/* daud.c */
+int daud_init(void);
 
 #include "rtp.h"
 
