@@ -887,7 +887,7 @@ void MPV_common_end(MpegEncContext *s)
 int MPV_encode_init(AVCodecContext *avctx)
 {
     MpegEncContext *s = avctx->priv_data;
-    int i, dummy;
+    int i;
     int chroma_h_shift, chroma_v_shift;
     
     MPV_encode_defaults(s);
@@ -2316,8 +2316,8 @@ int MPV_encode_picture(AVCodecContext *avctx,
         int start_y= s->thread_context[i]->start_mb_y;
         int   end_y= s->thread_context[i]->  end_mb_y;
         int h= s->mb_height;
-        uint8_t *start= buf + buf_size*start_y/h;
-        uint8_t *end  = buf + buf_size*  end_y/h;
+        uint8_t *start= buf + (size_t)(((int64_t) buf_size)*start_y/h);
+        uint8_t *end  = buf + (size_t)(((int64_t) buf_size)*  end_y/h);
 
         init_put_bits(&s->thread_context[i]->pb, start, end - start);
     }

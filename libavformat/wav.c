@@ -25,6 +25,8 @@ const CodecTag codec_wav_tags[] = {
     { CODEC_ID_AC3, 0x2000 },
     { CODEC_ID_PCM_S16LE, 0x01 },
     { CODEC_ID_PCM_U8, 0x01 }, /* must come after s16le in this list */
+    { CODEC_ID_PCM_S24LE, 0x01 },
+    { CODEC_ID_PCM_S32LE, 0x01 },
     { CODEC_ID_PCM_ALAW, 0x06 },
     { CODEC_ID_PCM_MULAW, 0x07 },
     { CODEC_ID_ADPCM_MS, 0x02 },
@@ -44,7 +46,7 @@ const CodecTag codec_wav_tags[] = {
     { 0, 0 },
 };
 
-#ifdef CONFIG_ENCODERS
+#ifdef CONFIG_MUXERS
 /* WAVEFORMATEX header */
 /* returns the size or -1 on error */
 int put_wav_header(ByteIOContext *pb, AVCodecContext *enc)
@@ -68,6 +70,10 @@ int put_wav_header(ByteIOContext *pb, AVCodecContext *enc)
         bps = 0;
     } else if (enc->codec_id == CODEC_ID_ADPCM_IMA_WAV || enc->codec_id == CODEC_ID_ADPCM_MS || enc->codec_id == CODEC_ID_ADPCM_G726 || enc->codec_id == CODEC_ID_ADPCM_YAMAHA) { //
         bps = 4;
+    } else if (enc->codec_id == CODEC_ID_PCM_S24LE) {
+        bps = 24;
+    } else if (enc->codec_id == CODEC_ID_PCM_S32LE) {
+        bps = 32;
     } else {
         bps = 16;
     }
@@ -82,6 +88,8 @@ int put_wav_header(ByteIOContext *pb, AVCodecContext *enc)
     } else
         blkalign = enc->channels*bps >> 3;
     if (enc->codec_id == CODEC_ID_PCM_U8 ||
+        enc->codec_id == CODEC_ID_PCM_S24LE ||
+        enc->codec_id == CODEC_ID_PCM_S32LE ||
         enc->codec_id == CODEC_ID_PCM_S16LE) {
         bytespersec = enc->sample_rate * blkalign;
     } else {
@@ -127,7 +135,7 @@ int put_wav_header(ByteIOContext *pb, AVCodecContext *enc)
 
     return hdrsize;
 }
-#endif //CONFIG_ENCODERS
+#endif //CONFIG_MUXERS
 
 /* We could be given one of the three possible structures here:
  * WAVEFORMAT, PCMWAVEFORMAT or WAVEFORMATEX. Each structure
@@ -179,10 +187,14 @@ int wav_codec_get_id(unsigned int tag, int bps)
     /* handle specific u8 codec */
     if (id == CODEC_ID_PCM_S16LE && bps == 8)
         id = CODEC_ID_PCM_U8;
+    if (id == CODEC_ID_PCM_S16LE && bps == 24)
+        id = CODEC_ID_PCM_S24LE;
+    if (id == CODEC_ID_PCM_S16LE && bps == 32)
+        id = CODEC_ID_PCM_S32LE;
     return id;
 }
 
-#ifdef CONFIG_ENCODERS
+#ifdef CONFIG_MUXERS
 typedef struct {
     offset_t data;
 } WAVContext;
@@ -241,7 +253,7 @@ static int wav_write_trailer(AVFormatContext *s)
     }
     return 0;
 }
-#endif //CONFIG_ENCODERS
+#endif //CONFIG_MUXERS
 
 /* return the size of the found tag */
 /* XXX: > 2GB ? */
@@ -383,7 +395,7 @@ static AVInputFormat wav_iformat = {
     wav_read_seek,
 };
 
-#ifdef CONFIG_ENCODERS
+#ifdef CONFIG_MUXERS
 static AVOutputFormat wav_oformat = {
     "wav",
     "wav format",
@@ -396,13 +408,13 @@ static AVOutputFormat wav_oformat = {
     wav_write_packet,
     wav_write_trailer,
 };
-#endif //CONFIG_ENCODERS
+#endif //CONFIG_MUXERS
 
 int ff_wav_init(void)
 {
     av_register_input_format(&wav_iformat);
-#ifdef CONFIG_ENCODERS
+#ifdef CONFIG_MUXERS
     av_register_output_format(&wav_oformat);
-#endif //CONFIG_ENCODERS
+#endif //CONFIG_MUXERS
     return 0;
 }

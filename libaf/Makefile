@@ -7,9 +7,18 @@ window.c filter.c af_volume.c af_equalizer.c af_tools.c af_comp.c af_gate.c \
 af_pan.c af_surround.c af_sub.c af_export.c af_volnorm.c af_extrastereo.c \
 af_lavcresample.c af_sweep.c af_hrtf.c $(OPTIONAL_SRCS)
 
+LIBAV_INC =
+ifeq ($(CONFIG_LIBAVUTIL),yes)
+LIBAV_INC += -I../libavutil
+endif
+ifeq ($(CONFIG_LIBAVCODEC),yes)
+LIBAV_INC += -I../libavcodec
+endif
+
+
 OBJS=$(SRCS:.c=.o)
 
-CFLAGS  = $(OPTFLAGS) -I. -Wall $(EXTRA_INC)
+CFLAGS  = $(OPTFLAGS) -I. -Wall $(LIBAV_INC) $(EXTRA_INC) -D_GNU_SOURCE
 
 ifeq ($(TARGET_OS),MINGW32)
 CFLAGS += -D_IO_H_

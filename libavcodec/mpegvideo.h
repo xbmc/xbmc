@@ -899,11 +899,6 @@ void ff_set_mpeg4_time(MpegEncContext * s, int picture_number);
 void mpeg4_encode_picture_header(MpegEncContext *s, int picture_number);
 void h263_encode_init(MpegEncContext *s);
 void h263_decode_init_vlc(MpegEncContext *s);
-#ifdef _XBOX
-#if 0 //Removed as it has not been tested, and we track memory anyways
-void h263_decode_uninit_vlc(void);
-#endif
-#endif
 int h263_decode_picture_header(MpegEncContext *s);
 int ff_h263_decode_gob_header(MpegEncContext *s);
 int ff_mpeg4_decode_picture_header(MpegEncContext * s, GetBitContext *gb);
@@ -952,11 +947,6 @@ void msmpeg4_encode_mb(MpegEncContext * s,
 int msmpeg4_decode_picture_header(MpegEncContext * s);
 int msmpeg4_decode_ext_header(MpegEncContext * s, int buf_size);
 int ff_msmpeg4_decode_init(MpegEncContext *s);
-#ifdef _XBOX
-#if 0 //Removed as it has not been tested, and we track memory anyways
-void ff_msmpeg4_decode_uninit(void);
-#endif
-#endif
 void ff_msmpeg4_encode_init(MpegEncContext *s);
 int ff_wmv2_decode_picture_header(MpegEncContext * s);
 int ff_wmv2_decode_secondary_picture_header(MpegEncContext * s);

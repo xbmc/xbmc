@@ -44,13 +44,22 @@ AUDIO_SRCS += ae_toolame.c
 EXTRA_INC += $(TOOLAME_EXTRAFLAGS)
 endif
 
+LIBAV_INC =
+ifeq ($(CONFIG_LIBAVUTIL),yes)
+LIBAV_INC += -I../libavutil
+endif
+ifeq ($(CONFIG_LIBAVCODEC),yes)
+LIBAV_INC += -I../libavcodec
+endif
+
+
 SRCS=$(AUDIO_SRCS) $(VIDEO_SRCS) $(VFILTER_SRCS) $(NATIVE_SRCS) img_format.c
 OBJS=$(SRCS:.c=.o)
 
 SRCS2=$(ENCODER_SRCS)
 OBJS2=$(SRCS2:.c=.o)
 
-CFLAGS  = $(OPTFLAGS) -I. -Inative -I.. -I../libmpdemux -I../loader $(EXTRA_INC) $(X264_INC) -D_GNU_SOURCE
+CFLAGS  = $(OPTFLAGS) -I. -Inative -I.. -I../libmpdemux -I../loader $(LIBAV_INC) $(EXTRA_INC) $(X264_INC) -D_GNU_SOURCE
 
 .SUFFIXES: .c .o
 

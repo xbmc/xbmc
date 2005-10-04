@@ -29,26 +29,43 @@ typedef struct OggContext {
 } OggContext ;
 
 
-#ifdef CONFIG_ENCODERS
+#ifdef CONFIG_MUXERS
 static int ogg_write_header(AVFormatContext *avfcontext) 
 {
     OggContext *context = avfcontext->priv_data;
     ogg_packet *op= &context->op;    
-    int n, i;
+    int n;
 
     ogg_stream_init(&context->os, 31415);
     
     for(n = 0 ; n < avfcontext->nb_streams ; n++) {
         AVCodecContext *codec = avfcontext->streams[n]->codec;
-        uint8_t *p= codec->extradata;
+        uint8_t *headers = codec->extradata;
+        int headers_len = codec->extradata_size;
+        uint8_t *header_start[3];
+        int header_len[3];
+        int i, j;
         
         av_set_pts_info(avfcontext->streams[n], 60, 1, AV_TIME_BASE);
 
-        for(i=0; i < codec->extradata_size; i+= op->bytes){
-            op->bytes = p[i++]<<8;
-            op->bytes+= p[i++];
+        for(j=1,i=0;i<2;++i, ++j) {
+            header_len[i]=0;
+            while(j<headers_len && headers[j]==0xff) {
+                header_len[i]+=0xff;
+                ++j;
+            }
+            header_len[i]+=headers[j];
+        }
+        header_len[2]=headers_len-header_len[0]-header_len[1]-j;
+        headers+=j;
+        header_start[0] = headers;
+        header_start[1] = header_start[0] + header_len[0];
+        header_start[2] = header_start[1] + header_len[1];
 
-            op->packet= &p[i];
+        for(i=0; i < 3; ++i){
+            op->bytes = header_len[i];
+
+            op->packet= header_start[i];
             op->b_o_s= op->packetno==0;
 
             ogg_stream_packetin(&context->os, op);
@@ -132,7 +149,7 @@ static AVOutputFormat ogg_oformat = {
     ogg_write_packet,
     ogg_write_trailer,
 } ;
-#endif //CONFIG_ENCODERS
+#endif //CONFIG_MUXERS
 
 #if 0
 static int next_packet(AVFormatContext *avfcontext, ogg_packet *op) {
@@ -250,7 +267,7 @@ static AVInputFormat ogg_iformat = {
 #endif
 
 int libogg_init(void) {
-#ifdef CONFIG_ENCODERS
+#ifdef CONFIG_MUXERS
     av_register_output_format(&ogg_oformat) ;
 #endif
 /*     av_register_input_format(&ogg_iformat); */

@@ -2396,7 +2396,7 @@ static void mpeg4_encode_vol_header(MpegEncContext * s, int vo_number, int vol_n
     if(!(s->flags & CODEC_FLAG_BITEXACT)){
         put_bits(&s->pb, 16, 0);
         put_bits(&s->pb, 16, 0x1B2);	/* user_data */
-	put_string(&s->pb, LIBAVCODEC_IDENT, 0);
+	ff_put_string(&s->pb, LIBAVCODEC_IDENT, 0);
     }
 }
 
@@ -2914,69 +2914,6 @@ void init_vlc_rl(RLTable *rl, int use_static)
         }
     }
 }
-
-#ifdef _XBOX
-#if 0 //Removed as it has not been tested in new ffmpeg, and we track memory anyways
-
-
-/* uninit vlcs */
-static uninit_vlc_rl(RLTable *rl)
-{
-    int q;
-    for(q=0; q<32; q++){
-    	if(rl->rl_vlc[q]) {
-	av_free(rl->rl_vlc[q]);
-	rl->rl_vlc[q]= NULL;
-	}
-    }
-    free_vlc(&rl->vlc);
-}
-
-static uninit_rl(RLTable *rl)
-{
-    int q;
-    for(q=0; q<2; q++)  {	
-    	if(rl->max_level[q]){
-    		av_free(rl->max_level[q]);
-    		rl->max_level[q] = NULL;
-    	}
-    	if(rl->max_run[q]){
-    		av_free(rl->max_run[q]);
-    		rl->max_run[q] = NULL;
-    	}
-    	if(rl->index_run[q]){
-    		av_free(rl->index_run[q]);
-    		rl->index_run[q] = NULL;
-    	}
-    }
-}
-
-void h263_decode_uninit_vlc()
-{
-    free_vlc(&intra_MCBPC_vlc);
-    free_vlc(&inter_MCBPC_vlc);
-    free_vlc(&cbpy_vlc);
-    free_vlc(&mv_vlc);
-    uninit_rl(&rl_inter);
-    uninit_rl(&rl_intra);
-    uninit_rl(&rvlc_rl_inter);
-    uninit_rl(&rvlc_rl_intra);
-    uninit_rl(&rl_intra_aic);
-    uninit_vlc_rl(&rl_inter);
-    uninit_vlc_rl(&rl_intra);
-    uninit_vlc_rl(&rvlc_rl_inter);
-    uninit_vlc_rl(&rvlc_rl_intra);
-    uninit_vlc_rl(&rl_intra_aic);
-    free_vlc(&dc_lum);
-    free_vlc(&dc_chrom);
-    free_vlc(&sprite_trajectory);
-    free_vlc(&mb_type_b_vlc);
-    free_vlc(&h263_mbtype_b_vlc);
-    free_vlc(&cbpc_b_vlc);
-}
-
-#endif
-#endif
 
 /* init vlcs */
 
@@ -4603,7 +4540,7 @@ static int h263p_decode_umotion(MpegEncContext * s, int pred)
    
    code = (sign) ? (pred - code) : (pred + code);
 #ifdef DEBUG
-   fprintf(stderr,"H.263+ UMV Motion = %d\n", code);
+   av_log( s->avctx, AV_LOG_DEBUG,"H.263+ UMV Motion = %d\n", code);
 #endif
    return code;   
 
@@ -4950,11 +4887,11 @@ static inline int mpeg4_decode_block(MpegEncContext * s, DCTELEM * block,
                             }
                             if(s->error_resilience > FF_ER_COMPLIANT){
                                 if(abs_level <= rl->max_level[last][run]*2){
-                                    fprintf(stderr, "illegal 3. esc, esc 1 encoding possible\n");
+                                    av_log(s->avctx, AV_LOG_ERROR, "illegal 3. esc, esc 1 encoding possible\n");
                                     return -1;
                                 }
                                 if(run1 >= 0 && abs_level <= rl->max_level[last][run1]){
-                                    fprintf(stderr, "illegal 3. esc, esc 2 encoding possible\n");
+                                    av_log(s->avctx, AV_LOG_ERROR, "illegal 3. esc, esc 2 encoding possible\n");
                                     return -1;
                                 }
                             }
@@ -5066,6 +5003,7 @@ int h263_decode_picture_header(MpegEncContext *s)
     i = get_bits(&s->gb, 8); /* picture timestamp */
     if( (s->picture_number&~0xFF)+i < s->picture_number)
         i+= 256;
+    s->current_picture_ptr->pts=
     s->picture_number= (s->picture_number&~0xFF) + i;
 
     /* PTYPE starts here */    
@@ -5601,6 +5539,10 @@ static int decode_vol_header(MpegEncContext *s, GetBitContext *gb){
     check_marker(gb, "before time_increment_resolution");
     
     s->avctx->time_base.den = get_bits(gb, 16);
+    if(!s->avctx->time_base.den){
+        av_log(s->avctx, AV_LOG_ERROR, "time_base.den==0\n");
+        return -1;
+    }
     
     s->time_increment_bits = av_log2(s->avctx->time_base.den - 1) + 1;
     if (s->time_increment_bits < 1)
@@ -5826,6 +5768,10 @@ static int decode_user_data(MpegEncContext *s, GetBitContext *gb){
     if(e!=4)
         e=sscanf(buf, "FFmpeg v%d.%d.%d / libavcodec build: %d", &ver, &ver2, &ver3, &build); 
     if(e!=4){
+        e=sscanf(buf, "Lavc%d.%d.%d", &ver, &ver2, &ver3)+1;
+        build= (ver<<16) + (ver2<<8) + ver3;
+    }
+    if(e!=4){
         if(strcmp(buf, "ffmpeg")==0){
             s->lavc_build= 4600;
         }
@@ -5859,10 +5805,6 @@ static int decode_vop_header(MpegEncContext *s, GetBitContext *gb){
     else
         s->decode_mb= ff_mpeg4_decode_mb;
 
-    if(s->avctx->time_base.den==0){
-        s->avctx->time_base.den=1;
-//        fprintf(stderr, "time_increment_resolution is illegal\n");
-    }
     time_incr=0;
     while (get_bits1(gb) != 0) 
         time_incr++;
@@ -5914,7 +5856,10 @@ static int decode_vop_header(MpegEncContext *s, GetBitContext *gb){
     }
 //av_log(s->avctx, AV_LOG_DEBUG, "last nonb %Ld last_base %d time %Ld pp %d pb %d t %d ppf %d pbf %d\n", s->last_non_b_time, s->last_time_base, s->time, s->pp_time, s->pb_time, s->t_frame, s->pp_field_time, s->pb_field_time);
     
-    s->current_picture_ptr->pts= (s->time + s->avctx->time_base.num/2) / s->avctx->time_base.num;
+    if(s->avctx->time_base.num)
+        s->current_picture_ptr->pts= (s->time + s->avctx->time_base.num/2) / s->avctx->time_base.num;
+    else
+        s->current_picture_ptr->pts= AV_NOPTS_VALUE;
     if(s->avctx->debug&FF_DEBUG_PTS)
         av_log(s->avctx, AV_LOG_DEBUG, "MPEG4 PTS: %Ld\n", s->current_picture_ptr->pts);
 

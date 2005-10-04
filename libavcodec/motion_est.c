@@ -175,7 +175,7 @@ static always_inline int cmp(MpegEncContext *s, const int x, const int y, const 
         }else
             d= 256*256*256*32;
     }else{
-        int uvdxy;
+        int uvdxy;              /* no, it might not be used uninitialized */
         if(dxy){
             if(qpel){
                 c->qpel_put[size][dxy](c->temp, ref[0] + x + y*stride, stride); //FIXME prototype (add h)
@@ -441,7 +441,7 @@ static int log_motion_search(MpegEncContext * s,
     } while (range >= 1);
 
 #ifdef DEBUG
-    fprintf(stderr, "log       - MX: %d\tMY: %d\n", mx, my);
+    av_log(s->avctx, AV_LOG_DEBUG, "log       - MX: %d\tMY: %d\n", mx, my);
 #endif
     *mx_ptr = mx;
     *my_ptr = my;
@@ -530,7 +530,7 @@ static int phods_motion_search(MpegEncContext * s,
     } while (range >= 1);
 
 #ifdef DEBUG
-    fprintf(stderr, "phods     - MX: %d\tMY: %d\n", mx, my);
+    av_log(s->avctx, AV_LOG_DEBUG, "phods     - MX: %d\tMY: %d\n", mx, my);
 #endif
 
     /* half pixel search */
@@ -1563,7 +1563,6 @@ static inline int check_bidir_mv(MpegEncContext * s,
     MotionEstContext * const c= &s->me;
     uint8_t * const mv_penalty= c->mv_penalty[s->f_code] + MAX_MV; // f_code of the prev frame
     int stride= c->stride;
-    int uvstride= c->uvstride;
     uint8_t *dest_y = c->scratchpad;
     uint8_t *ptr;
     int dxy;
@@ -1891,10 +1890,15 @@ int ff_get_best_fcode(MpegEncContext * s, int16_t (*mv_table)[2], int type)
 {
     if(s->me_method>=ME_EPZS){
         int score[8];
-        int i, y, range= s->avctx->me_range;
+        int i, y, range= s->avctx->me_range ? s->avctx->me_range : (INT_MAX/2);
         uint8_t * fcode_tab= s->fcode_tab;
         int best_fcode=-1;
         int best_score=-10000000;
+
+        if(s->msmpeg4_version) 
+            range= FFMIN(range, 16);
+        else if(s->codec_id == CODEC_ID_MPEG2VIDEO && s->avctx->strict_std_compliance >= FF_COMPLIANCE_NORMAL)
+            range= FFMIN(range, 256);
 
         for(i=0; i<8; i++) score[i]= s->mb_num*(8-i);
 
@@ -1909,11 +1913,9 @@ int ff_get_best_fcode(MpegEncContext * s, int16_t (*mv_table)[2], int type)
                                      fcode_tab[my + MAX_MV]);
                     int j;
                     
-                    if(range){
                         if(mx >= range || mx < -range || 
                            my >= range || my < -range)
                             continue;
-                    }
                     
                     for(j=0; j<fcode && j<8; j++){
                         if(s->pict_type==B_TYPE || s->current_picture.mc_mb_var[xy] < s->current_picture.mb_var[xy])
@@ -1950,9 +1952,10 @@ void ff_fix_long_p_mvs(MpegEncContext * s)
     int y, range;
     assert(s->pict_type==P_TYPE);
 
-    range = (((s->out_format == FMT_MPEG1) ? 8 : 16) << f_code);
-    
-    if(s->msmpeg4_version) range= 16;
+    range = (((s->out_format == FMT_MPEG1 || s->msmpeg4_version) ? 8 : 16) << f_code);
+
+    assert(range <= 16 || !s->msmpeg4_version);
+    assert(range <=256 || !(s->codec_id == CODEC_ID_MPEG2VIDEO && s->avctx->strict_std_compliance >= FF_COMPLIANCE_NORMAL));
     
     if(c->avctx->me_range && range > c->avctx->me_range) range= c->avctx->me_range;
     
@@ -2000,9 +2003,8 @@ void ff_fix_long_mvs(MpegEncContext * s, uint8_t *field_select_table, int field_
     int y, h_range, v_range;
 
     // RAL: 8 in MPEG-1, 16 in MPEG-4
-    int range = (((s->out_format == FMT_MPEG1) ? 8 : 16) << f_code);
+    int range = (((s->out_format == FMT_MPEG1 || s->msmpeg4_version) ? 8 : 16) << f_code);
 
-    if(s->msmpeg4_version) range= 16;
     if(c->avctx->me_range && range > c->avctx->me_range) range= c->avctx->me_range;
 
     h_range= range;

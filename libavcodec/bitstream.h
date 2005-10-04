@@ -53,6 +53,11 @@ typedef struct PutBitContext {
 
 static inline void init_put_bits(PutBitContext *s, uint8_t *buffer, int buffer_size)
 {
+    if(buffer_size < 0) {
+        buffer_size = 0;
+        buffer = NULL;
+    }
+
     s->buf = buffer;
     s->buf_end = s->buf + buffer_size;
 #ifdef ALT_BITSTREAM_WRITER
@@ -95,7 +100,7 @@ static inline void flush_put_bits(PutBitContext *s)
 }
 
 void align_put_bits(PutBitContext *s);
-void put_string(PutBitContext * pbc, char *s, int put_zero);
+void ff_put_string(PutBitContext * pbc, char *s, int put_zero);
 
 /* bit input */
 /* buffer, buffer_end and size_in_bits must be present and used by every reader */
@@ -672,7 +677,11 @@ static inline void skip_bits1(GetBitContext *s){
 static inline void init_get_bits(GetBitContext *s,
                    const uint8_t *buffer, int bit_size)
 {
-    const int buffer_size= (bit_size+7)>>3;
+    int buffer_size= (bit_size+7)>>3;
+    if(buffer_size < 0 || bit_size < 0) {
+        buffer_size = bit_size = 0;
+        buffer = NULL;
+    }
 
     s->buffer= buffer;
     s->size_in_bits= bit_size;

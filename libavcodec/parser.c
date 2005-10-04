@@ -159,7 +159,8 @@ int av_parser_change(AVCodecParserContext *s,
         }
     }
 
-    *poutbuf= buf;
+    /* cast to avoid warning about discarding qualifiers */
+    *poutbuf= (uint8_t *) buf;
     *poutbuf_size= buf_size;
     if(avctx->extradata){
         if(  (keyframe && (avctx->flags2 & CODEC_FLAG2_LOCAL_HEADER))
@@ -429,13 +430,18 @@ static int mpegvideo_parse(AVCodecParserContext *s,
     ParseContext1 *pc1 = s->priv_data;
     ParseContext *pc= &pc1->pc;
     int next;
-    
-    next= ff_mpeg1_find_frame_end(pc, buf, buf_size);
-    
-    if (ff_combine_frame(pc, next, (uint8_t **)&buf, &buf_size) < 0) {
-        *poutbuf = NULL;
-        *poutbuf_size = 0;
-        return buf_size;
+   
+    if(s->flags & PARSER_FLAG_COMPLETE_FRAMES){
+        next= buf_size;
+    }else{
+        next= ff_mpeg1_find_frame_end(pc, buf, buf_size);
+        
+        if (ff_combine_frame(pc, next, (uint8_t **)&buf, &buf_size) < 0) {
+            *poutbuf = NULL;
+            *poutbuf_size = 0;
+            return buf_size;
+        }
+       
     }
     /* we have a full frame : we just parse the first few MPEG headers
        to have the full timing information. The time take by this
@@ -506,6 +512,7 @@ static int av_mpeg4_decode_header(AVCodecParserContext *s1,
     if (s->width) {
         avcodec_set_dimensions(avctx, s->width, s->height);
     }
+    s1->pict_type= s->pict_type;
     pc->first_picture = 0;
     return ret;
 }
@@ -529,12 +536,16 @@ static int mpeg4video_parse(AVCodecParserContext *s,
     ParseContext *pc = s->priv_data;
     int next;
     
-    next= ff_mpeg4_find_frame_end(pc, buf, buf_size);
-
-    if (ff_combine_frame(pc, next, (uint8_t **)&buf, &buf_size) < 0) {
-        *poutbuf = NULL;
-        *poutbuf_size = 0;
-        return buf_size;
+    if(s->flags & PARSER_FLAG_COMPLETE_FRAMES){
+        next= buf_size;
+    }else{
+        next= ff_mpeg4_find_frame_end(pc, buf, buf_size);
+    
+        if (ff_combine_frame(pc, next, (uint8_t **)&buf, &buf_size) < 0) {
+            *poutbuf = NULL;
+            *poutbuf_size = 0;
+            return buf_size;
+        }
     }
     av_mpeg4_decode_header(s, avctx, buf, buf_size);
 
@@ -738,8 +749,13 @@ static int mpegaudio_parse(AVCodecParserContext *s1,
 }
 
 #ifdef CONFIG_AC3
+#ifdef CONFIG_A52BIN
+extern int ff_a52_syncinfo (AVCodecContext * avctx, const uint8_t * buf,
+                       int * flags, int * sample_rate, int * bit_rate);
+#else
 extern int a52_syncinfo (const uint8_t * buf, int * flags,
                          int * sample_rate, int * bit_rate);
+#endif
 
 typedef struct AC3ParseContext {
     uint8_t inbuf[4096]; /* input buffer */
@@ -786,7 +802,11 @@ static int ac3_parse(AVCodecParserContext *s1,
             s->inbuf_ptr += len;
             buf_size -= len;
             if ((s->inbuf_ptr - s->inbuf) == AC3_HEADER_SIZE) {
+#ifdef CONFIG_A52BIN
+                len = ff_a52_syncinfo(avctx, s->inbuf, &s->flags, &sample_rate, &bit_rate);
+#else
                 len = a52_syncinfo(s->inbuf, &s->flags, &sample_rate, &bit_rate);
+#endif
                 if (len == 0) {
                     /* no sync found : move by one byte (inefficient, but simple!) */
                     memmove(s->inbuf, s->inbuf + 1, AC3_HEADER_SIZE - 1);

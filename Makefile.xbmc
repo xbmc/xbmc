@@ -20,6 +20,11 @@ ifeq ($(CONFIG_LIBAVFORMAT),yes)
   OBJECTS += libavformat/libavformat.a
 endif
 
+ifeq ($(CONFIG_LIBAVUTIL),yes)
+  NAMES += LIBAVUTIL
+  OBJECTS += libavutil/libavutil.a
+endif
+
 ifneq ($(Z_LIB),)
 	NAMES += ZLIB
 	OBJECTS += $(LIB_PATH)/libz.a
