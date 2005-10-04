@@ -22,10 +22,9 @@ WINBASEAPI BOOL WINAPI QueryPerformanceFrequencyXbox(LARGE_INTEGER *lpFrequency)
 
     if( model == 11 )
     {
-      //This is likely the DreamX 1480
-      //we don't know what mode it is in for them moment thou.
+      //This is likely the DreamX 1480      
       //so only support fullspeed mode
-      lFrequency = 1480000000;
+      lFrequency = 1481200000;
     }
     else
     {      
