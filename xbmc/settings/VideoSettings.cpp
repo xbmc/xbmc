@@ -14,7 +14,7 @@ CVideoSettings::CVideoSettings()
 {
   m_NoCache = false;
   m_NonInterleaved = false;
-  m_InterlaceMethod = VS_INTERLACEMETHOD_AUTO;
+  m_InterlaceMethod = VS_INTERLACEMETHOD_NONE;
   m_FilmGrain = 0;
   m_ViewMode = VIEW_MODE_NORMAL;
   m_CustomZoomAmount = 1.0f;
