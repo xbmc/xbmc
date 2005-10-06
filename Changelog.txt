@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 06-10-2005 fixed: when pausing playback of video wth passthrough in dvdplayer, audio would keep playing
  - 06-10-2005 added: XBMC.PlayerControl(Record) skin command. Toggles recording state. Player.IsRecording, Player.CanRecord are visibility states that tell if it is possible
  - 06-10-2005 fixed: dvdplayer would become unresponsive when displaying some stillimages.
  - 04-10-2005 changed: default interlaced handling is now none.. ie it doesn't try to do anything. changed due to the many times it starts to deinterlace when not needed.
