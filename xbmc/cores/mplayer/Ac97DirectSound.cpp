@@ -142,6 +142,10 @@ HRESULT CAc97DirectSound::Pause()
 {
   if (m_bPause) return S_OK;
   m_bPause = true;
+
+  //In lack of a better way, stop the stream
+  Stop();
+
   return S_OK;
 }
 
@@ -323,6 +327,8 @@ DWORD CAc97DirectSound::AddPacketsResample(unsigned char *pData, DWORD iLeft)
 //***********************************************************************************************
 DWORD CAc97DirectSound::AddPackets(unsigned char *data, DWORD len)
 {
+  // Don't accept packets when paused
+  if( m_bPause ) return 0;
   if (m_bResampleAudio)
     return AddPacketsResample(data, len);
 
