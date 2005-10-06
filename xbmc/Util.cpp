@@ -3103,6 +3103,14 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
         g_application.m_pPlayer->OnAction(action);
       }
     }
+    else if( parameter.Equals("record") )
+    {
+      if( g_application.IsPlaying() && g_application.m_pPlayer && g_application.m_pPlayer->CanRecord())
+      {
+        g_application.m_pPlayer->Record(!g_application.m_pPlayer->IsRecording());
+      }
+    }
+
   }
   else if (execute.Equals("ejecttray"))
   {
