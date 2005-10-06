@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 06-10-2005 fixed: dvdplayer would become unresponsive when displaying some stillimages.
  - 04-10-2005 changed: default interlaced handling is now none.. ie it doesn't try to do anything. changed due to the many times it starts to deinterlace when not needed.
  - 04-10-2005 fixed: clockspeed used for DreamX 1480 was somewhat of. Correct value is 1481.20000Mhz as per FriendTech info. (updated with forgotten file for mplayer)
  - 02-10-2005 fixed: my music keeps its settings.  (buttons need to reference ID 5, not 501.)
