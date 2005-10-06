@@ -16,7 +16,7 @@
       <posX>0</posX>
       <posY>25</posY>
       <width>420</width>
-      <height>326</height>
+      <height>336</height>
       <texture>osd_menu_bg.png</texture>
     </control>
 
@@ -60,7 +60,7 @@
       <posX>5</posX>
       <posY>30</posY>
       <width>408</width>
-      <height>330</height>
+      <height>320</height>
       <spinPosX>360</spinPosX>
       <spinPosY>327</spinPosY>
       <selectedColor>FFD2FF00</selectedColor>
