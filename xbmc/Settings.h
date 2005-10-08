@@ -322,15 +322,18 @@ public:
     int m_iMyMusicNavAlbumsViewAsIcons;
     int m_iMyMusicNavSongsViewAsIcons;
     int m_iMyMusicNavTopViewAsIcons;
+    int m_iMyMusicNavPlaylistsViewAsIcons;
 
     int m_iMyMusicNavRootSortMethod;
     int m_iMyMusicNavAlbumsSortMethod;
     int m_iMyMusicNavSongsSortMethod;
+    int m_iMyMusicNavPlaylistsSortMethod;
 
     bool m_bMyMusicNavGenresSortAscending;
     bool m_bMyMusicNavArtistsSortAscending;
     bool m_bMyMusicNavAlbumsSortAscending;
     bool m_bMyMusicNavSongsSortAscending;
+    bool m_bMyMusicNavPlaylistsSortAscending;
 
     // for scanning
     bool m_bMyMusicIsScanning;

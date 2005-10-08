@@ -1612,41 +1612,6 @@ CStdString CGUIWindowMusicBase::ParseFormat(CFileItem *pItem, const CStdString& 
 void CGUIWindowMusicBase::AddItemToTempPlayList(const CFileItem* pItem)
 {
   AddItemToPlayList(pItem, PLAYLIST_MUSIC_TEMP);
-
-  /*
-  if (pItem->m_bIsFolder)
-  {
-    // Check if we add a locked share
-    if ( pItem->m_bIsShareOrDrive )
-    {
-      CFileItem item = *pItem;
-      if ( !g_passwordManager.IsItemUnlocked( &item, "music" ) )
-        return ;
-    }
-
-    // recursive
-    if (pItem->GetLabel() == "..") return ;
-    CStdString strDirectory = m_Directory.m_strPath;
-    m_Directory.m_strPath = pItem->m_strPath;
-    CFileItemList items;
-    GetDirectory(m_Directory.m_strPath, items);
-    DoSort(items);
-    for (int i = 0; i < items.Size(); ++i)
-    {
-      AddItemToTempPlayList(items[i]);
-    }
-    m_Directory.m_strPath = strDirectory;
-  }
-  else
-  {
-    if (!pItem->IsNFO() && pItem->IsAudio() && !pItem->IsPlayList())
-    {
-      CPlayList::CPlayListItem playlistItem;
-      CUtil::ConvertFileItemToPlayListItem(pItem, playlistItem);
-      g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC_TEMP).Add(playlistItem);
-    }
-  }
-  */
 }
 
 void CGUIWindowMusicBase::PlayItem(int iItem)
@@ -1713,4 +1678,31 @@ void CGUIWindowMusicBase::OnDeleteItem(int iItem)
 
   Update(m_Directory.m_strPath);
   m_viewControl.SetSelectedItem(iItem);
+}
+
+void CGUIWindowMusicBase::LoadPlayList(const CStdString& strPlayList)
+{
+  // load a playlist like .m3u, .pls
+  // first get correct factory to load playlist
+  CPlayListFactory factory;
+  auto_ptr<CPlayList> pPlayList (factory.Create(strPlayList));
+  if ( NULL != pPlayList.get())
+  {
+    // load it
+    if (!pPlayList->Load(strPlayList))
+    {
+      CGUIDialogOK::ShowAndGetInput(6, 0, 477, 0);
+      return ; //hmmm unable to load playlist?
+    }
+  }
+
+  int iSize = pPlayList->size();
+  if (g_application.ProcessAndStartPlaylist(strPlayList, *pPlayList, PLAYLIST_MUSIC))
+  {
+    // activate the playlist window if its not activated yet
+    if (GetID() == m_gWindowManager.GetActiveWindow() && iSize > 1)
+    {
+      m_gWindowManager.ActivateWindow(WINDOW_MUSIC_PLAYLIST);
+    }
+  }
 }
