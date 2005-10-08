@@ -82,13 +82,18 @@ void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecC
     bMPlayer = true;
   }
 
-  if( bAllowDVD && (item.IsDVD() || item.IsDVDFile() || item.IsDVDImage()) )
+  if (bAllowDVD && ((item.IsDVD()) || item.IsDVDFile() || item.IsDVDImage()))
   {
     vecCores.push_back(EPC_DVDPLAYER);
     bDVDPlayer = true;
   }
+
+  if( PAPlayer::HandlesType(url.GetFileType()) )
+  {
+    vecCores.push_back(EPC_PAPLAYER);
+  }
   
-  if( ModPlayer::IsSupportedFormat(url.GetFileType()) )
+  if( ModPlayer::IsSupportedFormat(url.GetFileType()) || (url.GetFileType() == "xm") || (url.GetFileType() == "mod") || (url.GetFileType() == "s3m") || (url.GetFileType() == "it") )
   {
     vecCores.push_back(EPC_MODPLAYER);
   }
@@ -96,11 +101,6 @@ void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecC
   if( url.GetFileType() == "sid" )
   {
     vecCores.push_back(EPC_SIDPLAYER);
-  }
-
-  if( PAPlayer::HandlesType(url.GetFileType()) )
-  {
-    vecCores.push_back(EPC_PAPLAYER);
   }
 
   if( item.IsVideo() || item.IsAudio() )

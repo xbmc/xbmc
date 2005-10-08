@@ -736,7 +736,7 @@ bool CMPlayer::OpenFile(const CFileItem& file, __int64 iStartTime)
   CURL url(strFile);
   if ( file.IsHD() ) bFileOnHD = true;
   else if ( file.IsISO9660() ) bFileOnISO = true;
-  else if ( file.IsDVD() ) bFileOnUDF = true;
+  else if ( file.IsOnDVD() ) bFileOnUDF = true;
   else if ( file.IsInternetStream() ) bFileOnInternet = true;
   else bFileOnLAN = true;
 

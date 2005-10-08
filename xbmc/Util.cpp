@@ -1000,7 +1000,7 @@ bool CUtil::IsRemote(const CStdString& strFile)
   return false;
 }
 
-bool CUtil::IsDVD(const CStdString& strFile)
+bool CUtil::IsOnDVD(const CStdString& strFile)
 {
   if (strFile.Left(4) == "DVD:" || strFile.Left(4) == "dvd:")
     return true;
@@ -1009,6 +1009,18 @@ bool CUtil::IsDVD(const CStdString& strFile)
     return true;
 
   if (strFile.Left(4) == "UDF:" || strFile.Left(4) == "udf:")
+    return true;
+
+  if (strFile.Left(9) == "ISO9660:" || strFile.Left(9) == "iso9660:")
+    return true;
+
+  return false;
+}
+
+bool CUtil::IsDVD(const CStdString& strFile)
+{
+  CStdString strFileLow = strFile; strFileLow.MakeLower();
+  if (strFileLow == "d:\\" || strFileLow == "iso9660://" || strFileLow == "udf://" )
     return true;
 
   return false;
@@ -1222,14 +1234,14 @@ void CUtil::GetAlbumThumb(const CStdString& strAlbumName, const CStdString& strF
 bool CUtil::GetXBEIcon(const CStdString& strFilePath, CStdString& strIcon)
 {
   // check if thumbnail already exists
-  if (CUtil::IsDVD(strFilePath) && !CDetectDVDMedia::IsDiscInDrive() )
+  if (CUtil::IsOnDVD(strFilePath) && !CDetectDVDMedia::IsDiscInDrive() )
   {
     strIcon = "defaultDVDEmpty.png";
     return true;
   }
 
 
-  if (CUtil::IsDVD(strFilePath) || g_guiSettings.GetBool("MyPrograms.CacheProgramThumbs") )  // create CRC for DVD as we can't store default.tbn on DVD
+  if (CUtil::IsOnDVD(strFilePath) || g_guiSettings.GetBool("MyPrograms.CacheProgramThumbs") )  // create CRC for DVD as we can't store default.tbn on DVD
   {
     /*
     Crc32 crc;
@@ -1251,7 +1263,7 @@ bool CUtil::GetXBEIcon(const CStdString& strFilePath, CStdString& strIcon)
     strIcon.Format("%s\\%s", strPath.c_str(), defaultTbn.c_str());
   }
 
-  if (CFile::Exists(strIcon) && !CUtil::IsDVD(strFilePath))   // always create thumbnail for DVD.
+  if (CFile::Exists(strIcon) && !CUtil::IsOnDVD(strFilePath))   // always create thumbnail for DVD.
   {
     //yes, just return
     return true;
@@ -1462,7 +1474,7 @@ void CUtil::CreateShortcut(CFileItem* pItem)
   {
     // xbe
     pItem->SetIconImage("defaultProgram.png");
-    if ( !pItem->IsDVD() )
+    if ( !pItem->IsOnDVD() )
     {
       CStdString strDescription;
       if (! CUtil::GetXBEDescription(pItem->m_strPath, strDescription))
@@ -1499,7 +1511,7 @@ bool CUtil::GetFolderThumb(const CStdString& strFolder, CStdString& strThumb)
 
   CFileItem item(strFolder, true);
   // remote or local file?
-  if (item.IsRemote() || item.IsDVD() || item.IsISO9660() )
+  if (item.IsRemote() || item.IsOnDVD() || item.IsISO9660() )
   {
     // dont try to locate a folder.jpg for streams &  shoutcast
     if (item.IsInternetStream())
@@ -1510,7 +1522,7 @@ bool CUtil::GetFolderThumb(const CStdString& strFolder, CStdString& strThumb)
     if (!CFile::Exists( strThumb) )
     {
       // then cache folder.jpg to xbox HD
-      if ((g_guiSettings.GetBool("VideoFiles.FindRemoteThumbs") || item.IsDVD()) && CFile::Exists(strFolderImage))
+      if ((g_guiSettings.GetBool("VideoFiles.FindRemoteThumbs") || item.IsOnDVD()) && CFile::Exists(strFolderImage))
       {
         if ( CFile::Cache(strFolderImage.c_str(), strThumb.c_str(), NULL, NULL))
         {

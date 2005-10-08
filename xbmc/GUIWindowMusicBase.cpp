@@ -195,7 +195,7 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
 
             if (pItem)
             {
-              if (!pItem->IsPlayList() && !pItem->IsNFO())
+              if (!pItem->IsPlayList() && !pItem->IsNFO() && !pItem->IsRAR() && !pItem->IsZIP())
                 n++;
               if ((n - 1) == nCurrentItem)
               {
@@ -214,7 +214,7 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
     {
       if ( !m_Directory.IsVirtualDirectoryRoot() )
       {
-        if (m_Directory.IsCDDA() || m_Directory.IsDVD() || m_Directory.IsISO9660())
+        if (m_Directory.IsCDDA() || m_Directory.IsOnDVD())
         {
           // Disc has changed and we are inside a DVD Drive share, get out of here :)
           Update("");
@@ -1017,6 +1017,10 @@ void CGUIWindowMusicBase::OnQueueItem(int iItem)
 
   // add item 2 playlist
   const CFileItem* pItem = m_vecItems[iItem];
+  
+  if (pItem->IsRAR() || pItem->IsZIP())
+    return;
+
   AddItemToPlayList(pItem);
 
   //move to next item
@@ -1036,6 +1040,9 @@ void CGUIWindowMusicBase::OnQueueItem(int iItem)
 /// \param pItem The file item to add
 void CGUIWindowMusicBase::AddItemToPlayList(const CFileItem* pItem, int iPlayList /* = PLAYLIST_MUSIC */)
 {
+  if (pItem->IsRAR() || pItem->IsZIP()) // no zip/rar enques thank you!
+    return;
+
   if (pItem->m_bIsFolder)
   {
     // Check if we add a locked share
@@ -1611,6 +1618,8 @@ CStdString CGUIWindowMusicBase::ParseFormat(CFileItem *pItem, const CStdString& 
 
 void CGUIWindowMusicBase::AddItemToTempPlayList(const CFileItem* pItem)
 {
+  if (pItem->IsRAR() || pItem->IsZIP())
+    return;
   AddItemToPlayList(pItem, PLAYLIST_MUSIC_TEMP);
 }
 

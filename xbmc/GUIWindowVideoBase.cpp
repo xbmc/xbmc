@@ -171,7 +171,7 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
       CLog::Log(LOGDEBUG,"got eject msg!");
       if ( !m_Directory.IsVirtualDirectoryRoot() )
       {
-        if ( m_Directory.IsCDDA() || m_Directory.IsDVD() || m_Directory.IsISO9660() )
+        if ( m_Directory.IsCDDA() || m_Directory.IsOnDVD() )
         {
           // Disc has changed and we are inside a DVD Drive share, get out of here :)
           m_Directory.m_strPath.Empty();
@@ -683,7 +683,7 @@ void CGUIWindowVideoBase::ShowIMDB(const CStdString& strMovie, const CStdString&
                     CStdString strFolderImage;
                     CUtil::AddFileToFolder(strFolder, "folder.jpg", strFolderImage);
                     CFileItem folder(strFolder, true);
-                    if (folder.IsRemote() || folder.IsDVD() || folder.IsISO9660() )
+                    if (folder.IsRemote() || folder.IsOnDVD())
                     {
                       CStdString strThumb;
                       CUtil::GetThumbnail( strFolderImage, strThumb);
@@ -860,7 +860,7 @@ bool CGUIWindowVideoBase::CheckMovie(const CStdString& strFileName)
   CIMDBMovie movieDetails;
   m_database.GetMovieInfo(strFileName, movieDetails);
   CFileItem movieFile(movieDetails.m_strPath, false);
-  if ( !movieFile.IsDVD() && !movieFile.IsISO9660()) return true;
+  if ( !movieFile.IsOnDVD()) return true;
   CGUIDialogOK *pDlgOK = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
   if (!pDlgOK) return true;
   while (1)
@@ -887,10 +887,13 @@ void CGUIWindowVideoBase::OnQueueItem(int iItem)
   if ( iItem < 0 || iItem >= m_vecItems.Size() ) return ;
   // add item 2 playlist
   const CFileItem* pItem = m_vecItems[iItem];
-  AddItemToPlayList(pItem);
+  if (!pItem->IsRAR() && !pItem->IsZIP())
+  {
+    AddItemToPlayList(pItem);
 
-  //move to next item
-  m_viewControl.SetSelectedItem(iItem + 1);
+    //move to next item
+    m_viewControl.SetSelectedItem(iItem + 1);
+  }
 }
 
 void CGUIWindowVideoBase::AddItemToPlayList(const CFileItem* pItem)
