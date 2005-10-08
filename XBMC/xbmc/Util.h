@@ -114,6 +114,7 @@ public:
   static void GetAlbumDatabase(const CStdString& strFileName, CStdString& strAlbumThumb);
   static bool GetXBEIcon(const CStdString& strFilePath, CStdString& strIcon);
   static bool GetXBEDescription(const CStdString& strFileName, CStdString& strDescription);
+  static bool SetXBEDescription(const CStdString& strFileName, const CStdString& strDescription);
   static bool GetDirectoryName(const CStdString& strFileName, CStdString& strDescription);
   static DWORD GetXbeID( const CStdString& strFilePath);
   static void CreateShortcuts(CFileItemList &items);
@@ -190,8 +191,8 @@ static void CreateRarPath(CStdString& strUrlPath, const CStdString& strRarPath,
   static bool SetFTPServerUserPassword(CStdString strFtpUserName, CStdString strFtpUserPassword);
   static bool SetXBOXNickName(CStdString strXboxNickNameIn, CStdString &strXboxNickNameOut);
   static void GetRecursiveListing(const CStdString& strPath, CFileItemList& items, const CStdString& strMask);
-
-  static void GetRecursiveDirsListing(const CStdString& strPath, CFileItemList& item);
+  
+  static void GetRecursiveDirsListing(const CStdString& strPath, CFileItemList& items);
 
 private:
   static bool m_bNetworkUp;
