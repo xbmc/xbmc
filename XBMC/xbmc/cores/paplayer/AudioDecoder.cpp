@@ -54,7 +54,7 @@ bool CAudioDecoder::Create(const CFileItem &file, __int64 seekOffset, unsigned i
   unsigned int filecache = g_guiSettings.GetInt("CacheAudio.LAN");
   if ( file.IsHD() )
     filecache = g_guiSettings.GetInt("Cache.HardDisk");
-  else if ( file.IsISO9660() || file.IsDVD() )
+  else if ( file.IsOnDVD() )
     filecache = g_guiSettings.GetInt("CacheAudio.DVDRom");
   else if ( file.IsInternetStream() )
     filecache = g_guiSettings.GetInt("CacheAudio.Internet");

@@ -203,7 +203,7 @@ bool CGUIWindowFileManager::OnMessage(CGUIMessage& message)
     {
       for (int i = 0; i < 2; i++)
       {
-        if ( m_Directory[i].IsCDDA() || m_Directory[i].IsDVD() || m_Directory[i].IsISO9660() )
+        if ( m_Directory[i].IsCDDA() || m_Directory[i].IsOnDVD() )
         {
           // Disc has changed and we are inside a DVD Drive share, get out of here :)
           m_Directory[i].m_strPath = "";

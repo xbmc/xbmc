@@ -564,7 +564,7 @@ void CGUIWindowVideoFiles::AddFileToDatabase(const CFileItem* pItem)
   if ( pItem->IsPlayList()) return ;
 
   // get disc label for dvd's / iso9660
-  if (pItem->IsDVD() || pItem->IsISO9660())
+  if (pItem->IsOnDVD())
   {
     CCdInfo* pinfo = CDetectDVDMedia::GetCdInfo();
     if (pinfo)
@@ -641,7 +641,7 @@ void CGUIWindowVideoFiles::OnRetrieveVideoInfo(CFileItemList& items)
             }
           }
           CStdString strMovieName;
-          if (pItem->IsDVD() || pItem->IsDVDFile())
+          if (pItem->IsOnDVD() || pItem->IsDVDFile())
           {
             // find the name by back-drilling to the folder name
             CStdString strFolder;

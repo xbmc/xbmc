@@ -218,7 +218,7 @@ bool CGUIWindowMusicSongs::OnMessage(CGUIMessage& message)
         SetHistoryForPath(m_Directory.m_strPath);
       }
 
-      if (m_Directory.IsCDDA() || m_Directory.IsDVD() || m_Directory.IsISO9660())
+      if (m_Directory.IsCDDA() || m_Directory.IsOnDVD())
       {
         // No disc in drive but current directory is a dvd share
         if (!CDetectDVDMedia::IsDiscInDrive())
@@ -229,9 +229,7 @@ bool CGUIWindowMusicSongs::OnMessage(CGUIMessage& message)
         dvdUrl.m_strPath = m_rootDir.GetDVDDriveUrl();
         if (m_Directory.IsCDDA() && !dvdUrl.IsCDDA())
           m_Directory.m_strPath.Empty();
-        if (m_Directory.IsDVD() && !dvdUrl.IsDVD())
-          m_Directory.m_strPath.Empty();
-        if (m_Directory.IsISO9660() && !dvdUrl.IsISO9660())
+        if (m_Directory.IsOnDVD() && !dvdUrl.IsOnDVD())
           m_Directory.m_strPath.Empty();
       }
 
@@ -677,7 +675,11 @@ void CGUIWindowMusicSongs::OnClick(int iItem)
         for ( int i = 0; i < m_vecItems.Size(); i++ )
         {
           CFileItem* pItem = m_vecItems[i];
-          if ( pItem->m_bIsFolder )
+          
+          if (pItem->IsZIP() || pItem->IsRAR())
+            continue;
+
+          if (pItem->m_bIsFolder)
           {
             nFolderCount++;
             continue;
@@ -1156,7 +1158,7 @@ void CGUIWindowMusicSongs::LoadDirectoryCache(const CStdString& strDirectory, MA
   crc.ComputeFromLowerCase(directory.m_strPath);
 
   CStdString strFileName;
-  if (directory.IsCDDA() || directory.IsDVD() || directory.IsISO9660())
+  if (directory.IsCDDA() || directory.IsOnDVD())
     strFileName.Format("Z:\\r-%x.fi", crc);
   else
     strFileName.Format("Z:\\%x.fi", crc);
@@ -1193,7 +1195,7 @@ void CGUIWindowMusicSongs::SaveDirectoryCache(const CStdString& strDirectory, CF
   crc.ComputeFromLowerCase(directory.m_strPath);
 
   CStdString strFileName;
-  if (directory.IsCDDA() || directory.IsDVD() || directory.IsISO9660())
+  if (directory.IsCDDA() || directory.IsOnDVD())
     strFileName.Format("Z:\\r-%x.fi", crc);
   else
     strFileName.Format("Z:\\%x.fi", crc);

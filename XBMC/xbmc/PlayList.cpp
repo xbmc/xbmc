@@ -254,7 +254,7 @@ int CPlayList::RemoveDVDItems()
   while (it != m_vecItems.end() )
   {
     CPlayListItem& item = *it;
-    if ( item.IsCDDA() || item.IsISO9660() || item.IsDVD() )
+    if ( item.IsCDDA() || item.IsOnDVD() )
     {
       vecFilenames.push_back( item.GetFileName() );
     }
