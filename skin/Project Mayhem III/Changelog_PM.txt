@@ -1,4 +1,6 @@
-2005-10-03 fixed:	new dvd button all good now (what a mofo :P )
+2005-10-09 fixed:	some alignment issues in the OSD subscreens
+
+2005-10-03 fixed:	new dvd button all good now (lil mofo :P )
 2005-10-03 fixed:	xbmctex.exe couldnt handle the no-focus textures of the new dvd buttons - made them *.png
 
 2005-10-02 fixed:	my music keeps its settings.  (buttons need to reference ID 5, not 50)
