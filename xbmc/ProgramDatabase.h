@@ -20,6 +20,7 @@ public:
   void GetProgramsByPath(const CStdString& strPath, CFileItemList& programs, int idepth, bool bOnlyDefaultXBE);
   bool GetXBEPathByTitleId(const DWORD titleId, CStdString& strPathAndFilename);
   bool IncTimesPlayed(const CStdString& strFileName1);
+  bool SetDescription(const CStdString& strFileName1, const CStdString& strDescription);
   bool EntryExists(const CStdString& strPath, const CStdString& strBookmark);
   void DeleteProgram(const CStdString& strPath);
 protected:

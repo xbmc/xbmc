@@ -364,8 +364,64 @@ bool CGUIWindowPrograms::OnPopupMenu(int iItem)
       return true;
     }
     m_vecItems[iItem]->Select(false);
+    return false;
   }
-  return false;
+  else if (iItem >= 0)// assume a program
+  {
+    // mark the item
+    m_vecItems[iItem]->Select(true);
+    // popup the context menu
+    CGUIDialogContextMenu *pMenu = (CGUIDialogContextMenu *)m_gWindowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
+    if (!pMenu) return false;
+    // load our menu
+    pMenu->Initialize();
+    // add the needed buttons
+    
+    int btn_Rename = 0;
+    if (m_vecItems[iItem]->IsType(".xbe"))
+      btn_Rename = pMenu->AddButton(118); // rename
+
+    int btn_Rescan = pMenu->AddButton(102); // rescan bookmarks
+    int btn_Settings = pMenu->AddButton(5); // Settings
+
+    // position it correctly
+    pMenu->SetPosition(iPosX - pMenu->GetWidth() / 2, iPosY - pMenu->GetHeight() / 2);
+    pMenu->DoModal(GetID());
+
+    int btnid = pMenu->GetButton();
+    if (!btnid)
+    {
+      m_vecItems[iItem]->Select(false);
+      return false;
+    }
+
+    if (btnid == btn_Rename)
+    {
+      CStdString strDescription = m_vecItems[iItem]->GetLabel();
+      if (CGUIDialogKeyboard::ShowAndGetInput(strDescription, (CStdStringW)g_localizeStrings.Get(16013), false))
+      {
+        CUtil::SetXBEDescription(m_vecItems[iItem]->m_strPath,strDescription);
+        m_database.SetDescription(m_vecItems[iItem]->m_strPath,strDescription);
+        Update(m_Directory.m_strPath);
+      }
+    }
+    if (btnid == btn_Settings)
+    {
+      //MasterPassword
+      int iLockSettings = g_guiSettings.GetInt("Masterlock.LockSettingsFilemanager");
+      if (iLockSettings == 1 || iLockSettings == 3) 
+      {
+        if (g_passwordManager.IsMasterLockLocked(true))
+          m_gWindowManager.ActivateWindow(WINDOW_SETTINGS_MYPROGRAMS);
+      }
+      else m_gWindowManager.ActivateWindow(WINDOW_SETTINGS_MYPROGRAMS); 
+    }
+  }
+  else
+    return false;
+
+  m_vecItems[iItem]->Select(false);
+  return true;
 }
 
 void CGUIWindowPrograms::Render()
