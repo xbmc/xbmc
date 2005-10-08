@@ -27,7 +27,7 @@ protected:
   virtual void PlayItem(int iItem);
 
   void SetHistoryForPath(const CStdString& strDirectory);
-  void LoadPlayList(const CStdString& strPlayList);
+  
   void LoadDirectoryCache(const CStdString& strDirectory, MAPFILEITEMS& items);
   void SaveDirectoryCache(const CStdString& strDirectory, CFileItemList& items);
   void DeleteDirectoryCache();

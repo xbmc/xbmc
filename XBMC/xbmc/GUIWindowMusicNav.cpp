@@ -8,6 +8,7 @@
 #include "GUIPassword.h"
 #include "GUIListControl.h"
 #include "GUIDialogContextMenu.h"
+#include "GUIWindowMusicSongs.h"
 
 
 #define CONTROL_BTNVIEWASICONS  2
@@ -265,6 +266,7 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
         CStdString strTopSongs = g_localizeStrings.Get(10504);    // Top 100 Songs
         CStdString strTopAlbums = g_localizeStrings.Get(10505);   // Top 100 Albums
         CStdString strRecentAlbums = g_localizeStrings.Get(359);  // Recent Albums
+        CStdString strPlaylists = g_localizeStrings.Get(136);     // Playlists
 
         if (strDestination.Equals("Genres"))
         {
@@ -353,6 +355,17 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
           m_Directory.m_strPath = "db://" + strRecentAlbums + "/";
           m_history.Set(m_Directory.m_strPath, strParentPath);
         }
+        else if (strDestination.Equals("Playlists"))
+        {
+          m_iState = SHOW_PLAYLISTS;
+          m_iPath = SHOW_PLAYLISTS;
+
+          vecPathHistory.clear();
+          vecPathHistory.push_back(strPlaylists);
+
+          m_Directory.m_strPath = "db://" + strPlaylists + "/";
+          m_history.Set(m_Directory.m_strPath, strParentPath);
+        }
         else
         {
           CLog::Log(LOGERROR, "  Failed! Destination parameter (%s) is not valid!", strDestination.c_str());
@@ -404,6 +417,12 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
           // allow sort by 3,4,5,6,7
           g_stSettings.m_iMyMusicNavSongsSortMethod++;
           if (g_stSettings.m_iMyMusicNavSongsSortMethod >= 8) g_stSettings.m_iMyMusicNavSongsSortMethod = 3;
+        }
+        else if (m_iState == SHOW_PLAYLISTS)
+        {
+          // allow sort by 0,1,2
+          g_stSettings.m_iMyMusicNavPlaylistsSortMethod++;
+          if (g_stSettings.m_iMyMusicNavPlaylistsSortMethod >= 3) g_stSettings.m_iMyMusicNavPlaylistsSortMethod = 0;
         }
         g_settings.Save();
 
@@ -479,12 +498,14 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
           g_stSettings.m_iMyMusicNavGenresViewAsIcons = m_iViewAsIcons;
         else if (m_iState == SHOW_ARTISTS)
           g_stSettings.m_iMyMusicNavArtistsViewAsIcons = m_iViewAsIcons;
-        else if (m_iState == SHOW_ALBUMS)
+        else if (m_iState == SHOW_ALBUMS || m_iState == SHOW_RECENT)
           g_stSettings.m_iMyMusicNavAlbumsViewAsIcons = m_iViewAsIcons;
         else if (m_iState == SHOW_SONGS)
           g_stSettings.m_iMyMusicNavSongsViewAsIcons = m_iViewAsIcons;
         else if (m_iState == SHOW_TOP)
           g_stSettings.m_iMyMusicNavTopViewAsIcons = m_iViewAsIcons;
+        else if (m_iState = SHOW_PLAYLISTS)
+          g_stSettings.m_iMyMusicNavPlaylistsViewAsIcons = m_iViewAsIcons;
 
         g_settings.Save();
 
@@ -503,6 +524,9 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
           g_stSettings.m_bMyMusicNavAlbumsSortAscending = !g_stSettings.m_bMyMusicNavAlbumsSortAscending;
         else if (m_iState == SHOW_SONGS)
           g_stSettings.m_bMyMusicNavSongsSortAscending = !g_stSettings.m_bMyMusicNavSongsSortAscending;
+        else if (m_iState = SHOW_PLAYLISTS)
+          g_stSettings.m_bMyMusicNavPlaylistsSortAscending = !g_stSettings.m_bMyMusicNavPlaylistsSortAscending;
+
         g_settings.Save();
 
         // save cache state, and reset so we can resort
@@ -563,7 +587,8 @@ bool CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, CFileItemL
       vecRoot.push_back(g_localizeStrings.Get(134));  // Songs
       vecRoot.push_back(g_localizeStrings.Get(271));  // Top 100
       vecRoot.push_back(g_localizeStrings.Get(359));  // Recent Albums
-      for (int i = 0; i < (int)vecRoot.size();++i)
+      vecRoot.push_back(g_localizeStrings.Get(136));  // Playlists
+      for (int i = 0; i < (int)vecRoot.size(); ++i)
       {
         CFileItem* pFileItem = new CFileItem(vecRoot[i]);
         pFileItem->m_strPath = vecRoot[i];
@@ -576,6 +601,32 @@ bool CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, CFileItemL
     }
     break;
 
+  case SHOW_PLAYLISTS:
+    {
+      m_iViewAsIcons = g_stSettings.m_iMyMusicNavSongsViewAsIcons;
+      CStdString strPath;
+      strPath.Format("%s\\playlists", g_stSettings.m_szAlbumDirectory);
+      CStdString strMask = g_stSettings.m_szMyMusicExtensions;
+
+      // set parent directory
+      if (!g_guiSettings.GetBool("MyMusic.HideParentDirItems"))
+      {
+        CFileItem* pFileItem = new CFileItem("..");
+        pFileItem->m_strPath = "";
+        pFileItem->m_bIsFolder = true;
+        items.Add(pFileItem);
+      }
+
+      CFileItemList tempItems;
+      CDirectory::GetDirectory(strPath, tempItems, strMask);
+      for (int i = 0; i < tempItems.Size(); ++i)
+      {
+        CFileItem* pItem = new CFileItem(*tempItems[i]);
+        if (pItem->IsPlayList()) items.Add(pItem);
+      }
+    }
+    break;
+
   case SHOW_TOP:
     {
       m_iViewAsIcons = g_stSettings.m_iMyMusicNavTopViewAsIcons;
@@ -583,7 +634,7 @@ bool CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, CFileItemL
       vector<CStdString> vecRoot;
       vecRoot.push_back(g_localizeStrings.Get(10504));  // Top 100 Songs
       vecRoot.push_back(g_localizeStrings.Get(10505));  // Top 100 Albums
-      for (int i = 0; i < (int)vecRoot.size();++i)
+      for (int i = 0; i < (int)vecRoot.size(); ++i)
       {
         CFileItem* pFileItem = new CFileItem(vecRoot[i]);
         pFileItem->m_strPath = vecRoot[i];
@@ -844,8 +895,20 @@ void CGUIWindowMusicNav::UpdateButtons()
   int iItems = m_vecItems.Size();
   if (iItems)
   {
-    CFileItem* pItem = m_vecItems[0];
-    if (pItem->GetLabel() == "..") iItems--;
+    // check for parent dir
+    // check for "all" item
+    for (int i = 0; i <= 1; i++)
+    {
+      CFileItem* pItem = m_vecItems[i];
+      if (pItem->GetLabel() == "..") iItems--;
+      if (
+        pItem->GetLabel().Equals((CStdString)g_localizeStrings.Get(15102)) ||
+        pItem->GetLabel().Equals((CStdString)g_localizeStrings.Get(15103)) ||
+        pItem->GetLabel().Equals((CStdString)g_localizeStrings.Get(15104)) ||
+        pItem->GetLabel().Equals((CStdString)g_localizeStrings.Get(15105))
+        )
+        iItems--;
+    }
   }
   WCHAR wszText[20];
   const WCHAR* szText = g_localizeStrings.Get(127).c_str();
@@ -866,19 +929,29 @@ void CGUIWindowMusicNav::UpdateButtons()
   {
     SET_CONTROL_LABEL(CONTROL_BTNSORTBY, g_stSettings.m_iMyMusicNavSongsSortMethod + 263);
   }
+  else if (m_iState == SHOW_PLAYLISTS)
+  {
+    SET_CONTROL_LABEL(CONTROL_BTNSORTBY, g_stSettings.m_iMyMusicNavPlaylistsSortMethod + 103);
+  }
 
   // set the filter label
   CStdString strLabel;
 
   // "Top 100 Songs"
-  if (m_iPath == (SHOW_TOP + SHOW_SONGS))
+  if (m_iPath == SHOW_TOP)
+    strLabel = g_localizeStrings.Get(271);
+  // "Top 100 Songs"
+  else if (m_iPath == (SHOW_TOP + SHOW_SONGS))
     strLabel = g_localizeStrings.Get(10504);
   // "Top 100 Albums"
   else if (m_iPath == (SHOW_TOP + SHOW_ALBUMS))
     strLabel = g_localizeStrings.Get(10505);
   // "Recent Albums"
-  else if (m_iPath >= SHOW_RECENT)
+  else if (m_iPath == SHOW_RECENT)
     strLabel = g_localizeStrings.Get(359);
+  // "Playlists"
+  else if (m_iPath == SHOW_PLAYLISTS)
+    strLabel = g_localizeStrings.Get(136);
   // "Genre/Artist/Album"
   else
   {
@@ -954,6 +1027,9 @@ void CGUIWindowMusicNav::OnClick(int iItem)
           // recent albums
           else if (strPath.Equals((CStdString)g_localizeStrings.Get(359)))
             m_iState = SHOW_RECENT;
+          // playlists
+          else if (strPath.Equals((CStdString)g_localizeStrings.Get(136)))
+            m_iState = SHOW_PLAYLISTS;
           // songs
           else
             m_iState = SHOW_SONGS;
@@ -1027,31 +1103,38 @@ void CGUIWindowMusicNav::OnClick(int iItem)
   }
   else
   {
-    // play and add current directory to temporary playlist
-    int nFolderCount = 0;
-    g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC_TEMP).Clear();
-    g_playlistPlayer.Reset();
-    for ( int i = 0; i < m_vecItems.Size(); i++ )
+    if (pItem->IsPlayList())
     {
-      CFileItem* pItem = m_vecItems[i];
-      if ( pItem->m_bIsFolder )
-      {
-        nFolderCount++;
-        continue;
-      }
-      CPlayList::CPlayListItem playlistItem;
-      CUtil::ConvertFileItemToPlayListItem(pItem, playlistItem);
-      g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC_TEMP).Add(playlistItem);
+      LoadPlayList(strPath);
     }
+    else
+    {
+      // play and add current directory to temporary playlist
+      int nFolderCount = 0;
+      g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC_TEMP).Clear();
+      g_playlistPlayer.Reset();
+      for ( int i = 0; i < m_vecItems.Size(); i++ )
+      {
+        CFileItem* pItem = m_vecItems[i];
+        if ( pItem->m_bIsFolder )
+        {
+          nFolderCount++;
+          continue;
+        }
+        CPlayList::CPlayListItem playlistItem;
+        CUtil::ConvertFileItemToPlayListItem(pItem, playlistItem);
+        g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC_TEMP).Add(playlistItem);
+      }
 
-    // Save current window and directory to know where the selected item was
-    m_nTempPlayListWindow = GetID();
-    m_strTempPlayListDirectory = m_Directory.m_strPath;
-    if (CUtil::HasSlashAtEnd(m_strTempPlayListDirectory))
-      m_strTempPlayListDirectory.Delete(m_strTempPlayListDirectory.size() - 1);
+      // Save current window and directory to know where the selected item was
+      m_nTempPlayListWindow = GetID();
+      m_strTempPlayListDirectory = m_Directory.m_strPath;
+      if (CUtil::HasSlashAtEnd(m_strTempPlayListDirectory))
+        m_strTempPlayListDirectory.Delete(m_strTempPlayListDirectory.size() - 1);
 
-    g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_MUSIC_TEMP);
-    g_playlistPlayer.Play(iItem - nFolderCount);
+      g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_MUSIC_TEMP);
+      g_playlistPlayer.Play(iItem - nFolderCount);
+    }
   }
 }
 
@@ -1088,6 +1171,26 @@ void CGUIWindowMusicNav::OnFileItemFormatLabel(CFileItem* pItem)
     // for songs, set the label using user defined format string
     if (pItem->m_musicInfoTag.Loaded())
       SetLabelFromTag(pItem);
+    
+    // for playlists, set the second label
+    if (m_iState == SHOW_PLAYLISTS)
+    {
+      // remove extension?
+      if (g_guiSettings.GetBool("FileLists.HideExtensions"))
+        pItem->RemoveExtension();
+      // set unknown second label
+      pItem->SetLabel2("--");
+      // set second label to size by default
+      if (pItem->m_dwSize > 0)
+        pItem->SetFileSizeLabel();
+      // set second label to date if sorting by date
+      if (g_stSettings.m_iMyMusicNavPlaylistsSortMethod == 1 && pItem->m_stTime.wYear)
+      {
+        CStdString strDateTime;
+        CUtil::GetDate(pItem->m_stTime, strDateTime);
+        pItem->SetLabel2(strDateTime);
+      }
+    }
   }
 
   // set thumbs and default icons
@@ -1355,14 +1458,6 @@ void CGUIWindowMusicNav::GoParentFolder()
     m_iState = SHOW_ALBUMS;
     m_strAlbum.Empty();
     m_strAlbumPath.Empty();
-
-    // go back to recent albums
-    if (m_iPath == SHOW_RECENT)
-    {
-      m_iState = SHOW_RECENT;
-      m_strArtist.Empty();
-      m_strGenre.Empty();
-    }
   }
   // or back to artists?
   else if (m_iPath & (1 << 2))
@@ -1391,8 +1486,10 @@ void CGUIWindowMusicNav::GoParentFolder()
     m_strGenre.Empty();
   }
   // else just go back to the root
+  // from recent and songs
   else
   {
+    m_iPath = SHOW_ROOT;
     m_iState = SHOW_ROOT;
     m_strAlbum.Empty();
     m_strAlbumPath.Empty();
@@ -1521,86 +1618,6 @@ void CGUIWindowMusicNav::AddItemToPlayList(const CFileItem* pItem, int iPlayList
 void CGUIWindowMusicNav::AddItemToTempPlayList(const CFileItem* pItem)
 {
   AddItemToPlayList(pItem, PLAYLIST_MUSIC_TEMP);
-
-  /*
-  if (pItem->m_bIsFolder)
-  {
-    // save state
-    int iOldState = m_iState;
-    int iOldPath = m_iPath;
-    CStdString strOldGenre = m_strGenre;
-    CStdString strOldArtist = m_strArtist;
-    CStdString strOldAlbum = m_strAlbum;
-    CStdString strOldAlbumPath = m_strAlbumPath;
-    CStdString strDirectory = m_Directory.m_strPath;
-    CStdString strOldParentPath = m_strParentPath;
-    int iViewAsIcons = m_iViewAsIcons;
-
-    // update filter with currently selected item
-    switch (m_iState)
-    {
-    case SHOW_GENRES:
-      {
-        if (pItem->m_strPath.IsEmpty())
-          m_strGenre.Empty();
-        else
-          m_strGenre = pItem->m_strPath;
-      }
-      break;
-
-    case SHOW_ARTISTS:
-      {
-        if (pItem->m_strPath.IsEmpty())
-          m_strArtist.Empty();
-        else
-          m_strArtist = pItem->m_strPath;
-      }
-      break;
-
-    case SHOW_ALBUMS:
-      {
-        if (pItem->m_strPath.IsEmpty())
-          m_strAlbum.Empty();
-        else
-        {
-          m_strAlbum = pItem->m_musicInfoTag.GetAlbum();
-          m_strAlbumPath = pItem->m_strPath;
-        }
-      }
-      break;
-    }
-
-    m_iState = SHOW_SONGS;
-    CFileItemList items;
-    GetDirectory("Playlist", items);
-    DoSort(items);
-    for (int i = 0; i < items.Size(); ++i)
-    {
-      if (!items[i]->m_strPath.IsEmpty())
-        AddItemToTempPlayList(items[i]);
-    }
-
-    // restore old state
-    m_iState = iOldState;
-    m_iPath = iOldPath;
-    m_strGenre = strOldGenre;
-    m_strArtist = strOldArtist;
-    m_strAlbum = strOldAlbum;
-    m_strAlbumPath = strOldAlbumPath;
-    m_Directory.m_strPath = strDirectory;
-    m_strParentPath = strOldParentPath;
-    m_iViewAsIcons = iViewAsIcons;
-  }
-  else
-  {
-    if (!pItem->IsNFO() && pItem->IsAudio() && !pItem->IsPlayList())
-    {
-      CPlayList::CPlayListItem playlistItem;
-      CUtil::ConvertFileItemToPlayListItem(pItem, playlistItem);
-      g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC_TEMP).Add(playlistItem);
-    }
-  }
-  */
 }
 
 

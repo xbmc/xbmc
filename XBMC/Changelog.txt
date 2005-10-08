@@ -5,6 +5,10 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 08-10-2005 added: Playlists to My Music Library, also directly accessible via XBMC.ActivateWindow(MyMusicLibrary,Playlists)
+ - 08-10-2005 fixed: some navigation problems with My Music Library sometimes returning the full album listing for recent and top100 albums
+ - 08-10-2005 fixed: the "All" items are removed from the object count in My Music Library
+ - 08-10-2005 fixed: blank and missing title, artist, album, and genre tags are set to "unknown"
  - 06-10-2005 fixed: when pausing playback of video wth passthrough in dvdplayer, audio would keep playing
  - 06-10-2005 added: XBMC.PlayerControl(Record) skin command. Toggles recording state. Player.IsRecording, Player.CanRecord are visibility states that tell if it is possible
  - 06-10-2005 fixed: dvdplayer would become unresponsive when displaying some stillimages.
