@@ -597,3 +597,41 @@ bool CProgramDatabase::IncTimesPlayed(const CStdString& strFileName)
 
   return false;
 }
+
+bool CProgramDatabase::SetDescription(const CStdString& strFileName, const CStdString& strDescription)
+{
+  try
+  {
+    CStdString strPath;
+    CUtil::GetDirectory(strFileName, strPath);
+    strPath.Replace("\\", "/");
+
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS.get()) return false;
+
+    CStdString strSQL=FormatSQL("select * from files,path where files.idPath=path.idPath and path.strPath='%s'", strPath.c_str());
+    if (!m_pDS->query(strSQL.c_str())) return false;
+    int iRowsFound = m_pDS->num_rows();
+    if (iRowsFound == 0)
+    {
+      m_pDS->close();
+      return false;
+    }
+    int idFile = m_pDS->fv("files.idFile").get_asLong();
+    m_pDS->close();
+
+    CLog::Log(LOGDEBUG, "CProgramDatabase::SetDescription(%s), idFile=%i, description=%s",
+              strFileName.c_str(), idFile,strDescription.c_str());
+
+    strSQL=FormatSQL("update files set xbedescription='%s' where idFile=%i",
+                  strDescription.c_str(), idFile);
+    m_pDS->exec(strSQL.c_str());
+    return true;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "CProgramDatabase:SetDescription(%s) failed", strFileName.c_str());
+  }
+
+  return false;
+}

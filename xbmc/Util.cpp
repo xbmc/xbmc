@@ -1355,7 +1355,6 @@ bool CUtil::GetDirectoryName(const CStdString& strFileName, CStdString& strDescr
 }
 bool CUtil::GetXBEDescription(const CStdString& strFileName, CStdString& strDescription)
 {
-
   _XBE_CERTIFICATE HC;
   _XBE_HEADER HS;
 
@@ -1379,6 +1378,24 @@ bool CUtil::GetXBEDescription(const CStdString& strFileName, CStdString& strDesc
   }
   strDescription = CUtil::GetFileName(strFileName);
   return false;
+}
+
+bool CUtil::SetXBEDescription(const CStdString& strFileName, const CStdString& strDescription)
+{
+  _XBE_CERTIFICATE HC;
+  _XBE_HEADER HS;
+
+  FILE* hFile = fopen(strFileName.c_str(), "r+b");
+  fread(&HS, 1, sizeof(HS), hFile);
+  fseek(hFile, HS.XbeHeaderSize, SEEK_SET);
+  fread(&HC, 1, sizeof(HC), hFile);
+  fseek(hFile,HS.XbeHeaderSize, SEEK_SET);
+
+  MultiByteToWideChar(CP_ACP,0,strDescription.c_str(),-1,HC.TitleName,40);
+  fwrite(&HC,1,sizeof(HC),hFile);
+  fclose(hFile);
+  
+  return true;
 }
 
 DWORD CUtil::GetXbeID( const CStdString& strFilePath)
