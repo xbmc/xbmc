@@ -527,7 +527,7 @@ void CGUIWindowPrograms::LoadDirectory(const CStdString& strDirectory, int idept
             CUtil::RemoveIllegalChars(strDescription);
           }
 
-          if (!bFlattenDir || file.IsDVD())
+          if (!bFlattenDir || file.IsOnDVD())
           {
             CFileItem *pItem = new CFileItem(strDescription);
             pItem->m_strPath = file.m_strPath;
@@ -709,7 +709,7 @@ void CGUIWindowPrograms::UpdateDir(const CStdString &strDirectory)
             CUtil::RemoveIllegalChars(strDescription);
           }
 
-          if (item.IsDVD())
+          if (item.IsOnDVD())
           {
             WIN32_FILE_ATTRIBUTE_DATA FileAttributeData;
             FILETIME localTime;

@@ -384,6 +384,11 @@ bool CFileItem::IsDVD() const
   return CUtil::IsDVD(m_strPath);
 }
 
+bool CFileItem::IsOnDVD() const
+{
+  return CUtil::IsOnDVD(m_strPath);
+}
+
 bool CFileItem::IsISO9660() const
 {
   return CUtil::IsISO9660(m_strPath);
@@ -412,7 +417,7 @@ bool CFileItem::IsVirtualDirectoryRoot() const
 bool CFileItem::IsReadOnly() const
 {
   // check for dvd/cd media
-  if (IsDVD() || IsCDDA() || IsISO9660()) return true;
+  if (IsOnDVD() || IsCDDA()) return true;
   // now check for remote shares (smb is writeable??)
   if (IsSmb()) return false;
   // no other protocols are writeable??
@@ -601,9 +606,9 @@ void CFileItem::SetThumb()
 
   // does a cached thumbnail exists?
   // If it is on the DVD and is an XBE, let's grab get the thumbnail again
-  if (!CFile::Exists(strCachedThumbnail) || (item.IsXBE() && item.IsDVD()) )
+  if (!CFile::Exists(strCachedThumbnail) || (item.IsXBE() && item.IsOnDVD()) )
   {
-    if (IsRemote() && !IsDVD() && !g_guiSettings.GetBool("VideoFiles.FindRemoteThumbs")) return;
+    if (IsRemote() && !IsOnDVD() && !g_guiSettings.GetBool("VideoFiles.FindRemoteThumbs")) return;
     // get the path for the  thumbnail
     CUtil::GetThumbnail( item.m_strPath, strThumb);
     // local cached thumb does not exists
@@ -611,7 +616,7 @@ void CFileItem::SetThumb()
     if (CFile::Exists(strThumb))
     {
       // yes, is it a local or remote file
-      if (CUtil::IsRemote(strThumb) || CUtil::IsDVD(strThumb) || CUtil::IsISO9660(strThumb) )
+      if (CUtil::IsRemote(strThumb) || CUtil::IsOnDVD(strThumb) || CUtil::IsISO9660(strThumb) )
       {
         // remote file, then cache it...
         if ( CFile::Cache(strThumb.c_str(), strCachedThumbnail.c_str(), NULL, NULL))
@@ -647,7 +652,7 @@ void CFileItem::SetThumb()
       if (CFile::Exists(strThumbnailFileName))
       {
         //  local or remote ?
-        if (item.IsRemote() || item.IsDVD() || item.IsISO9660())
+        if (item.IsRemote() || item.IsOnDVD() || item.IsISO9660())
         {
           //  remote, cache thumb to hdd
           if ( CFile::Cache(strThumbnailFileName.c_str(), strCachedThumbnail.c_str(), NULL, NULL))
@@ -779,7 +784,7 @@ void CFileItem::SetMusicThumb()
 
     // no pre-cached thumbs so check for remote thumbs
     bool bTryRemote = true;
-    if (IsRemote() && !IsDVD() && !g_guiSettings.GetBool("MusicFiles.FindRemoteThumbs"))
+    if (IsRemote() && !IsOnDVD() && !g_guiSettings.GetBool("MusicFiles.FindRemoteThumbs"))
     {
       bTryRemote = false;
     }
@@ -834,7 +839,7 @@ void CFileItem::SetMusicThumb()
   if (m_bIsFolder)
   {
     bool bTryRemote = true;
-    if (IsRemote() && !IsDVD() && !g_guiSettings.GetBool("MusicFiles.FindRemoteThumbs"))
+    if (IsRemote() && !IsOnDVD() && !g_guiSettings.GetBool("MusicFiles.FindRemoteThumbs"))
     {
       bTryRemote = false;
     }
