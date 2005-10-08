@@ -500,33 +500,6 @@ void CGUIWindowMusicSongs::OnScan()
   return ;
 }
 
-void CGUIWindowMusicSongs::LoadPlayList(const CStdString& strPlayList)
-{
-  // load a playlist like .m3u, .pls
-  // first get correct factory to load playlist
-  CPlayListFactory factory;
-  auto_ptr<CPlayList> pPlayList (factory.Create(strPlayList));
-  if ( NULL != pPlayList.get())
-  {
-    // load it
-    if (!pPlayList->Load(strPlayList))
-    {
-      CGUIDialogOK::ShowAndGetInput(6, 0, 477, 0);
-      return ; //hmmm unable to load playlist?
-    }
-  }
-
-  int iSize = pPlayList->size();
-  if (g_application.ProcessAndStartPlaylist(strPlayList, *pPlayList, PLAYLIST_MUSIC))
-  {
-    // activate the playlist window if its not activated yet
-    if (GetID() == m_gWindowManager.GetActiveWindow() && iSize > 1)
-    {
-      m_gWindowManager.ActivateWindow(WINDOW_MUSIC_PLAYLIST);
-    }
-  }
-}
-
 void CGUIWindowMusicSongs::UpdateButtons()
 {
   CGUIWindowMusicBase::UpdateButtons();
