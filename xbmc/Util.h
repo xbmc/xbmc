@@ -92,6 +92,7 @@ public:
   static void Unicode2Ansi(const wstring& wstrText, CStdString& strName);
   static bool HasSlashAtEnd(const CStdString& strFile);
   static bool IsRemote(const CStdString& strFile);
+  static bool IsOnDVD(const CStdString& strFile);
   static bool IsDVD(const CStdString& strFile);
   static bool IsRAR(const CStdString& strFile);
   static bool IsZIP(const CStdString& strFile);

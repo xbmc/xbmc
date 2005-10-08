@@ -689,7 +689,7 @@ void CGUIWindowPictures::OnShowPicture(const CStdString& strPicture)
   for (int i = 0; i < (int)m_vecItems.Size();++i)
   {
     CFileItem* pItem = m_vecItems[i];
-    if (!pItem->m_bIsFolder)
+    if (!pItem->m_bIsFolder && !(CUtil::IsRAR(pItem->m_strPath) || CUtil::IsZIP(pItem->m_strPath)))
     {
       pSlideShow->Add(pItem->m_strPath);
     }
@@ -710,14 +710,10 @@ void CGUIWindowPictures::OnShowPictureRecursive(const CStdString& strPicture)
   for (int i = 0; i < (int)m_vecItems.Size();++i)
   {
     CFileItem* pItem = m_vecItems[i];
-    if (!pItem->m_bIsFolder)
-    {
+    if (pItem->m_bIsFolder)
+      AddDir(pSlideShow, pItem->m_strPath);
+    else if (!(CUtil::IsRAR(pItem->m_strPath) || CUtil::IsZIP(pItem->m_strPath)))
       pSlideShow->Add(pItem->m_strPath);
-    }
-    else
-    {
-      AddDir(pSlideShow,pItem->m_strPath);
-    }
   }
   if (!strPicture.IsEmpty())
     pSlideShow->Select(strPicture);
@@ -734,14 +730,10 @@ void CGUIWindowPictures::AddDir(CGUIWindowSlideShow *pSlideShow, const CStdStrin
   for (int i = 0; i < (int)items.Size();++i)
   {
     CFileItem* pItem = items[i];
-    if (!pItem->m_bIsFolder)
-    {
-      pSlideShow->Add(pItem->m_strPath);
-    }
-    else
-    {
+    if (pItem->m_bIsFolder)
       AddDir(pSlideShow, pItem->m_strPath);
-    }
+    else if (!(CUtil::IsRAR(pItem->m_strPath) || CUtil::IsZIP(pItem->m_strPath)))
+      pSlideShow->Add(pItem->m_strPath);
   }
 }
 
@@ -787,7 +779,7 @@ void CGUIWindowPictures::OnSlideShow(const CStdString &strPicture)
   for (int i = 0; i < (int)m_vecItems.Size();++i)
   {
     CFileItem* pItem = m_vecItems[i];
-    if (!pItem->m_bIsFolder)
+    if (!pItem->m_bIsFolder && !(CUtil::IsRAR(pItem->m_strPath) || CUtil::IsZIP(pItem->m_strPath)))
     {
       pSlideShow->Add(pItem->m_strPath);
     }
@@ -1131,7 +1123,7 @@ void CGUIWindowPictures::OnItemLoaded(CFileItem *pItem)
   { // generate the thumb folder if necessary
     // we load the directory, grab 4 random thumb files (if available) and then generate
     // the thumb.
-    if (pItem->IsRemote() && !pItem->IsDVD() && !g_guiSettings.GetBool("VideoFiles.FindRemoteThumbs")) return;
+    if (pItem->IsRemote() && !pItem->IsOnDVD() && !g_guiSettings.GetBool("VideoFiles.FindRemoteThumbs")) return;
     CFileItemList items;
     m_rootDir.GetDirectory(pItem->m_strPath, items);
     // create the folder thumb by choosing 4 random thumbs within the folder and putting

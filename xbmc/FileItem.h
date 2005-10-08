@@ -52,6 +52,7 @@ public:
   bool IsISO9660() const;
   bool IsCDDA() const;
   bool IsDVD() const;
+  bool IsOnDVD() const;
   bool IsHD() const;
   bool IsRemote() const;
   bool IsSmb() const;
