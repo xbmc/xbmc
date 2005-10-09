@@ -254,6 +254,7 @@ private:
 
   int m_iSecsTillSubmit;
   bool m_bShouldSubmit;
+  bool m_bReHandShaking;
 
 
   static CScrobbler* m_pInstance;
