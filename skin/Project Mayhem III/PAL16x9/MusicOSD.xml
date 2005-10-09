@@ -3,6 +3,47 @@
   <defaultcontrol>213</defaultcontrol>
   <visible effect="fade" time="200" start="hidden">Window.IsActive(120)</visible>
   <controls>
+
+    <control>
+      <description>REC button</description>
+      <type>button</type>
+      <id>208</id>
+      <posX>35</posX>
+      <posY>304</posY>
+      <width>128</width>
+      <height>163</height>
+      <textureFocus>osd_button_rec.png</textureFocus>
+      <textureNoFocus>osd_button_recNF.png</textureNoFocus>
+      <label>-</label>
+      <font>-</font>
+      <onleft>210</onleft>
+      <onright>499</onright>
+      <onup>499</onup>
+      <ondown>210</ondown>
+      <execute>XBMC.PlayerControl(Record)</execute>
+      <visible>Player.CanRecord + !Control.HasFocus(209)</visible>
+    </control>
+
+    <control>
+      <description>REC button 2</description>
+      <type>button</type>
+      <id>209</id>
+      <posX>35</posX>
+      <posY>304</posY>
+      <width>128</width>
+      <height>163</height>
+      <textureFocus>osd_button_rec.png</textureFocus>
+      <textureNoFocus>osd_button_recNF.png</textureNoFocus>
+      <label>-</label>
+      <font>-</font>
+      <onleft>211</onleft>
+      <onright>500</onright>
+      <onup>500</onup>
+      <ondown>211</ondown>
+      <execute>XBMC.PlayerControl(Record)</execute>
+      <visible>Player.CanRecord + !Control.HasFocus(208)</visible>
+    </control>
+
     <control>
       <description>Panel</description>
       <type>image</type>
@@ -29,7 +70,7 @@
       <font>-</font>
       <onleft>215</onleft>
       <onright>211</onright>
-      <onup>501</onup>
+      <onup>208</onup>
       <ondown>219</ondown>
       <execute>XBMC.PlayerControl(Previous)</execute>
     </control>
@@ -51,7 +92,7 @@
       <font>-</font>
       <onleft>210</onleft>
       <onright>213</onright>
-      <onup>500</onup>
+      <onup>209</onup>
       <ondown>220</ondown>
       <execute>XBMC.PlayerControl(Rewind)</execute>
     </control>
@@ -114,27 +155,25 @@
       <font>-</font>
       <onleft>214</onleft>
       <onright>210</onright>
-      <onup>501</onup>
+      <onup>499</onup>
       <ondown>219</ondown>
       <execute>XBMC.PlayerControl(Next)</execute>
     </control>
 
     <control>
-      <description>Lock Vis Button</description>
-      <type>togglebutton</type>
-      <id>501</id>
+      <description>playlist Button</description>
+      <type>button</type>
+      <id>499</id>
       <posX>130</posX>
       <posY>318</posY>
       <width>38</width>
       <height>43</height>
-      <AltTextureFocus>osd_button_vislockFO.png</AltTextureFocus>
-      <AltTextureNoFocus>-</AltTextureNoFocus>
-      <UseAltTexture>!Visualisation.Locked</UseAltTexture>
-      <textureFocus>osd_button_vislockSELFO.png</textureFocus>
-      <textureNoFocus>osd_button_vislockSELNF.png</textureNoFocus>
+      <textureFocus>osd_button_playlistFO.png</textureFocus>
+      <textureNoFocus>-</textureNoFocus>
+      <execute>XBMC.ActivateWindow(500)</execute>
       <label>-</label>
       <font>-</font>
-      <onleft>210</onleft>
+      <onleft>208</onleft>
       <onright>215</onright>
       <onup>219</onup>
       <ondown>500</ondown>
@@ -152,9 +191,9 @@
       <textureNoFocus>-</textureNoFocus>
       <label>-</label>
       <font>-</font>
-      <onleft>211</onleft>
+      <onleft>209</onleft>
       <onright>214</onright>
-      <onup>501</onup>
+      <onup>499</onup>
       <ondown>213</ondown>
     </control>
 
@@ -192,7 +231,7 @@
       <onleft>210</onleft>
       <onright>215</onright>
       <onup>220</onup>
-      <ondown>501</ondown>
+      <ondown>499</ondown>
       <execute>XBMC.ActivateWindow(121)</execute>
     </control>
 
