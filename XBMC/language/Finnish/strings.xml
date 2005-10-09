@@ -270,7 +270,7 @@
   <string><id>338</id><value>Analoginen</value></string>
   <string><id>339</id><value>Digitaalinen</value></string>
   <string><id>340</id><value>Eri esittäjiä</value></string>
-  <string><id>341</id><value>Näytä DVD</value></string>
+  <string><id>341</id><value>Toista levy</value></string>
   <string><id>342</id><value>Tiedostot</value></string>
   <string><id>343</id><value>Sovita kuvataajuus</value></string>
   <string><id>344</id><value>Näyttelijät</value></string>
@@ -555,6 +555,7 @@
   <string><id>771</id><value>- Automaattinen FATX-rajoitus</value></string>
   <string><id>772</id><value>Äänilaitteisto</value></string>
   <string><id>773</id><value>Haku</value></string>
+  <string><id>774</id><value>Slideshow näytönsäästäjän hakemisto</value></string>
   <string><id>998</id><value>XLink Kai</value></string>
   <string><id>999</id><value>Nettipelaaminen</value></string>
   
@@ -734,8 +735,8 @@
   <string><id>12351</id><value>asettaa pääsalasanan uudelleen käyttöön.)</value></string>
   <string><id>12352</id><value>Anna pääsalasana-painikeyhdistelmä ja paina Start</value></string>
   <string><id>12353</id><value>Uudelleenaktivoi lukitus</value></string>
-  <string><id>12354</id><value>Ohita kansioiden lukitus uudelleenkäynnitykseen asti?</value></string>
-  <string><id>12355</id><value>Ota kansioiden lukituksen automaattisesti käyttöön uudestaan.)</value></string>
+  <string><id>12354</id><value>Ohita hakemistojen lukitus uudelleenkäynnitykseen asti?</value></string>
+  <string><id>12355</id><value>Ota hakemistojen lukitus automaattisesti käyttöön uudestaan.)</value></string>
   <string><id>12356</id><value>Muuta lukitus</value></string>
   <string><id>12357</id><value>Jaon lukitus</value></string>
   <string><id>12358</id><value>Tyhjä salasana. Yritä uudestaan.</value></string>
@@ -754,7 +755,7 @@
   <string><id>12372</id><value>Lukitse Asetukset &amp; Tiedostot</value></string>
   <string><id>12373</id><value>Asetukset &amp; Tiedostot</value></string>
   <string><id>12374</id><value>Lukitse media</value></string>
-  <string><id>12374</id><value>Pääkäyttäjä-tila</value></string>
+  <string><id>12375</id><value>Pääkäyttäjä-tila</value></string>
 
   <string><id>12390</id><value>Uptime</value></string>
   <string><id>12391</id><value>minuuttia</value></string>
@@ -1096,7 +1097,7 @@
   <string><id>13297</id><value>Xbox ei ole yhdistetty. Tarkista verkkoasetukset.</value></string>
   <string><id>13298</id><value>XBLive!-avain:</value></string>
 
-  <string><id>15213</id><value>[PAIKANPITÄJÄ]</value></string>
+  <string><id>15213</id><value>Toista käyttäen...</value></string>
   <string><id>15214</id><value>Käytä tasoitettua A/V-synkronointia</value></string>
   <string><id>15215</id><value>Piilota tiedostonimet pikkukuvissa</value></string>
 
@@ -1109,6 +1110,7 @@
   <string><id>16001</id><value>Äänilaitteisto...</value></string>
   <string><id>16002</id><value>CDDB-haku</value></string>
   <string><id>16003</id><value>Soitin</value></string>
+  <string><id>16004</id><value>Toista media levyltä</value></string>
 
   <string><id>16009</id><value>Anna elokuvan nimi</value></string>
   <string><id>16010</id><value>Anna profiilin nimi</value></string>
