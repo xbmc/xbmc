@@ -21,13 +21,15 @@ public:
   bool GetXBEPathByTitleId(const DWORD titleId, CStdString& strPathAndFilename);
   bool IncTimesPlayed(const CStdString& strFileName1);
   bool SetDescription(const CStdString& strFileName1, const CStdString& strDescription);
+  int GetRegion(const CStdString& strFilenameAndPath);
+  bool SetRegion(const CStdString& strFilenameAndPath, int iRegion=0);
   bool EntryExists(const CStdString& strPath, const CStdString& strBookmark);
   void DeleteProgram(const CStdString& strPath);
 protected:
   static const unsigned __int64 Date_1601 = 0x0701CE1722770000i64;
 
   long AddPath(const CStdString& strPath);
-  long AddFile(long lPathId, const CStdString& strFileName, DWORD titleId , const CStdString& strDescription);
+  long AddFile(long lPathId, const CStdString& strFileName, DWORD titleId , const CStdString& strDescription, int iRegion);
 
   long AddBookMark(const CStdString& strBookmark);
   long GetProgram(long lPathId);

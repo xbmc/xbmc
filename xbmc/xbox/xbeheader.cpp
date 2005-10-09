@@ -124,7 +124,7 @@ uint32 CXBE::ExtractGameRegion(const CStdString& strFilename)
     FILE_ATTRIBUTE_NORMAL,
     NULL ) );
 
-  if (!hFile.isValid() ) return( -1 );
+  if (!hFile.isValid() ) return( 0 );
 
   // Read the header
   DWORD dwRead;
@@ -135,7 +135,7 @@ uint32 CXBE::ExtractGameRegion(const CStdString& strFilename)
     &dwRead,
     NULL ) )
   {
-    return( -1 );
+    return( 0 );
   }
 
   // Header read. Copy information about header
@@ -146,7 +146,7 @@ uint32 CXBE::ExtractGameRegion(const CStdString& strFilename)
     NULL,
     FILE_BEGIN ) == ( DWORD )0xFFFFFFFF )
   {
-    return( -1 );
+    return( 0 );
   }
   // re-read to be sure
   if ( !::ReadFile( (HANDLE)hFile,
@@ -155,7 +155,7 @@ uint32 CXBE::ExtractGameRegion(const CStdString& strFilename)
     &dwRead,
     NULL ) )
   {
-    return( -1 );
+    return( 0 );
   }
 
   memcpy(&m_XBEInfo.Certificate,m_pHeader,sizeof(m_XBEInfo.Certificate));

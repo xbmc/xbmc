@@ -12,7 +12,7 @@ public:
   virtual void OnWindowUnload();
   void ClearButtons();
   int AddButton(int iLabel);
-  int AddButton(const wstring &strButton);
+  int AddButton(const CStdStringW &strButton);
   int GetNumButtons();
   void EnableButton(int iButton, bool bEnable);
   int GetButton();
