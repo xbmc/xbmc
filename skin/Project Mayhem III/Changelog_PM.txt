@@ -1,3 +1,5 @@
+2005-10-09 removed:	xmls for Music Top 100 view as this is included in the library view anyways
+
 2005-10-09 fixed:	some alignment issues in the OSD subscreens
 
 2005-10-03 fixed:	new dvd button all good now (lil mofo :P )
