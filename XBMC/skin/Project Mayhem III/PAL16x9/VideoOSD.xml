@@ -3,6 +3,47 @@
   <defaultcontrol>213</defaultcontrol>
   <visible effect="fade" time="200" start="hidden">Window.IsActive(2901)</visible>
   <controls>
+
+    <control>
+      <description>DVD menu button</description>
+      <type>button</type>
+      <id>208</id>
+      <posX>35</posX>
+      <posY>304</posY>
+      <width>128</width>
+      <height>163</height>
+      <textureFocus>osd_button_dvdmenu.png</textureFocus>
+      <textureNoFocus>osd_button_dvdmenuNF.png</textureNoFocus>
+      <label>-</label>
+      <font>-</font>
+      <onleft>210</onleft>
+      <onright>918</onright>
+      <onup>918</onup>
+      <ondown>210</ondown>
+      <execute>XBMC.PlayerControl(ShowVideoMenu)</execute>
+      <visible>VideoPlayer.HasMenu + !Control.HasFocus(209)</visible>
+    </control>
+
+    <control>
+      <description>DVD menu button 2</description>
+      <type>button</type>
+      <id>209</id>
+      <posX>35</posX>
+      <posY>304</posY>
+      <width>128</width>
+      <height>163</height>
+      <textureFocus>osd_button_dvdmenu.png</textureFocus>
+      <textureNoFocus>osd_button_dvdmenuNF.png</textureNoFocus>
+      <label>-</label>
+      <font>-</font>
+      <onleft>211</onleft>
+      <onright>921</onright>
+      <onup>921</onup>
+      <ondown>211</ondown>
+      <execute>XBMC.PlayerControl(ShowVideoMenu)</execute>
+      <visible>VideoPlayer.HasMenu + !Control.HasFocus(208)</visible>
+    </control>
+
     <control>
       <description>Panel</description>
       <type>image</type>
@@ -32,7 +73,7 @@
       <font>-</font>
       <onleft>215</onleft>
       <onright>211</onright>
-      <onup>918</onup>
+      <onup>208</onup>
       <ondown>919</ondown>
     </control>
 
@@ -53,7 +94,7 @@
       <font>-</font>
       <onleft>210</onleft>
       <onright>213</onright>
-      <onup>921</onup>
+      <onup>209</onup>
       <ondown>920</ondown>
       <execute>XBMC.PlayerControl(Rewind)</execute>
     </control>
@@ -163,21 +204,18 @@
 
     <control>
       <description>Show Media Menu</description>
-      <type>togglebutton</type>
+      <type>button</type>
       <id>918</id>
       <posX>130</posX>
       <posY>318</posY>
       <width>38</width>
       <height>43</height>
-      <textureFocus>osd_button_subtitlesFO.png</textureFocus>
+      <textureFocus>osd_button_playlistFO.png</textureFocus>
       <textureNoFocus>-</textureNoFocus>
-      <UseAltTexture>Window.IsActive(124) | Window.IsActive(123)</UseAltTexture>
-      <AltTextureFocus>osd_button_subtitlesSELNF.png</AltTextureFocus>
-      <AltTextureNoFocus>-</AltTextureNoFocus>
-      <execute>XBMC.PlayerControl(ShowVideoMenu)</execute>
+      <execute>XBMC.ActivateWindow(28)</execute>
       <label>-</label>
       <font>-</font>
-      <onleft>210</onleft>
+      <onleft>208</onleft>
       <onright>215</onright>
       <onup>919</onup>
       <ondown>921</ondown>
@@ -199,7 +237,7 @@
       <execute>XBMC.ActivateWindow(124)</execute>
       <label>-</label>
       <font>-</font>
-      <onleft>211</onleft>
+      <onleft>209</onleft>
       <onright>214</onright>
       <onup>918</onup>
       <ondown>213</ondown>
