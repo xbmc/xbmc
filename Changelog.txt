@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 09-10-2005 fixed: dvds wouldn't play.
  - 09-10-2005 changed: some layout stuff regarding video mode override.
  - 09-10-2005 fixed: "bad authorization" message from audioscrobbler on every songsubmission (timed out session).
  - 09-10-2005 fixed: bugs with video mode override.

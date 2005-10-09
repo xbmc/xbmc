@@ -1031,7 +1031,7 @@ bool CUtil::IsOnDVD(const CStdString& strFile)
 bool CUtil::IsDVD(const CStdString& strFile)
 {
   CStdString strFileLow = strFile; strFileLow.MakeLower();
-  if (strFileLow == "d:\\" || strFileLow == "iso9660://" || strFileLow == "udf://" )
+  if (strFileLow == "d:\\" || strFileLow == "iso9660://" || strFileLow == "udf://" || strFileLow == "dvd://1" )
     return true;
 
   return false;
