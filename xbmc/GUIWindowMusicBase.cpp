@@ -38,6 +38,9 @@ CStdString CGUIWindowMusicBase::m_strTempPlayListDirectory = "";
 CGUIWindowMusicBase::CGUIWindowMusicBase(DWORD dwID, const CStdString &xmlFile)
     : CGUIWindow(dwID, xmlFile)
 {
+  m_iViewAsIcons = -1;
+  m_iViewAsIconsRoot = -1;
+
   m_nSelectedItem = -1;
   m_iLastControl = -1;
   m_bDisplayEmptyDatabaseMessage = false;
