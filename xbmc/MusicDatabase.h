@@ -115,7 +115,8 @@ public:
   bool FindAlbumsByName(const CStdString& strSearch, VECALBUMS& albums);
   bool GetTop100(VECSONGS& songs);
   bool GetTop100Albums(VECALBUMS& albums);
-  bool GetRecentAlbums(VECALBUMS& albums);
+  bool GetRecentlyAddedAlbums(VECALBUMS& albums);
+  bool GetRecentlyPlayedAlbums(VECALBUMS& albums);
   bool IncrTop100CounterByFileName(const CStdString& strFileName1);
   bool GetSubpathsFromPath(const CStdString &strPath, CStdString& strPathIds);
   bool RemoveSongsFromPaths(const CStdString &strPathIds);
@@ -125,6 +126,8 @@ public:
   bool GetArtistsNav(VECARTISTS& artists, const CStdString &strGenre1);
   bool GetAlbumsNav(VECALBUMS& albums, const CStdString &strGenre1, const CStdString &strArtist1);
   bool GetSongsNav(VECSONGS& songs, const CStdString &strGenre1, const CStdString &strArtist1, const CStdString &strAlbum1, const CStdString &strAlbumPath1);
+
+  int GetSongsCount();
 
 protected:
   map<CStdString, CArtistCache> m_artistCache;
