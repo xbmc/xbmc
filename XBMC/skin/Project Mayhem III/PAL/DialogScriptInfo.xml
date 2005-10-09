@@ -43,6 +43,7 @@
       <posY>120</posY>
       <width>445</width>
       <height>425</height>
+      <font>font12</font>
     </control>
 
   </controls>
