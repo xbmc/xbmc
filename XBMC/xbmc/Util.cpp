@@ -727,8 +727,19 @@ void CUtil::LaunchXbe(const char* szPath, const char* szXbe, const char* szParam
     else
     {
       Video = ForceVideo;
-      Country = ForceCountry;
+      if (ForceCountry)
+        Country = ForceCountry;
+      else
+      {
+        if (Video == VIDEO_NTSCM)
+          Country = COUNTRY_USA;
+        if (Video == VIDEO_NTSCJ)
+          Country = COUNTRY_JAP;
+        if (Video == VIDEO_PAL50)
+          Country = COUNTRY_EUR;
+      }
     }
+    CLog::Log(LOGDEBUG,"launching in %i",Video);
     if (Country != COUNTRY_NULL && Video != VIDEO_NULL)
     {
       bool bSuccessful = PatchCountryVideo(Country, Video);

@@ -63,7 +63,7 @@ int CGUIDialogContextMenu::AddButton(int iLabel)
   return AddButton(g_localizeStrings.Get(iLabel));
 }
 
-int CGUIDialogContextMenu::AddButton(const wstring &strLabel)
+int CGUIDialogContextMenu::AddButton(const CStdStringW &strLabel)
 { // add a button to our control
   CGUIButtonControl *pButtonTemplate = (CGUIButtonControl *)GetControl(BUTTON_TEMPLATE);
   if (!pButtonTemplate) return 0;
