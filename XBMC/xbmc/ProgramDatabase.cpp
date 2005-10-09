@@ -136,17 +136,19 @@ int CProgramDatabase::GetRegion(const CStdString& strFilenameAndPath)
   if (NULL == m_pDS.get()) return 0;
 
   CStdString strSQL=FormatSQL("select * from files,path where files.idPath=path.idPath and path.strPath='%s'", strPath.c_str());
-  if (!m_pDS->query(strSQL.c_str())) return 0;
+  if (!m_pDS->query(strSQL.c_str())) 
+    return 0;
+
   int iRowsFound = m_pDS->num_rows();
   if (iRowsFound == 0)
   {
     m_pDS->close();
     return 0;
   }
-  int iTimesPlayed = m_pDS->fv("files.iRegion").get_asLong();
+  int iRegion = m_pDS->fv("files.iRegion").get_asLong();
   m_pDS->close();
 
-  return iTimesPlayed;
+  return iRegion;
 }
 
 bool CProgramDatabase::SetRegion(const CStdString& strFileName, int iRegion)
@@ -486,7 +488,6 @@ long CProgramDatabase::AddProgram(const CStdString& strFilenameAndPath, DWORD ti
     {
       CXBE xbe;
       iRegion = xbe.ExtractGameRegion(strFilenameAndPath);
-      CLog::Log(LOGDEBUG,"iregion found: %i",iRegion);
       if (iRegion < 1 || iRegion > 7)
         iRegion = 0;
     }
