@@ -43,6 +43,7 @@ CScrobbler::CScrobbler()
   m_bShouldSubmit=false;
   m_bUpdateWarningDone=false;
   m_bConnectionWarningDone=false;
+  m_bReHandShaking=false;
   m_strClientId = CLIENT_ID; 
   m_strClientVer = CLIENT_VERSION;
   m_bCloseThread = false;
@@ -368,6 +369,17 @@ void CScrobbler::HandleSubmit(char *data)
   else if (stricmp("BADAUTH",response) == 0) 
   {
     StatusUpdate(S_SUBMIT_BADAUTH,"Submission failed: bad authorization.");
+    char *inttext = strtok(NULL, seps);
+    if (inttext && (stricmp("INTERVAL", inttext) == 0)) 
+    {
+      m_Interval = atoi(strtok(NULL, seps));
+      CStdString strBuf;
+      strBuf.Format("Submit interval set to %i seconds.", m_Interval);
+      StatusUpdate(S_SUBMIT_INTERVAL, strBuf);
+    }
+    //re-handshake
+    m_bReHandShaking = true;
+    DoHandshake();
   } 
   else 
   {
@@ -480,12 +492,6 @@ void CScrobbler::StatusUpdate(ScrobbleStatus status, const CStdString& strText)
     }
 
   }
-  else if (S_SUBMIT_BADAUTH == status)
-  {
-    CLog::Log(LOGNOTICE, "AudioScrobbler: %s", strText.c_str());
-    CStdString strMsg=g_localizeStrings.Get(15206); // Submission failed: bad authorization.
-    StatusUpdate(strMsg);
-  }
   else
   {
     CLog::Log(LOGNOTICE, "AudioScrobbler: %s", strText.c_str());
@@ -520,6 +526,8 @@ void CScrobbler::WorkerThread()
         LPSTR lphtml=strHtml.GetBuffer();
         HandleHandshake(lphtml);
         strHtml.ReleaseBuffer();
+        if (m_bReHandShaking)
+          m_bReHandShaking = false;
       }
     } 
     else 
@@ -531,6 +539,7 @@ void CScrobbler::WorkerThread()
         HandleSubmit(lphtml);
         strHtml.ReleaseBuffer();
         ::DeleteFile(GetTempFileName());
+        if (m_bReHandShaking) continue;
       }
     }
 
