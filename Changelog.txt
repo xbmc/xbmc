@@ -5,6 +5,11 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 09-10-2005 added: Nav view, recently played albums (musicdatabase will be updated to version 1.3)
+ - 09-10-2005 changed: Nav view, the empty database message is only displayed when there are no scanned items
+ - 09-10-2005 changed: added databaseviews for albums and songs to the musicdatabase
+ - 09-10-2005 changed: minor speedup of nav view database queries
+ - 09-10-2005 updated: sqlite to version 3.2.7
  - 09-10-2005 added: video mode override in my programs.
  - 08-10-2005 fixed: dvdplayer would be associated with any files on udf discs.
  - 08-10-2005 added: rename xbe in my programs.

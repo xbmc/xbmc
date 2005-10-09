@@ -295,6 +295,8 @@ bool Dataset::set_field_value(const char *f_name, const field_value &value) {
 
 
 const field_value Dataset::get_field_value(const char *f_name) {
+  char* name=strstr(f_name, ".");
+  if (name) name++;
   if (ds_state != dsInactive) {
     if (ds_state == dsEdit || ds_state == dsInsert){
       for (unsigned int i=0; i < edit_object->size(); i++)
@@ -305,7 +307,7 @@ const field_value Dataset::get_field_value(const char *f_name) {
        }
     else
       for (unsigned int i=0; i < fields_object->size(); i++) 
-			if (str_compare((*fields_object)[i].props.name.c_str(), f_name)==0) {
+			if (str_compare((*fields_object)[i].props.name.c_str(), f_name)==0 || (name && str_compare((*fields_object)[i].props.name.c_str(), name)==0)) {
 	  			return (*fields_object)[i].val;
 			}
       throw DbErrors("Field not found: %s",f_name);
