@@ -2,8 +2,9 @@
 #include ".\programdatabase.h"
 #include "utils/fstrcmp.h"
 #include "util.h"
+#include "xbox/xbeheader.h"
 
-#define PROGRAM_DATABASE_VERSION 0.5f
+#define PROGRAM_DATABASE_VERSION 0.6f
 
 //********************************************************************************************************************************
 CProgramDatabase::CProgramDatabase(void)
@@ -33,7 +34,7 @@ bool CProgramDatabase::CreateTables()
     CLog::Log(LOGINFO, "create path table");
     m_pDS->exec("CREATE TABLE path ( idPath integer primary key, strPath text)\n");
     CLog::Log(LOGINFO, "create files table");
-    m_pDS->exec("CREATE TABLE files ( idFile integer primary key, idPath integer, strFilename text, titleId text, xbedescription text, iTimesPlayed integer, lastAccessed integer)\n");
+    m_pDS->exec("CREATE TABLE files ( idFile integer primary key, idPath integer, strFilename text, titleId text, xbedescription text, iTimesPlayed integer, lastAccessed integer, iRegion integer)\n");
     CLog::Log(LOGINFO, "create bookmark index");
     m_pDS->exec("CREATE INDEX idxBookMark ON bookmark(bookmarkName)");
     CLog::Log(LOGINFO, "create path index");
@@ -65,6 +66,57 @@ bool CProgramDatabase::UpdateOldVersion(float fVersion)
       CLog::Log(LOGINFO, "creating versions table");
       m_pDS->exec("CREATE TABLE version (idVersion float)\n");
     }
+
+    if (fVersion < 0.6f)
+    { // Version 0.5 to 0.6 upgrade - we need to add the region entry
+      CGUIDialogProgress *dialog = (CGUIDialogProgress *)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+      if (dialog)
+      {
+        dialog->SetHeading("Updating old database version");
+        dialog->SetLine(0, L"");
+        dialog->SetLine(1, L"");
+        dialog->SetLine(2, L"");
+        dialog->StartModal(m_gWindowManager.GetActiveWindow());
+        dialog->SetLine(1, L"Adding table entries");
+        dialog->Progress();
+        dialog->Progress();
+      }
+      BeginTransaction();
+      CLog::Log(LOGINFO, "Creating temporary files table");
+      m_pDS->exec("CREATE TABLE tempfiles ( idFile integer primary key, idPath integer, strFilename text, titleId text, xbedescription text, iTimesPlayed integer, lastAccessed integer)\n");
+      CLog::Log(LOGINFO, "Copying files into temporary files table");
+      m_pDS->exec("INSERT INTO tempfiles SELECT idFile,idPath,strFilename,titleId,xbedescription,iTimesPlayed,lastAccessed FROM files");
+      CLog::Log(LOGINFO, "Destroying old files table");
+      m_pDS->exec("DROP TABLE files");
+      CLog::Log(LOGINFO, "Creating new files table");
+      m_pDS->exec("CREATE TABLE files ( idFile integer primary key, idPath integer, strFilename text, titleId text, xbedescription text, iTimesPlayed integer, lastAccessed integer, iRegion integer)\n");
+      CLog::Log(LOGINFO, "Copying files into new files table");
+      m_pDS->exec("INSERT INTO files(idFile,idPath,strFilename,titleId,xbedescription,iTimesPlayed,lastAccessed) SELECT * FROM tempfiles");
+      CLog::Log(LOGINFO, "Deleting temporary files table");
+      m_pDS->exec("DROP TABLE tempfiles");
+
+     /*   strSQL=FormatSQL("select * from artist where strArtist like '%s'", strArtist.c_str());
+    m_pDS->query(strSQL.c_str());
+
+    if (m_pDS->num_rows() == 0)
+    {
+      m_pDS->close();
+      // doesnt exists, add it
+      strSQL=FormatSQL("insert into artist (idArtist, strArtist) values( NULL, '%s' )", strArtist.c_str());
+      m_pDS->exec(strSQL.c_str());
+      CArtistCache artist;
+      artist.idArtist = (long)sqlite3_last_insert_rowid(m_pDB->getHandle());
+      artist.strArtist = strArtist1;
+      m_artistCache.insert(pair<CStdString, CArtistCache>(artist.strArtist, artist));
+      return artist.idArtist;
+    }*/
+
+      CStdString strSQL=FormatSQL("update files set iRegion=%i",-1);
+      m_pDS->exec(strSQL.c_str());
+   
+      CommitTransaction();
+      if (dialog) dialog->Close();
+    }
   }
   catch (...)
   {
@@ -72,6 +124,67 @@ bool CProgramDatabase::UpdateOldVersion(float fVersion)
     return false;
   }
   return true;
+}
+
+int CProgramDatabase::GetRegion(const CStdString& strFilenameAndPath)
+{
+  CStdString strPath;
+  CUtil::GetDirectory(strFilenameAndPath, strPath);
+  strPath.Replace("\\", "/");
+
+  if (NULL == m_pDB.get()) return 0;
+  if (NULL == m_pDS.get()) return 0;
+
+  CStdString strSQL=FormatSQL("select * from files,path where files.idPath=path.idPath and path.strPath='%s'", strPath.c_str());
+  if (!m_pDS->query(strSQL.c_str())) return 0;
+  int iRowsFound = m_pDS->num_rows();
+  if (iRowsFound == 0)
+  {
+    m_pDS->close();
+    return 0;
+  }
+  int iTimesPlayed = m_pDS->fv("files.iRegion").get_asLong();
+  m_pDS->close();
+
+  return iTimesPlayed;
+}
+
+bool CProgramDatabase::SetRegion(const CStdString& strFileName, int iRegion)
+{
+  try
+  {
+    CStdString strPath;
+    CUtil::GetDirectory(strFileName, strPath);
+    strPath.Replace("\\", "/");
+
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS.get()) return false;
+
+    CStdString strSQL=FormatSQL("select * from files,path where files.idPath=path.idPath and path.strPath='%s'", strPath.c_str());
+    if (!m_pDS->query(strSQL.c_str())) return false;
+    int iRowsFound = m_pDS->num_rows();
+    if (iRowsFound == 0)
+    {
+      m_pDS->close();
+      return false;
+    }
+    int idFile = m_pDS->fv("files.idFile").get_asLong();
+    m_pDS->close();
+
+    CLog::Log(LOGDEBUG, "CProgramDatabase::SetRegion(%i), idFile=%i, region=%i",
+              strFileName.c_str(), idFile,iRegion);
+
+    strSQL=FormatSQL("update files set iRegion=%i where idFile=%i",
+                  iRegion, idFile);
+    m_pDS->exec(strSQL.c_str());
+    return true;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "CProgramDatabase:SetDescription(%s) failed", strFileName.c_str());
+  }
+
+  return false;
 }
 
 //********************************************************************************************************************************
@@ -154,7 +267,7 @@ bool CProgramDatabase::GetXBEPathByTitleId(const DWORD titleId, CStdString& strP
   return false;
 }
 
-long CProgramDatabase::AddFile(long lPathId, const CStdString& strFileName , DWORD titleId, const CStdString& strDescription)
+long CProgramDatabase::AddFile(long lPathId, const CStdString& strFileName , DWORD titleId, const CStdString& strDescription, int iRegion)
 {
   CStdString strSQL = "";
   try
@@ -174,7 +287,7 @@ long CProgramDatabase::AddFile(long lPathId, const CStdString& strFileName , DWO
     SYSTEMTIME localTime;
     GetLocalTime(&localTime);
     unsigned __int64 lastAccessed = LocalTimeToTimeStamp(localTime);
-    strSQL=FormatSQL("insert into files (idFile, idPath, strFileName, titleId, xbedescription, iTimesPlayed, lastAccessed) values(NULL, %i, '%s', '%x','%s',%i,%I64u)", lPathId, strFileName.c_str(), titleId, strDescription.c_str(), 0, lastAccessed);
+    strSQL=FormatSQL("insert into files (idFile, idPath, strFileName, titleId, xbedescription, iTimesPlayed, lastAccessed, iRegion) values(NULL, %i, '%s', '%x','%s',%i,%I64u,%i)", lPathId, strFileName.c_str(), titleId, strDescription.c_str(), 0, lastAccessed, iRegion);
     m_pDS->exec(strSQL.c_str());
     lFileId = (long)sqlite3_last_insert_rowid( m_pDB->getHandle() );
     return lFileId;
@@ -368,6 +481,16 @@ long CProgramDatabase::AddProgram(const CStdString& strFilenameAndPath, DWORD ti
 
     long lPathId = GetPath(strPath);
 
+    int iRegion = 0;
+    if (g_guiSettings.GetBool("MyPrograms.GameAutoRegion"))
+    {
+      CXBE xbe;
+      iRegion = xbe.ExtractGameRegion(strFilenameAndPath);
+      CLog::Log(LOGDEBUG,"iregion found: %i",iRegion);
+      if (iRegion < 1 || iRegion > 7)
+        iRegion = 0;
+    }
+
     if (!EntryExists(strPath, strBookmark))
     {
       lPathId = AddPath(strPath);
@@ -378,12 +501,12 @@ long CProgramDatabase::AddProgram(const CStdString& strFilenameAndPath, DWORD ti
                     lPathId, lBookMarkId);
       m_pDS->exec(strSQL.c_str());
       long lProgramId = (long)sqlite3_last_insert_rowid(m_pDB->getHandle());
-      AddFile(lPathId, strFileName, titleId, strDescription);
+      AddFile(lPathId, strFileName, titleId, strDescription, iRegion);
     }
     else
     {
       long lProgramId = GetProgram(lPathId);
-      AddFile(lPathId, strFileName, titleId, strDescription);
+      AddFile(lPathId, strFileName, titleId, strDescription,iRegion);
       return lProgramId;
     }
 

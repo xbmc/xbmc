@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 09-10-2005 added: video mode override in my programs.
  - 08-10-2005 fixed: dvdplayer would be associated with any files on udf discs.
  - 08-10-2005 added: rename xbe in my programs.
  - 08-10-2005 added: Playlists to My Music Library, also directly accessible via XBMC.ActivateWindow(MyMusicLibrary,Playlists)
