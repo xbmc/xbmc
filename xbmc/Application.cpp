@@ -51,7 +51,7 @@
 // Windows includes
 #include "GUIWindowMusicPlaylist.h"
 #include "GUIWindowMusicSongs.h"
-#include "GUIWindowMusicTop100.h"
+//#include "GUIWindowMusicTop100.h"
 #include "GUIWindowMusicNav.h"
 #include "GUIWindowVideoPlaylist.h"
 #include "GUIWindowMusicInfo.h"
@@ -1194,7 +1194,7 @@ HRESULT CApplication::Initialize()
   m_gWindowManager.Add(new CGUIWindowMusicPlayList);          // window id = 500
   m_gWindowManager.Add(new CGUIWindowMusicSongs);             // window id = 501
   m_gWindowManager.Add(new CGUIWindowMusicNav);               // window id = 502
-  m_gWindowManager.Add(new CGUIWindowMusicTop100);            // window id = 503
+//  m_gWindowManager.Add(new CGUIWindowMusicTop100);            // window id = 503
 
   m_gWindowManager.Add(new CGUIDialogSelect);             // window id = 2000
   m_gWindowManager.Add(new CGUIWindowMusicInfo);                // window id = 2001
@@ -2816,7 +2816,7 @@ void CApplication::Stop()
     m_gWindowManager.Delete(WINDOW_MUSIC_PLAYLIST);
     m_gWindowManager.Delete(WINDOW_MUSIC_FILES);
     m_gWindowManager.Delete(WINDOW_MUSIC_NAV);
-    m_gWindowManager.Delete(WINDOW_MUSIC_TOP100);
+    //m_gWindowManager.Delete(WINDOW_MUSIC_TOP100);
     m_gWindowManager.Delete(WINDOW_MUSIC_INFO);
     m_gWindowManager.Delete(WINDOW_VIDEO_INFO);
     m_gWindowManager.Delete(WINDOW_VIDEOS);
@@ -3723,11 +3723,11 @@ bool CApplication::OnMessage(CGUIMessage& message)
         if (pItem)
         {
           // only Increment Top 100 Counter, if we have not clicked from inside the Top 100 view
-          if (g_stSettings.m_iMyMusicStartWindow == WINDOW_MUSIC_TOP100)
+/*          if (g_stSettings.m_iMyMusicStartWindow == WINDOW_MUSIC_TOP100)
           {
             break;
           }
-          else
+          else*/
           {
             // Can't write to the musicdatabase while scanning for music info
             CGUIDialogMusicScan *dialog = (CGUIDialogMusicScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);

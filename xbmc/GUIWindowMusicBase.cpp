@@ -1172,9 +1172,9 @@ void CGUIWindowMusicBase::UpdateButtons()
   msg2.SetLabel(strItem);
   g_graphicsContext.SendMessage(msg2);
 
-  strItem = g_localizeStrings.Get(271); // Top 100
+/*  strItem = g_localizeStrings.Get(271); // Top 100
   msg2.SetLabel(strItem);
-  g_graphicsContext.SendMessage(msg2);
+  g_graphicsContext.SendMessage(msg2);*/
 
   // Select the current window as default item
   CONTROL_SELECT_ITEM(CONTROL_BTNTYPE, g_stSettings.m_iMyMusicStartWindow - WINDOW_MUSIC_FILES);

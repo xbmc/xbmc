@@ -1006,11 +1006,11 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile, const bool loadp
       GetBoolean(pChild, "navsongssortascending", g_stSettings.m_bMyMusicNavSongsSortAscending);
       GetBoolean(pChild, "navplaylistssortascending", g_stSettings.m_bMyMusicNavPlaylistsSortAscending);
     }
-    pChild = pElement->FirstChildElement("top100");
+/*    pChild = pElement->FirstChildElement("top100");
     if (pChild)
     {
       GetInteger(pChild, "top100rooticons", g_stSettings.m_iMyMusicTop100ViewAsIcons, VIEW_AS_LIST, VIEW_AS_LIST, VIEW_AS_ICONS);
-    }
+    }*/
     pChild = pElement->FirstChildElement("playlist");
     if (pChild)
     {
@@ -1028,7 +1028,7 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile, const bool loadp
       GetBoolean(pChild, "oldusetags", g_stSettings.m_bMyMusicOldUseTags);
       GetBoolean(pChild, "oldfindthumbs", g_stSettings.m_bMyMusicOldFindThumbs);
     }
-    GetInteger(pElement, "startwindow", g_stSettings.m_iMyMusicStartWindow, WINDOW_MUSIC_FILES, WINDOW_MUSIC_FILES, WINDOW_MUSIC_TOP100); //501; view songs
+    GetInteger(pElement, "startwindow", g_stSettings.m_iMyMusicStartWindow, WINDOW_MUSIC_FILES, WINDOW_MUSIC_FILES, WINDOW_MUSIC_NAV); //501; view songs
     GetBoolean(pElement, "songinfoinvis", g_stSettings.m_bMyMusicSongInfoInVis);
     GetBoolean(pElement, "songthumbinvis", g_stSettings.m_bMyMusicSongThumbInVis);
   }
@@ -1254,10 +1254,10 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile, const bool savep
     SetBoolean(pChild, "navplaylistssortascending", g_stSettings.m_bMyMusicNavPlaylistsSortAscending);
   }
   {
-    TiXmlElement childNode("top100");
+    /*TiXmlElement childNode("top100");
     TiXmlNode *pChild = pNode->InsertEndChild(childNode);
     if (!pChild) return false;
-    SetInteger(pChild, "top100rooticons", g_stSettings.m_iMyMusicTop100ViewAsIcons);
+    SetInteger(pChild, "top100rooticons", g_stSettings.m_iMyMusicTop100ViewAsIcons);*/
   }
   {
     TiXmlElement childNode("playlist");
