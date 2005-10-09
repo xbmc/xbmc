@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 09-10-2005 fixed: "bad authorization" message from audioscrobbler on every songsubmission (timed out session).
  - 09-10-2005 fixed: bugs with video mode override.
  - 09-10-2005 fixed: charset converter may waste a byte here and there when converting
  - 09-10-2005 updated: German language file (Thnx to deezle)
