@@ -467,9 +467,6 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				<File
 					RelativePath=".\xbmc\GUIWindowMusicSongs.cpp">
 				</File>
-				<File
-					RelativePath=".\xbmc\GUIWindowMusicTop100.cpp">
-				</File>
 			</Filter>
 			<Filter
 				Name="GUI Video"
@@ -1271,9 +1268,6 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 			</File>
 			<File
 				RelativePath=".\xbmc\GUIWindowMusicSongs.h">
-			</File>
-			<File
-				RelativePath=".\xbmc\GUIWindowMusicTop100.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\GUIWindowOSD.h">
