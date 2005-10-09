@@ -14,6 +14,7 @@
 #define CONTROL_BTNVIEWASICONS  2
 #define CONTROL_BTNSORTBY       3
 #define CONTROL_BTNSORTASC      4
+#define CONTROL_BTNTYPE         6
 
 #define CONTROL_LABELFILES  12
 #define CONTROL_FILTER      15
@@ -23,14 +24,15 @@
 #define CONTROL_THUMBS    51
 #define CONTROL_BIGLIST   52
 
-#define SHOW_RECENT     64
-#define SHOW_TOP        32
-#define SHOW_PLAYLISTS  16
-#define SHOW_GENRES     8
-#define SHOW_ARTISTS    4
-#define SHOW_ALBUMS     2
-#define SHOW_SONGS      1
-#define SHOW_ROOT       0
+#define SHOW_RECENTLY_PLAYED   128
+#define SHOW_RECENTLY_ADDED     64
+#define SHOW_TOP                32
+#define SHOW_PLAYLISTS          16
+#define SHOW_GENRES              8
+#define SHOW_ARTISTS             4
+#define SHOW_ALBUMS              2
+#define SHOW_SONGS               1
+#define SHOW_ROOT                0
 
 struct SSortMusicNav
 {
@@ -218,6 +220,7 @@ CGUIWindowMusicNav::CGUIWindowMusicNav(void)
   m_iSortCache = -1;
   m_iAscendCache = -1;
   m_bSkipTheCache = false;
+  m_bDisplayEmptyDatabaseMessage=false;
 
   m_iState = SHOW_ROOT;
   m_iPath = m_iState;
@@ -265,7 +268,8 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
         CStdString strTop = g_localizeStrings.Get(271);           // Top 100
         CStdString strTopSongs = g_localizeStrings.Get(10504);    // Top 100 Songs
         CStdString strTopAlbums = g_localizeStrings.Get(10505);   // Top 100 Albums
-        CStdString strRecentAlbums = g_localizeStrings.Get(359);  // Recent Albums
+        CStdString strRecentlyAddedAlbums = g_localizeStrings.Get(359);  // Recent Added Albums
+        CStdString strRecentlyPlayedAlbums = g_localizeStrings.Get(517);  // Recent Played Albums
         CStdString strPlaylists = g_localizeStrings.Get(136);     // Playlists
 
         if (strDestination.Equals("Genres"))
@@ -344,15 +348,26 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
           m_Directory.m_strPath += strTopAlbums + "/";
           m_history.Set(m_Directory.m_strPath, strParentPath);
         }
-        else if (strDestination.Equals("RecentAlbums"))
+        else if (strDestination.Equals("RecentlyAddedAlbums"))
         {
-          m_iState = SHOW_RECENT;
-          m_iPath = SHOW_RECENT;
+          m_iState = SHOW_RECENTLY_ADDED;
+          m_iPath = SHOW_RECENTLY_ADDED;
 
           vecPathHistory.clear();
-          vecPathHistory.push_back(strRecentAlbums);
+          vecPathHistory.push_back(strRecentlyAddedAlbums);
 
-          m_Directory.m_strPath = "db://" + strRecentAlbums + "/";
+          m_Directory.m_strPath = "db://" + strRecentlyAddedAlbums + "/";
+          m_history.Set(m_Directory.m_strPath, strParentPath);
+        }
+        else if (strDestination.Equals("RecentlyPlayedAlbums"))
+        {
+          m_iState = SHOW_RECENTLY_PLAYED;
+          m_iPath = SHOW_RECENTLY_PLAYED;
+
+          vecPathHistory.clear();
+          vecPathHistory.push_back(strRecentlyPlayedAlbums);
+
+          m_Directory.m_strPath = "db://" + strRecentlyPlayedAlbums + "/";
           m_history.Set(m_Directory.m_strPath, strParentPath);
         }
         else if (strDestination.Equals("Playlists"))
@@ -379,6 +394,17 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
         m_strAlbum.Empty();
         m_strAlbumPath.Empty();
       }
+
+      CGUIWindowMusicBase::OnMessage(message);
+
+      if (g_musicDatabase.GetSongsCount()<=0)
+      {
+        DisplayEmptyDatabaseMessage(true);
+        SET_CONTROL_FOCUS(CONTROL_BTNTYPE, 0);
+        Update(m_Directory.m_strPath);  // Will remove content from the list/thumb control
+      }
+
+      return true;
     }
     break;
 
@@ -481,7 +507,7 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
       else if (iControl == CONTROL_BTNVIEWASICONS)
       {
         // First check if we have any additional view ability
-        if (m_iState == SHOW_ALBUMS || m_iState == SHOW_RECENT)
+        if (m_iState == SHOW_ALBUMS || m_iState == SHOW_RECENTLY_ADDED || m_iState == SHOW_RECENTLY_PLAYED)
         { // allow the extra big list view
           m_iViewAsIcons++;
           if (m_iViewAsIcons > VIEW_AS_LARGE_LIST) m_iViewAsIcons = VIEW_AS_LIST;
@@ -498,7 +524,7 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
           g_stSettings.m_iMyMusicNavGenresViewAsIcons = m_iViewAsIcons;
         else if (m_iState == SHOW_ARTISTS)
           g_stSettings.m_iMyMusicNavArtistsViewAsIcons = m_iViewAsIcons;
-        else if (m_iState == SHOW_ALBUMS || m_iState == SHOW_RECENT)
+        else if (m_iState == SHOW_ALBUMS || m_iState == SHOW_RECENTLY_ADDED || m_iState == SHOW_RECENTLY_PLAYED)
           g_stSettings.m_iMyMusicNavAlbumsViewAsIcons = m_iViewAsIcons;
         else if (m_iState == SHOW_SONGS)
           g_stSettings.m_iMyMusicNavSongsViewAsIcons = m_iViewAsIcons;
@@ -559,6 +585,9 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
 
 bool CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, CFileItemList &items)
 {
+  if (m_bDisplayEmptyDatabaseMessage)
+    return true;
+
   m_bGotDirFromCache = false;
 
   CLog::Log(LOGDEBUG, "CGUIWindowMusicNav::GetDirectory(%s)",strDirectory.c_str());
@@ -586,7 +615,8 @@ bool CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, CFileItemL
       vecRoot.push_back(g_localizeStrings.Get(132));  // Albums
       vecRoot.push_back(g_localizeStrings.Get(134));  // Songs
       vecRoot.push_back(g_localizeStrings.Get(271));  // Top 100
-      vecRoot.push_back(g_localizeStrings.Get(359));  // Recent Albums
+      vecRoot.push_back(g_localizeStrings.Get(359));  // Recently Added Albums
+      vecRoot.push_back(g_localizeStrings.Get(517));  // Recently Played Albums
       vecRoot.push_back(g_localizeStrings.Get(136));  // Playlists
       for (int i = 0; i < (int)vecRoot.size(); ++i)
       {
@@ -670,9 +700,6 @@ bool CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, CFileItemL
       VECGENRES genres;
       bool bTest = g_musicDatabase.GetGenresNav(genres);
 
-      // Display an error message if the database doesn't contain any genres
-      DisplayEmptyDatabaseMessage(genres.empty());
-
       if (bTest)
       {
         // add "All Genres"
@@ -719,9 +746,6 @@ bool CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, CFileItemL
       VECARTISTS artists;
       bool bTest = g_musicDatabase.GetArtistsNav(artists, m_strGenre);
 
-      // Display an error message if the database doesn't contain any artists
-      DisplayEmptyDatabaseMessage(artists.empty());
-
       if (bTest)
       {
         // add "All Artists"
@@ -742,7 +766,8 @@ bool CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, CFileItemL
     }
     break;
 
-  case SHOW_RECENT:
+  case SHOW_RECENTLY_PLAYED:
+  case SHOW_RECENTLY_ADDED:
   case SHOW_ALBUMS:
     {
       m_iViewAsIcons = g_stSettings.m_iMyMusicNavAlbumsViewAsIcons;
@@ -769,13 +794,12 @@ bool CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, CFileItemL
       bool bTest;
       if (m_iPath == (SHOW_TOP + SHOW_ALBUMS))
         bTest = g_musicDatabase.GetTop100Albums(albums);
-      else if (m_iPath == SHOW_RECENT)
-        bTest = g_musicDatabase.GetRecentAlbums(albums);
+      else if (m_iPath == SHOW_RECENTLY_ADDED)
+        bTest = g_musicDatabase.GetRecentlyAddedAlbums(albums);
+      else if (m_iPath == SHOW_RECENTLY_PLAYED)
+        bTest = g_musicDatabase.GetRecentlyPlayedAlbums(albums);
       else
         bTest = g_musicDatabase.GetAlbumsNav(albums, m_strGenre, m_strArtist);
-
-      // Display an error message if the database doesn't contain any albums
-      DisplayEmptyDatabaseMessage(albums.empty());
 
       if (bTest)
       {
@@ -822,9 +846,6 @@ bool CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, CFileItemL
         bTest = g_musicDatabase.GetTop100(songs);
       else
         bTest = g_musicDatabase.GetSongsNav(songs, m_strGenre, m_strArtist, m_strAlbum, m_strAlbumPath);
-
-      // Display an error message if the database doesn't contain any albums
-      DisplayEmptyDatabaseMessage(songs.empty());
 
       if (bTest)
       {
@@ -946,9 +967,12 @@ void CGUIWindowMusicNav::UpdateButtons()
   // "Top 100 Albums"
   else if (m_iPath == (SHOW_TOP + SHOW_ALBUMS))
     strLabel = g_localizeStrings.Get(10505);
-  // "Recent Albums"
-  else if (m_iPath == SHOW_RECENT)
+  // "Recently Added Albums"
+  else if (m_iPath == SHOW_RECENTLY_ADDED)
     strLabel = g_localizeStrings.Get(359);
+  // "Recently Played Albums"
+  else if (m_iPath == SHOW_RECENTLY_PLAYED)
+    strLabel = g_localizeStrings.Get(517);
   // "Playlists"
   else if (m_iPath == SHOW_PLAYLISTS)
     strLabel = g_localizeStrings.Get(136);
@@ -1024,9 +1048,12 @@ void CGUIWindowMusicNav::OnClick(int iItem)
           // top 100
           else if (strPath.Equals((CStdString)g_localizeStrings.Get(271)))
             m_iState = SHOW_TOP;
-          // recent albums
+          // recently added albums
           else if (strPath.Equals((CStdString)g_localizeStrings.Get(359)))
-            m_iState = SHOW_RECENT;
+            m_iState = SHOW_RECENTLY_ADDED;
+          // recently played albums
+          else if (strPath.Equals((CStdString)g_localizeStrings.Get(517)))
+            m_iState = SHOW_RECENTLY_PLAYED;
           // playlists
           else if (strPath.Equals((CStdString)g_localizeStrings.Get(136)))
             m_iState = SHOW_PLAYLISTS;
@@ -1075,7 +1102,8 @@ void CGUIWindowMusicNav::OnClick(int iItem)
         }
         break;
 
-      case SHOW_RECENT:
+      case SHOW_RECENTLY_PLAYED:
+      case SHOW_RECENTLY_ADDED:
       case SHOW_ALBUMS:
         {
           m_iState = SHOW_SONGS;
@@ -1149,7 +1177,7 @@ void CGUIWindowMusicNav::OnFileItemFormatLabel(CFileItem* pItem)
   else if (pItem->m_bIsFolder)
   {
     // for albums, set label2 to the artist name
-    if (m_iState == SHOW_ALBUMS || m_iState == SHOW_RECENT)
+    if (m_iState == SHOW_ALBUMS || m_iState == SHOW_RECENTLY_ADDED || m_iState == SHOW_RECENTLY_PLAYED)
     {
       // if filtering use the filtered artist name
       if (!m_strArtist.IsEmpty())
@@ -1480,6 +1508,24 @@ void CGUIWindowMusicNav::GoParentFolder()
   else if (m_iPath & (1 << 5))
   {
     m_iState = SHOW_TOP;
+    m_strAlbum.Empty();
+    m_strAlbumPath.Empty();
+    m_strArtist.Empty();
+    m_strGenre.Empty();
+  }
+  // go back to recently added albums
+  else if (m_iPath & (1 << 6))
+  {
+    m_iState = SHOW_RECENTLY_ADDED;
+    m_strAlbum.Empty();
+    m_strAlbumPath.Empty();
+    m_strArtist.Empty();
+    m_strGenre.Empty();
+  }
+  // go back to recently played albums
+  else if (m_iPath & (1 << 7))
+  {
+    m_iState = SHOW_RECENTLY_PLAYED;
     m_strAlbum.Empty();
     m_strAlbumPath.Empty();
     m_strArtist.Empty();
