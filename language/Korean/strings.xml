@@ -270,7 +270,7 @@
   <string><id>338</id><value>아날로그</value></string>
   <string><id>339</id><value>디지털</value></string>
   <string><id>340</id><value>각종 음악가</value></string>
-  <string><id>341</id><value>DVD 재생</value></string>
+  <string><id>341</id><value>디스크 재생</value></string>
   <string><id>342</id><value>영화</value></string>
   <string><id>343</id><value>프레임 비율 조정 </value></string>
   <string><id>344</id><value>배우</value></string>
@@ -556,7 +556,8 @@
   <string><id>770</id><value>오류 %i: 공유를 사용할 수 없습니다</value></string>
   <string><id>771</id><value>- Fatx 제한 자동 해제</value></string>
   <string><id>772</id><value>오디오 하드웨어</value></string>
-  <string><id>773</id><value>찾는중</value></string>    
+  <string><id>773</id><value>검색중</value></string>
+  <string><id>774</id><value>슬라이드쇼 화면보호기 폴더</value></string>    
   <string><id>998</id><value>XLink KAI</value></string>
   <string><id>999</id><value>온라인 게이밍</value></string>
 
@@ -602,6 +603,7 @@
   <string><id>1245</id><value>FTP 아이디</value></string>
   <string><id>1246</id><value>FTP 비밀번호</value></string>
   <string><id>1247</id><value>FTP 서버의 아이디/비밀번호 설정이 완료되었습니다!</value></string>
+  
   <string><id>1250</id><value>자동 탐지</value></string>
   <string><id>1251</id><value>XBOX 자동 탐지</value></string>
   <string><id>1252</id><value>닉네임</value></string>
@@ -653,7 +655,6 @@
   <string><id>10025</id><value>비디오/제목</value></string>
   <string><id>10028</id><value>비디오/재생목록</value></string>
   <string><id>10034</id><value>설정-&gt;프로파일</value></string>
-
   <string><id>10100</id><value>예/아니오 대화창</value></string>
   <string><id>10101</id><value>진행 대화창</value></string>
   <string><id>10500</id><value>음악/재생목록</value></string>
@@ -662,6 +663,7 @@
   <string><id>10503</id><value>음악/인기곡 100</value></string>
   <string><id>10504</id><value>인기곡 100</value></string> 
   <string><id>10505</id><value>인기앨범 100</value></string>
+
 
   <string><id>10506</id><value>프로그램</value></string>
   <string><id>10507</id><value>환경설정</value></string>
@@ -682,7 +684,6 @@
   <string><id>10522</id><value>비디오 - 재생목록</value></string>
   <string><id>10523</id><value>앨범 정보</value></string>
   <string><id>10524</id><value>영화 정보</value></string>
-
   <string><id>12000</id><value>대화창 선택</value></string>
   <string><id>12001</id><value>음악/정보</value></string>
   <string><id>12002</id><value>확인 대화창</value></string>
@@ -692,6 +693,8 @@
   <string><id>12006</id><value>오디오 시각화</value></string>
   <string><id>12007</id><value>사진/슬라이드 쇼</value></string>
   <string><id>12008</id><value>파일관리 대화창</value></string>
+
+
   <string><id>12310</id><value>0</value></string>
   <string><id>12311</id><value>1</value></string>
   <string><id>12312</id><value>2</value></string>
@@ -754,7 +757,6 @@
   <string><id>12371</id><value>새로운 마스터 코드를 설정해 주십시오!</value></string>
   <string><id>12372</id><value>잠금 설정 &amp; 파일</value></string> 
   <string><id>12373</id><value>설정 &amp; 파일</value></string> 
-  
   <string><id>12374</id><value>미디어 잠금</value></string>
   <string><id>12375</id><value>마스터 사용자 모드</value></string>
 
@@ -762,6 +764,7 @@
   <string><id>12391</id><value>분</value></string> 
   <string><id>12392</id><value>시간</value></string> 
   <string><id>12393</id><value>일</value></string> 
+
   
   <string><id>12600</id><value>날씨</value></string>
   <string><id>12900</id><value>화면 보호기</value></string>
@@ -1098,7 +1101,7 @@
   <string><id>13297</id><value>Xbox가 연결되지 않았습니다. 네트워크 설정을 확인하세요.</value></string>
   <string><id>13298</id><value>XBLIVE 키:</value></string>
   
-  <string><id>15213</id><value>[PLACEHOLDER]</value></string>
+  <string><id>15213</id><value>재생중...</value></string>
   <string><id>15214</id><value>자동 A/V 싱크 사용</value></string>
   <string><id>15215</id><value>미리보기 화면에서 파일명 숨김</value></string>
   
@@ -1107,11 +1110,11 @@
   <string><id>15302</id><value>서버를 찾을 수 없습니다</value></string> 
   <string><id>15303</id><value>작업그룹을 찾을 수 없습니다</value></string> 
 
-
   <string><id>16000</id><value>일반</value></string>
   <string><id>16001</id><value>오디오 하드웨어 설정...</value></string>
   <string><id>16002</id><value>CDDB 검색</value></string>
   <string><id>16003</id><value>플레이어</value></string>
+  <string><id>16004</id><value>디스크로부터 미디어 재생</value></string>
   
   <string><id>16009</id><value>동영상 이름 입력</value></string> 
   <string><id>16010</id><value>프로파일 이름 입력</value></string> 
@@ -1129,6 +1132,7 @@
   <string><id>16021</id><value>Odd 싱크</value></string> 
   <string><id>16022</id><value>Even 싱크</value></string> 
   <string><id>16023</id><value>인터레이스 처리</value></string> 
+
   <string><id>16024</id><value>취소중...</value></string>
   
 </strings>
