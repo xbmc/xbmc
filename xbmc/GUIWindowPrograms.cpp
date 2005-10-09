@@ -10,7 +10,7 @@
 #include "AutoSwitch.h"
 #include "GUIPassword.h"
 #include "GUIDialogContextMenu.h"
-
+#include "xbox/xbeheader.h"
 
 using namespace DIRECTORY;
 
@@ -377,11 +377,42 @@ bool CGUIWindowPrograms::OnPopupMenu(int iItem)
     pMenu->Initialize();
     // add the needed buttons
     
-    int btn_Rename = 0;
+    CStdStringW strLaunch("Launch");
+    int iRegion = m_database.GetRegion(m_vecItems[iItem]->m_strPath);
+    if (iRegion == -1)
+      if (g_guiSettings.GetBool("MyPrograms.GameAutoRegion"))
+      {
+        CXBE xbe;
+        iRegion = xbe.ExtractGameRegion(m_vecItems[iItem]->m_strPath);
+        if (iRegion < 1 || iRegion > 7)
+          iRegion = 0;
+      }
+      else
+        iRegion = 0;
+    
+    GetRegion(iRegion);
+    if (iRegion == 1)
+      strLaunch += " (NTSC-M)";
+    if (iRegion == 2)
+      strLaunch += " (NTSC-J)";
+    if (iRegion == 4)
+      strLaunch += " (PAL)";
+    /*int iPreferred = XGetVideoStandard();
+    if (iPreferred == 3)
+      iPreferred = 4;
+
+    if ((iRegion & 1  && iPreferred == 1) || (iRegion == 1))
+      strLaunch += " (NTSC-M)";
+    else if ((iRegion & 2  && iPreferred == 2) || (iRegion == 2))
+      strLaunch += " (NTSC-J)";
+    else if ((iRegion & 4  && iPreferred == 4) || (iRegion == 4))
+      strLaunch += " (PAL)";*/
+
+    int btn_Rename = -1;
     if (m_vecItems[iItem]->IsType(".xbe"))
       btn_Rename = pMenu->AddButton(118); // rename
-
-    int btn_Rescan = pMenu->AddButton(102); // rescan bookmarks
+    int btn_Launch = pMenu->AddButton(strLaunch); // launch
+    int btn_LaunchIn = pMenu->AddButton("Launch in.."); // launch in video mode
     int btn_Settings = pMenu->AddButton(5); // Settings
 
     // position it correctly
@@ -415,6 +446,48 @@ bool CGUIWindowPrograms::OnPopupMenu(int iItem)
           m_gWindowManager.ActivateWindow(WINDOW_SETTINGS_MYPROGRAMS);
       }
       else m_gWindowManager.ActivateWindow(WINDOW_SETTINGS_MYPROGRAMS); 
+    }
+    if (btnid == btn_Launch)
+    {
+      OnClick(iItem);
+      return true;
+    }
+    if (btnid == btn_LaunchIn)
+    {
+      pMenu->Initialize();
+      int btn_PAL;
+      int btn_NTSCM;
+      int btn_NTSCJ;
+      CStdStringW strPAL, strNTSCJ, strNTSCM;
+      strPAL = "PAL";
+      strNTSCM = "NTSC-M";
+      strNTSCJ = "NTSC-J";
+      int iRegion = m_database.GetRegion(m_vecItems[iItem]->m_strPath);
+      GetRegion(iRegion);
+
+      if (iRegion == 1)
+        strNTSCM += " (default)";
+      if (iRegion == 2)
+        strNTSCJ += " (default)";
+      if (iRegion == 4)
+        strPAL += " (default)";
+
+      btn_PAL = pMenu->AddButton(strPAL);
+      btn_NTSCM = pMenu->AddButton(strNTSCM);
+      btn_NTSCJ = pMenu->AddButton(strNTSCJ);
+      
+      pMenu->SetPosition(iPosX - pMenu->GetWidth() / 2, iPosY - pMenu->GetHeight() / 2);
+      pMenu->DoModal(GetID());
+      int btnid = pMenu->GetButton();
+      if (btnid == btn_NTSCM)
+        m_database.SetRegion(m_vecItems[iItem]->m_strPath,1);
+      if (btnid == btn_NTSCJ)
+        m_database.SetRegion(m_vecItems[iItem]->m_strPath,2);
+      if (btnid == btn_PAL)
+        m_database.SetRegion(m_vecItems[iItem]->m_strPath,4);
+
+      if (btnid > -1)
+        OnClick(iItem);
     }
   }
   else
@@ -872,10 +945,12 @@ void CGUIWindowPrograms::OnClick(int iItem)
         strcat(szParameters, shortcut.m_strParameters.c_str());
       }
     }
+    int iRegion = m_database.GetRegion(m_vecItems[iItem]->m_strPath);
+    GetRegion(iRegion);
     if (strlen(szParameters))
-      CUtil::RunXBE(szPath, szParameters);
+      CUtil::RunXBE(szPath, szParameters,F_VIDEO(iRegion));
     else
-      CUtil::RunXBE(szPath);
+      CUtil::RunXBE(szPath,NULL,F_VIDEO(iRegion));
   }
 }
 
@@ -1206,4 +1281,26 @@ void CGUIWindowPrograms::OnWindowUnload()
 {
   CGUIWindow::OnWindowUnload();
   m_viewControl.Reset();
+}
+
+void CGUIWindowPrograms::GetRegion(int& iRegion)
+{
+  int iPreferred = XGetVideoStandard();
+  if (iPreferred == 3)
+    iPreferred = 4;
+
+  if (iRegion == 0)
+    iRegion = iPreferred;
+  else if ((iRegion & 1  && iPreferred == 1) || (iRegion == 1))
+    iRegion = 1;
+  else if ((iRegion & 2  && iPreferred == 2) || (iRegion == 2))
+    iRegion = 2;
+  else if ((iRegion & 4  && iPreferred == 4) || (iRegion == 4))
+    iRegion = 4;
+  else if (iRegion & 1)
+    iRegion = 1;
+  else if (iRegion & 4)
+    iRegion = 4;
+  else if (iRegion & 2)
+    iRegion = 2;
 }
