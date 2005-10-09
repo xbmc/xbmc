@@ -29,7 +29,7 @@ protected:
   void ClearFileItems();
   void DeleteThumbs(CFileItemList& items);
   void GoParentFolder();
-  int GetRegion(int iItem);
+  int GetRegion(int iItem, bool bReload=false);
   CGUIDialogProgress* m_dlgProgress;
   CFileItemList m_vecItems;
   CFileItem m_Directory;

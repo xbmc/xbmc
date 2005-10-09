@@ -388,9 +388,9 @@ bool CGUIWindowPrograms::OnPopupMenu(int iItem)
 
     int btn_Launch = pMenu->AddButton(strLaunch); // launch
     int btn_Rename = -1;
-    if (m_vecItems[iItem]->IsType(".xbe"))
-      btn_Rename = pMenu->AddButton(118); // rename
     int btn_LaunchIn = pMenu->AddButton(519); // launch in video mode
+    if (m_vecItems[iItem]->IsType(".xbe"))
+      btn_Rename = pMenu->AddButton(520); // edit xbe title
     int btn_Settings = pMenu->AddButton(5); // Settings
 
     // position it correctly
@@ -440,7 +440,7 @@ bool CGUIWindowPrograms::OnPopupMenu(int iItem)
       strPAL = "PAL";
       strNTSCM = "NTSC-M";
       strNTSCJ = "NTSC-J";
-      int iRegion = GetRegion(iItem);
+      int iRegion = GetRegion(iItem,true);
 
       if (iRegion == 1)
         strNTSCM += " (default)";
@@ -1262,9 +1262,16 @@ void CGUIWindowPrograms::OnWindowUnload()
   m_viewControl.Reset();
 }
 
-int CGUIWindowPrograms::GetRegion(int iItem)
+int CGUIWindowPrograms::GetRegion(int iItem, bool bReload)
 {
-  int iRegion = m_database.GetRegion(m_vecItems[iItem]->m_strPath);
+  int iRegion;
+  if (bReload)
+  {
+    CXBE xbe;
+    iRegion = xbe.ExtractGameRegion(m_vecItems[iItem]->m_strPath); 
+  }
+  else
+    iRegion = m_database.GetRegion(m_vecItems[iItem]->m_strPath);
   if (iRegion == -1)
   {
     if (g_guiSettings.GetBool("MyPrograms.GameAutoRegion"))
