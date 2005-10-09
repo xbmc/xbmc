@@ -195,10 +195,11 @@ void CCharsetConverter::subtitleCharsetToFontCharset(const CStdStringA& strSourc
   {
     const char* src = strSource.c_str();
     size_t inBytes = strSource.length() + 1;
-    char *dst = (char*) strDest.SetBuf(inBytes * 2);
+    char *dst = (char*)strDest.GetBuffer(inBytes * 2);
     size_t outBytes = inBytes * 2;
 
     iconv(m_iconvSubtitleCharsetToFontCharset, &src, &inBytes, &dst, &outBytes);
+    strDest.ReleaseBuffer();
   }
 }
 
@@ -231,10 +232,11 @@ void CCharsetConverter::logicalToVisualBiDi(const CStdStringA& strSource, CStdSt
     // Removes bidirectional marks
     //len = fribidi_remove_bidi_marks(visual, len, NULL, NULL, NULL);
 
-    char* result = strDest.SetBuf(sourceLen);
+    char *result = strDest.GetBuffer(sourceLen);
 
     // Convert back from Unicode to the charset
     fribidi_unicode_to_charset(fribidiCharset, visual, len, result);
+    strDest.ReleaseBuffer();
   }
 
   free(logical);
@@ -253,15 +255,17 @@ void CCharsetConverter::utf8ToStringCharset(const CStdStringA& strSource, CStdSt
     const char* src = strSource.c_str();
     size_t inBytes = strSource.length() + 1;
 
-    char *dst = strDest.SetBuf(inBytes);
+    char *dst = strDest.GetBuffer(inBytes);
     size_t outBytes = inBytes - 1;
 
     if (iconv(m_iconvUtf8ToStringCharset, &src, &inBytes, &dst, &outBytes) == -1)
     {
+      strDest.ReleaseBuffer();
       // For some reason it failed (maybe wrong charset?). Nothing to do but
       // return the original..
       strDest = strSource;
     }
+    strDest.ReleaseBuffer();
   }
 }
 
@@ -279,17 +283,18 @@ void CCharsetConverter::stringCharsetToUtf8(const CStdStringA& strSource, CStdSt
 
     size_t outBytes = (inBytes * 4) + 1;
     size_t originalOutBytes = outBytes;
-    char *dst = strDest.SetBuf(outBytes);
+    char *dst = strDest.GetBuffer(inBytes);
 
     if (iconv(m_iconvStringCharsetToUtf8, &src, &inBytes, &dst, &outBytes) == -1)
     {
+      strDest.ReleaseBuffer();
       // For some reason it failed (maybe wrong charset?). Nothing to do but
       // return the original..
       strDest = strSource;
       return ;
     }
 
-    strDest.resize(originalOutBytes - outBytes);
+    strDest.ReleaseBuffer();
   }
 }
 
@@ -301,14 +306,15 @@ void CCharsetConverter::UTF16toUTF8(const CStdStringW& strSource, CStdStringA &s
   {
     const char* src = (const char*) strSource.c_str();
     size_t inBytes = (strSource.length() + 1)*2;
-    char *dst = strDest.SetBuf(inBytes);
+    char *dst = strDest.GetBuffer(inBytes);
     size_t outBytes = (inBytes * 2) + 1;  // some free for UTF8 conversion
     size_t originalOutBytes = outBytes;
     if (iconv(m_iconvUtf16toUtf8, &src, &inBytes, &dst, &outBytes))
     { // failed :(
+      strDest.ReleaseBuffer();
       strDest = strSource;
     }
-    strDest.resize(originalOutBytes - outBytes);
+    strDest.ReleaseBuffer();
   }
 }
 
@@ -339,10 +345,11 @@ void CCharsetConverter::ucs2CharsetToStringCharset(const CStdStringW& strSource,
       }
     }
 
-    char *dst = strDest.SetBuf(inBytes);
+    char *dst = strDest.GetBuffer(inBytes);
     size_t outBytes = inBytes;
 
     iconv(m_iconvUcs2CharsetToStringCharset, &src, &inBytes, &dst, &outBytes);
+    strDest.ReleaseBuffer();
   }
 }
 
@@ -360,10 +367,11 @@ void CCharsetConverter::utf32ToStringCharset(const unsigned long* strSource, CSt
     const char* src = (const char*) strSource;
     size_t inBytes = (ptr-strSource+1)*4;
 
-    char *dst = strDest.SetBuf(inBytes);
+    char *dst = strDest.GetBuffer(inBytes);
     size_t outBytes = inBytes;
 
     iconv(m_iconvUtf32ToStringCharset, &src, &inBytes, &dst, &outBytes);
+    strDest.ReleaseBuffer();
   }
 }
 
