@@ -5,6 +5,11 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 09-10-2005 updated: German language file (Thnx to deezle)
+ - 09-10-2005 updated: Hungarian language file (Thnx to tcsizmadia)
+ - 09-10-2005 updated: Norwegian language file (Thnx to vnm)
+ - 09-10-2005 updated: Finnish language file (Thnx to jutski)
+ - 09-10-2005 updated: Korean language file (Thnx to AkoXko)
  - 09-10-2005 added: Nav view, recently played albums (musicdatabase will be updated to version 1.3)
  - 09-10-2005 changed: Nav view, the empty database message is only displayed when there are no scanned items
  - 09-10-2005 changed: added databaseviews for albums and songs to the musicdatabase
