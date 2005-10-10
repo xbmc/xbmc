@@ -3251,25 +3251,39 @@ int CUtil::GetMatchingShare(const CStdString& strPath, VECSHARES& vecShares, boo
     }
 
     // doesnt match a name, so try the bookmark path
-    // remove user details, and ensure pathes ends in 
-    // a trailing slash so as not to match a substring
-    CURL urlShare(share.strPath);
-    CStdString strShare;
-    urlShare.GetURLWithoutUserDetails(strShare);
-    if (!HasSlashAtEnd(strShare))
-    {
-      if (IsHD(strShare))
-        strShare += "\\";
-      else
-        strShare += "/";
-    }
-    int iLenShare = strShare.size();
+    // first test for concatenated path
+    int iPos = share.strPath.Find(',');
+    vector<CStdString> vecPaths;
+    if (iPos < 0)
+      vecPaths.push_back(share.strPath);
+    else
+      CUtil::Tokenize(share.strPath, vecPaths, ",");
 
-    if ((iLenPath >= iLenShare) && (strDest.Left(iLenShare).Equals(strShare)) && (iLenShare > iLength))
+    // test each path
+    for (int j = 0; j < (int)vecPaths.size(); ++j)
     {
-      //CLog::Log(LOGDEBUG,"Found matching bookmark [%s], Len = [%i]", strShare.c_str(), iLenShare);
-      iIndex = i;
-      iLength = iLenShare;
+      // remove user details, and ensure pathes ends in 
+      // a trailing slash so as not to match a substring
+      CURL urlShare(vecPaths[j]);
+      CStdString strShare;
+      urlShare.GetURLWithoutUserDetails(strShare);
+      if (!HasSlashAtEnd(strShare))
+      {
+        if (IsHD(strShare))
+          strShare += "\\";
+        else
+          strShare += "/";
+      }
+      int iLenShare = strShare.size();
+
+      if ((iLenPath >= iLenShare) && (strDest.Left(iLenShare).Equals(strShare)) && (iLenShare > iLength))
+      {
+        CLog::Log(LOGDEBUG,"Found matching bookmark at index %i: [%s], Len = [%i]", i, strShare.c_str(), iLenShare);
+        if (vecPaths.size() > 1)
+          CLog::Log(LOGDEBUG,"In concatenated path: [%s]",share.strPath.c_str());
+        iIndex = i;
+        iLength = iLenShare;
+      }
     }
   }
 

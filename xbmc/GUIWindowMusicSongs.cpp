@@ -114,7 +114,7 @@ struct SSortMusicSongs
         strcpy(szfilename2, rpEnd.GetLabel());
         break;
 
-      default:  // Sort by Filename by default
+      default:  // Sort by Label by default
         strcpy(szfilename1, rpStart.GetLabel().c_str());
         strcpy(szfilename2, rpEnd.GetLabel().c_str());
         break;
@@ -125,13 +125,6 @@ struct SSortMusicSongs
 
       for (int i = 0; i < (int)strlen(szfilename2); i++)
         szfilename2[i] = tolower((unsigned char)szfilename2[i]);
-
-      /*
-      if (m_bSortAscending)
-        return (strcmp(szfilename1, szfilename2) < 0);
-      else
-        return (strcmp(szfilename1, szfilename2) >= 0);
-      */
 
       if (m_bSortAscending)
         return StringUtils::AlphaNumericCompare(szfilename1, szfilename2);
@@ -240,16 +233,6 @@ bool CGUIWindowMusicSongs::OnMessage(CGUIMessage& message)
       }
 
       return CGUIWindowMusicBase::OnMessage(message);
-
-      /*
-      if (bFirstTime)
-      {
-       // Set directory history for default path
-       SetHistoryForPath(m_Directory.m_strPath);
-       bFirstTime=false;
-      }
-      return true;
-      */
     }
     break;
 
@@ -371,9 +354,7 @@ bool CGUIWindowMusicSongs::OnMessage(CGUIMessage& message)
         CStdString strDirectory;
         strDirectory.Format("%s\\playlists", g_stSettings.m_szAlbumDirectory);
         if (strDirectory != m_Directory.m_strPath)
-        {
           Update(strDirectory);
-        }
       }
       else if (iControl == CONTROL_BTNSCAN)
       {
@@ -404,66 +385,65 @@ bool CGUIWindowMusicSongs::OnMessage(CGUIMessage& message)
 
 bool CGUIWindowMusicSongs::GetDirectory(const CStdString &strDirectory, CFileItemList &items)
 {
-  if (items.Size() )
-  {
-    // cleanup items
+  // cleanup items
+  if (items.Size())
     items.Clear();
-  }
 
-  CStdString strParentPath;
-  bool bParentExists = CUtil::GetParentPath(strDirectory, strParentPath);
+  // if we're getting the root bookmark listing
+  // make sure the path history is clean
+  if (strDirectory.IsEmpty())
+    m_vecHistory.empty();
 
-  CStdString strPlayListDir;
-  strPlayListDir.Format("%s\\playlists", g_stSettings.m_szAlbumDirectory);
-  if (strPlayListDir == strDirectory)
+  CStdString strParentPath = "";
+  if (m_vecHistory.size() > 0)
+    strParentPath = m_vecHistory.back();
+
+  CLog::Log(LOGDEBUG,"CGUIWindowMusicSongs::GetDirectory(%s)", strDirectory.c_str());
+  // debug log
+  CStdString strTemp;
+  CLog::Log(LOGDEBUG,"m_vecHistory = (");
+  for (int i = 0; i < (int)m_vecHistory.size(); ++i)
   {
-    bParentExists = true;
-    strParentPath = m_strPrevDir;
+    strTemp.Format("%02i.[%s]", i, m_vecHistory[i]);
+    CLog::Log(LOGDEBUG, "%s", strTemp.c_str());
   }
+  CLog::Log(LOGDEBUG,")");
 
-  // check if current directory is a root share
-  if ( !m_rootDir.IsShare(strDirectory) )
+  if (!g_guiSettings.GetBool("MyMusic.HideParentDirItems"))
   {
-    // no, do we got a parent dir?
-    if ( bParentExists )
-    {
-      // yes
-      if (!g_guiSettings.GetBool("MyMusic.HideParentDirItems"))
-      {
-        CFileItem *pItem = new CFileItem("..");
-        pItem->m_strPath = strParentPath;
-        pItem->m_bIsFolder = true;
-        pItem->m_bIsShareOrDrive = false;
-        items.Add(pItem);
-      }
-      m_strParentPath = strParentPath;
-    }
+    CFileItem *pItem = new CFileItem("..");
+    pItem->m_strPath = strParentPath;
+    pItem->m_bIsFolder = true;
+    pItem->m_bIsShareOrDrive = false;
+    items.Add(pItem);
   }
+  m_strParentPath = strParentPath;
+
+  CURL url(strDirectory);
+  vector<CStdString> vecPaths;
+  // dont tokenize if getting the root bookmark listing
+  // or its a zip or rar style special path
+  if (strDirectory.IsEmpty() || url.GetProtocol().Equals("zip") || url.GetProtocol().Equals("rar"))
+    vecPaths.push_back(strDirectory);
   else
+    CUtil::Tokenize(strDirectory, vecPaths, ",");
+  int iFailures = 0;
+  for (int i = 0; i < (int)vecPaths.size(); ++i)
   {
-    // yes, this is the root of a share
-    // add parent path to the virtual directory
-    if (!g_guiSettings.GetBool("MyMusic.HideParentDirItems"))
+    CStdString strPath = vecPaths[i];
+    CLog::Log(LOGDEBUG,"Fetching directory (%s)", strPath.c_str());
+    if (!m_rootDir.GetDirectory(strPath, items))
     {
-      CFileItem *pItem = new CFileItem("..");
-      pItem->m_strPath = "";
-      pItem->m_bIsShareOrDrive = false;
-      pItem->m_bIsFolder = true;
-      items.Add(pItem);
+      CLog::Log(LOGERROR,"GetDirectory(%s) failed", strPath.c_str());
+      iFailures++;
     }
-    m_strParentPath = "";
   }
 
-  if (!m_rootDir.GetDirectory(strDirectory, items))
+  if (iFailures == vecPaths.size())
     return false;
 
   // check for .CUE files here.
   items.FilterCueItems();
-
-  if (strPlayListDir != strDirectory)
-  {
-    m_strPrevDir = strDirectory;
-  }
 
   return true;
 }
@@ -640,6 +620,14 @@ void CGUIWindowMusicSongs::OnClick(int iItem)
       if ( !HaveDiscOrConnection( pItem->m_strPath, pItem->m_iDriveType ) )
         return ;
     }
+    if (pItem->GetLabel() == "..")
+    {
+      // go back a directory
+      GoParentFolder();
+
+      // GoParentFolder() calls Update(), so just return
+      return;
+    }
     if (!Update(strPath))
       ShowShareErrorMessage(pItem);
   }
@@ -711,6 +699,7 @@ void CGUIWindowMusicSongs::OnClick(int iItem)
         g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_NONE);
         g_application.PlayFile(*pItem);
       }
+      return;
     }
   }
 }
@@ -1025,6 +1014,18 @@ bool CGUIWindowMusicSongs::Update(const CStdString &strDirectory)
     m_iViewAsIcons = CAutoSwitch::GetView(m_vecItems);
     UpdateButtons();
   }
+  
+  m_vecHistory.push_back(strDirectory);
+
+  // debug log
+  CStdString strTemp;
+  CLog::Log(LOGDEBUG,"m_vecHistory = (");
+  for (int i = 0; i < (int)m_vecHistory.size(); ++i)
+  {
+    strTemp.Format("%02i.[%s]", i, m_vecHistory[i]);
+    CLog::Log(LOGDEBUG, "%s", strTemp.c_str());
+  }
+  CLog::Log(LOGDEBUG,")");
 
   return true;
 }
