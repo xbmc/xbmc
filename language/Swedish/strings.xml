@@ -273,7 +273,7 @@
   <string><id>338</id><value>Analog</value></string>
   <string><id>339</id><value>Digital</value></string>
   <string><id>340</id><value>Blandade artister</value></string>
-  <string><id>341</id><value>Spela DVD</value></string>
+  <string><id>341</id><value>Spela skiva</value></string>
   <string><id>342</id><value>Filmer</value></string>
   <string><id>343</id><value>Justera bilduppdatering</value></string>
   <string><id>344</id><value>Skådespelare</value></string>
@@ -291,7 +291,7 @@
   <string><id>356</id><value>Skärmsläckarläge</value></string>
   <string><id>357</id><value>Tid innan avstängning vid vila</value></string>
   <string><id>358</id><value>Alla album</value></string>
-  <string><id>359</id><value>Senast spelade album</value></string>
+  <string><id>359</id><value>Senast inlagda album</value></string>
   <string><id>360</id><value>Skärmsläckare</value></string>
   <string><id>361</id><value>Starta bildspel</value></string>
   <string><id>362</id><value>Skärmsläckarnivå</value></string>
@@ -449,7 +449,11 @@
   <string><id>514</id><value>Manuella inställningar</value></string>
   <string><id>515</id><value>Genre</value></string>
   <string><id>516</id><value>Hantera arkiv</value></string>
-  
+  <string><id>517</id><value>Senast spelade album</value></string>
+  <string><id>518</id><value>Starta</value></string>
+  <string><id>519</id><value>Starta med..</value></string>
+  <string><id>520</id><value>Ändra XBE filens interna namn</value></string>
+
   <string><id>600</id><value>Rippa Audio-CD</value></string>
   <string><id>601</id><value>Medel</value></string>
   <string><id>602</id><value>Standard</value></string>
@@ -679,14 +683,14 @@
   <string><id>10514</id><value>Min Musik - Genre</value></string>
   <string><id>10515</id><value>Min Musik - Topp 100</value></string>
   <string><id>10516</id><value>Min Musik - Bibliotek</value></string>
-  <string><id>10517</id><value>Min Musik - Spellista</value></string>
+  <string><id>10517</id><value>Min Musik - Nu spelas</value></string>
   <string><id>10518</id><value>Mina Filmer - Skådespelare</value></string>
   <string><id>10519</id><value>Mina Filmer - Genre</value></string>
   <string><id>10520</id><value>Mina Filmer - Titel</value></string>
   <string><id>10521</id><value>Mina Filmer - År</value></string>
   <string><id>10522</id><value>Mina Filmer - Spellista</value></string>
   <string><id>10523</id><value>Albuminfo</value></string>
-  <string><id>10524</id><value>Filminfo</value></string>
+  <string><id>10524</id><value>Nu spelas</value></string>
   <string><id>12000</id><value>Valdialog</value></string>
   <string><id>12001</id><value>Min Musik/info</value></string>
   <string><id>12002</id><value>Dialog OK</value></string>
