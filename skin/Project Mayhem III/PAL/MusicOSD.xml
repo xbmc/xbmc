@@ -21,7 +21,7 @@
       <onup>499</onup>
       <ondown>210</ondown>
       <execute>XBMC.PlayerControl(Record)</execute>
-      <visible>Player.CanRecord + !Control.HasFocus(209)</visible>
+      <visible>Player.CanRecord</visible>
     </control>
 
     <control>
@@ -32,8 +32,8 @@
       <posY>339</posY>
       <width>128</width>
       <height>128</height>
-      <textureFocus>osd_button_rec.png</textureFocus>
-      <textureNoFocus>osd_button_recNF.png</textureNoFocus>
+      <textureFocus>osd_button_rec2.png</textureFocus>
+      <textureNoFocus>-</textureNoFocus>
       <label>-</label>
       <font>-</font>
       <onleft>211</onleft>
@@ -41,7 +41,7 @@
       <onup>500</onup>
       <ondown>211</ondown>
       <execute>XBMC.PlayerControl(Record)</execute>
-      <visible>Player.CanRecord + !Control.HasFocus(208)</visible>
+      <visible>Player.CanRecord</visible>
     </control>
 
     <control>
