@@ -247,7 +247,7 @@ bool CGUIControl::OnMessage(CGUIMessage& message)
         }
       }
       else
-        m_bVisible = m_visibleCondition?g_infoManager.GetBool(m_visibleCondition):true;
+        m_bVisible = m_visibleCondition?g_infoManager.GetBool(m_visibleCondition, m_dwParentID):true;
       return true;
       break;
 
@@ -517,7 +517,7 @@ CStdString CGUIControl::ParseLabel(CStdString& strLabel)
 
 void CGUIControl::UpdateVisibility()
 {
-  bool bVisible = g_infoManager.GetBool(m_visibleCondition);
+  bool bVisible = g_infoManager.GetBool(m_visibleCondition, m_dwParentID);
   if (!m_lastVisible && bVisible)
   { // automatic change of visibility - do the in effect
     m_effectLength = m_effectInTime;
@@ -543,7 +543,7 @@ void CGUIControl::SetInitialVisibility()
 {
   if (m_effectStartState == START_NONE)
   {
-    m_lastVisible = m_bVisible = g_infoManager.GetBool(m_visibleCondition);
+    m_lastVisible = m_bVisible = g_infoManager.GetBool(m_visibleCondition, m_dwParentID);
     return;
   }
   m_lastVisible = m_bVisible = (m_effectStartState == START_VISIBLE);
