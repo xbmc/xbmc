@@ -451,15 +451,12 @@ bool CGUIWindowMusicBase::Update(const CStdString &strDirectory)
     }
   }
 
-  CStdString strOldDirectory=m_Directory.m_strPath;
-  m_Directory.m_strPath = strDirectory;
-
   CFileItemList items;
-  if (!GetDirectory(m_Directory.m_strPath, items))
-  {
-    m_Directory.m_strPath = strOldDirectory;
+  if (!GetDirectory(strDirectory, items))
     return false;
-  }
+
+  CStdString strOldDirectory = m_Directory.m_strPath;
+  m_Directory.m_strPath = strDirectory;
 
   m_history.Set(strSelectedItem, strOldDirectory);
 
@@ -520,7 +517,6 @@ bool CGUIWindowMusicBase::Update(const CStdString &strDirectory)
         bCurrentSongFound = true;
       }
     }
-
   }
 
   return true;
@@ -529,6 +525,34 @@ bool CGUIWindowMusicBase::Update(const CStdString &strDirectory)
 /// \brief Call to go to parent folder
 void CGUIWindowMusicBase::GoParentFolder()
 {
+  CLog::Log(LOGDEBUG,"CGUIWindowMusicBase::GoParentFolder()");
+  // debug log
+  CStdString strTemp;
+  CLog::Log(LOGDEBUG,"m_vecHistory = (");
+  for (int i = 0; i < (int)m_vecHistory.size(); ++i)
+  {
+    strTemp.Format("%02i.[%s]", i, m_vecHistory[i]);
+    CLog::Log(LOGDEBUG, "%s", strTemp.c_str());
+  }
+  CLog::Log(LOGDEBUG,")");
+
+  // remove current directory if its on the stack
+  if (m_vecHistory.size() > 0)
+  {
+    if (m_vecHistory.back() == m_Directory.m_strPath)
+      m_vecHistory.pop_back();
+  }
+  // if vector is not empty, pop parent
+  // if vector is empty, parent is bookmark listing
+  CStdString strParent = "";
+  if (m_vecHistory.size() > 0)
+  {
+    strParent = m_vecHistory.back();
+    m_vecHistory.pop_back();
+  }
+  CLog::Log(LOGDEBUG,"CGUIWindowMusicBase::GoParentFolder(), strParent = [%s]", strParent.c_str());
+
+  // check for special archive path
   CURL url(m_Directory.m_strPath);
   if ((url.GetProtocol() == "rar") || (url.GetProtocol() == "zip")) 
   {
@@ -544,8 +568,9 @@ void CGUIWindowMusicBase::GoParentFolder()
       return;
     }
   }
-  CStdString strPath(m_strParentPath), strOldPath(m_Directory.m_strPath);
-  Update(strPath);
+
+  CStdString strOldPath = m_Directory.m_strPath;
+  Update(strParent);
 
   if (!g_guiSettings.GetBool("LookAndFeel.FullDirectoryHistory"))
     m_history.Remove(strOldPath); //Delete current path
