@@ -41,7 +41,7 @@ public:
   void Clear();
 
   int TranslateString(const CStdString &strCondition);
-  bool GetBool(int condition) const;
+  bool GetBool(int condition, DWORD dwContextWindow = 0) const;
   int GetInt(int info) const;
   wstring GetLabel(int info);
 
@@ -125,7 +125,7 @@ protected:
 
   int GetOperator(const char ch);
   int TranslateBooleanExpression(const CStdString &expression);
-  bool EvaluateBooleanExpression(const CCombinedValue &expression, bool &result) const;
+  bool EvaluateBooleanExpression(const CCombinedValue &expression, bool &result, DWORD dwContextWindow) const;
 
   std::vector<CCombinedValue> m_CombinedValues;
 };

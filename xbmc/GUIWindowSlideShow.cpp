@@ -456,7 +456,7 @@ bool CGUIWindowSlideShow::OnAction(const CAction &action)
     break;
 
   case ACTION_SHOW_INFO:
-    g_infoManager.SetShowInfo(!g_infoManager.GetBool(PLAYER_SHOWINFO));
+    g_infoManager.SetShowInfo(!g_infoManager.GetBool(PLAYER_SHOWINFO, GetID()));
     break;
 
   case ACTION_PAUSE:

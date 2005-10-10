@@ -486,13 +486,13 @@ int CGUIInfoManager::GetInt(int info) const
 }
 // checks the condition and returns it as necessary.  Currently used
 // for toggle button controls and visibility of images.
-bool CGUIInfoManager::GetBool(int condition1) const
+bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow) const
 {
   if(  condition1 >= COMBINED_VALUES_START && (condition1 - COMBINED_VALUES_START) < (int)(m_CombinedValues.size()) )
   {
     const CCombinedValue &comb = m_CombinedValues[condition1 - COMBINED_VALUES_START];
     bool result;
-    if (EvaluateBooleanExpression(comb, result))
+    if (EvaluateBooleanExpression(comb, result, dwContextWindow))
       return result;
     return false;
   }
@@ -515,13 +515,17 @@ bool CGUIInfoManager::GetBool(int condition1) const
     bReturn = m_gWindowManager.IsWindowActive(condition);
   else if (condition >= CONTROL_HAS_FOCUS_START && condition <= CONTROL_HAS_FOCUS_END)
   {
-    CGUIWindow *pWindow = m_gWindowManager.GetWindow(m_gWindowManager.GetActiveWindow());
+    if( !dwContextWindow ) dwContextWindow = m_gWindowManager.GetActiveWindow();
+
+    CGUIWindow *pWindow = m_gWindowManager.GetWindow(dwContextWindow);
     if (pWindow) 
       bReturn = (pWindow->GetFocusedControl() == condition - CONTROL_HAS_FOCUS_START);
   }
   else if (condition >= BUTTON_SCROLLER_HAS_ICON_START && condition <= BUTTON_SCROLLER_HAS_ICON_END)
   {
-    CGUIWindow *pWindow = m_gWindowManager.GetWindow(m_gWindowManager.GetActiveWindow());
+    if( !dwContextWindow ) dwContextWindow = m_gWindowManager.GetActiveWindow();
+
+    CGUIWindow *pWindow = m_gWindowManager.GetWindow(dwContextWindow);
     if (pWindow)
     {
       CGUIControl *pControl = (CGUIControl *)pWindow->GetControl(pWindow->GetFocusedControl());
@@ -1274,7 +1278,7 @@ int CGUIInfoManager::GetOperator(const char ch)
     return 0;
 }
 
-bool CGUIInfoManager::EvaluateBooleanExpression(const CCombinedValue &expression, bool &result) const
+bool CGUIInfoManager::EvaluateBooleanExpression(const CCombinedValue &expression, bool &result, DWORD dwContextWindow) const
 {
   // stack to save our bool state as we go
   stack<bool> save;
@@ -1304,7 +1308,7 @@ bool CGUIInfoManager::EvaluateBooleanExpression(const CCombinedValue &expression
       save.push(left || right);
     }
     else  // operator
-      save.push(GetBool(expr));
+      save.push(GetBool(expr, dwContextWindow));
   }
   if (save.size() != 1) return false;
   result = save.top();
@@ -1382,7 +1386,7 @@ int CGUIInfoManager::TranslateBooleanExpression(const CStdString &expression)
 
   // test evaluate
   bool test;
-  if (!EvaluateBooleanExpression(comb, test))
+  if (!EvaluateBooleanExpression(comb, test, WINDOW_INVALID))
     CLog::Log(LOGERROR, "Error evaluating boolean expression %s", expression.c_str());
   // success - add to our combined values
   m_CombinedValues.push_back(comb);
