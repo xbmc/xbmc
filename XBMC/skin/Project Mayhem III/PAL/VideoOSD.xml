@@ -21,7 +21,7 @@
       <onup>918</onup>
       <ondown>210</ondown>
       <execute>XBMC.PlayerControl(ShowVideoMenu)</execute>
-      <visible>VideoPlayer.HasMenu + !Control.HasFocus(209)</visible>
+      <visible>VideoPlayer.HasMenu</visible>
     </control>
 
     <control>
@@ -32,8 +32,8 @@
       <posY>339</posY>
       <width>128</width>
       <height>128</height>
-      <textureFocus>osd_button_dvdmenu.png</textureFocus>
-      <textureNoFocus>osd_button_dvdmenuNF.png</textureNoFocus>
+      <textureFocus>osd_button_dvdmenu2.png</textureFocus>
+      <textureNoFocus>-</textureNoFocus>
       <label>-</label>
       <font>-</font>
       <onleft>211</onleft>
@@ -41,7 +41,7 @@
       <onup>921</onup>
       <ondown>211</ondown>
       <execute>XBMC.PlayerControl(ShowVideoMenu)</execute>
-      <visible>VideoPlayer.HasMenu + !Control.HasFocus(208)</visible>
+      <visible>VideoPlayer.HasMenu</visible>
     </control>
 
     <control>

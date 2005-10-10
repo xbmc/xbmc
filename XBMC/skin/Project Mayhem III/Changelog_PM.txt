@@ -1,3 +1,5 @@
+2005-10-09 fixed:	solved the floating button problem on the OSD without !Control.HasFocus() tags
+
 2005-10-09 added:	conditional OSD buttons to record web radio / go to DVD menu
 2005-10-09 changed:	the topmost button in both fullscreen OSDs leads to the Now Playing window now
 2005-10-09 removed:	xmls for Music Top 100 view as this is included in the library view anyways
