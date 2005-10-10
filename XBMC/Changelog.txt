@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 10-10-2005 fixed: control.hasfocus() didn't work on dialogs, only full windows
  - 10-10-2005 changed: how my music files keeps its path history.  this should correct naviagtion issues with overlapping bookmarks, and bookmarks which can traverse into the playlists location.
                        this changes how <default> path and activatewindow with a dest path work.  they are now behave as a virtual bookmark so back from there will display the root bookmark listing.
  - 09-10-2005 removed: my music top 100 window (use the library).
