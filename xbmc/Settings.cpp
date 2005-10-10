@@ -483,9 +483,50 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
   if (strDefault.size())
     strcpy( g_stSettings.m_szDefaultFiles, strDefault.c_str());
 
-  GetShares(pRootElement, "music", m_vecMyMusicShares, strDefault);
+  VECSHARES vecTemp;
+  GetShares(pRootElement, "music", vecTemp, strDefault);
   if (strDefault.size())
     strcpy( g_stSettings.m_szDefaultMusic, strDefault.c_str());
+
+  // validate music bookmarks
+  for (int i = 0; i < (int)vecTemp.size(); ++i)
+  {
+    // check for multiple paths
+    CShare share = vecTemp[i];
+    CLog::Log(LOGDEBUG,"Testing path %s",vecTemp[i].strPath.c_str());
+    int iPos = share.strPath.Find(',');
+    // plain bookmark
+    if (iPos < 0)
+      m_vecMyMusicShares.push_back(share);
+    // concatenated bookmark
+    else if (iPos > 0)
+    {
+      CStdString strTemp = "";
+      vector<CStdString> vecPaths;
+      CUtil::Tokenize(share.strPath, vecPaths, ",");
+      for (int j = 0; j < (int)vecPaths.size(); ++j)
+      {
+        CURL url(vecPaths[j]);
+        CStdString protocol = url.GetProtocol();
+        // for now, only allow HD, SMB, and XBMS
+        // strip out any others
+        if (protocol.IsEmpty() || protocol.Equals("smb") || protocol.Equals("xbms"))
+          strTemp += vecPaths[j] + ",";
+        else
+          CLog::Log(LOGERROR,"Invalid protocol for concatenated bookmark (%s)", vecPaths[j].c_str());
+      }
+      if (!strTemp.IsEmpty())
+      {
+        // replace the path with the corrected one
+        strTemp.TrimRight(",");
+        share.strPath = strTemp;
+        m_vecMyMusicShares.push_back(share);
+      }
+    }
+    // invalid bookmark
+    else
+      CLog::Log(LOGERROR,"Invalid bookmark path (%s)", share.strPath.c_str());
+  }
 
   GetShares(pRootElement, "video", m_vecMyVideoShares, strDefault);
   if (strDefault.size())
