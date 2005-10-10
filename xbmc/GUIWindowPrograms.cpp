@@ -379,11 +379,11 @@ bool CGUIWindowPrograms::OnPopupMenu(int iItem)
     
     CStdStringW strLaunch = g_localizeStrings.Get(518); // Launch
     int iRegion = GetRegion(iItem);
-    if (iRegion == 1)
+    if (iRegion == VIDEO_NTSCM)
       strLaunch += " (NTSC-M)";
-    if (iRegion == 2)
+    if (iRegion == VIDEO_NTSCJ)
       strLaunch += " (NTSC-J)";
-    if (iRegion == 4)
+    if (iRegion == VIDEO_PAL50)
       strLaunch += " (PAL)";
 
     int btn_Launch = pMenu->AddButton(strLaunch); // launch
@@ -442,11 +442,11 @@ bool CGUIWindowPrograms::OnPopupMenu(int iItem)
       strNTSCJ = "NTSC-J";
       int iRegion = GetRegion(iItem,true);
 
-      if (iRegion == 1)
+      if (iRegion == VIDEO_NTSCM)
         strNTSCM += " (default)";
-      if (iRegion == 2)
+      if (iRegion == VIDEO_NTSCJ)
         strNTSCJ += " (default)";
-      if (iRegion == 4)
+      if (iRegion == VIDEO_PAL50)
         strPAL += " (default)";
 
       btn_PAL = pMenu->AddButton(strPAL);
@@ -1271,7 +1271,11 @@ int CGUIWindowPrograms::GetRegion(int iItem, bool bReload)
     iRegion = xbe.ExtractGameRegion(m_vecItems[iItem]->m_strPath); 
   }
   else
+  {
+    m_database.Open();
     iRegion = m_database.GetRegion(m_vecItems[iItem]->m_strPath);
+    m_database.Close();
+  }
   if (iRegion == -1)
   {
     if (g_guiSettings.GetBool("MyPrograms.GameAutoRegion"))
@@ -1286,24 +1290,25 @@ int CGUIWindowPrograms::GetRegion(int iItem, bool bReload)
     m_database.SetRegion(m_vecItems[iItem]->m_strPath,iRegion);
   }
 
-  int iPreferred = XGetVideoStandard();
+  int iVideoMode, iPreferred;
+  iVideoMode = iPreferred = XGetVideoStandard();
   if (iPreferred == 3)
     iPreferred = 4;
 
   if (iRegion == 0)
-    iRegion = iPreferred;
+    iRegion = iVideoMode;
   else if ((iRegion & 1  && iPreferred == 1) || (iRegion == 1))
-    iRegion = 1;
+    iRegion = VIDEO_NTSCM;
   else if ((iRegion & 2  && iPreferred == 2) || (iRegion == 2))
-    iRegion = 2;
-  else if ((iRegion & 4  && iPreferred == 4) || (iRegion == 4))
-    iRegion = 4;
+    iRegion = VIDEO_NTSCJ;
+  else if ((iRegion & 4  && iPreferred == 4) || (iRegion == 4)) // stored as 4 in the db (xbe values) but the actual video-mode is VIDEO_PAL50=3
+    iRegion = VIDEO_PAL50;
   else if (iRegion & 1)
-    iRegion = 1;
+    iRegion = VIDEO_NTSCM;
   else if (iRegion & 4)
-    iRegion = 4;
+    iRegion = VIDEO_PAL50;
   else if (iRegion & 2)
-    iRegion = 2;
-
+    iRegion = VIDEO_NTSCJ;
+  
   return iRegion;
 }
