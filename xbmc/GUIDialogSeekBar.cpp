@@ -34,7 +34,7 @@ bool CGUIDialogSeekBar::OnAction(const CAction &action)
 {
   if (action.wID == ACTION_ANALOG_SEEK_FORWARD || action.wID == ACTION_ANALOG_SEEK_BACK)
   {
-    if (!g_infoManager.GetBool(PLAYER_SEEKING))
+    if (!g_infoManager.GetBool(PLAYER_SEEKING), m_dwParentWindowID)
     { // start of seeking
       if (g_infoManager.GetTotalPlayTime())
         m_fSeekPercentage = (float)g_infoManager.GetPlayTime() / g_infoManager.GetTotalPlayTime() * 0.1f;

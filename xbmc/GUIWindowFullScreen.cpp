@@ -496,7 +496,7 @@ bool CGUIWindowFullScreen::NeedRenderFullScreen()
   if (m_bShowViewModeInfo) return true;
   if (m_bShowCurrentTime) return true;
   if (g_infoManager.GetDisplayAfterSeek()) return true;
-  if (g_infoManager.GetBool(PLAYER_SEEKBAR)) return true;
+  if (g_infoManager.GetBool(PLAYER_SEEKBAR), GetID()) return true;
   if (m_gWindowManager.IsRouted(true)) return true;
   if (m_gWindowManager.IsModelessAvailable()) return true;
   if (g_Mouse.IsActive()) return true;
@@ -535,7 +535,7 @@ void CGUIWindowFullScreen::RenderFullScreen()
   }
 
   //We need to render should the seekbar be visible
-  if (g_infoManager.GetBool(PLAYER_SEEKBAR)) 
+  if (g_infoManager.GetBool(PLAYER_SEEKBAR, GetID())) 
     bRenderGUI = true;
 
   //------------------------
