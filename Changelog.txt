@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 10-10-2005 fixed: videomode override should work for ntsc->pal now.
  - 10-10-2005 updated: mplayer.dll (new ffmpeg, fixes some avi files among other things)
  - 10-10-2005 fixed: control.hasfocus() didn't work on dialogs, only full windows
  - 10-10-2005 changed: how my music files keeps its path history.  this should correct naviagtion issues with overlapping bookmarks, and bookmarks which can traverse into the playlists location.
