@@ -173,7 +173,7 @@ bool CProgramDatabase::SetRegion(const CStdString& strFileName, int iRegion)
     int idFile = m_pDS->fv("files.idFile").get_asLong();
     m_pDS->close();
 
-    CLog::Log(LOGDEBUG, "CProgramDatabase::SetRegion(%i), idFile=%i, region=%i",
+    CLog::Log(LOGDEBUG, "CProgramDatabase::SetRegion(%s), idFile=%i, region=%i",
               strFileName.c_str(), idFile,iRegion);
 
     strSQL=FormatSQL("update files set iRegion=%i where idFile=%i",
