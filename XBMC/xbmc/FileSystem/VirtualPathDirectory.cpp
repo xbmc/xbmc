@@ -19,25 +19,6 @@ bool CVirtualPathDirectory::GetDirectory(const CStdString& strPath, CFileItemLis
 {
   CLog::Log(LOGDEBUG,"CVirtualPathDirectory::GetDirectory(%s)", strPath.c_str());
 
-  /*
-  CStdString strType, strBookmark;
-  if (!GetTypeAndBookmark(strPath, strType, strBookmark))
-    return false;
-
-  VECSHARES vecShares;
-  if (!GetShares(strType, vecShares))
-    return false;
-
-  bool bIsBookmarkName = false;
-  int iIndex = CUtil::GetMatchingShare(strBookmark, vecShares, bIsBookmarkName);
-  if (!bIsBookmarkName)
-    return false;
-  if (iIndex < 0)
-    return false;
-
-  CShare share = vecShares[iIndex];
-  */
-
   CShare share;
   if (!GetMatchingShare(strPath, share))
     return false;
@@ -64,25 +45,6 @@ bool CVirtualPathDirectory::GetDirectory(const CStdString& strPath, CFileItemLis
 
 bool CVirtualPathDirectory::Exists(const CStdString& strPath)
 {
-  /*
-  CStdString strType, strBookmark;
-  if (!GetTypeAndBookmark(strPath, strType, strBookmark))
-    return false;
-
-  VECSHARES vecShares;
-  if (!GetShares(strType, vecShares))
-    return false;
-
-  bool bIsBookmarkName = false;
-  int iIndex = CUtil::GetMatchingShare(strBookmark, vecShares, bIsBookmarkName);
-  if (!bIsBookmarkName)
-    return false;
-  if (iIndex < 0)
-    return false;
-
-  CShare share = vecShares[iIndex];
-  */
-
   CShare share;
   if (!GetMatchingShare(strPath, share))
     return false;
