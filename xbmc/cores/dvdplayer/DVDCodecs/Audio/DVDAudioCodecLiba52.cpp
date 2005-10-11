@@ -264,33 +264,6 @@ int CDVDAudioCodecLiba52::Decode(BYTE* pData, int iSize)
   return (pData - pOldDataPointer);
 }
 
-bool CDVDAudioCodecLiba52::SyncAC3Header(BYTE* pData, int iDataSize, int* iOffset, int* iFrameSize )
-{
-    static const int ac3Channels[8] = { 2, 1, 2, 3, 3, 4, 4, 5 };
-
-    int i = 0, iLen = 0;
-    while (i <= (iDataSize - 7))
-    {
-      iLen = m_dll.a52_syncinfo(pData, &m_iFlags, &m_iSourceSampleRate, &m_iSourceBitrate);
-      if (iLen > 0)
-      {
-        if (m_iSourceChannels == 0)
-        {
-          m_iSourceChannels = ac3Channels[m_iFlags & 7];
-          if (m_iFlags & A52_LFE) m_iSourceChannels++;
-        }
-        (*iFrameSize) = iLen;
-        (*iOffset) = i;
-        return true;
-      }
-
-      // no sync found, shift one byte
-      i++;
-      pData++;
-      iDataSize--;
-    } 
-    return false;
-}
 
 int CDVDAudioCodecLiba52::GetData(BYTE** dst)
 {
