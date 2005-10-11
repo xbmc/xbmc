@@ -18,8 +18,6 @@ public:
   virtual int GetSampleRate();
   virtual int GetBitsPerSample();
 
-  bool SyncAC3Header(BYTE* pData, int iDataSize, int* iOffset, int* iFrameSize );
-
 protected:
   virtual void SetDefault();
 
