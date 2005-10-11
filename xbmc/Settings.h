@@ -16,6 +16,7 @@
 #define SHARE_TYPE_DVD          2
 #define SHARE_TYPE_VIRTUAL_DVD  3
 #define SHARE_TYPE_REMOTE       4
+#define SHARE_TYPE_VPATH        5
 
 #define LOCK_MODE_UNKNOWN            -1
 #define LOCK_MODE_EVERYONE            0
@@ -121,6 +122,8 @@ public:
   int m_iBadPwdCount; ///< Number of wrong passwords user has entered since share was last unlocked
 
   CStdString m_strThumbnailImage; ///< Path to a thumbnail image for the share, or blank for default
+
+  vector<CStdString> vecPaths;
 };
 /*!
 \ingroup windows

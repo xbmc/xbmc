@@ -428,7 +428,6 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
   ConvertHomeVar(strDir);
   strcpy( g_stSettings.szThumbnailsDirectory, strDir.c_str() );
 
-
   strDir = g_stSettings.m_szAlbumDirectory;
   ConvertHomeVar(strDir);
   strcpy( g_stSettings.m_szAlbumDirectory, strDir.c_str() );
@@ -483,50 +482,9 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
   if (strDefault.size())
     strcpy( g_stSettings.m_szDefaultFiles, strDefault.c_str());
 
-  VECSHARES vecTemp;
-  GetShares(pRootElement, "music", vecTemp, strDefault);
+  GetShares(pRootElement, "music", m_vecMyMusicShares, strDefault);
   if (strDefault.size())
     strcpy( g_stSettings.m_szDefaultMusic, strDefault.c_str());
-
-  // validate music bookmarks
-  for (int i = 0; i < (int)vecTemp.size(); ++i)
-  {
-    // check for multiple paths
-    CShare share = vecTemp[i];
-    CLog::Log(LOGDEBUG,"Testing path %s",vecTemp[i].strPath.c_str());
-    int iPos = share.strPath.Find(',');
-    // plain bookmark
-    if (iPos < 0)
-      m_vecMyMusicShares.push_back(share);
-    // concatenated bookmark
-    else if (iPos > 0)
-    {
-      CStdString strTemp = "";
-      vector<CStdString> vecPaths;
-      CUtil::Tokenize(share.strPath, vecPaths, ",");
-      for (int j = 0; j < (int)vecPaths.size(); ++j)
-      {
-        CURL url(vecPaths[j]);
-        CStdString protocol = url.GetProtocol();
-        // for now, only allow HD, SMB, and XBMS
-        // strip out any others
-        if (protocol.IsEmpty() || protocol.Equals("smb") || protocol.Equals("xbms"))
-          strTemp += vecPaths[j] + ",";
-        else
-          CLog::Log(LOGERROR,"Invalid protocol for concatenated bookmark (%s)", vecPaths[j].c_str());
-      }
-      if (!strTemp.IsEmpty())
-      {
-        // replace the path with the corrected one
-        strTemp.TrimRight(",");
-        share.strPath = strTemp;
-        m_vecMyMusicShares.push_back(share);
-      }
-    }
-    // invalid bookmark
-    else
-      CLog::Log(LOGERROR,"Invalid bookmark path (%s)", share.strPath.c_str());
-  }
 
   GetShares(pRootElement, "video", m_vecMyVideoShares, strDefault);
   if (strDefault.size())
@@ -566,6 +524,7 @@ void CSettings::GetShares(const TiXmlElement* pRootElement, const CStdString& st
 {
   CLog::Log(LOGDEBUG, "  Parsing <%s> tag", strTagName.c_str());
   strDefault = "";
+
   const TiXmlNode *pChild = pRootElement->FirstChild(strTagName.c_str());
   if (pChild)
   {
@@ -576,23 +535,74 @@ void CSettings::GetShares(const TiXmlElement* pRootElement, const CStdString& st
       if (strValue == "bookmark")
       {
         const TiXmlNode *pNodeName = pChild->FirstChild("name");
-        const TiXmlNode *pPathName = pChild->FirstChild("path");
+
+        // get multiple paths
+        vector<CStdString> vecPaths;
+        TiXmlNode *pPathName = pChild->FirstChild("path");
+        while (pPathName)
+        {
+          if (pPathName->FirstChild())
+          {
+            CStdString strPath = pPathName->FirstChild()->Value();
+            strPath.MakeLower();
+            vecPaths.push_back(strPath);
+          }
+          pPathName = pPathName->NextSibling("path");
+        }
+
         const TiXmlNode *pCacheNode = pChild->FirstChild("cache");
         const TiXmlNode *pDepthNode = pChild->FirstChild("depth");
         const TiXmlNode *pLockMode = pChild->FirstChild("lockmode");
         const TiXmlNode *pLockCode = pChild->FirstChild("lockcode");
         const TiXmlNode *pBadPwdCount = pChild->FirstChild("badpwdcount");
         const TiXmlNode *pThumbnailNode = pChild->FirstChild("thumbnail");
-        if (pNodeName && pPathName)
-        {
-          const char* szName = pNodeName->FirstChild()->Value();
-          CLog::Log(LOGDEBUG, "    Share Name: %s", szName);
-          const char* szPath = pPathName->FirstChild()->Value();
-          CLog::Log(LOGDEBUG, "    Share Path: %s", szPath);
 
+        //if (pNodeName && pPathName)
+        if (pNodeName && vecPaths.size() > 0)
+        {
           CShare share;
-          share.strName = szName;
-          share.strPath = szPath;
+
+          CStdString strName = pNodeName->FirstChild()->Value();
+          CLog::Log(LOGDEBUG, "    Share Name: %s", strName.c_str());
+
+          CStdString strPath;
+          // only allowed for music for now so just take the first path found
+          // or we're doing music and theres only a single path in the vector
+          if ((strTagName != "music") || (vecPaths.size() == 1))
+            strPath = vecPaths[0];
+          // multiple paths?
+          else
+          {
+            // validate the paths
+            for (int j = 0; j < (int)vecPaths.size(); ++j)
+            {
+              CURL url(vecPaths[j]);
+              CStdString protocol = url.GetProtocol();
+              // for now, only allow HD, SMB, and XBMS
+              // strip out any others
+              if (protocol.IsEmpty() || protocol.Equals("smb") || protocol.Equals("xbms"))
+                share.vecPaths.push_back(vecPaths[j]);
+              else
+                CLog::Log(LOGERROR,"Invalid protocol for virtualpath (%s)", vecPaths[j].c_str());
+            }
+            // no valid paths?
+            if (share.vecPaths.size() == 0)
+              pChild = pChild->NextSibling();
+            // only one valid path?
+            else if (share.vecPaths.size() == 1)
+            {
+              strPath = share.vecPaths[0];
+              share.vecPaths.empty();
+            }
+            // multiple valid paths
+            else
+              strPath.Format("virtualpath://%s/%s", strTagName.c_str(), strName.c_str());
+          }
+
+          CLog::Log(LOGDEBUG, "    Share Path: %s", strPath.c_str());
+
+          share.strName = strName;
+          share.strPath = strPath;
           share.m_iBufferSize = 0;
           share.m_iDepthSize = 1;
           share.m_iLockMode = LOCK_MODE_EVERYONE;
@@ -601,7 +611,7 @@ void CSettings::GetShares(const TiXmlElement* pRootElement, const CStdString& st
 
           // translate dir
           ConvertHomeVar(share.strPath);
-          CStdString strPath = share.strPath;
+          strPath = share.strPath;
           strPath.ToUpper();
 
           if (strPath.at(0) == '$')
@@ -617,7 +627,9 @@ void CSettings::GetShares(const TiXmlElement* pRootElement, const CStdString& st
             }
           }
 
-          if (strPath.Left(4) == "UDF:")
+          if (strPath.Left(12) == "VIRTUALPATH:")
+            share.m_iDriveType = SHARE_TYPE_VPATH;
+          else if (strPath.Left(4) == "UDF:")
           {
             share.m_iDriveType = SHARE_TYPE_VIRTUAL_DVD;
             share.strPath = "D:\\";
@@ -664,7 +676,6 @@ void CSettings::GetShares(const TiXmlElement* pRootElement, const CStdString& st
           {
             share.m_strThumbnailImage = pThumbnailNode->FirstChild()->Value();
           }
-
 
           // check - convert to url and back again to make sure strPath is accurate
           // in terms of what we expect
