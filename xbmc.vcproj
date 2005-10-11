@@ -1823,6 +1823,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				RelativePath=".\xbmc\FileSystem\VirtualDirectory.cpp">
 			</File>
 			<File
+				RelativePath=".\xbmc\FileSystem\VirtualPathDirectory.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\FileSystem\VirtualPathDirectory.h">
+			</File>
+			<File
 				RelativePath=".\xbmc\FileSystem\XBMSDirectory.cpp">
 			</File>
 			<File
