@@ -419,6 +419,7 @@ bool CGUIWindowMusicSongs::GetDirectory(const CStdString &strDirectory, CFileIte
   }
   m_strParentPath = strParentPath;
 
+  /*
   CURL url(strDirectory);
   vector<CStdString> vecPaths;
   // dont tokenize if getting the root bookmark listing
@@ -441,6 +442,11 @@ bool CGUIWindowMusicSongs::GetDirectory(const CStdString &strDirectory, CFileIte
 
   if (iFailures == vecPaths.size())
     return false;
+  */
+
+  CLog::Log(LOGDEBUG,"Fetching directory (%s)", strDirectory.c_str());
+  if (!m_rootDir.GetDirectory(strDirectory, items))
+    CLog::Log(LOGERROR,"GetDirectory(%s) failed", strDirectory.c_str());
 
   // check for .CUE files here.
   items.FilterCueItems();

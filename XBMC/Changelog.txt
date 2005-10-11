@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 11-10-2005 fixed: paths with commas in my music files
  - 11-10-2005 fixed: bug in my music library albums regarding albums with the same name, aka "greatest hits"
  - 11-10-2005 removed: setting blank or missing music tags to "unknown"
  - 11-10-2005 changed: cleaned up dts/ac3 passtrough code somewhat for dvdplayer

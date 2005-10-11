@@ -15,7 +15,7 @@
 #include "zipdirectory.h"
 #include "rardirectory.h"
 #include "FTPDirectory.h"
-
+#include "VirtualPathDirectory.h"
 
 /*!
  \brief Create a IDirectory object of the share type specified in \e strPath .
@@ -44,5 +44,6 @@ IDirectory* CFactoryDirectory::Create(const CStdString& strPath)
   else if (strProtocol == "zip") return new CZipDirectory();
   else if (strProtocol == "rar") return new CRarDirectory();
   else if (strProtocol == "ftp") return new CFTPDirectory();
+  else if (strProtocol == "virtualpath") return new CVirtualPathDirectory();
   else return new CHDDirectory();
 }
