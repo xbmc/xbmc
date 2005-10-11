@@ -1118,9 +1118,9 @@ void CGUIWindowMusicNav::OnClick(int iItem)
             m_strAlbumPath.Empty();
           }
 
-          // for albums set path to "album - artist"
-          if (!pItem->m_musicInfoTag.GetArtist().IsEmpty())
-            strPath += " - " + pItem->m_musicInfoTag.GetArtist();
+          // for albums set path to db://Albums/ALBUM - ARTIST/
+          if (!pItem->m_musicInfoTag.GetArtist().IsEmpty()) 
+            strLabel += " - " + pItem->m_musicInfoTag.GetArtist();
         }
         break;
       }
@@ -1381,9 +1381,9 @@ void CGUIWindowMusicNav::OnSearchItemFound(const CFileItem* pSelItem)
     m_history.Set(strPath, strParentPath);
 
     // set Albums history
-    // db://Albums/ => db://Albums/ALBUM/
+    //  db://Albums/ => db://Albums/ALBUM - ARTIST/
     strParentPath = strPath;
-    strPath += m_strAlbum + "/";
+    strPath += strAlbum + "/"; 
     m_history.Set(strPath, strParentPath);
 
     // if a song, highlight it
