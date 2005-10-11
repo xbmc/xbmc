@@ -121,8 +121,6 @@ void CMusicInfoTag::SetTitle(const CStdString& strTitle)
   m_strTitle.TrimRight(" ");
   m_strTitle.TrimRight("\n");
   m_strTitle.TrimRight("\r");
-  if (m_strTitle.IsEmpty())
-    m_strTitle = "unknown";
 }
 
 void CMusicInfoTag::SetArtist(const CStdString& strArtist)
@@ -132,8 +130,6 @@ void CMusicInfoTag::SetArtist(const CStdString& strArtist)
   m_strArtist.TrimRight(" ");
   m_strArtist.TrimRight("\n");
   m_strArtist.TrimRight("\r");
-  if (m_strArtist.IsEmpty())
-      m_strArtist = "unknown";
 }
 
 void CMusicInfoTag::SetAlbum(const CStdString& strAlbum)
@@ -143,8 +139,6 @@ void CMusicInfoTag::SetAlbum(const CStdString& strAlbum)
   m_strAlbum.TrimRight(" ");
   m_strAlbum.TrimRight("\n");
   m_strAlbum.TrimRight("\r");
-  if (m_strAlbum.IsEmpty())
-    m_strAlbum = "unknown";
 }
 
 void CMusicInfoTag::SetGenre(const CStdString& strGenre)
@@ -154,8 +148,6 @@ void CMusicInfoTag::SetGenre(const CStdString& strGenre)
   m_strGenre.TrimRight(" ");
   m_strGenre.TrimRight("\n");
   m_strGenre.TrimRight("\r");
-  if (m_strGenre.IsEmpty())
-    m_strGenre = "unknown";
 }
 
 void CMusicInfoTag::SetReleaseDate(SYSTEMTIME& dateTime)

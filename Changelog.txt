@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 11-10-2005 fixed: bug in my music library albums regarding albums with the same name, aka "greatest hits"
+ - 11-10-2005 removed: setting blank or missing music tags to "unknown"
  - 11-10-2005 changed: cleaned up dts/ac3 passtrough code somewhat for dvdplayer
  - 10-10-2005 fixed: videomode override should work for ntsc->pal now.
  - 10-10-2005 updated: mplayer.dll (new ffmpeg, fixes some avi files among other things)
