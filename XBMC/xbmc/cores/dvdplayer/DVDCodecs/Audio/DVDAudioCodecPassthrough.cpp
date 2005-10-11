@@ -10,35 +10,32 @@
 #undef  MAX
 #define MAX(a, b)  (((a) > (b)) ? (a) : (b))
 
-#ifdef __cplusplus
-extern "C"
-{
-#endif
-#  include "DTSHelper.h"
-#ifdef __cplusplus
-}
-#endif
+//These values are forced to allow spdif out
+#define OUT_SAMPLESIZE 16
+#define OUT_CHANNELS 2
+#define OUT_SAMPLERATE 48000
+
+#define OUT_SAMPLESTOBYTES(a) ((a) * OUT_CHANNELS * (OUT_SAMPLESIZE>>3))
 
 
 CDVDAudioCodecPassthrough::CDVDAudioCodecPassthrough(void)
 {
   m_pPassBuffer = NULL;
-  m_pLiba52 = NULL;
+  m_pStateA52 = NULL;
+  m_pStateDTS = NULL;
   m_iPassBufferLen = 0;
 
-  m_pDataFrame = NULL;
-  m_iDataFrameAlloced = 0;
+  m_iDataFrameAlloced = 6144*2;
+  m_pDataFrame = (BYTE*)malloc(m_iDataFrameAlloced);
   m_iDataFrameLen = 0;
-  m_iChunkSize=0;
   m_iOffset=0;
 
   m_iFrameSize=0;
   m_iType = ENS_UNKNOWN;
 
-  m_pPassBuffer = mPassBuffer;
-  m_pDataFrame = (BYTE*)malloc(6144);
-  m_iDataFrameAlloced = 6144;
-  if ( !m_pPassBuffer ) CLog::Log(LOGERROR, "CDVDAudioCodecPassthrough: Unable to allocate buffer, crash imminent");
+  m_iPassBufferAlloced = 0;
+  m_pPassBuffer = NULL;
+  m_iPassBufferLen = 0;
 
 }
 
@@ -48,45 +45,144 @@ CDVDAudioCodecPassthrough::~CDVDAudioCodecPassthrough(void)
 }
 
 
-bool CDVDAudioCodecPassthrough::SyncDTSHeader(BYTE* pData, int iDataSize, int* iOffset, int* iFrameSize )
+bool CDVDAudioCodecPassthrough::SyncDTSHeader(BYTE* pData, int iDataSize, int* iOffset, int* iFrameSize)
 {
-    int i = 0, iLen = 0;
-    int iSampleRate, m_BitRate;
+  int i = 0, iLen = 0;
+  int iFlags, iSampleRate, iBitRate, iFrameLenght;
 
-    while (i <= (iDataSize - 10))
+  if( !m_pStateDTS ) return false;
+
+  while (i <= (iDataSize - 10))
+  {
+    iLen = m_dllDTS.dts_syncinfo(m_pStateDTS, pData, &iFlags, &iSampleRate, &iBitRate, &iFrameLenght);
+    if (iLen > 0)
     {
-      iLen = helper_dts_syncinfo(pData, NULL, &iSampleRate, &m_BitRate);
-      if (iLen > 0)
+
+      if( iSampleRate != OUT_SAMPLERATE )
       {
-        (*iFrameSize) = iLen;
-        (*iOffset) = i;
-        return true;
+        CLog::Log(LOGERROR, "CDVDAudioCodecPassthrough::SyncDTSHeader - unsupported samplerate %d, skipping", iSampleRate);
+        return false;
       }
 
-      // no sync found, shift one byte
-      i++;
-      pData++;
-      iDataSize--;
-    } 
-    return false;
+      m_iSamplesPerFrame = iFrameLenght;
+      m_iSampleRate = iSampleRate;
+
+      (*iFrameSize) = iLen;
+      (*iOffset) = i;
+      return true;
+    }
+
+    // no sync found, shift one byte
+    i++;
+    pData++;
+    iDataSize--;
+  } 
+  return false;
+}
+
+int CDVDAudioCodecPassthrough::PaddDTSData( BYTE* pData, int iDataSize, BYTE* pOut)
+{
+  pOut[0] = 0x72; pOut[1] = 0xf8; /* iec 61937     */
+  pOut[2] = 0x1f; pOut[3] = 0x4e; /*  syncword     */
+
+  switch( m_iSamplesPerFrame )
+  {
+  case 512:
+    pOut[4] = 0x0b;      /* DTS-1 (512-sample bursts) */
+    break;
+  case 1024:
+    pOut[4] = 0x0c;      /* DTS-2 (1024-sample bursts) */
+    break;
+  case 2048:
+    pOut[4] = 0x0d;      /* DTS-3 (2048-sample bursts) */
+    break;
+  default:
+    CLog::Log(LOGERROR, "CDVDAudioCodecPassthrough::PaddDTSData - DTS: %d-sample bursts not supported\n", m_iSamplesPerFrame);
+    pOut[4] = 0x00;
+    break;
+  }
+
+  pOut[5] = 0;                      /* ?? */    
+  pOut[6] = (iDataSize << 3) & 0xFF;
+  pOut[7] = (iDataSize >> 5) & 0xFF;
+
+  int iOutputSize = OUT_SAMPLESTOBYTES(m_iSamplesPerFrame);
+
+  if ( iDataSize > iOutputSize - 8 ) 
+  {          
+    //Crap frame with more data than we can handle, can be worked around i think
+    CLog::Log(LOGERROR, "CDVDAudioCodecPassthrough::PaddDTSData - larger frame than will fit, skipping");
+    return 0;
+  }
+
+  //Swap byteorder
+  swab((char*)pData, (char*)pOut+8, iDataSize);
+  memset(pOut + iDataSize + 8, 0, iOutputSize - iDataSize - 8);  
+
+  return iOutputSize;
+}
+
+bool CDVDAudioCodecPassthrough::SyncAC3Header(BYTE* pData, int iDataSize, int* iOffset, int* iFrameSize )
+{
+  //static const int ac3Channels[8] = { 2, 1, 2, 3, 3, 4, 4, 5 };
+
+  int i = 0, iLen = 0;
+  int iFlags, iSampleRate, iBitRate;
+
+  if( !m_pStateA52 ) return false;
+
+  while (i <= (iDataSize - 7))
+  {
+    iLen = m_dllA52.a52_syncinfo(pData, &iFlags, &iSampleRate, &iBitRate);
+    if (iLen > 0)
+    {
+      if( iSampleRate != OUT_SAMPLERATE )
+      {
+        CLog::Log(LOGERROR, "CDVDAudioCodecPassthrough::SyncAC3Header - unsupported samplerate %d, skipping", iSampleRate);
+        return false;
+      }
+
+      m_iSamplesPerFrame = 6*256;        
+      m_iSampleRate = iSampleRate;
+
+      (*iFrameSize) = iLen;
+      (*iOffset) = i;
+      return true;
+    }
+
+    // no sync found, shift one byte
+    i++;
+    pData++;
+    iDataSize--;
+  } 
+  return false;
 }
 
 int CDVDAudioCodecPassthrough::PaddAC3Data( BYTE* pData, int iDataSize, BYTE* pOut)
 {
-    //Setup ac3 header
-    pOut[0] = 0x72;
-    pOut[1] = 0xF8;
-    pOut[2] = 0x1F;
-    pOut[3] = 0x4E;
-    pOut[4] = 0x01; //(length) ? data_type : 0; /* & 0x1F; */
-    pOut[5] = 0x00;
-    pOut[6] = (iDataSize << 3) & 0xFF;
-    pOut[7] = (iDataSize >> 5) & 0xFF;
+  //Setup ac3 header
+  pOut[0] = 0x72;
+  pOut[1] = 0xF8;
+  pOut[2] = 0x1F;
+  pOut[3] = 0x4E;
+  pOut[4] = 0x01; //(length) ? data_type : 0; /* & 0x1F; */
+  pOut[5] = 0x00;
+  pOut[6] = (iDataSize << 3) & 0xFF;
+  pOut[7] = (iDataSize >> 5) & 0xFF;
 
-    //Swap byteorder
-    swab((char*)pData, (char*)pOut+8, iDataSize);
-    memset(pOut + iDataSize + 8, 0, 6144 - iDataSize - 8);
-    return 6144;
+  int iOutputSize = OUT_SAMPLESTOBYTES(m_iSamplesPerFrame);
+
+  if ( iDataSize > iOutputSize - 8 ) 
+  {          
+    //Crap frame with more data than we can handle, can be worked around i think
+    CLog::Log(LOGERROR, "CDVDAudioCodecPassthrough::PaddAC3Data - larger frame than will fit, skipping");
+    return 0;
+  }
+
+  //Swap byteorder
+  swab((char*)pData, (char*)pOut+8, iDataSize);
+  memset(pOut + iDataSize + 8, 0, iOutputSize - iDataSize - 8);
+  return iOutputSize;
 }
 
 bool CDVDAudioCodecPassthrough::Open(CodecID codecID, int iChannels, int iSampleRate, int iBits)
@@ -101,11 +197,18 @@ bool CDVDAudioCodecPassthrough::Open(CodecID codecID, int iChannels, int iSample
 
   //Samplerate cannot be checked here as we don't know it at this point in time. 
   //We should probably have a way to try to decode data so that we know what samplerate it is.
-
   if ((codecID == CODEC_ID_AC3 && bSupportsAC3Out) || (codecID == CODEC_ID_DTS && bSupportsDTSOut))
   {
-    m_pLiba52 = new CDVDAudioCodecLiba52();
-    m_pLiba52->Open(codecID, iChannels, iSampleRate, iBits);
+    //We load both libDTS and A54 independent on what codec it was. Some streams are marked wrong
+    if (m_dllDTS.Load())
+    {
+      m_pStateDTS = m_dllDTS.dts_init(0);
+    }
+
+    if (m_dllA52.Load())
+    {
+      m_pStateA52 = m_dllA52.a52_init(0);
+    }
     return true;    
   }
   else
@@ -121,20 +224,24 @@ void CDVDAudioCodecPassthrough::Dispose()
     m_iDataFrameAlloced = 0;
     m_iDataFrameLen = 0;
   }
-  if( m_pLiba52 )
+  if( m_pStateA52 )
   {
-    m_pLiba52->Dispose();
-    delete m_pLiba52;
-    m_pLiba52 = NULL;
+    m_dllA52.a52_free(m_pStateA52);
+    m_pStateA52 = NULL;
+  }
+  if( m_pStateDTS )
+  {
+    m_dllDTS.dts_free(m_pStateDTS);
+    m_pStateDTS = NULL;
   }
 }
 
 int CDVDAudioCodecPassthrough::Decode(BYTE* pData, int iSize)
-{
-  //Still have data to portion out.
+{  
+
+  //If there is more to pass, do so first
   if( m_iPassBufferLen > 0) return 0;
-  m_pPassBuffer = mPassBuffer;
-  
+
   //Make sure we have enough room
   if( iSize + m_iDataFrameLen > m_iDataFrameAlloced )
   {
@@ -153,48 +260,24 @@ int CDVDAudioCodecPassthrough::Decode(BYTE* pData, int iSize)
   if( m_iFrameSize == 0)
   {
     m_iOffset = 0;
+    int iFrameLenght=0;
+
     if( SyncDTSHeader(m_pDataFrame, m_iDataFrameLen, &m_iOffset, &m_iFrameSize) )
     {
-      if(m_iFrameSize >= 10 && m_iFrameSize <= 6144-8) 
+      if(m_iType != ENS_DTS)
       {
-        if(m_iType != ENS_DTS)
-        {
-          CLog::Log(LOGDEBUG, "CDVDAudioCodecPassthrough: Synced to DTS frame");
-          m_iType = ENS_DTS;
-        }
-      }
-      else
-      {
-        m_iFrameSize = 0;
-        m_iDataFrameLen = 0; //Discard data
-        CLog::Log(LOGWARNING, "CDVDAudioCodecPassthrough::Decode - Error: Invalid DTS framesize");
-        return -1;
+        CLog::Log(LOGDEBUG, "CDVDAudioCodecPassthrough: Synced to DTS frame");
+        m_iType = ENS_DTS;
       }
     }
-
-    if( m_pLiba52->SyncAC3Header(m_pDataFrame, m_iDataFrameLen, &m_iOffset, &m_iFrameSize) )
+    // Check for AC3 sync only if no DTS sync was found. AC3 seem to sync sometimes even thou it's a DTS stream
+    // i would suppose a dts stream can contain data that looks like the AC3 syncword.
+    else if( SyncAC3Header(m_pDataFrame, m_iDataFrameLen, &m_iOffset, &m_iFrameSize) )
     {
-      if(m_iFrameSize >= 7 && m_iFrameSize <= 3840) 
+      if(m_iType != ENS_AC3)
       {
-        if(m_iType != ENS_AC3)
-        {
-          CLog::Log(LOGDEBUG, "CDVDAudioCodecPassthrough: Synced to AC3 frame");
-          m_iType = ENS_AC3;
-        }
-        if (m_pLiba52->GetSampleRate() != 48000)
-        {
-          m_iFrameSize = 0;
-          m_iDataFrameLen = 0; //Discard data
-          CLog::Log(LOGWARNING, "CDVDAudioCodecPassthrough::Decode - Error: Invalid AC3 samplerate, passtrough only supports 480000khz");
-          return -1;
-        }
-      }
-      else
-      {
-        m_iFrameSize = 0;
-        m_iDataFrameLen = 0; //Discard data
-        CLog::Log(LOGWARNING, "CDVDAudioCodecPassthrough::Decode - Error: Invalid AC3 framesize");
-        return -1;
+        CLog::Log(LOGDEBUG, "CDVDAudioCodecPassthrough: Synced to AC3 frame");
+        m_iType = ENS_AC3;
       }
     }
   }
@@ -209,19 +292,23 @@ int CDVDAudioCodecPassthrough::Decode(BYTE* pData, int iSize)
   //Check our data to see if we have enough to complete a frame
   if (m_iDataFrameLen >= m_iFrameSize + m_iOffset && m_iFrameSize > 0)
   {
+    if( m_iPassBufferAlloced < OUT_SAMPLESTOBYTES(m_iSamplesPerFrame) )
+    {
+      m_iPassBufferAlloced = OUT_SAMPLESTOBYTES(m_iSamplesPerFrame);
+      m_pPassBuffer = (BYTE*)realloc(m_pPassBuffer, m_iPassBufferAlloced);
+    }
+
     if(m_iType == ENS_DTS)
     {
-      m_iPassBufferLen = decode_audio_dts(m_pDataFrame + m_iOffset, m_iFrameSize, m_pPassBuffer);
-      m_iChunkSize = m_iPassBufferLen;
+      m_iPassBufferLen = PaddDTSData(m_pDataFrame + m_iOffset, m_iFrameSize, m_pPassBuffer);
     }
     else if(m_iType == ENS_AC3)
     {
       m_iPassBufferLen = PaddAC3Data(m_pDataFrame + m_iOffset, m_iFrameSize, m_pPassBuffer);
-      m_iChunkSize = m_iPassBufferLen;
     }    
     //Calc how much we use of size to complete frame
     int ret = m_iFrameSize + m_iOffset - (m_iDataFrameLen-iSize); 
-    
+
     //Discard current data
     m_iDataFrameLen = 0;
     m_iFrameSize=0;
@@ -243,12 +330,9 @@ int CDVDAudioCodecPassthrough::GetData(BYTE** dst)
   if(m_iPassBufferLen)
   {
     *dst = m_pPassBuffer;
-    if(m_iPassBufferLen < m_iChunkSize)
-      m_iChunkSize = m_iPassBufferLen;
-
-    m_iPassBufferLen-= m_iChunkSize;
-    m_pPassBuffer+=m_iChunkSize;
-    return m_iChunkSize;
+    int iSize = m_iPassBufferLen;
+    m_iPassBufferLen = 0;
+    return iSize;
   }
   else
     return 0;
@@ -265,16 +349,16 @@ int CDVDAudioCodecPassthrough::GetChannels()
 {
   //Can't return correct channels here as this is used to keep sync.
   //should probably have some other way to find out this
-  return 2;
+  return OUT_CHANNELS;
 }
 
 int CDVDAudioCodecPassthrough::GetSampleRate()
 {
-  return 48000;
+  return OUT_SAMPLERATE;
 }
 
 int CDVDAudioCodecPassthrough::GetBitsPerSample()
 {
-  return 16;
+  return OUT_SAMPLESIZE;
 }
 

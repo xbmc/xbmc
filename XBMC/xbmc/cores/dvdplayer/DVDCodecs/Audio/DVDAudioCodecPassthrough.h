@@ -1,6 +1,9 @@
 #pragma once
 #include "dvdaudiocodec.h"
 #include "dvdaudiocodecliba52.h"
+#include "DllLibDts.h"
+#include "DllLiba52.h"
+
 
 class CDVDAudioCodecPassthrough :
   public CDVDAudioCodec
@@ -20,12 +23,15 @@ public:
   virtual bool NeedPasstrough() { return true; }
   
 private:
-
+  bool SyncAC3Header(BYTE* pData, int iDataSize, int* iOffset, int* iFrameSize );
   bool SyncDTSHeader( BYTE* pData, int iDataSize, int* iOffset, int* iFrameSize );
   int PaddAC3Data( BYTE* pData, int iDataSize, BYTE* pOut);
-
+  int PaddDTSData( BYTE* pData, int iDataSize, BYTE* pOut);
+  
+  int m_iPassBufferAlloced;
   BYTE* m_pPassBuffer;
-  BYTE mPassBuffer[6144];
+  int m_iPassBufferLen;
+
   bool m_bHasMMByte;
   BYTE m_bMMByte;
   
@@ -34,11 +40,11 @@ private:
   int m_iDataFrameLen;
   int m_iOffset;
 
-  int m_iFrameSize;
+  int m_iFrameSize; //Input number of bytes  
   int m_iChunkSize;
 
-
-  int m_iPassBufferLen;
+  int m_iSamplesPerFrame; //Equivalent number of output bytes per frame
+  int m_iSampleRate;
 
   enum EN_SYNCTYPE
   {
@@ -47,7 +53,9 @@ private:
     ENS_DTS=2,
   } m_iType;
 
-  CDVDAudioCodecLiba52* m_pLiba52;
-
-
+  DllLibDts m_dllDTS;
+  DllLiba52 m_dllA52;
+  
+  dts_state_t* m_pStateDTS;
+  a52_state_t* m_pStateA52;
 };
