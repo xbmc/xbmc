@@ -6,6 +6,7 @@
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
 
+ - 13-10-2005 fixed: dvdplayer could hang if player was paused and user tried to exit the player
  - 12-10-2005 fixed: dts -> analog codec did not always work for dvdplayer
  - 12-10-2005 fixed: Seekbar was broken, should work now
  - 11-10-2005 fixed: paths with commas in my music files
