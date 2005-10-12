@@ -41,7 +41,6 @@ void CDVDAudio::UnRegisterAudioCallback()
 
 bool CDVDAudio::Create(int iChannels, int iBitrate, int iBitsPerSample, bool bPasstrough)
 {
-
   // if passthrough isset do something else
   CSingleLock lock (m_critSection);
 
@@ -56,7 +55,6 @@ bool CDVDAudio::Create(int iChannels, int iBitrate, int iBitsPerSample, bool bPa
     m_iPackets = 32; //64;// better sync with smaller buffers?
     m_pAudioDecoder = new CASyncDirectSound(m_pCallback, iChannels, iBitrate, iBitsPerSample, false, m_iPackets); // true = resample, 128 buffers
   }
-
 
   if (!m_pAudioDecoder) return false;
 

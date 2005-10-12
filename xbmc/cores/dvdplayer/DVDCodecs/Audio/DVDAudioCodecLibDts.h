@@ -29,18 +29,17 @@ protected:
   static void convert2s16_4(convert_t * _f, int16_t * s16);
   static void convert2s16_5(convert_t * _f, int16_t * s16);
   static void convert2s16_multi(convert_t * _f, int16_t * s16, int flags);
-  static void s16_swap(int16_t * s16, int channels);
-  static void s32_swap(int32_t * s32, int channels);
 
   dts_state_t* m_pState;
 
   BYTE m_inputBuffer[4096];
-  BYTE* m_pInputBuffer;
-
-
+  int m_iInputBufferSize;
+  //BYTE* m_pInputBuffer;
+  
   BYTE m_decodedData[131072]; // could be a bit to big
-  int m_decodedDataSize;
-
+  int m_iDecodedDataSize;
+  //int m_decodedDataSize;
+  
   int m_iFrameSize;
   int m_iFlags;
   float* m_fSamples;
