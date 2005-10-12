@@ -275,7 +275,7 @@ void CDVDPlayerAudio::Process()
     {
       //Wait untill only the new audio frame wich triggered the discontinuity is left
       //then set disc state
-      while( m_dvdAudio.GetBytesInBuffer() > len ) Sleep(5);
+      while (!m_bStop && m_dvdAudio.GetBytesInBuffer() > len ) Sleep(5);
 
       m_pClock->Discontinuity(CLOCK_DISC_NORMAL, m_audioClock - m_dvdAudio.GetDelay());
       CLog::DebugLog("CDVDPlayer:: Detected Audio Discontinuity, syncing clock. diff was: %I64d, %I64d, av: %I64d", iClockDiff, iCurrDiff, iAvDiff);
