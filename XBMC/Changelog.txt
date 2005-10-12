@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+
+ - 12-10-2005 fixed: dts -> analog codec did not always work for dvdplayer
  - 12-10-2005 fixed: Seekbar was broken, should work now
  - 11-10-2005 fixed: paths with commas in my music files
  - 11-10-2005 fixed: bug in my music library albums regarding albums with the same name, aka "greatest hits"
