@@ -3,7 +3,7 @@
 #include "DVDAudioCodecLibDts.h"
 #include "..\..\DVDPLayerDLL.h"
 
-static inline int16_t convert(int32_t i)
+inline int16_t convert(register int32_t i)
 {
 #ifdef LIBDTS_FIXED
     i >>= 15;
@@ -19,7 +19,7 @@ void CDVDAudioCodecLibDts::convert2s16_1(convert_t * _f, int16_t * s16)
     int32_t * f = (int32_t *) _f;
 
     for (i = 0; i < 256; i++) {
-	s16[i] = convert (f[i]);
+      s16[i] = convert (f[i]);
     }
 }
 
@@ -79,8 +79,8 @@ void CDVDAudioCodecLibDts::convert2s16_5(convert_t * _f, int16_t * s16)
 
 void CDVDAudioCodecLibDts::convert2s16_multi(convert_t * _f, int16_t * s16, int flags)
 {
-  int i;
-  int32_t * f = (int32_t *) _f;
+  register int i;
+  register int32_t * f = (int32_t *) _f;
 
   switch (flags)
   {
@@ -165,33 +165,14 @@ void CDVDAudioCodecLibDts::convert2s16_multi(convert_t * _f, int16_t * s16, int 
   }
 }
 
-void CDVDAudioCodecLibDts::s16_swap(int16_t * s16, int channels)
-{
-  int i;
-  uint16_t * u16 = (uint16_t *) s16;
-
-  for (i = 0; i < 256 * channels; i++)
-    u16[i] = (u16[i] >> 8) | (u16[i] << 8);
-}
-
-void CDVDAudioCodecLibDts::s32_swap(int32_t * s32, int channels)
-{
-  int i;
-  uint32_t * u32 = (uint32_t *) s32;
-
-  for (i = 0; i < 256 * channels; i++)
-    u32[i] = (u32[i] << 24) | ((u32[i] << 8)&0xFF0000) |
-    ((u32[i] >> 8)&0xFF00) | (u32[i] >> 24);
-}
-
 CDVDAudioCodecLibDts::CDVDAudioCodecLibDts() : CDVDAudioCodec()
 {
   m_pState = NULL;
   m_iSourceChannels = 0;
   m_iSourceSampleRate = 0;
   m_iSourceBitrate = 0;
-  m_decodedDataSize = 0;
-  m_pInputBuffer = NULL;
+  m_iDecodedDataSize = 0;
+  m_iInputBufferSize = 0;
 }
 
 CDVDAudioCodecLibDts::~CDVDAudioCodecLibDts()
@@ -251,131 +232,120 @@ int CDVDAudioCodecLibDts::GetNrOfChannels(int iFlags)
   return iChannels;
 }
 
-
-#define HEADER_SIZE 14
+#define DTS_HEADER_SIZE 14
 int CDVDAudioCodecLibDts::Decode(BYTE* pData, int iSize)
 {
   level_t level = 1.0f;
   sample_t bias = 384;
   
-  int iLen = 0;
-  m_decodedDataSize = 0;
-  BYTE* pOldDataPointer = pData;
-  while (iSize > 0)
+  int iFrameLen = 0;
+  bool bError = false;
+  
+  int iBytesToCopy = iSize;
+  int iBytesFree = sizeof(m_inputBuffer) - m_iInputBufferSize;
+  if (iBytesToCopy > iBytesFree) iBytesToCopy = iBytesFree;
+  
+  m_iDecodedDataSize = 0;
+  
+  fast_memcpy(m_inputBuffer + m_iInputBufferSize, pData, iBytesToCopy);
+  m_iInputBufferSize += iBytesToCopy;
+  BYTE* pInput = m_inputBuffer;
+  
+  while (m_iInputBufferSize > DTS_HEADER_SIZE)
   {
-    if (m_iFrameSize == 0)
+    bError = false;
+    
+    // look for sync
+    if (m_iFrameSize <= 0)
     {
-      // no header seen : find one. We need at least 7 bytes to parse it
-      int i = 0;
-      while (i <= (iSize - HEADER_SIZE))
+      m_iFrameSize = m_dll.dts_syncinfo(m_pState, pInput, &m_iFlags, &m_iSourceSampleRate, &m_iSourceBitrate, &iFrameLen);
+      if (m_iFrameSize <= 0)
       {
-        // it's possible that m_inputBuffer already contains 6 bits from our previous run
-        // so use m_pInputBuffer to copy the rest of the data. We must rest it after dts_syncinfo though!!
-        for (int u = 0; u < HEADER_SIZE; u++) m_pInputBuffer[u] = pData[u];
+        // no sync found, shift one byte
+        m_iInputBufferSize--;
+        pInput++;
+      }
+    }
+    
+    if (m_iFrameSize > 0)
+    {
+      if (m_iSourceChannels == 0) m_iSourceChannels = GetNrOfChannels(m_iFlags);
 
-        iLen = m_dll.dts_syncinfo(m_pState, m_inputBuffer, &m_iFlags, &m_iSourceSampleRate, &m_iSourceBitrate, &m_iFrameSize);
-        if (iLen > 0)
+      if ((m_iInputBufferSize) >= m_iFrameSize)
+      {
+        // we have the entire frame, decode it
+        int iFlags = m_iFlags;
+        if (m_iOutputChannels == 1)      iFlags = DTS_MONO;
+        else if (m_iOutputChannels == 2) iFlags = DTS_STEREO;
+        else
         {
-          if (m_iSourceChannels == 0)
-          {
-            m_iSourceChannels = GetNrOfChannels(m_iFlags);
-          }
-          m_iFrameSize = iLen;
-          pData += HEADER_SIZE;
-          m_pInputBuffer += HEADER_SIZE;
-          iSize -= HEADER_SIZE;
-          break;
+          m_iOutputChannels = m_iSourceChannels;
+          iFlags |= DTS_ADJUST_LEVEL;
         }
 
-        // reset the buffer pointer if needed
-        if ((m_pInputBuffer - m_inputBuffer) > 0) m_pInputBuffer = m_inputBuffer;
+        m_dll.dts_frame(m_pState, pInput, &iFlags, &level, bias);
 
-        // no sync found, shift one byte
-        i++;
-        pData++;
-        //m_pInputBuffer++;
-        iSize--;
+        //m_dll.dts_dynrng(m_pState, NULL, NULL);
+        
+        int iNrOfBlocks = m_dll.dts_blocks_num(m_pState);
+        
+        short* pDecodedData = (short*)(m_decodedData + m_iDecodedDataSize);
+        
+        for (int i = 0; i < iNrOfBlocks; i++)
+        {
+          if (m_dll.dts_block(m_pState) != 0)
+          {
+            // error, start syncing again
+            CLog::Log(LOGERROR, "CDVDAudioCodecLibDts::Decode : dts_block != 0");
+            bError = true;
+            break;
+          }
+          pDecodedData += i * 256 * m_iOutputChannels;
+          convert2s16_multi(m_fSamples, pDecodedData, iFlags & (DTS_CHANNEL_MASK | DTS_LFE));
+        }
+        
+        // need to check if there is enough data in the output buffer for the next run
+        
+        if (!bError)
+        {
+          m_iDecodedDataSize += iNrOfBlocks * m_iOutputChannels * 256 * sizeof(short);
+          
+          pInput += m_iFrameSize;
+          m_iInputBufferSize -= m_iFrameSize;
+        }
+        m_iFrameSize = 0;        
       }
-      if (m_iFrameSize == 0 && iSize < HEADER_SIZE)
+      else
       {
-        // we are at the end of our stream and don't have enough data for our header anymore.
-        // copy it to our buffer for later use;
-        for (int i = 0; i < iSize; i++) m_pInputBuffer[i] = pData[i];
-        m_pInputBuffer += iSize;
-        pData += iSize;
-        iSize = 0;
+        // found header, but we do not have enough data for a frame.
+        memmove(m_inputBuffer, pInput, m_iInputBufferSize);
         break;
       }
     }
-    else if (m_pInputBuffer - m_inputBuffer < m_iFrameSize)
-    {
-      // we are working on a frame that is m_iFrameSize big, but we don't have all data yet
-      // just copy more data to it
-      iLen = m_iFrameSize - (m_pInputBuffer - m_inputBuffer);
-      if (iSize < iLen) iLen = iSize;
-      fast_memcpy(m_pInputBuffer, pData, iLen);
-      m_pInputBuffer += iLen;
-      pData += iLen;
-      iSize -= iLen;
-    }
-    else
-    {
-      // we have a frame to decode
-      
-      int iFlags = m_iFlags;
-      if (m_iOutputChannels == 1)      iFlags = DTS_MONO;
-      else if (m_iOutputChannels == 2) iFlags = DTS_STEREO;
-      else
-      {
-        m_iOutputChannels = m_iSourceChannels;
-        iFlags |= DTS_ADJUST_LEVEL;
-      }
-
-      m_dll.dts_frame(m_pState, m_inputBuffer, &iFlags, &level, bias);
-
-      // [dts_dynrng (state, ...); this is only optional]
-      int iNrOfBlocks = m_dll.dts_blocks_num(m_pState);
-      for (int i = 0; i < iNrOfBlocks; i++)
-      {
-        if (m_dll.dts_block(m_pState) != 0)
-        {
-          OutputDebugString("Error!!!!!!!!!!");
-          m_pInputBuffer = m_inputBuffer;
-          m_iFrameSize = 0;
-          m_decodedDataSize = 0;
-          return -1;
-        }
-        
-        convert2s16_multi(m_fSamples, ((short*)m_decodedData) + (i * 256 * m_iOutputChannels), iFlags & (DTS_CHANNEL_MASK | DTS_LFE));
-      }
-
-      m_pInputBuffer = m_inputBuffer;
-      m_iFrameSize = 0;
-      m_decodedDataSize = iNrOfBlocks * m_iOutputChannels * 256 * sizeof(short);
-      return (pData - pOldDataPointer);
-    }
   }
-  return (pData - pOldDataPointer);
+  
+  return iBytesToCopy;
 }
 
 int CDVDAudioCodecLibDts::GetData(BYTE** dst)
 {
   *dst = m_decodedData;
-  return m_decodedDataSize;
+  return m_iDecodedDataSize;
 }
 
 void CDVDAudioCodecLibDts::SetDefault()
 {
-  m_pInputBuffer = m_inputBuffer;
+  m_iInputBufferSize = 0;
   m_iFrameSize = 0;
   m_iSourceChannels = 0;
   m_iSourceSampleRate = 0;
   m_iSourceBitrate = 0;
-  m_decodedDataSize = 0;
+  m_iDecodedDataSize = 0;
 }
 
 void CDVDAudioCodecLibDts::Reset()
 {
+  return;
   if (m_pState) m_dll.dts_free(m_pState);
 
   SetDefault();
@@ -383,4 +353,3 @@ void CDVDAudioCodecLibDts::Reset()
   m_pState = m_dll.dts_init(0);
   m_fSamples = m_dll.dts_samples(m_pState);
 }
-
