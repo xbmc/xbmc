@@ -66,6 +66,7 @@ bool CDVDAudioCodecFFmpeg::Open(CodecID codecID, int iChannels, int iSampleRate,
 
   m_pCodecContext->channels = iChannels;
   m_pCodecContext->sample_rate = iSampleRate;
+  //m_pCodecContext->bits_per_sample = 24;
   
   // not used for any codec yet, set it to 0
   m_pCodecContext->extradata = NULL;
@@ -122,20 +123,23 @@ int CDVDAudioCodecFFmpeg::GetData(BYTE** dst)
 
 void CDVDAudioCodecFFmpeg::Reset()
 {
-  avcodec_flush_buffers(m_pCodecContext);
+  if (m_pCodecContext) avcodec_flush_buffers(m_pCodecContext);
 }
 
 int CDVDAudioCodecFFmpeg::GetChannels()
 {
-  return m_pCodecContext->channels;
+  if (m_pCodecContext) return m_pCodecContext->channels;
+  return 0;
 }
 
 int CDVDAudioCodecFFmpeg::GetSampleRate()
 {
-  return m_pCodecContext->sample_rate;
+  if (m_pCodecContext) return m_pCodecContext->sample_rate;
+  return 0;
 }
 
 int CDVDAudioCodecFFmpeg::GetBitsPerSample()
 {
-  return 16;
+  if (m_pCodecContext) return 16;
+  return 0;
 }
