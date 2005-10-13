@@ -97,8 +97,8 @@ void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecC
       vecCores.push_back(EPC_PAPLAYER);
       bPAPlayer = true;
     }
-    else if( ( url.GetFileType().Equals("ac3") && !g_audioConfig.GetAC3Enabled() )
-         ||  ( url.GetFileType().Equals("dts") && !g_audioConfig.GetDTSEnabled() ) ) 
+    else if( ( url.GetFileType().Equals("ac3") && g_audioConfig.GetAC3Enabled() )
+         ||  ( url.GetFileType().Equals("dts") && g_audioConfig.GetDTSEnabled() ) ) 
     {
       //NOP
     }
