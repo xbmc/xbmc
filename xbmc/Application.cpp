@@ -606,21 +606,6 @@ HRESULT CApplication::Create()
   //floating point precision to 24 bits (faster performance)
   _controlfp(_PC_24, _MCW_PC);
 
-  CLog::Log(LOGINFO, "setup DirectX");
-  // Create the Direct3D object
-  if ( NULL == ( m_pD3D = Direct3DCreate8(D3D_SDK_VERSION) ) )
-  {
-    CLog::Log(LOGFATAL, "XBAppEx: Unable to create Direct3D!" );
-    return E_FAIL;
-  }
-  //list available videomodes
-  g_videoConfig.GetModes(m_pD3D);
-  //init the present parameters with values that are supported
-  RESOLUTION initialResolution = g_videoConfig.GetInitialMode(m_pD3D, &m_d3dpp);
-  // Transfer the resolution information to our graphics context
-  g_graphicsContext.SetD3DParameters(&m_d3dpp);
-  g_graphicsContext.SetGUIResolution(initialResolution);
-
   CIoSupport helper;
   CStdString strPath;
   char szDevicePath[1024];
@@ -665,51 +650,31 @@ HRESULT CApplication::Create()
       }
     }
   }
-
   ::DeleteFile(strLogFileOld.c_str());
   ::MoveFile(strLogFile.c_str(), strLogFileOld.c_str());
   
-  /*
-  //
-  CStdString strHomePath = "Q:";
-  if (g_settings.QuickXMLLoad("home"))
-  {
-    if (strlen(g_stSettings.szHomeDir) > 1)
-    {
-      CLog::Log(LOGNOTICE, "-----------------------------------------------------------------------");
-      CLog::Log(LOGNOTICE, "A home dir is defined in xboxmediacenter.xml!");
-      CLog::Log(LOGNOTICE, "Defined homedir is: %s", g_stSettings.szHomeDir);
-      CLog::Log(LOGNOTICE, "Remaping Q: to homedir: %s", g_stSettings.szHomeDir);
-      CLog::Log(LOGNOTICE, "-----------------------------------------------------------------------");
-      strHomePath = g_stSettings.szHomeDir;
-    }
-    if (strHomePath != "Q:")
-    {
-      helper.GetPartition(strHomePath, szDevicePath);
-      strcat(szDevicePath, &strHomePath.c_str()[2]);
-
-      CLog::Close();
-      helper.Unmount("Q:");
-      helper.Mount("Q:", szDevicePath);
-
-      ::DeleteFile(strLogFileOld.c_str());
-      ::MoveFile(strLogFile.c_str(), strLogFileOld.c_str());
-
-      CLog::Close();
-      CLog::Log(LOGNOTICE, "-----------------------------------------------------------------------");
-      CLog::Log(LOGNOTICE, "New HomeDir! Q is mapped to: %s", szDevicePath);
-      CLog::Log(LOGNOTICE, "-----------------------------------------------------------------------");
-    }
-  }
-  */
   CLog::Log(LOGNOTICE, "-----------------------------------------------------------------------");
   CLog::Log(LOGNOTICE, "Starting XBoxMediaCenter.  Built on %s", __DATE__);
   CLog::Log(LOGNOTICE, "Q is mapped to: %s",szDevicePath );
-  //CLog::Log(LOGNOTICE, "Home Path Q is mapped to: %s (%s)", strHomePath.c_str(), szDevicePath );
   CLog::Log(LOGNOTICE, "Log File is located: %s", strLogFile.c_str());
   CLog::Log(LOGNOTICE, "-----------------------------------------------------------------------");
-  // reset our strHomePath to Q:, so it can be checked again!
-  //strHomePath = "Q:";
+
+  CLog::Log(LOGINFO, "Setup DirectX");
+  // Create the Direct3D object
+  if ( NULL == ( m_pD3D = Direct3DCreate8(D3D_SDK_VERSION) ) )
+  {
+    CLog::Log(LOGFATAL, "XBAppEx: Unable to create Direct3D!" );
+    return E_FAIL;
+  }
+
+  //list available videomodes
+  g_videoConfig.GetModes(m_pD3D);
+  //init the present parameters with values that are supported
+  RESOLUTION initialResolution = g_videoConfig.GetInitialMode(m_pD3D, &m_d3dpp);
+  // Transfer the resolution information to our graphics context
+  g_graphicsContext.SetD3DParameters(&m_d3dpp);
+  g_graphicsContext.SetGUIResolution(initialResolution);
+
   // Initialize core peripheral port support. Note: If these parameters
   // are 0 and NULL, respectively, then the default number and types of
   // controllers will be initialized.
