@@ -38,9 +38,9 @@ ICodec* CodecFactory::CreateCodec(const CStdString& strFileType)
     return new FLACCodec();
   else if (strFileType.Equals("wav"))
     return new WAVCodec();
-  else if (strFileType.Equals("dts") && ((g_guiSettings.GetInt("AudioOutput.Mode") == AUDIO_ANALOG) || (!g_audioConfig.GetDTSEnabled())))
+  else if (strFileType.Equals("dts"))
     return new DTSCodec();
-  else if (strFileType.Equals("ac3") && ((g_guiSettings.GetInt("AudioOutput.Mode") == AUDIO_ANALOG) || (!g_audioConfig.GetAC3Enabled())))
+  else if (strFileType.Equals("ac3"))
     return new AC3Codec();
   else if (strFileType.Equals("m4a") || strFileType.Equals("aac"))
     return new AACCodec();

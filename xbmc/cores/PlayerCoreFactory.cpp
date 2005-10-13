@@ -7,6 +7,7 @@
 #include "dvdplayer\DVDPlayer.h"
 #include "paplayer\paplayer.h"
 #include "..\GUIDialogContextMenu.h"
+#include "../XBAudioConfig.h"
 
 
 CPlayerCoreFactory::CPlayerCoreFactory()
@@ -71,6 +72,7 @@ void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecC
 {
   CURL url(item.m_strPath);
   bool bMPlayer(false), bDVDPlayer(false);
+  bool bPAPlayer(false);
 
   bool bAllowDVD = true;
 
@@ -90,7 +92,21 @@ void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecC
 
   if( PAPlayer::HandlesType(url.GetFileType()) )
   {
-    vecCores.push_back(EPC_PAPLAYER);
+    if( g_guiSettings.GetInt("AudioOutput.Mode") == AUDIO_ANALOG )
+    {
+      vecCores.push_back(EPC_PAPLAYER);
+      bPAPlayer = true;
+    }
+    else if( ( url.GetFileType().Equals("ac3") && !g_audioConfig.GetAC3Enabled() )
+         ||  ( url.GetFileType().Equals("dts") && !g_audioConfig.GetDTSEnabled() ) ) 
+    {
+      //NOP
+    }
+    else
+    {
+      vecCores.push_back(EPC_PAPLAYER);
+      bPAPlayer = true;
+    }
   }
   
   if( ModPlayer::IsSupportedFormat(url.GetFileType()) || (url.GetFileType() == "xm") || (url.GetFileType() == "mod") || (url.GetFileType() == "s3m") || (url.GetFileType() == "it") )
@@ -103,6 +119,7 @@ void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecC
     vecCores.push_back(EPC_SIDPLAYER);
   }
 
+  //Add all normal players last so you can force them, should you want to
   if( item.IsVideo() || item.IsAudio() )
   {
     if( !bMPlayer )
@@ -110,6 +127,9 @@ void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecC
 
     if( bAllowDVD && !bDVDPlayer )
       vecCores.push_back(EPC_DVDPLAYER);
+
+    if( item.IsAudio() )
+      vecCores.push_back(EPC_PAPLAYER);
   }
 
 }

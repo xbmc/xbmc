@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 13-10-2005 changed: don't let PAPlayer itself decide to disable .ac3/.dts files if digital output is enabled. The player still supports the files just no passthrough. Allows user to force use of PAPlayer for .ac3/.dts files.
  - 13-10-2005 changed: Logging starts earlier (some logs weren't being logged)
  - 13-10-2005 fixed: Music files navigation, same path could be in the directoryhistory more then once in a row (causing having to press back multiple times to navigate back)
  - 13-10-2005 added: Playlists in My Music Library now act as folders.  The items are displayed in the order found in the playlist.
