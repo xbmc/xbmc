@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 13-10-2005 fixed: Music files navigation, same path could be in the directoryhistory more then once in a row (causing having to press back multiple times to navigate back)
  - 13-10-2005 added: Playlists in My Music Library now act as folders.  The items are displayed in the order found in the playlist.
                      Since no tag data is read for these items yet, they are not sortable, and only displayed by filename.
  - 13-10-2005 fixed: My Music Library Playlist listing was not sortable
