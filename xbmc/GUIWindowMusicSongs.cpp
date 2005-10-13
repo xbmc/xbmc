@@ -1021,7 +1021,10 @@ bool CGUIWindowMusicSongs::Update(const CStdString &strDirectory)
     UpdateButtons();
   }
   
-  m_vecHistory.push_back(strDirectory);
+  if ((m_vecHistory.size() == 0) || m_vecHistory.back() != strDirectory)
+  {
+    m_vecHistory.push_back(strDirectory);
+  }
 
   // debug log
   CStdString strTemp;
