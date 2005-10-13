@@ -544,7 +544,6 @@ void CSettings::GetShares(const TiXmlElement* pRootElement, const CStdString& st
           if (pPathName->FirstChild())
           {
             CStdString strPath = pPathName->FirstChild()->Value();
-            strPath.MakeLower();
             vecPaths.push_back(strPath);
           }
           pPathName = pPathName->NextSibling("path");

@@ -95,7 +95,7 @@ protected:
   void DisplayEmptyDatabaseMessage(bool bDisplay);
   void SetLabelFromTag(CFileItem *pItem);
   CStdString ParseFormat(CFileItem *pItem, const CStdString& strFormat);
-  void LoadPlayList(const CStdString& strPlayList);
+  void LoadPlayList(const CStdString& strPlayList, int iPlayList = PLAYLIST_MUSIC);
   void ShowShareErrorMessage(CFileItem* pItem);
 
   CFileItem m_Directory; ///< Holds the current direcotry path after calling Update()
