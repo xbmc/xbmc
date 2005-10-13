@@ -418,8 +418,8 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
       int iControl = message.GetSenderId();
       if (iControl == CONTROL_BTNSORTBY) // sort by
       {
-        // root, top, and recent items do not allow sorting
-        if (m_iState == SHOW_ROOT || m_iPath >= SHOW_TOP)
+        // root, top, and recent items, and playlist "folders" do not allow sorting
+        if (m_iState == SHOW_ROOT || m_iPath == (SHOW_PLAYLISTS + SHOW_SONGS) || m_iPath >= SHOW_TOP)
           return true;
 
         if (m_iState == SHOW_GENRES)
@@ -539,8 +539,8 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
       }
       else if (iControl == CONTROL_BTNSORTASC) // sort asc
       {
-        // root, top, and recent items do not allow sorting
-        if (m_iState == SHOW_ROOT || m_iPath >= SHOW_TOP)
+        // root, top, and recent items, and playlist "folders" do not allow sorting
+        if (m_iState == SHOW_ROOT || m_iPath == (SHOW_PLAYLISTS + SHOW_SONGS) || m_iPath >= SHOW_TOP)
           return true;
         else if (m_iState == SHOW_GENRES)
           g_stSettings.m_bMyMusicNavGenresSortAscending = !g_stSettings.m_bMyMusicNavGenresSortAscending;
@@ -844,17 +844,21 @@ bool CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, CFileItemL
       bool bTest;
       if (m_iPath == (SHOW_TOP + SHOW_SONGS))
         bTest = g_musicDatabase.GetTop100(songs);
+      else if (m_iPath == (SHOW_PLAYLISTS + SHOW_SONGS))
+        bTest = GetSongsFromPlayList(songs, vecPathHistory.back());
       else
         bTest = g_musicDatabase.GetSongsNav(songs, m_strGenre, m_strArtist, m_strAlbum, m_strAlbumPath);
 
       if (bTest)
       {
         // add "All Songs"
-        CFileItem* pFileItem = new CFileItem(g_localizeStrings.Get(15104));
-        pFileItem->m_strPath = "";
-        pFileItem->m_bIsFolder = true;
-        items.Add(pFileItem);
-
+        if (m_iPath != (SHOW_PLAYLISTS + SHOW_SONGS))
+        {
+          CFileItem* pFileItem = new CFileItem(g_localizeStrings.Get(15104));
+          pFileItem->m_strPath = "";
+          pFileItem->m_bIsFolder = true;
+          items.Add(pFileItem);
+        }
         for (int i = 0; i < (int)songs.size(); ++i)
         {
           CSong &song = songs[i];
@@ -873,8 +877,8 @@ void CGUIWindowMusicNav::UpdateButtons()
 {
   CGUIWindowMusicBase::UpdateButtons();
 
-  // root, top, and recent items do not allow sorting
-  if (m_iState == SHOW_ROOT || m_iPath >= SHOW_TOP)
+  // root, top, and recent items, and playlist "folders" do not allow sorting
+  if (m_iState == SHOW_ROOT || m_iPath == (SHOW_PLAYLISTS + SHOW_SONGS) || m_iPath >= SHOW_TOP)
   {
     CONTROL_DISABLE(CONTROL_BTNSORTASC);
   }
@@ -885,7 +889,7 @@ void CGUIWindowMusicNav::UpdateButtons()
 
   // Update sorting control
   bool bSortAscending = false;
-  if (m_iState == SHOW_ROOT || m_iPath >= SHOW_TOP)
+  if (m_iState == SHOW_ROOT || m_iPath == (SHOW_PLAYLISTS + SHOW_SONGS) || m_iPath >= SHOW_TOP)
     bSortAscending = false;
   else if (m_iState == SHOW_GENRES)
     bSortAscending = g_stSettings.m_bMyMusicNavGenresSortAscending;
@@ -938,7 +942,7 @@ void CGUIWindowMusicNav::UpdateButtons()
   SET_CONTROL_LABEL(CONTROL_LABELFILES, wszText);
 
   // Update sort by button
-  if (m_iState == SHOW_ROOT || m_iState == SHOW_GENRES || m_iState == SHOW_ARTISTS || m_iPath >= SHOW_TOP)
+  if (m_iState == SHOW_ROOT || m_iState == SHOW_GENRES || m_iState == SHOW_ARTISTS || m_iPath == (SHOW_PLAYLISTS + SHOW_SONGS) || m_iPath >= SHOW_TOP)
   {
     SET_CONTROL_LABEL(CONTROL_BTNSORTBY, 103);
   }
@@ -976,6 +980,9 @@ void CGUIWindowMusicNav::UpdateButtons()
   // "Playlists"
   else if (m_iPath == SHOW_PLAYLISTS)
     strLabel = g_localizeStrings.Get(136);
+  // Playlist name
+  else if (m_iPath == SHOW_PLAYLISTS + SHOW_SONGS)
+    strLabel = CUtil::GetFileName(vecPathHistory.back());
   // "Genre/Artist/Album"
   else
   {
@@ -1133,7 +1140,11 @@ void CGUIWindowMusicNav::OnClick(int iItem)
   {
     if (pItem->IsPlayList())
     {
-      LoadPlayList(strPath);
+      m_iState = SHOW_SONGS;
+      m_iPath += m_iState;
+      vecPathHistory.push_back(strPath);
+      strNextPath += strLabel + "/";
+      Update(strNextPath);
     }
     else
     {
@@ -1219,6 +1230,13 @@ void CGUIWindowMusicNav::OnFileItemFormatLabel(CFileItem* pItem)
         pItem->SetLabel2(strDateTime);
       }
     }
+
+    else if (m_iPath == (SHOW_PLAYLISTS + SHOW_SONGS))
+    {
+      // remove extension?
+      if (g_guiSettings.GetBool("FileLists.HideExtensions"))
+        pItem->RemoveExtension();
+    }
   }
 
   // set thumbs and default icons
@@ -1233,8 +1251,8 @@ void CGUIWindowMusicNav::OnFileItemFormatLabel(CFileItem* pItem)
 
 void CGUIWindowMusicNav::DoSort(CFileItemList& items)
 {
-  // root, top, and recent items do not allow sorting
-  if (m_iState == SHOW_ROOT || m_iPath >= SHOW_TOP)
+  // root, top, and recent items, and playlist "folders" do not allow sorting
+  if (m_iState == SHOW_ROOT || m_iPath == (SHOW_PLAYLISTS + SHOW_SONGS) || m_iPath >= SHOW_TOP)
     return;
 
   SSortMusicNav::m_strDirectory = m_Directory.m_strPath;
@@ -1258,6 +1276,11 @@ void CGUIWindowMusicNav::DoSort(CFileItemList& items)
   {
     SSortMusicNav::m_iSortMethod = g_stSettings.m_iMyMusicNavSongsSortMethod;
     SSortMusicNav::m_bSortAscending = g_stSettings.m_bMyMusicNavSongsSortAscending;
+  }
+  else if (m_iState == SHOW_PLAYLISTS)
+  {
+    SSortMusicNav::m_iSortMethod = g_stSettings.m_iMyMusicNavPlaylistsSortMethod;
+    SSortMusicNav::m_bSortAscending = g_stSettings.m_bMyMusicNavPlaylistsSortAscending;
   }
   // swap order for sort by date and sort by size
   if (SSortMusicNav::m_iSortMethod == 1 || SSortMusicNav::m_iSortMethod == 2)
@@ -1499,6 +1522,15 @@ void CGUIWindowMusicNav::GoParentFolder()
   else if (m_iPath & (1 << 3))
   {
     m_iState = SHOW_GENRES;
+    m_strAlbum.Empty();
+    m_strAlbumPath.Empty();
+    m_strArtist.Empty();
+    m_strGenre.Empty();
+  }
+  // or back to playlists?
+  else if (m_iPath & (1 << 4))
+  {
+    m_iState = SHOW_PLAYLISTS;
     m_strAlbum.Empty();
     m_strAlbumPath.Empty();
     m_strArtist.Empty();
@@ -1872,4 +1904,31 @@ void CGUIWindowMusicNav::LoadDatabaseDirectoryCache(const CStdString& strDirecto
     ar.Close();
     file.Close();
   }
+}
+
+bool CGUIWindowMusicNav::GetSongsFromPlayList(VECSONGS& songs, const CStdString& strPlayList)
+{
+  CPlayListFactory factory;
+  auto_ptr<CPlayList> pPlayList (factory.Create(strPlayList));
+  if ( NULL != pPlayList.get())
+  {
+    // load it
+    if (!pPlayList->Load(strPlayList))
+    {
+      CGUIDialogOK::ShowAndGetInput(6, 0, 477, 0);
+      return false; //hmmm unable to load playlist?
+    }
+    CPlayList playlist = *pPlayList;
+    // convert playlist items to songs
+    for (int i = 0; i < (int)playlist.size(); ++i)
+    {
+      CSong song;
+      song.strFileName = playlist[i].m_strPath;
+      song.strTitle = CUtil::GetFileName(song.strFileName);
+      song.iDuration = playlist[i].GetDuration();
+      songs.push_back(song);
+    }
+  }
+
+  return true;
 }

@@ -1676,6 +1676,10 @@ void CGUIWindowMusicBase::PlayItem(int iItem)
     g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_MUSIC_TEMP);
     g_playlistPlayer.Play();
   }
+  else if (pItem->IsPlayList())
+  {
+    LoadPlayList(pItem->m_strPath, PLAYLIST_MUSIC_TEMP);
+  }
   // otherwise just play the song
   else
   {
@@ -1717,7 +1721,7 @@ void CGUIWindowMusicBase::OnDeleteItem(int iItem)
   m_viewControl.SetSelectedItem(iItem);
 }
 
-void CGUIWindowMusicBase::LoadPlayList(const CStdString& strPlayList)
+void CGUIWindowMusicBase::LoadPlayList(const CStdString& strPlayList, int iPlayList /* = PLAYLIST_MUSIC */)
 {
   // load a playlist like .m3u, .pls
   // first get correct factory to load playlist
@@ -1734,10 +1738,10 @@ void CGUIWindowMusicBase::LoadPlayList(const CStdString& strPlayList)
   }
 
   int iSize = pPlayList->size();
-  if (g_application.ProcessAndStartPlaylist(strPlayList, *pPlayList, PLAYLIST_MUSIC))
+  if (g_application.ProcessAndStartPlaylist(strPlayList, *pPlayList, iPlayList))
   {
     // activate the playlist window if its not activated yet
-    if (GetID() == m_gWindowManager.GetActiveWindow() && iSize > 1)
+    if (GetID() == m_gWindowManager.GetActiveWindow() && iSize > 1 && iPlayList == PLAYLIST_MUSIC)
     {
       m_gWindowManager.ActivateWindow(WINDOW_MUSIC_PLAYLIST);
     }

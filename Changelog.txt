@@ -5,7 +5,10 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
-
+ - 13-10-2005 added: Playlists in My Music Library now act as folders.  The items are displayed in the order found in the playlist.
+                     Since no tag data is read for these items yet, they are not sortable, and only displayed by filename.
+ - 13-10-2005 fixed: My Music Library Playlist listing was not sortable
+ - 13-10-2005 fixed: xbms shares should be working again, they are case sensitive
  - 13-10-2005 fixed: dvdplayer could hang if player was paused and user tried to exit the player
  - 12-10-2005 fixed: dts -> analog codec did not always work for dvdplayer
  - 12-10-2005 fixed: Seekbar was broken, should work now
