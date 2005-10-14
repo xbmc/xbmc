@@ -208,7 +208,7 @@ string field_value::get_asString() const {
 bool field_value::get_asBool() const {
     switch (field_type) {
     case ft_String: {
-      if (str_value == "True" || str_value == "1")
+      if (str_value == "True" || str_value == "true" || str_value == "1")
           return true;
       else
 	return false;
@@ -217,7 +217,7 @@ bool field_value::get_asBool() const {
       return bool_value;
       }
     case ft_Char: {
-      if (char_value == 'T')
+      if (char_value == 'T' || char_value == 't')
 	return true;
       else
 	return false;
