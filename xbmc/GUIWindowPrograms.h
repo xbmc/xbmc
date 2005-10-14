@@ -46,4 +46,5 @@ protected:
   int m_iViewAsIcons;
   bool m_isRoot;
   CGUIViewControl m_viewControl;
+  int m_iRegionSet; // for cd stuff
 };
