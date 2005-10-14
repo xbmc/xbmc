@@ -1,4 +1,4 @@
-<!-- Based on English XML v1.251. Last updated by vnmartinsen  !-->
+<!-- Based on English XML v1.255. Last updated by vnmartinsen  !-->
 <strings>
   <string><id>0</id><value>Mine Programmer</value></string>
   <string><id>1</id><value>Mine Bilder</value></string>
@@ -289,7 +289,7 @@
   <string><id>356</id><value>Skjermbeskytter-modus</value></string>
   <string><id>357</id><value>Skru av etter</value></string>
   <string><id>358</id><value>Alle album</value></string>
-  <string><id>359</id><value>Nyeste albumer</value></string>
+  <string><id>359</id><value>Nylig tillagte albumer</value></string>
   <string><id>360</id><value>Skjermbeskytter</value></string>
   <string><id>361</id><value>Kjør bildevisning</value></string>
   <string><id>362</id><value>Uttoningsnivå på skjermbeskytter (%)</value></string>
@@ -447,7 +447,10 @@
   <string><id>514</id><value>Manuelle innstillinger</value></string>
   <string><id>515</id><value>Sjanger</value></string>
   <string><id>516</id><value>Behandle arkiver</value></string>
-
+  <string><id>517</id><value>Nylig spilte albumer</value></string>
+  <string><id>518</id><value>Start</value></string>
+  <string><id>519</id><value>Start om..</value></string>
+  <string><id>520</id><value>Rediger XBE-tittel</value></string>
   <string><id>600</id><value>Ripp musikk-CD</value></string>
   <string><id>601</id><value>Middels</value></string>
   <string><id>602</id><value>Standard</value></string>
@@ -677,12 +680,12 @@
   <string><id>10514</id><value>Min musikk - Sjanger</value></string>
   <string><id>10515</id><value>Min musikk - Topp 100</value></string>
   <string><id>10516</id><value>Min musikk - Bibliotek</value></string>
-  <string><id>10517</id><value>Min musikk - Spilleliste</value></string>
+  <string><id>10517</id><value>Min musikk - Spiller nå</value></string>
   <string><id>10518</id><value>Min video - Skuespiller</value></string>
   <string><id>10519</id><value>Min video - Sjanger</value></string>
   <string><id>10520</id><value>Min video - Tittel</value></string>
   <string><id>10521</id><value>Min video - År</value></string>
-  <string><id>10522</id><value>Min video - Spilleliste</value></string>
+  <string><id>10522</id><value>Min video - Spiller nå</value></string>
   <string><id>10523</id><value>Albuminfo</value></string>
   <string><id>10524</id><value>Filminfo</value></string>
   <string><id>12000</id><value>Velgedialog</value></string>
