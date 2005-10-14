@@ -51,6 +51,7 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
   case GUI_MSG_WINDOW_INIT:
     {
       int iLastControl = m_iLastControl;
+      m_iRegionSet = 0;
       CGUIWindow::OnMessage(message);
       m_database.Open();
       m_dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
@@ -456,12 +457,22 @@ bool CGUIWindowPrograms::OnPopupMenu(int iItem)
       pMenu->SetPosition(iPosX - pMenu->GetWidth() / 2, iPosY - pMenu->GetHeight() / 2);
       pMenu->DoModal(GetID());
       int btnid = pMenu->GetButton();
+      
       if (btnid == btn_NTSCM)
+      {
+        m_iRegionSet = 1;
         m_database.SetRegion(m_vecItems[iItem]->m_strPath,1);
+      }
       if (btnid == btn_NTSCJ)
+      {
+        m_iRegionSet = 2;
         m_database.SetRegion(m_vecItems[iItem]->m_strPath,2);
+      }
       if (btnid == btn_PAL)
+      {
+        m_iRegionSet = 4;
         m_database.SetRegion(m_vecItems[iItem]->m_strPath,4);
+      }
 
       if (btnid > -1)
         OnClick(iItem);
@@ -876,7 +887,7 @@ void CGUIWindowPrograms::OnClick(int iItem)
     if (g_guiSettings.GetBool("MyPrograms.Flatten"))
       m_database.IncTimesPlayed(pItem->m_strPath);
 
-    int iRegion = GetRegion(iItem);
+    int iRegion = m_iRegionSet?m_iRegionSet:GetRegion(iItem);
 
     m_database.Close();
     memset(szParameters, 0, sizeof(szParameters));
