@@ -21,6 +21,7 @@
 #define CONTROL_PLAY_DVD           6
 #define CONTROL_STACK              7
 #define CONTROL_IMDB        9
+#define CONTROL_BTNSHOWMODE       10
 #define CONTROL_LIST       50
 #define CONTROL_THUMBS      51
 #define CONTROL_LABELFILES        12
@@ -41,12 +42,26 @@ struct SSortVideoGenreByName
     {
       char szfilename1[1024];
       char szfilename2[1024];
+      CStdString strStart, strEnd;
 
       switch ( m_iSortMethod )
       {
       case 0:  // Sort by name
-        strcpy(szfilename1, rpStart.GetLabel().c_str());
-        strcpy(szfilename2, rpEnd.GetLabel().c_str());
+        {
+          strStart = rpStart.GetLabel();
+          strEnd = rpEnd.GetLabel();
+          if (g_guiSettings.GetBool("MyVideos.IgnoreTheWhenSorting") && strStart.Left(4).Equals("The "))
+            strStart = strStart.Mid(4);
+          if (g_guiSettings.GetBool("MyVideos.IgnoreTheWhenSorting") && strEnd.Left(4).Equals("The "))
+            strEnd = strEnd.Mid(4);
+          CStdString strWatched = " [W]";
+          if (strStart.Right(strWatched.length()).Equals(strWatched))
+            strStart.Mid(0,strStart.length() - strWatched.length());
+          if (strEnd.Right(strWatched.length()).Equals(strWatched))
+            strEnd.Mid(0,strEnd.length() - strWatched.length());
+          strcpy(szfilename1, strStart.c_str());
+          strcpy(szfilename2, strEnd.c_str());
+        }
         break;
 
       case 1:  // Sort by year
@@ -61,9 +76,22 @@ struct SSortVideoGenreByName
         return true;
         break;
 
-      default:  // Sort by Filename by default
-        strcpy(szfilename1, rpStart.GetLabel().c_str());
-        strcpy(szfilename2, rpEnd.GetLabel().c_str());
+      default:  // Sort by name by default
+        {
+          strStart = rpStart.GetLabel();
+          strEnd = rpEnd.GetLabel();
+          if (g_guiSettings.GetBool("MyVideos.IgnoreTheWhenSorting") && strStart.Left(4).Equals("The "))
+            strStart = strStart.Mid(4);
+          if (g_guiSettings.GetBool("MyVideos.IgnoreTheWhenSorting") && strEnd.Left(4).Equals("The "))
+            strEnd = strEnd.Mid(4);
+          CStdString strWatched = " [W]";
+          if (strStart.Right(strWatched.length()).Equals(strWatched))
+            strStart.Mid(0,strStart.length() - strWatched.length());
+          if (strEnd.Right(strWatched.length()).Equals(strWatched))
+            strEnd.Mid(0,strEnd.length() - strWatched.length());
+          strcpy(szfilename1, strStart.c_str());
+          strcpy(szfilename2, strEnd.c_str());
+        }
         break;
       }
 
@@ -107,6 +135,11 @@ bool CGUIWindowVideoGenre::OnMessage(CGUIMessage& message)
 {
   switch ( message.GetMessage() )
   {
+  case GUI_MSG_WINDOW_INIT:
+    {
+      m_iShowMode = g_stSettings.m_iMyVideoGenreShowMode;
+    }
+    break;
   case GUI_MSG_CLICKED:
     {
       int iControl = message.GetSenderId();
@@ -132,6 +165,15 @@ bool CGUIWindowVideoGenre::OnMessage(CGUIMessage& message)
         g_settings.Save();
         UpdateButtons();
         OnSort();
+      }
+      else if (iControl == CONTROL_BTNSHOWMODE)
+	    {
+        m_iShowMode++;
+		    if (m_iShowMode > VIDEO_SHOW_WATCHED) m_iShowMode = VIDEO_SHOW_ALL;
+		    g_stSettings.m_iMyVideoGenreShowMode = m_iShowMode;
+        g_settings.Save();
+		    Update(m_Directory.m_strPath);
+        return true;
       }
       else
         return CGUIWindowVideoBase::OnMessage(message);
@@ -207,7 +249,7 @@ bool CGUIWindowVideoGenre::Update(const CStdString &strDirectory)
   if (m_Directory.IsVirtualDirectoryRoot())
   {
     VECMOVIEGENRES genres;
-    m_database.GetGenres( genres);
+    m_database.GetGenres(genres, m_iShowMode);
     // Display an error message if the database doesn't contain any genres
     DisplayEmptyDatabaseMessage(genres.empty());
     for (int i = 0; i < (int)genres.size(); ++i)
@@ -236,18 +278,30 @@ bool CGUIWindowVideoGenre::Update(const CStdString &strDirectory)
     for (int i = 0; i < (int)movies.size(); ++i)
     {
       CIMDBMovie movie = movies[i];
-      CFileItem *pItem = new CFileItem(movie.m_strTitle);
-      pItem->m_strPath = movie.m_strSearchString;
-      pItem->m_bIsFolder = false;
-      pItem->m_bIsShareOrDrive = false;
+      // add the appropiate movies to m_vecItems based on the showmode
+      if (
+        (m_iShowMode == VIDEO_SHOW_ALL) ||
+        (m_iShowMode == VIDEO_SHOW_WATCHED && movie.m_bWatched == true) ||
+        (m_iShowMode == VIDEO_SHOW_UNWATCHED && movie.m_bWatched == false)
+        )
+      {
+        // mark watched movies when showing all
+        CStdString strTitle = movie.m_strTitle;
+        if (m_iShowMode == VIDEO_SHOW_ALL && movie.m_bWatched == true)
+          strTitle += " [W]";
+        CFileItem *pItem = new CFileItem(strTitle);
+        pItem->m_strPath = movie.m_strSearchString;
+        pItem->m_bIsFolder = false;
+        pItem->m_bIsShareOrDrive = false;
 
-      CStdString strThumb;
-      CUtil::GetVideoThumbnail(movie.m_strIMDBNumber, strThumb);
-      if (CFile::Exists(strThumb))
-        pItem->SetThumbnailImage(strThumb);
-      pItem->m_fRating = movie.m_fRating;
-      pItem->m_stTime.wYear = movie.m_iYear;
-      m_vecItems.Add(pItem);
+        CStdString strThumb;
+        CUtil::GetVideoThumbnail(movie.m_strIMDBNumber, strThumb);
+        if (CFile::Exists(strThumb))
+          pItem->SetThumbnailImage(strThumb);
+        pItem->m_fRating = movie.m_fRating;
+        pItem->m_stTime.wYear = movie.m_iYear;
+        m_vecItems.Add(pItem);
+      }
     }
     SET_CONTROL_LABEL(LABEL_GENRE, m_Directory.m_strPath);
   }

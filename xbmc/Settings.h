@@ -45,6 +45,10 @@
 #define STACK_SIMPLE        1
 #define STACK_FUZZY         2
 
+#define VIDEO_SHOW_ALL 0
+#define VIDEO_SHOW_UNWATCHED 1
+#define VIDEO_SHOW_WATCHED 2
+
 class CFolderView
 {
 public:
@@ -267,6 +271,11 @@ public:
     int m_iMyFilesDestRootSortMethod;
     bool m_bMyFilesDestSortAscending;
     bool m_bMyFilesDestRootSortAscending;
+
+    int m_iMyVideoTitleShowMode;
+    int m_iMyVideoGenreShowMode;
+    int m_iMyVideoActorShowMode;
+    int m_iMyVideoYearShowMode;
 
     int m_iMyVideoViewAsIcons;
     int m_iMyVideoRootViewAsIcons;
