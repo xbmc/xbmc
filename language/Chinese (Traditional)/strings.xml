@@ -446,7 +446,10 @@
   <string><id>514</id><value>設定界面</value></string>
   <string><id>515</id><value>類別</value></string>
   <string><id>516</id><value>檔案管理</value></string>
-  
+  <string><id>517</id><value>最近播放的專輯</value></string>
+  <string><id>518</id><value>啟動</value></string> 
+  <string><id>519</id><value>啟動方式</value></string>
+  <string><id>520</id><value>編輯 XBE 標題</value></string>
   <string><id>600</id><value>擷取音樂 CD</value></string>
   <string><id>601</id><value>中等</value></string>
   <string><id>602</id><value>標準</value></string>
@@ -557,6 +560,7 @@
   <string><id>771</id><value>FTP 伺服器限定工作在FATX格式</value></string>
   <string><id>772</id><value>聲音硬體</value></string>
   <string><id>773</id><value>搜尋中</value></string>
+  <string><id>774</id><value>幻燈片螢幕保護資料夾</value></string>
   <string><id>998</id><value>XLink Kai</value></string>
   <string><id>999</id><value>線上遊戲</value></string>
   
@@ -1113,6 +1117,7 @@
   <string><id>16001</id><value>設定聲音硬體</value></string>
   <string><id>16002</id><value>CDDB 查詢</value></string>
   <string><id>16003</id><value>進階設定</value></string>
+  <string><id>16004</id><value>播放碟片</value></string>
   
   <string><id>16009</id><value>輸入影片名稱</value></string>
   <string><id>16010</id><value>輸入預設檔名稱</value></string>

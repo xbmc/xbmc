@@ -6,7 +6,7 @@
   <string><id>4</id><value>Guida TV</value></string>
   <string><id>5</id><value>Impostazioni</value></string>
   <!-- String with id 6 should not be set here, only in the english language file !-->
-  <string><id>7</id><value>File</value></string>
+  <string><id>7</id><value>Files</value></string>
   <string><id>8</id><value>Meteo</value></string>
   <string><id>11</id><value>Lunedi'</value></string>
   <string><id>12</id><value>Martedi'</value></string>
@@ -270,7 +270,7 @@
   <string><id>338</id><value>Analogica</value></string>
   <string><id>339</id><value>Digitale</value></string>
   <string><id>340</id><value>Artisti Vari</value></string>
-  <string><id>341</id><value>Avvia DVD</value></string>
+  <string><id>341</id><value>Avvia Disco</value></string>
   <string><id>342</id><value>Filmati</value></string>
   <string><id>343</id><value>Correggi Framerate</value></string>
   <string><id>344</id><value>Attori</value></string>
@@ -288,7 +288,7 @@
   <string><id>356</id><value>Modalità Screensaver</value></string>
   <string><id>357</id><value>Autospegnimento per Inattività</value></string>
   <string><id>358</id><value>Tutti gli Album</value></string>
-  <string><id>359</id><value>Album Recenti</value></string>
+  <string><id>359</id><value>Album Aggiunti di Recente</value></string>
   <string><id>360</id><value>Screensaver</value></string>
   <string><id>361</id><value>R. SlideShow</value></string>
   <string><id>362</id><value>Oscuramento Screensaver</value></string>
@@ -446,6 +446,11 @@
   <string><id>514</id><value>Impostazione Manuale</value></string>
   <string><id>515</id><value>Genere</value></string>
   <string><id>516</id><value>Modifica Archivi</value></string>
+  <string><id>517</id><value>Album Riprodotti di Recente</value></string>
+  <string><id>518</id><value>Avvia</value></string> 
+  <string><id>519</id><value>Avvia in..</value></string> 
+  <string><id>520</id><value>Modifica nome XBE</value></string>
+
 
   <string><id>600</id><value>Rip CD Audio</value></string>
   <string><id>601</id><value>Medio</value></string>
@@ -555,6 +560,8 @@
   <string><id>771</id><value>- Limitazione Automatica Fatx</value></string>
   <string><id>772</id><value>Audio Hardware</value></string>
   <string><id>773</id><value>Cercando</value></string>
+  <string><id>774</id><value>Cartella per Screensaver Fotografico</value></string>
+
   <string><id>998</id><value>XLink KAI</value></string>
   <string><id>999</id><value>Gioco Online</value></string>
   <string><id>1000</id><value>Anteprima Screensaver</value></string>
@@ -672,12 +679,12 @@
   <string><id>10514</id><value>Musica - Generi</value></string>
   <string><id>10515</id><value>Musica - Top 100</value></string>
   <string><id>10516</id><value>Musica - Archivio</value></string>
-  <string><id>10517</id><value>Musica - Playlist</value></string>
+  <string><id>10517</id><value>Musica - In Riproduzione</value></string>
   <string><id>10518</id><value>Video - Attori</value></string>
   <string><id>10519</id><value>Video - Generi</value></string>
   <string><id>10520</id><value>Video - Titolo</value></string>
   <string><id>10521</id><value>Video - Anno</value></string>
-  <string><id>10522</id><value>Video - Playlist</value></string>
+  <string><id>10522</id><value>Video - In Riproduzione</value></string>
   <string><id>10523</id><value>Info Album</value></string>
   <string><id>10524</id><value>Info Film</value></string>
 
@@ -956,8 +963,8 @@
   <string><id>14063</id><value>Data e Ora</value></string>
   <string><id>14064</id><value>Imposta Data</value></string>
   <string><id>14065</id><value>Imposta Orario</value></string>
-  <string><id>14066</id><value>Inserire Orario in formato 24 hour HH:MM</value></string>
-  <string><id>14067</id><value>Inserire Data in formato GG/MM/AAAA format</value></string>
+  <string><id>14066</id><value>Inserire Orario in formato 24 ore HH:MM</value></string>
+  <string><id>14067</id><value>Inserire Data in formato GG/MM/AAAA</value></string>
   <string><id>14068</id><value>Inserire Indirizzo IP</value></string>
   <string><id>14069</id><value>Vuoi salvare queste Impostazioni adesso?</value></string>
   <string><id>14070</id><value>Salva Impostazioni</value></string>
@@ -1111,6 +1118,7 @@
   <string><id>16001</id><value>Configura Audio Hardware...</value></string>
   <string><id>16002</id><value>Ricerca CDDB</value></string>
   <string><id>16003</id><value>Lettore</value></string>
+  <string><id>16004</id><value>Riproduci i media dal disco</value></string>
 
   <string><id>16009</id><value>Inserire Nome del Film</value></string>
   <string><id>16010</id><value>Inserire Nome del Profilo</value></string>
