@@ -58,6 +58,10 @@ protected:
   void GetStackedFiles(const CStdString &strFileName, std::vector<CStdString> &movies);
   void ShowShareErrorMessage(CFileItem* pItem);
 
+  void MarkUnWatched(int iItem);
+  void MarkWatched(int iItem);
+  void UpdateVideoTitle(int iItem);
+
   CVirtualDirectory m_rootDir;
   CFileItemList m_vecItems;
   CFileItem m_Directory;
@@ -71,4 +75,5 @@ protected:
   int m_iViewAsIcons;
   int m_iViewAsIconsRoot;
   CGUIViewControl m_viewControl;  ///< Handles our various views
+  int m_iShowMode;
 };

@@ -21,18 +21,19 @@
 #include "GUIDialogFileStacking.h"
 #include "GUIWindowFileManager.h"
 
-#define CONTROL_BTNVIEWASICONS  2
-#define CONTROL_BTNSORTBY     3
-#define CONTROL_BTNSORTASC    4
+#define CONTROL_BTNVIEWASICONS    2
+#define CONTROL_BTNSORTBY         3
+#define CONTROL_BTNSORTASC        4
 #define CONTROL_BTNTYPE           5
 #define CONTROL_PLAY_DVD          6
 #define CONTROL_STACK             7
 #define CONTROL_BTNSCAN           8
 #define CONTROL_IMDB              9
-#define CONTROL_LIST       50
-#define CONTROL_THUMBS      51
-#define CONTROL_BIGLIST   52
-#define CONTROL_LABELFILES         12
+#define CONTROL_BTNSHOWMODE       10
+#define CONTROL_LIST              50
+#define CONTROL_THUMBS            51
+#define CONTROL_BIGLIST           52
+#define CONTROL_LABELFILES        12
 
 struct SSortVideoListByName
 {
@@ -139,6 +140,7 @@ CGUIWindowVideoBase::CGUIWindowVideoBase(DWORD dwID, const CStdString &xmlFile)
   m_iViewAsIcons = -1;
   m_iViewAsIconsRoot = -1;
   m_bDisplayEmptyDatabaseMessage = false;
+  m_iShowMode = VIDEO_SHOW_ALL;
 }
 
 CGUIWindowVideoBase::~CGUIWindowVideoBase()
@@ -214,7 +216,7 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
 
       m_database.Open();
       m_dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
-
+      
       m_rootDir.SetMask(g_stSettings.m_szMyVideoExtensions);
       m_rootDir.SetShares(g_settings.m_vecMyVideoShares);
 
@@ -407,8 +409,6 @@ void CGUIWindowVideoBase::UpdateButtons()
   if (g_stSettings.m_iVideoStartWindow == WINDOW_VIDEO_TITLE) nWindow = 4;
   CONTROL_SELECT_ITEM(CONTROL_BTNTYPE, nWindow);
 
-//  UpdateThumbPanel();
-
   // disable scan and manual imdb controls if internet lookups are disabled
   if (g_guiSettings.GetBool("Network.EnableInternet"))
   {
@@ -427,6 +427,7 @@ void CGUIWindowVideoBase::UpdateButtons()
     m_viewControl.SetCurrentView(m_iViewAsIcons);
 
   SET_CONTROL_LABEL(CONTROL_BTNSORTBY, SortMethod());
+  SET_CONTROL_LABEL(CONTROL_BTNSHOWMODE, g_localizeStrings.Get(16100 + m_iShowMode));
 
   if (SortAscending())
   {
@@ -1042,6 +1043,27 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem)
       btn_Delete = pMenu->AddButton(117);             // Delete
   }
 
+  int btn_Mark_UnWatched = 0;
+  int btn_Mark_Watched = 0;
+  int btn_Update_Title = 0;
+  if (GetID() == WINDOW_VIDEO_TITLE || GetID() == WINDOW_VIDEO_GENRE || GetID() == WINDOW_VIDEO_ACTOR || GetID() == WINDOW_VIDEO_YEAR)
+  {
+	  btn_Update_Title = pMenu->AddButton(16105); //Edit Title
+	  if (m_iShowMode == VIDEO_SHOW_ALL)
+	  {
+      btn_Mark_Watched = pMenu->AddButton(16103); //Mark as Watched
+      btn_Mark_UnWatched = pMenu->AddButton(16104); //Mark as UnWatched
+	  }
+	  else if (m_iShowMode == VIDEO_SHOW_UNWATCHED)
+	  {
+      btn_Mark_Watched = pMenu->AddButton(16103); //Mark as Watched
+	  }
+    else if (m_iShowMode == VIDEO_SHOW_WATCHED)
+    {
+      btn_Mark_UnWatched = pMenu->AddButton(16104); //Mark as UnWatched
+    }
+  }
+
   // GeminiServer Todo: Set a MasterLock Option to Enable or disable Settings incontext menu!
   int btn_Settings      = pMenu->AddButton(5);      // Settings
 
@@ -1077,6 +1099,21 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem)
     {
       OnManualIMDB();
     }
+    else if (btnid == btn_Mark_UnWatched)
+	  {
+		  MarkUnWatched(iItem);
+		  Update(m_Directory.m_strPath);
+	  }
+	  else if (btnid == btn_Mark_Watched)
+	  {
+		  MarkWatched(iItem);
+		  Update(m_Directory.m_strPath);
+	  }
+	  else if (btnid = btn_Update_Title)
+	  {
+		  UpdateVideoTitle(iItem);
+		  Update(m_Directory.m_strPath);
+	  }
     else if (btnid == btn_Settings)
     {
       //MasterPassword
@@ -1283,4 +1320,40 @@ void CGUIWindowVideoBase::ShowShareErrorMessage(CFileItem* pItem)
 
     CGUIDialogOK::ShowAndGetInput(220, idMessageText, 0, 0);
   }
+}
+
+void CGUIWindowVideoBase::MarkUnWatched(int iItem)
+{
+  if ( iItem < 0 || iItem >= m_vecItems.Size() ) return ;
+  CFileItem* pItem = m_vecItems[iItem];
+  m_database.MarkAsUnWatched(atol(pItem->m_strPath));
+  Update(m_Directory.m_strPath);
+}
+
+//Add Mark a Title as watched
+void CGUIWindowVideoBase::MarkWatched(int iItem)
+{
+  if ( iItem < 0 || iItem >= m_vecItems.Size() ) return ;
+  CFileItem* pItem = m_vecItems[iItem];
+  m_database.MarkAsWatched(atol(pItem->m_strPath));
+  Update(m_Directory.m_strPath);
+}
+
+//Add change a title's name
+void CGUIWindowVideoBase::UpdateVideoTitle(int iItem)
+{
+  if ( iItem < 0 || iItem >= m_vecItems.Size() ) return ;
+  CFileItem* pItem = m_vecItems[iItem];
+
+  //Get Current Name
+  CIMDBMovie detail;
+  m_database.GetMovieInfo(L"", detail, atol(pItem->m_strPath));
+  CStdString strInput;
+  strInput = detail.m_strTitle;
+
+  //Get the new title
+  
+  if (!CGUIDialogKeyboard::ShowAndGetInput(strInput, (CStdStringW)g_localizeStrings.Get(666007), false)) return ;
+  m_database.UpdateMovieTitle(atol(pItem->m_strPath), strInput );
+  Update(m_Directory.m_strPath);
 }

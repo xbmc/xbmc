@@ -45,6 +45,7 @@ public:
   CStdString m_strPath;
   CStdString m_strDVDLabel;
   CStdString m_strIMDBNumber;
+  bool m_bWatched;
   int m_iTop250;
   int m_iYear;
   float m_fRating;
