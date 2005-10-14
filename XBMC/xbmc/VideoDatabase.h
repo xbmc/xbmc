@@ -9,6 +9,10 @@ typedef vector<CStdString> VECMOVIEGENRES;
 typedef vector<CIMDBMovie> VECMOVIES;
 typedef vector<CStdString> VECMOVIESFILES;
 
+#define VIDEO_SHOW_ALL 0
+#define VIDEO_SHOW_UNWATCHED 1
+#define VIDEO_SHOW_WATCHED 2
+
 struct CBookmark
 {
   int timeInSeconds;
@@ -26,23 +30,31 @@ class CVideoDatabase : public CDatabase
 public:
   CVideoDatabase(void);
   virtual ~CVideoDatabase(void);
+
   long AddMovie(const CStdString& strFilenameAndPath, const CStdString& strcdLabel, bool bHassubtitles);
-  void GetGenres(VECMOVIEGENRES& genres);
-  void GetActors(VECMOVIEACTORS& actors);
-  void GetYears(VECMOVIEYEARS& years);
+
+  void MarkAsWatched(long lMovieId);
+  void MarkAsUnWatched(long lMovieId);
+  void UpdateMovieTitle(long lMovieId, const CStdString& strNewMovieTitle);
+
+  void GetGenres(VECMOVIEGENRES& genres, int iShowMode = VIDEO_SHOW_ALL);
+  void GetMoviesByGenre(CStdString& strGenre, VECMOVIES& movies);
+
+  void GetActors(VECMOVIEACTORS& actors, int iShowMode = VIDEO_SHOW_ALL);
+  void GetMoviesByActor(CStdString& strActor, VECMOVIES& movies);
+
+  void GetYears(VECMOVIEYEARS& years, int iShowMode = VIDEO_SHOW_ALL);
+  void GetMoviesByYear(CStdString& strYear, VECMOVIES& movies);
 
   bool HasMovieInfo(const CStdString& strFilenameAndPath);
   bool HasSubtitle(const CStdString& strFilenameAndPath);
   void DeleteMovieInfo(const CStdString& strFileNameAndPath);
 
+  void GetMovies(VECMOVIES& movies);
   void GetFiles(long lMovieId, VECMOVIESFILES& movies);
   void GetMovieInfo(const CStdString& strFilenameAndPath, CIMDBMovie& details, long lMovieId = -1);
   void SetMovieInfo(const CStdString& strFilenameAndPath, CIMDBMovie& details);
-  void GetMoviesByGenre(CStdString& strGenre, VECMOVIES& movies);
-  void GetMoviesByActor(CStdString& strActor, VECMOVIES& movies);
-  void GetMoviesByYear(CStdString& strYear, VECMOVIES& movies);
   void GetMoviesByPath(CStdString& strPath1, VECMOVIES& movies);
-  void GetMovies(VECMOVIES& movies);
   void GetBookMarksForMovie(const CStdString& strFilenameAndPath, VECBOOKMARKS& bookmarks);
   void AddBookMarkToMovie(const CStdString& strFilenameAndPath, const CBookmark &bookmark);
   void ClearBookMarksOfMovie(const CStdString& strFilenameAndPath);
