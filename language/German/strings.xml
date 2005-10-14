@@ -176,7 +176,7 @@
   <string><id>239</id><value>Playlist nach der Wiedergabe löschen</value></string>
   <string><id>240</id><value>DVD-Video automatisch abspielen</value></string>
   <string><id>241</id><value>VCD/SVCD automatisch abspielen</value></string>
-  <string><id>242</id><value>Audio-CD's automatisch abspielen</value></string>
+  <string><id>242</id><value>Audio-CDs automatisch abspielen</value></string>
   <string><id>243</id><value>XBox-Spiele automatisch laden</value></string>
   <string><id>244</id><value>Videos auf CD automatisch abspielen</value></string>
   <string><id>245</id><value>Musik auf CD automatisch abspielen</value></string>
@@ -451,7 +451,9 @@
   <string><id>515</id><value>Genre</value></string>
   <string><id>516</id><value>Archive handhaben</value></string>
   <string><id>517</id><value>Zuletzt gespielte Alben</value></string>
-
+  <string><id>518</id><value>Starten</value></string>
+  <string><id>519</id><value>Starten als...</value></string>
+  <string><id>520</id><value>XBE Titel bearbeiten</value></string>
   <string><id>600</id><value>CD rippen</value></string>
   <string><id>601</id><value>Medium</value></string>
   <string><id>602</id><value>Standard</value></string>
@@ -517,7 +519,7 @@
   <string><id>726</id><value>Änderungen nicht gespeichert. Weiter ohne Speichern?</value></string>
   <string><id>727</id><value>Web-Server</value></string>
   <string><id>728</id><value>FTP-Server</value></string>
-  <string><id>729</id><value>Internet Zeit</value></string>
+  <string><id>729</id><value>Internet-Zeit</value></string>
   <string><id>730</id><value>Web-Server-Port</value></string>
   <string><id>731</id><value>Zeit-Server-Host</value></string>
   <string><id>732</id><value>Sichern &amp; Übernehmen</value></string>
@@ -669,6 +671,7 @@
   <string><id>10504</id><value>Top 100 Songs</value></string>
   <string><id>10505</id><value>Top 100 Alben</value></string>
 
+
   <string><id>10506</id><value>Anwendungen</value></string>
   <string><id>10507</id><value>Konfiguration</value></string>
   <string><id>10508</id><value>Wetterbericht</value></string>
@@ -727,7 +730,7 @@
   <string><id>12336</id><value>Bitte die Art der Sperre auswählen:</value></string>
   <string><id>12337</id><value>Nummerisches Passwort</value></string>
   <string><id>12338</id><value>Gamepad Tastenkombination</value></string>
-  <string><id>12339</id><value>Volltext Passwort</value></string>
+  <string><id>12339</id><value>Volltext-Passwort</value></string>
   <string><id>12340</id><value>Neues Passwort eingeben</value></string>
   <string><id>12341</id><value>Neues Passwort erneut eingeben</value></string>
   <string><id>12342</id><value>Falsches Passwort,</value></string>
@@ -804,7 +807,7 @@
   <string><id>13304</id><value>links-/rechtsläufige Zeichenfolgen ermöglichen</value></string>
   <string><id>13305</id><value>RSS-Feed [Newsflash] aktivieren</value></string>
   <string><id>13306</id><value>Eintrag zum übergeordneten Verzeichnis ausblenden</value></string>
-  <string><id>13307</id><value>Formatvorlage für Track Namen</value></string>
+  <string><id>13307</id><value>Formatvorlage für Track-Namen</value></string>
   <string><id>13308</id><value>Drücke 'Ja' um die XBOX neu zu starten</value></string>
   <string><id>13309</id><value>Drücke 'Nein' um XBMC neu zu laden</value></string>
   <string><id>13310</id><value>Übergang streckend</value></string>
@@ -845,7 +848,7 @@
   <string><id>13345</id><value>LED ausschalten während der Wiedergabe</value></string>
   <string><id>13346</id><value>Film-Informationen</value></string>
   <string><id>13347</id><value>Zur Playliste hinzufügen</value></string>
-  <string><id>13348</id><value>In IMDb suchen...</value></string>
+  <string><id>13348</id><value>In IMDB suchen...</value></string>
   <string><id>13349</id><value>Für alle Dateien</value></string>
   <string><id>13350</id><value>Playlist anzeigen</value></string>
   <string><id>13351</id><value>Album-Informationen</value></string>
@@ -884,7 +887,7 @@
   <string><id>13384</id><value>Voice Maske - Port 2</value></string>
   <string><id>13385</id><value>Voice Maske - Port 3</value></string>
   <string><id>13386</id><value>Zeitbasiertes Vor-/Rückspulen</value></string>
-  <string><id>13387</id><value>Formatvorlage für Track Namen rechts</value></string>
+  <string><id>13387</id><value>Formatvorlage für Track-Namen rechts</value></string>
   <string><id>13388</id><value>Presets</value></string>
   <string><id>13389</id><value>Es sind keine Presets für diese&#10;Visualisierung verfügbar</value></string>
   <string><id>13390</id><value>Es sind keine Einstellungen für diese&#10;Visualisierung verfügbar</value></string>
@@ -964,7 +967,7 @@
   <string><id>14063</id><value>Datum &amp; Uhrzeit</value></string>
   <string><id>14064</id><value>Datum setzen</value></string>
   <string><id>14065</id><value>Zeit setzen</value></string>
-  <string><id>14066</id><value>Bitte die Uhrzeit in 24-Stunden Format (HH:MM) eingeben</value></string>
+  <string><id>14066</id><value>Bitte die Uhrzeit im 24-Stunden Format (HH:MM) eingeben</value></string>
   <string><id>14067</id><value>Bitte das Datum im Format DD/MM/YYYY eingeben</value></string>
   <string><id>14068</id><value>Bitte eine IP-Adresse eingeben</value></string>
   <string><id>14069</id><value>Sollen die Einstellungen übernommen werden?</value></string>
@@ -1009,7 +1012,7 @@
   <string><id>15035</id><value>hat einen Voice-Chat initiiert</value></string>
   <string><id>15036</id><value>hat dir eine Einladung gesendet</value></string>
   <string><id>15037</id><value>XBMC ist nicht in der Lage zu bestätigen, ob dein Netzwerk erreichbar ist.</value></string>
-  <string><id>15038</id><value>Du könntest Schwierigkeiten haben Spiele zu Hosten oder ihnen beizutreten.</value></string>
+  <string><id>15038</id><value>Du könntest Schwierigkeiten haben Spiele zu hosten oder ihnen beizutreten.</value></string>
   <string><id>15039</id><value>Xbox Media Center konnte das Spiel nicht automatisch finden.</value></string>
   <string><id>15040</id><value>Bitte die DVD in die XBOX einlegen oder 'A' drücken um abzubrechen</value></string>
   <string><id>15041</id><value>und das Spiel manuell zu starten.</value></string>
@@ -1088,7 +1091,7 @@
   <string><id>13280</id><value>Video</value></string>
   <string><id>13281</id><value>Hardware</value></string>
   <string><id>13282</id><value>_</value></string>
-  <string><id>13283</id><value>Kernel Version:</value></string>
+  <string><id>13283</id><value>Kernel-Version:</value></string>
   <string><id>13284</id><value>CPU-Speed:</value></string>
   <string><id>13285</id><value>BIOS:</value></string>
   <string><id>13286</id><value>Video-Encoder:</value></string>
@@ -1118,10 +1121,11 @@
   <string><id>16001</id><value>Audio-Hardware konfigurieren...</value></string>
   <string><id>16002</id><value>CDDB anfragen</value></string>
   <string><id>16003</id><value>Player</value></string>
-  
+  <string><id>16004</id><value>Inhalt der DVD abspielen</value></string>
+
   <string><id>16009</id><value>Bitte den Namen des Films eingeben</value></string>
-  <string><id>16010</id><value>Bitte den Namen des Profiles eingeben</value></string>
-  <string><id>16011</id><value>Bitte den Nmaen des Albums eingeben</value></string>
+  <string><id>16010</id><value>Bitte einen Namen für das Profil eingeben</value></string>
+  <string><id>16011</id><value>Bitte den Namen des Albums eingeben</value></string>
   <string><id>16012</id><value>Bitte den Namen der Playlist eingeben</value></string>
   <string><id>16013</id><value>Bitte den neuen Dateinamen eingeben</value></string>
   <string><id>16014</id><value>Bitte den Ordnernamen eingeben</value></string>
