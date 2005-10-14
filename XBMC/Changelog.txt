@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 14-10-2005 fixed: auto region for games on dvd.
  - 14-10-2005 updated: Italian language file (Thnx to kotix)
  - 14-10-2005 updated: Chinese (Traditional) language file (Thnx to omenpica)
  - 14-10-2005 updated: German language file (Thnx to deezle)
