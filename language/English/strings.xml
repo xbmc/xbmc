@@ -1137,5 +1137,12 @@
   <string><id>16023</id><value>Interlaced Handling</value></string>
   
   <string><id>16024</id><value>Canceling...</value></string>
-  
+
+  <string><id>16100</id><value>All Videos</value></string>
+  <string><id>16101</id><value>Watched</value></string>
+  <string><id>16102</id><value>Un-Watched</value></string>
+  <string><id>16103</id><value>Mark as Watched</value></string>
+  <string><id>16104</id><value>Mark as UnWatched</value></string>
+  <string><id>16105</id><value>Edit Title</value></string>
+
 </strings>
