@@ -3277,7 +3277,7 @@ int CUtil::GetMatchingShare(const CStdString& strPath, VECSHARES& vecShares, boo
 
       if ((iLenPath >= iLenShare) && (strDest.Left(iLenShare).Equals(strShare)) && (iLenShare > iLength))
       {
-        CLog::Log(LOGDEBUG,"Found matching bookmark at index %i: [%s], Len = [%i]", i, strShare.c_str(), iLenShare);
+        //CLog::Log(LOGDEBUG,"Found matching bookmark at index %i: [%s], Len = [%i]", i, strShare.c_str(), iLenShare);
         bIsBookmarkName = false;
         if (vecPaths.size() > 1)
         {
@@ -3285,7 +3285,7 @@ int CUtil::GetMatchingShare(const CStdString& strPath, VECSHARES& vecShares, boo
           // set bookmark name to true to load the entire concatented path
           if (iLenPath == iLenShare)
             bIsBookmarkName = true;
-          CLog::Log(LOGDEBUG,"In concatenated path: [%s]",share.strPath.c_str());
+          //CLog::Log(LOGDEBUG,"In concatenated path: [%s]",share.strPath.c_str());
         }
         iIndex = i;
         iLength = iLenShare;
