@@ -1265,7 +1265,7 @@ void CGUIWindowPrograms::OnWindowUnload()
 int CGUIWindowPrograms::GetRegion(int iItem, bool bReload)
 {
   int iRegion;
-  if (bReload)
+  if (bReload || m_vecItems[iItem]->IsOnDVD())
   {
     CXBE xbe;
     iRegion = xbe.ExtractGameRegion(m_vecItems[iItem]->m_strPath); 
