@@ -278,6 +278,7 @@ void CIMDBMovie::Reset()
   m_iTop250 = 0;
   m_iYear = 0;
   m_fRating = 0.0f;
+  m_bWatched = false;
 }
 
 void CIMDBMovie::Save(const CStdString &strFileName)

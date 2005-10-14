@@ -106,6 +106,19 @@
         <onleft>50</onleft>
         <onright>50</onright>
         <onup>3</onup>
+        <ondown>10</ondown>
+      </control>
+
+      <control>
+        <description>Show Button</description>
+        <type>button</type>
+        <id>10</id>
+        <posX>50</posX>
+        <posY>231</posY>
+        <label>-</label>
+        <onleft>50</onleft>
+        <onright>50</onright>
+        <onup>5</onup>
         <ondown>6</ondown>
       </control>
 
@@ -114,11 +127,11 @@
         <type>button</type>
         <id>6</id>
         <posX>50</posX>
-        <posY>231</posY>
+        <posY>268</posY>
         <label>341</label>
         <onleft>50</onleft>
         <onright>50</onright>
-        <onup>5</onup>
+        <onup>10</onup>
         <ondown>9</ondown>
       </control>
 
@@ -127,7 +140,7 @@
         <type>button</type>
         <id>9</id>
         <posX>50</posX>
-        <posY>268</posY>
+        <posY>305</posY>
         <label>368</label>
         <onleft>50</onleft>
         <onright>50</onright>

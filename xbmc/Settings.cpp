@@ -1154,6 +1154,7 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile, const bool loadp
     GetInteger(pElement, "genresortmethodroot", g_stSettings.m_iMyVideoGenreRootSortMethod, 0, 0, 0); //  by label only
     GetBoolean(pElement, "genresortascending", g_stSettings.m_bMyVideoGenreSortAscending);
     GetBoolean(pElement, "genresortascendingroot", g_stSettings.m_bMyVideoGenreRootSortAscending);
+    GetInteger(pElement, "genreshowmode", g_stSettings.m_iMyVideoGenreShowMode, VIDEO_SHOW_ALL, VIDEO_SHOW_ALL, VIDEO_SHOW_WATCHED);
 
     GetInteger(pElement, "actorviewicons", g_stSettings.m_iMyVideoActorViewAsIcons, VIEW_AS_LIST, VIEW_AS_LIST, VIEW_AS_LARGE_ICONS);
     GetInteger(pElement, "actorrooticons", g_stSettings.m_iMyVideoActorRootViewAsIcons, VIEW_AS_LIST, VIEW_AS_LIST, VIEW_AS_LARGE_ICONS);
@@ -1161,6 +1162,7 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile, const bool loadp
     GetInteger(pElement, "actorsortmethodroot", g_stSettings.m_iMyVideoActorRootSortMethod, 0, 0, 0); //  by label only
     GetBoolean(pElement, "actorsortascending", g_stSettings.m_bMyVideoActorSortAscending);
     GetBoolean(pElement, "actorsortascendingroot", g_stSettings.m_bMyVideoActorRootSortAscending);
+    GetInteger(pElement, "actorshowmode", g_stSettings.m_iMyVideoActorShowMode, VIDEO_SHOW_ALL, VIDEO_SHOW_ALL, VIDEO_SHOW_WATCHED);
 
     GetInteger(pElement, "yearviewicons", g_stSettings.m_iMyVideoYearViewAsIcons, VIEW_AS_LIST, VIEW_AS_LIST, VIEW_AS_LARGE_ICONS);
     GetInteger(pElement, "yearrooticons", g_stSettings.m_iMyVideoYearRootViewAsIcons, VIEW_AS_LIST, VIEW_AS_LIST, VIEW_AS_LARGE_ICONS);
@@ -1168,11 +1170,13 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile, const bool loadp
     GetInteger(pElement, "yearsortmethodroot", g_stSettings.m_iMyVideoYearRootSortMethod, 0, 0, 0); //  by label only
     GetBoolean(pElement, "yearsortascending", g_stSettings.m_bMyVideoYearSortAscending);
     GetBoolean(pElement, "yearsortascendingroot", g_stSettings.m_bMyVideoYearRootSortAscending);
+    GetInteger(pElement, "yearshowmode", g_stSettings.m_iMyVideoYearShowMode, VIDEO_SHOW_ALL, VIDEO_SHOW_ALL, VIDEO_SHOW_WATCHED);
 
     GetInteger(pElement, "titleviewicons", g_stSettings.m_iMyVideoTitleViewAsIcons, VIEW_AS_LIST, VIEW_AS_LIST,  VIEW_AS_LARGE_LIST);
     GetInteger(pElement, "titlerooticons", g_stSettings.m_iMyVideoTitleRootViewAsIcons, VIEW_AS_LIST, VIEW_AS_LIST,  VIEW_AS_LARGE_LIST);
     GetInteger(pElement, "titlesortmethod", g_stSettings.m_iMyVideoTitleSortMethod, 0, 0, 3);
     GetBoolean(pElement, "titlesortascending", g_stSettings.m_bMyVideoTitleSortAscending);
+    GetInteger(pElement, "titleshowmode", g_stSettings.m_iMyVideoTitleShowMode, VIDEO_SHOW_ALL, VIDEO_SHOW_ALL, VIDEO_SHOW_WATCHED);
 
     GetFloat(pElement, "subsdelayrange", g_stSettings.m_fSubsDelayRange, 10, 10, 600);
     GetFloat(pElement, "audiodelayrange", g_stSettings.m_fAudioDelayRange, 10, 10, 600);
@@ -1397,6 +1401,7 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile, const bool savep
   SetInteger(pNode, "genresortmethodroot", g_stSettings.m_iMyVideoGenreRootSortMethod);
   SetBoolean(pNode, "genresortascending", g_stSettings.m_bMyVideoGenreSortAscending);
   SetBoolean(pNode, "genresortascendingroot", g_stSettings.m_bMyVideoGenreRootSortAscending);
+  SetInteger(pNode, "genreshowmode", g_stSettings.m_iMyVideoGenreShowMode);
 
   SetInteger(pNode, "actorviewicons", g_stSettings.m_iMyVideoActorViewAsIcons);
   SetInteger(pNode, "actorrooticons", g_stSettings.m_iMyVideoActorRootViewAsIcons);
@@ -1404,6 +1409,7 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile, const bool savep
   SetInteger(pNode, "actorsortmethodroot", g_stSettings.m_iMyVideoActorRootSortMethod);
   SetBoolean(pNode, "actorsortascending", g_stSettings.m_bMyVideoActorSortAscending);
   SetBoolean(pNode, "actorsortascendingroot", g_stSettings.m_bMyVideoActorRootSortAscending);
+  SetInteger(pNode, "actorshowmode", g_stSettings.m_iMyVideoActorShowMode);
 
   SetInteger(pNode, "yearviewicons", g_stSettings.m_iMyVideoYearViewAsIcons);
   SetInteger(pNode, "yearrooticons", g_stSettings.m_iMyVideoYearRootViewAsIcons);
@@ -1411,11 +1417,13 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile, const bool savep
   SetInteger(pNode, "yearsortmethodroot", g_stSettings.m_iMyVideoYearRootSortMethod);
   SetBoolean(pNode, "yearsortascending", g_stSettings.m_bMyVideoYearSortAscending);
   SetBoolean(pNode, "yearsortascendingroot", g_stSettings.m_bMyVideoYearRootSortAscending);
+  SetInteger(pNode, "yearshowmode", g_stSettings.m_iMyVideoYearShowMode);
 
   SetInteger(pNode, "titleviewicons", g_stSettings.m_iMyVideoTitleViewAsIcons);
   SetInteger(pNode, "titlerooticons", g_stSettings.m_iMyVideoTitleRootViewAsIcons);
   SetInteger(pNode, "titlesortmethod", g_stSettings.m_iMyVideoTitleSortMethod);
   SetBoolean(pNode, "titlesortascending", g_stSettings.m_bMyVideoTitleSortAscending);
+  SetInteger(pNode, "titleshowmode", g_stSettings.m_iMyVideoTitleShowMode);
 
   SetFloat(pNode, "subsdelayrange", g_stSettings.m_fSubsDelayRange);
   SetFloat(pNode, "audiodelayrange", g_stSettings.m_fAudioDelayRange);

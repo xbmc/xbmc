@@ -10,7 +10,7 @@
 #include "util.h"
 #include "GUIPassword.h"
 
-#define VIDEO_DATABASE_VERSION 1.4f
+#define VIDEO_DATABASE_VERSION 1.5f
 #define VIDEO_DATABASE_NAME "MyVideos31.db"
 
 //********************************************************************************************************************************
@@ -52,7 +52,8 @@ bool CVideoDatabase::CreateTables()
     m_pDS->exec("CREATE TABLE movie ( idMovie integer primary key, idPath integer, hasSubtitles integer, cdlabel text)\n");
 
     CLog::Log(LOGINFO, "create movieinfo table");
-    m_pDS->exec("CREATE TABLE movieinfo ( idMovie integer, idDirector integer, strPlotOutline text, strPlot text, strTagLine text, strVotes text, strRuntime text, fRating text, strCast text,strCredits text, iYear integer, strGenre text, strPictureURL text, strTitle text, IMDBID text)\n");
+    //m_pDS->exec("CREATE TABLE movieinfo ( idMovie integer, idDirector integer, strPlotOutline text, strPlot text, strTagLine text, strVotes text, strRuntime text, fRating text, strCast text,strCredits text, iYear integer, strGenre text, strPictureURL text, strTitle text, IMDBID text)\n");
+	  m_pDS->exec("CREATE TABLE movieinfo ( idMovie integer, idDirector integer, strPlotOutline text, strPlot text, strTagLine text, strVotes text, strRuntime text, fRating text, strCast text,strCredits text, iYear integer, strGenre text, strPictureURL text, strTitle text, IMDBID text, bWatched bool)\n");
 
     CLog::Log(LOGINFO, "create actorlinkmovie table");
     m_pDS->exec("CREATE TABLE actorlinkmovie ( idActor integer, idMovie integer )\n");
@@ -451,7 +452,7 @@ void CVideoDatabase::AddActorToMovie(long lMovieId, long lActorId)
 }
 
 //********************************************************************************************************************************
-void CVideoDatabase::GetGenres(VECMOVIEGENRES& genres)
+void CVideoDatabase::GetGenres(VECMOVIEGENRES& genres, int iShowMode /* = VIDEO_SHOW_ALL */)
 {
   try
   {
@@ -461,8 +462,22 @@ void CVideoDatabase::GetGenres(VECMOVIEGENRES& genres)
 
     if (NULL == m_pDB.get()) return ;
     if (NULL == m_pDS.get()) return ;
-    //m_pDS->query("select distinct genre.strGenre from genre join genrelinkmovie on genre.idGenre = genrelinkmovie.idGenre join movie on genrelinkmovie.idMovie = movie.idMovie");
-    m_pDS->query("select * from genrelinkmovie,genre,movie,movieinfo,actors,path where path.idpath=movie.idpath and genrelinkmovie.idGenre=genre.idGenre and genrelinkmovie.idmovie=movie.idmovie and movieinfo.idmovie=movie.idmovie and movieinfo.iddirector=actors.idActor order by path.idpath");
+
+    CStdString strSQL;
+	  if (iShowMode == VIDEO_SHOW_WATCHED)
+	  {
+		  strSQL=FormatSQL("select * from genrelinkmovie,genre,movie,movieinfo,actors,path where path.idpath=movie.idpath and genrelinkmovie.idGenre=genre.idGenre and genrelinkmovie.idmovie=movie.idmovie and movieinfo.idmovie=movie.idmovie and movieinfo.bWatched='true' and movieinfo.iddirector=actors.idActor order by path.idpath");
+	  }
+	  else if (iShowMode == VIDEO_SHOW_UNWATCHED)
+	  {
+		  strSQL=FormatSQL("select * from genrelinkmovie,genre,movie,movieinfo,actors,path where path.idpath=movie.idpath and genrelinkmovie.idGenre=genre.idGenre and genrelinkmovie.idmovie=movie.idmovie and movieinfo.idmovie=movie.idmovie and NOT(movieinfo.bWatched='true') and movieinfo.iddirector=actors.idActor order by path.idpath");
+	  }
+	  else // VIDEO_SHOW_ALL
+	  {
+		  strSQL=FormatSQL("select * from genrelinkmovie,genre,movie,movieinfo,actors,path where path.idpath=movie.idpath and genrelinkmovie.idGenre=genre.idGenre and genrelinkmovie.idmovie=movie.idmovie and movieinfo.idmovie=movie.idmovie and movieinfo.iddirector=actors.idActor order by path.idpath");
+	  }
+    m_pDS->query(strSQL.c_str());
+
     long lLastPathId = -1;
     while (!m_pDS->eof())
     {
@@ -503,7 +518,7 @@ void CVideoDatabase::GetGenres(VECMOVIEGENRES& genres)
 }
 
 //********************************************************************************************************************************
-void CVideoDatabase::GetActors(VECMOVIEACTORS& actors)
+void CVideoDatabase::GetActors(VECMOVIEACTORS& actors, int iShowMode /* = VIDEO_SHOW_ALL */)
 {
   try
   {
@@ -513,8 +528,22 @@ void CVideoDatabase::GetActors(VECMOVIEACTORS& actors)
 
     if (NULL == m_pDB.get()) return ;
     if (NULL == m_pDS.get()) return ;
-    //m_pDS->query("select distinct actors.strActor from actors join actorlinkmovie on actors.idActor = actorlinkmovie.idActor join movie on actorlinkmovie.idMovie = movie.idMovie");
-    m_pDS->query("select * from actorlinkmovie,actors,movie,movieinfo,path where path.idpath=movie.idpath and actors.idActor=actorlinkmovie.idActor and actorlinkmovie.idmovie=movie.idmovie and movieinfo.idmovie=movie.idmovie order by path.idpath");
+
+    CStdString strSQL;
+    if (iShowMode == VIDEO_SHOW_WATCHED)
+	  {
+		  strSQL=FormatSQL("select * from actorlinkmovie,actors,movie,movieinfo,path where path.idpath=movie.idpath and actors.idActor=actorlinkmovie.idActor and actorlinkmovie.idmovie=movie.idmovie and movieinfo.bWatched='true' and movieinfo.idmovie=movie.idmovie order by path.idpath");
+	  }
+	  else if (iShowMode == VIDEO_SHOW_UNWATCHED)
+	  {
+		  strSQL=FormatSQL("select * from actorlinkmovie,actors,movie,movieinfo,path where path.idpath=movie.idpath and actors.idActor=actorlinkmovie.idActor and actorlinkmovie.idmovie=movie.idmovie and NOT(movieinfo.bWatched='true') and movieinfo.idmovie=movie.idmovie order by path.idpath");
+	  }
+	  else // VIDEO_SHOW_ALL
+	  {
+		  strSQL=FormatSQL("select * from actorlinkmovie,actors,movie,movieinfo,path where path.idpath=movie.idpath and actors.idActor=actorlinkmovie.idActor and actorlinkmovie.idmovie=movie.idmovie and movieinfo.idmovie=movie.idmovie order by path.idpath");
+    }
+    m_pDS->query(strSQL.c_str());
+
     long lLastPathId = -1;
     while (!m_pDS->eof())
     {
@@ -928,7 +957,7 @@ void CVideoDatabase::GetFiles(long lMovieId, VECMOVIESFILES& movies)
 }
 
 //********************************************************************************************************************************
-void CVideoDatabase::GetYears(VECMOVIEYEARS& years)
+void CVideoDatabase::GetYears(VECMOVIEYEARS& years, int iShowMode /* = VIDEO_SHOW_ALL */)
 {
   try
   {
@@ -938,8 +967,22 @@ void CVideoDatabase::GetYears(VECMOVIEYEARS& years)
 
     if (NULL == m_pDB.get()) return ;
     if (NULL == m_pDS.get()) return ;
-    //m_pDS->query("select distinct movieinfo.iYear from movieinfo join movie on movieinfo.idMovie = movie.idMovie");
-    m_pDS->query("select * from movie,movieinfo,actors,path where path.idpath=movie.idpath and movieinfo.idmovie=movie.idmovie and movieinfo.iddirector=actors.idActor order by path.idpath");
+    
+	  CStdString strSQL;
+	  if (iShowMode == VIDEO_SHOW_WATCHED)
+	  {
+		  strSQL=FormatSQL("select * from movie,movieinfo,actors,path where path.idpath=movie.idpath and movieinfo.idmovie=movie.idmovie and movieinfo.iddirector=actors.idActor and movieinfo.bWatched='true' order by path.idpath");
+	  }
+	  else if (iShowMode == VIDEO_SHOW_UNWATCHED)
+	  {
+		  strSQL=FormatSQL("select * from movie,movieinfo,actors,path where path.idpath=movie.idpath and movieinfo.idmovie=movie.idmovie and movieinfo.iddirector=actors.idActor and NOT(movieinfo.bWatched='true') order by path.idpath");
+	  }
+	  else // VIDEO_SHOW_ALL
+	  {
+		  strSQL=FormatSQL("select * from movie,movieinfo,actors,path where path.idpath=movie.idpath and movieinfo.idmovie=movie.idmovie and movieinfo.iddirector=actors.idActor order by path.idpath");
+	  }
+    m_pDS->query(strSQL.c_str());
+
     long lLastPathId = -1;
     while (!m_pDS->eof())
     {
@@ -1245,6 +1288,7 @@ CIMDBMovie CVideoDatabase::GetDetailsFromDataset(auto_ptr<Dataset> &pDS)
   details.m_strPath = pDS->fv("path.strPath").get_asString();
   details.m_strDVDLabel = pDS->fv("movie.cdlabel").get_asString();
   details.m_strIMDBNumber = pDS->fv("movieinfo.IMDBID").get_asString();
+  details.m_bWatched = pDS->fv("movieinfo.bWatched").get_asBool();
 
   long lMovieId = pDS->fv("movieinfo.idMovie").get_asLong();
   details.m_strSearchString.Format("%i", lMovieId);
@@ -1396,5 +1440,95 @@ bool CVideoDatabase::UpdateOldVersion(float fVersion)
     CLog::Log(LOGINFO, "Creating new bookmarks table");
     m_pDS->exec("CREATE TABLE bookmark ( idBookmark integer primary key, idFile integer, timeInSeconds integer, thumbNailImage text)\n");
   }
+//*************
+// 2005-10-08
+// MercuryInc
+  if (fVersion < 1.5f)
+  {
+    // v 1.4 -> 1.5 (new layout for Watched tag)
+    // Add watched column to movieinfo
+    try
+    {
+      CLog::Log(LOGINFO, "Adding column to movieinfo");
+      m_pDS->exec("CREATE TABLE TMPmovieinfo ( idMovie integer, idDirector integer, strPlotOutline text, strPlot text, strTagLine text, strVotes text, strRuntime text, fRating text, strCast text,strCredits text, iYear integer, strGenre text, strPictureURL text, strTitle text, IMDBID text, bWatched bool)\n");
+      m_pDS->exec("INSERT INTO TMPmovieinfo SELECT *, 'false' FROM movieinfo\n");
+      m_pDS->exec("DROP TABLE movieinfo\n");
+      m_pDS->exec("CREATE TABLE movieinfo ( idMovie integer, idDirector integer, strPlotOutline text, strPlot text, strTagLine text, strVotes text, strRuntime text, fRating text, strCast text,strCredits text, iYear integer, strGenre text, strPictureURL text, strTitle text, IMDBID text, bWatched bool)\n");
+      m_pDS->exec("INSERT INTO movieinfo SELECT * FROM TMPmovieinfo\n");
+      m_pDS->exec("DROP TABLE TMPmovieinfo\n");
+      return true;
+    }
+    catch (...)
+    {
+      CLog::Log(LOGERROR, "Failed to add bWatched to movieinfo");
+      return false;
+    }
+    
+    //vacuum movieinfo so the db is readable again
+    try
+    {
+      CLog::Log(LOGINFO, "Vacuuming movieinfo");
+      m_pDS->exec("VACUUM movieinfo\n");
+      return true;
+    }
+    catch (...)
+    {
+      CLog::Log(LOGERROR, "Failed to vacuum movieinfo");
+      return false;
+    }
+  }
+//*************
+
   return true;
+}
+
+void CVideoDatabase::MarkAsWatched(long lMovieId)
+{
+  try
+  {
+    if (NULL == m_pDB.get()) return ;
+    if (NULL == m_pDS.get()) return ;
+    CLog::Log(LOGINFO, "Updating Movie:%i as Watched", lMovieId);
+    CStdString strSQL;
+    strSQL.Format("UPDATE movieinfo set bWatched='true' WHERE idMovie=%i", lMovieId );
+    m_pDS->exec(strSQL.c_str());
+  }
+  catch (...)
+  {
+	  CLog::Log(LOGERROR, "CVideoDatabase::MarkAsWatched(long lMovieId) failed on MovieID:%i", lMovieId);
+  }
+}
+
+void CVideoDatabase::MarkAsUnWatched(long lMovieId)
+{
+  try
+  {
+    if (NULL == m_pDB.get()) return ;
+    if (NULL == m_pDS.get()) return ;
+    CLog::Log(LOGINFO, "Updating Movie:%i as UnWatched", lMovieId);
+    CStdString strSQL;
+    strSQL.Format("UPDATE movieinfo set bWatched='false' WHERE idMovie=%i", lMovieId );
+    m_pDS->exec(strSQL.c_str());
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "CVideoDatabase::MarkAsUnWatched(long lMovieId) failed on MovieID:%i", lMovieId);
+  }
+}
+
+void CVideoDatabase::UpdateMovieTitle(long lMovieId, const CStdString& strNewMovieTitle)
+{
+  try
+  {
+    if (NULL == m_pDB.get()) return ;
+    if (NULL == m_pDS.get()) return ;
+    CLog::Log(LOGINFO, "Changing Movie:id:%i New Title:%s", lMovieId, strNewMovieTitle.c_str());
+    CStdString strSQL;
+    strSQL.Format("UPDATE movieinfo SET strTitle='%s' WHERE idMovie=%i", strNewMovieTitle.c_str(), lMovieId );
+    m_pDS->exec(strSQL.c_str());
+  }
+  catch (...)
+  {
+	  CLog::Log(LOGERROR, "CVideoDatabase::UpdateMovieTitle(long lMovieId, const CStdString& strNewMovieTitle) failed on MovieID:%i and Title:%s", lMovieId, strNewMovieTitle);
+  }
 }
