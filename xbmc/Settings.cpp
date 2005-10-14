@@ -556,7 +556,6 @@ void CSettings::GetShares(const TiXmlElement* pRootElement, const CStdString& st
         const TiXmlNode *pBadPwdCount = pChild->FirstChild("badpwdcount");
         const TiXmlNode *pThumbnailNode = pChild->FirstChild("thumbnail");
 
-        //if (pNodeName && pPathName)
         if (pNodeName && vecPaths.size() > 0)
         {
           CShare share;
@@ -565,10 +564,10 @@ void CSettings::GetShares(const TiXmlElement* pRootElement, const CStdString& st
           CLog::Log(LOGDEBUG, "    Share Name: %s", strName.c_str());
 
           CStdString strPath;
-          // only allowed for music for now so just take the first path found
-          // or we're doing music and theres only a single path in the vector
-          if ((strTagName != "music") || (vecPaths.size() == 1))
+          // disallowed for files, or theres only a single path in the vector
+          if ((strTagName.Equals("files")) || (vecPaths.size() == 1))
             strPath = vecPaths[0];
+
           // multiple paths?
           else
           {
@@ -577,25 +576,61 @@ void CSettings::GetShares(const TiXmlElement* pRootElement, const CStdString& st
             {
               CURL url(vecPaths[j]);
               CStdString protocol = url.GetProtocol();
-              // for now, only allow HD, SMB, and XBMS
-              // strip out any others
-              if (protocol.IsEmpty() || protocol.Equals("smb") || protocol.Equals("xbms"))
-                share.vecPaths.push_back(vecPaths[j]);
+              bool bIsInvalid = false;
+
+              // for my programs
+              if (strTagName.Equals("myprograms"))
+              {
+                // only allow HD
+                if (protocol.IsEmpty())
+                  share.vecPaths.push_back(vecPaths[j]);
+                else
+                  bIsInvalid = true;
+              }
+
+              // for others
               else
+              {
+                // only allow HD, SMB, and XBMS
+                if (protocol.IsEmpty() || protocol.Equals("smb") || protocol.Equals("xbms"))
+                  share.vecPaths.push_back(vecPaths[j]);
+                else
+                  bIsInvalid = true;
+              }
+              
+              // error message
+              if (bIsInvalid)   
                 CLog::Log(LOGERROR,"Invalid protocol for virtualpath (%s)", vecPaths[j].c_str());
             }
-            // no valid paths?
+
+            // no valid paths? skip to next bookmark
             if (share.vecPaths.size() == 0)
+            {
+              CLog::Log(LOGERROR,"Error with bookmark (%s)", strName.c_str());
               pChild = pChild->NextSibling();
-            // only one valid path?
+            }
+
+            // only one valid path? make it the strPath
             else if (share.vecPaths.size() == 1)
             {
               strPath = share.vecPaths[0];
               share.vecPaths.empty();
             }
-            // multiple valid paths
+
+            // multiple valid paths?
             else
-              strPath.Format("virtualpath://%s/%s", strTagName.c_str(), strName.c_str());
+            {
+              // if my programs, make a comma seperated path
+              if (strTagName.Equals("myprograms"))
+              {
+                for (int j = 0; j < (int)share.vecPaths.size(); ++j)
+                  strPath += share.vecPaths[j] + ",";
+                strPath.Delete(strPath.size() -1);
+              }
+              // otherwise make a virtualpath path
+              else
+                strPath.Format("virtualpath://%s/%s", strTagName.c_str(), strName.c_str());
+            }
           }
 
           CLog::Log(LOGDEBUG, "    Share Path: %s", strPath.c_str());
@@ -686,8 +721,8 @@ void CSettings::GetShares(const TiXmlElement* pRootElement, const CStdString& st
         {
           CLog::Log(LOGERROR, "    <name> and/or <path> not properly defined within <bookmark>");
         }
-
       }
+
       if (strValue == "default")
       {
         const TiXmlNode *pValueNode = pChild->FirstChild();
