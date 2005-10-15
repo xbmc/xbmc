@@ -1,6 +1,3 @@
-
-
-
 <strings>
   <string><id>0</id><value>Mina Program</value></string>
   <string><id>1</id><value>Mina Bilder</value></string>
@@ -70,7 +67,7 @@
   <string><id>135</id><value>Genre</value></string>
   <string><id>136</id><value>Spelningslistor</value></string>
   <string><id>137</id><value>Sök</value></string>
-  <string><id>138</id><value>SYSTEMINFORMATION</value></string>
+  <string><id>138</id><value>SYSTEM INFORMATION</value></string>
   <string><id>139</id><value>Temperaturer</value></string>
   <string><id>140</id><value>CPU:</value></string>
   <string><id>141</id><value>GPU:</value></string>
@@ -291,7 +288,7 @@
   <string><id>356</id><value>Skärmsläckarläge</value></string>
   <string><id>357</id><value>Tid innan avstängning vid vila</value></string>
   <string><id>358</id><value>Alla album</value></string>
-  <string><id>359</id><value>Senast inlagda album</value></string>
+  <string><id>359</id><value>Senast spelade album</value></string>
   <string><id>360</id><value>Skärmsläckare</value></string>
   <string><id>361</id><value>Starta bildspel</value></string>
   <string><id>362</id><value>Skärmsläckarnivå</value></string>
@@ -451,9 +448,9 @@
   <string><id>516</id><value>Hantera arkiv</value></string>
   <string><id>517</id><value>Senast spelade album</value></string>
   <string><id>518</id><value>Starta</value></string>
-  <string><id>519</id><value>Starta med..</value></string>
-  <string><id>520</id><value>Ändra XBE filens interna namn</value></string>
-
+  <string><id>519</id><value>Starta i...</value></string>
+  <string><id>520</id><value>Döp om XBE-titel</value></string>
+  
   <string><id>600</id><value>Rippa Audio-CD</value></string>
   <string><id>601</id><value>Medel</value></string>
   <string><id>602</id><value>Standard</value></string>
@@ -486,8 +483,7 @@
   <string><id>641</id><value>Förstärkarnivå - Replay Gain filer</value></string>
   <string><id>642</id><value>Förstärkarnivå - Icke Replay Gain filer</value></string>
   <string><id>643</id><value>Undvik clipping på Replay Gain filer</value></string>
-  <string><id>644</id><value>Klipp ner svarta ramar</value></string>
-  
+  <string><id>644</id><value>Klipp ner svarta ramar</value></string>  
   <string><id>645</id><value>Måste buffra en stor fil. Fortsätta?</value></string>
   
   <string><id>700</id><value>Rensar bibliotek</value></string>
@@ -564,7 +560,7 @@
   <string><id>771</id><value>Automatisk FATX begränsare</value></string>
   <string><id>772</id><value>A/V Receiver</value></string>
   <string><id>773</id><value>Söker</value></string>
-  <string><id>774</id><value>Bildspelsmapp för skärmsläckare</value></string>
+  <string><id>774</id><value>Mapp för bildspel - skärmsläckare</value></string>
   <string><id>998</id><value>XLink Kai</value></string>
   <string><id>999</id><value>Online Spel</value></string>
   
@@ -688,9 +684,9 @@
   <string><id>10519</id><value>Mina Filmer - Genre</value></string>
   <string><id>10520</id><value>Mina Filmer - Titel</value></string>
   <string><id>10521</id><value>Mina Filmer - År</value></string>
-  <string><id>10522</id><value>Mina Filmer - Spellista</value></string>
+  <string><id>10522</id><value>Mina Filmer - Nu spelas</value></string>
   <string><id>10523</id><value>Albuminfo</value></string>
-  <string><id>10524</id><value>Nu spelas</value></string>
+  <string><id>10524</id><value>Filminfo</value></string>
   <string><id>12000</id><value>Valdialog</value></string>
   <string><id>12001</id><value>Min Musik/info</value></string>
   <string><id>12002</id><value>Dialog OK</value></string>
@@ -762,11 +758,16 @@
   <string><id>12369</id><value>XBMC Startlås</value></string>
   <string><id>12370</id><value>Huvudlåsläge ändrat, huvudkoden inte angiven!</value></string>
   <string><id>12371</id><value>Var god ange ny huvudkod!</value></string>  
-    
-  <string><id>12372</id><value>Lås Inställningar &amp; Mina Filer</value></string>
-  <string><id>12373</id><value>Inställningar &amp; Mina Filer</value></string>
-  <string><id>12374</id><value>Lås media</value></string>
-  <string><id>12375</id><value>Huvudanvändar läge</value></string>    
+  <string><id>12372</id><value>Låsinställningar & Mina Filer</value></string>
+  <string><id>12373</id><value>Inställningar & Mina Filer</value></string>
+  <string><id>12374</id><value>Lås media</value></string> 
+  <string><id>12375</id><value>Administratörsläge</value></string>   
+  
+  <string><id>12390</id><value>Systemets drifttid</value></string>
+  <string><id>12391</id><value>minuter</value></string>
+  <string><id>12392</id><value>timmar</value></string>
+  <string><id>12393</id><value>dagar</value></string>
+
       
   <string><id>12600</id><value>Mitt väder</value></string>
   <string><id>12900</id><value>Skärmsläckare</value></string>
@@ -793,11 +794,7 @@
   <string><id>13210</id><value>Startad, alarm om %im</value></string>
   <string><id>13211</id><value>Alarm!</value></string>
   <string><id>13212</id><value>Avbruten med %im%is kvar</value></string>
-  <string><id>15213</id><value>Spela upp med...</value></string>
-  <string><id>15214</id><value>Använd mjuk A/V synkronisering</value></string>
-  <string><id>15215</id><value>Göm filnamn i miniatyrläget</value></string>
-  <string><id>13297</id><value>Xbox ej uppkopplad. Kontrollera nätverksinställningar</value></string>
-  <string><id>13298</id><value>XBLIVE nyckel:</value></string>
+  
   <string><id>13299</id><value>Måltemperatur</value></string>
   <string><id>13300</id><value>Fläktfart</value></string>
   <string><id>13301</id><value>Automatisk temp. kontroll</value></string>
@@ -839,7 +836,7 @@
   <string><id>13337</id><value>- 2-kanalers PCM-genomgång</value></string>
   <string><id>13338</id><value>Eject LED</value></string>
   <string><id>13339</id><value>Eject LED färg</value></string>
-  <string><id>13340</id><value>Låt vara som det är</value></string>
+  <string><id>13340</id><value>Ingen förändring</value></string>
   <string><id>13341</id><value>Grön</value></string>
   <string><id>13342</id><value>Orange</value></string>
   <string><id>13343</id><value>Röd</value></string>
@@ -899,7 +896,7 @@
   <string><id>13397</id><value>Aktivera undertexter</value></string>
   <string><id>13398</id><value>Bokmärken</value></string>
   <string><id>13399</id><value>Ignorera "The" vid sortering</value></string>
-  <string><id>13400</id><value>Crossfade låtar från album</value></string>
+  <string><id>13400</id><value>Använd crossfade på albumspår</value></string>
   
   <string><id>14000</id><value>Stapling: Av</value></string>
   <string><id>14001</id><value>Stapling: Enkel</value></string>
@@ -964,11 +961,11 @@
   <string><id>14062</id><value>Ange användarnamn för</value></string>
   
   <string><id>14063</id><value>Datum &amp; klocka</value></string>
-  <string><id>14064</id><value>Ange år</value></string>
-  <string><id>14065</id><value>Ange månad</value></string>
+  <string><id>14064</id><value>Ange datum</value></string>
+  <string><id>14065</id><value>Ange klockslag</value></string>
   <string><id>14066</id><value>Ange tiden i 24-timmars TIM:MIN format</value></string>
   <string><id>14067</id><value>Ange datum i DAG/MÅNAD/ÅR format</value></string>
-  <string><id>14068</id><value>Ange IP adressen</value></string>
+  <string><id>14068</id><value>Ange IP adress</value></string>
   <string><id>14069</id><value>Vill du spara dessa inställningar nu?</value></string> 	 
   <string><id>14070</id><value>Spara inställningar</value></string> 
   <string><id>14071</id><value>Tillåt filradering</value></string>
@@ -1085,7 +1082,7 @@
   <string><id>13275</id><value>Hårddisk</value></string>
   <string><id>13276</id><value>DVD-ROM</value></string>
   <string><id>13277</id><value>Lagring</value></string>
-  <string><id>13278</id><value>Förval</value></string>
+  <string><id>13278</id><value>Generell</value></string>
   <string><id>13279</id><value>Nätverk</value></string>
   <string><id>13280</id><value>Video</value></string>
   <string><id>13281</id><value>Hårdvara</value></string>
@@ -1107,7 +1104,7 @@
   <string><id>13297</id><value>Xbox ej uppkopplad. Kontrollera nätverksinställningar.</value></string>
   <string><id>13298</id><value>XBLIVE nyckel:</value></string>
 
-  <string><id>15213</id><value>Spela med...</value></string>
+  <string><id>15213</id><value>Spela upp med...</value></string>
   <string><id>15214</id><value>Använd mjuk A/V synkronisering</value></string>
   <string><id>15215</id><value>Göm filnamn i miniatyrläget</value></string>
   
@@ -1120,6 +1117,7 @@
   <string><id>16001</id><value>A/V Receiver inställningar...</value></string>
   <string><id>16002</id><value>CDDB sök</value></string>
   <string><id>16003</id><value>Uppspelning</value></string>
+  <string><id>16004</id><value>Spela media från skiva</value></string>
   
   <string><id>16009</id><value>Ange filmtitel</value></string>
   <string><id>16010</id><value>Ange profilnamn</value></string>
@@ -1139,6 +1137,13 @@
   <string><id>16023</id><value>Interlaced hantering</value></string>
   
   <string><id>16024</id><value>Avbryter...</value></string>
+
+  <string><id>16100</id><value>Alla filmer</value></string>
+  <string><id>16101</id><value>Ej sedda</value></string>
+  <string><id>16102</id><value>Sedd</value></string>
+  <string><id>16103</id><value>Markera som sedd</value></string>
+  <string><id>16104</id><value>Markera som ej sedd</value></string>
+  <string><id>16105</id><value>Ändra Titel</value></string>
   
 </strings>
 
