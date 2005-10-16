@@ -129,6 +129,7 @@ void export_xbox_dx8()
   g_dlls.xbox_dx8.AddExport("D3DDevice_SetScissors@12", (unsigned long)D3DDevice_SetScissors);
   g_dlls.xbox_dx8.AddExport("d3dCreateTexture", (unsigned long)d3dCreateTexture);
   g_dlls.xbox_dx8.AddExport("D3DDevice_DrawIndexedVertices@12", (unsigned long)D3DDevice_DrawIndexedVertices);
+  g_dlls.xbox_dx8.AddExport("d3dDrawIndexedPrimitive", (unsigned long)d3dDrawIndexedPrimitive);
 }
 
 void export_xbox___dx8()
