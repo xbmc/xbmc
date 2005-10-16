@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 15-10-2005 added: Support for Direct3d DrawIndexedPrimitive from plugins.
  - 15-10-2005 added: More DirectX exports.
  - 15-10-2005 added: Watched/UnWatched filtering in Video Library views (Thanks to MercuryInc)
  - 14-10-2005 fixed: auto region for games on dvd.
