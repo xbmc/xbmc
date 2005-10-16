@@ -1014,7 +1014,7 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem)
     
     // don't show the add to playlist button in playlist window
     if (GetID() != WINDOW_VIDEO_PLAYLIST )
-      btn_Queue = pMenu->AddButton(13347);        // Add to Playlist
+      btn_Queue = pMenu->AddButton(13347);      // Add to Playlist
   }
 
   // check what players we have
@@ -1034,21 +1034,14 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem)
     btn_Query = pMenu->AddButton(13349);            // Query Info For All Files
 
   int btn_Search_IMDb = 0;
-  int btn_Delete = 0;
   if (!bIsGotoParent)
-  {
     btn_Search_IMDb   = pMenu->AddButton(13348);  // Search IMDb...
-    // hide delete button unless enabled, or in title window
-    if ((GetID() == WINDOW_VIDEOS && g_guiSettings.GetBool("VideoFiles.AllowFileDeletion")) || GetID() == WINDOW_VIDEO_TITLE)
-      btn_Delete = pMenu->AddButton(117);             // Delete
-  }
 
   int btn_Mark_UnWatched = 0;
   int btn_Mark_Watched = 0;
   int btn_Update_Title = 0;
   if (GetID() == WINDOW_VIDEO_TITLE || GetID() == WINDOW_VIDEO_GENRE || GetID() == WINDOW_VIDEO_ACTOR || GetID() == WINDOW_VIDEO_YEAR)
   {
-	  btn_Update_Title = pMenu->AddButton(16105); //Edit Title
 	  if (m_iShowMode == VIDEO_SHOW_ALL)
 	  {
       btn_Mark_Watched = pMenu->AddButton(16103); //Mark as Watched
@@ -1062,6 +1055,15 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem)
     {
       btn_Mark_UnWatched = pMenu->AddButton(16104); //Mark as UnWatched
     }
+    btn_Update_Title = pMenu->AddButton(16105); //Edit Title
+  }
+  
+  // hide delete button unless enabled, or in title window
+  int btn_Delete = 0;
+  if (!bIsGotoParent)
+  {
+    if ((GetID() == WINDOW_VIDEOS && g_guiSettings.GetBool("VideoFiles.AllowFileDeletion")) || GetID() == WINDOW_VIDEO_TITLE)
+      btn_Delete = pMenu->AddButton(117);             // Delete
   }
 
   // GeminiServer Todo: Set a MasterLock Option to Enable or disable Settings incontext menu!
@@ -1109,7 +1111,7 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem)
 		  MarkWatched(iItem);
 		  Update(m_Directory.m_strPath);
 	  }
-	  else if (btnid = btn_Update_Title)
+	  else if (btnid == btn_Update_Title)
 	  {
 		  UpdateVideoTitle(iItem);
 		  Update(m_Directory.m_strPath);
@@ -1130,7 +1132,7 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem)
     {
       OnDeleteItem(iItem);
     }
-    else if( btnid == btn_PlayWith )
+    else if (btnid == btn_PlayWith)
     {
       g_application.m_eForcedNextPlayer = CPlayerCoreFactory::SelectPlayerDialog(vecCores, iPosX, iPosY);
       if( g_application.m_eForcedNextPlayer != EPC_NONE )
@@ -1352,8 +1354,7 @@ void CGUIWindowVideoBase::UpdateVideoTitle(int iItem)
   strInput = detail.m_strTitle;
 
   //Get the new title
-  
-  if (!CGUIDialogKeyboard::ShowAndGetInput(strInput, (CStdStringW)g_localizeStrings.Get(666007), false)) return ;
-  m_database.UpdateMovieTitle(atol(pItem->m_strPath), strInput );
+  if (!CGUIDialogKeyboard::ShowAndGetInput(strInput, (CStdStringW)g_localizeStrings.Get(16105), false)) return ;
+  m_database.UpdateMovieTitle(atol(pItem->m_strPath), strInput);
   Update(m_Directory.m_strPath);
 }
