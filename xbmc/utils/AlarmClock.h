@@ -3,24 +3,35 @@
 #include "Thread.h"
 #include "../stdafx.h"
 #include "../../guilib/LocalizeStrings.h"
+struct SAlarmClockEvent
+{
+  CXBStopWatch watch;
+	double m_fSecs;
+  CStdString m_strCommand;
+};
+
 class CAlarmClock : public CThread
 {
 public:
 	CAlarmClock();
 	~CAlarmClock();
-	void start(float n_secs, const CStdString& strCommand);
+	void start(const CStdString& strName, float n_secs, const CStdString& strCommand);
 	inline bool isRunning()
 	{
 		return( m_bIsRunning );
 	}
-	void stop();
-	virtual void OnStartup();
-	virtual void OnExit();
+
+  inline bool hasAlarm(const CStdString& strName)
+  {
+    CLog::Log(LOGDEBUG,"checking for %s",strName.c_str());
+    return (m_event.find(strName) != m_event.end());
+  }
+
+	void stop(const CStdString& strName);
 	virtual void Process();
 private:
-	CXBStopWatch watch;
-	double m_fSecs;
-	bool m_bIsRunning;
-  CStdString m_strCommand;
+  std::map<CStdString,SAlarmClockEvent> m_event;
+  
+  bool m_bIsRunning;
 };
 extern CAlarmClock g_alarmClock;

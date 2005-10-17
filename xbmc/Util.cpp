@@ -686,69 +686,24 @@ void CUtil::LaunchXbe(const char* szPath, const char* szXbe, const char* szParam
   helper.Unmount("D:");
   helper.Mount("D:", const_cast<char*>(szPath));
 
-  if( g_guiSettings.GetBool("MyPrograms.GameAutoRegion") )
+  CLog::Log(LOGINFO, "launch xbe:%s", szXbe);
+
+  if (ForceVideo != VIDEO_NULL)
   {
-    F_COUNTRY Country = COUNTRY_NULL;
-    F_VIDEO Video = VIDEO_NULL;
-    if (ForceVideo == VIDEO_NULL) 
-    {
-      CLog::Log(LOGINFO,"Extracting region from xbe");
-      CXBE xbe;
-      uint32 iRegion = xbe.ExtractGameRegion(szXbe);
-      //Valid regions are 1, 2 and 4
-      if (iRegion>0 && iRegion < 5 )
-      {
-        switch(iRegion)
-        {
-        case 1:
-          if( !(XGetVideoStandard() == XC_VIDEO_STANDARD_NTSC_M) )
-          {
-            Country = COUNTRY_USA;
-            Video = VIDEO_NTSCM;
-          }
-          break;
-        case 2:
-          if( !(XGetVideoStandard() == XC_VIDEO_STANDARD_NTSC_J) )
-          {
-            Country = COUNTRY_JAP;
-            Video = VIDEO_NTSCJ;
-          }
-          break;
-        case 4:
-          if( !(XGetVideoStandard() == XC_VIDEO_STANDARD_PAL_I) )
-          {
-            Country = COUNTRY_EUR;
-            Video = VIDEO_PAL50;
-          }
-          break;
-        }
-      }
-    }
-    else
-    {
-      Video = ForceVideo;
-      if (ForceCountry)
-        Country = ForceCountry;
-      else
-      {
-        if (Video == VIDEO_NTSCM)
-          Country = COUNTRY_USA;
-        if (Video == VIDEO_NTSCJ)
-          Country = COUNTRY_JAP;
-        if (Video == VIDEO_PAL50)
-          Country = COUNTRY_EUR;
-      }
-    }
-    CLog::Log(LOGDEBUG,"launching in %i",Video);
-    if (Country != COUNTRY_NULL && Video != VIDEO_NULL)
-    {
-      bool bSuccessful = PatchCountryVideo(Country, Video);
+    if (!ForceCountry)
+      if (ForceVideo == VIDEO_NTSCM)
+        ForceCountry = COUNTRY_USA;
+      if (ForceVideo == VIDEO_NTSCJ)
+        ForceCountry = COUNTRY_JAP;
+      if (ForceVideo == VIDEO_PAL50)
+        ForceCountry = COUNTRY_EUR;
+    
+      CLog::Log(LOGDEBUG,"forcing video mode: %i",ForceVideo);
+      
+      bool bSuccessful = PatchCountryVideo(ForceCountry, ForceVideo);
       if( !bSuccessful )
         CLog::Log(LOGINFO,"AutoSwitch: Failed to set mode");
-    }
-  } 
-
-  CLog::Log(LOGINFO, "launch xbe:%s", szXbe);
+  }
 
   if (szParameters == NULL)
   {
@@ -2889,6 +2844,7 @@ const BUILT_IN commands[] = {
   "PlayerControl", "Control the music or video player",
   "EjectTray", "Close or open the DVD tray",
   "AlarmClock", "Prompt for a length of time and start an alarm clock",
+  "CancelAlarm","Cancels an alarm",
   "Action", "Executes an action for the active window (same as in keymap)",
   "Notificaton", "Shows a notification on screen, specify header, then message.",
   "PlayDVD"," Plays the inserted CD or DVD media from the DVD-ROM Drive!"
@@ -3161,27 +3117,34 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
       io.EjectTray();
   }
   else if( execute.Equals("alarmclock") ) 
-  {	
+  {
     float fSecs = -1.f;
     CStdString strCommand;
+    CStdString strName;
     if (!parameter.IsEmpty())
     {
       CRegExp reg;
-      if (!reg.RegComp("([^\\(,]*)(\\([^\\)]*\\)?)?,?(.*)?$"))
+      if (!reg.RegComp("([^,]*),([^\\(,]*)(\\([^\\)]*\\)?)?,?(.*)?$"))
         return -1; // whatever
       if (reg.RegFind(strParameterCaseIntact.c_str()) > -1)
       {
-        char* szParam = reg.GetReplaceString("\\1\\2");
+        char* szParam = reg.GetReplaceString("\\2\\3");
         if (szParam)
         {
           strCommand = szParam;
           free(szParam);
         }
-        szParam = reg.GetReplaceString("\\3");
+        szParam = reg.GetReplaceString("\\4");
         if (szParam)
         {
           if (strlen(szParam))
             fSecs = fSecs = static_cast<float>(atoi(szParam)*60);
+          free(szParam);
+        }
+        szParam = reg.GetReplaceString("\\1");
+        if (szParam)
+        {
+          strName = szParam;
           free(szParam);
         }
       }
@@ -3197,9 +3160,9 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
         return -4;
     }
     if( g_alarmClock.isRunning() )
-      g_alarmClock.stop();
+      g_alarmClock.stop(strName);
     
-    g_alarmClock.start(fSecs,strCommand);
+    g_alarmClock.start(strName,fSecs,strCommand);
   }
   else if (execute.Equals("notification"))
   {
@@ -3210,6 +3173,8 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
 
     g_application.m_guiDialogKaiToast.QueueNotification(params[0],params[1]);
   }
+  else if (execute.Equals("cancelalarm"))
+    g_alarmClock.stop(parameter);
   else if (execute.Equals("playdvd"))
   {
     CAutorun::PlayDisc();
