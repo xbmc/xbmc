@@ -89,7 +89,7 @@ IMusicInfoTagLoader* CMusicInfoTagLoaderFactory::CreateLoader(const CStdString& 
     CMusicInfoTagLoaderSHN *pTagLoader = new CMusicInfoTagLoaderSHN();
     return (IMusicInfoTagLoader*)pTagLoader;
   }
-  else if (strExtension == "sid")
+  else if (strExtension == "sid" || strExtension == "sidstream")
   {
     CMusicInfoTagLoaderSid *pTagLoader = new CMusicInfoTagLoaderSid();
     return (IMusicInfoTagLoader*)pTagLoader;
@@ -114,7 +114,7 @@ IMusicInfoTagLoader* CMusicInfoTagLoaderFactory::CreateLoader(const CStdString& 
     CMusicInfoTagLoaderWAVPack *pTagLoader = new CMusicInfoTagLoaderWAVPack();
     return (IMusicInfoTagLoader*)pTagLoader;
   } 
-  else if (strExtension == "nsf")
+  else if (strExtension == "nsf" || strExtension == "nsfstream")
   {
     CMusicInfoTagLoaderNSF *pTagLoader = new CMusicInfoTagLoaderNSF();
     return (IMusicInfoTagLoader*)pTagLoader;
