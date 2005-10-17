@@ -6,6 +6,7 @@
 //#include "rardirectory.h"
 //#include "zipdirectory.h"
 #include "nsffiledirectory.h"
+#include "sidfiledirectory.h"
 
 
 CFactoryFileDirectory::CFactoryFileDirectory(void)
@@ -37,9 +38,17 @@ IFileDirectory* CFactoryFileDirectory::Create(const CStdString& strPath )
     IFileDirectory* pDir=new CNSFFileDirectory;
     //  Has the nsf file more then one track?
     if (pDir->ContainsFiles(strPath))
-    {
       return pDir; // treat as directory
-    }
+
+    delete pDir;
+    return NULL;
+  }
+  if (strExtension.Equals(".sid") && CFile::Exists(strPath))
+  {
+    IFileDirectory* pDir=new CSIDFileDirectory;
+    //  Has the nsf file more then one track?
+    if (pDir->ContainsFiles(strPath))
+      return pDir; // treat as directory
 
     delete pDir;
     return NULL;
