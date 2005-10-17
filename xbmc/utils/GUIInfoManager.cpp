@@ -11,6 +11,7 @@
 #include "../MusicDatabase.h"
 #include "KaiClient.h"
 #include "GUIButtonScroller.h"
+#include "../utils/Alarmclock.h"
 
 #include <stack>
 
@@ -81,6 +82,8 @@ extern char g_szTitleIP[32];
 #define SYSTEM_ALWAYS_TRUE          125   // useful for <visible fade="10" start="hidden">true</visible>, to fade in a control
 #define SYSTEM_ALWAYS_FALSE         126   // used for <visible fade="10">false</visible>, to fade out a control (ie not particularly useful!)
 #define SYSTEM_MEDIA_DVD            127
+#define SYSTEM_NO_SUCH_ALARM        128
+#define SYSTEM_HAS_ALARM            129
 
 #define NETWORK_IP_ADDRESS          190
 
@@ -323,6 +326,9 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     if (time > 0)
       ret = SYSTEM_IDLE_TIME_START + time;
   }
+  else if (strTest.Left(16).Equals("system.hasalarm("))
+    ret = SYSTEM_NO_SUCH_ALARM+g_alarmClock.hasAlarm(strTest.Mid(16,strTest.size()-17));
+
   return bNegate ? -ret : ret;
 }
 
@@ -513,6 +519,10 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow) const
     bReturn = (g_application.GlobalIdleTime() >= condition - SYSTEM_IDLE_TIME_START);
   else if (condition >= WINDOW_ACTIVE_START && condition <= WINDOW_ACTIVE_END)// check for Window.IsActive(window)
     bReturn = m_gWindowManager.IsWindowActive(condition);
+  else if (condition == SYSTEM_HAS_ALARM)
+    bReturn = true;
+  else if (condition == SYSTEM_NO_SUCH_ALARM)
+    bReturn = false;
   else if (condition >= CONTROL_HAS_FOCUS_START && condition <= CONTROL_HAS_FOCUS_END)
   {
     if( !dwContextWindow ) dwContextWindow = m_gWindowManager.GetActiveWindow();
