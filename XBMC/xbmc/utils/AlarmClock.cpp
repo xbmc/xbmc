@@ -3,54 +3,73 @@
 #include "../Util.h"
 
 CAlarmClock g_alarmClock;
-CAlarmClock::CAlarmClock() : m_bIsRunning(false), m_fSecs(0)
+CAlarmClock::CAlarmClock() : m_bIsRunning(false)
 {
 }
 CAlarmClock::~CAlarmClock()
 {
 }
-void CAlarmClock::start(float n_secs, const CStdString& strCommand)
+void CAlarmClock::start(const CStdString& strName, float n_secs, const CStdString& strCommand)
 {
-  StopThread();
-  m_fSecs = n_secs;
-  m_strCommand = strCommand;
-  Create();
-}
-void CAlarmClock::stop()
-{
-  if( m_bIsRunning ) 
+  stop(strName);
+  SAlarmClockEvent event;
+  event.m_fSecs = n_secs;
+  event.m_strCommand = strCommand;
+  if (!m_bIsRunning)
+  {
     StopThread();
-}
-void CAlarmClock::OnStartup()
-{
-  watch.StartZero();
+    Create();
+    m_bIsRunning = true;
+  }
   CStdString strAlarmClock = g_localizeStrings.Get(13208);
   CStdString strMessage;
-  CStdString strCanceled = g_localizeStrings.Get(13210);
-  strMessage.Format(strCanceled.c_str(),static_cast<int>(m_fSecs)/60);
+  CStdString strStarted = g_localizeStrings.Get(13210);
+  strMessage.Format(strStarted.c_str(),static_cast<int>(event.m_fSecs)/60);
   g_application.m_guiDialogKaiToast.QueueNotification(strAlarmClock,strMessage);
-  m_bIsRunning = true;
+  event.watch.StartZero();
+  m_event.insert(std::make_pair<CStdString,SAlarmClockEvent>(strName,event));
+  CLog::Log(LOGDEBUG,"started alarm with name: %s",strName.c_str());
 }
-void CAlarmClock::OnExit()
+void CAlarmClock::stop(const CStdString& strName)
 {
+  std::map<CStdString,SAlarmClockEvent>::iterator iter = m_event.find(strName);
+
+  if (iter == m_event.end())
+    return;
+
   CStdString strAlarmClock = g_localizeStrings.Get(13208);
   CStdString strMessage;
-  if( watch.GetElapsedSeconds() > m_fSecs )
+
+  if( iter->second.watch.GetElapsedSeconds() > iter->second.m_fSecs )
     strMessage = g_localizeStrings.Get(13211);
   else 
   {
-    float remaining = static_cast<float>(m_fSecs-watch.GetElapsedSeconds());
+    float remaining = static_cast<float>(iter->second.m_fSecs-iter->second.watch.GetElapsedSeconds());
     CStdString strStarted = g_localizeStrings.Get(13212);
     strMessage.Format(strStarted.c_str(),static_cast<int>(remaining)/60,static_cast<int>(remaining)%60);
   }
-  if (m_strCommand.IsEmpty() || m_fSecs > watch.GetElapsedSeconds())
+  if (iter->second.m_strCommand.IsEmpty() || iter->second.m_fSecs > iter->second.watch.GetElapsedSeconds())
     g_application.m_guiDialogKaiToast.QueueNotification(strAlarmClock,strMessage);
   else
-    CUtil::ExecBuiltIn(m_strCommand);
-  watch.Stop();
-  m_bIsRunning = false;
+    CUtil::ExecBuiltIn(iter->second.m_strCommand);
+
+  iter->second.watch.Stop();
+  m_event.erase(iter);
 }
 void CAlarmClock::Process()
 {
-  while( (watch.GetElapsedSeconds() < m_fSecs) && (!m_bStop) ) Sleep(100);
+  while( !m_bStop)
+  {
+    CStdString strLast = "";
+    for (std::map<CStdString,SAlarmClockEvent>::iterator iter=m_event.begin();iter != m_event.end(); ++iter)
+      if (iter->second.watch.GetElapsedSeconds() >= iter->second.m_fSecs)
+      {    
+        stop(iter->first);
+        iter = m_event.find(strLast);
+      }
+      else
+        strLast = iter->first;
+
+    Sleep(100);
+  }
 }

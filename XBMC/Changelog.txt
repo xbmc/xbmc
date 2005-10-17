@@ -5,6 +5,10 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 17-10-2005 changed/fixed: xbe regions will only be used in my programs (not with xbmc.runxbe nor in my files). avoids a potential freeze on xbe launch.
+ - 17-10-2005 added: new visbility condition, system.hasalarm(alarmname). for use in skins.
+ - 17-10-2005 added: new builtin command xbmc.cancelalarm(alarmname)
+ - 17-10-2005 changed: new alarmclock syntax! xbmc.alarmclock(alarmname,command,time).
  - 17-10-2005 fixed: cancelling an alarm clock would trigger the command.
  - 17-10-2005 changed: sid tag loader now uses both stil.txt and sidlist.csv.
  - 17-10-2005 added: A .sid codec for paplayer (Commodore 64 Music). Based on libsidplay2+resid.
