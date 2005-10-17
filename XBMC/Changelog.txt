@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 17-10-2005 fixed: cancelling an alarm clock would trigger the command.
  - 17-10-2005 changed: sid tag loader now uses both stil.txt and sidlist.csv.
  - 17-10-2005 added: A .sid codec for paplayer (Commodore 64 Music). Based on libsidplay2+resid.
  - 16-10-2005 fixed: context menus in my video windows
