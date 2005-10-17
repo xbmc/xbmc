@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 17-10-2005 changed: sid tag loader now uses both stil.txt and sidlist.csv.
+ - 17-10-2005 added: A .sid codec for paplayer (Commodore 64 Music). Based on libsidplay2+resid.
  - 16-10-2005 fixed: context menus in my video windows
  - 15-10-2005 added: Support for Direct3d DrawIndexedPrimitive from plugins.
  - 15-10-2005 added: More DirectX exports.

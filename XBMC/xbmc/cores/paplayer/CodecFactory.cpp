@@ -19,6 +19,8 @@
 #include "AC3CDDACodec.h"
 #include "SPCCodec.h"
 #include "GYMCodec.h"
+//#include "GSFCodec.h"
+#include "SIDCodec.h"
 
 ICodec* CodecFactory::CreateCodec(const CStdString& strFileType)
 {
@@ -54,6 +56,10 @@ ICodec* CodecFactory::CreateCodec(const CStdString& strFileType)
     return new SPCCodec();
   else if (strFileType.Equals("gym"))
     return new GYMCodec();
+  /*else if (strFileType.Equals("minigsf"))
+    return new GSFCodec();*/
+  else if (strFileType.Equals("sid") || strFileType.Equals("sidstream"))
+    return new SIDCodec();
 
   return NULL;
 }

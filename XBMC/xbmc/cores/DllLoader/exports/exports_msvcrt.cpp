@@ -548,6 +548,7 @@ void export_msvcr71()
   g_dlls.msvcr71.AddExport("fabs", (unsigned long)fabs);
   g_dlls.msvcr71.AddExport("??2@YAPAXI@Z", (unsigned long)dllmalloc, (void*)track_malloc);
   g_dlls.msvcr71.AddExport("??3@YAXPAX@Z", (unsigned long)dllfree, (void*)track_free);
+  g_dlls.msvcr71.AddExport("??_U@YAPAXI@Z", (unsigned long)(operator new));
   g_dlls.msvcr71.AddExport("_beginthreadex", (unsigned long)dll_beginthreadex);
   g_dlls.msvcr71.AddExport("_fdopen", (unsigned long)dll_fdopen);
   g_dlls.msvcr71.AddExport("_fileno", (unsigned long)dll_fileno);
