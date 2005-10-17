@@ -37,12 +37,13 @@ void CAlarmClock::OnExit()
   CStdString strMessage;
   if( watch.GetElapsedSeconds() > m_fSecs )
     strMessage = g_localizeStrings.Get(13211);
-  else {
+  else 
+  {
     float remaining = static_cast<float>(m_fSecs-watch.GetElapsedSeconds());
     CStdString strStarted = g_localizeStrings.Get(13212);
     strMessage.Format(strStarted.c_str(),static_cast<int>(remaining)/60,static_cast<int>(remaining)%60);
   }
-  if (m_strCommand.IsEmpty())
+  if (m_strCommand.IsEmpty() || m_fSecs > watch.GetElapsedSeconds())
     g_application.m_guiDialogKaiToast.QueueNotification(strAlarmClock,strMessage);
   else
     CUtil::ExecBuiltIn(m_strCommand);
