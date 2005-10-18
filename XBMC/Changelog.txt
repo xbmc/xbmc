@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 18-10-2005 added: Support for D3D Visibility testing from plugins.
  - 17-10-2005 changed/fixed: xbe regions will only be used in my programs (not with xbmc.runxbe nor in my files). avoids a potential freeze on xbe launch.
  - 17-10-2005 added: new visbility condition, system.hasalarm(alarmname). for use in skins.
  - 17-10-2005 added: new builtin command xbmc.cancelalarm(alarmname)
