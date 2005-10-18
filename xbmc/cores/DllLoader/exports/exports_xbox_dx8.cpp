@@ -130,6 +130,9 @@ void export_xbox_dx8()
   g_dlls.xbox_dx8.AddExport("d3dCreateTexture", (unsigned long)d3dCreateTexture);
   g_dlls.xbox_dx8.AddExport("D3DDevice_DrawIndexedVertices@12", (unsigned long)D3DDevice_DrawIndexedVertices);
   g_dlls.xbox_dx8.AddExport("d3dDrawIndexedPrimitive", (unsigned long)d3dDrawIndexedPrimitive);
+  g_dlls.xbox_dx8.AddExport("D3DDevice_BeginVisibilityTest@0", (unsigned long)D3DDevice_BeginVisibilityTest);
+  g_dlls.xbox_dx8.AddExport("D3DDevice_EndVisibilityTest@4", (unsigned long)D3DDevice_EndVisibilityTest);
+  g_dlls.xbox_dx8.AddExport("D3DDevice_GetVisibilityTestResult@12", (unsigned long)D3DDevice_GetVisibilityTestResult);
 }
 
 void export_xbox___dx8()
