@@ -3216,13 +3216,15 @@ int CUtil::GetMatchingShare(const CStdString& strPath, VECSHARES& vecShares, boo
     }
 
     // doesnt match a name, so try the bookmark path
-    // first test for concatenated path
     vector<CStdString> vecPaths;
+
+    // add any concatenated paths if they exist
     if (share.vecPaths.size() > 0)
       vecPaths = share.vecPaths;
-    else
-      vecPaths.push_back(share.strPath);
 
+    // add the actual share path at the front of the vector
+    vecPaths.insert(vecPaths.begin(), share.strPath);
+    
     // test each path
     for (int j = 0; j < (int)vecPaths.size(); ++j)
     {
@@ -3247,7 +3249,7 @@ int CUtil::GetMatchingShare(const CStdString& strPath, VECSHARES& vecShares, boo
         if (vecPaths.size() > 1)
         {
           // if the path EXACTLY matches an item in a concatentated path
-          // set bookmark name to true to load the entire concatented path
+          // set bookmark name to true to load the full virtualpath 
           if (iLenPath == iLenShare)
             bIsBookmarkName = true;
           //CLog::Log(LOGDEBUG,"In concatenated path: [%s]",share.strPath.c_str());

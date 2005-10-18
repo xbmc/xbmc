@@ -61,13 +61,20 @@ bool CVirtualDirectory::GetDirectory(const CStdString& strPath, CFileItemList &i
 {
   if (!m_vecShares)
     return true;
+
   CStdString strPath2 = strPath;
   CStdString strPath3 = strPath;
   strPath2 += "/";
   strPath3 += "\\";
+
+  // i assumed the intention of this section was to confirm that strPath is part of an existing book.
+  // in order to work with virtualpath:// subpaths, i had replaced this with the GetMatchingShare function
+  // which does the same thing.
+  /*
   for (int i = 0; i < (int)m_vecShares->size(); ++i)
   {
     CShare& share = m_vecShares->at(i);
+    CLog::Log(LOGDEBUG,"CVirtualDirectory... Checking [%s]", share.strPath.c_str());
     if ( share.strPath == strPath.Left( share.strPath.size() ) ||
          share.strPath == strPath2.Left( share.strPath.size() ) ||
          share.strPath == strPath3.Left( share.strPath.size() ) ||
@@ -75,11 +82,26 @@ bool CVirtualDirectory::GetDirectory(const CStdString& strPath, CFileItemList &i
     {
       // Only cache directory we are getting now
       g_directoryCache.Clear();
+      CLog::Log(LOGDEBUG,"CVirtualDirectory... FOUND MATCH [%s]", share.strPath.c_str());
       
       return CDirectory::GetDirectory(strPath, items, m_strFileMask);
     }
   }
+  */
 
+  bool bIsBookmarkName = false;
+  VECSHARES vecShares = *m_vecShares;
+  int iIndex = CUtil::GetMatchingShare(strPath, vecShares, bIsBookmarkName);
+  if (iIndex > -1)
+  {
+    // Only cache directory we are getting now
+    g_directoryCache.Clear();   
+    return CDirectory::GetDirectory(strPath, items, m_strFileMask);
+  }
+
+  // is this operation intentional?
+  // should this return the root bookmark listing, or return an error?
+  CLog::Log(LOGERROR,"CVirtualDirectory::GetDirectory(%s) matches no valid bookmark, getting root bookmark list instead", strPath.c_str());
   items.Clear();
   for (int i = 0; i < (int)m_vecShares->size(); ++i)
   {
