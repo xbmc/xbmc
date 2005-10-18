@@ -40,7 +40,7 @@ struct SSortMusicSongs
     {
       char szfilename1[1024];
       char szfilename2[1024];
-
+      
       switch ( m_iSortMethod )
       {
       case 0:  // Sort by Listlabel
@@ -389,25 +389,12 @@ bool CGUIWindowMusicSongs::GetDirectory(const CStdString &strDirectory, CFileIte
   if (items.Size())
     items.Clear();
 
-  // if we're getting the root bookmark listing
-  // make sure the path history is clean
-  if (strDirectory.IsEmpty())
-    m_vecHistory.empty();
-
   CStdString strParentPath = "";
   if (m_vecHistory.size() > 0)
     strParentPath = m_vecHistory.back();
 
-  CLog::Log(LOGDEBUG,"CGUIWindowMusicSongs::GetDirectory(%s)", strDirectory.c_str());
-  // debug log
-  CStdString strTemp;
-  CLog::Log(LOGDEBUG,"m_vecHistory = (");
-  for (int i = 0; i < (int)m_vecHistory.size(); ++i)
-  {
-    strTemp.Format("%02i.[%s]", i, m_vecHistory[i]);
-    CLog::Log(LOGDEBUG, "%s", strTemp.c_str());
-  }
-  CLog::Log(LOGDEBUG,")");
+  CLog::Log(LOGDEBUG,"CGUIWindowMusicSongs::GetDirectory (%s)", strDirectory.c_str());
+  CLog::Log(LOGDEBUG,"  ParentPath = [%s]", strParentPath.c_str());
 
   if (!g_guiSettings.GetBool("MyMusic.HideParentDirItems"))
   {
@@ -419,34 +406,12 @@ bool CGUIWindowMusicSongs::GetDirectory(const CStdString &strDirectory, CFileIte
   }
   m_strParentPath = strParentPath;
 
-  /*
-  CURL url(strDirectory);
-  vector<CStdString> vecPaths;
-  // dont tokenize if getting the root bookmark listing
-  // or its a zip or rar style special path
-  if (strDirectory.IsEmpty() || url.GetProtocol().Equals("zip") || url.GetProtocol().Equals("rar"))
-    vecPaths.push_back(strDirectory);
-  else
-    CUtil::Tokenize(strDirectory, vecPaths, ",");
-  int iFailures = 0;
-  for (int i = 0; i < (int)vecPaths.size(); ++i)
-  {
-    CStdString strPath = vecPaths[i];
-    CLog::Log(LOGDEBUG,"Fetching directory (%s)", strPath.c_str());
-    if (!m_rootDir.GetDirectory(strPath, items))
-    {
-      CLog::Log(LOGERROR,"GetDirectory(%s) failed", strPath.c_str());
-      iFailures++;
-    }
-  }
-
-  if (iFailures == vecPaths.size())
-    return false;
-  */
-
   CLog::Log(LOGDEBUG,"Fetching directory (%s)", strDirectory.c_str());
   if (!m_rootDir.GetDirectory(strDirectory, items))
+  {
     CLog::Log(LOGERROR,"GetDirectory(%s) failed", strDirectory.c_str());
+    return false;
+  }
 
   // check for .CUE files here.
   items.FilterCueItems();
@@ -1012,8 +977,29 @@ void CGUIWindowMusicSongs::DoSearch(const CStdString& strSearch, CFileItemList& 
 
 bool CGUIWindowMusicSongs::Update(const CStdString &strDirectory)
 {
+  // if we're getting the root bookmark listing
+  // make sure the path history is clean
+  if (strDirectory.IsEmpty())
+    m_vecHistory.empty();
+
+  // debug log
+  CStdString strTemp;
+  CLog::Log(LOGDEBUG,"BEFORE... m_vecHistory = (");
+  for (int i = 0; i < (int)m_vecHistory.size(); ++i)
+  {
+    strTemp.Format("%02i.[%s]", i, m_vecHistory[i]);
+    CLog::Log(LOGDEBUG, "%s", strTemp.c_str());
+  }
+  CLog::Log(LOGDEBUG,")");
+
   if (!CGUIWindowMusicBase::Update(strDirectory))
     return false;
+
+  // possible minor issue ?
+  // CVirtualDirectory::GetDirectory() returns the root bookmark listing if the user
+  // tries to access a path which does not match any valid bookmark.
+  // this condition screws up the history vector because GetDirectory() returns true,
+  // and the history shows the "failed" path but the root listing.
 
   if (!m_Directory.IsVirtualDirectoryRoot() && g_guiSettings.GetBool("MusicFiles.UseAutoSwitching"))
   {
@@ -1027,8 +1013,7 @@ bool CGUIWindowMusicSongs::Update(const CStdString &strDirectory)
   }
 
   // debug log
-  CStdString strTemp;
-  CLog::Log(LOGDEBUG,"m_vecHistory = (");
+  CLog::Log(LOGDEBUG,"AFTER... m_vecHistory = (");
   for (int i = 0; i < (int)m_vecHistory.size(); ++i)
   {
     strTemp.Format("%02i.[%s]", i, m_vecHistory[i]);
