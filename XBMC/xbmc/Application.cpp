@@ -121,9 +121,9 @@
  #pragma comment (lib,"xbmc/lib/libshout/libshoutd.lib" )
  #pragma comment (lib,"xbmc/lib/libRTV/libRTVd.lib")    // SECTIONNAME=LIBRTV
  #pragma comment (lib,"xbmc/lib/mikxbox/mikxboxd.lib")  // SECTIONNAME=MOD_RW,MOD_RX
- #pragma comment (lib,"xbmc/lib/libsidplay/libsidplayd.lib")   // SECTIONNAME=SID_RW,SID_RX
+/* #pragma comment (lib,"xbmc/lib/libsidplay/libsidplayd.lib")   // SECTIONNAME=SID_RW,SID_RX
  #pragma comment (lib,"xbmc/lib/libsidplay/libsidutilsd.lib")  // SECTIONNAME=SID_RW,SID_RX
- #pragma comment (lib,"xbmc/lib/libsidplay/resid_builderd.lib") // SECTIONNAME=SID_RW,SID_RX
+ #pragma comment (lib,"xbmc/lib/libsidplay/resid_builderd.lib") // SECTIONNAME=SID_RW,SID_RX*/
  #pragma comment (lib,"xbmc/lib/libxdaap/libxdaapd.lib") // SECTIONNAME=LIBXDAAP
  #pragma comment (lib,"xbmc/lib/libiconv/libiconvd.lib")
  #pragma comment (lib,"xbmc/lib/libfribidi/libfribidid.lib")
@@ -138,9 +138,9 @@
  #pragma comment (lib,"xbmc/lib/libshout/libshout.lib")
  #pragma comment (lib,"xbmc/lib/libRTV/libRTV.lib")
  #pragma comment (lib,"xbmc/lib/mikxbox/mikxbox.lib")
- #pragma comment (lib,"xbmc/lib/libsidplay/libsidplay.lib")    // SECTIONNAME=SID_RW,SID_RX
+ /*#pragma comment (lib,"xbmc/lib/libsidplay/libsidplay.lib")    // SECTIONNAME=SID_RW,SID_RX
  #pragma comment (lib,"xbmc/lib/libsidplay/libsidutils.lib")   // SECTIONNAME=SID_RW,SID_RX
- #pragma comment (lib,"xbmc/lib/libsidplay/resid_builder.lib") // SECTIONNAME=SID_RW,SID_RX
+ #pragma comment (lib,"xbmc/lib/libsidplay/resid_builder.lib") // SECTIONNAME=SID_RW,SID_RX*/
  #pragma comment (lib,"xbmc/lib/libxdaap/libxdaap.lib") // SECTIONNAME=LIBXDAAP
  #pragma comment (lib,"xbmc/lib/libiconv/libiconv.lib")
  #pragma comment (lib,"xbmc/lib/libfribidi/libfribidi.lib")
@@ -2040,14 +2040,14 @@ bool CApplication::OnKey(CKey& key)
       }
       if (action.wID == ACTION_PLAYER_FORWARD || action.wID == ACTION_PLAYER_REWIND)
       {
-        if (m_eCurrentPlayer == EPC_SIDPLAYER )
+/*        if (m_eCurrentPlayer == EPC_SIDPLAYER )
         {
           // sid uses these to track skip
           m_pPlayer->Seek(action.wID == ACTION_PLAYER_FORWARD);
           return true;
         }
         else
-        {
+        {*/
           int iPlaySpeed = m_iPlaySpeed;
           if (action.wID == ACTION_PLAYER_REWIND && iPlaySpeed == 1) // Enables Rewinding
             iPlaySpeed *= -2;
@@ -2065,7 +2065,7 @@ bool CApplication::OnKey(CKey& key)
 
           SetPlaySpeed(iPlaySpeed);
           return true;
-        }
+        //}
       }
       else if ((action.fAmount1 || GetPlaySpeed() != 1) && (action.wID == ACTION_ANALOG_REWIND || action.wID == ACTION_ANALOG_FORWARD))
       {
