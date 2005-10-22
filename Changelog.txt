@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 22-10-2005 removed: sidplayer. obsolete due to the paplayer sid codec.
  - 22-10-2005 fixed: playlists button found in my music files window
  - 22-10-2005 fixed: aac codec failed for he-aac.
  - 22-10-2005 fixed: fatx limiter is now applied to directory names as well - thanks to soepy.
