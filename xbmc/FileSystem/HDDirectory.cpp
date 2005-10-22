@@ -94,7 +94,13 @@ bool CHDDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
 
 bool CHDDirectory::Create(const char* strPath)
 {
-  return ::CreateDirectory(strPath, NULL) ? true : false;
+  CStdString strPath1 = strPath;
+  if (!CUtil::HasSlashAtEnd(strPath1))
+    strPath1 += '\\';
+  if (g_guiSettings.GetBool("Servers.FTPAutoFatX"))
+    CUtil::GetFatXQualifiedPath(strPath1);
+  CLog::Log(LOGDEBUG,"fatxq: %s",strPath1.c_str());
+  return ::CreateDirectory(strPath1.c_str(), NULL) ? true : false;
 }
 
 bool CHDDirectory::Remove(const char* strPath)
@@ -106,6 +112,9 @@ bool CHDDirectory::Exists(const char* strPath)
 {
   CStdString strReplaced = strPath;
   strReplaced.Replace("/","\\");
+  if (!CUtil::HasSlashAtEnd(strReplaced))
+    strReplaced += '\\';
+  CUtil::GetFatXQualifiedPath(strReplaced);
   DWORD attributes = GetFileAttributes(strReplaced);
   if (FILE_ATTRIBUTE_DIRECTORY == attributes) return true;
   return false;
