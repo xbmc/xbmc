@@ -50,7 +50,7 @@ bool AACCodec::Init(const CStdString &strFile, unsigned int filecache)
 	AACInfo info;
 	if (m_dll.AACGetInfo(m_Handle, &info))
 	{
-		m_Channels = info.channels;
+    m_Channels = info.channels;
 		m_SampleRate = info.samplerate;
 		m_BitsPerSample = info.bitspersample;
     m_TotalTime = info.totaltime;
@@ -76,6 +76,8 @@ bool AACCodec::Init(const CStdString &strFile, unsigned int filecache)
       strType="ER-LTP";
     else if (info.objecttype==AAC_LD)
       strType="LD";
+    else if (info.objecttype == ALAC)
+      m_CodecName = L"ALAC";
 
     if (!strType.IsEmpty())
       m_CodecName.Format("%s-AAC", strType.c_str());
