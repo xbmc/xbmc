@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 22-10-2005 added: alac (apple lossless audio codec) support to paplayer. shares dll with the aac codec.
  - 19-10-2005 added: experimental support for multiple paths in my music bookmarks.
                      only hard drive, samba, and xbms paths are allowed, any other are removed when the config is read.
                      DO NOT USE COMMA SEPERATED PATHS.  the config MUST be as follows since comma is a valid smb and xbms character:
