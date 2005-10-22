@@ -92,7 +92,8 @@ bool CVirtualDirectory::GetDirectory(const CStdString& strPath, CFileItemList &i
   bool bIsBookmarkName = false;
   VECSHARES vecShares = *m_vecShares;
   int iIndex = CUtil::GetMatchingShare(strPath, vecShares, bIsBookmarkName);
-  if (iIndex > -1)
+  // added exception for various local hd items
+  if (iIndex > -1 || strPath.Mid(1, 1) == ":")
   {
     // Only cache directory we are getting now
     g_directoryCache.Clear();   
