@@ -3185,21 +3185,18 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
 }
 int CUtil::GetMatchingShare(const CStdString& strPath, VECSHARES& vecShares, bool& bIsBookmarkName)
 {
-  //CLog::Log(LOGDEBUG,"CUtil::GetMatchingShare, testing [%s]", strPath.c_str());
+  //CLog::Log(LOGDEBUG,"CUtil::GetMatchingShare, testing path/name [%s]", strPath.c_str());
 
-  // remove user details, and ensure pathes ends in 
-  // a trailing slash so as not to match a substring
+  // remove user details, and ensure path only uses forward slashes
+  // and ends with a trailing slash so as not to match a substring
   CURL urlDest(strPath);
   CStdString strDest;
   urlDest.GetURLWithoutUserDetails(strDest);
+  ForceForwardSlashes(strDest);
   if (!HasSlashAtEnd(strDest))
-  {
-    if (IsHD(strDest))
-      strDest += "\\";
-    else
-      strDest += "/";
-  }
+    strDest += "/";
   int iLenPath = strDest.size();
+  //CLog::Log(LOGDEBUG,"CUtil::GetMatchingShare, testing url [%s]", strDest.c_str());
 
   bIsBookmarkName = false;
   int iIndex = -1;
@@ -3207,9 +3204,25 @@ int CUtil::GetMatchingShare(const CStdString& strPath, VECSHARES& vecShares, boo
   for (int i = 0; i < (int)vecShares.size(); ++i)
   {
     CShare share = vecShares.at(i);
+    CStdString strName = share.strName;
+
+    // special cases for dvds
+    if (IsDVD(share.strPath))
+    {
+      if (IsDVD(strPath))
+        return i;
+
+      // not a path, so we need to modify the bookmark name
+      // since we add the drive status and disc name to the bookmark
+      // "Name (Drive Status/Disc Name)"
+      int iPos = strName.ReverseFind('(');
+      if (iPos > 1)
+        strName = strName.Mid(0, iPos - 1);
+    }
 
     // does it match a bookmark name?
-    if (strPath.Equals(share.strName))
+    //CLog::Log(LOGDEBUG,"CUtil::GetMatchingShare, comparing name [%s]", strName.c_str());
+    if (strPath.Equals(strName))
     {
       bIsBookmarkName = true;
       return i;
@@ -3228,31 +3241,30 @@ int CUtil::GetMatchingShare(const CStdString& strPath, VECSHARES& vecShares, boo
     // test each path
     for (int j = 0; j < (int)vecPaths.size(); ++j)
     {
-      // remove user details, and ensure pathes ends in 
-      // a trailing slash so as not to match a substring
+      // remove user details, and ensure path only uses forward slashes
+      // and ends with a trailing slash so as not to match a substring
       CURL urlShare(vecPaths[j]);
       CStdString strShare;
       urlShare.GetURLWithoutUserDetails(strShare);
+      ForceForwardSlashes(strShare);
       if (!HasSlashAtEnd(strShare))
-      {
-        if (IsHD(strShare))
-          strShare += "\\";
-        else
-          strShare += "/";
-      }
+        strShare += "/";
       int iLenShare = strShare.size();
+      //CLog::Log(LOGDEBUG,"CUtil::GetMatchingShare, comparing url [%s]", strShare.c_str());
 
       if ((iLenPath >= iLenShare) && (strDest.Left(iLenShare).Equals(strShare)) && (iLenShare > iLength))
       {
         //CLog::Log(LOGDEBUG,"Found matching bookmark at index %i: [%s], Len = [%i]", i, strShare.c_str(), iLenShare);
-        bIsBookmarkName = false;
-        if (vecPaths.size() > 1)
+
+        // if exact match, return it immediately
+        if (iLenPath == iLenShare)
         {
           // if the path EXACTLY matches an item in a concatentated path
           // set bookmark name to true to load the full virtualpath 
-          if (iLenPath == iLenShare)
+          bIsBookmarkName = false;
+          if (vecPaths.size() > 1)
             bIsBookmarkName = true;
-          //CLog::Log(LOGDEBUG,"In concatenated path: [%s]",share.strPath.c_str());
+          return i;
         }
         iIndex = i;
         iLength = iLenShare;
@@ -3710,4 +3722,14 @@ void CUtil::GetRecursiveDirsListing(const CStdString& strPath, CFileItemList& it
     }   
   }
   CLog::Log(LOGDEBUG,"done listing!");
+}
+
+void CUtil::ForceForwardSlashes(CStdString& strPath)
+{
+  int iPos = strPath.ReverseFind('\\');
+  while (iPos > 0) 
+  {
+    strPath.at(iPos) = '/';
+    iPos = strPath.ReverseFind('\\');
+  }
 }

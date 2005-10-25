@@ -194,6 +194,7 @@ static void CreateRarPath(CStdString& strUrlPath, const CStdString& strRarPath,
   static void GetRecursiveListing(const CStdString& strPath, CFileItemList& items, const CStdString& strMask);
   
   static void GetRecursiveDirsListing(const CStdString& strPath, CFileItemList& items);
+  static void ForceForwardSlashes(CStdString& strPath);
 
 private:
   static bool m_bNetworkUp;
