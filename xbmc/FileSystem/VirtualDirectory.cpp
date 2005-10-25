@@ -89,20 +89,25 @@ bool CVirtualDirectory::GetDirectory(const CStdString& strPath, CFileItemList &i
   }
   */
 
-  bool bIsBookmarkName = false;
-  VECSHARES vecShares = *m_vecShares;
-  int iIndex = CUtil::GetMatchingShare(strPath, vecShares, bIsBookmarkName);
-  // added exception for various local hd items
-  if (iIndex > -1 || strPath.Mid(1, 1) == ":")
+  if (!strPath.IsEmpty())
   {
-    // Only cache directory we are getting now
-    g_directoryCache.Clear();   
-    return CDirectory::GetDirectory(strPath, items, m_strFileMask);
+    bool bIsBookmarkName = false;
+    VECSHARES vecShares = *m_vecShares;
+    int iIndex = CUtil::GetMatchingShare(strPath, vecShares, bIsBookmarkName);
+    // added exception for various local hd items
+    if (iIndex > -1 || strPath.Mid(1, 1) == ":")
+    {
+      // Only cache directory we are getting now
+      g_directoryCache.Clear();   
+      return CDirectory::GetDirectory(strPath, items, m_strFileMask);
+    }
+
+    // is this operation intentional?
+    // should this return the root bookmark listing, or return an error?
+    CLog::Log(LOGERROR,"CVirtualDirectory::GetDirectory(%s) matches no valid bookmark, getting root bookmark list instead", strPath.c_str());
   }
 
-  // is this operation intentional?
-  // should this return the root bookmark listing, or return an error?
-  CLog::Log(LOGERROR,"CVirtualDirectory::GetDirectory(%s) matches no valid bookmark, getting root bookmark list instead", strPath.c_str());
+  // if strPath is blank, return the root bookmark listing
   items.Clear();
   for (int i = 0; i < (int)m_vecShares->size(); ++i)
   {
