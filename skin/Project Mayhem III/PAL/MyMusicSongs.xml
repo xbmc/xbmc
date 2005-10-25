@@ -58,7 +58,7 @@
         <font>font13</font>
         <onleft>50</onleft>
         <onright>50</onright>
-        <onup>21</onup>
+        <onup>33</onup>
         <ondown>3</ondown>
       </control>
 
@@ -112,76 +112,50 @@
         <onleft>50</onleft>
         <onright>50</onright>
         <onup>6</onup>
-        <ondown>8</ondown>
+        <ondown>31</ondown>
       </control>
 
       <control>
-        <description>Search button</description>
+        <description>Bookmark button 1</description>
         <type>button</type>
-        <id>8</id>
+        <id>31</id>
         <posX>50</posX>
         <posY>268</posY>
-        <label>137</label>
-        <font>font13</font>
+        <label>Local</label>
+        <execute>XBMC.ActivateWindow(MyMusic,Local)</execute>
         <onleft>50</onleft>
         <onright>50</onright>
         <onup>7</onup>
-        <ondown>9</ondown>
+        <ondown>32</ondown>
         <visible>no</visible>
       </control>
 
       <control>
-        <description>Scan button</description>
+        <description>Bookmark button 2</description>
         <type>button</type>
-        <id>9</id>
+        <id>32</id>
         <posX>50</posX>
         <posY>305</posY>
-        <label>193</label>
-        <font>font13</font>
+        <label>Network</label>
+        <execute>XBMC.ActivateWindow(MyMusic,Network)</execute>
         <onleft>50</onleft>
         <onright>50</onright>
-        <onup>8</onup>
-        <ondown>10</ondown>
+        <onup>31</onup>
+        <ondown>33</ondown>
         <visible>no</visible>
       </control>
 
       <control>
-        <description>Record button</description>
+        <description>Bookmark button 3</description>
         <type>button</type>
-        <id>10</id>
+        <id>33</id>
         <posX>50</posX>
-        <posY>268</posY>
-        <label>264</label>
-        <font>font13</font>
+        <posY>342</posY>
+        <label>WebRadio</label>
+        <execute>q:\scripts\KMLbrowse.py</execute>
         <onleft>50</onleft>
         <onright>50</onright>
-        <onup>9</onup>
-        <ondown>21</ondown>
-      </control>
-
-      <!-- <control>
-        <description>Rip CDDA Button</description>
-        <type>button</type>
-        <id>11</id>
-        <posX>60</posX>
-        <posY>380</posY>
-        <label>600</label>
-        <onleft>50</onleft>
-        <onright>50</onright>
-        <onup>10</onup>
-        <ondown>2</ondown>
-      </control> -->
-
-      <control>
-        <description>Shuffle button</description>
-        <type>radiobutton</type>
-        <id>21</id>
-        <posX>50</posX>
-        <posY>268</posY>
-        <label>191</label>
-        <onleft>50</onleft>
-        <onright>50</onright>
-        <onup>8</onup>
+        <onup>32</onup>
         <ondown>2</ondown>
         <visible>no</visible>
       </control>
