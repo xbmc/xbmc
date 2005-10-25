@@ -119,19 +119,6 @@
         <onleft>50</onleft>
         <onright>50</onright>
         <onup>5</onup>
-        <ondown>6</ondown>
-      </control>
-
-      <control>
-        <description>Play DVD</description>
-        <type>button</type>
-        <id>6</id>
-        <posX>50</posX>
-        <posY>268</posY>
-        <label>341</label>
-        <onleft>50</onleft>
-        <onright>50</onright>
-        <onup>10</onup>
         <ondown>9</ondown>
       </control>
 
@@ -140,11 +127,11 @@
         <type>button</type>
         <id>9</id>
         <posX>50</posX>
-        <posY>305</posY>
+        <posY>268</posY>
         <label>368</label>
         <onleft>50</onleft>
         <onright>50</onright>
-        <onup>6</onup>
+        <onup>10</onup>
         <ondown>2</ondown>
       </control>
 
