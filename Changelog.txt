@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 26-10-2005 added: better testing of dvd urls (D:\, iso9660://, udf://) in GetMatchingShare
+ - 26-10-2005 fixed: GetMatchingShare failing due to forward slash & backslash incompatibility
  - 25-10-2005 fixed: erroneous error messages being reported in log
                      "ERROR CUtil::GetMatchingShare... no matching bookmark found for [/]"
                      "ERROR CVirtualDirectory::GetDirectory() matches no valid bookmark, getting root bookmark list instead"
