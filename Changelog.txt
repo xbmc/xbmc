@@ -5,6 +5,9 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 25-10-2005 fixed: erroneous error messages being reported in log
+                     "ERROR CUtil::GetMatchingShare... no matching bookmark found for [/]"
+                     "ERROR CVirtualDirectory::GetDirectory() matches no valid bookmark, getting root bookmark list instead"
  - 23-10-2005 fixed: memory leaks and startup lag in the aac codec - thanks to arnie pie!
  - 22-10-2005 removed: sidplayer. obsolete due to the paplayer sid codec.
  - 22-10-2005 fixed: playlists button found in my music files window
