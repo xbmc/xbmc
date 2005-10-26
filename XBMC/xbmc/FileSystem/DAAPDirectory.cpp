@@ -19,11 +19,10 @@
 */
 
 #include "../stdafx.h"
+#include "FileDAAP.h"
 #include "DAAPDirectory.h"
 #include "../util.h"
 #include "directorycache.h"
-#include "../lib/libsmb/xbLibSmb.h"
-#include "../application.h" 
 // using the smb library for UTF-8 conversion
 #include "../lib/libsmb/xbLibSmb.h"
 
@@ -31,50 +30,30 @@
 CDAAPDirectory::CDAAPDirectory(void)
 {
   CSectionLoader::Load("LIBXDAAP");
-
   // m_currLevel holds where we are in the playlist/artist/album/songs hierarchy (0,1,2,3)
   m_currLevel = -1;
   m_thisHost = NULL;
-  m_thisClient = NULL;
   m_artisthead = NULL;
   m_currentSongItems = NULL;
   m_currentSongItemCount = 0;
 }
 
 CDAAPDirectory::~CDAAPDirectory(void)
-{
+{  
   //if (m_thisClient) DAAP_Client_Release(m_thisClient);
   free_artists();
 
   m_thisHost = NULL;
-  m_thisClient = NULL;
   m_artisthead = NULL;
 
   m_currentSongItems = NULL;
   CSectionLoader::Unload("LIBXDAAP");
 }
 
-void CDAAPDirectory::CloseDAAP(void)
-{
-  if (g_application.m_DAAPPtr)
-  {
-    CSectionLoader::Load("LIBXDAAP");
-    if (g_application.m_DAAPArtistPtr) m_artisthead = (artistPTR *) g_application.m_DAAPArtistPtr;
-    free_artists();
-    m_thisClient = (DAAP_SClient *) g_application.m_DAAPPtr;
-    DAAP_Client_Release(m_thisClient);
-    m_thisClient = NULL;
-    g_application.m_DAAPPtr = NULL;
-    g_application.m_DAAPArtistPtr = NULL;
-    CSectionLoader::Unload("LIBXDAAP");
-  }
-  g_application.m_DAAPPtr = NULL;
-}
-
 bool CDAAPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
 {
   int c;
-  wchar_t wStrFile[1024]; // buffer for converting strings
+  //wchar_t wStrFile[1024]; // buffer for converting strings
 
   CURL url(strPath);
 
@@ -85,51 +64,17 @@ bool CDAAPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
   // Clear out any cached entries for this path
   g_directoryCache.ClearDirectory(strPath);
 
-  // if we are accessing a different host then close any current host connection
-  if (strcmp(g_application.m_CurrDAAPHost, (char *) url.GetHostName().c_str()) != 0)
-  {
-    CloseDAAP();
-  }
 
-  if (g_application.m_DAAPPtr)
-  {
-    m_thisClient = (DAAP_SClient *) g_application.m_DAAPPtr;
-    m_thisHost = m_thisClient->hosts;
-  }
-  else
-  {
-    // Create a client object if we don't already have one
-    if (!m_thisClient) m_thisClient = DAAP_Client_Create(NULL, NULL);
-    g_application.m_DAAPPtr = m_thisClient;
-  }
-
-  // Add the defined host to the client object if we don't already have one
-  if (!m_thisHost)
-  {
-    m_thisHost = DAAP_Client_AddHost(m_thisClient, (char *) url.GetHostName().c_str(), "A", "A");
-
-    // If no host object returned then the connection failed
-    if (!m_thisHost)
-    {
-      CloseDAAP();
-      return false;
-    }
-
-    if ((int)DAAP_ClientHost_Connect(m_thisHost) < 0)
-    {
-      CloseDAAP();
-      return false;
-    }
-
-    DAAP_Client_GetDatabases(m_thisHost);
-    g_application.m_DAAPDBID = m_thisHost->databases[0].id;
-    strcpy(g_application.m_CurrDAAPHost, m_thisHost->host);
-  }
+  m_thisHost = g_DaapClient.GetHost(url.GetHostName());
+  if (!m_thisHost)  
+    return false;
+  
 
   // if we have at least one database we should show it's contents
   if (m_thisHost->nDatabases)
   {
-    if (g_application.m_DAAPArtistPtr) m_artisthead = (artistPTR *) g_application.m_DAAPArtistPtr;
+    //Store the first database
+    g_DaapClient.m_iDatabase = m_thisHost->databases[0].id;
 
     // Get the songs from the database if we haven't already
     if (!m_artisthead)
@@ -152,17 +97,11 @@ bool CDAAPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
     {
       for (c = 0; c < m_thisHost->dbplaylists->nPlaylists; c++)
       {
-        CStdString strThisRoot = m_thisHost->dbplaylists->playlists[c].itemname;
         CStdString strFile;
-        size_t strLen;
+        //size_t strLen;
 
         // convert from UTF8 to charset string
-        //g_charsetConverter.utf8ToStringCharset(strThisRoot, strFile);
-
-        // convert from UTF8 to wide string
-        strLen = convert_string(CH_UTF8, CH_UCS2, strThisRoot, strThisRoot.length(), wStrFile, 1024, false);
-        wStrFile[(strLen / 2)] = 0;
-        CUtil::Unicode2Ansi(wStrFile, strFile);
+        g_charsetConverter.utf8ToStringCharset(m_thisHost->dbplaylists->playlists[c].itemname, strFile);
 
         // Add item to directory list
         CFileItem* pItem = new CFileItem(strFile);
@@ -195,10 +134,12 @@ bool CDAAPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
         // if selected playlist name == d/b name then show in artist/album/song formation
         if (strcmp(m_thisHost->databases[0].name, m_thisHost->dbplaylists->playlists[c].itemname) == 0)
         {
+          CStdString strBuffer;
           artistPTR *cur = m_artisthead;
           while (cur)
-          {
-            CFileItem* pItem = new CFileItem(cur->artist);
+          {            
+            g_charsetConverter.utf8ToStringCharset(cur->artist, strBuffer);
+            CFileItem* pItem = new CFileItem(strBuffer);
             pItem->m_strPath = strRoot + cur->artist;
             pItem->m_bIsFolder = true;
             items.Add(new CFileItem(*pItem));
@@ -220,7 +161,7 @@ bool CDAAPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
             idx = -1;
             for (i = 0; i < m_currentSongItemCount; i ++)
             {
-              if (m_currentSongItems[i].id == m_thisHost->dbplaylists->playlists[c].items[j].id)
+              if (m_currentSongItems[i].id == m_thisHost->dbplaylists->playlists[c].items[j].songid)
               {
                 idx = i;
                 break;
@@ -228,17 +169,28 @@ bool CDAAPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
             }
 
             if (idx > -1)
-            {
-              CFileItem* pItem = new CFileItem(m_currentSongItems[idx].itemname);
+            {              
+              // convert from UTF8 to charset string
+              CStdString strBuffer;
+              g_charsetConverter.utf8ToStringCharset(m_currentSongItems[idx].itemname, strBuffer);
+
+              CFileItem* pItem = new CFileItem(strBuffer);
               pItem->m_strPath.Format("daap://%s/%d.%s", m_thisHost->host, m_currentSongItems[idx].id,
                                       m_currentSongItems[idx].songformat);
               pItem->m_bIsFolder = false;
               pItem->m_dwSize = m_currentSongItems[idx].songsize;
 
               pItem->m_musicInfoTag.SetURL(pItem->m_strPath);
-              pItem->m_musicInfoTag.SetTitle(m_currentSongItems[idx].itemname);
-              pItem->m_musicInfoTag.SetArtist(m_currentSongItems[idx].songartist);
-              pItem->m_musicInfoTag.SetAlbum(m_currentSongItems[idx].songalbum);
+
+              
+              pItem->m_musicInfoTag.SetTitle(strBuffer);
+
+              g_charsetConverter.utf8ToStringCharset(m_currentSongItems[idx].songartist, strBuffer);
+              pItem->m_musicInfoTag.SetArtist(strBuffer);
+
+              g_charsetConverter.utf8ToStringCharset(m_currentSongItems[idx].songalbum, strBuffer);
+              pItem->m_musicInfoTag.SetAlbum(strBuffer);
+
               //pItem->m_musicInfoTag.SetTrackNumber(m_currentSongItems[idx].songtracknumber);
               pItem->m_musicInfoTag.SetTrackNumber(m_thisHost->dbplaylists->playlists[c].items[j].songid);
               //pItem->m_musicInfoTag.SetTrackNumber(j+1);
@@ -269,7 +221,10 @@ bool CDAAPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
         albumPTR *curAlbum = cur->albumhead;
         while (curAlbum)
         {
-          CFileItem* pItem = new CFileItem(curAlbum->album);
+          CStdString strBuffer;
+          g_charsetConverter.utf8ToStringCharset(curAlbum->album, strBuffer);
+          CFileItem* pItem = new CFileItem(strBuffer);
+
           pItem->m_strPath = strRoot + curAlbum->album;
           pItem->m_bIsFolder = true;
           items.Add(new CFileItem(*pItem));
@@ -287,16 +242,25 @@ bool CDAAPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
         if (m_currentSongItems[c].songartist == m_selectedArtist &&
             m_currentSongItems[c].songalbum == m_selectedAlbum)
         {
-          CFileItem* pItem = new CFileItem(m_currentSongItems[c].itemname);
+          CStdString strBuffer;
+          g_charsetConverter.utf8ToStringCharset(m_currentSongItems[c].itemname, strBuffer);
+
+          CFileItem* pItem = new CFileItem(strBuffer);
           pItem->m_strPath.Format("daap://%s/%d.%s", m_thisHost->host, m_currentSongItems[c].id,
                                   m_currentSongItems[c].songformat);
           pItem->m_bIsFolder = false;
           pItem->m_dwSize = m_currentSongItems[c].songsize;
 
           pItem->m_musicInfoTag.SetURL(pItem->m_strPath);
-          pItem->m_musicInfoTag.SetTitle(m_currentSongItems[c].itemname);
-          pItem->m_musicInfoTag.SetArtist(m_selectedArtist);
-          pItem->m_musicInfoTag.SetAlbum(m_selectedAlbum);
+
+          pItem->m_musicInfoTag.SetTitle(strBuffer);
+
+          g_charsetConverter.utf8ToStringCharset(m_selectedArtist, strBuffer);
+          pItem->m_musicInfoTag.SetArtist(strBuffer);
+
+          g_charsetConverter.utf8ToStringCharset(m_selectedAlbum, strBuffer);
+          pItem->m_musicInfoTag.SetAlbum(strBuffer);
+
           pItem->m_musicInfoTag.SetTrackNumber(m_currentSongItems[c].songtracknumber);
           pItem->m_musicInfoTag.SetPartOfSet(m_currentSongItems[c].songdiscnumber);
           pItem->m_musicInfoTag.SetDuration((int) (m_currentSongItems[c].songtime / 1000));
