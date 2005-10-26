@@ -20,9 +20,9 @@
 
 #include "../stdafx.h"
 #include "FileDAAP.h"
-#include "../util.h"
 #include <sys/stat.h>
-#include "../application.h"
+
+#define BUFFER_SIZE 32768
 
 static UINT64 strtouint64(const char *s)
 {
@@ -41,43 +41,195 @@ static UINT64 strtouint64(const char *s)
   return r;
 }
 
+CDaapClient g_DaapClient;
+
+CDaapClient::CDaapClient()
+{
+  m_pClient = NULL;
+  m_Status = DAAP_STATUS_error;
+
+  m_pArtistsHead = NULL;
+  m_iDatabase = 0;
+}
+CDaapClient::~CDaapClient()
+{
+
+}
+void CDaapClient::Release()
+{
+  m_mapHosts.clear();
+
+  if( m_pClient )
+  {
+    try
+    {
+      while( DAAP_Client_Release(m_pClient) != 0 );    
+    }
+    catch(...)
+    {
+      CLog::Log(LOGINFO, "CDaapClient::Disconnect - Unexpected exception");   
+    }
+
+    m_pClient = NULL;
+  }
+}
+
+DAAP_SClientHost* CDaapClient::GetHost(const CStdString &strHost)
+{ 
+  //We need this section from now on
+  if( !CSectionLoader::IsLoaded("LIBXDAAP") ) CSectionLoader::Load("LIBXDAAP");
+  try
+  {
+
+    ITHOST it;
+    it = m_mapHosts.find(strHost);
+    if( it != m_mapHosts.end() )
+      return it->second;
+
+
+    if( !m_pClient )
+      m_pClient = DAAP_Client_Create((DAAP_fnClientStatus)StatusCallback, (void*)this);
+
+    DAAP_SClientHost* pHost = DAAP_Client_AddHost(m_pClient, (char *)strHost.c_str(), "A", "A");
+    if( !pHost )
+      throw("Unable to add host");
+
+    if( DAAP_ClientHost_Connect(pHost) != 0 )
+      throw("Unable to connect");
+
+    m_mapHosts[strHost] = pHost;
+
+    return pHost;
+
+  }
+  catch(char* err)
+  {
+    CLog::Log(LOGERROR, "CDaapClient::GetHost(%s) - %s", strHost.c_str(), err );
+    return NULL;
+  }
+  catch(...)
+  {
+    CLog::Log(LOGERROR, "CDaapClient::GetHost(%s) - Unknown Exception");
+    return NULL;
+  }
+    
+}
+
+void CDaapClient::StatusCallback(DAAP_SClient *pClient, DAAP_Status status, int value, void* pContext)
+{    
+  ((CDaapClient*)pContext)->m_Status = status;
+  switch(status)
+  {
+    case DAAP_STATUS_connecting:
+      CLog::Log(LOGINFO, "CDaapClient::Callback - Connecting");
+    case DAAP_STATUS_downloading:
+      CLog::Log(LOGINFO, "CDaapClient::Callback - Downlading");
+    case DAAP_STATUS_idle:
+      CLog::Log(LOGINFO, "CDaapClient::Callback - Idle");
+  }
+}
+
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
 CFileDAAP::CFileDAAP()
-{
-  CSectionLoader::Load("LIBXDAAP");
+{  
   m_fileSize = 0;
   m_filePos = 0;
-  m_song.size = 0;
-  m_song.data = NULL;
-  m_bOpened = false;
+  m_httpHeaderLength = 0;
+  m_httpContentLenght = 0;
+  m_hStreamThread = NULL;
+
   m_thisHost = NULL;
   m_thisClient = NULL;
+
+  m_bOpened = false;
+  m_bInterupt = false;
+  m_bStreaming = false;
+
 }
 
 CFileDAAP::~CFileDAAP()
 {
-  DestroyDAAP();
-  CSectionLoader::Unload("LIBXDAAP");
+  Close();  
 }
 
-void CFileDAAP::DestroyDAAP()
+//Callback function from XDAAP, if return value is less than 0, it will abort
+int CFileDAAP::DAAPHttpCallback(const char *data, int size, int flag, int contentlength, void* context)
 {
-  Close();
+  CFileDAAP* pFile = (CFileDAAP*)context;
+  
+  if( !pFile->m_hStreamThread )
+  {
+    DuplicateHandle( NULL, GetCurrentThread(), NULL, &(pFile->m_hStreamThread), 0, FALSE, 0 );
+  }
+
+  int result = 0;
+  if( flag == 1 )
+  {
+    //Header data
+    pFile->m_httpHeaderLength = size;
+    pFile->m_httpContentLenght = contentlength;
+
+    //Enough to start streaming
+    pFile->m_bStreaming = true;
+    pFile->m_eventCallback.PulseEvent();
+    return 0;
+  }
+  else if( flag == 2 )
+  {    
+    //Normal data
+    pFile->m_httpContentLenght = contentlength;  
+
+
+    //Good make sure we say we have started before writing as it can block
+    pFile->m_bStreaming = true;
+    pFile->m_eventCallback.PulseEvent();
+
+
+    int iSizeLeft = size;
+    int iWriteSize = 0;
+    char *pData = (char*)data;
+
+    while( 1 )
+    {
+
+      iWriteSize = pFile->m_DataBuffer.GetMaxWriteSize();
+      if( iWriteSize > iSizeLeft ) iWriteSize = iSizeLeft;
+
+      if( iWriteSize )
+      {
+        pFile->m_DataBuffer.WriteBinary(pData, iWriteSize);
+        pFile->m_eventNewData.PulseEvent();
+        pData+= iWriteSize;
+        iSizeLeft -= iWriteSize;
+      }
+
+      if( iSizeLeft <= 0 ) break;
+
+      if( pFile->m_bInterupt ) break;
+
+      Sleep(1);
+    }
+
+    return 0;
+  }
+  else
+  {
+    //Either end of file, or failed to start
+    pFile->m_bStreaming = false;
+    pFile->m_eventCallback.PulseEvent();
+    return -1;
+  }  
 }
+
 
 //*********************************************************************************************
 bool CFileDAAP::Open(const CURL& url, bool bBinary)
 {
-  const char* strUserName = url.GetUserName().c_str();
-  const char* strPassword = url.GetPassWord().c_str();
-  const char* strHostName = url.GetHostName().c_str();
-  const char* strFileName = url.GetFileName().c_str();
-  const char* strFileFormat = url.GetFileType().c_str();
+  CSingleLock lock(g_DaapClient);
 
-  strncpy(m_strFileFormat, strFileFormat, 16);
   // only able to open mp3's or m4a's ...
   if (url.GetFileType() != "mp3" && url.GetFileType() != "m4a") return (false);
   // not protected drm'd iTunes songs yet
@@ -86,135 +238,103 @@ bool CFileDAAP::Open(const CURL& url, bool bBinary)
 
   if (m_bOpened) Close();
 
-  m_bOpened = false;
-  m_song.size = 0;
+  m_DataBuffer.Create(BUFFER_SIZE*3, BUFFER_SIZE);
+
   m_filePos = 0;
   m_fileSize = 0;
 
-  //int fileID;
-  //int dbID;
-  char szFormat[120];
-  sscanf(strFileName, "%i.%s", &m_iFileID, szFormat);
-  //dbID = 0x22;
+  sscanf(url.GetFileName().c_str(), "%i.%s", &m_iFileID, m_sFileFormat);
 
-  OutputDebugString("daap:open:");
-  OutputDebugString(strFileName);
-/*
-  // If we already have a song open, use that instead!
-  if (g_application.m_DAAPSong)
+  CLog::Log(LOGDEBUG, "CFileDAAP::Open(%s)", url.GetFileName().c_str());
+
+
+  m_thisHost = g_DaapClient.GetHost(url.GetHostName());
+  if (!m_thisHost)  
+    return false;  
+    
+  if( !StartStreaming() )
   {
-    m_bOpened = true;
-    m_song.size = (int) g_application.m_DAAPSongSize;
-    m_song.data = malloc(m_song.size);
-    memcpy(m_song.data, g_application.m_DAAPSong, m_song.size);
-    m_filePos = 0;
-    m_fileSize = m_song.size;
-    OutputDebugString(" (cached)\n");
-    return true;
-  }
-*/
-  OutputDebugString("\n");
-
-  if (g_application.m_DAAPPtr)
-  {
-    m_thisClient = (DAAP_SClient *) g_application.m_DAAPPtr;
-    m_thisHost = m_thisClient->hosts;
-  }
-  else
-  {
-    // Create a client object if we don't already have one
-    if (!m_thisClient)
-      m_thisClient = DAAP_Client_Create(NULL, NULL);
-    g_application.m_DAAPPtr = m_thisClient;
-  }
-
-  // Add the defined host to the client object if we don't already have one
-  if (!m_thisHost)
-  {
-    m_thisHost = DAAP_Client_AddHost(m_thisClient, (char *) url.GetHostName().c_str(), "A", "A");
-
-    // If no host object returned then the connection failed
-    if (!m_thisHost) return false;  // tidy ups?
-
-    if ((int)DAAP_ClientHost_Connect(m_thisHost) < 0) return false;  // tidy ups?
-  }
-
-  /*
-  if (m_thisHost)
-  { 
-   //if (DAAP_ClientHost_GetAudioFile(m_thisHost, g_application.m_DAAPDBID, fileID, (char *) strFileFormat, &m_song) < 0)
-   if (DAAP_ClientHost_GetAudioFileAsync(m_thisHost, g_application.m_DAAPDBID, fileID, (char *) strFileFormat, &m_song) < 0)
-   {
-    DestroyDAAP();
+    CLog::Log(LOGERROR, "CFileDAAP::Open - Failed");
     return false;
-   }
-
-   // sleep for a moment to allow the thread to start
-   Sleep(100);
   }
 
+  //First callback should be header if exists, so it should give both contentlength and header length
+  //we save this file lenght as it can change after a seek. I suppose we could get filesize from the database too.
+  m_fileSize = (__int64) (m_httpContentLenght - m_httpHeaderLength);
 
-  // if the stream thread is active wait until
-  // we have the intended size of the file ...
-  while(GetStreamThreadStatus() && m_song.size == 0)
-  {
-   Sleep(100);
-  }
-
-  m_fileSize = m_song.size;
-  g_application.m_DAAPSongSize = m_song.size;
-  g_application.m_DAAPSong = m_song.data;
-  */
-
-  m_bStreaming = false;//StartAudioStream();
   m_bOpened = true;
   return true;
 }
 
-bool CFileDAAP::StartAudioStream()
+bool CFileDAAP::StopStreaming()
 {
-  if (m_thisHost)
+  m_bInterupt = true;
+  if( m_hStreamThread )
   {
-    //if (DAAP_ClientHost_GetAudioFile(m_thisHost, g_application.m_DAAPDBID, fileID, (char *) strFileFormat, &m_song) < 0)
-    if (DAAP_ClientHost_GetAudioFileAsync(m_thisHost, g_application.m_DAAPDBID, m_iFileID, (char *) m_strFileFormat, &m_song) < 0)
+
+    //Thread is still active for some reason.. this need to end before we can close
+    //otherwise it might call the callback function on objects that doesn't exist
+    if( WaitForSingleObject(m_hStreamThread, 5000) == WAIT_TIMEOUT )
     {
-      DestroyDAAP();
-      return false;
+      CLog::Log(LOGERROR, "CFileDAAP::Open - Timeout waiting for stream to stop.");
     }
 
-    // sleep for a moment to allow the thread to start
-    Sleep(100);
+    CloseHandle( m_hStreamThread );
+    m_hStreamThread = NULL;
   }
+  m_bStreaming = false;
 
+  return true;
+}
 
-  // if the stream thread is active wait until
-  // we have the intended size of the file ...
-  while (GetStreamThreadStatus() && m_song.size == 0)
+bool CFileDAAP::StartStreaming()
+{
+  CSingleLock lock( g_DaapClient );
+
+  try
   {
-    Sleep(100);
-  }
 
-  // wait until we have at least 250kb of this file, or all of it if smaller
-  while (GetStreamThreadStatus() && m_song.streamlen < 256000 && m_song.streamlen < m_song.size)
+    if( m_bStreaming ) StopStreaming();
+
+    m_bInterupt = false;
+    m_httpContentLenght = 0;
+    m_httpHeaderLength = 0;
+
+    int iResult = DAAP_ClientHost_AsyncGetAudioFileCallback( m_thisHost, g_DaapClient.m_iDatabase, m_iFileID, m_sFileFormat, (int)m_filePos, DAAPHttpCallback, (void*)this);  
+
+    if( iResult < 0 )
+      throw("DAAP_ClientHost_AsyncGetAudioFileCallback failed.");
+    
+    if( !m_eventCallback.WaitMSec(5000) )
+      throw("Timeout waiting for first callback.");
+          
+    return true;
+
+  }
+  catch(char* error)
   {
-    Sleep(100);
-  }
+    CLog::Log(LOGERROR, "CFileDAAP::StartStreaming - %s", error);
+    StopStreaming();
 
-  m_fileSize = m_song.size;
-  g_application.m_DAAPSongSize = m_song.size;
-  g_application.m_DAAPSong = m_song.data;
-  m_bOpened = true;
-  m_bStreaming = true;
-  return m_song.size > 0;
+    return false;
+  }
+  catch(...)
+  {
+    CLog::Log(LOGERROR, "CFileDAAP::StartStreaming - Unknown exception");
+    StopStreaming();
+
+    return false;
+  }
+  
 }
 
 bool CFileDAAP::Exists(const CURL& url)
 {
-
-  bool exist(true);
-  //exist=CFileDAAP::Open(url, true);
-  //Close();
-  return exist;
+  CStdString strType = url.GetFileType();
+  if( strType.Equals("mp3") || strType.Equals("m4a") )
+    return true;
+  else
+    return false;
 }
 
 int CFileDAAP::Stat(const CURL& url, struct __stat64* buffer)
@@ -234,118 +354,102 @@ int CFileDAAP::Stat(const CURL& url, struct __stat64* buffer)
 //*********************************************************************************************
 unsigned int CFileDAAP::Read(void *lpBuf, __int64 uiBufSize)
 {
-  unsigned char *buf;
-  //char* pBuffer=(char* )lpBuf;
-  size_t buflen;
+  char *pData = (char*)lpBuf;
+  int iSizeLeft = (int)uiBufSize;
+  int iReadSize = 0;
+  
+  while(1)
+  {
+    iReadSize = m_DataBuffer.GetMaxReadSize();
+    if( iSizeLeft < iReadSize ) iReadSize = iSizeLeft;
 
-  if (!m_bOpened) return 0;
+    m_DataBuffer.ReadBinary(pData, iReadSize);
 
-  if (!m_bStreaming) StartAudioStream();
+    pData += iReadSize;
+    iSizeLeft -= iReadSize;
 
-  // check to see we have enough data in the stream buffer
-  if ((m_filePos + uiBufSize) > m_song.streamlen) return 0;
+    //Check if we are done
+    if( iSizeLeft <= 0 ) break;
 
-  buf = (unsigned char *) m_song.data;
-  buf += m_filePos;
+    if( !m_bStreaming ) break;
 
-  if (uiBufSize > (__int64) (m_song.size - m_filePos))
-    buflen = (size_t) (m_song.size - m_filePos);
-  else
-    buflen = (size_t) uiBufSize;
-
-  fast_memcpy(lpBuf, buf, buflen);
-  //pBuffer[uiBufSize] = 0x00;
-  m_filePos += buflen;
-  return buflen;
+    m_eventNewData.WaitMSec(100);
+  }
+  
+  
+  m_filePos += uiBufSize - iSizeLeft;
+  return (int) (uiBufSize - iSizeLeft);
+  
 }
 
 //*********************************************************************************************
 void CFileDAAP::Close()
 {
-  if (m_bOpened)
-  {
-    OutputDebugString("daap:close:\n");
+  StopStreaming();
 
-    // if we are still streaming we need to wait until
-    // we've finished. Not ideal, but iTunes does NOT
-    // like having it's stream cut mid-flow :)
-    if (m_bStreaming)
-    {
-      while (GetStreamThreadStatus())
-      {
-        Sleep(100);
-      }
-    }
+  m_DataBuffer.Destroy();
 
-    /*
-    if (GetStreamThreadStatus())
-    {
-     DAAP_ClientHost_StopAudioFileAsync(m_thisHost);
-     if (m_thisClient) DAAP_Client_Release(m_thisClient);
-    }
-    */
-
-    if (m_song.data) free(m_song.data);
-    m_song.size = 0;
-    m_fileSize = 0;
-
-    //if (m_thisClient) DAAP_Client_Release(m_thisClient);
-    m_thisHost = NULL;
-    m_thisClient = NULL;
-    g_application.m_DAAPSong = NULL;
-  }
   m_bOpened = false;
 }
 
 //*********************************************************************************************
 __int64 CFileDAAP::Seek(__int64 iFilePosition, int iWhence)
 {
-  UINT64 newpos;
 
-  if (!m_bOpened) return -1;
-  if (!m_bStreaming) StartAudioStream();
-
+  __int64 nextPos = 0;
   switch (iWhence)
   {
   case SEEK_SET:
-    // cur = pos
-    newpos = iFilePosition;
+    if (iFilePosition < 0 || iFilePosition > m_fileSize ) return -1;
+
+    nextPos = iFilePosition;
+
     break;
+
   case SEEK_CUR:
-    // cur += pos
-    newpos = m_filePos + iFilePosition;
+    if ( (m_filePos+iFilePosition) < 0 || (m_filePos+iFilePosition) > m_fileSize ) return -1;
+
+    nextPos = m_filePos + iFilePosition;
+
     break;
+
   case SEEK_END:
-    // end += pos
-    newpos = m_song.size + iFilePosition;
+    if( iFilePosition > 0 || (m_fileSize+iFilePosition) > m_fileSize ) return -1;
+
+    nextPos = m_fileSize+iFilePosition;
     break;
   }
-  if (newpos < 0) newpos = 0;
-  if (newpos >= m_song.size) newpos = m_song.size;
 
-  // if we try to seek beyond the data we have streamed so far
-  // we should return with error (?)
-  if (newpos > m_song.streamlen) return -1;
+  if( m_DataBuffer.SkipBytes((int)(nextPos - m_filePos)) )
+  {
+    return m_filePos;
+  }
+  else
+  {
+    StopStreaming();
+    m_DataBuffer.Clear();
 
-  m_filePos = newpos;
-  return m_filePos;
+    m_filePos = nextPos;
+
+    if( StartStreaming() )
+      return m_filePos;
+    else
+      return -1;
+  }
+  
 }
 
 //*********************************************************************************************
 __int64 CFileDAAP::GetLength()
 {
   if (!m_bOpened) return 0;
-  if (!m_bStreaming)
-    m_bStreaming = StartAudioStream();
-  return m_song.size;
+  return m_fileSize;
 }
 
 //*********************************************************************************************
 __int64 CFileDAAP::GetPosition()
 {
   if (!m_bOpened) return 0;
-  if (!m_bStreaming)
-    m_bStreaming = StartAudioStream();
   return m_filePos;
 }
 

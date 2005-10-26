@@ -26,20 +26,18 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  *
  */
-/*
-#include <pthread.h>
 
-#include "mDNS/mDNSClientAPI.h"
-#include "mDNS/mDNSPosix.h"
-
-#include "threadpool.h"
-#include "discover.h"
-*/
+//#include "threadpool.h"
+//#include "discover.h"
 #include "client.h"
 #include "httpClient.h"
+#include "thread.h"
+
+//#include "mdnsd/mdnsd.h"
 
 /* function prototypes */
 //unsigned int CP_GetTickCount();
+char *safe_sprintf(const char *format, ...);
 
 /* Client */
 typedef struct DAAP_ClientHost_FakeTAG DAAP_ClientHost_Fake;
@@ -48,8 +46,7 @@ struct DAAP_SClientTAG
 {
     unsigned int uiRef;
 
-    //pthread_mutex_t mtObjectLock;
-	void  *mtObjectLock;
+    ts_mutex mtObjectLock;
 
     DAAP_fnClientStatus pfnCallbackStatus;
     void *pvCallbackStatusContext;
@@ -57,10 +54,15 @@ struct DAAP_SClientTAG
     DAAP_SClientHost *hosts;
     DAAP_ClientHost_Fake *fakehosts;
 
-    void *tp;
-    void *discover;
-	//CP_SThreadPool *tp;
-    //SDiscover *discover;
+#if defined(SYSTEM_POSIX)
+    CP_SThreadPool *tp;
+#endif
+
+    HTTP_ConnectionWatch *update_watch;
+
+#ifndef _XBOX
+    SDiscover *discover;
+#endif
 };
 
 typedef struct
@@ -109,23 +111,24 @@ struct DAAP_SClientHostTAG
 
     int interrupt;
 
+    char *password;
+
     DAAP_SClientHost *prev;
     DAAP_SClientHost *next;
 
     int marked; /* used for discover cb */
 };
-
-/*
-// Discover
+#if defined(SYSTEM_POSIX) /* otherwise use the structure elsewhere */
+/* Discover */
 #define DISC_RR_CACHE_SIZE 500
 struct SDiscoverTAG
 {
     unsigned int uiRef;
 
-    pthread_mutex_t mtObjectLock; // this requires an object wide lock
-                                  // since the service thread holds a reference
-                                  // and tests it for death
-    pthread_mutex_t mtWorkerLock;
+    ts_mutex mtObjectLock; /* this requires an object wide lock
+                                     since the service thread holds a reference
+                                     and tests it for death */
+    ts_mutex mtWorkerLock;
 
 
     fnDiscUpdated pfnUpdateCallback;
@@ -133,26 +136,19 @@ struct SDiscoverTAG
 
     CP_SThreadPool *tp;
 
-    mDNS mDNSStorage_browse;
-    mDNS_PlatformSupport mDNSPlatformStorage_browse;
-    CacheRecord gRRCache_browse[DISC_RR_CACHE_SIZE];
+    mdnsd mdnsd_info;
+    int socket;
 
-    mDNS mDNSStorage_query;
-    mDNS_PlatformSupport mDNSPlatformStorage_query;
-    CacheRecord gRRCache_query[DISC_RR_CACHE_SIZE];
-
-    int requestcontrol_pipe[2];
-    int yieldcontrol_pipe[2];
-
+    int newquery_pipe[2];
     // answers
-    int q_answer;
+    /* answers */
     int pending_hosts;
     SDiscover_HostList *prenamed;
     SDiscover_HostList *pending;
     SDiscover_HostList *have;
 };
 
-// ThreadPool
+/* ThreadPool */
 typedef struct CP_STPJobQueueTAG CP_STPJobQueue;
 struct CP_STPJobQueueTAG
 {
@@ -181,20 +177,20 @@ struct CP_SThreadPoolTAG
     unsigned int uiRef;
 
     unsigned int uiMaxThreads;
-    pthread_t *prgptThreads; // variable sized array 
+    ts_thread *prgptThreads; /* variable sized array */
     unsigned int uiThreadCount;
 
-    pthread_mutex_t mtJobQueueMutex;
+    ts_mutex mtJobQueueMutex;
     unsigned int uiJobCount;
     CP_STPJobQueue *pTPJQHead;
     CP_STPJobQueue *pTPJQTail;
-    pthread_cond_t cndJobPosted;
+    ts_condition cndJobPosted;
 
-    pthread_mutex_t mtTimerQueueMutex;
+    ts_mutex mtTimerQueueMutex;
     CP_STPTimerQueue *pTPTQTail;
-    pthread_cond_t cndTimerPosted;
+    ts_condition cndTimerPosted;
 
     unsigned int uiDying;
 };
+#endif
 
-*/
