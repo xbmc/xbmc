@@ -47,6 +47,7 @@
 #include "cores/paplayer/paplayer.h"
 #include "filesystem/directoryCache.h"
 #include "cores/DllLoader/DllLoaderContainer.h"
+#include "filesystem/filedaap.h"
 
 // Windows includes
 #include "GUIWindowMusicPlaylist.h"
@@ -2754,18 +2755,13 @@ void CApplication::Stop()
       m_pPlayer = NULL;
     }
 
-    // if we have an active connection to iTunes, stop that too
-    if (g_application.m_DAAPPtr)
-    {
-      CDAAPDirectory *objDAAP;
-
-      objDAAP = new CDAAPDirectory();
-      objDAAP->CloseDAAP();
-    }
 
     CGUIDialogMusicScan *musicScan = (CGUIDialogMusicScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
     if (musicScan && musicScan->IsRunning())
       musicScan->StopScanning();
+
+    CLog::Log(LOGNOTICE, "stop daap clients");
+    g_DaapClient.Release();
 
     //g_lcd->StopThread();
     CLog::Log(LOGNOTICE, "stop python");
