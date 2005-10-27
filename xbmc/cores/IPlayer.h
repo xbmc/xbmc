@@ -81,6 +81,8 @@ public:
   virtual CStdString GetCodec(){ return L"";};
   virtual void ToFFRW(int iSpeed = 0){};
   virtual void ShowOSD(bool bOnoff){};
+  // Skip to next track/item inside the current media (if supported).
+  virtual bool SkipNext(){return false;}
 
   //Returns true if not playback (paused or stopped beeing filled)
   virtual bool IsCaching() const {return false;};

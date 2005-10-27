@@ -81,11 +81,16 @@ bool MP3Codec::Init(const CStdString &strFile, unsigned int filecache)
   m_eof = false;
   m_CallAgainWithSameBuffer = false;
 
-  // Guess Bitrate and obtain replayGain information etc.
-  CMusicInfoTagLoaderMP3 mp3info;
-  mp3info.ReadSeekAndReplayGainInfo(strFile);
-  mp3info.GetSeekInfo(m_seekInfo);
-  mp3info.GetReplayGain(m_replayGain);
+  //CURL urlFile(strFile);
+  CFileItem item(strFile, false);
+  if (!item.IsInternetStream())
+  {
+    // Guess Bitrate and obtain replayGain information etc.
+    CMusicInfoTagLoaderMP3 mp3info;
+    mp3info.ReadSeekAndReplayGainInfo(strFile);
+    mp3info.GetSeekInfo(m_seekInfo);
+    mp3info.GetReplayGain(m_replayGain);
+  }
 
   if (!m_file.Open(strFile))
   {
@@ -95,8 +100,12 @@ bool MP3Codec::Init(const CStdString &strFile, unsigned int filecache)
     return false;
   }
   
-  __int64 length = m_file.GetLength();
-  m_TotalTime = (__int64)(m_seekInfo.GetDuration() * 1000.0f);
+  __int64 length = 0;
+  if (!item.IsInternetStream())
+  {
+    length = m_file.GetLength();
+    m_TotalTime = (__int64)(m_seekInfo.GetDuration() * 1000.0f);
+  }
   if ( m_TotalTime )
   {
     m_AverageInputBytesPerSecond = (DWORD)(length / m_seekInfo.GetDuration());
@@ -109,18 +118,21 @@ bool MP3Codec::Init(const CStdString &strFile, unsigned int filecache)
   // This needs to be made more intelligent - possibly use a temp output buffer
   // and cycle around continually reading until we have the necessary data
   // as a first workaround skip the id3v2 tag at the beginning of the file
-  const float* offsets=m_seekInfo.GetOffsets();
-  int id3v2Size=(int)offsets[0];
-  m_file.Seek(id3v2Size);
-  m_file.Read(m_InputBuffer, 8192);
+  int id3v2Size = 0;
+  if (!item.IsInternetStream())
+  {
+    const float* offsets=m_seekInfo.GetOffsets();
+    id3v2Size=(int)offsets[0];
+    m_file.Seek(id3v2Size);
+  }
+  int iread = m_file.Read(m_InputBuffer, 8192);
   int sendsize = 8192;
-  unsigned int formatdata[8];
-  int result = m_pDecoder->decode(m_InputBuffer, 8192, m_InputBuffer + 8192, &sendsize, (unsigned int *)&formatdata);
+  int result = m_pDecoder->decode(m_InputBuffer, 8192, m_InputBuffer + 8192, &sendsize, (unsigned int *)&m_Formatdata);
   if ( (result == 0 || result == 1) && sendsize )
   {
-    m_Channels = formatdata[2];
-    m_SampleRate = formatdata[1];
-    m_BitsPerSample = formatdata[3];
+    m_Channels      = m_Formatdata[2];
+    m_SampleRate    = m_Formatdata[1];
+    m_BitsPerSample = m_Formatdata[3];
   }
   else
   {
@@ -130,8 +142,11 @@ bool MP3Codec::Init(const CStdString &strFile, unsigned int filecache)
     m_pDecoder = NULL;
     return false;
   }
-  m_pDecoder->flush();
-  m_file.Seek(id3v2Size);
+  if (!item.IsInternetStream())
+  {
+    m_pDecoder->flush();
+    m_file.Seek(id3v2Size);
+  }
   return true;
 }
 
@@ -160,8 +175,11 @@ int MP3Codec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
   int inputBufferToRead = m_InputBufferSize - m_InputBufferPos;
   if ( inputBufferToRead && !m_CallAgainWithSameBuffer && !m_eof ) 
   {
-    int fileLeft=(int)(m_file.GetLength() - m_file.GetPosition());
-    if (inputBufferToRead >  fileLeft ) inputBufferToRead = fileLeft;
+    if (m_file.GetLength() > 0)
+    {
+      int fileLeft=(int)(m_file.GetLength() - m_file.GetPosition());
+      if (inputBufferToRead >  fileLeft ) inputBufferToRead = fileLeft;
+    }
 
     DWORD dwBytesRead = m_file.Read(m_InputBuffer + m_InputBufferPos , inputBufferToRead);
     if (!dwBytesRead)
@@ -171,7 +189,7 @@ int MP3Codec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
     }
     // add the size of read PAP data to the buffer size
     m_InputBufferPos += dwBytesRead;
-    if ( m_file.GetLength() == m_file.GetPosition() )
+    if (m_file.GetLength() > 0 && m_file.GetLength() == m_file.GetPosition() )
       m_eof = true;
   }
   // Decode data if we have some to decode
@@ -184,7 +202,6 @@ int MP3Codec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
     if ( size )
     {
       m_CallAgainWithSameBuffer = false;
-      unsigned int formatdata[8];
       int outputsize = m_OutputBufferSize - m_OutputBufferPos;
       //MAD needs padding at the end of the stream to decode the last frame, this doesn't hurt winamps in_mp3.dll
       int madguard = 0;
@@ -196,7 +213,7 @@ int MP3Codec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
         memset(m_InputBuffer + m_InputBufferPos, 0, madguard);
       }
       // Now decode data into the vacant frame buffer
-      result = m_pDecoder->decode( m_InputBuffer, m_InputBufferPos + madguard, m_OutputBuffer + m_OutputBufferPos, &outputsize, (unsigned int *)&formatdata);
+      result = m_pDecoder->decode( m_InputBuffer, m_InputBufferPos + madguard, m_OutputBuffer + m_OutputBufferPos, &outputsize, (unsigned int *)&m_Formatdata);
       if ( result == 1 || result == 0) 
       {
         // let's check if we need to ignore the decoded data.
@@ -275,4 +292,9 @@ int MP3Codec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
 bool MP3Codec::CanInit()
 {
   return m_dll.CanLoad();
+}
+
+bool MP3Codec::SkipNext()
+{
+  return m_file.SkipNext();
 }

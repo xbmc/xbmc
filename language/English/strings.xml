@@ -1056,6 +1056,10 @@
   <string><id>15210</id><value>Cached %i Songs</value></string>
   <string><id>15211</id><value>Submitting...</value></string>
   <string><id>15212</id><value>Submitting in %i secs</value></string>
+  <string><id>15250</id><value>Submit Last.fm Radio to AudioScrobbler</value></string>
+  <string><id>15251</id><value>Connecting to Last.fm...</value></string>
+  <string><id>15252</id><value>Selecting station...</value></string>
+  
   
   <string><id>13150</id><value>HDD Key:</value></string>
   <string><id>13151</id><value>HDD Temp:</value></string>

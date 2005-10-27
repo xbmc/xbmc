@@ -109,6 +109,8 @@ CFileCurl::~CFileCurl()
   Close(); 
 }
 
+#define BUFFER_SIZE 32768
+
 CFileCurl::CFileCurl()
 {
   g_curlInterface.Load(); // loads the curl dll and resolves exports etc.
@@ -123,6 +125,13 @@ CFileCurl::CFileCurl()
   m_overflowBuffer = NULL;
   m_overflowSize = 0;
   m_pHeaderCallback = NULL;
+  m_bufferSize = BUFFER_SIZE;
+}
+
+//Has to be called before Open()
+void CFileCurl::SetBufferSize(unsigned int size)
+{
+  m_bufferSize = size;
 }
 
 void CFileCurl::Close()
@@ -159,13 +168,12 @@ void CFileCurl::Close()
   m_overflowSize = 0;
 }
 
-#define BUFFER_SIZE 32768
 
 bool CFileCurl::Open(const CURL& url, bool bBinary)
 {
   m_easyHandle = g_curlInterface.easy_init();
 
-  m_buffer.Create(BUFFER_SIZE * 3, BUFFER_SIZE);  // 3 times our buffer size (2 in front, 1 behind)
+  m_buffer.Create(m_bufferSize * 3, m_bufferSize);  // 3 times our buffer size (2 in front, 1 behind)
   m_overflowBuffer = 0;
   m_overflowSize = 0;
 
@@ -220,7 +228,7 @@ bool CFileCurl::Open(const CURL& url, bool bBinary)
 
   // read some data in to try and obtain the length
   // maybe there's a better way to get this info??
-  FillBuffer(BUFFER_SIZE, 10);           // completely fill our buffer
+  FillBuffer(m_bufferSize, 10);           // completely fill our buffer
 
   if (m_buffer.GetMaxReadSize() == 0 && !m_stillRunning)
   {
@@ -368,7 +376,7 @@ int CFileCurl::FillBuffer(unsigned int want, int waittime)
     
   // only attempt to fill buffer if transactions still running and buffer
   // doesnt exceed required size already
-  while (m_stillRunning && m_buffer.GetMaxReadSize() < want + BUFFER_SIZE && m_buffer.GetMaxWriteSize() > 0)
+  while (m_stillRunning && m_buffer.GetMaxReadSize() < want + m_bufferSize && m_buffer.GetMaxWriteSize() > 0)
   {
     // get file descriptors from the transfers
     g_curlInterface.multi_fdset(m_multiHandle, &fdread, &fdwrite, &fdexcep, &maxfd);

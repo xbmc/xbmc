@@ -1198,11 +1198,6 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       int iColour = g_guiSettings.GetInt("LED.Colour");
       pControl->SetEnabled(iColour != LED_COLOUR_NO_CHANGE && iColour != LED_COLOUR_OFF);
     }
-    else if (strSetting == "MyMusic.AudioScrobblerUserName" || strSetting == "MyMusic.AudioScrobblerPassword")
-    {
-      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("MyMusic.UseAudioScrobbler"));
-    }
     else if (strSetting == "MyMusic.TrackFormat")
     {
       if (m_strOldTrackFormat != g_guiSettings.GetString("MyMusic.TrackFormat"))

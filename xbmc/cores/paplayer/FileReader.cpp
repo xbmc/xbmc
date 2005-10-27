@@ -105,7 +105,7 @@ int CFileReader::Read(void *out, __int64 size)
         CLog::Log(LOGDEBUG, "FileReader: Waited a total of %i ms on data", sleeptime);
         sleeptime = 0;
       }
-      if (m_bufferedDataPos == m_file.GetLength())
+      if (m_bufferedDataPos == m_file.GetLength() && m_file.GetLength() > 0)
       { // end of file reached
         return (int)(size - sizeleft);
       }
@@ -121,12 +121,18 @@ int CFileReader::Read(void *out, __int64 size)
       {
         //- sleep while we wait for our reader thread to read the data in.
         // check we don't reach EOF and loop forever
-        if (m_bufferedDataPos == m_file.GetLength())
+        if (m_bufferedDataPos == m_file.GetLength() && m_file.GetLength() > 0)
         { // end of file reached
           return (int)(size - sizeleft);
         }
         Sleep(1);
         sleeptime++;
+        //ten seconds timeout...
+        if (sleeptime >= 10000)
+        {
+          m_readError = true;
+          return 0;
+        }
       }
     }
   }
@@ -166,8 +172,11 @@ int CFileReader::BufferChunk()
     // grab a file lock
     CSingleLock lock(m_fileLock);
     unsigned int amountToRead = m_chunk_size;
-    if (amountToRead > m_file.GetLength() - m_file.GetPosition())
-      amountToRead = (unsigned int)(m_file.GetLength() - m_file.GetPosition());
+    if (m_file.GetLength() > 0)
+    {
+      if (amountToRead > m_file.GetLength() - m_file.GetPosition())
+        amountToRead = (unsigned int)(m_file.GetLength() - m_file.GetPosition());
+    }
     // check the range of our valid data
     if (amountToRead)
     {
@@ -202,4 +211,15 @@ void CFileReader::Process()
       // no space to read data into right now, or at end of file - sleep
       Sleep(1);
   }
+}
+
+bool CFileReader::SkipNext()
+{
+  CSingleLock lock(m_fileLock);
+  if (m_file.SkipNext())
+  {
+    m_ringBuffer.Clear();
+    return true;
+  }
+  return false;
 }

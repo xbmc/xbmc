@@ -197,6 +197,10 @@ bool CFileItem::IsVideo() const
 
 bool CFileItem::IsAudio() const
 {
+  if (strstr(m_strPath.c_str(), ".cdda") ) return true;
+  if (IsShoutCast() ) return true;
+  if (strstr(m_strPath.c_str(), "lastfm:") ) return true;
+
   CStdString strExtension;
   CUtil::GetExtension(m_strPath, strExtension);
   if (strExtension.size() < 2) return false;
@@ -204,9 +208,6 @@ bool CFileItem::IsAudio() const
 
   if ( strstr( g_stSettings.m_szMyMusicExtensions, strExtension.c_str() ) )
     return true;
-
-  if (strstr(m_strPath.c_str(), ".cdda") ) return true;
-  if (IsShoutCast() ) return true;
 
   return false;
 }
@@ -251,7 +252,7 @@ bool CFileItem::IsInternetStream() const
   if (strProtocol == "shout" || strProtocol == "mms" ||
       strProtocol == "http" || strProtocol == "ftp" ||
       strProtocol == "rtsp" || strProtocol == "rtp" ||
-      strProtocol == "udp")
+      strProtocol == "udp"  || strProtocol == "lastfm")
     return true;
 
   return false;
