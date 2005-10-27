@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 27-10-2005 fixed: Slideshow-screensaver start when video is paused cause hang (1313900) [GeminiServer]
  - 27-10-2005 changed: reorganized the program settings a little.
  - 27-10-2005 added: you can now choose which 60hz modes you want to use with the game region overrider.
  - 27-10-2005 added: pal 60 support to game region overrider.
