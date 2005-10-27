@@ -591,7 +591,10 @@ bool PAPlayer::ProcessPAP()
     unsigned int dataToRead = PACKET_SIZE * 2;  // read 2 packets at a time
     int retVal = m_decoder[m_currentDecoder].ReadData(dataToRead);
     if (retVal == RET_ERROR)
+    {
+      m_decoder[m_currentDecoder].Destroy();
       return false;
+    }
     int retVal2 = m_decoder[1 - m_currentDecoder].ReadData(dataToRead);
     if (retVal2 == RET_ERROR)
     {
@@ -923,5 +926,15 @@ bool PAPlayer::HandlesType(const CStdString &type)
   if (codec)
     delete codec;
 
+  return false;
+}
+
+// Skip to next track/item inside the current media (if supported).
+bool PAPlayer::SkipNext()
+{
+  if (m_decoder[m_currentDecoder].GetCodec() && m_decoder[m_currentDecoder].GetCodec()->SkipNext())
+  {
+    return true;
+  }
   return false;
 }

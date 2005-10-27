@@ -100,6 +100,7 @@ public:
   static void GetFileAndProtocol(const CStdString& strURL, CStdString& strDir);
   static void RemoveCRLF(CStdString& strLine);
   static int GetDVDIfoTitle(const CStdString& strPathFile);
+  static void UrlDecode(CStdString& strURLData);
   static void URLEncode(CStdString& strURLData);
   static bool LoadString(string &strTxt, FILE *fd);
   static int LoadString(CStdString &strTxt, byte* pBuffer);

@@ -15,7 +15,7 @@ public:
   virtual __int64 Seek(__int64 iSeekTime);
   virtual int ReadPCM(BYTE *pBuffer, int size, int *actualsize);
   virtual bool CanInit();
-
+  virtual bool SkipNext();
 private:
   // Decoding variables
   CFileReader   m_file;          // Our MP3 file
@@ -35,6 +35,8 @@ private:
   BYTE*         m_OutputBuffer;
   unsigned int  m_OutputBufferSize;
   unsigned int  m_OutputBufferPos;    // position in our buffer
+
+  unsigned int m_Formatdata[8];
 
   // Seeking helpers
   CVBRMP3SeekHelper m_seekInfo;
