@@ -5,6 +5,7 @@
 #include "utils/lcd.h"
 #include "xbox\iosupport.h"
 #include "xbox/xkutils.h"
+#include "xbox/xbeheader.h"
 #include "util.h"
 #include "texturemanager.h"
 #include "cores/playercorefactory.h"
@@ -770,20 +771,20 @@ HRESULT CApplication::Create()
       CStdString strTemp(temp+2);
       int iLastSlash = strTemp.rfind('\\');
       strcat(temp2,strTemp.substr(0,iLastSlash).c_str());
-      
-      if ((DWVideo == XKEEPROM::VIDEO_STANDARD::NTSC_M) && ((XGetVideoStandard() == XC_VIDEO_STANDARD_PAL_I) || (XGetVideoStandard() == XC_VIDEO_STANDARD_NTSC_J))) 
+
+      if ((DWVideo == XKEEPROM::VIDEO_STANDARD::NTSC_M) && ((XGetVideoStandard() == XC_VIDEO_STANDARD_NTSC_M) || (XGetVideoStandard() == XC_VIDEO_STANDARD_NTSC_J) || initialResolution > 5))
       {
         CLog::Log(LOGINFO, "Rebooting to change resolution from %s back to NTSC_M", (XGetVideoStandard() == XC_VIDEO_STANDARD_PAL_I) ? "PAL" : "NTSC_J");
         Destroy();
         CUtil::LaunchXbe(temp2,("D:\\"+strTemp.substr(iLastSlash+1)).c_str(),NULL,VIDEO_NTSCM,COUNTRY_USA);
       }
-      else if ((DWVideo == XKEEPROM::VIDEO_STANDARD::PAL_I) && ((XGetVideoStandard() == XC_VIDEO_STANDARD_NTSC_M) || (XGetVideoStandard() == XC_VIDEO_STANDARD_NTSC_J)))
+      else if ((DWVideo == XKEEPROM::VIDEO_STANDARD::PAL_I) && ((XGetVideoStandard() == XC_VIDEO_STANDARD_NTSC_M) || (XGetVideoStandard() == XC_VIDEO_STANDARD_NTSC_J) || initialResolution < 6))
       {
         CLog::Log(LOGINFO, "Rebooting to change resolution from %s back to PAL_I", (XGetVideoStandard() == XC_VIDEO_STANDARD_NTSC_M) ? "NTSC_M" : "NTSC_J");
         Destroy();
         CUtil::LaunchXbe(temp2,("D:\\"+strTemp.substr(iLastSlash+1)).c_str(),NULL,VIDEO_PAL50,COUNTRY_EUR);
       }
-      else if ((DWVideo == XKEEPROM::VIDEO_STANDARD::NTSC_J) && ((XGetVideoStandard() == XC_VIDEO_STANDARD_NTSC_M) || (XGetVideoStandard() == XC_VIDEO_STANDARD_PAL_I)))
+      else if ((DWVideo == XKEEPROM::VIDEO_STANDARD::NTSC_J) && ((XGetVideoStandard() == XC_VIDEO_STANDARD_NTSC_M) || (XGetVideoStandard() == XC_VIDEO_STANDARD_PAL_I) || initialResolution > 5))
       {
         CLog::Log(LOGINFO, "Rebooting to change resolution from %s back to NTSC_J", (XGetVideoStandard() == XC_VIDEO_STANDARD_PAL_I) ? "PAL" : "NTSC_M");
         Destroy();
@@ -3736,7 +3737,18 @@ bool CApplication::OnMessage(CGUIMessage& message)
         }
         else if (item.IsXBE())
         { // an XBE
-          CUtil::RunXBE(item.m_strPath.c_str());
+          int iRegion;
+          if (g_guiSettings.GetBool("MyPrograms.GameAutoRegion"))
+          {
+            CXBE xbe;
+            iRegion = xbe.ExtractGameRegion(item.m_strPath);
+            if (iRegion < 1 || iRegion > 7)
+              iRegion = 0;
+            iRegion = xbe.FilterRegion(iRegion);
+          }
+          else
+            iRegion = 0;
+          CUtil::RunXBE(item.m_strPath.c_str(),NULL,F_VIDEO(iRegion));
         }
         else if (item.IsAudio() || item.IsVideo())
         { // an audio or video file

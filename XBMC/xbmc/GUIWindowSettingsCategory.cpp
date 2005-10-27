@@ -329,13 +329,23 @@ void CGUIWindowSettingsCategory::CreateSettings()
     CSetting *pSetting = settings[i];
     AddSetting(pSetting, iPosX, iPosY, iGapY, iWidth, iControlID);
     CStdString strSetting = pSetting->GetSetting();
-    if (strSetting == "Pictures.AutoSwitchMethod" || strSetting == "MyPrograms.AutoSwitchMethod" || strSetting == "MusicFiles.AutoSwitchMethod" || strSetting == "VideoFiles.AutoSwitchMethod")
+    if (strSetting == "Pictures.AutoSwitchMethod" || strSetting == "ProgramFiles.AutoSwitchMethod" || strSetting == "MusicFiles.AutoSwitchMethod" || strSetting == "VideoFiles.AutoSwitchMethod")
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
       for (int i = pSettingInt->m_iMin; i <= pSettingInt->m_iMax; i++)
       {
         pControl->AddLabel(g_localizeStrings.Get(14015 + i), i);
+      }
+      pControl->SetValue(pSettingInt->GetData());
+    }
+    else if (strSetting == "MyPrograms.NTSCMode")
+    {
+      CSettingInt *pSettingInt = (CSettingInt*)pSetting;
+      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
+      for (int i = pSettingInt->m_iMin; i <= pSettingInt->m_iMax; i++)
+      {
+        pControl->AddLabel(g_localizeStrings.Get(16106 + i), i);
       }
       pControl->SetValue(pSettingInt->GetData());
     }
@@ -752,15 +762,20 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("Pictures.UseAutoSwitching"));
     }
-    else if (strSetting == "MyPrograms.AutoSwitchUseLargeThumbs" || strSetting == "MyPrograms.AutoSwitchMethod")
+    else if (strSetting == "ProgramFiles.AutoSwitchUseLargeThumbs" || strSetting == "ProgramFiles.AutoSwitchMethod")
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("MyPrograms.UseAutoSwitching"));
+      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("ProgramFiles.UseAutoSwitching"));
     }
-    else if (strSetting == "MyPrograms.AutoSwitchPercentage")
+    else if (strSetting == "ProgramFiles.AutoSwitchPercentage")
     { // set visibility based on our other setting...
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("MyPrograms.UseAutoSwitching") && g_guiSettings.GetInt("MyPrograms.AutoSwitchMethod") == 2);
+      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("ProgramFiles.UseAutoSwitching") && g_guiSettings.GetInt("ProgramFiles.AutoSwitchMethod") == 2);
+    }
+    else if (strSetting == "MyPrograms.NTSCMode")
+    { // set visibility based on our other setting...
+      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("MyPrograms.GameAutoRegion"));
     }
     else if (strSetting == "MusicFiles.AutoSwitchUseLargeThumbs" || strSetting == "MusicFiles.AutoSwitchMethod")
     {

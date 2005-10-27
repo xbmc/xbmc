@@ -2989,7 +2989,18 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   }
   else if (execute.Equals("runxbe"))
   {
-    CUtil::RunXBE(parameter.c_str());
+    int iRegion;
+    if (g_guiSettings.GetBool("MyPrograms.GameAutoRegion"))
+    {
+      CXBE xbe;
+      iRegion = xbe.ExtractGameRegion(parameter);
+      if (iRegion < 1 || iRegion > 7)
+        iRegion = 0;
+      iRegion = xbe.FilterRegion(iRegion);
+    }
+    else
+      iRegion = 0;
+    CUtil::RunXBE(parameter.c_str(),NULL,F_VIDEO(iRegion));
   }
   else if (execute.Equals("playmedia"))
   {
