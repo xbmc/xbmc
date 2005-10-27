@@ -1712,6 +1712,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				RelativePath=".\xbmc\FileSystem\FileISO.cpp">
 			</File>
 			<File
+				RelativePath=".\xbmc\FileSystem\FileLastFM.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\FileSystem\FileLastFM.h">
+			</File>
+			<File
 				RelativePath=".\xbmc\FileSystem\FileRar.cpp">
 			</File>
 			<File

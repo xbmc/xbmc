@@ -53,6 +53,10 @@ public:
   // eg. check if a dll needed for the codec exists
   virtual bool CanInit()=0;
 
+  // SkipNext()
+  // Skip to next track/item inside the current media (if supported).
+  virtual bool SkipNext(){return false;}
+
   __int64 m_TotalTime;  // time in ms
   int m_SampleRate;
   int m_BitsPerSample;

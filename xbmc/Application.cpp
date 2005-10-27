@@ -2012,6 +2012,8 @@ bool CApplication::OnKey(CKey& key)
   // next : play next song from playlist
   if (action.wID == ACTION_NEXT_ITEM)
   {
+    if (IsPlaying() && m_pPlayer->SkipNext())
+      return true;
     g_playlistPlayer.PlayNext();
     return true;
   }

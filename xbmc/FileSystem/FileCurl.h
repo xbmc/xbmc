@@ -35,6 +35,7 @@ namespace XFILE
       void SetUserAgent(CStdString sUserAgent)                   { m_userAgent = sUserAgent; }
       void UseOldHttpVersion(bool bUse)                          { m_useOldHttpVersion = bUse; }
       void AddHeaderParam(const char* sParam);
+      void SetBufferSize(unsigned int size);
       
     protected:
       int FillBuffer(unsigned int want, int waittime);
@@ -53,6 +54,7 @@ namespace XFILE
       CRingHoldBuffer m_buffer;           // our ringhold buffer
       char *          m_overflowBuffer;   // in the rare case we would overflow the above buffer
       unsigned int    m_overflowSize;     // size of the overflow buffer
+      unsigned int    m_bufferSize;
 
       int             m_stillRunning; /* Is background url fetch still in progress */
       
