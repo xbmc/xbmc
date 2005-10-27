@@ -55,6 +55,7 @@ public:
   // Current song stuff
   /// \brief Retrieves tag info (if necessary) and fills in our current song path.
   void SetCurrentSong(CFileItem &item);
+  void SetCurrentAlbumThumb(const CStdString thumbFileName);
   void SetCurrentSongTag(const CMusicInfoTag &tag) { m_currentSong.m_musicInfoTag = tag; m_currentSong.m_lStartOffset = 0;};
   const CMusicInfoTag &GetCurrentSongTag() const { return m_currentSong.m_musicInfoTag; };
 

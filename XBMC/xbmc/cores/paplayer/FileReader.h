@@ -21,6 +21,7 @@ public:
   virtual __int64 GetPosition();
   virtual __int64 Seek(__int64 pos, int whence = SEEK_SET);
   virtual __int64 GetLength();
+  virtual bool SkipNext();
 
 protected:
   // thread functions

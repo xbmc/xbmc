@@ -211,10 +211,11 @@ CGUISettings::CGUISettings(void)
   AddString(6, "MyMusic.TrackFormatRight", 13387, "%D", BUTTON_CONTROL_INPUT, false, 16016);
   AddSeparator(7, "MyMusic.Sep2");
   AddBool(8, "MyMusic.UseAudioScrobbler", 15201, false);
-  AddString(9,"MyMusic.AudioScrobblerUserName", 15202, "", BUTTON_CONTROL_INPUT, false, 15202);
-  AddString(10,"MyMusic.AudioScrobblerPassword", 15203, "", BUTTON_CONTROL_HIDDEN_INPUT, false, 15203); 
-  AddSeparator(11, "MyMusic.Sep3");
-  AddString(12, "MyMusic.CleanupMusicLibrary", 334, "", BUTTON_CONTROL_STANDARD);
+  AddBool(9, "MyMusic.LastFMRecordToProfile", 15250, false);
+  AddString(10,"MyMusic.AudioScrobblerUserName", 15202, "", BUTTON_CONTROL_INPUT, false, 15202);
+  AddString(11,"MyMusic.AudioScrobblerPassword", 15203, "", BUTTON_CONTROL_HIDDEN_INPUT, false, 15203); 
+  AddSeparator(12, "MyMusic.Sep3");
+  AddString(13, "MyMusic.CleanupMusicLibrary", 334, "", BUTTON_CONTROL_STANDARD);
 
   AddCategory(3, "MusicFiles", 744);
   AddBool(1, "MusicFiles.AutoPlayNextItem", 489, true);

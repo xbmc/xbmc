@@ -1020,6 +1020,17 @@ void CGUIInfoManager::SetCurrentItem(CFileItem &item)
     SetCurrentMovie(item);
 }
 
+void CGUIInfoManager::SetCurrentAlbumThumb(const CStdString thumbFileName)
+{
+  if (CFile::Exists(thumbFileName))
+    m_currentSong.SetThumbnailImage(thumbFileName);
+  else
+  {
+    m_currentSong.SetThumbnailImage("");
+    m_currentSong.FillInDefaultIcon();
+  }
+}
+
 void CGUIInfoManager::SetCurrentSong(CFileItem &item)
 {
   CLog::Log(LOGDEBUG,"CGUIInfoManager::SetCurrentSong(%s)",item.m_strPath.c_str());

@@ -67,6 +67,10 @@ ICodec* CodecFactory::CreateCodec(const CStdString& strFileType)
 ICodec* CodecFactory::CreateCodecDemux(const CStdString& strFile, unsigned int filecache)
 {
   CURL urlFile(strFile);
+  if (urlFile.GetProtocol() == "lastfm")
+  {
+    return new MP3Codec();
+  }
   if (urlFile.GetFileType().Equals("wav"))
   {
     //lets see what it contains...

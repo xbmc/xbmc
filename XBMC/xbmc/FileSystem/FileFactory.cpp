@@ -15,6 +15,7 @@
 #include "FileRar.h"
 #include "FileFTP.h"
 #include "FileCurl.h"
+#include "FileLastFM.h"
 
 using namespace XFILE;
 
@@ -38,6 +39,7 @@ IFile* CFileFactory::CreateLoader(const CStdString& strFileName)
   else if (strProtocol == "smb") return new CFileSMB();
   else if (strProtocol == "xbms") return new CFileXBMSP();
   else if (strProtocol == "shout") return new CFileShoutcast();
+  else if (strProtocol == "lastfm") return new CFileLastFM();
   else if (strProtocol == "rtv") return new CFileRTV();
   else if (strProtocol == "soundtrack") return new CFileSndtrk();
   else if (strProtocol == "daap") return new CFileDAAP();
