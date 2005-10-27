@@ -9,6 +9,8 @@ added/fixed: (dd-mm-yyyy) (please specify date in CET)
  - 27-10-2005 added: you can now choose which 60hz modes you want to use with the game region overrider.
  - 27-10-2005 added: pal 60 support to game region overrider.
  - 27-10-2005 fixed: auto game region now works everywhere again. 
+ - 27-10-2005 fixed: DAAP directories wasn't displaying local characters like å,ä,ö,û... correctly
+ - 27-10-2005 updated/rewrote: itunes DAAP client to not use global buffering, but actually stream the file to player.  XDAAP updated to libopendaap 0.4.0.  
  - 26-10-2005 added: better testing of dvd urls (D:\, iso9660://, udf://) in GetMatchingShare
  - 26-10-2005 fixed: GetMatchingShare failing due to forward slash & backslash incompatibility
  - 25-10-2005 fixed: erroneous error messages being reported in log
