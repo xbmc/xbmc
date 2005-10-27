@@ -1,4 +1,3 @@
-
 #include "stdafx.h"
 #include "xbox/XKEEPROM.h"
 #include "application.h"
@@ -3195,17 +3194,19 @@ bool CApplication::ResetScreenSaverWindow()
     {
       return false;    // don't need to do anything - just stay in vis mode
     }
-    // Fade to dim or black screensaver is active
-    // fade in
+    // Fade to dim or black screensaver is active --> fade in
     float fFadeLevel = 1.0f;
     CStdString strScreenSaver = g_guiSettings.GetString("ScreenSaver.Mode");
     if (strScreenSaver == "Dim")
     {
       fFadeLevel = (float)g_guiSettings.GetInt("ScreenSaver.DimLevel") / 100;
     }
+    // Picture slideshow
     else if (strScreenSaver == "PSlide")
     {
-      m_gWindowManager.PreviousWindow();
+      if(!IsPlayingVideo()) m_gWindowManager.PreviousWindow();
+      else 
+        return true;
     }
     else if (strScreenSaver == "Fade")
     {
@@ -3227,9 +3228,7 @@ bool CApplication::ResetScreenSaverWindow()
     return true;
   }
   else
-  {
     return false;
-  }
 }
 
 void CApplication::CheckScreenSaver()
@@ -3292,20 +3291,27 @@ void CApplication::ActivateScreenSaver()
   m_bScreenSave = true;
   m_dwSaverTick = timeGetTime();  // Save the current time for the shutdown timeout
 
+  // Get Screensaver Mode
   CStdString strScreenSaver = g_guiSettings.GetString("ScreenSaver.Mode");
+
+  // Check if we are Playing Audio and Vis instead Screensaver!
   if (IsPlayingAudio() && g_guiSettings.GetBool("ScreenSaver.UseMusicVisInstead"))
   { // activate the visualisation
     m_gWindowManager.ActivateWindow(WINDOW_VISUALISATION);
     return;
   }
-  if (strScreenSaver == "Dim")
+  // Picture slideshow
+  else if (strScreenSaver == "PSlide")
+  {
+    if(!IsPlayingVideo())
+    {
+      fFadeLevel = 1.f;
+      g_applicationMessenger.PictureSlideShow(g_guiSettings.GetString("ScreenSaver.PSlidePath"));
+    }else return;
+  }
+  else if (strScreenSaver == "Dim")
   {
     fFadeLevel = (FLOAT) g_guiSettings.GetInt("ScreenSaver.DimLevel") / 100; // 0.07f;
-  }
-  else if (strScreenSaver == "PSlide") // Picture slideshow
-  {
-    fFadeLevel = 100;
-    g_applicationMessenger.PictureSlideShow(g_guiSettings.GetString("ScreenSaver.PSlidePath"));
   }
   else if (strScreenSaver == "Black")
   {
