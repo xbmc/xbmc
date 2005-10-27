@@ -6,6 +6,7 @@
 #include "GUIConsoleControl.h"
 #include "Util.h"
 #include "xbox/undocumented.h"
+#include "xbox/xbeheader.h"
 #include "programdatabase.h"
 
 
@@ -1536,7 +1537,23 @@ void CGUIWindowBuddies::Play(CStdString& aVector)
     //finally, if we found the game path..run it!
     if (foundPath && !strGamePath.IsEmpty())
     {
-      CUtil::RunXBE(strGamePath);
+      int iRegion;
+      if (g_guiSettings.GetBool("MyPrograms.GameAutoRegion"))
+      {
+        iRegion = db.GetRegion(strGamePath);
+        if (iRegion == -1)
+        {
+          CXBE xbe;
+          iRegion = xbe.ExtractGameRegion(strGamePath);
+          if (iRegion < 1 || iRegion > 7)
+            iRegion = 0;
+        }
+        iRegion = CXBE::FilterRegion(iRegion);
+      }
+      else
+        iRegion = 0;
+
+      CUtil::RunXBE(strGamePath,NULL,F_VIDEO(iRegion));
       return ;
     }
   }

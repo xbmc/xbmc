@@ -1145,4 +1145,10 @@
   <string><id>16104</id><value>Mark as UnWatched</value></string>
   <string><id>16105</id><value>Edit Title</value></string>
 
+  <string><id>16106</id><value>Use NTSC-M &amp; NTSC-J</value></string>
+  <string><id>16107</id><value>Use only NTSC-M</value></string>
+  <string><id>16108</id><value>Use only NTSC-J</value></string>
+  <string><id>16109</id><value>Use only PAL-60</value></string>
+  <string><id>16110</id><value>For 60hz Games</value></string>
+
 </strings>
