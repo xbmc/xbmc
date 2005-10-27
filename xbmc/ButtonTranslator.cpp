@@ -402,7 +402,7 @@ WORD CButtonTranslator::TranslateWindowString(const char *szWindow)
   else if (strWindow.Equals("mymusicplaylist")) wWindowID = WINDOW_MUSIC_PLAYLIST;
   else if (strWindow.Equals("mymusicfiles")) wWindowID = WINDOW_MUSIC_FILES;
   else if (strWindow.Equals("mymusiclibrary")) wWindowID = WINDOW_MUSIC_NAV;
-  else if (strWindow.Equals("mymusictop100")) wWindowID = WINDOW_MUSIC_TOP100;
+  //else if (strWindow.Equals("mymusictop100")) wWindowID = WINDOW_MUSIC_TOP100;
 //  else if (strWindow.Equals("virtualkeyboard")) wWindowID = WINDOW_VIRTUAL_KEYBOARD;
   else if (strWindow.Equals("selectdialog")) wWindowID = WINDOW_DIALOG_SELECT;
   else if (strWindow.Equals("musicinformation")) wWindowID = WINDOW_MUSIC_INFO;

@@ -4,6 +4,7 @@
 #include "DetectDVDType.h"
 #include "util.h"
 #include "playlistplayer.h"
+#include "xbox/xbeheader.h"
 
 using namespace PLAYLIST;
 using namespace MEDIA_DETECT;
@@ -51,9 +52,21 @@ void CAutorun::RunXboxCd()
   {
     if ( CFile::Exists("D:\\default.xbe") )
     {
+      int iRegion;
+      if (g_guiSettings.GetBool("MyPrograms.GameAutoRegion"))
+      {
+        CXBE xbe;
+        iRegion = xbe.ExtractGameRegion("D:\\default.xbe");
+        if (iRegion < 1 || iRegion > 7)
+          iRegion = 0;
+        iRegion = xbe.FilterRegion(iRegion);
+      }
+      else
+        iRegion = 0;
+
       g_application.Stop();
 
-      CUtil::LaunchXbe( "Cdrom0", "D:\\default.xbe", NULL );
+      CUtil::LaunchXbe( "Cdrom0", "D:\\default.xbe", NULL,F_VIDEO(iRegion));
       return ;
     }
   }
@@ -360,9 +373,20 @@ bool CAutorun::PlayDisc()
   {
     if ( CFile::Exists("D:\\default.xbe") )
     {
+      int iRegion;
+      if (g_guiSettings.GetBool("MyPrograms.GameAutoRegion"))
+      {
+        CXBE xbe;
+        iRegion = xbe.ExtractGameRegion("D:\\default.xbe");
+        if (iRegion < 1 || iRegion > 7)
+          iRegion = 0;
+        iRegion = xbe.FilterRegion(iRegion);
+      }
+      else
+        iRegion = 0;
       g_application.Stop();
 
-      CUtil::LaunchXbe( "Cdrom0", "D:\\default.xbe", NULL );
+      CUtil::LaunchXbe( "Cdrom0", "D:\\default.xbe", NULL, F_VIDEO(iRegion) );
       return false;
     }
     int nSize = g_playlistPlayer.GetPlaylist( PLAYLIST_MUSIC ).size();
@@ -397,8 +421,21 @@ bool CAutorun::PlayDisc()
   {
     if ( CFile::Exists("D:\\default.xbe") )
     {
+      int iRegion;
+      if (g_guiSettings.GetBool("MyPrograms.GameAutoRegion"))
+      {
+        CXBE xbe;
+        iRegion = xbe.ExtractGameRegion("D:\\default.xbe");
+        if (iRegion < 1 || iRegion > 7)
+          iRegion = 0;
+        iRegion = xbe.FilterRegion(iRegion);
+      }
+      else
+        iRegion = 0;
+
       g_application.Stop();
-      CUtil::LaunchXbe( "Cdrom0", "D:\\default.xbe", NULL );
+   
+      CUtil::LaunchXbe( "Cdrom0", "D:\\default.xbe", NULL, F_VIDEO(iRegion) );
       return false;
     }
     int nSize = g_playlistPlayer.GetPlaylist( PLAYLIST_MUSIC ).size();
@@ -414,6 +451,7 @@ bool CAutorun::PlayDisc()
       g_playlistPlayer.Play( nSize );
     }
   }
+  return true;
 }
 // GeminiServer: PlayRunDisc()
 // Will Play, if a disc is inserted! Has nothing todo with Autorun, therefore no autorun settings will be used!

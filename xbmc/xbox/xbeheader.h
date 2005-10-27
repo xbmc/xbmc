@@ -1,5 +1,7 @@
 #pragma once
 
+#include "../util.h"
+
 // ******************************************************************
 // * standard typedefs
 // ******************************************************************
@@ -186,6 +188,7 @@ public:
   virtual ~CXBE();
   bool ExtractIcon(const CStdString& strFilename, const CStdString& strIcon);
   uint32 ExtractGameRegion(const CStdString& strFilename);
+  static int FilterRegion(int iRegion, bool bForceAllModes=false);
 protected:
   XBE_INFO m_XBEInfo;
   int m_iHeaderSize;

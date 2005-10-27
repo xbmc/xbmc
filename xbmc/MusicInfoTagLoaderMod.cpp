@@ -64,11 +64,9 @@ bool CMusicInfoTagLoaderMod::Load(const CStdString& strFileName, CMusicInfoTag& 
     tag.SetLoaded(false);
     if( getFile(strMod,strFileName) ) 
     {
-      CLog::Log(LOGDEBUG,"got file %s",strMod.c_str());
       char* szTitle = Mod_Player_LoadTitle(reinterpret_cast<CHAR*>(const_cast<char*>(strMod.c_str())));
       
       if( szTitle ) {
-        CLog::Log(LOGDEBUG,"got title %s",szTitle);
         if( !CStdString(szTitle).empty() ) {
           tag.SetTitle(szTitle);
           free(szTitle);
