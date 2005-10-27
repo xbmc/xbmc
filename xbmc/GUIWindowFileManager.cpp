@@ -2,6 +2,7 @@
 #include "GUIWindowFileManager.h"
 #include "Application.h"
 #include "Util.h"
+#include "xbox/xbeheader.h"
 #include "FileSystem/Directory.h"
 #include "FileSystem/ZipManager.h"
 #include "Picture.h"
@@ -395,10 +396,8 @@ void CGUIWindowFileManager::OnSort(int iList)
     // Set free space on disc
     if (pItem->m_bIsShareOrDrive)
     {
-      CLog::Log(LOGDEBUG,"item %s",pItem->m_strPath.c_str());
       if (pItem->IsHD())
       {
-        CLog::Log(LOGDEBUG,"ishd!");
         ULARGE_INTEGER ulBytesFree;
         if (GetDiskFreeSpaceEx(pItem->m_strPath.c_str(), &ulBytesFree, NULL, NULL))
         {
@@ -637,7 +636,18 @@ void CGUIWindowFileManager::OnStart(CFileItem *pItem)
   }
   if (pItem->IsXBE())
   {
-    CUtil::RunXBE(pItem->m_strPath.c_str());
+    int iRegion;
+    if (g_guiSettings.GetBool("MyPrograms.GameAutoRegion"))
+    {
+      CXBE xbe;
+      iRegion = xbe.ExtractGameRegion(pItem->m_strPath);
+      if (iRegion < 1 || iRegion > 7)
+        iRegion = 0;
+      iRegion = xbe.FilterRegion(iRegion);
+    }
+    else
+      iRegion = 0;
+    CUtil::RunXBE(pItem->m_strPath.c_str(),NULL,F_VIDEO(iRegion));
   }
   if (pItem->IsPicture())
   {

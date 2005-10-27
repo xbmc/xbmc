@@ -162,3 +162,53 @@ uint32 CXBE::ExtractGameRegion(const CStdString& strFilename)
 
   return( m_XBEInfo.Certificate.game_region );
 }
+
+int CXBE::FilterRegion(int iRegion, bool bForceAllModes)
+{
+  int iVideoMode, iPreferred;
+  iVideoMode = iPreferred = XGetVideoStandard();
+  if (iPreferred == 3)
+    iPreferred = 4;
+  int iNTSCMode = 0;
+  if (!bForceAllModes)
+    iNTSCMode = g_guiSettings.GetInt("MyPrograms.NTSCMode");
+
+  if (iRegion == 0)
+    iRegion = iVideoMode;
+  else if ((iRegion & 1  && iPreferred == 1) || (iRegion == 1))
+  {
+    if (iNTSCMode == 0 || iNTSCMode == 1)
+      iRegion = VIDEO_NTSCM;
+    else
+      iRegion = iNTSCMode==2?VIDEO_NTSCJ:VIDEO_PAL60;
+  }
+  else if ((iRegion & 2  && iPreferred == 2) || (iRegion == 2))
+  {
+    if (iNTSCMode == 0 || iNTSCMode == 2)
+      iRegion = VIDEO_NTSCJ;
+    else
+      iRegion = iNTSCMode==1?VIDEO_NTSCM:VIDEO_PAL60;
+  }
+  else if ((iRegion & 4  && iPreferred == 4) || (iRegion == 4)) // stored as 4 in the db (xbe values) but the actual video-mode is VIDEO_PAL50=3
+    iRegion = VIDEO_PAL50;
+  else if (iRegion == 8)
+    iRegion = VIDEO_PAL60;
+  else if (iRegion & 1)
+  {
+    if (iNTSCMode == 0 || iNTSCMode == 1)
+      iRegion = VIDEO_NTSCM;
+    else
+      iRegion = iNTSCMode==2?VIDEO_NTSCJ:VIDEO_PAL60;
+  }
+  else if (iRegion & 4)
+    iRegion = VIDEO_PAL50;
+  else if (iRegion & 2)
+  {
+    if (iNTSCMode == 0 || iNTSCMode == 2)
+      iRegion = VIDEO_NTSCJ;
+    else
+      iRegion = iNTSCMode==1?VIDEO_NTSCM:VIDEO_PAL60;
+  }
+  
+  return iRegion;
+}

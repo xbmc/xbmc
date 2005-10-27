@@ -386,6 +386,8 @@ bool CGUIWindowPrograms::OnPopupMenu(int iItem)
       strLaunch += " (NTSC-J)";
     if (iRegion == VIDEO_PAL50)
       strLaunch += " (PAL)";
+    if (iRegion == VIDEO_PAL60)
+      strLaunch += " (PAL-60)";
 
     int btn_Launch = pMenu->AddButton(strLaunch); // launch
     int btn_Rename = -1;
@@ -437,10 +439,12 @@ bool CGUIWindowPrograms::OnPopupMenu(int iItem)
       int btn_PAL;
       int btn_NTSCM;
       int btn_NTSCJ;
-      CStdStringW strPAL, strNTSCJ, strNTSCM;
+      int btn_PAL60;
+      CStdStringW strPAL, strNTSCJ, strNTSCM, strPAL60;
       strPAL = "PAL";
       strNTSCM = "NTSC-M";
       strNTSCJ = "NTSC-J";
+      strPAL60 = "PAL-60";
       int iRegion = GetRegion(iItem,true);
 
       if (iRegion == VIDEO_NTSCM)
@@ -453,6 +457,7 @@ bool CGUIWindowPrograms::OnPopupMenu(int iItem)
       btn_PAL = pMenu->AddButton(strPAL);
       btn_NTSCM = pMenu->AddButton(strNTSCM);
       btn_NTSCJ = pMenu->AddButton(strNTSCJ);
+      btn_PAL60 = pMenu->AddButton(strPAL60);
       
       pMenu->SetPosition(iPosX - pMenu->GetWidth() / 2, iPosY - pMenu->GetHeight() / 2);
       pMenu->DoModal(GetID());
@@ -460,18 +465,23 @@ bool CGUIWindowPrograms::OnPopupMenu(int iItem)
       
       if (btnid == btn_NTSCM)
       {
-        m_iRegionSet = 1;
+        m_iRegionSet = VIDEO_NTSCM;
         m_database.SetRegion(m_vecItems[iItem]->m_strPath,1);
       }
       if (btnid == btn_NTSCJ)
       {
-        m_iRegionSet = 2;
+        m_iRegionSet = VIDEO_NTSCJ;
         m_database.SetRegion(m_vecItems[iItem]->m_strPath,2);
       }
       if (btnid == btn_PAL)
       {
-        m_iRegionSet = 4;
+        m_iRegionSet = VIDEO_PAL50;
         m_database.SetRegion(m_vecItems[iItem]->m_strPath,4);
+      }
+      if (btnid == btn_PAL60)
+      {
+        m_iRegionSet = VIDEO_PAL60;
+        m_database.SetRegion(m_vecItems[iItem]->m_strPath,8);
       }
 
       if (btnid > -1)
@@ -643,7 +653,7 @@ void CGUIWindowPrograms::ClearFileItems()
 void CGUIWindowPrograms::Update(const CStdString &strDirectory)
 {
   UpdateDir(strDirectory);
-  if (g_guiSettings.GetBool("MyPrograms.UseAutoSwitching"))
+  if (g_guiSettings.GetBool("ProgramFiles.UseAutoSwitching"))
   {
     m_iViewAsIcons = CAutoSwitch::GetView(m_vecItems);
     UpdateButtons();
@@ -740,7 +750,7 @@ void CGUIWindowPrograms::UpdateDir(const CStdString &strDirectory)
 
   if (strDirectory != "")
   {
-    if (!g_guiSettings.GetBool("MyPrograms.HideParentDirItems"))
+    if (!g_guiSettings.GetBool("ProgramFiles.HideParentDirItems"))
     {
       CFileItem *pItem = new CFileItem("..");
       pItem->m_strPath = strParentPath;
@@ -1300,26 +1310,9 @@ int CGUIWindowPrograms::GetRegion(int iItem, bool bReload)
       iRegion = 0;
     m_database.SetRegion(m_vecItems[iItem]->m_strPath,iRegion);
   }
-
-  int iVideoMode, iPreferred;
-  iVideoMode = iPreferred = XGetVideoStandard();
-  if (iPreferred == 3)
-    iPreferred = 4;
-
-  if (iRegion == 0)
-    iRegion = iVideoMode;
-  else if ((iRegion & 1  && iPreferred == 1) || (iRegion == 1))
-    iRegion = VIDEO_NTSCM;
-  else if ((iRegion & 2  && iPreferred == 2) || (iRegion == 2))
-    iRegion = VIDEO_NTSCJ;
-  else if ((iRegion & 4  && iPreferred == 4) || (iRegion == 4)) // stored as 4 in the db (xbe values) but the actual video-mode is VIDEO_PAL50=3
-    iRegion = VIDEO_PAL50;
-  else if (iRegion & 1)
-    iRegion = VIDEO_NTSCM;
-  else if (iRegion & 4)
-    iRegion = VIDEO_PAL50;
-  else if (iRegion & 2)
-    iRegion = VIDEO_NTSCJ;
   
-  return iRegion;
+  if (bReload)
+    return CXBE::FilterRegion(iRegion,true);
+  else
+    return CXBE::FilterRegion(iRegion);
 }
