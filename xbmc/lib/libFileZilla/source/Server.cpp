@@ -32,6 +32,10 @@
 #include "FileLogger.h"
 #include "version.h"
 
+#if defined(_XBOX)
+#include "../../utils/Log.h"
+#endif
+
 #ifndef MB_SERVICE_NOTIFICATION
 #define MB_SERVICE_NOTIFICATION          0x00040000L
 #endif
@@ -187,9 +191,13 @@ LRESULT CALLBACK CServer::WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPA
 		}
 		for (i=0; i<pServer->m_ThreadArray.size(); i++)
 		{
-			int res=WaitForSingleObject(handle[i],INFINITE);
+			int res=WaitForSingleObject(handle[i], 2000); // wait at most 2 seconds
 			if (res==WAIT_FAILED)
 				res=GetLastError();
+			else if (res == WAIT_TIMEOUT)
+			{
+			  CLog::Log(LOGWARNING, "FileZilla failed to end a thread within 2000 msec, possible deadlock, but will continue anyway.");
+			}
 		}
 		delete [] handle;
 		for (std::list<CAdminListenSocket*>::iterator iter2 = pServer->m_AdminListenSocketList.begin(); iter2!=pServer->m_AdminListenSocketList.end(); iter2++)

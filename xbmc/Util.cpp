@@ -658,23 +658,31 @@ void CUtil::RunXBE(const char* szPath1, char* szParameters, F_VIDEO ForceVideo, 
     strcpy(szPath, strPath.c_str());
   }
   char* szBackslash = strrchr(szPath, '\\');
-  *szBackslash = 0x00;
-  char* szXbe = &szBackslash[1];
+  if (szBackslash)
+  {
+    *szBackslash = 0x00;
+    char* szXbe = &szBackslash[1];
 
-  char* szColon = strrchr(szPath, ':');
-  *szColon = 0x00;
-  char* szDrive = szPath;
-  char* szDirectory = &szColon[1];
+    char* szColon = strrchr(szPath, ':');
+    if (szColon)
+    {
+      *szColon = 0x00;
+      char* szDrive = szPath;
+      char* szDirectory = &szColon[1];
 
-  CIoSupport helper;
-  helper.GetPartition( (LPCSTR) szDrive, szDevicePath);
+      CIoSupport helper;
+      helper.GetPartition( (LPCSTR) szDrive, szDevicePath);
 
-  strcat(szDevicePath, szDirectory);
-  wsprintf(szXbePath, "d:\\%s", szXbe);
+      strcat(szDevicePath, szDirectory);
+      wsprintf(szXbePath, "d:\\%s", szXbe);
 
-  g_application.Stop();
+      g_application.Stop();
 
-  CUtil::LaunchXbe(szDevicePath, szXbePath, szParameters, ForceVideo, ForceCountry);
+      CUtil::LaunchXbe(szDevicePath, szXbePath, szParameters, ForceVideo, ForceCountry);
+    }
+  }
+  
+  CLog::Log(LOGERROR, "Unable to run xbe : %s", szPath);
 }
 
 void CUtil::LaunchXbe(const char* szPath, const char* szXbe, const char* szParameters, F_VIDEO ForceVideo, F_COUNTRY ForceCountry)
@@ -3015,18 +3023,27 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   }
   else if (execute.Equals("runxbe"))
   {
-    int iRegion;
-    if (g_guiSettings.GetBool("MyPrograms.GameAutoRegion"))
+    // only usefull if there is actualy a xbe to execute
+    if (parameter.size() > 0)
     {
-      CXBE xbe;
-      iRegion = xbe.ExtractGameRegion(parameter);
-      if (iRegion < 1 || iRegion > 7)
-        iRegion = 0;
-      iRegion = xbe.FilterRegion(iRegion);
+	    int iRegion;
+	    if (g_guiSettings.GetBool("MyPrograms.GameAutoRegion"))
+	    {
+	      CXBE xbe;
+	      iRegion = xbe.ExtractGameRegion(parameter);
+	      if (iRegion < 1 || iRegion > 7)
+	        iRegion = 0;
+	      iRegion = xbe.FilterRegion(iRegion);
+	    }
+	    else
+	      iRegion = 0;
+	      
+	    CUtil::RunXBE(parameter.c_str(),NULL,F_VIDEO(iRegion));
     }
     else
-      iRegion = 0;
-    CUtil::RunXBE(parameter.c_str(),NULL,F_VIDEO(iRegion));
+    {
+      CLog::Log(LOGERROR, "CUtil::ExecBuiltIn, runxbe called with no arguments.");
+    }
   }
   else if (execute.Equals("playmedia"))
   {
