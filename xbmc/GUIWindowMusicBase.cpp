@@ -528,27 +528,27 @@ void CGUIWindowMusicBase::GoParentFolder()
   CLog::Log(LOGDEBUG,"CGUIWindowMusicBase::GoParentFolder()");
   // debug log
   CStdString strTemp;
-  CLog::Log(LOGDEBUG,"m_vecHistory = (");
-  for (int i = 0; i < (int)m_vecHistory.size(); ++i)
+  CLog::Log(LOGDEBUG,"m_vecPathHistory = (");
+  for (int i = 0; i < (int)m_vecPathHistory.size(); ++i)
   {
-    strTemp.Format("%02i.[%s]", i, m_vecHistory[i]);
+    strTemp.Format("%02i.[%s]", i, m_vecPathHistory[i]);
     CLog::Log(LOGDEBUG, "%s", strTemp.c_str());
   }
   CLog::Log(LOGDEBUG,")");
 
   // remove current directory if its on the stack
-  if (m_vecHistory.size() > 0)
+  if (m_vecPathHistory.size() > 0)
   {
-    if (m_vecHistory.back() == m_Directory.m_strPath)
-      m_vecHistory.pop_back();
+    if (m_vecPathHistory.back() == m_Directory.m_strPath)
+      m_vecPathHistory.pop_back();
   }
   // if vector is not empty, pop parent
   // if vector is empty, parent is bookmark listing
   CStdString strParent = "";
-  if (m_vecHistory.size() > 0)
+  if (m_vecPathHistory.size() > 0)
   {
-    strParent = m_vecHistory.back();
-    m_vecHistory.pop_back();
+    strParent = m_vecPathHistory.back();
+    m_vecPathHistory.pop_back();
   }
   CLog::Log(LOGDEBUG,"CGUIWindowMusicBase::GoParentFolder(), strParent = [%s]", strParent.c_str());
 

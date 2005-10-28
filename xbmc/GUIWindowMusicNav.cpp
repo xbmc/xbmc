@@ -277,8 +277,8 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
           m_iState = SHOW_GENRES;
           m_iPath = SHOW_GENRES;
 
-          vecPathHistory.clear();
-          vecPathHistory.push_back(strGenres);
+          m_vecPathHistory.clear();
+          m_vecPathHistory.push_back(strGenres);
 
           m_Directory.m_strPath = "db://" + strGenres + "/";
           m_history.Set(m_Directory.m_strPath, strParentPath);
@@ -288,8 +288,8 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
           m_iState = SHOW_ARTISTS;
           m_iPath = SHOW_ARTISTS;
 
-          vecPathHistory.clear();
-          vecPathHistory.push_back(strArtists);
+          m_vecPathHistory.clear();
+          m_vecPathHistory.push_back(strArtists);
 
           m_Directory.m_strPath = "db://" + strArtists + "/";
           m_history.Set(m_Directory.m_strPath, strParentPath);
@@ -299,8 +299,8 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
           m_iState = SHOW_ALBUMS;
           m_iPath = SHOW_ALBUMS;
 
-          vecPathHistory.clear();
-          vecPathHistory.push_back(strAlbums);
+          m_vecPathHistory.clear();
+          m_vecPathHistory.push_back(strAlbums);
 
           m_Directory.m_strPath = "db://" + strAlbums + "/";
           m_history.Set(m_Directory.m_strPath, strParentPath);
@@ -310,8 +310,8 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
           m_iState = SHOW_SONGS;
           m_iPath = SHOW_SONGS;
 
-          vecPathHistory.clear();
-          vecPathHistory.push_back(strSongs);
+          m_vecPathHistory.clear();
+          m_vecPathHistory.push_back(strSongs);
 
           m_Directory.m_strPath = "db://" + strSongs + "/";
           m_history.Set(m_Directory.m_strPath, strParentPath);
@@ -321,9 +321,9 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
           m_iState = SHOW_SONGS;
           m_iPath = SHOW_TOP + SHOW_SONGS;
 
-          vecPathHistory.clear();
-          vecPathHistory.push_back(strTop);
-          vecPathHistory.push_back(strTopSongs);
+          m_vecPathHistory.clear();
+          m_vecPathHistory.push_back(strTop);
+          m_vecPathHistory.push_back(strTopSongs);
 
           m_Directory.m_strPath = "db://" + strTop + "/";
           m_history.Set(m_Directory.m_strPath, strParentPath);
@@ -337,9 +337,9 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
           m_iState = SHOW_ALBUMS;
           m_iPath = SHOW_TOP + SHOW_ALBUMS;
 
-          vecPathHistory.clear();
-          vecPathHistory.push_back(strTop);
-          vecPathHistory.push_back(strTopAlbums);
+          m_vecPathHistory.clear();
+          m_vecPathHistory.push_back(strTop);
+          m_vecPathHistory.push_back(strTopAlbums);
 
           m_Directory.m_strPath = "db://" + strTop + "/";
           m_history.Set(m_Directory.m_strPath, strParentPath);
@@ -353,8 +353,8 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
           m_iState = SHOW_RECENTLY_ADDED;
           m_iPath = SHOW_RECENTLY_ADDED;
 
-          vecPathHistory.clear();
-          vecPathHistory.push_back(strRecentlyAddedAlbums);
+          m_vecPathHistory.clear();
+          m_vecPathHistory.push_back(strRecentlyAddedAlbums);
 
           m_Directory.m_strPath = "db://" + strRecentlyAddedAlbums + "/";
           m_history.Set(m_Directory.m_strPath, strParentPath);
@@ -364,8 +364,8 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
           m_iState = SHOW_RECENTLY_PLAYED;
           m_iPath = SHOW_RECENTLY_PLAYED;
 
-          vecPathHistory.clear();
-          vecPathHistory.push_back(strRecentlyPlayedAlbums);
+          m_vecPathHistory.clear();
+          m_vecPathHistory.push_back(strRecentlyPlayedAlbums);
 
           m_Directory.m_strPath = "db://" + strRecentlyPlayedAlbums + "/";
           m_history.Set(m_Directory.m_strPath, strParentPath);
@@ -375,8 +375,8 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
           m_iState = SHOW_PLAYLISTS;
           m_iPath = SHOW_PLAYLISTS;
 
-          vecPathHistory.clear();
-          vecPathHistory.push_back(strPlaylists);
+          m_vecPathHistory.clear();
+          m_vecPathHistory.push_back(strPlaylists);
 
           m_Directory.m_strPath = "db://" + strPlaylists + "/";
           m_history.Set(m_Directory.m_strPath, strParentPath);
@@ -627,7 +627,7 @@ bool CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, CFileItemL
       }
 
       // make sure the path history is clear if showing the root
-      vecPathHistory.clear();
+      m_vecPathHistory.clear();
     }
     break;
 
@@ -845,7 +845,7 @@ bool CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, CFileItemL
       if (m_iPath == (SHOW_TOP + SHOW_SONGS))
         bTest = g_musicDatabase.GetTop100(songs);
       else if (m_iPath == (SHOW_PLAYLISTS + SHOW_SONGS))
-        bTest = GetSongsFromPlayList(songs, vecPathHistory.back());
+        bTest = GetSongsFromPlayList(songs, m_vecPathHistory.back());
       else
         bTest = g_musicDatabase.GetSongsNav(songs, m_strGenre, m_strArtist, m_strAlbum, m_strAlbumPath);
 
@@ -982,7 +982,7 @@ void CGUIWindowMusicNav::UpdateButtons()
     strLabel = g_localizeStrings.Get(136);
   // Playlist name
   else if (m_iPath == SHOW_PLAYLISTS + SHOW_SONGS)
-    strLabel = CUtil::GetFileName(vecPathHistory.back());
+    strLabel = CUtil::GetFileName(m_vecPathHistory.back());
   // "Genre/Artist/Album"
   else
   {
@@ -1132,7 +1132,7 @@ void CGUIWindowMusicNav::OnClick(int iItem)
         break;
       }
     }
-    vecPathHistory.push_back(strPath);
+    m_vecPathHistory.push_back(strPath);
     strNextPath += strLabel + "/";
     Update(strNextPath);
   }
@@ -1142,7 +1142,7 @@ void CGUIWindowMusicNav::OnClick(int iItem)
     {
       m_iState = SHOW_SONGS;
       m_iPath += m_iState;
-      vecPathHistory.push_back(strPath);
+      m_vecPathHistory.push_back(strPath);
       strNextPath += strLabel + "/";
       Update(strNextPath);
     }
@@ -1303,7 +1303,7 @@ void CGUIWindowMusicNav::DoSort(CFileItemList& items)
 void CGUIWindowMusicNav::OnSearchItemFound(const CFileItem* pSelItem)
 {
   // clear previous state
-  vecPathHistory.clear();
+  m_vecPathHistory.clear();
   m_strGenre.Empty();
   m_strArtist.Empty();
   m_strAlbum.Empty();
@@ -1324,10 +1324,10 @@ void CGUIWindowMusicNav::OnSearchItemFound(const CFileItem* pSelItem)
     m_strGenre = pSelItem->m_strPath;
 
     // set path to db://Genres/GENRE/
-    // vecPathHistory = ("Genres", "GENRE")
+    // m_vecPathHistory = ("Genres", "GENRE")
     CStdString strGenres = g_localizeStrings.Get(135); // Genres
-    vecPathHistory.push_back(strGenres);
-    vecPathHistory.push_back(m_strGenre);
+    m_vecPathHistory.push_back(strGenres);
+    m_vecPathHistory.push_back(m_strGenre);
     strPath += strGenres + "/" + m_strGenre + "/";
     Update(strPath);
 
@@ -1354,8 +1354,8 @@ void CGUIWindowMusicNav::OnSearchItemFound(const CFileItem* pSelItem)
 
     // set path to db://Artists/ARTIST/
     CStdString strArtists = g_localizeStrings.Get(133); // Artists
-    vecPathHistory.push_back(strArtists);
-    vecPathHistory.push_back(m_strArtist);
+    m_vecPathHistory.push_back(strArtists);
+    m_vecPathHistory.push_back(m_strArtist);
     strPath += strArtists + "/" + m_strArtist + "/";
     Update(strPath);
 
@@ -1388,12 +1388,12 @@ void CGUIWindowMusicNav::OnSearchItemFound(const CFileItem* pSelItem)
 
     // set path to db://Albums/ALBUM - ARTIST/
     CStdString strAlbums = g_localizeStrings.Get(132); // Albums
-    vecPathHistory.push_back(strAlbums);
+    m_vecPathHistory.push_back(strAlbums);
 
     CStdString strAlbum = m_strAlbum;
     if (!pSelItem->m_musicInfoTag.GetArtist().IsEmpty())
       strAlbum += " - " + pSelItem->m_musicInfoTag.GetArtist();
-    vecPathHistory.push_back(strAlbum);
+    m_vecPathHistory.push_back(strAlbum);
     strPath += strAlbums + "/" + strAlbum + "/";
     Update(strPath);
 
@@ -1577,11 +1577,11 @@ void CGUIWindowMusicNav::GoParentFolder()
 
   // build previous path from the vector
   m_strParentPath = "db://";
-  if (vecPathHistory.size())
-    vecPathHistory.pop_back();
-  if (vecPathHistory.size())
-    for (int i = 0; i < (int)vecPathHistory.size(); i++)
-      m_strParentPath += vecPathHistory[i] + "/";
+  if (m_vecPathHistory.size())
+    m_vecPathHistory.pop_back();
+  if (m_vecPathHistory.size())
+    for (int i = 0; i < (int)m_vecPathHistory.size(); i++)
+      m_strParentPath += m_vecPathHistory[i] + "/";
 
   // parent path??
   CStdString strOldPath = m_Directory.m_strPath;
