@@ -390,8 +390,8 @@ bool CGUIWindowMusicSongs::GetDirectory(const CStdString &strDirectory, CFileIte
     items.Clear();
 
   CStdString strParentPath = "";
-  if (m_vecHistory.size() > 0)
-    strParentPath = m_vecHistory.back();
+  if (m_vecPathHistory.size() > 0)
+    strParentPath = m_vecPathHistory.back();
 
   CLog::Log(LOGDEBUG,"CGUIWindowMusicSongs::GetDirectory (%s)", strDirectory.c_str());
   CLog::Log(LOGDEBUG,"  ParentPath = [%s]", strParentPath.c_str());
@@ -980,14 +980,14 @@ bool CGUIWindowMusicSongs::Update(const CStdString &strDirectory)
   // if we're getting the root bookmark listing
   // make sure the path history is clean
   if (strDirectory.IsEmpty())
-    m_vecHistory.empty();
+    m_vecPathHistory.empty();
 
   // debug log
   CStdString strTemp;
-  CLog::Log(LOGDEBUG,"BEFORE... m_vecHistory = (");
-  for (int i = 0; i < (int)m_vecHistory.size(); ++i)
+  CLog::Log(LOGDEBUG,"BEFORE... m_vecPathHistory = (");
+  for (int i = 0; i < (int)m_vecPathHistory.size(); ++i)
   {
-    strTemp.Format("%02i.[%s]", i, m_vecHistory[i]);
+    strTemp.Format("%02i.[%s]", i, m_vecPathHistory[i]);
     CLog::Log(LOGDEBUG, "%s", strTemp.c_str());
   }
   CLog::Log(LOGDEBUG,")");
@@ -1007,16 +1007,16 @@ bool CGUIWindowMusicSongs::Update(const CStdString &strDirectory)
     UpdateButtons();
   }
   
-  if ((m_vecHistory.size() == 0) || m_vecHistory.back() != strDirectory)
+  if ((m_vecPathHistory.size() == 0) || m_vecPathHistory.back() != strDirectory)
   {
-    m_vecHistory.push_back(strDirectory);
+    m_vecPathHistory.push_back(strDirectory);
   }
 
   // debug log
-  CLog::Log(LOGDEBUG,"AFTER... m_vecHistory = (");
-  for (int i = 0; i < (int)m_vecHistory.size(); ++i)
+  CLog::Log(LOGDEBUG,"AFTER... m_vecPathHistory = (");
+  for (int i = 0; i < (int)m_vecPathHistory.size(); ++i)
   {
-    strTemp.Format("%02i.[%s]", i, m_vecHistory[i]);
+    strTemp.Format("%02i.[%s]", i, m_vecPathHistory[i]);
     CLog::Log(LOGDEBUG, "%s", strTemp.c_str());
   }
   CLog::Log(LOGDEBUG,")");
