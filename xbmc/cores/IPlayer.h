@@ -78,7 +78,7 @@ public:
   virtual int GetChannels(){ return 0;};
   virtual int GetBitsPerSample(){ return 0;};
   virtual int GetSampleRate(){ return 0;};
-  virtual CStdString GetCodec(){ return L"";};
+  virtual CStdString GetCodecName(){ return L"";};
   virtual void ToFFRW(int iSpeed = 0){};
   virtual void ShowOSD(bool bOnoff){};
   // Skip to next track/item inside the current media (if supported).
