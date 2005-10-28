@@ -541,14 +541,30 @@ void CGUIWindowVideoBase::ShowIMDB(const CStdString& strMovie, const CStdString&
   // handle .nfo files
   CStdString strExtension, strNfoFile;
   CUtil::GetExtension(strFile, strExtension);
+
+  // already an .nfo file?
   if ( strcmpi(strExtension.c_str(), ".nfo") == 0 )
     strNfoFile = strFile;
+  // no, create .nfo file
   else
-  {
     CUtil::ReplaceExtension(strFile, ".nfo", strNfoFile);
+
+  // test file existance
+  if (!strNfoFile.IsEmpty() && !CFile::Exists(strNfoFile))
+      strNfoFile.Empty();
+
+  // try looking for .nfo file based off the stacked title
+  if (strNfoFile.IsEmpty() && g_stSettings.m_iMyVideoVideoStack > STACK_NONE)
+  {
+    CStdString strPath, strFileName, strStackedTitle, strVolume;
+    CUtil::Split(strFile, strPath, strFileName);
+    CUtil::GetVolumeFromFileName(strFileName, strStackedTitle, strVolume);
+    CUtil::ReplaceExtension(strStackedTitle, ".nfo", strFileName);
+    CUtil::AddFileToFolder(strPath, strFileName, strNfoFile);
     if (!CFile::Exists(strNfoFile))
       strNfoFile.Empty();
   }
+
   if ( !strNfoFile.IsEmpty() )
   {
     if ( CFile::Cache(strNfoFile, "Z:\\movie.nfo", NULL, NULL))
