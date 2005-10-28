@@ -11,9 +11,9 @@ CCDDAReader::CCDDAReader()
 
   m_iCurrentBuffer = 0;
 
-  m_hReadEvent = CreateEvent(NULL, false, false, "rip read event");
-  m_hDataReadyEvent = CreateEvent(NULL, false, false, "rip dataready event");
-  m_hStopEvent = CreateEvent(NULL, false, false, "rip stop event");
+  m_hReadEvent = CreateEvent(NULL, false, false, NULL);
+  m_hDataReadyEvent = CreateEvent(NULL, false, false, NULL);
+  m_hStopEvent = CreateEvent(NULL, false, false, NULL);
 }
 
 CCDDAReader::~CCDDAReader()

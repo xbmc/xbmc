@@ -206,7 +206,6 @@ CAsyncSelectHelper* CAsyncSelectManager::GetHelper(SOCKET s)
   return result;
 }
 
-
 int CAsyncSelectManager::WSAAsyncSelect(SOCKET s, HWND hWnd, unsigned int wMsg, long lEvent)
 {
   mAsyncSelectHelperListCS.Lock();
@@ -436,6 +435,10 @@ DWORD CAsyncSelectManager::Run()
                       //OutputDebugString(str);
                     }
               }
+              else
+              {
+                Sleep(1);
+              }
             }
           }
           else
@@ -479,6 +482,8 @@ DWORD CAsyncSelectManager::Run()
                 str.Format(_T("0x%X : Socket 0x%X select() FD_WRITE received, but not handled\n"), GetCurrentThreadId(), helper->mSocket);
                 OutputDebugString(str);
                 */
+
+                Sleep(1);
               }
           }
           else
@@ -524,7 +529,7 @@ CSocketLock::~CSocketLock()
 
 namespace SyncSocket {
 
-SOCKET accept(IN SOCKET s, OUT struct sockaddr FAR * addr, IN OUT int FAR * addrlen)
+SOCKET fz_accept(IN SOCKET s, OUT struct sockaddr FAR * addr, IN OUT int FAR * addrlen)
 {
   CSocketLock lock(s);
 
@@ -540,7 +545,7 @@ SOCKET accept(IN SOCKET s, OUT struct sockaddr FAR * addr, IN OUT int FAR * addr
   return temp;
 }
 
-int bind(IN SOCKET s, IN const struct sockaddr FAR * name, IN int namelen)
+int fz_bind(IN SOCKET s, IN const struct sockaddr FAR * name, IN int namelen)
 {
   CSocketLock lock(s);
   
@@ -552,7 +557,7 @@ int bind(IN SOCKET s, IN const struct sockaddr FAR * name, IN int namelen)
   return ::bind(s, (const struct sockaddr FAR *)&sa, namelen);
 }
 
-int closesocket(IN SOCKET s)
+int fz_closesocket(IN SOCKET s)
 {
   CSocketLock lock(s);
 
@@ -564,7 +569,7 @@ int closesocket(IN SOCKET s)
   return result;
 }
 
-int connect(IN SOCKET s, IN const struct sockaddr FAR * name, IN int namelen)
+int fz_connect(IN SOCKET s, IN const struct sockaddr FAR * name, IN int namelen)
 {
   CSocketLock lock(s);
 
@@ -576,20 +581,20 @@ int connect(IN SOCKET s, IN const struct sockaddr FAR * name, IN int namelen)
   return result;
 }
 
-int ioctlsocket(IN SOCKET s, IN long cmd, IN OUT u_long FAR * argp)
+int fz_ioctlsocket(IN SOCKET s, IN long cmd, IN OUT u_long FAR * argp)
 {
   CSocketLock lock(s);
   int result = ::ioctlsocket(s, cmd, argp);
   return result;
 }
 
-int getpeername(IN SOCKET s, OUT struct sockaddr FAR * name, IN OUT int FAR * namelen)
+int fz_getpeername(IN SOCKET s, OUT struct sockaddr FAR * name, IN OUT int FAR * namelen)
 {
   CSocketLock lock(s);
   return ::getpeername(s, name, namelen);
 }
 
-int getsockname(IN SOCKET s, OUT struct sockaddr FAR * name, IN OUT int FAR * namelen)
+int fz_getsockname(IN SOCKET s, OUT struct sockaddr FAR * name, IN OUT int FAR * namelen)
 {
   CSocketLock lock(s);
   int result = ::getsockname(s, name, namelen);
@@ -598,13 +603,13 @@ int getsockname(IN SOCKET s, OUT struct sockaddr FAR * name, IN OUT int FAR * na
   return result;
 }
 
-int getsockopt(IN SOCKET s, IN int level, IN int optname, OUT char FAR * optval, IN OUT int FAR * optlen)
+int fz_getsockopt(IN SOCKET s, IN int level, IN int optname, OUT char FAR * optval, IN OUT int FAR * optlen)
 {
   CSocketLock lock(s);
   return ::getsockopt(s, level, optname, optval, optlen);
 }
 
-int listen(IN SOCKET s, IN int backlog)
+int fz_listen(IN SOCKET s, IN int backlog)
 {
   CSocketLock lock(s);
 
@@ -616,7 +621,7 @@ int listen(IN SOCKET s, IN int backlog)
   return result; 
 }
 
-int recv(IN SOCKET s, OUT char FAR * buf, IN int len, IN int flags)
+int fz_recv(IN SOCKET s, OUT char FAR * buf, IN int len, IN int flags)
 {
   CSocketLock lock(s);
 
@@ -628,7 +633,7 @@ int recv(IN SOCKET s, OUT char FAR * buf, IN int len, IN int flags)
   return result;
 }
 
-int recvfrom(IN SOCKET s, OUT char FAR * buf, IN int len, IN int flags, OUT struct sockaddr FAR * from, IN OUT int FAR * fromlen)
+int fz_recvfrom(IN SOCKET s, OUT char FAR * buf, IN int len, IN int flags, OUT struct sockaddr FAR * from, IN OUT int FAR * fromlen)
 {
   CSocketLock lock(s);
 
@@ -643,14 +648,14 @@ int recvfrom(IN SOCKET s, OUT char FAR * buf, IN int len, IN int flags, OUT stru
 
 // synchronisation of select() is being done in another way, 
 // see CAsyncSelectManager::Run()
-int select(IN int nfds, IN OUT fd_set FAR * readfds, IN OUT fd_set FAR * writefds, IN OUT fd_set FAR *exceptfds, IN const struct timeval FAR * timeout)
+int fz_select(IN int nfds, IN OUT fd_set FAR * readfds, IN OUT fd_set FAR * writefds, IN OUT fd_set FAR *exceptfds, IN const struct timeval FAR * timeout)
 {
 //  CSocketLock lock(s);
   return ::select(nfds, readfds, writefds, exceptfds, timeout);
 }
 
 
-int send(IN SOCKET s, IN const char FAR * buf, IN int len, IN int flags)
+int fz_send(IN SOCKET s, IN const char FAR * buf, IN int len, IN int flags)
 {
   CSocketLock lock(s);
 
@@ -662,7 +667,7 @@ int send(IN SOCKET s, IN const char FAR * buf, IN int len, IN int flags)
   return result;
 }
 
-int sendto(IN SOCKET s, IN const char FAR * buf, IN int len, IN int flags, IN const struct sockaddr FAR * to, IN int tolen)
+int fz_sendto(IN SOCKET s, IN const char FAR * buf, IN int len, IN int flags, IN const struct sockaddr FAR * to, IN int tolen)
 {
   CSocketLock lock(s);
 
@@ -674,26 +679,26 @@ int sendto(IN SOCKET s, IN const char FAR * buf, IN int len, IN int flags, IN co
   return result;
 }
 
-int setsockopt(IN SOCKET s, IN int level, IN int optname, IN const char FAR * optval, IN int optlen)
+int fz_setsockopt(IN SOCKET s, IN int level, IN int optname, IN const char FAR * optval, IN int optlen)
 {
   CSocketLock lock(s);
   return ::setsockopt(s, level, optname, optval, optlen);
 }
 
-int shutdown(IN SOCKET s, IN int how)
+int fz_shutdown(IN SOCKET s, IN int how)
 {
   CSocketLock lock(s);
   return ::shutdown(s, how);
 }
 
+/////////////////////////////////////////////////////////////
+// async socket helper functions
+
+int fz_WSAAsyncSelect(SOCKET s, HWND hWnd, unsigned int wMsg, long lEvent)
+{
+  return gAsyncSelectManager.WSAAsyncSelect(s, hWnd, wMsg, lEvent);
+}
 
 
 }; // namespace SyncSocket
 
-/////////////////////////////////////////////////////////////
-// async socket helper functions
-
-int WSAAsyncSelect(SOCKET s, HWND hWnd, unsigned int wMsg, long lEvent)
-{
-  return gAsyncSelectManager.WSAAsyncSelect(s, hWnd, wMsg, lEvent);
-}

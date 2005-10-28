@@ -60,7 +60,7 @@ CWebServer::CWebServer()
   m_port = 80;					/* Server port */
   m_szPassword[0] = '\0';
 
-  m_hEvent = CreateEvent(NULL, false, false, "webserverEvent");
+  m_hEvent = CreateEvent(NULL, false, false, NULL);
 }
 
 

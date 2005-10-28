@@ -2156,9 +2156,13 @@ void CControlSocket::ParseCommand()
     {
       //Get command
 	    CStdString sitecommand, siteargs;
+	    
 	    if (!GetCommandFromString(args, sitecommand, siteargs))
 		    return;
 
+      CStdString fullcommand = sitecommand;
+      if (siteargs.size() > 0) fullcommand += "(" + siteargs + ")";
+      
       CLog::Log(LOGNOTICE, "200 FTP SITE command called [command=%s, args=%s]", sitecommand.c_str(), siteargs.c_str());
 
 	    //Check if command is valid
@@ -2225,7 +2229,7 @@ void CControlSocket::ParseCommand()
         {
           // send using a threadmessage...
           ThreadMessage tMsg = {TMSG_EXECUTE_BUILT_IN};
-          tMsg.strParam = strBuiltIn;
+          tMsg.strParam = fullcommand;
           g_applicationMessenger.SendMessage(tMsg, true);
           Send(_T("200 Executed built in function."));
         }

@@ -177,22 +177,25 @@ public:
 
 /* Socket function prototypes */
 namespace SyncSocket {
-  SOCKET accept(IN SOCKET s, OUT struct sockaddr FAR * addr, IN OUT int FAR * addrlen);
-  int bind(IN SOCKET s, IN const struct sockaddr FAR * name, IN int namelen);
-  int closesocket(IN SOCKET s);
-  int connect(IN SOCKET s, IN const struct sockaddr FAR * name, IN int namelen);
-  int ioctlsocket(IN SOCKET s, IN long cmd, IN OUT u_long FAR * argp);
-  int getpeername(IN SOCKET s, OUT struct sockaddr FAR * name, IN OUT int FAR * namelen);
-  int getsockname(IN SOCKET s, OUT struct sockaddr FAR * name, IN OUT int FAR * namelen);
-  int getsockopt(IN SOCKET s, IN int level, IN int optname, OUT char FAR * optval, IN OUT int FAR * optlen);
-  int listen(IN SOCKET s, IN int backlog);
-  int recv(IN SOCKET s, OUT char FAR * buf, IN int len, IN int flags);
-  int recvfrom(IN SOCKET s, OUT char FAR * buf, IN int len, IN int flags, OUT struct sockaddr FAR * from, IN OUT int FAR * fromlen);
-  int select(IN int nfds, IN OUT fd_set FAR * readfds, IN OUT fd_set FAR * writefds, IN OUT fd_set FAR *exceptfds, IN const struct timeval FAR * timeout);
-  int send(IN SOCKET s, IN const char FAR * buf, IN int len, IN int flags);
-  int sendto(IN SOCKET s, IN const char FAR * buf, IN int len, IN int flags, IN const struct sockaddr FAR * to, IN int tolen);
-  int setsockopt(IN SOCKET s, IN int level, IN int optname, IN const char FAR * optval, IN int optlen);
-  int shutdown(IN SOCKET s, IN int how);
+  SOCKET fz_accept(IN SOCKET s, OUT struct sockaddr FAR * addr, IN OUT int FAR * addrlen);
+  int fz_bind(IN SOCKET s, IN const struct sockaddr FAR * name, IN int namelen);
+  int fz_closesocket(IN SOCKET s);
+  int fz_connect(IN SOCKET s, IN const struct sockaddr FAR * name, IN int namelen);
+  int fz_ioctlsocket(IN SOCKET s, IN long cmd, IN OUT u_long FAR * argp);
+  int fz_getpeername(IN SOCKET s, OUT struct sockaddr FAR * name, IN OUT int FAR * namelen);
+  int fz_getsockname(IN SOCKET s, OUT struct sockaddr FAR * name, IN OUT int FAR * namelen);
+  int fz_getsockopt(IN SOCKET s, IN int level, IN int optname, OUT char FAR * optval, IN OUT int FAR * optlen);
+  int fz_listen(IN SOCKET s, IN int backlog);
+  int fz_recv(IN SOCKET s, OUT char FAR * buf, IN int len, IN int flags);
+  int fz_recvfrom(IN SOCKET s, OUT char FAR * buf, IN int len, IN int flags, OUT struct sockaddr FAR * from, IN OUT int FAR * fromlen);
+  int fz_select(IN int nfds, IN OUT fd_set FAR * readfds, IN OUT fd_set FAR * writefds, IN OUT fd_set FAR *exceptfds, IN const struct timeval FAR * timeout);
+  int fz_send(IN SOCKET s, IN const char FAR * buf, IN int len, IN int flags);
+  int fz_sendto(IN SOCKET s, IN const char FAR * buf, IN int len, IN int flags, IN const struct sockaddr FAR * to, IN int tolen);
+  int fz_setsockopt(IN SOCKET s, IN int level, IN int optname, IN const char FAR * optval, IN int optlen);
+  int fz_shutdown(IN SOCKET s, IN int how);
+
+  int fz_WSAAsyncSelect(SOCKET s, HWND hWnd, unsigned int wMsg, long lEvent);
+
 };
 
 
@@ -204,22 +207,23 @@ namespace SyncSocket {
   methods
 */
   
-#define accept SyncSocket::accept
-#define bind   SyncSocket::bind
-#define closesocket SyncSocket::closesocket
-#define connect SyncSocket::connect
-#define ioctlsocket SyncSocket::ioctlsocket
-#define getpeername SyncSocket::getpeername
-#define getsockname SyncSocket::getsockname
-#define getsockopt SyncSocket::getsockopt
-#define listen SyncSocket::listen
-#define recv SyncSocket::recv
-#define recvfrom SyncSocket::recvfrom
-#define select SyncSocket::select 
-#define send SyncSocket::send
-#define sendto SyncSocket::sendto
-#define setsockopt SyncSocket::setsockopt
-#define shutdown SyncSocket::shutdown
+#define accept SyncSocket::fz_accept
+#define bind   SyncSocket::fz_bind
+#define closesocket SyncSocket::fz_closesocket
+#define connect SyncSocket::fz_connect
+#define ioctlsocket SyncSocket::fz_ioctlsocket
+#define getpeername SyncSocket::fz_getpeername
+#define getsockname SyncSocket::fz_getsockname
+#define getsockopt SyncSocket::fz_getsockopt
+#define listen SyncSocket::fz_listen
+#define recv SyncSocket::fz_recv
+#define recvfrom SyncSocket::fz_recvfrom
+#define select SyncSocket::fz_select 
+#define send SyncSocket::fz_send
+#define sendto SyncSocket::fz_sendto
+#define setsockopt SyncSocket::fz_setsockopt
+#define shutdown SyncSocket::fz_shutdown
 
+#define fz_WSAAsyncSelect SyncSocket::fz_WSAAsyncSelect
 
 #endif
