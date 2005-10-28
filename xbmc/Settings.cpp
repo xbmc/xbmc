@@ -545,7 +545,9 @@ void CSettings::GetShares(const TiXmlElement* pRootElement, const CStdString& st
           if (pPathName->FirstChild())
           {
             CStdString strPath = pPathName->FirstChild()->Value();
-            vecPaths.push_back(strPath);
+            // make sure there are no virtualpaths defined in xboxmediacenter.xml
+            if (!CUtil::IsVirualPath(strPath))
+              vecPaths.push_back(strPath);
           }
           pPathName = pPathName->NextSibling("path");
         }
@@ -1611,6 +1613,10 @@ bool CSettings::UpdateBookmark(const CStdString &strType, const CStdString &strO
   if (strType == "pictures") pShares = &m_vecMyPictureShares;
 
   if (!pShares) return false;
+
+  // disallow virtual paths
+  if (strUpdateElement.Equals("path") && CUtil::IsVirualPath(strUpdateText))
+    return false;
 
   for (IVECSHARES it = pShares->begin(); it != pShares->end(); it++)
   {
