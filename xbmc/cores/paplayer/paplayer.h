@@ -61,7 +61,7 @@ public:
   virtual int GetChannels();
   virtual int GetBitsPerSample();
   virtual int GetSampleRate();
-  virtual CStdString GetCodec();
+  virtual CStdString GetCodecName();
   virtual __int64 GetTime();
   virtual void SeekTime(__int64 iTime = 0);
   // Skip to next track/item inside the current media (if supported).

@@ -908,7 +908,7 @@ CStdString CGUIInfoManager::GetMusicLabel(int item)
   case MUSICPLAYER_CODEC:
     {
       CStdString strCodec;
-      strCodec.Format("%s", g_application.m_pPlayer->GetCodec().c_str());
+      strCodec.Format("%s", g_application.m_pPlayer->GetCodecName().c_str());
       return strCodec;
     }
     break;

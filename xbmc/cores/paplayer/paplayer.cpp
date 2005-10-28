@@ -663,27 +663,42 @@ int PAPlayer::GetTotalTime()
 
 int PAPlayer::GetChannels()
 {
-  return (int)(m_decoder[m_currentDecoder].GetCodec()->m_Channels);
+  ICodec* codec = m_decoder[m_currentDecoder].GetCodec();
+  if (codec)
+    return codec->m_Channels;
+  return 0;
 }
 
 int PAPlayer::GetBitsPerSample()
 {
-  return (int)(m_decoder[m_currentDecoder].GetCodec()->m_BitsPerSample);
+  ICodec* codec = m_decoder[m_currentDecoder].GetCodec();
+  if (codec)
+    return codec->m_BitsPerSample;
+  return 0;
 }
 
 int PAPlayer::GetSampleRate()
 {
-  return (int)((m_decoder[m_currentDecoder].GetCodec()->m_SampleRate / 1000) + 0.5);
+  ICodec* codec = m_decoder[m_currentDecoder].GetCodec();
+  if (codec)
+    return (int)((codec->m_SampleRate / 1000) + 0.5);
+  return 0;
 }
 
-CStdString PAPlayer::GetCodec()
+CStdString PAPlayer::GetCodecName()
 {
-  return m_decoder[m_currentDecoder].GetCodec()->m_CodecName;
+  ICodec* codec = m_decoder[m_currentDecoder].GetCodec();
+  if (codec)
+    return codec->m_CodecName;
+  return L"";
 }
 
 int PAPlayer::GetBitrate()
 {
-	return (int)((m_decoder[m_currentDecoder].GetCodec()->m_Bitrate / 1000) + 0.5); // in kbits/s, rounded to the nearest int
+  ICodec* codec = m_decoder[m_currentDecoder].GetCodec();
+  if (codec)
+  	return (int)((codec->m_Bitrate / 1000) + 0.5); // in kbits/s, rounded to the nearest int
+  return 0;
 }
 
 void PAPlayer::SeekTime(__int64 iTime /*=0*/)
