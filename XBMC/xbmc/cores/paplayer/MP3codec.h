@@ -40,8 +40,6 @@ private:
 
   // Seeking helpers
   CVBRMP3SeekHelper m_seekInfo;
-  bool    m_bGuessByterate;
-  DWORD   m_AverageInputBytesPerSecond;
 
   // Gapless playback
   bool m_IgnoreFirst;     // Ignore first samples if this is true (for gapless playback)
