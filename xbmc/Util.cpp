@@ -1000,6 +1000,12 @@ bool CUtil::IsDVD(const CStdString& strFile)
   return false;
 }
 
+bool CUtil::IsVirualPath(const CStdString& strFile)
+{ 
+  if (strFile.Left(13).Equals("virtualpath://")) return true;
+  return false;
+}
+
 bool CUtil::IsRAR(const CStdString& strFile) // also checks for comic books
 {
   CStdString strExtension;
@@ -3261,9 +3267,9 @@ int CUtil::GetMatchingShare(const CStdString& strPath, VECSHARES& vecShares, boo
     CStdString strName = share.strName;
 
     // special cases for dvds
-    if (IsDVD(share.strPath))
+    if (IsOnDVD(share.strPath))
     {
-      if (IsDVD(strPath))
+      if (IsOnDVD(strPath))
         return i;
 
       // not a path, so we need to modify the bookmark name
