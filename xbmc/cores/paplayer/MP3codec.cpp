@@ -15,8 +15,6 @@ MP3Codec::MP3Codec()
   // mp3 related
   m_pDecoder = NULL;
   m_CallAgainWithSameBuffer = false;
-  m_AverageInputBytesPerSecond = 20000; // 160k , good place to start i guess
-  m_bGuessByterate = false;
   m_lastByteOffset = 0;
   m_InputBufferSize = 64*1024;         // 64k is a reasonable amount, considering that we actual are
                                        // using a background reader thread now that caches in advance.
@@ -106,13 +104,6 @@ bool MP3Codec::Init(const CStdString &strFile, unsigned int filecache)
     length = m_file.GetLength();
     m_TotalTime = (__int64)(m_seekInfo.GetDuration() * 1000.0f);
   }
-  if ( m_TotalTime )
-  {
-    m_AverageInputBytesPerSecond = (DWORD)(length / m_seekInfo.GetDuration());
-    m_Bitrate = m_AverageInputBytesPerSecond * 8;  // average bitrate
-  }
-  else
-    m_bGuessByterate = true;  // If we don't have the TrackDuration we'll have to guess later.
 
   // Read in some data so we can determine the sample size and so on
   // This needs to be made more intelligent - possibly use a temp output buffer
@@ -133,6 +124,7 @@ bool MP3Codec::Init(const CStdString &strFile, unsigned int filecache)
     m_Channels      = m_Formatdata[2];
     m_SampleRate    = m_Formatdata[1];
     m_BitsPerSample = m_Formatdata[3];
+    m_Bitrate       = m_Formatdata[4];
   }
   else
   {
@@ -216,6 +208,7 @@ int MP3Codec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
       result = m_pDecoder->decode( m_InputBuffer, m_InputBufferPos + madguard, m_OutputBuffer + m_OutputBufferPos, &outputsize, (unsigned int *)&m_Formatdata);
       if ( result == 1 || result == 0) 
       {
+        m_Bitrate = m_Formatdata[4];
         // let's check if we need to ignore the decoded data.
         if ( m_IgnoreFirst && outputsize && m_seekInfo.GetFirstSample() )
         {

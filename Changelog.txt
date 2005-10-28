@@ -6,6 +6,8 @@
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
 
+ - 28-10-2005 changed: show current bitrate for vbr mp3 instead of average bitrate. (needs new MadCodec.dll, also works with renamed in_mp3.dll)
+ - 28-10-2005 fixed: no bitrate information for last.fm streams
  - 28-10-2005 fixed: possible thread synchronisation problems in python
  - 28-10-2005 fixed: possible crash at exit of xbmc because of deadlocks in filezilla
  - 28-10-2005 fixed: SITE runxbe in ftp server

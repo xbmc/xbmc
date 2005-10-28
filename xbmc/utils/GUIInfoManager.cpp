@@ -156,6 +156,7 @@ void CGUIInfoManager::CCombinedValue::operator =(const CGUIInfoManager::CCombine
 CGUIInfoManager::CGUIInfoManager(void)
 {
   m_lastSysHeatInfoTime = 0;
+  m_lastMusicBitrateTime = 0;
   m_fanSpeed = 0;
   m_gpuTemp = 0;
   m_cpuTemp = 0;
@@ -862,11 +863,15 @@ CStdString CGUIInfoManager::GetMusicLabel(int item)
   	break;
   case MUSICPLAYER_BITRATE:
     {
+      float fTimeSpan = (float)(timeGetTime() - m_lastMusicBitrateTime);
+      if (fTimeSpan >= 500.0f)
+      {
+        m_MusicBitrate = g_application.m_pPlayer->GetBitrate();
+        m_lastMusicBitrateTime = timeGetTime();
+      }
       CStdString strBitrate = L"";
-	    if (g_application.m_pPlayer->GetBitrate() > 0)
-	    {
-	      strBitrate.Format("%i", g_application.m_pPlayer->GetBitrate());
-	    }
+      if (m_MusicBitrate > 0)
+        strBitrate.Format("%i", m_MusicBitrate);
       return strBitrate;
     }
     break;
