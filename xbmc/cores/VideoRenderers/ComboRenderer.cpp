@@ -331,7 +331,7 @@ void CComboRenderer::YV12toYUY2()
 
 void CComboRenderer::Render()
 {
-  if ( m_NumYUY2Buffers == 0 )
+  if (m_NumYUY2Buffers == 0)
   {
     //This is in fullscreen
     RenderLowMem();

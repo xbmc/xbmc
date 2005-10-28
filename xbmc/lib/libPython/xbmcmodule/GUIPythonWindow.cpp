@@ -11,7 +11,7 @@ CGUIPythonWindow::CGUIPythonWindow(DWORD dwId)
 :CGUIWindow(dwId, "")
 {
 	pCallbackWindow = NULL;
-	m_actionEvent = CreateEvent(NULL, true, false, "pythonActionEvent");
+	m_actionEvent = CreateEvent(NULL, true, false, NULL);
   m_loadOnDemand = false;
 }
 

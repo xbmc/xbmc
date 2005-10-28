@@ -5,6 +5,10 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+
+ - 28-10-2005 fixed: possible thread synchronisation problems in python
+ - 28-10-2005 fixed: possible crash at exit of xbmc because of deadlocks in filezilla
+ - 28-10-2005 fixed: SITE runxbe in ftp server
  - 28-10-2005 added: progress dialog when openning a multipath bookmark (only supported by music)
  - 28-10-2005 fixed: auto game region would lead to an infinite reboot-loop on ntsc systems
  - 27-10-2005 added: Basic support for Last.fm radio including trackinfo and albumcovers, place the lastfm:// url in a .strm file to play.

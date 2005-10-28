@@ -20,7 +20,7 @@ XBPython::XBPython()
 	nextid = 0;
 	mainThreadState = NULL;
 	InitializeCriticalSection(&m_critSection);
-	m_hEvent = CreateEvent(NULL, false, false, "pythonEvent");
+	m_hEvent = CreateEvent(NULL, false, false, NULL);
 	dThreadId = GetCurrentThreadId();
 	vecPlayerCallbackList.clear();
 }
