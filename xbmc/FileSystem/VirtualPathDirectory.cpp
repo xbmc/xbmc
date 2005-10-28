@@ -23,9 +23,32 @@ bool CVirtualPathDirectory::GetDirectory(const CStdString& strPath, CFileItemLis
   if (!GetMatchingShare(strPath, share))
     return false;
 
+  CGUIDialogProgress* dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+  if (dlgProgress)
+  {
+    dlgProgress->SetHeading(15310);
+    dlgProgress->SetLine(0, 15311);
+    dlgProgress->SetLine(1, L"");
+    dlgProgress->SetLine(2, L"");
+    dlgProgress->StartModal(m_gWindowManager.GetActiveWindow());
+    dlgProgress->ShowProgressBar(true);
+    dlgProgress->SetProgressBarMax((int)share.vecPaths.size()*2);
+    dlgProgress->Progress();
+  }
+
   int iFailures = 0;
   for (int i = 0; i < (int)share.vecPaths.size(); ++i)
   {
+    if (dlgProgress)
+    {
+      CURL url(share.vecPaths[i]);
+      CStdString strStripped;
+      url.GetURLWithoutUserDetails(strStripped);
+      dlgProgress->SetLine(1, strStripped);
+      dlgProgress->StepProgressBar();
+      dlgProgress->Progress();
+    }
+
     CFileItemList tempItems;
     CLog::Log(LOGDEBUG,"Getting Directory (%s)", share.vecPaths[i].c_str());
     if (CDirectory::GetDirectory(share.vecPaths[i], tempItems, m_strFileMask))
@@ -35,7 +58,16 @@ bool CVirtualPathDirectory::GetDirectory(const CStdString& strPath, CFileItemLis
       CLog::Log(LOGERROR,"Error Getting Directory (%s)", share.vecPaths[i].c_str());
       iFailures++;
     }
+
+    if (dlgProgress)
+    {
+      dlgProgress->StepProgressBar();
+      dlgProgress->Progress();
+    }
   }
+
+  if (dlgProgress)
+    dlgProgress->Close();
 
   if (iFailures == share.vecPaths.size())
     return false;
