@@ -685,7 +685,7 @@ BOOL CAsyncSocketEx::Create( UINT nSocketPort /*=0*/, int nSocketType /*=SOCK_ST
 		if (m_pFirstLayer)
 		{
 			m_lEvent = lEvent;
-			if (WSAAsyncSelect(m_SocketData.hSocket, GetHelperWindowHandle(), m_SocketData.nSocketIndex+WM_SOCKETEX_NOTIFY, FD_READ | FD_WRITE | FD_OOB | FD_ACCEPT | FD_CONNECT | FD_CLOSE) )
+			if (fz_WSAAsyncSelect(m_SocketData.hSocket, GetHelperWindowHandle(), m_SocketData.nSocketIndex+WM_SOCKETEX_NOTIFY, FD_READ | FD_WRITE | FD_OOB | FD_ACCEPT | FD_CONNECT | FD_CLOSE) )
 			{
 				Close();
 				return FALSE;
@@ -1155,7 +1155,7 @@ BOOL CAsyncSocketEx::Attach( SOCKET hSocket, long lEvent /*= FD_READ | FD_WRITE 
 	if (m_pFirstLayer)
 	{
 		m_lEvent = lEvent;
-		return !WSAAsyncSelect(m_SocketData.hSocket, GetHelperWindowHandle(), m_SocketData.nSocketIndex+WM_SOCKETEX_NOTIFY, FD_READ | FD_WRITE | FD_OOB | FD_ACCEPT | FD_CONNECT | FD_CLOSE);
+		return !fz_WSAAsyncSelect(m_SocketData.hSocket, GetHelperWindowHandle(), m_SocketData.nSocketIndex+WM_SOCKETEX_NOTIFY, FD_READ | FD_WRITE | FD_OOB | FD_ACCEPT | FD_CONNECT | FD_CLOSE);
 	}
 	else
 #endif //NOLAYERS
@@ -1174,7 +1174,7 @@ BOOL CAsyncSocketEx::AsyncSelect( long lEvent /*= FD_READ | FD_WRITE | FD_OOB | 
 	else
 #endif //NOLAYERS
 	{
-		if ( !WSAAsyncSelect(m_SocketData.hSocket, GetHelperWindowHandle(), m_SocketData.nSocketIndex+WM_SOCKETEX_NOTIFY, lEvent) )
+		if ( !fz_WSAAsyncSelect(m_SocketData.hSocket, GetHelperWindowHandle(), m_SocketData.nSocketIndex+WM_SOCKETEX_NOTIFY, lEvent) )
 			return TRUE;
 		else
 			return FALSE;
@@ -1294,7 +1294,7 @@ BOOL CAsyncSocketEx::AddLayer(CAsyncSocketExLayer *pLayer)
 		m_pFirstLayer=pLayer;
 		m_pLastLayer=m_pFirstLayer;
 		if (m_SocketData.hSocket != INVALID_SOCKET)
-			if (WSAAsyncSelect(m_SocketData.hSocket, GetHelperWindowHandle(), m_SocketData.nSocketIndex+WM_SOCKETEX_NOTIFY, FD_READ | FD_WRITE | FD_OOB | FD_ACCEPT | FD_CONNECT | FD_CLOSE))
+			if (fz_WSAAsyncSelect(m_SocketData.hSocket, GetHelperWindowHandle(), m_SocketData.nSocketIndex+WM_SOCKETEX_NOTIFY, FD_READ | FD_WRITE | FD_OOB | FD_ACCEPT | FD_CONNECT | FD_CLOSE))
 				return FALSE;
 	}
 

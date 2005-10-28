@@ -40,7 +40,7 @@ void CApplicationMessenger::SendMessage(ThreadMessage& message, bool wait)
   { // check that we're not being called from our application thread, else we'll be waiting
     // forever!
     if (GetCurrentThreadId() != g_application.GetThreadId())
-      message.hWaitEvent = CreateEvent(NULL, false, false, "threadWaitEvent");
+      message.hWaitEvent = CreateEvent(NULL, false, false, NULL);
     else
     {
       //OutputDebugString("Attempting to wait on a SendMessage() from our application thread will cause lockup!\n");

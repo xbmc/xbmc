@@ -57,6 +57,7 @@
 #include <vector>
 
 #if defined(_XBOX) && defined(_MEMTRACKING)
+
 #ifdef _DEBUG
 #define _CRTDBG_MAP_ALLOC
 #include <FStream>
@@ -64,6 +65,7 @@
 #include <crtdbg.h>
 #define new new( _NORMAL_BLOCK, __FILE__, __LINE__)
 #endif
+
 #endif
 
 #include "AsyncSocketEx.h"

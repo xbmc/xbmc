@@ -94,7 +94,7 @@ void *Audio_Xbox::open (AudioConfig &cfg, const char *name)
   for (int i = 0; i < AUDIO_XBOX_BUFFERS; ++i)
   {
     pMPacket[i].dwMaxSize = BufSize;
-    pMPacket[i].hCompletionEvent = CreateEvent(0, TRUE, TRUE, 0);
+    pMPacket[i].hCompletionEvent = CreateEvent(0, TRUE, TRUE, NULL);
     pMPacket[i].pvBuffer = malloc(BufSize);
     pMPacket[i].pdwCompletedSize = &dwStreamed[i];
   }
