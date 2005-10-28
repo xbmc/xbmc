@@ -96,6 +96,8 @@ protected:
   CFileItem m_currentSong;
   CIMDBMovie m_currentMovie;
   CStdString m_currentMovieThumb;
+  unsigned int m_lastMusicBitrateTime;
+  unsigned int m_MusicBitrate;
 
   // fan stuff
   DWORD m_lastSysHeatInfoTime;
