@@ -154,6 +154,11 @@ bool CFileRar::Open(const CURL& url, bool bBinary)
     }
     else
     {
+      if (items[i]->m_dwSize > __int64(2)*1024*1024*1024) // 2 gig limit of fat-x
+      {
+        CLog::Log(LOGERROR,"CFileRar::Open: Can't cache files bigger than 2GB due to fat-x limits.");
+        return false;
+      }
       m_bUseFile = true;
       CStdString strPathInCache;
       
