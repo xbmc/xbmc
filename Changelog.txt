@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 30-10-2005 added: Paths to $homedir´s default screenshot folder in My Pictures and $homedir´s default path to recordings (Shoutcast rips) in xboxmediacenter.xml.
  - 29-10-2005 fixed: filerar will now fail immediately if it tries to cache files bigger than 2 gig (since fat-x can't handle it anyway).
  - 29-10-2005 fixed: display of squares and/or dots for track albumname and crashes sometimes when there was no albumtag in the file.
  - 28-10-2005 fixed: occasional crash between songs when codec info is displayed 
