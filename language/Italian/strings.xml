@@ -8,6 +8,7 @@
   <!-- String with id 6 should not be set here, only in the english language file !-->
   <string><id>7</id><value>Files</value></string>
   <string><id>8</id><value>Meteo</value></string>
+
   <string><id>11</id><value>Lunedi'</value></string>
   <string><id>12</id><value>Martedi'</value></string>
   <string><id>13</id><value>Mercoledi'</value></string>
@@ -15,6 +16,7 @@
   <string><id>15</id><value>Venerdi'</value></string>
   <string><id>16</id><value>Sabato</value></string>
   <string><id>17</id><value>Domenica</value></string>
+
   <string><id>21</id><value>Gennaio</value></string>
   <string><id>22</id><value>Febbraio</value></string>
   <string><id>23</id><value>Marzo</value></string>
@@ -27,6 +29,7 @@
   <string><id>30</id><value>Ottobre</value></string>
   <string><id>31</id><value>Novembre</value></string>
   <string><id>32</id><value>Dicembre</value></string>
+
   <string><id>98</id><value>Vedi: Auto</value></string>
   <string><id>99</id><value>Vedi: Auto Grande</value></string>
   <string><id>100</id><value>Visualizza Icone</value></string>
@@ -134,7 +137,6 @@
   <string><id>202</id><value>Tagline:</value></string>
   <string><id>203</id><value>Trama breve:</value></string>
   <string><id>204</id><value>Rating:</value></string>
-  <string><id>2050</id><value>Durata:</value></string>
   <string><id>205</id><value>Voti:</value></string>
   <string><id>206</id><value>Attori</value></string>
   <string><id>207</id><value>Trama</value></string>
@@ -229,6 +231,7 @@
   <string><id>296</id><value>Cancella segnalibri</value></string>
   <string><id>297</id><value>Ritardo Audio</value></string>
   <string><id>298</id><value>Cursore</value></string>
+
   <string><id>300</id><value>1. Lingua</value></string>
   <string><id>301</id><value>2. Volume</value></string>
   <string><id>302</id><value>3. Stream</value></string>
@@ -338,6 +341,7 @@
   <string><id>406</id><value>Umidità</value></string>
   <string><id>407</id><value>Da</value></string>
   <string><id>408</id><value>vel.</value></string>
+
   <string><id>410</id><value>Collegamento a Weather.com</value></string>
   <string><id>411</id><value>Aggiorno le Previsioni meteo per:</value></string>
   <string><id>412</id><value>Impossibile aggiornare le informazioni meteo</value></string>
@@ -379,7 +383,6 @@
   <string><id>448</id><value>LCD</value></string>
   <string><id>449</id><value>Abilitato</value></string>
   <string><id>450</id><value>Colonne</value></string>
-  <string><id>4501</id><value>Tipo LCD</value></string>
   <string><id>451</id><value>Indirizzo Riga 1</value></string>
   <string><id>452</id><value>Indirizzo Riga 2</value></string>
   <string><id>453</id><value>Indirizzo Riga 3</value></string>
@@ -447,10 +450,9 @@
   <string><id>515</id><value>Genere</value></string>
   <string><id>516</id><value>Modifica Archivi</value></string>
   <string><id>517</id><value>Album Riprodotti di Recente</value></string>
-  <string><id>518</id><value>Avvia</value></string> 
-  <string><id>519</id><value>Avvia in..</value></string> 
+  <string><id>518</id><value>Avvia</value></string>
+  <string><id>519</id><value>Avvia in..</value></string>
   <string><id>520</id><value>Modifica nome XBE</value></string>
-
 
   <string><id>600</id><value>Rip CD Audio</value></string>
   <string><id>601</id><value>Medio</value></string>
@@ -462,12 +464,14 @@
   <string><id>607</id><value>A:</value></string>
   <string><id>608</id><value>Impossibile rip del CD o della Traccia</value></string>
   <string><id>609</id><value>Percorso CDDARip non settato in XboxMediaCenter.xml</value></string>
+
   <string><id>620</id><value>Copia CD</value></string>
   <string><id>621</id><value>Encoder</value></string>
   <string><id>622</id><value>Qualità</value></string>
   <string><id>623</id><value>Bit Rate</value></string>
   <string><id>624</id><value>Includi Numero Traccia</value></string>
   <string><id>625</id><value>Tutte canzoni di</value></string>
+
   <string><id>629</id><value>Modalità di Visione</value></string>
   <string><id>630</id><value>Normale</value></string>
   <string><id>631</id><value>Zoom</value></string>
@@ -476,13 +480,13 @@
   <string><id>634</id><value>Stretch 16:9</value></string>
   <string><id>635</id><value>Dimensione originale</value></string>
   <string><id>636</id><value>Personalizzata</value></string>
-  <string><id>637</id><value>Replay Gain</value></string> 
-  <string><id>638</id><value>Modalità &quot;Replay Gain&quot;</value></string> 
-  <string><id>639</id><value>Usa Livelli Traccia</value></string> 
-  <string><id>640</id><value>Usa Livelli Album</value></string> 
-  <string><id>641</id><value>Livello PreAmp - File &quot;Replay Gained&quot;</value></string> 
-  <string><id>642</id><value>Livello PreAmp - File &quot;Non Replay Gained&quot;</value></string> 
-  <string><id>643</id><value>Evita Clipping nei File &quot;Replay Gained&quot;</value></string> 
+  <string><id>637</id><value>Replay Gain</value></string>
+  <string><id>638</id><value>Modalità "Replay Gain"</value></string>
+  <string><id>639</id><value>Usa Livelli Traccia</value></string>
+  <string><id>640</id><value>Usa Livelli Album</value></string>
+  <string><id>641</id><value>Livello PreAmp - File "Replay Gained"</value></string>
+  <string><id>642</id><value>Livello PreAmp - File "Non Replay Gained"</value></string>
+  <string><id>643</id><value>Evita Clipping nei File "Replay Gained"</value></string>
   <string><id>644</id><value>Taglia Barre Nere</value></string>
   <string><id>645</id><value>Devo memorizzare un file grande. Continuare?</value></string>
 
@@ -592,10 +596,9 @@
   <string><id>1223</id><value>Disattivo</value></string>
   <string><id>1224</id><value>Utente Normale</value></string>
   <string><id>1225</id><value>Utente Esperto</value></string>
-  <string><id>1226</id><value>File, Musica e Video</value></string> 
-  <string><id>1227</id><value>File, Immagini e Musica</value></string> 
-  <string><id>1228</id><value>File, Immagini e Video</value></string> 
-
+  <string><id>1226</id><value>File, Musica e Video</value></string>
+  <string><id>1227</id><value>File, Immagini e Musica</value></string>
+  <string><id>1228</id><value>File, Immagini e Video</value></string>
   <string><id>1229</id><value>Musica e Programmi</value></string>
   <string><id>1230</id><value>Video e Programmi</value></string>
   <string><id>1231</id><value>Immagini e Programmi</value></string>
@@ -603,7 +606,7 @@
   <string><id>1233</id><value>Programmi, Video e Musica</value></string>
   <string><id>1234</id><value>Programmi, Immagini e Musica</value></string>
   <string><id>1235</id><value>Programmi, Immagini e Video</value></string>
-  
+
   <string><id>1245</id><value>FTP User Name</value></string>
   <string><id>1246</id><value>FTP User Password</value></string>
   <string><id>1247</id><value>FTP Server User Password salvata con successo!</value></string>
@@ -632,6 +635,10 @@
   <string><id>1409</id><value>Cristalli</value></string>
   <string><id>1410</id><value>Calmo</value></string>
 
+  <string><id>2050</id><value>Durata:</value></string>
+
+  <string><id>4501</id><value>Tipo LCD</value></string>
+
   <string><id>10000</id><value>Home</value></string>
   <string><id>10001</id><value>Programmi</value></string>
   <string><id>10002</id><value>Immagini</value></string>
@@ -642,32 +649,36 @@
   <string><id>10007</id><value>Informazioni Sistema</value></string>
   <string><id>10008</id><value>Impostazioni->Generale</value></string>
   <string><id>10009</id><value>Impostazioni->Video</value></string>
-  <string><id>10010</id><value>Impostazioni-&gt;Aspetto-&gt;Calibrazione GUI</value></string>
-  <string><id>10011</id><value>Impostazioni-&gt;Video-&gt;Calibrazione Schermo</value></string>
-  <string><id>10012</id><value>Impostazioni-&gt;Immagini</value></string>
-  <string><id>10013</id><value>Impostazioni-&gt;Programmi</value></string>
-  <string><id>10014</id><value>Impostazioni-&gt;Meteo</value></string>
-  <string><id>10015</id><value>Impostazioni-&gt;Musica</value></string>
-  <string><id>10016</id><value>Impostazioni-&gt;Sistema</value></string>
-  <string><id>10017</id><value>Impostazioni-&gt;Video</value></string>
-  <string><id>10018</id><value>Impostazioni-&gt;Rete</value></string>
-  <string><id>10019</id><value>Impostazioni-&gt;Aspetto</value></string>
+  <string><id>10010</id><value>Impostazioni->Aspetto->Calibrazione GUI</value></string>
+  <string><id>10011</id><value>Impostazioni->Video->Calibrazione Schermo</value></string>
+  <string><id>10012</id><value>Impostazioni->Immagini</value></string>
+  <string><id>10013</id><value>Impostazioni->Programmi</value></string>
+  <string><id>10014</id><value>Impostazioni->Meteo</value></string>
+  <string><id>10015</id><value>Impostazioni->Musica</value></string>
+  <string><id>10016</id><value>Impostazioni->Sistema</value></string>
+  <string><id>10017</id><value>Impostazioni->Video</value></string>
+  <string><id>10018</id><value>Impostazioni->Rete</value></string>
+  <string><id>10019</id><value>Impostazioni->Aspetto</value></string>
   <string><id>10020</id><value>Scripts</value></string>
   <string><id>10021</id><value>Video/Generi</value></string>
   <string><id>10022</id><value>Video/Attori</value></string>
   <string><id>10023</id><value>Video/Anni</value></string>
+
   <string><id>10025</id><value>Video/Titoli</value></string>
+
   <string><id>10028</id><value>Video/Playlist</value></string>
-  <string><id>10034</id><value>Impostazioni-&gt;Profili</value></string>
+
+  <string><id>10034</id><value>Impostazioni->Profili</value></string>
+
   <string><id>10100</id><value>Casella di dialogo Si/No</value></string>
   <string><id>10101</id><value>Barra di Progresso</value></string>
+
   <string><id>10500</id><value>Musica/Playlist</value></string>
   <string><id>10501</id><value>Musica/File</value></string>
   <string><id>10502</id><value>Musica/Album</value></string>
   <string><id>10503</id><value>Musica/Artisti</value></string>
-  <string><id>10504</id><value>Top 100 Canzoni</value></string> 
-  <string><id>10505</id><value>Top 100 Albums</value></string> 
-
+  <string><id>10504</id><value>Top 100 Canzoni</value></string>
+  <string><id>10505</id><value>Top 100 Albums</value></string>
   <string><id>10506</id><value>Applicazioni</value></string>
   <string><id>10507</id><value>Configurazione</value></string>
   <string><id>10508</id><value>Previsioni Meteo</value></string>
@@ -697,6 +708,7 @@
   <string><id>12006</id><value>Effetti grafici</value></string>
   <string><id>12007</id><value>Immagini/slideshow</value></string>
   <string><id>12008</id><value>Casella di Unisci</value></string>
+
   <string><id>12310</id><value>0</value></string>
   <string><id>12311</id><value>1</value></string>
   <string><id>12312</id><value>2</value></string>
@@ -710,11 +722,12 @@
   <string><id>12320</id><value>c</value></string>
   <string><id>12321</id><value>ok</value></string>
   <string><id>12322</id><value>*</value></string>
+
   <string><id>12324</id><value>XBMC Master Lock</value></string>
   <string><id>12325</id><value>Bloccata! Inserire codice...</value></string>
   <string><id>12326</id><value>Inserire password</value></string>
   <string><id>12327</id><value>Inserire Master Code</value></string>
-  <string><id>12328</id><value>Inserire Codice Sblocco</value></string> 
+  <string><id>12328</id><value>Inserire Codice Sblocco</value></string>
   <string><id>12329</id><value>Premere C per Annullare</value></string>
   <string><id>12330</id><value>Inserire combinazione tasti Gamepad e premere Start</value></string>
   <string><id>12331</id><value>premere Start, oppure Back per Annullare</value></string>
@@ -745,6 +758,7 @@
   <string><id>12356</id><value>Cambia Lock</value></string>
   <string><id>12357</id><value>Condividi Lock</value></string>
   <string><id>12358</id><value>Password inserita è vuota. Riprova.</value></string>
+
   <string><id>12360</id><value>Master Lock</value></string>
   <string><id>12361</id><value>Max Tentativi</value></string>
   <string><id>12362</id><value>Abilita Spegnimento</value></string>
@@ -757,21 +771,21 @@
   <string><id>12369</id><value>XBMC Startup Lock</value></string>
   <string><id>12370</id><value>Master Lock Mode è cambiato, il Master Code non era impostato!</value></string>
   <string><id>12371</id><value>Inserire un nuovo Master Code!</value></string>
-
-  <string><id>12372</id><value>Lock Impostazioni &amp; Files</value></string>
-  <string><id>12373</id><value>Impostazioni &amp;  Files</value></string>
+  <string><id>12372</id><value>Lock Impostazioni & Files</value></string>
+  <string><id>12373</id><value>Impostazioni &  Files</value></string>
   <string><id>12374</id><value>Lock Media</value></string>
   <string><id>12375</id><value>Modalità Master User</value></string>
 
-  <string><id>12390</id><value>Tempo di Vita del Sistema</value></string> 
-  <string><id>12391</id><value>Minuti</value></string> 
-  <string><id>12392</id><value>Ore</value></string> 
-  <string><id>12393</id><value>Giorni</value></string> 
-
+  <string><id>12390</id><value>Tempo di Vita del Sistema</value></string>
+  <string><id>12391</id><value>Minuti</value></string>
+  <string><id>12392</id><value>Ore</value></string>
+  <string><id>12393</id><value>Giorni</value></string>
 
   <string><id>12600</id><value>Meteo</value></string>
+
   <string><id>12900</id><value>Screensaver</value></string>
   <string><id>12901</id><value>OSD a schermo intero</value></string>
+
   <string><id>13000</id><value>Sistema</value></string>
   <string><id>13001</id><value>Autospegnimento HD Immediato</value></string>
   <string><id>13002</id><value>Solo Video</value></string>
@@ -779,21 +793,70 @@
   <string><id>13004</id><value>- Durata Minima del File</value></string>
   <string><id>13005</id><value>Spegni</value></string>
   <string><id>13006</id><value>Dashboard</value></string>
+
   <string><id>13100</id><value>Filtro Sfarfallio</value></string>
+
+  <string><id>13150</id><value>HDD Key:</value></string>
+  <string><id>13151</id><value>HDD Temp:</value></string>
+  <string><id>13152</id><value>DVD Model:</value></string>
+  <string><id>13153</id><value>DVD Firmware:</value></string>
+  <string><id>13154</id><value>HDD Model:</value></string>
+  <string><id>13155</id><value>HDD Serial:</value></string>
+  <string><id>13156</id><value>HDD Firmware:</value></string>
+  <string><id>13157</id><value>HDD Password:</value></string>
+  <string><id>13158</id><value>HDD Lock State:</value></string>
+  <string><id>13159</id><value>Subnet mask:</value></string>
+  <string><id>13160</id><value>Gateway:</value></string>
+  <string><id>13161</id><value>DNS:</value></string>
+  <string><id>13162</id><value>Inizializzazione fallita</value></string>
+  <string><id>13163</id><value>GamePads In Porta:</value></string>
+  <string><id>13164</id><value>Keyboard In Porta:</value></string>
+  <string><id>13165</id><value>Mouse In Porta:</value></string>
+  <string><id>13166</id><value>Head/MicroPhone In Porta:</value></string>
+  <string><id>13167</id><value>MemoryStick In Porta:</value></string>
+  <string><id>13168</id><value>IR-Remote In Porta:</value></string>
+
   <string><id>13200</id><value>Profili</value></string>
   <string><id>13201</id><value>Cancella profilo '%i'?</value></string>
   <string><id>13202</id><value>Salva impostazioni correnti come profilo...</value></string>
   <string><id>13203</id><value>Profilo '%i' caricato con successo</value></string>
   <string><id>13204</id><value>Ultimo profilo caricato:</value></string>
   <string><id>13205</id><value>Sconosciuto</value></string>
-  <string><id>13206</id><value>Sovrascrivi</value></string> 
-  <string><id>13207</id><value>Sovrascrivo profilo '%s'?</value></string> 
-  <string><id>13208</id><value>Allarme sveglia</value></string> 
-  <string><id>13209</id><value>Intervallo allarme sveglia (in minutes)</value></string> 
-  <string><id>13210</id><value>Partito, allarme tra %im</value></string> 
-  <string><id>13211</id><value>Allarme!</value></string> 
-  <string><id>13212</id><value>Annullato con ancora %im%is</value></string> 
+  <string><id>13206</id><value>Sovrascrivi</value></string>
+  <string><id>13207</id><value>Sovrascrivo profilo '%s'?</value></string>
+  <string><id>13208</id><value>Allarme sveglia</value></string>
+  <string><id>13209</id><value>Intervallo allarme sveglia (in minutes)</value></string>
+  <string><id>13210</id><value>Partito, allarme tra %im</value></string>
+  <string><id>13211</id><value>Allarme!</value></string>
+  <string><id>13212</id><value>Annullato con ancora %im%is</value></string>
 
+  <string><id>13270</id><value>Hardware:</value></string>
+  <string><id>13271</id><value>CPU Speed:</value></string>
+
+  <string><id>13275</id><value>Hard Disk</value></string>
+  <string><id>13276</id><value>DVD-ROM</value></string>
+  <string><id>13277</id><value>Storage</value></string>
+  <string><id>13278</id><value>Default</value></string>
+  <string><id>13279</id><value>Rete</value></string>
+  <string><id>13280</id><value>Video</value></string>
+  <string><id>13281</id><value>Hardware</value></string>
+  <string><id>13282</id><value>_</value></string>
+  <string><id>13283</id><value>Kernel Version:</value></string>
+  <string><id>13284</id><value>CPU Speed:</value></string>
+  <string><id>13285</id><value>BIOS Rilevato:</value></string>
+  <string><id>13286</id><value>Video Encoder:</value></string>
+  <string><id>13287</id><value>Risoluzione Schermo:</value></string>
+  <string><id>13288</id><value>Xbox Version:</value></string>
+  <string><id>13289</id><value>Xbox Serialnumber:</value></string>
+  <string><id>13290</id><value>XBOX Manufacture:</value></string>
+  <string><id>13291</id><value>ModChip:</value></string>
+  <string><id>13292</id><value>A/V Cable:</value></string>
+  <string><id>13293</id><value>Video & XBE Region:</value></string>
+  <string><id>13294</id><value>DVD Region:</value></string>
+  <string><id>13295</id><value>Internet:</value></string>
+  <string><id>13296</id><value>Xbox è Connessa</value></string>
+  <string><id>13297</id><value>Xbox NON è Connessa. Controlla Configurazione Rete!</value></string>
+  <string><id>13298</id><value>XBLIVE Key:</value></string>
   <string><id>13299</id><value>Temperatura da Raggiungere</value></string>
   <string><id>13300</id><value>Velocità Ventola</value></string>
   <string><id>13301</id><value>Controllo Automatico Temperatura</value></string>
@@ -884,12 +947,14 @@
   <string><id>13386</id><value>Usa ricerca basata sul tempo</value></string>
   <string><id>13387</id><value>Formato Titolo della Traccia a Destra</value></string>
   <string><id>13388</id><value>Presets</value></string>
-  <string><id>13389</id><value>Nessun preset disponibile&#10;per questo effetto grafico</value></string>
-  <string><id>13390</id><value>Nessuna impostazione disponibile&#10;per questo effetto grafico</value></string>
+  <string><id>13389</id><value>Nessun preset disponibile
+per questo effetto grafico</value></string>
+  <string><id>13390</id><value>Nessuna impostazione disponibile
+per questo effetto grafico</value></string>
   <string><id>13391</id><value>Apri / Chuidi</value></string>
   <string><id>13392</id><value>Effetto Grafico in Automatico</value></string>
-  <string><id>13393</id><value>Calcola Dimensione</value></string> 
-  <string><id>13394</id><value>Calcolo Dim. Cartella</value></string> 
+  <string><id>13393</id><value>Calcola Dimensione</value></string>
+  <string><id>13394</id><value>Calcolo Dim. Cartella</value></string>
   <string><id>13395</id><value>Impostazioni Video</value></string>
   <string><id>13396</id><value>Impostazioni Audio and Sottotitoli</value></string>
   <string><id>13397</id><value>Attiva Sottotitoli</value></string>
@@ -1031,8 +1096,9 @@
   <string><id>15058</id><value>Ospita</value></string>
   <string><id>15059</id><value>Invito accettato!</value></string>
   <string><id>15060</id><value>Messaggio Qui</value></string>
-  <string><id>15061</id><value>Sei stato invitato a giocare %s.</value></string> 
+  <string><id>15061</id><value>Sei stato invitato a giocare %s.</value></string>
   <string><id>15062</id><value>Usa mplayer alternativo</value></string>
+
   <string><id>15100</id><value>Archivio</value></string>
   <string><id>15101</id><value>Database</value></string>
   <string><id>15102</id><value>* Tutti gli Albums</value></string>
@@ -1041,8 +1107,8 @@
   <string><id>15105</id><value>* Tutti i Generi</value></string>
   <string><id>15106</id><value>Ricorda selezione in navigazioni successive</value></string>
   <string><id>15107</id><value>Caricando...</value></string>
-  <string><id>15108</id><value>Suoni Navigazione</value></string> 
-  <string><id>15109</id><value>Propri della Skin</value></string> 
+  <string><id>15108</id><value>Suoni Navigazione</value></string>
+  <string><id>15109</id><value>Propri della Skin</value></string>
 
   <string><id>15200</id><value>AudioScrobbler</value></string>
   <string><id>15201</id><value>Invia Canzoni a AudioScrobbler</value></string>
@@ -1057,54 +1123,6 @@
   <string><id>15210</id><value>%i Canzoni Memorizzate</value></string>
   <string><id>15211</id><value>Inviando...</value></string>
   <string><id>15212</id><value>Inviato in %i secondi</value></string>
-
-  <string><id>13150</id><value>HDD Key:</value></string>
-  <string><id>13151</id><value>HDD Temp:</value></string>
-  <string><id>13152</id><value>DVD Model:</value></string>
-  <string><id>13153</id><value>DVD Firmware:</value></string>
-  <string><id>13154</id><value>HDD Model:</value></string>
-  <string><id>13155</id><value>HDD Serial:</value></string>
-  <string><id>13156</id><value>HDD Firmware:</value></string>
-  <string><id>13157</id><value>HDD Password:</value></string>
-  <string><id>13158</id><value>HDD Lock State:</value></string>
-  <string><id>13159</id><value>Subnet mask:</value></string>
-  <string><id>13160</id><value>Gateway:</value></string>
-  <string><id>13161</id><value>DNS:</value></string>
-  <string><id>13162</id><value>Inizializzazione fallita</value></string>
-  <string><id>13163</id><value>GamePads In Porta:</value></string>
-  <string><id>13164</id><value>Keyboard In Porta:</value></string>
-  <string><id>13165</id><value>Mouse In Porta:</value></string>
-  <string><id>13166</id><value>Head/MicroPhone In Porta:</value></string>
-  <string><id>13167</id><value>MemoryStick In Porta:</value></string>
-  <string><id>13168</id><value>IR-Remote In Porta:</value></string>
-
-  <string><id>13270</id><value>Hardware:</value></string>
-  <string><id>13271</id><value>CPU Speed:</value></string>
-  <string><id>13275</id><value>Hard Disk</value></string>
-  <string><id>13276</id><value>DVD-ROM</value></string>
-  <string><id>13277</id><value>Storage</value></string>
-  <string><id>13278</id><value>Default</value></string>
-  <string><id>13279</id><value>Rete</value></string>
-  <string><id>13280</id><value>Video</value></string>
-  <string><id>13281</id><value>Hardware</value></string>
-  <string><id>13282</id><value>_</value></string>
-  <string><id>13283</id><value>Kernel Version:</value></string>
-  <string><id>13284</id><value>CPU Speed:</value></string>
-  <string><id>13285</id><value>BIOS Rilevato:</value></string>
-  <string><id>13286</id><value>Video Encoder:</value></string>
-  <string><id>13287</id><value>Risoluzione Schermo:</value></string>
-  <string><id>13288</id><value>Xbox Version:</value></string>
-  <string><id>13289</id><value>Xbox Serialnumber:</value></string>
-  <string><id>13290</id><value>XBOX Manufacture:</value></string>
-  <string><id>13291</id><value>ModChip:</value></string>
-  <string><id>13292</id><value>A/V Cable:</value></string>
-  <string><id>13293</id><value>Video &amp; XBE Region:</value></string>
-  <string><id>13294</id><value>DVD Region:</value></string>
-  <string><id>13295</id><value>Internet:</value></string>
-  <string><id>13296</id><value>Xbox è Connessa</value></string>
-  <string><id>13297</id><value>Xbox NON è Connessa. Controlla Configurazione Rete!</value></string>
-  <string><id>13298</id><value>XBLIVE Key:</value></string>
-
   <string><id>15213</id><value>Play con...</value></string>
   <string><id>15214</id><value>Perfeziona Sincronizzazione A/V</value></string>
   <string><id>15215</id><value>Nascondi Nomi dei Files in Vista Icone</value></string>
@@ -1127,9 +1145,8 @@
   <string><id>16013</id><value>Inserire nuovo nome del file</value></string>
   <string><id>16014</id><value>Inserire Nome della cartella</value></string>
   <string><id>16015</id><value>Inserire directory</value></string>
-  <string><id>16016</id><value>Available options: %A, %T, %N, %B, %D, %G, %Y, %F, %S</value></string>
+  <string><id>16016</id><value>Opzioni disponibili: %A, %T, %N, %B, %D, %G, %Y, %F, %S</value></string>
   <string><id>16017</id><value>Inserire Stringa da cercare</value></string>
-  
   <string><id>16018</id><value>Nessuno</value></string>
   <string><id>16019</id><value>Auto Seleziona</value></string>
   <string><id>16020</id><value>DeInterlaccia</value></string>
@@ -1138,4 +1155,10 @@
   <string><id>16023</id><value>Modifiche Interlacciate</value></string>
   <string><id>16024</id><value>Annullando...</value></string>
 
+  <string><id>16100</id><value>Tutti i Video</value></string>
+  <string><id>16101</id><value>Non Visti</value></string>
+  <string><id>16102</id><value>Già Visti</value></string>
+  <string><id>16103</id><value>Segna Come Già Visto</value></string>
+  <string><id>16104</id><value>Segna Come Non Visto</value></string>
+  <string><id>16105</id><value>Modifica Titolo</value></string>
 </strings>

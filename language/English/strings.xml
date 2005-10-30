@@ -1118,8 +1118,8 @@
   <string><id>15303</id><value>Workgroup not found</value></string>
 
 
-  <string><id>15310></id><value>Openning multi-path bookmark</value></string>
-  <string><id>15311></id><value>Path:</value></string>
+  <string><id>15310</id><value>Openning multi-path bookmark</value></string>
+  <string><id>15311</id><value>Path:</value></string>
 
   <string><id>16000</id><value>General</value></string>
   <string><id>16001</id><value>Configure Audio Hardware...</value></string>
