@@ -95,10 +95,11 @@ bool CVirtualDirectory::GetDirectory(const CStdString& strPath, CFileItemList &i
     VECSHARES vecShares = *m_vecShares;
     int iIndex = CUtil::GetMatchingShare(strPath, vecShares, bIsBookmarkName);
     // added exception for various local hd items
-    if (iIndex > -1 || strPath.Mid(1, 1) == ":")
+	if (iIndex > -1 || strPath.Mid(1, 1) == ":")
     {
       // Only cache directory we are getting now
-      g_directoryCache.Clear();   
+	  if (strPath.Left(7) != "lastfm:")
+		g_directoryCache.Clear();
       return CDirectory::GetDirectory(strPath, items, m_strFileMask);
     }
 

@@ -240,6 +240,12 @@ bool CFileItem::IsShoutCast() const
   return false;
 }
 
+bool CFileItem::IsLastFM() const
+{
+  if (strstr(m_strPath.c_str(), "lastfm:") ) return true;
+  return false;
+}
+
 bool CFileItem::IsInternetStream() const
 {
   CURL url(m_strPath);

@@ -12,6 +12,7 @@
 #include "SndtrkDirectory.h"
 #include "DAAPDirectory.h"
 #include "shoutcastdirectory.h"
+#include "lastfmdirectory.h"
 #include "zipdirectory.h"
 #include "rardirectory.h"
 #include "FTPDirectory.h"
@@ -41,6 +42,7 @@ IDirectory* CFactoryDirectory::Create(const CStdString& strPath)
   else if (strProtocol == "soundtrack") return new CSndtrkDirectory();
   else if (strProtocol == "daap") return new CDAAPDirectory();
   else if (strProtocol == "shout") return new CShoutcastDirectory();
+  else if (strProtocol == "lastfm") return new CLastFMDirectory();
   else if (strProtocol == "zip") return new CZipDirectory();
   else if (strProtocol == "rar") return new CRarDirectory();
   else if (strProtocol == "ftp") return new CFTPDirectory();
