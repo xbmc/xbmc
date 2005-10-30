@@ -698,7 +698,7 @@ void CGUIWindowMusicSongs::OnFileItemFormatLabel(CFileItem* pItem)
     {
       if (pItem->m_bIsFolder)
       {
-        if (!pItem->IsShoutCast())
+        if (!pItem->IsShoutCast() && !pItem->IsLastFM())
           pItem->SetLabel2("");
       }
       else
@@ -719,13 +719,13 @@ void CGUIWindowMusicSongs::OnFileItemFormatLabel(CFileItem* pItem)
     }
     else
     {
-      if (pItem->m_stTime.wYear && (!pItem->IsShoutCast()))
+      if (pItem->m_stTime.wYear && (!pItem->IsShoutCast() && !pItem->IsLastFM()))
       {
         CStdString strDateTime;
         CUtil::GetDate(pItem->m_stTime, strDateTime);
         pItem->SetLabel2(strDateTime);
       }
-      else if (!pItem->IsShoutCast())
+      else if (!pItem->IsShoutCast() && !pItem->IsLastFM())
         pItem->SetLabel2("");
     }
   }
