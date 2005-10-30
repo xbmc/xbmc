@@ -140,6 +140,21 @@ namespace PYXBMC
 		return Py_None;
 	}
 
+	// Player_PlaySelected
+	PyDoc_STRVAR(playselected__doc__,
+		"playselected() -- Play a certain item from the current playlist.");
+
+	PyObject* Player_PlaySelected(PyObject *self, PyObject *args)
+	{
+		int iItem;
+		if (!PyArg_ParseTuple(args, "i", &iItem)) return NULL;
+
+		g_applicationMessenger.PlayListPlayerPlay(iItem);
+
+		Py_INCREF(Py_None);
+		return Py_None;
+	}
+
 	// Player_OnPlayBackStarted
 	PyDoc_STRVAR(onPlayBackStarted__doc__,
 		"onPlayBackStarted() -- onPlayBackStarted method.\n"
@@ -331,6 +346,7 @@ namespace PYXBMC
 		{"pause", (PyCFunction)Player_Pause, METH_VARARGS, pause__doc__},
 		{"playnext", (PyCFunction)Player_PlayNext, METH_VARARGS, playnext__doc__},
 		{"playprevious", (PyCFunction)Player_PlayPrevious, METH_VARARGS, playprevious__doc__},
+		{"playselected", (PyCFunction)Player_PlaySelected, METH_VARARGS, playselected__doc__},
 		{"onPlayBackStarted", (PyCFunction)Player_OnPlayBackStarted, METH_VARARGS, onPlayBackStarted__doc__},
 		{"onPlayBackEnded", (PyCFunction)Player_OnPlayBackEnded, METH_VARARGS, onPlayBackEnded__doc__},
 		{"onPlayBackStopped", (PyCFunction)Player_OnPlayBackStopped, METH_VARARGS, onPlayBackStopped__doc__},
