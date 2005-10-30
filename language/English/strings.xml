@@ -1059,7 +1059,42 @@
   <string><id>15250</id><value>Submit Last.fm Radio to AudioScrobbler</value></string>
   <string><id>15251</id><value>Connecting to Last.fm...</value></string>
   <string><id>15252</id><value>Selecting station...</value></string>
+
+  <string><id>15253</id><value>Search similar artists...</value></string>
+  <string><id>15254</id><value>Search similar tags...</value></string>
+  <string><id>15255</id><value>Your profile (%name%)</value></string>
+  <string><id>15256</id><value>Overall top tags</value></string>
+
+  <string><id>15257</id><value>Top artists for tag %name%</value></string>
+  <string><id>15258</id><value>Top albums for tag %name%</value></string>
+  <string><id>15259</id><value>Top tracks for tag %name%</value></string>
+  <string><id>15260</id><value>Listen to tag %name% last.fm radio</value></string>
+
+  <string><id>15261</id><value>Similar artists as %name%</value></string>
+  <string><id>15262</id><value>Top %name% albums</value></string>
+  <string><id>15263</id><value>Top %name% tracks</value></string>
+  <string><id>15264</id><value>Top %name% tags</value></string>
+  <string><id>15265</id><value>Biggest fans of %name%</value></string>
+  <string><id>15266</id><value>Listen to %name% fans last.fm radio</value></string>
+  <string><id>15267</id><value>Listen to %name% similar artists last.fm radio</value></string>
   
+  <string><id>15268</id><value>Top artists for user %name%</value></string>
+  <string><id>15269</id><value>Top albums for user %name%</value></string>
+  <string><id>15270</id><value>Top tracks for user %name%</value></string>
+  <string><id>15271</id><value>Friends of user %name%</value></string>
+  <string><id>15272</id><value>Neighbours of user %name%</value></string>
+  <string><id>15273</id><value>Weekly artist chart for %name%</value></string>
+  <string><id>15274</id><value>Weekly album chart for %name%</value></string>
+  <string><id>15275</id><value>Weekly track chart for %name%</value></string>
+  <string><id>15276</id><value>Listen to %name%'s neighbours last.fm radio</value></string>
+  <string><id>15277</id><value>Listen to %name%'s personal last.fm radio</value></string>
+  <string><id>15278</id><value>Listen to %name%'s loved tracks last.fm radio</value></string>
+
+  <string><id>15279</id><value>Retrieving list from last.fm...</value></string>
+  <string><id>15280</id><value>Can't retrieve list from last.fm...</value></string>
+  <string><id>15281</id><value>Enter an artist name to find related ones</value></string>
+  <string><id>15282</id><value>Enter a tag name to find similar ones</value></string>
+   
   
   <string><id>13150</id><value>HDD Key:</value></string>
   <string><id>13151</id><value>HDD Temp:</value></string>
