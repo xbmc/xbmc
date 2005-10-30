@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 30-10-2005 added: "lastfm:" virtual filesystem (initial audioscrobbler web services support)
+                     Add a My Music share to "lastfm://" to test it, and make sure you are registered with audioscrobbler.
  - 30-10-2005 fixed: [1341077] English language string had a invalid closing tag (Thnx to blittan)
  - 30-10-2005 updated: German (Austrian) language file (Thnx to CEOMR)
  - 30-10-2005 updated: Spanish language file (Thnx to jose_t)

@@ -1784,6 +1784,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				RelativePath=".\xbmc\FileSystem\ISO9660Directory.cpp">
 			</File>
 			<File
+				RelativePath=".\xbmc\FileSystem\LastFMDirectory.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\FileSystem\LastFMDirectory.h">
+			</File>
+			<File
 				RelativePath=".\xbmc\FileSystem\NSFFileDirectory.cpp">
 			</File>
 			<File
