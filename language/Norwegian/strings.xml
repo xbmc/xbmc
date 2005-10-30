@@ -1,4 +1,4 @@
-<!-- Based on English XML v1.255. Last updated by vnmartinsen  !-->
+<!-- Based on English XML v1.261. Last updated by vnmartinsen  !-->
 <strings>
   <string><id>0</id><value>Mine Programmer</value></string>
   <string><id>1</id><value>Mine Bilder</value></string>
@@ -1114,6 +1114,10 @@
   <string><id>15302</id><value>Ingen servere funnet</value></string>
   <string><id>15303</id><value>Arbeidsgruppe ikke funnet</value></string>
 
+
+  <string><id>15310></id><value>Åpner bokmerke med flere baner</value></string>
+  <string><id>15311></id><value>Bane:</value></string>
+
   <string><id>16000</id><value>Generelt</value></string>
   <string><id>16001</id><value>Konfigurer lyd-maskinvare...</value></string>
   <string><id>16002</id><value>CDDB-søk</value></string>
@@ -1137,6 +1141,19 @@
   <string><id>16022</id><value>Synkroniser partall</value></string>
   <string><id>16023</id><value>Behandling av sammenfletting</value></string>
   
-  <string><id>16024</id><value>Avbryter...</value></string>
+  <string><id>16024</id><value>Avbryter...</value></string>	   
+
+  <string><id>16100</id><value>Alle videoer</value></string>
+  <string><id>16101</id><value>Usette</value></string>
+  <string><id>16102</id><value>Sette</value></string>
+  <string><id>16103</id><value>Marker som sett</value></string>
+  <string><id>16104</id><value>Marker som usett</value></string>
+  <string><id>16105</id><value>Rediger tittel</value></string>
+   
+  <string><id>16106</id><value>Bruk NTSC-M &amp; NTSC-J</value></string>
+  <string><id>16107</id><value>Bruk kun NTSC-M</value></string>
+  <string><id>16108</id><value>Bruk kun NTSC-J</value></string>
+  <string><id>16109</id><value>Bruk kun PAL-60</value></string>
+  <string><id>16110</id><value>For 60hz spill</value></string>
 
 </strings>

@@ -5,6 +5,12 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 30-10-2005 fixed: [1341077] English language string had a invalid closing tag
+ - 30-10-2005 updated: German (Austrian) language file (Thnx to CEOMR)
+ - 30-10-2005 updated: Spanish language file (Thnx to jose_t)
+ - 30-10-2005 updated: Italian language file (Thnx to kotix)
+ - 30-10-2005 updated: German language file (Thnx to deezle)
+ - 30-10-2005 updated: Norwegian language file (Thnx to vnm)
  - 30-10-2005 added: [ 1336095 ] new playselected(position) python function, plays a certain item from the current playlist, thanks to nicko2k.
  - 30-10-2005 added: Paths to $homedir´s default screenshot folder in My Pictures and $homedir´s default path to recordings (Shoutcast rips) in xboxmediacenter.xml.
  - 29-10-2005 fixed: filerar will now fail immediately if it tries to cache files bigger than 2 gig (since fat-x can't handle it anyway).

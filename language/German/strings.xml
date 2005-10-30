@@ -401,7 +401,7 @@
   <string><id>465</id><value>Kontrast</value></string>
   <string><id>466</id><value>Gamma</value></string>
   <string><id>467</id><value>Typ</value></string>
-  <string><id>468</id><value>Bewege die Leiste um die OSD-Einstellung zu ändern</value></string>
+  <string><id>468</id><value>Bewege die Leiste, um die OSD-Einstellung zu ändern</value></string>
   <string><id>469</id><value>OSD-Position</value></string>
   <string><id>470</id><value>Credits</value></string>
   <string><id>471</id><value>Modchip</value></string>
@@ -453,7 +453,7 @@
   <string><id>517</id><value>Zuletzt gespielte Alben</value></string>
   <string><id>518</id><value>Starten</value></string>
   <string><id>519</id><value>Starten als...</value></string>
-  <string><id>520</id><value>XBE Titel bearbeiten</value></string>
+  <string><id>520</id><value>XBE-Titel bearbeiten</value></string>
   <string><id>600</id><value>CD rippen</value></string>
   <string><id>601</id><value>Medium</value></string>
   <string><id>602</id><value>Standard</value></string>
@@ -939,7 +939,7 @@
   <string><id>14036</id><value>Server</value></string>
   <string><id>14037</id><value>Darstellung</value></string>
   <string><id>14038</id><value>Netwerkeinstellungen verändert</value></string>
-  <string><id>14039</id><value>XBMC muss neu gestartet werden damit die Änderungen</value></string>
+  <string><id>14039</id><value>XBMC muss neu gestartet werden, damit die Änderungen</value></string>
   <string><id>14040</id><value>wirksam werden.  Soll jetzt neu gestartet werden?</value></string>
   <string><id>14041</id><value>Post-Processing</value></string>
   <string><id>14042</id><value>Engine IP-Adresse</value></string>
@@ -1003,7 +1003,7 @@
   <string><id>15026</id><value>Chat</value></string>
   <string><id>15027</id><value>Ansicht: Chat</value></string>
   <string><id>15028</id><value>Tastatur</value></string>
-  <string><id>15029</id><value>Es wird ein Passwort benötigt um dieser Arena beizutreten.</value></string>
+  <string><id>15029</id><value>Es wird ein Passwort benötigt, um dieser Arena beizutreten.</value></string>
   <string><id>15030</id><value>Verbindung zu XLink-Kai unterbrochen</value></string>
   <string><id>15031</id><value>XLink-Kai-Authentifikation</value></string>
   <string><id>15032</id><value>Dein Benutzername und/oder dein Passwort wurde vom</value></string>
@@ -1060,7 +1060,11 @@
   <string><id>15210</id><value>%i Songs in Cache</value></string>
   <string><id>15211</id><value>Übermittlung...</value></string>
   <string><id>15212</id><value>Übermittlung in %i sek</value></string>
+  <string><id>15250</id><value>Last.fm Radio an AudioScrobbler übertragen</value></string>
+  <string><id>15251</id><value>Verbindung mit Last.fm herstellen...</value></string>
+  <string><id>15252</id><value>Station wird ausgewählt...</value></string>
   
+
   <string><id>13150</id><value>HDD-Key:</value></string>
   <string><id>13151</id><value>HDD-Temp:</value></string>
   <string><id>13152</id><value>DVD-Model:</value></string>
@@ -1117,6 +1121,10 @@
   <string><id>15302</id><value>Es wurden keine Server gefunden</value></string>
   <string><id>15303</id><value>Es konnten keine Arbeitsgruppen gefunden werden</value></string>
 
+
+  <string><id>15310</id><value>Multi-Pfad-Share wird geöffnet...</value></string>
+  <string><id>15311</id><value>Pfad:</value></string>
+
   <string><id>16000</id><value>Allgemein</value></string>
   <string><id>16001</id><value>Audio-Hardware konfigurieren...</value></string>
   <string><id>16002</id><value>CDDB anfragen</value></string>
@@ -1141,5 +1149,18 @@
   <string><id>16023</id><value>Interlaced Handling</value></string>
   
   <string><id>16024</id><value>Abbrechen...</value></string>
+
+  <string><id>16100</id><value>Alle Videos</value></string>
+  <string><id>16101</id><value>Nicht gesehen</value></string>
+  <string><id>16102</id><value>Gesehen</value></string>
+  <string><id>16103</id><value>Als gesehen markieren</value></string>
+  <string><id>16104</id><value>Als nicht gesehen markieren</value></string>
+  <string><id>16105</id><value>Titel bearbeiten</value></string>
+
+  <string><id>16106</id><value>NTSC-M &amp; NTSC-J benutzen</value></string>
+  <string><id>16107</id><value>Nur NTSC-M benutzen</value></string>
+  <string><id>16108</id><value>Nur NTSC-J benutzen</value></string>
+  <string><id>16109</id><value>Nur PAL-60 benutzen</value></string>
+  <string><id>16110</id><value>Bei 60hz Spielen</value></string>
   
 </strings>
