@@ -23,12 +23,12 @@ void CDVDVideoPPFFmpeg::Dispose()
 {
   if (m_pMode)
   {
-    pp_free_mode(m_pMode);
+    m_dll.pp_free_mode(m_pMode);
     m_pMode = NULL;
   }
   if(m_pContext)
   {
-    pp_free_context(m_pContext);
+    m_dll.pp_free_context(m_pContext);
     m_pContext = NULL;
   }
   
@@ -48,10 +48,14 @@ void CDVDVideoPPFFmpeg::Dispose()
 
   m_iInitWidth = 0;
   m_iInitHeight = 0;
+
+  m_dll.Unload();
 }
 
 bool CDVDVideoPPFFmpeg::CheckInit(int iWidth, int iHeight)
 {
+  if (!m_dll.IsLoaded() && !m_dll.Load()) return false;
+  
   if(m_iInitWidth != iWidth || m_iInitHeight != iHeight)
   {
     if(m_pContext || m_pMode)
@@ -59,7 +63,7 @@ bool CDVDVideoPPFFmpeg::CheckInit(int iWidth, int iHeight)
       Dispose();
     }
 
-    m_pContext = pp_get_context(m_pSource->iWidth, m_pSource->iHeight, PP_CPU_CAPS_MMX | PP_CPU_CAPS_MMX2 | PP_FORMAT_420);
+    m_pContext = m_dll.pp_get_context(m_pSource->iWidth, m_pSource->iHeight, PP_CPU_CAPS_MMX | PP_CPU_CAPS_MMX2 | PP_FORMAT_420);
 
     m_iInitWidth = m_pSource->iWidth;
     m_iInitHeight = m_pSource->iHeight;
@@ -67,13 +71,13 @@ bool CDVDVideoPPFFmpeg::CheckInit(int iWidth, int iHeight)
     switch(m_eType)
     {
     case ED_DEINT_FFMPEG:
-      m_pMode = pp_get_mode_by_name_and_quality("ffmpegdeint", PP_QUALITY_MAX);
+      m_pMode = m_dll.pp_get_mode_by_name_and_quality("ffmpegdeint", PP_QUALITY_MAX);
       break;
     case ED_DEINT_CUBICIPOL:
-      m_pMode = pp_get_mode_by_name_and_quality("cubicipoldeint", PP_QUALITY_MAX);
+      m_pMode = m_dll.pp_get_mode_by_name_and_quality("cubicipoldeint", PP_QUALITY_MAX);
       break;
     case ED_DEINT_LINBLEND:
-      m_pMode = pp_get_mode_by_name_and_quality("linblenddeint", PP_QUALITY_MAX);
+      m_pMode = m_dll.pp_get_mode_by_name_and_quality("linblenddeint", PP_QUALITY_MAX);
       break;
     default:
       Dispose();
@@ -113,7 +117,7 @@ void CDVDVideoPPFFmpeg::Process(DVDVideoPicture* pPicture)
     }
   }
 
-  pp_postprocess(m_pSource->data, m_pSource->iLineSize, 
+  m_dll.pp_postprocess(m_pSource->data, m_pSource->iLineSize, 
                 m_pTarget->data, m_pTarget->iLineSize,        
                 m_pSource->iWidth, m_pSource->iHeight,
                 0, 0,
