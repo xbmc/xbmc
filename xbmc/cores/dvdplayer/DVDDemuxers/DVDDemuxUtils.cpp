@@ -35,8 +35,9 @@ CDVDDemux::DemuxPacket* CDVDDemuxUtils::AllocateDemuxPacket(int iDataSize)
       FreeDemuxPacket(pPacket);
       return NULL;
     }
+    
     // reset the last 8 bytes to 0;
-    fast_memset(pPacket->pData + iDataSize, 0, INPUT_BUFFER_PADDING_SIZE);
+    memset(pPacket->pData + iDataSize, 0, INPUT_BUFFER_PADDING_SIZE);
   }
   
   return pPacket;

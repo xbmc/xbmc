@@ -5,7 +5,7 @@
 #include "DVDDemuxers\DVDPacketQueue.h"
 #include "DVDCodecs\Video\DVDVideoCodec.h"
 #include "DVDClock.h"
-#include "DVDOverlay.h"
+#include "DVDOverlayContainer.h"
 #include "../VideoRenderers/RenderManager.h"
 
 enum CodecID;
@@ -17,7 +17,7 @@ class CDemuxStreamVideo;
 class CDVDPlayerVideo : public CThread
 {
 public:
-  CDVDPlayerVideo(CDVDDemuxSPU* spu, CDVDClock* pClock);
+  CDVDPlayerVideo(CDVDDemuxSPU* spu, CDVDClock* pClock, CDVDOverlayContainer* pOverlayContainer);
   virtual ~CDVDPlayerVideo();
 
   bool OpenStream(CodecID codecID, int iWidth, int iHeight, CDemuxStreamVideo* pDemuxStreamVideo);
@@ -44,6 +44,8 @@ public:
 
   bool InitializedOutputDevice();
   
+  __int64 GetCurrentPts()                           { return m_iCurrentPts; }
+  
   // used for picture handling between the class and video_refresh_thread()
   CRITICAL_SECTION m_critSection;
   HANDLE m_hEvent;
@@ -54,11 +56,13 @@ public:
   
   int m_iDroppedFrames;
   int m_iSpeed;
-  __int64 m_iVideoDelay;
-
+  
+  __int64 m_iVideoDelay; // not really needed to be an __int64
+  __int64 m_iCurrentPts;
+  
   // classes
   CDVDPacketQueue m_packetQueue;
-  CDVDOverlay m_overlay;
+  CDVDOverlayContainer* m_pOverlayContainer;
   
   CDVDClock* m_pClock;
 

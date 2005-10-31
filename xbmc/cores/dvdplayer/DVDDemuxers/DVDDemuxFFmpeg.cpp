@@ -14,7 +14,7 @@ void CDemuxStreamVideoFFmpeg::GetStreamInfo(std::string& strInfo)
 {
   if(!pPrivate) return;
   char temp[128];
-  avcodec_string(temp, 128, &((AVStream*)pPrivate)->codec, 0);
+  avcodec_string(temp, 128, ((AVStream*)pPrivate)->codec, 0);
   strInfo = temp;
 }
 
@@ -23,7 +23,7 @@ void CDemuxStreamAudioFFmpeg::GetStreamInfo(std::string& strInfo)
 {
   if(!pPrivate) return;
   char temp[128];
-  avcodec_string(temp, 128, &((AVStream*)pPrivate)->codec, 0);
+  avcodec_string(temp, 128, ((AVStream*)pPrivate)->codec, 0);
   strInfo = temp;
 }
 
@@ -94,6 +94,7 @@ CDVDDemuxFFmpeg::CDVDDemuxFFmpeg() : CDVDDemux()
   for (int i = 0; i < MAX_STREAMS; i++) m_streams[i] = NULL;
   m_bLoadedDllAvFormat = false;
   m_bLoadedDllAvCodec = false;
+  m_iCurrentPts = 0LL;
 }
 
 CDVDDemuxFFmpeg::~CDVDDemuxFFmpeg()
@@ -163,7 +164,8 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
 {
   AVInputFormat* iformat = NULL;
   const char* strFile;
-
+  m_iCurrentPts = 0LL;
+  
   if (!pInput) return false;
 
   if (!LoadDlls()) return false;
@@ -180,8 +182,7 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
   m_pInput = pInput;
   strFile = m_pInput->GetFileName();
 
-  if (m_pInput->m_streamType == DVDSTREAM_TYPE_DVD ||
-      m_pInput->HasExtension("vob"))
+  if (m_pInput->IsStreamType(DVDSTREAM_TYPE_DVD))
   {
     // we are playing form a dvd, just open the mpeg demuxer here
     iformat = av_find_input_format("mpeg");
@@ -223,7 +224,7 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
   iformat->flags |= AVFMT_NOFILE;
 
   int iBufferSize = FFMPEG_FILE_BUFFER_SIZE;
-  if (m_pInput->m_streamType == DVDSTREAM_TYPE_DVD) iBufferSize = FFMPEG_DVDNAV_BUFFER_SIZE;
+  if (m_pInput->IsStreamType(DVDSTREAM_TYPE_DVD)) iBufferSize = FFMPEG_DVDNAV_BUFFER_SIZE;
 
   if (!ContextInit(strFile, m_ffmpegBuffer, iBufferSize))
   {
@@ -241,8 +242,8 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
 
   // in combination with libdvdnav seek, av_find_stream_info wont work
   // so we do this for files only
-  if (m_pInput->m_streamType == DVDSTREAM_TYPE_FILE &&
-      !m_pInput->HasExtension("vob"))
+  if (m_pInput->IsStreamType(DVDSTREAM_TYPE_FILE))// &&
+  //    !m_pInput->HasExtension("vob"))
   {
     // disable the AVFMT_NOFILE just once, else ffmpeg isn't able to find stream info
     iformat->flags &= ~AVFMT_NOFILE;
@@ -252,7 +253,7 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
     if (iErr < 0)
     {
       CLog::DebugLog("could not find codec parameters for %s", strFile);
-      if (m_pFormatContext->nb_streams == 1 && m_pFormatContext->streams[0]->codec.codec_id == CODEC_ID_AC3)
+      if (m_pFormatContext->nb_streams == 1 && m_pFormatContext->streams[0]->codec->codec_id == CODEC_ID_AC3)
       {
         // special case, our codecs can still handle it.
       }
@@ -352,38 +353,69 @@ CDVDDemux::DemuxPacket* CDVDDemuxFFmpeg::Read()
   Lock();
   if (m_pFormatContext)
   {
-    if (av_read_frame(m_pFormatContext, &pkt))
+    if (av_read_frame(m_pFormatContext, &pkt) < 0)
     {
       // error reading from stream
-      // XXX, currently there is a bug when reading from libdvdnav at the moment of a STILL_PICTURE
       // XXX, just reset eof for now, and let the dvd player decide what todo
       m_pFormatContext->pb.eof_reached = 0;
       pPacket = NULL;
     }
     else
     {
+      // pkt.pts is not the real pts, but a frame number.
+      // to get our pts we need to multiply the frame delay with that number
+      int num = m_pFormatContext->streams[pkt.stream_index]->time_base.num;
+      int den = m_pFormatContext->streams[pkt.stream_index]->time_base.den;
+        
       // XXX, in some cases ffmpeg returns a negative packet size
-      if (pkt.size <= 0) return NULL;
+      if (pkt.size <= 0 || num == 0 || den == 0 || pkt.stream_index >= MAX_STREAMS)
+      {
+        CLog::Log(LOGERROR, "CDVDDemuxFFmpeg::Read() no valid packet");          
+        return NULL;
+      }
       
       pPacket = CDVDDemuxUtils::AllocateDemuxPacket(pkt.size);
       if (pPacket)
       {
         // copy contents into our own packet
-        
         pPacket->iSize = pkt.size;
         
         // maybe we can avoid a memcpy here by detecting where pkt.destruct is pointing too?
         fast_memcpy(pPacket->pData, pkt.data, pPacket->iSize);
         
-        // pkt.pts is not the real pts, but a frame number.
-        // to get our pts we need to multiply the frame delay with that number
-        int num = m_pFormatContext->streams[pkt.stream_index]->time_base.num;
-        int den = m_pFormatContext->streams[pkt.stream_index]->time_base.den;
-        
         if (pkt.pts == AV_NOPTS_VALUE) pPacket->pts = DVD_NOPTS_VALUE;
-        else pPacket->pts = (num * pkt.pts * DVD_TIME_BASE) / den;
+        else
+        {
+          pPacket->pts = (num * pkt.pts * AV_TIME_BASE) / den;
+          if (m_pFormatContext->start_time != DVD_NOPTS_VALUE &&
+              pPacket->pts > (unsigned int)m_pFormatContext->start_time)
+          {
+            pPacket->pts -= m_pFormatContext->start_time;
+          }
+          
+          // convert to dvdplayer clock ticks
+          pPacket->pts = (pPacket->pts * DVD_TIME_BASE) / AV_TIME_BASE;
+        }
+        
         if (pkt.dts == AV_NOPTS_VALUE) pPacket->dts = DVD_NOPTS_VALUE;
-        else pPacket->dts = (num * pkt.dts * DVD_TIME_BASE) / den;
+        else
+        {
+          pPacket->dts = (num * pkt.dts * AV_TIME_BASE) / den;
+          if (m_pFormatContext->start_time != DVD_NOPTS_VALUE &&
+              pPacket->dts > (unsigned int)m_pFormatContext->start_time)
+          {
+            pPacket->dts -= m_pFormatContext->start_time;
+          }
+          
+          // convert to dvdplayer clock ticks
+          pPacket->dts = (pPacket->dts * DVD_TIME_BASE) / AV_TIME_BASE;
+          
+          // used to guess streamlength
+          if (pPacket->dts > m_iCurrentPts)
+          {
+            m_iCurrentPts = pPacket->dts;
+          }
+        }
 
         pPacket->iStreamId = pkt.stream_index; // XXX just for now
       }
@@ -399,7 +431,7 @@ CDVDDemux::DemuxPacket* CDVDDemuxFFmpeg::Read()
   {
     if (!m_streams[pPacket->iStreamId] ||
         m_streams[pPacket->iStreamId]->pPrivate != m_pFormatContext->streams[pPacket->iStreamId] ||
-        m_streams[pPacket->iStreamId]->codec != m_pFormatContext->streams[pPacket->iStreamId]->codec.codec_id)
+        m_streams[pPacket->iStreamId]->codec != m_pFormatContext->streams[pPacket->iStreamId]->codec->codec_id)
     {
       // content has changed, or stream did not yet exist
       AddStream(pPacket->iStreamId);
@@ -407,8 +439,8 @@ CDVDDemux::DemuxPacket* CDVDDemuxFFmpeg::Read()
     // we already check for a valid m_streams[pPacket->iStreamId] above
     else if (m_streams[pPacket->iStreamId]->type == STREAM_AUDIO)
     {
-      if (((CDemuxStreamAudio*)m_streams[pPacket->iStreamId])->iChannels != m_pFormatContext->streams[pPacket->iStreamId]->codec.channels ||
-          ((CDemuxStreamAudio*)m_streams[pPacket->iStreamId])->iSampleRate != m_pFormatContext->streams[pPacket->iStreamId]->codec.sample_rate)
+      if (((CDemuxStreamAudio*)m_streams[pPacket->iStreamId])->iChannels != m_pFormatContext->streams[pPacket->iStreamId]->codec->channels ||
+          ((CDemuxStreamAudio*)m_streams[pPacket->iStreamId])->iSampleRate != m_pFormatContext->streams[pPacket->iStreamId]->codec->sample_rate)
       {
         // content has changed
         AddStream(pPacket->iStreamId);
@@ -416,8 +448,8 @@ CDVDDemux::DemuxPacket* CDVDDemuxFFmpeg::Read()
     }
     else if (m_streams[pPacket->iStreamId]->type == STREAM_VIDEO)
     {
-      if (((CDemuxStreamVideo*)m_streams[pPacket->iStreamId])->iWidth != m_pFormatContext->streams[pPacket->iStreamId]->codec.width ||
-          ((CDemuxStreamVideo*)m_streams[pPacket->iStreamId])->iHeight != m_pFormatContext->streams[pPacket->iStreamId]->codec.height)
+      if (((CDemuxStreamVideo*)m_streams[pPacket->iStreamId])->iWidth != m_pFormatContext->streams[pPacket->iStreamId]->codec->width ||
+          ((CDemuxStreamVideo*)m_streams[pPacket->iStreamId])->iHeight != m_pFormatContext->streams[pPacket->iStreamId]->codec->height)
       {
         // content has changed
         AddStream(pPacket->iStreamId);
@@ -431,16 +463,33 @@ CDVDDemux::DemuxPacket* CDVDDemuxFFmpeg::Read()
 
 bool CDVDDemuxFFmpeg::Seek(int iTime)
 {
-  Lock();
   __int64 seek_pts = (__int64)iTime * (AV_TIME_BASE / 1000);
+  if (m_pFormatContext->start_time != DVD_NOPTS_VALUE && seek_pts > m_pFormatContext->start_time)
+  {
+    seek_pts += m_pFormatContext->start_time;
+  }
+  
+  Lock();
   int ret = av_seek_frame(m_pFormatContext, -1, seek_pts, seek_pts < 0 ? AVSEEK_FLAG_BACKWARD : 0);
+  m_iCurrentPts = 0LL;
   Unlock();
+  
   return (ret >= 0);
 }
 
 int CDVDDemuxFFmpeg::GetStreamLenght()
 {
-  if (m_pFormatContext->duration == DVD_NOPTS_VALUE) return 0;
+  if (m_pFormatContext->duration == DVD_NOPTS_VALUE)
+  {
+    // no duration is available for us
+    // try to calculate it
+    int iLength = 0;
+    if (m_iCurrentPts > 0 && m_pFormatContext->file_size > 0 && m_pFormatContext->pb.pos > 0)
+    {
+      iLength = (int)(((m_iCurrentPts * m_pFormatContext->file_size) / m_pFormatContext->pb.pos) / 1000) & 0xFFFFFFFF;
+    }
+    return iLength;
+  }
 
   return (int)(m_pFormatContext->duration / (AV_TIME_BASE / 1000));
 }
@@ -465,24 +514,24 @@ void CDVDDemuxFFmpeg::AddStream(int iId)
   {
     if (m_streams[iId]) delete m_streams[iId];
 
-    switch (pStream->codec.codec_type)
+    switch (pStream->codec->codec_type)
     {
     case CODEC_TYPE_AUDIO:
       {
         m_streams[iId] = new CDemuxStreamAudioFFmpeg();
         m_streams[iId]->type = STREAM_AUDIO;
-        ((CDemuxStreamAudio*)m_streams[iId])->iChannels = pStream->codec.channels;
-        ((CDemuxStreamAudio*)m_streams[iId])->iSampleRate = pStream->codec.sample_rate;
+        ((CDemuxStreamAudio*)m_streams[iId])->iChannels = pStream->codec->channels;
+        ((CDemuxStreamAudio*)m_streams[iId])->iSampleRate = pStream->codec->sample_rate;
         break;
       }
     case CODEC_TYPE_VIDEO:
       {
         m_streams[iId] = new CDemuxStreamVideoFFmpeg();
         m_streams[iId]->type = STREAM_VIDEO;
-        ((CDemuxStreamVideo*)m_streams[iId])->iFpsRate = pStream->codec.time_base.den;
-        ((CDemuxStreamVideo*)m_streams[iId])->iFpsScale = pStream->codec.time_base.num;
-        ((CDemuxStreamVideo*)m_streams[iId])->iWidth = pStream->codec.width;
-        ((CDemuxStreamVideo*)m_streams[iId])->iHeight = pStream->codec.height;
+        ((CDemuxStreamVideo*)m_streams[iId])->iFpsRate = pStream->codec->time_base.den;
+        ((CDemuxStreamVideo*)m_streams[iId])->iFpsScale = pStream->codec->time_base.num;
+        ((CDemuxStreamVideo*)m_streams[iId])->iWidth = pStream->codec->width;
+        ((CDemuxStreamVideo*)m_streams[iId])->iHeight = pStream->codec->height;
         break;
       }
     case CODEC_TYPE_DATA:
@@ -508,7 +557,7 @@ void CDVDDemuxFFmpeg::AddStream(int iId)
     // generic stuff
     if (pStream->duration != AV_NOPTS_VALUE) m_streams[iId]->iDuration = (int)((pStream->duration / AV_TIME_BASE) & 0xFFFFFFFF);
 
-    m_streams[iId]->codec = pStream->codec.codec_id;
+    m_streams[iId]->codec = pStream->codec->codec_id;
     m_streams[iId]->iId = iId;
 
     //FFMPEG has an error doesn't set type properly for DTS
