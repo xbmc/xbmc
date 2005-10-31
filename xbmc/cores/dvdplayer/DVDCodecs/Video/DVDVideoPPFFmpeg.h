@@ -2,6 +2,7 @@
 #pragma once
 
 #include "DVDVideoCodec.h"
+#include "DllPostProc.h"
 
 class CDVDVideoPPFFmpeg
 {
@@ -37,4 +38,6 @@ protected:
   int m_iInitWidth, m_iInitHeight;
   bool CheckInit(int iWidth, int iHeight);
   bool CheckFrameBuffer(const DVDVideoPicture* pSource);
+  
+  DllPostProc m_dll;
 };
