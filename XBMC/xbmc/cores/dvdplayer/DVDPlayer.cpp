@@ -1105,6 +1105,12 @@ int CDVDPlayer::OnDVDNavResult(void* pData, int iMessage)
         FlushBuffers();
       }
       break;
+    case DVDNAV_STOP:
+      {
+        CLog::Log(LOGDEBUG, "DVDNAV_STOP");
+        m_dvd.state = DVDSTATE_NORMAL;
+      }
+      break;
     default:
     {}
       break;
