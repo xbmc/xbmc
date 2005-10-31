@@ -14,10 +14,10 @@ typedef struct SPUData
 }
 SPUData;
 
-class CSPUInfo : public CDVDOverlayPicture
+class CSPUInfo : public CDVDOverlaySpu
 {
 public:
-  CSPUInfo() : CDVDOverlayPicture()
+  CSPUInfo() : CDVDOverlaySpu()
   {
     pData = result;
     bHasColor = false;

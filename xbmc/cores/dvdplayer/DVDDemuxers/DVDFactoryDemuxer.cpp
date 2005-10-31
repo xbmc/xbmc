@@ -11,7 +11,7 @@
 
 CDVDDemux* CDVDFactoryDemuxer::CreateDemuxer(CDVDInputStream* pInputStream)
 {
-  if (pInputStream->m_streamType == DVDSTREAM_TYPE_HTTP)
+  if (pInputStream->IsStreamType(DVDSTREAM_TYPE_HTTP))
   {
     CDVDInputStreamHttp* pHttpStream = (CDVDInputStreamHttp*)pInputStream;
     // we can always check header info in (pHttpStream->GetHttpHeader())

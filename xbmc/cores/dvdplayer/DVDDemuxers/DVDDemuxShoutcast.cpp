@@ -44,7 +44,7 @@ bool CDVDDemuxShoutcast::Open(CDVDInputStream* pInput)
   m_pInput = pInput;
   
   // the input stream should be a http stream
-  if (pInput->m_streamType != DVDSTREAM_TYPE_HTTP) return false;
+  if (!pInput->IsStreamType(DVDSTREAM_TYPE_HTTP)) return false;
   CDVDInputStreamHttp* pInputStreamHttp = (CDVDInputStreamHttp*)pInput;
   
   CHttpHeader* pHeader = pInputStreamHttp->GetHttpHeader();

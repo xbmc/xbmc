@@ -12,9 +12,9 @@
 #include "Audio\DVDAudioCodecLibDts.h"
 #include "Audio\DVDAudioCodecLibMad.h"
 #include "Audio\DVDAudioCodecLibFaad.h"
+#include "Audio\DVDAudioCodecPcm.h"
 
-#define EMULATE_INTTYPES
-#include "..\ffmpeg\avcodec.h"
+#include "DVDCodecs.h"
 
 
 CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CodecID codecID)
@@ -59,10 +59,25 @@ CDVDAudioCodec* CDVDFactoryCodec::CreateAudioCodec(CodecID codecID)
       pAudioCodec = new CDVDAudioCodecLibFaad();
       break;
     }
-  case CODEC_ID_PCM_S16BE:
+  case CODEC_ID_PCM_S32LE:
+  case CODEC_ID_PCM_S32BE:
+  case CODEC_ID_PCM_U32LE:
+  case CODEC_ID_PCM_U32BE:
+  case CODEC_ID_PCM_S24LE:
+  case CODEC_ID_PCM_S24BE:
+  case CODEC_ID_PCM_U24LE:
+  case CODEC_ID_PCM_U24BE:
+  case CODEC_ID_PCM_S24DAUD:
   case CODEC_ID_PCM_S16LE:
+  case CODEC_ID_PCM_S16BE:
+  case CODEC_ID_PCM_U16LE:
+  case CODEC_ID_PCM_U16BE:
+  case CODEC_ID_PCM_S8:
+  case CODEC_ID_PCM_U8:
+  case CODEC_ID_PCM_ALAW:
+  case CODEC_ID_PCM_MULAW:
     {
-      pAudioCodec = new CDVDAudioCodecFFmpeg();
+      pAudioCodec = new CDVDAudioCodecPcm();
       break;
     }
   default:

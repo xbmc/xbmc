@@ -4,6 +4,7 @@
 #include "DVDInputStream.h"
 #include "..\IDVDPlayer.h"
 #include <string>
+#include "..\DVDOverlay.h"
 
 #include "DllDvdNav.h"
 
@@ -41,6 +42,7 @@ public:
   virtual void Close();
   virtual int Read(BYTE* buf, int buf_size);
   virtual __int64 Seek(__int64 offset, int whence);
+  virtual int GetBlockSize() { return DVDSTREAM_BLOCK_SIZE_DVD; }
   
   void ActivateButton();
   void SelectButton(int iButton);
@@ -57,7 +59,7 @@ public:
 
   int GetCurrentButton();
   
-  bool GetCurrentButtonInfo(CDVDOverlayPicture* pOverlayPicture, CDVDDemuxSPU* pSPU, int iButtonType /* 0 = selection, 1 = action (clicked)*/);
+  bool GetCurrentButtonInfo(CDVDOverlaySpu* pOverlayPicture, CDVDDemuxSPU* pSPU, int iButtonType /* 0 = selection, 1 = action (clicked)*/);
   
   bool IsInMenu();
 
