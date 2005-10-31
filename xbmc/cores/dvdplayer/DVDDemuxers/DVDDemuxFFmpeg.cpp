@@ -464,7 +464,7 @@ CDVDDemux::DemuxPacket* CDVDDemuxFFmpeg::Read()
 bool CDVDDemuxFFmpeg::Seek(int iTime)
 {
   __int64 seek_pts = (__int64)iTime * (AV_TIME_BASE / 1000);
-  if (m_pFormatContext->start_time != DVD_NOPTS_VALUE && seek_pts > m_pFormatContext->start_time)
+  if (m_pFormatContext->start_time != DVD_NOPTS_VALUE && seek_pts < m_pFormatContext->start_time)
   {
     seek_pts += m_pFormatContext->start_time;
   }
