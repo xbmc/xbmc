@@ -1943,3 +1943,31 @@ float CMPlayer::GetActualFPS()
   mplayer_GetVideoInfo(strFourCC, strVideoCodec, &fFPS, &iWidth, &iHeight, &lFrames2Early, &lFrames2Late);
   return options.GetSpeed()*fFPS;
 }
+
+bool CMPlayer::GetCurrentSubtitle(CStdStringW& strSubtitle)
+{
+  strSubtitle = L"";
+  
+  subtitle* sub = mplayer_GetCurrentSubtitle();
+  if (sub)
+  {
+    for (int i = 0; i < sub->lines; i++)
+    {
+      if (i != 0)
+      {
+        strSubtitle += L"\n";
+      }
+
+      CStdStringA S = sub->text[i];
+      CStdStringW W;
+      g_charsetConverter.subtitleCharsetToFontCharset(S, W);
+      strSubtitle += W;
+    }
+    
+    return true;
+  }
+    
+  return false;
+
+  
+}

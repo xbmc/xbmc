@@ -691,31 +691,20 @@ renderDialogs:
 
 void CGUIWindowFullScreen::RenderTTFSubtitles()
 {
-  if ( g_application.GetCurrentPlayer() == EPC_MPLAYER && CUtil::IsUsingTTFSubtitles() && g_application.m_pPlayer->GetSubtitleVisible() && m_subtitleFont)
+  //if ( g_application.GetCurrentPlayer() == EPC_MPLAYER && CUtil::IsUsingTTFSubtitles() && g_application.m_pPlayer->GetSubtitleVisible() && m_subtitleFont)
+  if ((g_application.GetCurrentPlayer() == EPC_MPLAYER || g_application.GetCurrentPlayer() == EPC_DVDPLAYER) &&
+      CUtil::IsUsingTTFSubtitles() &&
+      g_application.m_pPlayer->GetSubtitleVisible() &&
+      m_subtitleFont)
   {
     CSingleLock lock (m_fontLock);
 
     g_graphicsContext.SetWindowAlpha(255);
     g_graphicsContext.SetScalingResolution(g_graphicsContext.GetVideoResolution(), 0, 0, false);
 
-    subtitle* sub = mplayer_GetCurrentSubtitle();
-
-    if (sub != NULL)
+    CStdStringW subtitleText = L"";
+    if (g_application.m_pPlayer && g_application.m_pPlayer->GetCurrentSubtitle(subtitleText))
     {
-      CStdStringW subtitleText = L"";
-
-      for (int i = 0; i < sub->lines; i++)
-      {
-        if (i != 0)
-        {
-          subtitleText += L"\n";
-        }
-
-        CStdStringA S = sub->text[i];
-        CStdStringW W;
-        g_charsetConverter.subtitleCharsetToFontCharset(S, W);
-        subtitleText += W;
-      }
 
       int m_iResolution = g_graphicsContext.GetVideoResolution();
 
