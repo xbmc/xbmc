@@ -917,3 +917,17 @@ bool CDVDInputStreamNavigator::PlayPart(int iTitle, int iPart)
   
   return false;
 }
+
+void CDVDInputStreamNavigator::EnableSubtitleStream(bool bEnable)
+{
+  int iCurrentStream = GetActiveSubtitleStream();
+  if (bEnable)
+  {
+    SetActiveSubtitleStream(iCurrentStream);
+  }
+  else
+  {
+    // hide subtitles
+    SetActiveSubtitleStream(iCurrentStream | 0x80);
+  }
+}

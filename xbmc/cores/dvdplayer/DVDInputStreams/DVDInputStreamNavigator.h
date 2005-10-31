@@ -66,7 +66,7 @@ public:
   int GetSubTitleStreamCount();
   bool SetActiveSubtitleStream(int iId);
   int GetMpegSubtitleStream(int iId);
-
+  void EnableSubtitleStream(bool bEnable);
 
   int GetActiveAudioStream();
   std::string GetAudioStreamLanguage(int iId);
