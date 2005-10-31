@@ -9,8 +9,11 @@
 #include "DVDClock.h"
 #include "DVDPlayerAudio.h"
 #include "DVDPlayerVideo.h"
+#include "DVDPlayerSubtitle.h"
+
 #include "DVDPlayerMessenger.h"
 //#include "DVDChapterReader.h"
+#include "DVDSubtitles\DVDFactorySubtitle.h"
 
 class CDVDTimerThread;
 class CDVDInputStream;
@@ -110,6 +113,9 @@ public:
   virtual void DoAudioWork()                                    { m_dvdPlayerAudio.DoWork(); }
   virtual bool OnAction(const CAction &action);
   virtual bool HasMenu();
+  
+  virtual bool GetCurrentSubtitle(CStdStringW& strSubtitle);
+  
   // virtual IChapterProvider* GetChapterProvider();
 
   virtual int OnDVDNavResult(void* pData, int iMessage);
@@ -128,7 +134,10 @@ private:
   bool CloseAudioStream(bool bWaitForBuffers);
   bool CloseVideoStream(bool bWaitForBuffers);
   
-  void ProcessSubData(CDVDDemux::DemuxPacket* pPacket);
+  void ProcessAudioData(CDemuxStream* pStream, CDVDDemux::DemuxPacket* pPacket);
+  void ProcessVideoData(CDemuxStream* pStream, CDVDDemux::DemuxPacket* pPacket);
+  void ProcessSubData(CDemuxStream* pStream, CDVDDemux::DemuxPacket* pPacket);
+  
   __int64 GetTotalTimeInMsec();
   void FlushBuffers();
 
@@ -151,10 +160,13 @@ private:
   // classes
   CDVDPlayerAudio m_dvdPlayerAudio; // audio part
   CDVDPlayerVideo m_dvdPlayerVideo; // video part
+  CDVDPlayerSubtitle m_dvdPlayerSubtitle; // subtitle part
+  
   CDVDPlayerMessenger m_messenger;  // thread messenger
   CDVDClock m_clock;                // master clock
   CDVDDemuxSPU m_dvdspus;           // dvd subtitle demuxer
-  //CDVDChapterReader m_chapterReader;// dvd chapter provider
+  CDVDOverlayContainer m_overlayContainer;
+  // CDVDChapterReader m_chapterReader;// dvd chapter provider
   
   CDVDInputStream* m_pInputStream;  // input stream for current playing file
   CDVDDemux* m_pDemuxer;            // demuxer for current playing file

@@ -1,9 +1,17 @@
 
 #pragma once
 
-#define DVDSTREAM_TYPE_FILE 1
-#define DVDSTREAM_TYPE_DVD  2
-#define DVDSTREAM_TYPE_HTTP 3
+enum DVDStreamType
+{
+  DVDSTREAM_TYPE_NONE   = -1,
+  DVDSTREAM_TYPE_FILE   = 1,
+  DVDSTREAM_TYPE_DVD    = 2,
+  DVDSTREAM_TYPE_HTTP   = 3,
+  DVDSTREAM_TYPE_MEMORY = 4
+};
+
+#define DVDSTREAM_BLOCK_SIZE_FILE (2048 * 16)
+#define DVDSTREAM_BLOCK_SIZE_DVD  2048
 
 class CDVDInputStream
 {
@@ -17,9 +25,14 @@ public:
   
   const char* GetFileName();
   bool HasExtension(char* sExtension);
-
-  int m_streamType;
+  
+  int GetBlockSize() { return DVDSTREAM_BLOCK_SIZE_FILE; }
+  bool IsStreamType(DVDStreamType type) { return m_streamType == type; }
+  
+  
 
 protected:
+  DVDStreamType m_streamType;
+  
   char* m_strFileName;
 };

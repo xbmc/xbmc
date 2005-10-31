@@ -120,6 +120,12 @@ public:
   virtual bool Seek(int iTime) = 0;
 
   /*
+   * returns the start time of this stream in msec
+   * needed for e.g. vob files that are part of a dvd
+   */
+  //virtual int GetStreamStart() { return 0; }
+  
+  /*
    * returns the total time in msec
    */
   virtual int GetStreamLenght() = 0;
