@@ -5,19 +5,19 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
-
- - 31-11-2005 fixed: dvdplayer, after the last update, enabeling deinterlacing could cause a crash
- - 31-11-2005 update: dvdplayer, ffmpeg to latest version
- - 31-11-2005 fixed: dvdplayer, subtitle issues. subtitles should now be displayed if you enable them when playing a dvd
- - 31-11-2005 fixed: dvdplayer, on some menu overlays, transparency was ignored and resulted into non visable menu overlays
- - 31-11-2005 added: dvdplayer, media duration estimation when no duration is available
- - 31-11-2005 fixed: dvdplayer, vob files had no timing information
- - 31-11-2005 fixed: dvdplayer, only the first vob file of a dvd was seekable and had the correct time values
- - 31-11-2005 cleanup of file-input classes for dvdplayer
- - 31-11-2005 removed named events and created normal events of them
- - 31-11-2005 added: basic external subtitle support to the dvdplayer (not enabled)
- - 31-11-2005 fixed: bug report #1312797, dvdplayer: some rips hang with 1 sec left to play.
- - 31-11-2005 changed: paths to screenshots and shoutcast rips to their path variables which support non default locations ($RECORDINGS, $SCREENSHOTS)
+ - 31-10-2005 changed: files ending in .ts.001 will now be consider to be mpeg files and not rar archives.
+ - 31-10-2005 fixed: dvdplayer, after the last update, enabeling deinterlacing could cause a crash
+ - 31-10-2005 update: dvdplayer, ffmpeg to latest version
+ - 31-10-2005 fixed: dvdplayer, subtitle issues. subtitles should now be displayed if you enable them when playing a dvd
+ - 31-10-2005 fixed: dvdplayer, on some menu overlays, transparency was ignored and resulted into non visable menu overlays
+ - 31-10-2005 added: dvdplayer, media duration estimation when no duration is available
+ - 31-10-2005 fixed: dvdplayer, vob files had no timing information
+ - 31-10-2005 fixed: dvdplayer, only the first vob file of a dvd was seekable and had the correct time values
+ - 31-10-2005 cleanup of file-input classes for dvdplayer
+ - 31-10-2005 removed named events and created normal events of them
+ - 31-10-2005 added: basic external subtitle support to the dvdplayer (not enabled)
+ - 31-10-2005 fixed: bug report #1312797, dvdplayer: some rips hang with 1 sec left to play.
+ - 31-10-2005 changed: paths to screenshots and shoutcast rips to their path variables which support non default locations ($RECORDINGS, $SCREENSHOTS)
  - 30-10-2005 added: "lastfm:" virtual filesystem (initial audioscrobbler web services support)
                      Add a My Music share to "lastfm://" to test it, and make sure you are registered with audioscrobbler.
  - 30-10-2005 fixed: [1341077] English language string had a invalid closing tag (Thnx to blittan)
