@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 31-11-2005 changed: paths to screenshots and shoutcast rips to their path variables which support non default locations ($RECORDINGS, $SCREENSHOTS)
  - 30-10-2005 added: "lastfm:" virtual filesystem (initial audioscrobbler web services support)
                      Add a My Music share to "lastfm://" to test it, and make sure you are registered with audioscrobbler.
  - 30-10-2005 fixed: [1341077] English language string had a invalid closing tag (Thnx to blittan)
