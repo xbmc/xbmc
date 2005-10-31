@@ -1010,7 +1010,7 @@ bool CUtil::IsRAR(const CStdString& strFile) // also checks for comic books
 {
   CStdString strExtension;
   CUtil::GetExtension(strFile,strExtension);
-  if (strExtension.Equals(".001")) return true;
+  if (strExtension.Equals(".001") && strFile.Mid(strFile.length()-7,7).CompareNoCase(".ts.001")) return true;
   if (strExtension.CompareNoCase(".cbr") == 0) return true;
   if (strExtension.CompareNoCase(".rar") == 0)
   {
