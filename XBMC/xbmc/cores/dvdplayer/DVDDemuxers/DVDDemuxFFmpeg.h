@@ -67,4 +67,6 @@ protected:
   
   bool m_bLoadedDllAvFormat;
   bool m_bLoadedDllAvCodec;
+  
+  unsigned __int64 m_iCurrentPts; // used for stream length estimation
 };

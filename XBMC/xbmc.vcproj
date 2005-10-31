@@ -2187,10 +2187,19 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\cores\dvdplayer\DVDDemuxSPU.h">
 				</File>
 				<File
-					RelativePath=".\xbmc\cores\dvdplayer\DVDOverlay.cpp">
+					RelativePath=".\xbmc\cores\dvdplayer\DVDOverlay.h">
 				</File>
 				<File
-					RelativePath=".\xbmc\cores\dvdplayer\DVDOverlay.h">
+					RelativePath=".\xbmc\cores\dvdplayer\DVDOverlayContainer.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\dvdplayer\DVDOverlayContainer.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\dvdplayer\DVDOverlayRenderer.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\dvdplayer\DVDOverlayRenderer.h">
 				</File>
 				<File
 					RelativePath=".\xbmc\cores\dvdplayer\DVDPlayer.cpp">
@@ -2215,6 +2224,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				</File>
 				<File
 					RelativePath=".\xbmc\cores\dvdplayer\DVDPlayerMessenger.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\dvdplayer\DVDPlayerSubtitle.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\dvdplayer\DVDPlayerSubtitle.h">
 				</File>
 				<File
 					RelativePath=".\xbmc\cores\dvdplayer\DVDPlayerVideo.cpp">
@@ -2296,6 +2311,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 						</File>
 						<File
 							RelativePath=".\xbmc\cores\dvdplayer\DVDCodecs\Audio\DVDAudioCodecPassthrough.h">
+						</File>
+						<File
+							RelativePath=".\xbmc\cores\dvdplayer\DVDCodecs\Audio\DVDAudioCodecPcm.cpp">
+						</File>
+						<File
+							RelativePath=".\xbmc\cores\dvdplayer\DVDCodecs\Audio\DVDAudioCodecPcm.h">
 						</File>
 					</Filter>
 					<Filter
@@ -2404,6 +2425,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 						RelativePath=".\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamHttp.h">
 					</File>
 					<File
+						RelativePath=".\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamMemory.cpp">
+					</File>
+					<File
+						RelativePath=".\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamMemory.h">
+					</File>
+					<File
 						RelativePath=".\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamNavigator.cpp">
 					</File>
 					<File
@@ -2472,6 +2499,37 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					</File>
 					<File
 						RelativePath=".\xbmc\cores\dvdplayer\DVDInputStreams\dvdnav\vmcmd.h">
+					</File>
+				</Filter>
+				<Filter
+					Name="DVDSubtitles"
+					Filter="">
+					<File
+						RelativePath=".\xbmc\cores\dvdplayer\DVDSubtitles\DVDFactorySubtitle.cpp">
+					</File>
+					<File
+						RelativePath=".\xbmc\cores\dvdplayer\DVDSubtitles\DVDFactorySubtitle.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\cores\dvdplayer\DVDSubtitles\DVDSubtitleLineCollection.cpp">
+					</File>
+					<File
+						RelativePath=".\xbmc\cores\dvdplayer\DVDSubtitles\DVDSubtitleLineCollection.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\cores\dvdplayer\DVDSubtitles\DVDSubtitleParser.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\cores\dvdplayer\DVDSubtitles\DVDSubtitleParserSubrip.cpp">
+					</File>
+					<File
+						RelativePath=".\xbmc\cores\dvdplayer\DVDSubtitles\DVDSubtitleParserSubrip.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\cores\dvdplayer\DVDSubtitles\DVDSubtitleStream.cpp">
+					</File>
+					<File
+						RelativePath=".\xbmc\cores\dvdplayer\DVDSubtitles\DVDSubtitleStream.h">
 					</File>
 				</Filter>
 			</Filter>
