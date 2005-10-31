@@ -364,14 +364,13 @@ int CDVDInputStreamNavigator::ProcessBlock(BYTE* dest_buffer, int* read)
 
     case DVDNAV_STOP:
       {
-        CLog::Log(LOGDEBUG, "DVDNAV_STOP");
         // Playback should end here.
         
         // don't read any further, it could be libdvdnav had some problems reading
         // the disc. reading further results in a crash
         m_bStopped = true;
         
-        // m_pDVDPlayer->OnDVDNavResult(NULL, DVDNAV_STOP);
+        m_pDVDPlayer->OnDVDNavResult(NULL, DVDNAV_STOP);
         iNavresult = DVDNAV_STOP;
         bFinished = true;
       }
@@ -772,7 +771,7 @@ int CDVDInputStreamNavigator::GetAudioStreamCount()
   return m_dll.dvdnav_get_nr_of_audio_streams(m_dvdnav);
 }
 
-bool CDVDInputStreamNavigator::GetCurrentButtonInfo(CDVDOverlayPicture* pOverlayPicture, CDVDDemuxSPU* pSPU, int iButtonType)
+bool CDVDInputStreamNavigator::GetCurrentButtonInfo(CDVDOverlaySpu* pOverlayPicture, CDVDDemuxSPU* pSPU, int iButtonType)
 {
   int alpha[2][4];
   int color[2][4];
@@ -784,11 +783,18 @@ bool CDVDInputStreamNavigator::GetCurrentButtonInfo(CDVDOverlayPicture* pOverlay
 
   if (m_dll.dvdnav_get_button_info(m_dvdnav, alpha, color) == 0)
   {
-    pOverlayPicture->alpha[0] = alpha[iButtonType][0];
-    pOverlayPicture->alpha[1] = alpha[iButtonType][1];
-    pOverlayPicture->alpha[2] = alpha[iButtonType][2];
-    pOverlayPicture->alpha[3] = alpha[iButtonType][3];
-
+    int* a = pOverlayPicture->alpha;
+    
+    // we could also check the alpha from dvdnav_get_button_info
+    // by checking if one of those values are valid (!0) and set them
+    if (!a[0] && !a[1] && !a[2] && !a[3]) 
+    {
+      pOverlayPicture->alpha[0] = alpha[iButtonType][0];
+      pOverlayPicture->alpha[1] = alpha[iButtonType][1];
+      pOverlayPicture->alpha[2] = alpha[iButtonType][2];
+      pOverlayPicture->alpha[3] = alpha[iButtonType][3];
+    }
+    
     int i;
     for (i = 0; i < 3; i++) pOverlayPicture->color[0][i] = pSPU->m_clut[color[iButtonType][0]][i];
     for (i = 0; i < 3; i++) pOverlayPicture->color[1][i] = pSPU->m_clut[color[iButtonType][1]][i];
