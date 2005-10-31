@@ -1,6 +1,8 @@
 #pragma once
 #include "IAudioCallback.h"
 
+//class IChapterProvider;
+
 class IPlayerCallback
 {
 public:
@@ -95,6 +97,10 @@ public:
   virtual void DoAudioWork(){};
   virtual bool OnAction(const CAction &action) { return false; };
 
+  virtual bool GetCurrentSubtitle(CStdStringW& strSubtitle) { strSubtitle = ""; return false; }
+  
+  //virtual IChapterProvider* GetChapterProvider() { return NULL; }
+  
 protected:
   IPlayerCallback& m_callback;
 };

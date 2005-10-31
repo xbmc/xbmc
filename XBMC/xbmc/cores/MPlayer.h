@@ -147,6 +147,8 @@ public:
   virtual bool IsCaching() const {return m_bCaching;};
   virtual int GetCacheLevel() const {return m_CacheLevel;};
 
+  virtual bool GetCurrentSubtitle(CStdStringW& strSubtitle);
+  
   CStdString _SubtitleExtension;
 protected:
   int GetCacheSize(bool bFileOnHD, bool bFileOnISO, bool bFileOnUDF, bool bFileOnInternet, bool bFileOnLAN, bool bIsVideo, bool bIsAudio, bool bIsDVD);
