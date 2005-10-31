@@ -353,7 +353,7 @@ bool CFileItem::IsRAR() const
 {
   CStdString strExtension;
   CUtil::GetExtension(m_strPath, strExtension);
-  if ( (strExtension.CompareNoCase(".rar") == 0) || (strExtension.Equals(".001")) ) return true; // sometimes the first rar is named .001
+  if ( (strExtension.CompareNoCase(".rar") == 0) || ((strExtension.Equals(".001") && m_strPath.Mid(m_strPath.length()-7,7).CompareNoCase(".ts.001"))) ) return true; // sometimes the first rar is named .001
   return false;
 }
 
