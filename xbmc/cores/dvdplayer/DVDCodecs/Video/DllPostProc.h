@@ -1,0 +1,49 @@
+#pragma once
+#include "../../../../DynamicDll.h"
+
+#include "..\..\ffmpeg\ffmpeg.h"
+#include "..\..\ffmpeg\avcodec.h"
+#include "..\..\ffmpeg\postprocess.h"
+
+class DllAvCodecInterface
+{
+public:
+  virtual void pp_postprocess(uint8_t * src[3], int srcStride[3], uint8_t * dst[3], int dstStride[3],
+                   int horizontalSize, int verticalSize, QP_STORE_T *QP_store,  int QP_stride,
+		           pp_mode_t *mode, pp_context_t *ppContext, int pict_type)=0;	           
+  virtual pp_mode_t *pp_get_mode_by_name_and_quality(char *name, int quality)=0;
+  virtual void pp_free_mode(pp_mode_t *mode)=0;
+  virtual pp_context_t *pp_get_context(int width, int height, int flags)=0;
+  virtual void pp_free_context(pp_context_t *ppContext)=0;
+};
+
+class DllPostProc : public DllDynamic, DllAvCodecInterface
+{
+  DECLARE_DLL_WRAPPER(DllPostProc, Q:\\system\\players\\dvdplayer\\postproc.dll)
+  DEFINE_METHOD11(void, pp_postprocess, (uint8_t* p1[3], int p2[3], uint8_t * p3[3], int p4[3],
+                      int p5, int p6, QP_STORE_T *p7,  int p8,
+                      pp_mode_t *p9, pp_context_t *p10, int p11))
+  DEFINE_METHOD2(pp_mode_t*, pp_get_mode_by_name_and_quality, (char *p1, int p2))
+  DEFINE_METHOD1(void, pp_free_mode, (pp_mode_t *p1))
+  DEFINE_METHOD3(pp_context_t*, pp_get_context, (int p1, int p2, int p3))
+  DEFINE_METHOD1(void, pp_free_context, (pp_context_t *p1))
+
+  BEGIN_METHOD_RESOLVE()
+    RESOLVE_METHOD(pp_postprocess)
+    RESOLVE_METHOD(pp_get_mode_by_name_and_quality)
+    RESOLVE_METHOD(pp_free_mode)
+    RESOLVE_METHOD(pp_get_context)
+    RESOLVE_METHOD(pp_free_context)
+  END_METHOD_RESOLVE()
+};
+
+
+
+
+
+
+/**
+ * returns a pp_mode_t or NULL if an error occured
+ * name is the string after "-pp" on the command line
+ * quality is a number from 0 to PP_QUALITY_MAX
+ */

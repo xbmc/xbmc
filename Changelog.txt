@@ -6,6 +6,7 @@
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
 
+ - 31-11-2005 fixed: dvdplayer, after the last update, enabeling deinterlacing could cause a crash
  - 31-11-2005 update: dvdplayer, ffmpeg to latest version
  - 31-11-2005 fixed: dvdplayer, subtitle issues. subtitles should now be displayed if you enable them when playing a dvd
  - 31-11-2005 fixed: dvdplayer, on some menu overlays, transparency was ignored and resulted into non visable menu overlays
