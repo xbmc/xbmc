@@ -133,8 +133,8 @@ namespace PYXBMC
 		if (!PyArg_ParseTuple(args, "OOOO", &pUpControl, &pDownControl, &pLeftControl, &pRightControl)) return NULL;
 
 		// type checking, objects should be of type Control
-		if(Control_Check(pUpControl) &&	Control_Check(pDownControl) &&
-				Control_Check(pLeftControl) && Control_Check(pRightControl))
+		if(!(Control_Check(pUpControl) &&	Control_Check(pDownControl) &&
+				Control_Check(pLeftControl) && Control_Check(pRightControl)))
 		{
 			PyErr_SetString(PyExc_TypeError, "Objects should be of type Control");
 			return NULL;
@@ -173,7 +173,7 @@ namespace PYXBMC
 		Control* pControl;
 		if (!PyArg_ParseTuple(args, "O", &pControl)) return NULL;
 		// type checking, object should be of type Control
-		if(strcmp(((PyObject*)pControl)->ob_type->tp_base->tp_name, Control_Type.tp_name))
+		if(!Control_Check(pControl))
 		{
 			PyErr_SetString(PyExc_TypeError, "Object should be of type Control");
 			return NULL;
@@ -208,7 +208,7 @@ namespace PYXBMC
 		Control* pControl;
 		if (!PyArg_ParseTuple(args, "O", &pControl)) return NULL;
 		// type checking, object should be of type Control
-		if(strcmp(((PyObject*)pControl)->ob_type->tp_base->tp_name, Control_Type.tp_name))
+		if (!Control_Check(pControl))
 		{
 			PyErr_SetString(PyExc_TypeError, "Object should be of type Control");
 			return NULL;
@@ -243,7 +243,7 @@ namespace PYXBMC
 		Control* pControl;
 		if (!PyArg_ParseTuple(args, "O", &pControl)) return NULL;
 		// type checking, object should be of type Control
-		if(strcmp(((PyObject*)pControl)->ob_type->tp_base->tp_name, Control_Type.tp_name))
+		if (!Control_Check(pControl))
 		{
 			PyErr_SetString(PyExc_TypeError, "Object should be of type Control");
 			return NULL;
@@ -278,7 +278,7 @@ namespace PYXBMC
 		Control* pControl;
 		if (!PyArg_ParseTuple(args, "O", &pControl)) return NULL;
 		// type checking, object should be of type Control
-		if(strcmp(((PyObject*)pControl)->ob_type->tp_base->tp_name, Control_Type.tp_name))
+		if (!Control_Check(pControl))
 		{
 			PyErr_SetString(PyExc_TypeError, "Object should be of type Control");
 			return NULL;

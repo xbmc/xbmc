@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+
+ - 01-11-2005 fixed: applied sf patch #1283584 to fix some python control issues, (Thnx to hempster)
  - 31-10-2005 changed: files ending in .ts.001 will now be consider to be mpeg files and not rar archives.
  - 31-10-2005 fixed: dvdplayer, after the last update, enabeling deinterlacing could cause a crash
  - 31-10-2005 update: dvdplayer, ffmpeg to latest version
