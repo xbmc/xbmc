@@ -175,13 +175,13 @@ CGUISettings::CGUISettings(void)
   AddInt(8, "MyPrograms.NTSCMode", 16110, 0, 0, 1, 3, SPIN_CONTROL_TEXT);
   
   AddCategory(1,"ProgramFiles",744);
-  AddBool(8, "ProgramFiles.HideParentDirItems", 13306, true);
-  AddBool(9, "ProgramFiles.UseAutoSwitching", 14011, false);
-  AddBool(10, "ProgramFiles.AutoSwitchUseLargeThumbs", 14012, false);
-  AddInt(11, "ProgramFiles.AutoSwitchMethod", 14013, 0, 0, 1, 2, SPIN_CONTROL_TEXT);
-  AddInt(12, "ProgramFiles.AutoSwitchPercentage", 14014, 50, 0, 5, 100, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
+  AddBool(1, "ProgramFiles.HideParentDirItems", 13306, true);
+  AddBool(2, "ProgramFiles.UseAutoSwitching", 14011, false);
+  AddBool(3, "ProgramFiles.AutoSwitchUseLargeThumbs", 14012, false);
+  AddInt(4, "ProgramFiles.AutoSwitchMethod", 14013, 0, 0, 1, 2, SPIN_CONTROL_TEXT);
+  AddInt(5, "ProgramFiles.AutoSwitchPercentage", 14014, 50, 0, 5, 100, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
 
-  AddCategory(2, "XLinkKai", 714);
+  AddCategory(1, "XLinkKai", 714);
   AddBool(1, "XLinkKai.EnableNotifications", 14008, true);
   AddString(2, "XLinkKai.GamesDir", 14009, "f:\\games", BUTTON_CONTROL_INPUT, false, 16015);
   AddString(3, "XLinkKai.UserName", 709, "", BUTTON_CONTROL_INPUT, false, 709);
