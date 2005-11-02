@@ -24,17 +24,13 @@ static FileState m_fileState;
 
 CFileLastFM::CFileLastFM() : CThread()
 {
-  m_hDownloadThread          = NULL;
   m_fileState.bHandshakeDone = false;
   m_fileState.bActionDone    = false;
   m_fileState.bError         = false;
-  int cache = g_guiSettings.GetInt("CacheAudio.Internet") * 1024;
-  if (cache == 0) cache = 32768;
-  m_ringbuf.Create(cache);
+  
   m_pFile        = NULL;
   m_pSyncBuffer  = new char[6];
   m_bOpened      = false;
-  m_bFirstSync   = true;
   m_bDirectSkip  = false;
   m_hWorkerEvent = CreateEvent(NULL, false, false, NULL);
 }
@@ -45,7 +41,6 @@ CFileLastFM::~CFileLastFM()
   CloseHandle(m_hWorkerEvent);
   delete[] m_pSyncBuffer;
   m_pSyncBuffer = NULL;
-  m_ringbuf.Destroy();
 }
 
 bool CFileLastFM::CanSeek()
@@ -240,22 +235,12 @@ bool CFileLastFM::Open(const CURL& url, bool bBinary)
   }
 
   dlgProgress->SetLine(2, 15107); //Buffering...
-  dlgProgress->ShowProgressBar(true);
-  m_fileState.bActionDone = false;
-  DWORD threadid;
-  m_hDownloadThread = CreateThread(NULL, 0, threadProc, (LPVOID)this, 0, &threadid);
-  if (!m_hDownloadThread)
+  if (!OpenStream())
   {
-    CLog::Log(LOGERROR, "Failed to create Last.fm download thread.");
+    CLog::Log(LOGERROR, "Last.fm could not open stream.");
     if (dlgProgress) dlgProgress->Close();
     Close();
     return false;
-  }
-  while (!m_fileState.bError && !dlgProgress->IsCanceled() && (m_ringbuf.GetMaxReadSize() < m_ringbuf.Size()*0.7f))
-  {
-    dlgProgress->SetPercentage(int(143 * (m_ringbuf.GetMaxReadSize()/(float)m_ringbuf.Size())));
-    dlgProgress->Progress();
-    Sleep(10);
   }
   if (dlgProgress->IsCanceled() || m_fileState.bError)
   {
@@ -285,7 +270,7 @@ bool CFileLastFM::OpenStream()
   }
   
   m_pFile->SetUserAgent("");
-  m_pFile->SetBufferSize(32768);
+  m_pFile->SetBufferSize(8192);
   
   if (!m_pFile->Open(CURL(m_StreamUrl), true))
   {
@@ -325,23 +310,7 @@ unsigned int CFileLastFM::Read(void* lpBuf, __int64 uiBufSize)
   if (!m_bOpened) return 0;
   unsigned int read = 0;
   unsigned int tms = 0;
-  bool bWasDirectSkip = m_bDirectSkip;
-  while ((m_ringbuf.GetMaxReadSize() == 0) && (!m_fileState.bError))
-  {
-    Sleep(1);
-    tms++;
-    if (tms >= 10000)
-    {
-      CLog::Log(LOGERROR, "Last.fm stream reading timeout.");
-      m_fileState.bError = true;
-    }
-  }
-  if (m_ringbuf.GetMaxReadSize() > 0)
-  {
-    read = (int)min(uiBufSize, m_ringbuf.GetMaxReadSize());
-    if (!m_ringbuf.ReadBinary((char*)lpBuf, read))
-      return 0;
-  }
+  read = m_pFile->Read(lpBuf, uiBufSize);
   if (read == 0) return 0;
   char* data = (char*)lpBuf;
   //copy first 3 chars to syncbuffer, might be "YNC"
@@ -352,7 +321,6 @@ unsigned int CFileLastFM::Read(void* lpBuf, __int64 uiBufSize)
     m_bDirectSkip = false;
     memmove(data, data + iSyncPos + 1, read - (iSyncPos + 1));
     read -= (iSyncPos + 1);
-    if (bWasDirectSkip) m_bFirstSync = true;
     m_fileState.Action = ACTION_RetreivingMetaData;
     SetEvent(m_hWorkerEvent);
   }
@@ -362,7 +330,6 @@ unsigned int CFileLastFM::Read(void* lpBuf, __int64 uiBufSize)
     {
       read -= (iSyncPos + 4);
       memmove(data, data + iSyncPos + 4, read);
-      m_bFirstSync = true;
       m_bDirectSkip = false;
     }
     else
@@ -378,22 +345,8 @@ unsigned int CFileLastFM::Read(void* lpBuf, __int64 uiBufSize)
   if (m_bDirectSkip)
   {
     //send only silence while skipping track
-    //memset(lpBuf, 0, read);
+    memset(lpBuf, 0, read);
   }
-  /*if (bWasDirectSkip && !m_bDirectSkip)
-  {
-    //re-buffer
-    while ((m_ringbuf.GetMaxReadSize() < m_ringbuf.Size()*0.70f) && !m_fileState.bError)
-    {
-      Sleep(10);
-      tms++;
-      if (tms >= 20000)
-      {
-        CLog::Log(LOGERROR, "Last.fm stream reading re-buffer timeout.");
-        m_fileState.bError = true;
-      }
-    }
-  }*/
   return read;
 }
 
@@ -411,7 +364,6 @@ __int64 CFileLastFM::Seek(__int64 iFilePosition, int iWhence)
 bool CFileLastFM::SkipNext()
 {
   m_bDirectSkip = true;
-  m_ringbuf.Clear();
   CHTTP http;
   CStdString url;
   CStdString html;
@@ -436,13 +388,6 @@ void CFileLastFM::Close()
     SetEvent(m_hWorkerEvent);
     StopThread();
   }
-  if (m_hDownloadThread)
-  {
-    WaitForSingleObject(m_hDownloadThread, INFINITE);
-    CloseHandle(m_hDownloadThread);
-    m_hDownloadThread = NULL;
-  }
-  m_ringbuf.Clear();
 
   if (m_pFile)
   {
@@ -453,39 +398,6 @@ void CFileLastFM::Close()
   m_bOpened = false;
 
   CLog::DebugLog("LastFM closed");
-}
-
-#define LASTFM_DOWNLOADBUFFERSIZE 4096
-void CFileLastFM::DownloadThread()
-{
-  char* buf = new char[LASTFM_DOWNLOADBUFFERSIZE];
-  while (!m_bStop)
-  {
-    if (!m_pFile)
-    {
-      if (!OpenStream())
-      {
-        m_fileState.bError = true;
-        break;
-      }
-    }
-    int write = m_ringbuf.GetMaxWriteSize();
-    if (write > 0)
-    {
-      if (write > LASTFM_DOWNLOADBUFFERSIZE)
-        write = LASTFM_DOWNLOADBUFFERSIZE;
-      write = m_pFile->Read(buf, write);
-      if (write == 0)
-      {
-        m_fileState.bError = true;
-        break;
-      }
-      m_ringbuf.WriteBinary(buf, write);
-    }
-    else
-      Sleep(1);
-  }
-  delete[] buf;
 }
 
 bool CFileLastFM::RetreiveMetaData()
@@ -531,16 +443,6 @@ bool CFileLastFM::RetreiveMetaData()
         http.Download(coverUrl, cachedFile);
       }
     }
-    if (!m_bFirstSync)
-    {
-      //delay update of info because data is being buffered.
-      //assume 128kbps cbr mp3 stream, guess what's been buffered in the owning class...
-      int delay = 1000*(int)(float(m_ringbuf.Size()*2/3) / float(128000/8));
-      delay -= (timeGetTime() - m_dwTime);
-      if (delay > 0)
-        Sleep(delay);
-    }
-    m_bFirstSync = false;
     g_infoManager.SetCurrentAlbumThumb(cachedFile);
     tag.SetLoaded();
     g_infoManager.SetCurrentSongTag(tag);
