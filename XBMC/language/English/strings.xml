@@ -1086,6 +1086,7 @@
   <string><id>15273</id><value>Weekly artist chart for %name%</value></string>
   <string><id>15274</id><value>Weekly album chart for %name%</value></string>
   <string><id>15275</id><value>Weekly track chart for %name%</value></string>
+  <string><id>15283</id><value>Tracks recently listened by %name%</value></string>
   <string><id>15276</id><value>Listen to %name%'s neighbours last.fm radio</value></string>
   <string><id>15277</id><value>Listen to %name%'s personal last.fm radio</value></string>
   <string><id>15278</id><value>Listen to %name%'s loved tracks last.fm radio</value></string>
