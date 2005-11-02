@@ -7,7 +7,7 @@
 
 
 
-#define AUDIOSCROBBLER_BASE_URL	  "http://ws.audioscrobbler.com/1.0/"
+#define AUDIOSCROBBLER_BASE_URL      "http://ws.audioscrobbler.com/1.0/"
 
 
 CLastFMDirectory::CLastFMDirectory()
@@ -73,8 +73,8 @@ bool CLastFMDirectory::RetrieveList(CStdString url)
   {
     if (m_dlgProgress) m_dlgProgress->Close();
     CGUIDialogOK::ShowAndGetInput(257, 15280, 0, 0);
-    CLog::Log(LOGERROR, "Error parsing file from shoutcast, Line %d\n%s", m_xmlDoc.ErrorRow(), m_xmlDoc.ErrorDesc());
-	return false;
+    CLog::Log(LOGERROR, "Error parsing file from audioscrobbler web services, Line %d\n%s", m_xmlDoc.ErrorRow(), m_xmlDoc.ErrorDesc());
+    return false;
   }
 
   m_dlgProgress->Close();
@@ -106,20 +106,38 @@ void CLastFMDirectory::AddListEntry(const char *name, const char *artist, const 
   CFileItem *pItem = new CFileItem;
 
   if (artist)
-	strName = (CStdString)artist + " - " + (CStdString)name;
+    g_charsetConverter.utf8ToStringCharset((CStdString)artist + " - " + (CStdString)name, strName);
+    //strName = (CStdString)artist + " - " + (CStdString)name;
   else
-	strName = (CStdString)name;
+    g_charsetConverter.utf8ToStringCharset((CStdString)name, strName);
+    //strName = (CStdString)name;
 
   if (count)
   {
-	pItem->SetLabel2(count);
-	pItem->m_dwSize = _atoi64(count);
+    pItem->SetLabel2(count);
+    pItem->m_dwSize = _atoi64(count) * 100000000;
+
+    const char *dot;
+    if (dot = (const char *)strstr(count, "."))
+      pItem->m_dwSize += _atoi64(dot + 1);
+
   }
 
   pItem->SetLabel(strName);
   pItem->m_strPath = strPath;
   pItem->m_bIsFolder = true;
-  // TODO: dates
+
+  if (date)
+  {
+    LONGLONG ll = Int32x32To64(atoi(date), 10000000) + 116444736000000000;
+    FILETIME ft;
+
+    ft.dwLowDateTime = (DWORD)(ll & 0xFFFFFFFF);
+    ft.dwHighDateTime = (DWORD)(ll >> 32);
+    
+    FileTimeToSystemTime(&ft, &pItem->m_stTime);
+  }
+
   // icons? would probably take too long to retrieve them all
   items.Add(pItem);
   m_vecCachedItems.Add(new CFileItem(*pItem));
@@ -128,7 +146,7 @@ void CLastFMDirectory::AddListEntry(const char *name, const char *artist, const 
 bool CLastFMDirectory::ParseArtistList(CStdString url, CFileItemList &items)
 {
   if (!RetrieveList(url))
-	return false;
+    return false;
 
   TiXmlElement* pRootElement = m_xmlDoc.RootElement();
 
@@ -136,29 +154,29 @@ bool CLastFMDirectory::ParseArtistList(CStdString url, CFileItemList &items)
 
   while(pEntry)
   {
-	TiXmlNode* name = pEntry->FirstChild("name");
-	TiXmlNode* count;
-	const char *countstr = NULL;
-	const char *namestr = NULL;
+    TiXmlNode* name = pEntry->FirstChild("name");
+    TiXmlNode* count;
+    const char *countstr = NULL;
+    const char *namestr = NULL;
 
-	count = pEntry->FirstChild("count");
-	if (!count) count = pEntry->FirstChild("playcount");
-	if (!count) count = pEntry->FirstChild("match");
-	if (!count && pEntry->Attribute("count"))
-	  countstr = pEntry->Attribute("count");
-	else
-	  countstr = count->FirstChild()->Value();
-	if (name)
-	  namestr = name->FirstChild()->Value();
-	else
-	  namestr = pEntry->Attribute("name");
+    count = pEntry->FirstChild("count");
+    if (!count) count = pEntry->FirstChild("playcount");
+    if (!count) count = pEntry->FirstChild("match");
+    if (!count && pEntry->Attribute("count"))
+      countstr = pEntry->Attribute("count");
+    else
+      countstr = count->FirstChild()->Value();
+    if (name)
+      namestr = name->FirstChild()->Value();
+    else
+      namestr = pEntry->Attribute("name");
 
 
-	if (namestr)
-	  AddListEntry(namestr, NULL, countstr, NULL, NULL,
-		  "lastfm://xbmc/artist/" + (CStdString)namestr + "/", items);
+    if (namestr)
+      AddListEntry(namestr, NULL, countstr, NULL, NULL,
+          "lastfm://xbmc/artist/" + (CStdString)namestr + "/", items);
 
-	pEntry = pEntry->NextSiblingElement("artist");
+    pEntry = pEntry->NextSiblingElement("artist");
   }
 
   m_xmlDoc.Clear();
@@ -168,7 +186,7 @@ bool CLastFMDirectory::ParseArtistList(CStdString url, CFileItemList &items)
 bool CLastFMDirectory::ParseAlbumList(CStdString url, CFileItemList &items)
 {
   if (!RetrieveList(url))
-	return false;
+    return false;
 
   TiXmlElement* pRootElement = m_xmlDoc.RootElement();
 
@@ -176,31 +194,31 @@ bool CLastFMDirectory::ParseAlbumList(CStdString url, CFileItemList &items)
 
   while(pEntry)
   {
-	TiXmlNode* name = pEntry->FirstChild("name");
-	TiXmlNode* artist = pEntry->FirstChild("artist");
+    TiXmlNode* name = pEntry->FirstChild("name");
+    TiXmlNode* artist = pEntry->FirstChild("artist");
 
-	TiXmlNode* count;
-	count = pEntry->FirstChild("count");
-	if (!count) count = pEntry->FirstChild("playcount");
+    TiXmlNode* count;
+    count = pEntry->FirstChild("count");
+    if (!count) count = pEntry->FirstChild("playcount");
 
-	if (name)
-	{
-	  AddListEntry(artist->FirstChild()->Value(), name->FirstChild()->Value(), count->FirstChild()->Value(),
-		  NULL, NULL, "lastfm://xbmc/artist/" + (CStdString)artist->FirstChild()->Value() + "/", items);
-	}
-	else
-	{
-	  // no luck, try another way :)
-	  const char *name = pEntry->Attribute("name");
-	  const char *artist = pEntry->FirstChildElement("artist")->Attribute("name");
-	  const char *count = pEntry->Attribute("count");
+    if (name)
+    {
+      AddListEntry(name->FirstChild()->Value(), artist->FirstChild()->Value(), count->FirstChild()->Value(),
+          NULL, NULL, "lastfm://xbmc/artist/" + (CStdString)artist->FirstChild()->Value() + "/", items);
+    }
+    else
+    {
+      // no luck, try another way :)
+      const char *name = pEntry->Attribute("name");
+      const char *artist = pEntry->FirstChildElement("artist")->Attribute("name");
+      const char *count = pEntry->Attribute("count");
 
-	  if (name)
-		AddListEntry(name, artist, count, NULL, NULL,
-			"lastfm://xbmc/artist/" + (CStdString)artist + "/", items);
-	}
+      if (name)
+        AddListEntry(name, artist, count, NULL, NULL,
+            "lastfm://xbmc/artist/" + (CStdString)artist + "/", items);
+    }
 
-	pEntry = pEntry->NextSiblingElement("album");
+    pEntry = pEntry->NextSiblingElement("album");
   }
 
   m_xmlDoc.Clear();
@@ -210,7 +228,7 @@ bool CLastFMDirectory::ParseAlbumList(CStdString url, CFileItemList &items)
 bool CLastFMDirectory::ParseUserList(CStdString url, CFileItemList &items)
 {
   if (!RetrieveList(url))
-	return false;
+    return false;
 
   TiXmlElement* pRootElement = m_xmlDoc.RootElement();
 
@@ -218,19 +236,19 @@ bool CLastFMDirectory::ParseUserList(CStdString url, CFileItemList &items)
 
   while(pEntry)
   {
-	const char *name = pEntry->Attribute("username");
+    const char *name = pEntry->Attribute("username");
 
-	TiXmlNode* count;
-	count = pEntry->FirstChild("weight");
-	if (!count) count = pEntry->FirstChild("match");
+    TiXmlNode* count;
+    count = pEntry->FirstChild("weight");
+    if (!count) count = pEntry->FirstChild("match");
 
-	if (name)
-	{
-	  AddListEntry(name, NULL, (count) ? count->FirstChild()->Value() : NULL, NULL, NULL,
-		  "lastfm://xbmc/user/" + (CStdString)name + "/", items);
-	}
+    if (name)
+    {
+      AddListEntry(name, NULL, (count) ? count->FirstChild()->Value() : NULL, NULL, NULL,
+          "lastfm://xbmc/user/" + (CStdString)name + "/", items);
+    }
 
-	pEntry = pEntry->NextSiblingElement("user");
+    pEntry = pEntry->NextSiblingElement("user");
   }
 
   m_xmlDoc.Clear();
@@ -240,7 +258,7 @@ bool CLastFMDirectory::ParseUserList(CStdString url, CFileItemList &items)
 bool CLastFMDirectory::ParseTagList(CStdString url, CFileItemList &items)
 {
   if (!RetrieveList(url))
-	return false;
+    return false;
 
   TiXmlElement* pRootElement = m_xmlDoc.RootElement();
 
@@ -248,30 +266,31 @@ bool CLastFMDirectory::ParseTagList(CStdString url, CFileItemList &items)
 
   while(pEntry)
   {
-	TiXmlNode* name = pEntry->FirstChild("name");
-	TiXmlNode* count;
-	const char *countstr = NULL;
-	const char *namestr = NULL;
+    TiXmlNode* name = pEntry->FirstChild("name");
+    TiXmlNode* count;
+    const char *countstr = NULL;
+    const char *namestr = NULL;
 
-	count = pEntry->FirstChild("count");
-	if (!count) count = pEntry->FirstChild("playcount");
-	if (!count) count = pEntry->FirstChild("match");
-	if (!count && pEntry->Attribute("count"))
-	  countstr = pEntry->Attribute("count");
-	else
-	  countstr = count->FirstChild()->Value();
-	if (name)
-	  namestr = name->FirstChild()->Value();
-	else
-	  namestr = pEntry->Attribute("name");
+    count = pEntry->FirstChild("count");
+    if (!count) count = pEntry->FirstChild("playcount");
+    if (!count) count = pEntry->FirstChild("match");
+    if (!count && pEntry->Attribute("count"))
+      countstr = pEntry->Attribute("count");
+    else
+      countstr = count->FirstChild()->Value();
 
-	if (namestr)
-	{
-	  AddListEntry(namestr, NULL, countstr, NULL, NULL,
-		  "lastfm://xbmc/tag/" + (CStdString)namestr + "/", items);
-	}
+    if (name)
+      namestr = name->FirstChild()->Value();
+    else
+      namestr = pEntry->Attribute("name");
 
-	pEntry = pEntry->NextSiblingElement("tag");
+    if (namestr)
+    {
+      AddListEntry(namestr, NULL, countstr, NULL, NULL,
+          "lastfm://xbmc/tag/" + (CStdString)namestr + "/", items);
+    }
+
+    pEntry = pEntry->NextSiblingElement("tag");
   }
 
   m_xmlDoc.Clear();
@@ -281,7 +300,7 @@ bool CLastFMDirectory::ParseTagList(CStdString url, CFileItemList &items)
 bool CLastFMDirectory::ParseTrackList(CStdString url, CFileItemList &items)
 {
   if (!RetrieveList(url))
-	return false;
+    return false;
 
   TiXmlElement* pRootElement = m_xmlDoc.RootElement();
 
@@ -289,42 +308,44 @@ bool CLastFMDirectory::ParseTrackList(CStdString url, CFileItemList &items)
 
   while(pEntry)
   {
-	TiXmlNode* name = pEntry->FirstChild("name");
-	TiXmlNode* artist = pEntry->FirstChild("artist");
+    TiXmlNode* name = pEntry->FirstChild("name");
+    TiXmlNode* artist = pEntry->FirstChild("artist");
+    TiXmlElement *date = pEntry->FirstChildElement("date");
 
-	TiXmlNode* count;
-	count = pEntry->FirstChild("count");
-	if (!count) count = pEntry->FirstChild("playcount");
-	if (!count) count = pEntry->FirstChild("match");
+    TiXmlNode* count;
+    count = pEntry->FirstChild("count");
+    if (!count) count = pEntry->FirstChild("playcount");
+    if (!count) count = pEntry->FirstChild("match");
 
-	if (name)
-	{
-	  CFileItem *pItem = new CFileItem;
-	  if (artist)
-		AddListEntry((name) ? name->FirstChild()->Value() : NULL,
-			(artist) ? artist->FirstChild()->Value() : NULL, 
-			(count) ? count->FirstChild()->Value() : NULL,
-			NULL, NULL, "lastfm://xbmc/artist/" + (CStdString)artist->FirstChild()->Value() + "/", items);
-	  else
-		// no artist in xml, assuming we're retrieving track list for the artist in m_objname...
-		AddListEntry((name) ? name->FirstChild()->Value() : NULL,
-			m_objname.c_str(),
-			(count) ? count->FirstChild()->Value() : NULL,
-			NULL, NULL, "lastfm://xbmc/artist/" + m_objname + "/", items);
-	}
-	else
-	{
-	  // no luck, try another way :)
-	  const char *name = pEntry->Attribute("name");
-	  const char *artist = pEntry->FirstChildElement("artist")->Attribute("name");
-	  const char *count = pEntry->Attribute("count");
+    if (name)
+    {
+      CFileItem *pItem = new CFileItem;
+      if (artist)
+        AddListEntry((name) ? name->FirstChild()->Value() : NULL,
+            (artist) ? artist->FirstChild()->Value() : NULL, 
+            (count) ? count->FirstChild()->Value() : ((date) ? date->FirstChild()->Value() : NULL),
+            (date) ? date->Attribute("uts") : NULL,
+            NULL, "lastfm://xbmc/artist/" + (CStdString)artist->FirstChild()->Value() + "/", items);
+      else
+        // no artist in xml, assuming we're retrieving track list for the artist in m_objname...
+        AddListEntry((name) ? name->FirstChild()->Value() : NULL,
+            m_objname.c_str(),
+            (count) ? count->FirstChild()->Value() : NULL,
+            NULL, NULL, "lastfm://xbmc/artist/" + m_objname + "/", items);
+    }
+    else
+    {
+      // no luck, try another way :)
+      const char *name = pEntry->Attribute("name");
+      const char *artist = pEntry->FirstChildElement("artist")->Attribute("name");
+      const char *count = pEntry->Attribute("count");
 
-	  if (name)
-		AddListEntry(name, artist, count, NULL, NULL,
-			"lastfm://xbmc/artist/" + (CStdString)artist + "/", items);
-	}
+      if (name)
+        AddListEntry(name, artist, count, NULL, NULL,
+            "lastfm://xbmc/artist/" + (CStdString)artist + "/", items);
+    }
 
-	pEntry = pEntry->NextSiblingElement("track");
+    pEntry = pEntry->NextSiblingElement("track");
   }
 
   m_xmlDoc.Clear();
@@ -336,7 +357,7 @@ bool CLastFMDirectory::SearchSimilarArtists(CFileItemList &items)
   CStdString strSearchTerm = "";
 
   if (!CGUIDialogKeyboard::ShowAndGetInput(strSearchTerm, g_localizeStrings.Get(15281), false))
-	return false;
+    return false;
 
   m_objname = m_encodedobjname = strSearchTerm;
   CUtil::URLEncode(m_encodedobjname);
@@ -350,7 +371,7 @@ bool CLastFMDirectory::SearchSimilarTags(CFileItemList &items)
   CStdString strSearchTerm = "";
 
   if (!CGUIDialogKeyboard::ShowAndGetInput(strSearchTerm, g_localizeStrings.Get(15282), false))
-	return false;
+    return false;
 
   m_objname = m_encodedobjname = strSearchTerm;
   CUtil::URLEncode(m_encodedobjname);
@@ -362,30 +383,30 @@ bool CLastFMDirectory::SearchSimilarTags(CFileItemList &items)
 bool CLastFMDirectory::GetArtistInfo(CFileItemList &items)
 {
   if (m_objname == "?" && m_objrequest == "similar")
-	return SearchSimilarArtists(items);
+    return SearchSimilarArtists(items);
 
   if (m_objrequest == "similar")
-	return ParseArtistList(BuildURLFromInfo(), items);
+    return ParseArtistList(BuildURLFromInfo(), items);
   else if (m_objrequest == "topalbums")
-	return ParseAlbumList(BuildURLFromInfo(), items);
+    return ParseAlbumList(BuildURLFromInfo(), items);
   else if (m_objrequest == "toptracks")
-	return ParseTrackList(BuildURLFromInfo(), items);
+    return ParseTrackList(BuildURLFromInfo(), items);
   else if (m_objrequest == "toptags")
-	return ParseTagList(BuildURLFromInfo(), items);
+    return ParseTagList(BuildURLFromInfo(), items);
   else if (m_objrequest == "fans")
-	return ParseUserList(BuildURLFromInfo(), items);
+    return ParseUserList(BuildURLFromInfo(), items);
   else if (m_objrequest == "")
   {
-	AddEntry(15261, "lastfm://xbmc/artist/%name%/similar/", "", true, items);
-	AddEntry(15262, "lastfm://xbmc/artist/%name%/topalbums/", "", true, items);
-	AddEntry(15263, "lastfm://xbmc/artist/%name%/toptracks/", "", true, items);
-	AddEntry(15264, "lastfm://xbmc/artist/%name%/toptags/", "", true, items);
-	AddEntry(15265, "lastfm://xbmc/artist/%name%/fans/", "", true, items);
-	AddEntry(15266, "lastfm://artist/%name%/fans", "", false, items);
-	AddEntry(15267, "lastfm://artist/%name%/similarartists", "", false, items);
+    AddEntry(15261, "lastfm://xbmc/artist/%name%/similar/", "", true, items);
+    AddEntry(15262, "lastfm://xbmc/artist/%name%/topalbums/", "", true, items);
+    AddEntry(15263, "lastfm://xbmc/artist/%name%/toptracks/", "", true, items);
+    AddEntry(15264, "lastfm://xbmc/artist/%name%/toptags/", "", true, items);
+    AddEntry(15265, "lastfm://xbmc/artist/%name%/fans/", "", true, items);
+    AddEntry(15266, "lastfm://artist/%name%/fans", "", false, items);
+    AddEntry(15267, "lastfm://artist/%name%/similarartists", "", false, items);
   }
   else
-	return false;
+    return false;
 
   return true;
 }
@@ -393,39 +414,42 @@ bool CLastFMDirectory::GetArtistInfo(CFileItemList &items)
 bool CLastFMDirectory::GetUserInfo(CFileItemList &items)
 {
   if (m_objrequest == "topartists")
-	return ParseArtistList(BuildURLFromInfo(), items);
+    return ParseArtistList(BuildURLFromInfo(), items);
   else if (m_objrequest == "topalbums")
-	return ParseAlbumList(BuildURLFromInfo(), items);
+    return ParseAlbumList(BuildURLFromInfo(), items);
   else if (m_objrequest == "toptracks")
-	return ParseTrackList(BuildURLFromInfo(), items);
+    return ParseTrackList(BuildURLFromInfo(), items);
   else if (m_objrequest == "toptags")
-	return ParseTagList(BuildURLFromInfo(), items);
+    return ParseTagList(BuildURLFromInfo(), items);
   else if (m_objrequest == "friends")
-	return ParseUserList(BuildURLFromInfo(), items);
+    return ParseUserList(BuildURLFromInfo(), items);
   else if (m_objrequest == "neighbours")
-	return ParseUserList(BuildURLFromInfo(), items);
+    return ParseUserList(BuildURLFromInfo(), items);
   else if (m_objrequest == "weeklyartistchart")
-	return ParseArtistList(BuildURLFromInfo(), items);
+    return ParseArtistList(BuildURLFromInfo(), items);
   else if (m_objrequest == "weeklyalbumchart")
-	return ParseAlbumList(BuildURLFromInfo(), items);
+    return ParseAlbumList(BuildURLFromInfo(), items);
   else if (m_objrequest == "weeklytrackchart")
-	return ParseTrackList(BuildURLFromInfo(), items);
+    return ParseTrackList(BuildURLFromInfo(), items);
+  else if (m_objrequest == "recenttracks")
+    return ParseTrackList(BuildURLFromInfo(), items);
   else if (m_objrequest == "")
   {
-	AddEntry(15268, "lastfm://xbmc/user/%name%/topartists/", "", true, items);
-	AddEntry(15269, "lastfm://xbmc/user/%name%/topalbums/", "", true, items);
-	AddEntry(15270, "lastfm://xbmc/user/%name%/toptracks/", "", true, items);
-	AddEntry(15271, "lastfm://xbmc/user/%name%/friends/", "", true, items);
-	AddEntry(15272, "lastfm://xbmc/user/%name%/neighbours/", "", true, items);
-	AddEntry(15273, "lastfm://xbmc/user/%name%/weeklyartistchart/", "", true, items);
-	AddEntry(15274, "lastfm://xbmc/user/%name%/weeklyalbumchart/", "", true, items);
-	AddEntry(15275, "lastfm://xbmc/user/%name%/weeklytrackchart/", "", true, items);
-	AddEntry(15276, "lastfm://user/%name%/neighbours", "", false, items);
-	AddEntry(15277, "lastfm://user/%name%/personal", "", false, items);
-	AddEntry(15278, "lastfm://user/%name%/loved", "", false, items);
+    AddEntry(15268, "lastfm://xbmc/user/%name%/topartists/", "", true, items);
+    AddEntry(15269, "lastfm://xbmc/user/%name%/topalbums/", "", true, items);
+    AddEntry(15270, "lastfm://xbmc/user/%name%/toptracks/", "", true, items);
+    AddEntry(15271, "lastfm://xbmc/user/%name%/friends/", "", true, items);
+    AddEntry(15272, "lastfm://xbmc/user/%name%/neighbours/", "", true, items);
+    AddEntry(15273, "lastfm://xbmc/user/%name%/weeklyartistchart/", "", true, items);
+    AddEntry(15274, "lastfm://xbmc/user/%name%/weeklyalbumchart/", "", true, items);
+    AddEntry(15275, "lastfm://xbmc/user/%name%/weeklytrackchart/", "", true, items);
+    AddEntry(15283, "lastfm://xbmc/user/%name%/recenttracks/", "", true, items);
+    AddEntry(15276, "lastfm://user/%name%/neighbours", "", false, items);
+    AddEntry(15277, "lastfm://user/%name%/personal", "", false, items);
+    AddEntry(15278, "lastfm://user/%name%/loved", "", false, items);
   }
   else
-	return false;
+    return false;
 
   return true;
 }
@@ -433,22 +457,22 @@ bool CLastFMDirectory::GetUserInfo(CFileItemList &items)
 bool CLastFMDirectory::GetTagInfo(CFileItemList &items)
 {
   if (m_objname == "?" && m_objrequest== "search")
-	return SearchSimilarTags(items);
+    return SearchSimilarTags(items);
 
   if (m_objrequest == "topartists")
-	return ParseArtistList(BuildURLFromInfo(), items);
+    return ParseArtistList(BuildURLFromInfo(), items);
   else if (m_objrequest == "topalbums")
-	return ParseAlbumList(BuildURLFromInfo(), items);
+    return ParseAlbumList(BuildURLFromInfo(), items);
   else if (m_objrequest == "toptracks")
-	return ParseTrackList(BuildURLFromInfo(), items);
+    return ParseTrackList(BuildURLFromInfo(), items);
   else if (m_objrequest == "toptags")
-	return ParseTagList(BuildURLFromInfo(), items);
+    return ParseTagList(BuildURLFromInfo(), items);
   else if (m_objrequest == "")
   {
-	AddEntry(15257, "lastfm://xbmc/tag/%name%/topartists/", "", true, items);
-	AddEntry(15258, "lastfm://xbmc/tag/%name%/topalbums/", "", true, items);
-	AddEntry(15259, "lastfm://xbmc/tag/%name%/toptracks/", "", true, items);
-	AddEntry(15260, "lastfm://globaltags/%name%", "", false, items);
+    AddEntry(15257, "lastfm://xbmc/tag/%name%/topartists/", "", true, items);
+    AddEntry(15258, "lastfm://xbmc/tag/%name%/topalbums/", "", true, items);
+    AddEntry(15259, "lastfm://xbmc/tag/%name%/toptracks/", "", true, items);
+    AddEntry(15260, "lastfm://globaltags/%name%", "", false, items);
   }
 
   return true;
@@ -469,52 +493,54 @@ bool CLastFMDirectory::GetDirectory(const CStdString& strPath, CFileItemList &it
   switch(StringUtils::SplitString(strURL, "/", vecURLParts))
   {
   case 2:
-	// simple lastfm:// root URL...
-	break;
+    // simple lastfm:// root URL...
+    g_directoryCache.Clear();
+    break;
   // the following fallthru's are on purpose
   case 6:
-	m_objrequest = vecURLParts[4];
+    m_objrequest = vecURLParts[4];
   case 5:
-	m_objname = vecURLParts[3];
-	m_encodedobjname = m_objname;
-	CUtil::URLEncode(m_encodedobjname);
-	CUtil::UrlDecode(m_objname);
+    g_charsetConverter.utf8ToStringCharset(vecURLParts[3], m_objname);
+    //m_objname = vecURLParts[3];
+    m_encodedobjname = vecURLParts[3];
+    CUtil::URLEncode(m_encodedobjname);
+    CUtil::UrlDecode(m_objname);
   case 4:
-	m_objtype = vecURLParts[2];
+    m_objtype = vecURLParts[2];
   case 3:
-	if (vecURLParts[1] != "/xbmc")
-	  return false;
-	break;
+    if (vecURLParts[1] != "/xbmc")
+      return false;
+    break;
   default:
-	return false;
+    return false;
   }
 
   if (g_directoryCache.GetDirectory(strPath, items))
-	return true;
+    return true;
 
   if (m_objtype == "user")
-	m_Error = GetUserInfo(items);
+    m_Error = GetUserInfo(items);
   else if (m_objtype == "tag")
-	m_Error = GetTagInfo(items);
+    m_Error = GetTagInfo(items);
   else if (m_objtype == "artist")
-	m_Error = GetArtistInfo(items);
+    m_Error = GetArtistInfo(items);
   else if (m_objtype == "")
   {
-	AddEntry(15253, "lastfm://xbmc/artist/?/similar/", "", true, items);
-	AddEntry(15254, "lastfm://xbmc/tag/?/search/", "", true, items);
-	AddEntry(15256, "lastfm://xbmc/tag/xbmc/toptags/", "", true, items);
-	if (g_guiSettings.GetString("MyMusic.AudioScrobblerUserName") != "")
-	{
+    AddEntry(15253, "lastfm://xbmc/artist/?/similar/", "", true, items);
+    AddEntry(15254, "lastfm://xbmc/tag/?/search/", "", true, items);
+    AddEntry(15256, "lastfm://xbmc/tag/xbmc/toptags/", "", true, items);
+    if (g_guiSettings.GetString("MyMusic.AudioScrobblerUserName") != "")
+    {
       m_encodedobjname = m_objname = g_guiSettings.GetString("MyMusic.AudioScrobblerUserName");
-	  CUtil::UrlDecode(m_encodedobjname);
-	  AddEntry(15255, "lastfm://xbmc/user/%name%/", "", true, items);
-	}
+      CUtil::UrlDecode(m_encodedobjname);
+      AddEntry(15255, "lastfm://xbmc/user/%name%/", "", true, items);
+    }
   }
   else
-	return false;
+    return false;
 
   if (!m_vecCachedItems.IsEmpty() )
-	g_directoryCache.SetDirectory(strPath, m_vecCachedItems);
+    g_directoryCache.SetDirectory(strPath, m_vecCachedItems);
 
   return true;
 }
@@ -523,7 +549,7 @@ bool CLastFMDirectory::GetDirectory(const CStdString& strPath, CFileItemList &it
 void CLastFMDirectory::Run()
 {
   if (!m_http.Download(m_strSource, m_strDestination))
-      m_Error=true;
+    m_Error=true;
 
   m_Downloaded=true;
 }
