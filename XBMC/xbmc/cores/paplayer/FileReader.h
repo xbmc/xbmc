@@ -14,7 +14,7 @@ public:
   virtual ~CFileReader();
 
   void Initialize(unsigned int bufferSize);
-  virtual bool Open(const CStdString &strFile, bool autoBuffer = true);
+  virtual bool Open(const CStdString &strFile, bool autoBuffer = true, bool preBuffer = false);
   virtual void Close();
   virtual void StartBuffering();
   virtual int Read(void *out, __int64 size);
@@ -22,6 +22,7 @@ public:
   virtual __int64 Seek(__int64 pos, int whence = SEEK_SET);
   virtual __int64 GetLength();
   virtual bool SkipNext();
+  unsigned int GetChunkSize() {return m_chunk_size;}
 
 protected:
   // thread functions
@@ -39,6 +40,7 @@ private:
 
   CCriticalSection m_fileLock;
   
+  __int64 m_FileLength;
   unsigned int m_chunk_size;
   char* m_chunkBuffer;          // buffer that we read chunks of our file into.
   CRingHoldBuffer m_ringBuffer; // ring buffer that holds our read-in data

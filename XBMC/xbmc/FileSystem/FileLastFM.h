@@ -20,7 +20,7 @@ public:
   virtual __int64 Seek(__int64 iFilePosition, int iWhence = SEEK_SET);
   virtual void Close();
   virtual bool CanSeek();
-  virtual int  GetChunkSize() { return 4096; }
+  virtual int  GetChunkSize() { return 1024; }
   virtual bool SkipNext();
 protected:
   bool HandShake();
@@ -36,14 +36,11 @@ protected:
   CFileCurl* m_pFile;
   char* m_pSyncBuffer;
   HANDLE m_hWorkerEvent;
-  HANDLE m_hDownloadThread;
 
   void DownloadThread();
   static DWORD WINAPI threadProc(void *param) { static_cast<CFileLastFM*>(param)->DownloadThread(); return 1; }
 
-  CRingBuffer m_ringbuf;
   bool m_bOpened;
-  bool m_bFirstSync;
   bool m_bDirectSkip;
 
   CStdString m_Url;
