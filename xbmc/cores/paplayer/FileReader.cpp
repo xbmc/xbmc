@@ -22,7 +22,7 @@ void CFileReader::Initialize(unsigned int bufferSize)
   m_ringBuffer.Create(bufferSize + DATA_TO_KEEP_BEHIND, DATA_TO_KEEP_BEHIND);
 }
 
-bool CFileReader::Open(const CStdString &strFile, bool autoBuffer)
+bool CFileReader::Open(const CStdString &strFile, bool autoBuffer, bool preBuffer)
 {
   Close();
   if (!m_file.Open(strFile))
@@ -34,12 +34,23 @@ bool CFileReader::Open(const CStdString &strFile, bool autoBuffer)
     Initialize(8 * m_chunk_size); //re-initialize with bigger buffersize
   m_chunkBuffer = new char[m_chunk_size];
 
+  m_FileLength = m_file.GetLength();
   m_bufferedDataPos = 0;
   m_ringBuffer.Clear();
   m_readError = false;
   if (autoBuffer)
   {
     StartBuffering();
+    if (preBuffer)
+    {
+      unsigned int ms = 0;
+      unsigned int minBuffered = (unsigned int)((m_ringBuffer.Size() - DATA_TO_KEEP_BEHIND)*0.5f);
+      while ((m_ringBuffer.GetMaxReadSize() < minBuffered) && (ms < 10000))
+      {
+        Sleep(1);
+        ms++;
+      }
+    }
   }
   else
   {
@@ -102,10 +113,10 @@ int CFileReader::Read(void *out, __int64 size)
       }
       if (sleeptime > 50)
       {
-        CLog::Log(LOGDEBUG, "FileReader: Waited a total of %i ms on data", sleeptime);
+        CLog::DebugLog("FileReader: Waited a total of %i ms on data", sleeptime);
         sleeptime = 0;
       }
-      if (m_bufferedDataPos == m_file.GetLength() && m_file.GetLength() > 0)
+      if (m_FileLength > 0 && m_bufferedDataPos == m_FileLength)
       { // end of file reached
         return (int)(size - sizeleft);
       }
@@ -121,7 +132,7 @@ int CFileReader::Read(void *out, __int64 size)
       {
         //- sleep while we wait for our reader thread to read the data in.
         // check we don't reach EOF and loop forever
-        if (m_bufferedDataPos == m_file.GetLength() && m_file.GetLength() > 0)
+        if (m_FileLength > 0 && m_bufferedDataPos == m_FileLength)
         { // end of file reached
           return (int)(size - sizeleft);
         }
@@ -149,7 +160,7 @@ __int64 CFileReader::Seek(__int64 pos, int whence)
   if (whence == SEEK_SET)
     newBufferedDataPos = pos;
   else if (whence == SEEK_END)
-    newBufferedDataPos = m_file.GetLength() + pos;
+    newBufferedDataPos = m_FileLength + pos;
   else if (whence == SEEK_CUR)
     newBufferedDataPos = m_bufferedDataPos + pos;
 
@@ -172,10 +183,10 @@ int CFileReader::BufferChunk()
     // grab a file lock
     CSingleLock lock(m_fileLock);
     unsigned int amountToRead = m_chunk_size;
-    if (m_file.GetLength() > 0)
+    if (m_FileLength > 0)
     {
-      if (amountToRead > m_file.GetLength() - m_file.GetPosition())
-        amountToRead = (unsigned int)(m_file.GetLength() - m_file.GetPosition());
+      if (amountToRead > m_FileLength - m_file.GetPosition())
+        amountToRead = (unsigned int)(m_FileLength - m_file.GetPosition());
     }
     // check the range of our valid data
     if (amountToRead)
@@ -189,7 +200,7 @@ int CFileReader::BufferChunk()
         }
         return 1; // read some more immediately
       }
-      else if (m_file.GetPosition() != m_file.GetLength())
+      else if (m_file.GetPosition() != m_FileLength)
       { // uh oh!
         m_readError = true;
         return -1;
@@ -215,7 +226,6 @@ void CFileReader::Process()
 
 bool CFileReader::SkipNext()
 {
-  CSingleLock lock(m_fileLock);
   if (m_file.SkipNext())
   {
     m_ringBuffer.Clear();
