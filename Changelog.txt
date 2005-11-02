@@ -6,6 +6,7 @@
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
 
+ - 02-11-2005 changed: utf8 name conversion in song metadata during last.fm streaming
  - 02-11-2005 changed: faster start of last.fm streams
  - 02-11-2005 fixed: last.fm, code indenting
  - 02-11-2005 added: last.fm, user's recently listened tracks, sortable by date
