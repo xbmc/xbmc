@@ -195,6 +195,15 @@ enum CodecID {
     
     CODEC_ID_MPEG2TS= 0x20000, /* _FAKE_ codec to indicate a raw MPEG2 transport
                          stream (only used by libavformat) */
+                         
+#ifdef _XBOX
+
+    CODEC_ID_LPCM_S16BE = 0x200000,
+    CODEC_ID_LPCM_S20BE = 0x200001,
+    CODEC_ID_LPCM_S24BE = 0x200002,
+
+#endif // _XBOX
+
 };
 
 /* CODEC_ID_MP3LAME is absolete */

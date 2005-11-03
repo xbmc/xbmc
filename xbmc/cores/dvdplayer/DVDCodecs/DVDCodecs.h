@@ -7,4 +7,7 @@
 #define EMULATE_INTTYPES
 #include "..\ffmpeg\avcodec.h"
 
-// additional codec id's can go here
+// 0x100000 is the video starting range
+
+// 0x200000 is the audio starting range
+
