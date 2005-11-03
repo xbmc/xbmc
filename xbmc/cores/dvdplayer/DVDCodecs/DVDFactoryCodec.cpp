@@ -13,6 +13,7 @@
 #include "Audio\DVDAudioCodecLibMad.h"
 #include "Audio\DVDAudioCodecLibFaad.h"
 #include "Audio\DVDAudioCodecPcm.h"
+#include "Audio\DVDAudioCodecLPcm.h"
 
 #include "DVDCodecs.h"
 
@@ -78,6 +79,13 @@ CDVDAudioCodec* CDVDFactoryCodec::CreateAudioCodec(CodecID codecID)
   case CODEC_ID_PCM_MULAW:
     {
       pAudioCodec = new CDVDAudioCodecPcm();
+      break;
+    }
+  //case CODEC_ID_LPCM_S16BE:
+  //case CODEC_ID_LPCM_S20BE:
+  case CODEC_ID_LPCM_S24BE:
+    {
+      pAudioCodec = new CDVDAudioCodecLPcm();
       break;
     }
   default:

@@ -19,7 +19,10 @@ public:
 class CDemuxStreamAudioFFmpeg : public CDemuxStreamAudio
 {
 public:
+  CDemuxStreamAudioFFmpeg() : CDemuxStreamAudio() { previous_dts = 0LL; }
+
   virtual void GetStreamInfo(std::string& strInfo);
+  __int64 previous_dts;
 };
 
 #define FFMPEG_FILE_BUFFER_SIZE   32768 // default reading size for ffmpeg
