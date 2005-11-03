@@ -140,14 +140,7 @@ bool CDVDAudioCodecPcm::Open(CodecID codecID, int iChannels, int iSampleRate, in
 void CDVDAudioCodecPcm::Dispose()
 {
 }
-/*
-static int pcm_decode_frame(AVCodecContext *avctx,
-			    void *data, int *data_size,
-			    uint8_t *buf, int buf_size)
-{
 
-}
-*/
 int CDVDAudioCodecPcm::Decode(BYTE* pData, int iSize)
 {
     int n;
