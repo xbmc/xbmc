@@ -57,7 +57,12 @@ bool CVirtualDirectory::RemoveShare(const CStdString& strPath)
  \note If \e strPath is an empty string, the share \e items have thumbnails and icons set, else the thumbnails
     and icons have to be set manually.
  */
+
 bool CVirtualDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
+{
+  return GetDirectory(strPath,items,true);
+}
+bool CVirtualDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items, bool bUseFileDirectories)
 {
   if (!m_vecShares)
     return true;
@@ -100,7 +105,7 @@ bool CVirtualDirectory::GetDirectory(const CStdString& strPath, CFileItemList &i
       // Only cache directory we are getting now
       if (strPath.Left(7) != "lastfm:")
         g_directoryCache.Clear();
-      return CDirectory::GetDirectory(strPath, items, m_strFileMask);
+      return CDirectory::GetDirectory(strPath, items, m_strFileMask, bUseFileDirectories);
     }
 
     // is this operation intentional?
