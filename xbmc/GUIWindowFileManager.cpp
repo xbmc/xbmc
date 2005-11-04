@@ -881,7 +881,7 @@ bool CGUIWindowFileManager::DoProcessFolder(int iAction, const CStdString& strPa
   CLog::Log(LOGDEBUG,"FileManager, processing folder: %s",strPath.c_str());
   CFileItemList items;
   //m_rootDir.GetDirectory(strPath, items);
-  CDirectory::GetDirectory(strPath, items);
+  CDirectory::GetDirectory(strPath, items, "", false);
   for (int i = 0; i < items.Size(); i++)
   {
     CFileItem* pItem = items[i];
@@ -1219,7 +1219,7 @@ bool CGUIWindowFileManager::GetDirectory(int iList, const CStdString &strDirecto
     m_strParentPath[iList] = "";
   }
 
-  return m_rootDir.GetDirectory(strDirectory, items);
+  return m_rootDir.GetDirectory(strDirectory, items, false);
 }
 
 bool CGUIWindowFileManager::CanRename(int iList)
@@ -1429,7 +1429,7 @@ __int64 CGUIWindowFileManager::CalculateFolderSize(const CStdString &strDirector
   // start by calculating the size of the files in this folder...
   __int64 totalSize = 0;
   CFileItemList items;
-  m_rootDir.GetDirectory(strDirectory, items);
+  m_rootDir.GetDirectory(strDirectory, items, false);
   for (int i=0; i < items.Size(); i++)
   {
     if (items[i]->m_bIsFolder && items[i]->GetLabel() != "..") // folder
