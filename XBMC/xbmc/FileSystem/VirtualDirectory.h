@@ -14,6 +14,7 @@ namespace DIRECTORY
     CVirtualDirectory(void);
     virtual ~CVirtualDirectory(void);
     virtual bool GetDirectory(const CStdString& strPath, CFileItemList &items);
+    virtual bool GetDirectory(const CStdString& strPath, CFileItemList &items, bool bUseFileDirectories); 
     void SetShares(VECSHARES& vecShares);
     inline unsigned int GetNumberOfShares() { 
       if (m_vecShares)
