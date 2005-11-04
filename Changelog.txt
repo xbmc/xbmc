@@ -6,7 +6,8 @@
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
 
- - 03-11-2005 added: 
+ - 04-11-2005 fixed: mymusic, when you changed sort method, cursor placement changed to wrong file, thx to Jmarshall for fix
+ - 03-11-2005 added: added: dvdplayer, 24 bits lpcm decoding
  - 02-11-2005 changed: utf8 name conversion in song metadata during last.fm streaming
  - 02-11-2005 changed: faster start of last.fm streams
  - 02-11-2005 fixed: last.fm, code indenting
