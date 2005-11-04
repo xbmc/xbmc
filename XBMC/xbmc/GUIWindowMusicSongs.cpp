@@ -286,13 +286,13 @@ bool CGUIWindowMusicSongs::OnMessage(CGUIMessage& message)
         }
         g_settings.Save();
 
-        UpdateButtons();
-        UpdateListControl();
-
         int nItem = m_viewControl.GetSelectedItem();
         if (nItem < 0) break;
         CFileItem*pItem = m_vecItems[nItem];
         CStdString strSelected = pItem->m_strPath;
+
+        UpdateButtons();
+        UpdateListControl();
 
         CStdString strDirectory = m_Directory.m_strPath;
         if (CUtil::HasSlashAtEnd(strDirectory))
