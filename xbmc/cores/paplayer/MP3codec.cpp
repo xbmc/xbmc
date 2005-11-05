@@ -79,9 +79,9 @@ bool MP3Codec::Init(const CStdString &strFile, unsigned int filecache)
   m_eof = false;
   m_CallAgainWithSameBuffer = false;
 
-  //CURL urlFile(strFile);
   CFileItem item(strFile, false);
-  if (!item.IsInternetStream())
+  bool bIsInternetStream = item.IsInternetStream();
+  if (!bIsInternetStream)
   {
     // Guess Bitrate and obtain replayGain information etc.
     CMusicInfoTagLoaderMP3 mp3info;
@@ -98,11 +98,14 @@ bool MP3Codec::Init(const CStdString &strFile, unsigned int filecache)
     return false;
   }
   
-  __int64 length = 0;
-  if (!item.IsInternetStream())
+  __int64 length = m_file.GetLength();
+  if (!bIsInternetStream)
   {
-    length = m_file.GetLength();
     m_TotalTime = (__int64)(m_seekInfo.GetDuration() * 1000.0f);
+  }
+  if ( m_TotalTime && length )
+  {
+    m_Bitrate = (int)((length / m_seekInfo.GetDuration()) * 8);  // average bitrate
   }
 
   // Read in some data so we can determine the sample size and so on
@@ -110,7 +113,7 @@ bool MP3Codec::Init(const CStdString &strFile, unsigned int filecache)
   // and cycle around continually reading until we have the necessary data
   // as a first workaround skip the id3v2 tag at the beginning of the file
   int id3v2Size = 0;
-  if (!item.IsInternetStream())
+  if (!bIsInternetStream)
   {
     const float* offsets=m_seekInfo.GetOffsets();
     id3v2Size=(int)offsets[0];
@@ -124,7 +127,7 @@ bool MP3Codec::Init(const CStdString &strFile, unsigned int filecache)
     m_Channels      = m_Formatdata[2];
     m_SampleRate    = m_Formatdata[1];
     m_BitsPerSample = m_Formatdata[3];
-    m_Bitrate       = m_Formatdata[4];
+    if (bIsInternetStream) m_Bitrate = m_Formatdata[4];
   }
   else
   {
@@ -134,7 +137,7 @@ bool MP3Codec::Init(const CStdString &strFile, unsigned int filecache)
     m_pDecoder = NULL;
     return false;
   }
-  if (!item.IsInternetStream())
+  if (!bIsInternetStream)
   {
     m_pDecoder->flush();
     m_file.Seek(id3v2Size);
@@ -208,7 +211,6 @@ int MP3Codec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
       result = m_pDecoder->decode( m_InputBuffer, m_InputBufferPos + madguard, m_OutputBuffer + m_OutputBufferPos, &outputsize, (unsigned int *)&m_Formatdata);
       if ( result == 1 || result == 0) 
       {
-        m_Bitrate = m_Formatdata[4];
         // let's check if we need to ignore the decoded data.
         if ( m_IgnoreFirst && outputsize && m_seekInfo.GetFirstSample() )
         {

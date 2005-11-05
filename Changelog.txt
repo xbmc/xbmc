@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 05-11-2005 changed: show average bitrate for vbr mp3 again.
  - 05-11-2005 changed: removed mymusictop100 keymappings from keymap.xml (window doesn't exist anymore, functionality was moved to libraryview a while back)
  - 04-11-2005 fixed: myfiles, certain .sids, .nsfs and .oggs weren't deleteable/copyable.
  - 04-11-2005 fixed: mymusic, when you changed sort method, cursor placement changed to wrong file, thx to Jmarshall for fix
