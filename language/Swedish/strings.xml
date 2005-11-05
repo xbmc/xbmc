@@ -1,10 +1,10 @@
-<!-- <version><dateDDMMYY>281005</dateDDMMYY><rev>1.261</rev></version> !-->
+<!-- date translated: 4 nov 2005 !-->
 <strings>
   <string><id>0</id><value>Mina Program</value></string>
   <string><id>1</id><value>Mina Bilder</value></string>
   <string><id>2</id><value>Min Musik</value></string>
   <string><id>3</id><value>Mina Filmer</value></string>
-  <string><id>4</id><value>TV Guide</value></string>
+  <string><id>4</id><value>TV guide</value></string>
   <string><id>5</id><value>Inst&#228;llningar</value></string>
   <!-- String with id 6 should not be set here, only in the english language file !-->
   <string><id>7</id><value>Mina Filer</value></string>
@@ -211,7 +211,7 @@
   <string><id>275</id><value>Pixelm&#228;ngdsjustering</value></string>
   <string><id>276</id><value>Flytta pilen f&#246;r att &#228;ndra kompenseringsm&#228;ngd</value></string>
   <string><id>277</id><value>Flytta pilen f&#246;r att flytta undertextsposition</value></string>
-  <string><id>278</id><value>&196;ndra rektangeln till en perfekt fyrkant</value></string>
+  <string><id>278</id><value>&#196;ndra rektangeln till en perfekt fyrkant</value></string>
   <string><id>279</id><value>Kunde inte ladda inst&#228;llningar</value></string>
   <string><id>280</id><value>anv&#228;nder standardinst&#228;llningar</value></string>
   <string><id>281</id><value>Var god kontrollera .xml-filerna</value></string>
@@ -245,7 +245,7 @@
   <string><id>309</id><value>- Horisontellt avsk&#228;rmningsfilter</value></string>
   <string><id>310</id><value>- Automatisk ljus/kontrast</value></string>
   <string><id>311</id><value>- Dering</value></string>
-  <string><id>312</id><value>(0=auto)</value></string>
+  <string><id>312</id><value>(0 = auto)</value></string>
   <string><id>313</id><value>Rensar databas</value></string>
   <string><id>314</id><value>F&#246;rbereder...</value></string>
   <string><id>315</id><value>Databasfel</value></string>
@@ -268,7 +268,7 @@
   <string><id>332</id><value>Fel vid komprimering av databas</value></string>
   <string><id>333</id><value>Vill du rensa musikbiblioteket?</value></string>
   <string><id>334</id><value>Rensa musikbibliotek...</value></string>
-  <string><id>335</id><value>Start</value></string>
+  <string><id>335</id><value>Starta</value></string>
   <string><id>336</id><value>Justera bilduppdatering</value></string>
   <string><id>337</id><value>Ljudutg&#229;ng</value></string>
   <string><id>338</id><value>Analog</value></string>
@@ -285,7 +285,7 @@
   <string><id>349</id><value>Visa endast Default.xbe</value></string>
   <string><id>350</id><value>Program</value></string>
   <string><id>351</id><value>Av</value></string>
-  <string><id>352</id><value>Dim</value></string>
+  <string><id>352</id><value>Dimma</value></string>
   <string><id>353</id><value>Svart</value></string>
   <string><id>354</id><value>Matrix-stil</value></string>
   <string><id>355</id><value>Tid innan sk&#228;rmsl&#228;ckare startar</value></string>
@@ -366,7 +366,7 @@
   <string><id>430</id><value>Sortera: DVD#</value></string>
   <string><id>431</id><value>Ingen cache</value></string>
   <string><id>432</id><value>Radera filmen fr&#229;n databasen</value></string>
-  <string><id>433</id><value>&196;r du s&#228;ker p&#229; att ta bort</value></string>
+  <string><id>433</id><value>&#196;r du s&#228;ker p&#229; att ta bort</value></string>
   <string><id>434</id><value>filmen?</value></string>
   <string><id>435</id><value>L&#229;t</value></string>
   <string><id>436</id><value>&#197;r:</value></string>
@@ -404,7 +404,7 @@
   <string><id>468</id><value>Flytta stapeln f&#246;r att &#228;ndra OSD-position</value></string>
   <string><id>469</id><value>OSD-position</value></string>
   <string><id>470</id><value>Om XBMC</value></string>
-  <string><id>471</id><value>Modchip</value></string>
+  <string><id>471</id><value>Mod-chip</value></string>
   <string><id>472</id><value>Video OSD timeout</value></string>
   <string><id>473</id><value>H&#246;gkvalitativ resampling</value></string>
   <string><id>474</id><value>Av</value></string>
@@ -500,7 +500,7 @@
   <string><id>706</id><value>HTTP proxy v&#228;rd</value></string>
   <string><id>707</id><value>HTTP proxy port</value></string>
   <string><id>708</id><value>Aktivera HTTP proxy</value></string>
-  <string><id>709</id><value>XLink Kai XTag</value></string>
+  <string><id>709</id><value>XLink Kai xTag</value></string>
   <string><id>710</id><value>XLink Kai l&#246;senord</value></string>
   <string><id>711</id><value>Internet protokoll (IP)</value></string>
   <string><id>712</id><value>Felaktig port angiven. V&#228;rde m&#229;ste vara mellan 1 och 65535.</value></string>
@@ -539,16 +539,16 @@
   <string><id>745</id><value>Ingen skannad information f&#246;r denna vy</value></string>
   <string><id>746</id><value>Byt till fil-vy</value></string>
   <string><id>747</id><value>Fel vid laddning av bilden</value></string>
-  <string><id>748</id><value>&196;ndra s&#246;kv&#228;g</value></string>
+  <string><id>748</id><value>&#196;ndra s&#246;kv&#228;g</value></string>
   <string><id>749</id><value>L&#228;gg till utdelning</value></string>
-  <string><id>750</id><value>&196;r du s&#228;ker?</value></string>
+  <string><id>750</id><value>&#196;r du s&#228;ker?</value></string>
   <string><id>751</id><value>Ta bort utdelning</value></string>
-  <string><id>752</id><value>&196;ndra s&#246;kv&#228;g till utdelning</value></string>
+  <string><id>752</id><value>&#196;ndra s&#246;kv&#228;g till utdelning</value></string>
   <string><id>753</id><value>Byt namn p&#229; utdelningen</value></string>
   <string><id>754</id><value>L&#228;gg till programl&#228;nk</value></string>
-  <string><id>755</id><value>&196;ndra programs&#246;kv&#228;g</value></string>
-  <string><id>756</id><value>&196;ndra programnamn</value></string>
-  <string><id>757</id><value>&196;ndra s&#246;kv&#228;gsdjup</value></string>
+  <string><id>755</id><value>&#196;ndra programs&#246;kv&#228;g</value></string>
+  <string><id>756</id><value>&#196;ndra programnamn</value></string>
+  <string><id>757</id><value>&#196;ndra s&#246;kv&#228;gsdjup</value></string>
   <string><id>758</id><value>Radera programl&#228;nk</value></string>
   <string><id>759</id><value>Vy: Stor lista</value></string>
   <string><id>760</id><value>Gul</value></string>
@@ -685,7 +685,7 @@
   <string><id>10508</id><value>V&#228;derprognos</value></string>
   <string><id>10509</id><value>N&#228;tverksspel</value></string>
   <string><id>10510</id><value>Till&#228;gg</value></string>
-  <string><id>10511</id><value>System Info</value></string>
+  <string><id>10511</id><value>System info</value></string>
   <string><id>10512</id><value>Min Musik - Album</value></string>
   <string><id>10513</id><value>Min Musik - Artister</value></string>
   <string><id>10514</id><value>Min Musik - Genre</value></string>
@@ -835,7 +835,7 @@
   <string><id>13271</id><value>CPU Hastighet:</value></string>
 
   <string><id>13275</id><value>H&#229;rddisk</value></string>
-  <string><id>13276</id><value>DVD-ROM</value></string>
+  <string><id>13276</id><value>DVDRom</value></string>
   <string><id>13277</id><value>Lagring</value></string>
   <string><id>13278</id><value>Standard</value></string>
   <string><id>13279</id><value>N&#228;tverk</value></string>
@@ -850,7 +850,7 @@
   <string><id>13288</id><value>Xbox version:</value></string>
   <string><id>13289</id><value>Xbox serienummer:</value></string>
   <string><id>13290</id><value>XBOX tillverkat:</value></string>
-  <string><id>13291</id><value>ModChip:</value></string>
+  <string><id>13291</id><value>Modchip:</value></string>
   <string><id>13292</id><value>A/V kabel:</value></string>
   <string><id>13293</id><value>Video &#38; XBE Region:</value></string>
   <string><id>13294</id><value>DVD region:</value></string>
@@ -893,7 +893,7 @@
   <string><id>13331</id><value>Fel: f&#246;r lite ledigt minne.</value></string>
   <string><id>13332</id><value>Flytta upp</value></string>
   <string><id>13333</id><value>Flytta ned</value></string>
-  <string><id>13334</id><value>&196;ndra Namn</value></string>
+  <string><id>13334</id><value>&#196;ndra Namn</value></string>
   <string><id>13335</id><value>Ange som standard</value></string>
   <string><id>13336</id><value>Ta bort knapp</value></string>
   <string><id>13337</id><value>- 2-kanalers PCM-genomg&#229;ng</value></string>
@@ -982,22 +982,22 @@ f&#246;r den h&#228;r visualiseringen</value></string>
   <string><id>14016</id><value>Minst en fil och miniatyr</value></string>
   <string><id>14017</id><value>Procent av miniatyrer</value></string>
   <string><id>14018</id><value>Vy val</value></string>
-  <string><id>14019</id><value>&196;ndra omr&#229;deskod 1</value></string>
-  <string><id>14020</id><value>&196;ndra omr&#229;deskod 2</value></string>
-  <string><id>14021</id><value>&196;ndra omr&#229;deskod 3</value></string>
+  <string><id>14019</id><value>&#196;ndra omr&#229;deskod 1</value></string>
+  <string><id>14020</id><value>&#196;ndra omr&#229;deskod 2</value></string>
+  <string><id>14021</id><value>&#196;ndra omr&#229;deskod 3</value></string>
   <string><id>14022</id><value>Bibliotek</value></string>
   <string><id>14023</id><value>Ingen TV</value></string>
   <string><id>14024</id><value>Skriv in din n&#228;rmsta storstad</value></string>
   <string><id>14025</id><value>Video/Audio/DVD Cache - H&#229;rddisk</value></string>
-  <string><id>14026</id><value>Video Cache - DVDRom</value></string>
+  <string><id>14026</id><value>Video cache - DVDRom</value></string>
   <string><id>14027</id><value>- Lokalt N&#228;tverk</value></string>
   <string><id>14028</id><value>- Internet</value></string>
 
-  <string><id>14030</id><value>Audio Cache - DVDRom</value></string>
+  <string><id>14030</id><value>Audio cache - DVDRom</value></string>
   <string><id>14031</id><value>- Lokalt N&#228;tverk</value></string>
   <string><id>14032</id><value>- Internet</value></string>
 
-  <string><id>14034</id><value>DVD Cache - DVDRom</value></string>
+  <string><id>14034</id><value>DVD cache - DVDRom</value></string>
   <string><id>14035</id><value>- Lokalt N&#228;tverk</value></string>
   <string><id>14036</id><value>Servrar</value></string>
   <string><id>14037</id><value>Utseende</value></string>
@@ -1045,7 +1045,7 @@ f&#246;r den h&#228;r visualiseringen</value></string>
   <string><id>15006</id><value>Fr&#229;n: %s</value></string>
   <string><id>15007</id><value>Inbjudan</value></string>
   <string><id>15008</id><value>Du har blivit inbjuden till %s.</value></string>
-  <string><id>15009</id><value>Offline</value></string>
+  <string><id>15009</id><value>Fr&#229;nkopplad</value></string>
   <string><id>15010</id><value>V&#228;nner</value></string>
   <string><id>15011</id><value>Vy: V&#228;nner</value></string>
   <string><id>15012</id><value>G&#229; med</value></string>
@@ -1120,10 +1120,10 @@ f&#246;r den h&#228;r visualiseringen</value></string>
   <string><id>15206</id><value>Infoleverans misslyckades: Felaktig autentisering.</value></string>
   <string><id>15207</id><value>Uppkopplad</value></string>
   <string><id>15208</id><value>Ej uppkopplad</value></string>
-  <string><id>15209</id><value>Leverans intervall %i</value></string>
+  <string><id>15209</id><value>Leveransintervall %i</value></string>
   <string><id>15210</id><value>Cachade %i l&#229;tar</value></string>
   <string><id>15211</id><value>Skickar...</value></string>
-  <string><id>15212</id><value>Skickar om %i seks</value></string>
+  <string><id>15212</id><value>Skickar om %i sek</value></string>
   <string><id>15213</id><value>Spela upp med...</value></string>
   <string><id>15214</id><value>Anv&#228;nd mjuk A/V synkronisering</value></string>
   <string><id>15215</id><value>G&#246;m filnamn i miniatyrl&#228;get</value></string>
@@ -1131,6 +1131,37 @@ f&#246;r den h&#228;r visualiseringen</value></string>
   <string><id>15250</id><value>Skicka in Last.fm radio till Audioscrobbler</value></string>
   <string><id>15251</id><value>Ansluter till Last.fm...</value></string>
   <string><id>15252</id><value>V&#228;ljer station...</value></string>
+  <string><id>15253</id><value>S&#246;k liknande artister...</value></string>
+  <string><id>15254</id><value>S&#246;k liknande taggar...</value></string>
+  <string><id>15255</id><value>Din profil (%name%)</value></string>
+  <string><id>15256</id><value>Totalt sett topp-taggar</value></string>
+  <string><id>15257</id><value>Toppartister f&#246;r tag %name%</value></string>
+  <string><id>15258</id><value>Toppalbum f&#246;r tag %name%</value></string>
+  <string><id>15259</id><value>Toppl&#229;tar f&#246;r tag %name%</value></string>
+  <string><id>15260</id><value>Lyssna till tag %name% last.fm radio</value></string>
+  <string><id>15261</id><value>Liknande artister som %name%</value></string>
+  <string><id>15262</id><value>Topp %name% album</value></string>
+  <string><id>15263</id><value>Topp %name% sp&#229;r</value></string>
+  <string><id>15264</id><value>Topp %name% taggar</value></string>
+  <string><id>15265</id><value>St&#246;rsta fansen av %name%</value></string>
+  <string><id>15266</id><value>Lyssna p&#229; %name% fans last.fm radio</value></string>
+  <string><id>15267</id><value>Lyssna p&#229; %name% liknande artister last.fm radio</value></string>
+  <string><id>15268</id><value>Toppartister f&#246;r anv&#228;ndare %name%</value></string>
+  <string><id>15269</id><value>Toppalbum f&#246;r anv&#228;ndare %name%</value></string>
+  <string><id>15270</id><value>Toppl&#229;tar f&#246;r anv&#228;ndare %name%</value></string>
+  <string><id>15271</id><value>V&#228;nner till anv&#228;ndare %name%</value></string>
+  <string><id>15272</id><value>Grannar till anv&#228;ndare %name%</value></string>
+  <string><id>15273</id><value>Vecko-artister f&#246;r %name%</value></string>
+  <string><id>15274</id><value>Vecko-albumlista f&#246;r %name%</value></string>
+  <string><id>15275</id><value>Vecko-l&#229;tlista f&#246;r %name%</value></string>
+  <string><id>15276</id><value>Lyssna p&#229; %name%'s grannes last.fm radio</value></string>
+  <string><id>15277</id><value>Lyssna p&#229; %name%'s personliga last.fm radio</value></string>
+  <string><id>15278</id><value>Lyssna p&#229; %name%'s &#228;lsklingssp&#229;r last.fm radio</value></string>
+  <string><id>15279</id><value>H&#228;mtar lista fr&#229;n last.fm...</value></string>
+  <string><id>15280</id><value>Kan inte h&#228;mta lista fr&#229;n last.fm...</value></string>
+  <string><id>15281</id><value>Skriv ett artistnamn f&#246;r att hitta besl&#228;ktade</value></string>
+  <string><id>15282</id><value>Skriv ett tagnamn f&#246;r att hitta besl&#228;ktade</value></string>
+  <string><id>15283</id><value>Nyligen spelade l&#229;tar av %name%</value></string>
 
   <string><id>15300</id><value>S&#246;kv&#228;g ej funnen eller ogiltig</value></string>
   <string><id>15301</id><value>Uppkoppling misslyckades</value></string>
@@ -1157,7 +1188,7 @@ f&#246;r den h&#228;r visualiseringen</value></string>
   <string><id>16017</id><value>Ange s&#246;kstr&#228;ng</value></string>
   <string><id>16018</id><value>Inget</value></string>
   <string><id>16019</id><value>Auto</value></string>
-  <string><id>16020</id><value>DeInterlace</value></string>
+  <string><id>16020</id><value>Deinterlace</value></string>
   <string><id>16021</id><value>Synka udda</value></string>
   <string><id>16022</id><value>Synka j&#228;mn</value></string>
   <string><id>16023</id><value>Interlaced hantering</value></string>
@@ -1168,7 +1199,7 @@ f&#246;r den h&#228;r visualiseringen</value></string>
   <string><id>16102</id><value>Sedd</value></string>
   <string><id>16103</id><value>Markera som sedd</value></string>
   <string><id>16104</id><value>Markera som ej sedd</value></string>
-  <string><id>16105</id><value>&196;ndra Titel</value></string>
+  <string><id>16105</id><value>&#196;ndra Titel</value></string>
   <string><id>16106</id><value>Anv&#228;nd NTSC-M &#38; NTSC-J</value></string>
   <string><id>16107</id><value>Anv&#228;nd endast NTSC-M</value></string>
   <string><id>16108</id><value>Anv&#228;nd endast NTSC-J</value></string>
