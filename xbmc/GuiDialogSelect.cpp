@@ -170,3 +170,8 @@ void CGUIDialogSelect::Sort(bool bSortAscending /*=true*/)
   sort(m_vecList.begin(), m_vecList.end(), sortmethod);
 }
 
+void CGUIDialogSelect::SetSelected(int iSelected)
+{
+  if (iSelected < 0 || iSelected >= (int)m_vecList.size()) return;
+  m_iSelected = iSelected;
+}

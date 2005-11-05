@@ -669,13 +669,16 @@ void CGUIWindowMusicBase::OnInfo(int iItem)
   bool bSaveDb = false;
   bool bSaveDirThumb = false;
   CStdString strLabel = pItem->GetLabel();
+  CStdString strAlbumName;
+  CStdString strArtistName;
 
   CAlbum album;
   if (pItem->m_musicInfoTag.Loaded())
   {
-    CStdString strAlbum = pItem->m_musicInfoTag.GetAlbum();
-    if (!strAlbum.IsEmpty())
-      strLabel = strAlbum;
+    strAlbumName = pItem->m_musicInfoTag.GetAlbum();
+    strArtistName = pItem->m_musicInfoTag.GetArtist();
+    if (strAlbumName.IsEmpty())
+      strAlbumName = strLabel;
 
     if (g_musicDatabase.GetAlbumsByPath(strPath, albums))
     {
@@ -702,8 +705,8 @@ void CGUIWindowMusicBase::OnInfo(int iItem)
       // the only album in this directory?
       if (albums.size() == 1)
       {
-        CStdString strAlbum = *albums.begin();
-        strLabel = strAlbum;
+        //CStdString strAlbum = *albums.begin();
+        //strLabel = strAlbum;
         bSaveDirThumb = true;
       }
     }
@@ -714,7 +717,8 @@ void CGUIWindowMusicBase::OnInfo(int iItem)
     if (albums.size() == 1)
     {
       CAlbum& album = albums[0];
-      strLabel = album.strAlbum;
+      strAlbumName = album.strAlbum;
+      strArtistName = album.strArtist;
       bSaveDirThumb = true;
     }
     else
@@ -731,9 +735,12 @@ void CGUIWindowMusicBase::OnInfo(int iItem)
         for (int i = 0; i < (int)albums.size(); ++i)
         {
           CAlbum& album = albums[i];
-          pDlg->Add(album.strAlbum);
+          CStdString strTemp = album.strAlbum;
+          if (!album.strArtist.IsEmpty())
+            strTemp += " - " + album.strArtist;
+          pDlg->Add(strTemp);
         }
-        pDlg->Sort();
+        //pDlg->Sort();
         pDlg->DoModal(GetID());
 
         // and wait till user selects one
@@ -744,7 +751,9 @@ void CGUIWindowMusicBase::OnInfo(int iItem)
           return ;
         }
 
-        strLabel = pDlg->GetSelectedLabelText();
+        // get album and artist
+        strAlbumName = albums[iSelectedAlbum].strAlbum;
+        strArtistName = albums[iSelectedAlbum].strArtist;
       }
     }
 
@@ -758,7 +767,7 @@ void CGUIWindowMusicBase::OnInfo(int iItem)
     GetDirectory(strPath, items);
     OnRetrieveMusicInfo(items);
 
-    set<CStdString> albums;
+    set<CAlbum> setAlbums;
 
     // Get album names found in directory
     for (int i = 0; i < items.Size(); i++)
@@ -766,31 +775,41 @@ void CGUIWindowMusicBase::OnInfo(int iItem)
       CFileItem* pItem = items[i];
       if (pItem->m_musicInfoTag.Loaded() && !pItem->m_musicInfoTag.GetAlbum().IsEmpty())
       {
-        CStdString strAlbum = pItem->m_musicInfoTag.GetAlbum();
-        if (!strAlbum.IsEmpty())
-          albums.insert(strAlbum);
+        CAlbum album;
+        album.strAlbum = pItem->m_musicInfoTag.GetAlbum();
+        album.strArtist = pItem->m_musicInfoTag.GetArtist();
+        setAlbums.insert(album);
       }
     }
 
-    // no album found in folder use the
-    // item label, we may find something?
-    if (albums.size() == 0)
+    // no album found in folder
+    // use the item label, we may find something?
+    if (setAlbums.size() == 0)
     {
       if (m_dlgProgress) m_dlgProgress->Close();
+      strAlbumName = pItem->GetLabel();
       bSaveDirThumb = true;
     }
 
-    if (albums.size() == 1)
+    // one album, get the album and artist
+    else if (setAlbums.size() == 1)
     {
-      CStdString strAlbum = *albums.begin();
-      strLabel = strAlbum;
+      CAlbum album = *setAlbums.begin();
+      strAlbumName = album.strAlbum;
+      strArtistName = album.strArtist;
       bSaveDirThumb = true;
     }
 
-    if (albums.size() > 1)
+    // many albums, let the user choose
+    else if (setAlbums.size() > 1)
     {
-      // More then one album is found in this directory
-      // let the user choose
+      // convert set into vector for display
+      VECALBUMS albums;
+      set<CAlbum>::iterator it;
+      for (it = setAlbums.begin(); it != setAlbums.end(); it++)
+      albums.push_back(*it);
+
+      // select dialog
       CGUIDialogSelect *pDlg = (CGUIDialogSelect*)m_gWindowManager.GetWindow(WINDOW_DIALOG_SELECT);
       if (pDlg)
       {
@@ -798,12 +817,15 @@ void CGUIWindowMusicBase::OnInfo(int iItem)
         pDlg->Reset();
         pDlg->EnableButton(false);
 
-        for (set<CStdString>::iterator it = albums.begin(); it != albums.end(); it++)
+        for (int i = 0; i < (int)albums.size(); ++i)
         {
-          CStdString strAlbum = *it;
+          CAlbum& album = albums[i];
+          CStdString strAlbum = album.strAlbum;
+          if (!album.strArtist.IsEmpty())
+            strAlbum += " - " + album.strArtist;
           pDlg->Add(strAlbum);
         }
-        pDlg->Sort();
+        //pDlg->Sort();
         pDlg->DoModal(GetID());
 
         // and wait till user selects one
@@ -813,8 +835,8 @@ void CGUIWindowMusicBase::OnInfo(int iItem)
           if (m_dlgProgress) m_dlgProgress->Close();
           return ;
         }
-
-        strLabel = pDlg->GetSelectedLabelText();
+        strAlbumName = albums[iSelectedAlbum].strAlbum;
+        strArtistName = albums[iSelectedAlbum].strArtist;
       }
     }
   }
@@ -830,11 +852,12 @@ void CGUIWindowMusicBase::OnInfo(int iItem)
       CMusicInfoTag& tag = pItem->m_musicInfoTag;
       if ( pLoader->Load(pItem->m_strPath, tag))
       {
-        // get album
+        // get album and artist
         CStdString strAlbum = tag.GetAlbum();
         if (!strAlbum.IsEmpty())
         {
-          strLabel = strAlbum;
+          strAlbumName = strAlbum;
+          strArtistName = tag.GetArtist();
         }
       }
     }
@@ -842,10 +865,15 @@ void CGUIWindowMusicBase::OnInfo(int iItem)
 
   if (m_dlgProgress) m_dlgProgress->Close();
 
-  ShowAlbumInfo(strLabel, strPath, bSaveDb, bSaveDirThumb, false);
+  ShowAlbumInfo(strAlbumName, strArtistName, strPath, bSaveDb, bSaveDirThumb, false);
 }
 
 void CGUIWindowMusicBase::ShowAlbumInfo(const CStdString& strAlbum, const CStdString& strPath, bool bSaveDb, bool bSaveDirThumb, bool bRefresh)
+{
+  ShowAlbumInfo(strAlbum, "", strPath, bSaveDb, bSaveDirThumb, bRefresh);
+}
+
+void CGUIWindowMusicBase::ShowAlbumInfo(const CStdString& strAlbum, const CStdString& strArtist, const CStdString& strPath, bool bSaveDb, bool bSaveDirThumb, bool bRefresh)
 {
   bool bUpdate = false;
   // check cache
@@ -888,7 +916,7 @@ void CGUIWindowMusicBase::ShowAlbumInfo(const CStdString& strAlbum, const CStdSt
 
   // find album info
   CMusicAlbumInfo album;
-  if (FindAlbumInfo(strAlbum, album))
+  if (FindAlbumInfo(strAlbum, strArtist, album))
   {
     // download the album info
     bool bLoaded = album.Loaded();
@@ -938,14 +966,18 @@ void CGUIWindowMusicBase::ShowAlbumInfo(const CStdString& strAlbum, const CStdSt
       CGUIWindowMusicInfo *pDlgAlbumInfo = (CGUIWindowMusicInfo*)m_gWindowManager.GetWindow(WINDOW_MUSIC_INFO);
       if (pDlgAlbumInfo)
       {
+        CStdString strThumb;
+        CUtil::GetAlbumThumb(album.GetTitle(), album.GetAlbumPath(), strThumb);
+
+        CHTTP http;
+        http.Download(album.GetImageURL(), strThumb);
+
         pDlgAlbumInfo->SetAlbum(album);
         pDlgAlbumInfo->DoModal(GetID());
 
         // Save directory thumb
         if (bSaveDirThumb)
         {
-          CStdString strThumb;
-          CUtil::GetAlbumThumb(album.GetTitle(), album.GetAlbumPath(), strThumb);
           // Was the download of the album art
           // from allmusic.com successfull...
           if (CFile::Exists(strThumb))
@@ -964,7 +996,7 @@ void CGUIWindowMusicBase::ShowAlbumInfo(const CStdString& strAlbum, const CStdSt
         }
         if (pDlgAlbumInfo->NeedRefresh())
         {
-          ShowAlbumInfo(strAlbum, strPath, bSaveDb, bSaveDirThumb, true);
+          ShowAlbumInfo(strAlbum, strArtist, strPath, bSaveDb, bSaveDirThumb, true);
           return ;
         }
       }
@@ -1211,7 +1243,7 @@ void CGUIWindowMusicBase::OnSearchItemFound(const CFileItem* pItem)
 {
 }
 
-bool CGUIWindowMusicBase::FindAlbumInfo(const CStdString& strAlbum, CMusicAlbumInfo& album)
+bool CGUIWindowMusicBase::FindAlbumInfo(const CStdString& strAlbum, const CStdString& strArtist, CMusicAlbumInfo& album)
 {
   // quietly return if Internet lookups are disabled
   if (!g_guiSettings.GetBool("Network.EnableInternet")) return false;
@@ -1221,7 +1253,7 @@ bool CGUIWindowMusicBase::FindAlbumInfo(const CStdString& strAlbum, CMusicAlbumI
   {
     m_dlgProgress->SetHeading(185);
     m_dlgProgress->SetLine(0, strAlbum);
-    m_dlgProgress->SetLine(1, "");
+    m_dlgProgress->SetLine(1, strArtist);
     m_dlgProgress->SetLine(2, "");
     m_dlgProgress->StartModal(GetID());
   }
@@ -1229,7 +1261,7 @@ bool CGUIWindowMusicBase::FindAlbumInfo(const CStdString& strAlbum, CMusicAlbumI
   try
   {
     CMusicInfoScraper scraper;
-    scraper.FindAlbuminfo(strAlbum);
+    scraper.FindAlbuminfo(strAlbum, strArtist);
 
     while (!scraper.Completed())
     {
@@ -1262,12 +1294,41 @@ bool CGUIWindowMusicBase::FindAlbumInfo(const CStdString& strAlbum, CMusicAlbumI
             pDlg->EnableButton(true);
             pDlg->SetButtonLabel(413); // manual
 
+            int iBest = -1;
             for (int i = 0; i < iAlbumCount; ++i)
             {
               CMusicAlbumInfo& info = scraper.GetAlbum(i);
-              pDlg->Add(info.GetTitle2());
+              double fRelevance = CUtil::AlbumRelevance(info.GetTitle(), strAlbum, info.GetArtist(), strArtist);
+
+              // are there any items with 100% relevance?
+              if (fRelevance == 1.0f && iBest > -2)
+              {
+                // there was no best item so make this best item
+                if (iBest == -1)
+                  iBest = i;
+                // there was another item with 100% relevance so the user has to choose
+                else
+                  iBest = -2;
+              }
+
+              // set the label to [relevance]  album - artist
+              CStdString strTemp;
+              strTemp.Format("[%0.2f]  %s", fRelevance, info.GetTitle2());
+              pDlg->Add(strTemp);
             }
-            pDlg->DoModal(GetID());
+            // autochoose the iBest item
+            if (iBest > -1)
+            {
+              pDlg->SetSelected(iBest);
+              pDlg->Close();
+            }
+            // otherwise allow the user to choose
+            else
+            {
+              // sort by relevance
+              pDlg->Sort(false);
+              pDlg->DoModal(GetID());
+            }
 
             // and wait till user selects one
             iSelectedAlbum = pDlg->GetSelectedLabel();
@@ -1277,13 +1338,36 @@ bool CGUIWindowMusicBase::FindAlbumInfo(const CStdString& strAlbum, CMusicAlbumI
               CStdString strNewAlbum = strAlbum;
               if (!CGUIDialogKeyboard::ShowAndGetInput(strNewAlbum, (CStdStringW)g_localizeStrings.Get(16011), false)) return false;
               if (strNewAlbum == "") return false;
+
+              CStdString strNewArtist = strArtist;
+              if (!CGUIDialogKeyboard::ShowAndGetInput(strNewArtist, (CStdStringW)g_localizeStrings.Get(16025), false)) return false;
+
               if (m_dlgProgress)
               {
                 m_dlgProgress->SetLine(0, strNewAlbum);
+                m_dlgProgress->SetLine(1, strNewArtist);
                 m_dlgProgress->Progress();
               }
 
-              return FindAlbumInfo(strNewAlbum, album);
+              return FindAlbumInfo(strNewAlbum, strNewArtist, album);
+            }
+
+            // match the selected item back to an item in the scraper vector...
+            // dialog select only allows text items
+            // we sorted the list by relevance but the scraper vector is not sorted similarly
+            // so the text needs to be matched back to the correct scraper item
+            // [0.96]  Album - Artist
+            // 12345678
+            CStdString strSelectedAlbum = pDlg->GetSelectedLabelText();            
+            strSelectedAlbum = strSelectedAlbum.Right(strSelectedAlbum.size() - 8); 
+            for (int i = 0; i < iAlbumCount; ++i)
+            {
+              CMusicAlbumInfo& info = scraper.GetAlbum(i);
+              if (strSelectedAlbum.Equals(info.GetTitle2()))
+              {
+                iSelectedAlbum = i;
+                i = iAlbumCount;
+              }
             }
           }
         }

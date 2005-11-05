@@ -198,6 +198,8 @@ static void CreateRarPath(CStdString& strUrlPath, const CStdString& strRarPath,
   static void GetRecursiveDirsListing(const CStdString& strPath, CFileItemList& items);
   static void ForceForwardSlashes(CStdString& strPath);
 
+  static double AlbumRelevance(const CStdString& strAlbumTemp1, const CStdString& strAlbum1, const CStdString& strArtistTemp1, const CStdString& strArtist1);
+
 private:
   static bool m_bNetworkUp;
 };

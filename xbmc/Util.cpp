@@ -20,6 +20,7 @@
 #include "Picture.h"
 #include "GUIDialogNumeric.h"
 #include "autorun.h"
+#include "utils/fstrcmp.h"
 
 #define clamp(x) (x) > 255.f ? 255 : ((x) < 0 ? 0 : (BYTE)(x+0.5f)) // Valid ranges: brightness[-1 -> 1 (0 is default)] contrast[0 -> 2 (1 is default)]  gamma[0.5 -> 3.5 (1 is default)] default[ramp is linear]
 static const __int64 SECS_BETWEEN_EPOCHS = 11644473600;
@@ -3792,4 +3793,27 @@ void CUtil::ForceForwardSlashes(CStdString& strPath)
     strPath.at(iPos) = '/';
     iPos = strPath.ReverseFind('\\');
   }
+}
+
+double CUtil::AlbumRelevance(const CStdString& strAlbumTemp1, const CStdString& strAlbum1, const CStdString& strArtistTemp1, const CStdString& strArtist1)
+{
+  // case-insensitive fuzzy string comparison on the album and artist for relevance
+  // weighting is identical, both album and artist are 50% of the total relevance
+  // a missing artist means the maximum relevance can only be 0.50
+  CStdString strAlbumTemp = strAlbumTemp1;
+  strAlbumTemp.MakeLower();
+  CStdString strAlbum = strAlbum1;
+  strAlbum.MakeLower();
+  double fAlbumPercentage = fstrcmp(strAlbumTemp, strAlbum, 0.0f);
+  double fArtistPercentage = 0.0f;
+  if (!strArtist1.IsEmpty())
+  {
+    CStdString strArtistTemp = strArtistTemp1;
+    strArtistTemp.MakeLower();
+    CStdString strArtist = strArtist1;
+    strArtist.MakeLower();
+    fArtistPercentage = fstrcmp(strArtistTemp, strArtist, 0.0f);
+  }
+  double fRelevance = fAlbumPercentage * 0.5f + fArtistPercentage * 0.5f;
+  return fRelevance;
 }

@@ -31,9 +31,10 @@ CMusicAlbumInfo& CMusicInfoScraper::GetAlbum(int iAlbum)
   return m_vecAlbums[iAlbum];
 }
 
-void CMusicInfoScraper::FindAlbuminfo(const CStdString& strAlbum)
+void CMusicInfoScraper::FindAlbuminfo(const CStdString& strAlbum, const CStdString& strArtist /* = "" */)
 {
   m_strAlbum=strAlbum;
+  m_strArtist=strArtist;
   StopThread();
   Create();
 }
@@ -88,6 +89,8 @@ void CMusicInfoScraper::FindAlbuminfo()
   {
     const CHTMLRow& row = table.GetRow(i);
     CStdString strAlbumName;
+    CStdString strArtist1;
+    CStdString strAlbum1;
 
     for (int iCol = 0; iCol < row.GetColumns(); ++iCol)
     {
@@ -105,10 +108,9 @@ void CMusicInfoScraper::FindAlbuminfo()
       {
         if (strColum != "&nbsp;")
         {
-          CStdString strArtist;
           util.RemoveTags(strColum);
-          util.ConvertHTMLToAnsi(strColum, strArtist);
-          strAlbumName = "- " + strArtist + " " + strAlbumName;
+          util.ConvertHTMLToAnsi(strColum, strArtist1);
+          strAlbumName = "- " + strArtist1 + " " + strAlbumName;
         }
       }
 
@@ -118,9 +120,8 @@ void CMusicInfoScraper::FindAlbuminfo()
         CStdString strTemp = strColum;
         util.RemoveTags(strTemp);
 
-        CStdString strAlbum;
-        util.ConvertHTMLToAnsi(strTemp, strAlbum);
-        strAlbumName = strAlbum + " " + strAlbumName;
+        util.ConvertHTMLToAnsi(strTemp, strAlbum1);
+        strAlbumName = strAlbum1 + " " + strAlbumName;
       }
       // Album URL
       if (iCol == 4 && strColum.Find("<a href") >= 0)
@@ -128,12 +129,12 @@ void CMusicInfoScraper::FindAlbuminfo()
         CStdString strAlbumURL;
         int iStartOfUrl = strColum.Find("<a href", 0);
         int iEndOfUrl = strColum.Find(">", iStartOfUrl);
-        CStdString strAlbum = strColum.Mid(iStartOfUrl, iEndOfUrl + 1);
-        util.getAttributeOfTag(strAlbum, "href=\"", strAlbumURL);
+        CStdString strTemp = strColum.Mid(iStartOfUrl, iEndOfUrl + 1);
+        util.getAttributeOfTag(strTemp, "href=\"", strAlbumURL);
 
         if (!strAlbumURL.IsEmpty())
         {
-          CMusicAlbumInfo newAlbum(strAlbumName, "http://www.allmusic.com" + strAlbumURL);
+          CMusicAlbumInfo newAlbum(strAlbum1, strArtist1, strAlbumName, "http://www.allmusic.com" + strAlbumURL);
           m_vecAlbums.push_back(newAlbum);
         }
       }
@@ -210,6 +211,7 @@ void CMusicInfoScraper::Process()
     {
       FindAlbuminfo();
       m_strAlbum.Empty();
+      m_strArtist.Empty();
     }
     if (m_iAlbum>-1)
     {
