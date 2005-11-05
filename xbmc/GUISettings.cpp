@@ -182,11 +182,12 @@ CGUISettings::CGUISettings(void)
   AddInt(5, "ProgramFiles.AutoSwitchPercentage", 14014, 50, 0, 5, 100, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
 
   AddCategory(1, "XLinkKai", 714);
-  AddBool(1, "XLinkKai.EnableNotifications", 14008, true);
-  AddString(2, "XLinkKai.GamesDir", 14009, "f:\\games", BUTTON_CONTROL_INPUT, false, 16015);
-  AddString(3, "XLinkKai.UserName", 709, "", BUTTON_CONTROL_INPUT, false, 709);
-  AddString(4, "XLinkKai.Password", 710, "", BUTTON_CONTROL_HIDDEN_INPUT, false, 710);
-  AddString(5, "XLinkKai.Server", 14042, "", BUTTON_CONTROL_IP_INPUT);
+  AddBool(1, "XLinkKai.Enabled", 14072, false);
+  AddBool(2, "XLinkKai.EnableNotifications", 14008, true);
+  AddString(3, "XLinkKai.GamesDir", 14009, "f:\\games", BUTTON_CONTROL_INPUT, false, 16015);
+  AddString(4, "XLinkKai.UserName", 709, "", BUTTON_CONTROL_INPUT, false, 709);
+  AddString(5, "XLinkKai.Password", 710, "", BUTTON_CONTROL_HIDDEN_INPUT, false, 710);
+  AddString(6, "XLinkKai.Server", 14042, "", BUTTON_CONTROL_IP_INPUT);
 
   // My Weather settings
   AddGroup(2, 8);
