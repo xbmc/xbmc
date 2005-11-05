@@ -188,6 +188,7 @@ void CKaiClient::RemoveObserver()
 {
   if (observer)
   {
+    observer->OnDeInitialise();
     observer = NULL;
     Detach();
   }

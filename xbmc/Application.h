@@ -40,6 +40,8 @@ public:
 
   void StartServices();
   void StopServices();
+  void StartKai();
+  void StopKai();
   void StartWebServer();
   void StopWebServer();
   void StartFtpServer();

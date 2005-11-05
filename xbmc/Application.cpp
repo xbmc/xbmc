@@ -1181,11 +1181,9 @@ HRESULT CApplication::Initialize()
     m_gWindowManager.Add(new CGUIWindowOSD);                // window id = 2901
   m_gWindowManager.Add(new CGUIWindowScreensaver);        // window id = 2900 Screensaver
   m_gWindowManager.Add(new CGUIWindowWeather);                // window id = 2600 WEATHER
-  CGUIWindowBuddies *pKai = new CGUIWindowBuddies;
-  m_gWindowManager.Add(pKai);                // window id = 2700 BUDDIES
+  m_gWindowManager.Add(new CGUIWindowBuddies);                // window id = 2700 BUDDIES
   /* window id's 3000 - 3100 are reserved for python */
   g_DownloadManager.Initialize();
-  CKaiClient::GetInstance()->SetObserver(pKai);
 
   m_ctrDpad.SetDelays(g_stSettings.m_iMoveDelayController, g_stSettings.m_iRepeatDelayController);
 
@@ -1244,6 +1242,7 @@ HRESULT CApplication::Initialize()
   }
 
   CScrobbler::GetInstance()->Init();
+  StartKai();
 
   m_bInitializing = false;
   return S_OK;
@@ -1342,6 +1341,29 @@ void CApplication::StopTimeServer()
   m_sntpClient.StopThread();
 }
 
+void CApplication::StartKai()
+{
+  if (g_guiSettings.GetBool("XLinkKai.Enabled"))
+  {
+    CGUIWindowBuddies *pKai = (CGUIWindowBuddies*)m_gWindowManager.GetWindow(WINDOW_BUDDIES);
+    if (pKai)
+    {
+      CLog::Log(LOGNOTICE, "starting kai");
+      CKaiClient::GetInstance()->SetObserver(pKai);
+    }
+  }
+}
+
+void CApplication::StopKai()
+{
+  if (CKaiClient::IsInstantiated())
+  {
+    CLog::Log(LOGNOTICE, "stop kai");
+    CKaiClient::GetInstance()->RemoveObserver();
+    CKaiClient::RemoveInstance();
+  }
+}
+
 void CApplication::StartLEDControl(bool switchoff)
 {
   if (g_guiSettings.GetInt("LED.Colour") != LED_COLOUR_NO_CHANGE)
@@ -1393,6 +1415,7 @@ void CApplication::StartServices()
   StartTimeServer();
   StartWebServer();
   StartFtpServer();
+  StartKai();
   StartLEDControl(false);
   CheckDate();
 
@@ -1456,6 +1479,7 @@ void CApplication::StopServices()
   StopWebServer();
   StopTimeServer();
   StopFtpServer();
+  StopKai();
 
   CLog::Log(LOGNOTICE, "stop dvd detect media");
   m_DetectDVDType.StopThread();
@@ -1502,7 +1526,7 @@ void CApplication::LoadSkin(const CStdString& strSkin)
   //  disconnect from the engine when the skin is
   //  changed
   bool bKaiConnected = false;
-  if (!m_bInitializing)
+  if (!m_bInitializing && g_guiSettings.GetBool("XLinkKai.Enabled"))
   {
     bKaiConnected = CKaiClient::GetInstance()->IsEngineConnected();
     if (bKaiConnected)
@@ -2362,12 +2386,15 @@ void CApplication::UpdateLCD()
 
 void CApplication::FrameMove()
 {
-  CKaiClient::GetInstance()->DoWork();
-  if (m_guiDialogKaiToast.DoWork())
+  if (g_guiSettings.GetBool("XLinkKai.Enabled"))
   {
-    if (!m_guiDialogKaiToast.IsRunning())
+    CKaiClient::GetInstance()->DoWork();
+    if (m_guiDialogKaiToast.DoWork())
     {
-      m_guiDialogKaiToast.Show(m_gWindowManager.GetActiveWindow());
+      if (!m_guiDialogKaiToast.IsRunning())
+      {
+        m_guiDialogKaiToast.Show(m_gWindowManager.GetActiveWindow());
+      }
     }
   }
 
@@ -2751,8 +2778,6 @@ void CApplication::Stop()
     g_settings.Save();
     m_bStop = true;
     CLog::Log(LOGNOTICE, "stop all");
-
-    CKaiClient::GetInstance()->RemoveObserver();
 
     StopServices();
     //Sleep(5000);
