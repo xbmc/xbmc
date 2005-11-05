@@ -660,7 +660,7 @@ HRESULT CApplication::Create()
   CLog::Log(LOGNOTICE, "Log File is located: %s", strLogFile.c_str());
   CLog::Log(LOGNOTICE, "-----------------------------------------------------------------------");
 
-  CLog::Log(LOGINFO, "Setup DirectX");
+  CLog::Log(LOGNOTICE, "Setup DirectX");
   // Create the Direct3D object
   if ( NULL == ( m_pD3D = Direct3DCreate8(D3D_SDK_VERSION) ) )
   {
@@ -822,6 +822,7 @@ HRESULT CApplication::Create()
   
   CLog::Log(LOGINFO, "Drives are mapped");
 
+  bool bHomePathChanged = false;
   // check settings to see if another home dir is defined.
   // if there is, we check if it's a xbmc dir and map to it Q:
   CStdString strHomePath = "Q:";
@@ -853,6 +854,7 @@ HRESULT CApplication::Create()
       CLog::Log(LOGNOTICE, "-----------------------------------------------------------------------");
       CLog::Log(LOGNOTICE, "New Home Path! Q is mapped to: %s", szDevicePath);
       CLog::Log(LOGNOTICE, "-----------------------------------------------------------------------");
+      bHomePathChanged = true;
     }
   }
   else
@@ -889,6 +891,7 @@ HRESULT CApplication::Create()
       ::MoveFile(strLogFile.c_str(), strLogFileOld.c_str());
 
       CLog::Close();
+      bHomePathChanged = true;
     }
     else
     {
@@ -897,11 +900,14 @@ HRESULT CApplication::Create()
     }
   }
 
-  CLog::Log(LOGNOTICE, "-----------------------------------------------------------------------");
-  CLog::Log(LOGNOTICE, "Starting XBoxMediaCenter.  Built on %s", __DATE__);
-  CLog::Log(LOGNOTICE, "Home Path Q is mapped to: %s (%s)", strHomePath.c_str(), szDevicePath );
-  CLog::Log(LOGNOTICE, "Log File is located: %s", strLogFile.c_str());
-  CLog::Log(LOGNOTICE, "-----------------------------------------------------------------------");
+  if (bHomePathChanged)
+  { //new start of log in different location
+    CLog::Log(LOGNOTICE, "-----------------------------------------------------------------------");
+    CLog::Log(LOGNOTICE, "Starting XBoxMediaCenter from alternate homepath.  Built on %s", __DATE__);
+    CLog::Log(LOGNOTICE, "Home Path Q is mapped to: %s (%s)", strHomePath.c_str(), szDevicePath );
+    CLog::Log(LOGNOTICE, "Log File is located: %s", strLogFile.c_str());
+    CLog::Log(LOGNOTICE, "-----------------------------------------------------------------------");
+  }
 
   if (!g_graphicsContext.IsValidResolution(g_guiSettings.m_LookAndFeelResolution))
   {
@@ -1298,7 +1304,6 @@ void CApplication::StartFtpServer()
 
 void CApplication::StopFtpServer()
 {
-  /* filezilla doesn't like to be deleted?  */
   if (m_pFileZilla)
   {
     CLog::Log(LOGINFO, "XBFileZilla: Stopping...");
@@ -1339,7 +1344,8 @@ void CApplication::StopTimeServer()
 
 void CApplication::StartLEDControl(bool switchoff)
 {
-  CLog::Log(LOGNOTICE, "Start LED Control");
+  if (g_guiSettings.GetInt("LED.Colour") != LED_COLOUR_NO_CHANGE)
+    CLog::Log(LOGNOTICE, "Start LED Control");
   if (switchoff == true && g_guiSettings.GetInt("LED.Colour") != LED_COLOUR_NO_CHANGE)
   {
     if ( IsPlayingVideo() && g_guiSettings.GetInt("LED.DisableOnPlayback") == LED_PLAYBACK_VIDEO)
@@ -1368,9 +1374,9 @@ void CApplication::StartLEDControl(bool switchoff)
 
 void CApplication::DimLCDOnPlayback(bool dim)
 {
-  CLog::Log(LOGNOTICE, "Dim LCD On Playback");
   if (g_lcd && g_guiSettings.GetInt("LCD.Mode") != LCD_MODE_NONE)
   {
+    CLog::Log(LOGNOTICE, "Dim LCD On Playback");
     if (IsPlayingVideo() && dim == true && g_guiSettings.GetInt("LED.DisableOnPlayback") == LED_PLAYBACK_VIDEO)
     {
       g_lcd->SetBackLight(0);
@@ -1406,13 +1412,14 @@ void CApplication::StartServices()
   g_lcd = factory.Create();
   g_lcd->Initialize();
 
-  CLog::Log(LOGNOTICE, "start fancontroller");
   if (g_guiSettings.GetBool("System.AutoTemperature"))
   {
+    CLog::Log(LOGNOTICE, "start fancontroller");
     CFanController::Instance()->Start(g_guiSettings.GetInt("System.TargetTemperature"));
   }
   else if (g_guiSettings.GetBool("System.FanSpeedControl"))
   {
+    CLog::Log(LOGNOTICE, "setting fanspeed");
     CFanController::Instance()->SetFanSpeed(g_guiSettings.GetInt("System.FanSpeed"));
   }
 }
@@ -1424,7 +1431,7 @@ void CApplication::CheckDate()
 	SYSTEMTIME NewTime;
 	GetLocalTime(&CurTime);
 	GetLocalTime(&NewTime);
-	CLog::Log(LOGNOTICE, "- Current Date is: %i-%i-%i",CurTime.wDay, CurTime.wMonth, CurTime.wYear);
+	CLog::Log(LOGINFO, "- Current Date is: %i-%i-%i",CurTime.wDay, CurTime.wMonth, CurTime.wYear);
 	if ((CurTime.wYear > 2099) || (CurTime.wYear < 2001) )	// XBOX MS Dashboard also uses min/max DateYear 2001/2099 !!
 	{
 		CLog::Log(LOGNOTICE, "- The Date is Wrong: Setting New Date!");
