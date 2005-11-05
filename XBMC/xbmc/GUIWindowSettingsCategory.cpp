@@ -777,6 +777,11 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("MyPrograms.GameAutoRegion"));
     }
+    else if (strSetting == "XLinkKai.EnableNotifications" || strSetting == "XLinkKai.GamesDir" || strSetting == "XLinkKai.UserName" || strSetting == "XLinkKai.Password" || strSetting == "XLinkKai.Server")
+    {
+      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("XLinkKai.Enabled"));
+    }
     else if (strSetting == "MusicFiles.AutoSwitchUseLargeThumbs" || strSetting == "MusicFiles.AutoSwitchMethod")
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
@@ -1440,6 +1445,13 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
       g_audioContext.RemoveActiveDevice();
       g_audioContext.SetActiveDevice(CAudioContext::DEFAULT_DEVICE);
     }
+  }
+  else if (strSetting == "XLinkKai.Enabled")
+  {
+    if (g_guiSettings.GetBool("XLinkKai.Enabled"))
+      g_application.StartKai();
+    else
+      g_application.StopKai();
   }
   else if (strSetting == "LCD.Mode")
   {

@@ -17,6 +17,7 @@ class IBuddyObserver
 {
 public:
   virtual void OnInitialise(CKaiClient* pClient) = 0;
+  virtual void OnDeInitialise() = 0;
   virtual void OnEngineDetached() = 0;
   virtual void OnAuthenticationFailed(CStdString& aUsername) = 0;
   virtual void OnNetworkError(CStdString& aError) = 0;
@@ -54,6 +55,7 @@ class CKaiClient : public CUdpClient
 public:
   enum Item{Unknown = 0, Player = 1, Arena = 2};
 
+  static bool IsInstantiated() {return CKaiClient::client != NULL;}
   static CKaiClient* GetInstance();
   static void RemoveInstance();
   virtual ~CKaiClient(void);

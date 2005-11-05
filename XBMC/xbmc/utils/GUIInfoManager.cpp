@@ -545,7 +545,7 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow) const
     }
   }
   else if (condition == SYSTEM_KAI_CONNECTED)
-    bReturn = CKaiClient::GetInstance()->IsEngineConnected();
+    bReturn = g_guiSettings.GetBool("XLinkKai.Enabled") && CKaiClient::GetInstance()->IsEngineConnected();
   else if (condition == SYSTEM_MEDIA_DVD)
   {
     // GeminiServer: DVD Drive state

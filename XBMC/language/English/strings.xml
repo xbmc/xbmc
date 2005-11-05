@@ -969,6 +969,8 @@
   <string><id>14069</id><value>Do you want set these Settings now?</value></string> 	 
   <string><id>14070</id><value>Apply Changes Now</value></string> 	 
   <string><id>14071</id><value>Allow File Deletion</value></string>
+  <string><id>14072</id><value>Enable XLink Kai</value></string>
+  <string><id>14073</id><value>XLink Kai is not enabled.</value></string>
 
   <string><id>15000</id><value>XLink Kai</value></string>
   <string><id>15001</id><value>The service is not connected, would you like to attempt</value></string>
