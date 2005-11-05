@@ -1182,6 +1182,8 @@
   
   <string><id>16024</id><value>Canceling...</value></string>
 
+  <string><id>16025</id><value>Enter the Artist Name</value></string>
+
   <string><id>16100</id><value>All Videos</value></string>
   <string><id>16101</id><value>UnWatched</value></string>
   <string><id>16102</id><value>Watched</value></string>
