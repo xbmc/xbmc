@@ -199,7 +199,7 @@ void XBVideoConfig::PrintInfo() const
   else if (dwAVPack == XC_AV_PACK_SVIDEO) strAVPack = "S-Video";
   else if (dwAVPack == XC_AV_PACK_STANDARD) strAVPack = "Standard";
   else strAVPack.Format("Unknown: %x", dwAVPack);
-  CLog::Log(LOGNOTICE, "AV Pack: %s", strAVPack.c_str());
+  CLog::Log(LOGINFO, "AV Pack: %s", strAVPack.c_str());
   CStdString strAVFlags;
   if (HasWidescreen()) strAVFlags += "Widescreen,";
   if (HasPAL60()) strAVFlags += "Pal60,";
@@ -207,5 +207,5 @@ void XBVideoConfig::PrintInfo() const
   if (Has720p()) strAVFlags += "720p,";
   if (Has1080i()) strAVFlags += "1080i,";
   if (strAVFlags.size() > 1) strAVFlags = strAVFlags.Left(strAVFlags.size() - 1);
-  CLog::Log(LOGNOTICE, "AV Flags: %s", strAVFlags.c_str());
+  CLog::Log(LOGINFO, "AV Flags: %s", strAVFlags.c_str());
 }

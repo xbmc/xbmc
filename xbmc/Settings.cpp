@@ -943,13 +943,13 @@ bool CSettings::LoadCalibration(const TiXmlElement* pElement, const CStdString& 
       GetInteger(pOverscan, "right", m_ResInfo[iRes].GUIOverscan.right, m_ResInfo[iRes].iWidth, m_ResInfo[iRes].iWidth / 2, m_ResInfo[iRes].iWidth * 3 / 2);
       GetInteger(pOverscan, "bottom", m_ResInfo[iRes].GUIOverscan.bottom, m_ResInfo[iRes].iHeight, m_ResInfo[iRes].iHeight / 2, m_ResInfo[iRes].iHeight * 3 / 2);
     }
-    CLog::Log(LOGINFO, "  calibration for %s %ix%i", m_ResInfo[iRes].strMode, m_ResInfo[iRes].iWidth, m_ResInfo[iRes].iHeight);
-    CLog::Log(LOGINFO, "    subtitle yposition:%i pixelratio:%03.3f offsets:(%i,%i)->(%i,%i) osdyoffset:%i",
+    CLog::Log(LOGDEBUG, "  calibration for %s %ix%i", m_ResInfo[iRes].strMode, m_ResInfo[iRes].iWidth, m_ResInfo[iRes].iHeight);
+    CLog::Log(LOGDEBUG, "    subtitle yposition:%i pixelratio:%03.3f offsets:(%i,%i)->(%i,%i) osdyoffset:%i",
               m_ResInfo[iRes].iSubtitles, m_ResInfo[iRes].fPixelRatio,
               m_ResInfo[iRes].Overscan.left, m_ResInfo[iRes].Overscan.top,
               m_ResInfo[iRes].Overscan.right, m_ResInfo[iRes].Overscan.bottom,
               m_ResInfo[iRes].iOSDYOffset);
-    CLog::Log(LOGINFO, "    GUI calibration :(%i,%i)->(%i,%i)",
+    CLog::Log(LOGDEBUG, "    GUI calibration :(%i,%i)->(%i,%i)",
               m_ResInfo[iRes].GUIOverscan.left, m_ResInfo[iRes].GUIOverscan.top,
               m_ResInfo[iRes].GUIOverscan.right, m_ResInfo[iRes].GUIOverscan.bottom);
 
@@ -1517,7 +1517,7 @@ bool CSettings::SaveSettingsToProfile(int index)
 
 bool CSettings::LoadProfiles(const TiXmlElement* pRootElement, const CStdString& strSettingsFile)
 {
-  CLog::Log(LOGINFO, "  Parsing <profiles> tag");
+  CLog::Log(LOGDEBUG, "Parsing <profiles> tag");
   const TiXmlElement *pChild = pRootElement->FirstChildElement("profiles");
   if (pChild)
   {
