@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 06-11-2005 added: option in my programs settings to en/disable Kai (disabled by default).
  - 05-11-2005 changed: allmusic.com album lookups now use both album and artist and rank the results
  - 05-11-2005 fixed: the cover image is updated when refreshing album information
  - 05-11-2005 changed: some startup logging cleanup.

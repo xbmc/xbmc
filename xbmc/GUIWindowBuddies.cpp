@@ -255,6 +255,12 @@ void CGUIWindowBuddies::OnWindowLoaded()
 
 void CGUIWindowBuddies::OnInitWindow()
 {
+  if (!m_pKaiClient)
+  {
+    CGUIDialogOK::ShowAndGetInput(15000, 0, 14073, 0);
+    m_gWindowManager.PreviousWindow();
+    return;
+  }
   SET_CONTROL_LABEL( CONTROL_LABELUSERNAME, g_guiSettings.GetString("XLinkKai.UserName"));
   SET_CONTROL_LABEL( CONTROL_LABELUPDATED, "");
   SET_CONTROL_LABEL( CONTROL_LABELBUDDYNAME, "");
@@ -324,6 +330,11 @@ void CGUIWindowBuddies::OnInitWindow()
 void CGUIWindowBuddies::OnInitialise(CKaiClient* pClient)
 {
   m_pKaiClient = pClient;
+}
+
+void CGUIWindowBuddies::OnDeInitialise()
+{
+  m_pKaiClient = NULL;
 }
 
 CBuddyItem* CGUIWindowBuddies::GetBuddySelection()
@@ -805,6 +816,7 @@ void CGUIWindowBuddies::UpdatePanel()
 void CGUIWindowBuddies::Render()
 {
   CGUIWindow::Render();
+  if (!m_pKaiClient) return;
 
   m_dwGamesUpdateTimer++;
   m_dwArenaUpdateTimer++;

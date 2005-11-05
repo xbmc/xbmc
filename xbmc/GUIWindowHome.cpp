@@ -406,5 +406,7 @@ void CGUIWindowHome::OnPopupContextMenu()
 
 bool CGUIWindowHome::OnPollXLinkClient(CGUIConditionalButtonControl* pButton)
 {
-  return CKaiClient::GetInstance()->IsEngineConnected();
+  if (g_guiSettings.GetBool("XLinkKai.Enabled"))
+    return CKaiClient::GetInstance()->IsEngineConnected();
+  return false;
 }

@@ -22,6 +22,7 @@ public:
   virtual ~CGUIWindowBuddies(void);
 
   virtual void OnInitialise(CKaiClient* pClient);
+  virtual void OnDeInitialise();
   virtual void OnEngineDetached();
   virtual void OnAuthenticationFailed(CStdString& aUsername);
   virtual void OnNetworkError(CStdString& aError);
