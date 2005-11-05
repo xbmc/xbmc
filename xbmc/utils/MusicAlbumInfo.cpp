@@ -4,7 +4,6 @@
 #include ".\htmlutil.h"
 #include "../util.h"
 
-
 using namespace MUSIC_GRABBER;
 using namespace HTML;
 
@@ -12,13 +11,15 @@ CMusicAlbumInfo::CMusicAlbumInfo(void)
 {
   m_strArtist = "";
   m_strTitle = "";
+  m_strTitle2 = "";
   m_strDateOfRelease = "";
   m_strGenre = "";
   m_strTones = "";
   m_strStyles = "";
   m_strReview = "";
   m_strImageURL = "";
-  m_strTitle2 = "";
+  m_strAlbumURL = "";
+  m_strAlbumPath = "";
   m_iRating = 0;
   m_bLoaded = false;
 }
@@ -30,16 +31,35 @@ CMusicAlbumInfo::~CMusicAlbumInfo(void)
 CMusicAlbumInfo::CMusicAlbumInfo(const CStdString& strAlbumInfo, const CStdString& strAlbumURL)
 {
   m_strArtist = "";
+  m_strTitle = "";
+  m_strTitle2 = strAlbumInfo;
   m_strDateOfRelease = "";
   m_strGenre = "";
   m_strTones = "";
   m_strStyles = "";
   m_strReview = "";
-  m_strTitle2 = "";
+  m_strImageURL = "";
+  m_strAlbumURL = strAlbumURL;
+  m_strAlbumPath = "";
   m_iRating = 0;
   m_bLoaded = false;
+}
+
+CMusicAlbumInfo::CMusicAlbumInfo(const CStdString& strAlbum, const CStdString& strArtist, const CStdString& strAlbumInfo, const CStdString& strAlbumURL)
+{
+  m_strArtist = strArtist;
+  m_strTitle = strAlbum;
   m_strTitle2 = strAlbumInfo;
+  m_strDateOfRelease = "";
+  m_strGenre = "";
+  m_strTones = "";
+  m_strStyles = "";
+  m_strReview = "";
+  m_strImageURL = "";
   m_strAlbumURL = strAlbumURL;
+  m_strAlbumPath = "";
+  m_iRating = 0;
+  m_bLoaded = false;
 }
 
 const CStdString& CMusicAlbumInfo::GetAlbumURL() const
