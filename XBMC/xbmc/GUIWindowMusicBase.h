@@ -84,8 +84,9 @@ protected:
   void RetrieveMusicInfo();
   void OnInfo(int iItem);
   void OnQueueItem(int iItem);
-  bool FindAlbumInfo(const CStdString& strAlbum, CMusicAlbumInfo& album);
+  bool FindAlbumInfo(const CStdString& strAlbum, const CStdString& strArtist, CMusicAlbumInfo& album);
   void ShowAlbumInfo(const CStdString& strAlbum, const CStdString& strPath, bool bSaveDb, bool bSaveDirThumb, bool bRefresh);
+  void ShowAlbumInfo(const CStdString& strAlbum, const CStdString& strArtist, const CStdString& strPath, bool bSaveDb, bool bSaveDirThumb, bool bRefresh);
   void UpdateListControl();
   void OnRipCD();
   void OnSearch();

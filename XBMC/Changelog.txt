@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 05-11-2005 changed: allmusic.com album lookups now use both album and artist and rank the results
+ - 05-11-2005 fixed: the cover image is updated when refreshing album information
  - 05-11-2005 changed: some startup logging cleanup.
  - 05-11-2005 changed: show average bitrate for vbr mp3 again.
  - 05-11-2005 changed: removed mymusictop100 keymappings from keymap.xml (window doesn't exist anymore, functionality was moved to libraryview a while back)

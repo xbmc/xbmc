@@ -19,6 +19,7 @@ public:
   void SetButtonLabel(int iString);
   bool IsButtonPressed();
   void Sort(bool bSortAscending = true);
+  void SetSelected(int iSelected);
 protected:
   bool m_bButtonEnabled;
   bool m_bButtonPressed;
