@@ -6,8 +6,11 @@
 
 void CDVDDemuxUtils::FreeDemuxPacket(CDVDDemux::DemuxPacket* pPacket)
 {
-  if (pPacket->pData) delete[] pPacket->pData;
-  delete pPacket;
+  if (pPacket)
+  {
+    if (pPacket->pData) delete[] pPacket->pData;
+    delete pPacket;
+  }
 }
 
 CDVDDemux::DemuxPacket* CDVDDemuxUtils::AllocateDemuxPacket(int iDataSize)

@@ -614,7 +614,7 @@ int CDVDInputStreamNavigator::GetActiveSubtitleStream()
   if (!m_dvdnav) return -1;
 
   vm_t* vm = m_dll.dvdnav_get_vm(m_dvdnav);
-  if( vm )
+  if (vm)
   {
     if((vm->state).domain != VTS_DOMAIN)
       return 0;
@@ -622,10 +622,11 @@ int CDVDInputStreamNavigator::GetActiveSubtitleStream()
     int subpN = (vm->state).SPST_REG & ~0x40;
 
     // If stream is larger than number of streams we have, use report first one
-    if( subpN >= vm->vtsi->vtsi_mat->nr_of_vts_subp_streams )
+    if (vm->vtsi && vm->vtsi->vtsi_mat &&
+        subpN >= vm->vtsi->vtsi_mat->nr_of_vts_subp_streams)
       return 0;
     // If it has info, it is an ok stream.. otherwise just use first as stream
-    if((vm->state).pgc->subp_control[subpN] & (1<<31))
+    if ((vm->state).pgc->subp_control[subpN] & (1<<31))
       return subpN;
     else //If it was invalid, just set first as active
       return 0;
@@ -714,7 +715,8 @@ int CDVDInputStreamNavigator::GetActiveAudioStream()
     int audioN = (vm->state).AST_REG;
 
     // If stream is larger than number of streams we have, use report first one
-    if( audioN >= vm->vtsi->vtsi_mat->nr_of_vts_audio_streams )
+    if (vm->vtsi && vm->vtsi->vtsi_mat &&
+        audioN >= vm->vtsi->vtsi_mat->nr_of_vts_audio_streams )
       return 0;
     // If it has info, it is an ok stream.. otherwise just use first as stream
     else if((vm->state).pgc->audio_control[audioN] & (1<<15))
