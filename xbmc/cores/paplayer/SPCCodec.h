@@ -17,14 +17,12 @@ public:
   virtual bool CanInit();
 
 private:
-  DllSnes9xApu m_dll;
+  DllSnesApu m_dll;
   char* m_szBuffer;
-  char* m_szStartOfBuffer; // never allocated
-  int m_iDataInBuffer;
-  int m_iBufferSize;
-  int m_spc;
+  u8* m_pApuRAM;
+  SPCState* m_pSPC;
+  DSPState* m_pDSP;
   __int64 m_iDataPos;
-  CStdString m_strFile;
 };
 
 #endif
