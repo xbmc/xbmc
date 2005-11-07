@@ -14,10 +14,5 @@ namespace MUSIC_INFO
 		virtual ~CMusicInfoTagLoaderSPC();
 
 		virtual bool Load(const CStdString& strFileName, CMusicInfoTag& tag);
-  private:
-    int m_spc;
-    DllSnes9xApu m_dll;
 	};
 };
-
-extern CStdString strNSFDLL;

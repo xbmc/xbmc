@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 07-11-2005 changed: new spc codec for paplayer. uses snesapu.dll (same core as snesamp).
  - 07-11-2005 fixed: after lpcm codec addition to dvdplayer, dvd's where not playable anymore.
  - 07-11-2005 fixed: reverted dvdplayer overlay fix (it produced more problems then it fixed)
  - 06-11-2005 added: option in my programs settings to en/disable Kai (disabled by default).
