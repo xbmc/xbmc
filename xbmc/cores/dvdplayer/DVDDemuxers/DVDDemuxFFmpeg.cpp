@@ -416,21 +416,6 @@ CDVDDemux::DemuxPacket* CDVDDemuxFFmpeg::Read()
             m_iCurrentPts = pPacket->dts;
           }
         }
-
-        // hack for lpcm pts values, this is not how it should be done!
-        // correct pts and dts values should be calculated in the demuxer (ffmpeg avformat)
-        CDemuxStream* pDemuxStream = m_streams[pkt.stream_index];
-        if (pDemuxStream->codec == CODEC_ID_LPCM_S24BE && pDemuxStream->type == STREAM_AUDIO)
-        {
-          CDemuxStreamAudioFFmpeg* p = (CDemuxStreamAudioFFmpeg*)pDemuxStream;
-          if (pPacket->dts - p->previous_dts > (DVD_TIME_BASE / 50) &&
-              pPacket->dts - p->previous_dts < DVD_TIME_BASE)
-          {
-            pPacket->pts = DVD_NOPTS_VALUE;
-            pPacket->dts = DVD_NOPTS_VALUE;
-          }
-          else p->previous_dts = pPacket->dts;
-        }
         
         pPacket->iStreamId = pkt.stream_index; // XXX just for now
       }
@@ -472,6 +457,20 @@ CDVDDemux::DemuxPacket* CDVDDemuxFFmpeg::Read()
     }
   }
 
+  // hack for lpcm pts values, this is not how it should be done!
+  // correct pts and dts values should be calculated in the demuxer (ffmpeg avformat)
+  CDemuxStream* pDemuxStream = m_streams[pkt.stream_index];
+  if (pDemuxStream->codec == CODEC_ID_LPCM_S24BE && pDemuxStream->type == STREAM_AUDIO)
+  {
+    CDemuxStreamAudioFFmpeg* p = (CDemuxStreamAudioFFmpeg*)pDemuxStream;
+    if (pPacket->dts - p->previous_dts > (DVD_TIME_BASE / 50) &&
+        pPacket->dts - p->previous_dts < DVD_TIME_BASE)
+    {
+      pPacket->pts = DVD_NOPTS_VALUE;
+      pPacket->dts = DVD_NOPTS_VALUE;
+    }
+    else p->previous_dts = pPacket->dts;
+  }        
 
   return pPacket;
 }
