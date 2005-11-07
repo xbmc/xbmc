@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 07-11-2005 fixed: after lpcm codec addition to dvdplayer, dvd's where not playable anymore.
+ - 07-11-2005 fixed: reverted dvdplayer overlay fix (it produced more problems then it fixed)
  - 06-11-2005 added: option in my programs settings to en/disable Kai (disabled by default).
  - 05-11-2005 changed: allmusic.com album lookups now use both album and artist and rank the results
  - 05-11-2005 fixed: the cover image is updated when refreshing album information
