@@ -783,11 +783,12 @@ bool CDVDInputStreamNavigator::GetCurrentButtonInfo(CDVDOverlaySpu* pOverlayPict
 
   if (m_dll.dvdnav_get_button_info(m_dvdnav, alpha, color) == 0)
   {
+  /*
     int* a = pOverlayPicture->alpha;
     
     // we could also check the alpha from dvdnav_get_button_info
     // by checking if one of those values are valid (!0) and set them
-    if (!a[0] && !a[1] && !a[2] && !a[3]) 
+    if (!a[0] && !a[1] && !a[2] && !a[3])*/
     {
       pOverlayPicture->alpha[0] = alpha[iButtonType][0];
       pOverlayPicture->alpha[1] = alpha[iButtonType][1];
