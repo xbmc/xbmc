@@ -1,4 +1,6 @@
-<!-- date translated: 4 nov 2005 !-->
+  <!-- XML languaje file created with XBMCTranslator. Idea and code by Jose_T !-->
+
+
 <strings>
   <string><id>0</id><value>Mina Program</value></string>
   <string><id>1</id><value>Mina Bilder</value></string>
@@ -409,10 +411,10 @@
   <string><id>473</id><value>H&#246;gkvalitativ resampling</value></string>
   <string><id>474</id><value>Av</value></string>
   <string><id>475</id><value>Bara musik</value></string>
-  <string><id>476</id><value>Musik &#38; video</value></string>
+  <string><id>476</id><value>Musik&video</value></string>
   <string><id>477</id><value>Kunde inte ladda spellista</value></string>
   <string><id>478</id><value>OSD</value></string>
-  <string><id>479</id><value>Skal &#38; spr&#229;k</value></string>
+  <string><id>479</id><value>Skal&spr&#229;k</value></string>
   <string><id>480</id><value>Utseende</value></string>
   <string><id>481</id><value>Ljudval</value></string>
   <string><id>482</id><value>Om XBMC</value></string>
@@ -514,7 +516,7 @@
   <string><id>720</id><value>- N&#228;tmask</value></string>
   <string><id>721</id><value>- Gateway</value></string>
   <string><id>722</id><value>- DNS Server</value></string>
-  <string><id>723</id><value>Spara &#38; starta om XBoxen</value></string>
+  <string><id>723</id><value>Spara&starta om XBoxen</value></string>
   <string><id>724</id><value>Felaktig adress angiven. Formatet skall vara AAA.BBB.CCC.DDD</value></string>
   <string><id>725</id><value>med siffror mellan 0 och 255.</value></string>
   <string><id>726</id><value>Inst&#228;llningar ej sparade. Forts&#228;tt utan att spara?</value></string>
@@ -523,7 +525,7 @@
   <string><id>729</id><value>Tidsserver</value></string>
   <string><id>730</id><value>Webbserver port</value></string>
   <string><id>731</id><value>Tidserver</value></string>
-  <string><id>732</id><value>Spara &#38; ange</value></string>
+  <string><id>732</id><value>Spara&ange</value></string>
   <string><id>733</id><value>Webbserver l&#246;senord</value></string>
   <string><id>734</id><value>Inget l&#246;senord</value></string>
   <string><id>735</id><value>- Teckenupps&#228;ttning</value></string>
@@ -586,27 +588,27 @@
   <string><id>1212</id><value>Film</value></string>
   <string><id>1213</id><value>Bilder</value></string>
   <string><id>1214</id><value>Filer</value></string>
-  <string><id>1215</id><value>Musik &#38; Film </value></string>
-  <string><id>1216</id><value>Musik &#38; Bilder</value></string>
-  <string><id>1217</id><value>Musik &#38; Filer</value></string>
-  <string><id>1218</id><value>Film &#38; Bilder</value></string>
-  <string><id>1219</id><value>Film &#38; Filer</value></string>
-  <string><id>1220</id><value>Bilder &#38; Filer</value></string>
-  <string><id>1221</id><value>Musik &#38; Film &#38; Bilder</value></string>
-  <string><id>1222</id><value>Musik &#38; Film &#38; Bilder &#38; Filer</value></string>
+  <string><id>1215</id><value>Musik&Film </value></string>
+  <string><id>1216</id><value>Musik&Bilder</value></string>
+  <string><id>1217</id><value>Musik&Filer</value></string>
+  <string><id>1218</id><value>Film&Bilder</value></string>
+  <string><id>1219</id><value>Film&Filer</value></string>
+  <string><id>1220</id><value>Bilder&Filer</value></string>
+  <string><id>1221</id><value>Musik&Film&Bilder</value></string>
+  <string><id>1222</id><value>Musik&Film&Bilder&Filer</value></string>
   <string><id>1223</id><value>Inaktiverad</value></string>
   <string><id>1224</id><value>Normal anv&#228;ndare</value></string>
   <string><id>1225</id><value>Avancerad anv&#228;ndare</value></string>
-  <string><id>1226</id><value>Filer &#38; Musik &#38; Film</value></string>
-  <string><id>1227</id><value>Filer &#38; Bilder &#38; Musik</value></string>
-  <string><id>1228</id><value>Filer &#38; Bilder &#38; Film</value></string>
-  <string><id>1229</id><value>Musik &#38; Program</value></string>
-  <string><id>1230</id><value>Film &#38; Program</value></string>
-  <string><id>1231</id><value>Bilder &#38; Program</value></string>
-  <string><id>1232</id><value>Musik &#38; Film &#38; Bilder &#38; Program</value></string>
-  <string><id>1233</id><value>Program &#38; Film &#38; Musik</value></string>
-  <string><id>1234</id><value>Program &#38; Bilder &#38; Musik</value></string>
-  <string><id>1235</id><value>Program &#38; Bilder &#38; Film</value></string>
+  <string><id>1226</id><value>Filer&Musik&Film</value></string>
+  <string><id>1227</id><value>Filer&Bilder&Musik</value></string>
+  <string><id>1228</id><value>Filer&Bilder&Film</value></string>
+  <string><id>1229</id><value>Musik&Program</value></string>
+  <string><id>1230</id><value>Film&Program</value></string>
+  <string><id>1231</id><value>Bilder&Program</value></string>
+  <string><id>1232</id><value>Musik&Film&Bilder&Program</value></string>
+  <string><id>1233</id><value>Program&Film&Musik</value></string>
+  <string><id>1234</id><value>Program&Bilder&Musik</value></string>
+  <string><id>1235</id><value>Program&Bilder&Film</value></string>
 
   <string><id>1245</id><value>FTP Anv&#228;ndarnamn</value></string>
   <string><id>1246</id><value>FTP L&#246;senord</value></string>
@@ -772,8 +774,8 @@
   <string><id>12369</id><value>XBMC Startl&#229;s</value></string>
   <string><id>12370</id><value>Huvudl&#229;sl&#228;ge &#228;ndrat, huvudkoden inte angiven!</value></string>
   <string><id>12371</id><value>Var god ange ny huvudkod!</value></string>
-  <string><id>12372</id><value>L&#229;sinst&#228;llningar &#38; Mina Filer</value></string>
-  <string><id>12373</id><value>Inst&#228;llningar &#38; Mina Filer</value></string>
+  <string><id>12372</id><value>L&#229;sinst&#228;llningar&Mina Filer</value></string>
+  <string><id>12373</id><value>Inst&#228;llningar&Mina Filer</value></string>
   <string><id>12374</id><value>L&#229;s media</value></string>
   <string><id>12375</id><value>Administrat&#246;rsl&#228;ge</value></string>
 
@@ -852,7 +854,7 @@
   <string><id>13290</id><value>XBOX tillverkat:</value></string>
   <string><id>13291</id><value>Modchip:</value></string>
   <string><id>13292</id><value>A/V kabel:</value></string>
-  <string><id>13293</id><value>Video &#38; XBE Region:</value></string>
+  <string><id>13293</id><value>Video&XBE Region:</value></string>
   <string><id>13294</id><value>DVD region:</value></string>
   <string><id>13295</id><value>Internet:</value></string>
   <string><id>13296</id><value>Xbox uppkopplad.</value></string>
@@ -1026,7 +1028,7 @@ f&#246;r den h&#228;r visualiseringen</value></string>
   <string><id>14060</id><value>Ok&#228;nd typ Cache - Internet</value></string>
   <string><id>14061</id><value>Auto</value></string>
   <string><id>14062</id><value>Ange anv&#228;ndarnamn f&#246;r</value></string>
-  <string><id>14063</id><value>Datum &#38; tid</value></string>
+  <string><id>14063</id><value>Datum&tid</value></string>
   <string><id>14064</id><value>Ange datum</value></string>
   <string><id>14065</id><value>Ange klockslag</value></string>
   <string><id>14066</id><value>Ange tiden i 24-timmars TIM:MIN format</value></string>
@@ -1035,6 +1037,8 @@ f&#246;r den h&#228;r visualiseringen</value></string>
   <string><id>14069</id><value>Vill du spara dessa inst&#228;llningar nu?</value></string>
   <string><id>14070</id><value>Spara inst&#228;llningar</value></string>
   <string><id>14071</id><value>Till&#229;t filradering</value></string>
+  <string><id>14072</id><value>Aktivera XLink Kai</value></string>
+  <string><id>14073</id><value>XLink Kai &#228;r inte aktiverat.</value></string>
 
   <string><id>15000</id><value>XLink Kai</value></string>
   <string><id>15001</id><value>Tj&#228;nsten &#228;r inte uppr&#228;ttad, vill du f&#246;rs&#246;ka</value></string>
@@ -1193,6 +1197,7 @@ f&#246;r den h&#228;r visualiseringen</value></string>
   <string><id>16022</id><value>Synka j&#228;mn</value></string>
   <string><id>16023</id><value>Interlaced hantering</value></string>
   <string><id>16024</id><value>Avbryter...</value></string>
+  <string><id>16025</id><value>Skriv in Artistnamnet</value></string>
 
   <string><id>16100</id><value>Alla filmer</value></string>
   <string><id>16101</id><value>Ej sedd</value></string>
@@ -1200,7 +1205,7 @@ f&#246;r den h&#228;r visualiseringen</value></string>
   <string><id>16103</id><value>Markera som sedd</value></string>
   <string><id>16104</id><value>Markera som ej sedd</value></string>
   <string><id>16105</id><value>&#196;ndra Titel</value></string>
-  <string><id>16106</id><value>Anv&#228;nd NTSC-M &#38; NTSC-J</value></string>
+  <string><id>16106</id><value>Anv&#228;nd NTSC-M&NTSC-J</value></string>
   <string><id>16107</id><value>Anv&#228;nd endast NTSC-M</value></string>
   <string><id>16108</id><value>Anv&#228;nd endast NTSC-J</value></string>
   <string><id>16109</id><value>Anv&#228;nd endast PAL-60</value></string>
