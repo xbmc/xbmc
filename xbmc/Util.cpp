@@ -1782,6 +1782,7 @@ void CUtil::ClearSubtitles()
 
 void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionCached, XFILE::IFileCallback *pCallback )
 {
+  static bool bAlternateChecked=false;
   char * sub_exts[] = { ".utf", ".utf8", ".utf-8", ".sub", ".srt", ".smi", ".rt", ".txt", ".ssa", ".aqt", ".jss", ".ass", ".idx", ".ifo", NULL};
   std::vector<CStdString> vecExtensionsCached;
   strExtensionCached = "";
@@ -1802,6 +1803,16 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
   CUtil::Split(strMovie, strPath, strFileName);
   ReplaceExtension(strFileName, "", strFileNameNoExt);
   strLookInPaths.push_back(strPath);
+  if (!bAlternateChecked && strlen(g_stSettings.m_szAlternateSubtitleDirectory)) // to avoid checking non-existent directories (network) every time..
+  {
+    if (!m_bNetworkUp && !IsHD(g_stSettings.m_szAlternateSubtitleDirectory))
+      g_stSettings.m_szAlternateSubtitleDirectory[0] = '\0';
+    else 
+    if (!CDirectory::Exists(g_stSettings.m_szAlternateSubtitleDirectory))
+      g_stSettings.m_szAlternateSubtitleDirectory[0] = '\0';
+    
+    bAlternateChecked = true;
+  }
 
   if (strlen(g_stSettings.m_szAlternateSubtitleDirectory) != 0)
   {
