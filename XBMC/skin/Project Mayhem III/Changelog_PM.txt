@@ -1,3 +1,5 @@
+2005-10-25 changed:	made the pics overlay (back button) available only when music is playing
+
 2005-10-25 added:	hidden bookmark buttons to My Videos Files view (unlock and configure in \PAL\MyVideo.xml)
 2005-10-25 removed:	Play Disc button from all My Videos views (its in the context menu now)
 2005-10-25 added:	hidden bookmark buttons to My Music Files view (unlock and configure in \PAL\MyMusicSongs.xml)
