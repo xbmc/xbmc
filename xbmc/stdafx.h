@@ -13,7 +13,6 @@
 #include <xvoice.h>
 #include <xonline.h>
 #include <XGraphics.h>
-#include <xbutil.h>
 #include <vector>
 #include <list>
 #include <map>
@@ -76,8 +75,8 @@ using namespace AUTOPTR;
 WINBASEAPI BOOL WINAPI QueryPerformanceFrequencyXbox(LARGE_INTEGER *lpFrequency);
 #define QueryPerformanceFrequency(a) QueryPerformanceFrequencyXbox(a)
 
-
-
-
+#define SAFE_DELETE(p)       { delete (p);     (p)=NULL; }
+#define SAFE_DELETE_ARRAY(p) { delete[] (p);   (p)=NULL; }
+#define SAFE_RELEASE(p)      { if(p) { (p)->Release(); (p)=NULL; } }
 
 // TODO: reference additional headers your program requires here

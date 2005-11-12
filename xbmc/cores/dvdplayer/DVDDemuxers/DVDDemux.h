@@ -93,27 +93,35 @@ public:
   }
   DemuxPacket;
 
+  CDVDDemux() {}
+  virtual ~CDVDDemux() {}
+  
   /*
    * Open the demuxer, returns true on success
    */
   virtual bool Open(CDVDInputStream* pInput) = 0;
+  
   /*
    * Dispose, Free all resources
    */
   virtual void Dispose() = 0;
+  
   /*
    * Reset the entire demuxer (same result as closing and opening it)
    */
   virtual void Reset() = 0;
+  
   /*
    * Flush the demuxer, if any data is kept in buffers, this should be freed now
    */
   virtual void Flush() = 0;
+  
   /*
    * Read a packet, returns NULL on error
    * 
    */
   virtual DemuxPacket* Read() = 0;
+  
   /*
    * Seek, time in msec calculated from stream start
    */
@@ -129,10 +137,12 @@ public:
    * returns the total time in msec
    */
   virtual int GetStreamLenght() = 0;
+  
   /*
    * returns the stream or NULL on error, starting from 0
    */
   virtual CDemuxStream* GetStream(int iStreamId) = 0;
+  
   /*
    * return nr of streams, 0 if none
    */

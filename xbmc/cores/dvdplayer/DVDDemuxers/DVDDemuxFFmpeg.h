@@ -32,7 +32,7 @@ class CDVDDemuxFFmpeg : public CDVDDemux
 {
 public:
   CDVDDemuxFFmpeg();
-  ~CDVDDemuxFFmpeg();
+  virtual ~CDVDDemuxFFmpeg();
 
   bool Open(CDVDInputStream* pInput);
   void Dispose();

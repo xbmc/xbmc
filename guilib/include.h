@@ -14,6 +14,7 @@
 #include <set>
 #include <memory>
 #include <queue>
+#include <stdio.h>
 #include "stdstring.h"
 #include "../xbmc/StringUtils.h"
 #include "../xbmc/memutil.h"
@@ -27,7 +28,6 @@ using namespace std;
 #define new new( _NORMAL_BLOCK, __FILE__, __LINE__)
 #endif
 
-#include "xbutil.h"
 #include "../xbmc/utils/log.h"
 
 // guilib internal
@@ -40,5 +40,7 @@ using namespace std;
 #endif
 WINBASEAPI BOOL WINAPI QueryPerformanceFrequencyXbox(LARGE_INTEGER *lpFrequency);
 #define QueryPerformanceFrequency(a) QueryPerformanceFrequencyXbox(a)
+
+#define SAFE_RELEASE(p)      { if(p) { (p)->Release(); (p)=NULL; } }
 
 // TODO: reference additional headers your program requires here

@@ -180,8 +180,7 @@ int CDVDInputStreamNavigator::ProcessBlock(BYTE* dest_buffer, int* read)
     if (result == DVDNAV_STATUS_ERR)
     {
       CLog::DebugLog("Error getting next block: %s\n", m_dll.dvdnav_err_to_string(m_dvdnav));
-      iNavresult = DVDNAV_STATUS_ERR;
-      bFinished = true;
+      return DVDNAV_STATUS_ERR; // do not free the cache block
     }
 
     switch (event)
