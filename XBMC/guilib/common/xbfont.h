@@ -47,7 +47,6 @@
 
 #ifdef _XBOX
 #include "XBResource.h"
-#include "XBUtil.h"
 #include "xonline.h"
 #include "uix.h"
 

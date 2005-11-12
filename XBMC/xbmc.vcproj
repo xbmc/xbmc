@@ -1591,16 +1591,7 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				RelativePath=".\xbmc\FileSystem\XBMSDirectory.h">
 			</File>
 			<File
-				RelativePath=".\xbmc\lib\common\xbNet.h">
-			</File>
-			<File
 				RelativePath=".\xbmc\cores\mplayer\xbox_video.h">
-			</File>
-			<File
-				RelativePath=".\xbmc\lib\common\xbSockAddr.h">
-			</File>
-			<File
-				RelativePath=".\xbmc\lib\common\xbsocket.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\lib\common\xbstopwatch.h">

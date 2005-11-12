@@ -5,12 +5,11 @@
 #include "DllLiba52.h"
 
 
-class CDVDAudioCodecPassthrough :
-  public CDVDAudioCodec
+class CDVDAudioCodecPassthrough : public CDVDAudioCodec
 {
 public:
-  CDVDAudioCodecPassthrough(void);
-  ~CDVDAudioCodecPassthrough(void);
+  CDVDAudioCodecPassthrough();
+  virtual ~CDVDAudioCodecPassthrough();
 
   virtual bool Open(CodecID codecID, int iChannels, int iSampleRate, int iBits);
   virtual void Dispose();
