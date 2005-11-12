@@ -517,17 +517,18 @@ CGUISettings::CGUISettings(void)
   AddCategory(7, "LookAndFeel", 14037);
   AddString(1, "LookAndFeel.Skin",          166,    "Project Mayhem III", SPIN_CONTROL_TEXT);
   AddString(2, "LookAndFeel.SoundSkin",     15108,  "SKINDEFAULT", SPIN_CONTROL_TEXT);
-  AddString(3, "LookAndFeel.Font",          13303,  "Default", SPIN_CONTROL_TEXT);
-  AddInt(4,    "LookAndFeel.StartUpWindow", 512,    1, 0, 1, 6, SPIN_CONTROL_TEXT);
-  AddSeparator(5, "LookAndFeel.Sep1");
-  AddString(6, "LookAndFeel.Language",      248,    "english", SPIN_CONTROL_TEXT);
-  AddString(7, "LookAndFeel.CharSet",       735,    "ISO-8859-1", SPIN_CONTROL_TEXT);
-  AddSeparator(8, "LookAndFeel.Sep2");
-  AddInt(9,    "LookAndFeel.Resolution",    169,    (int)AUTORES, (int)HDTV_1080i, 1, (int)AUTORES, SPIN_CONTROL_TEXT);
-  AddString(10, "LookAndFeel.GUICentering",  213,    "", BUTTON_CONTROL_STANDARD);
-  AddSeparator(11, "LookAndFeel.Sep3");
-  AddBool(12, "LookAndFeel.FullDirectoryHistory", 15106, true);
-
+  AddInt(3,   "LookAndFeel.Rumble",         15110,  5, 0, 1, 10, SPIN_CONTROL_TEXT);
+  AddString(4, "LookAndFeel.Font",          13303,  "Default", SPIN_CONTROL_TEXT);
+  AddInt(5,    "LookAndFeel.StartUpWindow", 512,    1, 0, 1, 6, SPIN_CONTROL_TEXT);
+  AddSeparator(6, "LookAndFeel.Sep1");
+  AddString(7, "LookAndFeel.Language",      248,    "english", SPIN_CONTROL_TEXT);
+  AddString(8, "LookAndFeel.CharSet",       735,    "ISO-8859-1", SPIN_CONTROL_TEXT);
+  AddSeparator(9, "LookAndFeel.Sep2");
+  AddInt(10,    "LookAndFeel.Resolution",    169,    (int)AUTORES, (int)HDTV_1080i, 1, (int)AUTORES, SPIN_CONTROL_TEXT);
+  AddString(11, "LookAndFeel.GUICentering",  213,    "", BUTTON_CONTROL_STANDARD);
+  AddSeparator(12, "LookAndFeel.Sep3");
+  AddBool(13, "LookAndFeel.FullDirectoryHistory", 15106, true);
+  
   AddCategory(7, "FileLists", 14018);
   AddBool(1, "FileLists.HideExtensions", 497, false);
   AddBool(2, "FileLists.HideParentDirItems", 13306, false);

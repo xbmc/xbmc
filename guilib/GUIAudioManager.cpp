@@ -3,7 +3,7 @@
 #include "audiocontext.h"
 #include "../xbmc/settings.h"
 #include "../xbmc/buttontranslator.h"
-
+#include "../xbmc/application.h"
 
 typedef struct
 {
@@ -277,12 +277,20 @@ void CGUIAudioManager::Play(LPDIRECTSOUNDBUFFER pSoundBuffer)
 void CGUIAudioManager::PlayActionSound(const CAction& action)
 {
   actionSoundMap::iterator it=m_actionSoundMap.find(action.wID);
-  if (it==m_actionSoundMap.end())
+  if (it==m_actionSoundMap.end()) 
     return;
-
+  
   CStdString strFile=m_strMediaDir+"\\"+it->second;
   if (CreateBufferFromFile(strFile, &m_lpActionSoundBuffer))
     Play(m_lpActionSoundBuffer);
+  
+  if( g_guiSettings.GetInt("LookAndFeel.Rumble") > 0 )
+  {
+    // GeminiServer: Rumble Controller Max Values 1.0!
+    FLOAT fRumlePower = FLOAT(g_guiSettings.GetInt("LookAndFeel.Rumble")/10.0f);
+    g_application.SetControllerRumble(fRumlePower,fRumlePower,0); // Rumble ON!
+    g_application.SetControllerRumble(0.0f,0.0f,100);  // Rumble OFF!
+  }
 }
 
 // \brief Play a sound associated with a window and its event
