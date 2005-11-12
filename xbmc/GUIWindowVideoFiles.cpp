@@ -626,8 +626,20 @@ void CGUIWindowVideoFiles::OnRetrieveVideoInfo(CFileItemList& items)
           CUtil::ReplaceExtension(pItem->m_strPath, ".nfo", strNfoFile);
           if (!CFile::Exists(strNfoFile))
             strNfoFile.Empty();
+          // try looking for .nfo file based off the stacked title
+          if (strNfoFile.IsEmpty() && g_stSettings.m_iMyVideoVideoStack > STACK_NONE)
+          {
+            CStdString strPath, strFileName, strStackedTitle, strVolume;
+            CUtil::Split(pItem->m_strPath, strPath, strFileName);
+            CUtil::GetVolumeFromFileName(strFileName, strStackedTitle, strVolume);
+            CUtil::ReplaceExtension(strStackedTitle, ".nfo", strFileName);
+            CUtil::AddFileToFolder(strPath, strFileName, strNfoFile);
+            if (!CFile::Exists(strNfoFile))
+              strNfoFile.Empty();
+          }
           if ( !strNfoFile.IsEmpty() )
           {
+            CLog::Log(LOGDEBUG,"Found matching nfo file: %s", strNfoFile.c_str());
             if ( CFile::Cache(strNfoFile, "Z:\\movie.nfo", NULL, NULL))
             {
               CNfoFile nfoReader;
@@ -635,10 +647,12 @@ void CGUIWindowVideoFiles::OnRetrieveVideoInfo(CFileItemList& items)
               {
                 CIMDBUrl url;
                 url.m_strURL = nfoReader.m_strImDbUrl;
+                CLog::Log(LOGDEBUG,"-- imdb url: %s", url.m_strURL.c_str());
                 GetIMDBDetails(pItem, url);
                 continue;
               }
             }
+            CLog::Log(LOGERROR,"Unable to cache nfo file: %s", strNfoFile.c_str());
           }
           CStdString strMovieName;
           if (pItem->IsOnDVD() || pItem->IsDVDFile())
