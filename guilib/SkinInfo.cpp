@@ -141,6 +141,29 @@ bool CSkinInfo::Check(const CStdString& strSkinDir)
   return false;
 }
 
+bool CSkinInfo::ReadElement(const CStdString strSkinDir, CStdString strElement, CStdString& strElementValue)
+{
+  // Load from skin.xml
+  TiXmlDocument xmlDoc;
+  CStdString strFile = strSkinDir + "\\skin.xml";
+  CStdString strGoodPath = strSkinDir;
+  if (xmlDoc.LoadFile(strFile.c_str()))
+  { // ok - get the default res folder out of it...
+    TiXmlElement* pRootElement = xmlDoc.RootElement();
+    CStdString strValue = pRootElement->Value();
+    if (strValue == "skin")
+    { // search the for the element
+      TiXmlNode *pChild = pRootElement->FirstChild(strElement.c_str());
+      if (pChild)
+      {
+        CLog::Log(LOGINFO, "Skin read value is: %s", pChild->FirstChild()->Value());
+        strElementValue = pChild->FirstChild()->Value();
+        return true;
+      }
+    }
+  }
+  return false;
+}
 CStdString CSkinInfo::GetSkinPath(const CStdString& strFile, RESOLUTION *res)
 {
   // first try and load from the current resolution's directory

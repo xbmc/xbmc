@@ -2,6 +2,11 @@
   <defaultresolution>pal</defaultresolution>
   <defaultresolutionwide>pal16x9</defaultresolutionwide>
   <version>1.3</version>
+
+  <!-- Here you can define your own Texture name! The texture file must be in folder media! -->
+  <!-- If no Texture Name is defined: Textures.xpr will be used! -->
+  <!-- <TextureName>MyTextureA.xpr</TextureName> -->
+  
   <credits>
     <skinname>Project Mayhem III</skinname>
     <name>by Mathias Mahling aka. ChokeManiac</name>
@@ -12,4 +17,3 @@
   </credits>
 
 </skin>
-

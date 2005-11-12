@@ -5,6 +5,10 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 12-11-2005 added: Controller Rumble (controller vibration)! [GeminiServer]
+                     On menu action controller will Rumble! Rumble On/Off and Rumble sensitivity can set over: Appearance - Look and Feel - Rumble Controller!
+ - 12-11-2005 added: rename in Context menu Music/Pictures/Video [GeminiServer]
+                     The renameing is in condition with delete function in the context menu! Settings description changed to "Allow File Renaming and Deletion"
  - 09-11-2005 fixed: more gracious handling of a missing alternate subtitle directory.
  - 07-11-2005 changed: new spc codec for paplayer. uses snesapu.dll (same core as snesamp).
  - 07-11-2005 fixed: after lpcm codec addition to dvdplayer, dvd's where not playable anymore.

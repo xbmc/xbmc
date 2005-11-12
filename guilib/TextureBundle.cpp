@@ -3,7 +3,7 @@
 #include <XGraphics.h>
 #include "GraphicContext.h"
 #include "../xbmc/lib/liblzo/LZO1X.H"
-
+#include "SkinInfo.h"
 
 #pragma comment(lib,"xbmc/lib/liblzo/lzo.lib")
 
@@ -91,7 +91,21 @@ bool CTextureBundle::OpenBundle()
     Cleanup();
 
   CStdString strPath = g_graphicsContext.GetMediaDir();
-  strPath += "\\media\\Textures.xpr";
+  
+  // GeminiServer
+  CStdString strElement, strElementValue;
+  strElement = "TextureName";
+  if ( g_SkinInfo.ReadElement(strPath,strElement,strElementValue) )
+  {
+    strPath += "\\media\\";
+    strPath += strElementValue.c_str();
+  } 
+  else {
+    strPath += "\\media\\Textures.xpr";
+  }
+  //
+
+  //strPath += "\\media\\Textures.xpr";
 
   if (GetFileAttributes(strPath.c_str()) == -1)
     return false;

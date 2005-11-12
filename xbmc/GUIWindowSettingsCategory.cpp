@@ -680,6 +680,18 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->AddLabel(g_localizeStrings.Get(3),    5 );  // 6    My Video
       pControl->SetValue(pSettingInt->GetData());
     }
+    else if (strSetting == "LookAndFeel.Rumble")
+    {
+      CSettingInt *pSettingInt = (CSettingInt*)pSetting;
+      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
+      pControl->AddLabel(g_localizeStrings.Get(351),  0 );  // Off!
+      pControl->AddLabel("0.1",     1	); pControl->AddLabel("0.2",     2	);  
+      pControl->AddLabel("0.3",     3	); pControl->AddLabel("0.4",     4 );  
+      pControl->AddLabel("0.5",     5 ); pControl->AddLabel("0.6",     6 );
+      pControl->AddLabel("0.7",     7 ); pControl->AddLabel("0.8",     8 );
+      pControl->AddLabel("0.9",     9 ); pControl->AddLabel("1.0",     10 );
+      pControl->SetValue(pSettingInt->GetData());
+    }
     else if (strSetting == "Masterlock.LockSettingsFilemanager")
     {
       int iLFState, iLSState, iTmpState;
