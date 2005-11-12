@@ -15,9 +15,7 @@
 //#include "DVDChapterReader.h"
 #include "DVDSubtitles\DVDFactorySubtitle.h"
 
-class CDVDTimerThread;
 class CDVDInputStream;
-class CDVDVideoCodec;
 
 class CDVDDemux;
 class CDemuxStreamVideo;
@@ -29,6 +27,7 @@ class CDemuxStreamAudio;
 #define DVDPACKET_MESSAGE_RESYNC 0x00000001 // will be set in a packet to signal that we have an discontinuity
 #define DVDPACKET_MESSAGE_STILL  0x00000002
 #define DVDPACKET_MESSAGE_NOSKIP 0x00000004
+#define DVDPACKET_MESSAGE_FLUSH  0x00000008
 
 typedef struct DVDInfo
 {

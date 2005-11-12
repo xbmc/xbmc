@@ -49,8 +49,7 @@ CDVDAudioCodecLiba52::~CDVDAudioCodecLiba52()
 
 bool CDVDAudioCodecLiba52::Open(CodecID codecID, int iChannels, int iSampleRate, int iBits)
 {
-  if (!m_dll.Load())
-    return false;
+  if (!m_dll.Load()) return false;
 
   SetDefault();
 

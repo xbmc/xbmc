@@ -42,9 +42,9 @@
 //-----------------------------------------------------------------------------
 #ifdef _XBOX
 
-#include <xtl.h>
+#include "../include.h"
 #include <xgraphics.h>
-#include <stdio.h>
+
 #include "XBFont.h"
 #include "../include.h"
 
@@ -283,7 +283,7 @@ HRESULT CXBFont::Create( D3DTexture* pFontTexture, VOID* pFontData )
   }
   else
   {
-    OUTPUT_DEBUG_STRING( "XBFont: Incorrect version number on font file!\n" );
+    CLog::Log(LOGFATAL, "XBFont: Incorrect version number on font file!\n" );
     return E_FAIL;
   }
 

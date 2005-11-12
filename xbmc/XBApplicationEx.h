@@ -11,7 +11,6 @@
 
 #include "common/XBInput.h"
 #include "XBInputEx.h"
-#include "common/XBUtil.h"
 #include "IWindowManagerCallback.h"
 #include "common/mouse.h"
 #include "common/keyboard.h"
