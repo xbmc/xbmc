@@ -1520,7 +1520,7 @@ void CGUIWindowMusicBase::OnPopupMenu(int iItem)
     
   // turn off CDDB lookup, if the current dir is not CDDA
   int btn_CDDB   = 0; // CDDB lookup
-  int btn_Delete = 0; // Delete 
+  int btn_Delete = 0, btn_Rename = 0; // Delete & Rename
   if (!bIsGotoParent)
   {
     if (!m_Directory.IsCDDA()) btn_CDDB = pMenu->AddButton(16002);    // CDDB lookup
@@ -1528,7 +1528,10 @@ void CGUIWindowMusicBase::OnPopupMenu(int iItem)
     CStdString strDirectory;
     strDirectory.Format("%s\\playlists", g_stSettings.m_szAlbumDirectory);
     if (strDirectory.Equals(m_Directory.m_strPath) || g_guiSettings.GetBool("MusicFiles.AllowFileDeletion"))
+    {
       btn_Delete = pMenu->AddButton(117);               // Delete
+      btn_Rename = pMenu->AddButton(118);               // Rename
+    }
   }
 
   // GeminiServer Todo: Set a MasterLock Option to Enable or disable Settings incontext menu!
@@ -1587,6 +1590,11 @@ void CGUIWindowMusicBase::OnPopupMenu(int iItem)
     else if (btnid == btn_Delete)
     {
       OnDeleteItem(iItem);
+    }
+    //Rename
+    else if (btnid == btn_Rename)
+    {
+      OnRenameItem(iItem);
     }
     // Settings
     else if (btnid == btn_Settings)
@@ -1801,6 +1809,33 @@ void CGUIWindowMusicBase::OnDeleteItem(int iItem)
   CGUIWindowFileManager* pWindow = (CGUIWindowFileManager*)m_gWindowManager.GetWindow(WINDOW_FILES);
   if (pWindow) pWindow->Delete(pItem);
 
+  Update(m_Directory.m_strPath);
+  m_viewControl.SetSelectedItem(iItem);
+}
+
+void CGUIWindowMusicBase::OnRenameItem(int iItem)
+{
+  // GeminiServer
+  if ( iItem < 0 || iItem >= m_vecItems.Size()) return;
+  const CFileItem* pItem = m_vecItems[iItem];
+
+  int ilocString = 16013; // Is file, set localizestring to File!
+  if (pItem->m_bIsFolder) ilocString = 16014; // Is file, set localizestring to Folder!
+
+  CStdString strFile = pItem->m_strPath;
+  CStdString strFileName = CUtil::GetFileName(strFile);
+  CStdString strPath = strFile.Left(strFile.size() - strFileName.size());
+  if (CGUIDialogKeyboard::ShowAndGetInput(strFileName, (CStdStringW)g_localizeStrings.Get(ilocString), false))
+  {
+    strPath += strFileName;
+    
+    CStdString strLog;
+    strLog.Format("FileManager: rename %s->%s\n", strFile.c_str(), strPath.c_str());
+    OutputDebugString(strLog.c_str());
+    CLog::Log(LOGINFO,"%s",strLog.c_str());
+
+    CFile::Rename(strFile.c_str(), strPath.c_str());
+  }
   Update(m_Directory.m_strPath);
   m_viewControl.SetSelectedItem(iItem);
 }
