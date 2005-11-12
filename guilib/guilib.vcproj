@@ -593,12 +593,6 @@
 			<File
 				RelativePath=".\common\xbinput.h">
 			</File>
-			<File
-				RelativePath=".\common\xbutil.cpp">
-			</File>
-			<File
-				RelativePath=".\common\xbutil.h">
-			</File>
 		</Filter>
 		<Filter
 			Name="tinyXML"
@@ -630,6 +624,12 @@
 			</File>
 			<File
 				RelativePath="$(XDK)\Samples\Xbox\Common\Include\xbresource.h">
+			</File>
+			<File
+				RelativePath="$(XDK)\Samples\Xbox\Common\Src\xbutil.cpp">
+			</File>
+			<File
+				RelativePath="$(XDK)\Samples\Xbox\Common\Include\xbutil.h">
 			</File>
 		</Filter>
 	</Files>

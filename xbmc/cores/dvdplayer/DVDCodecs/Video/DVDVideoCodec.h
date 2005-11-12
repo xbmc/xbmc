@@ -51,28 +51,32 @@ struct AVStream;
 class CDVDVideoCodec
 {
 public:
+
+  CDVDVideoCodec() {}
+  virtual ~CDVDVideoCodec() {}
+  
   /*
    * Open the decoder, returns true on success
    */
   virtual bool Open(CodecID codecID, int iWidth, int iHeight) = 0;
+  
   /*
    * Dispose, Free all resources
    */
   virtual void Dispose() = 0;
+  
   /*
    * returns one or a combination of VC_ messages
    * pData and iSize can be NULL, this means we should flush the rest of the data.
    */
   virtual int Decode(BYTE* pData, int iSize) = 0;
-  /*
-   * 
-   */
-  virtual bool Flush() = 0;
-  /*
+  
+ /*
    * Reset the decoder.
    * Should be the same as calling Dispose and Open after each other
    */
   virtual void Reset() = 0;
+  
   /*
    * returns true if successfull
    * the data is valid until the next Decode call

@@ -909,45 +909,6 @@
 				Name="Common"
 				Filter="">
 				<File
-					RelativePath="$(XDK)\Samples\Xbox\Common\Src\xbapp.cpp">
-					<FileConfiguration
-						Name="Release|Xbox">
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="2"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug|Xbox">
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="0"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BrowseInformation="1"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Profile|Xbox">
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="2"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Profile_FastCap|Xbox">
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="2"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""/>
-					</FileConfiguration>
-				</File>
-				<File
-					RelativePath="$(XDK)\Samples\Xbox\Common\Include\xbapp.h">
-				</File>
-				<File
 					RelativePath="$(XDK)\Samples\Xbox\Common\Src\xbinput.cpp">
 					<FileConfiguration
 						Name="Release|Xbox">
@@ -985,45 +946,6 @@
 				</File>
 				<File
 					RelativePath="$(XDK)\Samples\Xbox\Common\Include\xbinput.h">
-				</File>
-				<File
-					RelativePath="$(XDK)\Samples\Xbox\Common\Src\xbutil.cpp">
-					<FileConfiguration
-						Name="Release|Xbox">
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="2"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug|Xbox">
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="0"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BrowseInformation="1"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Profile|Xbox">
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="2"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Profile_FastCap|Xbox">
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="2"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""/>
-					</FileConfiguration>
-				</File>
-				<File
-					RelativePath="$(XDK)\Samples\Xbox\Common\Include\xbutil.h">
 				</File>
 			</Filter>
 		</Filter>

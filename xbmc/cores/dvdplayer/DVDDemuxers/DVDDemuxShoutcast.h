@@ -15,7 +15,7 @@ class CDVDDemuxShoutcast : public CDVDDemux
 {
 public:
   CDVDDemuxShoutcast();
-  ~CDVDDemuxShoutcast();
+  virtual ~CDVDDemuxShoutcast();
 
   bool Open(CDVDInputStream* pInput);
   void Dispose();
