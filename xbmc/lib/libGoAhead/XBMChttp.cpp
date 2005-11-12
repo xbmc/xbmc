@@ -2096,7 +2096,7 @@ CStdString CXbmcHttpShim::xbmcProcessCommand( int eid, webs_t wp, char_t *comman
 {
   CStdString cmd=command, paras=parameter, response="", retVal;
   int cnt=0;
-  if (wp != NULL)
+  if ((wp != NULL) && (eid==NO_EID))
     websHeader(wp);
   if ((*parameter==0) || !strcmp(parameter,XBMC_NONE))
     g_applicationMessenger.HttpApi(cmd);
