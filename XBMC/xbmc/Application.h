@@ -149,6 +149,7 @@ public:
   CStdString m_strPlayListFile;
   
   int GlobalIdleTime();
+  bool SetControllerRumble(FLOAT m_fLeftMotorSpeed, FLOAT m_fRightMotorSpeed,int iDuration);
   
 
 protected:

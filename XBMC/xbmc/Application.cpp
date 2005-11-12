@@ -1448,7 +1448,7 @@ void CApplication::StartServices()
 }
 void CApplication::CheckDate()
 {
-	CLog::Log(LOGNOTICE, "Checking the Date!");	//GeminiServer Date Check
+  CLog::Log(LOGNOTICE, "Checking the Date!");	//GeminiServer Date Check
 	// Check the Date: Year, if it is  above 2099 set to 2004!
 	SYSTEMTIME CurTime;
 	SYSTEMTIME NewTime;
@@ -4233,4 +4233,25 @@ bool CApplication::ProcessAndStartPlaylist(const CStdString& strPlayList, CPlayL
     return true;
   }
   return false;
+}
+
+bool CApplication::SetControllerRumble(FLOAT m_fLeftMotorSpeed, FLOAT m_fRightMotorSpeed, int iDuration)
+{
+  // GeminiServer: Controll(Rumble): Controller Motors.
+  for( DWORD i=0; i<4; i++ )
+  {
+      if( m_Gamepad[i].hDevice )
+      { 
+          if( m_Gamepad[i].Feedback.Header.dwStatus != ERROR_IO_PENDING )
+          {
+              m_Gamepad[i].Feedback.Rumble.wLeftMotorSpeed  = WORD( m_fLeftMotorSpeed  * 65535.0f );
+              m_Gamepad[i].Feedback.Rumble.wRightMotorSpeed = WORD( m_fRightMotorSpeed * 65535.0f );
+              XInputSetState( m_Gamepad[i].hDevice, &m_Gamepad[i].Feedback );
+          }
+          else { Sleep(iDuration);
+            SetControllerRumble(m_fLeftMotorSpeed, m_fRightMotorSpeed,iDuration);
+            return false;
+          }
+      }
+  }return true;
 }

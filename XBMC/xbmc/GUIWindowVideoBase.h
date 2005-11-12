@@ -50,6 +50,7 @@ protected:
   bool CheckMovie(const CStdString& strFileName);
   virtual void OnQueueItem(int iItem);
   virtual void OnDeleteItem(int iItem);
+  virtual void OnRenameItem(int iItem);
 
   void OnResumeItem(int iItem);
 

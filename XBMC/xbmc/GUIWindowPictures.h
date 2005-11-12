@@ -48,6 +48,8 @@ protected:
   void AddDir(CGUIWindowSlideShow *pSlideShow, const CStdString& strPath);
   virtual void OnItemLoaded(CFileItem* pItem);
   void OnDeleteItem(int iItem);
+  virtual void OnRenameItem(int iItem);
+
   void ShowShareErrorMessage(CFileItem* pItem);
 
   CVirtualDirectory m_rootDir;

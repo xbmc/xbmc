@@ -968,7 +968,7 @@
   <string><id>14068</id><value>Enter the IP address</value></string>
   <string><id>14069</id><value>Do you want set these Settings now?</value></string> 	 
   <string><id>14070</id><value>Apply Changes Now</value></string> 	 
-  <string><id>14071</id><value>Allow File Deletion</value></string>
+  <string><id>14071</id><value>Allow File Renaming and Deletion</value></string>
   <string><id>14072</id><value>Enable XLink Kai</value></string>
   <string><id>14073</id><value>XLink Kai is not enabled.</value></string>
 
@@ -1045,6 +1045,7 @@
   <string><id>15107</id><value>Buffering...</value></string>
   <string><id>15108</id><value>Navigation Sounds</value></string>
   <string><id>15109</id><value>Skin Default</value></string>
+  <string><id>15110</id><value>Controller Rumble</value></string>
   <string><id>15200</id><value>AudioScrobbler</value></string>
   <string><id>15201</id><value>Submit Songs to AudioScrobbler</value></string>
   <string><id>15202</id><value>AudioScrobbler Username</value></string>

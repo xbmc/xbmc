@@ -1012,9 +1012,12 @@ void CGUIWindowPictures::OnPopupMenu(int iItem)
     if (!m_thumbLoader.IsLoading()) 
       btn_Thumbs = pMenu->AddButton(13315);         // Create Thumbnails
     
-    int btn_Delete = 0;
+    int btn_Delete = 0, btn_Rename = 0;             // Delete and Rename
     if (g_guiSettings.GetBool("Pictures.AllowFileDeletion"))
+    {
       btn_Delete = pMenu->AddButton(117);           // Delete
+      btn_Rename = pMenu->AddButton(118);           // Rename
+    }
     
     int btn_Settings = pMenu->AddButton(5);         // Settings
 
@@ -1043,6 +1046,11 @@ void CGUIWindowPictures::OnPopupMenu(int iItem)
       else if (btnid == btn_Delete)
       {
         OnDeleteItem(iItem);
+      }
+      //Rename
+      else if (btnid == btn_Rename)
+      {
+        OnRenameItem(iItem);
       }
       else if (btnid == btn_Settings)
       {
@@ -1217,6 +1225,32 @@ void CGUIWindowPictures::OnDeleteItem(int iItem)
   CGUIWindowFileManager* pWindow = (CGUIWindowFileManager*)m_gWindowManager.GetWindow(WINDOW_FILES);
   if (pWindow) pWindow->Delete(pItem);
 
+  Update(m_Directory.m_strPath);
+  m_viewControl.SetSelectedItem(iItem);
+}
+void CGUIWindowPictures::OnRenameItem(int iItem)
+{
+  // GeminiServer
+  if ( iItem < 0 || iItem >= m_vecItems.Size()) return;
+  const CFileItem* pItem = m_vecItems[iItem];
+
+  int ilocString = 16013; // Is file, set localizestring to File!
+  if (pItem->m_bIsFolder) ilocString = 16014; // Is file, set localizestring to Folder!
+
+  CStdString strFile = pItem->m_strPath;
+  CStdString strFileName = CUtil::GetFileName(strFile);
+  CStdString strPath = strFile.Left(strFile.size() - strFileName.size());
+  if (CGUIDialogKeyboard::ShowAndGetInput(strFileName, (CStdStringW)g_localizeStrings.Get(ilocString), false))
+  {
+    strPath += strFileName;
+    
+    CStdString strLog;
+    strLog.Format("FileManager: rename %s->%s\n", strFile.c_str(), strPath.c_str());
+    OutputDebugString(strLog.c_str());
+    CLog::Log(LOGINFO,"%s",strLog.c_str());
+
+    CFile::Rename(strFile.c_str(), strPath.c_str());
+  }
   Update(m_Directory.m_strPath);
   m_viewControl.SetSelectedItem(iItem);
 }

@@ -1075,11 +1075,14 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem)
   }
   
   // hide delete button unless enabled, or in title window
-  int btn_Delete = 0;
+  int btn_Delete = 0, btn_Rename = 0;
   if (!bIsGotoParent)
   {
     if ((GetID() == WINDOW_VIDEOS && g_guiSettings.GetBool("VideoFiles.AllowFileDeletion")) || GetID() == WINDOW_VIDEO_TITLE)
+    {
       btn_Delete = pMenu->AddButton(117);             // Delete
+      btn_Rename = pMenu->AddButton(118);             // Rename
+    }
   }
 
   // GeminiServer Todo: Set a MasterLock Option to Enable or disable Settings incontext menu!
@@ -1147,6 +1150,10 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem)
     else if (btnid == btn_Delete)
     {
       OnDeleteItem(iItem);
+    }
+    else if (btnid == btn_Rename)
+    {
+      OnRenameItem(iItem);
     }
     else if (btnid == btn_PlayWith)
     {
@@ -1315,6 +1322,33 @@ void CGUIWindowVideoBase::OnDeleteItem(int iItem)
   CGUIWindowFileManager* pWindow = (CGUIWindowFileManager*)m_gWindowManager.GetWindow(WINDOW_FILES);
   if (pWindow) pWindow->Delete(pItem);
 
+  Update(m_Directory.m_strPath);
+  m_viewControl.SetSelectedItem(iItem);
+}
+
+void CGUIWindowVideoBase::OnRenameItem(int iItem)
+{
+  // GeminiServer
+  if ( iItem < 0 || iItem >= m_vecItems.Size()) return;
+  const CFileItem* pItem = m_vecItems[iItem];
+
+  int ilocString = 16013; // Is file, set localizestring to File!
+  if (pItem->m_bIsFolder) ilocString = 16014; // Is file, set localizestring to Folder!
+
+  CStdString strFile = pItem->m_strPath;
+  CStdString strFileName = CUtil::GetFileName(strFile);
+  CStdString strPath = strFile.Left(strFile.size() - strFileName.size());
+  if (CGUIDialogKeyboard::ShowAndGetInput(strFileName, (CStdStringW)g_localizeStrings.Get(ilocString), false))
+  {
+    strPath += strFileName;
+    
+    CStdString strLog;
+    strLog.Format("FileManager: rename %s->%s\n", strFile.c_str(), strPath.c_str());
+    OutputDebugString(strLog.c_str());
+    CLog::Log(LOGINFO,"%s",strLog.c_str());
+
+    CFile::Rename(strFile.c_str(), strPath.c_str());
+  }
   Update(m_Directory.m_strPath);
   m_viewControl.SetSelectedItem(iItem);
 }
