@@ -567,6 +567,7 @@ void CGUIWindowVideoBase::ShowIMDB(const CStdString& strMovie, const CStdString&
 
   if ( !strNfoFile.IsEmpty() )
   {
+    CLog::Log(LOGDEBUG,"Found matching nfo file: %s", strNfoFile.c_str());
     if ( CFile::Cache(strNfoFile, "Z:\\movie.nfo", NULL, NULL))
     {
       CNfoFile nfoReader;
@@ -575,6 +576,7 @@ void CGUIWindowVideoBase::ShowIMDB(const CStdString& strMovie, const CStdString&
         CIMDBUrl url;
         CIMDBMovie movieDetails;
         url.m_strURL = nfoReader.m_strImDbUrl;
+        CLog::Log(LOGDEBUG,"-- imdb url: %s", url.m_strURL.c_str());
 
         // show dialog that we're downloading the movie info
         pDlgProgress->SetHeading(198);
@@ -598,6 +600,7 @@ void CGUIWindowVideoBase::ShowIMDB(const CStdString& strMovie, const CStdString&
         }
       }
     }
+    CLog::Log(LOGERROR,"Unable to cache nfo file: %s", strNfoFile.c_str());
   }
 
   if (!g_guiSettings.GetBool("FileLists.HideExtensions") && !bFolder)
