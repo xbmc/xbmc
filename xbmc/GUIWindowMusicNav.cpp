@@ -1332,13 +1332,13 @@ void CGUIWindowMusicNav::OnSearchItemFound(const CFileItem* pSelItem)
     Update(strPath);
 
     // set root history
-    // db:// => db://Genres/
+    // db://Genres/ => db:// => 
     CStdString strParentPath = "db://";
     strPath = "db://" + strGenres + "/";
     m_history.Set(strPath, strParentPath);
 
     // set Genres history
-    // db://Genres/ => db://Genres/GENRE/
+    // db://Genres/GENRE/ => db://Genres/
     strParentPath = strPath;
     strPath += m_strGenre + "/";
     m_history.Set(strPath, strParentPath);
@@ -1360,13 +1360,13 @@ void CGUIWindowMusicNav::OnSearchItemFound(const CFileItem* pSelItem)
     Update(strPath);
 
     // set root history
-    // db:// => db://Artists/
+    // db://Artists/ => db://
     CStdString strParentPath = "db://";
     strPath = "db://" + strArtists + "/";
     m_history.Set(strPath, strParentPath);
 
     // set Artists history
-    // db://Artists/ => db://Artists/ARTIST/
+    // db://Artists/ARTIST/ => db://Artists/
     strParentPath = strPath;
     strPath += m_strArtist + "/";
     m_history.Set(strPath, strParentPath);
@@ -1398,13 +1398,13 @@ void CGUIWindowMusicNav::OnSearchItemFound(const CFileItem* pSelItem)
     Update(strPath);
 
     // set root history
-    // db:// => db://Albums/
+    // db://Albums/ => db://
     CStdString strParentPath = "db://";
     strPath = "db://" + strAlbums + "/";
     m_history.Set(strPath, strParentPath);
 
     // set Albums history
-    //  db://Albums/ => db://Albums/ALBUM - ARTIST/
+    // db://Albums/ALBUM - ARTIST/ => db://Albums/
     strParentPath = strPath;
     strPath += strAlbum + "/"; 
     m_history.Set(strPath, strParentPath);
@@ -1599,6 +1599,10 @@ void CGUIWindowMusicNav::GetDirectoryHistoryString(const CFileItem* pItem, CStdS
   if (!CUtil::HasSlashAtEnd(strHistoryString))
     strHistoryString += "/";
   strHistoryString += pItem->GetLabel();
+
+  // hack for albums
+  if ((m_iState == SHOW_ALBUMS || m_iState == SHOW_SONGS) && !pItem->m_strPath.IsEmpty() && !pItem->m_musicInfoTag.GetArtist().IsEmpty())
+    strHistoryString += " - " + pItem->m_musicInfoTag.GetArtist();
 }
 
 /// \brief Add file or folder and its subfolders to playlist
