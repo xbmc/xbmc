@@ -221,7 +221,12 @@ void CGUIWindowManager::ActivateWindow(int iWindowID, const CStdString& strPath)
   // translate virtual windows
   // virtual music window which returns the last open music window (aka the music start window)
   if (iWindowID == WINDOW_MUSIC)
+  {
     iWindowID = g_stSettings.m_iMyMusicStartWindow;
+    // if the last window was "Now Playing", return to files view
+    if (iWindowID == WINDOW_MUSIC_PLAYLIST)
+      iWindowID = WINDOW_MUSIC_FILES;
+  }
 
   // first check existence of the window we wish to activate.
   CGUIWindow *pNewWindow = GetWindow(iWindowID);
