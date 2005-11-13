@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 13-11-2005 fixed: My Music could get stuck in the Now Playing window
  - 12-11-2005 fixed: My Movies "Query Info For All Files" now looks for "stackedname.nfo" like "Movie Information"
  - 12-11-2005 fixed: httpapi - called via ASP would include inappropriate web header
  - 12-11-2005 added: Controller Rumble (controller vibration)! [GeminiServer]
