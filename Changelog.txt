@@ -5,6 +5,9 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+
+ - 14-11-2005 fixed: (I hope it is fixed, haven't been able to test it) dvds start to stutter at the end of a movie when played with dvdplayer
+ - 14-11-2005 fixed: when detectasiso was set to yes, most dvd's where not playable anymore with the dvdplayer (crash or back to menu)
  - 13-11-2005 fixed: My Music Library would highlight the wrong album on previous dir if there were multiple albums of the same name (aka Greatest Hits)
  - 13-11-2005 fixed: My Music could get stuck in the Now Playing window
  - 12-11-2005 fixed: My Movies "Query Info For All Files" now looks for "stackedname.nfo" like "Movie Information"

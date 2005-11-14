@@ -17,13 +17,6 @@
 #include "DVDDemuxers\DVDDemuxUtils.h"
 #include "DVDDemuxers\DVDFactoryDemuxer.h"
 
-#include "DVDSubtitles\DVDSubtitleParser.h"
-#include "DVDSubtitles\DVDSubtitleStream.h"
-
-#include "DVDCodecs\Video\DVDVideoCodec.h"
-#include "DVDCodecs\DVDFactoryCodec.h"
-#include "DVDCodecs\DVDCodecUtils.h"
-
 #include "..\..\util.h"
 #include "../../utils/GUIInfoManager.h"
 
@@ -81,7 +74,12 @@ bool CDVDPlayer::OpenFile(const CFileItem& file, __int64 iStartTime)
   m_dvd.iSelectedSPUStream = -1;
   m_dvd.iSelectedAudioStream = -1;
 
-  if (strFile.Find("dvd://") >= 0 || strFile.CompareNoCase("d:\\video_ts\\video_ts.ifo") == 0) strcpy(m_filename, "\\Device\\Cdrom0");
+  if (strFile.Find("dvd://") >= 0 ||
+      strFile.CompareNoCase("d:\\video_ts\\video_ts.ifo") == 0 ||
+      strFile.CompareNoCase("iso9660://video_ts/video_ts.ifo") == 0)
+  {
+    strcpy(m_filename, "\\Device\\Cdrom0");
+  }
   else strcpy(m_filename, strFile.c_str());
 
   ResetEvent(m_hReadyEvent);
@@ -92,14 +90,19 @@ bool CDVDPlayer::OpenFile(const CFileItem& file, __int64 iStartTime)
 
   // if we are playing a media file with pictures, we should wait for the video output device to be initialized
   // if we don't wait, the fullscreen window will init with a picture that is 0 pixels width and high
+  bool bProcessThreadIsAlive = true;
   if (m_iCurrentStreamVideo >= 0 ||
       m_pInputStream && (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD) || m_pInputStream->HasExtension("vob")))
   {
-    while (!m_bAbortRequest && !m_dvdPlayerVideo.InitializedOutputDevice()) Sleep(1);
+    while (bProcessThreadIsAlive && !m_bAbortRequest && !m_dvdPlayerVideo.InitializedOutputDevice())
+    {
+      bProcessThreadIsAlive = !WaitForThreadExit(0);
+      Sleep(1);
+    }
   }
 
   // m_bPlaying could be set to false in the meantime, which indicates an error
-  return !m_bStop;
+  return (bProcessThreadIsAlive && !m_bStop);
 }
 
 bool CDVDPlayer::CloseFile()
@@ -206,7 +209,10 @@ void CDVDPlayer::Process()
     // us to read again
     if (m_bReadAgain)
     {
-      if (pPacket) CDVDDemuxUtils::FreeDemuxPacket(pPacket);
+      if (pPacket)
+      {
+        CDVDDemuxUtils::FreeDemuxPacket(pPacket);
+      }
       continue;
     }
 
@@ -227,10 +233,10 @@ void CDVDPlayer::Process()
     iErrorCounter = 0;
 
     // process subtitles
-    // if (pPacket->dts != DVD_NOPTS_VALUE)
-    // {
-    //   m_dvdPlayerSubtitle.Process(pPacket->dts);
-    // }
+    if (pPacket->dts != DVD_NOPTS_VALUE)
+    {
+      //m_dvdPlayerSubtitle.Process(pPacket->dts);
+    }
     
     CDemuxStream *pStream = m_pDemuxer->GetStream(pPacket->iStreamId);
 
@@ -1113,12 +1119,6 @@ int CDVDPlayer::OnDVDNavResult(void* pData, int iMessage)
         CLog::Log(LOGDEBUG, "DVDNAV_HIGHLIGHT: Highlight button %d\n", iButton);
 
         UpdateOverlayInfo(LIBDVDNAV_BUTTON_NORMAL);
-
-        //This shouldn't be needed.. all still are now also rendered as stream fps
-        //if (pStream->IsInMenu())
-        //{
-        //  m_dvdPlayerVideo.UpdateMenuPicture();
-        //}
       }
       break;
     case DVDNAV_VTS_CHANGE:
@@ -1177,6 +1177,7 @@ int CDVDPlayer::OnDVDNavResult(void* pData, int iMessage)
         CLog::Log(LOGDEBUG, "DVDNAV_HOP_CHANNEL");
 
         FlushBuffers();
+        //m_bReadAgain = true;
       }
       break;
     case DVDNAV_STOP:
