@@ -216,7 +216,6 @@ void CDVDAudio::Flush()
 {
   CSingleLock lock (m_critSection);
 
-  //if (m_pAudioDecoder) m_pAudioDecoder->Flush();
   if (m_pAudioDecoder)
   {
     m_pAudioDecoder->Stop();
