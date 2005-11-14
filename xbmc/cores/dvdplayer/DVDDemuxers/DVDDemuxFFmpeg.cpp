@@ -388,7 +388,7 @@ CDVDDemux::DemuxPacket* CDVDDemuxFFmpeg::Read()
         {
           pPacket->pts = (num * pkt.pts * AV_TIME_BASE) / den;
           if (m_pFormatContext->start_time != DVD_NOPTS_VALUE &&
-              pPacket->pts > (unsigned int)m_pFormatContext->start_time)
+              pPacket->pts > (unsigned __int64)m_pFormatContext->start_time)
           {
             pPacket->pts -= m_pFormatContext->start_time;
           }
@@ -402,7 +402,7 @@ CDVDDemux::DemuxPacket* CDVDDemuxFFmpeg::Read()
         {
           pPacket->dts = (num * pkt.dts * AV_TIME_BASE) / den;
           if (m_pFormatContext->start_time != DVD_NOPTS_VALUE &&
-              pPacket->dts > (unsigned int)m_pFormatContext->start_time)
+              pPacket->dts > (unsigned __int64)m_pFormatContext->start_time)
           {
             pPacket->dts -= m_pFormatContext->start_time;
           }
