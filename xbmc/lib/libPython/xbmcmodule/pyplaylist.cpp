@@ -267,6 +267,14 @@ namespace PYXBMC
 		return (PyObject*)item;
 	}
 
+  PyDoc_STRVAR(getposition__doc__,
+    "getposition() -- returns the position of the current song in this playlist.\n");
+
+  PyObject* PlayList_GetPosition(PlayList *self, PyObject *key)
+  {
+    return Py_BuildValue("i", g_playlistPlayer.GetCurrentSong());
+  }
+
 	PyMethodDef PlayListItem_methods[] = {
 		{"getdescription", (PyCFunction)PlayListItem_GetDescription, METH_VARARGS, getDescription__doc__},
 		{"getduration", (PyCFunction)PlayListItem_GetDuration, METH_VARARGS, getDuration__doc__},
@@ -294,6 +302,7 @@ namespace PYXBMC
 		{"clear", (PyCFunction)PlayList_Clear, METH_VARARGS, clear__doc__},
 		{"size", (PyCFunction)PlayList_Size, METH_VARARGS, size__doc__},
 		{"shuffle", (PyCFunction)PlayList_Shuffle, METH_VARARGS, shuffle__doc__},
+		{"getposition", (PyCFunction)PlayList_GetPosition, METH_VARARGS, getposition__doc__},
 		{NULL, NULL, 0, NULL}
 	};
 
