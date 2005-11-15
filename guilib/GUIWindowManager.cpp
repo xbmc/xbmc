@@ -223,8 +223,8 @@ void CGUIWindowManager::ActivateWindow(int iWindowID, const CStdString& strPath)
   if (iWindowID == WINDOW_MUSIC)
   {
     iWindowID = g_stSettings.m_iMyMusicStartWindow;
-    // if the last window was "Now Playing", return to files view
-    if (iWindowID == WINDOW_MUSIC_PLAYLIST)
+    // ensure the music virtual window only returns music files and music library windows
+    if (iWindowID != WINDOW_MUSIC_FILES && iWindowID != WINDOW_MUSIC_NAV)
       iWindowID = WINDOW_MUSIC_FILES;
   }
 
