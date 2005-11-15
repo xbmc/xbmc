@@ -144,10 +144,16 @@ namespace PYXBMC
 	PyDoc_STRVAR(playselected__doc__,
 		"playselected() -- Play a certain item from the current playlist.");
 
-	PyObject* Player_PlaySelected(PyObject *self, PyObject *args)
+	PyObject* Player_PlaySelected(Player *self, PyObject *args)
 	{
 		int iItem;
 		if (!PyArg_ParseTuple(args, "i", &iItem)) return NULL;
+
+    if (g_playlistPlayer.GetCurrentPlaylist() != self->iPlayList)
+    {
+      g_playlistPlayer.SetCurrentPlaylist(self->iPlayList);
+    }
+    g_playlistPlayer.SetCurrentSong(iItem);
 
 		g_applicationMessenger.PlayListPlayerPlay(iItem);
 
