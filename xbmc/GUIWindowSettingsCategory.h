@@ -33,6 +33,8 @@ protected:
   void FillInFTPServerUser(CSetting *pSetting);
   bool SetFTPServerUserPass();
 
+  void FillInSkinThemes(CSetting *pSetting);
+
   virtual void SetupControls();
   void CreateSettings();
   void UpdateSettings();

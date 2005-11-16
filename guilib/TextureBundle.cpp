@@ -4,6 +4,10 @@
 #include "GraphicContext.h"
 #include "../xbmc/lib/liblzo/LZO1X.H"
 #include "SkinInfo.h"
+// GeminiServer
+#include "../xbmc/GUISettings.h"
+#include "../xbmc/Settings.h"
+//
 
 #pragma comment(lib,"xbmc/lib/liblzo/lzo.lib")
 
@@ -90,23 +94,31 @@ bool CTextureBundle::OpenBundle()
   if (m_hFile != INVALID_HANDLE_VALUE)
     Cleanup();
 
+  //GeminiServer Skin XPR-Theme detection!
+  bool bIsXPR = true;
+  CStdString strElementValue, strElement ="defaultthemename";
   CStdString strPath = g_graphicsContext.GetMediaDir();
-  
-  // GeminiServer
-  CStdString strElement, strElementValue;
-  strElement = "TextureName";
-  if ( g_SkinInfo.ReadElement(strPath,strElement,strElementValue) )
-  {
+  CStdString strThemeXPR = g_guiSettings.GetString("LookAndFeel.SkinTheme");
+  g_stSettings.m_curSkinTheme = strThemeXPR; // let's strore the Current used Theme
+  if ((strThemeXPR.compare("Default.xpr") != 0) && !strThemeXPR.IsEmpty() )
+  { 
     strPath += "\\media\\";
-    strPath += strElementValue.c_str();
-  } 
-  else {
+    strPath += strThemeXPR.c_str();
+    if (GetFileAttributes(strPath.c_str()) == -1) bIsXPR = false;
+  }
+  else{ 
+    if ( g_SkinInfo.ReadElement(strPath,strElement,strElementValue)){
+        strPath += "\\media\\";
+        strPath += strElementValue.c_str();
+        strPath += ".xpr";
+        if (GetFileAttributes(strPath.c_str()) == -1) bIsXPR = false;
+    } else bIsXPR = false;
+  }
+  if (!bIsXPR){
+    strPath = g_graphicsContext.GetMediaDir();
     strPath += "\\media\\Textures.xpr";
   }
   //
-
-  //strPath += "\\media\\Textures.xpr";
-
   if (GetFileAttributes(strPath.c_str()) == -1)
     return false;
 
@@ -456,8 +468,6 @@ PackedLoadError:
   if (pPal) delete pPal;
   return E_FAIL;
 }
-
-
 int CTextureBundle::LoadAnim(LPDIRECT3DDEVICE8 pDevice, const CStdString& Filename, D3DXIMAGE_INFO* pInfo, LPDIRECT3DTEXTURE8** ppTextures,
                              LPDIRECT3DPALETTE8* ppPalette, int& nLoops, int** ppDelays)
 {

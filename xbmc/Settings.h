@@ -451,6 +451,8 @@ public:
     int m_nVolumeLevel;       // measured in 100th's of a dB.  0dB is max, -60.00dB is min
     int m_iPreMuteVolumeLevel;    // save the m_nVolumeLevel for proper restore
     bool m_bMute;
+
+    CStdString m_curSkinTheme;
   };
 
   CStdStringArray m_MyVideoStackRegExps;
