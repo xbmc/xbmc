@@ -154,8 +154,10 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CStdS
     // add the needed buttons
     pMenu->AddButton(118); // 1: Rename
     pMenu->AddButton(748); // 2: Edit Path
+    /* why ? This is buggy.. the edit button is hidden everywhere
     if (!CUtil::IsVirualPath(strPath))
       pMenu->EnableButton(2, false);
+    */
     pMenu->AddButton(117); // 3: Delete
     pMenu->AddButton(bMyProgramsMenu ? 754 : 749); // 4: Add Program Link / Add Share
 
