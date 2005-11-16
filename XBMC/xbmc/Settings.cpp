@@ -163,6 +163,8 @@ CSettings::CSettings(void)
   g_stSettings.m_iMyVideoPercentSeekForwardBig = 10;
   g_stSettings.m_iMyVideoPercentSeekBackwardBig = -10;
   xbmcXmlLoaded = false;
+
+  g_stSettings.m_curSkinTheme = "";
 }
 
 CSettings::~CSettings(void)

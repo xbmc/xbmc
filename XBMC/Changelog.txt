@@ -6,6 +6,12 @@
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
 
+ - 16-11-2005 added: sf patch #1348694 F and G partition support to FEH (THX to)
+ - 15-11-2005 added: Skin Theme Support: [GeminiServer]
+		     Skin Themes, simply loading different Texture.xpr files from the current selected skin! To create new Themes, just add. a new MyThemaRed.xpr to the \Skin\SkinName\media\*.*,which contained Theme referenced pictures!
+                     You can also use more Themes and the shared files [picutes] can be in root of \media, which will be used if they are not in the defined theme!
+                     also new is to define the default used Theme in skin.xml <defaultthemename>textures</defaultthemename>, here you can define the simple XPR name! e.g. "My Theme Red.xpr" theme name is "My Theme Red"!
+                     All themes will be detected Automaticly, and can be selected true Settings - Appearance - Skin Theme! If there is no Theme defined, the default's will be used!
  - 15-11-2005 added: sf patch #1350866 modified playselected() python function
  - 15-11-2005 added: sf patch #1350867 new position() python function
  - 14-11-2005 fixed: (I hope it is fixed, haven't been able to test it) dvds start to stutter at the end of a movie when played with dvdplayer

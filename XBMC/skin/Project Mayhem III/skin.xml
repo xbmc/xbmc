@@ -1,12 +1,11 @@
 <skin>
   <defaultresolution>pal</defaultresolution>
   <defaultresolutionwide>pal16x9</defaultresolutionwide>
+  <!-- Here you can define the default (Texture)Theme Name! The texture/Theme files must be media folder ! -->
+  <!-- If no Texture Name is defined: "Textures" (Textures.xpr) will be used! -->
+  <!-- <defaultthemename>MyTextureA.xpr</defaultthemename> -->
+  <defaultthemename>textures</defaultthemename>
   <version>1.3</version>
-
-  <!-- Here you can define your own Texture name! The texture file must be in folder media! -->
-  <!-- If no Texture Name is defined: Textures.xpr will be used! -->
-  <!-- <TextureName>MyTextureA.xpr</TextureName> -->
-  
   <credits>
     <skinname>Project Mayhem III</skinname>
     <name>by Mathias Mahling aka. ChokeManiac</name>
@@ -15,5 +14,4 @@
     <name>Christian Granqvist - Steven [Blackbolt] Weir</name>
     <name>...and everybody who loves my skins!</name>
   </credits>
-
 </skin>
