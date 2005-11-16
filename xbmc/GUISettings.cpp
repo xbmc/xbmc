@@ -514,20 +514,21 @@ CGUISettings::CGUISettings(void)
 
   // appearance settings
   AddGroup(7, 480);
-  AddCategory(7, "LookAndFeel", 14037);
-  AddString(1, "LookAndFeel.Skin",          166,    "Project Mayhem III", SPIN_CONTROL_TEXT);
-  AddString(2, "LookAndFeel.SoundSkin",     15108,  "SKINDEFAULT", SPIN_CONTROL_TEXT);
-  AddInt(3,   "LookAndFeel.Rumble",         15110,  5, 0, 1, 10, SPIN_CONTROL_TEXT);
-  AddString(4, "LookAndFeel.Font",          13303,  "Default", SPIN_CONTROL_TEXT);
-  AddInt(5,    "LookAndFeel.StartUpWindow", 512,    1, 0, 1, 6, SPIN_CONTROL_TEXT);
-  AddSeparator(6, "LookAndFeel.Sep1");
-  AddString(7, "LookAndFeel.Language",      248,    "english", SPIN_CONTROL_TEXT);
-  AddString(8, "LookAndFeel.CharSet",       735,    "ISO-8859-1", SPIN_CONTROL_TEXT);
-  AddSeparator(9, "LookAndFeel.Sep2");
-  AddInt(10,    "LookAndFeel.Resolution",    169,    (int)AUTORES, (int)HDTV_1080i, 1, (int)AUTORES, SPIN_CONTROL_TEXT);
-  AddString(11, "LookAndFeel.GUICentering",  213,    "", BUTTON_CONTROL_STANDARD);
-  AddSeparator(12, "LookAndFeel.Sep3");
-  AddBool(13, "LookAndFeel.FullDirectoryHistory", 15106, true);
+  AddCategory(7,"LookAndFeel", 14037);
+  AddString(1, "LookAndFeel.Skin",166,"Project Mayhem III", SPIN_CONTROL_TEXT);
+  AddString(2, "LookAndFeel.SkinTheme",15111,"SKINDEFAULT", SPIN_CONTROL_TEXT);
+  AddString(3, "LookAndFeel.SoundSkin",15108,"SKINDEFAULT", SPIN_CONTROL_TEXT);
+  AddInt(4, "LookAndFeel.Rumble",15110,0, 0, 1, 10, SPIN_CONTROL_TEXT);
+  AddString(5, "LookAndFeel.Font",13303,"Default", SPIN_CONTROL_TEXT);
+  AddInt(6, "LookAndFeel.StartUpWindow",512,1, 0, 1, 6, SPIN_CONTROL_TEXT);
+  AddSeparator(7, "LookAndFeel.Sep1");
+  AddString(8, "LookAndFeel.Language",248,"english", SPIN_CONTROL_TEXT);
+  AddString(9, "LookAndFeel.CharSet",735,"ISO-8859-1", SPIN_CONTROL_TEXT);
+  AddSeparator(10, "LookAndFeel.Sep2");
+  AddInt(11, "LookAndFeel.Resolution",169,(int)AUTORES, (int)HDTV_1080i, 1, (int)AUTORES, SPIN_CONTROL_TEXT);
+  AddString(12, "LookAndFeel.GUICentering",213,"", BUTTON_CONTROL_STANDARD);
+  AddSeparator(13, "LookAndFeel.Sep3");
+  AddBool(14, "LookAndFeel.FullDirectoryHistory", 15106, true);
   
   AddCategory(7, "FileLists", 14018);
   AddBool(1, "FileLists.HideExtensions", 497, false);

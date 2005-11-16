@@ -1046,6 +1046,8 @@
   <string><id>15108</id><value>Navigation Sounds</value></string>
   <string><id>15109</id><value>Skin Default</value></string>
   <string><id>15110</id><value>Controller Rumble</value></string>
+  <string><id>15111</id><value>Skin Theme</value></string>
+  <string><id>15112</id><value>Default Theme</value></string>
   <string><id>15200</id><value>AudioScrobbler</value></string>
   <string><id>15201</id><value>Submit Songs to AudioScrobbler</value></string>
   <string><id>15202</id><value>AudioScrobbler Username</value></string>

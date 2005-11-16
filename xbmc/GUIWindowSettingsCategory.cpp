@@ -546,6 +546,11 @@ void CGUIWindowSettingsCategory::CreateSettings()
     {
       FillInResolutions(pSetting);
     }
+    else if (strSetting == "LookAndFeel.SkinTheme")
+    {
+      // GeminiServer Skin Theme
+      FillInSkinThemes(pSetting);
+    }
     else if (strSetting == "ScreenSaver.Mode")
     {
       FillInScreenSavers(pSetting);
@@ -1702,6 +1707,64 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
       g_application.CancelDelayLoadSkin();
     }
   }
+  else if (strSetting == "LookAndFeel.SkinTheme")
+  {
+    //a new Theme was choosen!
+    CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
+    CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
+    CStdString strSkinTheme, strElement, strPathSkin;
+    CStdString strSettingString = g_guiSettings.GetString("LookAndFeel.SkinTheme");
+    int iValue = pControl->GetValue();
+    bool bLoadTheme = true;
+
+    if (iValue == 0) // If the default skin is selected, detect the default theme in skin.xml
+    {
+      strElement    = "defaultthemename";
+      strPathSkin   = g_graphicsContext.GetMediaDir();
+      if (g_SkinInfo.ReadElement(strPathSkin,strElement,strSkinTheme))
+      {
+        strSkinTheme +=".xpr";
+      }
+      else strSkinTheme = "Textures.xpr"; // If in skin.xml is no Default skin is Defined, use the default: textures.xpr!
+    }
+    else strSkinTheme = pControl->GetCurrentLabel() + ".xpr";
+
+    // GeminiServer Todo: Detect the current used Theme to prevent loading it again!
+    // Reload the current skin with the choosen XPR Theme!
+    if (strcmpi(strSkinTheme.c_str(), g_stSettings.m_curSkinTheme.c_str()) != 0)
+    {
+      g_application.DelayLoadSkin();
+      pSettingString->SetData(strSkinTheme);
+    }else g_application.CancelDelayLoadSkin();
+  }
+  else if (strSetting == "LookAndFeel.StartUpWindow")
+  {
+    // Set the Current XML or Previos StartWindow state!
+    CStdString strStWin;
+    int iCurState = g_guiSettings.GetInt("LookAndFeel.StartUpWindow");
+    if (iCurState !=0)  // 0 if Manual Settings, don't tuch the StartWindow Stuff!
+    {
+      switch (iCurState)
+        {
+          case 1:                      
+            strStWin = "0";     // 0 XBMC Home           
+            break;                     
+          case 2:                      
+            strStWin = "1";     // 1 My Programs           
+            break;
+          case 3:                
+            strStWin = "2";     // 2 My Pictures     
+            break;               
+          case 4:                
+            strStWin = "501";   // 501 My Musik  
+            break;               
+          case 5:                
+            strStWin = "6";     // 6 My Video    
+            break;  
+        }
+      g_settings.UpDateXbmcXML("startwindow", strStWin);
+    }
+  }
   else if (strSetting == "UIFilters.Flicker" || strSetting == "UIFilters.Soften")
   { // reset display
     g_graphicsContext.SetGUIResolution(g_guiSettings.m_LookAndFeelResolution);
@@ -2063,34 +2126,6 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     {
       // PopUp OK and Display: MasterLock mode has changed but no no Mastercode has been set!
       CGUIDialogOK::ShowAndGetInput(12360, 12370, 12371, 0);
-    }
-  }
-  else if (strSetting == "LookAndFeel.StartUpWindow")
-  {
-    // Set the Current XML or Previos StartWindow state!
-    CStdString strStWin;
-    int iCurState = g_guiSettings.GetInt("LookAndFeel.StartUpWindow");
-    if (iCurState !=0)  // 0 if Manual Settings, don't tuch the StartWindow Stuff!
-    {
-      switch (iCurState)
-        {
-          case 1:                      
-            strStWin = "0";     // 0 XBMC Home           
-            break;                     
-          case 2:                      
-            strStWin = "1";     // 1 My Programs           
-            break;
-          case 3:                
-            strStWin = "2";     // 2 My Pictures     
-            break;               
-          case 4:                
-            strStWin = "501";   // 501 My Musik  
-            break;               
-          case 5:                
-            strStWin = "6";     // 6 My Video    
-            break;  
-        }
-      g_settings.UpDateXbmcXML("startwindow", strStWin);
     }
   }
   UpdateSettings();
@@ -3073,4 +3108,88 @@ void CGUIWindowSettingsCategory::JumpToPreviousSection()
   m_iSectionBeforeJump=-1;
   m_iControlBeforeJump=-1;
   m_iWindowBeforeJump=WINDOW_INVALID;
+}
+
+void CGUIWindowSettingsCategory::FillInSkinThemes(CSetting *pSetting)
+{ 
+  //GeminiServer Skin Theme [Themes are Different Packet XPR's]
+  CHDDirectory directory; CFileItemList items;
+  CStdString strExtension, strPath, strLblSkinDefault, strDefaultTheme, strSkinDefinedTheme, strElement, strPathSkin;
+  CSettingString *pSettingString = (CSettingString*)pSetting;
+  CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
+  CStdString strSettingString = g_guiSettings.GetString("LookAndFeel.SkinTheme");
+  
+  // Clear and add. the Default Label
+  pControl->Clear();
+  pControl->SetShowRange(true);
+  strLblSkinDefault = g_localizeStrings.Get(15109);
+  pControl->AddLabel(strLblSkinDefault.c_str(), 0); // "SKINDEFAULT"! The standart Textures.xpr will be used!
+  
+  // Get the Current Skin Path 
+  strPath = "Q:\\skin\\"; 
+  strPath += g_guiSettings.GetString("LookAndFeel.Skin"); 
+  strPath += "\\media\\";
+  directory.GetDirectory(strPath, items);
+  strDefaultTheme = pSettingString->GetData();
+  
+  // The Skin Default Defined Theme in Skin.xml!
+  strElement    = "defaultthemename";
+  strPathSkin   = g_graphicsContext.GetMediaDir();
+  if (!g_SkinInfo.ReadElement(strPathSkin,strElement,strSkinDefinedTheme))
+  {
+    strSkinDefinedTheme = "textures"; // If in skin.xml is no Default skin is Defined, use the default: textures !
+  }
+
+  // Search for Themes in the Current skin!
+  vector<CStdString> vecTheme;
+  for (int i = 0; i < items.Size(); ++i)
+  {
+    CFileItem* pItem = items[i];
+    if (!pItem->m_bIsFolder)
+    {
+      CStdString strExtension;
+      CUtil::GetExtension(pItem->m_strPath, strExtension);
+      if (strExtension == ".xpr")
+      {
+        CStdString strLabel = pItem->GetLabel();
+        vecTheme.push_back(strLabel.Mid(0, strLabel.size() - 4));
+      }
+    }
+  }
+
+  // Remove the .xpr extension from the Themes!
+  CUtil::GetExtension(strDefaultTheme, strExtension);
+  if (strExtension == ".xpr") strDefaultTheme.Delete(strDefaultTheme.size() - 4, 4);
+  CUtil::GetExtension(strSettingString, strExtension);
+  if (strExtension == ".xpr") strSettingString.Delete(strSettingString.size() - 4, 4);
+  CUtil::GetExtension(g_stSettings.m_curSkinTheme, strExtension);
+  if (strExtension == ".xpr") g_stSettings.m_curSkinTheme.Delete(g_stSettings.m_curSkinTheme.size() - 4, 4);
+  // Sort the Themes for GUI and list them
+  int iCurrentTheme = -1, iTheme= 0;
+  sort(vecTheme.begin(), vecTheme.end(), sortstringbyname());
+  for (i = 0; i < (int) vecTheme.size(); ++i)
+  {
+    CStdString strTheme = vecTheme[i];
+    // Is the Current Theme our Used Theme! If yes set the ID!
+    if (strcmpi(strTheme.ToLower().c_str(), g_stSettings.m_curSkinTheme.ToLower().c_str()) == 0 )
+    {
+      if (strTheme.ToLower() == strSkinDefinedTheme.ToLower())
+        iCurrentTheme = 0;
+      else
+        iCurrentTheme = iTheme +1 ; // 1: #of Predefined Theme [Label]
+    }
+    
+    // If the Current Theme is Skin.xml defined default Theme, set "SKINDEFAULT" Label for it!
+    if (strTheme.ToLower() == strSkinDefinedTheme.ToLower())
+    { 
+      strTheme = strLblSkinDefault;
+      //pControl->AddLabel(strTheme, iTheme++);
+    }
+    else 
+      pControl->AddLabel(strTheme, iTheme++);
+  }
+  // If we can't find any Theme then fall back to the Default Theme [Label]!
+  if (iCurrentTheme < 0 ) iCurrentTheme = 0;
+  // Set the Choosen Theme 
+  pControl->SetValue(iCurrentTheme);
 }
