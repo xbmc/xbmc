@@ -181,7 +181,7 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
 					pDlgProgress.SetLine(1, "Detecting HDD Values");
 					pDlgProgress.SetPercentage(60);
 					pDlgProgress.Progress();
-					GetATAValues(2, 3, 4, 5, 0); //0=6 is exlucded.. todo: Fix the HDD PW detection!
+					GetATAValues(2, 3, 4, 5, 0); //0=6 is excluded.. todo: Fix the HDD PW detection!
 					
 					//Label 7: HDD Lock/UnLock key
 					pDlgProgress.SetLine(1, "Detecting HDD Key");
@@ -189,7 +189,7 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
 					pDlgProgress.Progress();
 					CStdString strhddlockey;
 					GetHDDKey(strhddlockey);
-					SET_CONTROL_LABEL(6,strhddlockey);
+					//SET_CONTROL_LABEL(6,strhddlockey); //// is exclded.. todo: Fix the HDD key detection!
 					
 					//Label 8: HDD Temperature
 					pDlgProgress.SetLine(1, "Detecting HDD Temperature");
@@ -197,8 +197,8 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
 					pDlgProgress.Progress();
 					CStdString strItemhdd;
 					GetHDDTemp(strItemhdd);
-					SET_CONTROL_LABEL(7,strItemhdd);
-
+					SET_CONTROL_LABEL(6,strItemhdd);
+          
 					pDlgProgress.Close();
 					
 					CGUIWindow::Render();
