@@ -20,7 +20,6 @@ using namespace XFILE;
 #define ACTION_DELETE 3
 #define ACTION_CREATEFOLDER 4
 #define ACTION_DELETEFOLDER 5
-#define ACTION_RENAME       6
 
 #define CONTROL_BTNVIEWASICONS  2
 #define CONTROL_BTNSORTBY     3
@@ -130,6 +129,7 @@ CGUIWindowFileManager::CGUIWindowFileManager(void)
 {
   m_iItemSelected = -1;
   m_iLastControl = -1;
+  m_dlgProgress = NULL;
   m_Directory[0].m_strPath = "?";
   m_Directory[1].m_strPath = "?";
   m_Directory[0].m_bIsFolder = true;
@@ -235,6 +235,7 @@ bool CGUIWindowFileManager::OnMessage(CGUIMessage& message)
     {
       m_iLastControl = GetFocusedControl();
       m_iItemSelected = GetSelectedItem(m_iLastControl - CONTROL_LEFT_LIST);
+      m_dlgProgress = NULL;
       ClearFileItems(0);
       ClearFileItems(1);
     }
@@ -734,10 +735,7 @@ bool CGUIWindowFileManager::DoProcessFile(int iAction, const CStdString& strFile
   {
   case ACTION_COPY:
     {
-      CStdString strLog;
-      strLog.Format("FileManager: copy %s->%s\n", strFile.c_str(), strDestFile.c_str());
-      OutputDebugString(strLog.c_str());
-      CLog::Log(LOGINFO,"%s",strLog.c_str());
+      CLog::Log(LOGDEBUG,"FileManager: copy %s->%s\n", strFile.c_str(), strDestFile.c_str());
 
       const WCHAR *szText = g_localizeStrings.Get(115).c_str();
       CURL url(strFile);
@@ -780,10 +778,7 @@ bool CGUIWindowFileManager::DoProcessFile(int iAction, const CStdString& strFile
 
   case ACTION_MOVE:
     {
-      CStdString strLog;
-      strLog.Format("FileManager: move %s->%s\n", strFile.c_str(), strDestFile.c_str());
-      OutputDebugString(strLog.c_str());
-      CLog::Log(LOGINFO,"%s",strLog.c_str());
+      CLog::Log(LOGDEBUG,"FileManager: move %s->%s\n", strFile.c_str(), strDestFile.c_str());
 
       if (m_dlgProgress)
       {
@@ -812,10 +807,7 @@ bool CGUIWindowFileManager::DoProcessFile(int iAction, const CStdString& strFile
 
   case ACTION_DELETE:
     {
-      CStdString strLog;
-      strLog.Format("FileManager: delete %s\n", strFile.c_str());
-      OutputDebugString(strLog.c_str());
-      CLog::Log(LOGINFO,"%s",strLog.c_str());
+      CLog::Log(LOGDEBUG,"FileManager: delete %s\n", strFile.c_str());
 
       CFile::Delete(strFile.c_str());
       if (m_dlgProgress)
@@ -830,10 +822,7 @@ bool CGUIWindowFileManager::DoProcessFile(int iAction, const CStdString& strFile
 
   case ACTION_DELETEFOLDER:
     {
-      CStdString strLog;
-      strLog.Format("FileManager: delete folder %s\n", strFile.c_str());
-      OutputDebugString(strLog.c_str());
-      CLog::Log(LOGINFO,"%s",strLog.c_str());
+      CLog::Log(LOGDEBUG,"FileManager: delete folder %s\n", strFile.c_str());
 
       CDirectory::Remove(strFile);
       if (m_dlgProgress)
@@ -848,10 +837,7 @@ bool CGUIWindowFileManager::DoProcessFile(int iAction, const CStdString& strFile
 
   case ACTION_CREATEFOLDER:
     {
-      CStdString strLog;
-      strLog.Format("FileManager: create folder %s\n", strFile.c_str());
-      OutputDebugString(strLog.c_str());
-      CLog::Log(LOGINFO,"%s",strFile.c_str());
+      CLog::Log(LOGDEBUG,"FileManager: create folder %s\n", strFile.c_str());
 
       CDirectory::Create(strFile);
 
@@ -862,12 +848,6 @@ bool CGUIWindowFileManager::DoProcessFile(int iAction, const CStdString& strFile
         m_dlgProgress->SetLine(2, L"");
         m_dlgProgress->Progress();
       }
-    }
-    break;
-
-  case ACTION_RENAME:
-    {
-      RenameFile(strFile);
     }
     break;
   }
@@ -1023,7 +1003,7 @@ void CGUIWindowFileManager::OnSelectAll(int iList)
   }
 }
 
-void CGUIWindowFileManager::RenameFile(const CStdString &strFile)
+bool CGUIWindowFileManager::RenameFile(const CStdString &strFile)
 {
   CStdString strFileName = CUtil::GetFileName(strFile);
   CStdString strPath = strFile.Left(strFile.size() - strFileName.size());
@@ -1037,7 +1017,9 @@ void CGUIWindowFileManager::RenameFile(const CStdString &strFile)
     CLog::Log(LOGINFO,"%s",strLog.c_str());
 
     CFile::Rename(strFile.c_str(), strPath.c_str());
+    return true;
   }
+  return false;
 }
 
 void CGUIWindowFileManager::OnNewFolder(int iList)
@@ -1444,27 +1426,43 @@ __int64 CGUIWindowFileManager::CalculateFolderSize(const CStdString &strDirector
   return totalSize;
 }
 
-bool CGUIWindowFileManager::Delete(const CFileItem *pItem)
+bool CGUIWindowFileManager::DeleteItem(const CFileItem *pItem)
 {
-  CFileItem *pItemTemp = new CFileItem;
-  pItemTemp->m_strPath = pItem->m_strPath;
-  pItemTemp->m_bIsFolder = pItem->m_bIsFolder;
-  pItemTemp->Select(true);
+  if (!pItem) return false;
+  CLog::Log(LOGDEBUG,"FileManager::DeleteItem: %s",pItem->GetLabel().c_str());
 
+  // prompt user for confirmation of file/folder deletion
+  CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)m_gWindowManager.GetWindow(WINDOW_DIALOG_YES_NO);
+  if (pDialog)
+  {
+    pDialog->SetHeading(122);
+    pDialog->SetLine(0, 125);
+    pDialog->SetLine(1, CUtil::GetFileName(pItem->m_strPath));
+    pDialog->SetLine(2, L"");
+    pDialog->DoModal(m_gWindowManager.GetActiveWindow());
+    if (!pDialog->IsConfirmed()) return false;
+  }
+
+  // Create a temporary item list containing the file/folder for deletion
+  CFileItem *pItemTemp = new CFileItem(*pItem);
   CFileItemList items;
   items.Add(pItemTemp);
 
-  // initialize the progress dialog
-  m_dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
-  if (m_dlgProgress)
+  // grab the real filemanager window, set up the progress bar,
+  // and process the delete action
+  CGUIWindowFileManager *pFileManager = (CGUIWindowFileManager *)m_gWindowManager.GetWindow(WINDOW_FILES);
+  if (pFileManager)
   {
-    m_dlgProgress->SetHeading(126);
-    m_dlgProgress->StartModal(m_gWindowManager.GetActiveWindow());
+    pFileManager->m_dlgProgress = (CGUIDialogProgress *)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+    if (pFileManager->m_dlgProgress)
+    {
+      pFileManager->m_dlgProgress->SetHeading(126);
+      pFileManager->m_dlgProgress->StartModal(m_gWindowManager.GetActiveWindow());
+    }
+    pFileManager->DoProcess(ACTION_DELETE, items, "");
+    if (pFileManager->m_dlgProgress) pFileManager->m_dlgProgress->Close();
   }
-  bool bResult = DoProcess(ACTION_DELETE, items, "");
-  if (m_dlgProgress) m_dlgProgress->Close();
-
-  return bResult;
+  return true;
 }
 
 void CGUIWindowFileManager::ShowShareErrorMessage(CFileItem* pItem)

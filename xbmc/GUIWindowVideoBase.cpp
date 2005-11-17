@@ -1305,53 +1305,17 @@ void CGUIWindowVideoBase::OnWindowUnload()
 void CGUIWindowVideoBase::OnDeleteItem(int iItem)
 {
   if ( iItem < 0 || iItem >= m_vecItems.Size()) return;
-  const CFileItem* pItem = m_vecItems[iItem];
-  CStdString strPath = pItem->m_strPath;
-  CStdString strFile = CUtil::GetFileName(strPath);
-  if (pItem->m_bIsFolder)
-    CUtil::GetDirectoryName(strPath, strFile);
-
-  CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)m_gWindowManager.GetWindow(WINDOW_DIALOG_YES_NO);
-  if (pDialog)
-  {
-    pDialog->SetHeading(122);
-    pDialog->SetLine(0, 125);
-    pDialog->SetLine(1, strFile.c_str());
-    pDialog->SetLine(2, L"");
-    pDialog->DoModal(GetID());
-    if (!pDialog->IsConfirmed()) return ;
-  }
-
-  CGUIWindowFileManager* pWindow = (CGUIWindowFileManager*)m_gWindowManager.GetWindow(WINDOW_FILES);
-  if (pWindow) pWindow->Delete(pItem);
-
+  if (!CGUIWindowFileManager::DeleteItem(m_vecItems[iItem]))
+    return;
   Update(m_Directory.m_strPath);
   m_viewControl.SetSelectedItem(iItem);
 }
 
 void CGUIWindowVideoBase::OnRenameItem(int iItem)
 {
-  // GeminiServer
   if ( iItem < 0 || iItem >= m_vecItems.Size()) return;
-  const CFileItem* pItem = m_vecItems[iItem];
-
-  int ilocString = 16013; // Is file, set localizestring to File!
-  if (pItem->m_bIsFolder) ilocString = 16014; // Is file, set localizestring to Folder!
-
-  CStdString strFile = pItem->m_strPath;
-  CStdString strFileName = CUtil::GetFileName(strFile);
-  CStdString strPath = strFile.Left(strFile.size() - strFileName.size());
-  if (CGUIDialogKeyboard::ShowAndGetInput(strFileName, (CStdStringW)g_localizeStrings.Get(ilocString), false))
-  {
-    strPath += strFileName;
-    
-    CStdString strLog;
-    strLog.Format("FileManager: rename %s->%s\n", strFile.c_str(), strPath.c_str());
-    OutputDebugString(strLog.c_str());
-    CLog::Log(LOGINFO,"%s",strLog.c_str());
-
-    CFile::Rename(strFile.c_str(), strPath.c_str());
-  }
+  if (!CGUIWindowFileManager::RenameFile(m_vecItems[iItem]->m_strPath))
+    return;
   Update(m_Directory.m_strPath);
   m_viewControl.SetSelectedItem(iItem);
 }

@@ -17,8 +17,11 @@ public:
   virtual bool OnAction(const CAction &action);
   virtual void Render();
   virtual bool OnFileCallback(void* pContext, int ipercent);
-  bool Delete(const CFileItem *pItem);
   CFileItem CurrentDirectory(int indx) const { return m_Directory[indx];};
+
+  // static members for all windows to use
+  static bool DeleteItem(const CFileItem *pItem);
+  static bool RenameFile(const CStdString &strFile);
 
 protected:
   void GoParentFolder(int iList);
@@ -37,7 +40,6 @@ protected:
   void OnDelete(int iList);
   void OnRename(int iList);
   void OnSelectAll(int iList);
-  void RenameFile(const CStdString &strFile);
   void OnNewFolder(int iList);
   bool DoProcess(int iAction, CFileItemList & items, const CStdString& strDestFile);
   bool DoProcessFile(int iAction, const CStdString& strFile, const CStdString& strDestFile);
