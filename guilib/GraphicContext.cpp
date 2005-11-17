@@ -150,10 +150,10 @@ void CGraphicContext::SetViewWindow(const RECT& rc)
     if (m_bShowPreviewWindow && !m_bFullScreenVideo)
     {
       D3DRECT d3dRC;
-      d3dRC.x1 = rc.left;
-      d3dRC.x2 = rc.right;
-      d3dRC.y1 = rc.top;
-      d3dRC.y2 = rc.bottom;
+      d3dRC.x1 = m_videoRect.left;
+      d3dRC.x2 = m_videoRect.right;
+      d3dRC.y1 = m_videoRect.top;
+      d3dRC.y2 = m_videoRect.bottom;
       Get3DDevice()->Clear( 1, &d3dRC, D3DCLEAR_TARGET, 0x00010001, 1.0f, 0L );
     }
   }

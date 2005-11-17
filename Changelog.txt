@@ -5,7 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
-
+ - 17-11-2005 fixed: Location of the video preview window was incorrectly calibrated.
  - 16-11-2005 changed: sf bug #1301380 System info - Wrong HDD Key info! Removed until the detection is rewrote! [GeminiServer]
  - 16-11-2005 fixed: sf bug #1348614: ftp client: opening/copying folders with ."dot" should work again! [GeminiServer]
  - 16-11-2005 added: sf patch #1348694 F and G partition support to FEH [GeminiServer]
