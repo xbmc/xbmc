@@ -1,9 +1,9 @@
 <skin>
   <defaultresolution>pal</defaultresolution>
   <defaultresolutionwide>pal16x9</defaultresolutionwide>
-  <!-- Here you can define the default (Texture)Theme Name! The texture/Theme files must be media folder ! -->
+  <!-- Here you can define the default (Texture)Theme Name! The texture/Theme files must be in media\*.* folder ! -->
   <!-- If no Texture Name is defined: "Textures" (Textures.xpr) will be used! -->
-  <!-- <defaultthemename>MyTextureA.xpr</defaultthemename> -->
+  <!-- <defaultthemename>MyTexture</defaultthemename> -->
   <defaultthemename>textures</defaultthemename>
   <version>1.3</version>
   <credits>
