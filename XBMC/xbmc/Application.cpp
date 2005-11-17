@@ -331,8 +331,10 @@ void CApplication::FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetw
     helper.Remount("D:", "Cdrom0");
     helper.Remap("E:,Harddisk0\\Partition1");
     //Add. also Drive F/G
+    /*
     if ((g_stSettings.m_bAutoDetectFG && helper.IsDrivePresent("F:")) || g_stSettings.m_bUseFDrive) helper.Remap("F:,Harddisk0\\Partition6");
     if ((g_stSettings.m_bAutoDetectFG && helper.IsDrivePresent("G:")) || g_stSettings.m_bUseGDrive) helper.Remap("G:,Harddisk0\\Partition7");
+    */
 
   }
 
@@ -545,6 +547,7 @@ void CApplication::FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetw
       pUser->AddDirectory("E:\\", XBFILE_READ | XBFILE_WRITE | XBFILE_DELETE | XBFILE_APPEND | XBDIR_DELETE | XBDIR_CREATE | XBDIR_LIST | XBDIR_SUBDIRS);
       pUser->AddDirectory("Q:\\", XBFILE_READ | XBFILE_WRITE | XBFILE_DELETE | XBFILE_APPEND | XBDIR_DELETE | XBDIR_CREATE | XBDIR_LIST | XBDIR_SUBDIRS);
       //Add. also Drive F/G
+      /*
       CIoSupport helper;
       if ((g_stSettings.m_bAutoDetectFG && helper.IsDrivePresent("F:")) || g_stSettings.m_bUseFDrive){
         pUser->AddDirectory("F:\\", XBFILE_READ | XBFILE_WRITE | XBFILE_DELETE | XBFILE_APPEND | XBDIR_DELETE | XBDIR_CREATE | XBDIR_LIST | XBDIR_SUBDIRS);
@@ -552,6 +555,7 @@ void CApplication::FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetw
       if ((g_stSettings.m_bAutoDetectFG && helper.IsDrivePresent("G:")) || g_stSettings.m_bUseGDrive){
         pUser->AddDirectory("G:\\", XBFILE_READ | XBFILE_WRITE | XBFILE_DELETE | XBFILE_APPEND | XBDIR_DELETE | XBDIR_CREATE | XBDIR_LIST | XBDIR_SUBDIRS);
       }
+      */
       pUser->CommitChanges();
     }
 
