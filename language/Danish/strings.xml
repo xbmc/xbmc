@@ -27,10 +27,10 @@
   <string><id>30</id><value>Oktober</value></string>
   <string><id>31</id><value>November</value></string>
   <string><id>32</id><value>December</value></string>
-  <string><id>98</id><value>Maske: Automatisk</value></string>
-  <string><id>99</id><value>Maske: Automatisk Stor</value></string>
-  <string><id>100</id><value>Maske: Ikoner</value></string>
-  <string><id>101</id><value>Maske: Liste</value></string>
+  <string><id>98</id><value>Vis: Automatisk</value></string>
+  <string><id>99</id><value>Vis: Automatisk Stor</value></string>
+  <string><id>100</id><value>Vis: Ikoner</value></string>
+  <string><id>101</id><value>Vis: Liste</value></string>
   <string><id>102</id><value>Gennemsøg</value></string>
   <string><id>103</id><value>Sorter på: Navn</value></string>
   <string><id>104</id><value>Sorter på: Dato</value></string>
@@ -65,7 +65,7 @@
   <string><id>133</id><value>Kunstnere</value></string>
   <string><id>134</id><value>Numre</value></string>
   <string><id>135</id><value>Genrer</value></string>
-  <string><id>136</id><value>Hitlister</value></string>
+  <string><id>136</id><value>Afspillingslister</value></string>
   <string><id>137</id><value>Søg</value></string>
   <string><id>138</id><value>SYSTEM OPLYSNINGER</value></string>
   <string><id>139</id><value>Temperaturer:</value></string>
@@ -134,6 +134,7 @@
   <string><id>202</id><value>Undertitel:</value></string>
   <string><id>203</id><value>Handlingen kort:</value></string>
   <string><id>204</id><value>Bedømmelse:</value></string>
+  <string><id>2050</id><value>Runtime:</value></string>
   <string><id>205</id><value>Stemmer:</value></string>
   <string><id>206</id><value>Skuespillere</value></string>
   <string><id>207</id><value>Handling</value></string>
@@ -157,7 +158,7 @@
   <string><id>225</id><value>Overblændingstid</value></string>
   <string><id>226</id><value>Aktiver PAL60</value></string>
   <string><id>227</id><value>Aktiver CDDB</value></string>
-  <string><id>228</id><value>Bland hitlister under indlæsning</value></string>
+  <string><id>228</id><value>Bland afspillingslister under indlæsning</value></string>
   <string><id>229</id><value>Sluk for harddisk efter (min.)</value></string>
   <string><id>230</id><value>Filtre</value></string>
   <string><id>231</id><value>Ingen</value></string>
@@ -168,6 +169,7 @@
   <string><id>236</id><value>Gaussisk kubisk</value></string>
   <string><id>237</id><value>Formindskning:</value></string>
   <string><id>238</id><value>Forstørrelse:</value></string>
+  <string><id>239</id><value>Tøm afspillingslisten ved afslutning</value></string>
   <string><id>240</id><value>Autoafspil DVD-Film</value></string>
   <string><id>241</id><value>Autoafspil VCD/SVCD</value></string>
   <string><id>242</id><value>Autoafspil Lyd-CD</value></string>
@@ -313,6 +315,16 @@
   <string><id>383</id><value>Vind</value></string>
   <string><id>384</id><value>Hård</value></string>
   <string><id>385</id><value>Frisk</value></string>
+  <string><id>386</id><value>Skyfrit</value></string>
+  <string><id>387</id><value>Skyer</value></string>
+  <string><id>388</id><value>Tidligt</value></string>
+  <string><id>389</id><value>Regn</value></string>
+  <string><id>390</id><value>Fnug</value></string>
+  <string><id>391</id><value>Lav</value></string>
+  <string><id>392</id><value>Medium</value></string>
+  <string><id>393</id><value>Høj</value></string>
+  <string><id>394</id><value>Tåge</value></string>
+  <string><id>395</id><value>Hagl</value></string>
   <string><id>396</id><value>Vælg placering</value></string>
   <string><id>397</id><value>Opdaterings interval</value></string>
   <string><id>398</id><value>Temperatur skala</value></string>
@@ -333,7 +345,7 @@
   <string><id>414</id><value>Ingen anmeldelse til dette album</value></string>
   <string><id>415</id><value>Henter ikon...</value></string>
   <string><id>416</id><value>Ikke tilgængelig</value></string>
-  <string><id>417</id><value>Maske: Store ikoner</value></string>
+  <string><id>417</id><value>Vis: Store ikoner</value></string>
   <string><id>418</id><value>Film/Genre</value></string>
   <string><id>419</id><value>Film/Skuespillere</value></string>
   <string><id>420</id><value>Film/Årstal</value></string>
@@ -367,13 +379,14 @@
   <string><id>448</id><value>LCD</value></string>
   <string><id>449</id><value>Aktiveret</value></string>
   <string><id>450</id><value>Kolonner</value></string>
+  <string><id>4501</id><value>LCD Type</value></string>
   <string><id>451</id><value>Række 1 adresse:</value></string>
   <string><id>452</id><value>Række 2 adresse:</value></string>
   <string><id>453</id><value>Række 3 adresse:</value></string>
   <string><id>454</id><value>Række 4 adresse:</value></string>
   <string><id>455</id><value>Rækker:</value></string>
   <string><id>456</id><value>Tilstand:</value></string>
-  <string><id>457</id><value>Skift maske</value></string>
+  <string><id>457</id><value>Skift visning</value></string>
   <string><id>458</id><value>B/Marker</value></string>
   <string><id>459</id><value>Undertekster</value></string>
   <string><id>460</id><value>Lyd kanal</value></string>
@@ -393,7 +406,7 @@
   <string><id>474</id><value>Fra</value></string>
   <string><id>475</id><value>Kun music</value></string>
   <string><id>476</id><value>Musik & Film</value></string>
-  <string><id>477</id><value>Kan ikke indlæse hitliste</value></string>
+  <string><id>477</id><value>Kan ikke indlæse afspillingsliste</value></string>
   <string><id>478</id><value>OSD</value></string>
   <string><id>479</id><value>Overflade og sprog</value></string>
   <string><id>480</id><value>Bruger grænseflade</value></string>
@@ -404,8 +417,8 @@
   <string><id>485</id><value>Slet album</value></string>
   <string><id>486</id><value>Gentag</value></string>
   <string><id>487</id><value>Gentag een</value></string>
-  <string><id>488</id><value>Gentag mappe hitliste</value></string>
-  <string><id>489</id><value>Brug hitliste i numre</value></string>
+  <string><id>488</id><value>Gentag mapper</value></string>
+  <string><id>489</id><value>Brug afspillingsliste i numre</value></string>
   <string><id>490</id><value>Skift automatisk mellem liste og ikoner i numre</value></string>
   <string><id>491</id><value>Brug store ikoner</value></string>
   <string><id>492</id><value>Forstør VobSubs</value></string>
@@ -425,6 +438,18 @@
   <string><id>506</id><value>Brug mappe navne som beskrivelse</value></string>
   <string><id>507</id><value>Sorter på: Forbrug</value></string>
   <string><id>508</id><value>Brug ikke Genveje eller Gennemsøg</value></string>
+  <string><id>509</id><value>Cache Program Miniature billeder</value></string>
+  <string><id>510</id><value>Enable Visualisations</value></string>
+  <string><id>511</id><value>Automatisk ændre video tilstand baseret på spillets region </value></string>
+  <string><id>512</id><value>Start op Vindue</value></string>
+  <string><id>513</id><value>Hjemme Vindue</value></string>
+  <string><id>514</id><value>Manuelle Indstillinger</value></string>
+  <string><id>515</id><value>Genrer</value></string>
+  <string><id>516</id><value>Håndter Arkiver</value></string>
+  <string><id>517</id><value>Fornylig Afspillede Album</value></string>
+  <string><id>518</id><value>Start</value></string>
+  <string><id>519</id><value>Start i..</value></string>
+  <string><id>520</id><value>Rediger XBE titel</value></string>
   <string><id>600</id><value>Rip CD lyd</value></string>
   <string><id>601</id><value>Medium</value></string>
   <string><id>602</id><value>Standard</value></string>
@@ -449,6 +474,18 @@
   <string><id>634</id><value>Stræk 16:9</value></string>
   <string><id>635</id><value>Original Størrelse</value></string>
   <string><id>636</id><value>Brugerdefineret</value></string>
+  
+  <string><id>637</id><value>Replay Gain</value></string>
+  <string><id>638</id><value>Replay Gain Mode</value></string>
+  <string><id>639</id><value>Brug Spor Styrke</value></string>
+  <string><id>640</id><value>Brug Album Styrke</value></string>
+  <string><id>641</id><value>PreAmp Styrke - Replay Gained Filer</value></string>
+  <string><id>642</id><value>PreAmp Styrke - Non Replay Gained Filer</value></string>
+  <string><id>643</id><value>Undgå Klipning ved Replay Gained Files</value></string>
+  <string><id>644</id><value>Fjern Sorte Rammer</value></string>
+
+  <string><id>645</id><value>Behov for at cache en stor fil. Fortsæt?</value></string>
+  
   <string><id>700</id><value>Rydder op i databasen</value></string>
   <string><id>701</id><value>Fjerner gamle sange fra databasen</value></string>
   <string><id>702</id><value>Denne sti er tidligere blevet skannet.</value></string>
@@ -503,8 +540,97 @@
   <string><id>751</id><value>Fjerner netværksmappe</value></string>
   <string><id>752</id><value>Rediger netværksmappe sti</value></string>
   <string><id>753</id><value>Rediger netværksmappe navn</value></string>
+  <string><id>754</id><value>Tilføj Program Link</value></string>
+  <string><id>755</id><value>Rediger Programets Sti</value></string>
+  <string><id>756</id><value>Rediger Programets Navn</value></string>
+  <string><id>757</id><value>Rediger Sti Dybde</value></string>
+  <string><id>758</id><value>Fjerner Program Link</value></string>  
+  <string><id>759</id><value>Vis: Stor Liste</value></string>
+  <string><id>760</id><value>Gul</value></string>
+  <string><id>761</id><value>Hvid</value></string>
+  <string><id>762</id><value>Blå</value></string>
+  <string><id>763</id><value>Lyse grøn</value></string>
+  <string><id>764</id><value>Gul grøn</value></string>
+  <string><id>765</id><value>Cyan</value></string>
+  <string><id>766</id><value>Reserveret</value></string>
+  <string><id>767</id><value>Reserveret</value></string>
+  <string><id>768</id><value>Reserveret</value></string>
+  <string><id>769</id><value>Reserveret</value></string>
+  <string><id>770</id><value>Fejl %i: delt mappe ikke tilgængelig</value></string>
+  <string><id>771</id><value>- Auto Fatx Begrænser</value></string>
+  <string><id>772</id><value>Lyd Hardware</value></string>
+  <string><id>773</id><value>Søger</value></string>
+  <string><id>774</id><value>Slideshow Pauseskærm Mappe</value></string>
   <string><id>998</id><value>XLink KAI</value></string>
   <string><id>999</id><value>Online spil</value></string>
+  
+  <string><id>1000</id><value>Pauseskærm Preview</value></string>
+  <string><id>1200</id><value>SMB Share</value></string>
+  <string><id>1201</id><value>SMB IP</value></string>
+  <string><id>1202</id><value>SMB Workgroup</value></string>
+  <string><id>1203</id><value>SMB Bruagernavn</value></string>
+  <string><id>1204</id><value>SMB Adgangskode</value></string>
+  <string><id>1205</id><value>SMB Share Navn</value></string>
+  <string><id>1206</id><value>SMB Share Gruppe</value></string>
+  <string><id>1207</id><value>SMB WINS-Server</value></string>
+  <string><id>1208</id><value>Indstillingstilstand</value></string>
+  <string><id>1209</id><value>SMB Delingsindstillingerne blev gemt!</value></string>
+  <string><id>1210</id><value>Fjern</value></string>
+  <string><id>1211</id><value>Musik</value></string>
+  <string><id>1212</id><value>Video</value></string>
+  <string><id>1213</id><value>Billeder</value></string>
+  <string><id>1214</id><value>Filer</value></string>
+  <string><id>1215</id><value>Musik &amp; Video </value></string>
+  <string><id>1216</id><value>Musik &amp; Billeder</value></string>
+  <string><id>1217</id><value>Musik &amp; Filer</value></string>
+  <string><id>1218</id><value>Video &amp; Billeder</value></string>
+  <string><id>1219</id><value>Video &amp; Filer</value></string>
+  <string><id>1220</id><value>Billeder &amp; Filer</value></string>
+  <string><id>1221</id><value>Musik &amp; Video &amp; Billeder</value></string>
+  <string><id>1222</id><value>Musik &amp; Video &amp; Billeder &amp; Filer</value></string>
+  <string><id>1223</id><value>Slået fra</value></string>
+  <string><id>1224</id><value>Normal Bruger</value></string>
+  <string><id>1225</id><value>Advanced Bruger</value></string>
+  <string><id>1226</id><value>Filer &amp; Music &amp; Video</value></string>
+  <string><id>1227</id><value>Filer &amp; Billeder &amp; Musik</value></string>
+  <string><id>1228</id><value>Filer &amp; Billeder &amp; Video</value></string>
+  
+  <string><id>1229</id><value>Musik &amp; Programmer</value></string>
+  <string><id>1230</id><value>Video &amp; Programmer</value></string>
+  <string><id>1231</id><value>Pictures &amp; Programmer</value></string>
+  <string><id>1232</id><value>Musik &amp; Video &amp; Billeder &amp; Programmer</value></string>
+  <string><id>1233</id><value>Programmer &amp; Video &amp; Music</value></string>
+  <string><id>1234</id><value>Programmer &amp; Billeder &amp; Musik</value></string>
+  <string><id>1235</id><value>Programmer &amp; Billeder &amp; Video</value></string>
+
+  <string><id>1245</id><value>FTP Brugernavn</value></string>
+  <string><id>1246</id><value>FTP Adgangskode</value></string>
+  <string><id>1247</id><value>FTP Server bruger adgangskode blev gemt</value></string>
+
+  <string><id>1250</id><value>Autodetektering</value></string>
+  <string><id>1251</id><value>XBOX Autodetektering</value></string>
+  <string><id>1252</id><value>Kalde Navn</value></string>
+  <string><id>1253</id><value>Opret FTP Link i Dokumenter</value></string>
+  <string><id>1254</id><value>Popup Notifikation</value></string>
+  <string><id>1255</id><value>Send FTP Brugernavn og Adgangskode</value></string>
+  <string><id>1256</id><value>Ping Interval</value></string>
+  
+  <string><id>1396</id><value>Glat</value></string>
+  <string><id>1397</id><value>og</value></string>
+  <string><id>1398</id><value>Fryser</value></string>
+  <string><id>1399</id><value>Sent</value></string>
+  <string><id>1400</id><value>Isoleret</value></string>
+  <string><id>1401</id><value>T-Regn</value></string>
+  <string><id>1402</id><value>Torden</value></string>
+  <string><id>1403</id><value>Sol</value></string>
+  <string><id>1404</id><value>Hårdt</value></string>
+  <string><id>1405</id><value>i</value></string>
+  <string><id>1406</id><value></value></string>
+  <string><id>1407</id><value>Tæt</value></string>
+  <string><id>1408</id><value>Is</value></string>
+  <string><id>1409</id><value>Krystaller</value></string>
+  <string><id>1410</id><value>Roligt</value></string>
+
   <string><id>10000</id><value>Forside</value></string>
   <string><id>10001</id><value>Programmer</value></string>
   <string><id>10002</id><value>Billeder</value></string>
@@ -523,25 +649,44 @@
   <string><id>10015</id><value>Indstillinger->Skærm->Undertekster</value></string>
   <string><id>10016</id><value>Indstillinger->Skærm->Pauseskærm</value></string>
   <string><id>10017</id><value>Indstillinger->Vejret</value></string>
-  <string><id>10020</id><value>Indstillinger->Makroer</value></string>
+  <string><id>10018</id><value>Indstillinger-&gt;Netværk</value></string>
+  <string><id>10019</id><value>Indstillinger-&gt;Visning</value></string>
+  <string><id>10020</id><value>Makroer</value></string>
   <string><id>10021</id><value>Film/genre</value></string>
   <string><id>10022</id><value>Film/skuespiller</value></string>
   <string><id>10023</id><value>Film/årstal</value></string>
-  <string><id>10024</id><value>Indstillinger->Programmer</value></string>
   <string><id>10025</id><value>Film/titel</value></string>
-  <string><id>10026</id><value>Indstillinger->Generelt->Cache</value></string>
-  <string><id>10027</id><value>Indstillinger->Generelt->Afspil automatisk</value></string>
-  <string><id>10028</id><value>Film/hitliste</value></string>
-  <string><id>10029</id><value>Indstillinger->Generelt->LCD</value></string>
+  <string><id>10028</id><value>Film/afspillingsliste</value></string>
+  <string><id>10034</id><value>Indstillinger-&gt;Profiler</value></string>
   <string><id>10100</id><value>Ja/nej dialog</value></string>
   <string><id>10101</id><value>Progress dialog</value></string>
-  <string><id>10500</id><value>Musik/hitliste</value></string>
+  <string><id>10500</id><value>Musik/afspillingsliste</value></string>
   <string><id>10501</id><value>Musik/filer</value></string>
   <string><id>10502</id><value>Musik/album</value></string>
   <string><id>10503</id><value>Musik/kunstnere</value></string>
   <string><id>10504</id><value>Musik/genrer</value></string>
   <string><id>10505</id><value>Musik/top100</value></string>
-  <string><id>11000</id><value>tastatur</value></string>
+  
+  
+  <string><id>10506</id><value>Applikationer</value></string>
+  <string><id>10507</id><value>Konfiguration</value></string>
+  <string><id>10508</id><value>Vejrudsigt</value></string>
+  <string><id>10509</id><value>Netværksspil</value></string>
+  <string><id>10510</id><value>Udviddelser</value></string>
+  <string><id>10511</id><value>System Info</value></string>
+  <string><id>10512</id><value>Musik - Album</value></string>
+  <string><id>10513</id><value>Musik - Kunstnere</value></string>
+  <string><id>10514</id><value>Musik - Genrer</value></string>
+  <string><id>10515</id><value>Musik - Top 100</value></string>
+  <string><id>10516</id><value>Musik - Bibliotek</value></string>
+  <string><id>10517</id><value>Musik - Afspiller nu</value></string>
+  <string><id>10518</id><value>Film - Skuespillere</value></string>
+  <string><id>10519</id><value>Film - Genrer</value></string>
+  <string><id>10520</id><value>Film - Titel</value></string>
+  <string><id>10521</id><value>Film - År</value></string>
+  <string><id>10522</id><value>Film - Afspiller nu</value></string>
+  <string><id>10523</id><value>Album Info</value></string>
+  <string><id>10524</id><value>Film Info</value></string>
   <string><id>12000</id><value>Vælg dialog</value></string>
   <string><id>12001</id><value>Musik/info</value></string>
   <string><id>12002</id><value>Dialog OK</value></string>
@@ -551,6 +696,21 @@
   <string><id>12006</id><value>Lyd fremviser</value></string>
   <string><id>12007</id><value>Billeder/billedserie</value></string>
   <string><id>12008</id><value>Staknings dialog</value></string>
+  
+  
+  <string><id>12310</id><value>0</value></string>
+  <string><id>12311</id><value>1</value></string>
+  <string><id>12312</id><value>2</value></string>
+  <string><id>12313</id><value>3</value></string>
+  <string><id>12314</id><value>4</value></string>
+  <string><id>12315</id><value>5</value></string>
+  <string><id>12316</id><value>6</value></string>
+  <string><id>12317</id><value>7</value></string>
+  <string><id>12318</id><value>8</value></string>
+  <string><id>12319</id><value>9</value></string>
+  <string><id>12320</id><value>c</value></string>
+  <string><id>12321</id><value>ok</value></string>
+  <string><id>12322</id><value>*</value></string>
   <string><id>12324</id><value>XBMC Hoved Lås</value></string>
   <string><id>12325</id><value>Mappe låst</value></string>
   <string><id>12326</id><value>Indtast adgangskode</value></string>
@@ -575,6 +735,40 @@
   <string><id>12345</id><value>Adgang Nægtet</value></string>
   <string><id>12346</id><value>Du har ikke flere forsøg tilbage.</value></string>
   <string><id>12347</id><value>XBOX'en slukkes nu.</value></string>
+  <string><id>12348</id><value>Låst</value></string>
+  <string><id>12349</id><value>Husk Hoved Kode indtil næste opstart?</value></string>
+  <string><id>12350</id><value>(Oplåsning af enhver ting i indstillinger vil</value></string>
+  <string><id>12351</id><value>automatisk genanvende Hoved Lås.)</value></string>
+  <string><id>12352</id><value>Indtast Hoved Kode knap kombination og tryk Start</value></string>
+  <string><id>12353</id><value>Genaktiver Lås</value></string>
+  <string><id>12354</id><value>Overskriv mappe lås indtil næste opstart?</value></string>
+  <string><id>12355</id><value>Automatisk genanvend mappe låse.)</value></string>
+  <string><id>12356</id><value>Ændre Lås</value></string>
+  <string><id>12357</id><value>Del Lås</value></string>
+  <string><id>12358</id><value>Adgangskode var blank. Prøv igen.</value></string>
+  <string><id>12360</id><value>Hoved Lås</value></string>
+  <string><id>12361</id><value>Maks. forsøg</value></string>
+  <string><id>12362</id><value>Aktiver nedlukning</value></string>
+  <string><id>12363</id><value>Beskyt delinger</value></string>
+  <string><id>12364</id><value>Hoved Tilstand</value></string>
+  <string><id>12365</id><value>Hoved Kode</value></string>
+  <string><id>12366</id><value>Hoved Lås er ændret. Hoved Kode er nu sat til:</value></string>
+  <string><id>12367</id><value>Hoved Kode er ugyldig!</value></string>
+  <string><id>12368</id><value>Venligst indtast en gyldig Hoved Kode!</value></string>
+  <string><id>12369</id><value>XBMC Opstarts Lås</value></string>
+  <string><id>12370</id><value>Hoved Lås Tildstand ændret, Hoved Koden blev ikke indstillet!</value></string>
+  <string><id>12371</id><value>Venligst angiv en ny Hoved Kode!</value></string>
+  <string><id>12372</id><value>Lås Indstillinger &amp; Dokumenter</value></string>
+  <string><id>12373</id><value>Indstillinger &amp;  Dokumenter</value></string>
+  <string><id>12374</id><value>Lås Medie</value></string>
+  <string><id>12375</id><value>Hoved Bruger Tilstand</value></string>
+
+  <string><id>12390</id><value>Systemets Oppetid</value></string>
+  <string><id>12391</id><value>Minuter</value></string>
+  <string><id>12392</id><value>Timer</value></string>
+  <string><id>12393</id><value>Dage</value></string>
+  
+  
   <string><id>12600</id><value>Vejret</value></string>
   <string><id>12900</id><value>Pauseskærm</value></string>
   <string><id>12901</id><value>Fuldskærms OSD</value></string>
@@ -592,6 +786,15 @@
   <string><id>13203</id><value>Profil '%s' blev indlæst</value></string>
   <string><id>13204</id><value>Senest indlæste profil:</value></string>
   <string><id>13205</id><value>Ukendt</value></string>
+  <string><id>13206</id><value>Overskriv</value></string>
+  <string><id>13207</id><value>Overskriv profil '%s'?</value></string>
+  
+  <string><id>13208</id><value>Alarm ur</value></string>
+  <string><id>13209</id><value>Alarm ur interval (i minuter)</value></string>
+  <string><id>13210</id><value>Startede, alarm i %im</value></string>
+  <string><id>13211</id><value>Alarm!</value></string>
+  <string><id>13212</id><value>Annulleret med %im%is tilbage</value></string>
+  
   <string><id>13299</id><value>Mål Temperatur</value></string>
   <string><id>13300</id><value>Blæserhastighed</value></string>
   <string><id>13301</id><value>Automatisk Temperatur Kontrol</value></string>
@@ -606,7 +809,7 @@
   <string><id>13310</id><value>Zoom Effekt</value></string>
   <string><id>13311</id><value>Flyde Effekt</value></string>
   <string><id>13312</id><value>Sort Bar Reduktion</value></string>
-  <string><id>13313</id><value>Reset/Genstart</value></string>
+  <string><id>13313</id><value>Genstart</value></string>
   <string><id>13314</id><value>Musik OSD Timeout</value></string>
   <string><id>13315</id><value>Lav Ikoner</value></string>
   <string><id>13316</id><value>Rekursive Ikoner</value></string>
@@ -621,88 +824,3 @@
   <string><id>13325</id><value>Forgrund gennemsigtighed</value></string>
   <string><id>13326</id><value>A/V forsinkelse</value></string>
   <string><id>13327</id><value>Karaoke</value></string>
-  <string><id>13328</id><value>%s blev ikke fundet.</value></string>
-  <string><id>13329</id><value>Kunne ikke åbne %s</value></string>
-  <string><id>13330</id><value>Kunne ikke hente %s</value></string>
-  <string><id>13331</id><value>Fejl: ikke nok hukommelse.</value></string>
-  <string><id>13332</id><value>Flyt Op</value></string>
-  <string><id>13333</id><value>Flyt Ned</value></string>
-  <string><id>13334</id><value>Rediger Tekst</value></string>
-  <string><id>13335</id><value>Vælg som Standard</value></string>
-  <string><id>13336</id><value>Fjern Knap</value></string>
-  <string><id>13337</id><value>- 2 kanals PCM gennemgang</value></string>
-  <string><id>13338</id><value>Front LED</value></string>
-  <string><id>13339</id><value>Front LED Farve</value></string>
-  <string><id>13340</id><value>Uændret</value></string>
-  <string><id>13341</id><value>Grøn</value></string>
-  <string><id>13342</id><value>Orange</value></string>
-  <string><id>13343</id><value>Rød</value></string>
-  <string><id>13344</id><value>Skiftende</value></string>
-  <string><id>13345</id><value>Sluk LED under Afspilning</value></string>
-  <string><id>13346</id><value>Film Information</value></string>
-  <string><id>13347</id><value>Tilføj til kø</value></string>
-  <string><id>13348</id><value>Søg IMDb...</value></string>
-  <string><id>13349</id><value>Søg Information for alle filer</value></string>
-  <string><id>13350</id><value>Spiller Nu...</value></string>
-  <string><id>13351</id><value>Album Information</value></string>
-  <string><id>13352</id><value>Gennemsøg Mappe til Database</value></string>
-  <string><id>13353</id><value>Stop Gennemsøgning</value></string>
-  <string><id>14000</id><value>Stacking: Deaktiveret</value></string>
-  <string><id>14001</id><value>Stacking: Simpel</value></string>
-  <string><id>14002</id><value>Stacking: Fuzzy</value></string>
-  <string><id>14003</id><value>Henter hitliste fil...</value></string>
-  <string><id>14004</id><value>Henter stream fil...</value></string>
-  <string><id>14005</id><value>Parser stream liste...</value></string>
-  <string><id>14006</id><value>Kunne ikke hente stream listen</value></string>
-  <string><id>14007</id><value>Kunne ikke hente hitlisten</value></string>
-  <string><id>14008</id><value>Aktiver Kai Notifikationer</value></string>
-  <string><id>14009</id><value>Spil Mappe</value></string>
-  <string><id>14010</id><value>Skift automatisk til Ikoner baseret på</value></string>
-  <string><id>14011</id><value>Skift automatisk til Ikon Visning</value></string>
-  <string><id>14012</id><value>- Brug store Ikoner</value></string>
-  <string><id>14013</id><value>- Skift baseret på</value></string>
-  <string><id>14014</id><value>- Procentvis</value></string>
-  <string><id>14015</id><value>Ingen Filer og mindst et Ikon</value></string>
-  <string><id>14016</id><value>Mindst en Fil og et Ikon</value></string>
-  <string><id>14017</id><value>Procent af Ikoner</value></string>
-  <string><id>14018</id><value>Visnings Indstillinger</value></string>
-  <string><id>14019</id><value>Skift Landekode 1</value></string>
-  <string><id>14020</id><value>Skift Landekode 2</value></string>
-  <string><id>14021</id><value>Skift Landekode 3</value></string>
-  <string><id>14022</id><value>Database</value></string>
-  <string><id>14023</id><value>Intet TV</value></string>
-  <string><id>14024</id><value>Indtast den nærmeste storre by eller US postnummer</value></string>
-  <string><id>14025</id><value>Video Cache   - Harddisk</value></string>
-  <string><id>14026</id><value>              - DVDRom</value></string>
-  <string><id>14027</id><value>              - Lokalt Netwærk</value></string>
-  <string><id>14028</id><value>              - Internet</value></string>
-  <string><id>14029</id><value>Lyd Cache     - Harddisk</value></string>
-  <string><id>14030</id><value>              - DVDRom</value></string>
-  <string><id>14031</id><value>              - Lokalt Netwærk</value></string>
-  <string><id>14032</id><value>              - Internet</value></string>
-  <string><id>14033</id><value>DVD Cache     - Harddisk</value></string>
-  <string><id>14034</id><value>              - DVDRom</value></string>
-  <string><id>14035</id><value>              - Lokalt Netwærk</value></string>
-  <string><id>14036</id><value>Servere</value></string>
-  <string><id>14037</id><value>Udseende</value></string>
-  <string><id>14038</id><value>Netwærksindstillinger er ændret</value></string>
-  <string><id>14039</id><value>XBMC kræver en genstart for at ændre</value></string>
-  <string><id>14040</id><value>netværkssetup'et.  Vil du genstarte nu?</value></string>
-  <string><id>14041</id><value>Efter Processering</value></string>
-  <string><id>14042</id><value>Engine IP Adresse</value></string>
-  <string><id>14043</id><value>- Luk ned mens der afspiller</value></string>
-  <string><id>14044</id><value>%i min.</value></string>
-  <string><id>14045</id><value>%i sec.</value></string>
-  <string><id>14046</id><value>%i ms</value></string>
-  <string><id>14047</id><value>%i %%</value></string>
-  <string><id>14048</id><value>%i kbps</value></string>
-  <string><id>14049</id><value>%i kb</value></string>
-  <string><id>14050</id><value>%i.0 dB</value></string>
-  <string><id>14051</id><value>Vis 12-timers ur</value></string>
-  <string><id>14052</id><value>Skift måned og dag på start skærmen</value></string>
-  <string><id>14053</id><value>GUI Filtere</value></string>
-  <string><id>14054</id><value>Aktiver Internet Opslag</value></string>
-  <string><id>14055</id><value>Gennemsøg i baggrunden</value></string>
-  <string><id>14056</id><value>Stop Gennemsøgning</value></string>
-  <string><id>14057</id><value>Ikke muligt mens der gennemsøges for medie info</value></string>
-</strings>
