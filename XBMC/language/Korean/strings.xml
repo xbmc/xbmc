@@ -288,7 +288,7 @@
   <string><id>356</id><value>화면보호기 모드</value></string>
   <string><id>357</id><value>시간경과시 안전하게 끄기</value></string>
   <string><id>358</id><value>모든 앨범</value></string>
-  <string><id>359</id><value>최근 앨범</value></string>
+  <string><id>359</id><value>최근 추가 앨범</value></string>
   <string><id>360</id><value>스크린 세이버</value></string>
   <string><id>361</id><value>R. 슬라이드쇼</value></string>
   <string><id>362</id><value>스크린세이버 흐림정도 (%)</value></string>
@@ -446,7 +446,10 @@
   <string><id>514</id><value>사용자 설정</value></string>
   <string><id>515</id><value>장르</value></string>
   <string><id>516</id><value>압축파일 사용</value></string>
-  
+  <string><id>517</id><value>최근 재생 앨범</value></string>
+  <string><id>518</id><value>실행</value></string> 
+  <string><id>519</id><value>실행..</value></string> 
+  <string><id>520</id><value>XBE 이름 수정</value></string>
   <string><id>600</id><value>시디 추출</value></string>
   <string><id>601</id><value>중간</value></string>
   <string><id>602</id><value>표준</value></string>
@@ -647,7 +650,7 @@
   <string><id>10016</id><value>설정-&gt;시스템</value></string>
   <string><id>10017</id><value>설정-&gt;비디오</value></string>
   <string><id>10018</id><value>설정-&gt;네트워크</value></string>
-  <string><id>10019</id><value>설정-&gt;화면</value></string>형
+  <string><id>10019</id><value>설정-&gt;화면</value></string>
   <string><id>10020</id><value>스크립트</value></string>
   <string><id>10021</id><value>비디오/장르</value></string>
   <string><id>10022</id><value>비디오/배우</value></string>
@@ -676,12 +679,12 @@
   <string><id>10514</id><value>음악 - 장르</value></string>
   <string><id>10515</id><value>음악 - Top 100</value></string>
   <string><id>10516</id><value>음악 - 라이브러리</value></string>
-  <string><id>10517</id><value>음악 - 재생목록</value></string>
+  <string><id>10517</id><value>음악 - 재생중</value></string>
   <string><id>10518</id><value>비디오 - 배우</value></string>
   <string><id>10519</id><value>비디오 - 장르</value></string>
   <string><id>10520</id><value>비디오 - 제목</value></string>
   <string><id>10521</id><value>비디오 - 연도</value></string>
-  <string><id>10522</id><value>비디오 - 재생목록</value></string>
+  <string><id>10522</id><value>비디오 - 재생중</value></string>
   <string><id>10523</id><value>앨범 정보</value></string>
   <string><id>10524</id><value>영화 정보</value></string>
   <string><id>12000</id><value>대화창 선택</value></string>
@@ -967,6 +970,9 @@
   <string><id>14070</id><value>변경 사항 적용</value></string> 	 
   <string><id>14071</id><value>파일 삭제 허용</value></string>
   
+  <string><id>14072</id><value>XLink Kai 사용</value></string> 
+  <string><id>14073</id><value>XLink Kai가 사용중이지 않습니다.</value></string> 
+  
   <string><id>15000</id><value>XLink Kai</value></string>
   <string><id>15001</id><value>서비스가 연결되지 않았습니다</value></string>
   <string><id>15002</id><value>다시 시도해 보시겠습니까?</value></string>
@@ -1054,6 +1060,46 @@
   <string><id>15211</id><value>전송중...</value></string>
   <string><id>15212</id><value>%i초 후 전송</value></string>
 
+  <string><id>15250</id><value>Last.fm 라디오를 AudioScrobbler에 전송</value></string> 
+  <string><id>15251</id><value>Last.fm 연결중...</value></string> 
+  <string><id>15252</id><value>방송국 선택중...</value></string> 
+
+  <string><id>15253</id><value>비슷한 음악가 찾기...</value></string>
+  <string><id>15254</id><value>비슷한 테그 찾기</value></string> 
+  <string><id>15255</id><value>프로필 (%name%)</value></string>
+  <string><id>15256</id><value>상위권 테그</value></string> 
+      
+  <string><id>15257</id><value>테그 %name%에 대한 인기 음악가</value></string>
+  <string><id>15258</id><value>테그 %name%에 대한 인기 앨범</value></string> 
+  <string><id>15259</id><value>테그 %name%에 대한 인기 트랙</value></string>
+  <string><id>15260</id><value>테그 %name%에 대한 last.fm 라디오 청취</value></string>
+     
+  <string><id>15261</id><value>%name%와 비슷한 음악가</value></string>
+  <string><id>15262</id><value>인기 %name% 앨범</value></string> 
+  <string><id>15263</id><value>인기 %name% 트랙</value></string> 
+  <string><id>15264</id><value>인기 %name% 테그</value></string> 
+  <string><id>15265</id><value>%name%의 골수팬</value></string> 
+  <string><id>15266</id><value>%name% 팬의 last.fm 라디오 청취</value></string> 
+  <string><id>15267</id><value>%name%와 비슷한 음악가의 last.fm 라디오 청취</value></string> 
+  
+  <string><id>15268</id><value>사용자 %name%의 인기 음악가</value></string> 
+  <string><id>15269</id><value>사용자 %name%의 인기 앨범</value></string> 
+  <string><id>15270</id><value>사용자 %name%의 인기 트랙</value></string> 
+  <string><id>15271</id><value>사용자 %name%의 친구들</value></string> 
+  <string><id>15272</id><value>사용자 %name%의 이웃</value></string> 
+  <string><id>15273</id><value>%name%의 주간 음악가 차트</value></string> 
+  <string><id>15274</id><value>%name%의 주간 앨범 차트</value></string> 
+  <string><id>15275</id><value>%name%의 주간 트랙 차트</value></string> 
+  <string><id>15283</id><value>%name%의 최근 청취 트랙</value></string>
+  <string><id>15276</id><value>%name% 이웃의 last.fm 라디오 청취</value></string> 
+  <string><id>15277</id><value>%name%의 개인 last.fm 라디오 청취</value></string> 
+  <string><id>15278</id><value>%name%의 선호 트랙 last.fm 라디오 청취</value></string> 
+  
+  <string><id>15279</id><value>last.fm에서 목록을 가져오는중...</value></string> 
+  <string><id>15280</id><value>last.fm에서 목록을 가져올 수 없습니다...</value></string> 
+  <string><id>15281</id><value>관련된 음악가 이름을 입력하십시오</value></string> 
+  <string><id>15282</id><value>검색할 테그 이름을 입력하십시오</value></string> 
+
   <string><id>13150</id><value>HDD 키:</value></string>
   <string><id>13151</id><value>HDD 온도:</value></string>
   <string><id>13152</id><value>DVD 모델:</value></string>
@@ -1110,6 +1156,10 @@
   <string><id>15302</id><value>서버를 찾을 수 없습니다</value></string> 
   <string><id>15303</id><value>작업그룹을 찾을 수 없습니다</value></string> 
 
+
+  <string><id>15310</id><value>다중 경로 즐겨찾기 여는중</value></string>
+  <string><id>15311</id><value>경로:</value></string>
+
   <string><id>16000</id><value>일반</value></string>
   <string><id>16001</id><value>오디오 하드웨어 설정...</value></string>
   <string><id>16002</id><value>CDDB 검색</value></string>
@@ -1134,5 +1184,21 @@
   <string><id>16023</id><value>인터레이스 처리</value></string> 
 
   <string><id>16024</id><value>취소중...</value></string>
-  
-</strings>
+ 
+  <string><id>16025</id><value>음악가 이름 입력</value></string>
+ 
+  <string><id>16100</id><value>모든 비디오</value></string>
+  <string><id>16101</id><value>미확인</value></string>
+  <string><id>16102</id><value>확인함</value></string>
+  <string><id>16103</id><value>확인한 것으로 표시</value></string>
+  <string><id>16104</id><value>확인안한 것으로 표시</value></string>
+  <string><id>16105</id><value>이름 수정</value></string>
+
+  <string><id>16106</id><value>NTSC-M &amp; NTSC-J 사용</value></string> 
+  <string><id>16107</id><value>NTSC-M 사용</value></string> 
+  <string><id>16108</id><value>NTSC-J 사용</value></string> 
+  <string><id>16109</id><value>PAL-60 사용</value></string> 
+  <string><id>16110</id><value>60hz 게임</value></string> 
+    
+
+ </strings>

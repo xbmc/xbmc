@@ -5,7 +5,7 @@
   <string><id>3</id><value>Videot</value></string>
   <string><id>4</id><value>TV-opas</value></string>
   <string><id>5</id><value>Asetukset</value></string>
-  <!-- String with id 6 should not be set here, only in the english language file !-->
+  <!-- Merkkijonoa tunnisteella 6 ei aseteta täällä, vaan ainoastaan english.xml-tiedostosssa !-->
   <string><id>7</id><value>Tiedostonhallinta</value></string>
   <string><id>8</id><value>Säätila</value></string>
   <string><id>11</id><value>maanantai</value></string>
@@ -446,6 +446,10 @@
   <string><id>514</id><value>Manuaaliset asetukset</value></string>
   <string><id>515</id><value>Tyylilaji</value></string>
   <string><id>516</id><value>Avaa pakatut</value></string>
+  <string><id>517</id><value>Viimeksi toistetut albumit</value></string>
+  <string><id>518</id><value>Käynnistä</value></string>
+  <string><id>519</id><value>Käynnistä ohjelmalla...</value></string>
+  <string><id>520</id><value>Muuta XBE:n otsikkoa</value></string>
 
   <string><id>600</id><value>Rippaa CD</value></string>
   <string><id>601</id><value>Medium</value></string>
@@ -480,6 +484,7 @@
   <string><id>642</id><value>Esivahvistustaso - tasaamattomat tiedostot</value></string>
   <string><id>643</id><value>Vältä äänen leikkautumista tasatuissa tiedostoissa</value></string>
   <string><id>644</id><value>Rajaa mustat palkit pois</value></string>
+  <string><id>645</id><value>Tiedosto on ladattava välimuistiin. Jatketaanko?</value></string>
 
   <string><id>700</id><value>Päivitetään tietokantaa</value></string>
   <string><id>701</id><value>Poistetaan vanhat kappaleet tietokannasta</value></string>
@@ -962,6 +967,8 @@
   <string><id>14069</id><value>Otetaanko asetukset käyttöön heti?</value></string>
   <string><id>14070</id><value>Ota asetukset heti käyttöön</value></string>
   <string><id>14071</id><value>Salli tiedostojen poistaminen</value></string>
+  <string><id>14072</id><value>Ota Xlink Kai käyttöön</value></string>
+  <string><id>14073</id><value>Xlink Kai ei ole käytössä.</value></string>
 
   <string><id>15000</id><value>XLink Kai</value></string>
   <string><id>15001</id><value>Ei yhteyttä palveluun, haluaisitko</value></string>
@@ -1101,10 +1108,48 @@
   <string><id>15214</id><value>Käytä tasoitettua A/V-synkronointia</value></string>
   <string><id>15215</id><value>Piilota tiedostonimet pikkukuvissa</value></string>
 
+  <string><id>15250</id><value>Lähetä Last.fm radio AudioScrobbleriin</value></string>
+  <string><id>15251</id><value>Yhdistetään Last.fm...</value></string>
+  <string><id>15252</id><value>Valitaan asema...</value></string>
+  <string><id>15253</id><value>Etsi samankaltaisia artisteja...</value></string>
+  <string><id>15254</id><value>Etsi samankaltaisia tuntomerkkejä...</value></string>
+  <string><id>15255</id><value>Sinun profiilisi (%name%)</value></string>
+  <string><id>15256</id><value>Kaikkein parhaat tuntomerkit</value></string>
+  <string><id>15257</id><value>Parhaat artistit tuntomerkille %name%</value></string>
+  <string><id>15258</id><value>Parhaat albumit tuntomerkille %name%</value></string>
+  <string><id>15259</id><value>Parhaat raidat tuntomerkille %name%</value></string>
+  <string><id>15260</id><value>Kuuntele tuntomerkin %name% last.fm radiota</value></string>
+  <string><id>15261</id><value>Samankaltaiset artistit tuntomerkillä %name%</value></string>
+  <string><id>15262</id><value>Parhaat %name% albumit</value></string>
+  <string><id>15263</id><value>Parhaat %name% raidat</value></string>
+  <string><id>15264</id><value>Parhaat %name% tuntomerkit</value></string>
+  <string><id>15265</id><value>Suurimmat %name%:n fanit</value></string>
+  <string><id>15266</id><value>Kuuntele %name%:n fanien last.fm radiota</value></string>
+  <string><id>15267</id><value>Kuuntele %name%:n samankaltaisten artistien last.fm radiota</value></string>
+  <string><id>15268</id><value>Käyttäjän %name% parhaat artistit</value></string>
+  <string><id>15269</id><value>Käyttäjän %name% parhaat albumit</value></string>
+  <string><id>15270</id><value>Käyttäjän %name% parhaat raidat</value></string>
+  <string><id>15271</id><value>Käyttäjän %name% kaverit</value></string>
+  <string><id>15272</id><value>Käyttäjän %name% naapurit</value></string>
+  <string><id>15273</id><value>%name%:n viikottaiset artistit kaavio</value></string>
+  <string><id>15274</id><value>%name%:n viikottaiset albumit kaavio</value></string>
+  <string><id>15275</id><value>%name%:n viikottaiset raidat kaavio</value></string>
+  <string><id>15276</id><value>Kuuntele %name%:n naapurien last.fm radiota</value></string>
+  <string><id>15277</id><value>Kuuntele %name%:n henkilökohtaista last.fm radiota</value></string>
+  <string><id>15278</id><value>Kuuntele %name%:n parhaiden raitojen last.fm radiota</value></string>
+  <string><id>15279</id><value>Haetaan listaa last.fm:stä...</value></string>
+  <string><id>15280</id><value>Ei voida hakea listaa last.fm:stä...</value></string>
+  <string><id>15281</id><value>Anna artistin nimi löytääksesi liittyviä artisteja</value></string>
+  <string><id>15282</id><value>Anna tuntomerkki löytääksesi samankaltaisia tuntomerkkejä</value></string>
+  <string><id>15283</id><value>%name%:n viimeksi kuuntelemat raidat</value></string>
+
   <string><id>15300</id><value>Määritettyä polkua ei löydy</value></string>
   <string><id>15301</id><value>Ei saatu yhteyttä palvelimeen</value></string>
   <string><id>15302</id><value>Palvelimia ei löytynyt</value></string>
   <string><id>15303</id><value>Työryhmää ei löytynyt</value></string>
+
+  <string><id>15310</id><value>Avataan useapolkuista kirjanmerkkiä</value></string>
+  <string><id>15311</id><value>Polku:</value></string>
 
   <string><id>16000</id><value>Yleiset</value></string>
   <string><id>16001</id><value>Äänilaitteisto...</value></string>
@@ -1128,7 +1173,19 @@
   <string><id>16021</id><value>Synk. parittomat</value></string>
   <string><id>16022</id><value>Synk. parilliset</value></string>
   <string><id>16023</id><value>Lomituksen käsittely</value></string>
-  
   <string><id>16024</id><value>Peruutetaan...</value></string>
-  
+  <string><id>16025</id><value>Anna artistin nimi</value></string>
+
+  <string><id>16100</id><value>Kaikki videot</value></string>
+  <string><id>16101</id><value>Katsomaton</value></string>
+  <string><id>16102</id><value>Katsottu</value></string>
+  <string><id>16103</id><value>Merkitse katsotuksi</value></string>
+  <string><id>16104</id><value>Merkitse katsomattomaksi</value></string>
+  <string><id>16105</id><value>Muuta otsikkoa</value></string>
+  <string><id>16106</id><value>Käytä NTSC-M &amp; NTSC-J</value></string>
+  <string><id>16107</id><value>Käytä vain NTSC-M</value></string>
+  <string><id>16108</id><value>Käytä vain NTSC-J</value></string>
+  <string><id>16109</id><value>Käytä vain PAL-60</value></string>
+  <string><id>16110</id><value>60Hz:n peleille</value></string>
+
 </strings>

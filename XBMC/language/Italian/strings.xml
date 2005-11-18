@@ -683,7 +683,7 @@
   <string><id>10507</id><value>Configurazione</value></string>
   <string><id>10508</id><value>Previsioni Meteo</value></string>
   <string><id>10509</id><value>Gioco Online</value></string>
-  <string><id>10510</id><value>Estensioni</value></string>
+  <string><id>10510</id><value>Scripts</value></string>
   <string><id>10511</id><value>Info Sistema</value></string>
   <string><id>10512</id><value>Musica - Albums</value></string>
   <string><id>10513</id><value>Musica - Artisti</value></string>
@@ -771,8 +771,8 @@
   <string><id>12369</id><value>XBMC Startup Lock</value></string>
   <string><id>12370</id><value>Master Lock Mode è cambiato, il Master Code non era impostato!</value></string>
   <string><id>12371</id><value>Inserire un nuovo Master Code!</value></string>
-  <string><id>12372</id><value>Lock Impostazioni & Files</value></string>
-  <string><id>12373</id><value>Impostazioni &  Files</value></string>
+  <string><id>12372</id><value>Lock Impostazioni &amp; Files</value></string>
+  <string><id>12373</id><value>Impostazioni &amp; Files</value></string>
   <string><id>12374</id><value>Lock Media</value></string>
   <string><id>12375</id><value>Modalità Master User</value></string>
 
@@ -851,7 +851,7 @@
   <string><id>13290</id><value>XBOX Manufacture:</value></string>
   <string><id>13291</id><value>ModChip:</value></string>
   <string><id>13292</id><value>A/V Cable:</value></string>
-  <string><id>13293</id><value>Video & XBE Region:</value></string>
+  <string><id>13293</id><value>Video &amp; XBE Region:</value></string>
   <string><id>13294</id><value>DVD Region:</value></string>
   <string><id>13295</id><value>Internet:</value></string>
   <string><id>13296</id><value>Xbox è Connessa</value></string>
@@ -1033,7 +1033,9 @@ per questo effetto grafico</value></string>
   <string><id>14068</id><value>Inserire Indirizzo IP</value></string>
   <string><id>14069</id><value>Vuoi salvare queste Impostazioni adesso?</value></string>
   <string><id>14070</id><value>Salva Impostazioni</value></string>
-  <string><id>14071</id><value>Consenti Cancellazione File</value></string>
+  <string><id>14071</id><value>Consenti Rinominazione e Cancellazione File</value></string>
+  <string><id>14072</id><value>Abilita XLink Kai</value></string>
+  <string><id>14073</id><value>XLink Kai non è abilitato.</value></string>
 
   <string><id>15000</id><value>XLink Kai</value></string>
   <string><id>15001</id><value>Il servizio non è connesso, vuoi riprovare</value></string>
@@ -1109,6 +1111,9 @@ per questo effetto grafico</value></string>
   <string><id>15107</id><value>Caricando...</value></string>
   <string><id>15108</id><value>Suoni Navigazione</value></string>
   <string><id>15109</id><value>Propri della Skin</value></string>
+  <string><id>15110</id><value>Vibrazione Gamepad</value></string>
+  <string><id>15111</id><value>Tema della Skin</value></string> 
+  <string><id>15112</id><value>Tema di Default</value></string> 
 
   <string><id>15200</id><value>AudioScrobbler</value></string>
   <string><id>15201</id><value>Invia Canzoni a AudioScrobbler</value></string>
@@ -1127,10 +1132,48 @@ per questo effetto grafico</value></string>
   <string><id>15214</id><value>Perfeziona Sincronizzazione A/V</value></string>
   <string><id>15215</id><value>Nascondi Nomi dei Files in Vista Icone</value></string>
 
+  <string><id>15250</id><value>Invia Last.fm Radio ad AudioScrobbler</value></string>
+  <string><id>15251</id><value>Connessione a Last.fm...</value></string>
+  <string><id>15252</id><value>Selezione stazione...</value></string>
+  <string><id>15253</id><value>Ricerca artisti simili...</value></string>
+  <string><id>15254</id><value>Ricerca tags simili...</value></string>
+  <string><id>15255</id><value>Tuo profilo  (%name%)</value></string>
+  <string><id>15256</id><value>Etichette migliori</value></string>
+  <string><id>15257</id><value>Artisti migliori con etichetta %name%</value></string>
+  <string><id>15258</id><value>Albums migliori con etichetta %name%</value></string>
+  <string><id>15259</id><value>Canzoni migliori con etichetta %name%</value></string>
+  <string><id>15260</id><value>Ascolta l'etichetta %name% last.fm radio</value></string>
+  <string><id>15261</id><value>Artisti simili a %name%</value></string>
+  <string><id>15262</id><value>Albums %name% migliori</value></string>
+  <string><id>15263</id><value>Canzoni %name% migliori</value></string>
+  <string><id>15264</id><value>Etichette %name% migliori</value></string>
+  <string><id>15265</id><value>Più grandi fans di %name%</value></string>
+  <string><id>15266</id><value>Ascolta %name% fans last.fm radio</value></string>
+  <string><id>15267</id><value>Ascolta %name% artisti simili last.fm radio</value></string>
+  <string><id>15268</id><value>Artisti migliori per l'utente %name%</value></string>
+  <string><id>15269</id><value>Albums migliori per l'utente %name%</value></string>
+  <string><id>15270</id><value>Canzoni migliori per l'utente %name%</value></string>
+  <string><id>15271</id><value>Amici dell'utente %name%</value></string>
+  <string><id>15272</id><value>Vicini dell'utente %name%</value></string>
+  <string><id>15273</id><value>Classifica settimanale artista per %name%</value></string>
+  <string><id>15274</id><value>Classifica settimanale album per %name%</value></string>
+  <string><id>15275</id><value>Classifica settimanale canzone per %name%</value></string>
+  <string><id>15276</id><value>Ascolta la last.fm radio dei vicini di %name%</value></string>
+  <string><id>15277</id><value>Ascolta la last.fm radio personale di %name%</value></string>
+  <string><id>15278</id><value>Ascolta le last.fm radio canzoni preferite di %name%</value></string>
+  <string><id>15279</id><value>Ricezione lista da last.fm...</value></string>
+  <string><id>15280</id><value>Impossibile ricevere la lista da last.fm...</value></string>
+  <string><id>15281</id><value>Inserire il nome di un artista per trovarne i relazionati</value></string>
+  <string><id>15282</id><value>Inserire il nome di un etichetta per trovarne di simili</value></string>
+  <string><id>15283</id><value>Traccce recentemente ascoltate da %name%</value></string>
+
   <string><id>15300</id><value>Percorso non trovato o invalido</value></string>
   <string><id>15301</id><value>Non è stato possibile connetersi al server</value></string>
   <string><id>15302</id><value>Nessun server trovato</value></string>
   <string><id>15303</id><value>Nessun Workgroup trovato</value></string>
+
+  <string><id>15310</id><value>Apertura  bookmark multipercorso</value></string>
+  <string><id>15311</id><value>Percorso:</value></string>
 
   <string><id>16000</id><value>Generale</value></string>
   <string><id>16001</id><value>Configura Audio Hardware...</value></string>
@@ -1154,6 +1197,7 @@ per questo effetto grafico</value></string>
   <string><id>16022</id><value>Sincronismo Dispari</value></string>
   <string><id>16023</id><value>Modifiche Interlacciate</value></string>
   <string><id>16024</id><value>Annullando...</value></string>
+  <string><id>16025</id><value>Inserire Nome Artista</value></string>
 
   <string><id>16100</id><value>Tutti i Video</value></string>
   <string><id>16101</id><value>Non Visti</value></string>
@@ -1161,4 +1205,9 @@ per questo effetto grafico</value></string>
   <string><id>16103</id><value>Segna Come Già Visto</value></string>
   <string><id>16104</id><value>Segna Come Non Visto</value></string>
   <string><id>16105</id><value>Modifica Titolo</value></string>
+  <string><id>16106</id><value>Usa NTSC-M &amp; NTSC-J</value></string>
+  <string><id>16107</id><value>Usa solo NTSC-M</value></string>
+  <string><id>16108</id><value>Usa solo NTSC-J</value></string>
+  <string><id>16109</id><value>Usa solo PAL-60</value></string>
+  <string><id>16110</id><value>Per Giochi a 60Hz</value></string>
 </strings>
