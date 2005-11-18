@@ -972,7 +972,9 @@
   <string><id>14068</id><value>Bitte eine IP-Adresse eingeben</value></string>
   <string><id>14069</id><value>Sollen die Einstellungen übernommen werden?</value></string>
   <string><id>14070</id><value>Übernehmen</value></string>
-  <string><id>14071</id><value>Löschen von Dateien erlauben</value></string>
+  <string><id>14071</id><value>Löschen und Umbenennen von Dateien erlauben</value></string>
+  <string><id>14072</id><value>XLink Kai aktivieren</value></string>
+  <string><id>14073</id><value>XLink Kai ist nicht aktiv.</value></string>
 
   <string><id>15000</id><value>XLink-Kai</value></string>
   <string><id>15001</id><value>Keine Verbindung zu XLink Kai. Möchtest du </value></string>
@@ -1047,6 +1049,9 @@
   <string><id>15107</id><value>Pufferung...</value></string>
   <string><id>15108</id><value>Navigationssounds</value></string>
   <string><id>15109</id><value>Vorgabe des Skins</value></string>
+  <string><id>15110</id><value>Controller Rumble</value></string>
+  <string><id>15111</id><value>Skin Theme</value></string>
+  <string><id>15112</id><value>Standart Theme</value></string>
   <string><id>15200</id><value>AudioScrobbler</value></string>
   <string><id>15201</id><value>Song-Infos an AudioScrobbler übertragen</value></string>
   <string><id>15202</id><value>AudioScrobbler Benutzername</value></string>
@@ -1063,8 +1068,44 @@
   <string><id>15250</id><value>Last.fm Radio an AudioScrobbler übertragen</value></string>
   <string><id>15251</id><value>Verbindung mit Last.fm herstellen...</value></string>
   <string><id>15252</id><value>Station wird ausgewählt...</value></string>
-  
 
+  <string><id>15253</id><value>Ähnliche Interpreten suchen...</value></string>
+  <string><id>15254</id><value>Ähnliche Tags suchen...</value></string>
+  <string><id>15255</id><value>Dein Profil (%name%)</value></string>
+  <string><id>15256</id><value>Die besten Tags</value></string>
+
+  <string><id>15257</id><value>Die besten Interpreten des Tags %name%</value></string>
+  <string><id>15258</id><value>Die besten Alben des Tags %name%</value></string>
+  <string><id>15259</id><value>Die besten Songs des Tags %name%</value></string>
+  <string><id>15260</id><value>%name% last.fm Radio Tag anhören</value></string>
+
+  <string><id>15261</id><value>Ähnliche Interpreten wie %name%</value></string>
+  <string><id>15262</id><value>Die besten %name% Alben</value></string>
+  <string><id>15263</id><value>Die besten %name% Songs</value></string>
+  <string><id>15264</id><value>Die besten %name% Tags</value></string>
+  <string><id>15265</id><value>Gößte Fans von %name%</value></string>
+  <string><id>15266</id><value>%name% Fan last.fm Radio anhören</value></string>
+  <string><id>15267</id><value>Ähnliche Interpreten wie %name% im last.fm Radio anhören</value></string>
+  
+  <string><id>15268</id><value>Lieblingsinterpreten des Benutzers %name%</value></string>
+  <string><id>15269</id><value>Lieblingsalben des Benutzers %name%</value></string>
+  <string><id>15270</id><value>Lieblingssongs des Benutzers %name%</value></string>
+  <string><id>15271</id><value>Freunde des Benutzers %name%</value></string>
+  <string><id>15272</id><value>Nachbarn des Benutzers %name%</value></string>
+  <string><id>15273</id><value>Wöchentliche Interpretencharts von %name%</value></string>
+  <string><id>15274</id><value>Wöchentliche Albumcharts von %name%</value></string>
+  <string><id>15275</id><value>Wöchentliche Songcharts von %name%</value></string>
+  <string><id>15283</id><value>Kürzlich gehörte Songs von %name%</value></string>
+  <string><id>15276</id><value>last.fm Radio der Nachbarn von %name% anhören</value></string>
+  <string><id>15277</id><value>Privates last.fm radio von %name% anhören</value></string>
+  <string><id>15278</id><value>last.fm radio mit den Lieblingssongs von %name% anhören</value></string>
+
+  <string><id>15279</id><value>Liste von last.fm wird übertragen...</value></string>
+  <string><id>15280</id><value>Liste kann nicht von last.fm übertragen werden...</value></string>
+  <string><id>15281</id><value>Bitte einen Interpreten eingeben um ähnliche zu finden</value></string>
+  <string><id>15282</id><value>Bitte einen Tagnamen eingeben um ähnliche Tags zu finden</value></string>
+   
+  
   <string><id>13150</id><value>HDD-Key:</value></string>
   <string><id>13151</id><value>HDD-Temp:</value></string>
   <string><id>13152</id><value>DVD-Model:</value></string>
@@ -1149,6 +1190,8 @@
   <string><id>16023</id><value>Interlaced Handling</value></string>
   
   <string><id>16024</id><value>Abbrechen...</value></string>
+
+  <string><id>16025</id><value>Bitte den Namen des Interpreten eingeben</value></string>
 
   <string><id>16100</id><value>Alle Videos</value></string>
   <string><id>16101</id><value>Nicht gesehen</value></string>

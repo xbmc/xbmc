@@ -34,7 +34,7 @@
   <string><id>32</id><value>Diciembre</value></string>
 
   <string><id>98</id><value>Automático</value></string>
-  <string><id>99</id><value>Autogrande</value></string>
+  <string><id>99</id><value>Auto. Grande</value></string>
   <string><id>100</id><value>Iconos</value></string>
   <string><id>101</id><value>Lista</value></string>
   <string><id>102</id><value>Explorar</value></string>
@@ -47,7 +47,7 @@
   <string><id>109</id><value>Crear miniat.</value></string>
   <string><id>110</id><value>Crear miniaturas</value></string>
   <string><id>111</id><value>Accesos dir.</value></string>
-  <string><id>112</id><value>Pausa</value></string>
+  <string><id>112</id><value>PAUSA</value></string>
   <string><id>113</id><value>Archivos: Origen</value></string>
   <string><id>114</id><value>Archivos: Destino</value></string>
   <string><id>115</id><value>Copiar</value></string>
@@ -148,8 +148,8 @@
   <string><id>210</id><value>Anterior</value></string>
   <string><id>211</id><value>Buscando aplicaciones</value></string>
   <string><id>212</id><value>Aplicaciones encontradas</value></string>
-  <string><id>213</id><value>Posición Interfaz...</value></string>
-  <string><id>214</id><value>Calibrar Pantalla</value></string>
+  <string><id>213</id><value>Calibrar Interfaz XBMC</value></string>
+  <string><id>214</id><value>Calibrar Video</value></string>
   <string><id>215</id><value>Suavizar</value></string>
   <string><id>216</id><value>Aumentar</value></string>
   <string><id>217</id><value>Ajustar</value></string>
@@ -162,7 +162,7 @@
   <string><id>224</id><value>Velocidad</value></string>
   <string><id>225</id><value>Tiempo de Transición</value></string>
   <string><id>226</id><value>Activar PAL60</value></string>
-  <string><id>227</id><value>Activar conexión con CDDB</value></string>
+  <string><id>227</id><value>Permitir consultas a CDDB</value></string>
   <string><id>228</id><value>Lista de reproducción aleatoria al cargar</value></string>
   <string><id>229</id><value>Parar el disco duro tras</value></string>
   <string><id>230</id><value>Filtros</value></string>
@@ -187,7 +187,7 @@
   <string><id>249</id><value>Música</value></string>
   <string><id>250</id><value>Visualización</value></string>
   <string><id>251</id><value>Seleccione directorio de destino</value></string>
-  <string><id>252</id><value>- Hacer estéreo de 5 (o más) canales</value></string>
+  <string><id>252</id><value>Salida estéreo de 5 (o más) canales</value></string>
   <string><id>253</id><value>Número de canales</value></string>
   <string><id>254</id><value>- Decodificador compatible DTS</value></string>
   <string><id>255</id><value>CDDB</value></string>
@@ -210,7 +210,7 @@
   <string><id>272</id><value>Compensación de sobreexploración sup. izq.</value></string>
   <string><id>273</id><value>Compensación de sobreexploración inf. der.</value></string>
   <string><id>274</id><value>Posición de los subtítulos</value></string>
-  <string><id>275</id><value>Ajuste de la relación de aspecto del pixel</value></string>
+  <string><id>275</id><value>Ajuste de la relación de aspecto de pixel</value></string>
   <string><id>276</id><value>Mueva la flecha para variar la cantidad de sobreexploración</value></string>
   <string><id>277</id><value>Mueva la flecha para variar la posición de los subtítulos</value></string>
   <string><id>278</id><value>Modifique el rectángulo hasta que sea un cuadrado perfecto</value></string>
@@ -232,17 +232,17 @@
   <string><id>294</id><value>Crear marcador</value></string>
   <string><id>295</id><value>Siguiente marcador</value></string>
   <string><id>296</id><value>Borrar marcadores</value></string>
-  <string><id>297</id><value>Retardo AV</value></string>
+  <string><id>297</id><value>Retardo de Audio</value></string>
   <string><id>298</id><value>Barra de desplaz.</value></string>
 
   <string><id>300</id><value>1. Idioma</value></string>
   <string><id>301</id><value>2. Volumen</value></string>
-  <string><id>302</id><value>3. Flujo</value></string>
+  <string><id>302</id><value>3. Canal</value></string>
   <string><id>303</id><value>Retardo</value></string>
   <string><id>304</id><value>Idioma</value></string>
   <string><id>305</id><value>Activado</value></string>
   <string><id>306</id><value>No-Interpolado</value></string>
-  <string><id>307</id><value>- Postprocesado automático</value></string>
+  <string><id>307</id><value>- Postprocesado Automático</value></string>
   <string><id>308</id><value>- Filtro anti-cuadros vertical</value></string>
   <string><id>309</id><value>- Filtro anti-cuadros horizontal</value></string>
   <string><id>310</id><value>- Brillo/Contraste automáticos</value></string>
@@ -282,8 +282,8 @@
   <string><id>344</id><value>Actores</value></string>
   <string><id>345</id><value>Año</value></string>
   <string><id>346</id><value>Agrupar</value></string>
-  <string><id>347</id><value>Desagrupar</value></string>
-  <string><id>348</id><value>Jerarquía de directorios plana</value></string>
+  <string><id>347</id><value>No Agrupar</value></string>
+  <string><id>348</id><value>Jerarquía de Directorios Plana</value></string>
   <string><id>349</id><value>Mostrar sólo ficheros default.xbe</value></string>
   <string><id>350</id><value>Programas</value></string>
   <string><id>351</id><value>Inactivo</value></string>
@@ -294,7 +294,7 @@
   <string><id>356</id><value>Modo del prot. de pantalla</value></string>
   <string><id>357</id><value>Apagar consola tras</value></string>
   <string><id>358</id><value>Todos los álb.</value></string>
-  <string><id>359</id><value>álb. Recientes</value></string>
+  <string><id>359</id><value>Álb. Recientes</value></string>
   <string><id>360</id><value>Prot. de pantalla</value></string>
   <string><id>361</id><value>Pres. Recurs.</value></string>
   <string><id>362</id><value>Nivel de atenuación (%)</value></string>
@@ -316,7 +316,7 @@
   <string><id>378</id><value>AM</value></string>
   <string><id>379</id><value>PM</value></string>
   <string><id>380</id><value>Chubascos</value></string>
-  <string><id>381</id><value>Poco</value></string>
+  <string><id>381</id><value>Un poco</value></string>
   <string><id>382</id><value>Aislados</value></string>
   <string><id>383</id><value>Viento</value></string>
   <string><id>384</id><value>Fuerte</value></string>
@@ -331,7 +331,7 @@
   <string><id>393</id><value>Alto</value></string>
   <string><id>394</id><value>Niebla</value></string>
   <string><id>395</id><value>Bruma</value></string>
-  <string><id>396</id><value>Seleccione lugar</value></string>
+  <string><id>396</id><value>Seleccione Lugar</value></string>
   <string><id>397</id><value>Actualizar cada</value></string>
   <string><id>398</id><value>Temperatura en</value></string>
   <string><id>399</id><value>Velocidad en</value></string>
@@ -379,8 +379,8 @@
   <string><id>441</id><value>UDF</value></string>
   <string><id>442</id><value>Red Local</value></string>
   <string><id>443</id><value>Internet</value></string>
-  <string><id>444</id><value>vídeo</value></string>
-  <string><id>445</id><value>audio</value></string>
+  <string><id>444</id><value>Vídeo</value></string>
+  <string><id>445</id><value>Audio</value></string>
   <string><id>446</id><value>DVD</value></string>
   <string><id>447</id><value>Reprod. auto.</value></string>
   <string><id>448</id><value>LCD</value></string>
@@ -860,8 +860,8 @@
   <string><id>13296</id><value>¡Xbox conectada!</value></string>
   <string><id>13297</id><value>¡Xbox NO conectada! ¡Comprueba las opciones de red!</value></string>
   <string><id>13298</id><value>Clave de XBLIVE:</value></string>
-  <string><id>13299</id><value>- Temperatura máxima</value></string>
-  <string><id>13300</id><value>- Velocidad del ventilador</value></string>
+  <string><id>13299</id><value>Temperatura deseada</value></string>
+  <string><id>13300</id><value>Velocidad del ventilador</value></string>
   <string><id>13301</id><value>Control del ventilador por temperatura</value></string>
   <string><id>13302</id><value>Control manual del ventilador</value></string>
   <string><id>13303</id><value>Fuentes de la máscara</value></string>
@@ -1037,6 +1037,8 @@ para esta visualización</value></string>
   <string><id>14069</id><value>¿Quieres aplicar las opciones ahora?</value></string>
   <string><id>14070</id><value>Aplicar cambios ahora</value></string>
   <string><id>14071</id><value>Permitir Borrado de Ficheros</value></string>
+  <string><id>14072</id><value>Habilitar XLink Kai</value></string>
+  <string><id>14073</id><value>XLink Kai no está habilitado.</value></string>
 
   <string><id>15000</id><value>XLink Kai</value></string>
   <string><id>15001</id><value>El servicio no está conectado, ¿Quiere intentar</value></string>
@@ -1130,10 +1132,48 @@ para esta visualización</value></string>
   <string><id>15214</id><value>Usar sincronización A/V suavizada</value></string>
   <string><id>15215</id><value>Ocultar Nombres de Ficheros en Vista de Miniaturas</value></string>
 
+  <string><id>15250</id><value>Enviar datos de Radio Last.fm a AudioScrobbler</value></string>
+  <string><id>15251</id><value>Conectando a Last.fm...</value></string>
+  <string><id>15252</id><value>Seleccionando emisora...</value></string>
+  <string><id>15253</id><value>Buscar intérpretes similares...</value></string>
+  <string><id>15254</id><value>Buscar géneros similares...</value></string>
+  <string><id>15255</id><value>Tu perfil (%name%)</value></string>
+  <string><id>15256</id><value>Top global de géneros</value></string>
+  <string><id>15257</id><value>Top intérpretes del género %name%</value></string>
+  <string><id>15258</id><value>Top álbumes del género %name%</value></string>
+  <string><id>15259</id><value>Top canciones del género %name%</value></string>
+  <string><id>15260</id><value>Oir el género %name% desde la radio last.fm</value></string>
+  <string><id>15261</id><value>Intérpretes similares a %name%</value></string>
+  <string><id>15262</id><value>Top álbumes de %name%</value></string>
+  <string><id>15263</id><value>Top canciones de %name%</value></string>
+  <string><id>15264</id><value>Top géneros de %name%</value></string>
+  <string><id>15265</id><value>Mayores fans de %name%</value></string>
+  <string><id>15266</id><value>Oir a fans de %name% desde la radio last.fm</value></string>
+  <string><id>15267</id><value>Oir artistas similares a %name% desde la radio last.fm</value></string>
+  <string><id>15268</id><value>Top intérpretes del usuario %name%</value></string>
+  <string><id>15269</id><value>Top álbumes del usuario %name%</value></string>
+  <string><id>15270</id><value>Top canciones del usuario %name%</value></string>
+  <string><id>15271</id><value>Amigos del usuario %name%</value></string>
+  <string><id>15272</id><value>Vecinos del usuario %name%</value></string>
+  <string><id>15273</id><value>Gráfica Semanal de intérprete para %name%</value></string>
+  <string><id>15274</id><value>Gráfica Semanal de album para %name%</value></string>
+  <string><id>15275</id><value>Gráfica Semanal de canciones para %name%</value></string>
+  <string><id>15276</id><value>Oir a los vecinos de %name% desde la radio last.fm</value></string>
+  <string><id>15277</id><value>Oir la radio last.fm personal de %name%</value></string>
+  <string><id>15278</id><value>Oir canciones preferidas de %name% desde la radio last.fm</value></string>
+  <string><id>15279</id><value>Obteniendo la lista desde last.fm...</value></string>
+  <string><id>15280</id><value>No se puede obtener la lista desde last.fm...</value></string>
+  <string><id>15281</id><value>Introduzca un nombre de intérprete para buscar relacionados</value></string>
+  <string><id>15282</id><value>Introduzca un género para encontrar similares</value></string>
+  <string><id>15283</id><value>Canciones escuchadas recientemente por %name%</value></string>
+
   <string><id>15300</id><value>Ruta no encontrada o inválida</value></string>
   <string><id>15301</id><value>Imposible conectar al servidor</value></string>
   <string><id>15302</id><value>No se encontraron servidores</value></string>
   <string><id>15303</id><value>Grupo de trabajo no encontrado</value></string>
+
+  <string><id>15310</id><value>Abriendo carpeta multi-directorio</value></string>
+  <string><id>15311</id><value>Ruta:</value></string>
 
   <string><id>16000</id><value>General</value></string>
   <string><id>16001</id><value>Configurar Hardware de Audio...</value></string>
@@ -1157,6 +1197,7 @@ para esta visualización</value></string>
   <string><id>16022</id><value>Sinc. Par</value></string>
   <string><id>16023</id><value>Gestión del Entrelazado</value></string>
   <string><id>16024</id><value>Cancelando...</value></string>
+  <string><id>16025</id><value>Introduzca el Nombre del Intérprete</value></string>
 
   <string><id>16100</id><value>Todos los vídeos</value></string>
   <string><id>16101</id><value>Los no vistos</value></string>
@@ -1164,6 +1205,11 @@ para esta visualización</value></string>
   <string><id>16103</id><value>Marcar como vistos</value></string>
   <string><id>16104</id><value>Marcar como no vistos</value></string>
   <string><id>16105</id><value>Editar Título</value></string>
+  <string><id>16106</id><value>Usar NTSC-M y NTSC-J</value></string>
+  <string><id>16107</id><value>Usar sólo NTSC-M</value></string>
+  <string><id>16108</id><value>Usar sólo NTSC-J</value></string>
+  <string><id>16109</id><value>Usar sólo PAL-60</value></string>
+  <string><id>16110</id><value>Para Juegos de 60hz</value></string>
 
   <string><id>19999</id><value>La Web</value></string>
   <string><id>20000</id><value>Introduzca URL</value></string>

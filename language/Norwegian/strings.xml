@@ -1,4 +1,4 @@
-<!-- Based on English XML v1.261. Last updated by vnmartinsen  !-->
+<!-- Based on English XML v1.268. Last updated by vnmartinsen  !-->
 <strings>
   <string><id>0</id><value>Mine Programmer</value></string>
   <string><id>1</id><value>Mine Bilder</value></string>
@@ -969,7 +969,9 @@
   <string><id>14068</id><value>Skriv inn IP-adressen</value></string>
   <string><id>14069</id><value>Vil du lagre disse innstillingene nå?</value></string> 	 
   <string><id>14070</id><value>Lagre innstillinger nå</value></string> 	 
-  <string><id>14071</id><value>Tillat sletting av filer</value></string>
+  <string><id>14071</id><value>Tillat sletting av filer og endring av filnavn</value></string>
+  <string><id>14072</id><value>Skru på XLink Kai</value></string>
+  <string><id>14073</id><value>XLink Kai er ikke skrudd på.</value></string>
 
   <string><id>15000</id><value>XLink Kai</value></string>
   <string><id>15001</id><value>Tjenesten er ikke tilkoblet, vil du forsøke</value></string>
@@ -1044,6 +1046,9 @@
   <string><id>15107</id><value>Bufring...</value></string>
   <string><id>15108</id><value>Navigasjonslyder</value></string>
   <string><id>15109</id><value>Standard for skinnet</value></string>
+  <string><id>15110</id><value>Kontrollvibrasjon</value></string>
+  <string><id>15111</id><value>Skinets tema</value></string>
+  <string><id>15112</id><value>Standard tema</value></string>
   <string><id>15200</id><value>AudioScrobbler</value></string>
   <string><id>15201</id><value>Send sanger til AudioScrobbler</value></string>
   <string><id>15202</id><value>AudioScrobbler brukernavn</value></string>
@@ -1057,6 +1062,46 @@
   <string><id>15210</id><value>Cachet %i sanger</value></string>
   <string><id>15211</id><value>Sender...</value></string>
   <string><id>15212</id><value>Sender om %i sekunder</value></string>
+  <string><id>15250</id><value>Send inn Last.fm Radio til AudioScrobbler</value></string>
+  <string><id>15251</id><value>Kobler til Last.fm...</value></string>
+  <string><id>15252</id><value>Velger stasjon...</value></string>
+
+  <string><id>15253</id><value>Søk etter liknende artister...</value></string>
+  <string><id>15254</id><value>Søk etter liknende tag'er...</value></string>
+  <string><id>15255</id><value>Din profil (%name%)</value></string>
+  <string><id>15256</id><value>Top-tag'er generalt</value></string>
+
+  <string><id>15257</id><value>Topp-artister for tag %name%</value></string>
+  <string><id>15258</id><value>Topp-albumer for tag %name%</value></string>
+  <string><id>15259</id><value>Topp-spor for tag %name%</value></string>
+  <string><id>15260</id><value>Hør på tag %name% last.fm radio</value></string>
+
+  <string><id>15261</id><value>Liknende artister som %name%</value></string>
+  <string><id>15262</id><value>Top %name% albumer</value></string>
+  <string><id>15263</id><value>Top %name% spor</value></string>
+  <string><id>15264</id><value>Top %name% tag'er</value></string>
+  <string><id>15265</id><value>Største fans av %name%</value></string>
+  <string><id>15266</id><value>Hør på %name% fans last.fm radio</value></string>
+  <string><id>15267</id><value>Hør på %name% liknende artister last.fm radio</value></string>
+  
+  <string><id>15268</id><value>Topp-artister for bruker %name%</value></string>
+  <string><id>15269</id><value>Topp-albumer for bruker %name%</value></string>
+  <string><id>15270</id><value>Topp-spor for bruker %name%</value></string>
+  <string><id>15271</id><value>Venner av bruker %name%</value></string>
+  <string><id>15272</id><value>Naboer av bruker %name%</value></string>
+  <string><id>15273</id><value>Ukentlig artist-liste for %name%</value></string>
+  <string><id>15274</id><value>Ukentlig album-liste for %name%</value></string>
+  <string><id>15275</id><value>Ukentlig spor-liste for %name%</value></string>
+  <string><id>15283</id><value>Spor nylig lyttet til av %name%</value></string>
+  <string><id>15276</id><value>Hør på %name%'s nabores last.fm radio</value></string>
+  <string><id>15277</id><value>Hør på %name%'s personlige last.fm radio</value></string>
+  <string><id>15278</id><value>Hør på %name%'s favorattspor last.fm radio</value></string>
+
+  <string><id>15279</id><value>Mottar liste fra last.fm...</value></string>
+  <string><id>15280</id><value>Kan ikke motta liste fra last.fm...</value></string>
+  <string><id>15281</id><value>Skriv inn et artistnavn for å finne relaterte</value></string>
+  <string><id>15282</id><value>Skriv inn ent tag-navn for å finne liknende</value></string>
+   
 
   <string><id>13150</id><value>HDD-nøkkel:</value></string>
   <string><id>13151</id><value>HDD-temperatur:</value></string>
@@ -1115,8 +1160,8 @@
   <string><id>15303</id><value>Arbeidsgruppe ikke funnet</value></string>
 
 
-  <string><id>15310></id><value>Åpner bokmerke med flere baner</value></string>
-  <string><id>15311></id><value>Bane:</value></string>
+  <string><id>15310</id><value>Åpner bokmerke med flere baner</value></string>
+  <string><id>15311</id><value>Bane:</value></string>
 
   <string><id>16000</id><value>Generelt</value></string>
   <string><id>16001</id><value>Konfigurer lyd-maskinvare...</value></string>
@@ -1142,6 +1187,8 @@
   <string><id>16023</id><value>Behandling av sammenfletting</value></string>
   
   <string><id>16024</id><value>Avbryter...</value></string>	   
+
+  <string><id>16025</id><value>Skriv inn artistnavn</value></string>
 
   <string><id>16100</id><value>Alle videoer</value></string>
   <string><id>16101</id><value>Usette</value></string>
