@@ -5,6 +5,15 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 18-11-2005 updated: Spanish language file (Thnx to jose_t)
+ - 18-11-2005 updated: Norwegian language file (Thnx to vnm)
+ - 18-11-2005 updated: Korean language file (Thnx to AkoXko)
+ - 18-11-2005 updated: Italian language file (Thnx to kotix)
+ - 18-11-2005 updated: German language file
+ - 18-11-2005 updated: French language file (Thnx to flymaster)
+ - 18-11-2005 updated: Finnish language file (Thnx to jutski)
+ - 18-11-2005 updated: Danish language file (Thnx to hugener)
+ - 18-11-2005 updated: Chinese (Traditional) language file (Thnx to omenpica)
  - 18-11-2005 cleanup: Removed some code duplication of the the delete/rename code in Pictures/Video/Music.
  - 17-11-2005 fixed: Location of the video preview window was incorrectly calibrated.
  - 16-11-2005 changed: sf bug #1301380 System info - Wrong HDD Key info! Removed until the detection is rewrote! [GeminiServer]
