@@ -521,6 +521,22 @@ void CSettings::ConvertHomeVar(CStdString& strText)
     strcat(szText, szTemp);
   }
   strText = szText;
+  // unroll any relative paths used
+  std::vector<CStdString> token;
+  CUtil::Tokenize(strText,token,"\\");
+  if (token.size() > 1)
+  {
+    strText = "";
+    for (unsigned int i=0;i<token.size();++i)
+      if (token[i] == "..")
+      {
+        CStdString strParent;
+        CUtil::GetParentPath(strText,strParent);
+        strText = strParent+"\\";
+      }
+      else
+        strText += token[i]+"\\";
+  }
 }
 
 void CSettings::GetShares(const TiXmlElement* pRootElement, const CStdString& strTagName, VECSHARES& items, CStdString& strDefault)
