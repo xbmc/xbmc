@@ -128,9 +128,10 @@ bool CDVDPerformanceCounter::Initialize()
   DmRegisterPerformanceCounter("DVDVideoDecodePerformance",   DMCOUNT_SYNC, DVDPerformanceCounterVideoDecodePerformance);
   DmRegisterPerformanceCounter("DVDAudioDecodePerformance",   DMCOUNT_SYNC, DVDPerformanceCounterAudioDecodePerformance);
   DmRegisterPerformanceCounter("DVDMainPerformance",          DMCOUNT_SYNC, DVDPerformanceCounterMainPerformance);
-  Unlock();
 
 #endif
+
+  Unlock();
 
   return true;
 }
