@@ -49,7 +49,7 @@ void CDVDOverlayRenderer::RenderI420(DVDVideoPicture* pPicture, CDVDOverlaySpu* 
   p_dest[2] = pPicture->data[2] + (pOverlay->x >> 1) + (pOverlay->y >> 1) * pPicture->iLineSize[1];;
 
   /* Draw until we reach the bottom of the subtitle */
-  for ( i_y = 0; i_y < pOverlay->height; i_y ++ )
+  for (i_y = 0; i_y < pOverlay->height; i_y ++)
   {
     /* Draw until we reach the end of the line */
     for (i_x = 0; i_x < pOverlay->width ; i_x += i_len)
@@ -78,8 +78,10 @@ void CDVDOverlayRenderer::RenderI420(DVDVideoPicture* pPicture, CDVDOverlaySpu* 
 
       default:
         /* To be able to divide by 16 (>>4) we add 1 to the alpha.
-          * This means Alpha 0 won't be completely transparent, but
-          * that's handled in a special case above anyway. */ 
+         * This means Alpha 0 won't be completely transparent, but
+         * that's handled in a special case above anyway.
+         */
+          
         // First we deal with Y
         i_colprecomp = (unsigned __int16)pOverlay->color[i_color][0]
                       * (unsigned __int16)(pOverlay->alpha[i_color] + 1);
@@ -88,13 +90,15 @@ void CDVDOverlayRenderer::RenderI420(DVDVideoPicture* pPicture, CDVDOverlaySpu* 
         {
           *p_destptr = (( i_colprecomp + (unsigned __int16) * p_destptr * i_destalpha ) >> 4) & 0xFF;
         }
+        
         // now U
         i_colprecomp = (unsigned __int16)pOverlay->color[i_color][2]
                       * (unsigned __int16)(pOverlay->alpha[i_color] + 1);
-        for ( p_destptr = p_dest[1] + (i_x >> 1); p_destptr < p_dest[1] + ((i_x + i_len) >> 1); p_destptr++)
+        for (p_destptr = p_dest[1] + (i_x >> 1); p_destptr < p_dest[1] + ((i_x + i_len) >> 1); p_destptr++)
         {
           *p_destptr = (( i_colprecomp + (unsigned __int16) * p_destptr * i_destalpha ) >> 4) & 0xFF;
         }
+        
         // and finally V
         i_colprecomp = (unsigned __int16)pOverlay->color[i_color][1]
                       * (unsigned __int16)(pOverlay->alpha[i_color] + 1);

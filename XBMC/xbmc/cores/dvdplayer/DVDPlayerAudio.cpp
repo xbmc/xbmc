@@ -5,6 +5,7 @@
 #include "DVDCodecs\Audio\DVDAudioCodec.h"
 #include "DVDCodecs\DVDFactoryCodec.h"
 #include "DVDCodecs\Audio\dvdaudiocodecpassthrough.h"
+#include "DVDPerformanceCounter.h"
 
 #include "..\..\util.h"
 
@@ -23,10 +24,13 @@ CDVDPlayerAudio::CDVDPlayerAudio(CDVDClock* pClock) : CThread()
 
   InitializeCriticalSection(&m_critCodecSection);
   m_packetQueue.SetMaxSize(10 * 16 * 1024);
+  g_dvdPerformanceCounter.EnableAudioQueue(&m_packetQueue);
 }
 
 CDVDPlayerAudio::~CDVDPlayerAudio()
 {
+  g_dvdPerformanceCounter.DisableAudioQueue();
+
   // close the stream, and don't wait for the audio to be finished
   // CloseStream(true);
   DeleteCriticalSection(&m_critCodecSection);
@@ -228,6 +232,8 @@ void CDVDPlayerAudio::OnStartup()
   m_audioClock = 0;
   audio_pkt_data = NULL;
   audio_pkt_size = 0;
+  
+  g_dvdPerformanceCounter.EnableAudioDecodePerformance(ThreadHandle());
 }
 
 void CDVDPlayerAudio::Process()
@@ -292,6 +298,8 @@ void CDVDPlayerAudio::Process()
 
 void CDVDPlayerAudio::OnExit()
 {
+  g_dvdPerformanceCounter.DisableAudioDecodePerformance();
+  
   // destroy audio device
   CLog::Log(LOGNOTICE, "Closing audio device");
   m_dvdAudio.Destroy();

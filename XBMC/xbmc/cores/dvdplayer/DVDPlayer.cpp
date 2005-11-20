@@ -19,6 +19,7 @@
 
 #include "..\..\util.h"
 #include "../../utils/GUIInfoManager.h"
+#include "DVDPerformanceCounter.h"
 
 CDVDPlayer::CDVDPlayer(IPlayerCallback& callback)
     : IPlayer(callback),
@@ -100,7 +101,7 @@ bool CDVDPlayer::OpenFile(const CFileItem& file, __int64 iStartTime)
       Sleep(1);
     }
   }
-
+  
   // m_bPlaying could be set to false in the meantime, which indicates an error
   return (bProcessThreadIsAlive && !m_bStop);
 }
@@ -128,6 +129,8 @@ void CDVDPlayer::OnStartup()
   m_iCurrentStreamAudio = -1;
 
   m_messenger.Clear();
+  
+  g_dvdPerformanceCounter.EnableMainPerformance(ThreadHandle());
 }
 
 void CDVDPlayer::Process()
@@ -354,6 +357,8 @@ void CDVDPlayer::ProcessSubData(CDemuxStream* pStream, CDVDDemux::DemuxPacket* p
   
 void CDVDPlayer::OnExit()
 {
+  g_dvdPerformanceCounter.DisableMainPerformance();
+  
   CLog::Log(LOGNOTICE, "CDVDPlayer::OnExit()");
   
   // close each stream
