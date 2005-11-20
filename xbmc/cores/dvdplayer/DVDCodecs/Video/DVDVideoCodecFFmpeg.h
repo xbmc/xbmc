@@ -14,7 +14,6 @@ public:
   virtual bool Open(CodecID codecID, int iWidth, int iHeight);
   virtual void Dispose();
   virtual int Decode(BYTE* pData, int iSize);
-  virtual bool Flush();
   virtual void Reset();
   virtual bool GetPicture(DVDVideoPicture* pDvdVideoPicture);
 
