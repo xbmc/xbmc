@@ -177,12 +177,6 @@ int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize)
   return VC_BUFFER;
 }
 
-bool CDVDVideoCodecFFmpeg::Flush()
-{
-  // avcodec_flush_buffers(m_pCodecContext);
-  return false;
-}
-
 void CDVDVideoCodecFFmpeg::Reset()
 {
   avcodec_flush_buffers(m_pCodecContext);
