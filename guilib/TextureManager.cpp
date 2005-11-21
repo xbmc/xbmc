@@ -418,12 +418,7 @@ int CGUITextureManager::Load(const CStdString& strTextureName, DWORD dwColorKey)
   CStdString strPath;
 
   if (!bBundled)
-  {
-    if (strTextureName.c_str()[1] == ':')
-      strPath = strTextureName;
-    else
-      strPath.Format("%s\\media\\%s", g_graphicsContext.GetMediaDir().c_str(), strTextureName.c_str());
-  }
+    strPath = GetTexturePath(strTextureName);
   else
     strPath = strTextureName;
 
@@ -616,11 +611,7 @@ int CGUITextureManager::Load(const CStdString& strTextureName, DWORD dwColorKey)
 #else
 
   LPDIRECT3DTEXTURE8 pTexture;
-  CStdString strPath = g_graphicsContext.GetMediaDir();
-  strPath += "\\media\\";
-  strPath += strTextureName;
-  if (strTextureName.c_str()[1] == ':')
-    strPath = strTextureName;
+  CStdString strPath = GetTexturePath(strTextureName);
 
   //OutputDebugString(strPath.c_str());
   //OutputDebugString("\n");
@@ -822,4 +813,19 @@ void CGUITextureManager::Flush()
       ++i;
     }
   }
+}
+
+CStdString CGUITextureManager::GetTexturePath(const CStdString &textureName)
+{
+  CStdString path;
+  if (textureName.c_str()[1] == ':')
+    path = textureName;
+  else
+    path.Format("%s\\media\\%s", g_graphicsContext.GetMediaDir().c_str(), textureName.c_str());
+  return path;
+}
+
+void CGUITextureManager::GetBundledTexturesFromPath(const CStdString& texturePath, CStdStringArray &items)
+{
+  m_TexBundle.GetTexturesFromPath(texturePath, items);
 }

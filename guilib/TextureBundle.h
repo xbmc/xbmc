@@ -30,6 +30,7 @@ public:
   void Cleanup();
 
   bool HasFile(const CStdString& Filename);
+  void GetTexturesFromPath(const CStdString &path, CStdStringArray &textures);
   bool PreloadFile(const CStdString& Filename);
 
   HRESULT LoadTexture(LPDIRECT3DDEVICE8 pDevice, const CStdString& Filename, D3DXIMAGE_INFO* pInfo, LPDIRECT3DTEXTURE8* ppTexture,

@@ -455,8 +455,26 @@ void CGUIWindowVideoBase::UpdateButtons()
 void CGUIWindowVideoBase::OnSort()
 {
   FormatItemLabels();
+  // Save current item selection
+  CStdString currentItem = "";
+  int nItem = m_viewControl.GetSelectedItem();
+  if (nItem >= 0)
+    currentItem = m_vecItems[nItem]->m_strPath;
+
+  // sort and update the view
   SortItems(m_vecItems);
   m_viewControl.SetItems(m_vecItems);
+
+  // restore current item selection
+  for (int i = 0; i < (int)m_vecItems.Size(); i++)
+  {
+    CFileItem* pItem = m_vecItems[i];
+    if (pItem->m_strPath == currentItem)
+    {
+      m_viewControl.SetSelectedItem(i);
+      return;
+    }
+  }
 }
 
 void CGUIWindowVideoBase::ClearFileItems()
