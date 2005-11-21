@@ -30,6 +30,7 @@
 #include "GUIMoverControl.h"
 #include "GUIResizeControl.h"
 #include "GUIButtonScroller.h"
+#include "GUIMultiImage.h"
 #include "SkinInfo.h"
 #include "../xbmc/xbox/XKUtils.h"
 #include "../xbmc/Application.h"
@@ -159,6 +160,10 @@ bool CGUIWindow::LoadReference(VECREFERENCECONTOLS& controls)
       else if (!strcmp(it->m_szType, "image"))
       {
         stControl.m_pControl = new CGUIImage(*((CGUIImage*)it->m_pControl));
+      }
+      else if (!strcmp(it->m_szType, "multiimage"))
+      {
+        stControl.m_pControl = new CGUIMultiImage(*((CGUIMultiImage*)it->m_pControl));
       }
       else if (!strcmp(it->m_szType, "listcontrol"))
       {
@@ -304,6 +309,10 @@ bool CGUIWindow::LoadReference(VECREFERENCECONTOLS& controls)
     else if (!strcmp(it->m_szType, "image"))
     {
       stControl.m_pControl = new CGUIImage(*((CGUIImage*)it->m_pControl));
+    }
+    else if (!strcmp(it->m_szType, "multiimage"))
+    {
+      stControl.m_pControl = new CGUIMultiImage(*((CGUIMultiImage*)it->m_pControl));
     }
     else if (!strcmp(it->m_szType, "listcontrol"))
     {

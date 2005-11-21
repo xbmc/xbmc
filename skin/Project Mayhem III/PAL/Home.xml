@@ -3,246 +3,96 @@
   <defaultcontrol>2</defaultcontrol>
   <allowoverlay>no</allowoverlay>
   <controls>
+
     <control>
-      <type>image</type>
+      <type>multiimage</type>
       <id>102</id>
       <posX>182</posX>
       <posY>105</posY>
       <width>538</width>
       <height>362</height>
-      <texture>4x3home-myPrograms.png</texture>
+      <imagepath>4x3home-myprograms</imagepath>
+      <timeperimage>5000</timeperimage>
+      <fadetime>2000</fadetime>
       <visible effect="fade" time="200">!Player.HasMedia</visible>
     </control>
 
     <control>
-      <type>image</type>
-      <id>0</id>
-      <posX>182</posX>
-      <posY>105</posY>
-      <width>538</width>
-      <height>362</height>
-      <texture>16x9home-myPrograms.png</texture>
-      <visible effect="fade" time="2000">!Player.HasMedia + [Control.HasFocus(2) + System.IdleTime(5) + !System.IdleTime(20)]</visible>
-    </control>
-
-    <control>
-      <type>image</type>
-      <id>0</id>
-      <posX>182</posX>
-      <posY>105</posY>
-      <width>538</width>
-      <height>362</height>
-      <texture>16x9home-myPrograms3.png</texture>
-     <visible effect="fade" time="2000">!Player.HasMedia + [Control.HasFocus(2) + System.IdleTime(10)+ !System.IdleTime(15)]</visible>
-    </control>
-
-    <control>
-      <type>image</type>
+      <type>multiimage</type>
       <id>106</id>
       <posX>182</posX>
       <posY>105</posY>
       <width>538</width>
       <height>362</height>
-      <texture>16x9home-myfiles.png</texture>
+      <imagepath>16x9home-myfiles</imagepath>
+      <timeperimage>5000</timeperimage>
+      <fadetime>2000</fadetime>
       <visible effect="fade" time="200">!Player.HasMedia</visible>
     </control>
 
     <control>
-      <type>image</type>
-      <id>0</id>
-      <posX>182</posX>
-      <posY>105</posY>
-      <width>538</width>
-      <height>362</height>
-      <texture>16x9home-myfiles2.png</texture>
-      <visible effect="fade" time="2000">!Player.HasMedia + [Control.HasFocus(6) + System.IdleTime(5) + !System.IdleTime(20)]</visible>
-    </control>
-
-    <control>
-      <type>image</type>
-      <id>0</id>
-      <posX>182</posX>
-      <posY>105</posY>
-      <width>538</width>
-      <height>362</height>
-      <texture>16x9home-myfiles3.png</texture>
-      <visible effect="fade" time="2000">!Player.HasMedia + [Control.HasFocus(6) + System.IdleTime(10) + !System.IdleTime(15)]</visible>
-    </control>
-
-    <control>
-      <type>image</type>
+      <type>multiimage</type>
       <id>103</id>
       <posX>182</posX>
       <posY>105</posY>
       <width>538</width>
       <height>362</height>
-      <texture>16x9home-mymusic.png</texture>
+      <imagepath>4x3home-mymusic</imagepath>
+      <timeperimage>5000</timeperimage>
+      <fadetime>2000</fadetime>
       <visible effect="fade" time="200">!Player.HasMedia</visible>
     </control>
 
     <control>
-      <type>image</type>
-      <id>0</id>
-      <posX>182</posX>
-      <posY>105</posY>
-      <width>538</width>
-      <height>362</height>
-      <texture>16x9home-mymusic2.png</texture>
-      <visible effect="fade" time="2000">!Player.HasMedia + [Control.HasFocus(3) + System.IdleTime(5) + !System.IdleTime(20)]</visible>
-    </control>
-
-    <control>
-      <type>image</type>
-      <id>0</id>
-      <posX>182</posX>
-      <posY>105</posY>
-      <width>538</width>
-      <height>362</height>
-      <texture>4x3home-mymusic3.png</texture>
-     <visible effect="fade" time="2000">!Player.HasMedia + [Control.HasFocus(3) + System.IdleTime(10)+ !System.IdleTime(15)]</visible>
-    </control>
-
-    <control>
-      <type>image</type>
+      <type>multiimage</type>
       <id>104</id>
-      <posX>222</posX>
+      <posX>182</posX>
       <posY>105</posY>
-      <width>498</width>
+      <width>538</width>
       <height>362</height>
-      <texture>4x3home-mypictures.png</texture>
+      <imagepath>4x3home-mypictures</imagepath>
+      <timeperimage>5000</timeperimage>
+      <fadetime>2000</fadetime>
       <visible effect="fade" time="200">!Player.HasMedia</visible>
     </control>
 
     <control>
-      <type>image</type>
-      <id>0</id>
-      <posX>182</posX>
-      <posY>105</posY>
-      <width>538</width>
-      <height>362</height>
-      <texture>4x3home-mypictures2.png</texture>
-      <visible effect="fade" time="2000">!Player.HasMedia + [Control.HasFocus(4) + System.IdleTime(5) + !System.IdleTime(20)]</visible>
-    </control>
-
-    <control>
-      <type>image</type>
-      <id>0</id>
-      <posX>182</posX>
-      <posY>105</posY>
-      <width>538</width>
-      <height>362</height>
-      <texture>4x3home-mypictures3.png</texture>
-     <visible effect="fade" time="2000">!Player.HasMedia + [Control.HasFocus(4) + System.IdleTime(10)+ !System.IdleTime(15)]</visible>
-    </control>
-
-    <control>
-      <type>image</type>
+      <type>multiimage</type>
       <id>105</id>
       <posX>182</posX>
       <posY>105</posY>
       <width>538</width>
       <height>362</height>
-      <texture>16x9home-myvideos.png</texture>
+      <imagepath>16x9home-myvideos</imagepath>
+      <timeperimage>5000</timeperimage>
+      <fadetime>2000</fadetime>
       <visible effect="fade" time="200">!Player.HasMedia</visible>
     </control>
 
     <control>
-      <type>image</type>
-      <id>0</id>
-      <posX>182</posX>
-      <posY>105</posY>
-      <width>538</width>
-      <height>362</height>
-      <texture>16x9home-myvideos2.png</texture>
-      <visible effect="fade" time="2000">!Player.HasMedia + [Control.HasFocus(5) + System.IdleTime(5) + !System.IdleTime(20)]</visible>
-    </control>
-
-    <control>
-      <type>image</type>
-      <id>0</id>
-      <posX>182</posX>
-      <posY>105</posY>
-      <width>538</width>
-      <height>362</height>
-      <texture>16x9home-myvideos3.png</texture>
-     <visible effect="fade" time="2000">!Player.HasMedia + [Control.HasFocus(5) + System.IdleTime(10)+ !System.IdleTime(15)]</visible>
-    </control>
-
-    <control>
-      <type>image</type>
+      <type>multiimage</type>
       <id>107</id>
       <posX>182</posX>
       <posY>105</posY>
       <width>538</width>
       <height>362</height>
-      <texture>16x9home-myweather.png</texture>
+      <imagepath>16x9home-myweather</imagepath>
+      <timeperimage>5000</timeperimage>
+      <fadetime>2000</fadetime>
       <visible effect="fade" time="200">!Player.HasMedia</visible>
     </control>
 
     <control>
-      <type>image</type>
-      <id>0</id>
-      <posX>182</posX>
-      <posY>105</posY>
-      <width>538</width>
-      <height>362</height>
-      <texture>16x9home-myweather2.png</texture>
-      <visible effect="fade" time="2000">!Player.HasMedia + [Control.HasFocus(7) + System.IdleTime(5) + !System.IdleTime(30)]</visible>
-    </control>
-
-    <control>
-      <type>image</type>
-      <id>0</id>
-      <posX>182</posX>
-      <posY>105</posY>
-      <width>538</width>
-      <height>362</height>
-      <texture>16x9home-myweather3.png</texture>
-     <visible effect="fade" time="2000">!Player.HasMedia + [Control.HasFocus(7) + System.IdleTime(10)+ !System.IdleTime(25)]</visible>
-    </control>
-
-    <control>
-      <type>image</type>
-      <id>0</id>
-      <posX>182</posX>
-      <posY>105</posY>
-      <width>538</width>
-      <height>362</height>
-      <texture>16x9home-myweather4.png</texture>
-      <visible effect="fade" time="2000">!Player.HasMedia + [Control.HasFocus(7) + System.IdleTime(15) + !System.IdleTime(20)]</visible>
-    </control>
-
-    <control>
-      <type>image</type>
+      <type>multiimage</type>
       <id>109</id>
       <posX>182</posX>
       <posY>105</posY>
       <width>538</width>
       <height>362</height>
-      <texture>16x9home-settings.png</texture>
+      <imagepath>4x3home-settings</imagepath>
+      <timeperimage>5000</timeperimage>
+      <fadetime>2000</fadetime>
       <visible effect="fade" time="200">!Player.HasMedia</visible>
-    </control>
-
-    <control>
-      <type>image</type>
-      <id>0</id>
-      <posX>182</posX>
-      <posY>105</posY>
-      <width>538</width>
-      <height>362</height>
-      <texture>16x9home-settings2.png</texture>
-      <visible effect="fade" time="2000">!Player.HasMedia + [Control.HasFocus(9) + System.IdleTime(5) + !System.IdleTime(20)]</visible>
-    </control>
-
-    <control>
-      <type>image</type>
-      <id>0</id>
-      <posX>182</posX>
-      <posY>105</posY>
-      <width>538</width>
-      <height>362</height>
-      <texture>4x3home-settings3.png</texture>
-      <visible effect="fade" time="2000">!Player.HasMedia + [Control.HasFocus(9) + System.IdleTime(10) + !System.IdleTime(15)]</visible>
     </control>
 
     <control>
