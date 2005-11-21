@@ -252,12 +252,13 @@ public:
 
     char szThumbnailsDirectory[1024];
     char m_szMyPicturesExtensions[512];
-    char m_szMyMusicExtensions[512];
+    char m_szMyMusicExtensions[1024];
     char m_szMyVideoExtensions[512];
     char m_szShortcutDirectory[256];
     char m_szAlbumDirectory[256];
     char m_szScreenshotsDirectory[256];
     char m_szCacheDirectory[256];
+    char m_szPlaylistsDirectory[256];
 
     bool m_bMyFilesSourceViewAsIcons;
     bool m_bMyFilesSourceRootViewAsIcons;

@@ -327,6 +327,7 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
   GetString(pRootElement, "shortcuts", g_stSettings.m_szShortcutDirectory, "");
   GetString(pRootElement, "screenshots", g_stSettings.m_szScreenshotsDirectory, "");
   GetString(pRootElement, "recordings", g_stSettings.m_szMusicRecordingDirectory, "");
+  GetString(pRootElement, "playlists", g_stSettings.m_szPlaylistsDirectory,"Q:\\albums\\playlists");
 
   GetString(pRootElement, "albums", g_stSettings.m_szAlbumDirectory, "");
   GetString(pRootElement, "subtitles", g_stSettings.m_szAlternateSubtitleDirectory, "");
@@ -442,6 +443,16 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
   strDir = g_stSettings.m_szScreenshotsDirectory;
   ConvertHomeVar(strDir);
   strcpy( g_stSettings.m_szScreenshotsDirectory, strDir.c_str() );
+
+  strDir = g_stSettings.m_szPlaylistsDirectory;
+  ConvertHomeVar(strDir);
+  strcpy( g_stSettings.m_szPlaylistsDirectory, strDir.c_str() );
+  if (!CUtil::HasSlashAtEnd(g_stSettings.m_szPlaylistsDirectory))
+    strcat(g_stSettings.m_szPlaylistsDirectory,"/");
+  if (!CDirectory::Exists(strDir+"\\music"))
+    CDirectory::Create(strDir+"\\music");
+  if (!CDirectory::Exists(strDir+"\\video"))
+    CDirectory::Create(strDir+"\\video");
   
   strDir = g_stSettings.m_szCacheDirectory;
   ConvertHomeVar(strDir);

@@ -402,7 +402,6 @@ void CGUIWindowVideoTitle::OnClick(int iItem)
     PlayMovies(movies, pItem->m_lStartOffset);
   }
 }
-
 void CGUIWindowVideoTitle::OnDeleteItem(int iItem)
 {
   if (iItem < 0 || iItem >= (int)m_vecItems.Size()) return;
