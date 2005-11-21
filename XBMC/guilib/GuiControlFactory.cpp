@@ -28,6 +28,7 @@
 #include "GUISpinControlEx.h"
 #include "GUIVisualisationControl.h"
 #include "GUISettingsSliderControl.h"
+#include "GUIMultiImage.h"
 #include "../xbmc/utils/GUIInfoManager.h"
 #include "../xbmc/util.h"
 #include "../xbmc/ButtonTranslator.h"
@@ -343,6 +344,9 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
 
   bool bScrollLabel = false;
   bool bPulse = true;
+  CStdString texturePath;
+  DWORD timePerImage = 0;
+  DWORD fadeTime = 0;
 
   /////////////////////////////////////////////////////////////////////////////
   // Read default properties from reference controls
@@ -545,6 +549,13 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
       dwColorKey = ((CGUIImage *)pReference)->GetColorKey();
       bKeepAspectRatio = ((CGUIImage *)pReference)->GetKeepAspectRatio();
       vecInfo.push_back(((CGUIImage *)pReference)->GetInfo());
+    }
+    else if (strType == "multiimage")
+    {
+      texturePath = ((CGUIMultiImage *)pReference)->GetTexturePath();
+      bKeepAspectRatio = ((CGUIMultiImage *)pReference)->GetKeepAspectRatio();
+      timePerImage =  ((CGUIMultiImage *)pReference)->GetTimePerImage();
+      fadeTime =  ((CGUIMultiImage *)pReference)->GetFadeTime();
     }
     else if (strType == "listcontrol")
     {
@@ -995,6 +1006,10 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
   GetBoolean(pControlNode, "scroll", bScrollLabel);
   GetBoolean(pControlNode,"pulseonselect", bPulse);
 
+  GetPath(pControlNode,"imagepath", texturePath);
+  GetDWORD(pControlNode,"timeperimage", timePerImage);
+  GetDWORD(pControlNode,"fadetime", fadeTime);
+
   /////////////////////////////////////////////////////////////////////////////
   // Instantiate a new control using the properties gathered above
   //
@@ -1265,6 +1280,16 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     pControl->SetVisible(bVisible);
     pControl->SetVisibleCondition(iVisibleCondition, iEffectType, iEffectInTime, iEffectOutTime, startHidden);
     pControl->SetInfo(vecInfo.size() ? vecInfo[0] : 0);
+    return pControl;
+  }
+  else if (strType == "multiimage")
+  {
+    CGUIMultiImage* pControl = new CGUIMultiImage(
+      dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight, texturePath, timePerImage, fadeTime);
+    pControl->SetNavigation(up, down, left, right);
+    pControl->SetKeepAspectRatio(bKeepAspectRatio);
+    pControl->SetVisible(bVisible);
+    pControl->SetVisibleCondition(iVisibleCondition, iEffectType, iEffectInTime, iEffectOutTime, startHidden);
     return pControl;
   }
   else if (strType == "listcontrol")

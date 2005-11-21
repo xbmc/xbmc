@@ -7,7 +7,7 @@
 // GeminiServer
 #include "../xbmc/GUISettings.h"
 #include "../xbmc/Settings.h"
-//
+#include "../xbmc/Util.h"
 
 #pragma comment(lib,"xbmc/lib/liblzo/lzo.lib")
 
@@ -263,6 +263,27 @@ bool CTextureBundle::HasFile(const CStdString& Filename)
   CStdString name(Filename);
   name.Normalize();
   return m_FileHeaders.find(name) != m_FileHeaders.end();
+}
+
+void CTextureBundle::GetTexturesFromPath(const CStdString &path, CStdStringArray &textures)
+{
+  if (path.GetLength() > 1 && path[1] == ':')
+    return;
+
+  if (m_hFile == INVALID_HANDLE_VALUE && !OpenBundle())
+    return;
+
+  CStdString testPath(path);
+  testPath.Normalize();
+  if (!CUtil::HasSlashAtEnd(testPath))
+    testPath += "\\";
+  int testLength = testPath.GetLength();
+  std::map<CStdString, FileHeader_t>::iterator it;
+  for (it = m_FileHeaders.begin(); it != m_FileHeaders.end(); it++)
+  {
+    if (it->first.Left(testLength).Equals(testPath))
+      textures.push_back(it->first);
+  }
 }
 
 bool CTextureBundle::PreloadFile(const CStdString& Filename)

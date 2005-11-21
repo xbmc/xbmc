@@ -297,6 +297,9 @@
 				RelativePath=".\GUIMoverControl.cpp">
 			</File>
 			<File
+				RelativePath=".\GUIMultiImage.cpp">
+			</File>
+			<File
 				RelativePath=".\GUIProgressControl.cpp">
 			</File>
 			<File
@@ -474,6 +477,9 @@
 			</File>
 			<File
 				RelativePath=".\GUIMoverControl.h">
+			</File>
+			<File
+				RelativePath=".\GUIMultiImage.h">
 			</File>
 			<File
 				RelativePath=".\GUIProgressControl.h">

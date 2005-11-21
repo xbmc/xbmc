@@ -89,6 +89,8 @@ public:
   void Cleanup();
   void Dump() const;
   void Flush();
+  CStdString GetTexturePath(const CStdString& textureName);
+  void GetBundledTexturesFromPath(const CStdString& texturePath, CStdStringArray &items);
 protected:
   vector<CTextureMap*> m_vecTextures;
   typedef vector<CTextureMap*>::iterator ivecTextures;
