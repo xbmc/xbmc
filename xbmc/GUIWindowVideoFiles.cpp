@@ -29,6 +29,7 @@
 #define CONTROL_LIST       50
 #define CONTROL_THUMBS      51
 #define CONTROL_LABELFILES         12
+#define CONTROL_BTNPLAYLISTS  13
 
 struct SSortVideoByName
 {
@@ -273,6 +274,18 @@ bool CGUIWindowVideoFiles::OnMessage(CGUIMessage& message)
         g_settings.Save();
         UpdateButtons();
         Update( m_Directory.m_strPath );
+      }
+      else if (iControl == CONTROL_BTNPLAYLISTS)
+      {
+        CStdString strDirectory;
+        strDirectory.Format("%svideo\\", g_stSettings.m_szPlaylistsDirectory);
+        if (strDirectory != m_Directory.m_strPath)
+        {
+          CStdString strParent = m_Directory.m_strPath;
+          UpdateButtons();
+          Update(strDirectory);
+          m_strParentPath = strParent;
+        }
       }
       else
         return CGUIWindowVideoBase::OnMessage(message);
@@ -646,7 +659,7 @@ void CGUIWindowVideoFiles::OnRetrieveVideoInfo(CFileItemList& items)
               if ( nfoReader.Create("Z:\\movie.nfo") == S_OK)
               {
                 CIMDBUrl url;
-                url.m_strURL = nfoReader.m_strImDbUrl;
+                //url.m_strURL.push_back(nfoReader.m_strImDbUrl);
                 CLog::Log(LOGDEBUG,"-- imdb url: %s", url.m_strURL.c_str());
                 GetIMDBDetails(pItem, url);
                 continue;
@@ -899,7 +912,14 @@ bool CGUIWindowVideoFiles::GetDirectory(const CStdString &strDirectory, CFileIte
   }
 
   CStdString strParentPath;
-  bool bParentExists = CUtil::GetParentPath(strDirectory, strParentPath);
+  bool bParentExists;
+  if (strDirectory != CStdString(g_stSettings.m_szPlaylistsDirectory)+"video\\")
+    bParentExists = CUtil::GetParentPath(strDirectory, strParentPath);
+  else
+  {
+    bParentExists = true;
+    strParentPath = "";
+  }
 
   // check if current directory is a root share
   if ( !m_rootDir.IsShare(strDirectory) )

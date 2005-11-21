@@ -352,7 +352,7 @@ bool CGUIWindowMusicSongs::OnMessage(CGUIMessage& message)
       else if (iControl == CONTROL_BTNPLAYLISTS)
       {
         CStdString strDirectory;
-        strDirectory.Format("%s\\playlists", g_stSettings.m_szAlbumDirectory);
+        strDirectory.Format("%smusic\\", g_stSettings.m_szPlaylistsDirectory);
         if (strDirectory != m_Directory.m_strPath)
           Update(strDirectory);
       }

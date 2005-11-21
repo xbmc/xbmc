@@ -58,7 +58,7 @@
         <label>100</label>
         <onleft>50</onleft>
         <onright>50</onright>
-        <onup>33</onup>
+        <onup>13</onup>
         <ondown>3</ondown>
       </control>
 
@@ -109,6 +109,18 @@
         <onleft>50</onleft>
         <onright>50</onright>
         <onup>5</onup>
+        <ondown>13</ondown>
+      </control>
+      <control>
+        <description>Playlists</description>
+        <type>button</type>
+        <id>13</id>
+        <posX>50</posX>
+        <posY>268</posY>
+        <label>136</label>
+        <onleft>50</onleft>
+        <onright>50</onright>
+        <onup>7</onup>
         <ondown>31</ondown>
       </control>
 
