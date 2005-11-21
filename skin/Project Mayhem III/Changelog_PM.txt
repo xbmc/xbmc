@@ -1,3 +1,5 @@
+2005-11-21 changed:	added use of new multiimage control in home page.
+
 2005-10-25 changed:	made the pics overlay (back button) available only when music is playing
 
 2005-10-25 added:	hidden bookmark buttons to My Videos Files view (unlock and configure in \PAL\MyVideo.xml)

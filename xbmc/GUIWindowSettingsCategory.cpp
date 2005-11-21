@@ -3171,21 +3171,16 @@ void CGUIWindowSettingsCategory::FillInSkinThemes(CSetting *pSetting)
   {
     CStdString strTheme = vecTheme[i];
     // Is the Current Theme our Used Theme! If yes set the ID!
-    if (strcmpi(strTheme.ToLower().c_str(), g_stSettings.m_curSkinTheme.ToLower().c_str()) == 0 )
+    if (strTheme.CompareNoCase(g_stSettings.m_curSkinTheme) == 0 )
     {
-      if (strTheme.ToLower() == strSkinDefinedTheme.ToLower())
+      if (strTheme.CompareNoCase(strSkinDefinedTheme) == 0)
         iCurrentTheme = 0;
       else
-        iCurrentTheme = iTheme +1 ; // 1: #of Predefined Theme [Label]
+        iCurrentTheme = iTheme + 1; // 1: #of Predefined Theme [Label]
     }
     
-    // If the Current Theme is Skin.xml defined default Theme, set "SKINDEFAULT" Label for it!
-    if (strTheme.ToLower() == strSkinDefinedTheme.ToLower())
-    { 
-      strTheme = strLblSkinDefault;
-      //pControl->AddLabel(strTheme, iTheme++);
-    }
-    else 
+    // Add all themes other than the default one (it's already added as the first item)
+    if (strTheme.CompareNoCase(strSkinDefinedTheme) != 0)
       pControl->AddLabel(strTheme, iTheme++);
   }
   // If we can't find any Theme then fall back to the Default Theme [Label]!
