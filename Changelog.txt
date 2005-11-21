@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 21-11-2005 fixed: somehow a hack for dvd menu's was removed from the dvdplayer. Added it back again
  - 21-11-2005 added: New multiimage control.  A mini slideshow control.
  - 19-11-2005 added: you can now use relative paths in combination with $HOME in xboxmediacenter.xml. hi to jjsmither. WARNING: REMEMBER THAT $HOME IS Q:\ BY DEFAULT, NOT THE ACTUAL XBMC DIRECTORY PATH.
  - 18-11-2005 updated: Spanish language file (Thnx to jose_t)
