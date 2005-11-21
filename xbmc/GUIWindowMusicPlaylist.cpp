@@ -352,8 +352,8 @@ void CGUIWindowMusicPlayList::SavePlayList()
   if (CGUIDialogKeyboard::ShowAndGetInput(strNewFileName, (CStdStringW)g_localizeStrings.Get(16012), false))
   {
     // need 2 rename it
-    CStdString strPath = g_stSettings.m_szAlbumDirectory;
-    strPath += "\\playlists\\";
+    CStdString strPath = g_stSettings.m_szPlaylistsDirectory;
+    strPath += "music\\";
 
     CUtil::RemoveIllegalChars( strNewFileName );
     strPath += strNewFileName;

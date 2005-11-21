@@ -862,7 +862,6 @@ void CGUIWindowVideoBase::GoParentFolder()
 
   if (!g_guiSettings.GetBool("LookAndFeel.FullDirectoryHistory"))
     m_history.Remove(strOldPath); //Delete current path
-
 }
 
 void CGUIWindowVideoBase::OnManualIMDB()
