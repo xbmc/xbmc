@@ -482,8 +482,7 @@ void CFileItem::FillInDefaultIcon()
           CStdString strDir;
           CStdString strFileName;
           strFileName = CUtil::GetFileName(m_strPath);
-          strDir.Format("%s\\playlists\\%s", g_stSettings.m_szAlbumDirectory, strFileName.c_str());
-          if (strDir != m_strPath)
+          if (m_strPath != CStdString(g_stSettings.m_szPlaylistsDirectory)+"music\\"+strFileName && m_strPath != CStdString(g_stSettings.m_szPlaylistsDirectory)+"video\\"+strFileName)
           {
             CPlayListFactory factory;
             auto_ptr<CPlayList> pPlayList (factory.Create(m_strPath));
@@ -494,6 +493,14 @@ void CFileItem::FillInDefaultIcon()
                 const CPlayList::CPlayListItem& item = (*pPlayList.get())[0];
                 if (!item.IsInternetStream())
                 {
+                  if (item.IsAudio())
+                    strDir.Format("%smusic\\%s", g_stSettings.m_szPlaylistsDirectory, strFileName.c_str());
+                  else 
+                  if (item.IsVideo())
+                    strDir.Format("%svideo\\%s", g_stSettings.m_szPlaylistsDirectory, strFileName.c_str());
+                  else
+                    strDir = "";
+
                   pPlayList->Save(strDir);
                 }
               }

@@ -355,7 +355,7 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
           // is delete allowed?
           // must be at the playlists directory
           CStdString strDirectory;
-          strDirectory.Format("%s\\playlists", g_stSettings.m_szAlbumDirectory);
+          strDirectory.Format("%s\\music", g_stSettings.m_szPlaylistsDirectory);
           if (strDirectory.Equals(m_Directory.m_strPath))
             OnDeleteItem(iItem);
 
@@ -1527,7 +1527,7 @@ void CGUIWindowMusicBase::OnPopupMenu(int iItem)
     if (!m_Directory.IsCDDA()) btn_CDDB = pMenu->AddButton(16002);    // CDDB lookup
     
     CStdString strDirectory;
-    strDirectory.Format("%s\\playlists", g_stSettings.m_szAlbumDirectory);
+    strDirectory.Format("%s\\music", g_stSettings.m_szPlaylistsDirectory);
     if (strDirectory.Equals(m_Directory.m_strPath) || g_guiSettings.GetBool("MusicFiles.AllowFileDeletion"))
     {
       btn_Delete = pMenu->AddButton(117);               // Delete

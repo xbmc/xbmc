@@ -635,7 +635,7 @@ bool CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, CFileItemL
     {
       m_iViewAsIcons = g_stSettings.m_iMyMusicNavSongsViewAsIcons;
       CStdString strPath;
-      strPath.Format("%s\\playlists", g_stSettings.m_szAlbumDirectory);
+      strPath.Format("%s\\music", g_stSettings.m_szPlaylistsDirectory);
       CStdString strMask = g_stSettings.m_szMyMusicExtensions;
 
       // set parent directory
