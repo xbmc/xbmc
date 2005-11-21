@@ -485,6 +485,7 @@
   <string><id>644</id><value>Crop Black Bars</value></string>
 
   <string><id>645</id><value>Need to cache a big file. Continue?</value></string>
+  <string><id>646</id><value>Remove Title</value></string>
   
   <string><id>700</id><value>Cleaning up Library</value></string>
   <string><id>701</id><value>Removing old songs from the Library</value></string>

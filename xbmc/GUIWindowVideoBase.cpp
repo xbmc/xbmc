@@ -594,6 +594,7 @@ void CGUIWindowVideoBase::ShowIMDB(const CStdString& strMovie, const CStdString&
         CIMDBUrl url;
         CIMDBMovie movieDetails;
         url.m_strURL = nfoReader.m_strImDbUrl;
+        //url.m_strURL.push_back(nfoReader.m_strImDbUrl);
         CLog::Log(LOGDEBUG,"-- imdb url: %s", url.m_strURL.c_str());
 
         // show dialog that we're downloading the movie info
@@ -1099,11 +1100,13 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem)
   int btn_Delete = 0, btn_Rename = 0;
   if (!bIsGotoParent)
   {
-    if ((GetID() == WINDOW_VIDEOS && g_guiSettings.GetBool("VideoFiles.AllowFileDeletion")) || GetID() == WINDOW_VIDEO_TITLE)
+    if ((GetID() == WINDOW_VIDEOS && g_guiSettings.GetBool("VideoFiles.AllowFileDeletion")))
     {
       btn_Delete = pMenu->AddButton(117);             // Delete
       btn_Rename = pMenu->AddButton(118);             // Rename
     }
+    if (GetID() == WINDOW_VIDEO_TITLE)
+      btn_Delete = pMenu->AddButton(646);
   }
 
   // GeminiServer Todo: Set a MasterLock Option to Enable or disable Settings incontext menu!
