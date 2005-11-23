@@ -676,7 +676,7 @@ CStdString CGUIInfoManager::GetImage(int info)
   else if (info == MUSICPLAYER_COVER)
   {
     if (!g_application.IsPlayingAudio()) return "";
-    return m_currentSong.HasThumbnail() ? m_currentSong.GetThumbnailImage() : "music.jpg";
+    return m_currentSong.HasThumbnail() ? m_currentSong.GetThumbnailImage() : "defaultAlbumCover.png";
   }
   else if (info == VIDEOPLAYER_COVER)
   {

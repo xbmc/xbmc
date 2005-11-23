@@ -1132,8 +1132,10 @@ void CGUIWindowPictures::OnItemLoaded(CFileItem *pItem)
     // we load the directory, grab 4 random thumb files (if available) and then generate
     // the thumb.
     if (pItem->IsRemote() && !pItem->IsOnDVD() && !g_guiSettings.GetBool("VideoFiles.FindRemoteThumbs")) return;
+
     CFileItemList items;
-    m_rootDir.GetDirectory(pItem->m_strPath, items);
+    CDirectory::GetDirectory(pItem->m_strPath, items, g_stSettings.m_szMyPicturesExtensions, false, false);
+
     // create the folder thumb by choosing 4 random thumbs within the folder and putting
     // them into one thumb.
     // count the number of images
