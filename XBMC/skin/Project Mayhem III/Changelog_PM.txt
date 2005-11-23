@@ -1,3 +1,4 @@
+2005-11-23 fixed:	order of the home images
 2005-11-23 fixed:	the 16:9 homescreen used 4:3 images
 
 2005-11-21 changed:	added use of new multiimage control in home page.
