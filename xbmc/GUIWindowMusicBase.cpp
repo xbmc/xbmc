@@ -1394,6 +1394,7 @@ bool CGUIWindowMusicBase::FindAlbumInfo(const CStdString& strAlbum, const CStdSt
       else
       { // no albums found
         CGUIDialogOK::ShowAndGetInput(185, 0, 187, 0);
+        return false;
       }
     }
     

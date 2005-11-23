@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 23-11-2005 fixed: [ 1358363 ] AlbumInfo for none existing albums thanks to pade2.
  - 23-11-2005 fixed:   Removed invalid .jpg files from CVS.
  - 23-11-2005 changed: Default album cover in skin is now "defaultAlbumCover.png"
  - 23-11-2005 changed: Added flag to directory classes to specify whether they should prompt the user
