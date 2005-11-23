@@ -71,6 +71,8 @@ protected:
   CStdString m_strNewSkinFontSet;
   CStdString m_strNewSkin;
   CStdString m_strNewLanguage;
+  CStdString m_strNewSkinTheme;
+
   CStdStringW m_strErrorMessage;
 
   CStdString m_strOldTrackFormat;

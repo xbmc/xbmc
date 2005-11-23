@@ -901,9 +901,9 @@ void CFileItem::SetMusicThumb()
     // if we have a directory from album window, use music.jpg as icon
     if (!strAlbum.IsEmpty())
     {
-      SetIconImage("Music.jpg");
-      SetThumbnailImage("Music.jpg");
-      //CLog::Log(LOGDEBUG,"  Using default music.jpg thumb for album");
+      SetIconImage("defaultAlbumCover.png");
+      SetThumbnailImage("defaultAlbumCover.png");
+      //CLog::Log(LOGDEBUG,"  Using default defaultAlbumCover.png thumb for album");
       return;
     }
   }

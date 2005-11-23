@@ -8,6 +8,7 @@
 
 CVirtualDirectory::CVirtualDirectory(void) : m_vecShares(NULL)
 {
+  m_allowPrompting = true;  // by default, prompting is allowed.
 }
 
 CVirtualDirectory::~CVirtualDirectory(void)
@@ -105,7 +106,7 @@ bool CVirtualDirectory::GetDirectory(const CStdString& strPath, CFileItemList &i
       // Only cache directory we are getting now
       if (strPath.Left(7) != "lastfm:")
         g_directoryCache.Clear();
-      return CDirectory::GetDirectory(strPath, items, m_strFileMask, bUseFileDirectories);
+      return CDirectory::GetDirectory(strPath, items, m_strFileMask, bUseFileDirectories, m_allowPrompting);
     }
 
     // is this operation intentional?

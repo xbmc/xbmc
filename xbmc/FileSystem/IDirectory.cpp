@@ -9,6 +9,7 @@ using namespace DIRECTORY;
 IDirectory::IDirectory(void)
 {
   m_strFileMask = "";
+  m_allowPrompting = false;
 }
 
 IDirectory::~IDirectory(void)
@@ -49,4 +50,17 @@ void IDirectory::SetMask(const CStdString& strMask)
 {
   m_strFileMask = strMask;
   CUtil::Lower(m_strFileMask);
+}
+
+/*!
+ \brief Set whether the directory handlers can prompt the user.
+ \param allowPrompting Set true to allow prompting to occur (default is false).
+ 
+ Directory handlers should only prompt the user as a direct result of the
+ users actions.
+ */
+
+void IDirectory::SetAllowPrompting(bool allowPrompting)
+{
+  m_allowPrompting = allowPrompting;
 }
