@@ -419,7 +419,7 @@
     <posX>60</posX>
     <posY>192</posY>
     <textureFocus>button-focus.png</textureFocus>
-    <textureNoFocus>button-nofocus.jpg</textureNoFocus>
+    <textureNoFocus>button-nofocus.png</textureNoFocus>
   </control>
 
   <control>
@@ -429,7 +429,7 @@
     <posX>60</posX>
     <posY>192</posY>
     <textureFocus>button-focus.png</textureFocus>
-    <textureNoFocus>button-nofocus.jpg</textureNoFocus>
+    <textureNoFocus>button-nofocus.png</textureNoFocus>
   </control>
 
 </controls>

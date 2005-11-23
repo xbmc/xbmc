@@ -18,7 +18,7 @@
 class CGUIMultiImage : public CGUIControl
 {
 public:
-  CGUIMultiImage(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& texturePath, DWORD timePerImage, DWORD fadeTime);
+  CGUIMultiImage(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& texturePath, DWORD timePerImage, DWORD fadeTime, bool randomized);
   virtual ~CGUIMultiImage(void);
 
   virtual void Render();
@@ -35,14 +35,17 @@ public:
   const CStdString &GetTexturePath() const { return m_texturePath; };
   DWORD GetTimePerImage() const { return m_timePerImage; };
   DWORD GetFadeTime() const { return m_fadeTime; };
+  bool GetRandomized() const { return m_randomized; };
 
 protected:
+  void LoadImage(int image);
   CStdString m_texturePath;
   int m_currentImage;
   CXBStopWatch m_imageTimer;
   CXBStopWatch m_fadeTimer;
   DWORD m_timePerImage;
   DWORD m_fadeTime;
+  bool m_randomized;
   bool m_keepAspectRatio;
   vector <CGUIImage *> m_images;
 
