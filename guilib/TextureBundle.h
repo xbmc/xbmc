@@ -19,6 +19,7 @@ class CTextureBundle
   int m_PreloadIdx;
   int m_LoadIdx;
   FILETIME m_TimeStamp;
+  bool m_themeBundle;
 
   bool OpenBundle();
   HRESULT LoadFile(const CStdString& Filename, CAutoTexBuffer& UnpackedBuf);
@@ -29,6 +30,7 @@ public:
 
   void Cleanup();
 
+  void SetThemeBundle(bool themeBundle);
   bool HasFile(const CStdString& Filename);
   void GetTexturesFromPath(const CStdString &path, CStdStringArray &textures);
   bool PreloadFile(const CStdString& Filename);
