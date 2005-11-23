@@ -130,6 +130,9 @@ extern char g_szTitleIP[32];
 #define VISUALISATION_NAME          402
 #define VISUALISATION_ENABLED       403
 
+#define SKIN_HAS_THEME_START        500
+#define SKIN_HAS_THEME_END          509 // allow for max 10 themes
+
 #define WINDOW_ACTIVE_START         WINDOW_HOME
 #define WINDOW_ACTIVE_END           WINDOW_PYTHON_END
 
@@ -301,6 +304,8 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
   else if (strTest.Equals("visualisation.preset")) ret = VISUALISATION_PRESET;
   else if (strTest.Equals("visualisation.name")) ret = VISUALISATION_NAME;
   else if (strTest.Equals("visualisation.enabled")) ret = VISUALISATION_ENABLED;
+  else if (strTest.Left(14).Equals("skin.hastheme("))
+    ret = SKIN_HAS_THEME_START + ConditionalStringParameter(strTest.Mid(14, strTest.GetLength() -  15));
   else if (strTest.Left(16).Equals("window.isactive("))
   {
     int winID = g_buttonTranslator.TranslateWindowString(strTest.Mid(16, strTest.GetLength() - 17).c_str());
@@ -558,6 +563,14 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow) const
   }
   else if (condition == PLAYER_SHOWINFO)
     bReturn = m_playerShowInfo;
+  else if (condition >= SKIN_HAS_THEME_START && condition <= SKIN_HAS_THEME_END)
+  { // Note that the code used here could probably be extended to general
+    // settings conditions (parameter would need to store both the setting name and
+    // the and the comparison string)
+    CStdString theme = g_guiSettings.GetString("LookAndFeel.SkinTheme").ToLower();
+    CUtil::RemoveExtension(theme);
+    bReturn = theme.Equals(m_stringParameters[condition - SKIN_HAS_THEME_START]);
+  }
   else if (g_application.IsPlaying())
   {
     switch (condition)
@@ -1437,4 +1450,15 @@ void CGUIInfoManager::UpdateFPS()
     m_lastFPSTime = timeGetTime();
     m_frameCounter = 0;
   }
+}
+
+int CGUIInfoManager::ConditionalStringParameter(const CStdString &parameter)
+{
+  // check to see if we have this parameter already
+  for (unsigned int i = 0; i < m_stringParameters.size(); i++)
+    if (parameter.Equals(m_stringParameters[i]))
+      return (int)i;
+  // return the new offset
+  m_stringParameters.push_back(parameter);
+  return (int)m_stringParameters.size() - 1;
 }

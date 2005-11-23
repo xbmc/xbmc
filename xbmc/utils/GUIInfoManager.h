@@ -90,7 +90,14 @@ public:
 protected:
   int TranslateSingleString(const CStdString &strCondition);
 
+  // Conditional string parameters for testing are stored in a vector for later retrieval.
+  // The offset into the string parameters array is returned.
+  int ConditionalStringParameter(const CStdString &strParameter);
+
   CStdString GetAudioScrobblerLabel(int item);
+
+  // Conditional string parameters are stored here
+  CStdStringArray m_stringParameters;
 
   // Current playing stuff
   CFileItem m_currentSong;
