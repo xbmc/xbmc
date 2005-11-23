@@ -52,7 +52,7 @@ void CSkinInfo::Load(const CStdString& strSkinDir)
       CLog::Log(LOGINFO, "Default 4:3 resolution directory is %s%s", m_strBaseDir.c_str(), GetDirFromRes(m_DefaultResolution).c_str());
 
       pChild = pRootElement->FirstChild("defaultresolutionwide");
-      if (pChild)
+      if (pChild && pChild->FirstChild())
       { // found the defaultresolution tag
         CStdString strDefaultDir = pChild->FirstChild()->Value();
         strDefaultDir = strDefaultDir.ToLower();
@@ -69,7 +69,7 @@ void CSkinInfo::Load(const CStdString& strSkinDir)
 
       // get the version
       pChild = pRootElement->FirstChild("version");
-      if (pChild)
+      if (pChild && pChild->FirstChild())
       {
         m_Version = atof(pChild->FirstChild()->Value());
         CLog::Log(LOGINFO, "Skin version is: %s", pChild->FirstChild()->Value());
@@ -80,14 +80,14 @@ void CSkinInfo::Load(const CStdString& strSkinDir)
       if (pChild)
       { // ok, run through the credits
         TiXmlNode *pGrandChild = pChild->FirstChild("skinname");
-        if (pGrandChild)
+        if (pGrandChild && pGrandChild->FirstChild())
         {
           CStdString strName = pGrandChild->FirstChild()->Value();
           swprintf(credits[0], L"%S Skin", strName.Left(44).c_str());
         }
         pGrandChild = pChild->FirstChild("name");
         m_iNumCreditLines = 1;
-        while (pGrandChild && m_iNumCreditLines < 6)
+        while (pGrandChild && pGrandChild->FirstChild() && m_iNumCreditLines < 6)
         {
           CStdString strName = pGrandChild->FirstChild()->Value();
           swprintf(credits[m_iNumCreditLines], L"%S", strName.Left(49).c_str());
@@ -141,29 +141,6 @@ bool CSkinInfo::Check(const CStdString& strSkinDir)
   return false;
 }
 
-bool CSkinInfo::ReadElement(const CStdString strSkinDir, CStdString strElement, CStdString& strElementValue)
-{
-  // Load from skin.xml
-  TiXmlDocument xmlDoc;
-  CStdString strFile = strSkinDir + "\\skin.xml";
-  CStdString strGoodPath = strSkinDir;
-  if (xmlDoc.LoadFile(strFile.c_str()))
-  { // ok - get the default res folder out of it...
-    TiXmlElement* pRootElement = xmlDoc.RootElement();
-    CStdString strValue = pRootElement->Value();
-    if (strValue == "skin")
-    { // search the for the element
-      TiXmlNode *pChild = pRootElement->FirstChild(strElement.c_str());
-      if (pChild)
-      {
-        CLog::Log(LOGINFO, "Skin read value is: %s", pChild->FirstChild()->Value());
-        strElementValue = pChild->FirstChild()->Value();
-        return true;
-      }
-    }
-  }
-  return false;
-}
 CStdString CSkinInfo::GetSkinPath(const CStdString& strFile, RESOLUTION *res)
 {
   // first try and load from the current resolution's directory

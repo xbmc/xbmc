@@ -75,6 +75,7 @@ CTextureBundle::CTextureBundle(void)
   m_PreLoadBuffer[1] = 0;
   m_Ovl[0].hEvent = CreateEvent(0, TRUE, TRUE, 0);
   m_Ovl[1].hEvent = CreateEvent(0, TRUE, TRUE, 0);
+  m_themeBundle = false;
 }
 
 CTextureBundle::~CTextureBundle(void)
@@ -94,31 +95,19 @@ bool CTextureBundle::OpenBundle()
   if (m_hFile != INVALID_HANDLE_VALUE)
     Cleanup();
 
-  //GeminiServer Skin XPR-Theme detection!
-  bool bIsXPR = true;
-  CStdString strElementValue, strElement ="defaultthemename";
-  CStdString strPath = g_graphicsContext.GetMediaDir();
-  CStdString strThemeXPR = g_guiSettings.GetString("LookAndFeel.SkinTheme");
-  g_stSettings.m_curSkinTheme = strThemeXPR; // let's strore the Current used Theme
-  if ((strThemeXPR.compare("Default.xpr") != 0) && !strThemeXPR.IsEmpty() )
-  { 
-    strPath += "\\media\\";
-    strPath += strThemeXPR.c_str();
-    if (GetFileAttributes(strPath.c_str()) == -1) bIsXPR = false;
+  CStdString strPath;
+  
+  if (m_themeBundle)
+  {
+    // if we are the theme bundle, we only load if the user has chosen
+    // a valid theme (or the skin has a default one)
+    CStdString themeXPR = g_guiSettings.GetString("LookAndFeel.SkinTheme");
+    if (!themeXPR.IsEmpty() && themeXPR.CompareNoCase("SKINDEFAULT"))
+      strPath.Format("%s\\media\\%s", g_graphicsContext.GetMediaDir(), themeXPR.c_str());
   }
-  else{ 
-    if ( g_SkinInfo.ReadElement(strPath,strElement,strElementValue)){
-        strPath += "\\media\\";
-        strPath += strElementValue.c_str();
-        strPath += ".xpr";
-        if (GetFileAttributes(strPath.c_str()) == -1) bIsXPR = false;
-    } else bIsXPR = false;
-  }
-  if (!bIsXPR){
-    strPath = g_graphicsContext.GetMediaDir();
-    strPath += "\\media\\Textures.xpr";
-  }
-  //
+  else
+    strPath.Format("%s\\media\\Textures.xpr", g_graphicsContext.GetMediaDir());
+
   if (GetFileAttributes(strPath.c_str()) == -1)
     return false;
 
@@ -586,4 +575,9 @@ PackedAnimError:
   if (pPal) delete pPal;
   if (*ppDelays) delete [] *ppDelays;
   return 0;
+}
+
+void CTextureBundle::SetThemeBundle(bool themeBundle)
+{
+  m_themeBundle = themeBundle;
 }

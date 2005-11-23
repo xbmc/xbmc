@@ -4,13 +4,14 @@
 #include "TextureManager.h"
 #include "../xbmc/FileSystem/HDDirectory.h"
 
-CGUIMultiImage::CGUIMultiImage(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strTexturePath, DWORD timePerImage, DWORD fadeTime)
+CGUIMultiImage::CGUIMultiImage(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strTexturePath, DWORD timePerImage, DWORD fadeTime, bool randomized)
     : CGUIControl(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight)
 {
   m_texturePath = strTexturePath;
   m_currentImage = 0;
   m_timePerImage = timePerImage;
   m_fadeTime = fadeTime;
+  m_randomized = randomized;
   m_keepAspectRatio = false;
   ControlType = GUICONTROL_MULTI_IMAGE;
   m_bDynamicResourceAlloc=false;
@@ -39,10 +40,15 @@ void CGUIMultiImage::Render()
   if (m_images.empty())
     return ;
 
+  // Set a viewport so that we don't render outside the defined area
+  g_graphicsContext.SetViewPort((float)m_iPosX, (float)m_iPosY, (float)m_dwWidth, (float)m_dwHeight);
   m_images[m_currentImage]->Render();
 
   if (m_images.size() <= 1)
+  {
+    g_graphicsContext.RestoreViewPort();
     return; // no need for complicated stuff if we only have 1 picture!
+  }
 
   unsigned int nextImage = (m_currentImage + 1) % m_images.size();
 
@@ -51,8 +57,7 @@ void CGUIMultiImage::Render()
   {
     m_imageTimer.Stop();
     // grab a new image
-    // nextImage is the one we want.  Note that it will be loaded automagically
-    // at time to Render (using GUIImage's auto-load functions)
+    LoadImage(nextImage);
     // start the fade timer
     m_fadeTimer.StartZero();
   }
@@ -79,6 +84,8 @@ void CGUIMultiImage::Render()
     }
     m_images[nextImage]->Render();
   }
+
+  g_graphicsContext.RestoreViewPort();
 
   CGUIControl::Render();
 }
@@ -116,7 +123,10 @@ void CGUIMultiImage::AllocResources()
   }
 
   // and sort them
-  sort(images.begin(), images.end());
+  if (m_randomized)
+    random_shuffle(images.begin(), images.end());
+  else
+    sort(images.begin(), images.end());
 
   for (unsigned int i=0; i < images.size(); i++)
   {
@@ -130,26 +140,35 @@ void CGUIMultiImage::AllocResources()
   m_currentImage = 0;
   if (m_images.empty())
     return;
-  m_images[m_currentImage]->AllocResources();
+
+  LoadImage(m_currentImage);
+}
+
+void CGUIMultiImage::LoadImage(int image)
+{
+  if (image < 0 || image >= (int)m_images.size())
+    return;
+
+  m_images[image]->AllocResources();
 
   // Scale image so that it will fill our render area
   if (m_keepAspectRatio)
   {
     // image is scaled so that the aspect ratio is maintained (taking into account the TV pixel ratio)
     // and so that it fills the allocated space (so is zoomed then cropped)
-    float sourceAspectRatio = (float)m_images[m_currentImage]->GetTextureWidth() / m_images[m_currentImage]->GetTextureHeight();
+    float sourceAspectRatio = (float)m_images[image]->GetTextureWidth() / m_images[image]->GetTextureHeight();
     float aspectRatio = sourceAspectRatio / g_graphicsContext.GetPixelRatio(g_graphicsContext.GetVideoResolution());
 
     unsigned int newWidth = m_dwWidth;
-    unsigned int newHeight = (unsigned int)((float)newWidth * aspectRatio);
+    unsigned int newHeight = (unsigned int)((float)newWidth / aspectRatio);
     if (newHeight < m_dwHeight)
     {
       newHeight = m_dwHeight;
-      newWidth = (unsigned int)((float)newHeight / aspectRatio);
+      newWidth = (unsigned int)((float)newHeight * aspectRatio);
     }
-    m_images[m_currentImage]->SetPosition(m_iPosX - (int)(newWidth - m_dwWidth)/2, m_iPosY - (int)(newHeight - m_dwHeight)/2);
-    m_images[m_currentImage]->SetWidth(newWidth);
-    m_images[m_currentImage]->SetHeight(newHeight);
+    m_images[image]->SetPosition(m_iPosX - (int)(newWidth - m_dwWidth)/2, m_iPosY - (int)(newHeight - m_dwHeight)/2);
+    m_images[image]->SetWidth(newWidth);
+    m_images[image]->SetHeight(newHeight);
   }
 }
 

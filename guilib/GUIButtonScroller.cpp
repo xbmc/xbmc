@@ -173,6 +173,8 @@ void CGUIButtonScroller::SetFont(const CStdString &strFont, DWORD dwColor)
 
 void CGUIButtonScroller::Render()
 {
+	if (!UpdateEffectState())
+		return;
   int iPosX = m_iPosX;
   int iPosY = m_iPosY;
   // set our viewport

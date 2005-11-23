@@ -94,9 +94,10 @@ public:
 protected:
   vector<CTextureMap*> m_vecTextures;
   typedef vector<CTextureMap*>::iterator ivecTextures;
-  CTextureBundle m_TexBundle;
-  list<CStdString> m_PreLoadNames;
-  list<CStdString>::iterator m_iNextPreload;
+  // we have 2 texture bundles (one for the base textures, one for the theme)
+  CTextureBundle m_TexBundle[2];
+  list<CStdString> m_PreLoadNames[2];
+  list<CStdString>::iterator m_iNextPreload[2];
 };
 
 /*!
