@@ -256,7 +256,10 @@ void CTextureMap::Flush()
 CGUITextureManager::CGUITextureManager(void)
 {
   D3DXSetDXT3DXT5(TRUE);
-  m_iNextPreload = m_PreLoadNames.end();
+  for (int bundle = 0; bundle < 2; bundle++)
+    m_iNextPreload[bundle] = m_PreLoadNames[bundle].end();
+  // we set the theme bundle to be the first bundle (thus prioritising it
+  m_TexBundle[0].SetThemeBundle(true);
 }
 
 CGUITextureManager::~CGUITextureManager(void)
@@ -326,7 +329,8 @@ DWORD __forceinline __stdcall PadPow2(DWORD x)
 
 void CGUITextureManager::StartPreLoad()
 {
-  m_PreLoadNames.clear();
+  for (int bundle = 0; bundle < 2; bundle++)
+    m_PreLoadNames[bundle].clear();
 }
 
 void CGUITextureManager::PreLoad(const CStdString& strTextureName)
@@ -341,28 +345,40 @@ void CGUITextureManager::PreLoad(const CStdString& strTextureName)
       return ;
   }
 
-  for (list<CStdString>::iterator i = m_PreLoadNames.begin(); i != m_PreLoadNames.end(); ++i)
+  for (int bundle = 0; bundle < 2; bundle++)
   {
-    if (*i == strTextureName)
-      return ;
-  }
+    for (list<CStdString>::iterator i = m_PreLoadNames[bundle].begin(); i != m_PreLoadNames[bundle].end(); ++i)
+    {
+      if (*i == strTextureName)
+        return ;
+    }
 
-  if (m_TexBundle.HasFile(strTextureName))
-    m_PreLoadNames.push_back(strTextureName);
+    if (m_TexBundle[bundle].HasFile(strTextureName))
+    {
+      m_PreLoadNames[bundle].push_back(strTextureName);
+      return;
+    }
+  }
 }
 
 void CGUITextureManager::EndPreLoad()
 {
-  m_iNextPreload = m_PreLoadNames.begin();
-  // preload next file
-  if (m_iNextPreload != m_PreLoadNames.end())
-    m_TexBundle.PreloadFile(*m_iNextPreload);
+  for (int i = 0; i < 2; i++)
+  {
+    m_iNextPreload[i] = m_PreLoadNames[i].begin();
+    // preload next file
+    if (m_iNextPreload[i] != m_PreLoadNames[i].end())
+      m_TexBundle[i].PreloadFile(*m_iNextPreload[i]);
+  }
 }
 
 void CGUITextureManager::FlushPreLoad()
 {
-  m_PreLoadNames.clear();
-  m_iNextPreload = m_PreLoadNames.end();
+  for (int i = 0; i < 2; i++)
+  {
+    m_PreLoadNames[i].clear();
+    m_iNextPreload[i] = m_PreLoadNames[i].end();
+  }
 }
 
 int CGUITextureManager::Load(const CStdString& strTextureName, DWORD dwColorKey)
@@ -376,14 +392,16 @@ int CGUITextureManager::Load(const CStdString& strTextureName, DWORD dwColorKey)
     CTextureMap *pMap = m_vecTextures[i];
     if (pMap->GetName() == strTextureName)
     {
-      if (m_iNextPreload != m_PreLoadNames.end() && (*m_iNextPreload == strTextureName))
+      for (int i = 0; i < 2; i++)
       {
-        ++m_iNextPreload;
-        // preload next file
-        if (m_iNextPreload != m_PreLoadNames.end())
-          m_TexBundle.PreloadFile(*m_iNextPreload);
+        if (m_iNextPreload[i] != m_PreLoadNames[i].end() && (*m_iNextPreload[i] == strTextureName))
+        {
+          ++m_iNextPreload[i];
+          // preload next file
+          if (m_iNextPreload[i] != m_PreLoadNames[i].end())
+            m_TexBundle[i].PreloadFile(*m_iNextPreload[i]);
+        }
       }
-
       return pMap->size();
     }
   }
@@ -395,29 +413,32 @@ int CGUITextureManager::Load(const CStdString& strTextureName, DWORD dwColorKey)
   LPDIRECT3DTEXTURE8 pTexture;
   LPDIRECT3DPALETTE8 pPal = 0;
 
-  bool bBundled;
+  int bundle = -1;
   const CStdString* pstrBundleTex = NULL;
-  if (m_iNextPreload != m_PreLoadNames.end() && (*m_iNextPreload == strTextureName)) // || *m_iNextPreload == strPalTex))
+  for (int i = 0; i < 2; i++)
   {
-    pstrBundleTex = &strTextureName;
+    if (m_iNextPreload[i] != m_PreLoadNames[i].end() && (*m_iNextPreload[i] == strTextureName)) // || *m_iNextPreload == strPalTex))
+    {
+      pstrBundleTex = &strTextureName;
 
-    bBundled = true;
-    ++m_iNextPreload;
-    // preload next file
-    if (m_iNextPreload != m_PreLoadNames.end())
-      m_TexBundle.PreloadFile(*m_iNextPreload);
+      bundle = i;
+      ++m_iNextPreload[i];
+      // preload next file
+      if (m_iNextPreload[i] != m_PreLoadNames[i].end())
+        m_TexBundle[i].PreloadFile(*m_iNextPreload[i]);
+      break;
+    }
+    else if (m_TexBundle[i].HasFile(strTextureName))
+    {
+      pstrBundleTex = &strTextureName;
+      bundle = i;
+      break;
+    }
   }
-  else if (m_TexBundle.HasFile(strTextureName))
-  {
-    pstrBundleTex = &strTextureName;
-    bBundled = true;
-  }
-  else
-    bBundled = false;
 
   CStdString strPath;
 
-  if (!bBundled)
+  if (bundle != -1)
     strPath = GetTexturePath(strTextureName);
   else
     strPath = strTextureName;
@@ -427,7 +448,7 @@ int CGUITextureManager::Load(const CStdString& strTextureName, DWORD dwColorKey)
 
   bool bPacked;
   CStdString strPackedPath;
-  if (!bBundled)
+  if (bundle == -1)
   {
     strPackedPath = strPath;
     strPackedPath += ".xpr";
@@ -442,15 +463,15 @@ int CGUITextureManager::Load(const CStdString& strTextureName, DWORD dwColorKey)
   {
     CTextureMap* pMap;
 
-    if (bPacked || bBundled)
+    if (bPacked || bundle >= 0)
     {
       LPDIRECT3DTEXTURE8* pTextures;
       int nLoops = 0;
       int* Delay;
       int nImages;
-      if (bBundled)
+      if (bundle >= 0)
       {
-        nImages = m_TexBundle.LoadAnim(g_graphicsContext.Get3DDevice(), *pstrBundleTex, &info, &pTextures, &pPal, nLoops, &Delay);
+        nImages = m_TexBundle[bundle].LoadAnim(g_graphicsContext.Get3DDevice(), *pstrBundleTex, &info, &pTextures, &pPal, nLoops, &Delay);
         if (!nImages)
         {
           CLog::Log(LOGERROR, "Texture manager unable to load bundled file: %s", pstrBundleTex->c_str());
@@ -540,16 +561,16 @@ int CGUITextureManager::Load(const CStdString& strTextureName, DWORD dwColorKey)
     QueryPerformanceCounter(&end);
     QueryPerformanceFrequency(&freq);
     char temp[200];
-    sprintf(temp, "Load %s: %.1fms%s\n", strPath.c_str(), 1000.f * (end.QuadPart - start.QuadPart) / freq.QuadPart, bPacked ? " (packed)" : bBundled ? " (bundled)" : "");
+    sprintf(temp, "Load %s: %.1fms%s\n", strPath.c_str(), 1000.f * (end.QuadPart - start.QuadPart) / freq.QuadPart, bPacked ? " (packed)" : (bundle >= 0) ? " (bundled)" : "");
     OutputDebugString(temp);
 
     m_vecTextures.push_back(pMap);
     return pMap->size();
   } // of if (strPath.Right(4).ToLower()==".gif")
 
-  if (bBundled)
+  if (bundle >= 0)
   {
-    if (FAILED(m_TexBundle.LoadTexture(g_graphicsContext.Get3DDevice(), *pstrBundleTex, &info, &pTexture, &pPal)))
+    if (FAILED(m_TexBundle[bundle].LoadTexture(g_graphicsContext.Get3DDevice(), *pstrBundleTex, &info, &pTexture, &pPal)))
     {
       CLog::Log(LOGERROR, "Texture manager unable to load bundled file: %s", pstrBundleTex->c_str());
       return NULL;
@@ -594,15 +615,9 @@ int CGUITextureManager::Load(const CStdString& strTextureName, DWORD dwColorKey)
   LARGE_INTEGER end, freq;
   QueryPerformanceCounter(&end);
   QueryPerformanceFrequency(&freq);
-  // char temp[200];
-  // sprintf(temp, "Load %s: %.1fms%s\n", strPath.c_str(), 1000.f * (end.QuadPart - start.QuadPart) / freq.QuadPart, bPacked ? " (packed)" : bBundled ? " (bundled)" : "");
-  // OutputDebugString(temp);
 
-  //CStdString strLog;
-  //strLog.Format("%s %ix%i\n", strTextureName.c_str(),info.Width,info.Height);
-  //OutputDebugString(strLog.c_str());
   CTextureMap* pMap = new CTextureMap(strTextureName);
-  CTexture* pclsTexture = new CTexture(pTexture, info.Width, info.Height, bPacked || bBundled, 100, pPal);
+  CTexture* pclsTexture = new CTexture(pTexture, info.Width, info.Height, bPacked || bundle >= 0, 100, pPal);
   pMap->Add(pclsTexture);
   m_vecTextures.push_back(pMap);
   if (pPal)
@@ -772,7 +787,8 @@ void CGUITextureManager::Cleanup()
     delete pMap;
     i = m_vecTextures.erase(i);
   }
-  m_TexBundle.Cleanup();
+  for (int i = 0; i < 2; i++)
+    m_TexBundle[i].Cleanup();
 }
 
 void CGUITextureManager::Dump() const
@@ -827,5 +843,7 @@ CStdString CGUITextureManager::GetTexturePath(const CStdString &textureName)
 
 void CGUITextureManager::GetBundledTexturesFromPath(const CStdString& texturePath, CStdStringArray &items)
 {
-  m_TexBundle.GetTexturesFromPath(texturePath, items);
+  m_TexBundle[0].GetTexturesFromPath(texturePath, items);
+  if (items.empty())
+    m_TexBundle[1].GetTexturesFromPath(texturePath, items);
 }

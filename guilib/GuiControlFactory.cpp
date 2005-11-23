@@ -347,6 +347,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
   CStdString texturePath;
   DWORD timePerImage = 0;
   DWORD fadeTime = 0;
+  bool randomized = false;
 
   /////////////////////////////////////////////////////////////////////////////
   // Read default properties from reference controls
@@ -556,6 +557,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
       bKeepAspectRatio = ((CGUIMultiImage *)pReference)->GetKeepAspectRatio();
       timePerImage =  ((CGUIMultiImage *)pReference)->GetTimePerImage();
       fadeTime =  ((CGUIMultiImage *)pReference)->GetFadeTime();
+      randomized = ((CGUIMultiImage *)pReference)->GetRandomized();
     }
     else if (strType == "listcontrol")
     {
@@ -1009,6 +1011,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
   GetPath(pControlNode,"imagepath", texturePath);
   GetDWORD(pControlNode,"timeperimage", timePerImage);
   GetDWORD(pControlNode,"fadetime", fadeTime);
+  GetBoolean(pControlNode, "randomize", randomized);
 
   /////////////////////////////////////////////////////////////////////////////
   // Instantiate a new control using the properties gathered above
@@ -1285,7 +1288,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
   else if (strType == "multiimage")
   {
     CGUIMultiImage* pControl = new CGUIMultiImage(
-      dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight, texturePath, timePerImage, fadeTime);
+      dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight, texturePath, timePerImage, fadeTime, randomized);
     pControl->SetNavigation(up, down, left, right);
     pControl->SetKeepAspectRatio(bKeepAspectRatio);
     pControl->SetVisible(bVisible);
@@ -1441,6 +1444,8 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     pControl->SetFont(strFont, dwTextColor);
     pControl->SetNavigation(up, down, left, right);
     pControl->SetPulseOnSelect(bPulse);
+    pControl->SetVisible(bVisible);
+    pControl->SetVisibleCondition(iVisibleCondition, iEffectType, iEffectInTime, iEffectOutTime, startHidden);
     return pControl;
   }
   else if (strType == "spincontrolex")
