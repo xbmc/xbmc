@@ -162,7 +162,7 @@
       <width>200</width>
       <posX>660</posX>
       <posY>528</posY>
-      <label>Track $INFO[musicplayer.Playlistposition] / $INFO[musicplayer.Playlistlength]</label>
+      <label>$LOCALIZE[435] $INFO[musicplayer.Playlistposition] / $INFO[musicplayer.Playlistlength]</label>
       <visible effect="fade" time="1000">Player.ShowInfo</visible>
       <align>right</align>
       <font>font10</font>
