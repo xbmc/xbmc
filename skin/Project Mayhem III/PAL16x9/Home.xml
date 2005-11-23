@@ -10,7 +10,7 @@
       <posY>105</posY>
       <width>538</width>
       <height>362</height>
-      <imagepath>4x3home-myprograms</imagepath>
+      <imagepath>16x9home-myprograms</imagepath>
       <timeperimage>5000</timeperimage>
       <fadetime>2000</fadetime>
       <visible effect="fade" time="200">!Player.HasMedia</visible>
@@ -36,7 +36,7 @@
       <posY>105</posY>
       <width>538</width>
       <height>362</height>
-      <imagepath>4x3home-mymusic</imagepath>
+      <imagepath>16x9home-mymusic</imagepath>
       <timeperimage>5000</timeperimage>
       <fadetime>2000</fadetime>
       <visible effect="fade" time="200">!Player.HasMedia</visible>
@@ -49,7 +49,7 @@
       <posY>105</posY>
       <width>538</width>
       <height>362</height>
-      <imagepath>4x3home-mypictures</imagepath>
+      <imagepath>16x9home-mypictures</imagepath>
       <timeperimage>5000</timeperimage>
       <fadetime>2000</fadetime>
       <visible effect="fade" time="200">!Player.HasMedia</visible>
@@ -88,7 +88,7 @@
       <posY>105</posY>
       <width>538</width>
       <height>362</height>
-      <imagepath>4x3home-settings</imagepath>
+      <imagepath>16x9home-settings</imagepath>
       <timeperimage>5000</timeperimage>
       <fadetime>2000</fadetime>
       <visible effect="fade" time="200">!Player.HasMedia</visible>
