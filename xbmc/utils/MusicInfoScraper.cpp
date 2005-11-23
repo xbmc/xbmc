@@ -60,7 +60,11 @@ void CMusicInfoScraper::FindAlbuminfo()
   CStdString strURL = "http://www.allmusic.com/cg/amg.dll?";
   strURL += strPostData;
   CMusicAlbumInfo newAlbum("", strURL);
-  if (strHTML.Find("No Results Found") > -1) return;
+  if (strHTML.Find("No Results Found") > -1)
+  {
+    m_bSuccessfull=true;
+    return;
+  }
   if (strHTML.Find("Album Search Results for:") == -1)
   {
     if (newAlbum.Parse(strHTML, m_http))
