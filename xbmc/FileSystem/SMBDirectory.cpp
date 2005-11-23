@@ -249,11 +249,16 @@ int CSMBDirectory::OpenDir(CStdString& strAuth)
         if( iTryAutomatic ) 
           continue;
 
-        g_passwordManager.SetSMBShare(strPath);
-        g_passwordManager.GetSMBShareUserPassword();  // Do this bit via a threadmessage?
-        if (g_passwordManager.IsCanceled())
+        if (m_allowPrompting)
+        {
+          g_passwordManager.SetSMBShare(strPath);
+          g_passwordManager.GetSMBShareUserPassword();  // Do this bit via a threadmessage?
+          if (g_passwordManager.IsCanceled())
           	break;
-        strPath = g_passwordManager.GetSMBShare();
+          strPath = g_passwordManager.GetSMBShare();
+        }
+        else
+          break;
       }
       else
       {
@@ -261,16 +266,19 @@ int CSMBDirectory::OpenDir(CStdString& strAuth)
         if (nt_error == 0xc0000034)
           cError.Format(g_localizeStrings.Get(770).c_str(),nt_error);
         else
-          cError = get_friendly_nt_error_msg(nt_error);       
+          cError = get_friendly_nt_error_msg(nt_error);
+        
+        if (m_allowPrompting)
+        {
+          CGUIDialogOK* pDialog = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
+          pDialog->SetHeading(257);
+          pDialog->SetLine(0, cError);
+          pDialog->SetLine(1, L"");
+          pDialog->SetLine(2, L"");
 
-        CGUIDialogOK* pDialog = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
-        pDialog->SetHeading(257);
-        pDialog->SetLine(0, cError);
-        pDialog->SetLine(1, L"");
-        pDialog->SetLine(2, L"");
-
-        ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, WINDOW_DIALOG_OK, m_gWindowManager.GetActiveWindow()};
-        g_applicationMessenger.SendMessage(tMsg, false);
+          ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, WINDOW_DIALOG_OK, m_gWindowManager.GetActiveWindow()};
+          g_applicationMessenger.SendMessage(tMsg, false);
+        }
         break;
       }
     }

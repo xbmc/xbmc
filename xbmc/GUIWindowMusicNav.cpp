@@ -1244,8 +1244,8 @@ void CGUIWindowMusicNav::OnFileItemFormatLabel(CFileItem* pItem)
     pItem->SetArtistThumb();
   else if (m_iState != SHOW_ROOT)
     pItem->SetMusicThumb();
-  if (pItem->GetIconImage() == "music.jpg")
-    pItem->SetThumbnailImage("MyMusic.jpg");
+  if (pItem->GetIconImage() == "defaultAlbumCover.png")
+    pItem->SetThumbnailImage("defaultAlbumCover.png");
   pItem->FillInDefaultIcon();
 }
 

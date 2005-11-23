@@ -240,6 +240,9 @@ int CFileSMB::OpenFile(CStdString& strAuth)
       strPath = strAuth.Left(iPos + 1);
 
       CSMBDirectory smbDir;
+      // TODO: Currently we always allow prompting on files.  This may need to
+      // change in the future as background scanners are more prolific.
+      smbDir.SetAllowPrompting(true);
       fd = smbDir.Open(strPath);
 
       // directory open worked, try opening the file again
