@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 23-11-2005 fixed: Textures outside of Textures.xpr were failing to load.
+ - 23-11-2005 fixed: Fading code for homepage could cause multiple images to show in some cases (eg PM2).
  - 23-11-2005 added: Skin.HasTheme(themename) visibility condition.
  - 23-11-2005 fixed: [ 1358363 ] AlbumInfo for none existing albums thanks to pade2.
  - 23-11-2005 fixed:   Removed invalid .jpg files from CVS.
