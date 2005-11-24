@@ -438,7 +438,7 @@ int CGUITextureManager::Load(const CStdString& strTextureName, DWORD dwColorKey)
 
   CStdString strPath;
 
-  if (bundle != -1)
+  if (bundle == -1)
     strPath = GetTexturePath(strTextureName);
   else
     strPath = strTextureName;
