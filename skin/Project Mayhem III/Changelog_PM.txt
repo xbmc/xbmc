@@ -1,3 +1,5 @@
+2005-11-24 fixed:	music.jpg replaced with defaultAlbumCover.png
+
 2005-11-23 fixed:	SongInfo overlay during slideshow didnt work properly in 16:9 resolutions
 2005-11-23 fixed:	localized the "Track" label in the fullscreen viz music infos
 2005-11-23 changed:	matched the My Videos button order with My Music (Playlists button)

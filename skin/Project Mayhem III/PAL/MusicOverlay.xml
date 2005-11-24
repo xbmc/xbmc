@@ -22,7 +22,7 @@
       <posY>387</posY>
       <width>100</width>
       <height>109</height>
-      <texture>music.jpg</texture>
+      <texture>defaultAlbumCover.png</texture>
       <info>MusicPlayer.Cover</info>
     </control>
 
