@@ -4,7 +4,7 @@
 #include "TextureManager.h"
 #include "../xbmc/FileSystem/HDDirectory.h"
 
-CGUIMultiImage::CGUIMultiImage(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strTexturePath, DWORD timePerImage, DWORD fadeTime, bool randomized)
+CGUIMultiImage::CGUIMultiImage(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strTexturePath, DWORD timePerImage, DWORD fadeTime, bool randomized, bool loop)
     : CGUIControl(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight)
 {
   m_texturePath = strTexturePath;
@@ -12,6 +12,7 @@ CGUIMultiImage::CGUIMultiImage(DWORD dwParentID, DWORD dwControlId, int iPosX, i
   m_timePerImage = timePerImage;
   m_fadeTime = fadeTime;
   m_randomized = randomized;
+  m_loop = loop;
   m_keepAspectRatio = false;
   ControlType = GUICONTROL_MULTI_IMAGE;
   m_bDynamicResourceAlloc=false;
@@ -44,13 +45,15 @@ void CGUIMultiImage::Render()
   g_graphicsContext.SetViewPort((float)m_iPosX, (float)m_iPosY, (float)m_dwWidth, (float)m_dwHeight);
   m_images[m_currentImage]->Render();
 
-  if (m_images.size() <= 1)
-  {
-    g_graphicsContext.RestoreViewPort();
-    return; // no need for complicated stuff if we only have 1 picture!
-  }
+  unsigned int nextImage = m_currentImage + 1;
+  if (nextImage >= m_images.size())
+    nextImage = m_loop ? 0 : m_currentImage;  // stay on the last image if <loop>no</loop>
 
-  unsigned int nextImage = (m_currentImage + 1) % m_images.size();
+  if (nextImage == m_currentImage)
+  { // no need for complicated stuff if we aren't loading a new image!
+    g_graphicsContext.RestoreViewPort();
+    return;
+  }
 
   // check if we should be loading a new image yet
   if (m_imageTimer.IsRunning() && m_imageTimer.GetElapsedMilliseconds() > m_timePerImage)
