@@ -266,13 +266,11 @@ bool CGUIControl::OnMessage(CGUIMessage& message)
           m_effectLength = message.GetParam1();
           m_effectStart = timeGetTime() - (int)(m_effectLength * (1.0f - m_effectAmount));
         }
-        else if (m_effectState == EFFECT_IN)
-          m_effectState = EFFECT_NONE;
       }
       else
         m_bVisible = false;
       if (m_effectState == EFFECT_IN) // make sure we reset the fade in state.
-        m_effectState == EFFECT_NONE; // occurs if fading is performed from the code.
+        m_effectState = EFFECT_NONE;  // occurs if fading is performed from the code.
       return true;
       break;
 
