@@ -348,6 +348,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
   DWORD timePerImage = 0;
   DWORD fadeTime = 0;
   bool randomized = false;
+  bool loop = true;
 
   /////////////////////////////////////////////////////////////////////////////
   // Read default properties from reference controls
@@ -557,6 +558,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
       bKeepAspectRatio = ((CGUIMultiImage *)pReference)->GetKeepAspectRatio();
       timePerImage =  ((CGUIMultiImage *)pReference)->GetTimePerImage();
       fadeTime =  ((CGUIMultiImage *)pReference)->GetFadeTime();
+      loop = ((CGUIMultiImage *)pReference)->GetLoop();
       randomized = ((CGUIMultiImage *)pReference)->GetRandomized();
     }
     else if (strType == "listcontrol")
@@ -1012,6 +1014,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
   GetDWORD(pControlNode,"timeperimage", timePerImage);
   GetDWORD(pControlNode,"fadetime", fadeTime);
   GetBoolean(pControlNode, "randomize", randomized);
+  GetBoolean(pControlNode, "loop", loop);
 
   /////////////////////////////////////////////////////////////////////////////
   // Instantiate a new control using the properties gathered above
@@ -1288,7 +1291,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
   else if (strType == "multiimage")
   {
     CGUIMultiImage* pControl = new CGUIMultiImage(
-      dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight, texturePath, timePerImage, fadeTime, randomized);
+      dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight, texturePath, timePerImage, fadeTime, randomized, loop);
     pControl->SetNavigation(up, down, left, right);
     pControl->SetKeepAspectRatio(bKeepAspectRatio);
     pControl->SetVisible(bVisible);
