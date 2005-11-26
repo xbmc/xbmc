@@ -327,7 +327,7 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
   GetString(pRootElement, "shortcuts", g_stSettings.m_szShortcutDirectory, "");
   GetString(pRootElement, "screenshots", g_stSettings.m_szScreenshotsDirectory, "");
   GetString(pRootElement, "recordings", g_stSettings.m_szMusicRecordingDirectory, "");
-  GetString(pRootElement, "playlists", g_stSettings.m_szPlaylistsDirectory,"Q:\\albums\\playlists");
+  GetString(pRootElement, "playlists", g_stSettings.m_szPlaylistsDirectory, "Q:\\albums\\playlists");
 
   GetString(pRootElement, "albums", g_stSettings.m_szAlbumDirectory, "");
   GetString(pRootElement, "subtitles", g_stSettings.m_szAlternateSubtitleDirectory, "");
@@ -548,6 +548,9 @@ void CSettings::ConvertHomeVar(CStdString& strText)
       else
         strText += token[i]+"\\";
   }
+  // remove trailing slash
+  if (CUtil::HasSlashAtEnd(strText))
+    strText.Delete(strText.size() - 1);
 }
 
 void CSettings::GetShares(const TiXmlElement* pRootElement, const CStdString& strTagName, VECSHARES& items, CStdString& strDefault)
