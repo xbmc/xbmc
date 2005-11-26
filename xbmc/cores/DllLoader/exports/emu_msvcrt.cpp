@@ -554,6 +554,14 @@ extern "C"
 
   int dll_fputc (int character, FILE * stream)
   {
+    if (stream && stream->_file < 0)
+    {
+      // probably not a file, might be a string
+      int res = fputc(character, stream);
+      if (res == EOF) CLog::Log(LOGWARNING, "dll_fputc failed");
+      return res;
+    }
+    
     not_implement("msvcrt.dll fake function dll_fputc() called\n");
     return 0;
   }
