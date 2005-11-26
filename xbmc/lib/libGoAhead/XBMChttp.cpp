@@ -322,6 +322,10 @@ int displayDir(int numParas, CStdString paras[]) {
     return g_applicationMessenger.SetResponse("<li>Error:Missing folder");
   }
   folder=paras[0];
+  if (folder.length()<1)
+  {
+    return g_applicationMessenger.SetResponse("<li>Error:Missing folder");
+  }
   if (numParas>1)
     mask=paras[1];
     if (numParas>2)
@@ -334,7 +338,13 @@ int displayDir(int numParas, CStdString paras[]) {
     return g_applicationMessenger.SetResponse("<li>Error");  
   }
   pDirectory->SetMask(mask);
-  bool bResult=pDirectory->GetDirectory(folder,dirItems);
+  CStdString tail=folder.Right(folder.length()-1);
+  bool bResult=((pDirectory->Exists(folder))||(tail==":")||(tail==":\\")||(tail==":/"));
+  if (!bResult)
+  {
+    return g_applicationMessenger.SetResponse("<li>Error:Not folder");
+  }
+  bResult=pDirectory->GetDirectory(folder,dirItems);
   if (!bResult)
   {
     return g_applicationMessenger.SetResponse("<li>Error:Not folder");
@@ -2094,7 +2104,7 @@ CStdString CXbmcHttpShim::xbmcExternalCall(char *command)
 /* Parse an XBMC HTTP API command */
 CStdString CXbmcHttpShim::xbmcProcessCommand( int eid, webs_t wp, char_t *command, char_t *parameter)
 {
-  CStdString cmd=command, paras=parameter, response="", retVal;
+  CStdString cmd=command, paras=parameter, response="[No response yet]", retVal;
   int cnt=0;
   if ((wp != NULL) && (eid==NO_EID))
     websHeader(wp);
@@ -2103,7 +2113,7 @@ CStdString CXbmcHttpShim::xbmcProcessCommand( int eid, webs_t wp, char_t *comman
   else
     g_applicationMessenger.HttpApi(cmd+";"+paras);
   //wait for response - max 10s
-  while (response=="" && cnt<100) 
+  while (response=="[No response yet]" && cnt<100) 
   {
     response=g_applicationMessenger.GetResponse();
     Sleep(100);
