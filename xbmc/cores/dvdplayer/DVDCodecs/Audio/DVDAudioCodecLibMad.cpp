@@ -1,7 +1,6 @@
 
 #include "../../../../stdafx.h"
 #include "DVDAudioCodecLibMad.h"
-#include "..\..\DVDPLayerDLL.h"
 
 static inline signed int scale(mad_fixed_t sample)
 {

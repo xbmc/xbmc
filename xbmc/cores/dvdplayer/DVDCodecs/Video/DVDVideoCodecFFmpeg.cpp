@@ -1,7 +1,6 @@
 
 #include "../../../../stdafx.h"
 #include "DVDVideoCodecFFmpeg.h"
-#include "..\..\DVDPLayerDLL.h"
 #include "..\..\DVDDemuxers\DVDDemux.h"
 
 #include "..\..\ffmpeg\ffmpeg.h"
@@ -19,8 +18,6 @@ CDVDVideoCodecFFmpeg::CDVDVideoCodecFFmpeg() : CDVDVideoCodec()
 
   m_iScreenWidth = 0;
   m_iScreenHeight = 0;
-  
-  m_bDllLoaded = false;
 }
 
 CDVDVideoCodecFFmpeg::~CDVDVideoCodecFFmpeg()
@@ -32,32 +29,16 @@ bool CDVDVideoCodecFFmpeg::Open(CodecID codecID, int iWidth, int iHeight)
 {
   AVCodec* pCodec;
 
-  if (!m_bDllLoaded)
-  {
-    DllLoader* pDll = g_sectionLoader.LoadDLL(DVD_AVCODEC_DLL);
-    if (!pDll)
-    {
-      CLog::Log(LOGERROR, "CDVDVideoCodecFFmpeg: Unable to load dll %s", DVD_AVCODEC_DLL);
-      return false;
-    }
-    
-    if (!dvdplayer_load_dll_avcodec(*pDll))
-    {
-      CLog::Log(LOGERROR, "CDVDVideoCodecFFmpeg: Unable to resolve exports from %s", DVD_AVCODEC_DLL);
-      Dispose();
-      return false;
-    }
-    m_bDllLoaded = true;
-  }
+  if (!m_dllAvFormat.Load() || !m_dllAvCodec.Load()) return false;
   
   // register all codecs, demux and protocols
-  av_log_set_callback(dvdplayer_log);
-  av_register_all();
+  m_dllAvCodec.av_log_set_callback(dvdplayer_log);
+  m_dllAvFormat.av_register_all();
 
-  m_pCodecContext = avcodec_alloc_context();
+  m_pCodecContext = m_dllAvCodec.avcodec_alloc_context();
   // avcodec_get_context_defaults(m_pCodecContext);
 
-  pCodec = avcodec_find_decoder(codecID);
+  pCodec = m_dllAvCodec.avcodec_find_decoder(codecID);
   if (!pCodec)
   {
     CLog::DebugLog("CDVDVideoCodecFFmpeg::Open() Unable to find codec");
@@ -87,13 +68,13 @@ bool CDVDVideoCodecFFmpeg::Open(CodecID codecID, int iWidth, int iHeight)
   // set acceleration
   m_pCodecContext->dsp_mask = FF_MM_FORCE | FF_MM_MMX | FF_MM_MMXEXT | FF_MM_SSE;
 
-  if (avcodec_open(m_pCodecContext, pCodec) < 0)
+  if (m_dllAvCodec.avcodec_open(m_pCodecContext, pCodec) < 0)
   {
     CLog::DebugLog("CDVDVideoCodecFFmpeg::Open() Unable to open codec");
     return false;
   }
 
-  m_pFrame = avcodec_alloc_frame();
+  m_pFrame = m_dllAvCodec.avcodec_alloc_frame();
   if (!m_pFrame) return false;
 
   return true;
@@ -101,28 +82,25 @@ bool CDVDVideoCodecFFmpeg::Open(CodecID codecID, int iWidth, int iHeight)
 
 void CDVDVideoCodecFFmpeg::Dispose()
 {
-  if (m_pFrame) av_free(m_pFrame);
+  if (m_pFrame) m_dllAvCodec.av_free(m_pFrame);
   m_pFrame = NULL;
 
   if (m_pConvertFrame)
   {
     delete[] m_pConvertFrame->data[0];
-    av_free(m_pConvertFrame);
+    m_dllAvCodec.av_free(m_pConvertFrame);
   }
   m_pConvertFrame = NULL;
 
   if (m_pCodecContext)
   {
-    if (m_pCodecContext->codec) avcodec_close(m_pCodecContext);
-    av_free(m_pCodecContext);
+    if (m_pCodecContext->codec) m_dllAvCodec.avcodec_close(m_pCodecContext);
+    m_dllAvCodec.av_free(m_pCodecContext);
     m_pCodecContext = NULL;
   }
   
-  if (m_bDllLoaded)
-  {
-    g_sectionLoader.UnloadDLL(DVD_AVCODEC_DLL);
-    m_bDllLoaded = false;
-  }
+  m_dllAvCodec.Unload();
+  m_dllAvFormat.Unload();
 }
 
 int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize)
@@ -132,7 +110,7 @@ int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize)
   if (!m_pCodecContext) return VC_ERROR;
   try
   {
-    int iLen = avcodec_decode_video(m_pCodecContext, m_pFrame, &iGotPicture, pData, iSize);
+    int iLen = m_dllAvCodec.avcodec_decode_video(m_pCodecContext, m_pFrame, &iGotPicture, pData, iSize);
   }
   catch (...)
   {
@@ -146,18 +124,18 @@ int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize)
       if (!m_pConvertFrame)
       {
         // Allocate an AVFrame structure
-        m_pConvertFrame = avcodec_alloc_frame();
+        m_pConvertFrame =  m_dllAvCodec.avcodec_alloc_frame();
 
         // Determine required buffer size and allocate buffer
-        int numBytes = avpicture_get_size(PIX_FMT_YUV420P, m_pCodecContext->width, m_pCodecContext->height);
+        int numBytes =  m_dllAvCodec.avpicture_get_size(PIX_FMT_YUV420P, m_pCodecContext->width, m_pCodecContext->height);
         BYTE* buffer = new BYTE[numBytes];
 
         // Assign appropriate parts of buffer to image planes in pFrameRGB
-        avpicture_fill((AVPicture *)m_pConvertFrame, buffer, PIX_FMT_YUV420P, m_pCodecContext->width, m_pCodecContext->height);
+        m_dllAvCodec.avpicture_fill((AVPicture *)m_pConvertFrame, buffer, PIX_FMT_YUV420P, m_pCodecContext->width, m_pCodecContext->height);
       }
 
       // convert the picture
-      img_convert((AVPicture*)m_pConvertFrame, PIX_FMT_YUV420P,
+      m_dllAvCodec.img_convert((AVPicture*)m_pConvertFrame, PIX_FMT_YUV420P,
                   (AVPicture*)m_pFrame, m_pCodecContext->pix_fmt,
                   m_pCodecContext->width, m_pCodecContext->height);
     }
@@ -167,7 +145,7 @@ int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize)
       if (m_pConvertFrame)
       {
         delete[] m_pConvertFrame->data[0];
-        av_free(m_pConvertFrame);
+         m_dllAvCodec.av_free(m_pConvertFrame);
         m_pConvertFrame = NULL;
       }
     }
@@ -179,12 +157,12 @@ int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize)
 
 void CDVDVideoCodecFFmpeg::Reset()
 {
-  avcodec_flush_buffers(m_pCodecContext);
+  m_dllAvCodec.avcodec_flush_buffers(m_pCodecContext);
 
   if (m_pConvertFrame)
   {
     delete[] m_pConvertFrame->data[0];
-    av_free(m_pConvertFrame);
+    m_dllAvCodec.av_free(m_pConvertFrame);
     m_pConvertFrame = NULL;
   }
 }

@@ -2,27 +2,38 @@
 #pragma once
 
 #include "DVDDemux.h"
-
-// XXX, remove ffmpeg dependency
-#include "..\ffmpeg\ffmpeg.h"
-
-struct AVFormatContext;
-struct AVPacket;
-struct AVStream;
+#include "DllAvFormat.h"
+#include "..\DVDCodecs\DllAvCodec.h"
 
 class CDemuxStreamVideoFFmpeg : public CDemuxStreamVideo
 {
 public:
+  CDemuxStreamVideoFFmpeg(DllAvCodec* pDll) : CDemuxStreamVideo()
+  {
+    m_pDll = pDll;
+  }
+  
   virtual void GetStreamInfo(std::string& strInfo);
+  
+private:
+  DllAvCodec*  m_pDll;
 };
+
 
 class CDemuxStreamAudioFFmpeg : public CDemuxStreamAudio
 {
 public:
-  CDemuxStreamAudioFFmpeg() : CDemuxStreamAudio() { previous_dts = 0LL; }
+  CDemuxStreamAudioFFmpeg(DllAvCodec* pDll) : CDemuxStreamAudio()
+  {
+    m_pDll = pDll;
+    previous_dts = 0LL;
+  }
 
   virtual void GetStreamInfo(std::string& strInfo);
   __int64 previous_dts;
+  
+private:
+  DllAvCodec*  m_pDll;
 };
 
 #define FFMPEG_FILE_BUFFER_SIZE   32768 // default reading size for ffmpeg
@@ -54,9 +65,6 @@ protected:
   void Lock()   { EnterCriticalSection(&m_critSection); }
   void Unlock() { LeaveCriticalSection(&m_critSection); }
 
-  bool LoadDlls();
-  void UnloadDlls();
-  
   bool ContextInit(const char* strFile, BYTE* buffer, int iBufferSize);
   void ContextDeInit();
 
@@ -68,8 +76,8 @@ protected:
   ByteIOContext m_ioContext;
   URLContext* m_pUrlContext;
   
-  bool m_bLoadedDllAvFormat;
-  bool m_bLoadedDllAvCodec;
+  DllAvFormat m_dllAvFormat;
+  DllAvCodec  m_dllAvCodec;
   
   unsigned __int64 m_iCurrentPts; // used for stream length estimation
 };

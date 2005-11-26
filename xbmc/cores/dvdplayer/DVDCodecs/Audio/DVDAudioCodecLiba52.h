@@ -26,12 +26,9 @@ protected:
   BYTE m_inputBuffer[4096];
   BYTE* m_pInputBuffer;
 
-  //BYTE m_frameBuffer[3840]; // max frame buffer
-  //int m_frameBufferSize;
-
   BYTE m_decodedData[131072]; // could be a bit to big
   int m_decodedDataSize;
-  //int m_iBufferSize;
+
   int m_iFrameSize;
   int m_iFlags;
   float* m_fSamples;
