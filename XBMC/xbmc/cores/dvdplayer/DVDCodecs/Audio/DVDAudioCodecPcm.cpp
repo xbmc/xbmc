@@ -1,7 +1,6 @@
 
 #include "../../../../stdafx.h"
 #include "DVDAudioCodecPcm.h"
-
 #include "../DVDCodecs.h"
 
 /* from g711.c by SUN microsystems (unrestricted use) */

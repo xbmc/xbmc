@@ -1,7 +1,6 @@
 
 #include "../../../../stdafx.h"
 #include "DVDAudioCodecLibDts.h"
-#include "..\..\DVDPLayerDLL.h"
 
 inline int16_t convert(register int32_t i)
 {

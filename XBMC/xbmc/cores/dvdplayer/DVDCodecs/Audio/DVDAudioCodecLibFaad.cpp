@@ -1,7 +1,6 @@
 
 #include "../../../../stdafx.h"
 #include "DVDAudioCodecLibFaad.h"
-#include "..\..\DVDPLayerDLL.h"
 
 CDVDAudioCodecLibFaad::CDVDAudioCodecLibFaad() : CDVDAudioCodec()
 {

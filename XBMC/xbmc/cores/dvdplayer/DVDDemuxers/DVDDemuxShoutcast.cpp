@@ -1,6 +1,5 @@
 
 #include "../../../stdafx.h"
-#include "..\DVDPlayerDLL.h"
 #include "..\DVDCodecs\DVDCodecs.h"
 #include "..\DVDInputStreams\DVDInputStreamHttp.h"
 #include "DVDDemuxShoutcast.h"
@@ -8,14 +7,14 @@
 #include "..\DVDClock.h" // for DVD_TIME_BASE
 #include "..\..\..\utils\HttpHeader.h"
 
-#define ICY_NOTICE1      "icy-notice1" // string
-#define ICY_NOTICE2      "icy-notice2" // string
-#define ICY_NAME         "icy-name"    // string
-#define ICY_GENRE        "icy-genre"   // string
-#define ICY_URL          "icy-url"     // string
-#define ICY_PUBLIC       "icy-pub"     // int (1 / 0)
-#define ICY_BITRATE      "icy-br"      // int (bitrate = val * 1000 ?)
-#define ICY_METAINTERVAL "icy-metaint" // int
+#define ICY_NOTICE1       "icy-notice1" // string
+#define ICY_NOTICE2       "icy-notice2" // string
+#define ICY_NAME          "icy-name"    // string
+#define ICY_GENRE         "icy-genre"   // string
+#define ICY_URL           "icy-url"     // string
+#define ICY_PUBLIC        "icy-pub"     // int (1 / 0)
+#define ICY_BITRATE       "icy-br"      // int (bitrate = val * 1000 ?)
+#define ICY_METAINTERVAL  "icy-metaint" // int
 
 #define CONTENT_TYPE_MP3  "audio/mpeg"
 #define CONTENT_TYPE_AAC  "audio/aac"

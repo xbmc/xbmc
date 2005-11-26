@@ -2,8 +2,8 @@
 #pragma once
 
 #include "DVDAudioCodec.h"
-
-struct AVCodecContext;
+#include "..\DllAvCodec.h"
+#include "..\..\DVDDemuxers\DllAvFormat.h"
 
 // should be the same as in avcodec.h
 #define AVCODEC_MAX_AUDIO_FRAME_SIZE 131072
@@ -28,5 +28,7 @@ protected:
   unsigned char m_buffer[AVCODEC_MAX_AUDIO_FRAME_SIZE];
   int m_iBufferSize;
   bool m_bOpenedCodec;
-  bool m_bDllLoaded;
+  
+  DllAvCodec m_dllAvCodec;
+  DllAvFormat m_dllAvFormat;
 };

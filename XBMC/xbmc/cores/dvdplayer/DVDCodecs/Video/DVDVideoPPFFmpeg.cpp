@@ -1,12 +1,6 @@
 #include "../../../../stdafx.h"
 #include "DVDVideoPPFFmpeg.h"
 
-#define uint8_t unsigned char
-#define int8_t char
-
-#include "..\..\ffmpeg\postprocess.h"
-
-
 CDVDVideoPPFFmpeg::CDVDVideoPPFFmpeg(EPPTYPE mType)
 {
   m_eType = mType;

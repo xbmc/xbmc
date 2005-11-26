@@ -2,29 +2,6 @@
 #include "../../../../stdafx.h"
 #include "DVDVideoCodecLibMpeg2.h"
 #include "..\..\DVDClock.h"
-#include "..\..\DVDPlayerDLL.h"
-
-#include "..\..\..\..\util.h"
-
-
-typedef signed char int8_t;
-typedef signed short int16_t;
-typedef signed int int32_t;
-typedef unsigned char uint8_t;
-typedef unsigned short uint16_t;
-typedef unsigned int uint32_t;
-typedef signed __int64 int64_t;
-typedef unsigned __int64 uint64_t;
-
-#ifdef __cplusplus
-extern "C"
-{
-#endif
- #include "libmpeg2\mpeg2.h"
- #include "libmpeg2\mpeg2convert.h"
-#ifdef __cplusplus
-}
-#endif
 
 //Decoder specific flags used internal to decoder
 #define DVP_FLAG_LIBMPEG2_MASK      0x0000f00
@@ -161,6 +138,8 @@ void CDVDVideoCodecLibMpeg2::Dispose()
   DeleteBuffer(NULL);
   m_pCurrentBuffer = NULL;
   m_irffpattern = 0;
+  
+  m_dll.Unload();
 }
 
 int CDVDVideoCodecLibMpeg2::Decode(BYTE* pData, int iSize)
@@ -375,20 +354,6 @@ int CDVDVideoCodecLibMpeg2::Decode(BYTE* pData, int iSize)
 
   CLog::DebugLog("CDVDVideoCodecLibMpeg2::Decode error");
   return VC_ERROR;
-}
-
-bool CDVDVideoCodecLibMpeg2::Flush()
-{
-  /*
-  // send 0 bytes until we get another picture
-  int iState = 0;
-  while (iState != STATE_SLICE || iState != STATE_END || iState != STATE_INVALID_END)
-  {
-    iState = m_dll.mpeg2_parse(m_pHandle);
-    if (iState == STATE_BUFFER)
-    m_dll.mpeg2_buffer(m_pHandle, blanc, blanc + 2048);
-  }*/
-  return false;
 }
 
 void CDVDVideoCodecLibMpeg2::Reset()
