@@ -2,7 +2,6 @@
 #include "../../stdafx.h"
 #include "DVDDemuxSPU.h"
 #include "..\..\util.h"
-#include "DVDPlayerDLL.h"
 #include "DVDClock.h"
 
 // #define SPU_DEBUG
