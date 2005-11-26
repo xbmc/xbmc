@@ -1,9 +1,5 @@
 
 #include "../../../stdafx.h"
-#include "..\DVDPlayerDLL.h"
-
-#include "..\ffmpeg\ffmpeg.h"
-
 #include "DVDDemuxFFmpeg.h"
 #include "..\DVDInputStreams\DVDInputStream.h"
 #include "DVDdemuxUtils.h"
@@ -14,7 +10,7 @@ void CDemuxStreamVideoFFmpeg::GetStreamInfo(std::string& strInfo)
 {
   if(!pPrivate) return;
   char temp[128];
-  avcodec_string(temp, 128, ((AVStream*)pPrivate)->codec, 0);
+  m_pDll->avcodec_string(temp, 128, ((AVStream*)pPrivate)->codec, 0);
   strInfo = temp;
 }
 
@@ -23,7 +19,7 @@ void CDemuxStreamAudioFFmpeg::GetStreamInfo(std::string& strInfo)
 {
   if(!pPrivate) return;
   char temp[128];
-  avcodec_string(temp, 128, ((AVStream*)pPrivate)->codec, 0);
+  m_pDll->avcodec_string(temp, 128, ((AVStream*)pPrivate)->codec, 0);
   strInfo = temp;
 }
 
@@ -92,8 +88,6 @@ CDVDDemuxFFmpeg::CDVDDemuxFFmpeg() : CDVDDemux()
   m_pInput = NULL;
   InitializeCriticalSection(&m_critSection);
   for (int i = 0; i < MAX_STREAMS; i++) m_streams[i] = NULL;
-  m_bLoadedDllAvFormat = false;
-  m_bLoadedDllAvCodec = false;
   m_iCurrentPts = 0LL;
 }
 
@@ -103,63 +97,6 @@ CDVDDemuxFFmpeg::~CDVDDemuxFFmpeg()
   DeleteCriticalSection(&m_critSection);
 }
 
-bool CDVDDemuxFFmpeg::LoadDlls()
-{
-  if (!m_bLoadedDllAvCodec)
-  {
-    DllLoader* pDll = g_sectionLoader.LoadDLL(DVD_AVCODEC_DLL);
-    if (!pDll)
-    {
-      CLog::Log(LOGERROR, "CDVDDemuxFFmpeg: Unable to load dll %s", DVD_AVCODEC_DLL);
-      return false;
-    }
-    
-    if (!dvdplayer_load_dll_avcodec(*pDll))
-    {
-      CLog::Log(LOGERROR, "CDVDDemuxFFmpeg: Unable to resolve exports from %s", DVD_AVFORMAT_DLL);
-      UnloadDlls();
-      return false;
-    }
-    m_bLoadedDllAvCodec = true;
-  }
-  
-  if (!m_bLoadedDllAvFormat)
-  {
-    DllLoader* pDll = g_sectionLoader.LoadDLL(DVD_AVFORMAT_DLL);
-    if (!pDll)
-    {
-      CLog::Log(LOGERROR, "CDVDDemuxFFmpeg: Unable to load dll %s", DVD_AVFORMAT_DLL);
-      UnloadDlls();
-      return false;
-    }
-    
-    if (!dvdplayer_load_dll_avformat(*pDll))
-    {
-      CLog::Log(LOGERROR, "CDVDDemuxFFmpeg: Unable to resolve exports from %s", DVD_AVCODEC_DLL);
-      UnloadDlls();
-      return false;
-    }
-    m_bLoadedDllAvFormat = true;
-  }
-  
-  return true;
-}
-
-void CDVDDemuxFFmpeg::UnloadDlls()
-{
-  if (m_bLoadedDllAvCodec)
-  {
-    g_sectionLoader.UnloadDLL(DVD_AVCODEC_DLL);
-    m_bLoadedDllAvCodec = false;
-  }
-
-  if (m_bLoadedDllAvFormat)
-  {
-    g_sectionLoader.UnloadDLL(DVD_AVFORMAT_DLL);
-    m_bLoadedDllAvFormat = false;
-  }
-}
-  
 bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
 {
   AVInputFormat* iformat = NULL;
@@ -168,13 +105,13 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
   
   if (!pInput) return false;
 
-  if (!LoadDlls()) return false;
+  if (!m_dllAvFormat.Load() || !m_dllAvCodec.Load()) return false;
   
   // set ffmpeg logging, dvdplayer_log is staticly defined in ffmpeg.h
-  av_log_set_callback(dvdplayer_log);
+  m_dllAvCodec.av_log_set_callback(dvdplayer_log);
 
   // register codecs
-  av_register_all();
+  m_dllAvFormat.av_register_all();
 
   // could be used for interupting ffmpeg while opening a file (eg internet streams)
   // url_set_interrupt_cb(NULL);
@@ -185,7 +122,7 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
   if (m_pInput->IsStreamType(DVDSTREAM_TYPE_DVD))
   {
     // we are playing form a dvd, just open the mpeg demuxer here
-    iformat = av_find_input_format("mpeg");
+    iformat = m_dllAvFormat.av_find_input_format("mpeg");
     if (!iformat)
     {
       CLog::DebugLog("error opening ffmpeg's mpeg demuxer");
@@ -212,7 +149,7 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
     // and reset to the beginning
     m_pInput->Seek(0, SEEK_SET);
 
-    iformat = av_probe_input_format(&pd, 1);
+    iformat = m_dllAvFormat.av_probe_input_format(&pd, 1);
     if (!iformat)
     {
       CLog::DebugLog("error probing input format, %s", strFile);
@@ -233,7 +170,7 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
   }
 
   // open the demuxer
-  if (av_open_input_stream(&m_pFormatContext, &m_ioContext, strFile, iformat, NULL) < 0)
+  if (m_dllAvFormat.av_open_input_stream(&m_pFormatContext, &m_ioContext, strFile, iformat, NULL) < 0)
   {
     CLog::DebugLog("Error, could not open file", strFile);
     Dispose();
@@ -247,7 +184,7 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
   {
     // disable the AVFMT_NOFILE just once, else ffmpeg isn't able to find stream info
     iformat->flags &= ~AVFMT_NOFILE;
-    int iErr = av_find_stream_info(m_pFormatContext);
+    int iErr = m_dllAvFormat.av_find_stream_info(m_pFormatContext);
     iformat->flags |= AVFMT_NOFILE;
 
     if (iErr < 0)
@@ -266,7 +203,7 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
   }
 
   // print some extra information
-  dump_format(m_pFormatContext, 0, strFile, 0);
+  m_dllAvFormat.dump_format(m_pFormatContext, 0, strFile, 0);
 
   // add the ffmpeg streams to our own stream array
   for (int i = 0; i < m_pFormatContext->nb_streams; i++)
@@ -279,7 +216,7 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
 
 void CDVDDemuxFFmpeg::Dispose()
 {
-  if (m_pFormatContext) av_close_input_file(m_pFormatContext);
+  if (m_pFormatContext) m_dllAvFormat.av_close_input_file(m_pFormatContext);
 
   for (int i = 0; i < MAX_STREAMS; i++)
   {
@@ -292,7 +229,8 @@ void CDVDDemuxFFmpeg::Dispose()
 
   ContextDeInit();
   
-  UnloadDlls();
+  m_dllAvFormat.Unload();
+  m_dllAvCodec.Unload();
 }
 
 /*
@@ -319,7 +257,7 @@ bool CDVDDemuxFFmpeg::ContextInit(const char* strFile, BYTE* buffer, int iBuffer
   m_pUrlContext->priv_data = (void*)m_pInput;
 
   m_pUrlContext->max_packet_size = iBufferSize;
-  init_put_byte(&m_ioContext, buffer, iBufferSize, 0, m_pUrlContext, dvd_input_stream_read_packet,
+  m_dllAvFormat.init_put_byte(&m_ioContext, buffer, iBufferSize, 0, m_pUrlContext, dvd_input_stream_read_packet,
                 dvd_input_stream_write_packet, dvd_input_stream_seek);
 
   return true;
@@ -342,7 +280,7 @@ void CDVDDemuxFFmpeg::Flush()
 {
   if (m_pFormatContext)
   {
-    //av_read_frame_flush(m_pFormatContext);
+    m_dllAvFormat.av_read_frame_flush(m_pFormatContext);
   }
 }
 
@@ -353,7 +291,7 @@ CDVDDemux::DemuxPacket* CDVDDemuxFFmpeg::Read()
   Lock();
   if (m_pFormatContext)
   {
-    if (av_read_frame(m_pFormatContext, &pkt) < 0)
+    if (m_dllAvFormat.av_read_frame(m_pFormatContext, &pkt) < 0)
     {
       // error reading from stream
       // XXX, just reset eof for now, and let the dvd player decide what todo
@@ -484,7 +422,7 @@ bool CDVDDemuxFFmpeg::Seek(int iTime)
   }
   
   Lock();
-  int ret = av_seek_frame(m_pFormatContext, -1, seek_pts, seek_pts < 0 ? AVSEEK_FLAG_BACKWARD : 0);
+  int ret = m_dllAvFormat.av_seek_frame(m_pFormatContext, -1, seek_pts, seek_pts < 0 ? AVSEEK_FLAG_BACKWARD : 0);
   m_iCurrentPts = 0LL;
   Unlock();
   
@@ -532,7 +470,7 @@ void CDVDDemuxFFmpeg::AddStream(int iId)
     {
     case CODEC_TYPE_AUDIO:
       {
-        m_streams[iId] = new CDemuxStreamAudioFFmpeg();
+        m_streams[iId] = new CDemuxStreamAudioFFmpeg(&m_dllAvCodec);
         m_streams[iId]->type = STREAM_AUDIO;
         ((CDemuxStreamAudio*)m_streams[iId])->iChannels = pStream->codec->channels;
         ((CDemuxStreamAudio*)m_streams[iId])->iSampleRate = pStream->codec->sample_rate;
@@ -540,7 +478,7 @@ void CDVDDemuxFFmpeg::AddStream(int iId)
       }
     case CODEC_TYPE_VIDEO:
       {
-        m_streams[iId] = new CDemuxStreamVideoFFmpeg();
+        m_streams[iId] = new CDemuxStreamVideoFFmpeg(&m_dllAvCodec);
         m_streams[iId]->type = STREAM_VIDEO;
         ((CDemuxStreamVideo*)m_streams[iId])->iFpsRate = pStream->codec->time_base.den;
         ((CDemuxStreamVideo*)m_streams[iId])->iFpsScale = pStream->codec->time_base.num;

@@ -2,7 +2,6 @@
 #include "../../../../DynamicDll.h"
 
 #include "..\..\ffmpeg\ffmpeg.h"
-#include "..\..\ffmpeg\avcodec.h"
 #include "..\..\ffmpeg\postprocess.h"
 
 class DllAvCodecInterface
@@ -36,14 +35,3 @@ class DllPostProc : public DllDynamic, DllAvCodecInterface
     RESOLVE_METHOD(pp_free_context)
   END_METHOD_RESOLVE()
 };
-
-
-
-
-
-
-/**
- * returns a pp_mode_t or NULL if an error occured
- * name is the string after "-pp" on the command line
- * quality is a number from 0 to PP_QUALITY_MAX
- */

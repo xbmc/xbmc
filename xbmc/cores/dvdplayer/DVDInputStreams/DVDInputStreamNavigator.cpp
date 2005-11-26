@@ -1,7 +1,6 @@
 
 #include "../../../stdafx.h"
 #include "DVDInputStreamNavigator.h"
-#include "..\DVDPlayerDLL.h"
 #include "..\..\..\util.h"
 #include "..\..\..\LangCodeExpander.h"
 #include "..\DVDDemuxSPU.h"
