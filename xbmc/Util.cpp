@@ -3370,7 +3370,11 @@ CStdString CUtil::TranslateSpecialDir(const CStdString &strSpecial)
     else if (strSpecial.Equals("$SCREENSHOTS"))
       strReturn = g_stSettings.m_szScreenshotsDirectory;
     else if (strSpecial.Equals("$PLAYLISTS"))
-      strReturn = (CStdString)g_stSettings.m_szAlbumDirectory + "\\playlists";
+      strReturn = g_stSettings.m_szPlaylistsDirectory;
+    else if (strSpecial.Equals("$MUSICPLAYLISTS"))
+      strReturn = (CStdString)g_stSettings.m_szPlaylistsDirectory + "\\music";
+    else if (strSpecial.Equals("$VIDEOPLAYLISTS"))
+      strReturn = (CStdString)g_stSettings.m_szPlaylistsDirectory + "\\video";
     else if (strSpecial.Equals("$CDRIPS"))
       strReturn = g_stSettings.m_strRipPath;
   }
