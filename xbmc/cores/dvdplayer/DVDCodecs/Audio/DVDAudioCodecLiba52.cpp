@@ -1,7 +1,6 @@
 
 #include "../../../../stdafx.h"
 #include "DVDAudioCodecLiba52.h"
-#include "..\..\DVDPLayerDLL.h"
 
 // forward declarations
 void fast_memcpy(void* d, const void* s, unsigned n);

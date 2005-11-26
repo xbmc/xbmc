@@ -10,8 +10,15 @@ typedef unsigned int uint32_t;
 typedef signed __int64 int64_t;
 typedef unsigned __int64 uint64_t;
 
-#include "libmpeg2\mpeg2.h"
-#include "libmpeg2\mpeg2convert.h"
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+ #include "libmpeg2\mpeg2.h"
+ #include "libmpeg2\mpeg2convert.h"
+#ifdef __cplusplus
+}
+#endif
 
 class DllLibMpeg2Interface
 {

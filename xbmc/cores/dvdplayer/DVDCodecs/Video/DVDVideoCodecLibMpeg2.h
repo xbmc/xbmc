@@ -2,7 +2,6 @@
 #pragma once
 
 #include "DVDVideoCodec.h"
-
 #include "DllLibMpeg2.h"
 
 class CDVDVideoCodecLibMpeg2 : public CDVDVideoCodec
@@ -13,7 +12,6 @@ public:
   virtual bool Open(CodecID codecID, int iWidth, int iHeight);
   virtual void Dispose();
   virtual int Decode(BYTE* pData, int iSize);
-  virtual bool Flush();
   virtual void Reset();
   virtual bool GetPicture(DVDVideoPicture* pDvdVideoPicture);
 

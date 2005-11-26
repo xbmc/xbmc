@@ -2211,12 +2211,6 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\cores\dvdplayer\DVDPlayerAudio.h">
 				</File>
 				<File
-					RelativePath=".\xbmc\cores\dvdplayer\DVDPlayerDLL.cpp">
-				</File>
-				<File
-					RelativePath=".\xbmc\cores\dvdplayer\DVDPlayerDLL.h">
-				</File>
-				<File
 					RelativePath=".\xbmc\cores\dvdplayer\DVDPlayerMessenger.cpp">
 				</File>
 				<File
@@ -2240,6 +2234,9 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				<Filter
 					Name="DVDCodecs"
 					Filter="">
+					<File
+						RelativePath=".\xbmc\cores\dvdplayer\DVDCodecs\DllAvCodec.h">
+					</File>
 					<File
 						RelativePath=".\xbmc\cores\dvdplayer\DVDCodecs\DVDCodecs.h">
 					</File>
@@ -2326,13 +2323,10 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 						Name="Video"
 						Filter="">
 						<File
-							RelativePath=".\xbmc\cores\dvdplayer\DVDCodecs\Video\DllAvCodec.h">
-						</File>
-						<File
-							RelativePath=".\xbmc\cores\dvdplayer\DVDCodecs\Video\DllAvFormat.h">
-						</File>
-						<File
 							RelativePath=".\xbmc\cores\dvdplayer\DVDCodecs\Video\DllLibMpeg2.h">
+						</File>
+						<File
+							RelativePath=".\xbmc\cores\dvdplayer\DVDCodecs\Video\DllPostProc.h">
 						</File>
 						<File
 							RelativePath=".\xbmc\cores\dvdplayer\DVDCodecs\Video\DVDVideoCodec.h">
@@ -2360,6 +2354,9 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				<Filter
 					Name="DVDDemuxers"
 					Filter="">
+					<File
+						RelativePath=".\xbmc\cores\dvdplayer\DVDDemuxers\DllAvFormat.h">
+					</File>
 					<File
 						RelativePath=".\xbmc\cores\dvdplayer\DVDDemuxers\DVDDemux.cpp">
 					</File>
@@ -2457,9 +2454,6 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					</File>
 					<File
 						RelativePath=".\xbmc\cores\dvdplayer\DVDInputStreams\dvdnav\decoder.h">
-					</File>
-					<File
-						RelativePath=".\xbmc\cores\dvdplayer\DVDInputStreams\dvdnav\dvd_reader.h">
 					</File>
 					<File
 						RelativePath=".\xbmc\cores\dvdplayer\DVDInputStreams\dvdnav\dvd_types.h">
