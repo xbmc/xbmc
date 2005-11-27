@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 27-11-2005 fixed: paths ending in '://' and ':\' were handled wrongly. thanks to cleanrparty.
  - 27-11-2005 changed: Cleaned up the file stacking code, implementing a stack:// virtual directory.
  - 26-11-2005 updated: [ 1365798 ] Updated KAI-Vectors, thx to flymaster!
  - 26-11-2005 added: two new virtual directories for use in bookmarks: $MUSICPLAYLISTS, $VIDEOPLAYLISTS.
