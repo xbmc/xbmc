@@ -547,10 +547,10 @@ void CSettings::ConvertHomeVar(CStdString& strText)
       }
       else
         strText += token[i]+"\\";
+    // remove trailing slash
+    if (CUtil::HasSlashAtEnd(strText))
+      strText.Delete(strText.size() - 1);
   }
-  // remove trailing slash
-  if (CUtil::HasSlashAtEnd(strText))
-    strText.Delete(strText.size() - 1);
 }
 
 void CSettings::GetShares(const TiXmlElement* pRootElement, const CStdString& strTagName, VECSHARES& items, CStdString& strDefault)
