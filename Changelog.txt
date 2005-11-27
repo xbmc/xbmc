@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 27-11-2005 changed: Cleaned up the file stacking code, implementing a stack:// virtual directory.
  - 26-11-2005 updated: [ 1365798 ] Updated KAI-Vectors, thx to flymaster!
  - 26-11-2005 added: two new virtual directories for use in bookmarks: $MUSICPLAYLISTS, $VIDEOPLAYLISTS.
  - 26-11-2005 fixed: thumbs and databases should work again! (you may need to regenerate thumbs in my pictures)

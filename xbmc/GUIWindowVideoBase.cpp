@@ -17,6 +17,7 @@
 #include "AutoSwitch.h"
 #include "GUIFontManager.h"
 #include "FileSystem/ZipManager.h"
+#include "FileSystem/StackDirectory.h"
 #include "GUIDialogContextMenu.h"
 #include "GUIDialogFileStacking.h"
 #include "GUIWindowFileManager.h"
@@ -515,10 +516,9 @@ void CGUIWindowVideoBase::OnInfo(int iItem)
 {
   if ( iItem < 0 || iItem >= m_vecItems.Size() ) return ;
   CFileItem* pItem = m_vecItems[iItem];
-  VECMOVIESFILES movies;
-  m_database.GetFiles(atol(pItem->m_strPath), movies);
-  if (movies.size() <= 0) return ;
-  CStdString strFilePath = movies[0];
+  CStdString strFilePath;
+  m_database.GetFilePath(atol(pItem->m_strPath), strFilePath);
+  if (strFilePath.IsEmpty()) return;
   CStdString strFile = CUtil::GetFileName(strFilePath);
   ShowIMDB(strFile, strFilePath, "" , false);
 }
@@ -572,13 +572,12 @@ void CGUIWindowVideoBase::ShowIMDB(const CStdString& strMovie, const CStdString&
       strNfoFile.Empty();
 
   // try looking for .nfo file based off the stacked title
-  if (strNfoFile.IsEmpty() && g_stSettings.m_iMyVideoVideoStack > STACK_NONE)
+  CURL url(strFile);
+  if (url.GetProtocol() == "stack")
   {
-    CStdString strPath, strFileName, strStackedTitle, strVolume;
-    CUtil::Split(strFile, strPath, strFileName);
-    CUtil::GetVolumeFromFileName(strFileName, strStackedTitle, strVolume);
-    CUtil::ReplaceExtension(strStackedTitle, ".nfo", strFileName);
-    CUtil::AddFileToFolder(strPath, strFileName, strNfoFile);
+    CStackDirectory dir;
+    CStdString stackedTitlePath = dir.GetStackedTitlePath(strFile);
+    CUtil::ReplaceExtension(stackedTitlePath, ".nfo", strNfoFile);
     if (!CFile::Exists(strNfoFile))
       strNfoFile.Empty();
   }
@@ -838,6 +837,12 @@ void CGUIWindowVideoBase::Render()
 void CGUIWindowVideoBase::GoParentFolder()
 {
   CURL url(m_Directory.m_strPath);
+  // if we treat stacks as directories, then use this
+  /*if (url.GetProtocol() == "stack")
+  {
+    m_rootDir.RemoveShare(m_Directory.m_strPath);
+    CUtil::GetDirectory(m_Directory.m_strPath.Mid(8), m_strParentPath);
+  }*/
   if ((url.GetProtocol() == "rar") || (url.GetProtocol() == "zip")) 
   {
     // check for step-below, if, unmount rar
@@ -924,14 +929,34 @@ void CGUIWindowVideoBase::OnQueueItem(int iItem)
 {
   if ( iItem < 0 || iItem >= m_vecItems.Size() ) return ;
   // add item 2 playlist
-  const CFileItem* pItem = m_vecItems[iItem];
-  if (!pItem->IsRAR() && !pItem->IsZIP())
-  {
-    AddItemToPlayList(pItem);
+  CFileItem movieItem(*m_vecItems[iItem]);
 
-    //move to next item
-    m_viewControl.SetSelectedItem(iItem + 1);
+  if (CUtil::IsNaturalNumber(movieItem.m_strPath))
+  {
+    CStdString filePath;
+    m_database.GetFilePath(atol(movieItem.m_strPath), movieItem.m_strPath);
   }
+  if (movieItem.IsRAR() || movieItem.IsZIP())
+    return;
+  if (movieItem.IsStack())
+  {
+    // TODO: Remove this once the main player code is capable of handling the stack:// protocol
+    vector<CStdString> movies;
+    GetStackedFiles(movieItem.m_strPath, movies);
+    if (movies.size() <= 0) return;
+    for (int i = 0; i < (int)movies.size(); ++i)
+    {
+      CFileItem movieFile(movies[i], false);
+      CStdString strFileNum;
+      strFileNum.Format("(%2.2i)",i+1);
+      movieFile.SetLabel(movieItem.GetLabel() + " " + strFileNum);
+      AddItemToPlayList(&movieFile);
+    }
+  }
+  else
+    AddItemToPlayList(&movieItem);
+  //move to next item
+  m_viewControl.SetSelectedItem(iItem + 1);
 }
 
 void CGUIWindowVideoBase::AddItemToPlayList(const CFileItem* pItem)
@@ -982,27 +1007,32 @@ void CGUIWindowVideoBase::DisplayEmptyDatabaseMessage(bool bDisplay)
 int  CGUIWindowVideoBase::ResumeItemOffset(int iItem)
 {
   int startOffset = 0;
-  vector<CStdString> movies;
+  if (m_vecItems[iItem]->IsStack())
+  {
+    // TODO: Remove this code once the player can handle the stack:// protocol.
+    // grab the database info.  If stacking is enabled, we may have to check multiple files...
+    vector<CStdString> movies;
+    GetStackedFiles(m_vecItems[iItem]->m_strPath, movies);
+    for (unsigned int i=0; i < movies.size(); i++)
+    {
+      CVideoSettings settings;
 
-  GetStackedFiles(m_vecItems[iItem]->m_strPath, movies);
+      m_database.GetVideoSettings(movies[i], settings);
 
-  if (!m_vecItems[iItem]->IsNFO() && !m_vecItems[iItem]->IsPlayList())
-   { // ok, we have a video file at least
-     // grab the database info.  If stacking is enabled, we may have to check multiple files...
-     for (unsigned int i=0; i < movies.size(); i++)
-     {
-       CVideoSettings settings;
-
-       m_database.GetVideoSettings(movies[i], settings);
-
-       if (settings.m_ResumeTime > 0)
-       {
-         startOffset = settings.m_ResumeTime + 0x10000000 * i; // assume no more than 16 files are stacked
-         break;
-       }
-     }
-   }
-   return startOffset;
+      if (settings.m_ResumeTime > 0)
+      {
+        startOffset = settings.m_ResumeTime + 0x10000000 * i; // assume no more than 16 files are stacked
+        break;
+      }
+    }
+  }
+  else if (!m_vecItems[iItem]->IsNFO() && !m_vecItems[iItem]->IsPlayList())
+  {
+    CVideoSettings settings;
+    m_database.GetVideoSettings(m_vecItems[iItem]->m_strPath, settings);
+    startOffset = settings.m_ResumeTime;
+  }
+  return startOffset;
 }
 
 void CGUIWindowVideoBase::OnResumeItem(int iItem)
@@ -1188,127 +1218,71 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem)
   m_vecItems[iItem]->Select(bSelected);
 }
 
-void CGUIWindowVideoBase::GetStackedFiles(const CStdString &strFilePath, vector<CStdString> &movies)
+void CGUIWindowVideoBase::GetStackedFiles(const CStdString &strFilePath1, vector<CStdString> &movies)
 {
+  CStdString strFilePath = strFilePath1;  // we're gonna be altering it
+
   if (CUtil::IsNaturalNumber(strFilePath))
   { // we have a database view
-    movies.clear();
-    m_database.GetFiles(atol(strFilePath.c_str()), movies);
-    sort(movies.begin(), movies.end(), SSortVideoListByName());
-    return;
+    m_database.GetFilePath(atol(strFilePath.c_str()), strFilePath);
   }
-  // get the path and filename
-  CStdString strPath;
-  CStdString strFileName;
-  CUtil::Split(strFilePath, strPath, strFileName);
-//  if (CUtil::HasSlashAtEnd(strPath))
-//    strPath.Delete(strPath.size() - 1);
-  movies.clear();
-  if (g_stSettings.m_iMyVideoVideoStack == STACK_NONE)
-  {
-    movies.push_back(strFilePath);
-    return;
-  }
-  CStdString fileTitle;
-  CStdString volumeNumber;
-  if (g_stSettings.m_iMyVideoVideoStack == STACK_SIMPLE)
-  {
-    if (!CUtil::GetVolumeFromFileName(strFileName, fileTitle, volumeNumber))
-    {
-      // nothing to stack...
-      movies.push_back(strFilePath);
-      return;
-    }
-  }
-  // ok - we're good to go - let's search for stacked files
-  CFileItemList items;
-  m_rootDir.GetDirectory(strPath, items);
-  for (int i = 0; i < (int)items.Size(); ++i)
-  {
-    CFileItem *pItemTmp = items[i];
-    bool stackFile = false;
-    if (!pItemTmp->IsNFO() && !pItemTmp->IsPlayList() && pItemTmp->IsVideo())
-    {
-      CStdString fileNameTemp = CUtil::GetFileName(pItemTmp->m_strPath);
 
-/*      if (pItemTmp->IsDVDFile())
-      {
-        CFileItem item(strFilePath, true);
-        stackFile = item.IsDVDFile();
-      }
-      else*/ if (strFileName.Equals(fileNameTemp))
-      {
-        stackFile = true;
-      }
-      else if (g_stSettings.m_iMyVideoVideoStack == STACK_FUZZY)
-      {
-        // fuzzy stacking
-        double fPercentage = fstrcmp(fileNameTemp, strFileName, COMPARE_PERCENTAGE_MIN);
-        if (fPercentage >= COMPARE_PERCENTAGE)
-        {
-          stackFile = true;
-        }
-      }
-      else
-      {
-        // simple stacking
-        CStdString fileTitle2;
-        CStdString volumeNumber2;
-        if (CUtil::GetVolumeFromFileName(fileNameTemp, fileTitle2, volumeNumber2))
-        {
-          if (fileTitle.Equals(fileTitle2))
-          {
-            stackFile = true;
-          }
-        }
-      }
-      if (stackFile)
-      {
-        movies.push_back(pItemTmp->m_strPath);
-      }
-    }
+  movies.clear();
+
+  CURL url(strFilePath);
+  if (url.GetProtocol() == "stack")
+  {
+    CStackDirectory dir;
+    CFileItemList items;
+    dir.GetDirectory(strFilePath, items);
+    for (int i = 0; i < items.Size(); ++i)
+      movies.push_back(items[i]->m_strPath);
   }
-  // check if we have anything at all to stack
   if (movies.empty())
-    movies.push_back(strFileName);
-  // sort them
-  sort(movies.begin(), movies.end(), SSortVideoListByName());
+    movies.push_back(strFilePath);
 }
 
-void CGUIWindowVideoBase::PlayMovies(VECMOVIESFILES &movies, long lStartOffset)
+void CGUIWindowVideoBase::PlayMovie(const CFileItem *item)
 {
-  if (movies.size() <= 0) return ;
-  if (!CheckMovie(movies[0])) return ;
-  int iSelectedFile = 1;
-  if (movies.size() > 1)
+  CFileItem movie(*item);
+  vector<CStdString> movieList;
+  int selectedFile = 1;
+  if (CUtil::IsNaturalNumber(movie.m_strPath))
+  { // database file - get the true path
+    m_database.GetFilePath(atol(movie.m_strPath), movie.m_strPath);
+  }
+  if (movie.IsStack())
   {
-    if (lStartOffset)
-    { // have a startoffset, figure out which file it is
-      iSelectedFile = ((lStartOffset & 0x10000000) >> 28) + 1;
-    }
+    // TODO: Once the players are capable of playing a stack, we should remove
+    // this code in favour of just using the resume feature.
+    GetStackedFiles(movie.m_strPath, movieList);
+    if (movie.m_lStartOffset)
+      selectedFile = ((movie.m_lStartOffset & 0x10000000) >> 28) + 1;
     else
-    {
+    { // show file stacking dialog
       CGUIDialogFileStacking* dlg = (CGUIDialogFileStacking*)m_gWindowManager.GetWindow(WINDOW_DIALOG_FILESTACKING);
       if (dlg)
       {
-        dlg->SetNumberOfFiles(movies.size());
+        dlg->SetNumberOfFiles(movieList.size());
         dlg->DoModal(GetID());
-        iSelectedFile = dlg->GetSelectedFile();
-        if (iSelectedFile < 1) return ;
+        selectedFile = dlg->GetSelectedFile();
+        if (selectedFile < 1) return ;
       }
     }
   }
+  else
+    movieList.push_back(movie.m_strPath);
 
   g_playlistPlayer.Reset();
   g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_VIDEO_TEMP);
   CPlayList& playlist = g_playlistPlayer.GetPlaylist(PLAYLIST_VIDEO_TEMP);
   playlist.Clear();
-  for (int i = iSelectedFile - 1; i < (int)movies.size(); ++i)
+  for (int i = selectedFile - 1; i < (int)movieList.size(); ++i)
   {
     CPlayList::CPlayListItem item;
-    item.SetFileName(movies[i]);
-    if (i == iSelectedFile - 1)
-      item.m_lStartOffset = lStartOffset & 0x0fffffff;
+    item.SetFileName(movieList[i]);
+    if (i == selectedFile - 1)
+      item.m_lStartOffset = movie.m_lStartOffset & 0x0fffffff;
     playlist.Add(item);
   }
 
