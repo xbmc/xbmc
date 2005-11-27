@@ -73,6 +73,8 @@ protected:
   int m_iLastControl;
   bool m_bDisplayEmptyDatabaseMessage;
   CStdString m_strParentPath; ///< Parent path to handle going up a dir
+  vector<CStdString> m_vecPathHistory; ///< History of traversed directories
+
   int m_iViewAsIcons;
   int m_iViewAsIconsRoot;
   CGUIViewControl m_viewControl;  ///< Handles our various views

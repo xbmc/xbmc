@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 27-11-2005 added: support for multipath bookmarks in video and pictures. its still very much experimental. use at your own risk.
  - 27-11-2005 fixed: my previous fix for paths ending with '//' caused more problems than it fixed.
  - 27-11-2005 added: manual overriding of destination path when ripping cds without cddb.
  - 27-11-2005 fixed: paths ending in '://' and ':\' were handled wrongly. thanks to deanrparty.
