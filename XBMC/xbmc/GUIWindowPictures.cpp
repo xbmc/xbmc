@@ -503,6 +503,20 @@ bool CGUIWindowPictures::Update(const CStdString &strDirectory)
 
   m_thumbLoader.Load(m_vecItems);
 
+  if ((m_vecPathHistory.size() == 0) || m_vecPathHistory.back() != strDirectory)
+  {
+    m_vecPathHistory.push_back(strDirectory);
+  }
+
+  // debug log
+  CStdString strTemp;
+  CLog::Log(LOGDEBUG,"Current m_vecPathHistory:");
+  for (int i = 0; i < (int)m_vecPathHistory.size(); ++i)
+  {
+    strTemp.Format("%02i.[%s]", i, m_vecPathHistory[i]);
+    CLog::Log(LOGDEBUG, "  %s", strTemp.c_str());
+  }
+
   return true;
 }
 
@@ -805,6 +819,23 @@ void CGUIWindowPictures::Render()
 
 void CGUIWindowPictures::GoParentFolder()
 {
+  // remove current directory if its on the stack
+  if (m_vecPathHistory.size() > 0)
+  {
+    if (m_vecPathHistory.back() == m_Directory.m_strPath)
+      m_vecPathHistory.pop_back();
+  }
+
+  // if vector is not empty, pop parent
+  // if vector is empty, parent is bookmark listing
+  CStdString strParent = "";
+  if (m_vecPathHistory.size() > 0)
+  {
+    strParent = m_vecPathHistory.back();
+    m_vecPathHistory.pop_back();
+  }
+  CLog::Log(LOGDEBUG,"CGUIWindowPictures::GoParentFolder(), strParent = [%s]", strParent.c_str());
+
   CURL url(m_Directory.m_strPath);
   if ((url.GetProtocol() == "rar") || (url.GetProtocol() == "zip")) 
   {
@@ -821,8 +852,8 @@ void CGUIWindowPictures::GoParentFolder()
     }
   }
   
-  CStdString strPath(m_strParentPath), strOldPath(m_Directory.m_strPath);
-  Update(strPath);
+  CStdString strOldPath = m_Directory.m_strPath;
+  Update(strParent);
 
   if (!g_guiSettings.GetBool("LookAndFeel.FullDirectoryHistory"))
     m_history.Remove(strOldPath); //Delete current path
@@ -919,43 +950,31 @@ bool CGUIWindowPictures::GetDirectory(const CStdString &strDirectory, CFileItemL
     items.Clear();
   }
 
-  CStdString strParentPath;
-  bool bParentExists = CUtil::GetParentPath(strDirectory, strParentPath);
+  CStdString strParentPath = "";
+  if (m_vecPathHistory.size() > 0)
+    strParentPath = m_vecPathHistory.back();
 
-  // check if current directory is a root share
-  if ( !m_rootDir.IsShare(strDirectory) )
-  {
-    // no, do we got a parent dir?
-    if ( bParentExists )
-    {
-      // yes
-      if (!g_guiSettings.GetBool("Pictures.HideParentDirItems"))
-      {
-        CFileItem *pItem = new CFileItem("..");
-        pItem->m_strPath = strParentPath;
-        pItem->m_bIsFolder = true;
-        pItem->m_bIsShareOrDrive = false;
-        items.Add(pItem);
-      }
-      m_strParentPath = strParentPath;
-    }
-  }
-  else
-  {
-    // yes, this is the root of a share
-    // add parent path to the virtual directory
-    if (!g_guiSettings.GetBool("Pictures.HideParentDirItems"))
-    {
-      CFileItem *pItem = new CFileItem("..");
-      pItem->m_strPath = "";
-      pItem->m_bIsShareOrDrive = false;
-      pItem->m_bIsFolder = true;
-      items.Add(pItem);
-    }
-    m_strParentPath = "";
-  }
-  return m_rootDir.GetDirectory(strDirectory, items);
+  CLog::Log(LOGDEBUG,"CGUIWindowPicutres::GetDirectory (%s)", strDirectory.c_str());
+  CLog::Log(LOGDEBUG,"  ParentPath = [%s]", strParentPath.c_str());
 
+  if (!g_guiSettings.GetBool("Pictures.HideParentDirItems"))
+  {
+    CFileItem *pItem = new CFileItem("..");
+    pItem->m_strPath = strParentPath;
+    pItem->m_bIsFolder = true;
+    pItem->m_bIsShareOrDrive = false;
+    items.Add(pItem);
+  }
+  m_strParentPath = strParentPath;
+
+  CLog::Log(LOGDEBUG,"Fetching directory (%s)", strDirectory.c_str());
+  if (!m_rootDir.GetDirectory(strDirectory, items))
+  {
+    CLog::Log(LOGERROR,"GetDirectory(%s) failed", strDirectory.c_str());
+    return false;
+  }
+
+  return true;
 }
 
 void CGUIWindowPictures::OnPopupMenu(int iItem)

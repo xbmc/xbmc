@@ -836,6 +836,22 @@ void CGUIWindowVideoBase::Render()
 
 void CGUIWindowVideoBase::GoParentFolder()
 {
+  // remove current directory if its on the stack
+  if (m_vecPathHistory.size() > 0)
+  {
+    if (m_vecPathHistory.back() == m_Directory.m_strPath)
+      m_vecPathHistory.pop_back();
+  }
+  // if vector is not empty, pop parent
+  // if vector is empty, parent is bookmark listing
+  CStdString strParent = "";
+  if (m_vecPathHistory.size() > 0)
+  {
+    strParent = m_vecPathHistory.back();
+    m_vecPathHistory.pop_back();
+  }
+  CLog::Log(LOGDEBUG,"CGUIWindowVideoBase::GoParentFolder(), strParent = [%s]", strParent.c_str());
+
   CURL url(m_Directory.m_strPath);
   // if we treat stacks as directories, then use this
   /*if (url.GetProtocol() == "stack")
@@ -858,12 +874,10 @@ void CGUIWindowVideoBase::GoParentFolder()
       return;
     }
   }
-  
-  // don't call Update() with m_strParentPath, as we update m_strParentPath before the
-  // directory is retrieved.
-  CStdString strPath(m_strParentPath), strOldPath(m_Directory.m_strPath);
-  Update(strPath);
-  UpdateButtons();
+
+  CStdString strOldPath = m_Directory.m_strPath;
+  Update(strParent);
+  UpdateButtons();  // not sure why this is required in my videos, but not in music or pictures
 
   if (!g_guiSettings.GetBool("LookAndFeel.FullDirectoryHistory"))
     m_history.Remove(strOldPath); //Delete current path
@@ -967,7 +981,7 @@ void CGUIWindowVideoBase::AddItemToPlayList(const CFileItem* pItem)
     if ( pItem->m_bIsShareOrDrive )
     {
       CFileItem item = *pItem;
-      if ( !g_passwordManager.IsItemUnlocked( &item, "music" ) )
+      if ( !g_passwordManager.IsItemUnlocked( &item, "video" ) )
         return ;
     }
 

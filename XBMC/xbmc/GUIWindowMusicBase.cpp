@@ -526,23 +526,13 @@ bool CGUIWindowMusicBase::Update(const CStdString &strDirectory)
 /// \brief Call to go to parent folder
 void CGUIWindowMusicBase::GoParentFolder()
 {
-  CLog::Log(LOGDEBUG,"CGUIWindowMusicBase::GoParentFolder()");
-  // debug log
-  CStdString strTemp;
-  CLog::Log(LOGDEBUG,"m_vecPathHistory = (");
-  for (int i = 0; i < (int)m_vecPathHistory.size(); ++i)
-  {
-    strTemp.Format("%02i.[%s]", i, m_vecPathHistory[i]);
-    CLog::Log(LOGDEBUG, "%s", strTemp.c_str());
-  }
-  CLog::Log(LOGDEBUG,")");
-
   // remove current directory if its on the stack
   if (m_vecPathHistory.size() > 0)
   {
     if (m_vecPathHistory.back() == m_Directory.m_strPath)
       m_vecPathHistory.pop_back();
   }
+
   // if vector is not empty, pop parent
   // if vector is empty, parent is bookmark listing
   CStdString strParent = "";
