@@ -982,16 +982,6 @@ bool CGUIWindowMusicSongs::Update(const CStdString &strDirectory)
   if (strDirectory.IsEmpty())
     m_vecPathHistory.empty();
 
-  // debug log
-  CStdString strTemp;
-  CLog::Log(LOGDEBUG,"BEFORE... m_vecPathHistory = (");
-  for (int i = 0; i < (int)m_vecPathHistory.size(); ++i)
-  {
-    strTemp.Format("%02i.[%s]", i, m_vecPathHistory[i]);
-    CLog::Log(LOGDEBUG, "%s", strTemp.c_str());
-  }
-  CLog::Log(LOGDEBUG,")");
-
   if (!CGUIWindowMusicBase::Update(strDirectory))
     return false;
 
@@ -1013,13 +1003,13 @@ bool CGUIWindowMusicSongs::Update(const CStdString &strDirectory)
   }
 
   // debug log
-  CLog::Log(LOGDEBUG,"AFTER... m_vecPathHistory = (");
+  CStdString strTemp;
+  CLog::Log(LOGDEBUG,"Current m_vecPathHistory:");
   for (int i = 0; i < (int)m_vecPathHistory.size(); ++i)
   {
     strTemp.Format("%02i.[%s]", i, m_vecPathHistory[i]);
-    CLog::Log(LOGDEBUG, "%s", strTemp.c_str());
+    CLog::Log(LOGDEBUG, "  %s", strTemp.c_str());
   }
-  CLog::Log(LOGDEBUG,")");
 
   return true;
 }

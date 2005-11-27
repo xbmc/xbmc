@@ -57,6 +57,7 @@ protected:
   CFileItem m_Directory;
   CGUIDialogProgress* m_dlgProgress;
   CDirectoryHistory m_history;
+  vector<CStdString> m_vecPathHistory; ///< History of traversed directories
   int m_iItemSelected;
   int m_iLastControl;
   CStdString m_strParentPath;

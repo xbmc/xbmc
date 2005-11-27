@@ -147,17 +147,6 @@ bool CGUIWindowVideoFiles::OnMessage(CGUIMessage& message)
   {
   case GUI_MSG_WINDOW_INIT:
     {
-      /*
-      // This window is started by the home window.
-      // Now we decide which my music window has to be shown and
-      // switch to the my music window the user last activated.
-      if (g_stSettings.m_iVideoStartWindow >0 && g_stSettings.m_iVideoStartWindow !=GetID() )
-      {
-       m_gWindowManager.ActivateWindow(g_stSettings.m_iVideoStartWindow);
-       return false;
-      }
-      */
-
       // check for a passed destination path
       CStdString strDestination = message.GetStringParam();
       if (!strDestination.IsEmpty())
@@ -167,7 +156,7 @@ bool CGUIWindowVideoFiles::OnMessage(CGUIMessage& message)
         CLog::Log(LOGINFO, "Attempting to quickpath to: %s", strDestination.c_str());
       }
 
-      // unless we had a destination paramter switch to the last my music window
+      // unless we had a destination paramter switch to the last my video window
       if (g_stSettings.m_iVideoStartWindow > 0 && g_stSettings.m_iVideoStartWindow != GetID() )
       {
         m_gWindowManager.ActivateWindow(g_stSettings.m_iVideoStartWindow);
@@ -348,17 +337,33 @@ void CGUIWindowVideoFiles::SortItems(CFileItemList& items)
 
 bool CGUIWindowVideoFiles::Update(const CStdString &strDirectory)
 {
+  // if we're getting the root bookmark listing
+  // make sure the path history is clean
+  if (strDirectory.IsEmpty())
+    m_vecPathHistory.empty();
+
   if (!UpdateDir(strDirectory))
     return false;
 
   if (!m_Directory.IsVirtualDirectoryRoot() && g_guiSettings.GetBool("VideoFiles.UseAutoSwitching"))
   {
     m_iViewAsIcons = CAutoSwitch::GetView(m_vecItems);
-
     int iFocusedControl = GetFocusedControl();
-
-//    UpdateThumbPanel();
     UpdateButtons();
+  }
+
+  if ((m_vecPathHistory.size() == 0) || m_vecPathHistory.back() != strDirectory)
+  {
+    m_vecPathHistory.push_back(strDirectory);
+  }
+
+  // debug log
+  CStdString strTemp;
+  CLog::Log(LOGDEBUG,"Current m_vecPathHistory:");
+  for (int i = 0; i < (int)m_vecPathHistory.size(); ++i)
+  {
+    strTemp.Format("%02i.[%s]", i, m_vecPathHistory[i]);
+    CLog::Log(LOGDEBUG, "  %s", strTemp.c_str());
   }
 
   return true;
@@ -415,7 +420,12 @@ bool CGUIWindowVideoFiles::UpdateDir(const CStdString &strDirectory)
 
   SetIMDBThumbs(m_vecItems);
   m_vecItems.FillInDefaultIcons();
-  OnSort();
+
+  // changed this from OnSort() because it was incorrectly selecting
+  // the wrong item!
+  SortItems(m_vecItems);
+  m_viewControl.SetItems(m_vecItems);
+
   UpdateButtons();
 
   strSelectedItem = m_history.Get(m_Directory.m_strPath);
@@ -910,6 +920,41 @@ void CGUIWindowVideoFiles::LoadPlayList(const CStdString& strPlayList)
 
 bool CGUIWindowVideoFiles::GetDirectory(const CStdString &strDirectory, CFileItemList &items)
 {
+  // cleanup items
+  if (items.Size())
+    items.Clear();
+
+  CStdString strParentPath = "";
+  if (m_vecPathHistory.size() > 0)
+    strParentPath = m_vecPathHistory.back();
+
+  CLog::Log(LOGDEBUG,"CGUIWindowVideoFiles::GetDirectory (%s)", strDirectory.c_str());
+  CLog::Log(LOGDEBUG,"  ParentPath = [%s]", strParentPath.c_str());
+
+  if (!g_guiSettings.GetBool("MyVideos.HideParentDirItems"))
+  {
+    CFileItem *pItem = new CFileItem("..");
+    pItem->m_strPath = strParentPath;
+    pItem->m_bIsFolder = true;
+    pItem->m_bIsShareOrDrive = false;
+    items.Add(pItem);
+  }
+  m_strParentPath = strParentPath;
+
+  CLog::Log(LOGDEBUG,"Fetching directory (%s)", strDirectory.c_str());
+  if (!m_rootDir.GetDirectory(strDirectory, items))
+  {
+    CLog::Log(LOGERROR,"GetDirectory(%s) failed", strDirectory.c_str());
+    return false;
+  }
+
+  return true;
+}
+
+// old code
+/*
+bool CGUIWindowVideoFiles::GetDirectory(const CStdString &strDirectory, CFileItemList &items)
+{
   if (items.Size() )
   {
     // cleanup items
@@ -961,6 +1006,7 @@ bool CGUIWindowVideoFiles::GetDirectory(const CStdString &strDirectory, CFileIte
 
   return m_rootDir.GetDirectory(strDirectory, items);
 }
+*/
 
 /// \brief Can be overwritten to build an own history string for \c m_history
 /// \param pItem Item to build the history string from
