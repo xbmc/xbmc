@@ -302,7 +302,10 @@ bool CCDDARipper::RipCD()
       {
         strDirectory += strDate;
         CUtil::AddDirectorySeperator(strDirectory);
-        break;
+        if (CGUIDialogKeyboard::ShowAndGetInput(strDirectory, (CStdStringW)g_localizeStrings.Get(748), false))
+          break;
+        
+        return false;
       }
       iNumber++;
     }
