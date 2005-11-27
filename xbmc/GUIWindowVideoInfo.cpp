@@ -477,9 +477,7 @@ void CGUIWindowVideoInfo::AddItemsToList(const vector<CStdString> &vecStr)
 
 void CGUIWindowVideoInfo::Play()
 {
-  VECMOVIESFILES movies;
-  m_database.GetFiles(atol(m_pMovie->m_strSearchString), movies);
-
+  CFileItem movie(m_pMovie->m_strPath, false);
   CGUIWindowVideoFiles* pWindow = (CGUIWindowVideoFiles*)m_gWindowManager.GetWindow(WINDOW_VIDEOS);
-  if (pWindow) pWindow->PlayMovies(movies, 0);
+  if (pWindow) pWindow->PlayMovie(&movie);
 }

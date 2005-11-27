@@ -363,10 +363,7 @@ void CGUIWindowVideoGenre::OnClick(int iItem)
   else
   {
     m_iItemSelected = m_viewControl.GetSelectedItem();
-    int iSelectedFile = 1;
-    VECMOVIESFILES movies;
-    m_database.GetFiles(atol(pItem->m_strPath), movies);
-    PlayMovies(movies, pItem->m_lStartOffset);
+    PlayMovie(pItem);
   }
 }
 

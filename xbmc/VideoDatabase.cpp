@@ -120,12 +120,6 @@ long CVideoDatabase::GetFile(const CStdString& strFilenameAndPath, long &lPathId
     CStdString strPath, strFileName ;
     Split(strFilenameAndPath, strPath, strFileName);
 
-    // check for a stackable file
-    CStdString fileTitle;
-    CStdString volumeNumber;
-    if (!bExact && !CUtil::GetVolumeFromFileName(strFileName, fileTitle, volumeNumber))
-      bExact = true;  // can't stack this file
-
     lPathId = GetPath(strPath);
     if (lPathId < 0) return -1;
 
@@ -137,43 +131,15 @@ long CVideoDatabase::GetFile(const CStdString& strFilenameAndPath, long &lPathId
       while (!m_pDS->eof())
       {
         CStdString strFname = m_pDS->fv("strFilename").get_asString() ;
-        if (bExact)
+        if (strFname == strFileName)
         {
-          if (strFname == strFileName)
-          {
-            // was just returning 'true' here, but this caused problems with
-            // the bookmarks as these are stored by fileid. forza.
-            long lFileId = m_pDS->fv("idFile").get_asLong() ;
-            lMovieId = m_pDS->fv("idMovie").get_asLong() ;
-            m_pDS->close();
-            return lFileId;
-            //return true;
-          }
-        }
-        else
-        {
-          CStdString fileTitle2;
-          CStdString volumeNumber2;
-          if (CUtil::GetVolumeFromFileName(strFname, fileTitle2, volumeNumber2))
-          {
-            if (fileTitle.Equals(fileTitle2))
-            { // found a file already
-              long lFileId = m_pDS->fv("idFile").get_asLong() ;
-              lMovieId = m_pDS->fv("idMovie").get_asLong() ;
-              m_pDS->close();
-              return lFileId;
-            }
-          }
-          /*
-          double fPercentage = fstrcmp(strFname.c_str(), strFileName.c_str(), COMPARE_PERCENTAGE_MIN );
-          if ( fPercentage >= COMPARE_PERCENTAGE)
-          {
-            long lFileId = m_pDS->fv("idFile").get_asLong() ;
-            lMovieId = m_pDS->fv("idMovie").get_asLong() ;
-            m_pDS->close();
-            return lFileId;
-          }
-          */
+          // was just returning 'true' here, but this caused problems with
+          // the bookmarks as these are stored by fileid. forza.
+          long lFileId = m_pDS->fv("idFile").get_asLong() ;
+          lMovieId = m_pDS->fv("idMovie").get_asLong() ;
+          m_pDS->close();
+          return lFileId;
+          //return true;
         }
         m_pDS->next();
       }
@@ -764,6 +730,7 @@ void CVideoDatabase::GetMovieInfo(const CStdString& strFilenameAndPath, CIMDBMov
     if (m_pDS->num_rows() > 0)
     {
       details = GetDetailsFromDataset(m_pDS);
+      details.m_strPath = strFilenameAndPath;
       if (details.m_strWritingCredits.IsEmpty())
       { // try loading off disk
         CIMDB imdb;
@@ -926,11 +893,10 @@ void CVideoDatabase::GetMoviesByPath(CStdString& strPath1, VECMOVIES& movies)
 }
 
 //********************************************************************************************************************************
-void CVideoDatabase::GetFiles(long lMovieId, VECMOVIESFILES& movies)
+void CVideoDatabase::GetFilePath(long lMovieId, CStdString &filePath)
 {
   try
   {
-    movies.erase(movies.begin(), movies.end());
     if (NULL == m_pDB.get()) return ;
     if (NULL == m_pDS.get()) return ;
 
@@ -939,20 +905,16 @@ void CVideoDatabase::GetFiles(long lMovieId, VECMOVIESFILES& movies)
 
     CStdString strSQL=FormatSQL("select * from path,files where path.idPath=files.idPath and files.idmovie=%i order by strFilename", lMovieId );
     m_pDS->query( strSQL.c_str() );
-    while (!m_pDS->eof())
+    if (!m_pDS->eof())
     {
-      CStdString strPath, strFile;
-      strFile = m_pDS->fv("files.strFilename").get_asString();
-      strPath = m_pDS->fv("path.strPath").get_asString();
-      strFile = strPath + strFile;
-      movies.push_back(strFile);
-      m_pDS->next();
+      filePath = m_pDS->fv("path.strPath").get_asString();
+      filePath += m_pDS->fv("files.strFilename").get_asString();
     }
     m_pDS->close();
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "CVideoDatabase::GetFiles() failed");
+    CLog::Log(LOGERROR, "CVideoDatabase::GetFilePath() failed");
   }
 }
 

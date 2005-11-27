@@ -1829,6 +1829,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				RelativePath=".\xbmc\FileSystem\SndtrkDirectory.h">
 			</File>
 			<File
+				RelativePath=".\xbmc\FileSystem\StackDirectory.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\FileSystem\StackDirectory.h">
+			</File>
+			<File
 				RelativePath=".\xbmc\FileSystem\VirtualDirectory.cpp">
 			</File>
 			<File

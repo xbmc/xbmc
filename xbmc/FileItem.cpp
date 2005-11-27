@@ -381,6 +381,12 @@ bool CFileItem::IsCBR() const
   return false;
 }
 
+bool CFileItem::IsStack() const
+{
+  CURL url(m_strPath);
+  return url.GetProtocol().Equals("stack");
+}
+
 bool CFileItem::IsCDDA() const
 {
   return CUtil::IsCDDA(m_strPath);
@@ -1393,121 +1399,58 @@ void CFileItemList::CleanFileNames()
 
 void CFileItemList::Stack()
 {
+  // TODO: Remove nfo files before this stage?  The old routine did, but I'm not sure
+  // the advantage of this (seems to me it's better just to ignore them for stacking
+  // purposes).
+  // TODO: DVDFolders were being stacked here as well - I have removed this as you can
+  // probably do this via a regexp (reducing the need for special cases)
   if (g_stSettings.m_iMyVideoVideoStack != STACK_NONE)
   {
-    CFileItemList items;
-    bool bDVDFolder(false);
-    //Figure out first if we are in a folder that contains a dvd
-    for (int i = 0; i < (int)Size(); ++i) //Do it this way to avoid an extra roundtrip to files
+    // Stacking
+    for (int i = 0; i < Size() - 1; ++i)
     {
-      CFileItem* pItem1 = Get(i);
-      if (CStdString(CUtil::GetFileName(pItem1->m_strPath)).Equals("VIDEO_TS.IFO"))
-      {
-        bDVDFolder = true;
-        items.Add(new CFileItem(*pItem1));
-        Remove(i); //Make sure this is not included in the comeing search as it would have been deleted.
-        break;
-      }
-    }
+      CFileItem *item = Get(i);
+      // ignore directories and playlists
+      if (item->IsPlayList() || item->m_bIsFolder || item->IsNFO())
+        continue;
 
-    for (int i = 0; i < Size(); ++i)
-    {
-      bool bAdd(true);
-      CFileItem* pItem1 = Get(i);
-      if (pItem1->IsNFO())
+      CStdString fileName = CUtil::GetFileName(item->m_strPath);
+      CStdString fileTitle;
+      CStdString volumeNumber;
+      if (CUtil::GetVolumeFromFileName(fileName, fileTitle, volumeNumber))
       {
-        bAdd = false;
-      }
-      else if (bDVDFolder && pItem1->IsDVDFile(true, true)) //Hide all dvdfiles
-      {
-        bAdd = false;
-      }
-      else
-      {
-        //don't stack folders and playlists
-        if ((!pItem1->m_bIsFolder) && !pItem1->IsPlayList())
+        vector<int> stack;
+        stack.push_back(i);
+        for (int j = i + 1; j < Size(); ++j)
         {
-          CStdString fileName1 = CUtil::GetFileName(pItem1->m_strPath);
-
-          CStdString fileTitle;
-          CStdString volumeNumber;
-
-          bool searchForStackedFiles = false;
-          if (g_stSettings.m_iMyVideoVideoStack == STACK_FUZZY)
+          CFileItem *item2 = Get(j);
+          // ignore directories, nfo files and playlists
+          if (item2->IsPlayList() || item2->m_bIsFolder || item2->IsNFO())
+            continue;
+          CStdString fileName2 = CUtil::GetFileName(item2->m_strPath);
+          CStdString fileTitle2;
+          CStdString volumeNumber2;
+          if (CUtil::GetVolumeFromFileName(fileName2, fileTitle2, volumeNumber2))
           {
-            searchForStackedFiles = true;
-          }
-          else
-          {
-            searchForStackedFiles = CUtil::GetVolumeFromFileName(fileName1, fileTitle, volumeNumber);
-          }
-
-          if (searchForStackedFiles)
-          {
-            for (int x = 0; x < (int)items.Size(); ++x)
-            {
-              CFileItem* pItem2 = items[x];
-              if (pItem1 != pItem2)
-              {
-                if ((!pItem2->m_bIsFolder) && !pItem2->IsPlayList())
-                {
-                  CStdString fileName2 = CUtil::GetFileName(pItem2->m_strPath);
-
-                  if (g_stSettings.m_iMyVideoVideoStack == STACK_FUZZY)
-                  {
-                    // use "fuzzy" stacking
-
-                    double fPercentage = fstrcmp(fileName1, fileName2, COMPARE_PERCENTAGE_MIN);
-                    if (fPercentage >= COMPARE_PERCENTAGE)
-                    {
-                      int iGreater = strcmp(fileName1, fileName2);
-                      if (iGreater > 0)
-                      {
-                        bAdd = false;
-                        break;
-                      }
-                    }
-                  }
-                  else
-                  {
-                    // use traditional "simple" stacking (like XBMP)
-                    // file name must end in -CD[n], where only the first
-                    // one (-CD1) will be added to the display list
-
-                    CStdString fileTitle2;
-                    CStdString volumeNumber2;
-                    if (CUtil::GetVolumeFromFileName(fileName2, fileTitle2, volumeNumber2))
-                    {
-                      // TODO: check volumePrefix - they should be in the
-                      // same category, but not necessarily equal!
-
-                      if (fileTitle.Equals(fileTitle2) && strcmp(volumeNumber.c_str(), volumeNumber2.c_str()) > 0)
-                      {
-                        bAdd = false;
-                        break;
-                      }
-                    }
-                  }
-                }
-              }
-            }
+            if (fileTitle2.Equals(fileTitle))
+              stack.push_back(j);
           }
         }
-      }
-      if (bAdd)
-      {
-        items.Add(new CFileItem(*pItem1));
+        if (stack.size() > 1)
+        { // have a stack, remove the items and add the stacked item
+          CStdString stackPath = "stack://" + item->m_strPath;
+          for (unsigned int j = 1; j < stack.size(); ++j)
+          {
+            stackPath += ",";
+            stackPath += CUtil::GetFileName(Get(stack[j])->m_strPath);
+          }
+          for (unsigned int j = stack.size() - 1; j > 0; --j)
+            Remove(stack[j]);
+          item->m_strPath = stackPath;
+          // item->m_bIsFolder = true;  // don't treat stacked files as folders
+          item->SetLabel(fileTitle);
+        }
       }
     }
-
-    Clear();
-
-    for (int i=0; i<items.Size(); ++i)
-    {
-      CFileItem* pItem=items[i];
-      Add(pItem);
-    }
-
-    items.ClearKeepPointer();
   }
 }
