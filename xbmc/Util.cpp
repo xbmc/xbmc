@@ -961,7 +961,16 @@ bool CUtil::HasSlashAtEnd(const CStdString& strFile)
 {
   if (strFile.size() == 0) return false;
   char kar = strFile.c_str()[strFile.size() - 1];
-  if (kar == '/' || kar == '\\') return true;
+  if (kar == '/' || kar == '\\') 
+  {
+    if (strFile.length() > 2)
+      if (strFile[strFile.size()-1] == ':')
+        return false;
+    if (strFile.length() > 3)
+      if (strFile[strFile.size()-2] == ':')
+        return false;
+    return true;
+  }
   return false;
 }
 
