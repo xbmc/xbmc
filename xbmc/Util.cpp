@@ -3255,9 +3255,15 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     return -1;
   return 0;
 }
-int CUtil::GetMatchingShare(const CStdString& strPath, VECSHARES& vecShares, bool& bIsBookmarkName)
+int CUtil::GetMatchingShare(const CStdString& strPath1, VECSHARES& vecShares, bool& bIsBookmarkName)
 {
   //CLog::Log(LOGDEBUG,"CUtil::GetMatchingShare, testing path/name [%s]", strPath.c_str());
+
+  CStdString strPath = strPath1;  // copy as we may change strPath
+  // Check special protocols, such as stack://
+  CURL checkURL(strPath);
+  if (checkURL.GetProtocol() == "stack")
+    strPath.Delete(0, 8); // remove the stack protocol
 
   // remove user details, and ensure path only uses forward slashes
   // and ends with a trailing slash so as not to match a substring

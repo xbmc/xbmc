@@ -51,7 +51,7 @@ public:
   void DeleteMovieInfo(const CStdString& strFileNameAndPath);
 
   void GetMovies(VECMOVIES& movies);
-  void GetFiles(long lMovieId, VECMOVIESFILES& movies);
+  void GetFilePath(long lMovieId, CStdString &filePath);
   void GetMovieInfo(const CStdString& strFilenameAndPath, CIMDBMovie& details, long lMovieId = -1);
   void SetMovieInfo(const CStdString& strFilenameAndPath, CIMDBMovie& details);
   void GetMoviesByPath(CStdString& strPath1, VECMOVIES& movies);

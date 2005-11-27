@@ -433,15 +433,15 @@ void CMediaMonitor::InitializeObserver()
   {
     m_database.Open();
 
-    VECMOVIESFILES paths;
-    m_database.GetFiles(lzMovieId[i], paths);
+    CStdString path;
+    m_database.GetFilePath(lzMovieId[i], path);
 
     m_database.Close();
 
-    if (paths.size() > 0)
+    if (!path.IsEmpty())
     {
       Movie movie;
-      movie.strFilepath = paths[0];
+      movie.strFilepath = path;
       UpdateObserver(movie, i, false, true);
     }
   }
