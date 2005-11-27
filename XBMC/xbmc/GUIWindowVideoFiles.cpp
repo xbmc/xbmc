@@ -17,6 +17,7 @@
 #include "GUIPassword.h"
 #include "GUIFontManager.h"
 #include "GUIDialogContextMenu.h"
+#include "FileSystem/StackDirectory.h"
 
 #define CONTROL_BTNVIEWASICONS  2
 #define CONTROL_BTNSORTBY     3
@@ -260,8 +261,7 @@ bool CGUIWindowVideoFiles::OnMessage(CGUIMessage& message)
       {
         // toggle between the following states:
         //   0 : no stacking
-        //   1 : simple stacking
-        //   2 : fuzzy stacking
+        //   1 : stacking
         g_stSettings.m_iMyVideoVideoStack++;
         
         if (g_stSettings.m_iMyVideoVideoStack > STACK_SIMPLE) 
@@ -396,7 +396,7 @@ bool CGUIWindowVideoFiles::UpdateDir(const CStdString &strDirectory)
   m_vecItems.AppendPointer(items);
   items.ClearKeepPointer();
 
-  if (g_stSettings.m_iMyVideoVideoStack != STACK_NONE)
+  if (!m_Directory.IsStack() && g_stSettings.m_iMyVideoVideoStack != STACK_NONE)
   {
     //sort list ascending by filename before stacking...
     SSortVideoByName::m_iSortMethod = 0;
@@ -489,15 +489,11 @@ void CGUIWindowVideoFiles::OnClick(int iItem)
       LoadPlayList(pItem->m_strPath);
       return ;
     }
-    if (!CheckMovie(pItem->m_strPath)) return;
-    vector<CStdString> movies;
-    GetStackedFiles(pItem->m_strPath, movies);
-    for (int i = 0; i < (int)movies.size(); ++i)
+    else
     {
-      CFileItem item(movies[i], false);
-      AddFileToDatabase(&item);
+      AddFileToDatabase(pItem);
+      PlayMovie(pItem);
     }
-    PlayMovies(movies, pItem->m_lStartOffset);
   }
 }
 
@@ -556,11 +552,17 @@ void CGUIWindowVideoFiles::OnInfo(int iItem)
   }
 
   vector<CStdString> movies;
-  GetStackedFiles(strFile, movies);
-  for (unsigned int i = 0; i < movies.size(); i++)
-  {
-    CFileItem item(movies[i], false);
-    AddFileToDatabase(&item);
+  AddFileToDatabase(pItem);
+  if (pItem->IsStack())
+  { // add the individual files as well at this point
+    // TODO: This should be removed as soon as we no longer need the individual
+    // files for saving settings etc.
+    GetStackedFiles(strFile, movies);
+    for (unsigned int i = 0; i < movies.size(); i++)
+    {
+      CFileItem item(movies[i], false);
+      AddFileToDatabase(&item);
+    }
   }
 
   ShowIMDB(strMovie, strFile, strFolder, bFolder);
@@ -624,13 +626,18 @@ void CGUIWindowVideoFiles::OnRetrieveVideoInfo(CFileItemList& items)
           m_dlgProgress->Progress();
           if (m_dlgProgress->IsCanceled()) return ;
         }
-        // get stacked items
         vector<CStdString> movies;
-        GetStackedFiles(pItem->m_strPath, movies);
-        for (unsigned int i = 0; i < movies.size(); i++)
-        {
-          CFileItem item(movies[i], false);
-          AddFileToDatabase(&item);
+        AddFileToDatabase(pItem);
+        if (pItem->IsStack())
+        { // get stacked items
+          // TODO: This should be removed as soon as we no longer need the individual
+          // files for saving settings etc.
+          GetStackedFiles(pItem->m_strPath, movies);
+          for (unsigned int i = 0; i < movies.size(); i++)
+          {
+            CFileItem item(movies[i], false);
+            AddFileToDatabase(&item);
+          }
         }
         if (!m_database.HasMovieInfo(pItem->m_strPath))
         {
@@ -640,13 +647,11 @@ void CGUIWindowVideoFiles::OnRetrieveVideoInfo(CFileItemList& items)
           if (!CFile::Exists(strNfoFile))
             strNfoFile.Empty();
           // try looking for .nfo file based off the stacked title
-          if (strNfoFile.IsEmpty() && g_stSettings.m_iMyVideoVideoStack > STACK_NONE)
+          if (pItem->IsStack())
           {
-            CStdString strPath, strFileName, strStackedTitle, strVolume;
-            CUtil::Split(pItem->m_strPath, strPath, strFileName);
-            CUtil::GetVolumeFromFileName(strFileName, strStackedTitle, strVolume);
-            CUtil::ReplaceExtension(strStackedTitle, ".nfo", strFileName);
-            CUtil::AddFileToFolder(strPath, strFileName, strNfoFile);
+            CStackDirectory dir;
+            CStdString stackedTitlePath = dir.GetStackedTitlePath(pItem->m_strPath);
+            CUtil::ReplaceExtension(stackedTitlePath, ".nfo", strNfoFile);
             if (!CFile::Exists(strNfoFile))
               strNfoFile.Empty();
           }
@@ -680,7 +685,7 @@ void CGUIWindowVideoFiles::OnRetrieveVideoInfo(CFileItemList& items)
           }
           else
           {
-            strMovieName = CUtil::GetFileName(pItem->m_strPath);
+            strMovieName = CUtil::GetFileName(pItem->GetLabel());
             CUtil::RemoveExtension(strMovieName);
           }
           // do IMDB lookup...
@@ -1135,27 +1140,5 @@ void CGUIWindowVideoFiles::GetIMDBDetails(CFileItem *pItem, CIMDBUrl &url)
 
 void CGUIWindowVideoFiles::OnQueueItem(int iItem)
 {
-  if (iItem < 0 || iItem >= (int)m_vecItems.Size()) return;
-
-  CFileItem* pItem = m_vecItems[iItem];
-  if (pItem->m_bIsFolder || g_stSettings.m_iMyVideoVideoStack == STACK_NONE)
-  {
-    CGUIWindowVideoBase::OnQueueItem(iItem);
-    return;
-  }
-
-  vector<CStdString> movies;
-  GetStackedFiles(pItem->m_strPath, movies);
-  if (movies.size() <= 0) return;
-  for (int i = 0; i < (int)movies.size(); ++i)
-  {
-    CFileItem* pMovieFile = new CFileItem(movies[i], false);
-    CStdString strFileNum;
-    strFileNum.Format("(%2.2i)",i+1);
-    pMovieFile->SetLabel(pItem->GetLabel() + " " + strFileNum);
-    AddItemToPlayList(pMovieFile);
-  }
-
-  //move to next item
-  m_viewControl.SetSelectedItem(iItem + 1);
+  CGUIWindowVideoBase::OnQueueItem(iItem);
 }

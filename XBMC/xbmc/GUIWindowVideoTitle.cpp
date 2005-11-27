@@ -396,10 +396,7 @@ void CGUIWindowVideoTitle::OnClick(int iItem)
   else
   {
     m_iItemSelected = m_viewControl.GetSelectedItem();
-    int iSelectedFile = 1;
-    VECMOVIESFILES movies;
-    m_database.GetFiles(atol(pItem->m_strPath), movies);
-    PlayMovies(movies, pItem->m_lStartOffset);
+    PlayMovie(pItem);
   }
 }
 void CGUIWindowVideoTitle::OnDeleteItem(int iItem)
@@ -417,10 +414,11 @@ void CGUIWindowVideoTitle::OnDeleteItem(int iItem)
   pDialog->SetLine(2, L"");
   pDialog->DoModal(GetID());
   if (!pDialog->IsConfirmed()) return;
-  VECMOVIESFILES movies;
-  m_database.GetFiles(atol(pItem->m_strPath), movies);
-  if (movies.size() <= 0) return;
-  m_database.DeleteMovie(movies[0]);
+
+  CStdString path;
+  m_database.GetFilePath(atol(pItem->m_strPath), path);
+  if (path.IsEmpty()) return;
+  m_database.DeleteMovie(path);
 
   Update( m_Directory.m_strPath );
   m_viewControl.SetSelectedItem(iItem);
@@ -456,23 +454,5 @@ bool CGUIWindowVideoTitle::SortAscending()
 
 void CGUIWindowVideoTitle::OnQueueItem(int iItem)
 {
-  if (iItem < 0 || iItem >= (int)m_vecItems.Size()) return;
-
-  CFileItem* pItem = m_vecItems[iItem];
-  if (pItem->m_bIsFolder) return;
-
-  VECMOVIESFILES movies;
-  m_database.GetFiles(atol(pItem->m_strPath), movies);
-  if (movies.size() <= 0) return;
-  for (int i = 0; i < (int)movies.size(); ++i)
-  {
-    CFileItem* pMovieFile = new CFileItem(movies[i], false);
-    CStdString strFileNum;
-    strFileNum.Format("(%2.2i)",i+1);
-    pMovieFile->SetLabel(pItem->GetLabel() + " " + strFileNum);
-    AddItemToPlayList(pMovieFile);
-  }
-
-  //move to next item
-  m_viewControl.SetSelectedItem(iItem + 1);
+  CGUIWindowVideoBase::OnQueueItem(iItem);
 }

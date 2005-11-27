@@ -16,7 +16,7 @@ public:
   virtual void OnWindowLoaded();
   virtual void OnWindowUnload();
 
-  void PlayMovies(VECMOVIESFILES &movies, long lStartOffset);
+  void PlayMovie(const CFileItem *item);
 
 private:
   bool IsCorrectDiskInDrive(const CStdString& strFileName, const CStdString& strDVDLabel);
