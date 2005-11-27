@@ -10,6 +10,7 @@
 #include "..\xbmc\GUIDialogFileStacking.h"
 #include "..\xbmc\GUIDialogKeyboard.h"
 #include "..\xbmc\FileSystem\VirtualDirectory.h"
+#include "..\xbmc\FileSystem\StackDirectory.h"
 #include "LocalizeStrings.h"
 
 extern CApplication g_application;
@@ -293,151 +294,68 @@ struct CGUIRAMControl::SSortVideoListByName
 
 void CGUIRAMControl::PlayMovie(CFileItem& item)
 {
+  vector<CStdString> movies;
   // is video stacking enabled?
-  if (g_stSettings.m_iMyVideoVideoStack != STACK_NONE)
+  if (item.IsStack())
   {
-    CStdString strDirectory;
-    CUtil::GetDirectory(item.m_strPath, strDirectory);
-    CStdString fileName = CUtil::GetFileName(item.m_strPath);
+    CStackDirectory dir;
+    CFileItemList items;
+    dir.GetDirectory(item.m_strPath, items);
+    for (int i = 0; i < items.Size(); ++i)
+      movies.push_back(items[i]->m_strPath);
+  }
 
-    CStdString fileTitle;
-    CStdString volumeNumber;
-    bool fileStackable = true;
-    if (g_stSettings.m_iMyVideoVideoStack == STACK_SIMPLE)
-    {
-      if (!CUtil::GetVolumeFromFileName(fileName, fileTitle, volumeNumber))
-      {
-        fileStackable = false;
-      }
-    }
-
-    // create a list of associated movie files (some movies span across multiple files!)
-    vector<CStdString> movies;
-    {
-      if (fileStackable)
-      {
-        // create a list of all the files in the same directory
-        CFileItemList items;
-        CVirtualDirectory dir;
-        dir.SetShares(g_settings.m_vecMyVideoShares);
-        dir.SetMask(g_stSettings.m_szMyVideoExtensions);
-        dir.GetDirectory(strDirectory, items);
-
-        // TODO: this code is copied from GUIWindowVideo.cpp - it should
-        // be put in a place that can be shared
-
-        // iterate through all the files, adding any files that appear similar to the selected movie file
-        for (int i=0; i < items.Size(); ++i)
-        {
-          CFileItem *pItemTmp = items[i];
-          if (!pItemTmp->IsNFO() && !pItemTmp->IsPlayList())
-          {
-            if (pItemTmp->IsVideo())
-            {
-              CStdString fileNameTemp = CUtil::GetFileName(pItemTmp->m_strPath);
-              bool stackFile = false;
-
-              if (fileName.Equals(fileNameTemp))
-              {
-                stackFile = true;
-              }
-              else if (g_stSettings.m_iMyVideoVideoStack == STACK_FUZZY)
-              {
-                // fuzzy stacking
-                double fPercentage = fstrcmp(fileNameTemp, fileName, COMPARE_PERCENTAGE_MIN);
-                if (fPercentage >= COMPARE_PERCENTAGE)
-                {
-                  stackFile = true;
-                }
-              }
-              else
-              {
-                // simple stacking
-                CStdString fileTitle2;
-                CStdString volumeNumber2;
-                if (CUtil::GetVolumeFromFileName(fileNameTemp, fileTitle2, volumeNumber2))
-                {
-                  if (fileTitle.Equals(fileTitle2))
-                  {
-                    stackFile = true;
-                  }
-                }
-              }
-
-              if (stackFile)
-              {
-                movies.push_back(pItemTmp->m_strPath);
-              }
-            }
-          }
-        }
-      }
-      else
-      {
-        // file is not stackable - simply add it as the only item in the list
-        movies.push_back(item.m_strPath);
-      }
-    }
-
-    // if for some strange reason we couldn't find any matching files (can't think of any reason why!)
-    if (movies.size() <= 0)
-    {
-      CLog::Log(LOGWARNING, "*WARNING* Wibble! CGUIRAMControl was unable to find matching file!");
-
-      // might as well play the file that we do know about!
-      g_application.PlayFile( item );
-      return ;
-    }
-
-    // if this movie was split into multiple files
-    int iSelectedFile = 1;
-    if (movies.size() > 1)
-    {
-      // sort the files in alphabetical order
-      sort(movies.begin(), movies.end(), SSortVideoListByName());
-
-      // prompt the user to select a file from which to start playback (playback then continues across the
-      // selected file and the remainder of the files).
-      CGUIDialogFileStacking* dlg = (CGUIDialogFileStacking*)m_gWindowManager.GetWindow(WINDOW_DIALOG_FILESTACKING);
-      if (dlg)
-      {
-        dlg->SetNumberOfFiles(movies.size());
-        dlg->DoModal(m_dwParentID);
-        iSelectedFile = dlg->GetSelectedFile();
-        if (iSelectedFile < 1)
-        {
-          // the user decided to cancel playback
-          return ;
-        }
-      }
-    }
-
-    // create a playlist containing the appropriate movie files
-    g_playlistPlayer.Reset();
-    g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_VIDEO_TEMP);
-    CPlayList& playlist = g_playlistPlayer.GetPlaylist(PLAYLIST_VIDEO_TEMP);
-    playlist.Clear();
-    for (int i = iSelectedFile - 1; i < (int)movies.size(); ++i)
-    {
-      CStdString strFileName = movies[i];
-      CPlayList::CPlayListItem item;
-      item.SetFileName(strFileName);
-      playlist.Add(item);
-    }
-
-    // TODO: there is something funny about the way this works - if the
-    // volume we started on was not the first volume in the series, it
-    // is not possible to go backwards to previous volumes before this one.
-
-    // play the first file on the playlist
-    g_playlistPlayer.PlayNext();
+  if (movies.size() <= 0)
+  {
+    // might as well play the file that we do know about!
+    g_application.PlayFile( item );
     return ;
   }
 
-  // stacking disabled, just play the movie
-  g_application.PlayFile(item);
-}
+  // if this movie was split into multiple files
+  int iSelectedFile = 1;
+  if (movies.size() > 1)
+  {
+    // sort the files in alphabetical order
+    sort(movies.begin(), movies.end(), SSortVideoListByName());
 
+    // prompt the user to select a file from which to start playback (playback then continues across the
+    // selected file and the remainder of the files).
+    CGUIDialogFileStacking* dlg = (CGUIDialogFileStacking*)m_gWindowManager.GetWindow(WINDOW_DIALOG_FILESTACKING);
+    if (dlg)
+    {
+      dlg->SetNumberOfFiles(movies.size());
+      dlg->DoModal(m_dwParentID);
+      iSelectedFile = dlg->GetSelectedFile();
+      if (iSelectedFile < 1)
+      {
+        // the user decided to cancel playback
+        return ;
+      }
+    }
+  }
+
+  // create a playlist containing the appropriate movie files
+  g_playlistPlayer.Reset();
+  g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_VIDEO_TEMP);
+  CPlayList& playlist = g_playlistPlayer.GetPlaylist(PLAYLIST_VIDEO_TEMP);
+  playlist.Clear();
+  for (int i = iSelectedFile - 1; i < (int)movies.size(); ++i)
+  {
+    CStdString strFileName = movies[i];
+    CPlayList::CPlayListItem item;
+    item.SetFileName(strFileName);
+    playlist.Add(item);
+  }
+
+  // TODO: there is something funny about the way this works - if the
+  // volume we started on was not the first volume in the series, it
+  // is not possible to go backwards to previous volumes before this one.
+
+  // play the first file on the playlist
+  g_playlistPlayer.PlayNext();
+  return ;
+}
 
 void CGUIRAMControl::UpdateAllTitles()
 {

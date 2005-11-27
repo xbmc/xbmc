@@ -17,6 +17,7 @@
 #include "rardirectory.h"
 #include "FTPDirectory.h"
 #include "VirtualPathDirectory.h"
+#include "StackDirectory.h"
 
 /*!
  \brief Create a IDirectory object of the share type specified in \e strPath .
@@ -47,5 +48,6 @@ IDirectory* CFactoryDirectory::Create(const CStdString& strPath)
   else if (strProtocol == "rar") return new CRarDirectory();
   else if (strProtocol == "ftp") return new CFTPDirectory();
   else if (strProtocol == "virtualpath") return new CVirtualPathDirectory();
+  else if (strProtocol == "stack") return new CStackDirectory();
   else return new CHDDirectory();
 }
