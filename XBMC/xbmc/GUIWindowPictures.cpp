@@ -585,6 +585,15 @@ void CGUIWindowPictures::OnClick(int iItem)
     if ( !g_passwordManager.IsItemUnlocked( pItem, "pictures" ) )
       return ;
 
+    if (pItem->GetLabel() == "..")
+    {
+      // go back a directory
+      GoParentFolder();
+
+      // GoParentFolder() calls Update(), so just return
+      return;
+    }
+
     m_iItemSelected = -1;
     if ( pItem->m_bIsShareOrDrive )
     {
