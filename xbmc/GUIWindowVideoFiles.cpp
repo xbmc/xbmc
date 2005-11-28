@@ -459,6 +459,14 @@ void CGUIWindowVideoFiles::OnClick(int iItem)
 
   if (pItem->m_bIsFolder)
   {
+    if (pItem->GetLabel() == "..")
+    {
+      // go back a directory
+      GoParentFolder();
+
+      // GoParentFolder() calls Update(), so just return
+      return;
+    }
     m_iItemSelected = -1;
     if ( pItem->m_bIsShareOrDrive )
     {
