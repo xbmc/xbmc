@@ -215,9 +215,7 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
 
         g_graphicsContext.Lock();
         pSlideShow->Reset();
-        if (m_gWindowManager.GetActiveWindow() != WINDOW_SLIDESHOW)
-          m_gWindowManager.ActivateWindow(WINDOW_SLIDESHOW);
-        
+
         CFileItemList items;
         CStdString strPath = pMsg->strParam;
         CUtil::GetRecursiveListing(strPath,items,g_stSettings.m_szMyPicturesExtensions);
@@ -227,6 +225,9 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
             pSlideShow->Add(items[i]->m_strPath);
           pSlideShow->StartSlideShow(); //Start the slideshow!
         }
+        if (m_gWindowManager.GetActiveWindow() != WINDOW_SLIDESHOW)
+          m_gWindowManager.ActivateWindow(WINDOW_SLIDESHOW);
+        
         g_graphicsContext.Unlock();
       }
       break;

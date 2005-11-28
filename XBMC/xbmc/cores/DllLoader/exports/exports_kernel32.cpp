@@ -65,6 +65,7 @@ void export_kernel32()
   g_dlls.kernel32.AddExport("CreateFileA", (unsigned long) CreateFileA);
   g_dlls.kernel32.AddExport("DeviceIoControl", (unsigned long) DeviceIoControl);
   g_dlls.kernel32.AddExport("ReadFile", (unsigned long) ReadFile);
+  g_dlls.kernel32.AddExport("dllDVDReadFile", (unsigned long) dllDVDReadFileLayerChangeHack);
   g_dlls.kernel32.AddExport("SetFilePointer", (unsigned long) SetFilePointer);
   g_dlls.kernel32.AddExport("xboxopendvdrom", (unsigned long) xboxopendvdrom);
   g_dlls.kernel32.AddExport("GetVersion", (unsigned long) dllGetVersion);
