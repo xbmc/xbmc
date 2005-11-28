@@ -661,23 +661,7 @@ void CGUIWindowSlideShow::OnLoadPic(int iPic, int iSlideNumber, D3DTexture *pTex
 
 void CGUIWindowSlideShow::Shuffle()
 {
-  srand( timeGetTime() );
-  int iNumToShuffle = (int)m_vecSlides.size();
-  // first pic is the current pic
-  vector<CStdString> vecTemp(m_vecSlides);
-  m_vecSlides.clear();
-  int iDone = 0;
-  ivecSlides it = m_vecSlides.begin();
-  m_vecSlides.push_back(vecTemp[m_iCurrentSlide]);
-  vecTemp.erase(vecTemp.begin() + m_iCurrentSlide);
-  iNumToShuffle--;
-  while (iNumToShuffle)
-  {
-    int slide = rand() % iNumToShuffle;
-    m_vecSlides.push_back(vecTemp[slide]);
-    vecTemp.erase(vecTemp.begin() + slide);
-    iNumToShuffle--;
-  }
+  random_shuffle(m_vecSlides.begin(), m_vecSlides.end());
   m_iCurrentSlide = 0;
   m_iNextSlide = 1;
 }
