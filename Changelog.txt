@@ -5,6 +5,11 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 28-11-2005 added: Workaround for ReadFile() returning incorrect data at the DVD layer change - requires special version
+                     of libdvdcss-2.dll (rename from libdvdcss-2.dll_layerchangehack).
+ - 28-11-2005 fixed: Notifications were only showing if Kai was enabled.
+ - 28-11-2005 fixed: Shuffle in Slideshow screensaver was disregarded.
+ - 28-11-2005 added: Support for comma's in stacked file names.
  - 28-11-2005 fixed: same navigational bug in my pictures.
  - 28-11-2005 fixed: small navigational bug in my videos.
  - 27-11-2005 added: support for multipath bookmarks in video and pictures. its still very much experimental. use at your own risk.

@@ -6,6 +6,7 @@
 #include "shortcut.h"
 #include "crc32.h"
 #include "filesystem/DirectoryCache.h"
+#include "filesystem/StackDirectory.h"
 #include "musicInfoTagLoaderFactory.h"
 #include "cuedocument.h"
 #include "Utils/fstrcmp.h"
@@ -1438,12 +1439,8 @@ void CFileItemList::Stack()
         }
         if (stack.size() > 1)
         { // have a stack, remove the items and add the stacked item
-          CStdString stackPath = "stack://" + item->m_strPath;
-          for (unsigned int j = 1; j < stack.size(); ++j)
-          {
-            stackPath += ",";
-            stackPath += CUtil::GetFileName(Get(stack[j])->m_strPath);
-          }
+          CStackDirectory dir;
+          CStdString stackPath = dir.ConstructStackPath(*this, stack);
           for (unsigned int j = stack.size() - 1; j > 0; --j)
             Remove(stack[j]);
           item->m_strPath = stackPath;
