@@ -216,4 +216,6 @@ extern "C" UINT WINAPI dllSetConsoleCtrlHandler(PHANDLER_ROUTINE HandlerRoutine,
 extern "C" HANDLE xboxopendvdrom();
 extern "C" void WINAPI dllSleep(DWORD dwTime);
 
+extern "C" BOOL WINAPI dllDVDReadFileLayerChangeHack(HANDLE hFile, LPVOID lpBuffer, DWORD nNumberOfBytesToRead, LPDWORD lpNumberOfBytesRead, LPOVERLAPPED lpOverlapped);
+
 #endif // _EMU_KERNEL32_H_

@@ -765,27 +765,30 @@ in the middle of the movie.  The symptoms were:
    returns correctly, but the last chunk is completely zero'd out.
 
 This routine checks the last chunk for zeros, and re-reads if necessary.
+*/
+#define DVD_CHUNK_SIZE 2048
 
-#define CHUNK_SIZE 2048
-
-extern "C" BOOL WINAPI ReadFileCheckLastFile(HANDLE hFile, LPVOID lpBuffer, DWORD nNumberOfBytesToRead, LPDWORD lpNumberOfBytesRead, LPOVERLAPPED lpOverlapped)
+extern "C" BOOL WINAPI dllDVDReadFileLayerChangeHack(HANDLE hFile, LPVOID lpBuffer, DWORD nNumberOfBytesToRead, LPDWORD lpNumberOfBytesRead, LPOVERLAPPED lpOverlapped)
 {
   BOOL ret = ReadFile(hFile, lpBuffer, nNumberOfBytesToRead, lpNumberOfBytesRead, lpOverlapped);
-  if (!ret || !lpNumberOfBytesRead || *lpNumberOfBytesRead < CHUNK_SIZE) return ret;
+  if (!ret || !lpNumberOfBytesRead || *lpNumberOfBytesRead < DVD_CHUNK_SIZE) return ret;
   DWORD numChecked = *lpNumberOfBytesRead;
-//  while (numChecked >= CHUNK_SIZE)
+//  while (numChecked >= DVD_CHUNK_SIZE)
   {
-    int p = *(int *)((BYTE *)lpBuffer + numChecked - CHUNK_SIZE);
+    int p = *(int *)((BYTE *)lpBuffer + numChecked - DVD_CHUNK_SIZE);
     if (p == 0)
-    {
-      CLog::Log(LOGERROR, "ReadFile() error - returning invalid data, DVD will stop!");
+    { // reread this block
+      LONG low = 0;
+      LONG high = 0;
+      low = SetFilePointer(hFile, low, &high, FILE_CURRENT);
+      CLog::Log(LOGWARNING, "DVDReadFile() warning - invalid data read - rereading");
       DWORD numRead;
-      SetFilePointer(hFile, -CHUNK_SIZE, NULL, FILE_CURRENT);
-      ret = ReadFile(hFile, (BYTE *)lpBuffer + numChecked - CHUNK_SIZE, CHUNK_SIZE, &numRead, lpOverlapped);
+      SetFilePointer(hFile, (int)numChecked - (int)*lpNumberOfBytesRead - DVD_CHUNK_SIZE, NULL, FILE_CURRENT);
+      ret = ReadFile(hFile, (BYTE *)lpBuffer + numChecked - DVD_CHUNK_SIZE, DVD_CHUNK_SIZE, &numRead, lpOverlapped);
       if (!ret) return FALSE;
+      SetFilePointer(hFile, low, &high, FILE_BEGIN);
     }
-    numChecked -= CHUNK_SIZE;
+    numChecked -= DVD_CHUNK_SIZE;
   }
   return ret;
 }
-*/
