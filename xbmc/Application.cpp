@@ -2405,12 +2405,14 @@ void CApplication::FrameMove()
   if (g_guiSettings.GetBool("XLinkKai.Enabled"))
   {
     CKaiClient::GetInstance()->DoWork();
-    if (m_guiDialogKaiToast.DoWork())
+  }
+
+  // check if there are notifications to display
+  if (m_guiDialogKaiToast.DoWork())
+  {
+    if (!m_guiDialogKaiToast.IsRunning())
     {
-      if (!m_guiDialogKaiToast.IsRunning())
-      {
-        m_guiDialogKaiToast.Show(m_gWindowManager.GetActiveWindow());
-      }
+      m_guiDialogKaiToast.Show(m_gWindowManager.GetActiveWindow());
     }
   }
 
