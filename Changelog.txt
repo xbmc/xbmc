@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 28-11-2005 fixed: Stacked .nfo file paths were incorrect.
  - 28-11-2005 added: Workaround for ReadFile() returning incorrect data at the DVD layer change - requires special version
                      of libdvdcss-2.dll (rename from libdvdcss-2.dll_layerchangehack).
  - 28-11-2005 fixed: Notifications were only showing if Kai was enabled.
