@@ -12,7 +12,7 @@
     <control>
       <description>Popup Kai Toast Dialog Background</description>
       <type>image</type>
-      <id>1</id>
+      <id>0</id>
       <posX>0</posX>
       <posY>0</posY>
       <width>245</width>
