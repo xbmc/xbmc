@@ -489,6 +489,7 @@
   <string><id>644</id><value>Balken abschneiden</value></string>
 
   <string><id>645</id><value>Große Dateien müssen zwischengespeichert werden. Fortsetzen?</value></string>
+  <string><id>646</id><value>Titel entfernen</value></string>
   
   <string><id>700</id><value>Bibliothek aufräumen</value></string>
   <string><id>701</id><value>Alte Musikdaten aus der Bibliothek löschen</value></string>
