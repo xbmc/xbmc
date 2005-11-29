@@ -60,6 +60,23 @@ namespace DIRECTORY
     return path;
   }
 
+  CStdString CStackDirectory::GetFirstStackedFile(const CStdString &strPath)
+  {
+    CStdString path, file, folder;
+    CUtil::Split(strPath, folder, file);
+    int pos = file.Find(" , ");
+    // remove "stack://" from the folder
+    folder = folder.Mid(8);
+    if (pos > 0)
+    {
+      // are the stacked files always in volume order??
+      file = file.Left(pos);
+      file.Replace(",,", ",");
+      CUtil::AddFileToFolder(folder, file, path);
+    }
+    return path;
+  }
+
   CStdString CStackDirectory::ConstructStackPath(const CFileItemList &items, const vector<int> &stack)
   {
     // no checks on the range of stack here.
