@@ -5,6 +5,11 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 29-11-2005 updated: German language file
+ - 29-11-2005 updated: German (Austrian) language file (Thnx to CEOMR)
+ - 29-11-2005 updated: Norwegian language file (Thnx to vnm)
+ - 29-11-2005 updated: French language file (Thnx to modhack)
+ - 29-11-2005 updated: Dutch language file (Thnx to tijmengozer)
  - 29-11-2005 fixed: file sizes were missing in my videos.
  - 28-11-2005 fixed: Stacked .nfo file paths were incorrect.
  - 28-11-2005 added: Workaround for ReadFile() returning incorrect data at the DVD layer change - requires special version
