@@ -1,4 +1,4 @@
-<!-- Based on English XML v1.268. Last updated by vnmartinsen  !-->
+<!-- Based on English XML v1.269. Last updated by vnmartinsen  !-->
 <strings>
   <string><id>0</id><value>Mine Programmer</value></string>
   <string><id>1</id><value>Mine Bilder</value></string>
@@ -486,6 +486,7 @@
   <string><id>644</id><value>Fjern sorte felt</value></string>
 
   <string><id>645</id><value>Må cache en stor fil. Fortsette?</value></string>
+  <string><id>646</id><value>Fjern tittel</value></string>
 
   <string><id>700</id><value>Rydder opp i databasen</value></string>
   <string><id>701</id><value>Fjerner gamle sanger fra databasen</value></string>
