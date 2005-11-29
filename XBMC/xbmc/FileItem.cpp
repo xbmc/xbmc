@@ -1415,7 +1415,8 @@ void CFileItemList::Stack()
       if (item->IsPlayList() || item->m_bIsFolder || item->IsNFO())
         continue;
 
-      CStdString fileName = CUtil::GetFileName(item->m_strPath);
+      CStdString fileName, filePath;
+      CUtil::Split(item->m_strPath, filePath, fileName);
       CStdString fileTitle;
       CStdString volumeNumber;
       if (CUtil::GetVolumeFromFileName(fileName, fileTitle, volumeNumber))
@@ -1428,12 +1429,13 @@ void CFileItemList::Stack()
           // ignore directories, nfo files and playlists
           if (item2->IsPlayList() || item2->m_bIsFolder || item2->IsNFO())
             continue;
-          CStdString fileName2 = CUtil::GetFileName(item2->m_strPath);
+          CStdString fileName2, filePath2;
+          CUtil::Split(item2->m_strPath, filePath2, fileName2);
           CStdString fileTitle2;
           CStdString volumeNumber2;
           if (CUtil::GetVolumeFromFileName(fileName2, fileTitle2, volumeNumber2))
           {
-            if (fileTitle2.Equals(fileTitle))
+            if (fileTitle2 == fileTitle && filePath2 == filePath)
               stack.push_back(j);
           }
         }
