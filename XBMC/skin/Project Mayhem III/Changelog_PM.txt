@@ -1,3 +1,5 @@
+2005-11-30 fixed:	DialogKaiToast background control id to 0 (1 could cause crashes)
+
 2005-11-24 fixed:	music.jpg replaced with defaultAlbumCover.png
 
 2005-11-23 fixed:	SongInfo overlay during slideshow didnt work properly in 16:9 resolutions
