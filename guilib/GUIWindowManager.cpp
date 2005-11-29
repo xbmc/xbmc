@@ -33,6 +33,7 @@ void CGUIWindowManager::Initialize()
 bool CGUIWindowManager::SendMessage(CGUIMessage& message)
 {
   bool handled = false;
+//  CLog::DebugLog("SendMessage: mess=%d send=%d control=%d param1=%d", message.GetMessage(), message.GetSenderId(), message.GetControlId(), message.GetParam1());
   // Send the message to all none window targets
   for (int i = 0; i < (int) m_vecMsgTargets.size(); i++)
   {

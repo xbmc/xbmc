@@ -201,6 +201,8 @@ bool CGUIWindowOSD::OnMessage(CGUIMessage& message)
       // Remove our subdialogs if visible
       CGUIDialog *pDialog = (CGUIDialog *)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_OSD_SETTINGS);
       if (pDialog && pDialog->IsRunning()) pDialog->Close();
+      pDialog = (CGUIDialog *)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_BOOKMARKS);
+      if (pDialog && pDialog->IsRunning()) pDialog->Close();
       //return true;
     }
     break;
