@@ -423,6 +423,7 @@ bool CGUIWindowVideoFiles::UpdateDir(const CStdString &strDirectory)
 
   // changed this from OnSort() because it was incorrectly selecting
   // the wrong item!
+  FormatItemLabels();
   SortItems(m_vecItems);
   m_viewControl.SetItems(m_vecItems);
 
