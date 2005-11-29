@@ -665,11 +665,25 @@ void CGUIWindowVideoFiles::OnRetrieveVideoInfo(CFileItemList& items)
           if (!CFile::Exists(strNfoFile))
             strNfoFile.Empty();
           // try looking for .nfo file based off the stacked title
-          if (pItem->IsStack())
+          if (pItem->IsStack() && strNfoFile.IsEmpty())
           {
+            /*
+            problem!!!
+            Stacked items appear as:
+            "stack://smb://workgroup;user:pass@server/somepath/to/STACKEDFILE.AVI"
+            A matching nfo file cant be found since its looking for:
+            "stack://smb://workgroup;user:pass@server/somepath/to/STACKEDFILE.NFO"
+            I *think* GetStackedTitlePath() should return without stack:// prefix
+            but I fixed it here because I wasnt sure.
+            */
+
             CStackDirectory dir;
             CStdString stackedTitlePath = dir.GetStackedTitlePath(pItem->m_strPath);
+            if (stackedTitlePath.Left(8).Equals("stack://"))
+              stackedTitlePath = stackedTitlePath.Mid(8);
             CUtil::ReplaceExtension(stackedTitlePath, ".nfo", strNfoFile);
+            CLog::Log(LOGDEBUG,"File = [%s]",stackedTitlePath.c_str());
+            CLog::Log(LOGDEBUG," NFO = [%s]",strNfoFile.c_str());
             if (!CFile::Exists(strNfoFile))
               strNfoFile.Empty();
           }
@@ -682,6 +696,7 @@ void CGUIWindowVideoFiles::OnRetrieveVideoInfo(CFileItemList& items)
               if ( nfoReader.Create("Z:\\movie.nfo") == S_OK)
               {
                 CIMDBUrl url;
+                url.m_strURL = nfoReader.m_strImDbUrl;
                 //url.m_strURL.push_back(nfoReader.m_strImDbUrl);
                 CLog::Log(LOGDEBUG,"-- imdb url: %s", url.m_strURL.c_str());
                 GetIMDBDetails(pItem, url);
