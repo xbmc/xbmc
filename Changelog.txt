@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 30-11-2005 fixed: [ 1330862 ] Bookmarks OSD Window does not disappear on video end.
+ - 30-11-2005 fixed: Notifications cause stack overflow if the stack dialog is on screen and left or right is pressed.
  - 29-11-2005 updated: German language file
  - 29-11-2005 updated: German (Austrian) language file (Thnx to CEOMR)
  - 29-11-2005 updated: Norwegian language file (Thnx to vnm)
