@@ -575,20 +575,8 @@ void CGUIWindowVideoBase::ShowIMDB(const CStdString& strMovie, const CStdString&
   CURL url(strFile);
   if (url.GetProtocol() == "stack" && strNfoFile.IsEmpty())
   {
-    /*
-    problem!!!
-    Stacked items appear as:
-    "stack://smb://workgroup;user:pass@server/somepath/to/STACKEDFILE.AVI"
-    A matching nfo file cant be found since its looking for:
-    "stack://smb://workgroup;user:pass@server/somepath/to/STACKEDFILE.NFO"
-    I *think* GetStackedTitlePath() should return without stack:// prefix
-    but I fixed it here because I wasnt sure.
-    */
-
     CStackDirectory dir;
     CStdString stackedTitlePath = dir.GetStackedTitlePath(strFile);
-    if (stackedTitlePath.Left(8).Equals("stack://"))
-      stackedTitlePath = stackedTitlePath.Mid(8);
     CUtil::ReplaceExtension(stackedTitlePath, ".nfo", strNfoFile);
     if (!CFile::Exists(strNfoFile))
       strNfoFile.Empty();
