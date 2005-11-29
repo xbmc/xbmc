@@ -22,8 +22,6 @@ namespace DIRECTORY
     // filenames with commas are double escaped (ie replaced with ,,), thus the " , " separator used.
     CStdString folder, file;
     CUtil::Split(strPath, folder, file);
-    // replace doubled comma's with single slash
-    file.Replace(",,", "/");
     // split files on the single comma
     CStdStringArray files;
     StringUtils::SplitString(file, " , ", files);
@@ -33,9 +31,9 @@ namespace DIRECTORY
     folder = folder.Mid(8);
     for (unsigned int i = 0; i < files.size(); i++)
     {
-      // replace all instances of / with ,
       CStdString file = files[i];
-      file.Replace('/', ',');
+      // replace double comma's with single ones.
+      file.Replace(",,", ",");
       CFileItem *item = new CFileItem(file);
       CUtil::AddFileToFolder(folder, file, item->m_strPath);
       item->m_bIsFolder = false;
@@ -48,12 +46,13 @@ namespace DIRECTORY
   {
     CStdString path, file, folder;
     CUtil::Split(strPath, folder, file);
-    file.Replace(",,", "/");
     int pos = file.Find(" , ");
+    // remove "stack://" from the folder
+    folder = folder.Mid(8);
     if (pos > 0)
     {
       file = file.Left(pos);
-      file.Replace('/', ',');
+      file.Replace(",,", ",");
       CStdString title, volume;
       CUtil::GetVolumeFromFileName(file, title, volume);
       CUtil::AddFileToFolder(folder, title, path);
