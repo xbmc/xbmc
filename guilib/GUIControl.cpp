@@ -213,7 +213,18 @@ bool CGUIControl::OnMessage(CGUIMessage& message)
           if (message.GetParam1() == ACTION_MOVE_UP) {dwReverse = ACTION_MOVE_DOWN; dwControl = m_dwControlDown;}
           if (message.GetParam1() == ACTION_MOVE_LEFT) {dwReverse = ACTION_MOVE_RIGHT; dwControl = m_dwControlRight;}
           if (message.GetParam1() == ACTION_MOVE_RIGHT) {dwReverse = ACTION_MOVE_LEFT; dwControl = m_dwControlLeft;}
-          //if the other direction also points to itself it will still stackoverflow but then it's just skinproblem imho
+          // if the other direction also points to itself it will still stackoverflow, so prevent
+          // this and indicate in the logs that there is a skin problem
+          if (GetID() == dwControl)
+          {
+            // Note the more likely problem here is that this message has not come from a control
+            // on this window - there is no inclusion of the window parameter for messages sent
+            // to controls.  Ideally, every message who's destination is a control should have
+            // both destination window and destination control included.  If a message has the destination
+            // window parameter set, then only that window should be allowed to deal with the message.
+            CLog::Log(LOGERROR, "Control %d in window %d has been asked to focus, but it can't, and all directions point to itself", GetID(), GetParentID());
+            return true;
+          }
           CGUIMessage msg(GUI_MSG_SETFOCUS, GetID(), dwControl, dwReverse);
           g_graphicsContext.SendMessage(msg);
           return true;
