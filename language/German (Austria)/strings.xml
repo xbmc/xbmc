@@ -486,6 +486,7 @@
   <string><id>643</id><value>Störgeräusche entfernen bei angepassten Dateien</value></string>
   <string><id>644</id><value>Balken entfernen</value></string>
   <string><id>645</id><value>Große Dateien in den Zwischenspeicher laden?</value></string>
+  <string><id>646</id><value>Entfernen</value></string>
 
   <string><id>700</id><value>Datenbank säubern</value></string>
   <string><id>701</id><value>Lösche alte Musikdaten</value></string>
@@ -1016,7 +1017,9 @@
   <string><id>14068</id><value>IP-Adresse eingeben</value></string> 
   <string><id>14069</id><value>Änderungen übernehmen?</value></string>
   <string><id>14070</id><value>Änderungen übernehmen..</value></string>
-  <string><id>14071</id><value>Löschen von Dateien ermöglichen</value></string>
+  <string><id>14071</id><value>Dateien löschen und umbenennen ermöglichen</value></string>
+  <string><id>14072</id><value>XLink Kai aktivieren</value></string> 
+  <string><id>14073</id><value>XLink Kai ist deaktiviert.</value></string> 
 
   <string><id>15000</id><value>XLink-Kai</value></string>
   <string><id>15001</id><value>Es besteht keine Verbindung mit XLink,</value></string> 
@@ -1090,7 +1093,11 @@
   <string><id>15106</id><value>Gewählte Datei bei weiterer Navigation merken</value></string>
   <string><id>15107</id><value>Zwischenspeichern...</value></string>
   <string><id>15108</id><value>Navigations-Töne</value></string> 
-  <string><id>15109</id><value>Vorgabe des Skins</value></string> 
+  <string><id>15109</id><value>Vorgabe des Skins</value></string>
+  <string><id>15110</id><value>Vibrationseffekt</value></string>
+  <string><id>15111</id><value>Oberflächenschema</value></string> 
+  <string><id>15112</id><value>Standard</value></string> 
+
   <string><id>15200</id><value>AudioScrobbler</value></string> 
   <string><id>15201</id><value>Lieder Infos an AudioScrobbler senden</value></string> 
   <string><id>15202</id><value>Benutzername</value></string> 
@@ -1108,11 +1115,19 @@
   <string><id>15214</id><value>Ausgeglichene A/V-Synchronisation verwenden</value></string> 
   <string><id>15215</id><value>Dateiname verbergen bei Symbolansicht</value></string>
 
+  <string><id>15250</id><value>Last.fm Radio an AudioScrobbler senden</value></string> 
+  <string><id>15251</id><value>Last.fm verbinden...</value></string> 
+  <string><id>15252</id><value>Station wählend...</value></string> 
+
+  <string><id>15283</id><value>Zuletzt gehörte Lieder n. %name% ord.</value></string>
+
   <string><id>15300</id><value>Pfad wurde nicht gefunden oder ist ungültig</value></string> 
   <string><id>15301</id><value>Keine Verbindung zum Netzwerkserver</value></string> 
   <string><id>15302</id><value>Keine Server verfügbar</value></string> 
   <string><id>15303</id><value>Keine Arbeitsgruppe gefunden</value></string> 
 
+  <string><id>15310</id><value>MehrfachPfad Favoriten öffnen</value></string> 
+  <string><id>15311</id><value>Pfad:</value></string>
 
   <string><id>16000</id><value>Allgemein</value></string> 
   <string><id>16001</id><value>Audio-Hardware konfigurieren..</value></string> 
@@ -1137,6 +1152,7 @@
   <string><id>16022</id><value>Sync odd</value></string> 
   <string><id>16023</id><value>Interlaced</value></string> 
   <string><id>16024</id><value>Abbrechen..</value></string> 
+  <string><id>16025</id><value>Künstlername eingeben..</value></string>
 
   <string><id>16100</id><value>Alle Videos</value></string> 
   <string><id>16101</id><value>Unabgespielt</value></string> 
@@ -1145,11 +1161,21 @@
   <string><id>16104</id><value>Als unabgespielt setzen</value></string> 
   <string><id>16105</id><value>Video umbennenen</value></string> 
 
+  <string><id>16106</id><value>NTSC-M &amp; NTSC-J</value></string> 
+  <string><id>16107</id><value>NTSC-M</value></string> 
+  <string><id>16108</id><value>NTSC-J</value></string> 
+  <string><id>16109</id><value>PAL-60</value></string> 
+  <string><id>16110</id><value>60hz Spiele</value></string> 
 
+  <!-- Web browser strings -->  
+  <string><id>19999</id><value>Internet</value></string>
   <string><id>20000</id><value>Wechseln zu...</value></string>
-  <string><id>20001</id><value>Zu Favoriten hinzuf.</value></string>
-  <string><id>20002</id><value>Favoriten</value></string>
-  <string><id>20003</id><value>MedienInfo einblenden</value></string>
-  <string><id>20004</id><value>MedienInfo ausblenden</value></string>
+  <string><id>20001</id><value>Favoriten</value></string>
+  <string><id>20002</id><value>Zu Favoriten hinzuf.</value></string>
+  <string><id>20003</id><value>Bearbeiten</value></string>
+  <string><id>20004</id><value>Löschen</value></string>
+  <string><id>20005</id><value>Verlauf</value></string>
+  <string><id>20006</id><value>Verlauf löschen</value></string>
+  <!-- End of Web browser strings -->
 
 </strings>
