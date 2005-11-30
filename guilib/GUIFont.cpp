@@ -113,6 +113,7 @@ void CGUIFont::DrawColourTextWidth(FLOAT fOriginX, FLOAT fOriginY, DWORD* pdw256
   {
     DrawColourTextImpl( fOriginX, fOriginY, alphaColor, pszBuffer, pbColours, nStringLength, 0, 0.0f);
     delete[] alphaColor;
+    delete[] pszBuffer;
     return ;
   }
 

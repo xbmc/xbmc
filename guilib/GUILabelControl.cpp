@@ -117,6 +117,7 @@ void CGUILabelControl::Render()
           else
             color[1] = 0; // transparent black
           m_pFont->DrawColourTextWidth(fPosX, fPosY, color, 2, strLabelUnicode.c_str(), palette, (float)m_dwWidth);
+          delete[] palette;
         }
         else
           m_pFont->DrawText(fPosX, fPosY, m_dwTextColor, strLabelUnicode.c_str(), m_dwTextAlign | XBFONT_TRUNCATED, (float)m_dwWidth);

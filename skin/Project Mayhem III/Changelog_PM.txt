@@ -1,3 +1,5 @@
+2005-12-01 added:       FileBrowser.xml - needs proper skinning!
+
 2005-11-30 fixed:	DialogKaiToast background control id to 0 (1 could cause crashes)
 
 2005-11-24 fixed:	music.jpg replaced with defaultAlbumCover.png

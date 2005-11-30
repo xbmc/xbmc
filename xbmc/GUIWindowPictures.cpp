@@ -207,6 +207,7 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
       {
         message.SetStringParam("");
         CLog::Log(LOGINFO, "Attempting to quickpath to: %s", strDestination.c_str());
+        m_vecPathHistory.clear();
       }
       // otherwise, is this the first time accessing this window?
       else if (m_Directory.m_strPath == "?")
