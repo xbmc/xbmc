@@ -49,11 +49,13 @@ XboxMediaCenter.xml ->  e:\apps\xbmc\XboxMediaCenter.xml
 keymap.xml          ->  e:\apps\xbmc\keymap.xml
 FileZilla Server.xml->  e:\apps\xbmc\FileZilla Server.xml
 release/default.xbe ->  e:\apps\xbmc\default.xbe
-mplayer/            ->  e:\apps\xbmc\mplayer        (copy all files & subdirs)
+system/             ->  e:\apps\xbmc\system         (copy all files & subdirs)
 skin/               ->  e:\apps\xbmc\skin           (copy all files & subdirs)
+sounds/             ->  e:\apps\xbmc\sounds         (copy all files & subdirs)
 language/           ->  e:\apps\xbmc\language       (copy all files & subdirs)
 weather/            ->  e:\apps\xbmc\weather        (copy all files & subdirs)
-xbmc/keyboard/media ->  e:\apps\xbmc\media          (copy all files & subdirs)
+media               ->  e:\apps\xbmc\media          (copy all files & subdirs)
+screensavers        ->  e:\apps\xbmc\screensavers   (copy all files & subdirs)
 visualisations      ->  e:\apps\xbmc\visualisations (copy all files & subdirs)
 scripts/            ->  e:\apps\xbmc\scripts        (these are just samples, only extract if you want to experiment with it)
 python              ->  e:\apps\xbmc\python         (unpack the python.rar file)

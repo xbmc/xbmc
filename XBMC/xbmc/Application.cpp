@@ -101,6 +101,7 @@
 #include "GUIDialogVisualisationPresetList.h"
 #include "GUIDialogVideoSettings.h"
 #include "GUIDialogVideoBookmarks.h"
+#include "GUIDialogFileBrowser.h"
 #include "GUIWindowOSD.h"
 #include "GUIWindowScriptsInfo.h"
 
@@ -1178,6 +1179,7 @@ HRESULT CApplication::Initialize()
   m_gWindowManager.Add(new CGUIDialogVisualisationPresetList);   // window id = 122
   m_gWindowManager.Add(new CGUIDialogVideoSettings);      // window id = 123, 124
   m_gWindowManager.Add(new CGUIDialogVideoBookmarks);      // window id = 125
+  m_gWindowManager.Add(new CGUIDialogFileBrowser);      // window id = 126
 
   m_gWindowManager.Add(new CGUIWindowMusicPlayList);          // window id = 500
   m_gWindowManager.Add(new CGUIWindowMusicSongs);             // window id = 501
@@ -3254,7 +3256,7 @@ bool CApplication::ResetScreenSaverWindow()
       fFadeLevel = (float)g_guiSettings.GetInt("ScreenSaver.DimLevel") / 100;
     }
     // Picture slideshow
-    else if (strScreenSaver == "PSlide")
+    else if (strScreenSaver == "SlideShow")
     {
       if(!IsPlayingVideo()) m_gWindowManager.PreviousWindow();
       else 
@@ -3353,12 +3355,12 @@ void CApplication::ActivateScreenSaver()
     return;
   }
   // Picture slideshow
-  else if (strScreenSaver == "PSlide")
+  else if (strScreenSaver == "SlideShow")
   {
     if(!IsPlayingVideo())
     {
       fFadeLevel = 1.f;
-      g_applicationMessenger.PictureSlideShow(g_guiSettings.GetString("ScreenSaver.PSlidePath"));
+      g_applicationMessenger.PictureSlideShow(g_guiSettings.GetString("ScreenSaver.SlideShowPath"));
     }else return;
   }
   else if (strScreenSaver == "Dim")

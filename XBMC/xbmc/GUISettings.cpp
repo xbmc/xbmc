@@ -184,7 +184,7 @@ CGUISettings::CGUISettings(void)
   AddCategory(1, "XLinkKai", 714);
   AddBool(1, "XLinkKai.Enabled", 14072, false);
   AddBool(2, "XLinkKai.EnableNotifications", 14008, true);
-  AddString(3, "XLinkKai.GamesDir", 14009, "f:\\games", BUTTON_CONTROL_INPUT, false, 16015);
+  AddString(3, "XLinkKai.GamesDir", 14009, "f:\\games", BUTTON_CONTROL_MISC_INPUT, false, 14009);
   AddString(4, "XLinkKai.UserName", 709, "", BUTTON_CONTROL_INPUT, false, 709);
   AddString(5, "XLinkKai.Password", 710, "", BUTTON_CONTROL_HIDDEN_INPUT, false, 710);
   AddString(6, "XLinkKai.Server", 14042, "", BUTTON_CONTROL_IP_INPUT);
@@ -541,7 +541,7 @@ CGUISettings::CGUISettings(void)
   AddInt(4, "ScreenSaver.Time", 355, 3, 1, 1, 60, SPIN_CONTROL_INT_PLUS, MASK_MINS);
   AddSeparator(5, "ScreenSaver.Sep1");
   AddInt(6, "ScreenSaver.DimLevel", 362, 20, 10, 10, 80, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
-  AddString(7, "ScreenSaver.PSlidePath", 108, "F:\\Pictures\\", BUTTON_CONTROL_INPUT, false, 774  ); // GeminiServer: PictureSlideShow
+  AddString(7, "ScreenSaver.SlideShowPath", 774, "F:\\Pictures\\", BUTTON_CONTROL_MISC_INPUT, false, 774); // GeminiServer: PictureSlideShow
 
   AddCategory(7, "UIFilters", 14053);
   AddInt(1, "UIFilters.Flicker", 13100, 5, 0, 1, 5, SPIN_CONTROL_INT);
