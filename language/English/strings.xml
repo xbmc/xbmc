@@ -561,7 +561,7 @@
   <string><id>771</id><value>- Auto Fatx Limiter</value></string>
   <string><id>772</id><value>Audio Hardware</value></string>
   <string><id>773</id><value>Seeking</value></string>
-  <string><id>774</id><value>Slideshow Screensaver Folder</value></string>
+  <string><id>774</id><value>Slideshow Folder</value></string>
   <string><id>998</id><value>XLink Kai</value></string>
   <string><id>999</id><value>Online Gaming</value></string>
 
@@ -898,6 +898,7 @@
   <string><id>13398</id><value>Bookmarks</value></string>
   <string><id>13399</id><value>Ignore "The" when sorting</value></string>
   <string><id>13400</id><value>Crossfade albumtracks</value></string>
+  <string><id>13401</id><value>Browse for %s</value></string>
 
   <string><id>14000</id><value>Stack</value></string>
   <string><id>14001</id><value>Unstack</value></string>
