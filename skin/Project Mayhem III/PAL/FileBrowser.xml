@@ -1,0 +1,92 @@
+<window>
+  <id>126</id>
+  <defaultcontrol>450</defaultcontrol>
+  <allowoverlay>yes</allowoverlay>
+  <coordinates>
+    <system>1</system>
+    <posX>50</posX>
+    <posY>50</posY>
+  </coordinates>
+
+  <controls>
+    <control>
+      <description>background image</description>
+      <type>image</type>
+      <id>0</id>
+      <posX>0</posX>
+      <posY>0</posY>
+      <width>512</width>
+      <height>512</height>
+      <texture>background-videos.png</texture>
+    </control>
+
+    <control>
+      <description>heading label</description>
+      <type>label</type>
+      <id>411</id>
+      <posX>0</posX>
+      <posY>5</posY>
+      <width>512</width>
+      <align>center</align>
+    </control>
+
+    <control>
+      <description>path label control</description>
+      <type>label</type>
+      <id>412</id>
+      <posX>20</posX>
+      <posY>400</posY>
+      <width>492</width>
+      <align>left</align>
+      <font>special13</font>
+      <hasPath>true</hasPath>
+    </control>
+
+    <control>
+      <description>OK button</description>
+      <type>button</type>
+      <id>413</id>
+      <posX>320</posX>
+      <posY>430</posY>
+      <width>80</width>
+      <align>center</align>
+      <label>186</label>
+      <onleft>450</onleft>
+      <onright>414</onright>
+      <onup>450</onup>
+      <ondown>450</ondown>
+    </control>
+
+    <control>
+      <description>Cancel button</description>
+      <type>button</type>
+      <id>414</id>
+      <posX>410</posX>
+      <posY>430</posY>
+      <width>80</width>
+      <align>center</align>
+      <label>222</label>
+      <onleft>413</onleft>
+      <onright>450</onright>
+      <onup>450</onup>
+      <ondown>450</ondown>
+    </control>
+
+    <control>
+      <description>listcontrol</description>
+      <type>listcontrol</type>
+      <id>450</id>
+      <posX>10</posX>
+      <posY>30</posY>
+      <width>492</width>
+      <height>360</height>
+      <onleft>413</onleft>
+      <onright>413</onright>
+      <onup>413</onup>
+      <ondown>413</ondown>
+    </control>
+
+  </controls>
+
+</window>
+

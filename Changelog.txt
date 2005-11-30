@@ -5,6 +5,9 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 01-12-2005 added: File Browser Dialog - requires skinning
+ - 01-12-2005 fixed: Path history was incorrect for media windows started with XBMC.ActivateWindow(window,path)
+ - 01-12-2005 fixed: Memory leak in multicoloured text rendering (edit, rss controls)
  - 30-11-2005 fixed: [ 1330862 ] Bookmarks OSD Window does not disappear on video end.
  - 30-11-2005 fixed: Notifications cause stack overflow if the stack dialog is on screen and left or right is pressed.
  - 29-11-2005 updated: German language file

@@ -894,6 +894,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\GUIDialogContextMenu.cpp">
 				</File>
 				<File
+					RelativePath=".\xbmc\GUIDialogFileBrowser.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\GUIDialogFileBrowser.h">
+				</File>
+				<File
 					RelativePath=".\xbmc\GUIDialogFileStacking.cpp">
 				</File>
 				<File

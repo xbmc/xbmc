@@ -24,6 +24,8 @@ public:
   void SetItems(CFileItemList &items);
 
   void SetSelectedItem(int item);
+  void SetSelectedItem(const CStdString &itemPath);
+
   int GetSelectedItem();
   void SetFocused();
 

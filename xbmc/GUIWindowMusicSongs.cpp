@@ -174,6 +174,7 @@ bool CGUIWindowMusicSongs::OnMessage(CGUIMessage& message)
       {
         message.SetStringParam("");
         CLog::Log(LOGINFO, "Attempting to quickpath to: %s", strDestination.c_str());
+        m_vecPathHistory.clear();
       }
 
       // is this the first time the window is opened?
