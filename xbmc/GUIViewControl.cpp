@@ -175,6 +175,23 @@ void CGUIViewControl::SetSelectedItem(int item)
   g_graphicsContext.SendMessage(msg);
 }
 
+void CGUIViewControl::SetSelectedItem(const CStdString &itemPath)
+{
+  if (!m_fileItems)
+    return;
+
+  int item = -1;
+  for (int i = 0; i < m_fileItems->Size(); ++i)
+  {
+    if ((*m_fileItems)[i]->m_strPath.CompareNoCase(itemPath) == 0)
+    {
+      item = i;
+      break;
+    }
+  }
+  SetSelectedItem(item);
+}
+
 void CGUIViewControl::SetFocused()
 {
   map_iter it = m_vecViews.find(m_currentView);

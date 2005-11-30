@@ -154,6 +154,8 @@ bool CGUIWindowVideoFiles::OnMessage(CGUIMessage& message)
         message.SetStringParam("");
         g_stSettings.m_iVideoStartWindow = GetID();
         CLog::Log(LOGINFO, "Attempting to quickpath to: %s", strDestination.c_str());
+        // reset directory path, as we have effectively cleared it here
+        m_vecPathHistory.clear();
       }
 
       // unless we had a destination paramter switch to the last my video window

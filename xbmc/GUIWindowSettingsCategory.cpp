@@ -24,6 +24,8 @@
 #include <xfont.h>
 #include "GUIDialogGamepad.h"
 #include "GUIDialogNumeric.h"
+//TODO: Remove to SettingsControl
+#include "GUIDialogFileBrowser.h"
 
 #define CONTROL_GROUP_BUTTONS           0
 #define CONTROL_GROUP_SETTINGS          1
@@ -1205,10 +1207,10 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(GetSetting(strSetting)->GetID());
       pControl->SetEnabled(g_guiSettings.GetString("ScreenSaver.Mode") == "Dim");
     }
-    else if (strSetting == "ScreenSaver.PSlidePath")
+    else if (strSetting == "ScreenSaver.SlideShowPath")
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(GetSetting(strSetting)->GetID());
-      pControl->SetEnabled(g_guiSettings.GetString("ScreenSaver.Mode") == "PSlide");
+      pControl->SetEnabled(g_guiSettings.GetString("ScreenSaver.Mode") == "SlideShow");
     }
     else if (strSetting == "ScreenSaver.Preview")
     {
@@ -1782,7 +1784,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     else if (iValue == 2)
       strScreenSaver = "Black";
     else if (iValue == 3)
-      strScreenSaver = "PSlide"; // PictureSlideShow
+      strScreenSaver = "SlideShow"; // PictureSlideShow
     else
       strScreenSaver = pControl->GetCurrentLabel() + ".xbs";
     pSettingString->SetData(strScreenSaver);
@@ -1790,6 +1792,43 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
   else if (strSetting == "ScreenSaver.Preview")
   {
     g_application.ActivateScreenSaver();
+  }
+  else if (strSetting == "ScreenSaver.SlideShowPath")
+  {
+    CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
+    CStdString path = pSettingString->GetData();
+    if (CGUIDialogFileBrowser::ShowAndGetDirectory(g_settings.m_vecMyPictureShares, g_localizeStrings.Get(pSettingString->m_iHeadingString), path))
+      pSettingString->SetData(path);
+  }
+  else if (strSetting == "XLinkKai.GamesDir")
+  {
+    // TODO: Remove this share generation code when full GUI based
+    // shares system is implemented.
+    // VECSHARES shares = CShareManager::GetLocalDrives();
+    VECSHARES shares;
+    CShare share;
+    share.strPath = "C:";
+    share.strName = "C Drive";
+    shares.push_back(share);
+    share.strPath = "E:";
+    share.strName = "E Drive";
+    shares.push_back(share);
+    if (g_stSettings.m_bUseFDrive)
+    {
+      share.strPath = "F:";
+      share.strName = "F Drive";
+      shares.push_back(share);
+    }
+    if (g_stSettings.m_bUseGDrive)
+    {
+      share.strPath = "G:";
+      share.strName = "G Drive";
+      shares.push_back(share);
+    }
+    CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
+    CStdString path = pSettingString->GetData();
+    if (CGUIDialogFileBrowser::ShowAndGetDirectory(shares, g_localizeStrings.Get(pSettingString->m_iHeadingString), path))
+      pSettingString->SetData(path);
   }
   else if (strSetting == "LED.Colour")
   { // Alter LED Colour immediately
@@ -3001,7 +3040,7 @@ void CGUIWindowSettingsCategory::FillInScreenSavers(CSetting *pSetting)
       iCurrentScr = 1;
     else if (strDefaultScr == "Black")
       iCurrentScr = 2;
-    else if (strDefaultScr == "PSlide") // GeminiServer: PictureSlideShow
+    else if (strDefaultScr == "SlideShow") // GeminiServer: PictureSlideShow
       iCurrentScr = 3;
     else
     {
