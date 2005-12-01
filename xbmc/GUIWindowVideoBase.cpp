@@ -571,15 +571,22 @@ void CGUIWindowVideoBase::ShowIMDB(const CStdString& strMovie, const CStdString&
   if (!strNfoFile.IsEmpty() && !CFile::Exists(strNfoFile))
       strNfoFile.Empty();
 
-  // try looking for .nfo file based off the stacked title
+  // try looking for .nfo file for a stacked item
   CURL url(strFile);
-  if (url.GetProtocol() == "stack" && strNfoFile.IsEmpty())
+  if (url.GetProtocol() == "stack")
   {
+    // first try .nfo file matching first file in stack
     CStackDirectory dir;
-    CStdString stackedTitlePath = dir.GetStackedTitlePath(strFile);
-    CUtil::ReplaceExtension(stackedTitlePath, ".nfo", strNfoFile);
+    CStdString firstFile = dir.GetFirstStackedFile(strFile);
+    CUtil::ReplaceExtension(firstFile, ".nfo", strNfoFile);
+    // else try .nfo file matching stacked title
     if (!CFile::Exists(strNfoFile))
-      strNfoFile.Empty();
+    {
+      CStdString stackedTitlePath = dir.GetStackedTitlePath(strFile);
+      CUtil::ReplaceExtension(stackedTitlePath, ".nfo", strNfoFile);
+      if (!CFile::Exists(strNfoFile))
+        strNfoFile.Empty();
+    }
   }
 
   if ( !strNfoFile.IsEmpty() )
