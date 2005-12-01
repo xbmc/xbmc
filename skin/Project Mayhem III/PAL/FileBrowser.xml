@@ -17,7 +17,7 @@
       <posY>0</posY>
       <width>512</width>
       <height>512</height>
-      <texture>Box Large.png</texture>
+      <texture>background-filebrowser.png</texture>
     </control>
 
 
@@ -50,14 +50,14 @@
     </control>
 
     <control>
-      <description>background image</description>
+      <description>foreground image</description>
       <type>image</type>
       <id>0</id>
       <posX>0</posX>
       <posY>0</posY>
       <width>512</width>
       <height>512</height>
-      <texture>Box Large top.png</texture>
+      <texture>background-filebrowser-top.png</texture>
     </control>
 
 
