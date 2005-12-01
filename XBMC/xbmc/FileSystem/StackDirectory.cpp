@@ -62,6 +62,8 @@ namespace DIRECTORY
 
   CStdString CStackDirectory::GetFirstStackedFile(const CStdString &strPath)
   {
+    // the stacked files are always in volume order, so just get up to the first filename
+    // occurence of " , "
     CStdString path, file, folder;
     CUtil::Split(strPath, folder, file);
     int pos = file.Find(" , ");
@@ -69,7 +71,6 @@ namespace DIRECTORY
     folder = folder.Mid(8);
     if (pos > 0)
     {
-      // are the stacked files always in volume order??
       file = file.Left(pos);
       file.Replace(",,", ",");
       CUtil::AddFileToFolder(folder, file, path);
