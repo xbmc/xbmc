@@ -1,4 +1,4 @@
-2005-12-01 added:       FileBrowser.xml - needs proper skinning!
+2005-12-01 added:       FileBrowser.xml - initial skinning by BritneysPAIRS
 
 2005-11-30 fixed:	DialogKaiToast background control id to 0 (1 could cause crashes)
 
