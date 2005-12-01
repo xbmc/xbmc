@@ -17,37 +17,66 @@
       <posY>0</posY>
       <width>512</width>
       <height>512</height>
-      <texture>background-videos.png</texture>
+      <texture>Box Large.png</texture>
     </control>
 
-    <control>
-      <description>heading label</description>
-      <type>label</type>
-      <id>411</id>
-      <posX>0</posX>
-      <posY>5</posY>
-      <width>512</width>
-      <align>center</align>
-    </control>
+
 
     <control>
       <description>path label control</description>
       <type>label</type>
       <id>412</id>
-      <posX>20</posX>
-      <posY>400</posY>
-      <width>492</width>
+      <posX>55</posX>
+      <posY>414</posY>
+      <width>442</width>
       <align>left</align>
       <font>special13</font>
       <hasPath>true</hasPath>
+    </control>
+
+
+    <control>
+      <description>listcontrol</description>
+      <type>listcontrol</type>
+      <id>450</id>
+      <posX>22</posX>
+      <posY>45</posY>
+      <width>474</width>
+      <height>390</height>
+      <onleft>413</onleft>
+      <onright>413</onright>
+      <onup>413</onup>
+      <ondown>413</ondown>
+    </control>
+
+    <control>
+      <description>background image</description>
+      <type>image</type>
+      <id>0</id>
+      <posX>0</posX>
+      <posY>0</posY>
+      <width>512</width>
+      <height>512</height>
+      <texture>Box Large top.png</texture>
+    </control>
+
+
+    <control>
+      <description>heading label</description>
+      <type>label</type>
+      <id>411</id>
+      <posX>10</posX>
+      <posY>15</posY>
+      <width>480</width>
+      <align>center</align>
     </control>
 
     <control>
       <description>OK button</description>
       <type>button</type>
       <id>413</id>
-      <posX>320</posX>
-      <posY>430</posY>
+      <posX>300</posX>
+      <posY>453</posY>
       <width>80</width>
       <align>center</align>
       <label>186</label>
@@ -61,8 +90,8 @@
       <description>Cancel button</description>
       <type>button</type>
       <id>414</id>
-      <posX>410</posX>
-      <posY>430</posY>
+      <posX>390</posX>
+      <posY>453</posY>
       <width>80</width>
       <align>center</align>
       <label>222</label>
@@ -72,19 +101,7 @@
       <ondown>450</ondown>
     </control>
 
-    <control>
-      <description>listcontrol</description>
-      <type>listcontrol</type>
-      <id>450</id>
-      <posX>10</posX>
-      <posY>30</posY>
-      <width>492</width>
-      <height>360</height>
-      <onleft>413</onleft>
-      <onright>413</onright>
-      <onup>413</onup>
-      <ondown>413</ondown>
-    </control>
+
 
   </controls>
 
