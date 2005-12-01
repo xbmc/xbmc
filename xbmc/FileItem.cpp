@@ -616,6 +616,11 @@ void CFileItem::SetThumb()
       item.m_strPath = shortcut.m_strPath;
     }
   }
+  else if (IsStack())
+  {
+    CStackDirectory dir;
+    item.m_strPath = dir.GetFirstStackedFile(m_strPath);
+  }
   else
     item.m_strPath = m_strPath;
 
