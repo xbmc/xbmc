@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 02-12-2005 added: Bitrate tag to http command getCurrentlyPlaying.
+ - 02-12-2005 fixed: Added further DVD layer change hacks.
  - 01-12-2005 fixed: IMDB downloaded thumbs for stacked titles
  - 01-12-2005 fixed: .tbn thumbnails for stacked titles based on the first stacked filename
  - 01-12-2005 fixed: .nfo files for stacked titles based on the first stacked filename
