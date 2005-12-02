@@ -864,14 +864,16 @@ void CVideoDatabase::GetMoviesByPath(CStdString& strPath1, VECMOVIES& movies)
   {
     CStdString strPath = strPath1;
     if (CUtil::HasSlashAtEnd(strPath)) strPath = strPath.Left(strPath.size() - 1);
+    CStdString strStackPath = "stack://" + strPath;
 
     movies.erase(movies.begin(), movies.end());
     if (NULL == m_pDB.get()) return ;
     if (NULL == m_pDS.get()) return ;
-    long lPathId = GetPath(strPath);
-    if (lPathId < 0) return ;
+    //long lPathId = GetPath(strPath);
+    //if (lPathId < 0) return ;
 
-    CStdString strSQL=FormatSQL("select * from files,movieinfo where files.idpath=%i and files.idMovie=movieinfo.idMovie", lPathId);
+    //CStdString strSQL=FormatSQL("select * from files, movieinfo where files.idpath=%i and files.idMovie=movieinfo.idMovie", lPathId);
+    CStdString strSQL=FormatSQL("select * from path join files on path.idPath = files.idPath join movieinfo on files.idMovie = movieinfo.idMovie where path.strPath = '%s' or path.strPath = '%s'", strPath.c_str(), strStackPath.c_str());
 
     m_pDS->query( strSQL.c_str() );
     while (!m_pDS->eof())
@@ -881,6 +883,7 @@ void CVideoDatabase::GetMoviesByPath(CStdString& strPath1, VECMOVIES& movies)
       details.m_strSearchString.Format("%i", lMovieId);
       details.m_strIMDBNumber = m_pDS->fv("movieinfo.IMDBID").get_asString();
       details.m_strFile = m_pDS->fv("files.strFilename").get_asString();
+      details.m_strPath = m_pDS->fv("path.strPath").get_asString();
       movies.push_back(details);
       m_pDS->next();
     }
