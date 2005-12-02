@@ -2528,7 +2528,6 @@ void CApplication::FrameMove()
 
   bool bGotKey = false;
 
-  static lastAnalogKey = 0;
   bool bIsDown = false;
 
   // map all controller & remote actions to their keys
@@ -2545,93 +2544,141 @@ void CApplication::FrameMove()
     if (OnKey(key)) return;
   }
   // direction specific keys (for defining different actions for each direction)
-  // left thumb stick
-  // find new direction.  Note, only handles one direction at a time at the moment.
-  int newAnalogKey = 0;
-  if (lastAnalogKey == KEY_BUTTON_RIGHT_THUMB_STICK_UP || lastAnalogKey == KEY_BUTTON_RIGHT_THUMB_STICK_DOWN)
+  // We need to be able to know when it last had a direction, so that we can
+  // post the reset direction code the next time around (to reset scrolling,
+  // fastforwarding and other analog actions)
+
+  // For the sticks, once it is pushed in one direction (eg up) it will only
+  // detect movement in that direction of movement (eg up or down) - the other
+  // direction (eg left and right) will not be registered until the stick has
+  // been recentered for at least 2 frames.
+
+  // first the right stick
+  static lastRightStickKey = 0;
+  int newRightStickKey = 0;
+  if (lastRightStickKey == KEY_BUTTON_RIGHT_THUMB_STICK_UP || lastRightStickKey == KEY_BUTTON_RIGHT_THUMB_STICK_DOWN)
   {
     if (pGamepad->fY2 > 0)
-      newAnalogKey = KEY_BUTTON_RIGHT_THUMB_STICK_UP;
+      newRightStickKey = KEY_BUTTON_RIGHT_THUMB_STICK_UP;
     else if (pGamepad->fY2 < 0)
-      newAnalogKey = KEY_BUTTON_RIGHT_THUMB_STICK_DOWN;
+      newRightStickKey = KEY_BUTTON_RIGHT_THUMB_STICK_DOWN;
     else if (pGamepad->fX2 != 0)
     {
-      newAnalogKey = KEY_BUTTON_RIGHT_THUMB_STICK_UP;
+      newRightStickKey = KEY_BUTTON_RIGHT_THUMB_STICK_UP;
       pGamepad->fY2 = 0.00001f; // small amount of movement
     }
   }
-  else if (lastAnalogKey == KEY_BUTTON_RIGHT_THUMB_STICK_LEFT || lastAnalogKey == KEY_BUTTON_RIGHT_THUMB_STICK_RIGHT)
+  else if (lastRightStickKey == KEY_BUTTON_RIGHT_THUMB_STICK_LEFT || lastRightStickKey == KEY_BUTTON_RIGHT_THUMB_STICK_RIGHT)
   {
     if (pGamepad->fX2 > 0)
-      newAnalogKey = KEY_BUTTON_RIGHT_THUMB_STICK_RIGHT;
+      newRightStickKey = KEY_BUTTON_RIGHT_THUMB_STICK_RIGHT;
     else if (pGamepad->fX2 < 0)
-      newAnalogKey = KEY_BUTTON_RIGHT_THUMB_STICK_LEFT;
+      newRightStickKey = KEY_BUTTON_RIGHT_THUMB_STICK_LEFT;
     else if (pGamepad->fY2 != 0)
     {
-      newAnalogKey = KEY_BUTTON_RIGHT_THUMB_STICK_RIGHT;
+      newRightStickKey = KEY_BUTTON_RIGHT_THUMB_STICK_RIGHT;
       pGamepad->fX2 = 0.00001f; // small amount of movement
     }
   }
-  else if (lastAnalogKey == KEY_BUTTON_LEFT_THUMB_STICK_UP || lastAnalogKey == KEY_BUTTON_LEFT_THUMB_STICK_DOWN)
+  else
+  {
+    if (pGamepad->fY2 > 0 && pGamepad->fX2*2 < pGamepad->fY2 && -pGamepad->fX2*2 < pGamepad->fY2)
+      newRightStickKey = KEY_BUTTON_RIGHT_THUMB_STICK_UP;
+    else if (pGamepad->fY2 < 0 && pGamepad->fX2*2 < -pGamepad->fY2 && -pGamepad->fX2*2 < -pGamepad->fY2)
+      newRightStickKey = KEY_BUTTON_RIGHT_THUMB_STICK_DOWN;
+    else if (pGamepad->fX2 > 0 && pGamepad->fY2*2 < pGamepad->fX2 && -pGamepad->fY2*2 < pGamepad->fX2)
+      newRightStickKey = KEY_BUTTON_RIGHT_THUMB_STICK_RIGHT;
+    else if (pGamepad->fX2 < 0 && pGamepad->fY2*2 < -pGamepad->fX2 && -pGamepad->fY2*2 < -pGamepad->fX2)
+      newRightStickKey = KEY_BUTTON_RIGHT_THUMB_STICK_LEFT;
+  }
+  if (lastRightStickKey && newRightStickKey != lastRightStickKey)
+  { // was held down last time - and we have a new key now
+    // post old key reset message...
+    CKey key(lastRightStickKey, 0, 0, 0, 0, 0, 0);
+    lastRightStickKey = newRightStickKey;
+    if (OnKey(key)) return;
+  }
+  lastRightStickKey = newRightStickKey;
+  // post the new key's message
+  if (newRightStickKey)
+  {
+    CKey key(newRightStickKey, bLeftTrigger, bRightTrigger, pGamepad->fX1, pGamepad->fY1, pGamepad->fX2, pGamepad->fY2);
+    if (OnKey(key)) return;
+  }
+
+  // now the left stick
+  static lastLeftStickKey = 0;
+  int newLeftStickKey = 0;
+  if (lastLeftStickKey == KEY_BUTTON_LEFT_THUMB_STICK_UP || lastLeftStickKey == KEY_BUTTON_LEFT_THUMB_STICK_DOWN)
   {
     if (pGamepad->fY1 > 0)
-      newAnalogKey = KEY_BUTTON_LEFT_THUMB_STICK_UP;
+      newLeftStickKey = KEY_BUTTON_LEFT_THUMB_STICK_UP;
     else if (pGamepad->fY1 < 0)
-      newAnalogKey = KEY_BUTTON_LEFT_THUMB_STICK_DOWN;
+      newLeftStickKey = KEY_BUTTON_LEFT_THUMB_STICK_DOWN;
     else if (pGamepad->fX1 != 0)
     {
-      newAnalogKey = KEY_BUTTON_LEFT_THUMB_STICK_UP;
+      newLeftStickKey = KEY_BUTTON_LEFT_THUMB_STICK_UP;
       pGamepad->fY1 = 0.00001f; // small amount of movement
     }
   }
-  else if (lastAnalogKey == KEY_BUTTON_LEFT_THUMB_STICK_LEFT || lastAnalogKey == KEY_BUTTON_LEFT_THUMB_STICK_RIGHT)
+  else if (lastLeftStickKey == KEY_BUTTON_LEFT_THUMB_STICK_LEFT || lastLeftStickKey == KEY_BUTTON_LEFT_THUMB_STICK_RIGHT)
   {
     if (pGamepad->fX1 > 0)
-      newAnalogKey = KEY_BUTTON_LEFT_THUMB_STICK_RIGHT;
+      newLeftStickKey = KEY_BUTTON_LEFT_THUMB_STICK_RIGHT;
     else if (pGamepad->fX1 < 0)
-      newAnalogKey = KEY_BUTTON_LEFT_THUMB_STICK_LEFT;
+      newLeftStickKey = KEY_BUTTON_LEFT_THUMB_STICK_LEFT;
     else if (pGamepad->fY1 != 0)
     {
-      newAnalogKey = KEY_BUTTON_LEFT_THUMB_STICK_RIGHT;
+      newLeftStickKey = KEY_BUTTON_LEFT_THUMB_STICK_RIGHT;
       pGamepad->fX1 = 0.00001f; // small amount of movement
     }
   }
   else
   { // check for a new control movement
     if (pGamepad->fY1 > 0 && pGamepad->fX1 < pGamepad->fY1 && -pGamepad->fX1 < pGamepad->fY1)
-      newAnalogKey = KEY_BUTTON_LEFT_THUMB_STICK_UP;
+      newLeftStickKey = KEY_BUTTON_LEFT_THUMB_STICK_UP;
     else if (pGamepad->fY1 < 0 && pGamepad->fX1 < -pGamepad->fY1 && -pGamepad->fX1 < -pGamepad->fY1)
-      newAnalogKey = KEY_BUTTON_LEFT_THUMB_STICK_DOWN;
+      newLeftStickKey = KEY_BUTTON_LEFT_THUMB_STICK_DOWN;
     else if (pGamepad->fX1 > 0 && pGamepad->fY1 < pGamepad->fX1 && -pGamepad->fY1 < pGamepad->fX1)
-      newAnalogKey = KEY_BUTTON_LEFT_THUMB_STICK_RIGHT;
+      newLeftStickKey = KEY_BUTTON_LEFT_THUMB_STICK_RIGHT;
     else if (pGamepad->fX1 < 0 && pGamepad->fY1 < -pGamepad->fX1 && -pGamepad->fY1 < -pGamepad->fX1)
-      newAnalogKey = KEY_BUTTON_LEFT_THUMB_STICK_LEFT;
-    else if (pGamepad->fY2 > 0 && pGamepad->fX2*2 < pGamepad->fY2 && -pGamepad->fX2*2 < pGamepad->fY2)
-      newAnalogKey = KEY_BUTTON_RIGHT_THUMB_STICK_UP;
-    else if (pGamepad->fY2 < 0 && pGamepad->fX2*2 < -pGamepad->fY2 && -pGamepad->fX2*2 < -pGamepad->fY2)
-      newAnalogKey = KEY_BUTTON_RIGHT_THUMB_STICK_DOWN;
-    else if (pGamepad->fX2 > 0 && pGamepad->fY2*2 < pGamepad->fX2 && -pGamepad->fY2*2 < pGamepad->fX2)
-      newAnalogKey = KEY_BUTTON_RIGHT_THUMB_STICK_RIGHT;
-    else if (pGamepad->fX2 < 0 && pGamepad->fY2*2 < -pGamepad->fX2 && -pGamepad->fY2*2 < -pGamepad->fX2)
-      newAnalogKey = KEY_BUTTON_RIGHT_THUMB_STICK_LEFT;
-    else if (bLeftTrigger)
-      newAnalogKey = KEY_BUTTON_LEFT_ANALOG_TRIGGER;
-    else if (bRightTrigger)
-      newAnalogKey = KEY_BUTTON_RIGHT_ANALOG_TRIGGER;
+      newLeftStickKey = KEY_BUTTON_LEFT_THUMB_STICK_LEFT;
   }
 
-  if (lastAnalogKey && newAnalogKey != lastAnalogKey)
+  if (lastLeftStickKey && newLeftStickKey != lastLeftStickKey)
   { // was held down last time - and we have a new key now
     // post old key reset message...
-    CKey key(lastAnalogKey, 0, 0, 0, 0, 0, 0);
-    lastAnalogKey = newAnalogKey;
+    CKey key(lastLeftStickKey, 0, 0, 0, 0, 0, 0);
+    lastLeftStickKey = newLeftStickKey;
     if (OnKey(key)) return;
   }
-  lastAnalogKey = newAnalogKey;
+  lastLeftStickKey = newLeftStickKey;
   // post the new key's message
-  if (newAnalogKey)
+  if (newLeftStickKey)
   {
-    CKey key(newAnalogKey, bLeftTrigger, bRightTrigger, pGamepad->fX1, pGamepad->fY1, pGamepad->fX2, pGamepad->fY2);
+    CKey key(newLeftStickKey, bLeftTrigger, bRightTrigger, pGamepad->fX1, pGamepad->fY1, pGamepad->fX2, pGamepad->fY2);
+    if (OnKey(key)) return;
+  }
+
+  // Trigger detection
+  static lastTriggerKey = 0;
+  int newTriggerKey = 0;
+  if (bLeftTrigger)
+    newTriggerKey = KEY_BUTTON_LEFT_ANALOG_TRIGGER;
+  else if (bRightTrigger)
+    newTriggerKey = KEY_BUTTON_RIGHT_ANALOG_TRIGGER;
+  if (lastTriggerKey && newTriggerKey != lastTriggerKey)
+  { // was held down last time - and we have a new key now
+    // post old key reset message...
+    CKey key(lastTriggerKey, 0, 0, 0, 0, 0, 0);
+    lastTriggerKey = newTriggerKey;
+    if (OnKey(key)) return;
+  }
+  lastTriggerKey = newTriggerKey;
+  // post the new key's message
+  if (newTriggerKey)
+  {
+    CKey key(newTriggerKey, bLeftTrigger, bRightTrigger, pGamepad->fX1, pGamepad->fY1, pGamepad->fX2, pGamepad->fY2);
     if (OnKey(key)) return;
   }
 
