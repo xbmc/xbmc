@@ -858,6 +858,8 @@ int CXbmcHttp::xbmcGetCurrentlyPlaying()
         output+="\n<li>Artist"+tag+":"+tagVal.GetArtist() ;
       if (tagVal.GetAlbum()!="")
         output+="\n<li>Album"+tag+":"+tagVal.GetAlbum() ;
+      if (!g_infoManager.GetMusicLabel(211).IsEmpty())
+        output+="\n<li>Bitrate"+tag+":"+g_infoManager.GetMusicLabel(211);  // MUSICPLAYER_BITRATE
     }
     if (fn.Find("://")<0)
     {
