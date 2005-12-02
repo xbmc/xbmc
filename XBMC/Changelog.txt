@@ -5,7 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
- - 02-12-2005 changed: samba strips of all '/' at the end (hopefully it fixed the samba error success message)
+ - 02-12-2005 changed: samba strips of all '/' at the end of a path (hopefully it fixed the samba error success message)
  - 02-12-2005 changed: Made stick + trigger reading independent (fixes small issues with sticks being offcenter
                        intefering with the triggers)
  - 02-12-2005 added: Bitrate tag to http command getCurrentlyPlaying.
