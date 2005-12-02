@@ -867,16 +867,38 @@ void CGUIWindowVideoFiles::SetIMDBThumbs(CFileItemList& items)
     CFileItem* pItem = items[x];
     if (!pItem->m_bIsFolder && pItem->GetThumbnailImage() == "")
     {
-      for (int i = 0; i < (int)movies.size(); ++i)
+      // if a stack item, get first file
+      CStdString strPath = pItem->m_strPath;
+      if (pItem->IsStack())
       {
-        CIMDBMovie& info = movies[i];
-        CStdString strFile = CUtil::GetFileName(pItem->m_strPath);
-        if (info.m_strFile[0] == '\\' || info.m_strFile[0] == '/')
-          info.m_strFile.Delete(0, 1);
+        CStackDirectory dir;
+        strPath = dir.GetFirstStackedFile(pItem->m_strPath);
+      }
+      CStdString strFile = CUtil::GetFileName(strPath);
+      //CLog::Log(LOGDEBUG,"Setting IMDB thumb for [%s] -> [%s]", pItem->m_strPath.c_str(), strFile.c_str());
 
-        if (strFile.size() > 0)
+      if (strFile.size() > 0)
+      {
+        for (int i = 0; i < (int)movies.size(); ++i)
         {
-          if (info.m_strFile == strFile /*|| pItem->GetLabel() == info.m_strTitle*/)
+          // if a stack item, get first file
+          CIMDBMovie& info = movies[i];
+          CStdString strMovieFile = info.m_strFile;
+          if (strMovieFile[0] == '\\' || strMovieFile[0] == '/')
+            strMovieFile.Delete(0, 1);
+          CURL url(info.m_strPath);
+          if (url.GetProtocol().Equals("stack"))
+          {
+            CStackDirectory dir;
+            CStdString strMoviePath = info.m_strPath;
+            if (!CUtil::HasSlashAtEnd(strMoviePath))
+              strMoviePath += "/";
+            strMoviePath += strMovieFile;
+            strMovieFile = CUtil::GetFileName(dir.GetFirstStackedFile(strMoviePath));
+          }
+          //CLog::Log(LOGDEBUG,"  Testing [%s] -> [%s]", info.m_strPath.c_str(), strMovieFile.c_str());
+
+          if (strMovieFile == strFile /*|| pItem->GetLabel() == info.m_strTitle*/)
           {
             CStdString strThumb;
             CUtil::GetVideoThumbnail(info.m_strIMDBNumber, strThumb);
