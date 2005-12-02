@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 02-12-2005 changed: Made stick + trigger reading independent (fixes small issues with sticks being offcenter
+                       intefering with the triggers)
  - 02-12-2005 added: Bitrate tag to http command getCurrentlyPlaying.
  - 02-12-2005 fixed: Added further DVD layer change hacks.
  - 01-12-2005 fixed: IMDB downloaded thumbs for stacked titles
