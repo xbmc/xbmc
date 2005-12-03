@@ -26,9 +26,10 @@ public:
   void RenderImage(IDirect3DTexture8* pTexture, float x, float y, float width, float height, int iTextureWidth, int iTextureHeight, int iTextureLeft = 0, int iTextureTop = 0, DWORD dwAlpha = 0xFF);
 
   void CreateFolderThumb(CStdString &strFolder, CStdString *strThumbs);
-protected:
   bool DoCreateThumbnail(const CStdString& strFileName, const CStdString& strThumbFileName);
 
+protected:
+  
 private:
   struct VERTEX
   {
