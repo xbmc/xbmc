@@ -32,7 +32,7 @@ protected:
 
   void SaveDatabaseDirectoryCache(const CStdString& strDirectory, CFileItemList& items, int iSortMethod, int iAscending, bool bSkipThe);
   void LoadDatabaseDirectoryCache(const CStdString& strDirectory, CFileItemList& items, int& iSortMethod, int& iAscending, bool& bSkipThe);
-
+  void ClearDatabaseDirectoryCache(const CStdString& strDirectory);
   // directory caching
   bool m_bGotDirFromCache;
   int m_iSortCache;
