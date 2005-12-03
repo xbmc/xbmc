@@ -1684,24 +1684,9 @@ void CGUIWindowMusicNav::AddItemToPlayList(const CFileItem* pItem, int iPlayList
   }
   else
   {
-    if (!pItem->IsNFO() && pItem->IsAudio() && !pItem->IsPlayList())
-    {
-      CPlayList::CPlayListItem playlistItem;
-      CUtil::ConvertFileItemToPlayListItem(pItem, playlistItem);
-      if (g_guiSettings.GetBool("FileLists.HideExtensions"))
-        playlistItem.RemoveExtension();
-      g_playlistPlayer.GetPlaylist(iPlayList).Add(playlistItem);
-    }
+    CGUIWindowMusicBase::AddItemToPlayList(pItem, iPlayList);
   }
 }
-
-/// \brief Add file or folder and its subfolders to playlist
-/// \param pItem The file item to add
-void CGUIWindowMusicNav::AddItemToTempPlayList(const CFileItem* pItem)
-{
-  AddItemToPlayList(pItem, PLAYLIST_MUSIC_TEMP);
-}
-
 
 void CGUIWindowMusicNav::PlayItem(int iItem)
 {
