@@ -1761,12 +1761,11 @@ void CGUIWindowMusicNav::OnPopupMenu(int iItem)
   if (g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).size() <= 0)
     pMenu->EnableButton(btn_NowPlay, false);
 
-  // turn off set artist image if artist is not being filtered
-  // or if the source is an "all" item (path is empty)
-  // or if the source has no thumbnail
-  // or if the source has a default thumb
+  // turn off set artist image if not at artist listing.
+  // (uses file browser to pick an image)
   if (m_iState != SHOW_ARTISTS)
-    pMenu->EnableButton(6,false);
+    pMenu->EnableButton(6, false);
+
   // position it correctly
   pMenu->SetPosition(iPosX - pMenu->GetWidth() / 2, iPosY - pMenu->GetHeight() / 2);
   pMenu->DoModal(GetID());
