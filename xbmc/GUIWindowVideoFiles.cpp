@@ -881,11 +881,12 @@ void CGUIWindowVideoFiles::SetIMDBThumbs(CFileItemList& items)
       {
         for (int i = 0; i < (int)movies.size(); ++i)
         {
-          // if a stack item, get first file
           CIMDBMovie& info = movies[i];
           CStdString strMovieFile = info.m_strFile;
           if (strMovieFile[0] == '\\' || strMovieFile[0] == '/')
             strMovieFile.Delete(0, 1);
+
+          // stacked items
           CURL url(info.m_strPath);
           if (url.GetProtocol().Equals("stack"))
           {
@@ -894,7 +895,17 @@ void CGUIWindowVideoFiles::SetIMDBThumbs(CFileItemList& items)
             if (!CUtil::HasSlashAtEnd(strMoviePath))
               strMoviePath += "/";
             strMoviePath += strMovieFile;
-            strMovieFile = CUtil::GetFileName(dir.GetFirstStackedFile(strMoviePath));
+
+            // check all items in the stack
+            CFileItemList tempItems;
+            dir.GetDirectory(strMoviePath, tempItems);
+            for (int j = 0; j < (int)tempItems.Size(); ++j)
+            {
+              CFileItem* tempItem = tempItems[j];
+              strMovieFile = CUtil::GetFileName(tempItem->m_strPath);
+              if (strMovieFile == strFile)
+                break;
+            }
           }
           //CLog::Log(LOGDEBUG,"  Testing [%s] -> [%s]", info.m_strPath.c_str(), strMovieFile.c_str());
 
@@ -904,7 +915,6 @@ void CGUIWindowVideoFiles::SetIMDBThumbs(CFileItemList& items)
             CUtil::GetVideoThumbnail(info.m_strIMDBNumber, strThumb);
             if (CFile::Exists(strThumb))
               pItem->SetThumbnailImage(strThumb);
-
             break;
           }
         }
