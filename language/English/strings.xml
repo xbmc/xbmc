@@ -795,6 +795,8 @@
   <string><id>13210</id><value>Started, alarm in %im</value></string>
   <string><id>13211</id><value>Alarm!</value></string>
   <string><id>13212</id><value>Canceled with %im%is left</value></string>
+
+  <string><id>13250</id><value>Browse for subtitle...</value></string>
   
   <string><id>13299</id><value>Target Temperature</value></string>
   <string><id>13300</id><value>Fan Speed</value></string>
@@ -1161,7 +1163,7 @@
   <string><id>15303</id><value>Workgroup not found</value></string>
 
 
-  <string><id>15310</id><value>Openning multi-path bookmark</value></string>
+  <string><id>15310</id><value>Opening multi-path bookmark</value></string>
   <string><id>15311</id><value>Path:</value></string>
 
   <string><id>16000</id><value>General</value></string>
