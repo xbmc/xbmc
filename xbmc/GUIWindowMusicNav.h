@@ -25,7 +25,6 @@ protected:
   virtual void GetDirectoryHistoryString(const CFileItem* pItem, CStdString& strHistoryString);
   virtual void AddItemToPlayList(const CFileItem* pItem, int iPlayList = PLAYLIST_MUSIC);
   virtual void PlayItem(int iItem);
-  virtual void AddItemToTempPlayList(const CFileItem* pItem);
   virtual void OnPopupMenu(int iItem);
 
   void SetArtistImage(int iItem);
