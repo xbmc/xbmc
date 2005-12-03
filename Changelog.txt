@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 03-12-2005 fixed: after last samba modification, dates did not display correctly anymore.
  - 03-12-2005 changed: set artist thumb in my music library view now lets you choose a .jpg/.tbn with the filebrowser instead of letting you assign a album thumb to the artist.
  - 03-12-2005 fixed: better manual directory handling when ripping cds without cddb.
  - 02-12-2005 added: playlists can be queued in library view
