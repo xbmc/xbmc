@@ -1125,6 +1125,28 @@ void CGUIWindowMusicBase::AddItemToPlayList(const CFileItem* pItem, int iPlayLis
         playlistItem.RemoveExtension();
       g_playlistPlayer.GetPlaylist(iPlayList).Add(playlistItem);
     }
+    if (pItem->IsPlayList())
+    {
+      CPlayListFactory factory;
+      auto_ptr<CPlayList> pPlayList (factory.Create(pItem->m_strPath));
+      if ( NULL != pPlayList.get())
+      {
+        // load it
+        if (!pPlayList->Load(pItem->m_strPath))
+        {
+          CGUIDialogOK::ShowAndGetInput(6, 0, 477, 0);
+          return; //hmmm unable to load playlist?
+        }
+        CPlayList playlist = *pPlayList;
+        for (int i = 0; i < (int)playlist.size(); ++i)
+        {
+          CPlayList::CPlayListItem playlistItem = playlist[i];
+          if (g_guiSettings.GetBool("FileLists.HideExtensions"))
+            playlistItem.RemoveExtension();
+          g_playlistPlayer.GetPlaylist(iPlayList).Add(playlistItem);
+        }
+      }
+    }
   }
 }
 
