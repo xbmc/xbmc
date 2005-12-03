@@ -8,7 +8,9 @@
 #include "GUIPassword.h"
 #include "GUIListControl.h"
 #include "GUIDialogContextMenu.h"
+#include "GUIDialogFileBrowser.h"
 #include "GUIWindowMusicSongs.h"
+#include "Picture.h"
 
 
 #define CONTROL_BTNVIEWASICONS  2
@@ -1763,8 +1765,8 @@ void CGUIWindowMusicNav::OnPopupMenu(int iItem)
   // or if the source is an "all" item (path is empty)
   // or if the source has no thumbnail
   // or if the source has a default thumb
-  if (m_strArtist.IsEmpty() || m_vecItems[iItem]->m_strPath.IsEmpty() || !m_vecItems[iItem]->HasThumbnail())
-    pMenu->EnableButton(6, false);
+  if (m_iState != SHOW_ARTISTS)
+    pMenu->EnableButton(6,false);
   // position it correctly
   pMenu->SetPosition(iPosX - pMenu->GetWidth() / 2, iPosY - pMenu->GetHeight() / 2);
   pMenu->DoModal(GetID());
@@ -1811,16 +1813,55 @@ void CGUIWindowMusicNav::OnPopupMenu(int iItem)
 
 void CGUIWindowMusicNav::SetArtistImage(int iItem)
 {
-  const CFileItem* pItem = m_vecItems[iItem];
-  CStdString strArtist = "artist" + m_strArtist;
-  CStdString strSrcThumb = pItem->GetThumbnailImage();
-  CStdString strDestThumb;
-  CUtil::GetCachedThumbnail(strArtist, strDestThumb);
-  //CLog::Log(LOGDEBUG,"Setting thumb for Artist [%s]",m_strArtist.c_str());
-  //CLog::Log(LOGDEBUG,"  Src = [%s]",strSrcThumb.c_str());
-  //CLog::Log(LOGDEBUG,"  Dest = [%s]",strDestThumb.c_str());
-  if (!CFile::Cache(strSrcThumb.c_str(), strDestThumb.c_str(), NULL, NULL))
-    CLog::Log(LOGERROR,"  Could not cache artist thumb: %s",strSrcThumb.c_str());
+  CFileItem* pItem = m_vecItems[iItem];
+  // try to guess
+  VECALBUMS albums;
+  g_musicDatabase.GetAlbumsNav(albums, "", pItem->m_strPath);
+  CStdString strPicture = albums[0].strPath;
+  for (unsigned int i=1;i<albums.size();++i)
+  {
+    int j=0;
+    while (strPicture[j] == albums[i].strPath[j]) j++;
+    strPicture.Delete(j,strPicture.size()-j);
+  }
+
+  if (strPicture.size() > 2)
+  {
+    if ((strPicture[strPicture.size()-1] == '/' && strPicture[strPicture.size()-2] == '/') || (strPicture[1]==':' && strPicture[2] == '\\' && strPicture.size()==3))
+      strPicture = ""; // no protocol/drive-only matching
+    else if (CUtil::HasSlashAtEnd(strPicture))
+      strPicture.Delete(strPicture.size()-1,1);
+  }
+
+  if (CGUIDialogFileBrowser::ShowAndGetFile( g_settings.m_vecMyMusicShares, ".jpg|.tbn", L"Choose artist cover", strPicture))
+  {
+    CStdString strArtist = "artist" + pItem->m_strPath;
+    CStdString strDestThumb;
+    CUtil::GetCachedThumbnail(strArtist, strDestThumb);
+    CPicture picture;
+    CFile::Delete(strDestThumb); // remove old thumb
+    if (picture.DoCreateThumbnail(strPicture,strDestThumb))
+    {
+      ClearDatabaseDirectoryCache("db://Artists");    
+      Update("db://Artists");
+    }
+    else
+      CLog::Log(LOGERROR,"  Could not cache artist thumb: %s",strPicture.c_str());
+  }
+}
+
+void CGUIWindowMusicNav::ClearDatabaseDirectoryCache(const CStdString& strDirectory)
+{
+  CFileItem directory(strDirectory, true);
+  if (CUtil::HasSlashAtEnd(directory.m_strPath))
+    directory.m_strPath.Delete(directory.m_strPath.size() - 1);
+
+  Crc32 crc;
+  crc.ComputeFromLowerCase(directory.m_strPath);
+
+  CStdString strFileName;
+  strFileName.Format("Z:\\db-%08x.fi", crc);
+  CFile::Delete(strFileName);
 }
 
 void CGUIWindowMusicNav::SaveDatabaseDirectoryCache(const CStdString& strDirectory, CFileItemList& items, int iSortMethod, int iAscending, bool bSkipThe)
