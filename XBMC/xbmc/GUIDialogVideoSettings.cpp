@@ -682,7 +682,7 @@ void CGUIDialogVideoSettings::OnSettingChanged(unsigned int num)
     {
       CStdString strPath="";
       const CStdString strMask = ".utf|.utf8|.utf-8|.sub|.srt|.smi|.rt|.txt|.ssa|.aqt|.jss|.ass|.idx|.ifo";
-      if (CGUIDialogFileBrowser::ShowAndGetFile(g_settings.m_vecMyVideoShares,strMask,g_localizeStrings.Get(294),strPath)) // "subtitles"
+      if (CGUIDialogFileBrowser::ShowAndGetFile(g_settings.m_vecMyVideoShares,strMask,g_localizeStrings.Get(293),strPath)) // "subtitles"
       {
         CStdString strExt;
         CUtil::GetExtension(strPath,strExt);
