@@ -229,15 +229,16 @@ int CSMBDirectory::OpenDir(CStdString& strAuth)
 
     // remove the / or \ at the end. the samba library does not strip them off
     // don't do this for smb:// !!
-    int len = strPath.length();
-    if (strPath.at(len - 2) != '/' &&
-        (strPath.at(len - 1) == '/' || strPath.at(len - 1) == '\\'))
+    CStdString s = strPath;
+    int len = s.length();
+    if (s.at(len - 2) != '/' &&
+        (s.at(len - 1) == '/' || s.at(len - 1) == '\\'))
     {
-      strPath.erase(len - 1, 1);
+      s.erase(len - 1, 1);
     }
     
     smb.Lock();
-    fd = smbc_opendir(strPath.c_str());
+    fd = smbc_opendir(s.c_str());
     smb.Unlock();
     if (fd < 0)
     {
