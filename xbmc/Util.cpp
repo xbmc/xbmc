@@ -1769,7 +1769,8 @@ void CUtil::ClearSubtitles()
           strFile.Format("Z:\\%s", wfd.cFileName);
           if (strFile.Find("subtitle") >= 0 )
           {
-            ::DeleteFile(strFile.c_str());
+            if (strFile.Find(".keep") != strFile.size()-5) // do not remove files ending with .keep
+              ::DeleteFile(strFile.c_str());
           }
           else if (strFile.Find("vobsub_queue") >= 0 )
           {
