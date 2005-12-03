@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "GUIDialogVideoSettings.h"
 #include "GUIWindowSettingsCategory.h"
+#include "GUIDialogFileBrowser.h"
 #include "util.h"
 #include "utils/GUIInfoManager.h"
 #include "application.h"
@@ -445,6 +446,7 @@ void CGUIDialogVideoSettings::AddSeparator(unsigned int id)
 #define SUBTITLE_SETTINGS_ENABLE          5
 #define SUBTITLE_SETTINGS_DELAY           6
 #define SUBTITLE_SETTINGS_STREAM          7
+#define SUBTITLE_SETTINGS_BROWSER         8
 
 void CGUIDialogVideoSettings::CreateSettings()
 {
@@ -488,6 +490,7 @@ void CGUIDialogVideoSettings::CreateSettings()
     AddBool(SUBTITLE_SETTINGS_ENABLE, 13397, &g_stSettings.m_currentVideoSettings.m_SubtitleOn);
     AddSlider(SUBTITLE_SETTINGS_DELAY, 303, &g_stSettings.m_currentVideoSettings.m_SubtitleDelay, -g_stSettings.m_fSubsDelayRange, 0.1f, g_stSettings.m_fSubsDelayRange, "%2.1fs");
     AddSubtitleStreams(SUBTITLE_SETTINGS_STREAM);
+    AddButton(SUBTITLE_SETTINGS_BROWSER,13250);
   }
 }
 
@@ -553,6 +556,7 @@ void CGUIDialogVideoSettings::AddAudioStreams(unsigned int id)
 void CGUIDialogVideoSettings::AddSubtitleStreams(unsigned int id)
 {
   VideoSetting setting;
+
   setting.id = id;
   setting.name = g_localizeStrings.Get(462);
   setting.type = VideoSetting::SPIN;
@@ -673,6 +677,32 @@ void CGUIDialogVideoSettings::OnSettingChanged(unsigned int num)
     {
       g_stSettings.m_currentVideoSettings.m_SubtitleStream = m_subtitleStream;
       g_application.m_pPlayer->SetSubtitle(m_subtitleStream);
+    }
+    else if (setting.id == SUBTITLE_SETTINGS_BROWSER)
+    {
+      CStdString strPath="";
+      const CStdString strMask = ".utf|.utf8|.utf-8|.sub|.srt|.smi|.rt|.txt|.ssa|.aqt|.jss|.ass|.idx|.ifo";
+      if (CGUIDialogFileBrowser::ShowAndGetFile(g_settings.m_vecMyVideoShares,strMask,g_localizeStrings.Get(294),strPath)) // "subtitles"
+      {
+        CStdString strExt;
+        CUtil::GetExtension(strPath,strExt);
+        if (CFile::Cache(strPath,"z:\\subtitle"+strExt+".keep"))
+        {
+          CStdString strPath2;
+          if (strExt.CompareNoCase("idx"))
+          {
+            CUtil::ReplaceExtension(strPath,"sub",strPath2);
+            CFile::Cache(strPath2,"z:\\subtitle.sub.keep");
+          }
+          if (strExt.CompareNoCase("sub"))
+          {
+            CUtil::ReplaceExtension(strPath,"idx",strPath2);
+            CFile::Cache(strPath2,"z:\\subtitle.idx.keep");
+          }
+          g_application.Restart(true); // to reread subtitles
+          m_gWindowManager.RefreshWindow();
+        }
+      }
     }
   }
 }
