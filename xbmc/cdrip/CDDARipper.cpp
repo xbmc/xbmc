@@ -298,14 +298,13 @@ bool CCDDARipper::RipCD()
     while (1)
     {
       strDate.Format("%04i-%02i-%02i-%i", datetime.wYear, datetime.wMonth, datetime.wDay, iNumber);
+      if (!CGUIDialogKeyboard::ShowAndGetInput(strDate,(CStdStringW)g_localizeStrings.Get(748),false))
+        return false;
       if (!CFile::Exists(strDirectory + strDate))
       {
         strDirectory += strDate;
         CUtil::AddDirectorySeperator(strDirectory);
-        if (CGUIDialogKeyboard::ShowAndGetInput(strDirectory, (CStdStringW)g_localizeStrings.Get(748), false))
-          break;
-        
-        return false;
+        break;
       }
       iNumber++;
     }

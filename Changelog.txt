@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 03-12-2005 fixed: better manual directory handling when ripping cds without cddb.
  - 02-12-2005 added: playlists can be queued in library view
  - 02-12-2005 changed: IMDB downloaded thumbs will now show up for all files in stack when unstacked.
  - 02-12-2005 changed: samba strips of all '/' at the end of a path (hopefully it fixed the samba error success message)
