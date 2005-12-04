@@ -35,6 +35,9 @@ public:
   DllLoader(const char *dll, bool track = false, bool bSystemDll = false);
   ~DllLoader();
 
+  bool Load();
+  void Unload();
+  
   int Parse();
   int ResolveImports();
   int ResolveExport(const char*, void**);
