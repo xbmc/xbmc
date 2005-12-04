@@ -105,7 +105,17 @@ void CDVDVideoCodecFFmpeg::Dispose()
 
 void CDVDVideoCodecFFmpeg::SetDropState(bool bDrop)
 {
-  //noop
+  if( m_pCodecContext )
+  {
+    // i don't know exactly how high this should be set
+    // couldn't find any good docs on it. think it varies
+    // from codec to codec on what it does
+
+    if( bDrop )
+      m_pCodecContext->hurry_up = 2;
+    else
+      m_pCodecContext->hurry_up = 0;
+  }
 }
 
 int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize)
@@ -188,6 +198,7 @@ bool CDVDVideoCodecFFmpeg::GetPicture(DVDVideoPicture* pDvdVideoPicture)
     pDvdVideoPicture->iFlags = DVP_FLAG_ALLOCATED;    
     pDvdVideoPicture->iFlags |= m_pFrame->interlaced_frame ? DVP_FLAG_INTERLACED : 0;
     pDvdVideoPicture->iFlags |= m_pFrame->top_field_first ? DVP_FLAG_TOP_FIELD_FIRST: 0;
+    pDvdVideoPicture->iFlags |= m_pCodecContext->hurry_up ? DVP_FLAG_DROPPED : 0;
     return true;
   }
   else if (m_pFrame && m_pFrame->data[0])
@@ -199,6 +210,7 @@ bool CDVDVideoCodecFFmpeg::GetPicture(DVDVideoPicture* pDvdVideoPicture)
     pDvdVideoPicture->iFlags = DVP_FLAG_ALLOCATED;    
     pDvdVideoPicture->iFlags |= m_pFrame->interlaced_frame ? DVP_FLAG_INTERLACED : 0;
     pDvdVideoPicture->iFlags |= m_pFrame->top_field_first ? DVP_FLAG_TOP_FIELD_FIRST: 0;
+    pDvdVideoPicture->iFlags |= m_pCodecContext->hurry_up ? DVP_FLAG_DROPPED : 0;
     return true;
   }
 
