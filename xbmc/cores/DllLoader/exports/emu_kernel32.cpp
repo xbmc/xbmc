@@ -173,71 +173,58 @@ extern "C" UINT WINAPI dllGetPrivateProfileIntA(
 //globals for memory leak hack, no need for well-behaved dlls call init/del in pair
 //We can free the sections if applications does not call deletecriticalsection
 //need to initialize the list head NULL at mplayer_open_file, and free memory at close file.
-CriticalSection_List * criticalsection_head;
+std::map<LPCRITICAL_SECTION, LPCRITICAL_SECTION> g_mapCriticalSection;
 
-CriticalSection_List::CriticalSection_List()
+extern "C" void WINAPI dllDeleteCriticalSection(LPCRITICAL_SECTION cs)
 {
-  CriticalSection_List ** curr = &criticalsection_head;
-  Next = NULL;
-
-  while ( *curr ) curr = &((*curr)->Next);
-  *curr = this;
-}
-
-CriticalSection_List::~CriticalSection_List()
-{
-  CriticalSection_List ** curr = &criticalsection_head;
-
-  while ( *curr && *curr != this ) curr = &((*curr)->Next);
-  if ( *curr )  //delete node
+#ifdef API_DEBUG
+  CLog::Log(LOGDEBUG, "DeleteCriticalSection(0x%x)", cs);
+#endif
+  if (g_mapCriticalSection.find(cs) != g_mapCriticalSection.end())
   {
-    *curr = Next;
-    Next = NULL;
+    LPCRITICAL_SECTION cs_new = g_mapCriticalSection[cs];
+    DeleteCriticalSection(cs_new);
+    delete cs_new;
+    g_mapCriticalSection.erase(cs);
   }
 }
 
-extern "C" void WINAPI dllDeleteCriticalSection(CriticalSection_List ** fixc)
+extern "C" void WINAPI dllInitializeCriticalSection(LPCRITICAL_SECTION cs)
 {
 #ifdef API_DEBUG
-  CLog::Log(LOGDEBUG, "DeleteCriticalSection(0x%x)", fixc);
+  CLog::Log(LOGDEBUG, "InitializeCriticalSection(0x%x)", cs);
 #endif
-  DeleteCriticalSection(&((*fixc)->criticalsection));
-  delete *fixc;
-  //Fix different CRITICAL_SECTION size between win2K and Xbox
-  //But need application call  Initialize../Delete.. in pair.
-  //For bad behave applications, use criticalsection_head to free memory
+  LPCRITICAL_SECTION cs_new = new CRITICAL_SECTION;
+  memset(cs_new, 0, sizeof(CRITICAL_SECTION));
+  InitializeCriticalSection(cs_new);
+  
+  // just take the first member of the CRITICAL_SECTION to save ourdata in, this will be used to 
+  // get fast access to the new critial section in dllLeaveCriticalSection and dllEnterCriticalSection
+  ((LPCRITICAL_SECTION*)cs)[0] = cs_new;
+  g_mapCriticalSection[cs] = cs_new;
 }
 
-extern "C" void WINAPI dllInitializeCriticalSection(CriticalSection_List ** fixc)
+extern "C" void WINAPI dllLeaveCriticalSection(LPCRITICAL_SECTION cs)
 {
 #ifdef API_DEBUG
-  CLog::Log(LOGDEBUG, "InitializeCriticalSection(0x%x)", fixc);
+  CLog::Log(LOGDEBUG, "LeaveCriticalSection(0x%x) %p\n", ((LPCRITICAL_SECTION*)cs)[0]);
 #endif
-  *fixc = (CriticalSection_List *) new CriticalSection_List;
-  InitializeCriticalSection(&((*fixc)->criticalsection));
+  LeaveCriticalSection(((LPCRITICAL_SECTION*)cs)[0]);
 }
 
-extern "C" void WINAPI dllLeaveCriticalSection(CriticalSection_List ** fixc)
+extern "C" void WINAPI dllEnterCriticalSection(LPCRITICAL_SECTION cs)
 {
 #ifdef API_DEBUG
-  CLog::Log(LOGDEBUG, "LeaveCriticalSection(0x%x) %p\n", fixc, &((*fixc)->criticalsection));
+  CLog::Log(LOGDEBUG, "EnterCriticalSection(0x%x) %p\n", cs, ((LPCRITICAL_SECTION*)cs)[0]);
 #endif
-  LeaveCriticalSection(&((*fixc)->criticalsection));
-}
-
-extern "C" void WINAPI dllEnterCriticalSection(CriticalSection_List ** fixc)
-{
-#ifdef API_DEBUG
-  CLog::Log(LOGDEBUG, "EnterCriticalSection(0x%x) %p\n", fixc, &((*fixc)->criticalsection));
-#endif
-  if (!&((*fixc)->criticalsection))
+  if (!(LPCRITICAL_SECTION)cs->OwningThread)
   {
 #ifdef API_DEBUG
     CLog::Log(LOGDEBUG, "entered uninitialized critisec!\n");
 #endif
-    dllInitializeCriticalSection(fixc);
+    dllInitializeCriticalSection(cs);
   }
-  EnterCriticalSection(&((*fixc)->criticalsection));
+  EnterCriticalSection(((LPCRITICAL_SECTION*)cs)[0]);
 }
 
 extern "C" DWORD WINAPI dllGetVersion()

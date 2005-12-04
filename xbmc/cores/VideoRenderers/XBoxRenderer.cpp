@@ -1098,6 +1098,12 @@ void CXBoxRenderer::UnInit()
     DeleteYV12Texture(i);
     DeleteOSDTextures(i);
   }
+  
+  if (m_hLowMemShader)
+  {
+    m_pD3DDevice->DeletePixelShader(m_hLowMemShader);
+    m_hLowMemShader = 0;
+  }
 }
 
 void CXBoxRenderer::RenderBlank()

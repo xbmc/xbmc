@@ -4,6 +4,7 @@
 
 #include "emu_kernel32.h"
 #include "../dll_tracker_library.h"
+#include "../dll_tracker_critical_section.h"
 
 void export_kernel32()
 {
@@ -39,8 +40,8 @@ void export_kernel32()
   g_dlls.kernel32.AddExport("GetProcAddress", (unsigned long)dllGetProcAddress);
   g_dlls.kernel32.AddExport("LeaveCriticalSection", (unsigned long)dllLeaveCriticalSection);
   g_dlls.kernel32.AddExport("EnterCriticalSection", (unsigned long)dllEnterCriticalSection);
-  g_dlls.kernel32.AddExport("DeleteCriticalSection", (unsigned long)dllDeleteCriticalSection);
-  g_dlls.kernel32.AddExport("InitializeCriticalSection", (unsigned long)dllInitializeCriticalSection);
+  g_dlls.kernel32.AddExport("DeleteCriticalSection", (unsigned long)dllDeleteCriticalSection, (void*)track_DeleteCriticalSection);
+  g_dlls.kernel32.AddExport("InitializeCriticalSection", (unsigned long)dllInitializeCriticalSection, (void*)track_InitializeCriticalSection);
   g_dlls.kernel32.AddExport("GetSystemInfo", (unsigned long) dllGetSystemInfo);
   g_dlls.kernel32.AddExport("CloseHandle", (unsigned long) CloseHandle);
   g_dlls.kernel32.AddExport("GetPrivateProfileIntA", (unsigned long) dllGetPrivateProfileIntA);

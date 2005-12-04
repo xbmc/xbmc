@@ -496,6 +496,18 @@ void CRGBRenderer::UnInit()
   CXBoxRenderer::UnInit();
   DeleteYUVTexture();
   DeleteLookupTextures();
+  
+  if (m_hInterleavingShader)
+  {
+    m_pD3DDevice->DeletePixelShader(m_hInterleavingShader);
+    m_hInterleavingShader = 0;
+  }
+  
+  if (m_hYUVtoRGBLookup)
+  {
+    m_pD3DDevice->DeletePixelShader(m_hYUVtoRGBLookup);
+    m_hYUVtoRGBLookup = 0;
+  }
 }
 
 /*
