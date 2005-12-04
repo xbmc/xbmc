@@ -422,28 +422,6 @@ void CIMDB::Process()
 
 bool CIMDB::FindMovie(const CStdString &strMovie, IMDB_MOVIELIST& movieList, CGUIDialogProgress *pProgress /* = NULL */)
 {
-  // get movies from xml files
-  CFileItemList items;
-  CDirectory::GetDirectory("Q:\\albums\\imdb", items, ".xml", false);
-  for (int i = 0; i < items.Size(); i++)
-  {
-    TiXmlDocument doc;
-    if (!doc.LoadFile(items[i]->m_strPath))
-      continue;
-
-    TiXmlElement *root = doc.RootElement();
-    if (!root) continue;
-    TiXmlNode *title = root->FirstChild("title");
-    if (title && title->FirstChild() && strMovie.CompareNoCase(title->FirstChild()->Value()) == 0)
-    {
-      CIMDBUrl url;
-      url.m_strTitle = strMovie;
-      url.m_strURL = items[i]->m_strPath;
-      movieList.clear();
-      movieList.push_back(url);
-      return true;
-    }
-  }
   m_strMovie = strMovie;
   if (pProgress)
   { // threaded version
@@ -475,12 +453,6 @@ bool CIMDB::FindMovie(const CStdString &strMovie, IMDB_MOVIELIST& movieList, CGU
 
 bool CIMDB::GetDetails(const CIMDBUrl &url, CIMDBMovie &movieDetails, CGUIDialogProgress *pProgress /* = NULL */)
 {
-  // load xml file version
-  CStdString imdb = CUtil::GetFileName(url.m_strURL);
-  CUtil::RemoveExtension(imdb);
-  return LoadDetails(imdb, movieDetails);
-
-
   m_url = url;
   m_movieDetails = movieDetails;
   if (pProgress)
