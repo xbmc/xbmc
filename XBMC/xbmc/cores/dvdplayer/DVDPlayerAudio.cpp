@@ -14,6 +14,7 @@
 
 #define ABS(a) ((a) >= 0 ? (a) : (-(a)))
 
+
 CDVDPlayerAudio::CDVDPlayerAudio(CDVDClock* pClock) : CThread()
 {
   m_pClock = pClock;
@@ -22,6 +23,8 @@ CDVDPlayerAudio::CDVDPlayerAudio(CDVDClock* pClock) : CThread()
   m_iSourceChannels = 0;
   m_audioClock = 0;
 
+  m_iSpeed = 1;
+  
   InitializeCriticalSection(&m_critCodecSection);
   m_packetQueue.SetMaxSize(10 * 16 * 1024);
   g_dvdPerformanceCounter.EnableAudioQueue(&m_packetQueue);
@@ -124,17 +127,17 @@ void CDVDPlayerAudio::CloseStream(bool bWaitForBuffers)
 
   pAudioPacket = NULL;
 }
-
 // decode one audio frame and returns its uncompressed size
-int CDVDPlayerAudio::DecodeFrame(BYTE** pAudioBuffer)
+int CDVDPlayerAudio::DecodeFrame(BYTE** pAudioBuffer, int *data_size,bool bDropPacket)
 {
   CDVDDemux::DemuxPacket* pPacket = pAudioPacket;
-  int n=48000*2*16/8, len, data_size;
+  int n=48000*2*16/8, len;
 
   //Store amount left at this point, and what last pts was
   unsigned __int64 first_pkt_pts = 0;
   int first_pkt_size = 0; 
   int first_pkt_used = 0;
+  int result = 0;
   if (pPacket)
   {
     first_pkt_pts = pPacket->pts;
@@ -157,21 +160,29 @@ int CDVDPlayerAudio::DecodeFrame(BYTE** pAudioBuffer)
       }
 
       // get decoded data and the size of it
-      data_size = m_pAudioCodec->GetData(pAudioBuffer);
+      *data_size = m_pAudioCodec->GetData(pAudioBuffer);
 
       audio_pkt_data += len;
       audio_pkt_size -= len;
 
-      if (data_size <= 0) continue;
+      if (*data_size <= 0) continue;
       
       // compute pts.
       n = m_pAudioCodec->GetChannels() * m_pAudioCodec->GetBitsPerSample() / 8 * m_pAudioCodec->GetSampleRate();
       if (n > 0)
       {
         // safety check, if channels == 0, n will result in 0, and that will result in a nice devide exception
-        m_audioClock += ((__int64)data_size * (__int64)DVD_TIME_BASE) / (__int64)n;
+        m_audioClock += ((__int64)(*data_size) * (__int64)DVD_TIME_BASE) / (__int64)n;
       }
-      return data_size;
+
+      //If we are asked to drop this packet, return a size of zero. then it won't be played
+      //we currently still decode the audio.. this is needed since we still need to know it's 
+      //duration to make sure clock is updated correctly.
+      if( bDropPacket )
+      {
+        result |= DECODE_FLAG_DROP;
+      }
+      return result;
     }
     // free the current packet
     if (pPacket)
@@ -181,14 +192,14 @@ int CDVDPlayerAudio::DecodeFrame(BYTE** pAudioBuffer)
       pAudioPacket = NULL;
     }
 
-    if (m_packetQueue.RecievedAbortRequest()) return -1;
+    if (m_packetQueue.RecievedAbortRequest()) return DECODE_FLAG_ABORT;
     
     // read next packet and return -1 on error
     int dvdstate=0, packstate=0;
     LeaveCriticalSection(&m_critCodecSection); //Leave here as this might stall a while
     packstate = m_packetQueue.Get(&pPacket, INFINITE, (void**)&dvdstate);
     EnterCriticalSection(&m_critCodecSection);
-    if (packstate < 0) return -1;
+    if (packstate < 0) return DECODE_FLAG_ABORT;
 
     pAudioPacket = pPacket;
     audio_pkt_data = pPacket->pData;
@@ -197,30 +208,29 @@ int CDVDPlayerAudio::DecodeFrame(BYTE** pAudioBuffer)
     // if update the audio clock with the pts
     if (pPacket->pts != DVD_NOPTS_VALUE)
     {
-      if ((dvdstate & DVDPACKET_MESSAGE_RESYNC) || first_pkt_pts > pPacket->pts)
-      {
-        //Okey first packet in this continous stream, make sure we use the time here
-        m_audioClock = pPacket->pts;      
+      if (first_pkt_size == 0) 
+      { //first package
+        m_audioClock = pPacket->pts;        
       }
-      else
+      else if( dvdstate & DVDPACKET_MESSAGE_RESYNC )
+      { //player asked us to sync on this package
+        result |= DECODE_FLAG_RESYNC;
+        m_audioClock = pPacket->pts;
+      }
+      else if( first_pkt_pts > pPacket->pts )
+      { //okey first packet in this continous stream, make sure we use the time here        
+        m_audioClock = pPacket->pts;        
+      }
+      else if((unsigned __int64)m_audioClock < first_pkt_pts || (unsigned __int64)m_audioClock > pPacket->pts)
       {
-        if (first_pkt_size == 0) 
-        {
-          m_audioClock = pPacket->pts;
-          continue;
-        }
-
-        if((unsigned __int64)m_audioClock < first_pkt_pts || (unsigned __int64)m_audioClock > pPacket->pts)
-        {
-          //crap, moved outsided correct pts
-          //Use pts from current packet, untill we find a better value for it.
-          //Should be ok after a couple of frames, as soon as it starts clean on a packet
-          m_audioClock = pPacket->pts;
-        }
-        else if(first_pkt_size == first_pkt_used)
-        { //Nice starting up freshly on the start of a packet, use pts from it
-          m_audioClock = pPacket->pts;
-        }
+        //crap, moved outsided correct pts
+        //Use pts from current packet, untill we find a better value for it.
+        //Should be ok after a couple of frames, as soon as it starts clean on a packet
+        m_audioClock = pPacket->pts;
+      }
+      else if(first_pkt_size == first_pkt_used)
+      { //Nice starting up freshly on the start of a packet, use pts from it
+        m_audioClock = pPacket->pts;
       }
     }
   }
@@ -228,6 +238,7 @@ int CDVDPlayerAudio::DecodeFrame(BYTE** pAudioBuffer)
 
 void CDVDPlayerAudio::OnStartup()
 {
+  CThread::SetName("CDVDPlayerAudio");
   pAudioPacket = NULL;
   m_audioClock = 0;
   audio_pkt_data = NULL;
@@ -240,7 +251,7 @@ void CDVDPlayerAudio::Process()
 {
   CLog::Log(LOGNOTICE, "running thread: CDVDPlayerAudio::Process()");
 
-  int len;
+  int len, result;
 
   // silence data
   BYTE silence[1024];
@@ -248,34 +259,59 @@ void CDVDPlayerAudio::Process()
 
   BYTE* pAudioBuffer;
   __int64 iClockDiff=0;
-  int iDiffCount=0;;
   while (!m_bStop)
   {
     //Don't let anybody mess with our global variables
     EnterCriticalSection(&m_critCodecSection);
-    len = DecodeFrame(&pAudioBuffer); // blocks if no audio is available, but leaves critical section before doing so
+    result = DecodeFrame(&pAudioBuffer, &len, m_iSpeed != 1); // blocks if no audio is available, but leaves critical section before doing so
     LeaveCriticalSection(&m_critCodecSection);
 
-    if (len < 0)
-    {
-      len = 1024;
-      pAudioBuffer = silence;
+    if( result & DECODE_FLAG_ERROR ) 
+    {      
+      CLog::Log(LOGERROR, "CDVDPlayerAudio::Process - Decode Error. Skipping audio frame");
+      continue;
     }
 
-    // we have succesfully decoded an audio frame, openup the audio device if not already done
-    if (!m_bInitializedOutputDevice)
+    if( result & DECODE_FLAG_ABORT )
     {
-      m_bInitializedOutputDevice = InitializeOutputDevice();
+      CLog::Log(LOGDEBUG, "CDVDPlayerAudio::Process - Abort recieved, exiting thread");
+      break;
     }
 
-    //Add any packets decode
-    if( len > 0 ) m_dvdAudio.AddPackets(pAudioBuffer, len);
+    if( result & DECODE_FLAG_RESYNC )
+    {
+      CLog::Log(LOGDEBUG, "CDVDPlayerAudio::Process - Resync recieved.");
+      m_pClock->Discontinuity(CLOCK_DISC_NORMAL, m_audioClock - m_dvdAudio.GetDelay());
+    }
 
-    //Clock should be calculated after packets have been addet
+    if( result & DECODE_FLAG_DROP )
+    {
+      //Frame should be dropped. Don't let audio move ahead of the current time thou
+      //we need to be able to start playing at any time
+      while( !m_bStop && m_audioClock - m_dvdAudio.GetDelay() > m_pClock->GetClock() ) Sleep(1);
+
+      continue;
+    }
+    
+    if( len > 0 )
+    {
+      // we have succesfully decoded an audio frame, openup the audio device if not already done
+      if (!m_bInitializedOutputDevice)
+      {
+        m_bInitializedOutputDevice = InitializeOutputDevice();
+      }
+
+      //Add any packets play
+      m_dvdAudio.AddPackets(pAudioBuffer, len );      
+    }
+
+    //Clock should be calculated after packets have been added as m_audioClock points to the 
+    //time after they have been played
+
     const __int64 iCurrDiff = (m_audioClock - m_dvdAudio.GetDelay()) - m_pClock->GetClock();
     const __int64 iAvDiff = (iClockDiff + iCurrDiff)/2;
 
-    //Check for discontinuity in the stream, use an average of last two diffs to 
+    //Check for discontinuity in the stream, use a moving average to
     //eliminate highfreq fluctuations of large packet sizes
     if( ABS(iAvDiff) > 5000 ) // sync clock if average diff is bigger than 5 msec 
     {

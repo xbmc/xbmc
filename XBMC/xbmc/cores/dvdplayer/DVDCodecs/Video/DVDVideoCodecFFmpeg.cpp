@@ -103,6 +103,11 @@ void CDVDVideoCodecFFmpeg::Dispose()
   m_dllAvFormat.Unload();
 }
 
+void CDVDVideoCodecFFmpeg::SetDropState(bool bDrop)
+{
+  //noop
+}
+
 int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize)
 {
   int iGotPicture = 0;

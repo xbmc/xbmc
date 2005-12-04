@@ -13,9 +13,9 @@
 
 #include "DVDCodecs\DVDCodecs.h"
 
-DWORD video_refresh_thread(void *arg);
-
-CDVDPlayerVideo::CDVDPlayerVideo(CDVDDemuxSPU* spu, CDVDClock* pClock, CDVDOverlayContainer* pOverlayContainer) : CThread()
+CDVDPlayerVideo::CDVDPlayerVideo(CDVDDemuxSPU* spu, CDVDClock* pClock, CDVDOverlayContainer* pOverlayContainer) 
+: CThread()
+, m_PresentThread( pClock )
 {
   m_pDVDSpu = spu;
   m_pClock = pClock;
@@ -23,6 +23,7 @@ CDVDPlayerVideo::CDVDPlayerVideo(CDVDDemuxSPU* spu, CDVDClock* pClock, CDVDOverl
   
   m_pVideoCodec = NULL;
   m_bInitializedOutputDevice = false;
+  
   m_iSpeed = 1;
   m_bRenderSubs = false;
   m_iVideoDelay = 0;
@@ -35,19 +36,12 @@ CDVDPlayerVideo::CDVDPlayerVideo(CDVDDemuxSPU* spu, CDVDClock* pClock, CDVDOverl
   m_iCurrentPts = DVD_NOPTS_VALUE;
   
   m_iDroppedFrames = 0;
-  
-  // create sections and event for thread sync (should be destroyed at video stop)
-  InitializeCriticalSection(&m_critSection);
-  m_hEvent = CreateEvent(NULL, false, false, NULL);
 }
 
 CDVDPlayerVideo::~CDVDPlayerVideo()
 {
   g_dvdPerformanceCounter.DisableVideoQueue();
   DeleteCriticalSection(&m_critCodecSection);
-
-  DeleteCriticalSection(&m_critSection);
-  CloseHandle(m_hEvent);
 }
 
 bool CDVDPlayerVideo::OpenStream(CodecID codecID, int iWidth, int iHeight, CDemuxStreamVideo* pDemuxStreamVideo)
@@ -90,16 +84,10 @@ void CDVDPlayerVideo::CloseStream(bool bWaitForBuffers)
 {
   m_packetQueue.Abort();
 
-  /* note: we also signal this mutex to make sure we deblock the video thread in all cases */
-  EnterCriticalSection(&m_critSection);
-  SetEvent(m_hEvent);
-  LeaveCriticalSection(&m_critSection);
-
   // wait for decode_video thread to end
   CLog::Log(LOGNOTICE, "waiting for video thread to exit");
 
-  StopThread(); // will set this->m_bStop to true
-  this->WaitForThreadExit(INFINITE);
+  StopThread(); // will set this->m_bStop to true  
 
   m_packetQueue.End();
   m_pOverlayContainer->Clear();
@@ -117,10 +105,7 @@ void CDVDPlayerVideo::CloseStream(bool bWaitForBuffers)
 
 void CDVDPlayerVideo::OnStartup()
 {
-  pictq_size = 0;
-  pictq_rindex = 0;
-  pictq_windex = 0;
-  
+  CThread::SetName("CDVDPlayerVideo");
   m_iDroppedFrames = 0;
   
   m_iCurrentPts = DVD_NOPTS_VALUE;
@@ -132,7 +117,6 @@ void CDVDPlayerVideo::Process()
 {
   CLog::Log(LOGNOTICE, "running thread: video_thread");
 
-  HANDLE hVideoRefreshThread;
   CDVDDemux::DemuxPacket* pPacket;
   DVDVideoPicture picture;
   CDVDVideoPPFFmpeg mDeinterlace(CDVDVideoPPFFmpeg::ED_DEINT_FFMPEG);
@@ -141,15 +125,15 @@ void CDVDPlayerVideo::Process()
   
   int dvdstate;
   __int64 pts = 0;
-  m_bRunningVideo = true;
 
   unsigned int iFrameTime = (((__int64)(DVD_TIME_BASE/1000) * m_pDemuxStreamVideo->iFpsScale) / m_pDemuxStreamVideo->iFpsRate);
   if( iFrameTime == 0 ) iFrameTime = 40; //25 fps as a safety
 
   bool bDetectedStill = false;
 
-  hVideoRefreshThread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)video_refresh_thread, this, 0, NULL);
-  SetThreadPriority(hVideoRefreshThread, THREAD_PRIORITY_TIME_CRITICAL);
+  int iDropped = 0; //frames dropped in a row
+  bool bRequestDrop = false;
+  m_fFrameRate = 1000.0f / iFrameTime;
 
   while (!m_bStop)
   {
@@ -200,6 +184,26 @@ void CDVDPlayerVideo::Process()
       // (setting it to 2 will skip some menu stills, 5 is working ok for me).
       m_iNrOfPicturesNotToSkip = 5;
     }
+    
+    if( iDropped > 30 )
+    { // if we dropped too many pictures in a row, insert a forced picure
+      m_iNrOfPicturesNotToSkip++;
+      iDropped = 0;
+    }
+
+    if( m_iSpeed < 0 )
+    { // playing backward, don't drop any pictures
+      m_iNrOfPicturesNotToSkip = 5;
+    }
+
+    // if we have pictures that can't be skipped, never request drop
+    if( m_iNrOfPicturesNotToSkip > 0 ) bRequestDrop = false;
+
+    // tell codec if next frame should be dropped
+    // problem here, if one packet contains more than one frame
+    // both frames will be dropped in that case instead of just the first
+    // decoder still needs to provide an empty image structure, with correct flags
+    m_pVideoCodec->SetDropState(bRequestDrop);
     
     if (dvdstate & DVDPACKET_MESSAGE_FLUSH) // private mesasage sent by (CDVDPlayerVideo::Flush())
     {
@@ -263,18 +267,35 @@ void CDVDPlayerVideo::Process()
               picture.iDisplayWidth = (int) (picture.iDisplayHeight * m_fForcedAspectRatio);
             }
 
-            bool bResult;
+            EOUTPUTSTATUS iResult;
             do 
-            {
-              bResult = OutputPicture(&picture, pts);
-              if (!bResult) break;
-              
+            {              
+              if( m_iSpeed < 0 ) // reversing, don't wait for pts
+                iResult = OutputPicture(&picture, 0);
+              else
+                iResult = OutputPicture(&picture, pts);
+
+              if (iResult == EOS_ABORT) break;
+
               // guess next frame pts. iDuration is always valid
               pts += picture.iDuration;
             }
             while (picture.iRepeatPicture-- > 0);
-            
-            if( !bResult) break;
+
+            bRequestDrop = false;
+            if( iResult == EOS_ABORT ) 
+              break;            
+            else if( iResult == EOS_DROPPED )
+            {
+              m_iDroppedFrames++;
+              iDropped++;
+            }
+            else if( iResult == EOS_DROPPED_VERYLATE )
+            {
+              m_iDroppedFrames++;
+              iDropped++;
+              bRequestDrop = true;
+            }
           }
           else
           {
@@ -297,10 +318,6 @@ void CDVDPlayerVideo::Process()
     // all data is used by the decoder, we can safely free it now
     if (pPacket) CDVDDemuxUtils::FreeDemuxPacket(pPacket);
   }
-
-  CLog::Log(LOGNOTICE, "wating for video_refresh_thread");
-  m_bRunningVideo = false;
-  WaitForSingleObject(hVideoRefreshThread, INFINITE);
 
   CLog::Log(LOGNOTICE, "thread end: video_thread");
 
@@ -333,73 +350,40 @@ void CDVDPlayerVideo::Resume()
 }
 
 void CDVDPlayerVideo::Flush()
-{
-  //EnterCriticalSection(&m_critCodecSection);
-  
-  //int prio = GetThreadPriority(ThreadHandle());
-  //SetPriority(THREAD_PRIORITY_LOW);
- 
+{ 
   m_packetQueue.Flush();
   //m_packetQueue.Put(NULL, (void*)DVDPACKET_MESSAGE_FLUSH);
-  
+
   m_iCurrentPts = DVD_NOPTS_VALUE;
-  //SetPriority(prio);
-  
-  //LeaveCriticalSection(&m_critCodecSection);
 }
 
 
-bool CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, __int64 pts1)
+CDVDPlayerVideo::EOUTPUTSTATUS CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, __int64 pts)
 {
-  DVDVideoPicture *vp;
-  
-  __int64 pts = pts1;
-
-  // wait until we have space to put a new picture
-  EnterCriticalSection(&m_critSection);
-  while (pictq_size >= VIDEO_PICTURE_QUEUE_SIZE && !m_packetQueue.RecievedAbortRequest())
-  {
-    LeaveCriticalSection(&m_critSection);
-    WaitForSingleObject(m_hEvent, INFINITE);
-    EnterCriticalSection(&m_critSection);
-  }
-  LeaveCriticalSection(&m_critSection);
-
-  if (m_packetQueue.RecievedAbortRequest()) return false;
-
-  vp = &pictq[pictq_windex];
+  if (m_packetQueue.RecievedAbortRequest()) return EOS_ABORT;
 
   if (!m_bInitializedOutputDevice)
   {
-    float fFPS;
-    
+
     CLog::Log(LOGNOTICE, "Initializing video device");
 
-    if( m_pDemuxStreamVideo->iFpsRate != 0 && m_pDemuxStreamVideo->iFpsScale != 0)
-    {
-      fFPS = ((float)m_pDemuxStreamVideo->iFpsRate / m_pDemuxStreamVideo->iFpsScale);
-    }
-    else
-    {
-      CLog::Log(LOGERROR, "Demuxer reported invalid framerate: %d or fpsscale: %d", m_pDemuxStreamVideo->iFpsRate, m_pDemuxStreamVideo->iFpsScale);
-      fFPS = 25.0;
-    }
-  
     g_renderManager.PreInit();
 
-    CLog::Log(LOGNOTICE, "  fps: %f, pwidth: %i, pheight: %i, dwidth: %i, dheight: %i",
-              fFPS, pPicture->iWidth, pPicture->iHeight, pPicture->iDisplayWidth, pPicture->iDisplayHeight);
+    CLog::Log(LOGNOTICE, " fps: %f, pwidth: %i, pheight: %i, dwidth: %i, dheight: %i",
+      m_fFrameRate, pPicture->iWidth, pPicture->iHeight, pPicture->iDisplayWidth, pPicture->iDisplayHeight);
 
-    g_renderManager.Configure(pPicture->iWidth, pPicture->iHeight, pPicture->iDisplayWidth, pPicture->iDisplayHeight, fFPS);
+    g_renderManager.Configure(pPicture->iWidth, pPicture->iHeight, pPicture->iDisplayWidth, pPicture->iDisplayHeight, m_fFrameRate);
     m_bInitializedOutputDevice = true;
   }
 
   if (m_bInitializedOutputDevice)
-  {
-    // copy picture to overlay
-    YV12Image image;
-    if (g_renderManager.GetImage(&image))
+  {    
+    if( !(pPicture->iFlags & DVP_FLAG_DROPPED) )
     {
+      // copy picture to overlay
+      YV12Image image;
+      if( !g_renderManager.GetImage(&image) ) return EOS_ABORT;
+
       CDVDCodecUtils::CopyPictureToOverlay(&image, pPicture);
 
       // remove any overlays that are out of time
@@ -429,31 +413,80 @@ bool CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, __int64 pts1)
       // tell the renderer that we've finished with the image (so it can do any
       // post processing before FlipPage() is called.)
       g_renderManager.ReleaseImage();
+
     }
 
-    //Hmm why not just assigne the entire picure??
-    //the vp isn't used at all is it?? overlay is what's rendered all the time
-    vp->pts = pts;
-    vp->iDuration = pPicture->iDuration;
-    vp->iFrameType = pPicture->iFrameType;
-    vp->iFlags = pPicture->iFlags;
+    // calculate the time we need to delay this picture before displaying
+    __int64 iSleepTime;
 
-    /* now we can update the picture count */
-    if (++pictq_windex == VIDEO_PICTURE_QUEUE_SIZE) pictq_windex = 0;
-
-    EnterCriticalSection(&m_critSection);
-    pictq_size++;
-    LeaveCriticalSection(&m_critSection);
-
-    if (m_iSpeed < 0 && m_iSpeed > 1)
+    if( m_pClock->HadDiscontinuity( DVD_MSEC_TO_TIME(1) ) )
     {
-      // ffwd or rw
-      //is->seek_req = 1;
-      //is->seek_pos = (unsigned __int64)(pts * AV_TIME_BASE) + (m_iSpeed * 400000);
+      //Playback at normal fps until after discontinuity
+      iSleepTime = pPicture->iDuration;
+      iSleepTime -= m_pClock->GetAbsoluteClock() - m_iFlipTimeStamp;
     }
+    else
+    {
+      iSleepTime = pts - m_pClock->GetClock();
+
+      //User set delay
+      iSleepTime += m_iVideoDelay;
+
+      // take any delay caused by waiting for vsync into consideration
+      iSleepTime -= DVD_MSEC_TO_TIME( g_renderManager.GetAsyncFlipTime() );
+    }
+
+    // timestamp to find some sort of average frametime
+    m_iFlipTimeStamp = m_pClock->GetAbsoluteClock();
+
+    // dropping to a very low framerate is not correct (it should not happen at all)
+    // clock and audio could be adjusted
+    if (iSleepTime > DVD_MSEC_TO_TIME(500) ) iSleepTime = DVD_MSEC_TO_TIME(500); // drop to a minimum of 2 frames/sec
+
+    // current pts is always equal to the pts of a picture, at least it is for external subtitles
+    m_iCurrentPts = pts;
+
+    if( iSleepTime < 0 )
+    { // we are late, try to figure out how late
+      // this could be improved if we had some average time
+      // for decoding. so we know if we need to drop frames
+      // in decoder
+      if( !(pPicture->iFlags & DVP_FLAG_NOSKIP) )
+      {
+
+        iSleepTime*= -1;
+        if( iSleepTime > 4*pPicture->iDuration )
+        { // two frames late, signal that we are late. this will drop frames in decoder, untill we have an ok frame
+          pPicture->iFlags |= DVP_FLAG_DROPPED;
+          return EOS_DROPPED_VERYLATE;
+        }
+        else if( iSleepTime > 2*pPicture->iDuration )
+        { // one frame late, drop in renderer     
+          pPicture->iFlags |= DVP_FLAG_DROPPED;
+        }
+
+      }
+
+      iSleepTime = 0;
+    }
+
+    if( (pPicture->iFlags & DVP_FLAG_DROPPED) ) return EOS_DROPPED;
+
+    // set fieldsync if picture is interlaced
+    EFIELDSYNC mDisplayField = FS_NONE;
+    if( pPicture->iFlags & DVP_FLAG_INTERLACED )
+    {
+      if( pPicture->iFlags & DVP_FLAG_TOP_FIELD_FIRST )
+        mDisplayField = FS_ODD;
+      else
+        mDisplayField = FS_EVEN;
+    }
+
+    // present this image after the given delay
+    m_PresentThread.Present( m_pClock->GetAbsoluteClock() + iSleepTime, mDisplayField );
 
   }
-  return true;
+  return EOS_OK;
 }
 
 void CDVDPlayerVideo::UpdateMenuPicture()
@@ -491,133 +524,58 @@ void CDVDPlayerVideo::SetAspectRatio(float fAspectRatio)
   m_fForcedAspectRatio = fAspectRatio;
 }
 
-/* called to display each frame */
-DWORD video_refresh_thread(void *arg)
+void CDVDPlayerVideo::CPresentThread::Present( __int64 iTimeStamp, EFIELDSYNC m_OnField )
 {
-  CDVDPlayerVideo* pDVDPlayerVideo = (CDVDPlayerVideo*)arg;
-  DVDVideoPicture *vp;
+  CSingleLock lock(m_critSection);
 
-  // this one is needed for subtitles sync in DVDPlayer::GetCurrentSubtitle
-  pDVDPlayerVideo->m_iCurrentPts = DVD_NOPTS_VALUE;
-  
-  CLog::Log(LOGNOTICE, "running thread: video_refresh_thread");
-  int iSleepTime = 0;
-  CDVDClock frameclock;
-  __int64 iTimeStamp = frameclock.GetClock();
-  unsigned int iFrameCount=30;
-  unsigned int iFrameTimeError=300 * DVD_TIME_BASE / 1000;
+  m_iTimestamp = iTimeStamp;
 
-  unsigned int iDroppedInARow=0;
-  int diffPts = 0;
-  while (pDVDPlayerVideo->m_bRunningVideo)
+  // set the field we wish to display on
+  g_renderManager.SetFieldSync(m_OnField);
+
+  // prepare for display
+  g_renderManager.PrepareDisplay();
+
+  // start waiting thread
+  m_eventFrame.Set();
+}
+
+void CDVDPlayerVideo::CPresentThread::Process()
+{
+  CLog::Log(LOGDEBUG, "CPresentThread - Starting()");
+
+  while( !CThread::m_bStop )
   {
-    if (pDVDPlayerVideo->pictq_size == 0 || pDVDPlayerVideo->m_iSpeed == 0)
-    {
-      // if no picture, need to wait
-      usleep(1000);
-    }
-    else
-    {
-      // dequeue the picture
-      vp = &pDVDPlayerVideo->pictq[pDVDPlayerVideo->pictq_rindex];
+    m_eventFrame.Wait();
 
-      if( vp->iFlags & DVP_FLAG_INTERLACED )
+    { CSingleLock lock(m_critSection);
+
+      __int64 mTime;
+
+      while(1)
       {
-        if( vp->iFlags & DVP_FLAG_TOP_FIELD_FIRST )
-          g_renderManager.SetFieldSync(FS_ODD);
-        else
-          g_renderManager.SetFieldSync(FS_EVEN);
-      }
-      else
-        g_renderManager.SetFieldSync( FS_NONE );
-      
-      //Prepare image for display, will speed up rendering as it frees resources for decode earlier
-      g_renderManager.PrepareDisplay();
+        if( CThread::m_bStop ) return;
 
+        mTime = ( m_iTimestamp - m_pClock->GetAbsoluteClock() ) / (DVD_TIME_BASE / 1000000);
 
-      bool bDiscontinuity = pDVDPlayerVideo->m_pClock->HadDiscontinuity(DVD_TIME_BASE / 10);
-      if (bDiscontinuity)
-      {
-        //Playback at normal fps until after discontinuity
-        iSleepTime = vp->iDuration - (int)(frameclock.GetClock() - iTimeStamp);
-      }
-      else
-      {
-        iSleepTime = (int)((vp->pts - pDVDPlayerVideo->m_pClock->GetClock()) & 0xFFFFFFFF);
-      
-        //User set delay
-        iSleepTime += (int)pDVDPlayerVideo->m_iVideoDelay;
-      }
-      
-      //Adjust for flippage delay
-      //iSleepTime -= (iFrameTimeError / iFrameCount);
-      {
-        int pts = (int)(vp->pts & 0xFFFFFFFF);
-        int pts_diff = pts - diffPts;
-        int clock = (int)(pDVDPlayerVideo->m_pClock->GetClock() & 0xFFFFFFFF);
-        
-        diffPts = pts;
-        
-        // CLog::DebugLog("pts:%d, pts diff:%d, clock:%d, sleep:%d, frame error:%d, frame count: %d", pts, pts_diff, clock, iSleepTime, iFrameTimeError, iFrameCount);
-      }
-      // dropping to a very low framerate is not correct (it should not happen at all)
-      // clock and audio could be adjusted
-      if (iSleepTime > (DVD_TIME_BASE / 2)) iSleepTime = (DVD_TIME_BASE / 2); // drop to a minimum of 2 frames/sec
-
-      // we could drop some frames here too if iSleepTime < 0, but I don't think it will be any
-      // use at this stage currently (drawing pictures isn't taking the most processing power)
-
-      // sleep
-      if (iSleepTime > 0) usleep(iSleepTime);
-
-      // display picture
-      // we expect the video device to be initialized here
-      // skip this flip should we be later than a full frame
-      iTimeStamp = frameclock.GetClock();
-      
-      // current pts is always equal to the pts of a picture, at least it is for external subtitles
-      pDVDPlayerVideo->m_iCurrentPts = vp->pts;
-      
-      // menu pictures should never be skipped!
-      if ((vp->iFlags & DVP_FLAG_NOSKIP) || iSleepTime > -(int)vp->iDuration*2 || iDroppedInARow > 15) 
-      {
-        g_renderManager.FlipPage(); 
-      
-        //Adjust using the delay in flippage
-        __int64 iError = (frameclock.GetClock() - iTimeStamp);
-        if( iError < vp->iDuration*2 )
-        { //Only count when we actually have something that seem valid
-          iFrameTimeError += (unsigned int)iError;
-          iFrameCount++;
+        if( mTime > DVD_MSEC_TO_TIME(500) )
+        {
+          usleep( DVD_MSEC_TO_TIME(500) );
+          continue;
         }
         
-        if( iFrameCount >= 240 )
-        { //Keep around 120-240 too give new frames more effect
-          iFrameCount /= 2;
-          iFrameTimeError /= 2;
-        }
+        if( mTime > 0 )
+          usleep( (int)( mTime ) );        
 
-        //Reset number of frames dropped in a row
-        iDroppedInARow=0;
-      }
-      else
-      {
-        pDVDPlayerVideo->m_iDroppedFrames++;
-        iDroppedInARow++;
+        break;
       }
 
-      // update queue size and signal for next picture
-      if (++pDVDPlayerVideo->pictq_rindex == VIDEO_PICTURE_QUEUE_SIZE) pDVDPlayerVideo->pictq_rindex = 0;
-
-      EnterCriticalSection(&pDVDPlayerVideo->m_critSection);
-      pDVDPlayerVideo->pictq_size--;
-      SetEvent(pDVDPlayerVideo->m_hEvent);
-      LeaveCriticalSection(&pDVDPlayerVideo->m_critSection);
+      //Time to display
+      g_renderManager.FlipPage();
     }
   }
-  CLog::Log(LOGNOTICE, "thread end: video_refresh_thread");
 
-  pDVDPlayerVideo->m_iCurrentPts = DVD_NOPTS_VALUE;
-  
-  return 0;
+  CLog::Log(LOGDEBUG, "CPresentThread - Stopping()");
 }
+
+

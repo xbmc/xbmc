@@ -36,7 +36,7 @@ DVDVideoPicture;
 #define DVP_FLAG_INTERLACED         0x00000008 //Set to indicate that this frame is interlaced
 
 #define DVP_FLAG_NOSKIP             0x00000010 // indicate this picture should never be dropped
-
+#define DVP_FLAG_DROPPED            0x00000020 // indicate that this picture has been dropped in decoder stage, will have no data
 // DVP_FLAG 0x00000100 - 0x00000f00 is in use by libmpeg2!
 
 class CDemuxStreamVideo;
@@ -82,4 +82,10 @@ public:
    * the data is valid until the next Decode call
    */
   virtual bool GetPicture(DVDVideoPicture* pDvdVideoPicture) = 0;
+
+  /*
+   * will be called by video player indicating if a frame will eventually be dropped
+   * codec can then skip actually decoding the data, just consume the data set picture headers
+   */
+  virtual void SetDropState(bool bDrop) = 0;
 };
