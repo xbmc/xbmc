@@ -15,8 +15,17 @@ CDVDClock::CDVDClock()
 CDVDClock::~CDVDClock()
 {}
 
+__int64 CDVDClock::GetAbsoluteClock()
+{
+  LARGE_INTEGER current;
+  QueryPerformanceCounter(&current);
+  
+  return current.QuadPart * DVD_TIME_BASE / m_systemFrequency.QuadPart;  
+}
+
 __int64 CDVDClock::GetClock()
 {
+  CSharedLock lock(m_critSection);
   LARGE_INTEGER current;
   
   if (m_iPaused > 0) return m_iPaused;
@@ -36,8 +45,22 @@ __int64 CDVDClock::GetClock()
   return current.QuadPart * DVD_TIME_BASE / m_systemUsed.QuadPart + m_iDisc;
 }
 
+void CDVDClock::SetSpeed(int iSpeed)
+{
+    // this will sometimes be a little bit of due to rounding errors, ie clock might jump abit when changing speed
+    CExclusiveLock lock(m_critSection);
+    LARGE_INTEGER current;
+    __int64 newfreq = m_systemFrequency.QuadPart / iSpeed;
+    
+    QueryPerformanceCounter(&current);
+    m_startClock.QuadPart = current.QuadPart - ( newfreq * (current.QuadPart - m_startClock.QuadPart) ) / m_systemUsed.QuadPart;
+    m_systemUsed.QuadPart = newfreq;    
+
+}
+
 void CDVDClock::Discontinuity(ClockDiscontinuityType type, __int64 currentPts)
 {
+  CExclusiveLock lock(m_critSection);
   switch (type)
   {
   case CLOCK_DISC_FULL:
@@ -47,8 +70,6 @@ void CDVDClock::Discontinuity(ClockDiscontinuityType type, __int64 currentPts)
     }
   case CLOCK_DISC_NORMAL:
     {
-      //Reset speed to normal
-      m_systemUsed.QuadPart = m_systemFrequency.QuadPart;
 
       QueryPerformanceCounter(&m_startClock);
       m_iDisc = currentPts;
@@ -60,17 +81,21 @@ void CDVDClock::Discontinuity(ClockDiscontinuityType type, __int64 currentPts)
 
 void CDVDClock::Pause()
 {
+  CExclusiveLock lock(m_critSection);
   m_iPaused = GetClock();
 }
 
 void CDVDClock::Resume()
 {
+  CExclusiveLock lock(m_critSection);
   m_bReset = true;
   m_iPaused = 0I64;
 }
+
   
 bool CDVDClock::HadDiscontinuity(__int64 delay)
 {
+  CSharedLock lock(m_critSection);
   if(m_iDisc + delay > GetClock())
     return true;
   else
