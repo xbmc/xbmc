@@ -9,6 +9,7 @@
 #include "GUIPassword.h"
 #include "GUIDialogMusicScan.h"
 #include "GUIDialogContextMenu.h"
+#include "SortFileItem.h"
 
 #define CONTROL_BTNVIEWASICONS  2
 #define CONTROL_BTNSORTBY     3
@@ -24,125 +25,6 @@
 
 #define CONTROL_LIST       50
 #define CONTROL_THUMBS      51
-
-struct SSortMusicSongs
-{
-  static bool Sort(CFileItem* pStart, CFileItem* pEnd)
-  {
-    CFileItem& rpStart = *pStart;
-    CFileItem& rpEnd = *pEnd;
-    if (rpStart.GetLabel() == "..") return true;
-    if (rpEnd.GetLabel() == "..") return false;
-    bool bGreater = true;
-    if (m_bSortAscending) bGreater = false;
-
-    if (rpStart.m_bIsFolder == rpEnd.m_bIsFolder)
-    {
-      char szfilename1[1024];
-      char szfilename2[1024];
-      
-      switch ( m_iSortMethod )
-      {
-      case 0:  // Sort by Listlabel
-        strcpy(szfilename1, rpStart.GetLabel().c_str());
-        strcpy(szfilename2, rpEnd.GetLabel().c_str());
-        break;
-
-      case 1:  // Sort by Date
-        if ( rpStart.m_stTime.wYear > rpEnd.m_stTime.wYear ) return bGreater;
-        if ( rpStart.m_stTime.wYear < rpEnd.m_stTime.wYear ) return !bGreater;
-
-        if ( rpStart.m_stTime.wMonth > rpEnd.m_stTime.wMonth ) return bGreater;
-        if ( rpStart.m_stTime.wMonth < rpEnd.m_stTime.wMonth ) return !bGreater;
-
-        if ( rpStart.m_stTime.wDay > rpEnd.m_stTime.wDay ) return bGreater;
-        if ( rpStart.m_stTime.wDay < rpEnd.m_stTime.wDay ) return !bGreater;
-
-        if ( rpStart.m_stTime.wHour > rpEnd.m_stTime.wHour ) return bGreater;
-        if ( rpStart.m_stTime.wHour < rpEnd.m_stTime.wHour ) return !bGreater;
-
-        if ( rpStart.m_stTime.wMinute > rpEnd.m_stTime.wMinute ) return bGreater;
-        if ( rpStart.m_stTime.wMinute < rpEnd.m_stTime.wMinute ) return !bGreater;
-
-        if ( rpStart.m_stTime.wSecond > rpEnd.m_stTime.wSecond ) return bGreater;
-        if ( rpStart.m_stTime.wSecond < rpEnd.m_stTime.wSecond ) return !bGreater;
-        return true;
-        break;
-
-      case 2:  // Sort by Size
-        if ( rpStart.m_dwSize > rpEnd.m_dwSize) return bGreater;
-        if ( rpStart.m_dwSize < rpEnd.m_dwSize) return !bGreater;
-        return true;
-        break;
-
-      case 3:  // Sort by TrackNum
-        if ( rpStart.m_musicInfoTag.GetTrackAndDiskNumber() > rpEnd.m_musicInfoTag.GetTrackAndDiskNumber()) return bGreater;
-        if ( rpStart.m_musicInfoTag.GetTrackAndDiskNumber() < rpEnd.m_musicInfoTag.GetTrackAndDiskNumber()) return !bGreater;
-        return true;
-        break;
-
-      case 4:  // Sort by Duration
-        if ( rpStart.m_musicInfoTag.GetDuration() > rpEnd.m_musicInfoTag.GetDuration()) return bGreater;
-        if ( rpStart.m_musicInfoTag.GetDuration() < rpEnd.m_musicInfoTag.GetDuration()) return !bGreater;
-        return true;
-        break;
-
-      case 5:  // Sort by Title
-        strcpy(szfilename1, rpStart.m_musicInfoTag.GetTitle());
-        strcpy(szfilename2, rpEnd.m_musicInfoTag.GetTitle());
-        break;
-
-      case 6:  // Sort by Artist
-        strcpy(szfilename1, rpStart.m_musicInfoTag.GetArtist());
-        strcpy(szfilename2, rpEnd.m_musicInfoTag.GetArtist());
-        break;
-
-      case 7:  // Sort by Album
-        strcpy(szfilename1, rpStart.m_musicInfoTag.GetAlbum());
-        strcpy(szfilename2, rpEnd.m_musicInfoTag.GetAlbum());
-        break;
-
-      case 8:  // Sort by FileName
-        sprintf(szfilename1, "%s%07i", rpStart.m_strPath.c_str(), rpStart.m_lStartOffset);
-        sprintf(szfilename2, "%s%07i", rpEnd.m_strPath.c_str(), rpEnd.m_lStartOffset);
-        break;
-
-      case 9:  // Sort by share type
-        if ( rpStart.m_iDriveType > rpEnd.m_iDriveType) return bGreater;
-        if ( rpStart.m_iDriveType < rpEnd.m_iDriveType) return !bGreater;
-        strcpy(szfilename1, rpStart.GetLabel());
-        strcpy(szfilename2, rpEnd.GetLabel());
-        break;
-
-      default:  // Sort by Label by default
-        strcpy(szfilename1, rpStart.GetLabel().c_str());
-        strcpy(szfilename2, rpEnd.GetLabel().c_str());
-        break;
-      }
-
-      for (int i = 0; i < (int)strlen(szfilename1); i++)
-        szfilename1[i] = tolower((unsigned char)szfilename1[i]);
-
-      for (int i = 0; i < (int)strlen(szfilename2); i++)
-        szfilename2[i] = tolower((unsigned char)szfilename2[i]);
-
-      if (m_bSortAscending)
-        return StringUtils::AlphaNumericCompare(szfilename1, szfilename2);
-      else
-        return !StringUtils::AlphaNumericCompare(szfilename1, szfilename2);
-    }
-
-    if (!rpStart.m_bIsFolder) return false;
-    return true;
-  }
-
-  static int m_iSortMethod;
-  static int m_bSortAscending;
-  static CStdString m_strDirectory;
-};
-int SSortMusicSongs::m_iSortMethod;
-int SSortMusicSongs::m_bSortAscending;
-CStdString SSortMusicSongs::m_strDirectory;
 
 CGUIWindowMusicSongs::CGUIWindowMusicSongs(void)
     : CGUIWindowMusicBase(WINDOW_MUSIC_FILES, "MyMusicSongs.xml")
@@ -685,7 +567,7 @@ void CGUIWindowMusicSongs::OnFileItemFormatLabel(CFileItem* pItem)
   }
   else
   { // no tag info, so we disable the file extension if it has one
-    if (g_guiSettings.GetBool("FileLists.HideExtensions"))
+    if (m_hideExtensions)
       pItem->RemoveExtension();
 
     // and then set label 2
@@ -741,22 +623,45 @@ void CGUIWindowMusicSongs::OnFileItemFormatLabel(CFileItem* pItem)
 
 void CGUIWindowMusicSongs::DoSort(CFileItemList& items)
 {
-  SSortMusicSongs::m_strDirectory = m_Directory.m_strPath;
+  int sortMethod;
+  bool sortAscending;
 
   if (m_Directory.IsVirtualDirectoryRoot())
   {
-    SSortMusicSongs::m_iSortMethod = g_stSettings.m_iMyMusicSongsRootSortMethod;
-    SSortMusicSongs::m_bSortAscending = g_stSettings.m_bMyMusicSongsRootSortAscending;
+    sortMethod = g_stSettings.m_iMyMusicSongsRootSortMethod;
+    sortAscending = g_stSettings.m_bMyMusicSongsRootSortAscending;
   }
   else
   {
-    SSortMusicSongs::m_iSortMethod = g_stSettings.m_iMyMusicSongsSortMethod;
-    SSortMusicSongs::m_bSortAscending = g_stSettings.m_bMyMusicSongsSortAscending;
+    sortMethod = g_stSettings.m_iMyMusicSongsSortMethod;
+    sortAscending = g_stSettings.m_bMyMusicSongsSortAscending;
     if (g_stSettings.m_iMyMusicSongsSortMethod == 1 || g_stSettings.m_iMyMusicSongsSortMethod == 2)
-      SSortMusicSongs::m_bSortAscending = !SSortMusicSongs::m_bSortAscending;
+      sortAscending = !sortAscending;
   }
 
-  items.Sort(SSortMusicSongs::Sort);
+  switch (sortMethod)
+  {
+  case 1:
+    items.Sort(sortAscending ? SSortFileItem::DateAscending : SSortFileItem::DateDescending); break;
+  case 2:
+    items.Sort(sortAscending ? SSortFileItem::SizeAscending : SSortFileItem::SizeDescending); break;
+  case 3:
+    items.Sort(sortAscending ? SSortFileItem::SongTrackNumAscending : SSortFileItem::SongTrackNumDescending); break;
+  case 4:
+    items.Sort(sortAscending ? SSortFileItem::SongDurationAscending : SSortFileItem::SongDurationDescending); break;
+  case 5:
+    items.Sort(sortAscending ? SSortFileItem::SongTitleAscending : SSortFileItem::SongTitleDescending); break;
+  case 6:
+    items.Sort(sortAscending ? SSortFileItem::SongArtistAscending : SSortFileItem::SongArtistDescending); break;
+  case 7:
+    items.Sort(sortAscending ? SSortFileItem::SongAlbumAscending : SSortFileItem::SongAlbumDescending); break;
+  case 8:
+    items.Sort(sortAscending ? SSortFileItem::FileAscending : SSortFileItem::FileDescending); break;
+  case 9:
+    items.Sort(sortAscending ? SSortFileItem::DriveTypeAscending : SSortFileItem::DriveTypeDescending); break;
+  default:
+    items.Sort(sortAscending ? SSortFileItem::LabelAscending : SSortFileItem::LabelDescending); break;
+  }
 }
 
 void CGUIWindowMusicSongs::OnRetrieveMusicInfo(CFileItemList& items)

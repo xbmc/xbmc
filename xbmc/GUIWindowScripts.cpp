@@ -5,6 +5,7 @@
 #include "detectdvdtype.h"
 #include "lib/libPython/XBPython.h"
 #include "GUIWindowScriptsInfo.h"
+#include "SortFileItem.h"
 
 #define CONTROL_BTNVIEWASICONS  2
 #define CONTROL_BTNSORTBY     3
@@ -13,79 +14,6 @@
 #define CONTROL_LIST       10
 #define CONTROL_THUMBS      11
 #define CONTROL_LABELFILES        12
-
-
-struct SSortScriptsByName
-{
-  static bool Sort(CFileItem* pStart, CFileItem* pEnd)
-  {
-    CFileItem& rpStart = *pStart;
-    CFileItem& rpEnd = *pEnd;
-    if (rpStart.GetLabel() == "..") return true;
-    if (rpEnd.GetLabel() == "..") return false;
-    bool bGreater = true;
-    if (g_stSettings.m_bScriptsSortAscending) bGreater = false;
-    if ( rpStart.m_bIsFolder == rpEnd.m_bIsFolder)
-    {
-      char szfilename1[1024];
-      char szfilename2[1024];
-
-      switch ( g_stSettings.m_iScriptsSortMethod )
-      {
-      case 0:  // Sort by Filename
-        strcpy(szfilename1, rpStart.GetLabel().c_str());
-        strcpy(szfilename2, rpEnd.GetLabel().c_str());
-        break;
-      case 1:  // Sort by Date
-        if ( rpStart.m_stTime.wYear > rpEnd.m_stTime.wYear ) return bGreater;
-        if ( rpStart.m_stTime.wYear < rpEnd.m_stTime.wYear ) return !bGreater;
-
-        if ( rpStart.m_stTime.wMonth > rpEnd.m_stTime.wMonth ) return bGreater;
-        if ( rpStart.m_stTime.wMonth < rpEnd.m_stTime.wMonth ) return !bGreater;
-
-        if ( rpStart.m_stTime.wDay > rpEnd.m_stTime.wDay ) return bGreater;
-        if ( rpStart.m_stTime.wDay < rpEnd.m_stTime.wDay ) return !bGreater;
-
-        if ( rpStart.m_stTime.wHour > rpEnd.m_stTime.wHour ) return bGreater;
-        if ( rpStart.m_stTime.wHour < rpEnd.m_stTime.wHour ) return !bGreater;
-
-        if ( rpStart.m_stTime.wMinute > rpEnd.m_stTime.wMinute ) return bGreater;
-        if ( rpStart.m_stTime.wMinute < rpEnd.m_stTime.wMinute ) return !bGreater;
-
-        if ( rpStart.m_stTime.wSecond > rpEnd.m_stTime.wSecond ) return bGreater;
-        if ( rpStart.m_stTime.wSecond < rpEnd.m_stTime.wSecond ) return !bGreater;
-        return true;
-        break;
-
-      case 2:
-        if ( rpStart.m_dwSize > rpEnd.m_dwSize) return bGreater;
-        if ( rpStart.m_dwSize < rpEnd.m_dwSize) return !bGreater;
-        return true;
-        break;
-
-      default:  // Sort by Filename by default
-        strcpy(szfilename1, rpStart.GetLabel().c_str());
-        strcpy(szfilename2, rpEnd.GetLabel().c_str());
-        break;
-      }
-
-
-      for (int i = 0; i < (int)strlen(szfilename1); i++)
-        szfilename1[i] = tolower((unsigned char)szfilename1[i]);
-
-      for (i = 0; i < (int)strlen(szfilename2); i++)
-        szfilename2[i] = tolower((unsigned char)szfilename2[i]);
-      //return (rpStart.strPath.compare( rpEnd.strPath )<0);
-
-      if (g_stSettings.m_bScriptsSortAscending)
-        return (strcmp(szfilename1, szfilename2) < 0);
-      else
-        return (strcmp(szfilename1, szfilename2) >= 0);
-    }
-    if (!rpStart.m_bIsFolder) return false;
-    return true;
-  }
-};
 
 
 CGUIWindowScripts::CGUIWindowScripts()
@@ -292,7 +220,17 @@ void CGUIWindowScripts::OnSort()
     }
   }
 
-  m_vecItems.Sort(SSortScriptsByName::Sort);
+  int sortMethod = g_stSettings.m_iScriptsSortMethod;
+  bool sortAscending = g_stSettings.m_bScriptsSortAscending;
+  switch (sortMethod)
+  {
+  case 1:
+    m_vecItems.Sort(sortAscending ? SSortFileItem::DateAscending : SSortFileItem::DateDescending); break;
+  case 2:
+    m_vecItems.Sort(sortAscending ? SSortFileItem::SizeAscending : SSortFileItem::SizeDescending); break;
+  default:
+    m_vecItems.Sort(sortAscending ? SSortFileItem::LabelAscending : SSortFileItem::LabelDescending); break;
+  }
 
   m_viewControl.SetItems(m_vecItems);
 }

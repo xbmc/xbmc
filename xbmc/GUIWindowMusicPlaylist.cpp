@@ -530,6 +530,9 @@ void CGUIWindowMusicPlayList::OnItemLoaded(CFileItem* pItem)
 
   if (pItem->m_musicInfoTag.Loaded())
   { // set label 1+2 from tags
+    m_hideExtensions = g_guiSettings.GetBool("FileLists.HideExtensions");
+    m_formatLeft = g_guiSettings.GetString("MyMusic.TrackFormat");
+    m_formatRight = g_guiSettings.GetString("MyMusic.TrackFormatRight");
     SetLabelFromTag(pItem);
   } // if (pItem->m_musicInfoTag.Loaded())
   else

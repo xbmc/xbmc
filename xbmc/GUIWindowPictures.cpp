@@ -10,6 +10,7 @@
 #include "FileSystem/ZipManager.h"
 #include "GUIDialogContextMenu.h"
 #include "GUIWindowFileManager.h"
+#include "SortFileItem.h"
 
 #define CONTROL_BTNVIEWASICONS  2
 #define CONTROL_BTNSORTBY     3
@@ -22,89 +23,6 @@
 #define CONTROL_LIST       10
 #define CONTROL_THUMBS      11
 #define CONTROL_LABELFILES         12
-
-struct SSortPicturesByName
-{
-  static bool Sort(CFileItem* pStart, CFileItem* pEnd)
-  {
-    CFileItem& rpStart = *pStart;
-    CFileItem& rpEnd = *pEnd;
-    if (rpStart.GetLabel() == "..") return true;
-    if (rpEnd.GetLabel() == "..") return false;
-    bool bGreater = true;
-    if (m_bSortAscending) bGreater = false;
-    if ( rpStart.m_bIsFolder == rpEnd.m_bIsFolder)
-    {
-      char szfilename1[1024];
-      char szfilename2[1024];
-
-      switch ( m_iSortMethod )
-      {
-      case 0:  // Sort by Filename
-        strcpy(szfilename1, rpStart.GetLabel().c_str());
-        strcpy(szfilename2, rpEnd.GetLabel().c_str());
-        break;
-      case 1:  // Sort by Date
-        if ( rpStart.m_stTime.wYear > rpEnd.m_stTime.wYear ) return bGreater;
-        if ( rpStart.m_stTime.wYear < rpEnd.m_stTime.wYear ) return !bGreater;
-
-        if ( rpStart.m_stTime.wMonth > rpEnd.m_stTime.wMonth ) return bGreater;
-        if ( rpStart.m_stTime.wMonth < rpEnd.m_stTime.wMonth ) return !bGreater;
-
-        if ( rpStart.m_stTime.wDay > rpEnd.m_stTime.wDay ) return bGreater;
-        if ( rpStart.m_stTime.wDay < rpEnd.m_stTime.wDay ) return !bGreater;
-
-        if ( rpStart.m_stTime.wHour > rpEnd.m_stTime.wHour ) return bGreater;
-        if ( rpStart.m_stTime.wHour < rpEnd.m_stTime.wHour ) return !bGreater;
-
-        if ( rpStart.m_stTime.wMinute > rpEnd.m_stTime.wMinute ) return bGreater;
-        if ( rpStart.m_stTime.wMinute < rpEnd.m_stTime.wMinute ) return !bGreater;
-
-        if ( rpStart.m_stTime.wSecond > rpEnd.m_stTime.wSecond ) return bGreater;
-        if ( rpStart.m_stTime.wSecond < rpEnd.m_stTime.wSecond ) return !bGreater;
-        return true;
-        break;
-
-      case 2:
-        if ( rpStart.m_dwSize > rpEnd.m_dwSize) return bGreater;
-        if ( rpStart.m_dwSize < rpEnd.m_dwSize) return !bGreater;
-        return true;
-        break;
-
-      case 3:  // Sort by share type
-        if ( rpStart.m_iDriveType > rpEnd.m_iDriveType) return bGreater;
-        if ( rpStart.m_iDriveType < rpEnd.m_iDriveType) return !bGreater;
-        strcpy(szfilename1, rpStart.GetLabel());
-        strcpy(szfilename2, rpEnd.GetLabel());
-        break;
-
-      default:  // Sort by Filename by default
-        strcpy(szfilename1, rpStart.GetLabel().c_str());
-        strcpy(szfilename2, rpEnd.GetLabel().c_str());
-        break;
-      }
-
-
-      for (int i = 0; i < (int)strlen(szfilename1); i++)
-        szfilename1[i] = tolower((unsigned char)szfilename1[i]);
-
-      for (i = 0; i < (int)strlen(szfilename2); i++)
-        szfilename2[i] = tolower((unsigned char)szfilename2[i]);
-      //return (rpStart.strPath.compare( rpEnd.strPath )<0);
-
-      if (m_bSortAscending)
-        return (strcmp(szfilename1, szfilename2) < 0);
-      else
-        return (strcmp(szfilename1, szfilename2) >= 0);
-    }
-    if (!rpStart.m_bIsFolder) return false;
-    return true;
-  }
-  static bool m_bSortAscending;
-  static int m_iSortMethod;
-};
-bool SSortPicturesByName::m_bSortAscending;
-int SSortPicturesByName::m_iSortMethod;
 
 CGUIWindowPictures::CGUIWindowPictures(void)
     : CGUIWindow(WINDOW_PICTURES, "MyPics.xml")
@@ -1121,20 +1039,32 @@ bool CGUIWindowPictures::SortAscending()
 
 void CGUIWindowPictures::SortItems(CFileItemList& items)
 {
+  int sortMethod;
+  bool sortAscending;
   if (m_Directory.IsVirtualDirectoryRoot())
   {
-    SSortPicturesByName::m_iSortMethod = g_stSettings.m_iMyPicturesRootSortMethod;
-    SSortPicturesByName::m_bSortAscending = g_stSettings.m_bMyPicturesRootSortAscending;
+    sortMethod = g_stSettings.m_iMyPicturesRootSortMethod;
+    sortAscending = g_stSettings.m_bMyPicturesRootSortAscending;
   }
   else
   {
-    SSortPicturesByName::m_iSortMethod = g_stSettings.m_iMyPicturesSortMethod;
+    sortMethod = g_stSettings.m_iMyPicturesSortMethod;
     if (g_stSettings.m_iMyPicturesSortMethod == 1 || g_stSettings.m_iMyPicturesSortMethod == 2)
-      SSortPicturesByName::m_bSortAscending = !g_stSettings.m_bMyPicturesSortAscending;
+      sortAscending = !g_stSettings.m_bMyPicturesSortAscending;
     else
-      SSortPicturesByName::m_bSortAscending = g_stSettings.m_bMyPicturesSortAscending;
+      sortAscending = g_stSettings.m_bMyPicturesSortAscending;
   }
-  items.Sort(SSortPicturesByName::Sort);
+  switch (sortMethod)
+  {
+  case 1:
+    items.Sort(sortAscending ? SSortFileItem::DateAscending : SSortFileItem::DateDescending); break;
+  case 2:
+    items.Sort(sortAscending ? SSortFileItem::SizeAscending : SSortFileItem::SizeDescending); break;
+  case 3:
+    items.Sort(sortAscending ? SSortFileItem::DriveTypeAscending : SSortFileItem::DriveTypeDescending); break;
+  default:
+    items.Sort(sortAscending ? SSortFileItem::LabelAscending : SSortFileItem::LabelDescending); break;
+  }
 }
 
 void CGUIWindowPictures::OnWindowLoaded()

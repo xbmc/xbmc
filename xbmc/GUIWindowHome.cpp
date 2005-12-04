@@ -100,75 +100,7 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
       int iControl = message.GetControlId();
       m_iLastControl = iControl;
 #ifdef HOME_HANDLES_FADES
-      const CGUIControl *pControl = GetControl(iControl);
-      if (iControl >= MENU_BUTTON_START && iControl <= MENU_BUTTON_END && pControl && pControl->CanFocus())
-      {
-        m_iLastMenuOption = m_iLastControl;
-        bool fade = ((message.GetSenderId() == CONTROL_BTN_SCROLLER) || (message.GetSenderId() >= MENU_BUTTON_START && message.GetSenderId() < MENU_BUTTON_END)) && (message.GetSenderId() != iControl);
-
-        // make controls 102-120 invisible...
-        for (int i = MENU_BUTTON_IMAGE_BACKGROUND_START; i < MENU_BUTTON_IMAGE_BACKGROUND_END; i++)
-        {
-          if (fade)
-          {
-            SET_CONTROL_FADE_OUT(i, HOME_FADE_TIME);
-          }
-          else
-          {
-            SET_CONTROL_HIDDEN(i);
-          }
-        }
-
-        if (fade)
-        {
-          SET_CONTROL_FADE_IN(iControl + 100, HOME_FADE_TIME);
-        }
-        else
-        {
-          SET_CONTROL_VISIBLE(iControl + 100);
-        }
-        break;
-      }
-      if (iControl == CONTROL_BTN_SCROLLER)
-      {
-        // the button scroller has changed focus...
-        if (message.GetSenderId() != CONTROL_BTN_SCROLLER &&
-            message.GetSenderId() != GetID())
-        {
-          // button scroller is focused from some other control
-          // we need to fire off a message to update the info
-          CGUIMessage msg(GUI_MSG_SETFOCUS, GetID(), CONTROL_BTN_SCROLLER);
-          OnMessage(msg);
-          return true;
-        }
-        int iIconType = message.GetParam1();
-        bool fade = (message.GetSenderId() == CONTROL_BTN_SCROLLER) || (message.GetSenderId() >= MENU_BUTTON_START && message.GetSenderId() < MENU_BUTTON_END);
-        if (iIconType >= MENU_BUTTON_IMAGE_BACKGROUND_START && iIconType <= MENU_BUTTON_IMAGE_BACKGROUND_END)
-        {
-          // make controls 101-120 invisible...
-          for (int i = MENU_BUTTON_IMAGE_BACKGROUND_START; i < MENU_BUTTON_IMAGE_BACKGROUND_END; i++)
-          {
-            if (fade)
-            {
-              SET_CONTROL_FADE_OUT(i, HOME_FADE_TIME);
-            }
-            else
-            {
-              SET_CONTROL_HIDDEN(i);
-            }
-          }
-
-          if (fade)
-          {
-            SET_CONTROL_FADE_IN(iIconType, HOME_FADE_TIME);
-          }
-          else
-          {
-            SET_CONTROL_VISIBLE(iIconType);
-          }
-        }
-        break;
-      }
+      FadeBackgroundImages(message.GetControlId(), message.GetSenderId(), message.GetParam1());
 #endif
       break;
     }
@@ -219,6 +151,23 @@ void CGUIWindowHome::Render()
                                               // button scroller class
     }
   }
+#ifdef HOME_HANDLES_FADES
+  // Hack for when music/video stops while on homepage (images will all display
+  // in this case, whereas normally only 2 are allowed at the same time (during
+  // fading)  We check for more than 5 images as a safety check from very fast
+  // scrolling.  Note that this may well destroy skins designed purely using
+  // the new visibility flags.  This needs removing once agreement is reached
+  // that doing the fading both here and in the skin is not good.
+  int numBackgroundsVisible = 0;
+  for (int i = MENU_BUTTON_IMAGE_BACKGROUND_START; i <= MENU_BUTTON_IMAGE_BACKGROUND_END; ++i)
+  {
+    const CGUIControl *pControl = GetControl(i);
+    if (pControl && pControl->IsVisible())
+      numBackgroundsVisible++;
+  }
+  if (numBackgroundsVisible > 5)
+    FadeBackgroundImages(GetFocusedControl(), GetFocusedControl(), 0);
+#endif
   CGUIWindow::Render();
 }
 
@@ -409,4 +358,73 @@ bool CGUIWindowHome::OnPollXLinkClient(CGUIConditionalButtonControl* pButton)
   if (g_guiSettings.GetBool("XLinkKai.Enabled"))
     return CKaiClient::GetInstance()->IsEngineConnected();
   return false;
+}
+
+void CGUIWindowHome::FadeBackgroundImages(int focusedControl, int messageSender, int associatedImage)
+{
+  const CGUIControl *pControl = GetControl(focusedControl);
+  if (focusedControl >= MENU_BUTTON_START && focusedControl <= MENU_BUTTON_END && pControl && pControl->CanFocus())
+  {
+    m_iLastMenuOption = m_iLastControl;
+    bool fade = ((messageSender == CONTROL_BTN_SCROLLER) || (messageSender >= MENU_BUTTON_START && messageSender < MENU_BUTTON_END)) && (messageSender != focusedControl);
+
+    // make controls 102-120 invisible...
+    for (int i = MENU_BUTTON_IMAGE_BACKGROUND_START; i < MENU_BUTTON_IMAGE_BACKGROUND_END; i++)
+    {
+      if (fade)
+      {
+        SET_CONTROL_FADE_OUT(i, HOME_FADE_TIME);
+      }
+      else
+      {
+        SET_CONTROL_HIDDEN(i);
+      }
+    }
+
+    if (fade)
+    {
+      SET_CONTROL_FADE_IN(focusedControl + 100, HOME_FADE_TIME);
+    }
+    else
+    {
+      SET_CONTROL_VISIBLE(focusedControl + 100);
+    }
+  }
+  else if (focusedControl == CONTROL_BTN_SCROLLER)
+  {
+    // the button scroller has changed focus...
+    if (messageSender != CONTROL_BTN_SCROLLER && messageSender != GetID())
+    {
+      // button scroller is focused from some other control
+      // we need to fire off a message to update the info
+      CGUIMessage msg(GUI_MSG_SETFOCUS, GetID(), CONTROL_BTN_SCROLLER);
+      OnMessage(msg);
+      return;
+    }
+    bool fade = (messageSender == CONTROL_BTN_SCROLLER) || (messageSender >= MENU_BUTTON_START && messageSender < MENU_BUTTON_END);
+    if (associatedImage >= MENU_BUTTON_IMAGE_BACKGROUND_START && associatedImage <= MENU_BUTTON_IMAGE_BACKGROUND_END)
+    {
+      // make controls 101-120 invisible...
+      for (int i = MENU_BUTTON_IMAGE_BACKGROUND_START; i < MENU_BUTTON_IMAGE_BACKGROUND_END; i++)
+      {
+        if (fade)
+        {
+          SET_CONTROL_FADE_OUT(i, HOME_FADE_TIME);
+        }
+        else
+        {
+          SET_CONTROL_HIDDEN(i);
+        }
+      }
+
+      if (fade)
+      {
+        SET_CONTROL_FADE_IN(associatedImage, HOME_FADE_TIME);
+      }
+      else
+      {
+        SET_CONTROL_VISIBLE(associatedImage);
+      }
+    }
+  }
 }

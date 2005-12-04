@@ -144,6 +144,7 @@ public:
   void AppendPointer(const CFileItemList& itemlist);
   void Reserve(int iCount);
   void Sort(FILEITEMLISTCOMPARISONFUNC func);
+  void Randomize();
   void SetThumbs();
   void SetMusicThumbs();
   void FillInDefaultIcons();

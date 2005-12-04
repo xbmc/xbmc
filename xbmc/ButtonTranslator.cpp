@@ -588,7 +588,7 @@ WORD CButtonTranslator::TranslateKeyboardString(const char *szButton)
     else if (strKey.Equals("numpaddivide")) wButtonCode = 0xF06F;
     else if (strKey.Equals("pageup")) wButtonCode = 0xF021;
     else if (strKey.Equals("pagedown")) wButtonCode = 0xF022;
-    else if (strKey.Equals("printscreen")) wButtonCode = 0xF02C;
+    else if (strKey.Equals("printscreen")) wButtonCode = 0xF02A;
     else if (strKey.Equals("backspace")) wButtonCode = 0xF008;
     else if (strKey.Equals("menu")) wButtonCode = 0xF05D;
     else if (strKey.Equals("pause")) wButtonCode = 0xF013;

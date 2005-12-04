@@ -5,6 +5,7 @@
 #include "util.h"
 #include "playlistplayer.h"
 #include "xbox/xbeheader.h"
+#include "FileSystem/StackDirectory.h"
 
 using namespace PLAYLIST;
 using namespace MEDIA_DETECT;
@@ -240,13 +241,34 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
   // check video first
   if (!nAddedToPlaylist && !bPlaying && g_guiSettings.GetBool("Autorun.Video"))
   {
-    for (int i = 0; i < vecItems.Size(); i++)
+    // stack video files
+    CFileItemList tempItems;
+    tempItems.Append(vecItems);
+    tempItems.Stack();
+    for (int i = 0; i < tempItems.Size(); i++)
     {
-      CFileItem *pItem = vecItems[i];
+      CFileItem *pItem = tempItems[i];
       if (!pItem->m_bIsFolder && pItem->IsVideo())
       {
         bPlaying = true;
-        g_application.PlayFile( *pItem );
+        if (pItem->IsStack())
+        {
+          // TODO: remove this once the app/player is capable of handling stacks immediately
+          g_playlistPlayer.GetPlaylist( PLAYLIST_VIDEO_TEMP ).Clear();
+          CStackDirectory dir;
+          CFileItemList items;
+          dir.GetDirectory(pItem->m_strPath, items);
+          for (int i = 0; i < items.Size(); i++)
+          {
+            CPlayList::CPlayListItem playlistItem;
+            CUtil::ConvertFileItemToPlayListItem(items[i], playlistItem);
+            g_playlistPlayer.GetPlaylist( PLAYLIST_VIDEO_TEMP ).Add(playlistItem);
+          }
+          g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_VIDEO_TEMP);
+          g_playlistPlayer.Play(0);
+        }
+        else
+          g_application.PlayMedia(*pItem, PLAYLIST_VIDEO_TEMP);
         break;
       }
     }

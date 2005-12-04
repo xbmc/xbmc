@@ -30,13 +30,13 @@ protected:
   void SetArtistImage(int iItem);
   bool GetSongsFromPlayList(VECSONGS& songs, const CStdString& strPlayList);
 
-  void SaveDatabaseDirectoryCache(const CStdString& strDirectory, CFileItemList& items, int iSortMethod, int iAscending, bool bSkipThe);
-  void LoadDatabaseDirectoryCache(const CStdString& strDirectory, CFileItemList& items, int& iSortMethod, int& iAscending, bool& bSkipThe);
+  void SaveDatabaseDirectoryCache(const CStdString& strDirectory, CFileItemList& items, int iSortMethod, bool bAscending, bool bSkipThe);
+  void LoadDatabaseDirectoryCache(const CStdString& strDirectory, CFileItemList& items, int& iSortMethod, bool& bAscending, bool& bSkipThe);
   void ClearDatabaseDirectoryCache(const CStdString& strDirectory);
   // directory caching
   bool m_bGotDirFromCache;
   int m_iSortCache;
-  int m_iAscendCache;
+  bool m_bAscendCache;
   bool m_bSkipTheCache;
 
   // state of the window

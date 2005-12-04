@@ -78,6 +78,7 @@ public:
   bool IsPlayingVideo() const ;
   bool OnKey(CKey& key);
   void RenderFullScreen();
+  void RenderMemoryStatus();
   bool NeedRenderFullScreen();
   bool MustBlockHDSpinDown(bool bCheckThisForNormalSpinDown = true);
   void CheckNetworkHDSpinDown(bool playbackStarted = false);
