@@ -31,6 +31,15 @@
 #endif
 typedef unsigned (WINAPI *PBEGINTHREADEX_THREADFUNC)(LPVOID lpThreadParameter);
 
+#define MS_VC_EXCEPTION 0x406d1388
+typedef struct tagTHREADNAME_INFO 
+{ 
+  DWORD dwType; // must be 0x1000 
+  LPCSTR szName; // pointer to name (in same addr space) 
+  DWORD dwThreadID; // thread ID (-1 caller thread) 
+  DWORD dwFlags; // reserved for future use, most be zero 
+} THREADNAME_INFO;
+
 CThread::CThread()
 {
   m_bStop = false;
@@ -140,6 +149,22 @@ bool CThread::SetPriority(const int iPriority)
   {
     return false;
   }
+}
+
+void CThread::SetName( LPCTSTR szThreadName )
+{
+  THREADNAME_INFO info; 
+  info.dwType = 0x1000; 
+  info.szName = szThreadName; 
+  info.dwThreadID = m_dwThreadId; 
+  info.dwFlags = 0; 
+  __try 
+  { 
+    RaiseException(MS_VC_EXCEPTION, 0, sizeof(info) / sizeof(DWORD), (DWORD *)&info); 
+  } 
+  __except (EXCEPTION_CONTINUE_EXECUTION) 
+  { 
+  }  
 }
 
 bool CThread::WaitForThreadExit(DWORD dwmsTimeOut)
