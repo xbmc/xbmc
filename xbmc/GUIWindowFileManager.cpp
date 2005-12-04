@@ -12,6 +12,7 @@
 #include "lib/libPython/XBPython.h"
 #include "GUIWindowSlideShow.h"
 #include "PlayListFactory.h"
+#include "SortFileItem.h"
 
 using namespace XFILE;
 
@@ -39,90 +40,6 @@ using namespace XFILE;
 
 #define CONTROL_CURRENTDIRLABEL_LEFT  101
 #define CONTROL_CURRENTDIRLABEL_RIGHT  102
-
-struct SSortFilesByName
-{
-  static bool Sort(CFileItem* pStart, CFileItem* pEnd)
-  {
-    CFileItem& rpStart = *pStart;
-    CFileItem& rpEnd = *pEnd;
-    if (rpStart.GetLabel() == "..") return true;
-    if (rpEnd.GetLabel() == "..") return false;
-    bool bGreater = true;
-    if (m_bSortAscending) bGreater = false;
-    if ( rpStart.m_bIsFolder == rpEnd.m_bIsFolder)
-    {
-      char szfilename1[1024];
-      char szfilename2[1024];
-
-      switch ( m_iSortMethod )
-      {
-      case 0:  // Sort by Filename
-        strcpy(szfilename1, rpStart.GetLabel().c_str());
-        strcpy(szfilename2, rpEnd.GetLabel().c_str());
-        break;
-      case 1:  // Sort by Date
-        if ( rpStart.m_stTime.wYear > rpEnd.m_stTime.wYear ) return bGreater;
-        if ( rpStart.m_stTime.wYear < rpEnd.m_stTime.wYear ) return !bGreater;
-
-        if ( rpStart.m_stTime.wMonth > rpEnd.m_stTime.wMonth ) return bGreater;
-        if ( rpStart.m_stTime.wMonth < rpEnd.m_stTime.wMonth ) return !bGreater;
-
-        if ( rpStart.m_stTime.wDay > rpEnd.m_stTime.wDay ) return bGreater;
-        if ( rpStart.m_stTime.wDay < rpEnd.m_stTime.wDay ) return !bGreater;
-
-        if ( rpStart.m_stTime.wHour > rpEnd.m_stTime.wHour ) return bGreater;
-        if ( rpStart.m_stTime.wHour < rpEnd.m_stTime.wHour ) return !bGreater;
-
-        if ( rpStart.m_stTime.wMinute > rpEnd.m_stTime.wMinute ) return bGreater;
-        if ( rpStart.m_stTime.wMinute < rpEnd.m_stTime.wMinute ) return !bGreater;
-
-        if ( rpStart.m_stTime.wSecond > rpEnd.m_stTime.wSecond ) return bGreater;
-        if ( rpStart.m_stTime.wSecond < rpEnd.m_stTime.wSecond ) return !bGreater;
-        return true;
-        break;
-
-      case 2:
-        if ( rpStart.m_dwSize > rpEnd.m_dwSize) return bGreater;
-        if ( rpStart.m_dwSize < rpEnd.m_dwSize) return !bGreater;
-        return true;
-        break;
-
-      case 3:  // Sort by share type
-        if ( rpStart.m_iDriveType > rpEnd.m_iDriveType) return bGreater;
-        if ( rpStart.m_iDriveType < rpEnd.m_iDriveType) return !bGreater;
-        strcpy(szfilename1, rpStart.GetLabel());
-        strcpy(szfilename2, rpEnd.GetLabel());
-        break;
-
-      default:  // Sort by Filename by default
-        strcpy(szfilename1, rpStart.GetLabel().c_str());
-        strcpy(szfilename2, rpEnd.GetLabel().c_str());
-        break;
-      }
-
-
-      for (int i = 0; i < (int)strlen(szfilename1); i++)
-        szfilename1[i] = tolower((unsigned char)szfilename1[i]);
-
-      for (i = 0; i < (int)strlen(szfilename2); i++)
-        szfilename2[i] = tolower((unsigned char)szfilename2[i]);
-      //return (rpStart.strPath.compare( rpEnd.strPath )<0);
-
-      if (m_bSortAscending)
-        return (strcmp(szfilename1, szfilename2) < 0);
-      else
-        return (strcmp(szfilename1, szfilename2) >= 0);
-    }
-    if (!rpStart.m_bIsFolder) return false;
-    return true;
-  }
-  static bool m_bSortAscending;
-  static int m_iSortMethod;
-};
-
-bool SSortFilesByName::m_bSortAscending;
-int SSortFilesByName::m_iSortMethod;
 
 CGUIWindowFileManager::CGUIWindowFileManager(void)
     : CGUIWindow(WINDOW_FILES, "FileManager.xml")
@@ -361,21 +278,23 @@ bool CGUIWindowFileManager::OnMessage(CGUIMessage& message)
 
 void CGUIWindowFileManager::OnSort(int iList)
 {
+  int sortMethod;
+  bool sortAscending;
   if (m_Directory[iList].IsVirtualDirectoryRoot())
   {
-    SSortFilesByName::m_iSortMethod = g_stSettings.m_iMyFilesSourceRootSortMethod;
-    SSortFilesByName::m_bSortAscending = g_stSettings.m_bMyFilesSourceRootSortAscending;
+    sortMethod = g_stSettings.m_iMyFilesSourceRootSortMethod;
+    sortAscending = g_stSettings.m_bMyFilesSourceRootSortAscending;
   }
   else
   {
-    SSortFilesByName::m_iSortMethod = g_stSettings.m_iMyFilesSourceSortMethod;
-    SSortFilesByName::m_bSortAscending = g_stSettings.m_bMyFilesSourceSortAscending;
+    sortMethod = g_stSettings.m_iMyFilesSourceSortMethod;
+    sortAscending = g_stSettings.m_bMyFilesSourceSortAscending;
   }
 
   for (int i = 0; i < m_vecItems[iList].Size(); i++)
   {
     CFileItem* pItem = m_vecItems[iList][i];
-    if (SSortFilesByName::m_iSortMethod == 0 || SSortFilesByName::m_iSortMethod == 2)
+    if (sortMethod == 0 || sortMethod == 2)
     {
       if (pItem->m_bIsFolder && !pItem->m_dwSize)
         pItem->SetLabel2("");
@@ -419,7 +338,17 @@ void CGUIWindowFileManager::OnSort(int iList)
 
   }
 
-  m_vecItems[iList].Sort(SSortFilesByName::Sort);
+  switch (sortMethod)
+  {
+  case 1:
+    m_vecItems[iList].Sort(sortAscending ? SSortFileItem::DateAscending : SSortFileItem::DateDescending); break;
+  case 2:
+    m_vecItems[iList].Sort(sortAscending ? SSortFileItem::SizeAscending : SSortFileItem::SizeDescending); break;
+  case 3:
+    m_vecItems[iList].Sort(sortAscending ? SSortFileItem::DriveTypeAscending : SSortFileItem::DriveTypeDescending); break;
+  default:
+    m_vecItems[iList].Sort(sortAscending ? SSortFileItem::LabelAscending : SSortFileItem::LabelDescending); break;
+  }
 
   // UpdateControl(iList);
 }

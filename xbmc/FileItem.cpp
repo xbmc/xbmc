@@ -1150,6 +1150,11 @@ void CFileItemList::Sort(FILEITEMLISTCOMPARISONFUNC func)
   sort(m_items.begin(), m_items.end(), func);
 }
 
+void CFileItemList::Randomize()
+{
+  random_shuffle(m_items.begin(), m_items.end());
+}
+
 void CFileItemList::Serialize(CArchive& ar)
 {
   if (ar.IsStoring())

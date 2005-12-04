@@ -20,7 +20,6 @@
 #include "../../stdafx.h"
 #include "ComboRenderer.h"
 #include "../../application.h"
-#include "GUIFontManager.h"
 #include "../../util.h"
 
 
@@ -353,23 +352,8 @@ void CComboRenderer::Render()
   }
   RenderOSD();
 
-#ifndef _DEBUG
-  if (g_stSettings.m_bShowFreeMem)
-#endif
-    if (g_graphicsContext.IsFullScreenVideo())
-    {
-      // in debug mode, show freememory
-      CStdStringW wszText;
-      MEMORYSTATUS stat;
-      GlobalMemoryStatus(&stat);
-      wszText.Format(L"FreeMem %d/%d", stat.dwAvailPhys, stat.dwTotalPhys);
-
-      CGUIFont* pFont = g_fontManager.GetFont("font13");
-      if (pFont)
-      {
-        pFont->DrawText( 60, 40, 0xffffffff, wszText);
-      }
-    }
+  if (g_graphicsContext.IsFullScreenVideo())
+    g_application.RenderMemoryStatus();
 }
 
 unsigned int CComboRenderer::PreInit()

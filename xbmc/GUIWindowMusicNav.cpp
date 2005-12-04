@@ -11,6 +11,7 @@
 #include "GUIDialogFileBrowser.h"
 #include "GUIWindowMusicSongs.h"
 #include "Picture.h"
+#include "SortFileItem.h"
 
 
 #define CONTROL_BTNVIEWASICONS  2
@@ -36,191 +37,12 @@
 #define SHOW_SONGS               1
 #define SHOW_ROOT                0
 
-struct SSortMusicNav
-{
-  static bool Sort(CFileItem* pStart, CFileItem* pEnd)
-  {
-    CFileItem& rpStart = *pStart;
-    CFileItem& rpEnd = *pEnd;
-    if (rpStart.GetLabel() == "..") return true;
-    if (rpEnd.GetLabel() == "..") return false;
-
-    if (rpStart.m_strPath.IsEmpty())
-      return true;
-
-    if (rpEnd.m_strPath.IsEmpty())
-      return false;
-
-    bool bGreater = true;
-    if (m_bSortAscending) bGreater = false;
-
-    if (rpStart.m_bIsFolder == rpEnd.m_bIsFolder)
-    {
-      CStdString strStart;
-      CStdString strEnd;
-      CStdString strTemp;
-
-      char szfilename1[1024];
-      char szfilename2[1024];
-
-      switch ( m_iSortMethod )
-      {
-      case 0:   // Sort by Filename
-        strcpy(szfilename1, rpStart.GetLabel().c_str());
-        strcpy(szfilename2, rpEnd.GetLabel().c_str());
-        break;
-
-      case 1:   // Sort by Date
-        if ( rpStart.m_stTime.wYear > rpEnd.m_stTime.wYear ) return bGreater;
-        if ( rpStart.m_stTime.wYear < rpEnd.m_stTime.wYear ) return !bGreater;
-
-        if ( rpStart.m_stTime.wMonth > rpEnd.m_stTime.wMonth ) return bGreater;
-        if ( rpStart.m_stTime.wMonth < rpEnd.m_stTime.wMonth ) return !bGreater;
-
-        if ( rpStart.m_stTime.wDay > rpEnd.m_stTime.wDay ) return bGreater;
-        if ( rpStart.m_stTime.wDay < rpEnd.m_stTime.wDay ) return !bGreater;
-
-        if ( rpStart.m_stTime.wHour > rpEnd.m_stTime.wHour ) return bGreater;
-        if ( rpStart.m_stTime.wHour < rpEnd.m_stTime.wHour ) return !bGreater;
-
-        if ( rpStart.m_stTime.wMinute > rpEnd.m_stTime.wMinute ) return bGreater;
-        if ( rpStart.m_stTime.wMinute < rpEnd.m_stTime.wMinute ) return !bGreater;
-
-        if ( rpStart.m_stTime.wSecond > rpEnd.m_stTime.wSecond ) return bGreater;
-        if ( rpStart.m_stTime.wSecond < rpEnd.m_stTime.wSecond ) return !bGreater;
-        return true;
-        break;
-
-      case 2:   // Sort by Size
-        if ( rpStart.m_dwSize > rpEnd.m_dwSize) return bGreater;
-        if ( rpStart.m_dwSize < rpEnd.m_dwSize) return !bGreater;
-        return true;
-        break;
-
-      case 3:   // Sort by TrackNum
-        if ( rpStart.m_musicInfoTag.GetTrackAndDiskNumber() > rpEnd.m_musicInfoTag.GetTrackAndDiskNumber()) return bGreater;
-        if ( rpStart.m_musicInfoTag.GetTrackAndDiskNumber() < rpEnd.m_musicInfoTag.GetTrackAndDiskNumber()) return !bGreater;
-        return true;
-        break;
-
-      case 4:   // Sort by Duration
-        if ( rpStart.m_musicInfoTag.GetDuration() > rpEnd.m_musicInfoTag.GetDuration()) return bGreater;
-        if ( rpStart.m_musicInfoTag.GetDuration() < rpEnd.m_musicInfoTag.GetDuration()) return !bGreater;
-        return true;
-        break;
-
-      case 5:   // Sort by Title
-        // remove "the" for sorting
-        strStart = rpStart.m_musicInfoTag.GetTitle();
-        strEnd = rpEnd.m_musicInfoTag.GetTitle();
-        if (g_guiSettings.GetBool("MyMusic.IgnoreTheWhenSorting") && strStart.Left(4).Equals("The "))
-          strStart = strStart.Mid(4);
-        if (g_guiSettings.GetBool("MyMusic.IgnoreTheWhenSorting") && strEnd.Left(4).Equals("The "))
-          strEnd = strEnd.Mid(4);
-        strcpy(szfilename1, strStart.c_str());
-        strcpy(szfilename2, strEnd.c_str());
-        break;
-
-      case 6:   // Sort by Artist
-        // remove "the" for sorting
-        strStart = rpStart.m_musicInfoTag.GetArtist();
-        strEnd = rpEnd.m_musicInfoTag.GetArtist();
-        if (g_guiSettings.GetBool("MyMusic.IgnoreTheWhenSorting") && strStart.Left(4).Equals("The "))
-          strStart = strStart.Mid(4);
-        if (g_guiSettings.GetBool("MyMusic.IgnoreTheWhenSorting") && strEnd.Left(4).Equals("The "))
-          strEnd = strEnd.Mid(4);
-        strcpy(szfilename1, strStart.c_str());
-        strcpy(szfilename2, strEnd.c_str());
-        // concat the album...
-        strStart = rpStart.m_musicInfoTag.GetAlbum();
-        strEnd = rpEnd.m_musicInfoTag.GetAlbum();
-        if (g_guiSettings.GetBool("MyMusic.IgnoreTheWhenSorting") && strStart.Left(4).Equals("The "))
-          strStart = strStart.Mid(4);
-        if (g_guiSettings.GetBool("MyMusic.IgnoreTheWhenSorting") && strEnd.Left(4).Equals("The "))
-          strEnd = strEnd.Mid(4);
-        strcat(szfilename1, strStart.c_str());
-        strcat(szfilename2, strEnd.c_str());
-        // and finally the track number
-        strStart.Format("%02i", rpStart.m_musicInfoTag.GetTrackAndDiskNumber());
-        strEnd.Format("%02i", rpEnd.m_musicInfoTag.GetTrackAndDiskNumber());
-        strcat(szfilename1, strStart.c_str());
-        strcat(szfilename2, strEnd.c_str());
-        break;
-
-      case 7:   // Sort by Album
-        // remove "the" for sorting
-        strStart = rpStart.m_musicInfoTag.GetAlbum();
-        strEnd = rpEnd.m_musicInfoTag.GetAlbum();
-        if (g_guiSettings.GetBool("MyMusic.IgnoreTheWhenSorting") && strStart.Left(4).Equals("The "))
-          strStart = strStart.Mid(4);
-        if (g_guiSettings.GetBool("MyMusic.IgnoreTheWhenSorting") && strEnd.Left(4).Equals("The "))
-          strEnd = strEnd.Mid(4);
-        strcpy(szfilename1, strStart.c_str());
-        strcpy(szfilename2, strEnd.c_str());
-        // concat the artist (could have multiple Greatest Hits albums for instance)
-        strStart = rpStart.m_musicInfoTag.GetArtist();
-        strEnd = rpEnd.m_musicInfoTag.GetArtist();
-        if (g_guiSettings.GetBool("MyMusic.IgnoreTheWhenSorting") && strStart.Left(4).Equals("The "))
-          strStart = strStart.Mid(4);
-        if (g_guiSettings.GetBool("MyMusic.IgnoreTheWhenSorting") && strEnd.Left(4).Equals("The "))
-          strEnd = strEnd.Mid(4);
-        strcat(szfilename1, strStart.c_str());
-        strcat(szfilename2, strEnd.c_str());
-        // and concat the track number
-        strStart.Format("%02i", rpStart.m_musicInfoTag.GetTrackAndDiskNumber());
-        strEnd.Format("%02i", rpEnd.m_musicInfoTag.GetTrackAndDiskNumber());
-        strcat(szfilename1, strStart.c_str());
-        strcat(szfilename2, strEnd.c_str());
-        break;
-
-      case 8:   // Label without "The "
-        strStart = rpStart.GetLabel();
-        strEnd = rpEnd.GetLabel();
-        if (g_guiSettings.GetBool("MyMusic.IgnoreTheWhenSorting") && strStart.Left(4).Equals("The "))
-          strStart = strStart.Mid(4);
-        if (g_guiSettings.GetBool("MyMusic.IgnoreTheWhenSorting") && strEnd.Left(4).Equals("The "))
-          strEnd = strEnd.Mid(4);
-        strcpy(szfilename1, strStart.c_str());
-        strcpy(szfilename2, strEnd.c_str());
-        break;
-
-      default:   // Sort by Filename by default
-        strcpy(szfilename1, rpStart.GetLabel().c_str());
-        strcpy(szfilename2, rpEnd.GetLabel().c_str());
-        break;
-      }
-
-      for (int i = 0; i < (int)strlen(szfilename1); i++)
-        szfilename1[i] = tolower((unsigned char)szfilename1[i]);
-
-      for (int i = 0; i < (int)strlen(szfilename2); i++)
-        szfilename2[i] = tolower((unsigned char)szfilename2[i]);
-
-      if (m_bSortAscending)
-        return StringUtils::AlphaNumericCompare(szfilename1, szfilename2);
-      else
-        return !StringUtils::AlphaNumericCompare(szfilename1, szfilename2);
-    }
-
-    if (!rpStart.m_bIsFolder) return false;
-    return true;
-  }
-
-  static int m_iSortMethod;
-  static int m_bSortAscending;
-  static CStdString m_strDirectory;
-};
-
-int SSortMusicNav::m_iSortMethod;
-int SSortMusicNav::m_bSortAscending;
-CStdString SSortMusicNav::m_strDirectory;
-
 CGUIWindowMusicNav::CGUIWindowMusicNav(void)
     : CGUIWindowMusicBase(WINDOW_MUSIC_NAV, "MyMusicNav.xml")
 {
   m_bGotDirFromCache = false;
   m_iSortCache = -1;
-  m_iAscendCache = -1;
+  m_bAscendCache = false;
   m_bSkipTheCache = false;
   m_bDisplayEmptyDatabaseMessage=false;
 
@@ -682,7 +504,7 @@ bool CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, CFileItemL
       m_iViewAsIcons = g_stSettings.m_iMyMusicNavGenresViewAsIcons;
 
       // check cache first
-      LoadDatabaseDirectoryCache(strDirectory, items, m_iSortCache, m_iAscendCache, m_bSkipTheCache);
+//      LoadDatabaseDirectoryCache(strDirectory, items, m_iSortCache, m_bAscendCache, m_bSkipTheCache);
       if (items.Size())
       {
         m_bGotDirFromCache = true;
@@ -728,7 +550,7 @@ bool CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, CFileItemL
       m_iViewAsIcons = g_stSettings.m_iMyMusicNavArtistsViewAsIcons;
 
       // check cache first
-      LoadDatabaseDirectoryCache(strDirectory, items, m_iSortCache, m_iAscendCache, m_bSkipTheCache);
+//      LoadDatabaseDirectoryCache(strDirectory, items, m_iSortCache, m_bAscendCache, m_bSkipTheCache);
       if (items.Size())
       {
         m_bGotDirFromCache = true;
@@ -775,7 +597,7 @@ bool CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, CFileItemL
       m_iViewAsIcons = g_stSettings.m_iMyMusicNavAlbumsViewAsIcons;
 
       // check cache first
-      LoadDatabaseDirectoryCache(strDirectory, items, m_iSortCache, m_iAscendCache, m_bSkipTheCache);
+//      LoadDatabaseDirectoryCache(strDirectory, items, m_iSortCache, m_bAscendCache, m_bSkipTheCache);
       if (items.Size())
       {
         m_bGotDirFromCache = true;
@@ -825,7 +647,7 @@ bool CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, CFileItemL
       m_iViewAsIcons = g_stSettings.m_iMyMusicNavSongsViewAsIcons;
 
       // check cache first
-      LoadDatabaseDirectoryCache(strDirectory, items, m_iSortCache, m_iAscendCache, m_bSkipTheCache);
+//      LoadDatabaseDirectoryCache(strDirectory, items, m_iSortCache, m_bAscendCache, m_bSkipTheCache);
       if (items.Size())
       {
         m_bGotDirFromCache = true;
@@ -844,13 +666,14 @@ bool CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, CFileItemL
       // get songs from the database
       VECSONGS songs;
       bool bTest;
+//      DWORD time = timeGetTime();
       if (m_iPath == (SHOW_TOP + SHOW_SONGS))
         bTest = g_musicDatabase.GetTop100(songs);
       else if (m_iPath == (SHOW_PLAYLISTS + SHOW_SONGS))
         bTest = GetSongsFromPlayList(songs, m_vecPathHistory.back());
       else
-        bTest = g_musicDatabase.GetSongsNav(songs, m_strGenre, m_strArtist, m_strAlbum, m_strAlbumPath);
-
+        bTest = g_musicDatabase.GetSongsNav(items, m_strGenre, m_strArtist, m_strAlbum, m_strAlbumPath);
+//      CLog::DebugLog("Database lookup time = %i", timeGetTime() - time); time = timeGetTime();
       if (bTest)
       {
         // add "All Songs"
@@ -861,12 +684,12 @@ bool CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, CFileItemL
           pFileItem->m_bIsFolder = true;
           items.Add(pFileItem);
         }
-        for (int i = 0; i < (int)songs.size(); ++i)
+/*        for (int i = 0; i < (int)songs.size(); ++i)
         {
           CSong &song = songs[i];
           CFileItem* pFileItem = new CFileItem(song);
           items.Add(pFileItem);
-        }
+        }*/
       }
     }
     break;
@@ -1217,7 +1040,7 @@ void CGUIWindowMusicNav::OnFileItemFormatLabel(CFileItem* pItem)
     if (m_iState == SHOW_PLAYLISTS)
     {
       // remove extension?
-      if (g_guiSettings.GetBool("FileLists.HideExtensions"))
+      if (m_hideExtensions)
         pItem->RemoveExtension();
       // set unknown second label
       pItem->SetLabel2("--");
@@ -1236,7 +1059,7 @@ void CGUIWindowMusicNav::OnFileItemFormatLabel(CFileItem* pItem)
     else if (m_iPath == (SHOW_PLAYLISTS + SHOW_SONGS))
     {
       // remove extension?
-      if (g_guiSettings.GetBool("FileLists.HideExtensions"))
+      if (m_hideExtensions)
         pItem->RemoveExtension();
     }
   }
@@ -1257,49 +1080,87 @@ void CGUIWindowMusicNav::DoSort(CFileItemList& items)
   if (m_iState == SHOW_ROOT || m_iPath == (SHOW_PLAYLISTS + SHOW_SONGS) || m_iPath >= SHOW_TOP)
     return;
 
-  SSortMusicNav::m_strDirectory = m_Directory.m_strPath;
+  int sortMethod;
+  bool sortAscending;
 
   if (m_iState == SHOW_GENRES)
   {
-    SSortMusicNav::m_iSortMethod = g_stSettings.m_iMyMusicNavRootSortMethod;
-    SSortMusicNav::m_bSortAscending = g_stSettings.m_bMyMusicNavGenresSortAscending;
+    sortMethod = g_stSettings.m_iMyMusicNavRootSortMethod;
+    sortAscending = g_stSettings.m_bMyMusicNavGenresSortAscending;
   }
   else if (m_iState == SHOW_ARTISTS)
   {
-    SSortMusicNav::m_iSortMethod = g_stSettings.m_iMyMusicNavRootSortMethod;
-    SSortMusicNav::m_bSortAscending = g_stSettings.m_bMyMusicNavArtistsSortAscending;
+    sortMethod = g_stSettings.m_iMyMusicNavRootSortMethod;
+    sortAscending = g_stSettings.m_bMyMusicNavArtistsSortAscending;
   }
   else if (m_iState == SHOW_ALBUMS)
   {
-    SSortMusicNav::m_iSortMethod = g_stSettings.m_iMyMusicNavAlbumsSortMethod;
-    SSortMusicNav::m_bSortAscending = g_stSettings.m_bMyMusicNavAlbumsSortAscending;
+    sortMethod = g_stSettings.m_iMyMusicNavAlbumsSortMethod;
+    sortAscending = g_stSettings.m_bMyMusicNavAlbumsSortAscending;
   }
   else if (m_iState == SHOW_SONGS)
   {
-    SSortMusicNav::m_iSortMethod = g_stSettings.m_iMyMusicNavSongsSortMethod;
-    SSortMusicNav::m_bSortAscending = g_stSettings.m_bMyMusicNavSongsSortAscending;
+    sortMethod = g_stSettings.m_iMyMusicNavSongsSortMethod;
+    sortAscending = g_stSettings.m_bMyMusicNavSongsSortAscending;
   }
   else if (m_iState == SHOW_PLAYLISTS)
   {
-    SSortMusicNav::m_iSortMethod = g_stSettings.m_iMyMusicNavPlaylistsSortMethod;
-    SSortMusicNav::m_bSortAscending = g_stSettings.m_bMyMusicNavPlaylistsSortAscending;
+    sortMethod = g_stSettings.m_iMyMusicNavPlaylistsSortMethod;
+    sortAscending = g_stSettings.m_bMyMusicNavPlaylistsSortAscending;
   }
   // swap order for sort by date and sort by size
-  if (SSortMusicNav::m_iSortMethod == 1 || SSortMusicNav::m_iSortMethod == 2)
-    SSortMusicNav::m_bSortAscending = !SSortMusicNav::m_bSortAscending;
+  if (sortMethod == 1 || sortMethod == 2)
+    sortAscending = !sortAscending;
+
   // skip if directory was returned from cache
   // and the sort parameters match
   if (
     (m_bGotDirFromCache) && 
-    (m_iSortCache == SSortMusicNav::m_iSortMethod) &&
-    (m_iAscendCache == SSortMusicNav::m_bSortAscending) &&
+    (m_iSortCache == sortMethod) &&
+    (m_bAscendCache == sortAscending) &&
     (m_bSkipTheCache == g_guiSettings.GetBool("MyMusic.IgnoreTheWhenSorting"))
     )
     return;
 
   // else sort the list, and the save it to cache
-  items.Sort(SSortMusicNav::Sort);
-  SaveDatabaseDirectoryCache(m_Directory.m_strPath, m_vecItems, SSortMusicNav::m_iSortMethod, SSortMusicNav::m_bSortAscending, g_guiSettings.GetBool("MyMusic.IgnoreTheWhenSorting"));
+  switch (sortMethod)
+  {
+  case 1:
+    items.Sort(sortAscending ? SSortFileItem::DateAscending : SSortFileItem::DateDescending); break;
+  case 2:
+    items.Sort(sortAscending ? SSortFileItem::SizeAscending : SSortFileItem::SizeDescending); break;
+  case 3:
+    items.Sort(sortAscending ? SSortFileItem::SongTrackNumAscending : SSortFileItem::SongTrackNumDescending); break;
+  case 4:
+    items.Sort(sortAscending ? SSortFileItem::SongDurationAscending : SSortFileItem::SongDurationDescending); break;
+  case 5:
+    if (g_guiSettings.GetBool("MyMusic.IgnoreTheWhenSorting"))
+      items.Sort(sortAscending ? SSortFileItem::SongTitleAscendingNoThe : SSortFileItem::SongTitleDescendingNoThe);
+    else
+      items.Sort(sortAscending ? SSortFileItem::SongTitleAscending : SSortFileItem::SongTitleDescending);
+    break;
+  case 6:
+    if (g_guiSettings.GetBool("MyMusic.IgnoreTheWhenSorting"))
+      items.Sort(sortAscending ? SSortFileItem::SongArtistAscendingNoThe : SSortFileItem::SongArtistDescendingNoThe);
+    else
+      items.Sort(sortAscending ? SSortFileItem::SongArtistAscending : SSortFileItem::SongArtistDescending);
+    break;
+  case 7:
+    if (g_guiSettings.GetBool("MyMusic.IgnoreTheWhenSorting"))
+      items.Sort(sortAscending ? SSortFileItem::SongAlbumAscendingNoThe : SSortFileItem::SongAlbumDescendingNoThe);
+    else
+      items.Sort(sortAscending ? SSortFileItem::SongAlbumAscending : SSortFileItem::SongAlbumDescending);
+    break;
+  case 8: // Label
+    if (g_guiSettings.GetBool("MyMusic.IgnoreTheWhenSorting"))
+      items.Sort(sortAscending ? SSortFileItem::LabelAscendingNoThe : SSortFileItem::LabelDescendingNoThe);
+    else
+      items.Sort(sortAscending ? SSortFileItem::LabelAscending : SSortFileItem::LabelDescending);
+    break;
+  default:
+    items.Sort(sortAscending ? SSortFileItem::LabelAscending : SSortFileItem::LabelDescending); break;
+  }
+  SaveDatabaseDirectoryCache(m_Directory.m_strPath, m_vecItems, sortMethod, sortAscending, g_guiSettings.GetBool("MyMusic.IgnoreTheWhenSorting"));
 }
 
 void CGUIWindowMusicNav::OnSearchItemFound(const CFileItem* pSelItem)
@@ -1863,7 +1724,7 @@ void CGUIWindowMusicNav::ClearDatabaseDirectoryCache(const CStdString& strDirect
   CFile::Delete(strFileName);
 }
 
-void CGUIWindowMusicNav::SaveDatabaseDirectoryCache(const CStdString& strDirectory, CFileItemList& items, int iSortMethod, int iAscending, bool bSkipThe)
+void CGUIWindowMusicNav::SaveDatabaseDirectoryCache(const CStdString& strDirectory, CFileItemList& items, int iSortMethod, bool bAscending, bool bSkipThe)
 {
   int iSize = items.Size();
   if (iSize <= 0)
@@ -1887,9 +1748,9 @@ void CGUIWindowMusicNav::SaveDatabaseDirectoryCache(const CStdString& strDirecto
     CArchive ar(&file, CArchive::store);
     ar << items.Size();
     ar << iSortMethod;
-    ar << iAscending;
+    ar << bAscending;
     ar << bSkipThe;
-    CLog::Log(LOGDEBUG,"  -- items: %i, sort method: %i, ascending: %i, skipthe: %i",iSize,iSortMethod,iAscending,(int)bSkipThe);
+    CLog::Log(LOGDEBUG,"  -- items: %i, sort method: %i, ascending: %s, skipthe: %s",iSize,iSortMethod,bAscending ? "true" : "false",bSkipThe ? "true" : "false");
     for (int i = 0; i < iSize; i++)
     {
       CFileItem* pItem = items[i];
@@ -1900,7 +1761,7 @@ void CGUIWindowMusicNav::SaveDatabaseDirectoryCache(const CStdString& strDirecto
   }
 }
 
-void CGUIWindowMusicNav::LoadDatabaseDirectoryCache(const CStdString& strDirectory, CFileItemList& items, int& iSortMethod, int& iAscending, bool& bSkipThe)
+void CGUIWindowMusicNav::LoadDatabaseDirectoryCache(const CStdString& strDirectory, CFileItemList& items, int& iSortMethod, bool& bAscending, bool& bSkipThe)
 {
   CLog::Log(LOGDEBUG,"Loading database directory [%s]",strDirectory.c_str());
 
@@ -1921,9 +1782,9 @@ void CGUIWindowMusicNav::LoadDatabaseDirectoryCache(const CStdString& strDirecto
     int iSize = 0;
     ar >> iSize;
     ar >> iSortMethod;
-    ar >> iAscending;
+    ar >> bAscending;
     ar >> bSkipThe;
-      CLog::Log(LOGDEBUG,"  -- items: %i, sort method: %i, ascending: %i, skipthe: %i",iSize,iSortMethod,iAscending,(int)bSkipThe);
+    CLog::Log(LOGDEBUG,"  -- items: %i, sort method: %i, ascending: %s, skipthe: %s",iSize,iSortMethod,bAscending ? "true" : "false",bSkipThe ? "true" : "false");
     for (int i = 0; i < iSize; i++)
     {
       CFileItem* pItem = new CFileItem();

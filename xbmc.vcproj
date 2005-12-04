@@ -558,6 +558,9 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\musicInfoTag.cpp">
 				</File>
 				<File
+					RelativePath=".\xbmc\musicInfoTag.h">
+				</File>
+				<File
 					RelativePath=".\xbmc\MusicInfoTagLoaderAAC.cpp">
 				</File>
 				<File
@@ -803,6 +806,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				</File>
 				<File
 					RelativePath=".\xbmc\Shortcut.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\SortFileItem.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\SortFileItem.h">
 				</File>
 				<File
 					RelativePath=".\xbmc\utils\Splash.cpp">
@@ -1436,9 +1445,6 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 			</File>
 			<File
 				RelativePath=".\xbmc\utils\MusicInfoScraper.h">
-			</File>
-			<File
-				RelativePath=".\xbmc\musicInfoTag.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\MusicInfoTagLoaderCDDA.h">

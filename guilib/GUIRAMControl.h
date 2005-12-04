@@ -84,7 +84,6 @@ protected:
 
   void UpdateAllTitles();
   void UpdateTitle(CStdString& strFilepath, INT nIndex);
-  static struct SSortVideoListByName;
   void PlayMovie(CFileItem& item);
 
   CMediaMonitor* m_pMonitor;

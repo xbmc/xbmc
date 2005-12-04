@@ -26,5 +26,6 @@ public:
   static void Log(int loglevel, const char *format, ... );
   static void DebugLog(const char *format, ...);
   static void MemDump(BYTE *pData, int length);
+  static void DebugLogMemory();
   static int GetLevel();
 };

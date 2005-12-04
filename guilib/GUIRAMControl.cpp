@@ -284,14 +284,6 @@ bool CGUIRAMControl::OnAction(const CAction &action)
   }
 }
 
-struct CGUIRAMControl::SSortVideoListByName
-{
-  bool operator()(CStdString& strItem1, CStdString& strItem2)
-  {
-    return StringUtils::AlphaNumericCompare(strItem1.c_str(), strItem2.c_str());
-  }
-};
-
 void CGUIRAMControl::PlayMovie(CFileItem& item)
 {
   vector<CStdString> movies;
@@ -316,9 +308,6 @@ void CGUIRAMControl::PlayMovie(CFileItem& item)
   int iSelectedFile = 1;
   if (movies.size() > 1)
   {
-    // sort the files in alphabetical order
-    sort(movies.begin(), movies.end(), SSortVideoListByName());
-
     // prompt the user to select a file from which to start playback (playback then continues across the
     // selected file and the remainder of the files).
     CGUIDialogFileStacking* dlg = (CGUIDialogFileStacking*)m_gWindowManager.GetWindow(WINDOW_DIALOG_FILESTACKING);
