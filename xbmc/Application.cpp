@@ -1922,27 +1922,38 @@ void CApplication::Render()
       }
     }
 
-#ifndef _DEBUG
-    if (g_stSettings.m_bShowFreeMem)
-#endif
-
-    {
-      // in debug mode, show freememory
-      CStdStringW wszText;
-      wszText.Format(L"FPS %.0f FreeMem %d/%d", g_infoManager.GetFPS(), stat.dwAvailPhys, stat.dwTotalPhys);
-
-      CGUIFont* pFont = g_fontManager.GetFont("font13");
-      if (pFont)
-      {
-        pFont->DrawText( 60, 40, 0xffffffff, wszText);
-      }
-    }
+    RenderMemoryStatus();
   }
 
   // Present the backbuffer contents to the display
   m_pd3dDevice->Present( NULL, NULL, NULL, NULL );
   g_graphicsContext.Unlock();
 
+}
+
+void CApplication::RenderMemoryStatus()
+{
+#ifndef _DEBUG
+  if (g_stSettings.m_bShowFreeMem)
+#endif
+  {
+    // reset the window scaling and fade status
+    g_graphicsContext.SetScalingResolution(g_graphicsContext.GetVideoResolution(), 0, 0, false);
+    g_graphicsContext.SetWindowAlpha(255);
+    g_graphicsContext.SetControlAlpha(255);
+
+    // in debug mode, show freememory
+    CStdStringW wszText;
+    MEMORYSTATUS stat;
+    GlobalMemoryStatus(&stat);
+    wszText.Format(L"FreeMem %d/%d", stat.dwAvailPhys, stat.dwTotalPhys);
+
+    CGUIFont* pFont = g_fontManager.GetFont("font13");
+    if (pFont)
+    {
+      pFont->DrawText( 0.08f * g_graphicsContext.GetWidth(), 0.08f * g_graphicsContext.GetHeight(), 0xffffffff, wszText);
+    }
+  }
 }
 
 // OnKey() translates the key into a CAction which is sent on to our Window Manager.

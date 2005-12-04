@@ -18,6 +18,7 @@
 #include "GUIFontManager.h"
 #include "GUIDialogContextMenu.h"
 #include "FileSystem/StackDirectory.h"
+#include "SortFileItem.h"
 
 #define CONTROL_BTNVIEWASICONS  2
 #define CONTROL_BTNSORTBY     3
@@ -31,94 +32,6 @@
 #define CONTROL_THUMBS      51
 #define CONTROL_LABELFILES         12
 #define CONTROL_BTNPLAYLISTS  13
-
-struct SSortVideoByName
-{
-  static bool Sort(CFileItem* pStart, CFileItem* pEnd)
-  {
-    CFileItem& rpStart = *pStart;
-    CFileItem& rpEnd = *pEnd;
-    if (rpStart.GetLabel() == "..") return true;
-    if (rpEnd.GetLabel() == "..") return false;
-    bool bGreater = true;
-    if (m_bSortAscending) bGreater = false;
-    if ( rpStart.m_bIsFolder == rpEnd.m_bIsFolder)
-    {
-      char szfilename1[1024];
-      char szfilename2[1024];
-      CStdString strStart, strEnd;
-
-      switch ( m_iSortMethod )
-      {
-      case 0:  // Sort by Filename
-        strStart = rpStart.GetLabel();
-        strEnd = rpEnd.GetLabel();
-        strcpy(szfilename1, strStart.c_str());
-        strcpy(szfilename2, strEnd.c_str());
-        break;
-      case 1:  // Sort by Date
-        if ( rpStart.m_stTime.wYear > rpEnd.m_stTime.wYear ) return bGreater;
-        if ( rpStart.m_stTime.wYear < rpEnd.m_stTime.wYear ) return !bGreater;
-
-        if ( rpStart.m_stTime.wMonth > rpEnd.m_stTime.wMonth ) return bGreater;
-        if ( rpStart.m_stTime.wMonth < rpEnd.m_stTime.wMonth ) return !bGreater;
-
-        if ( rpStart.m_stTime.wDay > rpEnd.m_stTime.wDay ) return bGreater;
-        if ( rpStart.m_stTime.wDay < rpEnd.m_stTime.wDay ) return !bGreater;
-
-        if ( rpStart.m_stTime.wHour > rpEnd.m_stTime.wHour ) return bGreater;
-        if ( rpStart.m_stTime.wHour < rpEnd.m_stTime.wHour ) return !bGreater;
-
-        if ( rpStart.m_stTime.wMinute > rpEnd.m_stTime.wMinute ) return bGreater;
-        if ( rpStart.m_stTime.wMinute < rpEnd.m_stTime.wMinute ) return !bGreater;
-
-        if ( rpStart.m_stTime.wSecond > rpEnd.m_stTime.wSecond ) return bGreater;
-        if ( rpStart.m_stTime.wSecond < rpEnd.m_stTime.wSecond ) return !bGreater;
-        return true;
-        break;
-
-      case 2:
-        if ( rpStart.m_dwSize > rpEnd.m_dwSize) return bGreater;
-        if ( rpStart.m_dwSize < rpEnd.m_dwSize) return !bGreater;
-        return true;
-        break;
-
-      case 3:  // Sort by share type
-        if ( rpStart.m_iDriveType > rpEnd.m_iDriveType) return bGreater;
-        if ( rpStart.m_iDriveType < rpEnd.m_iDriveType) return !bGreater;
-        strcpy(szfilename1, rpStart.GetLabel());
-        strcpy(szfilename2, rpEnd.GetLabel());
-        break;
-
-      default:  // Sort by Filename by default
-        strStart = rpStart.GetLabel();
-        strEnd = rpEnd.GetLabel();
-        strcpy(szfilename1, strStart.c_str());
-        strcpy(szfilename2, strEnd.c_str());
-        break;
-      }
-
-
-      for (int i = 0; i < (int)strlen(szfilename1); i++)
-        szfilename1[i] = tolower((unsigned char)szfilename1[i]);
-
-      for (i = 0; i < (int)strlen(szfilename2); i++)
-        szfilename2[i] = tolower((unsigned char)szfilename2[i]);
-      //return (rpStart.strPath.compare( rpEnd.strPath )<0);
-
-      if (m_bSortAscending)
-        return StringUtils::AlphaNumericCompare(szfilename1, szfilename2);
-      else
-        return !StringUtils::AlphaNumericCompare(szfilename1, szfilename2);
-    }
-    if (!rpStart.m_bIsFolder) return false;
-    return true;
-  }
-  static bool m_bSortAscending;
-  static int m_iSortMethod;
-};
-bool SSortVideoByName::m_bSortAscending;
-int SSortVideoByName::m_iSortMethod;
 
 CGUIWindowVideoFiles::CGUIWindowVideoFiles()
 : CGUIWindowVideoBase(WINDOW_VIDEOS, "MyVideo.xml")
@@ -320,21 +233,33 @@ void CGUIWindowVideoFiles::FormatItemLabels()
 
 void CGUIWindowVideoFiles::SortItems(CFileItemList& items)
 {
+  int sortMethod;
+  bool sortAscending;
   if (m_Directory.IsVirtualDirectoryRoot())
   {
-    SSortVideoByName::m_iSortMethod = g_stSettings.m_iMyVideoRootSortMethod;
-    SSortVideoByName::m_bSortAscending = g_stSettings.m_bMyVideoRootSortAscending;
+    sortMethod = g_stSettings.m_iMyVideoRootSortMethod;
+    sortAscending = g_stSettings.m_bMyVideoRootSortAscending;
   }
   else
   {
-    SSortVideoByName::m_iSortMethod = g_stSettings.m_iMyVideoSortMethod;
-    SSortVideoByName::m_bSortAscending = g_stSettings.m_bMyVideoSortAscending;
+    sortMethod = g_stSettings.m_iMyVideoSortMethod;
+    sortAscending = g_stSettings.m_bMyVideoSortAscending;
     // in the case of sort by date or sort by size, it makes sense to have newest or largest
     // as the default order (ie same as normal alphabetic order)
     if (g_stSettings.m_iMyVideoSortMethod == 1 || g_stSettings.m_iMyVideoSortMethod == 2)
-      SSortVideoByName::m_bSortAscending = !SSortVideoByName::m_bSortAscending;
+      sortAscending = !sortAscending;
   }
-  items.Sort(SSortVideoByName::Sort);
+  switch (sortMethod)
+  {
+  case 1:
+    items.Sort(sortAscending ? SSortFileItem::DateAscending : SSortFileItem::DateDescending); break;
+  case 2:
+    items.Sort(sortAscending ? SSortFileItem::SizeAscending : SSortFileItem::SizeDescending); break;
+  case 3:
+    items.Sort(sortAscending ? SSortFileItem::DriveTypeAscending : SSortFileItem::DriveTypeDescending); break;
+  default:
+    items.Sort(sortAscending ? SSortFileItem::LabelAscending : SSortFileItem::LabelDescending); break;
+  }
 }
 
 bool CGUIWindowVideoFiles::Update(const CStdString &strDirectory)
@@ -406,9 +331,7 @@ bool CGUIWindowVideoFiles::UpdateDir(const CStdString &strDirectory)
   if (!m_Directory.IsStack() && g_stSettings.m_iMyVideoVideoStack != STACK_NONE)
   {
     //sort list ascending by filename before stacking...
-    SSortVideoByName::m_iSortMethod = 0;
-    SSortVideoByName::m_bSortAscending = 1;
-    m_vecItems.Sort(SSortVideoByName::Sort);
+    m_vecItems.Sort(SSortFileItem::LabelAscending);
     m_vecItems.Stack();
   }
 
@@ -849,9 +772,7 @@ void CGUIWindowVideoFiles::GetStackedDirectory(const CStdString &strPath, CFileI
   g_stSettings.m_iMyVideoVideoStack = STACK_SIMPLE;
 
   //sort list ascending by filename before stacking...
-  SSortVideoByName::m_iSortMethod = 0;
-  SSortVideoByName::m_bSortAscending = 1;
-  items.Sort(SSortVideoByName::Sort);
+  items.Sort(SSortFileItem::LabelAscending);
   items.Stack();
 
   // restore stack

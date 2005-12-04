@@ -244,6 +244,7 @@ bool CGUIControl::OnMessage(CGUIMessage& message)
     case GUI_MSG_VISIBLE:
       if (message.GetParam1())  // effect time
       {
+        CLog::DebugLog("Asked to fade in control %i in window %i, currently %s", GetID(), GetParentID(), m_bVisible ? "visible" : "hidden");
         if (!m_bVisible && m_effectState != EFFECT_IN)
         {
           m_effectState = EFFECT_IN;
@@ -265,6 +266,7 @@ bool CGUIControl::OnMessage(CGUIMessage& message)
     case GUI_MSG_HIDDEN:
       if (message.GetParam1())  // fade time
       {
+        CLog::DebugLog("Asked to fade out control %i in window %i, currently %s", GetID(), GetParentID(), m_bVisible ? "visible" : "hidden");
         if (m_bVisible && m_effectState == EFFECT_NONE)
         {
           m_effectState = EFFECT_OUT;

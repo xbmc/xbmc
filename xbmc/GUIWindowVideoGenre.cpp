@@ -12,7 +12,7 @@
 #include "PlayListPlayer.h"
 #include "GUIThumbnailPanel.h"
 #include "GUIPassword.h"
-
+#include "SortFileItem.h"
 
 #define CONTROL_BTNVIEWASICONS   2
 #define CONTROL_BTNSORTBY      3
@@ -27,96 +27,6 @@
 #define CONTROL_LABELFILES        12
 #define LABEL_GENRE              100
 
-//****************************************************************************************************************************
-struct SSortVideoGenreByName
-{
-  static bool Sort(CFileItem* pStart, CFileItem* pEnd)
-  {
-    CFileItem& rpStart = *pStart;
-    CFileItem& rpEnd = *pEnd;
-    if (rpStart.GetLabel() == "..") return true;
-    if (rpEnd.GetLabel() == "..") return false;
-    bool bGreater = true;
-    if (m_bSortAscending) bGreater = false;
-    if ( rpStart.m_bIsFolder == rpEnd.m_bIsFolder)
-    {
-      char szfilename1[1024];
-      char szfilename2[1024];
-      CStdString strStart, strEnd;
-
-      switch ( m_iSortMethod )
-      {
-      case 0:  // Sort by name
-        {
-          strStart = rpStart.GetLabel();
-          strEnd = rpEnd.GetLabel();
-          if (g_guiSettings.GetBool("MyVideos.IgnoreTheWhenSorting") && strStart.Left(4).Equals("The "))
-            strStart = strStart.Mid(4);
-          if (g_guiSettings.GetBool("MyVideos.IgnoreTheWhenSorting") && strEnd.Left(4).Equals("The "))
-            strEnd = strEnd.Mid(4);
-          CStdString strWatched = " [W]";
-          if (strStart.Right(strWatched.length()).Equals(strWatched))
-            strStart.Mid(0,strStart.length() - strWatched.length());
-          if (strEnd.Right(strWatched.length()).Equals(strWatched))
-            strEnd.Mid(0,strEnd.length() - strWatched.length());
-          strcpy(szfilename1, strStart.c_str());
-          strcpy(szfilename2, strEnd.c_str());
-        }
-        break;
-
-      case 1:  // Sort by year
-        if ( rpStart.m_stTime.wYear > rpEnd.m_stTime.wYear ) return bGreater;
-        if ( rpStart.m_stTime.wYear < rpEnd.m_stTime.wYear ) return !bGreater;
-        return true;
-        break;
-
-      case 2:  // sort by rating
-        if ( rpStart.m_fRating < rpEnd.m_fRating) return bGreater;
-        if ( rpStart.m_fRating > rpEnd.m_fRating) return !bGreater;
-        return true;
-        break;
-
-      default:  // Sort by name by default
-        {
-          strStart = rpStart.GetLabel();
-          strEnd = rpEnd.GetLabel();
-          if (g_guiSettings.GetBool("MyVideos.IgnoreTheWhenSorting") && strStart.Left(4).Equals("The "))
-            strStart = strStart.Mid(4);
-          if (g_guiSettings.GetBool("MyVideos.IgnoreTheWhenSorting") && strEnd.Left(4).Equals("The "))
-            strEnd = strEnd.Mid(4);
-          CStdString strWatched = " [W]";
-          if (strStart.Right(strWatched.length()).Equals(strWatched))
-            strStart.Mid(0,strStart.length() - strWatched.length());
-          if (strEnd.Right(strWatched.length()).Equals(strWatched))
-            strEnd.Mid(0,strEnd.length() - strWatched.length());
-          strcpy(szfilename1, strStart.c_str());
-          strcpy(szfilename2, strEnd.c_str());
-        }
-        break;
-      }
-
-
-      for (int i = 0; i < (int)strlen(szfilename1); i++)
-        szfilename1[i] = tolower((unsigned char)szfilename1[i]);
-
-      for (i = 0; i < (int)strlen(szfilename2); i++)
-        szfilename2[i] = tolower((unsigned char)szfilename2[i]);
-      //return (rpStart.strPath.compare( rpEnd.strPath )<0);
-
-      if (m_bSortAscending)
-        return (strcmp(szfilename1, szfilename2) < 0);
-      else
-        return (strcmp(szfilename1, szfilename2) >= 0);
-    }
-    if (!rpStart.m_bIsFolder) return false;
-    return true;
-  }
-
-  static bool m_bSortAscending;
-  static int m_iSortMethod;
-};
-bool SSortVideoGenreByName::m_bSortAscending;
-int SSortVideoGenreByName::m_iSortMethod;
 
 //****************************************************************************************************************************
 CGUIWindowVideoGenre::CGUIWindowVideoGenre()
@@ -214,19 +124,29 @@ void CGUIWindowVideoGenre::FormatItemLabels()
 
 void CGUIWindowVideoGenre::SortItems(CFileItemList& items)
 {
+  int sortMethod;
+  bool sortAscending;
   if (m_Directory.IsVirtualDirectoryRoot())
   {
-    SSortVideoGenreByName::m_iSortMethod = g_stSettings.m_iMyVideoGenreRootSortMethod;
-    SSortVideoGenreByName::m_bSortAscending = g_stSettings.m_bMyVideoGenreRootSortAscending;
+    sortMethod = g_stSettings.m_iMyVideoGenreRootSortMethod;
+    sortAscending = g_stSettings.m_bMyVideoGenreRootSortAscending;
   }
   else
   {
-    SSortVideoGenreByName::m_iSortMethod = g_stSettings.m_iMyVideoGenreSortMethod;
-    SSortVideoGenreByName::m_bSortAscending = g_stSettings.m_bMyVideoGenreSortAscending;
+    sortMethod = g_stSettings.m_iMyVideoGenreSortMethod;
+    sortAscending = g_stSettings.m_bMyVideoGenreSortAscending;
     if (g_stSettings.m_iMyVideoGenreSortMethod == 1)
-      SSortVideoGenreByName::m_bSortAscending = !SSortVideoGenreByName::m_bSortAscending;
+      sortAscending = !sortAscending;
   }
-  items.Sort(SSortVideoGenreByName::Sort);
+  switch (sortMethod)
+  {
+  case 1:
+    items.Sort(sortAscending ? SSortFileItem::MovieYearAscending : SSortFileItem::MovieYearDescending); break;
+  case 2:
+    items.Sort(sortAscending ? SSortFileItem::MovieRatingAscending : SSortFileItem::MovieRatingDescending); break;
+  default:
+    items.Sort(sortAscending ? SSortFileItem::LabelAscending : SSortFileItem::LabelDescending); break;
+  }
 }
 
 //****************************************************************************************************************************

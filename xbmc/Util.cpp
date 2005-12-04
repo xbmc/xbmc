@@ -21,33 +21,13 @@
 #include "GUIDialogNumeric.h"
 #include "autorun.h"
 #include "utils/fstrcmp.h"
+#include "SortFileItem.h"
 
 #define clamp(x) (x) > 255.f ? 255 : ((x) < 0 ? 0 : (BYTE)(x+0.5f)) // Valid ranges: brightness[-1 -> 1 (0 is default)] contrast[0 -> 2 (1 is default)]  gamma[0.5 -> 3.5 (1 is default)] default[ramp is linear]
 static const __int64 SECS_BETWEEN_EPOCHS = 11644473600;
 static const __int64 SECS_TO_100NS = 10000000;
-struct SSortByLabel
-{
-  static bool Sort(CFileItem* pStart, CFileItem* pEnd)
-  {
-    CGUIListItem& rpStart = *pStart;
-    CGUIListItem& rpEnd = *pEnd;
 
-    CStdString strLabel1 = rpStart.GetLabel();
-    strLabel1.ToLower();
-
-    CStdString strLabel2 = rpEnd.GetLabel();
-    strLabel2.ToLower();
-
-    if (m_bSortAscending)
-      return (strcmp(strLabel1.c_str(), strLabel2.c_str()) < 0);
-    else
-      return (strcmp(strLabel1.c_str(), strLabel2.c_str()) >= 0);
-  }
-
-  static bool m_bSortAscending;
-};
 bool CUtil::m_bNetworkUp = false;
-bool SSortByLabel::m_bSortAscending;
 char g_szTitleIP[32];
 CStdString strHasClientIP="",strHasClientInfo="",strNewClientIP,strNewClientInfo; 
 using namespace AUTOPTR;
@@ -1565,6 +1545,8 @@ void CUtil::GetFatXQualifiedPath(CStdString& strFileNameAndPath)
   CUtil::GetDirectory(strFileNameAndPath,strBasePath);
   CStdString strFileName = CUtil::GetFileName(strFileNameAndPath);
   CUtil::Tokenize(strBasePath,tokens,"\\");
+  if (tokens.empty())
+    return; // nothing to do here (invalid path)
   strFileNameAndPath = tokens.front();
   for (vector<CStdString>::iterator token=tokens.begin()+1;token != tokens.end();++token)
   {
@@ -2659,8 +2641,10 @@ void CUtil::ClearCache()
 
 void CUtil::SortFileItemsByName(CFileItemList& items, bool bSortAscending /*=true*/)
 {
-  SSortByLabel::m_bSortAscending = bSortAscending;
-  items.Sort(SSortByLabel::Sort);
+  if (bSortAscending)
+    items.Sort(SSortFileItem::LabelAscending);
+  else
+    items.Sort(SSortFileItem::LabelDescending);
 }
 
 void CUtil::Stat64ToStatI64(struct _stati64 *result, struct __stat64 *stat)

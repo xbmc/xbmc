@@ -5,6 +5,15 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 04-12-2005 fixed: [ 1335817 ] Stacking isn't working when CD is autoplayed
+ - 04-12-2005 fixed: [ 1371200 ] Video Info - cast - page up/down broken in 16x9.
+ - 04-12-2005 fixed: [ 1295019 ] Wrong play/pause icon displayed in menu (videoOSD) during fast forward. - Check musicOSD's as well.
+ - 04-12-2005 fixed: [ 1265343 ] Show FreeMem Display Not Visible in 1080i
+ - 04-12-2005 fixed: [ 1364937 ] Webserver crashes on "TakeScreenShot" action
+ - 04-12-2005 fixed: [ 1280366 ] keyboard.isConfirmed() not working properly. CGUIDialogKeyboard::IsDirty() changed to IsConfirmed() - returns true if done is pressed.
+ - 04-12-2005 fixed: [ 1276227 ] PrintScreen on keyboard wasn't working (incorrect key value)
+ - 04-12-2005 fixed: [ 1329312 ] Wrong Background in HomeScreen after playing Music/Videos in PM3.
+ - 04-12-2005 added: Improved sorting routine speed throughout.
  - 04-12-2005 added: manual browse for subtitle.
  - 03-12-2005 fixed: after last samba modification, dates did not display correctly anymore.
  - 03-12-2005 changed: set artist thumb in my music library view now lets you choose a .jpg/.tbn with the filebrowser instead of letting you assign a album thumb to the artist.

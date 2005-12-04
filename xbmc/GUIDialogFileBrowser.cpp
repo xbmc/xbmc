@@ -3,6 +3,7 @@
 #include "GUIDialogFileBrowser.h"
 #include "util.h"
 #include "detectdvdtype.h"
+#include "SortFileItem.h"
 
 #define CONTROL_LIST          450
 #define CONTROL_HEADING_LABEL 411
@@ -14,20 +15,6 @@
 // File browsing should not allow a directory as a valid option
 // Perhaps grey out "Ok" in that case, and allow selection of a normal item
 // to act as "Ok"??
-
-struct SSortByName
-{
-  static bool Sort(CFileItem* pStart, CFileItem* pEnd)
-  {
-    if (pStart->GetLabel() == "..") return true;
-    if (pEnd->GetLabel() == "..") return false;
-    if ( pStart->m_bIsFolder == pEnd->m_bIsFolder)
-      return pStart->GetLabel().CompareNoCase(pEnd->GetLabel()) < 0;
-    if (!pStart->m_bIsFolder) return false;
-    return true;
-  }
-};
-
 
 CGUIDialogFileBrowser::CGUIDialogFileBrowser()
     : CGUIDialog(WINDOW_DIALOG_FILE_BROWSER, "FileBrowser.xml")
@@ -121,7 +108,7 @@ void CGUIDialogFileBrowser::ClearFileItems()
 
 void CGUIDialogFileBrowser::OnSort()
 {
-  m_vecItems.Sort(SSortByName::Sort);
+  m_vecItems.Sort(SSortFileItem::LabelAscending);
   m_viewControl.SetItems(m_vecItems);
 }
 

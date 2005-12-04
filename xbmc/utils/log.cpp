@@ -122,6 +122,15 @@ void CLog::DebugLog(const char *format, ... )
   OutputDebugString(tmp);
 }
 
+void CLog::DebugLogMemory()
+{
+  CSingleLock waitLock(critSec);
+  MEMORYSTATUS stat;
+  GlobalMemoryStatus(&stat);
+  sprintf(tmp, "%i bytes free\n", stat.dwAvailPhys);
+  OutputDebugString(tmp);
+}
+
 void CLog::MemDump(BYTE *pData, int length)
 {
   DebugLog("MEM_DUMP: Dumping from %x", pData);

@@ -11,6 +11,7 @@
 #include "GUIPassword.h"
 #include "GUIDialogContextMenu.h"
 #include "xbox/xbeheader.h"
+#include "SortFileItem.h"
 
 using namespace DIRECTORY;
 
@@ -954,108 +955,6 @@ void CGUIWindowPrograms::OnClick(int iItem)
   }
 }
 
-struct SSortProgramsByName
-{
-  static bool Sort(CFileItem* pStart, CFileItem* pEnd)
-  {
-    CFileItem& rpStart = *pStart;
-    CFileItem& rpEnd = *pEnd;
-    if (rpStart.GetLabel() == "..")
-      return true;
-    if (rpEnd.GetLabel() == "..")
-      return false;
-    bool bGreater = true;
-    // Sort ascending is best for view by name only.  Otherwise sort descending.
-    // this makes the direction of sort always the best prefered (or worse preferred) depending
-    // on the sort direction. eg going from sort by name to sort by usage makes sense (ascending alphabet -> descending usage)
-    if ((g_stSettings.m_bMyProgramsSortAscending && g_stSettings.m_iMyProgramsSortMethod == 0) ||
-        (!g_stSettings.m_bMyProgramsSortAscending && g_stSettings.m_iMyProgramsSortMethod != 0))
-      bGreater = false;
-    if ( rpStart.m_bIsFolder == rpEnd.m_bIsFolder)
-    {
-      char szfilename1[1024];
-      char szfilename2[1024];
-
-      switch ( g_stSettings.m_iMyProgramsSortMethod )
-      {
-      case 0:  //  Sort by Filename
-        strcpy(szfilename1, rpStart.GetLabel().c_str());
-        strcpy(szfilename2, rpEnd.GetLabel().c_str());
-        break;
-      case 1:  // Sort by Date
-        if ( rpStart.m_stTime.wYear > rpEnd.m_stTime.wYear )
-          return bGreater;
-        if ( rpStart.m_stTime.wYear < rpEnd.m_stTime.wYear )
-          return !bGreater;
-
-        if ( rpStart.m_stTime.wMonth > rpEnd.m_stTime.wMonth )
-          return bGreater;
-        if ( rpStart.m_stTime.wMonth < rpEnd.m_stTime.wMonth )
-          return !bGreater;
-
-        if ( rpStart.m_stTime.wDay > rpEnd.m_stTime.wDay )
-          return bGreater;
-        if ( rpStart.m_stTime.wDay < rpEnd.m_stTime.wDay )
-          return !bGreater;
-
-        if ( rpStart.m_stTime.wHour > rpEnd.m_stTime.wHour )
-          return bGreater;
-        if ( rpStart.m_stTime.wHour < rpEnd.m_stTime.wHour )
-          return !bGreater;
-
-        if ( rpStart.m_stTime.wMinute > rpEnd.m_stTime.wMinute )
-          return bGreater;
-        if ( rpStart.m_stTime.wMinute < rpEnd.m_stTime.wMinute )
-          return !bGreater;
-
-        if ( rpStart.m_stTime.wSecond > rpEnd.m_stTime.wSecond )
-          return bGreater;
-        if ( rpStart.m_stTime.wSecond < rpEnd.m_stTime.wSecond )
-          return !bGreater;
-        return true;
-        break;
-
-/*      case 2:
-        if ( rpStart.m_dwSize > rpEnd.m_dwSize)
-          return bGreater;
-        if ( rpStart.m_dwSize < rpEnd.m_dwSize)
-          return !bGreater;
-        return true;
-        break;
-*/
-      case 2:
-        if (rpStart.m_iprogramCount > rpEnd.m_iprogramCount)
-          return bGreater;
-        if (rpStart.m_iprogramCount < rpEnd.m_iprogramCount)
-          return !bGreater;
-        return true;
-        break;
-
-      default:   //  Sort by Filename by default
-        strcpy(szfilename1, rpStart.GetLabel().c_str());
-        strcpy(szfilename2, rpEnd.GetLabel().c_str());
-        break;
-      }
-
-
-      for (int i = 0; i < (int)strlen(szfilename1); i++)
-        szfilename1[i] = tolower((unsigned char)szfilename1[i]);
-
-      for (i = 0; i < (int)strlen(szfilename2); i++)
-        szfilename2[i] = tolower((unsigned char)szfilename2[i]);
-      //return (rpStart.strPath.compare( rpEnd.strPath )<0);
-
-      if (g_stSettings.m_bMyProgramsSortAscending)
-        return (strcmp(szfilename1, szfilename2) < 0);
-      else
-        return (strcmp(szfilename1, szfilename2) >= 0);
-    }
-    if (!rpStart.m_bIsFolder)
-      return false;
-    return true;
-  }
-};
-
 void CGUIWindowPrograms::OnSort()
 {
   for (int i = 0; i < (int)m_vecItems.Size(); i++)
@@ -1096,8 +995,19 @@ void CGUIWindowPrograms::OnSort()
     }
   }
 
-
-  m_vecItems.Sort(SSortProgramsByName::Sort);
+  int sortMethod = g_stSettings.m_iMyProgramsSortMethod;
+  bool sortAscending = g_stSettings.m_bMyProgramsSortAscending;
+  if (sortMethod == 1 || sortMethod == 2)
+    sortAscending = !sortAscending;
+  switch (sortMethod)
+  {
+  case 1:
+    m_vecItems.Sort(sortAscending ? SSortFileItem::DateAscending : SSortFileItem::DateDescending); break;
+  case 2:
+    m_vecItems.Sort(sortAscending ? SSortFileItem::ProgramCountAscending : SSortFileItem::ProgramCountDescending); break;
+  default:
+    m_vecItems.Sort(sortAscending ? SSortFileItem::LabelAscending : SSortFileItem::LabelDescending); break;
+  }
 
   m_viewControl.SetItems(m_vecItems);
 }
