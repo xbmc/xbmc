@@ -15,6 +15,7 @@ public:
   virtual int Decode(BYTE* pData, int iSize);
   virtual void Reset();
   virtual bool GetPicture(DVDVideoPicture* pDvdVideoPicture);
+  virtual void SetDropState(bool bDrop);
 
 protected:
   void GetVideoAspect(AVCodecContext* CodecContext, unsigned int& iWidth, unsigned int& iHeight);

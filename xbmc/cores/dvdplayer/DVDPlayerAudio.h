@@ -11,6 +11,11 @@ class CDVDAudioCodec;
 class IAudioCallback;
 enum CodecID;
 
+#define DECODE_FLAG_DROP    1
+#define DECODE_FLAG_RESYNC  2
+#define DECODE_FLAG_ERROR   4
+#define DECODE_FLAG_ABORT   8
+
 class CDVDPlayerAudio : public CThread
 {
 public:
@@ -26,6 +31,8 @@ public:
   void Pause()                                          { m_dvdAudio.Pause(); }
   void Resume()                                         { m_dvdAudio.Resume(); }
   void Flush();
+ 
+  void SetSpeed(int iSpeed)                             { m_iSpeed = abs(iSpeed); }
 
   void DoWork()                                         { m_dvdAudio.DoWork(); }
 
@@ -44,7 +51,7 @@ protected:
   virtual void Process();
 
   bool InitializeOutputDevice();
-  int DecodeFrame(BYTE** audio_buf);
+  int DecodeFrame(BYTE** audio_buf, int *data_size, bool bDropPacket);
 
   bool m_bInitializedOutputDevice;
   __int64 m_audioClock;
@@ -57,6 +64,8 @@ protected:
   CDVDAudio m_dvdAudio; // audio output device
   CDVDClock* m_pClock; // dvd master clock
   CDVDAudioCodec* m_pAudioCodec; // audio codec
-  
+
+  int m_iSpeed;  
+
   CRITICAL_SECTION m_critCodecSection;
 };

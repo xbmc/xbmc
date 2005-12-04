@@ -66,6 +66,7 @@ bool CDVDAudio::Create(int iChannels, int iBitrate, int iBitsPerSample, bool bPa
   if (m_pBuffer) delete[] m_pBuffer;
   m_pBuffer = new BYTE[m_dwPacketSize];
 
+  
   return true;
 }
 
@@ -89,6 +90,24 @@ void CDVDAudio::Destroy()
   m_iBitrate = 0;
   m_iBitsPerSample = 0;
   m_iPackets = 0;
+  m_iSpeed = 1;
+}
+
+void CDVDAudio::SetSpeed(int iSpeed)
+{
+  m_iSpeed = abs(iSpeed);
+
+}
+
+DWORD CDVDAudio::AddPacketsRenderer(unsigned char* data, DWORD len)
+{ 
+  //Since we write same data size each time, we can drop full chunks to simulate a specific playback speed
+  //m_iSpeedStep = (m_iSpeedStep+1) % m_iSpeed;
+  //if( m_iSpeedStep )
+  //  return m_dwPacketSize;
+  //else
+    return m_pAudioDecoder->AddPackets(data, len);
+    
 }
 
 // we have a little bug here.
@@ -121,7 +140,7 @@ DWORD CDVDAudio::AddPackets(unsigned char* data, DWORD len)
     len -= iBytesToCopy;
     m_iBufferSize += iBytesToCopy;
     
-    if (m_pAudioDecoder->AddPackets(m_pBuffer, m_iBufferSize) != m_dwPacketSize)
+    if (AddPacketsRenderer(m_pBuffer, m_iBufferSize) != m_dwPacketSize)
     {
       return -1;
     }
@@ -131,7 +150,7 @@ DWORD CDVDAudio::AddPackets(unsigned char* data, DWORD len)
   DWORD copied = 0;
   do
   {
-    copied = m_pAudioDecoder->AddPackets(data, len);
+    copied = AddPacketsRenderer(data, len);
     if (copied < 0)
     {
       m_iBufferSize = 0;
@@ -200,6 +219,12 @@ __int64 CDVDAudio::GetDelay()
     
     if (bIsResampling) delay += ((__int64)m_pAudioDecoder->GetBytesInBuffer() * DVD_TIME_BASE) / (48000 * m_iChannels * 2);
     else delay += ((__int64)m_pAudioDecoder->GetBytesInBuffer() * DVD_TIME_BASE) / (m_iBitrate * m_iChannels * 2);
+
+    //if( m_iSpeedStep )
+    //{
+    //  //To smoothout clock abit when dropping audio chunks
+    //  delay += ((__int64)m_dwPacketSize*m_iSpeedStep*DVD_TIME_BASE) / ( (__int64)m_iBitrate * m_iChannels * 2 );
+    //}
 
     return delay;
   }

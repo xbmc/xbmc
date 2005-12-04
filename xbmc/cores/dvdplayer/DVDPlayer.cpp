@@ -125,6 +125,7 @@ bool CDVDPlayer::IsPlaying() const
 
 void CDVDPlayer::OnStartup()
 {
+  CThread::SetName("CDVDPlayer");
   m_iCurrentStreamVideo = -1;
   m_iCurrentStreamAudio = -1;
 
@@ -201,6 +202,27 @@ void CDVDPlayer::Process()
 
     if (m_bAbortRequest) break;
 
+    
+    if( m_iSpeed != 1 && m_iCurrentStreamVideo >= 0 )
+    { 
+      // check how much off clock video is when ff/rw:ing
+      // a problem here is that seeking isn't very accurate
+      // and since the clock will be resynced after seek
+      // we might actually not really be playing at the wanted 
+      // speed. we'd need to have some way to not resync the clock 
+      // after a seek to remember timing. still need to handle 
+      // discontinuities somehow
+
+      __int64 iError = m_clock.GetClock() - m_dvdPlayerVideo.GetCurrentPts();
+      if( iError > DVD_SEC_TO_TIME(2) || iError < -DVD_SEC_TO_TIME(1) )
+      {        
+        CLog::Log(LOGDEBUG, "CDVDPlayer::Process - FF/RW Seeking to catch up");
+        m_bDontSkipNextFrame = true;
+        SeekTime( m_clock.GetClock() / ( DVD_TIME_BASE / 1000 ) );
+      }
+    }
+
+      
     // handle messages send to this thread, like seek or demuxer reset requests
     HandleMessages();
     m_bReadAgain = false;
@@ -879,9 +901,16 @@ int CDVDPlayer::GetTotalTime()
 
 void CDVDPlayer::ToFFRW(int iSpeed)
 {
+// disabled for now in release builds. 
+#ifdef _DEBUG 
+
   // only one way todo this
   // 1. disable audio
   // 2. skip frames and adjust their pts or the clock
+  m_iSpeed = iSpeed;
+  m_dvdPlayerAudio.SetSpeed(iSpeed);
+  m_clock.SetSpeed(iSpeed);
+#endif
 }
 
 void CDVDPlayer::ShowOSD(bool bOnoff)

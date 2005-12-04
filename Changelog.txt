@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 04-12-2005 added: dvdplayer initial ff/rw support in dvdplayer. only available in debug builds. 
+ - 04-12-2005 changed: cleanup of dvdplayer audio/video rendering with added support for dropping frames in decoder.
  - 04-12-2005 fixed: dvdplayer memory leak in libdvdnav
  - 04-12-2005 fixed: '/' is not allowed in passwords in samba shares
  - 04-12-2005 fixed: [ 1335817 ] Stacking isn't working when CD is autoplayed
