@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 04-12-2005 fixed: dvdplayer memory leak in libdvdnav
  - 04-12-2005 fixed: '/' is not allowed in passwords in samba shares
  - 04-12-2005 fixed: [ 1335817 ] Stacking isn't working when CD is autoplayed
  - 04-12-2005 fixed: [ 1371200 ] Video Info - cast - page up/down broken in 16x9.
