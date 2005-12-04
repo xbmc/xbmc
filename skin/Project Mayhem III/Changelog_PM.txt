@@ -1,3 +1,6 @@
+2005-12-04 fixed:       Small navigation problem in DialogVideoInfo (16x9).
+2005-12-04 changed:     Play button shows Play when FastForwarding or Rewinding.
+
 2005-12-01 added:       FileBrowser.xml - initial skinning by BritneysPAIRS
 
 2005-11-30 fixed:	DialogKaiToast background control id to 0 (1 could cause crashes)
