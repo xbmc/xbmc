@@ -27,7 +27,7 @@ static char symbol_map[37] = "!@#$%^&*()[]{}-_=+;:\'\",.<>/?\\|`~    ";
 CGUIDialogKeyboard::CGUIDialogKeyboard(void)
 : CGUIDialog(WINDOW_DIALOG_KEYBOARD, "DialogKeyboard.xml")
 {
-  m_bDirty = false;
+  m_bIsConfirmed = false;
   m_bShift = false;
   m_keyType = LOWER;
   m_strHeading = "";
@@ -39,6 +39,8 @@ CGUIDialogKeyboard::~CGUIDialogKeyboard(void)
 void CGUIDialogKeyboard::OnInitWindow()
 {
   CGUIDialog::OnInitWindow();
+
+  m_bIsConfirmed = false;
 
   // set alphabetic (capitals)
   UpdateButtons();
@@ -63,11 +65,7 @@ void CGUIDialogKeyboard::OnInitWindow()
 
 bool CGUIDialogKeyboard::OnAction(const CAction &action)
 {
-  if (action.wID == ACTION_CLOSE_DIALOG || action.wID == ACTION_PREVIOUS_MENU)
-  {
-    m_bDirty = false;
-  }
-  else if (action.wID == ACTION_BACKSPACE)
+  if (action.wID == ACTION_BACKSPACE)
   {
     Backspace();
     return true;
@@ -114,6 +112,7 @@ bool CGUIDialogKeyboard::OnAction(const CAction &action)
         CGUILabelControl* pEdit = ((CGUILabelControl*)GetControl(CTL_LABEL_EDIT));
         if (pEdit)
           m_strEdit = pEdit->GetLabel();
+        m_bIsConfirmed = true;
         Close();
       }
       break;
@@ -121,7 +120,6 @@ bool CGUIDialogKeyboard::OnAction(const CAction &action)
       Backspace();
       break;
     case 27:  // escape
-      m_bDirty = false;
       Close();
       break;
     default:  //use character input
@@ -153,12 +151,11 @@ bool CGUIDialogKeyboard::OnMessage(CGUIMessage& message)
           {
             m_strEdit = pEdit->GetLabel();
           }
-
+          m_bIsConfirmed = true;
           Close();
           break;
         }
       case CTL_BUTTON_CANCEL:
-        m_bDirty = false;
         Close();
         break;
       case CTL_BUTTON_SHIFT:
@@ -199,7 +196,6 @@ bool CGUIDialogKeyboard::OnMessage(CGUIMessage& message)
 void CGUIDialogKeyboard::SetText(CStdString& aTextString)
 {
   m_strEdit = aTextString;
-  m_bDirty = false;
 
   CGUILabelControl* pEdit = ((CGUILabelControl*)GetControl(CTL_LABEL_EDIT));
   if (pEdit)
@@ -218,7 +214,6 @@ void CGUIDialogKeyboard::Character(WCHAR wch)
   CGUILabelControl* pEdit = ((CGUILabelControl*)GetControl(CTL_LABEL_EDIT));
   if (pEdit)
   {
-    m_bDirty = true;
     CStdString strLabel = pEdit->GetLabel();
     int iPos = pEdit->GetCursorPos();
     strLabel.Insert(iPos, (TCHAR)wch);
@@ -235,7 +230,6 @@ void CGUIDialogKeyboard::Backspace()
     CStdString strLabel = pEdit->GetLabel();
     if (pEdit->GetCursorPos() > 0)
     {
-      m_bDirty = true;
       strLabel.erase(pEdit->GetCursorPos() - 1, 1);
       pEdit->SetText(strLabel);
       pEdit->SetCursorPos(pEdit->GetCursorPos() - 1);
@@ -418,7 +412,7 @@ bool CGUIDialogKeyboard::ShowAndGetInput(CStdString& aTextString, const CStdStri
   pKeyboard->Close();
 
   // If have text - update this.
-  if (pKeyboard->IsDirty())
+  if (pKeyboard->IsConfirmed())
   {
     aTextString = pKeyboard->GetText();
     if (!allowEmptyResult && aTextString.IsEmpty())

@@ -13,7 +13,7 @@ public:
   void SetHeading(const CStdString& strHeading) {m_strHeading = strHeading;} ;
   void SetText(CStdString& aTextString);
   CStdString GetText() const { return m_strEdit;};
-  bool IsDirty() { return m_bDirty; };
+  bool IsConfirmed() { return m_bIsConfirmed; };
 
   static bool ShowAndGetInput(CStdString& aTextString, bool allowEmptyResult);
   static bool ShowAndGetInput(CStdString& aTextString, const CStdStringW &strHeading, bool allowEmptyResult);
@@ -42,7 +42,7 @@ private:
   void Backspace();
 
   CStdString m_strEdit;
-  bool m_bDirty;
+  bool m_bIsConfirmed;
   KEYBOARD m_keyType;
   int m_iMode;
   bool m_bShift;

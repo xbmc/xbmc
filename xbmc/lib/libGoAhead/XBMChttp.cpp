@@ -38,6 +38,7 @@
 #include "..\..\GUIWindowPictures.h"
 #include "..\..\GUIWindowPrograms.h"
 #include "..\..\guilib\GUIButtonScroller.h"
+#include "..\..\SortFileItem.h"
 
 #define XML_MAX_INNERTEXT_SIZE 256
 #define MAX_PARAS 10
@@ -226,86 +227,6 @@ CStdString flushResult(int eid, webs_t wp, CStdString output)
   return "";
 }
 
-struct SSortWebFilesByName
-{
-  static bool Sort(CFileItem* pStart, CFileItem* pEnd)
-  {
-    CFileItem& rpStart=*pStart;
-    CFileItem& rpEnd=*pEnd;
-    if (rpStart.GetLabel()=="..") return true;
-    if (rpEnd.GetLabel()=="..") return false;
-    bool bGreater=true;
-    if (m_bSortAscending) bGreater=false;
-    if ( rpStart.m_bIsFolder   == rpEnd.m_bIsFolder)
-    {
-      char szfilename1[1024];
-      char szfilename2[1024];
-
-      switch (m_iSortMethod) 
-      {
-        case 0:  //  Sort by Filename
-          strcpy(szfilename1, rpStart.GetLabel().c_str());
-          strcpy(szfilename2, rpEnd.GetLabel().c_str());
-          break;
-        case 1: // Sort by Date
-          if ( rpStart.m_stTime.wYear > rpEnd.m_stTime.wYear ) return bGreater;
-          if ( rpStart.m_stTime.wYear < rpEnd.m_stTime.wYear ) return !bGreater;
-          
-          if ( rpStart.m_stTime.wMonth > rpEnd.m_stTime.wMonth ) return bGreater;
-          if ( rpStart.m_stTime.wMonth < rpEnd.m_stTime.wMonth ) return !bGreater;
-          
-          if ( rpStart.m_stTime.wDay > rpEnd.m_stTime.wDay ) return bGreater;
-          if ( rpStart.m_stTime.wDay < rpEnd.m_stTime.wDay ) return !bGreater;
-
-          if ( rpStart.m_stTime.wHour > rpEnd.m_stTime.wHour ) return bGreater;
-          if ( rpStart.m_stTime.wHour < rpEnd.m_stTime.wHour ) return !bGreater;
-
-          if ( rpStart.m_stTime.wMinute > rpEnd.m_stTime.wMinute ) return bGreater;
-          if ( rpStart.m_stTime.wMinute < rpEnd.m_stTime.wMinute ) return !bGreater;
-
-          if ( rpStart.m_stTime.wSecond > rpEnd.m_stTime.wSecond ) return bGreater;
-          if ( rpStart.m_stTime.wSecond < rpEnd.m_stTime.wSecond ) return !bGreater;
-          return true;
-        break;
-
-        case 2:
-          if ( rpStart.m_dwSize > rpEnd.m_dwSize) return bGreater;
-          if ( rpStart.m_dwSize < rpEnd.m_dwSize) return !bGreater;
-          return true;
-        break;
-
-        default:  //  Sort by Filename by default
-          strcpy(szfilename1, rpStart.GetLabel().c_str());
-          strcpy(szfilename2, rpEnd.GetLabel().c_str());
-          break;
-      }
-
-      for (int i=0; i < (int)strlen(szfilename1); i++)
-      {
-        szfilename1[i]=tolower((unsigned char)szfilename1[i]);
-      }
-
-      for (int i=0; i < (int)strlen(szfilename2); i++)
-      {
-        szfilename2[i]=tolower((unsigned char)szfilename2[i]);
-      }
-
-      if (g_stSettings.m_bMyFilesSourceSortAscending)
-        return (strcmp(szfilename1,szfilename2)<0);
-      else
-        return (strcmp(szfilename1,szfilename2)>=0);
-    }
-    if (!rpStart.m_bIsFolder) return false;
-    return true;
-  }
-  static bool m_bSortAscending;
-  static int m_iSortMethod;
-};
-
-bool SSortWebFilesByName::m_bSortAscending;
-
-int SSortWebFilesByName::m_iSortMethod;
-
 int displayDir(int numParas, CStdString paras[]) {
   //mask = ".mp3|.wma" -> matching files
   //mask = "*" -> just folders
@@ -349,9 +270,8 @@ int displayDir(int numParas, CStdString paras[]) {
   {
     return g_applicationMessenger.SetResponse("<li>Error:Not folder");
   }
-  SSortWebFilesByName::m_bSortAscending = true;
-  SSortWebFilesByName::m_iSortMethod = 0;
-  dirItems.Sort(SSortWebFilesByName::Sort);
+
+  dirItems.Sort(SSortFileItem::LabelAscending);
   for (int i=0; i<dirItems.Size(); ++i)
   {
     CFileItem *itm = dirItems[i];
@@ -419,9 +339,7 @@ void AddItemToPlayList(const CFileItem* pItem, int playList, int sortMethod, CSt
     if (mask!="")
       pDirectory->SetMask(mask);
     bool bResult=pDirectory->GetDirectory(strDirectory,items);
-    SSortWebFilesByName::m_bSortAscending = true;
-    SSortWebFilesByName::m_iSortMethod = sortMethod;
-    items.Sort(SSortWebFilesByName::Sort);
+    items.Sort(SSortFileItem::LabelAscending);
     for (int i=0; i < items.Size(); ++i)
       AddItemToPlayList(items[i], playList, sortMethod, mask);
   }
@@ -1895,14 +1813,21 @@ int CXbmcHttp::xbmcTakeScreenshot(int numParas, CStdString paras[])
     CUtil::TakeScreenshot();
   else
   {
-    CStdString filename;
+    CStdString filepath, path, filename;
     if (paras[0]=="")
-      filename="q:\\screenshot.jpg";
+      filepath="Z:\\screenshot.jpg";
     else
-      filename=paras[0];
+      filepath=paras[0];
+    // check we have a valid path
+    filename = CUtil::GetFileName(filepath);
+    if (!CUtil::GetParentPath(filepath, path) || !CDirectory::Exists(path))
+    {
+      CLog::Log(LOGERROR, "Invalid path in xbmcTakeScreenShot - saving to Z:");
+      CUtil::AddFileToFolder("Z:", filename, filepath);
+    }
     if (numParas>5)
     {
-      CUtil::TakeScreenshot("q:\\temp.bmp", paras[1].ToLower()=="true");
+      CUtil::TakeScreenshot("Z:\\temp.bmp", paras[1].ToLower()=="true");
       int height, width;
       if (paras[4]=="")
         if (paras[3]=="")
@@ -1927,17 +1852,17 @@ int CXbmcHttp::xbmcTakeScreenshot(int numParas, CStdString paras[])
         }
       CPicture pic;
       int ret;
-      ret=pic.ConvertFile("q:\\temp.bmp", filename, (float) atof(paras[2]), width, height, atoi(paras[5]));
+      ret=pic.ConvertFile("Z:\\temp.bmp", filepath, (float) atof(paras[2]), width, height, atoi(paras[5]));
       if (ret==0)
       {
-        ::DeleteFile("q:\\temp.bmp");
+        ::DeleteFile("Z:\\temp.bmp");
         if (numParas>6)
           if (paras[6].ToLower()="true")
           {
             CStdString b64;
-            b64=encodeFileToBase64(filename,80);
-            if (filename=="q:\\screenshot.jpg")
-              ::DeleteFile(filename.c_str());
+            b64=encodeFileToBase64(filepath,80);
+            if (filepath=="Z:\\screenshot.jpg")
+              ::DeleteFile(filepath.c_str());
             return g_applicationMessenger.SetResponse(b64) ;
           }
       }

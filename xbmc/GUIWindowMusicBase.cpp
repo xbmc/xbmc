@@ -420,6 +420,10 @@ void CGUIWindowMusicBase::UpdateListControl()
   // Cache available album thumbs
   g_directoryCache.InitMusicThumbCache();
 
+  // save frequently used settings for speed
+  m_hideExtensions = g_guiSettings.GetBool("FileLists.HideExtensions");
+  m_formatLeft = g_guiSettings.GetString("MyMusic.TrackFormat");
+  m_formatRight = g_guiSettings.GetString("MyMusic.TrackFormatRight");
   for (int i = 0; i < m_vecItems.Size(); i++)
   {
     CFileItem* pItem = m_vecItems[i];
@@ -519,7 +523,6 @@ bool CGUIWindowMusicBase::Update(const CStdString &strDirectory)
       }
     }
   }
-
   return true;
 }
 
@@ -1658,15 +1661,15 @@ void CGUIWindowMusicBase::OnRipCD()
 
 void CGUIWindowMusicBase::SetLabelFromTag(CFileItem *pItem)
 {
-  CStdString strLabel  = ParseFormat(pItem, g_guiSettings.GetString("MyMusic.TrackFormat"));
-  CStdString strLabel2 = ParseFormat(pItem, g_guiSettings.GetString("MyMusic.TrackFormatRight"));
+  CStdString strLabel  = ParseFormat(pItem, m_formatLeft);
+  CStdString strLabel2 = ParseFormat(pItem, m_formatRight);
 
   // set label 1
   // if we don't have anything at the moment (due to empty tags),
   // we just remove the extension
   if (strLabel.size())
     pItem->SetLabel(strLabel);
-  else if (g_guiSettings.GetBool("FileLists.HideExtensions"))
+  else if (m_hideExtensions)
     pItem->RemoveExtension();
 
   // set label 2

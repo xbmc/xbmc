@@ -125,7 +125,7 @@ public:
   bool GetGenresNav(VECGENRES& genres);
   bool GetArtistsNav(VECARTISTS& artists, const CStdString &strGenre1);
   bool GetAlbumsNav(VECALBUMS& albums, const CStdString &strGenre1, const CStdString &strArtist1);
-  bool GetSongsNav(VECSONGS& songs, const CStdString &strGenre1, const CStdString &strArtist1, const CStdString &strAlbum1, const CStdString &strAlbumPath1);
+  bool GetSongsNav(CFileItemList& items, const CStdString &strGenre1, const CStdString &strArtist1, const CStdString &strAlbum1, const CStdString &strAlbumPath1);
 
   int GetSongsCount();
 
