@@ -1,8 +1,5 @@
 #pragma once
 
-#define DVD_AVFORMAT_DLL  "Q:\\system\\players\\dvdplayer\\avformat.dll"
-#define DVD_AVCODEC_DLL   "Q:\\system\\players\\dvdplayer\\avcodec.dll"
-
 //  forward
 class DllLoader;
 
