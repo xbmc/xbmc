@@ -111,7 +111,7 @@ namespace PYXBMC
 			return NULL;
 		}
 
-		return Py_BuildValue("b", pKeyboard->IsDirty());
+		return Py_BuildValue("b", pKeyboard->IsConfirmed());
 	}
 
 	PyMethodDef Keyboard_methods[] = {

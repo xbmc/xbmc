@@ -19,6 +19,7 @@ protected:
   void OnPopupContextMenu();
   void OnClickOnlineGaming(CGUIMessage& aMessage);
   void UpdateButtonScroller();
+  void FadeBackgroundImages(int focusedControl, int messageSender, int associatedImage);
 
   IDirect3DTexture8* m_pTexture;
   int m_iLastControl;

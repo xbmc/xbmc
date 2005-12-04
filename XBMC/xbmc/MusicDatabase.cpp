@@ -2785,11 +2785,12 @@ bool CMusicDatabase::GetAlbumsNav(VECALBUMS& albums, const CStdString &strGenre,
   return false;
 }
 
-bool CMusicDatabase::GetSongsNav(VECSONGS& songs, const CStdString &strGenre, const CStdString &strArtist, const CStdString &strAlbum, const CStdString &strAlbumPath)
+bool CMusicDatabase::GetSongsNav(CFileItemList& items, const CStdString &strGenre, const CStdString &strArtist, const CStdString &strAlbum, const CStdString &strAlbumPath)
 {
   try
   {
-    songs.erase(songs.begin(), songs.end());
+    DWORD time = timeGetTime();
+    items.Clear();
 
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
@@ -2857,13 +2858,19 @@ bool CMusicDatabase::GetSongsNav(VECSONGS& songs, const CStdString &strGenre, co
       return false;
     }
 
+    CLog::DebugLog("Time for actual SQL query = %d", timeGetTime() - time); time = timeGetTime();
+
     // get data from returned rows
-    songs.reserve(iRowsFound);
+    items.Reserve(iRowsFound);
+
     while (!m_pDS->eof())
     {
-      songs.push_back(GetSongFromDataset());
+      CFileItem *item = new CFileItem(GetSongFromDataset());
+      items.Add(item);
       m_pDS->next();
     }
+
+    CLog::DebugLog("Time to retrieve songs from dataset = %d", timeGetTime() - time);
 
     // cleanup
     m_pDS->close();

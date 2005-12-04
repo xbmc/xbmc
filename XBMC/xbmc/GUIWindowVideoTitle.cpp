@@ -12,7 +12,7 @@
 #include "PlayListPlayer.h"
 #include "GUIThumbnailPanel.h"
 #include "GUIPassword.h"
-
+#include "SortFileItem.h"
 
 #define CONTROL_BTNVIEWASICONS    2
 #define CONTROL_BTNSORTBY         3
@@ -28,144 +28,9 @@
 #define CONTROL_LABELFILES        12
 #define LABEL_TITLE              100
 
-//****************************************************************************************************************************
-struct SSortVideoTitleByTitle
-{
-  static bool Sort(CFileItem* pStart, CFileItem* pEnd)
-  {
-    CFileItem& rpStart = *pStart;
-    CFileItem& rpEnd = *pEnd;
-    if (rpStart.GetLabel() == "..") return true;
-    if (rpEnd.GetLabel() == "..") return false;
-    bool bGreater = true;
-    if (m_bSortAscending) bGreater = false;
-    if ( rpStart.m_bIsFolder == rpEnd.m_bIsFolder)
-    {
-      char szfilename1[1024];
-      char szfilename2[1024];
-      CStdString strStart, strEnd;
-
-      switch ( m_iSortMethod )
-      {
-      case 0:  // Sort by name
-        {
-          strStart = rpStart.GetLabel();
-          strEnd = rpEnd.GetLabel();
-          if (g_guiSettings.GetBool("MyVideos.IgnoreTheWhenSorting") && strStart.Left(4).Equals("The "))
-            strStart = strStart.Mid(4);
-          if (g_guiSettings.GetBool("MyVideos.IgnoreTheWhenSorting") && strEnd.Left(4).Equals("The "))
-            strEnd = strEnd.Mid(4);
-          CStdString strWatched = " [W]";
-          if (strStart.Right(strWatched.length()).Equals(strWatched))
-            strStart.Mid(0,strStart.length() - strWatched.length());
-          if (strEnd.Right(strWatched.length()).Equals(strWatched))
-            strEnd.Mid(0,strEnd.length() - strWatched.length());
-          strcpy(szfilename1, strStart.c_str());
-          strcpy(szfilename2, strEnd.c_str());
-        }
-        break;
-
-      case 1:  // Sort by year
-        if ( rpStart.m_stTime.wYear > rpEnd.m_stTime.wYear ) return bGreater;
-        if ( rpStart.m_stTime.wYear < rpEnd.m_stTime.wYear ) return !bGreater;
-
-        strcpy(szfilename1, rpStart.GetLabel().c_str());
-        strcpy(szfilename2, rpEnd.GetLabel().c_str());
-        break;
-
-      case 2:  // sort by rating
-        if ( rpStart.m_fRating < rpEnd.m_fRating) return bGreater;
-        if ( rpStart.m_fRating > rpEnd.m_fRating) return !bGreater;
-
-
-        strcpy(szfilename1, rpStart.GetLabel().c_str());
-        strcpy(szfilename2, rpEnd.GetLabel().c_str());
-        break;
-
-      case 3:  // sort dvdLabel
-        {
-          int iLabel1 = 0, iLabel2 = 0;
-          char szTmp[20];
-          int pos = 0;
-          strcpy(szTmp, "");
-          for (int x = 0; x < (int)rpStart.m_strDVDLabel.size(); x++)
-          {
-            char k = rpStart.m_strDVDLabel.GetAt(x);
-            if (k >= '0' && k <= '9')
-            {
-              if ( (k == '0' && pos > 0) || (k != '0' ) )
-              {
-                szTmp[pos++] = k;
-                szTmp[pos] = 0;
-              }
-            }
-          }
-          sscanf(szTmp, "%i", &iLabel1);
-          strcpy(szTmp, "");
-          pos = 0;
-          for (int x = 0; x < (int)rpEnd.m_strDVDLabel.size(); x++)
-          {
-            char k = rpEnd.m_strDVDLabel.GetAt(x);
-            if (k >= '0' && k <= '9')
-            {
-              if ( (k == '0' && pos > 0) || (k != '0' ) )
-              {
-                szTmp[pos++] = k;
-                szTmp[pos] = 0;
-              }
-            }
-          }
-          sscanf(szTmp, "%i", &iLabel2);
-
-          if ( iLabel1 < iLabel2) return bGreater;
-          if ( iLabel1 > iLabel2) return !bGreater;
-
-          strcpy(szfilename1, rpStart.GetLabel().c_str());
-          strcpy(szfilename2, rpEnd.GetLabel().c_str());
-
-        }
-        break;
-
-      default:  // Sort by name by default
-        {
-          strStart = rpStart.GetLabel();
-          strEnd = rpEnd.GetLabel();
-          if (g_guiSettings.GetBool("MyVideos.IgnoreTheWhenSorting") && strStart.Left(4).Equals("The "))
-            strStart = strStart.Mid(4);
-          if (g_guiSettings.GetBool("MyVideos.IgnoreTheWhenSorting") && strEnd.Left(4).Equals("The "))
-            strEnd = strEnd.Mid(4);
-          CStdString strWatched = " [W]";
-          if (strStart.Right(strWatched.length()).Equals(strWatched))
-            strStart.Mid(0,strStart.length() - strWatched.length());
-          if (strEnd.Right(strWatched.length()).Equals(strWatched))
-            strEnd.Mid(0,strEnd.length() - strWatched.length());
-          strcpy(szfilename1, strStart.c_str());
-          strcpy(szfilename2, strEnd.c_str());
-        }
-        break;
-      }
-
-
-      for (int i = 0; i < (int)strlen(szfilename1); i++)
-        szfilename1[i] = tolower((unsigned char)szfilename1[i]);
-
-      for (i = 0; i < (int)strlen(szfilename2); i++)
-        szfilename2[i] = tolower((unsigned char)szfilename2[i]);
-      //return (rpStart.strPath.compare( rpEnd.strPath )<0);
-
-      if (m_bSortAscending)
-        return (strcmp(szfilename1, szfilename2) < 0);
-      else
-        return (strcmp(szfilename1, szfilename2) >= 0);
-    }
-    if (!rpStart.m_bIsFolder) return false;
-    return true;
-  }
-  static bool m_bSortAscending;
-  static int m_iSortMethod;
-};
-bool SSortVideoTitleByTitle::m_bSortAscending;
-int SSortVideoTitleByTitle::m_iSortMethod;
+/*  REMOVED: There was a method here for sort by DVD label, but as this
+    doesn't seem to be used anywhere (at least it is not given a value
+    anywhere) I've removed it. (JM, 3 Dec 2005) */
 
 //****************************************************************************************************************************
 CGUIWindowVideoTitle::CGUIWindowVideoTitle()
@@ -195,7 +60,7 @@ bool CGUIWindowVideoTitle::OnMessage(CGUIMessage& message)
       if (iControl == CONTROL_BTNSORTBY) // sort by
       {
         g_stSettings.m_iMyVideoTitleSortMethod++;
-        if (g_stSettings.m_iMyVideoTitleSortMethod >= 4)
+        if (g_stSettings.m_iMyVideoTitleSortMethod >= 3 /* JM - this was 4 when we had DVDlabel filtering */)
           g_stSettings.m_iMyVideoTitleSortMethod = 0;
         g_settings.Save();
 
@@ -278,11 +143,19 @@ void CGUIWindowVideoTitle::FormatItemLabels()
 
 void CGUIWindowVideoTitle::SortItems(CFileItemList& items)
 {
-  SSortVideoTitleByTitle::m_iSortMethod = g_stSettings.m_iMyVideoTitleSortMethod;
-  SSortVideoTitleByTitle::m_bSortAscending = g_stSettings.m_bMyVideoTitleSortAscending;
+  int sortMethod = g_stSettings.m_iMyVideoTitleSortMethod;
+  bool sortAscending = g_stSettings.m_bMyVideoTitleSortAscending;
   if (g_stSettings.m_iMyVideoTitleSortMethod == 1)
-    SSortVideoTitleByTitle::m_bSortAscending = !SSortVideoTitleByTitle::m_bSortAscending;
-  items.Sort(SSortVideoTitleByTitle::Sort);
+    sortAscending = !sortAscending;
+  switch (sortMethod)
+  {
+  case 1:
+    items.Sort(sortAscending ? SSortFileItem::MovieYearAscending : SSortFileItem::MovieYearDescending); break;
+  case 2:
+    items.Sort(sortAscending ? SSortFileItem::MovieRatingAscending : SSortFileItem::MovieRatingDescending); break;
+  default:
+    items.Sort(sortAscending ? SSortFileItem::LabelAscending : SSortFileItem::LabelDescending); break;
+  }
 }
 
 //****************************************************************************************************************************

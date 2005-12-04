@@ -54,7 +54,7 @@ protected:
   virtual void OnPopupMenu(int iItem);
   /*!
   \brief Will be called for every item to set the label and thumbs
-  \param pItem Item to be formated
+  \param pItem Item to be formatted
   */
   virtual void OnFileItemFormatLabel(CFileItem* pItem) = 0;
   /*!
@@ -140,4 +140,9 @@ protected:
   vector<CStdString> m_vecPathHistory; ///< History of traversed directories
 
   CGUIViewControl m_viewControl;  ///< Handles our various views
+
+  // member variables to save frequently used g_guiSettings (which is slow)
+  CStdString m_formatLeft;
+  CStdString m_formatRight;
+  bool m_hideExtensions;
 };
