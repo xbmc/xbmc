@@ -101,7 +101,9 @@ CURL::CURL(const CStdString& strURL)
 
   // check for username/password
   int iAlphaSign = strURL.Find("@", iPos);
-  int iSlash = strURL.Find("/", iPos); //to allow for @'s in filenames
+  int iSlash;
+  if (iAlphaSign >= 0) iSlash = strURL.Find("/", iAlphaSign); //to allow for @'s in filenames
+  else iSlash = strURL.Find("/", iPos);
 
   if (iAlphaSign >= 0 && (iAlphaSign < iSlash || iSlash < 0))
   {
