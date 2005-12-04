@@ -14,6 +14,7 @@ public:
   virtual int Decode(BYTE* pData, int iSize);
   virtual void Reset();
   virtual bool GetPicture(DVDVideoPicture* pDvdVideoPicture);
+  virtual void SetDropState(bool bDrop);
 
 protected:
   DVDVideoPicture* GetBuffer(unsigned int width, unsigned int height);

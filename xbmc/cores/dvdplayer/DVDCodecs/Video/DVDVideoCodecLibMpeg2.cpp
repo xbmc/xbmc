@@ -142,6 +142,11 @@ void CDVDVideoCodecLibMpeg2::Dispose()
   m_dll.Unload();
 }
 
+void CDVDVideoCodecLibMpeg2::SetDropState(bool bDrop)
+{
+  //noop
+}
+
 int CDVDVideoCodecLibMpeg2::Decode(BYTE* pData, int iSize)
 {
   int iState = 0;

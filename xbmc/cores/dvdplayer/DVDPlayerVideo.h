@@ -3,6 +3,7 @@
 
 #include "../../utils/thread.h"
 #include "DVDDemuxers\DVDPacketQueue.h"
+#include "DVDDemuxers\DVDDemuxUtils.h"
 #include "DVDCodecs\Video\DVDVideoCodec.h"
 #include "DVDClock.h"
 #include "DVDOverlayContainer.h"
@@ -45,21 +46,9 @@ public:
   bool InitializedOutputDevice();
   
   __int64 GetCurrentPts()                           { return m_iCurrentPts; }
-  
-  // used for picture handling between the class and video_refresh_thread()
-  CRITICAL_SECTION m_critSection;
-  HANDLE m_hEvent;
-  DVDVideoPicture pictq[VIDEO_PICTURE_QUEUE_SIZE];
-  int pictq_size, pictq_rindex, pictq_windex;
-  
-  bool m_bRunningVideo;
-  
-  int m_iDroppedFrames;
+
   int m_iSpeed;
-  
-  __int64 m_iVideoDelay; // not really needed to be an __int64
-  __int64 m_iCurrentPts;
-  
+    
   // classes
   CDVDPacketQueue m_packetQueue;
   CDVDOverlayContainer* m_pOverlayContainer;
@@ -71,9 +60,25 @@ protected:
   virtual void OnExit();
   virtual void Process();
 
-  bool OutputPicture(DVDVideoPicture* pPicture, __int64 pts1);
-  
+  enum EOUTPUTSTATUS
+  {
+    EOS_OK=0,
+    EOS_ABORT=1,
+    EOS_DROPPED_VERYLATE=2,
+    EOS_DROPPED=3,
+  };
+
+  EOUTPUTSTATUS OutputPicture(DVDVideoPicture* pPicture, __int64 pts);
+
+  __int64 m_iCurrentPts; // last pts displayed
+  __int64 m_iVideoDelay; // not really needed to be an __int64  
+  __int64 m_iFlipTimeStamp; // time stamp of last flippage. used to play at a forced framerate
+
+  int m_iDroppedFrames;
   bool m_bInitializedOutputDevice;
+  float m_fFrameRate;
+
+  
   bool m_bRenderSubs;
   
   float m_fForcedAspectRatio;
@@ -86,4 +91,45 @@ protected:
   CDVDVideoCodec* m_pVideoCodec;
   
   CRITICAL_SECTION m_critCodecSection;
+
+  class CPresentThread : public CThread
+  {
+  public:
+    CPresentThread( CDVDClock *pClock )
+    {           
+      m_pClock = pClock;
+      m_iTimestamp = 0i64;
+      CThread::Create();
+      CThread::SetPriority(THREAD_PRIORITY_TIME_CRITICAL);      
+      CThread::SetName("CPresentThread");
+    }
+
+    virtual ~CPresentThread() { StopThread(); }
+
+    virtual void StopThread()
+    {
+      CThread::m_bStop = true;
+      m_eventFrame.Set();
+
+      CThread::StopThread();
+    }
+
+    // aborts any pending displays.
+    void AbortPresent() { m_iTimestamp = 0i64; } 
+
+    //delay before we want to present this picture
+    void Present(__int64 iTimeStamp, EFIELDSYNC m_OnField); 
+
+  protected:
+
+    virtual void Process();
+
+  private:
+    __int64 m_iTimestamp;
+
+    CCriticalSection m_critSection;
+    CEvent m_eventFrame;
+    CDVDClock *m_pClock;
+  } m_PresentThread;
+
 };
