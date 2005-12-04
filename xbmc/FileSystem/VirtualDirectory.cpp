@@ -109,9 +109,11 @@ bool CVirtualDirectory::GetDirectory(const CStdString& strPath, CFileItemList &i
       return CDirectory::GetDirectory(strPath, items, m_strFileMask, bUseFileDirectories, m_allowPrompting);
     }
 
-    // is this operation intentional?
-    // should this return the root bookmark listing, or return an error?
+    // what do with an invalid path?
+    // return false so the calling window can deal with the error accordingly
+    // otherwise the root bookmark listing is returned which seems incorrect but was the previous behaviour
     CLog::Log(LOGERROR,"CVirtualDirectory::GetDirectory(%s) matches no valid bookmark, getting root bookmark list instead", strPath.c_str());
+    return false;
   }
 
   // if strPath is blank, return the root bookmark listing
