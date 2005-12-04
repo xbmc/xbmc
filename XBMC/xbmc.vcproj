@@ -2791,6 +2791,9 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\cores\DllLoader\dll_tracker.cpp">
 				</File>
 				<File
+					RelativePath=".\xbmc\cores\DllLoader\dll_tracker_critical_section.cpp">
+				</File>
+				<File
 					RelativePath=".\xbmc\cores\DllLoader\dll_tracker_file.cpp">
 				</File>
 				<File
