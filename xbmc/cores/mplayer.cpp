@@ -3,7 +3,6 @@
 #include "mplayer/mplayer.h"
 #include "../util.h"
 #include "../filesystem/fileshoutcast.h"
-#include "DllLoader/exports/emu_kernel32.h"
 #include "dlgcache.h"
 #include "../FileSystem/FileSmb.h"
 #include "../XBAudioConfig.h"
@@ -575,7 +574,6 @@ void CMPlayer::Options::GetOptions(int& argc, char* argv[])
 CMPlayer::CMPlayer(IPlayerCallback& callback)
     : IPlayer(callback)
 {
-  criticalsection_head = NULL;
   m_pDLL = NULL;
   m_bIsPlaying = false;
   m_bPaused = false;
@@ -599,19 +597,7 @@ CMPlayer::~CMPlayer()
   }
 
   Unload();
-  while ( criticalsection_head )
-  {
-    CriticalSection_List * entry = criticalsection_head;
-    criticalsection_head = entry->Next;
-    try
-    {
-      delete entry;
-    }
-    catch(...)
-    {
-      CLog::Log(LOGERROR, "CMPlayer::~CMPlayer() - Unable to delete CriticalSection.. Skipping");
-    }
-  } //fix winnt and xbox critical data mismatch issue.
+  
   save_registry(); // save registry to disk
   free_registry(); //free memory take by registry structures
   smb.Purge(); // close any open smb sessions

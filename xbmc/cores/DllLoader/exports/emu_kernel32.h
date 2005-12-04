@@ -79,18 +79,6 @@ OSVERSIONINFO, *LPOSVERSIONINFO;
 
 #define ATOM unsigned short
 
-class CriticalSection_List
-{
-public:
-  CRITICAL_SECTION criticalsection;
-  CriticalSection_List * Next;
-
-  CriticalSection_List();
-  ~CriticalSection_List();
-};
-
-extern CriticalSection_List * criticalsection_head;
-
 //All kernel32 function should use WINAPI calling convention.
 //When doing emulation or interception, the calling convention should
 //match exactly the target dlls suppose to use.   Monkeyhappy
@@ -120,10 +108,10 @@ extern "C" void WINAPI dllGetSystemInfo(LPSYSTEM_INFO lpSystemInfo);
 extern "C" UINT WINAPI dllGetPrivateProfileIntA(LPCSTR lpAppName, LPCSTR lpKeyName,
       INT nDefault, LPCSTR lpFileName);
 
-extern "C" void WINAPI dllDeleteCriticalSection(CriticalSection_List ** fixc);
-extern "C" void WINAPI dllInitializeCriticalSection(CriticalSection_List ** fixc);
-extern "C" void WINAPI dllLeaveCriticalSection(CriticalSection_List ** fixc);
-extern "C" void WINAPI dllEnterCriticalSection(CriticalSection_List ** fixc);
+extern "C" void WINAPI dllDeleteCriticalSection(LPCRITICAL_SECTION cs);
+extern "C" void WINAPI dllInitializeCriticalSection(LPCRITICAL_SECTION cs);
+extern "C" void WINAPI dllLeaveCriticalSection(LPCRITICAL_SECTION cs);
+extern "C" void WINAPI dllEnterCriticalSection(LPCRITICAL_SECTION cs);
 
 extern "C" BOOL WINAPI dllGetVersionExA(LPOSVERSIONINFO lpVersionInfo);
 extern "C" DWORD WINAPI dllGetVersion();
