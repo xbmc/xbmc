@@ -393,6 +393,12 @@ void CComboRenderer::UnInit()
   CXBoxRenderer::UnInit();
   m_pD3DDevice->EnableOverlay(FALSE);
   DeleteYUY2Textures();
+
+  if (m_hPixelShader)
+  {
+    m_pD3DDevice->DeletePixelShader(m_hPixelShader);
+    m_hPixelShader = 0;
+  }
 }
 
 void CComboRenderer::CheckScreenSaver()
