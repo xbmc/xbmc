@@ -111,8 +111,9 @@ void CDVDVideoCodecFFmpeg::SetDropState(bool bDrop)
     // couldn't find any good docs on it. think it varies
     // from codec to codec on what it does
 
+    //  2 seem to be to high.. it causes video to be ruined on following images
     if( bDrop )
-      m_pCodecContext->hurry_up = 2;
+      m_pCodecContext->hurry_up = 1;
     else
       m_pCodecContext->hurry_up = 0;
   }
