@@ -5,7 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
- - 05-12-2005 added: frame dropping in video decoder when using ffmpeg
+ - 05-12-2005 added: frame dropping in video decoder when using ffmpeg in dvdplayer
  - 05-12-2005 fixed: saving playlists
  - 04-12-2005 fixed: memory leaks in video renderers
  - 04-12-2005 added: critical section tracking for dlls (should fix some small memory leaks)
