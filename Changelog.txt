@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 05-12-2005 fixed: saving playlists
  - 04-12-2005 fixed: memory leaks in video renderers
  - 04-12-2005 added: critical section tracking for dlls (should fix some small memory leaks)
  - 04-12-2005 added: dvdplayer initial ff/rw support in dvdplayer. only available in debug builds. 
