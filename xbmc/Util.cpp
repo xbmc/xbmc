@@ -2015,6 +2015,17 @@ void CUtil::AddFileToFolder(const CStdString& strFolder, const CStdString& strFi
   strResult += strFile;
 }
 
+void CUtil::AddSlashAtEnd(CStdString& strFolder)
+{
+  if (!CUtil::HasSlashAtEnd(strFolder))
+  {
+    if (strFolder.Find("//") >= 0 )
+      strFolder += "/";
+    else
+      strFolder += "\\";
+  }
+}
+
 void CUtil::GetPath(const CStdString& strFileName, CStdString& strPath)
 {
   int iPos1 = strFileName.Find("/");
