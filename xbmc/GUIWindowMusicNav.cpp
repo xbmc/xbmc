@@ -504,7 +504,7 @@ bool CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, CFileItemL
       m_iViewAsIcons = g_stSettings.m_iMyMusicNavGenresViewAsIcons;
 
       // check cache first
-//      LoadDatabaseDirectoryCache(strDirectory, items, m_iSortCache, m_bAscendCache, m_bSkipTheCache);
+      LoadDatabaseDirectoryCache(strDirectory, items, m_iSortCache, m_bAscendCache, m_bSkipTheCache);
       if (items.Size())
       {
         m_bGotDirFromCache = true;
@@ -550,7 +550,7 @@ bool CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, CFileItemL
       m_iViewAsIcons = g_stSettings.m_iMyMusicNavArtistsViewAsIcons;
 
       // check cache first
-//      LoadDatabaseDirectoryCache(strDirectory, items, m_iSortCache, m_bAscendCache, m_bSkipTheCache);
+      LoadDatabaseDirectoryCache(strDirectory, items, m_iSortCache, m_bAscendCache, m_bSkipTheCache);
       if (items.Size())
       {
         m_bGotDirFromCache = true;
@@ -597,7 +597,7 @@ bool CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, CFileItemL
       m_iViewAsIcons = g_stSettings.m_iMyMusicNavAlbumsViewAsIcons;
 
       // check cache first
-//      LoadDatabaseDirectoryCache(strDirectory, items, m_iSortCache, m_bAscendCache, m_bSkipTheCache);
+      LoadDatabaseDirectoryCache(strDirectory, items, m_iSortCache, m_bAscendCache, m_bSkipTheCache);
       if (items.Size())
       {
         m_bGotDirFromCache = true;
@@ -647,7 +647,7 @@ bool CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, CFileItemL
       m_iViewAsIcons = g_stSettings.m_iMyMusicNavSongsViewAsIcons;
 
       // check cache first
-//      LoadDatabaseDirectoryCache(strDirectory, items, m_iSortCache, m_bAscendCache, m_bSkipTheCache);
+      LoadDatabaseDirectoryCache(strDirectory, items, m_iSortCache, m_bAscendCache, m_bSkipTheCache);
       if (items.Size())
       {
         m_bGotDirFromCache = true;
