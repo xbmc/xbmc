@@ -586,11 +586,12 @@ void CGUIWindowVideoPlaylist::SavePlayList()
   if (CGUIDialogKeyboard::ShowAndGetInput(strNewFileName, (CStdStringW)g_localizeStrings.Get(16012), false))
   {
     // need 2 rename it
-    CStdString strPath = g_stSettings.m_szPlaylistsDirectory;
-    strPath += "video\\";
+    CStdString strFolder, strPath;
+    CUtil::AddFileToFolder(g_stSettings.m_szPlaylistsDirectory, "video", strFolder);
+    CUtil::RemoveIllegalChars( strNewFileName );
+    strNewFileName += ".m3u";
+    CUtil::AddFileToFolder(strFolder, strNewFileName, strPath);
 
-    strPath += strNewFileName;
-    strPath += ".m3u";
     CPlayListM3U playlist;
     for (int i = 0; i < m_vecItems.Size(); ++i)
     {
@@ -604,7 +605,7 @@ void CGUIWindowVideoPlaylist::SavePlayList()
         newItem.SetDuration(0);
       playlist.Add(newItem);
     }
-    CLog::Log(LOGDEBUG,"saving to %s",strPath.c_str());
+    CLog::Log(LOGDEBUG, "Saving video playlist: [%s]", strPath.c_str());
     playlist.Save(strPath);
   }
 }

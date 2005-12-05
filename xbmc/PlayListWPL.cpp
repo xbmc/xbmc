@@ -83,7 +83,11 @@ void CPlayListWPL::Save(const CStdString& strFileName) const
 {
   if (!m_vecItems.size()) return ;
   FILE *fd = fopen(strFileName.c_str(), "w+");
-  if (!fd) return ;
+  if (!fd)
+  {
+    CLog::Log(LOGERROR, "Could not save WPL playlist: [%s]", strFileName.c_str());
+    return ;
+  }
   fprintf(fd, "<?wpl version=%c1.0%c>\n", 34, 34);
   fprintf(fd, "<smil>\n");
   fprintf(fd, "    <head>\n");
