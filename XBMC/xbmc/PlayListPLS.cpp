@@ -320,7 +320,11 @@ void CPlayListPLS::Save(const CStdString& strFileName) const
 {
   if (!m_vecItems.size()) return ;
   FILE *fd = fopen(strFileName.c_str(), "w+");
-  if (!fd) return ;
+  if (!fd)
+  {
+    CLog::Log(LOGERROR, "Could not save PLS playlist: [%s]", strFileName.c_str());
+    return ;
+  }
   fprintf(fd, "%s\n", START_PLAYLIST_MARKER);
   fprintf(fd, "PlaylistName=%s\n", m_strPlayListName.c_str() );
 

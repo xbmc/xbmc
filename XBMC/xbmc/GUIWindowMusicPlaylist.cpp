@@ -352,12 +352,12 @@ void CGUIWindowMusicPlayList::SavePlayList()
   if (CGUIDialogKeyboard::ShowAndGetInput(strNewFileName, (CStdStringW)g_localizeStrings.Get(16012), false))
   {
     // need 2 rename it
-    CStdString strPath = g_stSettings.m_szPlaylistsDirectory;
-    strPath += "music\\";
-
+    CStdString strFolder, strPath;
+    CUtil::AddFileToFolder(g_stSettings.m_szPlaylistsDirectory, "music", strFolder);
     CUtil::RemoveIllegalChars( strNewFileName );
-    strPath += strNewFileName;
-    strPath += ".m3u";
+    strNewFileName += ".m3u";
+    CUtil::AddFileToFolder(strFolder, strNewFileName, strPath);
+
     CPlayListM3U playlist;
     for (int i = 0; i < (int)m_vecItems.Size(); ++i)
     {
@@ -371,6 +371,7 @@ void CGUIWindowMusicPlayList::SavePlayList()
         newItem.SetDuration(0);
       playlist.Add(newItem);
     }
+    CLog::Log(LOGDEBUG, "Saving music playlist: [%s]", strPath.c_str());
     playlist.Save(strPath);
   }
 }
