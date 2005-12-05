@@ -89,7 +89,11 @@ void CPlayListB4S::Save(const CStdString& strFileName) const
 {
   if (!m_vecItems.size()) return ;
   FILE *fd = fopen(strFileName.c_str(), "w+");
-  if (!fd) return ;
+  if (!fd)
+  {
+    CLog::Log(LOGERROR, "Could not save B4S playlist: [%s]", strFileName.c_str());
+    return ;
+  }
   fprintf(fd, "<?xml version=%c1.0%c encoding='UTF-8' standalone=%cyes%c?>\n", 34, 34, 34, 34);
   fprintf(fd, "<WinampXML>\n");
   fprintf(fd, "  <playlist num_entries=%c%i%c label=%c%s%c>\n", 34, m_vecItems.size(), 34, 34, m_strPlayListName.c_str(), 34);

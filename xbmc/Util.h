@@ -142,9 +142,10 @@ public:
   static void PrepareSubtitleFonts();
   static __int64 ToInt64(DWORD dwHigh, DWORD dwLow);
   static void AddFileToFolder(const CStdString& strFolder, const CStdString& strFile, CStdString& strResult);
+  static void CUtil::AddSlashAtEnd(CStdString& strFolder);
   static void GetPath(const CStdString& strFileName, CStdString& strPath);
   static void Split(const CStdString& strFileNameAndPath, CStdString& strPath, CStdString& strFileName);
-static void CreateRarPath(CStdString& strUrlPath, const CStdString& strRarPath, 
+  static void CreateRarPath(CStdString& strUrlPath, const CStdString& strRarPath, 
     const CStdString& strFilePathInRar,  const WORD wOptions = EXFILE_AUTODELETE , 
     const CStdString& strPwd = RAR_DEFAULT_PASSWORD, const CStdString& strCachePath = RAR_DEFAULT_CACHE);
   static bool ThumbExists(const CStdString& strFileName, bool bAddCache = false);

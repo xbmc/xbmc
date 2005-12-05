@@ -447,18 +447,19 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
   strDir = g_stSettings.m_szPlaylistsDirectory;
   ConvertHomeVar(strDir);
   strcpy( g_stSettings.m_szPlaylistsDirectory, strDir.c_str() );
-  if (!CUtil::HasSlashAtEnd(g_stSettings.m_szPlaylistsDirectory))
-    strcat(g_stSettings.m_szPlaylistsDirectory,"/");
-  if (!CDirectory::Exists(strDir+"\\music"))
-    CDirectory::Create(strDir+"\\music");
-  if (!CDirectory::Exists(strDir+"\\video"))
-    CDirectory::Create(strDir+"\\video");
+
+  CStdString strTempDir;
+  CUtil::AddFileToFolder(g_stSettings.m_szPlaylistsDirectory, "music", strTempDir);
+  if (!CDirectory::Exists(strTempDir))
+    CDirectory::Create(strTempDir);
+  CUtil::AddFileToFolder(g_stSettings.m_szPlaylistsDirectory, "video", strTempDir);
+  if (!CDirectory::Exists(strTempDir))
+    CDirectory::Create(strTempDir);
   
   strDir = g_stSettings.m_szCacheDirectory;
   ConvertHomeVar(strDir);
+  CUtil::AddSlashAtEnd(strDir);
   strcpy( g_stSettings.m_szCacheDirectory, strDir.c_str() );
-  if (!CUtil::HasSlashAtEnd(g_stSettings.m_szCacheDirectory))
-    strcat(g_stSettings.m_szCacheDirectory,"/");
 
   while ( CUtil::HasSlashAtEnd(g_stSettings.m_szScreenshotsDirectory) )
   {

@@ -115,7 +115,11 @@ void CPlayListM3U::Save(const CStdString& strFileName) const
 {
   if (!m_vecItems.size()) return ;
   FILE *fd = fopen(strFileName.c_str(), "w+");
-  if (!fd) return ;
+  if (!fd)
+  {
+    CLog::Log(LOGERROR, "Could not save M3U playlist: [%s]", strFileName.c_str());
+    return ;
+  }
   fprintf(fd, "%s\n", M3U_START_MARKER);
   for (int i = 0; i < (int)m_vecItems.size(); ++i)
   {
