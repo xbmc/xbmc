@@ -32,7 +32,7 @@ bool CGUIDialogMusicOSD::OnMessage(CGUIMessage &message)
         OnMessage(msg);
         CStdString strLabel = msg.GetLabel();
         if (msg.GetParam1() == 0)
-          g_guiSettings.SetString("MyMusic.Visualisation", strLabel);
+          g_guiSettings.SetString("MyMusic.Visualisation", "None");
         else
           g_guiSettings.SetString("MyMusic.Visualisation", strLabel + ".vis");
         // hide the control and reset focus
