@@ -446,6 +446,7 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
 
   strDir = g_stSettings.m_szPlaylistsDirectory;
   ConvertHomeVar(strDir);
+  CUtil::AddSlashAtEnd(strDir);
   strcpy( g_stSettings.m_szPlaylistsDirectory, strDir.c_str() );
 
   CStdString strTempDir;
