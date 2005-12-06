@@ -235,7 +235,7 @@ bool CGUIWindowMusicSongs::OnMessage(CGUIMessage& message)
       else if (iControl == CONTROL_BTNPLAYLISTS)
       {
         CStdString strDirectory;
-        strDirectory.Format("%smusic\\", g_stSettings.m_szPlaylistsDirectory);
+        CUtil::AddFileToFolder(g_stSettings.m_szPlaylistsDirectory, "music", strDirectory);
         if (strDirectory != m_Directory.m_strPath)
           Update(strDirectory);
       }
