@@ -2,7 +2,7 @@
 #include "GUIVideoControl.h"
 #include "GUIWindowManager.h"
 #include "../xbmc/Application.h"
-
+#include "../xbmc/cores/VideoRenderers/RenderManager.h"
 
 CGUIVideoControl::CGUIVideoControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight)
     : CGUIControl(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight)
@@ -16,7 +16,10 @@ void CGUIVideoControl::Render()
 {
   if (!UpdateEffectState()) return ;
 
-  if (!g_application.IsPlayingVideo()) return;
+  // don't render if we aren't playing video, or if the renderer isn't started
+  // (otherwise the lock we have from CApplication::Render() may clash with the startup
+  // locks in the RenderManager.)
+  if (!g_application.IsPlayingVideo() || !g_renderManager.IsStarted()) return;
 
   if (!g_application.m_pPlayer->IsPaused())
     g_application.ResetScreenSaver();
@@ -28,8 +31,7 @@ void CGUIVideoControl::Render()
   rc.bottom = rc.top + m_dwHeight;
   g_graphicsContext.SetViewWindow(rc);
 
-  extern void xbox_video_render_update(bool);
-  xbox_video_render_update(false);
+  g_renderManager.RenderUpdate(false);
 }
 
 void CGUIVideoControl::OnMouseClick(DWORD dwButton)

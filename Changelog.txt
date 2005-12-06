@@ -5,6 +5,9 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 06-12-2005 fixed: [ 1372341 ] Using 'none' in PM3 freezes xbox after apx. half hour in non-English locales. Requires changing the vis off none, then back onto it to stop the freezing.
+ - 06-12-2005 fixed: [ 1324302 ] XBMC hangs when skipping to next video in My Videos playlist.
+ - 06-12-2005 fixed: Bug in GUIFont::GetTextExtent() which could cause filenames with characters that were not present in the font to crash.
  - 05-12-2005 fixed: playlists button in My Music Files
  - 05-12-2005 added: frame dropping in video decoder when using ffmpeg in dvdplayer
  - 05-12-2005 fixed: saving playlists
