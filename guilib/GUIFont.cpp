@@ -51,7 +51,6 @@ void CGUIFont::DrawTextWidthInternal(FLOAT fOriginX, FLOAT fOriginY, DWORD dwCol
     return ;
   }
   
-
   int iMinCharsLeft;
   int iStrLength = wcslen( strText );
   WCHAR *wszText = new WCHAR[iStrLength + 1];
@@ -59,10 +58,10 @@ void CGUIFont::DrawTextWidthInternal(FLOAT fOriginX, FLOAT fOriginY, DWORD dwCol
   while (fTextWidth >= fMaxWidth && fTextWidth > 0)
   {
     iMinCharsLeft = (int)((fTextWidth - fMaxWidth) / m_iMaxCharWidth);
-    if (iMinCharsLeft > 5)
+    if (iMinCharsLeft > 5 && iStrLength > iMinCharsLeft)
     {
-      // at least 5 chars are left, strip al remaining characters instead
-      // of doing it one by one.
+      // at least 5 chars are on the right, strip all these characters
+      // instead of doing it one by one
       iStrLength -= iMinCharsLeft;
       wszText[iStrLength] = 0;
       GetTextExtentInternal(wszText, &fTextWidth, &fTextHeight);
