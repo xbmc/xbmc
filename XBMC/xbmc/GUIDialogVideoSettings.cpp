@@ -439,6 +439,7 @@ void CGUIDialogVideoSettings::AddSeparator(unsigned int id)
 #define VIDEO_SETTINGS_ADJUST_FRAME_RATE  13
 #define VIDEO_SETTINGS_NON_INTERLEAVED    14
 #define VIDEO_SETTINGS_NO_CACHE           15
+#define VIDEO_SETTINGS_FORCE_INDEX        16
 
 #define AUDIO_SETTINGS_VOLUME             1
 #define AUDIO_SETTINGS_DELAY              2
@@ -479,6 +480,7 @@ void CGUIDialogVideoSettings::CreateSettings()
     AddBool(VIDEO_SETTINGS_ADJUST_FRAME_RATE, 343, &g_stSettings.m_currentVideoSettings.m_AdjustFrameRate);
     AddBool(VIDEO_SETTINGS_NON_INTERLEAVED, 306, &g_stSettings.m_currentVideoSettings.m_NonInterleaved);
     AddBool(VIDEO_SETTINGS_NO_CACHE, 431, &g_stSettings.m_currentVideoSettings.m_NoCache);
+    AddButton(VIDEO_SETTINGS_FORCE_INDEX,12009);
   }
   else
   { // Audio and Subtitle settings
@@ -631,6 +633,11 @@ void CGUIDialogVideoSettings::OnSettingChanged(unsigned int num)
       if (pDialog) pDialog->Close();
       // launch calibration window
       m_gWindowManager.ActivateWindow(WINDOW_MOVIE_CALIBRATION);
+    }
+    else if (setting.id == VIDEO_SETTINGS_FORCE_INDEX)
+    {
+      g_stSettings.m_currentVideoSettings.m_bForceIndex = true;
+      g_application.Restart(true);
     }
   }
   else
