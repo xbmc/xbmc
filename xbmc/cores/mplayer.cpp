@@ -167,6 +167,16 @@ void CMPlayer::Options::SetNonInterleaved(bool bOnOff)
   m_bNonInterleaved = bOnOff;
 }
 
+bool CMPlayer::Options::GetForceIndex() const
+{
+  return m_bForceIndex;
+}
+
+void CMPlayer::Options::SetForceIndex(bool bOnOff)
+{
+  m_bForceIndex = bOnOff;
+}
+
 
 int CMPlayer::Options::GetAudioStream() const
 {
@@ -532,6 +542,9 @@ void CMPlayer::Options::GetOptions(int& argc, char* argv[])
     m_vecOptions.push_back("-ni");
   }
 
+  if (m_bForceIndex)
+    m_vecOptions.push_back("-forceidx");
+
   if (m_strDvdDevice.length() > 0)
   {
     CStdString strDevice;
@@ -791,6 +804,7 @@ bool CMPlayer::OpenFile(const CFileItem& file, __int64 iStartTime)
     if (file.IsVideo())
     {
       options.SetNonInterleaved(g_stSettings.m_currentVideoSettings.m_NonInterleaved);
+      options.SetForceIndex(g_stSettings.m_currentVideoSettings.m_bForceIndex);
 
     }
     options.SetNoCache(g_stSettings.m_currentVideoSettings.m_NoCache);
