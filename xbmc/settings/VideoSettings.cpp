@@ -14,6 +14,7 @@ CVideoSettings::CVideoSettings()
 {
   m_NoCache = false;
   m_NonInterleaved = false;
+  m_bForceIndex = false;
   m_InterlaceMethod = VS_INTERLACEMETHOD_NONE;
   m_FilmGrain = 0;
   m_ViewMode = VIEW_MODE_NORMAL;
@@ -60,6 +61,7 @@ bool CVideoSettings::operator!=(const CVideoSettings &right) const
   if (m_CropBottom != right.m_CropBottom) return true;
   if (m_CropLeft != right.m_CropLeft) return true;
   if (m_CropRight != right.m_CropRight) return true;
+  if (m_bForceIndex != right.m_bForceIndex) return true;
   return false;
 }
 
