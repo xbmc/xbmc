@@ -13,6 +13,9 @@ public:
     bool GetNonInterleaved() const;
     void SetNonInterleaved(bool bOnOff) ;
 
+    bool GetForceIndex() const;
+    void SetForceIndex(bool bOnOff);
+
     bool GetNoCache() const;
     void SetNoCache(bool bOnOff) ;
 
@@ -72,6 +75,7 @@ public:
     bool m_bDTSPassTru;
     float m_fVolumeAmplification;
     bool m_bNonInterleaved;
+    bool m_bForceIndex;
     bool m_bLimitedHWAC3;
     string m_strChannelMapping;
     string m_strDvdDevice;

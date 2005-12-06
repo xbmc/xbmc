@@ -34,6 +34,7 @@ public:
 
   bool m_NoCache;
   bool m_NonInterleaved;
+  bool m_bForceIndex;
   EINTERLACEMETHOD m_InterlaceMethod;
   int m_FilmGrain;
   int m_ViewMode;   // current view mode
