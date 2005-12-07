@@ -28,7 +28,7 @@ protected:
   virtual void OnPopupMenu(int iItem);
 
   void SetArtistImage(int iItem);
-  bool GetSongsFromPlayList(VECSONGS& songs, const CStdString& strPlayList);
+  bool GetSongsFromPlayList(CFileItemList &items, const CStdString& strPlayList);
 
   void SaveDatabaseDirectoryCache(const CStdString& strDirectory, CFileItemList& items, int iSortMethod, bool bAscending, bool bSkipThe);
   void LoadDatabaseDirectoryCache(const CStdString& strDirectory, CFileItemList& items, int& iSortMethod, bool& bAscending, bool& bSkipThe);
