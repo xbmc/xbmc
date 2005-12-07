@@ -113,7 +113,7 @@ public:
 
   bool GetAlbumsByPath(const CStdString& strPath, VECALBUMS& albums);
   bool FindAlbumsByName(const CStdString& strSearch, VECALBUMS& albums);
-  bool GetTop100(VECSONGS& songs);
+  bool GetTop100(CFileItemList& items);
   bool GetTop100Albums(VECALBUMS& albums);
   bool GetRecentlyAddedAlbums(VECALBUMS& albums);
   bool GetRecentlyPlayedAlbums(VECALBUMS& albums);

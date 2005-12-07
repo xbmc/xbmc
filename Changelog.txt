@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 06-12-2005 fixed: My Music Library access to Playlists and Top 100 Songs
  - 06-12-2005 changed: error messages related to nfo file reading for imdb url's
  - 06-12-2005 added: force index rebuilding to video osd.
  - 06-12-2005 fixed: [ 1372341 ] Using 'none' in PM3 freezes xbox after apx. half hour in non-English locales. Requires changing the vis off none, then back onto it to stop the freezing.
