@@ -446,16 +446,19 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
 
   strDir = g_stSettings.m_szPlaylistsDirectory;
   ConvertHomeVar(strDir);
+  CLog::Log(LOGDEBUG,"!!! PLAYLISTS DIR BEFORE: [%s]", strDir.c_str());
   CUtil::AddSlashAtEnd(strDir);
+  CLog::Log(LOGDEBUG,"!!! PLAYLISTS DIR AFTER:  [%s]", strDir.c_str());
   strcpy( g_stSettings.m_szPlaylistsDirectory, strDir.c_str() );
 
-  CStdString strTempDir;
-  CUtil::AddFileToFolder(g_stSettings.m_szPlaylistsDirectory, "music", strTempDir);
-  if (!CDirectory::Exists(strTempDir))
-    CDirectory::Create(strTempDir);
-  CUtil::AddFileToFolder(g_stSettings.m_szPlaylistsDirectory, "video", strTempDir);
-  if (!CDirectory::Exists(strTempDir))
-    CDirectory::Create(strTempDir);
+  CUtil::AddFileToFolder(g_stSettings.m_szPlaylistsDirectory, "music", strDir);
+  CLog::Log(LOGDEBUG,"!!! MUSIC PLAYLISTS DIR:  [%s]", strDir.c_str());
+  if (!CDirectory::Exists(strDir))
+    CDirectory::Create(strDir);
+  CUtil::AddFileToFolder(g_stSettings.m_szPlaylistsDirectory, "video", strDir);
+  CLog::Log(LOGDEBUG,"!!! VIDEO PLAYLISTS DIR:  [%s]", strDir.c_str());
+  if (!CDirectory::Exists(strDir))
+    CDirectory::Create(strDir);
   
   strDir = g_stSettings.m_szCacheDirectory;
   ConvertHomeVar(strDir);
