@@ -623,8 +623,11 @@ void CGUIWindowVideoFiles::OnRetrieveVideoInfo(CFileItemList& items)
                 GetIMDBDetails(pItem, url);
                 continue;
               }
+              else
+                CLog::Log(LOGERROR,"Unable to find an imdb url in nfo file: %s", strNfoFile.c_str());
             }
-            CLog::Log(LOGERROR,"Unable to cache nfo file: %s", strNfoFile.c_str());
+            else
+              CLog::Log(LOGERROR,"Unable to cache nfo file: %s", strNfoFile.c_str());
           }
           CStdString strMovieName;
           if (pItem->IsOnDVD() || pItem->IsDVDFile())
