@@ -1178,11 +1178,10 @@ bool CMusicDatabase::GetAlbumInfoSongs(long idAlbumInfo, VECSONGS& songs)
   return false;
 }
 
-bool CMusicDatabase::GetTop100(VECSONGS& songs)
+bool CMusicDatabase::GetTop100(CFileItemList& items)
 {
   try
   {
-    songs.erase(songs.begin(), songs.end());
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
@@ -1199,10 +1198,10 @@ bool CMusicDatabase::GetTop100(VECSONGS& songs)
       m_pDS->close();
       return false;
     }
-    int iCount = 1;
     while (!m_pDS->eof())
     {
-      songs.push_back(GetSongFromDataset());
+      CFileItem *item = new CFileItem(GetSongFromDataset());
+      items.Add(item);
       m_pDS->next();
     }
 

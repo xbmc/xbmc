@@ -664,13 +664,12 @@ bool CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, CFileItemL
       }
 
       // get songs from the database
-      VECSONGS songs;
       bool bTest;
 //      DWORD time = timeGetTime();
       if (m_iPath == (SHOW_TOP + SHOW_SONGS))
-        bTest = g_musicDatabase.GetTop100(songs);
+        bTest = g_musicDatabase.GetTop100(items);
       else if (m_iPath == (SHOW_PLAYLISTS + SHOW_SONGS))
-        bTest = GetSongsFromPlayList(songs, m_vecPathHistory.back());
+        bTest = GetSongsFromPlayList(items, m_vecPathHistory.back());
       else
         bTest = g_musicDatabase.GetSongsNav(items, m_strGenre, m_strArtist, m_strAlbum, m_strAlbumPath);
 //      CLog::DebugLog("Database lookup time = %i", timeGetTime() - time); time = timeGetTime();
@@ -684,12 +683,6 @@ bool CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, CFileItemL
           pFileItem->m_bIsFolder = true;
           items.Add(pFileItem);
         }
-/*        for (int i = 0; i < (int)songs.size(); ++i)
-        {
-          CSong &song = songs[i];
-          CFileItem* pFileItem = new CFileItem(song);
-          items.Add(pFileItem);
-        }*/
       }
     }
     break;
@@ -1796,8 +1789,9 @@ void CGUIWindowMusicNav::LoadDatabaseDirectoryCache(const CStdString& strDirecto
   }
 }
 
-bool CGUIWindowMusicNav::GetSongsFromPlayList(VECSONGS& songs, const CStdString& strPlayList)
+bool CGUIWindowMusicNav::GetSongsFromPlayList(CFileItemList &items, const CStdString& strPlayList)
 {
+  CLog::Log(LOGDEBUG,"CGUIWindowMusicNav, opening playlist [%s]", strPlayList.c_str());
   CPlayListFactory factory;
   auto_ptr<CPlayList> pPlayList (factory.Create(strPlayList));
   if ( NULL != pPlayList.get())
@@ -1816,7 +1810,8 @@ bool CGUIWindowMusicNav::GetSongsFromPlayList(VECSONGS& songs, const CStdString&
       song.strFileName = playlist[i].m_strPath;
       song.strTitle = CUtil::GetFileName(song.strFileName);
       song.iDuration = playlist[i].GetDuration();
-      songs.push_back(song);
+      CFileItem *item = new CFileItem(song);
+      items.Add(item);
     }
   }
 
