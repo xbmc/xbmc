@@ -3350,7 +3350,7 @@ int CUtil::GetMatchingShare(const CStdString& strPath1, VECSHARES& vecShares, bo
 
   // return the index of the share with the longest match
   if (iIndex == -1)
-    CLog::Log(LOGERROR,"CUtil::GetMatchingShare... no matching bookmark found for [%s]", strDest.c_str());
+    CLog::Log(LOGWARNING,"CUtil::GetMatchingShare... no matching bookmark found for [%s]", strDest.c_str());
   return iIndex;
 }
 
