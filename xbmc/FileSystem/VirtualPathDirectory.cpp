@@ -98,6 +98,16 @@ bool CVirtualPathDirectory::Exists(const CStdString& strPath)
   return true;
 }
 
+bool CVirtualPathDirectory::GetPathes(const CStdString& strPath, vector<CStdString>& vecPaths)
+{
+  CShare share;
+  if (!GetMatchingShare(strPath, share))
+    return false;
+  vecPaths = share.vecPaths;
+  return true;
+}
+
+
 bool CVirtualPathDirectory::GetTypeAndBookmark(const CStdString& strPath, CStdString& strType, CStdString& strBookmark)
 {
   // format: virtualpath://type/bookmarkname
