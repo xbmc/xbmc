@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 07-12-2005 fixed: IMDB thumbs for movies in the root of a multipath bookmark in My Videos (i hope?)
  - 06-12-2005 fixed: My Music Library access to Playlists and Top 100 Songs
  - 06-12-2005 changed: error messages related to nfo file reading for imdb url's
  - 06-12-2005 added: force index rebuilding to video osd.
