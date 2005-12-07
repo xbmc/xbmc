@@ -530,8 +530,11 @@ void CGUIWindowVideoBase::ShowIMDB(const CStdString& strMovie, const CStdString&
           m_database.DeleteMovieInfo(strFile);
         }
       }
+      else
+        CLog::Log(LOGERROR,"Unable to find an imdb url in nfo file: %s", strNfoFile.c_str());
     }
-    CLog::Log(LOGERROR,"Unable to cache nfo file: %s", strNfoFile.c_str());
+    else
+      CLog::Log(LOGERROR,"Unable to cache nfo file: %s", strNfoFile.c_str());
   }
 
   if (!g_guiSettings.GetBool("FileLists.HideExtensions") && !bFolder)
