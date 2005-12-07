@@ -148,47 +148,60 @@ bool CRarManager::GetFilesInRar(CFileItemList& vecpItems, const CStdString& strR
   else
     pFileList = it->second.first;
 
-	CFileItem* pFileItem = NULL;
+CFileItem* pFileItem = NULL;
   vector<CStdString> vec;
-  CUtil::Tokenize(strPathInRar,vec,"\\");
+  std::set<CStdString> dirSet;
+  CUtil::Tokenize(strPathInRar,vec,"\\/");
   unsigned int iDepth = vec.size();
   
   ArchiveList_struct* pIterator;
+  CStdString strMatch;
   for( pIterator = pFileList; pIterator  ; pIterator ? pIterator = pIterator->next : NULL)
 	{
-    char cDirDelimiter = (pIterator->item.HostOS==3 ? '/':'\\'); // win32 or unix paths?
+    CStdString strDirDelimiter = (pIterator->item.HostOS==3 ? "/":"\\"); // win32 or unix paths?
     if (bMask)
     {
       vec.clear();
-      CUtil::Tokenize(pIterator->item.Name,vec,"\\");
-      if ((vec.size() > iDepth+1) || (vec.size() < iDepth))
-        continue;
+      CUtil::Tokenize(pIterator->item.Name,vec,strDirDelimiter);
       if (!strstr(pIterator->item.Name,strPathInRar.c_str()))
+        continue;
+      if (vec.size() < iDepth)
         continue;
     }
     int iMask = (pIterator->item.HostOS==3 ? 0x0040000:16); // win32 or unix attribs?
-    if (((pIterator->item.FileAttr & iMask) == iMask)) // we have a directory
+    if (((pIterator->item.FileAttr & iMask) == iMask) || (vec.size() > iDepth+1 && bMask)) // we have a directory
     {
       if (!bMask) continue;
       if (vec.size() == iDepth)
         continue; // remove root of listing
-      pFileItem = new CFileItem(pIterator->item.Name+strPathInRar.size());
-      pFileItem->m_strPath = pIterator->item.Name+strPathInRar.size();
-      pFileItem->m_strPath += '\\';
-      pFileItem->m_strPath.Replace("/","\\");
-      pFileItem->m_bIsFolder = true;
-      pFileItem->m_lStartOffset = pIterator->item.Method;
+
+      if (dirSet.find(vec[iDepth]) == dirSet.end())
+      {
+        dirSet.insert(vec[iDepth]);
+        pFileItem = new CFileItem(vec[iDepth]);
+        pFileItem->m_strPath = vec[iDepth];
+        pFileItem->m_strPath += '\\';
+        pFileItem->m_strPath.Replace("/","\\");
+        pFileItem->m_bIsFolder = true;
+        pFileItem->m_lStartOffset = pIterator->item.Method;
+        pFileItem->m_lEndOffset = long(pIterator->item.iOffset);
+      }
     }
     else
     {
-      pFileItem = new CFileItem(pIterator->item.Name+strPathInRar.size());
-		  pFileItem->m_strPath = pIterator->item.Name+strPathInRar.size();
-      pFileItem->m_strPath.Replace("/","\\");
-      pFileItem->m_dwSize = pIterator->item.UnpSize;
-      pFileItem->m_lStartOffset = pIterator->item.Method;
+      if (vec.size() == iDepth+1 || !bMask)
+      {
+        pFileItem = new CFileItem(pIterator->item.Name+strPathInRar.size());
+		    pFileItem->m_strPath = pIterator->item.Name+strPathInRar.size();
+        pFileItem->m_strPath.Replace("/","\\");
+        pFileItem->m_dwSize = pIterator->item.UnpSize;
+        pFileItem->m_lStartOffset = pIterator->item.Method;
+        pFileItem->m_lEndOffset = long(pIterator->item.iOffset);
+      }
     }
     if (pFileItem)
       vecpItems.Add(pFileItem);
+
     pFileItem = NULL;
 	}
   return true;
