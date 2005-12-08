@@ -25,6 +25,7 @@ CGraphicContext::CGraphicContext(void)
   m_windowScaleX = m_windowScaleY = 1.0f;
   m_windowPosX = m_windowPosY = 0.0f;
   m_controlAlpha = m_windowAlpha = 255;
+  m_controlOffsetX = m_controlOffsetY = m_windowOffsetX = m_windowOffsetY = 0;
   MergeAlpha(10); // this just here so the inline function is included (why doesn't it include it normally??)
 }
 
@@ -102,17 +103,28 @@ bool CGraphicContext::SetViewPort(float fx, float fy , float fwidth, float fheig
       newviewport.Height = oldviewport->Y + oldviewport->Height - newviewport.Y;
   }
   // check range
-  if (newviewport.X + newviewport.Width > (DWORD)m_iScreenWidth) newviewport.Width = m_iScreenWidth - newviewport.X;
-  if (newviewport.Y + newviewport.Height > (DWORD)m_iScreenHeight)
+  if (newviewport.X + newviewport.Width > (DWORD)m_iScreenWidth)
   {
-    if (newviewport.Y>=(DWORD)m_iScreenHeight)
+    if (newviewport.X >= (DWORD)m_iScreenWidth)
     {
-      newviewport.Y=m_iScreenHeight-1;
-      newviewport.Height=1;
+      newviewport.X = m_iScreenWidth - 1;
+      newviewport.Width = 1;
     }
     else
     {
-      newviewport.Height=m_iScreenHeight-newviewport.Y;
+      newviewport.Width = m_iScreenWidth - newviewport.X;
+    }
+  }
+  if (newviewport.Y + newviewport.Height > (DWORD)m_iScreenHeight)
+  {
+    if (newviewport.Y >= (DWORD)m_iScreenHeight)
+    {
+      newviewport.Y = m_iScreenHeight - 1;
+      newviewport.Height = 1;
+    }
+    else
+    {
+      newviewport.Height = m_iScreenHeight-newviewport.Y;
     }
   }
   newviewport.MinZ = 0.0f;
@@ -592,12 +604,12 @@ void CGraphicContext::SetScalingResolution(RESOLUTION res, int posX, int posY, b
 
 inline float CGraphicContext::ScaleFinalXCoord(float x) const
 {
-  return x * m_windowScaleX + m_windowPosX;
+  return (x + m_controlOffsetX) * m_windowScaleX + m_windowPosX + m_windowOffsetX;
 }
 
 inline float CGraphicContext::ScaleFinalYCoord(float y) const
 {
-  return y * m_windowScaleY + m_windowPosY;
+  return (y + m_controlOffsetY) * m_windowScaleY + m_windowPosY + m_windowOffsetY;
 }
 
 inline DWORD CGraphicContext::MergeAlpha(DWORD color) const

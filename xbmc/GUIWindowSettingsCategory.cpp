@@ -154,11 +154,6 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
     break;
   case GUI_MSG_LOAD_SKIN:
     {
-      unsigned iCtrlID = GetFocusedControl();
-
-      CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), iCtrlID, 0, 0, NULL);
-      g_graphicsContext.SendMessage(msg);
-
       // Do we need to reload the language file
       if (!m_strNewLanguage.IsEmpty())
       {
@@ -193,12 +188,17 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
         g_settings.Save();
       }
 
-      // Reload the skin
+      // Reload the skin.  Save the current focused control, and refocus it
+      // when done.
+      unsigned iCtrlID = GetFocusedControl();
+      CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), iCtrlID, 0, 0, NULL);
+      g_graphicsContext.SendMessage(msg);
       int iWindowID = GetID();
       g_application.LoadSkin(g_guiSettings.GetString("LookAndFeel.Skin"));
-
       m_gWindowManager.ActivateWindow(iWindowID);
-      SET_CONTROL_FOCUS(iCtrlID, msg.GetParam2());
+      SET_CONTROL_FOCUS(iCtrlID, 0);
+      CGUIMessage msgSelect(GUI_MSG_ITEM_SELECT, GetID(), iCtrlID, msg.GetParam1(), msg.GetParam2());
+      OnMessage(msgSelect);
     }
     break;
   case GUI_MSG_WINDOW_INIT:

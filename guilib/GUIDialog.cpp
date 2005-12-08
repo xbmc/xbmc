@@ -194,26 +194,34 @@ void CGUIDialog::Show(DWORD dwParentId)
   m_bRunning = true;
 }
 
+void CGUIDialog::DoEffect(float effectAmount)
+{
+  if (m_effectType == EFFECT_TYPE_FADE)
+    SetAlpha((DWORD)(effectAmount * 255));
+  else if (m_effectType == EFFECT_TYPE_SLIDE)
+    m_offsetX = (1.0f - effectAmount) * g_graphicsContext.GetWidth();
+}
+
 void CGUIDialog::Render()
 {
   int currentTime = timeGetTime();
   if (m_effectState == EFFECT_IN)
   {
     if (currentTime - m_effectStart < m_effectInTime)
-      SetAlpha((DWORD)(255.0f * (currentTime - m_effectStart) / m_effectInTime));
+      DoEffect((float)(currentTime - m_effectStart) / m_effectInTime);
     else
     {
-      SetAlpha(255);
+      DoEffect(1);
       m_effectState = EFFECT_NONE;
     }
   }
   if (m_effectState == EFFECT_OUT)
   {
     if (currentTime - m_effectStart < m_effectOutTime)
-      SetAlpha((DWORD)(255.0f * (m_effectOutTime - currentTime + m_effectStart) / m_effectOutTime));
+      DoEffect((float)(m_effectOutTime - currentTime + m_effectStart) / m_effectOutTime);
     else
     {
-      SetAlpha(0);
+      DoEffect(0);
       Close(true);  // force the dialog to close
       m_effectState = EFFECT_NONE;
       return;
