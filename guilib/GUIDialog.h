@@ -29,6 +29,8 @@ public:
   virtual bool IsRunning() const { return m_bRunning; }
   virtual bool IsDialog() { return true;};
 
+  void DoEffect(float effectAmount);
+
 protected:
   DWORD m_dwParentWindowID;
   CGUIWindow* m_pParentWindow;

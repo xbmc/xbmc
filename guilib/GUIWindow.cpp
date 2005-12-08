@@ -58,6 +58,8 @@ CGUIWindow::CGUIWindow(DWORD dwID, const CStdString &xmlFile)
   m_windowLoaded = false;
   m_loadOnDemand = true;
   m_alpha = 255;
+  m_offsetX = 0;
+  m_offsetY = 0;
   m_renderOrder = 0;
   m_effectType = EFFECT_TYPE_NONE;
   m_effectState = EFFECT_NONE;
@@ -425,7 +427,13 @@ bool CGUIWindow::Load(const TiXmlElement* pRootElement, RESOLUTION resToUse)
     else if (strValue == "visible" && pChild->FirstChild())
     {
       const char *effect = pChild->ToElement()->Attribute("effect");
-      if (effect && strcmpi(effect, "fade")) m_effectType = EFFECT_TYPE_FADE;
+      if (effect)
+      {
+        if (strcmpi(effect, "fade") == 0)
+          m_effectType = EFFECT_TYPE_FADE;
+        else if (strcmpi(effect, "slide") == 0)
+          m_effectType = EFFECT_TYPE_SLIDE;
+      }
       pChild->ToElement()->Attribute("time", &m_effectInTime);
       m_effectOutTime = m_effectInTime;
       int fadetime;
@@ -586,6 +594,7 @@ void CGUIWindow::Render()
   if (!m_WindowAllocated) return;
 
   g_graphicsContext.SetScalingResolution(m_coordsRes, m_iPosX, m_iPosY, m_needsScaling);
+  g_graphicsContext.SetWindowOffset(m_offsetX,m_offsetY);
   g_graphicsContext.SetWindowAlpha(m_alpha);
 
   for (int i = 0; i < (int)m_vecControls.size(); i++)
@@ -593,8 +602,9 @@ void CGUIWindow::Render()
     CGUIControl *pControl = m_vecControls[i];
     if (pControl)
     {
-      // reset control alpha level
+      // reset control states
       g_graphicsContext.SetControlAlpha(255);
+      g_graphicsContext.SetControlOffset(0, 0);
       pControl->Render();
     }
   }
