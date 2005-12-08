@@ -50,6 +50,7 @@ public:
 	static bool GetHDDTemp(CStdString& strItemhdd);
 	static void GetFreeMemory(CStdString& strFreeMem);
   static bool GetSystemUpTime(CStdString& strSystemUptime);
+  static bool GetSystemTotalUpTime(CStdString& strSystemUptime);
 
 	
 private:
