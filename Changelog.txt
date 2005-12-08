@@ -5,6 +5,9 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 08-12-2005 added: SystemInfo: Total System Uptime, will show how long XBMC was used since first start! [GeminiServer]
+ - 08-12-2005 added: SmartXX V3 Modchip Detection [GeminiServer]
+ - 08-12-2005 fixed: previos changed settings was not saved if a restart follow to network Assignment change [GeminiServer]
  - 07-12-2005 fixed: rar directory masking.
  - 07-12-2005 fixed: IMDB thumbs for movies in the root of a multipath bookmark in My Videos (i hope?)
  - 06-12-2005 fixed: My Music Library access to Playlists and Top 100 Songs

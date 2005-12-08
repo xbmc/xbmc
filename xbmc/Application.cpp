@@ -414,7 +414,10 @@ void CApplication::FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetw
               ++iCount;
 
               if (HaveGamepad && AnyButtonDown())
+              { g_application.Stop();
+                Sleep(200);
                 XKUtils::XBOXPowerCycle();
+              }
             }
           }
 
@@ -446,7 +449,10 @@ void CApplication::FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetw
               ++iCount;
 
               if (HaveGamepad && AnyButtonDown())
+              { g_application.Stop();
+                Sleep(200);
                 XKUtils::XBOXPowerCycle();
+              }
             }
           }
         }
@@ -461,7 +467,10 @@ void CApplication::FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetw
             Sleep(50);
 
             if (HaveGamepad && AnyButtonDown())
+            { g_application.Stop();
+              Sleep(200);
               XKUtils::XBOXPowerCycle();
+            }
           }
           while (dwState == XNET_GET_XNADDR_PENDING);
           ip_addr = xna.ina;
@@ -489,7 +498,10 @@ void CApplication::FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetw
             Sleep(50);
 
             if (HaveGamepad && AnyButtonDown())
+            { g_application.Stop();
+              Sleep(200);
               XKUtils::XBOXPowerCycle();
+            }
           }
         }
       }
@@ -509,7 +521,10 @@ void CApplication::FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetw
       Sleep(50);
 
       if (HaveGamepad && AnyButtonDown())
+      { g_application.Stop();
+        Sleep(200);
         XKUtils::XBOXPowerCycle();
+      }
     }
     while (dwState == XNET_GET_XNADDR_PENDING);
     ip_addr = xna.ina;
@@ -570,7 +585,10 @@ void CApplication::FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetw
     {
       Sleep(50);
       if (AnyButtonDown())
+      { g_application.Stop();
+        Sleep(200);
         XKUtils::XBOXPowerCycle();
+      }
     }
   }
   else
@@ -1928,6 +1946,7 @@ void CApplication::Render()
   // Present the backbuffer contents to the display
   m_pd3dDevice->Present( NULL, NULL, NULL, NULL );
   g_graphicsContext.Unlock();
+  
 
 }
 
@@ -2852,6 +2871,9 @@ void CApplication::Stop()
 {
   try
   {
+    CLog::Log(LOGNOTICE, "Storing total System Uptime");  //GeminiServer: Total System Up-Running Time
+    g_stSettings.m_iSystemTimeTotalUp = g_stSettings.m_iSystemTimeTotalUp + (int)(timeGetTime() / 60000);
+
     CLog::Log(LOGNOTICE, "Saving settings");
     g_settings.Save();
     m_bStop = true;
