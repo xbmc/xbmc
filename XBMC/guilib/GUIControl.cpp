@@ -244,7 +244,6 @@ bool CGUIControl::OnMessage(CGUIMessage& message)
     case GUI_MSG_VISIBLE:
       if (message.GetParam1())  // effect time
       {
-        CLog::DebugLog("Asked to fade in control %i in window %i, currently %s", GetID(), GetParentID(), m_bVisible ? "visible" : "hidden");
         if (!m_bVisible && m_effectState != EFFECT_IN)
         {
           m_effectState = EFFECT_IN;
@@ -266,7 +265,6 @@ bool CGUIControl::OnMessage(CGUIMessage& message)
     case GUI_MSG_HIDDEN:
       if (message.GetParam1())  // fade time
       {
-        CLog::DebugLog("Asked to fade out control %i in window %i, currently %s", GetID(), GetParentID(), m_bVisible ? "visible" : "hidden");
         if (m_bVisible && m_effectState == EFFECT_NONE)
         {
           m_effectState = EFFECT_OUT;
@@ -565,14 +563,17 @@ void CGUIControl::SetInitialVisibility()
   UpdateVisibility();
 }
 
+// TODO: Currently defaults to EFFECT_TYPE_FADE due to the fading performed
+// by the code on the home page.  This should be removed as soon as the
+// other code is removed
 bool CGUIControl::UpdateEffectState()
 {
   if (m_visibleCondition)
     UpdateVisibility();
-  // update our alpha values if we're fading
+  // perform any effects
   DWORD currentTime = timeGetTime();
   if (m_effectState == EFFECT_IN)
-  { // doing a fade in
+  { // doing an in effect
     if (currentTime - m_effectStart < m_effectLength)
       m_effectAmount = (float)(currentTime - m_effectStart) / m_effectLength;
     else
@@ -580,11 +581,14 @@ bool CGUIControl::UpdateEffectState()
       m_effectAmount = 1;
       m_effectState = EFFECT_NONE;
     }
-    g_graphicsContext.SetControlAlpha((DWORD)(255 * m_effectAmount));
     if (m_lastVisible)
     {
       m_bVisible = true;
     }
+    if (m_effectType == EFFECT_TYPE_SLIDE)
+      g_graphicsContext.SetControlOffset((1.0f - m_effectAmount) * g_graphicsContext.GetWidth(), 0);
+    else // if (m_effectType == EFFECT_TYPE_FADE)
+      g_graphicsContext.SetControlAlpha((DWORD)(255 * m_effectAmount));
   }
   else if (m_effectState == EFFECT_OUT)
   {
@@ -596,7 +600,10 @@ bool CGUIControl::UpdateEffectState()
       m_effectState = EFFECT_NONE;
       m_bVisible = false;
     }
-    g_graphicsContext.SetControlAlpha((DWORD)(255 * m_effectAmount));
+    if (m_effectType == EFFECT_TYPE_SLIDE)
+      g_graphicsContext.SetControlOffset((1.0f - m_effectAmount) * g_graphicsContext.GetWidth(), 0);
+    else //if (m_effectType == EFFECT_TYPE_FADE)
+      g_graphicsContext.SetControlAlpha((DWORD)(255 * m_effectAmount));
   }
   return IsVisible();
 }

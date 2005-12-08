@@ -1810,8 +1810,7 @@ bool CSettings::DeleteBookmark(const CStdString &strType, const CStdString &strN
             break;
           }
         }
-        else
-          pIt = pIt->NextSibling("bookmark");
+        pIt = pIt->NextSibling("bookmark");
       }
     }
     return xbmcXml.SaveFile();

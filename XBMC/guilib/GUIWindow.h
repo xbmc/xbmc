@@ -153,10 +153,12 @@ protected:
 
   EFFECT_STATE m_effectState;
   EFFECT_TYPE m_effectType;
-  int m_effectInTime;  // for window fading
-  int m_effectOutTime;  // for window fading
-  DWORD m_alpha;        
+  int m_effectInTime;  // for window effects
+  int m_effectOutTime;  // for window effects
   int m_effectStart;
+  DWORD m_alpha;      // for fading
+  float m_offsetX;    // for sliding
+  float m_offsetY;
 
   int m_renderOrder;      // for render order of dialogs
 };
