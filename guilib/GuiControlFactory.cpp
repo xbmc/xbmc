@@ -205,8 +205,10 @@ bool CGUIControlFactory::GetConditionalVisibility(const TiXmlNode* control, int 
   TiXmlElement* node = control->FirstChildElement("visible");
   if (!node) return false;
   const char *effect = node->Attribute("effect");
-  if (effect && strcmpi(effect, "fade"))
+  if (effect && strcmpi(effect, "fade") == 0)
     effectType = EFFECT_TYPE_FADE;
+  else if (effect && strcmpi(effect, "slide") == 0)
+    effectType = EFFECT_TYPE_SLIDE;
   else
     effectType = EFFECT_TYPE_NONE;
   node->Attribute("time", &effectInTime);

@@ -1905,7 +1905,9 @@ void CApplication::Render()
     // reset image scaling and fade states
     g_graphicsContext.SetScalingResolution(g_graphicsContext.GetVideoResolution(), 0, 0, false);
     g_graphicsContext.SetWindowAlpha(255);
+    g_graphicsContext.SetWindowOffset(0,0);
     g_graphicsContext.SetControlAlpha(255);
+    g_graphicsContext.SetControlOffset(0,0);
 
     // If we have the remote codes enabled, then show them
     if (g_stSettings.m_bDisplayRemoteCodes)
@@ -1959,7 +1961,9 @@ void CApplication::RenderMemoryStatus()
     // reset the window scaling and fade status
     g_graphicsContext.SetScalingResolution(g_graphicsContext.GetVideoResolution(), 0, 0, false);
     g_graphicsContext.SetWindowAlpha(255);
+    g_graphicsContext.SetWindowOffset(0,0);
     g_graphicsContext.SetControlAlpha(255);
+    g_graphicsContext.SetControlOffset(0,0);
 
     // in debug mode, show freememory
     CStdStringW wszText;

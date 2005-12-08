@@ -518,15 +518,12 @@ void CGUIWindowMusicSongs::OnClick(int iItem)
         {
           CFileItem* pItem = m_vecItems[i];
           
-          if (pItem->IsZIP() || pItem->IsRAR())
-            continue;
-
           if (pItem->m_bIsFolder)
           {
             nFolderCount++;
             continue;
           }
-          if (!pItem->IsPlayList())
+          if (!pItem->IsPlayList() && !pItem->IsZIP() && !pItem->IsRAR())
           {
             CPlayList::CPlayListItem playlistItem ;
             CUtil::ConvertFileItemToPlayListItem(pItem, playlistItem);

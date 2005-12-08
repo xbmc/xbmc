@@ -5,6 +5,10 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 09-12-2005 fixed: ReplayGain wasn't correctly using the settings in the GUI.
+ - 09-12-2005 fixed: My music incorrect playlist item selected when rar or zip files were in the folder.
+ - 09-12-2005 fixed: Infinite loop in DeleteBookmark() if the bookmark had an invalid path.
+ - 09-12-2005 fixed: Spin control in settings followed weird focusing patterns when moving to it from the left or right.
  - 08-12-2005 added: SystemInfo: Total System Uptime, will show how long XBMC was used since first start! [GeminiServer]
  - 08-12-2005 added: SmartXX V3 Modchip Detection [GeminiServer]
  - 08-12-2005 fixed: previos changed settings was not saved if a restart follow to network Assignment change [GeminiServer]
