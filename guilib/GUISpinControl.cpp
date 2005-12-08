@@ -238,20 +238,15 @@ bool CGUISpinControl::OnMessage(CGUIMessage& message)
 {
 
   if (CGUIControl::OnMessage(message) )
-  {
-    //       if (!HasFocus())
-    //            m_iSelect=SPIN_BUTTON_DOWN;
-    //        else
-    if (HasFocus() && message.GetParam1() == SPIN_BUTTON_UP || message.GetParam1() == SPIN_BUTTON_DOWN)
-      m_iSelect = message.GetParam1() == SPIN_BUTTON_UP ? SPIN_BUTTON_UP : SPIN_BUTTON_DOWN;
     return true;
-  }
   if (message.GetControlId() == GetID() )
   {
     switch (message.GetMessage())
     {
     case GUI_MSG_ITEM_SELECT:
       SetValue( message.GetParam1());
+      if (message.GetParam2() == SPIN_BUTTON_DOWN || message.GetParam2() == SPIN_BUTTON_UP)
+        m_iSelect = message.GetParam2();
       return true;
       break;
 

@@ -246,21 +246,33 @@ float CAudioDecoder::GetReplayGain()
 {
 #define REPLAY_GAIN_DEFAULT_LEVEL 89.0f
   // Compute amount of gain
-  float replaydB, peak;
-  if (m_codec->m_replayGain.iHasGainInfo & REPLAY_GAIN_HAS_TRACK_INFO)
+  float replaydB = (float)g_guiSettings.m_replayGain.iNoGainPreAmp;
+  float peak = 0.0f;
+  if (g_guiSettings.m_replayGain.iType == REPLAY_GAIN_ALBUM)
   {
-    replaydB = (float)g_guiSettings.m_replayGain.iPreAmp + (float)m_codec->m_replayGain.iTrackGain / 100.0f;
-    peak = m_codec->m_replayGain.fTrackPeak;
+    if (m_codec->m_replayGain.iHasGainInfo & REPLAY_GAIN_HAS_ALBUM_INFO)
+    {
+      replaydB = (float)g_guiSettings.m_replayGain.iPreAmp + (float)m_codec->m_replayGain.iAlbumGain / 100.0f;
+      peak = m_codec->m_replayGain.fAlbumPeak;
+    }
+    else if (m_codec->m_replayGain.iHasGainInfo & REPLAY_GAIN_HAS_TRACK_INFO)
+    {
+      replaydB = (float)g_guiSettings.m_replayGain.iPreAmp + (float)m_codec->m_replayGain.iTrackGain / 100.0f;
+      peak = m_codec->m_replayGain.fTrackPeak;
+    }
   }
-  else if (m_codec->m_replayGain.iHasGainInfo & REPLAY_GAIN_HAS_ALBUM_INFO)
+  else if (g_guiSettings.m_replayGain.iType == REPLAY_GAIN_TRACK)
   {
-    replaydB = (float)g_guiSettings.m_replayGain.iPreAmp + (float)m_codec->m_replayGain.iAlbumGain / 100.0f;
-    peak = m_codec->m_replayGain.fAlbumPeak;
-  }
-  else
-  {
-    replaydB = (float)g_guiSettings.m_replayGain.iNoGainPreAmp;
-    peak = 0.0f;
+    if (m_codec->m_replayGain.iHasGainInfo & REPLAY_GAIN_HAS_TRACK_INFO)
+    {
+      replaydB = (float)g_guiSettings.m_replayGain.iPreAmp + (float)m_codec->m_replayGain.iTrackGain / 100.0f;
+      peak = m_codec->m_replayGain.fTrackPeak;
+    }
+    else if (m_codec->m_replayGain.iHasGainInfo & REPLAY_GAIN_HAS_ALBUM_INFO)
+    {
+      replaydB = (float)g_guiSettings.m_replayGain.iPreAmp + (float)m_codec->m_replayGain.iAlbumGain / 100.0f;
+      peak = m_codec->m_replayGain.fAlbumPeak;
+    }
   }
   // convert to a gain type
   float replaygain = pow(10.0f, (replaydB - REPLAY_GAIN_DEFAULT_LEVEL)* 0.05f);
