@@ -769,6 +769,7 @@
   <string><id>12391</id><value>Minutes</value></string>
   <string><id>12392</id><value>Hours</value></string>
   <string><id>12393</id><value>Days</value></string>
+  <string><id>12394</id><value>Total Uptime</value></string>
   
 
   <string><id>12600</id><value>My Weather</value></string>

@@ -1,6 +1,6 @@
 //////////////////////////////////////////
-//		XBOX Hardware Info				//
-//	   01.02.2005 GeminiServer			//
+//		XBOX Hardware Info				        //
+//	   01.02.2005 GeminiServer			    //
 //////////////////////////////////////////
 #include "../stdafx.h"
 #include "SystemInfo.h"
@@ -406,20 +406,31 @@ CStdString SYSINFO::GetModCHIPDetected()
 
 CStdString SYSINFO::SmartXXModCHIP()
 {	
- 	//SmartXX ModChip Detection Routine! 13.04.2005 GeminiServer
-	if (((inb(0xf701)) & 0xf) == 0x1) // SmartXX V1/V2
+  // SmartXX ModChip Detection Routine! 13.04.2005 GeminiServer
+  unsigned char uSmartXX_ID = ((inb(0xf701)) & 0xf);
+  if ( uSmartXX_ID == 1 )      // SmartXX V1+V2
 	{
 		CLog::Log(LOGDEBUG, "- Detected ModChip: SmartXX V1/V2");
 		return "SmartXX V1/V2";
 	}
-	else if (((inb(0xf701)) & 0xf) == 0x5) // // SmartXX OPX 5 or 9!
+  else if ( uSmartXX_ID == 2 ) // SmartXX V1+V2
+	{
+		CLog::Log(LOGDEBUG, "- Detected ModChip: SmartXX V1/V2");
+		return "SmartXX V1/V2";
+	}
+	else if ( uSmartXX_ID == 5 ) // SmartXX OPX
 	{
 		CLog::Log(LOGDEBUG, "- Detected ModChip: SmartXX OPX");
 		return "SmartXX OPX";
 	}
+  else if ( uSmartXX_ID == 8 ) // SmartXX V3
+	{
+		CLog::Log(LOGDEBUG, "- Detected ModChip: SmartXX V3");
+		return "SmartXX OPX";
+	}
 	else 
 	{
-		//CLog::Log(LOGDEBUG, "Detected MOdCHIP: No SmartXX Detected!");
+		//CLog::Log(LOGDEBUG, "Detected ModCHIP: No SmartXX Detected!");
 		return "None";
 	}
 }
@@ -1158,13 +1169,13 @@ char* SYSINFO::CheckMD5 (char *Sign)
 	while( strcmp(Listone[cntBioses].Name,"\0") != 0);
 	return ("Unknown");
 }
-//GeminiServer: System Up Time in Minutes
+//GeminiServer: System Up Time in Minutes 
 // Will return the time since the system was started!
-// Return Values int: Minutes, Hours, Days
-bool SYSINFO::SystemUpTime(int &iMinutes, int &iHours, int &iDays)
+// Input Value int: Minutes  Return Values int: Minutes, Hours, Days
+bool SYSINFO::SystemUpTime(int iInputMinutes, int &iMinutes, int &iHours, int &iDays)
 {
   iMinutes=0;iHours=0;iDays=0;
-  iMinutes = (int)(timeGetTime() / 60000);
+  iMinutes = iInputMinutes;
   if (iMinutes >= 60)
   {
     iHours = iMinutes / 60;

@@ -1248,7 +1248,8 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile, const bool loadp
   if (pElement)
   {
     GetInteger(pElement, "audiostream", g_stSettings.m_defaultVideoSettings.m_AudioStream, -1, -1, INT_MAX);
-
+    GetInteger(pElement, "systemtotaluptime", g_stSettings.m_iSystemTimeTotalUp, 0, 0, INT_MAX);
+    
     GetString(pElement, "kaiarenapass", g_stSettings.szOnlineArenaPassword, "");
     GetString(pElement, "kaiarenadesc", g_stSettings.szOnlineArenaDescription, "");
   }
@@ -1480,7 +1481,7 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile, const bool savep
   SetInteger(pNode, "percentseekbackward", g_stSettings.m_iMyVideoPercentSeekBackward);
   SetInteger(pNode, "percentseekforwardbig", g_stSettings.m_iMyVideoPercentSeekForwardBig);
   SetInteger(pNode, "percentseekbackwardbig", g_stSettings.m_iMyVideoPercentSeekBackwardBig);
-
+  
   // myscripts settings
   TiXmlElement scriptsNode("myscripts");
   pNode = pRoot->InsertEndChild(scriptsNode);
@@ -1496,6 +1497,7 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile, const bool savep
   if (!pNode) return false;
   SetString(pNode, "kaiarenapass", g_stSettings.szOnlineArenaPassword);
   SetString(pNode, "kaiarenadesc", g_stSettings.szOnlineArenaDescription);
+  SetInteger(pNode, "systemtotaluptime", g_stSettings.m_iSystemTimeTotalUp);
 
   // screen settings
   TiXmlElement screenNode("screen");

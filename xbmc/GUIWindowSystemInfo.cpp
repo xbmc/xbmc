@@ -434,6 +434,11 @@ void CGUIWindowSystemInfo::Render()
     CStdString strSystemUptime;
     GetSystemUpTime(strSystemUptime);
     SET_CONTROL_LABEL(9,strSystemUptime);
+
+    // Label 10: Get System Total Uptime
+    CStdString strSystemTotalUptime;
+    GetSystemTotalUpTime(strSystemTotalUptime);
+    SET_CONTROL_LABEL(10,strSystemTotalUptime);
   }
 
 	// Label 50: Get Current Time
@@ -1769,8 +1774,26 @@ bool CGUIWindowSystemInfo::GetSystemUpTime(CStdString& strSystemUptime)
   CStdString lblHou = g_localizeStrings.Get(12392);
   CStdString lblDay = g_localizeStrings.Get(12393);
 
-  int iMinutes,iHours,iDays;
-  SYSINFO::SystemUpTime(iMinutes, iHours, iDays);
+  int iInputMinutes, iMinutes,iHours,iDays;
+  iInputMinutes = (int)(timeGetTime() / 60000);
+  SYSINFO::SystemUpTime(iInputMinutes,iMinutes, iHours, iDays);
+  // Will Display Autodetected Values!
+  if (iDays > 0) strSystemUptime.Format("%s: %i %s, %i %s, %i %s",lbl1, iDays,lblDay, iHours,lblHou, iMinutes,lblMin);
+  else if (iDays == 0 && iHours >= 1 ) strSystemUptime.Format("%s: %i %s, %i %s",lbl1, iHours,lblHou, iMinutes,lblMin);
+  else if (iDays == 0 && iHours == 0 &&  iMinutes >= 0) strSystemUptime.Format("%s: %i %s",lbl1, iMinutes,lblMin);
+  
+  return true;
+}
+bool CGUIWindowSystemInfo::GetSystemTotalUpTime(CStdString& strSystemUptime)
+{
+  CStdString lbl1 = g_localizeStrings.Get(12394);
+  CStdString lblMin = g_localizeStrings.Get(12391);
+  CStdString lblHou = g_localizeStrings.Get(12392);
+  CStdString lblDay = g_localizeStrings.Get(12393);
+  
+  int iInputMinutes, iMinutes,iHours,iDays;
+  iInputMinutes = g_stSettings.m_iSystemTimeTotalUp + ((int)(timeGetTime() / 60000));
+  SYSINFO::SystemUpTime(iInputMinutes,iMinutes, iHours, iDays);
   // Will Display Autodetected Values!
   if (iDays > 0) strSystemUptime.Format("%s: %i %s, %i %s, %i %s",lbl1, iDays,lblDay, iHours,lblHou, iMinutes,lblMin);
   else if (iDays == 0 && iHours >= 1 ) strSystemUptime.Format("%s: %i %s, %i %s",lbl1, iHours,lblHou, iMinutes,lblMin);
