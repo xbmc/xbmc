@@ -184,7 +184,7 @@ CFileItem* pFileItem = NULL;
         pFileItem->m_strPath.Replace("/","\\");
         pFileItem->m_bIsFolder = true;
         pFileItem->m_lStartOffset = pIterator->item.Method;
-        pFileItem->m_lEndOffset = long(pIterator->item.iOffset);
+        //pFileItem->m_lEndOffset = long(pIterator->item.iOffset);
       }
     }
     else
@@ -196,7 +196,7 @@ CFileItem* pFileItem = NULL;
         pFileItem->m_strPath.Replace("/","\\");
         pFileItem->m_dwSize = pIterator->item.UnpSize;
         pFileItem->m_lStartOffset = pIterator->item.Method;
-        pFileItem->m_lEndOffset = long(pIterator->item.iOffset);
+        //pFileItem->m_lEndOffset = long(pIterator->item.iOffset);
       }
     }
     if (pFileItem)
