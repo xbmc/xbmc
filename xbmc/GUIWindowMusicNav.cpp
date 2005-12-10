@@ -417,6 +417,20 @@ bool CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, CFileItemL
   CLog::Log(LOGDEBUG, "CGUIWindowMusicNav::GetDirectory(%s)",strDirectory.c_str());
   CLog::Log(LOGDEBUG, "  m_iState = [%i], m_iPath = [%i]", m_iState, m_iPath);
   CLog::Log(LOGDEBUG, "  strGenre = [%s], strArtist = [%s], strAlbum = [%s], strAlbumPath = [%s]",m_strGenre.c_str(), m_strArtist.c_str(), m_strAlbum.c_str(), m_strAlbumPath.c_str());
+  
+  // check for All Albums choosen in Top 100, Recently Added, and Recently Played albums
+  // must be done before items is cleared!
+  VECALBUMS vecAlbums;
+  if (m_iPath > SHOW_TOP && m_iState == SHOW_SONGS)
+  {
+    CStdString strDir = strDirectory;
+    if (CUtil::HasSlashAtEnd(strDir))
+      strDir.Delete(strDir.size() - 1);
+    CStdString strPath, strLast; 
+    CUtil::Split(strDir, strPath, strLast);
+    if (strLast.Equals((CStdString)g_localizeStrings.Get(15102)))  /* all albums */
+      GetAlbums(vecAlbums);
+  }
 
   // cleanup items
   if (items.Size())
@@ -686,6 +700,8 @@ bool CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, CFileItemL
         bTest = g_musicDatabase.GetTop100Songs(items, false);
       else if (m_iPath == (SHOW_PLAYLISTS + SHOW_SONGS))
         bTest = GetSongsFromPlayList(items, m_vecPathHistory.back());
+      else if (vecAlbums.size() > 0)
+        bTest = GetSongsFromAlbums(items, vecAlbums);
       else
         bTest = g_musicDatabase.GetSongsNav(items, m_strGenre, m_strArtist, m_strAlbum, m_strAlbumPath, false);
 
@@ -1833,5 +1849,47 @@ bool CGUIWindowMusicNav::GetSongsFromPlayList(CFileItemList &items, const CStdSt
     }
   }
 
+  return true;
+}
+
+void CGUIWindowMusicNav::GetAlbums(VECALBUMS& vecAlbums)
+{
+  for (int i = 0; i < m_vecItems.Size(); ++i)
+  {
+    CFileItem *pItem = m_vecItems[i];
+    if (!pItem->GetLabel().Equals("..") && !pItem->m_strPath.IsEmpty())
+    {
+      CAlbum album;
+      album.strAlbum = pItem->GetLabel();
+      album.strPath  = pItem->m_strPath;
+      vecAlbums.push_back(album);
+    }
+  }
+}
+
+bool CGUIWindowMusicNav::GetSongsFromAlbums(CFileItemList& items, VECALBUMS& vecAlbums)
+{
+  int iErrors = 0;
+  for (int i = 0; i < (int)vecAlbums.size(); ++i)
+  {
+    CAlbum album = vecAlbums[i];
+    VECSONGS songs;
+    if (g_musicDatabase.GetSongsByAlbum(album.strAlbum, album.strPath, songs))
+    {
+      for (int j = 0; j < (int)songs.size(); ++j)
+      {
+        CSong song = songs[j];
+        CFileItem *item = new CFileItem(song);
+        items.Add(item);
+      }
+    }
+    else
+    {
+      iErrors++;
+      CLog::Log(LOGERROR, "CGUIWindowMusicNav::GetSongsFromAlbums could not get songs from Album(%s,%s)", album.strAlbum.c_str(), album.strPath.c_str());
+    }
+  }
+  if (iErrors == vecAlbums.size())
+    return false;
   return true;
 }
