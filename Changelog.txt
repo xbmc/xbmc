@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 10-12-2005 fixed: Top 100 items in Music Library
  - 10-12-2005 fixed: IMDB "Movie Lookup" on folders
  - 09-12-2005 fixed: rarmanager errors preventing cvs from compiling (just commented out the offending lines)
  - 09-12-2005 fixed: ReplayGain wasn't correctly using the settings in the GUI.
