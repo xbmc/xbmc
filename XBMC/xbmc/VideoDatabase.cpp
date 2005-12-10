@@ -832,10 +832,10 @@ void CVideoDatabase::SetMovieInfo(const CStdString& strFilenameAndPath, CIMDBMov
     {
       m_pDS->close();
       CStdString strTmp = "";
-      strSQL=FormatSQL("insert into movieinfo ( idMovie,idDirector,strRuntime,fRating,iYear,strTitle,IMDBID) values(%i,%i,'%s','%s',%i,'%s','%s')",
+      strSQL=FormatSQL("insert into movieinfo ( idMovie,idDirector,strRuntime,fRating,iYear,strTitle,IMDBID,bWatched) values(%i,%i,'%s','%s',%i,'%s','%s','%s')",
                     lMovieId, lDirector, details.m_strRuntime.c_str(), strRating.c_str(),
                     details.m_iYear, details.m_strTitle.c_str(),
-                    details.m_strIMDBNumber.c_str() );
+                    details.m_strIMDBNumber.c_str(), "false" );
 
       m_pDS->exec(strSQL.c_str());
 
@@ -843,7 +843,7 @@ void CVideoDatabase::SetMovieInfo(const CStdString& strFilenameAndPath, CIMDBMov
     else
     {
       m_pDS->close();
-      strSQL=FormatSQL("update movieinfo set idDirector=%i, strRuntime='%s', fRating='%s', iYear=%i, strTitle='%s', IMDBID='%s' where idMovie=%i",
+      strSQL=FormatSQL("update movieinfo set idDirector=%i, strRuntime='%s', fRating='%s', iYear=%i, strTitle='%s', IMDBID='%s', bWatched='false' where idMovie=%i",
                     lDirector, details.m_strRuntime.c_str(), strRating.c_str(),
                     details.m_iYear, details.m_strTitle.c_str(),
                     details.m_strIMDBNumber.c_str(),
