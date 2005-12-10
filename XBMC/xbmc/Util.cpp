@@ -1896,6 +1896,11 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
       g_directoryCache.ClearDirectory(strLookInPaths[step]);
     }
   }
+  // rename any 'kept' subtitles (selected using browse for subtitles)
+  CFileItemList items;
+  CDirectory::GetDirectory("z:\\",items,".keep");
+  for (int i=0;i<items.Size();++i)
+    CFile::Rename(items[i]->m_strPath,items[i]->m_strPath.Left(items[i]->m_strPath.size()-5));
   // construct string of added exts?
   for (std::vector<CStdString>::iterator it=vecExtensionsCached.begin(); it != vecExtensionsCached.end(); ++it)
     strExtensionCached += *it+" ";
