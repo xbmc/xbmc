@@ -453,29 +453,30 @@ void CGUIWindowVideoFiles::OnInfo(int iItem)
   if (pItem->m_bIsFolder && strMovie == "..") return ;
   if (pItem->m_bIsFolder)
   {
-    // IMDB is done on a folder, find first file in folder
+    // IMDB is done on a folder
+    // stack and then find first file in folder
     strFolder = pItem->m_strPath;
     bFolder = true;
     CFileItemList vecitems;
-    m_rootDir.GetDirectory(pItem->m_strPath, vecitems);
+    GetStackedDirectory(pItem->m_strPath, vecitems);
     bool bFoundFile(false);
     for (int i = 0; i < (int)vecitems.Size(); ++i)
     {
-      CFileItem *pItem = vecitems[i];
-      if (!pItem->m_bIsFolder)
+      CFileItem *item = vecitems[i];
+      if (!item->m_bIsFolder)
       {
-        if (pItem->IsVideo() && !pItem->IsNFO() && !pItem->IsPlayList() )
+        if (item->IsVideo() && !item->IsNFO() && !item->IsPlayList() )
         {
-          strFile = pItem->m_strPath;
           bFoundFile = true;
+          strFile = item->m_strPath;
           break;
         }
       }
       else
       { // check for a dvdfolder
-        if (pItem->m_strPath.CompareNoCase("VIDEO_TS"))
+        if (item->m_strPath.CompareNoCase("VIDEO_TS"))
         { // found a dvd folder - grab the main .ifo file
-          CUtil::AddFileToFolder(pItem->m_strPath, "video_ts.ifo", strFile);
+          CUtil::AddFileToFolder(item->m_strPath, "video_ts.ifo", strFile);
           if (CFile::Exists(strFile))
           {
             bFoundFile = true;
@@ -495,8 +496,11 @@ void CGUIWindowVideoFiles::OnInfo(int iItem)
     }
   }
 
-  vector<CStdString> movies;
-  AddFileToDatabase(pItem);
+  //vector<CStdString> movies;
+  CFileItem item(strFile, false);
+  CLog::Log(LOGDEBUG,"Adding file to video database [%s]", item.m_strPath.c_str());
+  AddFileToDatabase(&item);
+  /*
   if (pItem->IsStack())
   { // add the individual files as well at this point
     // TODO: This should be removed as soon as we no longer need the individual
@@ -508,6 +512,7 @@ void CGUIWindowVideoFiles::OnInfo(int iItem)
       AddFileToDatabase(&item);
     }
   }
+  */
 
   ShowIMDB(strMovie, strFile, strFolder, bFolder);
   m_viewControl.SetSelectedItem(iSelectedItem);
@@ -687,17 +692,10 @@ void CGUIWindowVideoFiles::OnRetrieveVideoInfo(CFileItemList& items)
 
 void CGUIWindowVideoFiles::OnScan()
 {
-  // force stacking on for best results
-  // save stack state
-  int iStack = g_stSettings.m_iMyVideoVideoStack;
-  g_stSettings.m_iMyVideoVideoStack = STACK_SIMPLE;
-
+  // GetStackedDirectory() now sets and restores the stack state!
   CFileItemList items;
   GetStackedDirectory(m_Directory.m_strPath, items);
   DoScan(m_Directory.m_strPath, items);
-
-  // restore stack state
-  g_stSettings.m_iMyVideoVideoStack = iStack;
 }
 
 bool CGUIWindowVideoFiles::DoScan(const CStdString &strPath, CFileItemList& items)
