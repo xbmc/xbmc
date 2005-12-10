@@ -1178,10 +1178,13 @@ bool CMusicDatabase::GetAlbumInfoSongs(long idAlbumInfo, VECSONGS& songs)
   return false;
 }
 
-bool CMusicDatabase::GetTop100(CFileItemList& items)
+bool CMusicDatabase::GetTop100Songs(CFileItemList& items, bool bClearItems /* = true */)
 {
   try
   {
+    if (bClearItems)
+      items.Clear();
+
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
@@ -1190,7 +1193,7 @@ bool CMusicDatabase::GetTop100(CFileItemList& items)
                       "order by iTimesPlayed desc "
                       "limit 100";
 
-    CLog::Log(LOGDEBUG, "CMusicDatabase::GetTop100() query: %s", strSQL.c_str());
+    CLog::Log(LOGDEBUG, "CMusicDatabase::GetTop100Songs() query: %s", strSQL.c_str());
     if (!m_pDS->query(strSQL.c_str())) return false;
     int iRowsFound = m_pDS->num_rows();
     if (iRowsFound == 0)
@@ -1198,6 +1201,7 @@ bool CMusicDatabase::GetTop100(CFileItemList& items)
       m_pDS->close();
       return false;
     }
+    items.Reserve(iRowsFound);
     while (!m_pDS->eof())
     {
       CFileItem *item = new CFileItem(GetSongFromDataset());
@@ -1210,7 +1214,7 @@ bool CMusicDatabase::GetTop100(CFileItemList& items)
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "CMusicDatabase:GetTop100() failed");
+    CLog::Log(LOGERROR, "CMusicDatabase:GetTop100Songs() failed");
   }
 
   return false;
@@ -2784,12 +2788,14 @@ bool CMusicDatabase::GetAlbumsNav(VECALBUMS& albums, const CStdString &strGenre,
   return false;
 }
 
-bool CMusicDatabase::GetSongsNav(CFileItemList& items, const CStdString &strGenre, const CStdString &strArtist, const CStdString &strAlbum, const CStdString &strAlbumPath)
+bool CMusicDatabase::GetSongsNav(CFileItemList& items, const CStdString &strGenre, const CStdString &strArtist, const CStdString &strAlbum, const CStdString &strAlbumPath, bool bClearItems /* = true */)
 {
   try
   {
     DWORD time = timeGetTime();
-    items.Clear();
+
+    if (bClearItems)
+      items.Clear();
 
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;

@@ -113,7 +113,7 @@ public:
 
   bool GetAlbumsByPath(const CStdString& strPath, VECALBUMS& albums);
   bool FindAlbumsByName(const CStdString& strSearch, VECALBUMS& albums);
-  bool GetTop100(CFileItemList& items);
+  bool GetTop100Songs(CFileItemList& item, bool bClearItems = true);
   bool GetTop100Albums(VECALBUMS& albums);
   bool GetRecentlyAddedAlbums(VECALBUMS& albums);
   bool GetRecentlyPlayedAlbums(VECALBUMS& albums);
@@ -125,7 +125,7 @@ public:
   bool GetGenresNav(VECGENRES& genres);
   bool GetArtistsNav(VECARTISTS& artists, const CStdString &strGenre1);
   bool GetAlbumsNav(VECALBUMS& albums, const CStdString &strGenre1, const CStdString &strArtist1);
-  bool GetSongsNav(CFileItemList& items, const CStdString &strGenre1, const CStdString &strArtist1, const CStdString &strAlbum1, const CStdString &strAlbumPath1);
+  bool GetSongsNav(CFileItemList& items, const CStdString &strGenre1, const CStdString &strArtist1, const CStdString &strAlbum1, const CStdString &strAlbumPath1, bool bClearItems = true);
 
   int GetSongsCount();
 
