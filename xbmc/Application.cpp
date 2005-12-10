@@ -1992,10 +1992,8 @@ bool CApplication::OnKey(CKey& key)
 
   // a key has been pressed.
   // Reset the screensaver timer
-  // but not for the analog thumbsticks
-  if (key.GetButtonCode() != KEY_BUTTON_LEFT_THUMB_STICK &&
-      key.GetButtonCode() != KEY_BUTTON_RIGHT_THUMB_STICK &&
-      key.GetButtonCode() != KEY_BUTTON_LEFT_THUMB_BUTTON)
+  // but not for the analog thumbsticks/triggers
+  if (!key.IsAnalogButton())
   {
     // reset harddisk spindown timer
     m_bSpinDown = false;
