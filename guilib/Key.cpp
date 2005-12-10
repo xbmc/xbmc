@@ -84,3 +84,11 @@ bool CKey::FromKeyboard() const
 {
   return (m_dwButtonCode >= KEY_VKEY && m_dwButtonCode != KEY_INVALID);
 }
+
+bool CKey::IsAnalogButton() const
+{
+  if ((GetButtonCode() > 261 && GetButtonCode() < 270) || (GetButtonCode() > 277 && GetButtonCode() < 284))
+    return true;
+
+  return false;
+}
