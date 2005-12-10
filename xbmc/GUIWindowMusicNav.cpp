@@ -420,9 +420,7 @@ bool CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, CFileItemL
 
   // cleanup items
   if (items.Size())
-  {
     items.Clear();
-  }
 
   switch (m_iState)
   {
@@ -457,11 +455,6 @@ bool CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, CFileItemL
 
   case SHOW_PLAYLISTS:
     {
-      m_iViewAsIcons = g_stSettings.m_iMyMusicNavSongsViewAsIcons;
-      CStdString strPath;
-      CUtil::AddFileToFolder(g_stSettings.m_szPlaylistsDirectory, "music", strPath);
-      CStdString strMask = g_stSettings.m_szMyMusicExtensions;
-
       // set parent directory
       if (!g_guiSettings.GetBool("MyMusic.HideParentDirItems"))
       {
@@ -470,6 +463,11 @@ bool CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, CFileItemL
         pFileItem->m_bIsFolder = true;
         items.Add(pFileItem);
       }
+
+      m_iViewAsIcons = g_stSettings.m_iMyMusicNavSongsViewAsIcons;
+      CStdString strPath;
+      CUtil::AddFileToFolder(g_stSettings.m_szPlaylistsDirectory, "music", strPath);
+      CStdString strMask = g_stSettings.m_szMyMusicExtensions;
 
       CFileItemList tempItems;
       CDirectory::GetDirectory(strPath, tempItems, strMask);
@@ -483,6 +481,15 @@ bool CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, CFileItemL
 
   case SHOW_TOP:
     {
+      // set parent directory
+      if (!g_guiSettings.GetBool("MyMusic.HideParentDirItems"))
+      {
+        CFileItem* pFileItem = new CFileItem("..");
+        pFileItem->m_strPath = "";
+        pFileItem->m_bIsFolder = true;
+        items.Add(pFileItem);
+      }
+
       m_iViewAsIcons = g_stSettings.m_iMyMusicNavTopViewAsIcons;
 
       vector<CStdString> vecRoot;
@@ -527,7 +534,7 @@ bool CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, CFileItemL
       if (bTest)
       {
         // add "All Genres"
-        CFileItem* pFileItem = new CFileItem(g_localizeStrings.Get(15105));
+        CFileItem* pFileItem = new CFileItem(g_localizeStrings.Get(15105));  /* all genres */
         pFileItem->m_strPath = "";
         pFileItem->m_bIsFolder = true;
         items.Add(pFileItem);
@@ -573,7 +580,7 @@ bool CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, CFileItemL
       if (bTest)
       {
         // add "All Artists"
-        CFileItem* pFileItem = new CFileItem(g_localizeStrings.Get(15103));
+        CFileItem* pFileItem = new CFileItem(g_localizeStrings.Get(15103));  /* all artists */
         pFileItem->m_strPath = "";
         pFileItem->m_bIsFolder = true;
         items.Add(pFileItem);
@@ -627,7 +634,8 @@ bool CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, CFileItemL
 
       if (bTest)
       {
-        CFileItem* pFileItem = new CFileItem(g_localizeStrings.Get(15102));
+        // Add "All Albums"
+        CFileItem* pFileItem = new CFileItem(g_localizeStrings.Get(15102));  /* all albums */
         pFileItem->m_strPath = "";
         pFileItem->m_bIsFolder = true;
         items.Add(pFileItem);
@@ -663,31 +671,41 @@ bool CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, CFileItemL
         items.Add(pFileItem);
       }
 
+      // add "All Songs"
+      if (m_iPath != (SHOW_PLAYLISTS + SHOW_SONGS))
+      {
+        CFileItem* pFileItem = new CFileItem(g_localizeStrings.Get(15104));  /* all songs */
+        pFileItem->m_strPath = "";
+        pFileItem->m_bIsFolder = true;
+        items.Add(pFileItem);
+      }
+
       // get songs from the database
       bool bTest;
-//      DWORD time = timeGetTime();
       if (m_iPath == (SHOW_TOP + SHOW_SONGS))
-        bTest = g_musicDatabase.GetTop100(items);
+        bTest = g_musicDatabase.GetTop100Songs(items, false);
       else if (m_iPath == (SHOW_PLAYLISTS + SHOW_SONGS))
         bTest = GetSongsFromPlayList(items, m_vecPathHistory.back());
       else
-        bTest = g_musicDatabase.GetSongsNav(items, m_strGenre, m_strArtist, m_strAlbum, m_strAlbumPath);
-//      CLog::DebugLog("Database lookup time = %i", timeGetTime() - time); time = timeGetTime();
-      if (bTest)
+        bTest = g_musicDatabase.GetSongsNav(items, m_strGenre, m_strArtist, m_strAlbum, m_strAlbumPath, false);
+
+      // if query failed remove the "All Songs" item
+      if (!bTest)
       {
-        // add "All Songs"
-        if (m_iPath != (SHOW_PLAYLISTS + SHOW_SONGS))
+        for (int i = 0; i < items.Size(); ++i)
         {
-          CFileItem* pFileItem = new CFileItem(g_localizeStrings.Get(15104));
-          pFileItem->m_strPath = "";
-          pFileItem->m_bIsFolder = true;
-          items.Add(pFileItem);
+          CFileItem* pFileItem = items[i];
+          if (pFileItem->GetLabel().Equals((CStdString)g_localizeStrings.Get(15104)))
+          {
+            items.Remove(i);
+            break;
+          }
         }
       }
+
     }
     break;
   }
-
   return true;
 }
 
@@ -739,16 +757,17 @@ void CGUIWindowMusicNav::UpdateButtons()
   if (iItems)
   {
     // check for parent dir
-    // check for "all" item
+    // check for "all" items
+    // they should always be the first two items
     for (int i = 0; i <= 1; i++)
     {
       CFileItem* pItem = m_vecItems[i];
       if (pItem->GetLabel() == "..") iItems--;
       if (
-        pItem->GetLabel().Equals((CStdString)g_localizeStrings.Get(15102)) ||
-        pItem->GetLabel().Equals((CStdString)g_localizeStrings.Get(15103)) ||
-        pItem->GetLabel().Equals((CStdString)g_localizeStrings.Get(15104)) ||
-        pItem->GetLabel().Equals((CStdString)g_localizeStrings.Get(15105))
+        pItem->GetLabel().Equals((CStdString)g_localizeStrings.Get(15102)) ||  /* all albums  */
+        pItem->GetLabel().Equals((CStdString)g_localizeStrings.Get(15103)) ||  /* all artists */
+        pItem->GetLabel().Equals((CStdString)g_localizeStrings.Get(15104)) ||  /* all songs   */
+        pItem->GetLabel().Equals((CStdString)g_localizeStrings.Get(15105))     /* all genres  */
         )
         iItems--;
     }
@@ -1420,7 +1439,6 @@ void CGUIWindowMusicNav::GoParentFolder()
     m_strGenre.Empty();
   }
   // else just go back to the root
-  // from recent and songs
   else
   {
     m_iPath = SHOW_ROOT;
