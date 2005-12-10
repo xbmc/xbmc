@@ -29,6 +29,8 @@ protected:
 
   void SetArtistImage(int iItem);
   bool GetSongsFromPlayList(CFileItemList &items, const CStdString& strPlayList);
+  void GetAlbums(VECALBUMS& vecAlbums);
+  bool GetSongsFromAlbums(CFileItemList& items, VECALBUMS& vecAlbums);
 
   void SaveDatabaseDirectoryCache(const CStdString& strDirectory, CFileItemList& items, int iSortMethod, bool bAscending, bool bSkipThe);
   void LoadDatabaseDirectoryCache(const CStdString& strDirectory, CFileItemList& items, int& iSortMethod, bool& bAscending, bool& bSkipThe);
