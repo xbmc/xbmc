@@ -5,6 +5,16 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 11-12-2005 changed: Moved the buttonscroller button list into the skin.  See online manual for more information.  It still reads
+                       from XboxMediaCenter.xml if skin version is less than 1.8.
+ - 11-12-2005 added: Initial support for skin version 2.0 and backwards compatibility to v1.3 skins (skinners please see graphical design
+                     forum for information).
+ - 11-12-2005 fixed: Workaround for a buffer overrun in DVDDemuxSPU.
+ - 11-12-2005 added: Sliding and delayed visiblitity effects for GUI controls + dialogs.  See the online manual for more information.
+ - 11-12-2005 added: Support for more URL combinations in nfo files.
+ - 11-12-2005 fixed: [ 1094942 ] No Movie Bookmarks when started from Filemgr
+ - 11-12-2005 fixed: Ignore The when Sorting had no effect in My Videos.
+ - 11-12-2005 fixed: Directory names don't end in a space when truncating in the FTP server.
  - 11-12-2005 fixed: Thumbs now appear immediately for files in the current directory from where a Movie "Query Info for All Files" is initiated
  - 11-12-2005 added: Context Menu: Make the share Default [GeminiServer]
                      In all share sections, with context menu, you can set the selected share as default! !<default>-</default>

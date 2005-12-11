@@ -5,9 +5,21 @@
 class CButton
 {
 public:
+  CButton()
+  {
+    id = 0;
+    imageFocus = imageNoFocus = NULL;
+  };
+  ~CButton()
+  {
+    if (imageFocus) delete imageFocus;
+    if (imageNoFocus) delete imageNoFocus;
+  }
+  int id;
   wstring strLabel;
   CStdString strExecute;
-  int iIcon;
+  CGUIImage *imageFocus;
+  CGUIImage *imageNoFocus;
 };
 
 class CGUIButtonScroller :
@@ -37,7 +49,7 @@ public:
   void AddButton(const wstring &strLabel, const CStdString &strExecute, const int iIcon);
   void SetActiveButton(int iButton);
   int GetActiveButton() const;
-  int GetActiveIcon() const;
+  int GetActiveButtonID() const;
   void SetFont(const CStdString &strFont, DWORD dwColor);
   CStdString GetTextureFocusName() const { return m_imgFocus.GetFileName(); };
   CStdString GetTextureNoFocusName() const { return m_imgNoFocus.GetFileName(); };
@@ -55,6 +67,7 @@ public:
   bool GetWrapAround() const { return m_bWrapAround; };
   bool GetSmoothScrolling() const { return m_bSmoothScrolling; };
   virtual CStdString GetDescription() const;
+  void LoadButtons(const TiXmlNode *node);
 
 protected:
   void OnChangeFocus();

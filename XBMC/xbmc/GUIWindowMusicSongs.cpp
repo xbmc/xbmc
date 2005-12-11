@@ -11,20 +11,19 @@
 #include "GUIDialogContextMenu.h"
 #include "SortFileItem.h"
 
-#define CONTROL_BTNVIEWASICONS  2
-#define CONTROL_BTNSORTBY     3
-#define CONTROL_BTNSORTASC    4
+#define CONTROL_BTNVIEWASICONS     2 
+#define CONTROL_BTNSORTBY          3
+#define CONTROL_BTNSORTASC         4
+#define CONTROL_BTNTYPE            5
+#define CONTROL_LIST              50
+#define CONTROL_THUMBS            51
+#define CONTROL_LABELFILES        12
 
-#define CONTROL_BTNTYPE      6
 #define CONTROL_BTNPLAYLISTS   7
 #define CONTROL_BTNSCAN      9
 #define CONTROL_BTNREC      10
 #define CONTROL_BTNRIP      11
 
-#define CONTROL_LABELFILES        12
-
-#define CONTROL_LIST       50
-#define CONTROL_THUMBS      51
 
 CGUIWindowMusicSongs::CGUIWindowMusicSongs(void)
     : CGUIWindowMusicBase(WINDOW_MUSIC_FILES, "MyMusicSongs.xml")

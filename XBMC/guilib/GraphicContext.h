@@ -64,6 +64,23 @@ struct RESOLUTION_INFO
   char strMode[11];
 };
 
+class CAttribute
+{
+public:
+  CAttribute()
+  {
+    Reset();
+  };
+  void Reset()
+  {
+    alpha = 255;
+    offsetX = offsetY = 0;
+  };
+  DWORD alpha;
+  int offsetX;
+  int offsetY;
+};
+
 /*!
  \ingroup graphics
  \brief 
@@ -125,10 +142,10 @@ public:
   inline float ScaleFinalX() const { return m_windowScaleX; };
   inline float ScaleFinalY() const { return m_windowScaleY; };
   inline DWORD MergeAlpha(DWORD color) const;
-  void SetControlAlpha(DWORD alpha) { m_controlAlpha = alpha; };
-  void SetControlOffset(float x, float y) { m_controlOffsetX = x; m_controlOffsetY = y; };
-  void SetWindowAlpha(DWORD alpha) { m_windowAlpha = alpha; };
-  void SetWindowOffset(float x, float y) { m_windowOffsetX = x; m_windowOffsetY = y; };
+  void ResetControlAttributes() { m_controlAttribute.Reset(); };
+  void SetControlAlpha(DWORD alpha) { m_controlAttribute.alpha = alpha; };
+  void SetControlOffset(float offsetX, float offsetY) { m_controlAttribute.offsetX = (int)offsetX; m_controlAttribute.offsetY = (int)offsetY; };
+  void SetWindowAttributes(CAttribute &attribute) { m_windowAttribute = attribute; };
 
 protected:
   IMsgSenderCallback* m_pCallback;
@@ -152,12 +169,8 @@ private:
   float m_windowScaleY;
   float m_windowPosX;
   float m_windowPosY;
-  DWORD m_controlAlpha;   // for control fading
-  float m_controlOffsetX; // for sliding
-  float m_controlOffsetY;
-  DWORD m_windowAlpha;    // for window fading
-  float m_windowOffsetX;
-  float m_windowOffsetY;
+  CAttribute m_controlAttribute;
+  CAttribute m_windowAttribute;
 };
 
 /*!

@@ -57,15 +57,9 @@ CGUIWindow::CGUIWindow(DWORD dwID, const CStdString &xmlFile)
   m_visibleCondition = 0;
   m_windowLoaded = false;
   m_loadOnDemand = true;
-  m_alpha = 255;
-  m_offsetX = 0;
-  m_offsetY = 0;
   m_renderOrder = 0;
-  m_effectType = EFFECT_TYPE_NONE;
   m_effectState = EFFECT_NONE;
   m_effectStart = 0;
-  m_effectInTime = 0;
-  m_effectOutTime = 0;
   m_dynamicResourceAlloc = true;
 }
 
@@ -406,8 +400,6 @@ bool CGUIWindow::Load(const TiXmlElement* pRootElement, RESOLUTION resToUse)
   m_overlayState = OVERLAY_STATE_PARENT_WINDOW;   // Use parent or previous window's state
   m_coordsRes = g_guiSettings.m_LookAndFeelResolution;
   m_visibleCondition = 0;
-  m_effectType = EFFECT_TYPE_NONE;
-  m_effectInTime = m_effectOutTime = 0;
 
   VECREFERENCECONTOLS referencecontrols;
   IVECREFERENCECONTOLS it;
@@ -426,19 +418,7 @@ bool CGUIWindow::Load(const TiXmlElement* pRootElement, RESOLUTION resToUse)
     }
     else if (strValue == "visible" && pChild->FirstChild())
     {
-      const char *effect = pChild->ToElement()->Attribute("effect");
-      if (effect)
-      {
-        if (strcmpi(effect, "fade") == 0)
-          m_effectType = EFFECT_TYPE_FADE;
-        else if (strcmpi(effect, "slide") == 0)
-          m_effectType = EFFECT_TYPE_SLIDE;
-      }
-      pChild->ToElement()->Attribute("time", &m_effectInTime);
-      m_effectOutTime = m_effectInTime;
-      int fadetime;
-      if (pChild->ToElement()->Attribute("intime", &fadetime)) m_effectInTime = fadetime;
-      if (pChild->ToElement()->Attribute("outtime", &fadetime)) m_effectOutTime = fadetime;
+      m_effect.Create(pChild->ToElement());
       m_visibleCondition = g_infoManager.TranslateString(pChild->FirstChild()->Value());
     }
     else if (strValue == "zorder" && pChild->FirstChild())
@@ -594,8 +574,7 @@ void CGUIWindow::Render()
   if (!m_WindowAllocated) return;
 
   g_graphicsContext.SetScalingResolution(m_coordsRes, m_iPosX, m_iPosY, m_needsScaling);
-  g_graphicsContext.SetWindowOffset(m_offsetX,m_offsetY);
-  g_graphicsContext.SetWindowAlpha(m_alpha);
+  g_graphicsContext.SetWindowAttributes(m_attribute);
 
   for (int i = 0; i < (int)m_vecControls.size(); i++)
   {
@@ -603,8 +582,7 @@ void CGUIWindow::Render()
     if (pControl)
     {
       // reset control states
-      g_graphicsContext.SetControlAlpha(255);
-      g_graphicsContext.SetControlOffset(0, 0);
+      g_graphicsContext.ResetControlAttributes();
       pControl->Render();
     }
   }
@@ -819,7 +797,7 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
       OutputDebugString("------------------- GUI_MSG_WINDOW_INIT ");
       OutputDebugString(strLine.c_str());
       OutputDebugString("------------------- \n");
-      SetAlpha(255);  // initial fade state
+      m_attribute.Reset();
       if (m_dynamicResourceAlloc || !m_WindowAllocated) AllocResources();
       if (message.GetParam1() != WINDOW_INVALID)
       {
@@ -1153,4 +1131,26 @@ void CGUIWindow::SetControlVisibility()
     if (pControl->GetVisibleCondition())
       pControl->SetInitialVisibility();
   }
+}
+
+// Changes the control id if it is of the type specified, and updates the navigation
+// of all controls accordingly.  Useful for when we are changing the skin file definition.
+void CGUIWindow::ChangeControlID(DWORD oldID, DWORD newID, CGUIControl::GUICONTROLTYPES type)
+{
+  // change the ID
+  CGUIControl *control = (CGUIControl *)GetControl(oldID);
+  if (control && control->GetControlType() == type)
+    control->SetID(newID);
+  // change navigation
+  for (unsigned int i = 0; i < m_vecControls.size(); i++)
+  {
+    CGUIControl *control = m_vecControls[i];
+    if (control->GetControlIdUp() == oldID) control->SetNavigation(newID, control->GetControlIdDown(), control->GetControlIdLeft(), control->GetControlIdRight());
+    if (control->GetControlIdDown() == oldID) control->SetNavigation(control->GetControlIdUp(), newID, control->GetControlIdLeft(), control->GetControlIdRight());
+    if (control->GetControlIdLeft() == oldID) control->SetNavigation(control->GetControlIdUp(), control->GetControlIdDown(), newID, control->GetControlIdRight());
+    if (control->GetControlIdRight() == oldID) control->SetNavigation(control->GetControlIdUp(), control->GetControlIdDown(), control->GetControlIdLeft(), newID);
+  }
+  // update our default control
+  if (m_dwDefaultFocusControlID == oldID)
+    m_dwDefaultFocusControlID = newID;
 }
