@@ -1,6 +1,6 @@
 <window>
   <id>2</id>
-  <defaultcontrol>10</defaultcontrol>
+  <defaultcontrol>50</defaultcontrol>
   <allowoverlay>yes</allowoverlay>
   <controls>
     <control>
@@ -56,8 +56,8 @@
         <posY>120</posY>
         <label>100</label>
         <font>font13</font>
-        <onleft>10</onleft>
-        <onright>10</onright>
+        <onleft>50</onleft>
+        <onright>50</onright>
         <onup>9</onup>
         <ondown>3</ondown>
       </control>
@@ -70,7 +70,7 @@
         <posY>157</posY>
         <label>103</label>
         <font>font13</font>
-        <onleft>10</onleft>
+        <onleft>50</onleft>
         <onright>4</onright>
         <onup>2</onup>
         <ondown>6</ondown>
@@ -82,7 +82,7 @@
         <id>4</id>
         <label>-</label>
         <onleft>3</onleft>
-        <onright>10</onright>
+        <onright>50</onright>
         <onup>4</onup>
         <ondown>4</ondown>
       </control>
@@ -95,8 +95,8 @@
         <posY>194</posY>
         <label>108</label>
         <font>font13</font>
-        <onleft>10</onleft>
-        <onright>10</onright>
+        <onleft>50</onleft>
+        <onright>50</onright>
         <onup>3</onup>
         <ondown>7</ondown>
       </control>
@@ -109,8 +109,8 @@
         <posY>231</posY>
         <label>361</label>
         <font>font13</font>
-        <onleft>10</onleft>
-        <onright>10</onright>
+        <onleft>50</onleft>
+        <onright>50</onright>
         <onup>6</onup>
         <ondown>9</ondown>
       </control>
@@ -123,8 +123,8 @@
         <posY>268</posY>
         <label>13319</label>
         <font>font13</font>
-        <onleft>10</onleft>
-        <onright>10</onright>
+        <onleft>50</onleft>
+        <onright>50</onright>
         <onup>7</onup>
         <ondown>2</ondown>
       </control>
@@ -134,9 +134,9 @@
     <control>
       <description>listcontrol</description>
       <type>listcontrol</type>
-      <id>10</id>
+      <id>50</id>
       <onleft>2</onleft>
-      <onright>10</onright>
+      <onright>50</onright>
       <onup>2</onup>
       <ondown>2</ondown>
     </control>
@@ -144,7 +144,7 @@
     <control>
       <description>pics thumbnailpanel</description>
       <type>thumbnailpanel</type>
-      <id>11</id>
+      <id>51</id>
       <itemWidth>112</itemWidth>
       <itemHeight>132</itemHeight>
       <textureWidth>100</textureWidth>
@@ -162,9 +162,9 @@
       <thumbPosXBig>8</thumbPosXBig>
       <thumbPosYBig>16</thumbPosYBig>
       <onleft>2</onleft>
-      <onright>11</onright>
-      <onup>11</onup>
-      <ondown>11</ondown>
+      <onright>51</onright>
+      <onup>51</onup>
+      <ondown>51</ondown>
     </control>
 
   </controls>

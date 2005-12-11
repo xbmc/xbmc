@@ -1,3 +1,5 @@
+2005-12-11 changed:     Moved to version 1.8 compatible.
+
 2005-12-04 fixed:       Small navigation problem in DialogVideoInfo (16x9).
 2005-12-04 changed:     Play button shows Play when FastForwarding or Rewinding.
 
