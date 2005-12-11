@@ -14,18 +14,18 @@
 #include "SortFileItem.h"
 
 
-#define CONTROL_BTNVIEWASICONS  2
-#define CONTROL_BTNSORTBY       3
-#define CONTROL_BTNSORTASC      4
-#define CONTROL_BTNTYPE         6
+#define CONTROL_BTNVIEWASICONS     2 
+#define CONTROL_BTNSORTBY          3
+#define CONTROL_BTNSORTASC         4
+#define CONTROL_BTNTYPE            5
+#define CONTROL_LIST              50
+#define CONTROL_THUMBS            51
+#define CONTROL_BIGLIST           52
+#define CONTROL_LABELFILES        12
 
-#define CONTROL_LABELFILES  12
 #define CONTROL_FILTER      15
 #define CONTROL_BTNSHUFFLE  21
 
-#define CONTROL_LIST      50
-#define CONTROL_THUMBS    51
-#define CONTROL_BIGLIST   52
 
 #define SHOW_RECENTLY_PLAYED   128
 #define SHOW_RECENTLY_ADDED     64

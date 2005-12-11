@@ -1087,7 +1087,16 @@ void CVideoDatabase::AddBookMarkToMovie(const CStdString& strFilenameAndPath, co
   {
     long lPathId, lMovieId;
     long lFileId = GetFile(strFilenameAndPath, lPathId, lMovieId, true);
-    if (lFileId < 0) return ;
+    if (lFileId < 0)
+    {
+      // Doesn't exist in the database yet - add it.
+      // TODO: It doesn't appear to me that the CDLabel parameter or the subtitles
+      // parameter is anywhere in use in XBMC.
+      AddMovie(strFilenameAndPath, "", false);
+      lFileId = GetFile(strFilenameAndPath, lPathId, lMovieId, true);
+      if (lFileId < 0)
+        return ;
+    }
     if (NULL == m_pDB.get()) return ;
     if (NULL == m_pDS.get()) return ;
 

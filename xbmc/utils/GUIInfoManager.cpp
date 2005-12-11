@@ -567,7 +567,7 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow) const
     {
       CGUIControl *pControl = (CGUIControl *)pWindow->GetControl(pWindow->GetFocusedControl());
       if (pControl && pControl->GetControlType() == CGUIControl::GUICONTROL_BUTTONBAR)
-        bReturn = ((CGUIButtonScroller *)pControl)->GetActiveIcon() == condition - BUTTON_SCROLLER_HAS_ICON_START;
+        bReturn = ((CGUIButtonScroller *)pControl)->GetActiveButtonID() == condition - BUTTON_SCROLLER_HAS_ICON_START;
     }
   }
   else if (condition == SYSTEM_KAI_CONNECTED)

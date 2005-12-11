@@ -485,9 +485,10 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
   ConvertHomeVar(strDir);
   strcpy( g_stSettings.m_szAlternateSubtitleDirectory, strDir.c_str() );
 
-
+#ifdef PRE_SKIN_VERSION_2_0_COMPATIBILITY
   // Home page button scroller
   LoadHomeButtons(pRootElement);
+#endif
 
   // parse my programs bookmarks...
   CStdString strDefault;
@@ -2019,6 +2020,7 @@ bool CSettings::SetBookmarkLocks(const CStdString &strType, bool bEngageLocks)
     return true;
 }
 
+#ifdef PRE_SKIN_VERSION_2_0_COMPATIBILITY
 void CSettings::LoadHomeButtons(TiXmlElement* pRootElement)
 {
   TiXmlElement *pElement = pRootElement->FirstChildElement("homebuttons");
@@ -2073,83 +2075,7 @@ void CSettings::LoadHomeButtons(TiXmlElement* pRootElement)
     g_settings.m_buttonSettings.m_iDefaultButton = 0;
   }
 }
-
-bool CSettings::SaveHomeButtons()
-{
-  // Load the xml file...
-  if (!LoadXml()) return false;
-
-  // Find the <homebuttons> tag.
-  TiXmlElement *pRootElement = xbmcXml.RootElement();
-  TiXmlNode *pNode = pRootElement->FirstChild("homebuttons");
-  TiXmlNode *pIt = NULL;
-
-  // if we've found the <homebutton> tag
-  if (pNode)
-  { // delete it
-    pRootElement->RemoveChild(pNode);
-  }
-
-  // readd it
-  TiXmlElement xmlHomeButtons("homebuttons");
-  pRootElement->InsertEndChild(xmlHomeButtons);
-  pNode = pRootElement->FirstChild("homebuttons");
-  if (!pNode) return false;
-  // now add them all from our settings information
-  for (unsigned int i = 0; i < g_settings.m_buttonSettings.m_vecButtons.size(); i++)
-  {
-    // create a new <button> entry
-    CStdString strLabel;
-    CStdString strDescription;
-    if (g_settings.m_buttonSettings.m_vecButtons[i]->m_dwLabel == -1)
-    {
-      strLabel = g_settings.m_buttonSettings.m_vecButtons[i]->m_strLabel;
-      strDescription = strLabel;
-    }
-    else
-    {
-      strLabel.Format("%i", g_settings.m_buttonSettings.m_vecButtons[i]->m_dwLabel);
-      strDescription = g_localizeStrings.Get(g_settings.m_buttonSettings.m_vecButtons[i]->m_dwLabel);
-    }
-    TiXmlText xmlDescription(strDescription);
-    TiXmlText xmlLabel(strLabel);
-    TiXmlText xmlExecute(g_settings.m_buttonSettings.m_vecButtons[i]->m_strExecute);
-    CStdString strIcon;
-    strIcon.Format("%i", g_settings.m_buttonSettings.m_vecButtons[i]->m_iIcon);
-    TiXmlText xmlIcon(strIcon);
-    TiXmlElement eDescription("description");
-    TiXmlElement eLabel("label");
-    TiXmlElement eExecute("execute");
-    TiXmlElement eIcon("icon");
-
-    eDescription.InsertEndChild(xmlDescription);
-    eLabel.InsertEndChild(xmlLabel);
-    eExecute.InsertEndChild(xmlExecute);
-    eIcon.InsertEndChild(xmlIcon);
-
-    TiXmlElement button("button");
-    button.InsertEndChild(eDescription);
-    button.InsertEndChild(eLabel);
-    button.InsertEndChild(eExecute);
-    button.InsertEndChild(eIcon);
-
-    pNode->InsertEndChild(button);
-  }
-  // now save the default button...
-  pIt = pNode->FirstChild("default");
-  if (pIt)
-  { // delete it
-    pNode->RemoveChild(pIt);
-  }
-  CStdString strDefault;
-  strDefault.Format("%i", g_settings.m_buttonSettings.m_iDefaultButton);
-  TiXmlText xmlDefault(strDefault);
-  TiXmlElement eDefault("default");
-  eDefault.InsertEndChild(xmlDefault);
-  pNode->InsertEndChild(eDefault);
-
-  return xbmcXml.SaveFile();
-}
+#endif
 
 bool CSettings::LoadFolderViews(const CStdString &strFolderXML, VECFOLDERVIEWS &vecFolders)
 { // load xml file...
@@ -2263,7 +2189,9 @@ void CSettings::Clear()
   m_vecSambeShres.clear();
   m_vecIcons.clear();
   m_vecProfiles.clear();
+#ifdef PRE_SKIN_VERSION_2_0_COMPATIBILITY
   m_buttonSettings.Clear();
+#endif
   m_szMyVideoStackTokensArray.clear();
   m_szMyVideoCleanTokensArray.clear();
   m_MyVideoStackRegExps.clear();

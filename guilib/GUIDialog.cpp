@@ -74,10 +74,10 @@ bool CGUIDialog::OnMessage(CGUIMessage& message)
   case GUI_MSG_WINDOW_INIT:
     {
       // set the initial fade state of the dialog
-      if (m_effectInTime)
+      if (m_effect.m_inTime)
       {
         if (m_effectState == EFFECT_OUT)
-          m_effectStart = timeGetTime() - (int)(m_effectInTime * m_alpha / 255.0f);
+          m_effectStart = timeGetTime() - (int)(m_effect.m_inTime * m_attribute.alpha / 255.0f);
         else
           m_effectStart = timeGetTime();
         m_effectState = EFFECT_IN;
@@ -100,12 +100,12 @@ void CGUIDialog::Close(bool forceClose /*= false*/)
   if (!m_bRunning) return;
 
   // don't close if we should be fading out
-  if (!forceClose && m_effectOutTime)
+  if (!forceClose && m_effect.m_outTime)
   {
     if (m_effectState != EFFECT_OUT)
     {
       m_effectState = EFFECT_OUT;
-      m_effectStart = timeGetTime() - (int)(m_effectOutTime * (255.0f - m_alpha) / 255.0f);
+      m_effectStart = timeGetTime() - (int)(m_effect.m_outTime * (255.0f - m_attribute.alpha) / 255.0f);
     }
     return;
   }
@@ -196,19 +196,26 @@ void CGUIDialog::Show(DWORD dwParentId)
 
 void CGUIDialog::DoEffect(float effectAmount)
 {
-  if (m_effectType == EFFECT_TYPE_FADE)
-    SetAlpha((DWORD)(effectAmount * 255));
-  else if (m_effectType == EFFECT_TYPE_SLIDE)
-    m_offsetX = (1.0f - effectAmount) * g_graphicsContext.GetWidth();
+  if (m_effect.m_type == EFFECT_TYPE_FADE)
+    m_attribute.alpha = (DWORD)(effectAmount * 255);
+  else if (m_effect.m_type == EFFECT_TYPE_SLIDE)
+  {
+    float time = 1.0f - effectAmount;
+    float amount = time * (m_effect.m_acceleration * time + 1.0f - m_effect.m_acceleration);
+    m_attribute.offsetX = (int)(amount * (m_effect.m_startX - m_iPosX));
+    m_attribute.offsetY = (int)(amount * (m_effect.m_startY - m_iPosY));
+  }
 }
 
 void CGUIDialog::Render()
 {
-  int currentTime = timeGetTime();
+  DWORD currentTime = timeGetTime();
   if (m_effectState == EFFECT_IN)
   {
-    if (currentTime - m_effectStart < m_effectInTime)
-      DoEffect((float)(currentTime - m_effectStart) / m_effectInTime);
+    if (currentTime - m_effectStart < m_effect.m_inDelay)
+      DoEffect(0);
+    else if (currentTime - m_effectStart < m_effect.m_inDelay + m_effect.m_inTime)
+      DoEffect((float)(currentTime - m_effectStart - m_effect.m_inDelay) / m_effect.m_inTime);
     else
     {
       DoEffect(1);
@@ -217,13 +224,15 @@ void CGUIDialog::Render()
   }
   if (m_effectState == EFFECT_OUT)
   {
-    if (currentTime - m_effectStart < m_effectOutTime)
-      DoEffect((float)(m_effectOutTime - currentTime + m_effectStart) / m_effectOutTime);
+    if (currentTime - m_effectStart < m_effect.m_outDelay)
+      DoEffect(1);
+    else if (currentTime - m_effectStart < m_effect.m_outTime + m_effect.m_outDelay)
+      DoEffect((float)(m_effect.m_outTime + m_effect.m_outDelay - currentTime + m_effectStart) / m_effect.m_outTime);
     else
     {
       DoEffect(0);
-      Close(true);  // force the dialog to close
       m_effectState = EFFECT_NONE;
+      Close(true);  // force the dialog to close
       return;
     }
   }

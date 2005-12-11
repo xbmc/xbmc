@@ -11,10 +11,7 @@
 #include "GraphicContext.h"
 #include "GUICallback.h"
 #include "GUIFont.h"
-
-enum EFFECT_TYPE { EFFECT_TYPE_NONE = 0, EFFECT_TYPE_FADE, EFFECT_TYPE_SLIDE };
-enum EFFECT_STATE { EFFECT_NONE = 0, EFFECT_IN, EFFECT_OUT };
-enum START_STATE { START_NONE = 0, START_HIDDEN, START_VISIBLE };
+#include "VisibleEffect.h"
 
 /*!
  \ingroup controls
@@ -87,7 +84,8 @@ public:
   virtual void SetWidth(int iWidth);
   virtual void SetHeight(int iHeight);
   virtual void SetVisible(bool bVisible);
-  void SetVisibleCondition(int visible, EFFECT_TYPE effectType = EFFECT_TYPE_NONE, int fadeInTime = 0, int fadeOutTime = 0, START_STATE startState = START_NONE);
+  void SetVisibleCondition(int visible);
+  void SetVisibleCondition(int visible, const CVisibleEffect &effect);
   int GetVisibleCondition() const { return m_visibleCondition; };
   void UpdateVisibility();
   void SetInitialVisibility();
@@ -139,6 +137,7 @@ public:
   GUICONTROLTYPES GetControlType() const { return ControlType; }
 
 protected:
+  void DoEffect();
   DWORD m_dwControlLeft;
   DWORD m_dwControlRight;
   DWORD m_dwControlUp;
@@ -162,10 +161,7 @@ protected:
   bool m_pulseOnSelect;
   GUICONTROLTYPES ControlType;
   // effects information
-  START_STATE m_effectStartState;
-  EFFECT_TYPE m_effectType;
-  DWORD m_effectInTime;
-  DWORD m_effectOutTime;
+  CVisibleEffect m_effect;
   // current effect state
   EFFECT_STATE m_effectState;
   DWORD m_effectStart;
@@ -176,4 +172,5 @@ protected:
   int m_visibleCondition;
   bool m_lastVisible;
 };
+
 #endif
