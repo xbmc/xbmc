@@ -52,7 +52,7 @@ public:
   int xbmcSetVolume(int numParas, CStdString paras[]);
   int xbmcGetVolume();
   int xbmcGetPercentage();
-  int xbmcSeekPercentage(int numParas, CStdString paras[]);
+  int xbmcSeekPercentage(int numParas, CStdString paras[], bool relative);
   int xbmcAction(int numParas, CStdString paras[], int theAction);
   int xbmcExit(int theAction);
   int xbmcGetThumb(int numParas, CStdString paras[]);
