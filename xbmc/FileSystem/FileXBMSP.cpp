@@ -23,7 +23,6 @@
 #include "../util.h"
 #include <sys/stat.h>
 
-
 static UINT64 strtouint64(const char *s)
 {
   UINT64 r = 0;
@@ -229,8 +228,19 @@ int CFileXBMSP::Stat(const CURL& url, struct __stat64* buffer)
     buffer->st_size = this->m_fileSize;
     buffer->st_mode = _S_IFREG;
     Close();
+    errno = 0;
     return 0;
   }
+  
+  CStdString strURL;
+  url.GetURL(strURL);
+  if (CDirectory::Exists(strURL))
+  {
+    buffer->st_mode = _S_IFDIR;
+    errno = EISDIR;
+    return 0;
+  }
+
   errno = ENOENT;
   return -1;
 }
