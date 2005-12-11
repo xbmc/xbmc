@@ -5,10 +5,19 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 11-12-2005 added: Context Menu: Make the share Default [GeminiServer]
+                     In all share sections, with context menu, you can set the selected share as default! !<default>-</default>
+                     For more information see: http://manual.xboxmediacenter.de/wakka.php?wakka=BookMarksxml&v=kz4
+ - 11-12-2005 fixed: SmartXX V3 detection returned the wrong ID! [GeminiServer]
+ - 11-12-2005 added: Skin controlled switchable condition/buttons: [GeminiServer]
+		     The skinner can show and hide a Visual with own predefined button! 5 conditions are availibe! The conditions are [true] by default!
+		     For Example: set a Weather Icon and controll [show/hide] it with a button in submenu!
+                     Get the state:    use skin.ShowVisualx       [x=a,b,c,d,e]  e.g.: <visible>skin.ShowVisuala</visible>
+		     Change the state: use XBMC.skinshowvisual(x) [x=a,b,c,d,e]  e.g.: <execute>XBMC.skinshowvisual(a)</execute>
  - 11-12-2005 added: HTTPAPI SeekPercentageRelative command and additional GetCurrentlyPlaying info
  - 11-12-2005 fixed: CFileXBMSP::Stat(), set errno correctly (fixes dvdfolders).
  - 10-12-2005 fixed: Clicking on "All Albums" items in Top 100, Recently Played and Recently Added Albums
-			(Note: Queueing is still broken.  It gets *ALL* songs from the database.)
+		     (Note: Queueing is still broken.  It gets *ALL* songs from the database.)
  - 10-12-2005 fixed/changed: analog buttons can't turn off screensaver. plasma owners with flaky controllers (hi poing!) rejoice.
  - 10-12-2005 fixed: browse for subtitles (forgot some code)
  - 10-12-2005 fixed: Top 100 items in Music Library
@@ -19,6 +28,7 @@ added/fixed: (dd-mm-yyyy) (please specify date in CET)
  - 09-12-2005 fixed: Infinite loop in DeleteBookmark() if the bookmark had an invalid path.
  - 09-12-2005 fixed: Spin control in settings followed weird focusing patterns when moving to it from the left or right.
  - 08-12-2005 added: SystemInfo: Total System Uptime, will show how long XBMC was used since first start! [GeminiServer]
+                     Note: on IGR reset the Total Uptime can not be stored! Switch off XBMC via Menu!
  - 08-12-2005 added: SmartXX V3 Modchip Detection [GeminiServer]
  - 08-12-2005 fixed: previos changed settings was not saved if a restart follow to network Assignment change [GeminiServer]
  - 07-12-2005 fixed: rar directory masking.

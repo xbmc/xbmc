@@ -161,6 +161,8 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CStdS
     pMenu->AddButton(117); // 3: Delete
     pMenu->AddButton(bMyProgramsMenu ? 754 : 749); // 4: Add Program Link / Add Share
 
+    pMenu->AddButton(13335); // 5: Free
+
     // GeminiServer: DVD Drive Context menu stuff
     CIoSupport TrayIO;
     if (strPath == "D:\\" || strPath == "iso9660://" || strPath == "UDF://" || strPath == "cdda://" || strPath == "cdda://local/" )
@@ -169,10 +171,10 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CStdS
       int iTrayState = TrayIO.GetTrayState();
       if ( iTrayState == DRIVE_CLOSED_MEDIA_PRESENT || iTrayState == TRAY_CLOSED_MEDIA_PRESENT )
       {
-        pMenu->AddButton(341);    // 5||: Play CD/DVD!
+        pMenu->AddButton(341);    // 6||: Play CD/DVD!
         bIsDVDMediaPresent = true;
       }
-      pMenu->AddButton(13391);  // 5||6: Eject/Load CD/DVD!
+      pMenu->AddButton(13391);  // 6||7: Eject/Load CD/DVD!
       bIsDVDContextMenu = true;
     }
 
@@ -181,16 +183,16 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CStdS
     if (LOCK_MODE_EVERYONE != g_stSettings.m_iMasterLockMode)
     {
       if (LOCK_MODE_EVERYONE == iLockMode) 
-        pMenu->AddButton(12332);  // 5||7: Lock Share
+        pMenu->AddButton(12332);  // 6||8: Lock Share
       else if (LOCK_MODE_EVERYONE < iLockMode && bMaxRetryExceeded) 
-        pMenu->AddButton(12334);  // 5||7: Reset Share Lock
+        pMenu->AddButton(12334);  // 6||8: Reset Share Lock
       else if (LOCK_MODE_EVERYONE > iLockMode && !bMaxRetryExceeded)
       {
-        pMenu->AddButton(12335);  // 5||7: Remove Share Lock
+        pMenu->AddButton(12335);  // 6||8: Remove Share Lock
         if (!g_application.m_bMasterLockOverridesLocalPasswords) // don't show next button if folder locks are being overridden
         {
-          pMenu->AddButton(12353);  // 6||8: Reactivate Share Lock
-		      pMenu->AddButton(12356);  // 7||9: Change Share Lock
+          pMenu->AddButton(12353);  // 7||9: Reactivate Share Lock
+		      pMenu->AddButton(12356);  // 8||10: Change Share Lock
         }
       }
     }
@@ -205,21 +207,21 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CStdS
       {
         switch (iMenuID)
         {
-          case 5: {iMenuID = 9;} break; // 9: EjectButton
-          case 6: {iMenuID = 5;} break; 
-          case 7: {iMenuID = 6;} break;
+          case 6: {iMenuID = 10;} break; // 10: EjectButton
+          case 7: {iMenuID = 6;} break; 
           case 8: {iMenuID = 7;} break;
+          case 9: {iMenuID = 8;} break;
         }
       }
       else  // Ok, we have a Disc in, show the Play Button!
       {
         switch (iMenuID)
         {
-          case 5: {iMenuID = 8;} break; // 8: PlayButton
-          case 6: {iMenuID = 9;} break; // 9: EjectButton
-          case 7: {iMenuID = 5;} break;
+          case 6: {iMenuID = 9;} break; // 9: PlayButton
+          case 7: {iMenuID = 10;} break; // 10: EjectButton
           case 8: {iMenuID = 6;} break;
           case 9: {iMenuID = 7;} break;
+          case 10: {iMenuID = 8;} break;
         }
       }
     }
@@ -302,7 +304,14 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CStdS
           }
         }
         break;
-      case 5:   // 5: Share Lock settings
+      case 5:   // 5: Make the share "default"
+        {
+          if (!CheckMasterCode(iLockMode)) return false;
+          // make share default
+          return g_settings.UpDateXbmcXML(strType.c_str(), "default", strLabel.c_str());
+        }
+        break;
+      case 6:   // 5: Share Lock settings
         {
           if (LOCK_MODE_EVERYONE == iLockMode)  // 5: Lock Share
           {
@@ -379,7 +388,7 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CStdS
           else return false; // this should never happen, but if it does, don't perform any action
         }
         break;
-      case 6:   // 6: Share Lock settings
+      case 7:   // 6: Share Lock settings
         {
           // 6: Reactivate Share Lock
           if (LOCK_MODE_EVERYONE > iLockMode && !bMaxRetryExceeded && !g_application.m_bMasterLockOverridesLocalPasswords)
@@ -394,7 +403,7 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CStdS
             return false;
         }
         break;
-      case 7:   // 7: Share Change Lock Password 
+      case 8:   // 7: Share Change Lock Password 
         {
         // 7: Set New Password for the Chare
 	        // prompt user for mastercode when changing lock settings
@@ -433,13 +442,13 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CStdS
         //}
         }
         break;
-      case 8:   // 8: Play the CD/DVD  
+      case 9:   // 8: Play the CD/DVD  
         {
           // Ok Play now the Media CD/DVD!
           return CAutorun::PlayDisc();
         }
         break;
-      case 9:   // 9: Eject/Close CD/DVD
+      case 10:   // 9: Eject/Close CD/DVD
         {
           if (TrayIO.GetTrayState() == TRAY_OPEN)
           { TrayIO.CloseTray(); return true; }
