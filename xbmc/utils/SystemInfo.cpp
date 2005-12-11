@@ -426,7 +426,7 @@ CStdString SYSINFO::SmartXXModCHIP()
   else if ( uSmartXX_ID == 8 ) // SmartXX V3
 	{
 		CLog::Log(LOGDEBUG, "- Detected ModChip: SmartXX V3");
-		return "SmartXX OPX";
+		return "SmartXX V3";
 	}
 	else 
 	{
@@ -1176,15 +1176,33 @@ bool SYSINFO::SystemUpTime(int iInputMinutes, int &iMinutes, int &iHours, int &i
 {
   iMinutes=0;iHours=0;iDays=0;
   iMinutes = iInputMinutes;
-  if (iMinutes >= 60)
+  if (iMinutes >= 60) // Hour's
   {
     iHours = iMinutes / 60;
     iMinutes = iMinutes - (iHours *60);
   }
-  if (iHours >= 24)
+  if (iHours >= 24) // Days
   {
     iDays = iHours / 24;
     iHours = iHours - (iDays * 24);
   }
+  /*
+  if (iDays >= 7) // Weeks
+  {
+    iWeeks = iDays / 7;
+    iDays = iDays - (iDays * 7);
+  }
+  if (iWeeks >= 4) // Months
+  {
+    iMonth = iWeeks / 4;
+    iMonth = iMonth - (iMonth * 4);
+  }
+  if (iMonth >= 12) // Years
+  {
+    iMonth = iWeeks / 4;
+    iMonth = iMonth - (iMonth * 4);
+  }
+  */
+
   return true;
 }
