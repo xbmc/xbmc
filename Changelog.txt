@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 11-12-2005 added: HTTPAPI SeekPercentageRelative command and additional GetCurrentlyPlaying info
  - 11-12-2005 fixed: CFileXBMSP::Stat(), set errno correctly (fixes dvdfolders).
  - 10-12-2005 fixed: Clicking on "All Albums" items in Top 100, Recently Played and Recently Added Albums
 			(Note: Queueing is still broken.  It gets *ALL* songs from the database.)
