@@ -95,7 +95,6 @@ public:
   void SetXMLFile(const CStdString &xmlFile) { m_xmlFile = xmlFile; };
   void LoadOnDemand(bool loadOnDemand) { m_loadOnDemand = loadOnDemand; };
   bool GetLoadOnDemand() { return m_loadOnDemand; }
-  void SetAlpha(DWORD alpha) { m_alpha = alpha; };
   int GetRenderOrder() { return m_renderOrder; };
   EFFECT_STATE GetEffectState() { return m_effectState; };
   void SetControlVisibility();
@@ -103,6 +102,7 @@ public:
   enum OVERLAY_STATE { OVERLAY_STATE_PARENT_WINDOW=0, OVERLAY_STATE_SHOWN, OVERLAY_STATE_HIDDEN };
 
   OVERLAY_STATE GetOverlayState() const { return m_overlayState; };
+  void ChangeControlID(DWORD oldID, DWORD newID, CGUIControl::GUICONTROLTYPES type);
 
 protected:
   virtual void OnWindowUnload() {}
@@ -152,13 +152,9 @@ protected:
   int m_visibleCondition;
 
   EFFECT_STATE m_effectState;
-  EFFECT_TYPE m_effectType;
-  int m_effectInTime;  // for window effects
-  int m_effectOutTime;  // for window effects
-  int m_effectStart;
-  DWORD m_alpha;      // for fading
-  float m_offsetX;    // for sliding
-  float m_offsetY;
+  CVisibleEffect m_effect;
+  DWORD m_effectStart;
+  CAttribute m_attribute;
 
   int m_renderOrder;      // for render order of dialogs
 };

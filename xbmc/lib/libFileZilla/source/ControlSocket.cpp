@@ -1502,8 +1502,8 @@ void CControlSocket::ParseCommand()
 					{
 					if (piece.size() > 42)
 					  piece = piece.Left(42);
-					if (piece[piece.size()-1] == '\\')
-					  piece.erase(piece.length()-1);
+					while (piece.size() && (piece[piece.size()-1] == '\\' || piece[piece.size()-1] == ' '))
+					  piece.erase(piece.size()-1);
 					if( piece[piece.size()-1] != ':') // avoid fuckups with F: etc
 					  CUtil::RemoveIllegalChars(piece);
 					piece += '\\';

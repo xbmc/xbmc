@@ -24,8 +24,6 @@ CGraphicContext::CGraphicContext(void)
   m_stateBlock = 0xffffffff;
   m_windowScaleX = m_windowScaleY = 1.0f;
   m_windowPosX = m_windowPosY = 0.0f;
-  m_controlAlpha = m_windowAlpha = 255;
-  m_controlOffsetX = m_controlOffsetY = m_windowOffsetX = m_windowOffsetY = 0;
   MergeAlpha(10); // this just here so the inline function is included (why doesn't it include it normally??)
 }
 
@@ -604,16 +602,16 @@ void CGraphicContext::SetScalingResolution(RESOLUTION res, int posX, int posY, b
 
 inline float CGraphicContext::ScaleFinalXCoord(float x) const
 {
-  return (x + m_controlOffsetX) * m_windowScaleX + m_windowPosX + m_windowOffsetX;
+  return (x + m_controlAttribute.offsetX) * m_windowScaleX + m_windowPosX + m_windowAttribute.offsetX;
 }
 
 inline float CGraphicContext::ScaleFinalYCoord(float y) const
 {
-  return (y + m_controlOffsetY) * m_windowScaleY + m_windowPosY + m_windowOffsetY;
+  return (y + m_controlAttribute.offsetY) * m_windowScaleY + m_windowPosY + m_windowAttribute.offsetY;
 }
 
 inline DWORD CGraphicContext::MergeAlpha(DWORD color) const
 {
-  DWORD alpha = ((color >> 24) & 0xff) * m_controlAlpha * m_windowAlpha / 65025;
+  DWORD alpha = ((color >> 24) & 0xff) * m_controlAttribute.alpha * m_windowAttribute.alpha / 65025;
   return ((alpha << 24) & 0xff000000) | (color & 0xffffff);
 }

@@ -6,13 +6,15 @@
 #include "lib/libPython/XBPython.h"
 #include "GUIWindowScriptsInfo.h"
 #include "SortFileItem.h"
+#ifdef PRE_SKIN_VERSION_2_0_COMPATIBILITY
+#include "SkinInfo.h"
+#endif
 
-#define CONTROL_BTNVIEWASICONS  2
-#define CONTROL_BTNSORTBY     3
-#define CONTROL_BTNSORTASC    4
-
-#define CONTROL_LIST       10
-#define CONTROL_THUMBS      11
+#define CONTROL_BTNVIEWASICONS     2
+#define CONTROL_BTNSORTBY          3
+#define CONTROL_BTNSORTASC         4
+#define CONTROL_LIST              50
+#define CONTROL_THUMBS            51
 #define CONTROL_LABELFILES        12
 
 
@@ -445,6 +447,13 @@ void CGUIWindowScripts::GoParentFolder()
 void CGUIWindowScripts::OnWindowLoaded()
 {
   CGUIWindow::OnWindowLoaded();
+#ifdef PRE_SKIN_VERSION_2_0_COMPATIBILITY
+  if (g_SkinInfo.GetVersion() < 1.8)
+  {
+    ChangeControlID(10, CONTROL_LIST, CGUIControl::GUICONTROL_LIST);
+    ChangeControlID(11, CONTROL_THUMBS, CGUIControl::GUICONTROL_THUMBNAIL);
+  }
+#endif
   m_viewControl.Reset();
   m_viewControl.SetParentWindow(GetID());
   m_viewControl.AddView(VIEW_AS_LIST, GetControl(CONTROL_LIST));

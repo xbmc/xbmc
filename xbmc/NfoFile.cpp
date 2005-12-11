@@ -4,7 +4,7 @@
 
 #include "stdafx.h"
 #include "NfoFile.h"
-
+#include "utils/RegExp.h"
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
@@ -23,34 +23,23 @@ HRESULT CNfoFile::Create(LPSTR szPath)
   if (FAILED(Load(szPath)))
     return E_FAIL;
 
-  CHAR* szUrl = strstr(m_doc, "http://us.imdb");
-  if (!szUrl)
+  CRegExp reg;
+  reg.RegComp("imdb.com/Title\\?[0-9]*");
+  if (reg.RegFind(m_doc) > -1)
   {
-    szUrl = strstr(m_doc, "http://www.imdb.com");
+    char *src = reg.GetReplaceString("\\0");
+    m_strImDbUrl = "http://www.";
+    m_strImDbUrl += src;
+    free(src);
   }
-  if (!szUrl)
+  reg.RegComp("imdb.com/title/tt[0-9]*");
+  if (reg.RegFind(m_doc) > -1)
   {
-    szUrl = strstr(m_doc, "http://akas.imdb.com");
+    char *src = reg.GetReplaceString("\\0");
+    m_strImDbUrl = "http://www.";
+    m_strImDbUrl += src;
+    free(src);
   }
-  if (szUrl)
-  {
-    char szScrape[1024];
-
-    for (int i = 0; i < 1024; i++)
-    {
-      char c = szUrl[i];
-      if ( (c == 0) || (c == 32) || (c == 10) || (c == 13) )
-      {
-        szScrape[i] = 0;
-        break;
-      }
-
-      szScrape[i] = c;
-    }
-
-    m_strImDbUrl = szScrape;
-  }
-
   Close();
 
   return (m_strImDbUrl.size() > 0) ? S_OK : E_FAIL;

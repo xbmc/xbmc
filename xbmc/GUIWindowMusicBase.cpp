@@ -19,14 +19,18 @@
 #include "GUIDialogMusicScan.h"
 #include "GUIDialogContextMenu.h"
 #include "GUIWindowFileManager.h"
+#ifdef PRE_SKIN_VERSION_2_0_COMPATIBILITY
+#include "SkinInfo.h"
+#endif
 
 #define CONTROL_BTNVIEWASICONS  2
-#define CONTROL_BTNTYPE         6
+#define CONTROL_BTNTYPE         5
+#define CONTROL_LIST            50
+#define CONTROL_THUMBS          51
+#define CONTROL_BIGLIST         52
+
 #define CONTROL_BTNSEARCH       8
 
-#define CONTROL_LIST        50
-#define CONTROL_THUMBS      51
-#define CONTROL_BIGLIST     52
 
 using namespace MUSIC_GRABBER;
 using namespace DIRECTORY;
@@ -396,6 +400,12 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
 void CGUIWindowMusicBase::OnWindowLoaded()
 {
   CGUIWindow::OnWindowLoaded();
+#ifdef PRE_SKIN_VERSION_2_0_COMPATIBILITY
+  if (g_SkinInfo.GetVersion() < 1.8)
+  {
+    ChangeControlID(6, CONTROL_BTNTYPE, CGUIControl::GUICONTROL_SELECTBUTTON);
+  }
+#endif
   // add the view controls to our view controller
   m_viewControl.Reset();
   m_viewControl.SetParentWindow(GetID());

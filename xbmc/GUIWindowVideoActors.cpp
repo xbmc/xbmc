@@ -11,19 +11,19 @@
 #include "GUIPassword.h"
 #include "SortFileItem.h"
 
-#define CONTROL_BTNVIEWASICONS   2
-#define CONTROL_BTNSORTBY      3
-#define CONTROL_BTNSORTASC     4
+#define CONTROL_BTNVIEWASICONS     2 
+#define CONTROL_BTNSORTBY          3
+#define CONTROL_BTNSORTASC         4
 #define CONTROL_BTNTYPE            5
+#define CONTROL_LIST              50
+#define CONTROL_THUMBS            51
+#define CONTROL_LABELFILES        12
+
+#define LABEL_ACTOR              100
 #define CONTROL_PLAY_DVD           6
 #define CONTROL_STACK              7
 #define CONTROL_IMDB        9
 #define CONTROL_BTNSHOWMODE       10
-#define CONTROL_LIST       50
-#define CONTROL_THUMBS      51
-#define CONTROL_LABELFILES        12
-#define LABEL_ACTOR              100
-
 
 //****************************************************************************************************************************
 CGUIWindowVideoActors::CGUIWindowVideoActors()
@@ -144,7 +144,11 @@ void CGUIWindowVideoActors::SortItems(CFileItemList& items)
   case 2:
     items.Sort(sortAscending ? SSortFileItem::MovieRatingAscending : SSortFileItem::MovieRatingDescending); break;
   default:
-    items.Sort(sortAscending ? SSortFileItem::LabelAscending : SSortFileItem::LabelDescending); break;
+    if (g_guiSettings.GetBool("MyVideos.IgnoreTheWhenSorting"))
+      items.Sort(sortAscending ? SSortFileItem::LabelAscendingNoThe : SSortFileItem::LabelDescendingNoThe);
+    else
+      items.Sort(sortAscending ? SSortFileItem::LabelAscending : SSortFileItem::LabelDescending);
+    break;
   }
 }
 
