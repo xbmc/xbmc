@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 11-12-2005 fixed: Thumbs now appear immediately for files in the current directory from where a Movie "Query Info for All Files" is initiated
  - 11-12-2005 added: Context Menu: Make the share Default [GeminiServer]
                      In all share sections, with context menu, you can set the selected share as default! !<default>-</default>
                      For more information see: http://manual.xboxmediacenter.de/wakka.php?wakka=BookMarksxml&v=kz4
