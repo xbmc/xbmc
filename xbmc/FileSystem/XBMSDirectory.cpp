@@ -264,3 +264,12 @@ static void DiscoveryCallback(const char *addr, const char *port, const char *ve
   pItem->SetIconImage("defaultNetwork.png");
   c->items->Add(pItem);
 }
+bool CXBMSDirectory::Exists(const char* strPath)
+{
+  CFileItemList items;
+  CStdString strPath2(strPath);
+  if (GetDirectory(strPath2,items))
+    return true;
+  
+  return false;
+}
