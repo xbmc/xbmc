@@ -133,6 +133,12 @@ extern char g_szTitleIP[32];
 #define SKIN_HAS_THEME_START        500
 #define SKIN_HAS_THEME_END          509 // allow for max 10 themes
 
+#define SKIN_SHOW_VISUAL_A          520
+#define SKIN_SHOW_VISUAL_B          521
+#define SKIN_SHOW_VISUAL_C          522
+#define SKIN_SHOW_VISUAL_D          523
+#define SKIN_SHOW_VISUAL_E          524
+
 #define WINDOW_ACTIVE_START         WINDOW_HOME
 #define WINDOW_ACTIVE_END           WINDOW_PYTHON_END
 
@@ -304,6 +310,11 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
   else if (strTest.Equals("visualisation.preset")) ret = VISUALISATION_PRESET;
   else if (strTest.Equals("visualisation.name")) ret = VISUALISATION_NAME;
   else if (strTest.Equals("visualisation.enabled")) ret = VISUALISATION_ENABLED;
+  else if (strTest.Equals("skin.ShowVisuala")) ret = SKIN_SHOW_VISUAL_A;
+  else if (strTest.Equals("skin.ShowVisualb")) ret = SKIN_SHOW_VISUAL_B;
+  else if (strTest.Equals("skin.ShowVisualc")) ret = SKIN_SHOW_VISUAL_C;
+  else if (strTest.Equals("skin.ShowVisuald")) ret = SKIN_SHOW_VISUAL_D;
+  else if (strTest.Equals("skin.ShowVisuale")) ret = SKIN_SHOW_VISUAL_E;
   else if (strTest.Left(14).Equals("skin.hastheme("))
     ret = SKIN_HAS_THEME_START + ConditionalStringParameter(strTest.Mid(14, strTest.GetLength() -  15));
   else if (strTest.Left(16).Equals("window.isactive("))
@@ -529,6 +540,16 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow) const
     bReturn = true;
   else if (condition == SYSTEM_NO_SUCH_ALARM)
     bReturn = false;
+  else if (condition == SKIN_SHOW_VISUAL_A)
+    bReturn = g_stSettings.m_bskinshowvisa;
+  else if (condition == SKIN_SHOW_VISUAL_B)
+    bReturn = g_stSettings.m_bskinshowvisb;
+  else if (condition == SKIN_SHOW_VISUAL_C)
+    bReturn = g_stSettings.m_bskinshowvisc;
+  else if (condition == SKIN_SHOW_VISUAL_D)
+    bReturn = g_stSettings.m_bskinshowvisd;
+  else if (condition == SKIN_SHOW_VISUAL_E)
+    bReturn = g_stSettings.m_bskinshowvise;
   else if (condition >= CONTROL_HAS_FOCUS_START && condition <= CONTROL_HAS_FOCUS_END)
   {
     if( !dwContextWindow ) dwContextWindow = m_gWindowManager.GetActiveWindow();
