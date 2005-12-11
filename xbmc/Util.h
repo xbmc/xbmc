@@ -95,6 +95,7 @@ public:
   static bool IsOnDVD(const CStdString& strFile);
   static bool IsDVD(const CStdString& strFile);
   static bool IsVirualPath(const CStdString& strFile);
+  static bool IsStack(const CStdString& strFile);
   static bool IsRAR(const CStdString& strFile);
   static bool IsZIP(const CStdString& strFile);
   static bool IsCDDA(const CStdString& strFile);
@@ -142,7 +143,7 @@ public:
   static void PrepareSubtitleFonts();
   static __int64 ToInt64(DWORD dwHigh, DWORD dwLow);
   static void AddFileToFolder(const CStdString& strFolder, const CStdString& strFile, CStdString& strResult);
-  static void CUtil::AddSlashAtEnd(CStdString& strFolder);
+  static void AddSlashAtEnd(CStdString& strFolder);
   static void GetPath(const CStdString& strFileName, CStdString& strPath);
   static void Split(const CStdString& strFileNameAndPath, CStdString& strPath, CStdString& strFileName);
   static void CreateRarPath(CStdString& strUrlPath, const CStdString& strRarPath, 

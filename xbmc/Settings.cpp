@@ -574,7 +574,10 @@ void CSettings::GetShares(const TiXmlElement* pRootElement, const CStdString& st
       CStdString strValue = pChild->Value();
       if (strValue == "bookmark")
       {
+        CLog::Log(LOGDEBUG,"    ---- BOOKMARK START ----");
         const TiXmlNode *pNodeName = pChild->FirstChild("name");
+        CStdString strName = pNodeName->FirstChild()->Value();
+        CLog::Log(LOGDEBUG,"    Found name: %s", strName.c_str());
 
         // get multiple paths
         vector<CStdString> vecPaths;
@@ -584,13 +587,37 @@ void CSettings::GetShares(const TiXmlElement* pRootElement, const CStdString& st
           if (pPathName->FirstChild())
           {
             CStdString strPath = pPathName->FirstChild()->Value();
-            // make sure there are no virtualpaths defined in xboxmediacenter.xml
-            if (!CUtil::IsVirualPath(strPath))
+            // make sure there are no virtualpaths or stack paths defined in xboxmediacenter.xml
+            CLog::Log(LOGDEBUG,"    Found path: %s", strPath.c_str());
+            if (!CUtil::IsVirualPath(strPath) && !CUtil::IsStack(strPath))
+            {
+              // translate paths
+              CStdString strPathOld = strPath;
+              ConvertHomeVar(strPath);
+              if (!strPath.Equals(strPathOld))
+                CLog::Log(LOGDEBUG,"    -> Translated to path: %s", strPath.c_str());
+
+              // translate special tags
+              if (strPath.at(0) == '$')
+              {
+                strPath = CUtil::TranslateSpecialDir(strPath);
+                if (!strPath.IsEmpty())
+                  CLog::Log(LOGDEBUG,"    -> Translated to path: %s", strPath.c_str());
+                else
+                {
+                  CLog::Log(LOGERROR,"    -> Skipping invalid token: %s", strPathOld.c_str());
+                  pPathName = pPathName->NextSibling("path");
+                  continue;
+                }
+              }
               vecPaths.push_back(strPath);
+            }
+            else
+              CLog::Log(LOGERROR,"    Invalid path type (%s) in bookmark", strPath.c_str());
           }
           pPathName = pPathName->NextSibling("path");
         }
-
+        
         const TiXmlNode *pCacheNode = pChild->FirstChild("cache");
         const TiXmlNode *pDepthNode = pChild->FirstChild("depth");
         const TiXmlNode *pLockMode = pChild->FirstChild("lockmode");
@@ -598,12 +625,9 @@ void CSettings::GetShares(const TiXmlElement* pRootElement, const CStdString& st
         const TiXmlNode *pBadPwdCount = pChild->FirstChild("badpwdcount");
         const TiXmlNode *pThumbnailNode = pChild->FirstChild("thumbnail");
 
-        if (pNodeName && vecPaths.size() > 0)
+        if (!strName.IsEmpty() && vecPaths.size() > 0)
         {
           CShare share;
-
-          CStdString strName = pNodeName->FirstChild()->Value();
-          CLog::Log(LOGDEBUG, "    Share Name: %s", strName.c_str());
 
           CStdString strPath;
           // disallowed for files, or theres only a single path in the vector
@@ -642,13 +666,13 @@ void CSettings::GetShares(const TiXmlElement* pRootElement, const CStdString& st
               
               // error message
               if (bIsInvalid)   
-                CLog::Log(LOGERROR,"Invalid protocol for virtualpath (%s)", vecPaths[j].c_str());
+                CLog::Log(LOGERROR,"    Invalid path type (%s) for multipath bookmark", vecPaths[j].c_str());
             }
 
             // no valid paths? skip to next bookmark
             if (share.vecPaths.size() == 0)
             {
-              CLog::Log(LOGERROR,"Error with bookmark (%s)", strName.c_str());
+              CLog::Log(LOGERROR,"    Missing or invalid <name> and/or <path> in bookmark");
               pChild = pChild->NextSibling();
             }
 
@@ -667,15 +691,13 @@ void CSettings::GetShares(const TiXmlElement* pRootElement, const CStdString& st
               {
                 for (int j = 0; j < (int)share.vecPaths.size(); ++j)
                   strPath += share.vecPaths[j] + ",";
-                strPath.Delete(strPath.size() -1);
+                strPath.Delete(strPath.size()-1);
               }
               // otherwise make a virtualpath path
               else
                 strPath.Format("virtualpath://%s/%s", strTagName.c_str(), strName.c_str());
             }
           }
-
-          CLog::Log(LOGDEBUG, "    Share Path: %s", strPath.c_str());
 
           share.strName = strName;
           share.strPath = strPath;
@@ -685,24 +707,18 @@ void CSettings::GetShares(const TiXmlElement* pRootElement, const CStdString& st
           share.m_strLockCode = "";
           share.m_iBadPwdCount = 0;
 
-          // translate dir
-          ConvertHomeVar(share.strPath);
+          CLog::Log(LOGDEBUG,"      Adding bookmark:");
+          CLog::Log(LOGDEBUG,"        Name: %s", share.strName.c_str());
+          if (CUtil::IsVirualPath(share.strPath))
+          {
+            for (int i = 0; i < (int)share.vecPaths.size(); ++i)
+              CLog::Log(LOGDEBUG,"        Path (%02i): %s", i+1, share.vecPaths.at(i).c_str());
+          }
+          else
+            CLog::Log(LOGDEBUG,"        Path: %s", share.strPath.c_str());
+
           strPath = share.strPath;
           strPath.ToUpper();
-
-          if (strPath.at(0) == '$')
-          {
-            share.strPath = CUtil::TranslateSpecialDir(strPath);
-            if (!share.strPath.IsEmpty())
-              CLog::Log(LOGDEBUG,"    -> Translated to Path: %s",share.strPath.c_str());
-            else
-            {
-              CLog::Log(LOGDEBUG,"    -> Skipping invalid special directory token.");
-              pChild = pChild->NextSibling();
-              continue;
-            }
-          }
-
           if (strPath.Left(12) == "VIRTUALPATH:")
             share.m_iDriveType = SHARE_TYPE_VPATH;
           else if (strPath.Left(4) == "UDF:")
@@ -761,7 +777,7 @@ void CSettings::GetShares(const TiXmlElement* pRootElement, const CStdString& st
         }
         else
         {
-          CLog::Log(LOGERROR, "    <name> and/or <path> not properly defined within <bookmark>");
+          CLog::Log(LOGERROR, "    Missing or invalid <name> and/or <path> in bookmark");
         }
       }
 
