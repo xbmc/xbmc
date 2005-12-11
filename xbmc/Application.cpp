@@ -1902,12 +1902,10 @@ void CApplication::Render()
       g_TextureManager.Flush();
     }
 
-    // reset image scaling and fade states
+    // reset image scaling and effect states
     g_graphicsContext.SetScalingResolution(g_graphicsContext.GetVideoResolution(), 0, 0, false);
-    g_graphicsContext.SetWindowAlpha(255);
-    g_graphicsContext.SetWindowOffset(0,0);
-    g_graphicsContext.SetControlAlpha(255);
-    g_graphicsContext.SetControlOffset(0,0);
+    g_graphicsContext.SetWindowAttributes(CAttribute());
+    g_graphicsContext.ResetControlAttributes();
 
     // If we have the remote codes enabled, then show them
     if (g_stSettings.m_bDisplayRemoteCodes)
@@ -1960,10 +1958,8 @@ void CApplication::RenderMemoryStatus()
   {
     // reset the window scaling and fade status
     g_graphicsContext.SetScalingResolution(g_graphicsContext.GetVideoResolution(), 0, 0, false);
-    g_graphicsContext.SetWindowAlpha(255);
-    g_graphicsContext.SetWindowOffset(0,0);
-    g_graphicsContext.SetControlAlpha(255);
-    g_graphicsContext.SetControlOffset(0,0);
+    g_graphicsContext.SetWindowAttributes(CAttribute());
+    g_graphicsContext.ResetControlAttributes();
 
     // in debug mode, show freememory
     CStdStringW wszText;

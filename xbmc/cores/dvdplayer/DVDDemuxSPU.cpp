@@ -405,6 +405,14 @@ CSPUInfo* CDVDDemuxSPU::ParseRLE(CSPUInfo* pSPU, BYTE* pUnparsedData)
         stats[i_border] += i_code >> 2;
       }
 
+      /* Check we aren't overwriting our data range
+         This occurs on "The Triplets of BelleVille" region 4 disk (NTSC)"
+         where we use around 96k rather than 64k + 20bytes */
+      if ((BYTE *)p_dest >= pSPU->result + 65536 + 20)
+      {
+        DebugLog("ParseRLE: Overrunning our data range.  Need %i bytes", (BYTE *)p_dest - pSPU->result);
+        return false;
+      }
       *p_dest++ = i_code;
     }
 
@@ -434,6 +442,14 @@ CSPUInfo* CDVDDemuxSPU::ParseRLE(CSPUInfo* pSPU, BYTE* pUnparsedData)
     /* Skip them just in case */
     while ( i_y < i_height )
     {
+      /* Check we aren't overwriting our data range
+         This occurs on "The Triplets of BelleVille" region 4 disk (NTSC)"
+         where we use around 96k rather than 64k + 20bytes */
+      if ((BYTE *)p_dest >= pSPU->result + 65536 + 20)
+      {
+        DebugLog("ParseRLE: Overrunning our data range.  Need %i bytes", (BYTE *)p_dest - pSPU->result);
+        return false;
+      }
       *p_dest++ = i_width << 2;
       i_y++;
     }

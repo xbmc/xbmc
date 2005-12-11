@@ -1545,6 +1545,8 @@ bool CUtil::GetFolderThumb(const CStdString& strFolder, CStdString& strThumb)
 
 void CUtil::GetFatXQualifiedPath(CStdString& strFileNameAndPath)
 {
+  // This routine gets rid of any "\\"'s at the start of the path.
+  // Should this be the case?
   vector<CStdString> tokens;
   CStdString strBasePath;
   strFileNameAndPath.Replace("/","\\");

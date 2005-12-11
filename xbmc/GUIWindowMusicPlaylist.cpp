@@ -6,9 +6,12 @@
 #include "playlistplayer.h"
 
 
-#define CONTROL_BTNVIEWASICONS  2
-#define CONTROL_BTNSORTBY     3
-#define CONTROL_BTNSORTASC    4
+#define CONTROL_BTNVIEWASICONS     2 
+#define CONTROL_BTNSORTBY          3
+#define CONTROL_BTNSORTASC         4
+#define CONTROL_LIST              50
+#define CONTROL_THUMBS            51
+#define CONTROL_LABELFILES        12
 
 #define CONTROL_BTNSHUFFLE    20
 #define CONTROL_BTNSAVE      21
@@ -22,10 +25,6 @@
 #define CONTROL_BTNREPEATONE   27
 #define CONTROL_BTNRANDOMIZE  28
 
-#define CONTROL_LABELFILES        12
-
-#define CONTROL_LIST       50
-#define CONTROL_THUMBS      51
 
 CGUIWindowMusicPlayList::CGUIWindowMusicPlayList(void)
     : CGUIWindowMusicBase(WINDOW_MUSIC_PLAYLIST, "MyMusicPlaylist.xml")

@@ -1,8 +1,8 @@
 #pragma once
 
-// REMOVE ME WHEN WE SWITCH TO SKIN VERSION 1.4
-#define PRE_SKIN_VERSION_1_4_COMPATIBILITY 1
-// REMOVE ME WHEN WE SWITCH TO SKIN VERSION 1.4
+// REMOVE ME WHEN WE SWITCH TO SKIN VERSION 2.0
+#define PRE_SKIN_VERSION_2_0_COMPATIBILITY 1
+// REMOVE ME WHEN WE SWITCH TO SKIN VERSION 2.0
 
 #include "Profile.h"
 #include "settings/VideoSettings.h"
@@ -157,7 +157,7 @@ public:
 typedef std::vector<CFileTypeIcon> VECFILETYPEICONS;
 typedef std::vector<CFileTypeIcon>::iterator IVECFILETYPEICONS;
 
-
+#ifdef PRE_SKIN_VERSION_2_0_COMPATIBILITY
 class CButtonScrollerSettings
 {
 public:
@@ -200,6 +200,7 @@ public:
   std::vector<CButton *> m_vecButtons;
   int m_iDefaultButton;
 };
+#endif
 
 class CSettings
 {
@@ -222,7 +223,6 @@ public:
   bool AddBookmark(const CStdString &strType, const CStdString &strName, const CStdString &strPath);
   bool AddBookmark(const CStdString &strType, const CStdString &strName, const CStdString &strPath, const int iDepth);
   bool SetBookmarkLocks(const CStdString& strType, bool bEngageLocks);
-  bool SaveHomeButtons();
 
   bool LoadFolderViews(const CStdString &strFolderXML, VECFOLDERVIEWS &vecFolders);
   bool SaveFolderViews(const CStdString &strFolderXML, VECFOLDERVIEWS &vecFolders);
@@ -484,7 +484,9 @@ public:
   VECPROFILES m_vecProfiles;
   int m_iLastLoadedProfileIndex;
   RESOLUTION_INFO m_ResInfo[10];
+#ifdef PRE_SKIN_VERSION_2_0_COMPATIBILITY
   CButtonScrollerSettings m_buttonSettings;
+#endif
 protected:
   void GetBoolean(const TiXmlElement* pRootElement, const CStdString& strTagName, bool& bValue);
   void GetInteger(const TiXmlElement* pRootElement, const CStdString& strTagName, int& iValue, const int iDefault, const int iMin, const int iMax);
@@ -512,7 +514,9 @@ protected:
 
   bool LoadXml();
   void CloseXml();
+#ifdef PRE_SKIN_VERSION_2_0_COMPATIBILITY
   void LoadHomeButtons(TiXmlElement* pRootElement);
+#endif
 
   TiXmlDocument xbmcXml;  // for editing the xml file from within XBMC
   bool xbmcXmlLoaded;
