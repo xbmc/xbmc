@@ -5,7 +5,10 @@
 #include "LocalizeStrings.h"
 #include "GUIWindowManager.h"
 #include "../xbmc/utils/CharsetConverter.h"
-
+#include "../xbmc/util.h"
+#ifdef PRE_SKIN_VERSION_2_0_COMPATIBILITY
+#include "SkinInfo.h"
+#endif
 
 #define SCROLL_SPEED 6.0f
 
@@ -96,7 +99,74 @@ void CGUIButtonScroller::ClearButtons()
   m_vecButtons.erase(m_vecButtons.begin(), m_vecButtons.end());
 }
 
-void CGUIButtonScroller::AddButton(const wstring &strLabel, const CStdString &strExecute, const int iIcon)
+void CGUIButtonScroller::LoadButtons(const TiXmlNode *node)
+{
+#ifdef PRE_SKIN_VERSION_2_0_COMPATIBILITY
+  if (g_SkinInfo.GetVersion() < 1.8)
+  { // load from xboxmediacenter.xml instead
+    for (int i = 0; i < (int)g_settings.m_buttonSettings.m_vecButtons.size(); i++)
+    {
+      if (g_settings.m_buttonSettings.m_vecButtons[i]->m_dwLabel != -1)
+      { // grab the required label from our strings
+        AddButton(g_localizeStrings.Get(g_settings.m_buttonSettings.m_vecButtons[i]->m_dwLabel),
+                             g_settings.m_buttonSettings.m_vecButtons[i]->m_strExecute,
+                             g_settings.m_buttonSettings.m_vecButtons[i]->m_iIcon);
+      }
+      else
+      {
+        AddButton(g_settings.m_buttonSettings.m_vecButtons[i]->m_strLabel,
+                             g_settings.m_buttonSettings.m_vecButtons[i]->m_strExecute,
+                             g_settings.m_buttonSettings.m_vecButtons[i]->m_iIcon);
+      }
+    }
+    SetActiveButton(g_settings.m_buttonSettings.m_iDefaultButton);
+    return;
+  }
+#endif
+  // run through and find all <button> tags
+  // Format is:
+  // <button id="1">
+  //    <label>
+  //    <execute>
+  //    <textureFocus>
+  //    <textureNoFocus>
+  // </button>
+  TiXmlNode *buttons = node->FirstChild("buttons");
+  if (!buttons) return;
+  TiXmlElement *buttonNode = buttons->FirstChildElement("button");
+  while (buttonNode)
+  {
+    CButton *button = new CButton;
+    buttonNode->Attribute("id", &button->id);
+    TiXmlNode *childNode = buttonNode->FirstChild("label");
+    if (childNode && childNode->FirstChild())
+    {
+      CStdString strLabel = childNode->FirstChild()->Value();
+      if (CUtil::IsNaturalNumber(strLabel))
+        button->strLabel = g_localizeStrings.Get(atoi(strLabel.c_str()));
+      else
+      {
+        WCHAR label[1024];
+        swprintf(label, L"%S", strLabel.c_str());
+        button->strLabel = label;
+      }
+    }
+    childNode = buttonNode->FirstChild("execute");
+    if (childNode && childNode->FirstChild())
+      button->strExecute = childNode->FirstChild()->Value();
+    childNode = buttonNode->FirstChild("textureFocus");
+    if (childNode && childNode->FirstChild())
+      button->imageFocus = new CGUIImage(GetParentID(), GetID(), m_iPosX, m_iPosY, m_dwWidth, m_dwHeight, childNode->FirstChild()->Value());
+    childNode = buttonNode->FirstChild("textureNoFocus");
+    if (childNode && childNode->FirstChild())
+      button->imageNoFocus = new CGUIImage(GetParentID(), GetID(), m_iPosX, m_iPosY, m_dwWidth, m_dwHeight, childNode->FirstChild()->Value());
+    m_vecButtons.push_back(button);
+    buttonNode = buttonNode->NextSiblingElement("button");
+  }
+}
+
+#ifdef PRE_SKIN_VERSION_2_0_COMPATIBILITY
+void CGUIButtonScroller::AddButton(const wstring &strLabel, const CStdString &strExecute, const int iID)
 {
   // add a button to our control
   CButton *pButton = new CButton;
@@ -104,7 +174,8 @@ void CGUIButtonScroller::AddButton(const wstring &strLabel, const CStdString &st
   {
     pButton->strLabel = strLabel;
     pButton->strExecute = strExecute;
-    pButton->iIcon = iIcon;
+    pButton->imageFocus = new CGUIImage(*(CGUIImage *)(m_gWindowManager.GetWindow(m_dwParentID)->GetControl(iID + 20)));
+    pButton->imageNoFocus = new CGUIImage(*(CGUIImage *)(m_gWindowManager.GetWindow(m_dwParentID)->GetControl(iID + 40)));
     m_vecButtons.push_back(pButton);
   }
   // update the number of filled slots etc.
@@ -121,6 +192,7 @@ void CGUIButtonScroller::AddButton(const wstring &strLabel, const CStdString &st
     Update();
   }
 }
+#endif
 
 void CGUIButtonScroller::PreAllocResources()
 {
@@ -136,7 +208,6 @@ void CGUIButtonScroller::AllocResources()
   m_imgFocus.AllocResources();
   m_imgNoFocus.AllocResources();
   // calculate our correct width and height
-  // TODO: Width/Height calculation for horizontal button bars
   if (m_bHorizontal)
   {
     m_dwXMLWidth = (DWORD)(m_iXMLNumSlots * (m_imgFocus.GetWidth() + m_iButtonGap) - m_iButtonGap);
@@ -149,6 +220,20 @@ void CGUIButtonScroller::AllocResources()
   }
   m_dwWidth = m_dwXMLWidth;
   m_dwHeight = m_dwXMLHeight;
+  // update the number of filled slots etc.
+  if ((int)m_vecButtons.size() < m_iXMLNumSlots)
+  {
+    m_iNumSlots = m_vecButtons.size();
+    m_iDefaultSlot = (int)((float)m_iXMLDefaultSlot / ((float)m_iXMLNumSlots - 1) * ((float)m_iNumSlots - 1));
+    Update();
+  }
+  else
+  {
+    m_iNumSlots = m_iXMLNumSlots;
+    m_iDefaultSlot = m_iXMLDefaultSlot;
+    Update();
+  }
+  SetActiveButton(0);
 }
 
 void CGUIButtonScroller::FreeResources()
@@ -156,6 +241,7 @@ void CGUIButtonScroller::FreeResources()
   CGUIControl::FreeResources();
   m_imgFocus.FreeResources();
   m_imgNoFocus.FreeResources();
+  ClearButtons();
 }
 
 void CGUIButtonScroller::DynamicResourceAlloc(bool bOnOff)
@@ -286,7 +372,7 @@ void CGUIButtonScroller::Render()
     else
       iPosY += m_iCurrentSlot * ((int)m_imgFocus.GetHeight() + m_iButtonGap);
     // check if we have a skinner-defined icon image
-    CGUIImage *pImage = (CGUIImage *)m_gWindowManager.GetWindow(GetParentID())->GetControl(m_vecButtons[GetActiveButton()]->iIcon + 40);
+    CGUIImage *pImage = m_vecButtons[GetActiveButton()]->imageFocus;
     if (!pImage) pImage = &m_imgFocus;
     pImage->SetPosition(iPosX, iPosY);
     pImage->SetVisible(true);
@@ -559,7 +645,7 @@ void CGUIButtonScroller::RenderItem(int &iPosX, int &iPosY, int &iOffset, bool b
     float fAlpha = 255.0f;
     float fAlpha1 = 255.0f;
     // check if we have a skinner-defined texture...
-    CGUIImage *pImage = (CGUIImage *)m_gWindowManager.GetWindow(GetParentID())->GetControl(m_vecButtons[iOffset]->iIcon + 20);
+    CGUIImage *pImage = m_vecButtons[iOffset]->imageNoFocus;
     if (!pImage) pImage = &m_imgNoFocus;
     pImage->SetCornerAlpha(0xFF, 0xFF, 0xFF, 0xFF);
     pImage->SetVisible(true);
@@ -614,16 +700,16 @@ void CGUIButtonScroller::RenderItem(int &iPosX, int &iPosY, int &iOffset, bool b
 void CGUIButtonScroller::OnChangeFocus()
 {
   // send a message to our parent that our focused button has changed...
-  if (!GetActiveIcon()) return;
-  CGUIMessage msg(GUI_MSG_SETFOCUS, GetID(), GetID(), GetActiveIcon());
+  if (!GetActiveButtonID()) return;
+  CGUIMessage msg(GUI_MSG_SETFOCUS, GetID(), GetID(), GetActiveButtonID());
   g_graphicsContext.SendMessage(msg);
 }
 
-int CGUIButtonScroller::GetActiveIcon() const
+int CGUIButtonScroller::GetActiveButtonID() const
 {
   int iButton = GetActiveButton();
   if (iButton < 0 || iButton >= (int)m_vecButtons.size()) return 0;
-  return m_vecButtons[iButton]->iIcon;
+  return m_vecButtons[iButton]->id;
 }
 
 int CGUIButtonScroller::GetActiveButton() const

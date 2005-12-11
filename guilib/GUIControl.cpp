@@ -533,7 +533,7 @@ void CGUIControl::UpdateVisibility()
   bool bVisible = g_infoManager.GetBool(m_visibleCondition, m_dwParentID);
   if (!m_lastVisible && bVisible)
   { // automatic change of visibility - do the in effect
-    m_effectLength = m_effectInTime;
+    m_effectLength = m_effect.m_inTime;
     if (m_effectState == EFFECT_NONE)
       m_effectStart = timeGetTime();
     else if (m_effectState == EFFECT_OUT) // turn around direction of effect
@@ -541,8 +541,8 @@ void CGUIControl::UpdateVisibility()
     m_effectState = EFFECT_IN;
   }
   else if (m_lastVisible && !bVisible)
-  { // automatic change of visibility - fade out
-    m_effectLength = m_effectOutTime;
+  { // automatic change of visibility - do the out effect
+    m_effectLength = m_effect.m_outTime;
     if (m_effectState == EFFECT_NONE)
       m_effectStart = timeGetTime();
     else if (m_effectState == EFFECT_IN) // turn around direction of effect
@@ -554,13 +554,27 @@ void CGUIControl::UpdateVisibility()
 
 void CGUIControl::SetInitialVisibility()
 {
-  if (m_effectStartState == START_NONE)
+  if (m_effect.m_startState == START_NONE)
   {
     m_lastVisible = m_bVisible = g_infoManager.GetBool(m_visibleCondition, m_dwParentID);
     return;
   }
-  m_lastVisible = m_bVisible = (m_effectStartState == START_VISIBLE);
+  m_lastVisible = m_bVisible = false;
+  if (m_effect.m_startState == START_VISIBLE)
+    m_lastVisible = m_bVisible = true;
   UpdateVisibility();
+}
+
+void CGUIControl::DoEffect()
+{
+  if (m_effect.m_type == EFFECT_TYPE_SLIDE)
+  {
+    float time = 1.0f - m_effectAmount;
+    float amount = time * (m_effect.m_acceleration * time + 1.0f - m_effect.m_acceleration);
+    g_graphicsContext.SetControlOffset(amount * (m_effect.m_startX - m_iPosX), amount * (m_effect.m_startY - m_iPosY));
+  }
+  else // if (m_effect.type == EFFECT_TYPE_FADE)
+    g_graphicsContext.SetControlAlpha((DWORD)(255 * m_effectAmount));
 }
 
 // TODO: Currently defaults to EFFECT_TYPE_FADE due to the fading performed
@@ -574,8 +588,10 @@ bool CGUIControl::UpdateEffectState()
   DWORD currentTime = timeGetTime();
   if (m_effectState == EFFECT_IN)
   { // doing an in effect
-    if (currentTime - m_effectStart < m_effectLength)
-      m_effectAmount = (float)(currentTime - m_effectStart) / m_effectLength;
+    if (currentTime - m_effectStart < m_effect.m_inDelay)
+      m_effectAmount = 0;
+    else if (currentTime - m_effectStart < m_effectLength + m_effect.m_inDelay)
+      m_effectAmount = (float)(currentTime - m_effectStart + m_effect.m_inDelay) / m_effectLength;
     else
     {
       m_effectAmount = 1;
@@ -585,34 +601,32 @@ bool CGUIControl::UpdateEffectState()
     {
       m_bVisible = true;
     }
-    if (m_effectType == EFFECT_TYPE_SLIDE)
-      g_graphicsContext.SetControlOffset((1.0f - m_effectAmount) * g_graphicsContext.GetWidth(), 0);
-    else // if (m_effectType == EFFECT_TYPE_FADE)
-      g_graphicsContext.SetControlAlpha((DWORD)(255 * m_effectAmount));
+    DoEffect();
   }
   else if (m_effectState == EFFECT_OUT)
   {
-    if (currentTime - m_effectStart < m_effectLength)
-      m_effectAmount = (float)(m_effectLength - currentTime + m_effectStart) / m_effectLength;
+    if (currentTime - m_effectStart < m_effect.m_outDelay)
+      m_effectAmount = 1;
+    else if (currentTime - m_effectStart < m_effectLength + m_effect.m_outDelay)
+      m_effectAmount = (float)(m_effect.m_outDelay + m_effectLength - currentTime + m_effectStart) / m_effectLength;
     else
     {
       m_effectAmount = 0;
       m_effectState = EFFECT_NONE;
       m_bVisible = false;
     }
-    if (m_effectType == EFFECT_TYPE_SLIDE)
-      g_graphicsContext.SetControlOffset((1.0f - m_effectAmount) * g_graphicsContext.GetWidth(), 0);
-    else //if (m_effectType == EFFECT_TYPE_FADE)
-      g_graphicsContext.SetControlAlpha((DWORD)(255 * m_effectAmount));
+    DoEffect();
   }
   return IsVisible();
 }
 
-void CGUIControl::SetVisibleCondition(int visible, EFFECT_TYPE effectType /*= EFFECT_TYPE_NONE*/, int effectInTime /*= 0*/, int effectOutTime /*= 0*/, START_STATE startHidden /*= START_NONE*/)
+void CGUIControl::SetVisibleCondition(int visible)
 {
   m_visibleCondition = visible;
-  m_effectType = effectType;
-  m_effectInTime = effectInTime;
-  m_effectOutTime = effectOutTime;
-  m_effectStartState = startHidden;
+}
+
+void CGUIControl::SetVisibleCondition(int visible, const CVisibleEffect &effect)
+{
+  m_visibleCondition = visible;
+  m_effect = effect;
 }

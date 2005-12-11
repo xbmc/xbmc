@@ -568,6 +568,9 @@
 			<File
 				RelativePath=".\TextureManager.h">
 			</File>
+			<File
+				RelativePath=".\VisibleEffect.h">
+			</File>
 		</Filter>
 		<Filter
 			Name="common"

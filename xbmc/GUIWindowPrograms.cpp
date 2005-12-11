@@ -12,16 +12,20 @@
 #include "GUIDialogContextMenu.h"
 #include "xbox/xbeheader.h"
 #include "SortFileItem.h"
+#ifdef PRE_SKIN_VERSION_2_0_COMPATIBILITY
+#include "SkinInfo.h"
+#endif
 
 using namespace DIRECTORY;
 
 #define CONTROL_BTNVIEWAS     2
-#define CONTROL_BTNSCAN       3
-#define CONTROL_BTNSORTMETHOD 4
-#define CONTROL_BTNSORTASC    5
-#define CONTROL_LIST          7
-#define CONTROL_THUMBS        8
-#define CONTROL_LABELFILES    9
+#define CONTROL_BTNSORTMETHOD 3
+#define CONTROL_BTNSORTASC    4
+#define CONTROL_LIST          50
+#define CONTROL_THUMBS        51
+#define CONTROL_LABELFILES    12
+
+#define CONTROL_BTNSCAN       6
 
 CGUIWindowPrograms::CGUIWindowPrograms(void)
     : CGUIWindow(WINDOW_PROGRAMS, "MyPrograms.xml")
@@ -1179,6 +1183,17 @@ void CGUIWindowPrograms::GoParentFolder()
 void CGUIWindowPrograms::OnWindowLoaded()
 {
   CGUIWindow::OnWindowLoaded();
+#ifdef PRE_SKIN_VERSION_2_0_COMPATIBILITY
+  if (g_SkinInfo.GetVersion() < 1.8)
+  {
+    ChangeControlID(7, CONTROL_LIST, CGUIControl::GUICONTROL_LIST);
+    ChangeControlID(8, CONTROL_THUMBS, CGUIControl::GUICONTROL_THUMBNAIL);
+    ChangeControlID(9, CONTROL_LABELFILES, CGUIControl::GUICONTROL_LABEL);
+    ChangeControlID(3, CONTROL_BTNSCAN, CGUIControl::GUICONTROL_BUTTON);
+    ChangeControlID(4, CONTROL_BTNSORTMETHOD, CGUIControl::GUICONTROL_BUTTON);
+    ChangeControlID(5, CONTROL_BTNSORTASC, CGUIControl::GUICONTROL_TOGGLEBUTTON);
+  }
+#endif
   m_viewControl.Reset();
   m_viewControl.SetParentWindow(GetID());
   m_viewControl.AddView(VIEW_AS_LIST, GetControl(CONTROL_LIST));
