@@ -1,7 +1,7 @@
 <window>
   <id>104</id>
   <defaultcontrol>1</defaultcontrol>
-  <visible effect="fade" time="400" start="hidden">Window.IsActive(104)</visible>
+  <visible effect="slide" time="200" startX="535" startY="-75" accleration="1" start="hidden">Window.IsActive(104)</visible>
   <coordinates>
     <system>1</system>
     <posX>535</posX>
