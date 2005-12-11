@@ -984,8 +984,14 @@ bool CUtil::IsDVD(const CStdString& strFile)
 }
 
 bool CUtil::IsVirualPath(const CStdString& strFile)
-{ 
-  if (strFile.Left(13).Equals("virtualpath://")) return true;
+{
+  if (strFile.Left(14).Equals("virtualpath://")) return true;
+  return false;
+}
+
+bool CUtil::IsStack(const CStdString& strFile)
+{
+  if (strFile.Left(8).Equals("stack://")) return true;
   return false;
 }
 
@@ -3402,8 +3408,10 @@ CStdString CUtil::TranslateSpecialDir(const CStdString &strSpecial)
     else if (strSpecial.Equals("$CDRIPS"))
       strReturn = g_stSettings.m_strRipPath;
   }
+  /*
   if (strReturn.IsEmpty())
     CLog::Log(LOGERROR,"Invalid special directory token: %s",strSpecial.c_str());
+  */
   return strReturn;
 }
 
