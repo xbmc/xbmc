@@ -6,6 +6,8 @@
 
 #define MUSIC_DATABASE_VERSION 1.3f
 #define MUSIC_DATABASE_NAME "MyMusic6.db"
+#define RECENTLY_ADDED_LIMIT  25
+#define RECENTLY_PLAYED_LIMIT 25
 
 using namespace CDDB;
 
@@ -1227,9 +1229,9 @@ bool CMusicDatabase::GetTop100Albums(VECALBUMS& albums)
     albums.erase(albums.begin(), albums.end());
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
-
-CStdString strSQL = "select albumview.*, sum(song.iTimesPlayed) as total from albumview "
-                      "join song on albumview.idAlbum=song.idAlbum "
+    
+    CStdString strSQL = "select albumview.*, sum(song.iTimesPlayed) as total from albumview "
+                    "join song on albumview.idAlbum=song.idAlbum "
                     "where song.iTimesPlayed>0 "
                     "group by albumview.idalbum "
                     "order by total desc "
@@ -1261,6 +1263,49 @@ CStdString strSQL = "select albumview.*, sum(song.iTimesPlayed) as total from al
   return false;
 }
 
+bool CMusicDatabase::GetTop100AlbumSongs(CFileItemList& items, bool bClearItems /* = true */)
+{
+  try
+  {
+    if (bClearItems)
+      items.Clear();
+
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS.get()) return false;
+
+    CStdString strSQL;
+    while (!m_pDS->eof())
+    strSQL.Format("select * from songview join albumview on (songview.strAlbum = albumview.strAlbum and songview.strPath = albumview.strPath) where albumview.idalbum in (select song.idAlbum from song where song.iTimesPlayed>0 group by idalbum order by sum(song.iTimesPlayed) desc limit 100) order by albumview.idalbum in (select song.idAlbum from song where song.iTimesPlayed>0 group by idalbum order by sum(song.iTimesPlayed) desc limit 100)");
+    CLog::Log(LOGDEBUG,"GetRecentlyAddedAlbumSongs() query: %s", strSQL.c_str());
+    if (!m_pDS->query(strSQL.c_str())) return false;
+
+    int iRowsFound = m_pDS->num_rows();
+    if (iRowsFound == 0)
+    {
+      m_pDS->close();
+      return false;
+    }
+
+    // get data from returned rows
+    items.Reserve(iRowsFound);
+    while (!m_pDS->eof())
+    {
+      CFileItem *item = new CFileItem(GetSongFromDataset());
+      items.Add(item);
+      m_pDS->next();
+    }
+
+    // cleanup
+    m_pDS->close();  
+    return true;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "CMusicDatabase:GeRecentlyAddedAlbumSongs() failed");
+  }
+  return false;
+}
+
 bool CMusicDatabase::GetRecentlyPlayedAlbums(VECALBUMS& albums)
 {
   try
@@ -1269,12 +1314,8 @@ bool CMusicDatabase::GetRecentlyPlayedAlbums(VECALBUMS& albums)
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
-    CStdString strSQL = "select distinct albumview.* from albumview "
-                          "join song on albumview.idAlbum=song.idAlbum "
-                        "where song.lastplayed NOT NULL "
-                        "order by song.lastplayed desc "
-                        "limit 25 ";
-
+    CStdString strSQL;
+    strSQL.Format("select distinct albumview.* from albumview join song on albumview.idAlbum=song.idAlbum where song.lastplayed NOT NULL order by song.lastplayed desc limit %i", RECENTLY_PLAYED_LIMIT);
     CLog::Log(LOGDEBUG, "CMusicDatabase::GetRecentlyPlayedAlbums() query: %s", strSQL.c_str());
     if (!m_pDS->query(strSQL.c_str())) return false;
     int iRowsFound = m_pDS->num_rows();
@@ -1283,7 +1324,6 @@ bool CMusicDatabase::GetRecentlyPlayedAlbums(VECALBUMS& albums)
       m_pDS->close();
       return false;
     }
-    int iCount = 1;
     while (!m_pDS->eof())
     {
       albums.push_back(GetAlbumFromDataset());
@@ -1301,6 +1341,49 @@ bool CMusicDatabase::GetRecentlyPlayedAlbums(VECALBUMS& albums)
   return false;
 }
 
+bool CMusicDatabase::GetRecentlyPlayedAlbumSongs(CFileItemList& items, bool bClearItems /* = true */)
+{
+  try
+  {
+    if (bClearItems)
+      items.Clear();
+
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS.get()) return false;
+
+    CStdString strSQL;
+    while (!m_pDS->eof())
+    strSQL.Format("select * from songview join albumview on (songview.strAlbum = albumview.strAlbum and songview.strPath = albumview.strPath) where albumview.idalbum in (select albumview.idalbum from albumview join song on albumview.idAlbum=song.idAlbum where song.lastplayed NOT NULL order by song.lastplayed desc limit %i)", RECENTLY_ADDED_LIMIT);
+    CLog::Log(LOGDEBUG,"GetRecentlyPlayedAlbumSongs() query: %s", strSQL.c_str());
+    if (!m_pDS->query(strSQL.c_str())) return false;
+
+    int iRowsFound = m_pDS->num_rows();
+    if (iRowsFound == 0)
+    {
+      m_pDS->close();
+      return false;
+    }
+
+    // get data from returned rows
+    items.Reserve(iRowsFound);
+    while (!m_pDS->eof())
+    {
+      CFileItem *item = new CFileItem(GetSongFromDataset());
+      items.Add(item);
+      m_pDS->next();
+    }
+
+    // cleanup
+    m_pDS->close();  
+    return true;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "CMusicDatabase:GeRecentlyAddedAlbumSongs() failed");
+  }
+  return false;
+}
+
 bool CMusicDatabase::GetRecentlyAddedAlbums(VECALBUMS& albums)
 {
   try
@@ -1309,9 +1392,8 @@ bool CMusicDatabase::GetRecentlyAddedAlbums(VECALBUMS& albums)
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
-    CStdString strSQL = "select * from albumview "
-                        "order by idalbum desc "
-                        "limit 25 ";
+    CStdString strSQL;
+    strSQL.Format("select * from albumview order by idAlbum desc limit %i", RECENTLY_ADDED_LIMIT);
 
     CLog::Log(LOGDEBUG, "CMusicDatabase::GetRecentlyAddedAlbums() query: %s", strSQL.c_str());
     if (!m_pDS->query(strSQL.c_str())) return false;
@@ -1336,6 +1418,48 @@ bool CMusicDatabase::GetRecentlyAddedAlbums(VECALBUMS& albums)
     CLog::Log(LOGERROR, "CMusicDatabase:GetRecentlyAddedAlbums() failed");
   }
 
+  return false;
+}
+
+bool CMusicDatabase::GetRecentlyAddedAlbumSongs(CFileItemList& items, bool bClearItems /* = true */)\
+{
+  try
+  {
+    if (bClearItems)
+      items.Clear();
+
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS.get()) return false;
+
+    CStdString strSQL;
+    strSQL.Format("select * from songview join albumview on (songview.strAlbum = albumview.strAlbum and songview.strPath = albumview.strPath) where albumview.idalbum in ( select idAlbum from albumview order by idAlbum desc limit %i)", RECENTLY_ADDED_LIMIT);
+    CLog::Log(LOGDEBUG,"GetRecentlyAddedAlbumSongs() query: %s", strSQL.c_str());
+    if (!m_pDS->query(strSQL.c_str())) return false;
+
+    int iRowsFound = m_pDS->num_rows();
+    if (iRowsFound == 0)
+    {
+      m_pDS->close();
+      return false;
+    }
+
+    // get data from returned rows
+    items.Reserve(iRowsFound);
+    while (!m_pDS->eof())
+    {
+      CFileItem *item = new CFileItem(GetSongFromDataset());
+      items.Add(item);
+      m_pDS->next();
+    }
+
+    // cleanup
+    m_pDS->close();  
+    return true;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "CMusicDatabase:GeRecentlyAddedAlbumSongs() failed");
+  }
   return false;
 }
 
