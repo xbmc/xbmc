@@ -696,6 +696,7 @@ void CGUIWindowVideoFiles::OnScan()
   CFileItemList items;
   GetStackedDirectory(m_Directory.m_strPath, items);
   DoScan(m_Directory.m_strPath, items);
+  Update(m_Directory.m_strPath);
 }
 
 bool CGUIWindowVideoFiles::DoScan(const CStdString &strPath, CFileItemList& items)
