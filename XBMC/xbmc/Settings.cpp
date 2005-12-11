@@ -1,4 +1,3 @@
-
 #include "stdafx.h"
 #include "settings.h"
 #include "application.h"
@@ -163,6 +162,13 @@ CSettings::CSettings(void)
   g_stSettings.m_iMyVideoPercentSeekForwardBig = 10;
   g_stSettings.m_iMyVideoPercentSeekBackwardBig = -10;
   xbmcXmlLoaded = false;
+
+  //skin: skinner controll tool
+  g_stSettings.m_bskinshowvisa = true;
+  g_stSettings.m_bskinshowvisb = true;
+  g_stSettings.m_bskinshowvisc = true;
+  g_stSettings.m_bskinshowvisd = true;
+  g_stSettings.m_bskinshowvise = true;
 
   g_stSettings.m_curSkinTheme = "";
 }
@@ -1245,11 +1251,19 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile, const bool loadp
   {
     GetInteger(pElement, "audiostream", g_stSettings.m_defaultVideoSettings.m_AudioStream, -1, -1, INT_MAX);
     GetInteger(pElement, "systemtotaluptime", g_stSettings.m_iSystemTimeTotalUp, 0, 0, INT_MAX);
-    
     GetString(pElement, "kaiarenapass", g_stSettings.szOnlineArenaPassword, "");
     GetString(pElement, "kaiarenadesc", g_stSettings.szOnlineArenaDescription, "");
   }
-
+  pElement = pRootElement->FirstChildElement("skintool");
+  if (pElement)
+  {
+    GetBoolean(pElement, "skinshowvisuala", g_stSettings.m_bskinshowvisa);
+    GetBoolean(pElement, "skinshowvisualb", g_stSettings.m_bskinshowvisb);
+    GetBoolean(pElement, "skinshowvisualc", g_stSettings.m_bskinshowvisc);
+    GetBoolean(pElement, "skinshowvisuald", g_stSettings.m_bskinshowvisd);
+    GetBoolean(pElement, "skinshowvisuale", g_stSettings.m_bskinshowvise);
+  }
+  
   // screen settings
   pElement = pRootElement->FirstChildElement("screen");
   if (pElement)
@@ -1494,6 +1508,17 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile, const bool savep
   SetString(pNode, "kaiarenapass", g_stSettings.szOnlineArenaPassword);
   SetString(pNode, "kaiarenadesc", g_stSettings.szOnlineArenaDescription);
   SetInteger(pNode, "systemtotaluptime", g_stSettings.m_iSystemTimeTotalUp);
+  
+  // screen settings
+  TiXmlElement skintoolNode("skintool");
+  pNode = pRoot->InsertEndChild(skintoolNode);
+  if (!pNode) return false;
+  SetBoolean(pNode, "skinshowvisuala", g_stSettings.m_bskinshowvisa);
+  SetBoolean(pNode, "skinshowvisualb", g_stSettings.m_bskinshowvisb);
+  SetBoolean(pNode, "skinshowvisualc", g_stSettings.m_bskinshowvisc);
+  SetBoolean(pNode, "skinshowvisuald", g_stSettings.m_bskinshowvisd);
+  SetBoolean(pNode, "skinshowvisuale", g_stSettings.m_bskinshowvise);
+  
 
   // screen settings
   TiXmlElement screenNode("screen");

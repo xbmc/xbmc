@@ -454,6 +454,12 @@ public:
     bool m_bMute;
     int m_iSystemTimeTotalUp;    // Uptime in minutes!
 
+    bool m_bskinshowvisa;
+    bool m_bskinshowvisb;
+    bool m_bskinshowvisc;
+    bool m_bskinshowvisd;
+    bool m_bskinshowvise;
+
     CStdString m_curSkinTheme;
   };
 
