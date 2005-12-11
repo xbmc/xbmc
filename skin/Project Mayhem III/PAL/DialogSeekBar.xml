@@ -1,7 +1,7 @@
 <window>
   <id>115</id>
   <defaultcontrol>1</defaultcontrol>
-  <visible effect="fade" time="200" start="hidden">Player.Seeking | Player.DisplayAfterSeek | Window.IsActive(VideoOSD) | Window.IsActive(MusicOSD) | Player.Paused | Player.Forwarding | Player.Rewinding</visible>
+  <visible effect="slide" time="500" startX="0" startY="-117" accleration="1" start="hidden">Player.Seeking | Player.DisplayAfterSeek | Window.IsActive(VideoOSD) | Window.IsActive(MusicOSD) | Player.Paused | Player.Forwarding | Player.Rewinding</visible>
   <controls>
     <!-- playstate images -->
     <control>
