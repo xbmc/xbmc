@@ -765,6 +765,8 @@ int CXbmcHttp::xbmcGetCurrentlyPlaying()
       const CIMDBMovie& tagVal=g_infoManager.GetCurrentMovie();
       if (tagVal.m_strTitle!="")
         output+="\n<li>Title"+tag+":"+tagVal.m_strTitle ;
+      if (tagVal.m_strGenre!="")
+        output+="\n<li>Genre"+tag+":"+tagVal.m_strGenre;
     }
     else if (g_application.IsPlayingAudio()) {
       lPTS = g_application.m_pPlayer->GetTime()/100;
@@ -776,8 +778,14 @@ int CXbmcHttp::xbmcGetCurrentlyPlaying()
         output+="\n<li>Artist"+tag+":"+tagVal.GetArtist() ;
       if (tagVal.GetAlbum()!="")
         output+="\n<li>Album"+tag+":"+tagVal.GetAlbum() ;
+      if (tagVal.GetGenre()!="")
+        output+="\n<li>Genre"+tag+":"+tagVal.GetGenre() ;
+      if (tagVal.GetYear()!="")
+        output+="\n<li>Year"+tag+":"+tagVal.GetYear() ;
       if (!g_infoManager.GetMusicLabel(211).IsEmpty())
         output+="\n<li>Bitrate"+tag+":"+g_infoManager.GetMusicLabel(211);  // MUSICPLAYER_BITRATE
+      if (!g_infoManager.GetMusicLabel(216).IsEmpty())
+        output+="\n<li>Samplerate"+tag+":"+g_infoManager.GetMusicLabel(216);  // MUSICPLAYER_SAMPLERATE
     }
     if (fn.Find("://")<0)
     {
@@ -845,7 +853,7 @@ int CXbmcHttp::xbmcGetPercentage()
     return g_applicationMessenger.SetResponse("<li>Error");
 }
 
-int CXbmcHttp::xbmcSeekPercentage(int numParas, CStdString paras[])
+int CXbmcHttp::xbmcSeekPercentage(int numParas, CStdString paras[], bool relative)
 {
   if (numParas<1)
     return g_applicationMessenger.SetResponse("<li>Error:Missing Parameter");
@@ -853,8 +861,23 @@ int CXbmcHttp::xbmcSeekPercentage(int numParas, CStdString paras[])
   {
     if (g_application.m_pPlayer)
     {
-      g_application.m_pPlayer->SeekPercentage((float)atoi(paras[0].c_str()));
-      return g_applicationMessenger.SetResponse("<li>OK") ;
+      float percent=(float)atof(paras[0].c_str());
+      if (relative)
+      {
+        __int64 newPos=(g_infoManager.GetPlayTime()) + 1000*(long)(percent*(float)g_infoManager.GetTotalPlayTime()/100.0f);
+        if ((newPos>=0) && (newPos/1000<=g_infoManager.GetTotalPlayTime()))
+        {
+          g_application.m_pPlayer->SeekTime(newPos);
+          return g_applicationMessenger.SetResponse("<li>OK");
+        }
+        else
+          return g_applicationMessenger.SetResponse("<li>Error:Out of range");
+      }
+      else
+      {
+        g_application.m_pPlayer->SeekPercentage(percent);
+        return g_applicationMessenger.SetResponse("<li>OK");
+      }
     }
     else
       return g_applicationMessenger.SetResponse("<li>Error:Loading mPlayer");
@@ -1897,7 +1920,7 @@ int CXbmcHttp::xbmcHelp()
 
   output+= "<p>The full documentation as a Word file can be downloaded here: <a  href=\"http://prdownloads.sourceforge.net/xbmc/apiDoc.doc?download\">http://prdownloads.sourceforge.net/xbmc/apiDoc.doc?download</a></p>";
 
-  output+= "<li>clearplaylist\n<li>addtoplaylist\n<li>playfile\n<li>pause\n<li>stop\n<li>restart\n<li>shutdown\n<li>exit\n<li>reset\n<li>restartapp\n<li>getcurrentlyplaying\n<li>getdirectory\n<li>gettagfromfilename\n<li>getcurrentplaylist\n<li>setcurrentplaylist\n<li>getplaylistcontents\n<li>removefromplaylist\n<li>setplaylistsong\n<li>getplaylistsong\n<li>playlistnext\n<li>playlistprev\n<li>getpercentage\n<li>seekpercentage\n<li>setvolume\n<li>getvolume\n<li>getthumbfilename\n<li>lookupalbum\n<li>choosealbum\n<li>downloadinternetfile\n<li>getmoviedetails\n<li>showpicture\n<li>sendkey\n<li>filedelete\n<li>filecopy\n<li>fileexists\n<li>fileupload\n<li>getguistatus\n<li>execbuiltin\n<li>config\n<li>getsysteminfo\n<li>getsysteminfobyname\n<li>guisetting\n<li>addtoslideshow\n<li>clearslideshow\n<li>playslideshow\n<li>getslideshowcontents\n<li>slideshowselect\n<li>getcurrentslide\n<li>rotate\n<li>move\n<li>zoom\n<li>playnext\n<li>playprev\n<li>TakeScreenShot\n<li>GetGUIDescription\n<li>GetPlaySpeed\n<li>SetPlaySpeed\n<li>help";
+  output+= "<li>clearplaylist\n<li>addtoplaylist\n<li>playfile\n<li>pause\n<li>stop\n<li>restart\n<li>shutdown\n<li>exit\n<li>reset\n<li>restartapp\n<li>getcurrentlyplaying\n<li>getdirectory\n<li>gettagfromfilename\n<li>getcurrentplaylist\n<li>setcurrentplaylist\n<li>getplaylistcontents\n<li>removefromplaylist\n<li>setplaylistsong\n<li>getplaylistsong\n<li>playlistnext\n<li>playlistprev\n<li>getpercentage\n<li>seekpercentage\n<li>seekpercentagerelative\n<li>setvolume\n<li>getvolume\n<li>getthumbfilename\n<li>lookupalbum\n<li>choosealbum\n<li>downloadinternetfile\n<li>getmoviedetails\n<li>showpicture\n<li>sendkey\n<li>filedelete\n<li>filecopy\n<li>fileexists\n<li>fileupload\n<li>getguistatus\n<li>execbuiltin\n<li>config\n<li>getsysteminfo\n<li>getsysteminfobyname\n<li>guisetting\n<li>addtoslideshow\n<li>clearslideshow\n<li>playslideshow\n<li>getslideshowcontents\n<li>slideshowselect\n<li>getcurrentslide\n<li>rotate\n<li>move\n<li>zoom\n<li>playnext\n<li>playprev\n<li>TakeScreenShot\n<li>GetGUIDescription\n<li>GetPlaySpeed\n<li>SetPlaySpeed\n<li>help";
 
   return g_applicationMessenger.SetResponse(output);
 }
@@ -1942,7 +1965,8 @@ int CXbmcHttp::xbmcCommand(CStdString parameter)
       else if (command == "playlistnext")             retVal = xbmcPlayListNext();
       else if (command == "playlistprev")             retVal = xbmcPlayListPrev();
       else if (command == "getpercentage")            retVal = xbmcGetPercentage();
-      else if (command == "seekpercentage")           retVal = xbmcSeekPercentage(numParas, paras);
+      else if (command == "seekpercentage")           retVal = xbmcSeekPercentage(numParas, paras, false);
+      else if (command == "seekpercentagerelative")   retVal = xbmcSeekPercentage(numParas, paras, true);
       else if (command == "setvolume")                retVal = xbmcSetVolume(numParas, paras);
       else if (command == "getvolume")                retVal = xbmcGetVolume();
       else if (command == "setplayspeed")             retVal = xbmcSetPlaySpeed(numParas, paras);
