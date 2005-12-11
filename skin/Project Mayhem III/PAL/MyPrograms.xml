@@ -1,6 +1,6 @@
 <window>
   <id>1</id>
-  <defaultcontrol>7</defaultcontrol>
+  <defaultcontrol>50</defaultcontrol>
   <allowoverlay>yes</allowoverlay>
   <controls>
     <control>
@@ -39,7 +39,7 @@
     <control>
       <description>number of files text label</description>
       <type>label</type>
-      <id>9</id>
+      <id>12</id>
       <posX>545</posX>
       <posY>526</posY>
       <align>right</align>
@@ -55,21 +55,21 @@
         <posX>50</posX>
         <posY>120</posY>
         <label>100</label>
-        <onleft>7</onleft>
-        <onright>7</onright>
-        <onup>3</onup>
-        <ondown>4</ondown>
+        <onleft>50</onleft>
+        <onright>50</onright>
+        <onup>6</onup>
+        <ondown>3</ondown>
       </control>
 
       <control>
         <description>Sort by button</description>
         <type>button</type>
-        <id>4</id>
+        <id>3</id>
         <posX>50</posX>
         <posY>157</posY>
         <label>103</label>
-        <onleft>7</onleft>
-        <onright>5</onright>
+        <onleft>50</onleft>
+        <onright>4</onright>
         <onup>2</onup>
         <ondown>99</ondown>
       </control>
@@ -77,10 +77,10 @@
       <control>
         <description>Sort asc</description>
         <type>togglebutton</type>
-        <id>5</id>
+        <id>4</id>
         <label>-</label>
-        <onleft>4</onleft>
-        <onright>7</onright>
+        <onleft>3</onleft>
+        <onright>50</onright>
         <onup>2</onup>
         <ondown>99</ondown>
       </control>
@@ -93,9 +93,9 @@
         <posY>194</posY>
         <label>998</label>
         <hyperlink>2700</hyperlink>
-        <onleft>7</onleft>
-        <onright>7</onright>
-        <onup>4</onup>
+        <onleft>50</onleft>
+        <onright>50</onright>
+        <onup>3</onup>
         <ondown>100</ondown>
       </control>
 
@@ -106,8 +106,8 @@
         <posX>50</posX>
         <posY>231</posY>
         <label>103</label>
-        <onleft>7</onleft>
-        <onright>7</onright>
+        <onleft>50</onleft>
+        <onright>50</onright>
         <onup>99</onup>
         <ondown>101</ondown>
       </control>
@@ -119,8 +119,8 @@
         <posX>50</posX>
         <posY>268</posY>
         <label>103</label>
-        <onleft>7</onleft>
-        <onright>7</onright>
+        <onleft>50</onleft>
+        <onright>50</onright>
         <onup>100</onup>
         <ondown>102</ondown>
       </control>
@@ -132,8 +132,8 @@
         <posX>50</posX>
         <posY>305</posY>
         <label>103</label>
-        <onleft>7</onleft>
-        <onright>7</onright>
+        <onleft>50</onleft>
+        <onright>50</onright>
         <onup>101</onup>
         <ondown>103</ondown>
       </control>
@@ -145,8 +145,8 @@
         <posX>50</posX>
         <posY>342</posY>
         <label>103</label>
-        <onleft>7</onleft>
-        <onright>7</onright>
+        <onleft>50</onleft>
+        <onright>50</onright>
         <onup>102</onup>
         <ondown>104</ondown>
       </control>
@@ -158,21 +158,21 @@
         <posX>50</posX>
         <posY>379</posY>
         <label>103</label>
-        <onleft>7</onleft>
-        <onright>7</onright>
+        <onleft>50</onleft>
+        <onright>50</onright>
         <onup>103</onup>
-        <ondown>3</ondown>
+        <ondown>6</ondown>
       </control>
 
       <control>
         <description>scan button</description>
         <type>button</type>
-        <id>3</id>
+        <id>6</id>
         <posX>50</posX>
         <posY>416</posY>
         <label>102</label>
-        <onleft>7</onleft>
-        <onright>7</onright>
+        <onleft>50</onleft>
+        <onright>50</onright>
         <onup>104</onup>
         <ondown>2</ondown>
       </control>
@@ -182,9 +182,9 @@
     <control>
       <description>apps listcontrol</description>
       <type>listcontrol</type>
-      <id>7</id>
+      <id>50</id>
       <onleft>2</onleft>
-      <onright>7</onright>
+      <onright>50</onright>
       <onup>2</onup>
       <ondown>2</ondown>
     </control>
@@ -192,11 +192,11 @@
     <control>
       <description>thumbnailpanel</description>
       <type>thumbnailpanel</type>
-      <id>8</id>
+      <id>51</id>
       <onleft>2</onleft>
-      <onright>8</onright>
-      <onup>8</onup>
-      <ondown>8</ondown>
+      <onright>51</onright>
+      <onup>51</onup>
+      <ondown>51</ondown>
     </control>
 
   </controls>

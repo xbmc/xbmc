@@ -84,7 +84,7 @@
         <onleft>50</onleft>
         <onright>4</onright>
         <onup>2</onup>
-        <ondown>6</ondown>
+        <ondown>5</ondown>
       </control>
 
       <control>
@@ -101,7 +101,7 @@
       <control>
         <description>Albums/Artists/Songs/Genres button</description>
         <type>selectbutton</type>
-        <id>6</id>
+        <id>5</id>
         <posX>50</posX>
         <posY>194</posY>
         <label>457</label>
@@ -122,7 +122,7 @@
         <font>font13</font>
         <onleft>50</onleft>
         <onright>50</onright>
-        <onup>6</onup>
+        <onup>5</onup>
         <ondown>21</ondown>
       </control>
 
