@@ -420,7 +420,8 @@ bool CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, CFileItemL
   
   // check for All Albums choosen in Top 100, Recently Added, and Recently Played albums
   // must be done before items is cleared!
-  VECALBUMS vecAlbums;
+  //VECALBUMS vecAlbums;
+  bool bAllAlbums = false;
   if (m_iPath > SHOW_TOP && m_iState == SHOW_SONGS)
   {
     CStdString strDir = strDirectory;
@@ -429,7 +430,8 @@ bool CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, CFileItemL
     CStdString strPath, strLast; 
     CUtil::Split(strDir, strPath, strLast);
     if (strLast.Equals((CStdString)g_localizeStrings.Get(15102)))  /* all albums */
-      GetAlbums(vecAlbums);
+      //GetAlbums(vecAlbums);
+      bAllAlbums = true;
   }
 
   // cleanup items
@@ -700,8 +702,12 @@ bool CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, CFileItemL
         bTest = g_musicDatabase.GetTop100Songs(items, false);
       else if (m_iPath == (SHOW_PLAYLISTS + SHOW_SONGS))
         bTest = GetSongsFromPlayList(items, m_vecPathHistory.back());
-      else if (vecAlbums.size() > 0)
-        bTest = GetSongsFromAlbums(items, vecAlbums);
+      else if (m_iPath == (SHOW_TOP + SHOW_ALBUMS + SHOW_SONGS) && bAllAlbums)
+        bTest = g_musicDatabase.GetTop100AlbumSongs(items, false);
+      else if (m_iPath == (SHOW_RECENTLY_ADDED + SHOW_SONGS) && bAllAlbums)
+        bTest = g_musicDatabase.GetRecentlyAddedAlbumSongs(items, false);
+      else if (m_iPath == (SHOW_RECENTLY_PLAYED + SHOW_SONGS) && bAllAlbums)
+        bTest = g_musicDatabase.GetRecentlyPlayedAlbumSongs(items, false);
       else
         bTest = g_musicDatabase.GetSongsNav(items, m_strGenre, m_strArtist, m_strAlbum, m_strAlbumPath, false);
 
@@ -867,6 +873,11 @@ void CGUIWindowMusicNav::OnClick(int iItem)
 {
   CFileItem* pItem = m_vecItems[iItem];
   CStdString strLabel = pItem->GetLabel();
+
+  // cant click on "All Songs"
+  if (strLabel.Equals((CStdString)g_localizeStrings.Get(15104)))  /* all songs */
+    return;
+
   CStdString strPath = pItem->m_strPath;
   CStdString strNextPath = m_Directory.m_strPath;
   if (strNextPath.IsEmpty())
