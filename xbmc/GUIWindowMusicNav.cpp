@@ -1517,6 +1517,19 @@ void CGUIWindowMusicNav::AddItemToPlayList(const CFileItem* pItem, int iPlayList
     // skip ".."
     if (pItem->GetLabel() == "..") return ;
 
+    // queueing "All Songs" ?
+    if (pItem->GetLabel().Equals((CStdString)g_localizeStrings.Get(15104))) /* all songs */
+    {
+      // convert the current list directly from m_vecItems
+      for (int i = 0; i < m_vecItems.Size(); ++i)
+      {
+        CFileItem* pFileItem = m_vecItems[i];
+        if (!pFileItem->m_bIsFolder)
+          CGUIWindowMusicBase::AddItemToPlayList(pFileItem, iPlayList);
+      }
+      return;
+    }
+
     // save state
     int iOldState = m_iState;
     int iOldPath = m_iPath;

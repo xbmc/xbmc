@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 11-12-2005 fixed: The All Songs item in Music Library
  - 11-12-2005 changed: All Albums in Top 100 Albums, Recently Added Albums, Recently Played Albums is now a nested sql query for better performance
  - 11-12-2005 changed: Moved the buttonscroller button list into the skin.  See online manual for more information.  It still reads
                        from XboxMediaCenter.xml if skin version is less than 1.8.
