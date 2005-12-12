@@ -1274,9 +1274,8 @@ bool CMusicDatabase::GetTop100AlbumSongs(CFileItemList& items, bool bClearItems 
     if (NULL == m_pDS.get()) return false;
 
     CStdString strSQL;
-    while (!m_pDS->eof())
     strSQL.Format("select * from songview join albumview on (songview.strAlbum = albumview.strAlbum and songview.strPath = albumview.strPath) where albumview.idalbum in (select song.idAlbum from song where song.iTimesPlayed>0 group by idalbum order by sum(song.iTimesPlayed) desc limit 100) order by albumview.idalbum in (select song.idAlbum from song where song.iTimesPlayed>0 group by idalbum order by sum(song.iTimesPlayed) desc limit 100)");
-    CLog::Log(LOGDEBUG,"GetRecentlyAddedAlbumSongs() query: %s", strSQL.c_str());
+    CLog::Log(LOGDEBUG,"GetTop100AlbumSongs() query: %s", strSQL.c_str());
     if (!m_pDS->query(strSQL.c_str())) return false;
 
     int iRowsFound = m_pDS->num_rows();
@@ -1301,7 +1300,7 @@ bool CMusicDatabase::GetTop100AlbumSongs(CFileItemList& items, bool bClearItems 
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "CMusicDatabase:GeRecentlyAddedAlbumSongs() failed");
+    CLog::Log(LOGERROR, "CMusicDatabase:GetTop100AlbumSongs() failed");
   }
   return false;
 }
@@ -1352,8 +1351,7 @@ bool CMusicDatabase::GetRecentlyPlayedAlbumSongs(CFileItemList& items, bool bCle
     if (NULL == m_pDS.get()) return false;
 
     CStdString strSQL;
-    while (!m_pDS->eof())
-    strSQL.Format("select * from songview join albumview on (songview.strAlbum = albumview.strAlbum and songview.strPath = albumview.strPath) where albumview.idalbum in (select albumview.idalbum from albumview join song on albumview.idAlbum=song.idAlbum where song.lastplayed NOT NULL order by song.lastplayed desc limit %i)", RECENTLY_ADDED_LIMIT);
+    strSQL.Format("select * from songview join albumview on (songview.strAlbum = albumview.strAlbum and songview.strPath = albumview.strPath) where albumview.idalbum in (select distinct albumview.idalbum from albumview join song on albumview.idAlbum=song.idAlbum where song.lastplayed NOT NULL order by song.lastplayed desc limit %i)", RECENTLY_ADDED_LIMIT);
     CLog::Log(LOGDEBUG,"GetRecentlyPlayedAlbumSongs() query: %s", strSQL.c_str());
     if (!m_pDS->query(strSQL.c_str())) return false;
 
@@ -1379,7 +1377,7 @@ bool CMusicDatabase::GetRecentlyPlayedAlbumSongs(CFileItemList& items, bool bCle
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "CMusicDatabase:GeRecentlyAddedAlbumSongs() failed");
+    CLog::Log(LOGERROR, "CMusicDatabase:GeRecentlyPlayedAlbumSongs() failed");
   }
   return false;
 }
