@@ -109,7 +109,6 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
         }
       }
 
-
       // make controls 100-110 invisible...
       for (int i = 100; i < 110; i++)
       {
@@ -384,19 +383,24 @@ bool CGUIWindowPrograms::OnPopupMenu(int iItem)
     // add the needed buttons
     
     CStdStringW strLaunch = g_localizeStrings.Get(518); // Launch
-    int iRegion = GetRegion(iItem);
-    if (iRegion == VIDEO_NTSCM)
-      strLaunch += " (NTSC-M)";
-    if (iRegion == VIDEO_NTSCJ)
-      strLaunch += " (NTSC-J)";
-    if (iRegion == VIDEO_PAL50)
-      strLaunch += " (PAL)";
-    if (iRegion == VIDEO_PAL60)
-      strLaunch += " (PAL-60)";
-
+    if (g_guiSettings.GetBool("MyPrograms.GameAutoRegion"))
+    {
+      int iRegion = GetRegion(iItem);
+      if (iRegion == VIDEO_NTSCM)
+        strLaunch += " (NTSC-M)";
+      if (iRegion == VIDEO_NTSCJ)
+        strLaunch += " (NTSC-J)";
+      if (iRegion == VIDEO_PAL50)
+        strLaunch += " (PAL)";
+      if (iRegion == VIDEO_PAL60)
+        strLaunch += " (PAL-60)";
+    }
+    
     int btn_Launch = pMenu->AddButton(strLaunch); // launch
-    int btn_Rename = -1;
-    int btn_LaunchIn = pMenu->AddButton(519); // launch in video mode
+    int btn_Rename = -2;
+    int btn_LaunchIn = -2;
+    if (g_guiSettings.GetBool("MyPrograms.GameAutoRegion"))
+      btn_LaunchIn = pMenu->AddButton(519); // launch in video mode
     if (m_vecItems[iItem]->IsType(".xbe"))
       btn_Rename = pMenu->AddButton(520); // edit xbe title
     int btn_Settings = pMenu->AddButton(5); // Settings
@@ -1210,6 +1214,9 @@ void CGUIWindowPrograms::OnWindowUnload()
 
 int CGUIWindowPrograms::GetRegion(int iItem, bool bReload)
 {
+  if (!g_guiSettings.GetBool("MyPrograms.GameAutoRegion"))
+    return 0;
+
   int iRegion;
   if (bReload || m_vecItems[iItem]->IsOnDVD())
   {
