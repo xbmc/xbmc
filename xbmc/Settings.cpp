@@ -162,15 +162,6 @@ CSettings::CSettings(void)
   g_stSettings.m_iMyVideoPercentSeekForwardBig = 10;
   g_stSettings.m_iMyVideoPercentSeekBackwardBig = -10;
   xbmcXmlLoaded = false;
-
-  //skin: skinner controll tool
-  g_stSettings.m_bskinshowvisa = true;
-  g_stSettings.m_bskinshowvisb = true;
-  g_stSettings.m_bskinshowvisc = true;
-  g_stSettings.m_bskinshowvisd = true;
-  g_stSettings.m_bskinshowvise = true;
-
-  g_stSettings.m_curSkinTheme = "";
 }
 
 CSettings::~CSettings(void)
@@ -1271,15 +1262,6 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile, const bool loadp
     GetString(pElement, "kaiarenapass", g_stSettings.szOnlineArenaPassword, "");
     GetString(pElement, "kaiarenadesc", g_stSettings.szOnlineArenaDescription, "");
   }
-  pElement = pRootElement->FirstChildElement("skintool");
-  if (pElement)
-  {
-    GetBoolean(pElement, "skinshowvisuala", g_stSettings.m_bskinshowvisa);
-    GetBoolean(pElement, "skinshowvisualb", g_stSettings.m_bskinshowvisb);
-    GetBoolean(pElement, "skinshowvisualc", g_stSettings.m_bskinshowvisc);
-    GetBoolean(pElement, "skinshowvisuald", g_stSettings.m_bskinshowvisd);
-    GetBoolean(pElement, "skinshowvisuale", g_stSettings.m_bskinshowvise);
-  }
   
   // screen settings
   pElement = pRootElement->FirstChildElement("screen");
@@ -1309,6 +1291,8 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile, const bool loadp
   LoadCalibration(pRootElement, strSettingsFile);
 
   g_guiSettings.LoadXML(pRootElement);
+
+  LoadSkinSettings(pRootElement);
 
   return true;
 }
@@ -1525,17 +1509,6 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile, const bool savep
   SetString(pNode, "kaiarenapass", g_stSettings.szOnlineArenaPassword);
   SetString(pNode, "kaiarenadesc", g_stSettings.szOnlineArenaDescription);
   SetInteger(pNode, "systemtotaluptime", g_stSettings.m_iSystemTimeTotalUp);
-  
-  // screen settings
-  TiXmlElement skintoolNode("skintool");
-  pNode = pRoot->InsertEndChild(skintoolNode);
-  if (!pNode) return false;
-  SetBoolean(pNode, "skinshowvisuala", g_stSettings.m_bskinshowvisa);
-  SetBoolean(pNode, "skinshowvisualb", g_stSettings.m_bskinshowvisb);
-  SetBoolean(pNode, "skinshowvisualc", g_stSettings.m_bskinshowvisc);
-  SetBoolean(pNode, "skinshowvisuald", g_stSettings.m_bskinshowvisd);
-  SetBoolean(pNode, "skinshowvisuale", g_stSettings.m_bskinshowvise);
-  
 
   // screen settings
   TiXmlElement screenNode("screen");
@@ -1554,6 +1527,9 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile, const bool savep
   SaveCalibration(pRoot);
 
   g_guiSettings.SaveXML(pRoot);
+
+  SaveSkinSettings(pRoot);
+
   // save the file
   return xmlDoc.SaveFile(strSettingsFile);
 }
@@ -2020,6 +1996,39 @@ bool CSettings::SetBookmarkLocks(const CStdString &strType, bool bEngageLocks)
     return true;
 }
 
+void CSettings::LoadSkinSettings(const TiXmlElement* pRootElement)
+{
+  TiXmlElement *pElement = pRootElement->FirstChildElement("skinsettings");
+  if (pElement)
+  {
+    TiXmlElement *pChild = pElement->FirstChildElement("setting");
+    while (pChild && pChild->FirstChild())
+    {
+      CStdString settingName = pChild->Attribute("name");
+      bool settingData = strcmpi(pChild->FirstChild()->Value(), "true") == 0;
+      m_skinSettings.insert(pair<CStdString, bool>(settingName, settingData));
+      pChild = pChild->NextSiblingElement("setting");
+    }
+  }
+}
+
+void CSettings::SaveSkinSettings(TiXmlNode *pRootElement) const
+{
+  // add the <skinsettings> tag
+  TiXmlElement xmlSettingsElement("skinsettings");
+  TiXmlNode *pSettingsNode = pRootElement->InsertEndChild(xmlSettingsElement);
+  if (!pSettingsNode) return;
+  for (std::map<CStdString, bool>::const_iterator it = m_skinSettings.begin(); it != m_skinSettings.end(); ++it)
+  {
+    // Add a <setting name="name">true/false</setting>
+    TiXmlElement xmlSetting("setting");
+    xmlSetting.SetAttribute("name", (*it).first);
+    TiXmlText xmlBool((*it).second ? "true" : "false");
+    xmlSetting.InsertEndChild(xmlBool);
+    pSettingsNode->InsertEndChild(xmlSetting);
+  }
+}
+
 #ifdef PRE_SKIN_VERSION_2_0_COMPATIBILITY
 void CSettings::LoadHomeButtons(TiXmlElement* pRootElement)
 {
@@ -2197,4 +2206,30 @@ void CSettings::Clear()
   m_MyVideoStackRegExps.clear();
   m_mapRssUrls.clear();
   xbmcXml.Clear();
+  m_skinSettings.clear();
+}
+
+bool CSettings::GetSkinSetting(const char *setting) const
+{
+  std::map<CStdString, bool>::const_iterator it = m_skinSettings.find(setting);
+  if (it != m_skinSettings.end())
+  {
+    return (*it).second;
+  }
+  return false;
+}
+
+void CSettings::ToggleSkinSetting(const char *setting)
+{
+  CStdString settingName;
+  settingName.Format("%s.%s", g_guiSettings.GetString("LookAndFeel.Skin").c_str(), setting);
+  std::map<CStdString, bool>::iterator it = m_skinSettings.find(settingName);
+  if (it != m_skinSettings.end())
+  {
+    (*it).second = !(*it).second;
+  }
+  else
+  { // insert setting
+    m_skinSettings.insert(pair<CStdString, bool>(settingName, true)); // defaults are false
+  }
 }
