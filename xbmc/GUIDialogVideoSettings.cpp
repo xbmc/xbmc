@@ -696,14 +696,14 @@ void CGUIDialogVideoSettings::OnSettingChanged(unsigned int num)
         if (CFile::Cache(strPath,"z:\\subtitle"+strExt+".keep"))
         {
           CStdString strPath2;
-          if (strExt.CompareNoCase("idx"))
+          if (strExt.CompareNoCase(".idx") == 0)
           {
-            CUtil::ReplaceExtension(strPath,"sub",strPath2);
+            CUtil::ReplaceExtension(strPath,".sub",strPath2);
             CFile::Cache(strPath2,"z:\\subtitle.sub.keep");
           }
-          if (strExt.CompareNoCase("sub"))
+          if (strExt.CompareNoCase(".sub") == 0)
           {
-            CUtil::ReplaceExtension(strPath,"idx",strPath2);
+            CUtil::ReplaceExtension(strPath,".idx",strPath2);
             CFile::Cache(strPath2,"z:\\subtitle.idx.keep");
           }
           g_application.Restart(true); // to reread subtitles
