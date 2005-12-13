@@ -440,7 +440,7 @@
   <string><id>508</id><value>Do not use Shortcuts or Scan</value></string>
   <string><id>509</id><value>Cache Program Thumbnails</value></string>
   <string><id>510</id><value>Enable Visualisations</value></string>
-  <string><id>511</id><value>Auto switch video mode based on game region</value></string>
+  <string><id>511</id><value>Enable video mode switching</value></string>
   <string><id>512</id><value>Startup Window</value></string>
   <string><id>513</id><value>Home Window</value></string>
   <string><id>514</id><value>Manual Settings</value></string>
@@ -697,7 +697,7 @@
   <string><id>12006</id><value>Audio visualisation</value></string>
   <string><id>12007</id><value>My Picture/slideshow</value></string>
   <string><id>12008</id><value>Filestacking dialog</value></string>
-  <string><id>12009</id><value>Force index rebuilding...</value></string>
+  <string><id>12009</id><value>Rebuild index...</value></string>
 
 
   <string><id>12310</id><value>0</value></string>
