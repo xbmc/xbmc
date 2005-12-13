@@ -380,6 +380,9 @@
 			<File
 				RelativePath=".\TextureManager.cpp">
 			</File>
+			<File
+				RelativePath=".\VisibleEffect.cpp">
+			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"

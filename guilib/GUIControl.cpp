@@ -25,6 +25,7 @@ CGUIControl::CGUIControl()
   m_dwControlUp = 0;
   m_dwControlDown = 0;
   m_effectState = EFFECT_NONE;
+  m_queueState = EFFECT_NONE;
   m_effectLength = 0;
   m_effectStart = 0;
   m_effectAmount = 255;
@@ -56,6 +57,7 @@ CGUIControl::CGUIControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPo
   m_dwControlUp = 0;
   m_dwControlDown = 0;
   m_effectState = EFFECT_NONE;
+  m_queueState = EFFECT_NONE;
   m_effectLength = 0;
   m_effectStart = 0;
   ControlType = GUICONTROL_UNKNOWN;
@@ -532,22 +534,12 @@ void CGUIControl::UpdateVisibility()
 {
   bool bVisible = g_infoManager.GetBool(m_visibleCondition, m_dwParentID);
   if (!m_lastVisible && bVisible)
-  { // automatic change of visibility - do the in effect
-    m_effectLength = m_effect.m_inTime;
-    if (m_effectState == EFFECT_NONE)
-      m_effectStart = timeGetTime();
-    else if (m_effectState == EFFECT_OUT) // turn around direction of effect
-      m_effectStart = timeGetTime() - (int)(m_effectLength * m_effectAmount);
-    m_effectState = EFFECT_IN;
+  { // automatic change of visibility - queue the in effect
+    m_queueState = EFFECT_IN;
   }
   else if (m_lastVisible && !bVisible)
   { // automatic change of visibility - do the out effect
-    m_effectLength = m_effect.m_outTime;
-    if (m_effectState == EFFECT_NONE)
-      m_effectStart = timeGetTime();
-    else if (m_effectState == EFFECT_IN) // turn around direction of effect
-      m_effectStart = timeGetTime() - (int)(m_effectLength * (1.0f - m_effectAmount));
-    m_effectState = EFFECT_OUT;
+    m_queueState = EFFECT_OUT;
   }
   m_lastVisible = bVisible;
 }
@@ -584,14 +576,34 @@ bool CGUIControl::UpdateEffectState()
 {
   if (m_visibleCondition)
     UpdateVisibility();
-  // perform any effects
+  // start any queued effects
   DWORD currentTime = timeGetTime();
+  if (m_queueState == EFFECT_IN)
+  {
+    m_effectLength = m_effect.m_inTime;
+    if (m_effectState == EFFECT_NONE)
+      m_effectStart = currentTime;
+    else if (m_effectState == EFFECT_OUT) // turn around direction of effect
+      m_effectStart = currentTime - (int)(m_effectLength * m_effectAmount);
+    m_effectState = EFFECT_IN;
+  }
+  else if (m_queueState == EFFECT_OUT)
+  {
+    m_effectLength = m_effect.m_outTime;
+    if (m_effectState == EFFECT_NONE)
+      m_effectStart = currentTime;
+    else if (m_effectState == EFFECT_IN) // turn around direction of effect
+      m_effectStart = currentTime - (int)(m_effectLength * (1.0f - m_effectAmount));
+    m_effectState = EFFECT_OUT;
+  }
+  m_queueState = EFFECT_NONE;
+  // perform any effects
   if (m_effectState == EFFECT_IN)
   { // doing an in effect
     if (currentTime - m_effectStart < m_effect.m_inDelay)
       m_effectAmount = 0;
     else if (currentTime - m_effectStart < m_effectLength + m_effect.m_inDelay)
-      m_effectAmount = (float)(currentTime - m_effectStart + m_effect.m_inDelay) / m_effectLength;
+      m_effectAmount = (float)(currentTime - m_effectStart - m_effect.m_inDelay) / m_effectLength;
     else
     {
       m_effectAmount = 1;

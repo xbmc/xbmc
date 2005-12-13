@@ -164,6 +164,7 @@ protected:
   CVisibleEffect m_effect;
   // current effect state
   EFFECT_STATE m_effectState;
+  EFFECT_STATE m_queueState;
   DWORD m_effectStart;
   float m_effectAmount;
   DWORD m_effectLength;         // TODO: Remove this
