@@ -219,11 +219,12 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
         m_strAlbumPath.Empty();
       }
 
+      DisplayEmptyDatabaseMessage(g_musicDatabase.GetSongsCount() > 0);
+
       CGUIWindowMusicBase::OnMessage(message);
 
-      if (g_musicDatabase.GetSongsCount()<=0)
+      if (m_bDisplayEmptyDatabaseMessage)
       {
-        DisplayEmptyDatabaseMessage(true);
         SET_CONTROL_FOCUS(CONTROL_BTNTYPE, 0);
         Update(m_Directory.m_strPath);  // Will remove content from the list/thumb control
       }

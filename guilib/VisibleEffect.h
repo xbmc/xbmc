@@ -14,6 +14,7 @@ public:
     m_inDelay = m_inTime = m_outDelay = m_outTime = 0;
     m_startX = m_startY = 0;
     m_acceleration = 1;
+    m_allowHiddenFocus = false;
   }
   void Create(TiXmlElement *node)
   {
@@ -48,6 +49,10 @@ public:
     node->Attribute("startY", &m_startY);
     double accel;
     if (node->Attribute("accleration", &accel)) m_acceleration = (float)accel;
+    // focus when hidden
+    const char *focus = node->Attribute("allowhiddenfocus");
+    if (focus && strcmp(focus, "true"))
+      m_allowHiddenFocus = true;
   };
 
   EFFECT_TYPE m_type;
@@ -57,6 +62,7 @@ public:
   DWORD m_inDelay;
   DWORD m_outDelay;
   EFFECT_STATE m_state;
+  bool m_allowHiddenFocus;  // true if we should be focusable even if hidden
 
   int m_startX;           // for slide effects
   int m_startY;
