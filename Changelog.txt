@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 13-12-2005 fixed: selecting unrarred vobsubs using browse for subtitle.
  - 13-12-2005 fixed: auto game region would apply even with setting off in some cases.
  - 12-12-2005 added: allowHiddenFocus attribute to visibility tags.  See online manual for more info.
  - 12-12-2005 fixed: Music Library could report empty if it had already been visited before a scan was performed.
