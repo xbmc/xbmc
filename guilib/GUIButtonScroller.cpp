@@ -176,6 +176,7 @@ void CGUIButtonScroller::AddButton(const wstring &strLabel, const CStdString &st
     pButton->strExecute = strExecute;
     pButton->imageFocus = new CGUIImage(*(CGUIImage *)(m_gWindowManager.GetWindow(m_dwParentID)->GetControl(iID + 20)));
     pButton->imageNoFocus = new CGUIImage(*(CGUIImage *)(m_gWindowManager.GetWindow(m_dwParentID)->GetControl(iID + 40)));
+    pButton->id = iID;
     m_vecButtons.push_back(pButton);
   }
   // update the number of filled slots etc.
