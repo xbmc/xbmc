@@ -192,7 +192,7 @@ bool CGUIControl::OnMessage(CGUIMessage& message)
     {
     case GUI_MSG_SETFOCUS:
       // if control is disabled then move 2 the next control
-      if ( IsDisabled() || !IsVisible() || !CanFocus() )
+      if ( !CanFocus() )
       {
         DWORD dwControl = 0;
         if (message.GetParam1() == ACTION_MOVE_DOWN) dwControl = m_dwControlDown;
@@ -310,7 +310,7 @@ bool CGUIControl::OnMessage(CGUIMessage& message)
 
 bool CGUIControl::CanFocus() const
 {
-  if (!IsVisible()) return false;
+  if (!IsVisible() && !m_effect.m_allowHiddenFocus) return false;
   if (IsDisabled()) return false;
   return true;
 }
