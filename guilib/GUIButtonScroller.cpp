@@ -174,8 +174,6 @@ void CGUIButtonScroller::AddButton(const wstring &strLabel, const CStdString &st
   {
     pButton->strLabel = strLabel;
     pButton->strExecute = strExecute;
-    pButton->imageFocus = new CGUIImage(*(CGUIImage *)(m_gWindowManager.GetWindow(m_dwParentID)->GetControl(iID + 20)));
-    pButton->imageNoFocus = new CGUIImage(*(CGUIImage *)(m_gWindowManager.GetWindow(m_dwParentID)->GetControl(iID + 40)));
     pButton->id = iID;
     m_vecButtons.push_back(pButton);
   }
@@ -208,6 +206,17 @@ void CGUIButtonScroller::AllocResources()
   //  m_dwFrameCounter=0;
   m_imgFocus.AllocResources();
   m_imgNoFocus.AllocResources();
+  if (g_SkinInfo.GetVersion() < 1.8)
+  {  // grab our button scroller images
+    for (unsigned int i = 0; i < m_vecButtons.size(); ++i)
+    {
+      CButton *button = m_vecButtons[i];
+      CGUIImage *image = (CGUIImage *)(m_gWindowManager.GetWindow(GetParentID())->GetControl(button->id + 20));
+      if (image) button->imageFocus = new CGUIImage(*image);
+      image = (CGUIImage *)(m_gWindowManager.GetWindow(GetParentID())->GetControl(button->id + 40));
+      if (image) button->imageNoFocus = new CGUIImage(*image);
+    }
+  }
   // calculate our correct width and height
   if (m_bHorizontal)
   {

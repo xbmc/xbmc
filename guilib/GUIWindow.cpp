@@ -59,6 +59,7 @@ CGUIWindow::CGUIWindow(DWORD dwID, const CStdString &xmlFile)
   m_loadOnDemand = true;
   m_renderOrder = 0;
   m_effectState = EFFECT_NONE;
+  m_queueState = EFFECT_NONE;
   m_effectStart = 0;
   m_dynamicResourceAlloc = true;
 }

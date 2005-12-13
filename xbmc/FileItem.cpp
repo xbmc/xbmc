@@ -1413,10 +1413,32 @@ void CFileItemList::Stack()
   // TODO: Remove nfo files before this stage?  The old routine did, but I'm not sure
   // the advantage of this (seems to me it's better just to ignore them for stacking
   // purposes).
-  // TODO: DVDFolders were being stacked here as well - I have removed this as you can
-  // probably do this via a regexp (reducing the need for special cases)
   if (g_stSettings.m_iMyVideoVideoStack != STACK_NONE)
   {
+    // First stack any DVD folders by removing every dvd file other than
+    // the VIDEO_TS.IFO file.
+    bool isDVDFolder(false);
+    for (int i = 0; i < Size(); ++i)
+    {
+      CFileItem *item = Get(i);
+      if (item->GetLabel().CompareNoCase("video_ts.ifo") == 0)
+      {
+        isDVDFolder = true;
+        break;
+      }
+    }
+    if (isDVDFolder)
+    { // remove any other dvd files in this folder
+      const int num = Size() ? Size() - 1 : 0;  // Size will alter in this loop
+      for (int i = num; i; --i)
+      {
+        CFileItem *item = Get(i);
+        if (item->IsDVDFile() && item->GetLabel().CompareNoCase("video_ts.ifo"))
+        {
+          Remove(i);
+        }
+      }
+    }
     // Stacking
     for (int i = 0; i < Size() - 1; ++i)
     {

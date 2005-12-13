@@ -152,6 +152,7 @@ protected:
   int m_visibleCondition;
 
   EFFECT_STATE m_effectState;
+  EFFECT_STATE m_queueState;
   CVisibleEffect m_effect;
   DWORD m_effectStart;
   CAttribute m_attribute;

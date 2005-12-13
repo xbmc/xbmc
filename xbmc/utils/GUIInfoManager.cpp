@@ -12,6 +12,9 @@
 #include "KaiClient.h"
 #include "GUIButtonScroller.h"
 #include "../utils/Alarmclock.h"
+#ifdef PRE_SKIN_VERSION_2_0_COMPATIBILITY
+#include "SkinInfo.h"
+#endif
 
 #include <stack>
 
@@ -133,11 +136,8 @@ extern char g_szTitleIP[32];
 #define SKIN_HAS_THEME_START        500
 #define SKIN_HAS_THEME_END          509 // allow for max 10 themes
 
-#define SKIN_SHOW_VISUAL_A          520
-#define SKIN_SHOW_VISUAL_B          521
-#define SKIN_SHOW_VISUAL_C          522
-#define SKIN_SHOW_VISUAL_D          523
-#define SKIN_SHOW_VISUAL_E          524
+#define SKIN_HAS_SETTING_START      510
+#define SKIN_HAS_SETTING_END        600 // allow 90
 
 #define WINDOW_ACTIVE_START         WINDOW_HOME
 #define WINDOW_ACTIVE_END           WINDOW_PYTHON_END
@@ -310,11 +310,12 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
   else if (strTest.Equals("visualisation.preset")) ret = VISUALISATION_PRESET;
   else if (strTest.Equals("visualisation.name")) ret = VISUALISATION_NAME;
   else if (strTest.Equals("visualisation.enabled")) ret = VISUALISATION_ENABLED;
-  else if (strTest.Equals("skin.ShowVisuala")) ret = SKIN_SHOW_VISUAL_A;
-  else if (strTest.Equals("skin.ShowVisualb")) ret = SKIN_SHOW_VISUAL_B;
-  else if (strTest.Equals("skin.ShowVisualc")) ret = SKIN_SHOW_VISUAL_C;
-  else if (strTest.Equals("skin.ShowVisuald")) ret = SKIN_SHOW_VISUAL_D;
-  else if (strTest.Equals("skin.ShowVisuale")) ret = SKIN_SHOW_VISUAL_E;
+  else if (strTest.Left(16).Equals("skin.hassetting("))
+  {
+    CStdString settingName;
+    settingName.Format("%s.%s", g_guiSettings.GetString("LookAndFeel.Skin").c_str(), strTest.Mid(16, strTest.GetLength() - 17).c_str());
+    ret = SKIN_HAS_SETTING_START + ConditionalStringParameter(settingName);
+  }
   else if (strTest.Left(14).Equals("skin.hastheme("))
     ret = SKIN_HAS_THEME_START + ConditionalStringParameter(strTest.Mid(14, strTest.GetLength() -  15));
   else if (strTest.Left(16).Equals("window.isactive("))
@@ -329,9 +330,9 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     if (controlID)
       ret = controlID + CONTROL_HAS_FOCUS_START;
   }
-  else if (strTest.Left(23).Equals("buttonscroller.hasicon("))
+  else if ((strTest.Left(23).Equals("buttonscroller.hasicon(") && g_SkinInfo.GetVersion() < 1.8) || strTest.Left(24).Equals("buttonscroller.hasfocus("))
   {
-    int controlID = atoi(strTest.Mid(23, strTest.GetLength() - 24).c_str());
+    int controlID = atoi(strTest.Mid(g_SkinInfo.GetVersion() < 1.8 ? 23 : 24, strTest.GetLength() - 24).c_str());
     if (controlID)
       ret = controlID + BUTTON_SCROLLER_HAS_ICON_START;
   }
@@ -540,16 +541,6 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow) const
     bReturn = true;
   else if (condition == SYSTEM_NO_SUCH_ALARM)
     bReturn = false;
-  else if (condition == SKIN_SHOW_VISUAL_A)
-    bReturn = g_stSettings.m_bskinshowvisa;
-  else if (condition == SKIN_SHOW_VISUAL_B)
-    bReturn = g_stSettings.m_bskinshowvisb;
-  else if (condition == SKIN_SHOW_VISUAL_C)
-    bReturn = g_stSettings.m_bskinshowvisc;
-  else if (condition == SKIN_SHOW_VISUAL_D)
-    bReturn = g_stSettings.m_bskinshowvisd;
-  else if (condition == SKIN_SHOW_VISUAL_E)
-    bReturn = g_stSettings.m_bskinshowvise;
   else if (condition >= CONTROL_HAS_FOCUS_START && condition <= CONTROL_HAS_FOCUS_END)
   {
     if( !dwContextWindow ) dwContextWindow = m_gWindowManager.GetActiveWindow();
@@ -592,6 +583,8 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow) const
     CUtil::RemoveExtension(theme);
     bReturn = theme.Equals(m_stringParameters[condition - SKIN_HAS_THEME_START]);
   }
+  else if (condition >= SKIN_HAS_SETTING_START && condition <= SKIN_HAS_SETTING_END)
+    bReturn = g_settings.GetSkinSetting(m_stringParameters[condition - SKIN_HAS_SETTING_START].c_str());
   else if (g_application.IsPlaying())
   {
     switch (condition)
