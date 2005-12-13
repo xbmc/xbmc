@@ -2911,7 +2911,7 @@ const BUILT_IN commands[] = {
   "Action", "Executes an action for the active window (same as in keymap)",
   "Notificaton", "Shows a notification on screen, specify header, then message.",
   "PlayDVD"," Plays the inserted CD or DVD media from the DVD-ROM Drive!",
-  "SkinShowVisual"," Plays the inserted CD or DVD media from the DVD-ROM Drive!"
+  "Skin.ToggleSetting"," Toggles a skin setting on or off"
 };
 
 bool CUtil::IsBuiltIn(const CStdString& execString)
@@ -3263,17 +3263,9 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   {
     CAutorun::PlayDisc();
   }
-  else if (execute.Equals("skinshowvisual"))
+  else if (execute.Equals("skin.togglesetting"))
   {
-    if (parameter == "a") g_stSettings.m_bskinshowvisa = !g_stSettings.m_bskinshowvisa;
-    else if (parameter == "b") 
-      g_stSettings.m_bskinshowvisb = !g_stSettings.m_bskinshowvisb;
-    else if (parameter == "c") 
-      g_stSettings.m_bskinshowvisc = !g_stSettings.m_bskinshowvisc;
-    else if (parameter == "d") 
-      g_stSettings.m_bskinshowvisd = !g_stSettings.m_bskinshowvisd;
-    else if (parameter == "e") 
-      g_stSettings.m_bskinshowvise = !g_stSettings.m_bskinshowvise;
+    g_settings.ToggleSkinSetting(parameter.c_str());
     g_settings.Save(); // To save the settings, this will keep them if a IGR follow.. 
   }
 

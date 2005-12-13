@@ -479,7 +479,7 @@ void CGUIWindowVideoFiles::OnInfo(int iItem)
       }
       else
       { // check for a dvdfolder
-        if (item->m_strPath.CompareNoCase("VIDEO_TS"))
+        if (item->m_strPath.CompareNoCase("VIDEO_TS") == 0)
         { // found a dvd folder - grab the main .ifo file
           CUtil::AddFileToFolder(item->m_strPath, "video_ts.ifo", strFile);
           if (CFile::Exists(strFile))

@@ -230,6 +230,9 @@ public:
   bool UpDateXbmcXML(const CStdString &strFirstChild, const CStdString &strChild, const CStdString &strChildValue);
   bool UpDateXbmcXML(const CStdString &strFirstChild, const CStdString &strFirstChildValue);
 
+  bool GetSkinSetting(const char *setting) const;
+  void ToggleSkinSetting(const char *setting);
+
   struct stSettings
   {
 public:
@@ -453,20 +456,12 @@ public:
     int m_iPreMuteVolumeLevel;    // save the m_nVolumeLevel for proper restore
     bool m_bMute;
     int m_iSystemTimeTotalUp;    // Uptime in minutes!
-
-    bool m_bskinshowvisa;
-    bool m_bskinshowvisb;
-    bool m_bskinshowvisc;
-    bool m_bskinshowvisd;
-    bool m_bskinshowvise;
-
-    CStdString m_curSkinTheme;
   };
 
   CStdStringArray m_MyVideoStackRegExps;
 
   std::map<int,std::pair<std::vector<int>,std::vector<wstring> > > m_mapRssUrls;
-
+  std::map<CStdString, bool> m_skinSettings;
 
   // cache copies of these parsed values, to avoid re-parsing over and over
   CStdString m_szMyVideoStackSeparatorsString;
@@ -517,6 +512,9 @@ protected:
 #ifdef PRE_SKIN_VERSION_2_0_COMPATIBILITY
   void LoadHomeButtons(TiXmlElement* pRootElement);
 #endif
+  // skin activated settings
+  void LoadSkinSettings(const TiXmlElement* pElement);
+  void SaveSkinSettings(TiXmlNode *pElement) const;
 
   TiXmlDocument xbmcXml;  // for editing the xml file from within XBMC
   bool xbmcXmlLoaded;

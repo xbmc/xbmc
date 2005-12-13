@@ -76,11 +76,7 @@ bool CGUIDialog::OnMessage(CGUIMessage& message)
       // set the initial fade state of the dialog
       if (m_effect.m_inTime)
       {
-        if (m_effectState == EFFECT_OUT)
-          m_effectStart = timeGetTime() - (int)(m_effect.m_inTime * m_attribute.alpha / 255.0f);
-        else
-          m_effectStart = timeGetTime();
-        m_effectState = EFFECT_IN;
+        m_queueState = EFFECT_IN;
       }
       CGUIWindow::OnMessage(message);
 
@@ -102,11 +98,7 @@ void CGUIDialog::Close(bool forceClose /*= false*/)
   // don't close if we should be fading out
   if (!forceClose && m_effect.m_outTime)
   {
-    if (m_effectState != EFFECT_OUT)
-    {
-      m_effectState = EFFECT_OUT;
-      m_effectStart = timeGetTime() - (int)(m_effect.m_outTime * (255.0f - m_attribute.alpha) / 255.0f);
-    }
+    m_queueState = EFFECT_OUT;
     return;
   }
 
@@ -210,6 +202,25 @@ void CGUIDialog::DoEffect(float effectAmount)
 void CGUIDialog::Render()
 {
   DWORD currentTime = timeGetTime();
+  // start any effects
+  if (m_queueState == EFFECT_IN)
+  {
+    if (m_effectState == EFFECT_OUT)
+      m_effectStart = timeGetTime() - (int)(m_effect.m_inTime * m_attribute.alpha / 255.0f);
+    else
+      m_effectStart = timeGetTime();
+    m_effectState = EFFECT_IN;
+  }
+  else if (m_queueState == EFFECT_OUT)
+  {
+    if (m_effectState != EFFECT_OUT)
+    {
+      m_effectState = EFFECT_OUT;
+      m_effectStart = timeGetTime() - (int)(m_effect.m_outTime * (255.0f - m_attribute.alpha) / 255.0f);
+    }
+  }
+  m_queueState = EFFECT_NONE;
+  // now do the effect
   if (m_effectState == EFFECT_IN)
   {
     if (currentTime - m_effectStart < m_effect.m_inDelay)
@@ -222,7 +233,7 @@ void CGUIDialog::Render()
       m_effectState = EFFECT_NONE;
     }
   }
-  if (m_effectState == EFFECT_OUT)
+  else if (m_effectState == EFFECT_OUT)
   {
     if (currentTime - m_effectStart < m_effect.m_outDelay)
       DoEffect(1);
