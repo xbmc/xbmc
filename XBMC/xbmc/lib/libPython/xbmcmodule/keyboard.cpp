@@ -22,9 +22,11 @@ namespace PYXBMC
 		if (!self) return NULL;
 
 		char *cLine = NULL;
-		if (!PyArg_ParseTuple(args, "|s", &cLine))	return NULL;
+		char *cHeading = NULL;
+    if (!PyArg_ParseTuple(args, "|ss", &cLine, &cHeading)) return NULL;
 
 		self->strDefault = cLine ? cLine : "";
+    self->strHeading = cHeading ? cHeading : "";
 
 		return (PyObject*)self;
 	}
@@ -48,6 +50,7 @@ namespace PYXBMC
 
     pKeyboard->Initialize();
 		pKeyboard->CenterWindow();
+    pKeyboard->SetHeading(self->strHeading);
 		pKeyboard->SetText(CStdString(self->strDefault));
 
 		// do modal of dialog
@@ -59,7 +62,7 @@ namespace PYXBMC
 	}
 
 	PyDoc_STRVAR(setDefault__doc__,
-		"setDefault(string text) -- Set new text that is displayed as default.");
+		"setDefault(string default) -- Set new text that is displayed as default.");
 
 	PyObject* Keyboard_SetDefault(Keyboard *self, PyObject *args)
 	{
@@ -76,6 +79,29 @@ namespace PYXBMC
 		}
 
 		pKeyboard->SetText(CStdString(self->strDefault));
+
+		Py_INCREF(Py_None);
+		return Py_None;
+	}
+
+	PyDoc_STRVAR(setHeading__doc__,
+		"setHeading(string heading) -- Set new text that is displayed as heading.");
+
+	PyObject* Keyboard_SetHeading(Keyboard *self, PyObject *args)
+	{
+		char *cHeading = NULL;
+    if (!PyArg_ParseTuple(args, "| s", &cHeading)) return NULL;
+
+    self->strHeading = cHeading ? cHeading : "";
+
+		CGUIDialogKeyboard *pKeyboard = (CGUIDialogKeyboard*)m_gWindowManager.GetWindow(WINDOW_DIALOG_KEYBOARD);
+		if(!pKeyboard)
+		{
+			PyErr_SetString(PyExc_SystemError, "Unable to load keyboard");
+			return NULL;
+		}
+
+		pKeyboard->SetHeading(self->strHeading);
 
 		Py_INCREF(Py_None);
 		return Py_None;
@@ -116,6 +142,7 @@ namespace PYXBMC
 
 	PyMethodDef Keyboard_methods[] = {
 		{"doModal", (PyCFunction)Keyboard_DoModal, METH_VARARGS, doModal__doc__},
+		{"setHeading", (PyCFunction)Keyboard_SetDefault, METH_VARARGS, setHeading__doc__},
 		{"setDefault", (PyCFunction)Keyboard_SetDefault, METH_VARARGS, setDefault__doc__},
 		{"getText", (PyCFunction)Keyboard_GetText, METH_VARARGS, getText__doc__},
 		{"isConfirmed", (PyCFunction)Keyboard_IsConfirmed, METH_VARARGS, isConfirmed__doc__},
@@ -125,8 +152,8 @@ namespace PYXBMC
 	PyDoc_STRVAR(keyboard__doc__,
 		"Keyboard class.\n"
 		"\n"
-		"Keyboard([string default]) -- Creates a new Keyboard object with default text\n"
-		"                              if supplied.");
+    "Keyboard([string default, string heading]) -- Creates a new Keyboard object with default text\n"
+		"                              and heading if supplied.");
 
 // Restore code and data sections to normal.
 #pragma code_seg()
