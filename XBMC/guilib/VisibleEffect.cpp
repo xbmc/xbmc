@@ -45,7 +45,7 @@ void CVisibleEffect::Create(TiXmlElement *node)
   if (node->Attribute("accleration", &accel)) m_acceleration = (float)accel;
   // focus when hidden
   const char *focus = node->Attribute("allowhiddenfocus");
-  if (focus && strcmp(focus, "true"))
+  if (focus && strcmpi(focus, "true") == 0)
     m_allowHiddenFocus = true;
 }
 
