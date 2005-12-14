@@ -11,6 +11,7 @@ namespace PYXBMC
 	typedef struct {
     PyObject_HEAD
 		std::string strDefault;
+    std::string strHeading;
 	} Keyboard;
 
 	extern PyTypeObject Keyboard_Type;
