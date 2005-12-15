@@ -7,8 +7,8 @@
       <description>video rectangle</description>
       <type>image</type>
       <id>0</id>
-      <posX>60</posX>
-      <posY>380</posY>
+      <posx>60</posx>
+      <posy>380</posy>
       <width>140</width>
       <height>118</height>
       <texture>blue_rectangle_video.png</texture>
@@ -20,8 +20,8 @@
       <description>video preview window</description>
       <type>videowindow</type>
       <id>1</id>
-      <posX>65</posX>
-      <posY>385</posY>
+      <posx>65</posx>
+      <posy>385</posy>
       <width>130</width>
       <height>107</height>
     </control>
@@ -30,8 +30,8 @@
       <description>play time label</description>
       <type>label</type>
       <id>0</id>
-      <posX>65</posX>
-      <posY>500</posY>
+      <posx>65</posx>
+      <posy>500</posy>
       <label>-</label>
       <info>VideoPlayer.Time</info>
       <align>left</align>
@@ -42,8 +42,8 @@
       <description>album/artist/genre etc info label</description>
       <type>fadelabel</type>
       <width>130</width>
-      <posX>65</posX>
-      <posY>525</posY>
+      <posx>65</posx>
+      <posy>525</posy>
       <font>font10</font>
       <id>0</id>
       <label>$INFO[VideoPlayer.Title] | $INFO[VideoPlayer.Year] | $INFO[VideoPlayer.Director] | $INFO[VideoPlayer.Genre]</label>

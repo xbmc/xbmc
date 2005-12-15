@@ -8,16 +8,16 @@
   <type>buttonMenu</type>
   <coordinates>
     <system>1</system>
-    <posX>500</posX>
-    <posY>70</posY>
+    <posx>500</posx>
+    <posy>70</posy>
   </coordinates>
 
   <controls>
     <control>
       <type>image</type>
       <id>0</id>
-      <posX>10</posX>
-      <posY>15</posY>
+      <posx>10</posx>
+      <posy>15</posy>
       <width>160</width>
       <height>440</height>
       <texture>subpanel.png</texture>
@@ -33,8 +33,8 @@
       <description>SubMenu button</description>	<visible>no</visible>
       <type>button</type>				<execute>q:\scripts\-.py</execute>
       <id>1123</id>					<label>-</label>
-      <posX>30</posX>
-      <posY>110</posY>
+      <posx>30</posx>
+      <posy>110</posy>
       <width>110</width>
       <height>20</height>
       <font>font101</font>
@@ -43,16 +43,16 @@
       <onup>1109</onup>
       <ondown>1122</ondown>
       <align>center</align>
-      <textOffsetY>-1</textOffsetY>
-      <textureNoFocus>-</textureNoFocus>
+      <textoffsety>-1</textoffsety>
+      <texturenofocus>-</texturenofocus>
     </control>
 
     <control>
       <description>SubMenu button</description>	<visible>no</visible>
       <type>button</type>				<execute>q:\scripts\-.py</execute>
       <id>1122</id>					<label>-</label>
-      <posX>30</posX>
-      <posY>130</posY>
+      <posx>30</posx>
+      <posy>130</posy>
       <width>110</width>
       <height>20</height>
       <font>font101</font>
@@ -61,16 +61,16 @@
       <onup>1123</onup>
       <ondown>1121</ondown>
       <align>center</align>
-      <textOffsetY>-1</textOffsetY>
-      <textureNoFocus>-</textureNoFocus>
+      <textoffsety>-1</textoffsety>
+      <texturenofocus>-</texturenofocus>
     </control>
 
     <control>
       <description>SubMenu button</description>	<visible>no</visible>
       <type>button</type>				<execute>q:\scripts\-.py</execute>
       <id>1121</id>					<label>-</label>
-      <posX>30</posX>
-      <posY>150</posY>
+      <posx>30</posx>
+      <posy>150</posy>
       <width>110</width>
       <height>20</height>
       <font>font101</font>
@@ -79,16 +79,16 @@
       <onup>1122</onup>
       <ondown>1120</ondown>
       <align>center</align>
-      <textOffsetY>-1</textOffsetY>
-      <textureNoFocus>-</textureNoFocus>
+      <textoffsety>-1</textoffsety>
+      <texturenofocus>-</texturenofocus>
     </control>
 
     <control>
       <description>SubMenu button</description>	<visible>no</visible>
       <type>button</type>				<execute>q:\scripts\-.py</execute>
       <id>1120</id>					<label>-</label>
-      <posX>30</posX>
-      <posY>170</posY>
+      <posx>30</posx>
+      <posy>170</posy>
       <width>110</width>
       <height>20</height>
       <font>font101</font>
@@ -97,16 +97,16 @@
       <onup>1121</onup>
       <ondown>1119</ondown>
       <align>center</align>
-      <textOffsetY>0</textOffsetY>
-      <textureNoFocus>-</textureNoFocus>
+      <textoffsety>0</textoffsety>
+      <texturenofocus>-</texturenofocus>
     </control>
 
     <control>
       <description>SubMenu button</description>	<visible>no</visible>
       <type>button</type>				<execute>q:\scripts\-.py</execute>
       <id>1119</id>					<label>-</label>
-      <posX>30</posX>
-      <posY>190</posY>
+      <posx>30</posx>
+      <posy>190</posy>
       <width>110</width>
       <height>20</height>
       <font>font101</font>
@@ -115,16 +115,16 @@
       <onup>1120</onup>
       <ondown>1118</ondown>
       <align>center</align>
-      <textOffsetY>0</textOffsetY>
-      <textureNoFocus>-</textureNoFocus>
+      <textoffsety>0</textoffsety>
+      <texturenofocus>-</texturenofocus>
     </control>
 
     <control>
       <description>SubMenu button</description>	<visible>no</visible>
       <type>button</type>				<execute>q:\scripts\-.py</execute>
       <id>1118</id>					<label>-</label>
-      <posX>30</posX>
-      <posY>210</posY>
+      <posx>30</posx>
+      <posy>210</posy>
       <width>110</width>
       <height>20</height>
       <font>font101</font>
@@ -133,16 +133,16 @@
       <onup>1119</onup>
       <ondown>1117</ondown>
       <align>center</align>
-      <textOffsetY>0</textOffsetY>
-      <textureNoFocus>-</textureNoFocus>
+      <textoffsety>0</textoffsety>
+      <texturenofocus>-</texturenofocus>
     </control>
 
     <control>
       <description>SubMenu button</description>	<visible>no</visible>
       <type>button</type>				<execute>q:\scripts\-.py</execute>
       <id>1117</id>					<label>-</label>
-      <posX>30</posX>
-      <posY>230</posY>
+      <posx>30</posx>
+      <posy>230</posy>
       <width>110</width>
       <height>20</height>
       <font>font101</font>
@@ -151,16 +151,16 @@
       <onup>1118</onup>
       <ondown>1116</ondown>
       <align>center</align>
-      <textOffsetY>0</textOffsetY>
-      <textureNoFocus>-</textureNoFocus>
+      <textoffsety>0</textoffsety>
+      <texturenofocus>-</texturenofocus>
     </control>
 
     <control>
       <description>SubMenu button</description>	<visible>no</visible>
       <type>button</type>				<execute>q:\scripts\-.py</execute>
       <id>1116</id>					<label>-</label>
-      <posX>30</posX>
-      <posY>250</posY>
+      <posx>30</posx>
+      <posy>250</posy>
       <width>110</width>
       <height>20</height>
       <font>font101</font>
@@ -169,16 +169,16 @@
       <onup>1117</onup>
       <ondown>1115</ondown>
       <align>center</align>
-      <textOffsetY>0</textOffsetY>
-      <textureNoFocus>-</textureNoFocus>
+      <textoffsety>0</textoffsety>
+      <texturenofocus>-</texturenofocus>
     </control>
 
     <control>
       <description>SubMenu button</description>	<visible>no</visible>
       <type>button</type>				<execute>q:\scripts\-.py</execute>
       <id>1115</id>					<label>-</label>
-      <posX>30</posX>
-      <posY>270</posY>
+      <posx>30</posx>
+      <posy>270</posy>
       <width>110</width>
       <height>20</height>
       <font>font101</font>
@@ -187,16 +187,16 @@
       <onup>1116</onup>
       <ondown>1114</ondown>
       <align>center</align>
-      <textOffsetY>0</textOffsetY>
-      <textureNoFocus>-</textureNoFocus>
+      <textoffsety>0</textoffsety>
+      <texturenofocus>-</texturenofocus>
     </control>
 
     <control>
       <description>SubMenu button</description>	<visible>no</visible>
       <type>button</type>				<execute>q:\scripts\-.py</execute>
       <id>1114</id>					<label>-</label>
-      <posX>30</posX>
-      <posY>290</posY>
+      <posx>30</posx>
+      <posy>290</posy>
       <width>110</width>
       <height>20</height>
       <font>font101</font>
@@ -205,16 +205,16 @@
       <onup>1115</onup>
       <ondown>1113</ondown>
       <align>center</align>
-      <textOffsetY>0</textOffsetY>
-      <textureNoFocus>-</textureNoFocus>
+      <textoffsety>0</textoffsety>
+      <texturenofocus>-</texturenofocus>
     </control>
 
     <control>
       <description>Profiles button</description>	<visible>no</visible>
       <type>button</type>				<execute>q:\scripts\-.py</execute>
       <id>1113</id>					<label>-</label>
-      <posX>30</posX>
-      <posY>310</posY>
+      <posx>30</posx>
+      <posy>310</posy>
       <width>110</width>
       <height>20</height>
       <font>font101</font>
@@ -223,16 +223,16 @@
       <onup>1114</onup>
       <ondown>1112</ondown>
       <align>center</align>
-      <textOffsetY>0</textOffsetY>
-      <textureNoFocus>-</textureNoFocus>
+      <textoffsety>0</textoffsety>
+      <texturenofocus>-</texturenofocus>
     </control>
 
     <control>
       <description>scripts button</description>	<visible>yes</visible>
       <type>button</type>				<execute>q:\scripts\QuickTimeBrowser.py</execute>
       <id>1112</id>					<label>Movie Trailers</label>
-      <posX>30</posX>
-      <posY>330</posY>
+      <posx>30</posx>
+      <posy>330</posy>
       <width>110</width>
       <height>20</height>
       <font>font101</font>
@@ -241,16 +241,16 @@
       <onup>1113</onup>
       <ondown>1111</ondown>
       <align>center</align>
-      <textOffsetY>0</textOffsetY>
-      <textureNoFocus>-</textureNoFocus>
+      <textoffsety>0</textoffsety>
+      <texturenofocus>-</texturenofocus>
     </control>
 
     <control>
       <description>Scripts button</description>	<visible>yes</visible>
       <type>button</type>		  		<execute>q:\scripts\Launchbrowser\launchbrowser.py</execute>
       <id>1111</id>                			<label>Music Videos</label>
-      <posX>30</posX>
-      <posY>350</posY>
+      <posx>30</posx>
+      <posy>350</posy>
       <width>110</width>
       <height>20</height>
       <font>font101</font>
@@ -259,16 +259,16 @@
       <onup>1112</onup>
       <ondown>1110</ondown>
       <align>center</align>
-      <textOffsetY>0</textOffsetY>
-      <textureNoFocus>-</textureNoFocus>
+      <textoffsety>0</textoffsety>
+      <texturenofocus>-</texturenofocus>
     </control>
 
     <control>
       <description>Scripts button</description>	<visible>yes</visible>
       <type>button</type>				<execute>q:\scripts\KMLBrowse.py</execute>
       <id>1110</id>					<label>Web Radio</label>
-      <posX>30</posX>
-      <posY>370</posY>
+      <posx>30</posx>
+      <posy>370</posy>
       <width>110</width>
       <height>20</height>
       <font>font101</font>
@@ -277,16 +277,16 @@
       <onup>1111</onup>
       <ondown>1109</ondown>
       <align>center</align>
-      <textOffsetY>0</textOffsetY>
-      <textureNoFocus>-</textureNoFocus>
+      <textoffsety>0</textoffsety>
+      <texturenofocus>-</texturenofocus>
     </control>
 
     <control>
       <description>Scripts button</description>	<visible>yes</visible>
       <type>button</type>				<execute>XBMC.ActivateWindow(20)</execute>
       <id>1109</id>					<label>247</label>
-      <posX>30</posX>
-      <posY>390</posY>
+      <posx>30</posx>
+      <posy>390</posy>
       <width>110</width>
       <height>20</height>
       <font>font101</font>
@@ -295,8 +295,8 @@
       <onup>1110</onup>
       <ondown>1123</ondown>
       <align>center</align>
-      <textOffsetY>0</textOffsetY>
-      <textureNoFocus>-</textureNoFocus>
+      <textoffsety>0</textoffsety>
+      <texturenofocus>-</texturenofocus>
     </control>
 
   </controls>

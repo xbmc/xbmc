@@ -39,8 +39,8 @@ void CVisibleEffect::Create(TiXmlElement *node)
   if (node->Attribute("indelay", &tempTime)) m_inDelay = tempTime;
   if (node->Attribute("outdelay", &tempTime)) m_outDelay = tempTime;
   // slide parameters
-  node->Attribute("startX", &m_startX);
-  node->Attribute("startY", &m_startY);
+  node->Attribute("startx", &m_startX);
+  node->Attribute("starty", &m_startY);
   double accel;
   if (node->Attribute("accleration", &accel)) m_acceleration = (float)accel;
   // focus when hidden

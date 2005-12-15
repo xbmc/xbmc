@@ -6,8 +6,8 @@
       <description>bar image</description>
       <type>image</type>
       <id>1</id>
-      <posX>-10</posX>
-      <posY>40</posY>
+      <posx>-10</posx>
+      <posy>40</posy>
       <width>740</width>
       <height>65</height>
       <texture>osd_menu_bg.png</texture>
@@ -18,8 +18,8 @@
       <description>row 1 label</description>
       <type>label</type>
       <id>10</id>
-      <posX>70</posX>
-      <posY>50</posY>
+      <posx>70</posx>
+      <posy>50</posy>
       <label>-</label>
       <align>left</align>
       <font>font12</font>
@@ -30,8 +30,8 @@
       <description>row 2 label</description>
       <type>label</type>
       <id>11</id>
-      <posX>70</posX>
-      <posY>75</posY>
+      <posx>70</posx>
+      <posy>75</posy>
       <label>-</label>
       <align>left</align>
       <font>font12</font>
@@ -42,8 +42,8 @@
       <description>row 2 extra label</description>
       <type>label</type>
       <id>12</id>
-      <posX>250</posX>
-      <posY>75</posY>
+      <posx>250</posx>
+      <posy>75</posy>
       <label>-</label>
       <align>left</align>
       <font>font12</font>
@@ -55,8 +55,8 @@
       <type>image</type>
       <id>13</id>
       <align>right</align>
-      <posX>580</posX>
-      <posY>25</posY>
+      <posx>580</posx>
+      <posy>25</posy>
       <height>64</height>
       <width>128</width>
       <visible>no</visible>

@@ -7,8 +7,8 @@
       <description>Dialog Background</description>
       <type>image</type>
       <id>0</id>
-      <posX>137</posX>
-      <posY>177</posY>
+      <posx>137</posx>
+      <posy>177</posy>
       <width>425</width>
       <height>290</height>
       <texture>dialog-invite.png</texture>
@@ -18,8 +18,8 @@
       <description>Send Invitation Heading</description>
       <type>label</type>
       <id>1</id>
-      <posX>190</posX>
-      <posY>191</posY>
+      <posx>190</posx>
+      <posy>191</posy>
       <label>15054</label>
       <font>special13</font>
     </control>
@@ -28,8 +28,8 @@
       <description>Choose Game</description>
       <type>label</type>
       <id>1</id>
-      <posX>190</posX>
-      <posY>240</posY>
+      <posx>190</posx>
+      <posy>240</posy>
       <label>15055</label>
       <font>font12</font>
     </control>
@@ -39,8 +39,8 @@
       <type>spincontrol</type>
       <id>30</id>
       <font>font12</font>
-      <posX>215</posX>
-      <posY>275</posY>
+      <posx>215</posx>
+      <posy>275</posy>
       <align>left</align>
       <onleft>30</onleft>
       <onright>30</onright>
@@ -52,8 +52,8 @@
       <description>Enter Message</description>
       <type>label</type>
       <id>4</id>
-      <posX>190</posX>
-      <posY>310</posY>
+      <posx>190</posx>
+      <posy>310</posy>
       <label>15056</label>
       <font>font12</font>
     </control>
@@ -62,13 +62,13 @@
       <description>Message Field</description>
       <type>button</type>
       <id>20</id>
-      <posX>190</posX>
-      <posY>340</posY>
+      <posx>190</posx>
+      <posy>340</posy>
       <width>330</width>
       <label>15060</label>
       <font>font12</font>
-      <textureFocus>list-focus.png</textureFocus>
-      <textureNoFocus>list-nofocus.png</textureNoFocus>
+      <texturefocus>list-focus.png</texturefocus>
+      <texturenofocus>list-nofocus.png</texturenofocus>
       <onleft>20</onleft>
       <onright>20</onright>
       <onup>30</onup>
@@ -79,8 +79,8 @@
       <description>Send button</description>
       <type>button</type>
       <id>10</id>
-      <posX>360</posX>
-      <posY>385</posY>
+      <posx>360</posx>
+      <posy>385</posy>
       <width>75</width>
       <height>35</height>
       <label>15057</label>
@@ -95,8 +95,8 @@
       <description>Cancel button</description>
       <type>button</type>
       <id>11</id>
-      <posX>445</posX>
-      <posY>385</posY>
+      <posx>445</posx>
+      <posy>385</posy>
       <width>75</width>
       <height>35</height>
       <label>222</label>

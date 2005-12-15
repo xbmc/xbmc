@@ -17,8 +17,8 @@
       <type>fadelabel</type>
       <id>101</id>
       <align>left</align>
-      <posX>90</posX>
-      <posY>65</posY>
+      <posx>90</posx>
+      <posy>65</posy>
       <width>270</width>
       <font>font13</font>
     </control>
@@ -28,8 +28,8 @@
       <type>fadelabel</type>
       <id>102</id>
       <align>left</align>
-      <posX>380</posX>
-      <posY>65</posY>
+      <posx>380</posx>
+      <posy>65</posy>
       <width>270</width>
       <font>font13</font>
     </control>
@@ -38,8 +38,8 @@
       <description>number of files in left list text label</description>
       <type>label</type>
       <id>12</id>
-      <posX>90</posX>
-      <posY>484</posY>
+      <posx>90</posx>
+      <posy>484</posy>
       <label>-</label>
       <font>font13</font>
     </control>
@@ -48,8 +48,8 @@
       <description>number of files in right list text label</description>
       <type>label</type>
       <id>13</id>
-      <posX>380</posX>
-      <posY>484</posY>
+      <posx>380</posx>
+      <posy>484</posy>
       <label>-</label>
       <font>font13</font>
     </control>
@@ -58,9 +58,9 @@
       <description>Left File list</description>
       <type>listcontrol</type>
       <id>20</id>
-      <selectedColor>FFFF9600</selectedColor>
-      <posX>74</posX>
-      <posY>102</posY>
+      <selectedcolor>FFFF9600</selectedcolor>
+      <posx>74</posx>
+      <posy>102</posy>
       <width>290</width>
       <height>400</height>
       <onleft>21</onleft>
@@ -73,9 +73,9 @@
       <description>Right File list</description>
       <type>listcontrol</type>
       <id>21</id>
-      <selectedColor>FFFF9600</selectedColor>
-      <posX>364</posX>
-      <posY>102</posY>
+      <selectedcolor>FFFF9600</selectedcolor>
+      <posx>364</posx>
+      <posy>102</posy>
       <width>290</width>
       <height>400</height>
       <onleft>20</onleft>
@@ -88,8 +88,8 @@
       <description>free space label</description>
       <type>label</type>
       <id>1</id>
-      <posX>120</posX>
-      <posY>530</posY>
+      <posx>120</posx>
+      <posy>530</posy>
       <info>System.Freespace(C)</info>
       <textcolor>CCFFFFFF</textcolor>
       <font>font10</font>
@@ -100,8 +100,8 @@
       <description>free space label</description>
       <type>label</type>
       <id>1</id>
-      <posX>270</posX>
-      <posY>530</posY>
+      <posx>270</posx>
+      <posy>530</posy>
       <info>System.Freespace(E)</info>
       <textcolor>CCFFFFFF</textcolor>
       <font>font10</font>
@@ -112,8 +112,8 @@
       <description>free space label</description>
       <type>label</type>
       <id>1</id>
-      <posX>430</posX>
-      <posY>530</posY>
+      <posx>430</posx>
+      <posy>530</posy>
       <info>System.Freespace(F)</info>
       <textcolor>CCFFFFFF</textcolor>
       <font>font10</font>

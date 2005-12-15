@@ -11,7 +11,7 @@ public:
   virtual bool OnAction(const CAction &action);
   virtual void Render();
   virtual void ResetControls();
-#ifdef PRE_SKIN_VERSION_1_4_COMPATIBILITY
+#ifdef PRE_SKIN_VERSION_2_0_COMPATIBILITY
   virtual void OnWindowLoaded();
 #endif
 

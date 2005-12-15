@@ -7,8 +7,8 @@
       <description>background image</description>
       <type>image</type>
       <id>1</id>
-      <posX>0</posX>
-      <posY>0</posY>
+      <posx>0</posx>
+      <posy>0</posy>
       <width>720</width>
       <height>576</height>
       <texture>background-pics.png</texture>
@@ -18,8 +18,8 @@
       <description>xbox media center label</description>
       <type>label</type>
       <id>1</id>
-      <posX>200</posX>
-      <posY>63</posY>
+      <posx>200</posx>
+      <posy>63</posy>
       <align>right</align>
       <label>xbox media center</label>
       <font>special12</font>
@@ -29,8 +29,8 @@
       <description>description label</description>
       <type>label</type>
       <id>1</id>
-      <posX>207</posX>
-      <posY>63</posY>
+      <posx>207</posx>
+      <posy>63</posy>
       <align>left</align>
       <label>1</label>
       <font>special13</font>
@@ -40,8 +40,8 @@
       <description>number of files text label</description>
       <type>label</type>
       <id>12</id>
-      <posX>545</posX>
-      <posY>526</posY>
+      <posx>545</posx>
+      <posy>526</posy>
       <align>right</align>
       <label>-</label>
       <font>font10</font>
@@ -52,8 +52,8 @@
         <description>View As Icons button</description>
         <type>button</type>
         <id>2</id>
-        <posX>50</posX>
-        <posY>120</posY>
+        <posx>50</posx>
+        <posy>120</posy>
         <label>100</label>
         <font>font13</font>
         <onleft>50</onleft>
@@ -66,8 +66,8 @@
         <description>Sort by button</description>
         <type>button</type>
         <id>3</id>
-        <posX>50</posX>
-        <posY>157</posY>
+        <posx>50</posx>
+        <posy>157</posy>
         <label>103</label>
         <font>font13</font>
         <onleft>50</onleft>
@@ -91,8 +91,8 @@
         <description>SlideShow button</description>
         <type>button</type>
         <id>6</id>
-        <posX>50</posX>
-        <posY>194</posY>
+        <posx>50</posx>
+        <posy>194</posy>
         <label>108</label>
         <font>font13</font>
         <onleft>50</onleft>
@@ -105,8 +105,8 @@
         <description>recursive slideshow</description>
         <type>button</type>
         <id>7</id>
-        <posX>50</posX>
-        <posY>231</posY>
+        <posx>50</posx>
+        <posy>231</posy>
         <label>361</label>
         <font>font13</font>
         <onleft>50</onleft>
@@ -119,8 +119,8 @@
         <description>Randomize button</description>
         <type>radiobutton</type>
         <id>9</id>
-        <posX>50</posX>
-        <posY>268</posY>
+        <posx>50</posx>
+        <posy>268</posy>
         <label>13319</label>
         <font>font13</font>
         <onleft>50</onleft>
