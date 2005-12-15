@@ -6,8 +6,8 @@
       <description>background image</description>
       <type>image</type>
       <id>1</id>
-      <posX>0</posX>
-      <posY>0</posY>
+      <posx>0</posx>
+      <posy>0</posy>
       <width>720</width>
       <height>576</height>
       <texture>background-apps.png</texture>
@@ -17,8 +17,8 @@
       <description>xbox media center label</description>
       <type>label</type>
       <id>1</id>
-      <posX>200</posX>
-      <posY>63</posY>
+      <posx>200</posx>
+      <posy>63</posy>
       <align>right</align>
       <label>xbox media center</label>
       <font>special12</font>
@@ -28,8 +28,8 @@
       <description>description label</description>
       <type>label</type>
       <id>1</id>
-      <posX>207</posX>
-      <posY>63</posY>
+      <posx>207</posx>
+      <posy>63</posy>
       <align>left</align>
       <label>262</label>
       <font>special13</font>
@@ -39,8 +39,8 @@
       <description>textarea</description>
       <type>textbox</type>
       <id>5</id>
-      <posX>220</posX>
-      <posY>120</posY>
+      <posx>220</posx>
+      <posy>120</posy>
       <width>445</width>
       <height>425</height>
       <font>font12</font>

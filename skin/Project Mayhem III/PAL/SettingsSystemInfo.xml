@@ -7,8 +7,8 @@
       <description>background image</description>
       <type>image</type>
       <id>1</id>
-      <posX>0</posX>
-      <posY>0</posY>
+      <posx>0</posx>
+      <posy>0</posy>
       <width>720</width>
       <height>576</height>
       <texture>background-settings.png</texture>
@@ -20,8 +20,8 @@
       <description>xbox media center label</description>
       <type>label</type>
       <id>1</id>
-      <posX>200</posX>
-      <posY>63</posY>
+      <posx>200</posx>
+      <posy>63</posy>
       <align>right</align>
       <label>xbox media center</label>
       <font>special12</font>
@@ -32,8 +32,8 @@
       <description>description label</description>
       <type>label</type>
       <id>1</id>
-      <posX>207</posX>
-      <posY>63</posY>
+      <posx>207</posx>
+      <posy>63</posy>
       <align>left</align>
       <label>130</label>
       <font>special13</font>
@@ -45,8 +45,8 @@
 	<description>Section Label</description>
 	<type>label</type>
 	<id>40</id>
-	<posX>220</posX>
-	<posY>120</posY>
+	<posx>220</posx>
+	<posy>120</posy>
 	<font>font13</font>
 	<label>139</label>
       </control>
@@ -55,8 +55,8 @@
 	<description>Button Default Values</description>
 	<type>button</type>
 	<id>95</id>
-	<posX>50</posX>
-	<posY>120</posY>
+	<posx>50</posx>
+	<posy>120</posy>
 	<label>13278</label>
 	<font>font13</font>
 	<onleft>95</onleft>
@@ -70,8 +70,8 @@
 	<description>Button Storage</description>
 	<type>button</type>
 	<id>94</id>
-	<posX>50</posX>
-	<posY>157</posY>
+	<posx>50</posx>
+	<posy>157</posy>
 	<label>13277</label>
 	<font>font13</font>
 	<onleft>94</onleft>
@@ -85,8 +85,8 @@
 	<description>Button HDD</description>
 	<type>button</type>
 	<id>92</id>
-	<posX>50</posX>
-	<posY>194</posY>
+	<posx>50</posx>
+	<posy>194</posy>
 	<label>13275</label>
 	<font>font13</font>
 	<onleft>92</onleft>
@@ -100,8 +100,8 @@
 	<description>Button DVD</description>
 	<type>button</type>
 	<id>93</id>
-	<posX>50</posX>
-	<posY>231</posY>
+	<posx>50</posx>
+	<posy>231</posy>
 	<label>13276</label>
 	<font>font13</font>
 	<onleft>93</onleft>
@@ -115,8 +115,8 @@
 	<description>Button Network</description>
 	<type>button</type>
 	<id>96</id>
-	<posX>50</posX>
-	<posY>268</posY>
+	<posx>50</posx>
+	<posy>268</posy>
 	<label>13279</label>
 	<font>font13</font>
 	<onleft>96</onleft>
@@ -130,8 +130,8 @@
 	<description>Button VIDEO</description>
 	<type>button</type>
 	<id>97</id>
-	<posX>50</posX>
-	<posY>305</posY>
+	<posx>50</posx>
+	<posy>305</posy>
 	<label>13280</label>
 	<font>font13</font>
 	<onleft>97</onleft>
@@ -145,8 +145,8 @@
 	<description>Button XBOX Hardware</description>
 	<type>button</type>
 	<id>98</id>
-	<posX>50</posX>
-	<posY>342</posY>
+	<posx>50</posx>
+	<posy>342</posy>
 	<label>13281</label>
 	<font>font13</font>
 	<onleft>98</onleft>
@@ -162,8 +162,8 @@
       <description>Label 2</description>
       <type>label</type>
       <id>2</id>
-      <posX>220</posX>
-      <posY>150</posY>
+      <posx>220</posx>
+      <posy>150</posy>
       <label>13282</label>
       <font>font13</font>
       <textcolor>70FFFFFF</textcolor>
@@ -173,8 +173,8 @@
       <description>Label 3</description>
       <type>label</type>
       <id>3</id>
-      <posX>220</posX>
-      <posY>180</posY>
+      <posx>220</posx>
+      <posy>180</posy>
       <label>13282</label>
       <font>font13</font>
       <textcolor>70FFFFFF</textcolor>
@@ -184,8 +184,8 @@
       <description>Label 4</description>
       <type>label</type>
       <id>4</id>
-      <posX>220</posX>
-      <posY>210</posY>
+      <posx>220</posx>
+      <posy>210</posy>
       <label>13282</label>
       <font>font13</font>
       <textcolor>70FFFFFF</textcolor>
@@ -195,8 +195,8 @@
       <description>Label 5</description>
       <type>label</type>
       <id>5</id>
-      <posX>220</posX>
-      <posY>240</posY>
+      <posx>220</posx>
+      <posy>240</posy>
       <label>13282</label>
       <font>font13</font>
       <textcolor>70FFFFFF</textcolor>
@@ -206,8 +206,8 @@
       <description>Label 6</description>
       <type>label</type>
       <id>6</id>
-      <posX>220</posX>
-      <posY>270</posY>
+      <posx>220</posx>
+      <posy>270</posy>
       <label>13282</label>
       <font>font13</font>
       <textcolor>70FFFFFF</textcolor>
@@ -217,8 +217,8 @@
       <description>Label 7</description>
       <type>label</type>
       <id>7</id>
-      <posX>220</posX>
-      <posY>300</posY>
+      <posx>220</posx>
+      <posy>300</posy>
       <label>13282</label>
       <font>font13</font>
       <textcolor>70FFFFFF</textcolor>
@@ -228,8 +228,8 @@
       <description>Label 8</description>
       <type>label</type>
       <id>8</id>
-      <posX>220</posX>
-      <posY>330</posY>
+      <posx>220</posx>
+      <posy>330</posy>
       <label>13282</label>
       <font>font13</font>
       <textcolor>70FFFFFF</textcolor>
@@ -239,8 +239,8 @@
       <description>Label 9</description>
       <type>label</type>
       <id>9</id>
-      <posX>220</posX>
-      <posY>360</posY>
+      <posx>220</posx>
+      <posy>360</posy>
       <label>13282</label>
       <font>font13</font>
       <textcolor>70FFFFFF</textcolor>
@@ -250,8 +250,8 @@
       <description>Label 10</description>
       <type>label</type>
       <id>10</id>
-      <posX>220</posX>
-      <posY>390</posY>
+      <posx>220</posx>
+      <posy>390</posy>
       <label>13282</label>
       <font>font13</font>
       <textcolor>70FFFFFF</textcolor>
@@ -261,8 +261,8 @@
       <description>Label 11</description>
       <type>label</type>
       <id>11</id>
-      <posX>220</posX>
-      <posY>405</posY>
+      <posx>220</posx>
+      <posy>405</posy>
       <label>13282</label>
       <font>font13</font>
       <textcolor>70FFFFFF</textcolor>
@@ -273,8 +273,8 @@
       <description>Label 12</description>
       <type>label</type>
       <id>12</id>
-      <posX>220</posX>
-      <posY>425</posY>
+      <posx>220</posx>
+      <posy>425</posy>
       <label>13282</label>
       <font>font13</font>
       <textcolor>70FFFFFF</textcolor>
@@ -286,8 +286,8 @@
       <description>TEST Label</description>
       <type>label</type>
       <id>1</id>
-      <posX>220</posX>
-      <posY>426</posY>
+      <posx>220</posx>
+      <posy>426</posy>
       <label>-</label>
       <info>Network.IPAddress</info>
       <align>left</align>
@@ -299,8 +299,8 @@
       <description>Current Time</description>
       <type>label</type>
       <id>50</id>
-      <posX>220</posX>
-      <posY>422</posY>
+      <posx>220</posx>
+      <posy>422</posy>
       <label>143</label>
       <font>font12</font>
       <textcolor>70FFFFFF</textcolor>
@@ -310,8 +310,8 @@
       <description>XBMC Version</description>
       <type>label</type>
       <id>51</id>
-      <posX>220</posX>
-      <posY>443</posY>
+      <posx>220</posx>
+      <posy>443</posy>
       <label>144</label>
       <font>font12</font>
       <textcolor>70FFFFFF</textcolor>
@@ -321,8 +321,8 @@
       <description>XBMC XBE BUILD Version</description>
       <type>label</type>
       <id>52</id>
-      <posX>220</posX>
-      <posY>465</posY>
+      <posx>220</posx>
+      <posy>465</posy>
       <label>144</label>
       <font>font12</font>
       <textcolor>70FFFFFF</textcolor>
@@ -332,8 +332,8 @@
       <description>Mplayer DLL Version</description>
       <type>label</type>
       <id>53</id>
-      <posX>220</posX>
-      <posY>485</posY>
+      <posx>220</posx>
+      <posy>485</posy>
       <label>144</label>
       <font>font12</font>
       <textcolor>70FFFFFF</textcolor>

@@ -3299,7 +3299,7 @@ void CApplication::RenderFullScreen()
 
 void CApplication::ResetScreenSaver()
 {
-  if (m_bInactive)
+  if (m_bInactive && !m_bScreenSave)
   {
     m_dwSaverTick = timeGetTime(); // Start the timer going ...
   }

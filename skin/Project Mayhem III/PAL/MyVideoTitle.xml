@@ -7,8 +7,8 @@
       <description>background image</description>
       <type>image</type>
       <id>1</id>
-      <posX>0</posX>
-      <posY>0</posY>
+      <posx>0</posx>
+      <posy>0</posy>
       <width>720</width>
       <height>576</height>
       <texture>background-videos.png</texture>
@@ -18,8 +18,8 @@
       <description>xbox media center label</description>
       <type>label</type>
       <id>1</id>
-      <posX>200</posX>
-      <posY>63</posY>
+      <posx>200</posx>
+      <posy>63</posy>
       <align>right</align>
       <label>xbox media center</label>
       <font>special12</font>
@@ -29,8 +29,8 @@
       <description>description label</description>
       <type>label</type>
       <id>1</id>
-      <posX>207</posX>
-      <posY>63</posY>
+      <posx>207</posx>
+      <posy>63</posy>
       <align>left</align>
       <label>10520</label>
       <font>special13</font>
@@ -40,8 +40,8 @@
       <description>number of files text label</description>
       <type>label</type>
       <id>12</id>
-      <posX>545</posX>
-      <posY>526</posY>
+      <posx>545</posx>
+      <posy>526</posy>
       <align>right</align>
       <label>-</label>
       <font>font10</font>
@@ -52,8 +52,8 @@
       <type>label</type>
       <id>100</id>
       <align>right</align>
-      <posX>660</posX>
-      <posY>55</posY>
+      <posx>660</posx>
+      <posy>55</posy>
       <label>3</label>
       <font>font14</font>
     </control>
@@ -63,8 +63,8 @@
         <description>View As Icons button</description>
         <type>button</type>
         <id>2</id>
-        <posX>50</posX>
-        <posY>120</posY>
+        <posx>50</posx>
+        <posy>120</posy>
         <label>100</label>
         <onleft>50</onleft>
         <onright>50</onright>
@@ -76,8 +76,8 @@
         <description>Sort by button</description>
         <type>button</type>
         <id>3</id>
-        <posX>50</posX>
-        <posY>157</posY>
+        <posx>50</posx>
+        <posy>157</posy>
         <label>103</label>
         <onleft>50</onleft>
         <onright>4</onright>
@@ -100,8 +100,8 @@
         <description>Movies</description>
         <type>selectbutton</type>
         <id>5</id>
-        <posX>50</posX>
-        <posY>194</posY>
+        <posx>50</posx>
+        <posy>194</posy>
         <label>457</label>
         <onleft>50</onleft>
         <onright>50</onright>
@@ -113,8 +113,8 @@
         <description>Show Button</description>
         <type>button</type>
         <id>10</id>
-        <posX>50</posX>
-        <posY>231</posY>
+        <posx>50</posx>
+        <posy>231</posy>
         <label>-</label>
         <onleft>50</onleft>
         <onright>50</onright>
@@ -126,8 +126,8 @@
         <description>IMDB</description>
         <type>button</type>
         <id>9</id>
-        <posX>50</posX>
-        <posY>268</posY>
+        <posx>50</posx>
+        <posy>268</posy>
         <label>368</label>
         <onleft>50</onleft>
         <onright>50</onright>
@@ -161,36 +161,36 @@
       <description>big listcontrol</description>
       <type>listcontrol</type>
       <id>52</id>
-      <posY>121</posY>
+      <posy>121</posy>
       <height>430</height>
-      <spinWidth>16</spinWidth>
-      <spinHeight>16</spinHeight>
-      <spinColor>ddffffff</spinColor>
-      <spinPosX>630</spinPosX>
-      <spinPosY>527</spinPosY>
-      <textureUp>scroll-up.png</textureUp>
-      <textureDown>scroll-down.png</textureDown>
-      <textureUpFocus>scroll-up-focus.gif</textureUpFocus>
-      <textureDownFocus>scroll-down-focus.gif</textureDownFocus>
-      <textureFocus>blue-rectangle.png</textureFocus>
-      <textureNoFocus>blue-rectangleNF.png</textureNoFocus>
+      <spinwidth>16</spinwidth>
+      <spinheight>16</spinheight>
+      <spincolor>ddffffff</spincolor>
+      <spinposx>419</spinposx>
+      <spinposy>406</spinposy>
+      <textureup>scroll-up.png</textureup>
+      <texturedown>scroll-down.png</texturedown>
+      <textureupFocus>scroll-up-focus.gif</textureupFocus>
+      <texturedownFocus>scroll-down-focus.gif</texturedownFocus>
+      <texturefocus>blue-rectangle.png</texturefocus>
+      <texturenofocus>blue-rectangleNF.png</texturenofocus>
       <font>font14</font>
       <font2>font13</font2>
-      <selectedColor>FFFFffff</selectedColor>
+      <selectedcolor>FFFFffff</selectedcolor>
       <textcolor>0xd0ffffff</textcolor>
-      <selectedColor2>0xFFFFffff</selectedColor2>
+      <selectedcolor2>0xFFFFffff</selectedcolor2>
       <textcolor2>0xd0ffffff</textcolor2>
       <colordiffuse>ffffffff</colordiffuse>
       <suffix>|</suffix>
-      <textXOff>10</textXOff>
-      <textYOff>10</textYOff>
-      <textXOff2>445</textXOff2>
-      <textYOff2>94</textYOff2>
-      <alignY>top</alignY>
-      <itemWidth>100</itemWidth>
-      <itemHeight>110</itemHeight>
-      <spaceBetweenItems>10</spaceBetweenItems>
-      <textureHeight>120</textureHeight>
+      <textxoff>10</textxoff>
+      <textyoff>10</textyoff>
+      <textxoff2>445</textxoff2>
+      <textyoff2>94</textyoff2>
+      <aligny>top</aligny>
+      <itemwidth>100</itemwidth>
+      <itemheight>110</itemheight>
+      <spacebetweenitems>10</spacebetweenitems>
+      <textureheight>120</textureheight>
       <onleft>2</onleft>
       <onright>52</onright>
       <onup>2</onup>

@@ -7,8 +7,8 @@
       <description>background image</description>
       <type>image</type>
       <id>1</id>
-      <posX>0</posX>
-      <posY>0</posY>
+      <posx>0</posx>
+      <posy>0</posy>
       <width>720</width>
       <height>576</height>
       <texture>background-weather.png</texture>
@@ -18,8 +18,8 @@
       <description>xbox media center label</description>
       <type>label</type>
       <id>1</id>
-      <posX>200</posX>
-      <posY>63</posY>
+      <posx>200</posx>
+      <posy>63</posy>
       <align>right</align>
       <label>xbox media center</label>
       <font>special12</font>
@@ -29,8 +29,8 @@
       <description>description label</description>
       <type>label</type>
       <id>1</id>
-      <posX>207</posX>
-      <posY>63</posY>
+      <posx>207</posx>
+      <posy>63</posy>
       <align>left</align>
       <label>10508</label>
       <font>special13</font>
@@ -40,8 +40,8 @@
       <description>Refresh Button</description>
       <type>button</type>
       <id>2</id>
-      <posX>60</posX>
-      <posY>120</posY>
+      <posx>60</posx>
+      <posy>120</posy>
       <width>135</width>
       <height>35</height>
       <label>184</label>
@@ -57,8 +57,8 @@
       <description>logo image</description>
       <type>image</type>
       <id>101</id>
-      <posX>85</posX>
-      <posY>190</posY>
+      <posx>85</posx>
+      <posy>190</posy>
       <texture>TWClogo_64px.png</texture>
     </control>
 
@@ -66,8 +66,8 @@
       <description>logo image</description>
       <type>image</type>
       <id>1</id>
-      <posX>211</posX>
-      <posY>120</posY>
+      <posx>211</posx>
+      <posy>120</posy>
       <width>465</width>
       <height>180</height>
       <texture>blue_rectangle_weather.png</texture>
@@ -77,8 +77,8 @@
       <description>logo image</description>
       <type>button</type>
       <id>1</id>
-      <posX>211</posX>
-      <posY>120</posY>
+      <posx>211</posx>
+      <posy>120</posy>
       <width>464</width>
     </control>
 
@@ -86,8 +86,8 @@
       <description>logo image</description>
       <type>image</type>
       <id>1</id>
-      <posX>211</posX>
-      <posY>310</posY>
+      <posx>211</posx>
+      <posy>310</posy>
       <width>111</width>
       <height>198</height>
       <texture>blue_rectangle_weather.png</texture>
@@ -97,8 +97,8 @@
       <description>logo image</description>
       <type>image</type>
       <id>1</id>
-      <posX>329</posX>
-      <posY>310</posY>
+      <posx>329</posx>
+      <posy>310</posy>
       <width>111</width>
       <height>198</height>
       <texture>blue_rectangle_weather.png</texture>
@@ -108,8 +108,8 @@
       <description>logo image</description>
       <type>image</type>
       <id>1</id>
-      <posX>447</posX>
-      <posY>310</posY>
+      <posx>447</posx>
+      <posy>310</posy>
       <width>111</width>
       <height>198</height>
       <texture>blue_rectangle_weather.png</texture>
@@ -119,8 +119,8 @@
       <description>logo image</description>
       <type>image</type>
       <id>1</id>
-      <posX>565</posX>
-      <posY>310</posY>
+      <posx>565</posx>
+      <posy>310</posy>
       <width>111</width>
       <height>198</height>
       <texture>blue_rectangle_weather.png</texture>
@@ -133,8 +133,8 @@
       <width>15</width>
       <height>15</height>
       <id>3</id>
-      <posX>226</posX>
-      <posY>130</posY>
+      <posx>226</posx>
+      <posy>130</posy>
       <font>font14</font>
       <reverse>yes</reverse>
       <onup>2</onup>
@@ -142,9 +142,9 @@
       <onleft>2</onleft>
       <onright>2</onright>
       <disabledcolor>ffffffff</disabledcolor>
-      <textOffsetX>0</textOffsetX>
-      <textOffsetY>0</textOffsetY>
-      <alignY>center</alignY>
+      <textoffsetx>0</textoffsetx>
+      <textoffsety>0</textoffsety>
+      <aligny>center</aligny>
     </control>
 
     <control>
@@ -152,8 +152,8 @@
       <type>label</type>
       <id>11</id>
       <align>right</align>
-      <posX>660</posX>
-      <posY>129</posY>
+      <posx>660</posx>
+      <posy>129</posy>
       <label>-</label>
       <font>font10</font>
     </control>
@@ -162,8 +162,8 @@
       <description>current temp static label</description>
       <type>label</type>
       <id>223</id>
-      <posX>221</posX>
-      <posY>168</posY>
+      <posx>221</posx>
+      <posy>168</posy>
       <label>Temp</label>
       <font>font10</font>
     </control>
@@ -172,8 +172,8 @@
       <description>current feels like static label</description>
       <type>label</type>
       <id>224</id>
-      <posX>221</posX>
-      <posY>188</posY>
+      <posx>221</posx>
+      <posy>188</posy>
       <label>-</label>
       <font>font10</font>
     </control>
@@ -182,8 +182,8 @@
       <description>current UV Index static label</description>
       <type>label</type>
       <id>225</id>
-      <posX>221</posX>
-      <posY>248</posY>
+      <posx>221</posx>
+      <posy>248</posy>
       <label>-</label>
       <font>font10</font>
     </control>
@@ -192,8 +192,8 @@
       <description>current wind static label</description>
       <type>label</type>
       <id>226</id>
-      <posX>221</posX>
-      <posY>268</posY>
+      <posx>221</posx>
+      <posy>268</posy>
       <label>-</label>
       <font>font10</font>
     </control>
@@ -202,8 +202,8 @@
       <description>current dew static label</description>
       <type>label</type>
       <id>227</id>
-      <posX>221</posX>
-      <posY>208</posY>
+      <posx>221</posx>
+      <posy>208</posy>
       <label>-</label>
       <font>font10</font>
     </control>
@@ -212,8 +212,8 @@
       <description>current humidity static label</description>
       <type>label</type>
       <id>228</id>
-      <posX>221</posX>
-      <posY>228</posY>
+      <posx>221</posx>
+      <posy>228</posy>
       <label>-</label>
       <font>font10</font>
     </control>
@@ -222,8 +222,8 @@
       <description>current weather icon</description>
       <type>image</type>
       <id>21</id>
-      <posX>530</posX>
-      <posY>158</posY>
+      <posx>530</posx>
+      <posy>158</posy>
       <height>138</height>
       <width>106</width>
       <texture>background-myweather.png</texture>
@@ -234,8 +234,8 @@
       <type>label</type>
       <align>right</align>
       <id>22</id>
-      <posX>520</posX>
-      <posY>178</posY>
+      <posx>520</posx>
+      <posy>178</posy>
       <width>120</width>
       <label>-</label>
       <font>font10</font>
@@ -245,8 +245,8 @@
       <description>current temp label</description>
       <type>label</type>
       <id>23</id>
-      <posX>335</posX>
-      <posY>168</posY>
+      <posx>335</posx>
+      <posy>168</posy>
       <label>-</label>
       <font>font10</font>
     </control>
@@ -255,8 +255,8 @@
       <description>current feels like label</description>
       <type>label</type>
       <id>24</id>
-      <posX>335</posX>
-      <posY>188</posY>
+      <posx>335</posx>
+      <posy>188</posy>
       <label>-</label>
       <font>font10</font>
     </control>
@@ -265,8 +265,8 @@
       <description>current UV Index label</description>
       <type>label</type>
       <id>25</id>
-      <posX>335</posX>
-      <posY>248</posY>
+      <posx>335</posx>
+      <posy>248</posy>
       <label>-</label>
       <font>font10</font>
     </control>
@@ -275,8 +275,8 @@
       <description>current wind label</description>
       <type>label</type>
       <id>26</id>
-      <posX>335</posX>
-      <posY>268</posY>
+      <posx>335</posx>
+      <posy>268</posy>
       <label>-</label>
       <font>font10</font>
     </control>
@@ -285,8 +285,8 @@
       <description>current dew label</description>
       <type>label</type>
       <id>27</id>
-      <posX>335</posX>
-      <posY>208</posY>
+      <posx>335</posx>
+      <posy>208</posy>
       <label>-</label>
       <font>font10</font>
     </control>
@@ -295,8 +295,8 @@
       <description>current humidity label</description>
       <type>label</type>
       <id>28</id>
-      <posX>335</posX>
-      <posY>228</posY>
+      <posx>335</posx>
+      <posy>228</posy>
       <label>-</label>
       <font>font10</font>
     </control>
@@ -308,11 +308,11 @@
       <height>28</height>
       <width>110</width>
       <id>31</id>
-      <posX>211</posX>
-      <posY>310</posY>
+      <posx>211</posx>
+      <posy>310</posy>
       <label>-</label>
       <font>font10</font>
-      <textOffsetX>-</textOffsetX>
+      <textoffsetx>-</textoffsetx>
     </control>
 
     <control>
@@ -321,13 +321,13 @@
       <align>center</align>
       <width>110</width>
       <id>32</id>
-      <posX>211</posX>
-      <posY>338</posY>
+      <posx>211</posx>
+      <posy>338</posy>
       <label>-</label>
       <font>font10</font>
-      <textOffsetX>-</textOffsetX>
-      <textureFocus>-</textureFocus>
-      <textureNoFocus>-</textureNoFocus>
+      <textoffsetx>-</textoffsetx>
+      <texturefocus>-</texturefocus>
+      <texturenofocus>-</texturenofocus>
     </control>
 
     <control>
@@ -336,37 +336,37 @@
       <align>center</align>
       <width>110</width>
       <id>33</id>
-      <posX>211</posX>
-      <posY>360</posY>
+      <posx>211</posx>
+      <posy>360</posy>
       <label>-</label>
       <font>font10</font>
-      <textOffsetX>-</textOffsetX>
-      <textureFocus>-</textureFocus>
-      <textureNoFocus>-</textureNoFocus>
+      <textoffsetx>-</textoffsetx>
+      <texturefocus>-</texturefocus>
+      <texturenofocus>-</texturenofocus>
     </control>
 
     <control>
       <description>day 0 general weather label</description>
       <type>button</type>
       <align>center</align>
-      <alignY>top</alignY>
+      <aligny>top</aligny>
       <width>110</width>
       <id>34</id>
-      <posX>211</posX>
-      <posY>465</posY>
+      <posx>211</posx>
+      <posy>465</posy>
       <label>-</label>
       <font>font10</font>
-      <textOffsetX>-</textOffsetX>
-      <textureFocus>-</textureFocus>
-      <textureNoFocus>-</textureNoFocus>
+      <textoffsetx>-</textoffsetx>
+      <texturefocus>-</texturefocus>
+      <texturenofocus>-</texturenofocus>
     </control>
 
     <control>
       <description>day 0 icon</description>
       <type>image</type>
       <id>35</id>
-      <posX>243</posX>
-      <posY>395</posY>
+      <posx>243</posx>
+      <posy>395</posy>
       <height>64</height>
       <width>48</width>
       <texture>background-myweather.png</texture>
@@ -379,11 +379,11 @@
       <height>28</height>
       <width>110</width>
       <id>41</id>
-      <posX>329</posX>
-      <posY>310</posY>
+      <posx>329</posx>
+      <posy>310</posy>
       <label>-</label>
       <font>font10</font>
-      <textOffsetX>-</textOffsetX>
+      <textoffsetx>-</textoffsetx>
     </control>
 
     <control>
@@ -392,13 +392,13 @@
       <align>center</align>
       <width>110</width>
       <id>42</id>
-      <posX>329</posX>
-      <posY>338</posY>
+      <posx>329</posx>
+      <posy>338</posy>
       <label>-</label>
       <font>font10</font>
-      <textOffsetX>-</textOffsetX>
-      <textureFocus>-</textureFocus>
-      <textureNoFocus>-</textureNoFocus>
+      <textoffsetx>-</textoffsetx>
+      <texturefocus>-</texturefocus>
+      <texturenofocus>-</texturenofocus>
     </control>
 
     <control>
@@ -407,37 +407,37 @@
       <align>center</align>
       <width>110</width>
       <id>43</id>
-      <posX>329</posX>
-      <posY>360</posY>
+      <posx>329</posx>
+      <posy>360</posy>
       <label>-</label>
       <font>font10</font>
-      <textOffsetX>-</textOffsetX>
-      <textureFocus>-</textureFocus>
-      <textureNoFocus>-</textureNoFocus>
+      <textoffsetx>-</textoffsetx>
+      <texturefocus>-</texturefocus>
+      <texturenofocus>-</texturenofocus>
     </control>
 
     <control>
       <description>day 1 general weather label</description>
       <type>button</type>
       <align>center</align>
-      <alignY>top</alignY>
+      <aligny>top</aligny>
       <width>110</width>
       <id>44</id>
-      <posX>329</posX>
-      <posY>465</posY>
+      <posx>329</posx>
+      <posy>465</posy>
       <label>-</label>
       <font>font10</font>
-      <textOffsetX>-</textOffsetX>
-      <textureFocus>-</textureFocus>
-      <textureNoFocus>-</textureNoFocus>
+      <textoffsetx>-</textoffsetx>
+      <texturefocus>-</texturefocus>
+      <texturenofocus>-</texturenofocus>
     </control>
 
     <control>
       <description>day 1 icon</description>
       <type>image</type>
       <id>45</id>
-      <posX>361</posX>
-      <posY>395</posY>
+      <posx>361</posx>
+      <posy>395</posy>
       <height>64</height>
       <width>48</width>
       <texture>background-myweather.png</texture>
@@ -450,11 +450,11 @@
       <height>28</height>
       <width>110</width>
       <id>51</id>
-      <posX>447</posX>
-      <posY>310</posY>
+      <posx>447</posx>
+      <posy>310</posy>
       <label>-</label>
       <font>font10</font>
-      <textOffsetX>-</textOffsetX>
+      <textoffsetx>-</textoffsetx>
     </control>
 
     <control>
@@ -463,13 +463,13 @@
       <align>center</align>
       <width>110</width>
       <id>52</id>
-      <posX>447</posX>
-      <posY>338</posY>
+      <posx>447</posx>
+      <posy>338</posy>
       <label>-</label>
       <font>font10</font>
-      <textOffsetX>-</textOffsetX>
-      <textureFocus>-</textureFocus>
-      <textureNoFocus>-</textureNoFocus>
+      <textoffsetx>-</textoffsetx>
+      <texturefocus>-</texturefocus>
+      <texturenofocus>-</texturenofocus>
     </control>
 
     <control>
@@ -478,37 +478,37 @@
       <align>center</align>
       <width>110</width>
       <id>53</id>
-      <posX>447</posX>
-      <posY>360</posY>
+      <posx>447</posx>
+      <posy>360</posy>
       <label>-</label>
       <font>font10</font>
-      <textOffsetX>-</textOffsetX>
-      <textureFocus>-</textureFocus>
-      <textureNoFocus>-</textureNoFocus>
+      <textoffsetx>-</textoffsetx>
+      <texturefocus>-</texturefocus>
+      <texturenofocus>-</texturenofocus>
     </control>
 
     <control>
       <description>day 2 general weather label</description>
       <type>button</type>
       <align>center</align>
-      <alignY>top</alignY>
+      <aligny>top</aligny>
       <width>110</width>
       <id>54</id>
-      <posX>447</posX>
-      <posY>465</posY>
+      <posx>447</posx>
+      <posy>465</posy>
       <label>-</label>
       <font>font10</font>
-      <textOffsetX>-</textOffsetX>
-      <textureFocus>-</textureFocus>
-      <textureNoFocus>-</textureNoFocus>
+      <textoffsetx>-</textoffsetx>
+      <texturefocus>-</texturefocus>
+      <texturenofocus>-</texturenofocus>
     </control>
 
     <control>
       <description>day 2 icon</description>
       <type>image</type>
       <id>55</id>
-      <posX>480</posX>
-      <posY>395</posY>
+      <posx>480</posx>
+      <posy>395</posy>
       <height>64</height>
       <width>48</width>
       <texture>background-myweather.png</texture>
@@ -521,11 +521,11 @@
       <height>28</height>
       <width>110</width>
       <id>61</id>
-      <posX>565</posX>
-      <posY>310</posY>
+      <posx>565</posx>
+      <posy>310</posy>
       <label>-</label>
       <font>font10</font>
-      <textOffsetX>-</textOffsetX>
+      <textoffsetx>-</textoffsetx>
     </control>
 
     <control>
@@ -534,13 +534,13 @@
       <align>center</align>
       <width>110</width>
       <id>62</id>
-      <posX>565</posX>
-      <posY>338</posY>
+      <posx>565</posx>
+      <posy>338</posy>
       <label>-</label>
       <font>font10</font>
-      <textOffsetX>-</textOffsetX>
-      <textureFocus>-</textureFocus>
-      <textureNoFocus>-</textureNoFocus>
+      <textoffsetx>-</textoffsetx>
+      <texturefocus>-</texturefocus>
+      <texturenofocus>-</texturenofocus>
     </control>
 
     <control>
@@ -549,37 +549,37 @@
       <align>center</align>
       <width>110</width>
       <id>63</id>
-      <posX>565</posX>
-      <posY>360</posY>
+      <posx>565</posx>
+      <posy>360</posy>
       <label>-</label>
       <font>font10</font>
-      <textOffsetX>-</textOffsetX>
-      <textureFocus>-</textureFocus>
-      <textureNoFocus>-</textureNoFocus>
+      <textoffsetx>-</textoffsetx>
+      <texturefocus>-</texturefocus>
+      <texturenofocus>-</texturenofocus>
     </control>
 
     <control>
       <description>day 3 general weather label</description>
       <type>button</type>
       <align>center</align>
-      <alignY>top</alignY>
+      <aligny>top</aligny>
       <width>110</width>
       <id>64</id>
-      <posX>565</posX>
-      <posY>465</posY>
+      <posx>565</posx>
+      <posy>465</posy>
       <label>-</label>
       <font>font10</font>
-      <textOffsetX>-</textOffsetX>
-      <textureFocus>-</textureFocus>
-      <textureNoFocus>-</textureNoFocus>
+      <textoffsetx>-</textoffsetx>
+      <texturefocus>-</texturefocus>
+      <texturenofocus>-</texturenofocus>
     </control>
 
     <control>
       <description>day 3 icon</description>
       <type>image</type>
       <id>65</id>
-      <posX>596</posX>
-      <posY>395</posY>
+      <posx>596</posx>
+      <posy>395</posy>
       <height>64</height>
       <width>48</width>
       <texture>background-myweather.png</texture>

@@ -4,8 +4,8 @@
   <type>buttonMenu</type>
   <coordinates>
     <system>1</system>
-    <posX>185</posX>
-    <posY>230</posY>
+    <posx>185</posx>
+    <posy>230</posy>
   </coordinates>
 
   <visible effect="fade" time="200" start="hidden">Window.IsActive(111)</visible>
@@ -13,8 +13,8 @@
     <control>
       <type>image</type>
       <id>0</id>
-      <posX>-185</posX>
-      <posY>-230</posY>
+      <posx>-185</posx>
+      <posy>-230</posy>
       <width>720</width>
       <height>576</height>
       <texture>black.png</texture>
@@ -24,8 +24,8 @@
     <control>
       <type>image</type>
       <id>0</id>
-      <posX>-245</posX>
-      <posY>5</posY>
+      <posx>-245</posx>
+      <posy>5</posy>
       <width>805</width>
       <height>107</height>
       <texture>sub-background.png</texture>
@@ -35,12 +35,12 @@
       <description>Dashboard button</description>
       <type>button</type>
       <id>3110</id>
-      <posX>30</posX>
-      <posY>10</posY>
+      <posx>30</posx>
+      <posy>10</posy>
       <width>60</width>
       <height>80</height>
-      <textureFocus>sub-exit-focus.gif</textureFocus>
-      <textureNoFocus>sub-exit-nofocus.png</textureNoFocus>
+      <texturefocus>sub-exit-focus.gif</texturefocus>
+      <texturenofocus>sub-exit-nofocus.png</texturenofocus>
       <execute>XBMC.Dashboard()</execute>
       <pulseonselect>no</pulseonselect>
       <onleft>3114</onleft>
@@ -55,12 +55,12 @@
       <description>eject button</description>
       <type>button</type>
       <id>3111</id>
-      <posX>90</posX>
-      <posY>10</posY>
+      <posx>90</posx>
+      <posy>10</posy>
       <width>60</width>
       <height>80</height>
-      <textureFocus>sub-eject-focus.gif</textureFocus>
-      <textureNoFocus>sub-eject-nofocus.png</textureNoFocus>
+      <texturefocus>sub-eject-focus.gif</texturefocus>
+      <texturenofocus>sub-eject-nofocus.png</texturenofocus>
       <execute>XBMC.EjectTray()</execute>
       <pulseonselect>no</pulseonselect>
       <onleft>3110</onleft>
@@ -75,12 +75,12 @@
       <description>Shutdown button</description>
       <type>button</type>
       <id>3112</id>
-      <posX>150</posX>
-      <posY>10</posY>
+      <posx>150</posx>
+      <posy>10</posy>
       <width>60</width>
       <height>80</height>
-      <textureFocus>sub-shutdown-focus.gif</textureFocus>
-      <textureNoFocus>sub-shutdown-nofocus.png</textureNoFocus>
+      <texturefocus>sub-shutdown-focus.gif</texturefocus>
+      <texturenofocus>sub-shutdown-nofocus.png</texturenofocus>
       <execute>XBMC.ShutDown()</execute>
       <pulseonselect>no</pulseonselect>
       <onleft>3111</onleft>
@@ -95,12 +95,12 @@
       <description>System Info button</description>
       <type>button</type>
       <id>3113</id>
-      <posX>210</posX>
-      <posY>10</posY>
+      <posx>210</posx>
+      <posy>10</posy>
       <width>60</width>
       <height>80</height>
-      <textureFocus>sub-info-focus.gif</textureFocus>
-      <textureNoFocus>sub-info-nofocus.png</textureNoFocus>
+      <texturefocus>sub-info-focus.gif</texturefocus>
+      <texturenofocus>sub-info-nofocus.png</texturenofocus>
       <execute>XBMC.ActivateWindow(7)</execute>
       <pulseonselect>no</pulseonselect>
       <onleft>3112</onleft>
@@ -115,12 +115,12 @@
       <description>reboot button</description>
       <type>button</type>
       <id>3114</id>
-      <posX>270</posX>
-      <posY>10</posY>
+      <posx>270</posx>
+      <posy>10</posy>
       <width>60</width>
       <height>80</height>
-      <textureFocus>sub-reboot-focus.gif</textureFocus>
-      <textureNoFocus>sub-reboot-nofocus.png</textureNoFocus>
+      <texturefocus>sub-reboot-focus.gif</texturefocus>
+      <texturenofocus>sub-reboot-nofocus.png</texturenofocus>
       <execute>XBMC.Reset()</execute>
       <pulseonselect>no</pulseonselect>
       <onleft>3113</onleft>
@@ -135,12 +135,12 @@
       <description>reload skin button</description>
       <type>button</type>
       <id>3115</id>
-      <posX>150</posX>
-      <posY>10</posY>
+      <posx>150</posx>
+      <posy>10</posy>
       <width>60</width>
       <height>80</height>
-      <textureFocus>sub-shutdown-focus.gif</textureFocus>
-      <textureNoFocus>-</textureNoFocus>
+      <texturefocus>sub-shutdown-focus.gif</texturefocus>
+      <texturenofocus>-</texturenofocus>
       <execute>XBMC.ReloadSkin()</execute>
       <pulseonselect>no</pulseonselect>
       <onleft>3115</onleft>
@@ -155,12 +155,12 @@
       <description>reload skin button</description>
       <type>button</type>
       <id>3116</id>
-      <posX>150</posX>
-      <posY>10</posY>
+      <posx>150</posx>
+      <posy>10</posy>
       <width>60</width>
       <height>80</height>
-      <textureFocus>sub-shutdown-focus.gif</textureFocus>
-      <textureNoFocus>-</textureNoFocus>
+      <texturefocus>sub-shutdown-focus.gif</texturefocus>
+      <texturenofocus>-</texturenofocus>
       <execute>XBMC.RestartApp()</execute>
       <pulseonselect>no</pulseonselect>
       <onleft>3116</onleft>
@@ -174,8 +174,8 @@
     <control>
       <type>image</type>
       <id>0</id>
-      <posX>-245</posX>
-      <posY>100</posY>
+      <posx>-245</posx>
+      <posy>100</posy>
       <width>805</width>
       <height>46</height>
       <texture>sub-background-label.png</texture>
@@ -185,8 +185,8 @@
       <description>Label control</description>
       <type>label</type>
       <id>3100</id>
-      <posX>19</posX>
-      <posY>110</posY>
+      <posx>19</posx>
+      <posy>110</posy>
       <width>322</width>
       <height>20</height>
       <align>center</align>

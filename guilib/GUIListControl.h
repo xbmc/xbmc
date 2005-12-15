@@ -76,8 +76,8 @@ public:
   const CStdString& GetTextureUpFocusName() const { return m_upDown.GetTextureUpFocusName(); };
   const CStdString& GetTextureDownFocusName() const { return m_upDown.GetTextureDownFocusName(); };
   DWORD GetSpinTextColor() const { return m_upDown.GetTextColor();};
-  int GetSpinX() const { return m_upDown.GetXPosition();};
-  int GetSpinY() const { return m_upDown.GetYPosition();};
+  int GetSpinX() const { return m_iSpinPosX;};
+  int GetSpinY() const { return m_iSpinPosY;};
   DWORD GetSpace() const { return m_iSpaceBetweenItems;};
   DWORD GetItemHeight() const { return m_iItemHeight; };
   DWORD GetButtonTextOffsetX() const { return m_imgButton.GetTextOffsetX();};
@@ -112,6 +112,8 @@ protected:
   int m_iTextOffsetY;
   int m_iTextOffsetX2;
   int m_iTextOffsetY2;
+  int m_iSpinPosX;
+  int m_iSpinPosY;
   DWORD m_dwTextAlign;
   int m_iImageWidth;
   int m_iImageHeight;

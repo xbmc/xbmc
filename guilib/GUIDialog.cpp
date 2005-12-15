@@ -137,6 +137,11 @@ void CGUIDialog::DoModal(DWORD dwParentId, int iWindowID /*= WINDOW_INVALID */)
   }
   
   m_bModal = true;
+  // set running before it's added to the window manager, else the auto-show code
+  // could show it as well if we are in a different thread from
+  // the main rendering thread (this should really be handled via
+  // a thread message though IMO)
+  m_bRunning = true;
   m_gWindowManager.RouteToWindow(this);
 
   //  Play the window specific init sound
@@ -146,7 +151,7 @@ void CGUIDialog::DoModal(DWORD dwParentId, int iWindowID /*= WINDOW_INVALID */)
   CGUIMessage msg(GUI_MSG_WINDOW_INIT, 0, 0, WINDOW_INVALID, iWindowID);
   OnMessage(msg);
 
-  m_bRunning = true;
+//  m_bRunning = true;
 
   lock.Leave();
   while (m_bRunning)
@@ -174,6 +179,12 @@ void CGUIDialog::Show(DWORD dwParentId)
   }
 
   m_bModal = false;
+  
+  // set running before it's added to the window manager, else the auto-show code
+  // could show it as well if we are in a different thread from
+  // the main rendering thread (this should really be handled via
+  // a thread message though IMO)
+  m_bRunning = true;
   m_gWindowManager.AddModeless(this);
 
   //  Play the window specific init sound
@@ -183,7 +194,7 @@ void CGUIDialog::Show(DWORD dwParentId)
   CGUIMessage msg(GUI_MSG_WINDOW_INIT, 0, 0);
   OnMessage(msg);
 
-  m_bRunning = true;
+//  m_bRunning = true;
 }
 
 void CGUIDialog::DoEffect()

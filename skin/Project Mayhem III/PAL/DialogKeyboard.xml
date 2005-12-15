@@ -6,8 +6,8 @@
     <control>
       <type>image</type>
       <id>0</id>
-      <posX>0</posX>
-      <posY>0</posY>
+      <posx>0</posx>
+      <posy>0</posy>
       <width>720</width>
       <height>576</height>
       <texture>black.png</texture>
@@ -17,8 +17,8 @@
     <control>
       <type>image</type>
       <id>0</id>
-      <posX>-10</posX>
-      <posY>150</posY>
+      <posx>-10</posx>
+      <posy>150</posy>
       <width>740</width>
       <height>87</height>
       <texture>sub-background.png</texture>
@@ -28,8 +28,8 @@
       <description>dialog Heading</description>
       <type>label</type>
       <id>311</id>
-      <posX>160</posX>
-      <posY>163</posY>
+      <posx>160</posx>
+      <posy>163</posy>
       <font>font12</font>
       <width>400</width>
       <height>16</height>
@@ -40,8 +40,8 @@
       <description>Edit Text</description>
       <type>label</type>
       <id>310</id>
-      <posX>0</posX>
-      <posY>187</posY>
+      <posx>0</posx>
+      <posy>187</posy>
       <width>720</width>
       <height>16</height>
       <font>special13</font>
@@ -52,8 +52,8 @@
       <description>Keyboard Dialog Background</description>
       <type>image</type>
       <id>0</id>
-      <posX>125</posX>
-      <posY>240</posY>
+      <posx>125</posx>
+      <posy>240</posy>
       <width>460</width>
       <height>189</height>
       <texture>keyboard-panel.png</texture>
@@ -63,8 +63,8 @@
       <description>DONE button</description>
       <type>button</type>
       <id>300</id>
-      <posX>150</posX>
-      <posY>255</posY>
+      <posx>150</posx>
+      <posy>255</posy>
       <width>120</width>
       <height>30</height>
       <label>Done</label>
@@ -72,10 +72,10 @@
       <onright>48</onright>
       <onup>304</onup>
       <ondown>302</ondown>
-      <textureNoFocus>keyboard-btn-done.png</textureNoFocus>
-      <textureFocus>keyboard-btn-done-focus.png</textureFocus>
+      <texturenofocus>keyboard-btn-done.png</texturenofocus>
+      <texturefocus>keyboard-btn-done-focus.png</texturefocus>
       <align>center</align>
-      <alignY>center</alignY>
+      <aligny>center</aligny>
       <font>special13</font>
     </control>
 
@@ -83,18 +83,18 @@
       <description>'0' button</description>
       <type>button</type>
       <id>48</id>
-      <posX>270</posX>
-      <posY>255</posY>
+      <posx>270</posx>
+      <posy>255</posy>
       <width>30</width>
       <height>30</height>
       <onleft>300</onleft>
       <onright>49</onright>
       <onup>32</onup>
       <ondown>65</ondown>
-      <textureNoFocus>keyboard-btn.png</textureNoFocus>
-      <textureFocus>keyboard-btn-focus.png</textureFocus>
+      <texturenofocus>keyboard-btn.png</texturenofocus>
+      <texturefocus>keyboard-btn-focus.png</texturefocus>
       <align>center</align>
-      <alignY>center</alignY>
+      <aligny>center</aligny>
       <font>special13</font>
     </control>
 
@@ -102,18 +102,18 @@
       <description>'1' button</description>
       <type>button</type>
       <id>49</id>
-      <posX>300</posX>
-      <posY>255</posY>
+      <posx>300</posx>
+      <posy>255</posy>
       <width>30</width>
       <height>30</height>
       <onleft>48</onleft>
       <onright>50</onright>
       <onup>32</onup>
       <ondown>66</ondown>
-      <textureNoFocus>keyboard-btn.png</textureNoFocus>
-      <textureFocus>keyboard-btn-focus.png</textureFocus>
+      <texturenofocus>keyboard-btn.png</texturenofocus>
+      <texturefocus>keyboard-btn-focus.png</texturefocus>
       <align>center</align>
-      <alignY>center</alignY>
+      <aligny>center</aligny>
       <font>special13</font>
     </control>
 
@@ -121,18 +121,18 @@
       <description>'2' button</description>
       <type>button</type>
       <id>50</id>
-      <posX>330</posX>
-      <posY>255</posY>
+      <posx>330</posx>
+      <posy>255</posy>
       <width>30</width>
       <height>30</height>
       <onleft>49</onleft>
       <onright>51</onright>
       <onup>32</onup>
       <ondown>67</ondown>
-      <textureNoFocus>keyboard-btn.png</textureNoFocus>
-      <textureFocus>keyboard-btn-focus.png</textureFocus>
+      <texturenofocus>keyboard-btn.png</texturenofocus>
+      <texturefocus>keyboard-btn-focus.png</texturefocus>
       <align>center</align>
-      <alignY>center</alignY>
+      <aligny>center</aligny>
       <font>special13</font>
     </control>
 
@@ -140,18 +140,18 @@
       <description>'3' button</description>
       <type>button</type>
       <id>51</id>
-      <posX>360</posX>
-      <posY>255</posY>
+      <posx>360</posx>
+      <posy>255</posy>
       <width>30</width>
       <height>30</height>
       <onleft>50</onleft>
       <onright>52</onright>
       <onup>32</onup>
       <ondown>68</ondown>
-      <textureNoFocus>keyboard-btn.png</textureNoFocus>
-      <textureFocus>keyboard-btn-focus.png</textureFocus>
+      <texturenofocus>keyboard-btn.png</texturenofocus>
+      <texturefocus>keyboard-btn-focus.png</texturefocus>
       <align>center</align>
-      <alignY>center</alignY>
+      <aligny>center</aligny>
       <font>special13</font>
     </control>
 
@@ -159,18 +159,18 @@
       <description>'4' button</description>
       <type>button</type>
       <id>52</id>
-      <posX>390</posX>
-      <posY>255</posY>
+      <posx>390</posx>
+      <posy>255</posy>
       <width>30</width>
       <height>30</height>
       <onleft>51</onleft>
       <onright>53</onright>
       <onup>32</onup>
       <ondown>69</ondown>
-      <textureNoFocus>keyboard-btn.png</textureNoFocus>
-      <textureFocus>keyboard-btn-focus.png</textureFocus>
+      <texturenofocus>keyboard-btn.png</texturenofocus>
+      <texturefocus>keyboard-btn-focus.png</texturefocus>
       <align>center</align>
-      <alignY>center</alignY>
+      <aligny>center</aligny>
       <font>special13</font>
     </control>
 
@@ -178,18 +178,18 @@
       <description>'5' button</description>
       <type>button</type>
       <id>53</id>
-      <posX>420</posX>
-      <posY>255</posY>
+      <posx>420</posx>
+      <posy>255</posy>
       <width>30</width>
       <height>30</height>
       <onleft>52</onleft>
       <onright>54</onright>
       <onup>32</onup>
       <ondown>70</ondown>
-      <textureNoFocus>keyboard-btn.png</textureNoFocus>
-      <textureFocus>keyboard-btn-focus.png</textureFocus>
+      <texturenofocus>keyboard-btn.png</texturenofocus>
+      <texturefocus>keyboard-btn-focus.png</texturefocus>
       <align>center</align>
-      <alignY>center</alignY>
+      <aligny>center</aligny>
       <font>special13</font>
     </control>
 
@@ -197,18 +197,18 @@
       <description>'6' button</description>
       <type>button</type>
       <id>54</id>
-      <posX>450</posX>
-      <posY>255</posY>
+      <posx>450</posx>
+      <posy>255</posy>
       <width>30</width>
       <height>30</height>
       <onleft>53</onleft>
       <onright>55</onright>
       <onup>305</onup>
       <ondown>71</ondown>
-      <textureNoFocus>keyboard-btn.png</textureNoFocus>
-      <textureFocus>keyboard-btn-focus.png</textureFocus>
+      <texturenofocus>keyboard-btn.png</texturenofocus>
+      <texturefocus>keyboard-btn-focus.png</texturefocus>
       <align>center</align>
-      <alignY>center</alignY>
+      <aligny>center</aligny>
       <font>special13</font>
     </control>
 
@@ -216,18 +216,18 @@
       <description>'7' button</description>
       <type>button</type>
       <id>55</id>
-      <posX>480</posX>
-      <posY>255</posY>
+      <posx>480</posx>
+      <posy>255</posy>
       <width>30</width>
       <height>30</height>
       <onleft>54</onleft>
       <onright>56</onright>
       <onup>305</onup>
       <ondown>72</ondown>
-      <textureNoFocus>keyboard-btn.png</textureNoFocus>
-      <textureFocus>keyboard-btn-focus.png</textureFocus>
+      <texturenofocus>keyboard-btn.png</texturenofocus>
+      <texturefocus>keyboard-btn-focus.png</texturefocus>
       <align>center</align>
-      <alignY>center</alignY>
+      <aligny>center</aligny>
       <font>special13</font>
     </control>
 
@@ -235,18 +235,18 @@
       <description>'8' button</description>
       <type>button</type>
       <id>56</id>
-      <posX>510</posX>
-      <posY>255</posY>
+      <posx>510</posx>
+      <posy>255</posy>
       <width>30</width>
       <height>30</height>
       <onleft>55</onleft>
       <onright>57</onright>
       <onup>306</onup>
       <ondown>73</ondown>
-      <textureNoFocus>keyboard-btn.png</textureNoFocus>
-      <textureFocus>keyboard-btn-focus.png</textureFocus>
+      <texturenofocus>keyboard-btn.png</texturenofocus>
+      <texturefocus>keyboard-btn-focus.png</texturefocus>
       <align>center</align>
-      <alignY>center</alignY>
+      <aligny>center</aligny>
       <font>special13</font>
     </control>
 
@@ -254,18 +254,18 @@
       <description>'9' button</description>
       <type>button</type>
       <id>57</id>
-      <posX>540</posX>
-      <posY>255</posY>
+      <posx>540</posx>
+      <posy>255</posy>
       <width>30</width>
       <height>30</height>
       <onleft>56</onleft>
       <onright>300</onright>
       <onup>306</onup>
       <ondown>74</ondown>
-      <textureNoFocus>keyboard-btn-topright.png</textureNoFocus>
-      <textureFocus>keyboard-btn-topright-focus.png</textureFocus>
+      <texturenofocus>keyboard-btn-topright.png</texturenofocus>
+      <texturefocus>keyboard-btn-topright-focus.png</texturefocus>
       <align>center</align>
-      <alignY>center</alignY>
+      <aligny>center</aligny>
       <font>special13</font>
     </control>
 
@@ -273,8 +273,8 @@
       <description>SHIFT button</description>
       <type>togglebutton</type>
       <id>302</id>
-      <posX>150</posX>
-      <posY>285</posY>
+      <posx>150</posx>
+      <posy>285</posy>
       <width>120</width>
       <height>30</height>
       <label>Shift</label>
@@ -282,12 +282,12 @@
       <onright>65</onright>
       <onup>300</onup>
       <ondown>303</ondown>
-      <AltTextureNoFocus>keyboard-btn-mid.png</AltTextureNoFocus>
-      <AltTextureFocus>keyboard-btn-mid-focus.png</AltTextureFocus>
-      <textureNoFocus>keyboard-btn-mid-sel.png</textureNoFocus>
-      <textureFocus>keyboard-btn-mid-sel-focus.png</textureFocus>
+      <alttexturenofocus>keyboard-btn-mid.png</alttexturenofocus>
+      <alttexturefocus>keyboard-btn-mid-focus.png</alttexturefocus>
+      <texturenofocus>keyboard-btn-mid-sel.png</texturenofocus>
+      <texturefocus>keyboard-btn-mid-sel-focus.png</texturefocus>
       <align>center</align>
-      <alignY>center</alignY>
+      <aligny>center</aligny>
       <font>special13</font>
     </control>
 
@@ -295,18 +295,18 @@
       <description>'A' button</description>
       <type>button</type>
       <id>65</id>
-      <posX>270</posX>
-      <posY>285</posY>
+      <posx>270</posx>
+      <posy>285</posy>
       <width>30</width>
       <height>30</height>
       <onleft>302</onleft>
       <onright>66</onright>
       <onup>48</onup>
       <ondown>75</ondown>
-      <textureNoFocus>keyboard-btn.png</textureNoFocus>
-      <textureFocus>keyboard-btn-focus.png</textureFocus>
+      <texturenofocus>keyboard-btn.png</texturenofocus>
+      <texturefocus>keyboard-btn-focus.png</texturefocus>
       <align>center</align>
-      <alignY>center</alignY>
+      <aligny>center</aligny>
       <font>special13</font>
     </control>
 
@@ -314,18 +314,18 @@
       <description>'B' button</description>
       <type>button</type>
       <id>66</id>
-      <posX>300</posX>
-      <posY>285</posY>
+      <posx>300</posx>
+      <posy>285</posy>
       <width>30</width>
       <height>30</height>
       <onleft>65</onleft>
       <onright>67</onright>
       <onup>49</onup>
       <ondown>76</ondown>
-      <textureNoFocus>keyboard-btn.png</textureNoFocus>
-      <textureFocus>keyboard-btn-focus.png</textureFocus>
+      <texturenofocus>keyboard-btn.png</texturenofocus>
+      <texturefocus>keyboard-btn-focus.png</texturefocus>
       <align>center</align>
-      <alignY>center</alignY>
+      <aligny>center</aligny>
       <font>special13</font>
     </control>
 
@@ -333,18 +333,18 @@
       <description>'C' button</description>
       <type>button</type>
       <id>67</id>
-      <posX>330</posX>
-      <posY>285</posY>
+      <posx>330</posx>
+      <posy>285</posy>
       <width>30</width>
       <height>30</height>
       <onleft>66</onleft>
       <onright>68</onright>
       <onup>50</onup>
       <ondown>77</ondown>
-      <textureNoFocus>keyboard-btn.png</textureNoFocus>
-      <textureFocus>keyboard-btn-focus.png</textureFocus>
+      <texturenofocus>keyboard-btn.png</texturenofocus>
+      <texturefocus>keyboard-btn-focus.png</texturefocus>
       <align>center</align>
-      <alignY>center</alignY>
+      <aligny>center</aligny>
       <font>special13</font>
     </control>
 
@@ -352,18 +352,18 @@
       <description>'D' button</description>
       <type>button</type>
       <id>68</id>
-      <posX>360</posX>
-      <posY>285</posY>
+      <posx>360</posx>
+      <posy>285</posy>
       <width>30</width>
       <height>30</height>
       <onleft>67</onleft>
       <onright>69</onright>
       <onup>51</onup>
       <ondown>78</ondown>
-      <textureNoFocus>keyboard-btn.png</textureNoFocus>
-      <textureFocus>keyboard-btn-focus.png</textureFocus>
+      <texturenofocus>keyboard-btn.png</texturenofocus>
+      <texturefocus>keyboard-btn-focus.png</texturefocus>
       <align>center</align>
-      <alignY>center</alignY>
+      <aligny>center</aligny>
       <font>special13</font>
     </control>
 
@@ -371,18 +371,18 @@
       <description>'E' button</description>
       <type>button</type>
       <id>69</id>
-      <posX>390</posX>
-      <posY>285</posY>
+      <posx>390</posx>
+      <posy>285</posy>
       <width>30</width>
       <height>30</height>
       <onleft>68</onleft>
       <onright>70</onright>
       <onup>52</onup>
       <ondown>79</ondown>
-      <textureNoFocus>keyboard-btn.png</textureNoFocus>
-      <textureFocus>keyboard-btn-focus.png</textureFocus>
+      <texturenofocus>keyboard-btn.png</texturenofocus>
+      <texturefocus>keyboard-btn-focus.png</texturefocus>
       <align>center</align>
-      <alignY>center</alignY>
+      <aligny>center</aligny>
       <font>special13</font>
     </control>
 
@@ -390,18 +390,18 @@
       <description>'F' button</description>
       <type>button</type>
       <id>70</id>
-      <posX>420</posX>
-      <posY>285</posY>
+      <posx>420</posx>
+      <posy>285</posy>
       <width>30</width>
       <height>30</height>
       <onleft>69</onleft>
       <onright>71</onright>
       <onup>53</onup>
       <ondown>80</ondown>
-      <textureNoFocus>keyboard-btn.png</textureNoFocus>
-      <textureFocus>keyboard-btn-focus.png</textureFocus>
+      <texturenofocus>keyboard-btn.png</texturenofocus>
+      <texturefocus>keyboard-btn-focus.png</texturefocus>
       <align>center</align>
-      <alignY>center</alignY>
+      <aligny>center</aligny>
       <font>special13</font>
     </control>
 
@@ -409,18 +409,18 @@
       <description>'G' button</description>
       <type>button</type>
       <id>71</id>
-      <posX>450</posX>
-      <posY>285</posY>
+      <posx>450</posx>
+      <posy>285</posy>
       <width>30</width>
       <height>30</height>
       <onleft>70</onleft>
       <onright>72</onright>
       <onup>54</onup>
       <ondown>81</ondown>
-      <textureNoFocus>keyboard-btn.png</textureNoFocus>
-      <textureFocus>keyboard-btn-focus.png</textureFocus>
+      <texturenofocus>keyboard-btn.png</texturenofocus>
+      <texturefocus>keyboard-btn-focus.png</texturefocus>
       <align>center</align>
-      <alignY>center</alignY>
+      <aligny>center</aligny>
       <font>special13</font>
     </control>
 
@@ -428,18 +428,18 @@
       <description>'H' button</description>
       <type>button</type>
       <id>72</id>
-      <posX>480</posX>
-      <posY>285</posY>
+      <posx>480</posx>
+      <posy>285</posy>
       <width>30</width>
       <height>30</height>
       <onleft>71</onleft>
       <onright>73</onright>
       <onup>55</onup>
       <ondown>82</ondown>
-      <textureNoFocus>keyboard-btn.png</textureNoFocus>
-      <textureFocus>keyboard-btn-focus.png</textureFocus>
+      <texturenofocus>keyboard-btn.png</texturenofocus>
+      <texturefocus>keyboard-btn-focus.png</texturefocus>
       <align>center</align>
-      <alignY>center</alignY>
+      <aligny>center</aligny>
       <font>special13</font>
     </control>
 
@@ -447,18 +447,18 @@
       <description>'I' button</description>
       <type>button</type>
       <id>73</id>
-      <posX>510</posX>
-      <posY>285</posY>
+      <posx>510</posx>
+      <posy>285</posy>
       <width>30</width>
       <height>30</height>
       <onleft>72</onleft>
       <onright>74</onright>
       <onup>56</onup>
       <ondown>83</ondown>
-      <textureNoFocus>keyboard-btn.png</textureNoFocus>
-      <textureFocus>keyboard-btn-focus.png</textureFocus>
+      <texturenofocus>keyboard-btn.png</texturenofocus>
+      <texturefocus>keyboard-btn-focus.png</texturefocus>
       <align>center</align>
-      <alignY>center</alignY>
+      <aligny>center</aligny>
       <font>special13</font>
     </control>
 
@@ -466,18 +466,18 @@
       <description>'J' button</description>
       <type>button</type>
       <id>74</id>
-      <posX>540</posX>
-      <posY>285</posY>
+      <posx>540</posx>
+      <posy>285</posy>
       <width>30</width>
       <height>30</height>
       <onleft>73</onleft>
       <onright>302</onright>
       <onup>57</onup>
       <ondown>84</ondown>
-      <textureNoFocus>keyboard-btn.png</textureNoFocus>
-      <textureFocus>keyboard-btn-focus.png</textureFocus>
+      <texturenofocus>keyboard-btn.png</texturenofocus>
+      <texturefocus>keyboard-btn-focus.png</texturefocus>
       <align>center</align>
-      <alignY>center</alignY>
+      <aligny>center</aligny>
       <font>special13</font>
     </control>
 
@@ -485,8 +485,8 @@
       <description>CAPS LOCK button</description>
       <type>togglebutton</type>
       <id>303</id>
-      <posX>150</posX>
-      <posY>315</posY>
+      <posx>150</posx>
+      <posy>315</posy>
       <width>120</width>
       <height>30</height>
       <label>Caps Lock</label>
@@ -494,12 +494,12 @@
       <onright>75</onright>
       <onup>302</onup>
       <ondown>304</ondown>
-      <AltTextureNoFocus>keyboard-btn-mid.png</AltTextureNoFocus>
-      <AltTextureFocus>keyboard-btn-mid-focus.png</AltTextureFocus>
-      <textureNoFocus>keyboard-btn-mid-sel.png</textureNoFocus>
-      <textureFocus>keyboard-btn-mid-sel-focus.png</textureFocus>
+      <alttexturenofocus>keyboard-btn-mid.png</alttexturenofocus>
+      <alttexturefocus>keyboard-btn-mid-focus.png</alttexturefocus>
+      <texturenofocus>keyboard-btn-mid-sel.png</texturenofocus>
+      <texturefocus>keyboard-btn-mid-sel-focus.png</texturefocus>
       <align>center</align>
-      <alignY>center</alignY>
+      <aligny>center</aligny>
       <font>special13</font>
     </control>
 
@@ -507,18 +507,18 @@
       <description>'K' button</description>
       <type>button</type>
       <id>75</id>
-      <posX>270</posX>
-      <posY>315</posY>
+      <posx>270</posx>
+      <posy>315</posy>
       <width>30</width>
       <height>30</height>
       <onleft>303</onleft>
       <onright>76</onright>
       <onup>65</onup>
       <ondown>85</ondown>
-      <textureNoFocus>keyboard-btn.png</textureNoFocus>
-      <textureFocus>keyboard-btn-focus.png</textureFocus>
+      <texturenofocus>keyboard-btn.png</texturenofocus>
+      <texturefocus>keyboard-btn-focus.png</texturefocus>
       <align>center</align>
-      <alignY>center</alignY>
+      <aligny>center</aligny>
       <font>special13</font>
     </control>
 
@@ -526,18 +526,18 @@
       <description>'L' button</description>
       <type>button</type>
       <id>76</id>
-      <posX>300</posX>
-      <posY>315</posY>
+      <posx>300</posx>
+      <posy>315</posy>
       <width>30</width>
       <height>30</height>
       <onleft>75</onleft>
       <onright>77</onright>
       <onup>66</onup>
       <ondown>86</ondown>
-      <textureNoFocus>keyboard-btn.png</textureNoFocus>
-      <textureFocus>keyboard-btn-focus.png</textureFocus>
+      <texturenofocus>keyboard-btn.png</texturenofocus>
+      <texturefocus>keyboard-btn-focus.png</texturefocus>
       <align>center</align>
-      <alignY>center</alignY>
+      <aligny>center</aligny>
       <font>special13</font>
     </control>
 
@@ -545,18 +545,18 @@
       <description>'M' button</description>
       <type>button</type>
       <id>77</id>
-      <posX>330</posX>
-      <posY>315</posY>
+      <posx>330</posx>
+      <posy>315</posy>
       <width>30</width>
       <height>30</height>
       <onleft>76</onleft>
       <onright>78</onright>
       <onup>67</onup>
       <ondown>87</ondown>
-      <textureNoFocus>keyboard-btn.png</textureNoFocus>
-      <textureFocus>keyboard-btn-focus.png</textureFocus>
+      <texturenofocus>keyboard-btn.png</texturenofocus>
+      <texturefocus>keyboard-btn-focus.png</texturefocus>
       <align>center</align>
-      <alignY>center</alignY>
+      <aligny>center</aligny>
       <font>special13</font>
     </control>
 
@@ -564,18 +564,18 @@
       <description>'N' button</description>
       <type>button</type>
       <id>78</id>
-      <posX>360</posX>
-      <posY>315</posY>
+      <posx>360</posx>
+      <posy>315</posy>
       <width>30</width>
       <height>30</height>
       <onleft>77</onleft>
       <onright>79</onright>
       <onup>68</onup>
       <ondown>88</ondown>
-      <textureNoFocus>keyboard-btn.png</textureNoFocus>
-      <textureFocus>keyboard-btn-focus.png</textureFocus>
+      <texturenofocus>keyboard-btn.png</texturenofocus>
+      <texturefocus>keyboard-btn-focus.png</texturefocus>
       <align>center</align>
-      <alignY>center</alignY>
+      <aligny>center</aligny>
       <font>special13</font>
     </control>
 
@@ -583,18 +583,18 @@
       <description>'O' button</description>
       <type>button</type>
       <id>79</id>
-      <posX>390</posX>
-      <posY>315</posY>
+      <posx>390</posx>
+      <posy>315</posy>
       <width>30</width>
       <height>30</height>
       <onleft>78</onleft>
       <onright>80</onright>
       <onup>69</onup>
       <ondown>89</ondown>
-      <textureNoFocus>keyboard-btn.png</textureNoFocus>
-      <textureFocus>keyboard-btn-focus.png</textureFocus>
+      <texturenofocus>keyboard-btn.png</texturenofocus>
+      <texturefocus>keyboard-btn-focus.png</texturefocus>
       <align>center</align>
-      <alignY>center</alignY>
+      <aligny>center</aligny>
       <font>special13</font>
     </control>
 
@@ -602,18 +602,18 @@
       <description>'P' button</description>
       <type>button</type>
       <id>80</id>
-      <posX>420</posX>
-      <posY>315</posY>
+      <posx>420</posx>
+      <posy>315</posy>
       <width>30</width>
       <height>30</height>
       <onleft>79</onleft>
       <onright>81</onright>
       <onup>70</onup>
       <ondown>90</ondown>
-      <textureNoFocus>keyboard-btn.png</textureNoFocus>
-      <textureFocus>keyboard-btn-focus.png</textureFocus>
+      <texturenofocus>keyboard-btn.png</texturenofocus>
+      <texturefocus>keyboard-btn-focus.png</texturefocus>
       <align>center</align>
-      <alignY>center</alignY>
+      <aligny>center</aligny>
       <font>special13</font>
     </control>
 
@@ -621,18 +621,18 @@
       <description>'Q' button</description>
       <type>button</type>
       <id>81</id>
-      <posX>450</posX>
-      <posY>315</posY>
+      <posx>450</posx>
+      <posy>315</posy>
       <width>30</width>
       <height>30</height>
       <onleft>80</onleft>
       <onright>82</onright>
       <onup>71</onup>
       <ondown>8</ondown>
-      <textureNoFocus>keyboard-btn.png</textureNoFocus>
-      <textureFocus>keyboard-btn-focus.png</textureFocus>
+      <texturenofocus>keyboard-btn.png</texturenofocus>
+      <texturefocus>keyboard-btn-focus.png</texturefocus>
       <align>center</align>
-      <alignY>center</alignY>
+      <aligny>center</aligny>
       <font>special13</font>
     </control>
 
@@ -640,18 +640,18 @@
       <description>'R' button</description>
       <type>button</type>
       <id>82</id>
-      <posX>480</posX>
-      <posY>315</posY>
+      <posx>480</posx>
+      <posy>315</posy>
       <width>30</width>
       <height>30</height>
       <onleft>81</onleft>
       <onright>83</onright>
       <onup>72</onup>
       <ondown>8</ondown>
-      <textureNoFocus>keyboard-btn.png</textureNoFocus>
-      <textureFocus>keyboard-btn-focus.png</textureFocus>
+      <texturenofocus>keyboard-btn.png</texturenofocus>
+      <texturefocus>keyboard-btn-focus.png</texturefocus>
       <align>center</align>
-      <alignY>center</alignY>
+      <aligny>center</aligny>
       <font>special13</font>
     </control>
 
@@ -659,18 +659,18 @@
       <description>'S' button</description>
       <type>button</type>
       <id>83</id>
-      <posX>510</posX>
-      <posY>315</posY>
+      <posx>510</posx>
+      <posy>315</posy>
       <width>30</width>
       <height>30</height>
       <onleft>82</onleft>
       <onright>84</onright>
       <onup>73</onup>
       <ondown>8</ondown>
-      <textureNoFocus>keyboard-btn.png</textureNoFocus>
-      <textureFocus>keyboard-btn-focus.png</textureFocus>
+      <texturenofocus>keyboard-btn.png</texturenofocus>
+      <texturefocus>keyboard-btn-focus.png</texturefocus>
       <align>center</align>
-      <alignY>center</alignY>
+      <aligny>center</aligny>
       <font>special13</font>
     </control>
 
@@ -678,18 +678,18 @@
       <description>'T' button</description>
       <type>button</type>
       <id>84</id>
-      <posX>540</posX>
-      <posY>315</posY>
+      <posx>540</posx>
+      <posy>315</posy>
       <width>30</width>
       <height>30</height>
       <onleft>83</onleft>
       <onright>303</onright>
       <onup>74</onup>
       <ondown>8</ondown>
-      <textureNoFocus>keyboard-btn.png</textureNoFocus>
-      <textureFocus>keyboard-btn-focus.png</textureFocus>
+      <texturenofocus>keyboard-btn.png</texturenofocus>
+      <texturefocus>keyboard-btn-focus.png</texturefocus>
       <align>center</align>
-      <alignY>center</alignY>
+      <aligny>center</aligny>
       <font>special13</font>
     </control>
 
@@ -697,8 +697,8 @@
       <description>Symbols button</description>
       <type>togglebutton</type>
       <id>304</id>
-      <posX>150</posX>
-      <posY>345</posY>
+      <posx>150</posx>
+      <posy>345</posy>
       <width>120</width>
       <height>30</height>
       <label>Symbols</label>
@@ -706,12 +706,12 @@
       <onright>85</onright>
       <onup>303</onup>
       <ondown>300</ondown>
-      <AltTextureNoFocus>keyboard-btn-mid.png</AltTextureNoFocus>
-      <AltTextureFocus>keyboard-btn-mid-focus.png</AltTextureFocus>
-      <textureNoFocus>keyboard-btn-mid-sel.png</textureNoFocus>
-      <textureFocus>keyboard-btn-mid-sel-focus.png</textureFocus>
+      <alttexturenofocus>keyboard-btn-mid.png</alttexturenofocus>
+      <alttexturefocus>keyboard-btn-mid-focus.png</alttexturefocus>
+      <texturenofocus>keyboard-btn-mid-sel.png</texturenofocus>
+      <texturefocus>keyboard-btn-mid-sel-focus.png</texturefocus>
       <align>center</align>
-      <alignY>center</alignY>
+      <aligny>center</aligny>
       <font>special13</font>
     </control>
 
@@ -719,18 +719,18 @@
       <description>'U' button</description>
       <type>button</type>
       <id>85</id>
-      <posX>270</posX>
-      <posY>345</posY>
+      <posx>270</posx>
+      <posy>345</posy>
       <width>30</width>
       <height>30</height>
       <onleft>304</onleft>
       <onright>86</onright>
       <onup>75</onup>
       <ondown>32</ondown>
-      <textureNoFocus>keyboard-btn.png</textureNoFocus>
-      <textureFocus>keyboard-btn-focus.png</textureFocus>
+      <texturenofocus>keyboard-btn.png</texturenofocus>
+      <texturefocus>keyboard-btn-focus.png</texturefocus>
       <align>center</align>
-      <alignY>center</alignY>
+      <aligny>center</aligny>
       <font>special13</font>
     </control>
 
@@ -738,18 +738,18 @@
       <description>'V' button</description>
       <type>button</type>
       <id>86</id>
-      <posX>300</posX>
-      <posY>345</posY>
+      <posx>300</posx>
+      <posy>345</posy>
       <width>30</width>
       <height>30</height>
       <onleft>85</onleft>
       <onright>87</onright>
       <onup>76</onup>
       <ondown>32</ondown>
-      <textureNoFocus>keyboard-btn.png</textureNoFocus>
-      <textureFocus>keyboard-btn-focus.png</textureFocus>
+      <texturenofocus>keyboard-btn.png</texturenofocus>
+      <texturefocus>keyboard-btn-focus.png</texturefocus>
       <align>center</align>
-      <alignY>center</alignY>
+      <aligny>center</aligny>
       <font>special13</font>
     </control>
 
@@ -757,18 +757,18 @@
       <description>'W' button</description>
       <type>button</type>
       <id>87</id>
-      <posX>330</posX>
-      <posY>345</posY>
+      <posx>330</posx>
+      <posy>345</posy>
       <width>30</width>
       <height>30</height>
       <onleft>86</onleft>
       <onright>88</onright>
       <onup>77</onup>
       <ondown>32</ondown>
-      <textureNoFocus>keyboard-btn.png</textureNoFocus>
-      <textureFocus>keyboard-btn-focus.png</textureFocus>
+      <texturenofocus>keyboard-btn.png</texturenofocus>
+      <texturefocus>keyboard-btn-focus.png</texturefocus>
       <align>center</align>
-      <alignY>center</alignY>
+      <aligny>center</aligny>
       <font>special13</font>
     </control>
 
@@ -776,18 +776,18 @@
       <description>'X' button</description>
       <type>button</type>
       <id>88</id>
-      <posX>360</posX>
-      <posY>345</posY>
+      <posx>360</posx>
+      <posy>345</posy>
       <width>30</width>
       <height>30</height>
       <onleft>87</onleft>
       <onright>89</onright>
       <onup>78</onup>
       <ondown>32</ondown>
-      <textureNoFocus>keyboard-btn.png</textureNoFocus>
-      <textureFocus>keyboard-btn-focus.png</textureFocus>
+      <texturenofocus>keyboard-btn.png</texturenofocus>
+      <texturefocus>keyboard-btn-focus.png</texturefocus>
       <align>center</align>
-      <alignY>center</alignY>
+      <aligny>center</aligny>
       <font>special13</font>
     </control>
 
@@ -795,18 +795,18 @@
       <description>'Y' button</description>
       <type>button</type>
       <id>89</id>
-      <posX>390</posX>
-      <posY>345</posY>
+      <posx>390</posx>
+      <posy>345</posy>
       <width>30</width>
       <height>30</height>
       <onleft>88</onleft>
       <onright>90</onright>
       <onup>79</onup>
       <ondown>32</ondown>
-      <textureNoFocus>keyboard-btn.png</textureNoFocus>
-      <textureFocus>keyboard-btn-focus.png</textureFocus>
+      <texturenofocus>keyboard-btn.png</texturenofocus>
+      <texturefocus>keyboard-btn-focus.png</texturefocus>
       <align>center</align>
-      <alignY>center</alignY>
+      <aligny>center</aligny>
       <font>special13</font>
     </control>
 
@@ -814,18 +814,18 @@
       <description>'Z' button</description>
       <type>button</type>
       <id>90</id>
-      <posX>420</posX>
-      <posY>345</posY>
+      <posx>420</posx>
+      <posy>345</posy>
       <width>30</width>
       <height>30</height>
       <onleft>89</onleft>
       <onright>8</onright>
       <onup>80</onup>
       <ondown>32</ondown>
-      <textureNoFocus>keyboard-btn.png</textureNoFocus>
-      <textureFocus>keyboard-btn-focus.png</textureFocus>
+      <texturenofocus>keyboard-btn.png</texturenofocus>
+      <texturefocus>keyboard-btn-focus.png</texturefocus>
       <align>center</align>
-      <alignY>center</alignY>
+      <aligny>center</aligny>
       <font>special13</font>
     </control>
 
@@ -833,8 +833,8 @@
       <description>BACKSPACE button</description>
       <type>button</type>
       <id>8</id>
-      <posX>450</posX>
-      <posY>345</posY>
+      <posx>450</posx>
+      <posy>345</posy>
       <width>120</width>
       <height>30</height>
       <label>Backspace</label>
@@ -842,10 +842,10 @@
       <onright>304</onright>
       <onup>81</onup>
       <ondown>305</ondown>
-      <textureNoFocus>keyboard-btn-backspace.png</textureNoFocus>
-      <textureFocus>keyboard-btn-backspace-focus.png</textureFocus>
+      <texturenofocus>keyboard-btn-backspace.png</texturenofocus>
+      <texturefocus>keyboard-btn-backspace-focus.png</texturefocus>
       <align>center</align>
-      <alignY>center</alignY>
+      <aligny>center</aligny>
       <font>special13</font>
     </control>
 
@@ -853,8 +853,8 @@
       <description>dummy left</description>
       <type>image</type>
       <id>0</id>
-      <posX>150</posX>
-      <posY>375</posY>
+      <posx>150</posx>
+      <posy>375</posy>
       <width>120</width>
       <height>30</height>
       <texture>keyboard-btn-dummyleft.png</texture>
@@ -864,8 +864,8 @@
       <description>SPACE button</description>
       <type>button</type>
       <id>32</id>
-      <posX>270</posX>
-      <posY>375</posY>
+      <posx>270</posx>
+      <posy>375</posy>
       <width>180</width>
       <height>30</height>
       <label>Space</label>
@@ -873,10 +873,10 @@
       <onright>305</onright>
       <onup>85</onup>
       <ondown>48</ondown>
-      <textureNoFocus>keyboard-btn-space.png</textureNoFocus>
-      <textureFocus>keyboard-btn-space-focus.png</textureFocus>
+      <texturenofocus>keyboard-btn-space.png</texturenofocus>
+      <texturefocus>keyboard-btn-space-focus.png</texturefocus>
       <align>center</align>
-      <alignY>center</alignY>
+      <aligny>center</aligny>
       <font>special13</font>
     </control>
 
@@ -884,40 +884,40 @@
       <description>previous button</description>
       <type>button</type>
       <id>305</id>
-      <posX>450</posX>
-      <posY>375</posY>
+      <posx>450</posx>
+      <posy>375</posy>
       <width>60</width>
       <height>30</height>
       <onleft>32</onleft>
       <onright>306</onright>
       <onup>8</onup>
       <ondown>54</ondown>
-      <textureNoFocus>keyboard-btn-prev.png</textureNoFocus>
-      <textureFocus>keyboard-btn-prev-focus.png</textureFocus>
+      <texturenofocus>keyboard-btn-prev.png</texturenofocus>
+      <texturefocus>keyboard-btn-prev-focus.png</texturefocus>
     </control>
 
     <control>
       <description>next button</description>
       <type>button</type>
       <id>306</id>
-      <posX>510</posX>
-      <posY>375</posY>
+      <posx>510</posx>
+      <posy>375</posy>
       <width>60</width>
       <height>30</height>
       <onleft>305</onleft>
       <onright>32</onright>
       <onup>8</onup>
       <ondown>56</ondown>
-      <textureNoFocus>keyboard-btn-next.png</textureNoFocus>
-      <textureFocus>keyboard-btn-next-focus.png</textureFocus>
+      <texturenofocus>keyboard-btn-next.png</texturenofocus>
+      <texturefocus>keyboard-btn-next-focus.png</texturefocus>
     </control>
 
     <control>
       <description>Keyboard Dialog Background</description>
       <type>image</type>
       <id>0</id>
-      <posX>125</posX>
-      <posY>240</posY>
+      <posx>125</posx>
+      <posy>240</posy>
       <width>460</width>
       <height>189</height>
       <texture>keyboard-panel-overlay.png</texture>

@@ -28,6 +28,11 @@ void CGUIDialogProgress::StartModal(DWORD dwParentId)
     return ;
   }
 
+  // set running before it's routed, else the auto-show code
+  // could show it as well if we are in a different thread from
+  // the main rendering thread (this should really be handled via
+  // a thread message though IMO)
+  m_bRunning = true;
   m_gWindowManager.RouteToWindow(this);
 
   // active this window...
@@ -37,7 +42,6 @@ void CGUIDialogProgress::StartModal(DWORD dwParentId)
   SetPercentage(0);
   m_iCurrent=0;
   m_iMax=0;
-  m_bRunning = true;
 }
 
 void CGUIDialogProgress::Progress()

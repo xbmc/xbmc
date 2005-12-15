@@ -7,8 +7,8 @@
       <description>visualisation</description>
       <type>visualisation</type>
       <id>2</id>
-      <posX>0</posX>
-      <posY>0</posY>
+      <posx>0</posx>
+      <posy>0</posy>
       <width>720</width>
       <height>576</height>
     </control>
@@ -18,8 +18,8 @@
       <description>preset background image</description>
       <type>image</type>
       <id>0</id>
-      <posX>-10</posX>
-      <posY>40</posY>
+      <posx>-10</posx>
+      <posy>40</posy>
       <width>740</width>
       <height>65</height>
       <texture>osd_menu_bg.png</texture>
@@ -31,8 +31,8 @@
       <type>label</type>
       <id>0</id>
       <width>600</width>
-      <posX>75</posX>
-      <posY>50</posY>
+      <posx>75</posx>
+      <posy>50</posy>
       <label>Audio | Codec: $INFO[musicplayer.Codec] - Bitrate: $INFO[musicplayer.Bitrate]kbps - Bits: $INFO[musicplayer.bitspersample]bit - Freq.: $INFO[musicplayer.Samplerate]kHz - Channels: $INFO[musicplayer.Channels]</label>
       <align>left</align>
       <font>font12</font>
@@ -43,8 +43,8 @@
       <description>Presets label</description>
       <type>label</type>
       <id>0</id>
-      <posX>75</posX>
-      <posY>75</posY>
+      <posx>75</posx>
+      <posy>75</posy>
       <width>560</width>
       <label>Visuals | fps: $INFO[System.FPS] - </label>
       <font>font12</font>
@@ -56,8 +56,8 @@
       <description>Presets label</description>
       <type>label</type>
       <id>0</id>
-      <posX>225</posX>
-      <posY>75</posY>
+      <posx>225</posx>
+      <posy>75</posy>
       <width>420</width>
       <label>$INFO[Visualisation.Name] - $INFO[Visualisation.Preset]</label>
       <font>font12</font>
@@ -69,8 +69,8 @@
       <type>image</type>
       <description>Preset locked image</description>
       <id>0</id>
-      <posX>210</posX>
-      <posY>76</posY>
+      <posx>210</posx>
+      <posy>76</posy>
       <width>12</width>
       <height>15</height>
       <visible effect="fade" time="300">Visualisation.Locked + Player.ShowCodec</visible>
@@ -82,8 +82,8 @@
       <description>media info background image</description>
       <type>image</type>
       <id>1</id>
-      <posX>-10</posX>
-      <posY>455</posY>
+      <posx>-10</posx>
+      <posy>455</posy>
       <width>740</width>
       <height>100</height>
       <texture>osd_menu_bg.png</texture>
@@ -94,8 +94,8 @@
       <description>cover image</description>
       <type>image</type>
       <id>1</id>
-      <posX>75</posX>
-      <posY>455</posY>
+      <posx>75</posx>
+      <posy>455</posy>
       <width>100</width>
       <height>100</height>
       <info>MusicPlayer.Cover</info>
@@ -108,8 +108,8 @@
       <type>label</type>
       <id>1</id>
       <width>445</width>
-      <posX>157</posX>
-      <posY>458</posY>
+      <posx>157</posx>
+      <posy>458</posy>
       <info>MusicPlayer.Artist</info>
       <align>left</align>
       <font>special12</font>
@@ -121,8 +121,8 @@
       <type>label</type>
       <id>1</id>
       <width>430</width>
-      <posX>157</posX>
-      <posY>479</posY>
+      <posx>157</posx>
+      <posy>479</posy>
       <info>MusicPlayer.Title</info>
       <align>left</align>
       <font>special13</font>
@@ -134,8 +134,8 @@
       <type>label</type>
       <id>1</id>
       <width>430</width>
-      <posX>157</posX>
-      <posY>507</posY>
+      <posx>157</posx>
+      <posy>507</posy>
       <info>MusicPlayer.Album</info>
       <align>left</align>
       <font>font10</font>
@@ -147,8 +147,8 @@
       <type>label</type>
       <id>1</id>
       <width>430</width>
-      <posX>157</posX>
-      <posY>528</posY>
+      <posx>157</posx>
+      <posy>528</posy>
       <label>$INFO[musicplayer.Time] / $INFO[musicplayer.Duration]</label>
       <align>left</align>
       <font>font10</font>
@@ -160,8 +160,8 @@
       <type>label</type>
       <id>1</id>
       <width>200</width>
-      <posX>660</posX>
-      <posY>528</posY>
+      <posx>660</posx>
+      <posy>528</posy>
       <label>$LOCALIZE[435] $INFO[musicplayer.Playlistposition] / $INFO[musicplayer.Playlistlength]</label>
       <align>right</align>
       <font>font10</font>

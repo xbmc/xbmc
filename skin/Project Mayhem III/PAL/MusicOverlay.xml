@@ -7,8 +7,8 @@
       <description>music rectangle</description>
       <type>image</type>
       <id>0</id>
-      <posX>60</posX>
-      <posY>381</posY>
+      <posx>60</posx>
+      <posy>381</posy>
       <width>110</width>
       <height>120</height>
       <texture>blue_rectangle_music.png</texture>
@@ -18,8 +18,8 @@
       <description>music logo</description>
       <type>image</type>
       <id>0</id>
-      <posX>65</posX>
-      <posY>387</posY>
+      <posx>65</posx>
+      <posy>387</posy>
       <width>100</width>
       <height>109</height>
       <texture>defaultAlbumCover.png</texture>
@@ -30,8 +30,8 @@
       <description>play time label</description>
       <type>label</type>
       <id>0</id>
-      <posX>65</posX>
-      <posY>500</posY>
+      <posx>65</posx>
+      <posy>500</posy>
       <label>-</label>
       <info>MusicPlayer.Time</info>
       <align>left</align>
@@ -42,8 +42,8 @@
       <description>album/artist/genre etc info label</description>
       <type>fadelabel</type>
       <width>130</width>
-      <posX>65</posX>
-      <posY>525</posY>
+      <posx>65</posx>
+      <posy>525</posy>
       <font>font10</font>
       <id>0</id>
       <label>$INFO[MusicPlayer.Artist] | $INFO[MusicPlayer.Title] | $INFO[MusicPlayer.Album] | $INFO[MusicPlayer.Year]</label>

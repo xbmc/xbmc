@@ -7,8 +7,8 @@
       <description>background image</description>
       <type>image</type>
       <id>1</id>
-      <posX>0</posX>
-      <posY>0</posY>
+      <posx>0</posx>
+      <posy>0</posy>
       <width>720</width>
       <height>576</height>
       <texture>background-settings.png</texture>
@@ -18,8 +18,8 @@
       <description>xbox media center label</description>
       <type>label</type>
       <id>1</id>
-      <posX>200</posX>
-      <posY>63</posY>
+      <posx>200</posx>
+      <posy>63</posy>
       <align>right</align>
       <label>xbox media center</label>
       <font>special12</font>
@@ -29,8 +29,8 @@
       <description>description label</description>
       <type>label</type>
       <id>1</id>
-      <posX>207</posX>
-      <posY>63</posY>
+      <posx>207</posx>
+      <posy>63</posy>
       <align>left</align>
       <label>10507</label>
       <font>special13</font>
@@ -41,8 +41,8 @@
         <description>profiles</description>
         <type>button</type>
         <id>11</id>
-        <posX>50</posX>
-        <posY>120</posY>
+        <posx>50</posx>
+        <posy>120</posy>
         <label>13200</label>
         <execute>XBMC.ActivateWindow(34)</execute>
         <onleft>8</onleft>
@@ -55,8 +55,8 @@
         <description>About XBMC</description>
         <type>button</type>
         <id>12</id>
-        <posX>50</posX>
-        <posY>157</posY>
+        <posx>50</posx>
+        <posy>157</posy>
         <label>482</label>
         <execute>XBMC.Credits()</execute>
         <onleft>8</onleft>
@@ -69,8 +69,8 @@
         <description>Skin builder</description>
         <type>button</type>
         <id>14</id>
-        <posX>50</posX>
-        <posY>194</posY>
+        <posx>50</posx>
+        <posy>194</posy>
         <label>PY Skin Builder</label>
         <execute>XBMC.ActivateWindow(57)</execute>
         <onleft>8</onleft>
@@ -83,8 +83,8 @@
         <description>skin reload</description>
         <type>button</type>
         <id>13</id>
-        <posX>50</posX>
-        <posY>231</posY>
+        <posx>50</posx>
+        <posy>231</posy>
         <label>Reload Skin</label>
         <execute>XBMC.ReloadSkin()</execute>
         <onleft>8</onleft>
@@ -100,14 +100,14 @@
       <type>button</type>
       <id>6</id>
       <font>font10</font>
-      <posX>245</posX>
-      <posY>155</posY>
+      <posx>245</posx>
+      <posy>155</posy>
       <width>75</width>
       <height>110</height>
-      <textureFocus>settings-videos-focus.png</textureFocus>
-      <textureNoFocus>settings-videos-nofocus.png</textureNoFocus>
-      <alignY>top</alignY>
-      <textOffsetY>117</textOffsetY>
+      <texturefocus>settings-videos-focus.png</texturefocus>
+      <texturenofocus>settings-videos-nofocus.png</texturenofocus>
+      <aligny>top</aligny>
+      <textoffsety>117</textoffsety>
       <label>3</label>
       <align>center</align>
       <hyperlink>17</hyperlink>
@@ -122,14 +122,14 @@
       <type>button</type>
       <id>7</id>
       <font>font10</font>
-      <posX>345</posX>
-      <posY>155</posY>
+      <posx>345</posx>
+      <posy>155</posy>
       <width>75</width>
       <height>110</height>
-      <textureFocus>settings-music-focus.png</textureFocus>
-      <textureNoFocus>settings-music-nofocus.png</textureNoFocus>
-      <alignY>top</alignY>
-      <textOffsetY>117</textOffsetY>
+      <texturefocus>settings-music-focus.png</texturefocus>
+      <texturenofocus>settings-music-nofocus.png</texturenofocus>
+      <aligny>top</aligny>
+      <textoffsety>117</textoffsety>
       <label>2</label>
       <align>center</align>
       <hyperlink>15</hyperlink>
@@ -144,14 +144,14 @@
       <type>button</type>
       <id>9</id>
       <font>font10</font>
-      <posX>445</posX>
-      <posY>155</posY>
+      <posx>445</posx>
+      <posy>155</posy>
       <width>75</width>
       <height>110</height>
-      <textureFocus>settings-pictures-focus.png</textureFocus>
-      <textureNoFocus>settings-pictures-nofocus.png</textureNoFocus>
-      <alignY>top</alignY>
-      <textOffsetY>117</textOffsetY>
+      <texturefocus>settings-pictures-focus.png</texturefocus>
+      <texturenofocus>settings-pictures-nofocus.png</texturenofocus>
+      <aligny>top</aligny>
+      <textoffsety>117</textoffsety>
       <label>1</label>
       <align>center</align>
       <hyperlink>12</hyperlink>
@@ -166,14 +166,14 @@
       <type>button</type>
       <id>8</id>
       <font>font10</font>
-      <posX>545</posX>
-      <posY>155</posY>
+      <posx>545</posx>
+      <posy>155</posy>
       <width>75</width>
       <height>110</height>
-      <textureFocus>settings-programs-focus.png</textureFocus>
-      <textureNoFocus>settings-programs-nofocus.png</textureNoFocus>
-      <alignY>top</alignY>
-      <textOffsetY>117</textOffsetY>
+      <texturefocus>settings-programs-focus.png</texturefocus>
+      <texturenofocus>settings-programs-nofocus.png</texturenofocus>
+      <aligny>top</aligny>
+      <textoffsety>117</textoffsety>
       <label>0</label>
       <align>center</align>
       <hyperlink>13</hyperlink>
@@ -188,14 +188,14 @@
       <type>button</type>
       <id>10</id>
       <font>font10</font>
-      <posX>245</posX>
-      <posY>325</posY>
+      <posx>245</posx>
+      <posy>325</posy>
       <width>75</width>
       <height>110</height>
-      <textureFocus>settings-weather-focus.png</textureFocus>
-      <textureNoFocus>settings-weather-nofocus.png</textureNoFocus>
-      <alignY>top</alignY>
-      <textOffsetY>117</textOffsetY>
+      <texturefocus>settings-weather-focus.png</texturefocus>
+      <texturenofocus>settings-weather-nofocus.png</texturenofocus>
+      <aligny>top</aligny>
+      <textoffsety>117</textoffsety>
       <label>8</label>
       <align>center</align>
       <hyperlink>14</hyperlink>
@@ -210,14 +210,14 @@
       <type>button</type>
       <id>2</id>
       <font>font10</font>
-      <posX>345</posX>
-      <posY>325</posY>
+      <posx>345</posx>
+      <posy>325</posy>
       <width>75</width>
       <height>110</height>
-      <textureFocus>settings-network-focus.png</textureFocus>
-      <textureNoFocus>settings-network-nofocus.png</textureNoFocus>
-      <alignY>top</alignY>
-      <textOffsetY>117</textOffsetY>
+      <texturefocus>settings-network-focus.png</texturefocus>
+      <texturenofocus>settings-network-nofocus.png</texturenofocus>
+      <aligny>top</aligny>
+      <textoffsety>117</textoffsety>
       <label>705</label>
       <align>center</align>
       <hyperlink>18</hyperlink>
@@ -232,14 +232,14 @@
       <type>button</type>
       <id>4</id>
       <font>font10</font>
-      <posX>445</posX>
-      <posY>325</posY>
+      <posx>445</posx>
+      <posy>325</posy>
       <width>75</width>
       <height>110</height>
-      <textureFocus>settings-system-focus.png</textureFocus>
-      <textureNoFocus>settings-system-nofocus.png</textureNoFocus>
-      <alignY>top</alignY>
-      <textOffsetY>117</textOffsetY>
+      <texturefocus>settings-system-focus.png</texturefocus>
+      <texturenofocus>settings-system-nofocus.png</texturenofocus>
+      <aligny>top</aligny>
+      <textoffsety>117</textoffsety>
       <label>13000</label>
       <align>center</align>
       <hyperlink>16</hyperlink>
@@ -254,14 +254,14 @@
       <type>button</type>
       <id>3</id>
       <font>font10</font>
-      <posX>545</posX>
-      <posY>325</posY>
+      <posx>545</posx>
+      <posy>325</posy>
       <width>75</width>
       <height>110</height>
-      <textureFocus>settings-appearance-focus.png</textureFocus>
-      <textureNoFocus>settings-appearance-nofocus.png</textureNoFocus>
-      <alignY>top</alignY>
-      <textOffsetY>117</textOffsetY>
+      <texturefocus>settings-appearance-focus.png</texturefocus>
+      <texturenofocus>settings-appearance-nofocus.png</texturenofocus>
+      <aligny>top</aligny>
+      <textoffsety>117</textoffsety>
       <label>480</label>
       <align>center</align>
       <hyperlink>19</hyperlink>

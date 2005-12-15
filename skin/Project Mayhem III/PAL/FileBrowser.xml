@@ -4,8 +4,8 @@
   <allowoverlay>yes</allowoverlay>
   <coordinates>
     <system>1</system>
-    <posX>50</posX>
-    <posY>50</posY>
+    <posx>50</posx>
+    <posy>50</posy>
   </coordinates>
 
   <controls>
@@ -13,8 +13,8 @@
       <description>background image</description>
       <type>image</type>
       <id>0</id>
-      <posX>0</posX>
-      <posY>0</posY>
+      <posx>0</posx>
+      <posy>0</posy>
       <width>512</width>
       <height>512</height>
       <texture>background-filebrowser.png</texture>
@@ -26,12 +26,12 @@
       <description>path label control</description>
       <type>label</type>
       <id>412</id>
-      <posX>55</posX>
-      <posY>414</posY>
+      <posx>55</posx>
+      <posy>414</posy>
       <width>442</width>
       <align>left</align>
       <font>special13</font>
-      <hasPath>true</hasPath>
+      <haspath>true</haspath>
     </control>
 
 
@@ -39,8 +39,8 @@
       <description>listcontrol</description>
       <type>listcontrol</type>
       <id>450</id>
-      <posX>22</posX>
-      <posY>45</posY>
+      <posx>22</posx>
+      <posy>45</posy>
       <width>474</width>
       <height>390</height>
       <onleft>413</onleft>
@@ -53,8 +53,8 @@
       <description>foreground image</description>
       <type>image</type>
       <id>0</id>
-      <posX>0</posX>
-      <posY>0</posY>
+      <posx>0</posx>
+      <posy>0</posy>
       <width>512</width>
       <height>512</height>
       <texture>background-filebrowser-top.png</texture>
@@ -65,8 +65,8 @@
       <description>heading label</description>
       <type>label</type>
       <id>411</id>
-      <posX>10</posX>
-      <posY>15</posY>
+      <posx>10</posx>
+      <posy>15</posy>
       <width>480</width>
       <align>center</align>
     </control>
@@ -75,8 +75,8 @@
       <description>OK button</description>
       <type>button</type>
       <id>413</id>
-      <posX>300</posX>
-      <posY>453</posY>
+      <posx>300</posx>
+      <posy>453</posy>
       <width>80</width>
       <align>center</align>
       <label>186</label>
@@ -90,8 +90,8 @@
       <description>Cancel button</description>
       <type>button</type>
       <id>414</id>
-      <posX>390</posX>
-      <posY>453</posY>
+      <posx>390</posx>
+      <posy>453</posy>
       <width>80</width>
       <align>center</align>
       <label>222</label>

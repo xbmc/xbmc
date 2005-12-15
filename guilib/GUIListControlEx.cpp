@@ -10,12 +10,12 @@ CGUIListControlEx::CGUIListControlEx(DWORD dwParentID, DWORD dwControlId, int iP
                                      DWORD dwSpinWidth, DWORD dwSpinHeight,
                                      const CStdString& strUp, const CStdString& strDown,
                                      const CStdString& strUpFocus, const CStdString& strDownFocus,
-                                     DWORD dwSpinColor, DWORD dwSpinX, DWORD dwSpinY,
+                                     DWORD dwSpinColor, int iSpinX, int iSpinY,
                                      const CStdString& strFont, DWORD dwTextColor, DWORD dwSelectedColor,
                                      const CStdString& strButton, const CStdString& strButtonFocus,
                                      DWORD dwItemTextOffsetX, DWORD dwItemTextOffsetY, DWORD dwTextAlignY)
     : CGUIControl(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight)
-    , m_upDown(dwControlId, 0, dwSpinX, dwSpinY, dwSpinWidth, dwSpinHeight, strUp, strDown, strUpFocus, strDownFocus, strFont, dwSpinColor, SPIN_CONTROL_TYPE_INT)
+    , m_upDown(dwControlId, 0, 0, 0, dwSpinWidth, dwSpinHeight, strUp, strDown, strUpFocus, strDownFocus, strFont, dwSpinColor, SPIN_CONTROL_TYPE_INT)
     , m_imgButton(dwControlId, 0, iPosX, iPosY, dwWidth, dwHeight, strButtonFocus, strButton, dwItemTextOffsetX, dwItemTextOffsetY, dwTextAlignY)
 {
   m_pList = NULL;
@@ -34,6 +34,8 @@ CGUIListControlEx::CGUIListControlEx(DWORD dwParentID, DWORD dwControlId, int iP
   m_iSpaceBetweenItems = 4;
   m_bUpDownVisible = true; // show the spin control by default
 
+  m_iSpinPosX = iSpinX;
+  m_iSpinPosY = iSpinY;
   m_dwTextColor2 = dwTextColor;
   m_dwSelectedColor2 = dwSelectedColor;
   m_dwTextOffsetX = dwItemTextOffsetX;
@@ -91,6 +93,7 @@ void CGUIListControlEx::Render()
     {
       iPages++;
     }
+    m_upDown.SetPosition(m_iPosX + m_iSpinPosX, m_iPosY + m_iSpinPosY);
     m_upDown.SetRange(1, iPages);
     m_upDown.SetValue(1);
     m_upDown.Render();

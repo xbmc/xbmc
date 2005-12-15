@@ -1,11 +1,11 @@
 <window>
   <id>104</id>
   <defaultcontrol>1</defaultcontrol>
-  <visible effect="slide" time="200" startX="535" startY="-75" accleration="1" start="hidden">Window.IsActive(104)</visible>
+  <visible effect="slide" time="200" startx="535" starty="-75" accleration="1" start="hidden">Window.IsActive(104)</visible>
   <coordinates>
     <system>1</system>
-    <posX>535</posX>
-    <posY>40</posY>
+    <posx>535</posx>
+    <posy>40</posy>
   </coordinates>
 
   <controls>
@@ -13,8 +13,8 @@
       <description>Popup Volume Dialog Background</description>
       <type>image</type>
       <id>400</id>
-      <posX>1</posX>
-      <posY>2</posY>
+      <posx>1</posx>
+      <posy>2</posy>
       <width>120</width>
       <height>75</height>
       <texture>voulume-panel-bg.png</texture>
@@ -24,11 +24,11 @@
       <description>Volume Slider</description>
       <type>slider</type>
       <id>401</id>
-      <posX>33</posX>
-      <posY>42</posY>
-      <textureSliderBar>osd_slider_volume_bg.png</textureSliderBar>
-      <textureSliderNib>slider_nibFO.png</textureSliderNib>
-      <textureSliderNibFocus>slider_nibFO.png</textureSliderNibFocus>
+      <posx>33</posx>
+      <posy>42</posy>
+      <texturesliderbar>osd_slider_volume_bg.png</texturesliderbar>
+      <textureslidernib>slider_nibFO.png</textureslidernib>
+      <textureslidernibFocus>slider_nibFO.png</textureslidernibFocus>
       <onup>1</onup>
       <ondown>1</ondown>
       <onleft>1</onleft>
@@ -39,8 +39,8 @@
       <description>Volume Label</description>
       <type>label</type>
       <id>402</id>
-      <posX>87</posX>
-      <posY>20</posY>
+      <posx>87</posx>
+      <posy>20</posy>
       <font>font10</font>
       <align>right</align>
       <width>70</width>

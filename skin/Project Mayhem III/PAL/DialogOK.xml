@@ -6,8 +6,8 @@
     <control>
       <type>image</type>
       <id>0</id>
-      <posX>135</posX>
-      <posY>205</posY>
+      <posx>135</posx>
+      <posy>205</posy>
       <width>466</width>
       <height>210</height>
       <texture>dialog-popup.png</texture>
@@ -17,8 +17,8 @@
       <description>dialog Heading</description>
       <type>label</type>
       <id>1</id>
-      <posX>190</posX>
-      <posY>218</posY>
+      <posx>190</posx>
+      <posy>218</posy>
       <label>0</label>
       <font>special13</font>
       <textcolor>DDced8da</textcolor>
@@ -28,8 +28,8 @@
       <description>dialog line 1</description>
       <type>label</type>
       <id>2</id>
-      <posX>190</posX>
-      <posY>260</posY>
+      <posx>190</posx>
+      <posy>260</posy>
       <label>0</label>
       <font>font10</font>
     </control>
@@ -38,8 +38,8 @@
       <description>dialog line 2</description>
       <type>label</type>
       <id>3</id>
-      <posX>190</posX>
-      <posY>280</posY>
+      <posx>190</posx>
+      <posy>280</posy>
       <label>0</label>
       <font>font10</font>
     </control>
@@ -48,8 +48,8 @@
       <description>dialog line 3</description>
       <type>label</type>
       <id>4</id>
-      <posX>190</posX>
-      <posY>300</posY>
+      <posx>190</posx>
+      <posy>300</posy>
       <label>0</label>
       <font>font10</font>
     </control>
@@ -58,8 +58,8 @@
       <description>OK button</description>
       <type>button</type>
       <id>10</id>
-      <posX>355</posX>
-      <posY>330</posY>
+      <posx>355</posx>
+      <posy>330</posy>
       <width>50</width>
       <height>32</height>
       <label>186</label>

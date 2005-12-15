@@ -96,7 +96,7 @@ public:
   void LoadOnDemand(bool loadOnDemand) { m_loadOnDemand = loadOnDemand; };
   bool GetLoadOnDemand() { return m_loadOnDemand; }
   int GetRenderOrder() { return m_renderOrder; };
-  EFFECT_STATE GetEffectState() { return m_effectState; };
+  EFFECT_STATE GetEffectState();
   void SetControlVisibility();
 
   enum OVERLAY_STATE { OVERLAY_STATE_PARENT_WINDOW=0, OVERLAY_STATE_SHOWN, OVERLAY_STATE_HIDDEN };
