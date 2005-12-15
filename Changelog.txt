@@ -5,6 +5,13 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 15-12-2005 updated: Spanish language file (Thnx to traxis)
+ - 15-12-2005 updated: Italian language file (Thnx to kotix)
+ - 15-12-2005 updated: Chinese (Traditional) language file (Thnx to omenpica)
+ - 15-12-2005 updated: Korean language file (Thnx to AkoXko)
+ - 15-12-2005 updated: Swedish language file (Thnx to blittan)
+ - 15-12-2005 updated: Norwegian language file (Thnx to vnm)
+ - 15-12-2005 updated: Danish language file (Thnx to hugener)
  - 15-12-2005 added: rarred subtitles to manual subtitle selection.
  - 15-12-2005 changed: better rarred subtitle handling - thanks to syra!
  - 14-12-2005 fixed: Sliding dialogs didn't reverse their direction correctly when hidden early.

@@ -485,6 +485,7 @@
   <string><id>644</id><value>修剪黑邊</value></string>
   
   <string><id>645</id><value>一個大檔案需要緩衝區，是否繼續？</value></string>
+  <string><id>646</id><value>刪除標題</value></string>
 
   <string><id>700</id><value>清除音樂庫</value></string>
   <string><id>701</id><value>清除音樂庫中的舊檔案</value></string>
@@ -696,6 +697,7 @@
   <string><id>12006</id><value>音樂視覺效果</value></string>
   <string><id>12007</id><value>我的圖片/幻燈片秀</value></string>
   <string><id>12008</id><value>檔案堆疊</value></string>
+  <string><id>12009</id><value>重建目錄…</value></string>
   
   
   <string><id>12310</id><value>0</value></string>
@@ -767,6 +769,7 @@
   <string><id>12391</id><value>分鐘</value></string>
   <string><id>12392</id><value>小時</value></string>
   <string><id>12393</id><value>天</value></string>
+  <string><id>12394</id><value>總計運作時間</value></string>
   
   
   <string><id>12600</id><value>氣象報告</value></string>
@@ -794,6 +797,8 @@
   <string><id>13210</id><value>鬧鈴啟動， %i分鐘倒數計時。</value></string>
   <string><id>13211</id><value>鬧鈴提醒！</value></string>
   <string><id>13212</id><value>鬧鈴取消，剩下%i分%i秒。</value></string>
+  
+  <string><id>13250</id><value>瀏覽字幕…</value></string>
   
   <string><id>13299</id><value>目標溫度</value></string>
   <string><id>13300</id><value>風扇轉速</value></string>
@@ -897,6 +902,7 @@
   <string><id>13398</id><value>書籤</value></string>
   <string><id>13399</id><value>排序時忽略 "The" 字串</value></string>
   <string><id>13400</id><value>專輯音軌淡入淡出</value></string>
+  <string><id>13401</id><value>瀏覽 %s</value></string>
 
   <string><id>14000</id><value>堆疊開啟</value></string>
   <string><id>14001</id><value>堆疊關閉</value></string>
@@ -1099,7 +1105,7 @@
   <string><id>15279</id><value>正在從 last.fm 獲取目錄…</value></string>
   <string><id>15280</id><value>不能從 last.fm 獲取目錄…</value></string>
   <string><id>15281</id><value>輸入藝人名稱尋找相關資訊</value></string>
-  <string><id>15282</id><value>輸入標籤尋找其他同類</value></string>
+  <string><id>15282</id><value>輸入標籤名稱尋找同類資訊</value></string>
   
   
   <string><id>13150</id><value>硬碟 金鑰：</value></string>

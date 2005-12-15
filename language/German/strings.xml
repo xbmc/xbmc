@@ -565,7 +565,7 @@
   <string><id>771</id><value>Workaround für FatX-Limits im FTP-Server</value></string>
   <string><id>772</id><value>Audio-Hardware</value></string>
   <string><id>773</id><value>Positionieren</value></string>
-  <string><id>774</id><value>Bildschirmschoner Diaschau Ordner</value></string>
+  <string><id>774</id><value>Diaschau Ordner</value></string>
   <string><id>998</id><value>XLink-KAI</value></string>
   <string><id>999</id><value>Online spielen</value></string>
 
@@ -701,6 +701,7 @@
   <string><id>12006</id><value>Audio-Visualisation</value></string>
   <string><id>12007</id><value>Bilder/Diaschau</value></string>
   <string><id>12008</id><value>Verbinden-Dialog</value></string>
+  <string><id>12009</id><value>Index neu aufbauen...</value></string>
 
 
   <string><id>12310</id><value>0</value></string>
@@ -772,6 +773,7 @@
   <string><id>12391</id><value>Minuten</value></string>
   <string><id>12392</id><value>Stunden</value></string>
   <string><id>12393</id><value>Tage</value></string>
+  <string><id>12394</id><value>Betriebszeit gesamt</value></string>
   
 
   <string><id>12600</id><value>Wetter</value></string>
@@ -799,6 +801,8 @@
   <string><id>13210</id><value>Gestartet, Alarm in %im</value></string>
   <string><id>13211</id><value>Alarm!</value></string>
   <string><id>13212</id><value>Abgebrochen, es sind %im%is übrig</value></string>
+
+  <string><id>13250</id><value>Nach Untertitel suchen...</value></string>
   
   <string><id>13299</id><value>Angestrebte CPU-Temperatur</value></string>
   <string><id>13300</id><value>Lüftergeschwindigkeit</value></string>
@@ -902,6 +906,7 @@
   <string><id>13398</id><value>Bookmarks</value></string>
   <string><id>13399</id><value>"The" bei der Sortierung ignorieren</value></string>
   <string><id>13400</id><value>Crossfade bei Songs eines Albums</value></string>
+  <string><id>13401</id><value>Duchsuchen nach %s</value></string>
 
   <string><id>14000</id><value>Stapeln: Aus</value></string>
   <string><id>14001</id><value>Stapeln: An</value></string>
