@@ -1,4 +1,4 @@
-  <!-- XML languaje file created with XBMCTranslator. Idea and code by Jose_T !-->
+  <!-- XML languaje file created with XBMCTranslator. Idea and code by Jose_T. Corrected and updated by Traxis !-->
 
 
 <strings>
@@ -711,6 +711,7 @@
   <string><id>12006</id><value>Visualización de Audio</value></string>
   <string><id>12007</id><value>Imágenes/presentación</value></string>
   <string><id>12008</id><value>Cuadro de diálogo Agrupar archivos</value></string>
+  <string><id>12009</id><value>Forzar reconstruccion del índice...</value></string>
 
   <string><id>12310</id><value>0</value></string>
   <string><id>12311</id><value>1</value></string>
@@ -779,10 +780,11 @@
   <string><id>12374</id><value>Bloqueo de Medios</value></string>
   <string><id>12375</id><value>Modo Usuario Maestro</value></string>
 
-  <string><id>12390</id><value>Activo desde</value></string>
+  <string><id>12390</id><value>Sistema encendido desde</value></string>
   <string><id>12391</id><value>Minutos</value></string>
   <string><id>12392</id><value>Horas</value></string>
   <string><id>12393</id><value>Días</value></string>
+  <string><id>12394</id><value>Tiempo total encendido</value></string>
 
   <string><id>12600</id><value>Meteorología</value></string>
 
@@ -875,7 +877,7 @@
   <string><id>13311</id><value>Efecto de flotar</value></string>
   <string><id>13312</id><value>Disminución de las bandas negras</value></string>
   <string><id>13313</id><value>Restablecer/Reiniciar</value></string>
-  <string><id>13314</id><value>Tiempo hasta ocultar el OSD musical</value></string>
+  <string><id>13314</id><value>Mezclar entre pistas</value></string>
   <string><id>13315</id><value>Crear miniaturas</value></string>
   <string><id>13316</id><value>Miniaturas recursivas</value></string>
   <string><id>13317</id><value>Ver Presentación</value></string>
