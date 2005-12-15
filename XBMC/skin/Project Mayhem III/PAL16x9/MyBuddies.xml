@@ -7,8 +7,8 @@
       <description>background image</description>
       <type>image</type>
       <id>1</id>
-      <posX>0</posX>
-      <posY>0</posY>
+      <posx>0</posx>
+      <posy>0</posy>
       <width>720</width>
       <height>576</height>
       <texture>background-xlink16x9.png</texture>
@@ -18,8 +18,8 @@
       <description>xbox media center label</description>
       <type>label</type>
       <id>1</id>
-      <posX>200</posX>
-      <posY>63</posY>
+      <posx>200</posx>
+      <posy>63</posy>
       <align>right</align>
       <label>xbox media center</label>
       <font>special12</font>
@@ -29,8 +29,8 @@
       <description>description label</description>
       <type>label</type>
       <id>1</id>
-      <posX>207</posX>
-      <posY>63</posY>
+      <posx>207</posx>
+      <posy>63</posy>
       <align>left</align>
       <label>10509</label>
       <font>special13</font>
@@ -50,13 +50,13 @@
       <description>friends tab</description>
       <type>button</type>
       <id>3080</id>
-      <posX>271</posX>
-      <posY>116</posY>
+      <posx>271</posx>
+      <posy>116</posy>
       <width>83</width>
       <height>32</height>
       <label>15010</label>
       <align>center</align>
-      <alignY>center</alignY>
+      <aligny>center</aligny>
       <font>font12</font>
     </control>
 
@@ -64,13 +64,13 @@
       <description>games tab</description>
       <type>button</type>
       <id>3081</id>
-      <posX>354</posX>
-      <posY>116</posY>
+      <posx>354</posx>
+      <posy>116</posy>
       <width>83</width>
       <height>32</height>
       <label>15016</label>
       <align>center</align>
-      <alignY>center</alignY>
+      <aligny>center</aligny>
       <font>font12</font>
     </control>
 
@@ -78,13 +78,13 @@
       <description>arenas tab</description>
       <type>button</type>
       <id>3082</id>
-      <posX>437</posX>
-      <posY>116</posY>
+      <posx>437</posx>
+      <posy>116</posy>
       <width>83</width>
       <height>32</height>
       <label>15021</label>
       <align>center</align>
-      <alignY>center</alignY>
+      <aligny>center</aligny>
       <font>font12</font>
     </control>
 
@@ -92,13 +92,13 @@
       <description>chat tab</description>
       <type>button</type>
       <id>3083</id>
-      <posX>520</posX>
-      <posY>116</posY>
+      <posx>520</posx>
+      <posy>116</posy>
       <width>83</width>
       <height>32</height>
       <label>15026</label>
       <align>center</align>
-      <alignY>center</alignY>
+      <aligny>center</aligny>
       <font>font12</font>
     </control>
 
@@ -106,8 +106,8 @@
       <description>Mode Button</description>
       <type>button</type>
       <id>3012</id>
-      <posX>50</posX>
-      <posY>120</posY>
+      <posx>50</posx>
+      <posy>120</posy>
       <onleft>3012</onleft>
       <onright>3031</onright>
       <onup>3015</onup>
@@ -118,8 +118,8 @@
       <description>Join (Friends)</description>
       <type>button</type>
       <id>3013</id>
-      <posX>50</posX>
-      <posY>157</posY>
+      <posx>50</posx>
+      <posy>157</posy>
       <onleft>3013</onleft>
       <onright>3031</onright>
       <onup>3012</onup>
@@ -130,8 +130,8 @@
       <description>Speex (Friends)</description>
       <type>button</type>
       <id>3016</id>
-      <posX>50</posX>
-      <posY>194</posY>
+      <posx>50</posx>
+      <posy>194</posy>
       <onleft>3016</onleft>
       <onright>3031</onright>
       <onup>3013</onup>
@@ -142,8 +142,8 @@
       <description>Invite (Friends)</description>
       <type>button</type>
       <id>3014</id>
-      <posX>50</posX>
-      <posY>231</posY>
+      <posx>50</posx>
+      <posy>231</posy>
       <onleft>3014</onleft>
       <onright>3031</onright>
       <onup>3016</onup>
@@ -154,8 +154,8 @@
       <description>Remove (Friends)</description>
       <type>button</type>
       <id>3015</id>
-      <posX>50</posX>
-      <posY>268</posY>
+      <posx>50</posx>
+      <posy>268</posy>
       <onleft>3015</onleft>
       <onright>3031</onright>
       <onup>3014</onup>
@@ -166,8 +166,8 @@
       <description>Chat Panel</description>
       <type>image</type>
       <id>3076</id>
-      <posX>213</posX>
-      <posY>96</posY>
+      <posx>213</posx>
+      <posy>96</posy>
       <width>505</width>
       <height>452</height>
       <texture>panel2.png</texture>
@@ -177,15 +177,15 @@
       <description>Console control</description>
       <id>3074</id>
       <type>console</type>
-      <posX>239</posX>
-      <posY>194</posY>
+      <posx>239</posx>
+      <posy>194</posy>
       <width>390</width>
       <height>265</height>
       <font>font12</font>
       <textcolor>D0FFFFFF</textcolor>         <!-- normal  (pen0) -->
       <textcolor2>FFF2B466</textcolor2>       <!-- action  (pen1) -->
       <titlecolor>FFA4FFAE</titlecolor>       <!-- system  (pen2) -->
-      <selectedColor>FFF3FB6B</selectedColor> <!-- private (pen3) -->
+      <selectedcolor>FFF3FB6B</selectedcolor> <!-- private (pen3) -->
       <onleft>3074</onleft>
       <onright>3074</onright>
       <onup>3074</onup>
@@ -196,8 +196,8 @@
       <description>Edit control</description>
       <type>edit</type>
       <id>3075</id>
-      <posX>239</posX>
-      <posY>463</posY>
+      <posx>239</posx>
+      <posy>463</posy>
       <width>390</width>
       <label>-</label>
       <font>font12</font>
@@ -207,8 +207,8 @@
       <description>Keyboard (chat)</description>
       <type>button</type>
       <id>3036</id>
-      <posX>50</posX>
-      <posY>157</posY>
+      <posx>50</posx>
+      <posy>157</posy>
       <onleft>3036</onleft>
       <onright>3036</onright>
       <onup>3012</onup>
@@ -219,8 +219,8 @@
       <description>Play (Arenas)</description>
       <type>button</type>
       <id>3033</id>
-      <posX>50</posX>
-      <posY>157</posY>
+      <posx>50</posx>
+      <posy>157</posy>
       <onleft>3033</onleft>
       <onright>3031</onright>
       <onup>3012</onup>
@@ -231,8 +231,8 @@
       <description>Host (Arenas)</description>
       <type>button</type>
       <id>3035</id>
-      <posX>50</posX>
-      <posY>194</posY>
+      <posx>50</posx>
+      <posy>194</posy>
       <onleft>3035</onleft>
       <onright>3031</onright>
       <onup>3033</onup>
@@ -243,8 +243,8 @@
       <description>Add (Arenas)</description>
       <type>button</type>
       <id>3034</id>
-      <posX>50</posX>
-      <posY>231</posY>
+      <posx>50</posx>
+      <posy>231</posy>
       <onleft>3034</onleft>
       <onright>3031</onright>
       <onup>3035</onup>
@@ -255,8 +255,8 @@
       <description>My avatar icon</description>
       <type>image</type>
       <id>3064</id>
-      <posX>79</posX>
-      <posY>345</posY>
+      <posx>79</posx>
+      <posy>345</posy>
       <width>43</width>
       <height>61</height>
       <texture>buddyitem-default-avatar.png</texture>
@@ -268,36 +268,36 @@
       <description>Username</description>
       <type>button</type>
       <id>3051</id>
-      <posX>63</posX>
-      <posY>418</posY>
+      <posx>63</posx>
+      <posy>418</posy>
       <width>122</width>
       <align>center</align>
       <label>-</label>
       <font>font10</font>
-      <textureFocus>-</textureFocus>
-      <textureNoFocus>-</textureNoFocus>
+      <texturefocus>-</texturefocus>
+      <texturenofocus>-</texturenofocus>
     </control>
 
     <control>
       <description>Arena Name</description>
       <type>button</type>
       <id>3052</id>
-      <posX>267</posX>
-      <posY>153</posY>
+      <posx>267</posx>
+      <posy>153</posy>
       <width>340</width>
       <label>-</label>
       <font>font10</font>
       <align>center</align>
-      <textureFocus>-</textureFocus>
-      <textureNoFocus>-</textureNoFocus>
+      <texturefocus>-</texturefocus>
+      <texturenofocus>-</texturenofocus>
     </control>
 
     <control>
       <description>Buddy (offline) icon</description>
       <type>image</type>
       <id>3060</id>
-      <posX>294</posX>
-      <posY>440</posY>
+      <posx>294</posx>
+      <posy>440</posy>
       <width>44</width>
       <height>59</height>
       <texture>buddy-offline.png</texture>
@@ -309,8 +309,8 @@
       <description>Buddy (online) icon</description>
       <type>image</type>
       <id>3061</id>
-      <posX>294</posX>
-      <posY>440</posY>
+      <posx>294</posx>
+      <posy>440</posy>
       <width>44</width>
       <height>59</height>
       <texture>buddy-online.png</texture>
@@ -322,8 +322,8 @@
       <description>Opponent icon</description>
       <type>image</type>
       <id>3062</id>
-      <posX>294</posX>
-      <posY>440</posY>
+      <posx>294</posx>
+      <posy>440</posy>
       <width>44</width>
       <height>59</height>
       <texture>opponent.png</texture>
@@ -335,8 +335,8 @@
       <description>Arena icon</description>
       <type>image</type>
       <id>3063</id>
-      <posX>294</posX>
-      <posY>440</posY>
+      <posx>294</posx>
+      <posy>440</posy>
       <width>44</width>
       <height>59</height>
       <texture>arena.png</texture>
@@ -348,8 +348,8 @@
       <description>Buddy Name</description>
       <type>fadelabel</type>
       <id>3070</id>
-      <posX>360</posX>
-      <posY>445</posY>
+      <posx>360</posx>
+      <posy>445</posy>
       <width>220</width>
       <label>-</label>
       <font>font13</font>
@@ -359,8 +359,8 @@
       <description>Buddy Status</description>
       <type>fadelabel</type>
       <id>3071</id>
-      <posX>360</posX>
-      <posY>472</posY>
+      <posx>360</posx>
+      <posy>472</posy>
       <width>220</width>
       <label>-</label>
       <font>font10</font>
@@ -370,8 +370,8 @@
       <description>Buddy Invitation Status</description>
       <type>label</type>
       <id>3072</id>
-      <posX>360</posX>
-      <posY>500</posY>
+      <posx>360</posx>
+      <posy>500</posy>
       <width>50</width>
       <label>-</label>
       <font>font13</font>
@@ -381,8 +381,8 @@
       <description>Player Count</description>
       <type>label</type>
       <id>3073</id>
-      <posX>596</posX>
-      <posY>180</posY>
+      <posx>596</posx>
+      <posy>180</posy>
       <label>-</label>
       <font>font13</font>
     </control>

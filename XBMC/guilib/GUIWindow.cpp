@@ -6,7 +6,6 @@
 #include "../xbmc/util.h"
 #include "GUIControlFactory.h"
 #include "GUIButtonControl.h"
-#include "GUIConditionalButtonControl.h"
 #include "GUIRadioButtonControl.h"
 #include "GUISpinControl.h"
 #include "GUISpinControlEx.h"
@@ -37,6 +36,9 @@
 #include "../xbmc/ApplicationMessenger.h"
 #include "../xbmc/utils/GUIInfoManager.h"
 
+#ifdef PRE_SKIN_VERSION_2_0_COMPATIBILITY
+#include "GUIConditionalButtonControl.h"
+#endif
 
 CStdString CGUIWindow::CacheFilename = "";
 CGUIWindow::VECREFERENCECONTOLS CGUIWindow::ControlsCache;
@@ -115,10 +117,12 @@ bool CGUIWindow::LoadReference(VECREFERENCECONTOLS& controls)
       {
         stControl.m_pControl = new CGUIButtonControl(*((CGUIButtonControl*)it->m_pControl));
       }
-      else if (!strcmp(it->m_szType, "conditionalbutton"))
+#ifdef PRE_SKIN_VERSION_2_0_COMPATIBILITY
+      else if (g_SkinInfo.GetVersion() < 1.85 && !strcmp(it->m_szType, "conditionalbutton"))
       {
         stControl.m_pControl = new CGUIConditionalButtonControl(*((CGUIConditionalButtonControl*)it->m_pControl));
       }
+#endif
       else if (!strcmp(it->m_szType, "rss"))
       {
         stControl.m_pControl = new CGUIRSSControl(*((CGUIRSSControl*)it->m_pControl));
@@ -264,10 +268,12 @@ bool CGUIWindow::LoadReference(VECREFERENCECONTOLS& controls)
     {
       stControl.m_pControl = new CGUIButtonControl(*((CGUIButtonControl*)it->m_pControl));
     }
-    else if (!strcmp(it->m_szType, "conditionalbutton"))
+#ifdef PRE_SKIN_VERSION_2_0_COMPATIBILITY
+    else if (g_SkinInfo.GetVersion() < 1.85 && !strcmp(it->m_szType, "conditionalbutton"))
     {
       stControl.m_pControl = new CGUIConditionalButtonControl(*((CGUIConditionalButtonControl*)it->m_pControl));
     }
+#endif
     else if (!strcmp(it->m_szType, "rss"))
     {
       stControl.m_pControl = new CGUIRSSControl(*((CGUIRSSControl*)it->m_pControl));
@@ -436,15 +442,15 @@ bool CGUIWindow::Load(const TiXmlElement* pRootElement, RESOLUTION resToUse)
         m_bRelativeCoords = (iCoordinateSystem == 1);
       }
 
-      TiXmlNode* pPosX = pChild->FirstChild("posX");
-      if (pPosX)
+      TiXmlNode* pPosX = (g_SkinInfo.GetVersion() < 1.85) ? pChild->FirstChild("posX") : pChild->FirstChild("posx");
+      if (pPosX && pPosX->FirstChild())
       {
         m_iPosX = atoi(pPosX->FirstChild()->Value());
         g_graphicsContext.ScaleXCoord(m_iPosX, resToUse);
       }
 
-      TiXmlNode* pPosY = pChild->FirstChild("posY");
-      if (pPosY)
+      TiXmlNode* pPosY = (g_SkinInfo.GetVersion() < 1.85) ? pChild->FirstChild("posY") : pChild->FirstChild("posy");
+      if (pPosY && pPosY->FirstChild())
       {
         m_iPosY = atoi(pPosY->FirstChild()->Value());
         g_graphicsContext.ScaleYCoord(m_iPosY, resToUse);
@@ -1155,4 +1161,12 @@ void CGUIWindow::ChangeControlID(DWORD oldID, DWORD newID, CGUIControl::GUICONTR
   // update our default control
   if (m_dwDefaultFocusControlID == oldID)
     m_dwDefaultFocusControlID = newID;
+}
+
+EFFECT_STATE CGUIWindow::GetEffectState()
+{
+  if (m_queueState != EFFECT_NONE)
+    return m_queueState;  // effect queued for next render
+  else
+    return m_effectState;
 }

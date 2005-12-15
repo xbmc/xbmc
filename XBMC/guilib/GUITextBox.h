@@ -24,7 +24,7 @@ public:
               DWORD dwSpinWidth, DWORD dwSpinHeight,
               const CStdString& strUp, const CStdString& strDown,
               const CStdString& strUpFocus, const CStdString& strDownFocus,
-              DWORD dwSpinColor, DWORD dwSpinX, DWORD dwSpinY,
+              DWORD dwSpinColor, int iSpinX, int iSpinY,
               const CStdString& strFont, DWORD dwTextColor);
   virtual ~CGUITextBox(void);
   virtual void Render();
@@ -52,8 +52,8 @@ public:
   const CStdString& GetTextureUpFocusName() const { return m_upDown.GetTextureUpFocusName(); };
   const CStdString& GetTextureDownFocusName() const { return m_upDown.GetTextureDownFocusName(); };
   DWORD GetSpinTextColor() const { return m_upDown.GetTextColor();};
-  int GetSpinX() const { return m_upDown.GetXPosition();};
-  int GetSpinY() const { return m_upDown.GetYPosition();};
+  int GetSpinX() const { return m_iSpinPosX;};
+  int GetSpinY() const { return m_iSpinPosY;};
   void SetText(const wstring &strText);
   virtual bool HitTest(int iPosX, int iPosY) const;
   virtual void OnMouseOver();
@@ -64,6 +64,8 @@ protected:
   void OnPageUp();
   void OnPageDown();
 
+  int m_iSpinPosX;
+  int m_iSpinPosY;
   int m_iOffset;
   int m_iItemsPerPage;
   int m_iItemHeight;

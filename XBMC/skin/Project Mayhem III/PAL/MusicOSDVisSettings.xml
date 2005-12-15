@@ -4,8 +4,8 @@
   <visible effect="fade" time="200" start="hidden">Window.IsActive(121)</visible>
   <coordinates>
     <system>1</system>
-    <posX>250</posX>
-    <posY>116</posY>
+    <posx>250</posx>
+    <posy>116</posy>
   </coordinates>
 
   <controls>
@@ -13,8 +13,8 @@
       <description>background image</description>
       <type>image</type>
       <id>1</id>
-      <posX>0</posX>
-      <posY>25</posY>
+      <posx>0</posx>
+      <posy>25</posy>
       <width>420</width>
       <height>336</height>
       <texture>osd_menu_bg.png</texture>
@@ -24,8 +24,8 @@
       <description>background image</description>
       <type>image</type>
       <id>0</id>
-      <posX>0</posX>
-      <posY>-5</posY>
+      <posx>0</posx>
+      <posy>-5</posy>
       <width>420</width>
       <height>31</height>
       <texture>osd_settings_header.png</texture>
@@ -35,8 +35,8 @@
       <description>Settings Label</description>
       <type>label</type>
       <id>2</id>
-      <posX>0</posX>
-      <posY>2</posY>
+      <posx>0</posx>
+      <posy>2</posy>
       <width>420</width>
       <align>center</align>
       <font>font12</font>
@@ -46,8 +46,8 @@
       <description>No Settings Label</description>
       <type>label</type>
       <id>3</id>
-      <posX>0</posX>
-      <posY>170</posY>
+      <posx>0</posx>
+      <posy>170</posy>
       <width>420</width>
       <align>center</align>
       <label>13390</label>
@@ -57,8 +57,8 @@
       <description>Next page button</description>
       <type>spincontrol</type>
       <id>60</id>
-      <posX>335</posX>
-      <posY>320</posY>
+      <posx>335</posx>
+      <posy>320</posy>
       <subtype>int</subtype>
       <font>font13</font>
       <onleft>60</onleft>
@@ -70,8 +70,8 @@
       <description>control area</description>
       <type>image</type>
       <id>5</id>
-      <posX>5</posX>
-      <posY>30</posY>
+      <posx>5</posx>
+      <posy>30</posy>
       <width>408</width>
       <height>290</height>
       <texture>-</texture>
@@ -90,52 +90,52 @@
       <description>Default Button</description>
       <type>button</type>
       <id>7</id>
-      <posX>530</posX>
-      <posY>150</posY>
+      <posx>530</posx>
+      <posy>150</posy>
       <height>31</height>
       <font>font12</font>
-      <textOffsetX>12</textOffsetX>
-      <alignY>center</alignY>
-      <textureFocus>list-focus.png</textureFocus>
-      <textureNoFocus>-</textureNoFocus>
+      <textoffsetx>12</textoffsetx>
+      <aligny>center</aligny>
+      <texturefocus>list-focus.png</texturefocus>
+      <texturenofocus>-</texturenofocus>
     </control>
 
     <control>
       <description>Default RadioButton</description>
       <type>radiobutton</type>
       <id>8</id>
-      <posX>530</posX>
-      <posY>150</posY>
+      <posx>530</posx>
+      <posy>150</posy>
       <height>31</height>
       <font>font12</font>
-      <textureFocus>list-focus.png</textureFocus>
-      <textureNoFocus>-</textureNoFocus>
-      <textOffsetX>12</textOffsetX>
-      <alignY>center</alignY>
-      <textureRadioFocus>settings-check-box.png</textureRadioFocus>
-      <textureRadioNoFocus>settings-check-boxNF.png</textureRadioNoFocus>
+      <texturefocus>list-focus.png</texturefocus>
+      <texturenofocus>-</texturenofocus>
+      <textoffsetx>12</textoffsetx>
+      <aligny>center</aligny>
+      <textureradiofocus>settings-check-box.png</textureradiofocus>
+      <textureradionofocus>settings-check-boxNF.png</textureradionofocus>
     </control>
 
     <control>
       <description>Default SpinControlex</description>
       <type>spincontrolex</type>
       <id>9</id>
-      <posX>530</posX>
-      <posY>150</posY>
+      <posx>530</posx>
+      <posy>150</posy>
       <height>31</height>
       <width>300</width>
-      <textureFocus>list-focus.png</textureFocus>
-      <textureNoFocus>-</textureNoFocus>
-      <textureUp>scroll-up.png</textureUp>
-      <textureDown>scroll-down.png</textureDown>
-      <textureUpFocus>scroll-up-focus.png</textureUpFocus>
-      <textureDownFocus>scroll-down-focus.png</textureDownFocus>
+      <texturefocus>list-focus.png</texturefocus>
+      <texturenofocus>-</texturenofocus>
+      <textureup>scroll-up.png</textureup>
+      <texturedown>scroll-down.png</texturedown>
+      <textureupFocus>scroll-up-focus.png</textureupFocus>
+      <texturedownFocus>scroll-down-focus.png</texturedownFocus>
       <font>font12</font>
       <textcolor>ffffffff</textcolor>
       <colordiffuse>ffffffff</colordiffuse>
       <disabledcolor>60d0d0d0</disabledcolor>
-      <textOffsetX>12</textOffsetX>
-      <alignY>center</alignY>
+      <textoffsetx>12</textoffsetx>
+      <aligny>center</aligny>
       <reverse>yes</reverse>
     </control>
 

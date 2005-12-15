@@ -34,12 +34,12 @@ CGUIThumbnailPanel::CGUIThumbnailPanel(DWORD dwParentID, DWORD dwControlId, int 
                                        DWORD dwSpinWidth, DWORD dwSpinHeight,
                                        const CStdString& strUp, const CStdString& strDown,
                                        const CStdString& strUpFocus, const CStdString& strDownFocus,
-                                       DWORD dwSpinColor, DWORD dwSpinX, DWORD dwSpinY,
+                                       DWORD dwSpinColor, int iSpinX, int iSpinY,
                                        const CStdString& strFont, DWORD dwTextColor, DWORD dwSelectedColor)
     : CGUIControl(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight)
     , m_imgFolder(dwParentID, dwControlId, iPosX, iPosY, dwitemWidth, dwitemHeight, strImageIcon)
     , m_imgFolderFocus(dwParentID, dwControlId, iPosX, iPosY, dwitemWidth, dwitemHeight, strImageIconFocus)
-    , m_upDown(dwControlId, 0, dwSpinX, dwSpinY, dwSpinWidth, dwSpinHeight, strUp, strDown, strUpFocus, strDownFocus, strFont, dwSpinColor, SPIN_CONTROL_TYPE_INT)
+    , m_upDown(dwControlId, 0, 0, 0, dwSpinWidth, dwSpinHeight, strUp, strDown, strUpFocus, strDownFocus, strFont, dwSpinColor, SPIN_CONTROL_TYPE_INT)
     , m_scrollInfo(0)
 {
   m_iItemWidth = dwitemWidth;
@@ -51,6 +51,8 @@ CGUIThumbnailPanel::CGUIThumbnailPanel(DWORD dwParentID, DWORD dwControlId, int 
   m_iSelect = CONTROL_LIST;
   m_iCursorY = 0;
   m_iCursorX = 0;
+  m_iSpinPosX = iSpinX;
+  m_iSpinPosY = iSpinY;
   m_dwTextColor = dwTextColor;
   m_strSuffix = L"|";
   m_bScrollUp = false;
@@ -317,7 +319,10 @@ void CGUIThumbnailPanel::Render()
     }
   }
   if (m_upDown.GetMaximum() > 1)
+  {
+    m_upDown.SetPosition(m_iPosX + m_iSpinPosX, m_iPosY + m_iSpinPosY);
     m_upDown.Render();
+  }
 }
 
 bool CGUIThumbnailPanel::OnAction(const CAction &action)

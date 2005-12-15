@@ -3221,6 +3221,26 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     {
       g_playlistPlayer.PlayPrevious();
     }
+    else if (parameter.Equals("bigskipbackward"))
+    {
+      if (g_application.IsPlaying())
+        g_application.m_pPlayer->Seek(false, true);
+    }
+    else if (parameter.Equals("bigskipforward"))
+    {
+      if (g_application.IsPlaying())
+        g_application.m_pPlayer->Seek(true, true);
+    }
+    else if (parameter.Equals("smallskipbackward"))
+    {
+      if (g_application.IsPlaying())
+        g_application.m_pPlayer->Seek(false, false);
+    }
+    else if (parameter.Equals("smallskipforward"))
+    {
+      if (g_application.IsPlaying())
+        g_application.m_pPlayer->Seek(true, false);
+    }
     else if( parameter.Equals("showvideomenu") )
     {
       if( g_application.IsPlaying() && g_application.m_pPlayer )

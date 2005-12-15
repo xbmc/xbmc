@@ -7,8 +7,8 @@
     <control>
       <type>multiimage</type>
       <id>102</id>
-      <posX>182</posX>
-      <posY>105</posY>
+      <posx>182</posx>
+      <posy>105</posy>
       <width>538</width>
       <height>362</height>
       <imagepath>4x3home-myprograms</imagepath>
@@ -20,8 +20,8 @@
     <control>
       <type>multiimage</type>
       <id>106</id>
-      <posX>182</posX>
-      <posY>105</posY>
+      <posx>182</posx>
+      <posy>105</posy>
       <width>538</width>
       <height>362</height>
       <imagepath>16x9home-myfiles</imagepath>
@@ -33,8 +33,8 @@
     <control>
       <type>multiimage</type>
       <id>103</id>
-      <posX>182</posX>
-      <posY>105</posY>
+      <posx>182</posx>
+      <posy>105</posy>
       <width>538</width>
       <height>362</height>
       <imagepath>4x3home-mymusic</imagepath>
@@ -46,8 +46,8 @@
     <control>
       <type>multiimage</type>
       <id>104</id>
-      <posX>182</posX>
-      <posY>105</posY>
+      <posx>182</posx>
+      <posy>105</posy>
       <width>538</width>
       <height>362</height>
       <imagepath>4x3home-mypictures</imagepath>
@@ -59,8 +59,8 @@
     <control>
       <type>multiimage</type>
       <id>105</id>
-      <posX>182</posX>
-      <posY>105</posY>
+      <posx>182</posx>
+      <posy>105</posy>
       <width>538</width>
       <height>362</height>
       <imagepath>16x9home-myvideos</imagepath>
@@ -72,8 +72,8 @@
     <control>
       <type>multiimage</type>
       <id>107</id>
-      <posX>182</posX>
-      <posY>105</posY>
+      <posx>182</posx>
+      <posy>105</posy>
       <width>538</width>
       <height>362</height>
       <imagepath>16x9home-myweather</imagepath>
@@ -85,8 +85,8 @@
     <control>
       <type>multiimage</type>
       <id>109</id>
-      <posX>182</posX>
-      <posY>105</posY>
+      <posx>182</posx>
+      <posy>105</posy>
       <width>538</width>
       <height>362</height>
       <imagepath>4x3home-settings</imagepath>
@@ -98,8 +98,8 @@
     <control>
       <type>visualisation</type>
       <id>1</id>
-      <posX>182</posX>
-      <posY>105</posY>
+      <posx>182</posx>
+      <posy>105</posy>
       <width>538</width>
       <height>372</height>
     </control>
@@ -108,8 +108,8 @@
       <description>video preview window</description>
       <type>videowindow</type>
       <id>1</id>
-      <posX>180</posX>
-      <posY>60</posY>
+      <posx>180</posx>
+      <posy>60</posy>
       <width>540</width>
       <height>455</height>
     </control>
@@ -118,8 +118,8 @@
       <description>background image</description>
       <type>image</type>
       <id>1</id>
-      <posX>0</posX>
-      <posY>0</posY>
+      <posx>0</posx>
+      <posy>0</posy>
       <width>720</width>
       <height>576</height>
       <texture>4x3home.png</texture>
@@ -129,8 +129,8 @@
       <description>background image</description>
       <type>image</type>
       <id>1</id>
-      <posX>0</posX>
-      <posY>0</posY>
+      <posx>0</posx>
+      <posy>0</posy>
       <width>720</width>
       <height>576</height>
       <texture>home_buttons.png</texture>
@@ -141,8 +141,8 @@
       <description>image</description>
       <type>image</type>
       <id>1</id>
-      <posX>105</posX>
-      <posY>338</posY>
+      <posx>105</posx>
+      <posy>338</posy>
       <width>90</width>
       <height>99</height>
       <info>MusicPlayer.Cover</info>
@@ -154,8 +154,8 @@
       <type>label</type>
       <id>1</id>
       <width>430</width>
-      <posX>210</posX>
-      <posY>340</posY>
+      <posx>210</posx>
+      <posy>340</posy>
       <info>MusicPlayer.Artist</info>
       <align>left</align>
       <font>special12</font>
@@ -167,8 +167,8 @@
       <type>label</type>
       <id>1</id>
       <width>430</width>
-      <posX>210</posX>
-      <posY>365</posY>
+      <posx>210</posx>
+      <posy>365</posy>
       <info>MusicPlayer.Title</info>
       <align>left</align>
       <font>special13</font>
@@ -180,8 +180,8 @@
       <type>label</type>
       <id>1</id>
       <width>430</width>
-      <posX>210</posX>
-      <posY>393</posY>
+      <posx>210</posx>
+      <posy>393</posy>
       <info>MusicPlayer.Album</info>
       <align>left</align>
       <font>font10</font>
@@ -192,8 +192,8 @@
       <description>Time label</description>
       <type>label</type>
       <id>1</id>
-      <posX>210</posX>
-      <posY>415</posY>
+      <posx>210</posx>
+      <posy>415</posy>
       <info>MusicPlayer.Time</info>
       <align>left</align>
       <font>font10</font>
@@ -205,8 +205,8 @@
       <type>image</type>
       <id>1</id>
       <visible effect="fade" time="1000" start="hidden">Player.HasAudio + !System.IdleTime(60)</visible>
-      <posX>315</posX>
-      <posY>338</posY>
+      <posx>315</posx>
+      <posy>338</posy>
       <width>400</width>
       <height>99</height>
       <texture>gradient.png</texture>
@@ -216,8 +216,8 @@
       <description>cover image</description>
       <type>image</type>
       <id>1</id>
-      <posX>555</posX>
-      <posY>338</posY>
+      <posx>555</posx>
+      <posy>338</posy>
       <width>90</width>
       <height>99</height>
       <info>MusicPlayer.Cover</info>
@@ -230,8 +230,8 @@
       <type>label</type>
       <id>1</id>
       <width>255</width>
-      <posX>540</posX>
-      <posY>340</posY>
+      <posx>540</posx>
+      <posy>340</posy>
       <info>MusicPlayer.Artist</info>
       <align>right</align>
       <font>special12</font>
@@ -243,8 +243,8 @@
       <type>label</type>
       <id>1</id>
       <width>255</width>
-      <posX>540</posX>
-      <posY>365</posY>
+      <posx>540</posx>
+      <posy>365</posy>
       <info>MusicPlayer.Title</info>
       <align>right</align>
       <font>special13</font>
@@ -256,8 +256,8 @@
       <type>label</type>
       <id>1</id>
       <width>255</width>
-      <posX>540</posX>
-      <posY>393</posY>
+      <posx>540</posx>
+      <posy>393</posy>
       <info>MusicPlayer.Album</info>
       <align>right</align>
       <font>font10</font>
@@ -268,8 +268,8 @@
       <description>Time label</description>
       <type>label</type>
       <id>1</id>
-      <posX>540</posX>
-      <posY>415</posY>
+      <posx>540</posx>
+      <posy>415</posy>
       <info>MusicPlayer.Time</info>
       <align>right</align>
       <font>font10</font>
@@ -281,8 +281,8 @@
 	<description>My Programs normal push button</description>
 	<type>button</type>
 	<id>2</id>
-	<posX>91</posX>
-	<posY>231</posY>
+	<posx>91</posx>
+	<posy>231</posy>
 	<width>14</width>
 	<height>13</height>
 	<label>0</label>
@@ -292,9 +292,9 @@
 	<onright>96</onright>
 	<onup>9</onup>
 	<ondown>4</ondown>
-	<textureFocus>home-focus.gif</textureFocus>
-	<textureNoFocus>-</textureNoFocus>
-	<textOffsetX>30</textOffsetX>
+	<texturefocus>home-focus.gif</texturefocus>
+	<texturenofocus>-</texturenofocus>
+	<textoffsetx>30</textoffsetx>
 	<visible  effect="fade" time="200">!Player.HasAudio | ![Player.HasAudio + System.IdleTime(60)]</visible>
       </control>
 
@@ -302,8 +302,8 @@
 	<description>My Pictures normal push button</description>
 	<type>button</type>
 	<id>4</id>
-	<posX>91</posX>
-	<posY>271</posY>
+	<posx>91</posx>
+	<posy>271</posy>
 	<width>14</width>
 	<height>13</height>
 	<label>1</label>
@@ -313,9 +313,9 @@
 	<onright>96</onright>
 	<onup>2</onup>
 	<ondown>5</ondown>
-	<textureFocus>home-focus.gif</textureFocus>
-	<textureNoFocus>-</textureNoFocus>
-	<textOffsetX>30</textOffsetX>
+	<texturefocus>home-focus.gif</texturefocus>
+	<texturenofocus>-</texturenofocus>
+	<textoffsetx>30</textoffsetx>
 	<visible  effect="fade" time="400">!Player.HasAudio | ![Player.HasAudio + System.IdleTime(60)]</visible>
       </control>
 
@@ -323,8 +323,8 @@
 	<description>My Videos normal push button</description>
 	<type>button</type>
 	<id>5</id>
-	<posX>91</posX>
-	<posY>310</posY>
+	<posx>91</posx>
+	<posy>310</posy>
 	<width>14</width>
 	<height>13</height>
 	<label>3</label>
@@ -334,9 +334,9 @@
 	<onright>96</onright>
 	<onup>4</onup>
 	<ondown>3</ondown>
-	<textureFocus>home-focus.gif</textureFocus>
-	<textureNoFocus>-</textureNoFocus>
-	<textOffsetX>30</textOffsetX>
+	<texturefocus>home-focus.gif</texturefocus>
+	<texturenofocus>-</texturenofocus>
+	<textoffsetx>30</textoffsetx>
 	<visible  effect="fade" time="600">!Player.HasAudio | ![Player.HasAudio + System.IdleTime(60)]</visible>
       </control>
 
@@ -344,8 +344,8 @@
 	<description>My Music normal push button</description>
 	<type>button</type>
 	<id>3</id>
-	<posX>91</posX>
-	<posY>350</posY>
+	<posx>91</posx>
+	<posy>350</posy>
 	<width>14</width>
 	<height>13</height>
 	<label>2</label>
@@ -355,9 +355,9 @@
 	<onright>96</onright>
 	<onup>5</onup>
 	<ondown>7</ondown>
-	<textureFocus>home-focus.gif</textureFocus>
-	<textureNoFocus>-</textureNoFocus>
-	<textOffsetX>30</textOffsetX>
+	<texturefocus>home-focus.gif</texturefocus>
+	<texturenofocus>-</texturenofocus>
+	<textoffsetx>30</textoffsetx>
 	<visible  effect="fade" time="800">!Player.HasAudio | ![Player.HasAudio + System.IdleTime(60)]</visible>
       </control>
 
@@ -365,8 +365,8 @@
 	<description>My Weather normal push button</description>
 	<type>button</type>
 	<id>7</id>
-	<posX>91</posX>
-	<posY>388</posY>
+	<posx>91</posx>
+	<posy>388</posy>
 	<width>14</width>
 	<height>13</height>
 	<label>8</label>
@@ -376,9 +376,9 @@
 	<onright>96</onright>
 	<onup>3</onup>
 	<ondown>9</ondown>
-	<textureFocus>home-focus.gif</textureFocus>
-	<textureNoFocus>-</textureNoFocus>
-	<textOffsetX>30</textOffsetX>
+	<texturefocus>home-focus.gif</texturefocus>
+	<texturenofocus>-</texturenofocus>
+	<textoffsetx>30</textoffsetx>
 	<visible  effect="fade" time="1000">!Player.HasAudio | ![Player.HasAudio + System.IdleTime(60)]</visible>
       </control>
 
@@ -386,8 +386,8 @@
 	<description>Settings normal push button</description>
 	<type>button</type>
 	<id>9</id>
-	<posX>80</posX>
-	<posY>434</posY>
+	<posx>80</posx>
+	<posy>434</posy>
 	<width>9</width>
 	<height>8</height>
 	<label>5</label>
@@ -397,9 +397,9 @@
 	<onright>6</onright>
 	<onup>7</onup>
 	<ondown>2</ondown>
-	<textureFocus>home-focus.gif</textureFocus>
-	<textureNoFocus>-</textureNoFocus>
-	<textOffsetX>20</textOffsetX>
+	<texturefocus>home-focus.gif</texturefocus>
+	<texturenofocus>-</texturenofocus>
+	<textoffsetx>20</textoffsetx>
 	<visible  effect="fade" time="1000">!Player.HasAudio | ![Player.HasAudio + System.IdleTime(60)]</visible>
       </control>
 
@@ -407,8 +407,8 @@
 	<description>My Files normal push button</description>
 	<type>button</type>
 	<id>6</id>
-	<posX>195</posX>
-	<posY>434</posY>
+	<posx>195</posx>
+	<posy>434</posy>
 	<width>9</width>
 	<height>8</height>
 	<label>7</label>
@@ -418,9 +418,9 @@
 	<onright>96</onright>
 	<onup>7</onup>
 	<ondown>2</ondown>
-	<textureFocus>home-focus.gif</textureFocus>
-	<textureNoFocus>-</textureNoFocus>
-	<textOffsetX>20</textOffsetX>
+	<texturefocus>home-focus.gif</texturefocus>
+	<texturenofocus>-</texturenofocus>
+	<textoffsetx>20</textoffsetx>
 	<visible  effect="fade" time="1000">!Player.HasAudio | ![Player.HasAudio + System.IdleTime(60)]</visible>
       </control>
 
@@ -429,8 +429,8 @@
     <control>
       <type>image</type>
       <id>102</id>
-      <posX>77</posX>
-      <posY>430</posY>
+      <posx>77</posx>
+      <posy>430</posy>
       <width>15</width>
       <height>16</height>
       <texture>homebutton-small.png</texture>
@@ -440,8 +440,8 @@
     <control>
       <type>image</type>
       <id>102</id>
-      <posX>192</posX>
-      <posY>430</posY>
+      <posx>192</posx>
+      <posy>430</posy>
       <width>15</width>
       <height>16</height>
       <texture>homebutton-small.png</texture>
@@ -452,8 +452,8 @@
       <description>date label</description>
       <type>label</type>
       <id>0</id>
-      <posX>582</posX>
-      <posY>75</posY>
+      <posx>582</posx>
+      <posy>75</posy>
       <label>date</label>
       <info>System.Date</info>
       <align>right</align>
@@ -465,8 +465,8 @@
       <description>suffix label</description>
       <type>label</type>
       <id>1</id>
-      <posX>592</posX>
-      <posY>73</posY>
+      <posx>592</posx>
+      <posy>73</posy>
       <label>|</label>
       <align>left</align>
       <font>special12</font>
@@ -478,8 +478,8 @@
       <description>time label</description>
       <type>label</type>
       <id>0</id>
-      <posX>602</posX>
-      <posY>75</posY>
+      <posx>602</posx>
+      <posy>75</posy>
       <label>time</label>
       <info>System.Time</info>
       <align>left</align>
@@ -492,8 +492,8 @@
       <description>rss feed</description>
       <type>rss</type>
       <id>1</id>
-      <posX>0</posX>
-      <posY>470</posY>
+      <posx>0</posx>
+      <posy>470</posy>
       <width>720</width>
       <font>font13</font>
       <urlset>1</urlset>
@@ -507,15 +507,15 @@
       <description>dvd-rom launch button</description>
       <type>button</type>
       <id>95</id>
-      <posX>511</posX>
-      <posY>503</posY>
+      <posx>511</posx>
+      <posy>503</posy>
       <width>35</width>
       <height>35</height>
       <label>-</label>
-      <textureFocus>home-dvd-l.gif</textureFocus>
-      <textureNoFocus>home-dvd-l.png</textureNoFocus>
+      <texturefocus>home-dvd-l.gif</texturefocus>
+      <texturenofocus>home-dvd-l.png</texturenofocus>
       <font>font12</font>
-      <textOffsetX>26</textOffsetX>
+      <textoffsetx>26</textoffsetx>
       <visible effect="fade" time="1000">System.hasmediadvd + System.KaiConnected + [!Player.HasAudio | ![Player.HasAudio + System.IdleTime(60)]]</visible>
       <execute>XBMC.PlayDVD()</execute>
       <onleft>96</onleft>
@@ -528,15 +528,15 @@
       <description>dvd-rom launch button 2</description>
       <type>button</type>
       <id>96</id>
-      <posX>544</posX>
-      <posY>503</posY>
+      <posx>544</posx>
+      <posy>503</posy>
       <width>35</width>
       <height>35</height>
       <label>-</label>
-      <textureFocus>home-dvd-r.gif</textureFocus>
-      <textureNoFocus>home-dvd-r.png</textureNoFocus>
+      <texturefocus>home-dvd-r.gif</texturefocus>
+      <texturenofocus>home-dvd-r.png</texturenofocus>
       <font>font12</font>
-      <textOffsetX>26</textOffsetX>
+      <textoffsetx>26</textoffsetx>
       <visible effect="fade" time="1000">System.hasmediadvd + !System.KaiConnected + [!Player.HasAudio | ![Player.HasAudio + System.IdleTime(60)]]</visible>
       <execute>XBMC.PlayDVD()</execute>
       <onleft>2</onleft>
@@ -549,13 +549,13 @@
       <description>xlink kai conditional button</description>
       <type>button</type>
       <id>97</id>
-      <posX>544</posX>
-      <posY>503</posY>
+      <posx>544</posx>
+      <posy>503</posy>
       <width>35</width>
       <height>35</height>
       <label>-</label>
-      <textureFocus>home-kai.gif</textureFocus>
-      <textureNoFocus>home-kai.png</textureNoFocus>
+      <texturefocus>home-kai.gif</texturefocus>
+      <texturenofocus>home-kai.png</texturenofocus>
       <hyperlink>2700</hyperlink>
       <onleft>95</onleft>
       <onright>100</onright>
@@ -568,13 +568,13 @@
       <description>submenu button</description>
       <type>button</type>
       <id>100</id>
-      <posX>577</posX>
-      <posY>503</posY>
+      <posx>577</posx>
+      <posy>503</posy>
       <width>35</width>
       <height>35</height>
       <hyperlink>105</hyperlink>
-      <textureFocus>home-sub.gif</textureFocus>
-      <textureNoFocus>home-sub.png</textureNoFocus>
+      <texturefocus>home-sub.gif</texturefocus>
+      <texturenofocus>home-sub.png</texturenofocus>
       <label>-</label>
       <onleft>97</onleft>
       <onright>98</onright>
@@ -587,13 +587,13 @@
       <description>submenu button</description>
       <type>button</type>
       <id>98</id>
-      <posX>610</posX>
-      <posY>503</posY>
+      <posx>610</posx>
+      <posy>503</posy>
       <width>35</width>
       <height>35</height>
       <hyperlink>111</hyperlink>
-      <textureFocus>home-power.gif</textureFocus>
-      <textureNoFocus>home-power.png</textureNoFocus>
+      <texturefocus>home-power.gif</texturefocus>
+      <texturenofocus>home-power.png</texturenofocus>
       <label>-</label>
       <onleft>100</onleft>
       <onright>2</onright>
