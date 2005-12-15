@@ -28,7 +28,7 @@ CGUIControl::CGUIControl()
   m_queueState = EFFECT_NONE;
   m_effectLength = 0;
   m_effectStart = 0;
-  m_effectAmount = 255;
+  m_effectAmount = 0;
   ControlType = GUICONTROL_UNKNOWN;
   m_bInvalidated = true;
   m_bAllocated=false;

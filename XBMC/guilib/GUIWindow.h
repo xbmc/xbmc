@@ -155,6 +155,7 @@ protected:
   EFFECT_STATE m_queueState;
   CVisibleEffect m_effect;
   DWORD m_effectStart;
+  float m_effectAmount;
   CAttribute m_attribute;
 
   int m_renderOrder;      // for render order of dialogs
