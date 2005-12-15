@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 15-12-2005 updated: German language file
  - 15-12-2005 updated: Spanish language file (Thnx to traxis)
  - 15-12-2005 updated: Italian language file (Thnx to kotix)
  - 15-12-2005 updated: Chinese (Traditional) language file (Thnx to omenpica)
