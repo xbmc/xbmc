@@ -3,8 +3,8 @@
   <defaultcontrol>2</defaultcontrol>
   <coordinates>
     <system>1</system>
-    <posX>250</posX>
-    <posY>116</posY>
+    <posx>250</posx>
+    <posy>116</posy>
   </coordinates>
   <visible effect="fade" time="400">Window.IsActive(125)</visible>
   <controls>
@@ -12,8 +12,8 @@
       <description>background image</description>
       <type>image</type>
       <id>1</id>
-      <posX>0</posX>
-      <posY>25</posY>
+      <posx>0</posx>
+      <posy>25</posy>
       <width>420</width>
       <height>326</height>
       <texture>osd_menu_bg.png</texture>
@@ -23,8 +23,8 @@
       <description>background image</description>
       <type>image</type>
       <id>0</id>
-      <posX>0</posX>
-      <posY>-5</posY>
+      <posx>0</posx>
+      <posy>-5</posy>
       <width>420</width>
       <height>31</height>
       <texture>osd_settings_header.png</texture>
@@ -34,8 +34,8 @@
       <description>Settings Label</description>
       <type>label</type>
       <id>0</id>
-      <posX>0</posX>
-      <posY>2</posY>
+      <posx>0</posx>
+      <posy>2</posy>
       <label>13398</label>
       <width>420</width>
       <align>center</align>
@@ -46,13 +46,13 @@
       <description>Create Bookmark button</description>
       <type>button</type>
       <id>2</id>
-      <posX>10</posX>
-      <posY>35</posY>
+      <posx>10</posx>
+      <posy>35</posy>
       <width>195</width>
       <height>31</height>
       <font>font12</font>
-      <textOffsetX>12</textOffsetX>
-      <alignY>center</alignY>
+      <textoffsetx>12</textoffsetx>
+      <aligny>center</aligny>
       <align>center</align>
       <label>294</label>
       <onleft>3</onleft>
@@ -65,12 +65,12 @@
       <description>Clear Bookmarks button</description>
       <type>button</type>
       <id>3</id>
-      <posX>215</posX>
-      <posY>35</posY>
+      <posx>215</posx>
+      <posy>35</posy>
       <width>195</width>
       <height>31</height>
       <font>font12</font>
-      <alignY>center</alignY>
+      <aligny>center</aligny>
       <align>center</align>
       <label>296</label>
       <onleft>2</onleft>
@@ -83,20 +83,20 @@
       <description>Bookmarks thumbnail panel</description>
       <type>thumbnailpanel</type>
       <id>11</id>
-      <posX>10</posX>
-      <posY>80</posY>
+      <posx>10</posx>
+      <posy>80</posy>
       <width>400</width>
       <height>300</height>
-      <spinPosX>360</spinPosX>
-      <spinPosY>310</spinPosY>
-      <itemWidth>100</itemWidth> 
-      <itemHeight>110</itemHeight>
-      <textureWidth>90</textureWidth>
-      <textureHeight>80</textureHeight>
-      <thumbWidth>80</thumbWidth>
-      <thumbHeight>70</thumbHeight>
-      <thumbPosX>5</thumbPosX>
-      <thumbPosY>5</thumbPosY>
+      <spinposx>350</spinposx>
+      <spinposy>230</spinposy>
+      <itemwidth>100</itemwidth> 
+      <itemheight>110</itemheight>
+      <texturewidth>90</texturewidth>
+      <textureheight>80</textureheight>
+      <thumbwidth>80</thumbwidth>
+      <thumbheight>70</thumbheight>
+      <thumbposx>5</thumbposx>
+      <thumbposy>5</thumbposy>
       <onleft>2</onleft>
       <onright>3</onright>
       <ondown>2</ondown>

@@ -2,7 +2,6 @@
 #include "GUIControlFactory.h"
 #include "LocalizeStrings.h"
 #include "GUIButtoncontrol.h"
-#include "GUIConditionalButtonControl.h"
 #include "GUIRadiobuttoncontrol.h"
 #include "GUISpinControl.h"
 #include "GUIRSSControl.h"
@@ -32,6 +31,11 @@
 #include "../xbmc/utils/GUIInfoManager.h"
 #include "../xbmc/util.h"
 #include "../xbmc/ButtonTranslator.h"
+
+#ifdef PRE_SKIN_VERSION_2_0_COMPATIBILITY
+#include "SkinInfo.h"
+#include "GUIConditionalButtonControl.h"
+#endif
 
 CGUIControlFactory::CGUIControlFactory(void)
 {}
@@ -171,7 +175,7 @@ bool CGUIControlFactory::GetPath(const TiXmlNode* pRootNode, const char* strTag,
 
 bool CGUIControlFactory::GetAlignment(const TiXmlNode* pRootNode, const char* strTag, DWORD& dwAlignment)
 {
-  TiXmlNode* pNode = pRootNode->FirstChild(strTag );
+  TiXmlNode* pNode = pRootNode->FirstChild(strTag);
   if (!pNode || !pNode->FirstChild()) return false;
 
   CStdString strAlign = pNode->FirstChild()->Value();
@@ -231,7 +235,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
   int iUrlSet=0;
   DWORD dwAlign = XBFONT_LEFT;
   DWORD dwAlignY = 0;
-  CStdString strTextureFocus, strTextureNoFocus, strTextureUpFocus, strTextureDownFocus;
+  CStdString strTextureFocus, strTextureNoFocus;
   CStdString strTextureAltFocus, strTextureAltNoFocus;
   int iToggleSelect;
   DWORD dwDisabledColor = 0xffffffff;;
@@ -262,7 +266,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
   CStdString strTexture;
   DWORD dwColorKey = 0;
   DWORD dwSelectedColor;
-  CStdString strButton, strButtonFocus;
   CStdString strSuffix = "";
   CStdString strFont2 = "";
 
@@ -418,7 +421,8 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
       lTextOffsetX = ((CGUIButtonControl*)pReference)->GetTextOffsetX();
       lTextOffsetY = ((CGUIButtonControl*)pReference)->GetTextOffsetY();
     }
-    else if (strType == "conditionalbutton")
+#ifdef PRE_SKIN_VERSION_2_0_COMPATIBILITY
+    else if (g_SkinInfo.GetVersion() < 1.85 && strType == "conditionalbutton")
     {
       strTextureFocus = ((CGUIConditionalButtonControl*)pReference)->GetTextureFocusName();
       strTextureNoFocus = ((CGUIConditionalButtonControl*)pReference)->GetTextureNoFocusName();
@@ -433,6 +437,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
       lTextOffsetX = ((CGUIConditionalButtonControl*)pReference)->GetTextOffsetX();
       lTextOffsetY = ((CGUIConditionalButtonControl*)pReference)->GetTextOffsetY();
     }
+#endif
     else if (strType == "togglebutton")
     {
       strTextureAltFocus = ((CGUIToggleButtonControl*)pReference)->GetTextureAltFocusName();
@@ -558,8 +563,8 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
       iSpinPosY = ((CGUIListControl*)pReference)->GetSpinY();
       dwTextColor = ((CGUIListControl*)pReference)->GetTextColor();
       dwSelectedColor = ((CGUIListControl*)pReference)->GetSelectedColor();
-      strButton = ((CGUIListControl*)pReference)->GetButtonNoFocusName();
-      strButtonFocus = ((CGUIListControl*)pReference)->GetButtonFocusName();
+      strTextureNoFocus = ((CGUIListControl*)pReference)->GetButtonNoFocusName();
+      strTextureFocus = ((CGUIListControl*)pReference)->GetButtonFocusName();
       strSuffix = ((CGUIListControl*)pReference)->GetSuffix();
       iTextXOff = ((CGUIListControl*)pReference)->GetTextOffsetX();
       iTextYOff = ((CGUIListControl*)pReference)->GetTextOffsetY();
@@ -590,8 +595,8 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
       iSpinPosY = ((CGUIListControlEx*)pReference)->GetSpinY();
       dwTextColor = ((CGUIListControlEx*)pReference)->GetTextColor();
       dwSelectedColor = ((CGUIListControlEx*)pReference)->GetSelectedColor();
-      strButton = ((CGUIListControlEx*)pReference)->GetButtonNoFocusName();
-      strButtonFocus = ((CGUIListControlEx*)pReference)->GetButtonFocusName();
+      strTextureNoFocus = ((CGUIListControlEx*)pReference)->GetButtonNoFocusName();
+      strTextureFocus = ((CGUIListControlEx*)pReference)->GetButtonFocusName();
       strSuffix = ((CGUIListControlEx*)pReference)->GetSuffix();
       dwitemWidth = ((CGUIListControlEx*)pReference)->GetImageWidth();
       dwitemHeight = ((CGUIListControlEx*)pReference)->GetImageHeight();
@@ -732,273 +737,528 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     return NULL; // NO id????
   }
 
-  if (GetInt(pControlNode, "posX", iPosX)) g_graphicsContext.ScaleXCoord(iPosX, res);
-  if (GetInt(pControlNode, "posY", iPosY)) g_graphicsContext.ScaleYCoord(iPosY, res);
-  if (GetDWORD(pControlNode, "width", dwWidth)) g_graphicsContext.ScaleXCoord(dwWidth, res);
-  if (GetDWORD(pControlNode, "height", dwHeight)) g_graphicsContext.ScaleYCoord(dwHeight, res);
-  if (GetLong(pControlNode, "textOffsetX", lTextOffsetX)) g_graphicsContext.ScaleXCoord(lTextOffsetX, res);
-  if (GetLong(pControlNode, "textOffsetY", lTextOffsetY)) g_graphicsContext.ScaleYCoord(lTextOffsetY, res);
-  if (GetDWORD(pControlNode, "textSpaceY", dwTextSpaceY)) g_graphicsContext.ScaleYCoord(dwTextSpaceY, res);
-
-  if (GetInt(pControlNode, "controlOffsetX", iControlOffsetX)) g_graphicsContext.ScaleXCoord(iControlOffsetX, res);
-  if (GetInt(pControlNode, "controlOffsetY", iControlOffsetY)) g_graphicsContext.ScaleYCoord(iControlOffsetY, res);
-
-  if (GetDWORD(pControlNode, "gfxThumbWidth", dwThumbWidth)) g_graphicsContext.ScaleXCoord(dwThumbWidth, res);
-  if (GetDWORD(pControlNode, "gfxThumbHeight", dwThumbHeight)) g_graphicsContext.ScaleYCoord(dwThumbHeight, res);
-  if (GetDWORD(pControlNode, "gfxThumbSpaceX", dwThumbSpaceX)) g_graphicsContext.ScaleXCoord(dwThumbSpaceX, res);
-  if (GetDWORD(pControlNode, "gfxThumbSpaceY", dwThumbSpaceY)) g_graphicsContext.ScaleYCoord(dwThumbSpaceY, res);
-  GetString(pControlNode, "gfxThumbDefault", strDefaultThumb);
-
-  if (!GetDWORD(pControlNode, "onup" , up ))
+  if (g_SkinInfo.GetVersion() < 1.85)
   {
-    up = dwID - 1;
-  }
-  if (!GetDWORD(pControlNode, "ondown" , down))
-  {
-    down = dwID + 1;
-  }
-  if (!GetDWORD(pControlNode, "onleft" , left ))
-  {
-    left = dwID;
-  }
-  if (!GetDWORD(pControlNode, "onright", right))
-  {
-    right = dwID;
-  }
+    if (GetInt(pControlNode, "posX", iPosX)) g_graphicsContext.ScaleXCoord(iPosX, res);
+    if (GetInt(pControlNode, "posY", iPosY)) g_graphicsContext.ScaleYCoord(iPosY, res);
 
-  GetHex(pControlNode, "colordiffuse", dwColorDiffuse);
-  
-  GetConditionalVisibility(pControlNode, iVisibleCondition, effect);
+    if (GetDWORD(pControlNode, "width", dwWidth)) g_graphicsContext.ScaleXCoord(dwWidth, res);
+    if (GetDWORD(pControlNode, "height", dwHeight)) g_graphicsContext.ScaleYCoord(dwHeight, res);
+    if (GetLong(pControlNode, "textOffsetX", lTextOffsetX)) g_graphicsContext.ScaleXCoord(lTextOffsetX, res);
+    if (GetLong(pControlNode, "textOffsetY", lTextOffsetY)) g_graphicsContext.ScaleYCoord(lTextOffsetY, res);
+    if (GetDWORD(pControlNode, "textSpaceY", dwTextSpaceY)) g_graphicsContext.ScaleYCoord(dwTextSpaceY, res);
 
-  GetString(pControlNode, "font", strFont);
-  GetAlignment(pControlNode, "align", dwAlign);
-  GetAlignmentY(pControlNode, "alignY", dwAlignY);
+    if (GetInt(pControlNode, "controlOffsetX", iControlOffsetX)) g_graphicsContext.ScaleXCoord(iControlOffsetX, res);
+    if (GetInt(pControlNode, "controlOffsetY", iControlOffsetY)) g_graphicsContext.ScaleYCoord(iControlOffsetY, res);
 
-  CStdString strWindow;
-  GetString(pControlNode, "hyperlink", strWindow);
-  iHyperLink = WINDOW_INVALID;
-  if (!strWindow.IsEmpty())
-    iHyperLink = g_buttonTranslator.TranslateWindowString(strWindow.c_str());
+    if (GetDWORD(pControlNode, "gfxThumbWidth", dwThumbWidth)) g_graphicsContext.ScaleXCoord(dwThumbWidth, res);
+    if (GetDWORD(pControlNode, "gfxThumbHeight", dwThumbHeight)) g_graphicsContext.ScaleYCoord(dwThumbHeight, res);
+    if (GetDWORD(pControlNode, "gfxThumbSpaceX", dwThumbSpaceX)) g_graphicsContext.ScaleXCoord(dwThumbSpaceX, res);
+    if (GetDWORD(pControlNode, "gfxThumbSpaceY", dwThumbSpaceY)) g_graphicsContext.ScaleYCoord(dwThumbSpaceY, res);
+    GetString(pControlNode, "gfxThumbDefault", strDefaultThumb);
 
-  GetString(pControlNode, "script", strExecuteAction); // left in for backwards compatibility.
-  GetString(pControlNode, "execute", strExecuteAction);
-
-  CStdStringArray strVecInfo;
-  if (GetMultipleString(pControlNode, "info", strVecInfo))
-  {
-    vecInfo.clear();
-    for (unsigned int i = 0; i < strVecInfo.size(); i++)
+    if (!GetDWORD(pControlNode, "onup" , up ))
     {
-      int info = g_infoManager.TranslateString(strVecInfo[i]);
-      if (info)
-        vecInfo.push_back(info);
+      up = dwID - 1;
     }
-  }
-  GetHex(pControlNode, "disabledcolor", dwDisabledColor);
-  GetPath(pControlNode, "textureDownFocus", strTextureDownFocus);
-  GetPath(pControlNode, "textureUpFocus", strTextureUpFocus);
-  GetPath(pControlNode, "textureFocus", strTextureFocus);
-  GetPath(pControlNode, "textureNoFocus", strTextureNoFocus);
-  GetPath(pControlNode, "AltTextureFocus", strTextureAltFocus);
-  GetPath(pControlNode, "AltTextureNoFocus", strTextureAltNoFocus);
-  CStdString strToggleSelect;
-  GetString(pControlNode, "UseAltTexture", strToggleSelect);
-  iToggleSelect = g_infoManager.TranslateString(strToggleSelect);
-  GetDWORD(pControlNode, "bitmaps", dwItems);
-  GetHex(pControlNode, "textcolor", dwTextColor);
-
-  GetBoolean(pControlNode, "hasPath", bHasPath);
-  GetBoolean(pControlNode, "shadow", bShadow);
-
-  GetPath(pControlNode, "textureUp", strUp);
-  GetPath(pControlNode, "textureDown", strDown);
-  GetPath(pControlNode, "textureUpFocus", strUpFocus);
-  GetPath(pControlNode, "textureDownFocus", strDownFocus);
-
-  GetPath(pControlNode, "textureLeft", strLeft);
-  GetPath(pControlNode, "textureRight", strRight);
-  GetPath(pControlNode, "textureLeftFocus", strLeftFocus);
-  GetPath(pControlNode, "textureRightFocus", strRightFocus);
-
-  GetHex(pControlNode, "spinColor", dwSpinColor);
-  if (GetDWORD(pControlNode, "spinWidth", dwSpinWidth)) g_graphicsContext.ScaleXCoord(dwSpinWidth, res);
-  if (GetDWORD(pControlNode, "spinHeight", dwSpinHeight)) g_graphicsContext.ScaleYCoord(dwSpinHeight, res);
-  if (GetInt(pControlNode, "spinPosX", iSpinPosX)) g_graphicsContext.ScaleXCoord(iSpinPosX, res);
-  if (GetInt(pControlNode, "spinPosY", iSpinPosY)) g_graphicsContext.ScaleYCoord(iSpinPosY, res);
-
-  if (GetDWORD(pControlNode, "MarkWidth", dwCheckWidth)) g_graphicsContext.ScaleXCoord(dwCheckWidth, res);
-  if (GetDWORD(pControlNode, "MarkHeight", dwCheckHeight)) g_graphicsContext.ScaleYCoord(dwCheckHeight, res);
-  if (GetDWORD(pControlNode, "sliderWidth", dwSliderWidth)) g_graphicsContext.ScaleXCoord(dwSliderWidth, res);
-  if (GetDWORD(pControlNode, "sliderHeight", dwSliderHeight)) g_graphicsContext.ScaleYCoord(dwSliderHeight, res);
-  GetPath(pControlNode, "textureCheckmark", strTextureCheckMark);
-  GetPath(pControlNode, "textureCheckmarkNoFocus", strTextureCheckMarkNF);
-  GetPath(pControlNode, "textureRadioFocus", strTextureRadioFocus);
-  GetPath(pControlNode, "textureRadioNoFocus", strTextureRadioNoFocus);
-
-  GetPath(pControlNode, "textureSliderBar", strTextureBg);
-  GetPath(pControlNode, "textureSliderNib", strMid);
-  GetPath(pControlNode, "textureSliderNibFocus", strMidFocus);
-  GetDWORD(pControlNode, "disposition", dwDisposition);
-
-  GetString(pControlNode, "title", strTitle);
-  GetString(pControlNode, "tagset", strRSSTags);
-  GetHex(pControlNode, "headlinecolor", dwTextColor2);
-  GetHex(pControlNode, "titlecolor", dwTextColor3);
-
-  if (GetString(pControlNode, "subtype", strSubType))
-  {
-    strSubType.ToLower();
-
-    if ( strSubType == "int")
+    if (!GetDWORD(pControlNode, "ondown" , down))
     {
-      iType = SPIN_CONTROL_TYPE_INT;
+      down = dwID + 1;
     }
-    else if ( strSubType == "float")
+    if (!GetDWORD(pControlNode, "onleft" , left ))
     {
-      iType = SPIN_CONTROL_TYPE_FLOAT;
+      left = dwID;
     }
-    else
+    if (!GetDWORD(pControlNode, "onright", right))
     {
-      iType = SPIN_CONTROL_TYPE_TEXT;
+      right = dwID;
     }
-  }
 
-  if (!GetIntRange(pControlNode, "range", iMin, iMax, iInterval))
-  {
-    GetFloatRange(pControlNode, "range", fMin, fMax, fInterval);
-  }
+    GetHex(pControlNode, "colordiffuse", dwColorDiffuse);
+    
+    GetConditionalVisibility(pControlNode, iVisibleCondition, effect);
 
-  GetBoolean(pControlNode, "reverse", bReverse);
+    GetString(pControlNode, "font", strFont);
+    GetAlignment(pControlNode, "align", dwAlign);
+    GetAlignmentY(pControlNode, "alignY", dwAlignY);
 
-  GetPath(pControlNode, "texturebg", strTextureBg);
-  GetPath(pControlNode, "lefttexture", strLeft);
-  GetPath(pControlNode, "midtexture", strMid);
-  GetPath(pControlNode, "righttexture", strRight);
-  GetPath(pControlNode, "overlaytexture", strOverlay);
-  GetPath(pControlNode, "texture", strTexture);
-  GetHex(pControlNode, "colorkey", dwColorKey);
+    CStdString strWindow;
+    GetString(pControlNode, "hyperlink", strWindow);
+    iHyperLink = WINDOW_INVALID;
+    if (!strWindow.IsEmpty())
+      iHyperLink = g_buttonTranslator.TranslateWindowString(strWindow.c_str());
 
-  GetHex(pControlNode, "selectedColor", dwSelectedColor);
-  dwSelectedColor2 = dwSelectedColor;
+    GetString(pControlNode, "script", strExecuteAction); // left in for backwards compatibility.
+    GetString(pControlNode, "execute", strExecuteAction);
 
-  GetPath(pControlNode, "textureNoFocus", strButton);
-  GetPath(pControlNode, "textureFocus", strButtonFocus);
-  GetString(pControlNode, "suffix", strSuffix);
-  if (GetInt(pControlNode, "textXOff", iTextXOff)) g_graphicsContext.ScaleXCoord(iTextXOff, res);
-  if (GetInt(pControlNode, "textYOff", iTextYOff)) g_graphicsContext.ScaleYCoord(iTextYOff, res);
-  if (GetInt(pControlNode, "textXOff2", iTextXOff2)) g_graphicsContext.ScaleXCoord(iTextXOff2, res);
-  if (GetInt(pControlNode, "textYOff2", iTextYOff2)) g_graphicsContext.ScaleYCoord(iTextYOff2, res);
-
-  if (GetDWORD(pControlNode, "itemWidth", dwitemWidth)) g_graphicsContext.ScaleXCoord(dwitemWidth, res);
-  if (GetDWORD(pControlNode, "itemHeight", dwitemHeight)) g_graphicsContext.ScaleYCoord(dwitemHeight, res);
-  if (GetInt(pControlNode, "spaceBetweenItems", iSpace)) g_graphicsContext.ScaleYCoord(iSpace, res);
-
-  GetHex(pControlNode, "selectedColor2", dwSelectedColor2);
-  GetHex(pControlNode, "textcolor2", dwTextColor2);
-  GetString(pControlNode, "font2", strFont2);
-  GetHex(pControlNode, "selectedColor", dwSelectedColor);
-
-  GetPath(pControlNode, "imageFolder", strImage);
-  GetPath(pControlNode, "imageFolderFocus", strImageFocus);
-  if (GetInt(pControlNode, "textureWidth", iTextureWidth)) g_graphicsContext.ScaleXCoord(iTextureWidth, res);
-  if (GetInt(pControlNode, "textureHeight", iTextureHeight)) g_graphicsContext.ScaleYCoord(iTextureHeight, res);
-
-  if (GetInt(pControlNode, "thumbWidth", iThumbWidth)) g_graphicsContext.ScaleXCoord(iThumbWidth, res);
-  if (GetInt(pControlNode, "thumbHeight", iThumbHeight)) g_graphicsContext.ScaleYCoord(iThumbHeight, res);
-  if (GetInt(pControlNode, "thumbPosX", iThumbXPos)) g_graphicsContext.ScaleXCoord(iThumbXPos, res);
-  if (GetInt(pControlNode, "thumbPosY", iThumbYPos)) g_graphicsContext.ScaleYCoord(iThumbYPos, res);
-
-  GetAlignment(pControlNode, "thumbAlign", dwThumbAlign);
-
-  if (GetInt(pControlNode, "thumbWidthBig", iThumbWidthBig)) g_graphicsContext.ScaleXCoord(iThumbWidthBig, res);
-  if (GetInt(pControlNode, "thumbHeightBig", iThumbHeightBig)) g_graphicsContext.ScaleYCoord(iThumbHeightBig, res);
-  if (GetInt(pControlNode, "thumbPosXBig", iThumbXPosBig)) g_graphicsContext.ScaleXCoord(iThumbXPosBig, res);
-  if (GetInt(pControlNode, "thumbPosYBig", iThumbYPosBig)) g_graphicsContext.ScaleYCoord(iThumbYPosBig, res);
-
-  if (GetDWORD(pControlNode, "textureWidthBig", textureWidthBig)) g_graphicsContext.ScaleXCoord(textureWidthBig, res);
-  if (GetDWORD(pControlNode, "textureHeightBig", textureHeightBig)) g_graphicsContext.ScaleYCoord(textureHeightBig, res);
-  if (GetDWORD(pControlNode, "itemWidthBig", itemWidthBig)) g_graphicsContext.ScaleXCoord(itemWidthBig, res);
-  if (GetDWORD(pControlNode, "itemHeightBig", itemHeightBig)) g_graphicsContext.ScaleYCoord(itemHeightBig, res);
-  GetDWORD(pControlNode, "buddycontrolid", dwBuddyControlID);
-
-  CStdStringArray strVecLabel;
-  if (GetMultipleString(pControlNode, "label", strVecLabel))
-  {
-    vecLabel.clear();
-    for (unsigned int i = 0; i < strVecLabel.size(); i++)
+    CStdStringArray strVecInfo;
+    if (GetMultipleString(pControlNode, "info", strVecInfo))
     {
-      strTmp = strVecLabel[i];
-      if (strTmp.size() > 0)
+      vecInfo.clear();
+      for (unsigned int i = 0; i < strVecInfo.size(); i++)
       {
-        if (strTmp[0] != '-')
+        int info = g_infoManager.TranslateString(strVecInfo[i]);
+        if (info)
+          vecInfo.push_back(info);
+      }
+    }
+    GetHex(pControlNode, "disabledcolor", dwDisabledColor);
+    GetPath(pControlNode, "textureFocus", strTextureFocus);
+    GetPath(pControlNode, "textureNoFocus", strTextureNoFocus);
+    GetPath(pControlNode, "AltTextureFocus", strTextureAltFocus);
+    GetPath(pControlNode, "AltTextureNoFocus", strTextureAltNoFocus);
+    CStdString strToggleSelect;
+    GetString(pControlNode, "UseAltTexture", strToggleSelect);
+    iToggleSelect = g_infoManager.TranslateString(strToggleSelect);
+    GetDWORD(pControlNode, "bitmaps", dwItems);
+    GetHex(pControlNode, "textcolor", dwTextColor);
+
+    GetBoolean(pControlNode, "hasPath", bHasPath);
+    GetBoolean(pControlNode, "shadow", bShadow);
+
+    GetPath(pControlNode, "textureUp", strUp);
+    GetPath(pControlNode, "textureDown", strDown);
+    GetPath(pControlNode, "textureUpFocus", strUpFocus);
+    GetPath(pControlNode, "textureDownFocus", strDownFocus);
+
+    GetPath(pControlNode, "textureLeft", strLeft);
+    GetPath(pControlNode, "textureRight", strRight);
+    GetPath(pControlNode, "textureLeftFocus", strLeftFocus);
+    GetPath(pControlNode, "textureRightFocus", strRightFocus);
+
+    GetHex(pControlNode, "spinColor", dwSpinColor);
+    if (GetDWORD(pControlNode, "spinWidth", dwSpinWidth)) g_graphicsContext.ScaleXCoord(dwSpinWidth, res);
+    if (GetDWORD(pControlNode, "spinHeight", dwSpinHeight)) g_graphicsContext.ScaleYCoord(dwSpinHeight, res);
+    if (GetInt(pControlNode, "spinPosX", iSpinPosX))
+    { // pre 1.85 skins had absolute spin positions
+      g_graphicsContext.ScaleXCoord(iSpinPosX, res);
+      iSpinPosX -= iPosX;
+    }
+    if (GetInt(pControlNode, "spinPosY", iSpinPosY))
+    { // pre 1.85 skins had absolute spin positions
+      g_graphicsContext.ScaleYCoord(iSpinPosY, res);
+      iSpinPosY -= iPosY;
+    }
+
+    if (GetDWORD(pControlNode, "MarkWidth", dwCheckWidth)) g_graphicsContext.ScaleXCoord(dwCheckWidth, res);
+    if (GetDWORD(pControlNode, "MarkHeight", dwCheckHeight)) g_graphicsContext.ScaleYCoord(dwCheckHeight, res);
+    if (GetDWORD(pControlNode, "sliderWidth", dwSliderWidth)) g_graphicsContext.ScaleXCoord(dwSliderWidth, res);
+    if (GetDWORD(pControlNode, "sliderHeight", dwSliderHeight)) g_graphicsContext.ScaleYCoord(dwSliderHeight, res);
+    GetPath(pControlNode, "textureCheckmark", strTextureCheckMark);
+    GetPath(pControlNode, "textureCheckmarkNoFocus", strTextureCheckMarkNF);
+    GetPath(pControlNode, "textureRadioFocus", strTextureRadioFocus);
+    GetPath(pControlNode, "textureRadioNoFocus", strTextureRadioNoFocus);
+
+    GetPath(pControlNode, "textureSliderBar", strTextureBg);
+    GetPath(pControlNode, "textureSliderNib", strMid);
+    GetPath(pControlNode, "textureSliderNibFocus", strMidFocus);
+    GetDWORD(pControlNode, "disposition", dwDisposition);
+
+    GetString(pControlNode, "title", strTitle);
+    GetString(pControlNode, "tagset", strRSSTags);
+    GetHex(pControlNode, "headlinecolor", dwTextColor2);
+    GetHex(pControlNode, "titlecolor", dwTextColor3);
+
+    if (GetString(pControlNode, "subtype", strSubType))
+    {
+      strSubType.ToLower();
+
+      if ( strSubType == "int")
+      {
+        iType = SPIN_CONTROL_TYPE_INT;
+      }
+      else if ( strSubType == "float")
+      {
+        iType = SPIN_CONTROL_TYPE_FLOAT;
+      }
+      else
+      {
+        iType = SPIN_CONTROL_TYPE_TEXT;
+      }
+    }
+
+    if (!GetIntRange(pControlNode, "range", iMin, iMax, iInterval))
+    {
+      GetFloatRange(pControlNode, "range", fMin, fMax, fInterval);
+    }
+
+    GetBoolean(pControlNode, "reverse", bReverse);
+
+    GetPath(pControlNode, "texturebg", strTextureBg);
+    GetPath(pControlNode, "lefttexture", strLeft);
+    GetPath(pControlNode, "midtexture", strMid);
+    GetPath(pControlNode, "righttexture", strRight);
+    GetPath(pControlNode, "overlaytexture", strOverlay);
+    GetPath(pControlNode, "texture", strTexture);
+    GetHex(pControlNode, "colorkey", dwColorKey);
+
+    GetHex(pControlNode, "selectedColor", dwSelectedColor);
+    dwSelectedColor2 = dwSelectedColor;
+
+    GetString(pControlNode, "suffix", strSuffix);
+    if (GetInt(pControlNode, "textXOff", iTextXOff)) g_graphicsContext.ScaleXCoord(iTextXOff, res);
+    if (GetInt(pControlNode, "textYOff", iTextYOff)) g_graphicsContext.ScaleYCoord(iTextYOff, res);
+    if (GetInt(pControlNode, "textXOff2", iTextXOff2)) g_graphicsContext.ScaleXCoord(iTextXOff2, res);
+    if (GetInt(pControlNode, "textYOff2", iTextYOff2)) g_graphicsContext.ScaleYCoord(iTextYOff2, res);
+
+    if (GetDWORD(pControlNode, "itemWidth", dwitemWidth)) g_graphicsContext.ScaleXCoord(dwitemWidth, res);
+    if (GetDWORD(pControlNode, "itemHeight", dwitemHeight)) g_graphicsContext.ScaleYCoord(dwitemHeight, res);
+    if (GetInt(pControlNode, "spaceBetweenItems", iSpace)) g_graphicsContext.ScaleYCoord(iSpace, res);
+
+    GetHex(pControlNode, "selectedColor2", dwSelectedColor2);
+    GetHex(pControlNode, "textcolor2", dwTextColor2);
+    GetString(pControlNode, "font2", strFont2);
+    GetHex(pControlNode, "selectedColor", dwSelectedColor);
+
+    GetPath(pControlNode, "imageFolder", strImage);
+    GetPath(pControlNode, "imageFolderFocus", strImageFocus);
+    if (GetInt(pControlNode, "textureWidth", iTextureWidth)) g_graphicsContext.ScaleXCoord(iTextureWidth, res);
+    if (GetInt(pControlNode, "textureHeight", iTextureHeight)) g_graphicsContext.ScaleYCoord(iTextureHeight, res);
+
+    if (GetInt(pControlNode, "thumbWidth", iThumbWidth)) g_graphicsContext.ScaleXCoord(iThumbWidth, res);
+    if (GetInt(pControlNode, "thumbHeight", iThumbHeight)) g_graphicsContext.ScaleYCoord(iThumbHeight, res);
+    if (GetInt(pControlNode, "thumbPosX", iThumbXPos)) g_graphicsContext.ScaleXCoord(iThumbXPos, res);
+    if (GetInt(pControlNode, "thumbPosY", iThumbYPos)) g_graphicsContext.ScaleYCoord(iThumbYPos, res);
+
+    GetAlignment(pControlNode, "thumbAlign", dwThumbAlign);
+
+    if (GetInt(pControlNode, "thumbWidthBig", iThumbWidthBig)) g_graphicsContext.ScaleXCoord(iThumbWidthBig, res);
+    if (GetInt(pControlNode, "thumbHeightBig", iThumbHeightBig)) g_graphicsContext.ScaleYCoord(iThumbHeightBig, res);
+    if (GetInt(pControlNode, "thumbPosXBig", iThumbXPosBig)) g_graphicsContext.ScaleXCoord(iThumbXPosBig, res);
+    if (GetInt(pControlNode, "thumbPosYBig", iThumbYPosBig)) g_graphicsContext.ScaleYCoord(iThumbYPosBig, res);
+
+    if (GetDWORD(pControlNode, "textureWidthBig", textureWidthBig)) g_graphicsContext.ScaleXCoord(textureWidthBig, res);
+    if (GetDWORD(pControlNode, "textureHeightBig", textureHeightBig)) g_graphicsContext.ScaleYCoord(textureHeightBig, res);
+    if (GetDWORD(pControlNode, "itemWidthBig", itemWidthBig)) g_graphicsContext.ScaleXCoord(itemWidthBig, res);
+    if (GetDWORD(pControlNode, "itemHeightBig", itemHeightBig)) g_graphicsContext.ScaleYCoord(itemHeightBig, res);
+    GetDWORD(pControlNode, "buddycontrolid", dwBuddyControlID);
+
+    CStdStringArray strVecLabel;
+    if (GetMultipleString(pControlNode, "label", strVecLabel))
+    {
+      vecLabel.clear();
+      for (unsigned int i = 0; i < strVecLabel.size(); i++)
+      {
+        strTmp = strVecLabel[i];
+        if (strTmp.size() > 0)
         {
-          if (CUtil::IsNaturalNumber(strTmp))
+          if (strTmp[0] != '-')
           {
-            DWORD dwLabelID = atol(strTmp);
-            strLabel = g_localizeStrings.Get(dwLabelID);
+            if (CUtil::IsNaturalNumber(strTmp))
+            {
+              DWORD dwLabelID = atol(strTmp);
+              strLabel = g_localizeStrings.Get(dwLabelID);
+            }
+            else
+            {
+              WCHAR wszTmp[256];
+              swprintf(wszTmp, L"%S", strTmp.c_str());
+              strLabel = wszTmp;
+            }
+            vecLabel.push_back(strLabel);
           }
           else
-          {
-            WCHAR wszTmp[256];
-            swprintf(wszTmp, L"%S", strTmp.c_str());
-            strLabel = wszTmp;
-          }
-          vecLabel.push_back(strLabel);
+            strLabel = L"";
         }
-        else
-          strLabel = L"";
       }
     }
-  }
 
-  GetInt(pControlNode,"urlset",iUrlSet);
+    GetInt(pControlNode,"urlset",iUrlSet);
 
-  /*  CStdStringArray strVecUrl;
-  if (GetMultipleString(pControlNode, "feed", strVecUrl))
-  {
-    vecUrls.clear();
-    for (unsigned int i = 0; i < strVecUrl.size(); i++)
+    /*  CStdStringArray strVecUrl;
+    if (GetMultipleString(pControlNode, "feed", strVecUrl))
     {
-      strTmp = strVecUrl[i];
-      if (strTmp.size() > 0)
+      vecUrls.clear();
+      for (unsigned int i = 0; i < strVecUrl.size(); i++)
       {
-        WCHAR wszTmp[1024];
-        swprintf(wszTmp, L"%S", strTmp.c_str());
-        wstring tempUrl = wszTmp;
-        vecUrls.push_back(tempUrl);
+        strTmp = strVecUrl[i];
+        if (strTmp.size() > 0)
+        {
+          WCHAR wszTmp[1024];
+          swprintf(wszTmp, L"%S", strTmp.c_str());
+          wstring tempUrl = wszTmp;
+          vecUrls.push_back(tempUrl);
+        }
+      }
+    }*/
+
+    // stuff for button scroller
+    if ( GetString(pControlNode, "orientation", strTmp) )
+    {
+      if (strTmp.ToLower() == "horizontal")
+        bHorizontal = true;
+    }
+    if (GetInt(pControlNode, "buttongap", iButtonGap))
+    {
+      if (bHorizontal)
+        g_graphicsContext.ScaleXCoord(iButtonGap, res);
+      else
+        g_graphicsContext.ScaleYCoord(iButtonGap, res);
+    }
+    GetInt(pControlNode, "numbuttons", iNumSlots);
+    GetInt(pControlNode, "movement", iMovementRange);
+    GetInt(pControlNode, "defaultbutton", iDefaultSlot);
+    GetInt(pControlNode, "alpha", iAlpha);
+    GetBoolean(pControlNode, "wraparound", bWrapAround);
+    GetBoolean(pControlNode, "smoothscrolling", bSmoothScrolling);
+    GetBoolean(pControlNode, "keepaspectratio", bKeepAspectRatio);
+    GetBoolean(pControlNode, "scroll", bScrollLabel);
+    GetBoolean(pControlNode,"pulseonselect", bPulse);
+
+    GetPath(pControlNode,"imagepath", texturePath);
+    GetDWORD(pControlNode,"timeperimage", timePerImage);
+    GetDWORD(pControlNode,"fadetime", fadeTime);
+    GetBoolean(pControlNode, "randomize", randomized);
+    GetBoolean(pControlNode, "loop", loop);
+  }
+  else
+  {
+    if (GetInt(pControlNode, "posx", iPosX)) g_graphicsContext.ScaleXCoord(iPosX, res);
+    if (GetInt(pControlNode, "posy", iPosY)) g_graphicsContext.ScaleYCoord(iPosY, res);
+
+    if (GetDWORD(pControlNode, "width", dwWidth)) g_graphicsContext.ScaleXCoord(dwWidth, res);
+    if (GetDWORD(pControlNode, "height", dwHeight)) g_graphicsContext.ScaleYCoord(dwHeight, res);
+    if (GetLong(pControlNode, "textoffsetx", lTextOffsetX)) g_graphicsContext.ScaleXCoord(lTextOffsetX, res);
+    if (GetLong(pControlNode, "textoffsety", lTextOffsetY)) g_graphicsContext.ScaleYCoord(lTextOffsetY, res);
+    if (GetDWORD(pControlNode, "textspacey", dwTextSpaceY)) g_graphicsContext.ScaleYCoord(dwTextSpaceY, res);
+
+    if (GetInt(pControlNode, "controloffsetx", iControlOffsetX)) g_graphicsContext.ScaleXCoord(iControlOffsetX, res);
+    if (GetInt(pControlNode, "controloffsety", iControlOffsetY)) g_graphicsContext.ScaleYCoord(iControlOffsetY, res);
+
+    if (GetDWORD(pControlNode, "gfxthumbwidth", dwThumbWidth)) g_graphicsContext.ScaleXCoord(dwThumbWidth, res);
+    if (GetDWORD(pControlNode, "gfxthumbheight", dwThumbHeight)) g_graphicsContext.ScaleYCoord(dwThumbHeight, res);
+    if (GetDWORD(pControlNode, "gfxthumbspacex", dwThumbSpaceX)) g_graphicsContext.ScaleXCoord(dwThumbSpaceX, res);
+    if (GetDWORD(pControlNode, "gfxthumbspacey", dwThumbSpaceY)) g_graphicsContext.ScaleYCoord(dwThumbSpaceY, res);
+    GetString(pControlNode, "gfxthumbdefault", strDefaultThumb);
+
+    if (!GetDWORD(pControlNode, "onup" , up ))
+    {
+      up = dwID - 1;
+    }
+    if (!GetDWORD(pControlNode, "ondown" , down))
+    {
+      down = dwID + 1;
+    }
+    if (!GetDWORD(pControlNode, "onleft" , left ))
+    {
+      left = dwID;
+    }
+    if (!GetDWORD(pControlNode, "onright", right))
+    {
+      right = dwID;
+    }
+
+    GetHex(pControlNode, "colordiffuse", dwColorDiffuse);
+    
+    GetConditionalVisibility(pControlNode, iVisibleCondition, effect);
+
+    GetString(pControlNode, "font", strFont);
+    GetAlignment(pControlNode, "align", dwAlign);
+    GetAlignmentY(pControlNode, "aligny", dwAlignY);
+
+    CStdString strWindow;
+    GetString(pControlNode, "hyperlink", strWindow);
+    iHyperLink = WINDOW_INVALID;
+    if (!strWindow.IsEmpty())
+      iHyperLink = g_buttonTranslator.TranslateWindowString(strWindow.c_str());
+
+    GetString(pControlNode, "script", strExecuteAction); // left in for backwards compatibility.
+    GetString(pControlNode, "execute", strExecuteAction);
+
+    CStdStringArray strVecInfo;
+    if (GetMultipleString(pControlNode, "info", strVecInfo))
+    {
+      vecInfo.clear();
+      for (unsigned int i = 0; i < strVecInfo.size(); i++)
+      {
+        int info = g_infoManager.TranslateString(strVecInfo[i]);
+        if (info)
+          vecInfo.push_back(info);
       }
     }
-  }*/
+    GetHex(pControlNode, "disabledcolor", dwDisabledColor);
+    GetPath(pControlNode, "texturefocus", strTextureFocus);
+    GetPath(pControlNode, "texturenofocus", strTextureNoFocus);
+    GetPath(pControlNode, "alttexturefocus", strTextureAltFocus);
+    GetPath(pControlNode, "alttexturenofocus", strTextureAltNoFocus);
+    CStdString strToggleSelect;
+    GetString(pControlNode, "usealttexture", strToggleSelect);
+    iToggleSelect = g_infoManager.TranslateString(strToggleSelect);
+    GetDWORD(pControlNode, "bitmaps", dwItems);
+    GetHex(pControlNode, "textcolor", dwTextColor);
 
-  // stuff for button scroller
-  if ( GetString(pControlNode, "orientation", strTmp) )
-  {
-    if (strTmp.ToLower() == "horizontal")
-      bHorizontal = true;
+    GetBoolean(pControlNode, "haspath", bHasPath);
+    GetBoolean(pControlNode, "shadow", bShadow);
+
+    GetPath(pControlNode, "textureup", strUp);
+    GetPath(pControlNode, "texturedown", strDown);
+    GetPath(pControlNode, "textureupfocus", strUpFocus);
+    GetPath(pControlNode, "texturedownfocus", strDownFocus);
+
+    GetPath(pControlNode, "textureleft", strLeft);
+    GetPath(pControlNode, "textureright", strRight);
+    GetPath(pControlNode, "textureleftfocus", strLeftFocus);
+    GetPath(pControlNode, "texturerightfocus", strRightFocus);
+
+    GetHex(pControlNode, "spincolor", dwSpinColor);
+    if (GetDWORD(pControlNode, "spinwidth", dwSpinWidth)) g_graphicsContext.ScaleXCoord(dwSpinWidth, res);
+    if (GetDWORD(pControlNode, "spinheight", dwSpinHeight)) g_graphicsContext.ScaleYCoord(dwSpinHeight, res);
+    if (GetInt(pControlNode, "spinposx", iSpinPosX)) g_graphicsContext.ScaleXCoord(iSpinPosX, res);
+    if (GetInt(pControlNode, "spinposy", iSpinPosY)) g_graphicsContext.ScaleYCoord(iSpinPosY, res);
+
+    if (GetDWORD(pControlNode, "markwidth", dwCheckWidth)) g_graphicsContext.ScaleXCoord(dwCheckWidth, res);
+    if (GetDWORD(pControlNode, "markheight", dwCheckHeight)) g_graphicsContext.ScaleYCoord(dwCheckHeight, res);
+    if (GetDWORD(pControlNode, "sliderwidth", dwSliderWidth)) g_graphicsContext.ScaleXCoord(dwSliderWidth, res);
+    if (GetDWORD(pControlNode, "sliderheight", dwSliderHeight)) g_graphicsContext.ScaleYCoord(dwSliderHeight, res);
+    GetPath(pControlNode, "texturecheckmark", strTextureCheckMark);
+    GetPath(pControlNode, "texturecheckmarknofocus", strTextureCheckMarkNF);
+    GetPath(pControlNode, "textureradiofocus", strTextureRadioFocus);
+    GetPath(pControlNode, "textureradionofocus", strTextureRadioNoFocus);
+
+    GetPath(pControlNode, "texturesliderbar", strTextureBg);
+    GetPath(pControlNode, "textureslidernib", strMid);
+    GetPath(pControlNode, "textureslidernibfocus", strMidFocus);
+    GetDWORD(pControlNode, "disposition", dwDisposition);
+
+    GetString(pControlNode, "title", strTitle);
+    GetString(pControlNode, "tagset", strRSSTags);
+    GetHex(pControlNode, "headlinecolor", dwTextColor2);
+    GetHex(pControlNode, "titlecolor", dwTextColor3);
+
+    if (GetString(pControlNode, "subtype", strSubType))
+    {
+      strSubType.ToLower();
+
+      if ( strSubType == "int")
+      {
+        iType = SPIN_CONTROL_TYPE_INT;
+      }
+      else if ( strSubType == "float")
+      {
+        iType = SPIN_CONTROL_TYPE_FLOAT;
+      }
+      else
+      {
+        iType = SPIN_CONTROL_TYPE_TEXT;
+      }
+    }
+
+    if (!GetIntRange(pControlNode, "range", iMin, iMax, iInterval))
+    {
+      GetFloatRange(pControlNode, "range", fMin, fMax, fInterval);
+    }
+
+    GetBoolean(pControlNode, "reverse", bReverse);
+
+    GetPath(pControlNode, "texturebg", strTextureBg);
+    GetPath(pControlNode, "lefttexture", strLeft);
+    GetPath(pControlNode, "midtexture", strMid);
+    GetPath(pControlNode, "righttexture", strRight);
+    GetPath(pControlNode, "overlaytexture", strOverlay);
+    GetPath(pControlNode, "texture", strTexture);
+    GetHex(pControlNode, "colorkey", dwColorKey);
+
+    GetHex(pControlNode, "selectedcolor", dwSelectedColor);
+    dwSelectedColor2 = dwSelectedColor;
+
+    GetString(pControlNode, "suffix", strSuffix);
+    if (GetInt(pControlNode, "textxoff", iTextXOff)) g_graphicsContext.ScaleXCoord(iTextXOff, res);
+    if (GetInt(pControlNode, "textyoff", iTextYOff)) g_graphicsContext.ScaleYCoord(iTextYOff, res);
+    if (GetInt(pControlNode, "textxoff2", iTextXOff2)) g_graphicsContext.ScaleXCoord(iTextXOff2, res);
+    if (GetInt(pControlNode, "textyoff2", iTextYOff2)) g_graphicsContext.ScaleYCoord(iTextYOff2, res);
+
+    if (GetDWORD(pControlNode, "itemwidth", dwitemWidth)) g_graphicsContext.ScaleXCoord(dwitemWidth, res);
+    if (GetDWORD(pControlNode, "itemheight", dwitemHeight)) g_graphicsContext.ScaleYCoord(dwitemHeight, res);
+    if (GetInt(pControlNode, "spacebetweenitems", iSpace)) g_graphicsContext.ScaleYCoord(iSpace, res);
+
+    GetHex(pControlNode, "selectedcolor2", dwSelectedColor2);
+    GetHex(pControlNode, "textcolor2", dwTextColor2);
+    GetString(pControlNode, "font2", strFont2);
+
+    GetPath(pControlNode, "imagefolder", strImage);
+    GetPath(pControlNode, "imagefolderfocus", strImageFocus);
+    if (GetInt(pControlNode, "texturewidth", iTextureWidth)) g_graphicsContext.ScaleXCoord(iTextureWidth, res);
+    if (GetInt(pControlNode, "textureheight", iTextureHeight)) g_graphicsContext.ScaleYCoord(iTextureHeight, res);
+
+    if (GetInt(pControlNode, "thumbwidth", iThumbWidth)) g_graphicsContext.ScaleXCoord(iThumbWidth, res);
+    if (GetInt(pControlNode, "thumbheight", iThumbHeight)) g_graphicsContext.ScaleYCoord(iThumbHeight, res);
+    if (GetInt(pControlNode, "thumbposx", iThumbXPos)) g_graphicsContext.ScaleXCoord(iThumbXPos, res);
+    if (GetInt(pControlNode, "thumbposy", iThumbYPos)) g_graphicsContext.ScaleYCoord(iThumbYPos, res);
+
+    GetAlignment(pControlNode, "thumbalign", dwThumbAlign);
+
+    if (GetInt(pControlNode, "thumbwidthbig", iThumbWidthBig)) g_graphicsContext.ScaleXCoord(iThumbWidthBig, res);
+    if (GetInt(pControlNode, "thumbheightbig", iThumbHeightBig)) g_graphicsContext.ScaleYCoord(iThumbHeightBig, res);
+    if (GetInt(pControlNode, "thumbposxbig", iThumbXPosBig)) g_graphicsContext.ScaleXCoord(iThumbXPosBig, res);
+    if (GetInt(pControlNode, "thumbposybig", iThumbYPosBig)) g_graphicsContext.ScaleYCoord(iThumbYPosBig, res);
+
+    if (GetDWORD(pControlNode, "texturewidthbig", textureWidthBig)) g_graphicsContext.ScaleXCoord(textureWidthBig, res);
+    if (GetDWORD(pControlNode, "textureheightbig", textureHeightBig)) g_graphicsContext.ScaleYCoord(textureHeightBig, res);
+    if (GetDWORD(pControlNode, "itemwidthbig", itemWidthBig)) g_graphicsContext.ScaleXCoord(itemWidthBig, res);
+    if (GetDWORD(pControlNode, "itemheightbig", itemHeightBig)) g_graphicsContext.ScaleYCoord(itemHeightBig, res);
+    GetDWORD(pControlNode, "buddycontrolid", dwBuddyControlID);
+
+    CStdStringArray strVecLabel;
+    if (GetMultipleString(pControlNode, "label", strVecLabel))
+    {
+      vecLabel.clear();
+      for (unsigned int i = 0; i < strVecLabel.size(); i++)
+      {
+        strTmp = strVecLabel[i];
+        if (strTmp.size() > 0)
+        {
+          if (strTmp[0] != '-')
+          {
+            if (CUtil::IsNaturalNumber(strTmp))
+            {
+              DWORD dwLabelID = atol(strTmp);
+              strLabel = g_localizeStrings.Get(dwLabelID);
+            }
+            else
+            {
+              WCHAR wszTmp[256];
+              swprintf(wszTmp, L"%S", strTmp.c_str());
+              strLabel = wszTmp;
+            }
+            vecLabel.push_back(strLabel);
+          }
+          else
+            strLabel = L"";
+        }
+      }
+    }
+
+    GetInt(pControlNode,"urlset",iUrlSet);
+
+    // stuff for button scroller
+    if ( GetString(pControlNode, "orientation", strTmp) )
+    {
+      if (strTmp.ToLower() == "horizontal")
+        bHorizontal = true;
+    }
+    if (GetInt(pControlNode, "buttongap", iButtonGap))
+    {
+      if (bHorizontal)
+        g_graphicsContext.ScaleXCoord(iButtonGap, res);
+      else
+        g_graphicsContext.ScaleYCoord(iButtonGap, res);
+    }
+    GetInt(pControlNode, "numbuttons", iNumSlots);
+    GetInt(pControlNode, "movement", iMovementRange);
+    GetInt(pControlNode, "defaultbutton", iDefaultSlot);
+    GetInt(pControlNode, "alpha", iAlpha);
+    GetBoolean(pControlNode, "wraparound", bWrapAround);
+    GetBoolean(pControlNode, "smoothscrolling", bSmoothScrolling);
+    GetBoolean(pControlNode, "keepaspectratio", bKeepAspectRatio);
+    GetBoolean(pControlNode, "scroll", bScrollLabel);
+    GetBoolean(pControlNode,"pulseonselect", bPulse);
+
+    GetPath(pControlNode,"imagepath", texturePath);
+    GetDWORD(pControlNode,"timeperimage", timePerImage);
+    GetDWORD(pControlNode,"fadetime", fadeTime);
+    GetBoolean(pControlNode, "randomize", randomized);
+    GetBoolean(pControlNode, "loop", loop);
   }
-  if (GetInt(pControlNode, "buttongap", iButtonGap))
-  {
-    if (bHorizontal)
-      g_graphicsContext.ScaleXCoord(iButtonGap, res);
-    else
-      g_graphicsContext.ScaleYCoord(iButtonGap, res);
-  }
-  GetInt(pControlNode, "numbuttons", iNumSlots);
-  GetInt(pControlNode, "movement", iMovementRange);
-  GetInt(pControlNode, "defaultbutton", iDefaultSlot);
-  GetInt(pControlNode, "alpha", iAlpha);
-  GetBoolean(pControlNode, "wraparound", bWrapAround);
-  GetBoolean(pControlNode, "smoothscrolling", bSmoothScrolling);
-  GetBoolean(pControlNode, "keepaspectratio", bKeepAspectRatio);
-  GetBoolean(pControlNode, "scroll", bScrollLabel);
-  GetBoolean(pControlNode,"pulseonselect", bPulse);
-
-  GetPath(pControlNode,"imagepath", texturePath);
-  GetDWORD(pControlNode,"timeperimage", timePerImage);
-  GetDWORD(pControlNode,"fadetime", fadeTime);
-  GetBoolean(pControlNode, "randomize", randomized);
-  GetBoolean(pControlNode, "loop", loop);
-
   /////////////////////////////////////////////////////////////////////////////
   // Instantiate a new control using the properties gathered above
   //
@@ -1112,7 +1372,8 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     pControl->SetPulseOnSelect(bPulse);
     return pControl;
   }
-  else if (strType == "conditionalbutton")
+#ifdef PRE_SKIN_VERSION_2_0_COMPATIBILITY
+  else if (g_SkinInfo.GetVersion() < 1.85 && strType == "conditionalbutton")
   {
     CGUIConditionalButtonControl* pControl = new CGUIConditionalButtonControl(
       dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight,
@@ -1130,6 +1391,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     pControl->SetPulseOnSelect(bPulse);
     return pControl;
   }
+#endif
   else if (strType == "togglebutton")
   {
     CGUIToggleButtonControl* pControl = new CGUIToggleButtonControl(
@@ -1291,7 +1553,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
       strUpFocus, strDownFocus,
       dwSpinColor, iSpinPosX, iSpinPosY,
       strFont, dwTextColor, dwSelectedColor,
-      strButton, strButtonFocus,
+      strTextureNoFocus, strTextureFocus,
       lTextOffsetX, lTextOffsetY);
 
     pControl->SetNavigation(up, down, left, right);
@@ -1319,7 +1581,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
       strUpFocus, strDownFocus,
       dwSpinColor, iSpinPosX, iSpinPosY,
       strFont, dwTextColor, dwSelectedColor,
-      strButton, strButtonFocus,
+      strTextureNoFocus, strTextureFocus,
       lTextOffsetX, lTextOffsetY, dwAlignY);
 
     pControl->SetNavigation(up, down, left, right);

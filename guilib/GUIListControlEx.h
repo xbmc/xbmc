@@ -24,7 +24,7 @@ public:
                     DWORD dwSpinWidth, DWORD dwSpinHeight,
                     const CStdString& strUp, const CStdString& strDown,
                     const CStdString& strUpFocus, const CStdString& strDownFocus,
-                    DWORD dwSpinColor, DWORD dwSpinX, DWORD dwSpinY,
+                    DWORD dwSpinColor, int iSpinX, int iSpinY,
                     const CStdString& strFont, DWORD dwTextColor, DWORD dwSelectedColor,
                     const CStdString& strButton, const CStdString& strButtonFocus,
                     DWORD dwItemTextOffsetX, DWORD dwItemTextOffsetY, DWORD dwTextAlign);
@@ -60,15 +60,15 @@ public:
   DWORD GetSelectedColor2() const { return m_dwSelectedColor2;};
   const char* GetFontName() const { return m_pFont ? m_pFont->GetFontName().c_str() : ""; };
   const char* GetFontName2() const { if (!m_pFont2) return ""; else return m_pFont2->GetFontName().c_str(); };
-DWORD GetSpinWidth() const { return m_upDown.GetWidth() / 2; };
+  DWORD GetSpinWidth() const { return m_upDown.GetWidth() / 2; };
   DWORD GetSpinHeight() const { return m_upDown.GetHeight(); };
   const CStdString& GetTextureUpName() const { return m_upDown.GetTextureUpName(); };
   const CStdString& GetTextureDownName() const { return m_upDown.GetTextureDownName(); };
   const CStdString& GetTextureUpFocusName() const { return m_upDown.GetTextureUpFocusName(); };
   const CStdString& GetTextureDownFocusName() const { return m_upDown.GetTextureDownFocusName(); };
   DWORD GetSpinTextColor() const { return m_upDown.GetTextColor();};
-  int GetSpinX() const { return m_upDown.GetXPosition();};
-  int GetSpinY() const { return m_upDown.GetYPosition();};
+  int GetSpinX() const { return m_iSpinPosX;};
+  int GetSpinY() const { return m_iSpinPosY;};
   DWORD GetSpace() const { return m_iSpaceBetweenItems;};
   DWORD GetItemHeight() const { return m_iItemHeight; };
   DWORD GetImageWidth() const { return m_iImageWidth;};
@@ -88,6 +88,8 @@ protected:
   virtual void OnUp();
   void OnPageUp();
   void OnPageDown();
+  int m_iSpinPosX;
+  int m_iSpinPosY;
   int m_iSpaceBetweenItems;
   int m_iOffset;
   float m_fSmoothScrollOffset;

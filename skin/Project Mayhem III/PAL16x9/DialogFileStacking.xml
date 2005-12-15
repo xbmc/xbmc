@@ -6,13 +6,13 @@
       <description>CD1</description>
       <type>button</type>
       <id>1</id>
-      <posX>680</posX>
-      <posY>30</posY>
+      <posx>680</posx>
+      <posy>30</posy>
       <width>48</width>
       <height>64</height>
       <label>-</label>
-      <textureFocus>button-cd-focus.png</textureFocus>
-      <textureNoFocus>button-cd-nofocus.png</textureNoFocus>
+      <texturefocus>button-cd-focus.png</texturefocus>
+      <texturenofocus>button-cd-nofocus.png</texturenofocus>
       <onleft>20</onleft>
       <onright>2</onright>
     </control>
@@ -21,13 +21,13 @@
       <description>CD2</description>
       <type>button</type>
       <id>2</id>
-      <posX>680</posX>
-      <posY>30</posY>
+      <posx>680</posx>
+      <posy>30</posy>
       <width>48</width>
       <height>64</height>
       <label>-</label>
-      <textureFocus>button-cd-focus.png</textureFocus>
-      <textureNoFocus>button-cd-nofocus.png</textureNoFocus>
+      <texturefocus>button-cd-focus.png</texturefocus>
+      <texturenofocus>button-cd-nofocus.png</texturenofocus>
       <onright>3</onright>
       <onleft>1</onleft>
     </control>
@@ -36,13 +36,13 @@
       <description>CD3</description>
       <type>button</type>
       <id>3</id>
-      <posX>680</posX>
-      <posY>30</posY>
+      <posx>680</posx>
+      <posy>30</posy>
       <width>48</width>
       <height>64</height>
       <label>-</label>
-      <textureFocus>button-cd-focus.png</textureFocus>
-      <textureNoFocus>button-cd-nofocus.png</textureNoFocus>
+      <texturefocus>button-cd-focus.png</texturefocus>
+      <texturenofocus>button-cd-nofocus.png</texturenofocus>
       <onright>4</onright>
       <onleft>2</onleft>
     </control>
@@ -51,13 +51,13 @@
       <description>CD4</description>
       <type>button</type>
       <id>4</id>
-      <posX>680</posX>
-      <posY>30</posY>
+      <posx>680</posx>
+      <posy>30</posy>
       <width>48</width>
       <height>64</height>
       <label>-</label>
-      <textureFocus>button-cd-focus.png</textureFocus>
-      <textureNoFocus>button-cd-nofocus.png</textureNoFocus>
+      <texturefocus>button-cd-focus.png</texturefocus>
+      <texturenofocus>button-cd-nofocus.png</texturenofocus>
       <onright>5</onright>
       <onleft>3</onleft>
     </control>
@@ -66,13 +66,13 @@
       <description>CD5</description>
       <type>button</type>
       <id>5</id>
-      <posX>680</posX>
-      <posY>30</posY>
+      <posx>680</posx>
+      <posy>30</posy>
       <width>48</width>
       <height>64</height>
       <label>-</label>
-      <textureFocus>button-cd-focus.png</textureFocus>
-      <textureNoFocus>button-cd-nofocus.png</textureNoFocus>
+      <texturefocus>button-cd-focus.png</texturefocus>
+      <texturenofocus>button-cd-nofocus.png</texturenofocus>
       <onright>6</onright>
       <onleft>4</onleft>
     </control>
@@ -81,13 +81,13 @@
       <description>CD6</description>
       <type>button</type>
       <id>6</id>
-      <posX>680</posX>
-      <posY>30</posY>
+      <posx>680</posx>
+      <posy>30</posy>
       <width>48</width>
       <height>64</height>
       <label>-</label>
-      <textureFocus>button-cd-focus.png</textureFocus>
-      <textureNoFocus>button-cd-nofocus.png</textureNoFocus>
+      <texturefocus>button-cd-focus.png</texturefocus>
+      <texturenofocus>button-cd-nofocus.png</texturenofocus>
       <onright>7</onright>
       <onleft>5</onleft>
     </control>
@@ -96,13 +96,13 @@
       <description>CD7</description>
       <type>button</type>
       <id>7</id>
-      <posX>680</posX>
-      <posY>30</posY>
+      <posx>680</posx>
+      <posy>30</posy>
       <width>48</width>
       <height>64</height>
       <label>-</label>
-      <textureFocus>button-cd-focus.png</textureFocus>
-      <textureNoFocus>button-cd-nofocus.png</textureNoFocus>
+      <texturefocus>button-cd-focus.png</texturefocus>
+      <texturenofocus>button-cd-nofocus.png</texturenofocus>
       <onright>8</onright>
       <onleft>6</onleft>
     </control>
@@ -111,13 +111,13 @@
       <description>CD8</description>
       <type>button</type>
       <id>8</id>
-      <posX>680</posX>
-      <posY>30</posY>
+      <posx>680</posx>
+      <posy>30</posy>
       <width>48</width>
       <height>64</height>
       <label>-</label>
-      <textureFocus>button-cd-focus.png</textureFocus>
-      <textureNoFocus>button-cd-nofocus.png</textureNoFocus>
+      <texturefocus>button-cd-focus.png</texturefocus>
+      <texturenofocus>button-cd-nofocus.png</texturenofocus>
       <onright>9</onright>
       <onleft>7</onleft>
     </control>
@@ -126,13 +126,13 @@
       <description>CD9</description>
       <type>button</type>
       <id>9</id>
-      <posX>680</posX>
-      <posY>30</posY>
+      <posx>680</posx>
+      <posy>30</posy>
       <width>48</width>
       <height>64</height>
       <label>-</label>
-      <textureFocus>button-cd-focus.png</textureFocus>
-      <textureNoFocus>button-cd-nofocus.png</textureNoFocus>
+      <texturefocus>button-cd-focus.png</texturefocus>
+      <texturenofocus>button-cd-nofocus.png</texturenofocus>
       <onright>10</onright>
       <onleft>8</onleft>
     </control>
@@ -141,13 +141,13 @@
       <description>CD10</description>
       <type>button</type>
       <id>10</id>
-      <posX>680</posX>
-      <posY>30</posY>
+      <posx>680</posx>
+      <posy>30</posy>
       <width>48</width>
       <height>64</height>
       <label>-</label>
-      <textureFocus>button-cd-focus.png</textureFocus>
-      <textureNoFocus>button-cd-nofocus.png</textureNoFocus>
+      <texturefocus>button-cd-focus.png</texturefocus>
+      <texturenofocus>button-cd-nofocus.png</texturenofocus>
       <onright>11</onright>
       <onleft>9</onleft>
     </control>
@@ -156,13 +156,13 @@
       <description>CD11</description>
       <type>button</type>
       <id>11</id>
-      <posX>680</posX>
-      <posY>30</posY>
+      <posx>680</posx>
+      <posy>30</posy>
       <width>48</width>
       <height>64</height>
       <label>-</label>
-      <textureFocus>button-cd-focus.png</textureFocus>
-      <textureNoFocus>button-cd-nofocus.png</textureNoFocus>
+      <texturefocus>button-cd-focus.png</texturefocus>
+      <texturenofocus>button-cd-nofocus.png</texturenofocus>
       <onright>12</onright>
       <onleft>10</onleft>
     </control>
@@ -171,13 +171,13 @@
       <description>CD12</description>
       <type>button</type>
       <id>12</id>
-      <posX>680</posX>
-      <posY>30</posY>
+      <posx>680</posx>
+      <posy>30</posy>
       <width>48</width>
       <height>64</height>
       <label>-</label>
-      <textureFocus>button-cd-focus.png</textureFocus>
-      <textureNoFocus>button-cd-nofocus.png</textureNoFocus>
+      <texturefocus>button-cd-focus.png</texturefocus>
+      <texturenofocus>button-cd-nofocus.png</texturenofocus>
       <onright>13</onright>
       <onleft>11</onleft>
     </control>
@@ -186,13 +186,13 @@
       <description>CD13</description>
       <type>button</type>
       <id>13</id>
-      <posX>680</posX>
-      <posY>30</posY>
+      <posx>680</posx>
+      <posy>30</posy>
       <width>48</width>
       <height>64</height>
       <label>-</label>
-      <textureFocus>button-cd-focus.png</textureFocus>
-      <textureNoFocus>button-cd-nofocus.png</textureNoFocus>
+      <texturefocus>button-cd-focus.png</texturefocus>
+      <texturenofocus>button-cd-nofocus.png</texturenofocus>
       <onright>14</onright>
       <onleft>12</onleft>
     </control>
@@ -201,13 +201,13 @@
       <description>CD14</description>
       <type>button</type>
       <id>14</id>
-      <posX>680</posX>
-      <posY>30</posY>
+      <posx>680</posx>
+      <posy>30</posy>
       <width>48</width>
       <height>64</height>
       <label>-</label>
-      <textureFocus>button-cd-focus.png</textureFocus>
-      <textureNoFocus>button-cd-nofocus.png</textureNoFocus>
+      <texturefocus>button-cd-focus.png</texturefocus>
+      <texturenofocus>button-cd-nofocus.png</texturenofocus>
       <onright>15</onright>
       <onleft>13</onleft>
     </control>
@@ -216,13 +216,13 @@
       <description>CD15</description>
       <type>button</type>
       <id>15</id>
-      <posX>680</posX>
-      <posY>30</posY>
+      <posx>680</posx>
+      <posy>30</posy>
       <width>48</width>
       <height>64</height>
       <label>-</label>
-      <textureFocus>button-cd-focus.png</textureFocus>
-      <textureNoFocus>button-cd-nofocus.png</textureNoFocus>
+      <texturefocus>button-cd-focus.png</texturefocus>
+      <texturenofocus>button-cd-nofocus.png</texturenofocus>
       <onright>16</onright>
       <onleft>14</onleft>
     </control>
@@ -231,13 +231,13 @@
       <description>CD16</description>
       <type>button</type>
       <id>16</id>
-      <posX>680</posX>
-      <posY>30</posY>
+      <posx>680</posx>
+      <posy>30</posy>
       <width>48</width>
       <height>64</height>
       <label>-</label>
-      <textureFocus>button-cd-focus.png</textureFocus>
-      <textureNoFocus>button-cd-nofocus.png</textureNoFocus>
+      <texturefocus>button-cd-focus.png</texturefocus>
+      <texturenofocus>button-cd-nofocus.png</texturenofocus>
       <onright>17</onright>
       <onleft>15</onleft>
     </control>
@@ -246,13 +246,13 @@
       <description>CD17</description>
       <type>button</type>
       <id>17</id>
-      <posX>680</posX>
-      <posY>30</posY>
+      <posx>680</posx>
+      <posy>30</posy>
       <width>48</width>
       <height>64</height>
       <label>-</label>
-      <textureFocus>button-cd-focus.png</textureFocus>
-      <textureNoFocus>button-cd-nofocus.png</textureNoFocus>
+      <texturefocus>button-cd-focus.png</texturefocus>
+      <texturenofocus>button-cd-nofocus.png</texturenofocus>
       <onright>18</onright>
       <onleft>16</onleft>
     </control>
@@ -261,13 +261,13 @@
       <description>CD18</description>
       <type>button</type>
       <id>18</id>
-      <posX>680</posX>
-      <posY>30</posY>
+      <posx>680</posx>
+      <posy>30</posy>
       <width>48</width>
       <height>64</height>
       <label>-</label>
-      <textureFocus>button-cd-focus.png</textureFocus>
-      <textureNoFocus>button-cd-nofocus.png</textureNoFocus>
+      <texturefocus>button-cd-focus.png</texturefocus>
+      <texturenofocus>button-cd-nofocus.png</texturenofocus>
       <onright>19</onright>
       <onleft>17</onleft>
     </control>
@@ -276,13 +276,13 @@
       <description>CD19</description>
       <type>button</type>
       <id>19</id>
-      <posX>680</posX>
-      <posY>30</posY>
+      <posx>680</posx>
+      <posy>30</posy>
       <width>48</width>
       <height>64</height>
       <label>-</label>
-      <textureFocus>button-cd-focus.png</textureFocus>
-      <textureNoFocus>button-cd-nofocus.png</textureNoFocus>
+      <texturefocus>button-cd-focus.png</texturefocus>
+      <texturenofocus>button-cd-nofocus.png</texturenofocus>
       <onright>20</onright>
       <onleft>18</onleft>
     </control>
@@ -291,13 +291,13 @@
       <description>CD20</description>
       <type>button</type>
       <id>20</id>
-      <posX>680</posX>
-      <posY>30</posY>
+      <posx>680</posx>
+      <posy>30</posy>
       <width>48</width>
       <height>64</height>
       <label>-</label>
-      <textureFocus>button-cd-focus.png</textureFocus>
-      <textureNoFocus>button-cd-nofocus.png</textureNoFocus>
+      <texturefocus>button-cd-focus.png</texturefocus>
+      <texturenofocus>button-cd-nofocus.png</texturenofocus>
       <onright>1</onright>
       <onleft>19</onleft>
     </control>

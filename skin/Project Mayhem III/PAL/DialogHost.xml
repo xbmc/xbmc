@@ -7,8 +7,8 @@
       <description>Dialog Background</description>
       <type>image</type>
       <id>0</id>
-      <posX>137</posX>
-      <posY>177</posY>
+      <posx>137</posx>
+      <posy>177</posy>
       <width>425</width>
       <height>290</height>
       <texture>dialog-invite.png</texture>
@@ -18,8 +18,8 @@
       <description>Dialog Caption</description>
       <type>label</type>
       <id>3100</id>
-      <posX>190</posX>
-      <posY>191</posY>
+      <posx>190</posx>
+      <posy>191</posy>
       <label>15049</label>
       <font>special13</font>
     </control>
@@ -28,8 +28,8 @@
       <description>Hosting type checkmark</description>
       <type>checkmark</type>
       <id>3101</id>
-      <posX>190</posX>
-      <posY>230</posY>
+      <posx>190</posx>
+      <posy>230</posy>
       <font>font13</font>
       <label>15050</label>
       <onleft>3101</onleft>
@@ -40,8 +40,8 @@
 
     <control>
       <id>3102</id>
-      <posX>190</posX>
-      <posY>267</posY>
+      <posx>190</posx>
+      <posy>267</posy>
       <type>label</type>
       <description>Player Limit label</description>
       <label>15051</label>
@@ -50,8 +50,8 @@
 
     <control>
       <id>3103</id>
-      <posX>360</posX>
-      <posY>267</posY>
+      <posx>360</posx>
+      <posy>267</posy>
       <onleft>3103</onleft>
       <onright>3103</onright>
       <onup>3101</onup>
@@ -64,8 +64,8 @@
 
     <control>
       <id>3104</id>
-      <posX>190</posX>
-      <posY>303</posY>
+      <posx>190</posx>
+      <posy>303</posy>
       <type>label</type>
       <description>Password label</description>
       <font>font12</font>
@@ -74,8 +74,8 @@
 
     <control>
       <id>3105</id>
-      <posX>312</posX>
-      <posY>298</posY>
+      <posx>312</posx>
+      <posy>298</posy>
       <onleft>3105</onleft>
       <onright>3105</onright>
       <onup>3103</onup>
@@ -86,14 +86,14 @@
       <width>210</width>
       <height>33</height>
       <label>-</label>
-      <alignY>center</alignY>
+      <aligny>center</aligny>
       <font>font13</font>
     </control>
 
     <control>
       <id>3106</id>
-      <posX>190</posX>
-      <posY>338</posY>
+      <posx>190</posx>
+      <posy>338</posy>
       <type>label</type>
       <description>Description label</description>
       <font>font12</font>
@@ -102,8 +102,8 @@
 
     <control>
       <id>3107</id>
-      <posX>312</posX>
-      <posY>333</posY>
+      <posx>312</posx>
+      <posy>333</posy>
       <onleft>3107</onleft>
       <onright>3107</onright>
       <onup>3105</onup>
@@ -114,7 +114,7 @@
       <width>210</width>
       <height>35</height>
       <label>This is a test</label>
-      <alignY>center</alignY>
+      <aligny>center</aligny>
       <font>font12</font>
     </control>
 
@@ -122,8 +122,8 @@
       <description>OK button</description>
       <type>button</type>
       <id>3108</id>
-      <posX>360</posX>
-      <posY>380</posY>
+      <posx>360</posx>
+      <posy>380</posy>
       <width>75</width>
       <height>33</height>
       <label>186</label>
@@ -138,8 +138,8 @@
       <description>Cancel button</description>
       <type>button</type>
       <id>3109</id>
-      <posX>445</posX>
-      <posY>380</posY>
+      <posx>445</posx>
+      <posy>380</posy>
       <width>75</width>
       <height>35</height>
       <label>222</label>

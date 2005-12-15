@@ -3,8 +3,8 @@
   <defaultcontrol>402</defaultcontrol>
   <coordinates>
     <system>1</system>
-    <posX>70</posX>
-    <posY>27</posY>
+    <posx>70</posx>
+    <posy>27</posy>
   </coordinates>
 
   <visible effect="fade" time="400" start="hidden">Window.IsActive(112)</visible>
@@ -13,8 +13,8 @@
       <description>Popup Music Scan Dialog Background</description>
       <type>image</type>
       <id>1</id>
-      <posX>0</posX>
-      <posY>0</posY>
+      <posx>0</posx>
+      <posy>0</posy>
       <width>400</width>
       <height>90</height>
       <texture>scan-panel-bg.png</texture>
@@ -24,8 +24,8 @@
       <description>Caption Label</description>
       <type>label</type>
       <id>401</id>
-      <posX>126</posX>
-      <posY>21</posY>
+      <posx>126</posx>
+      <posy>21</posy>
       <font>font12</font>
       <align>center</align>
       <width>160</width>
@@ -36,9 +36,9 @@
       <description>Current Directory Label</description>
       <type>label</type>
       <id>402</id>
-      <posX>60</posX>
-      <posY>43</posY>
-      <hasPath>yes</hasPath>
+      <posx>60</posx>
+      <posy>43</posy>
+      <haspath>yes</haspath>
       <font>font10</font>
       <onleft>402</onleft>
       <onright>402</onright>

@@ -3,8 +3,8 @@
   <defaultcontrol>1000</defaultcontrol>
   <coordinates>
     <system>1</system>
-    <posX>0</posX>
-    <posY>0</posY>
+    <posx>0</posx>
+    <posy>0</posy>
   </coordinates>
 
   <visible effect="fade" time="200" start="hidden">Window.IsActive(106)</visible>
@@ -13,8 +13,8 @@
       <description>background top image</description>
       <type>image</type>
       <id>997</id>
-      <posX>0</posX>
-      <posY>-30</posY>
+      <posx>0</posx>
+      <posy>-30</posy>
       <width>238</width>
       <height>30</height>
       <texture>dialog-context-top.png</texture>
@@ -24,8 +24,8 @@
       <description>background image</description>
       <type>image</type>
       <id>999</id>
-      <posX>0</posX>
-      <posY>0</posY>
+      <posx>0</posx>
+      <posy>0</posy>
       <width>238</width>
       <texture>dialog-context-middle.png</texture>
     </control>
@@ -34,7 +34,7 @@
       <description>background bottom image</description>
       <type>image</type>
       <id>998</id>
-      <posX>0</posX>
+      <posx>0</posx>
       <width>238</width>
       <height>30</height>
       <texture>dialog-context-bottom.png</texture>
@@ -44,8 +44,8 @@
       <description>button template</description>
       <type>button</type>
       <id>1000</id>
-      <posX>22</posX>
-      <posY>15</posY>
+      <posx>22</posx>
+      <posy>15</posy>
       <width>200</width>
       <height>30</height>
       <align>center</align>

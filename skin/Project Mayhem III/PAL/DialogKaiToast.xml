@@ -3,18 +3,18 @@
   <defaultcontrol>402</defaultcontrol>
   <coordinates>
     <system>1</system>
-    <posX>420</posX>
-    <posY>470</posY>
+    <posx>420</posx>
+    <posy>470</posy>
   </coordinates>
 
-  <visible effect="slide" time="400" startX="720" startY="470" start="hidden">Window.IsActive(107)</visible>
+  <visible effect="slide" time="400" startx="720" starty="470" start="hidden">Window.IsActive(107)</visible>
   <controls>
     <control>
       <description>Popup Kai Toast Dialog Background</description>
       <type>image</type>
       <id>0</id>
-      <posX>0</posX>
-      <posY>0</posY>
+      <posx>0</posx>
+      <posy>0</posy>
       <width>255</width>
       <height>75</height>
       <texture>voulume-panel-bg.png</texture>
@@ -24,8 +24,8 @@
       <description>avatar</description>
       <type>image</type>
       <id>400</id>
-      <posX>30</posX>
-      <posY>15</posY>
+      <posx>30</posx>
+      <posy>15</posy>
       <width>40</width>
       <height>40</height>
       <texture>infoicon.png</texture>
@@ -35,13 +35,13 @@
       <description>Caption Label</description>
       <type>button</type>
       <id>401</id>
-      <posX>76</posX>
-      <posY>17</posY>
+      <posx>76</posx>
+      <posy>17</posy>
       <font>font12</font>
       <align>center</align>
       <label>ChokeManiac</label>
-      <textureFocus>-</textureFocus>
-      <textureNoFocus>-</textureNoFocus>
+      <texturefocus>-</texturefocus>
+      <texturenofocus>-</texturenofocus>
       <width>160</width>
       <height>20</height>
     </control>
@@ -50,12 +50,12 @@
       <description>Description Button</description>
       <type>button</type>
       <id>402</id>
-      <posX>76</posX>
-      <posY>29</posY>
+      <posx>76</posx>
+      <posy>29</posy>
       <width>160</width>
       <height>32</height>
-      <textureFocus>-</textureFocus>
-      <textureNoFocus>-</textureNoFocus>
+      <texturefocus>-</texturefocus>
+      <texturenofocus>-</texturenofocus>
       <label>has just signed in</label>
       <font>font10</font>
       <onleft>402</onleft>

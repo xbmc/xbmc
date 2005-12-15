@@ -7,8 +7,8 @@
       <description>background image</description>
       <type>image</type>
       <id>1</id>
-      <posX>0</posX>
-      <posY>0</posY>
+      <posx>0</posx>
+      <posy>0</posy>
       <width>720</width>
       <height>576</height>
       <texture>background-videos.png</texture>
@@ -18,8 +18,8 @@
       <description>xbox media center label</description>
       <type>label</type>
       <id>1</id>
-      <posX>200</posX>
-      <posY>63</posY>
+      <posx>200</posx>
+      <posy>63</posy>
       <align>right</align>
       <label>xbox media center</label>
       <font>special12</font>
@@ -29,8 +29,8 @@
       <description>description label</description>
       <type>label</type>
       <id>1</id>
-      <posX>207</posX>
-      <posY>63</posY>
+      <posx>207</posx>
+      <posy>63</posy>
       <align>left</align>
       <label>10522</label>
       <font>special13</font>
@@ -40,8 +40,8 @@
       <description>number of files text label</description>
       <type>label</type>
       <id>12</id>
-      <posX>545</posX>
-      <posY>526</posY>
+      <posx>545</posx>
+      <posy>526</posy>
       <align>right</align>
       <label>-</label>
       <font>font10</font>
@@ -52,8 +52,8 @@
         <description>View As Icons button</description>
         <type>button</type>
         <id>2</id>
-        <posX>50</posX>
-        <posY>120</posY>
+        <posx>50</posx>
+        <posy>120</posy>
         <label>100</label>
         <font>font13</font>
         <onleft>50</onleft>
@@ -66,8 +66,8 @@
         <description>Shuffle button</description>
         <type>radiobutton</type>
         <id>20</id>
-        <posX>50</posX>
-        <posY>157</posY>
+        <posx>50</posx>
+        <posy>157</posy>
         <label>191</label>
         <onleft>50</onleft>
         <onright>50</onright>
@@ -79,8 +79,8 @@
         <description>Randomize button</description>
         <type>radiobutton</type>
         <id>28</id>
-        <posX>50</posX>
-        <posY>194</posY>
+        <posx>50</posx>
+        <posy>194</posy>
         <label>13319</label>
         <onleft>50</onleft>
         <onright>50</onright>
@@ -92,8 +92,8 @@
         <description>Repeat button</description>
         <type>radiobutton</type>
         <id>26</id>
-        <posX>50</posX>
-        <posY>231</posY>
+        <posx>50</posx>
+        <posy>231</posy>
         <label>486</label>
         <onleft>50</onleft>
         <onright>50</onright>
@@ -105,8 +105,8 @@
         <description>Repeat one button</description>
         <type>radiobutton</type>
         <id>27</id>
-        <posX>50</posX>
-        <posY>268</posY>
+        <posx>50</posx>
+        <posy>268</posy>
         <label>487</label>
         <font>font13</font>
         <onleft>50</onleft>
@@ -119,8 +119,8 @@
         <description>Save button</description>
         <type>button</type>
         <id>21</id>
-        <posX>50</posX>
-        <posY>305</posY>
+        <posx>50</posx>
+        <posy>305</posy>
         <label>190</label>
         <font>font13</font>
         <onleft>50</onleft>
@@ -133,8 +133,8 @@
         <description>Clear button</description>
         <type>button</type>
         <id>22</id>
-        <posX>50</posX>
-        <posY>342</posY>
+        <posx>50</posx>
+        <posy>342</posy>
         <label>192</label>
         <font>font13</font>
         <onleft>50</onleft>

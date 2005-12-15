@@ -1,7 +1,7 @@
 <window>
   <id>115</id>
   <defaultcontrol>1</defaultcontrol>
-  <visible effect="slide" time="500" startX="0" startY="-117" accleration="1" start="hidden">Player.Seeking | Player.DisplayAfterSeek | Window.IsActive(VideoOSD) | Window.IsActive(MusicOSD) | Player.Paused | Player.Forwarding | Player.Rewinding</visible>
+  <visible effect="slide" time="500" startx="0" starty="-117" accleration="1" start="hidden">Player.Seeking | Player.DisplayAfterSeek | Window.IsActive(VideoOSD) | Window.IsActive(MusicOSD) | Player.Paused | Player.Forwarding | Player.Rewinding</visible>
   <controls>
     <!-- playstate images -->
     <control>
@@ -9,8 +9,8 @@
       <type>image</type>
       <id>0</id>
       <align>right</align>
-      <posX>410</posX>
-      <posY>35</posY>
+      <posx>410</posx>
+      <posy>35</posy>
       <height>60</height>
       <width>115</width>
       <visible>Player.Paused</visible>
@@ -24,8 +24,8 @@
       <type>image</type>
       <id>0</id>
       <align>right</align>
-      <posX>410</posX>
-      <posY>35</posY>
+      <posx>410</posx>
+      <posy>35</posy>
       <height>60</height>
       <width>115</width>
       <visible>Player.Forwarding2x</visible>
@@ -39,8 +39,8 @@
       <type>image</type>
       <id>0</id>
       <align>right</align>
-      <posX>410</posX>
-      <posY>35</posY>
+      <posx>410</posx>
+      <posy>35</posy>
       <height>60</height>
       <width>115</width>
       <visible>Player.Forwarding4x</visible>
@@ -54,8 +54,8 @@
       <type>image</type>
       <id>0</id>
       <align>right</align>
-      <posX>410</posX>
-      <posY>35</posY>
+      <posx>410</posx>
+      <posy>35</posy>
       <height>60</height>
       <width>115</width>
       <visible>Player.Forwarding8x</visible>
@@ -69,8 +69,8 @@
       <type>image</type>
       <id>0</id>
       <align>right</align>
-      <posX>410</posX>
-      <posY>35</posY>
+      <posx>410</posx>
+      <posy>35</posy>
       <height>60</height>
       <width>115</width>
       <visible>Player.Forwarding16x</visible>
@@ -84,8 +84,8 @@
       <type>image</type>
       <id>0</id>
       <align>right</align>
-      <posX>410</posX>
-      <posY>35</posY>
+      <posx>410</posx>
+      <posy>35</posy>
       <height>60</height>
       <width>115</width>
       <visible>Player.Forwarding32x</visible>
@@ -99,8 +99,8 @@
       <type>image</type>
       <id>0</id>
       <align>right</align>
-      <posX>410</posX>
-      <posY>35</posY>
+      <posx>410</posx>
+      <posy>35</posy>
       <height>60</height>
       <width>115</width>
       <visible>Player.Rewinding2x</visible>
@@ -114,8 +114,8 @@
       <type>image</type>
       <id>0</id>
       <align>right</align>
-      <posX>410</posX>
-      <posY>35</posY>
+      <posx>410</posx>
+      <posy>35</posy>
       <height>60</height>
       <width>115</width>
       <visible>Player.Rewinding4x</visible>
@@ -129,8 +129,8 @@
       <type>image</type>
       <id>0</id>
       <align>right</align>
-      <posX>410</posX>
-      <posY>35</posY>
+      <posx>410</posx>
+      <posy>35</posy>
       <height>60</height>
       <width>115</width>
       <visible>Player.Rewinding8x</visible>
@@ -144,8 +144,8 @@
       <type>image</type>
       <id>0</id>
       <align>right</align>
-      <posX>410</posX>
-      <posY>35</posY>
+      <posx>410</posx>
+      <posy>35</posy>
       <height>60</height>
       <width>115</width>
       <visible>Player.Rewinding16x</visible>
@@ -159,8 +159,8 @@
       <type>image</type>
       <id>0</id>
       <align>right</align>
-      <posX>410</posX>
-      <posY>35</posY>
+      <posx>410</posx>
+      <posy>35</posy>
       <height>60</height>
       <width>115</width>
       <visible>Player.Rewinding32x</visible>
@@ -174,8 +174,8 @@
       <description>Popup Seek Dialog Background</description>
       <type>image</type>
       <id>23</id>
-      <posX>474</posX>
-      <posY>42</posY>
+      <posx>474</posx>
+      <posy>42</posy>
       <width>184</width>
       <height>75</height>
       <texture>voulume-panel-bg.png</texture>
@@ -185,8 +185,8 @@
       <description>Elapsed Time Label</description>
       <type>label</type>
       <id>22</id>
-      <posX>563</posX>
-      <posY>60</posY>
+      <posx>563</posx>
+      <posy>60</posy>
       <font>font10</font>
       <align>right</align>
       <info>Player.Time</info>
@@ -199,8 +199,8 @@
       <description>Seek Time Label</description>
       <type>label</type>
       <id>22</id>
-      <posX>563</posX>
-      <posY>60</posY>
+      <posx>563</posx>
+      <posy>60</posy>
       <font>font10</font>
       <align>right</align>
       <info>Player.SeekTime</info>
@@ -213,8 +213,8 @@
       <description>suffix label</description>
       <type>label</type>
       <id>22</id>
-      <posX>568</posX>
-      <posY>60</posY>
+      <posx>568</posx>
+      <posy>60</posy>
       <label>/</label>
       <align>left</align>
       <font>font10</font>
@@ -224,8 +224,8 @@
       <description>Duration Label</description>
       <type>label</type>
       <id>999</id>
-      <posX>577</posX>
-      <posY>60</posY>
+      <posx>577</posx>
+      <posy>60</posy>
       <info>Player.Duration</info>
       <font>font10</font>
       <align>left</align>
@@ -237,8 +237,8 @@
       <description>Progressbar</description>
       <type>progress</type>
       <id>23</id>
-      <posX>506</posX>
-      <posY>83</posY>
+      <posx>506</posx>
+      <posy>83</posy>
       <width>128</width>
       <height>5</height>
       <info>Player.Progress</info>
@@ -254,13 +254,13 @@
       <description>Seek Slider</description>
       <type>slider</type>
       <id>401</id>
-      <posX>506</posX>
-      <posY>82</posY>
+      <posx>506</posx>
+      <posy>82</posy>
       <width>128</width>
       <height>6</height>
-      <textureSliderBar>seekslider.png</textureSliderBar>
-      <textureSliderNib>slider_nibFO.png</textureSliderNib>
-      <textureSliderNibFocus>slider_nibFO.png</textureSliderNibFocus>
+      <texturesliderbar>seekslider.png</texturesliderbar>
+      <textureslidernib>slider_nibFO.png</textureslidernib>
+      <textureslidernibFocus>slider_nibFO.png</textureslidernibFocus>
       <visible>true</visible>
       <onup>1</onup>
       <ondown>1</ondown>

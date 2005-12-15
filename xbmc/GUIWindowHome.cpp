@@ -3,11 +3,11 @@
 #include "Util.h"
 #include "Credits.h"
 #include "GUIButtonScroller.h"
-#include "GUIConditionalButtonControl.h"
 #include "utils/GUIInfoManager.h"
 #include "GUIDialogContextMenu.h"
 #include "utils/KaiClient.h"
 #ifdef PRE_SKIN_VERSION_2_0_COMPATIBILITY
+#include "GUIConditionalButtonControl.h"
 #include "SkinInfo.h"
 #endif
 
