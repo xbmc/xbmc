@@ -61,6 +61,7 @@ CGUIWindow::CGUIWindow(DWORD dwID, const CStdString &xmlFile)
   m_effectState = EFFECT_NONE;
   m_queueState = EFFECT_NONE;
   m_effectStart = 0;
+  m_effectAmount = 0;
   m_dynamicResourceAlloc = true;
 }
 
