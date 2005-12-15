@@ -96,7 +96,7 @@
   <string><id>164</id><value>Intet medie</value></string>
   <string><id>165</id><value>Medie tilstede</value></string>
   <string><id>166</id><value>Overflade:</value></string>
-  <string><id>167</id><value>FTP server:</value></string>
+  <string><id>167</id><value>FTP Server:</value></string>
   <string><id>168</id><value>Synkroniser tid:</value></string>
   <string><id>169</id><value>Opløsning:</value></string>
   <string><id>170</id><value>Album:</value></string>
@@ -193,7 +193,7 @@
   <string><id>260</id><value>Internet radio</value></string>
   <string><id>261</id><value>Venter på opstart....</value></string>
   <string><id>262</id><value>Skript udgang</value></string>
-  <string><id>263</id><value>HTTP server:</value></string>
+  <string><id>263</id><value>HTTP Server:</value></string>
   <string><id>264</id><value>Optag</value></string>
   <string><id>265</id><value>Stands optagelse</value></string>
   <string><id>266</id><value>Sorter på: Nummer</value></string>
@@ -237,8 +237,8 @@
   <string><id>305</id><value>Aktiveret</value></string>
   <string><id>306</id><value>Non-Interleaved</value></string>
   <string><id>307</id><value>Automatisk</value></string>
-  <string><id>308</id><value>vertical deblokerings filter</value></string>
-  <string><id>309</id><value>horizontal deblokerings filter</value></string>
+  <string><id>308</id><value>Vertical deblokerings filter</value></string>
+  <string><id>309</id><value>Horizontal deblokerings filter</value></string>
   <string><id>310</id><value>Automatisk lysstyrke/kontrast</value></string>
   <string><id>311</id><value>Anti ringning</value></string>
   <string><id>312</id><value>(0=automatisk)</value></string>
@@ -284,7 +284,7 @@
   <string><id>352</id><value>Dæmp</value></string>
   <string><id>353</id><value>Sort</value></string>
   <string><id>354</id><value>Matrix</value></string>
-  <string><id>355</id><value>Pauseskærm efter</value></string>
+  <string><id>355</id><value>Start pauseskærm efter</value></string>
   <string><id>356</id><value>Pauseskærms tilstand</value></string>
   <string><id>357</id><value>Sluk efter</value></string>
   <string><id>358</id><value>Alle album</value></string>
@@ -306,7 +306,7 @@
   <string><id>374</id><value>Skyet</value></string>
   <string><id>375</id><value>Sne</value></string>
   <string><id>376</id><value>Regn</value></string>
-  <string><id>377</id><value>Lys</value></string>
+  <string><id>377</id><value>Let</value></string>
   <string><id>378</id><value>Formiddag</value></string>
   <string><id>379</id><value>Eftermiddag</value></string>
   <string><id>380</id><value>Byger</value></string>
@@ -437,16 +437,16 @@
   <string><id>505</id><value>Henter medie info fra dokumenterne...</value></string>
   <string><id>506</id><value>Brug mappe navne som beskrivelse</value></string>
   <string><id>507</id><value>Sorter på: Forbrug</value></string>
-  <string><id>508</id><value>Brug ikke Genveje eller Gennemsøg</value></string>
-  <string><id>509</id><value>Cache Program Miniature billeder</value></string>
+  <string><id>508</id><value>Brug ikke genveje eller gennemsøg</value></string>
+  <string><id>509</id><value>Gem programmers miniature billeder midlertidigt</value></string>
   <string><id>510</id><value>Enable Visualisations</value></string>
   <string><id>511</id><value>Automatisk ændre video tilstand baseret på spillets region </value></string>
-  <string><id>512</id><value>Start op Vindue</value></string>
+  <string><id>512</id><value>Start op vindue</value></string>
   <string><id>513</id><value>Hjemme Vindue</value></string>
   <string><id>514</id><value>Manuelle Indstillinger</value></string>
   <string><id>515</id><value>Genrer</value></string>
-  <string><id>516</id><value>Håndter Arkiver</value></string>
-  <string><id>517</id><value>Fornylig Afspillede Album</value></string>
+  <string><id>516</id><value>Håndter arkiver</value></string>
+  <string><id>517</id><value>Fornylig afspillede album</value></string>
   <string><id>518</id><value>Start</value></string>
   <string><id>519</id><value>Start i..</value></string>
   <string><id>520</id><value>Rediger XBE titel</value></string>
@@ -456,41 +456,42 @@
   <string><id>603</id><value>Ekstrem</value></string>
   <string><id>604</id><value>Konstat Bit Ratio (CBR)</value></string>
   <string><id>605</id><value>Ripper...</value></string>
-  <string><id>606</id><value>Spor Number:</value></string>
+  <string><id>606</id><value>Spor nummer:</value></string>
   <string><id>607</id><value>Til:</value></string>
-  <string><id>608</id><value>Kunne ikke ripppe CD eller Spor</value></string>
+  <string><id>608</id><value>Kunne ikke ripppe CD eller spor</value></string>
   <string><id>609</id><value>CDDARipPath er ikke sat i XboxMediaCenter.xml</value></string>
   <string><id>620</id><value>CD Ripper</value></string>
   <string><id>621</id><value>Encoder</value></string>
   <string><id>622</id><value>Kvalitet</value></string>
   <string><id>623</id><value>Bit Ratio</value></string>
-  <string><id>624</id><value>Inkluder Spor Nummer</value></string>
+  <string><id>624</id><value>Inkluder spor nummer</value></string>
   <string><id>625</id><value>Alle sange af</value></string>
-  <string><id>629</id><value>Visnings Tilstand</value></string>
+  <string><id>629</id><value>Visnings tilstand</value></string>
   <string><id>630</id><value>Normal</value></string>
   <string><id>631</id><value>Zoom</value></string>
   <string><id>632</id><value>Stræk 4:3</value></string>
   <string><id>633</id><value>Stræk 14:9</value></string>
   <string><id>634</id><value>Stræk 16:9</value></string>
-  <string><id>635</id><value>Original Størrelse</value></string>
+  <string><id>635</id><value>Original størrelse</value></string>
   <string><id>636</id><value>Brugerdefineret</value></string>
   
   <string><id>637</id><value>Replay Gain</value></string>
-  <string><id>638</id><value>Replay Gain Mode</value></string>
+  <string><id>638</id><value>Replay Gain modus</value></string>
   <string><id>639</id><value>Brug Spor Styrke</value></string>
   <string><id>640</id><value>Brug Album Styrke</value></string>
   <string><id>641</id><value>PreAmp Styrke - Replay Gained Filer</value></string>
   <string><id>642</id><value>PreAmp Styrke - Non Replay Gained Filer</value></string>
-  <string><id>643</id><value>Undgå Klipning ved Replay Gained Files</value></string>
-  <string><id>644</id><value>Fjern Sorte Rammer</value></string>
+  <string><id>643</id><value>Undgå klipning ved Replay Gained filer</value></string>
+  <string><id>644</id><value>Fjern sorte kanter</value></string>
 
-  <string><id>645</id><value>Behov for at cache en stor fil. Fortsæt?</value></string>
+  <string><id>645</id><value>Behov for at gemme en stor fil midlertidigt. Fortsæt?</value></string>
+  <string><id>646</id><value>Fjern titel</value></string>
   
   <string><id>700</id><value>Rydder op i databasen</value></string>
   <string><id>701</id><value>Fjerner gamle sange fra databasen</value></string>
   <string><id>702</id><value>Denne sti er tidligere blevet skannet.</value></string>
   <string><id>703</id><value>Vælg Ja for at opdatere alle sange i denne sti.</value></string>
-  <string><id>704</id><value>Vælg nej for kun at tilføje nye sange.</value></string>
+  <string><id>704</id><value>Vælg Nej for kun at tilføje nye sange.</value></string>
   <string><id>705</id><value>Netværk</value></string>
   <string><id>706</id><value>- HTTP Proxy Vært</value></string>
   <string><id>707</id><value>- HTTP Proxy Port</value></string>
@@ -498,7 +499,7 @@
   <string><id>709</id><value>XLink Kai XTag</value></string>
   <string><id>710</id><value>XLink Kai Adgangskode</value></string>
   <string><id>711</id><value>Internet Protokol (IP)</value></string>
-  <string><id>712</id><value>Invalid port specified. Value must be between 1 and 65535.</value></string>
+  <string><id>712</id><value>Ugyldig port angivet. Porten skal ligge imellem 1 og 65535.</value></string>
   <string><id>713</id><value>HTTP Proxy</value></string>
   <string><id>714</id><value>XLink Kai</value></string>
   <string><id>715</id><value>Tildeling</value></string>
@@ -540,11 +541,11 @@
   <string><id>751</id><value>Fjerner netværksmappe</value></string>
   <string><id>752</id><value>Rediger netværksmappe sti</value></string>
   <string><id>753</id><value>Rediger netværksmappe navn</value></string>
-  <string><id>754</id><value>Tilføj Program Link</value></string>
-  <string><id>755</id><value>Rediger Programets Sti</value></string>
-  <string><id>756</id><value>Rediger Programets Navn</value></string>
-  <string><id>757</id><value>Rediger Sti Dybde</value></string>
-  <string><id>758</id><value>Fjerner Program Link</value></string>  
+  <string><id>754</id><value>Tilføj program link</value></string>
+  <string><id>755</id><value>Rediger programets sti</value></string>
+  <string><id>756</id><value>Rediger programets navn</value></string>
+  <string><id>757</id><value>Rediger sti dybde</value></string>
+  <string><id>758</id><value>Fjerner program link</value></string>  
   <string><id>759</id><value>Vis: Stor Liste</value></string>
   <string><id>760</id><value>Gul</value></string>
   <string><id>761</id><value>Hvid</value></string>
@@ -560,11 +561,11 @@
   <string><id>771</id><value>- Auto Fatx Begrænser</value></string>
   <string><id>772</id><value>Lyd Hardware</value></string>
   <string><id>773</id><value>Søger</value></string>
-  <string><id>774</id><value>Slideshow Pauseskærm Mappe</value></string>
+  <string><id>774</id><value>Slideshow pauseskærms mappe</value></string>
   <string><id>998</id><value>XLink KAI</value></string>
   <string><id>999</id><value>Online spil</value></string>
   
-  <string><id>1000</id><value>Pauseskærm Preview</value></string>
+  <string><id>1000</id><value>Afprøv pauseskærm</value></string>
   <string><id>1200</id><value>SMB Share</value></string>
   <string><id>1201</id><value>SMB IP</value></string>
   <string><id>1202</id><value>SMB Workgroup</value></string>
@@ -711,10 +712,10 @@
   <string><id>12320</id><value>c</value></string>
   <string><id>12321</id><value>ok</value></string>
   <string><id>12322</id><value>*</value></string>
-  <string><id>12324</id><value>XBMC Hoved Lås</value></string>
+  <string><id>12324</id><value>XBMC Hovedlås</value></string>
   <string><id>12325</id><value>Mappe låst</value></string>
   <string><id>12326</id><value>Indtast adgangskode</value></string>
-  <string><id>12327</id><value>Indtast Hovedadgangskode og vælg Enter,</value></string>
+  <string><id>12327</id><value>Indtast Hovedlås adgangskode og vælg Enter,</value></string>
   <string><id>12328</id><value>Indtast adgamgslpde og vælg Enter,</value></string> 
   <string><id>12329</id><value>eller vælg C for at annullere</value></string>
   <string><id>12330</id><value>Indtast XBOX gamepad knap kombination og </value></string>
@@ -736,7 +737,7 @@
   <string><id>12346</id><value>Du har ikke flere forsøg tilbage.</value></string>
   <string><id>12347</id><value>XBOX'en slukkes nu.</value></string>
   <string><id>12348</id><value>Låst</value></string>
-  <string><id>12349</id><value>Husk Hoved Kode indtil næste opstart?</value></string>
+  <string><id>12349</id><value>Husk Hovedlåse kode indtil næste opstart?</value></string>
   <string><id>12350</id><value>(Oplåsning af enhver ting i indstillinger vil</value></string>
   <string><id>12351</id><value>automatisk genanvende Hoved Lås.)</value></string>
   <string><id>12352</id><value>Indtast Hoved Kode knap kombination og tryk Start</value></string>
@@ -746,22 +747,22 @@
   <string><id>12356</id><value>Ændre Lås</value></string>
   <string><id>12357</id><value>Del Lås</value></string>
   <string><id>12358</id><value>Adgangskode var blank. Prøv igen.</value></string>
-  <string><id>12360</id><value>Hoved Lås</value></string>
-  <string><id>12361</id><value>Maks. forsøg</value></string>
+  <string><id>12360</id><value>Hovedlås</value></string>
+  <string><id>12361</id><value>Maks. antal forsøg</value></string>
   <string><id>12362</id><value>Aktiver nedlukning</value></string>
   <string><id>12363</id><value>Beskyt delinger</value></string>
-  <string><id>12364</id><value>Hoved Tilstand</value></string>
-  <string><id>12365</id><value>Hoved Kode</value></string>
-  <string><id>12366</id><value>Hoved Lås er ændret. Hoved Kode er nu sat til:</value></string>
-  <string><id>12367</id><value>Hoved Kode er ugyldig!</value></string>
-  <string><id>12368</id><value>Venligst indtast en gyldig Hoved Kode!</value></string>
+  <string><id>12364</id><value>Hovedlås tilstand</value></string>
+  <string><id>12365</id><value>Hovedlås adgangskode</value></string>
+  <string><id>12366</id><value>Hovedlås adgangskode er ændret. Adgangskoden er nu sat til:</value></string>
+  <string><id>12367</id><value>Hovedlås kode er ugyldig!</value></string>
+  <string><id>12368</id><value>Venligst indtast en gyldig hovedlås adgangskode!</value></string>
   <string><id>12369</id><value>XBMC Opstarts Lås</value></string>
-  <string><id>12370</id><value>Hoved Lås Tildstand ændret, Hoved Koden blev ikke indstillet!</value></string>
-  <string><id>12371</id><value>Venligst angiv en ny Hoved Kode!</value></string>
+  <string><id>12370</id><value>Hovedlås tildstand ændret, adgangskoden blev ikke indstillet!</value></string>
+  <string><id>12371</id><value>Venligst angiv en ny Hovedlås adgangskode!</value></string>
   <string><id>12372</id><value>Lås Indstillinger &amp; Dokumenter</value></string>
   <string><id>12373</id><value>Indstillinger &amp;  Dokumenter</value></string>
   <string><id>12374</id><value>Lås Medie</value></string>
-  <string><id>12375</id><value>Hoved Bruger Tilstand</value></string>
+  <string><id>12375</id><value>Superbruger tilstand</value></string>
 
   <string><id>12390</id><value>Systemets Oppetid</value></string>
   <string><id>12391</id><value>Minuter</value></string>
@@ -779,7 +780,7 @@
   <string><id>13004</id><value>- Minimum Fil Længde</value></string>
   <string><id>13005</id><value>Sluk</value></string>
   <string><id>13006</id><value>Dashboard</value></string>
-  <string><id>13100</id><value>Flimre Filter</value></string>
+  <string><id>13100</id><value>Flimmer Filter</value></string>
   <string><id>13200</id><value>Profiler</value></string>
   <string><id>13201</id><value>Slet profil '%s'?</value></string>
   <string><id>13202</id><value>Gem nuværende instillinger som profil...</value></string>
@@ -808,7 +809,7 @@
   <string><id>13309</id><value>istedet for kun XBMC?</value></string>
   <string><id>13310</id><value>Zoom Effekt</value></string>
   <string><id>13311</id><value>Flyde Effekt</value></string>
-  <string><id>13312</id><value>Sort Bar Reduktion</value></string>
+  <string><id>13312</id><value>Sort kant reduktion</value></string>
   <string><id>13313</id><value>Genstart</value></string>
   <string><id>13314</id><value>Musik OSD Timeout</value></string>
   <string><id>13315</id><value>Lav Ikoner</value></string>
@@ -824,3 +825,383 @@
   <string><id>13325</id><value>Forgrund gennemsigtighed</value></string>
   <string><id>13326</id><value>A/V forsinkelse</value></string>
   <string><id>13327</id><value>Karaoke</value></string>
+  <string><id>13328</id><value>%s blev ikke fundet.</value></string>
+  <string><id>13329</id><value>Kunne ikke åbne %s</value></string>
+  <string><id>13330</id><value>Kunne ikke hente %s</value></string>
+  <string><id>13331</id><value>Fejl: ikke nok hukommelse.</value></string>
+  <string><id>13332</id><value>Flyt Op</value></string>
+  <string><id>13333</id><value>Flyt Ned</value></string>
+  <string><id>13334</id><value>Rediger tekst</value></string>
+  <string><id>13335</id><value>Vælg som standard</value></string>
+  <string><id>13336</id><value>Fjern Knap</value></string>
+  <string><id>13337</id><value>- 2 kanals PCM gennemgang</value></string>
+  <string><id>13338</id><value>Front LED</value></string>
+  <string><id>13339</id><value>Front LED Farve</value></string>
+  <string><id>13340</id><value>Uændret</value></string>
+  <string><id>13341</id><value>Grøn</value></string>
+  <string><id>13342</id><value>Orange</value></string>
+  <string><id>13343</id><value>Rød</value></string>
+  <string><id>13344</id><value>Skiftende</value></string>
+  <string><id>13345</id><value>Sluk LED under afspilning</value></string>
+  <string><id>13346</id><value>Film Information</value></string>
+  <string><id>13347</id><value>Tilføj til kø</value></string>
+  <string><id>13348</id><value>Søg IMDb...</value></string>
+  <string><id>13349</id><value>Søg information for alle filer</value></string>
+  <string><id>13350</id><value>Spiller Nu...</value></string>
+  <string><id>13351</id><value>Album information</value></string>
+  <string><id>13352</id><value>Gennemsøg mappe til database</value></string>
+  <string><id>13353</id><value>Stop gennemsøgning</value></string>
+  <string><id>13354</id><value>Render Metode</value></string>
+  <string><id>13355</id><value>Lav Kvalitets Pixel Shader</value></string>
+  <string><id>13356</id><value>Hardware Overlays</value></string>
+  <string><id>13357</id><value>Høj Kvalitets Pixel Shader</value></string>
+  <string><id>13358</id><value>Afspil</value></string>
+  <string><id>13359</id><value>Angiv kunstner miniature</value></string>
+  <string><id>13360</id><value>Generer Miniature</value></string>
+  <string><id>13361</id><value>Aktiver Stemme</value></string>
+  <string><id>13362</id><value>Stemme Maske</value></string>
+  <string><id>13363</id><value>- Tænd Spektrum Energi vægt</value></string>
+  <string><id>13364</id><value>-- Spektrum Energi vægt Værdi</value></string>
+  <string><id>13365</id><value>- Tænd Pitch Skalering</value></string>
+  <string><id>13366</id><value>-- Pitch Skalering Værdi</value></string>
+  <string><id>13367</id><value>- Tænd Viske Faktor</value></string>
+  <string><id>13368</id><value>-- Viske Faktor Værdi</value></string>
+  <string><id>13369</id><value>- Tænd Robot Faktor</value></string>
+  <string><id>13370</id><value>-- Robot Faktor Værdi</value></string>
+  <string><id>13371</id><value>- Port 0 Stemme</value></string>
+  <string><id>13372</id><value>- Port 1 Stemme</value></string>
+  <string><id>13373</id><value>- Port 2 Stemme</value></string>
+  <string><id>13374</id><value>- Port 3 Stemme</value></string>
+  <string><id>13375</id><value>Tænd Enhed</value></string>
+  <string><id>13376</id><value>Lydstyrke</value></string>
+  <string><id>13377</id><value>Standard Visning</value></string>
+  <string><id>13378</id><value>Standard Lysstyrke</value></string>
+  <string><id>13379</id><value>Standard Kontrast</value></string>
+  <string><id>13380</id><value>Standard Gamma</value></string>
+  <string><id>13381</id><value>Fortsæt Video</value></string>
+  <string><id>13382</id><value>Stemme Maske - Port 0</value></string>
+  <string><id>13383</id><value>Stemme Maske - Port 1</value></string>
+  <string><id>13384</id><value>Stemme Maske - Port 2</value></string>
+  <string><id>13385</id><value>Stemme Maske - Port 3</value></string>
+  <string><id>13386</id><value>Brug tidsbaseret søgning</value></string>
+  <string><id>13387</id><value>Spor navngivningsskabelon højre</value></string>
+  <string><id>13388</id><value>Presets</value></string>
+  <string><id>13389</id><value>Der er ingen presets tilgængelige&#10;for denne visualisering</value></string>
+  <string><id>13390</id><value>Der er ingen Indstillinger tilgængelige&#10;for denne visualisering</value></string>
+  <string><id>13391</id><value>Åben/Start</value></string>
+  <string><id>13392</id><value>Brug visualisering hvis der afspilles musik</value></string>
+  <string><id>13393</id><value>Beregn Størrelse</value></string>
+  <string><id>13394</id><value>Beregner mappe størrelse</value></string>
+  <string><id>13395</id><value>Video Indstillinger</value></string>
+  <string><id>13396</id><value>Lyd og Undertekst Indstillinger</value></string>
+  <string><id>13397</id><value>Slå Undertekster til</value></string>
+  <string><id>13398</id><value>Bogmærker</value></string>
+  <string><id>13399</id><value>Ignorer "The" ved sortering</value></string>
+  <string><id>13400</id><value>Crossfade albumnumre</value></string>
+  <string><id>13401</id><value>Gennemsøg for %s</value></string>
+  
+  <string><id>14000</id><value>Stakning: Fra</value></string>
+  <string><id>14001</id><value>Stakning: Til</value></string>
+  <string><id>14002</id><value>Stakning: Fuzzy</value></string>
+  <string><id>14003</id><value>Henter afspillingsliste fil...</value></string>
+  <string><id>14004</id><value>Henter stream fil...</value></string>
+  <string><id>14005</id><value>Parser stream liste...</value></string>
+  <string><id>14006</id><value>Kunne ikke hente stream listen</value></string>
+  <string><id>14007</id><value>Kunne ikke hente afspillingslisten</value></string>
+  <string><id>14008</id><value>Aktiver Kai Notifikationer</value></string>
+  <string><id>14009</id><value>Spil mappe</value></string>
+  <string><id>14010</id><value>Skift automatisk til ikoner baseret på</value></string>
+  <string><id>14011</id><value>Skift automatisk til ikon visning</value></string>
+  <string><id>14012</id><value>- Brug store Ikoner</value></string>
+  <string><id>14013</id><value>- Skift baseret på</value></string>
+  <string><id>14014</id><value>- Procentvis</value></string>
+  <string><id>14015</id><value>Ingen filer og mindst et ikon</value></string>
+  <string><id>14016</id><value>Mindst en fil og et Ikon</value></string>
+  <string><id>14017</id><value>Procent af Ikoner</value></string>
+  <string><id>14018</id><value>Visning</value></string>
+  <string><id>14019</id><value>Skift Landekode 1</value></string>
+  <string><id>14020</id><value>Skift Landekode 2</value></string>
+  <string><id>14021</id><value>Skift Landekode 3</value></string>
+  <string><id>14022</id><value>Database</value></string>
+  <string><id>14023</id><value>Intet TV</value></string>
+  <string><id>14024</id><value>Indtast den nærmeste større by eller US postnummer</value></string>
+  <string><id>14025</id><value>Video Cache   - Harddisk</value></string>
+  <string><id>14026</id><value>              - DVDRom</value></string>
+  <string><id>14027</id><value>              - Lokalt Netwærk</value></string>
+  <string><id>14028</id><value>              - Internet</value></string>
+  <string><id>14029</id><value>Lyd Cache     - Harddisk</value></string>
+  <string><id>14030</id><value>              - DVDRom</value></string>
+  <string><id>14031</id><value>              - Lokalt Netwærk</value></string>
+  <string><id>14032</id><value>              - Internet</value></string>
+  <string><id>14033</id><value>DVD Cache     - Harddisk</value></string>
+  <string><id>14034</id><value>              - DVDRom</value></string>
+  <string><id>14035</id><value>              - Lokalt Netwærk</value></string>
+  <string><id>14036</id><value>Servere</value></string>
+  <string><id>14037</id><value>Udseende</value></string>
+  <string><id>14038</id><value>Netwærksindstillinger er ændret</value></string>
+  <string><id>14039</id><value>XBMC kræver en genstart for at ændre</value></string>
+  <string><id>14040</id><value>netværkssetup'et.  Vil du genstarte nu?</value></string>
+  <string><id>14041</id><value>Efter Processering</value></string>
+  <string><id>14042</id><value>Engine IP Adresse</value></string>
+  <string><id>14043</id><value>- Luk ned mens der afspiller</value></string>
+  <string><id>14044</id><value>%i min.</value></string>
+  <string><id>14045</id><value>%i sek.</value></string>
+  <string><id>14046</id><value>%i ms</value></string>
+  <string><id>14047</id><value>%i %%</value></string>
+  <string><id>14048</id><value>%i kbps</value></string>
+  <string><id>14049</id><value>%i kb</value></string>
+  <string><id>14050</id><value>%i.0 dB</value></string>
+  <string><id>14051</id><value>Vis 12-timers ur</value></string>
+  <string><id>14052</id><value>Skift måned og dag på start skærmen</value></string>
+  <string><id>14053</id><value>GUI Filtere</value></string>
+  <string><id>14054</id><value>Aktiver Internet Opslag</value></string>
+  <string><id>14055</id><value>Gennemsøg i baggrunden</value></string>
+  <string><id>14056</id><value>Stop Gennemsøgning</value></string>
+  <string><id>14057</id><value>Ikke muligt mens der gennemsøges for medie info</value></string>
+  <string><id>14058</id><value>Filmkorn effekt</value></string>
+  <string><id>14059</id><value>Søg efter miniture billeder på delte mapper</value></string>
+  <string><id>14060</id><value>Ukendt type Cache - Internet</value></string>
+  <string><id>14061</id><value>Auto</value></string>
+  <string><id>14062</id><value>Indtast brugernavn for</value></string>
+  
+  <string><id>14063</id><value>Dato &amp; Tid</value></string>
+  <string><id>14064</id><value>Indstil Dato</value></string>
+  <string><id>14065</id><value>Indstil Tid</value></string>
+  <string><id>14066</id><value>Indtast tiden i 24 timers format (TT:MM)</value></string>
+  <string><id>14067</id><value>Indtast datoen i DD/MM/ÅÅÅÅ format</value></string>
+  <string><id>14068</id><value>Indtast IP adressen</value></string>
+  <string><id>14069</id><value>Ønsker du at anvende disse instillinger nu?</value></string> 	 
+  <string><id>14070</id><value>Anvend ændringer nu</value></string> 	 
+  <string><id>14071</id><value>Tillad fil sletning</value></string>
+
+  <string><id>15000</id><value>XLink Kai</value></string>
+  <string><id>15001</id><value>Servicen er ikke forbundet, ønsker du at genetablere</value></string>
+  <string><id>15002</id><value>den med Xbox Media Center?</value></string>
+  <string><id>15003</id><value>Indtast din meddelelse</value></string>
+  <string><id>15004</id><value>Du har er blevet inviteret til at spille %s.</value></string>
+  <string><id>15005</id><value>Dato: %s</value></string>
+  <string><id>15006</id><value>Fra: %s</value></string>
+  <string><id>15007</id><value>Invitation</value></string>
+  <string><id>15008</id><value>Du er blevet inviteret til at deltage hos %s.</value></string>
+  <string><id>15009</id><value>Offline</value></string>
+  <string><id>15010</id><value>Venner</value></string>
+  <string><id>15011</id><value>Vis: Venner</value></string>
+  <string><id>15012</id><value>Deltag</value></string>
+  <string><id>15013</id><value>Stemme</value></string>
+  <string><id>15014</id><value>Inviter</value></string>
+  <string><id>15015</id><value>Fjern</value></string>
+  <string><id>15016</id><value>Spil</value></string>
+  <string><id>15017</id><value>Vis: Spil</value></string>
+  <string><id>15018</id><value>Enter</value></string>
+  <string><id>15019</id><value>Tilføj</value></string>
+  <string><id>15020</id><value>Vært</value></string>
+  <string><id>15021</id><value>Arenaer</value></string>
+  <string><id>15022</id><value>Vis: Arenaer</value></string>
+  <string><id>15023</id><value>Spil nu</value></string>
+  <string><id>15024</id><value>Tilføj</value></string>
+  <string><id>15025</id><value>Vært</value></string>
+  <string><id>15026</id><value>Chat</value></string>
+  <string><id>15027</id><value>Vis: Chat</value></string>
+  <string><id>15028</id><value>Tastatur</value></string>
+  <string><id>15029</id><value>Adgangskode krævet for at deltage i denne arena</value></string>
+  <string><id>15030</id><value>Servicen er afbrudt</value></string>
+  <string><id>15031</id><value>XLink Kai Authentication</value></string>
+  <string><id>15032</id><value>Dit brugernavn og/eller adgangskode blev afvist af</value></string>
+  <string><id>15033</id><value>Orbital serveren. Venligst check din konfiguration.</value></string>
+  <string><id>15034</id><value>er lige logget på</value></string>
+  <string><id>15035</id><value>har startet en stemme samtale</value></string>
+  <string><id>15036</id><value>har sendt dig en invitation</value></string>
+  <string><id>15037</id><value>XBMC is unable to confirm your network is reachable.</value></string>
+  <string><id>15038</id><value>Der er muligvis problemer med at deltage i eller være vært for spil.</value></string>
+  <string><id>15039</id><value>Xbox Media Center er ikke istand til at finde spillet automatisk.</value></string>
+  <string><id>15040</id><value>Indsæt Spil DVD'en i XBOX'en eller tryk 'A' for at annullere</value></string>
+  <string><id>15041</id><value>og start spillet manuelt.</value></string>
+  <string><id>15042</id><value>Adgang nægtet</value></string>
+  <string><id>15043</id><value>%s ankommer til chatten.</value></string>
+  <string><id>15044</id><value>%s forlader chatten.</value></string>
+  <string><id>15045</id><value>Indtast din personlige meddelelse.</value></string>
+  <string><id>15046</id><value>Nuværende Arena</value></string>
+  <string><id>15047</id><value>Indtast en adgangskode for din arena.</value></string>
+  <string><id>15048</id><value>Indtast en beskrivelse for din arena.</value></string>
+  <string><id>15049</id><value>Opret Spil</value></string>
+  <string><id>15050</id><value>Opret Spil i en privat arena</value></string>
+  <string><id>15051</id><value>Spiller begrænsning</value></string>
+  <string><id>15052</id><value>Adgangskode</value></string>
+  <string><id>15053</id><value>Beskrivelse</value></string>
+  <string><id>15054</id><value>Invitations Dialog</value></string>
+  <string><id>15055</id><value>Vælg spil:</value></string>
+  <string><id>15056</id><value>Indtast meddelelse:</value></string>
+  <string><id>15057</id><value>Send</value></string>
+  <string><id>15058</id><value>Opret</value></string>
+  <string><id>15059</id><value>Invitation accepteret!</value></string>
+  <string><id>15060</id><value>Meddelelse her</value></string>
+  <string><id>15061</id><value>Du er inviteret til at spille %s.</value></string>
+  <string><id>15062</id><value>Brug alternativ mplayer lokation</value></string>
+  <string><id>15100</id><value>Bibliotek</value></string>
+  <string><id>15101</id><value>Database</value></string>
+  <string><id>15102</id><value>* Alle Album</value></string>
+  <string><id>15103</id><value>* Alle Kunstnere</value></string>
+  <string><id>15104</id><value>* Alle Sange</value></string>
+  <string><id>15105</id><value>* Alle Genre</value></string>
+  <string><id>15106</id><value>Husk valgt fil ved fremadrettet navigation</value></string>
+  <string><id>15107</id><value>Lagring...</value></string>
+  <string><id>15108</id><value>Navigations Lyde</value></string>
+  <string><id>15109</id><value>Skinnets standard</value></string>
+  <string><id>15110</id><value>Kontroller Vibration</value></string>
+  <string><id>15111</id><value>Skin Tema</value></string>
+  <string><id>15112</id><value>Standard Tema</value></string>
+  <string><id>15200</id><value>AudioScrobbler</value></string>
+  <string><id>15201</id><value>Send spor til AudioScrobbler</value></string>
+  <string><id>15202</id><value>AudioScrobbler Brugernavn</value></string>
+  <string><id>15203</id><value>AudioScrobbler Adgangskode</value></string>
+  <string><id>15204</id><value>Ikke istand til at udføre håndtryk: sover...</value></string>
+  <string><id>15205</id><value>Venligst opdater XBMC</value></string>
+  <string><id>15206</id><value>Sending slog fejl: Forkert autorisation.</value></string>
+  <string><id>15207</id><value>Forbundet</value></string>
+  <string><id>15208</id><value>Afbrudt</value></string>
+  <string><id>15209</id><value>Send Interval %i</value></string>
+  <string><id>15210</id><value>Cached %i Sange</value></string>
+  <string><id>15211</id><value>Sender...</value></string>
+  <string><id>15212</id><value>Sender om %i sekunder</value></string>
+  <string><id>15250</id><value>Send Last.fm Radio til AudioScrobbler</value></string>
+  <string><id>15251</id><value>Forbinder til Last.fm...</value></string>
+  <string><id>15252</id><value>Vælger station...</value></string>
+  
+  <string><id>15253</id><value>Søg efter lignende kunstnere...</value></string>
+  <string><id>15254</id><value>Søg lignende etiket...</value></string>
+  <string><id>15255</id><value>Din profil (%name%)</value></string>
+  <string><id>15256</id><value>Gennemsnitlig bedste etiket</value></string>
+
+  <string><id>15257</id><value>Bedste kunstner med etiket %name%</value></string>
+  <string><id>15258</id><value>Bedste albums med etiket %name%</value></string>
+  <string><id>15259</id><value>Bedste sange med etiket %name%</value></string>
+  <string><id>15260</id><value>Lyt til etiket %name% last.fm radio</value></string>
+
+  <string><id>15261</id><value>Lignede kunstnere som %name%</value></string>
+  <string><id>15262</id><value>Bedste %name% albums</value></string>
+  <string><id>15263</id><value>Bedste %name% sange</value></string>
+  <string><id>15264</id><value>Bedste %name% etiket</value></string>
+  <string><id>15265</id><value>Største fans af %name%</value></string>
+  <string><id>15266</id><value>Lyt til %name% fans last.fm radio</value></string>
+  <string><id>15267</id><value>Lyt til %name% lignende kunstnere last.fm radio</value></string>
+  
+  <string><id>15268</id><value>Bedste kunstner for bruger %name%</value></string>
+  <string><id>15269</id><value>Bedste albums for bruger %name%</value></string>
+  <string><id>15270</id><value>Bedste sange for bruger %name%</value></string>
+  <string><id>15271</id><value>Venner til bruger %name%</value></string>
+  <string><id>15272</id><value>Naboer til bruger %name%</value></string>
+  <string><id>15273</id><value>Ugentlig kunstner kurve for %name%</value></string>
+  <string><id>15274</id><value>Ugentlig album kurve for %name%</value></string>
+  <string><id>15275</id><value>Ugentlig sang kurve for %name%</value></string>
+  <string><id>15283</id><value>Fornyeligt tilføjede sange af %name%</value></string>
+  <string><id>15276</id><value>Lyt til %name%'s naboers last.fm radio</value></string>
+  <string><id>15277</id><value>Lyt til %name%'s personlige last.fm radio</value></string>
+  <string><id>15278</id><value>Lyt til %name%'s ynglings sange last.fm radio</value></string>
+
+  <string><id>15279</id><value>Henter liste fra last.fm...</value></string>
+  <string><id>15280</id><value>Kunne ikke hente liste fra last.fm...</value></string>
+  <string><id>15281</id><value>Indtast kunstner navn for at finde relaterede</value></string>
+  <string><id>15282</id><value>Indtast etiket for at finde lignende</value></string>
+  
+  
+  <string><id>13150</id><value>HDD Nøgle:</value></string>
+  <string><id>13151</id><value>HDD Temperatur:</value></string>
+  <string><id>13152</id><value>DVD Model:</value></string>
+  <string><id>13153</id><value>DVD Firmware:</value></string>
+  <string><id>13154</id><value>HDD Model:</value></string>
+  <string><id>13155</id><value>HDD Serie nummer:</value></string>
+  <string><id>13156</id><value>HDD Firmware:</value></string>
+  <string><id>13157</id><value>HDD Adgangskode:</value></string>
+  <string><id>13158</id><value>HDD Låsningstilstand:</value></string>
+  <string><id>13159</id><value>Subnet mask:</value></string>
+  <string><id>13160</id><value>Gateway:</value></string>
+  <string><id>13161</id><value>DNS:</value></string>
+  <string><id>13162</id><value>Initialisering slog fejl</value></string>
+  <string><id>13163</id><value>GamePads på Port:</value></string>
+  <string><id>13164</id><value>Tastatur på Port:</value></string>
+  <string><id>13165</id><value>Mus på Port:</value></string>
+  <string><id>13166</id><value>Headset/Mikrofon på Port:</value></string>
+  <string><id>13167</id><value>MemoryStick på Port:</value></string>
+  <string><id>13168</id><value>IR-Fjernbetjening på Port:</value></string>
+
+  <string><id>13270</id><value>Hardware:</value></string>
+  <string><id>13271</id><value>CPU Hastighed:</value></string>
+  <string><id>13275</id><value>Hard Disk</value></string>
+  <string><id>13276</id><value>DVD-ROM</value></string>
+  <string><id>13277</id><value>Lager</value></string>
+  <string><id>13278</id><value>Standard</value></string>
+  <string><id>13279</id><value>Netværk</value></string>
+  <string><id>13280</id><value>Video</value></string>
+  <string><id>13281</id><value>Hardware</value></string>
+  <string><id>13282</id><value>_</value></string>
+  <string><id>13283</id><value>Kernel Version:</value></string>
+  <string><id>13284</id><value>CPU Hastighed:</value></string>
+  <string><id>13285</id><value>BIOS:</value></string>
+  <string><id>13286</id><value>Video Encoder:</value></string>
+  <string><id>13287</id><value>Skærm opløsning:</value></string>
+  <string><id>13288</id><value>Xbox Version:</value></string>
+  <string><id>13289</id><value>Xbox Serie Nummer:</value></string>
+  <string><id>13290</id><value>XBOX Producent:</value></string>
+  <string><id>13291</id><value>ModChip:</value></string>
+  <string><id>13292</id><value>A/V Kabel:</value></string>
+  <string><id>13293</id><value>Video &amp; XBE Region:</value></string>
+  <string><id>13294</id><value>DVD Region:</value></string>
+  <string><id>13295</id><value>Internet:</value></string>
+  <string><id>13296</id><value>Xbox'en er forbundet</value></string>
+  <string><id>13297</id><value>Xbox'en er ikke forbundet. Check Netværksindstillinger.</value></string>
+  <string><id>13298</id><value>XBLIVE Nøgle:</value></string>
+
+  <string><id>15213</id><value>Afspil med...</value></string>
+  <string><id>15214</id><value>Brug udglattet A/V synkronisering</value></string>
+  <string><id>15215</id><value>Skjul filnavne i miniature visning</value></string>
+
+  <string><id>15300</id><value>Sti ikke fundet eller ugyldig</value></string>
+  <string><id>15301</id><value>Kunne ikke forbinde til netværksserver</value></string>
+  <string><id>15302</id><value>Ingen servere fundet</value></string>
+  <string><id>15303</id><value>Arbejdsgruppe ikke fundet</value></string>
+
+
+  <string><id>15310</id><value>Åbner multiple-stier</value></string>
+  <string><id>15311</id><value>Sti:</value></string>
+
+  <string><id>16000</id><value>Generelt</value></string>
+  <string><id>16001</id><value>Konfigurer Lyd Hardware...</value></string>
+  <string><id>16002</id><value>CDDB søgning</value></string>
+  <string><id>16003</id><value>Afspiller</value></string>
+  <string><id>16004</id><value>Afspil medie fra disk</value></string>
+  
+  <string><id>16009</id><value>Indtast filmens navn</value></string>
+  <string><id>16010</id><value>Indtast profilens navn</value></string>
+  <string><id>16011</id><value>Indtast albummets navn</value></string>
+  <string><id>16012</id><value>Indtast playlistens navn</value></string>
+  <string><id>16013</id><value>Indtast nyt filnavn</value></string>
+  <string><id>16014</id><value>Indtast mappe navn</value></string>
+  <string><id>16015</id><value>Indtast bibliotek</value></string>
+  <string><id>16016</id><value>Tilgængelige muligheder: %A, %T, %N, %B, %D, %G, %Y, %F, %S</value></string>
+  <string><id>16017</id><value>Indtast søgeord</value></string>
+  
+  <string><id>16018</id><value>Ingen</value></string>
+  <string><id>16019</id><value>Vælg Automatisk</value></string>
+  <string><id>16020</id><value>DeInterlace</value></string>
+  <string><id>16021</id><value>Synkroniser Ulige</value></string>
+  <string><id>16022</id><value>Synkroniser Lige</value></string>
+  <string><id>16023</id><value>Interlaced Håndtering</value></string>
+  
+  <string><id>16024</id><value>Afbryder...</value></string>
+
+  <string><id>16025</id><value>Indtast kunstner navn</value></string>
+  
+  <string><id>16100</id><value>Alle Videoer</value></string>
+  <string><id>16101</id><value>Ikke set</value></string>
+  <string><id>16102</id><value>Set</value></string>
+  <string><id>16103</id><value>Marker som set</value></string>
+  <string><id>16104</id><value>Marker som ikke-set</value></string>
+  <string><id>16105</id><value>Rediger Titel</value></string>
+
+  <string><id>16106</id><value>Brug NTSC-M &amp; NTSC-J</value></string>
+  <string><id>16107</id><value>Brug kun NTSC-M</value></string>
+  <string><id>16108</id><value>Brug kun NTSC-J</value></string>
+  <string><id>16109</id><value>Brug kun PAL-60</value></string>
+  <string><id>16110</id><value>For 60hz spil</value></string>
+
+</strings>
