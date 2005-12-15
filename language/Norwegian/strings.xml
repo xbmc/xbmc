@@ -1,4 +1,4 @@
-<!-- Based on English XML v1.269. Last updated by vnmartinsen  !-->
+<!-- Based on English XML v1.274. Last updated by vnmartinsen  !-->
 <strings>
   <string><id>0</id><value>Mine Programmer</value></string>
   <string><id>1</id><value>Mine Bilder</value></string>
@@ -205,10 +205,10 @@
   <string><id>271</id><value>Topp 100</value></string>
   <string><id>272</id><value>Venstre hjørne oppe</value></string>
   <string><id>273</id><value>Høyre hjørne nede</value></string>
-  <string><id>274</id><value>Plassering av undertekster</value></string>
+  <string><id>274</id><value>Plassering av tekster</value></string>
   <string><id>275</id><value>Justering av punktforhold</value></string>
   <string><id>276</id><value>Flytt pilen for å endre plassering</value></string>
-  <string><id>277</id><value>Flytt linjen for å endre plassering av undertekster</value></string>
+  <string><id>277</id><value>Flytt linjen for å endre plassering av tekster</value></string>
   <string><id>278</id><value>Justér firkanten til den blir helt kvadratisk</value></string>
   <string><id>279</id><value>Kunne ikke laste innstillinger</value></string>
   <string><id>280</id><value>Bruker standard innstillinger</value></string>
@@ -218,13 +218,13 @@
   <string><id>284</id><value>Ingen resultater funnet</value></string>
   <string><id>285</id><value>Linjesprangfjerningsfilter</value></string>
   <string><id>286</id><value>Etterprosesseringsfilter</value></string>
-  <string><id>287</id><value>SRT-undertekster</value></string>
+  <string><id>287</id><value>Tekster</value></string>
   <string><id>288</id><value>Skrifttype</value></string>
   <string><id>289</id><value>Størrelse</value></string>
   <string><id>290</id><value>Volumforsterkning (dB)</value></string>
   <string><id>291</id><value>Bilde</value></string>
   <string><id>292</id><value>Lyd</value></string>
-  <string><id>293</id><value>Undertekster</value></string>
+  <string><id>293</id><value>Tekster</value></string>
   <string><id>294</id><value>Lag bokmerke</value></string>
   <string><id>295</id><value>Skift bokmerke</value></string>
   <string><id>296</id><value>Slett bokmerker</value></string>
@@ -392,7 +392,7 @@
   <string><id>459</id><value>Undertekster</value></string>
   <string><id>460</id><value>Lydkilde</value></string>
   <string><id>461</id><value>[aktiv]</value></string>
-  <string><id>462</id><value>Undertekst</value></string>
+  <string><id>462</id><value>Tekst</value></string>
   <string><id>463</id><value>Bakgrunnslys</value></string>
   <string><id>464</id><value>Lysstyrke</value></string>
   <string><id>465</id><value>Kontrast</value></string>
@@ -441,7 +441,7 @@
   <string><id>508</id><value>Ikke bruke snarveier eller skanning</value></string>
   <string><id>509</id><value>Cache programikoner</value></string>
   <string><id>510</id><value>Skru på visualisering</value></string>
-  <string><id>511</id><value>Bytt auomatisk videoformat basert på spillregion</value></string>
+  <string><id>511</id><value>Bytt videoformat basert på spillregion</value></string>
   <string><id>512</id><value>Starbilde</value></string>
   <string><id>513</id><value>Hovedmeny</value></string>
   <string><id>514</id><value>Manuelle innstillinger</value></string>
@@ -562,7 +562,7 @@
   <string><id>771</id><value>- Automatisk FATX-begrensning</value></string>
   <string><id>772</id><value>Lyd-maskinvare</value></string>
   <string><id>773</id><value>Søker</value></string>
-  <string><id>774</id><value>Mappe til bildevisningsskjermsparer</value></string>
+  <string><id>774</id><value>Mappe for bildevisning</value></string>
   <string><id>998</id><value>XLink Kai</value></string>
   <string><id>999</id><value>Spill på nettet</value></string>
 
@@ -698,6 +698,7 @@
   <string><id>12006</id><value>Lydvisualisering</value></string>
   <string><id>12007</id><value>Mine bilder/fremvisning</value></string>
   <string><id>12008</id><value>Filstablingsdialog</value></string>
+  <string><id>12009</id><value>Gjenoppbygg index...</value></string>
 
 
   <string><id>12310</id><value>0</value></string>
@@ -769,6 +770,7 @@
   <string><id>12391</id><value>Minutter</value></string>
   <string><id>12392</id><value>Timer</value></string>
   <string><id>12393</id><value>Dager</value></string>
+  <string><id>12394</id><value>Total oppetid</value></string>
 
 
   <string><id>12600</id><value>Været</value></string>
@@ -796,6 +798,8 @@
   <string><id>13210</id><value>Startet, alarm om %im</value></string>
   <string><id>13211</id><value>Alarm!</value></string>
   <string><id>13212</id><value>Avbrutt med %im%is igjen</value></string>
+
+  <string><id>13250</id><value>Finn tekster...</value></string>
 
   <string><id>13299</id><value>Temperaturmål</value></string>
   <string><id>13300</id><value>Viftehastighet</value></string>
@@ -899,6 +903,7 @@
   <string><id>13398</id><value>Bokmerker</value></string>
   <string><id>13399</id><value>Ignorer "the" ved sortering</value></string>
   <string><id>13400</id><value>Kryssfading mellom spor i albumer</value></string>
+  <string><id>13401</id><value>Se etter %s</value></string>
 
   <string><id>14000</id><value>Stable</value></string>
   <string><id>14001</id><value>Ikke stable</value></string>
