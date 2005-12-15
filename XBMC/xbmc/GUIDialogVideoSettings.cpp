@@ -688,26 +688,45 @@ void CGUIDialogVideoSettings::OnSettingChanged(unsigned int num)
     else if (setting.id == SUBTITLE_SETTINGS_BROWSER)
     {
       CStdString strPath="";
-      const CStdString strMask = ".utf|.utf8|.utf-8|.sub|.srt|.smi|.rt|.txt|.ssa|.aqt|.jss|.ass|.idx|.ifo";
+      const CStdString strMask = ".utf|.utf8|.utf-8|.sub|.srt|.smi|.rt|.txt|.ssa|.aqt|.jss|.ass|.idx|.ifo|.rar";
       if (CGUIDialogFileBrowser::ShowAndGetFile(g_settings.m_vecMyVideoShares,strMask,g_localizeStrings.Get(293),strPath)) // "subtitles"
       {
         CStdString strExt;
         CUtil::GetExtension(strPath,strExt);
-        if (CFile::Cache(strPath,"z:\\subtitle"+strExt+".keep"))
+        if (strExt.CompareNoCase(".rar") == 0)
         {
-          CStdString strPath2;
-          if (strExt.CompareNoCase(".idx") == 0)
-          {
-            CUtil::ReplaceExtension(strPath,".sub",strPath2);
-            CFile::Cache(strPath2,"z:\\subtitle.sub.keep");
-          }
-          if (strExt.CompareNoCase(".sub") == 0)
-          {
-            CUtil::ReplaceExtension(strPath,".idx",strPath2);
-            CFile::Cache(strPath2,"z:\\subtitle.idx.keep");
-          }
+          std::vector<CStdString> vecExtensionsCached;
+          CUtil::CacheRarSubtitles(vecExtensionsCached,strPath,"",".keep");
           g_application.Restart(true); // to reread subtitles
-          m_gWindowManager.RefreshWindow();
+          CreateSettings();
+          SetupPage();
+          SET_CONTROL_FOCUS(CONTROL_START, 0);         
+        }
+        else
+        {
+          if (CFile::Cache(strPath,"z:\\subtitle"+strExt+".keep"))
+          {
+            CStdString strPath2;
+            if (strExt.CompareNoCase(".idx") == 0)
+            {
+              CUtil::ReplaceExtension(strPath,".sub",strPath2);
+              if (!CFile::Cache(strPath2,"z:\\subtitle.sub.keep"))
+              {
+                CUtil::ReplaceExtension(strPath,".rar",strPath2);
+                std::vector<CStdString> vecExtensionsCached;
+                CUtil::CacheRarSubtitles(vecExtensionsCached,strPath2,CUtil::GetFileName(strPath),".keep");
+              }
+            }
+            if (strExt.CompareNoCase(".sub") == 0)
+            {
+              CUtil::ReplaceExtension(strPath,".idx",strPath2);
+              CFile::Cache(strPath2,"z:\\subtitle.idx.keep");
+            }
+            g_application.Restart(true); // to reread subtitles
+            CreateSettings();
+            SetupPage();
+            SET_CONTROL_FOCUS(CONTROL_START, 0);
+          }
         }
       }
     }
