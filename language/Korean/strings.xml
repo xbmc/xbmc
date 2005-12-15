@@ -485,6 +485,7 @@
   <string><id>644</id><value>검은 여백 제거</value></string>
   
   <string><id>645</id><value>큰 용량의 캐시 작업이 필요합니다. 계속합니까?</value></string>
+  <string><id>646</id><value>타이틀 삭제</value></string>
 
   <string><id>700</id><value>데이터베이스 정리</value></string>
   <string><id>701</id><value>데이터베이스로부터 오래된 음악 제거</value></string>
@@ -560,7 +561,7 @@
   <string><id>771</id><value>- Fatx 제한 자동 해제</value></string>
   <string><id>772</id><value>오디오 하드웨어</value></string>
   <string><id>773</id><value>검색중</value></string>
-  <string><id>774</id><value>슬라이드쇼 화면보호기 폴더</value></string>    
+  <string><id>774</id><value>슬라이드쇼 폴더</value></string>    
   <string><id>998</id><value>XLink KAI</value></string>
   <string><id>999</id><value>온라인 게이밍</value></string>
 
@@ -793,7 +794,9 @@
   <string><id>13209</id><value>알람 간격(분)</value></string>
   <string><id>13210</id><value>시작, %im 분 후 알람</value></string>
   <string><id>13211</id><value>알람!</value></string>
-  <string><id>13212</id><value>%im% 분을 남겨놓고 취소됨</value></string>  
+  <string><id>13212</id><value>%im% 분을 남겨놓고 취소됨</value></string>
+  
+  <string><id>13250</id><value>자막 찾아보기...</value></string>
   
   <string><id>13299</id><value>목표 온도</value></string>
   <string><id>13300</id><value>팬 속도:</value></string>
@@ -897,6 +900,7 @@
   <string><id>13398</id><value>북마크</value></string>
   <string><id>13399</id><value>정렬시 정관사 "The" 무시</value></string>
   <string><id>13400</id><value>앨범 트랙에 크로스페이드 효과</value></string>
+  <string><id>13401</id><value>%s 찾아보기</value></string>
 
   <string><id>14000</id><value>연속 재생</value></string>
   <string><id>14001</id><value>연속 재생 해제</value></string>
@@ -968,7 +972,7 @@
   <string><id>14068</id><value>IP주소 입력</value></string>
   <string><id>14069</id><value>설정을 지금 적용하시겠습니까?</value></string> 	 
   <string><id>14070</id><value>변경 사항 적용</value></string> 	 
-  <string><id>14071</id><value>파일 삭제 허용</value></string>
+  <string><id>14071</id><value>파일 이름변경 및 삭제 허용</value></string>
   
   <string><id>14072</id><value>XLink Kai 사용</value></string> 
   <string><id>14073</id><value>XLink Kai가 사용중이지 않습니다.</value></string> 
@@ -1046,6 +1050,9 @@
   <string><id>15107</id><value>버퍼링중...</value></string>
   <string><id>15108</id><value>네비게이션 사운드</value></string>
   <string><id>15109</id><value>스킨 기본값</value></string>
+  <string><id>15110</id><value>콘트롤러 진동</value></string>
+  <string><id>15111</id><value>스킨 테마</value></string> 
+  <string><id>15112</id><value>기본 테마</value></string> 
   <string><id>15200</id><value>AudioScrobbler</value></string>
   <string><id>15201</id><value>음악 정보를 AudioScrobbler로 전송</value></string>
   <string><id>15202</id><value>AudioScrobbler 사용자명</value></string>

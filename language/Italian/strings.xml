@@ -489,6 +489,7 @@
   <string><id>643</id><value>Evita Clipping nei File "Replay Gained"</value></string>
   <string><id>644</id><value>Taglia Barre Nere</value></string>
   <string><id>645</id><value>Devo memorizzare un file grande. Continuare?</value></string>
+  <string><id>646</id><value>Elimina Titolo</value></string>
 
   <string><id>700</id><value>Riorganizza l'archivio</value></string>
   <string><id>701</id><value>Eliminazione vecchie canzoni dall' archivio</value></string>
@@ -708,6 +709,7 @@
   <string><id>12006</id><value>Effetti grafici</value></string>
   <string><id>12007</id><value>Immagini/slideshow</value></string>
   <string><id>12008</id><value>Casella di Unisci</value></string>
+  <string><id>12009</id><value>Forza ricostruzione indice...</value></string>
 
   <string><id>12310</id><value>0</value></string>
   <string><id>12311</id><value>1</value></string>
@@ -829,6 +831,8 @@
   <string><id>13210</id><value>Partito, allarme tra %im</value></string>
   <string><id>13211</id><value>Allarme!</value></string>
   <string><id>13212</id><value>Annullato con ancora %im%is</value></string>
+
+  <string><id>13250</id><value>Mostra sottotili...</value></string>
 
   <string><id>13270</id><value>Hardware:</value></string>
   <string><id>13271</id><value>CPU Speed:</value></string>
@@ -961,6 +965,7 @@ per questo effetto grafico</value></string>
   <string><id>13398</id><value>Segnalibri</value></string>
   <string><id>13399</id><value>Ignora "The" nell'ordinamento</value></string>
   <string><id>13400</id><value>Dissolvenza tra le tracce dell'album</value></string>
+  <string><id>13401</id><value>Mostra per %s</value></string>
 
   <string><id>14000</id><value>Unisci Volumi</value></string>
   <string><id>14001</id><value>Dividi Volumi</value></string>
