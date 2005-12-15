@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 15-12-2005 fixed: [ 1380351 ] Autoshutdown if slideshow screensaver is activated
  - 15-12-2005 fixed: Progress dialog could stay on screen after a calling up the shoutcast list via the webserver.
  - 15-12-2005 added: XBMC.PlayerControl(BigSkipForward), BigSkipBackward, SmallSkipForward and SmallSkipBackward built in functions.
  - 15-12-2005 changed: Skin version updated to 1.85 (version 1.3 skins still run, but skinners need to update)
