@@ -3,8 +3,8 @@
   <defaultcontrol>901</defaultcontrol>
   <coordinates>
     <system>1</system>
-    <posX>535</posX>
-    <posY>40</posY>
+    <posx>535</posx>
+    <posy>40</posy>
   </coordinates>
 
   <controls>
@@ -12,8 +12,8 @@
       <description>Mute Image</description>
       <type>image</type>
       <id>901</id>
-      <posX>70</posX>
-      <posY>16</posY>
+      <posx>70</posx>
+      <posy>16</posy>
       <width>40</width>
       <height>40</height>
       <texture>mute.png</texture>

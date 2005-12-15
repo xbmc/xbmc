@@ -8,12 +8,12 @@
       <description>REC button</description>
       <type>button</type>
       <id>208</id>
-      <posX>35</posX>
-      <posY>339</posY>
+      <posx>35</posx>
+      <posy>339</posy>
       <width>128</width>
       <height>128</height>
-      <textureFocus>osd_button_rec.png</textureFocus>
-      <textureNoFocus>osd_button_recNF.png</textureNoFocus>
+      <texturefocus>osd_button_rec.png</texturefocus>
+      <texturenofocus>osd_button_recNF.png</texturenofocus>
       <label>-</label>
       <font>-</font>
       <onleft>210</onleft>
@@ -28,12 +28,12 @@
       <description>REC button 2</description>
       <type>button</type>
       <id>209</id>
-      <posX>35</posX>
-      <posY>339</posY>
+      <posx>35</posx>
+      <posy>339</posy>
       <width>128</width>
       <height>128</height>
-      <textureFocus>osd_button_rec2.png</textureFocus>
-      <textureNoFocus>-</textureNoFocus>
+      <texturefocus>osd_button_rec2.png</texturefocus>
+      <texturenofocus>-</texturenofocus>
       <label>-</label>
       <font>-</font>
       <onleft>211</onleft>
@@ -48,8 +48,8 @@
       <description>Panel</description>
       <type>image</type>
       <id>1</id>
-      <posX>60</posX>
-      <posY>330</posY>
+      <posx>60</posx>
+      <posy>330</posy>
       <height>223</height>
       <width>180</width>
       <texture>osd_panel_audio.png</texture>
@@ -60,12 +60,12 @@
       <description>Skip Bwd</description>
       <type>button</type>
       <id>210</id>
-      <posX>81</posX>
-      <posY>424</posY>
+      <posx>81</posx>
+      <posy>424</posy>
       <width>38</width>
       <height>45</height>
-      <textureFocus>osd_button_skip_minusFO.png</textureFocus>
-      <textureNoFocus>-</textureNoFocus>
+      <texturefocus>osd_button_skip_minusFO.png</texturefocus>
+      <texturenofocus>-</texturenofocus>
       <label>-</label>
       <font>-</font>
       <onleft>215</onleft>
@@ -79,15 +79,15 @@
       <description>Rewind</description>
       <type>togglebutton</type>
       <id>211</id>
-      <posX>111</posX>
-      <posY>420</posY>
+      <posx>111</posx>
+      <posy>420</posy>
       <width>34</width>
       <height>42</height>
-      <textureFocus>osd_button_rewFO.png</textureFocus>
-      <textureNoFocus>-</textureNoFocus>
-      <UseAltTexture>Player.Rewinding</UseAltTexture>
-      <AltTextureFocus>osd_button_rewSELFO.png</AltTextureFocus>
-      <AltTextureNoFocus>osd_button_rewSELNF.png</AltTextureNoFocus>
+      <texturefocus>osd_button_rewFO.png</texturefocus>
+      <texturenofocus>-</texturenofocus>
+      <usealttexture>Player.Rewinding</usealttexture>
+      <alttexturefocus>osd_button_rewSELFO.png</alttexturefocus>
+      <alttexturenofocus>osd_button_rewSELNF.png</alttexturenofocus>
       <label>-</label>
       <font>-</font>
       <onleft>210</onleft>
@@ -101,15 +101,15 @@
       <description>Play</description>
       <type>togglebutton</type>
       <id>213</id>
-      <posX>136</posX>
-      <posY>404</posY>
+      <posx>136</posx>
+      <posy>404</posy>
       <width>52</width>
       <height>58</height>
-      <textureFocus>osd_button_pauseFO.png</textureFocus>
-      <textureNoFocus>osd_button_pauseNF.png</textureNoFocus>
-      <UseAltTexture>Player.Paused</UseAltTexture>
-      <AltTextureFocus>osd_button_playFO.png</AltTextureFocus>
-      <AltTextureNoFocus>osd_button_playNF.png</AltTextureNoFocus>
+      <texturefocus>osd_button_pauseFO.png</texturefocus>
+      <texturenofocus>osd_button_pauseNF.png</texturenofocus>
+      <usealttexture>Player.Paused</usealttexture>
+      <alttexturefocus>osd_button_playFO.png</alttexturefocus>
+      <alttexturenofocus>osd_button_playNF.png</alttexturenofocus>
       <label>-</label>
       <font>-</font>
       <onleft>211</onleft>
@@ -123,15 +123,15 @@
       <description>Fast Forward</description>
       <type>togglebutton</type>
       <id>214</id>
-      <posX>179</posX>
-      <posY>405</posY>
+      <posx>179</posx>
+      <posy>405</posy>
       <width>32</width>
       <height>42</height>
-      <textureFocus>osd_button_ffFO.png</textureFocus>
-      <textureNoFocus>-</textureNoFocus>
-      <UseAltTexture>Player.Forwarding</UseAltTexture>
-      <AltTextureFocus>osd_button_ffSELFO.png</AltTextureFocus>
-      <AltTextureNoFocus>osd_button_ffSELNF.png</AltTextureNoFocus>
+      <texturefocus>osd_button_ffFO.png</texturefocus>
+      <texturenofocus>-</texturenofocus>
+      <usealttexture>Player.Forwarding</usealttexture>
+      <alttexturefocus>osd_button_ffSELFO.png</alttexturefocus>
+      <alttexturenofocus>osd_button_ffSELNF.png</alttexturenofocus>
       <label>-</label>
       <font>-</font>
       <onleft>213</onleft>
@@ -145,12 +145,12 @@
       <description>Skip Fwd</description>
       <type>button</type>
       <id>215</id>
-      <posX>202</posX>
-      <posY>400</posY>
+      <posx>202</posx>
+      <posy>400</posy>
       <width>33</width>
       <height>40</height>
-      <textureFocus>osd_button_skip_plusSELFO.png</textureFocus>
-      <textureNoFocus>-</textureNoFocus>
+      <texturefocus>osd_button_skip_plusSELFO.png</texturefocus>
+      <texturenofocus>-</texturenofocus>
       <label>-</label>
       <font>-</font>
       <onleft>214</onleft>
@@ -164,12 +164,12 @@
       <description>playlist Button</description>
       <type>button</type>
       <id>499</id>
-      <posX>130</posX>
-      <posY>346</posY>
+      <posx>130</posx>
+      <posy>346</posy>
       <width>38</width>
       <height>38</height>
-      <textureFocus>osd_button_playlistFO.png</textureFocus>
-      <textureNoFocus>-</textureNoFocus>
+      <texturefocus>osd_button_playlistFO.png</texturefocus>
+      <texturenofocus>-</texturenofocus>
       <execute>XBMC.ActivateWindow(500)</execute>
       <label>-</label>
       <font>-</font>
@@ -183,12 +183,12 @@
       <description>Popup Vis Select Button</description>
       <type>button</type>
       <id>500</id>
-      <posX>136</posX>
-      <posY>376</posY>
+      <posx>136</posx>
+      <posy>376</posy>
       <width>39</width>
       <height>36</height>
-      <textureFocus>osd_button_visFO.png</textureFocus>
-      <textureNoFocus>-</textureNoFocus>
+      <texturefocus>osd_button_visFO.png</texturefocus>
+      <texturenofocus>-</texturenofocus>
       <label>-</label>
       <font>-</font>
       <onleft>209</onleft>
@@ -201,12 +201,12 @@
       <description>Popup Vis Preset List</description>
       <type>button</type>
       <id>220</id>
-      <posX>151</posX>
-      <posY>456</posY>
+      <posx>151</posx>
+      <posy>456</posy>
       <width>41</width>
       <height>37</height>
-      <textureFocus>osd_button_presetsFO.png</textureFocus>
-      <textureNoFocus>-</textureNoFocus>
+      <texturefocus>osd_button_presetsFO.png</texturefocus>
+      <texturenofocus>-</texturenofocus>
       <label>-</label>
       <font>-</font>
       <onleft>211</onleft>
@@ -220,12 +220,12 @@
       <description>Popup Vis Settings</description>
       <type>button</type>
       <id>219</id>
-      <posX>156</posX>
-      <posY>486</posY>
+      <posx>156</posx>
+      <posy>486</posy>
       <width>43</width>
       <height>43</height>
-      <textureFocus>osd_button_vizsettingsFO.png</textureFocus>
-      <textureNoFocus>-</textureNoFocus>
+      <texturefocus>osd_button_vizsettingsFO.png</texturefocus>
+      <texturenofocus>-</texturenofocus>
       <label>-</label>
       <font>-</font>
       <onleft>210</onleft>
@@ -239,13 +239,13 @@
       <description>Visualisation Select Button</description>
       <type>selectbutton</type>
       <id>503</id>
-      <posX>250</posX>
-      <posY>431</posY>
+      <posx>250</posx>
+      <posy>431</posy>
       <width>420</width>
       <height>35</height>
       <label>-</label>
-      <textureNoFocus>-</textureNoFocus>
-      <textureFocus>-</textureFocus>
+      <texturenofocus>-</texturenofocus>
+      <texturefocus>-</texturefocus>
       <texturebg>osd_settings_header.png</texturebg>
       <onleft>500</onleft>
       <onright>500</onright>

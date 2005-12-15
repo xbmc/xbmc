@@ -3,8 +3,8 @@
   <defaultcontrol>1</defaultcontrol>
   <coordinates>
     <system>1</system>
-    <posX>0</posX>
-    <posY>0</posY>
+    <posx>0</posx>
+    <posy>0</posy>
   </coordinates>
 
   <controls>
@@ -12,8 +12,8 @@
       <description>Pointer Image</description>
       <type>image</type>
       <id>1</id>
-      <posX>0</posX>
-      <posY>0</posY>
+      <posx>0</posx>
+      <posy>0</posy>
       <width>23</width>
       <height>32</height>
       <texture>pointer-nofocus.png</texture>
@@ -23,8 +23,8 @@
       <description>Pointer Focus Image</description>
       <type>image</type>
       <id>2</id>
-      <posX>0</posX>
-      <posY>0</posY>
+      <posx>0</posx>
+      <posy>0</posy>
       <width>23</width>
       <height>32</height>
       <texture>pointer-focus.png</texture>
@@ -34,8 +34,8 @@
       <description>Pointer Drag Image</description>
       <type>image</type>
       <id>3</id>
-      <posX>-15</posX>
-      <posY>-15</posY>
+      <posx>-15</posx>
+      <posy>-15</posy>
       <width>30</width>
       <height>30</height>
       <texture>calibrate-pixelratio-focus.png</texture>
@@ -45,8 +45,8 @@
       <description>Pointer Click Image</description>
       <type>image</type>
       <id>4</id>
-      <posX>0</posX>
-      <posY>0</posY>
+      <posx>0</posx>
+      <posy>0</posy>
       <width>30</width>
       <height>30</height>
       <texture>calibrate-topleft-focus.png</texture>

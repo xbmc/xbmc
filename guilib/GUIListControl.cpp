@@ -16,7 +16,7 @@ CGUIListControl::CGUIListControl(DWORD dwParentID, DWORD dwControlId, int iPosX,
                                  const CStdString& strButton, const CStdString& strButtonFocus,
                                  DWORD dwItemTextOffsetX, DWORD dwItemTextOffsetY)
     : CGUIControl(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight)
-    , m_upDown(dwControlId, 0, iSpinX, iSpinY, dwSpinWidth, dwSpinHeight, strUp, strDown, strUpFocus, strDownFocus, strFont, dwSpinColor, SPIN_CONTROL_TYPE_INT)
+    , m_upDown(dwControlId, 0, 0, 0, dwSpinWidth, dwSpinHeight, strUp, strDown, strUpFocus, strDownFocus, strFont, dwSpinColor, SPIN_CONTROL_TYPE_INT)
     , m_imgButton(dwControlId, 0, iPosX, iPosY, dwWidth, dwHeight, strButtonFocus, strButton, dwItemTextOffsetX, dwItemTextOffsetY)
 {
   m_dwSelectedColor = dwSelectedColor;
@@ -30,6 +30,8 @@ CGUIListControl::CGUIListControl(DWORD dwParentID, DWORD dwControlId, int iPosX,
   m_iCursorY = 0;
   m_dwTextColor = dwTextColor;
   m_strSuffix = L"|";
+  m_iSpinPosX = iSpinX;
+  m_iSpinPosY = iSpinY;
   m_iTextOffsetX = 0;
   m_iTextOffsetY = 0;
   m_iImageWidth = 16;
@@ -232,6 +234,7 @@ void CGUIListControl::Render()
 
   if (m_bUpDownVisible && m_upDown.GetMaximum() > 1)
   {
+    m_upDown.SetPosition(m_iPosX + m_iSpinPosX, m_iPosY + m_iSpinPosY);
     m_upDown.SetValue(GetPage());
     m_upDown.Render();
   }

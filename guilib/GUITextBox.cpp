@@ -11,14 +11,16 @@ CGUITextBox::CGUITextBox(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPo
                          DWORD dwSpinWidth, DWORD dwSpinHeight,
                          const CStdString& strUp, const CStdString& strDown,
                          const CStdString& strUpFocus, const CStdString& strDownFocus,
-                         DWORD dwSpinColor, DWORD dwSpinX, DWORD dwSpinY,
+                         DWORD dwSpinColor, int iSpinX, int iSpinY,
                          const CStdString& strFont, DWORD dwTextColor)
     : CGUIControl(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight)
-    , m_upDown(dwControlId, 0, dwSpinX, dwSpinY, dwSpinWidth, dwSpinHeight, strUp, strDown, strUpFocus, strDownFocus, strFont, dwSpinColor, SPIN_CONTROL_TYPE_INT)
+    , m_upDown(dwControlId, 0, 0, 0, dwSpinWidth, dwSpinHeight, strUp, strDown, strUpFocus, strDownFocus, strFont, dwSpinColor, SPIN_CONTROL_TYPE_INT)
 {
   m_iOffset = 0;
   m_iItemsPerPage = 10;
   m_iItemHeight = 10;
+  m_iSpinPosX = iSpinX;
+  m_iSpinPosY = iSpinY;
   m_iMaxPages = 50;
   m_pFont = g_fontManager.GetFont(strFontName);
   m_dwTextColor = dwTextColor;
@@ -66,6 +68,7 @@ void CGUITextBox::Render()
     }
   }
   m_pFont->End();
+  m_upDown.SetPosition(m_iPosX + m_iSpinPosX, m_iPosY + m_iSpinPosY);
   m_upDown.Render();
 }
 

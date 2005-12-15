@@ -7,8 +7,8 @@
       <description>background image</description>
       <type>image</type>
       <id>1</id>
-      <posX>0</posX>
-      <posY>0</posY>
+      <posx>0</posx>
+      <posy>0</posy>
       <width>720</width>
       <height>576</height>
       <texture>background-UIcalibration16x9.png</texture>
@@ -18,28 +18,28 @@
       <description>top left mover</description>
       <type>mover</type>
       <id>8</id>
-      <posX>0</posX>
-      <posY>0</posY>
-      <textureFocus>calibrate-topleft-focus.png</textureFocus>
-      <textureNoFocus>calibrate-topleft.png</textureNoFocus>
+      <posx>0</posx>
+      <posy>0</posy>
+      <texturefocus>calibrate-topleft-focus.png</texturefocus>
+      <texturenofocus>calibrate-topleft.png</texturenofocus>
     </control>
 
     <control>
       <description>right bottom mover</description>
       <type>mover</type>
       <id>9</id>
-      <posX>700</posX>
-      <posY>500</posY>
-      <textureFocus>calibrate-bottomright-focus.png</textureFocus>
-      <textureNoFocus>calibrate-bottomright.png</textureNoFocus>
+      <posx>700</posx>
+      <posy>500</posy>
+      <texturefocus>calibrate-bottomright-focus.png</texturefocus>
+      <texturenofocus>calibrate-bottomright.png</texturenofocus>
     </control>
 
     <control>
       <description>coordinates label</description>
       <type>label</type>
       <id>3</id>
-      <posX>0</posX>
-      <posY>275</posY>
+      <posx>0</posx>
+      <posy>275</posy>
       <width>720</width>
       <label>5</label>
       <align>center</align>

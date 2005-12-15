@@ -1,13 +1,16 @@
-
 #include "stdafx.h"
 #include "GUIWindowSettingsUICalibration.h"
 #include "GUIMoverControl.h"
 #include "Application.h"
 #include "GUIWindowSettingsScreenCalibration.h"
 
+#ifdef PRE_SKIN_VERSION_2_0_COMPATIBILITY
+#include "SkinInfo.h"
+#endif
+
 #define CONTROL_TOPLEFT 8
-#define CONTROL_LABEL 3
 #define CONTROL_BOTTOMRIGHT 9
+#define CONTROL_LABEL 3
 
 CGUIWindowSettingsUICalibration::CGUIWindowSettingsUICalibration(void)
     : CGUIWindow(WINDOW_UI_CALIBRATION, "SettingsUICalibration.xml")
@@ -145,39 +148,42 @@ void CGUIWindowSettingsUICalibration::ResetControls()
   }
 }
 
-#ifdef PRE_SKIN_VERSION_1_4_COMPATIBILITY
+#ifdef PRE_SKIN_VERSION_2_0_COMPATIBILITY
 #define CONTROL_OLD_MOVER 2
 void CGUIWindowSettingsUICalibration::OnWindowLoaded()
 {
-  // check if we have 2 mover controls - if not, load the ones
-  // for the screen calibration and use those instead.
-  CGUIMoverControl *pTopLeft = (CGUIMoverControl *)GetControl(CONTROL_TOPLEFT);
-  CGUIMoverControl *pBottomRight = (CGUIMoverControl *)GetControl(CONTROL_BOTTOMRIGHT);
-  if (pTopLeft && pBottomRight)
-    return; // we are up to date
+  if (g_SkinInfo.GetVersion() < 1.85)
+  {
+    // check if we have 2 mover controls - if not, load the ones
+    // for the screen calibration and use those instead.
+    CGUIMoverControl *pTopLeft = (CGUIMoverControl *)GetControl(CONTROL_TOPLEFT);
+    CGUIMoverControl *pBottomRight = (CGUIMoverControl *)GetControl(CONTROL_BOTTOMRIGHT);
+    if (pTopLeft && pBottomRight)
+      return; // we are up to date
 
-  // ok, first off, load teh SettingsScreenCalibration file and find the mover control information
-  CGUIWindowSettingsScreenCalibration *pScreen = (CGUIWindowSettingsScreenCalibration*)m_gWindowManager.GetWindow(WINDOW_MOVIE_CALIBRATION);
-  if (pScreen)
-  {
-    pScreen->Initialize(); // loads itself
-    CGUIMoverControl *pMover = (CGUIMoverControl *)pScreen->GetControl(CONTROL_TOPLEFT);
-    if (pMover) pTopLeft = new CGUIMoverControl(*pMover);  
-    pMover = (CGUIMoverControl *)pScreen->GetControl(CONTROL_BOTTOMRIGHT);
-    if (pMover) pBottomRight = new CGUIMoverControl(*pMover);
-    pScreen->ClearAll();  // clear itself
+    // ok, first off, load the SettingsScreenCalibration file and find the mover control information
+    CGUIWindowSettingsScreenCalibration *pScreen = (CGUIWindowSettingsScreenCalibration*)m_gWindowManager.GetWindow(WINDOW_MOVIE_CALIBRATION);
+    if (pScreen)
+    {
+      pScreen->Initialize(); // loads itself
+      CGUIMoverControl *pMover = (CGUIMoverControl *)pScreen->GetControl(CONTROL_TOPLEFT);
+      if (pMover) pTopLeft = new CGUIMoverControl(*pMover);  
+      pMover = (CGUIMoverControl *)pScreen->GetControl(CONTROL_BOTTOMRIGHT);
+      if (pMover) pBottomRight = new CGUIMoverControl(*pMover);
+      pScreen->ClearAll();  // clear itself
+    }
+    // remove any current mover controls
+    const CGUIControl *pOldMover = GetControl(CONTROL_OLD_MOVER);
+    if (pOldMover)
+    {
+      Remove(CONTROL_OLD_MOVER);
+      delete pOldMover;
+    }
+    if (!pTopLeft || !pBottomRight) return;
+    // add the new movers
+    Add(pTopLeft);
+    Add(pBottomRight);
   }
-  // remove any current mover controls
-  const CGUIControl *pOldMover = GetControl(CONTROL_OLD_MOVER);
-  if (pOldMover)
-  {
-    Remove(CONTROL_OLD_MOVER);
-    delete pOldMover;
-  }
-  if (!pTopLeft || !pBottomRight) return;
-  // add the new movers
-  Add(pTopLeft);
-  Add(pBottomRight);
   CGUIWindow::OnWindowLoaded();
 }
 #endif

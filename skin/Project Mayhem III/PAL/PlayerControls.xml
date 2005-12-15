@@ -5,16 +5,16 @@
   <type>buttonMenu</type>
   <coordinates>
     <system>1</system>
-    <posX>67</posX>
-    <posY>470</posY>
+    <posx>67</posx>
+    <posy>470</posy>
   </coordinates>
 
   <controls>
     <control>
       <type>image</type>
       <id>1</id>
-      <posX>0</posX>
-      <posY>0</posY>
+      <posx>0</posx>
+      <posy>0</posy>
       <width>128</width>
       <height>22</height>
       <texture>music-bg.png</texture>
@@ -23,13 +23,13 @@
     <control>
       <type>button</type>
       <id>400</id>
-      <posX>0</posX>
-      <posY>0</posY>
+      <posx>0</posx>
+      <posy>0</posy>
       <width>22</width>
       <height>22</height>
       <label>-</label>
-      <textureFocus>music-skipminus-focus.png</textureFocus>
-      <textureNoFocus>music-skipminus-nofocus.png</textureNoFocus>
+      <texturefocus>music-skipminus-focus.png</texturefocus>
+      <texturenofocus>music-skipminus-nofocus.png</texturenofocus>
       <onleft>405</onleft>
       <onright>401</onright>
       <onup>400</onup>
@@ -40,13 +40,13 @@
     <control>
       <type>button</type>
       <id>401</id>
-      <posX>22</posX>
-      <posY>0</posY>
+      <posx>22</posx>
+      <posy>0</posy>
       <width>21</width>
       <height>22</height>
       <label>-</label>
-      <textureFocus>music-rw-focus.png</textureFocus>
-      <textureNoFocus>music-rw-nofocus.png</textureNoFocus>
+      <texturefocus>music-rw-focus.png</texturefocus>
+      <texturenofocus>music-rw-nofocus.png</texturenofocus>
       <onleft>400</onleft>
       <onright>402</onright>
       <onup>401</onup>
@@ -57,13 +57,13 @@
     <control>
       <type>button</type>
       <id>402</id>
-      <posX>43</posX>
-      <posY>0</posY>
+      <posx>43</posx>
+      <posy>0</posy>
       <width>21</width>
       <height>22</height>
       <label>-</label>
-      <textureFocus>music-stop-focus.png</textureFocus>
-      <textureNoFocus>music-stop-nofocus.png</textureNoFocus>
+      <texturefocus>music-stop-focus.png</texturefocus>
+      <texturenofocus>music-stop-nofocus.png</texturenofocus>
       <onleft>401</onleft>
       <onright>403</onright>
       <onup>402</onup>
@@ -74,16 +74,16 @@
     <control>
       <type>togglebutton</type>
       <id>403</id>
-      <posX>64</posX>
-      <posY>0</posY>
+      <posx>64</posx>
+      <posy>0</posy>
       <width>21</width>
       <height>22</height>
       <label>-</label>
-      <textureFocus>music-pause-focus.png</textureFocus>
-      <textureNoFocus>music-pause-nofocus.png</textureNoFocus>
-      <UseAltTexture>Player.Paused</UseAltTexture>
-      <AltTextureFocus>music-play-focus.png</AltTextureFocus>
-      <AltTextureNoFocus>music-play-nofocus.png</AltTextureNoFocus>
+      <texturefocus>music-pause-focus.png</texturefocus>
+      <texturenofocus>music-pause-nofocus.png</texturenofocus>
+      <usealttexture>Player.Paused</usealttexture>
+      <alttexturefocus>music-play-focus.png</alttexturefocus>
+      <alttexturenofocus>music-play-nofocus.png</alttexturenofocus>
       <onleft>402</onleft>
       <onright>404</onright>
       <onup>403</onup>
@@ -94,13 +94,13 @@
     <control>
       <type>button</type>
       <id>404</id>
-      <posX>85</posX>
-      <posY>0</posY>
+      <posx>85</posx>
+      <posy>0</posy>
       <width>21</width>
       <height>22</height>
       <label>-</label>
-      <textureFocus>music-ff-focus.png</textureFocus>
-      <textureNoFocus>music-ff-nofocus.png</textureNoFocus>
+      <texturefocus>music-ff-focus.png</texturefocus>
+      <texturenofocus>music-ff-nofocus.png</texturenofocus>
       <onleft>403</onleft>
       <onright>405</onright>
       <onup>404</onup>
@@ -111,13 +111,13 @@
     <control>
       <type>button</type>
       <id>405</id>
-      <posX>106</posX>
-      <posY>0</posY>
+      <posx>106</posx>
+      <posy>0</posy>
       <width>22</width>
       <height>22</height>
       <label>-</label>
-      <textureFocus>music-skipplus-focus.png</textureFocus>
-      <textureNoFocus>music-skipplus-nofocus.png</textureNoFocus>
+      <texturefocus>music-skipplus-focus.png</texturefocus>
+      <texturenofocus>music-skipplus-nofocus.png</texturenofocus>
       <onleft>404</onleft>
       <onright>400</onright>
       <onup>405</onup>

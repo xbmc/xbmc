@@ -10,6 +10,9 @@
 #include "utils/GUIInfoManager.h"
 #include "cores/VideoRenderers/RenderManager.h"
 
+#ifdef PRE_SKIN_VERSION_2_0_COMPATIBILITY
+#include "SkinInfo.h"
+#endif
 
 #define OSD_VIDEOPROGRESS 101
 #define OSD_SKIPBWD 210
@@ -114,8 +117,11 @@ void CGUIWindowOSD::OnWindowLoaded()
 
 void CGUIWindowOSD::Render()
 {
-  SetVideoProgress();   // get the percentage of playback complete so far
-  Get_TimeInfo();    // show the time elapsed/total playing time
+  if (g_SkinInfo.GetVersion() < 1.85)
+  {
+    SetVideoProgress();   // get the percentage of playback complete so far
+    Get_TimeInfo();    // show the time elapsed/total playing time
+  }
   if ( g_guiSettings.GetInt("MyVideos.OSDTimeout") &&
       !m_gWindowManager.IsWindowActive(WINDOW_DIALOG_VIDEO_OSD_SETTINGS) &&
       !m_gWindowManager.IsWindowActive(WINDOW_DIALOG_VIDEO_BOOKMARKS) )
@@ -131,56 +137,58 @@ void CGUIWindowOSD::Render()
 bool CGUIWindowOSD::OnAction(const CAction &action)
 {
   m_dwOSDTimeOut = timeGetTime();
-  switch (action.wID)
+  if (g_SkinInfo.GetVersion() < 1.85)
   {
-  case ACTION_SHOW_OSD:
+    switch (action.wID)
     {
-      Close();
-      return true;
-    }
-    break;
-  case ACTION_CLOSE_DIALOG:
-  case ACTION_PREVIOUS_MENU:
-    {
-      if (m_bSubMenuOn)      // is sub menu on?
+    case ACTION_SHOW_OSD:
       {
-        FOCUS_CONTROL(GetID(), m_iActiveMenuButtonID, 0); // set focus to last menu button
-        ToggleSubMenu(0, m_iActiveMenu);      // hide the currently active sub-menu
-      }
-      else
         Close();
-      return true;
-    }
-    break;
+        return true;
+      }
+      break;
+    case ACTION_CLOSE_DIALOG:
+    case ACTION_PREVIOUS_MENU:
+      {
+        if (m_bSubMenuOn)      // is sub menu on?
+        {
+          FOCUS_CONTROL(GetID(), m_iActiveMenuButtonID, 0); // set focus to last menu button
+          ToggleSubMenu(0, m_iActiveMenu);      // hide the currently active sub-menu
+        }
+        else
+          Close();
+        return true;
+      }
+      break;
 
-  case ACTION_STOP:
-    {
-      // push a message through to this window to handle the remote control button
-      CGUIMessage msgSet(GUI_MSG_CLICKED, OSD_STOP, OSD_STOP, 0, 0, NULL);
-      OnMessage(msgSet);
-      return true;
-    }
-    break;
+    case ACTION_STOP:
+      {
+        // push a message through to this window to handle the remote control button
+        CGUIMessage msgSet(GUI_MSG_CLICKED, OSD_STOP, OSD_STOP, 0, 0, NULL);
+        OnMessage(msgSet);
+        return true;
+      }
+      break;
 
-/*  case ACTION_OSD_SHOW_VALUE_MAX:
-    {
-      // push a message through to this window to handle the remote control button
-      CGUIMessage msgSet(GUI_MSG_CLICKED, OSD_SKIPFWD, OSD_SKIPFWD, 0, 0, NULL);
-      OnMessage(msgSet);
-      return true;
-    }
-    break;
+  /*  case ACTION_OSD_SHOW_VALUE_MAX:
+      {
+        // push a message through to this window to handle the remote control button
+        CGUIMessage msgSet(GUI_MSG_CLICKED, OSD_SKIPFWD, OSD_SKIPFWD, 0, 0, NULL);
+        OnMessage(msgSet);
+        return true;
+      }
+      break;
 
-  case ACTION_OSD_SHOW_VALUE_MIN:
-    {
-      // push a message through to this window to handle the remote control button
-      CGUIMessage msgSet(GUI_MSG_CLICKED, OSD_SKIPBWD, OSD_SKIPBWD, 0, 0, NULL);
-      OnMessage(msgSet);
-      return true;
+    case ACTION_OSD_SHOW_VALUE_MIN:
+      {
+        // push a message through to this window to handle the remote control button
+        CGUIMessage msgSet(GUI_MSG_CLICKED, OSD_SKIPBWD, OSD_SKIPBWD, 0, 0, NULL);
+        OnMessage(msgSet);
+        return true;
+      }
+      break;*/
     }
-    break;*/
   }
-
   return CGUIDialog::OnAction(action);
 }
 
@@ -190,11 +198,14 @@ bool CGUIWindowOSD::OnMessage(CGUIMessage& message)
   {
   case GUI_MSG_WINDOW_DEINIT:  // fired when OSD is hidden
     {
+      if (g_SkinInfo.GetVersion() < 1.85)
+      {
       // no need to lock the graphics context here, as we already grab a lock in GUIWindowFullScreen
       // whenever we need to render.
       ClearAudioStreamItems();
       ClearSubTitleItems();
       ClearBookmarkItems();
+      }
       // don't save the settings here, it's bad for the hd-spindown feature (causes spinup)
       // settings are saved in FreeResources in GUIWindowFullScreen
       //g_settings.Save();
@@ -242,6 +253,9 @@ bool CGUIWindowOSD::OnMessage(CGUIMessage& message)
 
   case GUI_MSG_CLICKED:
     {
+      if (g_SkinInfo.GetVersion() >= 1.85)
+        return CGUIDialog::OnMessage(message);
+
       int iControl = message.GetSenderId();  // get the ID of the control sending us a message
 
       if (iControl >= OSD_VOLUMESLIDER)  // one of the settings (sub menu) controls is sending us a message
