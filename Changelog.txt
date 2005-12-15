@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 14-12-2005 fixed: Sliding dialogs didn't reverse their direction correctly when hidden early.
  - 14-12-2005 added: Keyboard SetHeading patch thans to Nuka1195
  - 14-12-2005 fixed: allowhiddenfocus wasn't working correctly.
  - 14-12-2005 fixed: Very small image's thumbs would crash.  Minimum is now 8x8 pixels.
