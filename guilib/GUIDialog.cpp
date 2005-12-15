@@ -186,13 +186,13 @@ void CGUIDialog::Show(DWORD dwParentId)
   m_bRunning = true;
 }
 
-void CGUIDialog::DoEffect(float effectAmount)
+void CGUIDialog::DoEffect()
 {
   if (m_effect.m_type == EFFECT_TYPE_FADE)
-    m_attribute.alpha = (DWORD)(effectAmount * 255);
+    m_attribute.alpha = (DWORD)(m_effectAmount * 255);
   else if (m_effect.m_type == EFFECT_TYPE_SLIDE)
   {
-    float time = 1.0f - effectAmount;
+    float time = 1.0f - m_effectAmount;
     float amount = time * (m_effect.m_acceleration * time + 1.0f - m_effect.m_acceleration);
     m_attribute.offsetX = (int)(amount * (m_effect.m_startX - m_iPosX));
     m_attribute.offsetY = (int)(amount * (m_effect.m_startY - m_iPosY));
@@ -206,9 +206,9 @@ void CGUIDialog::Render()
   if (m_queueState == EFFECT_IN)
   {
     if (m_effectState == EFFECT_OUT)
-      m_effectStart = timeGetTime() - (int)(m_effect.m_inTime * m_attribute.alpha / 255.0f);
+      m_effectStart = currentTime - (int)(m_effect.m_inTime * m_effectAmount);
     else
-      m_effectStart = timeGetTime();
+      m_effectStart = currentTime;
     m_effectState = EFFECT_IN;
   }
   else if (m_queueState == EFFECT_OUT)
@@ -216,7 +216,7 @@ void CGUIDialog::Render()
     if (m_effectState != EFFECT_OUT)
     {
       m_effectState = EFFECT_OUT;
-      m_effectStart = timeGetTime() - (int)(m_effect.m_outTime * (255.0f - m_attribute.alpha) / 255.0f);
+      m_effectStart = currentTime - (int)(m_effect.m_outTime * (1.0f - m_effectAmount));
     }
   }
   m_queueState = EFFECT_NONE;
@@ -224,28 +224,30 @@ void CGUIDialog::Render()
   if (m_effectState == EFFECT_IN)
   {
     if (currentTime - m_effectStart < m_effect.m_inDelay)
-      DoEffect(0);
+      m_effectAmount = 0;
     else if (currentTime - m_effectStart < m_effect.m_inDelay + m_effect.m_inTime)
-      DoEffect((float)(currentTime - m_effectStart - m_effect.m_inDelay) / m_effect.m_inTime);
+      m_effectAmount = (float)(currentTime - m_effectStart - m_effect.m_inDelay) / m_effect.m_inTime;
     else
     {
-      DoEffect(1);
+      m_effectAmount = 1;
       m_effectState = EFFECT_NONE;
     }
+    DoEffect();
   }
   else if (m_effectState == EFFECT_OUT)
   {
     if (currentTime - m_effectStart < m_effect.m_outDelay)
-      DoEffect(1);
+      m_effectAmount = 1;
     else if (currentTime - m_effectStart < m_effect.m_outTime + m_effect.m_outDelay)
-      DoEffect((float)(m_effect.m_outTime + m_effect.m_outDelay - currentTime + m_effectStart) / m_effect.m_outTime);
+      m_effectAmount = (float)(m_effect.m_outTime + m_effect.m_outDelay - currentTime + m_effectStart) / m_effect.m_outTime;
     else
     {
-      DoEffect(0);
+      m_effectAmount = 0;
       m_effectState = EFFECT_NONE;
       Close(true);  // force the dialog to close
       return;
     }
+    DoEffect();
   }
   CGUIWindow::Render();
 }
