@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 15-12-2005 added: rarred subtitles to manual subtitle selection.
+ - 15-12-2005 changed: better rarred subtitle handling - thanks to syra!
  - 14-12-2005 fixed: Sliding dialogs didn't reverse their direction correctly when hidden early.
  - 14-12-2005 added: Keyboard SetHeading patch thans to Nuka1195
  - 14-12-2005 fixed: allowhiddenfocus wasn't working correctly.
