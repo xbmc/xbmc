@@ -127,8 +127,8 @@
       <texturenofocus>-</texturenofocus>
       <textureup>scroll-up.png</textureup>
       <texturedown>scroll-down.png</texturedown>
-      <textureupFocus>scroll-up-focus.png</textureupFocus>
-      <texturedownFocus>scroll-down-focus.png</texturedownFocus>
+      <textureupfocus>scroll-up-focus.png</textureupfocus>
+      <texturedownfocus>scroll-down-focus.png</texturedownfocus>
       <font>font12</font>
       <textcolor>ffffffff</textcolor>
       <colordiffuse>ffffffff</colordiffuse>
@@ -153,7 +153,7 @@
       <sliderheight>20</sliderheight>
       <texturesliderbar>osd_slider_bg.png</texturesliderbar>
       <textureslidernib>osd_slider_nibNF.png</textureslidernib>
-      <textureslidernibFocus>osd_slider_nibFO.png</textureslidernibFocus>
+      <textureslidernibfocus>osd_slider_nibFO.png</textureslidernibfocus>
       <font>font12</font>
       <textcolor>ffffffff</textcolor>
       <colordiffuse>ffffffff</colordiffuse>
