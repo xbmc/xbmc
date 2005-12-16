@@ -564,6 +564,20 @@ void CGUIWindowSettingsCategory::CreateSettings()
     {
       FillInScreenSavers(pSetting);
     }
+    else if (strSetting == "VideoPlayer.BypassCDSelection")
+    {
+      CSettingInt *pSettingInt = (CSettingInt*)pSetting;
+      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
+      pControl->AddLabel(g_localizeStrings.Get(13170), 0); // "Never" = disabled
+      pControl->AddLabel(g_localizeStrings.Get(13171), 1); // "Immediatly" = skip it completely
+      for (int i = 2; i <= 37; i++)
+      {
+        CStdString strText;
+        strText.Format((CStdString)g_localizeStrings.Get(13172), (i-1)*5); 
+        pControl->AddLabel(strText, i); // "After 5-180 secs"
+      }
+      pControl->SetValue(pSettingInt->GetData());
+    }
     else if (strSetting == "LED.Colour")
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;

@@ -430,6 +430,7 @@ CGUISettings::CGUISettings(void)
   AddBool(7, "VideoPlayer.UseGUIResolution", 495, true);
   AddSeparator(10, "VideoPlayer.Sep3");
   AddBool(11, "VideoPlayer.UseTimeBasedSeeking", 13386, false);
+  AddInt(12, "VideoPlayer.BypassCDSelection", 13169, 0, 0, 1, 37, SPIN_CONTROL_TEXT);
 
   AddCategory(5, "Subtitles", 287);
   AddString(1, "Subtitles.Font", 288, "arial-iso-8859-1", SPIN_CONTROL_TEXT);

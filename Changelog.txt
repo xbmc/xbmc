@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 16-12-2005 changed: video stacking cd selector bypass is now configurable, found in settings ->  my video -> video player
  - 16-12-2005 added: Built in command XBMC.TakeScreenShot thanks to Donno
  - 16-12-2005 changed: the video stacked-cd selector dialog will choose the first file after 60 seconds
  - 16-12-2005 fixed: IMDB lookup of plotsummary when a "Title?tt#######" url is in the nfo file
