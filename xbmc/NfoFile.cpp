@@ -24,11 +24,11 @@ HRESULT CNfoFile::Create(LPSTR szPath)
     return E_FAIL;
 
   CRegExp reg;
-  reg.RegComp("imdb.com/Title\\?[0-9]*");
+  reg.RegComp("imdb.com/Title\\?([0-9]*)");
   if (reg.RegFind(m_doc) > -1)
   {
-    char *src = reg.GetReplaceString("\\0");
-    m_strImDbUrl = "http://www.";
+    char *src = reg.GetReplaceString("\\1");
+    m_strImDbUrl = "http://www.imdb.com/title/tt";
     m_strImDbUrl += src;
     free(src);
   }
