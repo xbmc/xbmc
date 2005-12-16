@@ -260,7 +260,7 @@
       <height>6</height>
       <texturesliderbar>seekslider.png</texturesliderbar>
       <textureslidernib>slider_nibFO.png</textureslidernib>
-      <textureslidernibFocus>slider_nibFO.png</textureslidernibFocus>
+      <textureslidernibfocus>slider_nibFO.png</textureslidernibfocus>
       <visible>true</visible>
       <onup>1</onup>
       <ondown>1</ondown>

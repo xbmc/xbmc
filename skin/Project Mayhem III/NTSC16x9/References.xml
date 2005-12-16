@@ -29,8 +29,8 @@
     <posy>200</posy>
     <width>22</width>
     <height>44</height>
-    <texturedownFocus>spinbutton4.png</texturedownFocus>
-    <textureupFocus>spinbutton3.png</textureupFocus>
+    <texturedownfocus>spinbutton4.png</texturedownfocus>
+    <textureupfocus>spinbutton3.png</textureupfocus>
     <texturefocus>spinbutton2.png</texturefocus>
     <texturenofocus>spinbutton1.png</texturenofocus>
     <font>font13</font>
@@ -109,8 +109,8 @@
     <spinposy>338</spinposy>
     <textureup>scroll-up.png</textureup>
     <texturedown>scroll-down.png</texturedown>
-    <textureupFocus>scroll-up-focus.png</textureupFocus>
-    <texturedownFocus>scroll-down-focus.png</texturedownFocus>
+    <textureupfocus>scroll-up-focus.png</textureupfocus>
+    <texturedownfocus>scroll-down-focus.png</texturedownfocus>
     <texturefocus>list-focus.png</texturefocus>
     <texturenofocus>list-nofocus.png</texturenofocus>
     <image>icon-folder.png</image>
@@ -141,8 +141,8 @@
     <spincolor>doffffff</spincolor>
     <textureup>scroll-up.png</textureup>
     <texturedown>scroll-down.png</texturedown>
-    <textureupFocus>scroll-up-focus.gif</textureupFocus>
-    <texturedownFocus>scroll-down-focus.gif</texturedownFocus>
+    <textureupfocus>scroll-up-focus.gif</textureupfocus>
+    <texturedownfocus>scroll-down-focus.gif</texturedownfocus>
     <texturefocus>list-focus.png</texturefocus>
     <texturenofocus>list-nofocus.png</texturenofocus>
     <textureheight>22</textureheight>
@@ -195,8 +195,8 @@
     <spinposy>338</spinposy>
     <textureup>scroll-up.png</textureup>
     <texturedown>scroll-down.png</texturedown>
-    <textureupFocus>scroll-up-focus.png</textureupFocus>
-    <texturedownFocus>scroll-down-focus.png</texturedownFocus>
+    <textureupfocus>scroll-up-focus.png</textureupfocus>
+    <texturedownfocus>scroll-down-focus.png</texturedownfocus>
     <itemwidth>90</itemwidth>
     <itemheight>108</itemheight>
     <texturewidth>74</texturewidth>
@@ -206,7 +206,7 @@
     <thumbposx>-3</thumbposx>
     <thumbposy>4</thumbposy>
     <imagefolder>folder-nofocus.png</imagefolder>
-    <imagefolderFocus>folder-focus.png</imagefolderFocus>
+    <imagefolderfocus>folder-focus.png</imagefolderfocus>
     <font>font10</font>
     <selectedcolor>ffffffff</selectedcolor>
     <textcolor>ffffffff</textcolor>
@@ -249,8 +249,8 @@
     <spincolor>ddffffff</spincolor>
     <textureup>scroll-up.png</textureup>
     <texturedown>scroll-down.png</texturedown>
-    <textureupFocus>scroll-up-focus.png</textureupFocus>
-    <texturedownFocus>scroll-down-focus.png</texturedownFocus>
+    <textureupfocus>scroll-up-focus.png</textureupfocus>
+    <texturedownfocus>scroll-down-focus.png</texturedownfocus>
     <image>icon-folder.png</image>
     <font>font12</font>
     <textcolor>ffFFFFFF</textcolor>
@@ -278,8 +278,8 @@
     <posy>126</posy>
     <textureup>scroll-up.png</textureup>
     <texturedown>scroll-down.png</texturedown>
-    <textureupFocus>scroll-up-focus.png</textureupFocus>
-    <texturedownFocus>scroll-down-focus.png</texturedownFocus>
+    <textureupfocus>scroll-up-focus.png</textureupfocus>
+    <texturedownfocus>scroll-down-focus.png</texturedownfocus>
     <align>right</align>
     <width>18</width>
     <height>16</height>
@@ -307,8 +307,8 @@
     <texturenofocus>-</texturenofocus>
     <textureup>scroll-up.png</textureup>
     <texturedown>scroll-down.png</texturedown>
-    <textureupFocus>scroll-up-focus.png</textureupFocus>
-    <texturedownFocus>scroll-down-focus.png</texturedownFocus>
+    <textureupfocus>scroll-up-focus.png</textureupfocus>
+    <texturedownfocus>scroll-down-focus.png</texturedownfocus>
     <font>font13</font>
     <textcolor>ffffffff</textcolor>
     <colordiffuse>ffffffff</colordiffuse>
@@ -329,7 +329,7 @@
     <font>font13</font>
     <label>167</label>
     <texturecheckmark>check-box.png</texturecheckmark>
-    <texturecheckmarkNoFocus>check-boxNF.png</texturecheckmarkNoFocus>
+    <texturecheckmarknofocus>check-boxNF.png</texturecheckmarknofocus>
     <markwidth>16</markwidth>
     <markheight>20</markheight>
     <align>left</align>
