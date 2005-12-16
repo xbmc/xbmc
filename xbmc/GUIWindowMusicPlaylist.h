@@ -21,12 +21,14 @@ protected:
   virtual void OnItemLoaded(CFileItem* pItem);
   virtual void ClearFileItems();
   virtual bool Update(const CStdString& strDirectory);
+  virtual void OnPopupMenu(int iItem);
+  void OnMove(int iItem, int iAction);
 
   void SavePlayList();
   void ClearPlayList();
   void ShufflePlayList();
   void RemovePlayListItem(int iItem);
-  void MoveCurrentPlayListItem(int iAction); // up or down
+  void MoveCurrentPlayListItem(int iItem, int iAction); // up or down
 
   MAPSONGS m_songsMap;
   CStdString m_strPrevPath;
