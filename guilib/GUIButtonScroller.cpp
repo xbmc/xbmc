@@ -128,8 +128,8 @@ void CGUIButtonScroller::LoadButtons(const TiXmlNode *node)
   // <button id="1">
   //    <label>
   //    <execute>
-  //    <textureFocus>
-  //    <textureNoFocus>
+  //    <texturefocus>
+  //    <texturenofocus>
   // </button>
   TiXmlNode *buttons = node->FirstChild("buttons");
   if (!buttons) return;
@@ -154,10 +154,10 @@ void CGUIButtonScroller::LoadButtons(const TiXmlNode *node)
     childNode = buttonNode->FirstChild("execute");
     if (childNode && childNode->FirstChild())
       button->strExecute = childNode->FirstChild()->Value();
-    childNode = buttonNode->FirstChild("textureFocus");
+    childNode = buttonNode->FirstChild("texturefocus");
     if (childNode && childNode->FirstChild())
       button->imageFocus = new CGUIImage(GetParentID(), GetID(), m_iPosX, m_iPosY, m_dwWidth, m_dwHeight, childNode->FirstChild()->Value());
-    childNode = buttonNode->FirstChild("textureNoFocus");
+    childNode = buttonNode->FirstChild("texturenofocus");
     if (childNode && childNode->FirstChild())
       button->imageNoFocus = new CGUIImage(GetParentID(), GetID(), m_iPosX, m_iPosY, m_dwWidth, m_dwHeight, childNode->FirstChild()->Value());
     m_vecButtons.push_back(button);
