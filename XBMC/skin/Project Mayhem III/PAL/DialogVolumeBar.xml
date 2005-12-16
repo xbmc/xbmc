@@ -28,7 +28,7 @@
       <posy>42</posy>
       <texturesliderbar>osd_slider_volume_bg.png</texturesliderbar>
       <textureslidernib>slider_nibFO.png</textureslidernib>
-      <textureslidernibFocus>slider_nibFO.png</textureslidernibFocus>
+      <textureslidernibfocus>slider_nibFO.png</textureslidernibfocus>
       <onup>1</onup>
       <ondown>1</ondown>
       <onleft>1</onleft>
