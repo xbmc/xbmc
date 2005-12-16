@@ -4,6 +4,8 @@
 #include "PlayListM3U.h"
 #include "application.h"
 #include "playlistplayer.h"
+#include "GUIListControl.h"
+#include "GUIDialogContextMenu.h"
 
 
 #define CONTROL_BTNVIEWASICONS     2 
@@ -196,12 +198,10 @@ bool CGUIWindowMusicPlayList::OnMessage(CGUIMessage& message)
       else if (m_viewControl.HasControl(iControl))
       {
         int iAction = message.GetParam1();
+        int iItem = m_viewControl.GetSelectedItem();
         if (iAction == ACTION_DELETE_ITEM || iAction == ACTION_MOUSE_MIDDLE_CLICK)
         {
-          int iItem = m_viewControl.GetSelectedItem();
-          if ( iItem >= 0 )
-            RemovePlayListItem(iItem);
-          return true;
+          RemovePlayListItem(iItem);
         }
       }
     }
@@ -223,68 +223,48 @@ bool CGUIWindowMusicPlayList::OnAction(const CAction &action)
     m_gWindowManager.PreviousWindow();
     return true;
   }
-  if (action.wID == ACTION_MOVE_ITEM_UP)
+  if ((action.wID == ACTION_MOVE_ITEM_UP) || (action.wID == ACTION_MOVE_ITEM_DOWN))
   {
-    bool bRestart = m_tagloader.IsLoading();
-    if (bRestart)
-      m_tagloader.StopThread();
-
-    MoveCurrentPlayListItem(ACTION_MOVE_ITEM_UP);
-
-    if (bRestart)
-      m_tagloader.Load(m_vecItems);
+    int iItem = -1;
+    int iFocusedControl = GetFocusedControl();
+    if (m_viewControl.HasControl(iFocusedControl))
+      iItem = m_viewControl.GetSelectedItem();
+    OnMove(iItem, action.wID);
     return true;
   }
-  if (action.wID == ACTION_MOVE_ITEM_DOWN)
-  {
-    bool bRestart = m_tagloader.IsLoading();
-    if (bRestart)
-      m_tagloader.StopThread();
-
-    MoveCurrentPlayListItem(ACTION_MOVE_ITEM_DOWN);
-
-    if (bRestart)
-      m_tagloader.Load(m_vecItems);
-    return true;
-  }
-
   return CGUIWindowMusicBase::OnAction(action);
 }
 
-void CGUIWindowMusicPlayList::MoveCurrentPlayListItem(int iAction)
+void CGUIWindowMusicPlayList::MoveCurrentPlayListItem(int iItem, int iAction)
 {
-  int iFocusedControl = GetFocusedControl();
-  if (m_viewControl.HasControl(iFocusedControl))
+  int iSelected = iItem;
+  int iNew = iSelected;
+  if (iAction == ACTION_MOVE_ITEM_UP)
   {
-    int iSelected = m_viewControl.GetSelectedItem();
-    int iNew = iSelected;
-    if (iAction == ACTION_MOVE_ITEM_UP)
-    {
-      iNew--;
-    }
-    else
-    {
-      iNew++;
-    }
-    // The current playing or target song can't be moved
-    if (
-      (g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_MUSIC) &&
-      (g_application.IsPlayingAudio()) &&
-      (
-        (g_playlistPlayer.GetCurrentSong() == iSelected) ||
-        (g_playlistPlayer.GetCurrentSong() == iNew)
-      )
+    iNew--;
+  }
+  else
+  {
+    iNew++;
+  }
+  // The current playing or target song can't be moved
+  if (
+    (g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_MUSIC) &&
+    (g_application.IsPlayingAudio()) &&
+    (
+      (g_playlistPlayer.GetCurrentSong() == iSelected) ||
+      (g_playlistPlayer.GetCurrentSong() == iNew)
     )
-    {
-      return ;
-    }
-    CPlayList& playlist = g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC);
-    if (playlist.Swap(iSelected, iNew))
-    {
-      Update(m_Directory.m_strPath);
-      m_viewControl.SetSelectedItem(iNew);
-      return ;
-    }
+  )
+  {
+    return ;
+  }
+  CPlayList& playlist = g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC);
+  if (playlist.Swap(iSelected, iNew))
+  {
+    Update(m_Directory.m_strPath);
+    m_viewControl.SetSelectedItem(iNew);
+    return ;
   }
 }
 
@@ -422,6 +402,8 @@ void CGUIWindowMusicPlayList::ShufflePlayList()
 
 void CGUIWindowMusicPlayList::RemovePlayListItem(int iItem)
 {
+  if (iItem < 0 || iItem > m_vecItems.Size()) return;
+
   // The current playing song can't be removed
   if (g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_MUSIC && g_application.IsPlayingAudio()
       && g_playlistPlayer.GetCurrentSong() == iItem)
@@ -583,4 +565,70 @@ void CGUIWindowMusicPlayList::ClearFileItems()
 {
   m_viewControl.Clear();
   m_vecItems.ClearKeepPointer();
+}
+
+void CGUIWindowMusicPlayList::OnPopupMenu(int iItem)
+{
+  if ( iItem < 0 || iItem >= m_vecItems.Size() ) return ;
+  // calculate our position
+  int iPosX = 200;
+  int iPosY = 100;
+  CGUIListControl *pList = (CGUIListControl *)GetControl(CONTROL_LIST);
+  if (pList)
+  {
+    iPosX = pList->GetXPosition() + pList->GetWidth() / 2;
+    iPosY = pList->GetYPosition() + pList->GetHeight() / 2;
+  }
+  // mark the item
+  bool bSelected = m_vecItems[iItem]->IsSelected(); // item maybe selected (playlistitem)
+  m_vecItems[iItem]->Select(true);
+  // popup the context menu
+  CGUIDialogContextMenu *pMenu = (CGUIDialogContextMenu *)m_gWindowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
+  if (!pMenu) return ;
+  // load our menu
+  pMenu->Initialize();
+
+  // add the needed buttons
+  int btn_MoveUp = pMenu->AddButton(13332); // Move Up
+  int btn_MoveDn = pMenu->AddButton(13333); // Move Down
+  int btn_Delete = pMenu->AddButton(15015); // Remove
+  int btn_Return = pMenu->AddButton(12010); // Return to My Music
+
+  // position it correctly
+  pMenu->SetPosition(iPosX - pMenu->GetWidth() / 2, iPosY - pMenu->GetHeight() / 2);
+  pMenu->DoModal(GetID());
+
+  int btnid = pMenu->GetButton();
+  if( btnid  == btn_MoveUp ) // Move Up
+  {
+    OnMove(iItem, ACTION_MOVE_ITEM_UP);
+  }
+  else if( btnid  == btn_MoveDn )  // Move Down
+  {
+    OnMove(iItem, ACTION_MOVE_ITEM_DOWN);
+  }
+  else if( btnid  == btn_Delete )  // Delete
+  {
+    RemovePlayListItem(iItem);
+  }
+  else if( btnid  == btn_Return )  // Return
+  {
+    m_gWindowManager.PreviousWindow();
+    return;
+  }
+  m_vecItems[iItem]->Select(bSelected);
+}
+
+void CGUIWindowMusicPlayList::OnMove(int iItem, int iAction)
+{
+  if (iItem < 0 || iItem >= m_vecItems.Size()) return;
+
+  bool bRestart = m_tagloader.IsLoading();
+  if (bRestart)
+    m_tagloader.StopThread();
+
+  MoveCurrentPlayListItem(iItem, iAction);
+
+  if (bRestart)
+    m_tagloader.Load(m_vecItems);
 }
