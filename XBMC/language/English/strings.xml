@@ -698,7 +698,8 @@
   <string><id>12007</id><value>My Picture/slideshow</value></string>
   <string><id>12008</id><value>Filestacking dialog</value></string>
   <string><id>12009</id><value>Rebuild index...</value></string>
-
+  <string><id>12010</id><value>Return to My Music</value></string>
+  <string><id>12011</id><value>Return to My Video</value></string>
 
   <string><id>12310</id><value>0</value></string>
   <string><id>12311</id><value>1</value></string>
@@ -1166,7 +1167,6 @@
   <string><id>15301</id><value>Could not connect to network server</value></string>
   <string><id>15302</id><value>No servers found</value></string>
   <string><id>15303</id><value>Workgroup not found</value></string>
-
 
   <string><id>15310</id><value>Opening multi-path bookmark</value></string>
   <string><id>15311</id><value>Path:</value></string>

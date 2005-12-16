@@ -17,6 +17,8 @@ protected:
   virtual bool SortAscending() {return false;};
   virtual void SortItems(CFileItemList &items) {};
   virtual void FormatItemLabels() {};
+  virtual void OnPopupMenu(int iItem);
+  void OnMove(int iItem, int iAction);
 
   void GetDirectoryHistoryString(const CFileItem* pItem, CStdString& strHistoryString);
   virtual bool GetDirectory(const CStdString &strDirectory, CFileItemList &items);
@@ -24,7 +26,7 @@ protected:
   void ClearPlayList();
   void UpdateListControl();
   void RemovePlayListItem(int iItem);
-  void MoveCurrentPlayListItem(int iAction); // up or down
+  void MoveCurrentPlayListItem(int iItem, int iAction); // up or down
   void OnFileItemFormatLabel(CFileItem* pItem);
   void DoSort(CFileItemList& items);
   void UpdateButtons();
