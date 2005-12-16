@@ -177,8 +177,8 @@
       <spinposy>404</spinposy>
       <textureup>scroll-up.png</textureup>
       <texturedown>scroll-down.png</texturedown>
-      <textureupFocus>scroll-up-focus.gif</textureupFocus>
-      <texturedownFocus>scroll-down-focus.gif</texturedownFocus>
+      <textureupfocus>scroll-up-focus.gif</textureupfocus>
+      <texturedownfocus>scroll-down-focus.gif</texturedownfocus>
       <texturefocus>blue-rectangle.png</texturefocus>
       <texturenofocus>blue-rectangleNF.png</texturenofocus>
       <font>font14</font>

@@ -113,8 +113,8 @@
       <texturenofocus>-</texturenofocus>
       <textureup>scroll-up.png</textureup>
       <texturedown>scroll-down.png</texturedown>
-      <textureupFocus>scroll-up-focus.png</textureupFocus>
-      <texturedownFocus>scroll-down-focus.png</texturedownFocus>
+      <textureupfocus>scroll-up-focus.png</textureupfocus>
+      <texturedownfocus>scroll-down-focus.png</texturedownfocus>
       <font>font13</font>
       <textcolor>ffffffff</textcolor>
       <colordiffuse>ffffffff</colordiffuse>
