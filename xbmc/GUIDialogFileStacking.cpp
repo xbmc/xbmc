@@ -19,6 +19,15 @@ bool CGUIDialogFileStacking::OnMessage(CGUIMessage& message)
   {
   case GUI_MSG_WINDOW_INIT:
     {
+      // skip if set to immediately
+      // just pick first file and close
+      if (g_guiSettings.GetInt("VideoPlayer.BypassCDSelection") == 1)
+      {
+        m_iSelectedFile = 1;
+        Close();
+        return true;
+      }
+
       CGUIDialog::OnMessage(message);
       m_iSelectedFile = -1;
       m_iFrames = 0;
@@ -57,11 +66,11 @@ int CGUIDialogFileStacking::GetSelectedFile() const
 {
   return m_iSelectedFile;
 }
+
 void CGUIDialogFileStacking::SetNumberOfFiles(int iFiles)
 {
   m_iNumberOfFiles = iFiles;
 }
-
 
 void CGUIDialogFileStacking::Render()
 {
@@ -87,10 +96,16 @@ void CGUIDialogFileStacking::Render()
   }
   CGUIDialog::Render();
 
-  // check timer, 60 seconds
-  if ((long)(timeGetTime() - m_dwTimerTick) >= (long)(60*1000L))
+  // now check timer, 5-180 seconds
+  int iTimerSetting = g_guiSettings.GetInt("VideoPlayer.BypassCDSelection");
+  if (iTimerSetting > 1)
   {
-    m_iSelectedFile = 1;
-    Close();
+    iTimerSetting--;
+    iTimerSetting *= 5;
+    if ((long)(timeGetTime() - m_dwTimerTick) >= (long)(iTimerSetting*1000L))
+    {
+      m_iSelectedFile = 1;
+      Close();
+    }
   }
 }

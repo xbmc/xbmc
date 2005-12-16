@@ -1107,7 +1107,6 @@
   <string><id>15281</id><value>Enter an artist name to find related ones</value></string>
   <string><id>15282</id><value>Enter a tag name to find similar ones</value></string>
    
-  
   <string><id>13150</id><value>HDD Key:</value></string>
   <string><id>13151</id><value>HDD Temp:</value></string>
   <string><id>13152</id><value>DVD Model:</value></string>
@@ -1127,6 +1126,10 @@
   <string><id>13166</id><value>Head/MicroPhone On Port:</value></string>
   <string><id>13167</id><value>MemoryStick On Port:</value></string>
   <string><id>13168</id><value>IR-Remote On Port:</value></string>
+  <string><id>13169</id><value>Bypass CD Selection</value></string>
+  <string><id>13170</id><value>Never</value></string>
+  <string><id>13171</id><value>Immediately</value></string>
+  <string><id>13172</id><value>After %i secs</value></string>
 
   <string><id>13270</id><value>Hardware:</value></string>
   <string><id>13271</id><value>CPU Speed:</value></string>
