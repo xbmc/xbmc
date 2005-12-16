@@ -119,9 +119,6 @@ bool CIMDB::InternalGetDetails(const CIMDBUrl& url, CIMDBMovie& movieDetails)
   if (!m_http.Get(strURL, strHTML) || strHTML.size() == 0)
     return false;
 
-  // grab our plot summary as well (if it's available)
-  m_http.Get(strURL + "plotsummary", strPlotHTML);
-
   char *szBuffer = new char[strHTML.size() + 1];
   strcpy(szBuffer, strHTML.c_str());
 
@@ -139,6 +136,11 @@ bool CIMDB::InternalGetDetails(const CIMDBUrl& url, CIMDBMovie& movieDetails)
 
   movieDetails.m_strIMDBNumber = &szURL[ipos + 1];
   CLog::Log(LOGINFO, "imdb number:%s\n", movieDetails.m_strIMDBNumber.c_str());
+
+  // grab our plot summary as well (if it's available)
+  // http://www.imdb.com/Title/ttIMDBNUMBER/plotsummary
+  CStdString strPlotURL = "http://www.imdb.com/title/" + movieDetails.m_strIMDBNumber + "/plotsummary";
+  m_http.Get(strPlotURL, strPlotHTML);
 
   // now grab our details using the dll
   char szXML[50000];

@@ -16,5 +16,5 @@ protected:
   int m_iSelectedFile;
   int m_iNumberOfFiles;
   int m_iFrames;
-
+  DWORD m_dwTimerTick;
 };
