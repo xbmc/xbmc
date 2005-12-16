@@ -819,10 +819,8 @@ void CGUIWindowVideoFiles::SetIMDBThumbs(CFileItemList& items)
           if (url.GetProtocol().Equals("stack"))
           {
             CStdString strPathTemp = info.m_strPath;
-            strPathTemp = strPathTemp.Mid(8);
             CStdString strMoviePath;
             CUtil::AddFileToFolder(strPathTemp, strMovieFile, strMoviePath);
-            strMoviePath = "stack://" + strMoviePath;
 
             // check all items in the stack
             CFileItemList tempItems;

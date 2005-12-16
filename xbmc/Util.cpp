@@ -2066,6 +2066,9 @@ __int64 CUtil::ToInt64(DWORD dwHigh, DWORD dwLow)
 void CUtil::AddFileToFolder(const CStdString& strFolder, const CStdString& strFile, CStdString& strResult)
 {
   strResult = strFolder;
+  if (IsStack(strFolder))
+    strResult = strResult.Mid(8);
+
   if (!CUtil::HasSlashAtEnd(strResult))
   {
     if (strResult.Find("//") >= 0 )
@@ -2074,6 +2077,9 @@ void CUtil::AddFileToFolder(const CStdString& strFolder, const CStdString& strFi
       strResult += "\\";
   }
   strResult += strFile;
+
+  if (IsStack(strFolder))
+    strResult = "stack://" + strResult;
 }
 
 void CUtil::AddSlashAtEnd(CStdString& strFolder)
