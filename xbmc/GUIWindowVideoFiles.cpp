@@ -818,19 +818,21 @@ void CGUIWindowVideoFiles::SetIMDBThumbs(CFileItemList& items)
           CURL url(info.m_strPath);
           if (url.GetProtocol().Equals("stack"))
           {
-            CStackDirectory dir;
-            CStdString strMoviePath = info.m_strPath;
-            if (!CUtil::HasSlashAtEnd(strMoviePath))
-              strMoviePath += "/";
-            strMoviePath += strMovieFile;
+            CStdString strPathTemp = info.m_strPath;
+            strPathTemp = strPathTemp.Mid(8);
+            CStdString strMoviePath;
+            CUtil::AddFileToFolder(strPathTemp, strMovieFile, strMoviePath);
+            strMoviePath = "stack://" + strMoviePath;
 
             // check all items in the stack
             CFileItemList tempItems;
+            CStackDirectory dir;
             dir.GetDirectory(strMoviePath, tempItems);
             for (int j = 0; j < (int)tempItems.Size(); ++j)
             {
               CFileItem* tempItem = tempItems[j];
               strMovieFile = CUtil::GetFileName(tempItem->m_strPath);
+              //CLog::Log(LOGDEBUG,"  Testing [%s] -> [%s]", strFile.c_str(), strMovieFile.c_str());
               if (strMovieFile == strFile)
                 break;
             }
