@@ -2946,6 +2946,7 @@ const BUILT_IN commands[] = {
   "Credits", "Run XBMCs Credits",
   "Reset", "Reset the xbox (warm reboot)",
   "ActivateWindow", "Activate the specified window",
+  "TakeScreenshot", "Takes a Screenshot",
   "RunScript", "Run the specified script",
   "RunXBE", "Run the specified executeable",
   "PlayMedia", "Play the specified media file (or playlist)",
@@ -3032,6 +3033,10 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   else if (execute.Equals("restartapp"))
   {
     g_applicationMessenger.RestartApp();
+  }
+  else if (execute.Equals("takescreenshot"))
+  {
+    TakeScreenshot();
   }
   else if (execute.Equals("credits"))
   {
