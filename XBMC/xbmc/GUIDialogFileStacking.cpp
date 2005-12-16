@@ -7,6 +7,7 @@ CGUIDialogFileStacking::CGUIDialogFileStacking(void)
 {
   m_iSelectedFile = -1;
   m_iNumberOfFiles = 0;
+  m_dwTimerTick = 0;
 }
 
 CGUIDialogFileStacking::~CGUIDialogFileStacking(void)
@@ -35,6 +36,8 @@ bool CGUIDialogFileStacking::OnMessage(CGUIMessage& message)
         SET_CONTROL_HIDDEN(i);
         CONTROL_DISABLE(i);
       }
+
+      m_dwTimerTick = timeGetTime();
       return true;
     }
     break;
@@ -83,4 +86,11 @@ void CGUIDialogFileStacking::Render()
     m_iFrames++;
   }
   CGUIDialog::Render();
+
+  // check timer, 60 seconds
+  if ((long)(timeGetTime() - m_dwTimerTick) >= (long)(60*1000L))
+  {
+    m_iSelectedFile = 1;
+    Close();
+  }
 }
