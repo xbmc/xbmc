@@ -431,12 +431,13 @@ void CGUIWindowVideoBase::OnInfo(int iItem)
 
 void CGUIWindowVideoBase::ShowIMDB(const CStdString& strMovie, const CStdString& strFile, const CStdString& strFolder, bool bFolder)
 {
-
+  /*
   CLog::Log(LOGDEBUG,"CGUIWindowVideoBase::ShowIMDB");
   CLog::Log(LOGDEBUG,"  strMovie  = [%s]", strMovie.c_str());
   CLog::Log(LOGDEBUG,"  strFile   = [%s]", strFile.c_str());
   CLog::Log(LOGDEBUG,"  strFolder = [%s]", strFolder.c_str());
   CLog::Log(LOGDEBUG,"  bFolder   = [%s]", ((int)bFolder ? "true" : "false"));
+  */
 
   CGUIDialogProgress* pDlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
   CGUIDialogSelect* pDlgSelect = (CGUIDialogSelect*)m_gWindowManager.GetWindow(WINDOW_DIALOG_SELECT);
