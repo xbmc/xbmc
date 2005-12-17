@@ -3080,6 +3080,31 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
       strWindow = parameter.Left(iPos);
       strPath = parameter.Mid(iPos + 1);
     }
+    if (strPath.Equals("autodetection"))
+    {
+      //GeminiServer: Open the AutoDetect XBOX FTP in filemanager
+      if (g_guiSettings.GetBool("Autodetect.OnOff"))
+      {
+        //Autodetection String: NickName;FTP_USER;FTP_Password;FTP_PORT;BOOST_MODE
+        CStdString strFTPPath, strNickName, strFtpUserName, strFtpPassword, strFtpPort, strBoosMode;
+        CStdStringArray arSplit; 
+        StringUtils::SplitString(strNewClientInfo,";", arSplit);
+        if ((int)arSplit.size() > 1)
+        {
+          strNickName     = arSplit[0].c_str();
+          strFtpUserName  = arSplit[1].c_str();
+          strFtpPassword  = arSplit[2].c_str();
+          strFtpPort      = arSplit[3].c_str();
+          strBoosMode     = arSplit[4].c_str();
+          strFTPPath.Format("ftp://%s:%s@%s:%s/",strFtpUserName.c_str(),strFtpPassword.c_str(),strHasClientIP.c_str(),strFtpPort.c_str());
+          
+          strPath  = strFTPPath;
+        }else{
+          CLog::Log(LOGERROR, "ActivateWindow: Autodetection returned with invalid parameter : %s", strNewClientInfo.c_str());
+          return -7;
+        }
+      }
+    }
 
     // confirm the window destination is actually a number
     // before switching
@@ -3337,7 +3362,9 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     g_application.m_guiDialogKaiToast.QueueNotification(params[0],params[1]);
   }
   else if (execute.Equals("cancelalarm"))
+  {
     g_alarmClock.stop(parameter);
+  }
   else if (execute.Equals("playdvd"))
   {
     CAutorun::PlayDisc();
@@ -3635,7 +3662,6 @@ bool CUtil::SetSysDateTimeYear(int iYear, int iMonth, int iDay, int iHour, int i
 bool CUtil::XboxAutoDetectionPing(bool bRefresh, CStdString strFTPUserName, CStdString strFTPPass, CStdString strNickName, int iFTPPort, CStdString &strHasClientIP, CStdString &strHasClientInfo, CStdString &strNewClientIP, CStdString &strNewClientInfo )
 {
   //GeminiServer
-  
   CStdString strWorkTemp;
   CStdString strSendMessage = "ping\0";
   CStdString strReceiveMessage = "ping";
@@ -3685,19 +3711,24 @@ bool CUtil::XboxAutoDetectionPing(bool bRefresh, CStdString strFTPUserName, CStd
 	}
 	FD_ZERO(&readfds);
 	FD_SET(udp_server_socket, &readfds);
-	life = select( 0,&readfds, NULL, NULL, &timeout ); 
+	life = select( 0,&readfds, NULL, NULL, &timeout );
+  if (life == 0 ) // Do we have a Ping able xbox ? 0:no 1:yes
+  {
+    if (!g_guiSettings.GetBool("Autodetect.CreateLink"))
+    { strNewClientIP =""; strNewClientInfo =""; } // To prevent to create more then one Same Share! todo: Until we have a vec list
+    g_stSettings.m_bXboxAutodetection = false;
+  }
   while( life )
 	{
     recvfrom(udp_server_socket, sztmp, 512, 0,(struct sockaddr *) &cliAddr, &cliLen); 
-    strWorkTemp = sztmp;
+    strWorkTemp.Format("%s",sztmp);
     if( strWorkTemp == strReceiveMessage )
 		{
-			strWorkTemp.Format("%s;%s;%s;%d;%d\r\n\0",strNickName.c_str(),strFTPUserName.c_str(),strFTPPass.c_str(),iFTPPort,0 );
+      strWorkTemp.Format("%s;%s;%s;%d;%d\r\n\0",strNickName.c_str(),strFTPUserName.c_str(),strFTPPass.c_str(),iFTPPort,0 );
       sendto(udp_server_socket,(char *)strWorkTemp.c_str(),strlen((char *)strWorkTemp.c_str())+1,0,(struct sockaddr *)(&cliAddr),sizeof(cliAddr));
       strWorkTemp.Format("%d.%d.%d.%d",cliAddr.sin_addr.S_un.S_un_b.s_b1,cliAddr.sin_addr.S_un.S_un_b.s_b2,cliAddr.sin_addr.S_un.S_un_b.s_b3,cliAddr.sin_addr.S_un.S_un_b.s_b4 );
 
-			bool bPing = ( bool )false; // Check if we have this client in our list already, and if not respond with a ping
-			// todo: a code to check the list of other clients
+			bool bPing = ( bool )false; // Check if we have this client in our list already, and if not respond with a ping // todo: a code to check the list of other clients
 			if( bPing ) sendto(udp_server_socket,strSendMessage.c_str(),5,0,(struct sockaddr *)(&cliAddr),sizeof(cliAddr));  
 		}
 		else
@@ -3705,16 +3736,14 @@ bool CUtil::XboxAutoDetectionPing(bool bRefresh, CStdString strFTPUserName, CStd
       sprintf( szTemp, "%d.%d.%d.%d", cliAddr.sin_addr.S_un.S_un_b.s_b1,cliAddr.sin_addr.S_un.S_un_b.s_b2,cliAddr.sin_addr.S_un.S_un_b.s_b3,cliAddr.sin_addr.S_un.S_un_b.s_b4 );
       if (strHasClientIP != szTemp && strHasClientInfo != strWorkTemp)
       {
-        strHasClientIP = szTemp;        //This is the Client IP Adress!
-        strHasClientInfo  = strWorkTemp; // This is the Client Informations!
-        if (strHasClientIP != "" && strHasClientInfo !="")
+        strHasClientIP = szTemp, strHasClientInfo  = strWorkTemp;
+        if (!strHasClientIP.IsEmpty()&& !strHasClientInfo.IsEmpty())
         {
           strNewClientIP = szTemp;        //This is the Client IP Adress!
           strNewClientInfo = strWorkTemp; // This is the Client Informations!
           bState = true;
-        }
-      }
-      //todo: add it to a list of clients after parsing out user id, password, port, boost capable, etc. >
+        } //todo: add it to a list of clients after parsing out user id, password, port, boost capable, etc.
+      }else g_stSettings.m_bXboxAutodetection = true;
 		}
 		timeout.tv_sec=0;
 		timeout.tv_usec = 5000;
@@ -3724,7 +3753,6 @@ bool CUtil::XboxAutoDetectionPing(bool bRefresh, CStdString strFTPUserName, CStd
 	}
   return bState;
 }
-
 bool CUtil::XboxAutoDetection() // GeminiServer: Xbox Autodetection!
 {
   if (g_guiSettings.GetBool("Autodetect.OnOff"))
@@ -3734,24 +3762,17 @@ bool CUtil::XboxAutoDetection() // GeminiServer: Xbox Autodetection!
       return false;
     pingTimer = timeGetTime();
 
-    // Todo: Extract Ftp User, PW, Port from Internal FTP Server!
-    // Todo: Create a FTP Client for XBMC!
-    // Todo: Create a Setting for entering FTP Password and Username!
     CStdString strLabel      = g_localizeStrings.Get(1251); // lbl Xbox Autodetection
     CStdString strNickName   = g_guiSettings.GetString("Autodetect.NickName");
-    
     CStdString strSysFtpName = g_guiSettings.GetString("Servers.FTPServerUser");
     CStdString strSysFtpPw   = g_guiSettings.GetString("Servers.FTPServerPassword");
 
-    if(!g_guiSettings.GetBool("Autodetect.SendUserPw"))
+    if(!g_guiSettings.GetBool("Autodetect.SendUserPw")) //Send anon login names!
     {
-      strSysFtpName = "anonymous";
-      strSysFtpPw   = "anonymous";
+      strSysFtpName = "anonymous"; strSysFtpPw = "anonymous";
     }
     int iSysFtpPort = 21;
-
-    bool bget = CUtil::XboxAutoDetectionPing(true, strSysFtpName, strSysFtpPw, strNickName, iSysFtpPort,strHasClientIP,strHasClientInfo, strNewClientIP , strNewClientInfo );
-    if ( bget )
+    if ( CUtil::XboxAutoDetectionPing(true, strSysFtpName, strSysFtpPw, strNickName, iSysFtpPort,strHasClientIP,strHasClientInfo, strNewClientIP , strNewClientInfo ) )
     {
       //Autodetection String: NickName;FTP_USER;FTP_Password;FTP_PORT;BOOST_MODE
       CStdString strFTPPath, strNickName, strFtpUserName, strFtpPassword, strFtpPort, strBoosMode;
@@ -3766,28 +3787,38 @@ bool CUtil::XboxAutoDetection() // GeminiServer: Xbox Autodetection!
         strBoosMode     = arSplit[4].c_str();
         strFTPPath.Format("ftp://%s:%s@%s:%s/",strFtpUserName.c_str(),strFtpPassword.c_str(),strHasClientIP.c_str(),strFtpPort.c_str());
 
-        if (g_guiSettings.GetBool("Autodetect.PopUpInfo"))    //PopUp Notification
+        //PopUp Notification (notify antime if a box is found! no switch needed)
+        CStdString strtemplbl;
+        strtemplbl.Format("%s %s",strNickName, strNewClientIP);
+        g_application.m_guiDialogKaiToast.QueueNotification(strLabel, strtemplbl);
+        
+        if (g_guiSettings.GetBool("Autodetect.CreateLink")) //Check if this XBOX is allread in the FileManager List! If Not add it!
         {
-          CStdString strtemplbl;
-          strtemplbl.Format("%s %s",strNickName, strNewClientIP);
-          g_application.m_guiDialogKaiToast.QueueNotification(strLabel, strtemplbl);  
-        }
-
-        if (g_guiSettings.GetBool("Autodetect.CreateLink"))   //Check if this XBOX is allread in the FileManager List! If Not add it!
-        {
-          // Add a FTP link to MyFiles! //Todo: If there is a same Name ask to overwrite it!
-          if(!g_settings.UpdateBookmark("files", strNickName, "path", strFTPPath) )
-          {
+          if(!g_settings.UpdateBookmark("files", strNickName, "path", strFTPPath) ) // Add a FTP link to MyFiles! //Todo: If there is a same Name ask to overwrite it!
             g_settings.AddBookmark("files",    strNickName,  strFTPPath);
-            // Todo: Create a FTP link in My Files and PopUp a OK windows with the info, that a FTP bla is created!
-          }
         }
         CLog::Log(LOGDEBUG,"%s: %s FTP-Link: %s", strLabel.c_str(), strNickName.c_str(), strFTPPath.c_str());
+        
+        if (g_guiSettings.GetBool("Autodetect.PopUpInfo")) //PopUP Ask window to connect to the detected XBOX via Filemanger!
+        {
+          if (CGUIDialogYesNo::ShowAndGetInput(1251, 0, 1257, 0))
+          {
+            g_stSettings.m_bXboxAutodetection = true;
+            strcpy( g_stSettings.m_szDefaultFiles, strNickName.c_str());
+            if (g_guiSettings.GetBool("Autodetect.CreateLink"))
+              m_gWindowManager.ActivateWindow(WINDOW_FILES, strNickName);  //Open FileManager with the created ShareName
+            else
+              m_gWindowManager.ActivateWindow(WINDOW_FILES, strFTPPath);  // Open FileManager with the SharePath! [a TMP Share session will be created]
+          }
         }
+      }
     }
     strHasClientIP = strNewClientIP, strHasClientInfo = strNewClientInfo;
   }
-  else strHasClientIP ="", strHasClientInfo = "";
+  else{
+    strHasClientIP ="", strHasClientInfo = ""; 
+    g_stSettings.m_bXboxAutodetection = false;
+  }
   return true;
 }
 bool CUtil::IsFTP(const CStdString& strFile)

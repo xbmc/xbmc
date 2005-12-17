@@ -496,8 +496,8 @@ CGUISettings::CGUISettings(void)
   AddInt(3,     "Autodetect.PingTime",  1256, 30, 5, 5, 240, SPIN_CONTROL_INT, MASK_SECS);
   AddBool(4,    "Autodetect.PopUpInfo", 1254, true);
   AddSeparator(5, "Autodetect.Sep1");
-  AddBool(6,    "Autodetect.CreateLink",1253, true);
-  AddBool(7,    "Autodetect.SendUserPw",1255, true);
+  AddBool(6,    "Autodetect.SendUserPw",1255, true);
+  AddBool(7,    "Autodetect.CreateLink",1253, false);
   
   //GeminiServer
   AddCategory(6, "Smb", 1200);
