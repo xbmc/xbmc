@@ -173,10 +173,26 @@ bool CGUIWindowFileManager::OnMessage(CGUIMessage& message)
       pControl = (CGUIListControl *)GetControl(CONTROL_RIGHT_LIST);
       if (pControl) pControl->SetPageControlVisible(false);
 
-      m_rootDir.SetShares(g_settings.m_vecMyFilesShares);
-
       // check for a passed destination path
       CStdString strDestination = message.GetStringParam();
+      CStdString strFTPTMP = g_localizeStrings.Get(1251); // ShareName: XBOX Autodetection
+      if (!g_stSettings.m_bXboxAutodetection ) 
+        m_rootDir.RemoveShareName(strFTPTMP);
+      //--------------------------------
+      if (g_guiSettings.GetBool("Autodetect.OnOff"))
+      {
+        if (g_stSettings.m_bXboxAutodetection && !strDestination.IsEmpty()) // XBOX Autodetection: add a dummy share
+        {
+          m_rootDir.RemoveShareName(strFTPTMP); // Remove a previos share: to be sure to not have double stuff..
+          CShare shareTmp;
+          shareTmp.strName.Format(strFTPTMP);
+          shareTmp.strPath.Format(strDestination,1);
+          m_rootDir.AddShare(shareTmp);
+        }
+      }
+      //--------------------------------
+
+      m_rootDir.SetShares(g_settings.m_vecMyFilesShares);
       if (!strDestination.IsEmpty())
       {
         message.SetStringParam("");
@@ -235,6 +251,7 @@ bool CGUIWindowFileManager::OnMessage(CGUIMessage& message)
         SET_CONTROL_FOCUS(m_dwDefaultFocusControlID, 0);
       }
 
+      
       return true;
     }
     break;
