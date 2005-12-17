@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 17-12-2005 added: SmartXX V3 LCD , RGB&Status LED Support
  - 17-12-2005 added: system.autodetection, XBMC.ActivateWindow(3,autodetection),  Skinning indication icon/button to connect to a Autodetected XBOX!
  - 17-12-2005 changed: XBOX Autodetection, little more tweaks
  - 16-12-2005 fixed: IMDB thumbs for stacked hard drive items
