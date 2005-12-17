@@ -87,6 +87,7 @@ extern char g_szTitleIP[32];
 #define SYSTEM_MEDIA_DVD            127
 #define SYSTEM_NO_SUCH_ALARM        128
 #define SYSTEM_HAS_ALARM            129
+#define SYSTEM_AUTODETECTION        130
 
 #define NETWORK_IP_ADDRESS          190
 
@@ -270,6 +271,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
   else if (strTest.Equals("system.fps")) ret = SYSTEM_FPS;
   else if (strTest.Equals("system.kaiconnected")) ret = SYSTEM_KAI_CONNECTED;
   else if (strTest.Equals("system.hasmediadvd")) ret = SYSTEM_MEDIA_DVD;
+  else if (strTest.Equals("system.autodetection")) ret = SYSTEM_AUTODETECTION;
   else if (strTest.Equals("network.ipaddress")) ret = NETWORK_IP_ADDRESS;
   else if (strTest.Equals("musicplayer.title")) ret = MUSICPLAYER_TITLE;
   else if (strTest.Equals("musicplayer.album")) ret = MUSICPLAYER_ALBUM;
@@ -541,6 +543,8 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow) const
     bReturn = true;
   else if (condition == SYSTEM_NO_SUCH_ALARM)
     bReturn = false;
+  else if (condition == SYSTEM_AUTODETECTION)
+    bReturn = g_stSettings.m_bXboxAutodetection;
   else if (condition >= CONTROL_HAS_FOCUS_START && condition <= CONTROL_HAS_FOCUS_END)
   {
     if( !dwContextWindow ) dwContextWindow = m_gWindowManager.GetActiveWindow();
