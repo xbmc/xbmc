@@ -50,6 +50,19 @@ bool CVirtualDirectory::RemoveShare(const CStdString& strPath)
   return false;
 }
 
+bool CVirtualDirectory::RemoveShareName(const CStdString& strName)
+{
+  if (!m_vecShares)
+    return true;
+  for (vector<CShare>::iterator it=m_vecShares->begin(); it != m_vecShares->end(); ++it)
+    if (it->strName == strName) 
+    {
+      m_vecShares->erase(it,it+1);
+      return true;
+    }
+  return false;
+}
+
 /*!
  \brief Retrieve the shares or the content of a directory.
  \param strPath Specifies the path of the directory to retrieve or pass an empty string to get the shares.
