@@ -456,6 +456,7 @@ public:
     int m_iPreMuteVolumeLevel;    // save the m_nVolumeLevel for proper restore
     bool m_bMute;
     int m_iSystemTimeTotalUp;    // Uptime in minutes!
+    bool m_bXboxAutodetection;
   };
 
   CStdStringArray m_MyVideoStackRegExps;

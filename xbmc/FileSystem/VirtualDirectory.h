@@ -24,6 +24,7 @@ namespace DIRECTORY
       }
     void AddShare(const CShare& share);
     bool RemoveShare(const CStdString& strPath);
+    bool RemoveShareName(const CStdString& strName);
     bool IsShare(const CStdString& strPath) const;
     CStdString GetDVDDriveUrl();
 
