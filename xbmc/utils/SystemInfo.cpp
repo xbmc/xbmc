@@ -410,22 +410,22 @@ CStdString SYSINFO::SmartXXModCHIP()
   unsigned char uSmartXX_ID = ((inb(0xf701)) & 0xf);
   if ( uSmartXX_ID == 1 )      // SmartXX V1+V2
 	{
-		CLog::Log(LOGDEBUG, "- Detected ModChip: SmartXX V1/V2");
+		//CLog::Log(LOGDEBUG, "- Detected ModChip: SmartXX V1/V2");
 		return "SmartXX V1/V2";
 	}
   else if ( uSmartXX_ID == 2 ) // SmartXX V1+V2
 	{
-		CLog::Log(LOGDEBUG, "- Detected ModChip: SmartXX V1/V2");
+		//CLog::Log(LOGDEBUG, "- Detected ModChip: SmartXX V1/V2");
 		return "SmartXX V1/V2";
 	}
 	else if ( uSmartXX_ID == 5 ) // SmartXX OPX
 	{
-		CLog::Log(LOGDEBUG, "- Detected ModChip: SmartXX OPX");
+		//CLog::Log(LOGDEBUG, "- Detected ModChip: SmartXX OPX");
 		return "SmartXX OPX";
 	}
   else if ( uSmartXX_ID == 8 ) // SmartXX V3
 	{
-		CLog::Log(LOGDEBUG, "- Detected ModChip: SmartXX V3");
+		//CLog::Log(LOGDEBUG, "- Detected ModChip: SmartXX V3");
 		return "SmartXX V3";
 	}
 	else 
@@ -781,42 +781,89 @@ bool SYSINFO::SmartXXLEDControll(int iSmartXXLED)
 {
 	//SmartXX LED0/LED1 Controll Routine! 21.04.2005 GeminiServer
 	//LED_R, LED_B, LED_RB, LED_RBCYCLE
-	
-	//We need to check b4 we use the SmartXX LED controll!!
-	if ( (((inb(0xf701)) & 0xf) == 0x1) || (((inb(0xf701)) & 0xf) == 0x5) )
+	//We need to check b4 we use the SmartXX LED controll!! 
+	if (SmartXXModCHIP() == "SmartXX V3" || SmartXXModCHIP() == "SmartXX V1/V2")
 	{
 		if (iSmartXXLED == SMARTXX_LED_OFF)
 		{	
-			outb(0xf702, 0xb);  //R:off	B:off
-			CLog::Log(LOGDEBUG, "Setting SmartXX LED: BOTH OFF");
+      if (SmartXXModCHIP() == "SmartXX V3")
+      {
+        outb(0xf70c,0); // Red
+        outb(0xf70d,0);	// Green
+        outb(0xf70e,0); // Blue
+        outb(0xf702, 0x0); // Status LED OFF
+      }
+      else
+      {
+			  outb(0xf702, 0xb);  //R:off	B:off
+			  CLog::Log(LOGDEBUG, "Setting SmartXX LED: BOTH OFF");
+      }
 			return true;
 		}
 		else if (iSmartXXLED == SMARTXX_LED_RED)
-		{	//Only Red:
-			outb(0xf702, 0xb);  //R:off	B:off
-			outb(0xf702, 0x1);  //R:on	B:off
-			CLog::Log(LOGDEBUG, "Setting SmartXX LED: RED");
-			return true;
+		{	
+      if (SmartXXModCHIP() == "SmartXX V3")
+      {
+        outb(0xf70c,80);// Red
+        outb(0xf70d,0);	// Green
+        outb(0xf70e,0); // Blue
+        outb(0xf702, 0x0);  // Status LED OFF
+      }
+      else
+      {
+        //Only Red:
+			  outb(0xf702, 0xb);  //R:off	B:off
+			  outb(0xf702, 0x1);  //R:on	B:off
+			  CLog::Log(LOGDEBUG, "Setting SmartXX LED: RED");
+      }
+      return true;
 		}
 		else if (iSmartXXLED == SMARTXX_LED_BLUE)
 		{	//Only Blue
-			outb(0xf702, 0xb);  //R:off	B:off
-			outb(0xf702, 0xa);  //R:off B:on
-			CLog::Log(LOGDEBUG, "Setting SmartXX LED: BLUE");
+      if (SmartXXModCHIP() == "SmartXX V3")
+      {
+        outb(0xf70c,0);// Red
+        outb(0xf70d,0);	// Green
+        outb(0xf70e,80); // Blue
+        outb(0xf702, 0x0);  // Status LED OFF
+      }
+      else
+      {
+			  outb(0xf702, 0xb);  //R:off	B:off
+			  outb(0xf702, 0xa);  //R:off B:on
+			  CLog::Log(LOGDEBUG, "Setting SmartXX LED: BLUE");
+      }
 			return true;
 		}
 		else if (iSmartXXLED == SMARTXX_LED_BLUE_RED)
 		{	// RED and Blue
-			outb(0xf702, 0xb);  //R:off	B:off
-			outb(0xf702, 0x0);  //R:on	B:on 
-			CLog::Log(LOGDEBUG, "Setting SmartXX LED: RED and BLUE");
+      if (SmartXXModCHIP() == "SmartXX V3")
+      {
+        outb(0xf70c,80);// Red
+        outb(0xf70d,0);	// Green
+        outb(0xf70e,80); // Blue
+        outb(0xf702, 0xb);  // Status LED Blue ON
+      }
+      else
+      {
+			  outb(0xf702, 0xb);  //R:off	B:off
+			  outb(0xf702, 0x0);  //R:on	B:on 
+			  CLog::Log(LOGDEBUG, "Setting SmartXX LED: RED and BLUE");
+      }
 			return true;
 		}
 		else if (iSmartXXLED == SMARTXX_LED_CYCLE)
 		{
-			CLog::Log(LOGDEBUG, "Setting SmartXX LED: 1x CYCLE");
-			//while (iSmartXXLED == SMARTXX_LED_CYCLE)
-			//{	// Blue and Red
+      if (SmartXXModCHIP() == "SmartXX V3")
+      {
+        outb(0xf70c,80);  // Red
+        outb(0xf70d,80);  // Green
+        outb(0xf70e,80);  // Blue
+        outb(0xf702, 0xb);  // Status LED Blue ON
+      }
+      else
+      {
+			  // Blue and Red
 				outb(0xf702, 0x0);  //R:on	B:on
 				Sleep(100);
 				outb(0xf702, 0x1);  //R:on	B:off
@@ -825,13 +872,24 @@ bool SYSINFO::SmartXXLEDControll(int iSmartXXLED)
 				Sleep(100);
 				outb(0xf702, 0xb);  //R:off	B:off
 				Sleep(100);
-			//} 
+			 } 
+      CLog::Log(LOGDEBUG, "Setting SmartXX LED: 1x CYCLE NO --> ALL ON!");
 			return true;
 		}
 		else
 		{	
-			outb(0xf702, 0xa);  //R:off B:on
-			CLog::Log(LOGDEBUG, "Setting SmartXX LED: DEFAULT STATE --> RED");
+      if (SmartXXModCHIP() == "SmartXX V3")
+      {
+        outb(0xf70c,0);// Red
+        outb(0xf70d,0);	// Green
+        outb(0xf70e,80); // Blue
+        outb(0xf702, 0xb);  // Status LED Blue ON
+      }
+      else
+      {
+			  outb(0xf702, 0xa);  //R:off B:on
+			  CLog::Log(LOGDEBUG, "Setting SmartXX LED: DEFAULT STATE --> RED");
+      }
 			return true;	
 		}
 	}
