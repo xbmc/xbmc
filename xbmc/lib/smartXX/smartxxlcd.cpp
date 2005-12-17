@@ -3,6 +3,7 @@
 #include "smartxxlcd.h"
 #include "conio.h"
 #include "../../Util.h"
+#include "../../utils/SystemInfo.h"
 
 /*
 HD44780 or equivalent
@@ -16,7 +17,7 @@ DDRAM address      54 55 56 57 58 59 5a 5b 5c 5d 5e 5f 60 61 62 63 64 65 66 67
 #define SCROLL_SPEED_IN_MSEC 250
 #define DISP_O			        0xF700		// Display Port
 #define DISP_O_LIGHT			  0xF701		// Display Port brightness control
-#define DISP_O_CONTRAST			  0xF703		// Display Port contrast control
+#define DISP_O_CONTRAST			0xF703		// Display Port contrast control
 #define DISP_CTR_TIME		    2		      // Controll Timing for Display routine
 
 #define DISPCON_RS		      0x02		  // some Display definitions
@@ -29,13 +30,13 @@ DDRAM address      54 55 56 57 58 59 5a 5b 5c 5d 5e 5f 60 61 62 63 64 65 66 67
 #define DISP_CLEAR		      0x01 // cmd: clear display command
 #define DISP_HOME		        0x02 // cmd: return cursor to home
 #define DISP_ENTRY_MODE_SET	0x04 // cmd: enable cursor moving direction and enable the shift of entire display
-  #define DISP_S_FLAG		      0x01
-  #define DISP_ID_FLAG		    0x02
+#define DISP_S_FLAG		      0x01
+#define DISP_ID_FLAG		    0x02
 
 #define DISP_CONTROL		    0x08	//cmd: display ON/OFF
-  #define DISP_D_FLAG		      0x04	// display on
-  #define DISP_C_FLAG		      0x02	// cursor on
-  #define DISP_B_FLAG		      0x01	// blinking on
+#define DISP_D_FLAG		      0x04	// display on
+#define DISP_C_FLAG		      0x02	// cursor on
+#define DISP_B_FLAG		      0x01	// blinking on
 
 #define DISP_EXT_CONTROL	  0x08	//RE_FLAG = 1
 #define DISP_FW_FLAG		    0x04	//RE_FLAG = 1
@@ -43,18 +44,17 @@ DDRAM address      54 55 56 57 58 59 5a 5b 5c 5d 5e 5f 60 61 62 63 64 65 66 67
 #define DISP_NW_FLAG		    0x01	//RE_FLAG = 1
 
 #define DISP_SHIFT		      0x10  //cmd: set cursor moving and display shift control bit, and the direction without changing of ddram data
-  #define DISP_SC_FLAG		    0x08
-  #define DISP_RL_FLAG		    0x04
+#define DISP_SC_FLAG		    0x08
+#define DISP_RL_FLAG		    0x04
 
 #define DISP_FUNCTION_SET	  0x20 // cmd: set interface data length
-  #define DISP_DL_FLAG		    0x10  // set interface data length: 8bit/4bit
-  #define DISP_N_FLAG		      0x08  // number of display lines:2-line / 1-line
-  #define DISP_F_FLAG		      0x04  // display font type 5x11 dots or 5x8 dots
-
-  #define DISP_RE_FLAG		    0x04
+#define DISP_DL_FLAG		    0x10  // set interface data length: 8bit/4bit
+#define DISP_N_FLAG		      0x08  // number of display lines:2-line / 1-line
+#define DISP_F_FLAG		      0x04  // display font type 5x11 dots or 5x8 dots
+#define DISP_RE_FLAG		    0x04
 
 #define DISP_CGRAM_SET		  0x40 // cmd: set CGRAM address in address counter
-  #define DISP_SEGRAM_SET		  0x40	//RE_FLAG = 1
+#define DISP_SEGRAM_SET		  0x40	//RE_FLAG = 1
 
 #define DISP_DDRAM_SET		  0x80 // cmd: set DDRAM address in address counter
 
@@ -405,11 +405,30 @@ void CSmartXXLCD::DisplaySetBacklight(unsigned char level)
   }
   else //if (g_guiSettings.GetInt("LCD.Type")==LCD_TYPE_LCD_HD44780)
   {
-    float fBackLight=((float)level)/100.0f;
-    fBackLight*=63.0f;
-    int iNewLevel=(int)fBackLight;
-    if (iNewLevel==31) iNewLevel=32;
-    outb(DISP_O_LIGHT, iNewLevel&63);
+    if (SYSINFO::SmartXXModCHIP()== "SmartXX V3")
+    {
+      float fBackLight=((float)level)/100.0f;
+      fBackLight*=127.0f;
+      int iNewLevel=(int)fBackLight;
+      if (iNewLevel==63) iNewLevel=64;
+      outb(DISP_O_LIGHT, iNewLevel&127);
+    }
+    else if (SYSINFO::SmartXXModCHIP()== "SmartXX OPX")
+    {
+      float fBackLight=((float)level)/100.0f;
+      fBackLight*=127.0f;
+      int iNewLevel=(int)fBackLight;
+      if (iNewLevel==63) iNewLevel=64;
+      outb(DISP_O_LIGHT, iNewLevel&127);
+    }
+    else
+    {
+      float fBackLight=((float)level)/100.0f;
+      fBackLight*=63.0f;
+      int iNewLevel=(int)fBackLight;
+      if (iNewLevel==31) iNewLevel=32;
+      outb(DISP_O_LIGHT, iNewLevel&63);
+    }
   }
 }
 //************************************************************************************************************************
@@ -418,15 +437,38 @@ void CSmartXXLCD::DisplaySetBacklight(unsigned char level)
 void CSmartXXLCD::DisplaySetContrast(unsigned char level) 
 {
   // can't do this with a VFD
-  if (g_guiSettings.GetInt("LCD.Type")==LCD_TYPE_VFD)
+  if (g_guiSettings.GetInt("LCD.Type")==LCD_TYPE_VFD) 
     return;
 
   float fBackLight=((float)level)/100.0f;
-  fBackLight*=63.0f;
-  int iNewLevel=(int)fBackLight;
-  if (iNewLevel==31) iNewLevel=32;
-  outb(DISP_O_CONTRAST, iNewLevel&63);
+  
+  if (SYSINFO::SmartXXModCHIP() == "SmartXX V3") // Smartxx V3 
+  {   
+      fBackLight*=127.0f;
+      int iNewLevel=(int)fBackLight;
+      if (iNewLevel==63) iNewLevel=64;
+      int itemp = iNewLevel;
+      outb(0xF701, itemp&127|128);
+ 	}
+  else if ( SYSINFO::SmartXXModCHIP() == "SmartXX OPX" )
+  {
+    fBackLight*=127.0f;
+    int iNewLevel=(int)fBackLight;
+    if (iNewLevel==63) iNewLevel=64;
+    
+    outb(DISP_O_CONTRAST, iNewLevel&127|128);
+  }
+  else 
+  {
+    fBackLight*=63.0f;
+    int iNewLevel=(int)fBackLight;
+    if (iNewLevel==31) iNewLevel=32;
+    
+    outb(DISP_O_CONTRAST, iNewLevel&63);
+  }
+  
 }
+
 //************************************************************************************************************************
 void CSmartXXLCD::DisplayInit()
 {
