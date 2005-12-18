@@ -146,7 +146,6 @@
       <posy>150</posy>
       <height>31</height>
       <width>300</width>
-      <subtype>float</subtype>
       <texturefocus>list-focus.png</texturefocus>
       <texturenofocus>-</texturenofocus>
       <sliderwidth>100</sliderwidth>
