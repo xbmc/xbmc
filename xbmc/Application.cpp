@@ -2590,11 +2590,11 @@ void CApplication::FrameMove()
       newRightStickKey = KEY_BUTTON_RIGHT_THUMB_STICK_UP;
     else if (pGamepad->fY2 < 0)
       newRightStickKey = KEY_BUTTON_RIGHT_THUMB_STICK_DOWN;
-    else if (pGamepad->fX2 != 0)
+/*    else if (pGamepad->fX2 != 0)
     {
       newRightStickKey = KEY_BUTTON_RIGHT_THUMB_STICK_UP;
       pGamepad->fY2 = 0.00001f; // small amount of movement
-    }
+    }*/
   }
   else if (lastRightStickKey == KEY_BUTTON_RIGHT_THUMB_STICK_LEFT || lastRightStickKey == KEY_BUTTON_RIGHT_THUMB_STICK_RIGHT)
   {
@@ -2602,11 +2602,11 @@ void CApplication::FrameMove()
       newRightStickKey = KEY_BUTTON_RIGHT_THUMB_STICK_RIGHT;
     else if (pGamepad->fX2 < 0)
       newRightStickKey = KEY_BUTTON_RIGHT_THUMB_STICK_LEFT;
-    else if (pGamepad->fY2 != 0)
+/*    else if (pGamepad->fY2 != 0)
     {
       newRightStickKey = KEY_BUTTON_RIGHT_THUMB_STICK_RIGHT;
       pGamepad->fX2 = 0.00001f; // small amount of movement
-    }
+    }*/
   }
   else
   {

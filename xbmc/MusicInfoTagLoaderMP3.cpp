@@ -178,12 +178,14 @@ int CMusicInfoTagLoaderMP3::ReadDuration(const CStdString& strFileName)
   file.Read(buffer, 10);
 
   int id3v2Size=0;
-  if (buffer[0] == 'I' &&
-      buffer[1] == 'D' &&
-      buffer[2] == '3')
+  while (buffer[0] == 'I' &&
+         buffer[1] == 'D' &&
+         buffer[2] == '3')
   {
     /* Now check what the ID3v2 size field says */
     id3v2Size += UNSYNC(buffer[6], buffer[7], buffer[8], buffer[9]) + 10;
+    file.Seek(id3v2Size, SEEK_SET);
+    file.Read(buffer, 10);
   }
 
   /* Make sure file has a ID3v1 tag */
