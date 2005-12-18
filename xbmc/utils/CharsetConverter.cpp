@@ -283,7 +283,7 @@ void CCharsetConverter::stringCharsetToUtf8(const CStdStringA& strSource, CStdSt
 
     size_t outBytes = (inBytes * 4) + 1;
     size_t originalOutBytes = outBytes;
-    char *dst = strDest.GetBuffer(inBytes);
+    char *dst = strDest.GetBuffer(outBytes);
 
     if (iconv(m_iconvStringCharsetToUtf8, &src, &inBytes, &dst, &outBytes) == -1)
     {
