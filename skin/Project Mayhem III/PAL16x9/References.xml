@@ -371,9 +371,9 @@
     <texturenofocus>button-nofocus.png</texturenofocus>
     <texturebg>button-focus.png</texturebg>
     <textureleft>select-left.gif</textureleft>
-    <textureleftFocus>select-left-focus.png</textureleftFocus>
+    <textureleftfocus>select-left-focus.png</textureleftfocus>
     <textureright>select-right.gif</textureright>
-    <texturerightFocus>select-right-focus.png</texturerightFocus>
+    <texturerightfocus>select-right-focus.png</texturerightfocus>
     <font>font13</font>
     <textcolor>ffffffff</textcolor>
     <colordiffuse>ffffffff</colordiffuse>
