@@ -50,8 +50,8 @@ CXbmcHttp* pXbmcHttp;
 CXbmcHttpShim* pXbmcHttpShim;
 
 //Response format
-CStdString openTag="<li>", closeTag="\n", userHeader="", userFooter="", closeTagAtom="";
-bool incWebHeader=true, incWebFooter=true;
+CStdString openTag="<li>", closeTag="\n", userHeader="", userFooter="";
+bool incWebHeader=true, incWebFooter=true, closeFinalTag=false;
 
 bool autoGetPictureThumbs = true;
 
@@ -228,10 +228,16 @@ bool playableFile(CStdString filename)
 
 int SetResponse(CStdString response)
 {
-  if (response.Right(closeTagAtom.length())!=closeTagAtom) 
-    return g_applicationMessenger.SetResponse(response+closeTagAtom);
-  else
-    return g_applicationMessenger.SetResponse(response);
+  if (response.length()>=closeTag.length())
+  {
+    if ((response.Right(closeTag.length())!=closeTag) && closeFinalTag) 
+      return g_applicationMessenger.SetResponse(response+closeTag);
+    else;
+  }
+  else 
+    if (closeFinalTag)
+      return g_applicationMessenger.SetResponse(response+closeTag);
+  return g_applicationMessenger.SetResponse(response);
 }
 
 CStdString flushResult(int eid, webs_t wp, CStdString output)
@@ -1978,8 +1984,8 @@ int CXbmcHttp::xbmcSetResponseFormat(int numParas, CStdString paras[])
       openTag=paras[1];
     else if (para=="closetag")
       closeTag=paras[1];
-    else if (para=="closetagatom")
-      closeTagAtom=paras[1];
+    else if (para=="closefinaltag")
+      closeFinalTag=(paras[1].ToLower()=="true");
     else
       return SetResponse(openTag+"Error:Unknown parameter");
     return SetResponse(openTag+"OK");
