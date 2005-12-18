@@ -3,6 +3,7 @@
 #include "GUIFontManager.h"
 #include "../xbmc/utils/CharsetConverter.h"
 
+#include "../xbmc/Settings.h" // FOR PRE_SKIN_VERSION_2_0_COMPATIBILITY
 
 #define SPIN_BUTTON_DOWN 1
 #define SPIN_BUTTON_UP   2
@@ -317,6 +318,7 @@ void CGUISpinControl::AllocResources()
   m_imgspinUp.SetPosition(m_iPosX + m_imgspinDown.GetWidth(), m_iPosY);
   m_imgspinUpFocus.SetPosition(m_iPosX + m_imgspinDownFocus.GetWidth(), m_iPosY);
 
+#ifdef PRE_SKIN_VERSION_2_0_COMPATIBILITY
   if (m_dwBuddyControlID) // do we have an associated label control?
   {
     // set it to disabled by default (i.e. no focus)
@@ -324,6 +326,7 @@ void CGUISpinControl::AllocResources()
     g_graphicsContext.SendMessage(msg);
     m_bBuddyDisabled = true;
   }
+#endif
 }
 
 void CGUISpinControl::FreeResources()
@@ -360,6 +363,7 @@ void CGUISpinControl::Render()
     strcpy(m_szTyped, "");
   }
 
+#ifdef PRE_SKIN_VERSION_2_0_COMPATIBILITY
   if (m_dwBuddyControlID)  // do we have an associated label control?
   {
     if (HasFocus())   // we currently have focus
@@ -383,7 +387,7 @@ void CGUISpinControl::Render()
       }
     }
   }
-
+#endif
   int iPosX = m_iPosX;
   WCHAR wszText[1024];
   CStdStringW strTextUnicode;
@@ -591,6 +595,7 @@ void CGUISpinControl::SetFocus(bool bOnOff)
   CGUIControl::SetFocus(bOnOff);
   m_iSelect = SPIN_BUTTON_DOWN;
 }
+#ifdef PRE_SKIN_VERSION_2_0_COMPATIBILITY
 void CGUISpinControl::SetVisible(bool bVisible)
 {
   CGUIControl::SetVisible(bVisible);
@@ -608,7 +613,7 @@ void CGUISpinControl::SetVisible(bool bVisible)
     }
   }
 }
-
+#endif
 bool CGUISpinControl::CanMoveUp(bool bTestReverse)
 {
   // test for reverse...
@@ -886,12 +891,13 @@ int CGUISpinControl::GetMaximum() const
   }
   return 100;
 }
+#ifdef PRE_SKIN_VERSION_2_0_COMPATIBILITY
 void CGUISpinControl::SetBuddyControlID(DWORD dwBuddyControlID)
 {
   m_dwBuddyControlID = dwBuddyControlID;
   return ;
 }
-
+#endif
 bool CGUISpinControl::HitTest(int iPosX, int iPosY) const
 {
   if (m_imgspinUpFocus.HitTest(iPosX, iPosY) || m_imgspinDownFocus.HitTest(iPosX, iPosY))
