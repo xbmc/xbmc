@@ -49,6 +49,10 @@
 CXbmcHttp* pXbmcHttp;
 CXbmcHttpShim* pXbmcHttpShim;
 
+//Response format
+CStdString openTag="<li>", closeTag="\n", userHeader="", userFooter="", closeTagAtom="";
+bool incWebHeader=true, incWebFooter=true;
+
 bool autoGetPictureThumbs = true;
 
 /*
@@ -110,7 +114,7 @@ CStdString encodeFileToBase64( CStdString inFilename, int linesize )
       if( blocksout >= (linesize/4) || feof( infile ) ) 
       {
         if( blocksout )
-          strBase64 += "\r\n" ;
+          strBase64 += "\r"+closeTag ;
         blocksout = 0;
       }
     }
@@ -215,6 +219,21 @@ int splitParameter(CStdString parameter, CStdString& command, CStdString paras[]
     return num;
 }
 
+bool playableFile(CStdString filename)
+{
+  CStdString strExtension;
+  CUtil::GetExtension(filename, strExtension);
+  return (CFile::Exists(filename)) && (strExtension!="");
+}
+
+int SetResponse(CStdString response)
+{
+  if (response.Right(closeTagAtom.length())!=closeTagAtom) 
+    return g_applicationMessenger.SetResponse(response+closeTagAtom);
+  else
+    return g_applicationMessenger.SetResponse(response);
+}
+
 CStdString flushResult(int eid, webs_t wp, CStdString output)
 {
   if (output!="")
@@ -240,12 +259,12 @@ int displayDir(int numParas, CStdString paras[]) {
 
   if (numParas==0)
   {
-    return g_applicationMessenger.SetResponse("<li>Error:Missing folder");
+    return SetResponse(openTag+"Error:Missing folder");
   }
   folder=paras[0];
   if (folder.length()<1)
   {
-    return g_applicationMessenger.SetResponse("<li>Error:Missing folder");
+    return SetResponse(openTag+"Error:Missing folder");
   }
   if (numParas>1)
     mask=paras[1];
@@ -256,19 +275,19 @@ int displayDir(int numParas, CStdString paras[]) {
 
   if (!pDirectory) 
   {
-    return g_applicationMessenger.SetResponse("<li>Error");  
+    return SetResponse(openTag+"Error");  
   }
   pDirectory->SetMask(mask);
   CStdString tail=folder.Right(folder.length()-1);
   bool bResult=((pDirectory->Exists(folder))||(tail==":")||(tail==":\\")||(tail==":/"));
   if (!bResult)
   {
-    return g_applicationMessenger.SetResponse("<li>Error:Not folder");
+    return SetResponse(openTag+"Error:Not folder");
   }
   bResult=pDirectory->GetDirectory(folder,dirItems);
   if (!bResult)
   {
-    return g_applicationMessenger.SetResponse("<li>Error:Not folder");
+    return SetResponse(openTag+"Error:Not folder");
   }
 
   dirItems.Sort(SSortFileItem::LabelAscending);
@@ -277,18 +296,18 @@ int displayDir(int numParas, CStdString paras[]) {
     CFileItem *itm = dirItems[i];
     if (mask=="*" || (mask =="" && itm->m_bIsFolder))
       if (!CUtil::HasSlashAtEnd(itm->m_strPath))
-        output+="\n<li>" + itm->m_strPath + "\\" ;
+        output+=closeTag+openTag + itm->m_strPath + "\\" ;
       else
-        output+="\n<li>" + itm->m_strPath ;
+        output+=closeTag+openTag + itm->m_strPath ;
     else if (!itm->m_bIsFolder)
-      output+="\n<li>" + itm->m_strPath;
+      output+=closeTag+openTag + itm->m_strPath;
     if (option="1") {
       CStdString theDate;
       CUtil::GetDate(itm->m_stTime,theDate) ;
       output+="  ;" + theDate ;
     }
   }
-  return g_applicationMessenger.SetResponse(output);
+  return SetResponse(output);
 }
 
 void SetCurrentMediaItem(CFileItem& newItem)
@@ -496,7 +515,7 @@ int CXbmcHttp::xbmcAddToPlayList(int numParas, CStdString paras[])
   int playList ;
 
   if (numParas==0)
-    return g_applicationMessenger.SetResponse("<li>Error:Missing Parameter");
+    return SetResponse(openTag+"Error:Missing Parameter");
   else
   {
     if (numParas==1) //no playlist and no mask
@@ -530,19 +549,20 @@ int CXbmcHttp::xbmcAddToPlayList(int numParas, CStdString paras[])
     if (changed)
     {
       g_playlistPlayer.HasChanged();
-      return g_applicationMessenger.SetResponse("<li>OK");
+      return SetResponse(openTag+"OK");
     }
     else
-      return g_applicationMessenger.SetResponse("<li>Error");
+      return SetResponse(openTag+"Error");
   }
 }
+
 
 int CXbmcHttp::xbmcGetTagFromFilename(int numParas, CStdString paras[]) 
 {
   //char buffer[XML_MAX_INNERTEXT_SIZE];
   CStdString strFileName;
   if (numParas==0) {
-    return g_applicationMessenger.SetResponse("<li>Error:Missing Parameter");
+    return SetResponse(openTag+"Error:Missing Parameter");
   }
   strFileName=CUtil::GetFileName(paras[0].c_str());
   CFileItem *pItem = new CFileItem(strFileName);
@@ -550,7 +570,7 @@ int CXbmcHttp::xbmcGetTagFromFilename(int numParas, CStdString paras[])
   if (!pItem->IsAudio())
   {
     delete pItem;
-    return g_applicationMessenger.SetResponse("<li>Error:Not Audio");
+    return SetResponse(openTag+"Error:Not Audio");
   }
   CMusicInfoTag& tag=pItem->m_musicInfoTag;
   bool bFound=false;
@@ -587,33 +607,33 @@ int CXbmcHttp::xbmcGetTagFromFilename(int numParas, CStdString paras[])
       }
       else
       {
-        return g_applicationMessenger.SetResponse("<li>Error:Could not load TagLoader");
+        return SetResponse(openTag+"Error:Could not load TagLoader");
       }
     }
     else
     {
-      return g_applicationMessenger.SetResponse("<li>Error:System not set to use tags");
+      return SetResponse(openTag+"Error:System not set to use tags");
       
     }
   if (tag.Loaded())
   {
     CStdString output, tmp;
 
-    output = "<li>Artist:" + tag.GetArtist();
-    output += "\n<li>Album:" + tag.GetAlbum();
-    output += "\n<li>Title:" + tag.GetTitle();
+    output = openTag+"Artist:" + tag.GetArtist();
+    output += closeTag+openTag+"Album:" + tag.GetAlbum();
+    output += closeTag+openTag+"Title:" + tag.GetTitle();
     tmp.Format("%i", tag.GetTrackNumber());
-    output += "\n<li>Track number:" + tmp;
+    output += closeTag+openTag+"Track number:" + tmp;
     tmp.Format("%i", tag.GetDuration());
-    output += "\n<li>Duration:" + tmp;
-    output += "\n<li>Genre:" + tag.GetGenre();
+    output += closeTag+openTag+"Duration:" + tmp;
+    output += closeTag+openTag+"Genre:" + tag.GetGenre();
     SYSTEMTIME stTime;
     tag.GetReleaseDate(stTime);
     tmp.Format("%i", stTime.wYear);
-    output += "\n<li>Release year:" + tmp;
+    output += closeTag+openTag+"Release year:" + tmp;
     pItem->SetMusicThumb();
     if (pItem->HasThumbnail())
-      output += "\n<li>Thumb:" + pItem->GetThumbnailImage() ;
+      output += closeTag+openTag+"Thumb:" + pItem->GetThumbnailImage() ;
     else {
       //There isn't a thumbnail but let's still return the appropriate filename if one did exist
       CStdString strThumb, strPath, strFileName;
@@ -631,16 +651,16 @@ int CXbmcHttp::xbmcGetTagFromFilename(int numParas, CStdString paras[])
       if (!pItem->m_bIsFolder)
       {
         CUtil::GetAlbumThumb(strAlbum, strPath, strThumb);
-        output += "\n<li>Thumb:[None] " + strThumb ;
+        output += closeTag+openTag+"Thumb:[None] " + strThumb ;
       }
     }
     delete pItem;
-    return g_applicationMessenger.SetResponse(output);
+    return SetResponse(output);
   }
   else
   {
     delete pItem;
-    return g_applicationMessenger.SetResponse("<li>Error:No tag info");
+    return SetResponse(openTag+"Error:No tag info");
   }
 }
 
@@ -652,7 +672,7 @@ int CXbmcHttp::xbmcClearPlayList(int numParas, CStdString paras[])
   else
     playList=atoi(paras[0]) ;
   g_playlistPlayer.GetPlaylist( playList ).Clear();
-  return g_applicationMessenger.SetResponse("<li>OK");
+  return SetResponse(openTag+"OK");
 }
 
 int CXbmcHttp::xbmcGetDirectory(int numParas, CStdString paras[])
@@ -660,7 +680,7 @@ int CXbmcHttp::xbmcGetDirectory(int numParas, CStdString paras[])
   if (numParas>0)
     return displayDir(numParas, paras);
   else
-    return g_applicationMessenger.SetResponse("<li>Error:No path") ;
+    return SetResponse(openTag+"Error:No path") ;
 }
 
 int CXbmcHttp::xbmcGetMovieDetails(int numParas, CStdString paras[])
@@ -678,39 +698,39 @@ int CXbmcHttp::xbmcGetMovieDetails(int numParas, CStdString paras[])
         CStdString thumb, output, tmp;
         m_database.GetMovieInfo(paras[0].c_str(),aMovieRec);
         tmp.Format("%i", aMovieRec.m_iYear);
-        output = "\n<li>Year:" + tmp;
-        output += "\n<li>Director:" + aMovieRec.m_strDirector;
-        output += "\n<li>Title:" + aMovieRec.m_strTitle;
-        output += "\n<li>Plot:" + aMovieRec.m_strPlot;
-        output += "\n<li>Genre:" + aMovieRec.m_strGenre;
+        output = closeTag+openTag+"Year:" + tmp;
+        output += closeTag+openTag+"Director:" + aMovieRec.m_strDirector;
+        output += closeTag+openTag+"Title:" + aMovieRec.m_strTitle;
+        output += closeTag+openTag+"Plot:" + aMovieRec.m_strPlot;
+        output += closeTag+openTag+"Genre:" + aMovieRec.m_strGenre;
         CStdString strRating;
         strRating.Format("%3.3f", aMovieRec.m_fRating);
         if (strRating=="") strRating="0.0";
-        output += "\n<li>Rating:" + strRating;
-        output += "\n<li>Cast:" + aMovieRec.m_strCast;
+        output += closeTag+openTag+"Rating:" + strRating;
+        output += closeTag+openTag+"Cast:" + aMovieRec.m_strCast;
         CUtil::GetVideoThumbnail(aMovieRec.m_strIMDBNumber,thumb);
         if (!CFile::Exists(thumb))
           thumb = "[None] " + thumb;
-        output += "\n<li>Thumb:" + thumb;
+        output += closeTag+openTag+"Thumb:" + thumb;
         m_database.Close();
         delete item;
-        return g_applicationMessenger.SetResponse(output);
+        return SetResponse(output);
       }
       else
       {
         m_database.Close();
         delete item;
-        return g_applicationMessenger.SetResponse("<li>Error:Not found");
+        return SetResponse(openTag+"Error:Not found");
       }
     }
     else
     {
       delete item;
-      return g_applicationMessenger.SetResponse("<li>Error:Not a video") ;
+      return SetResponse(openTag+"Error:Not a video") ;
     }
   }
   else
-    return g_applicationMessenger.SetResponse("<li>Error:No file name") ;
+    return SetResponse(openTag+"Error:No file name") ;
 }
 
 int CXbmcHttp::xbmcGetCurrentlyPlaying()
@@ -720,14 +740,14 @@ int CXbmcHttp::xbmcGetCurrentlyPlaying()
   if (pSlideShow)
     if (m_gWindowManager.GetActiveWindow() == WINDOW_SLIDESHOW)
     {
-      output="<li>Filename:"+pSlideShow->GetCurrentSlide();
-      output+="\n<li>Type:Picture" ;
+      output=openTag+"Filename:"+pSlideShow->GetCurrentSlide();
+      output+=closeTag+openTag+"Type:Picture" ;
       int width=0, height=0;
       pSlideShow->GetCurrentSlideInfo(width, height);
       tmp.Format("%i",width);
-      output+="\n<li>Width:" + tmp ;
+      output+=closeTag+openTag+"Width:" + tmp ;
       tmp.Format("%i",height);
-      output+="\n<li>Height:" + tmp ;
+      output+=closeTag+openTag+"Height:" + tmp ;
       CStdString thumb, picFn=pSlideShow->GetCurrentSlide();
       CUtil::GetThumbnail(picFn,thumb);
       if (!CFile::Exists(thumb))
@@ -741,51 +761,51 @@ int CXbmcHttp::xbmcGetCurrentlyPlaying()
         if (!CFile::Exists(thumb))
           thumb = "[None] " + thumb;
       }
-      output+="\n<li>Thumb:"+thumb;
+      output+=closeTag+openTag+"Thumb:"+thumb;
       tag="1";
     } 
   CStdString fn=g_application.CurrentFile();
   if (fn=="")
   {
     if (tag=="")
-      output="<li>Filename:[Nothing Playing]";
+      output=openTag+"Filename:[Nothing Playing]";
   }
   else
   { 
     if (tag=="")
-      output="<li>Filename:"+fn;
+      output=openTag+"Filename:"+fn;
     else
-      output+="\n<li>Filename"+tag+":"+fn;
+      output+=closeTag+openTag+"Filename"+tag+":"+fn;
     tmp.Format("%i",g_playlistPlayer.GetCurrentSong());
-    output+="\n<li>SongNo:"+tmp;
+    output+=closeTag+openTag+"SongNo:"+tmp;
     __int64 lPTS=-1;
     if (g_application.IsPlayingVideo()) {
       lPTS = g_application.m_pPlayer->GetTime()/100;
-      output+="\n<li>Type"+tag+":Video" ;
+      output+=closeTag+openTag+"Type"+tag+":Video" ;
       const CIMDBMovie& tagVal=g_infoManager.GetCurrentMovie();
       if (tagVal.m_strTitle!="")
-        output+="\n<li>Title"+tag+":"+tagVal.m_strTitle ;
+        output+=closeTag+openTag+"Title"+tag+":"+tagVal.m_strTitle ;
       if (tagVal.m_strGenre!="")
-        output+="\n<li>Genre"+tag+":"+tagVal.m_strGenre;
+        output+=closeTag+openTag+"Genre"+tag+":"+tagVal.m_strGenre;
     }
     else if (g_application.IsPlayingAudio()) {
       lPTS = g_application.m_pPlayer->GetTime()/100;
-      output+="\n<li>Type"+tag+":Audio" ;
+      output+=closeTag+openTag+"Type"+tag+":Audio" ;
       const CMusicInfoTag& tagVal=g_infoManager.GetCurrentSongTag();
       if (tagVal.GetTitle()!="")
-        output+="\n<li>Title"+tag+":"+tagVal.GetTitle() ;
+        output+=closeTag+openTag+"Title"+tag+":"+tagVal.GetTitle() ;
       if (tagVal.GetArtist()!="")
-        output+="\n<li>Artist"+tag+":"+tagVal.GetArtist() ;
+        output+=closeTag+openTag+"Artist"+tag+":"+tagVal.GetArtist() ;
       if (tagVal.GetAlbum()!="")
-        output+="\n<li>Album"+tag+":"+tagVal.GetAlbum() ;
+        output+=closeTag+openTag+"Album"+tag+":"+tagVal.GetAlbum() ;
       if (tagVal.GetGenre()!="")
-        output+="\n<li>Genre"+tag+":"+tagVal.GetGenre() ;
+        output+=closeTag+openTag+"Genre"+tag+":"+tagVal.GetGenre() ;
       if (tagVal.GetYear()!="")
-        output+="\n<li>Year"+tag+":"+tagVal.GetYear() ;
+        output+=closeTag+openTag+"Year"+tag+":"+tagVal.GetYear() ;
       if (!g_infoManager.GetMusicLabel(211).IsEmpty())
-        output+="\n<li>Bitrate"+tag+":"+g_infoManager.GetMusicLabel(211);  // MUSICPLAYER_BITRATE
+        output+=closeTag+openTag+"Bitrate"+tag+":"+g_infoManager.GetMusicLabel(211);  // MUSICPLAYER_BITRATE
       if (!g_infoManager.GetMusicLabel(216).IsEmpty())
-        output+="\n<li>Samplerate"+tag+":"+g_infoManager.GetMusicLabel(216);  // MUSICPLAYER_SAMPLERATE
+        output+=closeTag+openTag+"Samplerate"+tag+":"+g_infoManager.GetMusicLabel(216);  // MUSICPLAYER_SAMPLERATE
     }
     if (fn.Find("://")<0)
     {
@@ -793,16 +813,16 @@ int CXbmcHttp::xbmcGetCurrentlyPlaying()
       CUtil::GetThumbnail(fn,thumb);
       if (!CFile::Exists(thumb))
         thumb = "[None] " + thumb;
-      output+="\n<li>Thumb"+tag+":"+thumb;
+      output+=closeTag+openTag+"Thumb"+tag+":"+thumb;
     }
     if (g_application.m_pPlayer->IsPaused()) 
-      output+="\n<li>Paused:True" ;
+      output+=closeTag+openTag+"Paused:True" ;
     else
-      output+="\n<li>Paused:False" ;
+      output+=closeTag+openTag+"Paused:False" ;
     if (g_application.IsPlaying()) 
-      output+="\n<li>Playing:True" ;
+      output+=closeTag+openTag+"Playing:True" ;
     else
-      output+="\n<li>Playing:False" ;
+      output+=closeTag+openTag+"Playing:False" ;
     if (lPTS!=-1)
     {          
       int hh = (int)(lPTS / 36000) % 100;
@@ -816,7 +836,7 @@ int CXbmcHttp::xbmcGetCurrentlyPlaying()
       {
         tmp.Format("%02.2i:%02.2i",mm,ss);
       }
-      output+="\n<li>Time:"+tmp;
+      output+=closeTag+openTag+"Time:"+tmp;
       CStdString strTotalTime;
       unsigned int tmpvar = g_application.m_pPlayer->GetTotalTime();
       if(tmpvar != 0)
@@ -832,13 +852,13 @@ int CXbmcHttp::xbmcGetCurrentlyPlaying()
         {
           tmp.Format("%02.2i:%02.2i",mm,ss);
         }
-        output+="\n<li>Duration:"+tmp;
+        output+=closeTag+openTag+"Duration:"+tmp;
       }
       tmp.Format("%i",(int)g_application.m_pPlayer->GetPercentage());
-      output+="\n<li>Percentage:"+tmp ;
+      output+=closeTag+openTag+"Percentage:"+tmp ;
     }
   }
-  return g_applicationMessenger.SetResponse(output);
+  return SetResponse(output);
 }
 
 int CXbmcHttp::xbmcGetPercentage()
@@ -847,16 +867,16 @@ int CXbmcHttp::xbmcGetPercentage()
   {
     CStdString tmp;
     tmp.Format("%i",(int)g_application.m_pPlayer->GetPercentage());
-    return g_applicationMessenger.SetResponse("<li>" + tmp ) ;
+    return SetResponse(openTag + tmp ) ;
   }
   else
-    return g_applicationMessenger.SetResponse("<li>Error");
+    return SetResponse(openTag+"Error");
 }
 
 int CXbmcHttp::xbmcSeekPercentage(int numParas, CStdString paras[], bool relative)
 {
   if (numParas<1)
-    return g_applicationMessenger.SetResponse("<li>Error:Missing Parameter");
+    return SetResponse(openTag+"Error:Missing Parameter");
   else
   {
     if (g_application.m_pPlayer)
@@ -868,26 +888,26 @@ int CXbmcHttp::xbmcSeekPercentage(int numParas, CStdString paras[], bool relativ
         if ((newPos>=0) && (newPos/1000<=g_infoManager.GetTotalPlayTime()))
         {
           g_application.m_pPlayer->SeekTime(newPos);
-          return g_applicationMessenger.SetResponse("<li>OK");
+          return SetResponse(openTag+"OK");
         }
         else
-          return g_applicationMessenger.SetResponse("<li>Error:Out of range");
+          return SetResponse(openTag+"Error:Out of range");
       }
       else
       {
         g_application.m_pPlayer->SeekPercentage(percent);
-        return g_applicationMessenger.SetResponse("<li>OK");
+        return SetResponse(openTag+"OK");
       }
     }
     else
-      return g_applicationMessenger.SetResponse("<li>Error:Loading mPlayer");
+      return SetResponse(openTag+"Error:Loading mPlayer");
   }
 }
 
 int CXbmcHttp::xbmcSetVolume(int numParas, CStdString paras[])
 {
   if (numParas<1)
-    return g_applicationMessenger.SetResponse("<li>Error:Missing Parameter");
+    return SetResponse(openTag+"Error:Missing Parameter");
   else
   {
     int iPercent = atoi(paras[0].c_str()) ;
@@ -896,14 +916,11 @@ int CXbmcHttp::xbmcSetVolume(int numParas, CStdString paras[])
       if (iPercent>100) iPercent = 100;
       float fHardwareVolume = ((float)iPercent)/100.0f * (VOLUME_MAXIMUM-VOLUME_MINIMUM) + VOLUME_MINIMUM;
       g_stSettings.m_nVolumeLevel = (long)fHardwareVolume;
-      // show visual feedback of volume change...
-      //if (!g_application.m_guiDialogVolumeBar.IsRunning())
-      //  g_application.m_guiDialogVolumeBar.DoModal(m_gWindowManager.GetActiveWindow());
       g_application.m_pPlayer->SetVolume(g_stSettings.m_nVolumeLevel);
-      return g_applicationMessenger.SetResponse("<li>OK");
+      return SetResponse(openTag+"OK");
     }
     else
-      return g_applicationMessenger.SetResponse("<li>Error");
+      return SetResponse(openTag+"Error");
   }
 }
 
@@ -916,18 +933,18 @@ int CXbmcHttp::xbmcGetVolume()
     vol = -1;
   CStdString tmp;
   tmp.Format("%i",vol);
-  return g_applicationMessenger.SetResponse("<li>" + tmp );
+  return SetResponse(openTag + tmp );
 }
 
 int CXbmcHttp::xbmcClearSlideshow()
 {
   CGUIWindowSlideShow *pSlideShow = (CGUIWindowSlideShow *)m_gWindowManager.GetWindow(WINDOW_SLIDESHOW);
   if (!pSlideShow)
-    return g_applicationMessenger.SetResponse("<li>Error:Could not create slideshow");
+    return SetResponse(openTag+"Error:Could not create slideshow");
   else
   {
     pSlideShow->Reset();
-    return g_applicationMessenger.SetResponse("<li>OK");
+    return SetResponse(openTag+"OK");
   }
 }
 
@@ -945,22 +962,22 @@ int CXbmcHttp::xbmcPlaySlideshow(int numParas, CStdString paras[] )
       msg.SetStringParam(paras[0]);
     CGUIWindow *pWindow = m_gWindowManager.GetWindow(WINDOW_SLIDESHOW);
     if (pWindow) pWindow->OnMessage(msg);
-    return g_applicationMessenger.SetResponse("<li>OK");
+    return SetResponse(openTag+"OK");
 }
 
 int CXbmcHttp::xbmcSlideshowSelect(int numParas, CStdString paras[])
 {
   if (numParas<1)
-    return g_applicationMessenger.SetResponse("<li>Error:Missing filename");
+    return SetResponse(openTag+"Error:Missing filename");
   else
   {
     CGUIWindowSlideShow *pSlideShow = (CGUIWindowSlideShow *)m_gWindowManager.GetWindow(WINDOW_SLIDESHOW);
     if (!pSlideShow)
-      return g_applicationMessenger.SetResponse("<li>Error:Could not create slideshow");
+      return SetResponse(openTag+"Error:Could not create slideshow");
     else
     {
       pSlideShow->Select(paras[0]);
-      return g_applicationMessenger.SetResponse("<li>OK");
+      return SetResponse(openTag+"OK");
     }
   }
 }
@@ -970,7 +987,7 @@ int CXbmcHttp::xbmcAddToSlideshow(int numParas, CStdString paras[])
 {
   CStdString mask="";
   if (numParas<1)
-    return g_applicationMessenger.SetResponse("<li>Error:Missing parameter");
+    return SetResponse(openTag+"Error:Missing parameter");
   else
   {
     if (numParas>1)
@@ -985,7 +1002,7 @@ int CXbmcHttp::xbmcAddToSlideshow(int numParas, CStdString paras[])
     pItem->m_bIsShareOrDrive=false;
     AddItemToPlayList(pItem, -1, 0, mask); //add to slideshow
     delete pItem;
-    return g_applicationMessenger.SetResponse("<li>OK");
+    return SetResponse(openTag+"OK");
   }
 }
 
@@ -993,17 +1010,17 @@ int CXbmcHttp::xbmcSetPlaySpeed(int numParas, CStdString paras[])
 {
   if (numParas>0) {
     g_application.SetPlaySpeed(atoi(paras[0]));
-    return g_applicationMessenger.SetResponse("<li>OK");
+    return SetResponse(openTag+"OK");
   }
   else
-    return g_applicationMessenger.SetResponse("<li>Error:Missing parameter");
+    return SetResponse(openTag+"Error:Missing parameter");
 }
 
 int CXbmcHttp::xbmcGetPlaySpeed()
 {
   CStdString strSpeed;
   strSpeed.Format("%i", g_application.GetPlaySpeed());
-  return g_applicationMessenger.SetResponse("<li>" + strSpeed );
+  return SetResponse(openTag + strSpeed );
 }
 
 int CXbmcHttp::xbmcGetGUIDescription()
@@ -1011,46 +1028,46 @@ int CXbmcHttp::xbmcGetGUIDescription()
   CStdString strWidth, strHeight;
   strWidth.Format("%i", g_graphicsContext.GetWidth());
   strHeight.Format("%i", g_graphicsContext.GetHeight());
-  return g_applicationMessenger.SetResponse("<li>Width:" + strWidth + "\n<li>Height:" + strHeight  );
+  return SetResponse(openTag+"Width:" + strWidth + closeTag+openTag+"Height:" + strHeight  );
 }
 
 int CXbmcHttp::xbmcGetGUIStatus()
 {
   CStdString output, tmp, strTmp;
 
-  output = "\n<li>MusicPath:" + ((CGUIWindowMusicNav *)m_gWindowManager.GetWindow(WINDOW_MUSIC_FILES))->CurrentDirectory().m_strPath;
-  output += "\n<li>VideoPath:" + ((CGUIWindowVideoFiles *)m_gWindowManager.GetWindow(WINDOW_VIDEOS))->CurrentDirectory().m_strPath;
-  output += "\n<li>PicturePath:" + ((CGUIWindowPictures *)m_gWindowManager.GetWindow(WINDOW_PICTURES))->CurrentDirectory().m_strPath;
-  output += "\n<li>ProgramsPath:" + ((CGUIWindowPrograms *)m_gWindowManager.GetWindow(WINDOW_PROGRAMS))->CurrentDirectory().m_strPath;
-  output += "\n<li>FilesPath1:" + ((CGUIWindowFileManager *)m_gWindowManager.GetWindow(WINDOW_FILES))->CurrentDirectory(0).m_strPath;
-  output += "\n<li>FilesPath1:" + ((CGUIWindowFileManager *)m_gWindowManager.GetWindow(WINDOW_FILES))->CurrentDirectory(1).m_strPath;
+  output = closeTag+openTag+"MusicPath:" + ((CGUIWindowMusicNav *)m_gWindowManager.GetWindow(WINDOW_MUSIC_FILES))->CurrentDirectory().m_strPath;
+  output += closeTag+openTag+"VideoPath:" + ((CGUIWindowVideoFiles *)m_gWindowManager.GetWindow(WINDOW_VIDEOS))->CurrentDirectory().m_strPath;
+  output += closeTag+openTag+"PicturePath:" + ((CGUIWindowPictures *)m_gWindowManager.GetWindow(WINDOW_PICTURES))->CurrentDirectory().m_strPath;
+  output += closeTag+openTag+"ProgramsPath:" + ((CGUIWindowPrograms *)m_gWindowManager.GetWindow(WINDOW_PROGRAMS))->CurrentDirectory().m_strPath;
+  output += closeTag+openTag+"FilesPath1:" + ((CGUIWindowFileManager *)m_gWindowManager.GetWindow(WINDOW_FILES))->CurrentDirectory(0).m_strPath;
+  output += closeTag+openTag+"FilesPath1:" + ((CGUIWindowFileManager *)m_gWindowManager.GetWindow(WINDOW_FILES))->CurrentDirectory(1).m_strPath;
   int iWin=m_gWindowManager.GetActiveWindow();
   CGUIWindow* pWindow=m_gWindowManager.GetWindow(iWin);  
   tmp.Format("%i", iWin);
-  output += "<li>ActiveWindow:" + tmp;
+  output += openTag+"ActiveWindow:" + tmp;
   if (pWindow)
   {
     CStdString strLine;
     wstring wstrLine;
     wstrLine=g_localizeStrings.Get(iWin);
     CUtil::Unicode2Ansi(wstrLine,strLine);
-    output += "\n<li>ActiveWindowName:" + strLine ; 
+    output += closeTag+openTag+"ActiveWindowName:" + strLine ; 
     int iControl=pWindow->GetFocusedControl();
     CGUIControl* pControl=(CGUIControl* )pWindow->GetControl(iControl);
     strLine.Format("%d",(int)pControl->GetID());
-    output += "\n<li>ControlId:" + strLine;
+    output += closeTag+openTag+"ControlId:" + strLine;
     
     if (pControl)
     {
       strTmp = pControl->GetDescription();
       if (pControl->GetControlType() == CGUIControl::GUICONTROL_BUTTON)
       {
-        output += "\n<li>Type:Button";
+        output += closeTag+openTag+"Type:Button";
         if (strTmp!="")
-          output += "\n<li>Description:" + strTmp;
+          output += closeTag+openTag+"Description:" + strTmp;
         strTmp = ((CGUIButtonControl *)pControl)->GetExecuteAction();
         if (strTmp!="")
-          output += "\n<li>Execution:" + strTmp;
+          output += closeTag+openTag+"Execution:" + strTmp;
         long lHyperLinkWindowID = ((CGUIButtonControl *)pControl)->GetHyperLink();
         if (lHyperLinkWindowID != WINDOW_INVALID)
         {
@@ -1061,42 +1078,42 @@ int CXbmcHttp::xbmcGetGUIStatus()
             CGUIControl* pHyperControl=(CGUIControl* )pHyperWindow->GetControl(iHyperControl);
             if (pHyperControl)
             {
-              output += "\n<li>DescriptionSub:" + (CStdString) ((CGUIButtonControl *)pHyperControl)->GetLabel();
+              output += closeTag+openTag+"DescriptionSub:" + (CStdString) ((CGUIButtonControl *)pHyperControl)->GetLabel();
               strTmp.Format("%d", ((CGUIButtonControl *)pHyperControl)->GetID());
-              output += "\n<li>ControlIdSub:" + strTmp;
-              output += "\n<li>ExecutionSub:" + ((CGUIButtonControl *)pHyperControl)->GetExecuteAction();
+              output += closeTag+openTag+"ControlIdSub:" + strTmp;
+              output += closeTag+openTag+"ExecutionSub:" + ((CGUIButtonControl *)pHyperControl)->GetExecuteAction();
             }
           }
         }
       }
       else if (pControl->GetControlType() == CGUIControl::GUICONTROL_BUTTONBAR)
       {
-        output += "\n<li>Type:ButtonBar\n<li>Description:" + strTmp;
+        output += closeTag+openTag+"Type:ButtonBar"+closeTag+openTag+"Description:" + strTmp;
         strLine.Format("%d",((CGUIButtonScroller *)pControl)->GetActiveButton());
-        output += "\n<li>ActiveButton:" + strLine;
+        output += closeTag+openTag+"ActiveButton:" + strLine;
       }
       else if (pControl->GetControlType() == CGUIControl::GUICONTROL_SPIN)
       {
-        output += "\n<li>Type:Spin\n<li>Description:" + strTmp;
+        output += closeTag+openTag+"Type:Spin"+closeTag+openTag+"Description:" + strTmp;
       }
       else if (pControl->GetControlType() == CGUIControl::GUICONTROL_THUMBNAIL)
       {
-        output += "\n<li>Type:ThumbNail\n<li>Description:" + strTmp;
+        output += closeTag+openTag+"Type:ThumbNail"+closeTag+openTag+"Description:" + strTmp;
       }
       else if (pControl->GetControlType() == CGUIControl::GUICONTROL_LIST)
       {
-        output += "\n<li>Type:List\n<li>Description:" + strTmp;
+        output += closeTag+openTag+"Type:List"+closeTag+openTag+"Description:" + strTmp;
       }
     }
   }
-  return g_applicationMessenger.SetResponse(output);
+  return SetResponse(output);
 }
 
 int CXbmcHttp::xbmcGetThumb(int numParas, CStdString paras[])
 {
   CStdString thumb="";
   if (numParas<1)
-    return g_applicationMessenger.SetResponse("<li>Error:Missing parameter");
+    return SetResponse(openTag+"Error:Missing parameter");
   else
   {
     if (CUtil::IsRemote(paras[0]))
@@ -1110,12 +1127,12 @@ int CXbmcHttp::xbmcGetThumb(int numParas, CStdString paras[])
       }
       else
       {
-        return g_applicationMessenger.SetResponse("<li>Error");
+        return SetResponse(openTag+"Error");
       }
     }
     else
       thumb=encodeFileToBase64(paras[0],80);
-    return g_applicationMessenger.SetResponse(thumb) ;
+    return SetResponse(thumb) ;
   }
 }
 
@@ -1126,16 +1143,16 @@ int CXbmcHttp::xbmcGetThumbFilename(int numParas, CStdString paras[])
   if (numParas>1)
   {
     CUtil::GetAlbumThumb(paras[0],paras[1],thumbFilename,false);
-    return g_applicationMessenger.SetResponse("<li>" + thumbFilename ) ;
+    return SetResponse(openTag+thumbFilename ) ;
   }
   else
-    return g_applicationMessenger.SetResponse("<li>Error:Missing parameter (album;filename)") ;
+    return SetResponse(openTag+"Error:Missing parameter (album;filename)") ;
 }
 
 int CXbmcHttp::xbmcPlayerPlayFile(int numParas, CStdString paras[])
 {
   if (numParas<1)
-    return g_applicationMessenger.SetResponse("<li>Error:Missing parameter");
+    return SetResponse(openTag+"Error:Missing parameter");
   else
   {
     CFileItem item(paras[0], FALSE);
@@ -1143,32 +1160,37 @@ int CXbmcHttp::xbmcPlayerPlayFile(int numParas, CStdString paras[])
     {
       LoadPlayList(paras[0], g_playlistPlayer.GetCurrentPlaylist(), false, false);
       g_applicationMessenger.PlayListPlayerPlay(0);
-      //g_application.PlayMedia(item, g_playlistPlayer.GetCurrentPlaylist());
-      return g_applicationMessenger.SetResponse("<li>OK:PlayList");
+      return SetResponse(openTag+"OK:PlayList");
     }
     else
     {
-      g_applicationMessenger.MediaPlay(paras[0]);
-      //g_application.PlayMedia(item);
-      return g_applicationMessenger.SetResponse("<li>OK");
+      if (playableFile(paras[0]))
+      {
+        g_applicationMessenger.MediaPlay(paras[0]);
+        return SetResponse(openTag+"OK");
+      }
+      else
+        return SetResponse(openTag+"Error:File not found");
     }
   }
 }
+
+
 
 int CXbmcHttp::xbmcGetCurrentPlayList()
 {
   CStdString tmp;
   tmp.Format("%i", g_playlistPlayer.GetCurrentPlaylist());
-  return g_applicationMessenger.SetResponse("<li>" + tmp  );
+  return SetResponse(openTag + tmp  );
 }
 
 int CXbmcHttp::xbmcSetCurrentPlayList(int numParas, CStdString paras[])
 {
   if (numParas<1) 
-    return g_applicationMessenger.SetResponse("<li>Error:Missing playlist") ;
+    return SetResponse(openTag+"Error:Missing playlist") ;
   else {
     g_playlistPlayer.SetCurrentPlaylist(atoi(paras[0].c_str()));
-    return g_applicationMessenger.SetResponse("<li>OK") ;
+    return SetResponse(openTag+"OK") ;
   }
 }
 
@@ -1183,13 +1205,13 @@ int CXbmcHttp::xbmcGetPlayListContents(int numParas, CStdString paras[])
     playList=atoi(paras[0]);
   CPlayList& thePlayList = g_playlistPlayer.GetPlaylist(playList);
   if (thePlayList.size()==0)
-    list="<li>[Empty]" ;
+    list=openTag+"[Empty]" ;
   else
     for (int i=0; i< thePlayList.size(); i++) {
       const CPlayList::CPlayListItem& item=thePlayList[i];
-      list += "\n<li>" + item.GetFileName();
+      list += closeTag+openTag + item.GetFileName();
     }
-  return g_applicationMessenger.SetResponse(list) ;
+  return SetResponse(list) ;
 }
 
 int CXbmcHttp::xbmcGetSlideshowContents()
@@ -1197,16 +1219,16 @@ int CXbmcHttp::xbmcGetSlideshowContents()
   CStdString list="";
   CGUIWindowSlideShow *pSlideShow = (CGUIWindowSlideShow *)m_gWindowManager.GetWindow(WINDOW_SLIDESHOW);
   if (!pSlideShow)
-    return g_applicationMessenger.SetResponse("<li>Error");
+    return SetResponse(openTag+"Error");
   else
   {
     vector<CStdString> slideshowContents = pSlideShow->GetSlideShowContents();
     if ((int)slideshowContents.size()==0)
-      list="<li>[Empty]" ;
+      list=openTag+"[Empty]" ;
     else
     for (int i = 0; i < (int)slideshowContents.size(); ++i)
-      list += "\n<li>" + slideshowContents[i];
-    return g_applicationMessenger.SetResponse(list) ;
+      list += closeTag+openTag + slideshowContents[i];
+    return SetResponse(list) ;
   }
 }
 
@@ -1219,7 +1241,7 @@ int CXbmcHttp::xbmcGetPlayListSong(int numParas, CStdString paras[])
   {
     CStdString tmp;
     tmp.Format("%i", g_playlistPlayer.GetCurrentSong());
-    return g_applicationMessenger.SetResponse("<li>" + tmp );
+    return SetResponse(openTag + tmp );
   }
   else {
     CPlayList thePlayList;
@@ -1228,34 +1250,34 @@ int CXbmcHttp::xbmcGetPlayListSong(int numParas, CStdString paras[])
       thePlayList=g_playlistPlayer.GetPlaylist( g_playlistPlayer.GetCurrentPlaylist() );
       if (thePlayList.size()>iSong) {
         Filename=thePlayList[iSong].GetFileName();
-        return g_applicationMessenger.SetResponse("<li>" + Filename );
+        return SetResponse(openTag + Filename );
       }
     }
   }
-  return g_applicationMessenger.SetResponse("<li>Error");
+  return SetResponse(openTag+"Error");
 }
 
 int CXbmcHttp::xbmcSetPlayListSong(int numParas, CStdString paras[])
 {
   if (numParas<1)
-    return g_applicationMessenger.SetResponse("<li>Error:Missing song number");
+    return SetResponse(openTag+"Error:Missing song number");
   else
   {
     g_playlistPlayer.Play(atoi(paras[0].c_str()));
-    return g_applicationMessenger.SetResponse("<li>OK");
+    return SetResponse(openTag+"OK");
   }
 }
 
 int CXbmcHttp::xbmcPlayListNext()
 {
   g_playlistPlayer.PlayNext();
-  return g_applicationMessenger.SetResponse("<li>OK");
+  return SetResponse(openTag+"OK");
 }
 
 int CXbmcHttp::xbmcPlayListPrev()
 {
   g_playlistPlayer.PlayPrevious();
-  return g_applicationMessenger.SetResponse("<li>OK");
+  return SetResponse(openTag+"OK");
 }
 
 int CXbmcHttp::xbmcRemoveFromPlayList(int numParas, CStdString paras[])
@@ -1266,10 +1288,10 @@ int CXbmcHttp::xbmcRemoveFromPlayList(int numParas, CStdString paras[])
       g_playlistPlayer.GetPlaylist(g_playlistPlayer.GetCurrentPlaylist()).Remove(paras[0]) ;
     else
       g_playlistPlayer.GetPlaylist(atoi(paras[1])).Remove(paras[0]) ;
-    return g_applicationMessenger.SetResponse("<li>OK");
+    return SetResponse(openTag+"OK");
   }
   else
-    return g_applicationMessenger.SetResponse("<li>Error:Missing parameter");
+    return SetResponse(openTag+"Error:Missing parameter");
 }
 
 CKey CXbmcHttp::GetKey()
@@ -1289,7 +1311,7 @@ int CXbmcHttp::xbmcSetKey(int numParas, CStdString paras[])
   BYTE bLeftTrigger=0, bRightTrigger=0;
   float fLeftThumbX=0.0f, fLeftThumbY=0.0f, fRightThumbX=0.0f, fRightThumbY=0.0f ;
   if (numParas<1)
-    return g_applicationMessenger.SetResponse("<li>Error:Missing parameters");
+    return SetResponse(openTag+"Error:Missing parameters");
     
   else
   {
@@ -1313,7 +1335,7 @@ int CXbmcHttp::xbmcSetKey(int numParas, CStdString paras[])
     }
     CKey tempKey(dwButtonCode, bLeftTrigger, bRightTrigger, fLeftThumbX, fLeftThumbY, fRightThumbX, fRightThumbY) ;
     key = tempKey ;
-    return g_applicationMessenger.SetResponse("<li>OK");
+    return SetResponse(openTag+"OK");
   }
 }
 
@@ -1334,7 +1356,7 @@ int CXbmcHttp::xbmcAction(int numParas, CStdString paras[], int theAction)
     }
     else
       g_applicationMessenger.MediaPause();
-    return g_applicationMessenger.SetResponse("<li>OK");
+    return SetResponse(openTag+"OK");
     break;
   case 2:
     if (showingSlideshow) {
@@ -1348,7 +1370,7 @@ int CXbmcHttp::xbmcAction(int numParas, CStdString paras[], int theAction)
     else
       //g_application.StopPlaying();
       g_applicationMessenger.MediaStop();
-    return g_applicationMessenger.SetResponse("<li>OK");
+    return SetResponse(openTag+"OK");
     break;
   case 3:
     if (showingSlideshow) {
@@ -1361,7 +1383,7 @@ int CXbmcHttp::xbmcAction(int numParas, CStdString paras[], int theAction)
     }
     else
       g_playlistPlayer.PlayNext();
-    return g_applicationMessenger.SetResponse("<li>OK");
+    return SetResponse(openTag+"OK");
     break;
   case 4:
     if (showingSlideshow) {
@@ -1374,7 +1396,7 @@ int CXbmcHttp::xbmcAction(int numParas, CStdString paras[], int theAction)
     }
     else
       g_playlistPlayer.PlayPrevious();
-    return g_applicationMessenger.SetResponse("<li>OK");
+    return SetResponse(openTag+"OK");
     break;
   case 5:
     if (showingSlideshow)
@@ -1384,13 +1406,13 @@ int CXbmcHttp::xbmcAction(int numParas, CStdString paras[], int theAction)
         CAction action;
         action.wID = ACTION_ROTATE_PICTURE;
         pSlideShow->OnAction(action);  
-        return g_applicationMessenger.SetResponse("<li>OK");
+        return SetResponse(openTag+"OK");
       }
       else
-        return g_applicationMessenger.SetResponse("<li>Error");
+        return SetResponse(openTag+"Error");
     }
     else
-      return g_applicationMessenger.SetResponse("<li>Error");
+      return SetResponse(openTag+"Error");
     break;
   case 6:
     if (showingSlideshow)
@@ -1403,16 +1425,16 @@ int CXbmcHttp::xbmcAction(int numParas, CStdString paras[], int theAction)
           action.fAmount1=(float) atof(paras[0]);
           action.fAmount2=(float) atof(paras[1]);
           pSlideShow->OnAction(action);    
-          return g_applicationMessenger.SetResponse("<li>OK");
+          return SetResponse(openTag+"OK");
         }
         else
-          return g_applicationMessenger.SetResponse("<li>Error:Missing parameters");
+          return SetResponse(openTag+"Error:Missing parameters");
       }
       else
-        return g_applicationMessenger.SetResponse("<li>Error");
+        return SetResponse(openTag+"Error");
     }
     else
-      return g_applicationMessenger.SetResponse("<li>Error");
+      return SetResponse(openTag+"Error");
     break;
   case 7:
     if (showingSlideshow)
@@ -1424,19 +1446,19 @@ int CXbmcHttp::xbmcAction(int numParas, CStdString paras[], int theAction)
           CAction action;
           action.wID = ACTION_ZOOM_LEVEL_NORMAL+atoi(paras[0]);
           pSlideShow->OnAction(action);    
-          return g_applicationMessenger.SetResponse("<li>OK");
+          return SetResponse(openTag+"OK");
         }
         else
-          return g_applicationMessenger.SetResponse("<li>Error:Missing parameters");
+          return SetResponse(openTag+"Error:Missing parameters");
       }
       else
-        return g_applicationMessenger.SetResponse("<li>Error");
+        return SetResponse(openTag+"Error");
     }
     else
-      return g_applicationMessenger.SetResponse("<li>Error");
+      return SetResponse(openTag+"Error");
     break;
   default:
-    return g_applicationMessenger.SetResponse("<li>Error");
+    return SetResponse(openTag+"Error");
   }
 }
 
@@ -1446,26 +1468,26 @@ int CXbmcHttp::xbmcExit(int theAction)
   {
   case 1:
     g_applicationMessenger.Restart();
-    return g_applicationMessenger.SetResponse("<li>OK");
+    return SetResponse(openTag+"OK");
     break;
   case 2:
     g_applicationMessenger.Shutdown();
-    return g_applicationMessenger.SetResponse("<li>OK");
+    return SetResponse(openTag+"OK");
     break;
   case 3:
     g_applicationMessenger.RebootToDashBoard();
-    return g_applicationMessenger.SetResponse("<li>OK");
+    return SetResponse(openTag+"OK");
     break;
   case 4:
     g_applicationMessenger.Reset();
-    return g_applicationMessenger.SetResponse("<li>OK");
+    return SetResponse(openTag+"OK");
     break;
   case 5:
     g_applicationMessenger.RestartApp();
-    return g_applicationMessenger.SetResponse("<li>OK");
+    return SetResponse(openTag+"OK");
     break;
   default:
-    return g_applicationMessenger.SetResponse("<li>Error");
+    return SetResponse(openTag+"Error");
   }
 }
 
@@ -1475,7 +1497,7 @@ int CXbmcHttp::xbmcLookupAlbum(int numParas, CStdString paras[])
   CMusicInfoScraper scraper;
 
   if (numParas<1)
-    return g_applicationMessenger.SetResponse("<li>Error:Missing album name");
+    return SetResponse(openTag+"Error:Missing album name");
   else
     {
     try
@@ -1491,19 +1513,19 @@ int CXbmcHttp::xbmcLookupAlbum(int numParas, CStdString paras[])
           for (int i=0; i < iAlbumCount; ++i)
           {
             CMusicAlbumInfo& info = scraper.GetAlbum(i);
-            albums += "\n<li>" + info.GetTitle2() + "<@@>" + info.GetAlbumURL();
+            albums += closeTag+openTag + info.GetTitle2() + "<@@>" + info.GetAlbumURL();
           }
-          return g_applicationMessenger.SetResponse(albums) ;
+          return SetResponse(albums) ;
         }
         else
-          return g_applicationMessenger.SetResponse("<li>Error:No albums found") ;
+          return SetResponse(openTag+"Error:No albums found") ;
       }
       else
-        return g_applicationMessenger.SetResponse("<li>Error:Scraping") ;
+        return SetResponse(openTag+"Error:Scraping") ;
     }
     catch (...)
     {
-      return g_applicationMessenger.SetResponse("<li>Error");
+      return SetResponse(openTag+"Error");
     }
   }}
 
@@ -1512,7 +1534,7 @@ int CXbmcHttp::xbmcChooseAlbum(int numParas, CStdString paras[])
   CStdString output="";
 
   if (numParas<1)
-    return g_applicationMessenger.SetResponse("<li>Error:Missing album name");
+    return SetResponse(openTag+"Error:Missing album name");
   else
     try
     {
@@ -1520,16 +1542,16 @@ int CXbmcHttp::xbmcChooseAlbum(int numParas, CStdString paras[])
       CHTTP http;
       if (musicInfo.Load(http))
       {
-        output="<li>image:" + musicInfo.GetImageURL();
-        output+="\n<li>review:" + musicInfo.GetReview();
-        return g_applicationMessenger.SetResponse(output) ;
+        output=openTag+"image:" + musicInfo.GetImageURL();
+        output+=closeTag+openTag+"review:" + musicInfo.GetReview();
+        return SetResponse(output) ;
       }
       else
-        return g_applicationMessenger.SetResponse("<li>Error:Loading musinInfo");
+        return SetResponse(openTag+"Error:Loading musinInfo");
     }
     catch (...)
     {
-      return g_applicationMessenger.SetResponse("<li>Error:Exception");
+      return SetResponse(openTag+"Error:Exception");
     }
 }
 
@@ -1538,7 +1560,7 @@ int CXbmcHttp::xbmcDownloadInternetFile(int numParas, CStdString paras[])
   CStdString src, dest="";
 
   if (numParas<1)
-    return g_applicationMessenger.SetResponse("<li>Error:Missing parameter");
+    return SetResponse(openTag+"Error:Missing parameter");
   else
   {
     src=paras[0];
@@ -1547,7 +1569,7 @@ int CXbmcHttp::xbmcDownloadInternetFile(int numParas, CStdString paras[])
     if (dest=="")
       dest="Z:\\xbmcDownloadInternetFile.tmp" ;
     if (src=="")
-      return g_applicationMessenger.SetResponse("<li>Error:Missing parameter");
+      return SetResponse(openTag+"Error:Missing parameter");
     else
     {
       try
@@ -1557,16 +1579,16 @@ int CXbmcHttp::xbmcDownloadInternetFile(int numParas, CStdString paras[])
         CStdString encoded="";
         encoded=encodeFileToBase64(dest, 80);
         if (encoded=="")
-          return g_applicationMessenger.SetResponse("<li>Error:Nothing downloaded");
+          return SetResponse(openTag+"Error:Nothing downloaded");
         {
           if (dest=="Z:\\xbmcDownloadInternetFile.tmp")
           ::DeleteFile(dest);
-          return g_applicationMessenger.SetResponse(encoded) ;
+          return SetResponse(encoded) ;
         }
       }
       catch (...)
       {
-        return g_applicationMessenger.SetResponse("<li>Error:Exception");
+        return SetResponse(openTag+"Error:Exception");
       }
     }
   }
@@ -1576,14 +1598,14 @@ int CXbmcHttp::xbmcSetFile(int numParas, CStdString paras[])
 //parameter = destFilename ; base64String
 {
   if (numParas<2)
-    return g_applicationMessenger.SetResponse("<li>Error:Missing parameter");
+    return SetResponse(openTag+"Error:Missing parameter");
   else
   {
     paras[1].Replace(" ","+");
     decodeBase64ToFile(paras[1], "Z:\\xbmcTemp.tmp");
     CFile::Cache("Z:\\xbmcTemp.tmp", paras[0].c_str(), NULL, NULL) ;
     ::DeleteFile("Z:\\xbmcTemp.tmp");
-    return g_applicationMessenger.SetResponse("<li>OK");
+    return SetResponse(openTag+"OK");
   }
 }
 
@@ -1592,23 +1614,47 @@ int CXbmcHttp::xbmcCopyFile(int numParas, CStdString paras[])
 // both file names are relative to the XBox not the calling client
 {
   if (numParas<2)
-    return g_applicationMessenger.SetResponse("<li>Error:Missing parameter");
+    return SetResponse(openTag+"Error:Missing parameter");
   else
   {
     if (CFile::Exists(paras[0].c_str()))
     {
       CFile::Cache(paras[0].c_str(), paras[1].c_str(), NULL, NULL) ;
-      return g_applicationMessenger.SetResponse("<li>OK");
+      return SetResponse(openTag+"OK");
     }
     else
-      return g_applicationMessenger.SetResponse("<li>Error:Source file not found");
+      return SetResponse(openTag+"Error:Source file not found");
+  }
+}
+
+int CXbmcHttp::xbmcFileSize(int numParas, CStdString paras[])
+{
+  if (numParas<1)
+    return SetResponse(openTag+"Error:Missing parameter");
+  else
+  {
+    if (CFile::Exists(paras[0].c_str()))
+    {
+      __stat64 s64;
+      if (CFile::Stat(paras[0].c_str(), &s64) == 0)
+      {
+        __int64 filesize=s64.st_size;
+        CStdString tmp;
+        tmp.Format("%I64d",filesize);
+        return SetResponse(openTag+tmp);
+      }
+      else
+        return SetResponse(openTag+"Error");
+    }
+    else
+      return SetResponse(openTag+"Error:Source file not found");
   }
 }
 
 int CXbmcHttp::xbmcDeleteFile(int numParas, CStdString paras[])
 {
   if (numParas<1) 
-    return g_applicationMessenger.SetResponse("<li>Error:Missing parameter");
+    return SetResponse(openTag+"Error:Missing parameter");
   else
   {
     try
@@ -1616,14 +1662,14 @@ int CXbmcHttp::xbmcDeleteFile(int numParas, CStdString paras[])
       if (CFile::Exists(paras[0].c_str()))
       {
         ::DeleteFile(paras[0].c_str());
-        return g_applicationMessenger.SetResponse("<li>OK");
+        return SetResponse(openTag+"OK");
       }
       else
-        return g_applicationMessenger.SetResponse("<li>Error:File not found");
+        return SetResponse(openTag+"Error:File not found");
     }
     catch (...)
     {
-      return g_applicationMessenger.SetResponse("<li>Error");
+      return SetResponse(openTag+"Error");
     }
   }
 }
@@ -1631,21 +1677,21 @@ int CXbmcHttp::xbmcDeleteFile(int numParas, CStdString paras[])
 int CXbmcHttp::xbmcFileExists(int numParas, CStdString paras[])
 {
   if (numParas<1) 
-    return g_applicationMessenger.SetResponse("<li>Error:Missing parameter");
+    return SetResponse(openTag+"Error:Missing parameter");
   else
   {
     try
     {
       if (CFile::Exists(paras[0].c_str()))
       {
-        return g_applicationMessenger.SetResponse("<li>True");
+        return SetResponse(openTag+"True");
       }
       else
-        return g_applicationMessenger.SetResponse("<li>False");
+        return SetResponse(openTag+"False");
     }
     catch (...)
     {
-      return g_applicationMessenger.SetResponse("<li>Error");
+      return SetResponse(openTag+"Error");
     }
   }
 }
@@ -1653,11 +1699,11 @@ int CXbmcHttp::xbmcFileExists(int numParas, CStdString paras[])
 int CXbmcHttp::xbmcShowPicture(int numParas, CStdString paras[])
 {
   if (numParas<1) 
-    return g_applicationMessenger.SetResponse("<li>Error:Missing parameter");
+    return SetResponse(openTag+"Error:Missing parameter");
   else
   {
     g_applicationMessenger.PictureShow(paras[0]);
-    return g_applicationMessenger.SetResponse("<li>OK");
+    return SetResponse(openTag+"OK");
   }
 }
 
@@ -1665,21 +1711,21 @@ int CXbmcHttp::xbmcGetCurrentSlide()
 {
   CGUIWindowSlideShow *pSlideShow = (CGUIWindowSlideShow *)m_gWindowManager.GetWindow(WINDOW_SLIDESHOW);
   if (!pSlideShow)
-    return g_applicationMessenger.SetResponse("<li>Error:Could not access slideshown");
+    return SetResponse(openTag+"Error:Could not access slideshown");
   else
-    return g_applicationMessenger.SetResponse("<li>" + pSlideShow->GetCurrentSlide() );
+    return SetResponse(openTag + pSlideShow->GetCurrentSlide() );
 }
 
 int CXbmcHttp::xbmcExecBuiltIn(int numParas, CStdString paras[])
 {
   if (numParas<1) 
-    return g_applicationMessenger.SetResponse("<li>Error:Missing parameter");
+    return SetResponse(openTag+"Error:Missing parameter");
   else
   {
     ThreadMessage tMsg = {TMSG_EXECUTE_BUILT_IN};
     tMsg.strParam = paras[0];
     g_applicationMessenger.SendMessage(tMsg);
-    return g_applicationMessenger.SetResponse("<li>OK");
+    return SetResponse(openTag+"OK");
   }
 }
 
@@ -1688,7 +1734,7 @@ int CXbmcHttp::xbmcGUISetting(int numParas, CStdString paras[])
 //type=0->int, 1->bool, 2->float
 {
   if (numParas<2)
-    return g_applicationMessenger.SetResponse("<li>Error:Missing parameters");
+    return SetResponse(openTag+"Error:Missing parameters");
   else
   {
     CStdString tmp;
@@ -1697,20 +1743,20 @@ int CXbmcHttp::xbmcGUISetting(int numParas, CStdString paras[])
       {
         case 0:  //  int
           tmp.Format("%i", g_guiSettings.GetInt(paras[1]));
-          return g_applicationMessenger.SetResponse("<li>" + tmp );
+          return SetResponse(openTag + tmp );
           break;
         case 1: // bool
           if (g_guiSettings.GetBool(paras[1])==0)
-            return g_applicationMessenger.SetResponse("<li>False");
+            return SetResponse(openTag+"False");
           else
-            return g_applicationMessenger.SetResponse("<li>True");
+            return SetResponse(openTag+"True");
           break;
         case 2: // float
           tmp.Format("%f", g_guiSettings.GetFloat(paras[1]));
-          return g_applicationMessenger.SetResponse("<li>" + tmp);
+          return SetResponse(openTag + tmp);
           break;
         default:
-          return g_applicationMessenger.SetResponse("<li>Error:Unknown type");
+          return SetResponse(openTag+"Error:Unknown type");
           break;
       }
     else
@@ -1719,18 +1765,18 @@ int CXbmcHttp::xbmcGUISetting(int numParas, CStdString paras[])
       {
         case 0:  //  int
           g_guiSettings.SetInt(paras[1], atoi(paras[2]));
-          return g_applicationMessenger.SetResponse("<li>OK");
+          return SetResponse(openTag+"OK");
           break;
         case 1: // bool
           g_guiSettings.SetBool(paras[1], (paras[2].ToLower()=="true"));
-          return g_applicationMessenger.SetResponse("<li>OK");
+          return SetResponse(openTag+"OK");
           break;
         case 2: // float
           g_guiSettings.SetFloat(paras[1], (float)atof(paras[2]));
-          return g_applicationMessenger.SetResponse("<li>OK");
+          return SetResponse(openTag+"OK");
           break;
         default:
-          return g_applicationMessenger.SetResponse("<li>Error:Unknown type");
+          return SetResponse(openTag+"Error:Unknown type");
           break;
       }     
     }
@@ -1744,7 +1790,7 @@ int CXbmcHttp::xbmcConfig(int numParas, CStdString paras[])
   CStdString response="";
   
   if (numParas<1) {
-    return g_applicationMessenger.SetResponse("<li>Error:Missing paramters");
+    return SetResponse(openTag+"Error:Missing paramters");
   }
   if (numParas>1){
     for (argc=0; argc<numParas-1;argc++)
@@ -1781,48 +1827,48 @@ int CXbmcHttp::xbmcConfig(int numParas, CStdString paras[])
     ret=XbmcWebsHttpAPIConfigSetOption(response, argc, argv);
   else
   {
-    return g_applicationMessenger.SetResponse("<li>Error:Unknown Config Command");
+    return SetResponse(openTag+"Error:Unknown Config Command");
   }
 
-  return g_applicationMessenger.SetResponse(response);
+  return SetResponse(response);
   //if (ret==-1)
-  //  return g_applicationMessenger.SetResponse(""); //the XbmcWebsAspConfig procedures internally writes the error response
+  //  return SetResponse(""); //the XbmcWebsAspConfig procedures internally writes the error response
   //else if (ret==0)
-  //  return g_applicationMessenger.SetResponse("<li>OK");
+  //  return SetResponse(openTag+"OK");
   //else
-  //  return g_applicationMessenger.SetResponse(""); //the XbmcWebsAspConfig procedures internally writes the response
+  //  return SetResponse(""); //the XbmcWebsAspConfig procedures internally writes the response
 }
 
 int CXbmcHttp::xbmcGetSystemInfo(int numParas, CStdString paras[])
 {
   if (numParas<1)
-    return g_applicationMessenger.SetResponse("<li>Error:Missing Parameter");
+    return SetResponse(openTag+"Error:Missing Parameter");
   else
   {
     CStdString strInfo = "";
     int i;
     for (i=0; i<numParas; i++)
-      strInfo += "<li>" + (CStdString) g_infoManager.GetLabel(atoi(paras[i])) ;
+      strInfo += openTag + (CStdString) g_infoManager.GetLabel(atoi(paras[i])) ;
     if (strInfo == "")
       strInfo="Error:No information retrieved";
-    return g_applicationMessenger.SetResponse(strInfo);
+    return SetResponse(strInfo);
   }
 }
 
 int CXbmcHttp::xbmcGetSystemInfoByName(int numParas, CStdString paras[])
 {
   if (numParas<1)
-    return g_applicationMessenger.SetResponse("<li>Error:Missing Parameter");
+    return SetResponse(openTag+"Error:Missing Parameter");
   else
   {
     CStdString strInfo = "";
     int i;
 
     for (i=0; i<numParas; i++)
-      strInfo += "<li>" + (CStdString) g_infoManager.GetLabel(g_infoManager.TranslateString(paras[i])) ;
+      strInfo += openTag + (CStdString) g_infoManager.GetLabel(g_infoManager.TranslateString(paras[i])) ;
     if (strInfo == "")
       strInfo="Error:No information retrieved";
-    return g_applicationMessenger.SetResponse(strInfo);
+    return SetResponse(strInfo);
   }
 }
 
@@ -1855,7 +1901,7 @@ int CXbmcHttp::xbmcTakeScreenshot(int numParas, CStdString paras[])
       if (paras[4]=="")
         if (paras[3]=="")
         {
-          return g_applicationMessenger.SetResponse("<li>Error:Both height and width parameters cannot be absent");
+          return SetResponse(openTag+"Error:Both height and width parameters cannot be absent");
         }
         else
         {
@@ -1886,32 +1932,60 @@ int CXbmcHttp::xbmcTakeScreenshot(int numParas, CStdString paras[])
             b64=encodeFileToBase64(filepath,80);
             if (filepath=="Z:\\screenshot.jpg")
               ::DeleteFile(filepath.c_str());
-            return g_applicationMessenger.SetResponse(b64) ;
+            return SetResponse(b64) ;
           }
       }
       else
       {
         CStdString strInt;
         strInt.Format("%", ret);
-        return g_applicationMessenger.SetResponse("<li>Error:Could not convert image, error: " + strInt );
+        return SetResponse(openTag+"Error:Could not convert image, error: " + strInt );
       }
     }
     else
-      return g_applicationMessenger.SetResponse("<li>Error:Missing parameters");
+      return SetResponse(openTag+"Error:Missing parameters");
   }
-  return g_applicationMessenger.SetResponse("<li>OK");
+  return SetResponse(openTag+"OK");
 }
 
 int CXbmcHttp::xbmcAutoGetPictureThumbs(int numParas, CStdString paras[])
 {
   if (numParas<1)
-    return g_applicationMessenger.SetResponse("<li>Error:Missing parameter");
+    return SetResponse(openTag+"Error:Missing parameter");
   else
   {
     autoGetPictureThumbs = (paras[0].ToLower()=="true");
-    return g_applicationMessenger.SetResponse("<li>OK");
+    return SetResponse(openTag+"OK");
   }
 }
+
+int CXbmcHttp::xbmcSetResponseFormat(int numParas, CStdString paras[])
+{
+  if (numParas<2)
+    return SetResponse(openTag+"Error:Missing parameter");
+  else
+  {
+    CStdString para=paras[0].ToLower();
+    if (para=="webheader")
+      incWebHeader=(paras[1].ToLower()=="true");
+    else if (para=="webfooter")
+      incWebFooter=(paras[1].ToLower()=="true");
+    else if (para=="header")
+      userHeader=paras[1];
+    else if (para=="footer")
+      userFooter=paras[1];
+    else if (para=="opentag")
+      openTag=paras[1];
+    else if (para=="closetag")
+      closeTag=paras[1];
+    else if (para=="closetagatom")
+      closeTagAtom=paras[1];
+    else
+      return SetResponse(openTag+"Error:Unknown parameter");
+    return SetResponse(openTag+"OK");
+  }
+}
+
 
 int CXbmcHttp::xbmcHelp()
 {
@@ -1920,9 +1994,9 @@ int CXbmcHttp::xbmcHelp()
 
   output+= "<p>The full documentation as a Word file can be downloaded here: <a  href=\"http://prdownloads.sourceforge.net/xbmc/apiDoc.doc?download\">http://prdownloads.sourceforge.net/xbmc/apiDoc.doc?download</a></p>";
 
-  output+= "<li>clearplaylist\n<li>addtoplaylist\n<li>playfile\n<li>pause\n<li>stop\n<li>restart\n<li>shutdown\n<li>exit\n<li>reset\n<li>restartapp\n<li>getcurrentlyplaying\n<li>getdirectory\n<li>gettagfromfilename\n<li>getcurrentplaylist\n<li>setcurrentplaylist\n<li>getplaylistcontents\n<li>removefromplaylist\n<li>setplaylistsong\n<li>getplaylistsong\n<li>playlistnext\n<li>playlistprev\n<li>getpercentage\n<li>seekpercentage\n<li>seekpercentagerelative\n<li>setvolume\n<li>getvolume\n<li>getthumbfilename\n<li>lookupalbum\n<li>choosealbum\n<li>downloadinternetfile\n<li>getmoviedetails\n<li>showpicture\n<li>sendkey\n<li>filedelete\n<li>filecopy\n<li>fileexists\n<li>fileupload\n<li>getguistatus\n<li>execbuiltin\n<li>config\n<li>getsysteminfo\n<li>getsysteminfobyname\n<li>guisetting\n<li>addtoslideshow\n<li>clearslideshow\n<li>playslideshow\n<li>getslideshowcontents\n<li>slideshowselect\n<li>getcurrentslide\n<li>rotate\n<li>move\n<li>zoom\n<li>playnext\n<li>playprev\n<li>TakeScreenShot\n<li>GetGUIDescription\n<li>GetPlaySpeed\n<li>SetPlaySpeed\n<li>help";
+  output+= openTag+"clearplaylist"+closeTag+openTag+"addtoplaylist"+closeTag+openTag+"playfile"+closeTag+openTag+"pause"+closeTag+openTag+"stop"+closeTag+openTag+"restart"+closeTag+openTag+"shutdown"+closeTag+openTag+"exit"+closeTag+openTag+"reset"+closeTag+openTag+"restartapp"+closeTag+openTag+"getcurrentlyplaying"+closeTag+openTag+"getdirectory"+closeTag+openTag+"gettagfromfilename"+closeTag+openTag+"getcurrentplaylist"+closeTag+openTag+"setcurrentplaylist"+closeTag+openTag+"getplaylistcontents"+closeTag+openTag+"removefromplaylist"+closeTag+openTag+"setplaylistsong"+closeTag+openTag+"getplaylistsong"+closeTag+openTag+"playlistnext"+closeTag+openTag+"playlistprev"+closeTag+openTag+"getpercentage"+closeTag+openTag+"seekpercentage"+closeTag+openTag+"seekpercentagerelative"+closeTag+openTag+"setvolume"+closeTag+openTag+"getvolume"+closeTag+openTag+"getthumbfilename"+closeTag+openTag+"lookupalbum"+closeTag+openTag+"choosealbum"+closeTag+openTag+"downloadinternetfile"+closeTag+openTag+"getmoviedetails"+closeTag+openTag+"showpicture"+closeTag+openTag+"sendkey"+closeTag+openTag+"filedelete"+closeTag+openTag+"filecopy"+closeTag+openTag+"fileexists"+closeTag+openTag+"fileupload"+closeTag+openTag+"getguistatus"+closeTag+openTag+"execbuiltin"+closeTag+openTag+"config"+closeTag+openTag+"getsysteminfo"+closeTag+openTag+"getsysteminfobyname"+closeTag+openTag+"guisetting"+closeTag+openTag+"addtoslideshow"+closeTag+openTag+"clearslideshow"+closeTag+openTag+"playslideshow"+closeTag+openTag+"getslideshowcontents"+closeTag+openTag+"slideshowselect"+closeTag+openTag+"getcurrentslide"+closeTag+openTag+"rotate"+closeTag+openTag+"move"+closeTag+openTag+"zoom"+closeTag+openTag+"playnext"+closeTag+openTag+"playprev"+closeTag+openTag+"TakeScreenShot"+closeTag+openTag+"GetGUIDescription"+closeTag+openTag+"GetPlaySpeed"+closeTag+openTag+"SetPlaySpeed"+closeTag+openTag+"SetResponseFormat"+closeTag+openTag+"Help";
 
-  return g_applicationMessenger.SetResponse(output);
+  return SetResponse(output);
 }
 
 
@@ -1978,6 +2052,7 @@ int CXbmcHttp::xbmcCommand(CStdString parameter)
       else if (command == "filedownloadfrominternet") retVal = xbmcDownloadInternetFile(numParas, paras);
       else if (command == "filedelete")               retVal = xbmcDeleteFile(numParas, paras);
       else if (command == "filecopy")                 retVal = xbmcCopyFile(numParas, paras);
+      else if (command == "filesize")                 retVal = xbmcFileSize(numParas, paras);
       else if (command == "getmoviedetails")          retVal = xbmcGetMovieDetails(numParas, paras);
       else if (command == "showpicture")              retVal = xbmcShowPicture(numParas, paras);
       else if (command == "sendkey")                  retVal = xbmcSetKey(numParas, paras);
@@ -2000,7 +2075,7 @@ int CXbmcHttp::xbmcCommand(CStdString parameter)
       else if (command == "takescreenshot")           retVal = xbmcTakeScreenshot(numParas, paras);
       else if (command == "getguidescription")        retVal = xbmcGetGUIDescription();
       else if (command == "setautogetpicturethumbs")  retVal = xbmcAutoGetPictureThumbs(numParas, paras);
-
+      else if (command == "setresponseformat")        retVal = xbmcSetResponseFormat(numParas, paras);
       //Old command names
       else if (command == "deletefile")               retVal = xbmcDeleteFile(numParas, paras);
       else if (command == "copyfile")                 retVal = xbmcCopyFile(numParas, paras);
@@ -2011,11 +2086,11 @@ int CXbmcHttp::xbmcCommand(CStdString parameter)
       else if (command == "setkey")                   retVal = xbmcSetKey(numParas, paras);
 
       else
-        retVal = g_applicationMessenger.SetResponse("<li>Error:Unknown command");
+        retVal = SetResponse(openTag+"Error:Unknown command");
   else
-    retVal = g_applicationMessenger.SetResponse("<li>Error:Missing command");
+    retVal = SetResponse(openTag+"Error:Missing command");
   //if (g_applicationMessenger.GetResponse() == "")
-  //  g_applicationMessenger.SetResponse("<li>Error:Unknown error");
+  //  SetResponse(openTag+"Error:Unknown error");
   Sleep(100);
   return retVal;
 }
@@ -2057,7 +2132,7 @@ CStdString CXbmcHttpShim::xbmcProcessCommand( int eid, webs_t wp, char_t *comman
 {
   CStdString cmd=command, paras=parameter, response="[No response yet]", retVal;
   int cnt=0;
-  if ((wp != NULL) && (eid==NO_EID))
+  if ((wp != NULL) && (eid==NO_EID) && (incWebHeader))
     websHeader(wp);
   if ((*parameter==0) || !strcmp(parameter,XBMC_NONE))
     g_applicationMessenger.HttpApi(cmd);
@@ -2076,8 +2151,8 @@ CStdString CXbmcHttpShim::xbmcProcessCommand( int eid, webs_t wp, char_t *comman
     CLog::Log(LOGDEBUG, "HttpApi Waiting");
   }
   //flushresult
-  retVal=flushResult(eid, wp, response);
-  if (wp!=NULL)
+  retVal=flushResult(eid, wp, userHeader+response+userFooter);
+  if ((wp!=NULL) && (incWebFooter))
     websFooter(wp);
   return retVal;
 }
