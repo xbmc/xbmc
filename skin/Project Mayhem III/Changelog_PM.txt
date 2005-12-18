@@ -26,7 +26,7 @@
 2005-10-25 added:	hidden bookmark buttons to My Music Files view (unlock and configure in \PAL\MyMusicSongs.xml)
 2005-10-25 removed:	Record button from My Music Files view (its on the fullscreen OSD now)
 
-2005-10-09 fixed:	solved the floating button problem on the OSD without !Control.HasFocus() tags
+2005-10-09 fixed:	solved the floating button problem on the OSD without !Control.Hasfocus() tags
 
 2005-10-09 added:	conditional OSD buttons to record web radio / go to DVD menu
 2005-10-09 changed:	the topmost button in both fullscreen OSDs leads to the Now Playing window now
@@ -180,7 +180,7 @@
 
 2005-04-16 added:	New Script Skin Builder - see custom3.xml
 2005-04-16 fixed:	weather icons now display correct in 16:9
-2005-04-16 added:	NoFocus textures for the Settings and My Files button
+2005-04-16 added:	nofocus textures for the Settings and My Files button
 2005-04-16 fixed:       finally fixed made the homescreen 4:3 compatible (was just quick n dirty from 16:9)
 
 2005-04-15 fixed:       FileManager.xml had an unused image control.
