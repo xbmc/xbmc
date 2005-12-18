@@ -319,6 +319,7 @@ void CGUIDialogVideoSettings::AddSetting(VideoSetting &setting, int iPosX, int i
     if (setting.type == VideoSetting::SLIDER)
     {
       ((CGUISettingsSliderControl *)pControl)->SetFormatString(setting.format);
+      ((CGUISettingsSliderControl *)pControl)->SetType(SPIN_CONTROL_TYPE_FLOAT);
       ((CGUISettingsSliderControl *)pControl)->SetFloatRange(setting.min, setting.max);
       ((CGUISettingsSliderControl *)pControl)->SetFloatInterval(setting.interval);
       if (setting.data) ((CGUISettingsSliderControl *)pControl)->SetFloatValue(*(float *)setting.data);

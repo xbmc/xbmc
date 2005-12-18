@@ -9,6 +9,8 @@ CGUISettingsSliderControl::CGUISettingsSliderControl(DWORD dwParentID, DWORD dwC
     , m_buttonControl(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight, strFocus, strNoFocus, iTextXOffset, 0, XBFONT_CENTER_Y)
 {
   ControlType = GUICONTROL_SETTINGS_SLIDER;
+  m_iControlOffsetX = 0;  // no offsets for setting sliders
+  m_iControlOffsetY = 0;
   m_renderText = false;
 }
 

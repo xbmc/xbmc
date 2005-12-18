@@ -1196,7 +1196,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     if (GetDWORD(pControlNode, "textureheightbig", textureHeightBig)) g_graphicsContext.ScaleYCoord(textureHeightBig, res);
     if (GetDWORD(pControlNode, "itemwidthbig", itemWidthBig)) g_graphicsContext.ScaleXCoord(itemWidthBig, res);
     if (GetDWORD(pControlNode, "itemheightbig", itemHeightBig)) g_graphicsContext.ScaleYCoord(itemHeightBig, res);
-    GetDWORD(pControlNode, "buddycontrolid", dwBuddyControlID);
 
     CStdStringArray strVecLabel;
     if (GetMultipleString(pControlNode, "label", strVecLabel))
@@ -1458,7 +1457,8 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     pControl->SetVisible(bVisible);
     pControl->SetVisibleCondition(iVisibleCondition, effect);
     pControl->SetReverse(bReverse);
-    pControl->SetBuddyControlID(dwBuddyControlID);
+    if (g_SkinInfo.GetVersion() < 1.85)
+      pControl->SetBuddyControlID(dwBuddyControlID);
     pControl->SetDisabledColor(dwDisabledColor);
     pControl->SetTextOffsetX(lTextOffsetX);
     pControl->SetTextOffsetY(lTextOffsetY);
@@ -1481,7 +1481,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
   {
     CGUISliderControl* pControl = new CGUISliderControl(
       dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight,
-      strTextureBg, strMid, strMidFocus, iType);
+      strTextureBg, strMid, strMidFocus, (g_SkinInfo.GetVersion() < 1.85) ? iType : SPIN_CONTROL_TYPE_TEXT);
 
     pControl->SetVisible(bVisible);
     pControl->SetVisibleCondition(iVisibleCondition, effect);
@@ -1496,7 +1496,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
   {
     CGUISettingsSliderControl* pControl = new CGUISettingsSliderControl(
       dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight, dwSliderWidth, dwSliderHeight, strTextureFocus, strTextureNoFocus,
-      strTextureBg, strMid, strMidFocus, lTextOffsetX, iType);
+      strTextureBg, strMid, strMidFocus, lTextOffsetX, (g_SkinInfo.GetVersion() < 1.85) ? iType : SPIN_CONTROL_TYPE_TEXT);
 
     pControl->SetLabel(strFont, strLabel, dwTextColor);
     pControl->SetDisabledColor(dwDisabledColor);
@@ -1505,8 +1505,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     pControl->SetVisibleCondition(iVisibleCondition, effect);
     pControl->SetInfo(vecInfo.size() ? vecInfo[0] : 0);
     pControl->SetNavigation(up, down, left, right);
-    pControl->SetControlOffsetX(iControlOffsetX);
-    pControl->SetControlOffsetY(iControlOffsetY);
     return pControl;
   }
   else if (strType == "progress")
