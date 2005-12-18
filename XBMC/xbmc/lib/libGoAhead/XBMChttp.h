@@ -66,6 +66,7 @@ public:
   int xbmcCopyFile(int numParas, CStdString paras[]);
   int xbmcSetFile(int numParas, CStdString paras[]);
   int xbmcFileExists(int numParas, CStdString paras[]);
+  int xbmcFileSize(int numParas, CStdString paras[]);
   int xbmcShowPicture(int numParas, CStdString paras[]);
   int xbmcGetGUIStatus();
   int xbmcExecBuiltIn(int numParas, CStdString paras[]);
@@ -83,6 +84,7 @@ public:
   int xbmcTakeScreenshot(int numParas, CStdString paras[]);
   int xbmcGetGUIDescription();
   int xbmcAutoGetPictureThumbs(int numParas, CStdString paras[]);
+  int xbmcSetResponseFormat(int numParas, CStdString paras[]);
   CKey GetKey();
   void ResetKey();
 
