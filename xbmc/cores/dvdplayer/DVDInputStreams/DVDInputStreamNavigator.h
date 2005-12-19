@@ -107,7 +107,8 @@ protected:
 
   int m_iTotalTime;
   int m_iTime;
-  
+  __int64 m_iCellStart; // start time of current cell in pts units (90khz clock)
+
   struct dvdnav_s* m_dvdnav;
   
   IDVDPlayer* m_pDVDPlayer;
