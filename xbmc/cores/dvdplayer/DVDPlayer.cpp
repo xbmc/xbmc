@@ -203,7 +203,7 @@ void CDVDPlayer::Process()
     if (m_bAbortRequest) break;
 
     
-    if( m_iSpeed != 1 && m_iCurrentStreamVideo >= 0 )
+    if( m_iSpeed != 1 && m_iCurrentStreamVideo >= 0 && m_dvdPlayerVideo.GetCurrentPts() != DVD_NOPTS_VALUE )
     { 
       // check how much off clock video is when ff/rw:ing
       // a problem here is that seeking isn't very accurate
@@ -212,14 +212,20 @@ void CDVDPlayer::Process()
       // speed. we'd need to have some way to not resync the clock 
       // after a seek to remember timing. still need to handle 
       // discontinuities somehow
-
+      // when seeking, give the player a headstart of 1 second to make sure the time it takes 
+      // to seek doesn't make a difference. 
       __int64 iError = m_clock.GetClock() - m_dvdPlayerVideo.GetCurrentPts();
-      if( iError > DVD_SEC_TO_TIME(2) || iError < -DVD_SEC_TO_TIME(1) )
-      {        
-        CLog::Log(LOGDEBUG, "CDVDPlayer::Process - FF/RW Seeking to catch up");
-        m_bDontSkipNextFrame = true;
-        SeekTime( m_clock.GetClock() / ( DVD_TIME_BASE / 1000 ) );
+
+      if( m_iSpeed > 0 && iError > DVD_SEC_TO_TIME(1*m_iSpeed) )
+      {
+        CLog::Log(LOGDEBUG, "CDVDPlayer::Process - FF Seeking to catch up");        
+        SeekTime( GetTime() + 1000*m_iSpeed);
       }
+      else if( m_iSpeed < 0 && iError < DVD_SEC_TO_TIME(1*m_iSpeed) )
+      {        
+        SeekTime( GetTime() + 1000*m_iSpeed);
+      }      
+      m_bDontSkipNextFrame = true;
     }
 
       

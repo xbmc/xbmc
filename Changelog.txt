@@ -5,6 +5,9 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 19-12-2005 changed: tuned FF/RW for dvdplayer (only enabled in debug builds)
+ - 19-12-2005 fixed/changed: dvdplayer reported wrong total time for movie / dvdplayer now uses libdvdnav's time seek for seeking
+ - 19-12-2005 fixed: [ 1378710 ] DVDplayer crash when swithing from fullscreen to thumbnail 
  - 18-12-2005 fixed: potential deadlock when using ffmpeg demuxer in dvdplayer and it returns a negative package size
  - 18-12-2005 fixed: ID3 genres were being incorrectly returned as "Blues".
  - 18-12-2005 fixed: MP3 files with more than one ID3v2 tag at the beginning would fail to play.

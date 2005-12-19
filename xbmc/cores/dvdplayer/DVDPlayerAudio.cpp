@@ -286,9 +286,14 @@ void CDVDPlayerAudio::Process()
 
     if( result & DECODE_FLAG_DROP )
     {
-      //Frame should be dropped. Don't let audio move ahead of the current time thou
+      //frame should be dropped. Don't let audio move ahead of the current time thou
       //we need to be able to start playing at any time
-      while( !m_bStop && m_audioClock - m_dvdAudio.GetDelay() > m_pClock->GetClock() ) Sleep(1);
+      //when playing backwords, we try to keep as small buffers as possible
+
+      if( m_iSpeed > 0 )
+      { 
+        while( !m_bStop && m_audioClock - m_dvdAudio.GetDelay() > m_pClock->GetClock() ) Sleep(1);
+      }
 
       continue;
     }
