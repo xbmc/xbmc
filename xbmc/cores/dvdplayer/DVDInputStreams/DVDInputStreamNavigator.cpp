@@ -14,6 +14,7 @@ CDVDInputStreamNavigator::CDVDInputStreamNavigator(IDVDPlayer* player) : CDVDInp
   InitializeCriticalSection(&m_critSection);
   m_bCheckButtons = false;
   m_bDiscardHop = false;
+  m_iCellStart = 0;
 }
 
 CDVDInputStreamNavigator::~CDVDInputStreamNavigator()
@@ -301,17 +302,25 @@ int CDVDInputStreamNavigator::ProcessBlock(BYTE* dest_buffer, int* read)
         m_dll.dvdnav_get_position(m_dvdnav, &pos, &len);
         CLog::DebugLog("Cell change: Title %d, Chapter %d\n", tt, ptt);
         CLog::DebugLog("At position %.0f%% inside the feature\n", 100 * (double)pos / (double)len);
+        
+        //Get total segment time        
+        
+        
+        // this was not correct.. the values stored in hour/minute/second is stored quite weird
+        // (hour >> 4) * 10 + hour & 0x0f would have been correct for them all.
+        //vm_t* vm = m_dll.dvdnav_get_vm(m_dvdnav);        
+        //if (vm)
+        //{
+        //  m_iTotalTime = vm->state.pgc->playback_time.hour * 3600;
+        //  m_iTotalTime += vm->state.pgc->playback_time.minute * 60;
+        //  m_iTotalTime += vm->state.pgc->playback_time.second;
+        //  m_iTotalTime *= 1000;
+        //}
 
-        //Get total segment time
-        vm_t* vm = m_dll.dvdnav_get_vm(m_dvdnav);        
-        if (vm)
-        {
-          m_iTotalTime = vm->state.pgc->playback_time.hour * 3600;
-          m_iTotalTime += vm->state.pgc->playback_time.minute * 60;
-          m_iTotalTime += vm->state.pgc->playback_time.second;
-          m_iTotalTime *= 1000;
-        }
-
+        dvdnav_cell_change_event_t* cell_change_event = (dvdnav_cell_change_event_t*)buf;
+        m_iCellStart = cell_change_event->cell_start; // store cell time as we need that for time later
+        m_iTotalTime = (int) (cell_change_event->pgc_length / 90);
+        
         m_pDVDPlayer->OnDVDNavResult(buf, DVDNAV_CELL_CHANGE);
       }
       break;
@@ -330,17 +339,22 @@ int CDVDInputStreamNavigator::ProcessBlock(BYTE* dest_buffer, int* read)
         // and decoding pipeline just like any other data.
 
         // Calculate current time
-        unsigned int pos, len;
-        m_dll.dvdnav_get_position(m_dvdnav, &pos, &len);
-        m_iTime = (int)(((__int64)m_iTotalTime * pos) / len);
+        //unsigned int pos, len;
+        //m_dll.dvdnav_get_position(m_dvdnav, &pos, &len);
+        //m_iTime = (int)(((__int64)m_iTotalTime * pos) / len);
+
+        pci_t* pci = m_dll.dvdnav_get_current_nav_pci(m_dvdnav);
+        if( pci )
+        {
+          m_iTime = (int) ( m_dll.dvdnav_convert_time( &(pci->pci_gi.e_eltm) ) + m_iCellStart ) / 90;
+        }        
 
         if (m_bCheckButtons)
         {
           CheckButtons();
           m_bCheckButtons = false;
         }
-        pci_t* pci = m_dll.dvdnav_get_current_nav_pci(m_dvdnav);
-        
+
         m_pDVDPlayer->OnDVDNavResult((void*)pci, DVDNAV_NAV_PACKET);
       }
       break;
@@ -830,25 +844,14 @@ int CDVDInputStreamNavigator::GetTime()
 
 bool CDVDInputStreamNavigator::Seek(int iTimeInMsec)
 {
-  uint32_t pos=0, len=0;
-  uint64_t newpos=0;
-  m_dll.dvdnav_get_position(m_dvdnav, &pos, &len);
-  
-  float fDesiredPrecentage = (iTimeInMsec / (float)GetTotalTime());
-  
-  // would be much easier if we knew how much blocks one second is
-  // should actually look trough the vm tables to find the closest block the the requested time.
-  // kinda think it's abit of overkill thou.
 
-  //newpos = (uint64_t)iTimeInMsec / 1000 * 2048;
-  newpos = (uint64_t)( fDesiredPrecentage * len );
-  CLog::Log(LOGDEBUG, "dvdnav_sector_search pos: %d, len: %d, time %d, totaltime %d, percentage: %d",
-   pos, len, iTimeInMsec, GetTotalTime(), (int)fDesiredPrecentage);
-  if (m_dll.dvdnav_sector_search(m_dvdnav, newpos, SEEK_SET) == DVDNAV_STATUS_ERR)
+  if( m_dll.dvdnav_time_search(m_dvdnav, iTimeInMsec * 90) == DVDNAV_STATUS_ERR )
   {
-    CLog::Log(LOGDEBUG, "dvdnav: %s", m_dll.dvdnav_err_to_string(m_dvdnav));
+    CLog::Log(LOGDEBUG, "dvdnav: dvdnav_time_search failed");
+    //CLog::Log(LOGDEBUG, "dvdnav: %s", m_dll.dvdnav_err_to_string(m_dvdnav)); doesn't set error message
     return false;
   }
+
   m_bDiscardHop = true;
   return true;
 }
