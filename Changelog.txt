@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 18-12-2005 fixed: potential deadlock when using ffmpeg demuxer in dvdplayer and it returns a negative package size
  - 18-12-2005 fixed: ID3 genres were being incorrectly returned as "Blues".
  - 18-12-2005 fixed: MP3 files with more than one ID3v2 tag at the beginning would fail to play.
  - 18-12-2005 fixed: M3U reading could buffer overflow in the charset conversion.
