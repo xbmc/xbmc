@@ -65,7 +65,7 @@ protected:
   CDVDClock* m_pClock; // dvd master clock
   CDVDAudioCodec* m_pAudioCodec; // audio codec
 
-  int m_iSpeed;  
+  int m_iSpeed;  // wanted playback speed. if playback speed!=1, don't sync clock as it will loose track of position after seek
 
   CRITICAL_SECTION m_critCodecSection;
 };

@@ -283,8 +283,15 @@ void CDVDPlayerVideo::Process()
             while (picture.iRepeatPicture-- > 0);
 
             bRequestDrop = false;
-            if( iResult == EOS_ABORT ) 
-              break;            
+            if( iResult == EOS_ABORT )
+            {
+              //if we break here and we directly try to decode again wihout 
+              //flushing the video codec things break for some reason
+              //i think the decoder (libmpeg2 atleast) still has a pointer
+              //to the data, and when the packet is freed that will fail.
+              iDecoderState = m_pVideoCodec->Decode(NULL, NULL);
+              break;
+            }
             else if( iResult == EOS_DROPPED )
             {
               m_iDroppedFrames++;
@@ -382,7 +389,7 @@ CDVDPlayerVideo::EOUTPUTSTATUS CDVDPlayerVideo::OutputPicture(DVDVideoPicture* p
     {
       // copy picture to overlay
       YV12Image image;
-      if( !g_renderManager.GetImage(&image) ) return EOS_ABORT;
+      if( !g_renderManager.GetImage(&image) ) return EOS_DROPPED;
 
       CDVDCodecUtils::CopyPictureToOverlay(&image, pPicture);
 

@@ -31,19 +31,33 @@ public:
       m_pRenderer->WaitForFlip();
   }
   unsigned int Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps);
+
+  // a call to GetImage must be followed by a call to releaseimage if getimage was successfull
+  // failure to do so will result in deadlock
   inline unsigned int GetImage(YV12Image *image)
   {
-    CSharedLock lock(m_sharedSection);
-    if (m_bPauseDrawing) return 0;
-    if (m_pRenderer)
-      return m_pRenderer->GetImage(image);
+    m_sharedSection.EnterShared();
+    if (!m_bPauseDrawing && m_pRenderer)
+    {
+      try
+      {
+        int success = m_pRenderer->GetImage(image);
+        if( success ) return success;
+      }
+      catch(...)
+      {
+        CLog::Log(LOGERROR, "CRenderManager::GetImage - Exception cought");
+      }
+    }
+    m_sharedSection.LeaveShared();
     return 0;
   }
   inline void ReleaseImage()
-  {
-    CSharedLock lock(m_sharedSection);
+  {    
     if (m_pRenderer)
       m_pRenderer->ReleaseImage();
+
+    m_sharedSection.LeaveShared();
   }
   inline unsigned int PutImage(YV12Image *image)
   {

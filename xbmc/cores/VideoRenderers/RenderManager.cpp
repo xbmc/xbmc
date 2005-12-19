@@ -59,7 +59,7 @@ unsigned int CXBoxRenderManager::Configure(unsigned int width, unsigned int heig
 
 void CXBoxRenderManager::Update(bool bPauseDrawing)
 {
-  CSharedLock lock(m_sharedSection);
+  CExclusiveLock lock(m_sharedSection);
   m_bPauseDrawing = bPauseDrawing;
   if (m_pRenderer)
   {
