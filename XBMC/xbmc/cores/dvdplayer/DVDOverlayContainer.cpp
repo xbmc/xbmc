@@ -139,3 +139,14 @@ int CDVDOverlayContainer::GetSize()
   return m_overlays.size();
 }
 
+bool CDVDOverlayContainer::ContainsOverlayType(DVDOverlayType type)
+{
+  VecOverlaysIter it = m_overlays.begin();
+  while (it != m_overlays.end())
+  {
+    if (((CDVDOverlay*)*it)->IsOverlayType(type)) return true;
+    it++;
+  }
+  
+  return false;
+}
