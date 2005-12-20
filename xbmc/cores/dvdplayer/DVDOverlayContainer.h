@@ -15,6 +15,7 @@ public:
   void Add(CDVDOverlay* pPicture); // add a overlay to the fifo
   
   VecOverlays* GetOverlays(); // get the first overlay in this fifo
+  bool ContainsOverlayType(DVDOverlayType type);
   
   void Remove(); // remove the first overlay in this fifo
   
