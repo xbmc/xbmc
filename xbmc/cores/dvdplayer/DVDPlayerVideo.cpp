@@ -391,17 +391,30 @@ CDVDPlayerVideo::EOUTPUTSTATUS CDVDPlayerVideo::OutputPicture(DVDVideoPicture* p
       YV12Image image;
       if( !g_renderManager.GetImage(&image) ) return EOS_DROPPED;
 
-      CDVDCodecUtils::CopyPictureToOverlay(&image, pPicture);
-
       // remove any overlays that are out of time
       m_pOverlayContainer->CleanUp(pts);
 
       m_pOverlayContainer->Lock();
       
+      // rendering spu overlay types directly on video memory costs a lot of processing power.
+      // thus we allocate a temp picture, copy the original to it (needed because the same picture can be used more than once).
+      // then do all the rendering on that temp picture and finaly copy it to video memory.
+      // In almost all cases this is 5 or more times faster!.
+      DVDVideoPicture* pTempPicture = NULL;
+      if (m_pOverlayContainer->ContainsOverlayType(DVDOVERLAY_TYPE_SPU))
+      {
+        pTempPicture = CDVDCodecUtils::AllocatePicture(pPicture->iWidth, pPicture->iHeight);
+        CDVDCodecUtils::CopyPicture(pTempPicture, pPicture);
+      }
+      else
+      {
+        CDVDCodecUtils::CopyPictureToOverlay(&image, pPicture);
+      }
+      
       CDVDOverlay* pOverlay;
       VecOverlays* pVecOverlays = m_pOverlayContainer->GetOverlays();
       VecOverlaysIter it = pVecOverlays->begin();
-
+      
       //Check all overlays and render those that should be rendered, based on time and forced
       //Both forced and subs should check timeing, pts == 0 in the stillframe case
       while (it != pVecOverlays->end())
@@ -410,11 +423,19 @@ CDVDPlayerVideo::EOUTPUTSTATUS CDVDPlayerVideo::OutputPicture(DVDVideoPicture* p
         if ((pOverlay->bForced || m_bRenderSubs)
             && ((pOverlay->iPTSStartTime <= pts && pOverlay->iPTSStopTime >= pts) || pts == 0))
         {
-          // display subtitle, if bForced is true, it's a menu overlay and we should crop it
-          CDVDOverlayRenderer::Render(&image, pOverlay);
+          if (pTempPicture) CDVDOverlayRenderer::Render(pTempPicture, pOverlay);
+          else CDVDOverlayRenderer::Render(&image, pOverlay);
         }
         it++;
       }
+      
+      if (pTempPicture)
+      {
+        CDVDCodecUtils::CopyPictureToOverlay(&image, pTempPicture);
+        CDVDCodecUtils::FreePicture(pTempPicture);
+        pTempPicture = NULL;
+      }
+      
       m_pOverlayContainer->Unlock();
       
       // tell the renderer that we've finished with the image (so it can do any
