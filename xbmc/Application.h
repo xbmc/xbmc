@@ -156,6 +156,7 @@ public:
   
 
 protected:
+  bool PlayStack(const CFileItem& item, bool bRestart);
   EPLAYERCORES m_eCurrentPlayer;
   void UpdateLCD();
   bool SwitchToFullScreen();
@@ -167,6 +168,8 @@ protected:
   bool m_bAllSettingsLoaded;
   bool m_bInitializing;
   CFileItem m_itemCurrentFile;
+  CFileItemList m_currentStack;
+  int m_currentStackPosition;
   int m_nextPlaylistItem;
   D3DGAMMARAMP m_OldRamp;  // CB: SCREENSAVER PATCH
   CSplash* m_splash;

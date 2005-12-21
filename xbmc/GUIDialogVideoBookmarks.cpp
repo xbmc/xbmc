@@ -116,7 +116,7 @@ void CGUIDialogVideoBookmarks::GotoBookmark(int item)
   videoDatabase.Close();
   if (item < 0 || item >= (int)bookmarks.size()) return;
   if (g_application.m_pPlayer)
-    g_application.m_pPlayer->SeekTime((__int64)bookmarks[item].timeInSeconds * 1000);
+    g_application.SeekTime((double)bookmarks[item].timeInSeconds);
 }
 
 void CGUIDialogVideoBookmarks::ClearBookmarks()

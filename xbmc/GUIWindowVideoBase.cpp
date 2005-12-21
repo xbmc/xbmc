@@ -947,6 +947,10 @@ int  CGUIWindowVideoBase::ResumeItemOffset(int iItem)
   int startOffset = 0;
   if (m_vecItems[iItem]->IsStack())
   {
+    CVideoSettings settings;
+    if (m_database.GetVideoSettings(m_vecItems[iItem]->m_strPath, settings))
+      return settings.m_ResumeTime;
+
     // TODO: Remove this code once the player can handle the stack:// protocol.
     // grab the database info.  If stacking is enabled, we may have to check multiple files...
     vector<CStdString> movies;
@@ -1189,7 +1193,7 @@ void CGUIWindowVideoBase::PlayMovie(const CFileItem *item)
   { // database file - get the true path
     m_database.GetFilePath(atol(movie.m_strPath), movie.m_strPath);
   }
-  if (movie.IsStack())
+  if (movie.IsStack() && g_guiSettings.GetInt("VideoPlayer.BypassCDSelection") == 0)
   {
     // TODO: Once the players are capable of playing a stack, we should remove
     // this code in favour of just using the resume feature.

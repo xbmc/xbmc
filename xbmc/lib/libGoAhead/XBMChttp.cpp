@@ -890,10 +890,10 @@ int CXbmcHttp::xbmcSeekPercentage(int numParas, CStdString paras[], bool relativ
       float percent=(float)atof(paras[0].c_str());
       if (relative)
       {
-        __int64 newPos=(g_infoManager.GetPlayTime()) + 1000*(long)(percent*(float)g_infoManager.GetTotalPlayTime()/100.0f);
+        double newPos = g_application.GetTime() + percent * 0.01 * g_application.GetTotalTime();
         if ((newPos>=0) && (newPos/1000<=g_infoManager.GetTotalPlayTime()))
         {
-          g_application.m_pPlayer->SeekTime(newPos);
+          g_application.SeekTime(newPos);
           return SetResponse(openTag+"OK");
         }
         else
@@ -901,7 +901,7 @@ int CXbmcHttp::xbmcSeekPercentage(int numParas, CStdString paras[], bool relativ
       }
       else
       {
-        g_application.m_pPlayer->SeekPercentage(percent);
+        g_application.SeekPercentage(percent);
         return SetResponse(openTag+"OK");
       }
     }

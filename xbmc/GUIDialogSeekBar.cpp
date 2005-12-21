@@ -126,8 +126,8 @@ void CGUIDialogSeekBar::Render()
   if (m_bRequireSeek && timeGetTime() - m_dwTimer > SEEK_BAR_SEEK_TIME)
   {
     g_infoManager.m_performingSeek = true;
-    float time = g_infoManager.GetTotalPlayTime() * m_fSeekPercentage * 10.0f;
-    g_application.m_pPlayer->SeekTime((__int64)time);
+    double time = g_infoManager.GetTotalPlayTime() * m_fSeekPercentage * 0.01;
+    g_application.SeekTime(time);
     m_bRequireSeek = false;
   }
 }
