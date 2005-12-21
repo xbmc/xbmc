@@ -30,20 +30,19 @@ CGUIThumbnailPanel::CGUIThumbnailPanel(DWORD dwParentID, DWORD dwControlId, int 
                                        const CStdString& strFontName,
                                        const CStdString& strImageIcon,
                                        const CStdString& strImageIconFocus,
-                                       DWORD dwitemWidth, DWORD dwitemHeight,
                                        DWORD dwSpinWidth, DWORD dwSpinHeight,
                                        const CStdString& strUp, const CStdString& strDown,
                                        const CStdString& strUpFocus, const CStdString& strDownFocus,
                                        DWORD dwSpinColor, int iSpinX, int iSpinY,
                                        const CStdString& strFont, DWORD dwTextColor, DWORD dwSelectedColor)
     : CGUIControl(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight)
-    , m_imgFolder(dwParentID, dwControlId, iPosX, iPosY, dwitemWidth, dwitemHeight, strImageIcon)
-    , m_imgFolderFocus(dwParentID, dwControlId, iPosX, iPosY, dwitemWidth, dwitemHeight, strImageIconFocus)
+    , m_imgFolder(dwParentID, dwControlId, iPosX, iPosY, 0, 0, strImageIcon)
+    , m_imgFolderFocus(dwParentID, dwControlId, iPosX, iPosY, 0, 0, strImageIconFocus)
     , m_upDown(dwControlId, 0, 0, 0, dwSpinWidth, dwSpinHeight, strUp, strDown, strUpFocus, strDownFocus, strFont, dwSpinColor, SPIN_CONTROL_TYPE_INT)
     , m_scrollInfo(0)
 {
-  m_iItemWidth = dwitemWidth;
-  m_iItemHeight = dwitemHeight;
+  m_iItemWidth = 0;
+  m_iItemHeight = 0;
   m_iRowOffset = 0;
   m_fSmoothScrollOffset = 0;
   m_dwSelectedColor = dwSelectedColor;
@@ -506,8 +505,9 @@ void CGUIThumbnailPanel::AllocResources()
   m_upDown.AllocResources();
   m_imgFolder.AllocResources();
   m_imgFolderFocus.AllocResources();
+  if (!m_iItemHeight) m_iItemHeight = m_iItemHeightLow ? m_iItemHeightLow : 100;
+  if (!m_iItemWidth) m_iItemWidth = m_iItemWidthLow ? m_iItemWidthLow : 100;
   Calculate(true);
-
 }
 
 void CGUIThumbnailPanel::FreeResources()
@@ -730,18 +730,6 @@ void CGUIThumbnailPanel::GetOffsetFromPage()
   {
     m_iCursorY--;
   }
-}
-
-void CGUIThumbnailPanel::SetTextureDimensions(int iWidth, int iHeight)
-{
-  m_iTextureWidth = iWidth;
-  m_iTextureHeight = iHeight;
-
-  m_imgFolder.SetHeight(m_iTextureHeight);
-  m_imgFolderFocus.SetHeight(m_iTextureHeight);
-
-  m_imgFolder.SetWidth(m_iTextureWidth);
-  m_imgFolderFocus.SetWidth(m_iTextureWidth);
 }
 
 void CGUIThumbnailPanel::SetThumbAlign(int align)
