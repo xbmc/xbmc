@@ -22,6 +22,7 @@
 #include "autorun.h"
 #include "utils/fstrcmp.h"
 #include "SortFileItem.h"
+#include "utils/GUIInfoManager.h"
 
 #define clamp(x) (x) > 255.f ? 255 : ((x) < 0 ? 0 : (BYTE)(x+0.5f)) // Valid ranges: brightness[-1 -> 1 (0 is default)] contrast[0 -> 2 (1 is default)]  gamma[0.5 -> 3.5 (1 is default)] default[ramp is linear]
 static const __int64 SECS_BETWEEN_EPOCHS = 11644473600;
@@ -2066,6 +2067,7 @@ __int64 CUtil::ToInt64(DWORD dwHigh, DWORD dwLow)
 void CUtil::AddFileToFolder(const CStdString& strFolder, const CStdString& strFile, CStdString& strResult)
 {
   strResult = strFolder;
+  // remove the stack:// as it screws up the logic below
   if (IsStack(strFolder))
     strResult = strResult.Mid(8);
 
@@ -2077,7 +2079,7 @@ void CUtil::AddFileToFolder(const CStdString& strFolder, const CStdString& strFi
       strResult += "\\";
   }
   strResult += strFile;
-
+	// re-add the stack:// protocol
   if (IsStack(strFolder))
     strResult = "stack://" + strResult;
 }
@@ -3716,7 +3718,7 @@ bool CUtil::XboxAutoDetectionPing(bool bRefresh, CStdString strFTPUserName, CStd
   {
     if (!g_guiSettings.GetBool("Autodetect.CreateLink"))
     { strNewClientIP =""; strNewClientInfo =""; } // To prevent to create more then one Same Share! todo: Until we have a vec list
-    g_stSettings.m_bXboxAutodetection = false;
+    g_infoManager.SetAutodetectedXbox(false);
   }
   while( life )
 	{
@@ -3743,7 +3745,9 @@ bool CUtil::XboxAutoDetectionPing(bool bRefresh, CStdString strFTPUserName, CStd
           strNewClientInfo = strWorkTemp; // This is the Client Informations!
           bState = true;
         } //todo: add it to a list of clients after parsing out user id, password, port, boost capable, etc.
-      }else g_stSettings.m_bXboxAutodetection = true;
+      }
+      else
+        g_infoManager.SetAutodetectedXbox(true);
 		}
 		timeout.tv_sec=0;
 		timeout.tv_usec = 5000;
@@ -3803,7 +3807,7 @@ bool CUtil::XboxAutoDetection() // GeminiServer: Xbox Autodetection!
         {
           if (CGUIDialogYesNo::ShowAndGetInput(1251, 0, 1257, 0))
           {
-            g_stSettings.m_bXboxAutodetection = true;
+            g_infoManager.SetAutodetectedXbox(true);
             strcpy( g_stSettings.m_szDefaultFiles, strNickName.c_str());
             if (g_guiSettings.GetBool("Autodetect.CreateLink"))
               m_gWindowManager.ActivateWindow(WINDOW_FILES, strNickName);  //Open FileManager with the created ShareName
@@ -3815,9 +3819,10 @@ bool CUtil::XboxAutoDetection() // GeminiServer: Xbox Autodetection!
     }
     strHasClientIP = strNewClientIP, strHasClientInfo = strNewClientInfo;
   }
-  else{
+  else
+  {
     strHasClientIP ="", strHasClientInfo = ""; 
-    g_stSettings.m_bXboxAutodetection = false;
+    g_infoManager.SetAutodetectedXbox(false);
   }
   return true;
 }
