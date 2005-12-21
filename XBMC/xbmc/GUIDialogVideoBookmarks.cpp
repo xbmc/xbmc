@@ -132,7 +132,7 @@ void CGUIDialogVideoBookmarks::AddBookmark()
 {
   CVideoDatabase videoDatabase;
   CBookmark bookmark;
-  bookmark.timeInSeconds = (int)(g_application.m_pPlayer->GetTime() / 1000);
+  bookmark.timeInSeconds = (int)g_application.GetTime();
   // create the thumbnail image
   RECT rs, rd;
   g_renderManager.GetVideoRect(rs, rd);

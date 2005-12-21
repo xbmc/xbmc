@@ -162,7 +162,6 @@ CSettings::CSettings(void)
   g_stSettings.m_iMyVideoPercentSeekForwardBig = 10;
   g_stSettings.m_iMyVideoPercentSeekBackwardBig = -10;
   xbmcXmlLoaded = false;
-  g_stSettings.m_bXboxAutodetection = false;
 }
 
 CSettings::~CSettings(void)
