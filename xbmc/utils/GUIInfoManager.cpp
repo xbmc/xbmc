@@ -500,12 +500,11 @@ int CGUIInfoManager::GetInt(int info) const
     switch( info )
     {
     case PLAYER_PROGRESS:
-      return (int)(g_application.m_pPlayer->GetPercentage());
+      return (int)(g_application.GetPercentage());
     case PLAYER_SEEKBAR:
       return (int)(((CGUIDialogSeekBar*)m_gWindowManager.GetWindow(WINDOW_DIALOG_SEEK_BAR))->GetPercentage());
     case PLAYER_CACHING:
       return (int)(g_application.m_pPlayer->GetCacheLevel());
-      
     }
   }
   return 0;
@@ -544,7 +543,7 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow) const
   else if (condition == SYSTEM_NO_SUCH_ALARM)
     bReturn = false;
   else if (condition == SYSTEM_AUTODETECTION)
-    bReturn = g_stSettings.m_bXboxAutodetection;
+    bReturn = HasAutodetectedXbox();
   else if (condition >= CONTROL_HAS_FOCUS_START && condition <= CONTROL_HAS_FOCUS_END)
   {
     if( !dwContextWindow ) dwContextWindow = m_gWindowManager.GetActiveWindow();
@@ -865,7 +864,7 @@ CStdString CGUIInfoManager::GetMusicLabel(int item)
         CUtil::SecondsToHMSString(tag.GetDuration(), strDuration);
       else
       {
-        unsigned int iTotal = g_application.m_pPlayer->GetTotalTime();
+        unsigned int iTotal = (unsigned int)g_application.GetTotalTime();
         if (iTotal > 0)
           CUtil::SecondsToHMSString(iTotal, strDuration, true);
       }
@@ -987,7 +986,7 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
   case PLAYER_DURATION:
     {
       CStdString strDuration = "00:00:00";
-      unsigned int iTotal = g_application.m_pPlayer->GetTotalTime();
+      unsigned int iTotal = (unsigned int)g_application.GetTotalTime();
       if (iTotal > 0)
         CUtil::SecondsToHMSString(iTotal, strDuration, true);
       return strDuration;
@@ -1001,7 +1000,7 @@ __int64 CGUIInfoManager::GetPlayTime()
 {
   if (g_application.IsPlaying())
   {
-    __int64 lPTS = g_application.m_pPlayer->GetTime();
+    __int64 lPTS = (__int64)(g_application.GetTime() * 1000);
     if (lPTS < 0) lPTS = 0;
     return lPTS;
   }
@@ -1020,13 +1019,13 @@ CStdString CGUIInfoManager::GetCurrentPlayTime()
 
 int CGUIInfoManager::GetTotalPlayTime()
 {
-  int iTotalTime = g_application.m_pPlayer->GetTotalTime();
+  int iTotalTime = (int)g_application.GetTotalTime();
   return iTotalTime > 0 ? iTotalTime : 0;
 }
 
 int CGUIInfoManager::GetPlayTimeRemaining()
 {
-  int iReverse = GetTotalPlayTime() - (int)(g_application.m_pPlayer->GetTime() / 1000);
+  int iReverse = GetTotalPlayTime() - (int)g_application.GetTime();
   return iReverse > 0 ? iReverse : 0;
 }
 

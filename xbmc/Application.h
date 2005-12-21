@@ -105,6 +105,8 @@ public:
   void SetKaiNotification(const CStdString& aCaption, const CStdString& aDescription, CGUIImage* aIcon=NULL);
   double GetTotalTime() const;
   double GetTime() const;
+  float GetPercentage() const;
+  void SeekPercentage(float percent);
   void SeekTime( double dTime = 0.0 );
 
   void SaveMusicScanSettings();
