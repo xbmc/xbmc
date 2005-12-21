@@ -786,7 +786,7 @@ int CXbmcHttp::xbmcGetCurrentlyPlaying()
     output+=closeTag+openTag+"SongNo:"+tmp;
     __int64 lPTS=-1;
     if (g_application.IsPlayingVideo()) {
-      lPTS = g_application.m_pPlayer->GetTime()/100;
+      lPTS = (__int64)(g_application.GetTime() * 10);
       output+=closeTag+openTag+"Type"+tag+":Video" ;
       const CIMDBMovie& tagVal=g_infoManager.GetCurrentMovie();
       if (tagVal.m_strTitle!="")
@@ -795,7 +795,7 @@ int CXbmcHttp::xbmcGetCurrentlyPlaying()
         output+=closeTag+openTag+"Genre"+tag+":"+tagVal.m_strGenre;
     }
     else if (g_application.IsPlayingAudio()) {
-      lPTS = g_application.m_pPlayer->GetTime()/100;
+      lPTS = (__int64)(g_application.GetTime() * 10);
       output+=closeTag+openTag+"Type"+tag+":Audio" ;
       const CMusicInfoTag& tagVal=g_infoManager.GetCurrentSongTag();
       if (tagVal.GetTitle()!="")
@@ -844,7 +844,7 @@ int CXbmcHttp::xbmcGetCurrentlyPlaying()
       }
       output+=closeTag+openTag+"Time:"+tmp;
       CStdString strTotalTime;
-      unsigned int tmpvar = g_application.m_pPlayer->GetTotalTime();
+      unsigned int tmpvar = (unsigned int)g_application.GetTotalTime();
       if(tmpvar != 0)
       {
         int hh = tmpvar / 3600;
@@ -860,7 +860,7 @@ int CXbmcHttp::xbmcGetCurrentlyPlaying()
         }
         output+=closeTag+openTag+"Duration:"+tmp;
       }
-      tmp.Format("%i",(int)g_application.m_pPlayer->GetPercentage());
+      tmp.Format("%i",(int)g_application.GetPercentage());
       output+=closeTag+openTag+"Percentage:"+tmp ;
     }
   }
@@ -872,7 +872,7 @@ int CXbmcHttp::xbmcGetPercentage()
   if (g_application.m_pPlayer)
   {
     CStdString tmp;
-    tmp.Format("%i",(int)g_application.m_pPlayer->GetPercentage());
+    tmp.Format("%i",(int)g_application.GetPercentage());
     return SetResponse(openTag + tmp ) ;
   }
   else

@@ -350,7 +350,7 @@ bool CGUIWindowOSD::OnMessage(CGUIMessage& message)
         if (m_bSubMenuOn)      // is sub menu on?
         {
           // set the controls values
-          SetSliderValue(0.0f, 100.0f, (float) g_application.m_pPlayer->GetPercentage(), OSD_VIDEOPOS);
+          SetSliderValue(0.0f, 100.0f, g_application.GetPercentage(), OSD_VIDEOPOS);
           SetSliderValue(0.5f, 2.0f, g_stSettings.m_currentVideoSettings.m_CustomZoomAmount, OSD_ZOOM, 0.01f);
           SetSliderValue(0.5f, 2.0f, g_stSettings.m_currentVideoSettings.m_CustomPixelRatio, OSD_PIXELRATIO, 0.01f);
           SetSliderValue(0.0f, 100.0f, (float) g_stSettings.m_currentVideoSettings.m_Brightness, OSD_BRIGHTNESS);
@@ -424,7 +424,7 @@ void CGUIWindowOSD::SetVideoProgress()
 {
   if (g_application.m_pPlayer)
   {
-    float fValue = g_application.m_pPlayer->GetPercentage(); // Find out where we are at the moment
+    float fValue = g_application.GetPercentage(); // Find out where we are at the moment
 
     CGUIProgressControl* pControl = (CGUIProgressControl*)GetControl(OSD_VIDEOPROGRESS);
     if (pControl) pControl->SetPercentage(fValue);   // Update our progress bar accordingly ...
@@ -453,7 +453,7 @@ void CGUIWindowOSD::Get_TimeInfo()
   SYSTEMTIME time;
   WCHAR szETATime[32];
   GetLocalTime(&time);
-  unsigned int tmpvar = time.wHour * 3600 + time.wMinute * 60 + g_application.m_pPlayer->GetTotalTime() - (unsigned int)(g_application.m_pPlayer->GetTime() / 1000);
+  unsigned int tmpvar = time.wHour * 3600 + time.wMinute * 60 + (unsigned int)g_application.GetTotalTime() - (unsigned int)g_application.GetTime();
   if (tmpvar != 0)
   {
     int iHour = tmpvar / 3600;
@@ -796,7 +796,7 @@ void CGUIWindowOSD::Handle_ControlSetting(DWORD iControlID, DWORD wID)
   case OSD_CREATEBOOKMARK:
     {
       CBookmark bookmark;
-      bookmark.timeInSeconds = (int)(g_application.m_pPlayer->GetTime() / 1000);
+      bookmark.timeInSeconds = (int)g_application.GetTime();
       bookmark.thumbNailImage.Empty();
       dbs.Open();             // open the bookmark d/b
       dbs.AddBookMarkToMovie(strMovie, bookmark);    // add the current timestamp

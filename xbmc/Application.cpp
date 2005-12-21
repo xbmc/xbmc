@@ -2263,7 +2263,7 @@ void CApplication::UpdateLCD()
       // line 2: genre
       // line 3: year
       CStdString strTotalTime;
-      unsigned int tmpvar = g_application.m_pPlayer->GetTotalTime();
+      unsigned int tmpvar = (unsigned int)GetTotalTime();
       if (tmpvar != 0)
       {
         int ihour = tmpvar / 3600;
@@ -2295,8 +2295,7 @@ void CApplication::UpdateLCD()
       if (iLine < 4 && g_infoManager.GetVideoLabel(251) != "")  // genre
         g_lcd->SetLine(iLine++, g_infoManager.GetVideoLabel(251));
 
-      strProgressBar = g_lcd->GetProgressBar((double)g_application.m_pPlayer->GetTime() * 0.001f,
-                                             (double)g_application.m_pPlayer->GetTotalTime());
+      strProgressBar = g_lcd->GetProgressBar(GetTime(),GetTotalTime());
       g_lcd->SetLine(iLine++, strProgressBar);
       /*
       if (iLine<4 && m_tagCurrentMovie.m_iYear>1900)
@@ -2351,8 +2350,7 @@ void CApplication::UpdateLCD()
         g_lcd->SetLine(iLine++, strLine);
       strLine = g_infoManager.GetMusicLabel(201);   // album
 
-      strProgressBar = g_lcd->GetProgressBar( (double)(g_application.m_pPlayer->GetTime() * 0.001f),
-                                              (double)g_application.m_pPlayer->GetTotalTime());
+      strProgressBar = g_lcd->GetProgressBar(GetTime(), GetTotalTime());
 
       g_lcd->SetLine(iLine++, strProgressBar);
 
@@ -3263,7 +3261,7 @@ void CApplication::StopPlaying()
       m_gWindowManager.PreviousWindow();
     if ( IsPlayingVideo() )
     { // save our position for resuming at a later date
-      g_stSettings.m_currentVideoSettings.m_ResumeTime = (int)(m_pPlayer->GetTime() * 75 / 1000); // need it in frames (75ths of a second)
+      g_stSettings.m_currentVideoSettings.m_ResumeTime = (int)(GetTime() * 75 / 1000); // need it in frames (75ths of a second)
     }
     m_pPlayer->CloseFile();
   }
@@ -3583,7 +3581,7 @@ void CApplication::CheckNetworkHDSpinDown(bool playbackStarted)
     }
     if (IsPlaying() && iDuration <= 0)
     {
-      iDuration = m_pPlayer->GetTotalTime();
+      iDuration = (int)GetTotalTime();
     }
     //spin down harddisk when the current file being played is not on local harddrive and
     //duration is more then spindown timeoutsetting or duration is unknown (streams)
@@ -3989,7 +3987,7 @@ void CApplication::Restart(bool bSamePosition)
   }
 
   // else get current position
-  float fPercentage = m_pPlayer->GetPercentage();
+  float fPercentage = GetPercentage();
 
   // reopen the file
   if ( PlayFile(m_itemCurrentFile, true) )
@@ -4133,6 +4131,24 @@ void CApplication::SeekTime( double dTime )
   {
     // convert to milliseconds
     m_pPlayer->SeekTime( static_cast<__int64>( dTime * 1000.0 ) );
+  }
+}
+
+float CApplication::GetPercentage() const
+{
+  if (IsPlaying() && m_pPlayer)
+  {
+    return m_pPlayer->GetPercentage();
+  }
+  return 0.0f;
+}
+
+void CApplication::SeekPercentage(float percent)
+{
+  if (IsPlaying() && m_pPlayer && (percent >= 0.0))
+  {
+    // convert to milliseconds
+    m_pPlayer->SeekPercentage(percent);
   }
 }
 
