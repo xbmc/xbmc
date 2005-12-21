@@ -56,6 +56,7 @@ public:
   void PlayListPlayerPlay(int iSong);
   void PlayListPlayerNext();
   void PlayListPlayerPrevious();
+  void PlayFile(const CFileItem &item, bool bRestart = false); // thread safe version of g_application.PlayFile()
   void PictureShow(string filename);
   void PictureSlideShow(string pathname);
   void Shutdown();

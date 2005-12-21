@@ -657,7 +657,7 @@ void CGUIWindowOSD::Handle_ControlSetting(DWORD iControlID, DWORD wID)
       if (pControl)
       {
         // Set mplayer's seek position to the percentage requested by the user
-        g_application.m_pPlayer->SeekPercentage(pControl->GetFloatValue());
+        g_application.SeekPercentage(pControl->GetFloatValue());
       }
     }
     break;
@@ -818,7 +818,7 @@ void CGUIWindowOSD::Handle_ControlSetting(DWORD iControlID, DWORD wID)
         dbs.Close();           // close the d/b
         if (bookmarks.size() <= 0) return ;      // no bookmarks? leave if so ...
 
-        g_application.m_pPlayer->SeekTime((__int64)bookmarks[m_iCurrentBookmark].timeInSeconds*1000); // set mplayers play position
+        g_application.SeekTime((double)bookmarks[m_iCurrentBookmark].timeInSeconds); // set mplayers play position
         PopulateBookmarks();
       }
     }

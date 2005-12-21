@@ -142,8 +142,8 @@ namespace PYXBMC
 
 	PyMethodDef Keyboard_methods[] = {
 		{"doModal", (PyCFunction)Keyboard_DoModal, METH_VARARGS, doModal__doc__},
-		{"setHeading", (PyCFunction)Keyboard_SetDefault, METH_VARARGS, setHeading__doc__},
 		{"setDefault", (PyCFunction)Keyboard_SetDefault, METH_VARARGS, setDefault__doc__},
+		{"setHeading", (PyCFunction)Keyboard_SetHeading, METH_VARARGS, setHeading__doc__},
 		{"getText", (PyCFunction)Keyboard_GetText, METH_VARARGS, getText__doc__},
 		{"isConfirmed", (PyCFunction)Keyboard_IsConfirmed, METH_VARARGS, isConfirmed__doc__},
 		{NULL, NULL, 0, NULL}

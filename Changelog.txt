@@ -5,6 +5,11 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 21-12-2005 fixed: GUI Calibration screen was constantly allocating/deallocating it's resources.
+ - 21-12-2005 changed: Moved resume time saving into the application class.
+ - 21-12-2005 changed: Better solution for genre problem in libid3tag.dll.
+ - 21-12-2005 added: Support for treating stacked files as a single volume. Set "Bypass CD Selection" to "Immediately" to test.
+ - 21-12-2005 added: Selecting a file from the FileBrowser dialog is equivalent to pressing "Ok".
  - 21-12-2005 changed: improved seeking accuracy in dvdplayer. ( fixed libdvdnav.dll time_search to use time map in dvd )
  - 21-12-2005 fixed: dvdplayer could stall on rewind due to full audio buffer
  - 21-12-2005 fixed: Thumbpanel highlighting wasn't working correctly.

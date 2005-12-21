@@ -23,6 +23,7 @@ CGUIDialogFileBrowser::CGUIDialogFileBrowser()
   m_bDVDDiscChanged = false;
   m_bDVDDiscEjected = false;
   m_Directory.m_bIsFolder = true;
+  m_browsingForFolders = false;
 }
 
 CGUIDialogFileBrowser::~CGUIDialogFileBrowser()
@@ -192,6 +193,14 @@ void CGUIDialogFileBrowser::Render()
       m_selectedPath = m_vecItems[item]->m_strPath;
     // Update the current path label
     SET_CONTROL_LABEL(CONTROL_LABEL_PATH, m_selectedPath);
+    if (!m_browsingForFolders && m_vecItems[item]->m_bIsFolder)
+    {
+      CONTROL_DISABLE(CONTROL_OK);
+    }
+    else
+    {
+      CONTROL_ENABLE(CONTROL_OK);
+    }
   }
   CGUIDialog::Render();
 }
@@ -210,6 +219,12 @@ void CGUIDialogFileBrowser::OnClick(int iItem)
         return ;
     }
     Update(strPath);
+  }
+  else if (!m_browsingForFolders)
+  {
+    m_selectedPath = pItem->m_strPath;
+    m_bConfirmed = true;
+    Close();
   }
 }
 
@@ -278,6 +293,7 @@ bool CGUIDialogFileBrowser::ShowAndGetFile(VECSHARES &shares, const CStdString &
   browser->SetHeading(browseHeading);
   browser->m_rootDir.SetShares(shares);
   browser->m_rootDir.SetMask(mask);
+  browser->m_browsingForFolders = (mask == "/");
   browser->m_selectedPath = path;
   browser->DoModal(m_gWindowManager.GetActiveWindow());
   if (browser->IsConfirmed())

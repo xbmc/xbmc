@@ -12,7 +12,6 @@
 #include "../utils/GUIInfoManager.h"
 #include "VideoRenderers/RenderManager.h"
 
-
 #define KEY_ENTER 13
 #define KEY_TAB 9
 
@@ -591,7 +590,6 @@ CMPlayer::CMPlayer(IPlayerCallback& callback)
   m_bIsPlaying = false;
   m_bPaused = false;
   m_bIsMplayeropenfile = false;
-  m_strPath = "";
   m_bCaching = false;
   m_bSubsVisibleTTF=false;
   m_bUseFullRecaching = false;
@@ -731,7 +729,6 @@ bool CMPlayer::OpenFile(const CFileItem& file, __int64 iStartTime)
   
 
   CStdString strFile = file.m_strPath;
-  m_strPath = strFile;
   CURL url(strFile);
   if ( file.IsHD() ) bFileOnHD = true;
   else if ( file.IsISO9660() ) bFileOnISO = true;
@@ -1299,17 +1296,6 @@ void CMPlayer::Process()
     }
     _SubtitleExtension.Empty();
   
-  // Save our settings for the current movie for later
-  if (bHasVideo)
-  {
-    if (!m_bStop) // reset resume time if we reached the end of the movie
-      g_stSettings.m_currentVideoSettings.m_ResumeTime = 0;
-    CVideoDatabase dbs;
-    dbs.Open();
-    dbs.SetVideoSettings(m_strPath, g_stSettings.m_currentVideoSettings);
-    dbs.Close();
-  }
-
   //Set m_bIsPlaying to false here to make sure closefile doesn't try to close the file again
   m_bIsPlaying = false;
   CloseFile();
@@ -1323,7 +1309,6 @@ void CMPlayer::Process()
   {
     m_callback.OnPlayBackEnded();
   }
-  m_strPath = "";
 }
 
 void CMPlayer::Unload()
