@@ -185,5 +185,6 @@ void CGUIWindowSettingsUICalibration::OnWindowLoaded()
     Add(pBottomRight);
   }
   CGUIWindow::OnWindowLoaded();
+  DynamicResourceAlloc(false);
 }
 #endif
