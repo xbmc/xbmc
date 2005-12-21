@@ -153,9 +153,7 @@ namespace PYXBMC
             pControl->dwTextColor,
 			pControl->dwSelectedColor,
             pControl->strTextureButton,
-            pControl->strTextureButtonFocus,
-			pControl->dwItemTextXOffset,
-            pControl->dwItemTextYOffset );
+            pControl->strTextureButtonFocus);
 
 		CGUIListControl* pListControl = (CGUIListControl*)pControl->pGUIControl;
 		pListControl->SetImageDimensions(

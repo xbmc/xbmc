@@ -578,8 +578,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
       dwTextColor2 = ((CGUIListControl*)pReference)->GetTextColor2();
       dwSelectedColor2 = ((CGUIListControl*)pReference)->GetSelectedColor2();
       strFont2 = ((CGUIListControl*)pReference)->GetFontName2();
-      lTextOffsetX = ((CGUIListControl*)pReference)->GetButtonTextOffsetX();
-      lTextOffsetY = ((CGUIListControl*)pReference)->GetButtonTextOffsetY();
     }
     else if (strType == "listcontrolex")
     {
@@ -634,8 +632,8 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
       strFont = ((CGUIThumbnailPanel*)pReference)->GetFontName();
       strImage = ((CGUIThumbnailPanel*)pReference)->GetNoFocusName();
       strImageFocus = ((CGUIThumbnailPanel*)pReference)->GetFocusName();
-      dwitemWidth = ((CGUIThumbnailPanel*)pReference)->GetItemWidth();
-      dwitemHeight = ((CGUIThumbnailPanel*)pReference)->GetItemHeight();
+      dwitemWidth = ((CGUIThumbnailPanel*)pReference)->GetItemWidthLow();
+      dwitemHeight = ((CGUIThumbnailPanel*)pReference)->GetItemHeightLow();
       dwSpinWidth = ((CGUIThumbnailPanel*)pReference)->GetSpinWidth();
       dwSpinHeight = ((CGUIThumbnailPanel*)pReference)->GetSpinHeight();
       strUp = ((CGUIThumbnailPanel*)pReference)->GetTextureUpName();
@@ -647,8 +645,8 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
       iSpinPosY = ((CGUIThumbnailPanel*)pReference)->GetSpinY();
       dwTextColor = ((CGUIThumbnailPanel*)pReference)->GetTextColor();
       dwSelectedColor = ((CGUIThumbnailPanel*)pReference)->GetSelectedColor();
-      iTextureWidth = ((CGUIThumbnailPanel*)pReference)->GetTextureWidth();
-      iTextureHeight = ((CGUIThumbnailPanel*)pReference)->GetTextureHeight();
+      iTextureWidth = ((CGUIThumbnailPanel*)pReference)->GetTextureWidthLow();
+      iTextureHeight = ((CGUIThumbnailPanel*)pReference)->GetTextureHeightLow();
       strSuffix = ((CGUIThumbnailPanel*)pReference)->GetSuffix();
       dwThumbAlign = ((CGUIThumbnailPanel*)pReference)->GetThumbAlign();
       ((CGUIThumbnailPanel*)pReference)->GetThumbDimensions(iThumbXPos, iThumbYPos, iThumbWidth, iThumbHeight);
@@ -1551,8 +1549,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
       strUpFocus, strDownFocus,
       dwSpinColor, iSpinPosX, iSpinPosY,
       strFont, dwTextColor, dwSelectedColor,
-      strTextureNoFocus, strTextureFocus,
-      lTextOffsetX, lTextOffsetY);
+      strTextureNoFocus, strTextureFocus);
 
     pControl->SetNavigation(up, down, left, right);
     pControl->SetColourDiffuse(dwColorDiffuse);
@@ -1619,7 +1616,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
       dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight,
       strFont,
       strImage, strImageFocus,
-      dwitemWidth, dwitemHeight,
       dwSpinWidth, dwSpinHeight,
       strUp, strDown,
       strUpFocus, strDownFocus,
@@ -1631,7 +1627,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     pControl->SetScrollySuffix(strSuffix);
     pControl->SetVisible(bVisible);
     pControl->SetVisibleCondition(iVisibleCondition, effect);
-    pControl->SetTextureDimensions(iTextureWidth, iTextureHeight);
     pControl->SetThumbDimensions(iThumbXPos, iThumbYPos, iThumbWidth, iThumbHeight);
     pControl->SetTextureWidthBig(textureWidthBig);
     pControl->SetTextureHeightBig(textureHeightBig);

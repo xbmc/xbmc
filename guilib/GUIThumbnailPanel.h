@@ -23,7 +23,6 @@ public:
                      const CStdString& strFontName,
                      const CStdString& strImageIcon,
                      const CStdString& strImageIconFocus,
-                     DWORD dwitemWidth, DWORD dwitemHeight,
                      DWORD dwSpinWidth, DWORD dwSpinHeight,
                      const CStdString& strUp, const CStdString& strDown,
                      const CStdString& strUpFocus, const CStdString& strDownFocus,
@@ -46,7 +45,6 @@ public:
   virtual void SetHeight(int iHeight);
   virtual void SetPulseOnSelect(bool pulse);
   void SetScrollySuffix(CStdString wstrSuffix);
-  void SetTextureDimensions(int iWidth, int iHeight);
   void SetThumbAlign(int align);
   int GetThumbAlign();
   void SetThumbDimensions(int iXpos, int iYpos, int iWidth, int iHeight);
@@ -66,12 +64,8 @@ public:
   DWORD GetSpinTextColor() const { return m_upDown.GetTextColor();};
   int GetSpinX() const { return m_iSpinPosX;};
   int GetSpinY() const { return m_iSpinPosY;};
-  DWORD GetTextureWidth() const { return m_iTextureWidth;};
-  DWORD GetTextureHeight() const { return m_iTextureHeight;};
   const CStdString& GetFocusName() const { return m_imgFolderFocus.GetFileName();};
   const CStdString& GetNoFocusName() const { return m_imgFolder.GetFileName();};
-  DWORD GetItemWidth() const { return m_iItemWidth;};
-  DWORD GetItemHeight() const { return m_iItemHeight;};
   void SetItemWidth(DWORD dwWidth);
   void SetItemHeight(DWORD dwHeight);
   bool IsTextureShown() const { return m_bShowTexture;};
@@ -86,15 +80,15 @@ public:
   void SetItemWidthLow(int itemWidthLow){ m_iItemWidthLow = itemWidthLow;};
   void SetItemHeightLow(int itemHeightLow) { m_iItemHeightLow = itemHeightLow;};
 
-  int GetTextureWidthBig() { return m_iTextureWidthBig;};
-  int GetTextureHeightBig(){ return m_iTextureHeightBig;};
-  int GetItemWidthBig(){ return m_iItemWidthBig;};
-  int GetItemHeightBig() { return m_iItemHeightBig;};
+  int GetTextureWidthBig() const { return m_iTextureWidthBig;};
+  int GetTextureHeightBig() const { return m_iTextureHeightBig;};
+  int GetItemWidthBig() const { return m_iItemWidthBig;};
+  int GetItemHeightBig() const { return m_iItemHeightBig;};
 
-  int GetTextureWidthLow() { return m_iTextureWidthLow;};
-  int GetTextureHeightLow(){ return m_iTextureHeightLow;};
-  int GetItemWidthLow(){ return m_iItemWidthLow;};
-  int GetItemHeightLow() { return m_iItemHeightLow;};
+  int GetTextureWidthLow() const { return m_iTextureWidthLow;};
+  int GetTextureHeightLow() const { return m_iTextureHeightLow;};
+  int GetItemWidthLow() const { return m_iItemWidthLow;};
+  int GetItemHeightLow() const { return m_iItemHeightLow;};
   void ShowBigIcons(bool bOnOff);
   const wstring& GetSuffix() const { return m_strSuffix;};
   void SetThumbDimensionsLow(int iXpos, int iYpos, int iWidth, int iHeight) { m_iThumbXPosLow = iXpos;m_iThumbYPosLow = iYpos;m_iThumbWidthLow = iWidth;m_iThumbHeightLow = iHeight;};

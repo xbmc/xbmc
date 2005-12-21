@@ -25,8 +25,7 @@ public:
                   const CStdString& strUpFocus, const CStdString& strDownFocus,
                   DWORD dwSpinColor, int iSpinX, int iSpinY,
                   const CStdString& strFont, DWORD dwTextColor, DWORD dwSelectedColor,
-                  const CStdString& strButton, const CStdString& strButtonFocus,
-                  DWORD dwItemTextOffsetX, DWORD dwItemTextOffsetY);
+                  const CStdString& strButton, const CStdString& strButtonFocus);
   virtual ~CGUIListControl(void);
   virtual void Render();
   virtual bool OnAction(const CAction &action);
@@ -80,8 +79,6 @@ public:
   int GetSpinY() const { return m_iSpinPosY;};
   DWORD GetSpace() const { return m_iSpaceBetweenItems;};
   DWORD GetItemHeight() const { return m_iItemHeight; };
-  DWORD GetButtonTextOffsetX() const { return m_imgButton.GetTextOffsetX();};
-  DWORD GetButtonTextOffsetY() const { return m_imgButton.GetTextOffsetY();};
   DWORD GetTextOffsetX() const { return m_iTextOffsetX;};
   DWORD GetTextOffsetY() const { return m_iTextOffsetY;};
   DWORD GetTextOffsetX2() const { return m_iTextOffsetX2;};
