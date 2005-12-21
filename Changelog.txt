@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 21-12-2005 changed: improved seeking accuracy in dvdplayer. ( fixed libdvdnav.dll time_search to use time map in dvd )
+ - 21-12-2005 fixed: dvdplayer could stall on rewind due to full audio buffer
  - 21-12-2005 fixed: Thumbpanel highlighting wasn't working correctly.
  - 20-12-2005 fixed: some menu overlays did not display properly or not at all in the dvdplayer
  - 19-12-2005 changed: tuned FF/RW for dvdplayer (only enabled in debug builds)

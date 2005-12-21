@@ -32,7 +32,7 @@ public:
   void Resume()                                         { m_dvdAudio.Resume(); }
   void Flush();
  
-  void SetSpeed(int iSpeed)                             { m_iSpeed = abs(iSpeed); }
+  void SetSpeed(int iSpeed)                             { m_iSpeed = iSpeed; }
 
   void DoWork()                                         { m_dvdAudio.DoWork(); }
 
