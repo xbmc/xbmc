@@ -73,6 +73,7 @@ bool CDAAPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
   // if we have at least one database we should show it's contents
   if (m_thisHost->nDatabases)
   {
+    CLog::Log(LOGDEBUG, "Have %i databases", m_thisHost->nDatabases);
     //Store the first database
     g_DaapClient.m_iDatabase = m_thisHost->databases[0].id;
 
@@ -93,6 +94,7 @@ bool CDAAPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
     // find out where we are in the folder hierarchy
     m_currLevel = GetCurrLevel(strRoot);
 
+    CLog::Log(LOGDEBUG, "DAAPDirectory: Current Level is %i", m_currLevel);
     if (m_currLevel < 0) // root, so show playlists
     {
       for (c = 0; c < m_thisHost->dbplaylists->nPlaylists; c++)
@@ -104,6 +106,7 @@ bool CDAAPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
         g_charsetConverter.utf8ToStringCharset(m_thisHost->dbplaylists->playlists[c].itemname, strFile);
 
         // Add item to directory list
+        CLog::Log(LOGDEBUG, "DAAPDirectory: Adding item %s", strFile.c_str());
         CFileItem* pItem = new CFileItem(strFile);
         pItem->m_strPath = strRoot + m_thisHost->dbplaylists->playlists[c].itemname;
         pItem->m_bIsFolder = true;
@@ -139,6 +142,7 @@ bool CDAAPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
           while (cur)
           {            
             g_charsetConverter.utf8ToStringCharset(cur->artist, strBuffer);
+            CLog::Log(LOGDEBUG, "DAAPDirectory: Adding item %s", strBuffer.c_str());
             CFileItem* pItem = new CFileItem(strBuffer);
             pItem->m_strPath = strRoot + cur->artist;
             pItem->m_bIsFolder = true;
@@ -174,6 +178,7 @@ bool CDAAPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
               CStdString strBuffer;
               g_charsetConverter.utf8ToStringCharset(m_currentSongItems[idx].itemname, strBuffer);
 
+              CLog::Log(LOGDEBUG, "DAAPDirectory: Adding item %s", strBuffer.c_str());
               CFileItem* pItem = new CFileItem(strBuffer);
               pItem->m_strPath.Format("daap://%s/%d.%s", m_thisHost->host, m_currentSongItems[idx].id,
                                       m_currentSongItems[idx].songformat);
@@ -223,6 +228,7 @@ bool CDAAPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
         {
           CStdString strBuffer;
           g_charsetConverter.utf8ToStringCharset(curAlbum->album, strBuffer);
+          CLog::Log(LOGDEBUG, "DAAPDirectory: Adding item %s", strBuffer.c_str());
           CFileItem* pItem = new CFileItem(strBuffer);
 
           pItem->m_strPath = strRoot + curAlbum->album;
@@ -245,6 +251,7 @@ bool CDAAPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
           CStdString strBuffer;
           g_charsetConverter.utf8ToStringCharset(m_currentSongItems[c].itemname, strBuffer);
 
+          CLog::Log(LOGDEBUG, "DAAPDirectory: Adding item %s", strBuffer.c_str());
           CFileItem* pItem = new CFileItem(strBuffer);
           pItem->m_strPath.Format("daap://%s/%d.%s", m_thisHost->host, m_currentSongItems[c].id,
                                   m_currentSongItems[c].songformat);
