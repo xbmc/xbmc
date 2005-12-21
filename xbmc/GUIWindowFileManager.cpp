@@ -13,6 +13,7 @@
 #include "GUIWindowSlideShow.h"
 #include "PlayListFactory.h"
 #include "SortFileItem.h"
+#include "utils/GUIInfoManager.h"
 
 using namespace XFILE;
 
@@ -176,12 +177,12 @@ bool CGUIWindowFileManager::OnMessage(CGUIMessage& message)
       // check for a passed destination path
       CStdString strDestination = message.GetStringParam();
       CStdString strFTPTMP = g_localizeStrings.Get(1251); // ShareName: XBOX Autodetection
-      if (!g_stSettings.m_bXboxAutodetection ) 
+      if (!g_infoManager.HasAutodetectedXbox())
         m_rootDir.RemoveShareName(strFTPTMP);
       //--------------------------------
       if (g_guiSettings.GetBool("Autodetect.OnOff"))
       {
-        if (g_stSettings.m_bXboxAutodetection && !strDestination.IsEmpty()) // XBOX Autodetection: add a dummy share
+        if (g_infoManager.HasAutodetectedXbox() && !strDestination.IsEmpty()) // XBOX Autodetection: add a dummy share
         {
           m_rootDir.RemoveShareName(strFTPTMP); // Remove a previos share: to be sure to not have double stuff..
           CShare shareTmp;

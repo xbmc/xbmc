@@ -17,6 +17,7 @@ namespace DIRECTORY
 
   bool CStackDirectory::GetDirectory(const CStdString& strPath, CFileItemList& items)
   {
+    items.Clear();
     // format is:
     // stack://<path>/file1 , file2 , file3 , file4
     // filenames with commas are double escaped (ie replaced with ,,), thus the " , " separator used.

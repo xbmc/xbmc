@@ -281,7 +281,7 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
         g_application.m_pPlayer->Pause();
         bNeedPause = true;
       }
-      int orgpos = (int)(g_application.m_pPlayer->GetTime() / 1000);
+      int orgpos = (int)g_application.GetTime();
       int triesleft = g_stSettings.m_iSmallStepBackTries;
       int jumpsize = g_stSettings.m_iSmallStepBackSeconds; // secs
       int setpos = (orgpos > jumpsize) ? orgpos - jumpsize : 0; // First jump = 2*jumpsize
@@ -291,7 +291,7 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
         setpos = (setpos > jumpsize) ? setpos - jumpsize : 0;
         g_application.m_pPlayer->SeekTime(setpos*1000);
         Sleep(g_stSettings.m_iSmallStepBackDelay); // delay to let mplayer finish its seek (in ms)
-        newpos = (int)(g_application.m_pPlayer->GetTime() / 1000);
+        newpos = (int)g_application.GetTime();
       }
       while ( (newpos > orgpos - jumpsize) && (setpos > 0) && (--triesleft > 0));
       // repause player if needed
@@ -410,7 +410,11 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
     {
       // Pause player before lock or the app will deadlock
       if (g_application.m_pPlayer)
+      {
+        CLog::DebugLog("CGUIWindowFullscreen::Deinit - calling Player::Update(true)");
         g_application.m_pPlayer->Update(true);
+        CLog::DebugLog("CGUIWindowFullscreen::Deinit - Player::Update(true) done.");
+      }
       // Pause so that we make sure that our fullscreen renderer has finished...
       Sleep(100);
 
@@ -765,8 +769,8 @@ void CGUIWindowFullScreen::ChangetheTimeCode(DWORD remote)
         bNeedsPause = true;
         g_application.m_pPlayer->Pause();
       }
-      if (itotal < g_application.m_pPlayer->GetTotalTime())
-        g_application.m_pPlayer->SeekTime(itotal*1000);
+      if (itotal < g_application.GetTotalTime())
+        g_application.SeekTime((double)itotal);
       if (bNeedsPause)
       {
         Sleep(g_stSettings.m_iSmallStepBackDelay);  // allow mplayer to finish it's seek (nasty hack)

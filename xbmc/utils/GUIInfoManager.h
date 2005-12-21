@@ -85,7 +85,10 @@ public:
 
   wstring GetSystemHeatInfo(const CStdString &strInfo);
   void UpdateFPS();
-  inline float GetFPS() { return m_fps; };
+  inline float GetFPS() const { return m_fps; };
+
+  void SetAutodetectedXbox(bool set) { m_hasAutoDetectedXbox = set; };
+  bool HasAutodetectedXbox() const { return m_hasAutoDetectedXbox; };
 
 protected:
   int TranslateSingleString(const CStdString &strCondition);
@@ -123,6 +126,9 @@ protected:
   float m_fps;
   unsigned int m_frameCounter;
   unsigned int m_lastFPSTime;
+
+  // Xbox Autodetect stuff
+  bool m_hasAutoDetectedXbox;
 
   class CCombinedValue
   {
