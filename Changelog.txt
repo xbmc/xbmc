@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 22-12-2005 fixed: dvdplayer would drop frames / stall on a dvd cell change when previous cell didn't have audio and next did
+ - 22-12-2005 changed: dvdplayer now checks for eof on read error. if the error is really end of file, exit player, otherwise retry.
  - 21-12-2005 fixed: GUI Calibration screen was constantly allocating/deallocating it's resources.
  - 21-12-2005 changed: Moved resume time saving into the application class.
  - 21-12-2005 changed: Better solution for genre problem in libid3tag.dll.

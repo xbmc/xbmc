@@ -6,7 +6,7 @@
 CDVDInputStream::CDVDInputStream()
 {
   m_strFileName = NULL;
-  m_streamType = DVDSTREAM_TYPE_NONE;
+  m_bEOF = true;
 }
 
 CDVDInputStream::~CDVDInputStream()
@@ -18,7 +18,6 @@ bool CDVDInputStream::Open(const char* strFile)
 {
   if (m_strFileName) delete m_strFileName;
   m_strFileName = strdup(strFile);
-
   return true;
 }
 
@@ -26,6 +25,7 @@ void CDVDInputStream::Close()
 {
   if (m_strFileName) delete m_strFileName;
   m_strFileName = NULL;
+  m_bEOF = true;
 }
 
 const char* CDVDInputStream::GetFileName()

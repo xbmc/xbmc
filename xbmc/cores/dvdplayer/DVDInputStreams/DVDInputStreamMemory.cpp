@@ -22,6 +22,8 @@ bool CDVDInputStreamMemory::Open(const char* strFile)
 {
   if (!CDVDInputStream::Open(strFile)) return false;
 
+  m_bEOF = false;
+
   return true;
 }
 
@@ -32,6 +34,7 @@ void CDVDInputStreamMemory::Close()
   m_pData = NULL;
   m_iDataSize = 0;
   m_iDataPos = 0;
+  m_bEOF = true;
   
   CDVDInputStream::Close();
 }
@@ -46,6 +49,10 @@ int CDVDInputStreamMemory::Read(BYTE* buf, int buf_size)
   {
     fast_memcpy(buf, m_pData + m_iDataPos, iBytesToCopy);
     m_iDataPos += iBytesToCopy;
+  }
+  if( iBytesLeft <= 0 )
+  {
+    m_bEOF = true;
   }
   
   return iBytesToCopy;

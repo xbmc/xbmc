@@ -22,17 +22,17 @@ public:
   virtual void Close() = 0;
   virtual int Read(BYTE* buf, int buf_size) = 0;
   virtual __int64 Seek(__int64 offset, int whence) = 0;
-  
+   
   const char* GetFileName();
   bool HasExtension(char* sExtension);
   
   int GetBlockSize() { return DVDSTREAM_BLOCK_SIZE_FILE; }
   bool IsStreamType(DVDStreamType type) { return m_streamType == type; }
-  
+  bool IsEOF() { return m_bEOF; }  
   
 
 protected:
   DVDStreamType m_streamType;
-  
+  bool m_bEOF;
   char* m_strFileName;
 };
