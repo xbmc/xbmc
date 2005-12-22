@@ -98,7 +98,7 @@ bool CDVDInputStreamNavigator::Open(const char* strFile)
     return false;
   }
 
-  m_bStopped = false;
+  m_bEOF = false;
   
   return true;
 }
@@ -116,11 +116,12 @@ void CDVDInputStreamNavigator::Close()
 
   CDVDInputStream::Close();
   m_dvdnav = NULL;
+  m_bEOF = true;
 }
 
 int CDVDInputStreamNavigator::Read(BYTE* buf, int buf_size)
 {
-  if (!m_dvdnav || m_bStopped) return -1;
+  if (!m_dvdnav || m_bEOF) return -1;
   if (buf_size < DVD_VIDEO_BLOCKSIZE)
   {
     CLog::Log(LOGERROR, "CDVDInputStreamNavigator: buffer size is to small, %d bytes, should be 2048 bytes", buf_size);
@@ -381,7 +382,7 @@ int CDVDInputStreamNavigator::ProcessBlock(BYTE* dest_buffer, int* read)
         
         // don't read any further, it could be libdvdnav had some problems reading
         // the disc. reading further results in a crash
-        m_bStopped = true;
+        m_bEOF = true;
         
         m_pDVDPlayer->OnDVDNavResult(NULL, DVDNAV_STOP);
         iNavresult = DVDNAV_STOP;
