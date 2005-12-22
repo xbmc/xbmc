@@ -2705,6 +2705,9 @@ bool CMusicDatabase::GetGenresNav(VECGENRES& genres)
                       "or idGenre IN ("
                         "select distinct exgenresong.idGenre from exgenresong)) ";
 
+    // block null strings
+    strSQL += " and genre.strGenre != \"\"";
+
     // run query
     CLog::Log(LOGDEBUG, "CMusicDatabase::GetGenresNav() query: %s", strSQL.c_str());
     if (!m_pDS->query(strSQL.c_str())) return false;
@@ -2788,10 +2791,11 @@ bool CMusicDatabase::GetArtistsNav(VECARTISTS& artists, const CStdString &strGen
                           ") "
                         , strGenre.c_str(), strGenre.c_str(), strGenre.c_str(), strGenre.c_str());
 
+    // remove various artist entry and null string
     CStdString strVariousArtists = g_localizeStrings.Get(340);
     long lVariousArtistsId = AddArtist(strVariousArtists);
     CStdString strTemp;
-    strTemp.Format("and artist.idArtist<>%i ", lVariousArtistsId);
+    strTemp.Format("and artist.idArtist<>%i and artist.strArtist != \"\"", lVariousArtistsId);
     strSQL+=strTemp;
 
     // run query
@@ -2878,6 +2882,13 @@ bool CMusicDatabase::GetAlbumsNav(VECALBUMS& albums, const CStdString &strGenre,
                            ") "
                            , strArtist.c_str(), strArtist.c_str());
     }
+
+    // block null strings
+    if (strWhere.IsEmpty())
+      strWhere += "where ";
+    else
+      strWhere += "and ";
+    strWhere += "albumview.strAlbum != \"\"";
 
     strSQL += strWhere;
 
