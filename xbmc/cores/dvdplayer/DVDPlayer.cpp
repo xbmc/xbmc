@@ -248,16 +248,23 @@ void CDVDPlayer::Process()
     }
 
     if (!pPacket)
-    {
+    {            
       if (m_dvd.state == DVDSTATE_STILL) continue;
-      else
-      {
+      else if( m_pInputStream->IsEOF() ) break;
+      else 
+      { 
+        // keep on trying until user wants us to stop.
+        iErrorCounter++;
         CLog::Log(LOGERROR, "Error reading data from demuxer");
+
+        // maybe reseting the demuxer at this point would be a good idea, should it have failed in some way.        
+        if( iErrorCounter > 1000 )
+        {
+          m_pDemuxer->Reset();
+          iErrorCounter = 0;
+        }
         
-        if (++iErrorCounter < 50) //Allow 50 errors in a row before giving up
-          continue;
-        else
-          break;
+        continue;
       }
     }
 
@@ -306,14 +313,35 @@ void CDVDPlayer::ProcessAudioData(CDemuxStream* pStream, CDVDDemux::DemuxPacket*
   int iPacketMessage = 0;
   
   // if we have no audio stream yet, openup the audio device now
-  if (m_iCurrentStreamAudio < 0) OpenDefaultAudioStream();
+  if (m_iCurrentStreamAudio < 0) 
+  {
+    if( OpenDefaultAudioStream() )
+    {
+        if( m_iCurrentStreamVideo >= 0 )
+        { // up until now we wheren't playing audio, but we did play video
+          // this will change what is used to sync the dvdclock. 
+          // since the new audio data doesn't have to have any relation
+          // to the current video data in the packet que, we have to 
+          // wait for it to empty
+                    
+          // this happens if a new cell has audio data, but previous didn't
+          // and both have video data
+          
+          m_dvdPlayerVideo.m_packetQueue.WaitUntilEmpty();
+        }
+    }
+  }
   else
   {
     CDemuxStreamAudio* pStreamAudio = (CDemuxStreamAudio*)pStream;
 
     // if audio information changed close the audio device first
     if (m_dvdPlayerAudio.m_codec != pStreamAudio->codec ||
-        m_dvdPlayerAudio.m_iSourceChannels != pStreamAudio->iChannels) CloseAudioStream(false);
+      m_dvdPlayerAudio.m_iSourceChannels != pStreamAudio->iChannels) 
+    {
+      CloseAudioStream(true);
+      OpenAudioStream(m_iCurrentStreamAudio);
+    }
   }
 
   //If this is the first packet after a discontinuity, send it as a resync
@@ -1193,7 +1221,7 @@ int CDVDPlayer::OnDVDNavResult(void* pData, int iMessage)
         }
         
         m_dvd.state = DVDSTATE_NORMAL;
-        
+
         m_bDontSkipNextFrame = true;
       }
       break;
