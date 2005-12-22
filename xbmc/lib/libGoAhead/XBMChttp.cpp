@@ -188,35 +188,88 @@ bool decodeBase64ToFile( CStdString inString, CStdString outfilename )
   return ret;
 }
 
+__int64 fileSize(CStdString filename)
+{
+  if (CFile::Exists(filename.c_str()))
+  {
+    __stat64 s64;
+    if (CFile::Stat(filename.c_str(), &s64) == 0)
+      return s64.st_size;
+    else
+      return -1;
+  }
+  else
+    return -1;
+}
+
+
+
 int splitParameter(CStdString parameter, CStdString& command, CStdString paras[], CStdString sep)
 //returns -1 if no command else the number of parameters
+//assumption: sep.length()==1
 {
-  int num=0, p;
-  CStdString para=parameter;
-  p=para.Find(sep);
-  if (p==-1)
-    command=para;
-  else
+  unsigned int num=0, p;
+  CStdString empty="";
+
+  paras[0]="";
+  for (p=0; p<parameter.length(); p++)
   {
-    command=para.Left(p);
-    para=para.Right(para.length()-p-1);
-    p=para.Find(sep);
-    while (p!=-1 && num<MAX_PARAS)
+    if (parameter.Mid(p,1)==sep)
     {
-      paras[num]=para.Left(p);
-      if (paras[num].Trim()=="")
-        paras[num]=paras[num].Trim();
-      num++;
-      para=para.Right(para.length()-p-1);
-      p=para.Find(sep);
+      if (p<parameter.length()-1)
+      {
+        if (parameter.Mid(p+1,1)==sep)
+        {
+          paras[num]+=sep;
+          p+=1;
+        }
+        else
+        {
+          if (command!="")
+          {
+            paras[num]=paras[num].Trim();
+            num++;
+          }
+          else
+          {
+            command=paras[0];
+            paras[0]=empty;
+            p++; //the ";" after the command is always followed by a space which we can jump over
+          }
+        }
+      }
+      else
+      {
+        if (command!="")
+        {
+          paras[num]=paras[num].Trim();
+          num++;
+        }
+        else
+        {
+          command=paras[0];
+          paras[0]=empty;
+        }
+      }
     }
-    if (para.Trim()!="")
-      paras[num++]=para;
+    else
+    {
+      paras[num]+=parameter.Mid(p,1);
+    }
   }
   if (command=="")
-    return -1;
+    if (paras[0]!="")
+    {
+      command=paras[0];
+      return 0;
+    }
+    else
+      return -1;
   else
-    return num;
+  {
+    paras[num]=paras[num].Trim();
+    return num+1;
+  }
 }
 
 bool playableFile(CStdString filename)
@@ -297,20 +350,28 @@ int displayDir(int numParas, CStdString paras[]) {
   }
 
   dirItems.Sort(SSortFileItem::LabelAscending);
+  CStdString aLine="";
   for (int i=0; i<dirItems.Size(); ++i)
   {
     CFileItem *itm = dirItems[i];
     if (mask=="*" || (mask =="" && itm->m_bIsFolder))
       if (!CUtil::HasSlashAtEnd(itm->m_strPath))
-        output+=closeTag+openTag + itm->m_strPath + "\\" ;
+        aLine=closeTag+openTag + itm->m_strPath + "\\" ;
       else
-        output+=closeTag+openTag + itm->m_strPath ;
-    else if (!itm->m_bIsFolder)
-      output+=closeTag+openTag + itm->m_strPath;
-    if (option="1") {
-      CStdString theDate;
-      CUtil::GetDate(itm->m_stTime,theDate) ;
-      output+="  ;" + theDate ;
+        aLine=closeTag+openTag + itm->m_strPath ;
+    else
+      if (!itm->m_bIsFolder)
+        aLine=closeTag+openTag + itm->m_strPath;
+    if (aLine!="")
+    {
+      if (option=="1") {
+        CStdString theDate;
+        CUtil::GetDate(itm->m_stTime,theDate) ;
+        output+=aLine+"  ;" + theDate ;
+      }
+      else
+        output+=aLine;
+      aLine="";
     }
   }
   return SetResponse(output);
@@ -491,7 +552,6 @@ bool LoadPlayList(CStdString strPath, int iPlaylist, bool clearList, bool autoSt
       g_playlistPlayer.SetCurrentPlaylist(iPlaylist);
       g_playlistPlayer.Reset();
       g_playlistPlayer.Play(0);
-      //g_applicationMessenger.PlayListPlayerPlay(0);
       return true;
     } 
     else
@@ -565,7 +625,6 @@ int CXbmcHttp::xbmcAddToPlayList(int numParas, CStdString paras[])
 
 int CXbmcHttp::xbmcGetTagFromFilename(int numParas, CStdString paras[]) 
 {
-  //char buffer[XML_MAX_INNERTEXT_SIZE];
   CStdString strFileName;
   if (numParas==0) {
     return SetResponse(openTag+"Error:Missing Parameter");
@@ -862,6 +921,12 @@ int CXbmcHttp::xbmcGetCurrentlyPlaying()
       }
       tmp.Format("%i",(int)g_application.GetPercentage());
       output+=closeTag+openTag+"Percentage:"+tmp ;
+      _int64 fs=fileSize(fn);
+      if (fs>-1)
+      {
+        tmp.Format("%I64d",fs);
+        output+=closeTag+openTag+"File size:"+tmp ;
+      }
     }
   }
   return SetResponse(output);
@@ -1633,24 +1698,19 @@ int CXbmcHttp::xbmcCopyFile(int numParas, CStdString paras[])
   }
 }
 
+
 int CXbmcHttp::xbmcFileSize(int numParas, CStdString paras[])
 {
   if (numParas<1)
     return SetResponse(openTag+"Error:Missing parameter");
   else
   {
-    if (CFile::Exists(paras[0].c_str()))
+    __int64 filesize=fileSize(paras[0]);
+    if (filesize>-1)
     {
-      __stat64 s64;
-      if (CFile::Stat(paras[0].c_str(), &s64) == 0)
-      {
-        __int64 filesize=s64.st_size;
-        CStdString tmp;
-        tmp.Format("%I64d",filesize);
-        return SetResponse(openTag+tmp);
-      }
-      else
-        return SetResponse(openTag+"Error");
+      CStdString tmp;
+      tmp.Format("%I64d",filesize);
+      return SetResponse(openTag+tmp);
     }
     else
       return SetResponse(openTag+"Error:Source file not found");
@@ -1837,12 +1897,6 @@ int CXbmcHttp::xbmcConfig(int numParas, CStdString paras[])
   }
 
   return SetResponse(response);
-  //if (ret==-1)
-  //  return SetResponse(""); //the XbmcWebsAspConfig procedures internally writes the error response
-  //else if (ret==0)
-  //  return SetResponse(openTag+"OK");
-  //else
-  //  return SetResponse(""); //the XbmcWebsAspConfig procedures internally writes the response
 }
 
 int CXbmcHttp::xbmcGetSystemInfo(int numParas, CStdString paras[])
@@ -2143,7 +2197,7 @@ CStdString CXbmcHttpShim::xbmcProcessCommand( int eid, webs_t wp, char_t *comman
   if ((*parameter==0) || !strcmp(parameter,XBMC_NONE))
     g_applicationMessenger.HttpApi(cmd);
   else
-    g_applicationMessenger.HttpApi(cmd+";"+paras);
+    g_applicationMessenger.HttpApi(cmd+"; "+paras);
   //wait for response - max 10s
   while (response=="[No response yet]" && cnt<100) 
   {
@@ -2198,5 +2252,5 @@ void CXbmcHttpShim::xbmcForm(webs_t wp, char_t *path, char_t *query)
   if (wp->timeout!=-1)
     websDone(wp, 200);
   else
-    CLog::Log(LOGERROR, "HttpApi Timeout command: %s  paras: %s", command, parameter);
+    CLog::Log(LOGERROR, "HttpApi Timeout command: %s", query);
 }
