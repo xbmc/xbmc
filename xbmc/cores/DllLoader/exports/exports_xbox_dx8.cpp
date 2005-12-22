@@ -133,6 +133,8 @@ void export_xbox_dx8()
   g_dlls.xbox_dx8.AddExport("D3DDevice_BeginVisibilityTest@0", (unsigned long)D3DDevice_BeginVisibilityTest);
   g_dlls.xbox_dx8.AddExport("D3DDevice_EndVisibilityTest@4", (unsigned long)D3DDevice_EndVisibilityTest);
   g_dlls.xbox_dx8.AddExport("D3DDevice_GetVisibilityTestResult@12", (unsigned long)D3DDevice_GetVisibilityTestResult);
+  g_dlls.xbox_dx8.AddExport("D3DXCreateMatrixStack@8", (unsigned long)&D3DXCreateMatrixStack);
+  g_dlls.xbox_dx8.AddExport("D3DDevice_CreateSurface2@16", (unsigned long)D3DDevice_CreateSurface2);
 }
 
 void export_xbox___dx8()
