@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 22-12-2005 changed: My Music Library would incorrectly handle artists and albums that were blank as if they were the "all" item.
+			These items are now filtered out of the display.
  - 22-12-2005 added: HttpApi: FileSize to GetCurrentlyPlaying and the use of ";;" as a literal ";" rather than a separator
  - 22-12-2005 fixed: HttpApi: GetDirectory
  - 22-12-2005 fixed: dvdplayer would drop frames / stall on a dvd cell change when previous cell didn't have audio and next did
