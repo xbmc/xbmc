@@ -35,7 +35,7 @@ bool CMusicInfoLoader::LoadItem(CFileItem* pItem)
     return false;
 
   if (pItem->m_musicInfoTag.Loaded())
-    return false;
+    return true;
 
   CStdString strFileName, strPath;
   CUtil::GetDirectory(pItem->m_strPath, strPath);
