@@ -72,7 +72,7 @@ void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecC
 {
   CURL url(item.m_strPath);
 
-  CLog::Log(LOGDEBUG,"item: %s",item.m_strPath.c_str());
+  CLog::Log(LOGDEBUG,"CPlayerCoreFactor::GetPlayers(%s)",item.m_strPath.c_str());
   bool bMPlayer(false), bDVDPlayer(false);
   bool bPAPlayer(false);
 
