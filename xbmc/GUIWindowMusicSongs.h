@@ -10,24 +10,18 @@ public:
   virtual bool OnMessage(CGUIMessage& message);
 
 protected:
-  virtual bool GetDirectory(const CStdString &strDirectory, CFileItemList &items);
   virtual void UpdateButtons();
   virtual void OnFileItemFormatLabel(CFileItem* pItem);
   virtual void OnClick(int iItem);
   virtual void OnPopupMenu(int iItem);
-  virtual void DoSort(CFileItemList& items);
   virtual void DoSearch(const CStdString& strSearch, CFileItemList& items);
-  virtual void OnSearchItemFound(const CFileItem* pItem);
   virtual void GetDirectoryHistoryString(const CFileItem* pItem, CStdString& strHistoryString);
   virtual void OnRetrieveMusicInfo(CFileItemList& items);
   virtual void OnScan();
-  virtual bool Update(const CStdString &strDirectory);
 
   // new method
   virtual void PlayItem(int iItem);
 
-  void SetHistoryForPath(const CStdString& strDirectory);
-  
   void LoadDirectoryCache(const CStdString& strDirectory, MAPFILEITEMS& items);
   void SaveDirectoryCache(const CStdString& strDirectory, CFileItemList& items);
   void DeleteDirectoryCache();

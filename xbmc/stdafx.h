@@ -46,6 +46,7 @@ using namespace std;
 #include "utils/log.h"
 #include "utils/CharsetConverter.h"
 
+#include "settings.h"
 #include "MusicInfotag.h"
 using namespace MUSIC_INFO;
 #include "Song.h"

@@ -24,6 +24,7 @@ bool CDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items, C
   bool bSuccess = pDirectory->GetDirectory(strPath, items);
   if (bSuccess)
   {
+    items.m_strPath=strPath;
     if (bUseFileDirectories) //  Should any of the files we read be treated as a directory?
       for (int i=0; i< items.Size(); ++i)
       {
