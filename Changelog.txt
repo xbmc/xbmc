@@ -12,6 +12,7 @@ added/fixed: (dd-mm-yyyy) (please specify date in CET)
  - 23-12-2005 updated: Norwegian language file (Thnx to vnm)
  - 23-12-2005 updated: Dutch language file (Thnx to tijmengozer)
  - 23-12-2005 changed: moved music library into a directory class
+                       MusicDatabase will be updated to version 1.4
  - 23-12-2005 changed: moved sorting and available view as controls out of the my music windows
  - 22-12-2005 changed: My Music Library would incorrectly handle artists and albums that were blank as if they were the "all" item.
 			These items are now filtered out of the display.
