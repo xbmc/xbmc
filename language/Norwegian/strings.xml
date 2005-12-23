@@ -1,4 +1,4 @@
-<!-- Based on English XML v1.274. Last updated by vnmartinsen  !-->
+<!-- Based on English XML v1.277. Last updated by vnmartinsen  !-->
 <strings>
   <string><id>0</id><value>Mine Programmer</value></string>
   <string><id>1</id><value>Mine Bilder</value></string>
@@ -613,9 +613,10 @@
   <string><id>1251</id><value>XBOX Autooppdagelse</value></string>
   <string><id>1252</id><value>Kallenavn</value></string>
   <string><id>1253</id><value>Lag FTP link i Mine filer</value></string>
-  <string><id>1254</id><value>Popup-melding</value></string>
+  <string><id>1254</id><value>Spør om det skal kobles til</value></string>
   <string><id>1255</id><value>Send FTP brukernavn og passord</value></string>
   <string><id>1256</id><value>Ping-intervall</value></string>
+  <string><id>1257</id><value>Ønsker du å koble til den oppdagede XBOX'en?</value></string>
 
   <string><id>1396</id><value>Forbigående</value></string>
   <string><id>1397</id><value>og</value></string>
@@ -699,7 +700,8 @@
   <string><id>12007</id><value>Mine bilder/fremvisning</value></string>
   <string><id>12008</id><value>Filstablingsdialog</value></string>
   <string><id>12009</id><value>Gjenoppbygg index...</value></string>
-
+  <string><id>12010</id><value>Returner til Min musikk</value></string>
+  <string><id>12011</id><value>Returner til Min video</value></string>
 
   <string><id>12310</id><value>0</value></string>
   <string><id>12311</id><value>1</value></string>
@@ -1107,7 +1109,6 @@
   <string><id>15280</id><value>Kan ikke motta liste fra last.fm...</value></string>
   <string><id>15281</id><value>Skriv inn et artistnavn for å finne relaterte</value></string>
   <string><id>15282</id><value>Skriv inn ent tag-navn for å finne liknende</value></string>
-   
 
   <string><id>13150</id><value>HDD-nøkkel:</value></string>
   <string><id>13151</id><value>HDD-temperatur:</value></string>
@@ -1128,6 +1129,10 @@
   <string><id>13166</id><value>Headset/mikrofon på port:</value></string>
   <string><id>13167</id><value>Minnepinne på port:</value></string>
   <string><id>13168</id><value>Fjernkontroll på port:</value></string>
+  <string><id>13169</id><value>Hopp over CD-valg</value></string>
+  <string><id>13170</id><value>Aldri</value></string>
+  <string><id>13171</id><value>Umiddelbart</value></string>
+  <string><id>13172</id><value>Etter %i sek</value></string>
 
   <string><id>13270</id><value>Maskinvare:</value></string>
   <string><id>13271</id><value>CPU-hastighet:</value></string>
@@ -1164,7 +1169,6 @@
   <string><id>15301</id><value>Kunne ikke koble til nettverksserver</value></string>
   <string><id>15302</id><value>Ingen servere funnet</value></string>
   <string><id>15303</id><value>Arbeidsgruppe ikke funnet</value></string>
-
 
   <string><id>15310</id><value>Åpner bokmerke med flere baner</value></string>
   <string><id>15311</id><value>Bane:</value></string>
