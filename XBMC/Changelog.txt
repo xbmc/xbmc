@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 23-12-2005 added: workaround for stacking multipart rar sets (ie, filename.partXXX.rar)
  - 23-12-2005 updated: Swedish language file (Thnx to blittan)
  - 23-12-2005 updated: Korean language file (Thnx to AkoXko)
  - 23-12-2005 updated: Italian language file (Thnx to kotix)
