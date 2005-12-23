@@ -1569,13 +1569,22 @@ void CFileItemList::Stack()
           if (CUtil::GetVolumeFromFileName(fileName2, fileTitle2, volumeNumber2))
           {
             if (fileTitle2 == fileTitle && filePath2 == filePath)
+            {
+              //CLog::Log(LOGDEBUG,"Adding item: [%03i] %s", j, Get(j)->m_strPath.c_str());
               stack.push_back(j);
+            }
           }
         }
         if (stack.size() > 1)
-        { // have a stack, remove the items and add the stacked item
+        {
+          // have a stack, remove the items and add the stacked item
           CStackDirectory dir;
-          CStdString stackPath = dir.ConstructStackPath(*this, stack);
+          // dont actually stack a multipart rar set, just remove all items but the first
+          CStdString stackPath;
+          if (Get(stack[0])->IsRAR())
+            stackPath = Get(stack[0])->m_strPath;
+          else
+            stackPath = dir.ConstructStackPath(*this, stack);
           for (unsigned int j = stack.size() - 1; j > 0; --j)
             Remove(stack[j]);
           item->m_strPath = stackPath;
