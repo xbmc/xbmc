@@ -440,7 +440,7 @@
   <string><id>508</id><value>바로가기나 검색을 사용하지 않음</value></string>
   <string><id>509</id><value>프로그램 미리보기 캐시</value></string>
   <string><id>510</id><value>시각화 사용</value></string>
-  <string><id>511</id><value>게임 지역코드에 따른 비디오모드 자동변경</value></string>
+  <string><id>511</id><value>비디오 모드 변경기능 사용</value></string>
   <string><id>512</id><value>시작 윈도우</value></string>
   <string><id>513</id><value>홈 윈도우</value></string>
   <string><id>514</id><value>사용자 설정</value></string>
@@ -612,9 +612,10 @@
   <string><id>1251</id><value>XBOX 자동 탐지</value></string>
   <string><id>1252</id><value>닉네임</value></string>
   <string><id>1253</id><value>FTP 링크를 파일에 생성</value></string>
-  <string><id>1254</id><value>안내 사항 보임</value></string>
+  <string><id>1254</id><value>접속을 확인</value></string>
   <string><id>1255</id><value>FTP 아이디와 비밀번호 전송</value></string>
   <string><id>1256</id><value>핑 간격</value></string>
+  <string><id>1257</id><value>자동감지된 XBOX에 연결하시겠습니까?</value></string>
     
   <string><id>1396</id><value>뜬</value></string>
   <string><id>1397</id><value>그리고</value></string>
@@ -697,7 +698,9 @@
   <string><id>12006</id><value>오디오 시각화</value></string>
   <string><id>12007</id><value>사진/슬라이드 쇼</value></string>
   <string><id>12008</id><value>파일관리 대화창</value></string>
-
+  <string><id>12009</id><value>인텍스 재생성...</value></string>
+  <string><id>12010</id><value>음악보기로 돌아가기</value></string> 
+  <string><id>12011</id><value>비디오보기로 돌아가기</value></string> 
 
   <string><id>12310</id><value>0</value></string>
   <string><id>12311</id><value>1</value></string>
@@ -767,7 +770,8 @@
   <string><id>12390</id><value>시스템 운용시간</value></string> 
   <string><id>12391</id><value>분</value></string> 
   <string><id>12392</id><value>시간</value></string> 
-  <string><id>12393</id><value>일</value></string> 
+  <string><id>12393</id><value>일</value></string>
+  <string><id>12394</id><value>총 가동시간</value></string>
 
   
   <string><id>12600</id><value>날씨</value></string>
@@ -1125,7 +1129,11 @@
   <string><id>13165</id><value>마우스 연결포트:</value></string>
   <string><id>13166</id><value>라이브 킷 연결포트:</value></string>
   <string><id>13167</id><value>메모리카드 연결포트:</value></string>
-  <string><id>13168</id><value>DVD 킷 연결포트:</value></string>
+  <string><id>13168</id><value>리모콘 연결포트:</value></string>
+  <string><id>13169</id><value>CD선택기능 무시</value></string> 
+  <string><id>13170</id><value>사용안함</value></string> 
+  <string><id>13171</id><value>바로적용</value></string> 
+  <string><id>13172</id><value>%i초 후 적용</value></string> 
 
   <string><id>13270</id><value>하드웨어:</value></string>
   <string><id>13271</id><value>CPU 속도:</value></string>

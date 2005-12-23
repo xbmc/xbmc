@@ -48,7 +48,7 @@
   <string><id>113</id><value>File: Sorgente</value></string>
   <string><id>114</id><value>File: Destinazione</value></string>
   <string><id>115</id><value>Copia</value></string>
-  <string><id>116</id><value>Sostituisci</value></string>
+  <string><id>116</id><value>Sposta</value></string>
   <string><id>117</id><value>Elimina</value></string>
   <string><id>118</id><value>Rinomina</value></string>
   <string><id>119</id><value>Nuova Cartella</value></string>
@@ -443,7 +443,7 @@
   <string><id>508</id><value>Non Usare Shortcut o Scan</value></string>
   <string><id>509</id><value>Mantieni le Icone dei Programmi nella Cache</value></string>
   <string><id>510</id><value>Attiva Effetto Grafico</value></string>
-  <string><id>511</id><value>Modo Video automatico in base al Game Region</value></string>
+  <string><id>511</id><value>Attiva Cambio Modalità Video</value></string>
   <string><id>512</id><value>Schermata di Partenza</value></string>
   <string><id>513</id><value>Home Window</value></string>
   <string><id>514</id><value>Impostazione Manuale</value></string>
@@ -612,13 +612,14 @@
   <string><id>1246</id><value>FTP User Password</value></string>
   <string><id>1247</id><value>FTP Server User Password salvata con successo!</value></string>
 
-  <string><id>1250</id><value>Autodetection</value></string>
-  <string><id>1251</id><value>XBOX Autodetection</value></string>
+  <string><id>1250</id><value>AutoRilevazione</value></string>
+  <string><id>1251</id><value>AutoRilevazione XBOX</value></string>
   <string><id>1252</id><value>Nick Name</value></string>
   <string><id>1253</id><value>Crea collegamento FTP nel Filemanager</value></string>
-  <string><id>1254</id><value>Notificazione Popup</value></string>
+  <string><id>1254</id><value>Richiedi di connetersi</value></string>
   <string><id>1255</id><value>Invia FTP User e Password</value></string>
   <string><id>1256</id><value>Intervallo Ping</value></string>
+  <string><id>1257</id><value>Vuoi connetterti alla XBOX AutoRilevata?</value></string>
 
   <string><id>1396</id><value>Mutevole</value></string>
   <string><id>1397</id><value>e</value></string>
@@ -709,7 +710,10 @@
   <string><id>12006</id><value>Effetti grafici</value></string>
   <string><id>12007</id><value>Immagini/slideshow</value></string>
   <string><id>12008</id><value>Casella di Unisci</value></string>
-  <string><id>12009</id><value>Forza ricostruzione indice...</value></string>
+  <string><id>12009</id><value>Ricostruzione indice...</value></string>
+  <string><id>12010</id><value>Ritorna in Musica</value></string> 
+  <string><id>12011</id><value>Ritorna in Video</value></string> 
+
 
   <string><id>12310</id><value>0</value></string>
   <string><id>12311</id><value>1</value></string>
@@ -782,6 +786,7 @@
   <string><id>12391</id><value>Minuti</value></string>
   <string><id>12392</id><value>Ore</value></string>
   <string><id>12393</id><value>Giorni</value></string>
+  <string><id>12394</id><value>Tempo Totale d'Accensione</value></string>
 
   <string><id>12600</id><value>Meteo</value></string>
 
@@ -817,6 +822,11 @@
   <string><id>13166</id><value>Head/MicroPhone In Porta:</value></string>
   <string><id>13167</id><value>MemoryStick In Porta:</value></string>
   <string><id>13168</id><value>IR-Remote In Porta:</value></string>
+  <string><id>13169</id><value>Bypass Selezione CD</value></string> 
+  <string><id>13170</id><value>Mai</value></string> 
+  <string><id>13171</id><value>Immediatamente</value></string> 
+  <string><id>13172</id><value>Dopo %i secondi</value></string> 
+
 
   <string><id>13200</id><value>Profili</value></string>
   <string><id>13201</id><value>Cancella profilo '%i'?</value></string>
@@ -977,8 +987,8 @@ per questo effetto grafico</value></string>
   <string><id>14007</id><value>Scaricamento file playlist fallito</value></string>
   <string><id>14008</id><value>Abilita notifiche Kai</value></string>
   <string><id>14009</id><value>Cartella Giochi</value></string>
-  <string><id>14010</id><value>Adattamento Vista Icone per</value></string>
-  <string><id>14011</id><value>Auto-Adattamento Vista Icone</value></string>
+  <string><id>14010</id><value>Attivamento Vista Icone per</value></string>
+  <string><id>14011</id><value>Auto-Attivamento Vista Icone</value></string>
   <string><id>14012</id><value>- Usa Icone Grandi</value></string>
   <string><id>14013</id><value>- Vista Icone per</value></string>
   <string><id>14014</id><value>- Percentuale</value></string>
