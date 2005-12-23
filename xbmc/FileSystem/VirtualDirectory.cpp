@@ -79,7 +79,10 @@ bool CVirtualDirectory::GetDirectory(const CStdString& strPath, CFileItemList &i
 bool CVirtualDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items, bool bUseFileDirectories)
 {
   if (!m_vecShares)
+  {
+    items.m_strPath=strPath;
     return true;
+  }
 
   CStdString strPath2 = strPath;
   CStdString strPath3 = strPath;
@@ -131,6 +134,7 @@ bool CVirtualDirectory::GetDirectory(const CStdString& strPath, CFileItemList &i
 
   // if strPath is blank, return the root bookmark listing
   items.Clear();
+  items.m_strPath=strPath;
   for (int i = 0; i < (int)m_vecShares->size(); ++i)
   {
     CShare& share = m_vecShares->at(i);
@@ -141,22 +145,25 @@ bool CVirtualDirectory::GetDirectory(const CStdString& strPath, CFileItemList &i
     CStdString strPathUpper = pItem->m_strPath;
     strPathUpper.ToUpper();
 
-    CStdString strIcon;
-    // We have the real DVD-ROM, set icon on disktype
-    if (share.m_iDriveType == SHARE_TYPE_DVD)
-      CUtil::GetDVDDriveIcon( pItem->m_strPath, strIcon );
-    else if (strPathUpper.Left(11) == "SOUNDTRACK:")
-      strIcon = "defaultHardDisk.png";
-    else if (pItem->IsRemote())
-      strIcon = "defaultNetwork.png";
-    else if (pItem->IsISO9660())
-      strIcon = "defaultDVDRom.png";
-    else if (pItem->IsDVD())
-      strIcon = "defaultDVDRom.png";
-    else if (pItem->IsCDDA())
-      strIcon = "defaultCDDA.png";
-    else
-      strIcon = "defaultHardDisk.png";
+    CStdString strIcon=share.m_strThumbnailImage;
+    if (share.m_strThumbnailImage.IsEmpty())
+    {
+      // We have the real DVD-ROM, set icon on disktype
+      if (share.m_iDriveType == SHARE_TYPE_DVD)
+        CUtil::GetDVDDriveIcon( pItem->m_strPath, strIcon );
+      else if (strPathUpper.Left(11) == "SOUNDTRACK:")
+        strIcon = "defaultHardDisk.png";
+      else if (pItem->IsRemote())
+        strIcon = "defaultNetwork.png";
+      else if (pItem->IsISO9660())
+        strIcon = "defaultDVDRom.png";
+      else if (pItem->IsDVD())
+        strIcon = "defaultDVDRom.png";
+      else if (pItem->IsCDDA())
+        strIcon = "defaultCDDA.png";
+      else
+        strIcon = "defaultHardDisk.png";
+    }
 
     if (share.m_iLockMode > 0)
       strIcon = "defaultLocked.png";

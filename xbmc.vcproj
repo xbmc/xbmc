@@ -447,6 +447,18 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\GUIViewControl.h">
 				</File>
 				<File
+					RelativePath=".\xbmc\GUIViewState.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\GUIViewState.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\GUIViewStateMusic.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\GUIViewStateMusic.h">
+				</File>
+				<File
 					RelativePath=".\xbmc\GUIWindowMusicBase.cpp">
 				</File>
 				<File
@@ -1721,6 +1733,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				RelativePath=".\xbmc\FileSystem\FileLastFM.h">
 			</File>
 			<File
+				RelativePath=".\xbmc\FileSystem\FileMusicDatabase.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\FileSystem\FileMusicDatabase.h">
+			</File>
+			<File
 				RelativePath=".\xbmc\FileSystem\FileRar.cpp">
 			</File>
 			<File
@@ -1791,6 +1809,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 			</File>
 			<File
 				RelativePath=".\xbmc\FileSystem\LastFMDirectory.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\FileSystem\MusicDatabaseDirectory.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\FileSystem\MusicDatabaseDirectory.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\FileSystem\NSFFileDirectory.cpp">
@@ -1879,6 +1903,106 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 			<File
 				RelativePath=".\xbmc\FileSystem\zlib.h">
 			</File>
+			<Filter
+				Name="MusicDatabaseDirectory"
+				Filter="">
+				<File
+					RelativePath=".\xbmc\FileSystem\MusicDatabaseDirectory\DirectoryNode.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\FileSystem\MusicDatabaseDirectory\DirectoryNode.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\FileSystem\MusicDatabaseDirectory\DirectoryNodeAlbum.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\FileSystem\MusicDatabaseDirectory\DirectoryNodeAlbum.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\FileSystem\MusicDatabaseDirectory\DirectoryNodeAlbumRecentlyAdded.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\FileSystem\MusicDatabaseDirectory\DirectoryNodeAlbumRecentlyAdded.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\FileSystem\MusicDatabaseDirectory\DirectoryNodeAlbumRecentlyAddedSong.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\FileSystem\MusicDatabaseDirectory\DirectoryNodeAlbumRecentlyAddedSong.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\FileSystem\MusicDatabaseDirectory\DirectoryNodeAlbumRecentlyPlayed.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\FileSystem\MusicDatabaseDirectory\DirectoryNodeAlbumRecentlyPlayed.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\FileSystem\MusicDatabaseDirectory\DirectoryNodeAlbumRecentlyPlayedSong.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\FileSystem\MusicDatabaseDirectory\DirectoryNodeAlbumRecentlyPlayedSong.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\FileSystem\MusicDatabaseDirectory\DirectoryNodeAlbumTop100.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\FileSystem\MusicDatabaseDirectory\DirectoryNodeAlbumTop100.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\FileSystem\MusicDatabaseDirectory\DirectoryNodeAlbumTop100Song.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\FileSystem\MusicDatabaseDirectory\DirectoryNodeAlbumTop100Song.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\FileSystem\MusicDatabaseDirectory\DirectoryNodeArtist.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\FileSystem\MusicDatabaseDirectory\DirectoryNodeArtist.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\FileSystem\MusicDatabaseDirectory\DirectoryNodeGenre.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\FileSystem\MusicDatabaseDirectory\DirectoryNodeGenre.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\FileSystem\MusicDatabaseDirectory\DirectoryNodeOverview.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\FileSystem\MusicDatabaseDirectory\DirectoryNodeOverview.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\FileSystem\MusicDatabaseDirectory\DirectoryNodeRoot.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\FileSystem\MusicDatabaseDirectory\DirectoryNodeRoot.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\FileSystem\MusicDatabaseDirectory\DirectoryNodeSong.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\FileSystem\MusicDatabaseDirectory\DirectoryNodeSong.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\FileSystem\MusicDatabaseDirectory\DirectoryNodeSongTop100.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\FileSystem\MusicDatabaseDirectory\DirectoryNodeSongTop100.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\FileSystem\MusicDatabaseDirectory\DirectoryNodeTop100.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\FileSystem\MusicDatabaseDirectory\DirectoryNodeTop100.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\FileSystem\MusicDatabaseDirectory\QueryParams.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\FileSystem\MusicDatabaseDirectory\QueryParams.h">
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="xbox"

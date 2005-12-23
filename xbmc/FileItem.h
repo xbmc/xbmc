@@ -5,10 +5,37 @@
 #pragma once
 #include "..\guilib\guilistitem.h"
 #include "song.h"
-#include "settings.h"
 #include "utils/archive.h"
 
 using namespace MUSIC_INFO;
+
+typedef enum {
+  SORT_METHOD_NONE=0,
+  SORT_METHOD_LABEL,
+  SORT_METHOD_LABEL_IGNORE_THE,
+  SORT_METHOD_DATE,
+  SORT_METHOD_SIZE,
+  SORT_METHOD_FILE,
+  SORT_METHOD_DRIVE_TYPE,
+  SORT_METHOD_TRACKNUM,
+  SORT_METHOD_DURATION,
+  SORT_METHOD_TITLE,
+  SORT_METHOD_TITLE_IGNORE_THE,
+  SORT_METHOD_ARTIST,
+  SORT_METHOD_ARTIST_IGNORE_THE,
+  SORT_METHOD_ALBUM,
+  SORT_METHOD_ALBUM_IGNORE_THE,
+
+  SORT_METHOD_MAX
+} SORT_METHOD;
+
+typedef enum {
+  SORT_ORDER_NONE=0,
+  SORT_ORDER_ASC,
+  SORT_ORDER_DESC
+} SORT_ORDER;
+
+class CShare;
 
 /*!
   \brief Represents a file on a share
@@ -24,10 +51,12 @@ public:
   CFileItem(const CStdString& strPath, bool bIsFolder);
   CFileItem(const CSong& song);
   CFileItem(const CAlbum& album);
+  CFileItem(const CArtist& artist);
+  CFileItem(const CGenre& genre);
   CFileItem(const CShare& share);
   virtual ~CFileItem(void);
 
-  void Clear();
+  void Reset();
   const CFileItem& operator=(const CFileItem& item);
   virtual void Serialize(CArchive& ar);
 
@@ -58,9 +87,12 @@ public:
   bool IsRemote() const;
   bool IsSmb() const;
   bool IsStack() const;
+  bool IsMusicDb() const;
   bool IsType(const char *ext) const;
   bool IsVirtualDirectoryRoot() const;
   bool IsReadOnly() const;
+  bool CanQueue() const;
+  void SetCanQueue(bool bYesNo);
 
   void RemoveExtension();
   void CleanFileName();
@@ -69,6 +101,7 @@ public:
   void SetMusicThumb();
   void SetArtistThumb();
   void SetFileSizeLabel();
+  CURL GetAsUrl() const;
 
 public:
   CStdString m_strPath;            ///< complete path to item
@@ -86,6 +119,7 @@ public:
   int m_iLockMode;
   CStdString m_strLockCode;
   int m_iBadPwdCount;
+  bool m_bCanQueue;
 };
 
 /*!
@@ -123,7 +157,7 @@ typedef bool (*FILEITEMLISTCOMPARISONFUNC) (CFileItem* pItem1, CFileItem* pItem2
   \brief Represents a list of files
   \sa CFileItemList, CFileItem
   */
-class CFileItemList : public ISerializable
+class CFileItemList : public CFileItem
 {
 public:
   CFileItemList();
@@ -144,6 +178,7 @@ public:
   void AppendPointer(const CFileItemList& itemlist);
   void Reserve(int iCount);
   void Sort(FILEITEMLISTCOMPARISONFUNC func);
+  void Sort(SORT_METHOD sortMethod, SORT_ORDER sortOrder);
   void Randomize();
   void SetThumbs();
   void SetMusicThumbs();

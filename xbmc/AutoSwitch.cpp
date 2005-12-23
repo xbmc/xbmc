@@ -20,7 +20,7 @@ CAutoSwitch::~CAutoSwitch(void)
 
 /// \brief Generic function to add a layer of transparency to the calling window
 /// \param vecItems Vector of FileItems passed from the calling window
-int CAutoSwitch::GetView(CFileItemList &vecItems)
+int CAutoSwitch::GetView(const CFileItemList &vecItems)
 {
   int iViewAs = VIEW_AS_LIST;
   int iSortMethod = -1;
@@ -109,7 +109,7 @@ int CAutoSwitch::GetView(CFileItemList &vecItems)
 
 /// \brief Auto Switch method based on the current directory \e containing ALL folders and \e atleast one non-default thumb
 /// \param vecItems Vector of FileItems
-bool CAutoSwitch::ByFolders(CFileItemList& vecItems)
+bool CAutoSwitch::ByFolders(const CFileItemList& vecItems)
 {
   bool bThumbs = false;
   // is the list all folders?
@@ -118,7 +118,7 @@ bool CAutoSwitch::ByFolders(CFileItemList& vecItems)
     // test for thumbs
     for (int i = 0; i < vecItems.Size(); i++)
     {
-      CFileItem* pItem = vecItems[i];
+      const CFileItem* pItem = vecItems[i];
       if (pItem->HasThumbnail())
       {
         bThumbs = true;
@@ -132,7 +132,7 @@ bool CAutoSwitch::ByFolders(CFileItemList& vecItems)
 /// \brief Auto Switch method based on the current directory \e not containing ALL files and \e atleast one non-default thumb
 /// \param bHideParentDirItems - are we not counting the ".." item?
 /// \param vecItems Vector of FileItems
-bool CAutoSwitch::ByFiles(bool bHideParentDirItems, CFileItemList& vecItems)
+bool CAutoSwitch::ByFiles(bool bHideParentDirItems, const CFileItemList& vecItems)
 {
   bool bThumbs = false;
   int iCompare = 0;
@@ -149,7 +149,7 @@ bool CAutoSwitch::ByFiles(bool bHideParentDirItems, CFileItemList& vecItems)
     // test for thumbs
     for (int i = 0; i < vecItems.Size(); i++)
     {
-      CFileItem* pItem = vecItems[i];
+      const CFileItem* pItem = vecItems[i];
       if (pItem->HasThumbnail())
       {
         bThumbs = true;
@@ -164,7 +164,7 @@ bool CAutoSwitch::ByFiles(bool bHideParentDirItems, CFileItemList& vecItems)
 /// \brief Auto Switch method based on the percentage of non-default thumbs \e in the current directory
 /// \param iPercent Percent of non-default thumbs to autoswitch on
 /// \param vecItems Vector of FileItems
-bool CAutoSwitch::ByThumbPercent(bool bHideParentDirItems, int iPercent, CFileItemList& vecItems)
+bool CAutoSwitch::ByThumbPercent(bool bHideParentDirItems, int iPercent, const CFileItemList& vecItems)
 {
   bool bThumbs = false;
   int iNumThumbs = 0;
@@ -178,7 +178,7 @@ bool CAutoSwitch::ByThumbPercent(bool bHideParentDirItems, int iPercent, CFileIt
 
   for (int i = 0; i < vecItems.Size(); i++)
   {
-    CFileItem* pItem = vecItems[i];
+    const CFileItem* pItem = vecItems[i];
     if (pItem->HasThumbnail())
     {
       iNumThumbs++;
@@ -196,7 +196,7 @@ bool CAutoSwitch::ByThumbPercent(bool bHideParentDirItems, int iPercent, CFileIt
 
 /// \brief Auto Switch method based on whether there is more than 25% files.
 /// \param iPercent Percent of non-default thumbs to autoswitch on
-bool CAutoSwitch::ByFileCount(CFileItemList& vecItems)
+bool CAutoSwitch::ByFileCount(const CFileItemList& vecItems)
 {
   if (vecItems.Size() == 0) return false;
   float fPercent = (float)vecItems.GetFileCount() / vecItems.Size();
