@@ -420,8 +420,8 @@ CDVDPlayerVideo::EOUTPUTSTATUS CDVDPlayerVideo::OutputPicture(DVDVideoPicture* p
       while (it != pVecOverlays->end())
       {
         pOverlay = *it;
-        if ((pOverlay->bForced || m_bRenderSubs)
-            && ((pOverlay->iPTSStartTime <= pts && pOverlay->iPTSStopTime >= pts) || pts == 0))
+        if ((pOverlay->bForced || m_bRenderSubs) &&
+            ((pOverlay->iPTSStartTime <= pts && (pOverlay->iPTSStopTime >= pts || pOverlay->iPTSStopTime == 0LL)) || pts == 0))
         {
           if (pTempPicture) CDVDOverlayRenderer::Render(pTempPicture, pOverlay);
           else CDVDOverlayRenderer::Render(&image, pOverlay);
