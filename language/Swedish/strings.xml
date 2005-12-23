@@ -1,3 +1,6 @@
+
+
+
 <strings>
   <string><id>0</id><value>Mina Program</value></string>
   <string><id>1</id><value>Mina Bilder</value></string>
@@ -710,6 +713,8 @@
   <string><id>12007</id><value>Mina Bilder/Bildspel</value></string>
   <string><id>12008</id><value>Filstapel-dialog</value></string>
   <string><id>12009</id><value>Tvinga &#229;teruppbyggnad av index...</value></string>
+  <string><id>12010</id><value>&#197;terg&#229; till Min Musik</value></string>
+  <string><id>12011</id><value>&#197;terg&#229; till Mina Filmer</value></string>
 
   <string><id>12310</id><value>0</value></string>
   <string><id>12311</id><value>1</value></string>
@@ -818,6 +823,10 @@
   <string><id>13166</id><value>Headset/Mic p&#229; port:</value></string>
   <string><id>13167</id><value>Minneskort p&#229; port:</value></string>
   <string><id>13168</id><value>Fj&#228;rrkont. p&#229; port:</value></string>
+  <string><id>13169</id><value>Kring&#229; CD val</value></string>
+  <string><id>13170</id><value>Aldrig</value></string>
+  <string><id>13171</id><value>Omedelbart</value></string>
+  <string><id>13172</id><value>Efter %i sek</value></string>
 
   <string><id>13200</id><value>Profiler</value></string>
   <string><id>13201</id><value>Radera profil '%s'?</value></string>
