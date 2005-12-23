@@ -102,10 +102,11 @@ public:
   bool GetAlbumInfo(const CStdString& strAlbum, const CStdString& strPath, CAlbum& album, VECSONGS& songs);
   bool GetSong(const CStdString& strTitle, CSong& song);
   bool GetSongByFileName(const CStdString& strFileName, CSong& song);
+  bool GetSongById(long idSong, CSong& song);
   bool GetSongsByPath(const CStdString& strPath, VECSONGS& songs);
   bool GetSongsByPath(const CStdString& strPath, MAPSONGS& songs, bool bAppendToMap = false);
   bool GetSongsByAlbum(const CStdString& strAlbum, const CStdString& strPath, VECSONGS& songs);
-  bool FindSongsByName(const CStdString& strSearch, VECSONGS& songs);
+  bool FindSongsByName(const CStdString& strSearch, VECSONGS& songs, bool bWithMusicDbPath=false);
   bool FindSongsByNameAndArtist(const CStdString& strSearch, VECSONGS& songs);
   bool GetArtistsByName(const CStdString& strArtist, VECARTISTS& artists);
   bool GetGenresByName(const CStdString& strGenre1, VECGENRES& genres);
@@ -113,24 +114,28 @@ public:
 
   bool GetAlbumsByPath(const CStdString& strPath, VECALBUMS& albums);
   bool FindAlbumsByName(const CStdString& strSearch, VECALBUMS& albums);
-  bool GetTop100Songs(CFileItemList& item, bool bClearItems = true);
+  bool GetTop100(const CStdString& strBaseDir, CFileItemList& items);
   bool GetTop100Albums(VECALBUMS& albums);
-  bool GetTop100AlbumSongs(CFileItemList& item, bool bClearItems = true);
+  bool GetTop100AlbumSongs(const CStdString& strBaseDir, CFileItemList& item);
   bool GetRecentlyAddedAlbums(VECALBUMS& albums);
-  bool GetRecentlyAddedAlbumSongs(CFileItemList& item, bool bClearItems = true);
+  bool GetRecentlyAddedAlbumSongs(const CStdString& strBaseDir, CFileItemList& item);
   bool GetRecentlyPlayedAlbums(VECALBUMS& albums);
-  bool GetRecentlyPlayedAlbumSongs(CFileItemList& item, bool bClearItems = true);
+  bool GetRecentlyPlayedAlbumSongs(const CStdString& strBaseDir, CFileItemList& item);
   bool IncrTop100CounterByFileName(const CStdString& strFileName1);
   bool GetSubpathsFromPath(const CStdString &strPath, CStdString& strPathIds);
   bool RemoveSongsFromPaths(const CStdString &strPathIds);
   bool CleanupAlbumsArtistsGenres(const CStdString &strPathIds);
   void CheckVariousArtistsAndCoverArt();
-  bool GetGenresNav(VECGENRES& genres);
-  bool GetArtistsNav(VECARTISTS& artists, const CStdString &strGenre1);
-  bool GetAlbumsNav(VECALBUMS& albums, const CStdString &strGenre1, const CStdString &strArtist1);
-  bool GetSongsNav(CFileItemList& items, const CStdString &strGenre1, const CStdString &strArtist1, const CStdString &strAlbum1, const CStdString &strAlbumPath1, bool bClearItems = true);
+  bool GetGenresNav(const CStdString& strBaseDir, CFileItemList& items);
+  bool GetArtistsNav(const CStdString& strBaseDir, CFileItemList& items, long idGenre);
+  bool GetAlbumsNav(const CStdString& strBaseDir, CFileItemList& items, long idGenre, long idArtist);
+  bool GetSongsNav(const CStdString& strBaseDir, CFileItemList& items, long idGenre, long idArtist,long idAlbum);
 
   int GetSongsCount();
+  bool GetPathFromAlbumId(long idAlbum, CStdString& strPath);
+  bool GetPathFromSongId(long idSong, CStdString& strPath);
+  bool SaveAlbumThumb(const CStdString& strAlbum, const CStdString& strPath, const CStdString& strThumb);
+  bool GetAlbumsByArtistId(long idArtist, VECALBUMS& albums);
 
 protected:
   map<CStdString, CArtistCache> m_artistCache;
@@ -139,13 +144,13 @@ protected:
   map<CStdString, CPathCache> m_thumbCache;
   map<CStdString, CAlbumCache> m_albumCache;
   virtual bool CreateTables();
-  long AddAlbum(const CStdString& strAlbum, const long lArtistId, const int iNumArtists, const CStdString& strArtist, long lPathId, const CStdString& strPath);
+  long AddAlbum(const CStdString& strAlbum, long lArtistId, int iNumArtists, const CStdString& strArtist, long lPathId, const CStdString& strPath, long idThumb);
   long AddGenre(const CStdString& strGenre);
   long AddArtist(const CStdString& strArtist);
   long AddPath(const CStdString& strPath);
   long AddThumb(const CStdString& strThumb1);
-  void AddExtraArtists(const VECARTISTS& vecArtists, long lSongId, long lAlbumId, bool bCheck = true);
-  void AddExtraGenres(const VECGENRES& vecGenres, long lSongId, long lAlbumId, bool bCheck = true);
+  void AddExtraArtists(const CStdStringArray& vecArtists, long lSongId, long lAlbumId, bool bCheck = true);
+  void AddExtraGenres(const CStdStringArray& vecGenres, long lSongId, long lAlbumId, bool bCheck = true);
   bool AddAlbumInfoSongs(long idAlbumInfo, const VECSONGS& songs);
   bool GetAlbumInfoSongs(long idAlbumInfo, VECSONGS& songs);
   bool UpdateAlbumInfoSongs(long idAlbumInfo, const VECSONGS& songs);
@@ -155,7 +160,7 @@ private:
   bool GetExtraArtistsForSong(long lSongId, CStdString &strArtist);
   bool GetExtraGenresForAlbum(long lAlbumId, CStdString &strGenre);
   bool GetExtraGenresForSong(long lSongId, CStdString &strGenre);
-  CSong GetSongFromDataset();
+  CSong GetSongFromDataset(bool bWithMusicDbPath=false);
   CAlbum GetAlbumFromDataset();
   bool CleanupSongs();
   bool CleanupSongsByIds(const CStdString &strSongIds);

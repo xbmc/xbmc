@@ -183,10 +183,27 @@ bool CMusicInfoScanner::DoScan(const CStdString& strDirectory)
     {
       // get the item's thumb (this will cache the album thumb)
       pItem->SetMusicThumb();
-      if (!DoScan(pItem->m_strPath))
+      CStdString strPath=pItem->m_strPath;
+      //CFile file;
+      //static int j=0;
+      //CStdString strFileName;
+      //strFileName.Format("z:\\test%i.fi", j++);
+      //file.OpenForWrite(strFileName, true, true);
+      //CArchive ar(&file, CArchive::store);
+      //ar << items;
+      //ar.Close();
+      //file.Close();
+      //items.Clear();
+      if (!DoScan(strPath))
       {
         m_bStop = true;
       }
+      //CFile file1;
+      //file1.Open(strFileName);
+      //CArchive ar1(&file1, CArchive::load);
+      //ar1 >> items;
+      //ar1.Close();
+      //file1.Close();
     }
   }
 
