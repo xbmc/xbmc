@@ -565,7 +565,7 @@
   <string><id>771</id><value>Workaround für FatX-Limits im FTP-Server</value></string>
   <string><id>772</id><value>Audio-Hardware</value></string>
   <string><id>773</id><value>Positionieren</value></string>
-  <string><id>774</id><value>Diaschau Ordner</value></string>
+  <string><id>774</id><value>Diaschau-Ordner</value></string>
   <string><id>998</id><value>XLink-KAI</value></string>
   <string><id>999</id><value>Online spielen</value></string>
 
@@ -1057,7 +1057,7 @@
   <string><id>15109</id><value>Vorgabe des Skins</value></string>
   <string><id>15110</id><value>Controller Rumble</value></string>
   <string><id>15111</id><value>Skin Theme</value></string>
-  <string><id>15112</id><value>Standart Theme</value></string>
+  <string><id>15112</id><value>Standard Theme</value></string>
   <string><id>15200</id><value>AudioScrobbler</value></string>
   <string><id>15201</id><value>Song-Infos an AudioScrobbler übertragen</value></string>
   <string><id>15202</id><value>AudioScrobbler Benutzername</value></string>
@@ -1089,7 +1089,7 @@
   <string><id>15262</id><value>Die besten %name% Alben</value></string>
   <string><id>15263</id><value>Die besten %name% Songs</value></string>
   <string><id>15264</id><value>Die besten %name% Tags</value></string>
-  <string><id>15265</id><value>Gößte Fans von %name%</value></string>
+  <string><id>15265</id><value>Größte Fans von %name%</value></string>
   <string><id>15266</id><value>%name% Fan last.fm Radio anhören</value></string>
   <string><id>15267</id><value>Ähnliche Interpreten wie %name% im last.fm Radio anhören</value></string>
   
@@ -1108,8 +1108,8 @@
 
   <string><id>15279</id><value>Liste von last.fm wird übertragen...</value></string>
   <string><id>15280</id><value>Liste kann nicht von last.fm übertragen werden...</value></string>
-  <string><id>15281</id><value>Bitte einen Interpreten eingeben um ähnliche zu finden</value></string>
-  <string><id>15282</id><value>Bitte einen Tagnamen eingeben um ähnliche Tags zu finden</value></string>
+  <string><id>15281</id><value>Bitte einen Interpreten eingeben, um ähnliche zu finden</value></string>
+  <string><id>15282</id><value>Bitte einen Tagnamen eingeben, um ähnliche Tags zu finden</value></string>
    
   
   <string><id>13150</id><value>HDD-Key:</value></string>
@@ -1156,7 +1156,7 @@
   <string><id>13294</id><value>DVD-Region:</value></string>
   <string><id>13295</id><value>Internet:</value></string>
   <string><id>13296</id><value>Xbox ist verbunden</value></string>
-  <string><id>13297</id><value>Xbox is nicht verbunden. Bitte Netzwerkeinstellungen überprüfen.</value></string>
+  <string><id>13297</id><value>Xbox ist nicht verbunden. Bitte Netzwerkeinstellungen überprüfen.</value></string>
   <string><id>13298</id><value>XBLIVE-Key:</value></string>
 
   <string><id>15213</id><value>Abspielen mit...</value></string>
@@ -1210,6 +1210,6 @@
   <string><id>16107</id><value>Nur NTSC-M benutzen</value></string>
   <string><id>16108</id><value>Nur NTSC-J benutzen</value></string>
   <string><id>16109</id><value>Nur PAL-60 benutzen</value></string>
-  <string><id>16110</id><value>Bei 60hz Spielen</value></string>
+  <string><id>16110</id><value>Bei 60Hz-Spielen</value></string>
   
 </strings>
