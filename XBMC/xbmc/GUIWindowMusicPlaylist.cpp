@@ -64,7 +64,8 @@ bool CGUIWindowMusicPlayList::OnMessage(CGUIMessage& message)
 
   case GUI_MSG_WINDOW_INIT:
     {
-      m_iViewAsIconsRoot = g_stSettings.m_iMyMusicPlaylistViewAsIcons;
+      // Setup item cache for tagloader
+      m_tagloader.UseCacheOnHD("Z:\\MusicPlaylist.fi");
 
       CGUIWindowMusicBase::OnMessage(message);
 
@@ -107,8 +108,6 @@ bool CGUIWindowMusicPlayList::OnMessage(CGUIMessage& message)
         }
       }
 
-      // Setup item cache for tagloader
-      m_tagloader.UseCacheOnHD("Z:\\MusicPlaylist.fi");
       return true;
     }
     break;
@@ -118,14 +117,14 @@ bool CGUIWindowMusicPlayList::OnMessage(CGUIMessage& message)
       if (m_tagloader.IsLoading())
         m_tagloader.StopThread();
 
-      for (int i = 0; i < (int)m_vecItems.Size(); ++i)
-      {
-        CFileItem* pItem = m_vecItems[i];
-        pItem->FreeIcons();
-        // Do not clear musicinfo for cue items
-        if (pItem->m_lEndOffset == 0)
-          pItem->m_musicInfoTag.Clear();
-      }
+      //for (int i = 0; i < (int)m_vecItems.Size(); ++i)
+      //{
+      //  CFileItem* pItem = m_vecItems[i];
+      //  pItem->FreeMemory();
+      //  // Do not clear musicinfo for cue items
+      //  if (pItem->m_lEndOffset == 0)
+      //    pItem->m_musicInfoTag.Clear();
+      //}
     }
     break;
 
@@ -138,14 +137,7 @@ bool CGUIWindowMusicPlayList::OnMessage(CGUIMessage& message)
     {
       int iControl = message.GetSenderId();
 
-      if (iControl == CONTROL_BTNVIEWASICONS)
-      {
-        CGUIWindowMusicBase::OnMessage(message);
-        g_stSettings.m_iMyMusicPlaylistViewAsIcons = m_iViewAsIconsRoot;
-        g_settings.Save();
-        return true;
-      }
-      else if (iControl == CONTROL_BTNRANDOMIZE)
+      if (iControl == CONTROL_BTNRANDOMIZE)
       {
         g_stSettings.m_bMyMusicPlaylistShuffle = !g_playlistPlayer.ShuffledPlay(PLAYLIST_MUSIC);
         g_settings.Save();
@@ -262,7 +254,7 @@ void CGUIWindowMusicPlayList::MoveCurrentPlayListItem(int iItem, int iAction)
   CPlayList& playlist = g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC);
   if (playlist.Swap(iSelected, iNew))
   {
-    Update(m_Directory.m_strPath);
+    Update(m_vecItems.m_strPath);
     m_viewControl.SetSelectedItem(iNew);
     return ;
   }
@@ -277,12 +269,8 @@ bool CGUIWindowMusicPlayList::GetDirectory(const CStdString &strDirectory, CFile
 
   CPlayList& playlist = g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC);
   /* copy playlist from general playlist*/
-  int iCurrentSong = -1;
-  if (g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_MUSIC)
-    iCurrentSong = g_playlistPlayer.GetCurrentSong();
-
   CStdString strPath, strFileName;
-  m_vecItems.Reserve(playlist.size());
+  items.Reserve(playlist.size());
 
   for (int i = 0; i < playlist.size(); ++i)
   {
@@ -320,7 +308,7 @@ bool CGUIWindowMusicPlayList::GetDirectory(const CStdString &strDirectory, CFile
 
   // Set default icons first,
   // the tagloader will load the thumbs later
-  m_vecItems.FillInDefaultIcons();
+  items.FillInDefaultIcons();
 
   return true;
 }
@@ -397,7 +385,7 @@ void CGUIWindowMusicPlayList::ShufflePlayList()
     }
   }
 
-  Update(m_Directory.m_strPath);
+  Update(m_vecItems.m_strPath);
 }
 
 void CGUIWindowMusicPlayList::RemovePlayListItem(int iItem)
@@ -422,7 +410,7 @@ void CGUIWindowMusicPlayList::RemovePlayListItem(int iItem)
     }
   }
 
-  Update(m_Directory.m_strPath);
+  Update(m_vecItems.m_strPath);
 
   if (m_vecItems.Size() <= 0)
   {
@@ -436,6 +424,8 @@ void CGUIWindowMusicPlayList::RemovePlayListItem(int iItem)
 
 void CGUIWindowMusicPlayList::UpdateButtons()
 {
+  CGUIWindowMusicBase::UpdateButtons();
+
   // Update playlist buttons
   if (m_vecItems.Size() )
   {
@@ -470,8 +460,6 @@ void CGUIWindowMusicPlayList::UpdateButtons()
     CONTROL_DISABLE(CONTROL_BTNNEXT);
     CONTROL_DISABLE(CONTROL_BTNPREVIOUS);
   }
-
-  m_viewControl.SetCurrentView(m_iViewAsIconsRoot);
 
   // Update object count label
   int iItems = m_vecItems.Size();
@@ -540,13 +528,17 @@ void CGUIWindowMusicPlayList::OnItemLoaded(CFileItem* pItem)
     }
   }
 
-  g_graphicsContext.Lock();
-  // Remove default icons
-  pItem->FreeIcons();
-  // and reset thumbs and default icons
-  pItem->SetMusicThumb();
-  pItem->FillInDefaultIcon();
-  g_graphicsContext.Unlock();
+  //  MusicDb items already have thumbs
+  if (!pItem->IsMusicDb())
+  {
+    g_graphicsContext.Lock();
+    // Remove default icons
+    pItem->FreeIcons();
+    // and reset thumbs and default icons
+    pItem->SetMusicThumb();
+    pItem->FillInDefaultIcon();
+    g_graphicsContext.Unlock();
+  }
 }
 
 bool CGUIWindowMusicPlayList::Update(const CStdString& strDirectory)
@@ -564,6 +556,11 @@ bool CGUIWindowMusicPlayList::Update(const CStdString& strDirectory)
 void CGUIWindowMusicPlayList::ClearFileItems()
 {
   m_viewControl.Clear();
+  for (int i=0; i<m_vecItems.Size(); ++i)
+  {
+    CFileItem* item=m_vecItems[i];
+    item->FreeMemory();
+  }
   m_vecItems.ClearKeepPointer();
 }
 
@@ -610,6 +607,7 @@ void CGUIWindowMusicPlayList::OnPopupMenu(int iItem)
   else if( btnid  == btn_Delete )  // Delete
   {
     RemovePlayListItem(iItem);
+    return;
   }
   else if( btnid  == btn_Return )  // Return
   {

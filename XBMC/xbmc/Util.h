@@ -1,6 +1,7 @@
 #pragma once
 #include "playlist.h"
 #include "filesystem/rarmanager.h"
+#include "settings.h"
 
 //#define SKIN_VERSION_1_3 1
 

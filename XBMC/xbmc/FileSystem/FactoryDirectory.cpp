@@ -17,6 +17,7 @@
 #include "rardirectory.h"
 #include "FTPDirectory.h"
 #include "VirtualPathDirectory.h"
+#include "MusicDatabaseDirectory.h"
 #include "StackDirectory.h"
 
 /*!
@@ -49,5 +50,6 @@ IDirectory* CFactoryDirectory::Create(const CStdString& strPath)
   else if (strProtocol == "ftp") return new CFTPDirectory();
   else if (strProtocol == "virtualpath") return new CVirtualPathDirectory();
   else if (strProtocol == "stack") return new CStackDirectory();
+  else if (strProtocol == "musicdb") return new CMusicDatabaseDirectory();
   else return new CHDDirectory();
 }

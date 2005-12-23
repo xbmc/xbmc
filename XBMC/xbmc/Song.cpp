@@ -22,6 +22,7 @@ CSong::CSong(CMusicInfoTag& tag)
   strThumb = "";
   iStartOffset = 0;
   iEndOffset = 0;
+  idSong = -1;
 }
 
 CSong::CSong()
@@ -47,5 +48,6 @@ void CSong::Clear()
   iYear = 0;
   iStartOffset = 0;
   iEndOffset = 0;
+  idSong = -1;
 }
 

@@ -1552,7 +1552,7 @@ void CApplication::LoadSkin(const CStdString& strSkin)
     CLog::Log(LOGINFO, " stop playing...");
     m_CdgParser.Stop();
     m_pPlayer->CloseFile();
-    m_itemCurrentFile.Clear();
+    m_itemCurrentFile.Reset();
     m_currentStack.Clear();
     delete m_pPlayer;
     m_pPlayer = NULL;
@@ -3858,7 +3858,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
         {
           delete m_pPlayer;
           m_pPlayer = 0;
-          m_itemCurrentFile.Clear();
+          m_itemCurrentFile.Reset();
           m_currentStack.Clear();
           g_infoManager.ResetCurrentItem();
         }

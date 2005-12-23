@@ -72,20 +72,20 @@ CSettings::CSettings(void)
   g_stSettings.m_bMyMusicSongInfoInVis = true;    // UNUSED - depreciated.
   g_stSettings.m_bMyMusicSongThumbInVis = false;  // used for music info in vis screen
 
-  g_stSettings.m_bMyMusicSongsRootSortAscending = true;
-  g_stSettings.m_bMyMusicSongsSortAscending = true;
+  g_stSettings.m_iMyMusicSongsRootSortAscending = SORT_ORDER_ASC;
+  g_stSettings.m_iMyMusicSongsSortAscending = SORT_ORDER_ASC;
 
-  g_stSettings.m_bMyMusicNavGenresSortAscending = true;
-  g_stSettings.m_bMyMusicNavArtistsSortAscending = true;
-  g_stSettings.m_bMyMusicNavAlbumsSortAscending = true;
-  g_stSettings.m_bMyMusicNavSongsSortAscending = true;
-  g_stSettings.m_bMyMusicNavPlaylistsSortAscending = true;
+  g_stSettings.m_iMyMusicNavGenresSortAscending = SORT_ORDER_ASC;
+  g_stSettings.m_iMyMusicNavArtistsSortAscending = SORT_ORDER_ASC;
+  g_stSettings.m_iMyMusicNavAlbumsSortAscending = SORT_ORDER_ASC;
+  g_stSettings.m_iMyMusicNavSongsSortAscending = SORT_ORDER_ASC;
+  g_stSettings.m_iMyMusicNavPlaylistsSortAscending = SORT_ORDER_ASC;
 
   // need defaults for these or the display is
   // incorrect the first time Nav window is used
-  g_stSettings.m_iMyMusicNavAlbumsSortMethod = 6;
-  g_stSettings.m_iMyMusicNavSongsSortMethod = 3;
-  g_stSettings.m_iMyMusicNavPlaylistsSortMethod = 3;
+  g_stSettings.m_iMyMusicNavAlbumsSortMethod = SORT_METHOD_ALBUM;
+  g_stSettings.m_iMyMusicNavSongsSortMethod = SORT_METHOD_TRACKNUM;
+  g_stSettings.m_iMyMusicNavPlaylistsSortMethod = SORT_METHOD_TRACKNUM;
 
   g_stSettings.m_iMyMusicPlaylistViewAsIcons = 1;
   g_stSettings.m_bMyMusicPlaylistRepeat = true;
@@ -1113,40 +1113,36 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile, const bool loadp
     TiXmlElement *pChild = pElement->FirstChildElement("songs");
     if (pChild)
     {
-      GetInteger(pChild, "songsviewicons", g_stSettings.m_iMyMusicSongsViewAsIcons, VIEW_AS_LIST, VIEW_AS_LIST, VIEW_AS_LARGE_ICONS);
-      GetInteger(pChild, "songsrooticons", g_stSettings.m_iMyMusicSongsRootViewAsIcons, VIEW_AS_ICONS, VIEW_AS_LIST, VIEW_AS_LARGE_ICONS);
-      GetInteger(pChild, "songssortmethod", g_stSettings.m_iMyMusicSongsSortMethod, 0, 0, 8);
-      GetInteger(pChild, "songssortmethodroot", g_stSettings.m_iMyMusicSongsRootSortMethod, 0, 0, 9);
-      GetBoolean(pChild, "songssortascending", g_stSettings.m_bMyMusicSongsSortAscending);
-      GetBoolean(pChild, "songssortascendingroot", g_stSettings.m_bMyMusicSongsRootSortAscending);
+      GetInteger(pChild, "viewicons", g_stSettings.m_iMyMusicSongsViewAsIcons, VIEW_AS_LIST, VIEW_AS_LIST, VIEW_AS_LARGE_ICONS);
+      GetInteger(pChild, "viewiconsroot", g_stSettings.m_iMyMusicSongsRootViewAsIcons, VIEW_AS_ICONS, VIEW_AS_LIST, VIEW_AS_LARGE_ICONS);
+      GetInteger(pChild, "sortmethod", (int&)g_stSettings.m_iMyMusicSongsSortMethod, SORT_METHOD_LABEL, SORT_METHOD_NONE, SORT_METHOD_MAX-1);
+      GetInteger(pChild, "sortmethodroot", (int&)g_stSettings.m_iMyMusicSongsRootSortMethod, SORT_METHOD_LABEL, SORT_METHOD_NONE, SORT_METHOD_MAX-1);
+      GetInteger(pChild, "sortascending", (int&)g_stSettings.m_iMyMusicSongsSortAscending, SORT_ORDER_ASC, SORT_ORDER_NONE, SORT_ORDER_DESC);
+      GetInteger(pChild, "sortascendingroot", (int&)g_stSettings.m_iMyMusicSongsRootSortAscending, SORT_ORDER_ASC, SORT_ORDER_NONE, SORT_ORDER_DESC);
     }
     pChild = pElement->FirstChildElement("nav");
     if (pChild)
     {
-      GetInteger(pChild, "navrootviewicons", g_stSettings.m_iMyMusicNavRootViewAsIcons, VIEW_AS_LIST, VIEW_AS_LIST, VIEW_AS_LARGE_ICONS);
-      GetInteger(pChild, "navgenresviewicons", g_stSettings.m_iMyMusicNavGenresViewAsIcons, VIEW_AS_LIST, VIEW_AS_LIST, VIEW_AS_LARGE_ICONS);
-      GetInteger(pChild, "navartistsviewicons", g_stSettings.m_iMyMusicNavArtistsViewAsIcons, VIEW_AS_LIST, VIEW_AS_LIST, VIEW_AS_LARGE_ICONS);
-      GetInteger(pChild, "navalbumsviewicons", g_stSettings.m_iMyMusicNavAlbumsViewAsIcons, VIEW_AS_LIST, VIEW_AS_LIST, VIEW_AS_LARGE_LIST);
-      GetInteger(pChild, "navsongsviewicons", g_stSettings.m_iMyMusicNavSongsViewAsIcons, VIEW_AS_LIST, VIEW_AS_LIST, VIEW_AS_LARGE_ICONS);
-      GetInteger(pChild, "navtopviewicons", g_stSettings.m_iMyMusicNavTopViewAsIcons, VIEW_AS_LIST, VIEW_AS_LIST, VIEW_AS_LARGE_ICONS);
-      GetInteger(pChild, "navplaylistsviewicons", g_stSettings.m_iMyMusicNavPlaylistsViewAsIcons, VIEW_AS_LIST, VIEW_AS_LIST, VIEW_AS_LARGE_ICONS);
+      GetInteger(pChild, "rootviewicons", g_stSettings.m_iMyMusicNavRootViewAsIcons, VIEW_AS_LIST, VIEW_AS_LIST, VIEW_AS_LARGE_ICONS);
+      GetInteger(pChild, "genresviewicons", g_stSettings.m_iMyMusicNavGenresViewAsIcons, VIEW_AS_LIST, VIEW_AS_LIST, VIEW_AS_LARGE_ICONS);
+      GetInteger(pChild, "artistsviewicons", g_stSettings.m_iMyMusicNavArtistsViewAsIcons, VIEW_AS_LIST, VIEW_AS_LIST, VIEW_AS_LARGE_ICONS);
+      GetInteger(pChild, "albumsviewicons", g_stSettings.m_iMyMusicNavAlbumsViewAsIcons, VIEW_AS_LIST, VIEW_AS_LIST, VIEW_AS_LARGE_LIST);
+      GetInteger(pChild, "songsviewicons", g_stSettings.m_iMyMusicNavSongsViewAsIcons, VIEW_AS_LIST, VIEW_AS_LIST, VIEW_AS_LARGE_ICONS);
+      GetInteger(pChild, "topviewicons", g_stSettings.m_iMyMusicNavTopViewAsIcons, VIEW_AS_LIST, VIEW_AS_LIST, VIEW_AS_LARGE_ICONS);
+      GetInteger(pChild, "playlistsviewicons", g_stSettings.m_iMyMusicNavPlaylistsViewAsIcons, VIEW_AS_LIST, VIEW_AS_LIST, VIEW_AS_LARGE_ICONS);
 
-      GetInteger(pChild, "navgenressortmethod", g_stSettings.m_iMyMusicNavRootSortMethod, 0, 0, 0);
-      GetInteger(pChild, "navalbumssortmethod", g_stSettings.m_iMyMusicNavAlbumsSortMethod, 6, 6, 7);
-      GetInteger(pChild, "navsongssortmethod", g_stSettings.m_iMyMusicNavSongsSortMethod, 3, 3, 7);
-      GetInteger(pChild, "navplaylistssortmethod", g_stSettings.m_iMyMusicNavPlaylistsSortMethod, 0, 0, 2);
+      GetInteger(pChild, "genressortmethod", (int&)g_stSettings.m_iMyMusicNavRootSortMethod, SORT_METHOD_LABEL, SORT_METHOD_NONE, SORT_METHOD_MAX-1);
+      GetInteger(pChild, "albumssortmethod", (int&)g_stSettings.m_iMyMusicNavAlbumsSortMethod, SORT_METHOD_ALBUM, SORT_METHOD_NONE, SORT_METHOD_MAX-1);
+      GetInteger(pChild, "songssortmethod", (int&)g_stSettings.m_iMyMusicNavSongsSortMethod, SORT_METHOD_TRACKNUM, SORT_METHOD_NONE, SORT_METHOD_MAX-1);
+      GetInteger(pChild, "playlistssortmethod", (int&)g_stSettings.m_iMyMusicNavPlaylistsSortMethod, SORT_METHOD_TRACKNUM, SORT_METHOD_NONE, SORT_METHOD_MAX-1);
 
-      GetBoolean(pChild, "navgenressortascending", g_stSettings.m_bMyMusicNavGenresSortAscending);
-      GetBoolean(pChild, "navartistssortascending", g_stSettings.m_bMyMusicNavArtistsSortAscending);
-      GetBoolean(pChild, "navalbumssortascending", g_stSettings.m_bMyMusicNavAlbumsSortAscending);
-      GetBoolean(pChild, "navsongssortascending", g_stSettings.m_bMyMusicNavSongsSortAscending);
-      GetBoolean(pChild, "navplaylistssortascending", g_stSettings.m_bMyMusicNavPlaylistsSortAscending);
+      GetInteger(pChild, "genressortascending", (int&)g_stSettings.m_iMyMusicNavGenresSortAscending, SORT_ORDER_ASC, SORT_ORDER_NONE, SORT_ORDER_DESC);
+      GetInteger(pChild, "artistssortascending", (int&)g_stSettings.m_iMyMusicNavArtistsSortAscending, SORT_ORDER_ASC, SORT_ORDER_NONE, SORT_ORDER_DESC);
+      GetInteger(pChild, "albumssortascending", (int&)g_stSettings.m_iMyMusicNavAlbumsSortAscending, SORT_ORDER_ASC, SORT_ORDER_NONE, SORT_ORDER_DESC);
+      GetInteger(pChild, "songssortascending", (int&)g_stSettings.m_iMyMusicNavSongsSortAscending, SORT_ORDER_ASC, SORT_ORDER_NONE, SORT_ORDER_DESC);
+      GetInteger(pChild, "playlistssortascending", (int&)g_stSettings.m_iMyMusicNavPlaylistsSortAscending, SORT_ORDER_ASC, SORT_ORDER_NONE, SORT_ORDER_DESC);
     }
-/*    pChild = pElement->FirstChildElement("top100");
-    if (pChild)
-    {
-      GetInteger(pChild, "top100rooticons", g_stSettings.m_iMyMusicTop100ViewAsIcons, VIEW_AS_LIST, VIEW_AS_LIST, VIEW_AS_ICONS);
-    }*/
+
     pChild = pElement->FirstChildElement("playlist");
     if (pChild)
     {
@@ -1364,42 +1360,36 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile, const bool savep
     TiXmlElement childNode("songs");
     TiXmlNode *pChild = pNode->InsertEndChild(childNode);
     if (!pChild) return false;
-    SetInteger(pChild, "songsviewicons", g_stSettings.m_iMyMusicSongsViewAsIcons);
-    SetInteger(pChild, "songsrooticons", g_stSettings.m_iMyMusicSongsRootViewAsIcons);
-    SetInteger(pChild, "songssortmethod", g_stSettings.m_iMyMusicSongsSortMethod);
-    SetInteger(pChild, "songssortmethodroot", g_stSettings.m_iMyMusicSongsRootSortMethod);
-    SetBoolean(pChild, "songssortascending", g_stSettings.m_bMyMusicSongsSortAscending);
-    SetBoolean(pChild, "songssortascendingroot", g_stSettings.m_bMyMusicSongsRootSortAscending);
+    SetInteger(pChild, "viewicons", g_stSettings.m_iMyMusicSongsViewAsIcons);
+    SetInteger(pChild, "viewiconsroot", g_stSettings.m_iMyMusicSongsRootViewAsIcons);
+    SetInteger(pChild, "sortmethod", g_stSettings.m_iMyMusicSongsSortMethod);
+    SetInteger(pChild, "sortmethodroot", g_stSettings.m_iMyMusicSongsRootSortMethod);
+    SetInteger(pChild, "sortascending", g_stSettings.m_iMyMusicSongsSortAscending);
+    SetInteger(pChild, "sortascendingroot", g_stSettings.m_iMyMusicSongsRootSortAscending);
   }
   {
     TiXmlElement childNode("nav");
     TiXmlNode *pChild = pNode->InsertEndChild(childNode);
     if (!pChild) return false;
 
-    SetInteger(pChild, "navrootviewicons", g_stSettings.m_iMyMusicNavRootViewAsIcons);
-    SetInteger(pChild, "navgenresviewicons", g_stSettings.m_iMyMusicNavGenresViewAsIcons);
-    SetInteger(pChild, "navartistsviewicons", g_stSettings.m_iMyMusicNavArtistsViewAsIcons);
-    SetInteger(pChild, "navalbumsviewicons", g_stSettings.m_iMyMusicNavAlbumsViewAsIcons);
-    SetInteger(pChild, "navsongsviewicons", g_stSettings.m_iMyMusicNavSongsViewAsIcons);
-    SetInteger(pChild, "navtopviewicons", g_stSettings.m_iMyMusicNavTopViewAsIcons);
-    SetInteger(pChild, "navplaylistsviewicons", g_stSettings.m_iMyMusicNavPlaylistsViewAsIcons);
+    SetInteger(pChild, "rootviewicons", g_stSettings.m_iMyMusicNavRootViewAsIcons);
+    SetInteger(pChild, "genresviewicons", g_stSettings.m_iMyMusicNavGenresViewAsIcons);
+    SetInteger(pChild, "artistsviewicons", g_stSettings.m_iMyMusicNavArtistsViewAsIcons);
+    SetInteger(pChild, "albumsviewicons", g_stSettings.m_iMyMusicNavAlbumsViewAsIcons);
+    SetInteger(pChild, "songsviewicons", g_stSettings.m_iMyMusicNavSongsViewAsIcons);
+    SetInteger(pChild, "topviewicons", g_stSettings.m_iMyMusicNavTopViewAsIcons);
+    SetInteger(pChild, "playlistsviewicons", g_stSettings.m_iMyMusicNavPlaylistsViewAsIcons);
 
-    SetInteger(pChild, "navgenressortmethod", g_stSettings.m_iMyMusicNavRootSortMethod);
-    SetInteger(pChild, "navalbumssortmethod", g_stSettings.m_iMyMusicNavAlbumsSortMethod);
-    SetInteger(pChild, "navsongssortmethod", g_stSettings.m_iMyMusicNavSongsSortMethod);
-    SetInteger(pChild, "navplaylistssortmethod", g_stSettings.m_iMyMusicNavPlaylistsSortMethod);
+    SetInteger(pChild, "genressortmethod", g_stSettings.m_iMyMusicNavRootSortMethod);
+    SetInteger(pChild, "albumssortmethod", g_stSettings.m_iMyMusicNavAlbumsSortMethod);
+    SetInteger(pChild, "songssortmethod", g_stSettings.m_iMyMusicNavSongsSortMethod);
+    SetInteger(pChild, "playlistssortmethod", g_stSettings.m_iMyMusicNavPlaylistsSortMethod);
 
-    SetBoolean(pChild, "navgenressortascending", g_stSettings.m_bMyMusicNavGenresSortAscending);
-    SetBoolean(pChild, "navartistssortascending", g_stSettings.m_bMyMusicNavArtistsSortAscending);
-    SetBoolean(pChild, "navalbumssortascending", g_stSettings.m_bMyMusicNavAlbumsSortAscending);
-    SetBoolean(pChild, "navsongssortascending", g_stSettings.m_bMyMusicNavSongsSortAscending);
-    SetBoolean(pChild, "navplaylistssortascending", g_stSettings.m_bMyMusicNavPlaylistsSortAscending);
-  }
-  {
-    /*TiXmlElement childNode("top100");
-    TiXmlNode *pChild = pNode->InsertEndChild(childNode);
-    if (!pChild) return false;
-    SetInteger(pChild, "top100rooticons", g_stSettings.m_iMyMusicTop100ViewAsIcons);*/
+    SetInteger(pChild, "genressortascending", g_stSettings.m_iMyMusicNavGenresSortAscending);
+    SetInteger(pChild, "artistssortascending", g_stSettings.m_iMyMusicNavArtistsSortAscending);
+    SetInteger(pChild, "albumssortascending", g_stSettings.m_iMyMusicNavAlbumsSortAscending);
+    SetInteger(pChild, "songssortascending", g_stSettings.m_iMyMusicNavSongsSortAscending);
+    SetInteger(pChild, "playlistssortascending", g_stSettings.m_iMyMusicNavPlaylistsSortAscending);
   }
   {
     TiXmlElement childNode("playlist");

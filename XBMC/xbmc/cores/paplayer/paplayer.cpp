@@ -219,8 +219,8 @@ bool PAPlayer::CloseFile()
     FreeStream(i);
   }
 
-  m_currentFile.Clear();
-  m_nextFile.Clear();
+  m_currentFile.Reset();
+  m_nextFile.Reset();
 
   g_audioContext.RemoveActiveDevice();
   g_audioContext.SetActiveDevice(CAudioContext::DEFAULT_DEVICE);
@@ -483,7 +483,7 @@ bool PAPlayer::ProcessPAP()
           m_timeOffset = m_nextFile.m_lStartOffset * 1000 / 75;
           m_bytesSentOut = 0;
           m_currentFile = m_nextFile;
-          m_nextFile.Clear();
+          m_nextFile.Reset();
           m_cachingNextFile = false;
         }
       }
@@ -540,7 +540,7 @@ bool PAPlayer::ProcessPAP()
             m_timeOffset = m_nextFile.m_lStartOffset * 1000 / 75;
             m_bytesSentOut = 0;
             m_currentFile = m_nextFile;
-            m_nextFile.Clear();
+            m_nextFile.Reset();
             m_cachingNextFile = false;
             m_currentDecoder = 1 - m_currentDecoder;
           }
@@ -572,7 +572,7 @@ bool PAPlayer::ProcessPAP()
         m_timeOffset = m_nextFile.m_lStartOffset * 1000 / 75;
         m_bytesSentOut = 0;
         m_currentFile = m_nextFile;
-        m_nextFile.Clear();
+        m_nextFile.Reset();
         m_cachingNextFile = false;
       }
     }
