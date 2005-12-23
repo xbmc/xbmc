@@ -11,10 +11,11 @@
 #include "cuedocument.h"
 #include "Utils/fstrcmp.h"
 #include "videodatabase.h"
+#include "SortFileItem.h"
 
 CFileItem::CFileItem(const CSong& song)
 {
-  Clear();
+  Reset();
   m_strLabel = song.strTitle;
   m_strPath = song.strFileName;
   m_musicInfoTag.SetSong(song);
@@ -25,12 +26,31 @@ CFileItem::CFileItem(const CSong& song)
 
 CFileItem::CFileItem(const CAlbum& album)
 {
-  Clear();
+  Reset();
   m_strLabel = album.strAlbum;
   m_strPath = album.strPath;
   m_bIsFolder = true;
   m_strLabel2 = album.strArtist;
   m_musicInfoTag.SetAlbum(album);
+  m_strThumbnailImage = album.strThumb;
+}
+
+CFileItem::CFileItem(const CArtist& artist)
+{
+  Reset();
+  m_strLabel = artist.strArtist;
+  m_strPath = artist.strArtist;
+  m_bIsFolder = true;
+  m_musicInfoTag.SetArtist(artist.strArtist);
+}
+
+CFileItem::CFileItem(const CGenre& genre)
+{
+  Reset();
+  m_strLabel = genre.strGenre;
+  m_strPath = genre.strGenre;
+  m_bIsFolder = true;
+  m_musicInfoTag.SetGenre(genre.strGenre);
 }
 
 CFileItem::CFileItem(const CFileItem& item)
@@ -40,26 +60,26 @@ CFileItem::CFileItem(const CFileItem& item)
 
 CFileItem::CFileItem(void)
 {
-  Clear();
+  Reset();
 }
 
 CFileItem::CFileItem(const CStdString& strLabel)
     : CGUIListItem()
 {
-  Clear();
+  Reset();
   m_strLabel = strLabel;
 }
 
 CFileItem::CFileItem(const CStdString& strPath, bool bIsFolder)
 {
-  Clear();
+  Reset();
   m_strPath = strPath;
   m_bIsFolder = bIsFolder;
 }
 
 CFileItem::CFileItem(const CShare& share)
 {
-  Clear();
+  Reset();
   m_bIsFolder = true;
   m_bIsShareOrDrive = true;
   m_strPath = share.strPath;
@@ -103,7 +123,7 @@ const CFileItem& CFileItem::operator=(const CFileItem& item)
   return *this;
 }
 
-void CFileItem::Clear()
+void CFileItem::Reset()
 {
   m_strLabel2 = "";
   m_strLabel = "";
@@ -126,6 +146,7 @@ void CFileItem::Clear()
   m_iLockMode = LOCK_MODE_EVERYONE;
   m_strLockCode = "";
   m_iBadPwdCount = 0;
+  m_bCanQueue=true;
 }
 
 void CFileItem::Serialize(CArchive& ar)
@@ -423,6 +444,12 @@ bool CFileItem::IsHD() const
   return CUtil::IsHD(m_strPath);
 }
 
+bool CFileItem::IsMusicDb() const
+{
+  if (strstr(m_strPath.c_str(), "musicdb:") ) return true;
+  return false;
+}
+
 bool CFileItem::IsVirtualDirectoryRoot() const
 {
   return (m_bIsFolder && m_strPath.IsEmpty());
@@ -718,7 +745,7 @@ void CFileItem::SetThumb()
 
 void CFileItem::SetArtistThumb()
 {
-  CStdString strArtist = "artist" + m_strPath;
+  CStdString strArtist = "artist" + GetLabel();
   CStdString strThumb = "";
   CUtil::GetCachedThumbnail(strArtist, strThumb);
 
@@ -741,6 +768,9 @@ void CFileItem::SetMusicThumb()
 
   // streams do not have thumbnails
   if (IsInternetStream()) return;
+
+  //  music db items already have thumbs or there is no thumb available
+  if (IsMusicDb()) return;
 
   // ignore the parent dir items
   if (GetLabel() == "..") return;
@@ -986,6 +1016,21 @@ void CFileItem::SetFileSizeLabel()
   m_strLabel2.Format("%02.1f GB", fMegs);
 }
 
+CURL CFileItem::GetAsUrl() const
+{
+  return CURL(m_strPath);
+}
+
+bool CFileItem::CanQueue() const
+{
+  return m_bCanQueue;
+}
+
+void CFileItem::SetCanQueue(bool bYesNo)
+{
+  m_bCanQueue=bYesNo;
+}
+
 
 /////////////////////////////////////////////////////////////////////////////////
 /////
@@ -996,6 +1041,7 @@ void CFileItem::SetFileSizeLabel()
 CFileItemList::CFileItemList()
 {
   m_fastLookup = false;
+  m_bIsFolder=true;
 }
 
 CFileItemList::~CFileItemList()
@@ -1150,6 +1196,57 @@ void CFileItemList::Sort(FILEITEMLISTCOMPARISONFUNC func)
   sort(m_items.begin(), m_items.end(), func);
 }
 
+void CFileItemList::Sort(SORT_METHOD sortMethod, SORT_ORDER sortOrder)
+{
+  switch (sortMethod)
+  {
+  case SORT_METHOD_LABEL:
+    Sort(sortOrder==SORT_ORDER_ASC ? SSortFileItem::LabelAscending : SSortFileItem::LabelDescending);
+    break;
+  case SORT_METHOD_LABEL_IGNORE_THE:
+    Sort(sortOrder==SORT_ORDER_ASC ? SSortFileItem::LabelAscendingNoThe : SSortFileItem::LabelDescendingNoThe);
+    break;
+  case SORT_METHOD_DATE:
+    Sort(sortOrder==SORT_ORDER_ASC ? SSortFileItem::DateAscending : SSortFileItem::DateDescending);
+    break;
+  case SORT_METHOD_SIZE:
+    Sort(sortOrder==SORT_ORDER_ASC ? SSortFileItem::SizeAscending : SSortFileItem::SizeDescending);
+    break;
+  case SORT_METHOD_DRIVE_TYPE:
+    Sort(sortOrder==SORT_ORDER_ASC ? SSortFileItem::DriveTypeAscending : SSortFileItem::DriveTypeDescending);
+    break;
+  case SORT_METHOD_TRACKNUM:
+    Sort(sortOrder==SORT_ORDER_ASC ? SSortFileItem::SongTrackNumAscending : SSortFileItem::SongTrackNumDescending);
+    break;
+  case SORT_METHOD_DURATION:
+    Sort(sortOrder==SORT_ORDER_ASC ? SSortFileItem::SongDurationAscending : SSortFileItem::SongDurationDescending);
+    break;
+  case SORT_METHOD_TITLE_IGNORE_THE:
+    Sort(sortOrder==SORT_ORDER_ASC ? SSortFileItem::SongTitleAscendingNoThe : SSortFileItem::SongTitleDescendingNoThe);
+    break;
+  case SORT_METHOD_TITLE:
+    Sort(sortOrder==SORT_ORDER_ASC ? SSortFileItem::SongTitleAscending : SSortFileItem::SongTitleDescending);
+    break;
+  case SORT_METHOD_ARTIST:
+    Sort(sortOrder==SORT_ORDER_ASC ? SSortFileItem::SongArtistAscending : SSortFileItem::SongArtistDescending);
+    break;
+  case SORT_METHOD_ARTIST_IGNORE_THE:
+    Sort(sortOrder==SORT_ORDER_ASC ? SSortFileItem::SongArtistAscendingNoThe : SSortFileItem::SongArtistDescendingNoThe);
+    break;
+  case SORT_METHOD_ALBUM:
+    Sort(sortOrder==SORT_ORDER_ASC ? SSortFileItem::SongAlbumAscending : SSortFileItem::SongAlbumDescending);
+    break;
+  case SORT_METHOD_ALBUM_IGNORE_THE:
+    Sort(sortOrder==SORT_ORDER_ASC ? SSortFileItem::SongAlbumAscendingNoThe : SSortFileItem::SongAlbumDescendingNoThe);
+    break;
+  case SORT_METHOD_FILE:
+    Sort(sortOrder==SORT_ORDER_ASC ? SSortFileItem::FileAscending : SSortFileItem::FileDescending);
+    break;
+  default:
+    break;
+  }
+}
+
 void CFileItemList::Randomize()
 {
   random_shuffle(m_items.begin(), m_items.end());
@@ -1159,6 +1256,8 @@ void CFileItemList::Serialize(CArchive& ar)
 {
   if (ar.IsStoring())
   {
+    CFileItem::Serialize(ar);
+
     int i = 0;
     if (m_items.size() > 0 && m_items[0]->GetLabel() == "..")
       i = 1;
@@ -1173,6 +1272,8 @@ void CFileItemList::Serialize(CArchive& ar)
   }
   else
   {
+    CFileItem::Serialize(ar);
+
     int iSize = 0;
     ar >> iSize;
     if (iSize <= 0)
@@ -1275,7 +1376,7 @@ void CFileItemList::FilterCueItems()
 {
   // Handle .CUE sheet files...
   VECSONGS itemstoadd;
-  VECARTISTS itemstodelete;
+  CStdStringArray itemstodelete;
   for (int i = 0; i < (int)m_items.size(); i++)
   {
     CFileItem *pItem = m_items[i];

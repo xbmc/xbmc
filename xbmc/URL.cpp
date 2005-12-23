@@ -186,7 +186,7 @@ CURL::CURL(const CStdString& strURL)
   }
 
   // iso9960 doesnt have an hostname;-)
-  if (m_strProtocol.CompareNoCase("iso9660") == 0)
+  if (m_strProtocol.CompareNoCase("iso9660") == 0 || m_strProtocol.CompareNoCase("musicdb") == 0)
   {
     if (m_strHostName != "" && m_strFileName != "")
     {
@@ -196,7 +196,10 @@ CURL::CURL(const CStdString& strURL)
     }
     else
     {
-      m_strFileName = m_strHostName;
+      if (!m_strHostName.IsEmpty() && strURL[strURL.size()-1]=='/')
+        m_strFileName=m_strHostName + "/";
+      else
+        m_strFileName = m_strHostName;
       m_strHostName = "";
     }
   }

@@ -13,6 +13,46 @@ using namespace MUSIC_INFO;
 
 /*!
  \ingroup music
+ \brief Class to store and read album information from CMusicDatabase
+ \sa CSong, CMusicDatabase
+ */
+class CAlbum
+{
+public:
+  bool operator<(const CAlbum &a) const
+  {
+    return strAlbum + strPath < a.strAlbum + a.strPath;
+  }
+  long idAlbum;
+  CStdString strAlbum;
+  CStdString strPath;
+  CStdString strArtist;
+  CStdString strGenre;
+  CStdString strThumb;
+  CStdString strTones ;
+  CStdString strStyles ;
+  CStdString strReview ;
+  CStdString strImage ;
+  int iRating ;
+  int iYear;
+};
+
+class CArtist
+{
+public:
+  long idArtist;
+  CStdString strArtist;
+};
+
+class CGenre
+{
+public:
+  long idGenre;
+  CStdString strGenre;
+};
+
+/*!
+ \ingroup music
  \brief Class to store and read song information from CMusicDatabase
  \sa CAlbum, CMusicDatabase
  */
@@ -31,6 +71,7 @@ public:
     if (iTrack < song.iTrack) return true;
     return false;
   }
+  long idSong;
   CStdString strFileName;
   CStdString strTitle;
   CStdString strArtist;
@@ -48,30 +89,6 @@ public:
   int iTimedPlayed;
   int iStartOffset;
   int iEndOffset;
-};
-
-/*!
- \ingroup music
- \brief Class to store and read album information from CMusicDatabase
- \sa CSong, CMusicDatabase
- */
-class CAlbum
-{
-public:
-  bool operator<(const CAlbum &a) const
-  {
-    return strAlbum + strPath < a.strAlbum + a.strPath;
-  }
-  CStdString strAlbum;
-  CStdString strPath;
-  CStdString strArtist;
-  CStdString strGenre;
-  CStdString strTones ;
-  CStdString strStyles ;
-  CStdString strReview ;
-  CStdString strImage ;
-  int iRating ;
-  int iYear;
 };
 
 /*!
@@ -99,14 +116,14 @@ typedef std::map<CStdString, CSong>::iterator IMAPSONGS;
  \ingroup music
  \brief A vector of CStdString objects, used for CMusicDatabase
  */
-typedef std::vector<CStdString> VECARTISTS;
+typedef std::vector<CArtist> VECARTISTS;
 
 /*!
  \ingroup music
  \brief A vector of CStdString objects, used for CMusicDatabase
  \sa CMusicDatabase
  */
-typedef std::vector<CStdString> VECGENRES;
+typedef std::vector<CGenre> VECGENRES;
 
 /*!
  \ingroup music
