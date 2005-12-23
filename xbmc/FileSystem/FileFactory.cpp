@@ -15,6 +15,7 @@
 #include "FileRar.h"
 #include "FileFTP.h"
 #include "FileCurl.h"
+#include "FileMusicDatabase.h"
 #include "FileLastFM.h"
 
 using namespace XFILE;
@@ -47,6 +48,7 @@ IFile* CFileFactory::CreateLoader(const CStdString& strFileName)
   else if (strProtocol == "zip") return new CFileZip();
   else if (strProtocol == "rar") return new CFileRar();
   else if (strProtocol == "ftp") return new CFileFTP();
+  else if (strProtocol == "musicdb") return new CFileMusicDatabase();
 //  else if (strProtocol == "ftp") return new CFileCurl();
   else return new CFileHD();
 }

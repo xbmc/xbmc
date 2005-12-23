@@ -30,6 +30,7 @@ public:
   void SetFocused();
 
   bool HasControl(int viewMode);
+  bool HasViewMode(int viewMode);
   int GetCurrentControl();
 
   void Clear();

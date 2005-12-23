@@ -1041,7 +1041,7 @@ CStdString CGUIInfoManager::GetCurrentPlayTimeRemaining()
 
 void CGUIInfoManager::ResetCurrentItem()
 { 
-  m_currentSong.Clear();
+  m_currentSong.Reset();
   m_currentMovie.Reset();
   m_currentMovieThumb = "";
 }
@@ -1451,7 +1451,7 @@ int CGUIInfoManager::TranslateBooleanExpression(const CStdString &expression)
 
 void CGUIInfoManager::Clear()
 {
-  m_currentSong.Clear();
+  m_currentSong.Reset();
   m_currentMovie.Reset();
   m_CombinedValues.clear();
 }

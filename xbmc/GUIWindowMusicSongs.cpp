@@ -5,11 +5,10 @@
 #include "Util.h"
 #include "Application.h"
 #include "CUEDocument.h"
-#include "AutoSwitch.h"
 #include "GUIPassword.h"
 #include "GUIDialogMusicScan.h"
 #include "GUIDialogContextMenu.h"
-#include "SortFileItem.h"
+#include "GUIViewState.h"
 
 #define CONTROL_BTNVIEWASICONS     2 
 #define CONTROL_BTNSORTBY          3
@@ -28,9 +27,7 @@
 CGUIWindowMusicSongs::CGUIWindowMusicSongs(void)
     : CGUIWindowMusicBase(WINDOW_MUSIC_FILES, "MyMusicSongs.xml")
 {
-  m_Directory.m_strPath = "?";
-  m_iViewAsIcons = -1;
-  m_iViewAsIconsRoot = -1;
+  m_vecItems.m_strPath="?";
 
   // Remove old HD cache every time XBMC is loaded
   DeleteDirectoryCache();
@@ -59,9 +56,10 @@ bool CGUIWindowMusicSongs::OnMessage(CGUIMessage& message)
       }
 
       // is this the first time the window is opened?
-      if (m_Directory.m_strPath == "?" && strDestination.IsEmpty())
+      if (m_vecItems.m_strPath == "?" && strDestination.IsEmpty())
       {
-        m_Directory.m_strPath = strDestination = g_stSettings.m_szDefaultMusic;
+        strDestination = g_stSettings.m_szDefaultMusic;
+        m_vecItems.m_strPath=strDestination;
         CLog::Log(LOGINFO, "Attempting to default to: %s", strDestination.c_str());
       }
 
@@ -69,7 +67,7 @@ bool CGUIWindowMusicSongs::OnMessage(CGUIMessage& message)
       if (!strDestination.IsEmpty())
       {
         // default parameters if the jump fails
-        m_Directory.m_strPath = "";
+        m_vecItems.m_strPath.Empty();
 
         bool bIsBookmarkName = false;
         int iIndex = CUtil::GetMatchingShare(strDestination, g_settings.m_vecMyMusicShares, bIsBookmarkName);
@@ -77,9 +75,9 @@ bool CGUIWindowMusicSongs::OnMessage(CGUIMessage& message)
         {
           // set current directory to matching share
           if (bIsBookmarkName)
-            m_Directory.m_strPath = g_settings.m_vecMyMusicShares[iIndex].strPath;
+            m_vecItems.m_strPath=g_settings.m_vecMyMusicShares[iIndex].strPath;
           else
-            m_Directory.m_strPath = strDestination;
+            m_vecItems.m_strPath=strDestination;
           CLog::Log(LOGINFO, "  Success! Opened destination path: %s", strDestination.c_str());
         }
         else
@@ -90,28 +88,25 @@ bool CGUIWindowMusicSongs::OnMessage(CGUIMessage& message)
         // need file filters or GetDirectory in SetHistoryPath fails
         m_rootDir.SetMask(g_stSettings.m_szMyMusicExtensions);
         m_rootDir.SetShares(g_settings.m_vecMyMusicShares);
-        SetHistoryForPath(m_Directory.m_strPath);
+        SetHistoryForPath(m_vecItems.m_strPath);
       }
 
-      if (m_Directory.IsCDDA() || m_Directory.IsOnDVD())
+      m_rootDir.SetMask(g_stSettings.m_szMyMusicExtensions);
+      m_rootDir.SetShares(g_settings.m_vecMyMusicShares);
+
+      if (m_vecItems.IsCDDA() || m_vecItems.IsOnDVD())
       {
         // No disc in drive but current directory is a dvd share
         if (!CDetectDVDMedia::IsDiscInDrive())
-          m_Directory.m_strPath.Empty();
+          m_vecItems.m_strPath.Empty();
 
         // look if disc has changed outside this window and url is still the same
         CFileItem dvdUrl;
         dvdUrl.m_strPath = m_rootDir.GetDVDDriveUrl();
-        if (m_Directory.IsCDDA() && !dvdUrl.IsCDDA())
-          m_Directory.m_strPath.Empty();
-        if (m_Directory.IsOnDVD() && !dvdUrl.IsOnDVD())
-          m_Directory.m_strPath.Empty();
-      }
-
-      if (m_iViewAsIcons == -1 && m_iViewAsIconsRoot == -1)
-      {
-        m_iViewAsIcons = g_stSettings.m_iMyMusicSongsViewAsIcons;
-        m_iViewAsIconsRoot = g_stSettings.m_iMyMusicSongsRootViewAsIcons;
+        if (m_vecItems.IsCDDA() && !dvdUrl.IsCDDA())
+          m_vecItems.m_strPath.Empty();
+        if (m_vecItems.IsOnDVD() && !dvdUrl.IsOnDVD())
+          m_vecItems.m_strPath.Empty();
       }
 
       return CGUIWindowMusicBase::OnMessage(message);
@@ -127,9 +122,9 @@ bool CGUIWindowMusicSongs::OnMessage(CGUIMessage& message)
       {
         CStdString strParent;
         CUtil::GetParentPath(directory.m_strPath, strParent);
-        if (directory.m_strPath == m_Directory.m_strPath || strParent == m_Directory.m_strPath)
+        if (directory.m_strPath == m_vecItems.m_strPath || strParent == m_vecItems.m_strPath)
         {
-          Update(m_Directory.m_strPath);
+          Update(m_vecItems.m_strPath);
         }
       }
     }
@@ -143,7 +138,7 @@ bool CGUIWindowMusicSongs::OnMessage(CGUIMessage& message)
 
   case GUI_MSG_SCAN_FINISHED:
     {
-      Update(m_Directory.m_strPath);
+      Update(m_vecItems.m_strPath);
     }
     break;
 
@@ -151,91 +146,11 @@ bool CGUIWindowMusicSongs::OnMessage(CGUIMessage& message)
     {
       int iControl = message.GetSenderId();
 
-      if (iControl == CONTROL_BTNSORTBY) // sort by
-      {
-        if (m_Directory.IsVirtualDirectoryRoot())
-        {
-          if (g_stSettings.m_iMyMusicSongsRootSortMethod == 0)
-            g_stSettings.m_iMyMusicSongsRootSortMethod = 9;
-          else
-            g_stSettings.m_iMyMusicSongsRootSortMethod = 0;
-        }
-        else
-        {
-          g_stSettings.m_iMyMusicSongsSortMethod++;
-          if (g_stSettings.m_iMyMusicSongsSortMethod >= 9) g_stSettings.m_iMyMusicSongsSortMethod = 0;
-          if (g_stSettings.m_iMyMusicSongsSortMethod >= 3) g_stSettings.m_iMyMusicSongsSortMethod = 8;
-        }
-        g_settings.Save();
-
-        int nItem = m_viewControl.GetSelectedItem();
-        if (nItem < 0) break;
-        CFileItem*pItem = m_vecItems[nItem];
-        CStdString strSelected = pItem->m_strPath;
-
-        UpdateButtons();
-        UpdateListControl();
-
-        CStdString strDirectory = m_Directory.m_strPath;
-        if (CUtil::HasSlashAtEnd(strDirectory))
-          strDirectory.Delete(strDirectory.size() - 1);
-        if (!strDirectory.IsEmpty() && m_nTempPlayListWindow == GetID() && m_strTempPlayListDirectory == strDirectory && g_application.IsPlayingAudio() && g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_MUSIC_TEMP)
-        {
-          int nSong = g_playlistPlayer.GetCurrentSong();
-          const CPlayList::CPlayListItem item = g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC_TEMP)[nSong];
-          g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC_TEMP).Clear();
-          g_playlistPlayer.Reset();
-          int nFolderCount = 0;
-          for (int i = 0; i < (int)m_vecItems.Size(); i++)
-          {
-            CFileItem* pItem = m_vecItems[i];
-            if (pItem->m_bIsFolder)
-            {
-              nFolderCount++;
-              continue;
-            }
-            CPlayList::CPlayListItem playlistItem ;
-            CUtil::ConvertFileItemToPlayListItem(pItem, playlistItem);
-            g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC_TEMP).Add(playlistItem);
-            if (item.GetFileName() == pItem->m_strPath)
-              g_playlistPlayer.SetCurrentSong(i - nFolderCount);
-          }
-        }
-
-        for (int i = 0; i < (int)m_vecItems.Size(); i++)
-        {
-          CFileItem* pItem = m_vecItems[i];
-          if (pItem->m_strPath == strSelected)
-          {
-            m_viewControl.SetSelectedItem(i);
-            break;
-          }
-        }
-      }
-      else if (iControl == CONTROL_BTNVIEWASICONS)
-      {
-        CGUIWindowMusicBase::OnMessage(message);
-        g_stSettings.m_iMyMusicSongsRootViewAsIcons = m_iViewAsIconsRoot;
-        g_stSettings.m_iMyMusicSongsViewAsIcons = m_iViewAsIcons;
-        g_settings.Save();
-        return true;
-      }
-      else if (iControl == CONTROL_BTNSORTASC) // sort asc
-      {
-        if (m_Directory.IsVirtualDirectoryRoot())
-          g_stSettings.m_bMyMusicSongsRootSortAscending = !g_stSettings.m_bMyMusicSongsRootSortAscending;
-        else
-          g_stSettings.m_bMyMusicSongsSortAscending = !g_stSettings.m_bMyMusicSongsSortAscending;
-
-        g_settings.Save();
-        UpdateButtons();
-        UpdateListControl();
-      }
-      else if (iControl == CONTROL_BTNPLAYLISTS)
+      if (iControl == CONTROL_BTNPLAYLISTS)
       {
         CStdString strDirectory;
         CUtil::AddFileToFolder(g_stSettings.m_szPlaylistsDirectory, "music", strDirectory);
-        if (strDirectory != m_Directory.m_strPath)
+        if (strDirectory != m_vecItems.m_strPath)
           Update(strDirectory);
       }
       else if (iControl == CONTROL_BTNSCAN)
@@ -265,42 +180,6 @@ bool CGUIWindowMusicSongs::OnMessage(CGUIMessage& message)
   return CGUIWindowMusicBase::OnMessage(message);
 }
 
-bool CGUIWindowMusicSongs::GetDirectory(const CStdString &strDirectory, CFileItemList &items)
-{
-  // cleanup items
-  if (items.Size())
-    items.Clear();
-
-  CStdString strParentPath = "";
-  if (m_vecPathHistory.size() > 0)
-    strParentPath = m_vecPathHistory.back();
-
-  CLog::Log(LOGDEBUG,"CGUIWindowMusicSongs::GetDirectory (%s)", strDirectory.c_str());
-  CLog::Log(LOGDEBUG,"  ParentPath = [%s]", strParentPath.c_str());
-
-  if (!g_guiSettings.GetBool("MyMusic.HideParentDirItems"))
-  {
-    CFileItem *pItem = new CFileItem("..");
-    pItem->m_strPath = strParentPath;
-    pItem->m_bIsFolder = true;
-    pItem->m_bIsShareOrDrive = false;
-    items.Add(pItem);
-  }
-  m_strParentPath = strParentPath;
-
-  CLog::Log(LOGDEBUG,"Fetching directory (%s)", strDirectory.c_str());
-  if (!m_rootDir.GetDirectory(strDirectory, items))
-  {
-    CLog::Log(LOGERROR,"GetDirectory(%s) failed", strDirectory.c_str());
-    return false;
-  }
-
-  // check for .CUE files here.
-  items.FilterCueItems();
-
-  return true;
-}
-
 void CGUIWindowMusicSongs::OnScan()
 {
   CGUIDialogMusicScan *musicScan = (CGUIDialogMusicScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
@@ -313,7 +192,7 @@ void CGUIWindowMusicSongs::OnScan()
   // check whether we have scanned here before
   bool bUpdateAll = false;
   CStdString strPaths;
-  g_musicDatabase.GetSubpathsFromPath(m_Directory.m_strPath, strPaths);
+  g_musicDatabase.GetSubpathsFromPath(m_vecItems.m_strPath, strPaths);
   if (strPaths.length() > 2)
   { // yes, we have, we should prompt the user to ask if they want
     // to do a full scan, or just add new items...
@@ -325,7 +204,7 @@ void CGUIWindowMusicSongs::OnScan()
 
   // Start background loader
   int iControl=GetFocusedControl();
-  if (musicScan) musicScan->StartScanning(m_Directory.m_strPath, bUpdateAll);
+  if (musicScan) musicScan->StartScanning(m_vecItems.m_strPath, bUpdateAll);
   SET_CONTROL_FOCUS(iControl, 0);
   UpdateButtons();
   return ;
@@ -376,7 +255,7 @@ void CGUIWindowMusicSongs::UpdateButtons()
   }
 
   // Disable scan button if shoutcast
-  if (m_Directory.IsVirtualDirectoryRoot() || m_Directory.IsShoutCast())
+  if (m_vecItems.IsVirtualDirectoryRoot() || m_vecItems.IsShoutCast() || m_vecItems.IsLastFM() || m_vecItems.IsMusicDb())
   {
     CONTROL_DISABLE(CONTROL_BTNSCAN);
   }
@@ -395,29 +274,6 @@ void CGUIWindowMusicSongs::UpdateButtons()
     SET_CONTROL_LABEL(CONTROL_BTNSCAN, 102); // Scan
   }
 
-  // Update sorting control
-  bool bSortAscending = false;
-  if (m_Directory.IsVirtualDirectoryRoot())
-    bSortAscending = g_stSettings.m_bMyMusicSongsRootSortAscending;
-  else
-    bSortAscending = g_stSettings.m_bMyMusicSongsSortAscending;
-
-  if (bSortAscending)
-  {
-    CGUIMessage msg(GUI_MSG_DESELECTED, GetID(), CONTROL_BTNSORTASC);
-    g_graphicsContext.SendMessage(msg);
-  }
-  else
-  {
-    CGUIMessage msg(GUI_MSG_SELECTED, GetID(), CONTROL_BTNSORTASC);
-    g_graphicsContext.SendMessage(msg);
-  }
-
-  if ( m_Directory.IsVirtualDirectoryRoot() )
-    m_viewControl.SetCurrentView(m_iViewAsIconsRoot);
-  else
-    m_viewControl.SetCurrentView(m_iViewAsIcons);
-
   // Update object count label
   int iItems = m_vecItems.Size();
   if (iItems)
@@ -430,32 +286,6 @@ void CGUIWindowMusicSongs::UpdateButtons()
   swprintf(wszText, L"%i %s", iItems, szText);
 
   SET_CONTROL_LABEL(CONTROL_LABELFILES, wszText);
-
-  // Update sort by button
-  if (m_Directory.IsVirtualDirectoryRoot())
-  {
-    if (g_stSettings.m_iMyMusicSongsRootSortMethod == 0)
-    {
-      SET_CONTROL_LABEL(CONTROL_BTNSORTBY, g_stSettings.m_iMyMusicSongsRootSortMethod + 103);
-    }
-    else
-    {
-      SET_CONTROL_LABEL(CONTROL_BTNSORTBY, 498); // Sort by: Type
-    }
-  }
-  else
-  {
-    if (g_stSettings.m_iMyMusicSongsSortMethod <= 2)
-    {
-      // Sort by Name(ItemLabel), Date, Size
-      SET_CONTROL_LABEL(CONTROL_BTNSORTBY, g_stSettings.m_iMyMusicSongsSortMethod + 103);
-    }
-    else
-    {
-      // Sort by FileName
-      SET_CONTROL_LABEL(CONTROL_BTNSORTBY, 363);
-    }
-  }
 }
 
 void CGUIWindowMusicSongs::OnClick(int iItem)
@@ -534,7 +364,7 @@ void CGUIWindowMusicSongs::OnClick(int iItem)
 
         // Save current window and directory to know where the selected item was
         m_nTempPlayListWindow = GetID();
-        m_strTempPlayListDirectory = m_Directory.m_strPath;
+        m_strTempPlayListDirectory = m_vecItems.m_strPath;
         if (CUtil::HasSlashAtEnd(m_strTempPlayListDirectory))
           m_strTempPlayListDirectory.Delete(m_strTempPlayListDirectory.size() - 1);
 
@@ -557,7 +387,7 @@ void CGUIWindowMusicSongs::OnClick(int iItem)
 void CGUIWindowMusicSongs::OnFileItemFormatLabel(CFileItem* pItem)
 {
   // set label 1 & 2 from format string
-  if (pItem->m_musicInfoTag.Loaded())
+  if (!pItem->m_bIsFolder && pItem->m_musicInfoTag.Loaded())
   {
     SetLabelFromTag(pItem);
   }
@@ -567,45 +397,45 @@ void CGUIWindowMusicSongs::OnFileItemFormatLabel(CFileItem* pItem)
       pItem->RemoveExtension();
 
     // and then set label 2
-    int nMyMusicSortMethod = 0;
-    if (m_Directory.IsVirtualDirectoryRoot())
-      nMyMusicSortMethod = g_stSettings.m_iMyMusicSongsRootSortMethod;
-    else
-      nMyMusicSortMethod = g_stSettings.m_iMyMusicSongsSortMethod;
-
-    if (nMyMusicSortMethod == 0 || nMyMusicSortMethod == 2 || nMyMusicSortMethod == 8)
+    auto_ptr<CGUIViewState> pState(CGUIViewState::GetViewState(GetID(), m_vecItems));
+    if (pState.get())
     {
-      if (pItem->m_bIsFolder)
+      SORT_METHOD SortMethod = pState->GetSortMethod();
+
+      if (SortMethod == SORT_METHOD_LABEL || SortMethod == SORT_METHOD_SIZE || SortMethod == SORT_METHOD_FILE)
       {
-        if (!pItem->IsShoutCast() && !pItem->IsLastFM())
-          pItem->SetLabel2("");
-      }
-      else
-      {
-        if (pItem->m_dwSize > 0)
-          pItem->SetFileSizeLabel();
-        if (nMyMusicSortMethod == 0 || nMyMusicSortMethod == 8)
+        if (pItem->m_bIsFolder)
         {
-          int nDuration = pItem->m_musicInfoTag.GetDuration();
-          if (nDuration > 0)
+          if (!pItem->IsShoutCast() && !pItem->IsLastFM())
+            pItem->SetLabel2("");
+        }
+        else
+        {
+          if (pItem->m_dwSize > 0)
+            pItem->SetFileSizeLabel();
+          if (SortMethod == SORT_METHOD_LABEL || SortMethod == SORT_METHOD_FILE)
           {
-            CStdString strDuration;
-            CUtil::SecondsToHMSString(nDuration, strDuration);
-            pItem->SetLabel2(strDuration);
+            int nDuration = pItem->m_musicInfoTag.GetDuration();
+            if (nDuration > 0)
+            {
+              CStdString strDuration;
+              CUtil::SecondsToHMSString(nDuration, strDuration);
+              pItem->SetLabel2(strDuration);
+            }
           }
         }
       }
-    }
-    else
-    {
-      if (pItem->m_stTime.wYear && (!pItem->IsShoutCast() && !pItem->IsLastFM()))
+      else
       {
-        CStdString strDateTime;
-        CUtil::GetDate(pItem->m_stTime, strDateTime);
-        pItem->SetLabel2(strDateTime);
+        if (pItem->m_stTime.wYear && (!pItem->IsShoutCast() && !pItem->IsLastFM()))
+        {
+          CStdString strDateTime;
+          CUtil::GetDate(pItem->m_stTime, strDateTime);
+          pItem->SetLabel2(strDateTime);
+        }
+        else if (!pItem->IsShoutCast() && !pItem->IsLastFM())
+          pItem->SetLabel2("");
       }
-      else if (!pItem->IsShoutCast() && !pItem->IsLastFM())
-        pItem->SetLabel2("");
     }
   }
 
@@ -614,49 +444,6 @@ void CGUIWindowMusicSongs::OnFileItemFormatLabel(CFileItem* pItem)
   {
     pItem->SetMusicThumb();
     pItem->FillInDefaultIcon();
-  }
-}
-
-void CGUIWindowMusicSongs::DoSort(CFileItemList& items)
-{
-  int sortMethod;
-  bool sortAscending;
-
-  if (m_Directory.IsVirtualDirectoryRoot())
-  {
-    sortMethod = g_stSettings.m_iMyMusicSongsRootSortMethod;
-    sortAscending = g_stSettings.m_bMyMusicSongsRootSortAscending;
-  }
-  else
-  {
-    sortMethod = g_stSettings.m_iMyMusicSongsSortMethod;
-    sortAscending = g_stSettings.m_bMyMusicSongsSortAscending;
-    if (g_stSettings.m_iMyMusicSongsSortMethod == 1 || g_stSettings.m_iMyMusicSongsSortMethod == 2)
-      sortAscending = !sortAscending;
-  }
-
-  switch (sortMethod)
-  {
-  case 1:
-    items.Sort(sortAscending ? SSortFileItem::DateAscending : SSortFileItem::DateDescending); break;
-  case 2:
-    items.Sort(sortAscending ? SSortFileItem::SizeAscending : SSortFileItem::SizeDescending); break;
-  case 3:
-    items.Sort(sortAscending ? SSortFileItem::SongTrackNumAscending : SSortFileItem::SongTrackNumDescending); break;
-  case 4:
-    items.Sort(sortAscending ? SSortFileItem::SongDurationAscending : SSortFileItem::SongDurationDescending); break;
-  case 5:
-    items.Sort(sortAscending ? SSortFileItem::SongTitleAscending : SSortFileItem::SongTitleDescending); break;
-  case 6:
-    items.Sort(sortAscending ? SSortFileItem::SongArtistAscending : SSortFileItem::SongArtistDescending); break;
-  case 7:
-    items.Sort(sortAscending ? SSortFileItem::SongAlbumAscending : SSortFileItem::SongAlbumDescending); break;
-  case 8:
-    items.Sort(sortAscending ? SSortFileItem::FileAscending : SSortFileItem::FileDescending); break;
-  case 9:
-    items.Sort(sortAscending ? SSortFileItem::DriveTypeAscending : SSortFileItem::DriveTypeDescending); break;
-  default:
-    items.Sort(sortAscending ? SSortFileItem::LabelAscending : SSortFileItem::LabelDescending); break;
   }
 }
 
@@ -669,7 +456,7 @@ void CGUIWindowMusicSongs::OnRetrieveMusicInfo(CFileItemList& items)
 
   MAPSONGS songsMap;
   // get all information for all files in current directory from database
-  g_musicDatabase.GetSongsByPath(m_Directory.m_strPath, songsMap);
+  g_musicDatabase.GetSongsByPath(m_vecItems.m_strPath, songsMap);
 
   // Nothing in database and id3 tags disabled; dont load tags from cdda files
   if (songsMap.size() == 0 && !g_guiSettings.GetBool("MusicFiles.UseTags"))
@@ -677,7 +464,7 @@ void CGUIWindowMusicSongs::OnRetrieveMusicInfo(CFileItemList& items)
 
   // Do we have cached items
   MAPFILEITEMS itemsMap;
-  LoadDirectoryCache(m_Directory.m_strPath, itemsMap);
+  LoadDirectoryCache(m_vecItems.m_strPath, itemsMap);
 
   bool bShowProgress = false;
   bool bProgressVisible = false;
@@ -739,7 +526,7 @@ void CGUIWindowMusicSongs::OnRetrieveMusicInfo(CFileItemList& items)
       {
         if (m_dlgProgress)
         {
-          CURL url(m_Directory.m_strPath);
+          CURL url(m_vecItems.m_strPath);
           CStdString strStrippedPath;
           url.GetURLWithoutUserDetails(strStrippedPath);
           m_dlgProgress->SetHeading(189);
@@ -771,7 +558,7 @@ void CGUIWindowMusicSongs::OnRetrieveMusicInfo(CFileItemList& items)
 
   // Save the hdd cache if there are more songs in this directory then loaded from database
   if ((m_dlgProgress && !m_dlgProgress->IsCanceled()) && songsMap.size() != (items.Size() - iTaglessFiles))
-    SaveDirectoryCache(m_Directory.m_strPath, items);
+    SaveDirectoryCache(m_vecItems.m_strPath, items);
 
   // cleanup cache loaded from HD
   IMAPFILEITEMS it = itemsMap.begin();
@@ -784,61 +571,6 @@ void CGUIWindowMusicSongs::OnRetrieveMusicInfo(CFileItemList& items)
 
   if (bShowProgress && m_dlgProgress)
     m_dlgProgress->Close();
-}
-
-void CGUIWindowMusicSongs::OnSearchItemFound(const CFileItem* pSelItem)
-{
-  if (pSelItem->m_bIsFolder)
-  {
-    CStdString strPath = pSelItem->m_strPath;
-    CStdString strParentPath;
-    CUtil::GetParentPath(strPath, strParentPath);
-
-    Update(strParentPath);
-
-    SetHistoryForPath(strParentPath);
-
-    strPath = pSelItem->m_strPath;
-    CURL url(strPath);
-    if (pSelItem->IsSmb() && !CUtil::HasSlashAtEnd(strPath))
-      strPath += "/";
-
-    for (int i = 0; i < m_vecItems.Size(); i++)
-    {
-      CFileItem* pItem = m_vecItems[i];
-      if (pItem->m_strPath == strPath)
-      {
-        m_viewControl.SetSelectedItem(i);
-        break;
-      }
-    }
-  }
-  else
-  {
-    CStdString strPath;
-    CUtil::GetDirectory(pSelItem->m_strPath, strPath);
-
-    Update(strPath);
-
-    CStdString strParentPath;
-    while (CUtil::GetParentPath(strPath, strParentPath))
-    {
-      m_history.Set(strPath, strParentPath);
-      strPath = strParentPath;
-    }
-    m_history.Set(strPath, "");
-
-    for (int i = 0; i < (int)m_vecItems.Size(); i++)
-    {
-      CFileItem* pItem = m_vecItems[i];
-      if (pItem->m_strPath == pSelItem->m_strPath)
-      {
-        m_viewControl.SetSelectedItem(i);
-        break;
-      }
-    }
-  }
-  m_viewControl.SetFocused();
 }
 
 /// \brief Search for a song or a artist with search string \e strSearch in the musicdatabase and return the found \e items
@@ -875,45 +607,6 @@ void CGUIWindowMusicSongs::DoSearch(const CStdString& strSearch, CFileItemList& 
       items.Add(pItem);
     }
   }
-}
-
-bool CGUIWindowMusicSongs::Update(const CStdString &strDirectory)
-{
-  // if we're getting the root bookmark listing
-  // make sure the path history is clean
-  if (strDirectory.IsEmpty())
-    m_vecPathHistory.empty();
-
-  if (!CGUIWindowMusicBase::Update(strDirectory))
-    return false;
-
-  // possible minor issue ?
-  // CVirtualDirectory::GetDirectory() returns the root bookmark listing if the user
-  // tries to access a path which does not match any valid bookmark.
-  // this condition screws up the history vector because GetDirectory() returns true,
-  // and the history shows the "failed" path but the root listing.
-
-  if (!m_Directory.IsVirtualDirectoryRoot() && g_guiSettings.GetBool("MusicFiles.UseAutoSwitching"))
-  {
-    m_iViewAsIcons = CAutoSwitch::GetView(m_vecItems);
-    UpdateButtons();
-  }
-  
-  if ((m_vecPathHistory.size() == 0) || m_vecPathHistory.back() != strDirectory)
-  {
-    m_vecPathHistory.push_back(strDirectory);
-  }
-
-  // debug log
-  CStdString strTemp;
-  CLog::Log(LOGDEBUG,"Current m_vecPathHistory:");
-  for (int i = 0; i < (int)m_vecPathHistory.size(); ++i)
-  {
-    strTemp.Format("%02i.[%s]", i, m_vecPathHistory[i]);
-    CLog::Log(LOGDEBUG, "  %s", strTemp.c_str());
-  }
-
-  return true;
 }
 
 void CGUIWindowMusicSongs::GetDirectoryHistoryString(const CFileItem* pItem, CStdString& strHistoryString)
@@ -960,41 +653,6 @@ void CGUIWindowMusicSongs::GetDirectoryHistoryString(const CFileItem* pItem, CSt
   }
 }
 
-void CGUIWindowMusicSongs::SetHistoryForPath(const CStdString& strDirectory)
-{
-  if (!strDirectory.IsEmpty())
-  {
-    // Build the directory history for default path
-    CStdString strPath, strParentPath;
-    strPath = strDirectory;
-    CFileItemList items;
-    GetDirectory("", items);
-
-    while (CUtil::GetParentPath(strPath, strParentPath))
-    {
-      bool bSet = false;
-      for (int i = 0; i < (int)items.Size(); ++i)
-      {
-        CFileItem* pItem = items[i];
-        while (CUtil::HasSlashAtEnd(pItem->m_strPath))
-          pItem->m_strPath.Delete(pItem->m_strPath.size() - 1);
-        if (pItem->m_strPath == strPath)
-        {
-          CStdString strHistory;
-          GetDirectoryHistoryString(pItem, strHistory);
-          m_history.Set(strHistory, "");
-          return ;
-        }
-      }
-
-      m_history.Set(strPath, strParentPath);
-      strPath = strParentPath;
-      while (CUtil::HasSlashAtEnd(strPath))
-        strPath.Delete(strPath.size() - 1);
-    }
-  }
-}
-
 void CGUIWindowMusicSongs::OnPopupMenu(int iItem)
 {
   // We don't check for iItem range here, as we may later support creating shares
@@ -1009,7 +667,7 @@ void CGUIWindowMusicSongs::OnPopupMenu(int iItem)
     iPosX = pList->GetXPosition() + pList->GetWidth() / 2;
     iPosY = pList->GetYPosition() + pList->GetHeight() / 2;
   }
-  if ( m_Directory.IsVirtualDirectoryRoot() )
+  if ( m_vecItems.IsVirtualDirectoryRoot() )
   {
     if (iItem < 0)
     { // TODO: we should check here whether the user can add shares, and have the option to do so
@@ -1026,7 +684,7 @@ void CGUIWindowMusicSongs::OnPopupMenu(int iItem)
     if (CGUIDialogContextMenu::BookmarksMenu("music", m_vecItems[iItem]->GetLabel(), m_vecItems[iItem]->m_strPath, m_vecItems[iItem]->m_iLockMode, bMaxRetryExceeded, iPosX, iPosY))
     {
       m_rootDir.SetShares(g_settings.m_vecMyMusicShares);
-      Update(m_Directory.m_strPath);
+      Update(m_vecItems.m_strPath);
       return ;
     }
     m_vecItems[iItem]->Select(false);
@@ -1150,7 +808,7 @@ void CGUIWindowMusicSongs::PlayItem(int iItem)
   // and cleared!
 
   // we're at the root bookmark listing
-  if (m_Directory.m_strPath.IsEmpty())
+  if (m_vecItems.IsVirtualDirectoryRoot())
     return;
 
   CGUIWindowMusicBase::PlayItem(iItem);

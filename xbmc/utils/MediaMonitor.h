@@ -13,6 +13,7 @@
 #include "IMDB.h"
 #include "../FileSystem/iDirectory.h"
 #include "../VideoDatabase.h"
+#include "../settings.h"
 
 #define RECENT_MOVIES 3
 

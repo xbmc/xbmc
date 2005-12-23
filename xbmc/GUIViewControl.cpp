@@ -215,6 +215,12 @@ bool CGUIViewControl::HasControl(int viewControlID)
   return false;
 }
 
+bool CGUIViewControl::HasViewMode(int viewMode)
+{
+  map_iter it = m_vecViews.find(viewMode);
+  return (it!=m_vecViews.end());
+}
+
 int CGUIViewControl::GetCurrentControl()
 {
   map_iter it = m_vecViews.find(m_currentView);

@@ -2,6 +2,7 @@
 #include "GUIWindowManager.h"
 #include "GUIAudioManager.h"
 #include "GUIDialog.h"
+#include "../xbmc/settings.h"
 //GeminiServer 
 #include "../xbmc/FileItem.h"
 #include "../xbmc/GUIPassword.h"

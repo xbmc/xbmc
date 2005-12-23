@@ -8,6 +8,7 @@
 #include "settings/VideoSettings.h"
 #include "../xbmc/StringUtils.h"
 #include "GUISettings.h"
+#include "fileitem.h"
 
 #include <vector>
 
@@ -77,8 +78,8 @@ typedef std::vector<CFolderView*> VECFOLDERVIEWS;
 class CShare
 {
 public:
-  CShare(){};
-  virtual ~CShare(){};
+  CShare() { m_iBufferSize=0; m_iDepthSize=0; m_iDriveType=SHARE_TYPE_UNKNOWN; m_iLockMode=LOCK_MODE_EVERYONE; m_iBadPwdCount=0; };
+  virtual ~CShare() {};
   CStdString strName; ///< Name of the share, can be choosen freely.
   CStdString strPath; ///< Path of the share, eg. iso9660:// or F:
   CStdString strEntryPoint; ///< entry point of shares, used with archives
@@ -321,10 +322,10 @@ public:
 
     int m_iMyMusicSongsRootViewAsIcons;
     int m_iMyMusicSongsViewAsIcons;
-    bool m_bMyMusicSongsRootSortAscending;
-    bool m_bMyMusicSongsSortAscending;
-    int m_iMyMusicSongsSortMethod;
-    int m_iMyMusicSongsRootSortMethod;
+    SORT_ORDER m_iMyMusicSongsRootSortAscending;
+    SORT_ORDER m_iMyMusicSongsSortAscending;
+    SORT_METHOD m_iMyMusicSongsSortMethod;
+    SORT_METHOD m_iMyMusicSongsRootSortMethod;
     int m_iMyMusicPlaylistViewAsIcons;
     bool m_bMyMusicPlaylistRepeat;
     bool m_bMyMusicPlaylistShuffle;
@@ -340,16 +341,16 @@ public:
     int m_iMyMusicNavTopViewAsIcons;
     int m_iMyMusicNavPlaylistsViewAsIcons;
 
-    int m_iMyMusicNavRootSortMethod;
-    int m_iMyMusicNavAlbumsSortMethod;
-    int m_iMyMusicNavSongsSortMethod;
-    int m_iMyMusicNavPlaylistsSortMethod;
+    SORT_METHOD m_iMyMusicNavRootSortMethod;
+    SORT_METHOD m_iMyMusicNavAlbumsSortMethod;
+    SORT_METHOD m_iMyMusicNavSongsSortMethod;
+    SORT_METHOD m_iMyMusicNavPlaylistsSortMethod;
 
-    bool m_bMyMusicNavGenresSortAscending;
-    bool m_bMyMusicNavArtistsSortAscending;
-    bool m_bMyMusicNavAlbumsSortAscending;
-    bool m_bMyMusicNavSongsSortAscending;
-    bool m_bMyMusicNavPlaylistsSortAscending;
+    SORT_ORDER m_iMyMusicNavGenresSortAscending;
+    SORT_ORDER m_iMyMusicNavArtistsSortAscending;
+    SORT_ORDER m_iMyMusicNavAlbumsSortAscending;
+    SORT_ORDER m_iMyMusicNavSongsSortAscending;
+    SORT_ORDER m_iMyMusicNavPlaylistsSortAscending;
 
     // for scanning
     bool m_bMyMusicIsScanning;
