@@ -82,10 +82,14 @@ bool CPlayListWPL::Load(const CStdString& strFileName)
 void CPlayListWPL::Save(const CStdString& strFileName) const
 {
   if (!m_vecItems.size()) return ;
-  FILE *fd = fopen(strFileName.c_str(), "w+");
+  CStdString strPlaylist = strFileName;
+  // force HD saved playlists into fatx compliance
+  if (CUtil::IsHD(strPlaylist))
+    CUtil::GetFatXQualifiedPath(strPlaylist);
+  FILE *fd = fopen(strPlaylist.c_str(), "w+");
   if (!fd)
   {
-    CLog::Log(LOGERROR, "Could not save WPL playlist: [%s]", strFileName.c_str());
+    CLog::Log(LOGERROR, "Could not save WPL playlist: [%s]", strPlaylist.c_str());
     return ;
   }
   fprintf(fd, "<?wpl version=%c1.0%c>\n", 34, 34);

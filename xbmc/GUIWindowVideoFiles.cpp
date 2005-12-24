@@ -182,13 +182,11 @@ bool CGUIWindowVideoFiles::OnMessage(CGUIMessage& message)
       }
       else if (iControl == CONTROL_BTNPLAYLISTS)
       {
-        CStdString strDirectory;
-        strDirectory.Format("%svideo\\", g_stSettings.m_szPlaylistsDirectory);
-        if (strDirectory != m_Directory.m_strPath)
+        if (!m_Directory.m_strPath.Equals(CUtil::VideoPlaylistsLocation()))
         {
           CStdString strParent = m_Directory.m_strPath;
           UpdateButtons();
-          Update(strDirectory);
+          Update(CUtil::VideoPlaylistsLocation());
           m_strParentPath = strParent;
         }
       }
@@ -931,63 +929,6 @@ bool CGUIWindowVideoFiles::GetDirectory(const CStdString &strDirectory, CFileIte
 
   return true;
 }
-
-// old code
-/*
-bool CGUIWindowVideoFiles::GetDirectory(const CStdString &strDirectory, CFileItemList &items)
-{
-  if (items.Size() )
-  {
-    // cleanup items
-    items.Clear();
-  }
-
-  CStdString strParentPath;
-  bool bParentExists;
-  if (strDirectory != CStdString(g_stSettings.m_szPlaylistsDirectory)+"video\\")
-    bParentExists = CUtil::GetParentPath(strDirectory, strParentPath);
-  else
-  {
-    bParentExists = true;
-    strParentPath = "";
-  }
-
-  // check if current directory is a root share
-  if ( !m_rootDir.IsShare(strDirectory) )
-  {
-    // no, do we got a parent dir?
-    if ( bParentExists )
-    {
-      // yes
-      if (!g_guiSettings.GetBool("MyVideos.HideParentDirItems"))
-      {
-        CFileItem *pItem = new CFileItem("..");
-        pItem->m_strPath = strParentPath;
-        pItem->m_bIsFolder = true;
-        pItem->m_bIsShareOrDrive = false;
-        items.Add(pItem);
-      }
-      m_strParentPath = strParentPath;
-    }
-  }
-  else
-  {
-    // yes, this is the root of a share
-    // add parent path to the virtual directory
-    if (!g_guiSettings.GetBool("MyVideos.HideParentDirItems"))
-    {
-      CFileItem *pItem = new CFileItem("..");
-      pItem->m_strPath = "";
-      pItem->m_bIsShareOrDrive = false;
-      pItem->m_bIsFolder = true;
-      items.Add(pItem);
-    }
-    m_strParentPath = "";
-  }
-
-  return m_rootDir.GetDirectory(strDirectory, items);
-}
-*/
 
 /// \brief Can be overwritten to build an own history string for \c m_history
 /// \param pItem Item to build the history string from

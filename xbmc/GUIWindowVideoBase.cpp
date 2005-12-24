@@ -247,6 +247,10 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
           else if (GetID() == WINDOW_VIDEOS && g_guiSettings.GetBool("VideoFiles.AllowFileDeletion"))
             OnDeleteItem(iItem);
 
+          // or be at the video playlists location
+          if (m_vecItems.m_strPath.Equals(CUtil::VideoPlaylistsLocation()))
+            OnDeleteItem(iItem);
+
           else
             return false;
         }
@@ -1071,7 +1075,7 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem)
   int btn_Delete = 0, btn_Rename = 0;
   if (!bIsGotoParent)
   {
-    if ((GetID() == WINDOW_VIDEOS && g_guiSettings.GetBool("VideoFiles.AllowFileDeletion")))
+    if ((m_vecItems.m_strPath.Equals(CUtil::VideoPlaylistsLocation())) || (GetID() == WINDOW_VIDEOS && g_guiSettings.GetBool("VideoFiles.AllowFileDeletion")))
     {
       btn_Delete = pMenu->AddButton(117);             // Delete
       btn_Rename = pMenu->AddButton(118);             // Rename
