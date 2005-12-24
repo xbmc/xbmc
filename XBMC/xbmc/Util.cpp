@@ -3504,9 +3504,9 @@ CStdString CUtil::TranslateSpecialDir(const CStdString &strSpecial)
     else if (strSpecial.Equals("$PLAYLISTS"))
       strReturn = g_stSettings.m_szPlaylistsDirectory;
     else if (strSpecial.Equals("$MUSICPLAYLISTS"))
-      strReturn = (CStdString)g_stSettings.m_szPlaylistsDirectory + "\\music";
+      strReturn = MusicPlaylistsLocation();
     else if (strSpecial.Equals("$VIDEOPLAYLISTS"))
-      strReturn = (CStdString)g_stSettings.m_szPlaylistsDirectory + "\\video";
+      strReturn = VideoPlaylistsLocation();
     else if (strSpecial.Equals("$CDRIPS"))
       strReturn = g_stSettings.m_strRipPath;
   }
@@ -3514,6 +3514,20 @@ CStdString CUtil::TranslateSpecialDir(const CStdString &strSpecial)
   if (strReturn.IsEmpty())
     CLog::Log(LOGERROR,"Invalid special directory token: %s",strSpecial.c_str());
   */
+  return strReturn;
+}
+
+CStdString CUtil::MusicPlaylistsLocation()
+{
+  CStdString strReturn;
+  CUtil::AddFileToFolder(g_stSettings.m_szPlaylistsDirectory, "music", strReturn);
+  return strReturn;
+}
+
+CStdString CUtil::VideoPlaylistsLocation()
+{
+  CStdString strReturn;
+  CUtil::AddFileToFolder(g_stSettings.m_szPlaylistsDirectory, "video", strReturn);
   return strReturn;
 }
 

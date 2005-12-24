@@ -70,7 +70,7 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
         //  Playlists share
         CShare share;
         share.strName=g_localizeStrings.Get(136); // Playlists
-        share.strPath.Format("%smusic\\", g_stSettings.m_szPlaylistsDirectory);
+        share.strPath=CUtil::MusicPlaylistsLocation();
         share.m_strThumbnailImage="defaultFolder.png";
         m_shares.push_back(share);
 
@@ -131,7 +131,7 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
         }
         else if (strDestination.Equals("Playlists"))
         {
-          m_vecItems.m_strPath.Format("%s\\music", g_stSettings.m_szPlaylistsDirectory);
+          m_vecItems.m_strPath = CUtil::MusicPlaylistsLocation();
           SetHistoryForPath(m_vecItems.m_strPath);
         }
         else
