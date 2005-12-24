@@ -3292,7 +3292,7 @@ bool CMusicDatabase::UpdateOldVersion(float fVersion)
       CLog::Log(LOGINFO, "Creating temporary album table");
       m_pDS->exec("CREATE TEMPORARY TABLE tempalbum ( idAlbum integer primary key, strAlbum text, idArtist integer, iNumArtists integer, idPath integer, idThumb integer)\n");
       CLog::Log(LOGINFO, "Copying albums into temporary album table");
-      m_pDS->exec("INSERT INTO tempalbum SELECT distinct album.idAlbum as idAlbum, strAlbum, album.idArtist as idArtist, album.iNumArtists as iNumArtists, album.idPath as idPath, song.idThumb as idThumb FROM album join song on album.idAlbum=song.idAlbum");
+      m_pDS->exec("INSERT INTO tempalbum SELECT distinct album.idAlbum as idAlbum, strAlbum, album.idArtist as idArtist, album.iNumArtists as iNumArtists, album.idPath as idPath, song.idThumb as idThumb FROM album join song on album.idAlbum=song.idAlbum group by album.idalbum");
       CLog::Log(LOGINFO, "Dropping old album table");
       m_pDS->exec("DROP TABLE album");
       CLog::Log(LOGINFO, "Creating new album table");
