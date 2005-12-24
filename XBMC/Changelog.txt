@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 24-12-2005 fixed: Musicdatabase upgrade to 1.4 failed if songs from the same album had different thumbid's.
  - 24-12-2005 fixed: [ 1380153 ] DVD playback with subtitles not in sync
  - 23-12-2005 added: workaround for stacking multipart rar sets (ie, filename.partXXX.rar)
  - 23-12-2005 updated: Swedish language file (Thnx to blittan)
