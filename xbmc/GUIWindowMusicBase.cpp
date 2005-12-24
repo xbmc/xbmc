@@ -413,9 +413,7 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
         {
           // is delete allowed?
           // must be at the playlists directory
-          CStdString strDirectory;
-          strDirectory.Format("%s\\music", g_stSettings.m_szPlaylistsDirectory);
-          if (strDirectory.Equals(m_vecItems.m_strPath))
+          if (m_vecItems.m_strPath.Equals(CUtil::MusicPlaylistsLocation()))
             OnDeleteItem(iItem);
 
           // or be at the files window and have file deletion enabled
@@ -1767,9 +1765,7 @@ void CGUIWindowMusicBase::OnPopupMenu(int iItem)
   {
     if (!m_vecItems.IsCDDA()) btn_CDDB = pMenu->AddButton(16002);    // CDDB lookup
     
-    CStdString strDirectory;
-    strDirectory.Format("%s\\music", g_stSettings.m_szPlaylistsDirectory);
-    if (strDirectory.Equals(m_vecItems.m_strPath) || g_guiSettings.GetBool("MusicFiles.AllowFileDeletion"))
+    if (m_vecItems.m_strPath.Equals(CUtil::MusicPlaylistsLocation()) || g_guiSettings.GetBool("MusicFiles.AllowFileDeletion"))
     {
       btn_Delete = pMenu->AddButton(117);               // Delete
       btn_Rename = pMenu->AddButton(118);               // Rename

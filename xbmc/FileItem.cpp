@@ -510,13 +510,16 @@ void CFileItem::FillInDefaultIcon()
         SetIconImage("defaultPlaylist.png");
 
         CUtil::GetExtension(m_strPath, strExtension);
-        if ( strcmpi(strExtension.c_str(), ".strm") != 0)
+        if (!strExtension.Equals(".strm"))
         {
           //  Save playlists to playlist directroy
-          CStdString strDir;
-          CStdString strFileName;
-          strFileName = CUtil::GetFileName(m_strPath);
-          if (m_strPath != CStdString(g_stSettings.m_szPlaylistsDirectory)+"music\\"+strFileName && m_strPath != CStdString(g_stSettings.m_szPlaylistsDirectory)+"video\\"+strFileName)
+          CStdString strFileName, strFolder;
+          CUtil::Split(m_strPath, strFolder, strFileName);
+          if (CUtil::HasSlashAtEnd(strFolder))
+            strFolder.Delete(strFolder.size() - 1);
+
+          // skip playlists found in the playlists folders
+          if (!strFolder.Equals(CUtil::MusicPlaylistsLocation()) && !strFolder.Equals(CUtil::VideoPlaylistsLocation()))
           {
             CPlayListFactory factory;
             auto_ptr<CPlayList> pPlayList (factory.Create(m_strPath));
@@ -524,18 +527,22 @@ void CFileItem::FillInDefaultIcon()
             {
               if (pPlayList->Load(m_strPath) && pPlayList->size() > 0)
               {
+                // use first item in playlist to determine intent -- audio or video
                 const CPlayList::CPlayListItem& item = (*pPlayList.get())[0];
                 if (!item.IsInternetStream())
                 {
+                  CStdString strPlaylist = "";
                   if (item.IsAudio())
-                    strDir.Format("%smusic\\%s", g_stSettings.m_szPlaylistsDirectory, strFileName.c_str());
-                  else 
-                  if (item.IsVideo())
-                    strDir.Format("%svideo\\%s", g_stSettings.m_szPlaylistsDirectory, strFileName.c_str());
-                  else
-                    strDir = "";
-
-                  pPlayList->Save(strDir);
+                    CUtil::AddFileToFolder(CUtil::MusicPlaylistsLocation(), strFileName, strPlaylist);
+                  else if (item.IsVideo())
+                    CUtil::AddFileToFolder(CUtil::VideoPlaylistsLocation(), strFileName, strPlaylist);
+                  if (!strPlaylist.IsEmpty())
+                  {
+                    if (CUtil::IsHD(strPlaylist))
+                      CUtil::GetFatXQualifiedPath(strPlaylist);
+                    if (!CFile::Exists(strPlaylist))
+                      pPlayList->Save(strPlaylist);
+                  }
                 }
               }
             }

@@ -148,10 +148,8 @@ bool CGUIWindowMusicSongs::OnMessage(CGUIMessage& message)
 
       if (iControl == CONTROL_BTNPLAYLISTS)
       {
-        CStdString strDirectory;
-        CUtil::AddFileToFolder(g_stSettings.m_szPlaylistsDirectory, "music", strDirectory);
-        if (strDirectory != m_vecItems.m_strPath)
-          Update(strDirectory);
+        if (!m_vecItems.m_strPath.Equals(CUtil::MusicPlaylistsLocation()))
+          Update(CUtil::MusicPlaylistsLocation());
       }
       else if (iControl == CONTROL_BTNSCAN)
       {
