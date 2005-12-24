@@ -305,6 +305,62 @@ CStdString flushResult(int eid, webs_t wp, CStdString output)
   return "";
 }
 
+int CXbmcHttp::xbmcGetShares()
+{
+  // returns the share listing in this format:
+  // <li>type;name;path
+  // literal semicolons are translated into ;;
+
+  CStdString strOutput;
+  enum SHARETYPES { MUSIC, VIDEO, PICTURES };
+  for (int i = 0; i < 3; ++i)
+  {
+    CStdString strType;
+    VECSHARES *pShares = NULL;
+    switch(i)
+    {
+    case MUSIC:
+      {
+        strType = "music";
+        pShares = &g_settings.m_vecMyMusicShares;
+      }
+      break;
+    case VIDEO:
+      {
+        strType = "video";
+        pShares = &g_settings.m_vecMyVideoShares;
+      }
+      break;
+    case PICTURES:
+      {
+        strType = "pictures";
+        pShares = &g_settings.m_vecMyPictureShares;
+      }
+      break;
+    }
+
+    if (!pShares)
+      return SetResponse(openTag+"Error");
+    
+    VECSHARES vecShares = *pShares;
+    for (int j = 0; j < (int)vecShares.size(); ++j)
+    {
+      CShare share = vecShares.at(j);
+      CStdString strName = share.strName;
+      strName.Replace(";", ";;");
+      CStdString strPath = share.strPath;
+      strPath.Replace(";", ";;");
+      CStdString strLine = openTag;
+      strLine += strType + ";";
+      strLine += strName + ";";
+      strLine += strPath;
+      strLine += closeTag;
+      strOutput += strLine;
+    }
+  }
+  return SetResponse(strOutput);
+}
+
 int displayDir(int numParas, CStdString paras[]) {
   //mask = ".mp3|.wma" -> matching files
   //mask = "*" -> just folders
@@ -330,7 +386,7 @@ int displayDir(int numParas, CStdString paras[]) {
     if (numParas>2)
       option=paras[2];
 
-    IDirectory *pDirectory = CFactoryDirectory::Create(folder);
+  IDirectory *pDirectory = CFactoryDirectory::Create(folder);
 
   if (!pDirectory) 
   {
@@ -2088,6 +2144,7 @@ int CXbmcHttp::xbmcCommand(CStdString parameter)
       else if (command == "reset")                    retVal = xbmcExit(4);
       else if (command == "restartapp")               retVal = xbmcExit(5);
       else if (command == "getcurrentlyplaying")      retVal = xbmcGetCurrentlyPlaying(); 
+      else if (command == "getshares")                retVal = xbmcGetShares(); 
       else if (command == "getdirectory")             retVal = xbmcGetDirectory(numParas, paras); 
       else if (command == "gettagfromfilename")       retVal = xbmcGetTagFromFilename(numParas, paras);
       else if (command == "getcurrentplaylist")       retVal = xbmcGetCurrentPlayList();
