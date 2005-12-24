@@ -185,6 +185,8 @@
       <onright>5</onright>
       <onup>5</onup>
       <ondown>5</ondown>
+	<spinposx>410</spinposx>
+	<spinposy>205</spinposy>
     </control>
 
     <control>
