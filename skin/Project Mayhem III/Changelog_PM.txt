@@ -1,3 +1,6 @@
+2005-12-24 fixed:	spincontrol positi0ns in album & video info windows
+2005-12-24 fixed:	navigation from cast button to spin control in video info window
+
 2005-12-16 changed:     Moved to version 1.85 compatible.
 
 2005-12-11 changed:     Moved to version 1.8 compatible.

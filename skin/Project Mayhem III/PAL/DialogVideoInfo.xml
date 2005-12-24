@@ -247,6 +247,8 @@
       <onright>5</onright>
       <onup>5</onup>
       <ondown>5</ondown>
+	<spinposx>410</spinposx>
+	<spinposy>190</spinposy>
     </control>
 
     <control>
@@ -261,6 +263,8 @@
       <onright>5</onright>
       <onup>5</onup>
       <ondown>8</ondown>
+	<spinposx>410</spinposx>
+	<spinposy>190</spinposy>
     </control>
 
     <control>
@@ -270,8 +274,8 @@
       <posx>50</posx>
       <posy>120</posy>
       <label>206</label>
-      <onleft>50</onleft>
-      <onright>50</onright>
+      <onleft>4</onleft>
+      <onright>4</onright>
       <onup>6</onup>
       <ondown>8</ondown>
     </control>
