@@ -106,8 +106,8 @@ namespace PYXBMC
             PyGetDefaultImage("listcontrol", "textureFocus", "list-focus.png");	
 
 		// default values for spin control
-		self->pControlSpin->dwPosX = self->dwPosX + self->dwWidth - 35;
-		self->pControlSpin->dwPosY = self->dwPosY + self->dwHeight - 15;
+		self->pControlSpin->dwPosX = self->dwWidth - 35;
+		self->pControlSpin->dwPosY = self->dwHeight - 15;
 
 		return (PyObject*)self;
 	}
