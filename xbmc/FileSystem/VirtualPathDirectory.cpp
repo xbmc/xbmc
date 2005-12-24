@@ -77,6 +77,7 @@ bool CVirtualPathDirectory::GetDirectory(const CStdString& strPath, CFileItemLis
 
 bool CVirtualPathDirectory::Exists(const CStdString& strPath)
 {
+  CLog::Log(LOGDEBUG,"Testing Existance (%s)", strPath.c_str());
   CShare share;
   if (!GetMatchingShare(strPath, share))
     return false;
@@ -112,6 +113,8 @@ bool CVirtualPathDirectory::GetTypeAndBookmark(const CStdString& strPath, CStdSt
 {
   // format: virtualpath://type/bookmarkname
   CStdString strTemp = strPath;
+  if (CUtil::HasSlashAtEnd(strTemp))
+    strTemp.Delete(strTemp.size() - 1);
   CStdString strTest = "virtualpath://";
   if (strTemp.Left(strTest.length()).Equals(strTest))
   {
