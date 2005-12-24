@@ -185,6 +185,8 @@ public:
   static int GetMatchingShare(const CStdString& strPath, VECSHARES& vecShares, bool& bIsBookmarkName);
   static CStdString TranslateSpecialDir(const CStdString &strSpecial);
   static void DeleteDatabaseDirectoryCache();
+  static CStdString MusicPlaylistsLocation();
+  static CStdString VideoPlaylistsLocation();
 
   //GeminiServer
   static bool IsLeapYear(int iLYear, int iLMonth, int iLTag, int &iMonMax, int &iWeekDay);

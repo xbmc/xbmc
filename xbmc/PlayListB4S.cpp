@@ -88,10 +88,14 @@ bool CPlayListB4S::Load(const CStdString& strFileName)
 void CPlayListB4S::Save(const CStdString& strFileName) const
 {
   if (!m_vecItems.size()) return ;
-  FILE *fd = fopen(strFileName.c_str(), "w+");
+  CStdString strPlaylist = strFileName;
+  // force HD saved playlists into fatx compliance
+  if (CUtil::IsHD(strPlaylist))
+    CUtil::GetFatXQualifiedPath(strPlaylist);
+  FILE *fd = fopen(strPlaylist.c_str(), "w+");
   if (!fd)
   {
-    CLog::Log(LOGERROR, "Could not save B4S playlist: [%s]", strFileName.c_str());
+    CLog::Log(LOGERROR, "Could not save B4S playlist: [%s]", strPlaylist.c_str());
     return ;
   }
   fprintf(fd, "<?xml version=%c1.0%c encoding='UTF-8' standalone=%cyes%c?>\n", 34, 34, 34, 34);

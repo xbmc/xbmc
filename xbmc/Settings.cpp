@@ -446,12 +446,10 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
   CUtil::AddSlashAtEnd(strDir);
   strcpy( g_stSettings.m_szPlaylistsDirectory, strDir.c_str() );
 
-  CUtil::AddFileToFolder(g_stSettings.m_szPlaylistsDirectory, "music", strDir);
-  if (!CDirectory::Exists(strDir))
-    CDirectory::Create(strDir);
-  CUtil::AddFileToFolder(g_stSettings.m_szPlaylistsDirectory, "video", strDir);
-  if (!CDirectory::Exists(strDir))
-    CDirectory::Create(strDir);
+  if (!CDirectory::Exists(CUtil::MusicPlaylistsLocation()))
+    CDirectory::Create(CUtil::MusicPlaylistsLocation());
+  if (!CDirectory::Exists(CUtil::VideoPlaylistsLocation()))
+    CDirectory::Create(CUtil::VideoPlaylistsLocation());
   
   strDir = g_stSettings.m_szCacheDirectory;
   ConvertHomeVar(strDir);
