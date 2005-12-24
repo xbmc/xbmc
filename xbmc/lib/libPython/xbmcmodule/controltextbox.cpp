@@ -39,8 +39,8 @@ namespace PYXBMC
 		else self->dwTextColor = 0xffffffff;
 
 		// default values for spin control
-		self->pControlSpin->dwPosX = self->dwPosX + self->dwWidth - 25;
-		self->pControlSpin->dwPosY = self->dwPosY + self->dwHeight - 30;
+		self->pControlSpin->dwPosX = self->dwWidth - 25;
+		self->pControlSpin->dwPosY = self->dwHeight - 30;
 
 		return (PyObject*)self;
 	}
