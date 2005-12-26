@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 26-12-2005 fixed: FileItem attribute CanQueue was not saved or copyed to another object
  - 24-12-2005 fixed: playlist caching
  - 24-12-2005 fixed: list and textbox spincontrols in python
  - 24-12-2005 added: getshares command to HttpApi
