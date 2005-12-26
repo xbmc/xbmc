@@ -1219,12 +1219,17 @@ void CGUIWindowMusicBase::OnQueueItem(int iItem)
   int iOldSize=g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).size();
 
   // add item 2 playlist
-  const CFileItem* pItem = m_vecItems[iItem];
+  CFileItem item(*m_vecItems[iItem]);
   
-  if (pItem->IsRAR() || pItem->IsZIP())
+  if (item.IsRAR() || item.IsZIP())
     return;
 
-  AddItemToPlayList(pItem);
+  //  Allow queuing of unqueueable items
+  //  when we try to queue them directly
+  if (!item.CanQueue())
+    item.SetCanQueue(true);
+
+  AddItemToPlayList(&item);
 
   //move to next item
   m_viewControl.SetSelectedItem(iItem + 1);
