@@ -165,6 +165,11 @@ void CMusicInfoTag::SetPartOfSet(int iPartOfSet)
   m_iTrack = (m_iTrack & 0xffff) | (iPartOfSet << 16);
 }
 
+void CMusicInfoTag::SetTrackAndDiskNumber(int iTrackAndDisc)
+{
+  m_iTrack=iTrackAndDisc;
+}
+
 void CMusicInfoTag::SetDuration(int iSec)
 {
   m_iDuration = iSec;
