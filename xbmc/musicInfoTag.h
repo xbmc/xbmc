@@ -44,6 +44,7 @@ public:
   void SetReleaseDate(SYSTEMTIME& dateTime);
   void SetTrackNumber(int iTrack);
   void SetPartOfSet(int m_iPartOfSet);
+  void SetTrackAndDiskNumber(int iTrackAndDisc);
   void SetDuration(int iSec);
   void SetLoaded(bool bOnOff = true);
   void SetAlbum(const CAlbum& album);

@@ -162,6 +162,7 @@ private:
   bool GetExtraGenresForSong(long lSongId, CStdString &strGenre);
   CSong GetSongFromDataset(bool bWithMusicDbPath=false);
   CAlbum GetAlbumFromDataset();
+  void GetFileItemFromDataset(CFileItem* item, const CStdString& strMusicDBbasePath);
   bool CleanupSongs();
   bool CleanupSongsByIds(const CStdString &strSongIds);
   bool CleanupPaths();
