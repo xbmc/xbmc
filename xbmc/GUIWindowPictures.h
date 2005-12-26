@@ -49,7 +49,7 @@ protected:
   virtual void OnItemLoaded(CFileItem* pItem);
   void OnDeleteItem(int iItem);
   virtual void OnRenameItem(int iItem);
-
+  void CGUIWindowPictures::LoadPlayList(const CStdString& strPlayList);
   void ShowShareErrorMessage(CFileItem* pItem);
 
   CVirtualDirectory m_rootDir;
