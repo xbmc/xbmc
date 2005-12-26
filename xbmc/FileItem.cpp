@@ -120,6 +120,7 @@ const CFileItem& CFileItem::operator=(const CFileItem& item)
   m_iLockMode = item.m_iLockMode;
   m_strLockCode = item.m_strLockCode;
   m_iBadPwdCount = item.m_iBadPwdCount;
+  m_bCanQueue=item.m_bCanQueue;
   return *this;
 }
 
@@ -175,6 +176,8 @@ void CFileItem::Serialize(CArchive& ar)
     ar << m_strLockCode;
     ar << m_iBadPwdCount;
 
+    ar << m_bCanQueue;
+
     ar << m_musicInfoTag;
   }
   else
@@ -200,6 +203,8 @@ void CFileItem::Serialize(CArchive& ar)
     ar >> m_iLockMode;
     ar >> m_strLockCode;
     ar >> m_iBadPwdCount;
+
+    ar >> m_bCanQueue;
 
     ar >> m_musicInfoTag;
   }
