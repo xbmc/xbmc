@@ -721,6 +721,53 @@ CSong CMusicDatabase::GetSongFromDataset(bool bWithMusicDbPath/*=false*/)
   return song;
 }
 
+void CMusicDatabase::GetFileItemFromDataset(CFileItem* item, const CStdString& strMusicDBbasePath)
+{
+  // get the full artist string
+  CStdString strArtist=m_pDS->fv("strArtist").get_asString();
+  if (m_pDS->fv("iNumArtists").get_asLong() > 1)
+    GetExtraArtistsForSong(m_pDS->fv("idSong").get_asLong(), strArtist);
+  item->m_musicInfoTag.SetArtist(strArtist);
+  // and the full genre string
+  CStdString strGenre = m_pDS->fv("strGenre").get_asString();
+  if (m_pDS->fv("iNumGenres").get_asLong() > 1)
+    GetExtraGenresForSong(m_pDS->fv("idSong").get_asLong(), strGenre);
+  item->m_musicInfoTag.SetGenre(strGenre);
+  // and the rest...
+  item->m_musicInfoTag.SetAlbum(m_pDS->fv("strAlbum").get_asString());
+  item->m_musicInfoTag.SetTrackAndDiskNumber(m_pDS->fv("iTrack").get_asLong());
+  item->m_musicInfoTag.SetDuration(m_pDS->fv("iDuration").get_asLong());
+  SYSTEMTIME stTime;
+  stTime.wYear = (WORD)m_pDS->fv("iYear").get_asLong();
+  item->m_musicInfoTag.SetReleaseDate(stTime);
+  item->m_musicInfoTag.SetTitle(m_pDS->fv("strTitle").get_asString());
+  //song.iTimedPlayed = m_pDS->fv("iTimesPlayed").get_asLong();
+  item->m_lStartOffset = m_pDS->fv("iStartOffset").get_asLong();
+  item->m_lEndOffset = m_pDS->fv("iEndOffset").get_asLong();
+  item->m_musicInfoTag.SetMusicBrainzTrackID(m_pDS->fv("strMusicBrainzTrackID").get_asString());
+  item->m_musicInfoTag.SetMusicBrainzArtistID(m_pDS->fv("strMusicBrainzArtistID").get_asString());
+  item->m_musicInfoTag.SetMusicBrainzAlbumID(m_pDS->fv("strMusicBrainzAlbumID").get_asString());
+  item->m_musicInfoTag.SetMusicBrainzAlbumArtistID(m_pDS->fv("strMusicBrainzAlbumArtistID").get_asString());
+  item->m_musicInfoTag.SetMusicBrainzTRMID(m_pDS->fv("strMusicBrainzTRMID").get_asString());
+  item->m_musicInfoTag.SetLoaded(true);
+  CStdString strThumb=m_pDS->fv("strThumb").get_asString();
+  if (strThumb != "NONE")
+    item->SetThumbnailImage(strThumb);
+  // Get filename with full path
+  if (strMusicDBbasePath.IsEmpty())
+  {
+    item->m_strPath = m_pDS->fv("strPath").get_asString();
+    CUtil::AddDirectorySeperator(item->m_strPath);
+    item->m_strPath += m_pDS->fv("strFileName").get_asString();
+  }
+  else
+  {
+    CStdString strFileName=m_pDS->fv("strFileName").get_asString();
+    char* szExt=CUtil::GetExtension(strFileName);
+    item->m_strPath.Format("%s%ld%s", strMusicDBbasePath.c_str(), m_pDS->fv("idSong").get_asLong(), szExt);
+  }
+}
+
 CAlbum CMusicDatabase::GetAlbumFromDataset()
 {
   CAlbum album;
@@ -1253,11 +1300,8 @@ bool CMusicDatabase::GetTop100(const CStdString& strBaseDir, CFileItemList& item
     items.Reserve(iRowsFound);
     while (!m_pDS->eof())
     {
-      CFileItem *item = new CFileItem(GetSongFromDataset());
-      char* extension=CUtil::GetExtension(item->m_strPath);
-      CStdString strDir;
-      strDir.Format("%ld%s", m_pDS->fv("idSong").get_asLong(), extension);
-      item->m_strPath=strBaseDir + strDir;
+      CFileItem *item = new CFileItem;
+      GetFileItemFromDataset(item, strBaseDir);
       items.Add(item);
       m_pDS->next();
     }
@@ -1337,11 +1381,8 @@ bool CMusicDatabase::GetTop100AlbumSongs(const CStdString& strBaseDir, CFileItem
     items.Reserve(iRowsFound);
     while (!m_pDS->eof())
     {
-      CFileItem *item = new CFileItem(GetSongFromDataset());
-      char* extension=CUtil::GetExtension(item->m_strPath);
-      CStdString strDir;
-      strDir.Format("%ld%s", m_pDS->fv("idSong").get_asLong(), extension);
-      item->m_strPath=strBaseDir + strDir;
+      CFileItem *item = new CFileItem;
+      GetFileItemFromDataset(item, strBaseDir);
       items.Add(item);
       m_pDS->next();
     }
@@ -1415,11 +1456,8 @@ bool CMusicDatabase::GetRecentlyPlayedAlbumSongs(const CStdString& strBaseDir, C
     items.Reserve(iRowsFound);
     while (!m_pDS->eof())
     {
-      CFileItem *item = new CFileItem(GetSongFromDataset());
-      char* extension=CUtil::GetExtension(item->m_strPath);
-      CStdString strDir;
-      strDir.Format("%ld%s", m_pDS->fv("idSong").get_asLong(), extension);
-      item->m_strPath=strBaseDir + strDir;
+      CFileItem *item = new CFileItem;
+      GetFileItemFromDataset(item, strBaseDir);
       items.Add(item);
       m_pDS->next();
     }
@@ -1495,11 +1533,8 @@ bool CMusicDatabase::GetRecentlyAddedAlbumSongs(const CStdString& strBaseDir, CF
     items.Reserve(iRowsFound);
     while (!m_pDS->eof())
     {
-      CFileItem *item = new CFileItem(GetSongFromDataset());
-      char* extension=CUtil::GetExtension(item->m_strPath);
-      CStdString strDir;
-      strDir.Format("%ld%s", m_pDS->fv("idSong").get_asLong(), extension);
-      item->m_strPath=strBaseDir + strDir;
+      CFileItem *item = new CFileItem;
+      GetFileItemFromDataset(item, strBaseDir);
       items.Add(item);
       m_pDS->next();
     }
@@ -3055,11 +3090,13 @@ bool CMusicDatabase::GetSongsNav(const CStdString& strBaseDir, CFileItemList& it
 
     while (!m_pDS->eof())
     {
-      CFileItem* item=new CFileItem(GetSongFromDataset());
-      char* extension=CUtil::GetExtension(item->m_strPath);
-      CStdString strDir;
-      strDir.Format("%ld%s", m_pDS->fv("idSong").get_asLong(), extension);
-      item->m_strPath=strBaseDir + strDir;
+      CFileItem *item = new CFileItem;
+      GetFileItemFromDataset(item, strBaseDir);
+      //CFileItem* item=new CFileItem(GetSongFromDataset());
+      //char* extension=CUtil::GetExtension(item->m_strPath);
+      //CStdString strDir;
+      //strDir.Format("%ld%s", m_pDS->fv("idSong").get_asLong(), extension);
+      //item->m_strPath=strBaseDir + strDir;
       items.Add(item);
 
       m_pDS->next();
