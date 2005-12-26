@@ -741,6 +741,7 @@ void CMusicDatabase::GetFileItemFromDataset(CFileItem* item, const CStdString& s
   stTime.wYear = (WORD)m_pDS->fv("iYear").get_asLong();
   item->m_musicInfoTag.SetReleaseDate(stTime);
   item->m_musicInfoTag.SetTitle(m_pDS->fv("strTitle").get_asString());
+  item->SetLabel(m_pDS->fv("strTitle").get_asString());
   //song.iTimedPlayed = m_pDS->fv("iTimesPlayed").get_asLong();
   item->m_lStartOffset = m_pDS->fv("iStartOffset").get_asLong();
   item->m_lEndOffset = m_pDS->fv("iEndOffset").get_asLong();
