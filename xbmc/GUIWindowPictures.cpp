@@ -11,6 +11,7 @@
 #include "GUIDialogContextMenu.h"
 #include "GUIWindowFileManager.h"
 #include "SortFileItem.h"
+#include "PlayListFactory.h"
 #ifdef PRE_SKIN_VERSION_2_0_COMPATIBILITY
 #include "SkinInfo.h"
 #endif
@@ -585,6 +586,10 @@ void CGUIWindowPictures::OnClick(int iItem)
       Update(strPath);
     }
     m_iItemSelected = iItem;
+  }
+  else if (pItem->IsPlayList())
+  {
+    LoadPlayList(strPath);
   }
   else
   {
@@ -1210,5 +1215,46 @@ void CGUIWindowPictures::ShowShareErrorMessage(CFileItem* pItem)
       idMessageText=15301;
 
     CGUIDialogOK::ShowAndGetInput(220, idMessageText, 0, 0);
+  }
+}
+
+void CGUIWindowPictures::LoadPlayList(const CStdString& strPlayList)
+{
+  CLog::Log(LOGDEBUG,"CGUIWindowPictures::LoadPlayList()... converting playlist into slideshow: %s", strPlayList.c_str());
+  CPlayListFactory factory;
+  auto_ptr<CPlayList> pPlayList (factory.Create(strPlayList));
+  if ( NULL != pPlayList.get())
+  {
+    if (!pPlayList->Load(strPlayList))
+    {
+      CGUIDialogOK::ShowAndGetInput(6, 0, 477, 0);
+      return ; //hmmm unable to load playlist?
+    }
+  }
+
+  CPlayList playlist = *pPlayList;
+  if (playlist.size() > 0)
+  {
+    // set up slideshow
+    CGUIWindowSlideShow *pSlideShow = (CGUIWindowSlideShow *)m_gWindowManager.GetWindow(WINDOW_SLIDESHOW);
+    if (!pSlideShow)
+      return;
+    if (g_application.IsPlayingVideo())
+      g_application.StopPlaying();
+
+    // convert playlist items into slideshow items
+    pSlideShow->Reset();
+    for (int i = 0; i < (int)playlist.size(); ++i)
+    {
+      CFileItem *pItem = new CFileItem(playlist[i].m_strPath, false);
+      //CLog::Log(LOGDEBUG,"-- playlist item: %s", pItem->m_strPath.c_str());
+      if (pItem->IsPicture() && !(pItem->IsZIP() || pItem->IsRAR() || pItem->IsCBZ() || pItem->IsCBR()))
+        pSlideShow->Add(pItem->m_strPath);
+    }
+
+    // start slideshow if there are items
+    pSlideShow->StartSlideShow();
+    if (pSlideShow->NumSlides())
+      m_gWindowManager.ActivateWindow(WINDOW_SLIDESHOW);
   }
 }
