@@ -1197,7 +1197,11 @@ void CGUIWindowVideoBase::PlayMovie(const CFileItem *item)
   { // database file - get the true path
     m_database.GetFilePath(atol(movie.m_strPath), movie.m_strPath);
   }
-  if (movie.IsStack() && g_guiSettings.GetInt("VideoPlayer.BypassCDSelection") == 0)
+  // VideoPlayer.BypassCDSelection values:
+  // 0 = never
+  // 1 = immediately
+  // 2-37 = 5-180 seconds
+  if (movie.IsStack() && g_guiSettings.GetInt("VideoPlayer.BypassCDSelection") != 1)
   {
     // TODO: Once the players are capable of playing a stack, we should remove
     // this code in favour of just using the resume feature.
