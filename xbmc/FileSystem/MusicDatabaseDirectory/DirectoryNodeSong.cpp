@@ -20,7 +20,8 @@ bool CDirectoryNodeSong::GetContent(CFileItemList& items)
   CQueryParams params;
   CollectQueryParams(params);
 
-  bool bSuccess=musicdatabase.GetSongsNav(BuildPath(), items, params.GetGenreId(), params.GetArtistId(), params.GetAlbumId());
+  CStdString strBaseDir=BuildPath();
+  bool bSuccess=musicdatabase.GetSongsNav(strBaseDir, items, params.GetGenreId(), params.GetArtistId(), params.GetAlbumId());
 
   musicdatabase.Close();
 

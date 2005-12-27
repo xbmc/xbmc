@@ -2820,6 +2820,7 @@ bool CMusicDatabase::GetGenresNav(const CStdString& strBaseDir, CFileItemList& i
     while (!m_pDS->eof())
     {
       CFileItem* pItem=new CFileItem(m_pDS->fv("strGenre").get_asString());
+      pItem->m_musicInfoTag.SetGenre(m_pDS->fv("strGenre").get_asString());
       CStdString strDir;
       strDir.Format("%ld/", m_pDS->fv("idGenre").get_asLong());
       pItem->m_strPath=strBaseDir + strDir;
@@ -2909,6 +2910,7 @@ bool CMusicDatabase::GetArtistsNav(const CStdString& strBaseDir, CFileItemList& 
     while (!m_pDS->eof())
     {
       CFileItem* pItem=new CFileItem(m_pDS->fv("strArtist").get_asString());
+      pItem->m_musicInfoTag.SetArtist(m_pDS->fv("strArtist").get_asString());
       CStdString strDir;
       strDir.Format("%ld/", m_pDS->fv("idArtist").get_asLong());
       pItem->m_strPath=strBaseDir + strDir;

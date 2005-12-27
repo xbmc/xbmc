@@ -16,7 +16,8 @@ bool CDirectoryNodeAlbumRecentlyPlayedSong::GetContent(CFileItemList& items)
   if (!musicdatabase.Open())
     return false;
 
-  bool bSuccess=musicdatabase.GetRecentlyPlayedAlbumSongs(BuildPath(), items);
+  CStdString strBaseDir=BuildPath();
+  bool bSuccess=musicdatabase.GetRecentlyPlayedAlbumSongs(strBaseDir, items);
 
   musicdatabase.Close();
 
