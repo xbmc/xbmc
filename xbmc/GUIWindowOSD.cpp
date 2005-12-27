@@ -137,6 +137,12 @@ void CGUIWindowOSD::Render()
 bool CGUIWindowOSD::OnAction(const CAction &action)
 {
   m_dwOSDTimeOut = timeGetTime();
+  // ACTION_SHOW_OSD should take the OSD away too!
+  if (action.wID == ACTION_SHOW_OSD)
+  {
+    Close();
+    return true;
+  }
   if (g_SkinInfo.GetVersion() < 1.85)
   {
     switch (action.wID)
