@@ -460,6 +460,7 @@ public:
   };
 
   CStdStringArray m_MyVideoStackRegExps;
+  CStdStringArray m_vecPathSubstitutions;
 
   std::map<int,std::pair<std::vector<int>,std::vector<wstring> > > m_mapRssUrls;
   std::map<CStdString, bool> m_skinSettings;

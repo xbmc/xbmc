@@ -3987,3 +3987,42 @@ double CUtil::AlbumRelevance(const CStdString& strAlbumTemp1, const CStdString& 
   double fRelevance = fAlbumPercentage * 0.5f + fArtistPercentage * 0.5f;
   return fRelevance;
 }
+
+CStdString CUtil::SubstitutePath(const CStdString& strFileName)
+{
+  // substitutes paths to correct issues with remote playlists containing full paths
+  for (unsigned int i = 0; i < g_settings.m_vecPathSubstitutions.size(); i++)
+  {
+    vector<CStdString> vecSplit;
+    StringUtils::SplitString(g_settings.m_vecPathSubstitutions[i], " , ", vecSplit);
+
+    // something is wrong, go to next substitution
+    if (vecSplit.size() != 2)
+      continue;
+
+    CStdString strSearch = vecSplit[0];
+    CStdString strReplace = vecSplit[1];
+    strSearch.Replace(",,",",");
+    strReplace.Replace(",,",",");
+
+    if (!CUtil::HasSlashAtEnd(strSearch))
+      CUtil::AddSlashAtEnd(strSearch);
+    if (!CUtil::HasSlashAtEnd(strReplace))
+      CUtil::AddSlashAtEnd(strReplace);
+
+    // if left most characters match the search, replace them
+    int iLen = strSearch.size();
+    if (strFileName.Left(iLen).Equals(strSearch))
+    {
+      // fix slashes
+      CStdString strTemp = strFileName.Mid(iLen);
+      strTemp.Replace("\\", strReplace.Right(1));
+      CStdString strFileNameNew = strReplace + strTemp;
+      //CLog::Log(LOGDEBUG,"CUtil::SubstitutePath, new filename: %s", strFileNameNew.c_str());
+      return strFileNameNew;
+    }
+  }
+
+  // nothing matches, return original string
+  return strFileName;
+}
