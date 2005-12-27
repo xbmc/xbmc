@@ -305,15 +305,56 @@ CStdString flushResult(int eid, webs_t wp, CStdString output)
   return "";
 }
 
-int CXbmcHttp::xbmcGetShares()
+int CXbmcHttp::xbmcGetShares(int numParas, CStdString paras[])
 {
   // returns the share listing in this format:
   // <li>type;name;path
   // literal semicolons are translated into ;;
+  // options include the type, and pathsonly boolean
+
+  int iStart = 0;
+  int iEnd   = 3;
+  bool bShowType = true;
+  bool bShowName = true;
+
+  if (numParas > 0)
+  {
+    if (paras[0].Equals("music"))
+    {
+      iStart = 0;
+      iEnd   = 1;
+      bShowType = false;
+    }
+    else if (paras[0].Equals("video"))
+    {
+      iStart = 1;
+      iEnd   = 2;
+      bShowType = false;
+    }
+    else if (paras[0].Equals("pictures"))
+    {
+      iStart = 2;
+      iEnd   = 3;
+      bShowType = false;
+    }
+    else
+      numParas = 0;
+  }
+
+  if (numParas > 1)
+  {
+    int iTest = 0;
+    if (CUtil::IsNaturalNumber(paras[1]))
+      iTest = atoi(paras[1].c_str());
+    if (iTest > 1)
+      iTest = 0;
+    if (iTest)
+      bShowName = false;
+  }
 
   CStdString strOutput;
   enum SHARETYPES { MUSIC, VIDEO, PICTURES };
-  for (int i = 0; i < 3; ++i)
+  for (int i = iStart; i < iEnd; ++i)
   {
     CStdString strType;
     VECSHARES *pShares = NULL;
@@ -351,8 +392,10 @@ int CXbmcHttp::xbmcGetShares()
       CStdString strPath = share.strPath;
       strPath.Replace(";", ";;");
       CStdString strLine = openTag;
-      strLine += strType + ";";
-      strLine += strName + ";";
+      if (bShowType)
+        strLine += strType + ";";
+      if (bShowName)
+        strLine += strName + ";";
       strLine += strPath;
       strLine += closeTag;
       strOutput += strLine;
@@ -2144,7 +2187,7 @@ int CXbmcHttp::xbmcCommand(CStdString parameter)
       else if (command == "reset")                    retVal = xbmcExit(4);
       else if (command == "restartapp")               retVal = xbmcExit(5);
       else if (command == "getcurrentlyplaying")      retVal = xbmcGetCurrentlyPlaying(); 
-      else if (command == "getshares")                retVal = xbmcGetShares(); 
+      else if (command == "getshares")                retVal = xbmcGetShares(numParas, paras); 
       else if (command == "getdirectory")             retVal = xbmcGetDirectory(numParas, paras); 
       else if (command == "gettagfromfilename")       retVal = xbmcGetTagFromFilename(numParas, paras);
       else if (command == "getcurrentplaylist")       retVal = xbmcGetCurrentPlayList();

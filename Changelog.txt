@@ -5,7 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
-
+ - 27-12-2005 changed: HTTP API getshares command now accepts a type parameter: getshares&parameter=type;pathsonly
+			type=(music, video, pictures), pathsonly=(0,1)
  - 27-12-2005 fixed: music nav, "* All Artists" folder may not always be on top if the list
  - 27-12-2005 fixed: music nav, "* All Songs" folders where missing
  - 26-12-2005 added: custom slideshows in My Pictures via m3u playlists (only images are queued into the slideshow)
