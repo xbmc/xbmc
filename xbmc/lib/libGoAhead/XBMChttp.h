@@ -37,7 +37,7 @@ public:
   int xbmcPlayerPlayFile(int numParas, CStdString paras[]); 
   int xbmcClearPlayList(int numParas, CStdString paras[]); 
   int xbmcGetCurrentlyPlaying(); 
-  int xbmcGetShares();
+  int xbmcGetShares(int numParas, CStdString paras[]);
   int xbmcGetDirectory(int numParas, CStdString paras[]);
   int xbmcGetTagFromFilename(int numParas, CStdString paras[]); 
   int xbmcGetCurrentPlayList();
