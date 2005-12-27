@@ -56,13 +56,13 @@ CGUIViewStateMusicDatabase::CGUIViewStateMusicDatabase(const CFileItemList& item
     {
       if (g_guiSettings.GetBool("MyMusic.IgnoreTheWhenSorting"))
       {
-        AddSortMethod(SORT_METHOD_LABEL_IGNORE_THE, 103);
-        SetSortMethod(SORT_METHOD_LABEL_IGNORE_THE);
+        AddSortMethod(SORT_METHOD_ARTIST_IGNORE_THE, 103);
+        SetSortMethod(SORT_METHOD_ARTIST_IGNORE_THE);
       }
       else
       {
-        AddSortMethod(SORT_METHOD_LABEL, 103);
-        SetSortMethod(SORT_METHOD_LABEL);
+        AddSortMethod(SORT_METHOD_ARTIST, 103);
+        SetSortMethod(SORT_METHOD_ARTIST);
       }
       
       AddViewAsControl(VIEW_AS_CONTROL_LIST, 101);

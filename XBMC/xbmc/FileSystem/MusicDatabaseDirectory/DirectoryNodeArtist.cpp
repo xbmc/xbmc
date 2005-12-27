@@ -27,19 +27,10 @@ bool CDirectoryNodeArtist::GetContent(CFileItemList& items)
 
   CQueryParams params;
   CollectQueryParams(params);
-  if (!musicdatabase.GetArtistsNav(BuildPath(), items, params.GetGenreId()))
-  {
-    musicdatabase.Close();
-    return false;
-  }
 
-  // add "All Artists"
-  CFileItem* pItem = new CFileItem(g_localizeStrings.Get(15103));
-  pItem->m_strPath=BuildPath() + "-1/";
-  pItem->m_bIsFolder = true;
-  pItem->SetCanQueue(false);
-  items.Add(pItem);
+  bool bSuccess=musicdatabase.GetArtistsNav(BuildPath(), items, params.GetGenreId());
 
   musicdatabase.Close();
-  return true;
+
+  return bSuccess;
 }

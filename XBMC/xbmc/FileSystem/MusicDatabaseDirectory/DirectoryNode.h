@@ -53,6 +53,9 @@ namespace DIRECTORY
       CStdString BuildPath();
 
     private:
+      void AddQueuingFolder(CFileItemList& items);
+
+    private:
       NODE_TYPE m_Type;
       CStdString m_strName;
       CDirectoryNode* m_pParent;
