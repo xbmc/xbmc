@@ -125,6 +125,9 @@ bool CPlayListPLS::Load(const CStdString& strFileName)
         CFileItem item(strValue, false);
         if (bShoutCast && !item.IsAudio())
           strValue.Replace("http:", "shout:");
+
+        if (CUtil::IsRemote(strBasePath) && g_settings.m_vecPathSubstitutions.size() > 0)
+         strValue = CUtil::SubstitutePath(strValue);
         CUtil::GetQualifiedFilename(strBasePath, strValue);
         m_vecItems[idx - 1].SetFileName(strValue);
       }

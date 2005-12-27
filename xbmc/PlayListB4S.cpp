@@ -75,6 +75,8 @@ bool CPlayListB4S::Load(const CStdString& strFileName)
       if (pNodeInfo)
       {
         CStdString strInfo = pNodeInfo->FirstChild()->Value();
+        if (CUtil::IsRemote(strBasePath) && g_settings.m_vecPathSubstitutions.size() > 0)
+          strFileName = CUtil::SubstitutePath(strFileName);
         CUtil::GetQualifiedFilename(strBasePath, strFileName);
         CPlayListItem newItem(strInfo, strFileName, lDuration);
         Add(newItem);
