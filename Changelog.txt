@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 27-12-2005 added: advanced configuration option for path substitution; look in xboxmediacetner.xml for details.
  - 27-12-2005 fixed: Bypass CD Selection in "x" seconds
  - 27-12-2005 changed: HTTP API getshares command now accepts a type parameter: getshares&parameter=type;pathsonly
 			type=(music, video, pictures), pathsonly=(0,1)
