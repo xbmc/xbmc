@@ -31,12 +31,6 @@ bool CDirectoryNodeAlbumRecentlyPlayed::GetContent(CFileItemList& items)
     return false;
   }
 
-  // add "All Albums"
-  CFileItem* pItem = new CFileItem(g_localizeStrings.Get(15102));
-  pItem->m_strPath=BuildPath() + "-1/";
-  pItem->m_bIsFolder = true;
-  items.Add(pItem);
-
   for (int i=0; i<(int)albums.size(); ++i)
   {
     CAlbum& album=albums[i];

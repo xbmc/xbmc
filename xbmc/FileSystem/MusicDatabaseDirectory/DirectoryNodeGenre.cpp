@@ -27,19 +27,10 @@ bool CDirectoryNodeGenre::GetContent(CFileItemList& items)
 
   CQueryParams params;
   CollectQueryParams(params);
-  if (!musicdatabase.GetGenresNav(BuildPath(), items))
-  {
-    musicdatabase.Close();
-    return false;
-  }
 
-  // add "All Genres"
-  CFileItem* pItem = new CFileItem(g_localizeStrings.Get(15105));
-  pItem->m_strPath=BuildPath() + "-1/";
-  pItem->m_bIsFolder = true;
-  pItem->SetCanQueue(false);
-  items.Add(pItem);
+  bool bSuccess=musicdatabase.GetGenresNav(BuildPath(), items);
 
   musicdatabase.Close();
-  return true;
+
+  return bSuccess;
 }
