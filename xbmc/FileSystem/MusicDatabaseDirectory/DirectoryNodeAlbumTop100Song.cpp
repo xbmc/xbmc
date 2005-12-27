@@ -16,7 +16,8 @@ bool CDirectoryNodeAlbumTop100Song::GetContent(CFileItemList& items)
   if (!musicdatabase.Open())
     return false;
 
-  bool bSuccess=musicdatabase.GetTop100AlbumSongs(BuildPath(), items);
+  CStdString strBaseDir=BuildPath();
+  bool bSuccess=musicdatabase.GetTop100AlbumSongs(strBaseDir, items);
 
   musicdatabase.Close();
 

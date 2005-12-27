@@ -193,9 +193,71 @@ bool CDirectoryNode::GetChilds(CFileItemList& items)
   bool bSuccess=false;
   if (pNode.get())
   {
+    AddQueuingFolder(items);
     bSuccess=pNode->GetContent(items);
+    if (!bSuccess)
+      items.Clear();
     pNode->RemoveParent();
   }
 
   return bSuccess;
+}
+
+//  Add an "* All ..." folder to the CFileItemList
+//  depending on the child node
+void CDirectoryNode::AddQueuingFolder(CFileItemList& items)
+{
+  CFileItem* pItem=NULL;
+
+  switch (GetChildType())
+  {
+    //  Have no queuing folder
+  case NODE_TYPE_ROOT:
+  case NODE_TYPE_OVERVIEW:
+  case NODE_TYPE_TOP100:
+    break;
+
+  case NODE_TYPE_GENRE:
+    pItem = new CFileItem(g_localizeStrings.Get(15105));  // "All Genres"
+    pItem->m_strPath = BuildPath() + "-1/";
+    break;
+
+  case NODE_TYPE_ARTIST:
+    pItem = new CFileItem(g_localizeStrings.Get(15103));  // "All Artists"
+    pItem->m_strPath = BuildPath() + "-1/";
+    break;
+
+    //  All album related nodes
+  case NODE_TYPE_ALBUM_RECENTLY_PLAYED:
+  case NODE_TYPE_ALBUM_RECENTLY_ADDED:
+  case NODE_TYPE_ALBUM_TOP100:
+  case NODE_TYPE_ALBUM:
+    pItem = new CFileItem(g_localizeStrings.Get(15102));  // "All Albums"
+    pItem->m_strPath = BuildPath() + "-1/";
+    break;
+
+    //  All song related nodes
+  case NODE_TYPE_ALBUM_RECENTLY_PLAYED_SONGS:
+  case NODE_TYPE_ALBUM_RECENTLY_ADDED_SONGS:
+  case NODE_TYPE_ALBUM_TOP100_SONGS:
+  case NODE_TYPE_SONG_TOP100:
+  case NODE_TYPE_SONG:
+    pItem = new CFileItem(g_localizeStrings.Get(15104));  // "All Songs"
+    pItem->m_strPath = BuildPath(); // points to itself
+    break;
+  }
+
+  if (pItem)
+  {
+    pItem->m_bIsFolder = true;
+    //  HACK: This item will stay on top of a list
+    CStdString strFake;
+    strFake.Format("%c", 0x01);
+    pItem->m_musicInfoTag.SetAlbum(strFake);
+    pItem->m_musicInfoTag.SetArtist(strFake);
+    pItem->m_musicInfoTag.SetTitle(strFake);
+    pItem->m_musicInfoTag.SetGenre(strFake);
+    pItem->SetCanQueue(false);
+    items.Add(pItem);
+  }
 }
