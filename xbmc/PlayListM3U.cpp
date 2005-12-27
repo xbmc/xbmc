@@ -3,7 +3,7 @@
 #include "playlistm3u.h"
 #include "filesystem/file.h"
 #include "util.h"
-
+#include "utils/RegExp.h"
 
 using namespace PLAYLIST;
 using namespace XFILE;
@@ -93,6 +93,10 @@ bool CPlayListM3U::Load(const CStdString& strFileName)
           g_charsetConverter.stringCharsetToUtf8(strFileName, strFileNameUtf8);
           strFileName = strFileNameUtf8;
         }
+
+        // should substitition occur befor or after charset conversion??
+        if (CUtil::IsRemote(strBasePath) && g_settings.m_vecPathSubstitutions.size() > 0)
+          strFileName = CUtil::SubstitutePath(strFileName);
 
         // Get the full path file name and add it to the the play list
         CUtil::GetQualifiedFilename(strBasePath, strFileName);

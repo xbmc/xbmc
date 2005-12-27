@@ -357,6 +357,48 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
       pStackRegExp = pStackRegExp->NextSibling("regexp");
     }
   }
+
+  // path substitutions
+  g_settings.m_vecPathSubstitutions.clear();
+  TiXmlElement* pPathSubstitution = pRootElement->FirstChildElement("pathsubstitution");
+  if (pPathSubstitution)
+  {
+    CLog::Log(LOGDEBUG,"Configuring path substitions");
+    TiXmlNode* pSubstitute = pPathSubstitution->FirstChildElement("substitute");
+    while (pSubstitute)
+    {
+      CStdString strFrom, strTo;
+      TiXmlNode* pFrom = pSubstitute->FirstChild("from");
+      if (pFrom)
+        strFrom = pFrom->FirstChild()->Value();
+      TiXmlNode* pTo = pSubstitute->FirstChild("to");
+      if (pTo)
+        strTo = pTo->FirstChild()->Value();
+
+      if (!strFrom.IsEmpty() && !strTo.IsEmpty())
+      {
+        CLog::Log(LOGDEBUG,"  Registering substition pair:");
+        CLog::Log(LOGDEBUG,"    From: [%s]", strFrom.c_str());
+        CLog::Log(LOGDEBUG,"    To:   [%s]", strTo.c_str());
+        // keep literal commas since we use comma as a seperator
+        strFrom.Replace(",",",,");
+        strTo.Replace(",",",,");
+        g_settings.m_vecPathSubstitutions.push_back(strFrom + " , " + strTo);
+      }
+      else
+      {
+        // error message about missing tag
+        if (strFrom.IsEmpty())
+          CLog::Log(LOGERROR,"  Missing <from> tag");
+        else
+          CLog::Log(LOGERROR,"  Missing <to> tag");          
+      }
+
+      // get next one
+      pSubstitute = pSubstitute->NextSiblingElement("substitute");
+    }
+  }
+
   // rss feeds
   TiXmlElement* pRssFeeds = pRootElement->FirstChildElement("rss");
   if (pRssFeeds)

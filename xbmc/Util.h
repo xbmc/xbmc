@@ -187,6 +187,7 @@ public:
   static void DeleteDatabaseDirectoryCache();
   static CStdString MusicPlaylistsLocation();
   static CStdString VideoPlaylistsLocation();
+  static CStdString SubstitutePath(const CStdString& strFileName);
 
   //GeminiServer
   static bool IsLeapYear(int iLYear, int iLMonth, int iLTag, int &iMonMax, int &iWeekDay);
