@@ -2966,7 +2966,7 @@ const BUILT_IN commands[] = {
   "AlarmClock", "Prompt for a length of time and start an alarm clock",
   "CancelAlarm","Cancels an alarm",
   "Action", "Executes an action for the active window (same as in keymap)",
-  "Notificaton", "Shows a notification on screen, specify header, then message.",
+  "Notification", "Shows a notification on screen, specify header, then message.",
   "PlayDVD"," Plays the inserted CD or DVD media from the DVD-ROM Drive!",
   "Skin.ToggleSetting"," Toggles a skin setting on or off"
 };
