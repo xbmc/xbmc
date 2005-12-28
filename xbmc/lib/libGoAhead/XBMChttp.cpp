@@ -317,8 +317,8 @@ int CXbmcHttp::xbmcGetMediaLocation(int numParas, CStdString paras[])
   CStdString strLocation;
   CStdString strOutput;
 
-  if (numParas < 2)
-    return SetResponse(openTag+"Error: must supply media type and directory");
+  if (numParas < 1)
+    return SetResponse(openTag+"Error: must supply media type at minimum");
   else
   {
     if (paras[0].Equals("music"))
@@ -331,7 +331,8 @@ int CXbmcHttp::xbmcGetMediaLocation(int numParas, CStdString paras[])
       return SetResponse(openTag+"Error: invalid media type; valid options are music, video, pictures");
 
     strType = paras[0].ToLower();
-    strLocation = paras[1];
+    if (numParas > 1)
+      strLocation = paras[1];
   }
 
   bool bShowDate = false;
@@ -373,19 +374,29 @@ int CXbmcHttp::xbmcGetMediaLocation(int numParas, CStdString paras[])
   if (!pShares)
     return SetResponse(openTag+"Error");
 
-  VECSHARES vecShares = *pShares;
-  bool bIsShareName = false;
-  int iIndex = CUtil::GetMatchingShare(strLocation, vecShares, bIsShareName);
-  if (iIndex < 0)
+  if (!strLocation.IsEmpty())
   {
-    CStdString strError = "Error: invalid location, " + strLocation;
-    return SetResponse(openTag+strError);
+    VECSHARES vecShares = *pShares;
+    bool bIsShareName = false;
+    int iIndex = CUtil::GetMatchingShare(strLocation, vecShares, bIsShareName);
+    if (iIndex < 0)
+    {
+      CStdString strError = "Error: invalid location, " + strLocation;
+      return SetResponse(openTag+strError);
+    }
+    if (bIsShareName)
+      strLocation = vecShares[iIndex].strPath;
   }
-  if (bIsShareName)
-    strLocation = vecShares[iIndex].strPath;
 
   CFileItemList items;
-  if (!CDirectory::GetDirectory(strLocation, items, strMask))
+  if (strLocation.IsEmpty())
+  {
+    CStdString params[2];
+    params[0] = strType;
+    params[1] = "appendzero";
+    return xbmcGetShares(2, params);
+  }
+  else if (!CDirectory::GetDirectory(strLocation, items, strMask))
   {
     CStdString strError = "Error: could not get location, " + strLocation;
     return SetResponse(openTag+strError);
@@ -456,15 +467,22 @@ int CXbmcHttp::xbmcGetShares(int numParas, CStdString paras[])
       numParas = 0;
   }
 
+  bool bAppendZero = false;
   if (numParas > 1)
   {
-    int iTest = 0;
-    if (CUtil::IsNaturalNumber(paras[1]))
-      iTest = atoi(paras[1].c_str());
-    if (iTest > 1)
-      iTest = 0;
-    if (iTest)
-      bShowName = false;
+    // special case where getmedialocation calls getshares
+    if (paras[1].Equals("appendzero"))
+      bAppendZero = true;
+    else
+    {
+      int iTest = 0;
+      if (CUtil::IsNaturalNumber(paras[1]))
+        iTest = atoi(paras[1].c_str());
+      if (iTest > 1)
+        iTest = 0;
+      if (iTest)
+        bShowName = false;
+    }
   }
 
   CStdString strOutput;
@@ -512,6 +530,8 @@ int CXbmcHttp::xbmcGetShares(int numParas, CStdString paras[])
       if (bShowName)
         strLine += strName + ";";
       strLine += strPath;
+      if (bAppendZero)
+        strLine += ";0";
       strLine += closeTag;
       strOutput += strLine;
     }
