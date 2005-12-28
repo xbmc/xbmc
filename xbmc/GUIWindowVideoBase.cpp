@@ -14,7 +14,6 @@
 #include "GUIThumbnailPanel.h"
 #include "GUIListControl.h"
 #include "GUIPassword.h"
-#include "AutoSwitch.h"
 #include "GUIFontManager.h"
 #include "FileSystem/ZipManager.h"
 #include "FileSystem/StackDirectory.h"
@@ -38,37 +37,14 @@
 #define CONTROL_BTNSHOWMODE       10
 
 CGUIWindowVideoBase::CGUIWindowVideoBase(DWORD dwID, const CStdString &xmlFile)
-    : CGUIWindow(dwID, xmlFile)
+    : CGUIMediaWindow(dwID, xmlFile)
 {
-  m_Directory.m_strPath = "?";
-  m_Directory.m_bIsFolder = true;
-  m_iItemSelected = -1;
-  m_iLastControl = -1;
-  m_iViewAsIcons = -1;
-  m_iViewAsIconsRoot = -1;
   m_bDisplayEmptyDatabaseMessage = false;
   m_iShowMode = VIDEO_SHOW_ALL;
 }
 
 CGUIWindowVideoBase::~CGUIWindowVideoBase()
-{}
-
-
-bool CGUIWindowVideoBase::OnAction(const CAction &action)
 {
-  if (action.wID == ACTION_PARENT_DIR)
-  {
-    GoParentFolder();
-    return true;
-  }
-
-  if (action.wID == ACTION_PREVIOUS_MENU)
-  {
-    m_gWindowManager.ActivateWindow(WINDOW_HOME);
-    return true;
-  }
-
-  return CGUIWindow::OnAction(action);
 }
 
 bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
@@ -78,19 +54,19 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
   case GUI_MSG_DVDDRIVE_EJECTED_CD:
     {
       CLog::Log(LOGDEBUG,"got eject msg!");
-      if ( !m_Directory.IsVirtualDirectoryRoot() )
+      if ( !m_vecItems.IsVirtualDirectoryRoot() )
       {
-        if ( m_Directory.IsCDDA() || m_Directory.IsOnDVD() )
+        if ( m_vecItems.IsCDDA() || m_vecItems.IsOnDVD() )
         {
           // Disc has changed and we are inside a DVD Drive share, get out of here :)
-          m_Directory.m_strPath.Empty();
-          Update( m_Directory.m_strPath );
+          m_vecItems.m_strPath.Empty();
+          Update( m_vecItems.m_strPath );
         }
       }
       else
       {
         int iItem = m_viewControl.GetSelectedItem();
-        Update( m_Directory.m_strPath );
+        Update( m_vecItems.m_strPath );
         m_viewControl.SetSelectedItem(iItem);
       }
     }
@@ -99,18 +75,15 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
   case GUI_MSG_DVDDRIVE_CHANGED_CD:
     {
       CLog::Log(LOGDEBUG,"got changed cd!");
-      if ( m_Directory.IsVirtualDirectoryRoot() )
+      if ( m_vecItems.IsVirtualDirectoryRoot() )
       {
         int iItem = m_viewControl.GetSelectedItem();
-        Update( m_Directory.m_strPath );
+        Update( m_vecItems.m_strPath );
         m_viewControl.SetSelectedItem(iItem);
       }
     }
     break;
   case GUI_MSG_WINDOW_DEINIT:
-    m_iLastControl = GetFocusedControl();
-    m_iItemSelected = m_viewControl.GetSelectedItem();
-    ClearFileItems();
     m_database.Close();
     break;
 
@@ -119,17 +92,13 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
       int iLastControl = m_iLastControl;
       CGUIWindow::OnMessage(message);
 
-      LoadViewMode();
-
       m_database.Open();
       m_dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
       
       m_rootDir.SetMask(g_stSettings.m_szMyVideoExtensions);
       m_rootDir.SetShares(g_settings.m_vecMyVideoShares);
 
-      Update(m_Directory.m_strPath);
-
- //     UpdateThumbPanel();
+      Update(m_vecItems.m_strPath);
 
       if (iLastControl > -1)
       {
@@ -140,9 +109,9 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
         SET_CONTROL_FOCUS(m_dwDefaultFocusControlID, 0);
       }
 
-      if (m_iItemSelected >= 0)
+      if (m_iSelectedItem >= 0)
       {
-        m_viewControl.SetSelectedItem(m_iItemSelected);
+        m_viewControl.SetSelectedItem(m_iSelectedItem);
       }
       return true;
     }
@@ -151,23 +120,7 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
   case GUI_MSG_CLICKED:
     {
       int iControl = message.GetSenderId();
-      if (iControl == CONTROL_BTNVIEWASICONS)
-      {
-        // cycle LIST->ICONS->LARGEICONS
-        if (m_Directory.IsVirtualDirectoryRoot())
-        {
-          m_iViewAsIconsRoot++;
-          if (m_iViewAsIconsRoot > VIEW_AS_LARGE_ICONS) m_iViewAsIconsRoot = VIEW_AS_LIST;
-        }
-        else
-        {
-          m_iViewAsIcons++;
-          if (m_iViewAsIcons > VIEW_AS_LARGE_ICONS) m_iViewAsIcons = VIEW_AS_LIST;
-        }
-        SaveViewMode();
-        UpdateButtons();
-      }
-      else if (iControl == CONTROL_PLAY_DVD)
+      if (iControl == CONTROL_PLAY_DVD)
       {
         // play movie...
         CUtil::PlayDVD();
@@ -202,7 +155,7 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
         {
           g_stSettings.m_iVideoStartWindow = nNewWindow;
           g_settings.Save();
-          m_gWindowManager.ActivateWindow(nNewWindow);
+          m_gWindowManager.ChangeActiveWindow(nNewWindow);
           CGUIMessage msg2(GUI_MSG_SETFOCUS, nNewWindow, CONTROL_BTNTYPE);
           g_graphicsContext.SendMessage(msg2);
         }
@@ -216,11 +169,7 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
         int iAction = message.GetParam1();
 
         // iItem is checked for validity inside these routines
-        if (iAction == ACTION_SELECT_ITEM || iAction == ACTION_MOUSE_LEFT_CLICK)
-        {
-          OnClick(iItem);
-        }
-        else if (iAction == ACTION_QUEUE_ITEM || iAction == ACTION_MOUSE_MIDDLE_CLICK)
+        if (iAction == ACTION_QUEUE_ITEM || iAction == ACTION_MOUSE_MIDDLE_CLICK)
         {
           OnQueueItem(iItem);
         }
@@ -260,28 +209,8 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
         OnManualIMDB();
       }
     }
-  case GUI_MSG_SETFOCUS:
-    {
-      if (m_viewControl.HasControl(message.GetControlId()) && m_viewControl.GetCurrentControl() != message.GetControlId())
-      {
-        m_viewControl.SetFocused();
-        return true;
-      }
-    }
   }
-  return CGUIWindow::OnMessage(message);
-}
-
-void CGUIWindowVideoBase::OnWindowLoaded()
-{
-  CGUIWindow::OnWindowLoaded();
-  m_viewControl.Reset();
-  m_viewControl.SetParentWindow(GetID());
-  m_viewControl.AddView(VIEW_AS_LIST, GetControl(CONTROL_LIST));
-  m_viewControl.AddView(VIEW_AS_ICONS, GetControl(CONTROL_THUMBS));
-  m_viewControl.AddView(VIEW_AS_LARGE_ICONS, GetControl(CONTROL_THUMBS));
-  m_viewControl.AddView(VIEW_AS_LARGE_LIST, GetControl(CONTROL_BIGLIST));
-  m_viewControl.SetViewControlID(CONTROL_BTNVIEWASICONS);
+  return CGUIMediaWindow::OnMessage(message);
 }
 
 void CGUIWindowVideoBase::UpdateButtons()
@@ -332,35 +261,8 @@ void CGUIWindowVideoBase::UpdateButtons()
     CONTROL_DISABLE(CONTROL_IMDB);
   }
 
-  if ( m_Directory.IsVirtualDirectoryRoot() )
-    m_viewControl.SetCurrentView(m_iViewAsIconsRoot);
-  else
-    m_viewControl.SetCurrentView(m_iViewAsIcons);
-
-  SET_CONTROL_LABEL(CONTROL_BTNSORTBY, SortMethod());
   SET_CONTROL_LABEL(CONTROL_BTNSHOWMODE, g_localizeStrings.Get(16100 + m_iShowMode));
-
-  if (SortAscending())
-  {
-    CGUIMessage msg(GUI_MSG_DESELECTED, GetID(), CONTROL_BTNSORTASC);
-    g_graphicsContext.SendMessage(msg);
-  }
-  else
-  {
-    CGUIMessage msg(GUI_MSG_SELECTED, GetID(), CONTROL_BTNSORTASC);
-    g_graphicsContext.SendMessage(msg);
-  }
-
-  int iItems = m_vecItems.Size();
-  if (iItems)
-  {
-    CFileItem* pItem = m_vecItems[0];
-    if (pItem->IsParentFolder()) iItems--;
-  }
-  WCHAR wszText[20];
-  const WCHAR* szText = g_localizeStrings.Get(127).c_str();
-  swprintf(wszText, L"%i %s", iItems, szText);
-  SET_CONTROL_LABEL(CONTROL_LABELFILES, wszText);
+  CGUIMediaWindow::UpdateButtons();
 }
 
 void CGUIWindowVideoBase::OnSort()
@@ -386,40 +288,6 @@ void CGUIWindowVideoBase::OnSort()
       return;
     }
   }
-}
-
-void CGUIWindowVideoBase::ClearFileItems()
-{
-  m_viewControl.Clear();
-  m_vecItems.Clear(); // will clean up everything
-}
-
-bool CGUIWindowVideoBase::HaveDiscOrConnection( CStdString& strPath, int iDriveType )
-{
-  if ( iDriveType == SHARE_TYPE_DVD )
-  {
-    CDetectDVDMedia::WaitMediaReady();
-    if ( !CDetectDVDMedia::IsDiscInDrive() )
-    {
-      CGUIDialogOK::ShowAndGetInput(218, 219, 0, 0);
-      int iItem = m_viewControl.GetSelectedItem();
-      Update( m_Directory.m_strPath );
-      m_viewControl.SetSelectedItem(iItem);
-      return false;
-    }
-  }
-  else if ( iDriveType == SHARE_TYPE_REMOTE )
-  {
-    // TODO: Handle not connected to a remote share
-    if ( !CUtil::IsEthernetConnected() )
-    {
-      CGUIDialogOK::ShowAndGetInput(220, 221, 0, 0);
-      return false;
-    }
-  }
-  else
-    return true;
-  return true;
 }
 
 void CGUIWindowVideoBase::OnInfo(int iItem)
@@ -725,14 +593,7 @@ void CGUIWindowVideoBase::ShowIMDB(const CStdString& strMovie, const CStdString&
     m_vecItems.SetThumbs();
     SetIMDBThumbs(m_vecItems);
     m_vecItems.FillInDefaultIcons();
-
-    // HACK: If we are in files view
-    // autoswitch between list/thumb control
-    if (GetID() == WINDOW_VIDEOS && !m_Directory.IsVirtualDirectoryRoot() && g_guiSettings.GetBool("VideoFiles.UseAutoSwitching"))
-    {
-      m_iViewAsIcons = CAutoSwitch::GetView(m_vecItems);
-      UpdateButtons();
-    }
+    UpdateButtons();
   }
 }
 
@@ -767,7 +628,7 @@ void CGUIWindowVideoBase::GoParentFolder()
   // remove current directory if its on the stack
   if (m_vecPathHistory.size() > 0)
   {
-    if (m_vecPathHistory.back() == m_Directory.m_strPath)
+    if (m_vecPathHistory.back() == m_vecItems.m_strPath)
       m_vecPathHistory.pop_back();
   }
   // if vector is not empty, pop parent
@@ -780,12 +641,12 @@ void CGUIWindowVideoBase::GoParentFolder()
   }
   CLog::Log(LOGDEBUG,"CGUIWindowVideoBase::GoParentFolder(), strParent = [%s]", strParent.c_str());
 
-  CURL url(m_Directory.m_strPath);
+  CURL url(m_vecItems.m_strPath);
   // if we treat stacks as directories, then use this
   /*if (url.GetProtocol() == "stack")
   {
-    m_rootDir.RemoveShare(m_Directory.m_strPath);
-    CUtil::GetDirectory(m_Directory.m_strPath.Mid(8), m_strParentPath);
+    m_rootDir.RemoveShare(m_vecItems.m_strPath);
+    CUtil::GetDirectory(m_vecItems.m_strPath.Mid(8), m_strParentPath);
   }*/
   if ((url.GetProtocol() == "rar") || (url.GetProtocol() == "zip")) 
   {
@@ -793,8 +654,8 @@ void CGUIWindowVideoBase::GoParentFolder()
     if (url.GetFileName().IsEmpty())
     {
       if (url.GetProtocol() == "zip")
-        g_ZipManager.release(m_Directory.m_strPath); // release resources
-      m_rootDir.RemoveShare(m_Directory.m_strPath);
+        g_ZipManager.release(m_vecItems.m_strPath); // release resources
+      m_rootDir.RemoveShare(m_vecItems.m_strPath);
       CStdString strPath;
       CUtil::GetDirectory(url.GetHostName(),strPath);
       Update(strPath);
@@ -803,7 +664,7 @@ void CGUIWindowVideoBase::GoParentFolder()
     }
   }
 
-  CStdString strOldPath = m_Directory.m_strPath;
+  CStdString strOldPath = m_vecItems.m_strPath;
   Update(strParent);
   UpdateButtons();  // not sure why this is required in my videos, but not in music or pictures
 
@@ -915,10 +776,10 @@ void CGUIWindowVideoBase::AddItemToPlayList(const CFileItem* pItem)
 
     // recursive
     if (pItem->IsParentFolder()) return ;
-    CStdString strDirectory = m_Directory.m_strPath;
-    m_Directory.m_strPath = pItem->m_strPath;
+    CStdString strDirectory = m_vecItems.m_strPath;
+    m_vecItems.m_strPath = pItem->m_strPath;
     CFileItemList items;
-    GetDirectory(m_Directory.m_strPath, items);
+    GetDirectory(m_vecItems.m_strPath, items);
 
     SortItems(items);
 
@@ -926,7 +787,7 @@ void CGUIWindowVideoBase::AddItemToPlayList(const CFileItem* pItem)
     {
       AddItemToPlayList(items[i]);
     }
-    m_Directory.m_strPath = strDirectory;
+    m_vecItems.m_strPath = strDirectory;
   }
   else
   {
@@ -1122,17 +983,17 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem)
     else if (btnid == btn_Mark_UnWatched)
 	  {
 		  MarkUnWatched(iItem);
-		  Update(m_Directory.m_strPath);
+		  Update(m_vecItems.m_strPath);
 	  }
 	  else if (btnid == btn_Mark_Watched)
 	  {
 		  MarkWatched(iItem);
-		  Update(m_Directory.m_strPath);
+		  Update(m_vecItems.m_strPath);
 	  }
 	  else if (btnid == btn_Update_Title)
 	  {
 		  UpdateVideoTitle(iItem);
-		  Update(m_Directory.m_strPath);
+		  Update(m_vecItems.m_strPath);
 	  }
     else if (btnid == btn_Settings)
     {
@@ -1240,18 +1101,12 @@ void CGUIWindowVideoBase::PlayMovie(const CFileItem *item)
   g_playlistPlayer.PlayNext();
 }
 
-void CGUIWindowVideoBase::OnWindowUnload()
-{
-  CGUIWindow::OnWindowUnload();
-  m_viewControl.Reset();
-}
-
 void CGUIWindowVideoBase::OnDeleteItem(int iItem)
 {
   if ( iItem < 0 || iItem >= m_vecItems.Size()) return;
   if (!CGUIWindowFileManager::DeleteItem(m_vecItems[iItem]))
     return;
-  Update(m_Directory.m_strPath);
+  Update(m_vecItems.m_strPath);
   m_viewControl.SetSelectedItem(iItem);
 }
 
@@ -1260,7 +1115,7 @@ void CGUIWindowVideoBase::OnRenameItem(int iItem)
   if ( iItem < 0 || iItem >= m_vecItems.Size()) return;
   if (!CGUIWindowFileManager::RenameFile(m_vecItems[iItem]->m_strPath))
     return;
-  Update(m_Directory.m_strPath);
+  Update(m_vecItems.m_strPath);
   m_viewControl.SetSelectedItem(iItem);
 }
 
@@ -1290,7 +1145,7 @@ void CGUIWindowVideoBase::MarkUnWatched(int iItem)
   if ( iItem < 0 || iItem >= m_vecItems.Size() ) return ;
   CFileItem* pItem = m_vecItems[iItem];
   m_database.MarkAsUnWatched(atol(pItem->m_strPath));
-  Update(m_Directory.m_strPath);
+  Update(m_vecItems.m_strPath);
 }
 
 //Add Mark a Title as watched
@@ -1299,7 +1154,7 @@ void CGUIWindowVideoBase::MarkWatched(int iItem)
   if ( iItem < 0 || iItem >= m_vecItems.Size() ) return ;
   CFileItem* pItem = m_vecItems[iItem];
   m_database.MarkAsWatched(atol(pItem->m_strPath));
-  Update(m_Directory.m_strPath);
+  Update(m_vecItems.m_strPath);
 }
 
 //Add change a title's name
@@ -1317,5 +1172,5 @@ void CGUIWindowVideoBase::UpdateVideoTitle(int iItem)
   //Get the new title
   if (!CGUIDialogKeyboard::ShowAndGetInput(strInput, (CStdStringW)g_localizeStrings.Get(16105), false)) return ;
   m_database.UpdateMovieTitle(atol(pItem->m_strPath), strInput);
-  Update(m_Directory.m_strPath);
+  Update(m_vecItems.m_strPath);
 }

@@ -388,7 +388,7 @@ void CGUIWindowMusicNav::OnFileItemFormatLabel(CFileItem* pItem)
   pItem->FillInDefaultIcon();
 }
 
-void CGUIWindowMusicNav::DoSort(CFileItemList& items)
+void CGUIWindowMusicNav::SortItems(CFileItemList& items)
 {
   auto_ptr<CGUIViewState> pState(CGUIViewState::GetViewState(GetID(), items));
   if (pState.get())
@@ -409,7 +409,7 @@ void CGUIWindowMusicNav::DoSort(CFileItemList& items)
       return;
 
     // else sort the list, and the save it to cache
-    CGUIWindowMusicBase::DoSort(items);
+    CGUIWindowMusicBase::SortItems(items);
 
     if (bSortingCurrentDir && CanCache(items.m_strPath))
       SaveDatabaseDirectoryCache(items.m_strPath, items, sortMethod, sortAscending, g_guiSettings.GetBool("MyMusic.IgnoreTheWhenSorting"));

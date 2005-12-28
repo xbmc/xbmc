@@ -27,7 +27,7 @@ public:
   virtual void Close(bool forceClose = false);
   virtual bool Load(const CStdString& strFileName, bool bContainsPath = false);
   virtual bool IsRunning() const { return m_bRunning; }
-  virtual bool IsDialog() { return true;};
+  virtual bool IsDialog() const { return true;};
 
   void DoEffect();
 

@@ -9,6 +9,7 @@
 #include "../xbmc/StringUtils.h"
 #include "GUISettings.h"
 #include "fileitem.h"
+#include "GUIViewState.h" // for the VIEW_METHOD enum type
 
 #include <vector>
 
@@ -53,19 +54,19 @@
 class CFolderView
 {
 public:
-  CFolderView(CStdString &strPath, int iView, int iSort, bool bSortAscending)
+  CFolderView(CStdString &strPath, int iView, int iSort, bool bSortOrder)
   {
     m_strPath = strPath;
     m_iView = iView;
     m_iSort = iSort;
-    m_bSortAscending = bSortAscending;
+    m_bSortOrder = bSortOrder;
   };
   ~CFolderView() {};
 
   CStdString m_strPath;
   int m_iView;
   int m_iSort;
-  bool m_bSortAscending;
+  bool m_bSortOrder;
 };
 
 typedef std::vector<CFolderView*> VECFOLDERVIEWS;
@@ -240,19 +241,9 @@ public:
     unsigned long dwFileVersion;
     char szHomeDir[1024];
 
-    int m_iMyProgramsSortMethod;
-    bool m_bMyProgramsSortAscending;
-    int m_iMyProgramsViewAsIcons;
 
     char szDashboard[1024];
     int m_iStartupWindow;
-
-    int m_iMyPicturesSortMethod;
-    bool m_bMyPicturesSortAscending;
-    int m_iMyPicturesViewAsIcons;
-    int m_iMyPicturesRootSortMethod;
-    bool m_bMyPicturesRootSortAscending;
-    int m_iMyPicturesRootViewAsIcons;
 
     char szThumbnailsDirectory[1024];
     char m_szMyPicturesExtensions[512];
@@ -264,35 +255,20 @@ public:
     char m_szCacheDirectory[256];
     char m_szPlaylistsDirectory[256];
 
-    bool m_bMyFilesSourceViewAsIcons;
-    bool m_bMyFilesSourceRootViewAsIcons;
-    bool m_bMyFilesDestViewAsIcons;
-    bool m_bMyFilesDestRootViewAsIcons;
+    /*
+    bool m_bMyFilesSourceViewMethod;
+    bool m_bMyFilesSourceRootViewMethod;
+    bool m_bMyFilesDestViewMethod;
+    bool m_bMyFilesDestRootViewMethod;
     int m_iMyFilesSourceSortMethod;
     int m_iMyFilesSourceRootSortMethod;
-    bool m_bMyFilesSourceSortAscending;
-    bool m_bMyFilesSourceRootSortAscending;
+    bool m_bMyFilesSourceSortOrder;
+    bool m_bMyFilesSourceRootSortOrder;
     int m_iMyFilesDestSortMethod;
     int m_iMyFilesDestRootSortMethod;
-    bool m_bMyFilesDestSortAscending;
-    bool m_bMyFilesDestRootSortAscending;
-
-    int m_iMyVideoTitleShowMode;
-    int m_iMyVideoGenreShowMode;
-    int m_iMyVideoActorShowMode;
-    int m_iMyVideoYearShowMode;
-
-    int m_iMyVideoViewAsIcons;
-    int m_iMyVideoRootViewAsIcons;
-    int m_iMyVideoSortMethod;
-    int m_iMyVideoRootSortMethod;
-    bool m_bMyVideoSortAscending;
-    bool m_bMyVideoRootSortAscending;
-
-    bool m_bScriptsViewAsIcons;
-    bool m_bScriptsRootViewAsIcons;
-    int m_iScriptsSortMethod;
-    bool m_bScriptsSortAscending;
+    bool m_bMyFilesDestSortOrder;
+    bool m_bMyFilesDestRootSortOrder;
+    */
 
     int m_iRepeatDelayIR;
     int m_iMoveDelayController;
@@ -320,37 +296,53 @@ public:
     bool m_bMyMusicSongInfoInVis;
     bool m_bMyMusicSongThumbInVis;
 
-    int m_iMyMusicSongsRootViewAsIcons;
-    int m_iMyMusicSongsViewAsIcons;
-    SORT_ORDER m_iMyMusicSongsRootSortAscending;
-    SORT_ORDER m_iMyMusicSongsSortAscending;
-    SORT_METHOD m_iMyMusicSongsSortMethod;
-    SORT_METHOD m_iMyMusicSongsRootSortMethod;
-    int m_iMyMusicPlaylistViewAsIcons;
     bool m_bMyMusicPlaylistRepeat;
     bool m_bMyMusicPlaylistShuffle;
-    int m_iMyMusicTop100ViewAsIcons;
     int m_iMyMusicStartWindow;
 
+    VIEW_METHOD m_MyMusicSongsRootViewMethod;
+    SORT_METHOD m_MyMusicSongsRootSortMethod;
+    SORT_ORDER m_MyMusicSongsRootSortOrder;
+    VIEW_METHOD m_MyMusicSongsViewMethod;
+    SORT_METHOD m_MyMusicSongsSortMethod;
+    SORT_ORDER m_MyMusicSongsSortOrder;
+
+    VIEW_METHOD m_MyMusicPlaylistViewMethod;
+
     // new settings for the Music Nav Window
-    int m_iMyMusicNavRootViewAsIcons;
-    int m_iMyMusicNavGenresViewAsIcons;
-    int m_iMyMusicNavArtistsViewAsIcons;
-    int m_iMyMusicNavAlbumsViewAsIcons;
-    int m_iMyMusicNavSongsViewAsIcons;
-    int m_iMyMusicNavTopViewAsIcons;
-    int m_iMyMusicNavPlaylistsViewAsIcons;
+    VIEW_METHOD m_MyMusicNavRootViewMethod;
+    VIEW_METHOD m_MyMusicNavGenresViewMethod;
+    VIEW_METHOD m_MyMusicNavArtistsViewMethod;
+    VIEW_METHOD m_MyMusicNavAlbumsViewMethod;
+    VIEW_METHOD m_MyMusicNavSongsViewMethod;
+    VIEW_METHOD m_MyMusicNavTopViewMethod;
+    VIEW_METHOD m_MyMusicNavPlaylistsViewMethod;
 
-    SORT_METHOD m_iMyMusicNavRootSortMethod;
-    SORT_METHOD m_iMyMusicNavAlbumsSortMethod;
-    SORT_METHOD m_iMyMusicNavSongsSortMethod;
-    SORT_METHOD m_iMyMusicNavPlaylistsSortMethod;
+    SORT_METHOD m_MyMusicNavRootSortMethod;
+    SORT_METHOD m_MyMusicNavAlbumsSortMethod;
+    SORT_METHOD m_MyMusicNavSongsSortMethod;
+    SORT_METHOD m_MyMusicNavPlaylistsSortMethod;
 
-    SORT_ORDER m_iMyMusicNavGenresSortAscending;
-    SORT_ORDER m_iMyMusicNavArtistsSortAscending;
-    SORT_ORDER m_iMyMusicNavAlbumsSortAscending;
-    SORT_ORDER m_iMyMusicNavSongsSortAscending;
-    SORT_ORDER m_iMyMusicNavPlaylistsSortAscending;
+    SORT_ORDER m_MyMusicNavGenresSortOrder;
+    SORT_ORDER m_MyMusicNavArtistsSortOrder;
+    SORT_ORDER m_MyMusicNavAlbumsSortOrder;
+    SORT_ORDER m_MyMusicNavSongsSortOrder;
+    SORT_ORDER m_MyMusicNavPlaylistsSortOrder;
+
+    VIEW_METHOD m_ScriptsViewMethod;
+    SORT_METHOD m_ScriptsSortMethod;
+    SORT_ORDER m_ScriptsSortOrder;
+
+    VIEW_METHOD m_MyProgramsViewMethod;
+    SORT_METHOD m_MyProgramsSortMethod;
+    SORT_ORDER m_MyProgramsSortOrder;
+
+    VIEW_METHOD m_MyPicturesViewMethod;
+    SORT_METHOD m_MyPicturesSortMethod;
+    SORT_ORDER m_MyPicturesSortOrder;
+    VIEW_METHOD m_MyPicturesRootViewMethod;
+    SORT_METHOD m_MyPicturesRootSortMethod;
+    SORT_ORDER m_MyPicturesRootSortOrder;
 
     // for scanning
     bool m_bMyMusicIsScanning;
@@ -369,33 +361,45 @@ public:
     float m_fZoomAmount;      // current zoom amount
     float m_fPixelRatio;      // current pixel ratio
 
-    int m_iMyVideoGenreViewAsIcons;
-    int m_iMyVideoGenreRootViewAsIcons;
-    int m_iMyVideoGenreSortMethod;
-    int m_iMyVideoGenreRootSortMethod;
-    bool m_bMyVideoGenreSortAscending;
-    bool m_bMyVideoGenreRootSortAscending;
+    int m_iMyVideoTitleShowMode;
+    int m_iMyVideoGenreShowMode;
+    int m_iMyVideoActorShowMode;
+    int m_iMyVideoYearShowMode;
 
-    int m_iMyVideoActorViewAsIcons;
-    int m_iMyVideoActorRootViewAsIcons;
-    int m_iMyVideoActorSortMethod;
-    int m_iMyVideoActorRootSortMethod;
-    bool m_bMyVideoActorSortAscending;
-    bool m_bMyVideoActorRootSortAscending;
+    VIEW_METHOD m_MyVideoViewMethod;
+    VIEW_METHOD m_MyVideoRootViewMethod;
+    SORT_METHOD m_MyVideoSortMethod;
+    SORT_METHOD m_MyVideoRootSortMethod;
+    SORT_ORDER m_MyVideoSortOrder;
+    SORT_ORDER m_MyVideoRootSortOrder;
 
-    int m_iMyVideoYearViewAsIcons;
-    int m_iMyVideoYearRootViewAsIcons;
-    int m_iMyVideoYearSortMethod;
-    int m_iMyVideoYearRootSortMethod;
-    bool m_bMyVideoYearSortAscending;
-    bool m_bMyVideoYearRootSortAscending;
+    VIEW_METHOD m_MyVideoGenreViewMethod;
+    VIEW_METHOD m_MyVideoGenreRootViewMethod;
+    SORT_METHOD m_MyVideoGenreSortMethod;
+    SORT_METHOD m_MyVideoGenreRootSortMethod;
+    SORT_ORDER m_MyVideoGenreSortOrder;
+    SORT_ORDER m_MyVideoGenreRootSortOrder;
 
-    int m_iMyVideoTitleViewAsIcons;
-    int m_iMyVideoTitleRootViewAsIcons;
-    int m_iMyVideoTitleSortMethod;
-    bool m_bMyVideoTitleSortAscending;
+    VIEW_METHOD m_MyVideoActorViewMethod;
+    VIEW_METHOD m_MyVideoActorRootViewMethod;
+    SORT_METHOD m_MyVideoActorSortMethod;
+    SORT_METHOD m_MyVideoActorRootSortMethod;
+    SORT_ORDER m_MyVideoActorSortOrder;
+    SORT_ORDER m_MyVideoActorRootSortOrder;
 
-    int m_iMyVideoPlaylistViewAsIcons;
+    VIEW_METHOD m_MyVideoYearViewMethod;
+    VIEW_METHOD m_MyVideoYearRootViewMethod;
+    SORT_METHOD m_MyVideoYearSortMethod;
+    SORT_METHOD m_MyVideoYearRootSortMethod;
+    SORT_ORDER m_MyVideoYearSortOrder;
+    SORT_ORDER m_MyVideoYearRootSortOrder;
+
+    VIEW_METHOD m_MyVideoTitleViewMethod;
+    SORT_METHOD m_MyVideoTitleSortMethod;
+    SORT_ORDER m_MyVideoTitleSortOrder;
+
+    VIEW_METHOD m_MyVideoPlaylistViewMethod;
+
     bool m_bMyVideoPlaylistRepeat;
     bool m_bMyVideoPlaylistShuffle;
 
@@ -411,11 +415,7 @@ public:
 
     int m_iVideoStartWindow;
 
-    int m_iMyVideoVideoStack;
-    bool m_bMyVideoActorStack;
-    bool m_bMyVideoGenreStack;
-    bool m_bMyVideoYearStack;
-
+    int m_iMyVideoStack;
     bool m_bMyVideoCleanTitles;
     char m_szMyVideoCleanTokens[256];
     char m_szMyVideoCleanSeparators[32];

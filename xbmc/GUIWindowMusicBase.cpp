@@ -14,7 +14,6 @@
 #include "FileSystem/DirectoryCache.h"
 #include "CDRip/CDDARipper.h"
 #include "GUIPassword.h"
-#include "AutoSwitch.h"
 #include "GUIFontManager.h"
 #include "GUIDialogMusicScan.h"
 #include "GUIDialogContextMenu.h"
@@ -43,10 +42,8 @@ int CGUIWindowMusicBase::m_nTempPlayListWindow = 0;
 CStdString CGUIWindowMusicBase::m_strTempPlayListDirectory = "";
 
 CGUIWindowMusicBase::CGUIWindowMusicBase(DWORD dwID, const CStdString &xmlFile)
-    : CGUIWindow(dwID, xmlFile)
+    : CGUIMediaWindow(dwID, xmlFile)
 {
-  m_nSelectedItem = -1;
-  m_iLastControl = -1;
   m_bDisplayEmptyDatabaseMessage = false;
 }
 
@@ -58,12 +55,6 @@ CGUIWindowMusicBase::~CGUIWindowMusicBase ()
 /// \param action Action that can be reacted on.
 bool CGUIWindowMusicBase::OnAction(const CAction& action)
 {
-  if (action.wID == ACTION_PARENT_DIR)
-  {
-    GoParentFolder();
-    return true;
-  }
-
   if (action.wID == ACTION_PREVIOUS_MENU)
   {
     CGUIDialogMusicScan *musicScan = (CGUIDialogMusicScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
@@ -72,9 +63,6 @@ bool CGUIWindowMusicBase::OnAction(const CAction& action)
       CUtil::ThumbCacheClear();
       CUtil::RemoveTempFiles();
     }
-
-    m_gWindowManager.ActivateWindow(WINDOW_HOME);
-    return true;
   }
 
   if (action.wID == ACTION_SHOW_PLAYLIST)
@@ -83,7 +71,7 @@ bool CGUIWindowMusicBase::OnAction(const CAction& action)
     return true;
   }
 
-  return CGUIWindow::OnAction(action);
+  return CGUIMediaWindow::OnAction(action);
 }
 
 /*!
@@ -248,9 +236,6 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
 
   case GUI_MSG_WINDOW_DEINIT:
     {
-      m_nSelectedItem = m_viewControl.GetSelectedItem();
-      m_iLastControl = GetFocusedControl();
-      ClearFileItems();
       g_musicDatabase.Close();
     }
     break;
@@ -275,9 +260,9 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
         SET_CONTROL_FOCUS(m_dwDefaultFocusControlID, 0);
       }
 
-      if (m_nSelectedItem > -1)
+      if (m_iSelectedItem > -1)
       {
-        m_viewControl.SetSelectedItem(m_nSelectedItem);
+        m_viewControl.SetSelectedItem(m_iSelectedItem);
       }
 
       // save current window, unless the current window is the music playlist window
@@ -291,17 +276,7 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
   case GUI_MSG_CLICKED:
     {
       int iControl = message.GetSenderId();
-      if (iControl == CONTROL_BTNVIEWASICONS) // view as
-      {
-        auto_ptr<CGUIViewState> pState(CGUIViewState::GetViewState(GetID(), m_vecItems));
-        if (pState.get())
-          while (!m_viewControl.HasViewMode(pState->SetNextViewAsControl()));
-
-        UpdateButtons();
-
-        return true;
-      }
-      else if (iControl == CONTROL_BTNSORTASC) // sort asc
+      if (iControl == CONTROL_BTNSORTASC) // sort asc
       {
         auto_ptr<CGUIViewState> pState(CGUIViewState::GetViewState(GetID(), m_vecItems));
         if (pState.get())
@@ -376,7 +351,7 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
 
         g_stSettings.m_iMyMusicStartWindow = nWindow;
         g_settings.Save();
-        m_gWindowManager.ActivateWindow(g_stSettings.m_iMyMusicStartWindow);
+        m_gWindowManager.ChangeActiveWindow(nWindow);
 
         CGUIMessage msg2(GUI_MSG_SETFOCUS, g_stSettings.m_iMyMusicStartWindow, CONTROL_BTNTYPE);
         g_graphicsContext.SendMessage(msg2);
@@ -396,10 +371,6 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
         if (iAction == ACTION_QUEUE_ITEM || iAction == ACTION_MOUSE_MIDDLE_CLICK)
         {
           OnQueueItem(iItem);
-        }
-        else if (iAction == ACTION_SELECT_ITEM || iAction == ACTION_MOUSE_LEFT_CLICK)
-        {
-          OnClick(iItem);
         }
         else if (iAction == ACTION_SHOW_INFO)
         {
@@ -438,42 +409,19 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
         }
       }
     }
-  case GUI_MSG_SETFOCUS:
-    {
-      if (m_viewControl.HasControl(message.GetControlId()) && m_viewControl.GetCurrentControl() != message.GetControlId())
-      {
-        m_viewControl.SetFocused();
-        return true;
-      }
-    }
   }
-  return CGUIWindow::OnMessage(message);
+  return CGUIMediaWindow::OnMessage(message);
 }
 
 void CGUIWindowMusicBase::OnWindowLoaded()
 {
-  CGUIWindow::OnWindowLoaded();
 #ifdef PRE_SKIN_VERSION_2_0_COMPATIBILITY
   if (g_SkinInfo.GetVersion() < 1.8)
   {
     ChangeControlID(6, CONTROL_BTNTYPE, CGUIControl::GUICONTROL_SELECTBUTTON);
   }
 #endif
-  // add the view controls to our view controller
-  m_viewControl.Reset();
-  m_viewControl.SetParentWindow(GetID());
-  m_viewControl.AddView(VIEW_AS_LIST, GetControl(CONTROL_LIST));
-  m_viewControl.AddView(VIEW_AS_ICONS, GetControl(CONTROL_THUMBS));
-  m_viewControl.AddView(VIEW_AS_LARGE_ICONS, GetControl(CONTROL_THUMBS));
-  m_viewControl.AddView(VIEW_AS_LARGE_LIST, GetControl(CONTROL_BIGLIST));
-  m_viewControl.SetViewControlID(CONTROL_BTNVIEWASICONS);
-}
-
-/// \brief Remove items from list/thumb control and \e m_vecItems.
-void CGUIWindowMusicBase::ClearFileItems()
-{
-  m_viewControl.Clear();
-  m_vecItems.Clear(); // will clean up everything
+  CGUIMediaWindow::OnWindowLoaded();
 }
 
 bool CGUIWindowMusicBase::GetDirectory(const CStdString &strDirectory, CFileItemList &items)
@@ -534,7 +482,7 @@ void CGUIWindowMusicBase::UpdateListControl()
 
   g_directoryCache.ClearMusicThumbCache();
 
-  DoSort(m_vecItems);
+  SortItems(m_vecItems);
 
   m_viewControl.SetItems(m_vecItems);
 }
@@ -686,40 +634,6 @@ void CGUIWindowMusicBase::GoParentFolder()
 
   if (!g_guiSettings.GetBool("LookAndFeel.FullDirectoryHistory"))
     m_history.Remove(strOldPath); //Delete current path
-}
-
-/// \brief Tests if a network/removeable share is available
-/// \param strPath Root share to go into
-/// \param iDriveType If share is remote, dvd or hd. See: CShare
-/// \return If drive is available, returns \e true
-/// \todo Handle not connected to a remote share
-bool CGUIWindowMusicBase::HaveDiscOrConnection( CStdString& strPath, int iDriveType )
-{
-  if ( iDriveType == SHARE_TYPE_DVD )
-  {
-    CDetectDVDMedia::WaitMediaReady();
-    if ( !CDetectDVDMedia::IsDiscInDrive() )
-    {
-      CGUIDialogOK::ShowAndGetInput(218, 219, 0, 0);
-      // Update listcontrol, maybe share
-      // was selected while disc change
-      int iItem = m_viewControl.GetSelectedItem();
-      Update( m_vecItems.m_strPath );
-      m_viewControl.SetSelectedItem(iItem);
-      return false;
-    }
-  }
-  else if (iDriveType == SHARE_TYPE_REMOTE)
-  {
-    // TODO: Handle not connected to a remote share
-    if ( !CUtil::IsEthernetConnected() )
-    {
-      CGUIDialogOK::ShowAndGetInput(220, 221, 0, 0);
-      return false;
-    }
-  }
-
-  return true;
 }
 
 void CGUIWindowMusicBase::ShowShareErrorMessage(CFileItem* pItem)
@@ -1265,7 +1179,7 @@ void CGUIWindowMusicBase::AddItemToPlayList(const CFileItem* pItem, int iPlayLis
     if (pItem->IsParentFolder()) return ;
     CFileItemList items;
     GetDirectory(pItem->m_strPath, items);
-    DoSort(items);
+    SortItems(items);
     for (int i = 0; i < items.Size(); ++i)
       AddItemToPlayList(items[i], iPlayList);
   }
@@ -1398,43 +1312,7 @@ void CGUIWindowMusicBase::UpdateButtons()
   // Select the current window as default item
   CONTROL_SELECT_ITEM(CONTROL_BTNTYPE, g_stSettings.m_iMyMusicStartWindow - WINDOW_MUSIC_FILES);
 
-  auto_ptr<CGUIViewState> pState(CGUIViewState::GetViewState(GetID(), m_vecItems));
-  if (pState.get())
-  {
-    // Update sorting control
-    if (pState->GetSortOrder()==SORT_ORDER_NONE)
-    {
-      CONTROL_DISABLE(CONTROL_BTNSORTASC);
-    }
-    else
-    {
-      CONTROL_ENABLE(CONTROL_BTNSORTASC);
-      if (pState->GetSortOrder()==SORT_ORDER_ASC)
-      {
-        CGUIMessage msg(GUI_MSG_DESELECTED, GetID(), CONTROL_BTNSORTASC);
-        g_graphicsContext.SendMessage(msg);
-      }
-      else
-      {
-        CGUIMessage msg(GUI_MSG_SELECTED, GetID(), CONTROL_BTNSORTASC);
-        g_graphicsContext.SendMessage(msg);
-      }
-    }
-
-    // Update list/thumb control
-    m_viewControl.SetCurrentView(pState->GetViewAsControl());
-
-    // Update sort by button
-    if (pState->GetSortMethod()==SORT_METHOD_NONE)
-    {
-      CONTROL_DISABLE(CONTROL_BTNSORTBY);
-    }
-    else
-    {
-      CONTROL_ENABLE(CONTROL_BTNSORTBY);
-    }
-    SET_CONTROL_LABEL(CONTROL_BTNSORTBY, pState->GetSortMethodLabel());
-  }
+  CGUIMediaWindow::UpdateButtons();
 }
 
 /// \brief React on the selected search item
@@ -2022,12 +1900,6 @@ void CGUIWindowMusicBase::PlayItem(int iItem)
   }
 }
 
-void CGUIWindowMusicBase::OnWindowUnload()
-{
-  CGUIWindow::OnWindowUnload();
-  m_viewControl.Reset();
-}
-
 void CGUIWindowMusicBase::OnDeleteItem(int iItem)
 {
   if ( iItem < 0 || iItem >= m_vecItems.Size()) return;
@@ -2117,7 +1989,7 @@ void CGUIWindowMusicBase::SetHistoryForPath(const CStdString& strDirectory)
   }
 }
 
-void CGUIWindowMusicBase::DoSort(CFileItemList& items)
+void CGUIWindowMusicBase::SortItems(CFileItemList& items)
 {
   auto_ptr<CGUIViewState> pState(CGUIViewState::GetViewState(GetID(), items));
   if (pState.get())

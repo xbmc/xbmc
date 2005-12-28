@@ -4,14 +4,11 @@
 */
 
 #pragma once
-#include "GUIWindow.h"
-#include "FileSystem/VirtualDirectory.h"
-#include "FileSystem/DirectoryHistory.h"
+#include "GUIMediaWindow.h"
 #include "MusicDatabase.h"
 #include "PlayList.h"
 #include "MusicInfoTagLoaderFactory.h"
 #include "Utils/MusicInfoScraper.h"
-#include "GUIViewControl.h"
 #include "playlistplayer.h"
 
 using namespace DIRECTORY;
@@ -24,7 +21,7 @@ using namespace PLAYLIST;
  CGUIWindowMusicBase is the base class for
  all music windows.
  */
-class CGUIWindowMusicBase : public CGUIWindow
+class CGUIWindowMusicBase : public CGUIMediaWindow
 {
 public:
   CGUIWindowMusicBase(DWORD dwID, const CStdString &xmlFile);
@@ -33,7 +30,6 @@ public:
   virtual bool OnAction(const CAction& action);
   virtual void Render();
   virtual void OnWindowLoaded();
-  virtual void OnWindowUnload();
 
 protected:
   /*!
@@ -46,7 +42,7 @@ protected:
   \brief Will be called when an item in list/thumb control has been clicked
   \param iItem List/thumb control item that has been clicked on
   */
-  virtual void OnClick(int iItem) = 0;
+  virtual void OnClick(int iItem) {};
   /*!
   \brief Will be called when an popup context menu has been asked for
   \param iItem List/thumb control item that has been clicked on
@@ -61,15 +57,15 @@ protected:
    \brief Will be called to sort items. Provide a sort method.
    \param items Items to sort
    */
-  virtual void DoSort(CFileItemList& items);
+  virtual void SortItems(CFileItemList& items);
   /*!
   \brief Overwrite to update your gui buttons (visible, enable,...)
   */
-  virtual void UpdateButtons();
-  virtual void OnRetrieveMusicInfo(CFileItemList& items);
   virtual void GoParentFolder();
-  virtual void ClearFileItems();
+  virtual void UpdateButtons();
   virtual bool Update(const CStdString &strDirectory);
+
+  virtual void OnRetrieveMusicInfo(CFileItemList& items);
   virtual void AddItemToPlayList(const CFileItem* pItem, int iPlayList = PLAYLIST_MUSIC);
   virtual void OnSearchItemFound(const CFileItem* pItem);
   virtual void DoSearch(const CStdString& strSearch, CFileItemList& items);
@@ -92,7 +88,6 @@ protected:
   void UpdateListControl();
   void OnRipCD();
   void OnSearch();
-  bool HaveDiscOrConnection( CStdString& strPath, int iDriveType );
   bool ViewByIcon();
   bool ViewByLargeIcon();
   void DisplayEmptyDatabaseMessage(bool bDisplay);
@@ -102,22 +97,14 @@ protected:
   void ShowShareErrorMessage(CFileItem* pItem);
   void SetHistoryForPath(const CStdString& strDirectory);
   
-
-  CVirtualDirectory m_rootDir; ///< Used to get directories from shares and the shares itself
-  CFileItemList m_vecItems; ///< Represents the current items listed in the list/thumb control
   typedef vector <CFileItem*>::iterator ivecItems; ///< CFileItem* vector Iterator
   CGUIDialogProgress* m_dlgProgress; ///< Progress dialog
-  CDirectoryHistory m_history; ///< Previous items selected as string for list/thumb control
 
   static int m_nTempPlayListWindow; ///< Window the temporary playlist was started
   static CStdString m_strTempPlayListDirectory; ///< The directory the temporary playlist was started
-  int m_nSelectedItem; ///< Backups the last selected item before window is deinitialized
-  int m_iLastControl; ///< Backups the last selected control before window is deinitialized
-  bool m_bDisplayEmptyDatabaseMessage;  ///< If true we display a message informing the user to switch back to the Files view.
-  CStdString m_strParentPath; ///< Parent path to handle going up a dir
-  vector<CStdString> m_vecPathHistory; ///< History of traversed directories
 
-  CGUIViewControl m_viewControl;  ///< Handles our various views
+  bool m_bDisplayEmptyDatabaseMessage;  ///< If true we display a message informing the user to switch back to the Files view.
+  vector<CStdString> m_vecPathHistory; ///< History of traversed directories
 
   // member variables to save frequently used g_guiSettings (which is slow)
   CStdString m_formatLeft;

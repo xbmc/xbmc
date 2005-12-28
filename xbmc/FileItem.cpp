@@ -1275,6 +1275,15 @@ void CFileItemList::Sort(SORT_METHOD sortMethod, SORT_ORDER sortOrder)
   case SORT_METHOD_FILE:
     Sort(sortOrder==SORT_ORDER_ASC ? SSortFileItem::FileAscending : SSortFileItem::FileDescending);
     break;
+  case SORT_METHOD_VIDEO_RATING:
+    Sort(sortOrder==SORT_ORDER_ASC ? SSortFileItem::MovieRatingAscending : SSortFileItem::MovieRatingDescending);
+    break;
+  case SORT_METHOD_VIDEO_YEAR:
+    Sort(sortOrder==SORT_ORDER_ASC ? SSortFileItem::MovieYearAscending : SSortFileItem::MovieYearDescending);
+    break;
+  case SORT_METHOD_PROGRAM_COUNT:
+    Sort(sortOrder==SORT_ORDER_ASC ? SSortFileItem::ProgramCountAscending : SSortFileItem::ProgramCountDescending);
+    break;
   default:
     break;
   }
@@ -1557,7 +1566,7 @@ void CFileItemList::Stack()
   // TODO: Remove nfo files before this stage?  The old routine did, but I'm not sure
   // the advantage of this (seems to me it's better just to ignore them for stacking
   // purposes).
-  if (g_stSettings.m_iMyVideoVideoStack != STACK_NONE)
+  if (g_stSettings.m_iMyVideoStack != STACK_NONE)
   {
     // First stack any DVD folders by removing every dvd file other than
     // the VIDEO_TS.IFO file.
