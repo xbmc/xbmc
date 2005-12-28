@@ -440,6 +440,7 @@ bool CGUIWindowFileManager::Update(int iList, const CStdString &strDirectory)
   ClearFileItems(iList);
 
   m_vecItems[iList].AppendPointer(items);
+  m_vecItems[iList].m_strPath = items.m_strPath;
   items.ClearKeepPointer();
 
   // if we have a .tbn file, use itself as the thumb
@@ -686,6 +687,7 @@ bool CGUIWindowFileManager::DoProcessFile(int iAction, const CStdString& strFile
           CStdString strDestPath;
           CUtil::GetDirectory(strDestFileShortened,strDestPath);
           strcpy(g_stSettings.m_szCacheDirectory,strDestPath.c_str());
+          CLog::Log(LOGDEBUG, "CacheRarredFile: dest=%s, file=%s",strDestPath.c_str(), url.GetFileName().c_str());
           bool bResult = g_RarManager.CacheRarredFile(strDestPath,url.GetHostName(),url.GetFileName(),0,strDestPath,1);
           strcpy(g_stSettings.m_szCacheDirectory,strOriginalCachePath.c_str());
           return bResult;
