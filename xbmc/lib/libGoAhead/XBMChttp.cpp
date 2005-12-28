@@ -305,6 +305,121 @@ CStdString flushResult(int eid, webs_t wp, CStdString output)
   return "";
 }
 
+int CXbmcHttp::xbmcGetMediaLocation(int numParas, CStdString paras[])
+{
+  // getmediadirectory&parameter=type;location;1
+  // returns a listing of
+  // <li>label;path;0|1=folder;date
+
+  int iType = -1;
+  CStdString strType;
+  CStdString strMask;
+  CStdString strLocation;
+  CStdString strOutput;
+
+  if (numParas < 2)
+    return SetResponse(openTag+"Error: must supply media type and directory");
+  else
+  {
+    if (paras[0].Equals("music"))
+      iType = 0;
+    else if (paras[0].Equals("video"))
+      iType = 1;
+    else if (paras[0].Equals("pictures"))
+      iType = 2;
+    if (iType < 0)
+      return SetResponse(openTag+"Error: invalid media type; valid options are music, video, pictures");
+
+    strType = paras[0].ToLower();
+    strLocation = paras[1];
+  }
+
+  bool bShowDate = false;
+  if (numParas > 2)
+  {
+    int iTest = 0;
+    if (CUtil::IsNaturalNumber(paras[2]))
+      iTest = atoi(paras[2].c_str());
+    if (iTest > 1)
+      iTest = 0;
+    if (iTest)
+      bShowDate = true;
+  }
+
+  VECSHARES *pShares = NULL;
+  enum SHARETYPES { MUSIC, VIDEO, PICTURES };
+  switch(iType)
+  {
+  case MUSIC:
+    {
+      pShares = &g_settings.m_vecMyMusicShares;
+      strMask = g_stSettings.m_szMyMusicExtensions;
+    }
+    break;
+  case VIDEO:
+    {
+      pShares = &g_settings.m_vecMyVideoShares;
+      strMask = g_stSettings.m_szMyVideoExtensions;
+    }
+    break;
+  case PICTURES:
+    {
+      pShares = &g_settings.m_vecMyPictureShares;
+      strMask = g_stSettings.m_szMyPicturesExtensions;
+    }
+    break;
+  }
+
+  if (!pShares)
+    return SetResponse(openTag+"Error");
+
+  VECSHARES vecShares = *pShares;
+  bool bIsShareName = false;
+  int iIndex = CUtil::GetMatchingShare(strLocation, vecShares, bIsShareName);
+  if (iIndex < 0)
+  {
+    CStdString strError = "Error: invalid location, " + strLocation;
+    return SetResponse(openTag+strError);
+  }
+  if (bIsShareName)
+    strLocation = vecShares[iIndex].strPath;
+
+  CFileItemList items;
+  if (!CDirectory::GetDirectory(strLocation, items, strMask))
+  {
+    CStdString strError = "Error: could not get location, " + strLocation;
+    return SetResponse(openTag+strError);
+  }
+
+  items.Sort(SSortFileItem::LabelAscending);
+  CStdString strLine;
+  for (int i = 0; i < items.Size(); ++i)
+  {
+    CFileItem *item = items[i];
+    CStdString strLabel = item->GetLabel();
+    strLabel.Replace(";",";;");
+    CStdString strPath = item->m_strPath;
+    strPath.Replace(";",";;");
+    CStdString strFolder = "0";
+    if (item->m_bIsFolder)
+      strFolder = "1";
+
+    strLine = openTag;
+    strLine += strLabel + ";";
+    strLine += strPath + ";";
+    strLine += strFolder;
+    if (bShowDate)
+    {
+      CStdString theDate;
+      CUtil::GetDate(item->m_stTime, theDate);
+      strLine += ";" + theDate;
+    }
+    strLine += closeTag;
+    strOutput += strLine;
+  }
+  return SetResponse(strOutput);
+}
+
 int CXbmcHttp::xbmcGetShares(int numParas, CStdString paras[])
 {
   // returns the share listing in this format:
@@ -2189,6 +2304,7 @@ int CXbmcHttp::xbmcCommand(CStdString parameter)
       else if (command == "getcurrentlyplaying")      retVal = xbmcGetCurrentlyPlaying(); 
       else if (command == "getshares")                retVal = xbmcGetShares(numParas, paras); 
       else if (command == "getdirectory")             retVal = xbmcGetDirectory(numParas, paras); 
+      else if (command == "getmedialocation")         retVal = xbmcGetMediaLocation(numParas, paras); 
       else if (command == "gettagfromfilename")       retVal = xbmcGetTagFromFilename(numParas, paras);
       else if (command == "getcurrentplaylist")       retVal = xbmcGetCurrentPlayList();
       else if (command == "setcurrentplaylist")       retVal = xbmcSetCurrentPlayList(numParas, paras);
