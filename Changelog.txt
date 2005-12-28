@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 29-12-2005 fixed: lockup when switching between music and playlist window
  - 29-12-2005 fixed: Sorting in My Files was incorrect.
  - 29-12-2005 fixed: [1392003] My Pictures Context Menu Bug.
  - 29-12-2005 fixed: [site command: notificaton typo.
