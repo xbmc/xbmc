@@ -779,6 +779,7 @@ void CGUIWindowPictures::OnPopupMenu(int iItem)
       Update(m_vecItems.m_strPath);
       return ;
     }
+    m_vecItems[iItem]->Select(false);
   }
   else if (iItem >= 0)
   {
