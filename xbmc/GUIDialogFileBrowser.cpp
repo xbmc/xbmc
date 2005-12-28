@@ -121,7 +121,7 @@ void CGUIDialogFileBrowser::Update(const CStdString &strDirectory)
   if (iItem >= 0 && iItem < m_vecItems.Size())
   {
     CFileItem* pItem = m_vecItems[iItem];
-    if (pItem->GetLabel() != "..")
+    if (!pItem->IsParentFolder())
     {
       strSelectedItem = pItem->m_strPath;
       m_history.Set(strSelectedItem, m_Directory.m_strPath);
@@ -187,7 +187,7 @@ void CGUIDialogFileBrowser::Render()
   {
     // as we don't have a "." item, assume that if the user
     // is highlighting ".." then they wish to use that as the path
-    if (m_vecItems[item]->GetLabel() == "..")
+    if (m_vecItems[item]->IsParentFolder())
       m_selectedPath = m_Directory.m_strPath;
     else
       m_selectedPath = m_vecItems[item]->m_strPath;

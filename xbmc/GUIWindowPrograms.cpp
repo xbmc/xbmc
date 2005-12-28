@@ -1048,7 +1048,7 @@ void CGUIWindowPrograms::UpdateButtons()
   if (iItems)
   {
     CFileItem* pItem = m_vecItems[0];
-    if (pItem->GetLabel() == "..")
+    if (pItem->IsParentFolder())
       iItems--;
   }
   WCHAR wszText[20];
@@ -1105,7 +1105,7 @@ void CGUIWindowPrograms::OnScan(CFileItemList& items, int& iTotalAppsFound)
     CFileItem *pItem = items[i];
     if (pItem->m_bIsFolder)
     {
-      if (bScanSubDirs && !bFound && pItem->GetLabel() != "..")
+      if (bScanSubDirs && !bFound && !pItem->IsParentFolder())
       {
         // load subfolder
         CStdString strDir = m_Directory.m_strPath;

@@ -466,7 +466,7 @@ void CGUIWindowMusicPlayList::UpdateButtons()
   if (iItems)
   {
     CFileItem* pItem = m_vecItems[0];
-    if (pItem->GetLabel() == "..") iItems--;
+    if (pItem->IsParentFolder()) iItems--;
   }
   WCHAR wszText[20];
   const WCHAR* szText = g_localizeStrings.Get(127).c_str();

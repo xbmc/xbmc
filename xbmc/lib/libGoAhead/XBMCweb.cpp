@@ -130,7 +130,7 @@ void CXbmcWeb::AddItemToPlayList(const CFileItem* pItem)
   if (pItem->m_bIsFolder)
   {
     // recursive
-    if (pItem->GetLabel() == "..") return;
+    if (pItem->IsParentFolder()) return;
 
     CStdString strDirectory=pItem->m_strPath;
     CFileItemList items;

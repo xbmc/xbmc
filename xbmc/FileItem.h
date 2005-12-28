@@ -25,6 +25,7 @@ typedef enum {
   SORT_METHOD_ARTIST_IGNORE_THE,
   SORT_METHOD_ALBUM,
   SORT_METHOD_ALBUM_IGNORE_THE,
+  SORT_METHOD_GENRE,
 
   SORT_METHOD_MAX
 } SORT_METHOD;
@@ -93,6 +94,7 @@ public:
   bool IsReadOnly() const;
   bool CanQueue() const;
   void SetCanQueue(bool bYesNo);
+  bool IsParentFolder() const;
 
   void RemoveExtension();
   void CleanFileName();
@@ -119,6 +121,8 @@ public:
   int m_iLockMode;
   CStdString m_strLockCode;
   int m_iBadPwdCount;
+private:
+  bool m_bIsParentFolder;
   bool m_bCanQueue;
 };
 
@@ -193,8 +197,14 @@ public:
   bool Contains(CStdString& fileName);
   bool GetFastLookup() { return m_fastLookup; };
   void Stack();
+  SORT_ORDER GetSortOrder() { return m_sortOrder; }
+  SORT_METHOD GetSortMethod() { return m_sortMethod; }
+  bool Load();
+  bool Save();
 private:
   VECFILEITEMS m_items;
   MAPFILEITEMS m_map;
   bool m_fastLookup;
+  SORT_METHOD m_sortMethod;
+  SORT_ORDER m_sortOrder;
 };

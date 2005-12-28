@@ -652,7 +652,7 @@ void AddItemToPlayList(const CFileItem* pItem, int playList, int sortMethod, CSt
   if (pItem->m_bIsFolder)
   {
     // recursive
-    if (pItem->GetLabel() == "..") return;
+    if (pItem->IsParentFolder()) return;
     CStdString strDirectory=pItem->m_strPath;
     CFileItemList items;
     IDirectory *pDirectory = CFactoryDirectory::Create(strDirectory);
