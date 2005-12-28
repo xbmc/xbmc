@@ -393,7 +393,7 @@ int CXbmcHttp::xbmcGetMediaLocation(int numParas, CStdString paras[])
   {
     CStdString params[2];
     params[0] = strType;
-    params[1] = "appendzero";
+    params[1] = "appendone";
     return xbmcGetShares(2, params);
   }
   else if (!CDirectory::GetDirectory(strLocation, items, strMask))
@@ -467,12 +467,12 @@ int CXbmcHttp::xbmcGetShares(int numParas, CStdString paras[])
       numParas = 0;
   }
 
-  bool bAppendZero = false;
+  bool bAppendOne = false;
   if (numParas > 1)
   {
     // special case where getmedialocation calls getshares
-    if (paras[1].Equals("appendzero"))
-      bAppendZero = true;
+    if (paras[1].Equals("appendone"))
+      bAppendOne = true;
     else
     {
       int iTest = 0;
@@ -530,8 +530,8 @@ int CXbmcHttp::xbmcGetShares(int numParas, CStdString paras[])
       if (bShowName)
         strLine += strName + ";";
       strLine += strPath;
-      if (bAppendZero)
-        strLine += ";0";
+      if (bAppendOne)
+        strLine += ";1";
       strLine += closeTag;
       strOutput += strLine;
     }
