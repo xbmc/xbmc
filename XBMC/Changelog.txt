@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 28-12-2005 fixed: Movie Lookup on DVD folders like "Movie Name/VIDEO_TS/VIDEO_TS.IFO"
  - 27-12-2005 added: new Http Api command "getmedialocation", used as follows:
 			getmedialocation&parameter=type;location;showdate
 			type=(music,video,pictures), location=share name or path, showdate=(0,1)
