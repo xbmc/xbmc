@@ -477,9 +477,9 @@ void CGUIWindowVideoFiles::OnInfo(int iItem)
       }
       else
       { // check for a dvdfolder
-        if (item->m_strPath.CompareNoCase("VIDEO_TS") == 0)
+        if (item->GetLabel().CompareNoCase("VIDEO_TS") == 0)
         { // found a dvd folder - grab the main .ifo file
-          CUtil::AddFileToFolder(item->m_strPath, "video_ts.ifo", strFile);
+          CUtil::AddFileToFolder(item->m_strPath, "VIDEO_TS.IFO", strFile);
           if (CFile::Exists(strFile))
           {
             bFoundFile = true;
@@ -828,14 +828,14 @@ void CGUIWindowVideoFiles::SetIMDBThumbs(CFileItemList& items)
             {
               CFileItem* tempItem = tempItems[j];
               strMovieFile = CUtil::GetFileName(tempItem->m_strPath);
-              //CLog::Log(LOGDEBUG,"  Testing [%s] -> [%s]", strFile.c_str(), strMovieFile.c_str());
-              if (strMovieFile == strFile)
+              //CLog::Log(LOGDEBUG,"  Testing stack item [%s] -> [%s]", strFile.c_str(), strMovieFile.c_str());
+              if (strMovieFile.Equals(strFile))
                 break;
             }
           }
           //CLog::Log(LOGDEBUG,"  Testing [%s] -> [%s]", info.m_strPath.c_str(), strMovieFile.c_str());
 
-          if (strMovieFile == strFile /*|| pItem->GetLabel() == info.m_strTitle*/)
+          if (strMovieFile.Equals(strFile) /*|| pItem->GetLabel() == info.m_strTitle*/)
           {
             CStdString strThumb;
             CUtil::GetVideoThumbnail(info.m_strIMDBNumber, strThumb);
