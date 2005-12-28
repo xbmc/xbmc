@@ -27,7 +27,7 @@ protected:
   virtual bool Update(const CStdString &strDirectory);
   virtual void OnSort();
 
-  void ClearFileItems();
+  virtual void ClearFileItems();
   void SortItems(CFileItemList &items);
 
   // check for a disc or connection
