@@ -13,20 +13,13 @@
 #include "PlayListPlayer.h"
 #include "GUIThumbnailPanel.h"
 #include "GUIListControl.h"
-#include "AutoSwitch.h"
 #include "GUIPassword.h"
 #include "GUIFontManager.h"
 #include "GUIDialogContextMenu.h"
 #include "FileSystem/StackDirectory.h"
 #include "SortFileItem.h"
 
-#define CONTROL_BTNVIEWASICONS     2 
-#define CONTROL_BTNSORTBY          3
-#define CONTROL_BTNSORTASC         4
-#define CONTROL_BTNTYPE            5
 #define CONTROL_LIST              50
-#define CONTROL_THUMBS            51
-#define CONTROL_LABELFILES        12
 
 #define CONTROL_PLAY_DVD          6
 #define CONTROL_STACK             7
@@ -72,18 +65,11 @@ bool CGUIWindowVideoFiles::OnMessage(CGUIMessage& message)
         m_vecPathHistory.clear();
       }
 
-      // unless we had a destination paramter switch to the last my video window
-      if (g_stSettings.m_iVideoStartWindow > 0 && g_stSettings.m_iVideoStartWindow != GetID() )
-      {
-        m_gWindowManager.ActivateWindow(g_stSettings.m_iVideoStartWindow);
-        return false;
-      }
-
       // is this the first time accessing this window?
       // a quickpath overrides the a default parameter
-      if (m_Directory.m_strPath == "?" && strDestination.IsEmpty())
+      if (m_vecItems.m_strPath == "?" && strDestination.IsEmpty())
       {
-        m_Directory.m_strPath = strDestination = g_stSettings.m_szDefaultVideos;
+        m_vecItems.m_strPath = strDestination = g_stSettings.m_szDefaultVideos;
         CLog::Log(LOGINFO, "Attempting to default to: %s", strDestination.c_str());
       }
 
@@ -91,7 +77,7 @@ bool CGUIWindowVideoFiles::OnMessage(CGUIMessage& message)
       if (!strDestination.IsEmpty())
       {
         // default parameters if the jump fails
-        m_Directory.m_strPath = "";
+        m_vecItems.m_strPath = "";
 
         bool bIsBookmarkName = false;
         int iIndex = CUtil::GetMatchingShare(strDestination, g_settings.m_vecMyVideoShares, bIsBookmarkName);
@@ -99,9 +85,9 @@ bool CGUIWindowVideoFiles::OnMessage(CGUIMessage& message)
         {
           // set current directory to matching share
           if (bIsBookmarkName)
-            m_Directory.m_strPath = g_settings.m_vecMyVideoShares[iIndex].strPath;
+            m_vecItems.m_strPath = g_settings.m_vecMyVideoShares[iIndex].strPath;
           else
-            m_Directory.m_strPath = strDestination;
+            m_vecItems.m_strPath = strDestination;
           CLog::Log(LOGINFO, "  Success! Opened destination path: %s", strDestination.c_str());
         }
         else
@@ -112,13 +98,7 @@ bool CGUIWindowVideoFiles::OnMessage(CGUIMessage& message)
         // need file filters or GetDirectory in SetHistoryPath fails
         m_rootDir.SetMask(g_stSettings.m_szMyVideoExtensions);
         m_rootDir.SetShares(g_settings.m_vecMyVideoShares);
-        SetHistoryForPath(m_Directory.m_strPath);
-      }
-
-      if (m_iViewAsIcons == -1 && m_iViewAsIconsRoot == -1)
-      {
-        m_iViewAsIcons = g_stSettings.m_iMyVideoViewAsIcons;
-        m_iViewAsIconsRoot = g_stSettings.m_iMyVideoRootViewAsIcons;
+        SetHistoryForPath(m_vecItems.m_strPath);
       }
 
       return CGUIWindowVideoBase::OnMessage(message);
@@ -128,63 +108,33 @@ bool CGUIWindowVideoFiles::OnMessage(CGUIMessage& message)
   case GUI_MSG_CLICKED:
     {
       int iControl = message.GetSenderId();
-      if (iControl == CONTROL_BTNSORTBY) // sort by
-      {
-        if (m_Directory.IsVirtualDirectoryRoot())
-        {
-          if (g_stSettings.m_iMyVideoRootSortMethod == 0)
-            g_stSettings.m_iMyVideoRootSortMethod = 3;
-          else
-            g_stSettings.m_iMyVideoRootSortMethod = 0;
-        }
-        else
-        {
-          g_stSettings.m_iMyVideoSortMethod++;
-          if (g_stSettings.m_iMyVideoSortMethod >= 3) g_stSettings.m_iMyVideoSortMethod = 0;
-        }
-        g_settings.Save();
-        UpdateButtons();
-        OnSort();
-      }
-      else if (iControl == CONTROL_BTNSORTASC) // sort asc
-      {
-        if (m_Directory.IsVirtualDirectoryRoot())
-          g_stSettings.m_bMyVideoRootSortAscending = !g_stSettings.m_bMyVideoRootSortAscending;
-        else
-          g_stSettings.m_bMyVideoSortAscending = !g_stSettings.m_bMyVideoSortAscending;
-
-        g_settings.Save();
-        UpdateButtons();
-        OnSort();
-      }
-      else if (iControl == CONTROL_BTNSCAN)
+      if (iControl == CONTROL_BTNSCAN)
       {
         OnScan();
       }
-
       else if (iControl == CONTROL_STACK)
       {
         // toggle between the following states:
         //   0 : no stacking
         //   1 : stacking
-        g_stSettings.m_iMyVideoVideoStack++;
+        g_stSettings.m_iMyVideoStack++;
         
-        if (g_stSettings.m_iMyVideoVideoStack > STACK_SIMPLE) 
-          g_stSettings.m_iMyVideoVideoStack = STACK_NONE;
+        if (g_stSettings.m_iMyVideoStack > STACK_SIMPLE) 
+          g_stSettings.m_iMyVideoStack = STACK_NONE;
 
-        if (g_stSettings.m_iMyVideoVideoStack != STACK_NONE)
+        if (g_stSettings.m_iMyVideoStack != STACK_NONE)
           g_stSettings.m_bMyVideoCleanTitles = true;
         else
           g_stSettings.m_bMyVideoCleanTitles = false;
         g_settings.Save();
         UpdateButtons();
-        Update( m_Directory.m_strPath );
+        Update( m_vecItems.m_strPath );
       }
       else if (iControl == CONTROL_BTNPLAYLISTS)
       {
-        if (!m_Directory.m_strPath.Equals(CUtil::VideoPlaylistsLocation()))
+        if (!m_vecItems.m_strPath.Equals(CUtil::VideoPlaylistsLocation()))
         {
-          CStdString strParent = m_Directory.m_strPath;
+          CStdString strParent = m_vecItems.m_strPath;
           UpdateButtons();
           Update(CUtil::VideoPlaylistsLocation());
           m_strParentPath = strParent;
@@ -201,7 +151,7 @@ bool CGUIWindowVideoFiles::OnMessage(CGUIMessage& message)
 void CGUIWindowVideoFiles::UpdateButtons()
 {
   CGUIWindowVideoBase::UpdateButtons();
-  SET_CONTROL_LABEL(CONTROL_STACK, g_stSettings.m_iMyVideoVideoStack + 14000);
+  SET_CONTROL_LABEL(CONTROL_STACK, g_stSettings.m_iMyVideoStack + 14000);
 }
 
 void CGUIWindowVideoFiles::FormatItemLabels()
@@ -209,14 +159,7 @@ void CGUIWindowVideoFiles::FormatItemLabels()
   for (int i = 0; i < (int)m_vecItems.Size(); i++)
   {
     CFileItem* pItem = m_vecItems[i];
-    if (g_stSettings.m_iMyVideoSortMethod == 0 || g_stSettings.m_iMyVideoSortMethod == 2)
-    {
-      if (pItem->m_bIsFolder)
-        pItem->SetLabel2("");
-      else
-        pItem->SetFileSizeLabel();
-    }
-    else
+    if (g_stSettings.m_MyVideoSortMethod == SORT_METHOD_DATE)
     {
       if (pItem->m_stTime.wYear)
       {
@@ -227,41 +170,13 @@ void CGUIWindowVideoFiles::FormatItemLabels()
       else
         pItem->SetLabel2("");
     }
-  }
-}
-
-void CGUIWindowVideoFiles::SortItems(CFileItemList& items)
-{
-  int sortMethod;
-  bool sortAscending;
-  if (m_Directory.IsVirtualDirectoryRoot())
-  {
-    sortMethod = g_stSettings.m_iMyVideoRootSortMethod;
-    sortAscending = g_stSettings.m_bMyVideoRootSortAscending;
-  }
-  else
-  {
-    sortMethod = g_stSettings.m_iMyVideoSortMethod;
-    sortAscending = g_stSettings.m_bMyVideoSortAscending;
-    // in the case of sort by date or sort by size, it makes sense to have newest or largest
-    // as the default order (ie same as normal alphabetic order)
-    if (g_stSettings.m_iMyVideoSortMethod == 1 || g_stSettings.m_iMyVideoSortMethod == 2)
-      sortAscending = !sortAscending;
-  }
-  switch (sortMethod)
-  {
-  case 1:
-    items.Sort(sortAscending ? SSortFileItem::DateAscending : SSortFileItem::DateDescending); break;
-  case 2:
-    items.Sort(sortAscending ? SSortFileItem::SizeAscending : SSortFileItem::SizeDescending); break;
-  case 3:
-    items.Sort(sortAscending ? SSortFileItem::DriveTypeAscending : SSortFileItem::DriveTypeDescending); break;
-  default:
-    if (g_guiSettings.GetBool("MyVideos.IgnoreTheWhenSorting"))
-      items.Sort(sortAscending ? SSortFileItem::LabelAscendingNoThe : SSortFileItem::LabelDescendingNoThe);
     else
-      items.Sort(sortAscending ? SSortFileItem::LabelAscending : SSortFileItem::LabelDescending);
-    break;
+    {
+      if (pItem->m_bIsFolder)
+        pItem->SetLabel2("");
+      else
+        pItem->SetFileSizeLabel();
+    }
   }
 }
 
@@ -275,10 +190,8 @@ bool CGUIWindowVideoFiles::Update(const CStdString &strDirectory)
   if (!UpdateDir(strDirectory))
     return false;
 
-  if (!m_Directory.IsVirtualDirectoryRoot() && g_guiSettings.GetBool("VideoFiles.UseAutoSwitching"))
+  if (!m_vecItems.IsVirtualDirectoryRoot() && g_guiSettings.GetBool("VideoFiles.UseAutoSwitching"))
   {
-    m_iViewAsIcons = CAutoSwitch::GetView(m_vecItems);
-    int iFocusedControl = GetFocusedControl();
     UpdateButtons();
   }
 
@@ -310,17 +223,17 @@ bool CGUIWindowVideoFiles::UpdateDir(const CStdString &strDirectory)
     if (!pItem->IsParentFolder())
     {
       GetDirectoryHistoryString(pItem, strSelectedItem);
-      m_history.Set(strSelectedItem, m_Directory.m_strPath);
+      m_history.Set(strSelectedItem, m_vecItems.m_strPath);
     }
   }
 
-  CStdString strOldDirectory=m_Directory.m_strPath;
-  m_Directory.m_strPath = strDirectory;
+  CStdString strOldDirectory = m_vecItems.m_strPath;
+  m_vecItems.m_strPath = strDirectory;
 
   CFileItemList items;
-  if (!GetDirectory(m_Directory.m_strPath, items))
+  if (!GetDirectory(m_vecItems.m_strPath, items))
   {
-    m_Directory.m_strPath = strOldDirectory;
+    m_vecItems.m_strPath = strOldDirectory;
     return false;
   }
 
@@ -329,9 +242,10 @@ bool CGUIWindowVideoFiles::UpdateDir(const CStdString &strDirectory)
   ClearFileItems();
 
   m_vecItems.AppendPointer(items);
+  m_vecItems.m_strPath = items.m_strPath;
   items.ClearKeepPointer();
 
-  if (!m_Directory.IsStack() && g_stSettings.m_iMyVideoVideoStack != STACK_NONE)
+  if (!m_vecItems.IsStack() && g_stSettings.m_iMyVideoStack != STACK_NONE)
   {
     //sort list ascending by filename before stacking...
     m_vecItems.Sort(SSortFileItem::LabelAscending);
@@ -357,7 +271,7 @@ bool CGUIWindowVideoFiles::UpdateDir(const CStdString &strDirectory)
 
   UpdateButtons();
 
-  strSelectedItem = m_history.Get(m_Directory.m_strPath);
+  strSelectedItem = m_history.Get(m_vecItems.m_strPath);
   for (int i = 0; i < (int)m_vecItems.Size(); ++i)
   {
     CFileItem* pItem = m_vecItems[i];
@@ -396,7 +310,7 @@ void CGUIWindowVideoFiles::OnClick(int iItem)
       // GoParentFolder() calls Update(), so just return
       return;
     }
-    m_iItemSelected = -1;
+    m_iSelectedItem = -1;
     if ( pItem->m_bIsShareOrDrive )
     {
       if ( !g_passwordManager.IsItemUnlocked( pItem, "video" ) )
@@ -430,7 +344,7 @@ void CGUIWindowVideoFiles::OnClick(int iItem)
     g_playlistPlayer.Reset();
     g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_NONE);
     // Set selected item
-    m_iItemSelected = m_viewControl.GetSelectedItem();
+    m_iSelectedItem = m_viewControl.GetSelectedItem();
     if (pItem->IsPlayList())
     {
       LoadPlayList(pItem->m_strPath);
@@ -697,9 +611,9 @@ void CGUIWindowVideoFiles::OnScan()
 {
   // GetStackedDirectory() now sets and restores the stack state!
   CFileItemList items;
-  GetStackedDirectory(m_Directory.m_strPath, items);
-  DoScan(m_Directory.m_strPath, items);
-  Update(m_Directory.m_strPath);
+  GetStackedDirectory(m_vecItems.m_strPath, items);
+  DoScan(m_vecItems.m_strPath, items);
+  Update(m_vecItems.m_strPath);
 }
 
 bool CGUIWindowVideoFiles::DoScan(const CStdString &strPath, CFileItemList& items)
@@ -773,21 +687,21 @@ void CGUIWindowVideoFiles::GetStackedDirectory(const CStdString &strPath, CFileI
 
   // force stacking to be enabled
   // save stack state
-  int iStack = g_stSettings.m_iMyVideoVideoStack;
-  g_stSettings.m_iMyVideoVideoStack = STACK_SIMPLE;
+  int iStack = g_stSettings.m_iMyVideoStack;
+  g_stSettings.m_iMyVideoStack = STACK_SIMPLE;
 
   //sort list ascending by filename before stacking...
   items.Sort(SSortFileItem::LabelAscending);
   items.Stack();
 
   // restore stack
-  g_stSettings.m_iMyVideoVideoStack = iStack;
+  g_stSettings.m_iMyVideoStack = iStack;
 }
 
 void CGUIWindowVideoFiles::SetIMDBThumbs(CFileItemList& items)
 {
   VECMOVIES movies;
-  m_database.GetMoviesByPath(m_Directory.m_strPath, movies);
+  m_database.GetMoviesByPath(m_vecItems.m_strPath, movies);
   for (int x = 0; x < (int)items.Size(); ++x)
   {
     CFileItem* pItem = items[x];
@@ -847,27 +761,6 @@ void CGUIWindowVideoFiles::SetIMDBThumbs(CFileItemList& items)
       }
     }
   }
-}
-
-bool CGUIWindowVideoFiles::SortAscending()
-{
-  if (m_Directory.IsVirtualDirectoryRoot())
-    return g_stSettings.m_bMyVideoRootSortAscending;
-  else
-    return g_stSettings.m_bMyVideoSortAscending;
-}
-
-int CGUIWindowVideoFiles::SortMethod()
-{
-  if (m_Directory.IsVirtualDirectoryRoot())
-  {
-    if (g_stSettings.m_iMyVideoRootSortMethod == 0)
-      return 103;
-    else
-      return 498; // Sort by: Type
-  }
-  else
-    return g_stSettings.m_iMyVideoSortMethod + 103;
 }
 
 void CGUIWindowVideoFiles::LoadPlayList(const CStdString& strPlayList)
@@ -1023,7 +916,7 @@ void CGUIWindowVideoFiles::OnPopupMenu(int iItem)
     iPosX = pList->GetXPosition() + pList->GetWidth() / 2;
     iPosY = pList->GetYPosition() + pList->GetHeight() / 2;
   }
-  if ( m_Directory.IsVirtualDirectoryRoot() )
+  if ( m_vecItems.IsVirtualDirectoryRoot() )
   {
     if (iItem < 0)
     { // TODO: We should add the option here for shares to be added if there aren't any
@@ -1040,26 +933,13 @@ void CGUIWindowVideoFiles::OnPopupMenu(int iItem)
     if (CGUIDialogContextMenu::BookmarksMenu("video", m_vecItems[iItem]->GetLabel(), m_vecItems[iItem]->m_strPath, m_vecItems[iItem]->m_iLockMode, bMaxRetryExceeded, iPosX, iPosY))
     {
       m_rootDir.SetShares(g_settings.m_vecMyVideoShares);
-      Update(m_Directory.m_strPath);
+      Update(m_vecItems.m_strPath);
       return ;
     }
     m_vecItems[iItem]->Select(false);
     return ;
   }
   CGUIWindowVideoBase::OnPopupMenu(iItem);
-}
-
-void CGUIWindowVideoFiles::LoadViewMode()
-{
-  m_iViewAsIconsRoot = g_stSettings.m_iMyVideoRootViewAsIcons;
-  m_iViewAsIcons = g_stSettings.m_iMyVideoViewAsIcons;
-}
-
-void CGUIWindowVideoFiles::SaveViewMode()
-{
-  g_stSettings.m_iMyVideoRootViewAsIcons = m_iViewAsIconsRoot;
-  g_stSettings.m_iMyVideoViewAsIcons = m_iViewAsIcons;
-  g_settings.Save();
 }
 
 void CGUIWindowVideoFiles::GetIMDBDetails(CFileItem *pItem, CIMDBUrl &url)

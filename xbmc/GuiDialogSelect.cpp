@@ -21,13 +21,13 @@ struct SSortDialogSelect
     CStdString strLabel2 = rpEnd.GetLabel();
     strLabel2.ToLower();
 
-    if (m_bSortAscending)
+    if (m_bSortOrder)
       return (strcmp(strLabel1.c_str(), strLabel2.c_str()) < 0);
     else
       return (strcmp(strLabel1.c_str(), strLabel2.c_str()) >= 0);
   }
 
-  bool m_bSortAscending;
+  bool m_bSortOrder;
 };
 
 CGUIDialogSelect::CGUIDialogSelect(void)
@@ -163,10 +163,10 @@ bool CGUIDialogSelect::IsButtonPressed()
   return m_bButtonPressed;
 }
 
-void CGUIDialogSelect::Sort(bool bSortAscending /*=true*/)
+void CGUIDialogSelect::Sort(bool bSortOrder /*=true*/)
 {
   SSortDialogSelect sortmethod;
-  sortmethod.m_bSortAscending = bSortAscending;
+  sortmethod.m_bSortOrder = bSortOrder;
   sort(m_vecList.begin(), m_vecList.end(), sortmethod);
 }
 

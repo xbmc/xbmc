@@ -3,10 +3,6 @@
 #include "AutoSwitch.h"
 #include "util.h"
 
-#define VIEW_AS_LIST     0
-#define VIEW_AS_ICONS     1
-#define VIEW_AS_LARGEICONS  2
-
 #define METHOD_BYFOLDERS  0
 #define METHOD_BYFILES   1
 #define METHOD_BYTHUMBPERCENT 2
@@ -20,9 +16,8 @@ CAutoSwitch::~CAutoSwitch(void)
 
 /// \brief Generic function to add a layer of transparency to the calling window
 /// \param vecItems Vector of FileItems passed from the calling window
-int CAutoSwitch::GetView(const CFileItemList &vecItems)
+VIEW_METHOD CAutoSwitch::GetView(const CFileItemList &vecItems)
 {
-  int iViewAs = VIEW_AS_LIST;
   int iSortMethod = -1;
   bool bBigThumbs = false;
   bool bHideParentFolderItems = false;
@@ -76,7 +71,7 @@ int CAutoSwitch::GetView(const CFileItemList &vecItems)
     break;
   }
   // if this was called by an unknown window just return listtview
-  if (iSortMethod < 0) return iViewAs;
+  if (iSortMethod < 0) return VIEW_METHOD_LIST;
 
   bool bThumbs = false;
 
@@ -101,10 +96,10 @@ int CAutoSwitch::GetView(const CFileItemList &vecItems)
   if (bThumbs)
   {
     if (bBigThumbs)
-      return VIEW_AS_LARGEICONS;
-    return VIEW_AS_ICONS;
+      return VIEW_METHOD_LARGE_ICONS;
+    return VIEW_METHOD_ICONS;
   }
-  return VIEW_AS_LIST;
+  return VIEW_METHOD_LIST;
 }
 
 /// \brief Auto Switch method based on the current directory \e containing ALL folders and \e atleast one non-default thumb

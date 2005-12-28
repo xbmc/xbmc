@@ -4,7 +4,6 @@
 #include "GUIDialog.h"
 #include "../xbmc/settings.h"
 //GeminiServer 
-#include "../xbmc/FileItem.h"
 #include "../xbmc/GUIPassword.h"
 #include "../xbmc/utils/GUIInfoManager.h"
 
@@ -218,6 +217,16 @@ void CGUIWindowManager::RefreshWindow()
   pWindow->OnMessage(msg);
 }
 
+void CGUIWindowManager::ChangeActiveWindow(int newWindow)
+{
+  if (m_iActiveWindow >= 0)
+  {
+    DWORD previousID = m_vecWindows[m_iActiveWindow]->GetPreviousWindowID();
+    ActivateWindow(newWindow);
+    m_vecWindows[m_iActiveWindow]->SetPreviousWindowID(previousID);
+  }
+}
+
 void CGUIWindowManager::ActivateWindow(int iWindowID, const CStdString& strPath)
 {
   // translate virtual windows
@@ -228,6 +237,14 @@ void CGUIWindowManager::ActivateWindow(int iWindowID, const CStdString& strPath)
     // ensure the music virtual window only returns music files and music library windows
     if (iWindowID != WINDOW_MUSIC_FILES && iWindowID != WINDOW_MUSIC_NAV)
       iWindowID = WINDOW_MUSIC_FILES;
+  }
+  // virtual video window which returns the last open video window (aka the video start window)
+  if (iWindowID == WINDOW_VIDEOS)
+  {
+    if (g_stSettings.m_iVideoStartWindow > 0)
+    {
+      iWindowID = g_stSettings.m_iVideoStartWindow;
+    }
   }
 
   // first check existence of the window we wish to activate.

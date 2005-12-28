@@ -5,6 +5,11 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 28-12-2005 changed: Effect times are now calculated after items have been rendered once.
+ - 28-12-2005 added: ListItem.Thumb and ListItem.Label to the InfoManager.
+ - 28-12-2005 changed: Added a media window base class.
+ - 28-12-2005 fixed: Sort order for items that are identical other than their length.
+ - 28-12-2005 changed: moved sorting and available view as controls out of the video, programs, pictures + scripts windows
  - 28-12-2005 changed: moved parent folder testing into the fileitem, results in a minor speed increase while sorting
  - 28-12-2005 fixed: music nav, "* All Genre" folder may not always be on top if the list
  - 28-12-2005 fixed: Movie Lookup on DVD folders like "Movie Name/VIDEO_TS/VIDEO_TS.IFO"

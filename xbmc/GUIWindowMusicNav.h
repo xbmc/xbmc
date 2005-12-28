@@ -16,7 +16,7 @@ public:
 protected:
   // override base class methods
   virtual bool GetDirectory(const CStdString &strDirectory, CFileItemList &items);
-  virtual void DoSort(CFileItemList& items);
+  virtual void SortItems(CFileItemList& items);
   virtual void UpdateButtons();
   virtual void OnFileItemFormatLabel(CFileItem* pItem);
   virtual void OnClick(int iItem);

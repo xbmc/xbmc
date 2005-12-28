@@ -1,6 +1,5 @@
 #pragma once
-#include "HTTP.h"
-#include "thread.h"
+#include "InfoLoader.h"
 
 #define WEATHER_LABEL_LOCATION   10
 #define WEATHER_IMAGE_CURRENT_ICON 21
@@ -23,34 +22,25 @@ struct day_forcast
 
 #define NUM_DAYS 4
 
-class CWeather;
-
-class CBackgroundWeatherLoader : public CThread
+class CBackgroundWeatherLoader : public CBackgroundLoader
 {
 public:
-  CBackgroundWeatherLoader(CWeather *pCallback, int iArea);
-  ~CBackgroundWeatherLoader();
+  CBackgroundWeatherLoader(CInfoLoader *pCallback) : CBackgroundLoader(pCallback) {};
 
-private:
-  void Process();
-  int m_iArea;
-  CWeather *m_pCallback;
+protected:
+  virtual void GetInformation();
 };
 
-class CWeather
+class CWeather : public CInfoLoader
 {
 public:
   CWeather(void);
   virtual ~CWeather(void);
   static bool GetSearchResults(const CStdString &strSearch, CStdString &strResult);
   bool LoadWeather(const CStdString& strWeatherFile); //parse strWeatherFile
-  void Refresh(int iArea);
-  void LoaderFinished();
 
   char *GetLocation(int iLocation) { return m_szLocation[iLocation]; };
-  const char *GetLabel(DWORD dwLabel);
   char *GetLastUpdateTime() { return m_szLastUpdateTime; };
-  char *GetCurrentIcon();
   char *GetCurrentConditions() { return m_szCurrentConditions; };
   char *GetCurrentTemperature() { return m_szCurrentTemperature; };
   char *GetCurrentFeelsLike() { return m_szCurrentFeelsLike; };
@@ -59,9 +49,15 @@ public:
   char *GetCurrentDewPoint() { return m_szCurrentDewPoint; };
   char *GetCurrentHumidity() { return m_szCurrentHumidity; };
   
+  void SetArea(int iArea) { m_iCurWeather = iArea; };
+  int GetArea() const { return m_iCurWeather; };
   day_forcast m_dfForcast[NUM_DAYS];
   bool m_bImagesOkay;
 protected:
+  virtual const char *TranslateInfo(DWORD dwInfo);
+  virtual const char *BusyInfo(DWORD dwInfo);
+  virtual DWORD TimeToNextRefreshInMs();
+
   bool Download(const CStdString& strWeatherFile);  //download to strWeatherFile
   void GetString(const TiXmlElement* pRootElement, const CStdString& strTagName, char* szValue, const CStdString& strDefaultValue);
   void GetInteger(const TiXmlElement* pRootElement, const CStdString& strTagName, int& iValue);
@@ -76,7 +72,6 @@ protected:
 
   char m_szLocation[3][100];
 
-  DWORD m_lRefreshTime;  //for autorefresh
   // Last updated
   char m_szLastUpdateTime[256];
   // Now weather
@@ -92,9 +87,6 @@ protected:
   char m_szNAIcon[256];
 
   unsigned int m_iCurWeather;
-  bool m_bBusy;
-
-  CBackgroundWeatherLoader *m_pBackgroundLoader;
 };
 
 extern CWeather g_weatherManager;

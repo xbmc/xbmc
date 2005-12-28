@@ -267,8 +267,8 @@ void CGUIDialogFileBrowser::OnWindowLoaded()
   CGUIDialog::OnWindowLoaded();
   m_viewControl.Reset();
   m_viewControl.SetParentWindow(GetID());
-  m_viewControl.AddView(VIEW_AS_LIST, GetControl(CONTROL_LIST));
-  m_viewControl.SetCurrentView(VIEW_AS_LIST);
+  m_viewControl.AddView(VIEW_METHOD_LIST, GetControl(CONTROL_LIST));
+  m_viewControl.SetCurrentView(VIEW_METHOD_LIST);
 }
 
 void CGUIDialogFileBrowser::OnWindowUnload()
