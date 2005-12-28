@@ -380,7 +380,7 @@ void CGUIWindowPictures::UpdateButtons()
   if (iItems)
   {
     CFileItem* pItem = m_vecItems[0];
-    if (pItem->GetLabel() == "..") iItems--;
+    if (pItem->IsParentFolder()) iItems--;
   }
   WCHAR wszText[20];
   const WCHAR* szText = g_localizeStrings.Get(127).c_str();
@@ -451,7 +451,7 @@ bool CGUIWindowPictures::UpdateDir(const CStdString &strDirectory)
   if (iItem >= 0 && iItem < (int)m_vecItems.Size())
   {
       CFileItem* pItem = m_vecItems[iItem];
-    if (pItem->GetLabel() != "..")
+    if (!pItem->IsParentFolder())
     {
       GetDirectoryHistoryString(pItem, strSelectedItem);
       m_history.Set(strSelectedItem, m_Directory.m_strPath);
@@ -508,7 +508,7 @@ void CGUIWindowPictures::OnClick(int iItem)
     if ( !g_passwordManager.IsItemUnlocked( pItem, "pictures" ) )
       return ;
 
-    if (pItem->GetLabel() == "..")
+    if (pItem->IsParentFolder())
     {
       // go back a directory
       GoParentFolder();
@@ -1101,7 +1101,7 @@ void CGUIWindowPictures::OnWindowUnload()
 
 void CGUIWindowPictures::OnItemLoaded(CFileItem *pItem)
 {
-  if (pItem->m_bIsFolder && !pItem->m_bIsShareOrDrive && !pItem->HasThumbnail() && pItem->GetLabel() != "..")
+  if (pItem->m_bIsFolder && !pItem->m_bIsShareOrDrive && !pItem->HasThumbnail() && !pItem->IsParentFolder())
   { // generate the thumb folder if necessary
     // we load the directory, grab 4 random thumb files (if available) and then generate
     // the thumb.

@@ -41,8 +41,8 @@ CGUIViewStateMusicDatabase::CGUIViewStateMusicDatabase(const CFileItemList& item
     break;
   case NODE_TYPE_GENRE:
     {
-      AddSortMethod(SORT_METHOD_LABEL, 103);
-      SetSortMethod(SORT_METHOD_LABEL);
+      AddSortMethod(SORT_METHOD_GENRE, 103);
+      SetSortMethod(SORT_METHOD_GENRE);
       
       AddViewAsControl(VIEW_AS_CONTROL_LIST, 101);
       AddViewAsControl(VIEW_AS_CONTROL_ICONS, 100);

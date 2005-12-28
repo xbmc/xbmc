@@ -428,7 +428,7 @@ void CGUIWindowFileManager::UpdateButtons()
     if (iItems)
     {
       CFileItem* pItem = m_vecItems[i][0];
-      if (pItem->GetLabel() == "..") iItems--;
+      if (pItem->IsParentFolder()) iItems--;
     }
     swprintf(wszText, L"%i %s", iItems, szText);
     SET_CONTROL_LABEL(CONTROL_NUMFILES_LEFT + i, wszText);
@@ -444,7 +444,7 @@ bool CGUIWindowFileManager::Update(int iList, const CStdString &strDirectory)
   if (iItem >= 0 && iItem < (int)m_vecItems[iList].Size())
   {
     CFileItem* pItem = m_vecItems[iList][iItem];
-    if (pItem->GetLabel() != "..")
+    if (!pItem->IsParentFolder())
     {
       GetDirectoryHistoryString(pItem, strSelectedItem);
       m_history[iList].Set(strSelectedItem, m_Directory[iList].m_strPath);
@@ -662,7 +662,7 @@ void CGUIWindowFileManager::OnMark(int iList, int iItem)
 
   if (!pItem->m_bIsShareOrDrive)
   {
-    if (pItem->GetLabel() != "..")
+    if (!pItem->IsParentFolder())
     {
       // MARK file
       pItem->Select(!pItem->IsSelected());
@@ -943,7 +943,7 @@ void CGUIWindowFileManager::OnSelectAll(int iList)
   for (int i = 0; i < m_vecItems[iList].Size();++i)
   {
     CFileItem* pItem = m_vecItems[iList][i];
-    if (pItem->GetLabel() != "..")
+    if (!pItem->IsParentFolder())
     {
       pItem->Select(true);
     }
@@ -1266,7 +1266,7 @@ void CGUIWindowFileManager::OnPopupMenu(int list, int item)
     pMenu->EnableButton(4, item >= 0 && CanCopy(list));
     pMenu->EnableButton(5, item >= 0 && CanMove(list));
     pMenu->EnableButton(6, CanNewFolder(list));
-    pMenu->EnableButton(7, item >=0 && m_vecItems[list][item]->m_bIsFolder && m_vecItems[list][item]->GetLabel() != "..");
+    pMenu->EnableButton(7, item >=0 && m_vecItems[list][item]->m_bIsFolder && !m_vecItems[list][item]->IsParentFolder());
     // position it correctly
     pMenu->SetPosition(iPosX - pMenu->GetWidth() / 2, iPosY - pMenu->GetHeight() / 2);
     pMenu->DoModal(GetID());
@@ -1337,7 +1337,7 @@ bool CGUIWindowFileManager::SelectItem(int list, int &item)
   // get the currently selected item in the list
   item = GetSelectedItem(list);
   // select the item if we need to
-  if (!NumSelected(list) && m_vecItems[list][item]->GetLabel() != "..")
+  if (!NumSelected(list) && !m_vecItems[list][item]->IsParentFolder())
   {
     m_vecItems[list][item]->Select(true);
     return true;
@@ -1361,7 +1361,7 @@ __int64 CGUIWindowFileManager::CalculateFolderSize(const CStdString &strDirector
   m_rootDir.GetDirectory(strDirectory, items, false);
   for (int i=0; i < items.Size(); i++)
   {
-    if (items[i]->m_bIsFolder && items[i]->GetLabel() != "..") // folder
+    if (items[i]->m_bIsFolder && !items[i]->IsParentFolder()) // folder
     {
       __int64 folderSize = CalculateFolderSize(items[i]->m_strPath, pProgress);
       if (folderSize < 0) return -1;
