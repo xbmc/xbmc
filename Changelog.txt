@@ -5,6 +5,9 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 29-12-2005 fixed: Sorting in My Files was incorrect.
+ - 29-12-2005 fixed: [1392003] My Pictures Context Menu Bug.
+ - 29-12-2005 fixed: [site command: notificaton typo.
  - 28-12-2005 changed: Effect times are now calculated after items have been rendered once.
  - 28-12-2005 added: ListItem.Thumb and ListItem.Label to the InfoManager.
  - 28-12-2005 changed: Added a media window base class.
