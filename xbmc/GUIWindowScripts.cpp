@@ -182,7 +182,7 @@ void CGUIWindowScripts::UpdateButtons()
   if (iItems)
   {
     CFileItem* pItem = m_vecItems[0];
-    if (pItem->GetLabel() == "..") iItems--;
+    if (pItem->IsParentFolder()) iItems--;
   }
   WCHAR wszText[20];
   const WCHAR* szText = g_localizeStrings.Get(127).c_str();
@@ -245,7 +245,7 @@ void CGUIWindowScripts::Update(const CStdString &strDirectory)
   if (iItem >= 0 && iItem < m_vecItems.Size())
   {
     CFileItem* pItem = m_vecItems[iItem];
-    if (pItem->GetLabel() != "..")
+    if (!pItem->IsParentFolder())
     {
       strSelectedItem = pItem->m_strPath;
       m_history.Set(strSelectedItem, m_Directory.m_strPath);

@@ -68,6 +68,8 @@ CFileItem::CFileItem(const CStdString& strLabel)
 {
   Reset();
   m_strLabel = strLabel;
+  if (strLabel=="..")
+    m_bIsParentFolder=true;
 }
 
 CFileItem::CFileItem(const CStdString& strPath, bool bIsFolder)
@@ -148,6 +150,7 @@ void CFileItem::Reset()
   m_strLockCode = "";
   m_iBadPwdCount = 0;
   m_bCanQueue=true;
+  m_bIsParentFolder=false;
 }
 
 void CFileItem::Serialize(CArchive& ar)
@@ -598,7 +601,7 @@ void CFileItem::FillInDefaultIcon()
     }
     else
     {
-      if (GetLabel() == "..")
+      if (IsParentFolder())
       {
         SetIconImage("defaultFolderBack.png");
       }
@@ -620,7 +623,7 @@ void CFileItem::SetThumb()
     return;
 
   //  No thumb for parent folder items
-  if (GetLabel() == "..") return ;
+  if (IsParentFolder()) return ;
 
   if (IsXBE() && m_bIsFolder) return ;  // case where we have multiple paths with XBE
 
@@ -735,7 +738,7 @@ void CFileItem::SetThumb()
       }
     }
     // fill in the folder thumbs
-    if (!bGotIcon && GetLabel() != "..")
+    if (!bGotIcon && !IsParentFolder())
     {
       // this is a folder ?
       if (m_bIsFolder)
@@ -785,7 +788,7 @@ void CFileItem::SetMusicThumb()
   if (IsMusicDb()) return;
 
   // ignore the parent dir items
-  if (GetLabel() == "..") return;
+  if (IsParentFolder()) return;
 
   // if item is not a folder, extract its path
   //CLog::Log(LOGDEBUG,"Looking for thumb for: %s",m_strPath.c_str());
@@ -1043,6 +1046,11 @@ void CFileItem::SetCanQueue(bool bYesNo)
   m_bCanQueue=bYesNo;
 }
 
+bool CFileItem::IsParentFolder() const
+{
+  return m_bIsParentFolder;
+}
+
 
 /////////////////////////////////////////////////////////////////////////////////
 /////
@@ -1054,6 +1062,8 @@ CFileItemList::CFileItemList()
 {
   m_fastLookup = false;
   m_bIsFolder=true;
+  m_sortMethod=SORT_METHOD_NONE;
+  m_sortOrder=SORT_ORDER_NONE;
 }
 
 CFileItemList::~CFileItemList()
@@ -1115,6 +1125,9 @@ void CFileItemList::Clear()
     }
     m_map.clear();
   }
+
+  m_sortMethod=SORT_METHOD_NONE;
+  m_sortOrder=SORT_ORDER_NONE;
 }
 
 void CFileItemList::ClearKeepPointer()
@@ -1124,6 +1137,9 @@ void CFileItemList::ClearKeepPointer()
     m_items.clear();
     m_map.clear();
   }
+
+  m_sortMethod=SORT_METHOD_NONE;
+  m_sortOrder=SORT_ORDER_NONE;
 }
 
 void CFileItemList::Add(CFileItem* pItem)
@@ -1205,7 +1221,9 @@ void CFileItemList::Reserve(int iCount)
 
 void CFileItemList::Sort(FILEITEMLISTCOMPARISONFUNC func)
 {
+  DWORD dwTime=GetTickCount();
   sort(m_items.begin(), m_items.end(), func);
+  CLog::DebugLog("Sorting FileItems %s, took %ld ms", m_strPath.c_str(), GetTickCount()-dwTime);
 }
 
 void CFileItemList::Sort(SORT_METHOD sortMethod, SORT_ORDER sortOrder)
@@ -1251,12 +1269,18 @@ void CFileItemList::Sort(SORT_METHOD sortMethod, SORT_ORDER sortOrder)
   case SORT_METHOD_ALBUM_IGNORE_THE:
     Sort(sortOrder==SORT_ORDER_ASC ? SSortFileItem::SongAlbumAscendingNoThe : SSortFileItem::SongAlbumDescendingNoThe);
     break;
+  case SORT_METHOD_GENRE:
+    Sort(sortOrder==SORT_ORDER_ASC ? SSortFileItem::SongGenreAscending : SSortFileItem::SongGenreDescending);
+    break;
   case SORT_METHOD_FILE:
     Sort(sortOrder==SORT_ORDER_ASC ? SSortFileItem::FileAscending : SSortFileItem::FileDescending);
     break;
   default:
     break;
   }
+
+  m_sortMethod=sortMethod;
+  m_sortOrder=sortOrder;
 }
 
 void CFileItemList::Randomize()
@@ -1271,10 +1295,13 @@ void CFileItemList::Serialize(CArchive& ar)
     CFileItem::Serialize(ar);
 
     int i = 0;
-    if (m_items.size() > 0 && m_items[0]->GetLabel() == "..")
+    if (m_items.size() > 0 && m_items[0]->IsParentFolder())
       i = 1;
 
     ar << (int)(m_items.size() - i);
+
+    ar << (int)m_sortMethod;
+    ar << (int)m_sortOrder;
 
     for (i; i < (int)m_items.size(); ++i)
     {
@@ -1284,6 +1311,8 @@ void CFileItemList::Serialize(CArchive& ar)
   }
   else
   {
+    Clear();
+
     CFileItem::Serialize(ar);
 
     int iSize = 0;
@@ -1291,7 +1320,9 @@ void CFileItemList::Serialize(CArchive& ar)
     if (iSize <= 0)
       return ;
 
-    Clear();
+
+    ar >> (int&)m_sortMethod;
+    ar >> (int&)m_sortOrder;
 
     m_items.reserve(iSize);
 
@@ -1606,4 +1637,64 @@ void CFileItemList::Stack()
       }
     }
   }
+}
+
+bool CFileItemList::Load()
+{
+  CStdString strPath=m_strPath;
+  if (CUtil::HasSlashAtEnd(strPath))
+    strPath.Delete(strPath.size() - 1);
+
+  Crc32 crc;
+  crc.ComputeFromLowerCase(strPath);
+
+  CStdString strFileName;
+  strFileName.Format("Z:\\%08x.fi", crc);
+
+  CLog::Log(LOGDEBUG,"Loading fileitems [%s]",strFileName.c_str());
+
+  CFile file;
+  if (file.Open(strFileName))
+  {
+    CArchive ar(&file, CArchive::load);
+    ar >> *this;
+    CLog::Log(LOGDEBUG,"  -- items: %i, directory: %s sort method: %i, ascending: %s, skipthe: %s",Size(),m_strPath.c_str(), m_sortMethod, m_sortOrder ? "true" : "false");
+    ar.Close();
+    file.Close();
+    return true;
+  }
+
+  return false;
+}
+
+bool CFileItemList::Save()
+{
+  int iSize = Size();
+  if (iSize <= 0)
+    return false;
+
+  CLog::Log(LOGDEBUG,"Caching fileitems [%s]",m_strPath.c_str());
+
+  CStdString strPath=m_strPath;
+  if (CUtil::HasSlashAtEnd(strPath))
+    strPath.Delete(strPath.size() - 1);
+
+  Crc32 crc;
+  crc.ComputeFromLowerCase(strPath);
+
+  CStdString strFileName;
+  strFileName.Format("Z:\\%08x.fi", crc);
+
+  CFile file;
+  if (file.OpenForWrite(strFileName, true, true)) // overwrite always
+  {
+    CArchive ar(&file, CArchive::store);
+    ar << *this;
+    CLog::Log(LOGDEBUG,"  -- items: %i, sort method: %i, ascending: %s, skipthe: %s",iSize,m_sortMethod, m_sortOrder ? "true" : "false");
+    ar.Close();
+    file.Close();
+    return true;
+  }
+
+  return false;
 }
