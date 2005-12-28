@@ -237,7 +237,7 @@ void CGUIWindowMusicNav::UpdateButtons()
     for (int i = 0; i <= (iItems>=2 ? 1 : 0); i++)
     {
       CFileItem* pItem = m_vecItems[i];
-      if (pItem->GetLabel() == "..") iItems--;
+      if (pItem->IsParentFolder()) iItems--;
       if (
         pItem->GetLabel().Equals((CStdString)g_localizeStrings.Get(15102)) ||  /* all albums  */
         pItem->GetLabel().Equals((CStdString)g_localizeStrings.Get(15103)) ||  /* all artists */
@@ -321,7 +321,7 @@ void CGUIWindowMusicNav::OnClick(int iItem)
       if ( !HaveDiscOrConnection( pItem->m_strPath, pItem->m_iDriveType ) )
         return ;
     }
-    if (pItem->GetLabel() == "..")
+    if (pItem->IsParentFolder())
     {
       // go back a directory
       GoParentFolder();
@@ -538,7 +538,7 @@ void CGUIWindowMusicNav::OnPopupMenu(int iItem)
   CPlayerCoreFactory::GetPlayers(*m_vecItems[iItem], vecCores);
 
   // turn off info/queue/play/set artist thumb if the current item is goto parent ..
-  bool bIsGotoParent = m_vecItems[iItem]->GetLabel() == "..";
+  bool bIsGotoParent = m_vecItems[iItem]->IsParentFolder();
   if (bIsGotoParent)
   {
     pMenu->EnableButton(btn_Info, false);

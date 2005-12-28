@@ -354,7 +354,7 @@ void CGUIWindowVideoPlaylist::UpdateButtons()
   if (iItems)
   {
     CFileItem* pItem = m_vecItems[0];
-    if (pItem->GetLabel() == "..") iItems--;
+    if (pItem->IsParentFolder()) iItems--;
   }
   WCHAR wszText[20];
   const WCHAR* szText = g_localizeStrings.Get(127).c_str();
@@ -430,7 +430,7 @@ bool CGUIWindowVideoPlaylist::Update(const CStdString &strDirectory)
   if (iItem >= 0 && iItem < (int)m_vecItems.Size())
   {
     CFileItem* pItem = m_vecItems[iItem];
-    if (pItem->GetLabel() != "..")
+    if (!pItem->IsParentFolder())
     {
       GetDirectoryHistoryString(pItem, strSelectedItem);
     }
