@@ -31,6 +31,7 @@ public:
   void Delete(DWORD dwID);
   void RemoveModeless(DWORD dwID);
   void ActivateWindow(int iWindowID, const CStdString& strPath = "");
+  void ChangeActiveWindow(int iNewID);
   void PreviousWindow();
   void RefreshWindow();
   void LoadNotOnDemandWindows();

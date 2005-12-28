@@ -80,7 +80,7 @@ int StringUtils::FindNumber(const CStdString& strInput, const CStdString &strFin
 
 // Compares separately the numeric and alphabetic parts of a string.
 // returns negative if left < right, positive if left > right
-// and 0 if they are identical
+// and 0 if they are identical (essentially calculates left - right)
 int StringUtils::AlphaNumericCompare(const char *left, const char *right)
 {
   char *l = (char *)left;
@@ -129,6 +129,14 @@ int StringUtils::AlphaNumericCompare(const char *left, const char *right)
       return lc - rc;
     }
     l++; r++;
+  }
+  if (*r)
+  { // r is longer
+    return -1;
+  }
+  else if (*l)
+  { // l is longer
+    return 1;
   }
   return 0; // files are the same
 }

@@ -11,27 +11,22 @@ public:
   virtual bool OnAction(const CAction &action);
 
 protected:
-  virtual void LoadViewMode();
-  virtual void SaveViewMode();
-  virtual int SortMethod() {return 0;};
-  virtual bool SortAscending() {return false;};
+  virtual void OnClick(int iItem);
   virtual void SortItems(CFileItemList &items) {};
   virtual void FormatItemLabels() {};
+  virtual void UpdateButtons();
+  virtual bool Update(const CStdString &strDirectory);
+
   virtual void OnPopupMenu(int iItem);
   void OnMove(int iItem, int iAction);
 
   void GetDirectoryHistoryString(const CFileItem* pItem, CStdString& strHistoryString);
   virtual bool GetDirectory(const CStdString &strDirectory, CFileItemList &items);
-  virtual bool Update(const CStdString &strDirectory);
   void ClearPlayList();
   void UpdateListControl();
   void RemovePlayListItem(int iItem);
   void MoveCurrentPlayListItem(int iItem, int iAction); // up or down
   void OnFileItemFormatLabel(CFileItem* pItem);
-  void DoSort(CFileItemList& items);
-  void UpdateButtons();
   void ShufflePlayList();
   void SavePlayList();
-
-  virtual void OnClick(int iItem);
 };

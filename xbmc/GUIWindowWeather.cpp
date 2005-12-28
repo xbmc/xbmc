@@ -111,10 +111,10 @@ void CGUIWindowWeather::UpdateButtons()
 
   for (DWORD dwID = WEATHER_LABEL_CURRENT_COND; dwID <= WEATHER_LABEL_CURRENT_HUMI; dwID++)
   {
-    SET_CONTROL_LABEL(dwID, g_weatherManager.GetLabel(dwID));
+    SET_CONTROL_LABEL(dwID, g_weatherManager.GetInfo(dwID));
   }
   CGUIImage *pImage = (CGUIImage *)GetControl(WEATHER_IMAGE_CURRENT_ICON);
-  if (pImage) pImage->SetFileName(g_weatherManager.GetCurrentIcon());
+  if (pImage) pImage->SetFileName(g_weatherManager.GetInfo(WEATHER_IMAGE_CURRENT_ICON));
 
   //static labels
   SET_CONTROL_LABEL(CONTROL_STATICTEMP, 401);  //Temperature
@@ -175,5 +175,6 @@ void CGUIWindowWeather::Refresh()
   // quietly return if Internet lookups are disabled
   if (!g_guiSettings.GetBool("Network.EnableInternet")) return ;
 
-  g_weatherManager.Refresh(m_iCurWeather);
+  g_weatherManager.SetArea(m_iCurWeather);
+  g_weatherManager.Refresh();
 }

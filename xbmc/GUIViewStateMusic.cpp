@@ -18,10 +18,10 @@ CGUIViewStateMusicDatabase::CGUIViewStateMusicDatabase(const CFileItemList& item
       AddSortMethod(SORT_METHOD_NONE, 103);
       SetSortMethod(SORT_METHOD_NONE);
 
-      AddViewAsControl(VIEW_AS_CONTROL_LIST, 101);
-      AddViewAsControl(VIEW_AS_CONTROL_ICONS, 100);
-      AddViewAsControl(VIEW_AS_CONTROL_LARGE_ICONS, 417);
-      SetViewAsControl((VIEW_AS_CONTROL)g_stSettings.m_iMyMusicNavRootViewAsIcons);
+      AddViewAsControl(VIEW_METHOD_LIST, 101);
+      AddViewAsControl(VIEW_METHOD_ICONS, 100);
+      AddViewAsControl(VIEW_METHOD_LARGE_ICONS, 417);
+      SetViewAsControl(g_stSettings.m_MyMusicNavRootViewMethod);
 
       SetSortOrder(SORT_ORDER_NONE);
     }
@@ -31,10 +31,10 @@ CGUIViewStateMusicDatabase::CGUIViewStateMusicDatabase(const CFileItemList& item
       AddSortMethod(SORT_METHOD_NONE, 103);
       SetSortMethod(SORT_METHOD_NONE);
 
-      AddViewAsControl(VIEW_AS_CONTROL_LIST, 101);
-      AddViewAsControl(VIEW_AS_CONTROL_ICONS, 100);
-      AddViewAsControl(VIEW_AS_CONTROL_LARGE_ICONS, 417);
-      SetViewAsControl((VIEW_AS_CONTROL)g_stSettings.m_iMyMusicNavTopViewAsIcons);
+      AddViewAsControl(VIEW_METHOD_LIST, 101);
+      AddViewAsControl(VIEW_METHOD_ICONS, 100);
+      AddViewAsControl(VIEW_METHOD_LARGE_ICONS, 417);
+      SetViewAsControl(g_stSettings.m_MyMusicNavTopViewMethod);
 
       SetSortOrder(SORT_ORDER_NONE);
     }
@@ -44,12 +44,12 @@ CGUIViewStateMusicDatabase::CGUIViewStateMusicDatabase(const CFileItemList& item
       AddSortMethod(SORT_METHOD_GENRE, 103);
       SetSortMethod(SORT_METHOD_GENRE);
       
-      AddViewAsControl(VIEW_AS_CONTROL_LIST, 101);
-      AddViewAsControl(VIEW_AS_CONTROL_ICONS, 100);
-      AddViewAsControl(VIEW_AS_CONTROL_LARGE_ICONS, 417);
-      SetViewAsControl((VIEW_AS_CONTROL)g_stSettings.m_iMyMusicNavGenresViewAsIcons);
+      AddViewAsControl(VIEW_METHOD_LIST, 101);
+      AddViewAsControl(VIEW_METHOD_ICONS, 100);
+      AddViewAsControl(VIEW_METHOD_LARGE_ICONS, 417);
+      SetViewAsControl(g_stSettings.m_MyMusicNavGenresViewMethod);
 
-      SetSortOrder(g_stSettings.m_iMyMusicNavGenresSortAscending);
+      SetSortOrder(g_stSettings.m_MyMusicNavGenresSortOrder);
     }
     break;
   case NODE_TYPE_ARTIST:
@@ -65,12 +65,12 @@ CGUIViewStateMusicDatabase::CGUIViewStateMusicDatabase(const CFileItemList& item
         SetSortMethod(SORT_METHOD_ARTIST);
       }
       
-      AddViewAsControl(VIEW_AS_CONTROL_LIST, 101);
-      AddViewAsControl(VIEW_AS_CONTROL_ICONS, 100);
-      AddViewAsControl(VIEW_AS_CONTROL_LARGE_ICONS, 417);
-      SetViewAsControl((VIEW_AS_CONTROL)g_stSettings.m_iMyMusicNavArtistsViewAsIcons);
+      AddViewAsControl(VIEW_METHOD_LIST, 101);
+      AddViewAsControl(VIEW_METHOD_ICONS, 100);
+      AddViewAsControl(VIEW_METHOD_LARGE_ICONS, 417);
+      SetViewAsControl(g_stSettings.m_MyMusicNavArtistsViewMethod);
 
-      SetSortOrder(g_stSettings.m_iMyMusicNavArtistsSortAscending);
+      SetSortOrder(g_stSettings.m_MyMusicNavArtistsSortOrder);
     }
     break;
   case NODE_TYPE_ALBUM:
@@ -83,15 +83,15 @@ CGUIViewStateMusicDatabase::CGUIViewStateMusicDatabase(const CFileItemList& item
         AddSortMethod(SORT_METHOD_ARTIST_IGNORE_THE, 269);
       else
         AddSortMethod(SORT_METHOD_ARTIST, 269);
-      SetSortMethod(g_stSettings.m_iMyMusicNavAlbumsSortMethod);
+      SetSortMethod(g_stSettings.m_MyMusicNavAlbumsSortMethod);
       
-      AddViewAsControl(VIEW_AS_CONTROL_LIST, 101);
-      AddViewAsControl(VIEW_AS_CONTROL_ICONS, 100);
-      AddViewAsControl(VIEW_AS_CONTROL_LARGE_ICONS, 417);
-      AddViewAsControl(VIEW_AS_CONTROL_LARGE_LIST, 759);
-      SetViewAsControl((VIEW_AS_CONTROL)g_stSettings.m_iMyMusicNavAlbumsViewAsIcons);
+      AddViewAsControl(VIEW_METHOD_LIST, 101);
+      AddViewAsControl(VIEW_METHOD_ICONS, 100);
+      AddViewAsControl(VIEW_METHOD_LARGE_ICONS, 417);
+      AddViewAsControl(VIEW_METHOD_LARGE_LIST, 759);
+      SetViewAsControl(g_stSettings.m_MyMusicNavAlbumsViewMethod);
 
-      SetSortOrder(g_stSettings.m_iMyMusicNavAlbumsSortAscending);
+      SetSortOrder(g_stSettings.m_MyMusicNavAlbumsSortOrder);
     }
     break;
   case NODE_TYPE_ALBUM_RECENTLY_ADDED:
@@ -99,11 +99,11 @@ CGUIViewStateMusicDatabase::CGUIViewStateMusicDatabase(const CFileItemList& item
       AddSortMethod(SORT_METHOD_NONE, 103);
       SetSortMethod(SORT_METHOD_NONE);
       
-      AddViewAsControl(VIEW_AS_CONTROL_LIST, 101);
-      AddViewAsControl(VIEW_AS_CONTROL_ICONS, 100);
-      AddViewAsControl(VIEW_AS_CONTROL_LARGE_ICONS, 417);
-      AddViewAsControl(VIEW_AS_CONTROL_LARGE_LIST, 759);
-      SetViewAsControl((VIEW_AS_CONTROL)g_stSettings.m_iMyMusicNavAlbumsViewAsIcons);
+      AddViewAsControl(VIEW_METHOD_LIST, 101);
+      AddViewAsControl(VIEW_METHOD_ICONS, 100);
+      AddViewAsControl(VIEW_METHOD_LARGE_ICONS, 417);
+      AddViewAsControl(VIEW_METHOD_LARGE_LIST, 759);
+      SetViewAsControl(g_stSettings.m_MyMusicNavAlbumsViewMethod);
 
       SetSortOrder(SORT_ORDER_NONE);
     }
@@ -113,10 +113,10 @@ CGUIViewStateMusicDatabase::CGUIViewStateMusicDatabase(const CFileItemList& item
       AddSortMethod(SORT_METHOD_NONE, 103);
       SetSortMethod(SORT_METHOD_NONE);
       
-      AddViewAsControl(VIEW_AS_CONTROL_LIST, 101);
-      AddViewAsControl(VIEW_AS_CONTROL_ICONS, 100);
-      AddViewAsControl(VIEW_AS_CONTROL_LARGE_ICONS, 417);
-      SetViewAsControl((VIEW_AS_CONTROL)g_stSettings.m_iMyMusicNavSongsViewAsIcons);
+      AddViewAsControl(VIEW_METHOD_LIST, 101);
+      AddViewAsControl(VIEW_METHOD_ICONS, 100);
+      AddViewAsControl(VIEW_METHOD_LARGE_ICONS, 417);
+      SetViewAsControl(g_stSettings.m_MyMusicNavSongsViewMethod);
 
       SetSortOrder(SORT_ORDER_NONE);
     }
@@ -126,11 +126,11 @@ CGUIViewStateMusicDatabase::CGUIViewStateMusicDatabase(const CFileItemList& item
       AddSortMethod(SORT_METHOD_NONE, 103);
       SetSortMethod(SORT_METHOD_NONE);
       
-      AddViewAsControl(VIEW_AS_CONTROL_LIST, 101);
-      AddViewAsControl(VIEW_AS_CONTROL_ICONS, 100);
-      AddViewAsControl(VIEW_AS_CONTROL_LARGE_ICONS, 417);
-      AddViewAsControl(VIEW_AS_CONTROL_LARGE_LIST, 759);
-      SetViewAsControl((VIEW_AS_CONTROL)g_stSettings.m_iMyMusicNavAlbumsViewAsIcons);
+      AddViewAsControl(VIEW_METHOD_LIST, 101);
+      AddViewAsControl(VIEW_METHOD_ICONS, 100);
+      AddViewAsControl(VIEW_METHOD_LARGE_ICONS, 417);
+      AddViewAsControl(VIEW_METHOD_LARGE_LIST, 759);
+      SetViewAsControl(g_stSettings.m_MyMusicNavAlbumsViewMethod);
 
       SetSortOrder(SORT_ORDER_NONE);
     }
@@ -140,10 +140,10 @@ CGUIViewStateMusicDatabase::CGUIViewStateMusicDatabase(const CFileItemList& item
       AddSortMethod(SORT_METHOD_NONE, 103);
       SetSortMethod(SORT_METHOD_NONE);
       
-      AddViewAsControl(VIEW_AS_CONTROL_LIST, 101);
-      AddViewAsControl(VIEW_AS_CONTROL_ICONS, 100);
-      AddViewAsControl(VIEW_AS_CONTROL_LARGE_ICONS, 417);
-      SetViewAsControl((VIEW_AS_CONTROL)g_stSettings.m_iMyMusicNavSongsViewAsIcons);
+      AddViewAsControl(VIEW_METHOD_LIST, 101);
+      AddViewAsControl(VIEW_METHOD_ICONS, 100);
+      AddViewAsControl(VIEW_METHOD_LARGE_ICONS, 417);
+      SetViewAsControl(g_stSettings.m_MyMusicNavSongsViewMethod);
 
       SetSortOrder(SORT_ORDER_NONE);
     }
@@ -153,11 +153,11 @@ CGUIViewStateMusicDatabase::CGUIViewStateMusicDatabase(const CFileItemList& item
       AddSortMethod(SORT_METHOD_NONE, 103);
       SetSortMethod(SORT_METHOD_NONE);
       
-      AddViewAsControl(VIEW_AS_CONTROL_LIST, 101);
-      AddViewAsControl(VIEW_AS_CONTROL_ICONS, 100);
-      AddViewAsControl(VIEW_AS_CONTROL_LARGE_ICONS, 417);
-      AddViewAsControl(VIEW_AS_CONTROL_LARGE_LIST, 759);
-      SetViewAsControl((VIEW_AS_CONTROL)g_stSettings.m_iMyMusicNavAlbumsViewAsIcons);
+      AddViewAsControl(VIEW_METHOD_LIST, 101);
+      AddViewAsControl(VIEW_METHOD_ICONS, 100);
+      AddViewAsControl(VIEW_METHOD_LARGE_ICONS, 417);
+      AddViewAsControl(VIEW_METHOD_LARGE_LIST, 759);
+      SetViewAsControl(g_stSettings.m_MyMusicNavAlbumsViewMethod);
 
       SetSortOrder(SORT_ORDER_NONE);
     }
@@ -178,14 +178,14 @@ CGUIViewStateMusicDatabase::CGUIViewStateMusicDatabase(const CFileItemList& item
       else
         AddSortMethod(SORT_METHOD_TITLE, 268);
       AddSortMethod(SORT_METHOD_DURATION, 267);
-      SetSortMethod(g_stSettings.m_iMyMusicNavSongsSortMethod);
+      SetSortMethod(g_stSettings.m_MyMusicNavSongsSortMethod);
       
-      AddViewAsControl(VIEW_AS_CONTROL_LIST, 101);
-      AddViewAsControl(VIEW_AS_CONTROL_ICONS, 100);
-      AddViewAsControl(VIEW_AS_CONTROL_LARGE_ICONS, 417);
-      SetViewAsControl((VIEW_AS_CONTROL)g_stSettings.m_iMyMusicNavSongsViewAsIcons);
+      AddViewAsControl(VIEW_METHOD_LIST, 101);
+      AddViewAsControl(VIEW_METHOD_ICONS, 100);
+      AddViewAsControl(VIEW_METHOD_LARGE_ICONS, 417);
+      SetViewAsControl(g_stSettings.m_MyMusicNavSongsViewMethod);
 
-      SetSortOrder(g_stSettings.m_iMyMusicNavSongsSortAscending);
+      SetSortOrder(g_stSettings.m_MyMusicNavSongsSortOrder);
     }
     break;
   case NODE_TYPE_SONG_TOP100:
@@ -193,10 +193,10 @@ CGUIViewStateMusicDatabase::CGUIViewStateMusicDatabase(const CFileItemList& item
       AddSortMethod(SORT_METHOD_NONE, 266);
       SetSortMethod(SORT_METHOD_NONE);
       
-      AddViewAsControl(VIEW_AS_CONTROL_LIST, 101);
-      AddViewAsControl(VIEW_AS_CONTROL_ICONS, 100);
-      AddViewAsControl(VIEW_AS_CONTROL_LARGE_ICONS, 417);
-      SetViewAsControl((VIEW_AS_CONTROL)g_stSettings.m_iMyMusicNavSongsViewAsIcons);
+      AddViewAsControl(VIEW_METHOD_LIST, 101);
+      AddViewAsControl(VIEW_METHOD_ICONS, 100);
+      AddViewAsControl(VIEW_METHOD_LARGE_ICONS, 417);
+      SetViewAsControl(g_stSettings.m_MyMusicNavSongsViewMethod);
 
       SetSortOrder(SORT_ORDER_NONE);
     }
@@ -213,79 +213,79 @@ void CGUIViewStateMusicDatabase::SaveViewState()
   {
   case NODE_TYPE_ROOT:
     {
-      g_stSettings.m_iMyMusicNavRootViewAsIcons=GetViewAsControl();
+      g_stSettings.m_MyMusicNavRootViewMethod=GetViewAsControl();
     }
     break;
   case NODE_TYPE_OVERVIEW:
     {
-      g_stSettings.m_iMyMusicNavRootViewAsIcons=GetViewAsControl();
+      g_stSettings.m_MyMusicNavRootViewMethod=GetViewAsControl();
     }
     break;
   case NODE_TYPE_TOP100:
     {
-      g_stSettings.m_iMyMusicNavTopViewAsIcons=GetViewAsControl();
+      g_stSettings.m_MyMusicNavTopViewMethod=GetViewAsControl();
     }
     break;
   case NODE_TYPE_GENRE:
     {
-      g_stSettings.m_iMyMusicNavGenresViewAsIcons=GetViewAsControl();
+      g_stSettings.m_MyMusicNavGenresViewMethod=GetViewAsControl();
 
-      g_stSettings.m_iMyMusicNavGenresSortAscending=GetSortOrder();
+      g_stSettings.m_MyMusicNavGenresSortOrder=GetSortOrder();
     }
     break;
   case NODE_TYPE_ARTIST:
     {
-      g_stSettings.m_iMyMusicNavArtistsViewAsIcons=GetViewAsControl();
+      g_stSettings.m_MyMusicNavArtistsViewMethod=GetViewAsControl();
 
-      g_stSettings.m_iMyMusicNavArtistsSortAscending=GetSortOrder();
+      g_stSettings.m_MyMusicNavArtistsSortOrder=GetSortOrder();
     }
     break;
   case NODE_TYPE_ALBUM:
     {
-      g_stSettings.m_iMyMusicNavAlbumsSortMethod=GetSortMethod();
+      g_stSettings.m_MyMusicNavAlbumsSortMethod=GetSortMethod();
       
-      g_stSettings.m_iMyMusicNavAlbumsViewAsIcons=GetViewAsControl();
+      g_stSettings.m_MyMusicNavAlbumsViewMethod=GetViewAsControl();
 
-      g_stSettings.m_iMyMusicNavAlbumsSortAscending=GetSortOrder();
+      g_stSettings.m_MyMusicNavAlbumsSortOrder=GetSortOrder();
     }
     break;
   case NODE_TYPE_ALBUM_RECENTLY_ADDED:
     {
-      g_stSettings.m_iMyMusicNavAlbumsViewAsIcons=GetViewAsControl();
+      g_stSettings.m_MyMusicNavAlbumsViewMethod=GetViewAsControl();
     }
     break;
   case NODE_TYPE_ALBUM_RECENTLY_ADDED_SONGS:
     {
-      g_stSettings.m_iMyMusicNavSongsViewAsIcons=GetViewAsControl();
+      g_stSettings.m_MyMusicNavSongsViewMethod=GetViewAsControl();
     }
     break;
   case NODE_TYPE_ALBUM_RECENTLY_PLAYED:
     {      
-      g_stSettings.m_iMyMusicNavAlbumsViewAsIcons=GetViewAsControl();
+      g_stSettings.m_MyMusicNavAlbumsViewMethod=GetViewAsControl();
     }
     break;
   case NODE_TYPE_ALBUM_RECENTLY_PLAYED_SONGS:
     {
-      g_stSettings.m_iMyMusicNavSongsViewAsIcons=GetViewAsControl();
+      g_stSettings.m_MyMusicNavSongsViewMethod=GetViewAsControl();
     }
     break;
   case NODE_TYPE_ALBUM_TOP100:
     {
-      g_stSettings.m_iMyMusicNavAlbumsViewAsIcons=GetViewAsControl();
+      g_stSettings.m_MyMusicNavAlbumsViewMethod=GetViewAsControl();
     }
     break;
   case NODE_TYPE_SONG:
     {
-      g_stSettings.m_iMyMusicNavSongsSortMethod=GetSortMethod();
+      g_stSettings.m_MyMusicNavSongsSortMethod=GetSortMethod();
       
-      g_stSettings.m_iMyMusicNavSongsViewAsIcons=GetViewAsControl();
+      g_stSettings.m_MyMusicNavSongsViewMethod=GetViewAsControl();
 
-      g_stSettings.m_iMyMusicNavSongsSortAscending=GetSortOrder();
+      g_stSettings.m_MyMusicNavSongsSortOrder=GetSortOrder();
     }
     break;
   case NODE_TYPE_SONG_TOP100:
     {
-      g_stSettings.m_iMyMusicNavSongsViewAsIcons=GetViewAsControl();
+      g_stSettings.m_MyMusicNavSongsViewMethod=GetViewAsControl();
     }
     break;
   }
@@ -300,10 +300,10 @@ CGUIViewStateWindowMusicNav::CGUIViewStateWindowMusicNav(const CFileItemList& it
     AddSortMethod(SORT_METHOD_NONE, 103);
     SetSortMethod(SORT_METHOD_NONE);
 
-    AddViewAsControl(VIEW_AS_CONTROL_LIST, 101);
-    AddViewAsControl(VIEW_AS_CONTROL_ICONS, 100);
-    AddViewAsControl(VIEW_AS_CONTROL_LARGE_ICONS, 417);
-    SetViewAsControl((VIEW_AS_CONTROL)g_stSettings.m_iMyMusicNavRootViewAsIcons);
+    AddViewAsControl(VIEW_METHOD_LIST, 101);
+    AddViewAsControl(VIEW_METHOD_ICONS, 100);
+    AddViewAsControl(VIEW_METHOD_LARGE_ICONS, 417);
+    SetViewAsControl(g_stSettings.m_MyMusicNavRootViewMethod);
 
     SetSortOrder(SORT_ORDER_ASC);
   }
@@ -312,14 +312,14 @@ CGUIViewStateWindowMusicNav::CGUIViewStateWindowMusicNav(const CFileItemList& it
     AddSortMethod(SORT_METHOD_LABEL, 103);
     SetSortMethod(SORT_METHOD_LABEL);
 
-    AddViewAsControl(VIEW_AS_CONTROL_LIST, 101);
-    AddViewAsControl(VIEW_AS_CONTROL_ICONS, 100);
-    AddViewAsControl(VIEW_AS_CONTROL_LARGE_ICONS, 417);
+    AddViewAsControl(VIEW_METHOD_LIST, 101);
+    AddViewAsControl(VIEW_METHOD_ICONS, 100);
+    AddViewAsControl(VIEW_METHOD_LARGE_ICONS, 417);
 
     if (items.IsPlayList())
-      SetViewAsControl((VIEW_AS_CONTROL)g_stSettings.m_iMyMusicNavPlaylistsViewAsIcons);
+      SetViewAsControl(g_stSettings.m_MyMusicNavPlaylistsViewMethod);
     else  // Songs
-      SetViewAsControl((VIEW_AS_CONTROL)g_stSettings.m_iMyMusicNavSongsViewAsIcons);
+      SetViewAsControl(g_stSettings.m_MyMusicNavSongsViewMethod);
 
     SetSortOrder(SORT_ORDER_ASC);
   }
@@ -328,11 +328,11 @@ CGUIViewStateWindowMusicNav::CGUIViewStateWindowMusicNav(const CFileItemList& it
 void CGUIViewStateWindowMusicNav::SaveViewState()
 {
   if (m_items.IsVirtualDirectoryRoot())
-    g_stSettings.m_iMyMusicNavRootViewAsIcons=GetViewAsControl();
+    g_stSettings.m_MyMusicNavRootViewMethod=GetViewAsControl();
   else if (m_items.IsPlayList())
-    g_stSettings.m_iMyMusicNavPlaylistsViewAsIcons=GetViewAsControl();
+    g_stSettings.m_MyMusicNavPlaylistsViewMethod=GetViewAsControl();
   else // songs
-    g_stSettings.m_iMyMusicNavSongsViewAsIcons=GetViewAsControl();
+    g_stSettings.m_MyMusicNavSongsViewMethod=GetViewAsControl();
 
   g_settings.Save();
 }
@@ -343,14 +343,14 @@ CGUIViewStateWindowMusicSongs::CGUIViewStateWindowMusicSongs(const CFileItemList
   {
     AddSortMethod(SORT_METHOD_LABEL, 103);
     AddSortMethod(SORT_METHOD_DRIVE_TYPE, 498);
-    SetSortMethod((SORT_METHOD)g_stSettings.m_iMyMusicSongsRootSortMethod);
+    SetSortMethod(g_stSettings.m_MyMusicSongsRootSortMethod);
 
-    AddViewAsControl(VIEW_AS_CONTROL_LIST, 101);
-    AddViewAsControl(VIEW_AS_CONTROL_ICONS, 100);
-    AddViewAsControl(VIEW_AS_CONTROL_LARGE_ICONS, 417);
-    SetViewAsControl((VIEW_AS_CONTROL)g_stSettings.m_iMyMusicSongsRootViewAsIcons);
+    AddViewAsControl(VIEW_METHOD_LIST, 101);
+    AddViewAsControl(VIEW_METHOD_ICONS, 100);
+    AddViewAsControl(VIEW_METHOD_LARGE_ICONS, 417);
+    SetViewAsControl(g_stSettings.m_MyMusicSongsRootViewMethod);
 
-    SetSortOrder(g_stSettings.m_iMyMusicSongsRootSortAscending);
+    SetSortOrder(g_stSettings.m_MyMusicSongsRootSortOrder);
   }
   else
   {
@@ -358,21 +358,21 @@ CGUIViewStateWindowMusicSongs::CGUIViewStateWindowMusicSongs(const CFileItemList
     AddSortMethod(SORT_METHOD_SIZE, 105);
     AddSortMethod(SORT_METHOD_DATE, 104);
     AddSortMethod(SORT_METHOD_FILE, 363);
-    SetSortMethod((SORT_METHOD)g_stSettings.m_iMyMusicSongsSortMethod);
+    SetSortMethod(g_stSettings.m_MyMusicSongsSortMethod);
 
-    AddViewAsControl(VIEW_AS_CONTROL_LIST, 101);
-    AddViewAsControl(VIEW_AS_CONTROL_ICONS, 100);
-    AddViewAsControl(VIEW_AS_CONTROL_LARGE_ICONS, 417);
+    AddViewAsControl(VIEW_METHOD_LIST, 101);
+    AddViewAsControl(VIEW_METHOD_ICONS, 100);
+    AddViewAsControl(VIEW_METHOD_LARGE_ICONS, 417);
     if (g_guiSettings.GetBool("MusicFiles.UseAutoSwitching"))
     {
-      SetViewAsControl((VIEW_AS_CONTROL)CAutoSwitch::GetView(items));
+      SetViewAsControl(CAutoSwitch::GetView(items));
     }
     else
     {
-      SetViewAsControl((VIEW_AS_CONTROL)g_stSettings.m_iMyMusicSongsViewAsIcons);
+      SetViewAsControl(g_stSettings.m_MyMusicSongsViewMethod);
     }
 
-    SetSortOrder(g_stSettings.m_iMyMusicSongsSortAscending);
+    SetSortOrder(g_stSettings.m_MyMusicSongsSortOrder);
   }
 }
 
@@ -380,15 +380,15 @@ void CGUIViewStateWindowMusicSongs::SaveViewState()
 {
   if (m_items.IsVirtualDirectoryRoot())
   {
-    g_stSettings.m_iMyMusicSongsRootSortMethod=GetSortMethod();
-    g_stSettings.m_iMyMusicSongsRootViewAsIcons=GetViewAsControl();
-    g_stSettings.m_iMyMusicSongsRootSortAscending=GetSortOrder();
+    g_stSettings.m_MyMusicSongsRootSortMethod=GetSortMethod();
+    g_stSettings.m_MyMusicSongsRootViewMethod=GetViewAsControl();
+    g_stSettings.m_MyMusicSongsRootSortOrder=GetSortOrder();
   }
   else
   {
-    g_stSettings.m_iMyMusicSongsSortMethod=GetSortMethod();
-    g_stSettings.m_iMyMusicSongsViewAsIcons=GetViewAsControl();
-    g_stSettings.m_iMyMusicSongsSortAscending=GetSortOrder();
+    g_stSettings.m_MyMusicSongsSortMethod=GetSortMethod();
+    g_stSettings.m_MyMusicSongsViewMethod=GetViewAsControl();
+    g_stSettings.m_MyMusicSongsSortOrder=GetSortOrder();
   }
 
   g_settings.Save();
@@ -399,17 +399,17 @@ CGUIViewStateWindowMusicPlaylist::CGUIViewStateWindowMusicPlaylist(const CFileIt
   AddSortMethod(SORT_METHOD_NONE, 103);
   SetSortMethod(SORT_METHOD_NONE);
 
-  AddViewAsControl(VIEW_AS_CONTROL_LIST, 101);
-  AddViewAsControl(VIEW_AS_CONTROL_ICONS, 100);
-  AddViewAsControl(VIEW_AS_CONTROL_LARGE_ICONS, 417);
-  SetViewAsControl((VIEW_AS_CONTROL)g_stSettings.m_iMyMusicPlaylistViewAsIcons);
+  AddViewAsControl(VIEW_METHOD_LIST, 101);
+  AddViewAsControl(VIEW_METHOD_ICONS, 100);
+  AddViewAsControl(VIEW_METHOD_LARGE_ICONS, 417);
+  SetViewAsControl(g_stSettings.m_MyMusicPlaylistViewMethod);
 
   SetSortOrder(SORT_ORDER_NONE);
 }
 
 void CGUIViewStateWindowMusicPlaylist::SaveViewState()
 {
-  g_stSettings.m_iMyMusicPlaylistViewAsIcons=GetViewAsControl();
+  g_stSettings.m_MyMusicPlaylistViewMethod=GetViewAsControl();
 
   g_settings.Save();
 }

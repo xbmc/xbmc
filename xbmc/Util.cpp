@@ -2719,9 +2719,9 @@ void CUtil::ClearCache()
   }
 }
 
-void CUtil::SortFileItemsByName(CFileItemList& items, bool bSortAscending /*=true*/)
+void CUtil::SortFileItemsByName(CFileItemList& items, bool bSortOrder /*=true*/)
 {
-  if (bSortAscending)
+  if (bSortOrder)
     items.Sort(SSortFileItem::LabelAscending);
   else
     items.Sort(SSortFileItem::LabelDescending);

@@ -1,7 +1,8 @@
 #include "stdafx.h"
 #include "GUIViewState.h"
 #include "GUIViewStateMusic.h"
-
+#include "GUIViewStateVideo.h"
+#include "GUIViewStatePicturesProgramsScripts.h"
 
 CGUIViewState* CGUIViewState::GetViewState(int windowId, const CFileItemList& items)
 {
@@ -18,6 +19,33 @@ CGUIViewState* CGUIViewState::GetViewState(int windowId, const CFileItemList& it
 
   if (windowId==WINDOW_MUSIC_PLAYLIST)
     return new CGUIViewStateWindowMusicPlaylist(items);
+
+  if (windowId==WINDOW_VIDEOS)
+    return new CGUIViewStateWindowVideoFiles(items);
+
+  if (windowId==WINDOW_VIDEO_GENRE)
+    return new CGUIViewStateWindowVideoGenre(items);
+
+  if (windowId==WINDOW_VIDEO_ACTOR)
+    return new CGUIViewStateWindowVideoActor(items);
+
+  if (windowId==WINDOW_VIDEO_YEAR)
+    return new CGUIViewStateWindowVideoYear(items);
+
+  if (windowId==WINDOW_VIDEO_TITLE)
+    return new CGUIViewStateWindowVideoTitle(items);
+
+  if (windowId==WINDOW_VIDEO_PLAYLIST)
+    return new CGUIViewStateWindowVideoPlaylist(items);
+
+  if (windowId==WINDOW_SCRIPTS)
+    return new CGUIViewStateWindowScripts(items);
+
+  if (windowId==WINDOW_PICTURES)
+    return new CGUIViewStateWindowPictures(items);
+
+  if (windowId==WINDOW_PROGRAMS)
+    return new CGUIViewStateWindowPrograms(items);
 
   //  Use as fallback/default
   return new CGUIViewStateGeneral(items);
@@ -46,12 +74,12 @@ SORT_ORDER CGUIViewState::SetNextSortOrder()
   return m_sortOrder;
 }
 
-VIEW_AS_CONTROL CGUIViewState::GetViewAsControl() const
+VIEW_METHOD CGUIViewState::GetViewAsControl() const
 {
   if (m_currentViewAsControl>=0 && m_currentViewAsControl<(int)m_viewAsControls.size())
     return m_viewAsControls[m_currentViewAsControl].m_viewAsControl;
 
-  return VIEW_AS_CONTROL_LIST;
+  return VIEW_METHOD_LIST;
 }
 
 int CGUIViewState::GetViewAsControlButtonLabel() const
@@ -59,10 +87,10 @@ int CGUIViewState::GetViewAsControlButtonLabel() const
   if (m_currentViewAsControl>=0 && m_currentViewAsControl<(int)m_viewAsControls.size())
     return m_viewAsControls[m_currentViewAsControl].m_buttonLabel;
 
-  return VIEW_AS_CONTROL_LIST;
+  return VIEW_METHOD_LIST;
 }
 
-void CGUIViewState::AddViewAsControl(VIEW_AS_CONTROL viewAsControl, int buttonLabel)
+void CGUIViewState::AddViewAsControl(VIEW_METHOD viewAsControl, int buttonLabel)
 {
   VIEW view;
   view.m_viewAsControl=viewAsControl;
@@ -71,7 +99,7 @@ void CGUIViewState::AddViewAsControl(VIEW_AS_CONTROL viewAsControl, int buttonLa
   m_viewAsControls.push_back(view);
 }
 
-void CGUIViewState::SetViewAsControl(VIEW_AS_CONTROL viewAsControl)
+void CGUIViewState::SetViewAsControl(VIEW_METHOD viewAsControl)
 {
   for (int i=0; i<(int)m_viewAsControls.size(); ++i)
   {
@@ -83,7 +111,7 @@ void CGUIViewState::SetViewAsControl(VIEW_AS_CONTROL viewAsControl)
   }
 }
 
-VIEW_AS_CONTROL CGUIViewState::SetNextViewAsControl()
+VIEW_METHOD CGUIViewState::SetNextViewAsControl()
 {
   m_currentViewAsControl++;
 
@@ -108,7 +136,7 @@ int CGUIViewState::GetSortMethodLabel() const
   if (m_currentSortMethod>=0 && m_currentSortMethod<(int)m_sortMethods.size())
     return m_sortMethods[m_currentSortMethod].m_buttonLabel; 
 
-  return SORT_METHOD_NONE;
+  return 103; // Sort By: Name
 }
 
 void CGUIViewState::AddSortMethod(SORT_METHOD sortMethod, int buttonLabel)
@@ -149,10 +177,10 @@ CGUIViewStateGeneral::CGUIViewStateGeneral(const CFileItemList& items) : CGUIVie
   AddSortMethod(SORT_METHOD_LABEL, 103);
   SetSortMethod(SORT_METHOD_LABEL);
 
-  AddViewAsControl(VIEW_AS_CONTROL_LIST, 101);
-  AddViewAsControl(VIEW_AS_CONTROL_ICONS, 100);
-  AddViewAsControl(VIEW_AS_CONTROL_LARGE_ICONS, 417);
-  SetViewAsControl(VIEW_AS_CONTROL_LIST);
+  AddViewAsControl(VIEW_METHOD_LIST, 101);
+  AddViewAsControl(VIEW_METHOD_ICONS, 100);
+  AddViewAsControl(VIEW_METHOD_LARGE_ICONS, 417);
+  SetViewAsControl(VIEW_METHOD_LIST);
 
   SetSortOrder(SORT_ORDER_ASC);
 }
