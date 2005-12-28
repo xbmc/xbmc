@@ -4,9 +4,6 @@
 #include "../xbmc/XBVideoConfig.h"
 #include "xgraphics.h"
 
-#define WIDE_SCREEN_COMPENSATIONY (FLOAT)1.2
-#define WIDE_SCREEN_COMPENSATIONX (FLOAT)0.85
-
 CGraphicContext g_graphicsContext;
 
 CGraphicContext::CGraphicContext(void)

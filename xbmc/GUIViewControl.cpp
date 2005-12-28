@@ -17,14 +17,14 @@ CGUIViewControl::~CGUIViewControl(void)
 
 void CGUIViewControl::Reset()
 {
-  m_currentView = -1;
+  m_currentView = VIEW_METHOD_NONE;
   m_vecViews.clear();
 }
 
-void CGUIViewControl::AddView(int type, const CGUIControl *control)
+void CGUIViewControl::AddView(VIEW_METHOD type, const CGUIControl *control)
 {
   if (!control) return;
-  m_vecViews.insert(pair<int, CGUIControl *>(type, (CGUIControl *)control));
+  m_vecViews.insert(pair<VIEW_METHOD, CGUIControl *>(type, (CGUIControl *)control));
   ((CGUIControl *)control)->SetVisible(false); // set them all invisible
 }
 
@@ -38,9 +38,9 @@ void CGUIViewControl::SetParentWindow(int window)
   m_parentWindow = window;
 }
 
-void CGUIViewControl::SetCurrentView(int viewMode)
+void CGUIViewControl::SetCurrentView(VIEW_METHOD viewMode)
 {
-  if (viewMode == m_currentView)
+  if (m_currentView == viewMode)
     return;
 //  CLog::DebugLog("SetCurrentView: Oldview: %i, Newview :%i", m_currentView, viewMode);
   map_iter it = m_vecViews.find(viewMode);
@@ -73,7 +73,7 @@ void CGUIViewControl::SetCurrentView(int viewMode)
   // if we have a thumbs view, make sure we have set the appropriate size...
   if (pNewView->GetControlType() == CGUIControl::GUICONTROL_THUMBNAIL)
   {
-    if (viewMode == VIEW_AS_LARGE_ICONS)
+    if (viewMode == VIEW_METHOD_LARGE_ICONS)
       ((CGUIThumbnailPanel *)pNewView)->ShowBigIcons(true);
     else
       ((CGUIThumbnailPanel *)pNewView)->ShowBigIcons(false);
@@ -87,11 +87,6 @@ void CGUIViewControl::SetCurrentView(int viewMode)
   }
   // And update our "view as" button control
   UpdateViewAsControl();
-}
-
-int CGUIViewControl::GetCurrentView()
-{
-  return m_currentView;
 }
 
 void CGUIViewControl::SetItems(CFileItemList &items)
@@ -139,7 +134,7 @@ void CGUIViewControl::UpdateView()
   }
 }
 
-int CGUIViewControl::GetSelectedItem(const CGUIControl *control)
+int CGUIViewControl::GetSelectedItem(const CGUIControl *control) const
 {
   if (!control || !m_fileItems) return -1;
   CGUIMessage msg(GUI_MSG_ITEM_SELECTED, m_parentWindow, control->GetID(), 0, 0, NULL);
@@ -151,7 +146,7 @@ int CGUIViewControl::GetSelectedItem(const CGUIControl *control)
   return iItem;
 }
 
-int CGUIViewControl::GetSelectedItem()
+int CGUIViewControl::GetSelectedItem() const
 {
   map_iter it = m_vecViews.find(m_currentView);
   if (it == m_vecViews.end())
@@ -215,7 +210,7 @@ bool CGUIViewControl::HasControl(int viewControlID)
   return false;
 }
 
-bool CGUIViewControl::HasViewMode(int viewMode)
+bool CGUIViewControl::HasViewMode(VIEW_METHOD viewMode)
 {
   map_iter it = m_vecViews.find(viewMode);
   return (it!=m_vecViews.end());
@@ -249,16 +244,16 @@ void CGUIViewControl::UpdateViewAsControl()
   int iString;
   switch (m_currentView)
   {
-  case VIEW_AS_LIST:
+  case VIEW_METHOD_LIST:
     iString = 101; // View: List
     break;
-  case VIEW_AS_ICONS:
+  case VIEW_METHOD_ICONS:
     iString = 100; // View: Icons
     break;
-  case VIEW_AS_LARGE_ICONS:
+  case VIEW_METHOD_LARGE_ICONS:
     iString = 417; // View: Big Icons
     break;
-  case VIEW_AS_LARGE_LIST:
+  case VIEW_METHOD_LARGE_LIST:
     iString = 759; // View: Big List
     break;
   }

@@ -1,12 +1,13 @@
 #pragma once
-#include "GUIViewState.h"
 
 typedef enum {
-  VIEW_AS_CONTROL_LIST=0,
-  VIEW_AS_CONTROL_ICONS,
-  VIEW_AS_CONTROL_LARGE_ICONS,
-  VIEW_AS_CONTROL_LARGE_LIST
-} VIEW_AS_CONTROL;
+  VIEW_METHOD_NONE=-1,
+  VIEW_METHOD_LIST,
+  VIEW_METHOD_ICONS,
+  VIEW_METHOD_LARGE_ICONS,
+  VIEW_METHOD_LARGE_LIST,
+  VIEW_METHOD_MAX
+} VIEW_METHOD;
 
 class CGUIViewState
 {
@@ -14,8 +15,8 @@ public:
   virtual ~CGUIViewState();
   static CGUIViewState* GetViewState(int windowId, const CFileItemList& items);
 
-  VIEW_AS_CONTROL SetNextViewAsControl();
-  VIEW_AS_CONTROL GetViewAsControl() const;
+  VIEW_METHOD SetNextViewAsControl();
+  VIEW_METHOD GetViewAsControl() const;
   int GetViewAsControlButtonLabel() const;
 
   SORT_METHOD SetNextSortMethod();
@@ -29,8 +30,8 @@ protected:
   CGUIViewState(const CFileItemList& items);  // no direct object creation, use GetViewState()
   virtual void SaveViewState()=0;
 
-  void AddViewAsControl(VIEW_AS_CONTROL viewAsControl, int buttonLabel);
-  void SetViewAsControl(VIEW_AS_CONTROL viewAsControl);
+  void AddViewAsControl(VIEW_METHOD viewAsControl, int buttonLabel);
+  void SetViewAsControl(VIEW_METHOD viewAsControl);
   void AddSortMethod(SORT_METHOD sortMethod, int buttonLabel);
   void SetSortMethod(SORT_METHOD sortMethod);
   void SetSortOrder(SORT_ORDER sortOrder) { m_sortOrder=sortOrder; }
@@ -39,7 +40,7 @@ protected:
 private:
   typedef struct _VIEW
   {
-    VIEW_AS_CONTROL m_viewAsControl;
+    VIEW_METHOD m_viewAsControl;
     int m_buttonLabel;
   } VIEW;
   vector<VIEW> m_viewAsControls;

@@ -3,6 +3,7 @@
 #include "Weather.h"
 #include "../FileSystem/ZipManager.h"
 #include "../FileSystem/RarManager.h"
+#include "HTTP.h"
 
 
 #define SPEED_KMH 0
@@ -78,63 +79,47 @@ const CStdString strRarFile = "Q:\\media\\weather.rar";
 
 CWeather g_weatherManager;
 
-CBackgroundWeatherLoader::CBackgroundWeatherLoader(CWeather *pCallback, int iArea)
+void CBackgroundWeatherLoader::GetInformation()
 {
-  m_pCallback = pCallback;
-  m_iArea = iArea;
-  CThread::Create(true);
-}
+  if (!g_guiSettings.GetBool("Network.EnableInternet"))
+    return;
+  CWeather *callback = (CWeather *)m_callback;
+  // Download our weather
+  CLog::Log(LOGINFO, "WEATHER: Downloading weather");
+  CHTTP httpUtil;
+  CStdString strURL;
 
-CBackgroundWeatherLoader::~CBackgroundWeatherLoader()
-{}
+  char c_units; //convert from temp units to metric/standard
+  if (g_guiSettings.GetInt("Weather.TemperatureUnits") == DEGREES_F) //we'll convert the speed later depending on what thats set to
+    c_units = 's';
+  else
+    c_units = 'm';
 
-void CBackgroundWeatherLoader::Process()
-{
-  if (m_pCallback)
+  CStdString strSetting;
+  strSetting.Format("Weather.AreaCode%i", callback->GetArea() + 1);
+  strURL.Format("http://xoap.weather.com/weather/local/%s?cc=*&unit=%c&dayf=4&prod=xoap&par=%s&key=%s",
+                g_guiSettings.GetString(strSetting), c_units, PARTNER_ID, PARTNER_KEY);
+  CStdString strWeatherFile = "Z:\\curWeather.xml";
+  if (httpUtil.Download(strURL, strWeatherFile))
   {
-    // Download our weather
-    CLog::Log(LOGINFO, "WEATHER: Downloading weather");
-    CHTTP httpUtil;
-    CStdString strURL;
-
-    char c_units; //convert from temp units to metric/standard
-    if (g_guiSettings.GetInt("Weather.TemperatureUnits") == DEGREES_F) //we'll convert the speed later depending on what thats set to
-      c_units = 's';
-    else
-      c_units = 'm';
-
-    CStdString strSetting;
-    strSetting.Format("Weather.AreaCode%i", m_iArea + 1);
-    strURL.Format("http://xoap.weather.com/weather/local/%s?cc=*&unit=%c&dayf=4&prod=xoap&par=%s&key=%s",
-                  g_guiSettings.GetString(strSetting), c_units, PARTNER_ID, PARTNER_KEY);
-    CStdString strWeatherFile = "Z:\\curWeather.xml";
-    if (httpUtil.Download(strURL, strWeatherFile))
+    CLog::Log(LOGINFO, "WEATHER: Weather download successful");
+    if (!callback->m_bImagesOkay)
     {
-      CLog::Log(LOGINFO, "WEATHER: Weather download successful");
-      if (!m_pCallback->m_bImagesOkay)
-      {
-        CDirectory::Create(strBasePath);
-        if (bUseZip)
-          g_ZipManager.ExtractArchive(strZipFile,strBasePath);
-        else if (bUseRar)
-          g_RarManager.ExtractArchive(strRarFile,strBasePath);
-        m_pCallback->m_bImagesOkay = true;
-      }
-      m_pCallback->LoadWeather(strWeatherFile);
+      CDirectory::Create(strBasePath);
+      if (bUseZip)
+        g_ZipManager.ExtractArchive(strZipFile,strBasePath);
+      else if (bUseRar)
+        g_RarManager.ExtractArchive(strRarFile,strBasePath);
+      callback->m_bImagesOkay = true;
     }
-    else
-      CLog::Log(LOGERROR, "WEATHER: Weather download failed!");
-
-    // extract 
-    
-    // and we now die
-    m_pCallback->LoaderFinished();
+    callback->LoadWeather(strWeatherFile);
   }
+  else
+    CLog::Log(LOGERROR, "WEATHER: Weather download failed!");
 }
 
-CWeather::CWeather(void)
+CWeather::CWeather(void) : CInfoLoader("weather")
 {
-  m_bBusy = false;
   m_bImagesOkay = false;
   for (int i = 0; i < MAX_LOCATION; i++)
   {
@@ -172,9 +157,7 @@ CWeather::CWeather(void)
     strcpy(m_szLocation[i], "");
   }
   m_iCurWeather = 0;
-  m_pBackgroundLoader = NULL;
   srand(timeGetTime());
-  m_lRefreshTime = 0;
 }
 
 CWeather::~CWeather(void)
@@ -636,77 +619,31 @@ bool CWeather::GetSearchResults(const CStdString &strSearch, CStdString &strResu
   return true;
 }
 
-const char *CWeather::GetLabel(DWORD dwLabel)
+const char *CWeather::BusyInfo(DWORD dwInfo)
 {
-  if (!g_guiSettings.GetBool("Network.EnableInternet"))
-    return "";
-
-  // ok, now let's check if we have a background loader running
-  if (m_lRefreshTime < timeGetTime())
-  { // need to refresh!
-    Refresh(m_iCurWeather);
-  }
-  if (m_bBusy)
-  {
-    CStdString strBusy = g_localizeStrings.Get(503);
-    strncpy(m_szBusyString, strBusy.c_str(), 256);
-    return m_szBusyString;
-  }
-  // ok, here is where the fun deciphering goes
-  if (dwLabel == WEATHER_LABEL_CURRENT_COND) return m_szCurrentConditions;
-  else if (dwLabel == WEATHER_LABEL_CURRENT_TEMP) return m_szCurrentTemperature;
-  else if (dwLabel == WEATHER_LABEL_CURRENT_FEEL) return m_szCurrentFeelsLike;
-  else if (dwLabel == WEATHER_LABEL_CURRENT_UVID) return m_szCurrentUVIndex;
-  else if (dwLabel == WEATHER_LABEL_CURRENT_WIND) return m_szCurrentWind;
-  else if (dwLabel == WEATHER_LABEL_CURRENT_DEWP) return m_szCurrentDewPoint;
-  else if (dwLabel == WEATHER_LABEL_CURRENT_HUMI) return m_szCurrentHumidity;
-  else if (dwLabel == WEATHER_LABEL_LOCATION) return m_szLocation[m_iCurWeather];
-  return "";
-}
-
-void CWeather::Refresh(int iArea)
-{
-  // quietly return if Internet lookups are disabled
-  if (!g_guiSettings.GetBool("Network.EnableInternet")) return ;
-
-  m_iCurWeather = iArea;
-  // all we do is start the background loader if it's not already running.
-  // this just runs until it has the info, then exits, setting it's pointer to NULL.
-  if (!m_pBackgroundLoader)
-  {
-    m_pBackgroundLoader = new CBackgroundWeatherLoader(this, iArea);
-    if (!m_pBackgroundLoader)
-    {
-      CLog::Log(LOGERROR, "Unable to start the background weather loader");
-      return ;
-    }
-  }
-  m_bBusy = true;
-}
-
-
-void CWeather::LoaderFinished()
-{
-  m_lRefreshTime = timeGetTime() + (DWORD)(g_guiSettings.GetInt("Weather.RefreshTime") * 60000);
-  m_pBackgroundLoader = NULL;
-  m_bBusy = false;
-}
-
-char *CWeather::GetCurrentIcon()
-{
-  if (!g_guiSettings.GetBool("Network.EnableInternet"))
-    return "";
-
-  // ok, now let's check if we have a background loader running
-  if (m_lRefreshTime < timeGetTime())
-  { // need to refresh!
-    Refresh(m_iCurWeather);
-  }
-  //if (m_bBusy) return "Q:\\weather\\128x128\\na.png";
-  if (m_bBusy) 
+  if (dwInfo == WEATHER_IMAGE_CURRENT_ICON)
   {
     sprintf(m_szNAIcon,"%s128x128\\na.png",strBasePath.c_str());
     return m_szNAIcon;
   }
-  return m_szCurrentIcon;
+  return CInfoLoader::BusyInfo(dwInfo);
+}
+
+const char *CWeather::TranslateInfo(DWORD dwInfo)
+{
+  if (dwInfo == WEATHER_LABEL_CURRENT_COND) return m_szCurrentConditions;
+  else if (dwInfo == WEATHER_IMAGE_CURRENT_ICON) return m_szCurrentIcon;
+  else if (dwInfo == WEATHER_LABEL_CURRENT_TEMP) return m_szCurrentTemperature;
+  else if (dwInfo == WEATHER_LABEL_CURRENT_FEEL) return m_szCurrentFeelsLike;
+  else if (dwInfo == WEATHER_LABEL_CURRENT_UVID) return m_szCurrentUVIndex;
+  else if (dwInfo == WEATHER_LABEL_CURRENT_WIND) return m_szCurrentWind;
+  else if (dwInfo == WEATHER_LABEL_CURRENT_DEWP) return m_szCurrentDewPoint;
+  else if (dwInfo == WEATHER_LABEL_CURRENT_HUMI) return m_szCurrentHumidity;
+  else if (dwInfo == WEATHER_LABEL_LOCATION) return m_szLocation[m_iCurWeather];
+  return "";
+}
+
+DWORD CWeather::TimeToNextRefreshInMs()
+{
+  return g_guiSettings.GetInt("Weather.RefreshTime") * 60000;
 }

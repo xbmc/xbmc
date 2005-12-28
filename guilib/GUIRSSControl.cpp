@@ -2,11 +2,8 @@
 #include "GUIRSSControl.h"
 #include "GUIWindowManager.h"
 #include "GUIFontManager.h"
-#include "..\xbmc\Application.h"
 #include "..\xbmc\settings.h"
 
-
-extern CApplication g_application;
 
 CGUIRSSControl::CGUIRSSControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strFontName, D3DCOLOR dwChannelColor, D3DCOLOR dwHeadlineColor, D3DCOLOR dwNormalColor, CStdString& strRSSTags)
 : CGUIControl(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight)

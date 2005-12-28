@@ -12,6 +12,7 @@
 #include "KaiClient.h"
 #include "GUIButtonScroller.h"
 #include "../utils/Alarmclock.h"
+#include "../GUIMediaWindow.h"
 #ifdef PRE_SKIN_VERSION_2_0_COMPATIBILITY
 #include "SkinInfo.h"
 #endif
@@ -128,6 +129,9 @@ extern char g_szTitleIP[32];
 #define AUDIOSCROBBLER_SUBMIT_INT   302
 #define AUDIOSCROBBLER_FILES_CACHED 303
 #define AUDIOSCROBBLER_SUBMIT_STATE 304
+
+#define LISTITEM_THUMB              310
+#define LISTITEM_LABEL              311
 
 #define VISUALISATION_LOCKED        400
 #define VISUALISATION_PRESET        401
@@ -308,6 +312,8 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
   else if (strTest.Equals("audioscrobbler.submitinterval")) ret = AUDIOSCROBBLER_SUBMIT_INT;
   else if (strTest.Equals("audioscrobbler.filescached")) ret = AUDIOSCROBBLER_FILES_CACHED;
   else if (strTest.Equals("audioscrobbler.submitstate")) ret = AUDIOSCROBBLER_SUBMIT_STATE;
+  else if (strTest.Equals("listitem.thumb")) ret = LISTITEM_THUMB;
+  else if (strTest.Equals("listitem.label")) ret = LISTITEM_LABEL;
   else if (strTest.Equals("visualisation.locked")) ret = VISUALISATION_LOCKED;
   else if (strTest.Equals("visualisation.preset")) ret = VISUALISATION_PRESET;
   else if (strTest.Equals("visualisation.name")) ret = VISUALISATION_NAME;
@@ -358,13 +364,13 @@ wstring CGUIInfoManager::GetLabel(int info)
   switch (info)
   {
   case WEATHER_CONDITIONS:
-    strLabel = g_weatherManager.GetLabel(WEATHER_LABEL_CURRENT_COND);
+    strLabel = g_weatherManager.GetInfo(WEATHER_LABEL_CURRENT_COND);
     break;
   case WEATHER_TEMPERATURE:
-    strLabel = g_weatherManager.GetLabel(WEATHER_LABEL_CURRENT_TEMP);
+    strLabel = g_weatherManager.GetInfo(WEATHER_LABEL_CURRENT_TEMP);
     break;
   case WEATHER_LOCATION:
-    strLabel = g_weatherManager.GetLabel(WEATHER_LABEL_LOCATION);
+    strLabel = g_weatherManager.GetInfo(WEATHER_LABEL_LOCATION);
     break;
   case SYSTEM_TIME:
     strLabel = GetTime();
@@ -481,6 +487,19 @@ wstring CGUIInfoManager::GetLabel(int info)
   case PLAYER_SEEKTIME:
     {
       strLabel = ((CGUIDialogSeekBar*)m_gWindowManager.GetWindow(WINDOW_DIALOG_SEEK_BAR))->GetSeekTimeLabel();
+    }
+    break;
+  case LISTITEM_LABEL:
+    {
+      CGUIWindow *pWindow = m_gWindowManager.GetWindow(m_gWindowManager.GetActiveWindow());
+      if (pWindow && pWindow->IsMediaWindow())
+      {
+        const CFileItem *item = ((CGUIMediaWindow *)pWindow)->GetCurrentListItem();
+        if (item)
+        {
+          strLabel = item->GetLabel();
+        }
+      }
     }
     break;
   }
@@ -702,7 +721,7 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow) const
 CStdString CGUIInfoManager::GetImage(int info)
 {
   if (info == WEATHER_CONDITIONS)
-    return g_weatherManager.GetCurrentIcon();
+    return g_weatherManager.GetInfo(WEATHER_IMAGE_CURRENT_ICON);
   else if (info == MUSICPLAYER_COVER)
   {
     if (!g_application.IsPlayingAudio()) return "";
@@ -712,6 +731,18 @@ CStdString CGUIInfoManager::GetImage(int info)
   {
     if (!g_application.IsPlayingVideo()) return "";
     return m_currentMovieThumb;
+  }
+  else if (info == LISTITEM_THUMB)
+  {
+    CGUIWindow *pWindow = m_gWindowManager.GetWindow(m_gWindowManager.GetActiveWindow());
+    if (pWindow && pWindow->IsMediaWindow())
+    {
+      const CFileItem *item = ((CGUIMediaWindow *)pWindow)->GetCurrentListItem();
+      if (item)
+      {
+        return item->GetThumbnailImage();
+      }
+    }
   }
   return "";
 }

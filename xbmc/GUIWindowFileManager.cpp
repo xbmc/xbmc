@@ -12,7 +12,6 @@
 #include "lib/libPython/XBPython.h"
 #include "GUIWindowSlideShow.h"
 #include "PlayListFactory.h"
-#include "SortFileItem.h"
 #include "utils/GUIInfoManager.h"
 
 using namespace XFILE;
@@ -164,11 +163,11 @@ bool CGUIWindowFileManager::OnMessage(CGUIMessage& message)
       int iLastControl = m_iLastControl;
       CGUIWindow::OnMessage(message);
       // default sort methods
-      g_stSettings.m_iMyFilesSourceRootSortMethod = 0;
-      g_stSettings.m_bMyFilesSourceRootSortAscending = true;
+/*      g_stSettings.m_iMyFilesSourceRootSortMethod = 0;
+      g_stSettings.m_bMyFilesSourceRootSortOrder = true;
       g_stSettings.m_iMyFilesSourceSortMethod = 0;
-      g_stSettings.m_bMyFilesSourceSortAscending = true;
-
+      g_stSettings.m_bMyFilesSourceSortOrder = true;
+*/
       CGUIListControl *pControl = (CGUIListControl *)GetControl(CONTROL_LEFT_LIST);
       if (pControl) pControl->SetPageControlVisible(false);
       pControl = (CGUIListControl *)GetControl(CONTROL_RIGHT_LIST);
@@ -296,40 +295,26 @@ bool CGUIWindowFileManager::OnMessage(CGUIMessage& message)
 
 void CGUIWindowFileManager::OnSort(int iList)
 {
-  int sortMethod;
-  bool sortAscending;
+  SORT_METHOD sortMethod;
+  SORT_ORDER sortOrder;
   if (m_Directory[iList].IsVirtualDirectoryRoot())
   {
-    sortMethod = g_stSettings.m_iMyFilesSourceRootSortMethod;
-    sortAscending = g_stSettings.m_bMyFilesSourceRootSortAscending;
+    sortMethod = SORT_METHOD_DRIVE_TYPE;
+    sortOrder = SORT_ORDER_ASC;
   }
   else
   {
-    sortMethod = g_stSettings.m_iMyFilesSourceSortMethod;
-    sortAscending = g_stSettings.m_bMyFilesSourceSortAscending;
+    sortMethod = SORT_METHOD_LABEL;
+    sortOrder = SORT_ORDER_ASC;
   }
 
   for (int i = 0; i < m_vecItems[iList].Size(); i++)
   {
     CFileItem* pItem = m_vecItems[iList][i];
-    if (sortMethod == 0 || sortMethod == 2)
-    {
-      if (pItem->m_bIsFolder && !pItem->m_dwSize)
-        pItem->SetLabel2("");
-      else
-        pItem->SetFileSizeLabel();
-    }
+    if (pItem->m_bIsFolder && !pItem->m_dwSize)
+      pItem->SetLabel2("");
     else
-    {
-      if (pItem->m_stTime.wYear)
-      {
-        CStdString strDateTime;
-        CUtil::GetDate(pItem->m_stTime, strDateTime);
-        pItem->SetLabel2(strDateTime);
-      }
-      else
-        pItem->SetLabel2("");
-    }
+      pItem->SetFileSizeLabel();
 
     // Set free space on disc
     if (pItem->m_bIsShareOrDrive)
@@ -356,18 +341,7 @@ void CGUIWindowFileManager::OnSort(int iList)
 
   }
 
-  switch (sortMethod)
-  {
-  case 1:
-    m_vecItems[iList].Sort(sortAscending ? SSortFileItem::DateAscending : SSortFileItem::DateDescending); break;
-  case 2:
-    m_vecItems[iList].Sort(sortAscending ? SSortFileItem::SizeAscending : SSortFileItem::SizeDescending); break;
-  case 3:
-    m_vecItems[iList].Sort(sortAscending ? SSortFileItem::DriveTypeAscending : SSortFileItem::DriveTypeDescending); break;
-  default:
-    m_vecItems[iList].Sort(sortAscending ? SSortFileItem::LabelAscending : SSortFileItem::LabelDescending); break;
-  }
-
+  m_vecItems[iList].Sort(sortMethod, sortOrder);
   // UpdateControl(iList);
 }
 
@@ -384,23 +358,23 @@ void CGUIWindowFileManager::UpdateButtons()
 
   /*
    // Update sorting control
-   bool bSortAscending=false;
+   bool bSortOrder=false;
    if ( m_bViewSource ) 
    {
     if (m_strSourceDirectory.IsEmpty())
-     bSortAscending=g_stSettings.m_bMyFilesSourceRootSortAscending;
+     bSortOrder=g_stSettings.m_bMyFilesSourceRootSortOrder;
     else
-     bSortAscending=g_stSettings.m_bMyFilesSourceSortAscending;
+     bSortOrder=g_stSettings.m_bMyFilesSourceSortOrder;
    }
    else
    {
     if (m_strDestDirectory.IsEmpty())
-     bSortAscending=g_stSettings.m_bMyFilesDestRootSortAscending;
+     bSortOrder=g_stSettings.m_bMyFilesDestRootSortOrder;
     else
-     bSortAscending=g_stSettings.m_bMyFilesDestSortAscending;
+     bSortOrder=g_stSettings.m_bMyFilesDestSortOrder;
    }
    
-   if (bSortAscending)
+   if (bSortOrder)
     {
       CGUIMessage msg(GUI_MSG_DESELECTED,GetID(), CONTROL_BTNSORTASC);
       g_graphicsContext.SendMessage(msg);

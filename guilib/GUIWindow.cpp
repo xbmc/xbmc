@@ -31,9 +31,6 @@
 #include "GUIButtonScroller.h"
 #include "GUIMultiImage.h"
 #include "SkinInfo.h"
-#include "../xbmc/xbox/XKUtils.h"
-#include "../xbmc/Application.h"
-#include "../xbmc/ApplicationMessenger.h"
 #include "../xbmc/utils/GUIInfoManager.h"
 
 #ifdef PRE_SKIN_VERSION_2_0_COMPATIBILITY
@@ -598,38 +595,6 @@ void CGUIWindow::Render()
 
 bool CGUIWindow::OnAction(const CAction &action)
 {
-  static bool PowerButtonDown = false;
-  static DWORD PowerButtonCode;
-  static DWORD MarkTime;
-
-  if (action.wID == ACTION_TAKE_SCREENSHOT)
-  {
-    CUtil::TakeScreenshot();
-    return true;
-  }
-  else if (action.wID == ACTION_POWERDOWN)
-  {
-    // Hold button for 3 secs to power down
-    if (!PowerButtonDown)
-    {
-      MarkTime = GetTickCount();
-      PowerButtonDown = true;
-      PowerButtonCode = action.m_dwButtonCode;
-    }
-  }
-  if (PowerButtonDown)
-  {
-    if (g_application.IsButtonDown(PowerButtonCode))
-    {
-      if (GetTickCount() >= MarkTime + 3000)
-      {
-        g_applicationMessenger.Shutdown();
-        return true;
-      }
-    }
-    else
-      PowerButtonDown = false;
-  }
   if (action.wID == ACTION_MOUSE)
   {
     OnMouseAction();

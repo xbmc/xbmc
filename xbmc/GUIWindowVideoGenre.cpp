@@ -12,15 +12,6 @@
 #include "PlayListPlayer.h"
 #include "GUIThumbnailPanel.h"
 #include "GUIPassword.h"
-#include "SortFileItem.h"
-
-#define CONTROL_BTNVIEWASICONS     2 
-#define CONTROL_BTNSORTBY          3
-#define CONTROL_BTNSORTASC         4
-#define CONTROL_BTNTYPE            5
-#define CONTROL_LIST              50
-#define CONTROL_THUMBS            51
-#define CONTROL_LABELFILES        12
 
 #define CONTROL_PLAY_DVD           6
 #define CONTROL_STACK              7
@@ -33,7 +24,7 @@
 CGUIWindowVideoGenre::CGUIWindowVideoGenre()
 : CGUIWindowVideoBase(WINDOW_VIDEO_GENRE, "MyVideoGenre.xml")
 {
-  m_Directory.m_strPath = "";
+  m_vecItems.m_strPath = "";
 }
 
 //****************************************************************************************************************************
@@ -54,36 +45,13 @@ bool CGUIWindowVideoGenre::OnMessage(CGUIMessage& message)
   case GUI_MSG_CLICKED:
     {
       int iControl = message.GetSenderId();
-      if (iControl == CONTROL_BTNSORTBY) // sort by
-      {
-        if (!m_Directory.IsVirtualDirectoryRoot())
-        {
-          g_stSettings.m_iMyVideoGenreSortMethod++;
-          if (g_stSettings.m_iMyVideoGenreSortMethod >= 3)
-            g_stSettings.m_iMyVideoGenreSortMethod = 0;
-          g_settings.Save();
-        }
-        UpdateButtons();
-        OnSort();
-      }
-      else if (iControl == CONTROL_BTNSORTASC) // sort asc
-      {
-        if (m_Directory.IsVirtualDirectoryRoot())
-          g_stSettings.m_bMyVideoGenreRootSortAscending = !g_stSettings.m_bMyVideoGenreRootSortAscending;
-        else
-          g_stSettings.m_bMyVideoGenreSortAscending = !g_stSettings.m_bMyVideoGenreSortAscending;
-
-        g_settings.Save();
-        UpdateButtons();
-        OnSort();
-      }
-      else if (iControl == CONTROL_BTNSHOWMODE)
+      if (iControl == CONTROL_BTNSHOWMODE)
 	    {
         m_iShowMode++;
 		    if (m_iShowMode > VIDEO_SHOW_WATCHED) m_iShowMode = VIDEO_SHOW_ALL;
 		    g_stSettings.m_iMyVideoGenreShowMode = m_iShowMode;
         g_settings.Save();
-		    Update(m_Directory.m_strPath);
+		    Update(m_vecItems.m_strPath);
         return true;
       }
       else
@@ -99,17 +67,7 @@ void CGUIWindowVideoGenre::FormatItemLabels()
   for (int i = 0; i < (int)m_vecItems.Size(); i++)
   {
     CFileItem* pItem = m_vecItems[i];
-    if (g_stSettings.m_iMyVideoGenreSortMethod == 0 || g_stSettings.m_iMyVideoGenreSortMethod == 2)
-    {
-      if (pItem->m_bIsFolder) pItem->SetLabel2("");
-      else
-      {
-        CStdString strRating;
-        strRating.Format("%2.2f", pItem->m_fRating);
-        pItem->SetLabel2(strRating);
-      }
-    }
-    else
+    if (g_stSettings.m_MyVideoGenreSortMethod == SORT_METHOD_DATE)
     {
       if (pItem->m_stTime.wYear)
       {
@@ -120,37 +78,16 @@ void CGUIWindowVideoGenre::FormatItemLabels()
       else
         pItem->SetLabel2("");
     }
-  }
-}
-
-void CGUIWindowVideoGenre::SortItems(CFileItemList& items)
-{
-  int sortMethod;
-  bool sortAscending;
-  if (m_Directory.IsVirtualDirectoryRoot())
-  {
-    sortMethod = g_stSettings.m_iMyVideoGenreRootSortMethod;
-    sortAscending = g_stSettings.m_bMyVideoGenreRootSortAscending;
-  }
-  else
-  {
-    sortMethod = g_stSettings.m_iMyVideoGenreSortMethod;
-    sortAscending = g_stSettings.m_bMyVideoGenreSortAscending;
-    if (g_stSettings.m_iMyVideoGenreSortMethod == 1)
-      sortAscending = !sortAscending;
-  }
-  switch (sortMethod)
-  {
-  case 1:
-    items.Sort(sortAscending ? SSortFileItem::MovieYearAscending : SSortFileItem::MovieYearDescending); break;
-  case 2:
-    items.Sort(sortAscending ? SSortFileItem::MovieRatingAscending : SSortFileItem::MovieRatingDescending); break;
-  default:
-    if (g_guiSettings.GetBool("MyVideos.IgnoreTheWhenSorting"))
-      items.Sort(sortAscending ? SSortFileItem::LabelAscendingNoThe : SSortFileItem::LabelDescendingNoThe);
     else
-      items.Sort(sortAscending ? SSortFileItem::LabelAscending : SSortFileItem::LabelDescending);
-    break;
+    {
+      if (pItem->m_bIsFolder) pItem->SetLabel2("");
+      else
+      {
+        CStdString strRating;
+        strRating.Format("%2.2f", pItem->m_fRating);
+        pItem->SetLabel2(strRating);
+      }
+    }
   }
 }
 
@@ -166,12 +103,12 @@ bool CGUIWindowVideoGenre::Update(const CStdString &strDirectory)
     if (!pItem->IsParentFolder())
     {
       strSelectedItem = pItem->m_strPath;
-      m_history.Set(strSelectedItem, m_Directory.m_strPath);
+      m_history.Set(strSelectedItem, m_vecItems.m_strPath);
     }
   }
   ClearFileItems();
-  m_Directory.m_strPath = strDirectory;
-  if (m_Directory.IsVirtualDirectoryRoot())
+  m_vecItems.m_strPath = strDirectory;
+  if (m_vecItems.IsVirtualDirectoryRoot())
   {
     VECMOVIEGENRES genres;
     m_database.GetGenres(genres, m_iShowMode);
@@ -185,6 +122,7 @@ bool CGUIWindowVideoGenre::Update(const CStdString &strDirectory)
       pItem->m_bIsShareOrDrive = false;
       m_vecItems.Add(pItem);
     }
+    m_vecItems.m_strPath = "";
     SET_CONTROL_LABEL(LABEL_GENRE, "");
   }
   else
@@ -199,7 +137,7 @@ bool CGUIWindowVideoGenre::Update(const CStdString &strDirectory)
     }
     m_strParentPath = "";
     VECMOVIES movies;
-    m_database.GetMoviesByGenre(m_Directory.m_strPath, movies);
+    m_database.GetMoviesByGenre(m_vecItems.m_strPath, movies);
     for (int i = 0; i < (int)movies.size(); ++i)
     {
       CIMDBMovie movie = movies[i];
@@ -228,7 +166,7 @@ bool CGUIWindowVideoGenre::Update(const CStdString &strDirectory)
         m_vecItems.Add(pItem);
       }
     }
-    SET_CONTROL_LABEL(LABEL_GENRE, m_Directory.m_strPath);
+    SET_CONTROL_LABEL(LABEL_GENRE, m_vecItems.m_strPath);
   }
   m_vecItems.SetThumbs();
   SetIMDBThumbs(m_vecItems);
@@ -248,7 +186,7 @@ bool CGUIWindowVideoGenre::Update(const CStdString &strDirectory)
   OnSort();
   UpdateButtons();
 
-  strSelectedItem = m_history.Get(m_Directory.m_strPath);
+  strSelectedItem = m_history.Get(m_vecItems.m_strPath);
   for (int i = 0; i < (int)m_vecItems.Size(); ++i)
   {
     CFileItem* pItem = m_vecItems[i];
@@ -274,7 +212,7 @@ void CGUIWindowVideoGenre::OnClick(int iItem)
 
   if (pItem->m_bIsFolder)
   {
-    m_iItemSelected = -1;
+    m_iSelectedItem = -1;
     if ( pItem->m_bIsShareOrDrive )
     {
       if ( !g_passwordManager.IsItemUnlocked( pItem, "video" ) )
@@ -287,42 +225,13 @@ void CGUIWindowVideoGenre::OnClick(int iItem)
   }
   else
   {
-    m_iItemSelected = m_viewControl.GetSelectedItem();
+    m_iSelectedItem = m_viewControl.GetSelectedItem();
     PlayMovie(pItem);
   }
 }
 
 void CGUIWindowVideoGenre::OnInfo(int iItem)
 {
-  if ( m_Directory.IsVirtualDirectoryRoot() ) return ;
+  if ( m_vecItems.IsVirtualDirectoryRoot() ) return ;
   CGUIWindowVideoBase::OnInfo(iItem);
-}
-
-void CGUIWindowVideoGenre::LoadViewMode()
-{
-  m_iViewAsIconsRoot = g_stSettings.m_iMyVideoGenreRootViewAsIcons;
-  m_iViewAsIcons = g_stSettings.m_iMyVideoGenreViewAsIcons;
-}
-
-void CGUIWindowVideoGenre::SaveViewMode()
-{
-  g_stSettings.m_iMyVideoGenreRootViewAsIcons = m_iViewAsIconsRoot;
-  g_stSettings.m_iMyVideoGenreViewAsIcons = m_iViewAsIcons;
-  g_settings.Save();
-}
-
-int CGUIWindowVideoGenre::SortMethod()
-{
-  if (m_Directory.IsVirtualDirectoryRoot())
-    return g_stSettings.m_iMyVideoGenreRootSortMethod + 365;
-  else
-    return g_stSettings.m_iMyVideoGenreSortMethod + 365;
-}
-
-bool CGUIWindowVideoGenre::SortAscending()
-{
-  if (m_Directory.IsVirtualDirectoryRoot())
-    return g_stSettings.m_bMyVideoGenreRootSortAscending;
-  else
-    return g_stSettings.m_bMyVideoGenreSortAscending;
 }

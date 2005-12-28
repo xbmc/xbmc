@@ -1,11 +1,8 @@
-
 #include "stdafx.h"
 #include "guiwindowscripts.h"
 #include "util.h"
-#include "detectdvdtype.h"
 #include "lib/libPython/XBPython.h"
 #include "GUIWindowScriptsInfo.h"
-#include "SortFileItem.h"
 #ifdef PRE_SKIN_VERSION_2_0_COMPATIBILITY
 #include "SkinInfo.h"
 #endif
@@ -19,62 +16,36 @@
 
 
 CGUIWindowScripts::CGUIWindowScripts()
-    : CGUIWindow(WINDOW_SCRIPTS, "MyScripts.xml")
+    : CGUIMediaWindow(WINDOW_SCRIPTS, "MyScripts.xml")
 {
-  m_bDVDDiscChanged = false;
-  m_bDVDDiscEjected = false;
   m_bViewOutput = false;
-  m_Directory.m_strPath = "?";
-  m_Directory.m_bIsFolder = true;
-  scriptSize = 0;
-  m_iLastControl = -1;
-  m_iSelectedItem = -1;
+  m_scriptSize = 0;
 }
 
 CGUIWindowScripts::~CGUIWindowScripts()
-{}
-
+{
+}
 
 bool CGUIWindowScripts::OnAction(const CAction &action)
 {
-  if (action.wID == ACTION_PARENT_DIR)
-  {
-    GoParentFolder();
-    return true;
-  }
-
-  if (action.wID == ACTION_PREVIOUS_MENU)
-  {
-    m_gWindowManager.PreviousWindow();
-    return true;
-  }
-
   if (action.wID == ACTION_SHOW_INFO)
   {
     OnInfo();
     return true;
   }
-  return CGUIWindow::OnAction(action);
+  return CGUIMediaWindow::OnAction(action);
 }
 
 bool CGUIWindowScripts::OnMessage(CGUIMessage& message)
 {
   switch ( message.GetMessage() )
   {
-  case GUI_MSG_WINDOW_DEINIT:
-    {
-      m_iSelectedItem = m_viewControl.GetSelectedItem();
-      m_iLastControl = GetFocusedControl();
-      ClearFileItems();
-    }
-    break;
-
   case GUI_MSG_WINDOW_INIT:
     {
       int iLastControl = m_iLastControl;
-      shares.erase(shares.begin(), shares.end());
       CGUIWindow::OnMessage(message);
-      if (m_Directory.m_strPath == "?") m_Directory.m_strPath = "Q:\\scripts"; //g_stSettings.m_szDefaultScripts;
+      m_shares.erase(m_shares.begin(), m_shares.end());
+      if (m_vecItems.m_strPath == "?") m_vecItems.m_strPath = "Q:\\scripts"; //g_stSettings.m_szDefaultScripts;
 
       m_rootDir.SetMask("*.py");
 
@@ -83,11 +54,11 @@ bool CGUIWindowScripts::OnMessage(CGUIMessage& message)
       share.strPath = "Q:\\";
       share.m_iBufferSize = 0;
       share.m_iDriveType = SHARE_TYPE_LOCAL;
-      shares.push_back(share);
+      m_shares.push_back(share);
 
-      m_rootDir.SetShares(shares); //g_settings.m_vecScriptShares);
+      m_rootDir.SetShares(m_shares);
 
-      Update(m_Directory.m_strPath);
+      Update(m_vecItems.m_strPath);
 
       if (iLastControl > -1)
       {
@@ -104,112 +75,18 @@ bool CGUIWindowScripts::OnMessage(CGUIMessage& message)
       return true;
     }
     break;
-
-  case GUI_MSG_CLICKED:
-    {
-      int iControl = message.GetSenderId();
-      if (iControl == CONTROL_BTNVIEWASICONS)
-      {
-        if ( m_Directory.IsVirtualDirectoryRoot() )
-          g_stSettings.m_bScriptsRootViewAsIcons = !g_stSettings.m_bScriptsRootViewAsIcons;
-        else
-          g_stSettings.m_bScriptsViewAsIcons = !g_stSettings.m_bScriptsViewAsIcons;
-        g_settings.Save();
-        UpdateButtons();
-      }
-      else if (iControl == CONTROL_BTNSORTBY) // sort by
-      {
-        g_stSettings.m_iScriptsSortMethod++;
-        if (g_stSettings.m_iScriptsSortMethod >= 3) g_stSettings.m_iScriptsSortMethod = 0;
-        g_settings.Save();
-        UpdateButtons();
-        OnSort();
-      }
-      else if (iControl == CONTROL_BTNSORTASC) // sort asc
-      {
-        g_stSettings.m_bScriptsSortAscending = !g_stSettings.m_bScriptsSortAscending;
-        g_settings.Save();
-        UpdateButtons();
-        OnSort();
-      }
-
-      else if (m_viewControl.HasControl(iControl))  // list/thumb control
-      {
-        int iItem = m_viewControl.GetSelectedItem();
-        int iAction = message.GetParam1();
-        if (iItem < 0) break;
-        if (iAction == ACTION_SELECT_ITEM || iAction == ACTION_MOUSE_LEFT_CLICK)
-        {
-          OnClick(iItem);
-        }
-      }
-    }
-    break;
-  case GUI_MSG_SETFOCUS:
-    {
-      if (m_viewControl.HasControl(message.GetControlId()) && m_viewControl.GetCurrentControl() != message.GetControlId())
-      {
-        m_viewControl.SetFocused();
-        return true;
-      }
-    }
-    break;
   }
-  return CGUIWindow::OnMessage(message);
+  return CGUIMediaWindow::OnMessage(message);
 }
 
-void CGUIWindowScripts::UpdateButtons()
+void CGUIWindowScripts::FormatItemLabels()
 {
-  if (m_Directory.IsVirtualDirectoryRoot())
-    m_viewControl.SetCurrentView(g_stSettings.m_bScriptsRootViewAsIcons);
-  else
-    m_viewControl.SetCurrentView(g_stSettings.m_bScriptsViewAsIcons);
-
-  SET_CONTROL_LABEL(CONTROL_BTNSORTBY, g_stSettings.m_iScriptsSortMethod + 103);
-
-  if ( g_stSettings.m_bScriptsSortAscending)
-  {
-    CGUIMessage msg(GUI_MSG_DESELECTED, GetID(), CONTROL_BTNSORTASC);
-    g_graphicsContext.SendMessage(msg);
-  }
-  else
-  {
-    CGUIMessage msg(GUI_MSG_SELECTED, GetID(), CONTROL_BTNSORTASC);
-    g_graphicsContext.SendMessage(msg);
-  }
-
-  int iItems = m_vecItems.Size();
-  if (iItems)
-  {
-    CFileItem* pItem = m_vecItems[0];
-    if (pItem->IsParentFolder()) iItems--;
-  }
-  WCHAR wszText[20];
-  const WCHAR* szText = g_localizeStrings.Get(127).c_str();
-  swprintf(wszText, L"%i %s", iItems, szText);
-  SET_CONTROL_LABEL(CONTROL_LABELFILES, wszText);
-
-}
-
-void CGUIWindowScripts::ClearFileItems()
-{
-  m_viewControl.Clear();
-  m_vecItems.Clear(); // will clean up everything
-}
-
-void CGUIWindowScripts::OnSort()
-{
+  auto_ptr<CGUIViewState> pState(CGUIViewState::GetViewState(GetID(), m_vecItems));
+  if (!pState.get()) return;
   for (int i = 0; i < m_vecItems.Size(); i++)
   {
     CFileItem* pItem = m_vecItems[i];
-    if (g_stSettings.m_iScriptsSortMethod == 0 || g_stSettings.m_iScriptsSortMethod == 2)
-    {
-      if (pItem->m_bIsFolder)
-        pItem->SetLabel2("");
-      else
-        pItem->SetFileSizeLabel();
-    }
-    else
+    if (pState->GetSortMethod() == SORT_METHOD_DATE)
     {
       if (pItem->m_stTime.wYear)
       {
@@ -220,24 +97,17 @@ void CGUIWindowScripts::OnSort()
       else
         pItem->SetLabel2("");
     }
+    else
+    {
+      if (pItem->m_bIsFolder)
+        pItem->SetLabel2("");
+      else
+        pItem->SetFileSizeLabel();
+    }
   }
-
-  int sortMethod = g_stSettings.m_iScriptsSortMethod;
-  bool sortAscending = g_stSettings.m_bScriptsSortAscending;
-  switch (sortMethod)
-  {
-  case 1:
-    m_vecItems.Sort(sortAscending ? SSortFileItem::DateAscending : SSortFileItem::DateDescending); break;
-  case 2:
-    m_vecItems.Sort(sortAscending ? SSortFileItem::SizeAscending : SSortFileItem::SizeDescending); break;
-  default:
-    m_vecItems.Sort(sortAscending ? SSortFileItem::LabelAscending : SSortFileItem::LabelDescending); break;
-  }
-
-  m_viewControl.SetItems(m_vecItems);
 }
 
-void CGUIWindowScripts::Update(const CStdString &strDirectory)
+bool CGUIWindowScripts::Update(const CStdString &strDirectory)
 {
   // get selected item
   int iItem = m_viewControl.GetSelectedItem();
@@ -248,7 +118,7 @@ void CGUIWindowScripts::Update(const CStdString &strDirectory)
     if (!pItem->IsParentFolder())
     {
       strSelectedItem = pItem->m_strPath;
-      m_history.Set(strSelectedItem, m_Directory.m_strPath);
+      m_history.Set(strSelectedItem, m_vecItems.m_strPath);
     }
   }
   ClearFileItems();
@@ -291,7 +161,7 @@ void CGUIWindowScripts::Update(const CStdString &strDirectory)
     m_strParentPath = "";
   }
 
-  m_Directory.m_strPath = strDirectory;
+  m_vecItems.m_strPath = strDirectory;
   m_rootDir.GetDirectory(strDirectory, m_vecItems);
   m_vecItems.SetThumbs();
   if (g_guiSettings.GetBool("FileLists.HideExtensions"))
@@ -332,7 +202,7 @@ void CGUIWindowScripts::Update(const CStdString &strDirectory)
   OnSort();
   UpdateButtons();
 
-  strSelectedItem = m_history.Get(m_Directory.m_strPath);
+  strSelectedItem = m_history.Get(m_vecItems.m_strPath);
 
   for (int i = 0; i < (int)m_vecItems.Size(); ++i)
   {
@@ -343,6 +213,7 @@ void CGUIWindowScripts::Update(const CStdString &strDirectory)
       break;
     }
   }
+  return true;
 }
 
 void CGUIWindowScripts::OnClick(int iItem)
@@ -354,16 +225,7 @@ void CGUIWindowScripts::OnClick(int iItem)
   CStdString strExtension;
   CUtil::GetExtension(pItem->m_strPath, strExtension);
 
-  if (pItem->m_bIsFolder)
-  {
-    if ( pItem->m_bIsShareOrDrive )
-    {
-      if ( !HaveDiscOrConnection( pItem->m_strPath, pItem->m_iDriveType ) )
-        return ;
-    }
-    Update(strPath);
-  }
-  else
+  if (!pItem->m_bIsFolder)
   {
     /* execute script...
      * if script is already running do not run it again but stop it.
@@ -380,38 +242,15 @@ void CGUIWindowScripts::OnClick(int iItem)
 
         // update items
         int selectedItem = m_viewControl.GetSelectedItem();
-        Update(m_Directory.m_strPath);
+        Update(m_vecItems.m_strPath);
         m_viewControl.SetSelectedItem(selectedItem);
         return ;
       }
     }
     g_pythonParser.evalFile(strPath);
+    return;
   }
-}
-
-bool CGUIWindowScripts::HaveDiscOrConnection( CStdString& strPath, int iDriveType )
-{
-  if ( iDriveType == SHARE_TYPE_DVD )
-  {
-    MEDIA_DETECT::CDetectDVDMedia::WaitMediaReady();
-    if ( !MEDIA_DETECT::CDetectDVDMedia::IsDiscInDrive() )
-    {
-      CGUIDialogOK::ShowAndGetInput(218, 219, 0, 0);
-      return false;
-    }
-  }
-  else if ( iDriveType == SHARE_TYPE_REMOTE )
-  {
-    // TODO: Handle not connected to a remote share
-    if ( !CUtil::IsEthernetConnected() )
-    {
-      CGUIDialogOK::ShowAndGetInput(220, 221, 0, 0);
-      return false;
-    }
-  }
-  else
-    return true;
-  return true;
+  CGUIMediaWindow::OnClick(iItem);
 }
 
 void CGUIWindowScripts::OnInfo()
@@ -423,30 +262,29 @@ void CGUIWindowScripts::OnInfo()
 void CGUIWindowScripts::Render()
 {
   // update control_list / control_thumbs if one or more scripts have stopped / started
-  if (g_pythonParser.ScriptsSize() != scriptSize)
+  if (g_pythonParser.ScriptsSize() != m_scriptSize)
   {
     int selectedItem = m_viewControl.GetSelectedItem();
-    Update(m_Directory.m_strPath);
+    Update(m_vecItems.m_strPath);
     m_viewControl.SetSelectedItem(selectedItem);
-    scriptSize = g_pythonParser.ScriptsSize();
+    m_scriptSize = g_pythonParser.ScriptsSize();
   }
   CGUIWindow::Render();
 }
 
 void CGUIWindowScripts::GoParentFolder()
 {
-  CStdString strPath(m_strParentPath), strOldPath(m_Directory.m_strPath);
+  CStdString strPath(m_strParentPath), strOldPath(m_vecItems.m_strPath);
   Update(strPath);
   UpdateButtons();
 
   if (!g_guiSettings.GetBool("LookAndFeel.FullDirectoryHistory"))
     m_history.Remove(strOldPath); //Delete current path
-
+  // CGUIMediaWindow::GoParentFolder();
 }
 
 void CGUIWindowScripts::OnWindowLoaded()
 {
-  CGUIWindow::OnWindowLoaded();
 #ifdef PRE_SKIN_VERSION_2_0_COMPATIBILITY
   if (g_SkinInfo.GetVersion() < 1.8)
   {
@@ -454,16 +292,5 @@ void CGUIWindowScripts::OnWindowLoaded()
     ChangeControlID(11, CONTROL_THUMBS, CGUIControl::GUICONTROL_THUMBNAIL);
   }
 #endif
-  m_viewControl.Reset();
-  m_viewControl.SetParentWindow(GetID());
-  m_viewControl.AddView(VIEW_AS_LIST, GetControl(CONTROL_LIST));
-  m_viewControl.AddView(VIEW_AS_ICONS, GetControl(CONTROL_THUMBS));
-  m_viewControl.AddView(VIEW_AS_LARGE_ICONS, GetControl(CONTROL_THUMBS));
-  m_viewControl.SetViewControlID(CONTROL_BTNVIEWASICONS);
-}
-
-void CGUIWindowScripts::OnWindowUnload()
-{
-  CGUIWindow::OnWindowUnload();
-  m_viewControl.Reset();
+  CGUIMediaWindow::OnWindowLoaded();
 }
