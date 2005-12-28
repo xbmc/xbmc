@@ -549,7 +549,7 @@ bool CGUIWindowMusicBase::Update(const CStdString &strDirectory)
   if (iItem >= 0 && iItem < m_vecItems.Size())
   {
     CFileItem* pItem = m_vecItems[iItem];
-    if (pItem->GetLabel() != "..")
+    if (!pItem->IsParentFolder())
     {
       GetDirectoryHistoryString(pItem, strSelectedItem);
     }
@@ -750,7 +750,7 @@ void CGUIWindowMusicBase::OnInfo(int iItem)
   if ( iItem < 0 || iItem >= m_vecItems.Size() ) return ;
   CFileItem* pItem;
   pItem = m_vecItems[iItem];
-  if (pItem->m_bIsFolder && pItem->GetLabel() == "..") return ;
+  if (pItem->m_bIsFolder && pItem->IsParentFolder()) return ;
 
   // show dialog box indicating we're searching the album name
   if (m_dlgProgress)
@@ -1262,7 +1262,7 @@ void CGUIWindowMusicBase::AddItemToPlayList(const CFileItem* pItem, int iPlayLis
     }
 
     // recursive
-    if (pItem->GetLabel() == "..") return ;
+    if (pItem->IsParentFolder()) return ;
     CFileItemList items;
     GetDirectory(pItem->m_strPath, items);
     DoSort(items);
@@ -1716,7 +1716,7 @@ void CGUIWindowMusicBase::OnPopupMenu(int iItem)
   CPlayerCoreFactory::GetPlayers(*m_vecItems[iItem], vecCores);
   
   // turn off info/queue/play if the current item is goto parent ..
-  bool bIsGotoParent = m_vecItems[iItem]->GetLabel() == "..";
+  bool bIsGotoParent = m_vecItems[iItem]->IsParentFolder();
   if (!bIsGotoParent)
   {
     btn_Info       = pMenu->AddButton(13351);    // Music Information
@@ -1997,7 +1997,7 @@ void CGUIWindowMusicBase::PlayItem(int iItem)
   if (pItem->m_bIsFolder)
   {
     // skip ".."
-    if (pItem->GetLabel() == "..")
+    if (pItem->IsParentFolder())
       return;
 
     // clear current temp playlist

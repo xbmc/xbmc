@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 28-12-2005 changed: moved parent folder testing into the fileitem, results in a minor speed increase while sorting
+ - 28-12-2005 fixed: music nav, "* All Genre" folder may not always be on top if the list
  - 28-12-2005 fixed: Movie Lookup on DVD folders like "Movie Name/VIDEO_TS/VIDEO_TS.IFO"
  - 27-12-2005 added: new Http Api command "getmedialocation", used as follows:
 			getmedialocation&parameter=type;location;showdate

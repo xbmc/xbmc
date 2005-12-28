@@ -307,7 +307,7 @@ bool CGUIWindowVideoFiles::UpdateDir(const CStdString &strDirectory)
   if (iItem >= 0 && iItem < (int)m_vecItems.Size())
   {
     CFileItem* pItem = m_vecItems[iItem];
-    if (pItem->GetLabel() != "..")
+    if (!pItem->IsParentFolder())
     {
       GetDirectoryHistoryString(pItem, strSelectedItem);
       m_history.Set(strSelectedItem, m_Directory.m_strPath);
@@ -388,7 +388,7 @@ void CGUIWindowVideoFiles::OnClick(int iItem)
 
   if (pItem->m_bIsFolder)
   {
-    if (pItem->GetLabel() == "..")
+    if (pItem->IsParentFolder())
     {
       // go back a directory
       GoParentFolder();
@@ -453,7 +453,7 @@ void CGUIWindowVideoFiles::OnInfo(int iItem)
   CFileItem* pItem = m_vecItems[iItem];
   CStdString strFile = pItem->m_strPath;
   CStdString strMovie = pItem->GetLabel();
-  if (pItem->m_bIsFolder && strMovie == "..") return ;
+  if (pItem->m_bIsFolder && pItem->IsParentFolder()) return ;
   if (pItem->m_bIsFolder)
   {
     // IMDB is done on a folder
@@ -745,7 +745,7 @@ bool CGUIWindowVideoFiles::DoScan(const CStdString &strPath, CFileItemList& item
       }
       if ( pItem->m_bIsFolder)
       {
-        if (pItem->GetLabel() != "..")
+        if (!pItem->IsParentFolder())
         {
           // load subfolder
           CFileItemList subDirItems;

@@ -179,7 +179,7 @@ bool CMusicInfoScanner::DoScan(const CStdString& strDirectory)
     if (m_bStop)
       break;
 
-    if (pItem->m_bIsFolder && pItem->GetLabel() != "..")
+    if (pItem->m_bIsFolder && !pItem->IsParentFolder())
     {
       // get the item's thumb (this will cache the album thumb)
       pItem->SetMusicThumb();

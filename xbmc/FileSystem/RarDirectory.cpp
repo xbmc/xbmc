@@ -22,7 +22,7 @@ namespace DIRECTORY
       // fill in paths
       for( int iEntry=0;iEntry<items.Size();++iEntry)
       {
-        if (items[iEntry]->GetLabel() == "..")
+        if (items[iEntry]->IsParentFolder())
           continue;
         if ((IsAllowed(items[iEntry]->m_strPath)) || (items[iEntry]->m_bIsFolder))
         {

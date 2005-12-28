@@ -172,7 +172,7 @@ bool CGUIWindowVideoTitle::Update(const CStdString &strDirectory)
   if (iItem >= 0 && iItem < (int)m_vecItems.Size())
   {
     CFileItem* pItem = m_vecItems[iItem];
-    if (pItem->GetLabel() != "..")
+    if (!pItem->IsParentFolder())
     {
       strSelectedItem = pItem->m_strPath;
       m_history.Set(strSelectedItem, m_Directory.m_strPath);

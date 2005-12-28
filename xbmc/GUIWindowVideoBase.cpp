@@ -355,7 +355,7 @@ void CGUIWindowVideoBase::UpdateButtons()
   if (iItems)
   {
     CFileItem* pItem = m_vecItems[0];
-    if (pItem->GetLabel() == "..") iItems--;
+    if (pItem->IsParentFolder()) iItems--;
   }
   WCHAR wszText[20];
   const WCHAR* szText = g_localizeStrings.Get(127).c_str();
@@ -914,7 +914,7 @@ void CGUIWindowVideoBase::AddItemToPlayList(const CFileItem* pItem)
     }
 
     // recursive
-    if (pItem->GetLabel() == "..") return ;
+    if (pItem->IsParentFolder()) return ;
     CStdString strDirectory = m_Directory.m_strPath;
     m_Directory.m_strPath = pItem->m_strPath;
     CFileItemList items;
@@ -1014,7 +1014,7 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem)
   int btn_Show_Info     = 0; // Show Video Information
   int btn_Resume        = 0; // Resume Video
   int btn_Queue         = 0; // Add to Playlist
-  bool bIsGotoParent = m_vecItems[iItem]->GetLabel() == "..";
+  bool bIsGotoParent = m_vecItems[iItem]->IsParentFolder();
   if (!bIsGotoParent)
   {
     // turn off the query info button if we are in playlists view

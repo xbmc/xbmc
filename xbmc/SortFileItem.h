@@ -45,6 +45,10 @@ struct SSortFileItem
   static bool SongArtistAscendingNoThe(CFileItem *left, CFileItem *right);
   static bool SongArtistDescendingNoThe(CFileItem *left, CFileItem *right);
 
+  // Sort by genre
+  static bool SongGenreAscending(CFileItem *left, CFileItem *right);
+  static bool SongGenreDescending(CFileItem *left, CFileItem *right);
+
   // Sort by track number
   static bool SongTrackNumAscending(CFileItem *left, CFileItem *right);
   static bool SongTrackNumDescending(CFileItem *left, CFileItem *right);
