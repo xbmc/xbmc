@@ -1,5 +1,6 @@
 #pragma once
 #include "StdString.h"
+#include "FileItem.h"
 
 typedef map<CStdString, CStdString> MAPPASSWORDS;
 typedef map<CStdString, CStdString>::iterator IMAPPASSWORDS;

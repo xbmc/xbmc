@@ -65,6 +65,7 @@ public:
   virtual bool IsVisible() const;
   virtual bool IsDisabled() const;
   virtual bool IsSelected() const;
+  bool HasRendered() const { return m_hasRendered; };
   virtual void SetPosition(int iPosX, int iPosY);
   virtual void SetAlpha(DWORD dwAlpha);
   virtual void SetColourDiffuse(D3DCOLOR colour);
@@ -172,6 +173,7 @@ protected:
   // visibility condition/state
   int m_visibleCondition;
   bool m_lastVisible;
+  bool m_hasRendered;
 };
 
 #endif

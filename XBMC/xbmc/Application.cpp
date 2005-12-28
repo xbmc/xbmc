@@ -2056,6 +2056,15 @@ bool CApplication::OnKey(CKey& key)
   //  Play a sound based on the action
   g_audioManager.PlayActionSound(action);
 
+  // Rumble the controller
+  if( g_guiSettings.GetInt("LookAndFeel.Rumble") > 0 )
+  {
+    // GeminiServer: Rumble Controller Max Values 1.0!
+    FLOAT fRumlePower = FLOAT(g_guiSettings.GetInt("LookAndFeel.Rumble")/10.0f);
+    SetControllerRumble(fRumlePower,fRumlePower,0); // Rumble ON!
+    SetControllerRumble(0.0f,0.0f,100);  // Rumble OFF!
+  }
+
   // special case for switching between GUI & fullscreen mode.
   if (action.wID == ACTION_SHOW_GUI)
   { // Switch to fullscreen mode if we can
@@ -2063,11 +2072,43 @@ bool CApplication::OnKey(CKey& key)
       return true;
   }
 
-  // handle global functions - form is XBMC.Function()
-  if (action.wID == ACTION_BUILT_IN_FUNCTION)
+  // handle global functions
+  static bool PowerButtonDown = false;
+  static DWORD PowerButtonCode;
+  static DWORD MarkTime;
+
+  if (action.wID == ACTION_TAKE_SCREENSHOT)
+  {
+    CUtil::TakeScreenshot();
+    return true;
+  }
+  else if (action.wID == ACTION_BUILT_IN_FUNCTION)
   {
     CUtil::ExecBuiltIn(action.strAction);
     return true;
+  }
+  else if (action.wID == ACTION_POWERDOWN)
+  {
+    // Hold button for 3 secs to power down
+    if (!PowerButtonDown)
+    {
+      MarkTime = GetTickCount();
+      PowerButtonDown = true;
+      PowerButtonCode = action.m_dwButtonCode;
+    }
+  }
+  if (PowerButtonDown)
+  {
+    if (g_application.IsButtonDown(PowerButtonCode))
+    {
+      if (GetTickCount() >= MarkTime + 3000)
+      {
+        g_applicationMessenger.Shutdown();
+        return true;
+      }
+    }
+    else
+      PowerButtonDown = false;
   }
   // in normal case
   // just pass the action to the current window and let it handle it

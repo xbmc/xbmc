@@ -8,18 +8,13 @@ public:
   virtual ~CGUIWindowVideoFiles(void);
   virtual bool OnMessage(CGUIMessage& message);
   virtual bool OnAction(const CAction &action);
-  CFileItem CurrentDirectory() const { return m_Directory;};
+  CFileItem CurrentDirectory() const { return m_vecItems;};
 
 private:
   virtual void SetIMDBThumbs(CFileItemList& items);
 protected:
-  virtual void SaveViewMode();
-  virtual void LoadViewMode();
-  virtual int SortMethod();
-  virtual bool SortAscending();
   virtual void AddFileToDatabase(const CFileItem* pItem);
   virtual void FormatItemLabels();
-  virtual void SortItems(CFileItemList& items);
   virtual void UpdateButtons();
   virtual bool Update(const CStdString &strDirectory);
   bool UpdateDir(const CStdString &strDirectory);

@@ -1,12 +1,8 @@
 #pragma once
 #include "GUIControl.h"
+#include "GUIViewState.h"
 
-typedef map<int, CGUIControl *>::const_iterator map_iter;
-
-#define VIEW_AS_LIST        0
-#define VIEW_AS_ICONS       1
-#define VIEW_AS_LARGE_ICONS 2
-#define VIEW_AS_LARGE_LIST  3
+typedef map<VIEW_METHOD, CGUIControl *>::const_iterator map_iter;
 
 class CGUIViewControl
 {
@@ -16,33 +12,33 @@ public:
 
   void Reset();
   void SetParentWindow(int window);
-  void AddView(int type, const CGUIControl *control);
+  void AddView(VIEW_METHOD type, const CGUIControl *control);
   void SetViewControlID(int control);
 
-  void SetCurrentView(int viewMode);
-  int GetCurrentView();
+  void SetCurrentView(VIEW_METHOD viewMode);
+
   void SetItems(CFileItemList &items);
 
   void SetSelectedItem(int item);
   void SetSelectedItem(const CStdString &itemPath);
 
-  int GetSelectedItem();
+  int GetSelectedItem() const;
   void SetFocused();
 
-  bool HasControl(int viewMode);
-  bool HasViewMode(int viewMode);
+  bool HasControl(int controlID);
+  bool HasViewMode(VIEW_METHOD viewMode);
   int GetCurrentControl();
 
   void Clear();
 
 protected:
-  int GetSelectedItem(const CGUIControl *control);
+  int GetSelectedItem(const CGUIControl *control) const;
   void UpdateContents(const CGUIControl *control);
   void UpdateView();
   void UpdateViewAsControl();
 
-  unsigned int          m_currentView;
-  map<int, CGUIControl *>     m_vecViews;
+  VIEW_METHOD       m_currentView;
+  map<VIEW_METHOD, CGUIControl *>     m_vecViews;
   CFileItemList*        m_fileItems;
   int                   m_viewAsControl;
   int                   m_parentWindow;

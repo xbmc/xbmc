@@ -7,20 +7,18 @@
 #include "filesystem/HDDirectory.h"
 #include "filesystem/directorycache.h"
 #include "GUIThumbnailPanel.h"
-#include "AutoSwitch.h"
 #include "GUIPassword.h"
 #include "GUIDialogContextMenu.h"
 #include "xbox/xbeheader.h"
-#include "SortFileItem.h"
 #ifdef PRE_SKIN_VERSION_2_0_COMPATIBILITY
 #include "SkinInfo.h"
 #endif
 
 using namespace DIRECTORY;
 
-#define CONTROL_BTNVIEWAS     2
-#define CONTROL_BTNSORTMETHOD 3
-#define CONTROL_BTNSORTASC    4
+#define CONTROL_BTNVIEWASICONS 2
+#define CONTROL_BTNSORTBY      3
+#define CONTROL_BTNSORTASC     4
 #define CONTROL_LIST          50
 #define CONTROL_THUMBS        51
 #define CONTROL_LABELFILES    12
@@ -28,17 +26,14 @@ using namespace DIRECTORY;
 #define CONTROL_BTNSCAN       6
 
 CGUIWindowPrograms::CGUIWindowPrograms(void)
-    : CGUIWindow(WINDOW_PROGRAMS, "MyPrograms.xml")
+    : CGUIMediaWindow(WINDOW_PROGRAMS, "MyPrograms.xml")
 {
-  m_Directory.m_strPath = "?";
-  m_Directory.m_bIsFolder = true;
-  m_iLastControl = -1;
-  m_iViewAsIcons = -1;
 }
 
 
 CGUIWindowPrograms::~CGUIWindowPrograms(void)
-{}
+{
+}
 
 bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
 {
@@ -46,9 +41,6 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
   {
   case GUI_MSG_WINDOW_DEINIT:
     {
-      m_iLastControl = GetFocusedControl();
-      m_iSelectedItem = m_viewControl.GetSelectedItem();
-      ClearFileItems();
       m_database.Close();
     }
     break;
@@ -73,16 +65,16 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
         CLog::Log(LOGINFO, "Attempting to quickpath to: %s", strDestination.c_str());
       }
       // otherwise, is this the first time accessing this window?
-      else if (m_Directory.m_strPath == "?")
+      else if (m_vecItems.m_strPath == "?")
       {
-        m_Directory.m_strPath = strDestination = g_stSettings.m_szDefaultPrograms;
+        m_vecItems.m_strPath = strDestination = g_stSettings.m_szDefaultPrograms;
         CLog::Log(LOGINFO, "Attempting to default to: %s", strDestination.c_str());
       }
       // try to open the destination path
       if (!strDestination.IsEmpty())
       {
         // default parameters if the jump fails
-        m_Directory.m_strPath = "";
+        m_vecItems.m_strPath = "";
         m_shareDirectory = "";
         m_iDepth = 1;
         m_strBookmarkName = "default";
@@ -94,9 +86,9 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
         {
           // set current directory to matching share
           if (bIsBookmarkName)
-            m_Directory.m_strPath = g_settings.m_vecMyProgramsBookmarks[iIndex].strPath;
+            m_vecItems.m_strPath = g_settings.m_vecMyProgramsBookmarks[iIndex].strPath;
           else
-            m_Directory.m_strPath = strDestination;
+            m_vecItems.m_strPath = strDestination;
           m_shareDirectory = g_settings.m_vecMyProgramsBookmarks[iIndex].strPath;
           m_iDepth = g_settings.m_vecMyProgramsBookmarks[iIndex].m_iDepthSize;
           m_strBookmarkName = g_settings.m_vecMyProgramsBookmarks[iIndex].strName;
@@ -113,11 +105,6 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
       for (int i = 100; i < 110; i++)
       {
         SET_CONTROL_HIDDEN(i);
-      }
-
-      if (m_iViewAsIcons == -1)
-      {
-        m_iViewAsIcons = g_stSettings.m_iMyProgramsViewAsIcons;
       }
 
       if (g_guiSettings.GetBool("MyPrograms.NoShortcuts"))    // let's hide Scan button
@@ -146,7 +133,7 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
       
       m_vecPaths.clear();
       m_database.GetPathsByBookmark(m_strBookmarkName, m_vecPaths);
-      Update(m_Directory.m_strPath);
+      Update(m_vecItems.m_strPath);
 
       if (iLastControl > -1)
       {
@@ -167,21 +154,11 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
   case GUI_MSG_CLICKED:
     {
       int iControl = message.GetSenderId();
-      if (iControl == CONTROL_BTNVIEWAS)
-      {
-        bool bLargeIcons(false);
-        m_iViewAsIcons++;
-        if (m_iViewAsIcons > VIEW_AS_LARGE_ICONS) m_iViewAsIcons = VIEW_AS_LIST;
-        g_stSettings.m_iMyProgramsViewAsIcons = m_iViewAsIcons;
-        g_settings.Save();
-
-        UpdateButtons();
-      }
-      else if (iControl == CONTROL_BTNSCAN) // button
+      if (iControl == CONTROL_BTNSCAN) // button
       {
         int iTotalApps = 0;
-        CStdString strDir = m_Directory.m_strPath;
-        m_Directory.m_strPath = g_stSettings.m_szShortcutDirectory;
+        CStdString strDir = m_vecItems.m_strPath;
+        m_vecItems.m_strPath = g_stSettings.m_szShortcutDirectory;
 
         if (m_dlgProgress)
         {
@@ -197,7 +174,7 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
 
         // remove shortcuts...
         rootDir.SetMask(".cut");
-        rootDir.GetDirectory(m_Directory.m_strPath, m_vecItems);
+        rootDir.GetDirectory(m_vecItems.m_strPath, m_vecItems);
 
         for (int i = 0; i < (int)m_vecItems.Size(); ++i)
         {
@@ -212,7 +189,7 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
 
         CFileItemList items;
         {
-          m_Directory.m_strPath = "C:";
+          m_vecItems.m_strPath = "C:";
           rootDir.SetMask(".xbe");
           rootDir.GetDirectory("C:\\", items);
           OnScan(items, iTotalApps);
@@ -220,7 +197,7 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
         }
 
         {
-          m_Directory.m_strPath = "E:";
+          m_vecItems.m_strPath = "E:";
           rootDir.SetMask(".xbe");
           rootDir.GetDirectory("E:\\", items);
           OnScan(items, iTotalApps);
@@ -229,7 +206,7 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
 
         if (g_stSettings.m_bUseFDrive)
         {
-          m_Directory.m_strPath = "F:";
+          m_vecItems.m_strPath = "F:";
           rootDir.SetMask(".xbe");
           rootDir.GetDirectory("F:\\", items);
           OnScan(items, iTotalApps);
@@ -237,7 +214,7 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
         }
         if (g_stSettings.m_bUseGDrive)
         {
-          m_Directory.m_strPath = "G:";
+          m_vecItems.m_strPath = "G:";
           rootDir.SetMask(".xbe");
           rootDir.GetDirectory("G:\\", items);
           OnScan(items, iTotalApps);
@@ -245,43 +222,20 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
         }
 
 
-        m_Directory.m_strPath = strDir;
+        m_vecItems.m_strPath = strDir;
         CUtil::ClearCache();
-        Update(m_Directory.m_strPath);
+        Update(m_vecItems.m_strPath);
 
         if (m_dlgProgress)
         {
           m_dlgProgress->Close();
         }
       }
-      else if (iControl == CONTROL_BTNSORTMETHOD) // sort by
-      {
-        g_stSettings.m_iMyProgramsSortMethod++;
-        if (g_stSettings.m_iMyProgramsSortMethod >= 3)
-          g_stSettings.m_iMyProgramsSortMethod = 0;
-        g_settings.Save();
-        UpdateButtons();
-        OnSort();
-      }
-      else if (iControl == CONTROL_BTNSORTASC) // sort asc
-      {
-        g_stSettings.m_bMyProgramsSortAscending = !g_stSettings.m_bMyProgramsSortAscending;
-        g_settings.Save();
-
-        UpdateButtons();
-        OnSort();
-      }
       else if (m_viewControl.HasControl(iControl))  // list/thumb control
       {
         // get selected item
         int iAction = message.GetParam1();
-        if (ACTION_SELECT_ITEM == iAction || ACTION_MOUSE_LEFT_CLICK == iAction)
-        {
-          int iItem = m_viewControl.GetSelectedItem();
-          // iItem is checked within the OnClick routine
-          OnClick(iItem);
-        }
-        else if (ACTION_CONTEXT_MENU == iAction)
+        if (ACTION_CONTEXT_MENU == iAction)
         {
           int iItem = m_viewControl.GetSelectedItem();
           // iItem is checked inside OnPopupMenu
@@ -315,27 +269,18 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
             return false;
           }
           m_shareDirectory = share.strPath;    // since m_strDirectory can change, we always want something that won't.
-          m_Directory.m_strPath = share.strPath;
+          m_vecItems.m_strPath = share.strPath;
           m_strBookmarkName = share.strName;
           m_database.GetPathsByBookmark(m_strBookmarkName, m_vecPaths);  // fetch all paths in this bookmark
           m_iDepth = share.m_iDepthSize;
-          Update(m_Directory.m_strPath);
+          Update(m_vecItems.m_strPath);
         }
-      }
-    }
-    break;
-  case GUI_MSG_SETFOCUS:
-    {
-      if (m_viewControl.HasControl(message.GetControlId()) && m_viewControl.GetCurrentControl() != message.GetControlId())
-      {
-        m_viewControl.SetFocused();
-        return true;
       }
     }
     break;
   }
 
-  return CGUIWindow::OnMessage(message);
+  return CGUIMediaWindow::OnMessage(message);
 }
 
 bool CGUIWindowPrograms::OnPopupMenu(int iItem)
@@ -349,7 +294,7 @@ bool CGUIWindowPrograms::OnPopupMenu(int iItem)
     iPosX = pList->GetXPosition() + pList->GetWidth() / 2;
     iPosY = pList->GetYPosition() + pList->GetHeight() / 2;
   }
-  if ( m_Directory.IsVirtualDirectoryRoot() )
+  if ( m_vecItems.IsVirtualDirectoryRoot() )
   {
     if (iItem < 0)
     { // TODO: Add option to add shares in this case
@@ -423,7 +368,7 @@ bool CGUIWindowPrograms::OnPopupMenu(int iItem)
       {
         CUtil::SetXBEDescription(m_vecItems[iItem]->m_strPath,strDescription);
         m_database.SetDescription(m_vecItems[iItem]->m_strPath,strDescription);
-        Update(m_Directory.m_strPath);
+        Update(m_vecItems.m_strPath);
       }
     }
     if (btnid == btn_Settings)
@@ -503,31 +448,6 @@ bool CGUIWindowPrograms::OnPopupMenu(int iItem)
   m_vecItems[iItem]->Select(false);
   return true;
 }
-
-void CGUIWindowPrograms::Render()
-{
-  CGUIWindow::Render();
-}
-
-
-bool CGUIWindowPrograms::OnAction(const CAction &action)
-{
-  if (action.wID == ACTION_PARENT_DIR)
-  {
-    GoParentFolder();
-    return true;
-  }
-
-  if (action.wID == ACTION_PREVIOUS_MENU)
-  {
-    m_gWindowManager.PreviousWindow();
-    return true;
-  }
-
-  return CGUIWindow::OnAction(action);
-}
-
-
 
 void CGUIWindowPrograms::LoadDirectory(const CStdString& strDirectory, int idepth)
 {
@@ -652,23 +572,15 @@ void CGUIWindowPrograms::LoadDirectory(const CStdString& strDirectory, int idept
   while (FindNextFile(hFind, &wfd));
 }
 
-
-void CGUIWindowPrograms::ClearFileItems()
-{
-  m_viewControl.Clear();
-  m_vecItems.Clear();
-}
-
-void CGUIWindowPrograms::Update(const CStdString &strDirectory)
+bool CGUIWindowPrograms::Update(const CStdString &strDirectory)
 {
   UpdateDir(strDirectory);
   if (g_guiSettings.GetBool("ProgramFiles.UseAutoSwitching"))
   {
-    m_iViewAsIcons = CAutoSwitch::GetView(m_vecItems);
     UpdateButtons();
   }
+  return true;
 }
-
 
 void CGUIWindowPrograms::UpdateDir(const CStdString &strDirectory)
 {
@@ -772,7 +684,7 @@ void CGUIWindowPrograms::UpdateDir(const CStdString &strDirectory)
 
   m_iLastControl = GetFocusedControl();
 
-  if (!m_Directory.IsVirtualDirectoryRoot())
+  if (!m_vecItems.IsVirtualDirectoryRoot())
   {
     for (int j = 0; j < (int)vecPaths.size(); j++)
     {
@@ -880,9 +792,9 @@ void CGUIWindowPrograms::OnClick(int iItem)
     if ( !g_passwordManager.IsItemUnlocked( pItem, "myprograms" ) )
       return ;
 
-    if (m_Directory.IsVirtualDirectoryRoot())
+    if (m_vecItems.IsVirtualDirectoryRoot())
       m_shareDirectory = pItem->m_strPath;
-    m_Directory.m_strPath = pItem->m_strPath;
+    m_vecItems.m_strPath = pItem->m_strPath;
     m_iDepth = pItem->m_idepth;
     bool bIsBookmarkName(false);
     if (m_isRoot) {
@@ -895,7 +807,7 @@ void CGUIWindowPrograms::OnClick(int iItem)
         m_database.GetPathsByBookmark(m_strBookmarkName, m_vecPaths);
       }
     }
-    Update(m_Directory.m_strPath);
+    Update(m_vecItems.m_strPath);
   }
   else
   {
@@ -963,12 +875,14 @@ void CGUIWindowPrograms::OnClick(int iItem)
   }
 }
 
-void CGUIWindowPrograms::OnSort()
+void CGUIWindowPrograms::FormatItemLabels()
 {
+  auto_ptr<CGUIViewState> pState(CGUIViewState::GetViewState(GetID(), m_vecItems));
+  if (!pState.get()) return;
   for (int i = 0; i < (int)m_vecItems.Size(); i++)
   {
     CFileItem* pItem = m_vecItems[i];
-    if (g_stSettings.m_iMyProgramsSortMethod == 0)
+    if (pState->GetSortMethod() == SORT_METHOD_LABEL)
     {
       if (pItem->m_bIsFolder)
         pItem->SetLabel2("");
@@ -977,6 +891,17 @@ void CGUIWindowPrograms::OnSort()
         CStdString strDateTime;
         CUtil::GetDate(pItem->m_stTime, strDateTime);
         pItem->SetLabel2(strDateTime);
+      }
+    }
+    else if (pState->GetSortMethod() == SORT_METHOD_PROGRAM_COUNT)
+    {
+      if (pItem->m_bIsFolder)
+        pItem->SetLabel2("");
+      else
+      {
+        CStdString strTimesPlayed;
+        strTimesPlayed.Format("%i", pItem->m_iprogramCount);
+        pItem->SetLabel2(strTimesPlayed);
       }
     }
     else
@@ -990,80 +915,13 @@ void CGUIWindowPrograms::OnSort()
       else
         pItem->SetLabel2("");
     }
-    if (g_stSettings.m_iMyProgramsSortMethod == 2)
-    {
-      if (pItem->m_bIsFolder)
-        pItem->SetLabel2("");
-      else
-      {
-        CStdString strTimesPlayed;
-        strTimesPlayed.Format("%i", pItem->m_iprogramCount);
-        pItem->SetLabel2(strTimesPlayed);
-      }
-    }
   }
-
-  int sortMethod = g_stSettings.m_iMyProgramsSortMethod;
-  bool sortAscending = g_stSettings.m_bMyProgramsSortAscending;
-  if (sortMethod == 1 || sortMethod == 2)
-    sortAscending = !sortAscending;
-  switch (sortMethod)
-  {
-  case 1:
-    m_vecItems.Sort(sortAscending ? SSortFileItem::DateAscending : SSortFileItem::DateDescending); break;
-  case 2:
-    m_vecItems.Sort(sortAscending ? SSortFileItem::ProgramCountAscending : SSortFileItem::ProgramCountDescending); break;
-  default:
-    m_vecItems.Sort(sortAscending ? SSortFileItem::LabelAscending : SSortFileItem::LabelDescending); break;
-  }
-
-  m_viewControl.SetItems(m_vecItems);
-}
-
-void CGUIWindowPrograms::UpdateButtons()
-{
-  m_viewControl.SetCurrentView(m_iViewAsIcons);
-
-  if (g_stSettings.m_iMyProgramsSortMethod == 2)
-  {
-    SET_CONTROL_LABEL(CONTROL_BTNSORTMETHOD, 507);  //Times Played
-  }
-  else
-  {
-    SET_CONTROL_LABEL(CONTROL_BTNSORTMETHOD, g_stSettings.m_iMyProgramsSortMethod + 103);
-  }
-
-  if ( g_stSettings.m_bMyProgramsSortAscending)
-  {
-    CGUIMessage msg(GUI_MSG_DESELECTED, GetID(), CONTROL_BTNSORTASC);
-    g_graphicsContext.SendMessage(msg);
-  }
-  else
-  {
-    CGUIMessage msg(GUI_MSG_SELECTED, GetID(), CONTROL_BTNSORTASC);
-    g_graphicsContext.SendMessage(msg);
-  }
-
-  int iItems = m_vecItems.Size();
-  if (iItems)
-  {
-    CFileItem* pItem = m_vecItems[0];
-    if (pItem->IsParentFolder())
-      iItems--;
-  }
-  WCHAR wszText[20];
-  const WCHAR* szText = g_localizeStrings.Get(127).c_str();
-  swprintf(wszText, L"%i %s", iItems, szText);
-
-  SET_CONTROL_LABEL(CONTROL_LABELFILES, wszText);
-
-
 }
 
 void CGUIWindowPrograms::OnScan(CFileItemList& items, int& iTotalAppsFound)
 {
   // remove username + password from m_strDirectory for display in Dialog
-  CURL url(m_Directory.m_strPath);
+  CURL url(m_vecItems.m_strPath);
   CStdString strStrippedPath;
   url.GetURLWithoutUserDetails(strStrippedPath);
 
@@ -1083,7 +941,7 @@ void CGUIWindowPrograms::OnScan(CFileItemList& items, int& iTotalAppsFound)
   DeleteThumbs(items);
   //CUtil::SetThumbs(items);
   CUtil::CreateShortcuts(items);
-  if ((int)m_Directory.m_strPath.size() != 2) // true for C:, E:, F:, G:
+  if ((int)m_vecItems.m_strPath.size() != 2) // true for C:, E:, F:, G:
   {
     // first check all files
     for (int i = 0; i < (int)items.Size(); ++i)
@@ -1108,17 +966,17 @@ void CGUIWindowPrograms::OnScan(CFileItemList& items, int& iTotalAppsFound)
       if (bScanSubDirs && !bFound && !pItem->IsParentFolder())
       {
         // load subfolder
-        CStdString strDir = m_Directory.m_strPath;
+        CStdString strDir = m_vecItems.m_strPath;
         if (pItem->m_strPath != "E:\\UDATA" && pItem->m_strPath != "E:\\TDATA")
         {
-          m_Directory.m_strPath = pItem->m_strPath;
+          m_vecItems.m_strPath = pItem->m_strPath;
           CFileItemList subDirItems;
           CHDDirectory rootDir;
           rootDir.SetMask(".xbe");
           rootDir.GetDirectory(pItem->m_strPath, subDirItems);
           OnScan(subDirItems, iTotalAppsFound);
           subDirItems.Clear();
-          m_Directory.m_strPath = strDir;
+          m_vecItems.m_strPath = strDir;
         }
       }
     }
@@ -1179,14 +1037,13 @@ void CGUIWindowPrograms::DeleteThumbs(CFileItemList& items)
 void CGUIWindowPrograms::GoParentFolder()
 {
   //CStdString strPath=m_strParentPath;
-  m_Directory.m_strPath = m_strParentPath;
-  Update(m_Directory.m_strPath);
+  m_vecItems.m_strPath = m_strParentPath;
+  Update(m_vecItems.m_strPath);
 }
 
 
 void CGUIWindowPrograms::OnWindowLoaded()
 {
-  CGUIWindow::OnWindowLoaded();
 #ifdef PRE_SKIN_VERSION_2_0_COMPATIBILITY
   if (g_SkinInfo.GetVersion() < 1.8)
   {
@@ -1194,22 +1051,11 @@ void CGUIWindowPrograms::OnWindowLoaded()
     ChangeControlID(8, CONTROL_THUMBS, CGUIControl::GUICONTROL_THUMBNAIL);
     ChangeControlID(9, CONTROL_LABELFILES, CGUIControl::GUICONTROL_LABEL);
     ChangeControlID(3, CONTROL_BTNSCAN, CGUIControl::GUICONTROL_BUTTON);
-    ChangeControlID(4, CONTROL_BTNSORTMETHOD, CGUIControl::GUICONTROL_BUTTON);
+    ChangeControlID(4, CONTROL_BTNSORTBY, CGUIControl::GUICONTROL_BUTTON);
     ChangeControlID(5, CONTROL_BTNSORTASC, CGUIControl::GUICONTROL_TOGGLEBUTTON);
   }
 #endif
-  m_viewControl.Reset();
-  m_viewControl.SetParentWindow(GetID());
-  m_viewControl.AddView(VIEW_AS_LIST, GetControl(CONTROL_LIST));
-  m_viewControl.AddView(VIEW_AS_ICONS, GetControl(CONTROL_THUMBS));
-  m_viewControl.AddView(VIEW_AS_LARGE_ICONS, GetControl(CONTROL_THUMBS));
-  m_viewControl.SetViewControlID(CONTROL_BTNVIEWAS);
-}
-
-void CGUIWindowPrograms::OnWindowUnload()
-{
-  CGUIWindow::OnWindowUnload();
-  m_viewControl.Reset();
+  CGUIMediaWindow::OnWindowLoaded();
 }
 
 int CGUIWindowPrograms::GetRegion(int iItem, bool bReload)

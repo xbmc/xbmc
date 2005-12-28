@@ -7,6 +7,7 @@
 
 CGUIControl::CGUIControl()
 {
+  m_hasRendered = false;
   m_bHasFocus = false;
   m_dwControlID = 0;
   m_iGroup = -1;
@@ -63,6 +64,7 @@ CGUIControl::CGUIControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPo
   ControlType = GUICONTROL_UNKNOWN;
   m_bInvalidated = true;
   m_bAllocated=false;
+  m_hasRendered = false;
 }
 
 
@@ -73,12 +75,14 @@ CGUIControl::~CGUIControl(void)
 
 void CGUIControl::AllocResources()
 {
+  m_hasRendered = false;
   m_bInvalidated = true;
   m_bAllocated=true;
 }
 
 void CGUIControl::FreeResources()
 {
+  m_hasRendered = false;
   m_bAllocated=false;
 }
 
@@ -95,6 +99,7 @@ void CGUIControl::DynamicResourceAlloc(bool bOnOff)
 void CGUIControl::Render()
 {
   m_bInvalidated = false;
+  m_hasRendered = true;
 }
 
 bool CGUIControl::OnAction(const CAction &action)
@@ -581,22 +586,25 @@ bool CGUIControl::UpdateEffectState()
   if (m_queueState == EFFECT_IN)
   {
     m_effectLength = m_effect.m_inTime;
-    if (m_effectState == EFFECT_NONE)
+    if (m_effectState != EFFECT_OUT)
       m_effectStart = currentTime;
-    else if (m_effectState == EFFECT_OUT) // turn around direction of effect
+    else // turn around direction of effect
       m_effectStart = currentTime - (int)(m_effectLength * m_effectAmount);
     m_effectState = EFFECT_IN;
   }
   else if (m_queueState == EFFECT_OUT)
   {
     m_effectLength = m_effect.m_outTime;
-    if (m_effectState == EFFECT_NONE)
+    if (m_effectState != EFFECT_IN)
       m_effectStart = currentTime;
-    else if (m_effectState == EFFECT_IN) // turn around direction of effect
+    else // turn around direction of effect
       m_effectStart = currentTime - (int)(m_effectLength * (1.0f - m_effectAmount));
     m_effectState = EFFECT_OUT;
   }
-  m_queueState = EFFECT_NONE;
+  // reset the queue state once we are allocated (allows timing to start when controls
+  // are allocated).
+  if (HasRendered())
+    m_queueState = EFFECT_NONE;
   // perform any effects
   if (m_effectState == EFFECT_IN)
   { // doing an in effect

@@ -484,6 +484,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				Name="GUI Video"
 				Filter="">
 				<File
+					RelativePath=".\xbmc\GUIViewStateVideo.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\GUIViewStateVideo.h">
+				</File>
+				<File
 					RelativePath=".\xbmc\GUIWindowVideoActors.cpp">
 				</File>
 				<File
@@ -757,6 +763,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\GUISettings.h">
 				</File>
 				<File
+					RelativePath=".\xbmc\utils\InfoLoader.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\utils\InfoLoader.h">
+				</File>
+				<File
 					RelativePath=".\xbmc\utils\KaiClient.cpp">
 				</File>
 				<File
@@ -1008,6 +1020,18 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 			<Filter
 				Name="GUI Other"
 				Filter="">
+				<File
+					RelativePath=".\xbmc\GUIMediaWindow.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\GUIMediaWindow.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\GUIViewStatePicturesProgramsScripts.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\GUIViewStatePicturesProgramsScripts.h">
+				</File>
 				<File
 					RelativePath=".\xbmc\GUIWindowBuddies.cpp">
 				</File>

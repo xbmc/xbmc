@@ -5,12 +5,10 @@
 #include "Picture.h"
 #include "application.h"
 #include "GUIThumbnailPanel.h"
-#include "AutoSwitch.h"
 #include "GUIPassword.h"
 #include "FileSystem/ZipManager.h"
 #include "GUIDialogContextMenu.h"
 #include "GUIWindowFileManager.h"
-#include "SortFileItem.h"
 #include "PlayListFactory.h"
 #ifdef PRE_SKIN_VERSION_2_0_COMPATIBILITY
 #include "SkinInfo.h"
@@ -29,34 +27,13 @@
 
 
 CGUIWindowPictures::CGUIWindowPictures(void)
-    : CGUIWindow(WINDOW_PICTURES, "MyPics.xml")
+    : CGUIMediaWindow(WINDOW_PICTURES, "MyPics.xml")
 {
-  m_Directory.m_strPath = "?";
-  m_Directory.m_bIsFolder = true;
-  m_iItemSelected = -1;
-  m_iLastControl = -1;
-
-  m_iViewAsIcons = -1;
-  m_iViewAsIconsRoot = -1;
   m_thumbLoader.SetObserver(this);
 }
 
 CGUIWindowPictures::~CGUIWindowPictures(void)
-{}
-
-bool CGUIWindowPictures::OnAction(const CAction &action)
 {
-  if (action.wID == ACTION_PARENT_DIR)
-  {
-    GoParentFolder();
-    return true;
-  }
-  if (action.wID == ACTION_PREVIOUS_MENU)
-  {
-    m_gWindowManager.PreviousWindow();
-    return true;
-  }
-  return CGUIWindow::OnAction(action);
 }
 
 bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
@@ -65,29 +42,29 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
   {
   case GUI_MSG_DVDDRIVE_EJECTED_CD:
     {
-      if ( !m_Directory.IsVirtualDirectoryRoot() )
+      if ( !m_vecItems.IsVirtualDirectoryRoot() )
       {
-        if ( m_Directory.IsCDDA() || m_Directory.IsDVD() || m_Directory.IsISO9660() )
+        if ( m_vecItems.IsCDDA() || m_vecItems.IsDVD() || m_vecItems.IsISO9660() )
         {
           // Disc has changed and we are inside a DVD Drive share, get out of here :)
-          m_Directory.m_strPath.Empty();
-          Update( m_Directory.m_strPath );
+          m_vecItems.m_strPath.Empty();
+          Update( m_vecItems.m_strPath );
         }
       }
       else
       {
         int iItem = m_viewControl.GetSelectedItem();
-        Update( m_Directory.m_strPath );
+        Update( m_vecItems.m_strPath );
         m_viewControl.SetSelectedItem(iItem);
       }
     }
     break;
   case GUI_MSG_DVDDRIVE_CHANGED_CD:
     {
-      if ( m_Directory.IsVirtualDirectoryRoot() )
+      if ( m_vecItems.IsVirtualDirectoryRoot() )
       {
         int iItem = m_viewControl.GetSelectedItem();
-        Update( m_Directory.m_strPath );
+        Update( m_vecItems.m_strPath );
         m_viewControl.SetSelectedItem(iItem);
       }
     }
@@ -97,10 +74,6 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
       if (m_thumbLoader.IsLoading())
         m_thumbLoader.StopThread();
 
-      m_iLastControl = GetFocusedControl();
-      m_iItemSelected = m_viewControl.GetSelectedItem();
-
-      ClearFileItems();
       if (message.GetParam1() != WINDOW_SLIDESHOW)
       {
         m_ImageLib.Unload();
@@ -132,9 +105,9 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
         m_vecPathHistory.clear();
       }
       // otherwise, is this the first time accessing this window?
-      else if (m_Directory.m_strPath == "?")
+      else if (m_vecItems.m_strPath == "?")
       {
-        m_Directory.m_strPath = strDestination = g_stSettings.m_szDefaultPictures;
+        m_vecItems.m_strPath = strDestination = g_stSettings.m_szDefaultPictures;
         CLog::Log(LOGINFO, "Attempting to default to: %s", strDestination.c_str());
       }
       
@@ -162,7 +135,7 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
       if (!strDestination.IsEmpty())
       {
         // default parameters if the jump fails
-        m_Directory.m_strPath = "";
+        m_vecItems.m_strPath = "";
 
         bool bIsBookmarkName = false;
         int iIndex = CUtil::GetMatchingShare(strDestination, g_settings.m_vecMyPictureShares, bIsBookmarkName);
@@ -170,25 +143,19 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
         {
           // set current directory to matching share
           if (bIsBookmarkName)
-            m_Directory.m_strPath = g_settings.m_vecMyPictureShares[iIndex].strPath;
+            m_vecItems.m_strPath = g_settings.m_vecMyPictureShares[iIndex].strPath;
           else
-            m_Directory.m_strPath = strDestination;
+            m_vecItems.m_strPath = strDestination;
           CLog::Log(LOGINFO, "  Success! Opened destination path: %s", strDestination.c_str());
         }
         else
         {
           CLog::Log(LOGERROR, "  Failed! Destination parameter (%s) does not match a valid share!", strDestination.c_str());
         }
-        SetHistoryForPath(m_Directory.m_strPath);
+        SetHistoryForPath(m_vecItems.m_strPath);
       }
 
-      if (m_iViewAsIcons == -1 && m_iViewAsIconsRoot == -1)
-      {
-        m_iViewAsIcons = g_stSettings.m_iMyPicturesViewAsIcons;
-        m_iViewAsIconsRoot = g_stSettings.m_iMyPicturesRootViewAsIcons;
-      }
-
-      Update(m_Directory.m_strPath);
+      Update(m_vecItems.m_strPath);
 
       if (iLastControl > -1)
       {
@@ -199,9 +166,9 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
         SET_CONTROL_FOCUS(m_dwDefaultFocusControlID, 0);
       }
 
-      if (m_iItemSelected >= 0)
+      if (m_iSelectedItem >= 0)
       {
-        m_viewControl.SetSelectedItem(m_iItemSelected);
+        m_viewControl.SetSelectedItem(m_iSelectedItem);
       }
 
       return true;
@@ -211,51 +178,7 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
   case GUI_MSG_CLICKED:
     {
       int iControl = message.GetSenderId();
-      if (iControl == CONTROL_BTNVIEWASICONS)
-      {
-        // cycle LIST->ICONS->LARGEICONS
-        if (m_Directory.IsVirtualDirectoryRoot())
-          m_iViewAsIconsRoot++;
-        else
-          m_iViewAsIcons++;
-        if (m_iViewAsIconsRoot > VIEW_AS_LARGE_ICONS) m_iViewAsIconsRoot = VIEW_AS_LIST;
-        if (m_iViewAsIcons > VIEW_AS_LARGE_ICONS) m_iViewAsIcons = VIEW_AS_LIST;
-        g_stSettings.m_iMyPicturesRootViewAsIcons = m_iViewAsIconsRoot;
-        g_stSettings.m_iMyPicturesViewAsIcons = m_iViewAsIcons;
-        g_settings.Save();
-        UpdateButtons();
-      }
-      else if (iControl == CONTROL_BTNSORTBY) // sort by
-      {
-        if (m_Directory.IsVirtualDirectoryRoot())
-        {
-          if (g_stSettings.m_iMyPicturesRootSortMethod == 0)
-            g_stSettings.m_iMyPicturesRootSortMethod = 3;
-          else
-            g_stSettings.m_iMyPicturesRootSortMethod = 0;
-        }
-        else
-        {
-          g_stSettings.m_iMyPicturesSortMethod++;
-          if (g_stSettings.m_iMyPicturesSortMethod >= 3) g_stSettings.m_iMyPicturesSortMethod = 0;
-        }
-
-        g_settings.Save();
-        UpdateButtons();
-        OnSort();
-      }
-      else if (iControl == CONTROL_BTNSORTASC) // sort asc
-      {
-        if (m_Directory.IsVirtualDirectoryRoot())
-          g_stSettings.m_bMyPicturesRootSortAscending = !g_stSettings.m_bMyPicturesRootSortAscending;
-        else
-          g_stSettings.m_bMyPicturesSortAscending = !g_stSettings.m_bMyPicturesSortAscending;
-
-        g_settings.Save();
-        UpdateButtons();
-        OnSort();
-      }
-      else if (iControl == CONTROL_BTNSLIDESHOW) // Slide Show
+      if (iControl == CONTROL_BTNSLIDESHOW) // Slide Show
       {
         OnSlideShow();
       }
@@ -274,11 +197,7 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
         int iAction = message.GetParam1();
 
         // iItem is checked for validity inside these routines
-        if (iAction == ACTION_SELECT_ITEM || iAction == ACTION_MOUSE_LEFT_CLICK)
-        {
-          OnClick(iItem);
-        }
-        else if (iAction == ACTION_CONTEXT_MENU || iAction == ACTION_MOUSE_RIGHT_CLICK)
+        if (iAction == ACTION_CONTEXT_MENU || iAction == ACTION_MOUSE_RIGHT_CLICK)
         {
           OnPopupMenu(iItem);
         }
@@ -287,32 +206,24 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
           // is delete allowed?
           if (g_guiSettings.GetBool("Pictures.AllowFileDeletion"))
             OnDeleteItem(iItem);
-
           else
             return false;
         }
       }
     }
     break;
-  case GUI_MSG_SETFOCUS:
-    {
-      if (m_viewControl.HasControl(message.GetControlId()) && m_viewControl.GetCurrentControl() != message.GetControlId())
-      {
-        m_viewControl.SetFocused();
-        return true;
-      }
-    }
-    break;
   }
-  return CGUIWindow::OnMessage(message);
+  return CGUIMediaWindow::OnMessage(message);
 }
 
-void CGUIWindowPictures::OnSort()
+void CGUIWindowPictures::FormatItemLabels()
 {
-  for (int i = 0; i < (int)m_vecItems.Size(); i++)
+  auto_ptr<CGUIViewState> pState(CGUIViewState::GetViewState(GetID(), m_vecItems));
+  if (!pState.get()) return;
+  for (int i = 0; i < m_vecItems.Size(); i++)
   {
     CFileItem* pItem = m_vecItems[i];
-    if (g_stSettings.m_iMyPicturesSortMethod == 0 || g_stSettings.m_iMyPicturesSortMethod == 2)
+    if (pState->GetSortMethod() == SORT_METHOD_LABEL || pState->GetSortMethod() == SORT_METHOD_SIZE)
     {
       if (pItem->m_bIsFolder)
         pItem->SetLabel2("");
@@ -331,25 +242,13 @@ void CGUIWindowPictures::OnSort()
         pItem->SetLabel2("");
     }
   }
-
-  SortItems(m_vecItems);
-
-  m_viewControl.SetItems(m_vecItems);
-}
-
-void CGUIWindowPictures::ClearFileItems()
-{
-  m_viewControl.Clear();
-  m_vecItems.Clear(); // will clean up everything
 }
 
 void CGUIWindowPictures::UpdateButtons()
 {
-  if (m_Directory.IsVirtualDirectoryRoot())
-    m_viewControl.SetCurrentView(m_iViewAsIconsRoot);
-  else
-    m_viewControl.SetCurrentView(m_iViewAsIcons);
+  CGUIMediaWindow::UpdateButtons();
 
+  // Update the shuffle button
   if (g_guiSettings.GetBool("Slideshow.Shuffle"))
   {
     CGUIMessage msg2(GUI_MSG_SELECTED, GetID(), CONTROL_SHUFFLE, 0, 0, NULL);
@@ -360,34 +259,6 @@ void CGUIWindowPictures::UpdateButtons()
     CGUIMessage msg2(GUI_MSG_DESELECTED, GetID(), CONTROL_SHUFFLE, 0, 0, NULL);
     g_graphicsContext.SendMessage(msg2);
   }
-
-  // Update sort by button
-  SET_CONTROL_LABEL(CONTROL_BTNSORTBY, SortMethod());
-
-  // Update sorting control
-  if (SortAscending())
-  {
-    CGUIMessage msg(GUI_MSG_DESELECTED, GetID(), CONTROL_BTNSORTASC);
-    g_graphicsContext.SendMessage(msg);
-  }
-  else
-  {
-    CGUIMessage msg(GUI_MSG_SELECTED, GetID(), CONTROL_BTNSORTASC);
-    g_graphicsContext.SendMessage(msg);
-  }
-
-  int iItems = m_vecItems.Size();
-  if (iItems)
-  {
-    CFileItem* pItem = m_vecItems[0];
-    if (pItem->IsParentFolder()) iItems--;
-  }
-  WCHAR wszText[20];
-  const WCHAR* szText = g_localizeStrings.Get(127).c_str();
-  swprintf(wszText, L"%i %s", iItems, szText);
-
-
-  SET_CONTROL_LABEL(CONTROL_LABELFILES, wszText);
 
   // check we can slideshow or recursive slideshow
   int nFolders = m_vecItems.GetFolderCount();
@@ -417,10 +288,8 @@ bool CGUIWindowPictures::Update(const CStdString &strDirectory)
   if (!UpdateDir(strDirectory))
     return false;
 
-  if (!m_Directory.IsVirtualDirectoryRoot() && g_guiSettings.GetBool("Pictures.UseAutoSwitching"))
+  if (!m_vecItems.IsVirtualDirectoryRoot() && g_guiSettings.GetBool("Pictures.UseAutoSwitching"))
   {
-    m_iViewAsIcons = CAutoSwitch::GetView(m_vecItems);
-
     UpdateButtons();
   }
 
@@ -454,17 +323,17 @@ bool CGUIWindowPictures::UpdateDir(const CStdString &strDirectory)
     if (!pItem->IsParentFolder())
     {
       GetDirectoryHistoryString(pItem, strSelectedItem);
-      m_history.Set(strSelectedItem, m_Directory.m_strPath);
+      m_history.Set(strSelectedItem, m_vecItems.m_strPath);
     }
   }
 
-  CStdString strOldDirectory=m_Directory.m_strPath;
-  m_Directory.m_strPath = strDirectory;
+  CStdString strOldDirectory=m_vecItems.m_strPath;
+  m_vecItems.m_strPath = strDirectory;
 
   CFileItemList items;
-  if (!GetDirectory(m_Directory.m_strPath, items))
+  if (!GetDirectory(m_vecItems.m_strPath, items))
   {
-    m_Directory.m_strPath = strOldDirectory;
+    m_vecItems.m_strPath = strOldDirectory;
     return false;
   }
 
@@ -473,6 +342,7 @@ bool CGUIWindowPictures::UpdateDir(const CStdString &strDirectory)
   ClearFileItems();
 
   m_vecItems.AppendPointer(items);
+  m_vecItems.m_strPath = items.m_strPath;
   items.ClearKeepPointer();
 
   if (g_guiSettings.GetBool("FileLists.HideExtensions"))
@@ -481,7 +351,7 @@ bool CGUIWindowPictures::UpdateDir(const CStdString &strDirectory)
   OnSort();
   UpdateButtons();
 
-  strSelectedItem = m_history.Get(m_Directory.m_strPath);
+  strSelectedItem = m_history.Get(m_vecItems.m_strPath);
 
   for (int i = 0; i < (int)m_vecItems.Size(); ++i)
   {
@@ -517,7 +387,7 @@ void CGUIWindowPictures::OnClick(int iItem)
       return;
     }
 
-    m_iItemSelected = -1;
+    m_iSelectedItem = -1;
     if ( pItem->m_bIsShareOrDrive )
     {
       if ( !HaveDiscOrConnection( pItem->m_strPath, pItem->m_iDriveType ) )
@@ -532,7 +402,7 @@ void CGUIWindowPictures::OnClick(int iItem)
     shareZip.strPath.Format("zip://Z:\\,%i,,%s,\\",1, pItem->m_strPath.c_str() );
     shareZip.strEntryPoint.Empty();
     m_rootDir.AddShare(shareZip);
-    m_iItemSelected = -1;
+    m_iSelectedItem = -1;
     Update(shareZip.strPath);
   }
   else if (pItem->IsRAR() && g_guiSettings.GetBool("Pictures.HandleArchives")) // mount rar archive
@@ -541,7 +411,7 @@ void CGUIWindowPictures::OnClick(int iItem)
     shareRar.strPath.Format("rar://Z:\\,%i,,%s,\\",EXFILE_AUTODELETE, pItem->m_strPath.c_str() );
     shareRar.strEntryPoint.Empty();
     m_rootDir.AddShare(shareRar);
-    m_iItemSelected = -1;
+    m_iSelectedItem = -1;
     Update(shareRar.strPath);
   }
   else if (pItem->IsCBZ()) //mount'n'show'n'unmount
@@ -563,7 +433,7 @@ void CGUIWindowPictures::OnClick(int iItem)
       m_rootDir.RemoveShare(shareZip.strPath);
       Update(strPath);
     }
-    m_iItemSelected = iItem;
+    m_iSelectedItem = iItem;
   }
   else if (pItem->IsCBR()) // mount'n'show'n'unmount
   {
@@ -572,7 +442,7 @@ void CGUIWindowPictures::OnClick(int iItem)
     shareRar.strPath.Format("rar://Z:\\,%i,,%s,\\",EXFILE_AUTODELETE,pItem->m_strPath.c_str() );
     shareRar.strEntryPoint = strPath;
     m_rootDir.AddShare(shareRar);
-    m_iItemSelected = -1;
+    m_iSelectedItem = -1;
     Update(shareRar.strPath);
     if (m_vecItems.Size() > 0)
     {
@@ -585,7 +455,7 @@ void CGUIWindowPictures::OnClick(int iItem)
       m_rootDir.RemoveShare(shareRar.strPath);
       Update(strPath);
     }
-    m_iItemSelected = iItem;
+    m_iSelectedItem = iItem;
   }
   else if (pItem->IsPlayList())
   {
@@ -594,37 +464,9 @@ void CGUIWindowPictures::OnClick(int iItem)
   else
   {
     // show picture
-    m_iItemSelected = m_viewControl.GetSelectedItem();
+    m_iSelectedItem = m_viewControl.GetSelectedItem();
     OnShowPicture(strPath);
   }
-}
-
-bool CGUIWindowPictures::HaveDiscOrConnection( CStdString& strPath, int iDriveType )
-{
-  if ( iDriveType == SHARE_TYPE_DVD )
-  {
-    CDetectDVDMedia::WaitMediaReady();
-    if ( !CDetectDVDMedia::IsDiscInDrive() )
-    {
-      CGUIDialogOK::ShowAndGetInput(218, 219, 0, 0);
-      int iItem = m_viewControl.GetSelectedItem();
-      Update( m_Directory.m_strPath );
-      m_viewControl.SetSelectedItem(iItem);
-      return false;
-    }
-  }
-  else if ( iDriveType == SHARE_TYPE_REMOTE )
-  {
-    // TODO: Handle not connected to a remote share
-    if ( !CUtil::IsEthernetConnected() )
-    {
-      CGUIDialogOK::ShowAndGetInput(220, 221, 0, 0);
-      return false;
-    }
-  }
-  else
-    return true;
-  return true;
 }
 
 void CGUIWindowPictures::OnShowPicture(const CStdString& strPicture)
@@ -697,7 +539,7 @@ void CGUIWindowPictures::OnSlideShowRecursive(const CStdString &strPicture)
     g_application.StopPlaying();
 
   pSlideShow->Reset();
-  AddDir(pSlideShow, m_Directory.m_strPath);
+  AddDir(pSlideShow, m_vecItems.m_strPath);
   pSlideShow->StartSlideShow();
   if (!strPicture.IsEmpty())
     pSlideShow->Select(strPicture);
@@ -748,17 +590,12 @@ void CGUIWindowPictures::OnRegenerateThumbs()
   m_thumbLoader.Load(m_vecItems);
 }
 
-void CGUIWindowPictures::Render()
-{
-  CGUIWindow::Render();
-}
-
 void CGUIWindowPictures::GoParentFolder()
 {
   // remove current directory if its on the stack
   if (m_vecPathHistory.size() > 0)
   {
-    if (m_vecPathHistory.back() == m_Directory.m_strPath)
+    if (m_vecPathHistory.back() == m_vecItems.m_strPath)
       m_vecPathHistory.pop_back();
   }
 
@@ -772,15 +609,15 @@ void CGUIWindowPictures::GoParentFolder()
   }
   CLog::Log(LOGDEBUG,"CGUIWindowPictures::GoParentFolder(), strParent = [%s]", strParent.c_str());
 
-  CURL url(m_Directory.m_strPath);
+  CURL url(m_vecItems.m_strPath);
   if ((url.GetProtocol() == "rar") || (url.GetProtocol() == "zip")) 
   {
     // check for step-below, if, unmount rar
     if (url.GetFileName().IsEmpty())
     {
       if (url.GetProtocol() == "zip")
-        g_ZipManager.release(m_Directory.m_strPath); // release resources
-      m_rootDir.RemoveShare(m_Directory.m_strPath);
+        g_ZipManager.release(m_vecItems.m_strPath); // release resources
+      m_rootDir.RemoveShare(m_vecItems.m_strPath);
       CStdString strPath;
       CUtil::GetDirectory(url.GetHostName(),strPath);
       Update(strPath);
@@ -788,7 +625,7 @@ void CGUIWindowPictures::GoParentFolder()
     }
   }
   
-  CStdString strOldPath = m_Directory.m_strPath;
+  CStdString strOldPath = m_vecItems.m_strPath;
   Update(strParent);
 
   if (!g_guiSettings.GetBool("LookAndFeel.FullDirectoryHistory"))
@@ -923,7 +760,7 @@ void CGUIWindowPictures::OnPopupMenu(int iItem)
     iPosX = pList->GetXPosition() + pList->GetWidth() / 2;
     iPosY = pList->GetYPosition() + pList->GetHeight() / 2;
   }
-  if ( m_Directory.IsVirtualDirectoryRoot() )
+  if ( m_vecItems.IsVirtualDirectoryRoot() )
   {
     if (iItem < 0)
     { // we should add the option here of adding shares
@@ -939,7 +776,7 @@ void CGUIWindowPictures::OnPopupMenu(int iItem)
     if (CGUIDialogContextMenu::BookmarksMenu("pictures", m_vecItems[iItem]->GetLabel(), m_vecItems[iItem]->m_strPath, m_vecItems[iItem]->m_iLockMode, bMaxRetryExceeded, iPosX, iPosY))
     {
       m_rootDir.SetShares(g_settings.m_vecMyPictureShares);
-      Update(m_Directory.m_strPath);
+      Update(m_vecItems.m_strPath);
       return ;
     }
   }
@@ -1024,60 +861,8 @@ void CGUIWindowPictures::OnPopupMenu(int iItem)
   }
 }
 
-int CGUIWindowPictures::SortMethod()
-{
-  if (m_Directory.IsVirtualDirectoryRoot())
-  {
-    if (g_stSettings.m_iMyPicturesRootSortMethod == 0)
-      return g_stSettings.m_iMyPicturesRootSortMethod + 103;
-    else
-      return 498; // Sort by: Type
-  }
-  else
-    return g_stSettings.m_iMyPicturesSortMethod + 103;
-}
-
-bool CGUIWindowPictures::SortAscending()
-{
-  if (m_Directory.IsVirtualDirectoryRoot())
-    return g_stSettings.m_bMyPicturesRootSortAscending;
-  else
-    return g_stSettings.m_bMyPicturesSortAscending;
-}
-
-void CGUIWindowPictures::SortItems(CFileItemList& items)
-{
-  int sortMethod;
-  bool sortAscending;
-  if (m_Directory.IsVirtualDirectoryRoot())
-  {
-    sortMethod = g_stSettings.m_iMyPicturesRootSortMethod;
-    sortAscending = g_stSettings.m_bMyPicturesRootSortAscending;
-  }
-  else
-  {
-    sortMethod = g_stSettings.m_iMyPicturesSortMethod;
-    if (g_stSettings.m_iMyPicturesSortMethod == 1 || g_stSettings.m_iMyPicturesSortMethod == 2)
-      sortAscending = !g_stSettings.m_bMyPicturesSortAscending;
-    else
-      sortAscending = g_stSettings.m_bMyPicturesSortAscending;
-  }
-  switch (sortMethod)
-  {
-  case 1:
-    items.Sort(sortAscending ? SSortFileItem::DateAscending : SSortFileItem::DateDescending); break;
-  case 2:
-    items.Sort(sortAscending ? SSortFileItem::SizeAscending : SSortFileItem::SizeDescending); break;
-  case 3:
-    items.Sort(sortAscending ? SSortFileItem::DriveTypeAscending : SSortFileItem::DriveTypeDescending); break;
-  default:
-    items.Sort(sortAscending ? SSortFileItem::LabelAscending : SSortFileItem::LabelDescending); break;
-  }
-}
-
 void CGUIWindowPictures::OnWindowLoaded()
 {
-  CGUIWindow::OnWindowLoaded();
 #ifdef PRE_SKIN_VERSION_2_0_COMPATIBILITY
   if (g_SkinInfo.GetVersion() < 1.8)
   {
@@ -1085,18 +870,7 @@ void CGUIWindowPictures::OnWindowLoaded()
     ChangeControlID(11, CONTROL_THUMBS, CGUIControl::GUICONTROL_THUMBNAIL);
   }
 #endif
-  m_viewControl.Reset();
-  m_viewControl.SetParentWindow(GetID());
-  m_viewControl.AddView(VIEW_AS_LIST, GetControl(CONTROL_LIST));
-  m_viewControl.AddView(VIEW_AS_ICONS, GetControl(CONTROL_THUMBS));
-  m_viewControl.AddView(VIEW_AS_LARGE_ICONS, GetControl(CONTROL_THUMBS));
-  m_viewControl.SetViewControlID(CONTROL_BTNVIEWASICONS);
-}
-
-void CGUIWindowPictures::OnWindowUnload()
-{
-  CGUIWindow::OnWindowUnload();
-  m_viewControl.Reset();
+  CGUIMediaWindow::OnWindowLoaded();
 }
 
 void CGUIWindowPictures::OnItemLoaded(CFileItem *pItem)
@@ -1184,7 +958,7 @@ void CGUIWindowPictures::OnDeleteItem(int iItem)
   if ( iItem < 0 || iItem >= m_vecItems.Size()) return;
   if (!CGUIWindowFileManager::DeleteItem(m_vecItems[iItem]))
     return;
-  Update(m_Directory.m_strPath);
+  Update(m_vecItems.m_strPath);
   m_viewControl.SetSelectedItem(iItem);
 }
 
@@ -1193,7 +967,7 @@ void CGUIWindowPictures::OnRenameItem(int iItem)
   if ( iItem < 0 || iItem >= m_vecItems.Size()) return;
   if (!CGUIWindowFileManager::RenameFile(m_vecItems[iItem]->m_strPath))
     return;
-  Update(m_Directory.m_strPath);
+  Update(m_vecItems.m_strPath);
   m_viewControl.SetSelectedItem(iItem);
 }
 

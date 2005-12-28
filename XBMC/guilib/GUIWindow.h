@@ -76,6 +76,7 @@ public:
   virtual bool HasID(DWORD dwID) { return (dwID >= m_dwWindowId && dwID < m_dwWindowId + m_dwIDRange); };
   void SetIDRange(DWORD dwRange) { m_dwIDRange = dwRange; };
   DWORD GetPreviousWindowID(void) const;
+  void SetPreviousWindowID(DWORD id) { m_dwPreviousWindowId = id; };
   DWORD GetWidth() { return m_dwWidth; };
   DWORD GetHeight() { return m_dwHeight; };
   int GetPosX() { return m_iPosX; };
@@ -88,7 +89,8 @@ public:
   void DynamicResourceAlloc(bool bOnOff);
   virtual void ResetAllControls();
   static void FlushReferenceCache();
-  virtual bool IsDialog() { return false;};
+  virtual bool IsDialog() const { return false;};
+  virtual bool IsMediaWindow() const { return false; };
   void SetCoordsRes(RESOLUTION res) { m_coordsRes = res; };
   RESOLUTION GetCoordsRes() const { return m_coordsRes; };
   int GetVisibleCondition() const { return m_visibleCondition; };

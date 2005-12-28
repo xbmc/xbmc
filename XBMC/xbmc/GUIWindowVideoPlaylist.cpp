@@ -13,9 +13,7 @@
 #define CONTROL_BTNVIEWASICONS     2 
 #define CONTROL_BTNSORTBY          3
 #define CONTROL_BTNSORTASC         4
-#define CONTROL_BTNTYPE            5
 #define CONTROL_LIST              50
-#define CONTROL_THUMBS            51
 #define CONTROL_LABELFILES        12
 
 #define CONTROL_BTNSHUFFLE    20
@@ -37,7 +35,6 @@ static CStdString m_strTempPlayListDirectory = "";
 CGUIWindowVideoPlaylist::CGUIWindowVideoPlaylist()
 : CGUIWindowVideoBase(WINDOW_VIDEO_PLAYLIST, "MyVideoPlaylist.xml")
 {
-  m_Directory.m_strPath = "";
 }
 
 CGUIWindowVideoPlaylist::~CGUIWindowVideoPlaylist()
@@ -86,7 +83,7 @@ bool CGUIWindowVideoPlaylist::OnMessage(CGUIMessage& message)
   case GUI_MSG_WINDOW_DEINIT:
     {
       OutputDebugString("deinit guiwindowvideoplaylist!\n");
-      m_iItemSelected = m_viewControl.GetSelectedItem();
+      m_iSelectedItem = m_viewControl.GetSelectedItem();
       m_iLastControl = GetFocusedControl();
     }
     break;
@@ -96,8 +93,6 @@ bool CGUIWindowVideoPlaylist::OnMessage(CGUIMessage& message)
       OutputDebugString("init guiwindowvideoplaylist!\n");
       CGUIWindow::OnMessage(message);
 
-      LoadViewMode();
-
       Update("");
 
       if (m_viewControl.HasControl(m_iLastControl) && m_vecItems.Size() > 0)
@@ -105,9 +100,9 @@ bool CGUIWindowVideoPlaylist::OnMessage(CGUIMessage& message)
         m_viewControl.SetFocused();
       }
 
-      if (m_iItemSelected > -1)
+      if (m_iSelectedItem > -1)
       {
-        m_viewControl.SetSelectedItem(m_iItemSelected);
+        m_viewControl.SetSelectedItem(m_iSelectedItem);
       }
 
       if (g_playlistPlayer.Repeated(PLAYLIST_VIDEO))
@@ -262,7 +257,7 @@ void CGUIWindowVideoPlaylist::MoveCurrentPlayListItem(int iItem, int iAction)
   CPlayList& playlist = g_playlistPlayer.GetPlaylist(PLAYLIST_VIDEO);
   if (playlist.Swap(iSelected, iNew))
   {
-    Update(m_Directory.m_strPath);
+    Update(m_vecItems.m_strPath);
     m_viewControl.SetSelectedItem(iNew);
     return ;
   }
@@ -293,7 +288,7 @@ void CGUIWindowVideoPlaylist::UpdateListControl()
     OnFileItemFormatLabel(pItem);
   }
 
-  DoSort(m_vecItems);
+  SortItems(m_vecItems);
 
   m_viewControl.SetItems(m_vecItems);
 }
@@ -304,10 +299,6 @@ void CGUIWindowVideoPlaylist::OnFileItemFormatLabel(CFileItem* pItem)
   pItem->FillInDefaultIcon();
   // Remove extension from title if it exists
   pItem->SetLabel(CUtil::GetTitleFromPath(pItem->GetLabel()));
-}
-
-void CGUIWindowVideoPlaylist::DoSort(CFileItemList& items)
-{
 }
 
 void CGUIWindowVideoPlaylist::UpdateButtons()
@@ -347,20 +338,7 @@ void CGUIWindowVideoPlaylist::UpdateButtons()
     CONTROL_DISABLE(CONTROL_BTNREPEATONE);
   }
 
-  m_viewControl.SetCurrentView(g_stSettings.m_iMyVideoPlaylistViewAsIcons);
-
-  // Update object count label
-  int iItems = m_vecItems.Size();
-  if (iItems)
-  {
-    CFileItem* pItem = m_vecItems[0];
-    if (pItem->IsParentFolder()) iItems--;
-  }
-  WCHAR wszText[20];
-  const WCHAR* szText = g_localizeStrings.Get(127).c_str();
-  swprintf(wszText, L"%i %s", iItems, szText);
-
-  SET_CONTROL_LABEL(CONTROL_LABELFILES, wszText);
+  CGUIMediaWindow::UpdateButtons();
 
   // Update Repeat/Repeat One button
   if (g_playlistPlayer.Repeated(PLAYLIST_VIDEO))
@@ -438,18 +416,18 @@ bool CGUIWindowVideoPlaylist::Update(const CStdString &strDirectory)
 
   ClearFileItems();
 
-  m_history.Set(strSelectedItem, m_Directory.m_strPath);
-  m_Directory.m_strPath = strDirectory;
+  m_history.Set(strSelectedItem, m_vecItems.m_strPath);
+  m_vecItems.m_strPath = strDirectory;
 
-  GetDirectory(m_Directory.m_strPath, m_vecItems);
+  GetDirectory(m_vecItems.m_strPath, m_vecItems);
 
   UpdateListControl();
   UpdateButtons();
 
-  strSelectedItem = m_history.Get(m_Directory.m_strPath);
+  strSelectedItem = m_history.Get(m_vecItems.m_strPath);
   int iCurrentSong = -1;
   // Search current playlist item
-  if ((m_nTempPlayListWindow == GetID() && m_strTempPlayListDirectory.Find(m_Directory.m_strPath) > -1 && g_application.IsPlayingVideo()
+  if ((m_nTempPlayListWindow == GetID() && m_strTempPlayListDirectory.Find(m_vecItems.m_strPath) > -1 && g_application.IsPlayingVideo()
        && g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_VIDEO_TEMP)
       || (GetID() == WINDOW_VIDEO_PLAYLIST && g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_VIDEO && g_application.IsPlayingVideo()) )
   {
@@ -522,7 +500,7 @@ void CGUIWindowVideoPlaylist::RemovePlayListItem(int iItem)
     }
   }
 
-  Update(m_Directory.m_strPath);
+  Update(m_vecItems.m_strPath);
 
   if (m_vecItems.Size() <= 0)
   {
@@ -562,7 +540,7 @@ void CGUIWindowVideoPlaylist::ShufflePlayList()
     }
   }
 
-  Update(m_Directory.m_strPath);
+  Update(m_vecItems.m_strPath);
 }
 
 /// \brief Save current playlist to playlist folder
@@ -594,17 +572,6 @@ void CGUIWindowVideoPlaylist::SavePlayList()
     CLog::Log(LOGDEBUG, "Saving video playlist: [%s]", strPath.c_str());
     playlist.Save(strPath);
   }
-}
-
-void CGUIWindowVideoPlaylist::LoadViewMode()
-{
-  m_iViewAsIconsRoot = g_stSettings.m_iMyVideoPlaylistViewAsIcons;
-}
-
-void CGUIWindowVideoPlaylist::SaveViewMode()
-{
-  g_stSettings.m_iMyVideoPlaylistViewAsIcons = m_iViewAsIconsRoot;
-  g_settings.Save();
 }
 
 void CGUIWindowVideoPlaylist::OnPopupMenu(int iItem)

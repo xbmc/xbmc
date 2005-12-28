@@ -167,7 +167,7 @@ public:
   static void RestoreBrightnessContrastGamma();
   static void InitGamma();
   static void ClearCache();
-  static void SortFileItemsByName(CFileItemList& items, bool bSortAscending = true);
+  static void SortFileItemsByName(CFileItemList& items, bool bSortOrder = true);
   static bool IsNetworkUp() { return m_bNetworkUp; }
   static void Stat64ToStatI64(struct _stati64 *result, struct __stat64 *stat);
   static void StatI64ToStat64(struct __stat64 *result, struct _stati64 *stat);
