@@ -307,7 +307,8 @@ CStdString flushResult(int eid, webs_t wp, CStdString output)
 
 int CXbmcHttp::xbmcGetMediaLocation(int numParas, CStdString paras[])
 {
-  // getmediadirectory&parameter=type;location;1
+  // getmediadirectory&parameter=type;location;options
+  // options = showdate, pathsonly
   // returns a listing of
   // <li>label;path;0|1=folder;date
 
@@ -335,16 +336,21 @@ int CXbmcHttp::xbmcGetMediaLocation(int numParas, CStdString paras[])
       strLocation = paras[1];
   }
 
+  // handle options
   bool bShowDate = false;
+  bool bPathsOnly = false;
   if (numParas > 2)
   {
-    int iTest = 0;
-    if (CUtil::IsNaturalNumber(paras[2]))
-      iTest = atoi(paras[2].c_str());
-    if (iTest > 1)
-      iTest = 0;
-    if (iTest)
-      bShowDate = true;
+    for (int i = 2; i < numParas; ++i)
+    {
+      if (paras[i].Equals("showdate"))
+        bShowDate = true;
+      else if (paras[i].Equals("pathsonly"))
+        bPathsOnly = true;
+    }
+    // pathsonly and showdate are mutually exclusive, pathsonly wins
+    if (bPathsOnly)
+      bShowDate = false;
   }
 
   VECSHARES *pShares = NULL;
@@ -394,6 +400,8 @@ int CXbmcHttp::xbmcGetMediaLocation(int numParas, CStdString paras[])
     CStdString params[2];
     params[0] = strType;
     params[1] = "appendone";
+    if (bPathsOnly)
+      params[1] = "pathsonly";
     return xbmcGetShares(2, params);
   }
   else if (!CDirectory::GetDirectory(strLocation, items, strMask))
@@ -419,9 +427,11 @@ int CXbmcHttp::xbmcGetMediaLocation(int numParas, CStdString paras[])
       strFolder = "1";
     }
     strLine = openTag;
-    strLine += strLabel + ";";
-    strLine += strPath + ";";
-    strLine += strFolder;
+    if (!bPathsOnly)
+      strLine += strLabel + ";";
+    strLine += strPath;
+    if (!bPathsOnly)
+      strLine += ";" + strFolder;
     if (bShowDate)
     {
       CStdString theDate;
@@ -476,16 +486,8 @@ int CXbmcHttp::xbmcGetShares(int numParas, CStdString paras[])
     // special case where getmedialocation calls getshares
     if (paras[1].Equals("appendone"))
       bAppendOne = true;
-    else
-    {
-      int iTest = 0;
-      if (CUtil::IsNaturalNumber(paras[1]))
-        iTest = atoi(paras[1].c_str());
-      if (iTest > 1)
-        iTest = 0;
-      if (iTest)
-        bShowName = false;
-    }
+    else if (paras[1].Equals("pathsonly"))
+      bShowName = false;
   }
 
   CStdString strOutput;
