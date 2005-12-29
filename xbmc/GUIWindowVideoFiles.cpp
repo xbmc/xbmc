@@ -140,6 +140,27 @@ bool CGUIWindowVideoFiles::OnMessage(CGUIMessage& message)
           m_strParentPath = strParent;
         }
       }
+      // list/thumb panel 
+      else if (m_viewControl.HasControl(iControl))
+      {
+        int iItem = m_viewControl.GetSelectedItem();
+        int iAction = message.GetParam1();
+
+        const CFileItem* pItem = m_vecItems[iItem];
+
+        // use play button to add folders of items to temp playlist
+        if (iAction == ACTION_PLAYER_PLAY && pItem->m_bIsFolder && !pItem->IsParentFolder())
+        {
+          // if playback is paused or playback speed != 1, return
+          if (g_application.IsPlayingVideo())
+          {
+            if (g_application.m_pPlayer->IsPaused()) return false;
+            if (g_application.GetPlaySpeed() != 1) return false;
+          }
+          // not playing, or playback speed == 1
+          PlayFolder(pItem);
+        }
+      }
       else
         return CGUIWindowVideoBase::OnMessage(message);
     }
@@ -989,4 +1010,18 @@ void CGUIWindowVideoFiles::GetIMDBDetails(CFileItem *pItem, CIMDBUrl &url)
 void CGUIWindowVideoFiles::OnQueueItem(int iItem)
 {
   CGUIWindowVideoBase::OnQueueItem(iItem);
+}
+
+void CGUIWindowVideoFiles::PlayFolder(const CFileItem* pItem)
+{
+  // clear current temp playlist
+  g_playlistPlayer.GetPlaylist(PLAYLIST_VIDEO_TEMP).Clear();
+  g_playlistPlayer.Reset();
+
+  // recursively add items to temp playlist
+  AddItemToPlayList(pItem, PLAYLIST_VIDEO_TEMP);
+
+  // play!
+  g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_VIDEO_TEMP);
+  g_playlistPlayer.Play();
 }

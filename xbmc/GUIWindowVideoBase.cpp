@@ -762,7 +762,7 @@ void CGUIWindowVideoBase::OnQueueItem(int iItem)
   m_viewControl.SetSelectedItem(iItem + 1);
 }
 
-void CGUIWindowVideoBase::AddItemToPlayList(const CFileItem* pItem)
+void CGUIWindowVideoBase::AddItemToPlayList(const CFileItem* pItem, int iPlaylist /* = PLAYLIST_VIDEO */)
 {
   if (pItem->m_bIsFolder)
   {
@@ -785,7 +785,7 @@ void CGUIWindowVideoBase::AddItemToPlayList(const CFileItem* pItem)
 
     for (int i = 0; i < items.Size(); ++i)
     {
-      AddItemToPlayList(items[i]);
+      AddItemToPlayList(items[i], iPlaylist);
     }
     m_vecItems.m_strPath = strDirectory;
   }
@@ -797,7 +797,7 @@ void CGUIWindowVideoBase::AddItemToPlayList(const CFileItem* pItem)
       playlistItem.SetFileName(pItem->m_strPath);
       playlistItem.SetDescription(pItem->GetLabel());
       playlistItem.SetDuration(pItem->m_musicInfoTag.GetDuration());
-      g_playlistPlayer.GetPlaylist( PLAYLIST_VIDEO ).Add(playlistItem);
+      g_playlistPlayer.GetPlaylist(iPlaylist).Add(playlistItem);
     }
   }
 }

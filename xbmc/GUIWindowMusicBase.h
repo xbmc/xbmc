@@ -74,7 +74,6 @@ protected:
 
   // new methods
   virtual void PlayItem(int iItem);
-  virtual void AddItemToTempPlayList(const CFileItem* pItem);
 
   void OnDeleteItem(int iItem);
   virtual void OnRenameItem(int iItem);

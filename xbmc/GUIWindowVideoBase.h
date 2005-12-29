@@ -1,6 +1,7 @@
 #pragma once
 #include "GUIMediaWindow.h"
 #include "VideoDatabase.h"
+#include "playlistplayer.h"
 
 class CGUIWindowVideoBase : public CGUIMediaWindow
 {
@@ -40,7 +41,7 @@ protected:
   bool CheckMovie(const CStdString& strFileName);
 
   int  ResumeItemOffset(int iItem);
-  void AddItemToPlayList(const CFileItem* pItem);
+  void AddItemToPlayList(const CFileItem* pItem, int iPlaylist = PLAYLIST_VIDEO);
   void GetStackedFiles(const CStdString &strFileName, std::vector<CStdString> &movies);
   void ShowShareErrorMessage(CFileItem* pItem);
 

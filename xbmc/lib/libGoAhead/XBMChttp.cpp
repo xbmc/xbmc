@@ -413,8 +413,11 @@ int CXbmcHttp::xbmcGetMediaLocation(int numParas, CStdString paras[])
     strPath.Replace(";",";;");
     CStdString strFolder = "0";
     if (item->m_bIsFolder)
+    {
+      if (!CUtil::HasSlashAtEnd(strPath))
+        CUtil::AddSlashAtEnd(strPath);
       strFolder = "1";
-
+    }
     strLine = openTag;
     strLine += strLabel + ";";
     strLine += strPath + ";";
@@ -524,6 +527,8 @@ int CXbmcHttp::xbmcGetShares(int numParas, CStdString paras[])
       strName.Replace(";", ";;");
       CStdString strPath = share.strPath;
       strPath.Replace(";", ";;");
+      if (!CUtil::HasSlashAtEnd(strPath))
+        CUtil::AddSlashAtEnd(strPath);
       CStdString strLine = openTag;
       if (bShowType)
         strLine += strType + ";";
