@@ -57,7 +57,7 @@ protected:
    \brief Will be called to sort items. Provide a sort method.
    \param items Items to sort
    */
-  virtual void SortItems(CFileItemList& items);
+  //virtual void SortItems(CFileItemList& items);
   /*!
   \brief Overwrite to update your gui buttons (visible, enable,...)
   */
