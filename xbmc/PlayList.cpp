@@ -20,6 +20,7 @@ CPlayList::CPlayListItem::CPlayListItem(const CStdString& strDescription, const 
   m_lStartOffset = lStartOffset;
   m_lEndOffset = lEndOffset;
   m_bPlayed = false;
+  m_bUnPlayable = false;
 }
 
 CPlayList::CPlayListItem::~CPlayListItem()
@@ -89,6 +90,7 @@ CPlayList::CPlayList(void)
 {
   m_strPlayListName = "";
   m_iUnplayedItems = -1;
+  m_iPlayableItems = -1;
   m_bShuffled = false;
 }
 
@@ -108,6 +110,12 @@ void CPlayList::Add(CPlayListItem& item)
     m_iUnplayedItems = 1;
   else
     m_iUnplayedItems++;
+
+  // increment the playable counter
+  if (m_iPlayableItems < 0)
+    m_iPlayableItems = 1;
+  else
+    m_iPlayableItems++;
 }
 
 void CPlayList::Clear()
@@ -115,6 +123,7 @@ void CPlayList::Clear()
   m_vecItems.erase(m_vecItems.begin(), m_vecItems.end());
   m_strPlayListName = "";
   m_iUnplayedItems = -1;
+  m_iPlayableItems = -1;
   m_bShuffled = false;
 }
 
@@ -131,6 +140,19 @@ const CPlayList::CPlayListItem& CPlayList::operator[] (int iItem) const
 CPlayList::CPlayListItem& CPlayList::operator[] (int iItem)
 {
   return m_vecItems[iItem];
+}
+
+bool CPlayList::CPlayListItem::WasPlayed()
+{
+  if (IsUnPlayable())
+    return true;
+  else
+    return m_bPlayed;
+}
+
+bool CPlayList::CPlayListItem::IsUnPlayable()
+{
+  return m_bUnPlayable;
 }
 
 void CPlayList::Shuffle()
@@ -309,8 +331,20 @@ bool CPlayList::Swap(int position1, int position2)
 
 void CPlayList::SetPlayed(int iItem)
 {
-  m_vecItems[iItem].SetPlayed();
-  m_iUnplayedItems--;
+  if (!m_vecItems[iItem].WasPlayed())
+  {
+    m_vecItems[iItem].SetPlayed();
+    m_iUnplayedItems--;
+  }
+}
+
+void CPlayList::SetUnPlayable(int iItem)
+{
+  if (!m_vecItems[iItem].IsUnPlayable())
+  {
+    m_vecItems[iItem].SetUnPlayable();
+    m_iPlayableItems--;
+  }
 }
 
 void CPlayList::ClearPlayed()
@@ -318,9 +352,4 @@ void CPlayList::ClearPlayed()
   for (int i = 0; i < (int)m_vecItems.size(); i++)
     m_vecItems[i].ClearPlayed();
   m_iUnplayedItems = m_vecItems.size();
-}
-
-int CPlayList::GetUnplayed()
-{
-  return m_iUnplayedItems;
 }
