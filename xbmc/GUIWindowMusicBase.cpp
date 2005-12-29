@@ -1857,13 +1857,6 @@ CStdString CGUIWindowMusicBase::ParseFormat(CFileItem *pItem, const CStdString& 
   return strLabel;
 }
 
-void CGUIWindowMusicBase::AddItemToTempPlayList(const CFileItem* pItem)
-{
-  if (pItem->IsRAR() || pItem->IsZIP())
-    return;
-  AddItemToPlayList(pItem, PLAYLIST_MUSIC_TEMP);
-}
-
 void CGUIWindowMusicBase::PlayItem(int iItem)
 {
   // restrictions should be placed in the appropiate window code
@@ -1883,7 +1876,7 @@ void CGUIWindowMusicBase::PlayItem(int iItem)
     g_playlistPlayer.Reset();
 
     // recursively add items to temp playlist
-    AddItemToTempPlayList(pItem);
+    AddItemToPlayList(pItem, PLAYLIST_MUSIC_TEMP);
 
     // play!
     g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_MUSIC_TEMP);

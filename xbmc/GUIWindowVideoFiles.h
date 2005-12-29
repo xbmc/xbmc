@@ -19,7 +19,7 @@ protected:
   virtual bool Update(const CStdString &strDirectory);
   bool UpdateDir(const CStdString &strDirectory);
   virtual void OnClick(int iItem);
-
+  void PlayFolder(const CFileItem* pItem);
   virtual void OnPopupMenu(int iItem);
   virtual void OnInfo(int iItem);
 
