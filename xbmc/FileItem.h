@@ -106,6 +106,7 @@ public:
   void SetMusicThumb();
   void SetArtistThumb();
   void SetFileSizeLabel();
+  virtual void SetLabel(const CStdString &strLabel);
   CURL GetAsUrl() const;
 
 public:

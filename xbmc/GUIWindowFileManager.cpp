@@ -815,18 +815,14 @@ bool CGUIWindowFileManager::DoProcess(int iAction, CFileItemList & items, const 
         strCorrectedPath = strCorrectedPath.Left(strCorrectedPath.size() - 1);
       }
       char* pFileName = CUtil::GetFileName(strCorrectedPath);
-      CStdString strnewDestFile = strDestFile;
-      if (!CUtil::HasSlashAtEnd(strnewDestFile) )
-      {
-        strnewDestFile += "\\";
-      }
-      strnewDestFile += pFileName;
+      CStdString strnewDestFile;
+      CUtil::AddFileToFolder(strDestFile, pFileName, strnewDestFile);
       if (pItem->m_bIsFolder)
       {
         // create folder on dest. drive
-
         if (iAction != ACTION_DELETE)
         {
+          CLog::Log(LOGDEBUG, "Create folder with strDestFile=%s, strnewDestFile=%s, pFileName=%s", strDestFile.c_str(), strnewDestFile.c_str(), pFileName);
           if (!DoProcessFile(ACTION_CREATEFOLDER, strnewDestFile, strnewDestFile)) return false;
         }
         if (!DoProcessFolder(iAction, strCorrectedPath, strnewDestFile)) return false;

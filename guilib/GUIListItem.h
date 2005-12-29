@@ -28,7 +28,7 @@ public:
 
   const CGUIListItem& operator =(const CGUIListItem& item);
 
-  void SetLabel(const CStdString& strLabel);
+  virtual void SetLabel(const CStdString& strLabel);
   const CStdString& GetLabel() const;
 
   void SetLabel2(const CStdString& strLabel);
