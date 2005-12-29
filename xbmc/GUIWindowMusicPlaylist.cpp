@@ -73,15 +73,27 @@ bool CGUIWindowMusicPlayList::OnMessage(CGUIMessage& message)
       {
         CONTROL_SELECT(CONTROL_BTNREPEAT);
       }
+      else
+      {
+        CONTROL_DESELECT(CONTROL_BTNREPEAT);
+      }
 
       if (g_playlistPlayer.RepeatedOne(PLAYLIST_MUSIC))
       {
         CONTROL_SELECT(CONTROL_BTNREPEATONE);
       }
+      else
+      {
+        CONTROL_DESELECT(CONTROL_BTNREPEATONE);
+      }
 
       if (g_playlistPlayer.ShuffledPlay(PLAYLIST_MUSIC))
       {
         CONTROL_SELECT(CONTROL_BTNRANDOMIZE);
+      }
+      else
+      {
+        CONTROL_DESELECT(CONTROL_BTNRANDOMIZE);
       }
 
       if (g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).IsShuffled())
@@ -446,6 +458,15 @@ void CGUIWindowMusicPlayList::UpdateButtons()
     {
       CONTROL_DISABLE(CONTROL_BTNNEXT);
       CONTROL_DISABLE(CONTROL_BTNPREVIOUS);
+    }
+
+    // disable repeat options if clear on end is enabled
+    if (g_guiSettings.GetBool("MusicPlaylist.ClearPlaylistsOnEnd"))
+    {
+      g_playlistPlayer.Repeat(PLAYLIST_MUSIC, false);
+      g_playlistPlayer.RepeatOne(PLAYLIST_MUSIC, false);
+      CONTROL_DISABLE(CONTROL_BTNREPEAT);
+      CONTROL_DISABLE(CONTROL_BTNREPEATONE);
     }
   }
   else
