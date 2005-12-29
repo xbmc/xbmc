@@ -1989,10 +1989,3 @@ void CGUIWindowMusicBase::SetHistoryForPath(const CStdString& strDirectory)
   }
 }
 
-void CGUIWindowMusicBase::SortItems(CFileItemList& items)
-{
-  auto_ptr<CGUIViewState> pState(CGUIViewState::GetViewState(GetID(), items));
-  if (pState.get())
-    items.Sort(pState->GetSortMethod(), pState->GetSortOrder());
-}
-
