@@ -82,7 +82,11 @@ int CPlayListPlayer::GetNextSong()
   }
 
   if (iSong >= playlist.size() && Repeated(m_iCurrentPlayList))
+  {
+    // clear played status and wrap around
+    playlist.ClearPlayed();
     iSong = 0;
+  }
 
   return iSong;
 }
@@ -91,17 +95,16 @@ int CPlayListPlayer::GetNextSong()
 void CPlayListPlayer::PlayNext(bool bAutoPlay)
 {
   int iSong = GetNextSong();
-  if (iSong < 0)
-    return;
-
   CPlayList& playlist = GetPlaylist(m_iCurrentPlayList);
-  if (iSong >= playlist.size())
+
+  // stop playing
+  if ((iSong < 0) || (iSong >= playlist.size()) || (playlist.GetPlayable() <= 0))
   {
     CGUIMessage msg(GUI_MSG_PLAYLISTPLAYER_STOPPED, 0, 0, m_iCurrentPlayList, m_iCurrentSong);
     m_gWindowManager.SendThreadMessage(msg);
     Reset();
     m_iCurrentPlayList = PLAYLIST_NONE;
-    return ;
+    return;
   }
 
   if (bAutoPlay)
@@ -179,12 +182,27 @@ void CPlayListPlayer::Play(int iSong, bool bAutoPlay /* = false */, bool bPlayPr
   if (!g_application.PlayFile(item, bAutoPlay))
   {
     CLog::Log(LOGERROR,"Playlist Player: skipping unplayable item: %i, path [%s]", m_iCurrentSong, item.m_strPath.c_str());
+    playlist.SetUnPlayable(m_iCurrentSong);
 
-    if (bPlayPrevious)
-      PlayPrevious();
+    // how many playable items are in the playlist?
+    if (playlist.GetPlayable() > 0)
+    {
+      if (bPlayPrevious)
+        PlayPrevious();
+      else
+        PlayNext();
+      return;
+    }
+    // none? then abort playback
     else
-      PlayNext();
-    return;
+    {
+      CLog::Log(LOGDEBUG,"Playlist Player: no more playable items... aborting playback");
+      CGUIMessage msg(GUI_MSG_PLAYLISTPLAYER_STOPPED, 0, 0, m_iCurrentPlayList, m_iCurrentSong);
+      m_gWindowManager.SendThreadMessage(msg);
+      Reset();
+      m_iCurrentPlayList = PLAYLIST_NONE;
+      return;
+    }
   }
 
   m_bPlayedFirstFile = true;
@@ -565,7 +583,7 @@ int CPlayListPlayer::NextShuffleItem()
 
   // pick random number
   int iRandom = rand() % playlist.GetUnplayed();
-  while (playlist[iRandom].WasPlayed())
+  while (playlist[iRandom].WasPlayed() || playlist[iRandom].IsUnPlayable())
   {
     //CLog::Log(LOGDEBUG,"CPlayListPlayer::NextShuffleItem(), skipping played song at %i",iRandom);
     // increment by one until an unplayed song is found
