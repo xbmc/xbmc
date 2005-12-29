@@ -842,6 +842,16 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("VideoFiles.UseAutoSwitching") && g_guiSettings.GetInt("VideoFiles.AutoSwitchMethod") == 2);
     }
+    else if (strSetting == "MusicPlaylist.ClearPlaylistsOnEnd")
+    { // disable repeat and repeat one if clear playlists is enabled
+      if (g_guiSettings.GetBool("MusicPlaylist.ClearPlaylistsOnEnd"))
+      {
+        g_playlistPlayer.Repeat(PLAYLIST_MUSIC, false);
+        g_playlistPlayer.RepeatOne(PLAYLIST_MUSIC, false);
+        g_stSettings.m_bMyMusicPlaylistRepeat = false;
+        g_settings.Save();
+      }
+    } 
     else if (strSetting == "CDDARipper.Quality")
     { // only visible if we are doing non-WAV ripping
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());

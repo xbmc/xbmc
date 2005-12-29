@@ -36,13 +36,18 @@ class CPlayListItem : public CFileItem
     // keep track of the order items were added to the playlist
     int m_iOrder;
 
+    bool WasPlayed();
     void SetPlayed() { m_bPlayed = true; };
     void ClearPlayed() { m_bPlayed = false; };
-    bool WasPlayed() { return m_bPlayed; };
+
+    bool IsUnPlayable();
+    void SetUnPlayable() { m_bUnPlayable = true; };
+    void ClearUnPlayable() { m_bUnPlayable = false; };
 
   protected:
     long m_lDuration;
     bool m_bPlayed;
+    bool m_bUnPlayable;
   };
   CPlayList(void);
   virtual ~CPlayList(void);
@@ -65,12 +70,15 @@ class CPlayListItem : public CFileItem
   void FixOrder(int iOrder);
 
   void SetPlayed(int iItem);
+  void SetUnPlayable(int iItem);
   void ClearPlayed();
-  int GetUnplayed();
+  int GetUnplayed() { return m_iUnplayedItems; };
+  int GetPlayable() { return m_iPlayableItems; };
 
 protected:
   CStdString m_strPlayListName;
   int m_iUnplayedItems;
+  int m_iPlayableItems;
   bool m_bShuffled;
   vector <CPlayListItem> m_vecItems;
   typedef vector <CPlayListItem>::iterator ivecItems;

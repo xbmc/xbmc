@@ -4466,6 +4466,14 @@ bool CApplication::ProcessAndStartPlaylist(const CStdString& strPlayList, CPlayL
   // add each item of the playlist to the playlistplayer
   for (int i = 0; i < (int)playlist.size(); ++i)
   {
+    g_playlistPlayer.GetPlaylist(iPlaylist).Add(playlist[i]);
+
+    // why was this done? its completely redundant. 
+    // the playlist is already loaded at this point.
+    // all we need to do is copy the playlist items into the
+    // playlist held by the playlist player.
+
+    /* 
     const CPlayList::CPlayListItem& playListItem = playlist[i];
     CStdString strLabel = playListItem.GetDescription();
     if (strLabel.size() == 0)
@@ -4476,6 +4484,7 @@ bool CApplication::ProcessAndStartPlaylist(const CStdString& strPlayList, CPlayL
     playlistItem.SetDuration(playListItem.GetDuration());
     playlistItem.SetFileName(playListItem.GetFileName());
     g_playlistPlayer.GetPlaylist(iPlaylist).Add(playlistItem);
+    */
   }
 
   // music option: shuffle playlist on load
