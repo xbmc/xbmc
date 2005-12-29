@@ -67,9 +67,7 @@ CFileItem::CFileItem(const CStdString& strLabel)
     : CGUIListItem()
 {
   Reset();
-  m_strLabel = strLabel;
-  if (strLabel=="..")
-    m_bIsParentFolder=true;
+  SetLabel(strLabel);
 }
 
 CFileItem::CFileItem(const CStdString& strPath, bool bIsFolder)
@@ -109,6 +107,7 @@ const CFileItem& CFileItem::operator=(const CFileItem& item)
   m_strThumbnailImage = item.m_strThumbnailImage;
   m_strPath = item.m_strPath;
   m_bIsFolder = item.m_bIsFolder;
+  m_bIsParentFolder = item.m_bIsParentFolder;
   m_iDriveType = item.m_iDriveType;
   m_bIsShareOrDrive = item.m_bIsShareOrDrive;
   memcpy(&m_stTime, &item.m_stTime, sizeof(SYSTEMTIME));
@@ -158,6 +157,7 @@ void CFileItem::Serialize(CArchive& ar)
   if (ar.IsStoring())
   {
     ar << m_bIsFolder;
+    ar << m_bIsParentFolder;
     ar << m_strLabel;
     ar << m_strLabel2;
     ar << m_strThumbnailImage;
@@ -186,6 +186,7 @@ void CFileItem::Serialize(CArchive& ar)
   else
   {
     ar >> m_bIsFolder;
+    ar >> m_bIsParentFolder;
     ar >> m_strLabel;
     ar >> m_strLabel2;
     ar >> m_strThumbnailImage;
@@ -985,6 +986,13 @@ void CFileItem::CleanFileName()
   CStdString strLabel = GetLabel();
   CUtil::CleanFileName(strLabel);
   SetLabel(strLabel);
+}
+
+void CFileItem::SetLabel(const CStdString &strLabel)
+{
+  m_strLabel = strLabel;
+  if (strLabel=="..")
+    m_bIsParentFolder = true;
 }
 
 void CFileItem::SetFileSizeLabel()
