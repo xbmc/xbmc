@@ -205,8 +205,8 @@ void CGUIDialog::DoEffect()
   {
     float time = 1.0f - m_effectAmount;
     float amount = time * (m_effect.m_acceleration * time + 1.0f - m_effect.m_acceleration);
-    m_attribute.offsetX = (int)(amount * (m_effect.m_startX - m_iPosX));
-    m_attribute.offsetY = (int)(amount * (m_effect.m_startY - m_iPosY));
+    m_attribute.offsetX = (int)(amount * m_effect.m_startX);
+    m_attribute.offsetY = (int)(amount * m_effect.m_startY);
   }
 }
 

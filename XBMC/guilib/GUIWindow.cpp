@@ -452,6 +452,26 @@ bool CGUIWindow::Load(const TiXmlElement* pRootElement, RESOLUTION resToUse)
         m_iPosY = atoi(pPosY->FirstChild()->Value());
         g_graphicsContext.ScaleYCoord(m_iPosY, resToUse);
       }
+
+      if (g_SkinInfo.GetVersion() < 1.86 && m_effect.m_type == EFFECT_TYPE_SLIDE)
+      {
+        // slide effect origin is relative to the normal origin
+        m_effect.m_startX -= m_iPosX;
+        m_effect.m_startY -= m_iPosY;
+      }
+
+      m_origins.clear();
+      TiXmlElement *originElement = pChild->FirstChildElement("origin");
+      while (originElement)
+      {
+        COrigin origin;
+        originElement->Attribute("x", &origin.x);
+        originElement->Attribute("y", &origin.y);
+        if (originElement->FirstChild())
+          origin.condition = g_infoManager.TranslateString(originElement->FirstChild()->Value());
+        m_origins.push_back(origin);
+        originElement = originElement->NextSiblingElement("origin");
+      }
     }
     else if (strValue == "controls")
     {
@@ -578,7 +598,20 @@ void CGUIWindow::Render()
   // to occur.
   if (!m_WindowAllocated) return;
 
-  g_graphicsContext.SetScalingResolution(m_coordsRes, m_iPosX, m_iPosY, m_needsScaling);
+  // find our origin point
+  int posX = m_iPosX;
+  int posY = m_iPosY;
+  for (unsigned int i = 0; i < m_origins.size(); i++)
+  {
+    // no condition implies true
+    if (!m_origins[i].condition || g_infoManager.GetBool(m_origins[i].condition, GetID()))
+    { // found origin
+      posX = m_origins[i].x;
+      posY = m_origins[i].y;
+      break;
+    }
+  }
+  g_graphicsContext.SetScalingResolution(m_coordsRes, posX, posY, m_needsScaling);
   g_graphicsContext.SetWindowAttributes(m_attribute);
 
   for (int i = 0; i < (int)m_vecControls.size(); i++)

@@ -1,7 +1,7 @@
 <window>
   <id>104</id>
   <defaultcontrol>1</defaultcontrol>
-  <visible effect="slide" time="200" startx="535" starty="-75" accleration="1" start="hidden">Window.IsActive(104)</visible>
+  <visible effect="slide" time="200" startx="0" starty="-115" accleration="1" start="hidden">Window.IsActive(104)</visible>
   <coordinates>
     <system>1</system>
     <posx>535</posx>
@@ -12,7 +12,7 @@
     <control>
       <description>Popup Volume Dialog Background</description>
       <type>image</type>
-      <id>400</id>
+      <id>0</id>
       <posx>1</posx>
       <posy>2</posy>
       <width>120</width>
@@ -23,12 +23,13 @@
     <control>
       <description>Volume Slider</description>
       <type>slider</type>
-      <id>401</id>
+      <id>1</id>
       <posx>33</posx>
       <posy>42</posy>
       <texturesliderbar>osd_slider_volume_bg.png</texturesliderbar>
       <textureslidernib>slider_nibFO.png</textureslidernib>
       <textureslidernibfocus>slider_nibFO.png</textureslidernibfocus>
+      <info>Player.Volume</info>
       <onup>1</onup>
       <ondown>1</ondown>
       <onleft>1</onleft>
@@ -38,11 +39,12 @@
     <control>
       <description>Volume Label</description>
       <type>label</type>
-      <id>402</id>
+      <id>0</id>
       <posx>87</posx>
       <posy>20</posy>
       <font>font10</font>
       <align>right</align>
+      <info>Player.Volume</info>
       <width>70</width>
       <height>16</height>
     </control>

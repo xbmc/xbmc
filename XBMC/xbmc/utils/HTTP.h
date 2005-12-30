@@ -28,7 +28,7 @@ public:
   void Cancel();
 
   string m_redirectedURL;
-  bool IsInternet();
+  bool IsInternet(bool checkDNS = true);
   static bool BreakURL(const string& strURL, string& strHostName, string &strUsername, string &strPassword, int& iPort, string& Page);
 
 protected:

@@ -55,6 +55,7 @@ void CGUIMoverControl::Render()
   // render both so the visibility settings cause the frame counter to resetcorrectly
   m_imgFocus.Render();
   m_imgNoFocus.Render();
+  CGUIControl::Render();
 }
 
 bool CGUIMoverControl::OnAction(const CAction &action)

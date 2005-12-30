@@ -1612,7 +1612,7 @@ void CFileItemList::Stack()
       CUtil::Split(item->m_strPath, filePath, fileName);
       CStdString fileTitle;
       CStdString volumeNumber;
-      if (CUtil::GetVolumeFromFileName(fileName, fileTitle, volumeNumber))
+      if (CUtil::GetVolumeFromFileName(item->GetLabel(), fileTitle, volumeNumber))
       {
         vector<int> stack;
         stack.push_back(i);
@@ -1649,6 +1649,9 @@ void CFileItemList::Stack()
             Remove(stack[j]);
           item->m_strPath = stackPath;
           // item->m_bIsFolder = true;  // don't treat stacked files as folders
+          // the label may be in a different char set from the filename (eg over smb
+          // the label is converted from utf8, but the filename is not)
+          CUtil::GetVolumeFromFileName(item->GetLabel(), fileTitle, volumeNumber);
           item->SetLabel(fileTitle);
         }
       }

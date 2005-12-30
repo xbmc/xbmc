@@ -97,6 +97,7 @@ void CGUIConsoleControl::Render()
 
     fTextY += m_fFontHeight + CONSOLE_LINE_SPACING;
   }
+  CGUIControl::Render();
 }
 
 void CGUIConsoleControl::AddLine(CStdString& aLine, DWORD aColour)

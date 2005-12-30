@@ -36,6 +36,19 @@ public:
   int x;
   int y;
 };
+
+class COrigin
+{
+public:
+  COrigin()
+  {
+    x = y = condition = 0;
+  };
+  int x;
+  int y;
+  int condition;
+};
+
 /*!
  \ingroup winmsg
  \brief 
@@ -162,6 +175,8 @@ protected:
   CAttribute m_attribute;
 
   int m_renderOrder;      // for render order of dialogs
+
+  vector<COrigin> m_origins;
 };
 
 #endif
