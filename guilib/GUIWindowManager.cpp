@@ -56,8 +56,22 @@ bool CGUIWindowManager::SendMessage(CGUIMessage& message)
     }
   }
 
+  //  A GUI_MSG_NOTIFY_ALL is send to any active modal dialog
+  //  and all windows whether they are active or not
+  if (message.GetMessage()==GUI_MSG_NOTIFY_ALL)
+  {
+    int topWindow = m_vecModalWindows.size();
+    while (topWindow)
+      m_vecModalWindows[--topWindow]->OnMessage(message);
+
+    topWindow = m_vecWindows.size();
+    while (topWindow)
+      m_vecWindows[--topWindow]->OnMessage(message);
+
+    handled = true;
+  }
   // Have we routed windows...
-  if (m_vecModalWindows.size() > 0)
+  else if (m_vecModalWindows.size() > 0)
   {
     // ...send the message to the top most.
     int topWindow = m_vecModalWindows.size();

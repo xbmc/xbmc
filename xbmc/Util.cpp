@@ -969,7 +969,7 @@ bool CUtil::IsOnDVD(const CStdString& strFile)
   if (strFile.Left(4) == "UDF:" || strFile.Left(4) == "udf:")
     return true;
 
-  if (strFile.Left(9) == "ISO9660:" || strFile.Left(9) == "iso9660:")
+  if (strFile.Left(8) == "ISO9660:" || strFile.Left(8) == "iso9660:")
     return true;
 
   return false;

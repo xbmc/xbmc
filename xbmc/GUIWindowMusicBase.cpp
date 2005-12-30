@@ -88,12 +88,6 @@ bool CGUIWindowMusicBase::OnAction(const CAction& action)
    if we are in a temporary playlist or in playlistwindow
   - #GUI_MSG_PLAYLIST_PLAY_NEXT_PREV\n
    ...the next playing item is set in list/thumb control
-  - #GUI_MSG_DVDDRIVE_EJECTED_CD\n
-   ...it will look, if m_strDirectory contains a path from a DVD share.
-   If it is, Update() is called with a empty directory.
-  - #GUI_MSG_DVDDRIVE_CHANGED_CD\n
-   ...and m_strDirectory is empty, Update is called to renew icons after
-   disc is changed.
   - #GUI_MSG_WINDOW_DEINIT\n
    ...the last focused control is saved to m_iLastControl.
   - #GUI_MSG_WINDOW_INIT\n
@@ -200,36 +194,6 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
           } // for (int i=nFolderCount, n=0; i<(int)m_vecItems.size(); i++)
         }
 
-      }
-    }
-    break;
-
-  case GUI_MSG_DVDDRIVE_EJECTED_CD:
-    {
-      if ( !m_vecItems.IsVirtualDirectoryRoot() )
-      {
-        if (m_vecItems.IsCDDA() || m_vecItems.IsOnDVD())
-        {
-          // Disc has changed and we are inside a DVD Drive share, get out of here :)
-          Update("");
-        }
-      }
-      else
-      {
-        int iItem = m_viewControl.GetSelectedItem();
-        Update(m_vecItems.m_strPath);
-        m_viewControl.SetSelectedItem(iItem);
-      }
-    }
-    break;
-
-  case GUI_MSG_DVDDRIVE_CHANGED_CD:
-    {
-      if (m_vecItems.IsVirtualDirectoryRoot())
-      {
-        int iItem = m_viewControl.GetSelectedItem();
-        Update(m_vecItems.m_strPath);
-        m_viewControl.SetSelectedItem(iItem);
       }
     }
     break;
@@ -409,6 +373,35 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
         }
       }
     }
+  case GUI_MSG_NOTIFY_ALL:
+    { // Message is received even if this window is inactive
+      
+      //  Is there a dvd share in this window?
+      if (!m_rootDir.GetDVDDriveUrl().IsEmpty())
+      {
+        if (message.GetParam1()==GUI_MSG_DVDDRIVE_EJECTED_CD)
+        {
+          if (m_vecItems.IsVirtualDirectoryRoot() && IsActive())
+          {
+            int iItem = m_viewControl.GetSelectedItem();
+            Update(m_vecItems.m_strPath);
+            m_viewControl.SetSelectedItem(iItem);
+          }
+          else if (m_vecItems.IsCDDA() || m_vecItems.IsOnDVD())
+          { // Disc has changed and we are inside a DVD Drive share, get out of here :)
+            if (IsActive()) Update("");
+            else 
+            {
+              m_vecPathHistory.clear();
+              m_vecItems.m_strPath="";
+            }
+          }
+
+          return true;
+        }
+      }
+    }
+    break;
   }
   return CGUIMediaWindow::OnMessage(message);
 }
@@ -506,7 +499,7 @@ bool CGUIWindowMusicBase::Update(const CStdString &strDirectory)
    // if we're getting the root bookmark listing
   // make sure the path history is clean
   if (strDirectory.IsEmpty())
-    m_vecPathHistory.empty();
+    m_vecPathHistory.clear();
 
   CStdString strOldDirectory = m_vecItems.m_strPath;
   CFileItemList items;

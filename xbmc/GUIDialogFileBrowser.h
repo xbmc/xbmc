@@ -37,8 +37,6 @@ protected:
   CStdString m_selectedPath;
   CDirectoryHistory m_history;
   bool m_browsingForFolders;
-  bool m_bDVDDiscChanged;
-  bool m_bDVDDiscEjected;
   bool m_bConfirmed;
 
   CGUIViewControl m_viewControl;

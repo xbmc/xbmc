@@ -28,12 +28,10 @@ protected:
   virtual void OnSort();
 
   virtual void ClearFileItems();
-  void SortItems(CFileItemList &items);
+  virtual void SortItems(CFileItemList &items);
 
   // check for a disc or connection
   virtual bool HaveDiscOrConnection( CStdString& strPath, int iDriveType );
-  bool m_bDVDDiscChanged;
-  bool m_bDVDDiscEjected;
 
   CVirtualDirectory m_rootDir;
   CGUIViewControl m_viewControl;
