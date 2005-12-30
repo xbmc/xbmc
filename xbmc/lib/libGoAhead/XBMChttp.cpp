@@ -328,6 +328,8 @@ int CXbmcHttp::xbmcGetMediaLocation(int numParas, CStdString paras[])
       iType = 1;
     else if (paras[0].Equals("pictures"))
       iType = 2;
+    else if (paras[0].Equals("files"))
+      iType = 3;
     if (iType < 0)
       return SetResponse(openTag+"Error: invalid media type; valid options are music, video, pictures");
 
@@ -354,7 +356,7 @@ int CXbmcHttp::xbmcGetMediaLocation(int numParas, CStdString paras[])
   }
 
   VECSHARES *pShares = NULL;
-  enum SHARETYPES { MUSIC, VIDEO, PICTURES };
+  enum SHARETYPES { MUSIC, VIDEO, PICTURES, FILES };
   switch(iType)
   {
   case MUSIC:
@@ -373,6 +375,12 @@ int CXbmcHttp::xbmcGetMediaLocation(int numParas, CStdString paras[])
     {
       pShares = &g_settings.m_vecMyPictureShares;
       strMask = g_stSettings.m_szMyPicturesExtensions;
+    }
+    break;
+  case FILES:
+    {
+      pShares = &g_settings.m_vecMyFilesShares;
+      strMask = "";
     }
     break;
   }
@@ -452,7 +460,7 @@ int CXbmcHttp::xbmcGetShares(int numParas, CStdString paras[])
   // options include the type, and pathsonly boolean
 
   int iStart = 0;
-  int iEnd   = 3;
+  int iEnd   = 4;
   bool bShowType = true;
   bool bShowName = true;
 
@@ -476,6 +484,12 @@ int CXbmcHttp::xbmcGetShares(int numParas, CStdString paras[])
       iEnd   = 3;
       bShowType = false;
     }
+    else if (paras[0].Equals("files"))
+    {
+      iStart = 3;
+      iEnd   = 4;
+      bShowType = false;
+    }
     else
       numParas = 0;
   }
@@ -491,7 +505,7 @@ int CXbmcHttp::xbmcGetShares(int numParas, CStdString paras[])
   }
 
   CStdString strOutput;
-  enum SHARETYPES { MUSIC, VIDEO, PICTURES };
+  enum SHARETYPES { MUSIC, VIDEO, PICTURES, FILES };
   for (int i = iStart; i < iEnd; ++i)
   {
     CStdString strType;
@@ -514,6 +528,12 @@ int CXbmcHttp::xbmcGetShares(int numParas, CStdString paras[])
       {
         strType = "pictures";
         pShares = &g_settings.m_vecMyPictureShares;
+      }
+      break;
+    case FILES:
+      {
+        strType = "files";
+        pShares = &g_settings.m_vecMyFilesShares;
       }
       break;
     }
