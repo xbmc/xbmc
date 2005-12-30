@@ -87,7 +87,7 @@ int CGUIViewState::GetViewAsControlButtonLabel() const
   if (m_currentViewAsControl>=0 && m_currentViewAsControl<(int)m_viewAsControls.size())
     return m_viewAsControls[m_currentViewAsControl].m_buttonLabel;
 
-  return VIEW_METHOD_LIST;
+  return 101; // "View As: List" button label
 }
 
 void CGUIViewState::AddViewAsControl(VIEW_METHOD viewAsControl, int buttonLabel)

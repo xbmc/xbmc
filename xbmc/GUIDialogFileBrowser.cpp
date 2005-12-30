@@ -20,8 +20,6 @@ CGUIDialogFileBrowser::CGUIDialogFileBrowser()
     : CGUIDialog(WINDOW_DIALOG_FILE_BROWSER, "FileBrowser.xml")
 {
   m_bConfirmed = false;
-  m_bDVDDiscChanged = false;
-  m_bDVDDiscEjected = false;
   m_Directory.m_bIsFolder = true;
   m_browsingForFolders = false;
 }
@@ -97,6 +95,43 @@ bool CGUIDialogFileBrowser::OnMessage(CGUIMessage& message)
       }
     }
     break;
+  case GUI_MSG_NOTIFY_ALL:
+    { // Message is received even if this window is inactive
+      
+      //  Is there a dvd share in this window?
+      if (!m_rootDir.GetDVDDriveUrl().IsEmpty())
+      {
+        if (message.GetParam1()==GUI_MSG_DVDDRIVE_EJECTED_CD)
+        {
+          if (m_Directory.IsVirtualDirectoryRoot() && IsActive())
+          {
+            int iItem = m_viewControl.GetSelectedItem();
+            Update(m_Directory.m_strPath);
+            m_viewControl.SetSelectedItem(iItem);
+          }
+          else if (m_Directory.IsCDDA() || m_Directory.IsOnDVD())
+          { // Disc has changed and we are inside a DVD Drive share, get out of here :)
+            if (IsActive()) Update("");
+            else m_Directory.m_strPath="";
+          }
+
+          return true;
+        }
+        else if (message.GetParam1()==GUI_MSG_DVDDRIVE_CHANGED_CD)
+        { // State of the dvd-drive changed (Open/Busy label,...), so update it
+          if (m_Directory.IsVirtualDirectoryRoot() && IsActive())
+          {
+            int iItem = m_viewControl.GetSelectedItem();
+            Update(m_Directory.m_strPath);
+            m_viewControl.SetSelectedItem(iItem);
+          }
+
+          return true;
+        }
+      }
+    }
+    break;
+
   }
   return CGUIDialog::OnMessage(message);
 }

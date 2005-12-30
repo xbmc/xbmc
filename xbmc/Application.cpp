@@ -3800,16 +3800,18 @@ bool CApplication::OnMessage(CGUIMessage& message)
 {
   switch ( message.GetMessage() )
   {
-  case GUI_MSG_DVDDRIVE_EJECTED_CD:
+  case GUI_MSG_NOTIFY_ALL:
     {
-      // Update general playlist: Remove DVD playlist items
-      int nRemoved = g_playlistPlayer.RemoveDVDItems();
-      if ( nRemoved > 0 )
+      if (message.GetParam1()==GUI_MSG_DVDDRIVE_EJECTED_CD)
       {
-        CGUIMessage msg( GUI_MSG_PLAYLIST_CHANGED, 0, 0, 0, 0, NULL );
-        m_gWindowManager.SendMessage( msg );
+        // Update general playlist: Remove DVD playlist items
+        int nRemoved = g_playlistPlayer.RemoveDVDItems();
+        if ( nRemoved > 0 )
+        {
+          CGUIMessage msg( GUI_MSG_PLAYLIST_CHANGED, 0, 0, 0, 0, NULL );
+          m_gWindowManager.SendMessage( msg );
+        }
       }
-      return true;
     }
     break;
 

@@ -41,6 +41,9 @@
 #define GUI_MSG_FULLSCREEN  19  // should go to fullscreen window (vis or video)
 #define GUI_MSG_EXECUTE    20  // user has clicked on a button with <execute> tag
 
+#define GUI_MSG_NOTIFY_ALL    21  // message will be send to all active and inactive(!) windows, all active modal and modeless dialogs
+                                  // dwParam1 must contain an additional message the windows should react on
+
 #define GUI_MSG_USER         1000
 
 /*!

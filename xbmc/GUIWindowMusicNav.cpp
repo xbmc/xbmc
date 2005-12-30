@@ -155,11 +155,6 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
     }
     break;
 
-  case GUI_MSG_DVDDRIVE_EJECTED_CD:
-  case GUI_MSG_DVDDRIVE_CHANGED_CD:
-    return true;
-    break;
-
   case GUI_MSG_CLICKED:
     {
       int iControl = message.GetSenderId();
