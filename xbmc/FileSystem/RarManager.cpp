@@ -129,10 +129,11 @@ bool CRarManager::CacheRarredFile(CStdString& strPathInCache, const CStdString& 
 	return true;
 }
 
+// NB: The rar manager expects paths in rars to be terminated with a "\".
 bool CRarManager::GetFilesInRar(CFileItemList& vecpItems, const CStdString& strRarPath, bool bMask, const CStdString& strPathInRar)
 {
   CSingleLock lock(m_CritSection);
-  
+
   ArchiveList_struct* pFileList = NULL;
   std::map<CStdString,std::pair<ArchiveList_struct*,std::vector<CFileInfo> > >::iterator it = m_ExFiles.find(strRarPath);
   if (it == m_ExFiles.end())

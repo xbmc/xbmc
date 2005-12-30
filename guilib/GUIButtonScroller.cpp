@@ -408,6 +408,7 @@ void CGUIButtonScroller::Render()
 
   // reset the viewport
   g_graphicsContext.RestoreViewPort();
+  CGUIControl::Render();
 }
 
 int CGUIButtonScroller::GetNext(int iCurrent) const

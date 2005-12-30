@@ -136,7 +136,7 @@ void CGUISelectButtonControl::Render()
     // No, render a normal button
     CGUIButtonControl::Render();
   }
-
+  CGUIControl::Render();
 }
 
 bool CGUISelectButtonControl::OnMessage(CGUIMessage& message)

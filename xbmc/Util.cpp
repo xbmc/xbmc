@@ -2968,7 +2968,9 @@ const BUILT_IN commands[] = {
   "Action", "Executes an action for the active window (same as in keymap)",
   "Notification", "Shows a notification on screen, specify header, then message.",
   "PlayDVD"," Plays the inserted CD or DVD media from the DVD-ROM Drive!",
-  "Skin.ToggleSetting"," Toggles a skin setting on or off"
+  "Skin.ToggleSetting"," Toggles a skin setting on or off",
+  "Mute","Mute the player",
+  "SetVolume","Set the current volume"
 };
 
 bool CUtil::IsBuiltIn(const CStdString& execString)
@@ -3297,6 +3299,14 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
       }
     }
 
+  }
+  else if (execute.Equals("mute"))
+  {
+    g_application.Mute();
+  }
+  else if (execute.Equals("setvolume"))
+  {
+    g_application.SetVolume(atoi(parameter.c_str()));
   }
   else if (execute.Equals("ejecttray"))
   {

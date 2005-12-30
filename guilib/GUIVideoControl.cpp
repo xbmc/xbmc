@@ -32,6 +32,7 @@ void CGUIVideoControl::Render()
   g_graphicsContext.SetViewWindow(rc);
 
   g_renderManager.RenderUpdate(false);
+  CGUIControl::Render();
 }
 
 void CGUIVideoControl::OnMouseClick(DWORD dwButton)

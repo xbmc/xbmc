@@ -84,6 +84,7 @@ void CGUICheckMarkControl::Render()
     m_imgCheckMarkNoFocus.SetPosition(iCheckMarkPosX, m_iPosY);
     m_imgCheckMarkNoFocus.Render();
   }
+  CGUIControl::Render();
 }
 
 bool CGUICheckMarkControl::OnAction(const CAction &action)
