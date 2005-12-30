@@ -90,6 +90,7 @@ void CGUIProgressControl::Render()
   m_guiOverlay.SetHeight((int)(fScaleY * m_guiOverlay.GetTextureHeight()));
   m_guiOverlay.SetWidth((int)(fScaleX * m_guiOverlay.GetTextureWidth()));
   m_guiOverlay.Render();
+  CGUIControl::Render();
 }
 
 

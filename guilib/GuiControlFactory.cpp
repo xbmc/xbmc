@@ -1049,6 +1049,12 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     GetHex(pControlNode, "colordiffuse", dwColorDiffuse);
     
     GetConditionalVisibility(pControlNode, iVisibleCondition, effect);
+    if (g_SkinInfo.GetVersion() < 1.86 && effect.m_type == EFFECT_TYPE_SLIDE)
+    {
+      // slide effect origin is relative to the normal origin
+      effect.m_startX -= iPosX;
+      effect.m_startY -= iPosY;
+    }
 
     GetString(pControlNode, "font", strFont);
     GetAlignment(pControlNode, "align", dwAlign);
