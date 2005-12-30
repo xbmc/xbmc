@@ -91,6 +91,7 @@ public:
   static void FlushReferenceCache();
   virtual bool IsDialog() const { return false;};
   virtual bool IsMediaWindow() const { return false; };
+  virtual bool IsActive() const;
   void SetCoordsRes(RESOLUTION res) { m_coordsRes = res; };
   RESOLUTION GetCoordsRes() const { return m_coordsRes; };
   int GetVisibleCondition() const { return m_visibleCondition; };

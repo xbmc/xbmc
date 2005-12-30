@@ -213,11 +213,14 @@ bool CVirtualDirectory::IsShare(const CStdString& strPath) const
  */
 CStdString CVirtualDirectory::GetDVDDriveUrl()
 {
-  for (int i = 0; i < (int)m_vecShares->size(); ++i)
+  if (m_vecShares)
   {
-    const CShare& share = m_vecShares->at(i);
-    if (share.m_iDriveType == SHARE_TYPE_DVD)
-      return share.strPath;
+    for (int i = 0; i < (int)m_vecShares->size(); ++i)
+    {
+      const CShare& share = m_vecShares->at(i);
+      if (share.m_iDriveType == SHARE_TYPE_DVD)
+        return share.strPath;
+    }
   }
 
   return "";
