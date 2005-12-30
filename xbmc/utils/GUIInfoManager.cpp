@@ -63,6 +63,8 @@ extern char g_szTitleIP[32];
 #define PLAYER_DURATION              29
 //#define PLAYER_SHOWCODEC             30
 //#define PLAYER_SHOWINFO              31
+#define PLAYER_VOLUME                32
+#define PLAYER_MUTED                 33
 
 #define WEATHER_CONDITIONS          100
 #define WEATHER_TEMPERATURE         101
@@ -257,6 +259,8 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
   else if (strTest.Equals("player.time")) ret = PLAYER_TIME;
   else if (strTest.Equals("player.timeremaining")) ret = PLAYER_TIME_REMAINING;
   else if (strTest.Equals("player.duration")) ret = PLAYER_DURATION;
+  else if (strTest.Equals("player.volume")) ret = PLAYER_VOLUME;
+  else if (strTest.Equals("player.muted")) ret = PLAYER_MUTED;
   else if (strTest.Equals("weather.conditions")) ret = WEATHER_CONDITIONS;
   else if (strTest.Equals("weather.temperature")) ret = WEATHER_TEMPERATURE;
   else if (strTest.Equals("weather.location")) ret = WEATHER_LOCATION;
@@ -380,6 +384,9 @@ wstring CGUIInfoManager::GetLabel(int info)
     break;
   case SYSTEM_FPS:
     strLabel.Format("%02.2f", m_fps);
+    break;
+  case PLAYER_VOLUME:
+    strLabel.Format("%2.1f dB", (float)g_stSettings.m_nVolumeLevel * 0.01f);
     break;
   case PLAYER_TIME:
     strLabel = GetCurrentPlayTime();
@@ -514,7 +521,9 @@ wstring CGUIInfoManager::GetLabel(int info)
 // tries to get a integer value for use in progressbars/sliders and such
 int CGUIInfoManager::GetInt(int info) const
 {
-  if( g_application.IsPlaying() && g_application.m_pPlayer)
+  if (info == PLAYER_VOLUME)
+    return g_application.GetVolume();
+  else if( g_application.IsPlaying() && g_application.m_pPlayer)
   {
     switch( info )
     {
@@ -563,6 +572,8 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow) const
     bReturn = false;
   else if (condition == SYSTEM_AUTODETECTION)
     bReturn = HasAutodetectedXbox();
+  else if (condition == PLAYER_MUTED)
+    bReturn = g_stSettings.m_bMute;
   else if (condition >= CONTROL_HAS_FOCUS_START && condition <= CONTROL_HAS_FOCUS_END)
   {
     if( !dwContextWindow ) dwContextWindow = m_gWindowManager.GetActiveWindow();

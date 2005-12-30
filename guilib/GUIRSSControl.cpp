@@ -83,6 +83,7 @@ void CGUIRSSControl::Render()
 
   if (m_pReader)
     m_pReader->CheckForUpdates();
+  CGUIControl::Render();
 }
 
 void CGUIRSSControl::OnFeedUpdate(CStdStringW& aFeed, LPBYTE aColorArray)

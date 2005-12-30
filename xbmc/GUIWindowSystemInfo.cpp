@@ -690,12 +690,14 @@ bool CGUIWindowSystemInfo::GetINetState(CStdString& strInetCon)
 		strInetCon.Format("%s %s",lbl2.c_str(), lbl3.c_str());
 		return true;
 	}
-	else 
-	{	// NOT Connected to the Internet!
-		strInetCon.Format("%s %s",lbl2.c_str(), lbl4.c_str());
-		return true;
-	}
-	return false;
+	else if (http.IsInternet(false))
+  { // connected, but no DNS
+		strInetCon.Format("%s %s",lbl2.c_str(), g_localizeStrings.Get(13299).c_str());
+    return true;
+  }
+  // NOT Connected to the Internet!
+	strInetCon.Format("%s %s",lbl2.c_str(), lbl4.c_str());
+	return true;
 }
 
 bool CGUIWindowSystemInfo::GetXBLiveKey(CStdString& strXBLiveKey)

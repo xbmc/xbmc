@@ -2,7 +2,7 @@
 #include "../stdafx.h"
 #include "RarDirectory.h"
 #include "../utils/log.h"
-
+#include "../Util.h"
 
 namespace DIRECTORY
 {
@@ -16,7 +16,11 @@ namespace DIRECTORY
 
   bool CRarDirectory::GetDirectory(const CStdString& strPath, CFileItemList& items)
   {
-    CURL url(strPath);
+    // the RAR code depends on things having a "\" at the end of the path
+    CStdString strSlashPath = strPath;
+    if (!CUtil::HasSlashAtEnd(strSlashPath))
+      strSlashPath += "\\";
+    CURL url(strSlashPath);
     if (g_RarManager.GetFilesInRar(items,url.GetHostName(),true,url.GetFileName()))
     {
       // fill in paths
@@ -26,7 +30,7 @@ namespace DIRECTORY
           continue;
         if ((IsAllowed(items[iEntry]->m_strPath)) || (items[iEntry]->m_bIsFolder))
         {
-          items[iEntry]->m_strPath = strPath+items[iEntry]->m_strPath;
+          items[iEntry]->m_strPath = strSlashPath + items[iEntry]->m_strPath;
         }
         else
         {

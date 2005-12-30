@@ -3,15 +3,15 @@
 #include "GUIDialogVolumeBar.h"
 #include "GUISliderControl.h"
 #include "Application.h"
-
-
-// May need to change this so that it is "modeless" rather than Modal,
-// though it works reasonably well as is...
+#include "utils/GUIInfoManager.h"
 
 #define VOLUME_BAR_DISPLAY_TIME 1000L
 
+#ifdef PRE_SKIN_VERSION_2_0_COMPATIBILITY
+#include "SkinInfo.h"
 #define POPUP_VOLUME_SLIDER     401
 #define POPUP_VOLUME_LEVEL_TEXT 402
+#endif
 
 CGUIDialogVolumeBar::CGUIDialogVolumeBar(void)
     : CGUIDialog(WINDOW_DIALOG_VOLUME_BAR, "DialogVolumeBar.xml")
@@ -40,9 +40,7 @@ bool CGUIDialogVolumeBar::OnMessage(CGUIMessage& message)
     {
       //resources are allocated in g_application
       CGUIDialog::OnMessage(message);
-      // start timer
-      m_dwTimer = timeGetTime();
-      // levels are set in Render(), so no need to do them here...
+      ResetTimer();
       return true;
     }
     break;
@@ -54,28 +52,13 @@ bool CGUIDialogVolumeBar::OnMessage(CGUIMessage& message)
     }
     break;
 
-  case GUI_MSG_CLICKED:
-    {
-      if (message.GetSenderId() == POPUP_VOLUME_SLIDER) // who else is it going to be??
-      {
-        CGUISliderControl* pControl = (CGUISliderControl*)GetControl(message.GetSenderId());
-        if (pControl)
-        {
-          // Set the global volume setting to the percentage requested
-          int iPercentage = pControl->GetPercentage();
-          g_application.SetVolume(iPercentage);
-          // Label and control will auto-update when Render() is called.
-        }
-        // reset the timer
-        m_dwTimer = timeGetTime();
-        return true;
-      }
-    }
-    break;
   case GUI_MSG_LABEL_SET:
     {
-      if (message.GetSenderId() == GetID() && message.GetControlId() == POPUP_VOLUME_LEVEL_TEXT)
-        CGUIDialog::OnMessage(message);
+      if (g_SkinInfo.GetVersion() < 1.86)
+      {
+        if (message.GetSenderId() == GetID() && message.GetControlId() == POPUP_VOLUME_LEVEL_TEXT)
+          CGUIDialog::OnMessage(message);
+      }
     }
   }
   return false; // don't process anything other than what we need!
@@ -89,15 +72,13 @@ void CGUIDialogVolumeBar::ResetTimer()
 void CGUIDialogVolumeBar::Render()
 {
   // set the level on our slider
-  int iValue = g_application.GetVolume();
-  CGUISliderControl *pSlider = (CGUISliderControl*)GetControl(POPUP_VOLUME_SLIDER);
-  if (pSlider) pSlider->SetPercentage(iValue);   // Update our volume bar accordingly
-  // and set the level in our text label
-  CStdString strLevel;
-  strLevel.Format("%2.1f dB", (float)g_stSettings.m_nVolumeLevel / 100.0f);
-  CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), POPUP_VOLUME_LEVEL_TEXT);
-  msg.SetLabel(strLevel);
-  OnMessage(msg);
+  if (g_SkinInfo.GetVersion() < 1.86)
+  {
+    CGUISliderControl *pSlider = (CGUISliderControl*)GetControl(POPUP_VOLUME_SLIDER);
+    if (pSlider) pSlider->SetPercentage(g_application.GetVolume());   // Update our volume bar accordingly
+    // and set the level in our text label
+    SET_CONTROL_LABEL(POPUP_VOLUME_LEVEL_TEXT, g_infoManager.GetLabel(32));
+  }
   // and render the controls
   CGUIDialog::Render();
   // now check if we should exit

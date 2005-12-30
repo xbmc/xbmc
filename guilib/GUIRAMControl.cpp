@@ -224,6 +224,7 @@ void CGUIRAMControl::Render()
       fTextY += m_fFont2Height + (FLOAT) m_dwTextSpaceY;
     }
   }
+  CGUIControl::Render();
 }
 
 

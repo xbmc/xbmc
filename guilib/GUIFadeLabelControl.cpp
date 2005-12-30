@@ -110,6 +110,7 @@ void CGUIFadeLabelControl::Render()
     else
       RenderText((float)m_iPosX, (float)m_iPosY, (float) m_dwWidth, m_dwTextColor, (WCHAR*) strLabelUnicode.c_str(), true );
   }
+  CGUIControl::Render();
 }
 
 
