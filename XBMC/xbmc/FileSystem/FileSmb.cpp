@@ -325,7 +325,7 @@ bool CFileSMB::ReadString(char *szLine, int iLineLength)
   __int64 iFilePos = GetPosition();
 
   smb.Lock();
-  int iBytesRead = smbc_read(m_fd, (unsigned char*)szLine, iLineLength);
+  int iBytesRead = smbc_read(m_fd, (unsigned char*)szLine, iLineLength - 1);
   smb.Unlock();
   if (iBytesRead <= 0)
   {
