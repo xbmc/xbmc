@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 30-12-2005 fixed: Port numbers in Karaoke settings didn't match port numbers in System Info.
  - 30-12-2005 changed: Skin slide start positions are relative as of skin version 1.86.  PM3 updated to 1.86
  - 30-12-2005 added: Conditional window origins for dialogs.
  - 30-12-2005 fixed: [1387719] Stacking of non-english names.
