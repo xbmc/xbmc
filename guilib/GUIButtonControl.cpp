@@ -123,7 +123,7 @@ void CGUIButtonControl::Render()
     }
     m_pFont->End();
   }
-
+  CGUIControl::Render();
 }
 
 bool CGUIButtonControl::OnAction(const CAction &action)

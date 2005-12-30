@@ -38,6 +38,7 @@ void CGUIToggleButtonControl::Render()
     m_selectButton.SetEnabled(!IsDisabled());
     m_selectButton.SetPulseOnSelect(GetPulseOnSelect());
     m_selectButton.Render();
+    CGUIControl::Render();
   }
   else
   { // render our Normal textures...

@@ -118,6 +118,7 @@ void CGUISliderControl::Render()
       m_guiMid.Render();
     }
   }
+  CGUIControl::Render();
 }
 
 /*

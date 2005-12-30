@@ -3893,7 +3893,10 @@ bool CApplication::OnMessage(CGUIMessage& message)
 
       if (message.GetMessage() == GUI_MSG_PLAYBACK_ENDED)
       {
-        g_playlistPlayer.PlayNext(true);
+        // sending true to PlayNext() effectively passes bRestart to PlayFile()
+        // which is not generally what we want (except for stacks, which are
+        // handled above)
+        g_playlistPlayer.PlayNext();
       }
       else
       {

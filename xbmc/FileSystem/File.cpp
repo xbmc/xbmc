@@ -64,7 +64,7 @@ bool CFile::Cache(const CStdString& strFileName, const CStdString& strDest, XFIL
   {
     if (file.GetLength() <= 0)
     {
-      CLog::Log(LOGWARNING, "FILE::cache: the file %s has a length of 0 bytes", strFileName);
+      CLog::Log(LOGWARNING, "FILE::cache: the file %s has a length of 0 bytes", strFileName.c_str());
       file.Close();
       // no need to return false here.  Technically, we should create the new file and leave it at that
 //      return false;

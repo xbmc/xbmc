@@ -511,6 +511,7 @@ void CGUISpinControl::Render()
     else
       m_rectHit.SetRect((int)(fPosX - fTextWidth), (int)fPosY, (int) fTextWidth, (int) fTextHeight);
   }
+  CGUIControl::Render();
 }
 
 void CGUISpinControl::SetRange(int iStart, int iEnd)

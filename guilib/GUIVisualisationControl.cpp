@@ -192,6 +192,7 @@ void CGUIVisualisationControl::Render()
       g_graphicsContext.RestoreViewPort();
     }
   }
+  CGUIControl::Render();
 }
 
 

@@ -568,7 +568,7 @@ void CGUIControl::DoEffect()
   {
     float time = 1.0f - m_effectAmount;
     float amount = time * (m_effect.m_acceleration * time + 1.0f - m_effect.m_acceleration);
-    g_graphicsContext.SetControlOffset(amount * (m_effect.m_startX - m_iPosX), amount * (m_effect.m_startY - m_iPosY));
+    g_graphicsContext.SetControlOffset(amount * m_effect.m_startX, amount * m_effect.m_startY);
   }
   else // if (m_effect.type == EFFECT_TYPE_FADE)
     g_graphicsContext.SetControlAlpha((DWORD)(255 * m_effectAmount));
@@ -603,7 +603,7 @@ bool CGUIControl::UpdateEffectState()
   }
   // reset the queue state once we are allocated (allows timing to start when controls
   // are allocated).
-  if (HasRendered())
+  if (m_queueState != EFFECT_IN || HasRendered())
     m_queueState = EFFECT_NONE;
   // perform any effects
   if (m_effectState == EFFECT_IN)
