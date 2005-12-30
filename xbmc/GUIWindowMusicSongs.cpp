@@ -94,20 +94,20 @@ bool CGUIWindowMusicSongs::OnMessage(CGUIMessage& message)
       m_rootDir.SetMask(g_stSettings.m_szMyMusicExtensions);
       m_rootDir.SetShares(g_settings.m_vecMyMusicShares);
 
-      if (m_vecItems.IsCDDA() || m_vecItems.IsOnDVD())
-      {
-        // No disc in drive but current directory is a dvd share
-        if (!CDetectDVDMedia::IsDiscInDrive())
-          m_vecItems.m_strPath.Empty();
+      //if (m_vecItems.IsCDDA() || m_vecItems.IsOnDVD())
+      //{
+      //  // No disc in drive but current directory is a dvd share
+      //  if (!CDetectDVDMedia::IsDiscInDrive())
+      //    m_vecItems.m_strPath.Empty();
 
-        // look if disc has changed outside this window and url is still the same
-        CFileItem dvdUrl;
-        dvdUrl.m_strPath = m_rootDir.GetDVDDriveUrl();
-        if (m_vecItems.IsCDDA() && !dvdUrl.IsCDDA())
-          m_vecItems.m_strPath.Empty();
-        if (m_vecItems.IsOnDVD() && !dvdUrl.IsOnDVD())
-          m_vecItems.m_strPath.Empty();
-      }
+      //  // look if disc has changed outside this window and url is still the same
+      //  CFileItem dvdUrl;
+      //  dvdUrl.m_strPath = m_rootDir.GetDVDDriveUrl();
+      //  if (m_vecItems.IsCDDA() && !dvdUrl.IsCDDA())
+      //    m_vecItems.m_strPath.Empty();
+      //  if (m_vecItems.IsOnDVD() && !dvdUrl.IsOnDVD())
+      //    m_vecItems.m_strPath.Empty();
+      //}
 
       return CGUIWindowMusicBase::OnMessage(message);
     }
@@ -130,9 +130,10 @@ bool CGUIWindowMusicSongs::OnMessage(CGUIMessage& message)
     }
     break;
 
-  case GUI_MSG_DVDDRIVE_EJECTED_CD:
+  case GUI_MSG_NOTIFY_ALL:
     {
-      DeleteRemoveableMediaDirectoryCache();
+      if (message.GetParam1()==GUI_MSG_DVDDRIVE_EJECTED_CD)
+        DeleteRemoveableMediaDirectoryCache();
     }
     break;
 

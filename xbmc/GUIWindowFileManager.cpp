@@ -117,33 +117,39 @@ bool CGUIWindowFileManager::OnMessage(CGUIMessage& message)
 {
   switch ( message.GetMessage() )
   {
-  case GUI_MSG_DVDDRIVE_EJECTED_CD:
-    {
-      for (int i = 0; i < 2; i++)
+  case GUI_MSG_NOTIFY_ALL:
+    { // Message is received even if window is inactive
+      //  Is there a dvd share in this window?
+      if (!m_rootDir.GetDVDDriveUrl().IsEmpty())
       {
-        if ( m_Directory[i].IsCDDA() || m_Directory[i].IsOnDVD() )
+        if (message.GetParam1()==GUI_MSG_DVDDRIVE_EJECTED_CD)
         {
-          // Disc has changed and we are inside a DVD Drive share, get out of here :)
-          m_Directory[i].m_strPath = "";
+          for (int i = 0; i < 2; i++)
+          {
+            if (m_Directory[i].IsVirtualDirectoryRoot() && IsActive())
+            {
+              int iItem = GetSelectedItem(i);
+              Update(i, m_Directory[i].m_strPath);
+              CONTROL_SELECT_ITEM(CONTROL_LEFT_LIST + i, iItem)
+            }
+            else if (m_Directory[i].IsCDDA() || m_Directory[i].IsOnDVD())
+            { // Disc has changed and we are inside a DVD Drive share, get out of here :)
+              if (IsActive()) Update(i, "");
+              else m_Directory[i].m_strPath="";
+            }
+          }
         }
-        if (m_Directory[i].IsVirtualDirectoryRoot())
-        {
-          int iItem = GetSelectedItem(i);
-          Update(i, "");
-          CONTROL_SELECT_ITEM(CONTROL_LEFT_LIST + i, iItem)
-        }
-      }
-    }
-    break;
-  case GUI_MSG_DVDDRIVE_CHANGED_CD:
-    {
-      for (int i = 0; i < 2; i++)
-      {
-        if (m_Directory[i].IsVirtualDirectoryRoot())
-        {
-          int iItem = GetSelectedItem(i);
-          Update(i, "");
-          CONTROL_SELECT_ITEM(CONTROL_LEFT_LIST + i, iItem)
+        else if (message.GetParam1()==GUI_MSG_DVDDRIVE_CHANGED_CD)
+        { // State of the dvd-drive changed (Open/Busy label,...), so update it
+          for (int i = 0; i < 2; i++)
+          {
+            if (m_Directory[i].IsVirtualDirectoryRoot() && IsActive())
+            {
+              int iItem = GetSelectedItem(i);
+              Update(i, m_Directory[i].m_strPath);
+              CONTROL_SELECT_ITEM(CONTROL_LEFT_LIST + i, iItem)
+            }
+          }
         }
       }
     }

@@ -18,8 +18,6 @@
 CGUIMediaWindow::CGUIMediaWindow(DWORD id, const char *xmlFile)
     : CGUIWindow(id, xmlFile)
 {
-  m_bDVDDiscChanged = false;
-  m_bDVDDiscEjected = false;
   m_vecItems.m_strPath = "?";
   m_vecItems.m_bIsFolder = true;
   m_iLastControl = -1;
@@ -101,6 +99,7 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
       }
     }
     break;
+
   case GUI_MSG_SETFOCUS:
     {
       if (m_viewControl.HasControl(message.GetControlId()) && m_viewControl.GetCurrentControl() != message.GetControlId())
@@ -110,7 +109,45 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
       }
     }
     break;
+
+  case GUI_MSG_NOTIFY_ALL:
+    { // Message is received even if this window is inactive
+      
+      //  Is there a dvd share in this window?
+      if (!m_rootDir.GetDVDDriveUrl().IsEmpty())
+      {
+        if (message.GetParam1()==GUI_MSG_DVDDRIVE_EJECTED_CD)
+        {
+          if (m_vecItems.IsVirtualDirectoryRoot() && IsActive())
+          {
+            int iItem = m_viewControl.GetSelectedItem();
+            Update(m_vecItems.m_strPath);
+            m_viewControl.SetSelectedItem(iItem);
+          }
+          else if (m_vecItems.IsCDDA() || m_vecItems.IsOnDVD())
+          { // Disc has changed and we are inside a DVD Drive share, get out of here :)
+            if (IsActive()) Update("");
+            else m_vecItems.m_strPath="";
+          }
+
+          return true;
+        }
+        else if (message.GetParam1()==GUI_MSG_DVDDRIVE_CHANGED_CD)
+        { // State of the dvd-drive changed (Open/Busy label,...), so update it
+          if (m_vecItems.IsVirtualDirectoryRoot() && IsActive())
+          {
+            int iItem = m_viewControl.GetSelectedItem();
+            Update(m_vecItems.m_strPath);
+            m_viewControl.SetSelectedItem(iItem);
+          }
+
+          return true;
+        }
+      }
+    }
+    break;
   }
+
   return CGUIWindow::OnMessage(message);
 }
 
@@ -175,8 +212,13 @@ void CGUIMediaWindow::ClearFileItems()
 void CGUIMediaWindow::SortItems(CFileItemList &items)
 {
   auto_ptr<CGUIViewState> pState(CGUIViewState::GetViewState(GetID(), items));
-  if (pState.get())
+
+  if (pState.get() && 
+      (pState->GetSortMethod()!=items.GetSortMethod() || 
+       pState->GetSortOrder()!=items.GetSortOrder()))
+  {
     items.Sort(pState->GetSortMethod(), pState->GetSortOrder());
+  }
 }
 
 void CGUIMediaWindow::OnSort()

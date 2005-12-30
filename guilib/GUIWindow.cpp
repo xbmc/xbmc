@@ -1135,3 +1135,8 @@ EFFECT_STATE CGUIWindow::GetEffectState()
   else
     return m_effectState;
 }
+
+bool CGUIWindow::IsActive() const
+{
+  return m_gWindowManager.IsWindowActive(GetID());
+}

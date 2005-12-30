@@ -51,38 +51,6 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
 {
   switch ( message.GetMessage() )
   {
-  case GUI_MSG_DVDDRIVE_EJECTED_CD:
-    {
-      CLog::Log(LOGDEBUG,"got eject msg!");
-      if ( !m_vecItems.IsVirtualDirectoryRoot() )
-      {
-        if ( m_vecItems.IsCDDA() || m_vecItems.IsOnDVD() )
-        {
-          // Disc has changed and we are inside a DVD Drive share, get out of here :)
-          m_vecItems.m_strPath.Empty();
-          Update( m_vecItems.m_strPath );
-        }
-      }
-      else
-      {
-        int iItem = m_viewControl.GetSelectedItem();
-        Update( m_vecItems.m_strPath );
-        m_viewControl.SetSelectedItem(iItem);
-      }
-    }
-    break;
-
-  case GUI_MSG_DVDDRIVE_CHANGED_CD:
-    {
-      CLog::Log(LOGDEBUG,"got changed cd!");
-      if ( m_vecItems.IsVirtualDirectoryRoot() )
-      {
-        int iItem = m_viewControl.GetSelectedItem();
-        Update( m_vecItems.m_strPath );
-        m_viewControl.SetSelectedItem(iItem);
-      }
-    }
-    break;
   case GUI_MSG_WINDOW_DEINIT:
     m_database.Close();
     break;
@@ -209,6 +177,36 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
         OnManualIMDB();
       }
     }
+    break;
+  case GUI_MSG_NOTIFY_ALL:
+    { // Message is received even if this window is inactive
+      
+      //  Is there a dvd share in this window?
+      if (!m_rootDir.GetDVDDriveUrl().IsEmpty())
+      {
+        if (message.GetParam1()==GUI_MSG_DVDDRIVE_EJECTED_CD)
+        {
+          if (m_vecItems.IsVirtualDirectoryRoot() && IsActive())
+          {
+            int iItem = m_viewControl.GetSelectedItem();
+            Update(m_vecItems.m_strPath);
+            m_viewControl.SetSelectedItem(iItem);
+          }
+          else if (m_vecItems.IsCDDA() || m_vecItems.IsOnDVD())
+          { // Disc has changed and we are inside a DVD Drive share, get out of here :)
+            if (IsActive()) Update("");
+            else 
+            {
+              m_vecPathHistory.clear();
+              m_vecItems.m_strPath="";
+            }
+          }
+
+          return true;
+        }
+      }
+    }
+    break;
   }
   return CGUIMediaWindow::OnMessage(message);
 }
