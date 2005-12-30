@@ -77,7 +77,7 @@ VOID CDetectDVDMedia::UpdateDvdrom()
         m_DriveState = DRIVE_OPEN;
         SetNewDVDShareUrl("D:\\", false, g_localizeStrings.Get(502));
         // Send Message to GUI that disc been ejected
-        CGUIMessage msg( GUI_MSG_DVDDRIVE_EJECTED_CD, 0, 0, 0, 0, NULL );
+        CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_DVDDRIVE_EJECTED_CD, 0, NULL);
         waitLock.Leave();
         m_gWindowManager.SendThreadMessage( msg );
 
@@ -99,7 +99,7 @@ VOID CDetectDVDMedia::UpdateDvdrom()
           m_pCdInfo = NULL;
         }
         waitLock.Leave();
-        CGUIMessage msg( GUI_MSG_DVDDRIVE_CHANGED_CD, 0, 0, 0, 0, NULL );
+        CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_DVDDRIVE_CHANGED_CD, 0, NULL);
         m_gWindowManager.SendThreadMessage( msg );
         Sleep(6000);
         return ;
@@ -118,7 +118,7 @@ VOID CDetectDVDMedia::UpdateDvdrom()
         m_DriveState = DRIVE_CLOSED_NO_MEDIA;
         SetNewDVDShareUrl("D:\\", false, g_localizeStrings.Get(504));
         // Send Message to GUI that disc has changed
-        CGUIMessage msg( GUI_MSG_DVDDRIVE_CHANGED_CD, 0, 0, 0, 0, NULL );
+        CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_DVDDRIVE_CHANGED_CD, 0, NULL);
         waitLock.Leave();
         m_gWindowManager.SendThreadMessage( msg );
         return ;
@@ -132,7 +132,7 @@ VOID CDetectDVDMedia::UpdateDvdrom()
         m_helper.Remount("D:", "Cdrom0");
         // Detect ISO9660(mode1/mode2) or CDDA filesystem
         DetectMediaType();
-        CGUIMessage msg( GUI_MSG_DVDDRIVE_CHANGED_CD, 0, 0, 0, 0, (void*) m_pCdInfo );
+        CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_DVDDRIVE_CHANGED_CD, 0, NULL);
         waitLock.Leave();
         m_gWindowManager.SendThreadMessage( msg );
         // Tell the application object that a new Cd is inserted

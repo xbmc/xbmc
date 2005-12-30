@@ -45,10 +45,6 @@ bool CGUIWindowVideoPlaylist::OnMessage(CGUIMessage& message)
 {
   switch ( message.GetMessage() )
   {
-  case GUI_MSG_DVDDRIVE_EJECTED_CD:
-  case GUI_MSG_DVDDRIVE_CHANGED_CD:
-    return true;  // nothing to do
-    break;
   case GUI_MSG_PLAYBACK_ENDED:
   case GUI_MSG_PLAYBACK_STOPPED:
   case GUI_MSG_PLAYLISTPLAYER_STOPPED:

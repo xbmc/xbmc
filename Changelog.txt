@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 30-12-2005 changed: moved dvd tray state to media window base class
  - 29-12-2005 added: Play action on a folder in videos will build internal playlist recursively and start playing immediately
  - 29-12-2005 fixed: Strange navigation and sorting issues.
  - 29-12-2005 fixed: xbmc in infinite loop due to a playlist full of unplayable items
