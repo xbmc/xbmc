@@ -190,7 +190,7 @@ bool CFileHD::ReadString(char *szLine, int iLineLength)
   if (!m_hFile.isValid()) return false;
   __int64 iFilePos = GetPosition();
 
-  int iBytesRead = Read( (unsigned char*)szLine, iLineLength);
+  int iBytesRead = Read( (unsigned char*)szLine, iLineLength - 1);
   if (iBytesRead <= 0)
   {
     return false;
