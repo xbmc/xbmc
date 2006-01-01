@@ -1,3 +1,8 @@
+/*
+ * Modified for use with MPlayer, for details see the CVS changelog at
+ * http://www.mplayerhq.hu/cgi-bin/cvsweb.cgi/main/
+ * $Id$
+ */
 
 /*
  * Discrete Cosine Tansform (DCT) for subband synthesis
@@ -305,7 +310,13 @@ static void dct64_1(real *out0,real *out1,real *b1,real *b2,real *samples)
  * the call via dct64 is a trick to force GCC to use
  * (new) registers for the b1,b2 pointer to the bufs[xx] field
  */
-void dct64(real *a,real *b,real *c)
+static void dct64(real *a,real *b,real *c)
+{
+  real bufs[0x40];
+  dct64_1(a,b,bufs,bufs+0x20,c);
+}
+
+void mp3lib_dct64(real *a,real *b,real *c)
 {
   real bufs[0x40];
   dct64_1(a,b,bufs,bufs+0x20,c);

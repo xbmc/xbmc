@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 01-01-2006 updated: libmp3 to mplayerhq cvs version as of now. fixes some mpegs that where only playing static audio
   - 04-10-2005 updated: ffmpeg to mplayerhq cvs version as of now. fixes a few avi's that where causing problems + a few other stuff
   - 06-09-2005 reverted: when resuming normal playback speed, video would jump ahead a couple of seconds. didn't work well
   - 22-08-2005 updated: libvorbis interface to mplayer cvs (ad_libvorbis.c:1.18), fixes vorbis decoding in both matroska and ogm containers
