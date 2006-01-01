@@ -25,9 +25,9 @@
 #include "huffman.h"
 #include "mp3.h"
 #include "bswap.h"
-#include "../cpudetect.h"
-//#include "../liba52/mm_accel.h"
-#include "../mp_msg.h"
+#include "cpudetect.h"
+//#include "liba52/mm_accel.h"
+#include "mp_msg.h"
 
 #include "fastmemcpy.h"
 
@@ -45,7 +45,7 @@ int MP3_fpos=0;      // current file position
 int MP3_framesize=0; // current framesize
 int MP3_bitrate=0;   // current bitrate
 int MP3_samplerate=0;  // current samplerate
-int MP3_resync=0;
+static int MP3_resync;
 int MP3_channels=0;
 int MP3_bps=2;
 
@@ -65,6 +65,12 @@ LOCAL int mp3_read(char *buf,int size){
 #else
 extern int mp3_read(char *buf,int size);
 #endif
+/*
+ * Modified for use with MPlayer, for details see the CVS changelog at
+ * http://www.mplayerhq.hu/cgi-bin/cvsweb.cgi/main/
+ * $Id$
+ */
+
 
 //void mp3_seek(int pos){
 //  fseek(mp3_file,pos,SEEK_SET);
@@ -388,7 +394,7 @@ extern void dct64_MMX_3dnow(real *, real *, real *);
 extern void dct64_MMX_3dnowex(real *, real *, real *);
 void (*dct64_MMX_func)(real *, real *, real *);
 
-#include "../cpudetect.h"
+#include "cpudetect.h"
 
 // Init decoder tables.  Call first, once!
 #ifdef USE_FAKE_MONO
@@ -401,6 +407,7 @@ void MP3_Init(){
 
     _has_mmx = 0;
     dct36_func = dct36;
+    MP3_resync = 1;
 
     make_decode_tables(outscale);
 

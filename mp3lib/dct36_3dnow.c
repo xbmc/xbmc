@@ -14,6 +14,10 @@
  * by KIMURA Takuhiro <kim@hannah.ipc.miyakyo-u.ac.jp> - until 31.Mar.1999
  *                    <kim@comtec.co.jp>               - after  1.Apr.1999
  *
+ * Modified for use with MPlayer, for details see the CVS changelog at
+ * http://www.mplayerhq.hu/cgi-bin/cvsweb.cgi/main/
+ * $Id$
+ *
  * Original disclaimer:
  *  The author of this program disclaim whole expressed or implied
  *  warranties with regard to this program, and in no event shall the
@@ -25,7 +29,7 @@
 
 #define real float /* ugly - but only way */
 
-#include "../mangle.h"
+#include "mangle.h"
 
 #ifdef __DCT36_OPTIMIZE_FOR_K7
 void dct36_3dnowex(real *inbuf, real *o1,
