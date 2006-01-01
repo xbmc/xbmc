@@ -692,7 +692,7 @@ bool CGUIWindowSystemInfo::GetINetState(CStdString& strInetCon)
 	}
 	else if (http.IsInternet(false))
   { // connected, but no DNS
-		strInetCon.Format("%s %s",lbl2.c_str(), g_localizeStrings.Get(13299).c_str());
+		strInetCon.Format("%s %s",lbl2.c_str(), g_localizeStrings.Get(13274).c_str());
     return true;
   }
   // NOT Connected to the Internet!
