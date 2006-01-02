@@ -188,6 +188,9 @@ NODE_TYPE CDirectoryNode::GetChildType()
 //  Get the child fileitems of this node
 bool CDirectoryNode::GetChilds(CFileItemList& items)
 {
+  if (CanCache() && items.Load())
+    return true;
+
   auto_ptr<CDirectoryNode> pNode(CDirectoryNode::CreateNode(GetChildType(), "", this));
 
   bool bSuccess=false;
@@ -198,6 +201,9 @@ bool CDirectoryNode::GetChilds(CFileItemList& items)
     if (!bSuccess)
       items.Clear();
     pNode->RemoveParent();
+
+    if (CanCache())
+      items.SetCacheToDisc(true);
   }
 
   return bSuccess;
@@ -258,6 +264,17 @@ void CDirectoryNode::AddQueuingFolder(CFileItemList& items)
     pItem->m_musicInfoTag.SetTitle(strFake);
     pItem->m_musicInfoTag.SetGenre(strFake);
     pItem->SetCanQueue(false);
+    pItem->SetLabelPreformated(true);
     items.Add(pItem);
   }
+}
+
+bool CDirectoryNode::CanCache()
+{
+  //  Only cache the directorys in the root
+  NODE_TYPE childnode=GetChildType();
+  NODE_TYPE node=GetType();
+  return ((childnode==NODE_TYPE_GENRE || childnode==NODE_TYPE_ARTIST || 
+          childnode==NODE_TYPE_ALBUM || childnode==NODE_TYPE_SONG) &&
+          node==NODE_TYPE_OVERVIEW);
 }

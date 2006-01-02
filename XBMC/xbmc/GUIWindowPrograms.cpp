@@ -532,6 +532,7 @@ void CGUIWindowPrograms::LoadDirectory(const CStdString& strDirectory, int idept
             CFileItem *pItem = new CFileItem(strDescription);
             pItem->m_strPath = file.m_strPath;
             pItem->m_bIsFolder = false;
+            pItem->m_strTitle=strDescription;
             //pItem->m_dwSize = wfd.nFileSizeLow;
 
             FileTimeToLocalFileTime(&wfd.ftLastWriteTime, &localTime);
@@ -671,7 +672,8 @@ void CGUIWindowPrograms::UpdateDir(const CStdString &strDirectory)
 
   if (strDirectory != "")
   {
-    if (!g_guiSettings.GetBool("ProgramFiles.HideParentDirItems"))
+    auto_ptr<CGUIViewState> pState(CGUIViewState::GetViewState(GetID(), m_vecItems));
+    if (pState.get() && !pState->HideParentDirItems())
     {
       CFileItem *pItem = new CFileItem("..");
       pItem->m_strPath = strParentPath;
@@ -708,6 +710,7 @@ void CGUIWindowPrograms::UpdateDir(const CStdString &strDirectory)
             CFileItem *pItem = new CFileItem(strDescription);
             pItem->m_strPath = item.m_strPath;
             pItem->m_bIsFolder = false;
+            pItem->m_strTitle=strDescription;
             GetFileAttributesEx(pItem->m_strPath, GetFileExInfoStandard, &FileAttributeData);
             FileTimeToLocalFileTime(&FileAttributeData.ftLastWriteTime, &localTime);
             FileTimeToSystemTime(&localTime, &pItem->m_stTime);
@@ -775,7 +778,8 @@ void CGUIWindowPrograms::UpdateDir(const CStdString &strDirectory)
   
   CUtil::ClearCache();
   m_vecItems.SetThumbs();
-  if (g_guiSettings.GetBool("FileLists.HideExtensions"))
+  auto_ptr<CGUIViewState> pState(CGUIViewState::GetViewState(GetID(), m_vecItems));
+  if (pState.get() && pState->HideExtensions())
     m_vecItems.RemoveExtensions();
   m_vecItems.FillInDefaultIcons();
   OnSort();
@@ -872,49 +876,6 @@ void CGUIWindowPrograms::OnClick(int iItem)
       CUtil::RunXBE(szPath, szParameters,F_VIDEO(iRegion));
     else
       CUtil::RunXBE(szPath,NULL,F_VIDEO(iRegion));
-  }
-}
-
-void CGUIWindowPrograms::FormatItemLabels()
-{
-  auto_ptr<CGUIViewState> pState(CGUIViewState::GetViewState(GetID(), m_vecItems));
-  if (!pState.get()) return;
-  for (int i = 0; i < (int)m_vecItems.Size(); i++)
-  {
-    CFileItem* pItem = m_vecItems[i];
-    if (pState->GetSortMethod() == SORT_METHOD_LABEL)
-    {
-      if (pItem->m_bIsFolder)
-        pItem->SetLabel2("");
-      else
-      {
-        CStdString strDateTime;
-        CUtil::GetDate(pItem->m_stTime, strDateTime);
-        pItem->SetLabel2(strDateTime);
-      }
-    }
-    else if (pState->GetSortMethod() == SORT_METHOD_PROGRAM_COUNT)
-    {
-      if (pItem->m_bIsFolder)
-        pItem->SetLabel2("");
-      else
-      {
-        CStdString strTimesPlayed;
-        strTimesPlayed.Format("%i", pItem->m_iprogramCount);
-        pItem->SetLabel2(strTimesPlayed);
-      }
-    }
-    else
-    {
-      if (pItem->m_stTime.wYear)
-      {
-        CStdString strDateTime;
-        CUtil::GetDate(pItem->m_stTime, strDateTime);
-        pItem->SetLabel2(strDateTime);
-      }
-      else
-        pItem->SetLabel2("");
-    }
   }
 }
 

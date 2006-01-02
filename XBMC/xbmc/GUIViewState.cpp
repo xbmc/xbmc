@@ -139,11 +139,27 @@ int CGUIViewState::GetSortMethodLabel() const
   return 103; // Sort By: Name
 }
 
-void CGUIViewState::AddSortMethod(SORT_METHOD sortMethod, int buttonLabel)
+void CGUIViewState::GetSortMethodLabelMasks(LABEL_MASKS& masks) const
+{
+  if (m_currentSortMethod>=0 && m_currentSortMethod<(int)m_sortMethods.size())
+  {
+    masks=m_sortMethods[m_currentSortMethod].m_labelMasks; 
+    return;
+  }
+
+  masks.m_strLabelFile.Empty();
+  masks.m_strLabel2File.Empty();
+  masks.m_strLabelFolder.Empty();
+  masks.m_strLabel2Folder.Empty();
+  return;
+}
+
+void CGUIViewState::AddSortMethod(SORT_METHOD sortMethod, int buttonLabel, LABEL_MASKS labelmasks)
 {
   SORT sort;
   sort.m_sortMethod=sortMethod;
   sort.m_buttonLabel=buttonLabel;
+  sort.m_labelMasks=labelmasks;
 
   m_sortMethods.push_back(sort);
 }
@@ -172,9 +188,19 @@ SORT_METHOD CGUIViewState::SetNextSortMethod()
   return GetSortMethod();
 }
 
+bool CGUIViewState::HideExtensions()
+{
+  return g_guiSettings.GetBool("FileLists.HideExtensions");
+}
+
+bool CGUIViewState::HideParentDirItems()
+{
+  return g_guiSettings.GetBool("FileLists.HideParentDirItems");
+}
+
 CGUIViewStateGeneral::CGUIViewStateGeneral(const CFileItemList& items) : CGUIViewState(items)
 {
-  AddSortMethod(SORT_METHOD_LABEL, 103);
+  AddSortMethod(SORT_METHOD_LABEL, 103, LABEL_MASKS("%F", "%I", "%F", ""));  // Filename, size | Foldername, empty
   SetSortMethod(SORT_METHOD_LABEL);
 
   AddViewAsControl(VIEW_METHOD_LIST, 101);

@@ -7,6 +7,7 @@ public:
   CGUIViewStateWindowPictures(const CFileItemList& items);
 
 protected:
+  virtual bool HideParentDirItems();
   virtual void SaveViewState();
 };
 
@@ -16,6 +17,7 @@ public:
   CGUIViewStateWindowPrograms(const CFileItemList& items);
 
 protected:
+  virtual bool HideParentDirItems();
   virtual void SaveViewState();
 };
 

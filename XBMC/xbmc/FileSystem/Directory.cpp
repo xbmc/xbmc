@@ -21,10 +21,11 @@ bool CDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items, C
   pDirectory->SetMask(strMask);
   pDirectory->SetAllowPrompting(allowPrompting);
 
+  items.m_strPath=strPath;
+
   bool bSuccess = pDirectory->GetDirectory(strPath, items);
   if (bSuccess)
   {
-    items.m_strPath=strPath;
     //  Should any of the files we read be treated as a directory?
     //  Disable for musicdatabase, it already contains the extracted items
     if (bUseFileDirectories && !items.IsMusicDb())

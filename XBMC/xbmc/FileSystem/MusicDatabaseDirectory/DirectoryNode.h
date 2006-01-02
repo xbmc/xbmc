@@ -54,6 +54,7 @@ namespace DIRECTORY
 
     private:
       void AddQueuingFolder(CFileItemList& items);
+      bool CanCache();
 
     private:
       NODE_TYPE m_Type;

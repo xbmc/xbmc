@@ -49,16 +49,6 @@ protected:
   */
   virtual void OnPopupMenu(int iItem);
   /*!
-  \brief Will be called for every item to set the label and thumbs
-  \param pItem Item to be formatted
-  */
-  virtual void OnFileItemFormatLabel(CFileItem* pItem) = 0;
-  /*!
-   \brief Will be called to sort items. Provide a sort method.
-   \param items Items to sort
-   */
-  //virtual void SortItems(CFileItemList& items);
-  /*!
   \brief Overwrite to update your gui buttons (visible, enable,...)
   */
   virtual void GoParentFolder();
@@ -84,14 +74,9 @@ protected:
   bool FindAlbumInfo(const CStdString& strAlbum, const CStdString& strArtist, CMusicAlbumInfo& album);
   void ShowAlbumInfo(const CStdString& strAlbum, const CStdString& strPath, bool bSaveDb, bool bSaveDirThumb, bool bRefresh);
   void ShowAlbumInfo(const CStdString& strAlbum, const CStdString& strArtist, const CStdString& strPath, bool bSaveDb, bool bSaveDirThumb, bool bRefresh);
-  void UpdateListControl();
   void OnRipCD();
   void OnSearch();
-  bool ViewByIcon();
-  bool ViewByLargeIcon();
   void DisplayEmptyDatabaseMessage(bool bDisplay);
-  void SetLabelFromTag(CFileItem *pItem);
-  CStdString ParseFormat(CFileItem *pItem, const CStdString& strFormat);
   void LoadPlayList(const CStdString& strPlayList, int iPlayList = PLAYLIST_MUSIC);
   void ShowShareErrorMessage(CFileItem* pItem);
   void SetHistoryForPath(const CStdString& strDirectory);
@@ -106,7 +91,5 @@ protected:
   vector<CStdString> m_vecPathHistory; ///< History of traversed directories
 
   // member variables to save frequently used g_guiSettings (which is slow)
-  CStdString m_formatLeft;
-  CStdString m_formatRight;
   bool m_hideExtensions;
 };

@@ -14,7 +14,6 @@ private:
   virtual void SetIMDBThumbs(CFileItemList& items);
 protected:
   virtual void AddFileToDatabase(const CFileItem* pItem);
-  virtual void FormatItemLabels();
   virtual void UpdateButtons();
   virtual bool Update(const CStdString &strDirectory);
   bool UpdateDir(const CStdString &strDirectory);
