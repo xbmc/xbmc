@@ -17,7 +17,6 @@ public:
 protected:
   virtual void GoParentFolder();
   virtual void OnClick(int iItem);
-  virtual void FormatItemLabels();
   virtual bool Update(const CStdString& strDirectory);
 
   void OnScan(CFileItemList& items, int& iTotalAppsFound) ;

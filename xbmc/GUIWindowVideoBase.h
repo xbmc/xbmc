@@ -18,7 +18,6 @@ private:
 protected:
   virtual void GoParentFolder();
   virtual void OnClick(int iItem) {};  // CONSOLIDATE??
-  virtual void FormatItemLabels() {};
   virtual void UpdateButtons();
   virtual bool Update(const CStdString &strDirectory) { return false; }; // CONSOLIDATE??
   virtual void OnSort();

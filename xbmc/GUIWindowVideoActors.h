@@ -9,7 +9,6 @@ public:
   virtual bool OnMessage(CGUIMessage& message);
 
 protected:
-  virtual void FormatItemLabels();
   virtual bool Update(const CStdString &strDirectory);
   virtual void OnClick(int iItem);
   virtual void OnInfo(int iItem);

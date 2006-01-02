@@ -216,34 +216,6 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
   return CGUIMediaWindow::OnMessage(message);
 }
 
-void CGUIWindowPictures::FormatItemLabels()
-{
-  auto_ptr<CGUIViewState> pState(CGUIViewState::GetViewState(GetID(), m_vecItems));
-  if (!pState.get()) return;
-  for (int i = 0; i < m_vecItems.Size(); i++)
-  {
-    CFileItem* pItem = m_vecItems[i];
-    if (pState->GetSortMethod() == SORT_METHOD_LABEL || pState->GetSortMethod() == SORT_METHOD_SIZE)
-    {
-      if (pItem->m_bIsFolder)
-        pItem->SetLabel2("");
-      else
-        pItem->SetFileSizeLabel();
-    }
-    else
-    {
-      if (pItem->m_stTime.wYear)
-      {
-        CStdString strDateTime;
-        CUtil::GetDate(pItem->m_stTime, strDateTime);
-        pItem->SetLabel2(strDateTime);
-      }
-      else
-        pItem->SetLabel2("");
-    }
-  }
-}
-
 void CGUIWindowPictures::UpdateButtons()
 {
   CGUIMediaWindow::UpdateButtons();
@@ -345,7 +317,8 @@ bool CGUIWindowPictures::UpdateDir(const CStdString &strDirectory)
   m_vecItems.m_strPath = items.m_strPath;
   items.ClearKeepPointer();
 
-  if (g_guiSettings.GetBool("FileLists.HideExtensions"))
+  auto_ptr<CGUIViewState> pState(CGUIViewState::GetViewState(GetID(), m_vecItems));
+  if (pState.get() && pState->HideExtensions())
     m_vecItems.RemoveExtensions();
   m_vecItems.FillInDefaultIcons();
   OnSort();
@@ -730,7 +703,8 @@ bool CGUIWindowPictures::GetDirectory(const CStdString &strDirectory, CFileItemL
   CLog::Log(LOGDEBUG,"CGUIWindowPicutres::GetDirectory (%s)", strDirectory.c_str());
   CLog::Log(LOGDEBUG,"  ParentPath = [%s]", strParentPath.c_str());
 
-  if (!g_guiSettings.GetBool("Pictures.HideParentDirItems"))
+  auto_ptr<CGUIViewState> pState(CGUIViewState::GetViewState(GetID(), m_vecItems));
+  if (pState.get() && !pState->HideParentDirItems())
   {
     CFileItem *pItem = new CFileItem("..");
     pItem->m_strPath = strParentPath;

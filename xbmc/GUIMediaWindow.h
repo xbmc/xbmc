@@ -22,7 +22,7 @@ public:
 protected:
   virtual void GoParentFolder();
   virtual void OnClick(int iItem);
-  virtual void FormatItemLabels() {};
+  virtual void FormatItemLabels();
   virtual void UpdateButtons();
   virtual bool Update(const CStdString &strDirectory);
   virtual void OnSort();
