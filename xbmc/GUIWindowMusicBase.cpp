@@ -2,14 +2,12 @@
 #include "GUIWindowMusicBase.h"
 #include "MusicInfoTagLoaderFactory.h"
 #include "GUIWindowMusicInfo.h"
-#include "FileSystem/HDdirectory.h"
 #include "FileSystem/ZipManager.h"
 #include "PlayListFactory.h"
 #include "Util.h"
 #include "PlayListM3U.h"
 #include "Application.h"
 #include "PlayListPlayer.h"
-#include "GUIThumbnailPanel.h"
 #include "GUIListControl.h"
 #include "FileSystem/DirectoryCache.h"
 #include "CDRip/CDDARipper.h"
@@ -18,7 +16,6 @@
 #include "GUIDialogMusicScan.h"
 #include "GUIDialogContextMenu.h"
 #include "GUIWindowFileManager.h"
-#include "GUIViewState.h"
 #ifdef PRE_SKIN_VERSION_2_0_COMPATIBILITY
 #include "SkinInfo.h"
 #endif
@@ -240,39 +237,9 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
   case GUI_MSG_CLICKED:
     {
       int iControl = message.GetSenderId();
-      if (iControl == CONTROL_BTNSORTASC) // sort asc
-      {
-        auto_ptr<CGUIViewState> pState(CGUIViewState::GetViewState(GetID(), m_vecItems));
-        if (pState.get())
-          pState->SetNextSortOrder();
-
-        UpdateButtons();
-        UpdateListControl();
-
-        return true;
-      }
       if (iControl == CONTROL_BTNSORTBY) // sort by
       {
-        auto_ptr<CGUIViewState> pState(CGUIViewState::GetViewState(GetID(), m_vecItems));
-        if (pState.get())
-          pState->SetNextSortMethod();
-
-        int nItem = m_viewControl.GetSelectedItem();
-        CFileItem*pItem = m_vecItems[nItem];
-        CStdString strSelected = pItem->m_strPath;
-
-        UpdateButtons();
-        UpdateListControl();
-
-        for (int i = 0; i < m_vecItems.Size(); i++)
-        {
-          CFileItem* pItem = m_vecItems[i];
-          if (pItem->m_strPath == strSelected)
-          {
-            m_viewControl.SetSelectedItem(i);
-            break;
-          }
-        }
+        CGUIMediaWindow::OnMessage(message);
 
         //  set the currently playing item as selected, if its in this directory
         CStdString strDirectory = m_vecItems.m_strPath;
@@ -430,7 +397,15 @@ bool CGUIWindowMusicBase::GetDirectory(const CStdString &strDirectory, CFileItem
   CLog::Log(LOGDEBUG,"CGUIWindowMusicBase::GetDirectory (%s)", strDirectory.c_str());
   CLog::Log(LOGDEBUG,"  ParentPath = [%s]", strParentPath.c_str());
 
-  if (!g_guiSettings.GetBool("MyMusic.HideParentDirItems"))
+  CLog::Log(LOGDEBUG,"Fetching directory (%s)", strDirectory.c_str());
+  if (!m_rootDir.GetDirectory(strDirectory, items))
+  {
+    CLog::Log(LOGERROR,"GetDirectory(%s) failed", strDirectory.c_str());
+    return false;
+  }
+
+  auto_ptr<CGUIViewState> pState(CGUIViewState::GetViewState(GetID(), m_vecItems));
+  if (pState.get() && !pState->HideParentDirItems())
   {
     CFileItem *pItem = new CFileItem("..");
     pItem->m_strPath = strParentPath;
@@ -440,44 +415,10 @@ bool CGUIWindowMusicBase::GetDirectory(const CStdString &strDirectory, CFileItem
   }
   m_strParentPath = strParentPath;
 
-  CLog::Log(LOGDEBUG,"Fetching directory (%s)", strDirectory.c_str());
-  if (!m_rootDir.GetDirectory(strDirectory, items))
-  {
-    CLog::Log(LOGERROR,"GetDirectory(%s) failed", strDirectory.c_str());
-    return false;
-  }
-
   // check for .CUE files here.
   items.FilterCueItems();
 
   return true;
-}
-
-/// \brief Updates list/thumb control
-/// Sets item labels (text and thumbs), sorts items and adds them to the control
-void CGUIWindowMusicBase::UpdateListControl()
-{
-  // Cache available album thumbs
-  g_directoryCache.InitMusicThumbCache();
-
-  // save frequently used settings for speed
-  m_hideExtensions = g_guiSettings.GetBool("FileLists.HideExtensions");
-  m_formatLeft = g_guiSettings.GetString("MyMusic.TrackFormat");
-  m_formatRight = g_guiSettings.GetString("MyMusic.TrackFormatRight");
-  for (int i = 0; i < m_vecItems.Size(); i++)
-  {
-    CFileItem* pItem = m_vecItems[i];
-
-    // Format label for listcontrol
-    // and set thumb/icon for item
-    OnFileItemFormatLabel(pItem);
-  }
-
-  g_directoryCache.ClearMusicThumbCache();
-
-  SortItems(m_vecItems);
-
-  m_viewControl.SetItems(m_vecItems);
 }
 
 /// \brief Set window to a specific directory
@@ -512,11 +453,25 @@ bool CGUIWindowMusicBase::Update(const CStdString &strDirectory)
 
   m_vecItems.AppendPointer(items);
   m_vecItems.m_strPath=items.m_strPath;
+  m_vecItems.SetCacheToDisc(items.GetCacheToDisc());
   items.ClearKeepPointer();
+
+  auto_ptr<CGUIViewState> pState(CGUIViewState::GetViewState(GetID(), m_vecItems));
+  if (pState.get() && pState->HideExtensions())
+    m_vecItems.RemoveExtensions();
 
   RetrieveMusicInfo();
 
-  UpdateListControl();
+  FormatItemLabels();
+  SortItems(m_vecItems);
+  m_viewControl.SetItems(m_vecItems);
+
+  if (!m_vecItems.IsVirtualDirectoryRoot())
+  {
+    m_vecItems.SetMusicThumbs();
+    m_vecItems.FillInDefaultIcons();
+  }
+
   UpdateButtons();
 
   strSelectedItem = m_history.Get(m_vecItems.m_strPath);
@@ -1182,7 +1137,8 @@ void CGUIWindowMusicBase::AddItemToPlayList(const CFileItem* pItem, int iPlayLis
     {
       CPlayList::CPlayListItem playlistItem;
       CUtil::ConvertFileItemToPlayListItem(pItem, playlistItem);
-      if (g_guiSettings.GetBool("FileLists.HideExtensions"))
+      auto_ptr<CGUIViewState> pState(CGUIViewState::GetViewState(GetID(), m_vecItems));
+      if (pState.get() && pState->HideExtensions())
         playlistItem.RemoveExtension();
       g_playlistPlayer.GetPlaylist(iPlayList).Add(playlistItem);
     }
@@ -1198,11 +1154,16 @@ void CGUIWindowMusicBase::AddItemToPlayList(const CFileItem* pItem, int iPlayLis
           CGUIDialogOK::ShowAndGetInput(6, 0, 477, 0);
           return; //hmmm unable to load playlist?
         }
+
+        bool hideExtensions=false;
+        auto_ptr<CGUIViewState> pState(CGUIViewState::GetViewState(GetID(), m_vecItems));
+        if (pState.get()) hideExtensions=pState->HideExtensions();
+
         CPlayList playlist = *pPlayList;
         for (int i = 0; i < (int)playlist.size(); ++i)
         {
           CPlayList::CPlayListItem playlistItem = playlist[i];
-          if (g_guiSettings.GetBool("FileLists.HideExtensions"))
+          if (hideExtensions)
             playlistItem.RemoveExtension();
           g_playlistPlayer.GetPlaylist(iPlayList).Add(playlistItem);
         }
@@ -1756,100 +1717,6 @@ void CGUIWindowMusicBase::OnRipCD()
   }
 }
 
-void CGUIWindowMusicBase::SetLabelFromTag(CFileItem *pItem)
-{
-  CStdString strLabel  = ParseFormat(pItem, m_formatLeft);
-  CStdString strLabel2 = ParseFormat(pItem, m_formatRight);
-
-  // set label 1
-  // if we don't have anything at the moment (due to empty tags),
-  // we just remove the extension
-  if (strLabel.size())
-    pItem->SetLabel(strLabel);
-  else if (m_hideExtensions)
-    pItem->RemoveExtension();
-
-  // set label 2
-  if (strLabel2.size())
-    pItem->SetLabel2(strLabel2);
-}
-
-CStdString CGUIWindowMusicBase::ParseFormat(CFileItem *pItem, const CStdString& strFormat)
-{
-  CStdString strLabel = "";
-  CMusicInfoTag& tag = pItem->m_musicInfoTag;
-  int iPos1 = 0;
-  int iPos2 = strFormat.Find('%', iPos1);
-  bool bDoneSomething = !(iPos1 == iPos2); // stuff in front should be applied - everything using this bool is added by spiff
-  while (iPos2 >= 0)
-  {
-    if( (iPos2 > iPos1) && bDoneSomething )
-    {
-      strLabel += strFormat.Mid(iPos1, iPos2 - iPos1);
-      bDoneSomething = false;  
-    }
-    CStdString str;
-    if (strFormat[iPos2 + 1] == 'N' && tag.GetTrackNumber() > 0)
-    { // track number
-      str.Format("%02.2i", tag.GetTrackNumber());
-      bDoneSomething = true;
-    }
-    else if (strFormat[iPos2 + 1] == 'S' && tag.GetDiscNumber() > 0)
-    { // disc number
-      str.Format("%02.2i", tag.GetDiscNumber());
-      bDoneSomething = true;
-    }
-    else if (strFormat[iPos2 + 1] == 'A' && tag.GetArtist().size())
-    { // artist
-      str = tag.GetArtist();
-      bDoneSomething = true;
-    }
-    else if (strFormat[iPos2 + 1] == 'T' && tag.GetTitle().size())
-    { // title
-      str = tag.GetTitle();
-      bDoneSomething = true;
-    }
-    else if (strFormat[iPos2 + 1] == 'B' && tag.GetAlbum().size())
-    { // album
-      str = tag.GetAlbum();
-      bDoneSomething = true;
-    }
-    else if (strFormat[iPos2 + 1] == 'G' && tag.GetGenre().size())
-    { // genre
-      str = tag.GetGenre();
-      bDoneSomething = true;
-    }
-    else if (strFormat[iPos2 + 1] == 'Y')
-    { // year
-      str = tag.GetYear();
-      bDoneSomething = true;
-    }
-    else if (strFormat[iPos2 + 1] == 'F')
-    { // filename
-      str = CUtil::GetTitleFromPath(pItem->m_strPath);
-      bDoneSomething = true;
-    }
-    else if (strFormat[iPos2 + 1] == 'D' && tag.GetDuration() > 0)
-    { // duration
-      int nDuration = tag.GetDuration();
-      CUtil::SecondsToHMSString(nDuration, str);
-      bDoneSomething = true;
-    }
-    else if (strFormat[iPos2 + 1] == '%')
-    { // %% to print %
-      str = '%';
-      bDoneSomething = true;
-    }
-    strLabel += str;
-    iPos1 = iPos2 + 2;
-    iPos2 = strFormat.Find('%', iPos1);
-  }
-  if (iPos1 < (int)strFormat.size())
-    strLabel += strFormat.Right(strFormat.size() - iPos1);
-
-  return strLabel;
-}
-
 void CGUIWindowMusicBase::PlayItem(int iItem)
 {
   // restrictions should be placed in the appropiate window code
@@ -1974,4 +1841,3 @@ void CGUIWindowMusicBase::SetHistoryForPath(const CStdString& strDirectory)
     }
   }
 }
-

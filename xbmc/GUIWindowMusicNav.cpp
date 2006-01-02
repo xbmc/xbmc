@@ -9,10 +9,8 @@
 #include "GUIListControl.h"
 #include "GUIDialogContextMenu.h"
 #include "GUIDialogFileBrowser.h"
-#include "GUIWindowMusicSongs.h"
 #include "Picture.h"
 #include "FileSystem/MusicDatabaseDirectory.h"
-#include "GUIViewState.h"
 
 using namespace MUSICDATABASEDIRECTORY;
 
@@ -31,12 +29,6 @@ using namespace MUSICDATABASEDIRECTORY;
 CGUIWindowMusicNav::CGUIWindowMusicNav(void)
     : CGUIWindowMusicBase(WINDOW_MUSIC_NAV, "MyMusicNav.xml")
 {
-  m_bGotDirFromCache = false;
-  m_SortCache = SORT_METHOD_NONE;
-  m_AscendCache = SORT_ORDER_NONE;
-  m_bSkipTheCache = false;
-  m_bDisplayEmptyDatabaseMessage=false;
-
   m_vecItems.m_strPath = "?";
 }
 CGUIWindowMusicNav::~CGUIWindowMusicNav(void)
@@ -79,7 +71,6 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
         m_rootDir.SetShares(m_shares);
 
         m_vecItems.m_strPath = "";
-        m_bSkipTheCache = g_guiSettings.GetBool("MyMusic.IgnoreTheWhenSorting");
       }
 
       // check for valid quickpath parameter
@@ -158,29 +149,7 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
   case GUI_MSG_CLICKED:
     {
       int iControl = message.GetSenderId();
-      if (iControl == CONTROL_BTNSORTASC) // sort asc
-      {
-        bool bGotDirFromCache=m_bGotDirFromCache;
-        m_bGotDirFromCache=false;
-
-        CGUIWindowMusicBase::OnMessage(message);
-
-        m_bGotDirFromCache=bGotDirFromCache;
-
-        return true;
-      }
-      if (iControl == CONTROL_BTNSORTBY) // sort by
-      {
-        bool bGotDirFromCache=m_bGotDirFromCache;
-        m_bGotDirFromCache=false;
-
-        CGUIWindowMusicBase::OnMessage(message);
-
-        m_bGotDirFromCache=bGotDirFromCache;
-
-        return true;
-      }
-      else if (iControl == CONTROL_BTNSHUFFLE) // shuffle?
+      if (iControl == CONTROL_BTNSHUFFLE) // shuffle?
       {
         // inverse current playlist shuffle state but do not save!
         g_stSettings.m_bMyMusicPlaylistShuffle = !g_playlistPlayer.ShuffledPlay(PLAYLIST_MUSIC_TEMP);
@@ -201,19 +170,9 @@ bool CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, CFileItemL
   if (m_bDisplayEmptyDatabaseMessage)
     return true;
 
-  m_bGotDirFromCache=false;
-
   CFileItem directory(strDirectory, true);
   if (directory.IsPlayList())
-  {
     return GetSongsFromPlayList(strDirectory, items);
-  }
-  else if (CanCache(strDirectory))
-  {
-    m_bGotDirFromCache=LoadDatabaseDirectoryCache(strDirectory, items, m_SortCache, m_AscendCache, m_bSkipTheCache);
-    if (m_bGotDirFromCache)
-      return true;
-  }
 
   return CGUIWindowMusicBase::GetDirectory(strDirectory, items);
 }
@@ -368,50 +327,6 @@ void CGUIWindowMusicNav::OnClick(int iItem)
   }
 }
 
-void CGUIWindowMusicNav::OnFileItemFormatLabel(CFileItem* pItem)
-{
-  // skip if directory was returned from cache
-  if (m_bGotDirFromCache) return;
-
-  //  Folders have a preformated label
-  if (!pItem->m_bIsFolder)
-    SetLabelFromTag(pItem);
-
-  if (pItem->GetIconImage() == "defaultAlbumCover.png")
-    pItem->SetThumbnailImage("defaultAlbumCover.png");
-
-  pItem->FillInDefaultIcon();
-}
-
-void CGUIWindowMusicNav::SortItems(CFileItemList& items)
-{
-  auto_ptr<CGUIViewState> pState(CGUIViewState::GetViewState(GetID(), items));
-  if (pState.get())
-  {
-    SORT_METHOD sortMethod=pState->GetSortMethod();
-    SORT_ORDER sortAscending=pState->GetSortOrder();
-    bool bSortingCurrentDir=items.m_strPath==m_vecItems.m_strPath;
-    // skip if directory was returned from cache and 
-    // the items we are now sorting are the current ones
-    // and the sort parameters match
-    if (
-      (bSortingCurrentDir) && 
-      (m_bGotDirFromCache) && 
-      (m_SortCache == sortMethod) &&
-      (m_AscendCache == sortAscending) &&
-      (m_bSkipTheCache == g_guiSettings.GetBool("MyMusic.IgnoreTheWhenSorting"))
-      )
-      return;
-
-    // else sort the list, and the save it to cache
-    CGUIWindowMusicBase::SortItems(items);
-
-    if (bSortingCurrentDir && CanCache(items.m_strPath))
-      SaveDatabaseDirectoryCache(items.m_strPath, items, sortMethod, sortAscending, g_guiSettings.GetBool("MyMusic.IgnoreTheWhenSorting"));
-  }
-
-}
-
 /// \brief Search for songs, artists and albums with search string \e strSearch in the musicdatabase and return the found \e items
 /// \param strSearch The search string
 /// \param items Items Found
@@ -548,8 +463,9 @@ void CGUIWindowMusicNav::OnPopupMenu(int iItem)
     pMenu->EnableButton(btn_PlayWith, vecCores.size() >= 1 );
   }
 
+  CMusicDatabaseDirectory dir;
   // turn off the music info button on non-album-able items
-  if (!HasAlbumInfo(m_vecItems[iItem]->m_strPath))
+  if (!dir.HasAlbumInfo(m_vecItems[iItem]->m_strPath))
     pMenu->EnableButton(btn_Info, false);
 
   // turn off the now playing button if playlist is empty
@@ -558,7 +474,7 @@ void CGUIWindowMusicNav::OnPopupMenu(int iItem)
 
   // turn off set artist image if not at artist listing.
   // (uses file browser to pick an image)
-  if (!IsArtistDir(m_vecItems[iItem]->m_strPath))
+  if (!dir.IsArtistDir(m_vecItems[iItem]->m_strPath))
     pMenu->EnableButton(6, false);
 
   // position it correctly
@@ -651,115 +567,13 @@ void CGUIWindowMusicNav::SetArtistImage(int iItem)
     CFile::Delete(strDestThumb); // remove old thumb
     if (picture.DoCreateThumbnail(strPicture,strDestThumb))
     {
-      ClearDatabaseDirectoryCache(m_vecItems.m_strPath);    
+      CMusicDatabaseDirectory dir;
+      dir.ClearDirectoryCache(m_vecItems.m_strPath);    
       Update(m_vecItems.m_strPath);
     }
     else
       CLog::Log(LOGERROR,"  Could not cache artist thumb: %s",strPicture.c_str());
   }
-}
-
-bool CGUIWindowMusicNav::IsArtistDir(const CStdString& strDirectory)
-{
-  CMusicDatabaseDirectory dir;
-  NODE_TYPE node=dir.GetDirectoryType(strDirectory);
-  return (node==NODE_TYPE_ARTIST);
-}
-
-bool CGUIWindowMusicNav::CanCache(const CStdString& strDirectory)
-{
-  //  Only cache the directorys shown in the root of the window
-  CMusicDatabaseDirectory dir;
-  NODE_TYPE node=dir.GetDirectoryChildType(strDirectory);
-  NODE_TYPE parentNode=dir.GetDirectoryType(strDirectory);
-  return ((node==NODE_TYPE_GENRE || node==NODE_TYPE_ARTIST || 
-          node==NODE_TYPE_ALBUM || node==NODE_TYPE_SONG) &&
-          parentNode==NODE_TYPE_OVERVIEW);
-}
-
-bool CGUIWindowMusicNav::HasAlbumInfo(const CStdString& strDirectory)
-{
-  CMusicDatabaseDirectory dir;
-  NODE_TYPE node=dir.GetDirectoryType(strDirectory);
-  return (node!=NODE_TYPE_OVERVIEW && node!=NODE_TYPE_TOP100 && 
-          node!=NODE_TYPE_GENRE && node!=NODE_TYPE_ARTIST);
-}
-
-void CGUIWindowMusicNav::ClearDatabaseDirectoryCache(const CStdString& strDirectory)
-{
-  CFileItem directory(strDirectory, true);
-  if (CUtil::HasSlashAtEnd(directory.m_strPath))
-    directory.m_strPath.Delete(directory.m_strPath.size() - 1);
-
-  Crc32 crc;
-  crc.ComputeFromLowerCase(directory.m_strPath);
-
-  CStdString strFileName;
-  strFileName.Format("Z:\\db-%08x.fi", crc);
-  CFile::Delete(strFileName);
-}
-
-void CGUIWindowMusicNav::SaveDatabaseDirectoryCache(const CStdString& strDirectory, CFileItemList& items, SORT_METHOD SortMethod, SORT_ORDER Ascending, bool bSkipThe)
-{
-  int iSize = items.Size();
-  if (iSize <= 0)
-    return;
-
-  CLog::Log(LOGDEBUG,"Caching database directory [%s]",strDirectory.c_str());
-
-  CFileItem directory(strDirectory, true);
-  if (CUtil::HasSlashAtEnd(directory.m_strPath))
-    directory.m_strPath.Delete(directory.m_strPath.size() - 1);
-
-  Crc32 crc;
-  crc.ComputeFromLowerCase(directory.m_strPath);
-
-  CStdString strFileName;
-  strFileName.Format("Z:\\db-%08x.fi", crc);
-
-  CFile file;
-  if (file.OpenForWrite(strFileName, true, true)) // overwrite always
-  {
-    CArchive ar(&file, CArchive::store);
-    ar << SortMethod;
-    ar << Ascending;
-    ar << bSkipThe;
-    ar << items;
-    CLog::Log(LOGDEBUG,"  -- items: %i, sort method: %i, ascending: %s, skipthe: %s",iSize,SortMethod,Ascending ? "true" : "false",bSkipThe ? "true" : "false");
-    ar.Close();
-    file.Close();
-  }
-}
-
-bool CGUIWindowMusicNav::LoadDatabaseDirectoryCache(const CStdString& strDirectory, CFileItemList& items, SORT_METHOD& SortMethod, SORT_ORDER& Ascending, bool& bSkipThe)
-{
-  CLog::Log(LOGDEBUG,"Loading database directory [%s]",strDirectory.c_str());
-
-  CFileItem directory(strDirectory, true);
-  if (CUtil::HasSlashAtEnd(directory.m_strPath))
-    directory.m_strPath.Delete(directory.m_strPath.size() - 1);
-
-  Crc32 crc;
-  crc.ComputeFromLowerCase(directory.m_strPath);
-
-  CStdString strFileName;
-  strFileName.Format("Z:\\db-%08x.fi", crc);
-
-  CFile file;
-  if (file.Open(strFileName))
-  {
-    CArchive ar(&file, CArchive::load);
-    ar >> (int&)SortMethod;
-    ar >> (int&)Ascending;
-    ar >> bSkipThe;
-    ar >> items;
-    CLog::Log(LOGDEBUG,"  -- items: %i, sort method: %i, ascending: %s, skipthe: %s",items.Size(),SortMethod,Ascending ? "true" : "false",bSkipThe ? "true" : "false");
-    ar.Close();
-    file.Close();
-    return true;
-  }
-
-  return false;
 }
 
 bool CGUIWindowMusicNav::GetSongsFromPlayList(const CStdString& strPlayList, CFileItemList &items)

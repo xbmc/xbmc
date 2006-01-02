@@ -415,7 +415,8 @@ void CGUIWindowVideoBase::ShowIMDB(const CStdString& strMovie, const CStdString&
       CLog::Log(LOGERROR,"Unable to cache nfo file: %s", strNfoFile.c_str());
   }
 
-  if (!g_guiSettings.GetBool("FileLists.HideExtensions") && !bFolder)
+  auto_ptr<CGUIViewState> pState(CGUIViewState::GetViewState(GetID(), m_vecItems));
+  if (pState->HideExtensions() && !bFolder)
     CUtil::RemoveExtension(strMovieName);
 
   bool bContinue;

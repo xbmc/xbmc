@@ -217,6 +217,7 @@ long CProgramDatabase::GetFile(const CStdString& strFilenameAndPath, CFileItemLi
         CFileItem *pItem = new CFileItem(m_pDS->fv("files.xbedescription").get_asString());
         pItem->m_iprogramCount = m_pDS->fv("files.iTimesPlayed").get_asLong();
         pItem->m_strPath = strPathandFile;
+        pItem->m_strTitle=m_pDS->fv("files.xbedescription").get_asString();
         pItem->m_bIsFolder = false;
         GetFileAttributesEx(pItem->m_strPath, GetFileExInfoStandard, &FileAttributeData);
         FileTimeToLocalFileTime(&FileAttributeData.ftLastWriteTime, &localTime);
@@ -569,6 +570,7 @@ void CProgramDatabase::GetProgramsByBookmark(CStdString& strBookmark, CFileItemL
       pItem->m_iprogramCount = m_pDS->fv("iTimesPlayed").get_asLong();
       pItem->m_strPath = strPathandFile;
       pItem->m_bIsFolder = false;
+      pItem->m_strTitle=m_pDS->fv("files.xbedescription").get_asString();
       CStdString timestampstr = m_pDS->fv("lastAccessed").get_asString();
       unsigned __int64 timestamp = _atoi64(timestampstr.c_str());
       pItem->m_stTime=TimeStampToLocalTime(timestamp);
@@ -621,6 +623,7 @@ void CProgramDatabase::GetProgramsByPath(const CStdString& strPath1, CFileItemLi
         pItem->m_iprogramCount = m_pDS->fv("iTimesPlayed").get_asLong();
         pItem->m_strPath = strPathandFile;
         pItem->m_bIsFolder = false;
+        pItem->m_strTitle=m_pDS->fv("files.xbedescription").get_asString();
         CStdString timestampstr = m_pDS->fv("lastAccessed").get_asString();
         unsigned __int64 timestamp = _atoi64(timestampstr.c_str());
         pItem->m_stTime=TimeStampToLocalTime(timestamp);

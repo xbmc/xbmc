@@ -175,32 +175,6 @@ void CGUIWindowVideoFiles::UpdateButtons()
   SET_CONTROL_LABEL(CONTROL_STACK, g_stSettings.m_iMyVideoStack + 14000);
 }
 
-void CGUIWindowVideoFiles::FormatItemLabels()
-{
-  for (int i = 0; i < (int)m_vecItems.Size(); i++)
-  {
-    CFileItem* pItem = m_vecItems[i];
-    if (g_stSettings.m_MyVideoSortMethod == SORT_METHOD_DATE)
-    {
-      if (pItem->m_stTime.wYear)
-      {
-        CStdString strDateTime;
-        CUtil::GetDate(pItem->m_stTime, strDateTime);
-        pItem->SetLabel2(strDateTime);
-      }
-      else
-        pItem->SetLabel2("");
-    }
-    else
-    {
-      if (pItem->m_bIsFolder)
-        pItem->SetLabel2("");
-      else
-        pItem->SetFileSizeLabel();
-    }
-  }
-}
-
 bool CGUIWindowVideoFiles::Update(const CStdString &strDirectory)
 {
   // if we're getting the root bookmark listing
@@ -276,9 +250,10 @@ bool CGUIWindowVideoFiles::UpdateDir(const CStdString &strDirectory)
   m_iLastControl = GetFocusedControl();
 
   m_vecItems.SetThumbs();
+  auto_ptr<CGUIViewState> pState(CGUIViewState::GetViewState(GetID(), m_vecItems));
   if (g_stSettings.m_bMyVideoCleanTitles)
     m_vecItems.CleanFileNames();
-  else if (g_guiSettings.GetBool("FileLists.HideExtensions"))
+  else if (pState.get() && pState->HideExtensions())
     m_vecItems.RemoveExtensions();
 
   SetIMDBThumbs(m_vecItems);
@@ -824,7 +799,8 @@ bool CGUIWindowVideoFiles::GetDirectory(const CStdString &strDirectory, CFileIte
   CLog::Log(LOGDEBUG,"CGUIWindowVideoFiles::GetDirectory (%s)", strDirectory.c_str());
   CLog::Log(LOGDEBUG,"  ParentPath = [%s]", strParentPath.c_str());
 
-  if (!g_guiSettings.GetBool("MyVideos.HideParentDirItems"))
+  auto_ptr<CGUIViewState> pState(CGUIViewState::GetViewState(GetID(), m_vecItems));
+  if (pState.get() && !pState->HideParentDirItems())
   {
     CFileItem *pItem = new CFileItem("..");
     pItem->m_strPath = strParentPath;

@@ -2,7 +2,16 @@
 #include "GUIViewState.h"
 
 
-class CGUIViewStateWindowVideoFiles : public CGUIViewState
+class CGUIViewStateWindowVideo : public CGUIViewState
+{
+public:
+  CGUIViewStateWindowVideo(const CFileItemList& items) : CGUIViewState(items) {}
+
+protected:
+  virtual bool HideParentDirItems();
+};
+
+class CGUIViewStateWindowVideoFiles : public CGUIViewStateWindowVideo
 {
 public:
   CGUIViewStateWindowVideoFiles(const CFileItemList& items);
@@ -11,7 +20,7 @@ protected:
   virtual void SaveViewState();
 };
 
-class CGUIViewStateWindowVideoGenre : public CGUIViewState
+class CGUIViewStateWindowVideoGenre : public CGUIViewStateWindowVideo
 {
 public:
   CGUIViewStateWindowVideoGenre(const CFileItemList& items);
@@ -20,7 +29,7 @@ protected:
   virtual void SaveViewState();
 };
 
-class CGUIViewStateWindowVideoTitle : public CGUIViewState
+class CGUIViewStateWindowVideoTitle : public CGUIViewStateWindowVideo
 {
 public:
   CGUIViewStateWindowVideoTitle(const CFileItemList& items);
@@ -29,7 +38,7 @@ protected:
   virtual void SaveViewState();
 };
 
-class CGUIViewStateWindowVideoYear : public CGUIViewState
+class CGUIViewStateWindowVideoYear : public CGUIViewStateWindowVideo
 {
 public:
   CGUIViewStateWindowVideoYear(const CFileItemList& items);
@@ -38,7 +47,7 @@ protected:
   virtual void SaveViewState();
 };
 
-class CGUIViewStateWindowVideoActor : public CGUIViewState
+class CGUIViewStateWindowVideoActor : public CGUIViewStateWindowVideo
 {
 public:
   CGUIViewStateWindowVideoActor(const CFileItemList& items);
@@ -47,7 +56,7 @@ protected:
   virtual void SaveViewState();
 };
 
-class CGUIViewStateWindowVideoPlaylist : public CGUIViewState
+class CGUIViewStateWindowVideoPlaylist : public CGUIViewStateWindowVideo
 {
 public:
   CGUIViewStateWindowVideoPlaylist(const CFileItemList& items);

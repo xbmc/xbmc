@@ -181,6 +181,7 @@ bool CShoutcastDirectory::DownloadPlaylists(CFileItemList &items)
       {
         CFileItem* pItem = new CFileItem;
         pItem->m_bIsFolder = true;
+        pItem->SetLabelPreformated(true);
 
         pItem->m_strPath = pEntry->Attribute("Playstring"); //URL to .pls file
         pItem->m_strPath.Replace("http://www.shoutcast.com/sbin/", "shout://www.shoutcast.com/");

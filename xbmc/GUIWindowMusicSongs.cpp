@@ -8,7 +8,6 @@
 #include "GUIPassword.h"
 #include "GUIDialogMusicScan.h"
 #include "GUIDialogContextMenu.h"
-#include "GUIViewState.h"
 
 #define CONTROL_BTNVIEWASICONS     2 
 #define CONTROL_BTNSORTBY          3
@@ -368,74 +367,11 @@ void CGUIWindowMusicSongs::OnClick(int iItem)
   }
 }
 
-void CGUIWindowMusicSongs::OnFileItemFormatLabel(CFileItem* pItem)
-{
-  // set label 1 & 2 from format string
-  if (!pItem->m_bIsFolder && pItem->m_musicInfoTag.Loaded())
-  {
-    SetLabelFromTag(pItem);
-  }
-  else
-  { // no tag info, so we disable the file extension if it has one
-    if (m_hideExtensions)
-      pItem->RemoveExtension();
-
-    // and then set label 2
-    auto_ptr<CGUIViewState> pState(CGUIViewState::GetViewState(GetID(), m_vecItems));
-    if (pState.get())
-    {
-      SORT_METHOD SortMethod = pState->GetSortMethod();
-
-      if (SortMethod == SORT_METHOD_LABEL || SortMethod == SORT_METHOD_SIZE || SortMethod == SORT_METHOD_FILE)
-      {
-        if (pItem->m_bIsFolder)
-        {
-          if (!pItem->IsShoutCast() && !pItem->IsLastFM())
-            pItem->SetLabel2("");
-        }
-        else
-        {
-          if (pItem->m_dwSize > 0)
-            pItem->SetFileSizeLabel();
-          if (SortMethod == SORT_METHOD_LABEL || SortMethod == SORT_METHOD_FILE)
-          {
-            int nDuration = pItem->m_musicInfoTag.GetDuration();
-            if (nDuration > 0)
-            {
-              CStdString strDuration;
-              CUtil::SecondsToHMSString(nDuration, strDuration);
-              pItem->SetLabel2(strDuration);
-            }
-          }
-        }
-      }
-      else
-      {
-        if (pItem->m_stTime.wYear && (!pItem->IsShoutCast() && !pItem->IsLastFM()))
-        {
-          CStdString strDateTime;
-          CUtil::GetDate(pItem->m_stTime, strDateTime);
-          pItem->SetLabel2(strDateTime);
-        }
-        else if (!pItem->IsShoutCast() && !pItem->IsLastFM())
-          pItem->SetLabel2("");
-      }
-    }
-  }
-
-  // set thumbs and default icons
-  if (!pItem->m_bIsShareOrDrive)
-  {
-    pItem->SetMusicThumb();
-    pItem->FillInDefaultIcon();
-  }
-}
-
 void CGUIWindowMusicSongs::OnRetrieveMusicInfo(CFileItemList& items)
 {
   int nFolderCount = items.GetFolderCount();
   // Skip items with folders only
-  if (nFolderCount == (int)items.Size())
+  if (nFolderCount == (int)items.Size() || items.IsMusicDb())
     return ;
 
   MAPSONGS songsMap;
@@ -447,8 +383,9 @@ void CGUIWindowMusicSongs::OnRetrieveMusicInfo(CFileItemList& items)
     return ;
 
   // Do we have cached items
-  MAPFILEITEMS itemsMap;
-  LoadDirectoryCache(m_vecItems.m_strPath, itemsMap);
+  CFileItemList itemsMap(m_vecItems.m_strPath);
+  itemsMap.Load();
+  itemsMap.SetFastLookup(true);
 
   bool bShowProgress = false;
   bool bProgressVisible = false;
@@ -475,7 +412,7 @@ void CGUIWindowMusicSongs::OnRetrieveMusicInfo(CFileItemList& items)
     {
       // no, then we gonna load it.
       IMAPSONGS itSong;
-      IMAPFILEITEMS itItem;
+      CFileItem* mapItem;
 
       // Is items load from the database
       if ((itSong = songsMap.find(pItem->m_strPath)) != songsMap.end())
@@ -484,10 +421,10 @@ void CGUIWindowMusicSongs::OnRetrieveMusicInfo(CFileItemList& items)
         pItem->m_musicInfoTag.SetSong(song);
         pItem->SetThumbnailImage(song.strThumb);
       } // Query map if we previously cached the file on HD
-      else if ((itItem = itemsMap.find(pItem->m_strPath)) != itemsMap.end() && CUtil::CompareSystemTime(&itItem->second->m_stTime, &pItem->m_stTime) == 0)
+      else if ((mapItem=itemsMap[pItem->m_strPath])!=NULL && CUtil::CompareSystemTime(&mapItem->m_stTime, &pItem->m_stTime) == 0)
       {
-        pItem->m_musicInfoTag = itItem->second->m_musicInfoTag;
-        pItem->SetThumbnailImage(itItem->second->GetThumbnailImage());
+        pItem->m_musicInfoTag = mapItem->m_musicInfoTag;
+        pItem->SetThumbnailImage(mapItem->GetThumbnailImage());
       } // if id3 tag scanning is turned on
       else if (g_guiSettings.GetBool("MusicFiles.UseTags"))
       {
@@ -542,16 +479,10 @@ void CGUIWindowMusicSongs::OnRetrieveMusicInfo(CFileItemList& items)
 
   // Save the hdd cache if there are more songs in this directory then loaded from database
   if ((m_dlgProgress && !m_dlgProgress->IsCanceled()) && songsMap.size() != (items.Size() - iTaglessFiles))
-    SaveDirectoryCache(m_vecItems.m_strPath, items);
+    items.Save();
 
   // cleanup cache loaded from HD
-  IMAPFILEITEMS it = itemsMap.begin();
-  while (it != itemsMap.end())
-  {
-    delete it->second;
-    it++;
-  }
-  itemsMap.erase(itemsMap.begin(), itemsMap.end());
+  itemsMap.Clear();
 
   if (bShowProgress && m_dlgProgress)
     m_dlgProgress->Close();
@@ -675,74 +606,6 @@ void CGUIWindowMusicSongs::OnPopupMenu(int iItem)
     return ;
   }
   CGUIWindowMusicBase::OnPopupMenu(iItem);
-}
-
-void CGUIWindowMusicSongs::LoadDirectoryCache(const CStdString& strDirectory, MAPFILEITEMS& items)
-{
-  CFileItem directory(strDirectory, true);
-  if (CUtil::HasSlashAtEnd(directory.m_strPath))
-    directory.m_strPath.Delete(directory.m_strPath.size() - 1);
-
-  Crc32 crc;
-  crc.ComputeFromLowerCase(directory.m_strPath);
-
-  CStdString strFileName;
-  if (directory.IsCDDA() || directory.IsOnDVD())
-    strFileName.Format("Z:\\r-%x.fi", crc);
-  else
-    strFileName.Format("Z:\\%x.fi", crc);
-
-  CFile file;
-  if (file.Open(strFileName))
-  {
-    CArchive ar(&file, CArchive::load);
-    int iSize = 0;
-    ar >> iSize;
-    for (int i = 0; i < iSize; i++)
-    {
-      CFileItem* pItem = new CFileItem();
-      ar >> *pItem;
-      items.insert(MAPFILEITEMSPAIR(pItem->m_strPath, pItem));
-    }
-    ar.Close();
-    file.Close();
-  }
-}
-
-void CGUIWindowMusicSongs::SaveDirectoryCache(const CStdString& strDirectory, CFileItemList& items)
-{
-  int iSize = items.Size();
-
-  if (iSize <= 0)
-    return ;
-
-  CFileItem directory(strDirectory, true);
-  if (CUtil::HasSlashAtEnd(directory.m_strPath))
-    directory.m_strPath.Delete(directory.m_strPath.size() - 1);
-
-  Crc32 crc;
-  crc.ComputeFromLowerCase(directory.m_strPath);
-
-  CStdString strFileName;
-  if (directory.IsCDDA() || directory.IsOnDVD())
-    strFileName.Format("Z:\\r-%x.fi", crc);
-  else
-    strFileName.Format("Z:\\%x.fi", crc);
-
-  CFile file;
-  if (file.OpenForWrite(strFileName, true, true)) // overwrite always
-  {
-    CArchive ar(&file, CArchive::store);
-    ar << items.Size();
-    for (int i = 0; i < iSize; i++)
-    {
-      CFileItem* pItem = items[i];
-      ar << *pItem;
-    }
-    ar.Close();
-    file.Close();
-  }
-
 }
 
 void CGUIWindowMusicSongs::DeleteDirectoryCache()
