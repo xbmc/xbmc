@@ -2057,7 +2057,7 @@ bool CApplication::OnKey(CKey& key)
   g_audioManager.PlayActionSound(action);
 
   // Rumble the controller
-  if( g_guiSettings.GetInt("LookAndFeel.Rumble") > 0 )
+  if( g_guiSettings.GetInt("LookAndFeel.Rumble") > 0 && !key.IsAnalogButton() && action.wID)
   {
     // GeminiServer: Rumble Controller Max Values 1.0!
     FLOAT fRumlePower = FLOAT(g_guiSettings.GetInt("LookAndFeel.Rumble")/10.0f);
