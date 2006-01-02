@@ -4,6 +4,7 @@
 #include "directorycache.h"
 #include "../util.h"
 #include "../PlayListFactory.h"
+#include "../musicdatabase.h"
 
 
 
@@ -96,6 +97,7 @@ void CLastFMDirectory::AddEntry(int iString, CStdString strPath, CStdString strI
   pItem->SetLabel(strLabel);
   pItem->m_strPath = strPath;
   pItem->m_bIsFolder = bFolder;
+  pItem->SetLabelPreformated(true);
   items.Add(pItem);
 }
 
@@ -126,6 +128,7 @@ void CLastFMDirectory::AddListEntry(const char *name, const char *artist, const 
   pItem->SetLabel(strName);
   pItem->m_strPath = strPath;
   pItem->m_bIsFolder = true;
+  pItem->SetLabelPreformated(true);
 
   if (date)
   {
@@ -319,7 +322,6 @@ bool CLastFMDirectory::ParseTrackList(CStdString url, CFileItemList &items)
 
     if (name)
     {
-      CFileItem *pItem = new CFileItem;
       if (artist)
         AddListEntry((name) ? name->FirstChild()->Value() : NULL,
             (artist) ? artist->FirstChild()->Value() : NULL, 

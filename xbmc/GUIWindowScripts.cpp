@@ -79,34 +79,6 @@ bool CGUIWindowScripts::OnMessage(CGUIMessage& message)
   return CGUIMediaWindow::OnMessage(message);
 }
 
-void CGUIWindowScripts::FormatItemLabels()
-{
-  auto_ptr<CGUIViewState> pState(CGUIViewState::GetViewState(GetID(), m_vecItems));
-  if (!pState.get()) return;
-  for (int i = 0; i < m_vecItems.Size(); i++)
-  {
-    CFileItem* pItem = m_vecItems[i];
-    if (pState->GetSortMethod() == SORT_METHOD_DATE)
-    {
-      if (pItem->m_stTime.wYear)
-      {
-        CStdString strDateTime;
-        CUtil::GetDate(pItem->m_stTime, strDateTime);
-        pItem->SetLabel2(strDateTime);
-      }
-      else
-        pItem->SetLabel2("");
-    }
-    else
-    {
-      if (pItem->m_bIsFolder)
-        pItem->SetLabel2("");
-      else
-        pItem->SetFileSizeLabel();
-    }
-  }
-}
-
 bool CGUIWindowScripts::Update(const CStdString &strDirectory)
 {
   // get selected item
@@ -135,7 +107,8 @@ bool CGUIWindowScripts::Update(const CStdString &strDirectory)
     if ( bParentExists )
     {
       // yes
-      if (!g_guiSettings.GetBool("FileLists.HideParentDirItems"))
+      auto_ptr<CGUIViewState> pState(CGUIViewState::GetViewState(GetID(), m_vecItems));
+      if (pState.get() && !pState->HideParentDirItems())
       {
         CFileItem *pItem = new CFileItem("..");
         pItem->m_strPath = strParentPath;
@@ -150,7 +123,8 @@ bool CGUIWindowScripts::Update(const CStdString &strDirectory)
   {
     // yes, this is the root of a share
     // add parent path to the virtual directory
-    if (!g_guiSettings.GetBool("FileLists.HideParentDirItems"))
+    auto_ptr<CGUIViewState> pState(CGUIViewState::GetViewState(GetID(), m_vecItems));
+    if (pState.get() && !pState->HideParentDirItems())
     {
       CFileItem *pItem = new CFileItem("..");
       pItem->m_strPath = "";
@@ -164,10 +138,15 @@ bool CGUIWindowScripts::Update(const CStdString &strDirectory)
   m_vecItems.m_strPath = strDirectory;
   m_rootDir.GetDirectory(strDirectory, m_vecItems);
   m_vecItems.SetThumbs();
-  if (g_guiSettings.GetBool("FileLists.HideExtensions"))
+  auto_ptr<CGUIViewState> pState(CGUIViewState::GetViewState(GetID(), m_vecItems));
+  if (pState.get() && pState->HideExtensions())
     m_vecItems.RemoveExtensions();
 
   m_vecItems.FillInDefaultIcons();
+
+  m_iLastControl = GetFocusedControl();
+  OnSort();
+  UpdateButtons();
 
   /* check if any python scripts are running. If true, place "(Running)" after the item.
    * since stopping a script can take up to 10 seconds or more,we display 'stopping'
@@ -197,10 +176,6 @@ bool CGUIWindowScripts::Update(const CStdString &strDirectory)
       }
     }
   }
-
-  m_iLastControl = GetFocusedControl();
-  OnSort();
-  UpdateButtons();
 
   strSelectedItem = m_history.Get(m_vecItems.m_strPath);
 

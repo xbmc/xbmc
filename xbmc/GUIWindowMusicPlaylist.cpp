@@ -359,7 +359,7 @@ void CGUIWindowMusicPlayList::ClearPlayList()
     g_playlistPlayer.Reset();
     g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_NONE);
   }
-  UpdateListControl();
+  OnSort();
   UpdateButtons();
   SET_CONTROL_FOCUS(CONTROL_BTNVIEWASICONS, 0);
 }
@@ -516,10 +516,11 @@ void CGUIWindowMusicPlayList::OnItemLoaded(CFileItem* pItem)
 
   if (pItem->m_musicInfoTag.Loaded())
   { // set label 1+2 from tags
-    m_hideExtensions = g_guiSettings.GetBool("FileLists.HideExtensions");
-    m_formatLeft = g_guiSettings.GetString("MyMusic.TrackFormat");
-    m_formatRight = g_guiSettings.GetString("MyMusic.TrackFormatRight");
-    SetLabelFromTag(pItem);
+    auto_ptr<CGUIViewState> pState(CGUIViewState::GetViewState(GetID(), m_vecItems));
+    if (pState.get()) m_hideExtensions = pState->HideExtensions();
+    pItem->FormatLabel(g_guiSettings.GetString("MyMusic.TrackFormat"));
+    pItem->FormatLabel2(g_guiSettings.GetString("MyMusic.TrackFormatRight"));
+
   } // if (pItem->m_musicInfoTag.Loaded())
   else
   {

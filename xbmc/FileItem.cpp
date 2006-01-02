@@ -90,6 +90,7 @@ CFileItem::CFileItem(const CShare& share)
   m_iDriveType = share.m_iDriveType;
   m_idepth = share.m_iDepthSize;
   m_strThumbnailImage = share.m_strThumbnailImage;
+  SetLabelPreformated(true);
 }
 
 CFileItem::~CFileItem(void)
@@ -101,6 +102,7 @@ const CFileItem& CFileItem::operator=(const CFileItem& item)
   if (this == &item) return * this;
   m_strLabel2 = item.m_strLabel2;
   m_strLabel = item.m_strLabel;
+  m_bLabelPreformated=item.m_bLabelPreformated;
   FreeMemory();
   m_bSelected = item.m_bSelected;
   m_strIcon = item.m_strIcon;
@@ -117,6 +119,7 @@ const CFileItem& CFileItem::operator=(const CFileItem& item)
   m_lEndOffset = item.m_lEndOffset;
   m_fRating = item.m_fRating;
   m_strDVDLabel = item.m_strDVDLabel;
+  m_strTitle = item.m_strTitle;
   m_iprogramCount = item.m_iprogramCount;
   m_iLockMode = item.m_iLockMode;
   m_strLockCode = item.m_strLockCode;
@@ -127,17 +130,20 @@ const CFileItem& CFileItem::operator=(const CFileItem& item)
 
 void CFileItem::Reset()
 {
-  m_strLabel2 = "";
-  m_strLabel = "";
+  m_strLabel2.Empty();
+  m_strLabel.Empty();
+  m_bLabelPreformated=false;
   FreeIcons();
   m_musicInfoTag.Clear();
   m_bSelected = false;
   m_fRating = 0.0f;
-  m_strDVDLabel = "";
-  m_strPath = "";
+  m_strDVDLabel.Empty();
+  m_strTitle.Empty();
+  m_strPath.Empty();
   m_fRating = 0.0f;
   m_dwSize = 0;
   m_bIsFolder = false;
+  m_bIsParentFolder=false;
   m_bIsShareOrDrive = false;
   memset(&m_stTime, 0, sizeof(m_stTime));
   m_iDriveType = SHARE_TYPE_UNKNOWN;
@@ -149,7 +155,6 @@ void CFileItem::Reset()
   m_strLockCode = "";
   m_iBadPwdCount = 0;
   m_bCanQueue=true;
-  m_bIsParentFolder=false;
 }
 
 void CFileItem::Serialize(CArchive& ar)
@@ -160,6 +165,7 @@ void CFileItem::Serialize(CArchive& ar)
     ar << m_bIsParentFolder;
     ar << m_strLabel;
     ar << m_strLabel2;
+    ar << m_bLabelPreformated;
     ar << m_strThumbnailImage;
     ar << m_strIcon;
     ar << m_bSelected;
@@ -171,6 +177,7 @@ void CFileItem::Serialize(CArchive& ar)
     ar << m_dwSize;
     ar << m_fRating;
     ar << m_strDVDLabel;
+    ar << m_strTitle;
     ar << m_iprogramCount;
     ar << m_idepth;
     ar << m_lStartOffset;
@@ -189,6 +196,7 @@ void CFileItem::Serialize(CArchive& ar)
     ar >> m_bIsParentFolder;
     ar >> m_strLabel;
     ar >> m_strLabel2;
+    ar >> m_bLabelPreformated;
     ar >> m_strThumbnailImage;
     ar >> m_strIcon;
     ar >> m_bSelected;
@@ -200,6 +208,7 @@ void CFileItem::Serialize(CArchive& ar)
     ar >> m_dwSize;
     ar >> m_fRating;
     ar >> m_strDVDLabel;
+    ar >> m_strTitle;
     ar >> m_iprogramCount;
     ar >> m_idepth;
     ar >> m_lStartOffset;
@@ -992,11 +1001,21 @@ void CFileItem::SetLabel(const CStdString &strLabel)
 {
   m_strLabel = strLabel;
   if (strLabel=="..")
-    m_bIsParentFolder = true;
+  {
+    m_bIsParentFolder=true;
+    m_bIsFolder=true;
+    SetLabelPreformated(true);
+  }
 }
 
 void CFileItem::SetFileSizeLabel()
 {
+  SetLabel2(BuildFileSizeLabel());
+}
+
+CStdString CFileItem::BuildFileSizeLabel()
+{
+  CStdString strLabel;
   // file < 1 kbyte?
   if (m_dwSize < 1024)
   {
@@ -1005,16 +1024,16 @@ void CFileItem::SetFileSizeLabel()
     float fToAdd = 0.0f;
     if (fRemainder < 0.01f)
       fToAdd = 0.1f;
-    m_strLabel2.Format("%2.1f KB", (((float)m_dwSize) / 1024.0f) + fToAdd);
-    return;
+    strLabel.Format("%2.1f KB", (((float)m_dwSize) / 1024.0f) + fToAdd);
+    return strLabel;
   }
   const __int64 iOneMeg = 1024 * 1024;
 
   // file < 1 megabyte?
   if (m_dwSize < iOneMeg)
   {
-    m_strLabel2.Format("%02.1f KB", ((float)m_dwSize) / 1024.0f);
-    return;
+    strLabel.Format("%02.1f KB", ((float)m_dwSize) / 1024.0f);
+    return strLabel;
   }
 
   // file < 1 GByte?
@@ -1022,8 +1041,8 @@ void CFileItem::SetFileSizeLabel()
   iOneGigabyte *= (__int64)1000;
   if (m_dwSize < iOneGigabyte)
   {
-    m_strLabel2.Format("%02.1f MB", ((float)m_dwSize) / ((float)iOneMeg));
-    return;
+    strLabel.Format("%02.1f MB", ((float)m_dwSize) / ((float)iOneMeg));
+    return strLabel;
   }
   //file > 1 GByte
   int iGigs = 0;
@@ -1036,7 +1055,9 @@ void CFileItem::SetFileSizeLabel()
   float fMegs = ((float)dwFileSize) / ((float)iOneMeg);
   fMegs /= 1000.0f;
   fMegs += iGigs;
-  m_strLabel2.Format("%02.1f GB", fMegs);
+  strLabel.Format("%02.1f GB", fMegs);
+
+  return strLabel;
 }
 
 CURL CFileItem::GetAsUrl() const
@@ -1059,6 +1080,158 @@ bool CFileItem::IsParentFolder() const
   return m_bIsParentFolder;
 }
 
+// %N - TrackNumber
+// %S - DiscNumber
+// %A - Artist
+// %T - Titel
+// %B - Album
+// %G - Genre
+// %Y - Year
+// %F - FileName
+// %D - Duration
+// %% - % sign
+// %I - Size
+// %J - Date
+// %Q - Movie year
+// %R - Movie rating
+// %C - Programs count
+// %K - Movie/Game title
+void CFileItem::FormatLabel(const CStdString& strMask)
+{
+  if (!strMask.IsEmpty())
+  {
+    const CStdString& strLabel=ParseFormat(strMask);
+    if (!strLabel.IsEmpty())
+      SetLabel(strLabel);
+  }
+  else
+    SetLabel(strMask);
+}
+
+void CFileItem::FormatLabel2(const CStdString& strMask)
+{
+  if (!strMask.IsEmpty())
+  {
+    const CStdString& strLabel2=ParseFormat(strMask);
+    if (!strLabel2.IsEmpty())
+      SetLabel2(strLabel2);
+  }
+  else
+    SetLabel2(strMask);
+}
+
+CStdString CFileItem::ParseFormat(const CStdString& strMask)
+{
+  if (strMask.IsEmpty())
+    return "";
+
+  CStdString strLabel = "";
+  CMusicInfoTag& tag = m_musicInfoTag;
+  int iPos1 = 0;
+  int iPos2 = strMask.Find('%', iPos1);
+  bool bDoneSomething = !(iPos1 == iPos2); // stuff in front should be applied - everything using this bool is added by spiff
+  while (iPos2 >= 0)
+  {
+    if( (iPos2 > iPos1) && bDoneSomething )
+    {
+      strLabel += strMask.Mid(iPos1, iPos2 - iPos1);
+      bDoneSomething = false;  
+    }
+    CStdString str;
+    if (strMask[iPos2 + 1] == 'N' && tag.GetTrackNumber() > 0)
+    { // track number
+      str.Format("%02.2i", tag.GetTrackNumber());
+      bDoneSomething = true;
+    }
+    else if (strMask[iPos2 + 1] == 'S' && tag.GetDiscNumber() > 0)
+    { // disc number
+      str.Format("%02.2i", tag.GetDiscNumber());
+      bDoneSomething = true;
+    }
+    else if (strMask[iPos2 + 1] == 'A' && tag.GetArtist().size())
+    { // artist
+      str = tag.GetArtist();
+      bDoneSomething = true;
+    }
+    else if (strMask[iPos2 + 1] == 'T' && tag.GetTitle().size())
+    { // title
+      str = tag.GetTitle();
+      bDoneSomething = true;
+    }
+    else if (strMask[iPos2 + 1] == 'B' && tag.GetAlbum().size())
+    { // album
+      str = tag.GetAlbum();
+      bDoneSomething = true;
+    }
+    else if (strMask[iPos2 + 1] == 'G' && tag.GetGenre().size())
+    { // genre
+      str = tag.GetGenre();
+      bDoneSomething = true;
+    }
+    else if (strMask[iPos2 + 1] == 'Y')
+    { // year
+      str = tag.GetYear();
+      bDoneSomething = true;
+    }
+    else if (strMask[iPos2 + 1] == 'F')
+    { // filename
+      str = CUtil::GetTitleFromPath(m_strPath);
+      bDoneSomething = true;
+    }
+    else if (strMask[iPos2 + 1] == 'D')
+    { // duration
+      int nDuration = tag.GetDuration();
+
+      if (nDuration > 0)
+        CUtil::SecondsToHMSString(nDuration, str);
+      else if (m_dwSize > 0)
+        str=BuildFileSizeLabel();
+      bDoneSomething = true;
+    }
+    else if (strMask[iPos2 + 1] == 'I')
+    { // size
+      str=BuildFileSizeLabel();
+      bDoneSomething = true;
+    }
+    else if (strMask[iPos2 + 1] == 'J' && m_stTime.wYear > 0)
+    { // date
+      CUtil::GetDate(m_stTime, str);
+      bDoneSomething = true;
+    }
+    else if (strMask[iPos2 + 1] == 'R')
+    { // movie rating
+      str.Format("%2.2f", m_fRating);
+      bDoneSomething = true;
+    }
+    else if (strMask[iPos2 + 1] == 'Q')
+    { // movie Year
+      str.Format("%i", m_stTime.wYear);
+      bDoneSomething = true;
+    }
+    else if (strMask[iPos2 + 1] == 'C')
+    { // programs count
+      str.Format("%i", m_iprogramCount);
+      bDoneSomething = true;
+    }
+    else if (strMask[iPos2 + 1] == 'K')
+    { // moview/game title
+      str=m_strTitle;
+      bDoneSomething = true;
+    }
+    else if (strMask[iPos2 + 1] == '%')
+    { // %% to print %
+      str = '%';
+      bDoneSomething = true;
+    }
+    strLabel += str;
+    iPos1 = iPos2 + 2;
+    iPos2 = strMask.Find('%', iPos1);
+  }
+  if (iPos1 < (int)strMask.size())
+    strLabel += strMask.Right(strMask.size() - iPos1);
+
+  return strLabel;
+}
 
 /////////////////////////////////////////////////////////////////////////////////
 /////
@@ -1070,6 +1243,17 @@ CFileItemList::CFileItemList()
 {
   m_fastLookup = false;
   m_bIsFolder=true;
+  m_bCacheToDisc=false;
+  m_sortMethod=SORT_METHOD_NONE;
+  m_sortOrder=SORT_ORDER_NONE;
+}
+
+CFileItemList::CFileItemList(const CStdString& strPath)
+{
+  m_strPath=strPath;
+  m_fastLookup = false;
+  m_bIsFolder=true;
+  m_bCacheToDisc=false;
   m_sortMethod=SORT_METHOD_NONE;
   m_sortOrder=SORT_ORDER_NONE;
 }
@@ -1087,6 +1271,16 @@ CFileItem* CFileItemList::operator[] (int iItem)
 const CFileItem* CFileItemList::operator[] (int iItem) const
 {
   return Get(iItem);
+}
+
+CFileItem* CFileItemList::operator[] (const CStdString& strPath)
+{
+  return Get(strPath);
+}
+
+const CFileItem* CFileItemList::operator[] (const CStdString& strPath) const
+{
+  return Get(strPath);
 }
 
 void CFileItemList::SetFastLookup(bool fastLookup)
@@ -1136,6 +1330,7 @@ void CFileItemList::Clear()
 
   m_sortMethod=SORT_METHOD_NONE;
   m_sortOrder=SORT_ORDER_NONE;
+  m_bCacheToDisc=false;
 }
 
 void CFileItemList::ClearKeepPointer()
@@ -1210,6 +1405,48 @@ CFileItem* CFileItemList::Get(int iItem)
 const CFileItem* CFileItemList::Get(int iItem) const
 {
   return m_items[iItem];
+}
+
+CFileItem* CFileItemList::Get(const CStdString& strPath)
+{
+  if (m_fastLookup)
+  {
+    IMAPFILEITEMS it=m_map.find(strPath);
+    if (it != m_map.end())
+      return it->second;
+
+    return NULL;
+  }
+  // slow method...
+  for (unsigned int i = 0; i < m_items.size(); i++)
+  {
+    CFileItem *pItem = m_items[i];
+    if (pItem->m_strPath == strPath)
+      return pItem;
+  }
+
+  return NULL;
+}
+
+const CFileItem* CFileItemList::Get(const CStdString& strPath) const
+{
+  if (m_fastLookup)
+  {
+    map<CStdString, CFileItem*>::const_iterator it=m_map.find(strPath);
+    if (it != m_map.end())
+      return it->second;
+
+    return NULL;
+  }
+  // slow method...
+  for (unsigned int i = 0; i < m_items.size(); i++)
+  {
+    CFileItem *pItem = m_items[i];
+    if (pItem->m_strPath == strPath)
+      return pItem;
+  }
+
+  return NULL;
 }
 
 int CFileItemList::Size() const
@@ -1317,8 +1554,11 @@ void CFileItemList::Serialize(CArchive& ar)
 
     ar << (int)(m_items.size() - i);
 
+    ar << m_fastLookup;
+
     ar << (int)m_sortMethod;
     ar << (int)m_sortOrder;
+    ar << m_bCacheToDisc;
 
     for (i; i < (int)m_items.size(); ++i)
     {
@@ -1338,8 +1578,11 @@ void CFileItemList::Serialize(CArchive& ar)
       return ;
 
 
+    ar >> m_fastLookup;
+
     ar >> (int&)m_sortMethod;
     ar >> (int&)m_sortOrder;
+    ar >> m_bCacheToDisc;
 
     m_items.reserve(iSize);
 
@@ -1347,7 +1590,7 @@ void CFileItemList::Serialize(CArchive& ar)
     {
       CFileItem* pItem = new CFileItem;
       ar >> *pItem;
-      m_items.push_back(pItem);
+      Add(pItem);
     }
   }
 }
@@ -1669,7 +1912,10 @@ bool CFileItemList::Load()
   crc.ComputeFromLowerCase(strPath);
 
   CStdString strFileName;
-  strFileName.Format("Z:\\%08x.fi", crc);
+  if (IsCDDA() || IsOnDVD())
+    strFileName.Format("Z:\\r-%08x.fi", crc);
+  else
+    strFileName.Format("Z:\\%08x.fi", crc);
 
   CLog::Log(LOGDEBUG,"Loading fileitems [%s]",strFileName.c_str());
 
@@ -1678,7 +1924,7 @@ bool CFileItemList::Load()
   {
     CArchive ar(&file, CArchive::load);
     ar >> *this;
-    CLog::Log(LOGDEBUG,"  -- items: %i, directory: %s sort method: %i, ascending: %s, skipthe: %s",Size(),m_strPath.c_str(), m_sortMethod, m_sortOrder ? "true" : "false");
+    CLog::Log(LOGDEBUG,"  -- items: %i, directory: %s sort method: %i, ascending: %s",Size(),m_strPath.c_str(), m_sortMethod, m_sortOrder ? "true" : "false");
     ar.Close();
     file.Close();
     return true;
@@ -1693,7 +1939,7 @@ bool CFileItemList::Save()
   if (iSize <= 0)
     return false;
 
-  CLog::Log(LOGDEBUG,"Caching fileitems [%s]",m_strPath.c_str());
+  CLog::Log(LOGDEBUG,"Saving fileitems [%s]",m_strPath.c_str());
 
   CStdString strPath=m_strPath;
   if (CUtil::HasSlashAtEnd(strPath))
@@ -1703,14 +1949,17 @@ bool CFileItemList::Save()
   crc.ComputeFromLowerCase(strPath);
 
   CStdString strFileName;
-  strFileName.Format("Z:\\%08x.fi", crc);
+  if (IsCDDA() || IsOnDVD())
+    strFileName.Format("Z:\\r-%08x.fi", crc);
+  else
+    strFileName.Format("Z:\\%08x.fi", crc);
 
   CFile file;
   if (file.OpenForWrite(strFileName, true, true)) // overwrite always
   {
     CArchive ar(&file, CArchive::store);
     ar << *this;
-    CLog::Log(LOGDEBUG,"  -- items: %i, sort method: %i, ascending: %s, skipthe: %s",iSize,m_sortMethod, m_sortOrder ? "true" : "false");
+    CLog::Log(LOGDEBUG,"  -- items: %i, sort method: %i, ascending: %s",iSize,m_sortMethod, m_sortOrder ? "true" : "false");
     ar.Close();
     file.Close();
     return true;

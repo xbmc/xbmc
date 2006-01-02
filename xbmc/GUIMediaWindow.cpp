@@ -74,8 +74,10 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
         auto_ptr<CGUIViewState> pState(CGUIViewState::GetViewState(GetID(), m_vecItems));
         if (pState.get())
           pState->SetNextSortOrder();
+
         UpdateButtons();
         OnSort();
+
         return true;
       }
       else if (iControl == CONTROL_BTNSORTBY) // sort by
@@ -83,8 +85,24 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
         auto_ptr<CGUIViewState> pState(CGUIViewState::GetViewState(GetID(), m_vecItems));
         if (pState.get())
           pState->SetNextSortMethod();
+
+        int nItem = m_viewControl.GetSelectedItem();
+        CFileItem* pItem = m_vecItems[nItem];
+        const CStdString& strSelected = pItem->m_strPath;
+
         UpdateButtons();
         OnSort();
+
+        for (int i = 0; i < m_vecItems.Size(); i++)
+        {
+          CFileItem* pItem = m_vecItems[i];
+          if (pItem->m_strPath == strSelected)
+          {
+            m_viewControl.SetSelectedItem(i);
+            break;
+          }
+        }
+
         return true;
       }
       else if (m_viewControl.HasControl(iControl))  // list/thumb control
@@ -218,6 +236,32 @@ void CGUIMediaWindow::SortItems(CFileItemList &items)
        pState->GetSortOrder()!=items.GetSortOrder()))
   {
     items.Sort(pState->GetSortMethod(), pState->GetSortOrder());
+
+    // Should these items be saved to the hdd
+    if (items.GetCacheToDisc())
+      items.Save();
+  }
+}
+
+void CGUIMediaWindow::FormatItemLabels()
+{
+  auto_ptr<CGUIViewState> pState(CGUIViewState::GetViewState(GetID(), m_vecItems));
+
+  if (!pState.get())
+    return;
+
+  CGUIViewState::LABEL_MASKS labelMasks;
+  pState->GetSortMethodLabelMasks(labelMasks);
+
+  for (int i=0; i<m_vecItems.Size(); ++i)
+  {
+    CFileItem* pItem=m_vecItems[i];
+
+    if (pItem->IsLabelPreformated())
+      continue;
+
+    pItem->FormatLabel(pItem->m_bIsFolder ? labelMasks.m_strLabelFolder : labelMasks.m_strLabelFile);
+    pItem->FormatLabel2(pItem->m_bIsFolder ? labelMasks.m_strLabel2Folder : labelMasks.m_strLabel2File);
   }
 }
 
@@ -249,6 +293,10 @@ bool CGUIMediaWindow::Update(const CStdString &strDirectory)
   if (strDirectory != "Q:\\scripts")
     bParentExists = CUtil::GetParentPath(strDirectory, strParentPath);
 
+  m_rootDir.GetDirectory(strDirectory, m_vecItems);
+  
+  auto_ptr<CGUIViewState> pState(CGUIViewState::GetViewState(GetID(), m_vecItems));
+
   // check if current directory is a root share
   if ( !m_rootDir.IsShare(strDirectory) )
   {
@@ -256,12 +304,10 @@ bool CGUIMediaWindow::Update(const CStdString &strDirectory)
     if ( bParentExists )
     {
       // yes
-      if (!g_guiSettings.GetBool("FileLists.HideParentDirItems"))
+      if (pState.get() && !pState->HideParentDirItems())
       {
         CFileItem *pItem = new CFileItem("..");
         pItem->m_strPath = strParentPath;
-        pItem->m_bIsFolder = true;
-        pItem->m_bIsShareOrDrive = false;
         m_vecItems.Add(pItem);
       }
       m_strParentPath = strParentPath;
@@ -271,20 +317,17 @@ bool CGUIMediaWindow::Update(const CStdString &strDirectory)
   {
     // yes, this is the root of a share
     // add parent path to the virtual directory
-    if (!g_guiSettings.GetBool("FileLists.HideParentDirItems"))
+    if (pState.get() && !pState->HideParentDirItems())
     {
       CFileItem *pItem = new CFileItem("..");
       pItem->m_strPath = "";
-      pItem->m_bIsShareOrDrive = false;
-      pItem->m_bIsFolder = true;
       m_vecItems.Add(pItem);
     }
     m_strParentPath = "";
   }
 
-  m_rootDir.GetDirectory(strDirectory, m_vecItems);
   m_vecItems.SetThumbs();
-  if (g_guiSettings.GetBool("FileLists.HideExtensions"))
+  if (pState.get() && pState->HideExtensions())
     m_vecItems.RemoveExtensions();
 
   m_vecItems.FillInDefaultIcons();
