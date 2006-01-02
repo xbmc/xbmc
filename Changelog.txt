@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 02-01-2006 fixed: Rumble controller option caused crashes with analog buttons.
  - 01-01-2006 fixed: mplayer.dll - some files with mp3 audio was misdetected and played only static.
  - 01-01-2006 fixed: duplicate string id resulting in "Target Temperature" incorrectly displayed in System Info
  - 30-12-2005 added: http api "getshares" and "getmedialocation" now accept "files" as a share type
