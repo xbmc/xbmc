@@ -11,7 +11,6 @@ public:
 
 protected:
   virtual void UpdateButtons();
-  virtual void OnFileItemFormatLabel(CFileItem* pItem);
   virtual void OnClick(int iItem);
   virtual void OnPopupMenu(int iItem);
   virtual void DoSearch(const CStdString& strSearch, CFileItemList& items);
@@ -22,8 +21,6 @@ protected:
   // new method
   virtual void PlayItem(int iItem);
 
-  void LoadDirectoryCache(const CStdString& strDirectory, MAPFILEITEMS& items);
-  void SaveDirectoryCache(const CStdString& strDirectory, CFileItemList& items);
   void DeleteDirectoryCache();
   void DeleteRemoveableMediaDirectoryCache();
 };

@@ -15,5 +15,8 @@ namespace DIRECTORY
     MUSICDATABASEDIRECTORY::NODE_TYPE GetDirectoryChildType(const CStdString& strPath);
     MUSICDATABASEDIRECTORY::NODE_TYPE GetDirectoryType(const CStdString& strPath);
     MUSICDATABASEDIRECTORY::NODE_TYPE GetDirectoryParentType(const CStdString& strPath);
+    bool IsArtistDir(const CStdString& strDirectory);
+    bool HasAlbumInfo(const CStdString& strDirectory);
+    void ClearDirectoryCache(const CStdString& strDirectory);
   };
 };

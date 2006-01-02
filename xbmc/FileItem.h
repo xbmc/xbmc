@@ -108,6 +108,14 @@ public:
   void SetFileSizeLabel();
   virtual void SetLabel(const CStdString &strLabel);
   CURL GetAsUrl() const;
+  void FormatLabel(const CStdString& strMask);
+  void FormatLabel2(const CStdString& strMask);
+  bool IsLabelPreformated() const { return m_bLabelPreformated; }
+  void SetLabelPreformated(bool bYesNo) { m_bLabelPreformated=bYesNo; }
+
+private:
+  CStdString ParseFormat(const CStdString& strMask);
+  CStdString BuildFileSizeLabel();
 
 public:
   CStdString m_strPath;            ///< complete path to item
@@ -117,6 +125,7 @@ public:
   __int64 m_dwSize;             ///< file size (0 for folders)
   float m_fRating;
   CStdString m_strDVDLabel;
+  CStdString m_strTitle;
   CMusicInfoTag m_musicInfoTag;
   int m_iprogramCount;
   int m_idepth;
@@ -128,6 +137,7 @@ public:
 private:
   bool m_bIsParentFolder;
   bool m_bCanQueue;
+  bool m_bLabelPreformated;
 };
 
 /*!
@@ -169,10 +179,13 @@ class CFileItemList : public CFileItem
 {
 public:
   CFileItemList();
+  CFileItemList(const CStdString& strPath);
   virtual ~CFileItemList();
   virtual void Serialize(CArchive& ar);
   CFileItem* operator[] (int iItem);
   const CFileItem* operator[] (int iItem) const;
+  CFileItem* operator[] (const CStdString& strPath);
+  const CFileItem* operator[] (const CStdString& strPath) const;
   void Clear();
   void ClearKeepPointer();
   void Add(CFileItem* pItem);
@@ -180,6 +193,8 @@ public:
   void Remove(int iItem);
   CFileItem* Get(int iItem);
   const CFileItem* Get(int iItem) const;
+  CFileItem* Get(const CStdString& strPath);
+  const CFileItem* Get(const CStdString& strPath) const;
   int Size() const;
   bool IsEmpty() const;
   void Append(const CFileItemList& itemlist);
@@ -205,10 +220,13 @@ public:
   SORT_METHOD GetSortMethod() { return m_sortMethod; }
   bool Load();
   bool Save();
+  void SetCacheToDisc(bool bYesNo) { m_bCacheToDisc=bYesNo; }
+  bool GetCacheToDisc() { return m_bCacheToDisc; }
 private:
   VECFILEITEMS m_items;
   MAPFILEITEMS m_map;
   bool m_fastLookup;
   SORT_METHOD m_sortMethod;
   SORT_ORDER m_sortOrder;
+  bool m_bCacheToDisc;
 };

@@ -62,36 +62,6 @@ bool CGUIWindowVideoYear::OnMessage(CGUIMessage& message)
 }
 
 //****************************************************************************************************************************
-void CGUIWindowVideoYear::FormatItemLabels()
-{
-  for (int i = 0; i < m_vecItems.Size(); i++)
-  {
-    CFileItem* pItem = m_vecItems[i];
-    if (g_stSettings.m_MyVideoGenreSortMethod == SORT_METHOD_DATE)
-    {
-      if (pItem->m_stTime.wYear)
-      {
-        CStdString strDateTime;
-        strDateTime.Format("%i", pItem->m_stTime.wYear);
-        pItem->SetLabel2(strDateTime);
-      }
-      else
-        pItem->SetLabel2("");
-    }
-    else
-    {
-      if (pItem->m_bIsFolder) pItem->SetLabel2("");
-      else
-      {
-        CStdString strRating;
-        strRating.Format("%2.2f", pItem->m_fRating);
-        pItem->SetLabel2(strRating);
-      }
-    }
-  }
-}
-
-//****************************************************************************************************************************
 bool CGUIWindowVideoYear::Update(const CStdString &strDirectory)
 {
   // get selected item
@@ -127,7 +97,8 @@ bool CGUIWindowVideoYear::Update(const CStdString &strDirectory)
   }
   else
   {
-    if (!g_guiSettings.GetBool("MyVideos.HideParentDirItems"))
+    auto_ptr<CGUIViewState> pState(CGUIViewState::GetViewState(GetID(), m_vecItems));
+    if (pState.get() && !pState->HideParentDirItems())
     {
       CFileItem *pItem = new CFileItem("..");
       pItem->m_strPath = "";
@@ -154,6 +125,7 @@ bool CGUIWindowVideoYear::Update(const CStdString &strDirectory)
           strTitle += " [W]";
         CFileItem *pItem = new CFileItem(strTitle);
         pItem->m_strPath = movie.m_strSearchString;
+        pItem->m_strTitle=strTitle;
         pItem->m_bIsFolder = false;
         pItem->m_bIsShareOrDrive = false;
 

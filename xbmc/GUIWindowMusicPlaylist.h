@@ -16,7 +16,6 @@ protected:
   virtual void UpdateButtons();
   virtual void OnClick(int iItem);
   virtual void SortItems(CFileItemList& items) {};
-  virtual void OnFileItemFormatLabel(CFileItem* pItem) {};
   virtual void OnRetrieveMusicInfo(CFileItemList& items) {};
   virtual void OnItemLoaded(CFileItem* pItem);
   virtual void ClearFileItems();

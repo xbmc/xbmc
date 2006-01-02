@@ -2,12 +2,17 @@
 #include "GUIViewStateVideo.h"
 #include "AutoSwitch.h"
 
-CGUIViewStateWindowVideoFiles::CGUIViewStateWindowVideoFiles(const CFileItemList& items) : CGUIViewState(items)
+bool CGUIViewStateWindowVideo::HideParentDirItems()
+{
+  return g_guiSettings.GetBool("MyVideos.HideParentDirItems");
+}
+
+CGUIViewStateWindowVideoFiles::CGUIViewStateWindowVideoFiles(const CFileItemList& items) : CGUIViewStateWindowVideo(items)
 {
   if (items.IsVirtualDirectoryRoot())
   {
-    AddSortMethod(SORT_METHOD_LABEL, 103);
-    AddSortMethod(SORT_METHOD_DRIVE_TYPE, 498);
+    AddSortMethod(SORT_METHOD_LABEL, 103, LABEL_MASKS()); // Preformated
+    AddSortMethod(SORT_METHOD_DRIVE_TYPE, 498, LABEL_MASKS()); // Preformated
     SetSortMethod(g_stSettings.m_MyVideoRootSortMethod);
 
     AddViewAsControl(VIEW_METHOD_LIST, 101);
@@ -20,11 +25,11 @@ CGUIViewStateWindowVideoFiles::CGUIViewStateWindowVideoFiles(const CFileItemList
   else
   {
     if (g_guiSettings.GetBool("MyVideos.IgnoreTheWhenSorting"))
-      AddSortMethod(SORT_METHOD_LABEL_IGNORE_THE, 103);
+      AddSortMethod(SORT_METHOD_LABEL_IGNORE_THE, 103, LABEL_MASKS("%F", "%I", "%F", ""));  // FileName, Size | Foldername, empty
     else
-      AddSortMethod(SORT_METHOD_LABEL, 103);
-    AddSortMethod(SORT_METHOD_SIZE, 105);
-    AddSortMethod(SORT_METHOD_DATE, 104);
+      AddSortMethod(SORT_METHOD_LABEL, 103, LABEL_MASKS("%F", "%I", "%F", ""));  // FileName, Size | Foldername, empty
+    AddSortMethod(SORT_METHOD_SIZE, 105, LABEL_MASKS("%F", "%I", "%F", "%I"));  // FileName, Size | Foldername, Size
+    AddSortMethod(SORT_METHOD_DATE, 104, LABEL_MASKS("%F", "%J", "%F", "%J"));  // FileName, Date | Foldername, Date
     SetSortMethod(g_stSettings.m_MyVideoSortMethod);
 
     AddViewAsControl(VIEW_METHOD_LIST, 101);
@@ -60,14 +65,14 @@ void CGUIViewStateWindowVideoFiles::SaveViewState()
   g_settings.Save();
 }
 
-CGUIViewStateWindowVideoTitle::CGUIViewStateWindowVideoTitle(const CFileItemList& items) : CGUIViewState(items)
+CGUIViewStateWindowVideoTitle::CGUIViewStateWindowVideoTitle(const CFileItemList& items) : CGUIViewStateWindowVideo(items)
 {
   if (g_guiSettings.GetBool("MyVideos.IgnoreTheWhenSorting"))
-    AddSortMethod(SORT_METHOD_LABEL_IGNORE_THE, 103);
+    AddSortMethod(SORT_METHOD_LABEL_IGNORE_THE, 103, LABEL_MASKS("%K", "%R", "%F", ""));  // Titel, Rating | Foldername, empty
   else
-    AddSortMethod(SORT_METHOD_LABEL, 103);
-  AddSortMethod(SORT_METHOD_VIDEO_YEAR, 366);
-  AddSortMethod(SORT_METHOD_VIDEO_RATING, 367);
+    AddSortMethod(SORT_METHOD_LABEL, 103, LABEL_MASKS("%K", "%R", "%F", ""));  // Titel, Rating | Foldername, empty
+  AddSortMethod(SORT_METHOD_VIDEO_YEAR, 366, LABEL_MASKS("%K", "%Q", "%F", ""));  // Titel, Year | Foldername, empty
+  AddSortMethod(SORT_METHOD_VIDEO_RATING, 367, LABEL_MASKS("%K", "%R", "%F", ""));  // Titel, Rating | Foldername, empty
   SetSortMethod(g_stSettings.m_MyVideoTitleSortMethod);
 
   AddViewAsControl(VIEW_METHOD_LIST, 101);
@@ -87,10 +92,11 @@ void CGUIViewStateWindowVideoTitle::SaveViewState()
   g_settings.Save();
 }
 
-CGUIViewStateWindowVideoGenre::CGUIViewStateWindowVideoGenre(const CFileItemList& items) : CGUIViewState(items)
+CGUIViewStateWindowVideoGenre::CGUIViewStateWindowVideoGenre(const CFileItemList& items) : CGUIViewStateWindowVideo(items)
 {
   if (items.IsVirtualDirectoryRoot())
   {
+    AddSortMethod(SORT_METHOD_LABEL, 103, LABEL_MASKS("%F", "", "%F", ""));  // Filename, Empty | Foldername, empty
     SetSortMethod(g_stSettings.m_MyVideoGenreRootSortMethod);
 
     AddViewAsControl(VIEW_METHOD_LIST, 101);
@@ -103,11 +109,11 @@ CGUIViewStateWindowVideoGenre::CGUIViewStateWindowVideoGenre(const CFileItemList
   else
   {
     if (g_guiSettings.GetBool("MyVideos.IgnoreTheWhenSorting"))
-      AddSortMethod(SORT_METHOD_LABEL_IGNORE_THE, 103);
+      AddSortMethod(SORT_METHOD_LABEL_IGNORE_THE, 103, LABEL_MASKS("%K", "%R", "%F", ""));  // Titel, Rating | Foldername, empty
     else
-      AddSortMethod(SORT_METHOD_LABEL, 103);
-    AddSortMethod(SORT_METHOD_VIDEO_YEAR, 366);
-    AddSortMethod(SORT_METHOD_VIDEO_RATING, 367);
+      AddSortMethod(SORT_METHOD_LABEL, 103, LABEL_MASKS("%K", "%R", "%F", ""));  // Titel, Rating | Foldername, empty
+    AddSortMethod(SORT_METHOD_VIDEO_YEAR, 366, LABEL_MASKS("%K", "%Q", "%F", ""));  // Titel, Year | Foldername, empty
+    AddSortMethod(SORT_METHOD_VIDEO_RATING, 367, LABEL_MASKS("%K", "%R", "%F", ""));  // Titel, Rating | Foldername, empty
     SetSortMethod(g_stSettings.m_MyVideoGenreSortMethod);
 
     AddViewAsControl(VIEW_METHOD_LIST, 101);
@@ -136,10 +142,11 @@ void CGUIViewStateWindowVideoGenre::SaveViewState()
   g_settings.Save();
 }
 
-CGUIViewStateWindowVideoActor::CGUIViewStateWindowVideoActor(const CFileItemList& items) : CGUIViewState(items)
+CGUIViewStateWindowVideoActor::CGUIViewStateWindowVideoActor(const CFileItemList& items) : CGUIViewStateWindowVideo(items)
 {
   if (items.IsVirtualDirectoryRoot())
   {
+    AddSortMethod(SORT_METHOD_LABEL, 103, LABEL_MASKS("%F", "", "%F", ""));  // FileName, empty | Foldername, empty
     SetSortMethod(g_stSettings.m_MyVideoActorRootSortMethod);
 
     AddViewAsControl(VIEW_METHOD_LIST, 101);
@@ -152,11 +159,11 @@ CGUIViewStateWindowVideoActor::CGUIViewStateWindowVideoActor(const CFileItemList
   else
   {
     if (g_guiSettings.GetBool("MyVideos.IgnoreTheWhenSorting"))
-      AddSortMethod(SORT_METHOD_LABEL_IGNORE_THE, 103);
+      AddSortMethod(SORT_METHOD_LABEL_IGNORE_THE, 103, LABEL_MASKS("%K", "%R", "%F", ""));  // Titel, Rating | Foldername, empty
     else
-      AddSortMethod(SORT_METHOD_LABEL, 103);
-    AddSortMethod(SORT_METHOD_VIDEO_YEAR, 366);
-    AddSortMethod(SORT_METHOD_VIDEO_RATING, 367);
+      AddSortMethod(SORT_METHOD_LABEL, 103, LABEL_MASKS("%K", "%R", "%F", ""));  // Titel, Rating | Foldername, empty
+    AddSortMethod(SORT_METHOD_VIDEO_YEAR, 366, LABEL_MASKS("%K", "%Q", "%F", ""));  // Titel, Year | Foldername, empty
+    AddSortMethod(SORT_METHOD_VIDEO_RATING, 367, LABEL_MASKS("%K", "%R", "%F", ""));  // Titel, Rating | Foldername, empty
     SetSortMethod(g_stSettings.m_MyVideoActorSortMethod);
 
     AddViewAsControl(VIEW_METHOD_LIST, 101);
@@ -185,11 +192,11 @@ void CGUIViewStateWindowVideoActor::SaveViewState()
   g_settings.Save();
 }
 
-CGUIViewStateWindowVideoYear::CGUIViewStateWindowVideoYear(const CFileItemList& items) : CGUIViewState(items)
+CGUIViewStateWindowVideoYear::CGUIViewStateWindowVideoYear(const CFileItemList& items) : CGUIViewStateWindowVideo(items)
 {
   if (items.IsVirtualDirectoryRoot())
   {
-    AddSortMethod(SORT_METHOD_LABEL, 103);
+    AddSortMethod(SORT_METHOD_LABEL, 103, LABEL_MASKS("%F", "", "%F", ""));  // Filename, empty | Foldername, empty
     SetSortMethod(g_stSettings.m_MyVideoYearRootSortMethod);
 
     AddViewAsControl(VIEW_METHOD_LIST, 101);
@@ -202,11 +209,11 @@ CGUIViewStateWindowVideoYear::CGUIViewStateWindowVideoYear(const CFileItemList& 
   else
   {
     if (g_guiSettings.GetBool("MyVideos.IgnoreTheWhenSorting"))
-      AddSortMethod(SORT_METHOD_LABEL_IGNORE_THE, 103);
+      AddSortMethod(SORT_METHOD_LABEL_IGNORE_THE, 103, LABEL_MASKS("%K", "%R", "%F", ""));  // Titel, Rating | Foldername, empty
     else
-      AddSortMethod(SORT_METHOD_LABEL, 103);
-    AddSortMethod(SORT_METHOD_VIDEO_YEAR, 366);
-    AddSortMethod(SORT_METHOD_VIDEO_RATING, 367);
+      AddSortMethod(SORT_METHOD_LABEL, 103, LABEL_MASKS("%K", "%R", "%F", ""));  // Titel, Rating | Foldername, empty
+    AddSortMethod(SORT_METHOD_VIDEO_YEAR, 366, LABEL_MASKS("%K", "%Q", "%F", ""));  // Titel, Year | Foldername, empty
+    AddSortMethod(SORT_METHOD_VIDEO_RATING, 367, LABEL_MASKS("%K", "%R", "%F", ""));  // Titel, Rating | Foldername, empty
     SetSortMethod(g_stSettings.m_MyVideoYearSortMethod);
 
     AddViewAsControl(VIEW_METHOD_LIST, 101);
@@ -235,9 +242,9 @@ void CGUIViewStateWindowVideoYear::SaveViewState()
   g_settings.Save();
 }
 
-CGUIViewStateWindowVideoPlaylist::CGUIViewStateWindowVideoPlaylist(const CFileItemList& items) : CGUIViewState(items)
+CGUIViewStateWindowVideoPlaylist::CGUIViewStateWindowVideoPlaylist(const CFileItemList& items) : CGUIViewStateWindowVideo(items)
 {
-  AddSortMethod(SORT_METHOD_NONE, 103);
+  AddSortMethod(SORT_METHOD_NONE, 103, LABEL_MASKS("%F", "", "%F", ""));  // FileName, "" | Foldername, empty
   SetSortMethod(SORT_METHOD_NONE);
 
   AddViewAsControl(VIEW_METHOD_LIST, 101);
