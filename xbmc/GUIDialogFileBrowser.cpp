@@ -3,7 +3,6 @@
 #include "GUIDialogFileBrowser.h"
 #include "util.h"
 #include "detectdvdtype.h"
-#include "SortFileItem.h"
 
 #define CONTROL_LIST          450
 #define CONTROL_HEADING_LABEL 411
@@ -96,14 +95,14 @@ bool CGUIDialogFileBrowser::OnMessage(CGUIMessage& message)
     }
     break;
   case GUI_MSG_NOTIFY_ALL:
-    { // Message is received even if this window is inactive
+    { // Message is received only if this window is active
       
       //  Is there a dvd share in this window?
       if (!m_rootDir.GetDVDDriveUrl().IsEmpty())
       {
         if (message.GetParam1()==GUI_MSG_DVDDRIVE_EJECTED_CD)
         {
-          if (m_Directory.IsVirtualDirectoryRoot() && IsActive())
+          if (m_Directory.IsVirtualDirectoryRoot())
           {
             int iItem = m_viewControl.GetSelectedItem();
             Update(m_Directory.m_strPath);
@@ -111,15 +110,14 @@ bool CGUIDialogFileBrowser::OnMessage(CGUIMessage& message)
           }
           else if (m_Directory.IsCDDA() || m_Directory.IsOnDVD())
           { // Disc has changed and we are inside a DVD Drive share, get out of here :)
-            if (IsActive()) Update("");
-            else m_Directory.m_strPath="";
+            Update("");
           }
 
           return true;
         }
         else if (message.GetParam1()==GUI_MSG_DVDDRIVE_CHANGED_CD)
         { // State of the dvd-drive changed (Open/Busy label,...), so update it
-          if (m_Directory.IsVirtualDirectoryRoot() && IsActive())
+          if (m_Directory.IsVirtualDirectoryRoot())
           {
             int iItem = m_viewControl.GetSelectedItem();
             Update(m_Directory.m_strPath);
@@ -144,7 +142,7 @@ void CGUIDialogFileBrowser::ClearFileItems()
 
 void CGUIDialogFileBrowser::OnSort()
 {
-  m_vecItems.Sort(SSortFileItem::LabelAscending);
+  m_vecItems.Sort(SORT_METHOD_LABEL, SORT_ORDER_ASC);
   m_viewControl.SetItems(m_vecItems);
 }
 
