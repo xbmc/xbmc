@@ -129,6 +129,8 @@ bool CGUIWindowMusicPlayList::OnMessage(CGUIMessage& message)
       if (m_tagloader.IsLoading())
         m_tagloader.StopThread();
 
+      // items should not be freed, else the musicdatabase 
+      // info is lost
       //for (int i = 0; i < (int)m_vecItems.Size(); ++i)
       //{
       //  CFileItem* pItem = m_vecItems[i];
@@ -343,6 +345,12 @@ void CGUIWindowMusicPlayList::SavePlayList()
         newItem.SetDuration(pItem->m_musicInfoTag.GetDuration());
       else
         newItem.SetDuration(0);
+
+      //  Musicdatabase items should contain the real path instead of a musicdb url
+      //  otherwise the user can't save and reuse the playlist when the musicdb gets deleted
+      if (pItem->IsMusicDb())
+        newItem.m_strPath=pItem->m_musicInfoTag.GetURL();
+
       playlist.Add(newItem);
     }
     CLog::Log(LOGDEBUG, "Saving music playlist: [%s]", strPath.c_str());
