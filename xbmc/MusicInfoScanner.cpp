@@ -162,7 +162,7 @@ bool CMusicInfoScanner::DoScan(const CStdString& strDirectory)
   CDirectory::GetDirectory(strDirectory, items, g_stSettings.m_szMyMusicExtensions);
   // filter items in the sub dir (for .cue sheet support)
   items.FilterCueItems();
-  CUtil::SortFileItemsByName(items);
+  items.Sort(SORT_METHOD_LABEL, SORT_ORDER_ASC);
 
   if (RetrieveMusicInfo(items, strDirectory) > 0)
   {

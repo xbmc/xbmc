@@ -21,7 +21,6 @@
 #include "GUIDialogNumeric.h"
 #include "autorun.h"
 #include "utils/fstrcmp.h"
-#include "SortFileItem.h"
 #include "utils/GUIInfoManager.h"
 
 #define clamp(x) (x) > 255.f ? 255 : ((x) < 0 ? 0 : (BYTE)(x+0.5f)) // Valid ranges: brightness[-1 -> 1 (0 is default)] contrast[0 -> 2 (1 is default)]  gamma[0.5 -> 3.5 (1 is default)] default[ramp is linear]
@@ -2717,14 +2716,6 @@ void CUtil::ClearCache()
     strThumbLoc += "\\" + strHex;
     g_directoryCache.ClearDirectory(strThumbLoc);
   }
-}
-
-void CUtil::SortFileItemsByName(CFileItemList& items, bool bSortOrder /*=true*/)
-{
-  if (bSortOrder)
-    items.Sort(SSortFileItem::LabelAscending);
-  else
-    items.Sort(SSortFileItem::LabelDescending);
 }
 
 void CUtil::Stat64ToStatI64(struct _stati64 *result, struct __stat64 *stat)
