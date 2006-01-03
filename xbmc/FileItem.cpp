@@ -1343,6 +1343,7 @@ void CFileItemList::ClearKeepPointer()
 
   m_sortMethod=SORT_METHOD_NONE;
   m_sortOrder=SORT_ORDER_NONE;
+  m_bCacheToDisc=false;
 }
 
 void CFileItemList::Add(CFileItem* pItem)

@@ -183,7 +183,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
             if (items.Size())
             {
               g_playlistPlayer.GetPlaylist( PLAYLIST_VIDEO_TEMP ).Clear();
-              CUtil::SortFileItemsByName(items);
+              items.Sort(SORT_METHOD_LABEL, SORT_ORDER_ASC);
               for (int i=0; i<items.Size(); ++i)
               {
                 CFileItem* pItem=items[i];
@@ -208,7 +208,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
             if (items.Size())
             {
               g_playlistPlayer.GetPlaylist( PLAYLIST_VIDEO_TEMP ).Clear();
-              CUtil::SortFileItemsByName(items);
+              items.Sort(SORT_METHOD_LABEL, SORT_ORDER_ASC);
               for (int i=0; i<items.Size(); ++i)
               {
                 CFileItem* pItem=items[i];
@@ -511,7 +511,7 @@ bool CAutorun::PlayRunDisc(IDirectory* pDir, const CStdString& strDrive, int& nA
           if (items.Size())
           {
             g_playlistPlayer.GetPlaylist( PLAYLIST_VIDEO_TEMP ).Clear();
-            CUtil::SortFileItemsByName(items);
+            items.Sort(SORT_METHOD_LABEL, SORT_ORDER_ASC);
             for (int i=0; i<items.Size(); ++i)
             {
               CFileItem* pItem=items[i];
@@ -533,7 +533,7 @@ bool CAutorun::PlayRunDisc(IDirectory* pDir, const CStdString& strDrive, int& nA
           if (items.Size())
           {
             g_playlistPlayer.GetPlaylist( PLAYLIST_VIDEO_TEMP ).Clear();
-            CUtil::SortFileItemsByName(items);
+            items.Sort(SORT_METHOD_LABEL, SORT_ORDER_ASC);
             for (int i=0; i<items.Size(); ++i)
             {
               CFileItem* pItem=items[i];
