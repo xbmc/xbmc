@@ -400,7 +400,7 @@ void CGUIWindowVideoInfo::OnSearch(CStdString& strSearch)
     CGUIDialogSelect* pDlgSelect = (CGUIDialogSelect*)m_gWindowManager.GetWindow(WINDOW_DIALOG_SELECT);
     pDlgSelect->Reset();
     pDlgSelect->SetHeading(283);
-    CUtil::SortFileItemsByName(items);
+    items.Sort(SORT_METHOD_LABEL, SORT_ORDER_ASC);
 
     for (int i = 0; i < (int)items.Size(); i++)
     {

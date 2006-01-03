@@ -38,7 +38,6 @@
 #include "..\..\GUIWindowPictures.h"
 #include "..\..\GUIWindowPrograms.h"
 #include "..\..\guilib\GUIButtonScroller.h"
-#include "..\..\SortFileItem.h"
 
 #define XML_MAX_INNERTEXT_SIZE 256
 #define MAX_PARAS 10
@@ -418,7 +417,7 @@ int CXbmcHttp::xbmcGetMediaLocation(int numParas, CStdString paras[])
     return SetResponse(openTag+strError);
   }
 
-  items.Sort(SSortFileItem::LabelAscending);
+  items.Sort(SORT_METHOD_LABEL, SORT_ORDER_ASC);
   CStdString strLine;
   for (int i = 0; i < items.Size(); ++i)
   {
@@ -610,7 +609,7 @@ int displayDir(int numParas, CStdString paras[]) {
     return SetResponse(openTag+"Error:Not folder");
   }
 
-  dirItems.Sort(SSortFileItem::LabelAscending);
+  dirItems.Sort(SORT_METHOD_LABEL, SORT_ORDER_ASC);
   CStdString aLine="";
   for (int i=0; i<dirItems.Size(); ++i)
   {
@@ -686,7 +685,7 @@ void AddItemToPlayList(const CFileItem* pItem, int playList, int sortMethod, CSt
     if (mask!="")
       pDirectory->SetMask(mask);
     bool bResult=pDirectory->GetDirectory(strDirectory,items);
-    items.Sort(SSortFileItem::LabelAscending);
+    items.Sort(SORT_METHOD_LABEL, SORT_ORDER_ASC);
     for (int i=0; i < items.Size(); ++i)
       AddItemToPlayList(items[i], playList, sortMethod, mask);
   }

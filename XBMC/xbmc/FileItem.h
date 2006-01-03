@@ -200,7 +200,6 @@ public:
   void Append(const CFileItemList& itemlist);
   void AppendPointer(const CFileItemList& itemlist);
   void Reserve(int iCount);
-  void Sort(FILEITEMLISTCOMPARISONFUNC func);
   void Sort(SORT_METHOD sortMethod, SORT_ORDER sortOrder);
   void Randomize();
   void SetThumbs();
@@ -223,6 +222,7 @@ public:
   void SetCacheToDisc(bool bYesNo) { m_bCacheToDisc=bYesNo; }
   bool GetCacheToDisc() { return m_bCacheToDisc; }
 private:
+  void Sort(FILEITEMLISTCOMPARISONFUNC func);
   VECFILEITEMS m_items;
   MAPFILEITEMS m_map;
   bool m_fastLookup;

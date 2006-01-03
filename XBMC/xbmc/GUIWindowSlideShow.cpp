@@ -699,7 +699,7 @@ void CGUIWindowSlideShow::AddItems(const CStdString &strPath, bool bRecursive)
   delete pDir;
   if (!bResult) return;
   // now sort it as necessary
-  CUtil::SortFileItemsByName(items);
+  items.Sort(SORT_METHOD_LABEL, SORT_ORDER_ASC);
   // need to go into all subdirs
   for (int i = 0; i < items.Size(); i++)
   {
