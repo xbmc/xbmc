@@ -1727,8 +1727,15 @@ void CGUIWindowMusicBase::PlayItem(int iItem)
   // if its a folder, build a temp playlist
   if (pItem->m_bIsFolder)
   {
+    CFileItem item(*m_vecItems[iItem]);
+  
+    //  Allow queuing of unqueueable items
+    //  when we try to queue them directly
+    if (!item.CanQueue())
+      item.SetCanQueue(true);
+
     // skip ".."
-    if (pItem->IsParentFolder())
+    if (item.IsParentFolder())
       return;
 
     // clear current temp playlist
@@ -1736,7 +1743,7 @@ void CGUIWindowMusicBase::PlayItem(int iItem)
     g_playlistPlayer.Reset();
 
     // recursively add items to temp playlist
-    AddItemToPlayList(pItem, PLAYLIST_MUSIC_TEMP);
+    AddItemToPlayList(&item, PLAYLIST_MUSIC_TEMP);
 
     // play!
     g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_MUSIC_TEMP);
