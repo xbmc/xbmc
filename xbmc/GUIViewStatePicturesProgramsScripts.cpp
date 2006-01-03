@@ -36,7 +36,7 @@ CGUIViewStateWindowPictures::CGUIViewStateWindowPictures(const CFileItemList& it
       SetViewAsControl(g_stSettings.m_MyPicturesViewMethod);
     }
 
-    SetSortOrder(g_stSettings.m_MyVideoSortOrder);
+    SetSortOrder(g_stSettings.m_MyPicturesSortOrder);
   }
 }
 
