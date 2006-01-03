@@ -750,6 +750,10 @@ void CMusicDatabase::GetFileItemFromDataset(CFileItem* item, const CStdString& s
   item->m_musicInfoTag.SetMusicBrainzAlbumID(m_pDS->fv("strMusicBrainzAlbumID").get_asString());
   item->m_musicInfoTag.SetMusicBrainzAlbumArtistID(m_pDS->fv("strMusicBrainzAlbumArtistID").get_asString());
   item->m_musicInfoTag.SetMusicBrainzTRMID(m_pDS->fv("strMusicBrainzTRMID").get_asString());
+  CStdString strRealPath = m_pDS->fv("strPath").get_asString();
+  CUtil::AddDirectorySeperator(strRealPath);
+  strRealPath += m_pDS->fv("strFileName").get_asString();
+  item->m_musicInfoTag.SetURL(strRealPath);
   item->m_musicInfoTag.SetLoaded(true);
   CStdString strThumb=m_pDS->fv("strThumb").get_asString();
   if (strThumb != "NONE")
@@ -757,9 +761,7 @@ void CMusicDatabase::GetFileItemFromDataset(CFileItem* item, const CStdString& s
   // Get filename with full path
   if (strMusicDBbasePath.IsEmpty())
   {
-    item->m_strPath = m_pDS->fv("strPath").get_asString();
-    CUtil::AddDirectorySeperator(item->m_strPath);
-    item->m_strPath += m_pDS->fv("strFileName").get_asString();
+    item->m_strPath = strRealPath;
   }
   else
   {
