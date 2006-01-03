@@ -17,7 +17,6 @@
 #include "GUIFontManager.h"
 #include "GUIDialogContextMenu.h"
 #include "FileSystem/StackDirectory.h"
-#include "SortFileItem.h"
 
 #define CONTROL_LIST              50
 
@@ -243,7 +242,7 @@ bool CGUIWindowVideoFiles::UpdateDir(const CStdString &strDirectory)
   if (!m_vecItems.IsStack() && g_stSettings.m_iMyVideoStack != STACK_NONE)
   {
     //sort list ascending by filename before stacking...
-    m_vecItems.Sort(SSortFileItem::LabelAscending);
+    m_vecItems.Sort(SORT_METHOD_LABEL, SORT_ORDER_ASC);
     m_vecItems.Stack();
   }
 
@@ -687,7 +686,7 @@ void CGUIWindowVideoFiles::GetStackedDirectory(const CStdString &strPath, CFileI
   g_stSettings.m_iMyVideoStack = STACK_SIMPLE;
 
   //sort list ascending by filename before stacking...
-  items.Sort(SSortFileItem::LabelAscending);
+  items.Sort(SORT_METHOD_LABEL, SORT_ORDER_ASC);
   items.Stack();
 
   // restore stack

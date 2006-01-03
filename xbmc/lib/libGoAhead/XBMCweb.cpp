@@ -25,7 +25,6 @@
 #include "..\..\utils\GUIInfoManager.h"
 #include "..\..\MusicInfoTagLoaderFactory.h"
 #include "..\..\MusicDatabase.h"
-#include "..\..\SortFileItem.h"
 
 #pragma code_seg("WEB_TEXT")
 #pragma data_seg("WEB_DATA")
@@ -137,7 +136,7 @@ void CXbmcWeb::AddItemToPlayList(const CFileItem* pItem)
     directory->GetDirectory(strDirectory, items);
 
     // sort the items before adding to playlist
-    items.Sort(SSortFileItem::LabelAscending);
+    items.Sort(SORT_METHOD_LABEL, SORT_ORDER_ASC);
 
     for (int i=0; i < (int) items.Size(); ++i)
       AddItemToPlayList(items[i]);
@@ -150,7 +149,7 @@ void CXbmcWeb::AddItemToPlayList(const CFileItem* pItem)
     directory->GetDirectory(strDirectory, items);
 
     // sort the items before adding to playlist
-    items.Sort(SSortFileItem::LabelAscending);
+    items.Sort(SORT_METHOD_LABEL, SORT_ORDER_ASC);
 
     for (int i=0; i < (int) items.Size(); ++i)
       AddItemToPlayList(items[i]);
@@ -163,7 +162,7 @@ void CXbmcWeb::AddItemToPlayList(const CFileItem* pItem)
     directory->GetDirectory(strDirectory, items);
 
     // sort the items before adding to playlist
-    items.Sort(SSortFileItem::LabelAscending);
+    items.Sort(SORT_METHOD_LABEL, SORT_ORDER_ASC);
 
     for (int i=0; i < (int) items.Size(); ++i)
       AddItemToPlayList(items[i]);
@@ -342,7 +341,7 @@ int CXbmcWeb::xbmcNavigate( int eid, webs_t wp, char_t *parameter)
         directory->GetDirectory("",webDirItems);
 
         //sort items
-        webDirItems.Sort(SSortFileItem::LabelAscending);
+        webDirItems.Sort(SORT_METHOD_LABEL, SORT_ORDER_ASC);
 
         return 0;
       }
@@ -750,7 +749,7 @@ int CXbmcWeb::xbmcCatalog( int eid, webs_t wp, char_t *parameter)
               webDirItems.Add(pItem);
             }
             directory->GetDirectory(strDirectory, webDirItems);
-            webDirItems.Sort(SSortFileItem::LabelAscending);
+            webDirItems.Sort(SORT_METHOD_LABEL, SORT_ORDER_ASC);
           }
           else
           {
