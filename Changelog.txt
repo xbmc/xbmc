@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 03-01-2006 fixed: Sort order in My Pictures
  - 02-01-2006 changed: moved list/thumb label formating to media window base class
  - 02-01-2006 changed: moved item caching out of music nav and files into the FileItemList
  - 02-01-2006 fixed: Rumble controller option caused crashes with analog buttons.
