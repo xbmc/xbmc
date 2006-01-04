@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 04-01-2006 fixed: creation of playlist locations (playlists/music and playlists/video)
  - 03-01-2006 fixed: music nav, Playitem does not work on "* All ..." folders
  - 03-01-2006 changed: music playlists, playlists with music database items are now saved with the real path of the file
                        instead of the musicdatabase URL
