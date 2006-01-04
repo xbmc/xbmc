@@ -118,7 +118,7 @@ INT CCdIoSupport::ReadSector(HANDLE hDevice, DWORD dwSector, LPSTR lpczBuffer)
   if ( cdio == NULL )
     return -1;
 
-  if ( cdio_read_mode2_sector( cdio, lpczBuffer, dwSector, false ) == 0 )
+  if ( cdio_read_mode1_sector( cdio, lpczBuffer, dwSector, false ) == 0 )
     return dwSector;
 
   return -1;
