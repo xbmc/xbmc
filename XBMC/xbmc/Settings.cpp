@@ -85,7 +85,7 @@ CSettings::CSettings(void)
   g_stSettings.m_MyMusicNavPlaylistsSortMethod = SORT_METHOD_TRACKNUM;
 
   g_stSettings.m_MyMusicPlaylistViewMethod = VIEW_METHOD_LIST;
-  g_stSettings.m_bMyMusicPlaylistRepeat = true;
+  g_stSettings.m_bMyMusicPlaylistRepeat = false;
   g_stSettings.m_bMyMusicPlaylistShuffle = false;
 
   g_stSettings.m_MyVideoSortOrder = SORT_ORDER_ASC;
@@ -103,7 +103,7 @@ CSettings::CSettings(void)
   g_stSettings.m_MyVideoTitleSortOrder = SORT_ORDER_ASC;
 
   g_stSettings.m_MyVideoPlaylistViewMethod = VIEW_METHOD_LIST;
-  g_stSettings.m_bMyVideoPlaylistRepeat = true;
+  g_stSettings.m_bMyVideoPlaylistRepeat = false;
   g_stSettings.m_bMyVideoPlaylistShuffle = false;
 
 /*  g_stSettings.m_bMyFilesSourceViewMethod = false;
@@ -320,7 +320,7 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
   GetString(pRootElement, "shortcuts", g_stSettings.m_szShortcutDirectory, "");
   GetString(pRootElement, "screenshots", g_stSettings.m_szScreenshotsDirectory, "");
   GetString(pRootElement, "recordings", g_stSettings.m_szMusicRecordingDirectory, "");
-  GetString(pRootElement, "playlists", g_stSettings.m_szPlaylistsDirectory, "Q:\\albums\\playlists");
+  GetString(pRootElement, "playlists", g_stSettings.m_szPlaylistsDirectory, "");
 
   GetString(pRootElement, "albums", g_stSettings.m_szAlbumDirectory, "");
   GetString(pRootElement, "subtitles", g_stSettings.m_szAlternateSubtitleDirectory, "");
@@ -481,13 +481,7 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
 
   strDir = g_stSettings.m_szPlaylistsDirectory;
   ConvertHomeVar(strDir);
-  CUtil::AddSlashAtEnd(strDir);
   strcpy( g_stSettings.m_szPlaylistsDirectory, strDir.c_str() );
-
-  if (!CDirectory::Exists(CUtil::MusicPlaylistsLocation()))
-    CDirectory::Create(CUtil::MusicPlaylistsLocation());
-  if (!CDirectory::Exists(CUtil::VideoPlaylistsLocation()))
-    CDirectory::Create(CUtil::VideoPlaylistsLocation());
   
   strDir = g_stSettings.m_szCacheDirectory;
   ConvertHomeVar(strDir);
