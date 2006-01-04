@@ -935,16 +935,16 @@ int CDVDPlayer::GetTotalTime()
 
 void CDVDPlayer::ToFFRW(int iSpeed)
 {
-// disabled for now in release builds. 
-#ifdef _DEBUG 
-
-  // only one way todo this
+  // current way this is done.
+  // audioplayer, stops outputing audio to audiorendere, but still tries to 
+  // sleep an correct amount for each packet
+  // videoplayer just plays faster after the clock speed has been increased
   // 1. disable audio
   // 2. skip frames and adjust their pts or the clock
   m_iSpeed = iSpeed;
   m_dvdPlayerAudio.SetSpeed(iSpeed);
+  m_dvdPlayerVideo.SetSpeed(iSpeed);
   m_clock.SetSpeed(iSpeed);
-#endif
 }
 
 void CDVDPlayer::ShowOSD(bool bOnoff)
