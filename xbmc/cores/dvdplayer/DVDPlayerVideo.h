@@ -47,6 +47,8 @@ public:
   
   __int64 GetCurrentPts()                           { return m_iCurrentPts; }
 
+  void SetSpeed(int iSpeed)                         { m_iSpeed = iSpeed; }
+
   int m_iSpeed;
     
   // classes

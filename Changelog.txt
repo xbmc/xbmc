@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 04-01-2006 changed: enabled experimental FF/RW in dvdplayer. it's abit shaky still
  - 04-01-2006 changed: iso9660:// protocol always tried to read a disc as a mode2 disc, even thou it was a mode1 disc.
  - 04-01-2006 fixed: creation of playlist locations (playlists/music and playlists/video)
  - 03-01-2006 fixed: music nav, Playitem does not work on "* All ..." folders
