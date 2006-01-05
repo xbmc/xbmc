@@ -173,6 +173,51 @@ private:
   bool CleanupAlbumsFromPaths(const CStdString &strPathIds);
   virtual bool UpdateOldVersion(float fVersion);
 
+  // Fields should be ordered as they 
+  // appear in the songview
+  enum _SongFields
+  {
+    song_idSong=0,
+    song_iNumArtists,
+    song_iNumGenres,
+    song_strTitle,
+    song_iTrack,
+    song_iDuration,
+    song_iYear,
+    song_dwFileNameCRC,
+    song_strFileName,
+    song_strMusicBrainzTrackID,
+    song_strMusicBrainzArtistID,
+    song_strMusicBrainzAlbumID,
+    song_strMusicBrainzAlbumArtistID,
+    song_strMusicBrainzTRMID,
+    song_iTimesPlayed,
+    song_iStartOffset,
+    song_iEndOffset,
+    song_lastplayed,
+    song_idAlbum,
+    song_strAlbum,
+    song_strPath,
+    song_idArtist,
+    song_strArtist,
+    song_idGenre,
+    song_strGenre,
+    song_strThumb
+  } SongFields;
+
+  // Fields should be ordered as they 
+  // appear in the albumview
+  enum _AlbumFields
+  {
+    album_idAlbum=0,
+    album_strAlbum, 
+    album_iNumArtists, 
+    album_idArtist, 
+    album_strArtist, 
+    album_strPath, 
+    album_strThumb
+  } AlbumFields;
+
   int m_iSongsBeforeCommit;
 };
 
