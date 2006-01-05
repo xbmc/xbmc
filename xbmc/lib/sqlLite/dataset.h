@@ -337,8 +337,10 @@ public:
 
 /* Getting value of field for current record */
   virtual const field_value get_field_value(const char *f_name);
+  virtual const field_value get_field_value(int index);
 /* Alias to get_field_value */
   const field_value fv(const char *f) { return get_field_value(f); }
+  const field_value fv(int index) { return get_field_value(index); }
 
 /* ------------ for transaction ------------------- */
   void set_autocommit(bool v) { autocommit = v; }
