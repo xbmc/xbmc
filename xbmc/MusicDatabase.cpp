@@ -678,44 +678,44 @@ long CMusicDatabase::AddPath(const CStdString& strPath1)
 CSong CMusicDatabase::GetSongFromDataset(bool bWithMusicDbPath/*=false*/)
 {
   CSong song;
-  song.idSong = m_pDS->fv("idSong").get_asLong();
+  song.idSong = m_pDS->fv(song_idSong).get_asLong();
   // get the full artist string
-  song.strArtist = m_pDS->fv("strArtist").get_asString();
-  if (m_pDS->fv("iNumArtists").get_asLong() > 1)
-    GetExtraArtistsForSong(m_pDS->fv("idSong").get_asLong(), song.strArtist);
+  song.strArtist = m_pDS->fv(song_strArtist).get_asString();
+  if (m_pDS->fv(song_iNumArtists).get_asLong() > 1)
+    GetExtraArtistsForSong(m_pDS->fv(song_idSong).get_asLong(), song.strArtist);
   // and the full genre string
-  song.strGenre = m_pDS->fv("strGenre").get_asString();
-  if (m_pDS->fv("iNumGenres").get_asLong() > 1)
-    GetExtraGenresForSong(m_pDS->fv("idSong").get_asLong(), song.strGenre);
+  song.strGenre = m_pDS->fv(song_strGenre).get_asString();
+  if (m_pDS->fv(song_iNumGenres).get_asLong() > 1)
+    GetExtraGenresForSong(m_pDS->fv(song_idSong).get_asLong(), song.strGenre);
   // and the rest...
-  song.strAlbum = m_pDS->fv("strAlbum").get_asString();
-  song.iTrack = m_pDS->fv("iTrack").get_asLong() ;
-  song.iDuration = m_pDS->fv("iDuration").get_asLong() ;
-  song.iYear = m_pDS->fv("iYear").get_asLong() ;
-  song.strTitle = m_pDS->fv("strTitle").get_asString();
-  song.iTimedPlayed = m_pDS->fv("iTimesPlayed").get_asLong();
-  song.iStartOffset = m_pDS->fv("iStartOffset").get_asLong();
-  song.iEndOffset = m_pDS->fv("iEndOffset").get_asLong();
-  song.strMusicBrainzTrackID = m_pDS->fv("strMusicBrainzTrackID").get_asString();
-  song.strMusicBrainzArtistID = m_pDS->fv("strMusicBrainzArtistID").get_asString();
-  song.strMusicBrainzAlbumID = m_pDS->fv("strMusicBrainzAlbumID").get_asString();
-  song.strMusicBrainzAlbumArtistID = m_pDS->fv("strMusicBrainzAlbumArtistID").get_asString();
-  song.strMusicBrainzTRMID = m_pDS->fv("strMusicBrainzTRMID").get_asString();
-  song.strThumb = m_pDS->fv("strThumb").get_asString();
+  song.strAlbum = m_pDS->fv(song_strAlbum).get_asString();
+  song.iTrack = m_pDS->fv(song_iTrack).get_asLong() ;
+  song.iDuration = m_pDS->fv(song_iDuration).get_asLong() ;
+  song.iYear = m_pDS->fv(song_iYear).get_asLong() ;
+  song.strTitle = m_pDS->fv(song_strTitle).get_asString();
+  song.iTimedPlayed = m_pDS->fv(song_iTimesPlayed).get_asLong();
+  song.iStartOffset = m_pDS->fv(song_iStartOffset).get_asLong();
+  song.iEndOffset = m_pDS->fv(song_iEndOffset).get_asLong();
+  song.strMusicBrainzTrackID = m_pDS->fv(song_strMusicBrainzTrackID).get_asString();
+  song.strMusicBrainzArtistID = m_pDS->fv(song_strMusicBrainzArtistID).get_asString();
+  song.strMusicBrainzAlbumID = m_pDS->fv(song_strMusicBrainzAlbumID).get_asString();
+  song.strMusicBrainzAlbumArtistID = m_pDS->fv(song_strMusicBrainzAlbumArtistID).get_asString();
+  song.strMusicBrainzTRMID = m_pDS->fv(song_strMusicBrainzTRMID).get_asString();
+  song.strThumb = m_pDS->fv(song_strThumb).get_asString();
   if (song.strThumb == "NONE")
     song.strThumb.Empty();
   // Get filename with full path
   if (!bWithMusicDbPath)
   {
-    song.strFileName = m_pDS->fv("strPath").get_asString();
+    song.strFileName = m_pDS->fv(song_strPath).get_asString();
     CUtil::AddDirectorySeperator(song.strFileName);
-    song.strFileName += m_pDS->fv("strFileName").get_asString();
+    song.strFileName += m_pDS->fv(song_strFileName).get_asString();
   }
   else
   {
-    CStdString strFileName=m_pDS->fv("strFileName").get_asString();
+    CStdString strFileName=m_pDS->fv(song_strFileName).get_asString();
     char* szExt=CUtil::GetExtension(strFileName);
-    song.strFileName.Format("musicdb://3/%ld/%ld%s", m_pDS->fv("idAlbum").get_asLong(), m_pDS->fv("idSong").get_asLong(), szExt);
+    song.strFileName.Format("musicdb://3/%ld/%ld%s", m_pDS->fv(song_idAlbum).get_asLong(), m_pDS->fv(song_idSong).get_asLong(), szExt);
   }
 
   return song;
@@ -724,38 +724,38 @@ CSong CMusicDatabase::GetSongFromDataset(bool bWithMusicDbPath/*=false*/)
 void CMusicDatabase::GetFileItemFromDataset(CFileItem* item, const CStdString& strMusicDBbasePath)
 {
   // get the full artist string
-  CStdString strArtist=m_pDS->fv("strArtist").get_asString();
-  if (m_pDS->fv("iNumArtists").get_asLong() > 1)
-    GetExtraArtistsForSong(m_pDS->fv("idSong").get_asLong(), strArtist);
+  CStdString strArtist=m_pDS->fv(song_strArtist).get_asString();
+  if (m_pDS->fv(song_iNumArtists).get_asLong() > 1)
+    GetExtraArtistsForSong(m_pDS->fv(song_idSong).get_asLong(), strArtist);
   item->m_musicInfoTag.SetArtist(strArtist);
   // and the full genre string
-  CStdString strGenre = m_pDS->fv("strGenre").get_asString();
-  if (m_pDS->fv("iNumGenres").get_asLong() > 1)
-    GetExtraGenresForSong(m_pDS->fv("idSong").get_asLong(), strGenre);
+  CStdString strGenre = m_pDS->fv(song_strGenre).get_asString();
+  if (m_pDS->fv(song_iNumGenres).get_asLong() > 1)
+    GetExtraGenresForSong(m_pDS->fv(song_idSong).get_asLong(), strGenre);
   item->m_musicInfoTag.SetGenre(strGenre);
   // and the rest...
-  item->m_musicInfoTag.SetAlbum(m_pDS->fv("strAlbum").get_asString());
-  item->m_musicInfoTag.SetTrackAndDiskNumber(m_pDS->fv("iTrack").get_asLong());
-  item->m_musicInfoTag.SetDuration(m_pDS->fv("iDuration").get_asLong());
+  item->m_musicInfoTag.SetAlbum(m_pDS->fv(song_strAlbum).get_asString());
+  item->m_musicInfoTag.SetTrackAndDiskNumber(m_pDS->fv(song_iTrack).get_asLong());
+  item->m_musicInfoTag.SetDuration(m_pDS->fv(song_iDuration).get_asLong());
   SYSTEMTIME stTime;
-  stTime.wYear = (WORD)m_pDS->fv("iYear").get_asLong();
+  stTime.wYear = (WORD)m_pDS->fv(song_iYear).get_asLong();
   item->m_musicInfoTag.SetReleaseDate(stTime);
-  item->m_musicInfoTag.SetTitle(m_pDS->fv("strTitle").get_asString());
-  item->SetLabel(m_pDS->fv("strTitle").get_asString());
-  //song.iTimedPlayed = m_pDS->fv("iTimesPlayed").get_asLong();
-  item->m_lStartOffset = m_pDS->fv("iStartOffset").get_asLong();
-  item->m_lEndOffset = m_pDS->fv("iEndOffset").get_asLong();
-  item->m_musicInfoTag.SetMusicBrainzTrackID(m_pDS->fv("strMusicBrainzTrackID").get_asString());
-  item->m_musicInfoTag.SetMusicBrainzArtistID(m_pDS->fv("strMusicBrainzArtistID").get_asString());
-  item->m_musicInfoTag.SetMusicBrainzAlbumID(m_pDS->fv("strMusicBrainzAlbumID").get_asString());
-  item->m_musicInfoTag.SetMusicBrainzAlbumArtistID(m_pDS->fv("strMusicBrainzAlbumArtistID").get_asString());
-  item->m_musicInfoTag.SetMusicBrainzTRMID(m_pDS->fv("strMusicBrainzTRMID").get_asString());
-  CStdString strRealPath = m_pDS->fv("strPath").get_asString();
+  item->m_musicInfoTag.SetTitle(m_pDS->fv(song_strTitle).get_asString());
+  item->SetLabel(m_pDS->fv(song_strTitle).get_asString());
+  //song.iTimedPlayed = m_pDS->fv(song_iTimesPlayed).get_asLong();
+  item->m_lStartOffset = m_pDS->fv(song_iStartOffset).get_asLong();
+  item->m_lEndOffset = m_pDS->fv(song_iEndOffset).get_asLong();
+  item->m_musicInfoTag.SetMusicBrainzTrackID(m_pDS->fv(song_strMusicBrainzTrackID).get_asString());
+  item->m_musicInfoTag.SetMusicBrainzArtistID(m_pDS->fv(song_strMusicBrainzArtistID).get_asString());
+  item->m_musicInfoTag.SetMusicBrainzAlbumID(m_pDS->fv(song_strMusicBrainzAlbumID).get_asString());
+  item->m_musicInfoTag.SetMusicBrainzAlbumArtistID(m_pDS->fv(song_strMusicBrainzAlbumArtistID).get_asString());
+  item->m_musicInfoTag.SetMusicBrainzTRMID(m_pDS->fv(song_strMusicBrainzTRMID).get_asString());
+  CStdString strRealPath = m_pDS->fv(song_strPath).get_asString();
   CUtil::AddDirectorySeperator(strRealPath);
-  strRealPath += m_pDS->fv("strFileName").get_asString();
+  strRealPath += m_pDS->fv(song_strFileName).get_asString();
   item->m_musicInfoTag.SetURL(strRealPath);
   item->m_musicInfoTag.SetLoaded(true);
-  CStdString strThumb=m_pDS->fv("strThumb").get_asString();
+  CStdString strThumb=m_pDS->fv(song_strThumb).get_asString();
   if (strThumb != "NONE")
     item->SetThumbnailImage(strThumb);
   // Get filename with full path
@@ -765,22 +765,22 @@ void CMusicDatabase::GetFileItemFromDataset(CFileItem* item, const CStdString& s
   }
   else
   {
-    CStdString strFileName=m_pDS->fv("strFileName").get_asString();
+    CStdString strFileName=m_pDS->fv(song_strFileName).get_asString();
     char* szExt=CUtil::GetExtension(strFileName);
-    item->m_strPath.Format("%s%ld%s", strMusicDBbasePath.c_str(), m_pDS->fv("idSong").get_asLong(), szExt);
+    item->m_strPath.Format("%s%ld%s", strMusicDBbasePath.c_str(), m_pDS->fv(song_idSong).get_asLong(), szExt);
   }
 }
 
 CAlbum CMusicDatabase::GetAlbumFromDataset()
 {
   CAlbum album;
-  album.idAlbum = m_pDS->fv("idAlbum").get_asLong();
-  album.strAlbum = m_pDS->fv("strAlbum").get_asString();
-  album.strArtist = m_pDS->fv("strArtist").get_asString();
-  if (m_pDS->fv("iNumArtists").get_asLong() > 1)
-    GetExtraArtistsForAlbum(m_pDS->fv("idAlbum").get_asLong(), album.strArtist);
-  album.strPath = m_pDS->fv("strPath").get_asString();
-  album.strThumb = m_pDS->fv("strThumb").get_asString();
+  album.idAlbum = m_pDS->fv(album_idAlbum).get_asLong();
+  album.strAlbum = m_pDS->fv(album_strAlbum).get_asString();
+  album.strArtist = m_pDS->fv(album_strArtist).get_asString();
+  if (m_pDS->fv(album_iNumArtists).get_asLong() > 1)
+    GetExtraArtistsForAlbum(m_pDS->fv(album_idAlbum).get_asLong(), album.strArtist);
+  album.strPath = m_pDS->fv(album_strPath).get_asString();
+  album.strThumb = m_pDS->fv(album_strThumb).get_asString();
   if (album.strThumb == "NONE")
     album.strThumb.Empty();
   return album;
