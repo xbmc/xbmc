@@ -157,7 +157,9 @@ bool CGUIWindowVideoFiles::OnMessage(CGUIMessage& message)
             if (g_application.GetPlaySpeed() != 1) return false;
           }
           // not playing, or playback speed == 1
-          PlayFolder(pItem);
+          // queue folder or playlist into temp playlist and play
+          if ((pItem->m_bIsFolder && !pItem->IsParentFolder()) || pItem->IsPlayList())
+            PlayItem(iItem);
         }
       }
       else
@@ -985,18 +987,4 @@ void CGUIWindowVideoFiles::GetIMDBDetails(CFileItem *pItem, CIMDBUrl &url)
 void CGUIWindowVideoFiles::OnQueueItem(int iItem)
 {
   CGUIWindowVideoBase::OnQueueItem(iItem);
-}
-
-void CGUIWindowVideoFiles::PlayFolder(const CFileItem* pItem)
-{
-  // clear current temp playlist
-  g_playlistPlayer.GetPlaylist(PLAYLIST_VIDEO_TEMP).Clear();
-  g_playlistPlayer.Reset();
-
-  // recursively add items to temp playlist
-  AddItemToPlayList(pItem, PLAYLIST_VIDEO_TEMP);
-
-  // play!
-  g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_VIDEO_TEMP);
-  g_playlistPlayer.Play();
 }

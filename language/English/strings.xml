@@ -856,7 +856,7 @@
   <string><id>13349</id><value>Query Info For All Files</value></string>
   <string><id>13350</id><value>Now Playing...</value></string>
   <string><id>13351</id><value>Album Information</value></string>
-  <string><id>13352</id><value>Scan Folder to Database</value></string>
+  <string><id>13352</id><value>Scan All Items to Database</value></string>
   <string><id>13353</id><value>Stop Scanning</value></string>
   <string><id>13354</id><value>Render Method</value></string>
   <string><id>13355</id><value>Low Quality Pixel Shader</value></string>

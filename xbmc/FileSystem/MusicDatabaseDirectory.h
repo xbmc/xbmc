@@ -18,5 +18,6 @@ namespace DIRECTORY
     bool IsArtistDir(const CStdString& strDirectory);
     bool HasAlbumInfo(const CStdString& strDirectory);
     void ClearDirectoryCache(const CStdString& strDirectory);
+    bool IsAllItem(const CStdString& strDirectory);
   };
 };

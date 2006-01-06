@@ -31,8 +31,10 @@ protected:
   virtual void OnQueueItem(int iItem);
   virtual void OnDeleteItem(int iItem);
   virtual void OnRenameItem(int iItem);
-  void OnResumeItem(int iItem);
 
+  void OnResumeItem(int iItem);
+  void PlayItem(int iItem);
+  void LoadPlayList(const CStdString& strPlayList, int iPlayList = PLAYLIST_VIDEO);
   void DisplayEmptyDatabaseMessage(bool bDisplay);
 
   void ShowIMDB(const CStdString& strMovie, const CStdString& strFile, const CStdString& strFolder, bool bFolder);

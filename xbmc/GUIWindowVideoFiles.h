@@ -18,10 +18,9 @@ protected:
   virtual bool Update(const CStdString &strDirectory);
   bool UpdateDir(const CStdString &strDirectory);
   virtual void OnClick(int iItem);
-  void PlayFolder(const CFileItem* pItem);
   virtual void OnPopupMenu(int iItem);
   virtual void OnInfo(int iItem);
-
+  virtual void OnQueueItem(int iItem);
   virtual void OnScan();
   bool DoScan(const CStdString& strPath, CFileItemList& items);
   void GetStackedDirectory(const CStdString &strPath, CFileItemList &items);
@@ -31,6 +30,5 @@ protected:
   virtual void GetDirectoryHistoryString(const CFileItem* pItem, CStdString& strHistoryString);
   void SetHistoryForPath(const CStdString& strDirectory);
   void GetIMDBDetails(CFileItem *pItem, CIMDBUrl &url);
-
-  virtual void OnQueueItem(int iItem);
+  void PlayFolder(const CFileItem* pItem);
 };
