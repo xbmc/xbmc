@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 05-01-2006 changed: music and video context menus for better consistency
  - 05-01-2006 changed: speed improvement getting songs from the musicdatabase
  - 04-01-2006 changed: enabled experimental FF/RW in dvdplayer. it's abit shaky still
  - 04-01-2006 changed: iso9660:// protocol always tried to read a disc as a mode2 disc, even thou it was a mode1 disc.
