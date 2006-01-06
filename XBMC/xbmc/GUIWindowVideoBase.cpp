@@ -870,36 +870,42 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem)
 
   // load our menu
   pMenu->Initialize();
+  bool bIsGotoParent = m_vecItems[iItem]->IsParentFolder();
 
   int btn_Show_Info     = 0; // Show Video Information
   int btn_Resume        = 0; // Resume Video
+  int btn_PlayWith      = 0; // Play
   int btn_Queue         = 0; // Add to Playlist
-  bool bIsGotoParent = m_vecItems[iItem]->IsParentFolder();
-  if (!bIsGotoParent)
-  {
-    // turn off the query info button if we are in playlists view
-    if (GetID() != WINDOW_VIDEO_PLAYLIST || GetID() == WINDOW_VIDEOS && m_vecItems[iItem]->m_bIsFolder)
-      btn_Show_Info = pMenu->AddButton(13346);  // Show Video Information
-    
-    // check to see if the Resume Video button is applicable
-    if(ResumeItemOffset(iItem)>0)               
-      btn_Resume = pMenu->AddButton(13381);     // Resume Video
-    
-    // don't show the add to playlist button in playlist window
-    if (GetID() != WINDOW_VIDEO_PLAYLIST )
-      btn_Queue = pMenu->AddButton(13347);      // Add to Playlist
-  }
 
   // check what players we have
   VECPLAYERCORES vecCores;
   CPlayerCoreFactory::GetPlayers(*m_vecItems[iItem], vecCores);
-  int btn_PlayWith  = 0;
-  if( vecCores.size() >= 1 ) btn_PlayWith = pMenu->AddButton(15213);
+
+  if (!bIsGotoParent)
+  {
+    // turn off the query info button if we are in playlists view
+    if (GetID() != WINDOW_VIDEO_PLAYLIST)
+      btn_Show_Info = pMenu->AddButton(13346);
+    
+    // check to see if the Resume Video button is applicable
+    if(ResumeItemOffset(iItem)>0)               
+      btn_Resume = pMenu->AddButton(13381);     // Resume Video
+
+    if (vecCores.size() >= 1)
+      btn_PlayWith = pMenu->AddButton(15213);
+    // allow a folder to be ad-hoc queued and played by the default player
+    else if (GetID() == WINDOW_VIDEOS && (m_vecItems[iItem]->m_bIsFolder || m_vecItems[iItem]->IsPlayList()))
+      btn_PlayWith = pMenu->AddButton(208);
+
+    // don't show the add to playlist button in playlist window
+    if (GetID() != WINDOW_VIDEO_PLAYLIST)
+      btn_Queue = pMenu->AddButton(13347);      // Add to Playlist
+  }
 
   // turn off the now playing button if playlist is empty or if we are in playlist window
   int btn_Now_Playing = 0;                          
-  if ((GetID() != WINDOW_VIDEO_PLAYLIST ) && (g_playlistPlayer.GetPlaylist(PLAYLIST_VIDEO).size() > 0) )
-    btn_Now_Playing   = pMenu->AddButton(13350);    // Now Playing...
+  if (GetID() != WINDOW_VIDEO_PLAYLIST && g_playlistPlayer.GetPlaylist(PLAYLIST_VIDEO).size() > 0)
+    btn_Now_Playing = pMenu->AddButton(13350);    // Now Playing...
 
   // hide scan button unless we're in files window
   int btn_Query = 0;
@@ -911,13 +917,13 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem)
     btn_Search_IMDb   = pMenu->AddButton(13348);  // Search IMDb...
 
   int btn_Mark_UnWatched = 0;
-  int btn_Mark_Watched = 0;
-  int btn_Update_Title = 0;
+  int btn_Mark_Watched   = 0;
+  int btn_Update_Title   = 0;
   if (GetID() == WINDOW_VIDEO_TITLE || GetID() == WINDOW_VIDEO_GENRE || GetID() == WINDOW_VIDEO_ACTOR || GetID() == WINDOW_VIDEO_YEAR)
   {
 	  if (m_iShowMode == VIDEO_SHOW_ALL)
 	  {
-      btn_Mark_Watched = pMenu->AddButton(16103); //Mark as Watched
+      btn_Mark_Watched = pMenu->AddButton(16103);   //Mark as Watched
       btn_Mark_UnWatched = pMenu->AddButton(16104); //Mark as UnWatched
 	  }
 	  else if (m_iShowMode == VIDEO_SHOW_UNWATCHED)
@@ -932,7 +938,8 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem)
   }
   
   // hide delete button unless enabled, or in title window
-  int btn_Delete = 0, btn_Rename = 0;
+  int btn_Delete = 0;
+  int btn_Rename = 0;
   if (!bIsGotoParent)
   {
     if ((m_vecItems.m_strPath.Equals(CUtil::VideoPlaylistsLocation())) || (GetID() == WINDOW_VIDEOS && g_guiSettings.GetBool("VideoFiles.AllowFileDeletion")))
@@ -961,6 +968,20 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem)
     else if (btnid == btn_Resume)
     {
       OnResumeItem(iItem);
+    }
+    else if (btnid == btn_PlayWith)
+    {
+      // if folder, play with default player
+      if (m_vecItems[iItem]->m_bIsFolder)
+      {
+        PlayItem(iItem);
+      }
+      else
+      {
+        g_application.m_eForcedNextPlayer = CPlayerCoreFactory::SelectPlayerDialog(vecCores, iPosX, iPosY);
+        if( g_application.m_eForcedNextPlayer != EPC_NONE )
+          OnClick(iItem);
+      }
     }
     else if (btnid == btn_Queue)
     {
@@ -1013,12 +1034,6 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem)
     else if (btnid == btn_Rename)
     {
       OnRenameItem(iItem);
-    }
-    else if (btnid == btn_PlayWith)
-    {
-      g_application.m_eForcedNextPlayer = CPlayerCoreFactory::SelectPlayerDialog(vecCores, iPosX, iPosY);
-      if( g_application.m_eForcedNextPlayer != EPC_NONE )
-        OnClick(iItem);
     }
   }
   m_vecItems[iItem]->Select(bSelected);
@@ -1172,4 +1187,66 @@ void CGUIWindowVideoBase::UpdateVideoTitle(int iItem)
   if (!CGUIDialogKeyboard::ShowAndGetInput(strInput, (CStdStringW)g_localizeStrings.Get(16105), false)) return ;
   m_database.UpdateMovieTitle(atol(pItem->m_strPath), strInput);
   Update(m_vecItems.m_strPath);
+}
+
+void CGUIWindowVideoBase::LoadPlayList(const CStdString& strPlayList, int iPlayList /* = PLAYLIST_VIDEO */)
+{
+  // load a playlist like .m3u, .pls
+  // first get correct factory to load playlist
+  CPlayListFactory factory;
+  auto_ptr<CPlayList> pPlayList (factory.Create(strPlayList));
+  if ( NULL != pPlayList.get())
+  {
+    // load it
+    if (!pPlayList->Load(strPlayList))
+    {
+      CGUIDialogOK::ShowAndGetInput(6, 0, 477, 0);
+      return ; //hmmm unable to load playlist?
+    }
+  }
+
+  g_application.ProcessAndStartPlaylist(strPlayList, *pPlayList, iPlayList);
+}
+
+void CGUIWindowVideoBase::PlayItem(int iItem)
+{
+  // restrictions should be placed in the appropiate window code
+  // only call the base code if the item passes since this clears
+  // the currently playing temp playlist
+
+  const CFileItem* pItem = m_vecItems[iItem];
+  // if its a folder, build a temp playlist
+  if (pItem->m_bIsFolder)
+  {
+    CFileItem item(*m_vecItems[iItem]);
+  
+    //  Allow queuing of unqueueable items
+    //  when we try to queue them directly
+    if (!item.CanQueue())
+      item.SetCanQueue(true);
+
+    // skip ".."
+    if (item.IsParentFolder())
+      return;
+
+    // clear current temp playlist
+    g_playlistPlayer.GetPlaylist(PLAYLIST_VIDEO_TEMP).Clear();
+    g_playlistPlayer.Reset();
+
+    // recursively add items to temp playlist
+    AddItemToPlayList(&item, PLAYLIST_VIDEO_TEMP);
+
+    // play!
+    g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_VIDEO_TEMP);
+    g_playlistPlayer.Play();
+  }
+  else if (pItem->IsPlayList())
+  {
+    LoadPlayList(pItem->m_strPath, PLAYLIST_VIDEO_TEMP);
+  }
+  // otherwise just play the song
+  else
+  {
+    OnClick(iItem);
+  }
 }
