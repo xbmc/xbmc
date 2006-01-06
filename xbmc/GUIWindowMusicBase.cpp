@@ -974,6 +974,8 @@ void CGUIWindowMusicBase::ShowAlbumInfo(const CStdString& strAlbum, const CStdSt
       CGUIWindowMusicInfo *pDlgAlbumInfo = (CGUIWindowMusicInfo*)m_gWindowManager.GetWindow(WINDOW_MUSIC_INFO);
       if (pDlgAlbumInfo)
       {
+        // TODO: check for previous thumb here, and abort thumb saving
+
         CStdString strThumb;
         CUtil::GetAlbumThumb(album.GetTitle(), album.GetAlbumPath(), strThumb);
 
