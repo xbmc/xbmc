@@ -434,14 +434,12 @@ void CGUIWindowMusicNav::OnPopupMenu(int iItem)
   // load our menu
   pMenu->Initialize();
   // add the needed buttons
-  int btn_Info = pMenu->AddButton(13351);     // Music Information
-  int btn_Queue = pMenu->AddButton(13347);    // Queue Item
-  //int btn_Play = pMenu->AddButton(13358);   // Play Item
-  int btn_PlayWith = pMenu->AddButton(15213); // Play using alternate player
-  int btn_NowPlay = pMenu->AddButton(13350);  // Now Playing...
-  int btn_Search = pMenu->AddButton(137);     // Search...
-  int btn_Thumb = pMenu->AddButton(13359);    // Set Artist Thumb  
-  int btn_Settings = pMenu->AddButton(5);     // Settings...
+  int btn_Info     = 0;  // Music Information
+  int btn_PlayWith = 0;  // Play using alternate player
+  int btn_Queue    = 0;  // Queue Item
+
+  // directory tests
+  CMusicDatabaseDirectory dir;
 
   // check what players we have, if we have multiple display play with option
   VECPLAYERCORES vecCores;
@@ -449,74 +447,86 @@ void CGUIWindowMusicNav::OnPopupMenu(int iItem)
 
   // turn off info/queue/play/set artist thumb if the current item is goto parent ..
   bool bIsGotoParent = m_vecItems[iItem]->IsParentFolder();
-  if (bIsGotoParent)
-  {
-    pMenu->EnableButton(btn_Info, false);
-    pMenu->EnableButton(btn_Queue, false);
-    //pMenu->EnableButton(btn_Play, false);
-    pMenu->EnableButton(btn_PlayWith, false );
-    pMenu->EnableButton(btn_Settings, false);
-  }
-  else
-  {
-    // only enable play using if we have more than one player available
-    pMenu->EnableButton(btn_PlayWith, vecCores.size() >= 1 );
+  if (!bIsGotoParent && dir.GetDirectoryType(m_vecItems.m_strPath) != NODE_TYPE_ROOT)
+  { 
+    // enable music info button
+    if (dir.HasAlbumInfo(m_vecItems[iItem]->m_strPath) && !dir.IsAllItem(m_vecItems[iItem]->m_strPath))
+      btn_Info = pMenu->AddButton(13351);
+
+    if (vecCores.size() >= 1)
+      btn_PlayWith = pMenu->AddButton(15213);
+    // allow a folder to be ad-hoc queued and played by the default player
+    else if (m_vecItems[iItem]->m_bIsFolder || m_vecItems[iItem]->IsPlayList())
+      btn_PlayWith = pMenu->AddButton(208);
+    
+    // allow queue for anything but root
+    btn_Queue = pMenu->AddButton(13347);
   }
 
-  CMusicDatabaseDirectory dir;
-  // turn off the music info button on non-album-able items
-  if (!dir.HasAlbumInfo(m_vecItems[iItem]->m_strPath))
-    pMenu->EnableButton(btn_Info, false);
+  int btn_NowPlay  = 0;  // Now Playing...
+  if (g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).size() > 0)
+    btn_NowPlay = pMenu->AddButton(13350);
 
-  // turn off the now playing button if playlist is empty
-  if (g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).size() <= 0)
-    pMenu->EnableButton(btn_NowPlay, false);
+  // always visible
+  int btn_Search = pMenu->AddButton(137);     // Search...
 
   // turn off set artist image if not at artist listing.
   // (uses file browser to pick an image)
-  if (!dir.IsArtistDir(m_vecItems[iItem]->m_strPath))
-    pMenu->EnableButton(6, false);
+  int btn_Thumb = 0;  // Set Artist Thumb  
+  if (dir.IsArtistDir(m_vecItems[iItem]->m_strPath) && !dir.IsAllItem(m_vecItems[iItem]->m_strPath))
+    btn_Thumb = pMenu->AddButton(13359);
+
+  // always visible
+  int btn_Settings = pMenu->AddButton(5);     // Settings...
 
   // position it correctly
   pMenu->SetPosition(iPosX - pMenu->GetWidth() / 2, iPosY - pMenu->GetHeight() / 2);
   pMenu->DoModal(GetID());
 
-  int btnid = pMenu->GetButton();
-  if( btnid  == btn_Info ) // Music Information
+  int btn = pMenu->GetButton();
+  if (btn > 0)
   {
-    OnInfo(iItem);
-  }
-  else if( btnid  == btn_Queue )  // Queue Item
-  {
-    OnQueueItem(iItem);
-  }
-  //else if( btnid == btn_Play )
-  //{
-  //  PlayItem(iItem);
-  //}
-  else if( btnid  == btn_NowPlay )  // Now Playing...
-  {
-    m_gWindowManager.ActivateWindow(WINDOW_MUSIC_PLAYLIST);
-    return;
-  }
-  else if( btnid  == btn_Search )  // Search
-  {
-    OnSearch();
-  }
-  else if( btnid  == btn_Thumb )  // Set Artist Image
-  {
-    SetArtistImage(iItem);
-  }
-  else if( btnid  == btn_PlayWith )
-  {
-    g_application.m_eForcedNextPlayer = CPlayerCoreFactory::SelectPlayerDialog(vecCores, iPosX, iPosY);
-    if( g_application.m_eForcedNextPlayer != EPC_NONE )
-      PlayItem(iItem);
-  }
-  else if( btnid  == btn_Settings )  // Settings
-  {
-    m_gWindowManager.ActivateWindow(WINDOW_SETTINGS_MYMUSIC);
-    return;
+    if (btn == btn_Info) // Music Information
+    {
+      OnInfo(iItem);
+    }
+    else if (btn == btn_PlayWith)
+    {
+      // if folder, play with default player
+      if (m_vecItems[iItem]->m_bIsFolder)
+      {
+        PlayItem(iItem);
+      }
+      else
+      {
+        // Play With...
+        g_application.m_eForcedNextPlayer = CPlayerCoreFactory::SelectPlayerDialog(vecCores, iPosX, iPosY);
+        if( g_application.m_eForcedNextPlayer != EPC_NONE )
+          OnClick(iItem);
+      }
+    }
+    else if (btn == btn_Queue)  // Queue Item
+    {
+      OnQueueItem(iItem);
+    }
+    else if (btn == btn_NowPlay)  // Now Playing...
+    {
+      m_gWindowManager.ActivateWindow(WINDOW_MUSIC_PLAYLIST);
+      return;
+    }
+    else if (btn == btn_Search)  // Search
+    {
+      OnSearch();
+    }
+    else if (btn == btn_Thumb)  // Set Artist Image
+    {
+      SetArtistImage(iItem);
+    }
+    else if (btn == btn_Settings)  // Settings
+    {
+      m_gWindowManager.ActivateWindow(WINDOW_SETTINGS_MYMUSIC);
+      return;
+    }
   }
   m_vecItems[iItem]->Select(bSelected);
 }
