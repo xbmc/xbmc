@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 07-01-2006 fixed: partial restoration of the filter label in my music library
  - 05-01-2006 changed: music and video context menus for better consistency
  - 05-01-2006 changed: speed improvement getting songs from the musicdatabase
  - 04-01-2006 changed: enabled experimental FF/RW in dvdplayer. it's abit shaky still
