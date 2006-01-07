@@ -208,48 +208,25 @@ void CGUIWindowMusicNav::UpdateButtons()
   SET_CONTROL_LABEL(CONTROL_LABELFILES, wszText);
 
   // set the filter label
-  //CStdString strLabel;
+  CStdString strLabel;
 
-  //// "Top 100 Songs"
-  //if (m_iPath == SHOW_TOP)
-  //  strLabel = g_localizeStrings.Get(271);
-  //// "Top 100 Songs"
-  //else if (m_iPath == (SHOW_TOP + SHOW_SONGS))
-  //  strLabel = g_localizeStrings.Get(10504);
-  //// "Top 100 Albums"
-  //else if (m_iPath == (SHOW_TOP + SHOW_ALBUMS))
-  //  strLabel = g_localizeStrings.Get(10505);
-  //// "Recently Added Albums"
-  //else if (m_iPath == SHOW_RECENTLY_ADDED)
-  //  strLabel = g_localizeStrings.Get(359);
-  //// "Recently Played Albums"
-  //else if (m_iPath == SHOW_RECENTLY_PLAYED)
-  //  strLabel = g_localizeStrings.Get(517);
-  //// "Playlists"
-  //else if (m_iPath == SHOW_PLAYLISTS)
-  //  strLabel = g_localizeStrings.Get(136);
-  //// Playlist name
-  //else if (m_iPath == SHOW_PLAYLISTS + SHOW_SONGS)
-  //  strLabel = CUtil::GetFileName(m_vecPathHistory.back());
-  //// "Genre/Artist/Album"
-  //else
-  //{
-  //  strLabel = m_strGenre;
-
-  //  // Append Artist
-  //  if (!strLabel.IsEmpty() && !m_strArtist.IsEmpty())
-  //    strLabel += "/";
-  //  if (!m_strArtist.IsEmpty())
-  //    strLabel += m_strArtist;
-
-  //  // Append Album
-  //  if (!strLabel.IsEmpty() && !m_strAlbum.IsEmpty())
-  //    strLabel += "/";
-  //  if (!m_strAlbum.IsEmpty())
-  //    strLabel += m_strAlbum;
-  //}
-
-  //SET_CONTROL_LABEL(CONTROL_FILTER, strLabel);
+  // "Playlists"
+  if (m_vecItems.m_strPath.Equals(CUtil::MusicPlaylistsLocation()))
+    strLabel = g_localizeStrings.Get(136);
+  // "{Playlist Name}"
+  else if (m_vecItems.IsPlayList())
+  {
+    // get playlist name from path
+    CStdString strDummy;
+    CUtil::Split(m_vecItems.m_strPath, strDummy, strLabel);
+  }
+  // everything else is from a musicdb:// path
+  // for now display "Library"
+  // TODO: add a "GetLabel" function to CMusicDatabase to restore filter label
+  else 
+    strLabel = g_localizeStrings.Get(15100);
+  
+  SET_CONTROL_LABEL(CONTROL_FILTER, strLabel);
 
   // Mark the shuffle button
   if (g_playlistPlayer.ShuffledPlay(PLAYLIST_MUSIC_TEMP))
