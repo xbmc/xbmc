@@ -55,7 +55,7 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
           CShare share;
           share.strName=item->GetLabel();
           share.strPath=item->m_strPath;
-          share.m_strThumbnailImage="defaultFolder.png";
+          share.m_strThumbnailImage="defaultFolderBig.png";
           m_shares.push_back(share);
         }
 
@@ -63,7 +63,7 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
         CShare share;
         share.strName=g_localizeStrings.Get(136); // Playlists
         share.strPath=CUtil::MusicPlaylistsLocation();
-        share.m_strThumbnailImage="defaultFolder.png";
+        share.m_strThumbnailImage="defaultFolderBig.png";
         m_shares.push_back(share);
 
         // setup shares and file filters
@@ -223,8 +223,12 @@ void CGUIWindowMusicNav::UpdateButtons()
   // everything else is from a musicdb:// path
   // for now display "Library"
   // TODO: add a "GetLabel" function to CMusicDatabase to restore filter label
-  else 
+  else
+  {
+    //CMusicDatabaseDirectory dir;
+    //dir.GetLabel(m_vecItems.m_strPath, strLabel);
     strLabel = g_localizeStrings.Get(15100);
+  }
   
   SET_CONTROL_LABEL(CONTROL_FILTER, strLabel);
 
