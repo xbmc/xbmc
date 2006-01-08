@@ -1,6 +1,5 @@
 #include "include.h"
 #include "GUIThumbnailPanel.h"
-#include "GUIFontManager.h"
 #include "../xbmc/utils/CharsetConverter.h"
 #include "..\xbmc\settings.h"
 #include "GUIWindowManager.h"
@@ -27,32 +26,29 @@ relative position of thumbnail in the folder icon
 */
 
 CGUIThumbnailPanel::CGUIThumbnailPanel(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight,
-                                       const CStdString& strFontName,
                                        const CStdString& strImageIcon,
                                        const CStdString& strImageIconFocus,
                                        DWORD dwSpinWidth, DWORD dwSpinHeight,
                                        const CStdString& strUp, const CStdString& strDown,
                                        const CStdString& strUpFocus, const CStdString& strDownFocus,
                                        DWORD dwSpinColor, int iSpinX, int iSpinY,
-                                       const CStdString& strFont, DWORD dwTextColor, DWORD dwSelectedColor)
+                                       const CLabelInfo &labelInfo)
     : CGUIControl(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight)
     , m_imgFolder(dwParentID, dwControlId, iPosX, iPosY, 0, 0, strImageIcon)
     , m_imgFolderFocus(dwParentID, dwControlId, iPosX, iPosY, 0, 0, strImageIconFocus)
-    , m_upDown(dwControlId, 0, 0, 0, dwSpinWidth, dwSpinHeight, strUp, strDown, strUpFocus, strDownFocus, strFont, dwSpinColor, SPIN_CONTROL_TYPE_INT)
+    , m_upDown(dwControlId, 0, 0, 0, dwSpinWidth, dwSpinHeight, strUp, strDown, strUpFocus, strDownFocus, labelInfo, dwSpinColor, SPIN_CONTROL_TYPE_INT)
     , m_scrollInfo(0)
 {
+  m_label = labelInfo;
   m_iItemWidth = 0;
   m_iItemHeight = 0;
   m_iRowOffset = 0;
   m_fSmoothScrollOffset = 0;
-  m_dwSelectedColor = dwSelectedColor;
-  m_pFont = g_fontManager.GetFont(strFontName);
   m_iSelect = CONTROL_LIST;
   m_iCursorY = 0;
   m_iCursorX = 0;
   m_iSpinPosX = iSpinX;
   m_iSpinPosY = iSpinY;
-  m_dwTextColor = dwTextColor;
   m_strSuffix = L"|";
   m_bScrollUp = false;
   m_bScrollDown = false;
@@ -145,8 +141,8 @@ void CGUIThumbnailPanel::RenderItem(bool bFocus, int iPosX, int iPosY, CGUIListI
     CStdStringW strItemLabelUnicode;
     g_charsetConverter.stringCharsetToFontCharset(pItem->GetLabel().c_str(), strItemLabelUnicode);
 
-    DWORD dwColor = m_dwTextColor;
-    if (pItem->IsSelected()) dwColor = m_dwSelectedColor;
+    DWORD dwColor = m_label.textColor;
+    if (pItem->IsSelected()) dwColor = m_label.selectedColor;
     if (bFocus && HasFocus() && m_iSelect == CONTROL_LIST )
     {
       RenderText((float)iPosX, (float)fTextPosY, dwColor, (WCHAR*) strItemLabelUnicode.c_str(), true);
@@ -160,7 +156,7 @@ void CGUIThumbnailPanel::RenderItem(bool bFocus, int iPosX, int iPosY, CGUIListI
 
 void CGUIThumbnailPanel::Render()
 {
-  if (!m_pFont) return ;
+  if (!m_label.font) return ;
   if (!UpdateEffectState()) return ;
 
   if (!ValidItem(m_iCursorX, m_iCursorY) )
@@ -220,7 +216,7 @@ void CGUIThumbnailPanel::Render()
   {
     if (iStage == 1) //text rendering
     {
-      m_pFont->Begin();
+      m_label.font->Begin();
     }
 
     if (m_bScrollUp && m_iRowOffset > 0)
@@ -275,7 +271,7 @@ void CGUIThumbnailPanel::Render()
     }
     if (iStage == 1)
     { //end text rendering
-      m_pFont->End();
+      m_label.font->End();
     }
   }
 
@@ -463,7 +459,7 @@ bool CGUIThumbnailPanel::OnMessage(CGUIMessage& message)
 
 void CGUIThumbnailPanel::PreAllocResources()
 {
-  if (!m_pFont) return ;
+  if (!m_label.font) return;
   CGUIControl::PreAllocResources();
   m_upDown.PreAllocResources();
   m_imgFolder.PreAllocResources();
@@ -500,7 +496,7 @@ void CGUIThumbnailPanel::Calculate(bool resetItem)
 
 void CGUIThumbnailPanel::AllocResources()
 {
-  if (!m_pFont) return ;
+  if (!m_label.font) return ;
   CGUIControl::AllocResources();
   m_upDown.AllocResources();
   m_imgFolder.AllocResources();
@@ -638,18 +634,19 @@ void CGUIThumbnailPanel::OnDown()
 
 void CGUIThumbnailPanel::RenderText(float fPosX, float fPosY, DWORD dwTextColor, WCHAR* wszText, bool bScroll )
 {
-  if (!m_pFont) return ;
+  if (!m_label.font) return ;
   static int iLastItem = -1;
 
   float fTextHeight, fTextWidth;
-  m_pFont->GetTextExtent( wszText, &fTextWidth, &fTextHeight);
+  m_label.font->GetTextExtent( wszText, &fTextWidth, &fTextHeight);
   float fMaxWidth = (float)m_iItemWidth * 0.9f;
   fPosX += ((float)m_iItemWidth - fMaxWidth) / 2.0f;
   if (!bScroll)
   {
     // Center text to make it look nicer...
-    if (fTextWidth <= fMaxWidth) fPosX += (fMaxWidth - fTextWidth) / 2;
-    m_pFont->DrawTextWidth(fPosX, fPosY, dwTextColor, wszText, fMaxWidth);
+    if (fTextWidth <= fMaxWidth)
+      fPosX += (fMaxWidth - fTextWidth) / 2;
+    m_label.font->DrawTextWidth(fPosX, fPosY, dwTextColor, m_label.shadowColor, wszText, fMaxWidth);
     return ;
   }
   else
@@ -657,7 +654,7 @@ void CGUIThumbnailPanel::RenderText(float fPosX, float fPosY, DWORD dwTextColor,
     if (fTextWidth <= fMaxWidth)
     { // Center text to make it look nicer...
       fPosX += (fMaxWidth - fTextWidth) / 2;
-      m_pFont->DrawTextWidth(fPosX, fPosY, dwTextColor, wszText, fMaxWidth);
+      m_label.font->DrawTextWidth(fPosX, fPosY, dwTextColor, m_label.shadowColor, wszText, fMaxWidth);
       iLastItem = -1; // reset scroller
       return ;
     }
@@ -668,14 +665,14 @@ void CGUIThumbnailPanel::RenderText(float fPosX, float fPosY, DWORD dwTextColor,
     scrollString += L" ";
     scrollString += m_strSuffix;
 
-    m_pFont->End(); //deinit fontbatching before setting a new viewport
+    m_label.font->End(); //deinit fontbatching before setting a new viewport
     if (iLastItem != iItem)
     {
       m_scrollInfo.Reset();
       iLastItem = iItem;
     }
-    m_pFont->DrawScrollingText(fPosX, fPosY, &dwTextColor, 1, scrollString, fMaxWidth, m_scrollInfo);
-    m_pFont->Begin(); //resume fontbatching
+    m_label.font->DrawScrollingText(fPosX, fPosY, &dwTextColor, 1, m_label.shadowColor, scrollString, fMaxWidth, m_scrollInfo);
+    m_label.font->Begin(); //resume fontbatching
   }
 }
 
@@ -911,7 +908,7 @@ bool CGUIThumbnailPanel::SelectItemFromPoint(int iPosX, int iPosY)
     if (iPosX > x*m_iItemWidth + (m_iItemWidth - m_iTextureWidth) / 2 && iPosX < x*m_iItemWidth + m_iTextureWidth + (m_iItemWidth - m_iTextureWidth) / 2)
     { // width ok - check height constraints
       float fTextHeight, fTextWidth;
-      m_pFont->GetTextExtent( L"Yy", &fTextWidth, &fTextHeight);
+      m_label.font->GetTextExtent( L"Yy", &fTextWidth, &fTextHeight);
       if (iPosY > y*m_iItemHeight && iPosY < y*m_iItemHeight + m_iTextureHeight + fTextHeight)
       { // height ok - good to go!
         m_iCursorX = x;

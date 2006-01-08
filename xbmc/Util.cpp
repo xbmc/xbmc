@@ -1959,7 +1959,7 @@ bool CUtil::CacheRarSubtitles(std::vector<CStdString>& vecExtensionsCached, cons
   for (int it= 0 ; it <ItemList.Size();++it)
   {
     CStdString strPathInRar = ItemList[it]->m_strPath;
-
+    CLog::Log(LOGDEBUG, "CacheRarSubs:: Found file %s", strPathInRar.c_str());
     // always check any embedded rar archives
     // checking for embedded rars, I moved this outside the sub_ext[] loop. We only need to check this once for each file.
     if (CUtil::IsRAR(strPathInRar))

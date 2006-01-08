@@ -63,7 +63,7 @@ public:
 
   void Initialize();  // loads the window
   virtual bool Load(const CStdString& strFileName, bool bContainsPath = false);
-  virtual bool Load(const TiXmlElement* pRootElement, RESOLUTION resToUse);
+  virtual bool Load(TiXmlElement* pRootElement, RESOLUTION resToUse);
   virtual void SetPosition(int iPosX, int iPosY);
   void CenterWindow();
   virtual void Render();
@@ -112,7 +112,6 @@ public:
   void LoadOnDemand(bool loadOnDemand) { m_loadOnDemand = loadOnDemand; };
   bool GetLoadOnDemand() { return m_loadOnDemand; }
   int GetRenderOrder() { return m_renderOrder; };
-  EFFECT_STATE GetEffectState();
   void SetControlVisibility();
 
   enum OVERLAY_STATE { OVERLAY_STATE_PARENT_WINDOW=0, OVERLAY_STATE_SHOWN, OVERLAY_STATE_HIDDEN };
@@ -120,10 +119,17 @@ public:
   OVERLAY_STATE GetOverlayState() const { return m_overlayState; };
   void ChangeControlID(DWORD oldID, DWORD newID, CGUIControl::GUICONTROLTYPES type);
 
+  virtual void QueueAnimation(ANIMATION_TYPE animType);
+  virtual bool IsAnimating(ANIMATION_TYPE animType);
 protected:
   virtual void OnWindowUnload() {}
   virtual void OnWindowLoaded();
   virtual void OnInitWindow();
+  virtual void OnWindowCloseAnimation();
+  virtual bool RenderAnimation();
+  virtual void UpdateStates(ANIMATION_TYPE type, ANIMATION_PROCESS currentProcess, ANIMATION_STATE currentState);
+  bool HasAnimation(ANIMATION_TYPE animType);
+
   struct stReferenceControl
   {
     char m_szType[128];
@@ -141,7 +147,7 @@ protected:
   typedef vector<struct stReferenceControl> VECREFERENCECONTOLS;
   typedef vector<struct stReferenceControl>::iterator IVECREFERENCECONTOLS;
   bool LoadReference(VECREFERENCECONTOLS& controls);
-  void LoadControl(const TiXmlNode* pControl, int iGroup, VECREFERENCECONTOLS& referencecontrols, RESOLUTION& resToUse);
+  void LoadControl(TiXmlElement* pControl, int iGroup, VECREFERENCECONTOLS& referencecontrols, RESOLUTION& resToUse);
   static CStdString CacheFilename;
   static VECREFERENCECONTOLS ControlsCache;
 
@@ -167,12 +173,8 @@ protected:
   bool m_dynamicResourceAlloc;
   int m_visibleCondition;
 
-  EFFECT_STATE m_effectState;
-  EFFECT_STATE m_queueState;
-  CVisibleEffect m_effect;
-  DWORD m_effectStart;
-  float m_effectAmount;
-  CAttribute m_attribute;
+  CAnimation m_showAnimation;   // for dialogs
+  CAnimation m_closeAnimation;
 
   int m_renderOrder;      // for render order of dialogs
 

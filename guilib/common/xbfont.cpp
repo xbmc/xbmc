@@ -47,6 +47,7 @@
 
 #include "XBFont.h"
 #include "../include.h"
+#include "../GUIFont.h"
 
 //-----------------------------------------------------------------------------
 // Static objects
@@ -535,7 +536,7 @@ HRESULT CXBFont::Begin()
 HRESULT CXBFont::DrawText( DWORD dwColor, const WCHAR* strText, DWORD dwFlags,
                            FLOAT fMaxPixelWidth )
 {
-  return CXBFont::DrawText( m_fCursorX, m_fCursorY, dwColor, strText,
+  return CXBFont::DrawText( m_fCursorX, m_fCursorY, CAngle(0), dwColor, strText,
                             dwFlags, fMaxPixelWidth );
 }
 
@@ -546,11 +547,11 @@ HRESULT CXBFont::DrawText( DWORD dwColor, const WCHAR* strText, DWORD dwFlags,
 // Name: DrawText()
 // Desc: Draws text as textured polygons
 //-----------------------------------------------------------------------------
-HRESULT CXBFont::DrawText( FLOAT fOriginX, FLOAT fOriginY, DWORD dwColor,
-                           const WCHAR* strText, DWORD dwFlags,
-                           FLOAT fMaxPixelWidth )
+HRESULT CXBFont::DrawText( FLOAT fOriginX, FLOAT fOriginY, const CAngle &angle,
+                            DWORD dwColor, const WCHAR* strText,
+                             DWORD dwFlags, FLOAT fMaxPixelWidth )
 {
-  return CXBFont::DrawTextEx( fOriginX, fOriginY, dwColor, strText, wcslen( strText ),
+  return CXBFont::DrawTextEx( fOriginX, fOriginY, angle, dwColor, strText, wcslen( strText ),
                               dwFlags, fMaxPixelWidth );
 }
 
@@ -561,22 +562,15 @@ HRESULT CXBFont::DrawText( FLOAT fOriginX, FLOAT fOriginY, DWORD dwColor,
 // Name: DrawTextEx()
 // Desc: Draws text as textured polygons
 //-----------------------------------------------------------------------------
-HRESULT CXBFont::DrawTextEx( FLOAT fOriginX, FLOAT fOriginY, DWORD dwColor,
-                             const WCHAR* strText, DWORD cchText, DWORD dwFlags,
-                             FLOAT fMaxPixelWidth )
+HRESULT CXBFont::DrawTextEx( FLOAT fOriginX, FLOAT fOriginY, const CAngle &angle, DWORD dwColor,
+                             const WCHAR* strText, DWORD cchText,
+                             DWORD dwFlags, FLOAT fMaxPixelWidth )
 {
   // Set up stuff (i.e. lock the vertex buffer) to prepare for drawing text
   Begin();
 
   // Set the common color for all the vertices to follow
   D3DDevice::SetVertexDataColor( D3DVSDE_DIFFUSE, dwColor );
-
-  // Set the starting screen position
-  m_fCursorX = floorf( fOriginX );
-  m_fCursorY = floorf( fOriginY );
-
-  // Adjust for padding
-  fOriginY -= m_fFontTopPadding;
 
   FLOAT fEllipsesPixelWidth = m_fXScaleFactor * 3.0f * (m_Glyphs[m_TranslatorTable[L'.']].wOffset + m_Glyphs[m_TranslatorTable[L'.']].wAdvance);
 
@@ -603,18 +597,22 @@ HRESULT CXBFont::DrawTextEx( FLOAT fOriginX, FLOAT fOriginY, DWORD dwColor,
   {
     FLOAT w, h;
     GetTextExtent( strText, &w, &h );
-    m_fCursorY = floorf( m_fCursorY - h / 2 );
+    fOriginX -= angle.sine * h * 0.5f;
+    fOriginY -= angle.cosine * h * 0.5f;
   }
 
   // Set a flag so we can determine initial justification effects
   BOOL bStartingNewLine = TRUE;
   FLOAT fAlignedOriginX;
+  int numLines = 0;
 
   while ( cchText-- )
   {
     // If starting text on a new line, determine justification effects
     if ( bStartingNewLine )
     {
+      m_fCursorX = fOriginX + angle.sine * m_fFontYAdvance * numLines;
+      m_fCursorY = fOriginY + angle.cosine * m_fFontYAdvance * numLines;
       if ( dwFlags & (XBFONT_RIGHT | XBFONT_CENTER_X) )
       {
         // Get the extent of this line
@@ -624,11 +622,12 @@ HRESULT CXBFont::DrawTextEx( FLOAT fOriginX, FLOAT fOriginY, DWORD dwColor,
         else
           GetTextExtent( strText, &w, &h, TRUE );
 
+        if ( dwFlags & XBFONT_CENTER_X)
+          w *= 0.5;
+
         // Offset this line's starting m_fCursorX value
-        if ( dwFlags & XBFONT_RIGHT )
-          m_fCursorX = floorf( fOriginX - w );
-        if ( dwFlags & XBFONT_CENTER_X )
-          m_fCursorX = floorf( fOriginX - w / 2 );
+        m_fCursorX -= angle.cosine * w;
+        m_fCursorY += angle.sine * w;
       }
       bStartingNewLine = FALSE;
       fAlignedOriginX = m_fCursorX;
@@ -640,8 +639,7 @@ HRESULT CXBFont::DrawTextEx( FLOAT fOriginX, FLOAT fOriginY, DWORD dwColor,
     // Handle the newline character
     if ( letter == L'\n' )
     {
-      m_fCursorX = fOriginX;
-      m_fCursorY += m_fFontYAdvance;
+      numLines++;
       bStartingNewLine = TRUE;
       continue;
     }
@@ -660,26 +658,32 @@ HRESULT CXBFont::DrawTextEx( FLOAT fOriginX, FLOAT fOriginY, DWORD dwColor,
       if ( m_fCursorX + fOffset + fWidth + fEllipsesPixelWidth + m_fSlantFactor > fAlignedOriginX + fMaxPixelWidth )
       {
         // Yup. Let's draw the ellipses, then bail
-        DrawText( m_fCursorX, m_fCursorY, dwColor, L"..." );
+        DrawText( m_fCursorX, m_fCursorY, angle, dwColor, L"..." );
         End();
         return S_OK;
       }
     }
 
     // Setup the screen coordinates
-    m_fCursorX += fOffset;
-    FLOAT left1 = m_fCursorX;
-    FLOAT left2 = left1 + m_fSlantFactor;
-    FLOAT right1 = left1 + fWidth;
-    FLOAT right2 = left2 + fWidth;
-    FLOAT top = m_fCursorY;
-    FLOAT bottom = top + fHeight;
-    m_fCursorX += fAdvance;
+    m_fCursorX += fOffset * angle.cosine;
+    m_fCursorY -= fOffset * angle.sine;
 
-    D3DDevice::SetVertexData4f( 0, left1, bottom, pGlyph->tu1, pGlyph->tv2 );
-    D3DDevice::SetVertexData4f( 0, left2, top, pGlyph->tu1, pGlyph->tv1 );
-    D3DDevice::SetVertexData4f( 0, right2, top, pGlyph->tu2, pGlyph->tv1 );
-    D3DDevice::SetVertexData4f( 0, right1, bottom, pGlyph->tu2, pGlyph->tv2 );
+    FLOAT left1 = m_fCursorX + m_fSlantFactor;
+    FLOAT left2 = m_fCursorX + angle.sine * fHeight;
+    FLOAT right1 = left1 + angle.cosine * fWidth;
+    FLOAT right2 = left2 + angle.cosine * fWidth;
+    FLOAT top1 = m_fCursorY;
+    FLOAT top2 = top1 - angle.sine * fWidth;
+    FLOAT bottom1 = top1 + angle.cosine * fHeight;
+    FLOAT bottom2 = top2 + angle.cosine * fHeight;
+
+    m_fCursorX += fAdvance * angle.cosine;
+    m_fCursorY -= fAdvance * angle.sine;
+
+    D3DDevice::SetVertexData4f( 0, left1, top1, pGlyph->tu1, pGlyph->tv1 );
+    D3DDevice::SetVertexData4f( 0, right1, top2, pGlyph->tu2, pGlyph->tv1 );
+    D3DDevice::SetVertexData4f( 0, right2, bottom2, pGlyph->tu2, pGlyph->tv2 );
+    D3DDevice::SetVertexData4f( 0, left2, bottom1, pGlyph->tu1, pGlyph->tv2 );
   }
 
   // Call End() to complete the begin/end pair for drawing text
@@ -694,19 +698,12 @@ HRESULT CXBFont::DrawTextEx( FLOAT fOriginX, FLOAT fOriginY, DWORD dwColor,
 // Name: DrawColourText()
 // Desc: Draws text as textured multi-colored polygons
 //-----------------------------------------------------------------------------
-HRESULT CXBFont::DrawColourText( FLOAT fOriginX, FLOAT fOriginY, DWORD* pdw256ColorPalette,
-                                 const WCHAR* strText, BYTE* pbColours, DWORD cchText, DWORD dwFlags,
-                                 FLOAT fMaxPixelWidth )
+HRESULT CXBFont::DrawColourText( FLOAT fOriginX, FLOAT fOriginY, const CAngle &angle, DWORD* pdw256ColorPalette,
+                                 const WCHAR* strText, BYTE* pbColours, DWORD cchText,
+                                 DWORD dwFlags, FLOAT fMaxPixelWidth )
 {
   // Set up stuff (i.e. lock the vertex buffer) to prepare for drawing text
   Begin();
-
-  // Set the starting screen position
-  m_fCursorX = floorf( fOriginX );
-  m_fCursorY = floorf( fOriginY );
-
-  // Adjust for padding
-  fOriginY -= m_fFontTopPadding;
 
   FLOAT fEllipsesPixelWidth = m_fXScaleFactor * 3.0f * (m_Glyphs[m_TranslatorTable[L'.']].wOffset + m_Glyphs[m_TranslatorTable[L'.']].wAdvance);
 
@@ -733,28 +730,32 @@ HRESULT CXBFont::DrawColourText( FLOAT fOriginX, FLOAT fOriginY, DWORD* pdw256Co
   {
     FLOAT w, h;
     GetTextExtent( strText, &w, &h );
-    m_fCursorY = floorf( m_fCursorY - h / 2 );
+    fOriginX -= angle.sine * h * 0.5f;
+    fOriginY -= angle.cosine * h * 0.5f;
   }
 
   // Set a flag so we can determine initial justification effects
   BOOL bStartingNewLine = TRUE;
+  int numLines = 0;
 
   while ( cchText-- )
   {
     // If starting text on a new line, determine justification effects
     if ( bStartingNewLine )
     {
+      m_fCursorX = fOriginX + angle.sine * m_fFontYAdvance * numLines;
+      m_fCursorY = fOriginY + angle.cosine * m_fFontYAdvance * numLines;
       if ( dwFlags & (XBFONT_RIGHT | XBFONT_CENTER_X) )
       {
         // Get the extent of this line
         FLOAT w, h;
         GetTextExtent( strText, &w, &h, TRUE );
 
-        // Offset this line's starting m_fCursorX value
-        if ( dwFlags & XBFONT_RIGHT )
-          m_fCursorX = floorf( fOriginX - w );
-        if ( dwFlags & XBFONT_CENTER_X )
-          m_fCursorX = floorf( fOriginX - w / 2 );
+        if (dwFlags & XBFONT_CENTER_X)
+          w *= 0.5;
+
+        m_fCursorX -= angle.cosine * w;
+        m_fCursorY += angle.sine * w;
       }
       bStartingNewLine = FALSE;
     }
@@ -774,8 +775,7 @@ HRESULT CXBFont::DrawColourText( FLOAT fOriginX, FLOAT fOriginY, DWORD* pdw256Co
     // Handle the newline character
     if ( letter == L'\n' )
     {
-      m_fCursorX = fOriginX;
-      m_fCursorY += m_fFontYAdvance;
+      numLines++;
       bStartingNewLine = TRUE;
       continue;
     }
@@ -794,26 +794,32 @@ HRESULT CXBFont::DrawColourText( FLOAT fOriginX, FLOAT fOriginY, DWORD* pdw256Co
       if ( m_fCursorX + fOffset + fWidth + fEllipsesPixelWidth + m_fSlantFactor > fOriginX + fMaxPixelWidth )
       {
         // Yup. Let's draw the ellipses, then bail
-        DrawText( m_fCursorX, m_fCursorY, dwColor, L"..." );
+        DrawText( m_fCursorX, m_fCursorY, angle, dwColor, L"..." );
         End();
         return S_OK;
       }
     }
 
     // Setup the screen coordinates
-    m_fCursorX += fOffset;
-    FLOAT left1 = m_fCursorX;
-    FLOAT left2 = left1 + m_fSlantFactor;
-    FLOAT right1 = left1 + fWidth;
-    FLOAT right2 = left2 + fWidth;
-    FLOAT top = m_fCursorY;
-    FLOAT bottom = top + fHeight;
-    m_fCursorX += fAdvance;
+    m_fCursorX += fOffset * angle.cosine;
+    m_fCursorY -= fOffset * angle.sine;
 
-    D3DDevice::SetVertexData4f( 0, left1, bottom, pGlyph->tu1, pGlyph->tv2 );
-    D3DDevice::SetVertexData4f( 0, left2, top, pGlyph->tu1, pGlyph->tv1 );
-    D3DDevice::SetVertexData4f( 0, right2, top, pGlyph->tu2, pGlyph->tv1 );
-    D3DDevice::SetVertexData4f( 0, right1, bottom, pGlyph->tu2, pGlyph->tv2 );
+    FLOAT left1 = m_fCursorX + m_fSlantFactor;
+    FLOAT left2 = m_fCursorX + angle.sine * fHeight;
+    FLOAT right1 = left1 + angle.cosine * fWidth;
+    FLOAT right2 = left2 + angle.cosine * fWidth;
+    FLOAT top1 = m_fCursorY;
+    FLOAT top2 = top1 - angle.sine * fWidth;
+    FLOAT bottom1 = top1 + angle.cosine * fHeight;
+    FLOAT bottom2 = top2 + angle.cosine * fHeight;
+
+    m_fCursorX += fAdvance * angle.cosine;
+    m_fCursorY -= fAdvance * angle.sine;
+
+    D3DDevice::SetVertexData4f( 0, left1, top1, pGlyph->tu1, pGlyph->tv1 );
+    D3DDevice::SetVertexData4f( 0, right1, top2, pGlyph->tu2, pGlyph->tv1 );
+    D3DDevice::SetVertexData4f( 0, right2, bottom2, pGlyph->tu2, pGlyph->tv2 );
+    D3DDevice::SetVertexData4f( 0, left2, bottom1, pGlyph->tu1, pGlyph->tv2 );
   }
 
   // Call End() to complete the begin/end pair for drawing text
@@ -935,7 +941,7 @@ LPDIRECT3DTEXTURE8 CXBFont::CreateTexture( const WCHAR* strText,
   D3DDevice::Clear( 0L, NULL, D3DCLEAR_TARGET, dwBackgroundColor, 1.0f, 0L );
 
   // Render the text
-  CXBFont::DrawText( 0, 0, dwTextColor, strText, 0L );
+  CXBFont::DrawText( 0, 0, CAngle(), dwTextColor, strText, 0L );
 
   // Restore the render target
   D3DVIEWPORT8 vpBackBuffer = { 0, 0, 640, 480, 0.0f, 1.0f };
@@ -997,7 +1003,7 @@ STDMETHODIMP CXBFont::DrawText(
   D3DDevice::GetDepthStencilSurface( &pZBuffer );
 
   D3DDevice::SetRenderTarget( pSurface, NULL );
-  HRESULT hr = DrawTextEx( (FLOAT) X, (FLOAT) Y, m_dwCurrentColor,
+  HRESULT hr = DrawTextEx( (FLOAT) X, (FLOAT) Y, CAngle(), m_dwCurrentColor,
                            pText, CharCount, 0, 0.0 );
   // Restore render target and zbuffer
   D3DDevice::SetRenderTarget( pRenderTarget, pZBuffer );

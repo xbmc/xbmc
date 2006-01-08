@@ -1,6 +1,7 @@
 #include "../../../stdafx.h"
 #include "..\python.h"
 #include "GuiCheckMarkControl.h"
+#include "GUIFontManager.h"
 #include "control.h"
 #include "pyutil.h"
 
@@ -89,32 +90,32 @@ namespace PYXBMC
 		self->ob_type->tp_free((PyObject*)self);
 	}
 
-	CGUIControl* ControlCheckMark_Create(ControlCheckMark* pControl)
-	{
-		pControl->pGUIControl = new CGUICheckMarkControl(
-            pControl->iParentId,
-            pControl->iControlId,
-            pControl->dwPosX,
-            pControl->dwPosY,
-            pControl->dwWidth,
-            pControl->dwHeight,
-			pControl->strTextureFocus,
-            pControl->strTextureNoFocus,
-			pControl->dwCheckWidth,
-            pControl->dwCheckHeight,
-            pControl->dwAlign );
+  CGUIControl* ControlCheckMark_Create(ControlCheckMark* pControl)
+  {
+    CLabelInfo label;
+    label.disabledColor = pControl->dwDisabledColor;
+    label.textColor = pControl->dwTextColor;
+    label.font = g_fontManager.GetFont(pControl->strFont);
+    label.align = pControl->dwAlign;
+    pControl->pGUIControl = new CGUICheckMarkControl(
+      pControl->iParentId,
+      pControl->iControlId,
+      pControl->dwPosX,
+      pControl->dwPosY,
+      pControl->dwWidth,
+      pControl->dwHeight,
+      pControl->strTextureFocus,
+      pControl->strTextureNoFocus,
+      pControl->dwCheckWidth,
+      pControl->dwCheckHeight,
+      label );
 
-		CGUICheckMarkControl* pGuiCheckMarkControl =
-            (CGUICheckMarkControl*)pControl->pGUIControl;
+    CGUICheckMarkControl* pGuiCheckMarkControl = (CGUICheckMarkControl*)pControl->pGUIControl;
 
-		pGuiCheckMarkControl->SetLabel(
-            pControl->strFont,
-            pControl->strText,
-            pControl->dwTextColor );
-		pGuiCheckMarkControl->SetDisabledColor( pControl->dwDisabledColor );
+    pGuiCheckMarkControl->SetText(pControl->strText);
 
-		return pControl->pGUIControl;
-	}
+    return pControl->pGUIControl;
+  }
 
 	PyDoc_STRVAR(setDisabledColor__doc__,
 		"setDisabledColor(string hexcolor) -- .\n"
@@ -137,7 +138,7 @@ namespace PYXBMC
 		PyGUILock();
 		if (self->pGUIControl) 
         {
-			((CGUICheckMarkControl*)self->pGUIControl)->SetDisabledColor(
+			((CGUICheckMarkControl*)self->pGUIControl)->PythonSetDisabledColor(
                 self->dwDisabledColor );
         }
 		PyGUIUnlock();
@@ -185,11 +186,11 @@ namespace PYXBMC
 		PyGUILock();
 		if (self->pGUIControl)
         {
-			((CGUICheckMarkControl*)self->pGUIControl)->SetLabel(
+			((CGUICheckMarkControl*)self->pGUIControl)->PythonSetLabel(
                 self->strFont,
                 self->strText,
                 self->dwTextColor );
-			((CGUICheckMarkControl*)self->pGUIControl)->SetDisabledColor(
+			((CGUICheckMarkControl*)self->pGUIControl)->PythonSetDisabledColor(
 				self->dwDisabledColor );
         }
 		PyGUIUnlock();

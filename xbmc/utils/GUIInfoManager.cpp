@@ -134,6 +134,12 @@ extern char g_szTitleIP[32];
 
 #define LISTITEM_THUMB              310
 #define LISTITEM_LABEL              311
+#define LISTITEM_TITLE              312
+#define LISTITEM_TRACKNUMBER        313
+#define LISTITEM_ARTIST             314
+#define LISTITEM_ALBUM              315
+#define LISTITEM_YEAR               316
+#define LISTITEM_GENRE              317
 
 #define VISUALISATION_LOCKED        400
 #define VISUALISATION_PRESET        401
@@ -318,6 +324,12 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
   else if (strTest.Equals("audioscrobbler.submitstate")) ret = AUDIOSCROBBLER_SUBMIT_STATE;
   else if (strTest.Equals("listitem.thumb")) ret = LISTITEM_THUMB;
   else if (strTest.Equals("listitem.label")) ret = LISTITEM_LABEL;
+  else if (strTest.Equals("listitem.title")) ret = LISTITEM_TITLE;
+  else if (strTest.Equals("listitem.tracknumber")) ret = LISTITEM_TRACKNUMBER;
+  else if (strTest.Equals("listitem.artist")) ret = LISTITEM_ARTIST;
+  else if (strTest.Equals("listitem.album")) ret = LISTITEM_ALBUM;
+  else if (strTest.Equals("listitem.year")) ret = LISTITEM_YEAR;
+  else if (strTest.Equals("listitem.genre")) ret = LISTITEM_GENRE;
   else if (strTest.Equals("visualisation.locked")) ret = VISUALISATION_LOCKED;
   else if (strTest.Equals("visualisation.preset")) ret = VISUALISATION_PRESET;
   else if (strTest.Equals("visualisation.name")) ret = VISUALISATION_NAME;
@@ -497,15 +509,17 @@ wstring CGUIInfoManager::GetLabel(int info)
     }
     break;
   case LISTITEM_LABEL:
+  case LISTITEM_TITLE:
+  case LISTITEM_TRACKNUMBER:
+  case LISTITEM_ARTIST:
+  case LISTITEM_ALBUM:
+  case LISTITEM_YEAR:
+  case LISTITEM_GENRE:
     {
       CGUIWindow *pWindow = m_gWindowManager.GetWindow(m_gWindowManager.GetActiveWindow());
       if (pWindow && pWindow->IsMediaWindow())
       {
-        const CFileItem *item = ((CGUIMediaWindow *)pWindow)->GetCurrentListItem();
-        if (item)
-        {
-          strLabel = item->GetLabel();
-        }
+        strLabel = GetItemLabel(((CGUIMediaWindow *)pWindow)->GetCurrentListItem(), info);
       }
     }
     break;
@@ -1520,4 +1534,22 @@ int CGUIInfoManager::ConditionalStringParameter(const CStdString &parameter)
   // return the new offset
   m_stringParameters.push_back(parameter);
   return (int)m_stringParameters.size() - 1;
+}
+
+CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info)
+{
+  if (!item) return "";
+  if (info == LISTITEM_LABEL) return item->GetLabel();
+  else if (info == LISTITEM_TITLE) return item->m_musicInfoTag.GetTitle();
+  else if (info == LISTITEM_TRACKNUMBER)
+  {
+    CStdString track;
+    track.Format("%i", item->m_musicInfoTag.GetTrackNumber());
+    return track;
+  }
+  else if (info == LISTITEM_ARTIST) return item->m_musicInfoTag.GetArtist();
+  else if (info == LISTITEM_ALBUM) return item->m_musicInfoTag.GetAlbum();
+  else if (info == LISTITEM_YEAR) return item->m_musicInfoTag.GetYear();
+  else if (info == LISTITEM_GENRE) return item->m_musicInfoTag.GetGenre();
+  return "";
 }

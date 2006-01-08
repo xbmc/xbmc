@@ -312,6 +312,10 @@ void CDAAPDirectory::free_artists()
 
 void CDAAPDirectory::AddToArtistAlbum(char *artist_s, char *album_s)
 {
+  if (artist_s && album_s)
+    CLog::Log(LOGDEBUG, "DAAP::AddToArtistAlbum(%s, %s)", artist_s, album_s);
+  else
+    CLog::Log(LOGDEBUG, "DAAP::AddToArtistAlbum called with NULL artist_s or album_s");
   artistPTR *cur_artist = m_artisthead;
   albumPTR *cur_album = NULL;
   while (cur_artist)

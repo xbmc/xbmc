@@ -491,7 +491,6 @@ protected:
   void GetString(const TiXmlElement* pRootElement, const CStdString& strTagName, CStdString& strValue, const CStdString& strDefaultValue);
   void GetString(const TiXmlElement* pRootElement, const CStdString& strTagName, char *szValue, const CStdString& strDefaultValue);
   void GetShares(const TiXmlElement* pRootElement, const CStdString& strTagName, VECSHARES& items, CStdString& strDefault);
-  void GetHex(const TiXmlNode* pRootElement, const CStdString& strTagName, DWORD& dwHexValue, DWORD dwDefaultValue);
   void ConvertHomeVar(CStdString& strText);
   // functions for writing xml files
   void SetString(TiXmlNode* pRootNode, const CStdString& strTagName, const CStdString& strValue) const;

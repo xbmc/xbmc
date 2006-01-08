@@ -20,7 +20,7 @@ public:
 
   CGUIConsoleControl(DWORD dwParentID, DWORD dwControlId,
                      int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight,
-                     const CStdString& strFontName,
+                     const CLabelInfo &labelInfo,
                      D3DCOLOR dwPenColor1, D3DCOLOR dwPenColor2, D3DCOLOR dwPenColor3, D3DCOLOR dwPenColor4);
 
   virtual ~CGUIConsoleControl(void);
@@ -37,10 +37,9 @@ public:
     return nPaletteIndex < (INT)m_palette.size() ? m_palette[nPaletteIndex] : 0xFF808080;
   };
 
-  LPCSTR GetFontName() const { return m_pFont ? m_pFont->GetFontName().c_str() : ""; };
-
   void Clear();
   void Write(CStdString& aString, INT nPaletteIndex = 0);
+  const CLabelInfo& GetLabelInfo() const { return m_label; };
 
 protected:
 
@@ -66,6 +65,6 @@ protected:
   DWORD m_dwFrameCounter;
 
   FLOAT m_fFontHeight;
-  CGUIFont* m_pFont;
+  CLabelInfo m_label;
 };
 #endif

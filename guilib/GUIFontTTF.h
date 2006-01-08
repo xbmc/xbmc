@@ -8,15 +8,14 @@
 #pragma once
 
 #include "common/xbfont.h"
-#include "GUIFont.h"
-#include <xfont.h>
+#include "GUIFontBase.h"
 #include <hash_map>
 
 /*!
  \ingroup textures
  \brief 
  */
-class CGUIFontTTF: public CGUIFont
+class CGUIFontTTF: public CGUIFontBase
 {
   struct Character
   {
@@ -26,7 +25,7 @@ class CGUIFontTTF: public CGUIFont
   };
 public:
 
-  CGUIFontTTF(const CStdString& strFontName);
+  CGUIFontTTF(const CStdString& strFileName);
   virtual ~CGUIFontTTF(void);
 
   void Clear();
@@ -41,15 +40,15 @@ protected:
   virtual void GetTextExtentInternal(const WCHAR* strText, FLOAT* pWidth,
                              FLOAT* pHeight, BOOL bFirstLineOnly = FALSE);
 
-  virtual void DrawTextImpl(FLOAT fOriginX, FLOAT fOriginY, DWORD dwColor,
+  virtual void DrawTextImpl(FLOAT fOriginX, FLOAT fOriginY, const CAngle &angle, DWORD dwColor,
                             const WCHAR* strText, DWORD cchText, DWORD dwFlags = 0,
                             FLOAT fMaxPixelWidth = 0.0f);
 
-  virtual void DrawColourTextImpl(FLOAT fOriginX, FLOAT fOriginY, DWORD* pdw256ColorPalette,
+  virtual void DrawColourTextImpl(FLOAT fOriginX, FLOAT fOriginY, const CAngle &angle, DWORD* pdw256ColorPalette,
                                   const WCHAR* strText, BYTE* pbColours, DWORD cchText, DWORD dwFlags,
                                   FLOAT fMaxPixelWidth);
 
-  void DrawTextInternal(FLOAT fOriginX, FLOAT fOriginY, DWORD *pdw256ColorPalette, BYTE *pbColours,
+  void DrawTextInternal(FLOAT fOriginX, FLOAT fOriginY, const CAngle &angle, DWORD *pdw256ColorPalette, BYTE *pbColours,
                             const WCHAR* strText, DWORD cchText, DWORD dwFlags = 0,
                             FLOAT fMaxPixelWidth = 0.0f);
 
@@ -61,7 +60,7 @@ protected:
   // Stuff for pre-rendering for speed
   Character *GetCharacter(WCHAR letter);
   void CacheCharacter(WCHAR letter, Character *ch);
-  void RenderCharacter(int posX, int posY, const Character *ch, D3DCOLOR dwColor);
+  void RenderCharacter(float posX, float posY, const CAngle &angle, const Character *ch, D3DCOLOR dwColor);
   void CreateShaderAndTexture();
   void CopyTexture(int width);
 

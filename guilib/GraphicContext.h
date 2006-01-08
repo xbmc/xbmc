@@ -142,10 +142,20 @@ public:
   inline float ScaleFinalX() const { return m_windowScaleX; };
   inline float ScaleFinalY() const { return m_windowScaleY; };
   inline DWORD MergeAlpha(DWORD color) const;
-  void ResetControlAttributes() { m_controlAttribute.Reset(); };
-  void SetControlAlpha(DWORD alpha) { m_controlAttribute.alpha = alpha; };
-  void SetControlOffset(float offsetX, float offsetY) { m_controlAttribute.offsetX = (int)offsetX; m_controlAttribute.offsetY = (int)offsetY; };
-  void SetWindowAttributes(CAttribute &attribute) { m_windowAttribute = attribute; };
+  inline void ResetControlAnimation() { m_controlAttribute.Reset(); };
+  inline void AddControlAnimation(CAttribute &attribute)
+  {
+    m_controlAttribute.alpha = m_controlAttribute.alpha * attribute.alpha / 255;
+    m_controlAttribute.offsetX += attribute.offsetX;
+    m_controlAttribute.offsetY += attribute.offsetY;
+  };
+  inline void ResetWindowAnimation() { m_windowAttribute.Reset(); };
+  inline void AddWindowAnimation(CAttribute &attribute)
+  {
+    m_windowAttribute.alpha = m_windowAttribute.alpha * attribute.alpha / 255;
+    m_windowAttribute.offsetX += attribute.offsetX;
+    m_windowAttribute.offsetY += attribute.offsetY;
+  };
 
 protected:
   IMsgSenderCallback* m_pCallback;

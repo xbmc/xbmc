@@ -1,6 +1,5 @@
 #include "include.h"
 #include "GUIConsoleControl.h"
-#include "GUIfontmanager.h"
 #include "GUIWindowManager.h"
 #include "../xbmc/utils/CharsetConverter.h"
 
@@ -9,7 +8,7 @@
 
 CGUIConsoleControl::CGUIConsoleControl(DWORD dwParentID, DWORD dwControlId,
                                        int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight,
-                                       const CStdString& strFontName,
+                                       const CLabelInfo& labelInfo,
                                        D3DCOLOR dwPenColor1, D3DCOLOR dwPenColor2, D3DCOLOR dwPenColor3, D3DCOLOR dwPenColor4)
     : CGUIControl(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight)
 {
@@ -18,12 +17,10 @@ CGUIConsoleControl::CGUIConsoleControl(DWORD dwParentID, DWORD dwControlId,
   m_palette.push_back(dwPenColor3);
   m_palette.push_back(dwPenColor4);
 
-  m_pFont = g_fontManager.GetFont(strFontName);
-
   FLOAT fTextW;
-  if (m_pFont)
+  if (m_label.font)
   {
-    m_pFont->GetTextExtent(L"X", &fTextW, &m_fFontHeight);
+    m_label.font->GetTextExtent(L"X", &fTextW, &m_fFontHeight);
   }
 
   m_nMaxLines = dwHeight / (DWORD)(m_fFontHeight + CONSOLE_LINE_SPACING);
@@ -67,7 +64,7 @@ bool CGUIConsoleControl::OnAction(const CAction &action)
 
 void CGUIConsoleControl::Render()
 {
-  if (!UpdateEffectState() || !m_pFont)
+  if (!UpdateEffectState() || !m_label.font)
   {
     return ;
   }
@@ -93,7 +90,7 @@ void CGUIConsoleControl::Render()
     Line& line = m_lines[nIndex];
     g_charsetConverter.stringCharsetToFontCharset(line.text, strText);
 
-    m_pFont->DrawText(fTextX, fTextY, line.colour, (LPWSTR) strText.c_str());
+    m_label.font->DrawText(fTextX, fTextY, line.colour, m_label.shadowColor, (LPWSTR) strText.c_str());
 
     fTextY += m_fFontHeight + CONSOLE_LINE_SPACING;
   }
@@ -129,7 +126,7 @@ void CGUIConsoleControl::Write(CStdString& aString, INT nPaletteIndex)
 
 void CGUIConsoleControl::WriteString(CStdString& aString, DWORD aColour)
 {
-  if (!m_pFont) return ;
+  if (!m_label.font) return ;
 
   CStdString strLine;
   CStdStringW strLineW;
@@ -173,7 +170,7 @@ void CGUIConsoleControl::WriteString(CStdString& aString, DWORD aColour)
       // Calculate the accumulated text dimensions.
       g_charsetConverter.stringCharsetToFontCharset(strLine, strLineW);
       FLOAT fWidth, fHeight;
-      m_pFont->GetTextExtent(strLineW.c_str(), &fWidth, &fHeight);
+      m_label.font->GetTextExtent(strLineW.c_str(), &fWidth, &fHeight);
 
       // If we have exceeded the allowable line width
       if (fWidth > m_dwWidth)

@@ -2,7 +2,8 @@
 #include "GUIFontXPR.h"
 
 
-CGUIFontXPR::CGUIFontXPR(const CStdString& strFontName) : CGUIFont(strFontName)
+CGUIFontXPR::CGUIFontXPR(const CStdString& strFileName)
+  : CGUIFontBase(strFileName)
 {}
 
 CGUIFontXPR::~CGUIFontXPR(void)
@@ -12,11 +13,11 @@ boolean CGUIFontXPR::Load(const CStdString& strFilename)
 {
   try
   {
-    CLog::Log(LOGINFO, "Load font:%s path:%s", m_strFontName.c_str(), strFilename.c_str());
+    CLog::Log(LOGINFO, "Load font:%s path:%s", m_strFileName.c_str(), strFilename.c_str());
     bool bResult = (m_font.Create(strFilename.c_str()) == S_OK);
     if (!bResult)
     {
-      CLog::Log(LOGERROR, "failed to load Load font:%s path:%s", m_strFontName.c_str(), strFilename.c_str());
+      CLog::Log(LOGERROR, "failed to load Load font:%s path:%s", m_strFileName.c_str(), strFilename.c_str());
     }
     else
     {
@@ -28,7 +29,7 @@ boolean CGUIFontXPR::Load(const CStdString& strFilename)
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "failed to load font:%s file:%s", m_strFontName.c_str(), strFilename.c_str());
+    CLog::Log(LOGERROR, "failed to load font:%s file:%s", m_strFileName.c_str(), strFilename.c_str());
   }
 
   return false;
@@ -44,11 +45,11 @@ void CGUIFontXPR::End()
   m_font.End();
 }
 
-void CGUIFontXPR::DrawTextImpl(FLOAT fOriginX, FLOAT fOriginY, DWORD dwColor,
+void CGUIFontXPR::DrawTextImpl(FLOAT fOriginX, FLOAT fOriginY, const CAngle &angle, DWORD dwColor,
                                const WCHAR* strText, DWORD cchText, DWORD dwFlags,
                                FLOAT fMaxPixelWidth)
 {
-  m_font.DrawTextEx(fOriginX, fOriginY, dwColor, strText, cchText>2048?2048:cchText, dwFlags, fMaxPixelWidth);
+  m_font.DrawTextEx(fOriginX, fOriginY, angle, dwColor, strText, cchText>2048?2048:cchText, dwFlags, fMaxPixelWidth);
 }
 
 void CGUIFontXPR::GetTextExtentInternal(const WCHAR* strText, FLOAT* pWidth,
@@ -57,11 +58,11 @@ void CGUIFontXPR::GetTextExtentInternal(const WCHAR* strText, FLOAT* pWidth,
   m_font.GetTextExtent(strText, pWidth, pHeight, bFirstLineOnly);
 }
 
-void CGUIFontXPR::DrawColourTextImpl(FLOAT fOriginX, FLOAT fOriginY, DWORD* pdw256ColorPalette,
+void CGUIFontXPR::DrawColourTextImpl(FLOAT fOriginX, FLOAT fOriginY, const CAngle &angle, DWORD* pdw256ColorPalette,
                                      const WCHAR* strText, BYTE* pbColours, DWORD cchText, DWORD dwFlags,
                                      FLOAT fMaxPixelWidth)
 {
-  m_font.DrawColourText(fOriginX, fOriginY, pdw256ColorPalette, strText, pbColours, cchText>2048?2048:cchText, dwFlags, fMaxPixelWidth);
+  m_font.DrawColourText(fOriginX, fOriginY, angle, pdw256ColorPalette, strText, pbColours, cchText>2048?2048:cchText, dwFlags, fMaxPixelWidth);
 }
 
 D3DTexture* CGUIFontXPR::CreateTexture( const WCHAR* strText,
@@ -70,4 +71,10 @@ D3DTexture* CGUIFontXPR::CreateTexture( const WCHAR* strText,
                                         D3DFORMAT d3dFormat)
 {
   return m_font.CreateTexture(strText, dwBackgroundColor, dwTextColor, d3dFormat);
+}
+
+void CGUIFontXPR::CreditsGetTextExtent(const WCHAR* strText, FLOAT* pWidth,
+                                FLOAT* pHeight, BOOL bFirstLineOnly)
+{
+  m_font.GetTextExtent(strText, pWidth, pHeight, bFirstLineOnly);
 }

@@ -229,7 +229,7 @@ void CGUIDialogVisualisationSettings::AddSetting(VisSetting &setting, int iPosX,
     if (!pControl) return ;
     pControl->SetPosition(iPosX, iPosY);
     pControl->SetWidth(iWidth);
-    ((CGUISpinControlEx *)pControl)->SetLabel(setting.name);
+    ((CGUISpinControlEx *)pControl)->SetText(setting.name);
     pControl->SetWidth(iWidth);
     for (unsigned int i = 0; i < setting.entry.size(); i++)
       ((CGUISpinControlEx *)pControl)->AddLabel(setting.entry[i], i);
