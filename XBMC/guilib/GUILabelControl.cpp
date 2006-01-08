@@ -1,18 +1,14 @@
 #include "include.h"
 #include "GUILabelControl.h"
-#include "GUIFontManager.h"
 #include "../xbmc/utils/CharsetConverter.h"
 #include "../xbmc/utils/GUIInfoManager.h"
 
-CGUILabelControl::CGUILabelControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strFont, const wstring& strLabel, DWORD dwTextColor, DWORD dwDisabledColor, DWORD dwTextAlign, bool bHasPath)
+CGUILabelControl::CGUILabelControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, const wstring& strLabel, const CLabelInfo& labelInfo, bool bHasPath)
     : CGUIControl(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight)
 {
   SetLabel(strLabel);
-  m_pFont = g_fontManager.GetFont(strFont);
-  m_dwTextColor = dwTextColor;
-  m_dwTextAlign = dwTextAlign;
+  m_label = labelInfo;
   m_bHasPath = bHasPath;
-  m_dwDisabledColor = dwDisabledColor;
   m_bShowCursor = false;
   m_iCursorPos = 0;
   m_dwCounter = 0;
@@ -63,8 +59,7 @@ void CGUILabelControl::Render()
 		strRenderLabel = ParseLabel(strRenderLabel);
 	}
 
-
-  if (m_pFont)
+  if (m_label.font)
   {
     CStdStringW strLabelUnicode;
     g_charsetConverter.stringCharsetToFontCharset(strRenderLabel, strLabelUnicode);
@@ -74,53 +69,53 @@ void CGUILabelControl::Render()
     if (m_ScrollInsteadOfTruncate && m_dwWidth > 0 && !IsDisabled())
     { // ignore align center - just use align left/right
       float width, height;
-      m_pFont->GetTextExtent(strLabelUnicode.c_str(), &width, &height);
+      m_label.font->GetTextExtent(strLabelUnicode.c_str(), &width, &height);
       if (width > m_dwWidth)
       { // need to scroll - set the viewport.  Should be set just using the height of the text
         bNormalDraw = false;
         float fPosX = (float)m_iPosX;
-        if (m_dwTextAlign & XBFONT_RIGHT)
+        if (m_label.align & XBFONT_RIGHT)
           fPosX -= (float)m_dwWidth;
 
-        m_pFont->DrawScrollingText(fPosX, (float)m_iPosY, &m_dwTextColor, 1, strLabelUnicode, (float)m_dwWidth, m_ScrollInfo);
+        m_label.font->DrawScrollingText(fPosX, (float)m_iPosY, m_label.angle, &m_label.textColor, 1, m_label.shadowColor, strLabelUnicode, (float)m_dwWidth, m_ScrollInfo);
       }
     }
     if (bNormalDraw)
     {
       float fPosX = (float)m_iPosX;
-      if (m_dwTextAlign & XBFONT_CENTER_X)
+      if (m_label.align & XBFONT_CENTER_X)
         fPosX += (float)m_dwWidth / 2;
 
       float fPosY = (float)m_iPosY;
-      if (m_dwTextAlign & XBFONT_CENTER_Y)
+      if (m_label.align & XBFONT_CENTER_Y)
         fPosY += (float)m_dwHeight / 2;
 
       if (IsDisabled())
       {
-        m_pFont->DrawText(fPosX, fPosY, m_dwDisabledColor, strLabelUnicode.c_str(), m_dwTextAlign | XBFONT_TRUNCATED, (float)m_dwWidth);
+        m_label.font->DrawText(fPosX, fPosY, m_label.angle, m_label.disabledColor, m_label.shadowColor, strLabelUnicode.c_str(), m_label.align | XBFONT_TRUNCATED, (float)m_dwWidth);
       }
       else
       {
         if (m_bShowCursor)
         { // show the cursor...
           strLabelUnicode.Insert(m_iCursorPos, L"|");
-          if (m_dwTextAlign & XBFONT_CENTER_X)
-            fPosX -= m_pFont->GetTextWidth(strLabelUnicode.c_str()) * 0.5f;
+          if (m_label.align & XBFONT_CENTER_X)
+            fPosX -= m_label.font->GetTextWidth(strLabelUnicode.c_str()) * 0.5f;
           BYTE *palette = new BYTE[strLabelUnicode.size()];
           for (unsigned int i=0; i < strLabelUnicode.size(); i++)
             palette[i] = 0;
           palette[m_iCursorPos] = 1;
           DWORD color[2];
-          color[0] = m_dwDisabledColor;
+          color[0] = m_label.textColor;
           if ((++m_dwCounter % 50) > 25)
-            color[1] = m_dwTextColor;
+            color[1] = m_label.textColor;
           else
             color[1] = 0; // transparent black
-          m_pFont->DrawColourTextWidth(fPosX, fPosY, color, 2, strLabelUnicode.c_str(), palette, (float)m_dwWidth);
+          m_label.font->DrawColourTextWidth(fPosX, fPosY, m_label.angle, color, 2, m_label.shadowColor, strLabelUnicode.c_str(), palette, (float)m_dwWidth);
           delete[] palette;
         }
         else
-          m_pFont->DrawText(fPosX, fPosY, m_dwTextColor, strLabelUnicode.c_str(), m_dwTextAlign | XBFONT_TRUNCATED, (float)m_dwWidth);
+          m_label.font->DrawText(fPosX, fPosY, m_label.angle, m_label.textColor, m_label.shadowColor, strLabelUnicode.c_str(), m_label.align | XBFONT_TRUNCATED, (float)m_dwWidth);
       }
     }
   }
@@ -136,8 +131,8 @@ bool CGUILabelControl::CanFocus() const
 void CGUILabelControl::SetAlpha(DWORD dwAlpha)
 {
   CGUIControl::SetAlpha(dwAlpha);
-  m_dwTextColor = (dwAlpha << 24) | (m_dwTextColor & 0xFFFFFF);
-  m_dwDisabledColor = (dwAlpha << 24) | (m_dwDisabledColor & 0xFFFFFF);
+  m_label.textColor = (dwAlpha << 24) | (m_label.textColor & 0xFFFFFF);
+  m_label.disabledColor = (dwAlpha << 24) | (m_label.disabledColor & 0xFFFFFF);
 }
 
 void CGUILabelControl::SetLabel(const wstring &strLabel)
@@ -182,7 +177,7 @@ bool CGUILabelControl::OnMessage(CGUIMessage& message)
 
 void CGUILabelControl::ShortenPath()
 {
-  if (!m_pFont)
+  if (!m_label.font)
     return ;
   if ( m_dwWidth <= 0 )
     return ;
@@ -215,7 +210,7 @@ void CGUILabelControl::ShortenPath()
   CStdStringW strLabelUnicode;
   g_charsetConverter.stringCharsetToFontCharset(m_strLabel, strLabelUnicode);
 
-  m_pFont->GetTextExtent( strLabelUnicode.c_str(), &fTextWidth, &fTextHeight);
+  m_label.font->GetTextExtent( strLabelUnicode.c_str(), &fTextWidth, &fTextHeight);
 
   if ( fTextWidth <= (m_dwWidth) )
     return ;
@@ -238,6 +233,14 @@ void CGUILabelControl::ShortenPath()
       g_charsetConverter.stringCharsetToFontCharset(m_strLabel, strLabelUnicode);
     }
 
-    m_pFont->GetTextExtent( strLabelUnicode.c_str(), &fTextWidth, &fTextHeight );
+    m_label.font->GetTextExtent( strLabelUnicode.c_str(), &fTextWidth, &fTextHeight );
   }
+}
+
+void CGUILabelControl::SetTruncate(bool bTruncate)
+{
+  if (bTruncate)
+    m_label.align |= XBFONT_TRUNCATED;
+  else
+    m_label.align &= ~XBFONT_TRUNCATED;
 }

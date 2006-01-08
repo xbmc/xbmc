@@ -1,24 +1,22 @@
 #include "include.h"
 #include "GUIRSSControl.h"
 #include "GUIWindowManager.h"
-#include "GUIFontManager.h"
 #include "..\xbmc\settings.h"
 
 
-CGUIRSSControl::CGUIRSSControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strFontName, D3DCOLOR dwChannelColor, D3DCOLOR dwHeadlineColor, D3DCOLOR dwNormalColor, CStdString& strRSSTags)
+CGUIRSSControl::CGUIRSSControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, const CLabelInfo& labelInfo, D3DCOLOR dwChannelColor, D3DCOLOR dwHeadlineColor, CStdString& strRSSTags)
 : CGUIControl(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight)
 {
+  m_label = labelInfo;
   m_dwChannelColor = dwChannelColor;
   m_dwHeadlineColor = dwHeadlineColor;
-  m_dwTextColor = dwNormalColor;
-  m_pFont = g_fontManager.GetFont(strFontName);
 
   WCHAR wTmp[2];
   wTmp[0] = L' ';
   wTmp[1] = 0;
   float fWidth = 15, fHeight;
-  if (m_pFont)
-    m_pFont->GetTextExtent(wTmp, &fWidth, &fHeight);
+  if (m_label.font)
+    m_label.font->GetTextExtent(wTmp, &fWidth, &fHeight);
   m_iLeadingSpaces = (int) (dwWidth / fWidth);
   m_strRSSTags = strRSSTags;
 
@@ -76,7 +74,7 @@ void CGUIRSSControl::Render()
     m_pReader->Create(this, m_vecUrls, m_vecIntervals, m_iLeadingSpaces);
   }
 
-  if (m_pFont && m_pwzText)
+  if (m_label.font && m_pwzText)
   {
     RenderText();
   }
@@ -102,14 +100,14 @@ void CGUIRSSControl::OnFeedUpdate(CStdStringW& aFeed, LPBYTE aColorArray)
 
 void CGUIRSSControl::RenderText()
 {
-  if (!m_pFont)
+  if (!m_label.font)
     return ;
 
   DWORD dwPalette[3];
-  dwPalette[0]=m_dwTextColor;
+  dwPalette[0]=m_label.textColor;
   dwPalette[1]=m_dwHeadlineColor;
   dwPalette[2]=m_dwChannelColor;
 
-  m_pFont->DrawScrollingText((float)m_iPosX, (float)m_iPosY, dwPalette, 3, m_pwzText, (float)m_dwWidth, m_scrollInfo, m_pbColors);
+  m_label.font->DrawScrollingText((float)m_iPosX, (float)m_iPosY, dwPalette, 3, m_label.shadowColor, m_pwzText, (float)m_dwWidth, m_scrollInfo, m_pbColors);
 }
 

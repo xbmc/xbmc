@@ -1,6 +1,7 @@
 #include "../../../stdafx.h"
 #include "..\python.h"
 #include "GuiButtonControl.h"
+#include "GUIFontManager.h"
 #include "control.h"
 #include "pyutil.h"
 
@@ -95,30 +96,33 @@ namespace PYXBMC
 		self->ob_type->tp_free((PyObject*)self);
 	}
 
-	CGUIControl* ControlButton_Create(ControlButton* pControl)
-	{
-		pControl->pGUIControl = new CGUIButtonControl(
-            pControl->iParentId,
-            pControl->iControlId,
-			pControl->dwPosX,
-            pControl->dwPosY,
-            pControl->dwWidth,
-            pControl->dwHeight,
-			pControl->strTextureFocus,
-            pControl->strTextureNoFocus,
-			pControl->dwTextXOffset,
-            pControl->dwTextYOffset,
-            pControl->dwAlign );
+  CGUIControl* ControlButton_Create(ControlButton* pControl)
+  {
+    CLabelInfo label;
+    label.font = g_fontManager.GetFont(pControl->strFont);
+    label.textColor = pControl->dwTextColor;
+    label.disabledColor = pControl->dwDisabledColor;
+    label.align = pControl->dwAlign;
+    label.offsetX = pControl->dwTextXOffset;
+    label.offsetY = pControl->dwTextYOffset;
+    pControl->pGUIControl = new CGUIButtonControl(
+      pControl->iParentId,
+      pControl->iControlId,
+      pControl->dwPosX,
+      pControl->dwPosY,
+      pControl->dwWidth,
+      pControl->dwHeight,
+      pControl->strTextureFocus,
+      pControl->strTextureNoFocus,
+      label);
 
-		CGUIButtonControl* pGuiButtonControl =
-            (CGUIButtonControl*)pControl->pGUIControl;
+    CGUIButtonControl* pGuiButtonControl =
+      (CGUIButtonControl*)pControl->pGUIControl;
 
-		pGuiButtonControl->SetLabel(
-            pControl->strFont, pControl->strText, pControl->dwTextColor);
-		pGuiButtonControl->SetDisabledColor(pControl->dwDisabledColor);
+    pGuiButtonControl->SetText(pControl->strText);
 
-		return pControl->pGUIControl;
-	}
+    return pControl->pGUIControl;
+  }
 
 	PyDoc_STRVAR(setDisabledColor__doc__,
 		"setDisabledColor(string hexcolor) -- .\n"
@@ -138,7 +142,7 @@ namespace PYXBMC
 		PyGUILock();
 		if (self->pGUIControl) 
         {
-			((CGUIButtonControl*)self->pGUIControl)->SetDisabledColor(self->dwDisabledColor);
+			((CGUIButtonControl*)self->pGUIControl)->PythonSetDisabledColor(self->dwDisabledColor);
         }
 		PyGUIUnlock();
 
@@ -188,9 +192,9 @@ namespace PYXBMC
 		PyGUILock();
 		if (self->pGUIControl)
         {
-			((CGUIButtonControl*)self->pGUIControl)->SetLabel(
+			((CGUIButtonControl*)self->pGUIControl)->PythonSetLabel(
                 self->strFont, self->strText, self->dwTextColor );
-			((CGUIButtonControl*)self->pGUIControl)->SetDisabledColor(
+			((CGUIButtonControl*)self->pGUIControl)->PythonSetDisabledColor(
                 self->dwDisabledColor );
         }
 		PyGUIUnlock();

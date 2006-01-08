@@ -258,6 +258,9 @@
 				RelativePath=".\GUIFont.cpp">
 			</File>
 			<File
+				RelativePath=".\GUIFontBase.cpp">
+			</File>
+			<File
 				RelativePath=".\GUIFontManager.cpp">
 			</File>
 			<File
@@ -268,6 +271,9 @@
 			</File>
 			<File
 				RelativePath=".\guiImage.cpp">
+			</File>
+			<File
+				RelativePath=".\GUIIncludes.cpp">
 			</File>
 			<File
 				RelativePath=".\GUIItem.cpp">
@@ -357,9 +363,6 @@
 				RelativePath=".\include.cpp">
 			</File>
 			<File
-				RelativePath=".\include.h">
-			</File>
-			<File
 				RelativePath=".\IWindowManagerCallback.cpp">
 			</File>
 			<File
@@ -382,6 +385,9 @@
 			</File>
 			<File
 				RelativePath=".\VisibleEffect.cpp">
+			</File>
+			<File
+				RelativePath=".\XMLUtils.cpp">
 			</File>
 		</Filter>
 		<Filter
@@ -443,6 +449,9 @@
 				RelativePath=".\GUIFont.h">
 			</File>
 			<File
+				RelativePath=".\GUIFontBase.h">
+			</File>
+			<File
 				RelativePath=".\GUIFontManager.h">
 			</File>
 			<File
@@ -453,6 +462,9 @@
 			</File>
 			<File
 				RelativePath=".\guiImage.h">
+			</File>
+			<File
+				RelativePath=".\GUIIncludes.h">
 			</File>
 			<File
 				RelativePath=".\GUIItem.h">
@@ -548,6 +560,9 @@
 				RelativePath=".\IMsgTargetCallback.h">
 			</File>
 			<File
+				RelativePath=".\include.h">
+			</File>
+			<File
 				RelativePath=".\IWindowManagerCallback.h">
 			</File>
 			<File
@@ -573,6 +588,9 @@
 			</File>
 			<File
 				RelativePath=".\VisibleEffect.h">
+			</File>
+			<File
+				RelativePath=".\XMLUtils.h">
 			</File>
 		</Filter>
 		<Filter

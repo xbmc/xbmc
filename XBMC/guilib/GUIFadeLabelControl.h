@@ -17,15 +17,13 @@
 class CGUIFadeLabelControl : public CGUIControl
 {
 public:
-  CGUIFadeLabelControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strFont, DWORD dwTextColor, DWORD dwTextAlign);
+  CGUIFadeLabelControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, const CLabelInfo& labelInfo);
   virtual ~CGUIFadeLabelControl(void);
   virtual void Render();
   virtual bool CanFocus() const;
   virtual bool OnMessage(CGUIMessage& message);
   virtual void SetAlpha(DWORD dwAlpha);
-  DWORD GetTextColor() const { return m_dwTextColor;};
-  DWORD GetAlignment() const { return m_dwTextAlign;};
-  const char * GetFontName() const { return m_pFont ? m_pFont->GetFontName().c_str() : ""; };
+  const CLabelInfo& GetLabelInfo() const { return m_label; };
 
   void SetInfo(const vector<int> &vecInfo);
   void SetLabel(const vector<wstring> &vecLabel);
@@ -34,10 +32,9 @@ public:
 
 protected:
   void RenderText(float fPosX, float fPosY, float fMaxWidth, DWORD dwTextColor, WCHAR* wszText, bool bScroll );
-  CGUIFont* m_pFont;
   vector<wstring> m_vecLabels;
-  DWORD m_dwTextColor;
-  DWORD m_dwTextAlign;
+
+  CLabelInfo m_label;
   int m_iCurrentLabel;
   bool m_bFadeIn;
   int m_iCurrentFrame;

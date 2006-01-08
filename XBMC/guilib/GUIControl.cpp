@@ -4,6 +4,9 @@
 #include "LocalizeStrings.h"
 #include "../xbmc/Util.h"
 
+#ifdef PRE_SKIN_VERSION_2_0_COMPATIBILITY
+#include "SkinInfo.h"
+#endif
 
 CGUIControl::CGUIControl()
 {
@@ -25,11 +28,6 @@ CGUIControl::CGUIControl()
   m_dwControlRight = 0;
   m_dwControlUp = 0;
   m_dwControlDown = 0;
-  m_effectState = EFFECT_NONE;
-  m_queueState = EFFECT_NONE;
-  m_effectLength = 0;
-  m_effectStart = 0;
-  m_effectAmount = 0;
   ControlType = GUICONTROL_UNKNOWN;
   m_bInvalidated = true;
   m_bAllocated=false;
@@ -57,10 +55,6 @@ CGUIControl::CGUIControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPo
   m_dwControlRight = 0;
   m_dwControlUp = 0;
   m_dwControlDown = 0;
-  m_effectState = EFFECT_NONE;
-  m_queueState = EFFECT_NONE;
-  m_effectLength = 0;
-  m_effectStart = 0;
   ControlType = GUICONTROL_UNKNOWN;
   m_bInvalidated = true;
   m_bAllocated=false;
@@ -82,8 +76,14 @@ void CGUIControl::AllocResources()
 
 void CGUIControl::FreeResources()
 {
+  if (m_bAllocated)
+  {
+    // Reset our animation states
+    for (unsigned int i = 0; i < m_animations.size(); i++)
+      m_animations[i].ResetAnimation();
+    m_bAllocated=false;
+  }
   m_hasRendered = false;
-  m_bAllocated=false;
 }
 
 bool CGUIControl::IsAllocated()
@@ -188,6 +188,10 @@ bool CGUIControl::HasFocus(void) const
 
 void CGUIControl::SetFocus(bool bOnOff)
 {
+  if (m_bHasFocus && !bOnOff)
+    QueueAnimation(ANIM_TYPE_UNFOCUS);
+  else if (!m_bHasFocus && bOnOff)
+    QueueAnimation(ANIM_TYPE_FOCUS);
   m_bHasFocus = bOnOff;
 }
 
@@ -237,13 +241,13 @@ bool CGUIControl::OnMessage(CGUIMessage& message)
           return true;
         }
       }
-      m_bHasFocus = true;
+      SetFocus(true);
       return true;
       break;
 
     case GUI_MSG_LOSTFOCUS:
       {
-        m_bHasFocus = false;
+        SetFocus(false);
         return true;
       }
       break;
@@ -251,44 +255,43 @@ bool CGUIControl::OnMessage(CGUIMessage& message)
     case GUI_MSG_VISIBLE:
       if (message.GetParam1())  // effect time
       {
-        if (!m_bVisible && m_effectState != EFFECT_IN)
+//        CLog::DebugLog("Control %i set to visible.  Was %s, effect=%d", m_dwControlID, m_bVisible ? "visible" : "hidden", m_tempAnimation.currentProcess == ANIM_PROCESS_NORMAL ? "fading in" : (m_tempAnimation.currentProcess == ANIM_PROCESS_REVERSE) ? "fading out" : "none");
+        if ((!m_bVisible && m_tempAnimation.currentProcess != ANIM_PROCESS_NORMAL) ||
+            ( m_bVisible && m_tempAnimation.currentProcess == ANIM_PROCESS_REVERSE))
         {
-          m_effectState = EFFECT_IN;
-          m_effectLength = message.GetParam1();
-          m_effectStart = timeGetTime();
-        }
-        else if (m_bVisible && m_effectState == EFFECT_OUT)
-        { // turn around direction of effect
-          m_effectState = EFFECT_IN;
-          m_effectLength = message.GetParam1();
-          m_effectStart = timeGetTime() - (int)(m_effectLength * m_effectAmount);
+          m_tempAnimation.type = ANIM_TYPE_VISIBLE;
+          m_tempAnimation.effect = EFFECT_TYPE_FADE;
+          m_tempAnimation.queuedProcess = ANIM_PROCESS_NORMAL;
+          m_tempAnimation.length = message.GetParam1();
         }
       }
       else
-        m_bVisible = m_visibleCondition?g_infoManager.GetBool(m_visibleCondition, m_dwParentID):true;
+        m_bVisible = m_visibleCondition ? g_infoManager.GetBool(m_visibleCondition, m_dwParentID) : true;
       return true;
       break;
 
     case GUI_MSG_HIDDEN:
       if (message.GetParam1())  // fade time
       {
-        if (m_bVisible && m_effectState == EFFECT_NONE)
+//        CLog::DebugLog("Control %i set to hidden.  Was %s, effect=%d", m_dwControlID, m_bVisible ? "visible" : "hidden", m_tempAnimation.currentProcess == ANIM_PROCESS_NORMAL ? "fading in" : (m_tempAnimation.currentProcess == ANIM_PROCESS_REVERSE) ? "fading out" : "none");
+        if (m_bVisible && m_tempAnimation.currentProcess != ANIM_PROCESS_REVERSE)
         {
-          m_effectState = EFFECT_OUT;
-          m_effectLength = message.GetParam1();
-          m_effectStart = timeGetTime();
-        }
-        else if (m_bVisible && m_effectState == EFFECT_IN)
-        { // turn around direction of fade
-          m_effectState = EFFECT_OUT;
-          m_effectLength = message.GetParam1();
-          m_effectStart = timeGetTime() - (int)(m_effectLength * (1.0f - m_effectAmount));
+          m_tempAnimation.type = ANIM_TYPE_VISIBLE;
+          m_tempAnimation.effect = EFFECT_TYPE_FADE;
+          m_tempAnimation.queuedProcess = ANIM_PROCESS_REVERSE;
+          m_tempAnimation.length = message.GetParam1();
         }
       }
       else
         m_bVisible = false;
-      if (m_effectState == EFFECT_IN) // make sure we reset the fade in state.
-        m_effectState = EFFECT_NONE;  // occurs if fading is performed from the code.
+      if (IsAnimating(ANIM_TYPE_VISIBLE) || (m_tempAnimation.type == ANIM_PROCESS_NORMAL && m_tempAnimation.queuedProcess != ANIM_PROCESS_REVERSE)) // make sure we reset the fade in state.
+      {
+        m_tempAnimation.Reset();  // reset the temp animation
+        CAnimation *visibleAnim = GetAnimation(ANIM_TYPE_VISIBLE);
+        if (visibleAnim) visibleAnim->ResetAnimation();
+        CAnimation *hiddenAnim = GetAnimation(ANIM_TYPE_HIDDEN);
+        if (hiddenAnim) hiddenAnim->RenderAnimation();
+      }
       return true;
       break;
 
@@ -317,7 +320,7 @@ bool CGUIControl::OnMessage(CGUIMessage& message)
 
 bool CGUIControl::CanFocus() const
 {
-  if (!IsVisible() && !m_effect.m_allowHiddenFocus) return false;
+  if (!IsVisible() && !m_allowHiddenFocus) return false;
   if (IsDisabled()) return false;
   return true;
 }
@@ -416,9 +419,12 @@ void CGUIControl::SetHeight(int iHeight)
 
 void CGUIControl::SetVisible(bool bVisible)
 {
+  if (m_visibleCondition)
+    bVisible = g_infoManager.GetBool(m_visibleCondition, m_dwParentID);
   if (m_bVisible != bVisible)
   {
     m_bVisible = bVisible;
+    m_lastVisible = bVisible;
     m_bInvalidated = true;
   }
 }
@@ -534,109 +540,48 @@ CStdString CGUIControl::ParseLabel(CStdString& strLabel)
   return strReturn;
 }
 
-
 void CGUIControl::UpdateVisibility()
 {
   bool bVisible = g_infoManager.GetBool(m_visibleCondition, m_dwParentID);
   if (!m_lastVisible && bVisible)
   { // automatic change of visibility - queue the in effect
-    m_queueState = EFFECT_IN;
+//    CLog::DebugLog("Visibility changed to visible for control id %i", m_dwControlID);
+    QueueAnimation(ANIM_TYPE_VISIBLE);
   }
   else if (m_lastVisible && !bVisible)
   { // automatic change of visibility - do the out effect
-    m_queueState = EFFECT_OUT;
+//    CLog::DebugLog("Visibility changed to hidden for control id %i", m_dwControlID);
+    QueueAnimation(ANIM_TYPE_HIDDEN);
   }
   m_lastVisible = bVisible;
 }
 
 void CGUIControl::SetInitialVisibility()
 {
-  if (m_effect.m_startState == START_NONE)
+  // NOTE: Remove the m_startHidden variable when we switch to 2.0 skin
+  if (g_SkinInfo.GetVersion() < 1.90)
   {
-    m_lastVisible = m_bVisible = g_infoManager.GetBool(m_visibleCondition, m_dwParentID);
+    if (m_startHidden)
+    {
+      m_lastVisible = m_bVisible = false;
+    }
+    else
+    {
+      m_lastVisible = m_bVisible = g_infoManager.GetBool(m_visibleCondition, m_dwParentID);
+    }
+//    CLog::DebugLog("Set initial visibility for control %i: %s", m_dwControlID, m_bVisible ? "visible" : "hidden");
+    UpdateVisibility();
     return;
   }
-  m_lastVisible = m_bVisible = false;
-  if (m_effect.m_startState == START_VISIBLE)
-    m_lastVisible = m_bVisible = true;
-  UpdateVisibility();
+  m_lastVisible = m_bVisible = g_infoManager.GetBool(m_visibleCondition, m_dwParentID);
+//  CLog::DebugLog("Set initial visibility for control %i: %s", m_dwControlID, m_bVisible ? "visible" : "hidden");
 }
 
-void CGUIControl::DoEffect()
-{
-  if (m_effect.m_type == EFFECT_TYPE_SLIDE)
-  {
-    float time = 1.0f - m_effectAmount;
-    float amount = time * (m_effect.m_acceleration * time + 1.0f - m_effect.m_acceleration);
-    g_graphicsContext.SetControlOffset(amount * m_effect.m_startX, amount * m_effect.m_startY);
-  }
-  else // if (m_effect.type == EFFECT_TYPE_FADE)
-    g_graphicsContext.SetControlAlpha((DWORD)(255 * m_effectAmount));
-}
-
-// TODO: Currently defaults to EFFECT_TYPE_FADE due to the fading performed
-// by the code on the home page.  This should be removed as soon as the
-// other code is removed
 bool CGUIControl::UpdateEffectState()
 {
   if (m_visibleCondition)
     UpdateVisibility();
-  // start any queued effects
-  DWORD currentTime = timeGetTime();
-  if (m_queueState == EFFECT_IN)
-  {
-    m_effectLength = m_effect.m_inTime;
-    if (m_effectState != EFFECT_OUT)
-      m_effectStart = currentTime;
-    else // turn around direction of effect
-      m_effectStart = currentTime - (int)(m_effectLength * m_effectAmount);
-    m_effectState = EFFECT_IN;
-  }
-  else if (m_queueState == EFFECT_OUT)
-  {
-    m_effectLength = m_effect.m_outTime;
-    if (m_effectState != EFFECT_IN)
-      m_effectStart = currentTime;
-    else // turn around direction of effect
-      m_effectStart = currentTime - (int)(m_effectLength * (1.0f - m_effectAmount));
-    m_effectState = EFFECT_OUT;
-  }
-  // reset the queue state once we are allocated (allows timing to start when controls
-  // are allocated).
-  if (m_queueState != EFFECT_IN || HasRendered())
-    m_queueState = EFFECT_NONE;
-  // perform any effects
-  if (m_effectState == EFFECT_IN)
-  { // doing an in effect
-    if (currentTime - m_effectStart < m_effect.m_inDelay)
-      m_effectAmount = 0;
-    else if (currentTime - m_effectStart < m_effectLength + m_effect.m_inDelay)
-      m_effectAmount = (float)(currentTime - m_effectStart - m_effect.m_inDelay) / m_effectLength;
-    else
-    {
-      m_effectAmount = 1;
-      m_effectState = EFFECT_NONE;
-    }
-    if (m_lastVisible)
-    {
-      m_bVisible = true;
-    }
-    DoEffect();
-  }
-  else if (m_effectState == EFFECT_OUT)
-  {
-    if (currentTime - m_effectStart < m_effect.m_outDelay)
-      m_effectAmount = 1;
-    else if (currentTime - m_effectStart < m_effectLength + m_effect.m_outDelay)
-      m_effectAmount = (float)(m_effect.m_outDelay + m_effectLength - currentTime + m_effectStart) / m_effectLength;
-    else
-    {
-      m_effectAmount = 0;
-      m_effectState = EFFECT_NONE;
-      m_bVisible = false;
-    }
-    DoEffect();
-  }
+  Animate();
   return IsVisible();
 }
 
@@ -645,8 +590,189 @@ void CGUIControl::SetVisibleCondition(int visible)
   m_visibleCondition = visible;
 }
 
-void CGUIControl::SetVisibleCondition(int visible, const CVisibleEffect &effect)
+void CGUIControl::SetVisibleCondition(int visible, bool allowHiddenFocus, bool startHidden)
 {
   m_visibleCondition = visible;
-  m_effect = effect;
+  m_allowHiddenFocus = allowHiddenFocus;
+  m_startHidden = startHidden;
+}
+
+void CGUIControl::SetAnimations(const vector<CAnimation> &animations)
+{
+  m_animations = animations;
+  if (g_SkinInfo.GetVersion() < 1.86)
+  { // any slide effects are relative now
+    for (unsigned int i = 0; i < m_animations.size(); i++)
+    {
+      CAnimation &anim = m_animations[i];
+      if (anim.effect == EFFECT_TYPE_SLIDE)
+      {
+        if (anim.type == ANIM_TYPE_VISIBLE)
+        {
+          anim.startX -= m_iPosX;
+          anim.startY -= m_iPosY;
+        }
+        if (anim.type == ANIM_TYPE_HIDDEN)
+        {
+          anim.endX -= m_iPosX;
+          anim.endY -= m_iPosY;
+        }
+      }
+    }
+  }
+}
+
+void CGUIControl::QueueAnimation(ANIMATION_TYPE animType)
+{
+  // rule out the animations we shouldn't perform
+  if (!m_bVisible) 
+  { // hidden - don't allow exit or hide animations for this control
+    if (animType == ANIM_TYPE_WINDOW_CLOSE)
+      return;
+    else if (animType == ANIM_TYPE_HIDDEN && !IsAnimating(ANIM_TYPE_VISIBLE))
+      return;
+  }
+  CAnimation *reverseAnim = GetAnimation((ANIMATION_TYPE)-animType);
+  CAnimation *forwardAnim = GetAnimation(animType);
+  // we first check whether the reverse animation is in progress (and reverse it)
+  // then we check for the normal animation, and queue it
+  if (reverseAnim && (reverseAnim->currentState == ANIM_STATE_IN_PROCESS || reverseAnim->currentState == ANIM_STATE_DELAYED))
+  {
+    reverseAnim->queuedProcess = ANIM_PROCESS_REVERSE;
+    if (forwardAnim) forwardAnim->ResetAnimation();
+  }
+  else if (forwardAnim)
+  {
+    forwardAnim->queuedProcess = ANIM_PROCESS_NORMAL;
+    if (reverseAnim) reverseAnim->ResetAnimation();
+  }
+}
+
+CAnimation *CGUIControl::GetAnimation(ANIMATION_TYPE type)
+{
+  for (unsigned int i = 0; i < m_animations.size(); i++)
+  {
+    if (m_animations[i].type == type)
+      return &m_animations[i];
+  }
+  return NULL;
+}
+
+void CGUIControl::UpdateStates(ANIMATION_TYPE type, ANIMATION_PROCESS currentProcess, ANIMATION_STATE currentState)
+{
+  bool visible = m_bVisible;
+  // Make sure control is hidden or visible at the appropriate times
+  // while processing a visible or hidden animation it needs to be visible,
+  // but when finished a hidden operation it needs to be hidden
+  if (type == ANIM_TYPE_VISIBLE)
+  {
+    if (currentProcess == ANIM_PROCESS_REVERSE)
+    {
+      if (currentState == ANIM_STATE_APPLIED)
+        m_bVisible = false;
+    }
+    else if (currentProcess == ANIM_PROCESS_NORMAL)
+    {
+      if (currentState == ANIM_STATE_DELAYED)
+        m_bVisible = false;
+      else
+        m_bVisible = m_lastVisible; // true ??
+    }
+  }
+  else if (type == ANIM_TYPE_HIDDEN)
+  {
+    if (currentProcess == ANIM_PROCESS_NORMAL)  // a hide animation
+    {
+      if (currentState == ANIM_STATE_APPLIED)
+        m_bVisible = false; // finished
+      else
+        m_bVisible = true; // have to be visible until we are finished
+    }
+    else if (currentProcess == ANIM_PROCESS_REVERSE)  // a visible animation
+    { // no delay involved here - just make sure it's visible
+      m_bVisible = m_lastVisible;
+    }
+  }
+  else if (type == ANIM_TYPE_WINDOW_OPEN)
+  {
+    if (currentProcess == ANIM_PROCESS_NORMAL)
+    {
+      if (currentState == ANIM_STATE_DELAYED)
+        m_bVisible = false; // delayed
+      else
+        m_bVisible = m_lastVisible;
+    }
+  }
+//  if (visible != m_bVisible)
+//    CLog::DebugLog("UpdateControlState of control id %i - now %s (type=%d, process=%d, state=%d)", m_dwControlID, m_bVisible ? "visible" : "hidden", type, currentProcess, currentState);
+}
+
+void CGUIControl::Animate()
+{
+  DWORD currentTime = timeGetTime();
+  for (unsigned int i = 0; i < m_animations.size(); i++)
+  {
+    CAnimation &anim = m_animations[i];
+    anim.Animate(currentTime, HasRendered());
+    // Update the control states (such as visibility)
+    UpdateStates(anim.type, anim.currentProcess, anim.currentState);
+    // and render the animation effect
+    g_graphicsContext.AddControlAnimation(anim.RenderAnimation());
+/*
+    // debug stuff
+    if (anim.currentProcess != ANIM_PROCESS_NONE)
+    {
+      if (anim.effect == EFFECT_TYPE_SLIDE)
+      {
+        if (IsVisible())
+          CLog::DebugLog("Animating control %d with a %s slide effect %s. Amount is %2.1f, visible=%s", m_dwControlID, anim.type == ANIM_TYPE_VISIBLE ? "visible" : "hidden", anim.currentProcess == ANIM_PROCESS_NORMAL ? "normal" : "reverse", anim.amount, IsVisible() ? "true" : "false");
+      }
+      else if (anim.effect == EFFECT_TYPE_FADE)
+      {
+        if (IsVisible())
+          CLog::DebugLog("Animating control %d with a %s fade effect %s. Amount is %2.1f. Visible=%s", m_dwControlID, anim.type == ANIM_TYPE_VISIBLE ? "visible" : "hidden", anim.currentProcess == ANIM_PROCESS_NORMAL ? "normal" : "reverse", anim.amount, IsVisible() ? "true" : "false");
+      }
+    }
+    */
+  }
+#ifdef PRE_SKIN_VERSION_2_0_COMPATIBILITY
+  // do the temporary fade effect as well
+  m_tempAnimation.Animate(currentTime, HasRendered());
+  UpdateStates(m_tempAnimation.type, m_tempAnimation.currentProcess, m_tempAnimation.currentState);
+  g_graphicsContext.AddControlAnimation(m_tempAnimation.RenderAnimation());
+  CAnimation anim = m_tempAnimation;
+/*    // debug stuff
+    if (anim.currentProcess != ANIM_PROCESS_NONE)
+    {
+      if (anim.effect == EFFECT_TYPE_SLIDE)
+      {
+        if (IsVisible())
+          CLog::DebugLog("Animating control %d with a %s slide effect %s. Amount is %2.1f, visible=%s", m_dwControlID, anim.type == ANIM_TYPE_VISIBLE ? "visible" : "hidden", anim.currentProcess == ANIM_PROCESS_NORMAL ? "normal" : "reverse", anim.amount, IsVisible() ? "true" : "false");
+      }
+      else if (anim.effect == EFFECT_TYPE_FADE)
+      {
+        if (IsVisible())
+          CLog::DebugLog("Animating control %d with a %s fade effect %s. Amount is %2.1f. Visible=%s", m_dwControlID, anim.type == ANIM_TYPE_VISIBLE ? "visible" : "hidden", anim.currentProcess == ANIM_PROCESS_NORMAL ? "normal" : "reverse", anim.amount, IsVisible() ? "true" : "false");
+      }
+    }*/
+#endif
+}
+
+bool CGUIControl::IsAnimating(ANIMATION_TYPE animType)
+{
+  for (unsigned int i = 0; i < m_animations.size(); i++)
+  {
+    CAnimation &anim = m_animations[i];
+    if (anim.type == animType)
+    {
+      if (anim.queuedProcess == ANIM_PROCESS_NORMAL) return true;
+      if (anim.currentProcess == ANIM_PROCESS_NORMAL) return true;
+    }
+    else if (anim.type == -animType)
+    {
+      if (anim.queuedProcess == ANIM_PROCESS_REVERSE) return true;
+      if (anim.currentProcess == ANIM_PROCESS_REVERSE) return true;
+    }
+  }
+  return false;
 }

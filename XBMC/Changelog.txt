@@ -5,6 +5,16 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 08-01-2006 changed: Skin version to v1.90.
+                       - includes.xml added.
+                       - 1 pixel font shadows added (use <shadowcolor> tag).
+                       - directional text added (use <angle> tag to state a degree) - label and buttons only.
+                       - font.xml can take a <color> and <shadow> tag for each font.
+                       - new animation system.
+                       - online manual is being updated with the new information.
+ - 08-01-2006 fixed: ProgressDialog title in the Filemanager on second copy/move etc.
+ - 08-01-2006 fixed: [ 1399414 ] Cast listcontrol in Video Info couldn't be focused.
+ - 08-01-2006 fixed: [ 1390768 ] Picture slideshows with transistion time less than 1 second didn't display correctly.
  - 08-01-2006 fixed: httpapi PlayFile should now once again play remote media
  - 08-01-2006 fixed: full restoration of the filter label in my music library
  - 07-01-2006 fixed: folder images in root of music library were horribly stretched if in big icons view

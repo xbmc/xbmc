@@ -100,10 +100,10 @@ void CGUIListExItem::OnPaint(CGUIItem::RenderContext* pContext)
 
     iPosX += m_pIcon->GetWidth();
 
-    if (pDC->m_pFont)
+    if (pDC->m_label.font)
     {
       // render the text
-      DWORD dwColor = pDC->m_bFocused ? pDC->m_dwTextSelectedColour : pDC->m_dwTextNormalColour;
+      DWORD dwColor = pDC->m_bFocused ? pDC->m_label.selectedColor : pDC->m_label.textColor;
 
       CStdString strDisplayText;
       GetDisplayText(strDisplayText);
@@ -111,22 +111,22 @@ void CGUIListExItem::OnPaint(CGUIItem::RenderContext* pContext)
       CStdStringW strUnicode;
       g_charsetConverter.stringCharsetToFontCharset(strDisplayText, strUnicode);
 
-      float fPosX = (float)iPosX + pDC->m_pButton->GetTextOffsetX();
-      float fPosY = (float)iPosY + pDC->m_pButton->GetTextOffsetY();
-      if (pDC->m_pButton->GetTextAlign() & XBFONT_CENTER_Y)
+      float fPosX = (float)iPosX + pDC->m_pButton->GetLabelInfo().offsetX;
+      float fPosY = (float)iPosY + pDC->m_pButton->GetLabelInfo().offsetY;
+      if (pDC->m_pButton->GetLabelInfo().align & XBFONT_CENTER_Y)
       {
         float fTextHeight, fTextWidth;
-        pDC->m_pFont->GetTextExtent( strUnicode.c_str(), &fTextWidth, &fTextHeight);
+        pDC->m_label.font->GetTextExtent( strUnicode.c_str(), &fTextWidth, &fTextHeight);
         fPosY = (float)iPosY + ((float)pDC->m_pButton->GetHeight() - fTextHeight) / 2;
       }
-      RenderText(fPosX, fPosY, (FLOAT)pDC->m_pButton->GetWidth(), dwColor, (WCHAR*) strUnicode.c_str(), pDC->m_pFont);
+      RenderText(fPosX, fPosY, (FLOAT)pDC->m_pButton->GetWidth(), dwColor, (WCHAR*) strUnicode.c_str(), pDC->m_label);
     }
   }
 }
 
-void CGUIListExItem::RenderText(float fPosX, float fPosY, float fMaxWidth, DWORD dwTextColor, WCHAR* wszText, CGUIFont* pFont )
+void CGUIListExItem::RenderText(float fPosX, float fPosY, float fMaxWidth, DWORD dwTextColor, WCHAR* wszText, const CLabelInfo& label )
 {
-  if (!pFont)
+  if (!label.font)
     return ;
   static int scroll_pos = 0;
   static int iScrollX = 0;
@@ -135,9 +135,9 @@ void CGUIListExItem::RenderText(float fPosX, float fPosY, float fMaxWidth, DWORD
   static int iStartFrame = 0;
 
   float fTextHeight, fTextWidth;
-  pFont->GetTextExtent( wszText, &fTextWidth, &fTextHeight);
+  label.font->GetTextExtent( wszText, &fTextWidth, &fTextHeight);
 
   g_graphicsContext.SetViewPort(fPosX, fPosY, fMaxWidth - 5.0f, 60.0f);
-  pFont->DrawTextWidth(fPosX, fPosY, dwTextColor, wszText, fMaxWidth);
+  label.font->DrawTextWidth(fPosX, fPosY, dwTextColor, label.shadowColor, wszText, fMaxWidth);
   g_graphicsContext.RestoreViewPort();
 }

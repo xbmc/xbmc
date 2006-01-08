@@ -1,20 +1,18 @@
 #include "include.h"
 #include "GUITextBox.h"
-#include "GUIFontManager.h"
 #include "../xbmc/utils/CharsetConverter.h"
 
 
 #define CONTROL_LIST  0
 #define CONTROL_UPDOWN 1
 CGUITextBox::CGUITextBox(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight,
-                         const CStdString& strFontName,
                          DWORD dwSpinWidth, DWORD dwSpinHeight,
                          const CStdString& strUp, const CStdString& strDown,
                          const CStdString& strUpFocus, const CStdString& strDownFocus,
                          DWORD dwSpinColor, int iSpinX, int iSpinY,
-                         const CStdString& strFont, DWORD dwTextColor)
+                         const CLabelInfo& labelInfo)
     : CGUIControl(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight)
-    , m_upDown(dwControlId, 0, 0, 0, dwSpinWidth, dwSpinHeight, strUp, strDown, strUpFocus, strDownFocus, strFont, dwSpinColor, SPIN_CONTROL_TYPE_INT)
+    , m_upDown(dwControlId, 0, 0, 0, dwSpinWidth, dwSpinHeight, strUp, strDown, strUpFocus, strDownFocus, labelInfo, dwSpinColor, SPIN_CONTROL_TYPE_INT)
 {
   m_iOffset = 0;
   m_iItemsPerPage = 10;
@@ -22,23 +20,22 @@ CGUITextBox::CGUITextBox(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPo
   m_iSpinPosX = iSpinX;
   m_iSpinPosY = iSpinY;
   m_iMaxPages = 50;
-  m_pFont = g_fontManager.GetFont(strFontName);
-  m_dwTextColor = dwTextColor;
   m_upDown.SetShowRange(true); // show the range by default
   ControlType = GUICONTROL_TEXTBOX;
 }
 
 CGUITextBox::~CGUITextBox(void)
-{}
+{
+}
 
 void CGUITextBox::Render()
 {
-  if (!m_pFont) return ;
+  if (!m_label.font) return ;
   if (!UpdateEffectState()) return ;
   CGUIControl::Render();
   int iPosY = m_iPosY;
 
-  m_pFont->Begin();
+  m_label.font->Begin();
   for (int i = 0; i < m_iItemsPerPage; i++)
   {
     int iPosX = m_iPosX;
@@ -58,16 +55,16 @@ void CGUITextBox::Render()
         CStdStringW strText2Unicode;
         g_charsetConverter.stringCharsetToFontCharset(strLabel2, strText2Unicode);
         float fTextWidth, fTextHeight;
-        m_pFont->GetTextExtent( strText2Unicode.c_str(), &fTextWidth, &fTextHeight);
+        m_label.font->GetTextExtent( strText2Unicode.c_str(), &fTextWidth, &fTextHeight);
         dMaxWidth -= (DWORD)(fTextWidth);
 
-        m_pFont->DrawTextWidth((float)iPosX + dMaxWidth, (float)iPosY + 2, m_dwTextColor, strText2Unicode.c_str(), (float)fTextWidth);
+        m_label.font->DrawTextWidth((float)iPosX + dMaxWidth, (float)iPosY + 2, m_label.textColor, m_label.shadowColor, strText2Unicode.c_str(), (float)fTextWidth);
       }
-      m_pFont->DrawTextWidth((float)iPosX, (float)iPosY + 2, m_dwTextColor, strText1Unicode.c_str(), (float)dMaxWidth);
+      m_label.font->DrawTextWidth((float)iPosX, (float)iPosY + 2, m_label.textColor, m_label.shadowColor, strText1Unicode.c_str(), (float)dMaxWidth);
       iPosY += (DWORD)m_iItemHeight;
     }
   }
-  m_pFont->End();
+  m_label.font->End();
   m_upDown.SetPosition(m_iPosX + m_iSpinPosX, m_iPosY + m_iSpinPosY);
   m_upDown.Render();
 }
@@ -156,14 +153,14 @@ bool CGUITextBox::OnMessage(CGUIMessage& message)
 
 void CGUITextBox::PreAllocResources()
 {
-  if (!m_pFont) return ;
+  if (!m_label.font) return;
   CGUIControl::PreAllocResources();
   m_upDown.PreAllocResources();
 }
 
 void CGUITextBox::AllocResources()
 {
-  if (!m_pFont) return ;
+  if (!m_label.font) return;
   CGUIControl::AllocResources();
   m_upDown.AllocResources();
 
@@ -293,8 +290,8 @@ void CGUITextBox::SetText(const wstring &strText)
 
       FLOAT fwidth, fheight;
       swprintf(wsTmp, L"%S", szLine);
-      if (m_pFont)
-        m_pFont->GetTextExtent(wsTmp, &fwidth, &fheight);
+      if (m_label.font)
+        m_label.font->GetTextExtent(wsTmp, &fwidth, &fheight);
       if (fwidth > m_dwWidth)
       {
         if (iLastSpace > 0 && iLastSpaceInLine != lpos)
@@ -395,7 +392,7 @@ void CGUITextBox::SetHeight(int iHeight)
   m_upDown.SetPosition(m_upDown.GetXPosition(), GetYPosition() + GetHeight() + iSpinOffsetY);
 
   float fWidth, fHeight;
-  m_pFont->GetTextExtent( L"y", &fWidth, &fHeight);
+  m_label.font->GetTextExtent( L"y", &fWidth, &fHeight);
 
   m_iItemHeight = (int)fHeight;
   float fTotalHeight = (float)(m_dwHeight - m_upDown.GetHeight() - 5);

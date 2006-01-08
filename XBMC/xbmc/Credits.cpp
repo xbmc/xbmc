@@ -353,7 +353,7 @@ static D3DXVECTOR4 colour(1.0f, 1.0f, 1.0f, 0);
 static char* ResourceHeader;
 static void* ResourceData;
 static int SkinOffset;
-static map<int, CGUIFont*> Fonts;
+static map<int, CGUIFontXPR*> Fonts;
 
 static HRESULT InitLogo()
 {
@@ -907,8 +907,11 @@ void RunCredits()
       // first try loading it
       CStdString strFilename;
       strFilename.Fmt("q:\\credits\\credits-font%d.xpr", Credits[i].Font);
-      CGUIFont* pFont = g_fontManager.LoadXPR(strFont, strFilename);
-      if (!pFont)
+      CGUIFontXPR* pFont = new CGUIFontXPR(strFilename);
+      pFont->Load(strFilename);
+      // we don't do this anymore as the TTF fonts won't work with the routines we use
+      // if we don't have the credits font, then we can't do much about it
+/*      if (!pFont)
       {
         // Find closest skin font size
         for (int j = 0; j < Credits[i].Font; ++j)
@@ -927,8 +930,8 @@ void RunCredits()
         }
         if (!pFont)
           pFont = g_fontManager.GetFont("font13"); // should have this!
-      }
-      Fonts.insert(std::pair<int, CGUIFont*>(Credits[i].Font, pFont));
+      }*/
+      Fonts.insert(std::pair<int, CGUIFontXPR*>(Credits[i].Font, pFont));
     }
 
     // validate credits
@@ -1026,9 +1029,9 @@ void RunCredits()
       {
         if (Credits[NextCredit].Text)
         {
-          CGUIFontXPR* pFont = (CGUIFontXPR*) Fonts.find(Credits[NextCredit].Font)->second;
+          CGUIFontXPR* pFont = Fonts.find(Credits[NextCredit].Font)->second;
           Credits[NextCredit].pTex = pFont->CreateTexture(Credits[NextCredit].Text, 0, 0xffffffff, D3DFMT_LIN_A8R8G8B8);
-          pFont->GetTextExtent(Credits[NextCredit].Text, &Credits[NextCredit].TextWidth, &Credits[NextCredit].TextHeight);
+          pFont->CreditsGetTextExtent(Credits[NextCredit].Text, &Credits[NextCredit].TextWidth, &Credits[NextCredit].TextHeight);
         }
         ActiveList.push_back(&Credits[NextCredit]);
         ++NextCredit;
@@ -1133,11 +1136,9 @@ void RunCredits()
         CloseHandle(hMusicThread);
 
         // Unload fonts
-        for (map<int, CGUIFont*>::iterator iFont = Fonts.begin(); iFont != Fonts.end(); ++iFont)
+        for (map<int, CGUIFontXPR*>::iterator iFont = Fonts.begin(); iFont != Fonts.end(); ++iFont)
         {
-          CStdString strFont;
-          strFont.Fmt("creditsfont%d", iFont->first);
-          g_fontManager.Unload(strFont);
+          delete iFont->second;
         }
         Fonts.clear();
 
@@ -1188,7 +1189,7 @@ void RunCredits()
 
       CGUIFont* pFont = g_fontManager.GetFont("font13");
       if (pFont)
-        pFont->DrawText(50, 30, 0xffffffff, FPS);
+        pFont->DrawText(50, 30, 0xffffffff, 0, FPS);
 #endif
 
       // present scene

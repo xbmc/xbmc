@@ -45,7 +45,7 @@ public:
   void Render();
   void RenderDialogs();
   CGUIWindow* GetWindow(DWORD dwID);
-  void Process();
+  void Process(bool renderOnly = false);
   void SetCallback(IWindowManagerCallback& callback);
   void DeInitialize();
   void RouteToWindow(CGUIWindow* pWindow);

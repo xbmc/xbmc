@@ -4,6 +4,9 @@
 #include "SkinInfo.h"
 #include "GUIFontXPR.h"
 #include "GUIFontTTF.h"
+#include "GUIFont.h"
+#include "XMLUtils.h"
+
 #include <xfont.h>
 
 
@@ -15,7 +18,7 @@ GUIFontManager::GUIFontManager(void)
 GUIFontManager::~GUIFontManager(void)
 {}
 
-CGUIFont* GUIFontManager::LoadXPR(const CStdString& strFontName, const CStdString& strFilename)
+CGUIFont* GUIFontManager::LoadXPR(const CStdString& strFontName, const CStdString& strFilename, DWORD textColor, DWORD shadowColor)
 {
   //check if font already exists
   CGUIFont* pFont = GetFont(strFontName);
@@ -32,34 +35,42 @@ CGUIFont* GUIFontManager::LoadXPR(const CStdString& strFontName, const CStdStrin
   else
     strPath = strFilename;
 
-  CGUIFontXPR* pNewFont = new CGUIFontXPR(strFontName);
-  // First try to load it from the skin directory
-  boolean bFontLoaded = pNewFont->Load(strPath);
-  if (!bFontLoaded)
+  // check if we already have this font file loaded...
+  CGUIFontBase* pFontFile = GetFontFile(strFilename);
+  if (!pFontFile)
   {
-    // Now try to load it from media\fonts
-    if (strFilename[1] != ':')
+    pFontFile = new CGUIFontXPR(strFilename);
+    // First try to load it from the skin directory
+    boolean bFontLoaded = ((CGUIFontXPR *)pFontFile)->Load(strPath);
+    if (!bFontLoaded)
     {
-      strPath = "Q:\\media\\Fonts\\";
-      strPath += strFilename;
+      // Now try to load it from media\fonts
+      if (strFilename[1] != ':')
+      {
+        strPath = "Q:\\media\\Fonts\\";
+        strPath += strFilename;
+      }
+
+      bFontLoaded = ((CGUIFontXPR *)pFontFile)->Load(strPath);
     }
 
-    bFontLoaded = pNewFont->Load(strPath);
+    if (!bFontLoaded)
+    {
+      delete pFontFile;
+      // font could not b loaded
+      CLog::Log(LOGERROR, "Couldn't load font name:%s file:%s", strFontName.c_str(), strPath.c_str());
+      return NULL;
+    }
+    m_vecFontFiles.push_back(pFontFile);
   }
 
-  if (!bFontLoaded)
-  {
-    delete pNewFont;
-    // font could not b loaded
-    CLog::Log(LOGERROR, "Couldn't load font name:%s file:%s", strFontName.c_str(), strPath.c_str());
-    return NULL;
-  }
-
+  // font file is loaded, create our CGUIFont
+  CGUIFont *pNewFont = new CGUIFont(strFontName, textColor, shadowColor, pFontFile);
   m_vecFonts.push_back(pNewFont);
   return pNewFont;
 }
 
-CGUIFont* GUIFontManager::LoadTTF(const CStdString& strFontName, const CStdString& strFilename, const int iSize, const int iStyle)
+CGUIFont* GUIFontManager::LoadTTF(const CStdString& strFontName, const CStdString& strFilename, DWORD textColor, DWORD shadowColor, const int iSize, const int iStyle)
 {
   //check if font already exists
   CGUIFont* pFont = GetFont(strFontName);
@@ -76,31 +87,40 @@ CGUIFont* GUIFontManager::LoadTTF(const CStdString& strFontName, const CStdStrin
   else
     strPath = strFilename;
 
-  CGUIFontTTF* pNewFont = new CGUIFontTTF(strFontName);
-  boolean bFontLoaded = pNewFont->Load(strPath, iSize, iStyle);
-  if (!bFontLoaded)
+  // check if we already have this font file loaded...
+  CStdString TTFfontName;
+  TTFfontName.Format("%s_%i_%i", strFilename, iSize, iStyle);
+  CGUIFontBase* pFontFile = GetFontFile(TTFfontName);
+  if (!pFontFile)
   {
-    // Now try to load it from media\fonts
-    if (strFilename[1] != ':')
+    pFontFile = new CGUIFontTTF(TTFfontName);
+    boolean bFontLoaded = ((CGUIFontTTF *)pFontFile)->Load(strPath, iSize, iStyle);
+    if (!bFontLoaded)
     {
-      strPath = "Q:\\media\\Fonts\\";
-      strPath += strFilename;
+      // Now try to load it from media\fonts
+      if (strFilename[1] != ':')
+      {
+        strPath = "Q:\\media\\Fonts\\";
+        strPath += strFilename;
+      }
+
+      bFontLoaded = ((CGUIFontTTF *)pFontFile)->Load(strPath, iSize, iStyle);
     }
 
-    bFontLoaded = pNewFont->Load(strPath, iSize, iStyle);
+    if (!bFontLoaded)
+    {
+      delete pFontFile;
+
+      // font could not b loaded
+      CLog::Log(LOGERROR, "Couldn't load font name:%s file:%s", strFontName.c_str(), strPath.c_str());
+
+      return NULL;
+    }
+    m_vecFontFiles.push_back(pFontFile);
   }
 
-  if (!bFontLoaded)
-  {
-    delete pNewFont;
-
-    // font could not b loaded
-    CLog::Log(LOGERROR, "Couldn't load font name:%s file:%s", strFontName.c_str(), strPath.c_str());
-
-    return NULL;
-  }
-
-  // font is loaded
+  // font file is loaded, create our CGUIFont
+  CGUIFont *pNewFont = new CGUIFont(strFontName, textColor, shadowColor, pFontFile);
   m_vecFonts.push_back(pNewFont);
   return pNewFont;
 }
@@ -113,9 +133,20 @@ void GUIFontManager::Unload(const CStdString& strFontName)
     {
       delete (*iFont);
       m_vecFonts.erase(iFont);
-      return ;
+      return;
     }
   }
+}
+
+CGUIFontBase* GUIFontManager::GetFontFile(const CStdString& strFileName)
+{
+  for (int i = 0; i < (int)m_vecFontFiles.size(); ++i)
+  {
+    CGUIFontBase* pFont = m_vecFontFiles[i];
+    if (pFont->GetFileName() == strFileName)
+      return pFont;
+  }
+  return NULL;
 }
 
 CGUIFont* GUIFontManager::GetFont(const CStdString& strFontName)
@@ -137,7 +168,8 @@ void GUIFontManager::Clear()
     delete pFont;
   }
 
-  m_vecFonts.erase(m_vecFonts.begin(), m_vecFonts.end());
+  m_vecFonts.clear();
+  m_vecFontFiles.clear();
 }
 
 void GUIFontManager::LoadFonts(const CStdString& strFontSet)
@@ -216,6 +248,10 @@ void GUIFontManager::LoadFonts(const TiXmlNode* fontNode)
       if (pNode)
       {
         CStdString strFontName = pNode->FirstChild()->Value();
+        DWORD shadowColor = 0;
+        DWORD textColor = 0;
+        XMLUtils::GetHex(fontNode, "shadow", shadowColor);
+        XMLUtils::GetHex(fontNode, "color", textColor);
         const TiXmlNode *pNode = fontNode->FirstChild("filename");
         if (pNode)
         {
@@ -223,20 +259,15 @@ void GUIFontManager::LoadFonts(const TiXmlNode* fontNode)
 
           if (strstr(strFontFileName, ".xpr") != NULL)
           {
-            LoadXPR(strFontName, strFontFileName);
+            LoadXPR(strFontName, strFontFileName, textColor, shadowColor);
           }
           else if (strstr(strFontFileName, ".ttf") != NULL)
           {
             int iSize = 20;
             int iStyle = XFONT_NORMAL;
 
-            const TiXmlNode *pNode = fontNode->FirstChild("size");
-            if (pNode)
-            {
-              iSize = atoi(pNode->FirstChild()->Value());
-              if (iSize <= 0)
-                iSize = 20;
-            }
+            XMLUtils::GetInt(fontNode, "size", iSize);
+            if (iSize <= 0) iSize = 20;
 
             pNode = fontNode->FirstChild("style");
             if (pNode)
@@ -252,7 +283,7 @@ void GUIFontManager::LoadFonts(const TiXmlNode* fontNode)
                 iStyle = XFONT_BOLDITALICS;
             }
 
-            LoadTTF(strFontName, strFontFileName, iSize, iStyle);
+            LoadTTF(strFontName, strFontFileName, textColor, shadowColor, iSize, iStyle);
           }
         }
       }

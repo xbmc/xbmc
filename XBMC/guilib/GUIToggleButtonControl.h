@@ -17,7 +17,7 @@
 class CGUIToggleButtonControl : public CGUIButtonControl
 {
 public:
-  CGUIToggleButtonControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strTextureFocus, const CStdString& strTextureNoFocus, const CStdString& strAltTextureFocus, const CStdString& strAltTextureNoFocus, DWORD dwTextXOffset, DWORD dwTextYOffset, DWORD dwAlign = XBFONT_LEFT);
+  CGUIToggleButtonControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strTextureFocus, const CStdString& strTextureNoFocus, const CStdString& strAltTextureFocus, const CStdString& strAltTextureNoFocus, const CLabelInfo &labelInfo);
   virtual ~CGUIToggleButtonControl(void);
 
   virtual void Render();
@@ -31,7 +31,6 @@ public:
   virtual void SetHeight(int iHeight);
   virtual void SetAlpha(DWORD dwAlpha);
   virtual void SetColourDiffuse(D3DCOLOR colour);
-  virtual void SetDisabledColor(D3DCOLOR color);
   void SetLabel(const CStdString& strFontName, const wstring& strLabel, D3DCOLOR dwColor);
   void SetLabel(const CStdString& strFontName, const CStdString& strLabel, D3DCOLOR dwColor);
   const CStdString& GetTextureAltFocusName() const { return m_selectButton.GetTextureFocusName(); };

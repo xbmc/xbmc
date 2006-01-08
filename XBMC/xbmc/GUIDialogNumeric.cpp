@@ -2,7 +2,6 @@
 #include "GUIDialogNumeric.h"
 #include "util.h"
 #include "GUILabelControl.h"
-#include "GUIFontManager.h"
 
 #define CONTROL_HEADING_LABEL 1
 #define CONTROL_INPUT_LABEL 4
@@ -226,16 +225,16 @@ void CGUIDialogNumeric::Render()
   CGUILabelControl *pLabel = (CGUILabelControl *)GetControl(CONTROL_INPUT_LABEL);
   if (pLabel)
   {
-    CGUIFont *pFont = g_fontManager.GetFont(pLabel->GetFontName());
+    CGUIFont *pFont = pLabel->GetLabelInfo().font;
     DWORD palette[2];
-    palette[0] = pLabel->GetDisabledColor();
-    palette[1] = pLabel->GetTextColor();
+    palette[0] = pLabel->GetLabelInfo().disabledColor;
+    palette[1] = pLabel->GetLabelInfo().textColor;
     float fPosX = (float)pLabel->GetXPosition();
-    if (pLabel->m_dwTextAlign & XBFONT_CENTER_X)
+    if (pLabel->GetLabelInfo().align & XBFONT_CENTER_X)
       fPosX += (pLabel->GetWidth() - pFont->GetTextWidth(strLabel.c_str())) * 0.5f;
-    else if (pLabel->m_dwTextAlign & XBFONT_RIGHT)
+    else if (pLabel->GetLabelInfo().align & XBFONT_RIGHT)
       fPosX -= pFont->GetTextWidth(strLabel.c_str());
-    pFont->DrawColourTextWidth(fPosX, (float)pLabel->GetYPosition(), palette, 2, strLabel.c_str(), colors, 0);
+    pFont->DrawColourTextWidth(fPosX, (float)pLabel->GetYPosition(), palette, 2, pLabel->GetLabelInfo().shadowColor, strLabel.c_str(), colors, 0);
     delete[] colors;
   }
 }

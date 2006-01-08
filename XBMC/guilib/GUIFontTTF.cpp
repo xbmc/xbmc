@@ -9,7 +9,8 @@
 #define CHAR_CHUNK    64      // 64 chars allocated at a time (1024 bytes)
 #define TTF_FONT_CACHE_SIZE 32*1024
 
-CGUIFontTTF::CGUIFontTTF(const CStdString& strFontName) : CGUIFont(strFontName)
+CGUIFontTTF::CGUIFontTTF(const CStdString& strFileName)
+  : CGUIFontBase(strFileName)
 {
   m_pTrueTypeFont = NULL;
   m_texture = NULL;
@@ -109,23 +110,23 @@ bool CGUIFontTTF::Load(const CStdString& strFilename, int iHeight, int iStyle)
   return true;
 }
 
-void CGUIFontTTF::DrawTextImpl(FLOAT fOriginX, FLOAT fOriginY, DWORD dwColor,
+void CGUIFontTTF::DrawTextImpl(FLOAT fOriginX, FLOAT fOriginY, const CAngle &angle, DWORD dwColor,
                           const WCHAR* strText, DWORD cchText, DWORD dwFlags,
                           FLOAT fMaxPixelWidth)
 {
   // Draw text as a single colour
-  DrawTextInternal(fOriginX, fOriginY, &dwColor, NULL, strText, cchText>2048?2048:cchText, dwFlags, fMaxPixelWidth);
+  DrawTextInternal(fOriginX, fOriginY, angle, &dwColor, NULL, strText, cchText>2048?2048:cchText, dwFlags, fMaxPixelWidth);
 }
 
-void CGUIFontTTF::DrawColourTextImpl(FLOAT fOriginX, FLOAT fOriginY, DWORD* pdw256ColorPalette,
+void CGUIFontTTF::DrawColourTextImpl(FLOAT fOriginX, FLOAT fOriginY, const CAngle &angle, DWORD* pdw256ColorPalette,
                                      const WCHAR* strText, BYTE* pbColours, DWORD cchText, DWORD dwFlags,
                                      FLOAT fMaxPixelWidth)
 {
   // Draws text as multi-coloured polygons
-    DrawTextInternal(fOriginX, fOriginY, pdw256ColorPalette, pbColours, strText, cchText>2048?2048:cchText, dwFlags, fMaxPixelWidth);
+    DrawTextInternal(fOriginX, fOriginY, angle, pdw256ColorPalette, pbColours, strText, cchText>2048?2048:cchText, dwFlags, fMaxPixelWidth);
 }
 
-void CGUIFontTTF::DrawTextInternal( FLOAT sx, FLOAT sy, DWORD *pdw256ColorPalette, BYTE *pbColours, const WCHAR* strText, DWORD cchText, DWORD dwFlags, FLOAT fMaxPixelWidth )
+void CGUIFontTTF::DrawTextInternal( FLOAT sx, FLOAT sy, const CAngle &angle, DWORD *pdw256ColorPalette, BYTE *pbColours, const WCHAR* strText, DWORD cchText, DWORD dwFlags, FLOAT fMaxPixelWidth )
 {
   Begin();
 
@@ -153,7 +154,9 @@ void CGUIFontTTF::DrawTextInternal( FLOAT sx, FLOAT sy, DWORD *pdw256ColorPalett
     }
   }
 
-  int posX = (int)sx;
+  float posX = sx;
+  float posY = sy;
+  int numLines = 0;
   // Set a flag so we can determine initial justification effects
   BOOL bStartingNewLine = TRUE;
   int alignedStartX;
@@ -163,6 +166,8 @@ void CGUIFontTTF::DrawTextInternal( FLOAT sx, FLOAT sy, DWORD *pdw256ColorPalett
     // If starting text on a new line, determine justification effects
     if ( bStartingNewLine )
     {
+      posX = sx + angle.sine * m_pTrueTypeFont->GetTextHeight() * numLines;
+      posY = sy + angle.cosine * m_pTrueTypeFont->GetTextHeight() * numLines;
       if ( dwFlags & (XBFONT_RIGHT | XBFONT_CENTER_X) )
       {
         // Get the extent of this line
@@ -171,15 +176,14 @@ void CGUIFontTTF::DrawTextInternal( FLOAT sx, FLOAT sy, DWORD *pdw256ColorPalett
           w = fMaxPixelWidth;
         else
           GetTextExtentInternal( strText, &w, &h, TRUE );
-
-        // Offset this line's starting m_fCursorX value
-        if ( dwFlags & XBFONT_RIGHT )
-          posX = (int)floorf( sx - w );
-        if ( dwFlags & XBFONT_CENTER_X )
-          posX = (int)floorf( sx - w / 2 );
+        if ( dwFlags & XBFONT_CENTER_X)
+          w *= 0.5f;
+        // Offset this line's starting position
+        posX -= angle.cosine * w;
+        posY += angle.sine * w;
       }
       bStartingNewLine = FALSE;
-      alignedStartX = posX;
+      alignedStartX = (int)posX;
     }
 
     // Get the current letter in the CStdString
@@ -194,8 +198,7 @@ void CGUIFontTTF::DrawTextInternal( FLOAT sx, FLOAT sy, DWORD *pdw256ColorPalett
     // Handle the newline character
     if ( letter == L'\n' )
     {
-      posX = (int)sx;
-      sy += m_pTrueTypeFont->GetTextHeight();
+      numLines++;
       bStartingNewLine = TRUE;
       continue;
     }
@@ -212,15 +215,17 @@ void CGUIFontTTF::DrawTextInternal( FLOAT sx, FLOAT sy, DWORD *pdw256ColorPalett
         // Perhaps we should really bail to the next line in this case??
         for (int i = 0; i < 3; i++)
         {
-          RenderCharacter(posX, (int)sy, GetCharacter(L'.'), dwColor);
-          posX += m_ellipsesWidth;
+          RenderCharacter(posX, posY, angle, GetCharacter(L'.'), dwColor);
+          posX += m_ellipsesWidth * angle.cosine;
+          posY -= m_ellipsesWidth * angle.sine;
         }
         End();
         return;
       }
     }
-    RenderCharacter(posX, (int)sy, ch, dwColor);
-    posX += ch->width;
+    RenderCharacter(posX, posY, angle, ch, dwColor);
+    posX += ch->width * angle.cosine;
+    posY -= ch->width * angle.sine;
   }
   End();
 }
@@ -417,21 +422,21 @@ void CGUIFontTTF::End()
   m_pD3DDevice->SetTexture(0, NULL);
 }
 
-void CGUIFontTTF::RenderCharacter(int posX, int posY, const Character *ch, D3DCOLOR dwColor)
+void CGUIFontTTF::RenderCharacter(float posX, float posY, const CAngle &angle, const Character *ch, D3DCOLOR dwColor)
 {
   m_pD3DDevice->SetVertexDataColor( D3DVSDE_DIFFUSE, dwColor);
 
   m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)ch->left, (float)ch->top );
-  m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, (float)posX, (float)posY, 0, 1.0f );
+  m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, posX, posY, 0, 1.0f );
 
   m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)ch->right + m_charGap, (float)ch->top );
-  m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, (float)posX + ch->width, (float)posY, 0, 1.0f );
+  m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, posX + angle.cosine * ch->width, posY - angle.sine * ch->width, 0, 1.0f );
 
   m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)ch->right + m_charGap, (float)ch->bottom );
-  m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, (float)posX + ch->width, (float)posY + ch->height, 0, 1.0f );
+  m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, posX + angle.cosine * ch->width + angle.sine * ch->height, posY - angle.sine * ch->width + angle.cosine * ch->height, 0, 1.0f );
 
   m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)ch->left, (float)ch->bottom );
-  m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, (float)posX, (float)posY + ch->height, 0, 1.0f );
+  m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, posX + angle.sine * ch->height, posY + angle.cosine * ch->height, 0, 1.0f );
 }
 
 void CGUIFontTTF::CreateShaderAndTexture()

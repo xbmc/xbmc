@@ -1,7 +1,6 @@
 
 #include "include.h"
 #include "GUIButtonScroller.h"
-#include "GUIFontManager.h"
 #include "LocalizeStrings.h"
 #include "GUIWindowManager.h"
 #include "../xbmc/utils/CharsetConverter.h"
@@ -12,7 +11,7 @@
 
 #define SCROLL_SPEED 6.0f
 
-CGUIButtonScroller::CGUIButtonScroller(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, int iGap, int iSlots, int iDefaultSlot, int iMovementRange, bool bHorizontal, int iAlpha, bool bWrapAround, bool bSmoothScrolling, const CStdString& strTextureFocus, const CStdString& strTextureNoFocus, int iTextXOffset, int iTextYOffset, DWORD dwAlign)
+CGUIButtonScroller::CGUIButtonScroller(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, int iGap, int iSlots, int iDefaultSlot, int iMovementRange, bool bHorizontal, int iAlpha, bool bWrapAround, bool bSmoothScrolling, const CStdString& strTextureFocus, const CStdString& strTextureNoFocus, const CLabelInfo& labelInfo)
     : CGUIControl(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight)
     , m_imgFocus(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight, strTextureFocus)
     , m_imgNoFocus(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight, strTextureNoFocus)
@@ -47,11 +46,7 @@ CGUIButtonScroller::CGUIButtonScroller(DWORD dwParentID, DWORD dwControlId, int 
   m_bMoveDown = false;
   ControlType = GUICONTROL_BUTTONBAR;
   //  m_dwFrameCounter = 0;
-  m_dwTextColor = 0xFFFFFFFF;
-  m_iTextOffsetX = iTextXOffset;
-  m_iTextOffsetY = iTextYOffset;
-  m_dwTextAlignment = dwAlign;
-  m_pFont = NULL;
+  m_label = labelInfo;
 }
 
 CGUIButtonScroller::~CGUIButtonScroller(void)
@@ -259,12 +254,6 @@ void CGUIButtonScroller::DynamicResourceAlloc(bool bOnOff)
   CGUIControl::DynamicResourceAlloc(bOnOff);
   m_imgFocus.DynamicResourceAlloc(bOnOff);
   m_imgNoFocus.DynamicResourceAlloc(bOnOff);
-}
-
-void CGUIButtonScroller::SetFont(const CStdString &strFont, DWORD dwColor)
-{
-  m_dwTextColor = dwColor;
-  m_pFont = g_fontManager.GetFont(strFont);
 }
 
 void CGUIButtonScroller::Render()
@@ -617,14 +606,14 @@ void CGUIButtonScroller::RenderItem(int &iPosX, int &iPosY, int &iOffset, bool b
   GetScrollZone(fStartAlpha, fEndAlpha);
   if (bText)
   {
-    if (!m_pFont) return ;
-    float fPosX = (float)iPosX + m_iTextOffsetX;
-    float fPosY = (float)iPosY + m_iTextOffsetY;
-    if (m_dwTextAlignment & XBFONT_RIGHT)
-      fPosX = (float)iPosX + m_imgFocus.GetWidth() - m_iTextOffsetX;
-    if (m_dwTextAlignment & XBFONT_CENTER_X)
+    if (!m_label.font) return ;
+    float fPosX = (float)iPosX + m_label.offsetX;
+    float fPosY = (float)iPosY + m_label.offsetY;
+    if (m_label.align & XBFONT_RIGHT)
+      fPosX = (float)iPosX + m_imgFocus.GetWidth() - m_label.offsetX;
+    if (m_label.align & XBFONT_CENTER_X)
       fPosX = (float)iPosX + m_imgFocus.GetWidth() / 2;
-    if (m_dwTextAlignment & XBFONT_CENTER_Y)
+    if (m_label.align & XBFONT_CENTER_Y)
       fPosY = (float)iPosY + m_imgFocus.GetHeight() / 2;
 
     CStdStringW strLabelUnicode;
@@ -645,11 +634,14 @@ void CGUIButtonScroller::RenderItem(int &iPosX, int &iPosY, int &iOffset, bool b
       if (fPosY > fEndAlpha)
         fAlpha -= (fPosY - fEndAlpha) / (m_iPosY + (int)m_dwHeight - fEndAlpha) * m_iAlpha * 2.55f;
     }
-    if (fAlpha < 0) fAlpha = 0;
+    if (fAlpha < 1) fAlpha = 1; // don't quite go all the way transparent,
+                                // as any shadow colour will not be rendered transparent if
+                                // it's defined in the font class
     if (fAlpha > 255) fAlpha = 255.0f;
     DWORD dwAlpha = (DWORD)(fAlpha + 0.5f);
-    DWORD dwColor = (dwAlpha << 24) | (m_dwTextColor & 0xFFFFFF);
-    m_pFont->DrawText( fPosX, fPosY, dwColor, strLabelUnicode.c_str(), m_dwTextAlignment);
+    DWORD dwColor = (dwAlpha << 24) | (m_label.textColor & 0xFFFFFF);
+    DWORD dwShadowColor = (dwAlpha << 24) | (m_label.shadowColor & 0xFFFFFF);
+    m_label.font->DrawText( fPosX, fPosY, dwColor, dwShadowColor, strLabelUnicode.c_str(), m_label.align);
   }
   else
   {

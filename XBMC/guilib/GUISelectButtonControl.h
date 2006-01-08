@@ -70,9 +70,7 @@ public:
                           int iPosX, int iPosY,
                           DWORD dwWidth, DWORD dwHeight,
                           const CStdString& strButtonFocus, const CStdString& strButton,
-                          DWORD dwTextOffsetX,
-                          DWORD dwTextOffsetY,
-                          DWORD dwTextAlign,
+                          const CLabelInfo& labelInfo,
                           const CStdString& strSelectBackground,
                           const CStdString& strSelectArrowLeft, const CStdString& strSelectArrowLeftFocus,
                           const CStdString& strSelectArrowRight, const CStdString& strSelectArrowRightFocus);

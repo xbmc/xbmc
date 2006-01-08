@@ -20,12 +20,11 @@ class CGUITextBox : public CGUIControl
 {
 public:
   CGUITextBox(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight,
-              const CStdString& strFontName,
               DWORD dwSpinWidth, DWORD dwSpinHeight,
               const CStdString& strUp, const CStdString& strDown,
               const CStdString& strUpFocus, const CStdString& strDownFocus,
               DWORD dwSpinColor, int iSpinX, int iSpinY,
-              const CStdString& strFont, DWORD dwTextColor);
+              const CLabelInfo &labelInfo);
   virtual ~CGUITextBox(void);
   virtual void Render();
   virtual bool OnAction(const CAction &action) ;
@@ -43,15 +42,14 @@ public:
   virtual void SetWidth(int iWidth);
   virtual void SetHeight(int iHeight);
   virtual void SetPulseOnSelect(bool pulse);
-  DWORD GetTextColor() const { return m_dwTextColor;};
-  const char* GetFontName() const { return m_pFont ? m_pFont->GetFontName().c_str() : ""; };
+  const CLabelInfo& GetLabelInfo() const { return m_label; };
   DWORD GetSpinWidth() const { return m_upDown.GetWidth() / 2; };
   DWORD GetSpinHeight() const { return m_upDown.GetHeight(); };
   const CStdString& GetTextureUpName() const { return m_upDown.GetTextureUpName(); };
   const CStdString& GetTextureDownName() const { return m_upDown.GetTextureDownName(); };
   const CStdString& GetTextureUpFocusName() const { return m_upDown.GetTextureUpFocusName(); };
   const CStdString& GetTextureDownFocusName() const { return m_upDown.GetTextureDownFocusName(); };
-  DWORD GetSpinTextColor() const { return m_upDown.GetTextColor();};
+  DWORD GetSpinTextColor() const { return m_upDown.GetLabelInfo().textColor;};
   int GetSpinX() const { return m_iSpinPosX;};
   int GetSpinY() const { return m_iSpinPosY;};
   void SetText(const wstring &strText);
@@ -70,8 +68,8 @@ protected:
   int m_iItemsPerPage;
   int m_iItemHeight;
   int m_iMaxPages;
-  DWORD m_dwTextColor;
-  CGUIFont* m_pFont;
+
+  CLabelInfo m_label;
   CGUISpinControl m_upDown;
   vector<CGUIListItem> m_vecItems;
   typedef vector<CGUIListItem> ::iterator ivecItems;

@@ -1,48 +1,37 @@
 #include "include.h"
 #include "GUIListControl.h"
-#include "GUIFontManager.h"
 #include "../xbmc/utils/CharsetConverter.h"
 
 
 #define CONTROL_LIST  0
 #define CONTROL_UPDOWN 1
 CGUIListControl::CGUIListControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight,
-                                 const CStdString& strFontName,
                                  DWORD dwSpinWidth, DWORD dwSpinHeight,
                                  const CStdString& strUp, const CStdString& strDown,
                                  const CStdString& strUpFocus, const CStdString& strDownFocus,
                                  DWORD dwSpinColor, int iSpinX, int iSpinY,
-                                 const CStdString& strFont, DWORD dwTextColor, DWORD dwSelectedColor,
+                                 const CLabelInfo& labelInfo, const CLabelInfo& labelInfo2,
                                  const CStdString& strButton, const CStdString& strButtonFocus)
     : CGUIControl(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight)
-    , m_upDown(dwControlId, 0, 0, 0, dwSpinWidth, dwSpinHeight, strUp, strDown, strUpFocus, strDownFocus, strFont, dwSpinColor, SPIN_CONTROL_TYPE_INT)
-    , m_imgButton(dwControlId, 0, iPosX, iPosY, dwWidth, dwHeight, strButtonFocus, strButton, 0, 0)
+    , m_upDown(dwControlId, 0, 0, 0, dwSpinWidth, dwSpinHeight, strUp, strDown, strUpFocus, strDownFocus, labelInfo, dwSpinColor, SPIN_CONTROL_TYPE_INT)
+    , m_imgButton(dwControlId, 0, iPosX, iPosY, dwWidth, dwHeight, strButtonFocus, strButton, labelInfo)
 {
-  m_dwSelectedColor = dwSelectedColor;
+  m_label = labelInfo;
+  m_label2 = labelInfo2;
   m_iOffset = 0;
   m_fSmoothScrollOffset = 0;
   m_iItemsPerPage = 10;
   m_iItemHeight = 10;
-  m_pFont = g_fontManager.GetFont(strFontName);
-  m_pFont2 = g_fontManager.GetFont(strFontName);
   m_iSelect = CONTROL_LIST;
   m_iCursorY = 0;
-  m_dwTextColor = dwTextColor;
   m_strSuffix = L"|";
   m_iSpinPosX = iSpinX;
   m_iSpinPosY = iSpinY;
-  m_iTextOffsetX = 0;
-  m_iTextOffsetY = 0;
   m_iImageWidth = 16;
   m_iImageHeight = 16;
   m_iSpaceBetweenItems = 4;
-  m_iTextOffsetX2 = 0;
-  m_iTextOffsetY2 = 0;
   m_bUpDownVisible = true;   // show the spin control by default
   m_upDown.SetShowRange(true); // show the range by default
-  m_dwTextAlign = 0;
-  m_dwTextColor2 = dwTextColor;
-  m_dwSelectedColor2 = dwSelectedColor;
   ControlType = GUICONTROL_LIST;
 }
 
@@ -52,7 +41,7 @@ CGUIListControl::~CGUIListControl(void)
 
 void CGUIListControl::Render()
 {
-  if (!m_pFont) return ;
+  if (!m_label.font) return ;
   if (!UpdateEffectState()) return ;
 
   CGUIControl::Render();
@@ -144,7 +133,7 @@ void CGUIListControl::Render()
   //--------------------------------------------------------
   //Batch together all textrendering for m_pFont
   iPosY = m_iPosY;
-  m_pFont->Begin();
+  m_label.font->Begin();
   for (int i = 0; i < m_iItemsPerPage; i++)
   {
     int iPosX = m_iPosX;
@@ -152,48 +141,48 @@ void CGUIListControl::Render()
     {
       CGUIListItem *pItem = m_vecItems[i + m_iOffset];
       CStdString strLabel2 = pItem->GetLabel2();
-      iPosX += m_iImageWidth + m_iTextOffsetX + 10;
+      iPosX += m_iImageWidth + m_label.offsetX + 10;
 
-      DWORD dwColor = m_dwTextColor;
+      DWORD dwColor = m_label.textColor;
       if (pItem->IsSelected())
       {
-        dwColor = m_dwSelectedColor;
+        dwColor = m_label.selectedColor;
       }
 
       bool bSelected(i == m_iCursorY && HasFocus() && m_iSelect == CONTROL_LIST);
 
       DWORD dMaxWidth = (m_dwWidth - m_iImageWidth - 16);
-      if ( strLabel2.size() > 0 && m_pFont2)
+      if ( strLabel2.size() > 0 && m_label2.font)
       {
         g_charsetConverter.stringCharsetToFontCharset(strLabel2, labelUnicode2);
-        if ( m_iTextOffsetY == m_iTextOffsetY2 )
+        if ( m_label.offsetY == m_label2.offsetY )
         {
           float fTextHeight = 0;
           float fTextWidth = 0;
-          m_pFont2->GetTextExtent( labelUnicode2.c_str(), &fTextWidth, &fTextHeight);
+          m_label2.font->GetTextExtent( labelUnicode2.c_str(), &fTextWidth, &fTextHeight);
           dMaxWidth -= (DWORD)(fTextWidth + 20);
         }
       }
 
       g_charsetConverter.stringCharsetToFontCharset(pItem->GetLabel(), labelUnicode);
-      float fPosY = (float)iPosY + m_iTextOffsetY;
-      if (m_dwTextAlign & XBFONT_CENTER_Y)
+      float fPosY = (float)iPosY + m_label.offsetY;
+      if (m_label.align & XBFONT_CENTER_Y)
       {
         float fTextHeight = 0;
         float fTextWidth = 0;
-        m_pFont->GetTextExtent( labelUnicode.c_str(), &fTextWidth, &fTextHeight);
+        m_label.font->GetTextExtent( labelUnicode.c_str(), &fTextWidth, &fTextHeight);
         fPosY = (float)iPosY + (m_iItemHeight - fTextHeight) / 2;
       }
       RenderText((float)iPosX, fPosY, (float)dMaxWidth, dwColor, (WCHAR*)labelUnicode.c_str(), bSelected);
       iPosY += m_iItemHeight + m_iSpaceBetweenItems;
     }
   }
-  m_pFont->End();
+  m_label.font->End();
 
   //------------------------------------------
   //Batch together all textrendering for m_pFont2
   iPosY = m_iPosY;
-  m_pFont2->Begin();
+  m_label2.font->Begin();
   for (int i = 0; i < m_iItemsPerPage; i++)
   {
     int iPosX = m_iPosX;
@@ -202,34 +191,34 @@ void CGUIListControl::Render()
       CGUIListItem *pItem = m_vecItems[i + m_iOffset];
       CStdString strLabel2 = pItem->GetLabel2();
 
-      iPosX += m_iImageWidth + m_iTextOffsetX + 10;
-      if (strLabel2.size() > 0 && m_pFont2)
+      iPosX += m_iImageWidth + m_label.offsetX + 10;
+      if (strLabel2.size() > 0 && m_label2.font)
       {
         g_charsetConverter.stringCharsetToFontCharset(strLabel2, labelUnicode2);
-        DWORD dwColor = m_dwTextColor2;
+        DWORD dwColor = m_label2.textColor;
         if (pItem->IsSelected())
         {
-          dwColor = m_dwSelectedColor2;
+          dwColor = m_label2.selectedColor;
         }
-        if (!m_iTextOffsetX2)
+        if (!m_label2.offsetX)
           iPosX = m_iPosX + m_dwWidth - 16;
         else
-          iPosX = m_iPosX + m_iTextOffsetX2;
+          iPosX = m_iPosX + m_label2.offsetX;
 
-        float fPosY = (float)iPosY + m_iTextOffsetY2;
-        if (m_dwTextAlign & XBFONT_CENTER_Y)
+        float fPosY = (float)iPosY + m_label2.offsetY;
+        if (m_label.align & XBFONT_CENTER_Y)
         {
           float fTextHeight = 0;
           float fTextWidth = 0;
-          m_pFont->GetTextExtent(labelUnicode.c_str(), &fTextWidth, &fTextHeight);
+          m_label.font->GetTextExtent(labelUnicode.c_str(), &fTextWidth, &fTextHeight);
           fPosY = (float)iPosY + (m_iItemHeight - fTextHeight) / 2;
         }
-        m_pFont2->DrawText((float)iPosX, fPosY, dwColor, labelUnicode2.c_str(), XBFONT_RIGHT);
+        m_label2.font->DrawText((float)iPosX, fPosY, dwColor, m_label2.shadowColor, labelUnicode2.c_str(), XBFONT_RIGHT);
       }
       iPosY += m_iItemHeight + m_iSpaceBetweenItems;
     }
   }
-  m_pFont2->End();
+  m_label2.font->End();
 
   if (m_bUpDownVisible && m_upDown.GetMaximum() > 1)
   {
@@ -241,25 +230,25 @@ void CGUIListControl::Render()
 
 void CGUIListControl::RenderText(float fPosX, float fPosY, float fMaxWidth, DWORD dwTextColor, WCHAR* wszText, bool bScroll )
 {
-  if (!m_pFont)
+  if (!m_label.font)
     return ;
 
   static int iLastItem = -1;
 
   float fTextHeight = 0;
   float fTextWidth = 0;
-  m_pFont->GetTextExtent(wszText, &fTextWidth, &fTextHeight);
+  m_label.font->GetTextExtent(wszText, &fTextWidth, &fTextHeight);
 
   if (!bScroll)
   {
-    m_pFont->DrawTextWidth(fPosX, fPosY, dwTextColor, wszText, fMaxWidth);
+    m_label.font->DrawTextWidth(fPosX, fPosY, dwTextColor, m_label.shadowColor, wszText, fMaxWidth);
     return ;
   }
   else
   {
     if (fTextWidth <= fMaxWidth)
     { // don't need to scroll
-      m_pFont->DrawTextWidth(fPosX, fPosY, dwTextColor, wszText, fMaxWidth);
+      m_label.font->DrawTextWidth(fPosX, fPosY, dwTextColor, m_label.shadowColor, wszText, fMaxWidth);
       m_scrollInfo.Reset();
       return ;
     }
@@ -268,14 +257,14 @@ void CGUIListControl::RenderText(float fPosX, float fPosY, float fMaxWidth, DWOR
     scrollString += L" ";
     scrollString += m_strSuffix;
     int iItem = m_iCursorY + m_iOffset;
-    m_pFont->End(); // need to deinit the font before setting viewport
+    m_label.font->End(); // need to deinit the font before setting viewport
     if (iLastItem != iItem)
     {
       m_scrollInfo.Reset();
       iLastItem = iItem;
     }
-    m_pFont->DrawScrollingText(fPosX, fPosY, &dwTextColor, 1, scrollString, fMaxWidth, m_scrollInfo);
-    m_pFont->Begin(); // resume fontbatching
+    m_label.font->DrawScrollingText(fPosX, fPosY, &dwTextColor, 1, m_label.shadowColor, scrollString, fMaxWidth, m_scrollInfo);
+    m_label.font->Begin(); // resume fontbatching
   }
 }
 
@@ -457,7 +446,7 @@ bool CGUIListControl::OnMessage(CGUIMessage& message)
 
 void CGUIListControl::PreAllocResources()
 {
-  if (!m_pFont) return ;
+  if (!m_label.font) return ;
   CGUIControl::PreAllocResources();
   m_upDown.PreAllocResources();
   m_imgButton.PreAllocResources();
@@ -465,7 +454,7 @@ void CGUIListControl::PreAllocResources()
 
 void CGUIListControl::AllocResources()
 {
-  if (!m_pFont) return ;
+  if (!m_label.font) return ;
   CGUIControl::AllocResources();
   m_upDown.AllocResources();
 
@@ -631,14 +620,6 @@ int CGUIListControl::GetPage()
     return m_iOffset / m_iItemsPerPage + 1;
 }
 
-void CGUIListControl::SetTextOffsets(int iXoffset, int iYOffset, int iXoffset2, int iYOffset2)
-{
-  m_iTextOffsetX = iXoffset;
-  m_iTextOffsetY = iYOffset;
-  m_iTextOffsetX2 = iXoffset2;
-  m_iTextOffsetY2 = iYOffset2;
-}
-
 void CGUIListControl::SetImageDimensions(int iWidth, int iHeight)
 {
   m_iImageWidth = iWidth;
@@ -652,19 +633,6 @@ void CGUIListControl::SetItemHeight(int iHeight)
 void CGUIListControl::SetSpace(int iHeight)
 {
   m_iSpaceBetweenItems = iHeight;
-}
-
-void CGUIListControl::SetFont2(const CStdString& strFont)
-{
-  if (strFont != "")
-  {
-    m_pFont2 = g_fontManager.GetFont(strFont);
-  }
-}
-void CGUIListControl::SetColors2(DWORD dwTextColor, DWORD dwSelectedColor)
-{
-  m_dwTextColor2 = dwTextColor;
-  m_dwSelectedColor2 = dwSelectedColor;
 }
 
 int CGUIListControl::GetSelectedItem() const

@@ -1,12 +1,12 @@
 #include "include.h"
 #include "GUIButtonControl.h"
-#include "GUIFontManager.h"
 #include "GUIWindowManager.h"
 #include "GUIDialog.h"
 #include "../xbmc/utils/CharsetConverter.h"
+#include "GUIFontManager.h"
 
 
-CGUIButtonControl::CGUIButtonControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strTextureFocus, const CStdString& strTextureNoFocus, DWORD dwTextXOffset, DWORD dwTextYOffset, DWORD dwAlign)
+CGUIButtonControl::CGUIButtonControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strTextureFocus, const CStdString& strTextureNoFocus, const CLabelInfo& labelInfo)
     : CGUIControl(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight)
     , m_imgFocus(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight, strTextureFocus)
     , m_imgNoFocus(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight, strTextureNoFocus)
@@ -18,23 +18,14 @@ CGUIButtonControl::CGUIButtonControl(DWORD dwParentID, DWORD dwControlId, int iP
   m_dwFrameCounter = 0;
   m_strLabel = L"";
   m_strLabel2 = L"";
-  m_dwTextColor = 0xFFFFFFFF;
-  m_dwDisabledColor = 0xFF606060;
-  m_dwTextOffsetX = dwTextXOffset;
-  m_dwTextOffsetY = dwTextYOffset;
-  m_dwTextAlignment = dwAlign;
-  m_pFont = NULL;
+  m_label = labelInfo;
   m_lHyperLinkWindowID = WINDOW_INVALID;
   m_strExecuteAction = "";
   ControlType = GUICONTROL_BUTTON;
 }
 
 CGUIButtonControl::~CGUIButtonControl(void)
-{}
-
-void CGUIButtonControl::SetDisabledColor(D3DCOLOR color)
 {
-  m_dwDisabledColor = color;
 }
 
 void CGUIButtonControl::Render()
@@ -79,7 +70,7 @@ void CGUIButtonControl::Render()
   m_imgFocus.Render();
   m_imgNoFocus.Render();
 
-  if (!m_pFont) return ;
+  if (!m_label.font) return ;
 
   // if we're flickering then we may not need to render text
   bool bRenderText = (m_dwFlickerCounter > 0) ? (m_dwFrameCounter % 60 > 30) : true;
@@ -87,41 +78,41 @@ void CGUIButtonControl::Render()
 
   if (m_strLabel.size() > 0 && bRenderText)
   {
-    float fPosX = (float)m_iPosX + m_dwTextOffsetX;
-    float fPosY = (float)m_iPosY + m_dwTextOffsetY;
+    float fPosX = (float)m_iPosX + m_label.offsetX;
+    float fPosY = (float)m_iPosY + m_label.offsetY;
 
-    if (m_dwTextAlignment & XBFONT_RIGHT)
-      fPosX = (float)m_iPosX + m_dwWidth - m_dwTextOffsetX;
+    if (m_label.align & XBFONT_RIGHT)
+      fPosX = (float)m_iPosX + m_dwWidth - m_label.offsetX;
 
-    if (m_dwTextAlignment & XBFONT_CENTER_X)
+    if (m_label.align & XBFONT_CENTER_X)
       fPosX = (float)m_iPosX + m_dwWidth / 2;
 
-    if (m_dwTextAlignment & XBFONT_CENTER_Y)
+    if (m_label.align & XBFONT_CENTER_Y)
       fPosY = (float)m_iPosY + m_dwHeight / 2;
 
     CStdStringW strLabelUnicode;
     g_charsetConverter.stringCharsetToFontCharset(m_strLabel, strLabelUnicode);
 
-    m_pFont->Begin();
+    m_label.font->Begin();
     if (IsDisabled())
-      m_pFont->DrawText( fPosX, fPosY, m_dwDisabledColor, strLabelUnicode.c_str(), m_dwTextAlignment);
+      m_label.font->DrawText( fPosX, fPosY, m_label.angle, m_label.disabledColor, m_label.shadowColor, strLabelUnicode.c_str(), m_label.align);
     else
-      m_pFont->DrawText( fPosX, fPosY, m_dwTextColor, strLabelUnicode.c_str(), m_dwTextAlignment);
+      m_label.font->DrawText( fPosX, fPosY, m_label.angle, m_label.textColor, m_label.shadowColor, strLabelUnicode.c_str(), m_label.align);
 
     // render the second label if it exists
     if (m_strLabel2.size() > 0)
     {
-      fPosX = (float)m_iPosX + m_dwWidth - m_dwTextOffsetX;
-      DWORD dwAlign = XBFONT_RIGHT | (m_dwTextAlignment & XBFONT_CENTER_Y);
+      fPosX = (float)m_iPosX + m_dwWidth - m_label.offsetX;
+      DWORD dwAlign = XBFONT_RIGHT | (m_label.align & XBFONT_CENTER_Y);
 
       g_charsetConverter.stringCharsetToFontCharset(m_strLabel2, strLabelUnicode);
 
       if (IsDisabled() )
-        m_pFont->DrawText( fPosX, fPosY, m_dwDisabledColor, strLabelUnicode.c_str(), dwAlign);
+        m_label.font->DrawText( fPosX, fPosY, m_label.angle, m_label.disabledColor, m_label.shadowColor, strLabelUnicode.c_str(), dwAlign);
       else
-        m_pFont->DrawText( fPosX, fPosY, m_dwTextColor, strLabelUnicode.c_str(), dwAlign);
+        m_label.font->DrawText( fPosX, fPosY, m_label.angle, m_label.textColor, m_label.shadowColor, strLabelUnicode.c_str(), dwAlign);
     }
-    m_pFont->End();
+    m_label.font->End();
   }
   CGUIControl::Render();
 }
@@ -234,23 +225,6 @@ void CGUIButtonControl::SetText2(const wstring &label2)
   m_strLabel2 = label2;
 }
 
-void CGUIButtonControl::SetLabel(const CStdString& strFontName, const CStdString& strLabel, D3DCOLOR dwColor)
-{
-  WCHAR wszText[1024];
-  swprintf(wszText, L"%S", strLabel.c_str());
-  m_strLabel = wszText;
-  m_dwTextColor = dwColor;
-  m_pFont = g_fontManager.GetFont(strFontName);
-}
-
-void CGUIButtonControl::SetLabel(const CStdString& strFontName, const wstring& strLabel, D3DCOLOR dwColor)
-{
-  m_strLabel = strLabel;
-  m_dwTextColor = dwColor;
-  m_pFont = g_fontManager.GetFont(strFontName);
-}
-
-
 void CGUIButtonControl::Update()
 {
   CGUIControl::Update();
@@ -316,4 +290,26 @@ CStdString CGUIButtonControl::GetDescription() const
 {
   CStdString strLabel = GetLabel();
   return strLabel;
+}
+
+void CGUIButtonControl::PythonSetLabel(const CStdString &strFont, const wstring &strText, DWORD dwTextColor)
+{
+  m_label.font = g_fontManager.GetFont(strFont);
+  m_label.textColor = dwTextColor;
+  m_strLabel = strText;
+}
+
+void CGUIButtonControl::PythonSetDisabledColor(DWORD dwDisabledColor)
+{
+  m_label.disabledColor = dwDisabledColor;
+}
+
+void CGUIButtonControl::RAMSetTextColor(DWORD dwTextColor)
+{
+  m_label.textColor = dwTextColor;
+}
+
+void CGUIButtonControl::SettingsCategorySetTextAlign(DWORD dwAlign)
+{
+  m_label.align = dwAlign;
 }
