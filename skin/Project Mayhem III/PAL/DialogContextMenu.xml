@@ -7,7 +7,8 @@
     <posy>0</posy>
   </coordinates>
 
-  <visible effect="fade" time="200" start="hidden">Window.IsActive(106)</visible>
+  <animation effect="fade" time="200">WindowOpen</animation>
+  <animation effect="fade" time="200">WindowClose</animation>
   <controls>
     <control>
       <description>background top image</description>

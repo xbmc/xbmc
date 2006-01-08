@@ -23,7 +23,8 @@
       <width>740</width>
       <height>65</height>
       <texture>osd_menu_bg.png</texture>
-      <visible effect="fade" time="300">Player.ShowCodec</visible>
+      <visible>Player.ShowCodec</visible>
+      <animation effect="fade" time="300">VisibleChange</visible>
     </control>
 
     <control>
@@ -36,7 +37,8 @@
       <label>Audio | Codec: $INFO[musicplayer.Codec] - Bitrate: $INFO[musicplayer.Bitrate]kbps - Bits: $INFO[musicplayer.bitspersample]bit - Freq.: $INFO[musicplayer.Samplerate]kHz - Channels: $INFO[musicplayer.Channels]</label>
       <align>left</align>
       <font>font12</font>
-      <visible effect="fade" time="300">Player.ShowCodec</visible>
+      <visible>Player.ShowCodec</visible>
+      <animation effect="fade" time="300">VisibleChange</visible>
     </control>
 
     <control>
@@ -49,7 +51,8 @@
       <label>Visuals | fps: $INFO[System.FPS] - </label>
       <font>font12</font>
       <align>left</align>
-      <visible effect="fade" time="300">Player.ShowCodec</visible>
+      <visible>Player.ShowCodec</visible>
+      <animation effect="fade" time="300">VisibleChange</visible>
     </control>
 
     <control>
@@ -62,7 +65,8 @@
       <label>$INFO[Visualisation.Name] - $INFO[Visualisation.Preset]</label>
       <font>font12</font>
       <align>left</align>
-      <visible effect="fade" time="300">Player.ShowCodec</visible>
+      <visible>Player.ShowCodec</visible>
+      <animation effect="fade" time="300">VisibleChange</visible>
     </control>
 
     <control>
@@ -73,7 +77,8 @@
       <posy>76</posy>
       <width>12</width>
       <height>15</height>
-      <visible effect="fade" time="300">Visualisation.Locked + Player.ShowCodec</visible>
+      <visible>Visualisation.Locked + Player.ShowCodec</visible>
+      <animation effect="fade" time="300">VisibleChange</visible>
       <texture>arenaitem-private.png</texture>
     </control>
 
@@ -87,7 +92,8 @@
       <width>740</width>
       <height>100</height>
       <texture>osd_menu_bg.png</texture>
-      <visible effect="fade" time="1000">Player.ShowInfo</visible>
+      <visible>Player.ShowInfo</visible>
+      <animation effect="fade" time="1000">VisibleChange</visible>
     </control>
 
     <control>
@@ -100,7 +106,8 @@
       <height>100</height>
       <info>MusicPlayer.Cover</info>
       <keepaspectratio>true</keepaspectratio>
-      <visible effect="fade" time="1000">Player.ShowInfo</visible>
+      <visible>Player.ShowInfo</visible>
+      <animation effect="fade" time="1000">VisibleChange</visible>
     </control>
 
     <control>
@@ -113,7 +120,8 @@
       <info>MusicPlayer.Artist</info>
       <align>left</align>
       <font>special12</font>
-      <visible effect="fade" time="1000">Player.ShowInfo</visible>
+      <visible>Player.ShowInfo</visible>
+      <animation effect="fade" time="1000">VisibleChange</visible>
     </control>
 
     <control>
@@ -126,7 +134,8 @@
       <info>MusicPlayer.Title</info>
       <align>left</align>
       <font>special13</font>
-      <visible effect="fade" time="1000">Player.ShowInfo</visible>
+      <visible>Player.ShowInfo</visible>
+      <animation effect="fade" time="1000">VisibleChange</visible>
     </control>
 
     <control>
@@ -139,7 +148,8 @@
       <info>MusicPlayer.Album</info>
       <align>left</align>
       <font>font10</font>
-      <visible effect="fade" time="1000">Player.ShowInfo</visible>
+      <visible>Player.ShowInfo</visible>
+      <animation effect="fade" time="1000">VisibleChange</visible>
     </control>
 
     <control>
@@ -152,7 +162,8 @@
       <label>$INFO[musicplayer.Time] / $INFO[musicplayer.Duration]</label>
       <align>left</align>
       <font>font10</font>
-      <visible effect="fade" time="1000">Player.ShowInfo</visible>
+      <visible>Player.ShowInfo</visible>
+      <animation effect="fade" time="1000">VisibleChange</visible>
     </control>
 
     <control>
@@ -165,7 +176,8 @@
       <label>$LOCALIZE[435] $INFO[musicplayer.Playlistposition] / $INFO[musicplayer.Playlistlength]</label>
       <align>right</align>
       <font>font10</font>
-      <visible effect="fade" time="1000">Player.ShowInfo</visible>
+      <visible>Player.ShowInfo</visible>
+      <animation effect="fade" time="1000">VisibleChange</visible>
     </control>
 
   </controls>

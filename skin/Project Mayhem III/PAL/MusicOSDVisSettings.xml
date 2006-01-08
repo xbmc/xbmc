@@ -1,7 +1,8 @@
 <window>
   <id>121</id>
   <defaultcontrol>2</defaultcontrol>
-  <visible effect="fade" time="200" start="hidden">Window.IsActive(121)</visible>
+  <animation effect="fade" time="200">WindowOpen</animation>
+  <animation effect="fade" time="200">WindowClose</animation>
   <coordinates>
     <system>1</system>
     <posx>250</posx>
@@ -131,8 +132,7 @@
       <textureupfocus>scroll-up-focus.png</textureupfocus>
       <texturedownfocus>scroll-down-focus.png</texturedownfocus>
       <font>font12</font>
-      <textcolor>ffffffff</textcolor>
-      <colordiffuse>ffffffff</colordiffuse>
+      <include>textcolorwhite</include>
       <disabledcolor>60d0d0d0</disabledcolor>
       <textoffsetx>12</textoffsetx>
       <aligny>center</aligny>

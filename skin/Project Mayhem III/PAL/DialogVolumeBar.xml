@@ -1,7 +1,8 @@
 <window>
   <id>104</id>
   <defaultcontrol>1</defaultcontrol>
-  <visible effect="slide" time="200" startx="0" starty="-115" accleration="1" start="hidden">Window.IsActive(104)</visible>
+  <animation effect="slide" time="200" start="0,-115" acceleration="-1">WindowOpen</animation>
+  <animation effect="slide" time="200" end="0,-115" acceleration="1">WindowClose</animation>
   <coordinates>
     <system>1</system>
     <posx>535</posx>

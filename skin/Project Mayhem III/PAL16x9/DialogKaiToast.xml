@@ -6,8 +6,8 @@
     <posx>430</posx>
     <posy>480</posy>
   </coordinates>
-
-  <visible effect="fade" time="400" start="hidden">Window.IsActive(107)</visible>
+  <animation effect="fade" time="400">WindowOpen</animation>
+  <animation effect="fade" time="400">WindowClose</animation>
   <controls>
     <control>
       <description>Popup Kai Toast Dialog Background</description>

@@ -7,7 +7,8 @@
     <posy>27</posy>
   </coordinates>
 
-  <visible effect="fade" time="400" start="hidden">Window.IsActive(112)</visible>
+  <animation effect="fade" time="400">WindowOpen</animation>
+  <animation effect="fade" time="400">WindowClose</animation>
   <controls>
     <control>
       <description>Popup Music Scan Dialog Background</description>

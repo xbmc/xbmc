@@ -13,7 +13,6 @@
       <height>576</height>
       <texture>background-settings.png</texture>
       <colorkey>0</colorkey>
-      <colordiffuse>ffffffff</colordiffuse>
     </control>
 
     <control>
@@ -25,7 +24,7 @@
       <align>right</align>
       <label>xbox media center</label>
       <font>special12</font>
-      <textcolor>ffffffff</textcolor>
+      <include>textcolorwhite</include>
     </control>
 
     <control>
@@ -37,7 +36,7 @@
       <align>left</align>
       <label>130</label>
       <font>special13</font>
-      <textcolor>ffffffff</textcolor>
+      <include>textcolorwhite</include>
     </control>
 
     <controlgroup>
@@ -166,7 +165,7 @@
       <posy>150</posy>
       <label>13282</label>
       <font>font13</font>
-      <textcolor>70FFFFFF</textcolor>
+      <include>textcolorgrey</include>
     </control>
 
     <control>
@@ -177,7 +176,7 @@
       <posy>180</posy>
       <label>13282</label>
       <font>font13</font>
-      <textcolor>70FFFFFF</textcolor>
+      <include>textcolorgrey</include>
     </control>
 
     <control>
@@ -188,7 +187,7 @@
       <posy>210</posy>
       <label>13282</label>
       <font>font13</font>
-      <textcolor>70FFFFFF</textcolor>
+      <include>textcolorgrey</include>
     </control>
 
     <control>
@@ -199,7 +198,7 @@
       <posy>240</posy>
       <label>13282</label>
       <font>font13</font>
-      <textcolor>70FFFFFF</textcolor>
+      <include>textcolorgrey</include>
     </control>
 
     <control>
@@ -210,7 +209,7 @@
       <posy>270</posy>
       <label>13282</label>
       <font>font13</font>
-      <textcolor>70FFFFFF</textcolor>
+      <include>textcolorgrey</include>
     </control>
 
     <control>
@@ -221,7 +220,7 @@
       <posy>300</posy>
       <label>13282</label>
       <font>font13</font>
-      <textcolor>70FFFFFF</textcolor>
+      <include>textcolorgrey</include>
     </control>
 
     <control>
@@ -232,7 +231,7 @@
       <posy>330</posy>
       <label>13282</label>
       <font>font13</font>
-      <textcolor>70FFFFFF</textcolor>
+      <include>textcolorgrey</include>
     </control>
 
     <control>
@@ -243,7 +242,7 @@
       <posy>360</posy>
       <label>13282</label>
       <font>font13</font>
-      <textcolor>70FFFFFF</textcolor>
+      <include>textcolorgrey</include>
     </control>
 
     <control>
@@ -254,7 +253,7 @@
       <posy>390</posy>
       <label>13282</label>
       <font>font13</font>
-      <textcolor>70FFFFFF</textcolor>
+      <include>textcolorgrey</include>
     </control>
 
     <control>
@@ -265,7 +264,7 @@
       <posy>405</posy>
       <label>13282</label>
       <font>font13</font>
-      <textcolor>70FFFFFF</textcolor>
+      <include>textcolorgrey</include>
     </control>
 
     <!--
@@ -277,7 +276,7 @@
       <posy>425</posy>
       <label>13282</label>
       <font>font13</font>
-      <textcolor>70FFFFFF</textcolor>
+      <include>textcolorgrey</include>
     </control>
 
     -->
@@ -303,7 +302,7 @@
       <posy>422</posy>
       <label>143</label>
       <font>font12</font>
-      <textcolor>70FFFFFF</textcolor>
+      <include>textcolorgrey</include>
     </control>
 
     <control>
@@ -314,7 +313,7 @@
       <posy>443</posy>
       <label>144</label>
       <font>font12</font>
-      <textcolor>70FFFFFF</textcolor>
+      <include>textcolorgrey</include>
     </control>
 
     <control>
@@ -325,7 +324,7 @@
       <posy>465</posy>
       <label>144</label>
       <font>font12</font>
-      <textcolor>70FFFFFF</textcolor>
+      <include>textcolorgrey</include>
     </control>
 
     <control>
@@ -336,7 +335,7 @@
       <posy>485</posy>
       <label>144</label>
       <font>font12</font>
-      <textcolor>70FFFFFF</textcolor>
+      <include>textcolorgrey</include>
     </control>
 
   </controls>
