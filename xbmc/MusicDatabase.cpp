@@ -3590,3 +3590,88 @@ bool CMusicDatabase::GetAlbumsByArtistId(long idArtist, VECALBUMS& albums)
   }
   return false;
 }
+
+bool CMusicDatabase::GetGenreById(long idGenre, CStdString& strGenre)
+{
+  strGenre = "";
+  try
+  {
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS.get()) return false;
+
+    CStdString strSQL=FormatSQL("select strGenre from genre where genre.idGenre = %ld", idGenre);
+
+    // run query
+    if (!m_pDS->query(strSQL.c_str())) return false;
+    int iRowsFound = m_pDS->num_rows();
+    if (iRowsFound != 1)
+    {
+      m_pDS->close();
+      return false;
+    }
+    strGenre = m_pDS->fv("genre.strGenre").get_asString();
+    return true;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "CMusicDatabase::GetGenreFromId() failed");
+  }
+  return false;
+}
+
+bool CMusicDatabase::GetArtistById(long idArtist, CStdString& strArtist)
+{
+  strArtist = "";
+  try
+  {
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS.get()) return false;
+
+    CStdString strSQL=FormatSQL("select strArtist from artist where artist.idArtist = %ld", idArtist);
+
+    // run query
+    if (!m_pDS->query(strSQL.c_str())) return false;
+    int iRowsFound = m_pDS->num_rows();
+    if (iRowsFound != 1)
+    {
+      m_pDS->close();
+      return false;
+    }
+    strArtist = m_pDS->fv("artist.strArtist").get_asString();
+    return true;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "CMusicDatabase::GetArtistFromId() failed");
+  }
+  return false;
+}
+
+bool CMusicDatabase::GetAlbumById(long idAlbum, CStdString& strAlbum)
+{
+  strAlbum = "";
+  try
+  {
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS.get()) return false;
+
+    CStdString strSQL=FormatSQL("select strAlbum from album where album.idAlbum = %ld", idAlbum);
+
+    // run query
+    if (!m_pDS->query(strSQL.c_str())) return false;
+    int iRowsFound = m_pDS->num_rows();
+    if (iRowsFound != 1)
+    {
+      m_pDS->close();
+      return false;
+    }
+    strAlbum = m_pDS->fv("album.strAlbum").get_asString();
+    return true;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "CMusicDatabase::GetAlbumFromId() failed");
+  }
+  return false;
+}
+

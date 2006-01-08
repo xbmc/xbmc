@@ -137,6 +137,11 @@ public:
   bool SaveAlbumThumb(const CStdString& strAlbum, const CStdString& strPath, const CStdString& strThumb);
   bool GetAlbumsByArtistId(long idArtist, VECALBUMS& albums);
 
+
+  bool GetGenreById(long idGenre, CStdString& strGenre);
+  bool GetArtistById(long idArtist, CStdString& strArtist);
+  bool GetAlbumById(long idAlbum, CStdString& strAlbum);
+
 protected:
   map<CStdString, CArtistCache> m_artistCache;
   map<CStdString, CGenreCache> m_genreCache;
