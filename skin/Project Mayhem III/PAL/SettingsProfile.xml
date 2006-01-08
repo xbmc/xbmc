@@ -13,7 +13,6 @@
       <height>576</height>
       <texture>background-settings.png</texture>
       <colorkey>0</colorkey>
-      <colordiffuse>ffffffff</colordiffuse>
     </control>
 
     <control>

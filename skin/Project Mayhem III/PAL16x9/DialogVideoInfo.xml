@@ -2,7 +2,8 @@
   <id>2003</id>
   <defaultcontrol>5</defaultcontrol>
   <allowoverlay>no</allowoverlay>
-  <visible effect="fade" time="1000" start="hidden">Window.IsActive(2003)</visible>
+  <animation effect="fade" time="1000">WindowOpen</animation>
+  <animation effect="fade" time="1000">WindowClose</animation>
   <controls>
     <control>
       <description>background image</description>
@@ -244,11 +245,11 @@
       <width>410</width>
       <height>200</height>
       <onleft>5</onleft>
-      <onright>5</onright>
+      <onright>50</onright>
       <onup>5</onup>
       <ondown>5</ondown>
-	<spinposx>410</spinposx>
-	<spinposy>190</spinposy>
+      <spinposx>410</spinposx>
+      <spinposy>190</spinposy>
     </control>
 
     <control>
@@ -260,11 +261,11 @@
       <width>410</width>
       <height>200</height>
       <onleft>5</onleft>
-      <onright>5</onright>
+      <onright>4</onright>
       <onup>5</onup>
       <ondown>8</ondown>
-	<spinposx>410</spinposx>
-	<spinposy>190</spinposy>
+      <spinposx>410</spinposx>
+      <spinposy>190</spinposy>
     </control>
 
     <control>
@@ -274,7 +275,7 @@
       <posx>50</posx>
       <posy>120</posy>
       <label>206</label>
-      <onleft>4</onleft>
+      <onleft>50</onleft>
       <onright>4</onright>
       <onup>6</onup>
       <ondown>8</ondown>
@@ -339,7 +340,6 @@
       <height>118</height>
       <texture>blue_rectangle_video.png</texture>
       <colorkey>0</colorkey>
-      <colordiffuse>ffffffff</colordiffuse>
       <visible>Player.HasVideo</visible>
     </control>
 
@@ -420,7 +420,7 @@
       <posy>525</posy>
       <font>font10</font>
       <label>$INFO[MusicPlayer.Artist] | $INFO[MusicPlayer.Title] | $INFO[MusicPlayer.Album] | $INFO[MusicPlayer.Year]</label>
-      <textcolor>FFFFFFFF</textcolor>
+      <include>textcolorwhite</include>
       <id>0</id>
     </control>
 

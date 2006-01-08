@@ -11,7 +11,8 @@
       <width>740</width>
       <height>65</height>
       <texture>osd_menu_bg.png</texture>
-      <visible effect="fade" time="300">Player.ShowInfo</visible>
+      <visible>Player.ShowInfo</visible>
+      <animation effect="fade" time="300">VisibleChange</visible>
     </control>
 
     <control>
@@ -23,7 +24,8 @@
       <label>-</label>
       <align>left</align>
       <font>font12</font>
-      <visible effect="fade" time="300">Player.ShowInfo</visible>
+      <visible>Player.ShowInfo</visible>
+      <animation effect="fade" time="300">VisibleChange</visible>
     </control>
 
     <control>
@@ -35,7 +37,8 @@
       <label>-</label>
       <align>left</align>
       <font>font12</font>
-      <visible effect="fade" time="300">Player.ShowInfo</visible>
+      <visible>Player.ShowInfo</visible>
+      <animation effect="fade" time="300">VisibleChange</visible>
     </control>
 
     <control>
@@ -47,7 +50,8 @@
       <label>-</label>
       <align>left</align>
       <font>font12</font>
-      <visible effect="fade" time="300">Player.ShowInfo</visible>
+      <visible>Player.ShowInfo</visible>
+      <animation effect="fade" time="300">VisibleChange</visible>
     </control>
 
     <control>
@@ -62,7 +66,6 @@
       <visible>no</visible>
       <texture>video-pause.png</texture>
       <colorkey>0</colorkey>
-      <colordiffuse>ffffffff</colordiffuse>
     </control>
 
   </controls>

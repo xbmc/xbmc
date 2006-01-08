@@ -6,7 +6,8 @@
     <posx>250</posx>
     <posy>116</posy>
   </coordinates>
-  <visible effect="fade" time="400">Window.IsActive(125)</visible>
+  <animation effect="fade" time="400">WindowOpen</animation>
+  <animation effect="fade" time="400">WindowClose</animation>
   <controls>
     <control>
       <description>background image</description>

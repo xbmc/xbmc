@@ -14,7 +14,8 @@
       <imagepath>4x3home-myprograms</imagepath>
       <timeperimage>5000</timeperimage>
       <fadetime>2000</fadetime>
-      <visible effect="fade" time="200">!Player.HasMedia</visible>
+      <visible>!Player.HasMedia</visible>
+      <animation effect="fade" time="200">VisibleChange</animation>
     </control>
 
     <control>
@@ -27,7 +28,8 @@
       <imagepath>16x9home-myfiles</imagepath>
       <timeperimage>5000</timeperimage>
       <fadetime>2000</fadetime>
-      <visible effect="fade" time="200">!Player.HasMedia</visible>
+      <visible>!Player.HasMedia</visible>
+      <animation effect="fade" time="200">VisibleChange</animation>
     </control>
 
     <control>
@@ -40,7 +42,8 @@
       <imagepath>4x3home-mymusic</imagepath>
       <timeperimage>5000</timeperimage>
       <fadetime>2000</fadetime>
-      <visible effect="fade" time="200">!Player.HasMedia</visible>
+      <visible>!Player.HasMedia</visible>
+      <animation effect="fade" time="200">VisibleChange</animation>
     </control>
 
     <control>
@@ -53,7 +56,8 @@
       <imagepath>4x3home-mypictures</imagepath>
       <timeperimage>5000</timeperimage>
       <fadetime>2000</fadetime>
-      <visible effect="fade" time="200">!Player.HasMedia</visible>
+      <visible>!Player.HasMedia</visible>
+      <animation effect="fade" time="200">VisibleChange</animation>
     </control>
 
     <control>
@@ -66,7 +70,8 @@
       <imagepath>16x9home-myvideos</imagepath>
       <timeperimage>5000</timeperimage>
       <fadetime>2000</fadetime>
-      <visible effect="fade" time="200">!Player.HasMedia</visible>
+      <visible>!Player.HasMedia</visible>
+      <animation effect="fade" time="200">VisibleChange</animation>
     </control>
 
     <control>
@@ -79,7 +84,8 @@
       <imagepath>16x9home-myweather</imagepath>
       <timeperimage>5000</timeperimage>
       <fadetime>2000</fadetime>
-      <visible effect="fade" time="200">!Player.HasMedia</visible>
+      <visible>!Player.HasMedia</visible>
+      <animation effect="fade" time="200">VisibleChange</animation>
     </control>
 
     <control>
@@ -92,7 +98,8 @@
       <imagepath>4x3home-settings</imagepath>
       <timeperimage>5000</timeperimage>
       <fadetime>2000</fadetime>
-      <visible effect="fade" time="200">!Player.HasMedia</visible>
+      <visible>!Player.HasMedia</visible>
+      <animation effect="fade" time="200">VisibleChange</animation>
     </control>
 
     <control>
@@ -134,7 +141,8 @@
       <width>720</width>
       <height>576</height>
       <texture>home_buttons.png</texture>
-      <visible effect="fade" time="1000">![Player.HasAudio + System.IdleTime(60)]</visible>
+      <visible>![Player.HasAudio + System.IdleTime(60)]</visible>
+      <animation effect="fade" time="1000">VisibleChange</animation>
     </control>
 
     <control>
@@ -146,7 +154,8 @@
       <width>90</width>
       <height>99</height>
       <info>MusicPlayer.Cover</info>
-      <visible effect="fade" time="400" start="hidden">System.IdleTime(63)</visible>
+      <visible>System.IdleTime(63)</visible>
+      <animation effect="fade" time="400">VisibleChange</animation>
     </control>
 
     <control>
@@ -159,7 +168,8 @@
       <info>MusicPlayer.Artist</info>
       <align>left</align>
       <font>special12</font>
-      <visible effect="fade" time="400" start="hidden">System.IdleTime(63)</visible>
+      <visible>System.IdleTime(63)</visible>
+      <animation effect="fade" time="400">VisibleChange</animation>
     </control>
 
     <control>
@@ -172,7 +182,8 @@
       <info>MusicPlayer.Title</info>
       <align>left</align>
       <font>special13</font>
-      <visible effect="fade" time="400" start="hidden">System.IdleTime(63)</visible>
+      <visible>System.IdleTime(63)</visible>
+      <animation effect="fade" time="400">VisibleChange</animation>
     </control>
 
     <control>
@@ -185,7 +196,8 @@
       <info>MusicPlayer.Album</info>
       <align>left</align>
       <font>font10</font>
-      <visible effect="fade" time="400" start="hidden">System.IdleTime(63)</visible>
+      <visible>System.IdleTime(63)</visible>
+      <animation effect="fade" time="400">VisibleChange</animation>
     </control>
 
     <control>
@@ -197,19 +209,21 @@
       <info>MusicPlayer.Time</info>
       <align>left</align>
       <font>font10</font>
-      <visible effect="fade" time="400" start="hidden">System.IdleTime(63)</visible>
+      <visible>System.IdleTime(63)</visible>
+      <animation effect="fade" time="400">VisibleChange</animation>
     </control>
 
     <control>
       <description>gradient</description>
       <type>image</type>
       <id>1</id>
-      <visible effect="fade" time="1000" start="hidden">Player.HasAudio + !System.IdleTime(60)</visible>
       <posx>315</posx>
       <posy>338</posy>
       <width>400</width>
       <height>99</height>
       <texture>gradient.png</texture>
+      <visible>Player.HasAudio + !System.IdleTime(60)</visible>
+      <animation effect="fade" time="1000">VisibleChange</animation>
     </control>
 
     <control>
@@ -221,7 +235,8 @@
       <width>90</width>
       <height>99</height>
       <info>MusicPlayer.Cover</info>
-      <visible effect="fade" time="1000" start="hidden">!System.IdleTime(60)</visible>
+      <visible>!System.IdleTime(60)</visible>
+      <animation effect="fade" time="1000">VisibleChange</animation>
       <keepaspectratio>true</keepaspectratio>
     </control>
 
@@ -235,7 +250,8 @@
       <info>MusicPlayer.Artist</info>
       <align>right</align>
       <font>special12</font>
-      <visible effect="fade" time="1000" start="hidden">!System.IdleTime(60)</visible>
+      <visible>!System.IdleTime(60)</visible>
+      <animation effect="fade" time="1000">VisibleChange</animation>
     </control>
 
     <control>
@@ -248,7 +264,8 @@
       <info>MusicPlayer.Title</info>
       <align>right</align>
       <font>special13</font>
-      <visible effect="fade" time="1000" start="hidden">!System.IdleTime(60)</visible>
+      <visible>!System.IdleTime(60)</visible>
+      <animation effect="fade" time="1000">VisibleChange</animation>
     </control>
 
     <control>
@@ -261,7 +278,8 @@
       <info>MusicPlayer.Album</info>
       <align>right</align>
       <font>font10</font>
-      <visible effect="fade" time="1000" start="hidden">!System.IdleTime(60)</visible>
+      <visible>!System.IdleTime(60)</visible>
+      <animation effect="fade" time="1000">VisibleChange</animation>
     </control>
 
     <control>
@@ -273,155 +291,163 @@
       <info>MusicPlayer.Time</info>
       <align>right</align>
       <font>font10</font>
-      <visible effect="fade" time="1000" start="hidden">!System.IdleTime(60)</visible>
+      <visible>!System.IdleTime(60)</visible>
+      <animation effect="fade" time="1000">VisibleChange</animation>
     </control>
 
     <controlgroup>
       <control>
-	<description>My Programs normal push button</description>
-	<type>button</type>
-	<id>2</id>
-	<posx>91</posx>
-	<posy>231</posy>
-	<width>14</width>
-	<height>13</height>
-	<label>0</label>
-	<font>special13</font>
-	<hyperlink>1</hyperlink>
-	<onleft>98</onleft>
-	<onright>96</onright>
-	<onup>9</onup>
-	<ondown>4</ondown>
-	<texturefocus>home-focus.gif</texturefocus>
-	<texturenofocus>-</texturenofocus>
-	<textoffsetx>30</textoffsetx>
-	<visible  effect="fade" time="200">![Player.HasAudio + System.IdleTime(60)]</visible>
+        <description>My Programs normal push button</description>
+        <type>button</type>
+        <id>2</id>
+        <posx>91</posx>
+        <posy>231</posy>
+        <width>14</width>
+        <height>13</height>
+        <label>0</label>
+        <font>special13</font>
+        <hyperlink>1</hyperlink>
+        <onleft>98</onleft>
+        <onright>96</onright>
+        <onup>9</onup>
+        <ondown>4</ondown>
+        <texturefocus>home-focus.gif</texturefocus>
+        <texturenofocus>-</texturenofocus>
+        <textoffsetx>30</textoffsetx>
+        <visible>![Player.HasMedia + System.IdleTime(60)]</visible>
+        <animation effect="fade" time="1000">VisibleChange</animation>
       </control>
 
       <control>
-	<description>My Pictures normal push button</description>
-	<type>button</type>
-	<id>4</id>
-	<posx>91</posx>
-	<posy>271</posy>
-	<width>14</width>
-	<height>13</height>
-	<label>1</label>
-	<hyperlink>2</hyperlink>
-	<font>special13</font>
-	<onleft>98</onleft>
-	<onright>96</onright>
-	<onup>2</onup>
-	<ondown>5</ondown>
-	<texturefocus>home-focus.gif</texturefocus>
-	<texturenofocus>-</texturenofocus>
-	<textoffsetx>30</textoffsetx>
-	<visible  effect="fade" time="400">![Player.HasAudio + System.IdleTime(60)]</visible>
+        <description>My Pictures normal push button</description>
+        <type>button</type>
+        <id>4</id>
+        <posx>91</posx>
+        <posy>271</posy>
+        <width>14</width>
+        <height>13</height>
+        <label>1</label>
+        <hyperlink>2</hyperlink>
+        <font>special13</font>
+        <onleft>98</onleft>
+        <onright>96</onright>
+        <onup>2</onup>
+        <ondown>5</ondown>
+        <texturefocus>home-focus.gif</texturefocus>
+        <texturenofocus>-</texturenofocus>
+        <textoffsetx>30</textoffsetx>
+        <visible>![Player.HasMedia + System.IdleTime(60)]</visible>
+        <animation effect="fade" time="1000">VisibleChange</animation>
       </control>
 
       <control>
-	<description>My Videos normal push button</description>
-	<type>button</type>
-	<id>5</id>
-	<posx>91</posx>
-	<posy>310</posy>
-	<width>14</width>
-	<height>13</height>
-	<label>3</label>
-	<font>special13</font>
-	<hyperlink>6</hyperlink>
-	<onleft>98</onleft>
-	<onright>96</onright>
-	<onup>4</onup>
-	<ondown>3</ondown>
-	<texturefocus>home-focus.gif</texturefocus>
-	<texturenofocus>-</texturenofocus>
-	<textoffsetx>30</textoffsetx>
-	<visible  effect="fade" time="600">![Player.HasAudio + System.IdleTime(60)]</visible>
+        <description>My Videos normal push button</description>
+        <type>button</type>
+        <id>5</id>
+        <posx>91</posx>
+        <posy>310</posy>
+        <width>14</width>
+        <height>13</height>
+        <label>3</label>
+        <font>special13</font>
+        <hyperlink>6</hyperlink>
+        <onleft>98</onleft>
+        <onright>96</onright>
+        <onup>4</onup>
+        <ondown>3</ondown>
+        <texturefocus>home-focus.gif</texturefocus>
+        <texturenofocus>-</texturenofocus>
+        <textoffsetx>30</textoffsetx>
+        <visible>![Player.HasMedia + System.IdleTime(60)]</visible>
+        <animation effect="fade" time="1000">VisibleChange</animation>
       </control>
 
       <control>
-	<description>My Music normal push button</description>
-	<type>button</type>
-	<id>3</id>
-	<posx>91</posx>
-	<posy>350</posy>
-	<width>14</width>
-	<height>13</height>
-	<label>2</label>
-	<hyperlink>5</hyperlink>
-	<font>special13</font>
-	<onleft>98</onleft>
-	<onright>96</onright>
-	<onup>5</onup>
-	<ondown>7</ondown>
-	<texturefocus>home-focus.gif</texturefocus>
-	<texturenofocus>-</texturenofocus>
-	<textoffsetx>30</textoffsetx>
-	<visible  effect="fade" time="800">![Player.HasAudio + System.IdleTime(60)]</visible>
+        <description>My Music normal push button</description>
+        <type>button</type>
+        <id>3</id>
+        <posx>91</posx>
+        <posy>350</posy>
+        <width>14</width>
+        <height>13</height>
+        <label>2</label>
+        <hyperlink>5</hyperlink>
+        <font>special13</font>
+        <onleft>98</onleft>
+        <onright>96</onright>
+        <onup>5</onup>
+        <ondown>7</ondown>
+        <texturefocus>home-focus.gif</texturefocus>
+        <texturenofocus>-</texturenofocus>
+        <textoffsetx>30</textoffsetx>
+        <visible>![Player.HasMedia + System.IdleTime(60)]</visible>
+        <animation effect="fade" time="1000">VisibleChange</animation>
       </control>
 
       <control>
-	<description>My Weather normal push button</description>
-	<type>button</type>
-	<id>7</id>
-	<posx>91</posx>
-	<posy>388</posy>
-	<width>14</width>
-	<height>13</height>
-	<label>8</label>
-	<font>special13</font>
-	<hyperlink>2600</hyperlink>
-	<onleft>98</onleft>
-	<onright>96</onright>
-	<onup>3</onup>
-	<ondown>9</ondown>
-	<texturefocus>home-focus.gif</texturefocus>
-	<texturenofocus>-</texturenofocus>
-	<textoffsetx>30</textoffsetx>
-	<visible  effect="fade" time="1000">![Player.HasAudio + System.IdleTime(60)]</visible>
+	      <description>My Weather normal push button</description>
+	      <type>button</type>
+	      <id>7</id>
+	      <posx>91</posx>
+	      <posy>388</posy>
+	      <width>14</width>
+	      <height>13</height>
+	      <label>8</label>
+	      <font>special13</font>
+	      <hyperlink>2600</hyperlink>
+	      <onleft>98</onleft>
+	      <onright>96</onright>
+	      <onup>3</onup>
+	      <ondown>9</ondown>
+	      <texturefocus>home-focus.gif</texturefocus>
+	      <texturenofocus>-</texturenofocus>
+	      <textoffsetx>30</textoffsetx>
+        <visible>![Player.HasMedia + System.IdleTime(60)]</visible>
+        <animation effect="fade" time="1000">VisibleChange</animation>
       </control>
 
       <control>
-	<description>Settings normal push button</description>
-	<type>button</type>
-	<id>9</id>
-	<posx>80</posx>
-	<posy>434</posy>
-	<width>9</width>
-	<height>8</height>
-	<label>5</label>
-	<font>font10</font>
-	<hyperlink>4</hyperlink>
-	<onleft>98</onleft>
-	<onright>6</onright>
-	<onup>7</onup>
-	<ondown>2</ondown>
-	<texturefocus>home-focus.gif</texturefocus>
-	<texturenofocus>-</texturenofocus>
-	<textoffsetx>20</textoffsetx>
-	<visible  effect="fade" time="1000">![Player.HasAudio + System.IdleTime(60)]</visible>
+	      <description>Settings normal push button</description>
+	      <type>button</type>
+	      <id>9</id>
+	      <posx>80</posx>
+	      <posy>434</posy>
+	      <width>9</width>
+	      <height>8</height>
+	      <label>5</label>
+	      <font>font10</font>
+	      <hyperlink>4</hyperlink>
+	      <onleft>98</onleft>
+	      <onright>6</onright>
+	      <onup>7</onup>
+	      <ondown>2</ondown>
+	      <texturefocus>home-focus.gif</texturefocus>
+	      <texturenofocus>-</texturenofocus>
+	      <textoffsetx>20</textoffsetx>
+        <visible>![Player.HasMedia + System.IdleTime(60)]</visible>
+        <animation effect="fade" time="1000">VisibleChange</animation>
       </control>
 
       <control>
-	<description>My Files normal push button</description>
-	<type>button</type>
-	<id>6</id>
-	<posx>195</posx>
-	<posy>434</posy>
-	<width>9</width>
-	<height>8</height>
-	<label>7</label>
-	<hyperlink>3</hyperlink>
-	<font>font10</font>
-	<onleft>9</onleft>
-	<onright>96</onright>
-	<onup>7</onup>
-	<ondown>2</ondown>
-	<texturefocus>home-focus.gif</texturefocus>
-	<texturenofocus>-</texturenofocus>
-	<textoffsetx>20</textoffsetx>
-	<visible  effect="fade" time="1000">![Player.HasAudio + System.IdleTime(60)]</visible>
+	      <description>My Files normal push button</description>
+	      <type>button</type>
+	      <id>6</id>
+	      <posx>195</posx>
+	      <posy>434</posy>
+	      <width>9</width>
+	      <height>8</height>
+	      <label>7</label>
+	      <hyperlink>3</hyperlink>
+	      <font>font10</font>
+	      <onleft>9</onleft>
+	      <onright>96</onright>
+	      <onup>7</onup>
+	      <ondown>2</ondown>
+	      <texturefocus>home-focus.gif</texturefocus>
+	      <texturenofocus>-</texturenofocus>
+	      <textoffsetx>20</textoffsetx>
+        <visible>![Player.HasMedia + System.IdleTime(60)]</visible>
+        <animation effect="fade" time="1000">VisibleChange</animation>
       </control>
 
     </controlgroup>
@@ -434,7 +460,8 @@
       <width>15</width>
       <height>16</height>
       <texture>homebutton-small.png</texture>
-      <visible  effect="fade" time="1000">![Player.HasAudio + System.IdleTime(60)]</visible>
+      <visible>![Player.HasMedia + System.IdleTime(60)]</visible>
+      <animation effect="fade" time="1000">VisibleChange</animation>
     </control>
 
     <control>
@@ -445,7 +472,8 @@
       <width>15</width>
       <height>16</height>
       <texture>homebutton-small.png</texture>
-      <visible  effect="fade" time="1000">![Player.HasAudio + System.IdleTime(60)]</visible>
+      <visible>![Player.HasMedia + System.IdleTime(60)]</visible>
+      <animation effect="fade" time="1000">VisibleChange</animation>
     </control>
 
     <control>
@@ -458,7 +486,8 @@
       <info>System.Date</info>
       <align>right</align>
       <font>special12</font>
-      <visible effect="fade" time="1000">![Player.HasAudio + System.IdleTime(60)]</visible>
+      <visible>![Player.HasMedia + System.IdleTime(60)]</visible>
+      <animation effect="fade" time="1000">VisibleChange</animation>
     </control>
 
     <control>
@@ -470,8 +499,9 @@
       <label>|</label>
       <align>left</align>
       <font>special12</font>
-      <textcolor>60ffffff</textcolor>
-      <visible effect="fade" time="1000">![Player.HasAudio + System.IdleTime(60)]</visible>
+      <include>textcolorgrey</include>
+      <visible>![Player.HasMedia + System.IdleTime(60)]</visible>
+      <animation effect="fade" time="1000">VisibleChange</animation>
     </control>
 
     <control>
@@ -484,8 +514,9 @@
       <info>System.Time</info>
       <align>left</align>
       <font>special12</font>
-      <textcolor>60ffffff</textcolor>
-      <visible effect="fade" time="1000">![Player.HasAudio + System.IdleTime(60)]</visible>
+      <include>textcolorgrey</include>
+      <visible>![Player.HasMedia + System.IdleTime(60)]</visible>
+      <animation effect="fade" time="1000">VisibleChange</animation>
     </control>
 
     <control>
@@ -516,7 +547,8 @@
       <texturenofocus>home-dvd-l.png</texturenofocus>
       <font>font12</font>
       <textoffsetx>26</textoffsetx>
-      <visible effect="fade" time="1000">System.hasmediadvd + System.KaiConnected + ![Player.HasAudio + System.IdleTime(60)]</visible>
+      <visible>System.hasmediadvd + System.KaiConnected + ![Player.HasMedia + System.IdleTime(60)]</visible>
+      <animation effect="fade" time="1000">VisibleChange</animation>
       <execute>XBMC.PlayDVD()</execute>
       <onleft>96</onleft>
       <onright>97</onright>
@@ -537,7 +569,8 @@
       <texturenofocus>home-dvd-r.png</texturenofocus>
       <font>font12</font>
       <textoffsetx>26</textoffsetx>
-      <visible effect="fade" time="1000">System.hasmediadvd + !System.KaiConnected + ![Player.HasAudio + System.IdleTime(60)]</visible>
+      <visible>System.hasmediadvd + !System.KaiConnected + ![Player.HasAudio + System.IdleTime(60)]</visible>
+      <animation effect="fade" time="1000">VisibleChange</animation>
       <execute>XBMC.PlayDVD()</execute>
       <onleft>2</onleft>
       <onright>95</onright>
@@ -561,7 +594,8 @@
       <onright>100</onright>
       <onup>2</onup>
       <ondown>2</ondown>
-      <visible effect="fade" time="1000">System.KaiConnected + ![Player.HasAudio + System.IdleTime(60)]</visible>
+      <visible>System.KaiConnected + ![Player.HasAudio + System.IdleTime(60)]</visible>
+      <animation effect="fade" time="1000">VisibleChange</animation>
     </control>
 
     <control>
@@ -580,7 +614,8 @@
       <onright>98</onright>
       <onup>2</onup>
       <ondown>2</ondown>
-      <visible effect="fade" time="1000">![Player.HasAudio + System.IdleTime(60)]</visible>
+      <visible>![Player.HasAudio + System.IdleTime(60)]</visible>
+      <animation effect="fade" time="1000">VisibleChange</animation>
     </control>
 
     <control>
@@ -599,7 +634,8 @@
       <onright>2</onright>
       <onup>2</onup>
       <ondown>2</ondown>
-      <visible effect="fade" time="1000">![Player.HasAudio + System.IdleTime(60)]</visible>
+      <visible>![Player.HasAudio + System.IdleTime(60)]</visible>
+      <animation effect="fade" time="1000">VisibleChange</animation>
     </control>
 
   </controls>

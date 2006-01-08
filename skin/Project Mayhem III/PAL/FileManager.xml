@@ -91,7 +91,7 @@
       <posx>120</posx>
       <posy>530</posy>
       <info>System.Freespace(C)</info>
-      <textcolor>CCFFFFFF</textcolor>
+      <include>textcolorlightgrey</include>
       <font>font10</font>
       <align>left</align>
     </control>
@@ -103,7 +103,7 @@
       <posx>270</posx>
       <posy>530</posy>
       <info>System.Freespace(E)</info>
-      <textcolor>CCFFFFFF</textcolor>
+      <include>textcolorlightgrey</include>
       <font>font10</font>
       <align>left</align>
     </control>
@@ -115,7 +115,7 @@
       <posx>430</posx>
       <posy>530</posy>
       <info>System.Freespace(F)</info>
-      <textcolor>CCFFFFFF</textcolor>
+      <include>textcolorlightgrey</include>
       <font>font10</font>
       <align>left</align>
     </control>
