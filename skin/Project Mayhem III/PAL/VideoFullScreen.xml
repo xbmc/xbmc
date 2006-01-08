@@ -76,7 +76,7 @@
       <width>291</width>
       <align>center</align>
       <font>font12</font>
-      <textcolor>FFFFFFFF</textcolor>
+      <include>textcolorwhite</include>
     </control>
 
   </controls>

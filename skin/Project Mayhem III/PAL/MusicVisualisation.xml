@@ -23,7 +23,8 @@
       <width>740</width>
       <height>65</height>
       <texture>osd_menu_bg.png</texture>
-      <visible effect="fade" time="300">Player.ShowCodec</visible>
+      <visible>Player.ShowCodec</visible>
+      <animation effect="fade" time="300">VisibleChange</visible>
     </control>
 
     <control>
@@ -36,7 +37,8 @@
       <label>Audio | Codec: $INFO[musicplayer.Codec] - Bitrate: $INFO[musicplayer.Bitrate]kbps - Bits: $INFO[musicplayer.bitspersample]bit - Freq.: $INFO[musicplayer.Samplerate]kHz - Channels: $INFO[musicplayer.Channels]</label>
       <align>left</align>
       <font>font12</font>
-      <visible effect="fade" time="300">Player.ShowCodec</visible>
+      <visible>Player.ShowCodec</visible>
+      <animation effect="fade" time="300">VisibleChange</visible>
     </control>
 
     <control>
@@ -49,7 +51,8 @@
       <label>Visuals | fps: $INFO[System.FPS] - </label>
       <font>font12</font>
       <align>left</align>
-      <visible effect="fade" time="300">Player.ShowCodec</visible>
+      <visible>Player.ShowCodec</visible>
+      <animation effect="fade" time="300">VisibleChange</visible>
     </control>
 
     <control>
@@ -62,7 +65,8 @@
       <label>$INFO[Visualisation.Name] - $INFO[Visualisation.Preset]</label>
       <font>font12</font>
       <align>left</align>
-      <visible effect="fade" time="300">Player.ShowCodec</visible>
+      <visible>Player.ShowCodec</visible>
+      <animation effect="fade" time="300">VisibleChange</visible>
     </control>
 
     <control>
@@ -73,7 +77,8 @@
       <posy>76</posy>
       <width>12</width>
       <height>15</height>
-      <visible effect="fade" time="300">Visualisation.Locked + Player.ShowCodec</visible>
+      <visible>Visualisation.Locked + Player.ShowCodec</visible>
+      <animation effect="fade" time="300">VisibleChange</visible>
       <texture>arenaitem-private.png</texture>
     </control>
 
@@ -86,7 +91,8 @@
       <posy>455</posy>
       <width>740</width>
       <height>100</height>
-      <visible effect="fade" time="1000">Player.ShowInfo</visible>
+      <visible>Player.ShowInfo</visible>
+      <animation effect="fade" time="1000">VisibleChange</visible>
       <texture>osd_menu_bg.png</texture>
     </control>
 
@@ -99,7 +105,8 @@
       <width>100</width>
       <height>100</height>
       <info>MusicPlayer.Cover</info>
-      <visible effect="fade" time="1000">Player.ShowInfo</visible>
+      <visible>Player.ShowInfo</visible>
+      <animation effect="fade" time="1000">VisibleChange</visible>
       <keepaspectratio>true</keepaspectratio>
     </control>
 
@@ -111,7 +118,8 @@
       <posx>180</posx>
       <posy>458</posy>
       <info>MusicPlayer.Artist</info>
-      <visible effect="fade" time="1000">Player.ShowInfo</visible>
+      <visible>Player.ShowInfo</visible>
+      <animation effect="fade" time="1000">VisibleChange</visible>
       <align>left</align>
       <font>special12</font>
     </control>
@@ -124,7 +132,8 @@
       <posx>180</posx>
       <posy>479</posy>
       <info>MusicPlayer.Title</info>
-      <visible effect="fade" time="1000">Player.ShowInfo</visible>
+      <visible>Player.ShowInfo</visible>
+      <animation effect="fade" time="1000">VisibleChange</visible>
       <align>left</align>
       <font>special13</font>
     </control>
@@ -137,7 +146,8 @@
       <posx>180</posx>
       <posy>507</posy>
       <info>MusicPlayer.Album</info>
-      <visible effect="fade" time="1000">Player.ShowInfo</visible>
+      <visible>Player.ShowInfo</visible>
+      <animation effect="fade" time="1000">VisibleChange</visible>
       <align>left</align>
       <font>font10</font>
     </control>
@@ -150,7 +160,8 @@
       <posx>180</posx>
       <posy>528</posy>
       <label>$INFO[musicplayer.Time] / $INFO[musicplayer.Duration]</label>
-      <visible effect="fade" time="1000">Player.ShowInfo</visible>
+      <visible>Player.ShowInfo</visible>
+      <animation effect="fade" time="1000">VisibleChange</visible>
       <align>left</align>
       <font>font10</font>
     </control>
@@ -163,7 +174,8 @@
       <posx>660</posx>
       <posy>528</posy>
       <label>$LOCALIZE[435] $INFO[musicplayer.Playlistposition] / $INFO[musicplayer.Playlistlength]</label>
-      <visible effect="fade" time="1000">Player.ShowInfo</visible>
+      <visible>Player.ShowInfo</visible>
+      <animation effect="fade" time="1000">VisibleChange</visible>
       <align>right</align>
       <font>font10</font>
     </control>

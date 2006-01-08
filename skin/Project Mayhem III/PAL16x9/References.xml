@@ -7,7 +7,7 @@
     <posy>0</posy>
     <texture>background.png</texture>
     <colorkey>0</colorkey>
-    <colordiffuse>ffffffff</colordiffuse>
+    <include>controldefaults</include>
   </control>
 
   <control>
@@ -18,7 +18,7 @@
     <posy>60</posy>
     <label>6</label>
     <font>font13</font>
-    <textcolor>FFFFFFFF</textcolor>
+    <include>controldefaults</include>
   </control>
 
   <control>
@@ -34,8 +34,7 @@
     <texturefocus>spinbutton2.png</texturefocus>
     <texturenofocus>spinbutton1.png</texturenofocus>
     <font>font13</font>
-    <textcolor>ffffffff</textcolor>
-    <colordiffuse>ffffffff</colordiffuse>
+    <include>controldefaults</include>
     <disabledcolor>60FFFFFF</disabledcolor>
   </control>
 
@@ -50,8 +49,7 @@
     <texturefocus>button-focus.png</texturefocus>
     <texturenofocus>button-nofocus.png</texturenofocus>
     <font>font13</font>
-    <textcolor>ffffffff</textcolor>
-    <colordiffuse>ffffffff</colordiffuse>
+    <include>controldefaults</include>
     <disabledcolor>60ffffff</disabledcolor>
     <textoffsetx>17</textoffsetx>
     <aligny>center</aligny>
@@ -70,8 +68,7 @@
     <label>-</label>
     <bitmaps>2</bitmaps>
     <font>font14</font>
-    <textcolor>ffffffff</textcolor>
-    <colordiffuse>ffffffff</colordiffuse>
+    <include>controldefaults</include>
     <disabledcolor>60ffffff</disabledcolor>
   </control>
 
@@ -89,8 +86,7 @@
     <alttexturenofocus>toggle-down.png</alttexturenofocus>
     <label>-</label>
     <font>font13</font>
-    <textcolor>ffffffff</textcolor>
-    <colordiffuse>ffffffff</colordiffuse>
+    <include>controldefaults</include>
     <disabledcolor>60ffffff</disabledcolor>
   </control>
 
@@ -117,9 +113,8 @@
     <textureheight>26</textureheight>
     <font>font13</font>
     <selectedcolor>FFffffff</selectedcolor>
-    <textcolor>ffffffff</textcolor>
     <textcolor2>60ffffff</textcolor2>
-    <colordiffuse>ffffffff</colordiffuse>
+    <include>controldefaults</include>
     <suffix>|</suffix>
     <textxoff>3</textxoff>
     <textxoff2>0</textxoff2>
@@ -149,8 +144,7 @@
     <image>defaultFolderBig.png</image>
     <font>font12</font>
     <selectedcolor>ffffffff</selectedcolor>
-    <textcolor>ffffffff</textcolor>
-    <colordiffuse>ffffffff</colordiffuse>
+    <include>controldefaults</include>
     <suffix>|</suffix>
     <aligny>center</aligny>
   </control>
@@ -166,7 +160,7 @@
     <font>font12</font>
     <font2>font12</font2>
     <titlecolor>00FFFFFF</titlecolor>
-    <textcolor>ffFFFFFF</textcolor>
+    <include>textcolorwhite</include>
     <selectedcolor>d0FFFFFF</selectedcolor>
     <textspacey>6</textspacey>
     <gfxthumbwidth>150</gfxthumbwidth>
@@ -208,9 +202,8 @@
     <imagefolder>folder-nofocus.png</imagefolder>
     <imagefolderfocus>folder-focus.png</imagefolderfocus>
     <font>font12</font>
-    <selectedcolor>0xFFffffff</selectedcolor>
-    <textcolor>0xffffffff</textcolor>
-    <colordiffuse>ffffffff</colordiffuse>
+    <selectedcolor>FFffffff</selectedcolor>
+    <include>controldefaults</include>
     <texturewidthbig>118</texturewidthbig>
     <textureheightbig>169</textureheightbig>
     <itemwidthbig>152</itemwidthbig>
@@ -231,7 +224,7 @@
     <width>180</width>
     <align>left</align>
     <font>font13</font>
-    <textcolor>ffffffff</textcolor>
+    <include>textcolorwhite</include>
   </control>
 
   <control>
@@ -253,8 +246,7 @@
     <texturedownfocus>scroll-down-focus.png</texturedownfocus>
     <image>icon-folder.png</image>
     <font>font13</font>
-    <textcolor>0xffffffff</textcolor>
-    <colordiffuse>ffffffff</colordiffuse>
+    <include>controldefaults</include>
   </control>
 
   <control>
@@ -285,7 +277,7 @@
     <height>16</height>
     <font>font14</font>
     <reverse>yes</reverse>
-    <textcolor>ffffffff</textcolor>
+    <include>textcolorwhite</include>
     <disabledcolor>60ffffff</disabledcolor>
     <subtype>text</subtype>
     <textoffsetx>-5</textoffsetx>
@@ -310,8 +302,7 @@
     <textureupfocus>scroll-up-focus.png</textureupfocus>
     <texturedownfocus>scroll-down-focus.png</texturedownfocus>
     <font>font13</font>
-    <textcolor>ffffffff</textcolor>
-    <colordiffuse>ffffffff</colordiffuse>
+    <include>controldefaults</include>
     <disabledcolor>60d0d0d0</disabledcolor>
     <textoffsetx>7</textoffsetx>
     <aligny>center</aligny>
@@ -324,7 +315,7 @@
     <id>4</id>
     <posx>208</posx>
     <posy>166</posy>
-    <textcolor>ffFFFFFF</textcolor>
+    <include>textcolorwhite</include>
     <disabledcolor>60ffffff</disabledcolor>
     <font>font13</font>
     <label>167</label>
@@ -350,8 +341,7 @@
     <texturenofocus>button-nofocus.png</texturenofocus>
     <label>215</label>
     <font>font13</font>
-    <textcolor>ffffffff</textcolor>
-    <colordiffuse>ffffffff</colordiffuse>
+    <include>controldefaults</include>
     <disabledcolor>60ffffff</disabledcolor>
     <textoffsetx>17</textoffsetx>
     <aligny>center</aligny>
@@ -375,8 +365,7 @@
     <textureright>select-right.gif</textureright>
     <texturerightfocus>select-right-focus.png</texturerightfocus>
     <font>font13</font>
-    <textcolor>ffffffff</textcolor>
-    <colordiffuse>ffffffff</colordiffuse>
+    <include>controldefaults</include>
     <disabledcolor>60ffffff</disabledcolor>
     <onleft>50</onleft>
     <onright>50</onright>

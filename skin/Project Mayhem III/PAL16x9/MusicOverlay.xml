@@ -1,7 +1,8 @@
 <window>
   <id>2004</id>
   <defaultcontrol>2</defaultcontrol>
-  <visible effect="fade" time="1000" start="hidden">true</visible>
+  <animation effect="fade" time="1000">WindowOpen</animation>
+  <animation effect="fade" time="1000">WindowClose</animation>
   <controls>
     <control>
       <description>music rectangle</description>
@@ -46,7 +47,7 @@
       <posy>525</posy>
       <font>font10</font>
       <label>$INFO[MusicPlayer.Artist] | $INFO[MusicPlayer.Title] | $INFO[MusicPlayer.Album] | $INFO[MusicPlayer.Year]</label>
-      <textcolor>FFFFFFFF</textcolor>
+      <include>textcolorwhite</include>
       <id>0</id>
     </control>
 

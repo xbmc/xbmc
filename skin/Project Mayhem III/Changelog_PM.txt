@@ -1,3 +1,6 @@
+2006-01-08 changed:	Moved to version 1.90 compatible.
+2006-01-08 fixed:	Listcontrol in DialogVideoInfo.xml couldn't be focused.
+
 2005-12-29 changed:     Moved to version 1.86 compatible.
 2005-12-29 changed:     simplified the conditionals on home
 2005-12-29 changed:     volumebar now uses info labels
