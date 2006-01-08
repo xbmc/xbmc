@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 08-01-2006 fixed: Default python values from references.xml were incorrect for skin version >= 1.85.
  - 08-01-2006 changed: Skin version to v1.90.
                        - includes.xml added.
                        - 1 pixel font shadows added (use <shadowcolor> tag).

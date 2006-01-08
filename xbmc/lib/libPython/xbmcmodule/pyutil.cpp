@@ -82,7 +82,12 @@ namespace PYXBMC
 		if (!pElement) return cDefault;
 
 		// get texture element
-		TiXmlElement *pTexture = pNode->FirstChildElement(cTextureType);
+    CStdString element = cTextureType;
+    // TODO: Once skin version goes to 2.0, we must check every reference
+    // to this function and make them all lower case.
+    if (g_SkinInfo.GetVersion() >= 1.85)
+      element.ToLower();
+		TiXmlElement *pTexture = pNode->FirstChildElement(element.c_str());
 		if (pTexture)
 		{
 			// found our textureType
