@@ -8,7 +8,8 @@
     <posy>230</posy>
   </coordinates>
 
-  <visible effect="fade" time="200" start="hidden">Window.IsActive(111)</visible>
+  <animation effect="fade" time="200">WindowOpen</animation>
+  <animation effect="fade" time="200">WindowClose</animation>
   <controls>
     <control>
       <type>image</type>
@@ -18,7 +19,7 @@
       <width>720</width>
       <height>576</height>
       <texture>black.png</texture>
-      <visible effect="fade" time="2000" start="hidden">Window.IsActive(111)</visible>
+      <animation effect="fade" time="2000">WindowOpen</animation>
     </control>
 
     <control>

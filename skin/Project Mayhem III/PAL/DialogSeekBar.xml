@@ -1,7 +1,9 @@
 <window>
   <id>115</id>
   <defaultcontrol>1</defaultcontrol>
-  <visible effect="slide" time="500" startx="0" starty="-117" accleration="1" start="hidden">Player.Seeking | Player.DisplayAfterSeek | Window.IsActive(VideoOSD) | Window.IsActive(MusicOSD) | Player.Paused | Player.Forwarding | Player.Rewinding</visible>
+  <animation effect="slide" time="500" start="0,-117" acceleration="-1">WindowOpen</animation>
+  <animation effect="slide" time="500" end="0,-117" acceleration="1">WindowClose</animation>
+  <visible>Player.Seeking | Player.DisplayAfterSeek | Window.IsActive(VideoOSD) | Window.IsActive(MusicOSD) | Player.Paused | Player.Forwarding | Player.Rewinding</visible>
   <controls>
     <!-- playstate images -->
     <control>
@@ -16,7 +18,6 @@
       <visible>Player.Paused</visible>
       <texture>video-pause.png</texture>
       <colorkey>0</colorkey>
-      <colordiffuse>ffffffff</colordiffuse>
     </control>
 
     <control>
@@ -31,7 +32,6 @@
       <visible>Player.Forwarding2x</visible>
       <texture>video-2x.png</texture>
       <colorkey>0</colorkey>
-      <colordiffuse>ffffffff</colordiffuse>
     </control>
 
     <control>
@@ -46,7 +46,6 @@
       <visible>Player.Forwarding4x</visible>
       <texture>video-4x.png</texture>
       <colorkey>0</colorkey>
-      <colordiffuse>ffffffff</colordiffuse>
     </control>
 
     <control>
@@ -61,7 +60,6 @@
       <visible>Player.Forwarding8x</visible>
       <texture>video-8x.png</texture>
       <colorkey>0</colorkey>
-      <colordiffuse>ffffffff</colordiffuse>
     </control>
 
     <control>
@@ -76,7 +74,6 @@
       <visible>Player.Forwarding16x</visible>
       <texture>video-16x.png</texture>
       <colorkey>0</colorkey>
-      <colordiffuse>ffffffff</colordiffuse>
     </control>
 
     <control>
@@ -91,7 +88,6 @@
       <visible>Player.Forwarding32x</visible>
       <texture>video-32x.png</texture>
       <colorkey>0</colorkey>
-      <colordiffuse>ffffffff</colordiffuse>
     </control>
 
     <control>
@@ -106,7 +102,6 @@
       <visible>Player.Rewinding2x</visible>
       <texture>video-2xr.png</texture>
       <colorkey>0</colorkey>
-      <colordiffuse>ffffffff</colordiffuse>
     </control>
 
     <control>
@@ -121,7 +116,6 @@
       <visible>Player.Rewinding4x</visible>
       <texture>video-4xr.png</texture>
       <colorkey>0</colorkey>
-      <colordiffuse>ffffffff</colordiffuse>
     </control>
 
     <control>
@@ -136,7 +130,6 @@
       <visible>Player.Rewinding8x</visible>
       <texture>video-8xr.png</texture>
       <colorkey>0</colorkey>
-      <colordiffuse>ffffffff</colordiffuse>
     </control>
 
     <control>
@@ -151,7 +144,6 @@
       <visible>Player.Rewinding16x</visible>
       <texture>video-16xr.png</texture>
       <colorkey>0</colorkey>
-      <colordiffuse>ffffffff</colordiffuse>
     </control>
 
     <control>
@@ -166,7 +158,6 @@
       <visible>Player.Rewinding32x</visible>
       <texture>video-32xr.png</texture>
       <colorkey>0</colorkey>
-      <colordiffuse>ffffffff</colordiffuse>
     </control>
 
     <!-- progressbar dialog -->

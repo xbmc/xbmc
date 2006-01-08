@@ -1,0 +1,18 @@
+<includes>
+  <include name="textcolorwhite">
+    <textcolor>ffffffff</textcolor>
+  </include>
+
+  <include name="textcolorgrey">
+    <textcolor>60ffffff</textcolor>
+  </include>
+
+  <include name="textcolorlightgrey">
+    <textcolor>d0ffffff</textcolor>
+  </include>
+
+  <include name="controldefaults">
+    <include>textcolorwhite</include>
+    <colordiffuse>ffffffff</colordiffuse>
+  </include>
+</includes>

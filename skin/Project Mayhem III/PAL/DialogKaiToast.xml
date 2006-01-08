@@ -7,7 +7,8 @@
     <posy>470</posy>
   </coordinates>
 
-  <visible effect="slide" time="400" startx="300" starty="0" start="hidden">Window.IsActive(107)</visible>
+  <animation effect="slide" time="400" start="300,0">WindowOpen</animation>
+  <animation effect=slide" time="400" start="300,0">WindowClose</animation>
   <controls>
     <control>
       <description>Popup Kai Toast Dialog Background</description>
