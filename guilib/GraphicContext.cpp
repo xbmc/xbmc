@@ -612,3 +612,4 @@ inline DWORD CGraphicContext::MergeAlpha(DWORD color) const
   DWORD alpha = ((color >> 24) & 0xff) * m_controlAttribute.alpha * m_windowAttribute.alpha / 65025;
   return ((alpha << 24) & 0xff000000) | (color & 0xffffff);
 }
+

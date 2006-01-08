@@ -1741,7 +1741,7 @@ void CFileItemList::FilterCueItems()
             if (NULL != pLoader.get())
             {
               // get id3tag
-              pLoader->Load(cuesheet.GetMediaPath(), tag);
+              pLoader->Load(strMediaFile, tag);
             }
             // fill in any missing entries from underlying media file
             for (int j = 0; j < (int)newitems.size(); j++)

@@ -92,6 +92,7 @@ public:
 
 protected:
   int TranslateSingleString(const CStdString &strCondition);
+  CStdString GetItemLabel(const CFileItem *item, int info);
 
   // Conditional string parameters for testing are stored in a vector for later retrieval.
   // The offset into the string parameters array is returned.

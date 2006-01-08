@@ -2602,7 +2602,7 @@ bool CMusicDatabase::LookupCDDBInfo(bool bRequery/*=false*/)
     pDialogProgress->SetLine(2, "");
     pDialogProgress->ShowProgressBar(false);
     pDialogProgress->StartModal(m_gWindowManager.GetActiveWindow());
-    while (pDialogProgress->GetEffectState() == EFFECT_IN)
+    while (pDialogProgress->IsAnimating(ANIM_TYPE_WINDOW_OPEN))
       pDialogProgress->Progress();
 
     // get cddb information

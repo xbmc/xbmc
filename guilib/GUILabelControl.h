@@ -18,16 +18,14 @@ class CGUILabelControl :
       public CGUIControl
 {
 public:
-  CGUILabelControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strFont, const wstring& strLabel, DWORD dwTextColor, DWORD dwDisabledColor, DWORD dwTextAlign, bool bHasPath);
+  CGUILabelControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, const wstring& strLabel, const CLabelInfo& labelInfo, bool bHasPath);
   virtual ~CGUILabelControl(void);
   virtual void Render();
   virtual bool CanFocus() const;
   virtual bool OnMessage(CGUIMessage& message);
 
   virtual void SetAlpha(DWORD dwAlpha);
-  DWORD GetTextColor() const { return m_dwTextColor;}
-  DWORD GetDisabledColor() const { return m_dwDisabledColor;}
-  const char* GetFontName() const { return m_pFont ? m_pFont->GetFontName().c_str() : ""; }
+  const CLabelInfo& GetLabelInfo() const { return m_label; };
   const wstring GetLabel() const { return m_strLabel; }
   void SetLabel(const wstring &strLabel);
   void SetText(CStdString aLabel);
@@ -38,16 +36,14 @@ public:
   const vector<int> &GetInfo() const { return m_vecInfo; };
   void SetWidthControl(bool bScroll);
   bool GetWidthControl() { return m_ScrollInsteadOfTruncate; };
-  DWORD m_dwTextAlign;
-
+  void SetTruncate(bool bTruncate);
 protected:
   void ShortenPath();
 protected:
-  CGUIFont* m_pFont;
+  CLabelInfo m_label;
+
   wstring m_strLabel;
-  DWORD m_dwTextColor;
   bool m_bHasPath;
-  DWORD m_dwDisabledColor;
   bool m_bShowCursor;
   int m_iCursorPos;
   DWORD m_dwCounter;

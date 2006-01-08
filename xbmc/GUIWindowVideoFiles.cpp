@@ -14,7 +14,6 @@
 #include "GUIThumbnailPanel.h"
 #include "GUIListControl.h"
 #include "GUIPassword.h"
-#include "GUIFontManager.h"
 #include "GUIDialogContextMenu.h"
 #include "FileSystem/StackDirectory.h"
 

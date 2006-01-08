@@ -51,9 +51,11 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
   {
   case GUI_MSG_WINDOW_DEINIT:
     {
+      CGUIWindow::OnMessage(message);
       m_iSelectedItem = m_viewControl.GetSelectedItem();
       m_iLastControl = GetFocusedControl();
       ClearFileItems();
+      return true;
     }
     break;
 

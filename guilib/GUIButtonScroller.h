@@ -26,7 +26,7 @@ class CGUIButtonScroller :
       public CGUIControl
 {
 public:
-  CGUIButtonScroller(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, int iGap, int iSlots, int iDefaultSlot, int iMovementRange, bool bHorizontal, int iAlpha, bool bWrapAround, bool bSmoothScrolling, const CStdString& strTextureFocus, const CStdString& strTextureNoFocus, int iTextXOffset, int iTextYOffset, DWORD dwAlign = XBFONT_LEFT);
+  CGUIButtonScroller(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, int iGap, int iSlots, int iDefaultSlot, int iMovementRange, bool bHorizontal, int iAlpha, bool bWrapAround, bool bSmoothScrolling, const CStdString& strTextureFocus, const CStdString& strTextureNoFocus, const CLabelInfo& labelInfo);
   virtual ~CGUIButtonScroller(void);
   virtual bool OnAction(const CAction &action);
   virtual bool OnMessage(CGUIMessage &message);
@@ -50,14 +50,9 @@ public:
   void SetActiveButton(int iButton);
   int GetActiveButton() const;
   int GetActiveButtonID() const;
-  void SetFont(const CStdString &strFont, DWORD dwColor);
   CStdString GetTextureFocusName() const { return m_imgFocus.GetFileName(); };
   CStdString GetTextureNoFocusName() const { return m_imgNoFocus.GetFileName(); };
-  const char * GetFontName() const { return m_pFont ? m_pFont->GetFontName().c_str() : ""; };
-  DWORD GetTextColor() const { return m_dwTextColor; };
-  DWORD GetTextAlign() const { return m_dwTextAlignment; };
-  int GetTextOffsetX() const { return m_iTextOffsetX; };
-  int GetTextOffsetY() const { return m_iTextOffsetY; };
+  const CLabelInfo& GetLabelInfo() const { return m_label; };
   int GetButtonGap() const { return m_iButtonGap; };
   int GetNumSlots() const { return m_iNumSlots; };
   int GetDefaultSlot() const { return m_iDefaultSlot + 1; };
@@ -111,11 +106,7 @@ private:
   typedef vector<CButton*>::iterator ivecButtons;
   CGUIImage m_imgFocus;
   CGUIImage m_imgNoFocus;
-  //  DWORD        m_dwFrameCounter;
-  CGUIFont* m_pFont;
-  D3DCOLOR m_dwTextColor;
-  int m_iTextOffsetX;
-  int m_iTextOffsetY;
-  DWORD m_dwTextAlignment;
+
+  CLabelInfo m_label;
   int m_iSlowScrollCount;
 };

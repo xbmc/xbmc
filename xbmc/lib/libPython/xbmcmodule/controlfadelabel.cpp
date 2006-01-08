@@ -1,6 +1,7 @@
 #include "../../../stdafx.h"
 #include "..\python.h"
 #include "GuiFadeLabelControl.h"
+#include "GUIFontManager.h"
 #include "control.h"
 #include "pyutil.h"
 
@@ -67,24 +68,26 @@ namespace PYXBMC
 		self->ob_type->tp_free((PyObject*)self);
 	}
 
-	CGUIControl* ControlFadeLabel_Create(ControlFadeLabel* pControl)
-	{
-		pControl->pGUIControl = new CGUIFadeLabelControl(
-            pControl->iParentId,
-            pControl->iControlId,
-			pControl->dwPosX,
-            pControl->dwPosY,
-            pControl->dwWidth,
-            pControl->dwHeight,
-			pControl->strFont,
-            pControl->dwTextColor,
-            pControl->dwAlign );
+  CGUIControl* ControlFadeLabel_Create(ControlFadeLabel* pControl)
+  {
+    CLabelInfo label;
+    label.font = g_fontManager.GetFont(pControl->strFont);
+    label.textColor = pControl->dwTextColor;
+    label.align = pControl->dwAlign;
+    pControl->pGUIControl = new CGUIFadeLabelControl(
+      pControl->iParentId,
+      pControl->iControlId,
+      pControl->dwPosX,
+      pControl->dwPosY,
+      pControl->dwWidth,
+      pControl->dwHeight,
+      label);
 
-		CGUIMessage msg(GUI_MSG_LABEL_RESET, pControl->iParentId, pControl->iControlId);
-		pControl->pGUIControl->OnMessage(msg);
+    CGUIMessage msg(GUI_MSG_LABEL_RESET, pControl->iParentId, pControl->iControlId);
+    pControl->pGUIControl->OnMessage(msg);
 
-		return pControl->pGUIControl;
-	}
+    return pControl->pGUIControl;
+  }
 
 	PyDoc_STRVAR(addLabel__doc__,
 		"addLabel(string label) -- Add a label to this control for scrolling.\n"

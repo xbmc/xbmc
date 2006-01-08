@@ -1,7 +1,6 @@
 #include "include.h"
 #include "GUIRAMControl.h"
 #include "GUIWindowManager.h"
-#include "GUIFontManager.h"
 #include "..\xbmc\Util.h"
 #include "..\xbmc\Utils\fstrcmp.h"
 #include "..\xbmc\Application.h"
@@ -22,33 +21,26 @@ extern CApplication g_application;
 
 CGUIRAMControl::CGUIRAMControl(DWORD dwParentID, DWORD dwControlId,
                                int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight,
-                               const CStdString& strFontName, const CStdString& strFont2Name,
-                               D3DCOLOR dwTitleColor, D3DCOLOR dwNormalColor, D3DCOLOR dwSelectedColor,
-                               DWORD dwTextOffsetX, DWORD dwTextOffsetY)
+                               const CLabelInfo &labelInfo, const CLabelInfo& titleInfo)
     : CGUIControl(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight)
 {
-  m_dwTitleColor = dwTitleColor;
-  m_dwTextColor = dwNormalColor;
-  m_dwTextSelectColor = dwSelectedColor;
-  m_pFont = g_fontManager.GetFont(strFontName);
-  m_pFont2 = g_fontManager.GetFont(strFont2Name);
+  m_label = labelInfo;
+  m_title = titleInfo;
 
   m_dwThumbnailWidth = 80;
   m_dwThumbnailHeight = 128;
   m_dwThumbnailSpaceX = 6;
   m_dwThumbnailSpaceY = 25;
-  m_dwTextOffsetX = dwTextOffsetX;
-  m_dwTextOffsetY = dwTextOffsetY; // text offset from button
 
   m_dwTextSpaceY = BUTTON_Y_SPACING; // space between buttons
 
   m_pMonitor = NULL;
 
   FLOAT fTextW;
-  if (m_pFont)
-    m_pFont->GetTextExtent(L"X", &fTextW, &m_fFontHeight);
-  if (m_pFont2)
-    m_pFont2->GetTextExtent(L"X", &fTextW, &m_fFont2Height);
+  if (m_label.font)
+    m_label.font->GetTextExtent(L"X", &fTextW, &m_fFontHeight);
+  if (m_title.font)
+    m_title.font->GetTextExtent(L"X", &fTextW, &m_fFont2Height);
 
   for (int i = 0;i < RECENT_MOVIES;i++)
   {
@@ -183,13 +175,13 @@ void CGUIRAMControl::Render()
   FLOAT fTextX = (FLOAT) m_iPosX + m_dwWidth;
   FLOAT fTextY = (FLOAT) m_iPosY + m_dwThumbnailHeight + m_dwThumbnailSpaceY;
 
-  if (m_pFont)
+  if (m_title.font)
   {
     bool bBusy = (m_pMonitor && m_pMonitor->IsBusy() && (++m_dwCounter % 50 > 25) );
 
     swprintf(wszText, L"Recently Added to My Videos");
 
-    m_pFont->DrawText( fTextX - CONTROL_POSX_ADJUSTMENT, fTextY, m_dwTitleColor, wszText, XBFONT_RIGHT);
+    m_title.font->DrawText( fTextX - CONTROL_POSX_ADJUSTMENT, fTextY, m_title.textColor, m_label.shadowColor, wszText, XBFONT_RIGHT);
 
     fTextY += m_fFontHeight + (FLOAT) m_dwTextSpaceY;
   }
@@ -206,15 +198,15 @@ void CGUIRAMControl::Render()
       float fTextWidth = 0;
       float fTextHeight = 0;
       swprintf(wszText, L"%S", movie.strTitle.c_str() );
-      if (m_pFont2)
-        m_pFont2->GetTextExtent(wszText, &fTextWidth, &fTextHeight);
+      if (m_title.font)
+        m_title.font->GetTextExtent(wszText, &fTextWidth, &fTextHeight);
 
       int iButtonWidth = (int) (fTextWidth + BUTTON_WIDTH_ADJUSTMENT);
       int iButtonHeight = (int) (fTextHeight + BUTTON_HEIGHT_ADJUSTMENT);
       bool itemHasFocus = (i == m_iSelection) && HasFocus();
 
       pButton->SetText(movie.strTitle);
-      pButton->SetTextColor(itemHasFocus ? m_dwTextSelectColor : m_dwTextColor);
+      pButton->RAMSetTextColor(itemHasFocus ? m_label.selectedColor : m_label.textColor);
       pButton->SetPosition(iTextX - iButtonWidth, (int)fTextY),
       pButton->SetWidth(iButtonWidth);
       pButton->SetHeight(iButtonHeight);
@@ -417,8 +409,7 @@ void CGUIRAMControl::PreAllocResources()
   {
     if (!m_pTextButton[i])
     {
-      m_pTextButton[i] = new CGUIButtonControl(m_dwControlID, 0, 0, 0, 0, 0, "button-focus.png", "", m_dwTextOffsetX, m_dwTextOffsetY);
-      m_pTextButton[i]->SetLabel(m_pFont2->GetFontName(), "", m_dwTextColor);
+      m_pTextButton[i] = new CGUIButtonControl(m_dwControlID, 0, 0, 0, 0, 0, "button-focus.png", "", m_label);
       m_pTextButton[i]->SetPulseOnSelect(m_pulseOnSelect);
     }
     m_pTextButton[i]->PreAllocResources();

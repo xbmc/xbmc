@@ -1865,7 +1865,7 @@ void CApplication::Render()
         {
           iBlinkRecord++;
           if (iBlinkRecord > 25)
-            pFont->DrawText(60, 50, 0xffff0000, L"REC"); //Draw REC in RED
+            pFont->DrawText(60, 50, 0xffff0000, 0, L"REC"); //Draw REC in RED
           if (iBlinkRecord > 50)
             iBlinkRecord = 0;
         }
@@ -1920,8 +1920,8 @@ void CApplication::Render()
 
     // reset image scaling and effect states
     g_graphicsContext.SetScalingResolution(g_graphicsContext.GetVideoResolution(), 0, 0, false);
-    g_graphicsContext.SetWindowAttributes(CAttribute());
-    g_graphicsContext.ResetControlAttributes();
+    g_graphicsContext.ResetWindowAnimation();
+    g_graphicsContext.ResetControlAnimation();
 
     // If we have the remote codes enabled, then show them
     if (g_stSettings.m_bDisplayRemoteCodes)
@@ -1942,13 +1942,13 @@ void CApplication::Render()
         if (pFont)
         {
 #ifdef _DEBUG
-          pFont->DrawText( 60, 60, 0xffffffff, wszText);
+          pFont->DrawText( 60, 60, 0xffffffff, 0, wszText);
 #else
 
           if (g_stSettings.m_bShowFreeMem)
-            pFont->DrawText( 60, 60, 0xffffffff, wszText);
+            pFont->DrawText( 60, 60, 0xffffffff, 0, wszText);
           else
-            pFont->DrawText( 60, 40, 0xffffffff, wszText);
+            pFont->DrawText( 60, 40, 0xffffffff, 0, wszText);
 #endif
 
         }
@@ -1974,8 +1974,8 @@ void CApplication::RenderMemoryStatus()
   {
     // reset the window scaling and fade status
     g_graphicsContext.SetScalingResolution(g_graphicsContext.GetVideoResolution(), 0, 0, false);
-    g_graphicsContext.SetWindowAttributes(CAttribute());
-    g_graphicsContext.ResetControlAttributes();
+    g_graphicsContext.ResetWindowAnimation();
+    g_graphicsContext.ResetControlAnimation();
 
     // in debug mode, show freememory
     CStdStringW wszText;
@@ -1986,7 +1986,7 @@ void CApplication::RenderMemoryStatus()
     CGUIFont* pFont = g_fontManager.GetFont("font13");
     if (pFont)
     {
-      pFont->DrawText( 0.08f * g_graphicsContext.GetWidth(), 0.08f * g_graphicsContext.GetHeight(), 0xffffffff, wszText);
+      pFont->DrawText( 0.08f * g_graphicsContext.GetWidth(), 0.08f * g_graphicsContext.GetHeight(), 0xffffffff, 0, wszText);
     }
   }
 }
