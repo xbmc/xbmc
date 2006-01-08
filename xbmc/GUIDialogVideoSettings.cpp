@@ -303,7 +303,7 @@ void CGUIDialogVideoSettings::AddSetting(VideoSetting &setting, int iPosX, int i
     if (!pControl) return ;
     pControl->SetPosition(iPosX, iPosY);
     pControl->SetWidth(iWidth);
-    ((CGUISpinControlEx *)pControl)->SetLabel(setting.name);
+    ((CGUISpinControlEx *)pControl)->SetText(setting.name);
     pControl->SetWidth(iWidth);
     for (unsigned int i = 0; i < setting.entry.size(); i++)
       ((CGUISpinControlEx *)pControl)->AddLabel(setting.entry[i], i);
@@ -315,7 +315,7 @@ void CGUIDialogVideoSettings::AddSetting(VideoSetting &setting, int iPosX, int i
     if (!pControl) return ;
     pControl->SetPosition(iPosX, iPosY);
     pControl->SetWidth(iWidth);
-    ((CGUISettingsSliderControl *)pControl)->SetLabel(setting.name);
+    ((CGUISettingsSliderControl *)pControl)->SetText(setting.name);
     if (setting.type == VideoSetting::SLIDER)
     {
       ((CGUISettingsSliderControl *)pControl)->SetFormatString(setting.format);

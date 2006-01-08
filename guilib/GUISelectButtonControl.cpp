@@ -9,16 +9,14 @@ CGUISelectButtonControl::CGUISelectButtonControl(DWORD dwParentID, DWORD dwContr
     DWORD dwWidth, DWORD dwHeight,
     const CStdString& strButtonFocus,
     const CStdString& strButton,
-    DWORD dwTextOffsetX,
-    DWORD dwTextOffsetY,
-    DWORD dwTextAlign,
+    const CLabelInfo& labelInfo,
     const CStdString& strSelectBackground,
     const CStdString& strSelectArrowLeft,
     const CStdString& strSelectArrowLeftFocus,
     const CStdString& strSelectArrowRight,
     const CStdString& strSelectArrowRightFocus
                                                 )
-    : CGUIButtonControl(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight, strButtonFocus, strButton, dwTextOffsetX, dwTextOffsetY, dwTextAlign)
+    : CGUIButtonControl(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight, strButtonFocus, strButton, labelInfo)
     , m_imgBackground(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight, strSelectBackground)
     , m_imgLeft(dwParentID, dwControlId, iPosX, iPosY, 16, 16, strSelectArrowLeft)
     , m_imgLeftFocus(dwParentID, dwControlId, iPosX, iPosY, 16, 16, strSelectArrowLeftFocus)
@@ -54,7 +52,7 @@ void CGUISelectButtonControl::Render()
 
     m_imgBackground.Render();
 
-    D3DCOLOR dwTextColor = m_dwTextColor;
+    D3DCOLOR dwTextColor = m_label.textColor;
 
     // User has moved left...
     if (m_bMovedLeft)
@@ -67,7 +65,7 @@ void CGUISelectButtonControl::Render()
       }
       // If we are moving left
       // render item text as disabled
-      dwTextColor = m_dwDisabledColor;
+      dwTextColor = m_label.disabledColor;
     }
 
     // Render arrow
@@ -88,7 +86,7 @@ void CGUISelectButtonControl::Render()
       }
       // If we are moving right
       // render item text as disabled
-      dwTextColor = m_dwDisabledColor;
+      dwTextColor = m_label.disabledColor;
     }
 
     // Render arrow
@@ -99,18 +97,18 @@ void CGUISelectButtonControl::Render()
 
 
     // Render text if a current item is available
-    if (m_iCurrentItem >= 0 && m_pFont && (unsigned)m_iCurrentItem < m_vecItems.size())
+    if (m_iCurrentItem >= 0 && m_label.font && (unsigned)m_iCurrentItem < m_vecItems.size())
     {
       if (m_vecItems[m_iCurrentItem].size())
       {
         CStdStringW itemStrUnicode;
         g_charsetConverter.stringCharsetToFontCharset(m_vecItems[m_iCurrentItem].c_str(), itemStrUnicode);
 
-        DWORD dwAlign = m_dwTextAlignment | XBFONT_CENTER_X;
-        float fPosY = (float)m_iPosY + m_dwTextOffsetY;
-        if (m_dwTextAlignment & XBFONT_CENTER_Y)
+        DWORD dwAlign = m_label.align | XBFONT_CENTER_X;
+        float fPosY = (float)m_iPosY + m_label.offsetY;
+        if (m_label.align & XBFONT_CENTER_Y)
           fPosY = (float)m_iPosY + m_imgBackground.GetHeight() / 2;
-        m_pFont->DrawText( (float)m_iPosX + GetWidth()/2, fPosY, dwTextColor, itemStrUnicode.c_str(), dwAlign);
+        m_label.font->DrawText( (float)m_iPosX + GetWidth()/2, fPosY, dwTextColor, m_label.shadowColor, itemStrUnicode.c_str(), dwAlign);
       }
     }
 

@@ -138,13 +138,13 @@ void CArenaItem::OnPaint(CGUIItem::RenderContext* pContext)
       m_pPrivateIcon->Render();
     }
 
-    if (pDC->m_pFont)
+    if (pDC->m_label.font)
     {
       int iPosX = iBaseLineX;
       int iPosY = iBaseLineY;
 
       // render the text
-      DWORD dwColor = pDC->m_bFocused ? pDC->m_dwTextSelectedColour : pDC->m_dwTextNormalColour;
+      DWORD dwColor = pDC->m_bFocused ? pDC->m_label.selectedColor : pDC->m_label.textColor;
 
       CStdString strInfo;
       if (m_nPlayers < 0)
@@ -162,7 +162,7 @@ void CArenaItem::OnPaint(CGUIItem::RenderContext* pContext)
 
       CStdStringW strInfoUnicode;
       g_charsetConverter.stringCharsetToFontCharset(strInfo, strInfoUnicode);
-      RenderText((FLOAT)iPosX, (FLOAT)iPosY + 2, (FLOAT)pDC->m_pButton->GetWidth(), dwColor, (WCHAR*) strInfoUnicode.c_str(), pDC->m_pFont);
+      RenderText((FLOAT)iPosX, (FLOAT)iPosY + 2, (FLOAT)pDC->m_pButton->GetWidth(), dwColor, (WCHAR*) strInfoUnicode.c_str(), pDC->m_label);
     }
   }
 }

@@ -41,7 +41,7 @@ bool CGUIDialog::Load(const CStdString& strFileName, bool bContainsPath)
         {
           int spacing = (pLabel->GetXPosition() - pBase->GetXPosition()) * 2;
           pLabel->SetWidth(pBase->GetWidth() - spacing);
-          pLabel->m_dwTextAlign |= XBFONT_TRUNCATED;
+          pLabel->SetTruncate(true);
         }
       }
     }
@@ -73,13 +73,7 @@ bool CGUIDialog::OnMessage(CGUIMessage& message)
     }
   case GUI_MSG_WINDOW_INIT:
     {
-      // set the initial fade state of the dialog
-      if (m_effect.m_inTime)
-      {
-        m_queueState = EFFECT_IN;
-      }
       CGUIWindow::OnMessage(message);
-
       return true;
     }
   }
@@ -95,10 +89,11 @@ void CGUIDialog::Close(bool forceClose /*= false*/)
 
   if (!m_bRunning) return;
 
-  // don't close if we should be fading out
-  if (!forceClose && m_effect.m_outTime)
+  // don't close if we should be animating
+  if (!forceClose && HasAnimation(ANIM_TYPE_WINDOW_CLOSE))
   {
-    m_queueState = EFFECT_OUT;
+    if (!IsAnimating(ANIM_TYPE_WINDOW_CLOSE))
+      QueueAnimation(ANIM_TYPE_WINDOW_CLOSE);
     return;
   }
 
@@ -166,8 +161,7 @@ void CGUIDialog::Show(DWORD dwParentId)
   //maybe we should have a critical section per window instead??
   CSingleLock lock(g_graphicsContext);
 
-  if (m_bRunning && m_effectState != EFFECT_OUT) return;
-
+  if (m_bRunning && !IsAnimating(ANIM_TYPE_WINDOW_CLOSE)) return;
 
   m_dwParentWindowID = dwParentId;
   m_pParentWindow = m_gWindowManager.GetWindow( m_dwParentWindowID);
@@ -197,68 +191,61 @@ void CGUIDialog::Show(DWORD dwParentId)
 //  m_bRunning = true;
 }
 
-void CGUIDialog::DoEffect()
+void CGUIDialog::OnWindowCloseAnimation()
 {
-  if (m_effect.m_type == EFFECT_TYPE_FADE)
-    m_attribute.alpha = (DWORD)(m_effectAmount * 255);
-  else if (m_effect.m_type == EFFECT_TYPE_SLIDE)
+}
+
+void CGUIDialog::UpdateStates(ANIMATION_TYPE type, ANIMATION_PROCESS currentProcess, ANIMATION_STATE currentState)
+{
+  // Make sure dialog is closed at the appropriate time
+  if (type == ANIM_TYPE_WINDOW_OPEN)
   {
-    float time = 1.0f - m_effectAmount;
-    float amount = time * (m_effect.m_acceleration * time + 1.0f - m_effect.m_acceleration);
-    m_attribute.offsetX = (int)(amount * m_effect.m_startX);
-    m_attribute.offsetY = (int)(amount * m_effect.m_startY);
+    if (currentProcess == ANIM_PROCESS_REVERSE && currentState == ANIM_STATE_APPLIED)
+      Close(true);
   }
+  else if (type == ANIM_TYPE_WINDOW_CLOSE)
+  {
+    if (currentProcess == ANIM_PROCESS_NORMAL && currentState == ANIM_STATE_APPLIED)
+      Close(true);
+  }
+}
+
+bool CGUIDialog::RenderAnimation()
+{
+  CGUIWindow::RenderAnimation();
+  // debug stuff
+  CAnimation anim = m_showAnimation;
+  if (anim.currentProcess != ANIM_PROCESS_NONE)
+  {
+    if (anim.effect == EFFECT_TYPE_SLIDE)
+    {
+      if (IsRunning())
+        CLog::Log(LOGDEBUG, "Animating dialog %d with a %s slide effect %s. Amount is %2.1f, visible=%s", GetID(), anim.type == ANIM_TYPE_WINDOW_OPEN ? "show" : "close", anim.currentProcess == ANIM_PROCESS_NORMAL ? "normal" : "reverse", anim.amount, IsRunning() ? "true" : "false");
+    }
+    else if (anim.effect == EFFECT_TYPE_FADE)
+    {
+      if (IsRunning())
+        CLog::Log(LOGDEBUG, "Animating dialog %d with a %s fade effect %s. Amount is %2.1f. Visible=%s", GetID(), anim.type == ANIM_TYPE_WINDOW_OPEN ? "show" : "close", anim.currentProcess == ANIM_PROCESS_NORMAL ? "normal" : "reverse", anim.amount, IsRunning() ? "true" : "false");
+    }
+  }
+  anim = m_closeAnimation;
+  if (anim.currentProcess != ANIM_PROCESS_NONE)
+  {
+    if (anim.effect == EFFECT_TYPE_SLIDE)
+    {
+      if (IsRunning())
+        CLog::Log(LOGDEBUG, "Animating dialog %d with a %s slide effect %s. Amount is %2.1f, visible=%s", GetID(), anim.type == ANIM_TYPE_WINDOW_OPEN ? "show" : "close", anim.currentProcess == ANIM_PROCESS_NORMAL ? "normal" : "reverse", anim.amount, IsRunning() ? "true" : "false");
+    }
+    else if (anim.effect == EFFECT_TYPE_FADE)
+    {
+      if (IsRunning())
+        CLog::Log(LOGDEBUG, "Animating dialog %d with a %s fade effect %s. Amount is %2.1f. Visible=%s", GetID(), anim.type == ANIM_TYPE_WINDOW_OPEN ? "show" : "close", anim.currentProcess == ANIM_PROCESS_NORMAL ? "normal" : "reverse", anim.amount, IsRunning() ? "true" : "false");
+    }
+  }
+  return m_bRunning;
 }
 
 void CGUIDialog::Render()
 {
-  DWORD currentTime = timeGetTime();
-  // start any effects
-  if (m_queueState == EFFECT_IN)
-  {
-    if (m_effectState == EFFECT_OUT)
-      m_effectStart = currentTime - (int)(m_effect.m_inTime * m_effectAmount);
-    else
-      m_effectStart = currentTime;
-    m_effectState = EFFECT_IN;
-  }
-  else if (m_queueState == EFFECT_OUT)
-  {
-    if (m_effectState != EFFECT_OUT)
-    {
-      m_effectState = EFFECT_OUT;
-      m_effectStart = currentTime - (int)(m_effect.m_outTime * (1.0f - m_effectAmount));
-    }
-  }
-  m_queueState = EFFECT_NONE;
-  // now do the effect
-  if (m_effectState == EFFECT_IN)
-  {
-    if (currentTime - m_effectStart < m_effect.m_inDelay)
-      m_effectAmount = 0;
-    else if (currentTime - m_effectStart < m_effect.m_inDelay + m_effect.m_inTime)
-      m_effectAmount = (float)(currentTime - m_effectStart - m_effect.m_inDelay) / m_effect.m_inTime;
-    else
-    {
-      m_effectAmount = 1;
-      m_effectState = EFFECT_NONE;
-    }
-    DoEffect();
-  }
-  else if (m_effectState == EFFECT_OUT)
-  {
-    if (currentTime - m_effectStart < m_effect.m_outDelay)
-      m_effectAmount = 1;
-    else if (currentTime - m_effectStart < m_effect.m_outTime + m_effect.m_outDelay)
-      m_effectAmount = (float)(m_effect.m_outTime + m_effect.m_outDelay - currentTime + m_effectStart) / m_effect.m_outTime;
-    else
-    {
-      m_effectAmount = 0;
-      m_effectState = EFFECT_NONE;
-      Close(true);  // force the dialog to close
-      return;
-    }
-    DoEffect();
-  }
   CGUIWindow::Render();
 }

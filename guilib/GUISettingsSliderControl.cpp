@@ -1,12 +1,11 @@
 #include "include.h"
 #include "GUISettingsSliderControl.h"
-#include "GUIFontManager.h"
 #include "../xbmc/utils/GUIInfoManager.h"
 
 
-CGUISettingsSliderControl::CGUISettingsSliderControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, DWORD dwSliderWidth, DWORD dwSliderHeight, const CStdString &strFocus, const CStdString &strNoFocus, const CStdString& strBackGroundTexture, const CStdString& strMidTexture, const CStdString& strMidTextureFocus, int iTextXOffset, int iType)
+CGUISettingsSliderControl::CGUISettingsSliderControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, DWORD dwSliderWidth, DWORD dwSliderHeight, const CStdString &strFocus, const CStdString &strNoFocus, const CStdString& strBackGroundTexture, const CStdString& strMidTexture, const CStdString& strMidTextureFocus, const CLabelInfo &labelInfo, int iType)
     : CGUISliderControl(dwParentID, dwControlId, iPosX, iPosY, dwSliderWidth, dwSliderHeight, strBackGroundTexture, strMidTexture, strMidTextureFocus, iType)
-    , m_buttonControl(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight, strFocus, strNoFocus, iTextXOffset, 0, XBFONT_CENTER_Y)
+    , m_buttonControl(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight, strFocus, strNoFocus, labelInfo)
 {
   ControlType = GUICONTROL_SETTINGS_SLIDER;
   m_iControlOffsetX = 0;  // no offsets for setting sliders
@@ -30,14 +29,14 @@ void CGUISettingsSliderControl::Render()
   CGUISliderControl::Render();
 
   // now render our text
-  CGUIFont *pFont = g_fontManager.GetFont(m_buttonControl.GetFontName());
+  CGUIFont *pFont = m_buttonControl.GetLabelInfo().font;
   if (pFont)
   {
     CStdStringW strOut = CGUISliderControl::GetDescription();
     float unneeded, height;
     pFont->GetTextExtent(strOut.c_str(), &unneeded, &height);
     float fPosY = (float)GetYPosition() + ((float)GetHeight() - height) / 2;
-    pFont->DrawText((float)m_iPosX - m_buttonControl.GetTextOffsetX(), fPosY, m_buttonControl.GetTextColor(), strOut.c_str(), XBFONT_RIGHT);
+    pFont->DrawText((float)m_iPosX - m_buttonControl.GetLabelInfo().offsetX, fPosY, m_buttonControl.GetLabelInfo().textColor, m_buttonControl.GetLabelInfo().shadowColor, strOut.c_str(), XBFONT_RIGHT);
   }
 }
 
@@ -78,7 +77,7 @@ void CGUISettingsSliderControl::Update()
 void CGUISettingsSliderControl::SetPosition(int iPosX, int iPosY)
 {
   m_buttonControl.SetPosition(iPosX, iPosY);
-  int iSliderPosX = iPosX + m_buttonControl.GetWidth() - m_dwWidth - m_buttonControl.GetTextOffsetX();
+  int iSliderPosX = iPosX + m_buttonControl.GetWidth() - m_dwWidth - m_buttonControl.GetLabelInfo().offsetX;
   int iSliderPosY = iPosY + (m_buttonControl.GetHeight() - m_dwHeight) / 2;
   CGUISliderControl::SetPosition(iSliderPosX, iSliderPosY);
 }

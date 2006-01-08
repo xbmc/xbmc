@@ -48,7 +48,7 @@ private:
 class CGUISpinControl : public CGUIControl
 {
 public:
-  CGUISpinControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strUp, const CStdString& strDown, const CStdString& strUpFocus, const CStdString& strDownFocus, const CStdString& strFont, DWORD dwTextColor, int iType, DWORD dwAlign = XBFONT_RIGHT);
+  CGUISpinControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strUp, const CStdString& strDown, const CStdString& strUpFocus, const CStdString& strDownFocus, const CLabelInfo& labelInfo, DWORD dwSpinColor, int iType);
   virtual ~CGUISpinControl(void);
   virtual void Render();
   virtual bool OnAction(const CAction &action);
@@ -71,8 +71,6 @@ public:
   void SetFloatValue(float fValue);
   int GetValue() const;
   float GetFloatValue() const;
-  virtual void SetDisabledColor(D3DCOLOR color);
-  DWORD GetDisabledColor() const { return m_dwDisabledColor;};
   void AddLabel(const wstring& strLabel, int iValue);
   void AddLabel(CStdString aLabel, int iValue);
   const wstring GetLabel() const;
@@ -81,20 +79,11 @@ public:
   void SetReverse(bool bOnOff);
   int GetMaximum() const;
   int GetMinimum() const;
-  long GetTextOffsetX() const { return m_lTextOffsetX;};
-  long GetTextOffsetY() const { return m_lTextOffsetY;};
-  void SetTextOffsetX(long lTextOffsetX) { m_lTextOffsetX = lTextOffsetX;};
-  void SetTextOffsetY(long lTextOffsetY) { m_lTextOffsetY = lTextOffsetY;};
-  DWORD GetAlignmentY() const { return m_dwAlignY;};
-  void SetAlignmentY(DWORD dwAlignY) { m_dwAlignY = dwAlignY;};
   const CStdString& GetTextureUpName() const { return m_imgspinUp.GetFileName(); };
   const CStdString& GetTextureDownName() const { return m_imgspinDown.GetFileName(); };
   const CStdString& GetTextureUpFocusName() const { return m_imgspinUpFocus.GetFileName(); };
   const CStdString& GetTextureDownFocusName() const { return m_imgspinDownFocus.GetFileName(); };
-  DWORD GetTextColor() const { return m_dwTextColor;};
-  void SetTextColor(DWORD dwColor) { m_dwTextColor = dwColor; };
-  const CStdString& GetFontName() const { return m_strFont; };
-  DWORD GetAlignment() const { return m_dwAlign;};
+  const CLabelInfo& GetLabelInfo() const { return m_label; };
   int GetType() const { return m_iType;};
   void SetType(int iType) { m_iType = iType; };
   DWORD GetSpinWidth() const { return m_imgspinUp.GetWidth(); };
@@ -131,14 +120,7 @@ protected:
   CGUIImage m_imgspinDown;
   CGUIImage m_imgspinUpFocus;
   CGUIImage m_imgspinDownFocus;
-  CStdString m_strFont;
-  CGUIFont* m_pFont;
-  long m_lTextOffsetX;
-  long m_lTextOffsetY;
-  DWORD m_dwTextColor;
-  DWORD m_dwDisabledColor;
-  DWORD m_dwAlign;
-  DWORD m_dwAlignY;
+  CLabelInfo m_label;
   bool m_bShowRange;
   char m_szTyped[10];
   int m_iTypedPos;

@@ -17,7 +17,7 @@
 class CGUISpinControlEx : public CGUISpinControl
 {
 public:
-  CGUISpinControlEx(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, DWORD dwSpinWidth, DWORD dwSpinHeight, const CStdString &strFocus, const CStdString &strNoFocus, const CStdString& strUp, const CStdString& strDown, const CStdString& strUpFocus, const CStdString& strDownFocus, const CStdString& strFont, DWORD dwTextColor, int iTextXOffset, int iTextYOffset, DWORD dwAlign, int iType);
+  CGUISpinControlEx(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, DWORD dwSpinWidth, DWORD dwSpinHeight, DWORD dwSpinColor, const CStdString &strFocus, const CStdString &strNoFocus, const CStdString& strUp, const CStdString& strDown, const CStdString& strUpFocus, const CStdString& strDownFocus, const CLabelInfo& labelInfo, int iType);
   virtual ~CGUISpinControlEx(void);
   virtual void Render();
   virtual void SetPosition(int iPosX, int iPosY);
@@ -29,25 +29,21 @@ public:
   virtual void AllocResources();
   virtual void FreeResources();
   virtual void DynamicResourceAlloc(bool bOnOff);
-  DWORD GetAlignment() const { return m_buttonControl.GetTextAlign() & 0x00000004;};
-  DWORD GetTextOffsetX() const { return m_buttonControl.GetTextOffsetX();};
-  DWORD GetTextOffsetY() const { return m_buttonControl.GetTextOffsetY();};
   const CStdString& GetTextureFocusName() const { return m_buttonControl.GetTextureFocusName(); };
   const CStdString& GetTextureNoFocusName() const { return m_buttonControl.GetTextureNoFocusName(); };
   const wstring GetLabel() const { return m_buttonControl.GetLabel(); };
   const CStdString GetCurrentLabel() const;
-  void SetLabel(const CStdString &aLabel) {m_buttonControl.SetText(aLabel);};
-  void SetLabel(const wstring & aLabel) {m_buttonControl.SetText(aLabel);};
+  void SetText(const CStdString &aLabel) {m_buttonControl.SetText(aLabel);};
+  void SetText(const wstring & aLabel) {m_buttonControl.SetText(aLabel);};
   virtual void SetVisible(bool bVisible);
   virtual void SetColourDiffuse(D3DCOLOR color);
-  D3DCOLOR GetButtonTextColor() { return m_buttonControl.GetTextColor(); };
-  void SetSpinTextColor(D3DCOLOR color);
-  virtual void SetDisabledColor(D3DCOLOR color);
+  const CLabelInfo& GetButtonLabelInfo() { return m_buttonControl.GetLabelInfo(); };
   virtual void SetEnabled(bool bEnable);
   virtual int GetXPosition() const { return m_buttonControl.GetXPosition();};
   virtual int GetYPosition() const { return m_buttonControl.GetYPosition();};
   virtual CStdString GetDescription() const;
 
+  void SettingsCategorySetSpinTextColor(D3DCOLOR color);
 protected:
   CGUIButtonControl m_buttonControl;
 };

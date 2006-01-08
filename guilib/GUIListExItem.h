@@ -23,16 +23,12 @@ class RenderContext : public CGUIItem::RenderContext
     RenderContext()
     {
       m_pButton = NULL;
-      m_pFont = NULL;
       m_bActive = FALSE;
-      m_dwTextNormalColour = m_dwTextSelectedColour = 0x00000000;
     };
     virtual ~RenderContext(){};
 
     CGUIButtonControl* m_pButton;
-    CGUIFont* m_pFont;
-    DWORD m_dwTextNormalColour;
-    DWORD m_dwTextSelectedColour;
+    CLabelInfo m_label;
     bool m_bActive;
   };
 
@@ -46,7 +42,7 @@ class RenderContext : public CGUIItem::RenderContext
   DWORD GetFramesFocused() { return m_dwFocusedDuration; };
 
 protected:
-  void RenderText(FLOAT fPosX, FLOAT fPosY, FLOAT fMaxWidth, DWORD dwTextColor, WCHAR* wszText, CGUIFont* pFont);
+  void RenderText(FLOAT fPosX, FLOAT fPosY, FLOAT fMaxWidth, DWORD dwTextColor, WCHAR* wszText, const CLabelInfo &label);
 protected:
   CGUIImage* m_pIcon;
   DWORD m_dwFocusedDuration;

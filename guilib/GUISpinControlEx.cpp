@@ -3,20 +3,17 @@
 #include "../xbmc/Util.h"
 
 
-CGUISpinControlEx::CGUISpinControlEx(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, DWORD dwSpinWidth, DWORD dwSpinHeight, const CStdString &strFocus, const CStdString &strNoFocus, const CStdString& strUp, const CStdString& strDown, const CStdString& strUpFocus, const CStdString& strDownFocus, const CStdString& strFont, DWORD dwTextColor, int iTextXOffset, int iTextYOffset, DWORD dwAlign, int iType)
-    : CGUISpinControl(dwParentID, dwControlId, iPosX, iPosY, dwSpinWidth, dwSpinHeight, strUp, strDown, strUpFocus, strDownFocus, strFont, dwTextColor, iType, XBFONT_RIGHT)
-    , m_buttonControl(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight, strFocus, strNoFocus, iTextXOffset, iTextYOffset, dwAlign)
+CGUISpinControlEx::CGUISpinControlEx(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, DWORD dwSpinWidth, DWORD dwSpinHeight, DWORD dwSpinColor, const CStdString &strFocus, const CStdString &strNoFocus, const CStdString& strUp, const CStdString& strDown, const CStdString& strUpFocus, const CStdString& strDownFocus, const CLabelInfo& labelInfo, int iType)
+    : CGUISpinControl(dwParentID, dwControlId, iPosX, iPosY, dwSpinWidth, dwSpinHeight, strUp, strDown, strUpFocus, strDownFocus, labelInfo, dwSpinColor, iType)
+    , m_buttonControl(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight, strFocus, strNoFocus, labelInfo)
 {
-  m_buttonControl.SetLabel(strFont, CStdString(""), dwTextColor);
-  SetTextOffsetX( -iTextXOffset); // offsets are always added for the spincontrol - even if it's right aligned!
-  SetTextOffsetY(iTextYOffset);
-  SetAlignmentY(dwAlign & XBFONT_CENTER_Y);
   ControlType = GUICONTROL_SPINEX;
   m_bWrap = true;
 }
 
 CGUISpinControlEx::~CGUISpinControlEx(void)
-{}
+{
+}
 
 void CGUISpinControlEx::PreAllocResources()
 {
@@ -26,6 +23,11 @@ void CGUISpinControlEx::PreAllocResources()
 
 void CGUISpinControlEx::AllocResources()
 {
+  // Correct alignment - we always align the spincontrol on the right,
+  // and we always use a negative offsetX
+  m_label.align = (m_label.align & 4) | XBFONT_RIGHT;
+  if (m_label.offsetX > 0)
+    m_label.offsetX = -m_label.offsetX;
   CGUISpinControl::AllocResources();
   m_buttonControl.AllocResources();
   SetPosition(GetXPosition(), GetYPosition());
@@ -56,7 +58,7 @@ void CGUISpinControlEx::Render()
 void CGUISpinControlEx::SetPosition(int iPosX, int iPosY)
 {
   m_buttonControl.SetPosition(iPosX, iPosY);
-  int iSpinPosX = iPosX + (int)m_buttonControl.GetWidth() - (int)GetSpinWidth() * 2 - (int)m_buttonControl.GetTextOffsetX();
+  int iSpinPosX = iPosX + (int)m_buttonControl.GetWidth() - (int)GetSpinWidth() * 2 - (int)m_buttonControl.GetLabelInfo().offsetX;
   int iSpinPosY = iPosY + ((int)m_buttonControl.GetHeight() - (int)GetSpinHeight()) / 2;
   CGUISpinControl::SetPosition(iSpinPosX, iSpinPosY);
 }
@@ -85,24 +87,9 @@ void CGUISpinControlEx::SetColourDiffuse(D3DCOLOR color)
   CGUISpinControl::SetColourDiffuse(color);
 }
 
-void CGUISpinControlEx::SetSpinTextColor(D3DCOLOR color)
-{
-  CGUISpinControl::SetTextColor(color);
-}
-
-void CGUISpinControlEx::SetDisabledColor(D3DCOLOR color)
-{
-  m_buttonControl.SetDisabledColor(color);
-  CGUISpinControl::SetDisabledColor(color);
-}
-
 void CGUISpinControlEx::SetEnabled(bool bEnable)
 {
   m_buttonControl.SetEnabled(bEnable);
-  /* if (bEnable)
-    CGUISpinControl::SetDisabledColor(GetTextColor());
-   else
-    CGUISpinControl::SetDisabledColor(m_buttonControl.GetDisabledColor());*/
   CGUISpinControl::SetEnabled(bEnable);
 }
 
@@ -118,4 +105,9 @@ CStdString CGUISpinControlEx::GetDescription() const
   CStdString strLabel;
   strLabel.Format("%s (%s)", m_buttonControl.GetDescription(), GetCurrentLabel());
   return strLabel;
+}
+
+void CGUISpinControlEx::SettingsCategorySetSpinTextColor(D3DCOLOR color)
+{
+  m_label.textColor = color;
 }

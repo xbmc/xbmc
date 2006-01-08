@@ -1,5 +1,6 @@
 #pragma once
 #include "GraphicContext.h"
+#include "GUIIncludes.h"
 
 class CSkinInfo
 {
@@ -18,7 +19,10 @@ public:
   double GetMinVersion();
   double GetVersion(){ return m_Version;};
 
+  void ResolveIncludes(TiXmlElement *node);
+
 protected:
+  void LoadIncludes();
 
   wchar_t credits[6][50];  // credits info
   int m_iNumCreditLines;  // number of credit lines
@@ -26,6 +30,8 @@ protected:
   RESOLUTION m_DefaultResolutionWide; // default resolution for the skin in 16:9 modes
   CStdString m_strBaseDir;
   double m_Version;
+
+  CGUIIncludes m_includes;
 };
 
 extern CSkinInfo g_SkinInfo;

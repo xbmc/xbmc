@@ -893,19 +893,6 @@ void CSettings::GetBoolean(const TiXmlElement* pRootElement, const CStdString& s
     bValue = false;
 }
 
-void CSettings::GetHex(const TiXmlNode* pRootElement, const CStdString& strTagName, DWORD& dwHexValue, DWORD dwDefaultValue)
-{
-  const TiXmlNode *pChild = pRootElement->FirstChild(strTagName.c_str());
-  if (pChild)
-  {
-    sscanf(pChild->FirstChild()->Value(), "%x", &dwHexValue);
-  }
-  else
-  {
-    dwHexValue = dwDefaultValue;
-  }
-}
-
 void CSettings::SetString(TiXmlNode* pRootNode, const CStdString& strTagName, const CStdString& strValue) const
 {
   CStdString strPersistedValue = strValue;

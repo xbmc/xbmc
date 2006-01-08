@@ -19,12 +19,11 @@ class CGUIListControl : public CGUIControl
 {
 public:
   CGUIListControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight,
-                  const CStdString& strFontName,
                   DWORD dwSpinWidth, DWORD dwSpinHeight,
                   const CStdString& strUp, const CStdString& strDown,
                   const CStdString& strUpFocus, const CStdString& strDownFocus,
                   DWORD dwSpinColor, int iSpinX, int iSpinY,
-                  const CStdString& strFont, DWORD dwTextColor, DWORD dwSelectedColor,
+                  const CLabelInfo& labelInfo, const CLabelInfo& labelInfo2,
                   const CStdString& strButton, const CStdString& strButtonFocus);
   virtual ~CGUIListControl(void);
   virtual void Render();
@@ -52,39 +51,26 @@ public:
   virtual void SetWidth(int iWidth);
   virtual void SetHeight(int iHeight);
   void SetScrollySuffix(const CStdString& wstrSuffix);
-  void SetTextOffsets(int iXoffset, int iYOffset, int iXoffset2, int iYOffset2);
   void SetImageDimensions(int iWidth, int iHeight);
   void SetItemHeight(int iHeight);
   void SetSpace(int iHeight);
-  void SetFont2(const CStdString& strFont);
-  void SetColors2(DWORD dwTextColor, DWORD dwSelectedColor);
   void SetPageControlVisible(bool bVisible);
   int GetSelectedItem() const;
   bool SelectItemFromPoint(int iPosX, int iPosY);
   void GetPointFromItem(int &iPosX, int &iPosY);
-  DWORD GetTextColor() const { return m_dwTextColor;};
-  DWORD GetTextColor2() const { return m_dwTextColor2;};
-  DWORD GetSelectedColor() const { return m_dwSelectedColor;};
-  DWORD GetSelectedColor2() const { return m_dwSelectedColor2;};
-  const char* GetFontName() const { return m_pFont ? m_pFont->GetFontName().c_str() : ""; };
-  const char* GetFontName2() const { if (!m_pFont2) return ""; else return m_pFont2->GetFontName().c_str(); };
+  const CLabelInfo& GetLabelInfo() const { return m_label; };
+  const CLabelInfo& GetLabelInfo2() const { return m_label2; };
   DWORD GetSpinWidth() const { return m_upDown.GetWidth() / 2; };
   DWORD GetSpinHeight() const { return m_upDown.GetHeight(); };
   const CStdString& GetTextureUpName() const { return m_upDown.GetTextureUpName(); };
   const CStdString& GetTextureDownName() const { return m_upDown.GetTextureDownName(); };
   const CStdString& GetTextureUpFocusName() const { return m_upDown.GetTextureUpFocusName(); };
   const CStdString& GetTextureDownFocusName() const { return m_upDown.GetTextureDownFocusName(); };
-  DWORD GetSpinTextColor() const { return m_upDown.GetTextColor();};
+  DWORD GetSpinTextColor() const { return m_upDown.GetLabelInfo().textColor;};
   int GetSpinX() const { return m_iSpinPosX;};
   int GetSpinY() const { return m_iSpinPosY;};
   DWORD GetSpace() const { return m_iSpaceBetweenItems;};
   DWORD GetItemHeight() const { return m_iItemHeight; };
-  DWORD GetTextOffsetX() const { return m_iTextOffsetX;};
-  DWORD GetTextOffsetY() const { return m_iTextOffsetY;};
-  DWORD GetTextOffsetX2() const { return m_iTextOffsetX2;};
-  DWORD GetTextOffsetY2() const { return m_iTextOffsetY2;};
-  void SetAlignmentY(DWORD dwAlign) { m_dwTextAlign = dwAlign; };
-  DWORD GetAlignmentY() const { return m_dwTextAlign;};
   DWORD GetImageWidth() const { return m_iImageWidth;};
   DWORD GetImageHeight() const { return m_iImageHeight;};
   const wstring& GetSuffix() const { return m_strSuffix;};
@@ -105,20 +91,13 @@ protected:
   int m_iItemHeight;
   int m_iSelect;
   int m_iCursorY;
-  int m_iTextOffsetX;
-  int m_iTextOffsetY;
-  int m_iTextOffsetX2;
-  int m_iTextOffsetY2;
   int m_iSpinPosX;
   int m_iSpinPosY;
-  DWORD m_dwTextAlign;
   int m_iImageWidth;
   int m_iImageHeight;
   bool m_bUpDownVisible;
-  DWORD m_dwTextColor, m_dwTextColor2;
-  DWORD m_dwSelectedColor, m_dwSelectedColor2;
-  CGUIFont* m_pFont;
-  CGUIFont* m_pFont2;
+  CLabelInfo m_label;
+  CLabelInfo m_label2;
   CGUISpinControl m_upDown;
   CGUIButtonControl m_imgButton;
   wstring m_strSuffix;

@@ -50,6 +50,23 @@
 #include "xonline.h"
 #include "uix.h"
 
+#define DEGREE_TO_RADIAN 0.01745329f
+class CAngle
+{
+public:
+  CAngle()
+  {
+    sine = 0;
+    cosine = 1;
+  }
+  CAngle(int theta)
+  {
+    sine = sin(theta * DEGREE_TO_RADIAN);
+    cosine = cos(theta * DEGREE_TO_RADIAN);
+  }
+  float sine;
+  float cosine;
+};
 
 
 //-----------------------------------------------------------------------------
@@ -164,13 +181,13 @@ public:
   HRESULT Begin();
   virtual HRESULT DrawText( DWORD dwColor, const WCHAR* strText, DWORD dwFlags = 0L,
                             FLOAT fMaxPixelWidth = 0.0f );
-  virtual HRESULT DrawText( FLOAT sx, FLOAT sy, DWORD dwColor,
+  virtual HRESULT DrawText( FLOAT sx, FLOAT sy, const CAngle &angle, DWORD dwColor,
                             const WCHAR* strText, DWORD dwFlags = 0L,
                             FLOAT fMaxPixelWidth = 0.0f );
-  virtual HRESULT DrawTextEx( FLOAT sx, FLOAT sy, DWORD dwColor,
+  virtual HRESULT DrawTextEx( FLOAT sx, FLOAT sy, const CAngle &angle, DWORD dwColor,
                               const WCHAR* strText, DWORD cchText, DWORD dwFlags = 0L,
                               FLOAT fMaxPixelWidth = 0.0f );
-  virtual HRESULT DrawColourText( FLOAT fOriginX, FLOAT fOriginY, DWORD* pdw256ColorPalette,
+  virtual HRESULT DrawColourText( FLOAT fOriginX, FLOAT fOriginY, const CAngle &angle, DWORD* pdw256ColorPalette,
                                   const WCHAR* strText, BYTE* pbColours, DWORD cchText, DWORD dwFlags = 0L,
                                   FLOAT fMaxPixelWidth = 0.0f );
 

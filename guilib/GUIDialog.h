@@ -29,9 +29,11 @@ public:
   virtual bool IsRunning() const { return m_bRunning; }
   virtual bool IsDialog() const { return true;};
 
-  void DoEffect();
-
 protected:
+  virtual void OnWindowCloseAnimation();
+  virtual bool RenderAnimation();
+  virtual void UpdateStates(ANIMATION_TYPE type, ANIMATION_PROCESS currentProcess, ANIMATION_STATE currentState);
+
   DWORD m_dwParentWindowID;
   CGUIWindow* m_pParentWindow;
   bool m_bRunning;

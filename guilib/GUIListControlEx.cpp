@@ -1,33 +1,28 @@
 #include "include.h"
 #include "GUIListControlEx.h"
-#include "GUIFontManager.h"
 
 
 #define CONTROL_LIST  0
 #define CONTROL_UPDOWN 1
 CGUIListControlEx::CGUIListControlEx(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight,
-                                     const CStdString& strFontName,
                                      DWORD dwSpinWidth, DWORD dwSpinHeight,
                                      const CStdString& strUp, const CStdString& strDown,
                                      const CStdString& strUpFocus, const CStdString& strDownFocus,
                                      DWORD dwSpinColor, int iSpinX, int iSpinY,
-                                     const CStdString& strFont, DWORD dwTextColor, DWORD dwSelectedColor,
-                                     const CStdString& strButton, const CStdString& strButtonFocus,
-                                     DWORD dwItemTextOffsetX, DWORD dwItemTextOffsetY, DWORD dwTextAlignY)
+                                     const CLabelInfo& labelInfo, const CLabelInfo& labelInfo2,
+                                     const CStdString& strButton, const CStdString& strButtonFocus)
     : CGUIControl(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight)
-    , m_upDown(dwControlId, 0, 0, 0, dwSpinWidth, dwSpinHeight, strUp, strDown, strUpFocus, strDownFocus, strFont, dwSpinColor, SPIN_CONTROL_TYPE_INT)
-    , m_imgButton(dwControlId, 0, iPosX, iPosY, dwWidth, dwHeight, strButtonFocus, strButton, dwItemTextOffsetX, dwItemTextOffsetY, dwTextAlignY)
+    , m_upDown(dwControlId, 0, 0, 0, dwSpinWidth, dwSpinHeight, strUp, strDown, strUpFocus, strDownFocus, labelInfo, dwSpinColor, SPIN_CONTROL_TYPE_INT)
+    , m_imgButton(dwControlId, 0, iPosX, iPosY, dwWidth, dwHeight, strButtonFocus, strButton, labelInfo)
 {
   m_pList = NULL;
-  m_dwSelectedColor = dwSelectedColor;
   m_iOffset = 0;
   m_iItemsPerPage = 10;
   m_iItemHeight = 10;
-  m_pFont = g_fontManager.GetFont(strFontName);
-  m_pFont2 = g_fontManager.GetFont(strFontName);
+  m_label = labelInfo;
+  m_label2 = labelInfo2;
   m_iSelect = CONTROL_LIST;
   m_iCursorY = 0;
-  m_dwTextColor = dwTextColor;
   m_strSuffix = L"|";
   m_iImageWidth = 16;
   m_iImageHeight = 16;
@@ -36,10 +31,6 @@ CGUIListControlEx::CGUIListControlEx(DWORD dwParentID, DWORD dwControlId, int iP
 
   m_iSpinPosX = iSpinX;
   m_iSpinPosY = iSpinY;
-  m_dwTextColor2 = dwTextColor;
-  m_dwSelectedColor2 = dwSelectedColor;
-  m_dwTextOffsetX = dwItemTextOffsetX;
-  m_dwTextOffsetY = dwItemTextOffsetY;
   ControlType = GUICONTROL_LISTEX;
 }
 
@@ -50,7 +41,7 @@ CGUIListControlEx::~CGUIListControlEx(void)
 
 void CGUIListControlEx::Render()
 {
-  if ( (!UpdateEffectState()) || (!m_pList) || (!m_pFont) )
+  if ( (!UpdateEffectState()) || (!m_pList) || (!m_label.font) )
   {
     return ;
   }
@@ -74,9 +65,7 @@ void CGUIListControlEx::Render()
       context.m_bFocused = (i == m_iCursorY && HasFocus() && m_iSelect == CONTROL_LIST);
       context.m_bActive = (i == m_iCursorY);
       context.m_pButton = &m_imgButton;
-      context.m_pFont = m_pFont;
-      context.m_dwTextNormalColour = m_dwTextColor;
-      context.m_dwTextSelectedColour = m_dwSelectedColor;
+      context.m_label = m_label;
 
       // render the list item
       pItem->OnPaint(&context);
@@ -283,7 +272,7 @@ bool CGUIListControlEx::OnMessage(CGUIMessage& message)
 
 void CGUIListControlEx::PreAllocResources()
 {
-  if (!m_pFont) return ;
+  if (!m_label.font) return ;
   CGUIControl::PreAllocResources();
   m_upDown.PreAllocResources();
   m_imgButton.PreAllocResources();
@@ -291,7 +280,7 @@ void CGUIListControlEx::PreAllocResources()
 
 void CGUIListControlEx::AllocResources()
 {
-  if (!m_pFont)
+  if (!m_label.font)
   {
     return ;
   }
@@ -522,19 +511,6 @@ void CGUIListControlEx::SetItemHeight(int iHeight)
 void CGUIListControlEx::SetSpace(int iHeight)
 {
   m_iSpaceBetweenItems = iHeight;
-}
-
-void CGUIListControlEx::SetFont2(const CStdString& strFont)
-{
-  if (strFont != "")
-  {
-    m_pFont2 = g_fontManager.GetFont(strFont);
-  }
-}
-void CGUIListControlEx::SetColors2(DWORD dwTextColor, DWORD dwSelectedColor)
-{
-  m_dwTextColor2 = dwTextColor;
-  m_dwSelectedColor2 = dwSelectedColor;
 }
 
 CStdString CGUIListControlEx::GetDescription() const

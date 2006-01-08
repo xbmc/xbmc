@@ -1,6 +1,7 @@
 #include "../../../stdafx.h"
 #include "..\python.h"
 #include "GuiLabelControl.h"
+#include "GUIFontManager.h"
 #include "control.h"
 #include "pyutil.h"
 
@@ -76,23 +77,25 @@ namespace PYXBMC
 		self->ob_type->tp_free((PyObject*)self);
 	}
 
-	CGUIControl* ControlLabel_Create(ControlLabel* pControl)
-	{
-		pControl->pGUIControl = new CGUILabelControl(
-            pControl->iParentId,
-            pControl->iControlId,
-			pControl->dwPosX,
-            pControl->dwPosY,
-            pControl->dwWidth,
-            pControl->dwHeight,
-			pControl->strFont,
-            pControl->strText,
-            pControl->dwTextColor,
-            pControl->dwDisabledColor,
-            pControl->dwAlign,
-            pControl->bHasPath );
-		return pControl->pGUIControl;
-	}
+  CGUIControl* ControlLabel_Create(ControlLabel* pControl)
+  {
+    CLabelInfo label;
+    label.font = g_fontManager.GetFont(pControl->strFont);
+    label.textColor = pControl->dwTextColor;
+    label.disabledColor = pControl->dwDisabledColor;
+    label.align = pControl->dwAlign;
+    pControl->pGUIControl = new CGUILabelControl(
+      pControl->iParentId,
+      pControl->iControlId,
+      pControl->dwPosX,
+      pControl->dwPosY,
+      pControl->dwWidth,
+      pControl->dwHeight,
+      pControl->strText,
+      label,
+      pControl->bHasPath );
+    return pControl->pGUIControl;
+  }
 
 	PyDoc_STRVAR(setLabel__doc__,
 		"setLabel(string label) -- Set's text for this label.\n"

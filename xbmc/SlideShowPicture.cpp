@@ -56,10 +56,10 @@ void CSlideShowPic::SetTexture(int iSlideNumber, D3DTexture *pTexture, int iWidt
   // initialize our transistion effect
   m_transistionStart.type = transEffect;
   m_transistionStart.start = 0;
-  m_transistionStart.length = (int)g_infoManager.GetFPS() * (g_guiSettings.GetInt("Slideshow.TransistionTime") / 1000); // transition time in msec
+  m_transistionStart.length = (int)(g_infoManager.GetFPS() * g_guiSettings.GetInt("Slideshow.TransistionTime") * 0.001f); // transition time in msec
   m_transistionEnd.type = transEffect;
-  m_transistionEnd.start = m_transistionStart.length + ((int)g_infoManager.GetFPS() * g_guiSettings.GetInt("Slideshow.StayTime"));
-  m_transistionEnd.length = (int)g_infoManager.GetFPS() * (g_guiSettings.GetInt("Slideshow.TransistionTime") / 1000); // transition time in msec
+  m_transistionEnd.start = m_transistionStart.length + (int)(g_infoManager.GetFPS() * g_guiSettings.GetInt("Slideshow.StayTime"));
+  m_transistionEnd.length = (int)(g_infoManager.GetFPS() * g_guiSettings.GetInt("Slideshow.TransistionTime") * 0.001f); // transition time in msec
   CLog::Log(LOGDEBUG,"Duration: %i", m_transistionEnd.start);
   m_transistionTemp.type = TRANSISTION_NONE;
   m_fTransistionAngle = 0;

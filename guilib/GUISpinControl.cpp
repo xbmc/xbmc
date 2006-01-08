@@ -1,6 +1,5 @@
 #include "include.h"
 #include "GUISpinControl.h"
-#include "GUIFontManager.h"
 #include "../xbmc/utils/CharsetConverter.h"
 
 #include "../xbmc/Settings.h" // FOR PRE_SKIN_VERSION_2_0_COMPATIBILITY
@@ -8,7 +7,7 @@
 #define SPIN_BUTTON_DOWN 1
 #define SPIN_BUTTON_UP   2
 
-CGUISpinControl::CGUISpinControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strUp, const CStdString& strDown, const CStdString& strUpFocus, const CStdString& strDownFocus, const CStdString& strFont, DWORD dwTextColor, int iType, DWORD dwAlign)
+CGUISpinControl::CGUISpinControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strUp, const CStdString& strDown, const CStdString& strUpFocus, const CStdString& strDownFocus, const CLabelInfo &labelInfo, DWORD dwSpinColor, int iType)
     : CGUIControl(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight)
     , m_imgspinUp(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight, strUp)
     , m_imgspinDown(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight, strDown)
@@ -23,13 +22,10 @@ CGUISpinControl::CGUISpinControl(DWORD dwParentID, DWORD dwControlId, int iPosX,
   m_fEnd = 1.0f;
   m_fInterval = 0.1f;
   m_iValue = 0;
-  m_dwAlign = dwAlign;
-  m_dwAlignY = XBFONT_CENTER_Y;
+  m_label = labelInfo;
+  m_label.align |= XBFONT_CENTER_Y;
+  m_label.textColor = dwSpinColor;
   m_fValue = 0.0;
-  m_strFont = strFont;
-  m_pFont = NULL;
-  m_dwTextColor = dwTextColor;
-  m_dwDisabledColor = 0xFF606060;
   m_iType = iType;
   m_iSelect = SPIN_BUTTON_DOWN;
   m_bShowRange = false;
@@ -37,8 +33,6 @@ CGUISpinControl::CGUISpinControl(DWORD dwParentID, DWORD dwControlId, int iPosX,
   strcpy(m_szTyped, "");
   m_dwBuddyControlID = 0;
   m_bBuddyDisabled = false;
-  m_lTextOffsetX = 0;
-  m_lTextOffsetY = 0;
   m_bWrap = false;
   ControlType = GUICONTROL_SPIN;
 }
@@ -47,7 +41,7 @@ void CGUISpinControl::SetNonProportional(bool bOnOff)
 {
   m_fMaxTextWidth = 0;
 
-  if ((bOnOff) && (m_pFont))
+  if ((bOnOff) && (m_label.font))
   {
     m_bShowRange = false;
 
@@ -57,7 +51,7 @@ void CGUISpinControl::SetNonProportional(bool bOnOff)
     for (int i = 0;i < (int)m_vecLabels.size();i++)
     {
       g_charsetConverter.stringCharsetToFontCharset(m_vecLabels[m_iValue].c_str(), strLabelUnicode);
-      m_pFont->GetTextExtent( strLabelUnicode.c_str(), &fTextWidth, &fTextHeight);
+      m_label.font->GetTextExtent( strLabelUnicode.c_str(), &fTextWidth, &fTextHeight);
 
       if (fTextWidth > m_fMaxTextWidth)
       {
@@ -311,8 +305,6 @@ void CGUISpinControl::AllocResources()
   m_imgspinDown.AllocResources();
   m_imgspinDownFocus.AllocResources();
 
-  m_pFont = g_fontManager.GetFont(m_strFont);
-
   m_imgspinDownFocus.SetPosition(m_iPosX, m_iPosY);
   m_imgspinDown.SetPosition(m_iPosX, m_iPosY);
   m_imgspinUp.SetPosition(m_iPosX + m_imgspinDown.GetWidth(), m_iPosY);
@@ -436,8 +428,8 @@ void CGUISpinControl::Render()
 
   // Calculate the size of our text (for use in HitTest)
   float fTextWidth, fTextHeight;
-  if (m_pFont)
-    m_pFont->GetTextExtent( strTextUnicode.c_str(), &fTextWidth, &fTextHeight);
+  if (m_label.font)
+    m_label.font->GetTextExtent( strTextUnicode.c_str(), &fTextWidth, &fTextHeight);
   // Position the arrows
   if (m_fMaxTextWidth > 0)
   {
@@ -446,7 +438,7 @@ void CGUISpinControl::Render()
     m_imgspinDownFocus.SetPosition((int)m_fMaxTextWidth + 5 + iPosX, m_iPosY);
     m_imgspinDown.SetPosition((int)m_fMaxTextWidth + 5 + iPosX, m_iPosY);
   }
-  else if (( m_dwAlign == XBFONT_LEFT) && (m_pFont))
+  else if (( m_label.align & XBFONT_LEFT) && (m_label.font))
   {
     m_imgspinUpFocus.SetPosition((int)fTextWidth + 5 + iPosX + m_imgspinDown.GetWidth(), m_iPosY);
     m_imgspinUp.SetPosition((int)fTextWidth + 5 + iPosX + m_imgspinDown.GetWidth(), m_iPosY);
@@ -482,31 +474,29 @@ void CGUISpinControl::Render()
     m_imgspinDown.Render();
   }
 
-  if (m_pFont)
+  if (m_label.font)
   {
     float fPosY;
-    if (m_dwAlignY == XBFONT_CENTER_Y)
+    if (m_label.align & XBFONT_CENTER_Y)
     {
-      fPosY = ((float)m_dwHeight) / 2.0f;
-      fPosY -= fTextHeight / 2.0f;
-      fPosY += (float)m_iPosY;
+      fPosY = (float)m_iPosY + m_dwHeight * 0.5f;
     }
     else
     {
-      fPosY = (float)(m_iPosY + m_lTextOffsetY);
+      fPosY = (float)(m_iPosY + m_label.offsetY);
     }
 
-    float fPosX = (float)(m_iPosX + m_lTextOffsetX) - 3;
+    float fPosX = (float)(m_iPosX + m_label.offsetX) - 3;
     if ( !IsDisabled() /*HasFocus()*/ )
     {
-      m_pFont->DrawText(fPosX, fPosY, m_dwTextColor, strTextUnicode.c_str(), m_dwAlign);
+      m_label.font->DrawText(fPosX, fPosY, m_label.textColor, m_label.shadowColor, strTextUnicode.c_str(), m_label.align);
     }
     else
     {
-      m_pFont->DrawText(fPosX, fPosY, m_dwDisabledColor, strTextUnicode.c_str(), m_dwAlign);
+      m_label.font->DrawText(fPosX, fPosY, m_label.disabledColor, m_label.shadowColor, strTextUnicode.c_str(), m_label.align);
     }
     // set our hit rectangle for MouseOver events
-    if (m_dwAlign & XBFONT_LEFT)
+    if (m_label.align & XBFONT_LEFT)
       m_rectHit.SetRect((int)fPosX, (int)fPosY, (int) fTextWidth, (int) fTextHeight);
     else
       m_rectHit.SetRect((int)(fPosX - fTextWidth), (int)fPosY, (int) fTextWidth, (int) fTextHeight);
@@ -848,11 +838,6 @@ bool CGUISpinControl::GetShowRange() const
 void CGUISpinControl::SetShowRange(bool bOnoff)
 {
   m_bShowRange = bOnoff;
-}
-
-void CGUISpinControl::SetDisabledColor(D3DCOLOR color)
-{
-  m_dwDisabledColor = color;
 }
 
 int CGUISpinControl::GetMinimum() const

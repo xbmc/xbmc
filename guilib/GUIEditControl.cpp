@@ -5,9 +5,8 @@
 
 CGUIEditControl::CGUIEditControl(DWORD dwParentID, DWORD dwControlId,
                                  int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight,
-                                 const CStdString& strFont, const wstring& strLabel,
-                                 DWORD dwTextColor, DWORD dwDisabledColor)
-    : CGUILabelControl(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight, strFont, strLabel, dwTextColor, dwDisabledColor, 0, false)
+                                 const CLabelInfo& labelInfo, const wstring& strLabel)
+    : CGUILabelControl(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight, strLabel, labelInfo, false)
 {
   ControlType = GUICONTROL_EDIT;
   m_pObserver = NULL;
@@ -97,7 +96,7 @@ void CGUIEditControl::RecalcLabelPosition()
   CStdStringW strTempLabel = m_strLabel;
   CStdStringW strTempPart = strTempLabel.Mid(0, m_iCursorPos);
 
-  m_pFont->GetTextExtent( strTempPart.c_str(), &fTextWidth, &fTextHeight );
+  m_label.font->GetTextExtent( strTempPart.c_str(), &fTextWidth, &fTextHeight );
 
   // if skinner forgot to set height :p
   if (m_dwHeight == 0)
