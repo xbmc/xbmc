@@ -1,6 +1,7 @@
 #pragma once
 #include "idirectory.h"
 #include "musicdatabasedirectory/DirectoryNode.h"
+#include "musicdatabasedirectory/QueryParams.h"
 
 using namespace DIRECTORY;
 
@@ -19,5 +20,6 @@ namespace DIRECTORY
     bool HasAlbumInfo(const CStdString& strDirectory);
     void ClearDirectoryCache(const CStdString& strDirectory);
     bool IsAllItem(const CStdString& strDirectory);
+    bool GetLabel(const CStdString& strDirectory, CStdString& strLabel);
   };
 };
