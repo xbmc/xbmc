@@ -1,7 +1,7 @@
 #pragma once
 #include "GUIWindow.h"
 #include "utils/CriticalSection.h"
-#include "../guilib/GUIFontTTF.h"
+#include "GUIFont.h"
 
 class CGUIWindowFullScreen :
       public CGUIWindow
@@ -19,6 +19,7 @@ public:
   void RenderFullScreen();
   bool NeedRenderFullScreen();
   void ChangetheTimeCode(DWORD remote);
+  virtual void OnWindowCloseAnimation() {}; // no out window animation for fullscreen video
 
 private:
   void ShowOSD();
@@ -39,5 +40,5 @@ private:
   int m_strTimeStamp[5];
   int m_iTimeCodePosition;
   int m_iCurrentBookmark;
-  CGUIFontTTF* m_subtitleFont;
+  CGUIFont* m_subtitleFont;
 };

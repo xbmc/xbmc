@@ -13,6 +13,30 @@
 #include "GUIFont.h"
 #include "VisibleEffect.h"
 
+class CLabelInfo
+{
+public:
+  CLabelInfo()
+  {
+    textColor = 0;
+    shadowColor = 0;
+    disabledColor = 0;
+    selectedColor = 0;
+    font = NULL;
+    align = XBFONT_LEFT;
+    offsetX = offsetY = 0;
+  };
+  DWORD textColor;
+  DWORD shadowColor;
+  DWORD selectedColor;
+  DWORD disabledColor;
+  DWORD align;
+  int offsetX;
+  int offsetY;
+  CAngle angle;
+  CGUIFont *font;
+};
+
 /*!
  \ingroup controls
  \brief Base class for controls
@@ -86,7 +110,9 @@ public:
   virtual void SetHeight(int iHeight);
   virtual void SetVisible(bool bVisible);
   void SetVisibleCondition(int visible);
-  void SetVisibleCondition(int visible, const CVisibleEffect &effect);
+//#ifdef PRE_SKIN_VERSION_2_0_COMPATIBILITY
+  void SetVisibleCondition(int visible, bool allowHiddenFocus, bool startHidden);
+//  void SetVisibleCondition(int visible, bool allowHiddenFocus);
   int GetVisibleCondition() const { return m_visibleCondition; };
   void UpdateVisibility();
   void SetInitialVisibility();
@@ -137,8 +163,14 @@ public:
   };
   GUICONTROLTYPES GetControlType() const { return ControlType; }
 
+  void SetAnimations(const vector<CAnimation> &animations);
+  void QueueAnimation(ANIMATION_TYPE anim);
+  bool IsAnimating(ANIMATION_TYPE anim);
+  CAnimation *GetAnimation(ANIMATION_TYPE type);
 protected:
-  void DoEffect();
+  void Animate();
+  void UpdateStates(ANIMATION_TYPE type, ANIMATION_PROCESS currentProcess, ANIMATION_STATE currentState);
+
   DWORD m_dwControlLeft;
   DWORD m_dwControlRight;
   DWORD m_dwControlUp;
@@ -161,19 +193,17 @@ protected:
   bool m_bAllocated;
   bool m_pulseOnSelect;
   GUICONTROLTYPES ControlType;
-  // effects information
-  CVisibleEffect m_effect;
-  // current effect state
-  EFFECT_STATE m_effectState;
-  EFFECT_STATE m_queueState;
-  DWORD m_effectStart;
-  float m_effectAmount;
-  DWORD m_effectLength;         // TODO: Remove this
 
   // visibility condition/state
   int m_visibleCondition;
+  bool m_allowHiddenFocus;
   bool m_lastVisible;
+  bool m_startHidden; // PRE_SKIN_VERSION_2_0_COMPATIBILITY
   bool m_hasRendered;
+
+  // animation effects
+  vector<CAnimation> m_animations;
+  CAnimation m_tempAnimation;   // We can remove this once we have got rid of the effects
 };
 
 #endif

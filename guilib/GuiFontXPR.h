@@ -8,16 +8,16 @@
 #pragma once
 
 #include "common/xbfont.h"
-#include "GUIFont.h"
+#include "GUIFontBase.h"
 
 /*!
  \ingroup textures
  \brief 
  */
-class CGUIFontXPR: public CGUIFont
+class CGUIFontXPR: public CGUIFontBase
 {
 public:
-  CGUIFontXPR(const CStdString& strFontName);
+  CGUIFontXPR(const CStdString& strFileName);
 
   boolean Load(const CStdString& strFileName);
 
@@ -30,15 +30,19 @@ public:
                              D3DFORMAT d3dFormat = D3DFMT_LIN_A8R8G8B8 );
   virtual void Begin();
   virtual void End();
+
+  void CreditsGetTextExtent( const WCHAR* strText, FLOAT* pWidth, FLOAT* pHeight, BOOL bFirstLineOnly = FALSE);
+
 protected:
   virtual void GetTextExtentInternal(const WCHAR* strText, FLOAT* pWidth,
                              FLOAT* pHeight, BOOL bFirstLineOnly = FALSE);
 
-  virtual void DrawTextImpl(FLOAT fOriginX, FLOAT fOriginY, DWORD dwColor,
+
+  virtual void DrawTextImpl(FLOAT fOriginX, FLOAT fOriginY, const CAngle &angle, DWORD dwColor,
                             const WCHAR* strText, DWORD cchText, DWORD dwFlags = 0,
                             FLOAT fMaxPixelWidth = 0.0f);
 
-  virtual void DrawColourTextImpl(FLOAT fOriginX, FLOAT fOriginY, DWORD* pdw256ColorPalette,
+  virtual void DrawColourTextImpl(FLOAT fOriginX, FLOAT fOriginY, const CAngle &angle, DWORD* pdw256ColorPalette,
                                   const WCHAR* strText, BYTE* pbColours, DWORD cchText, DWORD dwFlags,
                                   FLOAT fMaxPixelWidth);
 

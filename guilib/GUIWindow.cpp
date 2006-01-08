@@ -57,10 +57,6 @@ CGUIWindow::CGUIWindow(DWORD dwID, const CStdString &xmlFile)
   m_windowLoaded = false;
   m_loadOnDemand = true;
   m_renderOrder = 0;
-  m_effectState = EFFECT_NONE;
-  m_queueState = EFFECT_NONE;
-  m_effectStart = 0;
-  m_effectAmount = 0;
   m_dynamicResourceAlloc = true;
 }
 
@@ -219,11 +215,13 @@ bool CGUIWindow::LoadReference(VECREFERENCECONTOLS& controls)
     CLog::Log(LOGERROR, "references.xml doesn't contain <controls>");
     return false;
   }
+  g_SkinInfo.ResolveIncludes(pRootElement);
   CGUIControlFactory factory;
   string strType;
-  const TiXmlNode *pControl = pRootElement->FirstChild();
+  TiXmlElement *pControl = pRootElement->FirstChildElement();
   while (pControl)
   {
+    g_SkinInfo.ResolveIncludes(pControl);
     TiXmlNode* pNode = pControl->FirstChild("type");
     if (pNode)
     {
@@ -237,7 +235,7 @@ bool CGUIWindow::LoadReference(VECREFERENCECONTOLS& controls)
         controls.push_back(stControl);
       }
     }
-    pControl = pControl->NextSibling();
+    pControl = pControl->NextSiblingElement();
   }
   CacheFilename = strReferenceFile;
   ControlsCache.clear();
@@ -397,8 +395,11 @@ bool CGUIWindow::Load(const CStdString& strFileName, bool bContainsPath)
   return ret;
 }
 
-bool CGUIWindow::Load(const TiXmlElement* pRootElement, RESOLUTION resToUse)
+bool CGUIWindow::Load(TiXmlElement* pRootElement, RESOLUTION resToUse)
 {
+  // Resolve any includes that may be present
+  g_SkinInfo.ResolveIncludes(pRootElement);
+  // now load in the skin file
   m_dwDefaultFocusControlID = 0;
   m_bRelativeCoords = false;
   m_iPosX = m_iPosY = m_dwWidth = m_dwHeight = 0;
@@ -409,7 +410,7 @@ bool CGUIWindow::Load(const TiXmlElement* pRootElement, RESOLUTION resToUse)
   VECREFERENCECONTOLS referencecontrols;
   IVECREFERENCECONTOLS it;
   LoadReference(referencecontrols);
-  const TiXmlNode *pChild = pRootElement->FirstChild();
+  TiXmlElement *pChild = pRootElement->FirstChildElement();
   while (pChild)
   {
     CStdString strValue = pChild->Value();
@@ -423,8 +424,24 @@ bool CGUIWindow::Load(const TiXmlElement* pRootElement, RESOLUTION resToUse)
     }
     else if (strValue == "visible" && pChild->FirstChild())
     {
-      m_effect.Create(pChild->ToElement());
-      m_visibleCondition = g_infoManager.TranslateString(pChild->FirstChild()->Value());
+      CGUIControlFactory factory;
+      factory.GetConditionalVisibility(pRootElement, m_visibleCondition);
+      if (g_SkinInfo.GetVersion() < 1.90)
+      {
+        vector<CAnimation> animations;
+        factory.GetAnimations(pRootElement, animations, resToUse);
+        m_showAnimation = animations[0];
+        m_closeAnimation = animations[1];
+        m_showAnimation.type = ANIM_TYPE_WINDOW_OPEN;
+        m_closeAnimation.type = ANIM_TYPE_WINDOW_CLOSE;
+      }
+    }
+    else if (strValue == "animation" && pChild->FirstChild())
+    {
+      if (strcmpi(pChild->FirstChild()->Value(), "windowopen") == 0)
+        m_showAnimation.Create(pChild->ToElement(), resToUse);
+      else if (strcmpi(pChild->FirstChild()->Value(), "windowclose") == 0)
+        m_closeAnimation.Create(pChild->ToElement(), resToUse);
     }
     else if (strValue == "zorder" && pChild->FirstChild())
     {
@@ -432,6 +449,8 @@ bool CGUIWindow::Load(const TiXmlElement* pRootElement, RESOLUTION resToUse)
     }
     else if (strValue == "coordinates")
     {
+      // resolve any includes within coordinates tag (such as multiple origin includes)
+      g_SkinInfo.ResolveIncludes(pChild);
       TiXmlNode* pSystem = pChild->FirstChild("system");
       if (pSystem)
       {
@@ -453,13 +472,6 @@ bool CGUIWindow::Load(const TiXmlElement* pRootElement, RESOLUTION resToUse)
         g_graphicsContext.ScaleYCoord(m_iPosY, resToUse);
       }
 
-      if (g_SkinInfo.GetVersion() < 1.86 && m_effect.m_type == EFFECT_TYPE_SLIDE)
-      {
-        // slide effect origin is relative to the normal origin
-        m_effect.m_startX -= m_iPosX;
-        m_effect.m_startY -= m_iPosY;
-      }
-
       m_origins.clear();
       TiXmlElement *originElement = pChild->FirstChildElement("origin");
       while (originElement)
@@ -475,26 +487,30 @@ bool CGUIWindow::Load(const TiXmlElement* pRootElement, RESOLUTION resToUse)
     }
     else if (strValue == "controls")
     {
-      const TiXmlNode *pControl = pChild->FirstChild("control");
+      // resolve any includes within controls tag (such as whole <control> includes)
+      g_SkinInfo.ResolveIncludes(pChild);
+      TiXmlElement *pControl = pChild->FirstChildElement("control");
       while (pControl)
       {
         LoadControl(pControl, -1, referencecontrols, resToUse);
-        pControl = pControl->NextSibling("control");
+        pControl = pControl->NextSiblingElement("control");
       }
 
-      const TiXmlNode *pControlGroup = pChild->FirstChild("controlgroup");
+      TiXmlElement *pControlGroup = pChild->FirstChildElement("controlgroup");
+      // resolve any includes within the <controlgroup> tag (such as whole <control> includes)
+      g_SkinInfo.ResolveIncludes(pControlGroup);
       int iGroup = 0;
       while (pControlGroup)
       {
-        const TiXmlNode *pControl = pControlGroup->FirstChild("control");
+        TiXmlElement *pControl = pControlGroup->FirstChildElement("control");
         // In this group no focus of the controls is remembered
         m_vecGroups.push_back( -1);
         while (pControl)
         {
           LoadControl(pControl, iGroup, referencecontrols, resToUse);
-          pControl = pControl->NextSibling("control");
+          pControl = pControl->NextSiblingElement("control");
         }
-        pControlGroup = pControlGroup->NextSibling("controlgroup");
+        pControlGroup = pControlGroup->NextSiblingElement("controlgroup");
         iGroup++;
       }
     }
@@ -513,9 +529,26 @@ bool CGUIWindow::Load(const TiXmlElement* pRootElement, RESOLUTION resToUse)
         m_overlayState = OVERLAY_STATE_HIDDEN;
     }
 
-    pChild = pChild->NextSibling();
+    pChild = pChild->NextSiblingElement();
   }
 
+  if (g_SkinInfo.GetVersion() < 1.86)
+  {
+    if (m_showAnimation.effect == EFFECT_TYPE_SLIDE)
+    {
+      m_showAnimation.startX -= m_iPosX;
+      m_showAnimation.startY -= m_iPosY;
+      m_showAnimation.endX -= m_iPosX;
+      m_showAnimation.endY -= m_iPosY;
+    }
+    if (m_closeAnimation.effect == EFFECT_TYPE_SLIDE)
+    {
+      m_closeAnimation.startX -= m_iPosX;
+      m_closeAnimation.startY -= m_iPosY;
+      m_closeAnimation.endX -= m_iPosX;
+      m_closeAnimation.endY -= m_iPosY;
+    }
+  }
   for (int i = 0; i < (int)referencecontrols.size();++i)
   {
     struct stReferenceControl stControl = referencecontrols[i];
@@ -526,8 +559,10 @@ bool CGUIWindow::Load(const TiXmlElement* pRootElement, RESOLUTION resToUse)
   return true;
 }
 
-void CGUIWindow::LoadControl(const TiXmlNode* pControl, int iGroup, VECREFERENCECONTOLS& referencecontrols, RESOLUTION& resToUse)
+void CGUIWindow::LoadControl(TiXmlElement* pControl, int iGroup, VECREFERENCECONTOLS& referencecontrols, RESOLUTION& resToUse)
 {
+  // resolve any <include> tag in this control
+  g_SkinInfo.ResolveIncludes(pControl);
   // get control type
   TiXmlNode* pNode = pControl->FirstChild("type");
   if (pNode)
@@ -612,15 +647,17 @@ void CGUIWindow::Render()
     }
   }
   g_graphicsContext.SetScalingResolution(m_coordsRes, posX, posY, m_needsScaling);
-  g_graphicsContext.SetWindowAttributes(m_attribute);
+
+  // render our window animation - returns false if it needs to stop rendering
+  if (!RenderAnimation())
+    return;
 
   for (int i = 0; i < (int)m_vecControls.size(); i++)
   {
     CGUIControl *pControl = m_vecControls[i];
     if (pControl)
     {
-      // reset control states
-      g_graphicsContext.ResetControlAttributes();
+      g_graphicsContext.ResetControlAnimation();
       pControl->Render();
     }
   }
@@ -782,12 +819,26 @@ void CGUIWindow::OnInitWindow()
 {
   // set our initial visibility
   SetControlVisibility();
+  QueueAnimation(ANIM_TYPE_WINDOW_OPEN);
 
   CGUIMessage msg(GUI_MSG_SETFOCUS, GetID(), m_dwDefaultFocusControlID);
   OnMessage(msg);
 
-  if (m_overlayState!=OVERLAY_STATE_PARENT_WINDOW) // True, use our own overlay state
+  if (m_overlayState != OVERLAY_STATE_PARENT_WINDOW) // True, use our own overlay state
     m_gWindowManager.ShowOverlay(m_overlayState==OVERLAY_STATE_SHOWN ? true : false);
+}
+
+void CGUIWindow::OnWindowCloseAnimation()
+{
+  if (!HasAnimation(ANIM_TYPE_WINDOW_CLOSE))
+    return;
+
+  // Perform the window out effect
+  QueueAnimation(ANIM_TYPE_WINDOW_CLOSE);
+  while (IsAnimating(ANIM_TYPE_WINDOW_CLOSE) && !IsDialog())
+  {
+    m_gWindowManager.Process(true);
+  }
 }
 
 bool CGUIWindow::OnMessage(CGUIMessage& message)
@@ -803,7 +854,6 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
       OutputDebugString("------------------- GUI_MSG_WINDOW_INIT ");
       OutputDebugString(strLine.c_str());
       OutputDebugString("------------------- \n");
-      m_attribute.Reset();
       if (m_dynamicResourceAlloc || !m_WindowAllocated) AllocResources();
       if (message.GetParam1() != WINDOW_INVALID)
       {
@@ -823,6 +873,10 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
       OutputDebugString("------------------- GUI_MSG_WINDOW_DEINIT ");
       OutputDebugString(strLine.c_str());
       OutputDebugString("------------------- \n");
+
+      if (message.GetParam1() != WINDOW_FULLSCREEN_VIDEO)
+        OnWindowCloseAnimation();
+      // now free the window
       if (m_dynamicResourceAlloc) FreeResources();
       return true;
     }
@@ -971,7 +1025,7 @@ void CGUIWindow::AllocResources(bool forceLoad /*= FALSE */)
   for (i = m_vecControls.begin();i != m_vecControls.end(); ++i)
   {
     CGUIControl* pControl = *i;
-    if (pControl->GetControlType() != CGUIControl::GUICONTROL_IMAGE || !pControl->IsDynamicallyAllocated()) 
+    if (!pControl->IsDynamicallyAllocated()) 
       pControl->PreAllocResources();
   }
   g_TextureManager.EndPreLoad();
@@ -982,7 +1036,7 @@ void CGUIWindow::AllocResources(bool forceLoad /*= FALSE */)
   for (i = m_vecControls.begin();i != m_vecControls.end(); ++i)
   {
     CGUIControl* pControl = *i;
-    if (pControl->GetControlType() != CGUIControl::GUICONTROL_IMAGE || !pControl->IsDynamicallyAllocated()) 
+    if (!pControl->IsDynamicallyAllocated()) 
       pControl->AllocResources();
   }
   g_TextureManager.FlushPreLoad();
@@ -1161,15 +1215,99 @@ void CGUIWindow::ChangeControlID(DWORD oldID, DWORD newID, CGUIControl::GUICONTR
     m_dwDefaultFocusControlID = newID;
 }
 
-EFFECT_STATE CGUIWindow::GetEffectState()
-{
-  if (m_queueState != EFFECT_NONE)
-    return m_queueState;  // effect queued for next render
-  else
-    return m_effectState;
-}
-
 bool CGUIWindow::IsActive() const
 {
   return m_gWindowManager.IsWindowActive(GetID());
+}
+
+void CGUIWindow::QueueAnimation(ANIMATION_TYPE animType)
+{
+  if (animType == ANIM_TYPE_WINDOW_OPEN)
+  {
+    if (m_closeAnimation.currentProcess == ANIM_PROCESS_NORMAL)
+    {
+      m_closeAnimation.queuedProcess = ANIM_PROCESS_REVERSE;
+      m_showAnimation.ResetAnimation();
+    }
+    else
+    {
+      m_showAnimation.queuedProcess = ANIM_PROCESS_NORMAL;
+      m_closeAnimation.ResetAnimation();
+    }
+  }
+  if (animType == ANIM_TYPE_WINDOW_CLOSE)
+  {
+    if (!m_WindowAllocated) // can't render an animation if we aren't allocated!
+      return;
+    if (m_showAnimation.currentProcess == ANIM_PROCESS_NORMAL)
+    {
+      m_showAnimation.queuedProcess = ANIM_PROCESS_REVERSE;
+      m_closeAnimation.ResetAnimation();
+    }
+    else
+    {
+      m_closeAnimation.queuedProcess = ANIM_PROCESS_NORMAL;
+      m_showAnimation.ResetAnimation();
+    }
+  }
+  for (unsigned int i = 0; i < m_vecControls.size(); i++)
+  {
+    CGUIControl *pControl = m_vecControls[i];
+    pControl->QueueAnimation(animType);
+  }
+}
+
+bool CGUIWindow::IsAnimating(ANIMATION_TYPE animType)
+{
+  if (animType == ANIM_TYPE_WINDOW_OPEN)
+  {
+    if (m_showAnimation.queuedProcess == ANIM_PROCESS_NORMAL) return true;
+    if (m_showAnimation.currentProcess == ANIM_PROCESS_NORMAL) return true;
+    if (m_closeAnimation.queuedProcess == ANIM_PROCESS_REVERSE) return true;
+    if (m_closeAnimation.currentProcess == ANIM_PROCESS_REVERSE) return true;
+  }
+  else if (animType == ANIM_TYPE_WINDOW_CLOSE)
+  {
+    if (m_closeAnimation.queuedProcess == ANIM_PROCESS_NORMAL) return true;
+    if (m_closeAnimation.currentProcess == ANIM_PROCESS_NORMAL) return true;
+    if (m_showAnimation.queuedProcess == ANIM_PROCESS_REVERSE) return true;
+    if (m_showAnimation.currentProcess == ANIM_PROCESS_REVERSE) return true;
+  }
+  for (unsigned int i = 0; i < m_vecControls.size(); i++)
+  {
+    CGUIControl *pControl = m_vecControls[i];
+    if (pControl->IsAnimating(animType)) return true;
+  }
+  return false;
+}
+
+bool CGUIWindow::RenderAnimation()
+{
+  g_graphicsContext.ResetWindowAnimation();
+  DWORD currentTime = timeGetTime();
+  // show animation
+  m_showAnimation.Animate(currentTime, true);
+  UpdateStates(m_showAnimation.type, m_showAnimation.currentProcess, m_showAnimation.currentState);
+  g_graphicsContext.AddWindowAnimation(m_showAnimation.RenderAnimation());
+  // close animation
+  m_closeAnimation.Animate(currentTime, true);
+  UpdateStates(m_closeAnimation.type, m_closeAnimation.currentProcess, m_closeAnimation.currentState);
+  g_graphicsContext.AddWindowAnimation(m_closeAnimation.RenderAnimation());
+  return true;
+}
+
+void CGUIWindow::UpdateStates(ANIMATION_TYPE type, ANIMATION_PROCESS currentProcess, ANIMATION_STATE currentState)
+{
+}
+
+bool CGUIWindow::HasAnimation(ANIMATION_TYPE animType)
+{
+  if (m_showAnimation.type == ANIM_TYPE_WINDOW_OPEN)
+    return true;
+  else if (m_closeAnimation.type == ANIM_TYPE_WINDOW_CLOSE)
+    return true;
+  // Now check the controls to see if we have this animation
+  for (unsigned int i = 0; i < m_vecControls.size(); i++)
+    if (m_vecControls[i]->GetAnimation(animType)) return true;
+  return false;
 }

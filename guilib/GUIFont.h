@@ -7,7 +7,7 @@
 #define CGUILIB_GUIFONT_H
 #pragma once
 
-#include "common/xbfont.h"
+#include "GUIFontBase.h"
 
 class CScrollInfo
 {
@@ -31,51 +31,48 @@ public:
 class CGUIFont
 {
 public:
-  CGUIFont(const CStdString& strFontName);
+  CGUIFont(const CStdString& strFontName, DWORD textColor, DWORD shadowColor, CGUIFontBase *font);
   virtual ~CGUIFont();
 
   CStdString& GetFontName();
 
-  void DrawShadowText( FLOAT fOriginX, FLOAT fOriginY, DWORD dwColor,
-                       const WCHAR* strText, DWORD dwFlags = 0,
-                       FLOAT fMaxPixelWidth = 0.0,
-                       int iShadowWidth = 5,
-                       int iShadowHeight = 5,
-                       DWORD dwShadowColor = 0xff000000);
+  void DrawText( FLOAT sx, FLOAT sy, const CAngle &angle, DWORD dwColor, DWORD dwShadowColor,
+                 const WCHAR* strText, DWORD dwFlags = 0L,
+                 FLOAT fMaxPixelWidth = 0.0f);
 
-  void DrawTextWidth(FLOAT fOriginX, FLOAT fOriginY, DWORD dwColor,
+  void DrawTextWidth(FLOAT fOriginX, FLOAT fOriginY, const CAngle &angle, DWORD dwColor, DWORD dwShadowColor,
                      const WCHAR* strText, float fMaxWidth);
 
-  void DrawColourTextWidth(FLOAT fOriginX, FLOAT fOriginY, DWORD* pdw256ColorPalette, int numColors,
+  void DrawScrollingText(float x, float y, const CAngle &angle, DWORD* color, int numColors,
+                         DWORD dwShadowColor, const CStdStringW &text, float w, CScrollInfo &scrollInfo, BYTE *pPalette = NULL);
+
+  void DrawColourTextWidth(FLOAT fOriginX, FLOAT fOriginY, const CAngle &angle, DWORD* pdw256ColorPalette, int numColors, DWORD dwShadowColor,
                            const WCHAR* strText, BYTE* pbColours, float fMaxWidth);
 
-  void DrawText( FLOAT sx, FLOAT sy, DWORD dwColor,
+  void DrawText( FLOAT sx, FLOAT sy, DWORD dwColor, DWORD dwShadowColor,
                  const WCHAR* strText, DWORD dwFlags = 0L,
                  FLOAT fMaxPixelWidth = 0.0f );
-  void DrawScrollingText(float x, float y, DWORD* color, int numColors, const CStdStringW &text, float w, CScrollInfo &scrollInfo, BYTE *pPalette = NULL);
+
+  void DrawTextWidth(FLOAT fOriginX, FLOAT fOriginY, DWORD dwColor, DWORD dwShadowColor,
+                     const WCHAR* strText, float fMaxWidth);
+
+  void DrawColourTextWidth(FLOAT fOriginX, FLOAT fOriginY, DWORD* pdw256ColorPalette, int numColors, DWORD dwShadowColor,
+                           const WCHAR* strText, BYTE* pbColours, float fMaxWidth);
+
+  void DrawScrollingText(float x, float y, DWORD* color, int numColors, DWORD dwShadowColor, const CStdStringW &text, float w, CScrollInfo &scrollInfo, BYTE *pPalette = NULL);
 
   inline void GetTextExtent( const WCHAR* strText, FLOAT* pWidth, FLOAT* pHeight, BOOL bFirstLineOnly = FALSE);
 
   FLOAT GetTextWidth( const WCHAR* strText );
-  virtual void Begin() {};
-  virtual void End() {};
+  inline void Begin() { if (m_font) m_font->Begin(); };
+  inline void End() { if (m_font) m_font->End(); };
 
 protected:
-  virtual void GetTextExtentInternal( const WCHAR* strText, FLOAT* pWidth, FLOAT* pHeight, BOOL bFirstLineOnly = FALSE) = 0;
-
-  void DrawTextWidthInternal(FLOAT fOriginX, FLOAT fOriginY, DWORD dwColor,
-                             const WCHAR* strText, float fMaxWidth);
-
-  virtual void DrawTextImpl(FLOAT fOriginX, FLOAT fOriginY, DWORD dwColor,
-                            const WCHAR* strText, DWORD cchText, DWORD dwFlags = 0,
-                            FLOAT fMaxPixelWidth = 0.0f) = 0;
-
-  virtual void DrawColourTextImpl(FLOAT fOriginX, FLOAT fOriginY, DWORD* pdw256ColorPalette,
-                                  const WCHAR* strText, BYTE* pbColours, DWORD cchText, DWORD dwFlags,
-                                  FLOAT fMaxPixelWidth) = 0;
-
-  float m_iMaxCharWidth;
   CStdString m_strFontName;
+  // for shadowed text
+  DWORD m_shadowColor;
+  DWORD m_textColor;
+  CGUIFontBase *m_font;
 };
 
 #endif

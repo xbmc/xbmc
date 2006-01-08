@@ -434,12 +434,15 @@ void CGUIWindowManager::UpdateModelessVisibility()
   }
 }
 
-void CGUIWindowManager::Process()
+void CGUIWindowManager::Process(bool renderOnly /*= false*/)
 {
   if (m_pCallback)
   {
-    m_pCallback->Process();
-    m_pCallback->FrameMove();
+    if (!renderOnly)
+    {
+      m_pCallback->Process();
+      m_pCallback->FrameMove();
+    }
     m_pCallback->Render();
 
   }
@@ -512,7 +515,7 @@ bool CGUIWindowManager::IsRouted(bool includeFadeOuts /*= false */) const
   bool hasActiveDialog = false;
   for (unsigned int i = 0; i < m_vecModalWindows.size(); i++)
   {
-    if (m_vecModalWindows[i]->GetEffectState() != EFFECT_OUT)
+    if (!m_vecModalWindows[i]->IsAnimating(ANIM_TYPE_WINDOW_CLOSE))
     {
       hasActiveDialog = true;
       break;
@@ -594,13 +597,13 @@ bool CGUIWindowManager::IsWindowActive(DWORD dwID) const
   for (unsigned int i = 0; i < m_vecModalWindows.size(); i++)
   {
     CGUIWindow *pWindow = m_vecModalWindows[i];
-    if (dwID == pWindow->GetID() && pWindow->GetEffectState() != EFFECT_OUT)
+    if (dwID == pWindow->GetID() && !pWindow->IsAnimating(ANIM_TYPE_WINDOW_CLOSE))
       return true;
   }
   for (unsigned int i = 0; i < m_vecModelessWindows.size(); i++)
   {
     CGUIWindow *pWindow = m_vecModelessWindows[i];
-    if (dwID == pWindow->GetID() && pWindow->GetEffectState() != EFFECT_OUT)
+    if (dwID == pWindow->GetID() && !pWindow->IsAnimating(ANIM_TYPE_WINDOW_CLOSE))
       return true;
   }
   return false; // window isn't active

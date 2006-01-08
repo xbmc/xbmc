@@ -20,14 +20,13 @@ class CGUIThumbnailPanel :
 {
 public:
   CGUIThumbnailPanel(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight,
-                     const CStdString& strFontName,
                      const CStdString& strImageIcon,
                      const CStdString& strImageIconFocus,
                      DWORD dwSpinWidth, DWORD dwSpinHeight,
                      const CStdString& strUp, const CStdString& strDown,
                      const CStdString& strUpFocus, const CStdString& strDownFocus,
                      DWORD dwSpinColor, int iSpinX, int iSpinY,
-                     const CStdString& strFont, DWORD dwTextColor, DWORD dwSelectedColor);
+                     const CLabelInfo& labelInfo);
   virtual ~CGUIThumbnailPanel(void);
   virtual void Render();
   virtual bool OnAction(const CAction &action) ;
@@ -52,16 +51,14 @@ public:
   void GetThumbDimensionsBig(int& iXpos, int& iYpos, int& iWidth, int& iHeight);
   void GetThumbDimensionsLow(int& iXpos, int& iYpos, int& iWidth, int& iHeight);
   void SetSelectedItem(int iItem);
-  DWORD GetTextColor() const { return m_dwTextColor;};
-  DWORD GetSelectedColor() const { return m_dwSelectedColor;};
-  const char* GetFontName() const { return m_pFont ? m_pFont->GetFontName().c_str() : ""; };
+  const CLabelInfo& GetLabelInfo() const { return m_label; };
   DWORD GetSpinWidth() const { return m_upDown.GetWidth() / 2; };
   DWORD GetSpinHeight() const { return m_upDown.GetHeight(); };
   const CStdString& GetTextureUpName() const { return m_upDown.GetTextureUpName(); };
   const CStdString& GetTextureDownName() const { return m_upDown.GetTextureDownName(); };
   const CStdString& GetTextureUpFocusName() const { return m_upDown.GetTextureUpFocusName(); };
   const CStdString& GetTextureDownFocusName() const { return m_upDown.GetTextureDownFocusName(); };
-  DWORD GetSpinTextColor() const { return m_upDown.GetTextColor();};
+  DWORD GetSpinTextColor() const { return m_upDown.GetLabelInfo().textColor;};
   int GetSpinX() const { return m_iSpinPosX;};
   int GetSpinY() const { return m_iSpinPosY;};
   const CStdString& GetFocusName() const { return m_imgFolderFocus.GetFileName();};
@@ -145,8 +142,7 @@ protected:
   bool m_bScrollDown;
   int m_iScrollCounter;
   wstring m_strSuffix;
-  DWORD m_dwTextColor;
-  DWORD m_dwSelectedColor;
+
   int m_iLastItem;
   int m_iTextureWidth;
   int m_iTextureHeight;
@@ -168,7 +164,8 @@ protected:
 
   bool m_bHideFileNameLabel;
 
-  CGUIFont* m_pFont;
+  CLabelInfo m_label;
+
   CGUISpinControl m_upDown;
   CGUIImage m_imgFolder;
   CGUIImage m_imgFolderFocus;

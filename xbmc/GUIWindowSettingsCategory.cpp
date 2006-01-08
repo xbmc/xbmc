@@ -15,7 +15,6 @@
 #include "Utils/FanController.h"
 #include "PlayListPlayer.h"
 #include "SkinInfo.h"
-#include "GUIFontManager.h"
 #include "GUIAudioManager.h"
 #include "AudioContext.h"
 #include "lib/libscrobbler/scrobbler.h"
@@ -26,6 +25,7 @@
 #include "GUIDialogNumeric.h"
 //TODO: Remove to SettingsControl
 #include "GUIDialogFileBrowser.h"
+#include "GUIFontManager.h"
 
 #define CONTROL_GROUP_BUTTONS           0
 #define CONTROL_GROUP_SETTINGS          1
@@ -1675,7 +1675,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     if (g_SkinInfo.Check(strSkinPath))
     {
       m_strErrorMessage.Empty();
-      pControl->SetSpinTextColor(pControl->GetButtonTextColor());
+      pControl->SettingsCategorySetSpinTextColor(pControl->GetButtonLabelInfo().textColor);
       if (strSkin != "CVS" && strSkin != g_guiSettings.GetString("LookAndFeel.Skin"))
       {
         m_strNewSkin = strSkin;
@@ -1692,7 +1692,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
       m_strErrorMessage.Format(L"Incompatible skin. We require skins of version %0.2f or higher", g_SkinInfo.GetMinVersion());
       m_strNewSkin.Empty();
       g_application.CancelDelayLoadSkin();
-      pControl->SetSpinTextColor(pControl->GetDisabledColor());
+      pControl->SettingsCategorySetSpinTextColor(pControl->GetButtonLabelInfo().disabledColor);
     }
   }
   else if (strSetting == "LookAndFeel.SoundSkin")
@@ -2249,7 +2249,7 @@ void CGUIWindowSettingsCategory::AddSetting(CSetting *pSetting, int iPosX, int &
     if (!pControl) return ;
     pControl->SetPosition(iPosX, iPosY);
     pControl->SetWidth(iWidth);
-    ((CGUISpinControlEx *)pControl)->SetLabel(g_localizeStrings.Get(pSetting->GetLabel()));
+    ((CGUISpinControlEx *)pControl)->SetText(g_localizeStrings.Get(pSetting->GetLabel()));
     pControl->SetWidth(iWidth);
     pSettingControl = new CSpinExSettingControl((CGUISpinControlEx *)pControl, iControlID, pSetting);
     iPosY += iGap;
@@ -2268,7 +2268,7 @@ void CGUIWindowSettingsCategory::AddSetting(CSetting *pSetting, int iPosX, int &
     pControl = new CGUIButtonControl(*m_pOriginalButton);
     if (!pControl) return ;
     pControl->SetPosition(iPosX, iPosY);
-    ((CGUIButtonControl *)pControl)->SetTextAlign(XBFONT_CENTER_Y);
+    ((CGUIButtonControl *)pControl)->SettingsCategorySetTextAlign(XBFONT_CENTER_Y);
     ((CGUIButtonControl *)pControl)->SetText(g_localizeStrings.Get(pSetting->GetLabel()));
     pControl->SetWidth(iWidth);
     pSettingControl = new CButtonSettingControl((CGUIButtonControl *)pControl, iControlID, pSetting);
@@ -2336,7 +2336,7 @@ void CGUIWindowSettingsCategory::Render()
     {
       float fPosY = g_graphicsContext.GetHeight() * 0.8f;
       float fPosX = g_graphicsContext.GetWidth() * 0.5f;
-      pFont->DrawText(fPosX, fPosY, 0xFFFFFFFF, m_strErrorMessage.c_str(), XBFONT_CENTER_X);
+      pFont->DrawText(fPosX, fPosY, 0xFFFFFFFF, 0, m_strErrorMessage.c_str(), XBFONT_CENTER_X);
     }
   }
 }

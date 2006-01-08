@@ -1,154 +1,100 @@
 #include "include.h"
-#include "guifontxpr.h"
+#include "guifont.h"
 #include "graphiccontext.h"
 
-CGUIFont::CGUIFont(const CStdString& strFontName)
+CGUIFont::CGUIFont(const CStdString& strFontName, DWORD textColor, DWORD shadowColor, CGUIFontBase *font)
 {
   m_strFontName = strFontName;
+  m_textColor = textColor;
+  m_shadowColor = shadowColor;
+  m_font = font;
+  if (m_font)
+    m_font->AddReference();
 }
 
 CGUIFont::~CGUIFont()
-{}
+{
+  if (m_font)
+    m_font->RemoveReference();
+}
 
 CStdString& CGUIFont::GetFontName()
 {
   return m_strFontName;
 }
 
-void CGUIFont::DrawShadowText( FLOAT fOriginX, FLOAT fOriginY, DWORD dwColor,
-                               const WCHAR* strText, DWORD dwFlags,
-                               FLOAT fMaxPixelWidth,
-                               int iShadowWidth,
-                               int iShadowHeight,
-                               DWORD dwShadowColor)
-{
-  Begin();
-  float nw = 0.0f, nh = 0.0f;
-  fOriginX = g_graphicsContext.ScaleFinalXCoord(fOriginX);
-  fOriginY = g_graphicsContext.ScaleFinalYCoord(fOriginY);
-  fMaxPixelWidth *= g_graphicsContext.ScaleFinalX();
-
-  for (int x = -iShadowWidth; x < iShadowWidth; x++)
-  {
-    for (int y = -iShadowHeight; y < iShadowHeight; y++)
-    {
-      DrawTextImpl( (float)x + fOriginX, (float)y + fOriginY, g_graphicsContext.MergeAlpha(dwShadowColor), strText, wcslen( strText ), dwFlags);
-    }
-  }
-
-  DrawTextImpl( fOriginX, fOriginY, g_graphicsContext.MergeAlpha(dwColor), strText, wcslen( strText ), dwFlags);
-  End();
-}
-
-void CGUIFont::DrawTextWidthInternal(FLOAT fOriginX, FLOAT fOriginY, DWORD dwColor,
+void CGUIFont::DrawTextWidth(FLOAT fOriginX, FLOAT fOriginY, const CAngle &angle, DWORD dwColor, DWORD dwShadowColor,
                              const WCHAR* strText, float fMaxWidth)
 {
-  float fTextHeight, fTextWidth;
-  GetTextExtentInternal( strText, &fTextWidth, &fTextHeight);
-  if (fTextWidth <= fMaxWidth)
-  {
-    DrawTextImpl( fOriginX, fOriginY, dwColor, strText, wcslen( strText ), 0, 0.0f);
-    return ;
-  }
-  
-  int iMinCharsLeft;
-  int iStrLength = wcslen( strText );
-  WCHAR *wszText = new WCHAR[iStrLength + 1];
-  wcscpy(wszText, strText);
-  while (fTextWidth >= fMaxWidth && fTextWidth > 0)
-  {
-    iMinCharsLeft = (int)((fTextWidth - fMaxWidth) / m_iMaxCharWidth);
-    if (iMinCharsLeft > 5 && iStrLength > iMinCharsLeft)
-    {
-      // at least 5 chars are on the right, strip all these characters
-      // instead of doing it one by one
-      iStrLength -= iMinCharsLeft;
-      wszText[iStrLength] = 0;
-      GetTextExtentInternal(wszText, &fTextWidth, &fTextHeight);
-    }
-    else
-    {
-      wszText[--iStrLength] = 0;
-      GetTextExtentInternal(wszText, &fTextWidth, &fTextHeight);
-    }
-  }
-
-  DrawTextImpl( fOriginX, fOriginY, dwColor, wszText, wcslen( wszText ), 0, 0.0f);
-  delete[] wszText;
-}
-
-void CGUIFont::DrawTextWidth(FLOAT fOriginX, FLOAT fOriginY, DWORD dwColor,
-                             const WCHAR* strText, float fMaxWidth)
-{
+  if (!m_font) return;
   fOriginX = g_graphicsContext.ScaleFinalXCoord(fOriginX);
   fOriginY = g_graphicsContext.ScaleFinalYCoord(fOriginY);
   fMaxWidth *= g_graphicsContext.ScaleFinalX();
-
-  DrawTextWidthInternal(fOriginX, fOriginY, g_graphicsContext.MergeAlpha(dwColor), strText, fMaxWidth);
+  if (!dwColor) dwColor = m_textColor;
+  if (!dwShadowColor) dwShadowColor = m_shadowColor;
+  if (dwShadowColor)
+    m_font->DrawTextWidthInternal(fOriginX + 1, fOriginY + 1, angle, g_graphicsContext.MergeAlpha(dwShadowColor), strText, fMaxWidth);
+  m_font->DrawTextWidthInternal(fOriginX, fOriginY, angle, g_graphicsContext.MergeAlpha(dwColor), strText, fMaxWidth);
 }
 
-void CGUIFont::DrawColourTextWidth(FLOAT fOriginX, FLOAT fOriginY, DWORD* pdw256ColorPalette, int numColors,
+
+// START backward compatibility
+void CGUIFont::DrawTextWidth(FLOAT fOriginX, FLOAT fOriginY, DWORD dwColor, DWORD dwShadowColor,
+                             const WCHAR* strText, float fMaxWidth)
+{
+  DrawTextWidth(fOriginX, fOriginY, CAngle(), dwColor, dwShadowColor, strText, fMaxWidth);
+}
+
+void CGUIFont::DrawColourTextWidth(FLOAT fOriginX, FLOAT fOriginY, DWORD* pdw256ColorPalette, int numColors, DWORD dwShadowColor,
                                    const WCHAR* strText, BYTE* pbColours, float fMaxWidth)
 {
+  DrawColourTextWidth(fOriginX, fOriginY, CAngle(), pdw256ColorPalette, numColors, dwShadowColor, strText, pbColours, fMaxWidth);
+}
 
-  float nh = 0.0f;
+void CGUIFont::DrawText( FLOAT sx, FLOAT sy, DWORD dwColor, DWORD dwShadowColor, const WCHAR* strText, DWORD dwFlags, FLOAT fMaxPixelWidth /* = 0 */)
+{
+  DrawText( sx, sy, CAngle(), dwColor, dwShadowColor, strText, dwFlags, fMaxPixelWidth);
+}
+
+void CGUIFont::DrawScrollingText(float x, float y, DWORD* color, int numColors, DWORD dwShadowColor, const CStdStringW &text, float w, CScrollInfo &scrollInfo, BYTE *pPalette)
+{
+  DrawScrollingText(x, y, CAngle(), color, numColors, dwShadowColor, text, w, scrollInfo, pPalette);
+}
+// END backward compatibility
+
+void CGUIFont::DrawColourTextWidth(FLOAT fOriginX, FLOAT fOriginY, const CAngle &angle, DWORD* pdw256ColorPalette, int numColors, DWORD dwShadowColor,
+                                   const WCHAR* strText, BYTE* pbColours, float fMaxWidth)
+{
+  if (!m_font) return;
+  if (!dwShadowColor) dwShadowColor = m_shadowColor;
+  dwShadowColor = g_graphicsContext.MergeAlpha(dwShadowColor);
 
   fOriginX = g_graphicsContext.ScaleFinalXCoord(fOriginX);
   fOriginY = g_graphicsContext.ScaleFinalYCoord(fOriginY);
   DWORD *alphaColor = new DWORD[numColors];
   for (int i = 0; i < numColors; i++)
+  {
+    if (!pdw256ColorPalette[i])
+      pdw256ColorPalette[i] = m_textColor;
     alphaColor[i] = g_graphicsContext.MergeAlpha(pdw256ColorPalette[i]);
-
+  }
   fMaxWidth *= g_graphicsContext.ScaleFinalX();
-
-  int nStringLength = wcslen(strText);
-  WCHAR *pszBuffer = new WCHAR[nStringLength + 1];
-
-  wcscpy(pszBuffer, strText);
-
-  float fTextHeight, fTextWidth;
-  GetTextExtentInternal( pszBuffer, &fTextWidth, &fTextHeight);
-  if (fTextWidth <= fMaxWidth)
-  {
-    DrawColourTextImpl( fOriginX, fOriginY, alphaColor, pszBuffer, pbColours, nStringLength, 0, 0.0f);
-    delete[] alphaColor;
-    delete[] pszBuffer;
-    return ;
-  }
-
-  if (fMaxWidth)
-  {
-    int iMinCharsLeft;
-    while (fTextWidth >= fMaxWidth && nStringLength)
-    {
-      iMinCharsLeft = (int)((fTextWidth - fMaxWidth) / m_iMaxCharWidth);
-      if (nStringLength > iMinCharsLeft && iMinCharsLeft > 5)
-      {
-        // at least 5 chars are left, strip al remaining characters instead
-        // of doing it one by one.
-        nStringLength -= iMinCharsLeft;
-        pszBuffer[ nStringLength ] = 0;
-        GetTextExtentInternal( pszBuffer, &fTextWidth, &fTextHeight);
-      }
-      else
-      {
-        pszBuffer[ --nStringLength ] = 0;
-        GetTextExtentInternal( pszBuffer, &fTextWidth, &fTextHeight);
-      }
-    }
-  }
-  DrawColourTextImpl( fOriginX, fOriginY, alphaColor, pszBuffer, pbColours, wcslen( pszBuffer ), 0, 0.0f);
-  delete[] pszBuffer;
+  m_font->DrawColourTextWidth(fOriginX, fOriginY, angle, alphaColor, numColors, dwShadowColor, strText, pbColours, fMaxWidth);
   delete[] alphaColor;
 }
 
-void CGUIFont::DrawText( FLOAT sx, FLOAT sy, DWORD dwColor, const WCHAR* strText, DWORD dwFlags, FLOAT fMaxPixelWidth)
+void CGUIFont::DrawText( FLOAT sx, FLOAT sy, const CAngle &angle, DWORD dwColor, DWORD dwShadowColor, const WCHAR* strText, DWORD dwFlags, FLOAT fMaxPixelWidth /* = 0 */)
 {
+  if (!m_font) return;
   float nw = 0.0f, nh = 0.0f;
   sx = g_graphicsContext.ScaleFinalXCoord(sx);
   sy = g_graphicsContext.ScaleFinalYCoord(sy);
   fMaxPixelWidth *= g_graphicsContext.ScaleFinalX();
-  DrawTextImpl( sx, sy, g_graphicsContext.MergeAlpha(dwColor), strText, wcslen( strText ), dwFlags, fMaxPixelWidth );
+  if (!dwColor) dwColor = m_textColor;
+  if (!dwShadowColor) dwShadowColor = m_shadowColor;
+  if (dwShadowColor)
+    m_font->DrawTextImpl(sx + 1, sy + 1, angle, g_graphicsContext.MergeAlpha(dwShadowColor), strText, wcslen( strText ), dwFlags, fMaxPixelWidth);
+  m_font->DrawTextImpl( sx, sy, angle, g_graphicsContext.MergeAlpha(dwColor), strText, wcslen( strText ), dwFlags, fMaxPixelWidth );
 }
 
 FLOAT CGUIFont::GetTextWidth(const WCHAR* strText)
@@ -163,13 +109,16 @@ FLOAT CGUIFont::GetTextWidth(const WCHAR* strText)
 
 inline void CGUIFont::GetTextExtent(const WCHAR *strText, FLOAT *pWidth, FLOAT *pHeight, BOOL bFirstLineOnly /* = 0 */)
 {
-  GetTextExtentInternal(strText, pWidth, pHeight, bFirstLineOnly);
+  if (!m_font) return;
+  m_font->GetTextExtentInternal(strText, pWidth, pHeight, bFirstLineOnly);
   *pWidth /= g_graphicsContext.ScaleFinalX();
   *pHeight /= g_graphicsContext.ScaleFinalY();
 }
 
-void CGUIFont::DrawScrollingText(float x, float y, DWORD *color, int numColors, const CStdStringW &text, float w, CScrollInfo &scrollInfo, BYTE *pPalette /* = NULL */)
+void CGUIFont::DrawScrollingText(float x, float y, const CAngle &angle, DWORD *color, int numColors, DWORD dwShadowColor, const CStdStringW &text, float w, CScrollInfo &scrollInfo, BYTE *pPalette /* = NULL */)
 {
+  if (!m_font) return;
+  if (!dwShadowColor) dwShadowColor = m_shadowColor;
   float unneeded, h;
   float sw = 0;
   GetTextExtent(L" ", &sw, &unneeded);
@@ -197,7 +146,7 @@ void CGUIFont::DrawScrollingText(float x, float y, DWORD *color, int numColors, 
       sz[0] = L' ';
     sz[1] = 0;
     float charWidth;
-    GetTextExtentInternal(sz, &charWidth, &unneeded);
+    m_font->GetTextExtentInternal(sz, &charWidth, &unneeded);
     if (scrollInfo.pixelPos < charWidth - 1)
       scrollInfo.pixelPos++;
     else
@@ -253,12 +202,22 @@ void CGUIFont::DrawScrollingText(float x, float y, DWORD *color, int numColors, 
   {
     DWORD *alphaColor = new DWORD[numColors];
     for (int i=0; i < numColors; i++)
+    {
+      if (!color[i]) color[i] = m_textColor;
       alphaColor[i] = g_graphicsContext.MergeAlpha(color[i]);
-    DrawColourTextImpl(x - scrollInfo.pixelPos, y, color, pOutput, pOutPalette, wcslen(pOutput), 0, w + scrollInfo.pixelPos + h*2);
+    }
+    if (dwShadowColor)
+      m_font->DrawTextImpl(x - scrollInfo.pixelPos + 1, y + 1, angle, g_graphicsContext.MergeAlpha(dwShadowColor), pOutput, wcslen(pOutput), 0, w + scrollInfo.pixelPos + h*2);
+    m_font->DrawColourTextImpl(x - scrollInfo.pixelPos, y, angle, color, pOutput, pOutPalette, wcslen(pOutput), 0, w + scrollInfo.pixelPos + h*2);
     delete[] alphaColor;
   }
   else
-    DrawTextWidthInternal(x - scrollInfo.pixelPos, y, g_graphicsContext.MergeAlpha(*color), pOutput, w + scrollInfo.pixelPos + h*2);
+  {
+    if (!*color) *color = m_textColor;
+    if (dwShadowColor)
+      m_font->DrawTextImpl(x - scrollInfo.pixelPos + 1, y + 1, angle, g_graphicsContext.MergeAlpha(dwShadowColor), pOutput, wcslen(pOutput), 0, w + scrollInfo.pixelPos + h*2);
+    m_font->DrawTextWidthInternal(x - scrollInfo.pixelPos, y, angle, g_graphicsContext.MergeAlpha(*color), pOutput, w + scrollInfo.pixelPos + h*2);
+  }
   delete[] pOutput;
   if (pPalette)
     delete[] pOutPalette;

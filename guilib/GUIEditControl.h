@@ -25,8 +25,7 @@ class CGUIEditControl : public CGUILabelControl
 {
 public:
   CGUIEditControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY,
-                  DWORD dwWidth, DWORD dwHeight, const CStdString& strFont, const wstring& strLabel,
-                  DWORD dwTextColor, DWORD dwDisabledColor );
+                  DWORD dwWidth, DWORD dwHeight, const CLabelInfo& labelInfo, const wstring& strLabel);
 
   virtual ~CGUIEditControl(void);
 

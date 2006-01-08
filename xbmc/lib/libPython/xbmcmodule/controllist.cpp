@@ -1,6 +1,7 @@
 #include "../../../stdafx.h"
 #include "..\python.h"
 #include "GuiListControl.h"
+#include "GUIFontManager.h"
 #include "control.h"
 #include "pyutil.h"
 
@@ -132,36 +133,38 @@ namespace PYXBMC
 
 	CGUIControl* ControlList_Create(ControlList* pControl)
 	{
+    CLabelInfo label;
+    label.align = pControl->dwAlignmentY;
+    label.font = g_fontManager.GetFont(pControl->strFont);
+    label.textColor = pControl->dwTextColor;
+    label.selectedColor = pControl->dwSelectedColor;
+    label.offsetX = pControl->dwItemTextXOffset;
+    label.offsetY = pControl->dwItemTextYOffset;
 		pControl->pGUIControl = new CGUIListControl(
-            pControl->iParentId,
-            pControl->iControlId,
-			pControl->dwPosX,
-            pControl->dwPosY,
-            pControl->dwWidth,
-            pControl->dwHeight,
-			pControl->strFont,
-            pControl->pControlSpin->dwWidth,
-            pControl->pControlSpin->dwHeight,
-			pControl->pControlSpin->strTextureUp,
-            pControl->pControlSpin->strTextureDown,
-            pControl->pControlSpin->strTextureUpFocus,
-			pControl->pControlSpin->strTextureDownFocus,
-            pControl->pControlSpin->dwColor,
-            pControl->pControlSpin->dwPosX,
-			pControl->pControlSpin->dwPosY,
-            pControl->strFont,
-            pControl->dwTextColor,
-			pControl->dwSelectedColor,
-            pControl->strTextureButton,
-            pControl->strTextureButtonFocus);
+      pControl->iParentId,
+      pControl->iControlId,
+      pControl->dwPosX,
+      pControl->dwPosY,
+      pControl->dwWidth,
+      pControl->dwHeight,
+      pControl->pControlSpin->dwWidth,
+      pControl->pControlSpin->dwHeight,
+      pControl->pControlSpin->strTextureUp,
+      pControl->pControlSpin->strTextureDown,
+      pControl->pControlSpin->strTextureUpFocus,
+      pControl->pControlSpin->strTextureDownFocus,
+      pControl->pControlSpin->dwColor,
+      pControl->pControlSpin->dwPosX,
+      pControl->pControlSpin->dwPosY,
+      label, CLabelInfo(),
+      pControl->strTextureButton,
+      pControl->strTextureButtonFocus);
 
 		CGUIListControl* pListControl = (CGUIListControl*)pControl->pGUIControl;
 		pListControl->SetImageDimensions(
             pControl->dwImageWidth, pControl->dwImageHeight );
 		pListControl->SetItemHeight(pControl->dwItemHeight);
 		pListControl->SetSpace(pControl->dwSpace);
-		pListControl->SetAlignmentY( pControl->dwAlignmentY );
-
 
 		// set values for spincontrol
 		//CGUIListControl* c = (CGUIListControl*)pControl->pGUIControl;

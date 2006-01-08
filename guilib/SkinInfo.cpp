@@ -97,7 +97,8 @@ void CSkinInfo::Load(const CStdString& strSkinDir)
       }
     }
   }
-
+  // Load the skin includes
+  LoadIncludes();
 }
 
 bool CSkinInfo::Check(const CStdString& strSkinDir)
@@ -216,4 +217,17 @@ wchar_t* CSkinInfo::GetCreditsLine(int i)
 double CSkinInfo::GetMinVersion()
 {
   return SKIN_MIN_VERSION;
+}
+
+void CSkinInfo::LoadIncludes()
+{
+  RESOLUTION res;
+  CStdString includesPath = GetSkinPath("includes.xml", &res);
+  CLog::Log(LOGINFO, "Loading skin includes from %s", includesPath.c_str());
+  m_includes.LoadIncludes(includesPath.c_str());
+}
+
+void CSkinInfo::ResolveIncludes(TiXmlElement *node)
+{
+  m_includes.ResolveIncludes(node);
 }

@@ -1,7 +1,7 @@
 #include "include.h"
 #include "GUISliderControl.h"
-#include "GUIFontManager.h"
 #include "../xbmc/utils/GUIInfoManager.h"
+#include "GUIFontManager.h"
 
 
 CGUISliderControl::CGUISliderControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strBackGroundTexture, const CStdString& strMidTexture, const CStdString& strMidTextureFocus, int iType)
@@ -47,12 +47,8 @@ void CGUISliderControl::Render()
     {
       WCHAR strValue[128];
       swprintf(strValue, L"%2.2f", m_fValue);
-      pFont13->DrawShadowText( (float)m_iPosX, (float)m_iPosY, 0xffffffff,
-                               strValue, 0,
-                               0,
-                               2,
-                               2,
-                               0xFF020202);
+      pFont13->DrawText( (float)m_iPosX, (float)m_iPosY, 0xffffffff, 0,
+                               strValue, 0, 0);
     }
     m_guiBackground.SetPosition(m_iPosX + m_iControlOffsetX, m_iPosY + m_iControlOffsetY);
 
@@ -69,12 +65,8 @@ void CGUISliderControl::Render()
     {
       WCHAR strValue[128];
       swprintf(strValue, L"%i/%i", m_iValue, m_iEnd);
-      pFont13->DrawShadowText( (float)m_iPosX, (float)m_iPosY, 0xffffffff,
-                               strValue, 0,
-                               0,
-                               2,
-                               2,
-                               0xFF020202);
+      pFont13->DrawText( (float)m_iPosX, (float)m_iPosY, 0xffffffff, 0,
+                               strValue, 0, 0);
     }
     m_guiBackground.SetPosition(m_iPosX + m_iControlOffsetX, m_iPosY + m_iControlOffsetY);
 

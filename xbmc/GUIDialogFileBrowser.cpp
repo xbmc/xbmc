@@ -10,11 +10,6 @@
 #define CONTROL_OK            413
 #define CONTROL_CANCEL        414
 
-// TODO: Much of this is really only applicable to directory browsing
-// File browsing should not allow a directory as a valid option
-// Perhaps grey out "Ok" in that case, and allow selection of a normal item
-// to act as "Ok"??
-
 CGUIDialogFileBrowser::CGUIDialogFileBrowser()
     : CGUIDialog(WINDOW_DIALOG_FILE_BROWSER, "FileBrowser.xml")
 {

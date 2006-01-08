@@ -13,6 +13,7 @@
 #include "GUIAudioManager.h"
 #include "../guilib/GUILabelControl.h"
 #include "GUIWindowOSD.h"
+#include "GUIFontManager.h"
 
 #include <stdio.h>
 
@@ -392,10 +393,10 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
           m_subtitleFont = NULL;
         }
 
-        m_subtitleFont = new CGUIFontTTF("__subtitle__");
         CStdString fontPath = "Q:\\Media\\Fonts\\";
         fontPath += g_guiSettings.GetString("Subtitles.Font");
-        if (!m_subtitleFont->Load(fontPath, g_guiSettings.GetInt("Subtitles.Height"), g_guiSettings.GetInt("Subtitles.Style")))
+        m_subtitleFont = g_fontManager.LoadTTF("__subtitle__", fontPath, color[g_guiSettings.GetInt("Subtitles.Color")], 0, g_guiSettings.GetInt("Subtitles.Height"), g_guiSettings.GetInt("Subtitles.Style"));
+        if (!m_subtitleFont)
         {
           delete m_subtitleFont;
           m_subtitleFont = NULL;
@@ -701,7 +702,7 @@ void CGUIWindowFullScreen::RenderTTFSubtitles()
     CSingleLock lock (m_fontLock);
 
     // reset the window attributes
-    g_graphicsContext.SetWindowAttributes(CAttribute());
+    g_graphicsContext.ResetWindowAnimation();
     g_graphicsContext.SetScalingResolution(g_graphicsContext.GetVideoResolution(), 0, 0, false);
 
     CStdStringW subtitleText = L"";
@@ -725,14 +726,14 @@ void CGUIWindowFullScreen::RenderTTFSubtitles()
         for (int j = 1; j < ymax; j++)
         {
           m_subtitleFont->Begin();
-          m_subtitleFont->DrawText(x - i, y + j, 0xFF000000, subtitleText.c_str(), XBFONT_CENTER_X);
-          m_subtitleFont->DrawText(x - i, y - j, 0xFF000000, subtitleText.c_str(), XBFONT_CENTER_X);
-          m_subtitleFont->DrawText(x + i, y + j, 0xFF000000, subtitleText.c_str(), XBFONT_CENTER_X);
-          m_subtitleFont->DrawText(x + i, y - j, 0xFF000000, subtitleText.c_str(), XBFONT_CENTER_X);
+          m_subtitleFont->DrawText(x - i, y + j, 0xFF000000, 0, subtitleText.c_str(), XBFONT_CENTER_X);
+          m_subtitleFont->DrawText(x - i, y - j, 0xFF000000, 0, subtitleText.c_str(), XBFONT_CENTER_X);
+          m_subtitleFont->DrawText(x + i, y + j, 0xFF000000, 0, subtitleText.c_str(), XBFONT_CENTER_X);
+          m_subtitleFont->DrawText(x + i, y - j, 0xFF000000, 0, subtitleText.c_str(), XBFONT_CENTER_X);
           m_subtitleFont->End();
         }
       }
-      m_subtitleFont->DrawText(x, y, color[g_guiSettings.GetInt("Subtitles.Color")], subtitleText.c_str(), XBFONT_CENTER_X);
+      m_subtitleFont->DrawText(x, y, 0, 0, subtitleText.c_str(), XBFONT_CENTER_X);
     }
   }
 }

@@ -17,7 +17,7 @@
 class CGUICheckMarkControl: public CGUIControl
 {
 public:
-  CGUICheckMarkControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strTextureCheckMark, const CStdString& strTextureCheckMarkNF, DWORD dwCheckWidth, DWORD dwCheckHeight, DWORD dwAlign = XBFONT_RIGHT);
+  CGUICheckMarkControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strTextureCheckMark, const CStdString& strTextureCheckMarkNF, DWORD dwCheckWidth, DWORD dwCheckHeight, const CLabelInfo &labelInfo);
   virtual ~CGUICheckMarkControl(void);
   virtual void Render();
   virtual bool OnAction(const CAction &action) ;
@@ -26,14 +26,10 @@ public:
   virtual void AllocResources();
   virtual void FreeResources();
   virtual void DynamicResourceAlloc(bool bOnOff);
-  virtual void SetDisabledColor(D3DCOLOR color);
 
-  void SetLabel(const CStdString& strFontName, const wstring& strLabel, D3DCOLOR dwColor);
-  void SetLabel(const CStdString& strFontName, const CStdString& strLabel, D3DCOLOR dwColor);
-  DWORD GetDisabledColor() const { return m_dwDisabledColor;};
-  DWORD GetTextColor() const { return m_dwTextColor;};
-  DWORD GetAlignment() const { return m_dwAlign;};
-  const char* GetFontName() const { return m_pFont ? m_pFont->GetFontName().c_str() : ""; };
+  void SetText(const wstring& strLabel);
+  void SetText(const CStdString& strLabel);
+  const CLabelInfo& GetLabelInfo() const { return m_label; };
   const wstring GetLabel() const { return m_strLabel; };
   DWORD GetCheckMarkWidth() const { return m_imgCheckMark.GetWidth(); };
   DWORD GetCheckMarkHeight() const { return m_imgCheckMark.GetHeight(); };
@@ -41,17 +37,16 @@ public:
   const CStdString& GetCheckMarkTextureNameNF() const { return m_imgCheckMarkNoFocus.GetFileName(); };
   void SetSelected(bool bOnOff);
   bool GetSelected() const;
-  void SetShadow(bool bOnOff);
-  bool GetShadow() const;
   void OnMouseClick(DWORD dwButton);
+
+  void PythonSetLabel(const CStdString &strFont, const wstring &strText, DWORD dwTextColor);
+  void PythonSetDisabledColor(DWORD dwDisabledColor);
+
 protected:
   CGUIImage m_imgCheckMark;
   CGUIImage m_imgCheckMarkNoFocus;
-  DWORD m_dwTextColor ;
-  CGUIFont* m_pFont;
+
+  CLabelInfo m_label;
   wstring m_strLabel;
-  DWORD m_dwDisabledColor;
-  DWORD m_dwAlign;
-  bool m_bShadow;
 };
 #endif

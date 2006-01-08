@@ -35,9 +35,7 @@ public:
 
   CGUIRAMControl(DWORD dwParentID, DWORD dwControlId,
                  int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight,
-                 const CStdString& strFontName, const CStdString& strFont2Name,
-                 D3DCOLOR dwTitleColor, D3DCOLOR dwNormalColor, D3DCOLOR dwSelectedColor,
-                 DWORD dwTextOffsetX, DWORD dwTextOffsetY);
+                 const CLabelInfo& labelInfo, const CLabelInfo& titleInfo);
 
   virtual ~CGUIRAMControl(void);
 
@@ -51,13 +49,8 @@ public:
   virtual void AllocResources();
   virtual void FreeResources();
 
-  DWORD GetTitleTextColor() const { return m_dwTitleColor;};
-  DWORD GetNormalTextColor() const { return m_dwTextColor;};
-  DWORD GetSelectedTextColor() const { return m_dwTextSelectColor;};
-  DWORD GetTextOffsetX() const { return m_dwTextOffsetX;};
-  DWORD GetTextOffsetY() const { return m_dwTextOffsetY;};
-  const char * GetFontName() const { return m_pFont ? m_pFont->GetFontName().c_str() : ""; };
-  const char * GetFont2Name() const { return m_pFont2 ? m_pFont2->GetFontName().c_str() : ""; };
+  const CLabelInfo& GetTitleInfo() const { return m_title; };
+  const CLabelInfo& GetLabelInfo() const { return m_label; };
 
   void SetTextSpacing(DWORD dwTextSpaceY) { m_dwTextSpaceY = dwTextSpaceY; };
   DWORD GetTextSpacing() const { return m_dwTextSpaceY; };
@@ -103,12 +96,7 @@ protected:
   DWORD m_dwTextSpaceY;
   CStdString m_strDefaultThumb;
 
-  D3DCOLOR m_dwTitleColor;
-  D3DCOLOR m_dwTextColor;
-  D3DCOLOR m_dwTextSelectColor;
-  DWORD m_dwTextOffsetX;
-  DWORD m_dwTextOffsetY;
-  CGUIFont* m_pFont;
-  CGUIFont* m_pFont2;
+  CLabelInfo m_title;
+  CLabelInfo m_label;
 };
 #endif

@@ -1,16 +1,13 @@
 #include "include.h"
 #include "GUIFadeLabelControl.h"
-#include "GUIFontManager.h"
 #include "../xbmc/utils/CharsetConverter.h"
 #include "../xbmc/utils/GUIInfoManager.h"
 
 
-CGUIFadeLabelControl::CGUIFadeLabelControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strFont, DWORD dwTextColor, DWORD dwTextAlign)
+CGUIFadeLabelControl::CGUIFadeLabelControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, const CLabelInfo& labelInfo)
     : CGUIControl(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight)
 {
-  m_pFont = g_fontManager.GetFont(strFont);
-  m_dwTextColor = dwTextColor;
-  m_dwTextAlign = dwTextAlign;
+  m_label = labelInfo;
   m_iCurrentLabel = 0;
   m_bFadeIn = false;
   m_iCurrentFrame = 0;
@@ -37,7 +34,7 @@ void CGUIFadeLabelControl::Render()
 	{
 		return ;
 	}
-	if (!m_pFont) return ;
+	if (!m_label.font) return ;
 
 
 	if ((int)m_vecLabels.size() == 0 && (int)m_vecInfo.size() == 0) return ;
@@ -78,10 +75,10 @@ void CGUIFadeLabelControl::Render()
 
   if (iLabelCount == 1)
   {
-    DWORD iWidth = (DWORD)m_pFont->GetTextWidth(strLabelUnicode.c_str());
+    DWORD iWidth = (DWORD)m_label.font->GetTextWidth(strLabelUnicode.c_str());
     if (iWidth < m_dwWidth)
     {
-      m_pFont->DrawText( (float)m_iPosX, (float)m_iPosY, m_dwTextColor, strLabelUnicode.c_str());
+      m_label.font->DrawText( (float)m_iPosX, (float)m_iPosY, m_label.textColor, m_label.shadowColor, strLabelUnicode.c_str());
       return ;
     }
   }
@@ -89,8 +86,8 @@ void CGUIFadeLabelControl::Render()
   {
     DWORD dwAlpha = (m_dwAlpha / 12) * m_iCurrentFrame;
     dwAlpha <<= 24;
-    dwAlpha += ( m_dwTextColor & 0x00ffffff);
-    m_pFont->DrawTextWidth((float)m_iPosX, (float)m_iPosY, dwAlpha, strLabelUnicode.c_str(), (float)m_dwWidth);
+    dwAlpha += ( m_label.textColor & 0x00ffffff);
+    m_label.font->DrawTextWidth((float)m_iPosX, (float)m_iPosY, dwAlpha, m_label.shadowColor, strLabelUnicode.c_str(), (float)m_dwWidth);
 
     m_iCurrentFrame++;
     if (m_iCurrentFrame >= 12)
@@ -108,7 +105,7 @@ void CGUIFadeLabelControl::Render()
       m_scrollInfo.Reset();
     }
     else
-      RenderText((float)m_iPosX, (float)m_iPosY, (float) m_dwWidth, m_dwTextColor, (WCHAR*) strLabelUnicode.c_str(), true );
+      RenderText((float)m_iPosX, (float)m_iPosY, (float) m_dwWidth, m_label.textColor, (WCHAR*) strLabelUnicode.c_str(), true );
   }
   CGUIControl::Render();
 }
@@ -145,13 +142,13 @@ bool CGUIFadeLabelControl::OnMessage(CGUIMessage& message)
 
 void CGUIFadeLabelControl::RenderText(float fPosX, float fPosY, float fMaxWidth, DWORD dwTextColor, WCHAR* wszText, bool bScroll )
 {
-  if (!m_pFont) return;
+  if (!m_label.font) return;
 
   // increase our text width to the maximum width
   float unneeded, width, spacewidth;
-  m_pFont->GetTextExtent( wszText, &width, &unneeded);
+  m_label.font->GetTextExtent( wszText, &width, &unneeded);
   WCHAR space[2]; space[0] = L' '; space[1] = 0;
-  m_pFont->GetTextExtent(space, &spacewidth, &unneeded);
+  m_label.font->GetTextExtent(space, &spacewidth, &unneeded);
   // ok, concat spaces on
   WCHAR wszOrgText[1024];
   wcscpy(wszOrgText, wszText);
@@ -168,11 +165,11 @@ void CGUIFadeLabelControl::RenderText(float fPosX, float fPosY, float fMaxWidth,
     width += spacewidth;
   }
 
-  m_pFont->DrawScrollingText(fPosX, fPosY, &m_dwTextColor, 1, wszOrgText, fMaxWidth, m_scrollInfo);
+  m_label.font->DrawScrollingText(fPosX, fPosY, &m_label.textColor, 1, m_label.shadowColor, wszOrgText, fMaxWidth, m_scrollInfo);
 }
 
 void CGUIFadeLabelControl::SetAlpha(DWORD dwAlpha)
 {
   CGUIControl::SetAlpha(dwAlpha);
-  m_dwTextColor = (dwAlpha << 24) | (m_dwTextColor & 0xFFFFFF);
+  m_label.textColor = (dwAlpha << 24) | (m_label.textColor & 0xFFFFFF);
 }
