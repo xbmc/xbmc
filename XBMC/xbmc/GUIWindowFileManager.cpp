@@ -853,6 +853,7 @@ void CGUIWindowFileManager::OnCopy(int iList)
 
   if (m_dlgProgress)
   {
+    m_dlgProgress->SetHeading(126);
     m_dlgProgress->StartModal(GetID());
     m_dlgProgress->SetPercentage(0);
     m_dlgProgress->ShowProgressBar(true);
@@ -872,6 +873,7 @@ void CGUIWindowFileManager::OnMove(int iList)
 
   if (m_dlgProgress)
   {
+    m_dlgProgress->SetHeading(126);
     m_dlgProgress->StartModal(GetID());
     m_dlgProgress->SetPercentage(0);
     m_dlgProgress->ShowProgressBar(true);
