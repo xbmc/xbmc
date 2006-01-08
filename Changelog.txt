@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 08-01-2006 fixed: httpapi PlayFile should now once again play remote media
  - 08-01-2006 fixed: full restoration of the filter label in my music library
  - 07-01-2006 fixed: folder images in root of music library were horribly stretched if in big icons view
  - 07-01-2006 fixed: partial restoration of the filter label in my music library
