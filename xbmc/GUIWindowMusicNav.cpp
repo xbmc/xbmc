@@ -225,9 +225,9 @@ void CGUIWindowMusicNav::UpdateButtons()
   // TODO: add a "GetLabel" function to CMusicDatabase to restore filter label
   else
   {
-    //CMusicDatabaseDirectory dir;
-    //dir.GetLabel(m_vecItems.m_strPath, strLabel);
-    strLabel = g_localizeStrings.Get(15100);
+    CMusicDatabaseDirectory dir;
+    dir.GetLabel(m_vecItems.m_strPath, strLabel);
+    //strLabel = g_localizeStrings.Get(15100);
   }
   
   SET_CONTROL_LABEL(CONTROL_FILTER, strLabel);

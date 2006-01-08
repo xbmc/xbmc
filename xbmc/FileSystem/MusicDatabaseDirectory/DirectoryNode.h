@@ -36,6 +36,7 @@ namespace DIRECTORY
 
       bool GetChilds(CFileItemList& items);
       virtual NODE_TYPE GetChildType();
+      void CollectQueryParams(CQueryParams& params);
 
       CDirectoryNode* GetParent();
 
@@ -47,8 +48,6 @@ namespace DIRECTORY
       void RemoveParent();
 
       virtual bool GetContent(CFileItemList& items);
-
-      void CollectQueryParams(CQueryParams& params);
 
       CStdString BuildPath();
 
