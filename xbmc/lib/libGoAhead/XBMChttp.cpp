@@ -275,7 +275,7 @@ bool playableFile(CStdString filename)
 {
   CStdString strExtension;
   CUtil::GetExtension(filename, strExtension);
-  return (CFile::Exists(filename)) && (strExtension!="");
+  return (CUtil::IsRemote(filename)) || ((CFile::Exists(filename)) && (strExtension!=""));
 }
 
 int SetResponse(CStdString response)
