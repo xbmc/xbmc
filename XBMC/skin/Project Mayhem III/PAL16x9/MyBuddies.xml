@@ -182,7 +182,7 @@
       <width>390</width>
       <height>265</height>
       <font>font12</font>
-      <textcolor>D0FFFFFF</textcolor>         <!-- normal  (pen0) -->
+      <include>textcolorlightgrey</include>         <!-- normal  (pen0) -->
       <textcolor2>FFF2B466</textcolor2>       <!-- action  (pen1) -->
       <titlecolor>FFA4FFAE</titlecolor>       <!-- system  (pen2) -->
       <selectedcolor>FFF3FB6B</selectedcolor> <!-- private (pen3) -->

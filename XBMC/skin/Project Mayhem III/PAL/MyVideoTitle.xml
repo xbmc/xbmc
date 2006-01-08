@@ -177,10 +177,9 @@
       <font>font14</font>
       <font2>font13</font2>
       <selectedcolor>FFFFffff</selectedcolor>
-      <textcolor>0xd0ffffff</textcolor>
-      <selectedcolor2>0xFFFFffff</selectedcolor2>
-      <textcolor2>0xd0ffffff</textcolor2>
-      <colordiffuse>ffffffff</colordiffuse>
+      <include>textcolorlightgrey</include>
+      <selectedcolor2>FFFFffff</selectedcolor2>
+      <textcolor2>d0ffffff</textcolor2>
       <suffix>|</suffix>
       <textxoff>10</textxoff>
       <textyoff>10</textyoff>

@@ -63,7 +63,6 @@
       <texturefocus>calibrate-subtitles-focus.png</texturefocus>
       <texturenofocus>calibrate-subtitles.png</texturenofocus>
       <colorkey>FFFF00FF</colorkey>
-      <colordiffuse>FFFFFFFF</colordiffuse>
     </control>
 
     <control>
