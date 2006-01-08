@@ -6,7 +6,6 @@
 #include "Util.h"
 #include "TextureManager.h"
 #include "GUILabelControl.h"
-#include "GUIFontManager.h"
 #include "utils/GUIInfoManager.h"
 
 #define MAX_RENDER_METHODS 9
@@ -501,11 +500,11 @@ void CGUIWindowSlideShow::RenderErrorMessage()
 {
   if (!m_bErrorMessage)
     return ;
-  CGUIFont *pFont = g_fontManager.GetFont(((CGUILabelControl *)GetControl(LABEL_ROW1))->GetFontName());
+  CGUIFont *pFont = ((CGUILabelControl *)GetControl(LABEL_ROW1))->GetLabelInfo().font;
   if (pFont)
   {
     wstring wszText = g_localizeStrings.Get(747);
-    pFont->DrawText((float)g_graphicsContext.GetWidth() / 2, (float)g_graphicsContext.GetHeight() / 2, 0xffffffff, wszText.c_str(), XBFONT_CENTER_X | XBFONT_CENTER_Y);
+    pFont->DrawText((float)g_graphicsContext.GetWidth() / 2, (float)g_graphicsContext.GetHeight() / 2, 0xffffffff, 0, wszText.c_str(), XBFONT_CENTER_X | XBFONT_CENTER_Y);
   }
 }
 
