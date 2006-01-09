@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 09-01-2006 added: additional fourcc codes in codec.conf
   - 09-01-2006 added: ffmpeg data padding patch ( malloc padding to avoid access beyond allocated memory ) , hopefully fixes fast wmv's. 
   - 09-01-2006 changed: explicitly disabled gif and jpeg instead of relying on autodetection
   - 09-01-2006 fixed: xbmc wasn't compilable with mingw5, due to missing sleep function
