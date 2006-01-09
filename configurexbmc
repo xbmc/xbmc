@@ -50,6 +50,8 @@ chmod +x configure && ./configure \
 --disable-tga \
 --disable-pnm \
 --disable-md5sum \
+--disable-gif \
+--disable-jpeg \
 --with-codecsdir='Q:\\system\\players\\mplayer\\codecs' \
 --with-reallibdir='Q:\\system\\players\\mplayer\\codecs' \
 --with-fribidi-config=$PWD/xbmcsys/fribidi/fribidi-config \

@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 09-01-2006 changed: explicitly disabled gif and jpeg instead of relying on autodetection
+  - 09-01-2006 fixed: xbmc wasn't compilable with mingw5, due to missing sleep function
   - 01-01-2006 updated: libmp3 to mplayerhq cvs version as of now. fixes some mpegs that where only playing static audio
   - 04-10-2005 updated: ffmpeg to mplayerhq cvs version as of now. fixes a few avi's that where causing problems + a few other stuff
   - 06-09-2005 reverted: when resuming normal playback speed, video would jump ahead a couple of seconds. didn't work well
