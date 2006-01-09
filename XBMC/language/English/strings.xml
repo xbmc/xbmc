@@ -615,7 +615,7 @@
   <string><id>1254</id><value>Ask to Connect</value></string>
   <string><id>1255</id><value>Send FTP User and Password</value></string>
   <string><id>1256</id><value>Ping Interval</value></string>
-  <string><id>1257</id><value>Would like to connect to the Autodetected XBOX ?</value></string>
+  <string><id>1257</id><value>Would you like to connect to the Autodetected Xbox?</value></string>
 
   
   <string><id>1396</id><value>Drifting</value></string>
