@@ -1,3 +1,5 @@
+2006-01-09 fixed:	MusicVisualisation.xml was invalid.
+
 2006-01-08 changed:	Moved to version 1.90 compatible.
 2006-01-08 fixed:	Listcontrol in DialogVideoInfo.xml couldn't be focused.
 

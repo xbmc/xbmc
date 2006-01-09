@@ -24,7 +24,7 @@
       <height>65</height>
       <texture>osd_menu_bg.png</texture>
       <visible>Player.ShowCodec</visible>
-      <animation effect="fade" time="300">VisibleChange</visible>
+      <animation effect="fade" time="300">VisibleChange</animation>
     </control>
 
     <control>
@@ -38,7 +38,7 @@
       <align>left</align>
       <font>font12</font>
       <visible>Player.ShowCodec</visible>
-      <animation effect="fade" time="300">VisibleChange</visible>
+      <animation effect="fade" time="300">VisibleChange</animation>
     </control>
 
     <control>
@@ -52,7 +52,7 @@
       <font>font12</font>
       <align>left</align>
       <visible>Player.ShowCodec</visible>
-      <animation effect="fade" time="300">VisibleChange</visible>
+      <animation effect="fade" time="300">VisibleChange</animation>
     </control>
 
     <control>
@@ -66,7 +66,7 @@
       <font>font12</font>
       <align>left</align>
       <visible>Player.ShowCodec</visible>
-      <animation effect="fade" time="300">VisibleChange</visible>
+      <animation effect="fade" time="300">VisibleChange</animation>
     </control>
 
     <control>
@@ -78,7 +78,7 @@
       <width>12</width>
       <height>15</height>
       <visible>Visualisation.Locked + Player.ShowCodec</visible>
-      <animation effect="fade" time="300">VisibleChange</visible>
+      <animation effect="fade" time="300">VisibleChange</animation>
       <texture>arenaitem-private.png</texture>
     </control>
 
@@ -92,7 +92,7 @@
       <width>740</width>
       <height>100</height>
       <visible>Player.ShowInfo</visible>
-      <animation effect="fade" time="1000">VisibleChange</visible>
+      <animation effect="fade" time="1000">VisibleChange</animation>
       <texture>osd_menu_bg.png</texture>
     </control>
 
@@ -106,7 +106,7 @@
       <height>100</height>
       <info>MusicPlayer.Cover</info>
       <visible>Player.ShowInfo</visible>
-      <animation effect="fade" time="1000">VisibleChange</visible>
+      <animation effect="fade" time="1000">VisibleChange</animation>
       <keepaspectratio>true</keepaspectratio>
     </control>
 
@@ -119,7 +119,7 @@
       <posy>458</posy>
       <info>MusicPlayer.Artist</info>
       <visible>Player.ShowInfo</visible>
-      <animation effect="fade" time="1000">VisibleChange</visible>
+      <animation effect="fade" time="1000">VisibleChange</animation>
       <align>left</align>
       <font>special12</font>
     </control>
@@ -133,7 +133,7 @@
       <posy>479</posy>
       <info>MusicPlayer.Title</info>
       <visible>Player.ShowInfo</visible>
-      <animation effect="fade" time="1000">VisibleChange</visible>
+      <animation effect="fade" time="1000">VisibleChange</animation>
       <align>left</align>
       <font>special13</font>
     </control>
@@ -147,7 +147,7 @@
       <posy>507</posy>
       <info>MusicPlayer.Album</info>
       <visible>Player.ShowInfo</visible>
-      <animation effect="fade" time="1000">VisibleChange</visible>
+      <animation effect="fade" time="1000">VisibleChange</animation>
       <align>left</align>
       <font>font10</font>
     </control>
@@ -161,7 +161,7 @@
       <posy>528</posy>
       <label>$INFO[musicplayer.Time] / $INFO[musicplayer.Duration]</label>
       <visible>Player.ShowInfo</visible>
-      <animation effect="fade" time="1000">VisibleChange</visible>
+      <animation effect="fade" time="1000">VisibleChange</animation>
       <align>left</align>
       <font>font10</font>
     </control>
@@ -175,7 +175,7 @@
       <posy>528</posy>
       <label>$LOCALIZE[435] $INFO[musicplayer.Playlistposition] / $INFO[musicplayer.Playlistlength]</label>
       <visible>Player.ShowInfo</visible>
-      <animation effect="fade" time="1000">VisibleChange</visible>
+      <animation effect="fade" time="1000">VisibleChange</animation>
       <align>right</align>
       <font>font10</font>
     </control>
