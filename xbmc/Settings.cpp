@@ -434,11 +434,6 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
     }
   }
 
-  /*
-  GetInteger(pRootElement, "startwindow", g_stSettings.m_iStartupWindow, 0, 0, INT_MAX);
-  g_stSettings.m_iStartupWindow += WINDOW_HOME; // windows referenced from WINDOW_HOME
-  */
-
   CStdString strWindow;
   GetString(pRootElement, "startwindow", strWindow, "0");
   g_stSettings.m_iStartupWindow = g_buttonTranslator.TranslateWindowString(strWindow.c_str());
