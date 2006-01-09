@@ -366,6 +366,9 @@ bool CGUIWindowPrograms::OnPopupMenu(int iItem)
       CStdString strDescription = m_vecItems[iItem]->GetLabel();
       if (CGUIDialogKeyboard::ShowAndGetInput(strDescription, (CStdStringW)g_localizeStrings.Get(16013), false))
       {
+        // truncate to 39 characters before updating xbe header
+        if (strDescription.size() > 39)
+          strDescription = strDescription.Left(39);
         CUtil::SetXBEDescription(m_vecItems[iItem]->m_strPath,strDescription);
         m_database.SetDescription(m_vecItems[iItem]->m_strPath,strDescription);
         Update(m_vecItems.m_strPath);
