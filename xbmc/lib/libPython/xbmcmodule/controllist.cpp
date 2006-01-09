@@ -140,6 +140,7 @@ namespace PYXBMC
     label.selectedColor = pControl->dwSelectedColor;
     label.offsetX = pControl->dwItemTextXOffset;
     label.offsetY = pControl->dwItemTextYOffset;
+    CLabelInfo label2 = label;
 		pControl->pGUIControl = new CGUIListControl(
       pControl->iParentId,
       pControl->iControlId,
@@ -156,7 +157,7 @@ namespace PYXBMC
       pControl->pControlSpin->dwColor,
       pControl->pControlSpin->dwPosX,
       pControl->pControlSpin->dwPosY,
-      label, CLabelInfo(),
+      label, label2,
       pControl->strTextureButton,
       pControl->strTextureButtonFocus);
 
