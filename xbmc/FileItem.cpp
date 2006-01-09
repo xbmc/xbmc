@@ -1175,7 +1175,10 @@ CStdString CFileItem::ParseFormat(const CStdString& strMask)
     }
     else if (strMask[iPos2 + 1] == 'F')
     { // filename
-      str = CUtil::GetTitleFromPath(m_strPath);
+      if (IsStack())
+        str = GetLabel();
+      else
+        str = CUtil::GetTitleFromPath(m_strPath);
       bDoneSomething = true;
     }
     else if (strMask[iPos2 + 1] == 'D')
@@ -1854,8 +1857,8 @@ void CFileItemList::Stack()
 
       CStdString fileName, filePath;
       CUtil::Split(item->m_strPath, filePath, fileName);
-      CStdString fileTitle;
-      CStdString volumeNumber;
+      CStdString fileTitle, volumeNumber;
+      //CLog::Log(LOGDEBUG,"Trying to stack: %s", item->GetLabel().c_str());
       if (CUtil::GetVolumeFromFileName(item->GetLabel(), fileTitle, volumeNumber))
       {
         vector<int> stack;
@@ -1868,13 +1871,13 @@ void CFileItemList::Stack()
             continue;
           CStdString fileName2, filePath2;
           CUtil::Split(item2->m_strPath, filePath2, fileName2);
-          CStdString fileTitle2;
-          CStdString volumeNumber2;
-          if (CUtil::GetVolumeFromFileName(fileName2, fileTitle2, volumeNumber2))
+          CStdString fileTitle2, volumeNumber2;
+          //if (CUtil::GetVolumeFromFileName(fileName2, fileTitle2, volumeNumber2))
+          if (CUtil::GetVolumeFromFileName(Get(j)->GetLabel(), fileTitle2, volumeNumber2))
           {
             if (fileTitle2 == fileTitle && filePath2 == filePath)
             {
-              //CLog::Log(LOGDEBUG,"Adding item: [%03i] %s", j, Get(j)->m_strPath.c_str());
+              //CLog::Log(LOGDEBUG,"  adding item: [%03i] %s", j, Get(j)->GetLabel().c_str());
               stack.push_back(j);
             }
           }
@@ -1897,6 +1900,7 @@ void CFileItemList::Stack()
           // the label is converted from utf8, but the filename is not)
           CUtil::GetVolumeFromFileName(item->GetLabel(), fileTitle, volumeNumber);
           item->SetLabel(fileTitle);
+          //CLog::Log(LOGDEBUG,"  ** finalized stack: %s", fileTitle.c_str());
         }
       }
     }
