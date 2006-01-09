@@ -27,6 +27,7 @@ public:
   CGUIFont* LoadTTF(const CStdString& strFontName, const CStdString& strFilename, DWORD textColor, DWORD shadowColor, const int iSize, const int iStyle);
   CGUIFont* GetFont(const CStdString& strFontName);
   void Clear();
+  void FreeFontFile(CGUIFontBase *pFont);
 
 protected:
   void LoadFonts(const TiXmlNode* fontNode);

@@ -84,6 +84,7 @@ public:
   const CStdString& GetTextureUpFocusName() const { return m_imgspinUpFocus.GetFileName(); };
   const CStdString& GetTextureDownFocusName() const { return m_imgspinDownFocus.GetFileName(); };
   const CLabelInfo& GetLabelInfo() const { return m_label; };
+  void SetSpinAlign(DWORD align, int offsetX) { m_label.align = align; m_label.offsetX = offsetX; };
   int GetType() const { return m_iType;};
   void SetType(int iType) { m_iType = iType; };
   DWORD GetSpinWidth() const { return m_imgspinUp.GetWidth(); };

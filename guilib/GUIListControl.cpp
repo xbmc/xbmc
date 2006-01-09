@@ -18,6 +18,7 @@ CGUIListControl::CGUIListControl(DWORD dwParentID, DWORD dwControlId, int iPosX,
 {
   m_label = labelInfo;
   m_label2 = labelInfo2;
+  m_upDown.SetSpinAlign(XBFONT_CENTER_Y | XBFONT_RIGHT, 0);
   m_iOffset = 0;
   m_fSmoothScrollOffset = 0;
   m_iItemsPerPage = 10;

@@ -40,6 +40,7 @@ CGUIThumbnailPanel::CGUIThumbnailPanel(DWORD dwParentID, DWORD dwControlId, int 
     , m_scrollInfo(0)
 {
   m_label = labelInfo;
+  m_upDown.SetSpinAlign(XBFONT_CENTER_Y | XBFONT_RIGHT, 0);
   m_iItemWidth = 0;
   m_iItemHeight = 0;
   m_iRowOffset = 0;
