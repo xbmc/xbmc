@@ -183,43 +183,46 @@ void CGUIListControl::Render()
   //------------------------------------------
   //Batch together all textrendering for m_pFont2
   iPosY = m_iPosY;
-  m_label2.font->Begin();
-  for (int i = 0; i < m_iItemsPerPage; i++)
+  if (m_label2.font)
   {
-    int iPosX = m_iPosX;
-    if (i + m_iOffset < (int)m_vecItems.size())
+    m_label2.font->Begin();
+    for (int i = 0; i < m_iItemsPerPage; i++)
     {
-      CGUIListItem *pItem = m_vecItems[i + m_iOffset];
-      CStdString strLabel2 = pItem->GetLabel2();
-
-      iPosX += m_iImageWidth + m_label.offsetX + 10;
-      if (strLabel2.size() > 0 && m_label2.font)
+      int iPosX = m_iPosX;
+      if (i + m_iOffset < (int)m_vecItems.size())
       {
-        g_charsetConverter.stringCharsetToFontCharset(strLabel2, labelUnicode2);
-        DWORD dwColor = m_label2.textColor;
-        if (pItem->IsSelected())
-        {
-          dwColor = m_label2.selectedColor;
-        }
-        if (!m_label2.offsetX)
-          iPosX = m_iPosX + m_dwWidth - 16;
-        else
-          iPosX = m_iPosX + m_label2.offsetX;
+        CGUIListItem *pItem = m_vecItems[i + m_iOffset];
+        CStdString strLabel2 = pItem->GetLabel2();
 
-        float fPosY = (float)iPosY + m_label2.offsetY;
-        if (m_label.align & XBFONT_CENTER_Y)
+        iPosX += m_iImageWidth + m_label.offsetX + 10;
+        if (strLabel2.size() > 0 && m_label2.font)
         {
-          float fTextHeight = 0;
-          float fTextWidth = 0;
-          m_label.font->GetTextExtent(labelUnicode.c_str(), &fTextWidth, &fTextHeight);
-          fPosY = (float)iPosY + (m_iItemHeight - fTextHeight) / 2;
+          g_charsetConverter.stringCharsetToFontCharset(strLabel2, labelUnicode2);
+          DWORD dwColor = m_label2.textColor;
+          if (pItem->IsSelected())
+          {
+            dwColor = m_label2.selectedColor;
+          }
+          if (!m_label2.offsetX)
+            iPosX = m_iPosX + m_dwWidth - 16;
+          else
+            iPosX = m_iPosX + m_label2.offsetX;
+
+          float fPosY = (float)iPosY + m_label2.offsetY;
+          if (m_label.align & XBFONT_CENTER_Y)
+          {
+            float fTextHeight = 0;
+            float fTextWidth = 0;
+            m_label.font->GetTextExtent(labelUnicode.c_str(), &fTextWidth, &fTextHeight);
+            fPosY = (float)iPosY + (m_iItemHeight - fTextHeight) / 2;
+          }
+          m_label2.font->DrawText((float)iPosX, fPosY, dwColor, m_label2.shadowColor, labelUnicode2.c_str(), XBFONT_RIGHT);
         }
-        m_label2.font->DrawText((float)iPosX, fPosY, dwColor, m_label2.shadowColor, labelUnicode2.c_str(), XBFONT_RIGHT);
+        iPosY += m_iItemHeight + m_iSpaceBetweenItems;
       }
-      iPosY += m_iItemHeight + m_iSpaceBetweenItems;
     }
+    m_label2.font->End();
   }
-  m_label2.font->End();
 
   if (m_bUpDownVisible && m_upDown.GetMaximum() > 1)
   {
