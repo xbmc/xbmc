@@ -89,6 +89,7 @@ void CGUIDialog::Close(bool forceClose /*= false*/)
 
   if (!m_bRunning) return;
 
+  CLog::DebugLog("Dialog::Close called");
   // don't close if we should be animating
   if (!forceClose && HasAnimation(ANIM_TYPE_WINDOW_CLOSE))
   {

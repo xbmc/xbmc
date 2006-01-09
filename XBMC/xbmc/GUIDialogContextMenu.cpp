@@ -6,7 +6,7 @@
 #include "application.h"
 #include "GUIPassword.h"
 #include "util.h"
-
+#include "SkinInfo.h"
 
 #define BACKGROUND_IMAGE 999
 #define BACKGROUND_BOTTOM 998
@@ -196,7 +196,8 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CStdS
       }
     }
     // set the correct position
-    pMenu->SetPosition(iPosX - pMenu->GetWidth() / 2, iPosY - pMenu->GetHeight() / 2);
+    if (g_SkinInfo.GetVersion() < 1.91 && !pMenu->GetPosX() && !pMenu->GetPosY())
+      pMenu->SetPosition(iPosX - pMenu->GetWidth() / 2, iPosY - pMenu->GetHeight() / 2);
     pMenu->DoModal(m_gWindowManager.GetActiveWindow());
     int iMenuID = pMenu->GetButton();
     
@@ -330,7 +331,8 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CStdS
               pMenu->AddButton(12339); // 3: Full-text Password
 
               // set the correct position
-              pMenu->SetPosition(iPosX - pMenu->GetWidth() / 2, iPosY - pMenu->GetHeight() / 2);
+              if (g_SkinInfo.GetVersion() < 1.91 && !pMenu->GetPosX() && !pMenu->GetPosY())
+                pMenu->SetPosition(iPosX - pMenu->GetWidth() / 2, iPosY - pMenu->GetHeight() / 2);
               pMenu->DoModal(m_gWindowManager.GetActiveWindow());
 
               char strLockMode[33];  // holds 32 places plus sign character

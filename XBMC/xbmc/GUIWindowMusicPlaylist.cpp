@@ -7,6 +7,8 @@
 #include "GUIListControl.h"
 #include "GUIDialogContextMenu.h"
 
+#include "SkinInfo.h"
+
 
 #define CONTROL_BTNVIEWASICONS     2 
 #define CONTROL_BTNSORTBY          3
@@ -617,7 +619,8 @@ void CGUIWindowMusicPlayList::OnPopupMenu(int iItem)
   int btn_Return = pMenu->AddButton(12010); // Return to My Music
 
   // position it correctly
-  pMenu->SetPosition(iPosX - pMenu->GetWidth() / 2, iPosY - pMenu->GetHeight() / 2);
+  if (g_SkinInfo.GetVersion() < 1.91 && !pMenu->GetPosX() && !pMenu->GetPosY())
+    pMenu->SetPosition(iPosX - pMenu->GetWidth() / 2, iPosY - pMenu->GetHeight() / 2);
   pMenu->DoModal(GetID());
 
   int btnid = pMenu->GetButton();

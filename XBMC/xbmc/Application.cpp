@@ -1274,7 +1274,7 @@ HRESULT CApplication::Initialize()
   }
 
   //  Show mute symbol
-  if (g_stSettings.m_nVolumeLevel==VOLUME_MINIMUM)
+  if (g_stSettings.m_nVolumeLevel == VOLUME_MINIMUM)
     Mute();
 
   // if the user shutoff the xbox during music scan
@@ -2230,13 +2230,7 @@ bool CApplication::OnKey(CKey& key)
   }
   if (action.wID == ACTION_MUTE)
   {
-    if (g_stSettings.m_bMute == false)
-      Mute();
-    else  // already muted
-      UnMute();
-
-    if (m_pPlayer)
-      m_pPlayer->SetVolume(g_stSettings.m_nVolumeLevel);
+    Mute();
     return true;
   }
 
@@ -2246,7 +2240,7 @@ bool CApplication::OnKey(CKey& key)
     if (g_stSettings.m_bMute == true)
     {
       if (action.wID == ACTION_VOLUME_UP)   // restore level only on volume up
-        UnMute();
+        Mute();
     }
     else // regular volume change
     {
@@ -2264,7 +2258,8 @@ bool CApplication::OnKey(CKey& key)
       if (g_stSettings.m_nVolumeLevel <= VOLUME_MINIMUM)
       {
         g_stSettings.m_nVolumeLevel = VOLUME_MINIMUM;
-        Mute();   // activate mute when volume becomes 0
+        if (!g_stSettings.m_bMute)
+          Mute();   // activate mute when volume becomes 0
       }
     }
 
@@ -3639,6 +3634,10 @@ void CApplication::CheckShutdown()
       {
         m_dwSaverTick = timeGetTime();
       }
+      else if (m_gWindowManager.IsWindowActive(WINDOW_DIALOG_PROGRESS))
+      {
+        m_dwSaverTick = timeGetTime();  // progress dialog is on screen
+      }
       else          // not playing
       {
         bShutDown = true;
@@ -3825,6 +3824,9 @@ bool CApplication::OnMessage(CGUIMessage& message)
           CGUIMessage msg( GUI_MSG_PLAYLIST_CHANGED, 0, 0, 0, 0, NULL );
           m_gWindowManager.SendMessage( msg );
         }
+        // stop the file if it's on dvd (will set the resume point etc)
+        if (m_itemCurrentFile.IsOnDVD())
+          StopPlaying();
       }
     }
     break;
@@ -4150,21 +4152,21 @@ const CFileItem& CApplication::CurrentFileItem()
 
 void CApplication::Mute(void)
 {
-  g_stSettings.m_iPreMuteVolumeLevel = g_stSettings.m_nVolumeLevel;
-  g_stSettings.m_bMute = true;
-  g_stSettings.m_nVolumeLevel = VOLUME_MINIMUM;
-
-  if (!m_guiDialogMuteBug.IsRunning())
-    m_guiDialogMuteBug.Show(m_gWindowManager.GetActiveWindow());
-}
-
-void CApplication::UnMute(void)
-{
-  g_stSettings.m_bMute = false;
-  g_stSettings.m_nVolumeLevel = g_stSettings.m_iPreMuteVolumeLevel;
-
-  CGUIMessage msg(GUI_MSG_MUTE_OFF, 0, 0, 0, 0, NULL);
-  m_gWindowManager.SendMessage(msg);
+  if (g_stSettings.m_bMute)
+  { // muted - unmute.
+    g_stSettings.m_bMute = false;
+    SetVolume(g_stSettings.m_iPreMuteVolumeLevel);
+    if (m_guiDialogMuteBug.IsRunning())
+      m_guiDialogMuteBug.Close();
+  }
+  else
+  { // mute
+    g_stSettings.m_iPreMuteVolumeLevel = GetVolume();
+    g_stSettings.m_bMute = true;
+    SetVolume(0);
+    if (!m_guiDialogMuteBug.IsRunning())
+      m_guiDialogMuteBug.Show(m_gWindowManager.GetActiveWindow());
+  }
 }
 
 void CApplication::SetVolume(int iPercent)
