@@ -138,6 +138,19 @@ void GUIFontManager::Unload(const CStdString& strFontName)
   }
 }
 
+void GUIFontManager::FreeFontFile(CGUIFontBase *pFont)
+{
+  for (vector<CGUIFontBase*>::iterator it = m_vecFontFiles.begin(); it != m_vecFontFiles.end(); ++it)
+  {
+    if (pFont == *it)
+    {
+      m_vecFontFiles.erase(it);
+      delete pFont;
+      return;
+    }
+  }
+}
+
 CGUIFontBase* GUIFontManager::GetFontFile(const CStdString& strFileName)
 {
   for (int i = 0; i < (int)m_vecFontFiles.size(); ++i)

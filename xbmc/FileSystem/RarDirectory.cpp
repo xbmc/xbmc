@@ -31,6 +31,7 @@ namespace DIRECTORY
         if ((IsAllowed(items[iEntry]->m_strPath)) || (items[iEntry]->m_bIsFolder))
         {
           items[iEntry]->m_strPath = strSlashPath + items[iEntry]->m_strPath;
+          CLog::Log(LOGDEBUG, "RarDirectory::GetDirectory() retrieved file: %s", items[iEntry]->m_strPath.c_str());
         }
         else
         {

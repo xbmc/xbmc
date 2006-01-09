@@ -5,6 +5,13 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 09-01-2006 fixed: Crash switching from Fullscreen -> GUI.
+ - 09-01-2006 fixed: Page up/down controls were rendered incorrectly.
+ - 09-01-2006 fixed: [ 1326937 ] Ripping a CD is an idle state for autoshutdown
+ - 09-01-2006 fixed: [ 1400055 ] Mute Function doesn't work well.
+ - 09-01-2006 fixed: [ 1309067 ] DVD-Player doesn't STOP on Eject Disc
+ - 09-01-2006 fixed: Window Animations weren't reset when changing skins.
+ - 09-01-2006 fixed: [ 1399055 ] Rarred subs left a progress dialog on screen.
  - 09-01-2006 changed: made dvdplayer use libmpeg2 for decoding mpeg1 video too and added reset code on decoding error
  - 09-01-2006 fixed: [ 1393429 ] If nothings playing volume reports -1 from GetVolume
  - 09-01-2006 changed: edit xbe title truncates to 39 characters so as not to corrupt xbe header
