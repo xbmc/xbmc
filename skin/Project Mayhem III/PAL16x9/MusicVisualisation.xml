@@ -24,7 +24,7 @@
       <height>65</height>
       <texture>osd_menu_bg.png</texture>
       <visible>Player.ShowCodec</visible>
-      <animation effect="fade" time="300">VisibleChange</visible>
+      <animation effect="fade" time="300">VisibleChange</animation>
     </control>
 
     <control>
@@ -38,7 +38,7 @@
       <align>left</align>
       <font>font12</font>
       <visible>Player.ShowCodec</visible>
-      <animation effect="fade" time="300">VisibleChange</visible>
+      <animation effect="fade" time="300">VisibleChange</animation>
     </control>
 
     <control>
@@ -52,7 +52,7 @@
       <font>font12</font>
       <align>left</align>
       <visible>Player.ShowCodec</visible>
-      <animation effect="fade" time="300">VisibleChange</visible>
+      <animation effect="fade" time="300">VisibleChange</animation>
     </control>
 
     <control>
@@ -66,7 +66,7 @@
       <font>font12</font>
       <align>left</align>
       <visible>Player.ShowCodec</visible>
-      <animation effect="fade" time="300">VisibleChange</visible>
+      <animation effect="fade" time="300">VisibleChange</animation>
     </control>
 
     <control>
@@ -78,7 +78,7 @@
       <width>12</width>
       <height>15</height>
       <visible>Visualisation.Locked + Player.ShowCodec</visible>
-      <animation effect="fade" time="300">VisibleChange</visible>
+      <animation effect="fade" time="300">VisibleChange</animation>
       <texture>arenaitem-private.png</texture>
     </control>
 
@@ -93,7 +93,7 @@
       <height>100</height>
       <texture>osd_menu_bg.png</texture>
       <visible>Player.ShowInfo</visible>
-      <animation effect="fade" time="1000">VisibleChange</visible>
+      <animation effect="fade" time="1000">VisibleChange</animation>
     </control>
 
     <control>
@@ -107,7 +107,7 @@
       <info>MusicPlayer.Cover</info>
       <keepaspectratio>true</keepaspectratio>
       <visible>Player.ShowInfo</visible>
-      <animation effect="fade" time="1000">VisibleChange</visible>
+      <animation effect="fade" time="1000">VisibleChange</animation>
     </control>
 
     <control>
@@ -121,7 +121,7 @@
       <align>left</align>
       <font>special12</font>
       <visible>Player.ShowInfo</visible>
-      <animation effect="fade" time="1000">VisibleChange</visible>
+      <animation effect="fade" time="1000">VisibleChange</animation>
     </control>
 
     <control>
@@ -135,7 +135,7 @@
       <align>left</align>
       <font>special13</font>
       <visible>Player.ShowInfo</visible>
-      <animation effect="fade" time="1000">VisibleChange</visible>
+      <animation effect="fade" time="1000">VisibleChange</animation>
     </control>
 
     <control>
@@ -149,7 +149,7 @@
       <align>left</align>
       <font>font10</font>
       <visible>Player.ShowInfo</visible>
-      <animation effect="fade" time="1000">VisibleChange</visible>
+      <animation effect="fade" time="1000">VisibleChange</animation>
     </control>
 
     <control>
@@ -163,7 +163,7 @@
       <align>left</align>
       <font>font10</font>
       <visible>Player.ShowInfo</visible>
-      <animation effect="fade" time="1000">VisibleChange</visible>
+      <animation effect="fade" time="1000">VisibleChange</animation>
     </control>
 
     <control>
@@ -177,7 +177,7 @@
       <align>right</align>
       <font>font10</font>
       <visible>Player.ShowInfo</visible>
-      <animation effect="fade" time="1000">VisibleChange</visible>
+      <animation effect="fade" time="1000">VisibleChange</animation>
     </control>
 
   </controls>
