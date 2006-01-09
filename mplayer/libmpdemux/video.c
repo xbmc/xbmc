@@ -22,6 +22,14 @@
 /* sub_cc (closed captions)*/
 #include "../sub_cc.h"
 
+#ifdef USE_LIBAVCODEC_SO
+#include <ffmpeg/avcodec.h>
+#elif defined(USE_LIBAVCODEC)
+#include "libavcodec/avcodec.h"
+#else
+#define FF_INPUT_BUFFER_PADDING_SIZE 8
+#endif
+
 /* biCompression constant */
 #define BI_RGB        0L
 
@@ -127,10 +135,13 @@ switch(video_codec){
       }
    }
    mp_msg(MSGT_DECVIDEO,MSGL_V,"OK!\n");
-   if(!videobuffer) videobuffer=(char*)memalign(8,VIDEOBUFFER_SIZE);
-   if(!videobuffer){ 
-     mp_msg(MSGT_DECVIDEO,MSGL_ERR,MSGTR_ShMemAllocFail);
-     return 0;
+   if(!videobuffer) {
+     videobuffer=(char*)memalign(8,VIDEOBUFFER_SIZE + FF_INPUT_BUFFER_PADDING_SIZE);
+     if (videobuffer) memset(videobuffer+VIDEOBUFFER_SIZE, 0, FF_INPUT_BUFFER_PADDING_SIZE);
+     else {
+       mp_msg(MSGT_DECVIDEO,MSGL_ERR,MSGTR_ShMemAllocFail);
+       return 0;
+     }
    }
    mp_msg(MSGT_DECVIDEO,MSGL_V,"Searching for Video Object Layer Start code... ");fflush(stdout);
    while(1){
@@ -167,10 +178,13 @@ switch(video_codec){
       }
    }
    mp_msg(MSGT_DECVIDEO,MSGL_V,"OK!\n");
-   if(!videobuffer) videobuffer=(char*)memalign(8,VIDEOBUFFER_SIZE);
-   if(!videobuffer){ 
-     mp_msg(MSGT_DECVIDEO,MSGL_ERR,MSGTR_ShMemAllocFail);
-     return 0;
+   if(!videobuffer) {
+     videobuffer=(char*)memalign(8,VIDEOBUFFER_SIZE + FF_INPUT_BUFFER_PADDING_SIZE);
+     if (videobuffer) memset(videobuffer+VIDEOBUFFER_SIZE, 0, FF_INPUT_BUFFER_PADDING_SIZE);
+     else {
+       mp_msg(MSGT_DECVIDEO,MSGL_ERR,MSGTR_ShMemAllocFail);
+       return 0;
+     }
    }
    mp_msg(MSGT_DECVIDEO,MSGL_V,"Searching for picture parameter set... ");fflush(stdout);
    while(1){
@@ -214,10 +228,13 @@ switch(video_codec){
 //   sh_video=d_video->sh;sh_video->ds=d_video;
 //   mpeg2_init();
    // ========= Read & process sequence header & extension ============
-   if(!videobuffer) videobuffer=(char*)memalign(8,VIDEOBUFFER_SIZE);
-   if(!videobuffer){ 
-     mp_msg(MSGT_DECVIDEO,MSGL_ERR,MSGTR_ShMemAllocFail);
-     return 0;
+   if(!videobuffer) {
+     videobuffer=(char*)memalign(8,VIDEOBUFFER_SIZE + FF_INPUT_BUFFER_PADDING_SIZE);
+     if (videobuffer) memset(videobuffer+VIDEOBUFFER_SIZE, 0, FF_INPUT_BUFFER_PADDING_SIZE);
+     else {
+       mp_msg(MSGT_DECVIDEO,MSGL_ERR,MSGTR_ShMemAllocFail);
+       return 0;
+     }
    }
    
    if(!read_video_packet(d_video)){ 
