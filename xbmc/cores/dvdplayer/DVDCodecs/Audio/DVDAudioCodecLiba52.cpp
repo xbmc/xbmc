@@ -244,7 +244,7 @@ int CDVDAudioCodecLiba52::Decode(BYTE* pData, int iSize)
       {
         if (m_dll.a52_block(m_pState) != 0)
         {
-          OutputDebugString("Error!!!!!!!!!!");
+          CLog::Log(LOGERROR, "CDVDAudioCodecLiba52::Decode - a52_block failed");
           m_pInputBuffer = m_inputBuffer;
           m_iFrameSize = 0;
           m_decodedDataSize = 0;
