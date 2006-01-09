@@ -1257,14 +1257,9 @@ int CXbmcHttp::xbmcSetVolume(int numParas, CStdString paras[])
 
 int CXbmcHttp::xbmcGetVolume()
 {
-  int vol;
-  if (g_application.m_pPlayer!=0)
-    vol = int(((float)(g_stSettings.m_nVolumeLevel - VOLUME_MINIMUM))/(VOLUME_MAXIMUM-VOLUME_MINIMUM)*100.0f+0.5f) ;
-  else
-    vol = -1;
   CStdString tmp;
-  tmp.Format("%i",vol);
-  return SetResponse(openTag + tmp );
+  tmp.Format("%i",g_application.GetVolume());
+  return SetResponse(openTag + tmp);
 }
 
 int CXbmcHttp::xbmcClearSlideshow()
