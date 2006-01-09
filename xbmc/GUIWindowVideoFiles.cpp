@@ -251,11 +251,12 @@ bool CGUIWindowVideoFiles::UpdateDir(const CStdString &strDirectory)
 
   m_vecItems.SetThumbs();
   auto_ptr<CGUIViewState> pState(CGUIViewState::GetViewState(GetID(), m_vecItems));
+  
   if (g_stSettings.m_bMyVideoCleanTitles)
     m_vecItems.CleanFileNames();
   else if (pState.get() && pState->HideExtensions())
     m_vecItems.RemoveExtensions();
-
+  
   SetIMDBThumbs(m_vecItems);
   m_vecItems.FillInDefaultIcons();
 
