@@ -302,19 +302,7 @@ bool CGUIWindowFileManager::OnMessage(CGUIMessage& message)
 
 void CGUIWindowFileManager::OnSort(int iList)
 {
-  SORT_METHOD sortMethod;
-  SORT_ORDER sortOrder;
-  if (m_Directory[iList].IsVirtualDirectoryRoot())
-  {
-    sortMethod = SORT_METHOD_DRIVE_TYPE;
-    sortOrder = SORT_ORDER_ASC;
-  }
-  else
-  {
-    sortMethod = SORT_METHOD_LABEL;
-    sortOrder = SORT_ORDER_ASC;
-  }
-
+  // always sort the list by label in ascending order
   for (int i = 0; i < m_vecItems[iList].Size(); i++)
   {
     CFileItem* pItem = m_vecItems[iList][i];
@@ -348,7 +336,7 @@ void CGUIWindowFileManager::OnSort(int iList)
 
   }
 
-  m_vecItems[iList].Sort(sortMethod, sortOrder);
+  m_vecItems[iList].Sort(SORT_METHOD_LABEL, SORT_ORDER_ASC);
   // UpdateControl(iList);
 }
 
