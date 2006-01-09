@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 09-01-2006 fixed: Sort order in Filemanager is now by label for the bookmarks.
  - 09-01-2006 fixed: Crash switching from Fullscreen -> GUI.
  - 09-01-2006 fixed: Page up/down controls were rendered incorrectly.
  - 09-01-2006 fixed: [ 1326937 ] Ripping a CD is an idle state for autoshutdown
