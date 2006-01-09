@@ -318,6 +318,9 @@ void CDVDPlayerVideo::Process()
         // the decoder didn't need more data, flush the remaning buffer
         iDecoderState = m_pVideoCodec->Decode(NULL, NULL);
       }
+
+      // if decoder had an error, tell it to reset to avoid more problems
+      if( iDecoderState & VC_ERROR ) m_pVideoCodec->Reset();
     }
     
     LeaveCriticalSection(&m_critCodecSection);
