@@ -1,9 +1,11 @@
 #include "include.h"
 #include "guifontbase.h"
+#include "GUIFontManager.h"
 
 CGUIFontBase::CGUIFontBase(const CStdString& strFileName)
 {
   m_strFileName = strFileName;
+  m_referenceCount = 0;
 }
 
 CGUIFontBase::~CGUIFontBase()
@@ -20,7 +22,9 @@ void CGUIFontBase::RemoveReference()
   // delete this object when it's reference count hits zero
   m_referenceCount--;
   if (!m_referenceCount)
-    delete this;
+  {
+    g_fontManager.FreeFontFile(this);
+  }
 }
 
 CStdString& CGUIFontBase::GetFileName()

@@ -434,7 +434,7 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
       CSingleLock lockFont(m_fontLock);
       if (m_subtitleFont)
       {
-        delete m_subtitleFont;
+        g_fontManager.Unload("__subtitle__");
         m_subtitleFont = NULL;
       }
 
