@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 09-01-2006 fixed: [ 1393429 ] If nothings playing volume reports -1 from GetVolume
  - 09-01-2006 changed: edit xbe title truncates to 39 characters so as not to corrupt xbe header
  - 09-01-2006 fixed: video stacking (no longer displays comma seperated file list)
  - 09-01-2006 fixed: [ 1398240 ] Dialog box grammar error.
