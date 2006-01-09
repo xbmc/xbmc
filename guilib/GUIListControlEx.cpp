@@ -15,6 +15,7 @@ CGUIListControlEx::CGUIListControlEx(DWORD dwParentID, DWORD dwControlId, int iP
     , m_upDown(dwControlId, 0, 0, 0, dwSpinWidth, dwSpinHeight, strUp, strDown, strUpFocus, strDownFocus, labelInfo, dwSpinColor, SPIN_CONTROL_TYPE_INT)
     , m_imgButton(dwControlId, 0, iPosX, iPosY, dwWidth, dwHeight, strButtonFocus, strButton, labelInfo)
 {
+  m_upDown.SetSpinAlign(XBFONT_CENTER_Y | XBFONT_RIGHT, 0);
   m_pList = NULL;
   m_iOffset = 0;
   m_iItemsPerPage = 10;

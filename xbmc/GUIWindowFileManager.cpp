@@ -13,6 +13,7 @@
 #include "GUIWindowSlideShow.h"
 #include "PlayListFactory.h"
 #include "utils/GUIInfoManager.h"
+#include "SkinInfo.h"
 
 using namespace XFILE;
 
@@ -1248,7 +1249,8 @@ void CGUIWindowFileManager::OnPopupMenu(int list, int item)
     pMenu->EnableButton(6, CanNewFolder(list));
     pMenu->EnableButton(7, item >=0 && m_vecItems[list][item]->m_bIsFolder && !m_vecItems[list][item]->IsParentFolder());
     // position it correctly
-    pMenu->SetPosition(iPosX - pMenu->GetWidth() / 2, iPosY - pMenu->GetHeight() / 2);
+    if (g_SkinInfo.GetVersion() < 1.91 && !pMenu->GetPosX() && !pMenu->GetPosY())
+      pMenu->SetPosition(iPosX - pMenu->GetWidth() / 2, iPosY - pMenu->GetHeight() / 2);
     pMenu->DoModal(GetID());
     switch (pMenu->GetButton())
     {

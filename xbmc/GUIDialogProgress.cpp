@@ -19,6 +19,7 @@ CGUIDialogProgress::~CGUIDialogProgress(void)
 
 void CGUIDialogProgress::StartModal(DWORD dwParentId)
 {
+  CLog::DebugLog("DialogProgress::StartModal called %s", m_bRunning ? "(already running)!" : "");
   m_bCanceled = false;
   m_dwParentWindowID = dwParentId;
   m_pParentWindow = m_gWindowManager.GetWindow( m_dwParentWindowID);
