@@ -1286,11 +1286,11 @@ HRESULT CApplication::Initialize()
   }
 
   CLog::Log(LOGNOTICE, "initialize done");
-  if (g_guiSettings.GetInt("LCD.Mode") == LCD_MODE_NOTV)
+/*  if (g_guiSettings.GetInt("LCD.Mode") == LCD_MODE_NOTV)
   {
     // jump to my music when we're in NO tv mode
     m_gWindowManager.ActivateWindow(WINDOW_MUSIC_FILES);
-  }
+  }*/
 
   CScrobbler::GetInstance()->Init();
   StartKai();
