@@ -203,29 +203,40 @@ void CDVDPlayer::Process()
     if (m_bAbortRequest) break;
 
     
-    if( m_iSpeed != 1 && m_iCurrentStreamVideo >= 0 && m_dvdPlayerVideo.GetCurrentPts() != DVD_NOPTS_VALUE )
-    { 
-      // check how much off clock video is when ff/rw:ing
-      // a problem here is that seeking isn't very accurate
-      // and since the clock will be resynced after seek
-      // we might actually not really be playing at the wanted 
-      // speed. we'd need to have some way to not resync the clock 
-      // after a seek to remember timing. still need to handle 
-      // discontinuities somehow
-      // when seeking, give the player a headstart of 1 second to make sure the time it takes 
-      // to seek doesn't make a difference. 
-      __int64 iError = m_clock.GetClock() - m_dvdPlayerVideo.GetCurrentPts();
+    if( m_iSpeed > 1 || m_iSpeed < 0)
+    {
+      bool bMenu = IsInMenu();
 
-      if( m_iSpeed > 0 && iError > DVD_SEC_TO_TIME(1*m_iSpeed) )
-      {
-        CLog::Log(LOGDEBUG, "CDVDPlayer::Process - FF Seeking to catch up");        
-        SeekTime( GetTime() + 1000*m_iSpeed);
+      // don't allow rewind in menu
+      if( bMenu && m_iSpeed < 0 ) ToFFRW(1);
+
+      if( m_iCurrentStreamVideo >= 0 
+        && m_dvdPlayerVideo.GetCurrentPts() != DVD_NOPTS_VALUE 
+        && !bMenu )
+      { 
+
+        // check how much off clock video is when ff/rw:ing
+        // a problem here is that seeking isn't very accurate
+        // and since the clock will be resynced after seek
+        // we might actually not really be playing at the wanted 
+        // speed. we'd need to have some way to not resync the clock 
+        // after a seek to remember timing. still need to handle 
+        // discontinuities somehow
+        // when seeking, give the player a headstart of 1 second to make sure the time it takes 
+        // to seek doesn't make a difference. 
+        __int64 iError = m_clock.GetClock() - m_dvdPlayerVideo.GetCurrentPts();
+
+        if( m_iSpeed > 0 && iError > DVD_SEC_TO_TIME(1*m_iSpeed) )
+        {
+          CLog::Log(LOGDEBUG, "CDVDPlayer::Process - FF Seeking to catch up");        
+          SeekTime( GetTime() + 1000*m_iSpeed);
+        }
+        else if( m_iSpeed < 0 && iError < DVD_SEC_TO_TIME(1*m_iSpeed) )
+        {        
+          SeekTime( GetTime() + 1000*m_iSpeed);
+        }      
+        m_bDontSkipNextFrame = true;
       }
-      else if( m_iSpeed < 0 && iError < DVD_SEC_TO_TIME(1*m_iSpeed) )
-      {        
-        SeekTime( GetTime() + 1000*m_iSpeed);
-      }      
-      m_bDontSkipNextFrame = true;
     }
 
       
@@ -935,6 +946,10 @@ int CDVDPlayer::GetTotalTime()
 
 void CDVDPlayer::ToFFRW(int iSpeed)
 {
+  // can't rewind in menu as seeking isn't possible
+  // forward is fine
+  if( iSpeed < 0 && IsInMenu() ) return;
+
   // current way this is done.
   // audioplayer, stops outputing audio to audiorendere, but still tries to 
   // sleep an correct amount for each packet
