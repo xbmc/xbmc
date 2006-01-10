@@ -104,8 +104,7 @@ CPlayList::~CPlayList(void)
 void CPlayList::Add(CPlayListItem& item)
 {
   // set the order identifier to the size of the vector
-  CLog::Log(LOGDEBUG,"CPlayList::Add, item: %s. WasPlayed: %s. IsUnPlayable: %s",
-      item.m_strPath.c_str(), item.WasPlayed() ? "true" : "false", item.IsUnPlayable() ? "true" : "false");
+  //CLog::Log(LOGDEBUG,"CPlayList::Add, item: %s. WasPlayed: %s. IsUnPlayable: %s", item.m_strPath.c_str(), item.WasPlayed() ? "true" : "false", item.IsUnPlayable() ? "true" : "false");
 
   item.m_iOrder = m_vecItems.size();
   m_vecItems.push_back(item);

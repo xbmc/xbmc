@@ -582,21 +582,23 @@ int CPlayListPlayer::NextShuffleItem()
     return -1;
 
   // pick random number
+  int iNumIterations = 0;
   int iRandom = rand() % playlist.GetUnplayed();
   while (playlist[iRandom].WasPlayed() || playlist[iRandom].IsUnPlayable())
   {
-    // sanity check in loop
-    if ((playlist.GetUnplayed() <= 0) || (playlist.GetPlayable() <= 0))
+    // sanity check
+    if (iNumIterations > playlist.size())
       return -1;
 
-    CLog::Log(LOGDEBUG,"CPlayListPlayer::NextShuffleItem(), skipping song at %i. WasPlayed: %s. IsUnPlayable: %s",
-      iRandom, playlist[iRandom].WasPlayed() ? "true" : "false", playlist[iRandom].IsUnPlayable() ? "true" : "false");
+    //CLog::Log(LOGDEBUG,"CPlayListPlayer::NextShuffleItem(), skipping song at %i. WasPlayed: %s. IsUnPlayable: %s", iRandom, playlist[iRandom].WasPlayed() ? "true" : "false", playlist[iRandom].IsUnPlayable() ? "true" : "false");
     // increment by one until an unplayed song is found
     iRandom++;
 
     // circle around if past the last song
     if (iRandom >= playlist.size())
       iRandom = 0;
+
+    iNumIterations++;
   }
   CLog::Log(LOGDEBUG,"CPlayListPlayer::NextShuffleItem(), return = %i",iRandom);
 
@@ -615,9 +617,14 @@ int CPlayListPlayer::PreviousShuffleItem()
     return -1;
   
   // pick random number
+  int iNumIterations = 0;
   int iRandom = rand() % iPlayed;
   while (iRandom == m_iCurrentSong || !playlist[iRandom].WasPlayed())
   {
+    // sanity check
+    if (iNumIterations > playlist.size())
+      return -1;
+
     //CLog::Log(LOGDEBUG,"CPlayListPlayer::PreviousShuffleItem(), skipping unplayed song at %i",iRandom);
     // increment by one until a played song is found
     iRandom++;
@@ -625,6 +632,8 @@ int CPlayListPlayer::PreviousShuffleItem()
     // circle around if past the last song
     if (iRandom >= playlist.size())
       iRandom = 0;
+
+    iNumIterations++;
   }
   //CLog::Log(LOGDEBUG,"CPlayListPlayer::PreviousShuffleItem(), return = %i",iRandom);
 
