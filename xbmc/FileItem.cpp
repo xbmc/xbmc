@@ -536,8 +536,10 @@ void CFileItem::FillInDefaultIcon()
           if (CUtil::HasSlashAtEnd(strFolder))
             strFolder.Delete(strFolder.size() - 1);
 
-          // skip playlists found in the playlists folders
-          if (!strFolder.Equals(CUtil::MusicPlaylistsLocation()) && !strFolder.Equals(CUtil::VideoPlaylistsLocation()))
+          // skip playlists found in the playlist subfolders
+          CStdString strPlaylistFolder = g_stSettings.m_szPlaylistsDirectory;
+          CUtil::AddSlashAtEnd(strPlaylistFolder);
+          if (!strFolder.Left(strPlaylistFolder.size()).Equals(strPlaylistFolder))
           {
             CPlayListFactory factory;
             auto_ptr<CPlayList> pPlayList (factory.Create(m_strPath));
