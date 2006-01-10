@@ -270,10 +270,7 @@ void CDVDPlayerVideo::Process()
             EOUTPUTSTATUS iResult;
             do 
             {              
-              if( m_iSpeed < 0 ) // reversing, don't wait for pts
-                iResult = OutputPicture(&picture, 0);
-              else
-                iResult = OutputPicture(&picture, pts);
+              iResult = OutputPicture(&picture, pts);
 
               if (iResult == EOS_ABORT) break;
 
@@ -455,6 +452,11 @@ CDVDPlayerVideo::EOUTPUTSTATUS CDVDPlayerVideo::OutputPicture(DVDVideoPicture* p
       //Playback at normal fps until after discontinuity
       iSleepTime = pPicture->iDuration;
       iSleepTime -= m_pClock->GetAbsoluteClock() - m_iFlipTimeStamp;
+    }
+    else if( m_iSpeed < 0 )
+    {
+      // don't sleep when going backwords, just push frames out
+      iSleepTime = 0;
     }
     else
     {
