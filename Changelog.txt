@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 10-01-2006 fixed: playlists found in subfolders off the music and video playlists locations
+			will not be re-cached to the music or video playlist location.
  - 09-01-2006 fixed: Python list controls would crash.
  - 09-01-2006 fixed: Sort order in Filemanager is now by label for the bookmarks.
  - 09-01-2006 fixed: Crash switching from Fullscreen -> GUI.
