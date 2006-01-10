@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 10-01-2006 fixed: dvdplayer: some vobs reported a wrong totaltime, as playback progressed totaltime decreased rapidly and no seeking was possible. 
  - 10-01-2006 fixed: changed to use libmpeg2 for mpeg1 caused ffmpeg to be used for everything instead in dvdplayer
  - 10-01-2006 fixed: playlists found in subfolders off the music and video playlists locations
 			will not be re-cached to the music or video playlist location.
