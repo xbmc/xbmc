@@ -14,10 +14,12 @@ public:
   void SetText(CStdString& aTextString);
   CStdString GetText() const { return m_strEdit;};
   bool IsConfirmed() { return m_bIsConfirmed; };
+  void SetHiddenInput(bool hiddenInput) { m_hiddenInput = hiddenInput; };
 
   static bool ShowAndGetInput(CStdString& aTextString, bool allowEmptyResult);
-  static bool ShowAndGetInput(CStdString& aTextString, const CStdStringW &strHeading, bool allowEmptyResult);
+  static bool ShowAndGetInput(CStdString& aTextString, const CStdStringW &strHeading, bool allowEmptyResult, bool hiddenInput = false);
   static bool ShowAndGetNewPassword(CStdString& strNewPassword);
+  static bool ShowAndGetNewPassword(CStdString& newPassword, const CStdStringW &heading, bool allowEmpty);
   static int ShowAndVerifyPassword(CStdString& strPassword, const CStdStringW& strHeading, int iRetries);
 
   virtual void Close(bool forceClose = false);
@@ -28,7 +30,8 @@ protected:
   virtual bool OnAction(const CAction &action);
   virtual bool OnMessage(CGUIMessage& message);
   void OnShift();
-  void OnCursor(int iAmount);
+  void MoveCursor(int iAmount);
+  int GetCursorPos() const;
   void OnSymbols();
 
 private:
@@ -37,6 +40,7 @@ private:
   void OnRemoteNumberClick(int key);
   void UpdateButtons();
   WCHAR GetCharacter(int iButton);
+  void UpdateLabel();
 
   void Character(WCHAR wch);
   void Backspace();
@@ -46,6 +50,7 @@ private:
   KEYBOARD m_keyType;
   int m_iMode;
   bool m_bShift;
+  bool m_hiddenInput;
 
   DWORD m_lastRemoteClickTime;
   WORD m_lastRemoteKeyClicked;
