@@ -5,6 +5,9 @@
 #include "DVDdemuxUtils.h"
 #include "..\DVDClock.h" // for DVD_TIME_BASE
 
+// threashold for start values in AV_TIME_BASE units
+#define PTS_START_THREASHOLD 100000
+
 // class CDemuxStreamVideoFFmpeg
 void CDemuxStreamVideoFFmpeg::GetStreamInfo(std::string& strInfo)
 {
@@ -326,10 +329,12 @@ CDVDDemux::DemuxPacket* CDVDDemuxFFmpeg::Read()
         else
         {
           pPacket->pts = (num * pkt.pts * AV_TIME_BASE) / den;
-          if (m_pFormatContext->start_time != DVD_NOPTS_VALUE &&
-              pPacket->pts > (unsigned __int64)m_pFormatContext->start_time)
+          if (m_pFormatContext->start_time != AV_NOPTS_VALUE)              
           {
-            pPacket->pts -= m_pFormatContext->start_time;
+            if( pPacket->pts > (unsigned __int64)m_pFormatContext->start_time )
+              pPacket->pts -= m_pFormatContext->start_time;
+            else if( pPacket->pts + PTS_START_THREASHOLD > (unsigned __int64)m_pFormatContext->start_time )
+              pPacket->pts = 0;
           }
           
           // convert to dvdplayer clock ticks
@@ -340,10 +345,12 @@ CDVDDemux::DemuxPacket* CDVDDemuxFFmpeg::Read()
         else
         {
           pPacket->dts = (num * pkt.dts * AV_TIME_BASE) / den;
-          if (m_pFormatContext->start_time != DVD_NOPTS_VALUE &&
-              pPacket->dts > (unsigned __int64)m_pFormatContext->start_time)
+          if (m_pFormatContext->start_time !=  AV_NOPTS_VALUE)
           {
-            pPacket->dts -= m_pFormatContext->start_time;
+            if( pPacket->dts > (unsigned __int64)m_pFormatContext->start_time )
+              pPacket->dts -= m_pFormatContext->start_time;
+            else if( pPacket->dts + PTS_START_THREASHOLD > (unsigned __int64)m_pFormatContext->start_time )
+              pPacket->dts = 0;
           }
           
           // convert to dvdplayer clock ticks
@@ -417,7 +424,7 @@ CDVDDemux::DemuxPacket* CDVDDemuxFFmpeg::Read()
 bool CDVDDemuxFFmpeg::Seek(int iTime)
 {
   __int64 seek_pts = (__int64)iTime * (AV_TIME_BASE / 1000);
-  if (m_pFormatContext->start_time != DVD_NOPTS_VALUE && seek_pts < m_pFormatContext->start_time)
+  if (m_pFormatContext->start_time != AV_NOPTS_VALUE && seek_pts < m_pFormatContext->start_time)
   {
     seek_pts += m_pFormatContext->start_time;
   }
