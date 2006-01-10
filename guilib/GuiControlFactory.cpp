@@ -1432,6 +1432,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
   }
   else if (strType == "sliderex")
   {
+    labelInfo.align |= XBFONT_CENTER_Y;    // always center text vertically
     CGUISettingsSliderControl* pControl = new CGUISettingsSliderControl(
       dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight, dwSliderWidth, dwSliderHeight, strTextureFocus, strTextureNoFocus,
       strTextureBg, strMid, strMidFocus, labelInfo, (g_SkinInfo.GetVersion() < 1.85) ? iType : SPIN_CONTROL_TYPE_TEXT);

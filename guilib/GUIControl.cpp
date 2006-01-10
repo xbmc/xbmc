@@ -542,18 +542,18 @@ CStdString CGUIControl::ParseLabel(CStdString& strLabel)
 
 void CGUIControl::UpdateVisibility()
 {
-  bool bVisible = g_infoManager.GetBool(m_visibleCondition, m_dwParentID);
-  if (!m_lastVisible && bVisible)
+  bool bWasVisible = m_lastVisible;
+  m_lastVisible = g_infoManager.GetBool(m_visibleCondition, m_dwParentID);
+  if (!bWasVisible && m_lastVisible)
   { // automatic change of visibility - queue the in effect
 //    CLog::DebugLog("Visibility changed to visible for control id %i", m_dwControlID);
     QueueAnimation(ANIM_TYPE_VISIBLE);
   }
-  else if (m_lastVisible && !bVisible)
+  else if (bWasVisible && !m_lastVisible)
   { // automatic change of visibility - do the out effect
 //    CLog::DebugLog("Visibility changed to hidden for control id %i", m_dwControlID);
     QueueAnimation(ANIM_TYPE_HIDDEN);
   }
-  m_lastVisible = bVisible;
 }
 
 void CGUIControl::SetInitialVisibility()
@@ -645,6 +645,12 @@ void CGUIControl::QueueAnimation(ANIMATION_TYPE animType)
   {
     forwardAnim->queuedProcess = ANIM_PROCESS_NORMAL;
     if (reverseAnim) reverseAnim->ResetAnimation();
+  }
+  else
+  { // hidden and visible animations delay the change of state.  If there is no animations
+    // to perform, then we should just change the state straightaway
+    if (reverseAnim) reverseAnim->ResetAnimation();
+    UpdateStates(animType, ANIM_PROCESS_NORMAL, ANIM_STATE_APPLIED);
   }
 }
 
