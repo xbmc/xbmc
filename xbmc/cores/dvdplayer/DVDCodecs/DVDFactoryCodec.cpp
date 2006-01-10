@@ -20,7 +20,7 @@
 CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CodecID codecID)
 {
   CDVDVideoCodec* pVideoCodec = NULL;
-  if (codecID == CODEC_ID_MPEG2VIDEO && codecID == CODEC_ID_MPEG1VIDEO)
+  if (codecID == CODEC_ID_MPEG2VIDEO || codecID == CODEC_ID_MPEG1VIDEO)
   {
     pVideoCodec = new CDVDVideoCodecLibMpeg2();
   }
