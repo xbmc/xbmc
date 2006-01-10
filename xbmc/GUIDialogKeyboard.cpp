@@ -29,6 +29,7 @@ CGUIDialogKeyboard::CGUIDialogKeyboard(void)
 {
   m_bIsConfirmed = false;
   m_bShift = false;
+  m_hiddenInput = false;
   m_keyType = LOWER;
   m_strHeading = "";
 }
@@ -72,12 +73,12 @@ bool CGUIDialogKeyboard::OnAction(const CAction &action)
   }
   else if (action.wID == ACTION_CURSOR_LEFT)
   {
-    OnCursor( -1);
+    MoveCursor( -1);
     return true;
   }
   else if (action.wID == ACTION_CURSOR_RIGHT)
   {
-    OnCursor(1);
+    MoveCursor(1);
     return true;
   }
   else if (action.wID == ACTION_SHIFT)
@@ -98,8 +99,8 @@ bool CGUIDialogKeyboard::OnAction(const CAction &action)
   else if (action.wID >= KEY_VKEY && action.wID < KEY_ASCII)
   { // input from the keyboard (vkey, not ascii)
     BYTE b = action.wID & 0xFF;
-    if (b == 0x25) OnCursor( -1); // left
-    if (b == 0x27) OnCursor(1);  // right
+    if (b == 0x25) MoveCursor( -1); // left
+    if (b == 0x27) MoveCursor(1);  // right
     return true;
   }
   else if (action.wID >= KEY_ASCII)
@@ -109,9 +110,6 @@ bool CGUIDialogKeyboard::OnAction(const CAction &action)
     {
     case 10:  // enter
       {
-        CGUILabelControl* pEdit = ((CGUILabelControl*)GetControl(CTL_LABEL_EDIT));
-        if (pEdit)
-          m_strEdit = pEdit->GetLabel();
         m_bIsConfirmed = true;
         Close();
       }
@@ -145,12 +143,6 @@ bool CGUIDialogKeyboard::OnMessage(CGUIMessage& message)
       {
       case CTL_BUTTON_DONE:
         {
-          CGUILabelControl* pEdit = ((CGUILabelControl*)GetControl(CTL_LABEL_EDIT));
-
-          if (pEdit)
-          {
-            m_strEdit = pEdit->GetLabel();
-          }
           m_bIsConfirmed = true;
           Close();
           break;
@@ -173,12 +165,12 @@ bool CGUIDialogKeyboard::OnMessage(CGUIMessage& message)
         break;
       case CTL_BUTTON_LEFT:
         {
-          OnCursor( -1);
+          MoveCursor( -1);
         }
         break;
       case CTL_BUTTON_RIGHT:
         {
-          OnCursor(1);
+          MoveCursor(1);
         }
         break;
       default:
@@ -196,44 +188,40 @@ bool CGUIDialogKeyboard::OnMessage(CGUIMessage& message)
 void CGUIDialogKeyboard::SetText(CStdString& aTextString)
 {
   m_strEdit = aTextString;
-
-  CGUILabelControl* pEdit = ((CGUILabelControl*)GetControl(CTL_LABEL_EDIT));
-  if (pEdit)
-  {
-    pEdit->SetText(aTextString);
-    // Set the cursor position to the end of the edit control
-    if (pEdit->GetCursorPos() >= 0)
-    {
-      pEdit->SetCursorPos(aTextString.length());
-    }
-  }
+  UpdateLabel();
+  MoveCursor(m_strEdit.size());
 }
 
 void CGUIDialogKeyboard::Character(WCHAR wch)
 {
+  m_strEdit.Insert(GetCursorPos(), (TCHAR)wch);
+  UpdateLabel();
+  MoveCursor(1);
+}
+
+void CGUIDialogKeyboard::UpdateLabel()
+{
   CGUILabelControl* pEdit = ((CGUILabelControl*)GetControl(CTL_LABEL_EDIT));
   if (pEdit)
   {
-    CStdString strLabel = pEdit->GetLabel();
-    int iPos = pEdit->GetCursorPos();
-    strLabel.Insert(iPos, (TCHAR)wch);
-    pEdit->SetText(strLabel);
-    pEdit->SetCursorPos(iPos + 1);
+    CStdString edit = m_strEdit;
+    if (m_hiddenInput)
+    { // convert to *'s
+      edit.Empty();
+      edit.append(m_strEdit.size(), '*');
+    }
+    pEdit->SetText(edit);
   }
 }
 
 void CGUIDialogKeyboard::Backspace()
 {
-  CGUILabelControl* pEdit = ((CGUILabelControl*)GetControl(CTL_LABEL_EDIT));
-  if (pEdit)
+  int iPos = GetCursorPos();
+  if (iPos > 0)
   {
-    CStdString strLabel = pEdit->GetLabel();
-    if (pEdit->GetCursorPos() > 0)
-    {
-      strLabel.erase(pEdit->GetCursorPos() - 1, 1);
-      pEdit->SetText(strLabel);
-      pEdit->SetCursorPos(pEdit->GetCursorPos() - 1);
-    }
+    m_strEdit.erase(iPos - 1, 1);
+    UpdateLabel();
+    MoveCursor(-1);
   }
 }
 
@@ -394,7 +382,7 @@ void CGUIDialogKeyboard::UpdateButtons()
 // Show keyboard with initial value (aTextString) and replace with result string.
 // Returns: true  - successful display and input (empty result may return true or false depending on parameter)
 //          false - unsucessful display of the keyboard or cancelled editing
-bool CGUIDialogKeyboard::ShowAndGetInput(CStdString& aTextString, const CStdStringW &strHeading, bool allowEmptyResult)
+bool CGUIDialogKeyboard::ShowAndGetInput(CStdString& aTextString, const CStdStringW &strHeading, bool allowEmptyResult, bool hiddenInput /* = false */)
 {
   CGUIDialogKeyboard *pKeyboard = (CGUIDialogKeyboard*)m_gWindowManager.GetWindow(WINDOW_DIALOG_KEYBOARD);
 
@@ -406,6 +394,7 @@ bool CGUIDialogKeyboard::ShowAndGetInput(CStdString& aTextString, const CStdStri
   pKeyboard->CenterWindow();
   pKeyboard->SetHeading(strHeading);
   pKeyboard->SetText(aTextString);
+  pKeyboard->SetHiddenInput(hiddenInput);
   // do this using a thread message to avoid render() conflicts
   ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, WINDOW_DIALOG_KEYBOARD, m_gWindowManager.GetActiveWindow()};
   g_applicationMessenger.SendMessage(tMsg, true);
@@ -424,35 +413,47 @@ bool CGUIDialogKeyboard::ShowAndGetInput(CStdString& aTextString, const CStdStri
 
 bool CGUIDialogKeyboard::ShowAndGetInput(CStdString& aTextString, bool allowEmptyResult)
 {
-  return ShowAndGetInput(aTextString, L"", allowEmptyResult);
+  return ShowAndGetInput(aTextString, L"", allowEmptyResult) != 0;
 }
+
+// \brief Show keyboard twice to get and confirm a user-entered password string.
+// \param newPassword Overwritten with user input if return=true.
+// \param heading Heading to display
+// \param allowEmpty Whether a blank password is valid or not.
+// \return true if successful display and user input entry/re-entry. false if unsucessful display, no user input, or canceled editing.
+bool CGUIDialogKeyboard::ShowAndGetNewPassword(CStdString& newPassword, const CStdStringW &heading, bool allowEmpty)
+{
+  // Prompt user for password input
+  CStdString userInput = "";
+  if (!ShowAndGetInput(userInput, heading, allowEmpty, true))
+  { // user cancelled, or invalid input
+    return false;
+  }
+  // success - verify the password
+  CStdString checkInput = "";
+  if (!ShowAndGetInput(checkInput, g_localizeStrings.Get(12341), allowEmpty, true))
+  { // user cancelled, or invalid input
+    return false;
+  }
+  // check the password
+  if (checkInput == userInput)
+  {
+    newPassword = checkInput;
+    return true;
+  }
+  CGUIDialogOK::ShowAndGetInput(12341, 12344, 0, 0);
+  return false;
+};
 
 // \brief Show keyboard twice to get and confirm a user-entered password string.
 // \param strNewPassword Overwritten with user input if return=true.
 // \return true if successful display and user input entry/re-entry. false if unsucessful display, no user input, or canceled editing.
-bool CGUIDialogKeyboard::ShowAndGetNewPassword(CStdString& strNewPassword)
+bool CGUIDialogKeyboard::ShowAndGetNewPassword(CStdString& newPassword)
 {
-  // Prompt user for password input
-  CStdString strUserInput = "";
-  if (ShowAndVerifyPassword(strUserInput, g_localizeStrings.Get(12340), 0))
-  {
-    // TODO: Show error to user saying the password entry was blank
-	  CGUIDialogOK::ShowAndGetInput(12357, 12358, 0, 0); // Password is empty/blank
-	  return false;
-  }
-  if (strUserInput.IsEmpty())
-	  return false; // user canceled out
-
-  // Prompt again for password input, this time sending previous input as the password to verify
-  if (ShowAndVerifyPassword(strUserInput, g_localizeStrings.Get(12341), 0))
-  {
-    // TODO: Show error to user saying the password re-entry failed
-	  CGUIDialogOK::ShowAndGetInput(12357, 12344, 0, 0); // Password do not match
-	  return false; 
-  }
-  strNewPassword = strUserInput; // password entry and re-entry succeeded
-  return true;
+  CStdStringW heading = g_localizeStrings.Get(12340);
+  return ShowAndGetNewPassword(newPassword, heading, false);
 }
+
 // \brief Show keyboard and verify user input against strPassword.
 // \param strPassword Value to compare against user input.
 // \param dlgHeading String shown on dialog title. Converts to localized string if contains a positive integer.
@@ -495,13 +496,23 @@ void CGUIDialogKeyboard::Close(bool forceClose)
   CGUIDialog::Close(forceClose);
 }
 
-void CGUIDialogKeyboard::OnCursor(int iAmount)
+void CGUIDialogKeyboard::MoveCursor(int iAmount)
 {
   CGUILabelControl* pEdit = ((CGUILabelControl*)GetControl(CTL_LABEL_EDIT));
   if (pEdit)
   {
     pEdit->SetCursorPos(pEdit->GetCursorPos() + iAmount);
   }
+}
+
+int CGUIDialogKeyboard::GetCursorPos() const
+{
+  const CGUILabelControl* pEdit = (const CGUILabelControl*)GetControl(CTL_LABEL_EDIT);
+  if (pEdit)
+  {
+    return pEdit->GetCursorPos();
+  }
+  return 0;
 }
 
 void CGUIDialogKeyboard::OnSymbols()
