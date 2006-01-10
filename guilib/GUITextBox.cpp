@@ -16,6 +16,7 @@ CGUITextBox::CGUITextBox(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPo
 {
   m_upDown.SetSpinAlign(XBFONT_CENTER_Y | XBFONT_RIGHT, 0);
   m_iOffset = 0;
+  m_label = labelInfo;
   m_iItemsPerPage = 10;
   m_iItemHeight = 10;
   m_iSpinPosX = iSpinX;
