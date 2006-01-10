@@ -10,6 +10,8 @@ CPlayList::CPlayListItem::CPlayListItem() : m_lDuration(0)
 {
   m_lStartOffset = 0;
   m_lEndOffset = 0;
+  m_bPlayed = false;
+  m_bUnPlayable = false;
 }
 
 CPlayList::CPlayListItem::CPlayListItem(const CStdString& strDescription, const CStdString& strFileName, long lDuration, long lStartOffset, long lEndOffset)
