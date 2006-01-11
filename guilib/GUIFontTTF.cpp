@@ -184,6 +184,9 @@ void CGUIFontTTF::DrawTextInternal( FLOAT sx, FLOAT sy, const CAngle &angle, DWO
       }
       bStartingNewLine = FALSE;
       alignedStartX = (int)posX;
+      // align to an integer so that aliasing doesn't occur
+      posX = floorf(posX);
+      posY = floorf(posY);
     }
 
     // Get the current letter in the CStdString
