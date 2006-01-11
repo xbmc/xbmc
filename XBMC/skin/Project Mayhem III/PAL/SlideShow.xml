@@ -12,7 +12,7 @@
       <height>65</height>
       <texture>osd_menu_bg.png</texture>
       <visible>Player.ShowInfo</visible>
-      <animation effect="fade" time="300">VisibleChange</visible>
+      <animation effect="fade" time="300">VisibleChange</animation>
     </control>
 
     <control>
@@ -25,7 +25,7 @@
       <align>left</align>
       <font>font12</font>
       <visible>Player.ShowInfo</visible>
-      <animation effect="fade" time="300">VisibleChange</visible>
+      <animation effect="fade" time="300">VisibleChange</animation>
     </control>
 
     <control>
@@ -38,7 +38,7 @@
       <align>left</align>
       <font>font12</font>
       <visible>Player.ShowInfo</visible>
-      <animation effect="fade" time="300">VisibleChange</visible>
+      <animation effect="fade" time="300">VisibleChange</animation>
     </control>
 
     <control>
@@ -51,7 +51,7 @@
       <align>left</align>
       <font>font12</font>
       <visible>Player.ShowInfo</visible>
-      <animation effect="fade" time="300">VisibleChange</visible>
+      <animation effect="fade" time="300">VisibleChange</animation>
     </control>
 
     <control>
