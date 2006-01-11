@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 11-01-2006 changed: SMS style password input shows the current character for 1 second (before changing it to a *).
  - 11-01-2006 fixed: 40 character XBE names are now handled correctly.
  - 11-01-2006 fixed: XPR font rendering was aliased (looked thin).
  - 11-01-2006 fixed: File with no extension called with PlayFile via webserver crash.
