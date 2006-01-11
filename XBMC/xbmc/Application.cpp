@@ -3206,15 +3206,21 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
     }
   }
 
-  if (!bRestart)
-    m_itemCurrentFile = item;
-  m_nextPlaylistItem = -1;
-
   if (!m_pPlayer)
   {
     m_eCurrentPlayer = eNewCore;
     m_pPlayer = CPlayerCoreFactory::CreatePlayer(eNewCore, *this);
   }
+
+  if (!m_pPlayer)
+  {
+    CLog::Log(LOGERROR, "Error creating player for item %s (File doesn't exist?)", item.m_strPath.c_str());
+    return false;
+  }
+
+  if (!bRestart)
+    m_itemCurrentFile = item;
+  m_nextPlaylistItem = -1;
 
   bool bResult = m_pPlayer->OpenFile(item, item.m_lStartOffset * 1000 / 75);
   if (bResult)
