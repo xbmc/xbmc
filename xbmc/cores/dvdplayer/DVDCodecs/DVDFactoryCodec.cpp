@@ -1,5 +1,8 @@
 
 #include "../../../stdafx.h"
+
+#include "../DVDDemuxers/DVDDemux.h"
+
 #include "DVDFactoryCodec.h"
 #include "Video\DVDVideoCodec.h"
 #include "Audio\DVDAudioCodec.h"
@@ -13,50 +16,101 @@
 #include "Audio\DVDAudioCodecLibFaad.h"
 #include "Audio\DVDAudioCodecPcm.h"
 #include "Audio\DVDAudioCodecLPcm.h"
+#include "Audio\DVDAudioCodecPassthrough.h"
 
 #include "DVDCodecs.h"
 
+CDVDVideoCodec* CDVDFactoryCodec::OpenCodec(CDVDVideoCodec* pCodec, CDemuxStreamVideo *pDemuxStream )
+{  
+  try
+  {
+    CLog::Log(LOGDEBUG, "FactoryCodec - Video: %s - Opening", pCodec->GetName());
+    if( pCodec->Open( pDemuxStream->codec, pDemuxStream->iWidth, pDemuxStream->iHeight, pDemuxStream->ExtraData, pDemuxStream->ExtraSize ) )
+    {
+      CLog::Log(LOGDEBUG, "FactoryCodec - Video: %s - Opened", pCodec->GetName());
+      return pCodec;
+    }
 
-CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CodecID codecID)
-{
-  CDVDVideoCodec* pVideoCodec = NULL;
-  if (codecID == CODEC_ID_MPEG2VIDEO || codecID == CODEC_ID_MPEG1VIDEO)
-  {
-    pVideoCodec = new CDVDVideoCodecLibMpeg2();
+    CLog::Log(LOGDEBUG, "FactoryCodec - Video: %s - Failed", pCodec->GetName());
+    pCodec->Dispose();
+    delete pCodec;
   }
-  else
+  catch(...)
   {
-    pVideoCodec = new CDVDVideoCodecFFmpeg();
+    CLog::Log(LOGERROR, "FactoryCodec - Video: Failed with exception");
   }
-  return pVideoCodec;
+  return NULL;
 }
 
-CDVDAudioCodec* CDVDFactoryCodec::CreateAudioCodec(CodecID codecID)
-{
-  CDVDAudioCodec* pAudioCodec = NULL;
+CDVDAudioCodec* CDVDFactoryCodec::OpenCodec(CDVDAudioCodec* pCodec, CDemuxStreamAudio *pDemuxStream )
+{    
+  try
+  {
+    CLog::Log(LOGDEBUG, "FactoryCodec - Audio: %s - Opening", pCodec->GetName());
+    if( pCodec->Open( pDemuxStream->codec, pDemuxStream->iChannels, pDemuxStream->iSampleRate, 16, pDemuxStream->ExtraData, pDemuxStream->ExtraSize ) )
+    {
+      CLog::Log(LOGDEBUG, "FactoryCodec - Audio: %s - Opened", pCodec->GetName());
+      return pCodec;
+    }
 
-  switch (codecID)
+    CLog::Log(LOGDEBUG, "FactoryCodec - Audio: %s - Failed", pCodec->GetName());
+    pCodec->Dispose();
+    delete pCodec;
+  }
+  catch(...)
+  {
+    CLog::Log(LOGERROR, "FactoryCodec - Audio: Failed with exception");
+  }
+  return NULL;
+}
+
+CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec( CDemuxStreamVideo *pDemuxStream )
+{
+  CDVDVideoCodec* pCodec = NULL;
+
+  if (pDemuxStream->codec == CODEC_ID_MPEG2VIDEO || pDemuxStream->codec == CODEC_ID_MPEG1VIDEO)
+  {
+    if( pCodec = OpenCodec(new CDVDVideoCodecLibMpeg2(), pDemuxStream) ) return pCodec;
+  }
+  
+  if( pCodec = OpenCodec(new CDVDVideoCodecFFmpeg(), pDemuxStream) ) return pCodec;
+
+  return NULL;
+}
+
+CDVDAudioCodec* CDVDFactoryCodec::CreateAudioCodec( CDemuxStreamAudio *pDemuxStream )
+{
+  CDVDAudioCodec* pCodec = NULL;
+
+  pCodec = OpenCodec( new CDVDAudioCodecPassthrough(), pDemuxStream );
+  if( pCodec ) return pCodec;
+  
+  switch (pDemuxStream->codec)
   {
   case CODEC_ID_AC3:
     {
-      pAudioCodec = new CDVDAudioCodecLiba52();
+      pCodec = OpenCodec( new CDVDAudioCodecLiba52(), pDemuxStream );
+      if( pCodec ) return pCodec;
       break;
     }
   case CODEC_ID_DTS:
     {
-      pAudioCodec = new CDVDAudioCodecLibDts();
+      pCodec = OpenCodec( new CDVDAudioCodecLibDts(), pDemuxStream );
+      if( pCodec ) return pCodec;
       break;
     }
   case CODEC_ID_MP2:
   case CODEC_ID_MP3:
     {
-      pAudioCodec = new CDVDAudioCodecLibMad();
+      pCodec = OpenCodec( new CDVDAudioCodecLibMad(), pDemuxStream );
+      if( pCodec ) return pCodec;
       break;
     }
   case CODEC_ID_AAC:
   //case CODEC_ID_MPEG4AAC:
     {
-      pAudioCodec = new CDVDAudioCodecLibFaad();
+      pCodec = OpenCodec( new CDVDAudioCodecLibFaad(), pDemuxStream );
+      if( pCodec ) return pCodec;
       break;
     }
   case CODEC_ID_PCM_S32LE:
@@ -77,22 +131,27 @@ CDVDAudioCodec* CDVDFactoryCodec::CreateAudioCodec(CodecID codecID)
   case CODEC_ID_PCM_ALAW:
   case CODEC_ID_PCM_MULAW:
     {
-      pAudioCodec = new CDVDAudioCodecPcm();
+      pCodec = OpenCodec( new CDVDAudioCodecPcm(), pDemuxStream );
+      if( pCodec ) return pCodec;
       break;
     }
   //case CODEC_ID_LPCM_S16BE:
   //case CODEC_ID_LPCM_S20BE:
   case CODEC_ID_LPCM_S24BE:
     {
-      pAudioCodec = new CDVDAudioCodecLPcm();
+      pCodec = OpenCodec( new CDVDAudioCodecLPcm(), pDemuxStream );
+      if( pCodec ) return pCodec;
       break;
     }
   default:
     {
-      CLog::Log(LOGWARNING, "Unsupported audio codec");
+      pCodec = NULL;
       break;
     }
   }
 
-  return pAudioCodec;
+  pCodec = OpenCodec( new CDVDAudioCodecFFmpeg(), pDemuxStream );
+  if( pCodec ) return pCodec;
+
+  return NULL;
 }

@@ -185,7 +185,7 @@ int CDVDAudioCodecPassthrough::PaddAC3Data( BYTE* pData, int iDataSize, BYTE* pO
   return iOutputSize;
 }
 
-bool CDVDAudioCodecPassthrough::Open(CodecID codecID, int iChannels, int iSampleRate, int iBits)
+bool CDVDAudioCodecPassthrough::Open(CodecID codecID, int iChannels, int iSampleRate, int iBits, void* ExtraData, unsigned int ExtraSize)
 {
   bool bSupportsAC3Out = false,  bSupportsDTSOut = false;
 

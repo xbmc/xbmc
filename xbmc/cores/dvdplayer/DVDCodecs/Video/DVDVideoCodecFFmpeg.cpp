@@ -25,7 +25,7 @@ CDVDVideoCodecFFmpeg::~CDVDVideoCodecFFmpeg()
   Dispose();
 }
 
-bool CDVDVideoCodecFFmpeg::Open(CodecID codecID, int iWidth, int iHeight)
+bool CDVDVideoCodecFFmpeg::Open(CodecID codecID, int iWidth, int iHeight, void* ExtraData, unsigned int ExtraSize)
 {
   AVCodec* pCodec;
 
@@ -64,6 +64,13 @@ bool CDVDVideoCodecFFmpeg::Open(CodecID codecID, int iWidth, int iHeight)
   // if we don't do this, then some codecs seem to fail.
   m_pCodecContext->height = iHeight;
   m_pCodecContext->width = iWidth;
+
+  if( ExtraData && ExtraSize > 0 )
+  {
+    m_pCodecContext->extradata_size = ExtraSize;
+    m_pCodecContext->extradata = m_dllAvCodec.av_mallocz(ExtraSize + FF_INPUT_BUFFER_PADDING_SIZE);
+    memcpy(m_pCodecContext->extradata, ExtraData, ExtraSize);
+  }
 
   // set acceleration
   m_pCodecContext->dsp_mask = FF_MM_FORCE | FF_MM_MMX | FF_MM_MMXEXT | FF_MM_SSE;

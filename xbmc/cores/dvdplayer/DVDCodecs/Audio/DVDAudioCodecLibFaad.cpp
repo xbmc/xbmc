@@ -14,7 +14,7 @@ CDVDAudioCodecLibFaad::~CDVDAudioCodecLibFaad()
   Dispose();
 }
 
-bool CDVDAudioCodecLibFaad::Open(CodecID codecID, int iChannels, int iSampleRate, int iBits)
+bool CDVDAudioCodecLibFaad::Open(CodecID codecID, int iChannels, int iSampleRate, int iBits, void* ExtraData, unsigned int ExtraSize)
 {
   // for safety
   if (m_pHandle) Dispose();

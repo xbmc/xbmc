@@ -9,7 +9,7 @@ class CDVDAudioCodecLibDts : public CDVDAudioCodec
 public:
   CDVDAudioCodecLibDts();
   virtual ~CDVDAudioCodecLibDts();
-  virtual bool Open(CodecID codecID, int iChannels, int iSampleRate, int iBits);
+  virtual bool Open(CodecID codecID, int iChannels, int iSampleRate, int iBits, void* ExtraData, unsigned int ExtraSize);
   virtual void Dispose();
   virtual int Decode(BYTE* pData, int iSize);
   virtual int GetData(BYTE** dst);
@@ -17,6 +17,7 @@ public:
   virtual int GetChannels()      { return m_iOutputChannels; }
   virtual int GetSampleRate()    { return m_iSourceSampleRate; }
   virtual int GetBitsPerSample() { return 16; }
+  virtual const char* GetName()  { return "libdts"; }
 
 protected:
   virtual void SetDefault();
