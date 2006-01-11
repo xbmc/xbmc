@@ -10,12 +10,13 @@ class CDVDVideoCodecFFmpeg : public CDVDVideoCodec
 public:
   CDVDVideoCodecFFmpeg();
   virtual ~CDVDVideoCodecFFmpeg();
-  virtual bool Open(CodecID codecID, int iWidth, int iHeight);
+  virtual bool Open(CodecID codecID, int iWidth, int iHeight, void* ExtraData, unsigned int ExtraSize);
   virtual void Dispose();
   virtual int Decode(BYTE* pData, int iSize);
   virtual void Reset();
   virtual bool GetPicture(DVDVideoPicture* pDvdVideoPicture);
   virtual void SetDropState(bool bDrop);
+  virtual const char* GetName() { return "FFmpeg"; };
 
 protected:
   void GetVideoAspect(AVCodecContext* CodecContext, unsigned int& iWidth, unsigned int& iHeight);

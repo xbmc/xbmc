@@ -11,7 +11,7 @@ public:
   CDVDAudioCodecPassthrough();
   virtual ~CDVDAudioCodecPassthrough();
 
-  virtual bool Open(CodecID codecID, int iChannels, int iSampleRate, int iBits);
+  virtual bool Open(CodecID codecID, int iChannels, int iSampleRate, int iBits, void* ExtraData, unsigned int ExtraSize);
   virtual void Dispose();
   virtual int Decode(BYTE* pData, int iSize);
   virtual int GetData(BYTE** dst);
@@ -20,6 +20,7 @@ public:
   virtual int GetSampleRate();
   virtual int GetBitsPerSample();
   virtual bool NeedPasstrough() { return true; }
+  virtual const char* GetName()  { return "passthrough"; }
   
 private:
   bool SyncAC3Header(BYTE* pData, int iDataSize, int* iOffset, int* iFrameSize );

@@ -25,7 +25,7 @@ public:
   void RegisterAudioCallback(IAudioCallback* pCallback) { m_dvdAudio.RegisterAudioCallback(pCallback); }
   void UnRegisterAudioCallback()                        { m_dvdAudio.UnRegisterAudioCallback(); }
 
-  bool OpenStream(CodecID codecID, int iChannels, int iSampleRate);
+  bool OpenStream(CDemuxStreamAudio *pDemuxStream);
   void CloseStream(bool bWaitForBuffers);
 
   void Pause()                                          { m_dvdAudio.Pause(); }

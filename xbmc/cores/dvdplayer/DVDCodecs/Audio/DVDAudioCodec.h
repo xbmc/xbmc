@@ -14,7 +14,7 @@ public:
   /*
    * Open the decoder, returns true on success
    */
-  virtual bool Open(CodecID codecID, int iChannels, int iSampleRate, int iBits) = 0;
+  virtual bool Open(CodecID codecID, int iChannels, int iSampleRate, int iBits, void* ExtraData, unsigned int ExtraSize) = 0;
   
   /*
    * Dispose, Free all resources
@@ -57,4 +57,9 @@ public:
    * returns if the codec requests to use passtrough
    */
   virtual bool NeedPasstrough() { return false; }
+
+  /*
+   * should return codecs name
+   */
+  virtual const char* GetName() = 0;
 };
