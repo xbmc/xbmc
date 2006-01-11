@@ -1376,8 +1376,11 @@ bool CUtil::GetXBEDescription(const CStdString& strFileName, CStdString& strDesc
   fread(&HC, 1, sizeof(HC), hFile);
   fclose(hFile);
 
-  CHAR TitleName[40];
-  WideCharToMultiByte(CP_ACP, 0, HC.TitleName, -1, TitleName, 40, NULL, NULL);
+  // Apparently, XBE titles can in fact use all 40 characters available to them,
+  // and thus are not necessarily NULL terminated
+  CHAR TitleName[41];
+  WideCharToMultiByte(CP_ACP, 0, HC.TitleName, 40, TitleName, 41, NULL, NULL);
+  TitleName[40] = 0;
   if (strlen(TitleName) > 0)
   {
     strDescription = TitleName;
@@ -1398,7 +1401,12 @@ bool CUtil::SetXBEDescription(const CStdString& strFileName, const CStdString& s
   fread(&HC, 1, sizeof(HC), hFile);
   fseek(hFile,HS.XbeHeaderSize, SEEK_SET);
 
-  MultiByteToWideChar(CP_ACP,0,strDescription.c_str(),-1,HC.TitleName,40);
+  WCHAR test[41];
+  CStdString shortDescription = strDescription;
+  if (strDescription.size() > 40)
+    shortDescription = strDescription.Left(40);
+  MultiByteToWideChar(CP_ACP,0,shortDescription.c_str(),-1,test,41);
+  wcsncpy(HC.TitleName, test, 40);  // only allow 40 chars
   fwrite(&HC,1,sizeof(HC),hFile);
   fclose(hFile);
   
