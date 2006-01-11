@@ -1,4 +1,6 @@
+2006-01-10 fixed:	Invalid control tags in Slideshow.xml
 2006-01-10 fixed:	Missing <disabledcolor> on DialogNumeric.xml
+
 2006-01-09 fixed:	MusicVisualisation.xml was invalid.
 
 2006-01-08 changed:	Moved to version 1.90 compatible.
