@@ -472,7 +472,11 @@ void CDVDDemuxFFmpeg::AddStream(int iId)
   AVStream* pStream = m_pFormatContext->streams[iId];
   if (pStream)
   {
-    if (m_streams[iId]) delete m_streams[iId];
+    if (m_streams[iId]) 
+    {
+      if( m_streams[iId]->ExtraData ) delete[] m_streams[iId]->ExtraData;
+      delete m_streams[iId];
+    }
 
     switch (pStream->codec->codec_type)
     {
@@ -519,6 +523,13 @@ void CDVDDemuxFFmpeg::AddStream(int iId)
 
     m_streams[iId]->codec = pStream->codec->codec_id;
     m_streams[iId]->iId = iId;
+
+    if( pStream->codec->extradata && pStream->codec->extradata_size > 0 )
+    {
+      m_streams[iId]->ExtraSize = pStream->codec->extradata_size;
+      m_streams[iId]->ExtraData = new BYTE[pStream->codec->extradata_size];
+      memcpy(m_streams[iId]->ExtraData, pStream->codec->extradata, pStream->codec->extradata_size);
+    }
 
     //FFMPEG has an error doesn't set type properly for DTS
     if( m_streams[iId]->codec == CODEC_ID_AC3 && (pStream->id >= 136 && pStream->id <= 143) )

@@ -103,7 +103,7 @@ CDVDAudioCodecPcm::~CDVDAudioCodecPcm()
   Dispose();
 }
 
-bool CDVDAudioCodecPcm::Open(CodecID codecID, int iChannels, int iSampleRate, int iBits)
+bool CDVDAudioCodecPcm::Open(CodecID codecID, int iChannels, int iSampleRate, int iBits, void* ExtraData, unsigned int ExtraSize)
 {
   SetDefault();
   

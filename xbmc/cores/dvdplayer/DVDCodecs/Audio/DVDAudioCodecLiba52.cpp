@@ -46,7 +46,7 @@ CDVDAudioCodecLiba52::~CDVDAudioCodecLiba52()
   Dispose();
 }
 
-bool CDVDAudioCodecLiba52::Open(CodecID codecID, int iChannels, int iSampleRate, int iBits)
+bool CDVDAudioCodecLiba52::Open(CodecID codecID, int iChannels, int iSampleRate, int iBits, void* ExtraData, unsigned int ExtraSize)
 {
   if (!m_dll.Load()) return false;
 

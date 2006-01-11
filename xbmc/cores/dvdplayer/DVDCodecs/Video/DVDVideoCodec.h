@@ -58,7 +58,7 @@ public:
   /*
    * Open the decoder, returns true on success
    */
-  virtual bool Open(CodecID codecID, int iWidth, int iHeight) = 0;
+  virtual bool Open(CodecID codecID, int iWidth, int iHeight, void* ExtraData, unsigned int ExtraSize) = 0;
   
   /*
    * Dispose, Free all resources
@@ -88,4 +88,10 @@ public:
    * codec can then skip actually decoding the data, just consume the data set picture headers
    */
   virtual void SetDropState(bool bDrop) = 0;
+
+  /*
+   *
+   * should return codecs name
+   */
+  virtual const char* GetName() = 0;
 };

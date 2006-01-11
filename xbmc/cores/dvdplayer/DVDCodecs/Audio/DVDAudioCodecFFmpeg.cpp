@@ -14,7 +14,7 @@ CDVDAudioCodecFFmpeg::~CDVDAudioCodecFFmpeg()
   Dispose();
 }
 
-bool CDVDAudioCodecFFmpeg::Open(CodecID codecID, int iChannels, int iSampleRate, int iBits)
+bool CDVDAudioCodecFFmpeg::Open(CodecID codecID, int iChannels, int iSampleRate, int iBits, void* ExtraData, unsigned int ExtraSize)
 {
   AVCodec* pCodec;
   m_bOpenedCodec = false;
@@ -46,9 +46,12 @@ bool CDVDAudioCodecFFmpeg::Open(CodecID codecID, int iChannels, int iSampleRate,
   m_pCodecContext->sample_rate = iSampleRate;
   //m_pCodecContext->bits_per_sample = 24;
   
-  // not used for any codec yet, set it to 0
-  m_pCodecContext->extradata = NULL;
-  m_pCodecContext->extradata_size = 0;
+  if( ExtraData && ExtraSize > 0 )
+  {
+    m_pCodecContext->extradata_size = ExtraSize;
+    m_pCodecContext->extradata = m_dllAvCodec.av_mallocz(ExtraSize + FF_INPUT_BUFFER_PADDING_SIZE);
+    memcpy(m_pCodecContext->extradata, ExtraData, ExtraSize);
+  }
   
   // set acceleration
   m_pCodecContext->dsp_mask = FF_MM_FORCE | FF_MM_MMX | FF_MM_MMXEXT | FF_MM_SSE;

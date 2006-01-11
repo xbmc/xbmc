@@ -1010,7 +1010,7 @@ bool CDVDPlayer::OpenAudioStream(int iStream)
   }
   CDemuxStreamAudio* pStreamAudio = (CDemuxStreamAudio*)m_pDemuxer->GetStream(iStream);
 
-  if (m_dvdPlayerAudio.OpenStream(pStreamAudio->codec, pStreamAudio->iChannels, pStreamAudio->iSampleRate))
+  if (m_dvdPlayerAudio.OpenStream(pStreamAudio))
   {
     m_dvdPlayerAudio.SetPriority(THREAD_PRIORITY_HIGHEST + 4);
 
@@ -1033,7 +1033,7 @@ bool CDVDPlayer::OpenVideoStream(int iStream)
   }
   CDemuxStreamVideo* pStreamVideo = (CDemuxStreamVideo*)m_pDemuxer->GetStream(iStream);
 
-  if (m_dvdPlayerVideo.OpenStream(pStreamVideo->codec, pStreamVideo->iWidth, pStreamVideo->iHeight, pStreamVideo))
+  if (m_dvdPlayerVideo.OpenStream(pStreamVideo))
   {
     m_dvdPlayerVideo.SetPriority(THREAD_PRIORITY_ABOVE_NORMAL);
 

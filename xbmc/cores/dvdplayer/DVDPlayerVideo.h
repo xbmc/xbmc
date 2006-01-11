@@ -21,7 +21,7 @@ public:
   CDVDPlayerVideo(CDVDDemuxSPU* spu, CDVDClock* pClock, CDVDOverlayContainer* pOverlayContainer);
   virtual ~CDVDPlayerVideo();
 
-  bool OpenStream(CodecID codecID, int iWidth, int iHeight, CDemuxStreamVideo* pDemuxStreamVideo);
+  bool OpenStream(CDemuxStreamVideo* pDemuxStreamVideo);
   void CloseStream(bool bWaitForBuffers);
 
   void Pause();
