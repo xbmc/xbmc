@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 11-01-2006 fixed: hopefully fixed fast wmv's with an updated mplayer.dll
  - 11-01-2006 added: made dvdplayer pass on extradata from demuxer to codec, enables it to play almost anything ffmpeg can play (including some quicktime)
  - 11-01-2006 changed: cleaned up codec selection for dvdplayer and enabled ffmpeg audio decoder
  - 10-01-2006 fixed: Settings passwords were displayed plain text on edit.
