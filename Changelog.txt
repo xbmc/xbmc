@@ -5,9 +5,10 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
- - 10-01-2006 fixed: XPR font rendering was aliased (looked thin).
- - 10-01-2006 fixed: File with no extension called with PlayFile via webserver crash.
- - 10-01-2006 fixed: Slideshow corrupt .xml file (only one picture was shown).
+ - 11-01-2006 fixed: 40 character XBE names are now handled correctly.
+ - 11-01-2006 fixed: XPR font rendering was aliased (looked thin).
+ - 11-01-2006 fixed: File with no extension called with PlayFile via webserver crash.
+ - 11-01-2006 fixed: Slideshow corrupt .xml file (only one picture was shown).
  - 11-01-2006 fixed: hopefully fixed fast wmv's with an updated mplayer.dll
  - 11-01-2006 added: made dvdplayer pass on extradata from demuxer to codec, enables it to play almost anything ffmpeg can play (including some quicktime)
  - 11-01-2006 changed: cleaned up codec selection for dvdplayer and enabled ffmpeg audio decoder
