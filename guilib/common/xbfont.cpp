@@ -631,6 +631,9 @@ HRESULT CXBFont::DrawTextEx( FLOAT fOriginX, FLOAT fOriginY, const CAngle &angle
       }
       bStartingNewLine = FALSE;
       fAlignedOriginX = m_fCursorX;
+      // align to an integer so that aliasing doesn't occur
+      m_fCursorX = floorf(m_fCursorX);
+      m_fCursorY = floorf(m_fCursorY);
     }
 
     // Get the current letter in the CStdString
@@ -758,6 +761,9 @@ HRESULT CXBFont::DrawColourText( FLOAT fOriginX, FLOAT fOriginY, const CAngle &a
         m_fCursorY += angle.sine * w;
       }
       bStartingNewLine = FALSE;
+      // align to an integer so that aliasing doesn't occur
+      m_fCursorX = floorf(m_fCursorX);
+      m_fCursorY = floorf(m_fCursorY);
     }
 
     // Get the current letter in the CStdString
