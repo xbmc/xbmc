@@ -12,8 +12,9 @@ class CDVDAudioCodecLPcm : public CDVDAudioCodecPcm
 public:
   CDVDAudioCodecLPcm();
   virtual ~CDVDAudioCodecLPcm() {}
-  virtual bool Open(CodecID codecID, int iChannels, int iSampleRate, int iBits);
+  virtual bool Open(CodecID codecID, int iChannels, int iSampleRate, int iBits, void* ExtraData, unsigned int ExtraSize);
   virtual int Decode(BYTE* pData, int iSize);
+  virtual const char* GetName()  { return "lpcm"; }
 
 protected:
 

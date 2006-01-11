@@ -28,6 +28,8 @@ public:
     type = STREAM_NONE;
     iDuration = 0;
     pPrivate = NULL;
+    ExtraData = NULL;
+    ExtraSize = NULL;
   }
 
   virtual void GetStreamInfo(std::string& strInfo)
@@ -42,6 +44,8 @@ public:
 
   int iDuration; // in mseconds
   void* pPrivate; // private pointer for the demuxer
+  void* ExtraData; // extra data for codec to use
+  unsigned int ExtraSize; // size of extra data
 };
 
 class CDemuxStreamVideo : public CDemuxStream

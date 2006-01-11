@@ -179,7 +179,7 @@ CDVDAudioCodecLibDts::~CDVDAudioCodecLibDts()
   Dispose();
 }
 
-bool CDVDAudioCodecLibDts::Open(CodecID codecID, int iChannels, int iSampleRate, int iBits)
+bool CDVDAudioCodecLibDts::Open(CodecID codecID, int iChannels, int iSampleRate, int iBits, void* ExtraData, unsigned int ExtraSize)
 {
   if (!m_dll.Load())
     return false;

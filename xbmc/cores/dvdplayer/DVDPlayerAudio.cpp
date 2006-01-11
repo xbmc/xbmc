@@ -39,7 +39,7 @@ CDVDPlayerAudio::~CDVDPlayerAudio()
   DeleteCriticalSection(&m_critCodecSection);
 }
 
-bool CDVDPlayerAudio::OpenStream(CodecID codecID, int iChannels, int iSampleRate)
+bool CDVDPlayerAudio::OpenStream( CDemuxStreamAudio *pDemuxStream )                                 
 {
   // should alway's be NULL!!!!, it will probably crash anyway when deleting m_pAudioCodec here.
   if (m_pAudioCodec)
@@ -48,49 +48,27 @@ bool CDVDPlayerAudio::OpenStream(CodecID codecID, int iChannels, int iSampleRate
     return false;
   }
 
-  int iWantedChannels = iChannels;
+  CodecID codecID = pDemuxStream->codec;
+
+  int iWantedChannels = pDemuxStream->iChannels;
   if (iWantedChannels == 5) iWantedChannels = 6;
 
   //Let codec downmix for us int the case of ac3
-  if (codecID == CODEC_ID_AC3 || codecID == CODEC_ID_DTS)
+  if (pDemuxStream->codec == CODEC_ID_AC3 || pDemuxStream->codec == CODEC_ID_DTS)
   {
     iWantedChannels = 2;
   }
 
-  CLog::Log(LOGNOTICE, "Opening passtrough codec for: %i", codecID);
-  m_pAudioCodec = new CDVDAudioCodecPassthrough();
-  if (!m_pAudioCodec->Open(codecID, iChannels, iSampleRate, 16))
+  CLog::Log(LOGNOTICE, "Finding audio codec for: %i", codecID);
+  m_pAudioCodec = CDVDFactoryCodec::CreateAudioCodec( pDemuxStream );
+  if( !m_pAudioCodec )
   {
-    CLog::Log(LOGNOTICE, "Failed to open passtrough codec for: %i", codecID);
-    m_pAudioCodec->Dispose();
-    delete m_pAudioCodec;
-    m_pAudioCodec = NULL;
-
-    //Okey now try a normal codec
-    CLog::Log(LOGNOTICE, "Creating audio codec with codec id: %i", codecID);
-    m_pAudioCodec = CDVDFactoryCodec::CreateAudioCodec(codecID);
-
-    if( !m_pAudioCodec )
-    {
-      CLog::Log(LOGERROR, "Unsupported audio codec");
-      return false;
-    }
-
-
-    CLog::Log(LOGNOTICE, "Opening audio codec id: %i, channels: %i, sample rate: %i, bits: %i",
-              codecID, iWantedChannels, iSampleRate, 16);
-    if (m_pAudioCodec && !m_pAudioCodec->Open(codecID, iWantedChannels, iSampleRate, 16))
-    {
-      CLog::Log(LOGERROR, "Error opening audio codec");
-      m_pAudioCodec->Dispose();
-      delete m_pAudioCodec;
-      m_pAudioCodec = NULL;
-      return false;
-    }
+    CLog::Log(LOGERROR, "Unsupported audio codec");
+    return false;
   }
 
-  m_codec = codecID;
-  m_iSourceChannels = iChannels;
+  m_codec = pDemuxStream->codec;
+  m_iSourceChannels = pDemuxStream->iChannels;
 
   m_packetQueue.Init();
 
@@ -157,6 +135,15 @@ int CDVDPlayerAudio::DecodeFrame(BYTE** pAudioBuffer, int *data_size,bool bDropP
         audio_pkt_size=0;
         m_pAudioCodec->Reset();
         break;
+      }
+
+      // fix for fucked up decoders
+      if( len > audio_pkt_size )
+      {        
+        CLog::Log(LOGERROR, "CDVDPlayerAudio:DecodeFrame - Codec tried to consume more data than available. Potential memory corruption");        
+        audio_pkt_size=0;
+        m_pAudioCodec->Reset();
+        assert(0);
       }
 
       // get decoded data and the size of it
