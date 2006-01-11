@@ -44,7 +44,7 @@ CDVDPlayerVideo::~CDVDPlayerVideo()
   DeleteCriticalSection(&m_critCodecSection);
 }
 
-bool CDVDPlayerVideo::OpenStream(CodecID codecID, int iWidth, int iHeight, CDemuxStreamVideo* pDemuxStreamVideo)
+bool CDVDPlayerVideo::OpenStream(CDemuxStreamVideo* pDemuxStreamVideo)
 {
   m_pDemuxStreamVideo = pDemuxStreamVideo;
 
@@ -55,20 +55,12 @@ bool CDVDPlayerVideo::OpenStream(CodecID codecID, int iWidth, int iHeight, CDemu
     return false;
   }
 
-  CLog::Log(LOGNOTICE, "Creating video codec with codec id: %i", codecID);
-  m_pVideoCodec = CDVDFactoryCodec::CreateVideoCodec(codecID);
+  CLog::Log(LOGNOTICE, "Creating video codec with codec id: %i", pDemuxStreamVideo->codec);
+  m_pVideoCodec = CDVDFactoryCodec::CreateVideoCodec( pDemuxStreamVideo );
 
   if( !m_pVideoCodec )
   {
     CLog::Log(LOGERROR, "Unsupported video codec");
-    return false;
-  }
-
-  if (!m_pVideoCodec->Open(codecID, iWidth, iHeight))
-  {
-    m_pVideoCodec->Dispose();
-    delete m_pVideoCodec;
-    m_pVideoCodec = NULL;
     return false;
   }
 

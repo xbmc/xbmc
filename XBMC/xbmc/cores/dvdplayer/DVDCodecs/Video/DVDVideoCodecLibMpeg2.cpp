@@ -114,7 +114,7 @@ void CDVDVideoCodecLibMpeg2::ReleaseBuffer(DVDVideoPicture* pPic)
   }
 }
 
-bool CDVDVideoCodecLibMpeg2::Open(CodecID codecID, int iWidth, int iHeight)
+bool CDVDVideoCodecLibMpeg2::Open(CodecID codecID, int iWidth, int iHeight, void* ExtraData, unsigned int ExtraSize)
 {
   if (!m_dll.Load())
     return false;

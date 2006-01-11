@@ -9,7 +9,7 @@ class CDVDAudioCodecLiba52 : public CDVDAudioCodec
 public:
   CDVDAudioCodecLiba52();
   virtual ~CDVDAudioCodecLiba52();
-  virtual bool Open(CodecID codecID, int iChannels, int iSampleRate, int iBits);
+  virtual bool Open(CodecID codecID, int iChannels, int iSampleRate, int iBits, void* ExtraData, unsigned int ExtraSize);
   virtual void Dispose();
   virtual int Decode(BYTE* pData, int iSize);
   virtual int GetData(BYTE** dst);
@@ -17,6 +17,7 @@ public:
   virtual int GetChannels();
   virtual int GetSampleRate();
   virtual int GetBitsPerSample();
+  virtual const char* GetName() { return "liba52"; }
 
 protected:
   virtual void SetDefault();

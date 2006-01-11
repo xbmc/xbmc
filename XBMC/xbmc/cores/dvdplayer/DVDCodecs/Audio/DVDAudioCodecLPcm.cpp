@@ -8,7 +8,7 @@ CDVDAudioCodecLPcm::CDVDAudioCodecLPcm() : CDVDAudioCodecPcm()
   m_bufferSize = LPCM_BUFFER_SIZE;
 }
 
-bool CDVDAudioCodecLPcm::Open(CodecID codecID, int iChannels, int iSampleRate, int iBits)
+bool CDVDAudioCodecLPcm::Open(CodecID codecID, int iChannels, int iSampleRate, int iBits, void* ExtraData, unsigned int ExtraSize)
 {
   m_codecID = codecID;
 
@@ -17,7 +17,7 @@ bool CDVDAudioCodecLPcm::Open(CodecID codecID, int iChannels, int iSampleRate, i
   
   if (pcm_id != CODEC_ID_NONE)
   {
-    return CDVDAudioCodecPcm::Open(pcm_id, iChannels, iSampleRate, iBits);
+    return CDVDAudioCodecPcm::Open(pcm_id, iChannels, iSampleRate, iBits, ExtraData, ExtraSize);
   }
   
   return false;
