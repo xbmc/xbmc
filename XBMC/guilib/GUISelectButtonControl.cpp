@@ -42,7 +42,6 @@ void CGUISelectButtonControl::Render()
 {
   if (!UpdateEffectState() ) return ;
 
-
   // Are we in selection mode
   if (m_bShowSelect)
   {
@@ -74,7 +73,6 @@ void CGUISelectButtonControl::Render()
     else
       m_imgLeft.Render();
 
-
     // User has moved right...
     if (m_bMovedRight)
     {
@@ -95,7 +93,6 @@ void CGUISelectButtonControl::Render()
     else
       m_imgRight.Render();
 
-
     // Render text if a current item is available
     if (m_iCurrentItem >= 0 && m_label.font && (unsigned)m_iCurrentItem < m_vecItems.size())
     {
@@ -112,7 +109,6 @@ void CGUISelectButtonControl::Render()
       }
     }
 
-
     // Select current item, if user doesn't
     // move left or right for 1.5 sec.
     DWORD dwTicksSpan = timeGetTime() - m_dwTicks;
@@ -127,7 +123,6 @@ void CGUISelectButtonControl::Render()
       CGUIMessage message(GUI_MSG_CLICKED, GetID(), GetParentID() );
       m_gWindowManager.SendThreadMessage(message);
     }
-
   } // if (m_bShowSelect)
   else
   {

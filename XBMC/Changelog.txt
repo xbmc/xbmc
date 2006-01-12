@@ -5,6 +5,10 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 12-01-2006 changed: Made all spin controls wrap rather than change direction when the end item is reached.
+ - 12-01-2006 fixed: Spin control and Checkmark control align left wasn't working (My Weather)
+ - 12-01-2006 fixed: Reverse animations for VisibleChange weren't running.
+ - 12-01-2006 fixed: WindowClose events on controls that never render cause infinite loop on window exit.
  - 11-01-2006 changed: SMS style password input shows the current character for 1 second (before changing it to a *).
  - 11-01-2006 fixed: 40 character XBE names are now handled correctly.
  - 11-01-2006 fixed: XPR font rendering was aliased (looked thin).

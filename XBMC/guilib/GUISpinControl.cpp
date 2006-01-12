@@ -33,7 +33,7 @@ CGUISpinControl::CGUISpinControl(DWORD dwParentID, DWORD dwControlId, int iPosX,
   strcpy(m_szTyped, "");
   m_dwBuddyControlID = 0;
   m_bBuddyDisabled = false;
-  m_bWrap = false;
+  m_bWrap = true;           // make all spin controls wrap
   ControlType = GUICONTROL_SPIN;
 }
 
@@ -438,7 +438,7 @@ void CGUISpinControl::Render()
     m_imgspinDownFocus.SetPosition((int)m_fMaxTextWidth + 5 + iPosX, m_iPosY);
     m_imgspinDown.SetPosition((int)m_fMaxTextWidth + 5 + iPosX, m_iPosY);
   }
-  else if (( m_label.align & XBFONT_LEFT) && (m_label.font))
+  else if ( !(m_label.align & (XBFONT_RIGHT | XBFONT_CENTER_X)) && (m_label.font))
   {
     m_imgspinUpFocus.SetPosition((int)fTextWidth + 5 + iPosX + m_imgspinDown.GetWidth(), m_iPosY);
     m_imgspinUp.SetPosition((int)fTextWidth + 5 + iPosX + m_imgspinDown.GetWidth(), m_iPosY);
@@ -496,7 +496,7 @@ void CGUISpinControl::Render()
       m_label.font->DrawText(fPosX, fPosY, m_label.disabledColor, m_label.shadowColor, strTextUnicode.c_str(), m_label.align);
     }
     // set our hit rectangle for MouseOver events
-    if (m_label.align & XBFONT_LEFT)
+    if (!(m_label.align & (XBFONT_RIGHT | XBFONT_CENTER_X)))
       m_rectHit.SetRect((int)fPosX, (int)fPosY, (int) fTextWidth, (int) fTextHeight);
     else
       m_rectHit.SetRect((int)(fPosX - fTextWidth), (int)fPosY, (int) fTextWidth, (int) fTextHeight);

@@ -70,13 +70,11 @@ void CGUIButtonControl::Render()
   m_imgFocus.Render();
   m_imgNoFocus.Render();
 
-  if (!m_label.font) return ;
-
   // if we're flickering then we may not need to render text
   bool bRenderText = (m_dwFlickerCounter > 0) ? (m_dwFrameCounter % 60 > 30) : true;
   m_dwFlickerCounter = (m_dwFlickerCounter > 0) ? (m_dwFlickerCounter - 1) : 0;
 
-  if (m_strLabel.size() > 0 && bRenderText)
+  if (m_strLabel.size() > 0 && bRenderText && m_label.font)
   {
     float fPosX = (float)m_iPosX + m_label.offsetX;
     float fPosY = (float)m_iPosY + m_label.offsetY;

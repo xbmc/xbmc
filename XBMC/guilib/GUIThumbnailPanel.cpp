@@ -157,7 +157,6 @@ void CGUIThumbnailPanel::RenderItem(bool bFocus, int iPosX, int iPosY, CGUIListI
 
 void CGUIThumbnailPanel::Render()
 {
-  if (!m_label.font) return ;
   if (!UpdateEffectState()) return ;
 
   if (!ValidItem(m_iCursorX, m_iCursorY) )
@@ -166,7 +165,6 @@ void CGUIThumbnailPanel::Render()
     m_iCursorY = 0;
     m_iRowOffset = 0;
   }
-  CGUIControl::Render();
 
   int iScrollYOffset = 0;
   if (m_bScrollDown)
@@ -177,7 +175,6 @@ void CGUIThumbnailPanel::Render()
   {
     iScrollYOffset = m_iItemHeight - m_iScrollCounter;
   }
-
 
   g_graphicsContext.SetViewPort( (float)m_iPosX, (float)m_iPosY, (float)m_iColumns*m_iItemWidth, (float)m_iRows*m_iItemHeight);
 
@@ -212,67 +209,70 @@ void CGUIThumbnailPanel::Render()
     }
   }
 
-  //render in 2 loops, first the images, second all text (batched between Begin()/End())
-  for (int iStage = 0; iStage <= 1; iStage++)
+  if (m_label.font)
   {
-    if (iStage == 1) //text rendering
+    //render in 2 loops, first the images, second all text (batched between Begin()/End())
+    for (int iStage = 0; iStage <= 1; iStage++)
     {
-      m_label.font->Begin();
-    }
-
-    if (m_bScrollUp && m_iRowOffset > 0)
-    {
-      // render item on top
-      int iPosY = m_iPosY - m_iItemHeight + iScrollYOffset;
-      m_iRowOffset --;
-      for (int iCol = 0; iCol < m_iColumns; iCol++)
+      if (iStage == 1) //text rendering
       {
-        int iPosX = m_iPosX + iCol * m_iItemWidth;
-        int iItem = iCol + m_iRowOffset * m_iColumns;
-        if (iItem >= 0 && iItem < (int)m_vecItems.size())
+        m_label.font->Begin();
+      }
+
+      if (m_bScrollUp && m_iRowOffset > 0)
+      {
+        // render item on top
+        int iPosY = m_iPosY - m_iItemHeight + iScrollYOffset;
+        m_iRowOffset --;
+        for (int iCol = 0; iCol < m_iColumns; iCol++)
         {
-          CGUIListItem *pItem = m_vecItems[iItem];
-          RenderItem(false, iPosX, iPosY, pItem, iStage);
+          int iPosX = m_iPosX + iCol * m_iItemWidth;
+          int iItem = iCol + m_iRowOffset * m_iColumns;
+          if (iItem >= 0 && iItem < (int)m_vecItems.size())
+          {
+            CGUIListItem *pItem = m_vecItems[iItem];
+            RenderItem(false, iPosX, iPosY, pItem, iStage);
+          }
+        }
+        m_iRowOffset++;
+      }
+
+      // render main panel
+      for (int iRow = 0; iRow < m_iRows; iRow++)
+      {
+        int iPosY = m_iPosY + iRow * m_iItemHeight + iScrollYOffset;
+        for (int iCol = 0; iCol < m_iColumns; iCol++)
+        {
+          int iPosX = m_iPosX + iCol * m_iItemWidth;
+          int iItem = (iRow + m_iRowOffset) * m_iColumns + iCol;
+          if (iItem < (int)m_vecItems.size())
+          {
+            CGUIListItem *pItem = m_vecItems[iItem];
+            bool bFocus = (m_iCursorX == iCol && m_iCursorY == iRow );
+            RenderItem(bFocus, iPosX, iPosY, pItem, iStage);
+          }
         }
       }
-      m_iRowOffset++;
-    }
 
-    // render main panel
-    for (int iRow = 0; iRow < m_iRows; iRow++)
-    {
-      int iPosY = m_iPosY + iRow * m_iItemHeight + iScrollYOffset;
-      for (int iCol = 0; iCol < m_iColumns; iCol++)
+      if (m_bScrollDown)
       {
-        int iPosX = m_iPosX + iCol * m_iItemWidth;
-        int iItem = (iRow + m_iRowOffset) * m_iColumns + iCol;
-        if (iItem < (int)m_vecItems.size())
+        // render item on bottom
+        int iPosY = m_iPosY + m_iRows * m_iItemHeight + iScrollYOffset;
+        for (int iCol = 0; iCol < m_iColumns; iCol++)
         {
-          CGUIListItem *pItem = m_vecItems[iItem];
-          bool bFocus = (m_iCursorX == iCol && m_iCursorY == iRow );
-          RenderItem(bFocus, iPosX, iPosY, pItem, iStage);
+          int iPosX = m_iPosX + iCol * m_iItemWidth;
+          int iItem = (iRow + m_iRowOffset) * m_iColumns + iCol;
+          if (iItem < (int)m_vecItems.size())
+          {
+            CGUIListItem *pItem = m_vecItems[iItem];
+            RenderItem(false, iPosX, iPosY, pItem, iStage);
+          }
         }
       }
-    }
-
-    if (m_bScrollDown)
-    {
-      // render item on bottom
-      int iPosY = m_iPosY + m_iRows * m_iItemHeight + iScrollYOffset;
-      for (int iCol = 0; iCol < m_iColumns; iCol++)
-      {
-        int iPosX = m_iPosX + iCol * m_iItemWidth;
-        int iItem = (iRow + m_iRowOffset) * m_iColumns + iCol;
-        if (iItem < (int)m_vecItems.size())
-        {
-          CGUIListItem *pItem = m_vecItems[iItem];
-          RenderItem(false, iPosX, iPosY, pItem, iStage);
-        }
+      if (iStage == 1)
+      { //end text rendering
+        m_label.font->End();
       }
-    }
-    if (iStage == 1)
-    { //end text rendering
-      m_label.font->End();
     }
   }
 
@@ -319,6 +319,7 @@ void CGUIThumbnailPanel::Render()
     m_upDown.SetPosition(m_iPosX + m_iSpinPosX, m_iPosY + m_iSpinPosY);
     m_upDown.Render();
   }
+  CGUIControl::Render();
 }
 
 bool CGUIThumbnailPanel::OnAction(const CAction &action)
