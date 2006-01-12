@@ -39,7 +39,7 @@ void CGUICheckMarkControl::Render()
       iTextPosY += (m_imgCheckMark.GetHeight() - (int)fTextHeight) / 2;
     }
 
-    if (m_label.align & XBFONT_LEFT)
+    if (!(m_label.align & (XBFONT_RIGHT | XBFONT_CENTER_X)))
     {
       iCheckMarkPosX += ( (DWORD)(fTextWidth) + 5);
     }

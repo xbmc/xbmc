@@ -42,10 +42,7 @@ CGUIListControl::~CGUIListControl(void)
 
 void CGUIListControl::Render()
 {
-  if (!m_label.font) return ;
   if (!UpdateEffectState()) return ;
-
-  CGUIControl::Render();
 
   CStdStringW labelUnicode;
   CStdStringW labelUnicode2;
@@ -134,52 +131,54 @@ void CGUIListControl::Render()
   //--------------------------------------------------------
   //Batch together all textrendering for m_pFont
   iPosY = m_iPosY;
-  m_label.font->Begin();
-  for (int i = 0; i < m_iItemsPerPage; i++)
+  if (m_label.font)
   {
-    int iPosX = m_iPosX;
-    if (i + m_iOffset < (int)m_vecItems.size() )
+    m_label.font->Begin();
+    for (int i = 0; i < m_iItemsPerPage; i++)
     {
-      CGUIListItem *pItem = m_vecItems[i + m_iOffset];
-      CStdString strLabel2 = pItem->GetLabel2();
-      iPosX += m_iImageWidth + m_label.offsetX + 10;
-
-      DWORD dwColor = m_label.textColor;
-      if (pItem->IsSelected())
+      int iPosX = m_iPosX;
+      if (i + m_iOffset < (int)m_vecItems.size() )
       {
-        dwColor = m_label.selectedColor;
-      }
+        CGUIListItem *pItem = m_vecItems[i + m_iOffset];
+        CStdString strLabel2 = pItem->GetLabel2();
+        iPosX += m_iImageWidth + m_label.offsetX + 10;
 
-      bool bSelected(i == m_iCursorY && HasFocus() && m_iSelect == CONTROL_LIST);
+        DWORD dwColor = m_label.textColor;
+        if (pItem->IsSelected())
+        {
+          dwColor = m_label.selectedColor;
+        }
 
-      DWORD dMaxWidth = (m_dwWidth - m_iImageWidth - 16);
-      if ( strLabel2.size() > 0 && m_label2.font)
-      {
-        g_charsetConverter.stringCharsetToFontCharset(strLabel2, labelUnicode2);
-        if ( m_label.offsetY == m_label2.offsetY )
+        bool bSelected(i == m_iCursorY && HasFocus() && m_iSelect == CONTROL_LIST);
+
+        DWORD dMaxWidth = (m_dwWidth - m_iImageWidth - 16);
+        if ( strLabel2.size() > 0 && m_label2.font)
+        {
+          g_charsetConverter.stringCharsetToFontCharset(strLabel2, labelUnicode2);
+          if ( m_label.offsetY == m_label2.offsetY )
+          {
+            float fTextHeight = 0;
+            float fTextWidth = 0;
+            m_label2.font->GetTextExtent( labelUnicode2.c_str(), &fTextWidth, &fTextHeight);
+            dMaxWidth -= (DWORD)(fTextWidth + 20);
+          }
+        }
+
+        g_charsetConverter.stringCharsetToFontCharset(pItem->GetLabel(), labelUnicode);
+        float fPosY = (float)iPosY + m_label.offsetY;
+        if (m_label.align & XBFONT_CENTER_Y)
         {
           float fTextHeight = 0;
           float fTextWidth = 0;
-          m_label2.font->GetTextExtent( labelUnicode2.c_str(), &fTextWidth, &fTextHeight);
-          dMaxWidth -= (DWORD)(fTextWidth + 20);
+          m_label.font->GetTextExtent( labelUnicode.c_str(), &fTextWidth, &fTextHeight);
+          fPosY = (float)iPosY + (m_iItemHeight - fTextHeight) / 2;
         }
+        RenderText((float)iPosX, fPosY, (float)dMaxWidth, dwColor, (WCHAR*)labelUnicode.c_str(), bSelected);
+        iPosY += m_iItemHeight + m_iSpaceBetweenItems;
       }
-
-      g_charsetConverter.stringCharsetToFontCharset(pItem->GetLabel(), labelUnicode);
-      float fPosY = (float)iPosY + m_label.offsetY;
-      if (m_label.align & XBFONT_CENTER_Y)
-      {
-        float fTextHeight = 0;
-        float fTextWidth = 0;
-        m_label.font->GetTextExtent( labelUnicode.c_str(), &fTextWidth, &fTextHeight);
-        fPosY = (float)iPosY + (m_iItemHeight - fTextHeight) / 2;
-      }
-      RenderText((float)iPosX, fPosY, (float)dMaxWidth, dwColor, (WCHAR*)labelUnicode.c_str(), bSelected);
-      iPosY += m_iItemHeight + m_iSpaceBetweenItems;
     }
+    m_label.font->End();
   }
-  m_label.font->End();
-
   //------------------------------------------
   //Batch together all textrendering for m_pFont2
   iPosY = m_iPosY;
@@ -230,6 +229,7 @@ void CGUIListControl::Render()
     m_upDown.SetValue(GetPage());
     m_upDown.Render();
   }
+  CGUIControl::Render();
 }
 
 void CGUIListControl::RenderText(float fPosX, float fPosY, float fMaxWidth, DWORD dwTextColor, WCHAR* wszText, bool bScroll )

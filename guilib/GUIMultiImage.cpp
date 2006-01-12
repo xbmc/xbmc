@@ -38,58 +38,53 @@ void CGUIMultiImage::Render()
   else if (!m_bDynamicResourceAlloc && !IsAllocated())
     AllocResources();  // not dynamic, make sure we allocate!
 
-  if (m_images.empty())
-    return ;
-
-  // Set a viewport so that we don't render outside the defined area
-  g_graphicsContext.SetViewPort((float)m_iPosX, (float)m_iPosY, (float)m_dwWidth, (float)m_dwHeight);
-  m_images[m_currentImage]->Render();
-
-  unsigned int nextImage = m_currentImage + 1;
-  if (nextImage >= m_images.size())
-    nextImage = m_loop ? 0 : m_currentImage;  // stay on the last image if <loop>no</loop>
-
-  if (nextImage == m_currentImage)
-  { // no need for complicated stuff if we aren't loading a new image!
-    g_graphicsContext.RestoreViewPort();
-    return;
-  }
-
-  // check if we should be loading a new image yet
-  if (m_imageTimer.IsRunning() && m_imageTimer.GetElapsedMilliseconds() > m_timePerImage)
+  if (!m_images.empty())
   {
-    m_imageTimer.Stop();
-    // grab a new image
-    LoadImage(nextImage);
-    // start the fade timer
-    m_fadeTimer.StartZero();
-  }
+    // Set a viewport so that we don't render outside the defined area
+    g_graphicsContext.SetViewPort((float)m_iPosX, (float)m_iPosY, (float)m_dwWidth, (float)m_dwHeight);
+    m_images[m_currentImage]->Render();
 
-  // check if we are still fading
-  if (m_fadeTimer.IsRunning())
-  {
-    // check if the fade timer has run out
-    float timeFading = m_fadeTimer.GetElapsedMilliseconds();
-    if (timeFading > m_fadeTime)
+    unsigned int nextImage = m_currentImage + 1;
+    if (nextImage >= m_images.size())
+      nextImage = m_loop ? 0 : m_currentImage;  // stay on the last image if <loop>no</loop>
+
+    if (nextImage != m_currentImage)
     {
-      m_fadeTimer.Stop();
-      // swap images
-      m_images[m_currentImage]->FreeResources();
-      m_images[nextImage]->SetAlpha(255);
-      m_currentImage = nextImage;
-      // start the load timer
-      m_imageTimer.StartZero();
+      // check if we should be loading a new image yet
+      if (m_imageTimer.IsRunning() && m_imageTimer.GetElapsedMilliseconds() > m_timePerImage)
+      {
+        m_imageTimer.Stop();
+        // grab a new image
+        LoadImage(nextImage);
+        // start the fade timer
+        m_fadeTimer.StartZero();
+      }
+
+      // check if we are still fading
+      if (m_fadeTimer.IsRunning())
+      {
+        // check if the fade timer has run out
+        float timeFading = m_fadeTimer.GetElapsedMilliseconds();
+        if (timeFading > m_fadeTime)
+        {
+          m_fadeTimer.Stop();
+          // swap images
+          m_images[m_currentImage]->FreeResources();
+          m_images[nextImage]->SetAlpha(255);
+          m_currentImage = nextImage;
+          // start the load timer
+          m_imageTimer.StartZero();
+        }
+        else
+        { // perform the fade
+          float fadeAmount = timeFading / m_fadeTime;
+          m_images[nextImage]->SetAlpha((DWORD)(255 * fadeAmount));
+        }
+        m_images[nextImage]->Render();
+      }
     }
-    else
-    { // perform the fade
-      float fadeAmount = timeFading / m_fadeTime;
-      m_images[nextImage]->SetAlpha((DWORD)(255 * fadeAmount));
-    }
-    m_images[nextImage]->Render();
+    g_graphicsContext.RestoreViewPort();
   }
-
-  g_graphicsContext.RestoreViewPort();
-
   CGUIControl::Render();
 }
 

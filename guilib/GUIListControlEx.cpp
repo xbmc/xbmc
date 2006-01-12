@@ -42,54 +42,54 @@ CGUIListControlEx::~CGUIListControlEx(void)
 
 void CGUIListControlEx::Render()
 {
-  if ( (!UpdateEffectState()) || (!m_pList) || (!m_label.font) )
+  if (!UpdateEffectState())
   {
     return ;
   }
 
+  if ( m_pList && m_label.font )
+  {
+    int iPosY = m_iPosY;
+    CGUIList::GUILISTITEMS& list = m_pList->Lock();
+
+    for (int i = 0; i < m_iItemsPerPage; i++)
+    {
+      int iPosX = m_iPosX;
+      if (i + m_iOffset < (int)list.size() )
+      {
+        CGUIItem* pItem = list[i + m_iOffset];
+
+        // create a list item rendering context
+        CGUIListExItem::RenderContext context;
+        context.m_iPositionX = iPosX;
+        context.m_iPositionY = iPosY;
+        context.m_bFocused = (i == m_iCursorY && HasFocus() && m_iSelect == CONTROL_LIST);
+        context.m_bActive = (i == m_iCursorY);
+        context.m_pButton = &m_imgButton;
+        context.m_label = m_label;
+
+        // render the list item
+        pItem->OnPaint(&context);
+
+        iPosY += (DWORD)(m_iItemHeight + m_iSpaceBetweenItems);
+      }
+    }
+    if (m_bUpDownVisible)
+    {
+      int iPages = list.size() / m_iItemsPerPage;
+
+      if (list.size() % m_iItemsPerPage)
+      {
+        iPages++;
+      }
+      m_upDown.SetPosition(m_iPosX + m_iSpinPosX, m_iPosY + m_iSpinPosY);
+      m_upDown.SetRange(1, iPages);
+      m_upDown.SetValue(1);
+      m_upDown.Render();
+    }
+    m_pList->Release();
+  }
   CGUIControl::Render();
-
-  int iPosY = m_iPosY;
-  CGUIList::GUILISTITEMS& list = m_pList->Lock();
-
-  for (int i = 0; i < m_iItemsPerPage; i++)
-  {
-    int iPosX = m_iPosX;
-    if (i + m_iOffset < (int)list.size() )
-    {
-      CGUIItem* pItem = list[i + m_iOffset];
-
-      // create a list item rendering context
-      CGUIListExItem::RenderContext context;
-      context.m_iPositionX = iPosX;
-      context.m_iPositionY = iPosY;
-      context.m_bFocused = (i == m_iCursorY && HasFocus() && m_iSelect == CONTROL_LIST);
-      context.m_bActive = (i == m_iCursorY);
-      context.m_pButton = &m_imgButton;
-      context.m_label = m_label;
-
-      // render the list item
-      pItem->OnPaint(&context);
-
-      iPosY += (DWORD)(m_iItemHeight + m_iSpaceBetweenItems);
-    }
-  }
-
-  if (m_bUpDownVisible)
-  {
-    int iPages = list.size() / m_iItemsPerPage;
-
-    if (list.size() % m_iItemsPerPage)
-    {
-      iPages++;
-    }
-    m_upDown.SetPosition(m_iPosX + m_iSpinPosX, m_iPosY + m_iSpinPosY);
-    m_upDown.SetRange(1, iPages);
-    m_upDown.SetValue(1);
-    m_upDown.Render();
-  }
-
-  m_pList->Release();
 }
 
 

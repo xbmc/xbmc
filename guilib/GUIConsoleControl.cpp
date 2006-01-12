@@ -64,7 +64,7 @@ bool CGUIConsoleControl::OnAction(const CAction &action)
 
 void CGUIConsoleControl::Render()
 {
-  if (!UpdateEffectState() || !m_label.font)
+  if (!UpdateEffectState())
   {
     return ;
   }
@@ -90,7 +90,8 @@ void CGUIConsoleControl::Render()
     Line& line = m_lines[nIndex];
     g_charsetConverter.stringCharsetToFontCharset(line.text, strText);
 
-    m_label.font->DrawText(fTextX, fTextY, line.colour, m_label.shadowColor, (LPWSTR) strText.c_str());
+    if (m_label.font)
+      m_label.font->DrawText(fTextX, fTextY, line.colour, m_label.shadowColor, (LPWSTR) strText.c_str());
 
     fTextY += m_fFontHeight + CONSOLE_LINE_SPACING;
   }

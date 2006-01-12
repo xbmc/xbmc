@@ -53,34 +53,38 @@ void CGUIRSSControl::SetIntervals(const vector<int>& vecIntervals)
 
 void CGUIRSSControl::Render()
 {
-  if ( (!UpdateEffectState()) || !g_guiSettings.GetBool("Network.EnableRSSFeeds") || !g_guiSettings.GetBool("Network.EnableInternet"))
+  if (!UpdateEffectState())
   {
     return ;
   }
 
-  // Create RSS background/worker thread if needed
-  if (m_pReader == NULL && !g_rssManager.GetReader(GetID(), GetParentID(), this, m_pReader))
+  // only render the control if they are enabled and the network is available
+  if (g_guiSettings.GetBool("Network.EnableRSSFeeds") && g_guiSettings.GetBool("Network.EnableInternet"))
   {
-    if (m_strRSSTags != "")
+    // Create RSS background/worker thread if needed
+    if (m_pReader == NULL && !g_rssManager.GetReader(GetID(), GetParentID(), this, m_pReader))
     {
-      CStdStringArray vecSplitTags;
-      int i;
+      if (m_strRSSTags != "")
+      {
+        CStdStringArray vecSplitTags;
+        int i;
 
-      StringUtils::SplitString(m_strRSSTags, ",", vecSplitTags);
+        StringUtils::SplitString(m_strRSSTags, ",", vecSplitTags);
 
-      for (i = 0;i < (int)vecSplitTags.size();i++)
-        m_pReader->AddTag(vecSplitTags[i]);
+        for (i = 0;i < (int)vecSplitTags.size();i++)
+          m_pReader->AddTag(vecSplitTags[i]);
+      }
+      m_pReader->Create(this, m_vecUrls, m_vecIntervals, m_iLeadingSpaces);
     }
-    m_pReader->Create(this, m_vecUrls, m_vecIntervals, m_iLeadingSpaces);
-  }
 
-  if (m_label.font && m_pwzText)
-  {
-    RenderText();
-  }
+    if (m_label.font && m_pwzText)
+    {
+      RenderText();
+    }
 
-  if (m_pReader)
-    m_pReader->CheckForUpdates();
+    if (m_pReader)
+      m_pReader->CheckForUpdates();
+  }
   CGUIControl::Render();
 }
 
