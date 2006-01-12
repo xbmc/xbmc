@@ -19,19 +19,20 @@ void CGUIVideoControl::Render()
   // don't render if we aren't playing video, or if the renderer isn't started
   // (otherwise the lock we have from CApplication::Render() may clash with the startup
   // locks in the RenderManager.)
-  if (!g_application.IsPlayingVideo() || !g_renderManager.IsStarted()) return;
+  if (g_application.IsPlayingVideo() && g_renderManager.IsStarted())
+  {
+    if (!g_application.m_pPlayer->IsPaused())
+      g_application.ResetScreenSaver();
 
-  if (!g_application.m_pPlayer->IsPaused())
-    g_application.ResetScreenSaver();
+    RECT rc;
+    rc.left = m_iPosX;
+    rc.top = m_iPosY;
+    rc.right = rc.left + m_dwWidth;
+    rc.bottom = rc.top + m_dwHeight;
+    g_graphicsContext.SetViewWindow(rc);
 
-  RECT rc;
-  rc.left = m_iPosX;
-  rc.top = m_iPosY;
-  rc.right = rc.left + m_dwWidth;
-  rc.bottom = rc.top + m_dwHeight;
-  g_graphicsContext.SetViewWindow(rc);
-
-  g_renderManager.RenderUpdate(false);
+    g_renderManager.RenderUpdate(false);
+  }
   CGUIControl::Render();
 }
 

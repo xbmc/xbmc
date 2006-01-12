@@ -32,43 +32,45 @@ CGUITextBox::~CGUITextBox(void)
 
 void CGUITextBox::Render()
 {
-  if (!m_label.font) return ;
   if (!UpdateEffectState()) return ;
-  CGUIControl::Render();
   int iPosY = m_iPosY;
 
-  m_label.font->Begin();
-  for (int i = 0; i < m_iItemsPerPage; i++)
+  if (m_label.font)
   {
-    int iPosX = m_iPosX;
-    if (i + m_iOffset < (int)m_vecItems.size() )
+    m_label.font->Begin();
+    for (int i = 0; i < m_iItemsPerPage; i++)
     {
-      // render item
-      CGUIListItem& item = m_vecItems[i + m_iOffset];
-      CStdString strLabel1 = item.GetLabel();
-      CStdString strLabel2 = item.GetLabel2();
-
-      CStdStringW strText1Unicode;
-      g_charsetConverter.stringCharsetToFontCharset(strLabel1, strText1Unicode);
-
-      DWORD dMaxWidth = m_dwWidth + 16;
-      if (strLabel2.size())
+      int iPosX = m_iPosX;
+      if (i + m_iOffset < (int)m_vecItems.size() )
       {
-        CStdStringW strText2Unicode;
-        g_charsetConverter.stringCharsetToFontCharset(strLabel2, strText2Unicode);
-        float fTextWidth, fTextHeight;
-        m_label.font->GetTextExtent( strText2Unicode.c_str(), &fTextWidth, &fTextHeight);
-        dMaxWidth -= (DWORD)(fTextWidth);
+        // render item
+        CGUIListItem& item = m_vecItems[i + m_iOffset];
+        CStdString strLabel1 = item.GetLabel();
+        CStdString strLabel2 = item.GetLabel2();
 
-        m_label.font->DrawTextWidth((float)iPosX + dMaxWidth, (float)iPosY + 2, m_label.textColor, m_label.shadowColor, strText2Unicode.c_str(), (float)fTextWidth);
+        CStdStringW strText1Unicode;
+        g_charsetConverter.stringCharsetToFontCharset(strLabel1, strText1Unicode);
+
+        DWORD dMaxWidth = m_dwWidth + 16;
+        if (strLabel2.size())
+        {
+          CStdStringW strText2Unicode;
+          g_charsetConverter.stringCharsetToFontCharset(strLabel2, strText2Unicode);
+          float fTextWidth, fTextHeight;
+          m_label.font->GetTextExtent( strText2Unicode.c_str(), &fTextWidth, &fTextHeight);
+          dMaxWidth -= (DWORD)(fTextWidth);
+
+          m_label.font->DrawTextWidth((float)iPosX + dMaxWidth, (float)iPosY + 2, m_label.textColor, m_label.shadowColor, strText2Unicode.c_str(), (float)fTextWidth);
+        }
+        m_label.font->DrawTextWidth((float)iPosX, (float)iPosY + 2, m_label.textColor, m_label.shadowColor, strText1Unicode.c_str(), (float)dMaxWidth);
+        iPosY += (DWORD)m_iItemHeight;
       }
-      m_label.font->DrawTextWidth((float)iPosX, (float)iPosY + 2, m_label.textColor, m_label.shadowColor, strText1Unicode.c_str(), (float)dMaxWidth);
-      iPosY += (DWORD)m_iItemHeight;
     }
+    m_label.font->End();
   }
-  m_label.font->End();
   m_upDown.SetPosition(m_iPosX + m_iSpinPosX, m_iPosY + m_iSpinPosY);
   m_upDown.Render();
+  CGUIControl::Render();
 }
 
 bool CGUITextBox::OnAction(const CAction &action)

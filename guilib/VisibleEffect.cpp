@@ -164,6 +164,8 @@ void CAnimation::CreateReverse(const CAnimation &anim)
   endAlpha = anim.startAlpha;
   startAlpha = anim.endAlpha;
   type = (ANIMATION_TYPE)-anim.type;
+  effect = anim.effect;
+  length = anim.length;
 }
 
 void CAnimation::Animate(DWORD time, bool hasRendered)

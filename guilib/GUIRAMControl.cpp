@@ -80,140 +80,143 @@ CGUIRAMControl::~CGUIRAMControl(void)
 
 void CGUIRAMControl::Render()
 {
-  if (!UpdateEffectState() || !g_guiSettings.GetBool("Network.EnableInternet"))
+  if (!UpdateEffectState())
   {
     return ;
   }
 
-  if (m_pMonitor == NULL)
+  if (g_guiSettings.GetBool("Network.EnableInternet"))
   {
-    // Create monitor background/worker thread
-    m_pMonitor = CMediaMonitor::GetInstance(this);
-  }
-
-  int iImageX;
-
-  // current images
-  iImageX = m_iPosX + m_dwWidth + m_dwThumbnailSpaceX - CONTROL_POSX_ADJUSTMENT;
-
-  for (int i = RECENT_MOVIES - 1; i >= 0; i--)
-  {
-    Movie& movie = m_current[i];
-
-    bool bIsNewTitleAvailable = m_new[i].bValid;
-
-    if (movie.bValid && movie.pImage)
+    if (m_pMonitor == NULL)
     {
-      iImageX -= m_dwThumbnailWidth + m_dwThumbnailSpaceX;
+      // Create monitor background/worker thread
+      m_pMonitor = CMediaMonitor::GetInstance(this);
+    }
 
-      movie.nAlpha += bIsNewTitleAvailable ? -4 : 4;
+    int iImageX;
 
-      int nLowWatermark = 64;
-      if (bIsNewTitleAvailable && !m_new[i].pImage)
+    // current images
+    iImageX = m_iPosX + m_dwWidth + m_dwThumbnailSpaceX - CONTROL_POSX_ADJUSTMENT;
+
+    for (int i = RECENT_MOVIES - 1; i >= 0; i--)
+    {
+      Movie& movie = m_current[i];
+
+      bool bIsNewTitleAvailable = m_new[i].bValid;
+
+      if (movie.bValid && movie.pImage)
       {
-        nLowWatermark = 1;
+        iImageX -= m_dwThumbnailWidth + m_dwThumbnailSpaceX;
+
+        movie.nAlpha += bIsNewTitleAvailable ? -4 : 4;
+
+        int nLowWatermark = 64;
+        if (bIsNewTitleAvailable && !m_new[i].pImage)
+        {
+          nLowWatermark = 1;
+        }
+
+        if (movie.nAlpha < nLowWatermark)
+        {
+          movie.pImage->FreeResources();
+          delete movie.pImage;
+          movie.pImage=NULL;
+          m_current[i] = m_new[i];
+          m_new[i].bValid = false;
+          m_new[i].pImage=NULL;
+        }
+        else if (movie.nAlpha > 255)
+        {
+          movie.nAlpha = 255;
+        }
+
+        if (movie.pImage)
+        {
+          movie.pImage->SetAlpha((DWORD)movie.nAlpha);
+          movie.pImage->SetPosition(iImageX, m_iPosY);
+          movie.pImage->Render();
+        }
       }
-
-      if (movie.nAlpha < nLowWatermark)
+      else if (bIsNewTitleAvailable)
       {
-        movie.pImage->FreeResources();
-        delete movie.pImage;
-        movie.pImage=NULL;
         m_current[i] = m_new[i];
         m_new[i].bValid = false;
         m_new[i].pImage=NULL;
       }
-      else if (movie.nAlpha > 255)
-      {
-        movie.nAlpha = 255;
-      }
+    }
 
-      if (movie.pImage)
+    // new images
+    iImageX = m_iPosX + m_dwWidth + m_dwThumbnailSpaceX - CONTROL_POSX_ADJUSTMENT;
+
+    for (int i = RECENT_MOVIES - 1; i >= 0; i--)
+    {
+      Movie& movie = m_new[i];
+
+      if (movie.bValid && movie.pImage)
       {
+        iImageX -= m_dwThumbnailWidth + m_dwThumbnailSpaceX;
+
+        movie.nAlpha += 4;
+
+        if (movie.nAlpha > 255)
+        {
+          movie.nAlpha = 255;
+        }
+
         movie.pImage->SetAlpha((DWORD)movie.nAlpha);
         movie.pImage->SetPosition(iImageX, m_iPosY);
         movie.pImage->Render();
       }
-    }
-    else if (bIsNewTitleAvailable)
-    {
-      m_current[i] = m_new[i];
-      m_new[i].bValid = false;
-      m_new[i].pImage=NULL;
-    }
-  }
-
-  // new images
-  iImageX = m_iPosX + m_dwWidth + m_dwThumbnailSpaceX - CONTROL_POSX_ADJUSTMENT;
-
-  for (int i = RECENT_MOVIES - 1; i >= 0; i--)
-  {
-    Movie& movie = m_new[i];
-
-    if (movie.bValid && movie.pImage)
-    {
-      iImageX -= m_dwThumbnailWidth + m_dwThumbnailSpaceX;
-
-      movie.nAlpha += 4;
-
-      if (movie.nAlpha > 255)
+      else if (m_current[i].bValid)
       {
-        movie.nAlpha = 255;
+        iImageX -= m_dwThumbnailWidth + m_dwThumbnailSpaceX;
       }
-
-      movie.pImage->SetAlpha((DWORD)movie.nAlpha);
-      movie.pImage->SetPosition(iImageX, m_iPosY);
-      movie.pImage->Render();
     }
-    else if (m_current[i].bValid)
+
+    WCHAR wszText[256];
+    FLOAT fTextX = (FLOAT) m_iPosX + m_dwWidth;
+    FLOAT fTextY = (FLOAT) m_iPosY + m_dwThumbnailHeight + m_dwThumbnailSpaceY;
+
+    if (m_title.font)
     {
-      iImageX -= m_dwThumbnailWidth + m_dwThumbnailSpaceX;
+      bool bBusy = (m_pMonitor && m_pMonitor->IsBusy() && (++m_dwCounter % 50 > 25) );
+
+      swprintf(wszText, L"Recently Added to My Videos");
+
+      m_title.font->DrawText( fTextX - CONTROL_POSX_ADJUSTMENT, fTextY, m_title.textColor, m_label.shadowColor, wszText, XBFONT_RIGHT);
+
+      fTextY += m_fFontHeight + (FLOAT) m_dwTextSpaceY;
     }
-  }
 
-  WCHAR wszText[256];
-  FLOAT fTextX = (FLOAT) m_iPosX + m_dwWidth;
-  FLOAT fTextY = (FLOAT) m_iPosY + m_dwThumbnailHeight + m_dwThumbnailSpaceY;
+    int iTextX = m_iPosX + m_dwWidth;
 
-  if (m_title.font)
-  {
-    bool bBusy = (m_pMonitor && m_pMonitor->IsBusy() && (++m_dwCounter % 50 > 25) );
-
-    swprintf(wszText, L"Recently Added to My Videos");
-
-    m_title.font->DrawText( fTextX - CONTROL_POSX_ADJUSTMENT, fTextY, m_title.textColor, m_label.shadowColor, wszText, XBFONT_RIGHT);
-
-    fTextY += m_fFontHeight + (FLOAT) m_dwTextSpaceY;
-  }
-
-  int iTextX = m_iPosX + m_dwWidth;
-
-  for (int i = 0; i < RECENT_MOVIES; i++)
-  {
-    CGUIButtonControl* pButton = m_pTextButton[i];
-    Movie& movie = m_new[i].bValid ? m_new[i] : m_current[i];
-
-    if (movie.bValid)
+    for (int i = 0; i < RECENT_MOVIES; i++)
     {
-      float fTextWidth = 0;
-      float fTextHeight = 0;
-      swprintf(wszText, L"%S", movie.strTitle.c_str() );
-      if (m_title.font)
-        m_title.font->GetTextExtent(wszText, &fTextWidth, &fTextHeight);
+      CGUIButtonControl* pButton = m_pTextButton[i];
+      Movie& movie = m_new[i].bValid ? m_new[i] : m_current[i];
 
-      int iButtonWidth = (int) (fTextWidth + BUTTON_WIDTH_ADJUSTMENT);
-      int iButtonHeight = (int) (fTextHeight + BUTTON_HEIGHT_ADJUSTMENT);
-      bool itemHasFocus = (i == m_iSelection) && HasFocus();
+      if (movie.bValid)
+      {
+        float fTextWidth = 0;
+        float fTextHeight = 0;
+        swprintf(wszText, L"%S", movie.strTitle.c_str() );
+        if (m_title.font)
+          m_title.font->GetTextExtent(wszText, &fTextWidth, &fTextHeight);
 
-      pButton->SetText(movie.strTitle);
-      pButton->RAMSetTextColor(itemHasFocus ? m_label.selectedColor : m_label.textColor);
-      pButton->SetPosition(iTextX - iButtonWidth, (int)fTextY),
-      pButton->SetWidth(iButtonWidth);
-      pButton->SetHeight(iButtonHeight);
-      pButton->SetFocus(itemHasFocus);
-      pButton->Render();
+        int iButtonWidth = (int) (fTextWidth + BUTTON_WIDTH_ADJUSTMENT);
+        int iButtonHeight = (int) (fTextHeight + BUTTON_HEIGHT_ADJUSTMENT);
+        bool itemHasFocus = (i == m_iSelection) && HasFocus();
 
-      fTextY += m_fFont2Height + (FLOAT) m_dwTextSpaceY;
+        pButton->SetText(movie.strTitle);
+        pButton->RAMSetTextColor(itemHasFocus ? m_label.selectedColor : m_label.textColor);
+        pButton->SetPosition(iTextX - iButtonWidth, (int)fTextY),
+        pButton->SetWidth(iButtonWidth);
+        pButton->SetHeight(iButtonHeight);
+        pButton->SetFocus(itemHasFocus);
+        pButton->Render();
+
+        fTextY += m_fFont2Height + (FLOAT) m_dwTextSpaceY;
+      }
     }
   }
   CGUIControl::Render();

@@ -625,7 +625,7 @@ void CGUIControl::SetAnimations(const vector<CAnimation> &animations)
 void CGUIControl::QueueAnimation(ANIMATION_TYPE animType)
 {
   // rule out the animations we shouldn't perform
-  if (!m_bVisible) 
+  if (!m_bVisible || !HasRendered()) 
   { // hidden - don't allow exit or hide animations for this control
     if (animType == ANIM_TYPE_WINDOW_CLOSE)
       return;
@@ -649,7 +649,9 @@ void CGUIControl::QueueAnimation(ANIMATION_TYPE animType)
   else
   { // hidden and visible animations delay the change of state.  If there is no animations
     // to perform, then we should just change the state straightaway
+//    if (m_dwParentID == WINDOW_VISUALISATION) CLog::DebugLog("No forward animation found for control %i, anim %i", m_dwControlID, animType);
     if (reverseAnim) reverseAnim->ResetAnimation();
+//    else if (m_dwParentID == WINDOW_VISUALISATION) CLog::DebugLog("Also no reverse animation found");
     UpdateStates(animType, ANIM_PROCESS_NORMAL, ANIM_STATE_APPLIED);
   }
 }
@@ -709,8 +711,8 @@ void CGUIControl::UpdateStates(ANIMATION_TYPE type, ANIMATION_PROCESS currentPro
         m_bVisible = m_lastVisible;
     }
   }
-//  if (visible != m_bVisible)
-//    CLog::DebugLog("UpdateControlState of control id %i - now %s (type=%d, process=%d, state=%d)", m_dwControlID, m_bVisible ? "visible" : "hidden", type, currentProcess, currentState);
+  if (visible != m_bVisible)
+    CLog::DebugLog("UpdateControlState of control id %i - now %s (type=%d, process=%d, state=%d)", m_dwControlID, m_bVisible ? "visible" : "hidden", type, currentProcess, currentState);
 }
 
 void CGUIControl::Animate()
@@ -730,16 +732,16 @@ void CGUIControl::Animate()
     {
       if (anim.effect == EFFECT_TYPE_SLIDE)
       {
-        if (IsVisible())
+        if (IsVisible() && m_dwParentID == WINDOW_VISUALISATION)
           CLog::DebugLog("Animating control %d with a %s slide effect %s. Amount is %2.1f, visible=%s", m_dwControlID, anim.type == ANIM_TYPE_VISIBLE ? "visible" : "hidden", anim.currentProcess == ANIM_PROCESS_NORMAL ? "normal" : "reverse", anim.amount, IsVisible() ? "true" : "false");
       }
       else if (anim.effect == EFFECT_TYPE_FADE)
       {
-        if (IsVisible())
+        if (IsVisible() && m_dwParentID == WINDOW_VISUALISATION)
           CLog::DebugLog("Animating control %d with a %s fade effect %s. Amount is %2.1f. Visible=%s", m_dwControlID, anim.type == ANIM_TYPE_VISIBLE ? "visible" : "hidden", anim.currentProcess == ANIM_PROCESS_NORMAL ? "normal" : "reverse", anim.amount, IsVisible() ? "true" : "false");
       }
     }
-    */
+  */  
   }
 #ifdef PRE_SKIN_VERSION_2_0_COMPATIBILITY
   // do the temporary fade effect as well
@@ -771,13 +773,17 @@ bool CGUIControl::IsAnimating(ANIMATION_TYPE animType)
     CAnimation &anim = m_animations[i];
     if (anim.type == animType)
     {
-      if (anim.queuedProcess == ANIM_PROCESS_NORMAL) return true;
-      if (anim.currentProcess == ANIM_PROCESS_NORMAL) return true;
+      if (anim.queuedProcess == ANIM_PROCESS_NORMAL)
+        return true;
+      if (anim.currentProcess == ANIM_PROCESS_NORMAL)
+        return true;
     }
     else if (anim.type == -animType)
     {
-      if (anim.queuedProcess == ANIM_PROCESS_REVERSE) return true;
-      if (anim.currentProcess == ANIM_PROCESS_REVERSE) return true;
+      if (anim.queuedProcess == ANIM_PROCESS_REVERSE)
+        return true;
+      if (anim.currentProcess == ANIM_PROCESS_REVERSE)
+        return true;
     }
   }
   return false;
