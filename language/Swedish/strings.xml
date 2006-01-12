@@ -1,6 +1,3 @@
-
-
-
 <strings>
   <string><id>0</id><value>Mina Program</value></string>
   <string><id>1</id><value>Mina Bilder</value></string>
@@ -622,6 +619,7 @@
   <string><id>1254</id><value>Popup meddelande</value></string>
   <string><id>1255</id><value>Skicka FTP anv&#228;ndare och l&#246;senord</value></string>
   <string><id>1256</id><value>Ping intervall (sek)</value></string>
+  <string><id>1257</id><value>Vill du ansluta till den autouppt&#228;ckta xboxen?</value></string>
 
   <string><id>1396</id><value>Bl&#229;sigt</value></string>
   <string><id>1397</id><value>och</value></string>
@@ -847,6 +845,7 @@
   <string><id>13270</id><value>H&#229;rdvara:</value></string>
   <string><id>13271</id><value>CPU Hastighet:</value></string>
 
+  <string><id>13274</id><value>Xboxen &#228;r ansluten, men ingen DNS &#228;r tillg&#228;nglig.</value></string>
   <string><id>13275</id><value>H&#229;rddisk</value></string>
   <string><id>13276</id><value>DVDRom</value></string>
   <string><id>13277</id><value>Lagring</value></string>
