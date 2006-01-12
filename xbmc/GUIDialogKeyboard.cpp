@@ -208,7 +208,7 @@ void CGUIDialogKeyboard::UpdateLabel()
     if (m_hiddenInput)
     { // convert to *'s
       edit.Empty();
-      if (m_lastRemoteClickTime + 1000 < timeGetTime() && m_strEdit.size())
+      if (m_lastRemoteClickTime + 1000 > timeGetTime() && m_strEdit.size())
       { // using the remove to input, so display the last key input
         edit.append(m_strEdit.size() - 1, '*');
         edit.append(1, m_strEdit[m_strEdit.size() - 1]);
