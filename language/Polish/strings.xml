@@ -451,7 +451,10 @@
   <string><id>514</id><value>Manualne ustawienia</value></string>
   <string><id>515</id><value>Gatunek</value></string>
   <string><id>516</id><value>Obs³uga archiwów</value></string>
-
+  <string><id>517</id><value>Najczêœciej odtwarzane albumy</value></string>
+  <string><id>518</id><value>Uruchom</value></string>
+  <string><id>519</id><value>Uruchom w..</value></string>
+  <string><id>520</id><value>Edytuj nazwê XBE</value></string>
   <string><id>600</id><value>Zgraj CD</value></string>
   <string><id>601</id><value>Œrednia</value></string>
   <string><id>602</id><value>Standardowa</value></string>
@@ -487,6 +490,7 @@
   <string><id>644</id><value>Przytnij czarne pasy</value></string>
 
   <string><id>645</id><value>Muszê buforowaæ du¿e pliki. Kontynuowaæ?</value></string>
+  <string><id>646</id><value>Usuñ tytu³</value></string>
 
   <string><id>700</id><value>Czyszczenie bazy danych</value></string>
   <string><id>701</id><value>Usuwam stare utwory z bazy danych</value></string>
@@ -562,6 +566,7 @@
   <string><id>771</id><value>Sprawdzam ograniczenia FATX serwera FTP</value></string>
   <string><id>772</id><value>Sprzêt Audio</value></string>
   <string><id>773</id><value>Poszukujê</value></string>
+  <string><id>774</id><value>Folder ze slajdami dla wygaszacza</value></string>
   <string><id>998</id><value>XLink KAI</value></string>
   <string><id>999</id><value>Rozgrywka Online</value></string>
 
@@ -615,6 +620,8 @@
   <string><id>1254</id><value>Wyskakuj¹ce informacje</value></string>
   <string><id>1255</id><value>Wyœlij u¿ytkownika i has³o do FTP'a</value></string>
   <string><id>1256</id><value>OpoŸnienie ping'u</value></string>
+  <string><id>1257</id><value>Czy chcesz siê pod³¹czyæ do wykrytego XBOX'a ?</value></string>
+
 
   <string><id>1396</id><value>Zamiecie</value></string>
   <string><id>1397</id><value>i</value></string>
@@ -697,7 +704,9 @@
   <string><id>12006</id><value>Wizualizacja dŸwiêku</value></string>
   <string><id>12007</id><value>Obrazy/pokaz slajdów</value></string>
   <string><id>12008</id><value>Okno grupowania plików</value></string>
-
+  <string><id>12009</id><value>Przebudowujê index...</value></string>
+  <string><id>12010</id><value>Wróæ do Muzyki</value></string>
+  <string><id>12011</id><value>Wróæ do Filmów</value></string>
 
   <string><id>12310</id><value>0</value></string>
   <string><id>12311</id><value>1</value></string>
@@ -768,6 +777,7 @@
   <string><id>12391</id><value>Minut</value></string>
   <string><id>12392</id><value>Godzin</value></string>
   <string><id>12393</id><value>Dni</value></string>
+  <string><id>12394</id><value>Ca³kowity czas pracy</value></string>
   
 
   <string><id>12600</id><value>Pogoda</value></string>
@@ -795,6 +805,8 @@
   <string><id>13210</id><value>Uruchomiony, alarm za %im</value></string>
   <string><id>13211</id><value>Alarm!</value></string>
   <string><id>13212</id><value>Anulowano pozosta³o minut %im%</value></string>
+
+  <string><id>13250</id><value>Przegl¹daj napisy...</value></string>
 
   <string><id>13299</id><value>Temperatura</value></string>
   <string><id>13300</id><value>Prêdkoœæ wiatraka:</value></string>
@@ -898,6 +910,7 @@
   <string><id>13398</id><value>Zak³adki</value></string>
   <string><id>13399</id><value>Ignoruj "The" kiedy sortujesz</value></string>
   <string><id>13400</id><value>Przenikanie utworów</value></string>
+  <string><id>13401</id><value>Przegl¹daj %s</value></string>
 
   <string><id>14000</id><value>Kaskadowanie wy³.</value></string>
   <string><id>14001</id><value>Kaskadowanie proste</value></string>
@@ -970,6 +983,8 @@
   <string><id>14069</id><value>Czy chcesz by zmiany obowi¹zywa³y od teraz?</value></string>
   <string><id>14070</id><value>WprowadŸ zmiany</value></string>
   <string><id>14071</id><value>Zezwól na kasowanie plików</value></string>
+  <string><id>14072</id><value>W³¹cz XLink Kai</value></string>
+  <string><id>14073</id><value>XLink Kai nie jest w³¹czony.</value></string>
 
   <string><id>15000</id><value>XLink Kai</value></string>
   <string><id>15001</id><value>Serwis nie jest pod³¹czony, czy chcesz siê</value></string>
@@ -1044,6 +1059,9 @@
   <string><id>15107</id><value>Buforujê...</value></string>
   <string><id>15108</id><value>DŸwiêki nawigacyjne</value></string>
   <string><id>15109</id><value>Domyœlna skóra</value></string>
+  <string><id>15110</id><value>Wibracje kontrolera</value></string>
+  <string><id>15111</id><value>Temat skóry</value></string>
+  <string><id>15112</id><value>Domyœlny temat</value></string>
   <string><id>15200</id><value>AudioScrobbler</value></string>
   <string><id>15201</id><value>Przesy³anie informacji o utworze do AudioScrobbler</value></string>
   <string><id>15202</id><value>AudioScrobbler U¿ytkownik</value></string>
@@ -1057,6 +1075,45 @@
   <string><id>15210</id><value>%i utworów w buforze</value></string>
   <string><id>15211</id><value>Przesy³am...</value></string>
   <string><id>15212</id><value>Przes³ano w %i sekund</value></string>
+  <string><id>15250</id><value>Pezeœlij ostatnie radio .fm do AudioScrobbler'a</value></string>
+  <string><id>15251</id><value>£¹czê siê z ostatnim.fm...</value></string>
+  <string><id>15252</id><value>Wybieram stacjê...</value></string>
+
+  <string><id>15253</id><value>Wyszukaj podobnych artystów...</value></string>
+  <string><id>15254</id><value>Wyszukaj podobne znaczniki...</value></string>
+  <string><id>15255</id><value>Twój profil (%name%)</value></string>
+  <string><id>15256</id><value>Najlepsze znaczniki</value></string>
+
+  <string><id>15257</id><value>Top artyœci dla znacznika %name%</value></string>
+  <string><id>15258</id><value>Top albumy dla znacznika %name%</value></string>
+  <string><id>15259</id><value>Top œcie¿ki dla znacznika %name%</value></string>
+  <string><id>15260</id><value>S³uchasz znacznika %name% radia last.fm</value></string>
+
+  <string><id>15261</id><value>Podobni artyœci jak w %name%</value></string>
+  <string><id>15262</id><value>Najlepsze %name% albumy</value></string>
+  <string><id>15263</id><value>Najlepsze %name% œcie¿ki</value></string>
+  <string><id>15264</id><value>Najlepsze %name% znaczniki</value></string>
+  <string><id>15265</id><value>Biggest fans of %name%</value></string>
+  <string><id>15266</id><value>Listen to %name% fans last.fm radio</value></string>
+  <string><id>15267</id><value>Listen to %name% similar artists last.fm radio</value></string>
+  
+  <string><id>15268</id><value>Najlepsi artyœci dla u¿ytkownika %name%</value></string>
+  <string><id>15269</id><value>Najlepsze albumy dla u¿ytkownika %name%</value></string>
+  <string><id>15270</id><value>Najlepsze œcie¿ki dla u¿ytkownika %name%</value></string>
+  <string><id>15271</id><value>Przyjaciele u¿ytkownika %name%</value></string>
+  <string><id>15272</id><value>S¹siedztwo u¿ytkownika %name%</value></string>
+  <string><id>15273</id><value>Tygodniowy wykaz artystów dla  %name%</value></string>
+  <string><id>15274</id><value>Tygodniowy wykaz albumów dla %name%</value></string>
+  <string><id>15275</id><value>Tygodniowy wykaz œcie¿ek dla %name%</value></string>
+  <string><id>15283</id><value>Najczêœciej s³uchane œcie¿ki przez %name%</value></string>
+  <string><id>15276</id><value>S³uchaj %name% neighbours last.fm radio</value></string>
+  <string><id>15277</id><value>S³uchaj %name% personal last.fm radio</value></string>
+  <string><id>15278</id><value>S³uchaj %name% loved tracks last.fm radio</value></string>
+
+  <string><id>15279</id><value>Odbieram listê z last.fm...</value></string>
+  <string><id>15280</id><value>Nie mogê odebraælisty z last.fm...</value></string>
+  <string><id>15281</id><value>Wpisz nazwê artysty aby wyszukaæ pokrewnych</value></string>
+  <string><id>15282</id><value>Wpisz nazwê znacznika aby wyszukaæ podobne</value></string>
 
   <string><id>13150</id><value>HDD Klucz:</value></string>
   <string><id>13151</id><value>HDD Temp:</value></string>
@@ -1077,6 +1134,10 @@
   <string><id>13166</id><value>S³uchawki/Mikrofon - Port:</value></string>
   <string><id>13167</id><value>MemoryStick - Port:</value></string>
   <string><id>13168</id><value>Pilot - Port:</value></string>
+  <string><id>13169</id><value>Omiñ wybór CD</value></string>
+  <string><id>13170</id><value>Nigdy</value></string>
+  <string><id>13171</id><value>Natychmiast</value></string>
+  <string><id>13172</id><value>Po %i sekundach</value></string>
 
   <string><id>13270</id><value>Sprzêt:</value></string>
   <string><id>13271</id><value>Prêdkoœci CPU:</value></string>
@@ -1114,10 +1175,14 @@
   <string><id>15302</id><value>Nie znaleziono serwerów</value></string>
   <string><id>15303</id><value>Grupa robocza nie zosta³a odnaleziona</value></string>
 
+  <string><id>15310</id><value>Otwieram wielo-œcie¿kow¹ zak³adkê</value></string>
+  <string><id>15311</id><value>Œcie¿ka:</value></string>
+
   <string><id>16000</id><value>Ogólne</value></string>
   <string><id>16001</id><value>Konfiguracja sprzêtu audio...</value></string>
   <string><id>16002</id><value>Przeszukujê CDDB</value></string>
   <string><id>16003</id><value>Odtwarzacz</value></string>
+  <string><id>16004</id><value>Odtwarzaj media z dysku</value></string>
   
   <string><id>16009</id><value>Wpisz nazwê filmu</value></string>
   <string><id>16010</id><value>Wpisz nazwê profilu</value></string>
@@ -1137,5 +1202,20 @@
   <string><id>16023</id><value>Obs³uga przeplotu</value></string>
   
   <string><id>16024</id><value>Anulujê...</value></string>
-  
+
+  <string><id>16025</id><value>Wpisz nazwê artysty</value></string>
+
+  <string><id>16100</id><value>Wszystkie filmy</value></string>
+  <string><id>16101</id><value>Nieogl¹dane</value></string>
+  <string><id>16102</id><value>Ogl¹dane</value></string>
+  <string><id>16103</id><value>Oznacz jako Ogl¹dane</value></string>
+  <string><id>16104</id><value>Oznacz jako Nieogl¹dane</value></string>
+  <string><id>16105</id><value>Edytuj nazwê</value></string>
+
+  <string><id>16106</id><value>U¿ywaj NTSC-M &amp; NTSC-J</value></string>
+  <string><id>16107</id><value>U¿ywaj tylko NTSC-M</value></string>
+  <string><id>16108</id><value>U¿ywaj tylko NTSC-J</value></string>
+  <string><id>16109</id><value>U¿ywaj tylko PAL-60</value></string>
+  <string><id>16110</id><value>Dla gier 60hz</value></string>
+
 </strings>

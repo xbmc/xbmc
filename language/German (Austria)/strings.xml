@@ -136,7 +136,6 @@
   <string><id>202</id><value>Beschreibung:</value></string>
   <string><id>203</id><value>Handlung:</value></string>
   <string><id>204</id><value>Bewertung:</value></string>
-  <string><id>2050</id><value>Spieldauer:</value></string>
   <string><id>205</id><value>Votum:</value></string>
   <string><id>206</id><value>Besetzung</value></string>
   <string><id>207</id><value>Handlung</value></string>
@@ -381,7 +380,6 @@
   <string><id>448</id><value>LCD</value></string>
   <string><id>449</id><value>Aktivieren</value></string>
   <string><id>450</id><value>Spalten</value></string>
-  <string><id>4501</id><value>LCD Typ</value></string>
   <string><id>451</id><value>Reihe 1</value></string>
   <string><id>452</id><value>Reihe 2</value></string>
   <string><id>453</id><value>Reihe 3</value></string>
@@ -442,7 +440,7 @@
   <string><id>508</id><value>Verknüpfungen und Durchsuchen deaktivieren</value></string>
   <string><id>509</id><value>Miniaturansichten zwischenspeichern</value></string>
   <string><id>510</id><value>Visualisierungen aktivieren</value></string>
-  <string><id>511</id><value>Video-Modus auf Spielregion automatisch anpassen</value></string>
+  <string><id>511</id><value>Video-Modus-Änderung ermöglichen</value></string>
   <string><id>512</id><value>Startfenster</value></string> 
   <string><id>513</id><value>Standard</value></string> 
   <string><id>514</id><value>Manuelle Einstellung</value></string> 
@@ -562,7 +560,7 @@
   <string><id>771</id><value>FTP FatX Übertragungsanpassung</value></string>
   <string><id>772</id><value>Audioausgabe</value></string>
   <string><id>773</id><value>Positionssuche</value></string>
-  <string><id>774</id><value>Diaschau Bildschirmschoner Ordner</value></string>
+  <string><id>774</id><value>Diaschau Ordner</value></string>
 
   <string><id>998</id><value>Online spielen</value></string>
   <string><id>999</id><value>Online spielen</value></string>
@@ -613,9 +611,10 @@
   <string><id>1251</id><value>XBOX Erkennung</value></string> 
   <string><id>1252</id><value>Beschreibung</value></string> 
   <string><id>1253</id><value>FTP Verknüpfung unter Eigene Dateien erstellen</value></string> 
-  <string><id>1254</id><value>Popup Anzeige</value></string> 
+  <string><id>1254</id><value>Abfrage vor Verbindung</value></string> 
   <string><id>1255</id><value>FTP Benutzername und Kennwort senden</value></string>
   <string><id>1256</id><value>Ping-Intervall</value></string>
+  <string><id>1257</id><value>Mit erkannter XBOX verbinden?</value></string>
 
   <string><id>1396</id><value>Verwehungen</value></string> 
   <string><id>1397</id><value>und</value></string> 
@@ -632,6 +631,10 @@
   <string><id>1408</id><value>Eis</value></string> 
   <string><id>1409</id><value>Kristalle</value></string> 
   <string><id>1410</id><value>Windstille</value></string> 
+
+  <string><id>2050</id><value>Spieldauer:</value></string>
+  <string><id>4501</id><value>LCD Typ</value></string>
+
   <string><id>10000</id><value>Hauptmenü</value></string>
   <string><id>10001</id><value>Programme</value></string>
   <string><id>10002</id><value>Bilder</value></string>
@@ -698,6 +701,9 @@
   <string><id>12006</id><value>Audio Visualisation</value></string>
   <string><id>12007</id><value>Bilder/Diaschau</value></string>
   <string><id>12008</id><value>Koppeln</value></string>
+  <string><id>12009</id><value>Index wiederherstellen..</value></string>
+  <string><id>12010</id><value>Zurück zu Eigene Musik</value></string> 
+  <string><id>12011</id><value>Zurück zu Eigene Videos</value></string> 
 
   <string><id>12310</id><value>0</value></string> 
   <string><id>12311</id><value>1</value></string> 
@@ -769,7 +775,8 @@
   <string><id>12390</id><value>Betriebszeit</value></string> 
   <string><id>12391</id><value>Minuten</value></string> 
   <string><id>12392</id><value>Stunden</value></string> 
-  <string><id>12393</id><value>Tage</value></string> 
+  <string><id>12393</id><value>Tage</value></string>
+  <string><id>12394</id><value>Gesamt-Betriebzeit</value></string> 
 
   <string><id>12600</id><value>Wetter</value></string>
   <string><id>12900</id><value>Bildschirmschoner</value></string>
@@ -802,6 +809,10 @@
   <string><id>13166</id><value>Kopf/Mikrofon an Port:</value></string> 
   <string><id>13167</id><value>MemoryStick an Port:</value></string> 
   <string><id>13168</id><value>IR-Remote an Port:</value></string> 
+  <string><id>13169</id><value>Gekoppelte Datei abspielen..</value></string> 
+  <string><id>13170</id><value>warten bis gewählt</value></string> 
+  <string><id>13171</id><value>sofortige Wiedergabe</value></string> 
+  <string><id>13172</id><value>nach %i sek</value></string>
 
   <string><id>13200</id><value>Profile</value></string>
   <string><id>13201</id><value>Profil löschen '%s'?</value></string>
@@ -816,10 +827,12 @@
   <string><id>13210</id><value>Gestartet, Alarm in %im</value></string> 
   <string><id>13211</id><value>Alarm!</value></string> 
   <string><id>13212</id><value>Abgebrochen mit %im%is übrig</value></string> 
+  <string><id>13250</id><value>Untertitel auswählen..</value></string>
 
   <string><id>13270</id><value>System:</value></string> 
   <string><id>13271</id><value>CPU-Geschwindigkeit:</value></string> 
-  <string><id>13275</id><value>Festplatte</value></string> 
+  <string><id>13275</id><value>Festplatte</value></string>
+  <string><id>13274</id><value>Netzwerkverbindung besteht, jedoch ist kein DNS erreichbar.</value></string> 
   <string><id>13276</id><value>DVD-Laufwerk</value></string> 
   <string><id>13277</id><value>Speicher</value></string> 
   <string><id>13278</id><value>Standard</value></string> 
@@ -915,10 +928,10 @@
   <string><id>13368</id><value>--></value></string>
   <string><id>13369</id><value>Robotereffekt verwenden</value></string> 
   <string><id>13370</id><value>--></value></string>
-  <string><id>13371</id><value>Port 0</value></string> 
-  <string><id>13372</id><value>Port 1</value></string> 
-  <string><id>13373</id><value>Port 2</value></string> 
-  <string><id>13374</id><value>Port 3</value></string> 
+  <string><id>13371</id><value>Port 1</value></string> 
+  <string><id>13372</id><value>Port 2</value></string> 
+  <string><id>13373</id><value>Port 3</value></string> 
+  <string><id>13374</id><value>Port 4</value></string> 
   <string><id>13375</id><value>Modul aktivieren</value></string> 
   <string><id>13376</id><value>Lautstärke</value></string> 
   <string><id>13377</id><value>Standard Ansicht</value></string> 
@@ -926,10 +939,10 @@
   <string><id>13379</id><value>Standard Kontrast</value></string> 
   <string><id>13380</id><value>Standard Gamma</value></string> 
   <string><id>13381</id><value>Video fortsetzen</value></string>
-  <string><id>13382</id><value>Sprachmaske - Port 0</value></string> 
-  <string><id>13383</id><value>Sprachmaske - Port 1</value></string> 
-  <string><id>13384</id><value>Sprachmaske - Port 2</value></string> 
-  <string><id>13385</id><value>Sprachmaske - Port 3</value></string> 
+  <string><id>13382</id><value>Sprachmaske - Port 1</value></string> 
+  <string><id>13383</id><value>Sprachmaske - Port 2</value></string> 
+  <string><id>13384</id><value>Sprachmaske - Port 3</value></string> 
+  <string><id>13385</id><value>Sprachmaske - Port 4</value></string> 
   <string><id>13386</id><value>Zeitbezogene Positionssuche verwenden</value></string>
   <string><id>13387</id><value>rechte Spalte [Dauer]</value></string>
   <string><id>13388</id><value>Vorauswahl</value></string> 
@@ -945,6 +958,7 @@
   <string><id>13398</id><value>Lesezeichen</value></string>
   <string><id>13399</id><value>"The" beim Sortieren nicht berücksichtigen</value></string>
   <string><id>13400</id><value>Titel bei Alben überblenden</value></string>
+  <string><id>13401</id><value>%s auswählen..</value></string>
 
   <string><id>14000</id><value>Koppeln deakt.</value></string>
   <string><id>14001</id><value>Koppeln aktiv.</value></string>
@@ -1098,8 +1112,8 @@
   <string><id>15111</id><value>Oberflächenschema</value></string> 
   <string><id>15112</id><value>Standard</value></string> 
 
-  <string><id>15200</id><value>AudioScrobbler</value></string> 
-  <string><id>15201</id><value>Lieder Infos an AudioScrobbler senden</value></string> 
+  <string><id>15200</id><value>LastFM</value></string> 
+  <string><id>15201</id><value>Lieder Infos an LastFM senden</value></string> 
   <string><id>15202</id><value>Benutzername</value></string> 
   <string><id>15203</id><value>Kennwort</value></string> 
   <string><id>15204</id><value>Verbindungsfehler...</value></string> 
@@ -1169,13 +1183,23 @@
 
   <!-- Web browser strings -->  
   <string><id>19999</id><value>Internet</value></string>
-  <string><id>20000</id><value>Wechseln zu...</value></string>
+  <string><id>20000</id><value>Wechseln zu..</value></string>
   <string><id>20001</id><value>Favoriten</value></string>
   <string><id>20002</id><value>Zu Favoriten hinzuf.</value></string>
-  <string><id>20003</id><value>Bearbeiten</value></string>
+  <string><id>20003</id><value>Neuer Ordner</value></string>
   <string><id>20004</id><value>Löschen</value></string>
   <string><id>20005</id><value>Verlauf</value></string>
   <string><id>20006</id><value>Verlauf löschen</value></string>
+  <string><id>20007</id><value>Favorit benennen..</value></string>
+  <string><id>20008</id><value>Favorit URL eingeben..</value></string>
+  <string><id>20009</id><value>Bearbeiten</value></string>
+  <string><id>20010</id><value>Löschen</value></string>
+  <string><id>20011</id><value>Verschieben</value></string>
+  <string><id>20012</id><value>An diese Stelle</value></string>
+  <string><id>20013</id><value>Verschieben abbrechen</value></string>
+  <string><id>20014</id><value>Möchten sie diesen</value></string>
+  <string><id>20015</id><value>Eintrag wirklich löschen?</value></string>
+  <string><id>20016</id><value>Ordner wirklich löschen?</value></string>
   <!-- End of Web browser strings -->
 
 </strings>

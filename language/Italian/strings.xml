@@ -755,7 +755,7 @@
   <string><id>12347</id><value>L'XBOX ora si spegnerà.</value></string>
   <string><id>12348</id><value>Item Locked</value></string>
   <string><id>12349</id><value>Ricordi Master Code fino al prossimo avvio?</value></string>
-  <string><id>12350</id><value>(Aprendo un oggetto in Impostazioni</value></string>
+  <string><id>12350</id><value>(Aprendo un elemento in Impostazioni</value></string>
   <string><id>12351</id><value>riabiliterà automaticamente Master Lock.)</value></string>
   <string><id>12352</id><value>Inserire combinazione di tasti Master Code e premere Start</value></string>
   <string><id>12353</id><value>Riattiva Blocco</value></string>
@@ -847,6 +847,7 @@
   <string><id>13270</id><value>Hardware:</value></string>
   <string><id>13271</id><value>CPU Speed:</value></string>
 
+  <string><id>13274</id><value>Xbox è Connessa, ma non c'è nessun DNS disponibile.</value></string>
   <string><id>13275</id><value>Hard Disk</value></string>
   <string><id>13276</id><value>DVD-ROM</value></string>
   <string><id>13277</id><value>Storage</value></string>
@@ -871,6 +872,7 @@
   <string><id>13296</id><value>Xbox è Connessa</value></string>
   <string><id>13297</id><value>Xbox NON è Connessa. Controlla Configurazione Rete!</value></string>
   <string><id>13298</id><value>XBLIVE Key:</value></string>
+
   <string><id>13299</id><value>Temperatura da Raggiungere</value></string>
   <string><id>13300</id><value>Velocità Ventola</value></string>
   <string><id>13301</id><value>Controllo Automatico Temperatura</value></string>
@@ -924,7 +926,7 @@
   <string><id>13349</id><value>Cerca Info Per Tutti i File</value></string>
   <string><id>13350</id><value>In Riproduzione...</value></string>
   <string><id>13351</id><value>Informazioni Album</value></string>
-  <string><id>13352</id><value>Scans.Cartella in Database</value></string>
+  <string><id>13352</id><value>Scans.Tutti gli Oggetti nel Database</value></string>
   <string><id>13353</id><value>Ferma Scansione</value></string>
   <string><id>13354</id><value>Metodo di Render</value></string>
   <string><id>13355</id><value>Pixel Shader Bassa Qualità</value></string>
@@ -943,10 +945,10 @@
   <string><id>13368</id><value>-- Valore Fattore Sussurro</value></string>
   <string><id>13369</id><value>- Attiva Fattore Robotico</value></string>
   <string><id>13370</id><value>-- Valore Fattore Robotico</value></string>
-  <string><id>13371</id><value>- Porta 0 Voce</value></string>
-  <string><id>13372</id><value>- Porta 1 Voce</value></string>
-  <string><id>13373</id><value>- Porta 2 Voce</value></string>
-  <string><id>13374</id><value>- Porta 3 Voce</value></string>
+  <string><id>13371</id><value>- Porta 1 Voce</value></string>
+  <string><id>13372</id><value>- Porta 2 Voce</value></string>
+  <string><id>13373</id><value>- Porta 3 Voce</value></string>
+  <string><id>13374</id><value>- Porta 4 Voce</value></string>
   <string><id>13375</id><value>Attiva Dispositivo</value></string>
   <string><id>13376</id><value>Volume</value></string>
   <string><id>13377</id><value>Modalità di Visione Predefinita</value></string>
@@ -954,10 +956,10 @@
   <string><id>13379</id><value>Contrasto Predefinito</value></string>
   <string><id>13380</id><value>Gamma Predefinita</value></string>
   <string><id>13381</id><value>Riprendi Video</value></string>
-  <string><id>13382</id><value>Camuffa Voce - Porta 0</value></string>
-  <string><id>13383</id><value>Camuffa Voce - Porta 1</value></string>
-  <string><id>13384</id><value>Camuffa Voce - Porta 2</value></string>
-  <string><id>13385</id><value>Camuffa Voce - Porta 3</value></string>
+  <string><id>13382</id><value>Camuffa Voce - Porta 1</value></string>
+  <string><id>13383</id><value>Camuffa Voce - Porta 2</value></string>
+  <string><id>13384</id><value>Camuffa Voce - Porta 3</value></string>
+  <string><id>13385</id><value>Camuffa Voce - Porta 4</value></string>
   <string><id>13386</id><value>Usa ricerca basata sul tempo</value></string>
   <string><id>13387</id><value>Formato Titolo della Traccia a Destra</value></string>
   <string><id>13388</id><value>Presets</value></string>
@@ -1125,7 +1127,7 @@ per questo effetto grafico</value></string>
   <string><id>15106</id><value>Ricorda selezione in navigazioni successive</value></string>
   <string><id>15107</id><value>Caricando...</value></string>
   <string><id>15108</id><value>Suoni Navigazione</value></string>
-  <string><id>15109</id><value>Propri della Skin</value></string>
+  <string><id>15109</id><value>Default della Skin</value></string>
   <string><id>15110</id><value>Vibrazione Gamepad</value></string>
   <string><id>15111</id><value>Tema della Skin</value></string> 
   <string><id>15112</id><value>Tema di Default</value></string> 
