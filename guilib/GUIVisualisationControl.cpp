@@ -158,6 +158,7 @@ void CGUIVisualisationControl::Render()
     {
       LoadVisualisation();
     }
+    CGUIControl::Render();
     return;
   }
   else
@@ -165,11 +166,13 @@ void CGUIVisualisationControl::Render()
     if (!g_application.IsPlayingAudio())
     { // deinit
       FreeVisualisation();
+      CGUIControl::Render();
       return;
     }
     else if (!m_currentVis.Equals(g_guiSettings.GetString("MyMusic.Visualisation")))
     { // vis changed - reload
       LoadVisualisation();
+      CGUIControl::Render();
       return;
     }
   }

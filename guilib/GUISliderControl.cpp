@@ -36,78 +36,79 @@ void CGUISliderControl::Render()
   float fRange, fPos, fPercent;
 
   if (!UpdateEffectState()) return ;
-  if (IsDisabled()) return ;
-
-  switch (m_iType)
+  if (!IsDisabled())
   {
-  case SPIN_CONTROL_TYPE_FLOAT:
-    if(m_iInfoCode) m_fValue = (float)g_infoManager.GetInt(m_iInfoCode);
-
-    if (m_renderText && pFont13)
+    switch (m_iType)
     {
-      WCHAR strValue[128];
-      swprintf(strValue, L"%2.2f", m_fValue);
-      pFont13->DrawText( (float)m_iPosX, (float)m_iPosY, 0xffffffff, 0,
-                               strValue, 0, 0);
+    case SPIN_CONTROL_TYPE_FLOAT:
+      if(m_iInfoCode) m_fValue = (float)g_infoManager.GetInt(m_iInfoCode);
+
+      if (m_renderText && pFont13)
+      {
+        WCHAR strValue[128];
+        swprintf(strValue, L"%2.2f", m_fValue);
+        pFont13->DrawText( (float)m_iPosX, (float)m_iPosY, 0xffffffff, 0,
+                                strValue, 0, 0);
+      }
+      m_guiBackground.SetPosition(m_iPosX + m_iControlOffsetX, m_iPosY + m_iControlOffsetY);
+
+      fRange = (float)(m_fEnd - m_fStart);
+      fPos = (float)(m_fValue - m_fStart);
+      fPercent = (fPos / fRange) * 100.0f;
+      m_iPercent = (int) fPercent;
+      break;
+
+    case SPIN_CONTROL_TYPE_INT:
+      if(m_iInfoCode) m_iValue = g_infoManager.GetInt(m_iInfoCode);
+
+      if (m_renderText && pFont13)
+      {
+        WCHAR strValue[128];
+        swprintf(strValue, L"%i/%i", m_iValue, m_iEnd);
+        pFont13->DrawText( (float)m_iPosX, (float)m_iPosY, 0xffffffff, 0,
+                                strValue, 0, 0);
+      }
+      m_guiBackground.SetPosition(m_iPosX + m_iControlOffsetX, m_iPosY + m_iControlOffsetY);
+
+      fRange = (float)(m_iEnd - m_iStart);
+      fPos = (float)(m_iValue - m_iStart);
+      m_iPercent = (int) ((fPos / fRange) * 100.0f);
+      break;
+    default:
+      if(m_iInfoCode) m_iPercent = g_infoManager.GetInt(m_iInfoCode);
     }
-    m_guiBackground.SetPosition(m_iPosX + m_iControlOffsetX, m_iPosY + m_iControlOffsetY);
 
-    fRange = (float)(m_fEnd - m_fStart);
-    fPos = (float)(m_fValue - m_fStart);
-    fPercent = (fPos / fRange) * 100.0f;
-    m_iPercent = (int) fPercent;
-    break;
+    float fScaleX, fScaleY;
+    fScaleY = m_dwHeight == 0 ? 1.0f : m_dwHeight/(float)m_guiBackground.GetTextureHeight();
+    fScaleX = m_dwWidth == 0 ? 1.0f : m_dwWidth/(float)m_guiBackground.GetTextureWidth();
 
-  case SPIN_CONTROL_TYPE_INT:
-    if(m_iInfoCode) m_iValue = g_infoManager.GetInt(m_iInfoCode);
+    m_guiBackground.SetHeight(m_dwHeight);
+    m_guiBackground.SetWidth(m_dwWidth);
+    m_guiBackground.Render();
 
-    if (m_renderText && pFont13)
+    float fWidth = (float)(m_guiBackground.GetTextureWidth() - m_guiMid.GetTextureWidth())*fScaleX;
+
+    fPos = (float)m_iPercent;
+    fPos /= 100.0f;
+    fPos *= fWidth;
+    fPos += (float) m_guiBackground.GetXPosition();
+    //fPos += 10.0f;
+    if ((int)fWidth > 1)
     {
-      WCHAR strValue[128];
-      swprintf(strValue, L"%i/%i", m_iValue, m_iEnd);
-      pFont13->DrawText( (float)m_iPosX, (float)m_iPosY, 0xffffffff, 0,
-                               strValue, 0, 0);
-    }
-    m_guiBackground.SetPosition(m_iPosX + m_iControlOffsetX, m_iPosY + m_iControlOffsetY);
-
-    fRange = (float)(m_iEnd - m_iStart);
-    fPos = (float)(m_iValue - m_iStart);
-    m_iPercent = (int) ((fPos / fRange) * 100.0f);
-    break;
-  default:
-    if(m_iInfoCode) m_iPercent = g_infoManager.GetInt(m_iInfoCode);
-  }
-
-  float fScaleX, fScaleY;
-  fScaleY = m_dwHeight == 0 ? 1.0f : m_dwHeight/(float)m_guiBackground.GetTextureHeight();
-  fScaleX = m_dwWidth == 0 ? 1.0f : m_dwWidth/(float)m_guiBackground.GetTextureWidth();
-
-  m_guiBackground.SetHeight(m_dwHeight);
-  m_guiBackground.SetWidth(m_dwWidth);
-  m_guiBackground.Render();
-
-  float fWidth = (float)(m_guiBackground.GetTextureWidth() - m_guiMid.GetTextureWidth())*fScaleX;
-
-  fPos = (float)m_iPercent;
-  fPos /= 100.0f;
-  fPos *= fWidth;
-  fPos += (float) m_guiBackground.GetXPosition();
-  //fPos += 10.0f;
-  if ((int)fWidth > 1)
-  {
-    if (m_bHasFocus)
-    {
-      m_guiMidFocus.SetPosition((int)fPos, m_guiBackground.GetYPosition() );
-      m_guiMidFocus.SetWidth((int)(m_guiMidFocus.GetTextureWidth()*fScaleX));
-      m_guiMidFocus.SetHeight((int)(m_guiMidFocus.GetTextureHeight()*fScaleY));
-      m_guiMidFocus.Render();
-    }
-    else
-    {
-      m_guiMid.SetPosition((int)fPos, m_guiBackground.GetYPosition() );
-      m_guiMid.SetWidth((int)(m_guiMid.GetTextureWidth()*fScaleX));
-      m_guiMid.SetHeight((int)(m_guiMid.GetTextureHeight()*fScaleY));
-      m_guiMid.Render();
+      if (m_bHasFocus)
+      {
+        m_guiMidFocus.SetPosition((int)fPos, m_guiBackground.GetYPosition() );
+        m_guiMidFocus.SetWidth((int)(m_guiMidFocus.GetTextureWidth()*fScaleX));
+        m_guiMidFocus.SetHeight((int)(m_guiMidFocus.GetTextureHeight()*fScaleY));
+        m_guiMidFocus.Render();
+      }
+      else
+      {
+        m_guiMid.SetPosition((int)fPos, m_guiBackground.GetYPosition() );
+        m_guiMid.SetWidth((int)(m_guiMid.GetTextureWidth()*fScaleX));
+        m_guiMid.SetHeight((int)(m_guiMid.GetTextureHeight()*fScaleY));
+        m_guiMid.Render();
+      }
     }
   }
   CGUIControl::Render();
