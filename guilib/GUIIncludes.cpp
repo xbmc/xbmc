@@ -73,6 +73,7 @@ void CGUIIncludes::ResolveIncludes(TiXmlElement *node)
     else
     { // invalid include
       CLog::Log(LOGWARNING, "Skin has invalid include: %s", tagName.c_str());
+      return;
     }
     include = node->FirstChildElement("include");
   }

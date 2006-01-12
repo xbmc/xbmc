@@ -796,8 +796,8 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
 
     XMLUtils::GetString(pControlNode, "title", strTitle);
     XMLUtils::GetString(pControlNode, "tagset", strRSSTags);
-    XMLUtils::GetHex(pControlNode, "headlinecolor", labelInfo2.textColor);
-    XMLUtils::GetHex(pControlNode, "titlecolor", dwTextColor3);
+    XMLUtils::GetHex(pControlNode, "headlinecolor", dwTextColor3);
+    XMLUtils::GetHex(pControlNode, "titlecolor", labelInfo2.textColor);
 
     if (XMLUtils::GetString(pControlNode, "subtype", strSubType))
     {
@@ -1069,8 +1069,8 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
 
     XMLUtils::GetString(pControlNode, "title", strTitle);
     XMLUtils::GetString(pControlNode, "tagset", strRSSTags);
-    XMLUtils::GetHex(pControlNode, "headlinecolor", labelInfo2.textColor);
-    XMLUtils::GetHex(pControlNode, "titlecolor", dwTextColor3);
+    XMLUtils::GetHex(pControlNode, "headlinecolor", dwTextColor3);
+    XMLUtils::GetHex(pControlNode, "titlecolor", labelInfo2.textColor);
 
     if (XMLUtils::GetString(pControlNode, "subtype", strSubType))
     {

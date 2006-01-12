@@ -34,10 +34,12 @@ void CGUIFadeLabelControl::Render()
 	{
 		return ;
 	}
-	if (!m_label.font) return ;
 
-
-	if ((int)m_vecLabels.size() == 0 && (int)m_vecInfo.size() == 0) return ;
+	if (!m_label.font || (m_vecLabels.size() == 0 && m_vecInfo.size() == 0))
+  {
+    CGUIControl::Render();
+    return ;
+  }
 
 	int iTempLabelCount = m_iCurrentLabel;
 	if ((int)m_vecLabels.size() > 0 && m_iCurrentLabel >= (int)m_vecLabels.size() )
@@ -79,6 +81,7 @@ void CGUIFadeLabelControl::Render()
     if (iWidth < m_dwWidth)
     {
       m_label.font->DrawText( (float)m_iPosX, (float)m_iPosY, m_label.textColor, m_label.shadowColor, strLabelUnicode.c_str());
+      CGUIControl::Render();
       return ;
     }
   }
