@@ -1,8 +1,6 @@
 
 #include "../../../stdafx.h"
 
-#include "../DVDDemuxers/DVDDemux.h"
-
 #include "DVDFactoryCodec.h"
 #include "Video\DVDVideoCodec.h"
 #include "Audio\DVDAudioCodec.h"
@@ -19,6 +17,8 @@
 #include "Audio\DVDAudioCodecPassthrough.h"
 
 #include "DVDCodecs.h"
+#include "../DVDDemuxers/DVDDemux.h"
+
 
 CDVDVideoCodec* CDVDFactoryCodec::OpenCodec(CDVDVideoCodec* pCodec, CDemuxStreamVideo *pDemuxStream )
 {  

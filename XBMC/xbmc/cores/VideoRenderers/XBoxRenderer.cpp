@@ -1505,6 +1505,7 @@ void CXBoxRenderer::Process()
   m_iAsyncFlipTime = 10; //Just a guess to what delay we have
 
   SetPriority(THREAD_PRIORITY_TIME_CRITICAL);
+  SetName("AsyncRenderer");
   while( !m_bStop )
   {
     //Wait for new frame or an stop event

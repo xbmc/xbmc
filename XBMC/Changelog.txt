@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 13-01-2006 added: try/catch handling for threads started in dll's. allows a more gracefull exit for mplayer, should cache thread fail
  - 13-01-2006 fixed: All Genres and All Artists items in Music Library now go to next level of filtering and not directly to songs
  - 12-01-2006 updated: Portuguese (Brazil) language file (Thnx to T1000)
  - 12-01-2006 updated: Swedish language file (Thnx to blittan)

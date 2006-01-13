@@ -151,6 +151,7 @@ bool CThread::SetPriority(const int iPriority)
   }
 }
 
+#ifdef _XBOX
 void CThread::SetName( LPCTSTR szThreadName )
 {
   THREADNAME_INFO info; 
@@ -166,6 +167,11 @@ void CThread::SetName( LPCTSTR szThreadName )
   { 
   }  
 }
+#else
+void CThread::SetName( LPCTSTR szThreadName )
+{
+}
+#endif
 
 bool CThread::WaitForThreadExit(DWORD dwmsTimeOut)
 // Waits for thread to exit, timeout in given number of msec.
