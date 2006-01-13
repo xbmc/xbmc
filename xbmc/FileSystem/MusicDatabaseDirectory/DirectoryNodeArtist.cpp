@@ -13,8 +13,10 @@ CDirectoryNodeArtist::CDirectoryNodeArtist(const CStdString& strName, CDirectory
 
 NODE_TYPE CDirectoryNodeArtist::GetChildType()
 {
+  /* all items should still go to the next filter level
   if (GetName()=="-1")
     return NODE_TYPE_SONG;
+    */
 
   return NODE_TYPE_ALBUM;
 }
