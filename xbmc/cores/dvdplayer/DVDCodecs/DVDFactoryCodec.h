@@ -5,6 +5,10 @@ enum CodecID;
 class CDVDVideoCodec;
 class CDVDAudioCodec;
 
+class CDemuxStreamVideo;
+class CDemuxStreamAudio;
+
+
 class CDVDFactoryCodec
 {
 public:

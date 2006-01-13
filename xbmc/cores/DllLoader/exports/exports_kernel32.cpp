@@ -11,7 +11,7 @@ void export_kernel32()
   g_dlls.kernel32.AddExport("AddAtomA", (unsigned long)dllAddAtomA);
   g_dlls.kernel32.AddExport("FindAtomA", (unsigned long)dllFindAtomA);
   g_dlls.kernel32.AddExport("GetAtomNameA", (unsigned long)dllGetAtomNameA);
-  g_dlls.kernel32.AddExport("CreateThread", (unsigned long)CreateThread);
+  g_dlls.kernel32.AddExport("CreateThread", (unsigned long)dllCreateThread);
   g_dlls.kernel32.AddExport("FindClose", (unsigned long)dllFindClose);
   g_dlls.kernel32.AddExport("FindFirstFileA", (unsigned long)FindFirstFileA);
   g_dlls.kernel32.AddExport("FindNextFileA", (unsigned long)FindNextFileA);

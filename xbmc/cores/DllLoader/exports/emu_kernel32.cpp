@@ -5,6 +5,8 @@
 
 vector<string> m_vecAtoms;
 
+extern char* tracker_getdllname(unsigned long caller);
+
 //#define API_DEBUG
 
 extern "C" HANDLE xboxopendvdrom()
@@ -65,6 +67,81 @@ extern "C" DWORD WINAPI dllGetFileAttributesA(LPCSTR lpFileName)
   while (p = strchr(p, '/')) * p = '\\';
   return GetFileAttributesA(str);
 }
+
+struct SThreadWrapper
+{
+  LPTHREAD_START_ROUTINE lpStartAddress;
+  LPVOID lpParameter;
+  PCHAR lpDLL;
+};
+
+#ifdef _DEBUG
+#define MS_VC_EXCEPTION 0x406d1388
+typedef struct tagTHREADNAME_INFO 
+{ 
+  DWORD dwType; // must be 0x1000 
+  LPCSTR szName; // pointer to name (in same addr space) 
+  DWORD dwThreadID; // thread ID (-1 caller thread) 
+  DWORD dwFlags; // reserved for future use, most be zero 
+} THREADNAME_INFO;
+#endif
+
+DWORD WINAPI dllThreadWrapper(LPVOID lpThreadParameter)
+{
+  SThreadWrapper *param = (SThreadWrapper*)lpThreadParameter;
+  DWORD result;
+
+#ifdef _DEBUG  
+  THREADNAME_INFO info; 
+  info.dwType = 0x1000; 
+  info.szName = "DLL"; 
+  info.dwThreadID = ::GetCurrentThreadId(); 
+  info.dwFlags = 0; 
+  __try 
+  { 
+    RaiseException(MS_VC_EXCEPTION, 0, sizeof(info) / sizeof(DWORD), (DWORD *)&info); 
+  } 
+  __except (EXCEPTION_CONTINUE_EXECUTION) 
+  { 
+  }  
+#endif
+
+  __try
+  {
+    result = param->lpStartAddress(param->lpParameter);
+  }
+  __except (EXCEPTION_EXECUTE_HANDLER)
+  {    
+    CLog::Log(LOGERROR, "DLL:%s - Unhandled exception in thread created by dll", param->lpDLL );
+    result = 0;
+  }
+
+  delete param;
+  return result;
+
+}
+
+extern "C" HANDLE WINAPI dllCreateThread(
+  LPSECURITY_ATTRIBUTES lpThreadAttributes, // SD
+  DWORD dwStackSize,                        // initial stack size
+  LPTHREAD_START_ROUTINE lpStartAddress,    // thread function
+  LPVOID lpParameter,                       // thread argument
+  DWORD dwCreationFlags,                    // creation option
+  LPDWORD lpThreadId                        // thread identifier
+)
+{
+  unsigned loc;
+  __asm mov eax, [ebp + 4]
+  __asm mov loc, eax
+  
+  SThreadWrapper *param = new SThreadWrapper;
+  param->lpStartAddress = lpStartAddress;
+  param->lpParameter = lpParameter;
+  param->lpDLL = tracker_getdllname(loc);
+
+  return CreateThread(lpThreadAttributes, dwStackSize, dllThreadWrapper, param, dwCreationFlags, lpThreadId);
+}
+
 
 extern "C" BOOL WINAPI dllTerminateThread(HANDLE tHread, DWORD dwExitCode)
 {
