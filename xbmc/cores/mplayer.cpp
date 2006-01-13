@@ -1179,6 +1179,7 @@ void CMPlayer::Process()
 {
   bool bHasVideo = HasVideo();
   bool bWaitingRestart = false;
+  CThread::SetName("MPlayer");
 
   if (!m_pDLL || !m_bIsPlaying) return;
 
