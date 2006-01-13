@@ -86,6 +86,7 @@ extern "C" BOOL WINAPI dllFindClose(HANDLE hFile);
 extern "C" UINT WINAPI dllGetAtomNameA( ATOM nAtom, LPTSTR lpBuffer, int nSize);
 extern "C" ATOM WINAPI dllFindAtomA( LPCTSTR lpString);
 extern "C" ATOM WINAPI dllAddAtomA( LPCTSTR lpString);
+extern "C" HANDLE WINAPI dllCreateThread(LPSECURITY_ATTRIBUTES lpThreadAttributes, DWORD dwStackSize, LPTHREAD_START_ROUTINE lpStartAddress, LPVOID lpParameter, DWORD dwCreationFlags, LPDWORD lpThreadId);
 extern "C" BOOL WINAPI dllTerminateThread(HANDLE tHread, DWORD dwExitCode);
 extern "C" HANDLE WINAPI dllGetCurrentThread(void);
 extern "C" DWORD WINAPI dllGetCurrentThreadId(VOID);
