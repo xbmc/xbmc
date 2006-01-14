@@ -29,6 +29,7 @@ CPlayListPlayer::CPlayListPlayer(void)
   m_bPlayedFirstFile = false;
   m_iCurrentPlayList = PLAYLIST_NONE;
   m_iOptions = 0;
+  m_iFailedSongs = 0;
 }
 
 CPlayListPlayer::~CPlayListPlayer(void)
@@ -184,6 +185,24 @@ void CPlayListPlayer::Play(int iSong, bool bAutoPlay /* = false */, bool bPlayPr
     CLog::Log(LOGERROR,"Playlist Player: skipping unplayable item: %i, path [%s]", m_iCurrentSong, item.m_strPath.c_str());
     playlist.SetUnPlayable(m_iCurrentSong);
 
+    // abort on 100 failed CONSECTUTIVE songs
+    m_iFailedSongs++;
+    if (m_iFailedSongs >= 100)
+    {
+      CLog::Log(LOGDEBUG,"Playlist Player: too many consecutive failures... aborting playback");
+
+      // open error dialog
+      CGUIDialogOK::ShowAndGetInput(257, 16026, 16027, 0);
+
+      CGUIMessage msg(GUI_MSG_PLAYLISTPLAYER_STOPPED, 0, 0, m_iCurrentPlayList, m_iCurrentSong);
+      m_gWindowManager.SendThreadMessage(msg);
+      Reset();
+      GetPlaylist(m_iCurrentPlayList).Clear();
+      m_iCurrentPlayList = PLAYLIST_NONE;
+      m_iFailedSongs = 0;
+      return;
+    }
+
     // how many playable items are in the playlist?
     if (playlist.GetPlayable() > 0)
     {
@@ -206,6 +225,9 @@ void CPlayListPlayer::Play(int iSong, bool bAutoPlay /* = false */, bool bPlayPr
   }
 
   m_bPlayedFirstFile = true;
+
+  // consecutive error counter so reset if the current item is playing
+  m_iFailedSongs = 0;
 
   if (!item.IsShoutCast())
   {
