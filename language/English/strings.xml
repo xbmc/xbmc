@@ -1197,6 +1197,8 @@
   <string><id>16023</id><value>Interlaced Handling</value></string>
   <string><id>16024</id><value>Canceling...</value></string>
   <string><id>16025</id><value>Enter the Artist Name</value></string>
+  <string><id>16026</id><value>Playlist playback aborted</value></string>
+  <string><id>16027</id><value>Too many consecutive failed items</value></string>
 
   <string><id>16100</id><value>All Videos</value></string>
   <string><id>16101</id><value>UnWatched</value></string>
