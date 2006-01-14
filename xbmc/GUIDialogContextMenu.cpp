@@ -155,7 +155,7 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CStdS
     pMenu->AddButton(118); // 1: Rename
     pMenu->AddButton(748); // 2: Edit Path
     // weird... it shouldnt have been not'ed.
-    if (CUtil::IsVirualPath(strPath))
+    if (CUtil::IsVirtualPath(strPath))
       pMenu->EnableButton(2, false);
     pMenu->AddButton(117); // 3: Delete
     pMenu->AddButton(bMyProgramsMenu ? 754 : 749); // 4: Add Program Link / Add Share
