@@ -1217,6 +1217,9 @@ void CGUIInfoManager::SetCurrentMovie(CFileItem &item)
   if (dbs.HasMovieInfo(item.m_strPath))
   {
     dbs.GetMovieInfo(item.m_strPath, m_currentMovie);
+    CLog::Log(LOGDEBUG,"CGUIInfoManager:SetCurrentMovie(), got movie info!");
+    CLog::Log(LOGDEBUG,"  Title = %s", m_currentMovie.m_strTitle.c_str());
+    CLog::Log(LOGDEBUG,"  IMDB# = %s", m_currentMovie.m_strIMDBNumber.c_str());
   }
   dbs.Close();
 
