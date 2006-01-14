@@ -983,7 +983,7 @@ bool CUtil::IsDVD(const CStdString& strFile)
   return false;
 }
 
-bool CUtil::IsVirualPath(const CStdString& strFile)
+bool CUtil::IsVirtualPath(const CStdString& strFile)
 {
   if (strFile.Left(14).Equals("virtualpath://")) return true;
   return false;
