@@ -10,6 +10,7 @@
 #include "util.h"
 #include "GUIPassword.h"
 #include "filesystem/VirtualPathDirectory.h"
+#include "filesystem/StackDirectory.h"
 
 #define VIDEO_DATABASE_VERSION 1.5f
 #define VIDEO_DATABASE_NAME "MyVideos31.db"
@@ -216,7 +217,7 @@ long CVideoDatabase::GetPath(const CStdString& strPath)
   return -1;
 }
 
-//********************************************************************************************************************************
+
 long CVideoDatabase::GetMovie(const CStdString& strFilenameAndPath)
 {
   long lPathId;
@@ -226,6 +227,74 @@ long CVideoDatabase::GetMovie(const CStdString& strFilenameAndPath)
     return -1;
   }
   return lMovieId;
+}
+
+long CVideoDatabase::GetMovieInfo(const CStdString& strFilenameAndPath)
+{
+  try
+  {
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS.get()) return false;
+    long lMovieId = -1;
+
+    // needed for query parameters
+    CStdString strPath, strFile;
+    CUtil::Split(strFilenameAndPath, strPath, strFile);
+    if (CUtil::HasSlashAtEnd(strPath))
+      strPath.Delete(strPath.size()-1);
+
+    // have to join movieinfo table for correct results
+    CStdString strSQL=FormatSQL("select * from movie join path on movie.idPath = path.idPath join movieinfo on movie.idMovie = movieinfo.idMovie join files on path.idPath = files.idPath where path.strPath = '%s' or path.strPath = 'stack://%s' and files.strFilename LIKE '%%%s%%'", strPath.c_str(), strPath.c_str(), strFile.c_str());
+    CLog::Log(LOGDEBUG,"CVideoDatabase::GetMovieInfo(%s), query = %s", strFilenameAndPath.c_str(), strSQL.c_str());
+    m_pDS->query(strSQL.c_str());
+    if (m_pDS->num_rows() > 0)
+    {
+      CLog::Log(LOGDEBUG,"Looking for movies by filename [%s]", strFilenameAndPath.c_str());
+      while (!m_pDS->eof())
+      {
+        CStdString strTest = m_pDS->fv("path.strPath").get_asString() + m_pDS->fv("files.strFilename").get_asString();
+        CLog::Log(LOGDEBUG,"  Testing [%s]", strTest.c_str());
+
+        // exact file match
+        if (strFilenameAndPath.Equals(strTest))
+          lMovieId = m_pDS->fv("movieinfo.idMovie").get_asLong();
+
+        // file may be part of a stacked path
+        else if (strTest.Left(8).Equals("stack://"))
+        {
+          CStackDirectory dir;
+          CFileItemList items;
+          dir.GetDirectory(strTest, items);
+          for (int i = 0; i < items.Size(); ++i)
+          {
+            if (strFilenameAndPath.Equals(items[i]->m_strPath))
+            {
+              lMovieId = m_pDS->fv("movieinfo.idMovie").get_asLong();
+              break;
+            }
+          }
+        }
+
+        // did we find anything?
+        if (lMovieId > -1)
+        {
+          // abort out of while loop if we have a match
+          CLog::Log(LOGDEBUG,"  Found match! [%s]", strTest.c_str());
+          break;
+        }
+        // no, try next db result
+        m_pDS->next();
+      }
+    }
+    m_pDS->close();
+
+    return lMovieId;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "CVideoDatabase::GetMovieInfo(%s) failed", strFilenameAndPath.c_str());
+  }
+  return false;
 }
 
 int CVideoDatabase::GetRecentMovies(long* pMovieIdArray, int nSize)
@@ -557,7 +626,7 @@ bool CVideoDatabase::HasMovieInfo(const CStdString& strFilenameAndPath)
   {
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
-    long lMovieId = GetMovie(strFilenameAndPath);
+    long lMovieId = GetMovieInfo(strFilenameAndPath);
     if ( lMovieId < 0) return false;
 
     CStdString strSQL=FormatSQL("select * from movieinfo where movieinfo.idmovie=%i", lMovieId);
@@ -722,7 +791,7 @@ void CVideoDatabase::GetMovieInfo(const CStdString& strFilenameAndPath, CIMDBMov
   try
   {
     if (lMovieId < 0)
-      lMovieId = GetMovie(strFilenameAndPath);
+      lMovieId = GetMovieInfo(strFilenameAndPath);
     if (lMovieId < 0) return ;
 
     CStdString strSQL=FormatSQL("select * from movieinfo,actors,movie,path where path.idpath=movie.idpath and movie.idMovie=movieinfo.idMovie and movieinfo.idmovie=%i and idDirector=idActor", lMovieId);
