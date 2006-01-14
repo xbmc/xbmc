@@ -606,7 +606,7 @@ void CSettings::GetShares(const TiXmlElement* pRootElement, const CStdString& st
             CStdString strPath = pPathName->FirstChild()->Value();
             // make sure there are no virtualpaths or stack paths defined in xboxmediacenter.xml
             CLog::Log(LOGDEBUG,"    Found path: %s", strPath.c_str());
-            if (!CUtil::IsVirualPath(strPath) && !CUtil::IsStack(strPath))
+            if (!CUtil::IsVirtualPath(strPath) && !CUtil::IsStack(strPath))
             {
               // translate paths
               CStdString strPathOld = strPath;
@@ -726,7 +726,7 @@ void CSettings::GetShares(const TiXmlElement* pRootElement, const CStdString& st
 
           CLog::Log(LOGDEBUG,"      Adding bookmark:");
           CLog::Log(LOGDEBUG,"        Name: %s", share.strName.c_str());
-          if (CUtil::IsVirualPath(share.strPath))
+          if (CUtil::IsVirtualPath(share.strPath))
           {
             for (int i = 0; i < (int)share.vecPaths.size(); ++i)
               CLog::Log(LOGDEBUG,"        Path (%02i): %s", i+1, share.vecPaths.at(i).c_str());
@@ -1706,7 +1706,7 @@ bool CSettings::UpdateBookmark(const CStdString &strType, const CStdString &strO
   if (!pShares) return false;
 
   // disallow virtual paths
-  if (strUpdateElement.Equals("path") && CUtil::IsVirualPath(strUpdateText))
+  if (strUpdateElement.Equals("path") && CUtil::IsVirtualPath(strUpdateText))
     return false;
 
   for (IVECSHARES it = pShares->begin(); it != pShares->end(); it++)

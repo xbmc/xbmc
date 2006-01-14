@@ -95,7 +95,7 @@ public:
   static bool IsRemote(const CStdString& strFile);
   static bool IsOnDVD(const CStdString& strFile);
   static bool IsDVD(const CStdString& strFile);
-  static bool IsVirualPath(const CStdString& strFile);
+  static bool IsVirtualPath(const CStdString& strFile);
   static bool IsStack(const CStdString& strFile);
   static bool IsRAR(const CStdString& strFile);
   static bool IsZIP(const CStdString& strFile);
