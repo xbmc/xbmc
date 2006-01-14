@@ -56,6 +56,7 @@ protected:
   CPlayList m_PlaylistVideoTemp;
   CPlayList m_PlaylistEmpty;
   int m_iOptions;
+  int m_iFailedSongs;
 };
 
 };
