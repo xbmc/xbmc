@@ -204,6 +204,7 @@ public:
   static void ForceForwardSlashes(CStdString& strPath);
 
   static double AlbumRelevance(const CStdString& strAlbumTemp1, const CStdString& strAlbum1, const CStdString& strArtistTemp1, const CStdString& strArtist1);
+  static bool MakeShortenPath(CStdString StrInput, CStdString& StrOutput, int iTextMaxLength);
 
 private:
   static bool m_bNetworkUp;

@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 14-01-2006 fixed: screensaver slideshow settings: if the selected path is to long it goes out of screen.
  - 14-01-2006 added: playlist playback is aborted and the current playlist cleared after 100 *CONSECUTIVE* failed items
  - 14-01-2006 fixed: current movie info from <info> tags for files that are part of a stacked movie
  - 13-01-2006 added: try/catch handling for threads started in dll's. allows a more gracefull exit for mplayer, should cache thread fail
