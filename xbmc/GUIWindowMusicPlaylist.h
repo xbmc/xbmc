@@ -27,9 +27,11 @@ protected:
   void ClearPlayList();
   void ShufflePlayList();
   void RemovePlayListItem(int iItem);
-  void MoveCurrentPlayListItem(int iItem, int iAction); // up or down
+  bool MoveCurrentPlayListItem(int iItem, int iAction, bool bUpdate = true);
+  void MoveItem(int iStart, int iDest);
 
   MAPSONGS m_songsMap;
   CStdString m_strPrevPath;
   CMusicInfoLoader m_tagloader;
+  int iPos;
 };
