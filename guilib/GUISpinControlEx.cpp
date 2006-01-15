@@ -8,7 +8,6 @@ CGUISpinControlEx::CGUISpinControlEx(DWORD dwParentID, DWORD dwControlId, int iP
     , m_buttonControl(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight, strFocus, strNoFocus, labelInfo)
 {
   ControlType = GUICONTROL_SPINEX;
-  m_bWrap = true;
 }
 
 CGUISpinControlEx::~CGUISpinControlEx(void)

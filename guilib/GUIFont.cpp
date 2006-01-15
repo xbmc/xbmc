@@ -124,7 +124,7 @@ void CGUIFont::DrawScrollingText(float x, float y, const CAngle &angle, DWORD *c
   GetTextExtent(L" ", &sw, &unneeded);
   unsigned int maxChars = min(text.size(), unsigned int((w*1.05f)/sw)); //max chars on screen + extra marginchars
   GetTextExtent(L"W", &unneeded, &h);
-  if (!g_graphicsContext.SetViewPort(x, y, w, h))
+  if (!g_graphicsContext.SetViewPort(x, y, w, h, true))
     return; // nothing to render
   x = g_graphicsContext.ScaleFinalXCoord(x);
   y = g_graphicsContext.ScaleFinalYCoord(y);

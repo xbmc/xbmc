@@ -45,7 +45,6 @@ CGUIWindow::CGUIWindow(DWORD dwID, const CStdString &xmlFile)
   m_dwWindowId = dwID;
   m_xmlFile = xmlFile;
   m_dwIDRange = 1;
-  m_dwPreviousWindowId = WINDOW_HOME;
   m_dwDefaultFocusControlID = 0;
   m_bRelativeCoords = false;
   m_iPosX = m_iPosY = m_dwWidth = m_dwHeight = 0;
@@ -812,11 +811,6 @@ void CGUIWindow::SetID(DWORD dwID)
   m_dwWindowId = dwID;
 }
 
-DWORD CGUIWindow::GetPreviousWindowID(void) const
-{
-  return m_dwPreviousWindowId;
-}
-
 void CGUIWindow::OnInitWindow()
 {
   // set our initial visibility
@@ -857,10 +851,6 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
       OutputDebugString(strLine.c_str());
       OutputDebugString("------------------- \n");
       if (m_dynamicResourceAlloc || !m_WindowAllocated) AllocResources();
-      if (message.GetParam1() != WINDOW_INVALID)
-      {
-        m_dwPreviousWindowId = message.GetParam1();
-      }
       OnInitWindow();
       return true;
     }

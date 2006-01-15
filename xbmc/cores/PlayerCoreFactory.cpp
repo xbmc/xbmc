@@ -8,7 +8,6 @@
 #include "paplayer\paplayer.h"
 #include "..\GUIDialogContextMenu.h"
 #include "../XBAudioConfig.h"
-#include "SkinInfo.h"
 
 CPlayerCoreFactory::CPlayerCoreFactory()
 {}
@@ -185,8 +184,7 @@ EPLAYERCORES CPlayerCoreFactory::SelectPlayerDialog(VECPLAYERCORES &vecCores, in
   }
 
   // Display menu
-  if (g_SkinInfo.GetVersion() < 1.91 && !pMenu->GetPosX() && !pMenu->GetPosY())
-    pMenu->SetPosition(iPosX - pMenu->GetWidth() / 2, iPosY - pMenu->GetHeight() / 2);
+  pMenu->SetPosition(iPosX - pMenu->GetWidth() / 2, iPosY - pMenu->GetHeight() / 2);
   pMenu->DoModal(m_gWindowManager.GetActiveWindow());
 
   //Check what player we selected

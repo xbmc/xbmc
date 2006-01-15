@@ -30,8 +30,8 @@ public:
   void Remove(DWORD dwID);
   void Delete(DWORD dwID);
   void RemoveModeless(DWORD dwID);
-  void ActivateWindow(int iWindowID, const CStdString& strPath = "");
-  void ChangeActiveWindow(int iNewID);
+  void ActivateWindow(int iWindowID, const CStdString& strPath = "", bool swappingWindows = false);
+  void ChangeActiveWindow(int iNewID, const CStdString& strPath = "");
   void PreviousWindow();
   void RefreshWindow();
   void LoadNotOnDemandWindows();
@@ -63,12 +63,14 @@ public:
   void ShowOverlay(bool bOnOff);
 
 private:
-  vector <CGUIWindow*> m_vecWindows;
+  void AddToWindowHistory(DWORD newWindowID);
+  map<DWORD, CGUIWindow *> m_mapWindows;
   vector <CGUIWindow*> m_vecModelessWindows;
   vector <CGUIWindow*> m_vecModalWindows;
   vector <CGUIWindow*> m_vecCustomWindows;
 
-  int m_iActiveWindow;
+  stack<DWORD> m_windowHistory;
+
   IWindowManagerCallback* m_pCallback;
   vector <CGUIMessage*> m_vecThreadMessages;
   CRITICAL_SECTION m_critSection;
