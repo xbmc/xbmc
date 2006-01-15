@@ -25,8 +25,12 @@ protected:
   void ClearPlayList();
   void UpdateListControl();
   void RemovePlayListItem(int iItem);
-  void MoveCurrentPlayListItem(int iItem, int iAction); // up or down
+  bool MoveCurrentPlayListItem(int iItem, int iAction, bool bUpdate = true);
+  void MoveItem(int iStart, int iDest);
+
   void OnFileItemFormatLabel(CFileItem* pItem);
   void ShufflePlayList();
   void SavePlayList();
+
+  int iPos;
 };

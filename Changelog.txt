@@ -5,6 +5,11 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 15-01-2006 added: "Move Item" function to both Now Playing windows context menu.
+		This can move an item (almost) anywhere in the list.  The exception is if the list is currently being
+		played, then moved item cannot be moved past the currently playing item.  This is because all items in-between
+		need to be altered, but the currently playing item cannot be altered.  If you try to move beyond the currently
+		playing item, your moved item will be located at the slot adjacent to the currently playing item.
  - 14-01-2006 fixed: screensaver slideshow settings: if the selected path is to long it goes out of screen.
  - 14-01-2006 added: playlist playback is aborted and the current playlist cleared after 100 *CONSECUTIVE* failed items
  - 14-01-2006 fixed: current movie info from <info> tags for files that are part of a stacked movie
