@@ -33,7 +33,6 @@ CGUISpinControl::CGUISpinControl(DWORD dwParentID, DWORD dwControlId, int iPosX,
   strcpy(m_szTyped, "");
   m_dwBuddyControlID = 0;
   m_bBuddyDisabled = false;
-  m_bWrap = true;           // make all spin controls wrap
   ControlType = GUICONTROL_SPIN;
 }
 
@@ -189,32 +188,21 @@ void CGUISpinControl::OnLeft()
 {
   if (m_iSelect == SPIN_BUTTON_UP)
   {
-    if (CanMoveDown())
-    { // select the down button
-      m_iSelect = SPIN_BUTTON_DOWN;
-    }
-    else
-    {
-      CGUIControl::OnLeft();
-    }
+    // select the down button
+    m_iSelect = SPIN_BUTTON_DOWN;
   }
   else
   { // base class
     CGUIControl::OnLeft();
   }
 }
+
 void CGUISpinControl::OnRight()
 {
   if (m_iSelect == SPIN_BUTTON_DOWN)
   {
-    if (CanMoveUp())
-    { // select the up button
-      m_iSelect = SPIN_BUTTON_UP;
-    }
-    else
-    {
-      CGUIControl::OnRight();
-    }
+    // select the up button
+    m_iSelect = SPIN_BUTTON_UP;
   }
   else
   { // base class
@@ -446,24 +434,14 @@ void CGUISpinControl::Render()
     m_imgspinDown.SetPosition((int)fTextWidth + 5 + iPosX, m_iPosY);
   }
 
-  if (!m_bWrap && m_iSelect == SPIN_BUTTON_UP && !CanMoveUp())
-  {
-    m_iSelect = SPIN_BUTTON_DOWN;
-  }
-
-  if (!m_bWrap && m_iSelect == SPIN_BUTTON_DOWN && !CanMoveDown())
-  {
-    m_iSelect = SPIN_BUTTON_UP;
-  }
-
   if ( HasFocus() )
   {
-    if (m_iSelect == SPIN_BUTTON_UP && (m_bWrap || CanMoveUp()))
+    if (m_iSelect == SPIN_BUTTON_UP)
       m_imgspinUpFocus.Render();
     else
       m_imgspinUp.Render();
 
-    if (m_iSelect == SPIN_BUTTON_DOWN && (m_bWrap || CanMoveDown()))
+    if (m_iSelect == SPIN_BUTTON_DOWN)
       m_imgspinDownFocus.Render();
     else
       m_imgspinDown.Render();
@@ -736,7 +714,7 @@ void CGUISpinControl::MoveUp(bool bTestReverse)
     {
       if (m_iValue - 1 >= m_iStart)
         m_iValue--;
-      else if (m_bWrap && m_iValue == m_iStart)
+      else if (m_iValue == m_iStart)
         m_iValue = m_iEnd;
       CGUIMessage msg(GUI_MSG_CLICKED, GetID(), GetParentID());
       g_graphicsContext.SendMessage(msg);
@@ -748,7 +726,7 @@ void CGUISpinControl::MoveUp(bool bTestReverse)
     {
       if (m_fValue - m_fInterval >= m_fStart)
         m_fValue -= m_fInterval;
-      else if (m_bWrap && m_fValue - m_fInterval < m_fStart)
+      else if (m_fValue - m_fInterval < m_fStart)
         m_fValue = m_fEnd;
       CGUIMessage msg(GUI_MSG_CLICKED, GetID(), GetParentID());
       g_graphicsContext.SendMessage(msg);
@@ -760,7 +738,7 @@ void CGUISpinControl::MoveUp(bool bTestReverse)
     {
       if (m_iValue - 1 >= 0)
         m_iValue--;
-      else if (m_bWrap && m_iValue == 0)
+      else if (m_iValue == 0)
         m_iValue = (int)m_vecLabels.size() - 1;
       CGUIMessage msg(GUI_MSG_CLICKED, GetID(), GetParentID());
       g_graphicsContext.SendMessage(msg);
@@ -783,7 +761,7 @@ void CGUISpinControl::MoveDown(bool bTestReverse)
     {
       if (m_iValue + 1 <= m_iEnd)
         m_iValue++;
-      else if (m_bWrap && m_iValue == m_iEnd)
+      else if (m_iValue == m_iEnd)
         m_iValue = m_iStart;
       CGUIMessage msg(GUI_MSG_CLICKED, GetID(), GetParentID());
       g_graphicsContext.SendMessage(msg);
@@ -795,7 +773,7 @@ void CGUISpinControl::MoveDown(bool bTestReverse)
     {
       if (m_fValue + m_fInterval <= m_fEnd)
         m_fValue += m_fInterval;
-      else if (m_bWrap && m_fValue + m_fInterval > m_fEnd)
+      else if (m_fValue + m_fInterval > m_fEnd)
         m_fValue = m_fStart;
       CGUIMessage msg(GUI_MSG_CLICKED, GetID(), GetParentID());
       g_graphicsContext.SendMessage(msg);
@@ -807,7 +785,7 @@ void CGUISpinControl::MoveDown(bool bTestReverse)
     {
       if (m_iValue + 1 < (int)m_vecLabels.size() )
         m_iValue++;
-      else if (m_bWrap && m_iValue == (int)m_vecLabels.size() - 1)
+      else if (m_iValue == (int)m_vecLabels.size() - 1)
         m_iValue = 0;
       CGUIMessage msg(GUI_MSG_CLICKED, GetID(), GetParentID());
       g_graphicsContext.SendMessage(msg);
