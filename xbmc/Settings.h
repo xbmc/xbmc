@@ -457,6 +457,9 @@ public:
     int m_iPreMuteVolumeLevel;    // save the m_nVolumeLevel for proper restore
     bool m_bMute;
     int m_iSystemTimeTotalUp;    // Uptime in minutes!
+    char szScreenSaverSlideShowPath[1024];
+
+
   };
 
   CStdStringArray m_MyVideoStackRegExps;
