@@ -6,8 +6,6 @@
 #include "application.h"
 #include "GUIDialogContextMenu.h"
 
-#include "SkinInfo.h"
-
 #define CONTROL_PROFILES 2
 #define CONTROL_LASTLOADED_PROFILE 3
 
@@ -61,8 +59,7 @@ void CGUIWindowSettingsProfile::OnPopupMenu(int iItem)
   pMenu->AddButton(117); // Delete
 
   // position it correctly
-  if (g_SkinInfo.GetVersion() < 1.91 && !pMenu->GetPosX() && !pMenu->GetPosY())
-    pMenu->SetPosition(iPosX - pMenu->GetWidth() / 2, iPosY - pMenu->GetHeight() / 2);
+  pMenu->SetPosition(iPosX - pMenu->GetWidth() / 2, iPosY - pMenu->GetHeight() / 2);
   pMenu->DoModal(GetID());
   switch (pMenu->GetButton())
   {

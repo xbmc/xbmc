@@ -956,8 +956,7 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem)
   int btn_Settings      = pMenu->AddButton(5);      // Settings
 
   // position it correctly
-  if (g_SkinInfo.GetVersion() < 1.91 && !pMenu->GetPosX() && !pMenu->GetPosY())
-    pMenu->SetPosition(iPosX - pMenu->GetWidth() / 2, iPosY - pMenu->GetHeight() / 2);
+  pMenu->SetPosition(iPosX - pMenu->GetWidth() / 2, iPosY - pMenu->GetHeight() / 2);
   pMenu->DoModal(GetID());
   
   int btnid = pMenu->GetButton();

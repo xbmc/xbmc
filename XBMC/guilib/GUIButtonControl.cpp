@@ -138,16 +138,7 @@ bool CGUIButtonControl::OnAction(const CAction &action)
 
     if (lHyperLinkWindowID != WINDOW_INVALID)
     {
-      CGUIWindow *pWindow = m_gWindowManager.GetWindow(lHyperLinkWindowID);
-      if (pWindow && pWindow->IsDialog())
-      {
-        CGUIDialog *pDialog = (CGUIDialog *)pWindow;
-        pDialog->DoModal(m_gWindowManager.GetActiveWindow());
-      }
-      else
-      {
-        m_gWindowManager.ActivateWindow(lHyperLinkWindowID);
-      }
+      m_gWindowManager.ActivateWindow(lHyperLinkWindowID);
     }
     return true;
   }
