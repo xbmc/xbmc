@@ -831,6 +831,9 @@
   <string><id>13212</id><value>Canceled with %im%is left</value></string>
 
   <string><id>13250</id><value>Browse for subtitle...</value></string>
+  <string><id>13251</id><value>Move Item</value></string>
+  <string><id>13252</id><value>Move Item Here</value></string>
+  <string><id>13253</id><value>Cancel Move</value></string>
 
   <string><id>13270</id><value>Hardware:</value></string>
   <string><id>13271</id><value>CPU Speed:</value></string>
