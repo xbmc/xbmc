@@ -3116,16 +3116,6 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     {
       // disable the screensaver
       g_application.ResetScreenSaverWindow();
-      // check what type of window we have (it could be a dialog)
-      CGUIWindow *pWindow = m_gWindowManager.GetWindow(iWindow);
-      if (pWindow && pWindow->IsDialog())
-      {
-        // Dialog, dont pass path!
-        CGUIDialog *pDialog = (CGUIDialog *)pWindow;
-        if (!pDialog->IsRunning())
-          pDialog->DoModal(m_gWindowManager.GetActiveWindow(), iWindow);
-        return -6;
-      }
       m_gWindowManager.ActivateWindow(iWindow, strPath);
     }
     else

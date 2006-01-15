@@ -140,6 +140,7 @@ namespace PYXBMC
     label.selectedColor = pControl->dwSelectedColor;
     label.offsetX = pControl->dwItemTextXOffset;
     label.offsetY = pControl->dwItemTextYOffset;
+    CLog::Log(LOGDEBUG, "CreateList: text=%x, select=%x, disabled=%x", label.textColor, label.selectedColor, label.disabledColor);
     CLabelInfo label2 = label;
 		pControl->pGUIControl = new CGUIListControl(
       pControl->iParentId,
