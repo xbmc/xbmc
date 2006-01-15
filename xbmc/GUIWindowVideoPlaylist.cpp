@@ -36,6 +36,7 @@ static CStdString m_strTempPlayListDirectory = "";
 CGUIWindowVideoPlaylist::CGUIWindowVideoPlaylist()
 : CGUIWindowVideoBase(WINDOW_VIDEO_PLAYLIST, "MyVideoPlaylist.xml")
 {
+  iPos = -1;
 }
 
 CGUIWindowVideoPlaylist::~CGUIWindowVideoPlaylist()
@@ -82,6 +83,8 @@ bool CGUIWindowVideoPlaylist::OnMessage(CGUIMessage& message)
       OutputDebugString("deinit guiwindowvideoplaylist!\n");
       m_iSelectedItem = m_viewControl.GetSelectedItem();
       m_iLastControl = GetFocusedControl();
+
+      iPos = -1;
     }
     break;
 
@@ -227,38 +230,31 @@ bool CGUIWindowVideoPlaylist::OnAction(const CAction &action)
   return CGUIWindowVideoBase::OnAction(action);
 }
 
-void CGUIWindowVideoPlaylist::MoveCurrentPlayListItem(int iItem, int iAction)
+bool CGUIWindowVideoPlaylist::MoveCurrentPlayListItem(int iItem, int iAction, bool bUpdate /* = true */)
 {
-  int iSelected = m_viewControl.GetSelectedItem();
+  int iSelected = iItem;
   int iNew = iSelected;
   if (iAction == ACTION_MOVE_ITEM_UP)
-  {
     iNew--;
-  }
   else
-  {
     iNew++;
-  }
-  // The current playing or target song can't be moved
-  if (
-    (g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_VIDEO) &&
-    (g_application.IsPlayingAudio()) &&
-    (
-      (g_playlistPlayer.GetCurrentSong() == iSelected) ||
-      (g_playlistPlayer.GetCurrentSong() == iNew)
-    )
-  )
-  {
-    return ;
-  }
+
+  // the current playing item can't be moved
+  if ((g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_VIDEO) && (g_application.IsPlayingAudio()) &&
+    ((g_playlistPlayer.GetCurrentSong() == iSelected) || (g_playlistPlayer.GetCurrentSong() == iNew)))
+    return false;
+
   CPlayList& playlist = g_playlistPlayer.GetPlaylist(PLAYLIST_VIDEO);
   if (playlist.Swap(iSelected, iNew))
   {
-    Update(m_vecItems.m_strPath);
-    m_viewControl.SetSelectedItem(iNew);
-    return ;
+    if (bUpdate)
+      Update(m_vecItems.m_strPath);
+    return true;
   }
+
+  return false;
 }
+
 
 void CGUIWindowVideoPlaylist::ClearPlayList()
 {
@@ -592,11 +588,34 @@ void CGUIWindowVideoPlaylist::OnPopupMenu(int iItem)
   // load our menu
   pMenu->Initialize();
 
-  // add the needed buttons
-  int btn_MoveUp = pMenu->AddButton(13332); // Move Up
-  int btn_MoveDn = pMenu->AddButton(13333); // Move Down
-  int btn_Delete = pMenu->AddButton(15015); // Remove
-  int btn_Return = pMenu->AddButton(12011); // Return to My Video
+  // add the buttons
+  int btn_Move = 0;   // move item
+  int btn_MoveTo = 0; // move item here
+  int btn_Cancel = 0; // cancel move
+  int btn_MoveUp = 0; // move up
+  int btn_MoveDn = 0; // move down
+  int btn_Delete = 0; // delete
+
+  if (iPos < 0)
+  {
+    btn_Move = pMenu->AddButton(13251);       // move item
+    btn_MoveUp = pMenu->AddButton(13332);     // move up
+    if (iItem == 0)
+      pMenu->EnableButton(btn_MoveUp, false); // disable if top item
+    btn_MoveDn = pMenu->AddButton(13333);     // move down
+    if (iItem == (m_vecItems.Size()-1))
+      pMenu->EnableButton(btn_MoveDn, false); // disable if bottom item
+    btn_Delete = pMenu->AddButton(15015);     // delete
+  }
+  // after selecting "move item" only two choices
+  else
+  {
+    btn_MoveTo = pMenu->AddButton(13252);         // move item here
+    if (iItem == iPos)
+      pMenu->EnableButton(btn_MoveTo, false);     // disable the button if its the same position
+    btn_Cancel = pMenu->AddButton(13253);         // cancel move
+  }
+  int btn_Return = pMenu->AddButton(12010);     // return to my music
 
   // position it correctly
   if (g_SkinInfo.GetVersion() < 1.91 && !pMenu->GetPosX() && !pMenu->GetPosY())
@@ -604,22 +623,46 @@ void CGUIWindowVideoPlaylist::OnPopupMenu(int iItem)
   pMenu->DoModal(GetID());
 
   int btnid = pMenu->GetButton();
-  if( btnid  == btn_MoveUp ) // Move Up
+  if (btnid > 0)
   {
-    OnMove(iItem, ACTION_MOVE_ITEM_UP);
-  }
-  else if( btnid  == btn_MoveDn )  // Move Down
-  {
-    OnMove(iItem, ACTION_MOVE_ITEM_DOWN);
-  }
-  else if( btnid  == btn_Delete )  // Delete
-  {
-    RemovePlayListItem(iItem);
-  }
-  else if( btnid  == btn_Return )  // Return
-  {
-    m_gWindowManager.PreviousWindow();
-    return;
+    // move item
+    if (btnid == btn_Move)
+    {
+      iPos = iItem;
+    }
+    // move item here
+    else if (btnid == btn_MoveTo && iPos >= 0)
+    {
+      MoveItem(iPos, iItem);
+      iPos = -1;
+    }
+    // cancel move
+    else if (btnid == btn_Cancel)
+    {
+      iPos = -1;
+    }
+    // move up
+    else if (btnid == btn_MoveUp)
+    {
+      OnMove(iItem, ACTION_MOVE_ITEM_UP);
+    }
+    // move down
+    else if (btnid == btn_MoveDn)
+    {
+      OnMove(iItem, ACTION_MOVE_ITEM_DOWN);
+    }
+    // delete
+    else if (btnid == btn_Delete)
+    {
+      RemovePlayListItem(iItem);
+      return;
+    }
+    // return to my videos
+    else if (btnid == btn_Return)
+    {
+      m_gWindowManager.PreviousWindow();
+      return;
+    }
   }
   m_vecItems[iItem]->Select(bSelected);
 }
@@ -628,4 +671,34 @@ void CGUIWindowVideoPlaylist::OnMove(int iItem, int iAction)
 {
   if (iItem < 0 || iItem >= m_vecItems.Size()) return;
   MoveCurrentPlayListItem(iItem, iAction);
+}
+
+void CGUIWindowVideoPlaylist::MoveItem(int iStart, int iDest)
+{
+  if (iStart < 0 || iStart >= m_vecItems.Size()) return;
+  if (iDest < 0 || iDest >= m_vecItems.Size()) return;
+
+  // default to move up
+  int iAction = ACTION_MOVE_ITEM_UP;
+  int iDirection = -1;
+  // are we moving down?
+  if (iStart < iDest)
+  {
+    iAction = ACTION_MOVE_ITEM_DOWN;
+    iDirection = 1;
+  }
+
+  // keep swapping until you get to the destination or you
+  // hit the currently playing song
+  int i = iStart;
+  while (i != iDest)
+  {
+    // try to swap adjacent items
+    if (MoveCurrentPlayListItem(i, iAction, false))
+      i = i + (1 * iDirection);
+    // we hit currently playing song, so abort
+    else
+      break;
+  }
+  Update(m_vecItems.m_strPath);
 }
