@@ -238,7 +238,7 @@ bool CGUIWindowVideoPlaylist::MoveCurrentPlayListItem(int iItem, int iAction, bo
     iNew++;
 
   // the current playing item can't be moved
-  if ((g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_VIDEO) && (g_application.IsPlayingAudio()) &&
+  if ((g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_VIDEO) && (g_application.IsPlayingVideo()) &&
     ((g_playlistPlayer.GetCurrentSong() == iSelected) || (g_playlistPlayer.GetCurrentSong() == iNew)))
     return false;
 
@@ -586,6 +586,18 @@ void CGUIWindowVideoPlaylist::OnPopupMenu(int iItem)
   // load our menu
   pMenu->Initialize();
 
+  // is this near the currently playing item
+  bool bIsPlaying = false;
+  bool bIsBelowPlaying = false;
+  bool bIsAbovePlaying = false;
+  if ((g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_VIDEO) && (g_application.IsPlayingVideo()))
+  {
+    int i = g_playlistPlayer.GetCurrentSong();
+    if (iItem == i) bIsPlaying = true;
+    if (iItem == i+1) bIsBelowPlaying = true;
+    if (iItem == i-1) bIsAbovePlaying = true;
+  }
+
   // add the buttons
   int btn_Move = 0;   // move item
   int btn_MoveTo = 0; // move item here
@@ -597,20 +609,24 @@ void CGUIWindowVideoPlaylist::OnPopupMenu(int iItem)
   if (iPos < 0)
   {
     btn_Move = pMenu->AddButton(13251);       // move item
+    if (bIsPlaying)
+      pMenu->EnableButton(btn_Move, false);   // disable if current item
     btn_MoveUp = pMenu->AddButton(13332);     // move up
-    if (iItem == 0)
-      pMenu->EnableButton(btn_MoveUp, false); // disable if top item
+    if (iItem == 0 || bIsPlaying || bIsBelowPlaying)
+      pMenu->EnableButton(btn_MoveUp, false); // disable if top item or current item or below current item
     btn_MoveDn = pMenu->AddButton(13333);     // move down
-    if (iItem == (m_vecItems.Size()-1))
-      pMenu->EnableButton(btn_MoveDn, false); // disable if bottom item
+    if (iItem == (m_vecItems.Size()-1) || bIsPlaying || bIsAbovePlaying)
+      pMenu->EnableButton(btn_MoveDn, false); // disable if bottom item or current item or above current item
     btn_Delete = pMenu->AddButton(15015);     // delete
+    if (bIsPlaying)
+      pMenu->EnableButton(btn_Delete, false); // disable if current item
   }
   // after selecting "move item" only two choices
   else
   {
     btn_MoveTo = pMenu->AddButton(13252);         // move item here
-    if (iItem == iPos)
-      pMenu->EnableButton(btn_MoveTo, false);     // disable the button if its the same position
+    if (iItem == iPos || bIsPlaying)
+      pMenu->EnableButton(btn_MoveTo, false);     // disable the button if its the same position or current item
     btn_Cancel = pMenu->AddButton(13253);         // cancel move
   }
   int btn_Return = pMenu->AddButton(12011);     // return to my videos
