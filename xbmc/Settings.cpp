@@ -157,6 +157,8 @@ CSettings::CSettings(void)
   g_stSettings.m_iMyVideoPercentSeekBackward = -2;
   g_stSettings.m_iMyVideoPercentSeekForwardBig = 10;
   g_stSettings.m_iMyVideoPercentSeekBackwardBig = -10;
+
+  
   xbmcXmlLoaded = false;
 }
 
@@ -1285,6 +1287,12 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile, const bool loadp
     GetString(pElement, "kaiarenapass", g_stSettings.szOnlineArenaPassword, "");
     GetString(pElement, "kaiarenadesc", g_stSettings.szOnlineArenaDescription, "");
   }
+  //screensaver
+  pElement = pRootElement->FirstChildElement("ScreenSaver");
+  if (pElement)
+  {
+    GetString(pElement, "ScreenSaverSlideShowPath", g_stSettings.szScreenSaverSlideShowPath, "");
+  }
   
   // screen settings
   pElement = pRootElement->FirstChildElement("screen");
@@ -1547,7 +1555,13 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile, const bool savep
   SetString(pNode, "kaiarenapass", g_stSettings.szOnlineArenaPassword);
   SetString(pNode, "kaiarenadesc", g_stSettings.szOnlineArenaDescription);
   SetInteger(pNode, "systemtotaluptime", g_stSettings.m_iSystemTimeTotalUp);
-
+  
+  //screensaver
+  TiXmlElement screensaverNode("ScreenSaver");
+  pNode = pRoot->InsertEndChild(screensaverNode);
+  if (!pNode) return false;
+  SetString(pNode, "ScreenSaverSlideShowPath", g_stSettings.szScreenSaverSlideShowPath);
+  
   // screen settings
   TiXmlElement screenNode("screen");
   pNode = pRoot->InsertEndChild(screenNode);

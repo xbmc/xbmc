@@ -3553,7 +3553,8 @@ void CApplication::ActivateScreenSaver()
     if(!IsPlayingVideo())
     {
       fFadeLevel = 1.f;
-      g_applicationMessenger.PictureSlideShow(g_guiSettings.GetString("ScreenSaver.SlideShowPath"));
+      //g_applicationMessenger.PictureSlideShow(g_guiSettings.GetString("ScreenSaver.SlideShowPath"));
+      g_applicationMessenger.PictureSlideShow(g_stSettings.szScreenSaverSlideShowPath);
     }else return;
   }
   else if (strScreenSaver == "Dim")
