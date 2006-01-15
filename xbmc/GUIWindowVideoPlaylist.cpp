@@ -615,7 +615,7 @@ void CGUIWindowVideoPlaylist::OnPopupMenu(int iItem)
       pMenu->EnableButton(btn_MoveTo, false);     // disable the button if its the same position
     btn_Cancel = pMenu->AddButton(13253);         // cancel move
   }
-  int btn_Return = pMenu->AddButton(12010);     // return to my music
+  int btn_Return = pMenu->AddButton(12011);     // return to my videos
 
   // position it correctly
   if (g_SkinInfo.GetVersion() < 1.91 && !pMenu->GetPosX() && !pMenu->GetPosY())
