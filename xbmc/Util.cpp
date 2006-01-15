@@ -4035,3 +4035,45 @@ CStdString CUtil::SubstitutePath(const CStdString& strFileName)
   // nothing matches, return original string
   return strFileName;
 }
+
+bool CUtil::MakeShortenPath(CStdString StrInput, CStdString& StrOutput, int iTextMaxLength)
+{
+  int iStrInputSize = StrInput.size(); 
+  if((iStrInputSize <= 0) || (iTextMaxLength >= iStrInputSize)) 
+    return false;
+  
+  char cDelim = '\0';
+  int nGreaterDelim, nPos;
+
+  nPos = StrInput.find_last_of( '\\' );
+  if ( nPos >= 0 ) 
+    cDelim = '\\';
+  else
+  {
+    nPos = StrInput.find_last_of( '/' );
+    if ( nPos >= 0 )
+      cDelim = '/';
+  }
+  if ( cDelim == '\0' )
+    return false;
+  
+  if (nPos == StrInput.size() - 1)
+  {
+    StrInput.erase(StrInput.size() - 1);
+    nPos = StrInput.find_last_of( cDelim );
+  }
+  while( iTextMaxLength < iStrInputSize )
+  {
+    // Todo: if the last FolderName is to long, the text will not be cut! 
+    // So maybe, we can just show the root and then the folder.. but i leave it this way for now..
+    nPos = StrInput.find_last_of( cDelim, nPos );
+    nGreaterDelim = nPos;
+    if ( nPos >= 0 ) nPos = StrInput.find_last_of( cDelim, nPos - 1 );
+    else break;
+    if ( nPos < 0 ) break;
+    if ( nGreaterDelim > nPos ) StrInput.replace( nPos + 1, nGreaterDelim - nPos - 1, ".." );
+    iStrInputSize = StrInput.size();
+  }
+  StrOutput = StrInput;
+  return true;
+}
