@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 15-01-2006 added: settings->video->subtitles, option to look for subs in rars, defaults to off because it causes lots of caching
  - 15-01-2006 changed: Rewrote window manager code to better track the window history.
  - 15-01-2006 changed: Cleaned up spin control (always wraps around now)
  - 15-01-2006 added: "Move Item" function to both Now Playing windows context menu.
