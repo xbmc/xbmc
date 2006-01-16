@@ -36,6 +36,7 @@ CDVDPlayerVideo::CDVDPlayerVideo(CDVDDemuxSPU* spu, CDVDClock* pClock, CDVDOverl
   m_iCurrentPts = DVD_NOPTS_VALUE;
   
   m_iDroppedFrames = 0;
+  m_fFrameRate = 25;
 }
 
 CDVDPlayerVideo::~CDVDPlayerVideo()
@@ -45,8 +46,13 @@ CDVDPlayerVideo::~CDVDPlayerVideo()
 }
 
 bool CDVDPlayerVideo::OpenStream(CDemuxStreamVideo* pDemuxStreamVideo)
-{
-  m_pDemuxStreamVideo = pDemuxStreamVideo;
+{  
+
+  if (pDemuxStreamVideo->iFpsRate && pDemuxStreamVideo->iFpsScale)
+    m_fFrameRate = (float)pDemuxStreamVideo->iFpsRate / pDemuxStreamVideo->iFpsScale;
+  else
+    m_fFrameRate = 25;
+
 
   // should alway's be NULL!!!!, it will probably crash anyway when deleting m_pVideoCodec here.
   if (m_pVideoCodec)
@@ -90,9 +96,7 @@ void CDVDPlayerVideo::CloseStream(bool bWaitForBuffers)
     m_pVideoCodec->Dispose();
     delete m_pVideoCodec;
     m_pVideoCodec = NULL;
-  }
-
-  m_pDemuxStreamVideo = NULL;
+  }  
 }
 
 void CDVDPlayerVideo::OnStartup()
@@ -118,14 +122,12 @@ void CDVDPlayerVideo::Process()
   int dvdstate;
   __int64 pts = 0;
 
-  unsigned int iFrameTime = (((__int64)(DVD_TIME_BASE/1000) * m_pDemuxStreamVideo->iFpsScale) / m_pDemuxStreamVideo->iFpsRate);
-  if( iFrameTime == 0 ) iFrameTime = 40; //25 fps as a safety
+  unsigned int iFrameTime = (unsigned int)(DVD_TIME_BASE / m_fFrameRate) ;  
 
   bool bDetectedStill = false;
 
   int iDropped = 0; //frames dropped in a row
-  bool bRequestDrop = false;
-  m_fFrameRate = 1000.0f / iFrameTime;
+  bool bRequestDrop = false;  
 
   while (!m_bStop)
   {
@@ -220,16 +222,7 @@ void CDVDPlayerVideo::Process()
           if (m_pVideoCodec->GetPicture(&picture))
           {          
             if (picture.iDuration == 0)
-            {
-              if (m_pDemuxStreamVideo->iFpsRate && m_pDemuxStreamVideo->iFpsScale)
-              {
-                picture.iDuration = (unsigned int)(((__int64)DVD_TIME_BASE * m_pDemuxStreamVideo->iFpsScale) / m_pDemuxStreamVideo->iFpsRate);
-              }
-              else
-              {
-                picture.iDuration = DVD_TIME_BASE / 25;
-              }
-            }
+              picture.iDuration = iFrameTime;
 
             if (m_iNrOfPicturesNotToSkip > 0)
             {
