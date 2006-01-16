@@ -59,6 +59,7 @@ CGUIViewState::CGUIViewState(const CFileItemList& items) : m_items(items)
   m_currentViewAsControl=0;
   m_currentSortMethod=0;
   m_sortOrder=SORT_ORDER_ASC;
+  m_hideParentDirItems = items.IsVirtualDirectoryRoot() ? true : g_guiSettings.GetBool("FileLists.HideParentDirItems");
 }
 
 CGUIViewState::~CGUIViewState()
@@ -198,7 +199,7 @@ bool CGUIViewState::HideExtensions()
 
 bool CGUIViewState::HideParentDirItems()
 {
-  return g_guiSettings.GetBool("FileLists.HideParentDirItems");
+  return m_hideParentDirItems;
 }
 
 int CGUIViewState::GetPlaylist()
