@@ -255,7 +255,7 @@ bool CGUIControl::OnMessage(CGUIMessage& message)
     case GUI_MSG_VISIBLE:
       if (message.GetParam1())  // effect time
       {
-//        CLog::DebugLog("Control %i set to visible.  Was %s, effect=%d", m_dwControlID, m_bVisible ? "visible" : "hidden", m_tempAnimation.currentProcess == ANIM_PROCESS_NORMAL ? "fading in" : (m_tempAnimation.currentProcess == ANIM_PROCESS_REVERSE) ? "fading out" : "none");
+        CLog::DebugLog("Control %i set to visible.  Was %s, effect=%d", m_dwControlID, m_bVisible ? "visible" : "hidden", m_tempAnimation.currentProcess == ANIM_PROCESS_NORMAL ? "fading in" : (m_tempAnimation.currentProcess == ANIM_PROCESS_REVERSE) ? "fading out" : "none");
         if ((!m_bVisible && m_tempAnimation.currentProcess != ANIM_PROCESS_NORMAL) ||
             ( m_bVisible && m_tempAnimation.currentProcess == ANIM_PROCESS_REVERSE))
         {
@@ -264,6 +264,8 @@ bool CGUIControl::OnMessage(CGUIMessage& message)
           m_tempAnimation.queuedProcess = ANIM_PROCESS_NORMAL;
           m_tempAnimation.length = message.GetParam1();
         }
+        else
+          m_tempAnimation.Reset();
       }
       else
         m_bVisible = m_visibleCondition ? g_infoManager.GetBool(m_visibleCondition, m_dwParentID) : true;
@@ -273,7 +275,7 @@ bool CGUIControl::OnMessage(CGUIMessage& message)
     case GUI_MSG_HIDDEN:
       if (message.GetParam1())  // fade time
       {
-//        CLog::DebugLog("Control %i set to hidden.  Was %s, effect=%d", m_dwControlID, m_bVisible ? "visible" : "hidden", m_tempAnimation.currentProcess == ANIM_PROCESS_NORMAL ? "fading in" : (m_tempAnimation.currentProcess == ANIM_PROCESS_REVERSE) ? "fading out" : "none");
+        CLog::DebugLog("Control %i set to hidden.  Was %s, effect=%d", m_dwControlID, m_bVisible ? "visible" : "hidden", m_tempAnimation.currentProcess == ANIM_PROCESS_NORMAL ? "fading in" : (m_tempAnimation.currentProcess == ANIM_PROCESS_REVERSE) ? "fading out" : "none");
         if (m_bVisible && m_tempAnimation.currentProcess != ANIM_PROCESS_REVERSE)
         {
           m_tempAnimation.type = ANIM_TYPE_VISIBLE;
@@ -284,13 +286,17 @@ bool CGUIControl::OnMessage(CGUIMessage& message)
       }
       else
         m_bVisible = false;
-      if (IsAnimating(ANIM_TYPE_VISIBLE) || (m_tempAnimation.type == ANIM_PROCESS_NORMAL && m_tempAnimation.queuedProcess != ANIM_PROCESS_REVERSE)) // make sure we reset the fade in state.
+      // reset any visible animations that are in process
+      if (IsAnimating(ANIM_TYPE_VISIBLE))
       {
-        m_tempAnimation.Reset();  // reset the temp animation
+        CLog::DebugLog("Resetting visible animation on control %i (we are %s)", m_dwControlID, m_bVisible ? "visible" : "hidden");
         CAnimation *visibleAnim = GetAnimation(ANIM_TYPE_VISIBLE);
         if (visibleAnim) visibleAnim->ResetAnimation();
-        CAnimation *hiddenAnim = GetAnimation(ANIM_TYPE_HIDDEN);
-        if (hiddenAnim) hiddenAnim->RenderAnimation();
+      }
+      if (m_tempAnimation.type == ANIM_TYPE_VISIBLE && m_tempAnimation.queuedProcess != ANIM_PROCESS_REVERSE && m_tempAnimation.currentProcess != ANIM_PROCESS_REVERSE)
+      {
+        CLog::DebugLog("Resetting temp visible animation on control %i (we are %s)", m_dwControlID, m_bVisible ? "visible" : "hidden");
+        m_tempAnimation.Reset();
       }
       return true;
       break;
@@ -626,10 +632,13 @@ void CGUIControl::QueueAnimation(ANIMATION_TYPE animType)
 {
   // rule out the animations we shouldn't perform
   if (!m_bVisible || !HasRendered()) 
-  { // hidden - don't allow exit or hide animations for this control
+  { // hidden or never rendered - don't allow exit animations for this control
     if (animType == ANIM_TYPE_WINDOW_CLOSE)
       return;
-    else if (animType == ANIM_TYPE_HIDDEN && !IsAnimating(ANIM_TYPE_VISIBLE))
+  }
+  if (!m_bVisible)
+  { // hidden - only allow hidden anims if we're animating a visible anim
+    if (animType == ANIM_TYPE_HIDDEN && !IsAnimating(ANIM_TYPE_VISIBLE))
       return;
   }
   CAnimation *reverseAnim = GetAnimation((ANIMATION_TYPE)-animType);

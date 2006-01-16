@@ -10,6 +10,7 @@ public:
   CGUIDialogKeyboard(void);
   virtual ~CGUIDialogKeyboard(void);
 
+  virtual void Render();
   void SetHeading(const CStdString& strHeading) {m_strHeading = strHeading;} ;
   void SetText(CStdString& aTextString);
   CStdString GetText() const { return m_strEdit;};

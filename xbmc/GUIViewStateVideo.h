@@ -5,10 +5,9 @@
 class CGUIViewStateWindowVideo : public CGUIViewState
 {
 public:
-  CGUIViewStateWindowVideo(const CFileItemList& items) : CGUIViewState(items) {}
+  CGUIViewStateWindowVideo(const CFileItemList& items);
 
 protected:
-  virtual bool HideParentDirItems();
   virtual CStdString GetLockType();
   virtual bool HandleArchives();
 };
