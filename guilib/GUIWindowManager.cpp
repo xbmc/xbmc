@@ -246,6 +246,9 @@ void CGUIWindowManager::ActivateWindow(int iWindowID, const CStdString& strPath,
     }
   }
 
+  // debug
+  CLog::Log(LOGDEBUG, "Activating window ID: %i", iWindowID);
+
   // GeminiServer HomeMenuLock with MasterCode!
   if(!g_passwordManager.CheckMenuLock(iWindowID))
   {
@@ -255,7 +258,6 @@ void CGUIWindowManager::ActivateWindow(int iWindowID, const CStdString& strPath,
 
   // first check existence of the window we wish to activate.
   CGUIWindow *pNewWindow = GetWindow(iWindowID);
-  CLog::Log(LOGDEBUG, "Activating Window: %i", iWindowID);
   if (!pNewWindow)
   { // nothing to see here - move along
     CLog::Log(LOGERROR, "Unable to locate window with id %d.  Check skin files", iWindowID - WINDOW_HOME);
