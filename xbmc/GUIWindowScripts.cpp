@@ -51,7 +51,7 @@ bool CGUIWindowScripts::OnMessage(CGUIMessage& message)
 
       CShare share;
       share.strName = "Q Drive";
-      share.strPath = "Q:\\";
+      share.strPath = "Q:\\scripts";
       share.m_iBufferSize = 0;
       share.m_iDriveType = SHARE_TYPE_LOCAL;
       m_shares.push_back(share);
@@ -81,72 +81,9 @@ bool CGUIWindowScripts::OnMessage(CGUIMessage& message)
 
 bool CGUIWindowScripts::Update(const CStdString &strDirectory)
 {
-  // get selected item
-  int iItem = m_viewControl.GetSelectedItem();
-  CStdString strSelectedItem = "";
-  if (iItem >= 0 && iItem < m_vecItems.Size())
-  {
-    CFileItem* pItem = m_vecItems[iItem];
-    if (!pItem->IsParentFolder())
-    {
-      strSelectedItem = pItem->m_strPath;
-      m_history.Set(strSelectedItem, m_vecItems.m_strPath);
-    }
-  }
-  ClearFileItems();
-
-  CStdString strParentPath;
-  bool bParentExists = false;
-  if (strDirectory != "Q:\\scripts")
-    bParentExists = CUtil::GetParentPath(strDirectory, strParentPath);
-
-  // check if current directory is a root share
-  if ( !m_rootDir.IsShare(strDirectory) )
-  {
-    // no, do we got a parent dir?
-    if ( bParentExists )
-    {
-      // yes
-      auto_ptr<CGUIViewState> pState(CGUIViewState::GetViewState(GetID(), m_vecItems));
-      if (pState.get() && !pState->HideParentDirItems())
-      {
-        CFileItem *pItem = new CFileItem("..");
-        pItem->m_strPath = strParentPath;
-        pItem->m_bIsFolder = true;
-        pItem->m_bIsShareOrDrive = false;
-        m_vecItems.Add(pItem);
-      }
-      m_strParentPath = strParentPath;
-    }
-  }
-  else
-  {
-    // yes, this is the root of a share
-    // add parent path to the virtual directory
-    auto_ptr<CGUIViewState> pState(CGUIViewState::GetViewState(GetID(), m_vecItems));
-    if (pState.get() && !pState->HideParentDirItems())
-    {
-      CFileItem *pItem = new CFileItem("..");
-      pItem->m_strPath = "";
-      pItem->m_bIsShareOrDrive = false;
-      pItem->m_bIsFolder = true;
-      m_vecItems.Add(pItem);
-    }
-    m_strParentPath = "";
-  }
-
-  m_vecItems.m_strPath = strDirectory;
-  m_rootDir.GetDirectory(strDirectory, m_vecItems);
-  m_vecItems.SetThumbs();
-  auto_ptr<CGUIViewState> pState(CGUIViewState::GetViewState(GetID(), m_vecItems));
-  if (pState.get() && pState->HideExtensions())
-    m_vecItems.RemoveExtensions();
-
-  m_vecItems.FillInDefaultIcons();
-
-  m_iLastControl = GetFocusedControl();
-  OnSort();
-  UpdateButtons();
+  // Look if baseclass can handle it
+  if (!CGUIMediaWindow::Update(strDirectory))
+    return false;
 
   /* check if any python scripts are running. If true, place "(Running)" after the item.
    * since stopping a script can take up to 10 seconds or more,we display 'stopping'
@@ -177,55 +114,35 @@ bool CGUIWindowScripts::Update(const CStdString &strDirectory)
     }
   }
 
-  strSelectedItem = m_history.Get(m_vecItems.m_strPath);
-
-  for (int i = 0; i < (int)m_vecItems.Size(); ++i)
-  {
-    CFileItem* pItem = m_vecItems[i];
-    if (pItem->m_strPath == strSelectedItem)
-    {
-      m_viewControl.SetSelectedItem(i);
-      break;
-    }
-  }
   return true;
 }
 
-void CGUIWindowScripts::OnClick(int iItem)
+void CGUIWindowScripts::OnPlayMedia(int iItem)
 {
-  if ( iItem < 0 || iItem >= (int)m_vecItems.Size() ) return ;
-  CFileItem* pItem = m_vecItems[iItem];
+  CFileItem* pItem=m_vecItems[iItem];
   CStdString strPath = pItem->m_strPath;
 
-  CStdString strExtension;
-  CUtil::GetExtension(pItem->m_strPath, strExtension);
-
-  if (!pItem->m_bIsFolder)
+  /* execute script...
+    * if script is already running do not run it again but stop it.
+    */
+  int id = g_pythonParser.getScriptId(strPath);
+  if (id != -1)
   {
-    /* execute script...
-     * if script is already running do not run it again but stop it.
-     */
-    int id = g_pythonParser.getScriptId(strPath);
-    if (id != -1)
+    /* if we are here we already know that this script is running.
+      * But we will check it again to be sure :)
+      */
+    if (g_pythonParser.isRunning(id))
     {
-      /* if we are here we already know that this script is running.
-       * But we will check it again to be sure :)
-       */
-      if (g_pythonParser.isRunning(id))
-      {
-        g_pythonParser.stopScript(id);
+      g_pythonParser.stopScript(id);
 
-        // update items
-        int selectedItem = m_viewControl.GetSelectedItem();
-        Update(m_vecItems.m_strPath);
-        m_viewControl.SetSelectedItem(selectedItem);
-        return ;
-      }
+      // update items
+      int selectedItem = m_viewControl.GetSelectedItem();
+      Update(m_vecItems.m_strPath);
+      m_viewControl.SetSelectedItem(selectedItem);
+      return;
     }
-    g_pythonParser.evalFile(strPath);
-    return;
   }
-  CGUIMediaWindow::OnClick(iItem);
+  g_pythonParser.evalFile(strPath);
 }
 
 void CGUIWindowScripts::OnInfo()
@@ -245,17 +162,6 @@ void CGUIWindowScripts::Render()
     m_scriptSize = g_pythonParser.ScriptsSize();
   }
   CGUIWindow::Render();
-}
-
-void CGUIWindowScripts::GoParentFolder()
-{
-  CStdString strPath(m_strParentPath), strOldPath(m_vecItems.m_strPath);
-  Update(strPath);
-  UpdateButtons();
-
-  if (!g_guiSettings.GetBool("LookAndFeel.FullDirectoryHistory"))
-    m_history.Remove(strOldPath); //Delete current path
-  // CGUIMediaWindow::GoParentFolder();
 }
 
 void CGUIWindowScripts::OnWindowLoaded()

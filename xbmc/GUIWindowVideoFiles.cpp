@@ -60,7 +60,7 @@ bool CGUIWindowVideoFiles::OnMessage(CGUIMessage& message)
         g_stSettings.m_iVideoStartWindow = GetID();
         CLog::Log(LOGINFO, "Attempting to quickpath to: %s", strDestination.c_str());
         // reset directory path, as we have effectively cleared it here
-        m_vecPathHistory.clear();
+        m_history.ClearPathHistory();
       }
 
       // is this the first time accessing this window?
@@ -135,7 +135,6 @@ bool CGUIWindowVideoFiles::OnMessage(CGUIMessage& message)
           CStdString strParent = m_vecItems.m_strPath;
           UpdateButtons();
           Update(CUtil::VideoPlaylistsLocation());
-          m_strParentPath = strParent;
         }
       }
       // list/thumb panel 
@@ -177,38 +176,6 @@ void CGUIWindowVideoFiles::UpdateButtons()
 
 bool CGUIWindowVideoFiles::Update(const CStdString &strDirectory)
 {
-  // if we're getting the root bookmark listing
-  // make sure the path history is clean
-  if (strDirectory.IsEmpty())
-    m_vecPathHistory.empty();
-
-  if (!UpdateDir(strDirectory))
-    return false;
-
-  if (!m_vecItems.IsVirtualDirectoryRoot() && g_guiSettings.GetBool("VideoFiles.UseAutoSwitching"))
-  {
-    UpdateButtons();
-  }
-
-  if ((m_vecPathHistory.size() == 0) || m_vecPathHistory.back() != strDirectory)
-  {
-    m_vecPathHistory.push_back(strDirectory);
-  }
-
-  // debug log
-  CStdString strTemp;
-  CLog::Log(LOGDEBUG,"Current m_vecPathHistory:");
-  for (int i = 0; i < (int)m_vecPathHistory.size(); ++i)
-  {
-    strTemp.Format("%02i.[%s]", i, m_vecPathHistory[i]);
-    CLog::Log(LOGDEBUG, "  %s", strTemp.c_str());
-  }
-
-  return true;
-}
-
-bool CGUIWindowVideoFiles::UpdateDir(const CStdString &strDirectory)
-{
   // get selected item
   int iItem = m_viewControl.GetSelectedItem();
   CStdString strSelectedItem = "";
@@ -218,27 +185,26 @@ bool CGUIWindowVideoFiles::UpdateDir(const CStdString &strDirectory)
     if (!pItem->IsParentFolder())
     {
       GetDirectoryHistoryString(pItem, strSelectedItem);
-      m_history.Set(strSelectedItem, m_vecItems.m_strPath);
+      m_history.SetSelectedItem(strSelectedItem, m_vecItems.m_strPath);
     }
   }
 
   CStdString strOldDirectory = m_vecItems.m_strPath;
-  m_vecItems.m_strPath = strDirectory;
 
-  CFileItemList items;
-  if (!GetDirectory(m_vecItems.m_strPath, items))
-  {
-    m_vecItems.m_strPath = strOldDirectory;
-    return false;
-  }
-
-  m_history.Set(strSelectedItem, strOldDirectory);
+  m_history.SetSelectedItem(strSelectedItem, strOldDirectory);
 
   ClearFileItems();
 
-  m_vecItems.AppendPointer(items);
-  m_vecItems.m_strPath = items.m_strPath;
-  items.ClearKeepPointer();
+  if (!GetDirectory(strDirectory, m_vecItems))
+    return !Update(strOldDirectory); // We assume, we can get the parent 
+                                     // directory again, but we have to 
+                                     // return false to be able to eg. show 
+                                     // an error message.
+
+  // if we're getting the root bookmark listing
+  // make sure the path history is clean
+  if (strDirectory.IsEmpty())
+    m_history.ClearPathHistory();
 
   if (!m_vecItems.IsStack() && g_stSettings.m_iMyVideoStack != STACK_NONE)
   {
@@ -250,11 +216,10 @@ bool CGUIWindowVideoFiles::UpdateDir(const CStdString &strDirectory)
   m_iLastControl = GetFocusedControl();
 
   m_vecItems.SetThumbs();
-  auto_ptr<CGUIViewState> pState(CGUIViewState::GetViewState(GetID(), m_vecItems));
   
   if (g_stSettings.m_bMyVideoCleanTitles)
     m_vecItems.CleanFileNames();
-  else if (pState.get() && pState->HideExtensions())
+  else if (m_guiState.get() && m_guiState->HideExtensions())
     m_vecItems.RemoveExtensions();
   
   SetIMDBThumbs(m_vecItems);
@@ -262,13 +227,14 @@ bool CGUIWindowVideoFiles::UpdateDir(const CStdString &strDirectory)
 
   // changed this from OnSort() because it was incorrectly selecting
   // the wrong item!
-  FormatItemLabels();
+   m_guiState.reset(CGUIViewState::GetViewState(GetID(), m_vecItems));
+ FormatItemLabels();
   SortItems(m_vecItems);
   m_viewControl.SetItems(m_vecItems);
 
   UpdateButtons();
 
-  strSelectedItem = m_history.Get(m_vecItems.m_strPath);
+  strSelectedItem = m_history.GetSelectedItem(m_vecItems.m_strPath);
   for (int i = 0; i < (int)m_vecItems.Size(); ++i)
   {
     CFileItem* pItem = m_vecItems[i];
@@ -281,78 +247,35 @@ bool CGUIWindowVideoFiles::UpdateDir(const CStdString &strDirectory)
     }
   }
 
+  m_history.AddPath(strDirectory);
+
   return true;
 }
 
-void CGUIWindowVideoFiles::OnClick(int iItem)
+bool CGUIWindowVideoFiles::OnClick(int iItem)
 {
-  if ( iItem < 0 || iItem >= (int)m_vecItems.Size() ) return ;
+  if ( iItem < 0 || iItem >= (int)m_vecItems.Size() ) return true;
   CFileItem* pItem = m_vecItems[iItem];
-  CStdString strPath = pItem->m_strPath;
   CStdString strExtension;
   CUtil::GetExtension(pItem->m_strPath, strExtension);
+
   if ( strcmpi(strExtension.c_str(), ".nfo") == 0)
   {
     OnInfo(iItem);
-    return ;
+    return true;
   }
 
-  if (pItem->m_bIsFolder)
-  {
-    if (pItem->IsParentFolder())
-    {
-      // go back a directory
-      GoParentFolder();
+  return CGUIWindowVideoBase::OnClick(iItem);
+}
 
-      // GoParentFolder() calls Update(), so just return
-      return;
-    }
-    m_iSelectedItem = -1;
-    if ( pItem->m_bIsShareOrDrive )
-    {
-      if ( !g_passwordManager.IsItemUnlocked( pItem, "video" ) )
-        return ;
+void CGUIWindowVideoFiles::OnPlayMedia(int iItem)
+{
+  if ( iItem < 0 || iItem >= (int)m_vecItems.Size() ) return;
+  CFileItem* pItem = m_vecItems[iItem];
 
-      if ( !HaveDiscOrConnection( pItem->m_strPath, pItem->m_iDriveType ) )
-        return ;
-    }
-    if (!Update(strPath))
-      ShowShareErrorMessage(pItem);
-  }
-  else if (pItem->IsZIP() && g_guiSettings.GetBool("VideoFiles.HandleArchives")) // mount zip archive
-  {
-    CShare shareZip;
-    shareZip.strPath.Format("zip://Z:\\temp\\,%i,,%s,\\",1, pItem->m_strPath.c_str() );
-    m_rootDir.AddShare(shareZip);
-    Update(shareZip.strPath);
-  }
-  else if (pItem->IsRAR() && g_guiSettings.GetBool("VideoFiles.HandleArchives")) // mount rar archive
-  {
-    CShare shareRar;
-    shareRar.strPath.Format("rar://Z:\\temp\\,%i,,%s,\\",1, pItem->m_strPath.c_str() );
-    m_rootDir.AddShare(shareRar);
-    Update(shareRar.strPath);
-  }
-  else
-  {
-    // Reset Playlistplayer, we may have played something
-    // from another playlist. New playback started now may
-    // not use the playlistplayer.
-    g_playlistPlayer.Reset();
-    g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_NONE);
-    // Set selected item
-    m_iSelectedItem = m_viewControl.GetSelectedItem();
-    if (pItem->IsPlayList())
-    {
-      LoadPlayList(pItem->m_strPath);
-      return ;
-    }
-    else
-    {
-      AddFileToDatabase(pItem);
-      PlayMovie(pItem);
-    }
-  }
+  AddFileToDatabase(pItem);
+
+  CGUIWindowVideoBase::OnPlayMedia(iItem);
 }
 
 void CGUIWindowVideoFiles::OnInfo(int iItem)
@@ -779,6 +702,8 @@ void CGUIWindowVideoFiles::LoadPlayList(const CStdString& strPlayList)
   int iSize = pPlayList->size();
   if (g_application.ProcessAndStartPlaylist(strPlayList, *pPlayList, PLAYLIST_VIDEO))
   {
+    if (m_guiState.get())
+      m_guiState->SetPlaylistDirectory("");
     // activate the playlist window if its not activated yet
     if (GetID() == m_gWindowManager.GetActiveWindow() && iSize > 1)
     {
@@ -793,15 +718,12 @@ bool CGUIWindowVideoFiles::GetDirectory(const CStdString &strDirectory, CFileIte
   if (items.Size())
     items.Clear();
 
-  CStdString strParentPath = "";
-  if (m_vecPathHistory.size() > 0)
-    strParentPath = m_vecPathHistory.back();
+  CStdString strParentPath = m_history.GetParentPath();
 
   CLog::Log(LOGDEBUG,"CGUIWindowVideoFiles::GetDirectory (%s)", strDirectory.c_str());
   CLog::Log(LOGDEBUG,"  ParentPath = [%s]", strParentPath.c_str());
 
-  auto_ptr<CGUIViewState> pState(CGUIViewState::GetViewState(GetID(), m_vecItems));
-  if (pState.get() && !pState->HideParentDirItems())
+  if (m_guiState.get() && !m_guiState->HideParentDirItems())
   {
     CFileItem *pItem = new CFileItem("..");
     pItem->m_strPath = strParentPath;
@@ -809,7 +731,6 @@ bool CGUIWindowVideoFiles::GetDirectory(const CStdString &strDirectory, CFileIte
     pItem->m_bIsShareOrDrive = false;
     items.Add(pItem);
   }
-  m_strParentPath = strParentPath;
 
   CLog::Log(LOGDEBUG,"Fetching directory (%s)", strDirectory.c_str());
   if (!m_rootDir.GetDirectory(strDirectory, items))
@@ -819,88 +740,6 @@ bool CGUIWindowVideoFiles::GetDirectory(const CStdString &strDirectory, CFileIte
   }
 
   return true;
-}
-
-/// \brief Can be overwritten to build an own history string for \c m_history
-/// \param pItem Item to build the history string from
-/// \param strHistoryString History string build as return value
-void CGUIWindowVideoFiles::GetDirectoryHistoryString(const CFileItem* pItem, CStdString& strHistoryString)
-{
-  if (pItem->m_bIsShareOrDrive)
-  {
-    // We are in the virual directory
-
-    // History string of the DVD drive
-    // must be handel separately
-    if (pItem->m_iDriveType == SHARE_TYPE_DVD)
-    {
-      // Remove disc label from item label
-      // and use as history string, m_strPath
-      // can change for new discs
-      CStdString strLabel = pItem->GetLabel();
-      int nPosOpen = strLabel.Find('(');
-      int nPosClose = strLabel.ReverseFind(')');
-      if (nPosOpen > -1 && nPosClose > -1 && nPosClose > nPosOpen)
-      {
-        strLabel.Delete(nPosOpen + 1, (nPosClose) - (nPosOpen + 1));
-        strHistoryString = strLabel;
-      }
-      else
-        strHistoryString = strLabel;
-    }
-    else
-    {
-      // Other items in virual directory
-      CStdString strPath = pItem->m_strPath;
-      while (CUtil::HasSlashAtEnd(strPath))
-        strPath.Delete(strPath.size() - 1);
-
-      strHistoryString = pItem->GetLabel() + strPath;
-    }
-  }
-  else
-  {
-    // Normal directory items
-    strHistoryString = pItem->m_strPath;
-
-    if (CUtil::HasSlashAtEnd(strHistoryString))
-      strHistoryString.Delete(strHistoryString.size() - 1);
-  }
-}
-
-void CGUIWindowVideoFiles::SetHistoryForPath(const CStdString& strDirectory)
-{
-  if (!strDirectory.IsEmpty())
-  {
-    // Build the directory history for default path
-    CStdString strPath, strParentPath;
-    strPath = strDirectory;
-    CFileItemList items;
-    GetDirectory("", items);
-
-    while (CUtil::GetParentPath(strPath, strParentPath))
-    {
-      bool bSet = false;
-      for (int i = 0; i < items.Size(); ++i)
-      {
-        CFileItem* pItem = items[i];
-        while (CUtil::HasSlashAtEnd(pItem->m_strPath))
-          pItem->m_strPath.Delete(pItem->m_strPath.size() - 1);
-        if (pItem->m_strPath == strPath)
-        {
-          CStdString strHistory;
-          GetDirectoryHistoryString(pItem, strHistory);
-          m_history.Set(strHistory, "");
-          return ;
-        }
-      }
-
-      m_history.Set(strPath, strParentPath);
-      strPath = strParentPath;
-      while (CUtil::HasSlashAtEnd(strPath))
-        strPath.Delete(strPath.size() - 1);
-    }
-  }
 }
 
 void CGUIWindowVideoFiles::OnPopupMenu(int iItem)

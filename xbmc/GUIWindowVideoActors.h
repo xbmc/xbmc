@@ -10,7 +10,6 @@ public:
 
 protected:
   virtual bool Update(const CStdString &strDirectory);
-  virtual void OnClick(int iItem);
   virtual void OnInfo(int iItem);
   virtual void OnDeleteItem(int iItem) {return;};
 };

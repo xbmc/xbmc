@@ -73,7 +73,7 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
       {
         message.SetStringParam("");
         CLog::Log(LOGINFO, "Attempting to quickpath to: %s", strDestination.c_str());
-        m_vecPathHistory.clear();
+        m_history.ClearPathHistory();
       }
       // otherwise, is this the first time accessing this window?
       else if (m_vecItems.m_strPath == "?")
@@ -183,35 +183,6 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
       }
     }
     break;
-  case GUI_MSG_NOTIFY_ALL:
-    { // Message is received even if this window is inactive
-      
-      //  Is there a dvd share in this window?
-      if (!m_rootDir.GetDVDDriveUrl().IsEmpty())
-      {
-        if (message.GetParam1()==GUI_MSG_DVDDRIVE_EJECTED_CD)
-        {
-          if (m_vecItems.IsVirtualDirectoryRoot() && IsActive())
-          {
-            int iItem = m_viewControl.GetSelectedItem();
-            Update(m_vecItems.m_strPath);
-            m_viewControl.SetSelectedItem(iItem);
-          }
-          else if (m_vecItems.IsCDDA() || m_vecItems.IsOnDVD())
-          { // Disc has changed and we are inside a DVD Drive share, get out of here :)
-            if (IsActive()) Update("");
-            else 
-            {
-              m_vecPathHistory.clear();
-              m_vecItems.m_strPath="";
-            }
-          }
-
-          return true;
-        }
-      }
-    }
-    break;
   }
   return CGUIMediaWindow::OnMessage(message);
 }
@@ -257,74 +228,46 @@ bool CGUIWindowPictures::Update(const CStdString &strDirectory)
   if (m_thumbLoader.IsLoading())
     m_thumbLoader.StopThread();
 
-  if (!UpdateDir(strDirectory))
-    return false;
-
-  if (!m_vecItems.IsVirtualDirectoryRoot() && g_guiSettings.GetBool("Pictures.UseAutoSwitching"))
-  {
-    UpdateButtons();
-  }
-
-  m_thumbLoader.Load(m_vecItems);
-
-  if ((m_vecPathHistory.size() == 0) || m_vecPathHistory.back() != strDirectory)
-  {
-    m_vecPathHistory.push_back(strDirectory);
-  }
-
-  // debug log
-  CStdString strTemp;
-  CLog::Log(LOGDEBUG,"Current m_vecPathHistory:");
-  for (int i = 0; i < (int)m_vecPathHistory.size(); ++i)
-  {
-    strTemp.Format("%02i.[%s]", i, m_vecPathHistory[i]);
-    CLog::Log(LOGDEBUG, "  %s", strTemp.c_str());
-  }
-
-  return true;
-}
-
-bool CGUIWindowPictures::UpdateDir(const CStdString &strDirectory)
-{
   // get selected item
   int iItem = m_viewControl.GetSelectedItem();
   CStdString strSelectedItem = "";
   if (iItem >= 0 && iItem < (int)m_vecItems.Size())
   {
-      CFileItem* pItem = m_vecItems[iItem];
+    CFileItem* pItem = m_vecItems[iItem];
     if (!pItem->IsParentFolder())
     {
       GetDirectoryHistoryString(pItem, strSelectedItem);
-      m_history.Set(strSelectedItem, m_vecItems.m_strPath);
+      m_history.SetSelectedItem(strSelectedItem, m_vecItems.m_strPath);
     }
   }
 
   CStdString strOldDirectory=m_vecItems.m_strPath;
-  m_vecItems.m_strPath = strDirectory;
 
-  CFileItemList items;
-  if (!GetDirectory(m_vecItems.m_strPath, items))
-  {
-    m_vecItems.m_strPath = strOldDirectory;
-    return false;
-  }
-
-  m_history.Set(strSelectedItem, strOldDirectory);
+  m_history.SetSelectedItem(strSelectedItem, strOldDirectory);
 
   ClearFileItems();
 
-  m_vecItems.AppendPointer(items);
-  m_vecItems.m_strPath = items.m_strPath;
-  items.ClearKeepPointer();
+  if (!GetDirectory(strDirectory, m_vecItems))
+    return !Update(strOldDirectory); // We assume, we can get the parent 
+                                     // directory again, but we have to 
+                                     // return false to be able to eg. show 
+                                     // an error message.
 
-  auto_ptr<CGUIViewState> pState(CGUIViewState::GetViewState(GetID(), m_vecItems));
-  if (pState.get() && pState->HideExtensions())
+  CStdString strParentPath=m_history.GetParentPath();
+  // if we're getting the root bookmark listing
+  // make sure the path history is clean
+  if (strDirectory.IsEmpty())
+    m_history.ClearPathHistory();
+
+  if (m_guiState.get() && m_guiState->HideExtensions())
     m_vecItems.RemoveExtensions();
   m_vecItems.FillInDefaultIcons();
+
+  m_guiState.reset(CGUIViewState::GetViewState(GetID(), m_vecItems));
   OnSort();
   UpdateButtons();
 
-  strSelectedItem = m_history.Get(m_vecItems.m_strPath);
+  strSelectedItem = m_history.GetSelectedItem(m_vecItems.m_strPath);
 
   for (int i = 0; i < (int)m_vecItems.Size(); ++i)
   {
@@ -338,56 +281,20 @@ bool CGUIWindowPictures::UpdateDir(const CStdString &strDirectory)
     }
   }
 
+  m_history.AddPath(strDirectory);
+
+  m_thumbLoader.Load(m_vecItems);
+
   return true;
 }
 
-void CGUIWindowPictures::OnClick(int iItem)
+bool CGUIWindowPictures::OnClick(int iItem)
 {
-  if ( iItem < 0 || iItem >= (int)m_vecItems.Size() ) return ;
+  if ( iItem < 0 || iItem >= (int)m_vecItems.Size() ) return true;
   CFileItem* pItem = m_vecItems[iItem];
   CStdString strPath = pItem->m_strPath;
-  if (pItem->m_bIsFolder)
-  {
-    if ( !g_passwordManager.IsItemUnlocked( pItem, "pictures" ) )
-      return ;
 
-    if (pItem->IsParentFolder())
-    {
-      // go back a directory
-      GoParentFolder();
-
-      // GoParentFolder() calls Update(), so just return
-      return;
-    }
-
-    m_iSelectedItem = -1;
-    if ( pItem->m_bIsShareOrDrive )
-    {
-      if ( !HaveDiscOrConnection( pItem->m_strPath, pItem->m_iDriveType ) )
-        return ;
-    }
-    if (!Update(strPath))
-      ShowShareErrorMessage(pItem);
-  }
-  else if (pItem->IsZIP() && g_guiSettings.GetBool("Pictures.HandleArchives")) // mount zip archive
-  {
-    CShare shareZip;
-    shareZip.strPath.Format("zip://Z:\\,%i,,%s,\\",1, pItem->m_strPath.c_str() );
-    shareZip.strEntryPoint.Empty();
-    m_rootDir.AddShare(shareZip);
-    m_iSelectedItem = -1;
-    Update(shareZip.strPath);
-  }
-  else if (pItem->IsRAR() && g_guiSettings.GetBool("Pictures.HandleArchives")) // mount rar archive
-  {
-    CShare shareRar;
-    shareRar.strPath.Format("rar://Z:\\,%i,,%s,\\",EXFILE_AUTODELETE, pItem->m_strPath.c_str() );
-    shareRar.strEntryPoint.Empty();
-    m_rootDir.AddShare(shareRar);
-    m_iSelectedItem = -1;
-    Update(shareRar.strPath);
-  }
-  else if (pItem->IsCBZ()) //mount'n'show'n'unmount
+  if (pItem->IsCBZ()) //mount'n'show'n'unmount
   {
     CUtil::GetDirectory(pItem->m_strPath,strPath);
     CShare shareZip;
@@ -407,6 +314,8 @@ void CGUIWindowPictures::OnClick(int iItem)
       Update(strPath);
     }
     m_iSelectedItem = iItem;
+
+    return true;
   }
   else if (pItem->IsCBR()) // mount'n'show'n'unmount
   {
@@ -429,21 +338,21 @@ void CGUIWindowPictures::OnClick(int iItem)
       Update(strPath);
     }
     m_iSelectedItem = iItem;
+
+    return true;
   }
-  else if (pItem->IsPlayList())
-  {
-    LoadPlayList(strPath);
-  }
-  else
-  {
-    // show picture
-    m_iSelectedItem = m_viewControl.GetSelectedItem();
-    OnShowPicture(strPath);
-  }
+  else if (CGUIMediaWindow::OnClick(iItem))
+    return true;
+
+  return false;
 }
 
-void CGUIWindowPictures::OnShowPicture(const CStdString& strPicture)
+void CGUIWindowPictures::OnPlayMedia(int iItem)
 {
+  if ( iItem < 0 || iItem >= (int)m_vecItems.Size() ) return;
+  CFileItem* pItem = m_vecItems[iItem];
+  CStdString strPicture = pItem->m_strPath;
+
   CGUIWindowSlideShow *pSlideShow = (CGUIWindowSlideShow *)m_gWindowManager.GetWindow(WINDOW_SLIDESHOW);
   if (!pSlideShow)
     return ;
@@ -563,131 +472,6 @@ void CGUIWindowPictures::OnRegenerateThumbs()
   m_thumbLoader.Load(m_vecItems);
 }
 
-void CGUIWindowPictures::GoParentFolder()
-{
-  // remove current directory if its on the stack
-  if (m_vecPathHistory.size() > 0)
-  {
-    if (m_vecPathHistory.back() == m_vecItems.m_strPath)
-      m_vecPathHistory.pop_back();
-  }
-
-  // if vector is not empty, pop parent
-  // if vector is empty, parent is bookmark listing
-  CStdString strParent = "";
-  if (m_vecPathHistory.size() > 0)
-  {
-    strParent = m_vecPathHistory.back();
-    m_vecPathHistory.pop_back();
-  }
-  CLog::Log(LOGDEBUG,"CGUIWindowPictures::GoParentFolder(), strParent = [%s]", strParent.c_str());
-
-  CURL url(m_vecItems.m_strPath);
-  if ((url.GetProtocol() == "rar") || (url.GetProtocol() == "zip")) 
-  {
-    // check for step-below, if, unmount rar
-    if (url.GetFileName().IsEmpty())
-    {
-      if (url.GetProtocol() == "zip")
-        g_ZipManager.release(m_vecItems.m_strPath); // release resources
-      m_rootDir.RemoveShare(m_vecItems.m_strPath);
-      CStdString strPath;
-      CUtil::GetDirectory(url.GetHostName(),strPath);
-      Update(strPath);
-      return;
-    }
-  }
-  
-  CStdString strOldPath = m_vecItems.m_strPath;
-  Update(strParent);
-
-  if (!g_guiSettings.GetBool("LookAndFeel.FullDirectoryHistory"))
-    m_history.Remove(strOldPath); //Delete current path
-}
-
-/// \brief Build a directory history string
-/// \param pItem Item to build the history string from
-/// \param strHistoryString History string build as return value
-void CGUIWindowPictures::GetDirectoryHistoryString(const CFileItem* pItem, CStdString& strHistoryString)
-{
-  if (pItem->m_bIsShareOrDrive)
-  {
-    // We are in the virual directory
-
-    // History string of the DVD drive
-    // must be handel separately
-    if (pItem->m_iDriveType == SHARE_TYPE_DVD)
-    {
-      // Remove disc label from item label
-      // and use as history string, m_strPath
-      // can change for new discs
-      CStdString strLabel = pItem->GetLabel();
-      int nPosOpen = strLabel.Find('(');
-      int nPosClose = strLabel.ReverseFind(')');
-      if (nPosOpen > -1 && nPosClose > -1 && nPosClose > nPosOpen)
-      {
-        strLabel.Delete(nPosOpen + 1, (nPosClose) - (nPosOpen + 1));
-        strHistoryString = strLabel;
-      }
-      else
-        strHistoryString = strLabel;
-    }
-    else
-    {
-      // Other items in virual directory
-      CStdString strPath = pItem->m_strPath;
-      while (CUtil::HasSlashAtEnd(strPath))
-        strPath.Delete(strPath.size() - 1);
-
-      strHistoryString = pItem->GetLabel() + strPath;
-    }
-  }
-  else
-  {
-    // Normal directory items
-    strHistoryString = pItem->m_strPath;
-
-    if (CUtil::HasSlashAtEnd(strHistoryString))
-      strHistoryString.Delete(strHistoryString.size() - 1);
-  }
-}
-
-void CGUIWindowPictures::SetHistoryForPath(const CStdString& strDirectory)
-{
-  if (!strDirectory.IsEmpty())
-  {
-    // Build the directory history for default path
-    CStdString strPath, strParentPath;
-    strPath = strDirectory;
-    CFileItemList items;
-    GetDirectory("", items);
-
-    while (CUtil::GetParentPath(strPath, strParentPath))
-    {
-      bool bSet = false;
-      for (int i = 0; i < items.Size(); ++i)
-      {
-        CFileItem* pItem = items[i];
-        while (CUtil::HasSlashAtEnd(pItem->m_strPath))
-          pItem->m_strPath.Delete(pItem->m_strPath.size() - 1);
-        if (pItem->m_strPath == strPath)
-        {
-          CStdString strHistory;
-          GetDirectoryHistoryString(pItem, strHistory);
-          m_history.Set(strHistory, "");
-          return ;
-        }
-      }
-
-      m_history.Set(strPath, strParentPath);
-      strPath = strParentPath;
-      while (CUtil::HasSlashAtEnd(strPath))
-        strPath.Delete(strPath.size() - 1);
-    }
-    items.Clear();
-  }
-}
-
 bool CGUIWindowPictures::GetDirectory(const CStdString &strDirectory, CFileItemList &items)
 {
   if (items.Size())
@@ -696,15 +480,12 @@ bool CGUIWindowPictures::GetDirectory(const CStdString &strDirectory, CFileItemL
     items.Clear();
   }
 
-  CStdString strParentPath = "";
-  if (m_vecPathHistory.size() > 0)
-    strParentPath = m_vecPathHistory.back();
+  CStdString strParentPath=m_history.GetParentPath();
 
   CLog::Log(LOGDEBUG,"CGUIWindowPicutres::GetDirectory (%s)", strDirectory.c_str());
   CLog::Log(LOGDEBUG,"  ParentPath = [%s]", strParentPath.c_str());
 
-  auto_ptr<CGUIViewState> pState(CGUIViewState::GetViewState(GetID(), m_vecItems));
-  if (pState.get() && !pState->HideParentDirItems())
+  if (m_guiState.get() && !m_guiState->HideParentDirItems())
   {
     CFileItem *pItem = new CFileItem("..");
     pItem->m_strPath = strParentPath;
@@ -712,8 +493,6 @@ bool CGUIWindowPictures::GetDirectory(const CStdString &strDirectory, CFileItemL
     pItem->m_bIsShareOrDrive = false;
     items.Add(pItem);
   }
-  m_strParentPath = strParentPath;
-
   CLog::Log(LOGDEBUG,"Fetching directory (%s)", strDirectory.c_str());
   if (!m_rootDir.GetDirectory(strDirectory, items))
   {
@@ -944,27 +723,6 @@ void CGUIWindowPictures::OnRenameItem(int iItem)
     return;
   Update(m_vecItems.m_strPath);
   m_viewControl.SetSelectedItem(iItem);
-}
-
-void CGUIWindowPictures::ShowShareErrorMessage(CFileItem* pItem)
-{
-  if (pItem->m_bIsShareOrDrive)
-  {
-    int idMessageText=0;
-    CURL url(pItem->m_strPath);
-    const CStdString& strHostName=url.GetHostName();
-
-    if (pItem->m_iDriveType!=SHARE_TYPE_REMOTE) //  Local shares incl. dvd drive
-      idMessageText=15300;
-    else if (url.GetProtocol()=="xbms" && strHostName.IsEmpty()) //  xbms server discover
-      idMessageText=15302;
-    else if (url.GetProtocol()=="smb" && strHostName.IsEmpty()) //  smb workgroup
-      idMessageText=15303;
-    else  //  All other remote shares
-      idMessageText=15301;
-
-    CGUIDialogOK::ShowAndGetInput(220, idMessageText, 0, 0);
-  }
 }
 
 void CGUIWindowPictures::LoadPlayList(const CStdString& strPlayList)

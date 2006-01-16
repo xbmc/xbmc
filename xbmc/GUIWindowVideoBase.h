@@ -16,8 +16,6 @@ public:
 private:
   bool IsCorrectDiskInDrive(const CStdString& strFileName, const CStdString& strDVDLabel);
 protected:
-  virtual void GoParentFolder();
-  virtual void OnClick(int iItem) {};  // CONSOLIDATE??
   virtual void UpdateButtons();
   virtual bool Update(const CStdString &strDirectory) { return false; }; // CONSOLIDATE??
   virtual void OnSort();
@@ -34,6 +32,7 @@ protected:
 
   void OnResumeItem(int iItem);
   void PlayItem(int iItem);
+  virtual void OnPlayMedia(int iItem);
   void LoadPlayList(const CStdString& strPlayList, int iPlayList = PLAYLIST_VIDEO);
   void DisplayEmptyDatabaseMessage(bool bDisplay);
 
@@ -44,7 +43,6 @@ protected:
   int  ResumeItemOffset(int iItem);
   void AddItemToPlayList(const CFileItem* pItem, int iPlaylist = PLAYLIST_VIDEO);
   void GetStackedFiles(const CStdString &strFileName, std::vector<CStdString> &movies);
-  void ShowShareErrorMessage(CFileItem* pItem);
 
   void MarkUnWatched(int iItem);
   void MarkWatched(int iItem);
@@ -53,7 +51,6 @@ protected:
   CGUIDialogProgress* m_dlgProgress;
   CVideoDatabase m_database;
   bool m_bDisplayEmptyDatabaseMessage;
-  vector<CStdString> m_vecPathHistory; ///< History of traversed directories
 
   int m_iShowMode;
 };

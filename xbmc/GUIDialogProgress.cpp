@@ -43,6 +43,9 @@ void CGUIDialogProgress::StartModal(DWORD dwParentId)
   SetPercentage(0);
   m_iCurrent=0;
   m_iMax=0;
+
+  while (IsAnimating(ANIM_TYPE_WINDOW_OPEN))
+    Progress();
 }
 
 void CGUIDialogProgress::Progress()
