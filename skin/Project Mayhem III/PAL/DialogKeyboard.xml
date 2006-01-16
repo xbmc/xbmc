@@ -12,7 +12,7 @@
       <width>720</width>
       <height>576</height>
       <texture>black.png</texture>
-      <animation effect="fade" time="2000">Start</animation>
+      <animation effect="fade" time="2000">WindowOpen</animation>
     </control>
 
     <control>
