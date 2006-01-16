@@ -215,7 +215,7 @@ bool CGUIDialog::RenderAnimation()
 {
   CGUIWindow::RenderAnimation();
   // debug stuff
-  CAnimation anim = m_showAnimation;
+/*  CAnimation anim = m_showAnimation;
   if (anim.currentProcess != ANIM_PROCESS_NONE)
   {
     if (anim.effect == EFFECT_TYPE_SLIDE)
@@ -242,7 +242,7 @@ bool CGUIDialog::RenderAnimation()
       if (IsRunning())
         CLog::Log(LOGDEBUG, "Animating dialog %d with a %s fade effect %s. Amount is %2.1f. Visible=%s", GetID(), anim.type == ANIM_TYPE_WINDOW_OPEN ? "show" : "close", anim.currentProcess == ANIM_PROCESS_NORMAL ? "normal" : "reverse", anim.amount, IsRunning() ? "true" : "false");
     }
-  }
+  }*/
   return m_bRunning;
 }
 
