@@ -1901,8 +1901,8 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
       {
         Split(items[j]->m_strPath, strPath, strItem);
 
-        // is this a rar-file .. even if it is in main dir! I changed my mind =)
-        if (CUtil::IsRAR(strItem))
+        // is this a rar-file .. 
+        if (CUtil::IsRAR(strItem) && g_guiSettings.GetBool("Subtitles.SearchRars"))
             CacheRarSubtitles( vecExtensionsCached, items[j]->m_strPath, strFileNameNoExtNoCase);
         else
         {
