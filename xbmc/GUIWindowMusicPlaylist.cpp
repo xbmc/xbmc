@@ -251,14 +251,27 @@ bool CGUIWindowMusicPlayList::MoveCurrentPlayListItem(int iItem, int iAction, bo
   else
     iNew++;
 
-  // the currently playing item can't be moved
+  // is the currently playing item affected?
+  bool bFixCurrentSong = false;
   if ((g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_MUSIC) && (g_application.IsPlayingAudio()) &&
     ((g_playlistPlayer.GetCurrentSong() == iSelected) || (g_playlistPlayer.GetCurrentSong() == iNew)))
-    return false;
+    bFixCurrentSong = true;
 
   CPlayList& playlist = g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC);
   if (playlist.Swap(iSelected, iNew))
   {
+    // Correct the current playing song in playlistplayer
+    if (bFixCurrentSong)
+    {
+      int iCurrentSong = g_playlistPlayer.GetCurrentSong();
+      if (iSelected == iCurrentSong)
+        iCurrentSong = iNew;
+      else if (iNew == iCurrentSong)
+        iCurrentSong = iSelected;
+      g_playlistPlayer.SetCurrentSong(iCurrentSong);
+      m_vecItems[iCurrentSong]->Select(true);
+    }
+
     if (bUpdate)
       Update(m_vecItems.m_strPath);
     return true;
@@ -420,6 +433,7 @@ void CGUIWindowMusicPlayList::RemovePlayListItem(int iItem)
     {
       iCurrentSong--;
       g_playlistPlayer.SetCurrentSong(iCurrentSong);
+      m_vecItems[iCurrentSong]->Select(true);
     }
   }
 
@@ -431,7 +445,7 @@ void CGUIWindowMusicPlayList::RemovePlayListItem(int iItem)
   }
   else
   {
-    m_viewControl.SetSelectedItem(iItem - 1);
+    m_viewControl.SetSelectedItem(iItem);
   }
 }
 
@@ -616,7 +630,6 @@ void CGUIWindowMusicPlayList::OnPopupMenu(int iItem)
     iPosY = pList->GetYPosition() + pList->GetHeight() / 2;
   }
   // mark the item
-  bool bSelected = m_vecItems[iItem]->IsSelected(); // item maybe selected (playlistitem)
   m_vecItems[iItem]->Select(true);
   // popup the context menu
   CGUIDialogContextMenu *pMenu = (CGUIDialogContextMenu *)m_gWindowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
@@ -624,16 +637,14 @@ void CGUIWindowMusicPlayList::OnPopupMenu(int iItem)
   // load our menu
   pMenu->Initialize();
 
-  // is this near the currently playing item
+  // is this playlist playing?
   bool bIsPlaying = false;
-  bool bIsBelowPlaying = false;
-  bool bIsAbovePlaying = false;
+  bool bItemIsPlaying = false;
   if ((g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_MUSIC) && (g_application.IsPlayingAudio()))
   {
+    bIsPlaying = true;
     int i = g_playlistPlayer.GetCurrentSong();
-    if (iItem == i) bIsPlaying = true;
-    if (iItem == i+1) bIsBelowPlaying = true;
-    if (iItem == i-1) bIsAbovePlaying = true;
+    if (iItem == i) bItemIsPlaying = true;
   }
 
   // add the buttons
@@ -647,23 +658,21 @@ void CGUIWindowMusicPlayList::OnPopupMenu(int iItem)
   if (iPos < 0)
   {
     btn_Move = pMenu->AddButton(13251);       // move item
-    if (bIsPlaying)
-      pMenu->EnableButton(btn_Move, false);   // disable if current item
     btn_MoveUp = pMenu->AddButton(13332);     // move up
-    if (iItem == 0 || bIsPlaying || bIsBelowPlaying)
-      pMenu->EnableButton(btn_MoveUp, false); // disable if top item or current item or below current item
+    if (iItem == 0)
+      pMenu->EnableButton(btn_MoveUp, false); // disable if top item
     btn_MoveDn = pMenu->AddButton(13333);     // move down
-    if (iItem == (m_vecItems.Size()-1) || bIsPlaying || bIsAbovePlaying)
-      pMenu->EnableButton(btn_MoveDn, false); // disable if bottom item or current item or above current item
+    if (iItem == (m_vecItems.Size()-1))
+      pMenu->EnableButton(btn_MoveDn, false); // disable if bottom item
     btn_Delete = pMenu->AddButton(15015);     // delete
-    if (bIsPlaying)
+    if (bItemIsPlaying)
       pMenu->EnableButton(btn_Delete, false); // disable if current item
   }
   // after selecting "move item" only two choices
   else
   {
     btn_MoveTo = pMenu->AddButton(13252);         // move item here
-    if (iItem == iPos || bIsPlaying)
+    if (iItem == iPos)
       pMenu->EnableButton(btn_MoveTo, false);     // disable the button if its the same position or current item
     btn_Cancel = pMenu->AddButton(13253);         // cancel move
   }
@@ -715,7 +724,14 @@ void CGUIWindowMusicPlayList::OnPopupMenu(int iItem)
       return;
     }
   }
-  m_vecItems[iItem]->Select(bSelected);
+  m_vecItems[iItem]->Select(false);
+
+  // mark the currently playing item
+  if (bIsPlaying)
+  {
+    int i = g_playlistPlayer.GetCurrentSong();
+    m_vecItems[i]->Select(true);
+  }
 }
 
 void CGUIWindowMusicPlayList::OnMove(int iItem, int iAction)
