@@ -34,6 +34,7 @@ CGUIDialogVideoSettings::CGUIDialogVideoSettings(void)
   m_iNumPages = 0;
   m_iNumPerPage = 0;
   m_loadOnDemand = false;
+  m_dwIDRange = 2;
 }
 
 CGUIDialogVideoSettings::~CGUIDialogVideoSettings(void)
