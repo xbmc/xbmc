@@ -409,7 +409,11 @@ void CGUIWindowManager::DeInitialize()
     Remove(pWindow->GetID());
     delete pWindow;
   }
-  m_vecCustomWindows.erase( m_vecCustomWindows.begin(), m_vecCustomWindows.end() );
+
+  // clear our vectors of windows
+  m_vecCustomWindows.clear();
+  m_vecModalWindows.clear();
+  m_vecModelessWindows.clear();
 }
 
 /// \brief Route to a window

@@ -12,6 +12,7 @@ CGUIConsoleControl::CGUIConsoleControl(DWORD dwParentID, DWORD dwControlId,
                                        D3DCOLOR dwPenColor1, D3DCOLOR dwPenColor2, D3DCOLOR dwPenColor3, D3DCOLOR dwPenColor4)
     : CGUIControl(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight)
 {
+  m_label = labelInfo;
   m_palette.push_back(dwPenColor1);
   m_palette.push_back(dwPenColor2);
   m_palette.push_back(dwPenColor3);

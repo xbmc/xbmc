@@ -7,7 +7,6 @@ public:
   CGUIViewStateWindowPictures(const CFileItemList& items);
 
 protected:
-  virtual bool HideParentDirItems();
   virtual void SaveViewState();
   virtual CStdString GetLockType();
   virtual bool HandleArchives();
@@ -19,7 +18,6 @@ public:
   CGUIViewStateWindowPrograms(const CFileItemList& items);
 
 protected:
-  virtual bool HideParentDirItems();
   virtual void SaveViewState();
   virtual CStdString GetLockType();
 };
