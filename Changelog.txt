@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 16-01-2006 fixed: crash in dvdplayer if demux stream changed during playback
  - 16-01-2006 changed: more media window base class work (moved some common msgs, consolidated OnClick)
  - 16-01-2006 fixed: progress dialog sometimes shows "Programs" in all lines
  - 16-01-2006 fixed: progress dialog sometimes does not fade in
