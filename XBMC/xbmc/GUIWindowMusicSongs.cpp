@@ -51,7 +51,7 @@ bool CGUIWindowMusicSongs::OnMessage(CGUIMessage& message)
       {
         message.SetStringParam("");
         CLog::Log(LOGINFO, "Attempting to quickpath to: %s", strDestination.c_str());
-        m_vecPathHistory.clear();
+        m_history.ClearPathHistory();
       }
 
       // is this the first time the window is opened?
@@ -271,102 +271,6 @@ void CGUIWindowMusicSongs::UpdateButtons()
   SET_CONTROL_LABEL(CONTROL_LABELFILES, wszText);
 }
 
-void CGUIWindowMusicSongs::OnClick(int iItem)
-{
-  if ( iItem < 0 || iItem >= m_vecItems.Size() ) return ;
-  CFileItem* pItem = m_vecItems[iItem];
-  CStdString strPath = pItem->m_strPath;
-  if (pItem->m_bIsFolder)
-  {
-    if ( pItem->m_bIsShareOrDrive )
-    {
-      if ( !g_passwordManager.IsItemUnlocked( pItem, "music" ) )
-        return ;
-
-      if ( !HaveDiscOrConnection( pItem->m_strPath, pItem->m_iDriveType ) )
-        return ;
-    }
-    if (pItem->IsParentFolder())
-    {
-      // go back a directory
-      GoParentFolder();
-
-      // GoParentFolder() calls Update(), so just return
-      return;
-    }
-    if (!Update(strPath))
-      ShowShareErrorMessage(pItem);
-  }
-  else if (pItem->IsZIP() && g_guiSettings.GetBool("MusicFiles.HandleArchives")) // mount zip archive
-  {
-    CShare shareZip;
-    shareZip.strPath.Format("zip://Z:\\,%i,,%s,\\",1, pItem->m_strPath.c_str() );
-    m_rootDir.AddShare(shareZip);
-    Update(shareZip.strPath);
-  }
-  else if (pItem->IsRAR()&& g_guiSettings.GetBool("MusicFiles.HandleArchives")) // mount rar archive
-  {
-    CShare shareRar;
-    shareRar.strPath.Format("rar://Z:\\,%i,,%s,\\",EXFILE_AUTODELETE, pItem->m_strPath.c_str() );
-    m_rootDir.AddShare(shareRar);
-    Update(shareRar.strPath);
-  }
-  else
-  {
-    if (pItem->IsPlayList())
-    {
-      LoadPlayList(strPath);
-    }
-    else
-    {
-      if (g_guiSettings.GetBool("MusicFiles.AutoPlayNextItem"))
-      {
-        //play and add current directory to temporary playlist
-        int nFolderCount = 0;
-        g_playlistPlayer.GetPlaylist( PLAYLIST_MUSIC_TEMP ).Clear();
-        g_playlistPlayer.Reset();
-        int iNoSongs = 0;
-        for ( int i = 0; i < m_vecItems.Size(); i++ )
-        {
-          CFileItem* pItem = m_vecItems[i];
-          
-          if (pItem->m_bIsFolder)
-          {
-            nFolderCount++;
-            continue;
-          }
-          if (!pItem->IsPlayList() && !pItem->IsZIP() && !pItem->IsRAR())
-          {
-            CPlayList::CPlayListItem playlistItem ;
-            CUtil::ConvertFileItemToPlayListItem(pItem, playlistItem);
-            g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC_TEMP).Add(playlistItem);
-          }
-          else if (i <= iItem)
-            iNoSongs++;
-        }
-
-        // Save current window and directory to know where the selected item was
-        m_nTempPlayListWindow = GetID();
-        m_strTempPlayListDirectory = m_vecItems.m_strPath;
-        if (CUtil::HasSlashAtEnd(m_strTempPlayListDirectory))
-          m_strTempPlayListDirectory.Delete(m_strTempPlayListDirectory.size() - 1);
-
-        g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_MUSIC_TEMP);
-        g_playlistPlayer.Play(iItem - nFolderCount - iNoSongs);
-      }
-      else
-      {
-        // Reset Playlistplayer, playback started now does
-        // not use the playlistplayer.
-        g_playlistPlayer.Reset();
-        g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_NONE);
-        g_application.PlayFile(*pItem);
-      }
-      return;
-    }
-  }
-}
-
 void CGUIWindowMusicSongs::OnRetrieveMusicInfo(CFileItemList& items)
 {
   int nFolderCount = items.GetFolderCount();
@@ -521,50 +425,6 @@ void CGUIWindowMusicSongs::DoSearch(const CStdString& strSearch, CFileItemList& 
       pItem->SetLabel("[" + strSong + "] " + song.strTitle + " - " + song.strArtist + " - " + song.strAlbum);
       items.Add(pItem);
     }
-  }
-}
-
-void CGUIWindowMusicSongs::GetDirectoryHistoryString(const CFileItem* pItem, CStdString& strHistoryString)
-{
-  if (pItem->m_bIsShareOrDrive)
-  {
-    // We are in the virual directory
-
-    // History string of the DVD drive
-    // must be handel separately
-    if (pItem->m_iDriveType == SHARE_TYPE_DVD)
-    {
-      // Remove disc label from item label
-      // and use as history string, m_strPath
-      // can change for new discs
-      CStdString strLabel = pItem->GetLabel();
-      int nPosOpen = strLabel.Find('(');
-      int nPosClose = strLabel.ReverseFind(')');
-      if (nPosOpen > -1 && nPosClose > -1 && nPosClose > nPosOpen)
-      {
-        strLabel.Delete(nPosOpen + 1, (nPosClose) - (nPosOpen + 1));
-        strHistoryString = strLabel;
-      }
-      else
-        strHistoryString = strLabel;
-    }
-    else
-    {
-      // Other items in virual directory
-      CStdString strPath = pItem->m_strPath;
-      while (CUtil::HasSlashAtEnd(strPath))
-        strPath.Delete(strPath.size() - 1);
-
-      strHistoryString = pItem->GetLabel() + strPath;
-    }
-  }
-  else
-  {
-    // Normal directory items
-    strHistoryString = pItem->m_strPath;
-
-    if (CUtil::HasSlashAtEnd(strHistoryString))
-      strHistoryString.Delete(strHistoryString.size() - 1);
   }
 }
 

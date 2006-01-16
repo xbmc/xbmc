@@ -239,73 +239,20 @@ void CGUIWindowMusicNav::UpdateButtons()
   }
 }
 
-void CGUIWindowMusicNav::OnClick(int iItem)
+bool CGUIWindowMusicNav::OnClick(int iItem)
 {
+  if ( iItem < 0 || iItem >= m_vecItems.Size() ) return true;
   CFileItem* pItem = m_vecItems[iItem];
-  CStdString strLabel = pItem->GetLabel();
 
-  CStdString strPath = pItem->m_strPath;
-  CStdString strNextPath = m_vecItems.m_strPath;
-  if (pItem->m_bIsFolder)
-  {
-    if ( pItem->m_bIsShareOrDrive )
-    {
-      if ( !g_passwordManager.IsItemUnlocked( pItem, "music" ) )
-        return ;
-
-      if ( !HaveDiscOrConnection( pItem->m_strPath, pItem->m_iDriveType ) )
-        return ;
-    }
-    if (pItem->IsParentFolder())
-    {
-      // go back a directory
-      GoParentFolder();
-
-      // GoParentFolder() calls Update(), so just return
-      return ;
-    }
-    else
-    {
-      Update(strPath);
-    }
+  if (!pItem->m_bIsFolder && pItem->IsPlayList())
+  { //  treat playlists like folders
+    CStdString strPath=pItem->m_strPath;
+    m_history.AddPath(strPath);
+    Update(strPath);
+    return true;
   }
-  else
-  {
-    //  treat playlists like folders
-    if (pItem->IsPlayList())
-    {
-      m_vecPathHistory.push_back(strPath);
-      Update(strPath);
-    }
-    else
-    {
-      // play and add current directory to temporary playlist
-      int nFolderCount = 0;
-      g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC_TEMP).Clear();
-      g_playlistPlayer.Reset();
-      for ( int i = 0; i < m_vecItems.Size(); i++ )
-      {
-        CFileItem* pItem = m_vecItems[i];
-        if ( pItem->m_bIsFolder )
-        {
-          nFolderCount++;
-          continue;
-        }
-        CPlayList::CPlayListItem playlistItem;
-        CUtil::ConvertFileItemToPlayListItem(pItem, playlistItem);
-        g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC_TEMP).Add(playlistItem);
-      }
 
-      // Save current window and directory to know where the selected item was
-      m_nTempPlayListWindow = GetID();
-      m_strTempPlayListDirectory = m_vecItems.m_strPath;
-      if (CUtil::HasSlashAtEnd(m_strTempPlayListDirectory))
-        m_strTempPlayListDirectory.Delete(m_strTempPlayListDirectory.size() - 1);
-
-      g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_MUSIC_TEMP);
-      g_playlistPlayer.Play(iItem - nFolderCount);
-    }
-  }
+  return CGUIWindowMusicBase::OnClick(iItem);
 }
 
 /// \brief Search for songs, artists and albums with search string \e strSearch in the musicdatabase and return the found \e items
@@ -569,6 +516,17 @@ void CGUIWindowMusicNav::SetArtistImage(int iItem)
 
 bool CGUIWindowMusicNav::GetSongsFromPlayList(const CStdString& strPlayList, CFileItemList &items)
 {
+  CStdString strParentPath=m_history.GetParentPath();
+
+  if (m_guiState.get() && !m_guiState->HideParentDirItems())
+  {
+    CFileItem *pItem = new CFileItem("..");
+    pItem->m_strPath = strParentPath;
+    items.Add(pItem);
+  }
+
+  items.m_strPath=strPlayList;
+
   CLog::Log(LOGDEBUG,"CGUIWindowMusicNav, opening playlist [%s]", strPlayList.c_str());
   CPlayListFactory factory;
   auto_ptr<CPlayList> pPlayList (factory.Create(strPlayList));
@@ -592,7 +550,6 @@ bool CGUIWindowMusicNav::GetSongsFromPlayList(const CStdString& strPlayList, CFi
       items.Add(item);
     }
 
-    items.m_strPath=strPlayList;
   }
 
   return true;

@@ -34,9 +34,6 @@ using namespace MUSIC_GRABBER;
 using namespace DIRECTORY;
 using namespace PLAYLIST;
 
-int CGUIWindowMusicBase::m_nTempPlayListWindow = 0;
-CStdString CGUIWindowMusicBase::m_strTempPlayListDirectory = "";
-
 CGUIWindowMusicBase::CGUIWindowMusicBase(DWORD dwID, const CStdString &xmlFile)
     : CGUIMediaWindow(dwID, xmlFile)
 {
@@ -106,94 +103,6 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
 {
   switch ( message.GetMessage() )
   {
-  case GUI_MSG_PLAYBACK_STARTED:
-    {
-      UpdateButtons();
-    }
-    break;
-
-  case GUI_MSG_PLAYBACK_ENDED:
-  case GUI_MSG_PLAYBACK_STOPPED:
-  case GUI_MSG_PLAYLISTPLAYER_STOPPED:
-    {
-      CStdString strDirectory = m_vecItems.m_strPath;
-      if (CUtil::HasSlashAtEnd(strDirectory))
-        strDirectory.Delete(strDirectory.size() - 1);
-      if ((m_nTempPlayListWindow == GetID() && m_strTempPlayListDirectory == strDirectory)
-          || (GetID() == WINDOW_MUSIC_PLAYLIST) )
-      {
-        for (int i = 0; i < m_vecItems.Size(); ++i)
-        {
-          CFileItem* pItem = m_vecItems[i];
-          if (pItem && pItem->IsSelected())
-          {
-            pItem->Select(false);
-            break;
-          }
-        }
-      }
-
-      UpdateButtons();
-    }
-    break;
-
-  case GUI_MSG_PLAYLISTPLAYER_STARTED:
-  case GUI_MSG_PLAYLISTPLAYER_CHANGED:
-    {
-      // started playing another song...
-      int nCurrentPlaylist = message.GetParam1();
-      CStdString strDirectory = m_vecItems.m_strPath;
-      if (CUtil::HasSlashAtEnd(strDirectory))
-        strDirectory.Delete(strDirectory.size() - 1);
-      if ((nCurrentPlaylist == PLAYLIST_MUSIC_TEMP && m_nTempPlayListWindow == GetID() && m_strTempPlayListDirectory == strDirectory )
-          || (GetID() == WINDOW_MUSIC_PLAYLIST && nCurrentPlaylist == PLAYLIST_MUSIC))
-      {
-        int nCurrentItem = 0;
-        int nPreviousItem = -1;
-        if (message.GetMessage() == GUI_MSG_PLAYLISTPLAYER_STARTED)
-        {
-          nCurrentItem = message.GetParam2();
-        }
-        else if (message.GetMessage() == GUI_MSG_PLAYLISTPLAYER_CHANGED)
-        {
-          nCurrentItem = LOWORD(message.GetParam2());
-          nPreviousItem = HIWORD(message.GetParam2());
-        }
-
-        int nFolderCount = m_vecItems.GetFolderCount();
-
-        // is the previous item in this directory
-        for (int i = nFolderCount, n = 0; i < m_vecItems.Size(); i++)
-        {
-          CFileItem* pItem = m_vecItems[i];
-
-          if (pItem)
-            pItem->Select(false);
-        }
-
-        if (nFolderCount + nCurrentItem < m_vecItems.Size())
-        {
-          for (int i = nFolderCount, n = 0; i < m_vecItems.Size(); i++)
-          {
-            CFileItem* pItem = m_vecItems[i];
-
-            if (pItem)
-            {
-              if (!pItem->IsPlayList() && !pItem->IsNFO() && !pItem->IsRAR() && !pItem->IsZIP())
-                n++;
-              if ((n - 1) == nCurrentItem)
-              {
-                pItem->Select(true);
-                break;
-              }
-            }
-          } // for (int i=nFolderCount, n=0; i<(int)m_vecItems.size(); i++)
-        }
-
-      }
-    }
-    break;
-
   case GUI_MSG_WINDOW_DEINIT:
     {
       g_musicDatabase.Close();
@@ -236,40 +145,7 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
   case GUI_MSG_CLICKED:
     {
       int iControl = message.GetSenderId();
-      if (iControl == CONTROL_BTNSORTBY) // sort by
-      {
-        CGUIMediaWindow::OnMessage(message);
-
-        //  set the currently playing item as selected, if its in this directory
-        CStdString strDirectory = m_vecItems.m_strPath;
-        if (CUtil::HasSlashAtEnd(strDirectory))
-          strDirectory.Delete(strDirectory.size() - 1);
-        if (!strDirectory.IsEmpty() && m_nTempPlayListWindow == GetID() && m_strTempPlayListDirectory == strDirectory && g_application.IsPlayingAudio() && g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_MUSIC_TEMP)
-        {
-          int nSong = g_playlistPlayer.GetCurrentSong();
-          const CPlayList::CPlayListItem& item = g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC_TEMP)[nSong];
-          g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC_TEMP).Clear();
-          g_playlistPlayer.Reset();
-          int nFolderCount = 0;
-          for (int i = 0; i < (int)m_vecItems.Size(); i++)
-          {
-            CFileItem* pItem = m_vecItems[i];
-            if (pItem->m_bIsFolder)
-            {
-              nFolderCount++;
-              continue;
-            }
-            CPlayList::CPlayListItem playlistItem ;
-            CUtil::ConvertFileItemToPlayListItem(pItem, playlistItem);
-            g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC_TEMP).Add(playlistItem);
-            if (item.GetFileName() == pItem->m_strPath)
-              g_playlistPlayer.SetCurrentSong(i - nFolderCount);
-          }
-        }
-
-        return true;
-      }
-      else if (iControl == CONTROL_BTNTYPE)
+      if (iControl == CONTROL_BTNTYPE)
       {
         CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), CONTROL_BTNTYPE);
         m_gWindowManager.SendMessage(msg);
@@ -339,35 +215,6 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
         }
       }
     }
-  case GUI_MSG_NOTIFY_ALL:
-    { // Message is received even if this window is inactive
-      
-      //  Is there a dvd share in this window?
-      if (!m_rootDir.GetDVDDriveUrl().IsEmpty())
-      {
-        if (message.GetParam1()==GUI_MSG_DVDDRIVE_EJECTED_CD)
-        {
-          if (m_vecItems.IsVirtualDirectoryRoot() && IsActive())
-          {
-            int iItem = m_viewControl.GetSelectedItem();
-            Update(m_vecItems.m_strPath);
-            m_viewControl.SetSelectedItem(iItem);
-          }
-          else if (m_vecItems.IsCDDA() || m_vecItems.IsOnDVD())
-          { // Disc has changed and we are inside a DVD Drive share, get out of here :)
-            if (IsActive()) Update("");
-            else 
-            {
-              m_vecPathHistory.clear();
-              m_vecItems.m_strPath="";
-            }
-          }
-
-          return true;
-        }
-      }
-    }
-    break;
   }
   return CGUIMediaWindow::OnMessage(message);
 }
@@ -389,22 +236,14 @@ bool CGUIWindowMusicBase::GetDirectory(const CStdString &strDirectory, CFileItem
   if (items.Size())
     items.Clear();
 
-  CStdString strParentPath;
-  if (m_vecPathHistory.size() > 0)
-    strParentPath = m_vecPathHistory.back();
+  CStdString strParentPath=m_history.GetParentPath();
 
   CLog::Log(LOGDEBUG,"CGUIWindowMusicBase::GetDirectory (%s)", strDirectory.c_str());
   CLog::Log(LOGDEBUG,"  ParentPath = [%s]", strParentPath.c_str());
 
   CLog::Log(LOGDEBUG,"Fetching directory (%s)", strDirectory.c_str());
-  if (!m_rootDir.GetDirectory(strDirectory, items))
-  {
-    CLog::Log(LOGERROR,"GetDirectory(%s) failed", strDirectory.c_str());
-    return false;
-  }
 
-  auto_ptr<CGUIViewState> pState(CGUIViewState::GetViewState(GetID(), m_vecItems));
-  if (pState.get() && !pState->HideParentDirItems())
+  if (m_guiState.get() && !m_guiState->HideParentDirItems())
   {
     CFileItem *pItem = new CFileItem("..");
     pItem->m_strPath = strParentPath;
@@ -412,7 +251,13 @@ bool CGUIWindowMusicBase::GetDirectory(const CStdString &strDirectory, CFileItem
     pItem->m_bIsShareOrDrive = false;
     items.Add(pItem);
   }
-  m_strParentPath = strParentPath;
+
+  if (!m_rootDir.GetDirectory(strDirectory, items))
+  {
+    CLog::Log(LOGERROR,"GetDirectory(%s) failed", strDirectory.c_str());
+    return false;
+  }
+
 
   // check for .CUE files here.
   items.FilterCueItems();
@@ -436,34 +281,27 @@ bool CGUIWindowMusicBase::Update(const CStdString &strDirectory)
     }
   }
 
-   // if we're getting the root bookmark listing
-  // make sure the path history is clean
-  if (strDirectory.IsEmpty())
-    m_vecPathHistory.clear();
-
   CStdString strOldDirectory = m_vecItems.m_strPath;
-  CFileItemList items;
-  if (!GetDirectory(strDirectory, items))
-    return false;
 
-  m_history.Set(strSelectedItem, strOldDirectory);
+  m_history.SetSelectedItem(strSelectedItem, strOldDirectory);
 
   ClearFileItems();
 
-  m_vecItems.AppendPointer(items);
-  m_vecItems.m_strPath=items.m_strPath;
-  m_vecItems.SetCacheToDisc(items.GetCacheToDisc());
-  items.ClearKeepPointer();
+  if (!GetDirectory(strDirectory, m_vecItems))
+    return !Update(strOldDirectory); // We assume, we can get the parent 
+                                     // directory again, but we have to 
+                                     // return false to be able to eg. show 
+                                     // an error message.
 
-  auto_ptr<CGUIViewState> pState(CGUIViewState::GetViewState(GetID(), m_vecItems));
-  if (pState.get() && pState->HideExtensions())
+  // if we're getting the root bookmark listing
+  // make sure the path history is clean
+  if (strDirectory.IsEmpty())
+    m_history.ClearPathHistory();
+
+  if (m_guiState.get() && m_guiState->HideExtensions())
     m_vecItems.RemoveExtensions();
 
   RetrieveMusicInfo();
-
-  FormatItemLabels();
-  SortItems(m_vecItems);
-  m_viewControl.SetItems(m_vecItems);
 
   if (!m_vecItems.IsVirtualDirectoryRoot())
   {
@@ -471,18 +309,22 @@ bool CGUIWindowMusicBase::Update(const CStdString &strDirectory)
     m_vecItems.FillInDefaultIcons();
   }
 
+  m_guiState.reset(CGUIViewState::GetViewState(GetID(), m_vecItems));
+  FormatItemLabels();
+  SortItems(m_vecItems);
+  m_viewControl.SetItems(m_vecItems);
+
   UpdateButtons();
 
-  strSelectedItem = m_history.Get(m_vecItems.m_strPath);
+  strSelectedItem = m_history.GetSelectedItem(m_vecItems.m_strPath);
 
   int iCurrentPlaylistSong = -1;
   // Search current playlist item
   CStdString strCurrentDirectory = m_vecItems.m_strPath;
   if (CUtil::HasSlashAtEnd(strCurrentDirectory))
     strCurrentDirectory.Delete(strCurrentDirectory.size() - 1);
-  if ((m_nTempPlayListWindow == GetID() && m_strTempPlayListDirectory == strCurrentDirectory && g_application.IsPlayingAudio()
-       && g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_MUSIC_TEMP)
-      || (GetID() == WINDOW_MUSIC_PLAYLIST && g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_MUSIC && g_application.IsPlayingAudio()) )
+  // Is this window responsible for the current playlist?
+  if (m_guiState.get() && g_playlistPlayer.GetCurrentPlaylist()==m_guiState->GetPlaylist() && strCurrentDirectory==m_guiState->GetPlaylistDirectory())
   {
     iCurrentPlaylistSong = g_playlistPlayer.GetCurrentSong();
   }
@@ -522,86 +364,11 @@ bool CGUIWindowMusicBase::Update(const CStdString &strDirectory)
     }
   }
 
-  if ((m_vecPathHistory.size() == 0) || m_vecPathHistory.back() != strDirectory)
-  {
-    m_vecPathHistory.push_back(strDirectory);
-  }
+  m_history.AddPath(strDirectory);
 
-  // debug log
-  CStdString strTemp;
-  CLog::Log(LOGDEBUG,"Current m_vecPathHistory:");
-  for (int i = 0; i < (int)m_vecPathHistory.size(); ++i)
-  {
-    strTemp.Format("%02i.[%s]", i, m_vecPathHistory[i]);
-    CLog::Log(LOGDEBUG, "  %s", strTemp.c_str());
-  }
+  m_history.DumpPathHistory();
 
   return true;
-}
-
-/// \brief Call to go to parent folder
-void CGUIWindowMusicBase::GoParentFolder()
-{
-  // remove current directory if its on the stack
-  if (m_vecPathHistory.size() > 0)
-  {
-    if (m_vecPathHistory.back() == m_vecItems.m_strPath)
-      m_vecPathHistory.pop_back();
-  }
-
-  // if vector is not empty, pop parent
-  // if vector is empty, parent is bookmark listing
-  CStdString strParent = "";
-  if (m_vecPathHistory.size() > 0)
-  {
-    strParent = m_vecPathHistory.back();
-    m_vecPathHistory.pop_back();
-  }
-  CLog::Log(LOGDEBUG,"CGUIWindowMusicBase::GoParentFolder(), strParent = [%s]", strParent.c_str());
-
-  // check for special archive path
-  const CURL& url=m_vecItems.GetAsUrl();
-  if ((url.GetProtocol() == "rar") || (url.GetProtocol() == "zip")) 
-  {
-    // check for step-below, if, unmount rar
-    if (url.GetFileName().IsEmpty())
-    {
-      if (url.GetProtocol() == "zip")
-        g_ZipManager.release(m_vecItems.m_strPath); // release resources
-      m_rootDir.RemoveShare(m_vecItems.m_strPath);
-      CStdString strPath;
-      CUtil::GetDirectory(url.GetHostName(),strPath);
-      Update(strPath);
-      return;
-    }
-  }
-
-  CStdString strOldPath = m_vecItems.m_strPath;
-  Update(strParent);
-
-  if (!g_guiSettings.GetBool("LookAndFeel.FullDirectoryHistory"))
-    m_history.Remove(strOldPath); //Delete current path
-}
-
-void CGUIWindowMusicBase::ShowShareErrorMessage(CFileItem* pItem)
-{
-  if (pItem->m_bIsShareOrDrive)
-  {
-    int idMessageText=0;
-    CURL url(pItem->m_strPath);
-    const CStdString& strHostName=url.GetHostName();
-
-    if (pItem->m_iDriveType!=SHARE_TYPE_REMOTE) //  Local shares incl. dvd drive
-      idMessageText=15300;
-    else if (url.GetProtocol()=="xbms" && strHostName.IsEmpty()) //  xbms server discover
-      idMessageText=15302;
-    else if (url.GetProtocol()=="smb" && strHostName.IsEmpty()) //  smb workgroup
-      idMessageText=15303;
-    else  //  All other remote shares
-      idMessageText=15301;
-
-    CGUIDialogOK::ShowAndGetInput(220, idMessageText, 0, 0);
-  }
 }
 
 /// \brief Retrieves music info for albums from allmusic.com and displays them in CGUIWindowMusicInfo
@@ -1098,6 +865,9 @@ void CGUIWindowMusicBase::OnQueueItem(int iItem)
   m_viewControl.SetSelectedItem(iItem + 1);
   if (g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).size() && !g_application.IsPlayingAudio() )
   {
+    if (m_guiState.get())
+      m_guiState->SetPlaylistDirectory("");
+
     g_playlistPlayer.Reset();
     g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_MUSIC);
     if (g_playlistPlayer.ShuffledPlay(PLAYLIST_MUSIC))
@@ -1138,8 +908,7 @@ void CGUIWindowMusicBase::AddItemToPlayList(const CFileItem* pItem, int iPlayLis
     {
       CPlayList::CPlayListItem playlistItem;
       CUtil::ConvertFileItemToPlayListItem(pItem, playlistItem);
-      auto_ptr<CGUIViewState> pState(CGUIViewState::GetViewState(GetID(), m_vecItems));
-      if (pState.get() && pState->HideExtensions())
+      if (m_guiState.get() && m_guiState->HideExtensions())
         playlistItem.RemoveExtension();
       g_playlistPlayer.GetPlaylist(iPlayList).Add(playlistItem);
     }
@@ -1157,8 +926,7 @@ void CGUIWindowMusicBase::AddItemToPlayList(const CFileItem* pItem, int iPlayLis
         }
 
         bool hideExtensions=false;
-        auto_ptr<CGUIViewState> pState(CGUIViewState::GetViewState(GetID(), m_vecItems));
-        if (pState.get()) hideExtensions=pState->HideExtensions();
+        if (m_guiState.get()) hideExtensions=m_guiState->HideExtensions();
 
         CPlayList playlist = *pPlayList;
         for (int i = 0; i < (int)playlist.size(); ++i)
@@ -1233,17 +1001,6 @@ void CGUIWindowMusicBase::OnSearch()
     if (m_dlgProgress) m_dlgProgress->Close();
     CGUIDialogOK::ShowAndGetInput(194, 284, 0, 0);
   }
-}
-
-/// \brief Can be overwritten to build an own history string for \c m_history
-/// \param pItem Item to build the history string from
-/// \param strHistoryString History string build as return value
-void CGUIWindowMusicBase::GetDirectoryHistoryString(const CFileItem* pItem, CStdString& strHistoryString)
-{
-  strHistoryString = pItem->m_strPath;
-
-  if (CUtil::HasSlashAtEnd(strHistoryString))
-    strHistoryString.Delete(strHistoryString.size() - 1);
 }
 
 void CGUIWindowMusicBase::UpdateButtons()
@@ -1746,20 +1503,26 @@ void CGUIWindowMusicBase::PlayItem(int iItem)
     if (item.IsParentFolder())
       return;
 
+    int iPlaylist=m_guiState->GetPlaylist();
     // clear current temp playlist
-    g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC_TEMP).Clear();
+    g_playlistPlayer.GetPlaylist(iPlaylist).Clear();
     g_playlistPlayer.Reset();
 
     // recursively add items to temp playlist
-    AddItemToPlayList(&item, PLAYLIST_MUSIC_TEMP);
+    AddItemToPlayList(&item, iPlaylist);
 
+    CStdString strPlayListDirectory = m_vecItems.m_strPath;
+    if (CUtil::HasSlashAtEnd(strPlayListDirectory))
+      strPlayListDirectory.Delete(strPlayListDirectory.size() - 1);
+
+    m_guiState->SetPlaylistDirectory(strPlayListDirectory);
     // play!
-    g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_MUSIC_TEMP);
+    g_playlistPlayer.SetCurrentPlaylist(iPlaylist);
     g_playlistPlayer.Play();
   }
   else if (pItem->IsPlayList())
   {
-    LoadPlayList(pItem->m_strPath, PLAYLIST_MUSIC_TEMP);
+    LoadPlayList(pItem->m_strPath);
   }
   // otherwise just play the song
   else
@@ -1788,7 +1551,7 @@ void CGUIWindowMusicBase::OnRenameItem(int iItem)
   m_viewControl.SetSelectedItem(iItem);
 }
 
-void CGUIWindowMusicBase::LoadPlayList(const CStdString& strPlayList, int iPlayList /* = PLAYLIST_MUSIC */)
+void CGUIWindowMusicBase::LoadPlayList(const CStdString& strPlayList)
 {
   // load a playlist like .m3u, .pls
   // first get correct factory to load playlist
@@ -1805,54 +1568,14 @@ void CGUIWindowMusicBase::LoadPlayList(const CStdString& strPlayList, int iPlayL
   }
 
   int iSize = pPlayList->size();
-  if (g_application.ProcessAndStartPlaylist(strPlayList, *pPlayList, iPlayList))
+  if (g_application.ProcessAndStartPlaylist(strPlayList, *pPlayList, PLAYLIST_MUSIC))
   {
+    if (m_guiState.get())
+      m_guiState->SetPlaylistDirectory("");
     // activate the playlist window if its not activated yet
-    if (GetID() == m_gWindowManager.GetActiveWindow() && iSize > 1 && iPlayList == PLAYLIST_MUSIC)
+    if (GetID() == m_gWindowManager.GetActiveWindow() && iSize > 1)
     {
       m_gWindowManager.ActivateWindow(WINDOW_MUSIC_PLAYLIST);
-    }
-  }
-}
-
-void CGUIWindowMusicBase::SetHistoryForPath(const CStdString& strDirectory)
-{
-  if (!strDirectory.IsEmpty())
-  {
-    // Build the directory history for default path
-    CStdString strPath, strParentPath;
-    strPath = strDirectory;
-    while (CUtil::HasSlashAtEnd(strPath))
-      strPath.Delete(strPath.size() - 1);
-
-    CFileItemList items;
-    GetDirectory("", items);
-
-    m_vecPathHistory.clear();
-
-    while (CUtil::GetParentPath(strPath, strParentPath))
-    {
-      bool bSet = false;
-      for (int i = 0; i < (int)items.Size(); ++i)
-      {
-        CFileItem* pItem = items[i];
-        while (CUtil::HasSlashAtEnd(pItem->m_strPath))
-          pItem->m_strPath.Delete(pItem->m_strPath.size() - 1);
-        if (pItem->m_strPath == strPath)
-        {
-          CStdString strHistory;
-          GetDirectoryHistoryString(pItem, strHistory);
-          m_history.Set(strHistory, "");
-          m_vecPathHistory.insert(m_vecPathHistory.begin(), strPath);
-          return ;
-        }
-      }
-
-      m_vecPathHistory.insert(m_vecPathHistory.begin(), strPath);
-      m_history.Set(strPath, strParentPath);
-      strPath = strParentPath;
-      while (CUtil::HasSlashAtEnd(strPath))
-        strPath.Delete(strPath.size() - 1);
     }
   }
 }
