@@ -1,10 +1,21 @@
 #include "stdafx.h"
 #include "GUIViewStateVideo.h"
 #include "AutoSwitch.h"
+#include "playlistplayer.h"
 
 bool CGUIViewStateWindowVideo::HideParentDirItems()
 {
   return g_guiSettings.GetBool("MyVideos.HideParentDirItems");
+}
+
+CStdString CGUIViewStateWindowVideo::GetLockType()
+{
+  return "video";
+}
+
+bool CGUIViewStateWindowVideo::HandleArchives()
+{
+  return g_guiSettings.GetBool("VideoFiles.HandleArchives");
 }
 
 CGUIViewStateWindowVideoFiles::CGUIViewStateWindowVideoFiles(const CFileItemList& items) : CGUIViewStateWindowVideo(items)
@@ -260,3 +271,9 @@ void CGUIViewStateWindowVideoPlaylist::SaveViewState()
   g_stSettings.m_MyVideoPlaylistViewMethod=GetViewAsControl();
   g_settings.Save();
 }
+
+int CGUIViewStateWindowVideoPlaylist::GetPlaylist()
+{
+  return PLAYLIST_VIDEO;
+}
+

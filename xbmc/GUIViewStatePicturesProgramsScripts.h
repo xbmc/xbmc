@@ -9,6 +9,8 @@ public:
 protected:
   virtual bool HideParentDirItems();
   virtual void SaveViewState();
+  virtual CStdString GetLockType();
+  virtual bool HandleArchives();
 };
 
 class CGUIViewStateWindowPrograms : public CGUIViewState
@@ -19,6 +21,7 @@ public:
 protected:
   virtual bool HideParentDirItems();
   virtual void SaveViewState();
+  virtual CStdString GetLockType();
 };
 
 class CGUIViewStateWindowScripts : public CGUIViewState

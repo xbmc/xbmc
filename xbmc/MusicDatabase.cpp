@@ -2310,7 +2310,7 @@ bool CMusicDatabase::CleanupThumbs()
   {
     // needs to be done AFTER the songs have been cleaned up.
     // we can happily delete any thumb that has no reference to a song
-    CStdString strSQL = "select * from thumb where idThumb not in (select distinct idThumb from song)";
+    CStdString strSQL = "select * from thumb where idThumb not in (select distinct idThumb from song) and idThumb not in (select distinct idThumb from album)";
     if (!m_pDS->query(strSQL.c_str())) return false;
     int iRowsFound = m_pDS->num_rows();
     if (iRowsFound == 0)
@@ -2335,7 +2335,7 @@ bool CMusicDatabase::CleanupThumbs()
     //g_directoryCache.ClearMusicThumbCache();
     // now we can delete
     m_pDS->close();
-    strSQL = "delete from thumb where idThumb not in (select distinct idThumb from song)";
+    strSQL = "delete from thumb where idThumb not in (select distinct idThumb from song) and idThumb not in (select distinct idThumb from album)";
     m_pDS->exec(strSQL.c_str());
     return true;
   }
@@ -2412,11 +2412,14 @@ int CMusicDatabase::Cleanup(CGUIDialogProgress *pDlgProgress)
   if (NULL == m_pDB.get()) return ERROR_DATABASE;
   if (NULL == m_pDS.get()) return ERROR_DATABASE;
   // first cleanup any songs with invalid paths
+  pDlgProgress->SetHeading(700);
   pDlgProgress->SetLine(0, "");
   pDlgProgress->SetLine(1, 318);
   pDlgProgress->SetLine(2, 330);
   pDlgProgress->SetPercentage(0);
-  pDlgProgress->Progress();
+  pDlgProgress->StartModal(m_gWindowManager.GetActiveWindow());
+  pDlgProgress->ShowProgressBar(true);
+
   if (!CleanupSongs())
   {
     RollbackTransaction();
@@ -2777,8 +2780,6 @@ void CMusicDatabase::Clean()
     CGUIDialogProgress* dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
     if (dlgProgress)
     {
-      dlgProgress->StartModal(m_gWindowManager.GetActiveWindow());
-
       int iReturnString = g_musicDatabase.Cleanup(dlgProgress);
       g_musicDatabase.Close();
 

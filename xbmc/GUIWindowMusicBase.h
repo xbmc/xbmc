@@ -39,11 +39,6 @@ protected:
    */
   virtual bool GetDirectory(const CStdString &strDirectory, CFileItemList &items);
   /*!
-  \brief Will be called when an item in list/thumb control has been clicked
-  \param iItem List/thumb control item that has been clicked on
-  */
-  virtual void OnClick(int iItem) {};
-  /*!
   \brief Will be called when an popup context menu has been asked for
   \param iItem List/thumb control item that has been clicked on
   */
@@ -51,7 +46,6 @@ protected:
   /*!
   \brief Overwrite to update your gui buttons (visible, enable,...)
   */
-  virtual void GoParentFolder();
   virtual void UpdateButtons();
   virtual bool Update(const CStdString &strDirectory);
 
@@ -60,7 +54,6 @@ protected:
   virtual void OnSearchItemFound(const CFileItem* pItem);
   virtual void DoSearch(const CStdString& strSearch, CFileItemList& items);
   virtual void OnScan() {};
-  virtual void GetDirectoryHistoryString(const CFileItem* pItem, CStdString& strHistoryString);
 
   // new methods
   virtual void PlayItem(int iItem);
@@ -77,18 +70,12 @@ protected:
   void OnRipCD();
   void OnSearch();
   void DisplayEmptyDatabaseMessage(bool bDisplay);
-  void LoadPlayList(const CStdString& strPlayList, int iPlayList = PLAYLIST_MUSIC);
-  void ShowShareErrorMessage(CFileItem* pItem);
-  void SetHistoryForPath(const CStdString& strDirectory);
+  virtual void LoadPlayList(const CStdString& strPlayList);
   
   typedef vector <CFileItem*>::iterator ivecItems; ///< CFileItem* vector Iterator
   CGUIDialogProgress* m_dlgProgress; ///< Progress dialog
 
-  static int m_nTempPlayListWindow; ///< Window the temporary playlist was started
-  static CStdString m_strTempPlayListDirectory; ///< The directory the temporary playlist was started
-
   bool m_bDisplayEmptyDatabaseMessage;  ///< If true we display a message informing the user to switch back to the Files view.
-  vector<CStdString> m_vecPathHistory; ///< History of traversed directories
 
   // member variables to save frequently used g_guiSettings (which is slow)
   bool m_hideExtensions;

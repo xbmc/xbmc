@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "GUIViewStateMusic.h"
 #include "AutoSwitch.h"
+#include "playlistplayer.h"
 
 #include "filesystem/musicdatabasedirectory.h"
 
@@ -9,6 +10,26 @@ using namespace DIRECTORY::MUSICDATABASEDIRECTORY;
 bool CGUIViewStateWindowMusic::HideParentDirItems()
 {
   return g_guiSettings.GetBool("MyMusic.HideParentDirItems");
+}
+
+int CGUIViewStateWindowMusic::GetPlaylist()
+{
+  return PLAYLIST_MUSIC_TEMP;
+}
+
+bool CGUIViewStateWindowMusic::HandleArchives()
+{
+  return g_guiSettings.GetBool("MusicFiles.HandleArchives");
+}
+
+bool CGUIViewStateWindowMusic::AutoPlayNextItem()
+{
+  return g_guiSettings.GetBool("MusicFiles.AutoPlayNextItem");
+}
+
+CStdString CGUIViewStateWindowMusic::GetLockType()
+{
+  return "music";
 }
 
 CGUIViewStateMusicDatabase::CGUIViewStateMusicDatabase(const CFileItemList& items) : CGUIViewStateWindowMusic(items)
@@ -427,4 +448,14 @@ void CGUIViewStateWindowMusicPlaylist::SaveViewState()
   g_stSettings.m_MyMusicPlaylistViewMethod=GetViewAsControl();
 
   g_settings.Save();
+}
+
+int CGUIViewStateWindowMusicPlaylist::GetPlaylist()
+{
+  return PLAYLIST_MUSIC;
+}
+
+bool CGUIViewStateWindowMusicPlaylist::AutoPlayNextItem()
+{
+  return false;
 }

@@ -12,7 +12,7 @@ CDirectoryHistory::CDirectoryHistory()
 CDirectoryHistory::~CDirectoryHistory()
 {}
 
-void CDirectoryHistory::Remove(const CStdString& strDirectory)
+void CDirectoryHistory::RemoveSelectedItem(const CStdString& strDirectory)
 {
   CStdString strDir = strDirectory;
   strDir.ToLower();
@@ -30,7 +30,7 @@ void CDirectoryHistory::Remove(const CStdString& strDirectory)
   }
 }
 
-void CDirectoryHistory::Set(const CStdString& strSelectedItem, const CStdString& strDirectory)
+void CDirectoryHistory::SetSelectedItem(const CStdString& strSelectedItem, const CStdString& strDirectory)
 {
   if (strSelectedItem.size() == 0) return ;
   // if (strDirectory.size()==0) return;
@@ -64,7 +64,7 @@ void CDirectoryHistory::Set(const CStdString& strSelectedItem, const CStdString&
   m_vecHistory.push_back(item);
 }
 
-const CStdString& CDirectoryHistory::Get(const CStdString& strDirectory) const
+const CStdString& CDirectoryHistory::GetSelectedItem(const CStdString& strDirectory) const
 {
   CStdString strDir = strDirectory;
   strDir.ToLower();
@@ -82,4 +82,57 @@ const CStdString& CDirectoryHistory::Get(const CStdString& strDirectory) const
     }
   }
   return m_strNull;
+}
+
+void CDirectoryHistory::AddPath(const CStdString& strPath)
+{
+  if ((m_vecPathHistory.size() == 0) || m_vecPathHistory.back() != strPath)
+  {
+    m_vecPathHistory.push_back(strPath);
+  }
+}
+
+void CDirectoryHistory::AddPathFront(const CStdString& strPath)
+{
+  m_vecPathHistory.insert(m_vecPathHistory.begin(), strPath);
+}
+
+CStdString CDirectoryHistory::GetParentPath()
+{
+  CStdString strParent;
+  if (m_vecPathHistory.size() > 0)
+  {
+    strParent = m_vecPathHistory.back();
+  }
+
+  return strParent;
+}
+
+CStdString CDirectoryHistory::RemoveParentPath()
+{
+  CStdString strParent;
+  if (m_vecPathHistory.size() > 0)
+  {
+    strParent = m_vecPathHistory.back();
+    m_vecPathHistory.pop_back();
+  }
+
+  return strParent;
+}
+
+void CDirectoryHistory::ClearPathHistory()
+{
+  m_vecPathHistory.clear();
+}
+
+void CDirectoryHistory::DumpPathHistory()
+{
+  // debug log
+  CStdString strTemp;
+  CLog::Log(LOGDEBUG,"Current m_vecPathHistory:");
+  for (int i = 0; i < (int)m_vecPathHistory.size(); ++i)
+  {
+    strTemp.Format("%02i.[%s]", i, m_vecPathHistory[i]);
+    CLog::Log(LOGDEBUG, "  %s", strTemp.c_str());
+  }
 }

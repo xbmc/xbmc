@@ -152,7 +152,7 @@ void CGUIDialogFileBrowser::Update(const CStdString &strDirectory)
     if (!pItem->IsParentFolder())
     {
       strSelectedItem = pItem->m_strPath;
-      m_history.Set(strSelectedItem, m_Directory.m_strPath);
+      m_history.SetSelectedItem(strSelectedItem, m_Directory.m_strPath);
     }
   }
   ClearFileItems();
@@ -195,7 +195,7 @@ void CGUIDialogFileBrowser::Update(const CStdString &strDirectory)
 
   OnSort();
 
-  strSelectedItem = m_history.Get(m_Directory.m_strPath);
+  strSelectedItem = m_history.GetSelectedItem(m_Directory.m_strPath);
 
   for (int i = 0; i < (int)m_vecItems.Size(); ++i)
   {
@@ -287,7 +287,7 @@ void CGUIDialogFileBrowser::GoParentFolder()
   Update(strPath);
 
   if (!g_guiSettings.GetBool("LookAndFeel.FullDirectoryHistory"))
-    m_history.Remove(strOldPath); //Delete current path
+    m_history.RemoveSelectedItem(strOldPath); //Delete current path
 }
 
 void CGUIDialogFileBrowser::OnWindowLoaded()

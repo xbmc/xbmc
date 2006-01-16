@@ -21,7 +21,7 @@ public:
 
 protected:
   virtual void GoParentFolder();
-  virtual void OnClick(int iItem);
+  virtual bool OnClick(int iItem);
   virtual void FormatItemLabels();
   virtual void UpdateButtons();
   virtual bool Update(const CStdString &strDirectory);
@@ -31,15 +31,21 @@ protected:
   virtual void SortItems(CFileItemList &items);
 
   // check for a disc or connection
-  virtual bool HaveDiscOrConnection( CStdString& strPath, int iDriveType );
+  virtual bool HaveDiscOrConnection(CStdString& strPath, int iDriveType);
+  void ShowShareErrorMessage(CFileItem* pItem);
 
+  void GetDirectoryHistoryString(const CFileItem* pItem, CStdString& strHistoryString);
+  void SetHistoryForPath(const CStdString& strDirectory);
+  virtual void LoadPlayList(const CStdString& strFileName) {}
+  virtual void OnPlayMedia(int iItem);
+protected:
   CVirtualDirectory m_rootDir;
   CGUIViewControl m_viewControl;
 
   // current path and history
   CFileItemList m_vecItems;
-  CStdString m_strParentPath;
   CDirectoryHistory m_history;
+  auto_ptr<CGUIViewState> m_guiState;
 
   // save control state on window exit
   int m_iLastControl;

@@ -68,6 +68,8 @@ bool CGUIWindowMusicPlayList::OnMessage(CGUIMessage& message)
       // Setup item cache for tagloader
       m_tagloader.UseCacheOnHD("Z:\\MusicPlaylist.fi");
 
+      m_vecItems.m_strPath="";
+
       CGUIWindowMusicBase::OnMessage(message);
 
       if (g_playlistPlayer.Repeated(PLAYLIST_MUSIC))
@@ -172,6 +174,7 @@ bool CGUIWindowMusicPlayList::OnMessage(CGUIMessage& message)
       }
       else if (iControl == CONTROL_BTNPLAY)
       {
+        m_guiState->SetPlaylistDirectory("");
         g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_MUSIC);
         g_playlistPlayer.Reset();
         g_playlistPlayer.Play(m_viewControl.GetSelectedItem());
@@ -494,14 +497,31 @@ void CGUIWindowMusicPlayList::UpdateButtons()
   SET_CONTROL_LABEL(CONTROL_LABELFILES, wszText);
 }
 
-void CGUIWindowMusicPlayList::OnClick(int iItem)
+void CGUIWindowMusicPlayList::OnPlayMedia(int iItem)
 {
-  if ( iItem < 0 || iItem >= m_vecItems.Size() ) return ;
-  CFileItem* pItem = m_vecItems[iItem];
-  CStdString strPath = pItem->m_strPath;
-  g_playlistPlayer.SetCurrentPlaylist( PLAYLIST_MUSIC );
-  g_playlistPlayer.Reset();
-  g_playlistPlayer.Play( iItem );
+  int iPlaylist=m_guiState->GetPlaylist();
+  if (iPlaylist!=PLAYLIST_NONE)
+  {
+    CStdString strPlayListDirectory = m_vecItems.m_strPath;
+    if (CUtil::HasSlashAtEnd(strPlayListDirectory))
+      strPlayListDirectory.Delete(strPlayListDirectory.size() - 1);
+
+    if (m_guiState.get())
+      m_guiState->SetPlaylistDirectory(strPlayListDirectory);
+
+    g_playlistPlayer.SetCurrentPlaylist( iPlaylist );
+    g_playlistPlayer.Reset();
+    g_playlistPlayer.Play( iItem );
+  }
+  else
+  {
+    // Reset Playlistplayer, playback started now does
+    // not use the playlistplayer.
+    CFileItem* pItem=m_vecItems[iItem];
+    g_playlistPlayer.Reset();
+    g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_NONE);
+    g_application.PlayFile(*pItem);
+  }
 }
 
 void CGUIWindowMusicPlayList::OnItemLoaded(CFileItem* pItem)
@@ -519,8 +539,7 @@ void CGUIWindowMusicPlayList::OnItemLoaded(CFileItem* pItem)
 
   if (pItem->m_musicInfoTag.Loaded())
   { // set label 1+2 from tags
-    auto_ptr<CGUIViewState> pState(CGUIViewState::GetViewState(GetID(), m_vecItems));
-    if (pState.get()) m_hideExtensions = pState->HideExtensions();
+    if (m_guiState.get()) m_hideExtensions = m_guiState->HideExtensions();
     pItem->FormatLabel(g_guiSettings.GetString("MyMusic.TrackFormat"));
     pItem->FormatLabel2(g_guiSettings.GetString("MyMusic.TrackFormatRight"));
 

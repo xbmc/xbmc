@@ -16,11 +16,10 @@ public:
 
 protected:
   virtual void GoParentFolder();
-  virtual void OnClick(int iItem);
+  virtual bool OnClick(int iItem);
   virtual bool Update(const CStdString& strDirectory);
 
   void OnScan(CFileItemList& items, int& iTotalAppsFound) ;
-  void UpdateDir(const CStdString& strDirectory);
   void LoadDirectory(const CStdString& strDirectory, int depth);
   void DeleteThumbs(CFileItemList& items);
   int GetRegion(int iItem, bool bReload=false);
@@ -31,10 +30,9 @@ protected:
 
   int m_iDepth;
   CStdString m_strBookmarkName;
-//  set <CStdString> m_setPaths;
-//  set <CStdString> m_setPaths1;
   vector<CStdString> m_vecPaths, m_vecPaths1;
   CProgramDatabase m_database;
+  CStdString m_strParentPath;
   bool m_isRoot;
   int m_iRegionSet; // for cd stuff
 };

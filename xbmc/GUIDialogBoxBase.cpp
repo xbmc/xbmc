@@ -61,6 +61,7 @@ void CGUIDialogBoxBase::SetHeading(int iString)
 
 void CGUIDialogBoxBase::SetLine(int iLine, const wstring& strLine)
 {
+  Initialize();
   CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), iLine + 2);
   msg.SetLabel(strLine);
   OnMessage(msg);
@@ -68,6 +69,7 @@ void CGUIDialogBoxBase::SetLine(int iLine, const wstring& strLine)
 
 void CGUIDialogBoxBase::SetLine(int iLine, const string& strLine)
 {
+  Initialize();
   CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), iLine + 2);
   msg.SetLabel(strLine);
   OnMessage(msg);
@@ -75,6 +77,7 @@ void CGUIDialogBoxBase::SetLine(int iLine, const string& strLine)
 
 void CGUIDialogBoxBase::SetLine(int iLine, int iString)
 {
+  Initialize();
   CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), iLine + 2);
   if (iString)
     msg.SetLabel(iString);
