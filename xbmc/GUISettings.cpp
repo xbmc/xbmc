@@ -441,6 +441,8 @@ CGUISettings::CGUISettings(void)
   AddBool(6, "Subtitles.FlipBiDiCharSet", 13304, false);
   AddSeparator(7, "Subtitles.Sep1");
   AddInt(8, "Subtitles.EnlargePercentage", 492, 100, 30, 10, 200, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
+  AddBool(9, "Subtitles.SearchRars", 13249, false);
+
 
   AddCategory(5, "PostProcessing", 14041);
   AddBool(2, "PostProcessing.Enable", 286, false);
