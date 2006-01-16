@@ -1,3 +1,5 @@
+2006-01-16 fixed:	Incorrect animation tags in some Dialogs.
+
 2006-01-10 fixed:	Invalid control tags in Slideshow.xml
 2006-01-10 fixed:	Missing <disabledcolor> on DialogNumeric.xml
 
