@@ -732,13 +732,6 @@ bool CGUIWindowVideoFiles::GetDirectory(const CStdString &strDirectory, CFileIte
     items.Add(pItem);
   }
 
-  CLog::Log(LOGDEBUG,"Fetching directory (%s)", strDirectory.c_str());
-  if (!m_rootDir.GetDirectory(strDirectory, items))
-  {
-    CLog::Log(LOGERROR,"GetDirectory(%s) failed", strDirectory.c_str());
-    return false;
-  }
-
   return true;
 }
 

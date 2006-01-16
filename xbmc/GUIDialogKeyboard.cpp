@@ -199,6 +199,17 @@ void CGUIDialogKeyboard::Character(WCHAR wch)
   MoveCursor(1);
 }
 
+void CGUIDialogKeyboard::Render()
+{
+  // reset the hide state of the label when the remote
+  // sms style input times out
+  if (m_lastRemoteClickTime + 1000 < timeGetTime())
+  {
+    UpdateLabel();
+  }
+  CGUIDialog::Render();
+}
+
 void CGUIDialogKeyboard::UpdateLabel()
 {
   CGUILabelControl* pEdit = ((CGUILabelControl*)GetControl(CTL_LABEL_EDIT));
@@ -272,7 +283,8 @@ void CGUIDialogKeyboard::OnRemoteNumberClick(int key)
 
   // use caps where appropriate
   WCHAR ch = (WCHAR) * characterPressed;
-  if (m_keyType != CAPS && *characterPressed >= 'A' && *characterPressed <= 'Z')
+  bool caps = (m_keyType == CAPS && !m_bShift) || (m_keyType == LOWER && m_bShift);
+  if (!caps && *characterPressed >= 'A' && *characterPressed <= 'Z')
     ch += 32;
   Character(ch);
 }
@@ -399,8 +411,8 @@ bool CGUIDialogKeyboard::ShowAndGetInput(CStdString& aTextString, const CStdStri
   pKeyboard->Initialize();
   pKeyboard->CenterWindow();
   pKeyboard->SetHeading(strHeading);
-  pKeyboard->SetText(aTextString);
   pKeyboard->SetHiddenInput(hiddenInput);
+  pKeyboard->SetText(aTextString);
   // do this using a thread message to avoid render() conflicts
   ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, WINDOW_DIALOG_KEYBOARD, m_gWindowManager.GetActiveWindow()};
   g_applicationMessenger.SendMessage(tMsg, true);

@@ -61,6 +61,7 @@ protected:
   void SetSortMethod(SORT_METHOD sortMethod);
   void SetSortOrder(SORT_ORDER sortOrder) { m_sortOrder=sortOrder; }
   const CFileItemList& m_items;
+  bool m_hideParentDirItems;
 
 private:
   typedef struct _VIEW
