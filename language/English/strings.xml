@@ -830,6 +830,8 @@
   <string><id>13211</id><value>Alarm!</value></string>
   <string><id>13212</id><value>Canceled with %im%is left</value></string>
 
+
+  <string><id>13249</id><value>Search Rar's For Subtitles</value></string>
   <string><id>13250</id><value>Browse for subtitle...</value></string>
   <string><id>13251</id><value>Move Item</value></string>
   <string><id>13252</id><value>Move Item Here</value></string>
