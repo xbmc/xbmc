@@ -255,7 +255,7 @@ bool CGUIControl::OnMessage(CGUIMessage& message)
     case GUI_MSG_VISIBLE:
       if (message.GetParam1())  // effect time
       {
-        CLog::DebugLog("Control %i set to visible.  Was %s, effect=%d", m_dwControlID, m_bVisible ? "visible" : "hidden", m_tempAnimation.currentProcess == ANIM_PROCESS_NORMAL ? "fading in" : (m_tempAnimation.currentProcess == ANIM_PROCESS_REVERSE) ? "fading out" : "none");
+//        CLog::DebugLog("Control %i set to visible.  Was %s, effect=%d", m_dwControlID, m_bVisible ? "visible" : "hidden", m_tempAnimation.currentProcess == ANIM_PROCESS_NORMAL ? "fading in" : (m_tempAnimation.currentProcess == ANIM_PROCESS_REVERSE) ? "fading out" : "none");
         if ((!m_bVisible && m_tempAnimation.currentProcess != ANIM_PROCESS_NORMAL) ||
             ( m_bVisible && m_tempAnimation.currentProcess == ANIM_PROCESS_REVERSE))
         {
@@ -275,7 +275,7 @@ bool CGUIControl::OnMessage(CGUIMessage& message)
     case GUI_MSG_HIDDEN:
       if (message.GetParam1())  // fade time
       {
-        CLog::DebugLog("Control %i set to hidden.  Was %s, effect=%d", m_dwControlID, m_bVisible ? "visible" : "hidden", m_tempAnimation.currentProcess == ANIM_PROCESS_NORMAL ? "fading in" : (m_tempAnimation.currentProcess == ANIM_PROCESS_REVERSE) ? "fading out" : "none");
+//        CLog::DebugLog("Control %i set to hidden.  Was %s, effect=%d", m_dwControlID, m_bVisible ? "visible" : "hidden", m_tempAnimation.currentProcess == ANIM_PROCESS_NORMAL ? "fading in" : (m_tempAnimation.currentProcess == ANIM_PROCESS_REVERSE) ? "fading out" : "none");
         if (m_bVisible && m_tempAnimation.currentProcess != ANIM_PROCESS_REVERSE)
         {
           m_tempAnimation.type = ANIM_TYPE_VISIBLE;
@@ -289,13 +289,13 @@ bool CGUIControl::OnMessage(CGUIMessage& message)
       // reset any visible animations that are in process
       if (IsAnimating(ANIM_TYPE_VISIBLE))
       {
-        CLog::DebugLog("Resetting visible animation on control %i (we are %s)", m_dwControlID, m_bVisible ? "visible" : "hidden");
+//        CLog::DebugLog("Resetting visible animation on control %i (we are %s)", m_dwControlID, m_bVisible ? "visible" : "hidden");
         CAnimation *visibleAnim = GetAnimation(ANIM_TYPE_VISIBLE);
         if (visibleAnim) visibleAnim->ResetAnimation();
       }
       if (m_tempAnimation.type == ANIM_TYPE_VISIBLE && m_tempAnimation.queuedProcess != ANIM_PROCESS_REVERSE && m_tempAnimation.currentProcess != ANIM_PROCESS_REVERSE)
       {
-        CLog::DebugLog("Resetting temp visible animation on control %i (we are %s)", m_dwControlID, m_bVisible ? "visible" : "hidden");
+//        CLog::DebugLog("Resetting temp visible animation on control %i (we are %s)", m_dwControlID, m_bVisible ? "visible" : "hidden");
         m_tempAnimation.Reset();
       }
       return true;
@@ -720,8 +720,8 @@ void CGUIControl::UpdateStates(ANIMATION_TYPE type, ANIMATION_PROCESS currentPro
         m_bVisible = m_lastVisible;
     }
   }
-  if (visible != m_bVisible)
-    CLog::DebugLog("UpdateControlState of control id %i - now %s (type=%d, process=%d, state=%d)", m_dwControlID, m_bVisible ? "visible" : "hidden", type, currentProcess, currentState);
+//  if (visible != m_bVisible)
+//    CLog::DebugLog("UpdateControlState of control id %i - now %s (type=%d, process=%d, state=%d)", m_dwControlID, m_bVisible ? "visible" : "hidden", type, currentProcess, currentState);
 }
 
 void CGUIControl::Animate()
