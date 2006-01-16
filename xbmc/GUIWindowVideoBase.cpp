@@ -179,35 +179,6 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
       }
     }
     break;
-  case GUI_MSG_NOTIFY_ALL:
-    { // Message is received even if this window is inactive
-      
-      //  Is there a dvd share in this window?
-      if (!m_rootDir.GetDVDDriveUrl().IsEmpty())
-      {
-        if (message.GetParam1()==GUI_MSG_DVDDRIVE_EJECTED_CD)
-        {
-          if (m_vecItems.IsVirtualDirectoryRoot() && IsActive())
-          {
-            int iItem = m_viewControl.GetSelectedItem();
-            Update(m_vecItems.m_strPath);
-            m_viewControl.SetSelectedItem(iItem);
-          }
-          else if (m_vecItems.IsCDDA() || m_vecItems.IsOnDVD())
-          { // Disc has changed and we are inside a DVD Drive share, get out of here :)
-            if (IsActive()) Update("");
-            else 
-            {
-              m_vecPathHistory.clear();
-              m_vecItems.m_strPath="";
-            }
-          }
-
-          return true;
-        }
-      }
-    }
-    break;
   }
   return CGUIMediaWindow::OnMessage(message);
 }
@@ -416,8 +387,7 @@ void CGUIWindowVideoBase::ShowIMDB(const CStdString& strMovie, const CStdString&
       CLog::Log(LOGERROR,"Unable to cache nfo file: %s", strNfoFile.c_str());
   }
 
-  auto_ptr<CGUIViewState> pState(CGUIViewState::GetViewState(GetID(), m_vecItems));
-  if (pState->HideExtensions() && !bFolder)
+  if (m_guiState.get() && m_guiState->HideExtensions() && !bFolder)
     CUtil::RemoveExtension(strMovieName);
 
   bool bContinue;
@@ -621,55 +591,6 @@ void CGUIWindowVideoBase::Render()
       pFont->DrawText((float)iX, (float)iY + fHeight, 0xffffffff, 0, wszText2.c_str(), XBFONT_CENTER_X | XBFONT_CENTER_Y);
     }
   }
-}
-
-void CGUIWindowVideoBase::GoParentFolder()
-{
-  // remove current directory if its on the stack
-  if (m_vecPathHistory.size() > 0)
-  {
-    if (m_vecPathHistory.back() == m_vecItems.m_strPath)
-      m_vecPathHistory.pop_back();
-  }
-  // if vector is not empty, pop parent
-  // if vector is empty, parent is bookmark listing
-  CStdString strParent = "";
-  if (m_vecPathHistory.size() > 0)
-  {
-    strParent = m_vecPathHistory.back();
-    m_vecPathHistory.pop_back();
-  }
-  CLog::Log(LOGDEBUG,"CGUIWindowVideoBase::GoParentFolder(), strParent = [%s]", strParent.c_str());
-
-  CURL url(m_vecItems.m_strPath);
-  // if we treat stacks as directories, then use this
-  /*if (url.GetProtocol() == "stack")
-  {
-    m_rootDir.RemoveShare(m_vecItems.m_strPath);
-    CUtil::GetDirectory(m_vecItems.m_strPath.Mid(8), m_strParentPath);
-  }*/
-  if ((url.GetProtocol() == "rar") || (url.GetProtocol() == "zip")) 
-  {
-    // check for step-below, if, unmount rar
-    if (url.GetFileName().IsEmpty())
-    {
-      if (url.GetProtocol() == "zip")
-        g_ZipManager.release(m_vecItems.m_strPath); // release resources
-      m_rootDir.RemoveShare(m_vecItems.m_strPath);
-      CStdString strPath;
-      CUtil::GetDirectory(url.GetHostName(),strPath);
-      Update(strPath);
-      UpdateButtons();
-      return;
-    }
-  }
-
-  CStdString strOldPath = m_vecItems.m_strPath;
-  Update(strParent);
-  UpdateButtons();  // not sure why this is required in my videos, but not in music or pictures
-
-  if (!g_guiSettings.GetBool("LookAndFeel.FullDirectoryHistory"))
-    m_history.Remove(strOldPath); //Delete current path
 }
 
 void CGUIWindowVideoBase::OnManualIMDB()
@@ -1064,6 +985,14 @@ void CGUIWindowVideoBase::GetStackedFiles(const CStdString &strFilePath1, vector
     movies.push_back(strFilePath);
 }
 
+void CGUIWindowVideoBase::OnPlayMedia(int iItem)
+{
+  if ( iItem < 0 || iItem >= (int)m_vecItems.Size() ) return;
+  CFileItem* pItem = m_vecItems[iItem];
+
+  PlayMovie(pItem);
+}
+
 void CGUIWindowVideoBase::PlayMovie(const CFileItem *item)
 {
   CFileItem movie(*item);
@@ -1134,27 +1063,6 @@ void CGUIWindowVideoBase::OnRenameItem(int iItem)
   m_viewControl.SetSelectedItem(iItem);
 }
 
-void CGUIWindowVideoBase::ShowShareErrorMessage(CFileItem* pItem)
-{
-  if (pItem->m_bIsShareOrDrive)
-  {
-    int idMessageText=0;
-    CURL url(pItem->m_strPath);
-    const CStdString& strHostName=url.GetHostName();
-
-    if (pItem->m_iDriveType!=SHARE_TYPE_REMOTE) //  Local shares incl. dvd drive
-      idMessageText=15300;
-    else if (url.GetProtocol()=="xbms" && strHostName.IsEmpty()) //  xbms server discover
-      idMessageText=15302;
-    else if (url.GetProtocol()=="smb" && strHostName.IsEmpty()) //  smb workgroup
-      idMessageText=15303;
-    else  //  All other remote shares
-      idMessageText=15301;
-
-    CGUIDialogOK::ShowAndGetInput(220, idMessageText, 0, 0);
-  }
-}
-
 void CGUIWindowVideoBase::MarkUnWatched(int iItem)
 {
   if ( iItem < 0 || iItem >= m_vecItems.Size() ) return ;
@@ -1206,7 +1114,11 @@ void CGUIWindowVideoBase::LoadPlayList(const CStdString& strPlayList, int iPlayL
     }
   }
 
-  g_application.ProcessAndStartPlaylist(strPlayList, *pPlayList, iPlayList);
+  if (g_application.ProcessAndStartPlaylist(strPlayList, *pPlayList, iPlayList))
+  {
+    if (m_guiState.get())
+      m_guiState->SetPlaylistDirectory("");
+  }
 }
 
 void CGUIWindowVideoBase::PlayItem(int iItem)

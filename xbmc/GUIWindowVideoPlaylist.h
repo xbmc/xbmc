@@ -11,7 +11,7 @@ public:
   virtual bool OnAction(const CAction &action);
 
 protected:
-  virtual void OnClick(int iItem);
+  virtual void OnPlayMedia(int iItem);
   virtual void SortItems(CFileItemList &items) {};
   virtual void FormatItemLabels() {};
   virtual void UpdateButtons();
@@ -20,7 +20,6 @@ protected:
   virtual void OnPopupMenu(int iItem);
   void OnMove(int iItem, int iAction);
 
-  void GetDirectoryHistoryString(const CFileItem* pItem, CStdString& strHistoryString);
   virtual bool GetDirectory(const CStdString &strDirectory, CFileItemList &items);
   void ClearPlayList();
   void UpdateListControl();

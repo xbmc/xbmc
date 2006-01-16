@@ -62,6 +62,16 @@ bool CGUIViewStateWindowPictures::HideParentDirItems()
   return g_guiSettings.GetBool("Pictures.HideParentDirItems");
 }
 
+CStdString CGUIViewStateWindowPictures::GetLockType()
+{
+  return "pictures";
+}
+
+bool CGUIViewStateWindowPictures::HandleArchives()
+{
+  return g_guiSettings.GetBool("Pictures.HandleArchives");
+}
+
 CGUIViewStateWindowPrograms::CGUIViewStateWindowPrograms(const CFileItemList& items) : CGUIViewState(items)
 {
   AddSortMethod(SORT_METHOD_LABEL, 103, LABEL_MASKS("%K", "%I", "%F", ""));  // Titel, Size | Foldername, empty
@@ -72,7 +82,14 @@ CGUIViewStateWindowPrograms::CGUIViewStateWindowPrograms(const CFileItemList& it
   AddViewAsControl(VIEW_METHOD_LIST, 101);
   AddViewAsControl(VIEW_METHOD_ICONS, 100);
   AddViewAsControl(VIEW_METHOD_LARGE_ICONS, 417);
-  SetViewAsControl(g_stSettings.m_MyProgramsViewMethod);
+  if (g_guiSettings.GetBool("ProgramFiles.UseAutoSwitching"))
+  {
+    SetViewAsControl(CAutoSwitch::GetView(items));
+  }
+  else
+  {
+    SetViewAsControl(g_stSettings.m_MyProgramsViewMethod);
+  }
 
   SetSortOrder(g_stSettings.m_MyProgramsSortOrder);
 }
@@ -88,6 +105,11 @@ void CGUIViewStateWindowPrograms::SaveViewState()
 bool CGUIViewStateWindowPrograms::HideParentDirItems()
 {
   return g_guiSettings.GetBool("ProgramFiles.HideParentDirItems");
+}
+
+CStdString CGUIViewStateWindowPrograms::GetLockType()
+{
+  return "myprograms";
 }
 
 CGUIViewStateWindowScripts::CGUIViewStateWindowScripts(const CFileItemList& items) : CGUIViewState(items)

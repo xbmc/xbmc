@@ -73,7 +73,7 @@ bool CGUIWindowVideoYear::Update(const CStdString &strDirectory)
     if (!pItem->IsParentFolder())
     {
       strSelectedItem = pItem->m_strPath;
-      m_history.Set(strSelectedItem, m_vecItems.m_strPath);
+      m_history.SetSelectedItem(strSelectedItem, m_vecItems.m_strPath);
     }
   }
   ClearFileItems();
@@ -97,8 +97,7 @@ bool CGUIWindowVideoYear::Update(const CStdString &strDirectory)
   }
   else
   {
-    auto_ptr<CGUIViewState> pState(CGUIViewState::GetViewState(GetID(), m_vecItems));
-    if (pState.get() && !pState->HideParentDirItems())
+    if (m_guiState.get() && !m_guiState->HideParentDirItems())
     {
       CFileItem *pItem = new CFileItem("..");
       pItem->m_strPath = "";
@@ -106,7 +105,6 @@ bool CGUIWindowVideoYear::Update(const CStdString &strDirectory)
       pItem->m_bIsShareOrDrive = false;
       m_vecItems.Add(pItem);
     }
-    m_strParentPath = "";
     VECMOVIES movies;
     m_database.GetMoviesByYear(m_vecItems.m_strPath, movies);
     for (int i = 0; i < (int)movies.size(); ++i)
@@ -156,9 +154,10 @@ bool CGUIWindowVideoYear::Update(const CStdString &strDirectory)
     pItem->m_strPath = strPath;
   }
 
+  m_guiState.reset(CGUIViewState::GetViewState(GetID(), m_vecItems));
   OnSort();
   UpdateButtons();
-  strSelectedItem = m_history.Get(m_vecItems.m_strPath);
+  strSelectedItem = m_history.GetSelectedItem(m_vecItems.m_strPath);
   for (int i = 0; i < (int)m_vecItems.Size(); ++i)
   {
     CFileItem* pItem = m_vecItems[i];
@@ -170,36 +169,6 @@ bool CGUIWindowVideoYear::Update(const CStdString &strDirectory)
   }
 
   return true;
-}
-
-//****************************************************************************************************************************
-void CGUIWindowVideoYear::OnClick(int iItem)
-{
-  if ( iItem < 0 || iItem >= (int)m_vecItems.Size() ) return ;
-  CFileItem* pItem = m_vecItems[iItem];
-  CStdString strPath = pItem->m_strPath;
-
-  CStdString strExtension;
-  CUtil::GetExtension(pItem->m_strPath, strExtension);
-
-  if (pItem->m_bIsFolder)
-  {
-    m_iSelectedItem = -1;
-    if ( pItem->m_bIsShareOrDrive )
-    {
-      if ( !g_passwordManager.IsItemUnlocked( pItem, "video" ) )
-        return ;
-
-      if ( !HaveDiscOrConnection( pItem->m_strPath, pItem->m_iDriveType ) )
-        return ;
-    }
-    Update(strPath);
-  }
-  else
-  {
-    m_iSelectedItem = m_viewControl.GetSelectedItem();
-    PlayMovie(pItem);
-  }
 }
 
 void CGUIWindowVideoYear::OnInfo(int iItem)

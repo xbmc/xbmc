@@ -1358,6 +1358,13 @@ void CFileItemList::Add(CFileItem* pItem)
     m_map.insert(MAPFILEITEMSPAIR(pItem->m_strPath, pItem));
 }
 
+void CFileItemList::AddFront(CFileItem* pItem)
+{
+  m_items.insert(m_items.begin(), pItem);
+  if (m_fastLookup)
+    m_map.insert(MAPFILEITEMSPAIR(pItem->m_strPath, pItem));
+}
+
 void CFileItemList::Remove(CFileItem* pItem)
 {
   for (IVECFILEITEMS it = m_items.begin(); it != m_items.end(); ++it)
@@ -1479,6 +1486,10 @@ void CFileItemList::Sort(FILEITEMLISTCOMPARISONFUNC func)
 
 void CFileItemList::Sort(SORT_METHOD sortMethod, SORT_ORDER sortOrder)
 {
+  //  Already sorted?
+  if (sortMethod==m_sortMethod && m_sortOrder==sortOrder)
+    return;
+
   switch (sortMethod)
   {
   case SORT_METHOD_LABEL:

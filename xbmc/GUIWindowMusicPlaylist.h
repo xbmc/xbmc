@@ -14,7 +14,6 @@ public:
 protected:
   virtual bool GetDirectory(const CStdString &strDirectory, CFileItemList &items);
   virtual void UpdateButtons();
-  virtual void OnClick(int iItem);
   virtual void SortItems(CFileItemList& items) {};
   virtual void OnRetrieveMusicInfo(CFileItemList& items) {};
   virtual void OnItemLoaded(CFileItem* pItem);
@@ -22,6 +21,7 @@ protected:
   virtual bool Update(const CStdString& strDirectory);
   virtual void OnPopupMenu(int iItem);
   void OnMove(int iItem, int iAction);
+  virtual void OnPlayMedia(int iItem);
 
   void SavePlayList();
   void ClearPlayList();

@@ -9,6 +9,8 @@ public:
 
 protected:
   virtual bool HideParentDirItems();
+  virtual CStdString GetLockType();
+  virtual bool HandleArchives();
 };
 
 class CGUIViewStateWindowVideoFiles : public CGUIViewStateWindowVideo
@@ -63,4 +65,5 @@ public:
 
 protected:
   virtual void SaveViewState();
+  virtual int GetPlaylist();
 };
