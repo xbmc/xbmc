@@ -44,9 +44,6 @@ void CGUIListControl::Render()
 {
   if (!UpdateEffectState()) return ;
 
-  CStdStringW labelUnicode;
-  CStdStringW labelUnicode2;
-
   // Free memory not used on screen at the moment, do this first so there's more memory for the new items.
   if (m_iOffset < 30000)
   {
@@ -154,6 +151,7 @@ void CGUIListControl::Render()
         DWORD dMaxWidth = (m_dwWidth - m_iImageWidth - 16);
         if ( strLabel2.size() > 0 && m_label2.font)
         {
+          CStdStringW labelUnicode2;
           g_charsetConverter.stringCharsetToFontCharset(strLabel2, labelUnicode2);
           if ( m_label.offsetY == m_label2.offsetY )
           {
@@ -164,6 +162,7 @@ void CGUIListControl::Render()
           }
         }
 
+        CStdStringW labelUnicode;
         g_charsetConverter.stringCharsetToFontCharset(pItem->GetLabel(), labelUnicode);
         float fPosY = (float)iPosY + m_label.offsetY;
         if (m_label.align & XBFONT_CENTER_Y)
@@ -196,6 +195,7 @@ void CGUIListControl::Render()
         iPosX += m_iImageWidth + m_label.offsetX + 10;
         if (strLabel2.size() > 0 && m_label2.font)
         {
+          CStdStringW labelUnicode2;
           g_charsetConverter.stringCharsetToFontCharset(strLabel2, labelUnicode2);
           DWORD dwColor = m_label2.textColor;
           if (pItem->IsSelected())
@@ -210,12 +210,9 @@ void CGUIListControl::Render()
           float fPosY = (float)iPosY + m_label2.offsetY;
           if (m_label.align & XBFONT_CENTER_Y)
           {
-            float fTextHeight = 0;
-            float fTextWidth = 0;
-            m_label.font->GetTextExtent(labelUnicode.c_str(), &fTextWidth, &fTextHeight);
-            fPosY = (float)iPosY + (m_iItemHeight - fTextHeight) / 2;
+            fPosY = (float)iPosY + m_iItemHeight * 0.5f;
           }
-          m_label2.font->DrawText((float)iPosX, fPosY, dwColor, m_label2.shadowColor, labelUnicode2.c_str(), XBFONT_RIGHT);
+          m_label2.font->DrawText((float)iPosX, fPosY, dwColor, m_label2.shadowColor, labelUnicode2.c_str(), (m_label.align & XBFONT_CENTER_Y) | XBFONT_RIGHT);
         }
         iPosY += m_iItemHeight + m_iSpaceBetweenItems;
       }
