@@ -2,6 +2,10 @@
 #include "GUIMediaWindow.h"
 #include "util.h"
 #include "detectdvdtype.h"
+#include "PlayListPlayer.h"
+#include "FileSystem/ZipManager.h"
+#include "GUIPassword.h"
+#include "Application.h"
 #ifdef PRE_SKIN_VERSION_2_0_COMPATIBILITY
 #include "SkinInfo.h"
 #endif
@@ -19,13 +23,39 @@ CGUIMediaWindow::CGUIMediaWindow(DWORD id, const char *xmlFile)
     : CGUIWindow(id, xmlFile)
 {
   m_vecItems.m_strPath = "?";
-  m_vecItems.m_bIsFolder = true;
   m_iLastControl = -1;
   m_iSelectedItem = -1;
+
+  m_guiState.reset(CGUIViewState::GetViewState(GetID(), m_vecItems));
 }
 
 CGUIMediaWindow::~CGUIMediaWindow()
 {
+}
+
+void CGUIMediaWindow::OnWindowLoaded()
+{
+  CGUIWindow::OnWindowLoaded();
+  m_viewControl.Reset();
+  m_viewControl.SetParentWindow(GetID());
+  m_viewControl.AddView(VIEW_METHOD_LIST, GetControl(CONTROL_LIST));
+  m_viewControl.AddView(VIEW_METHOD_ICONS, GetControl(CONTROL_THUMBS));
+  m_viewControl.AddView(VIEW_METHOD_LARGE_ICONS, GetControl(CONTROL_THUMBS));
+  m_viewControl.AddView(VIEW_METHOD_LARGE_LIST, GetControl(CONTROL_BIG_LIST));
+  m_viewControl.SetViewControlID(CONTROL_BTNVIEWASICONS);
+}
+
+void CGUIMediaWindow::OnWindowUnload()
+{
+  CGUIWindow::OnWindowUnload();
+  m_viewControl.Reset();
+}
+
+const CFileItem *CGUIMediaWindow::GetCurrentListItem() const
+{
+  int iItem = m_viewControl.GetSelectedItem();
+  if (iItem < 0) return NULL;
+  return m_vecItems[iItem];
 }
 
 bool CGUIMediaWindow::OnAction(const CAction &action)
@@ -64,18 +94,16 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
       int iControl = message.GetSenderId();
       if (iControl == CONTROL_BTNVIEWASICONS)
       {
-        auto_ptr<CGUIViewState> pState(CGUIViewState::GetViewState(GetID(), m_vecItems));
-        if (pState.get())
-          while (!m_viewControl.HasViewMode(pState->SetNextViewAsControl()));
+        if (m_guiState.get())
+          while (!m_viewControl.HasViewMode(m_guiState->SetNextViewAsControl()));
 
         UpdateButtons();
         return true;
       }
       else if (iControl == CONTROL_BTNSORTASC) // sort asc
       {
-        auto_ptr<CGUIViewState> pState(CGUIViewState::GetViewState(GetID(), m_vecItems));
-        if (pState.get())
-          pState->SetNextSortOrder();
+        if (m_guiState.get())
+          m_guiState->SetNextSortOrder();
 
         UpdateButtons();
         OnSort();
@@ -84,9 +112,8 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
       }
       else if (iControl == CONTROL_BTNSORTBY) // sort by
       {
-        auto_ptr<CGUIViewState> pState(CGUIViewState::GetViewState(GetID(), m_vecItems));
-        if (pState.get())
-          pState->SetNextSortMethod();
+        if (m_guiState.get())
+          m_guiState->SetNextSortMethod();
 
         int nItem = m_viewControl.GetSelectedItem();
         CFileItem* pItem = m_vecItems[nItem];
@@ -102,6 +129,43 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
           {
             m_viewControl.SetSelectedItem(i);
             break;
+          }
+        }
+
+        //  set the currently playing item as selected, if its in this directory
+        CStdString strDirectory = m_vecItems.m_strPath;
+        if (CUtil::HasSlashAtEnd(strDirectory))
+          strDirectory.Delete(strDirectory.size() - 1);
+        int iPlaylist=m_guiState->GetPlaylist();
+        if (iPlaylist!=PLAYLIST_NONE)
+        {
+          if (!strDirectory.IsEmpty() && m_guiState.get() && g_playlistPlayer.GetCurrentPlaylist()==iPlaylist && strDirectory==m_guiState->GetPlaylistDirectory())
+          {
+            int nSong = g_playlistPlayer.GetCurrentSong();
+            CStdString strCurrentSong = g_playlistPlayer.GetPlaylist(iPlaylist)[nSong].GetFileName();
+            g_playlistPlayer.GetPlaylist(iPlaylist).Clear();
+            g_playlistPlayer.Reset();
+            int nFolderCount = 0;
+            int iNoSongs = 0;
+            for (int i = 0; i < (int)m_vecItems.Size(); i++)
+            {
+              CFileItem* pItem = m_vecItems[i];
+              if (pItem->m_bIsFolder)
+              {
+                nFolderCount++;
+                continue;
+              }
+              if (!pItem->IsPlayList() && !pItem->IsZIP() && !pItem->IsRAR())
+              {
+                CPlayList::CPlayListItem playlistItem ;
+                CUtil::ConvertFileItemToPlayListItem(pItem, playlistItem);
+                g_playlistPlayer.GetPlaylist(iPlaylist).Add(playlistItem);
+              }
+              else iNoSongs++;
+
+              if (strCurrentSong == pItem->m_strPath)
+                g_playlistPlayer.SetCurrentSong(i - nFolderCount - iNoSongs);
+            }
           }
         }
 
@@ -147,7 +211,11 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
           else if (m_vecItems.IsCDDA() || m_vecItems.IsOnDVD())
           { // Disc has changed and we are inside a DVD Drive share, get out of here :)
             if (IsActive()) Update("");
-            else m_vecItems.m_strPath="";
+            else 
+            {
+              m_history.ClearPathHistory();
+              m_vecItems.m_strPath="";
+            }
           }
 
           return true;
@@ -166,6 +234,92 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
       }
     }
     break;
+
+  case GUI_MSG_PLAYBACK_STARTED:
+    {
+      UpdateButtons();
+    }
+    break;
+
+  case GUI_MSG_PLAYBACK_ENDED:
+  case GUI_MSG_PLAYBACK_STOPPED:
+  case GUI_MSG_PLAYLISTPLAYER_STOPPED:
+    {
+      CStdString strDirectory = m_vecItems.m_strPath;
+      if (CUtil::HasSlashAtEnd(strDirectory))
+        strDirectory.Delete(strDirectory.size() - 1);
+      if (m_guiState.get() && strDirectory==m_guiState->GetPlaylistDirectory())
+      {
+        for (int i = 0; i < m_vecItems.Size(); ++i)
+        {
+          CFileItem* pItem = m_vecItems[i];
+          if (pItem && pItem->IsSelected())
+          {
+            pItem->Select(false);
+            break;
+          }
+        }
+      }
+
+      UpdateButtons();
+    }
+    break;
+
+  case GUI_MSG_PLAYLISTPLAYER_STARTED:
+  case GUI_MSG_PLAYLISTPLAYER_CHANGED:
+    {
+      // started playing another song...
+      int nCurrentPlaylist = message.GetParam1();
+      CStdString strDirectory = m_vecItems.m_strPath;
+      if (CUtil::HasSlashAtEnd(strDirectory))
+        strDirectory.Delete(strDirectory.size() - 1);
+      if (m_guiState.get() && g_playlistPlayer.GetCurrentPlaylist()==m_guiState->GetPlaylist() && strDirectory==m_guiState->GetPlaylistDirectory())
+      {
+        int nCurrentItem = 0;
+        int nPreviousItem = -1;
+        if (message.GetMessage() == GUI_MSG_PLAYLISTPLAYER_STARTED)
+        {
+          nCurrentItem = message.GetParam2();
+        }
+        else if (message.GetMessage() == GUI_MSG_PLAYLISTPLAYER_CHANGED)
+        {
+          nCurrentItem = LOWORD(message.GetParam2());
+          nPreviousItem = HIWORD(message.GetParam2());
+        }
+
+        int nFolderCount = m_vecItems.GetFolderCount();
+
+        // is the previous item in this directory
+        for (int i = nFolderCount, n = 0; i < m_vecItems.Size(); i++)
+        {
+          CFileItem* pItem = m_vecItems[i];
+
+          if (pItem)
+            pItem->Select(false);
+        }
+
+        if (nFolderCount + nCurrentItem < m_vecItems.Size())
+        {
+          for (int i = nFolderCount, n = 0; i < m_vecItems.Size(); i++)
+          {
+            CFileItem* pItem = m_vecItems[i];
+
+            if (pItem)
+            {
+              if (!pItem->IsPlayList() && !pItem->IsNFO() && !pItem->IsRAR() && !pItem->IsZIP())
+                n++;
+              if ((n - 1) == nCurrentItem)
+              {
+                pItem->Select(true);
+                break;
+              }
+            }
+          } // for (int i=nFolderCount, n=0; i<(int)m_vecItems.size(); i++)
+        }
+
+      }
+    }
+    break;
   }
 
   return CGUIWindow::OnMessage(message);
@@ -173,18 +327,17 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
 
 void CGUIMediaWindow::UpdateButtons()
 {
-  auto_ptr<CGUIViewState> pState(CGUIViewState::GetViewState(GetID(), m_vecItems));
-  if (pState.get())
+  if (m_guiState.get())
   {
     // Update sorting controls
-    if (pState->GetSortOrder()==SORT_ORDER_NONE)
+    if (m_guiState->GetSortOrder()==SORT_ORDER_NONE)
     {
       CONTROL_DISABLE(CONTROL_BTNSORTASC);
     }
     else
     {
       CONTROL_ENABLE(CONTROL_BTNSORTASC);
-      if (pState->GetSortOrder()==SORT_ORDER_ASC)
+      if (m_guiState->GetSortOrder()==SORT_ORDER_ASC)
       {
         CGUIMessage msg(GUI_MSG_DESELECTED, GetID(), CONTROL_BTNSORTASC);
         g_graphicsContext.SendMessage(msg);
@@ -197,10 +350,10 @@ void CGUIMediaWindow::UpdateButtons()
     }
 
     // Update list/thumb control
-    m_viewControl.SetCurrentView(pState->GetViewAsControl());
+    m_viewControl.SetCurrentView(m_guiState->GetViewAsControl());
 
     // Update sort by button
-    if (pState->GetSortMethod()==SORT_METHOD_NONE)
+    if (m_guiState->GetSortMethod()==SORT_METHOD_NONE)
     {
       CONTROL_DISABLE(CONTROL_BTNSORTBY);
     }
@@ -208,7 +361,7 @@ void CGUIMediaWindow::UpdateButtons()
     {
       CONTROL_ENABLE(CONTROL_BTNSORTBY);
     }
-    SET_CONTROL_LABEL(CONTROL_BTNSORTBY, pState->GetSortMethodLabel());
+    SET_CONTROL_LABEL(CONTROL_BTNSORTBY, m_guiState->GetSortMethodLabel());
   }
 
   int iItems = m_vecItems.Size();
@@ -231,13 +384,11 @@ void CGUIMediaWindow::ClearFileItems()
 
 void CGUIMediaWindow::SortItems(CFileItemList &items)
 {
-  auto_ptr<CGUIViewState> pState(CGUIViewState::GetViewState(GetID(), items));
+  auto_ptr<CGUIViewState> guiState(CGUIViewState::GetViewState(GetID(), items));
 
-  if (pState.get() && 
-      (pState->GetSortMethod()!=items.GetSortMethod() || 
-       pState->GetSortOrder()!=items.GetSortOrder()))
+  if (guiState.get())
   {
-    items.Sort(pState->GetSortMethod(), pState->GetSortOrder());
+    items.Sort(guiState->GetSortMethod(), guiState->GetSortOrder());
 
     // Should these items be saved to the hdd
     if (items.GetCacheToDisc())
@@ -247,13 +398,11 @@ void CGUIMediaWindow::SortItems(CFileItemList &items)
 
 void CGUIMediaWindow::FormatItemLabels()
 {
-  auto_ptr<CGUIViewState> pState(CGUIViewState::GetViewState(GetID(), m_vecItems));
-
-  if (!pState.get())
+  if (!m_guiState.get())
     return;
 
   CGUIViewState::LABEL_MASKS labelMasks;
-  pState->GetSortMethodLabelMasks(labelMasks);
+  m_guiState->GetSortMethodLabelMasks(labelMasks);
 
   for (int i=0; i<m_vecItems.Size(); ++i)
   {
@@ -284,103 +433,229 @@ bool CGUIMediaWindow::Update(const CStdString &strDirectory)
     CFileItem* pItem = m_vecItems[iItem];
     if (!pItem->IsParentFolder())
     {
-      strSelectedItem = pItem->m_strPath;
-      m_history.Set(strSelectedItem, m_vecItems.m_strPath);
+      GetDirectoryHistoryString(pItem, strSelectedItem);
     }
   }
+
+  CStdString strOldDirectory = m_vecItems.m_strPath;
+
+  m_history.SetSelectedItem(strSelectedItem, strOldDirectory);
+
   ClearFileItems();
 
-  CStdString strParentPath;
-  bool bParentExists = false;
-  if (strDirectory != "Q:\\scripts")
-    bParentExists = CUtil::GetParentPath(strDirectory, strParentPath);
+  CStdString strParentPath=m_history.GetParentPath();
 
-  m_rootDir.GetDirectory(strDirectory, m_vecItems);
-  
-  auto_ptr<CGUIViewState> pState(CGUIViewState::GetViewState(GetID(), m_vecItems));
-
-  // check if current directory is a root share
-  if ( !m_rootDir.IsShare(strDirectory) )
+  if (m_guiState.get() && !m_guiState->HideParentDirItems())
   {
-    // no, do we got a parent dir?
-    if ( bParentExists )
-    {
-      // yes
-      if (pState.get() && !pState->HideParentDirItems())
-      {
-        CFileItem *pItem = new CFileItem("..");
-        pItem->m_strPath = strParentPath;
-        m_vecItems.Add(pItem);
-      }
-      m_strParentPath = strParentPath;
-    }
-  }
-  else
-  {
-    // yes, this is the root of a share
-    // add parent path to the virtual directory
-    if (pState.get() && !pState->HideParentDirItems())
-    {
-      CFileItem *pItem = new CFileItem("..");
-      pItem->m_strPath = "";
-      m_vecItems.Add(pItem);
-    }
-    m_strParentPath = "";
+    CFileItem *pItem = new CFileItem("..");
+    pItem->m_strPath = strParentPath;
+    m_vecItems.Add(pItem);
   }
 
-  m_vecItems.SetThumbs();
-  if (pState.get() && pState->HideExtensions())
+  if (!m_rootDir.GetDirectory(strDirectory, m_vecItems))
+  {
+    CLog::Log(LOGERROR,"GetDirectory(%s) failed", strDirectory.c_str());
+    return !Update(strOldDirectory); // We assume, we can get the parent 
+  }                                  // directory again, but we have to 
+                                     // return false to be able to eg. show 
+                                     // an error message.
+
+  // if we're getting the root bookmark listing
+  // make sure the path history is clean
+  if (strDirectory.IsEmpty())
+    m_history.ClearPathHistory();
+
+  if (m_guiState.get() && m_guiState->HideExtensions())
     m_vecItems.RemoveExtensions();
 
-  m_vecItems.FillInDefaultIcons();
+  if (!m_vecItems.IsVirtualDirectoryRoot())
+  {
+    m_vecItems.SetThumbs();
+    m_vecItems.FillInDefaultIcons();
+  }
 
   m_iLastControl = GetFocusedControl();
+  m_guiState.reset(CGUIViewState::GetViewState(GetID(), m_vecItems));
   OnSort();
   UpdateButtons();
 
-  strSelectedItem = m_history.Get(m_vecItems.m_strPath);
+  int iCurrentPlaylistSong = -1;
+  // Search current playlist item
+  CStdString strCurrentDirectory = m_vecItems.m_strPath;
+  if (CUtil::HasSlashAtEnd(strCurrentDirectory))
+    strCurrentDirectory.Delete(strCurrentDirectory.size() - 1);
+  // Is this window responsible for the current playlist?
+  if (m_guiState.get() && g_playlistPlayer.GetCurrentPlaylist()==m_guiState->GetPlaylist() && strCurrentDirectory==m_guiState->GetPlaylistDirectory())
+  {
+    iCurrentPlaylistSong = g_playlistPlayer.GetCurrentSong();
+  }
 
-  for (int i = 0; i < (int)m_vecItems.Size(); ++i)
+  bool bSelectedFound = false, bCurrentSongFound = false;
+  int iSongInDirectory = -1;
+  for (int i = 0; i < m_vecItems.Size(); ++i)
   {
     CFileItem* pItem = m_vecItems[i];
-    if (pItem->m_strPath == strSelectedItem)
+
+    // unselect all items
+    if (pItem)
+      pItem->Select(false);
+
+    // Update selected item
+    if (!bSelectedFound)
     {
-      m_viewControl.SetSelectedItem(i);
-      break;
+      CStdString strHistory;
+      GetDirectoryHistoryString(pItem, strHistory);
+      if (strHistory == strSelectedItem)
+      {
+        m_viewControl.SetSelectedItem(i);
+        bSelectedFound = true;
+      }
+    }
+
+    // synchronize playlist with current directory
+    if (!bCurrentSongFound && iCurrentPlaylistSong > -1)
+    {
+      if (!pItem->m_bIsFolder && !pItem->IsPlayList() && !pItem->IsNFO())
+        iSongInDirectory++;
+      if (iSongInDirectory == iCurrentPlaylistSong)
+      {
+        pItem->Select(true);
+        bCurrentSongFound = true;
+      }
     }
   }
+
+  m_history.AddPath(strDirectory);
+
   return true;
 }
 
-void CGUIMediaWindow::OnClick(int iItem)
+//  returns true, if the click is handled
+bool CGUIMediaWindow::OnClick(int iItem)
 {
-  if ( iItem < 0 || iItem >= (int)m_vecItems.Size() ) return ;
+  if ( iItem < 0 || iItem >= (int)m_vecItems.Size() ) return true;
   CFileItem* pItem = m_vecItems[iItem];
 
-  if (pItem->m_bIsFolder)
+  if (pItem->IsParentFolder())
+  {
+    GoParentFolder();
+    return true;
+  }
+  else if (pItem->m_bIsFolder)
   {
     if ( pItem->m_bIsShareOrDrive )
     {
-      if ( !HaveDiscOrConnection( pItem->m_strPath, pItem->m_iDriveType ) )
-        return ;
+      const CStdString& strLockType=m_guiState->GetLockType();
+      if (!strLockType.IsEmpty() && !g_passwordManager.IsItemUnlocked(pItem, strLockType))
+          return true;
+
+      if (!HaveDiscOrConnection(pItem->m_strPath, pItem->m_iDriveType))
+        return true;
     }
-    CStdString directory = pItem->m_strPath;
-    Update(directory);
+
+    CFileItem directory(*pItem);
+    if (!Update(directory.m_strPath))
+      ShowShareErrorMessage(&directory);
+
+    return true;
   }
+  else if (pItem->IsZIP() && m_guiState.get() && m_guiState->HandleArchives()) // mount zip archive
+  {
+    CShare shareZip;
+    shareZip.strPath.Format("zip://Z:\\,%i,,%s,\\",1, pItem->m_strPath.c_str() );
+    m_rootDir.AddShare(shareZip);
+    Update(shareZip.strPath);
+
+    return true;
+  }
+  else if (pItem->IsRAR()&& m_guiState.get() && m_guiState->HandleArchives()) // mount rar archive
+  {
+    CShare shareRar;
+    shareRar.strPath.Format("rar://Z:\\,%i,,%s,\\",EXFILE_AUTODELETE, pItem->m_strPath.c_str() );
+    m_rootDir.AddShare(shareRar);
+    Update(shareRar.strPath);
+
+    return true;
+  }
+  else
+  {
+    m_iSelectedItem = m_viewControl.GetSelectedItem();
+
+    if (pItem->IsPlayList())
+    {
+      CStdString strPath=pItem->m_strPath;
+      LoadPlayList(pItem->m_strPath);
+      return true;
+    }
+    else if (m_guiState.get() && m_guiState->AutoPlayNextItem())
+    {
+      //play and add current directory to temporary playlist
+      int iPlaylist=m_guiState->GetPlaylist();
+      if (iPlaylist!=PLAYLIST_NONE)
+      {
+        int nFolderCount = 0;
+        g_playlistPlayer.GetPlaylist( iPlaylist ).Clear();
+        g_playlistPlayer.Reset();
+        int iNoSongs = 0;
+        for ( int i = 0; i < m_vecItems.Size(); i++ )
+        {
+          CFileItem* pItem = m_vecItems[i];
+          
+          if (pItem->m_bIsFolder)
+          {
+            nFolderCount++;
+            continue;
+          }
+          if (!pItem->IsPlayList() && !pItem->IsZIP() && !pItem->IsRAR())
+          {
+            CPlayList::CPlayListItem playlistItem ;
+            CUtil::ConvertFileItemToPlayListItem(pItem, playlistItem);
+            g_playlistPlayer.GetPlaylist(iPlaylist).Add(playlistItem);
+          }
+          else if (i <= iItem)
+            iNoSongs++;
+        }
+
+        // Save current window and directory to know where the selected item was
+        CStdString strPlayListDirectory=m_vecItems.m_strPath;
+        if (CUtil::HasSlashAtEnd(strPlayListDirectory))
+          strPlayListDirectory.Delete(strPlayListDirectory.size() - 1);
+
+        if (m_guiState.get())
+          m_guiState->SetPlaylistDirectory(strPlayListDirectory);
+
+        g_playlistPlayer.SetCurrentPlaylist(iPlaylist);
+        g_playlistPlayer.Play(iItem - nFolderCount - iNoSongs);
+      }
+
+      return true;
+    }
+    else
+    {
+      // Reset Playlistplayer, playback started now does
+      // not use the playlistplayer.
+      g_playlistPlayer.Reset();
+      g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_NONE);
+      OnPlayMedia(iItem);
+      return true;
+    }
+  }
+
+  return false;
 }
 
-bool CGUIMediaWindow::HaveDiscOrConnection( CStdString& strPath, int iDriveType )
+bool CGUIMediaWindow::HaveDiscOrConnection(CStdString& strPath, int iDriveType)
 {
-  if ( iDriveType == SHARE_TYPE_DVD )
+  if (iDriveType==SHARE_TYPE_DVD)
   {
     MEDIA_DETECT::CDetectDVDMedia::WaitMediaReady();
-    if ( !MEDIA_DETECT::CDetectDVDMedia::IsDiscInDrive() )
+    if (!MEDIA_DETECT::CDetectDVDMedia::IsDiscInDrive())
     {
       CGUIDialogOK::ShowAndGetInput(218, 219, 0, 0);
       return false;
     }
   }
-  else if ( iDriveType == SHARE_TYPE_REMOTE )
+  else if (iDriveType==SHARE_TYPE_REMOTE)
   {
     // TODO: Handle not connected to a remote share
     if ( !CUtil::IsEthernetConnected() )
@@ -389,43 +664,157 @@ bool CGUIMediaWindow::HaveDiscOrConnection( CStdString& strPath, int iDriveType 
       return false;
     }
   }
-  else
-    return true;
+
   return true;
+}
+
+void CGUIMediaWindow::ShowShareErrorMessage(CFileItem* pItem)
+{
+  if (pItem->m_bIsShareOrDrive)
+  {
+    int idMessageText=0;
+    const CURL& url=pItem->GetAsUrl();
+    const CStdString& strHostName=url.GetHostName();
+
+    if (pItem->m_iDriveType!=SHARE_TYPE_REMOTE) //  Local shares incl. dvd drive
+      idMessageText=15300;
+    else if (url.GetProtocol()=="xbms" && strHostName.IsEmpty()) //  xbms server discover
+      idMessageText=15302;
+    else if (url.GetProtocol()=="smb" && strHostName.IsEmpty()) //  smb workgroup
+      idMessageText=15303;
+    else  //  All other remote shares
+      idMessageText=15301;
+
+    CGUIDialogOK::ShowAndGetInput(220, idMessageText, 0, 0);
+  }
 }
 
 void CGUIMediaWindow::GoParentFolder()
 {
-  CStdString strPath(m_strParentPath), strOldPath(m_vecItems.m_strPath);
-  Update(strPath);
-  UpdateButtons();
+  m_history.DumpPathHistory();
+  // remove current directory if its on the stack
+  if (m_history.GetParentPath() == m_vecItems.m_strPath)
+      m_history.RemoveParentPath();
+
+  // if vector is not empty, pop parent
+  // if vector is empty, parent is bookmark listing
+  CStdString strParent=m_history.RemoveParentPath();
+
+  // check for special archive path
+  const CURL& url=m_vecItems.GetAsUrl();
+  if ((url.GetProtocol() == "rar") || (url.GetProtocol() == "zip")) 
+  {
+    // check for step-below, if, unmount rar
+    if (url.GetFileName().IsEmpty())
+    {
+      if (url.GetProtocol() == "zip")
+        g_ZipManager.release(m_vecItems.m_strPath); // release resources
+      m_rootDir.RemoveShare(m_vecItems.m_strPath);
+      CStdString strPath;
+      CUtil::GetDirectory(url.GetHostName(),strPath);
+      Update(strPath);
+      return;
+    }
+  }
+
+  CStdString strOldPath(m_vecItems.m_strPath);
+  Update(strParent);
 
   if (!g_guiSettings.GetBool("LookAndFeel.FullDirectoryHistory"))
-    m_history.Remove(strOldPath); //Delete current path
+    m_history.RemoveSelectedItem(strOldPath); //Delete current path
 
 }
 
-void CGUIMediaWindow::OnWindowLoaded()
+void CGUIMediaWindow::GetDirectoryHistoryString(const CFileItem* pItem, CStdString& strHistoryString)
 {
-  CGUIWindow::OnWindowLoaded();
-  m_viewControl.Reset();
-  m_viewControl.SetParentWindow(GetID());
-  m_viewControl.AddView(VIEW_METHOD_LIST, GetControl(CONTROL_LIST));
-  m_viewControl.AddView(VIEW_METHOD_ICONS, GetControl(CONTROL_THUMBS));
-  m_viewControl.AddView(VIEW_METHOD_LARGE_ICONS, GetControl(CONTROL_THUMBS));
-  m_viewControl.AddView(VIEW_METHOD_LARGE_LIST, GetControl(CONTROL_BIG_LIST));
-  m_viewControl.SetViewControlID(CONTROL_BTNVIEWASICONS);
+  if (pItem->m_bIsShareOrDrive)
+  {
+    // We are in the virual directory
+
+    // History string of the DVD drive
+    // must be handel separately
+    if (pItem->m_iDriveType == SHARE_TYPE_DVD)
+    {
+      // Remove disc label from item label
+      // and use as history string, m_strPath
+      // can change for new discs
+      CStdString strLabel = pItem->GetLabel();
+      int nPosOpen = strLabel.Find('(');
+      int nPosClose = strLabel.ReverseFind(')');
+      if (nPosOpen > -1 && nPosClose > -1 && nPosClose > nPosOpen)
+      {
+        strLabel.Delete(nPosOpen + 1, (nPosClose) - (nPosOpen + 1));
+        strHistoryString = strLabel;
+      }
+      else
+        strHistoryString = strLabel;
+    }
+    else
+    {
+      // Other items in virual directory
+      CStdString strPath = pItem->m_strPath;
+      while (CUtil::HasSlashAtEnd(strPath))
+        strPath.Delete(strPath.size() - 1);
+
+      strHistoryString = pItem->GetLabel() + strPath;
+    }
+  }
+  else
+  {
+    // Normal directory items
+    strHistoryString = pItem->m_strPath;
+
+    if (CUtil::HasSlashAtEnd(strHistoryString))
+      strHistoryString.Delete(strHistoryString.size() - 1);
+  }
 }
 
-void CGUIMediaWindow::OnWindowUnload()
+void CGUIMediaWindow::SetHistoryForPath(const CStdString& strDirectory)
 {
-  CGUIWindow::OnWindowUnload();
-  m_viewControl.Reset();
+  if (!strDirectory.IsEmpty())
+  {
+    // Build the directory history for default path
+    CStdString strPath, strParentPath;
+    strPath = strDirectory;
+    while (CUtil::HasSlashAtEnd(strPath))
+      strPath.Delete(strPath.size() - 1);
+
+    CFileItemList items;
+    m_rootDir.GetDirectory("", items);
+
+    m_history.ClearPathHistory();
+
+    while (CUtil::GetParentPath(strPath, strParentPath))
+    {
+      bool bSet = false;
+      for (int i = 0; i < (int)items.Size(); ++i)
+      {
+        CFileItem* pItem = items[i];
+        while (CUtil::HasSlashAtEnd(pItem->m_strPath))
+          pItem->m_strPath.Delete(pItem->m_strPath.size() - 1);
+        if (pItem->m_strPath == strPath)
+        {
+          CStdString strHistory;
+          GetDirectoryHistoryString(pItem, strHistory);
+          m_history.SetSelectedItem(strHistory, "");
+          m_history.AddPathFront(strPath);
+          return ;
+        }
+      }
+
+      m_history.AddPathFront(strPath);
+      m_history.SetSelectedItem(strPath, strParentPath);
+      strPath = strParentPath;
+      while (CUtil::HasSlashAtEnd(strPath))
+        strPath.Delete(strPath.size() - 1);
+    }
+  }
+  else
+    m_history.ClearPathHistory();
 }
 
-const CFileItem *CGUIMediaWindow::GetCurrentListItem() const
+void CGUIMediaWindow::OnPlayMedia(int iItem)
 {
-  int iItem = m_viewControl.GetSelectedItem();
-  if (iItem < 0) return NULL;
-  return m_vecItems[iItem];
+  CFileItem* pItem=m_vecItems[iItem];
+  g_application.PlayFile(*pItem);
 }

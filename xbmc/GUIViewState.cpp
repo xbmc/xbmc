@@ -3,6 +3,9 @@
 #include "GUIViewStateMusic.h"
 #include "GUIViewStateVideo.h"
 #include "GUIViewStatePicturesProgramsScripts.h"
+#include "playlistplayer.h"
+
+CStdString CGUIViewState::m_strPlaylistDirectory;
 
 CGUIViewState* CGUIViewState::GetViewState(int windowId, const CFileItemList& items)
 {
@@ -196,6 +199,36 @@ bool CGUIViewState::HideExtensions()
 bool CGUIViewState::HideParentDirItems()
 {
   return g_guiSettings.GetBool("FileLists.HideParentDirItems");
+}
+
+int CGUIViewState::GetPlaylist()
+{
+  return PLAYLIST_NONE;
+}
+
+const CStdString& CGUIViewState::GetPlaylistDirectory()
+{
+  return m_strPlaylistDirectory;
+}
+
+void CGUIViewState::SetPlaylistDirectory(const CStdString& strDirectory)
+{
+  m_strPlaylistDirectory=strDirectory;
+}
+
+bool CGUIViewState::HandleArchives()
+{
+  return false;
+}
+
+bool CGUIViewState::AutoPlayNextItem()
+{
+  return false;
+}
+
+CStdString CGUIViewState::GetLockType()
+{
+  return "";
 }
 
 CGUIViewStateGeneral::CGUIViewStateGeneral(const CFileItemList& items) : CGUIViewState(items)

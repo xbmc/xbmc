@@ -265,7 +265,7 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
           // do nothing if the bookmark is locked, and update the panel with new bookmark settings
           if ( !g_passwordManager.IsItemUnlocked( &share, "myprograms" ) )
           {
-            UpdateDir("");
+            Update("");
             return false;
           }
           m_shareDirectory = share.strPath;    // since m_strDirectory can change, we always want something that won't.
@@ -576,16 +576,6 @@ void CGUIWindowPrograms::LoadDirectory(const CStdString& strDirectory, int idept
 
 bool CGUIWindowPrograms::Update(const CStdString &strDirectory)
 {
-  UpdateDir(strDirectory);
-  if (g_guiSettings.GetBool("ProgramFiles.UseAutoSwitching"))
-  {
-    UpdateButtons();
-  }
-  return true;
-}
-
-void CGUIWindowPrograms::UpdateDir(const CStdString &strDirectory)
-{
   bool bFlattenDir = g_guiSettings.GetBool("MyPrograms.Flatten");
   bool bOnlyDefaultXBE = g_guiSettings.GetBool("MyPrograms.DefaultXBEOnly");
   bool bParentPath(false);
@@ -673,8 +663,7 @@ void CGUIWindowPrograms::UpdateDir(const CStdString &strDirectory)
 
   if (strDirectory != "")
   {
-    auto_ptr<CGUIViewState> pState(CGUIViewState::GetViewState(GetID(), m_vecItems));
-    if (pState.get() && !pState->HideParentDirItems())
+    if (m_guiState.get() && !m_guiState->HideParentDirItems())
     {
       CFileItem *pItem = new CFileItem("..");
       pItem->m_strPath = strParentPath;
@@ -779,23 +768,26 @@ void CGUIWindowPrograms::UpdateDir(const CStdString &strDirectory)
   
   CUtil::ClearCache();
   m_vecItems.SetThumbs();
-  auto_ptr<CGUIViewState> pState(CGUIViewState::GetViewState(GetID(), m_vecItems));
-  if (pState.get() && pState->HideExtensions())
+  if (m_guiState.get() && m_guiState->HideExtensions())
     m_vecItems.RemoveExtensions();
   m_vecItems.FillInDefaultIcons();
+
+  m_guiState.reset(CGUIViewState::GetViewState(GetID(), m_vecItems));
   OnSort();
   UpdateButtons();
+
+  return true;
 }
 
-void CGUIWindowPrograms::OnClick(int iItem)
+bool CGUIWindowPrograms::OnClick(int iItem)
 {
-  if ( iItem < 0 || iItem >= (int)m_vecItems.Size() ) return ;
+  if ( iItem < 0 || iItem >= (int)m_vecItems.Size() ) return true;
   CFileItem* pItem = m_vecItems[iItem];
   if (pItem->m_bIsFolder)
   {
     // do nothing if the bookmark is locked
     if ( !g_passwordManager.IsItemUnlocked( pItem, "myprograms" ) )
-      return ;
+      return true;
 
     if (m_vecItems.IsVirtualDirectoryRoot())
       m_shareDirectory = pItem->m_strPath;
@@ -846,7 +838,7 @@ void CGUIWindowPrograms::OnClick(int iItem)
 
           CShortcut targetShortcut;
           if (FAILED(targetShortcut.Create(szNewPath)))
-            return ;
+            return true;
 
           shortcut.m_strPath = targetShortcut.m_strPath;
         }
@@ -878,6 +870,8 @@ void CGUIWindowPrograms::OnClick(int iItem)
     else
       CUtil::RunXBE(szPath,NULL,F_VIDEO(iRegion));
   }
+
+  return true;
 }
 
 void CGUIWindowPrograms::OnScan(CFileItemList& items, int& iTotalAppsFound)
@@ -1002,7 +996,6 @@ void CGUIWindowPrograms::GoParentFolder()
   m_vecItems.m_strPath = m_strParentPath;
   Update(m_vecItems.m_strPath);
 }
-
 
 void CGUIWindowPrograms::OnWindowLoaded()
 {

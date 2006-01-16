@@ -44,6 +44,12 @@ public:
   SORT_ORDER GetSortOrder() const { return m_sortOrder; }
   virtual bool HideExtensions();
   virtual bool HideParentDirItems();
+  virtual int GetPlaylist();
+  const CStdString& GetPlaylistDirectory();
+  void SetPlaylistDirectory(const CStdString& strDirectory);
+  virtual bool HandleArchives();
+  virtual bool AutoPlayNextItem();
+  virtual CStdString GetLockType();
 
 protected:
   CGUIViewState(const CFileItemList& items);  // no direct object creation, use GetViewState()
@@ -75,6 +81,8 @@ private:
   int m_currentSortMethod;
 
   SORT_ORDER m_sortOrder;
+
+  static CStdString m_strPlaylistDirectory;
 };
 
 class CGUIViewStateGeneral : public CGUIViewState

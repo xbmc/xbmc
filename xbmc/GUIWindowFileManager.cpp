@@ -415,7 +415,7 @@ bool CGUIWindowFileManager::Update(int iList, const CStdString &strDirectory)
     if (!pItem->IsParentFolder())
     {
       GetDirectoryHistoryString(pItem, strSelectedItem);
-      m_history[iList].Set(strSelectedItem, m_Directory[iList].m_strPath);
+      m_history[iList].SetSelectedItem(strSelectedItem, m_Directory[iList].m_strPath);
     }
   }
 
@@ -429,7 +429,7 @@ bool CGUIWindowFileManager::Update(int iList, const CStdString &strDirectory)
     return false;
   }
 
-  m_history[iList].Set(strSelectedItem, strOldDirectory);
+  m_history[iList].SetSelectedItem(strSelectedItem, strOldDirectory);
 
   ClearFileItems(iList);
 
@@ -455,7 +455,7 @@ bool CGUIWindowFileManager::Update(int iList, const CStdString &strDirectory)
   UpdateButtons();
   UpdateControl(iList);
 
-  strSelectedItem = m_history[iList].Get(m_Directory[iList].m_strPath);
+  strSelectedItem = m_history[iList].GetSelectedItem(m_Directory[iList].m_strPath);
   for (int i = 0; i < m_vecItems[iList].Size(); ++i)
   {
     CFileItem* pItem = m_vecItems[iList][i];
@@ -1012,7 +1012,7 @@ void CGUIWindowFileManager::GoParentFolder(int iList)
   Update(iList, strPath);
 
   if (!g_guiSettings.GetBool("LookAndFeel.FullDirectoryHistory"))
-    m_history[iList].Remove(strOldPath); //Delete current path
+    m_history[iList].RemoveSelectedItem(strOldPath); //Delete current path
 }
 
 void CGUIWindowFileManager::Render()

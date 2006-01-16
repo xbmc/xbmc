@@ -8,6 +8,10 @@ public:
   CGUIViewStateWindowMusic(const CFileItemList& items) : CGUIViewState(items) {}
 protected:
   virtual bool HideParentDirItems();
+  virtual int GetPlaylist();
+  virtual bool HandleArchives();
+  virtual bool AutoPlayNextItem();
+  virtual CStdString GetLockType();
 };
 
 class CGUIViewStateMusicDatabase : public CGUIViewStateWindowMusic
@@ -44,4 +48,6 @@ public:
 
 protected:
   virtual void SaveViewState();
+  virtual int GetPlaylist();
+  virtual bool AutoPlayNextItem();
 };

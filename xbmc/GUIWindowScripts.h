@@ -12,9 +12,8 @@ public:
   virtual void OnWindowLoaded();
 
 protected:
-  virtual void GoParentFolder();
-  virtual void OnClick(int iItem);
   virtual bool Update(const CStdString &strDirectory);
+  virtual void OnPlayMedia(int iItem);
 
   void OnInfo();
 
