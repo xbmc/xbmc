@@ -88,7 +88,7 @@ protected:
   int m_iNrOfPicturesNotToSkip;
   
   // classes
-  CDVDDemuxSPU* m_pDVDSpu;  
+  CDVDDemuxSPU* m_pDVDSpu;
   CDVDVideoCodec* m_pVideoCodec;
   
   CRITICAL_SECTION m_critCodecSection;
