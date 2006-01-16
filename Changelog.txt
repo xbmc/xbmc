@@ -5,6 +5,11 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 16-01-2006 fixed: Visibility reset due to home page fading from the code (affected The Orbs and CEOMR skins).
+ - 16-01-2006 fixed: Skin reload from a button/action from a dialog.
+ - 16-01-2006 fixed: Console control wasn't rendering any text.
+ - 16-01-2006 fixed: Hidden Keyboard input wasn't working 100%
+ - 16-01-2006 fixed: [ 1311457 ] ID3v2.2 embedded album art.
  - 16-01-2006 changed: my music and videos now playing no longer has any restriction on item movement, you can even the currently playing item
  - 16-01-2006 fixed: crash in dvdplayer if demux stream changed during playback
  - 16-01-2006 changed: more media window base class work (moved some common msgs, consolidated OnClick)

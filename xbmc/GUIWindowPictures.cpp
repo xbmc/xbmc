@@ -499,7 +499,6 @@ bool CGUIWindowPictures::GetDirectory(const CStdString &strDirectory, CFileItemL
     CLog::Log(LOGERROR,"GetDirectory(%s) failed", strDirectory.c_str());
     return false;
   }
-
   return true;
 }
 
