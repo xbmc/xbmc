@@ -112,3 +112,15 @@ void CGUIToggleButtonControl::SetColourDiffuse(D3DCOLOR colour)
   CGUIButtonControl::SetColourDiffuse(colour);
   m_selectButton.SetColourDiffuse(colour);
 }
+
+void CGUIToggleButtonControl::SetText(const CStdString &strLabel)
+{
+  CGUIButtonControl::SetText(strLabel);
+  m_selectButton.SetText(strLabel);
+}
+
+void CGUIToggleButtonControl::SetText(const wstring &strLabel)
+{
+  CGUIButtonControl::SetText(strLabel);
+  m_selectButton.SetText(strLabel);
+}
