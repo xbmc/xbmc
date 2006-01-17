@@ -126,8 +126,8 @@ void CComboRenderer::ManageDisplay()
   float fOffsetX1 = (float)rv.left;
   float fOffsetY1 = (float)rv.top;
   float fPixelRatio = g_stSettings.m_fPixelRatio;
-  float fMaxScreenWidth = (float)g_graphicsContext.GetWidth();
-  float fMaxScreenHeight = (float)g_graphicsContext.GetHeight();
+  float fMaxScreenWidth = (float)g_settings.m_ResInfo[g_graphicsContext.GetVideoResolution()].iWidth;
+  float fMaxScreenHeight = (float)g_settings.m_ResInfo[g_graphicsContext.GetVideoResolution()].iHeight;
   if (fOffsetX1 < 0) fOffsetX1 = 0;
   if (fOffsetY1 < 0) fOffsetY1 = 0;
   if (fScreenWidth + fOffsetX1 > fMaxScreenWidth) fScreenWidth = fMaxScreenWidth - fOffsetX1;
