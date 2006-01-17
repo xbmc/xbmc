@@ -140,8 +140,10 @@ namespace PYXBMC
     label.selectedColor = pControl->dwSelectedColor;
     label.offsetX = pControl->dwItemTextXOffset;
     label.offsetY = pControl->dwItemTextYOffset;
-    CLog::Log(LOGDEBUG, "CreateList: text=%x, select=%x, disabled=%x", label.textColor, label.selectedColor, label.disabledColor);
+    // Second label should have the same font, alignment, and colours as the first, but
+    // the offsets should be 0.
     CLabelInfo label2 = label;
+    label2.offsetX = label2.offsetY = 0;
 		pControl->pGUIControl = new CGUIListControl(
       pControl->iParentId,
       pControl->iControlId,
