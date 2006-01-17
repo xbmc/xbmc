@@ -8,7 +8,7 @@
   </coordinates>
 
   <animation effect="slide" time="400" start="300,0">WindowOpen</animation>
-  <animation effect=slide" time="400" start="300,0">WindowClose</animation>
+  <animation effect="slide" time="400" end="300,0">WindowClose</animation>
   <controls>
     <control>
       <description>Popup Kai Toast Dialog Background</description>
