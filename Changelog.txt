@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 17-01-2006 fixed: 720p or higher video playback with Hardware overlay renderer when GUI was 480p or lower.
  - 17-01-2006 fixed: Label2 alignment in listcontrols (including python)
  - 16-01-2006 fixed: Visibility reset due to home page fading from the code (affected The Orbs and CEOMR skins).
  - 16-01-2006 fixed: Skin reload from a button/action from a dialog.
