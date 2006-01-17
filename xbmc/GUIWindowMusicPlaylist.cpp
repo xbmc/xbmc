@@ -294,7 +294,22 @@ bool CGUIWindowMusicPlayList::GetDirectory(const CStdString &strDirectory, CFile
 
   for (int i = 0; i < playlist.size(); ++i)
   {
-    CPlayList::CPlayListItem& item = playlist[i];
+    // Make a copy of each playlist item, so that we don't have to try and
+    // keep track of the playlist player rearranging things as it increases in size.
+    // Reason is that the Playlist is a vector of CPlayListItem objects (not pointers)
+    // and so when the vector needs to resize itself, the pointers here will all be
+    // wrong if we just use pointers into the Playlist.  This is, however, a waste
+    // of memory as really we should be keeping the playlist and playlist windows
+    // in sync.  Ideally we'd do it by actually giving the list control/thumb controls
+    // the actual CFileItemList as a pointer, rather than constructing a new vector
+    // of the same objects (See how listcontrolex is done for instance).  That way we
+    // can have the playlist player use a CFileItemList (adjusted for playlist items)
+    // and can then just grab the pointer (or reference) to that list for use both
+    // here and in the listcontrol and thumbcontrols of this window.  The disadvantage
+    // to this method is that it breaks the common window code goal, as all the other
+    // windows have to maintain there own lists.  This window is fundamentally different
+    // from the others in this way though I guess.
+    CPlayList::CPlayListItem* item = new CPlayList::CPlayListItem(playlist[i]);
 
     // Commented by JM - don't see the point of this code, as our label is in the least
     // the filename.  Why precede it with a number?  Also, if we have a "proper" label
@@ -311,19 +326,19 @@ bool CGUIWindowMusicPlayList::GetDirectory(const CStdString &strDirectory, CFile
       item.SetLabel(strLabel);
     }*/
 
-    if (item.GetDuration())
+    if (item->GetDuration())
     {
-      int nDuration = item.GetDuration();
+      int nDuration = item->GetDuration();
       if (nDuration > 0)
       {
         CStdString str;
         CUtil::SecondsToHMSString(nDuration, str);
-        item.SetLabel2(str);
+        item->SetLabel2(str);
       }
       else
-        item.SetLabel2("");
+        item->SetLabel2("");
     }
-    items.Add(&item);
+    items.Add(item);
   }
 
   // Set default icons first,
@@ -540,6 +555,7 @@ void CGUIWindowMusicPlayList::OnPlayMedia(int iItem)
 
 void CGUIWindowMusicPlayList::OnItemLoaded(CFileItem* pItem)
 {
+  CLog::DebugLog("Started OnItemLoaded for item at %p", pItem);
   // FIXME: get the position of the item in the playlist
   int iTrack = 0;
   for (int i = 0; i < m_vecItems.Size(); ++i)
@@ -592,6 +608,7 @@ void CGUIWindowMusicPlayList::OnItemLoaded(CFileItem* pItem)
     pItem->FillInDefaultIcon();
     g_graphicsContext.Unlock();
   }
+  CLog::DebugLog("Finished OnItemLoaded for item at %p", pItem);
 }
 
 bool CGUIWindowMusicPlayList::Update(const CStdString& strDirectory)
@@ -609,12 +626,7 @@ bool CGUIWindowMusicPlayList::Update(const CStdString& strDirectory)
 void CGUIWindowMusicPlayList::ClearFileItems()
 {
   m_viewControl.Clear();
-  for (int i=0; i<m_vecItems.Size(); ++i)
-  {
-    CFileItem* item=m_vecItems[i];
-    item->FreeMemory();
-  }
-  m_vecItems.ClearKeepPointer();
+  m_vecItems.Clear();
 }
 
 void CGUIWindowMusicPlayList::OnPopupMenu(int iItem)
