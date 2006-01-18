@@ -231,7 +231,7 @@ int CSMBDirectory::OpenDir(CStdString& strAuth)
     // don't do this for smb:// !!
     CStdString s = strPath;
     int len = s.length();
-    if (s.at(len - 2) != '/' &&
+    if (len > 1 && s.at(len - 2) != '/' &&
         (s.at(len - 1) == '/' || s.at(len - 1) == '\\'))
     {
       s.erase(len - 1, 1);
