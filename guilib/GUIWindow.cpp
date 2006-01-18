@@ -865,7 +865,6 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
       OutputDebugString("------------------- GUI_MSG_WINDOW_DEINIT ");
       OutputDebugString(strLine.c_str());
       OutputDebugString("------------------- \n");
-
       if (message.GetParam1() != WINDOW_FULLSCREEN_VIDEO)
         OnWindowCloseAnimation();
       // now free the window
