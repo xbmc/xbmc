@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 18-01-2006 changed: Music files with embedded images but no album tag are now cached only for the file.
  - 18-01-2006 fixed: [ 1405320 ] Stacked files could be "cleaned" of their stack criteria twice.
  - 18-01-2006 fixed: Buttonscroller initial visibility conditions on home.
  - 18-01-2006 fixed: Reload skin from button menu meant the button menu no longer worked.
