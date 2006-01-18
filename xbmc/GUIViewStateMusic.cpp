@@ -7,10 +7,9 @@
 
 using namespace DIRECTORY::MUSICDATABASEDIRECTORY;
 
-CGUIViewStateWindowMusic::CGUIViewStateWindowMusic(const CFileItemList& items) : CGUIViewState(items)
+bool CGUIViewStateWindowMusic::HideParentDirItems()
 {
-  if (!items.IsVirtualDirectoryRoot())
-    m_hideParentDirItems = g_guiSettings.GetBool("MyMusic.HideParentDirItems");
+  return g_guiSettings.GetBool("MyMusic.HideParentDirItems");
 }
 
 int CGUIViewStateWindowMusic::GetPlaylist()
