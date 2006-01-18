@@ -1140,7 +1140,7 @@ int CXbmcHttp::xbmcGetCurrentlyPlaying()
         thumb = "[None] " + thumb;
       output+=closeTag+openTag+"Thumb"+tag+":"+thumb;
     }
-    if (g_application.m_pPlayer->IsPaused()) 
+    if (g_application.m_pPlayer && g_application.m_pPlayer->IsPaused()) 
       output+=closeTag+openTag+"Paused:True" ;
     else
       output+=closeTag+openTag+"Paused:False" ;

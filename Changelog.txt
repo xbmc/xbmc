@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 18-01-2006 fixed: Chat Console text should be all the right colour now.
+ - 18-01-2006 fixed: Webserver crash with GetCurrentPlaying.
  - 17-01-2006 fixed: Crash in My Music Playlist window when new files are queued via another thread (web, python etc.)
  - 17-01-2006 fixed: Toggle buttons didn't show text when selected.
  - 17-01-2006 fixed: 720p or higher video playback with Hardware overlay renderer when GUI was 480p or lower.
