@@ -3,10 +3,9 @@
 #include "AutoSwitch.h"
 #include "playlistplayer.h"
 
-CGUIViewStateWindowVideo::CGUIViewStateWindowVideo(const CFileItemList& items) : CGUIViewState(items)
+bool CGUIViewStateWindowVideo::HideParentDirItems()
 {
-  if (!items.IsVirtualDirectoryRoot())
-    m_hideParentDirItems = g_guiSettings.GetBool("MyVideos.HideParentDirItems");
+  return g_guiSettings.GetBool("MyVideos.HideParentDirItems");
 }
 
 CStdString CGUIViewStateWindowVideo::GetLockType()

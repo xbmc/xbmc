@@ -19,8 +19,6 @@ CGUIViewStateWindowPictures::CGUIViewStateWindowPictures(const CFileItemList& it
   }
   else
   {
-    m_hideParentDirItems = g_guiSettings.GetBool("Pictures.HideParentDirItems");
-
     AddSortMethod(SORT_METHOD_LABEL, 103, LABEL_MASKS("%F", "%I", "%F", ""));  // Filename, Size | Foldername, empty
     AddSortMethod(SORT_METHOD_SIZE, 105, LABEL_MASKS("%F", "%I", "%F", "%I"));  // Filename, Size | Foldername, Size
     AddSortMethod(SORT_METHOD_DATE, 104, LABEL_MASKS("%F", "%J", "%F", "%J"));  // Filename, Date | Foldername, Date
@@ -59,6 +57,11 @@ void CGUIViewStateWindowPictures::SaveViewState()
   g_settings.Save();
 }
 
+bool CGUIViewStateWindowPictures::HideParentDirItems()
+{
+  return g_guiSettings.GetBool("Pictures.HideParentDirItems");
+}
+
 CStdString CGUIViewStateWindowPictures::GetLockType()
 {
   return "pictures";
@@ -71,9 +74,6 @@ bool CGUIViewStateWindowPictures::HandleArchives()
 
 CGUIViewStateWindowPrograms::CGUIViewStateWindowPrograms(const CFileItemList& items) : CGUIViewState(items)
 {
-  if (!items.IsVirtualDirectoryRoot())
-    m_hideParentDirItems = g_guiSettings.GetBool("ProgramFiles.HideParentDirItems");
-
   AddSortMethod(SORT_METHOD_LABEL, 103, LABEL_MASKS("%K", "%I", "%F", ""));  // Titel, Size | Foldername, empty
   AddSortMethod(SORT_METHOD_DATE, 104, LABEL_MASKS("%K", "%J", "%F", "%J"));  // Titel, Date | Foldername, Date
   AddSortMethod(SORT_METHOD_PROGRAM_COUNT, 507, LABEL_MASKS("%K", "%C", "%F", ""));  // Titel, Count | Foldername, empty
@@ -100,6 +100,11 @@ void CGUIViewStateWindowPrograms::SaveViewState()
   g_stSettings.m_MyProgramsViewMethod=GetViewAsControl();
   g_stSettings.m_MyProgramsSortOrder=GetSortOrder();
   g_settings.Save();
+}
+
+bool CGUIViewStateWindowPrograms::HideParentDirItems()
+{
+  return g_guiSettings.GetBool("ProgramFiles.HideParentDirItems");
 }
 
 CStdString CGUIViewStateWindowPrograms::GetLockType()
