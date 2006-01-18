@@ -120,9 +120,21 @@ bool CID3Tag::Parse()
       bFound = true;
   }
 
-  CStdString strCoverArt, strPath;
-  CUtil::GetDirectory(tag.GetURL(), strPath);
-  CUtil::GetAlbumThumb(tag.GetAlbum(), strPath, strCoverArt, true);
+  // if we don't have an album tag, cache with the full file path so that
+  // other non-tagged files don't get this album image
+  CStdString strCoverArt;
+  if (!tag.GetAlbum().IsEmpty())
+  {
+    CStdString strPath;
+    CUtil::GetDirectory(tag.GetURL(), strPath);
+    CUtil::GetAlbumThumb(tag.GetAlbum(), strPath, strCoverArt, true);
+  }
+  else
+  {
+    CStdString strPath;
+    CUtil::ReplaceExtension(tag.GetURL(), ".tbn", strPath);
+    CUtil::GetAlbumFolderThumb(strPath, strCoverArt, true);
+  }
   if (bFound)
   {
     if (!CUtil::ThumbExists(strCoverArt))

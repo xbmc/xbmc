@@ -194,24 +194,7 @@ void CUtil::CleanFileName(CStdString& strFileName)
 {
   bool result = false;
 
-  //CLog::Log(LOGNOTICE, "CleanFileName : 1 : " + strFileName);
-
-  // remove volume indicator from stacked files
-  CStdString strFileTitle;
-  CStdString strVolumeNumber;
-  if (GetVolumeFromFileName(strFileName, strFileTitle, strVolumeNumber))
-  {
-    //CLog::Log(LOGNOTICE, "CleanFileName : 2 : " + strFileName + " : " + strFileTitle + " : " + strVolumeNumber);
-    //If we have same extension as before (ie GetVolumeFromFileName didn't remove it). remove it now
-    if(g_guiSettings.GetBool("FileLists.HideExtensions") 
-    	&& (strcmp(GetExtension(strFileName.c_str()), GetExtension(strFileTitle.c_str()) ) == 0))
-    {
-      RemoveExtension(strFileTitle);
-    }
-
-    strFileName = strFileTitle;
-  }
-  else if (g_guiSettings.GetBool("FileLists.HideExtensions"))
+  if (g_guiSettings.GetBool("FileLists.HideExtensions"))
   {
     RemoveExtension(strFileName);
   }

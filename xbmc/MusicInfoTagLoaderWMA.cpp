@@ -443,9 +443,21 @@ void CMusicInfoTagLoaderWMA::SetTagValueBinary(const CStdString& strFrameName, c
     if (picture.bPictureType == 3) // Cover Front
     {
       CStdString strExtension(picture.pwszMIMEType);
-      CStdString strCoverArt, strPath;
-      CUtil::GetDirectory(tag.GetURL(), strPath);
-      CUtil::GetAlbumThumb(tag.GetAlbum(), strPath, strCoverArt, true);
+      // if we don't have an album tag, cache with the full file path so that
+      // other non-tagged files don't get this album image
+      CStdString strCoverArt;
+      if (!tag.GetAlbum().IsEmpty())
+      {
+        CStdString strPath;
+        CUtil::GetDirectory(tag.GetURL(), strPath);
+        CUtil::GetAlbumThumb(tag.GetAlbum(), strPath, strCoverArt, true);
+      }
+      else
+      {
+        CStdString strPath;
+        CUtil::ReplaceExtension(tag.GetURL(), ".tbn", strPath);
+        CUtil::GetAlbumFolderThumb(strPath, strCoverArt, true);
+      }
       if (!CUtil::ThumbExists(strCoverArt))
       {
         int nPos = strExtension.Find('/');

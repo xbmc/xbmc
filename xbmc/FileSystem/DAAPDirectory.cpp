@@ -83,6 +83,7 @@ bool CDAAPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
       m_currentSongItems = m_thisHost->dbitems[0].items;
       m_currentSongItemCount = m_thisHost->dbitems[0].nItems;
 
+      CLog::Log(LOGDEBUG, "Getting songs from the database.  Have %i", m_currentSongItemCount);
       // Add each artist and album to an array
       int c;
       for (c = 0; c < m_currentSongItemCount; c++)
@@ -314,8 +315,12 @@ void CDAAPDirectory::AddToArtistAlbum(char *artist_s, char *album_s)
 {
   if (artist_s && album_s)
     CLog::Log(LOGDEBUG, "DAAP::AddToArtistAlbum(%s, %s)", artist_s, album_s);
+  else if (artist_s)
+    CLog::Log(LOGDEBUG, "DAAP::AddToArtistAlbum called with NULL album_s");
+  else if (album_s)
+    CLog::Log(LOGDEBUG, "DAAP::AddToArtistAlbum called with NULL artist_s");
   else
-    CLog::Log(LOGDEBUG, "DAAP::AddToArtistAlbum called with NULL artist_s or album_s");
+    CLog::Log(LOGDEBUG, "DAAP::AddToArtistAlbum called with NULL artist_s and NULL album_s");
   artistPTR *cur_artist = m_artisthead;
   albumPTR *cur_album = NULL;
   while (cur_artist)

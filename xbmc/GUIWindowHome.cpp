@@ -75,12 +75,6 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
         m_iLastControl = iFocusControl;
       }
 
-      if (m_iSelectedItem >= 0)
-      {
-        CGUIButtonScroller *pScroller = (CGUIButtonScroller *)GetControl(CONTROL_BTN_SCROLLER);
-        if (pScroller) pScroller->SetActiveButton(m_iSelectedItem);
-      }
-
 #ifdef PRE_SKIN_VERSION_2_0_COMPATIBILITY
     if (g_SkinInfo.GetVersion() < 1.8)
     {
@@ -253,3 +247,13 @@ void CGUIWindowHome::FadeBackgroundImages(int focusedControl, int messageSender,
   }
 }
 #endif
+
+void CGUIWindowHome::OnInitWindow()
+{
+  if (m_iSelectedItem >= 0)
+  {
+    CGUIButtonScroller *pScroller = (CGUIButtonScroller *)GetControl(CONTROL_BTN_SCROLLER);
+    if (pScroller) pScroller->SetActiveButton(m_iSelectedItem);
+  }
+  CGUIWindow::OnInitWindow();
+}
