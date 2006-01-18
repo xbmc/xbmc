@@ -796,8 +796,8 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
 
     XMLUtils::GetString(pControlNode, "title", strTitle);
     XMLUtils::GetString(pControlNode, "tagset", strRSSTags);
-    XMLUtils::GetHex(pControlNode, "headlinecolor", dwTextColor3);
-    XMLUtils::GetHex(pControlNode, "titlecolor", labelInfo2.textColor);
+    XMLUtils::GetHex(pControlNode, "headlinecolor", labelInfo2.textColor);
+    XMLUtils::GetHex(pControlNode, "titlecolor", dwTextColor3);
 
     if (XMLUtils::GetString(pControlNode, "subtype", strSubType))
     {
@@ -1069,8 +1069,8 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
 
     XMLUtils::GetString(pControlNode, "title", strTitle);
     XMLUtils::GetString(pControlNode, "tagset", strRSSTags);
-    XMLUtils::GetHex(pControlNode, "headlinecolor", dwTextColor3);
-    XMLUtils::GetHex(pControlNode, "titlecolor", labelInfo2.textColor);
+    XMLUtils::GetHex(pControlNode, "headlinecolor", labelInfo2.textColor);
+    XMLUtils::GetHex(pControlNode, "titlecolor", dwTextColor3);
 
     if (XMLUtils::GetString(pControlNode, "subtype", strSubType))
     {
@@ -1250,7 +1250,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
   {
     CGUIRSSControl* pControl = new CGUIRSSControl(
       dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight,
-      labelInfo, labelInfo2.textColor, dwTextColor3, strRSSTags);
+      labelInfo, dwTextColor3, labelInfo2.textColor, strRSSTags);
 
     pControl->SetColourDiffuse(dwColorDiffuse);
     pControl->SetVisible(bVisible);
