@@ -19,6 +19,7 @@ public:
   virtual void Render();
 #endif
 protected:
+  virtual void OnInitWindow();
 #ifdef PRE_SKIN_VERSION_2_0_COMPATIBILITY
   bool OnPollXLinkClient(CGUIConditionalButtonControl* pButton);
   void OnClickOnlineGaming(CGUIMessage& aMessage);

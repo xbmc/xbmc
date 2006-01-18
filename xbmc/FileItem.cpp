@@ -823,28 +823,31 @@ void CFileItem::SetMusicThumb()
 
   CStdString strThumb;
 
-  // try permanent album thumb (Q:\albums\thumbs)
-  // using "album name + path"
-  CUtil::GetAlbumThumb(strAlbum, strPath, strThumb);
-  if (CFile::Exists(strThumb))
+  if (!strAlbum.IsEmpty())
   {
-    // found it, we are finished.
-    SetIconImage(strThumb);
-    SetThumbnailImage(strThumb);
-    //CLog::Log(LOGDEBUG,"  Found cached permanent album thumb: %s",strThumb.c_str());
-    return;
-  }
-  
-  // try temporary album thumb (Q:\albums\thumbs\temp)
-  // using "album name + path"
-  CUtil::GetAlbumThumb(strAlbum, strPath, strThumb, true);
-  if (CFile::Exists(strThumb))
-  {
-    // found it, we are finished.
-    SetIconImage(strThumb);
-    SetThumbnailImage(strThumb);
-    //CLog::Log(LOGDEBUG,"  Found cached temporary album thumb: %s",strThumb.c_str());
-    return;
+    // try permanent album thumb (Q:\albums\thumbs)
+    // using "album name + path"
+    CUtil::GetAlbumThumb(strAlbum, strPath, strThumb);
+    if (CFile::Exists(strThumb))
+    {
+      // found it, we are finished.
+      SetIconImage(strThumb);
+      SetThumbnailImage(strThumb);
+      //CLog::Log(LOGDEBUG,"  Found cached permanent album thumb: %s",strThumb.c_str());
+      return;
+    }
+    
+    // try temporary album thumb (Q:\albums\thumbs\temp)
+    // using "album name + path"
+    CUtil::GetAlbumThumb(strAlbum, strPath, strThumb, true);
+    if (CFile::Exists(strThumb))
+    {
+      // found it, we are finished.
+      SetIconImage(strThumb);
+      SetThumbnailImage(strThumb);
+      //CLog::Log(LOGDEBUG,"  Found cached temporary album thumb: %s",strThumb.c_str());
+      return;
+    }
   }
 
   // if a file, try to find a file.tbn
