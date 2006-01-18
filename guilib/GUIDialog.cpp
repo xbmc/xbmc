@@ -69,7 +69,24 @@ bool CGUIDialog::OnMessage(CGUIMessage& message)
       CGUIWindow *pWindow = m_gWindowManager.GetWindow(m_gWindowManager.GetActiveWindow());
       if (pWindow && pWindow->GetOverlayState()!=OVERLAY_STATE_PARENT_WINDOW)
         m_gWindowManager.ShowOverlay(pWindow->GetOverlayState()==OVERLAY_STATE_SHOWN);
-      break;
+
+      CGUIWindow::OnMessage(message);
+      // if we were running, make sure we remove ourselves from the window manager
+      if (m_bRunning)
+      {
+        if (m_bModal)
+        {
+          m_gWindowManager.UnRoute(GetID());
+        }
+        else
+        {
+          m_gWindowManager.RemoveModeless( GetID() );
+        }
+
+        m_pParentWindow = NULL;
+        m_bRunning = false;
+      }
+      return true;
     }
   case GUI_MSG_WINDOW_INIT:
     {
@@ -103,18 +120,6 @@ void CGUIDialog::Close(bool forceClose /*= false*/)
 
   CGUIMessage msg(GUI_MSG_WINDOW_DEINIT, 0, 0);
   OnMessage(msg);
-
-  if (m_bModal)
-  {
-    m_gWindowManager.UnRoute(GetID());
-  }
-  else
-  {
-    m_gWindowManager.RemoveModeless( GetID() );
-  }
-
-  m_pParentWindow = NULL;
-  m_bRunning = false;
 }
 
 void CGUIDialog::DoModal(DWORD dwParentId, int iWindowID /*= WINDOW_INVALID */)

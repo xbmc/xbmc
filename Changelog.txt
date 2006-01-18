@@ -5,6 +5,10 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 18-01-2006 fixed: [ 1405320 ] Stacked files could be "cleaned" of their stack criteria twice.
+ - 18-01-2006 fixed: Buttonscroller initial visibility conditions on home.
+ - 18-01-2006 fixed: Reload skin from button menu meant the button menu no longer worked.
+ - 18-01-2006 fixed: Crash in SMBDirectory when fed with an invalid path.
  - 18-01-2006 fixed: Chat Console text should be all the right colour now.
  - 18-01-2006 fixed: Webserver crash with GetCurrentPlaying.
  - 17-01-2006 fixed: Crash in My Music Playlist window when new files are queued via another thread (web, python etc.)
