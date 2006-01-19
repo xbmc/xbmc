@@ -1287,21 +1287,21 @@ bool CDVDPlayer::OnAction(const CAction &action)
     {
     case ACTION_PREV_ITEM:  // SKIP-:
       {
-        CLog::DebugLog(" - pushed prev");
+        CLog::Log(LOGDEBUG, " - pushed prev");
         pStream->OnPrevious();
         return true;
       }
       break;
     case ACTION_NEXT_ITEM:  // SKIP+:
       {
-        CLog::DebugLog(" - pushed next");
+        CLog::Log(LOGDEBUG, " - pushed next");
         pStream->OnNext();
         return true;
       }
       break;
     case ACTION_SHOW_VIDEOMENU:   // start button 
       {
-        CLog::DebugLog(" - go to menu");
+        CLog::Log(LOGDEBUG, " - go to menu");
         pStream->OnMenu();
         return true;
       }
@@ -1367,7 +1367,7 @@ bool CDVDPlayer::OnAction(const CAction &action)
         {
           // Offset from key codes back to button number
           int button = action.wID - REMOTE_0;
-          CLog::DebugLog(" - button pressed %d", button);
+          CLog::Log(LOGDEBUG, " - button pressed %d", button);
           pStream->SelectButton(button);
         }
        break;
