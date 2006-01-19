@@ -423,6 +423,37 @@ void CGUIMediaWindow::OnSort()
   m_viewControl.SetItems(m_vecItems);
 }
 
+/*!
+  \brief Overwrite to fill fileitems from a source
+  \param strDirectory Path to read
+  \param items Fill with items specified in \e strDirectory
+  */
+bool CGUIMediaWindow::GetDirectory(const CStdString &strDirectory, CFileItemList &items)
+{
+  // cleanup items
+  if (items.Size())
+    items.Clear();
+
+  CStdString strParentPath=m_history.GetParentPath();
+
+  CLog::Log(LOGDEBUG,"CGUIMediaWindow::GetDirectory (%s)", strDirectory.c_str());
+  CLog::Log(LOGDEBUG,"  ParentPath = [%s]", strParentPath.c_str());
+
+  if (m_guiState.get() && !m_guiState->HideParentDirItems())
+  {
+    CFileItem *pItem = new CFileItem("..");
+    pItem->m_strPath = strParentPath;
+    pItem->m_bIsFolder = true;
+    pItem->m_bIsShareOrDrive = false;
+    items.Add(pItem);
+  }
+
+  if (!m_rootDir.GetDirectory(strDirectory, items))
+    return false;
+
+  return true;
+}
+
 bool CGUIMediaWindow::Update(const CStdString &strDirectory)
 {
   // get selected item
@@ -443,18 +474,9 @@ bool CGUIMediaWindow::Update(const CStdString &strDirectory)
 
   ClearFileItems();
 
-  CStdString strParentPath=m_history.GetParentPath();
-
-  if (m_guiState.get() && !m_guiState->HideParentDirItems())
+  if (!GetDirectory(strDirectory, m_vecItems))
   {
-    CFileItem *pItem = new CFileItem("..");
-    pItem->m_strPath = strParentPath;
-    m_vecItems.Add(pItem);
-  }
-
-  if (!m_rootDir.GetDirectory(strDirectory, m_vecItems))
-  {
-    CLog::Log(LOGERROR,"GetDirectory(%s) failed", strDirectory.c_str());
+    CLog::Log(LOGERROR,"CGUIMediaWindow::GetDirectory(%s) failed", strDirectory.c_str());
     return !Update(strOldDirectory); // We assume, we can get the parent 
   }                                  // directory again, but we have to 
                                      // return false to be able to eg. show 
