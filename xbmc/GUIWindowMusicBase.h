@@ -33,12 +33,6 @@ public:
 
 protected:
   /*!
-    \brief Overwrite to fill fileitems from a source
-   \param strDirectory Path to read
-   \param items Fill with items specified in \e strDirectory
-   */
-  virtual bool GetDirectory(const CStdString &strDirectory, CFileItemList &items);
-  /*!
   \brief Will be called when an popup context menu has been asked for
   \param iItem List/thumb control item that has been clicked on
   */

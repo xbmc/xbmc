@@ -64,23 +64,9 @@ bool CGUIWindowVideoTitle::OnMessage(CGUIMessage& message)
   return CGUIWindowVideoBase::OnMessage(message);
 }
 
-//****************************************************************************************************************************
-bool CGUIWindowVideoTitle::Update(const CStdString &strDirectory)
+bool CGUIWindowVideoTitle::GetDirectory(const CStdString &strDirectory, CFileItemList &items)
 {
-  // get selected item
-  int iItem = m_viewControl.GetSelectedItem();
-  CStdString strSelectedItem = "";
-  if (iItem >= 0 && iItem < (int)m_vecItems.Size())
-  {
-    CFileItem* pItem = m_vecItems[iItem];
-    if (!pItem->IsParentFolder())
-    {
-      strSelectedItem = pItem->m_strPath;
-      m_history.SetSelectedItem(strSelectedItem, m_vecItems.m_strPath);
-    }
-  }
-  ClearFileItems();
-  m_vecItems.m_strPath = strDirectory;
+  items.m_strPath = strDirectory;
   VECMOVIES movies;
   m_database.GetMovies(movies);
   // Display an error message if the database doesn't contain any movies
@@ -112,11 +98,37 @@ bool CGUIWindowVideoTitle::Update(const CStdString &strDirectory)
       pItem->m_fRating = movie.m_fRating;
       pItem->m_stTime.wYear = movie.m_iYear & 0xFFFF;
       pItem->m_strDVDLabel = movie.m_strDVDLabel;
-      m_vecItems.Add(pItem);
+      items.Add(pItem);
     }
   }
-  m_vecItems.m_strPath = "";
-  SET_CONTROL_LABEL(LABEL_TITLE, m_vecItems.m_strPath);
+
+  return true;
+}
+
+//****************************************************************************************************************************
+bool CGUIWindowVideoTitle::Update(const CStdString &strDirectory)
+{
+  // get selected item
+  int iItem = m_viewControl.GetSelectedItem();
+  CStdString strSelectedItem = "";
+  if (iItem >= 0 && iItem < (int)m_vecItems.Size())
+  {
+    CFileItem* pItem = m_vecItems[iItem];
+    if (!pItem->IsParentFolder())
+    {
+      strSelectedItem = pItem->m_strPath;
+      m_history.SetSelectedItem(strSelectedItem, m_vecItems.m_strPath);
+    }
+  }
+  ClearFileItems();
+
+  CStdString strOldDirectory = m_vecItems.m_strPath;
+
+  if (!GetDirectory(strDirectory, m_vecItems))
+    return !Update(strOldDirectory); // We assume, we can get the parent 
+                                     // directory again, but we have to 
+                                     // return false to be able to eg. show 
+                                     // an error message.
 
   m_vecItems.SetThumbs();
   SetIMDBThumbs(m_vecItems);
@@ -149,6 +161,12 @@ bool CGUIWindowVideoTitle::Update(const CStdString &strDirectory)
   }
 
   return true;
+}
+
+void CGUIWindowVideoTitle::UpdateButtons()
+{
+  CGUIWindowVideoBase::UpdateButtons();
+  SET_CONTROL_LABEL(LABEL_TITLE, m_vecItems.m_strPath);
 }
 
 void CGUIWindowVideoTitle::OnDeleteItem(int iItem)

@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 19-01-2006 changed: moved GetDirectory to media window base class
  - 19-01-2006 fixed: potential crash if application or gui asks dvdplayer if it is in menu and it hasn't completed loading it's input stream.
  - 19-01-2006 added: ability to select dvdbutton by remote button number (thnx to jdoering) 
  - 18-01-2006 changed: Music files with embedded images but no album tag are now cached only for the file.

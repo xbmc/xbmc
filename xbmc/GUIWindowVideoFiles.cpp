@@ -174,6 +174,21 @@ void CGUIWindowVideoFiles::UpdateButtons()
   SET_CONTROL_LABEL(CONTROL_STACK, g_stSettings.m_iMyVideoStack + 14000);
 }
 
+bool CGUIWindowVideoFiles::GetDirectory(const CStdString &strDirectory, CFileItemList &items)
+{
+  if (!CGUIWindowVideoBase::GetDirectory(strDirectory, items))
+    return false;
+
+  if (!m_vecItems.IsStack() && g_stSettings.m_iMyVideoStack != STACK_NONE)
+  {
+    //sort list ascending by filename before stacking...
+    m_vecItems.Sort(SORT_METHOD_LABEL, SORT_ORDER_ASC);
+    m_vecItems.Stack();
+  }
+
+  return true;
+}
+
 bool CGUIWindowVideoFiles::Update(const CStdString &strDirectory)
 {
   // get selected item
@@ -206,13 +221,6 @@ bool CGUIWindowVideoFiles::Update(const CStdString &strDirectory)
   if (strDirectory.IsEmpty())
     m_history.ClearPathHistory();
 
-  if (!m_vecItems.IsStack() && g_stSettings.m_iMyVideoStack != STACK_NONE)
-  {
-    //sort list ascending by filename before stacking...
-    m_vecItems.Sort(SORT_METHOD_LABEL, SORT_ORDER_ASC);
-    m_vecItems.Stack();
-  }
-
   m_iLastControl = GetFocusedControl();
 
   m_vecItems.SetThumbs();
@@ -227,8 +235,8 @@ bool CGUIWindowVideoFiles::Update(const CStdString &strDirectory)
 
   // changed this from OnSort() because it was incorrectly selecting
   // the wrong item!
-   m_guiState.reset(CGUIViewState::GetViewState(GetID(), m_vecItems));
- FormatItemLabels();
+  m_guiState.reset(CGUIViewState::GetViewState(GetID(), m_vecItems));
+  FormatItemLabels();
   SortItems(m_vecItems);
   m_viewControl.SetItems(m_vecItems);
 
@@ -710,36 +718,6 @@ void CGUIWindowVideoFiles::LoadPlayList(const CStdString& strPlayList)
       m_gWindowManager.ActivateWindow(WINDOW_VIDEO_PLAYLIST);
     }
   }
-}
-
-bool CGUIWindowVideoFiles::GetDirectory(const CStdString &strDirectory, CFileItemList &items)
-{
-  // cleanup items
-  if (items.Size())
-    items.Clear();
-
-  CStdString strParentPath = m_history.GetParentPath();
-
-  CLog::Log(LOGDEBUG,"CGUIWindowVideoFiles::GetDirectory (%s)", strDirectory.c_str());
-  CLog::Log(LOGDEBUG,"  ParentPath = [%s]", strParentPath.c_str());
-
-  if (m_guiState.get() && !m_guiState->HideParentDirItems())
-  {
-    CFileItem *pItem = new CFileItem("..");
-    pItem->m_strPath = strParentPath;
-    pItem->m_bIsFolder = true;
-    pItem->m_bIsShareOrDrive = false;
-    items.Add(pItem);
-  }
-
-  CLog::Log(LOGDEBUG,"Fetching directory (%s)", strDirectory.c_str());
-  if (!m_rootDir.GetDirectory(strDirectory, items))
-  {
-    CLog::Log(LOGERROR,"GetDirectory(%s) failed", strDirectory.c_str());
-    return false;
-  }
-
-  return true;
 }
 
 void CGUIWindowVideoFiles::OnPopupMenu(int iItem)
