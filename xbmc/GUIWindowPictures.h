@@ -23,7 +23,6 @@ protected:
   virtual void UpdateButtons();
   virtual bool Update(const CStdString &strDirectory);
 
-  bool GetDirectory(const CStdString &strDirectory, CFileItemList &items);
   void OnPopupMenu(int iItem);
   void OnRegenerateThumbs();
   void OnPlayMedia(int iItem);

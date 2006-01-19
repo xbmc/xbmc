@@ -61,23 +61,9 @@ bool CGUIWindowVideoYear::OnMessage(CGUIMessage& message)
   return CGUIWindowVideoBase::OnMessage(message);
 }
 
-//****************************************************************************************************************************
-bool CGUIWindowVideoYear::Update(const CStdString &strDirectory)
+bool CGUIWindowVideoYear::GetDirectory(const CStdString &strDirectory, CFileItemList &items)
 {
-  // get selected item
-  int iItem = m_viewControl.GetSelectedItem();
-  CStdString strSelectedItem = "";
-  if (iItem >= 0 && iItem < m_vecItems.Size())
-  {
-    CFileItem* pItem = m_vecItems[iItem];
-    if (!pItem->IsParentFolder())
-    {
-      strSelectedItem = pItem->m_strPath;
-      m_history.SetSelectedItem(strSelectedItem, m_vecItems.m_strPath);
-    }
-  }
-  ClearFileItems();
-  m_vecItems.m_strPath = strDirectory;
+  items.m_strPath = strDirectory;
   if (m_vecItems.IsVirtualDirectoryRoot())
   {
     VECMOVIEYEARS years;
@@ -92,8 +78,6 @@ bool CGUIWindowVideoYear::Update(const CStdString &strDirectory)
       pItem->m_bIsShareOrDrive = false;
       m_vecItems.Add(pItem);
     }
-    m_vecItems.m_strPath = "";
-    SET_CONTROL_LABEL(LABEL_YEAR, "");
   }
   else
   {
@@ -103,7 +87,7 @@ bool CGUIWindowVideoYear::Update(const CStdString &strDirectory)
       pItem->m_strPath = "";
       pItem->m_bIsFolder = true;
       pItem->m_bIsShareOrDrive = false;
-      m_vecItems.Add(pItem);
+      items.Add(pItem);
     }
     VECMOVIES movies;
     m_database.GetMoviesByYear(m_vecItems.m_strPath, movies);
@@ -133,11 +117,38 @@ bool CGUIWindowVideoYear::Update(const CStdString &strDirectory)
           pItem->SetThumbnailImage(strThumb);
         pItem->m_fRating = movie.m_fRating;
         pItem->m_stTime.wYear = movie.m_iYear;
-        m_vecItems.Add(pItem);
+        items.Add(pItem);
       }
     }
-    SET_CONTROL_LABEL(LABEL_YEAR, m_vecItems.m_strPath);
   }
+  return true;
+}
+
+//****************************************************************************************************************************
+bool CGUIWindowVideoYear::Update(const CStdString &strDirectory)
+{
+  // get selected item
+  int iItem = m_viewControl.GetSelectedItem();
+  CStdString strSelectedItem = "";
+  if (iItem >= 0 && iItem < m_vecItems.Size())
+  {
+    CFileItem* pItem = m_vecItems[iItem];
+    if (!pItem->IsParentFolder())
+    {
+      strSelectedItem = pItem->m_strPath;
+      m_history.SetSelectedItem(strSelectedItem, m_vecItems.m_strPath);
+    }
+  }
+  ClearFileItems();
+
+  CStdString strOldDirectory = m_vecItems.m_strPath;
+
+  if (!GetDirectory(strDirectory, m_vecItems))
+    return !Update(strOldDirectory); // We assume, we can get the parent 
+                                     // directory again, but we have to 
+                                     // return false to be able to eg. show 
+                                     // an error message.
+
   m_vecItems.SetThumbs();
   SetIMDBThumbs(m_vecItems);
 
@@ -169,6 +180,12 @@ bool CGUIWindowVideoYear::Update(const CStdString &strDirectory)
   }
 
   return true;
+}
+
+void CGUIWindowVideoYear::UpdateButtons()
+{
+  CGUIWindowVideoBase::UpdateButtons();
+  SET_CONTROL_LABEL(LABEL_YEAR, m_vecItems.m_strPath);
 }
 
 void CGUIWindowVideoYear::OnInfo(int iItem)

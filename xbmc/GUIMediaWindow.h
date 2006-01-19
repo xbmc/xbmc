@@ -24,6 +24,7 @@ protected:
   virtual bool OnClick(int iItem);
   virtual void FormatItemLabels();
   virtual void UpdateButtons();
+  virtual bool GetDirectory(const CStdString &strDirectory, CFileItemList &items);
   virtual bool Update(const CStdString &strDirectory);
   virtual void OnSort();
 
