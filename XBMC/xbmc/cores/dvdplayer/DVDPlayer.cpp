@@ -1385,7 +1385,7 @@ bool CDVDPlayer::OnAction(const CAction &action)
 
 bool CDVDPlayer::IsInMenu() const
 {
-  if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
+  if (m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
   {
     CDVDInputStreamNavigator* pStream = (CDVDInputStreamNavigator*)m_pInputStream;
     return pStream->IsInMenu();
