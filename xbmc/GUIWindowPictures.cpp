@@ -472,36 +472,6 @@ void CGUIWindowPictures::OnRegenerateThumbs()
   m_thumbLoader.Load(m_vecItems);
 }
 
-bool CGUIWindowPictures::GetDirectory(const CStdString &strDirectory, CFileItemList &items)
-{
-  if (items.Size())
-  {
-    // cleanup items
-    items.Clear();
-  }
-
-  CStdString strParentPath=m_history.GetParentPath();
-
-  CLog::Log(LOGDEBUG,"CGUIWindowPicutres::GetDirectory (%s)", strDirectory.c_str());
-  CLog::Log(LOGDEBUG,"  ParentPath = [%s]", strParentPath.c_str());
-
-  if (m_guiState.get() && !m_guiState->HideParentDirItems())
-  {
-    CFileItem *pItem = new CFileItem("..");
-    pItem->m_strPath = strParentPath;
-    pItem->m_bIsFolder = true;
-    pItem->m_bIsShareOrDrive = false;
-    items.Add(pItem);
-  }
-  CLog::Log(LOGDEBUG,"Fetching directory (%s)", strDirectory.c_str());
-  if (!m_rootDir.GetDirectory(strDirectory, items))
-  {
-    CLog::Log(LOGERROR,"GetDirectory(%s) failed", strDirectory.c_str());
-    return false;
-  }
-  return true;
-}
-
 void CGUIWindowPictures::OnPopupMenu(int iItem)
 {
   // calculate our position

@@ -21,7 +21,6 @@ protected:
   virtual void OnSort();
 
   virtual void SetIMDBThumbs(CFileItemList& items) {};
-  virtual bool GetDirectory(const CStdString &strDirectory, CFileItemList &items) { return false; }; //FIXME - this should be in all classes
 
   virtual void OnPopupMenu(int iItem);
   virtual void OnInfo(int iItem);
