@@ -1151,7 +1151,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
             }
             else
             {
-              WCHAR wszTmp[256];
+              WCHAR wszTmp[512];
               swprintf(wszTmp, L"%S", strTmp.c_str());
               strLabel = wszTmp;
             }
