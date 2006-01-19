@@ -48,13 +48,13 @@
         <onleft>8</onleft>
         <onright>6</onright>
         <onup>13</onup>
-        <ondown>12</ondown>
+        <ondown>112</ondown>
       </control>
 
       <control>
         <description>About XBMC</description>
         <type>button</type>
-        <id>12</id>
+        <id>112</id>
         <posx>50</posx>
         <posy>157</posy>
         <label>482</label>
@@ -75,7 +75,7 @@
         <execute>XBMC.ActivateWindow(57)</execute>
         <onleft>8</onleft>
         <onright>6</onright>
-        <onup>12</onup>
+        <onup>112</onup>
         <ondown>13</ondown>
       </control>
 

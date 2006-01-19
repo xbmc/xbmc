@@ -2562,7 +2562,7 @@ void CMusicDatabase::DeleteAlbumInfo()
 
 bool CMusicDatabase::LookupCDDBInfo(bool bRequery/*=false*/)
 {
-  if (!g_guiSettings.GetBool("MusicFiles.UseCDDB"))
+  if (!g_guiSettings.GetBool("MusicFiles.UseCDDB") || !g_guiSettings.GetBool("Network.EnableInternet"))
     return false;
 
   // Get information for the inserted disc

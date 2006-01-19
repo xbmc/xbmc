@@ -121,7 +121,6 @@ public:
   virtual void SetEnabled(bool bEnable);
   bool CalibrationEnabled() const;
   void SetGroup(int iGroup);
-  CStdString ParseLabel(CStdString &strLabel);
   int GetGroup(void) const;
   virtual void Update() { m_bInvalidated = true; };
   virtual void SetPulseOnSelect(bool pulse) { m_pulseOnSelect = pulse; };

@@ -327,6 +327,8 @@ void CApplicationMessenger::ProcessWindowMessages()
       //first remove the message from the queue, else the message could be processed more then once
       it = m_vecWindowMessages.erase(it);
 
+      // leave here in case we make more thread messages from this one
+      lock.Leave();
       ProcessMessage(pMsg);
       if (pMsg->hWaitEvent)
       {
@@ -334,9 +336,10 @@ void CApplicationMessenger::ProcessWindowMessages()
         CloseHandle(pMsg->hWaitEvent);
       }
       delete pMsg;
+      // reenter
+      lock.Enter();
     }
   }
-  lock.Leave();
 }
 
 int CApplicationMessenger::SetResponse(CStdString response)

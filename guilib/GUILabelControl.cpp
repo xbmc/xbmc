@@ -56,7 +56,7 @@ void CGUILabelControl::Render()
 	}
 	else
 	{
-		strRenderLabel = ParseLabel(strRenderLabel);
+		strRenderLabel = g_infoManager.ParseLabel(strRenderLabel);
 	}
 
   if (m_label.font)
