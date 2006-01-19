@@ -1,3 +1,5 @@
+2006-01-20 fixed:	Credits ran twice when run from Settings.
+
 2006-01-17 fixed:	DialogKaiToast.xml animations (thanks deanrparry)
 
 2006-01-16 fixed:	Incorrect animation tags in some Dialogs.
