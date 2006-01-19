@@ -1,6 +1,6 @@
 #include "../stdafx.h"
 #include "lcd.h"
-
+#include "GUIInfoManager.h"
 
 void ILCD::StringToLCDCharSet(CStdString& strText)
 {
@@ -123,4 +123,72 @@ CStdString ILCD::GetProgressBar(double tCurrent, double tTotal)
     return strProgressBar;
   }
   else return "";
+}
+
+void ILCD::LoadSkin(const CStdString &xmlFile)
+{
+  Reset();
+
+  TiXmlDocument doc;
+  if (!doc.LoadFile(xmlFile.c_str()))
+  {
+    CLog::Log(LOGERROR, "Unable to load LCD skin file %s", xmlFile.c_str());
+    return;
+  }
+
+  TiXmlElement *element = doc.RootElement();
+  if (!element || strcmp(element->Value(), "lcd") != 0)
+    return;
+
+  TiXmlElement *mode = element->FirstChildElement();
+  while (mode)
+  {
+    if (strcmpi(mode->Value(), "music") == 0)
+    { // music mode
+      LoadMode(mode, LCD_MODE_MUSIC);
+    }
+    else if (strcmpi(mode->Value(), "video") == 0)
+    { // video mode
+      LoadMode(mode, LCD_MODE_VIDEO);
+    }
+    else if (strcmpi(mode->Value(), "general") == 0)
+    { // general mode
+      LoadMode(mode, LCD_MODE_GENERAL);
+    }
+    else if (strcmpi(mode->Value(), "navigation") == 0)
+    { // navigation mode
+      LoadMode(mode, LCD_MODE_NAVIGATION);
+    }
+    mode = mode->NextSiblingElement();
+  }
+}
+
+void ILCD::LoadMode(TiXmlNode *node, LCD_MODE mode)
+{
+  if (!node) return;
+  TiXmlNode *line = node->FirstChild("line");
+  while (line)
+  {
+    if (line->FirstChild())
+      m_lcdMode[mode].push_back(line->FirstChild()->Value());
+    line = line->NextSibling("line");
+  }
+}
+
+void ILCD::Reset()
+{
+  for (unsigned int i = 0; i < LCD_MODE_MAX; i++)
+    m_lcdMode[i].clear();
+}
+
+void ILCD::Render(LCD_MODE mode)
+{
+  unsigned int outLine = 0;
+  unsigned int inLine = 0;
+  while (outLine < 4 && inLine < m_lcdMode[mode].size())
+  {
+    CStdString line = g_infoManager.ParseLabel(m_lcdMode[mode][inLine++]);
+    if (!line.IsEmpty())
+      SetLine(outLine++, line);
+  }
 }
