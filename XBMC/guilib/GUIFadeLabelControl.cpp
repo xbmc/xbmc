@@ -69,7 +69,7 @@ void CGUIFadeLabelControl::Render()
 	}
 	else
 	{
-		strRenderLabel = ParseLabel(strRenderLabel);
+		strRenderLabel = g_infoManager.ParseLabel(strRenderLabel);
 	}
 
   CStdStringW strLabelUnicode;

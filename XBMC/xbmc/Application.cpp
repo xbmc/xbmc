@@ -1019,6 +1019,7 @@ HRESULT CApplication::Create()
             g_settings.m_ResInfo[iResolution].strMode);
   CLog::Log(LOGINFO, " GUI screen offset (%i,%i)", g_guiSettings.GetInt("UIOffset.X"), g_guiSettings.GetInt("UIOffset.Y"));
   m_gWindowManager.Initialize();
+
   g_actionManager.SetScriptActionCallback(&g_pythonParser);
 
   g_settings.SetBookmarkLocks("myprograms", true);
@@ -1298,6 +1299,7 @@ HRESULT CApplication::Initialize()
   m_bInitializing = false;
   return S_OK;
 }
+
 void CApplication::PrintXBEToLCD(const char* xbePath)
 {
   int pLine = 0;
@@ -1308,11 +1310,15 @@ void CApplication::PrintXBEToLCD(const char* xbePath)
     CUtil::ShortenFileName(strXBEName);
     CUtil::RemoveIllegalChars(strXBEName);
   }
-  g_lcd->SetLine(pLine++, "");
-  g_lcd->SetLine(pLine++, "Playing");
-  g_lcd->SetLine(pLine++, strXBEName);
-  g_lcd->SetLine(pLine++, "");
+  if (g_lcd)
+  {
+    g_lcd->SetLine(pLine++, "");
+    g_lcd->SetLine(pLine++, "Playing");
+    g_lcd->SetLine(pLine++, strXBEName);
+    g_lcd->SetLine(pLine++, "");
+  }
 }
+
 void CApplication::StartWebServer()
 {
   if (g_guiSettings.GetBool("Servers.WebServer") && CUtil::IsNetworkUp())
@@ -1484,7 +1490,11 @@ void CApplication::StartServices()
 
   CLCDFactory factory;
   g_lcd = factory.Create();
-  g_lcd->Initialize();
+  if (g_lcd)
+  {
+    g_lcd->Initialize();
+    g_lcd->LoadSkin("Q:\\system\\lcd.xml");
+  }
 
   if (g_guiSettings.GetBool("System.AutoTemperature"))
   {
@@ -2304,7 +2314,20 @@ void CApplication::UpdateLCD()
     lTimeOut = 0;
   if ( ((long)GetTickCount() - lTickCount) >= lTimeOut)
   {
-    CStdString strTime;
+    if (g_application.GlobalIdleTime() < 5)
+      g_lcd->Render(ILCD::LCD_MODE_NAVIGATION);
+    else if (IsPlayingVideo())
+      g_lcd->Render(ILCD::LCD_MODE_VIDEO);
+    else if (IsPlayingAudio())
+      g_lcd->Render(ILCD::LCD_MODE_MUSIC);
+    else
+      g_lcd->Render(ILCD::LCD_MODE_GENERAL);
+
+    // reset tick count
+    lTickCount = GetTickCount();
+  }
+}
+/*    CStdString strTime;
     CStdString strIcon;
     CStdString strLine;
     CStdString strProgressBar;
@@ -2349,13 +2372,12 @@ void CApplication::UpdateLCD()
 
       strProgressBar = g_lcd->GetProgressBar(GetTime(),GetTotalTime());
       g_lcd->SetLine(iLine++, strProgressBar);
-      /*
+
       if (iLine<4 && m_tagCurrentMovie.m_iYear>1900)
       {
        strLine.Format("%i", m_tagCurrentMovie.m_iYear);
        g_lcd->SetLine(iLine++,strLine);
       }
-      */
 
       if (iLine < 4)
       {
@@ -2445,40 +2467,11 @@ void CApplication::UpdateLCD()
       }
       if (g_guiSettings.GetInt("LCD.Mode") == LCD_MODE_NOTV)
       {
-        // line 0: window name like   My music/songs
-        // line 1: current control or selected item
-        // line 2: time/date
-        // line 3: free memory (megs)
-        CStdString strTmp;
-        int iWin = m_gWindowManager.GetActiveWindow();
-        CGUIWindow* pWindow = m_gWindowManager.GetWindow(iWin);
-        if (pWindow)
-        {
-          CStdString strLine;
-          wstring wstrLine;
-          wstrLine = g_localizeStrings.Get(iWin);
-          CUtil::Unicode2Ansi(wstrLine, strLine);
-          g_lcd->SetLine(0, strLine);
-
-          int iControl = pWindow->GetFocusedControl();
-          CGUIControl* pControl = (CGUIControl* )pWindow->GetControl(iControl);
-          if (pControl)
-            g_lcd->SetLine(1, pControl->GetDescription());
-          else
-            g_lcd->SetLine(1, " ");
-          CStdString strDateTime = g_infoManager.GetTime() + " " + g_infoManager.GetDate(true);
-          g_lcd->SetLine(2, strDateTime);
-          MEMORYSTATUS stat;
-          GlobalMemoryStatus(&stat);
-          DWORD dwMegFree = stat.dwAvailPhys / (1024 * 1024);
-          strLine.Format("Freemem:%i meg", dwMegFree);
-          g_lcd->SetLine(3, strLine);
-        }
       }
     }
-    lTickCount = GetTickCount();
   }
 }
+*/
 
 void CApplication::FrameMove()
 {
