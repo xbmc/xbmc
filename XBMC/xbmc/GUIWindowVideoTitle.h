@@ -9,7 +9,9 @@ public:
   virtual bool OnMessage(CGUIMessage& message);
 
 protected:
+  virtual bool GetDirectory(const CStdString &strDirectory, CFileItemList &items);
   virtual bool Update(const CStdString &strDirectory);
+  virtual void UpdateButtons();
   virtual void OnDeleteItem(int iItem);
   virtual void OnQueueItem(int iItem);
 };

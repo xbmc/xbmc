@@ -193,6 +193,17 @@ void CGUIWindowMusicSongs::OnScan()
   return ;
 }
 
+bool CGUIWindowMusicSongs::GetDirectory(const CStdString &strDirectory, CFileItemList &items)
+{
+  if (!CGUIWindowMusicBase::GetDirectory(strDirectory, items))
+    return false;
+
+  // check for .CUE files here.
+  items.FilterCueItems();
+
+  return true;
+}
+
 void CGUIWindowMusicSongs::UpdateButtons()
 {
   CGUIWindowMusicBase::UpdateButtons();

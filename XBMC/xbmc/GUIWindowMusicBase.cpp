@@ -230,41 +230,6 @@ void CGUIWindowMusicBase::OnWindowLoaded()
   CGUIMediaWindow::OnWindowLoaded();
 }
 
-bool CGUIWindowMusicBase::GetDirectory(const CStdString &strDirectory, CFileItemList &items)
-{
-  // cleanup items
-  if (items.Size())
-    items.Clear();
-
-  CStdString strParentPath=m_history.GetParentPath();
-
-  CLog::Log(LOGDEBUG,"CGUIWindowMusicBase::GetDirectory (%s)", strDirectory.c_str());
-  CLog::Log(LOGDEBUG,"  ParentPath = [%s]", strParentPath.c_str());
-
-  CLog::Log(LOGDEBUG,"Fetching directory (%s)", strDirectory.c_str());
-
-  if (m_guiState.get() && !m_guiState->HideParentDirItems())
-  {
-    CFileItem *pItem = new CFileItem("..");
-    pItem->m_strPath = strParentPath;
-    pItem->m_bIsFolder = true;
-    pItem->m_bIsShareOrDrive = false;
-    items.Add(pItem);
-  }
-
-  if (!m_rootDir.GetDirectory(strDirectory, items))
-  {
-    CLog::Log(LOGERROR,"GetDirectory(%s) failed", strDirectory.c_str());
-    return false;
-  }
-
-
-  // check for .CUE files here.
-  items.FilterCueItems();
-
-  return true;
-}
-
 /// \brief Set window to a specific directory
 /// \param strDirectory The directory to be displayed in list/thumb control
 bool CGUIWindowMusicBase::Update(const CStdString &strDirectory)
