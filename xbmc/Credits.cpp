@@ -1209,8 +1209,8 @@ unsigned __stdcall CreditsMusicThread(void* pParam)
     SetEvent(s_hMusicStarted);
     return 1;
   }
-  int MusicVol;
-  mikxboxSetMusicVolume(MusicVol = 128);
+  int MusicVol = 128;
+  mikxboxSetMusicVolume((MusicVol * g_application.GetVolume()) / 100);
 
   MODULE* pModule = Mod_Player_Load((char*)pParam, 127, 0);
 
@@ -1236,7 +1236,8 @@ unsigned __stdcall CreditsMusicThread(void* pParam)
       MikMod_Update();
       if (s_bFadeMusic)
       {
-        mikxboxSetMusicVolume(--MusicVol);
+        --MusicVol;
+        mikxboxSetMusicVolume((MusicVol * g_application.GetVolume()) / 100);
       }
       else
       {
@@ -1261,7 +1262,8 @@ unsigned __stdcall CreditsMusicThread(void* pParam)
       //   pModule->loop = 1;
       //   pModule->sngpos = 18;
       s_bFadeMusic = false;
-      mikxboxSetMusicVolume(MusicVol = 128);
+      MusicVol = 128;
+      mikxboxSetMusicVolume((MusicVol * g_application.GetVolume()) / 100);
       Mod_Player_Start(pModule);
     }
   }

@@ -5,6 +5,9 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 19-01-2006 changed: No other thread messages could be processed if a dialog thread message was in process.
+ - 19-01-2006 added: Skinnable LCD.  See lcd.xml in the system folder.
+ - 19-01-2006 fixed:  Volume in credits should be obeyed by player now.
  - 19-01-2006 fixed: crash on very large labels in a skin like in PDM
  - 19-01-2006 changed: moved GetDirectory to media window base class
  - 19-01-2006 fixed: potential crash if application or gui asks dvdplayer if it is in menu and it hasn't completed loading it's input stream.

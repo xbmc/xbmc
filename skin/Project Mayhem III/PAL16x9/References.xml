@@ -195,9 +195,9 @@
     <itemheight>130</itemheight>
     <texturewidth>70</texturewidth>
     <textureheight>100</textureheight>
-    <thumbwidth>90</thumbwidth>
+    <thumbwidth>70</thumbwidth>
     <thumbheight>90</thumbheight>
-    <thumbposx>-10</thumbposx>
+    <thumbposx>0</thumbposx>
     <thumbposy>5</thumbposy>
     <imagefolder>folder-nofocus.png</imagefolder>
     <imagefolderfocus>folder-focus.png</imagefolderfocus>

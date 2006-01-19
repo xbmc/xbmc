@@ -12,6 +12,7 @@
 #include "KaiClient.h"
 #include "GUIButtonScroller.h"
 #include "../utils/Alarmclock.h"
+#include "../utils/lcd.h"
 #include "../GUIMediaWindow.h"
 #ifdef PRE_SKIN_VERSION_2_0_COMPATIBILITY
 #include "SkinInfo.h"
@@ -91,6 +92,15 @@ extern char g_szTitleIP[32];
 #define SYSTEM_NO_SUCH_ALARM        128
 #define SYSTEM_HAS_ALARM            129
 #define SYSTEM_AUTODETECTION        130
+#define SYSTEM_FREE_MEMORY          131
+#define SYSTEM_SCREEN_MODE          132
+#define SYSTEM_SCREEN_WIDTH         133
+#define SYSTEM_SCREEN_HEIGHT        134
+#define SYSTEM_CURRENT_WINDOW       135
+#define SYSTEM_CURRENT_CONTROL      136
+
+#define LCD_PLAY_ICON               180
+#define LCD_PROGRESS_BAR            181
 
 #define NETWORK_IP_ADDRESS          190
 
@@ -286,6 +296,14 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
   else if (strTest.Equals("system.kaiconnected")) ret = SYSTEM_KAI_CONNECTED;
   else if (strTest.Equals("system.hasmediadvd")) ret = SYSTEM_MEDIA_DVD;
   else if (strTest.Equals("system.autodetection")) ret = SYSTEM_AUTODETECTION;
+  else if (strTest.Equals("system.freememory")) ret = SYSTEM_FREE_MEMORY;
+  else if (strTest.Equals("system.screenmode")) ret = SYSTEM_SCREEN_MODE;
+  else if (strTest.Equals("system.screenwidth")) ret = SYSTEM_SCREEN_WIDTH;
+  else if (strTest.Equals("system.screenheight")) ret = SYSTEM_SCREEN_HEIGHT;
+  else if (strTest.Equals("system.currentwindow")) ret = SYSTEM_CURRENT_WINDOW;
+  else if (strTest.Equals("system.currentcontrol")) ret = SYSTEM_CURRENT_CONTROL;
+  else if (strTest.Equals("lcd.playicon")) ret = LCD_PLAY_ICON;
+  else if (strTest.Equals("lcd.progressbar")) ret = LCD_PROGRESS_BAR;
   else if (strTest.Equals("network.ipaddress")) ret = NETWORK_IP_ADDRESS;
   else if (strTest.Equals("musicplayer.title")) ret = MUSICPLAYER_TITLE;
   else if (strTest.Equals("musicplayer.album")) ret = MUSICPLAYER_ALBUM;
@@ -461,6 +479,52 @@ wstring CGUIInfoManager::GetLabel(int info)
     break;
   case SYSTEM_BUILD_DATE:
     strLabel = GetBuild();
+    break;
+  case SYSTEM_FREE_MEMORY:
+    {
+      MEMORYSTATUS stat;
+      GlobalMemoryStatus(&stat);
+      strLabel.Format("%i Mb", stat.dwAvailPhys / (1024 * 1024));
+    }
+    break;
+  case SYSTEM_SCREEN_MODE:
+    strLabel = g_settings.m_ResInfo[g_graphicsContext.GetVideoResolution()].strMode;
+    break;
+  case SYSTEM_SCREEN_WIDTH:
+    strLabel.Format("%i", g_settings.m_ResInfo[g_graphicsContext.GetVideoResolution()].iWidth);
+    break;
+  case SYSTEM_SCREEN_HEIGHT:
+    strLabel.Format("%i", g_settings.m_ResInfo[g_graphicsContext.GetVideoResolution()].iHeight);
+    break;
+  case SYSTEM_CURRENT_WINDOW:
+    return g_localizeStrings.Get(m_gWindowManager.GetActiveWindow());
+    break;
+  case SYSTEM_CURRENT_CONTROL:
+    {
+      CGUIWindow *window = m_gWindowManager.GetWindow(m_gWindowManager.GetActiveWindow());
+      if (window)
+      {
+        CGUIControl *control = (CGUIControl* )window->GetControl(window->GetFocusedControl());
+        if (control)
+          strLabel = control->GetDescription();
+      }
+    }
+    break;
+  case LCD_PLAY_ICON:
+    {
+      int iPlaySpeed = g_application.GetPlaySpeed();
+      if (iPlaySpeed < 1)
+        strLabel.Format("\3:%ix", iPlaySpeed);
+      else if (iPlaySpeed > 1)
+        strLabel.Format("\4:%ix", iPlaySpeed);
+      else if (g_application.m_pPlayer && g_application.m_pPlayer->IsPaused())
+        strLabel.Format("\7");
+      else
+        strLabel.Format("\5");
+    }
+    break;
+  case LCD_PROGRESS_BAR:
+    if (g_lcd) strLabel = g_lcd->GetProgressBar(g_application.GetTime(), g_application.GetTotalTime());
     break;
   case NETWORK_IP_ADDRESS:
     {
@@ -1555,4 +1619,81 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info)
   else if (info == LISTITEM_YEAR) return item->m_musicInfoTag.GetYear();
   else if (info == LISTITEM_GENRE) return item->m_musicInfoTag.GetGenre();
   return "";
+}
+
+
+CStdString CGUIInfoManager::ParseLabel(const CStdString& strLabel)
+{
+  CStdString strReturn = "";
+  int iPos1 = 0;
+  int iPos2 = strLabel.Find('$', iPos1);
+  bool bDoneSomething = !(iPos1 == iPos2);
+  while (iPos2 >= 0)
+  {
+    if( (iPos2 > iPos1) && bDoneSomething )
+    {
+      strReturn += strLabel.Mid(iPos1, iPos2 - iPos1);
+      bDoneSomething = false;  
+    }
+
+    int iPos3 = 0;
+    CStdString str;
+    CStdString strInfo = "INFO[";
+    CStdString strLocalize = "LOCALIZE[";
+
+    // $INFO[something]
+    if (strLabel.Mid(iPos2 + 1,strInfo.size()).Equals(strInfo))
+    {
+      iPos2 += strInfo.size() + 1;
+      iPos3 = strLabel.Find(']', iPos2);
+      CStdString strValue = strLabel.Mid(iPos2,(iPos3 - iPos2));
+      int iInfo = g_infoManager.TranslateString(strValue);
+      if (iInfo)
+      {
+        str = g_infoManager.GetLabel(iInfo);
+        if (str.size() > 0)
+          bDoneSomething = true;
+      }
+    }
+
+    // $LOCALIZE[something]
+    else if (strLabel.Mid(iPos2 + 1,strLocalize.size()).Equals(strLocalize))
+    {
+      iPos2 += strLocalize.size() + 1;
+      iPos3 = strLabel.Find(']', iPos2);
+      CStdString strValue = strLabel.Mid(iPos2,(iPos3 - iPos2));
+      if (CUtil::IsNaturalNumber(strValue))
+      {
+        int iLocalize = atoi(strValue);
+        str = g_localizeStrings.Get(iLocalize);
+        if (str.size() > 0)
+          bDoneSomething = true;
+      }
+    }
+
+    // $$ prints $
+    else if (strLabel[iPos2 + 1] == '$')
+    { 
+      iPos3 = iPos2 + 1;
+      str = '$';
+      bDoneSomething = true;
+    }
+
+    //Okey, nothing found, just print it right out
+    else
+    {
+      iPos3 = iPos2;
+      str = '$';
+      bDoneSomething = true;
+    }
+
+    strReturn += str;
+    iPos1 = iPos3 + 1;
+    iPos2 = strLabel.Find('$', iPos1);
+  }
+
+  if (iPos1 < (int)strLabel.size())
+    strReturn += strLabel.Right(strLabel.size() - iPos1);
+
+  return strReturn;
 }
