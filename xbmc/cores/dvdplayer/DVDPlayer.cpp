@@ -1314,37 +1314,37 @@ bool CDVDPlayer::OnAction(const CAction &action)
       {
       case ACTION_PREVIOUS_MENU:
         {
-          CLog::DebugLog(" - menu back");
+          CLog::Log(LOGDEBUG, " - menu back");
           pStream->OnBack();
         }
         break;
       case ACTION_MOVE_LEFT:
         {
-          CLog::DebugLog(" - move left");
+          CLog::Log(LOGDEBUG, " - move left");
           pStream->OnLeft();
         }
         break;
       case ACTION_MOVE_RIGHT:
         {
-          CLog::DebugLog(" - move right");
+          CLog::Log(LOGDEBUG, " - move right");
           pStream->OnRight();
         }
         break;
       case ACTION_MOVE_UP:
         {
-          CLog::DebugLog(" - move up");
+          CLog::Log(LOGDEBUG, " - move up");
           pStream->OnUp();
         }
         break;
       case ACTION_MOVE_DOWN:
         {
-          CLog::DebugLog(" - move down");
+          CLog::Log(LOGDEBUG, " - move down");
           pStream->OnDown();
         }
         break;
       case ACTION_SELECT_ITEM:
         {
-          CLog::DebugLog(" - button select");
+          CLog::Log(LOGDEBUG, " - button select");
 
           // show button pushed overlay
           UpdateOverlayInfo(LIBDVDNAV_BUTTON_CLICKED);
@@ -1354,6 +1354,23 @@ bool CDVDPlayer::OnAction(const CAction &action)
           pStream->ActivateButton();
         }
         break;
+      case REMOTE_0:
+      case REMOTE_1:
+      case REMOTE_2:
+      case REMOTE_3:
+      case REMOTE_4:
+      case REMOTE_5:
+      case REMOTE_6:
+      case REMOTE_7:
+      case REMOTE_8:
+      case REMOTE_9:
+        {
+          // Offset from key codes back to button number
+          int button = action.wID - REMOTE_0;
+          CLog::DebugLog(" - button pressed %d", button);
+          pStream->SelectButton(button);
+        }
+       break;
       default:
         return false;
         break;
