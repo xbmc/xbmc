@@ -85,20 +85,37 @@ CFileShoutcast* m_pShoutCastRipper = NULL;
 
 CFileShoutcast::CFileShoutcast()
 {
-  m_fileState.bBuffering = true;
-  m_fileState.bRipDone = false;
-  m_fileState.bRipStarted = false;
-  m_fileState.bRipError = false;
-  m_ringbuf.Create(1024*1024*5);
-  m_pShoutCastRipper = this;
+  // FIXME: without this check
+  // the playback stops when CFile::Stat()
+  // or CFile::Exists() is called
+
+  // Do we already have another file
+  // using the ripper?
+  if (!m_pShoutCastRipper)
+  {
+    m_fileState.bBuffering = true;
+    m_fileState.bRipDone = false;
+    m_fileState.bRipStarted = false;
+    m_fileState.bRipError = false;
+    m_ringbuf.Create(1024*1024*5);
+    m_pShoutCastRipper = this;
+  }
 }
 
 CFileShoutcast::~CFileShoutcast()
 {
-  rip_manager_stop();
-  m_pShoutCastRipper = NULL;
-  m_ripFile.Reset();
-  m_ringbuf.Destroy();
+  // FIXME: without this check
+  // the playback stops when CFile::Stat()
+  // or CFile::Exists() is called
+
+  // Has this object initialized the ripper?
+  if (m_pShoutCastRipper==this)
+  {
+    rip_manager_stop();
+    m_pShoutCastRipper = NULL;
+    m_ripFile.Reset();
+    m_ringbuf.Destroy();
+  }
 }
 
 bool CFileShoutcast::CanSeek()
