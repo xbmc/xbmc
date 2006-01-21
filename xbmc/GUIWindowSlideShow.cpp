@@ -151,6 +151,9 @@ void CGUIWindowSlideShow::Add(const CStdString& strPicture)
 
 void CGUIWindowSlideShow::ShowNext()
 {
+  if (m_vecSlides.size() == 1)
+    return;
+  
   m_iNextSlide = m_iCurrentSlide + 1;
   if (m_iNextSlide >= (int)m_vecSlides.size())
     m_iNextSlide = 0;
@@ -159,6 +162,9 @@ void CGUIWindowSlideShow::ShowNext()
 
 void CGUIWindowSlideShow::ShowPrevious()
 {
+  if (m_vecSlides.size() == 1)
+    return;
+
   m_iNextSlide = m_iCurrentSlide - 1;
   if (m_iNextSlide < 0)
     m_iNextSlide = m_vecSlides.size() - 1;
