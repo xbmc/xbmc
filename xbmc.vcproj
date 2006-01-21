@@ -585,6 +585,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\MusicInfoTagLoaderAAC.h">
 				</File>
 				<File
+					RelativePath=".\xbmc\MusicInfoTagLoaderAdplug.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\MusicInfoTagLoaderAdplug.h">
+				</File>
+				<File
 					RelativePath=".\xbmc\MusicInfoTagLoaderApe.cpp">
 				</File>
 				<File
@@ -2718,6 +2724,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\cores\paplayer\AC3Codec.h">
 				</File>
 				<File
+					RelativePath=".\xbmc\cores\paplayer\AdplugCodec.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\paplayer\AdplugCodec.h">
+				</File>
+				<File
 					RelativePath=".\xbmc\cores\paplayer\APEcodec.cpp">
 				</File>
 				<File
@@ -2746,6 +2758,9 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				</File>
 				<File
 					RelativePath=".\xbmc\cores\paplayer\DllAc3codec.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\paplayer\DllAdplug.h">
 				</File>
 				<File
 					RelativePath=".\xbmc\cores\paplayer\DllDCACodec.h">
