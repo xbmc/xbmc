@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 21-01-2006 added: new builtin command, xbmc.extract(rar/zip file). IMPORTANT: requires absolute paths. thanks to darkdonno459.
  - 21-01-2006 updated: Swedish language file (Thnx to blittan)
  - 21-01-2006 updated: Norwegian language file (Thnx to vnm)
  - 21-01-2006 updated: German language file (Thnx to sCAPe)
