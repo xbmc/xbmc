@@ -22,6 +22,8 @@
 #include "autorun.h"
 #include "utils/fstrcmp.h"
 #include "utils/GUIInfoManager.h"
+#include "FileSystem/ZipManager.h"
+#include "FileSystem/RarManager.h"
 
 #define clamp(x) (x) > 255.f ? 255 : ((x) < 0 ? 0 : (BYTE)(x+0.5f)) // Valid ranges: brightness[-1 -> 1 (0 is default)] contrast[0 -> 2 (1 is default)]  gamma[0.5 -> 3.5 (1 is default)] default[ramp is linear]
 static const __int64 SECS_BETWEEN_EPOCHS = 11644473600;
@@ -2939,6 +2941,7 @@ const BUILT_IN commands[] = {
   "TakeScreenshot", "Takes a Screenshot",
   "RunScript", "Run the specified script",
   "RunXBE", "Run the specified executeable",
+  "Extract", "Extracts the specified archive",
   "PlayMedia", "Play the specified media file (or playlist)",
   "SlideShow", "Run a slideshow from the specified directory",
   "RecursiveSlideShow", "Run a slideshow from the specified directory, including all subdirs",
@@ -3110,6 +3113,30 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   else if (execute.Equals("runscript"))
   {
     g_pythonParser.evalFile(parameter.c_str());
+  }
+  else if (execute.Equals("extract"))
+  {
+    // Detects if file is zip or zip then extracts
+    CStdString strDestDirect = "";
+    std::vector<CStdString> params;
+    StringUtils::SplitString(strParameterCaseIntact,",",params);
+    if (params.size() < 2)
+      CUtil::GetDirectory(params[0],strDestDirect);
+    else
+      strDestDirect = params[1];
+  
+    if (!HasSlashAtEnd(strDestDirect))
+        strDestDirect += "\\";
+        
+    if (params.size() < 1)
+      return -1; // No File Selected
+    
+    if (CUtil::IsZIP(params[0]))
+      g_ZipManager.ExtractArchive(params[0],strDestDirect);     
+    else if (CUtil::IsRAR(params[0]))
+      g_RarManager.ExtractArchive(params[0],strDestDirect);
+    else
+      CLog::Log(LOGERROR, "CUtil::ExecuteBuiltin: No archive given");     
   }
   else if (execute.Equals("runxbe"))
   {
