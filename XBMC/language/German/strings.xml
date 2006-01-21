@@ -60,7 +60,7 @@
   <string><id>121</id><value>Verschieben bestätigen</value></string>
   <string><id>122</id><value>Löschen bestätigen</value></string>
   <string><id>123</id><value>Dateien wirklich kopieren?</value></string>
-  <string><id>124</id><value>Dateien wirklich verschieben ?</value></string>
+  <string><id>124</id><value>Dateien wirklich verschieben?</value></string>
   <string><id>125</id><value>Dateien wirklich löschen?</value></string>
   <string><id>126</id><value>Status</value></string>
   <string><id>127</id><value>Objekte</value></string>
@@ -179,7 +179,7 @@
   <string><id>240</id><value>DVD-Video automatisch abspielen</value></string>
   <string><id>241</id><value>VCD/SVCD automatisch abspielen</value></string>
   <string><id>242</id><value>Audio-CDs automatisch abspielen</value></string>
-  <string><id>243</id><value>XBox-Spiele automatisch laden</value></string>
+  <string><id>243</id><value>XBOX-Spiele automatisch laden</value></string>
   <string><id>244</id><value>Videos auf CD automatisch abspielen</value></string>
   <string><id>245</id><value>Musik auf CD automatisch abspielen</value></string>
   <string><id>246</id><value>Bilder auf CD automatisch anschauen</value></string>
@@ -268,7 +268,7 @@
   <string><id>330</id><value>Einen Moment Geduld...</value></string>
   <string><id>331</id><value>Komprimiere Datenbank...</value></string>
   <string><id>332</id><value>Fehler beim Komprimieren der Datenbank</value></string>
-  <string><id>333</id><value>Wollen sie die Musikbibliothek aufräumen?</value></string>
+  <string><id>333</id><value>Wollen Sie die Musikbibliothek aufräumen?</value></string>
   <string><id>334</id><value>Musikbibliothek aufräumen...</value></string>
   <string><id>335</id><value>Start</value></string>
   <string><id>336</id><value>Framerate anpassen</value></string>
@@ -412,7 +412,7 @@
   <string><id>474</id><value>Aus</value></string>
   <string><id>475</id><value>nur Musik</value></string>
   <string><id>476</id><value>Musik &amp; Video</value></string>
-  <string><id>477</id><value>Playliste konnte nicht geladen werden.</value></string>
+  <string><id>477</id><value>Playlist konnte nicht geladen werden.</value></string>
   <string><id>478</id><value>OSD</value></string>
   <string><id>479</id><value>Skin und Sprache</value></string>
   <string><id>480</id><value>Darstellung</value></string>
@@ -544,7 +544,7 @@
   <string><id>747</id><value>Nicht genügend Speicher um das Bild zu laden</value></string>
   <string><id>748</id><value>Pfad bearbeiten</value></string>
   <string><id>749</id><value>Share hinzufügen</value></string>
-  <string><id>750</id><value>Bist du sicher?</value></string>
+  <string><id>750</id><value>Sind Sie sicher?</value></string>
   <string><id>751</id><value>Share entfernen</value></string>
   <string><id>752</id><value>Share-Pfad bearbeiten</value></string>
   <string><id>753</id><value>Share-Namen bearbeiten</value></string>
@@ -609,7 +609,7 @@
   <string><id>1232</id><value>Musik &amp; Video &amp; Bilder &amp; Programme</value></string>
   <string><id>1233</id><value>Programme &amp; Video &amp; Musik</value></string>
   <string><id>1234</id><value>Programme &amp; Bilder &amp; Musik</value></string>
-  <string><id>1235</id><value>Programmes &amp; Bilder &amp; Video</value></string>
+  <string><id>1235</id><value>Programme &amp; Bilder &amp; Video</value></string>
 
   <string><id>1245</id><value>FTP-Benutzername</value></string>
   <string><id>1246</id><value>FTP-Passwort</value></string>
@@ -709,7 +709,7 @@
   <string><id>12008</id><value>Verbinden-Dialog</value></string>
   <string><id>12009</id><value>Index neu aufbauen...</value></string>
   <string><id>12010</id><value>Zurück zu Musik</value></string>
-  <string><id>12011</id><value>Zürück zu Videos</value></string>
+  <string><id>12011</id><value>Zurück zu Videos</value></string>
 
   <string><id>12310</id><value>0</value></string>
   <string><id>12311</id><value>1</value></string>
@@ -798,9 +798,9 @@
   <string><id>13100</id><value>Flimmerfilter</value></string>
   <string><id>13150</id><value>HDD-Key:</value></string>
   <string><id>13151</id><value>HDD-Temp:</value></string>
-  <string><id>13152</id><value>DVD-Model:</value></string>
+  <string><id>13152</id><value>DVD-Modell:</value></string>
   <string><id>13153</id><value>DVD-Firmware:</value></string>
-  <string><id>13154</id><value>HDD-Model:</value></string>
+  <string><id>13154</id><value>HDD-Modell:</value></string>
   <string><id>13155</id><value>HDD-Seriennummer:</value></string>
   <string><id>13156</id><value>HDD-Firmware:</value></string>
   <string><id>13157</id><value>HDD-Passwort:</value></string>
@@ -815,7 +815,7 @@
   <string><id>13166</id><value>Headset/Mic an Port:</value></string>
   <string><id>13167</id><value>MemoryStick an Port:</value></string>
   <string><id>13168</id><value>Fernbedienung an Port:</value></string>
-  <string><id>13169</id><value>CD-Auswahl Dialog übergehen</value></string>
+  <string><id>13169</id><value>CD-Auswahl Dialog überspringen</value></string>
   <string><id>13170</id><value>Nie</value></string>
   <string><id>13171</id><value>Sofort</value></string>
   <string><id>13172</id><value>Nach %i Sek</value></string>
@@ -829,16 +829,20 @@
   <string><id>13206</id><value>Überschreiben</value></string>
   <string><id>13207</id><value>Profile '%s' überschreiben?</value></string>
   <string><id>13208</id><value>Wecker</value></string>
-  <string><id>13209</id><value>Interval (in Minuten)</value></string>
+  <string><id>13209</id><value>Intervall (in Minuten)</value></string>
   <string><id>13210</id><value>Gestartet, Alarm in %im</value></string>
   <string><id>13211</id><value>Alarm!</value></string>
   <string><id>13212</id><value>Abgebrochen, es sind %im%is übrig</value></string>
 
+  <string><id>13249</id><value>Untertitel in RAR-Dateien suchen</value></string>
   <string><id>13250</id><value>Untertitel suchen...</value></string>
+  <string><id>13251</id><value>Bewegen</value></string>
+  <string><id>13252</id><value>Hierhin bewegen</value></string>
+  <string><id>13253</id><value>Bewegen rückgängig machen</value></string>
 
   <string><id>13270</id><value>Hardware:</value></string>
   <string><id>13271</id><value>CPU-Speed:</value></string>
-  <string><id>13274</id><value>XBOX is verbunden, es ist aber kein DNS verfügbar</value></string>
+  <string><id>13274</id><value>XBOX ist verbunden, es ist aber kein DNS verfügbar</value></string>
   <string><id>13275</id><value>Festplatte</value></string>
   <string><id>13276</id><value>DVD-ROM</value></string>
   <string><id>13277</id><value>Speicher</value></string>
@@ -852,16 +856,16 @@
   <string><id>13285</id><value>BIOS:</value></string>
   <string><id>13286</id><value>Video-Encoder:</value></string>
   <string><id>13287</id><value>Bildschirm-Auflösung:</value></string>
-  <string><id>13288</id><value>Xbox-Version:</value></string>
-  <string><id>13289</id><value>Xbox-Seriennummer:</value></string>
+  <string><id>13288</id><value>XBOX-Version:</value></string>
+  <string><id>13289</id><value>XBOX-Seriennummer:</value></string>
   <string><id>13290</id><value>XBOX-Hersteller:</value></string>
   <string><id>13291</id><value>ModChip:</value></string>
   <string><id>13292</id><value>A/V-Kabel:</value></string>
   <string><id>13293</id><value>Video- &amp; XBE-Region:</value></string>
   <string><id>13294</id><value>DVD-Region:</value></string>
   <string><id>13295</id><value>Internet:</value></string>
-  <string><id>13296</id><value>Xbox ist verbunden</value></string>
-  <string><id>13297</id><value>Xbox ist nicht verbunden. Bitte Netzwerkeinstellungen überprüfen.</value></string>
+  <string><id>13296</id><value>XBOX ist verbunden</value></string>
+  <string><id>13297</id><value>XBOX ist nicht verbunden. Bitte Netzwerkeinstellungen überprüfen.</value></string>
   <string><id>13298</id><value>XBLIVE-Key:</value></string>
   <string><id>13299</id><value>Angestrebte CPU-Temperatur</value></string>
   <string><id>13300</id><value>Lüftergeschwindigkeit</value></string>
@@ -909,9 +913,9 @@
   <string><id>13342</id><value>Orange</value></string>
   <string><id>13343</id><value>Rot</value></string>
   <string><id>13344</id><value>Zyklisch</value></string>
-  <string><id>13345</id><value>LED ausschalten während der Wiedergabe</value></string>
+  <string><id>13345</id><value>LED aus während der Wiedergabe</value></string>
   <string><id>13346</id><value>Film-Informationen</value></string>
-  <string><id>13347</id><value>Zur Playliste hinzufügen</value></string>
+  <string><id>13347</id><value>Zur Playlist hinzufügen</value></string>
   <string><id>13348</id><value>In IMDB suchen...</value></string>
   <string><id>13349</id><value>Für alle Dateien</value></string>
   <string><id>13350</id><value>Playlist anzeigen</value></string>
@@ -945,7 +949,7 @@
   <string><id>13378</id><value>Standard Helligkeit</value></string>
   <string><id>13379</id><value>Standard Kontrast</value></string>
   <string><id>13380</id><value>Standard Gamma</value></string>
-  <string><id>13381</id><value>Video fortsetzten</value></string>
+  <string><id>13381</id><value>Video fortsetzen</value></string>
   <string><id>13382</id><value>Voice Maske - Port 1</value></string>
   <string><id>13383</id><value>Voice Maske - Port 2</value></string>
   <string><id>13384</id><value>Voice Maske - Port 3</value></string>
@@ -1003,7 +1007,7 @@
   <string><id>14035</id><value>- Lokales Netzwerk</value></string>
   <string><id>14036</id><value>Server</value></string>
   <string><id>14037</id><value>Darstellung</value></string>
-  <string><id>14038</id><value>Netwerkeinstellungen verändert</value></string>
+  <string><id>14038</id><value>Netzwerkeinstellungen verändert</value></string>
   <string><id>14039</id><value>XBMC muss neu gestartet werden, damit die Änderungen</value></string>
   <string><id>14040</id><value>wirksam werden.  Soll jetzt neu gestartet werden?</value></string>
   <string><id>14041</id><value>Post-Processing</value></string>
@@ -1020,7 +1024,7 @@
   <string><id>14052</id><value>Europäische Datumsanzeige</value></string>
   <string><id>14053</id><value>GUI-Filter</value></string>
   <string><id>14054</id><value>Internet-Anfragen zulassen</value></string>
-  <string><id>14055</id><value>Durchsuchen in Hintergrund</value></string>
+  <string><id>14055</id><value>Durchsuchen im Hintergrund</value></string>
   <string><id>14056</id><value>Stop</value></string>
   <string><id>14057</id><value>Nicht möglich während des Durchsuchens</value></string>
   <string><id>14058</id><value>Filmkörnungseffekt</value></string>
@@ -1041,14 +1045,14 @@
   <string><id>14073</id><value>XLink Kai ist nicht aktiv.</value></string>
 
   <string><id>15000</id><value>XLink-Kai</value></string>
-  <string><id>15001</id><value>Keine Verbindung zu XLink Kai. Möchtest du </value></string>
+  <string><id>15001</id><value>Keine Verbindung zu XLink Kai. Möchten Sie</value></string>
   <string><id>15002</id><value>versuchen eine Verbindung aufzubauen?</value></string>
   <string><id>15003</id><value>Bitte die Nachricht eingeben.</value></string>
-  <string><id>15004</id><value>Du wurdest eingeladen %s zu spielen.</value></string>
+  <string><id>15004</id><value>Sie wurden eingeladen %s zu spielen.</value></string>
   <string><id>15005</id><value>Datum: %s</value></string>
   <string><id>15006</id><value>Von: %s</value></string>
   <string><id>15007</id><value>Einladung</value></string>
-  <string><id>15008</id><value>Du wurdest eingeladen %s beizutreten.</value></string>
+  <string><id>15008</id><value>Sie wurden eingeladen %s beizutreten.</value></string>
   <string><id>15009</id><value>Offline</value></string>
   <string><id>15010</id><value>Freunde</value></string>
   <string><id>15011</id><value>Ansicht: Freunde</value></string>
@@ -1072,13 +1076,13 @@
   <string><id>15029</id><value>Es wird ein Passwort benötigt, um dieser Arena beizutreten.</value></string>
   <string><id>15030</id><value>Verbindung zu XLink-Kai unterbrochen</value></string>
   <string><id>15031</id><value>XLink-Kai-Authentifikation</value></string>
-  <string><id>15032</id><value>Dein Benutzername und/oder dein Passwort wurde vom</value></string>
+  <string><id>15032</id><value>Ihr Benutzername und/oder Ihr Passwort wurde vom</value></string>
   <string><id>15033</id><value>Orbital-Server abgelehnt. Bitte die Konfiguration überprüfen.</value></string>
   <string><id>15034</id><value>hat sich angemeldet</value></string>
   <string><id>15035</id><value>hat einen Voice-Chat initiiert</value></string>
-  <string><id>15036</id><value>hat dir eine Einladung gesendet</value></string>
-  <string><id>15037</id><value>XBMC ist nicht in der Lage zu bestätigen, ob dein Netzwerk erreichbar ist.</value></string>
-  <string><id>15038</id><value>Du könntest Schwierigkeiten haben Spiele zu hosten oder ihnen beizutreten.</value></string>
+  <string><id>15036</id><value>hat Ihnen eine Einladung gesendet</value></string>
+  <string><id>15037</id><value>XBMC ist nicht in der Lage zu bestätigen, ob Ihr Netzwerk erreichbar ist.</value></string>
+  <string><id>15038</id><value>Sie könnten Schwierigkeiten haben Spiele zu hosten oder ihnen beizutreten.</value></string>
   <string><id>15039</id><value>Xbox Media Center konnte das Spiel nicht automatisch finden.</value></string>
   <string><id>15040</id><value>Bitte die DVD in die XBOX einlegen oder 'A' drücken um abzubrechen</value></string>
   <string><id>15041</id><value>und das Spiel manuell zu starten.</value></string>
@@ -1087,8 +1091,8 @@
   <string><id>15044</id><value>%s hat den Chat verlassen.</value></string>
   <string><id>15045</id><value>Bitte die persönliche Nachricht eingeben.</value></string>
   <string><id>15046</id><value>Diese Arena</value></string>
-  <string><id>15047</id><value>Bitte ein Passwort für deine Arena eingeben.</value></string>
-  <string><id>15048</id><value>Bitte eine Beschreibung für deine Arena eingeben.</value></string>
+  <string><id>15047</id><value>Bitte ein Passwort für Ihre Arena eingeben.</value></string>
+  <string><id>15048</id><value>Bitte eine Beschreibung für Ihre Arena eingeben.</value></string>
   <string><id>15049</id><value>Spiel hosten</value></string>
   <string><id>15050</id><value>Private Arena hosten</value></string>
   <string><id>15051</id><value>Spieler-Anzahl</value></string>
@@ -1101,7 +1105,7 @@
   <string><id>15058</id><value>Host</value></string>
   <string><id>15059</id><value>Einladung akzeptiert!</value></string>
   <string><id>15060</id><value>Nachricht hier</value></string>
-  <string><id>15061</id><value>Du bist eingeladen %s zu spielen.</value></string>
+  <string><id>15061</id><value>Sie sind eingeladen %s zu spielen.</value></string>
   <string><id>15062</id><value>Alternativen MPlayer benutzen</value></string>
 
   <string><id>15100</id><value>Bibliothek</value></string>
@@ -1127,12 +1131,12 @@
   <string><id>15206</id><value>Übertragung fehlgeschlagen: Bitte Benutzerdaten prüfen</value></string>
   <string><id>15207</id><value>Verbunden</value></string>
   <string><id>15208</id><value>Nicht verbunden</value></string>
-  <string><id>15209</id><value>Übertragungsinterval %i</value></string>
+  <string><id>15209</id><value>Übertragungsintervall %i</value></string>
   <string><id>15210</id><value>%i Songs in Cache</value></string>
   <string><id>15211</id><value>Übermittlung...</value></string>
   <string><id>15212</id><value>Übermittlung in %i sek</value></string>
   <string><id>15213</id><value>Abspielen mit...</value></string>
-  <string><id>15214</id><value>Smoothed A/V-Syncronisation benutzen</value></string>
+  <string><id>15214</id><value>Weiche A/V-Synchronisation benutzen</value></string>
   <string><id>15215</id><value>Keine Dateinamen in der Symbolansicht</value></string>
 
   <string><id>15250</id><value>Last.fm Radio an LastFM übertragen</value></string>
@@ -1140,19 +1144,19 @@
   <string><id>15252</id><value>Station wird ausgewählt...</value></string>
   <string><id>15253</id><value>Ähnliche Interpreten suchen...</value></string>
   <string><id>15254</id><value>Ähnliche Tags suchen...</value></string>
-  <string><id>15255</id><value>Dein Profil (%name%)</value></string>
+  <string><id>15255</id><value>Ihr Profil (%name%)</value></string>
   <string><id>15256</id><value>Die besten Tags</value></string>
   <string><id>15257</id><value>Die besten Interpreten des Tags %name%</value></string>
   <string><id>15258</id><value>Die besten Alben des Tags %name%</value></string>
   <string><id>15259</id><value>Die besten Songs des Tags %name%</value></string>
-  <string><id>15260</id><value>%name% last.fm Radio Tag anhören</value></string>
+  <string><id>15260</id><value>%name% Last.fm Radio Tag anhören</value></string>
   <string><id>15261</id><value>Ähnliche Interpreten wie %name%</value></string>
   <string><id>15262</id><value>Die besten %name% Alben</value></string>
   <string><id>15263</id><value>Die besten %name% Songs</value></string>
   <string><id>15264</id><value>Die besten %name% Tags</value></string>
   <string><id>15265</id><value>Größte Fans von %name%</value></string>
-  <string><id>15266</id><value>%name% Fan last.fm Radio anhören</value></string>
-  <string><id>15267</id><value>Ähnliche Interpreten wie %name% im last.fm Radio anhören</value></string>
+  <string><id>15266</id><value>%name% Fan Last.fm Radio anhören</value></string>
+  <string><id>15267</id><value>Ähnliche Interpreten wie %name% im Last.fm Radio anhören</value></string>
   <string><id>15268</id><value>Lieblingsinterpreten des Benutzers %name%</value></string>
   <string><id>15269</id><value>Lieblingsalben des Benutzers %name%</value></string>
   <string><id>15270</id><value>Lieblingssongs des Benutzers %name%</value></string>
@@ -1161,11 +1165,11 @@
   <string><id>15273</id><value>Wöchentliche Interpretencharts von %name%</value></string>
   <string><id>15274</id><value>Wöchentliche Albumcharts von %name%</value></string>
   <string><id>15275</id><value>Wöchentliche Songcharts von %name%</value></string>
-  <string><id>15276</id><value>last.fm Radio der Nachbarn von %name% anhören</value></string>
-  <string><id>15277</id><value>Privates last.fm radio von %name% anhören</value></string>
-  <string><id>15278</id><value>last.fm radio mit den Lieblingssongs von %name% anhören</value></string>
-  <string><id>15279</id><value>Liste von last.fm wird übertragen...</value></string>
-  <string><id>15280</id><value>Liste kann nicht von last.fm übertragen werden...</value></string>
+  <string><id>15276</id><value>Last.fm Radio der Nachbarn von %name% anhören</value></string>
+  <string><id>15277</id><value>Privates Last.fm Radio von %name% anhören</value></string>
+  <string><id>15278</id><value>Last.fm Radio mit den Lieblingssongs von %name% anhören</value></string>
+  <string><id>15279</id><value>Liste von Last.fm wird übertragen...</value></string>
+  <string><id>15280</id><value>Liste kann nicht von Last.fm übertragen werden...</value></string>
   <string><id>15281</id><value>Bitte einen Interpreten eingeben, um ähnliche zu finden</value></string>
   <string><id>15282</id><value>Bitte einen Tagnamen eingeben, um ähnliche Tags zu finden</value></string>
   <string><id>15283</id><value>Kürzlich gehörte Songs von %name%</value></string>
@@ -1201,6 +1205,8 @@
   <string><id>16023</id><value>Interlaced Handling</value></string>
   <string><id>16024</id><value>Abbrechen...</value></string>
   <string><id>16025</id><value>Bitte den Namen des Interpreten eingeben</value></string>
+  <string><id>16026</id><value>Wiedergabe der Playlist abgebrochen</value></string>
+  <string><id>16027</id><value>Zu viele Einträge konnten nicht wiedergegeben werden</value></string>
 
   <string><id>16100</id><value>Alle Videos</value></string>
   <string><id>16101</id><value>Nicht gesehen</value></string>

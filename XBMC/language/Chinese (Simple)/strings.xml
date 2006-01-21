@@ -8,6 +8,7 @@
   <!-- String with id 6 should not be set here, only in the english language file !-->
   <string><id>7</id><value>我的文件</value></string>
   <string><id>8</id><value>天气预报</value></string>
+ 
   <string><id>11</id><value>星期一</value></string>
   <string><id>12</id><value>星期二</value></string>
   <string><id>13</id><value>星期三</value></string>
@@ -15,6 +16,7 @@
   <string><id>15</id><value>星期五</value></string>
   <string><id>16</id><value>星期六</value></string>
   <string><id>17</id><value>星期日</value></string>
+  
   <string><id>21</id><value>一月</value></string>
   <string><id>22</id><value>二月</value></string>
   <string><id>23</id><value>三月</value></string>
@@ -27,6 +29,7 @@
   <string><id>30</id><value>十月</value></string>
   <string><id>31</id><value>十一月</value></string>
   <string><id>32</id><value>十二月</value></string>
+
   <string><id>98</id><value>显示：自动</value></string>
   <string><id>99</id><value>显示：自动大图标</value></string>
   <string><id>100</id><value>显示：图标</value></string>
@@ -120,7 +123,7 @@
   <string><id>188</id><value>全部选择</value></string>
   <string><id>189</id><value>查找媒体信息</value></string>
   <string><id>190</id><value>保存</value></string>
-  <string><id>191</id><value>随机</value></string>
+  <string><id>191</id><value>打乱次序</value></string>
   <string><id>192</id><value>清除</value></string>
   <string><id>193</id><value>扫描</value></string>
   <string><id>194</id><value>查找…</value></string>
@@ -134,7 +137,6 @@
   <string><id>202</id><value>标语：</value></string>
   <string><id>203</id><value>剧情大纲：</value></string>
   <string><id>204</id><value>评分：</value></string>
-  <string><id>2050</id><value>时长：</value></string>
   <string><id>205</id><value>得票：</value></string>
   <string><id>206</id><value>演员表</value></string>
   <string><id>207</id><value>剧情简介</value></string>
@@ -270,7 +272,7 @@
   <string><id>338</id><value>模拟</value></string>
   <string><id>339</id><value>数码</value></string>
   <string><id>340</id><value>多样的艺术家</value></string>
-  <string><id>341</id><value>播放 DVD</value></string>
+  <string><id>341</id><value>播放DVD</value></string>
   <string><id>342</id><value>影片</value></string>
   <string><id>343</id><value>校正桢数</value></string>
   <string><id>344</id><value>演员</value></string>
@@ -288,7 +290,7 @@
   <string><id>356</id><value>屏幕保护模式</value></string>
   <string><id>357</id><value>关机 空闲时间</value></string>
   <string><id>358</id><value>全部专辑</value></string>
-  <string><id>359</id><value>新的专辑</value></string>
+  <string><id>359</id><value>新添加的专辑</value></string>
   <string><id>360</id><value>屏幕保护</value></string>
   <string><id>361</id><value>R.幻灯片</value></string>
   <string><id>362</id><value>屏幕保护衰减级别(%)</value></string>
@@ -338,6 +340,7 @@
   <string><id>406</id><value>湿度</value></string>
   <string><id>407</id><value>风向</value></string>
   <string><id>408</id><value>风速</value></string>
+  
   <string><id>410</id><value>访问Weather.com</value></string>
   <string><id>411</id><value>取得天气：</value></string>
   <string><id>412</id><value>不能获得天气数据</value></string>
@@ -379,7 +382,6 @@
   <string><id>448</id><value>液晶屏设置</value></string>
   <string><id>449</id><value>开启</value></string>
   <string><id>450</id><value>柱</value></string>
-  <string><id>4501</id><value>LCD 类型</value></string>
   <string><id>451</id><value>第 =1= 列位址</value></string>
   <string><id>452</id><value>第 =2= 列位址</value></string>
   <string><id>453</id><value>第 =3= 列位址</value></string>
@@ -440,12 +442,16 @@
   <string><id>508</id><value>不使用 捷径及扫描</value></string>
   <string><id>509</id><value>缓存程序图标</value></string>
   <string><id>510</id><value>开启 可视化效果</value></string>
-  <string><id>511</id><value>根据游戏区域自动切换视频模式</value></string>
+  <string><id>511</id><value>启用视频模式自动切换功能</value></string>
   <string><id>512</id><value>启动界面</value></string>
   <string><id>513</id><value>主界面</value></string>
   <string><id>514</id><value>设置界面</value></string>
   <string><id>515</id><value>流派</value></string>
   <string><id>516</id><value>文档管理</value></string>
+  <string><id>517</id><value>最近播放的专辑</value></string>
+  <string><id>518</id><value>运行</value></string> 
+  <string><id>519</id><value>运行方式</value></string> 
+  <string><id>520</id><value>编辑软件标题</value></string>
 
   <string><id>600</id><value>压缩音乐CD</value></string>
   <string><id>601</id><value>中等</value></string>
@@ -457,12 +463,14 @@
   <string><id>607</id><value>到：</value></string>
   <string><id>608</id><value>不能压缩CD或音轨</value></string>
   <string><id>609</id><value>CD压缩路径没有设置在XboxMediaCenter.xml</value></string>
+  
   <string><id>620</id><value>压缩音乐CD</value></string>
   <string><id>621</id><value>编码器</value></string>
   <string><id>622</id><value>质量</value></string>
   <string><id>623</id><value>码率</value></string>
   <string><id>624</id><value>包括音轨序号</value></string>
   <string><id>625</id><value>所有歌曲</value></string>
+  
   <string><id>629</id><value>显示模式</value></string>
   <string><id>630</id><value>标准</value></string>
   <string><id>631</id><value>放缩以填满屏幕</value></string>
@@ -471,7 +479,6 @@
   <string><id>634</id><value>拉伸为 16:9</value></string>
   <string><id>635</id><value>原始尺寸</value></string>
   <string><id>636</id><value>定制</value></string>
-
   <string><id>637</id><value>回放增益</value></string>
   <string><id>638</id><value>回放增益模式</value></string>
   <string><id>639</id><value>使用音轨增益等级</value></string>
@@ -480,9 +487,9 @@
   <string><id>642</id><value>前级放大器音量 - 不重复播放的文件</value></string>
   <string><id>643</id><value>播放增益时忽略消波失真</value></string>
   <string><id>644</id><value>修剪黑边</value></string>
-
   <string><id>645</id><value>需要缓存一个大文件，是否继续？</value></string>
-  
+  <string><id>646</id><value>移除标题</value></string>
+
   <string><id>700</id><value>清除音乐库</value></string>
   <string><id>701</id><value>清除音乐库中的旧文件</value></string>
   <string><id>702</id><value>目前路径曾被扫瞄过。</value></string>
@@ -557,10 +564,12 @@
   <string><id>771</id><value>FTP 服务器限定工作在FATX格式</value></string>
   <string><id>772</id><value>音频硬件</value></string>
   <string><id>773</id><value>搜索中</value></string>
+  <string><id>774</id><value>幻灯片文件夹</value></string>
+ 
   <string><id>998</id><value>XLink KAI</value></string>
   <string><id>999</id><value>在线游戏</value></string>
-
   <string><id>1000</id><value>屏幕保护预览</value></string>
+
   <string><id>1200</id><value>SMB 共享设置</value></string>
   <string><id>1201</id><value>SMB IP地址</value></string>
   <string><id>1202</id><value>SMB 工作组</value></string>
@@ -590,7 +599,6 @@
   <string><id>1226</id><value>文件 &amp; 音乐 &amp; 视频</value></string>
   <string><id>1227</id><value>文件 &amp; 图片 &amp; 音乐</value></string>
   <string><id>1228</id><value>文件 &amp; 图片 &amp; 视频</value></string>
-  
   <string><id>1229</id><value>音乐 &amp; 程序</value></string>
   <string><id>1230</id><value>视频 &amp; 程序</value></string>
   <string><id>1231</id><value>图片 &amp; 程序</value></string>
@@ -607,9 +615,10 @@
   <string><id>1251</id><value>XBOX 自动检测</value></string>
   <string><id>1252</id><value>昵称</value></string>
   <string><id>1253</id><value>在我的文件中建立FTP连接</value></string>
-  <string><id>1254</id><value>显示通告</value></string>
+  <string><id>1254</id><value>确认连接</value></string>
   <string><id>1255</id><value>发送 FTP 用户名和密码</value></string>
   <string><id>1256</id><value>Ping间隔</value></string>
+  <string><id>1257</id><value>是否连接到自动发现的XBOX？</value></string>
 
   <string><id>1396</id><value>漂流</value></string>
   <string><id>1397</id><value>和</value></string>
@@ -626,6 +635,10 @@
   <string><id>1408</id><value>冰</value></string>
   <string><id>1409</id><value>清澈</value></string>
   <string><id>1410</id><value>无风</value></string>
+
+  <string><id>2050</id><value>运行时间：</value></string>
+
+  <string><id>4501</id><value>LCD类型</value></string>
 
   <string><id>10000</id><value>首页</value></string>
   <string><id>10001</id><value>我的程序</value></string>
@@ -662,7 +675,6 @@
   <string><id>10503</id><value>我的音乐/Top100</value></string>
   <string><id>10504</id><value>Top 100（歌曲）</value></string> 
   <string><id>10505</id><value>Top 100（专辑）</value></string> 
-
   <string><id>10506</id><value>我的程序</value></string>
   <string><id>10507</id><value>系统设置</value></string>
   <string><id>10508</id><value>天气预报</value></string>
@@ -691,7 +703,9 @@
   <string><id>12006</id><value>音频可视化效果</value></string>
   <string><id>12007</id><value>我的图片/幻灯片</value></string>
   <string><id>12008</id><value>文件堆栈对话框</value></string>
-
+  <string><id>12009</id><value>重新生成检索…</value></string>
+  <string><id>12010</id><value>返回到我的音乐</value></string> 
+  <string><id>12011</id><value>返回到我的视频</value></string> 
   
   <string><id>12310</id><value>0</value></string>
   <string><id>12311</id><value>1</value></string>
@@ -712,7 +726,7 @@
   <string><id>12327</id><value>输入管理员密码</value></string>
   <string><id>12328</id><value>输入解锁密码</value></string> 
   <string><id>12329</id><value>按手柄输入，并选择Start确认</value></string>
-  <string><id>12330</id><value>输入 XBOX 手柄按键顺序 </value></string>
+  <string><id>12330</id><value>输入XBOX手柄按键顺序 </value></string>
   <string><id>12331</id><value>按Start确认, 或按Back取消</value></string>
   <string><id>12332</id><value>设置锁定</value></string>
   <string><id>12333</id><value>解除锁定</value></string>
@@ -753,14 +767,22 @@
   <string><id>12369</id><value>XBMC 启动锁定</value></string>
   <string><id>12370</id><value>密码方式改变，但没有设置管理员密码！</value></string>
   <string><id>12371</id><value>请设置一个新的管理员密码！</value></string>
-
-  <string><id>12372</id><value>锁定 我的文件</value></string>
-  <string><id>12373</id><value>锁定 系统设置</value></string>
-  <string><id>12374</id><value>锁定 其他项目</value></string>
-
+  <string><id>12372</id><value>锁定设置 &amp; 我的文件</value></string>
+  <string><id>12373</id><value>设置 &amp;  我的文件</value></string>
+  <string><id>12374</id><value>锁定媒体文件</value></string>
+  <string><id>12375</id><value>管理员模式</value></string>
+  
+  <string><id>12390</id><value>系统启动时间</value></string>
+  <string><id>12391</id><value>分钟</value></string>
+  <string><id>12392</id><value>小时</value></string>
+  <string><id>12393</id><value>天</value></string>
+  <string><id>12394</id><value>累计开机时间</value></string>
+  
   <string><id>12600</id><value>我的天气</value></string>
+
   <string><id>12900</id><value>屏幕保护</value></string>
   <string><id>12901</id><value>全屏 OSD</value></string>
+
   <string><id>13000</id><value>系统</value></string>
   <string><id>13001</id><value>立即关闭硬盘</value></string>
   <string><id>13002</id><value>只有视频</value></string>
@@ -768,7 +790,32 @@
   <string><id>13004</id><value>- 最小影音文件时长</value></string>
   <string><id>13005</id><value>关机</value></string>
   <string><id>13006</id><value>Dashboard</value></string>
+
   <string><id>13100</id><value>闪烁过滤</value></string>
+  <string><id>13150</id><value>硬盘 钥匙：</value></string>
+  <string><id>13151</id><value>硬盘 温度：</value></string>
+  <string><id>13152</id><value>DVD 型号：</value></string>
+  <string><id>13153</id><value>DVD 固件版本：</value></string>
+  <string><id>13154</id><value>硬盘 型号：</value></string>
+  <string><id>13155</id><value>硬盘 序列号：</value></string>
+  <string><id>13156</id><value>硬盘 固件版本：</value></string>
+  <string><id>13157</id><value>硬盘 密码：</value></string>
+  <string><id>13158</id><value>硬盘 锁 状态：</value></string>
+  <string><id>13159</id><value>子网 掩码：</value></string>
+  <string><id>13160</id><value>网关 地址：</value></string>
+  <string><id>13161</id><value>DNS服务器地址：</value></string>
+  <string><id>13162</id><value>无法读取信息</value></string>
+  <string><id>13163</id><value>游戏杆在端口：</value></string>
+  <string><id>13164</id><value>键盘在端口：</value></string>
+  <string><id>13165</id><value>鼠标在端口：</value></string>
+  <string><id>13166</id><value>耳麦在端口：</value></string>
+  <string><id>13167</id><value>记忆卡在端口：</value></string>
+  <string><id>13168</id><value>遥控器在端口：</value></string>
+  <string><id>13169</id><value>忽略CD选择器</value></string> 
+  <string><id>13170</id><value>从不</value></string> 
+  <string><id>13171</id><value>立即</value></string> 
+  <string><id>13172</id><value>隔%i秒以后</value></string> 
+
   <string><id>13200</id><value>预存设置</value></string>
   <string><id>13201</id><value>删除预存设置 '%s'？</value></string>
   <string><id>13202</id><value>保存当前设置为预存设置…</value></string>
@@ -777,14 +824,47 @@
   <string><id>13205</id><value>未知</value></string>
   <string><id>13206</id><value>覆盖</value></string>
   <string><id>13207</id><value>覆盖配置文件 '%s'？</value></string>
-
   <string><id>13208</id><value>闹铃</value></string>
   <string><id>13209</id><value>闹铃间隔（以分钟为单位）</value></string>
   <string><id>13210</id><value>闹铃启动， %i分钟倒计时。</value></string>
   <string><id>13211</id><value>闹铃时间到！</value></string>
   <string><id>13212</id><value>闹铃取消，剩余%i分%i秒。</value></string>
 
- <string><id>13299</id><value>目标温度</value></string>
+
+  <string><id>13249</id><value>选择RAR文件里面的字幕</value></string>
+  <string><id>13250</id><value>选择字幕…</value></string>
+  <string><id>13251</id><value>移动该项目</value></string> 
+  <string><id>13252</id><value>将项目移动至此</value></string> 
+  <string><id>13253</id><value>取消移动</value></string> 
+
+  <string><id>13270</id><value>硬件：</value></string>
+  <string><id>13271</id><value>中央处理器速度：</value></string>
+  <string><id>13274</id><value>Xbox已经联网，但是没有设置DNS！</value></string>
+  <string><id>13275</id><value>硬盘</value></string>
+  <string><id>13276</id><value>DVD-ROM</value></string>
+  <string><id>13277</id><value>存储器</value></string>
+  <string><id>13278</id><value>默认</value></string>
+  <string><id>13279</id><value>网络</value></string>
+  <string><id>13280</id><value>视频</value></string>
+  <string><id>13281</id><value>硬件</value></string>
+  <string><id>13282</id><value>_</value></string>
+  <string><id>13283</id><value>核心版本：</value></string>
+  <string><id>13284</id><value>中央处理器速度：</value></string>
+  <string><id>13285</id><value>BIOS 型号：</value></string>
+  <string><id>13286</id><value>视频芯片：</value></string>
+  <string><id>13287</id><value>屏幕分辨率：</value></string>
+  <string><id>13288</id><value>Xbox 版本：</value></string>
+  <string><id>13289</id><value>Xbox 序列号：</value></string>
+  <string><id>13290</id><value>XBOX 生产商：</value></string>
+  <string><id>13291</id><value>改机芯片：</value></string>
+  <string><id>13292</id><value>A/V 线：</value></string>
+  <string><id>13293</id><value>视频 &amp; XBE 区域：</value></string>
+  <string><id>13294</id><value>DVD 区域：</value></string>
+  <string><id>13295</id><value>互联网：</value></string>
+  <string><id>13296</id><value>Xbox已连接！</value></string>
+  <string><id>13297</id><value>Xbox无法连接！ 请检查网络设置！</value></string>
+  <string><id>13298</id><value>XBLIVE 钥匙：</value></string>
+  <string><id>13299</id><value>目标温度</value></string>
   <string><id>13300</id><value>风扇转速</value></string>
   <string><id>13301</id><value>自动温度控制</value></string>
   <string><id>13302</id><value>手动控制风扇转速</value></string>
@@ -804,7 +884,7 @@
   <string><id>13316</id><value>循环缩略图</value></string>
   <string><id>13317</id><value>观看幻灯片</value></string>
   <string><id>13318</id><value>循环幻灯片</value></string>
-  <string><id>13319</id><value>随机</value></string>
+  <string><id>13319</id><value>随机播放</value></string>
   <string><id>13320</id><value>立体声</value></string>
   <string><id>13321</id><value>左声道</value></string>
   <string><id>13322</id><value>右声道</value></string>
@@ -856,10 +936,10 @@
   <string><id>13368</id><value>-- 悄悄话效果数值</value></string>
   <string><id>13369</id><value>- 开启机械人效果</value></string>
   <string><id>13370</id><value>-- 机械人效果数值</value></string>
-  <string><id>13371</id><value>- 语音端口 0</value></string>
-  <string><id>13372</id><value>- 语音端口 1</value></string>
-  <string><id>13373</id><value>- 语音端口 2</value></string>
-  <string><id>13374</id><value>- 语音端口 3</value></string>
+  <string><id>13371</id><value>- 语音端口 1</value></string>
+  <string><id>13372</id><value>- 语音端口 2</value></string>
+  <string><id>13373</id><value>- 语音端口 3</value></string>
+  <string><id>13374</id><value>- 语音端口 4</value></string>
   <string><id>13375</id><value>启用装置</value></string>
   <string><id>13376</id><value>音量</value></string>
   <string><id>13377</id><value>默认显示方式</value></string>
@@ -867,10 +947,10 @@
   <string><id>13379</id><value>默认对比度数值</value></string>
   <string><id>13380</id><value>默认伽码数值</value></string>
   <string><id>13381</id><value>从书签处开始播放</value></string>
-  <string><id>13382</id><value>语音特效 - 端口 0</value></string>
-  <string><id>13383</id><value>语音特效 - 端口 1</value></string>
-  <string><id>13384</id><value>语音特效 - 端口 2</value></string>
-  <string><id>13385</id><value>语音特效 - 端口 3</value></string>
+  <string><id>13382</id><value>语音特效 - 端口 1</value></string>
+  <string><id>13383</id><value>语音特效 - 端口 2</value></string>
+  <string><id>13384</id><value>语音特效 - 端口 3</value></string>
+  <string><id>13385</id><value>语音特效 - 端口 4</value></string>
   <string><id>13386</id><value>使用时间搜寻</value></string>
   <string><id>13387</id><value>右侧音轨命名模板</value></string>
   <string><id>13388</id><value>预设</value></string>
@@ -884,6 +964,9 @@
   <string><id>13396</id><value>声音和字幕设置</value></string> 
   <string><id>13397</id><value>启用字幕</value></string> 
   <string><id>13398</id><value>书签</value></string>
+  <string><id>13399</id><value>排序时忽略"The"开头名称</value></string>
+  <string><id>13400</id><value>专辑音轨平滑转换</value></string>
+  <string><id>13401</id><value>浏览%s</value></string>
 
   <string><id>14000</id><value>堆栈【已关闭】</value></string>
   <string><id>14001</id><value>堆栈【已开启】</value></string>
@@ -946,7 +1029,6 @@
   <string><id>14060</id><value>未知类型文件缓冲     - 互联网</value></string>
   <string><id>14061</id><value>自动</value></string>
   <string><id>14062</id><value>输入用户名</value></string>
-
   <string><id>14063</id><value>日期和时间</value></string>
   <string><id>14064</id><value>设置日期</value></string>
   <string><id>14065</id><value>设置时间</value></string>
@@ -955,7 +1037,9 @@
   <string><id>14068</id><value>输入IP地址</value></string>
   <string><id>14069</id><value>确定要设定这些参数吗？</value></string>
   <string><id>14070</id><value> - 应用设置</value></string>
-  <string><id>14071</id><value>允许删除文件</value></string> 
+  <string><id>14071</id><value>允许重命名和删除文件</value></string> 
+  <string><id>14072</id><value>启用XLink Kai</value></string>
+  <string><id>14073</id><value>XLink Kai 没有被启用！</value></string>
 
   <string><id>15000</id><value>XLink Kai</value></string>
   <string><id>15001</id><value>目前并没有连线到运行XLink Kai的电脑</value></string>
@@ -1020,6 +1104,7 @@
   <string><id>15060</id><value>讯息</value></string>
   <string><id>15061</id><value>邀请玩家 %s。</value></string>
   <string><id>15062</id><value>使用替代的 mplayer 位置</value></string>
+ 
   <string><id>15100</id><value>浏览</value></string>
   <string><id>15101</id><value>数据库</value></string>
   <string><id>15102</id><value>* 所有专辑</value></string>
@@ -1030,6 +1115,10 @@
   <string><id>15107</id><value>缓冲中…</value></string>
   <string><id>15108</id><value>导航音效</value></string>
   <string><id>15109</id><value>主题预设</value></string>
+  <string><id>15110</id><value>手柄振动</value></string>
+  <string><id>15111</id><value>皮肤主题</value></string> 
+  <string><id>15112</id><value>缺省主题</value></string> 
+
   <string><id>15200</id><value>AudioScrobbler</value></string>
   <string><id>15201</id><value>将歌曲提交到 AudioScrobbler</value></string>
   <string><id>15202</id><value>AudioScrobbler 用户名</value></string>
@@ -1043,66 +1132,58 @@
   <string><id>15210</id><value>已上传 %i首歌曲</value></string>
   <string><id>15211</id><value>上传中…</value></string>
   <string><id>15212</id><value>上传剩余 %i 秒</value></string>
-
-  <string><id>13150</id><value>硬盘 钥匙：</value></string>
-  <string><id>13151</id><value>硬盘 温度：</value></string>
-  <string><id>13152</id><value>DVD 型号：</value></string>
-  <string><id>13153</id><value>DVD 固件版本：</value></string>
-  <string><id>13154</id><value>硬盘 型号：</value></string>
-  <string><id>13155</id><value>硬盘 序列号：</value></string>
-  <string><id>13156</id><value>硬盘 固件版本：</value></string>
-  <string><id>13157</id><value>硬盘 密码：</value></string>
-  <string><id>13158</id><value>硬盘 锁 状态：</value></string>
-  <string><id>13159</id><value>子网 掩码：</value></string>
-  <string><id>13160</id><value>网关 地址：</value></string>
-  <string><id>13161</id><value>DNS服务器地址：</value></string>
-  <string><id>13162</id><value>无法读取信息</value></string>
-  <string><id>13163</id><value>游戏杆在端口：</value></string>
-  <string><id>13164</id><value>键盘在端口：</value></string>
-  <string><id>13165</id><value>鼠标在端口：</value></string>
-  <string><id>13166</id><value>耳麦在端口：</value></string>
-  <string><id>13167</id><value>记忆卡在端口：</value></string>
-  <string><id>13168</id><value>遥控器在端口：</value></string>
-
-  <string><id>13270</id><value>硬件：</value></string>
-  <string><id>13271</id><value>中央处理器速度：</value></string>
-  <string><id>13275</id><value>硬盘</value></string>
-  <string><id>13276</id><value>DVD-ROM</value></string>
-  <string><id>13277</id><value>存储器</value></string>
-  <string><id>13278</id><value>默认</value></string>
-  <string><id>13279</id><value>网络</value></string>
-  <string><id>13280</id><value>视频</value></string>
-  <string><id>13281</id><value>硬件</value></string>
-  <string><id>13282</id><value>_</value></string>
-  <string><id>13283</id><value>核心版本：</value></string>
-  <string><id>13284</id><value>中央处理器速度：</value></string>
-  <string><id>13285</id><value>BIOS 型号：</value></string>
-  <string><id>13286</id><value>视频芯片：</value></string>
-  <string><id>13287</id><value>屏幕分辨率：</value></string>
-  <string><id>13288</id><value>Xbox 版本：</value></string>
-  <string><id>13289</id><value>Xbox 序列号：</value></string>
-  <string><id>13290</id><value>XBOX 生产商：</value></string>
-  <string><id>13291</id><value>改机芯片：</value></string>
-  <string><id>13292</id><value>A/V 线：</value></string>
-  <string><id>13293</id><value>视频 &amp; XBE 区域：</value></string>
-  <string><id>13294</id><value>DVD 区域：</value></string>
-  <string><id>13295</id><value>互联网：</value></string>
-  <string><id>13296</id><value>Xbox已连接！</value></string>
-  <string><id>13297</id><value>Xbox无法连接！ 请检查网络设置！</value></string>
-  <string><id>13298</id><value>XBLIVE 钥匙：</value></string>
-
-  <string><id>15213</id><value>【预留位置】</value></string>
+  <string><id>15213</id><value>打开方式</value></string>
   <string><id>15214</id><value>使用平滑的A/V同步</value></string>
+  <string><id>15215</id><value>缩略图显示时隐藏文件名</value></string>
+
+  <string><id>15250</id><value>提交 Last.fm 电台到AudioScrobbler</value></string>
+  <string><id>15251</id><value>连接到 Last.fm…</value></string>
+  <string><id>15252</id><value>选择电台…</value></string>
+  <string><id>15253</id><value>寻找相似的艺术家…</value></string>
+  <string><id>15254</id><value>寻找相似的标记…</value></string>
+  <string><id>15255</id><value>你的设置 (%name%)</value></string>
+  <string><id>15256</id><value>Overall top tags</value></string>
+  <string><id>15257</id><value>Top artists for tag %name%</value></string>
+  <string><id>15258</id><value>Top albums for tag %name%</value></string>
+  <string><id>15259</id><value>Top tracks for tag %name%</value></string>
+  <string><id>15260</id><value>Listen to tag %name% last.fm radio</value></string>
+  <string><id>15261</id><value>Similar artists as %name%</value></string>
+  <string><id>15262</id><value>Top %name% albums</value></string>
+  <string><id>15263</id><value>Top %name% tracks</value></string>
+  <string><id>15264</id><value>Top %name% tags</value></string>
+  <string><id>15265</id><value>Biggest fans of %name%</value></string>
+  <string><id>15266</id><value>Listen to %name% fans last.fm radio</value></string>
+  <string><id>15267</id><value>Listen to %name% similar artists last.fm radio</value></string>
+  <string><id>15268</id><value>Top artists for user %name%</value></string>
+  <string><id>15269</id><value>Top albums for user %name%</value></string>
+  <string><id>15270</id><value>Top tracks for user %name%</value></string>
+  <string><id>15271</id><value>Friends of user %name%</value></string>
+  <string><id>15272</id><value>Neighbours of user %name%</value></string>
+  <string><id>15273</id><value>Weekly artist chart for %name%</value></string>
+  <string><id>15274</id><value>Weekly album chart for %name%</value></string>
+  <string><id>15275</id><value>Weekly track chart for %name%</value></string>
+  <string><id>15283</id><value>Tracks recently listened by %name%</value></string>
+  <string><id>15276</id><value>Listen to %name%'s neighbours last.fm radio</value></string>
+  <string><id>15277</id><value>Listen to %name%'s personal last.fm radio</value></string>
+  <string><id>15278</id><value>Listen to %name%'s loved tracks last.fm radio</value></string>
+  <string><id>15279</id><value>正在从last.fm获取列表</value></string>
+  <string><id>15280</id><value>不能从last.fm获取列表…</value></string>
+  <string><id>15281</id><value>输入艺术家名字来寻找相关资料</value></string>
+  <string><id>15282</id><value>输入一个标记来寻找其他相似的</value></string>
 
   <string><id>15300</id><value>路径错误或无法找到！</value></string>
   <string><id>15301</id><value>无法连接服务器！</value></string>
   <string><id>15302</id><value>没有服务器找到！</value></string>
   <string><id>15303</id><value>没有找到工作组！</value></string>
 
+  <string><id>15310</id><value>打开多个书签路径</value></string>
+  <string><id>15311</id><value>路径：</value></string>
+
   <string><id>16000</id><value>通用</value></string>
   <string><id>16001</id><value>配置音频硬件…</value></string>
   <string><id>16002</id><value>CDDB 查询</value></string>
   <string><id>16003</id><value>高级设置</value></string>
+  <string><id>16004</id><value>播放碟片</value></string>
  
   <string><id>16009</id><value>输入影片名称</value></string>
   <string><id>16010</id><value>输入配置名称</value></string>
@@ -1113,14 +1194,27 @@
   <string><id>16015</id><value>输入目录</value></string>
   <string><id>16016</id><value>可使用选项： %A, %T, %N, %B, %D, %G, %Y, %F, %S</value></string>
   <string><id>16017</id><value>输入查询字符串</value></string>
-
-  
   <string><id>16018</id><value>关闭</value></string> 
   <string><id>16019</id><value>自动选择</value></string> 
   <string><id>16020</id><value>去交错</value></string> 
   <string><id>16021</id><value>奇同步</value></string> 
   <string><id>16022</id><value>偶同步</value></string> 
   <string><id>16023</id><value>交错设置</value></string> 
-
   <string><id>16024</id><value>取消中……</value></string>
+  <string><id>16025</id><value>输入艺术家名字</value></string>
+  <string><id>16026</id><value>播放列表回放取消。</value></string> 
+  <string><id>16027</id><value>太多连续性错误</value></string> 
+
+  <string><id>16100</id><value>所有视频文件</value></string>
+  <string><id>16101</id><value>未观看的</value></string>
+  <string><id>16102</id><value>已观看的</value></string>
+  <string><id>16103</id><value>标记成已看的</value></string>
+  <string><id>16104</id><value>标记成未看的</value></string>
+  <string><id>16105</id><value>编辑标题</value></string>
+  <string><id>16106</id><value>使用 NTSC-M &amp; NTSC-J制式</value></string>
+  <string><id>16107</id><value>使用 NTSC-M制式</value></string>
+  <string><id>16108</id><value>使用 NTSC-J制式</value></string>
+  <string><id>16109</id><value>使用PAL-60制式</value></string>
+  <string><id>16110</id><value> 60hz 游戏设置</value></string>
+
 </strings>

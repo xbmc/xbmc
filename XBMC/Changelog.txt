@@ -5,6 +5,10 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 21-01-2006 updated: Swedish language file (Thnx to blittan)
+ - 21-01-2006 updated: Norwegian language file (Thnx to vnm)
+ - 21-01-2006 updated: German language file (Thnx to sCAPe)
+ - 21-01-2006 updated: Chinese (Simple) language file (Thnx to walter)
  - 21-01-2006 fixed: My Video 'Query Info For All Files'
  - 20-01-2006 fixed: [ 1410413 ] checking getcurrentlyplaying while strm a top500 kills audio
  - 19-01-2006 changed: No other thread messages could be processed if a dialog thread message was in process.
