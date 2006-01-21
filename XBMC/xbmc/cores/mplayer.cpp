@@ -1385,6 +1385,8 @@ void CMPlayer::ToggleSubtitles()
     m_bSubsVisibleTTF = !m_bSubsVisibleTTF;
   else
     mplayer_put_key('s');
+    
+  g_stSettings.m_currentVideoSettings.m_SubtitleOn = !g_stSettings.m_currentVideoSettings.m_SubtitleOn;
 }
 
 
