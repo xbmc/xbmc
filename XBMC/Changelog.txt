@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 21-01-2006 fixed: My Music 'Query Info For All Files'
  - 20-01-2006 fixed: [ 1410413 ] checking getcurrentlyplaying while strm a top500 kills audio
  - 19-01-2006 changed: No other thread messages could be processed if a dialog thread message was in process.
  - 19-01-2006 added: Skinnable LCD.  See lcd.xml in the system folder.
