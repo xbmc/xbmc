@@ -18,6 +18,7 @@
 #include "MusicInfoTagLoaderNSF.h"
 #include "MusicInfoTagLoaderSPC.h"
 #include "MusicInfoTagLoaderGYM.h"
+#include "MusicInfoTagLoaderAdplug.h"
 #include "util.h"
 
 
@@ -129,6 +130,11 @@ IMusicInfoTagLoader* CMusicInfoTagLoaderFactory::CreateLoader(const CStdString& 
     CMusicInfoTagLoaderGYM *pTagLoader = new CMusicInfoTagLoaderGYM();
     return (IMusicInfoTagLoader*)pTagLoader;
   } 
+  else if (AdplugCodec::IsSupportedFormat(strExtension))
+  {
+    CMusicInfoTagLoaderAdplug *pTagLoader = new CMusicInfoTagLoaderAdplug();
+    return (IMusicInfoTagLoader*)pTagLoader;
+  }
 
   return NULL;
 }
