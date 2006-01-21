@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 21-01-2006 added: adplug codec to paplayer. add .adplug to the end of the filename of the file you want to play.
  - 21-01-2006 fixed: toggling subtitle with remote didn't affect setting in video osd.
  - 21-01-2006 fixed: unnecessary reloading of the same picture if the slide show consisted of only one picture and next/previous picture was requested.
  - 21-01-2006 added: new builtin command, xbmc.extract(rar/zip file). IMPORTANT: requires absolute paths. thanks to darkdonno459.
