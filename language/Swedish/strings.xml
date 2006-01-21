@@ -840,7 +840,11 @@
   <string><id>13211</id><value>Alarm!</value></string>
   <string><id>13212</id><value>Avbruten med %im%is kvar</value></string>
 
+  <string><id>13249</id><value>S&#246;k i Rar-filer f&#246;r undertexter</value></string>
   <string><id>13250</id><value>Bl&#228;ddra efter undertext...</value></string>
+  <string><id>13251</id><value>Flytta post</value></string>
+  <string><id>13252</id><value>Flytta post hit</value></string>
+  <string><id>13253</id><value>Avbryt flyttning</value></string>
 
   <string><id>13270</id><value>H&#229;rdvara:</value></string>
   <string><id>13271</id><value>CPU Hastighet:</value></string>
@@ -960,10 +964,8 @@
   <string><id>13386</id><value>Anv&#228;nd tidsbaserad s&#246;kning</value></string>
   <string><id>13387</id><value>Mall f&#246;r h&#246;ger sp&#229;rnamn</value></string>
   <string><id>13388</id><value>F&#246;rinst&#228;llning</value></string>
-  <string><id>13389</id><value>Det finns inga f&#246;rinst&#228;llningar
-f&#246;r den h&#228;r visualiseringen</value></string>
-  <string><id>13390</id><value>Det finns inga inst&#228;llningar
-f&#246;r den h&#228;r visualiseringen</value></string>
+  <string><id>13389</id><value>Det finns inga f&#246;rinst&#228;llningar f&#246;r den h&#228;r visualiseringen</value></string>
+  <string><id>13390</id><value>Det finns inga inst&#228;llningar f&#246;r den h&#228;r visualiseringen</value></string>
   <string><id>13391</id><value>Mata ut/Mata in</value></string>
   <string><id>13392</id><value>Anv&#228;nd fullsk&#228;rmsvisualisering vid musik</value></string>
   <string><id>13393</id><value>Ber&#228;kna storlek</value></string>
@@ -1212,6 +1214,8 @@ f&#246;r den h&#228;r visualiseringen</value></string>
   <string><id>16023</id><value>Interlaced hantering</value></string>
   <string><id>16024</id><value>Avbryter...</value></string>
   <string><id>16025</id><value>Skriv in Artistnamnet</value></string>
+  <string><id>16026</id><value>Uppspelning av spellista avbruten</value></string>
+  <string><id>16027</id><value>F&#246;r m&#229;nga felaktiga l&#229;tar i f&#246;ljd</value></string>
 
   <string><id>16100</id><value>Alla filmer</value></string>
   <string><id>16101</id><value>Ej sedd</value></string>
