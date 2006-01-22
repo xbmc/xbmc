@@ -1,0 +1,175 @@
+<window>
+  <id>127</id>
+  <defaultcontrol>1</defaultcontrol>
+  <coordinates>
+    <system>1</system>
+    <posx>250</posx>
+    <posy>116</posy>
+  </coordinates>
+  <visible>Window.IsActive(127)</visible>
+  <animation effect="fade" time="400">WindowOpen</animation>
+  <animation effect="fade" time="400">WindowClose</animation>
+  <controls>
+    <control>
+      <description>background image</description>
+      <type>image</type>
+      <id>1</id>
+      <posx>0</posx>
+      <posy>25</posy>
+      <width>420</width>
+      <height>336</height>
+      <texture>osd_menu_bg.png</texture>
+    </control>
+
+    <control>
+      <description>background image</description>
+      <type>image</type>
+      <id>0</id>
+      <posx>0</posx>
+      <posy>-5</posy>
+      <width>420</width>
+      <height>31</height>
+      <texture>osd_settings_header.png</texture>
+    </control>
+
+    <control>
+      <description>Settings Label</description>
+      <type>label</type>
+      <id>2</id>
+      <posx>0</posx>
+      <posy>2</posy>
+      <width>420</width>
+      <align>center</align>
+      <font>font12</font>
+    </control>
+
+    <control>
+      <description>No Settings Label</description>
+      <type>label</type>
+      <id>3</id>
+      <posx>0</posx>
+      <posy>170</posy>
+      <width>420</width>
+      <align>center</align>
+      <label>12016</label>
+    </control>
+
+    <control>
+      <description>Next page button</description>
+      <type>spincontrol</type>
+      <id>60</id>
+      <posx>335</posx>
+      <posy>320</posy>
+      <subtype>int</subtype>
+      <font>font13</font>
+      <onleft>60</onleft>
+      <onright>60</onright>
+      <ondown>2</ondown>
+    </control>
+
+    <control>
+      <description>control area</description>
+      <type>image</type>
+      <id>5</id>
+      <posx>5</posx>
+      <posy>30</posy>
+      <width>408</width>
+      <height>290</height>
+      <texture>-</texture>
+    </control>
+
+    <control>
+      <description>control gap</description>
+      <type>image</type>
+      <id>6</id>
+      <width>350</width>
+      <height>33</height>
+      <texture>-</texture>
+    </control>
+
+    <control>
+      <description>Default Button</description>
+      <type>button</type>
+      <id>7</id>
+      <posx>530</posx>
+      <posy>150</posy>
+      <height>31</height>
+      <font>font12</font>
+      <textoffsetx>12</textoffsetx>
+      <aligny>center</aligny>
+      <texturefocus>list-focus.png</texturefocus>
+      <texturenofocus>-</texturenofocus>
+    </control>
+
+    <control>
+      <description>Default RadioButton</description>
+      <type>radiobutton</type>
+      <id>8</id>
+      <posx>530</posx>
+      <posy>150</posy>
+      <height>31</height>
+      <font>font12</font>
+      <texturefocus>list-focus.png</texturefocus>
+      <texturenofocus>-</texturenofocus>
+      <textoffsetx>12</textoffsetx>
+      <aligny>center</aligny>
+      <textureradiofocus>settings-check-box.png</textureradiofocus>
+      <textureradionofocus>settings-check-boxNF.png</textureradionofocus>
+    </control>
+
+    <control>
+      <description>Default SpinControlex</description>
+      <type>spincontrolex</type>
+      <id>9</id>
+      <posx>530</posx>
+      <posy>150</posy>
+      <height>31</height>
+      <width>300</width>
+      <texturefocus>list-focus.png</texturefocus>
+      <texturenofocus>-</texturenofocus>
+      <textureup>scroll-up.png</textureup>
+      <texturedown>scroll-down.png</texturedown>
+      <textureupfocus>scroll-up-focus.png</textureupfocus>
+      <texturedownfocus>scroll-down-focus.png</texturedownfocus>
+      <font>font12</font>
+      <include>textcolorwhite</include>
+      <disabledcolor>60d0d0d0</disabledcolor>
+      <textoffsetx>12</textoffsetx>
+      <aligny>center</aligny>
+      <reverse>yes</reverse>
+    </control>
+
+    <control>
+      <description>Default Slider</description>
+      <type>sliderex</type>
+      <id>10</id>
+      <posx>530</posx>
+      <posy>150</posy>
+      <height>31</height>
+      <width>300</width>
+      <texturefocus>list-focus.png</texturefocus>
+      <texturenofocus>-</texturenofocus>
+      <sliderwidth>100</sliderwidth>
+      <sliderheight>20</sliderheight>
+      <texturesliderbar>osd_slider_bg.png</texturesliderbar>
+      <textureslidernib>osd_slider_nibNF.png</textureslidernib>
+      <textureslidernibfocus>osd_slider_nibFO.png</textureslidernibfocus>
+      <font>font12</font>
+      <include>textcolorwhite</include>
+      <disabledcolor>60d0d0d0</disabledcolor>
+      <textoffsetx>12</textoffsetx>
+    </control>
+
+    <control>
+      <description>separator image</description>
+      <type>image</type>
+      <id>11</id>
+      <width>350</width>
+      <height>5</height>
+      <texture>separatorOSD.png</texture>
+    </control>
+
+  </controls>
+
+</window>
+
