@@ -845,7 +845,7 @@ CStdString CGUIInfoManager::GetDate(bool bNumbersOnly)
   if (bNumbersOnly)
   {
     CStdString strDate;
-    if (g_guiSettings.GetBool("XBDateTime.SwapMonthAndDay"))
+    if (g_guiSettings.GetInt("XBDateTime.DateFormat") == DATETIME_FORMAT_EU)
       text.Format("%d-%d-%d", time.wDay, time.wMonth, time.wYear);
     else
       text.Format("%d-%d-%d", time.wMonth, time.wDay, time.wYear);
@@ -883,7 +883,7 @@ CStdString CGUIInfoManager::GetDate(bool bNumbersOnly)
 
     if (day.size() && month.size())
     {
-      if (g_guiSettings.GetBool("XBDateTime.SwapMonthAndDay"))
+      if (g_guiSettings.GetInt("XBDateTime.DateFormat") == DATETIME_FORMAT_EU)
         text.Format("%s, %d %s", day.c_str(), time.wDay, month.c_str());
       else
         text.Format("%s, %s %d", day.c_str(), month.c_str(), time.wDay);
@@ -902,7 +902,7 @@ CStdString CGUIInfoManager::GetTime(bool bSeconds)
 
   INT iHour = time.wHour;
 
-  if (g_guiSettings.GetBool("XBDateTime.Clock12Hour"))
+  if (g_guiSettings.GetInt("XBDateTime.TimeFormat") == DATETIME_FORMAT_US)
   {
     if (iHour > 11)
     {

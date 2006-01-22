@@ -32,13 +32,10 @@
 #define AUDIO_DIGITAL      1
 
 // LCD settings
-#define LCD_MODE_NONE   0
-#define LCD_MODE_NORMAL  1
-#define LCD_MODE_NOTV     2
-
-#define LCD_TYPE_LCD_HD44780 0
-#define LCD_TYPE_LCD_KS0073  1
-#define LCD_TYPE_VFD         2
+#define LCD_TYPE_NONE        0
+#define LCD_TYPE_LCD_HD44780 1
+#define LCD_TYPE_LCD_KS0073  2
+#define LCD_TYPE_VFD         3
 
 #define MODCHIP_SMARTXX   0
 #define MODCHIP_XENIUM    1
@@ -108,12 +105,17 @@
 #define LOCK_PROG_PIC_VI        14 // Musik & Picture & Video
 #define LOCK_MU_VI_PIC_PROG     15 // Musik & Video & Pictures & Programs
 
-
+#define FRAME_RATE_LEAVE_AS_IS  0
+#define FRAME_RATE_CONVERT      1
+#define FRAME_RATE_USE_PAL60    2
 
 #define LED_PLAYBACK_OFF     0
 #define LED_PLAYBACK_VIDEO    1
 #define LED_PLAYBACK_MUSIC    2
 #define LED_PLAYBACK_VIDEO_MUSIC 3
+
+#define DATETIME_FORMAT_EU 0
+#define DATETIME_FORMAT_US 1
 
 #define SPIN_DOWN_NONE  0
 #define SPIN_DOWN_MUSIC  1

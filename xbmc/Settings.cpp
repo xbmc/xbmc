@@ -9,6 +9,7 @@
 
 class CSettings g_settings;
 struct CSettings::stSettings g_stSettings;
+struct CSettings::AdvancedSettings g_advancedSettings;
 
 extern CStdString g_LoadErrorStr;
 
@@ -107,24 +108,11 @@ CSettings::CSettings(void)
   g_stSettings.m_bMyVideoPlaylistRepeat = false;
   g_stSettings.m_bMyVideoPlaylistShuffle = false;
 
-/*  g_stSettings.m_bMyFilesSourceViewMethod = false;
-  g_stSettings.m_bMyFilesSourceRootViewMethod = true;
-  g_stSettings.m_bMyFilesDestViewMethod = false;
-  g_stSettings.m_bMyFilesDestRootViewMethod = true;
-  g_stSettings.m_bMyFilesSourceSortOrder = true;
-  g_stSettings.m_bMyFilesSourceRootSortOrder = true;
-  g_stSettings.m_bMyFilesDestSortOrder = true;
-  g_stSettings.m_bMyFilesDestRootSortOrder = true;
-*/
-
   g_stSettings.m_MyPicturesSortOrder = SORT_ORDER_ASC;
   g_stSettings.m_MyPicturesRootSortOrder = SORT_ORDER_ASC;
 
   g_stSettings.m_ScriptsViewMethod = VIEW_METHOD_LIST;
   g_stSettings.m_ScriptsSortOrder = SORT_ORDER_ASC;
-
-  g_stSettings.m_fZoomAmount = 1.0f;
-  g_stSettings.m_fPixelRatio = 1.0f;
 
   g_stSettings.m_bDisplayRemoteCodes = false;
   g_stSettings.m_iSambaDebugLevel = 0;
@@ -136,6 +124,8 @@ CSettings::CSettings(void)
   g_stSettings.m_nVolumeLevel = 0;
   g_stSettings.m_iPreMuteVolumeLevel = 0;
   g_stSettings.m_bMute = false;
+  g_stSettings.m_fZoomAmount = 1.0f;
+  g_stSettings.m_fPixelRatio = 1.0f;
 
   g_stSettings.m_iLogLevel = LOGINFO;
   g_stSettings.m_bUnhandledExceptionToFatalError = false;
@@ -148,18 +138,35 @@ CSettings::CSettings(void)
   g_stSettings.m_bMyMusicOldUseTags = true;
   g_stSettings.m_bMyMusicOldFindThumbs = true;
 
-  // defaults for seeking
-  g_stSettings.m_iMyVideoTimeSeekForward = 30;
-  g_stSettings.m_iMyVideoTimeSeekBackward = -30;
-  g_stSettings.m_iMyVideoTimeSeekForwardBig = 300;
-  g_stSettings.m_iMyVideoTimeSeekBackwardBig = -300;
+  // Advanced settings
+  g_advancedSettings.m_audioHeadRoom = 0;
 
-  g_stSettings.m_iMyVideoPercentSeekForward = 2;
-  g_stSettings.m_iMyVideoPercentSeekBackward = -2;
-  g_stSettings.m_iMyVideoPercentSeekForwardBig = 10;
-  g_stSettings.m_iMyVideoPercentSeekBackwardBig = -10;
+  g_advancedSettings.m_videoSubsDelayRange = 10;
+  g_advancedSettings.m_videoAudioDelayRange = 10;
+  g_advancedSettings.m_videoSmallStepBackSeconds = 7;
+  g_advancedSettings.m_videoSmallStepBackTries = 3;
+  g_advancedSettings.m_videoSmallStepBackDelay = 300;
+  g_advancedSettings.m_videoUseTimeSeeking = true;
+  g_advancedSettings.m_videoTimeSeekForward = 30;
+  g_advancedSettings.m_videoTimeSeekBackward = -30;
+  g_advancedSettings.m_videoTimeSeekForwardBig = 600;
+  g_advancedSettings.m_videoTimeSeekBackwardBig = -600;
+  g_advancedSettings.m_videoPercentSeekForward = 2;
+  g_advancedSettings.m_videoPercentSeekBackward = -2;
+  g_advancedSettings.m_videoPercentSeekForwardBig = 10;
+  g_advancedSettings.m_videoPercentSeekBackwardBig = -10;
 
-  
+  g_advancedSettings.m_slideshowPanAmount = 2.5f;
+  g_advancedSettings.m_slideshowZoomAmount = 5.0f;
+  g_advancedSettings.m_slideshowBlackBarCompensation = 20.0f;
+
+  g_advancedSettings.m_lcdRows = 4;
+  g_advancedSettings.m_lcdColumns = 20;
+  g_advancedSettings.m_lcdAddress1 = 0;
+  g_advancedSettings.m_lcdAddress2 = 0x40;
+  g_advancedSettings.m_lcdAddress3 = 0x14;
+  g_advancedSettings.m_lcdAddress4 = 0x54;
+
   xbmcXmlLoaded = false;
 }
 
@@ -1096,31 +1103,6 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile, const bool loadp
     GetInteger(pElement, "sortorder", (int&)g_stSettings.m_MyPicturesSortOrder, SORT_ORDER_ASC, SORT_ORDER_NONE, SORT_ORDER_DESC);
     GetInteger(pElement, "sortorderroot", (int&)g_stSettings.m_MyPicturesRootSortOrder, SORT_ORDER_ASC, SORT_ORDER_NONE, SORT_ORDER_DESC);
   }
-  // myfiles
-/*  pElement = pRootElement->FirstChildElement("myfiles");
-  if (pElement)
-  {
-    TiXmlElement *pChild = pElement->FirstChildElement("source");
-    if (pChild)
-    {
-      GetBoolean(pChild, "srcfilesviewmethod", g_stSettings.m_bMyFilesSourceViewMethod);
-      GetBoolean(pChild, "srcfilesviewmethodroot", g_stSettings.m_bMyFilesSourceRootViewMethod);
-      GetInteger(pChild, "srcfilessortmethod", g_stSettings.m_iMyFilesSourceSortMethod, 0, 0, 2);
-      GetInteger(pChild, "srcfilessortmethodroot", g_stSettings.m_iMyFilesSourceRootSortMethod, 0, 0, 3);
-      GetBoolean(pChild, "srcfilessortorder", g_stSettings.m_bMyFilesSourceSortOrder);
-      GetBoolean(pChild, "srcfilessortorderroot", g_stSettings.m_bMyFilesSourceRootSortOrder);
-    }
-    pChild = pElement->FirstChildElement("dest");
-    if (pChild)
-    {
-      GetBoolean(pChild, "dstfilesviewmethod", g_stSettings.m_bMyFilesDestViewMethod);
-      GetBoolean(pChild, "dstfilesviewmethodroot", g_stSettings.m_bMyFilesDestRootViewMethod);
-      GetInteger(pChild, "dstfilessortmethod", g_stSettings.m_iMyFilesDestSortMethod, 0, 0, 2);
-      GetInteger(pChild, "dstfilessortmethodroot", g_stSettings.m_iMyFilesDestRootSortMethod, 0, 0, 3);
-      GetBoolean(pChild, "dstfilessortorder", g_stSettings.m_bMyFilesDestSortOrder);
-      GetBoolean(pChild, "dstfilessortorderroot", g_stSettings.m_bMyFilesDestRootSortOrder);
-    }
-  }*/
 
   // mymusic settings
   pElement = pRootElement->FirstChildElement("mymusic");
@@ -1255,22 +1237,6 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile, const bool loadp
       GetInteger(pChild, "sortorder", (int&)g_stSettings.m_MyVideoTitleSortOrder, SORT_ORDER_ASC, SORT_ORDER_NONE, SORT_ORDER_DESC);
       GetInteger(pChild, "showmode", g_stSettings.m_iMyVideoTitleShowMode, VIDEO_SHOW_ALL, VIDEO_SHOW_ALL, VIDEO_SHOW_WATCHED);
     }
-
-    GetFloat(pElement, "subsdelayrange", g_stSettings.m_fSubsDelayRange, 10, 10, 600);
-    GetFloat(pElement, "audiodelayrange", g_stSettings.m_fAudioDelayRange, 10, 10, 600);
-    GetInteger(pElement, "smallstepbackseconds", g_stSettings.m_iSmallStepBackSeconds, 7, 1, INT_MAX);
-    GetInteger(pElement, "smallstepbacktries", g_stSettings.m_iSmallStepBackTries, 3, 1, 10);
-    GetInteger(pElement, "smallstepbackdelay", g_stSettings.m_iSmallStepBackDelay, 300, 100, 5000); //MS
-
-    GetInteger(pElement, "timeseekforward", g_stSettings.m_iMyVideoTimeSeekForward, 30, 0, 6000);
-    GetInteger(pElement, "timeseekbackward", g_stSettings.m_iMyVideoTimeSeekBackward, -30, -6000, 0);
-    GetInteger(pElement, "timeseekforwardbig", g_stSettings.m_iMyVideoTimeSeekForwardBig, 300, 0, 6000);
-    GetInteger(pElement, "timeseekbackwardbig", g_stSettings.m_iMyVideoTimeSeekBackwardBig, -300, -6000, 0);
-
-    GetInteger(pElement, "percentseekforward", g_stSettings.m_iMyVideoPercentSeekForward, 2, 0, 100);
-    GetInteger(pElement, "percentseekbackward", g_stSettings.m_iMyVideoPercentSeekBackward, -2, -100, 0);
-    GetInteger(pElement, "percentseekforwardbig", g_stSettings.m_iMyVideoPercentSeekForwardBig, 10, 0, 100);
-    GetInteger(pElement, "percentseekbackwardbig", g_stSettings.m_iMyVideoPercentSeekBackwardBig, -10, -100, 0);
   }
   // myscripts settings
   pElement = pRootElement->FirstChildElement("myscripts");
@@ -1296,23 +1262,86 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile, const bool loadp
     GetString(pElement, "ScreenSaverSlideShowPath", g_stSettings.szScreenSaverSlideShowPath, "");
   }
   
-  // screen settings
-  pElement = pRootElement->FirstChildElement("screen");
+  pElement = pRootElement->FirstChildElement("DefaultVideoSettings");
   if (pElement)
   {
-    //    GetInteger(pElement, "viewmode", g_stSettings.m_defaultVideoSettings.m_ViewMode, VIEW_MODE_NORMAL, VIEW_MODE_NORMAL, VIEW_MODE_CUSTOM);
-    GetFloat(pElement, "zoomamount", g_stSettings.m_defaultVideoSettings.m_CustomZoomAmount, 1.0f, 1.0f, 2.0f);
+    GetInteger(pElement, "viewmode", g_stSettings.m_defaultVideoSettings.m_ViewMode, VIEW_MODE_NORMAL, VIEW_MODE_NORMAL, VIEW_MODE_CUSTOM);
+    GetFloat(pElement, "zoomamount", g_stSettings.m_defaultVideoSettings.m_CustomZoomAmount, 1.0f, 0.5f, 2.0f);
     GetFloat(pElement, "pixelratio", g_stSettings.m_defaultVideoSettings.m_CustomPixelRatio, 1.0f, 0.5f, 2.0f);
-    // there is no way to set these settings correctly, so lets default them
-    g_stSettings.m_defaultVideoSettings.m_ViewMode = VIEW_MODE_NORMAL;
+    GetInteger(pElement, "brightness", g_stSettings.m_defaultVideoSettings.m_Brightness, 50, 0, 100);
+    GetInteger(pElement, "contrast", g_stSettings.m_defaultVideoSettings.m_Contrast, 50, 0, 100);
+    GetInteger(pElement, "gamma", g_stSettings.m_defaultVideoSettings.m_Gamma, 20, 0, 100);
+    GetInteger(pElement, "filmgrain", g_stSettings.m_defaultVideoSettings.m_FilmGrain, 0, 1, 100);
+    GetFloat(pElement, "volumeamplification", g_stSettings.m_defaultVideoSettings.m_VolumeAmplification, 0, 0, 30);
+    GetBoolean(pElement, "showsubtitles", g_stSettings.m_defaultVideoSettings.m_SubtitleOn);
   }
   // audio settings
   pElement = pRootElement->FirstChildElement("audio");
   if (pElement)
   {
     GetInteger(pElement, "volumelevel", g_stSettings.m_nVolumeLevel, VOLUME_MAXIMUM, VOLUME_MINIMUM, VOLUME_MAXIMUM);
+    for (int i = 0; i < 4; i++)
+    {
+      CStdString setting;
+      setting.Format("karaoke%i", i);
+      GetFloat(pElement, setting + "energy", g_stSettings.m_karaokeVoiceMask[i].fSpecEnergyWeight, XVOICE_MASK_PARAM_DISABLED, XVOICE_MASK_PARAM_DISABLED, 1.0f);
+      GetFloat(pElement, setting + "pitch", g_stSettings.m_karaokeVoiceMask[i].fPitchScale, XVOICE_MASK_PARAM_DISABLED, XVOICE_MASK_PARAM_DISABLED, 1.0f);
+      GetFloat(pElement, setting + "whisper", g_stSettings.m_karaokeVoiceMask[i].fWhisperValue, XVOICE_MASK_PARAM_DISABLED, XVOICE_MASK_PARAM_DISABLED, 1.0f);
+      GetFloat(pElement, setting + "robotic", g_stSettings.m_karaokeVoiceMask[i].fRoboticValue, XVOICE_MASK_PARAM_DISABLED, XVOICE_MASK_PARAM_DISABLED, 1.0f);
+    }
   }
 
+  // Advanced settings
+  pElement = pRootElement->FirstChildElement("AudioSettings");
+  if (pElement)
+  {
+    GetInteger(pElement, "headroom", g_advancedSettings.m_audioHeadRoom, 0, 0, 12);
+  }
+
+  pElement = pRootElement->FirstChildElement("VideoSettings");
+  if (pElement)
+  {
+    GetFloat(pElement, "subsdelayrange", g_advancedSettings.m_videoSubsDelayRange, 10, 10, 600);
+    GetFloat(pElement, "audiodelayrange", g_advancedSettings.m_videoAudioDelayRange, 10, 10, 600);
+    GetInteger(pElement, "smallstepbackseconds", g_advancedSettings.m_videoSmallStepBackSeconds, 7, 1, INT_MAX);
+    GetInteger(pElement, "smallstepbacktries", g_advancedSettings.m_videoSmallStepBackTries, 3, 1, 10);
+    GetInteger(pElement, "smallstepbackdelay", g_advancedSettings.m_videoSmallStepBackDelay, 300, 100, 5000); //MS
+
+    GetBoolean(pElement, "usetimeseeking", g_advancedSettings.m_videoUseTimeSeeking);
+    GetInteger(pElement, "timeseekforward", g_advancedSettings.m_videoTimeSeekForward, 30, 0, 6000);
+    GetInteger(pElement, "timeseekbackward", g_advancedSettings.m_videoTimeSeekBackward, -30, -6000, 0);
+    GetInteger(pElement, "timeseekforwardbig", g_advancedSettings.m_videoTimeSeekForwardBig, 600, 0, 6000);
+    GetInteger(pElement, "timeseekbackwardbig", g_advancedSettings.m_videoTimeSeekBackwardBig, -600, -6000, 0);
+
+    GetInteger(pElement, "percentseekforward", g_advancedSettings.m_videoPercentSeekForward, 2, 0, 100);
+    GetInteger(pElement, "percentseekbackward", g_advancedSettings.m_videoPercentSeekBackward, -2, -100, 0);
+    GetInteger(pElement, "percentseekforwardbig", g_advancedSettings.m_videoPercentSeekForwardBig, 10, 0, 100);
+    GetInteger(pElement, "percentseekbackwardbig", g_advancedSettings.m_videoPercentSeekBackwardBig, -10, -100, 0);
+  }
+
+  pElement = pRootElement->FirstChildElement("SlideShowEffects");
+  if (pElement)
+  {
+    GetFloat(pElement, "panamount", g_advancedSettings.m_slideshowPanAmount, 2.5f, 0.0f, 20.0f);
+    GetFloat(pElement, "zoomamount", g_advancedSettings.m_slideshowZoomAmount, 5.0f, 0.0f, 20.0f);
+    GetFloat(pElement, "blackbarcompensation", g_advancedSettings.m_slideshowBlackBarCompensation, 20.0f, 0.0f, 50.0f);
+  }
+
+  pElement = pRootElement->FirstChildElement("LCDSettings");
+  if (pElement)
+  {
+    GetInteger(pElement, "rows", g_advancedSettings.m_lcdRows, 4, 1, 4);
+    GetInteger(pElement, "columns", g_advancedSettings.m_lcdColumns, 20, 1, 20);
+    GetInteger(pElement, "address1", g_advancedSettings.m_lcdAddress1, 0, 0, 0x100);
+    GetInteger(pElement, "address2", g_advancedSettings.m_lcdAddress2, 0x40, 0, 0x100);
+    GetInteger(pElement, "address3", g_advancedSettings.m_lcdAddress3, 0x14, 0, 0x100);
+    GetInteger(pElement, "address4", g_advancedSettings.m_lcdAddress4, 0x54, 0, 0x100);
+  }
+  pElement = pRootElement->FirstChildElement("NetworkSettings");
+  if (pElement)
+  {
+    GetInteger(pElement, "autodetectpingtime", g_advancedSettings.m_autoDetectPingTime, 30, 1, 240);
+  }
   // my programs
   pElement = pRootElement->FirstChildElement("myprograms");
   if (pElement)
@@ -1361,33 +1390,6 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile, const bool savep
   SetInteger(pNode, "sortmethodroot", g_stSettings.m_MyPicturesRootSortMethod);
   SetInteger(pNode, "sortorder", g_stSettings.m_MyPicturesSortOrder);
   SetInteger(pNode, "sortorderroot", g_stSettings.m_MyPicturesRootSortOrder);
-
-  // myfiles settings
-/*  TiXmlElement filesNode("myfiles");
-  pNode = pRoot->InsertEndChild(filesNode);
-  if (!pNode) return false;
-  {
-    TiXmlElement childNode("source");
-    TiXmlNode *pChild = pNode->InsertEndChild(childNode);
-    if (!pChild) return false;
-    SetBoolean(pChild, "srcfilesviewmethod", g_stSettings.m_bMyFilesSourceViewMethod);
-    SetBoolean(pChild, "srcfilesviewmethodroot", g_stSettings.m_bMyFilesSourceRootViewMethod);
-    SetInteger(pChild, "srcfilessortmethod", g_stSettings.m_iMyFilesSourceSortMethod);
-    SetInteger(pChild, "srcfilessortmethodroot", g_stSettings.m_iMyFilesSourceRootSortMethod);
-    SetBoolean(pChild, "srcfilessortorder", g_stSettings.m_bMyFilesSourceSortOrder);
-    SetBoolean(pChild, "srcfilessortorderroot", g_stSettings.m_bMyFilesSourceRootSortOrder);
-  }
-  {
-    TiXmlElement childNode("dest");
-    TiXmlNode *pChild = pNode->InsertEndChild(childNode);
-    if (!pChild) return false;
-    SetBoolean(pChild, "dstfilesviewmethod", g_stSettings.m_bMyFilesDestViewMethod);
-    SetBoolean(pChild, "dstfilesviewmethodroot", g_stSettings.m_bMyFilesDestRootViewMethod);
-    SetInteger(pChild, "dstfilessortmethod", g_stSettings.m_iMyFilesDestSortMethod);
-    SetInteger(pChild, "dstfilessortmethodroot", g_stSettings.m_iMyFilesDestRootSortMethod);
-    SetBoolean(pChild, "dstfilessortorder", g_stSettings.m_bMyFilesDestSortOrder);
-    SetBoolean(pChild, "dstfilessortorderroot", g_stSettings.m_bMyFilesDestRootSortOrder);
-  }*/
 
   // mymusic settings
   TiXmlElement musicNode("mymusic");
@@ -1526,22 +1528,6 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile, const bool savep
     SetInteger(pChild, "showmode", g_stSettings.m_iMyVideoTitleShowMode);
   }
 
-  SetFloat(pNode, "subsdelayrange", g_stSettings.m_fSubsDelayRange);
-  SetFloat(pNode, "audiodelayrange", g_stSettings.m_fAudioDelayRange);
-  SetInteger(pNode, "smallstepbackseconds", g_stSettings.m_iSmallStepBackSeconds);
-  SetInteger(pNode, "smallstepbacktries", g_stSettings.m_iSmallStepBackTries);
-  SetInteger(pNode, "smallstepbackdelay", g_stSettings.m_iSmallStepBackDelay);
-
-  SetInteger(pNode, "timeseekforward", g_stSettings.m_iMyVideoTimeSeekForward);
-  SetInteger(pNode, "timeseekbackward", g_stSettings.m_iMyVideoTimeSeekBackward);
-  SetInteger(pNode, "timeseekforwardbig", g_stSettings.m_iMyVideoTimeSeekForwardBig);
-  SetInteger(pNode, "timeseekbackwardbig", g_stSettings.m_iMyVideoTimeSeekBackwardBig);
-
-  SetInteger(pNode, "percentseekforward", g_stSettings.m_iMyVideoPercentSeekForward);
-  SetInteger(pNode, "percentseekbackward", g_stSettings.m_iMyVideoPercentSeekBackward);
-  SetInteger(pNode, "percentseekforwardbig", g_stSettings.m_iMyVideoPercentSeekForwardBig);
-  SetInteger(pNode, "percentseekbackwardbig", g_stSettings.m_iMyVideoPercentSeekBackwardBig);
-  
   // myscripts settings
   TiXmlElement scriptsNode("myscripts");
   pNode = pRoot->InsertEndChild(scriptsNode);
@@ -1564,20 +1550,82 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile, const bool savep
   if (!pNode) return false;
   SetString(pNode, "ScreenSaverSlideShowPath", g_stSettings.szScreenSaverSlideShowPath);
   
-  // screen settings
-  TiXmlElement screenNode("screen");
-  pNode = pRoot->InsertEndChild(screenNode);
-  if (!pNode) return false;
-  SetFloat(pNode, "zoomamount", g_stSettings.m_defaultVideoSettings.m_CustomZoomAmount);
-  SetFloat(pNode, "pixelratio", g_stSettings.m_defaultVideoSettings.m_CustomPixelRatio);
-
-  // audio settings
-  TiXmlElement audioNode("audio");
+  // Advanced Settings
+  TiXmlElement audioNode("AudioSettings");
   pNode = pRoot->InsertEndChild(audioNode);
   if (!pNode) return false;
+  SetInteger(pNode, "headroom", g_advancedSettings.m_audioHeadRoom);
 
+  TiXmlElement videoNode("VideoSettings");
+  pNode = pRoot->InsertEndChild(videoNode);
+  if (!pNode) return false;
+  SetFloat(pNode, "subsdelayrange", g_advancedSettings.m_videoSubsDelayRange);
+  SetFloat(pNode, "audiodelayrange", g_advancedSettings.m_videoAudioDelayRange);
+  SetInteger(pNode, "smallstepbackseconds", g_advancedSettings.m_videoSmallStepBackSeconds);
+  SetInteger(pNode, "smallstepbacktries", g_advancedSettings.m_videoSmallStepBackTries);
+  SetInteger(pNode, "smallstepbackdelay", g_advancedSettings.m_videoSmallStepBackDelay);
+
+  SetBoolean(pNode, "usetimeseeking", g_advancedSettings.m_videoUseTimeSeeking);
+  SetInteger(pNode, "timeseekforward", g_advancedSettings.m_videoTimeSeekForward);
+  SetInteger(pNode, "timeseekbackward", g_advancedSettings.m_videoTimeSeekBackward);
+  SetInteger(pNode, "timeseekforwardbig", g_advancedSettings.m_videoTimeSeekForwardBig);
+  SetInteger(pNode, "timeseekbackwardbig", g_advancedSettings.m_videoTimeSeekBackwardBig);
+
+  SetInteger(pNode, "percentseekforward", g_advancedSettings.m_videoPercentSeekForward);
+  SetInteger(pNode, "percentseekbackward", g_advancedSettings.m_videoPercentSeekBackward);
+  SetInteger(pNode, "percentseekforwardbig", g_advancedSettings.m_videoPercentSeekForwardBig);
+  SetInteger(pNode, "percentseekbackwardbig", g_advancedSettings.m_videoPercentSeekBackwardBig);
+  
+  TiXmlElement slideShowEffectsNode("SlideShowEffects");
+  pNode = pRoot->InsertEndChild(slideShowEffectsNode);
+  if (!pNode) return false;
+  SetFloat(pNode, "panamount", g_advancedSettings.m_slideshowPanAmount);
+  SetFloat(pNode, "zoomamount", g_advancedSettings.m_slideshowZoomAmount);
+  SetFloat(pNode, "blackbarcompensation", g_advancedSettings.m_slideshowBlackBarCompensation);
+
+  TiXmlElement lcdNode("LCDSettings");
+  pNode = pRoot->InsertEndChild(lcdNode);
+  if (!pNode) return false;
+  SetInteger(pNode, "numrows", g_advancedSettings.m_lcdRows);
+  SetInteger(pNode, "numcolumns", g_advancedSettings.m_lcdColumns);
+  SetInteger(pNode, "rowaddress1", g_advancedSettings.m_lcdAddress1);
+  SetInteger(pNode, "rowaddress2", g_advancedSettings.m_lcdAddress2);
+  SetInteger(pNode, "rowaddress3", g_advancedSettings.m_lcdAddress3);
+  SetInteger(pNode, "rowaddress4", g_advancedSettings.m_lcdAddress4);
+
+  TiXmlElement networkNode("NetworkSettings");
+  pNode = pRoot->InsertEndChild(networkNode);
+  if (!pNode) return false;
+  SetInteger(pNode, "autodetectpingtime", g_advancedSettings.m_autoDetectPingTime);
+
+  // default video settings
+  TiXmlElement videoSettingsNode("DefaultVideoSettings");
+  pNode = pRoot->InsertEndChild(videoSettingsNode);
+  if (!pNode) return false;
+  SetInteger(pNode, "viewmode", g_stSettings.m_defaultVideoSettings.m_ViewMode);
+  SetFloat(pNode, "zoomamount", g_stSettings.m_defaultVideoSettings.m_CustomZoomAmount);
+  SetFloat(pNode, "pixelratio", g_stSettings.m_defaultVideoSettings.m_CustomPixelRatio);
+  SetInteger(pNode, "brightness", g_stSettings.m_defaultVideoSettings.m_Brightness);
+  SetInteger(pNode, "contrast", g_stSettings.m_defaultVideoSettings.m_Contrast);
+  SetInteger(pNode, "gamma", g_stSettings.m_defaultVideoSettings.m_Gamma);
+  SetInteger(pNode, "filmgrain", g_stSettings.m_defaultVideoSettings.m_FilmGrain);
+  SetFloat(pNode, "volumeamplification", g_stSettings.m_defaultVideoSettings.m_VolumeAmplification);
+  SetBoolean(pNode, "showsubtitles", g_stSettings.m_defaultVideoSettings.m_SubtitleOn);
+
+  // audio settings
+  TiXmlElement volumeNode("audio");
+  pNode = pRoot->InsertEndChild(volumeNode);
+  if (!pNode) return false;
   SetInteger(pNode, "volumelevel", g_stSettings.m_nVolumeLevel);
-
+  for (int i = 0; i < 4; i++)
+  {
+    CStdString setting;
+    setting.Format("karaoke%i", i);
+    SetFloat(pNode, setting + "energy", g_stSettings.m_karaokeVoiceMask[i].fSpecEnergyWeight);
+    SetFloat(pNode, setting + "pitch", g_stSettings.m_karaokeVoiceMask[i].fPitchScale);
+    SetFloat(pNode, setting + "whisper", g_stSettings.m_karaokeVoiceMask[i].fWhisperValue);
+    SetFloat(pNode, setting + "robotic", g_stSettings.m_karaokeVoiceMask[i].fRoboticValue);
+  }
   SaveCalibration(pRoot);
 
   g_guiSettings.SaveXML(pRoot);

@@ -178,14 +178,13 @@ void CCdgChatter::LoadSettings()
 {
   // Get the Max volume
   CStdString strSetting = "Karaoke.Volume";
-//  strSetting.Format("VoiceOnPort%i.Volume", m_dwPort);
   int iPercent = g_guiSettings.GetInt(strSetting);
   if (iPercent < 0) iPercent = 0;
   if (iPercent > 100) iPercent = 100;
   float fHardwareVolume = ((float)iPercent) / 100.0f * (VOLUME_MAXIMUM - VOLUME_MINIMUM) + VOLUME_MINIMUM;
   m_lVolume = (long)fHardwareVolume;
   //Load the voice mask
-  strSetting.Format("Karaoke.Port%iVoiceMask" /*"VoiceOnPort%i.VoiceMask"*/, m_dwPort);
+  strSetting.Format("Karaoke.Port%iVoiceMask", m_dwPort);
   strSetting = g_guiSettings.GetString(strSetting);
   if (strSetting.CompareNoCase("None") == 0)
   {
@@ -198,34 +197,7 @@ void CCdgChatter::LoadSettings()
     if (!m_pVoiceMask)
       m_pVoiceMask = new XVOICE_MASK;
     if (!m_pVoiceMask) return ;
-    CStdString strEnergy, strPitch, strWhisper, strRobotic;
-    CStdString strBoolEnergy, strBoolPitch, strBoolWhisper, strBoolRobotic;
-    strEnergy.Format("VoiceOnPort%i.fSpecEnergyWeight", m_dwPort);
-    strPitch.Format("VoiceOnPort%i.fPitchScale", m_dwPort);
-    strWhisper.Format("VoiceOnPort%i.fWhisperValue", m_dwPort);
-    strRobotic.Format("VoiceOnPort%i.fRoboticValue", m_dwPort);
-
-    strBoolEnergy.Format("VoiceOnPort%i.EnablefSpecEnergyWeight", m_dwPort);
-    strBoolPitch.Format("VoiceOnPort%i.EnablefPitchScale", m_dwPort);
-    strBoolWhisper.Format("VoiceOnPort%i.EnablefWhisperValue", m_dwPort);
-    strBoolRobotic.Format("VoiceOnPort%i.EnablefRoboticValue", m_dwPort);
-
-    if (g_guiSettings.GetBool(strBoolEnergy))
-      m_pVoiceMask->fSpecEnergyWeight = g_guiSettings.GetFloat(strEnergy);
-    else
-      m_pVoiceMask->fSpecEnergyWeight = XVOICE_MASK_PARAM_DISABLED;
-    if (g_guiSettings.GetBool(strBoolPitch))
-      m_pVoiceMask->fPitchScale = g_guiSettings.GetFloat(strPitch);
-    else
-      m_pVoiceMask->fPitchScale = XVOICE_MASK_PARAM_DISABLED;
-    if (g_guiSettings.GetBool(strBoolWhisper))
-      m_pVoiceMask->fWhisperValue = g_guiSettings.GetFloat(strWhisper);
-    else
-      m_pVoiceMask->fWhisperValue = XVOICE_MASK_PARAM_DISABLED;
-    if (g_guiSettings.GetBool(strBoolRobotic))
-      m_pVoiceMask->fRoboticValue = g_guiSettings.GetFloat(strRobotic);
-    else
-      m_pVoiceMask->fRoboticValue = XVOICE_MASK_PARAM_DISABLED;
+    memcpy(m_pVoiceMask, &g_stSettings.m_karaokeVoiceMask[m_dwPort], sizeof(XVOICE_MASK));
   }
   //Calculate other useful constants
   DWORD dwSamplingRate, dwVoicePacketTime;
@@ -498,15 +470,6 @@ void CCdgVoiceManager::Initialize( CDG_VOICE_MANAGER_CONFIG* pConfig )
   // Grab the config parameters
   memcpy( &m_cfg, pConfig, sizeof( CDG_VOICE_MANAGER_CONFIG ) );
 
- /* CStdString strSetting;
-  for (DWORD i = 0; i < XGetPortCount(); i++)
-  {
-    strSetting.Format("VoiceOnPort%i.EnableDevice", i );
-    if ( g_guiSettings.GetBool(strSetting) )
-      m_bEnabled[i] = true;
-    else
-      m_bEnabled[i] = false;
-  }*/
   //Update the starting voice device states
   DWORD dwComHeadMask = XGetDevices(XDEVICE_TYPE_VOICE_HEADPHONE);
   DWORD dwComMikeMask = XGetDevices(XDEVICE_TYPE_VOICE_MICROPHONE);

@@ -66,6 +66,7 @@ public:
 
   bool GetVideoSettings(const CStdString &strFilenameAndPath, CVideoSettings &settings);
   void SetVideoSettings(const CStdString &strFilenameAndPath, const CVideoSettings &settings);
+  void EraseVideoSettings();
 
 protected:
   long GetPath(const CStdString& strPath);
