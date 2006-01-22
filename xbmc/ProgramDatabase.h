@@ -14,6 +14,14 @@ public:
   CProgramDatabase(void);
   virtual ~CProgramDatabase(void);
   long AddProgram(const CStdString& strFilenameAndPath, DWORD titleId, const CStdString& strDescription, const CStdString& strBookmark);
+  bool AddTrainer(int iTitleId, const CStdString& strText);
+  bool RemoveTrainer(const CStdString& strText);
+  bool GetTrainers(unsigned int iTitleId, std::vector<CStdString>& vecTrainers);
+  bool GetAllTrainers(std::vector<CStdString>& vecTrainers);
+  bool SetTrainerOptions(const CStdString& strTrainerPath, unsigned int iTitleId, unsigned char* data);
+  bool GetTrainerOptions(const CStdString& strTrainerPath, unsigned int iTitleId, unsigned char* data);
+  void SetTrainerActive(const CStdString& strTrainerPath, unsigned int iTitleId, bool bActive);
+  CStdString GetActiveTrainer(unsigned int iTitleId);
   long GetFile(const CStdString& strFilenameAndPath, CFileItemList& programs);
   void GetProgramsByBookmark(CStdString& strBookmark, CFileItemList& programs, int iDepth, bool bOnlyDefaultXBE);
   void GetPathsByBookmark(const CStdString& strBookmark, vector <CStdString>& vecPaths);
@@ -24,6 +32,8 @@ public:
   int GetRegion(const CStdString& strFilenameAndPath);
   bool SetRegion(const CStdString& strFilenameAndPath, int iRegion=0);
   bool EntryExists(const CStdString& strPath, const CStdString& strBookmark);
+  bool HasTrainer(const CStdString& strTrainerPath);
+  bool ItemHasTrainer(unsigned int iTitleId);
   void DeleteProgram(const CStdString& strPath);
 protected:
   static const unsigned __int64 Date_1601 = 0x0701CE1722770000i64;

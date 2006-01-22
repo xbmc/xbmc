@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 21-01-2006 added: xored trainer engine! thanks to team xored and to britneyspair for skinwork!
  - 21-01-2006 fixed/changed: tuned the subtitle caching a bit. should avoid most issues with rarred subs.
  - 21-01-2006 added: adplug codec to paplayer. add .adplug to the end of the filename of the file you want to play.
  - 21-01-2006 fixed: toggling subtitle with remote didn't affect setting in video osd.
