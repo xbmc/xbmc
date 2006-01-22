@@ -65,6 +65,7 @@ CSettings::CSettings(void)
   strcpy( g_stSettings.m_szIMDBurl, "");
   strcpy (g_stSettings.m_szMusicRecordingDirectory, "");
   strcpy(g_stSettings.m_szCacheDirectory,"Z:\\");
+  strcpy(g_stSettings.m_szTrainerDirectory,"$HOME\\system\\trainers");
 
   g_stSettings.m_bMyMusicSongInfoInVis = true;    // UNUSED - depreciated.
   g_stSettings.m_bMyMusicSongThumbInVis = false;  // used for music info in vis screen
@@ -327,6 +328,7 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
   GetString(pRootElement, "albums", g_stSettings.m_szAlbumDirectory, "");
   GetString(pRootElement, "subtitles", g_stSettings.m_szAlternateSubtitleDirectory, "");
   GetString(pRootElement, "cachepath", g_stSettings.m_szCacheDirectory,"Z:\\");
+  GetString(pRootElement, "trainerpath", g_stSettings.m_szTrainerDirectory,"c:\\trainers");
 
   GetString(pRootElement, "pictureextensions", g_stSettings.m_szMyPicturesExtensions, ".bmp|.jpg|.png|.gif|.pcx|.tif|.jpeg");
 
