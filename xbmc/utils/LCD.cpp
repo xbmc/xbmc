@@ -89,7 +89,7 @@ CStdString ILCD::GetProgressBar(double tCurrent, double tTotal)
   unsigned char cLCDsmallBlocks = 0xb0; //this char (0xAC-0xAF) will be translated in LCD.cpp to the smallBlock
   unsigned char cLCDbigBlock = 0xa0;  //this char will be translated in LCD.cpp to the right bigBlock
   int iBigBlock = 5;      // a big block is a combination of 5 small blocks
-  int m_iColumns = g_guiSettings.GetInt("LCD.Columns") - 2;
+  int m_iColumns = g_advancedSettings.m_lcdColumns - 2;
 
   if (m_iColumns > 0)
   {

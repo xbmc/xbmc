@@ -368,7 +368,7 @@ void CGUIWindowSlideShow::Render()
     {
       if (m_pBackgroundLoader->IsLoading())
       {
-        CLog::Log(LOGDEBUG, "Having to hold the current image (%s) while we load %s", m_vecSlides[m_iCurrentSlide].c_str(), m_vecSlides[m_iNextSlide].c_str());
+//        CLog::Log(LOGDEBUG, "Having to hold the current image (%s) while we load %s", m_vecSlides[m_iCurrentSlide].c_str(), m_vecSlides[m_iNextSlide].c_str());
         m_Image[m_iCurrentPic].Keep();
       }
     }
@@ -649,7 +649,7 @@ void CGUIWindowSlideShow::OnLoadPic(int iPic, int iSlideNumber, D3DTexture *pTex
     else
     {
       if (m_bSlideShow)
-        m_Image[iPic].SetTexture(iSlideNumber, pTexture, iWidth, iHeight, iRotate);
+        m_Image[iPic].SetTexture(iSlideNumber, pTexture, iWidth, iHeight, iRotate, g_guiSettings.GetBool("Slideshow.DisplayEffects") ? CSlideShowPic::EFFECT_RANDOM : CSlideShowPic::EFFECT_NONE);
       else
         m_Image[iPic].SetTexture(iSlideNumber, pTexture, iWidth, iHeight, iRotate, CSlideShowPic::EFFECT_NO_TIMEOUT);
       m_Image[iPic].SetOriginalSize(iOriginalWidth, iOriginalHeight, bFullSize);

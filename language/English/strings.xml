@@ -267,7 +267,7 @@
   <string><id>333</id><value>Do you want to clean the music library?</value></string>
   <string><id>334</id><value>Clean Music Library...</value></string>
   <string><id>335</id><value>Start</value></string>
-  <string><id>336</id><value>Adjust Framerate</value></string>
+  <string><id>336</id><value>Framerate Conversion</value></string>
   <string><id>337</id><value>Audio Output</value></string>
   <string><id>338</id><value>Analog</value></string>
   <string><id>339</id><value>Digital</value></string>
@@ -776,6 +776,17 @@
   <string><id>12373</id><value>Settings &amp;  My Files</value></string>
   <string><id>12374</id><value>Lock Media</value></string>
   <string><id>12375</id><value>Master User Mode</value></string>
+  <string><id>12376</id><value>Set as default for all Movies</value></string>
+  <string><id>12377</id><value>This will reset any previously saved values</value></string>
+  <string><id>12378</id><value>Show each image for</value></string>
+  <string><id>12379</id><value>Use Pan and Zoom effects</value></string>
+  <string><id>12380</id><value>Play NTSC videos at PAL rates</value></string>
+  <string><id>12381</id><value>Play PAL videos at NTSC rates</value></string>
+  <string><id>12382</id><value>Play NTSC videos in PAL60</value></string>
+  <string><id>12383</id><value>12 hour clock</value></string>
+  <string><id>12384</id><value>24 hour clock</value></string>
+  <string><id>12385</id><value>Day/Month</value></string>
+  <string><id>12386</id><value>Month/Day</value></string>
 
   <string><id>12390</id><value>System Uptime</value></string>
   <string><id>12391</id><value>Minutes</value></string>
@@ -1022,8 +1033,8 @@
   <string><id>14048</id><value>%i kbps</value></string>
   <string><id>14049</id><value>%i kb</value></string>
   <string><id>14050</id><value>%i.0 dB</value></string>
-  <string><id>14051</id><value>Show 12 hour clock</value></string>
-  <string><id>14052</id><value>Swap month and day in home screen</value></string>
+  <string><id>14051</id><value>Time Format</value></string>
+  <string><id>14052</id><value>Date Format</value></string>
   <string><id>14053</id><value>GUI Filters</value></string>
   <string><id>14054</id><value>Enable Internet Lookups</value></string>
   <string><id>14055</id><value>Use Background Scanning</value></string>
