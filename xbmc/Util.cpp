@@ -1804,10 +1804,16 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
   if (!bAlternateChecked && strlen(g_stSettings.m_szAlternateSubtitleDirectory)) // to avoid checking non-existent directories (network) every time..
   {
     if (!m_bNetworkUp && !IsHD(g_stSettings.m_szAlternateSubtitleDirectory))
+    {
+      CLog::Log(LOGINFO,"CUtil::CacheSubtitles: disabling alternate subtitle directory for this session, it's nonaccessible");
       g_stSettings.m_szAlternateSubtitleDirectory[0] = '\0';
+    }
     else
     if (!CDirectory::Exists(g_stSettings.m_szAlternateSubtitleDirectory))
+    {
+      CLog::Log(LOGINFO,"CUtil::CacheSubtitles: disabling alternate subtitle directory for this session, it's nonexistant");
       g_stSettings.m_szAlternateSubtitleDirectory[0] = '\0';
+    }
 
     bAlternateChecked = true;
   }
@@ -1825,6 +1831,8 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
   {
     CStdString strParent;
     CUtil::GetParentPath(strLookInPaths[i],strParent);
+    if (CURL(strParent).GetHostName() == "" && !IsHD(strParent))
+      strParent = "";
     for (int j=0; common_sub_dirs[j]; j++)
     {
       CStdString strPath2;
@@ -1833,10 +1841,12 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
         strLookInPaths.push_back(strPath2);
 
       // ../common dirs aswell
-      CUtil::AddFileToFolder(strParent,common_sub_dirs[j],strPath2);
-      if (CDirectory::Exists(strPath2))
-        strLookInPaths.push_back(strPath2);
-
+      if (strParent != "")
+      {
+        CUtil::AddFileToFolder(strParent,common_sub_dirs[j],strPath2);
+        if (CDirectory::Exists(strPath2))
+          strLookInPaths.push_back(strPath2);
+      }
     }
   }
   // .. done checking for common subdirs
@@ -1846,13 +1856,13 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
   iSize = strLookInPaths.size();
   for (int i=0;i<9;++i) // 9 cd's
   {
-    sprintf(temp,"/cd%i/",i+1);
+    sprintf(temp,"cd%i",i+1);
     for (int i=0;i<iSize;++i)
     {
-      if (CDirectory::Exists(strLookInPaths[i]+temp))
-      {
+      CStdString strPath2;
+      CUtil::AddFileToFolder(strLookInPaths[i],temp,strPath2);
+      if (CDirectory::Exists(strPath2))
         strLookInPaths.push_back(strLookInPaths[i]+temp);
-      }
     }
   }
   // .. done checking for cd-dirs
@@ -1888,7 +1898,12 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
 
         // is this a rar-file .. 
         if (CUtil::IsRAR(strItem) && g_guiSettings.GetBool("Subtitles.SearchRars"))
+        {
+          CStdString strRar;
+          CUtil::AddFileToFolder(strLookInPaths[step],strFileNameNoExt+".rar",strRar);
+          if (step != (strMovie.substr(0,6)=="rar://"?1:0) || strItem == strRar)
             CacheRarSubtitles( vecExtensionsCached, items[j]->m_strPath, strFileNameNoExtNoCase);
+        }
         else
         {
           for (int i = 0; sub_exts[i]; i++)
@@ -1943,12 +1958,11 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
 bool CUtil::CacheRarSubtitles(std::vector<CStdString>& vecExtensionsCached, const CStdString& strRarPath, const CStdString& strCompare, const CStdString& strExtExt)
 {
   bool bFoundSubs = false;
-  CRarManager RarMgr;
   CFileItemList ItemList;
 
   // get _ALL_files in the rar, even those located in subdirectories because we set the bMask to false.
   // so now we dont have to find any subdirs anymore, all files in the rar is checked.
-  if( !RarMgr.GetFilesInRar(ItemList, strRarPath, false, "") ) return false;
+  if( !g_RarManager.GetFilesInRar(ItemList, strRarPath, false, "") ) return false;
   for (int it= 0 ; it <ItemList.Size();++it)
   {
     CStdString strPathInRar = ItemList[it]->m_strPath;
