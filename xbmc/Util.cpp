@@ -22,6 +22,7 @@
 #include "autorun.h"
 #include "utils/fstrcmp.h"
 #include "utils/GUIInfoManager.h"
+#include "utils/trainer.h"
 #include "FileSystem/ZipManager.h"
 #include "FileSystem/RarManager.h"
 
@@ -590,6 +591,186 @@ bool CUtil::PatchCountryVideo(F_COUNTRY Country, F_VIDEO Video)
   // All Done!
   return( true );
 } 
+
+bool CUtil::InstallTrainer(CTrainer& trainer)
+{
+	unsigned char *xboxkrnl = (unsigned char *)KERNEL_START_ADDRESS;
+	unsigned char *hackptr = (unsigned char *)KERNEL_STORE_ADDRESS;
+  void *ourmemaddr = NULL; // pointer used to allocated trainer mem
+	unsigned int i = 0;
+	bool Found = false;
+	DWORD memsize;
+
+	if (trainer.IsXBTF()) // size of our allocation buffer for trainer
+		memsize = XBTF_HEAP_SIZE;
+	else
+		memsize = ETM_HEAP_SIZE;
+
+	unsigned char xbe_entry_point[] = {0xff,0x15,0x28,0x01,0x01,0x00}; // xbe entry point bytes in kernel
+	unsigned char evox_tsr_hook[] = {0xff,0x15,0x10,0x00,0x00,0x80}; // check for evox's evil tsr hook
+
+	for(i = 0; i < KERNEL_SEARCH_RANGE; i++)
+	{
+		if (memcmp(&xboxkrnl[i], xbe_entry_point, sizeof(xbe_entry_point)) == 0 ||
+			memcmp(&xboxkrnl[i], evox_tsr_hook, sizeof(evox_tsr_hook)) == 0)
+		{
+			Found = true;
+			break;
+		}
+	}
+
+	if(Found)
+	{
+		unsigned char *patchlocation = xboxkrnl;
+
+		patchlocation += i + 2; // adjust to xbe entry point bytes in kernel (skipping actual call opcodes)
+		_asm
+		{
+			pushad
+
+			mov eax, cr0
+			push eax
+			and eax, 0FFFEFFFFh
+			mov cr0, eax // disable memory write prot
+
+			mov	edi, patchlocation // address of call to xbe entry point in kernel
+			mov	dword ptr [edi], KERNEL_STORE_ADDRESS // patch with address of where we store loaderdata+trainer buffer address
+
+			pop eax
+			mov cr0, eax // restore memory write prot
+
+			popad
+		}
+	}
+	else
+	{
+		__asm // recycle check
+		{
+			pushad
+
+			mov edx, KERNEL_STORE_ADDRESS
+			mov ecx, DWORD ptr [edx]
+			cmp ecx, 0 // just in case :)
+			jz cleanup
+
+			cmp word ptr [ecx], 0BA60h // address point to valid loaderdata?
+			jnz cleanup
+
+			mov Found, 1 // yes! flag it found
+
+			push ecx
+			call MmFreeContiguousMemory // release old memory
+cleanup:
+			popad
+		}
+	}
+
+	// allocate our memory space BELOW the kernel (so we can access buffer from game's scope)
+	// if you allocate above kernel our buffer is out of scope and only debug bio will allow
+	// game to access it
+	ourmemaddr = MmAllocateContiguousMemoryEx(memsize, 0, -1, KERNEL_ALLOCATE_ADDRESS, PAGE_NOCACHE | PAGE_READWRITE);
+	if ((DWORD)ourmemaddr > 0)
+	{
+		MmPersistContiguousMemory(ourmemaddr, memsize, true); // so we survive soft boots
+		memcpy(hackptr, &ourmemaddr, 4); // store location of ourmemaddr in kernel
+
+		memset(ourmemaddr, 0xFF, memsize); // init trainer buffer
+		memcpy(ourmemaddr, trainerloaderdata, sizeof(trainerloaderdata)); // copy loader data (actual kernel hack)
+
+		// patch loaderdata with trainer base address
+		_asm
+		{
+			pushad
+
+			mov eax, ourmemaddr
+			mov ebx, eax
+			add ebx, SIZEOFLOADERDATA
+			mov dword ptr [eax+2], ebx
+
+			popad
+		}
+
+		// adjust ourmemaddr pointer past loaderdata
+		ourmemaddr=(PVOID *)(((unsigned int) ourmemaddr) + sizeof(trainerloaderdata));
+
+		// blacklist check 
+		if (trainer.IsXBTF())// && !check_blacklist(creation_key))
+		{
+      memcpy(trainerdata,trainer.data(),XBTF_HEAP_SIZE);
+			__asm
+			{
+				pushad
+
+				mov edx, offset trainerdata
+				push edx
+				xor ecx, ecx
+				mov cl, 0x1A
+				add edx, ecx
+				mov ecx, [edx]
+				pop edx
+				add edx, ecx
+				mov byte ptr [edx], 0C3h // patch return into entry point :)
+
+				popad
+			}
+      memcpy(trainer.data(),trainerdata,XBTF_HEAP_SIZE);
+		}
+
+		// copy our trainer data into allocated mem
+		memcpy(ourmemaddr, trainer.data(), trainer.Size());
+
+/*		if (bXBTFTrainer)
+			inject_xbtf_toys(); // lcd support, hookit, patchit, ect...*/
+	}
+
+	return Found;
+}
+
+bool CUtil::RemoveTrainer()
+{
+  unsigned char *xboxkrnl = (unsigned char *)KERNEL_START_ADDRESS;
+	unsigned char *hackptr = (unsigned char *)KERNEL_STORE_ADDRESS;
+  void *ourmemaddr = NULL; // pointer used to allocated trainer mem
+	unsigned int i = 0;
+	bool Found = false;
+  
+  unsigned char xbe_entry_point[] = {0xff,0x15,0x80,0x00,0x00,0x0c}; // xbe entry point bytes in kernel
+  *((DWORD*)(xbe_entry_point+2)) = KERNEL_STORE_ADDRESS;
+
+	for(i = 0; i < KERNEL_SEARCH_RANGE; i++)
+	{
+		if (memcmp(&xboxkrnl[i], xbe_entry_point, 6) == 0)
+		{
+			Found = true;
+			break;
+		}
+	}
+
+	if(Found)
+  {
+    unsigned char *patchlocation = xboxkrnl;
+    patchlocation += i + 2; // adjust to xbe entry point bytes in kernel (skipping actual call opcodes)
+    __asm // recycle check
+    {
+        pushad
+
+        mov eax, cr0
+        push eax
+        and eax, 0FFFEFFFFh
+        mov cr0, eax // disable memory write prot
+
+        mov	edi, patchlocation // address of call to xbe entry point in kernel
+        mov	dword ptr [edi], 0x00010128 // patch with address of where we store loaderdata+trainer buffer address
+
+        pop eax
+        mov cr0, eax // restore memory write prot
+
+        popad
+    }
+  }
+  
+  return Found;
+}
 
 
 void CUtil::RunXBE(const char* szPath1, char* szParameters, F_VIDEO ForceVideo, F_COUNTRY ForceCountry) 

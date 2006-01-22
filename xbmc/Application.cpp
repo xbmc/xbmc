@@ -103,6 +103,7 @@
 #include "GUIDialogVideoSettings.h"
 #include "GUIDialogVideoBookmarks.h"
 #include "GUIDialogFileBrowser.h"
+#include "GUIDialogTrainerSettings.h"
 #include "GUIWindowOSD.h"
 #include "GUIWindowScriptsInfo.h"
 
@@ -786,6 +787,22 @@ HRESULT CApplication::Create()
     g_stSettings.m_bShowFreeMem = true;
     CLog::Log(LOGINFO, "Key combination detected for full debug logging (X+Y)");
   }
+  
+  bool bNeedReboot = false;
+  char temp[1024];
+  helper.GetXbePath(temp);
+  char temp2[1024];
+  char temp3[2];
+  temp3[0] = temp[0]; temp3[1] = '\0';
+  helper.GetPartition((LPCSTR)temp3,temp2);
+  CStdString strTemp(temp+2);
+  int iLastSlash = strTemp.rfind('\\');
+  strcat(temp2,strTemp.substr(0,iLastSlash).c_str());
+  F_VIDEO ForceVideo = VIDEO_NULL;
+  F_COUNTRY ForceCountry = COUNTRY_NULL;
+  
+  if (CUtil::RemoveTrainer())
+    bNeedReboot = true;
 
 // now check if we are switching video modes. if, are we in the wrong mode according to eeprom?
   if (g_guiSettings.GetBool("MyPrograms.GameAutoRegion"))
@@ -810,23 +827,33 @@ HRESULT CApplication::Create()
       if ((DWVideo == XKEEPROM::VIDEO_STANDARD::NTSC_M) && ((XGetVideoStandard() == XC_VIDEO_STANDARD_PAL_I) || (XGetVideoStandard() == XC_VIDEO_STANDARD_NTSC_J) || initialResolution > 5))
       {
         CLog::Log(LOGINFO, "Rebooting to change resolution from %s back to NTSC_M", (XGetVideoStandard() == XC_VIDEO_STANDARD_PAL_I) ? "PAL" : "NTSC_J");
-        Destroy();
-        CUtil::LaunchXbe(temp2,("D:\\"+strTemp.substr(iLastSlash+1)).c_str(),NULL,VIDEO_NTSCM,COUNTRY_USA);
+        ForceVideo = VIDEO_NTSCM;
+        ForceCountry = COUNTRY_USA;
+        bNeedReboot = true;
       }
       else if ((DWVideo == XKEEPROM::VIDEO_STANDARD::PAL_I) && ((XGetVideoStandard() == XC_VIDEO_STANDARD_NTSC_M) || (XGetVideoStandard() == XC_VIDEO_STANDARD_NTSC_J) || initialResolution < 6))
       {
         CLog::Log(LOGINFO, "Rebooting to change resolution from %s back to PAL_I", (XGetVideoStandard() == XC_VIDEO_STANDARD_NTSC_M) ? "NTSC_M" : "NTSC_J");
-        Destroy();
-        CUtil::LaunchXbe(temp2,("D:\\"+strTemp.substr(iLastSlash+1)).c_str(),NULL,VIDEO_PAL50,COUNTRY_EUR);
+        ForceVideo = VIDEO_PAL50;
+        ForceCountry = COUNTRY_EUR;
+        bNeedReboot = true;
       }
       else if ((DWVideo == XKEEPROM::VIDEO_STANDARD::NTSC_J) && ((XGetVideoStandard() == XC_VIDEO_STANDARD_NTSC_M) || (XGetVideoStandard() == XC_VIDEO_STANDARD_PAL_I) || initialResolution > 5))
       {
         CLog::Log(LOGINFO, "Rebooting to change resolution from %s back to NTSC_J", (XGetVideoStandard() == XC_VIDEO_STANDARD_PAL_I) ? "PAL" : "NTSC_M");
-        Destroy();
-        CUtil::LaunchXbe(temp2,("D:\\"+strTemp.substr(iLastSlash+1)).c_str(),NULL,VIDEO_NTSCJ,COUNTRY_JAP);
+        ForceVideo = VIDEO_NTSCJ;
+        ForceCountry = COUNTRY_JAP;
+        bNeedReboot = true;
       }
     }
   } 
+  
+  if (bNeedReboot)
+  {
+    Destroy();
+    CUtil::LaunchXbe(temp2,("D:\\"+strTemp.substr(iLastSlash+1)).c_str(),NULL,ForceVideo,ForceCountry);
+  }
+  
   CLog::Log(LOGINFO, "map drives...");
   CLog::Log(LOGINFO, "  map drive C:");
   helper.Remap("C:,Harddisk0\\Partition2");
@@ -1214,6 +1241,7 @@ HRESULT CApplication::Initialize()
   m_gWindowManager.Add(new CGUIDialogVideoSettings);      // window id = 123, 124
   m_gWindowManager.Add(new CGUIDialogVideoBookmarks);      // window id = 125
   m_gWindowManager.Add(new CGUIDialogFileBrowser);      // window id = 126
+  m_gWindowManager.Add(new CGUIDialogTrainerSettings);  // window id = 127
 
   m_gWindowManager.Add(new CGUIWindowMusicPlayList);          // window id = 500
   m_gWindowManager.Add(new CGUIWindowMusicSongs);             // window id = 501
@@ -2983,6 +3011,7 @@ void CApplication::Stop()
     m_gWindowManager.Delete(WINDOW_DIALOG_HOST);
     m_gWindowManager.Delete(WINDOW_DIALOG_KEYBOARD);
     m_gWindowManager.Delete(WINDOW_FULLSCREEN_VIDEO);
+    m_gWindowManager.Delete(WINDOW_DIALOG_TRAINER_SETTINGS);
 
     m_gWindowManager.Delete(WINDOW_VISUALISATION);
     m_gWindowManager.Delete(WINDOW_SETTINGS_MENU);

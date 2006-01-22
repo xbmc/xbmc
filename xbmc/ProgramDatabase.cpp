@@ -4,7 +4,7 @@
 #include "util.h"
 #include "xbox/xbeheader.h"
 
-#define PROGRAM_DATABASE_VERSION 0.6f
+#define PROGRAM_DATABASE_VERSION 0.7f
 
 //********************************************************************************************************************************
 CProgramDatabase::CProgramDatabase(void)
@@ -35,6 +35,8 @@ bool CProgramDatabase::CreateTables()
     m_pDS->exec("CREATE TABLE path ( idPath integer primary key, strPath text)\n");
     CLog::Log(LOGINFO, "create files table");
     m_pDS->exec("CREATE TABLE files ( idFile integer primary key, idPath integer, strFilename text, titleId text, xbedescription text, iTimesPlayed integer, lastAccessed integer, iRegion integer)\n");
+    CLog::Log(LOGINFO, "create trainers table");
+    m_pDS->exec("CREATE TABLE trainers (idKey integer auto_increment primary key, idCRC integer, idTitle integer, strTrainerPath text, strSettings text, Active integer)\n");
     CLog::Log(LOGINFO, "create bookmark index");
     m_pDS->exec("CREATE INDEX idxBookMark ON bookmark(bookmarkName)");
     CLog::Log(LOGINFO, "create path index");
@@ -95,27 +97,16 @@ bool CProgramDatabase::UpdateOldVersion(float fVersion)
       CLog::Log(LOGINFO, "Deleting temporary files table");
       m_pDS->exec("DROP TABLE tempfiles");
 
-     /*   strSQL=FormatSQL("select * from artist where strArtist like '%s'", strArtist.c_str());
-    m_pDS->query(strSQL.c_str());
-
-    if (m_pDS->num_rows() == 0)
-    {
-      m_pDS->close();
-      // doesnt exists, add it
-      strSQL=FormatSQL("insert into artist (idArtist, strArtist) values( NULL, '%s' )", strArtist.c_str());
-      m_pDS->exec(strSQL.c_str());
-      CArtistCache artist;
-      artist.idArtist = (long)sqlite3_last_insert_rowid(m_pDB->getHandle());
-      artist.strArtist = strArtist1;
-      m_artistCache.insert(pair<CStdString, CArtistCache>(artist.strArtist, artist));
-      return artist.idArtist;
-    }*/
-
       CStdString strSQL=FormatSQL("update files set iRegion=%i",-1);
       m_pDS->exec(strSQL.c_str());
-   
+      
       CommitTransaction();
       if (dialog) dialog->Close();
+    }
+    if (fVersion < 0.7f)
+    { // Version 0.6 to 0.7 update - need to create the trainers table
+      CLog::Log(LOGINFO,"Creating trainers table");    
+      m_pDS->exec("CREATE TABLE trainers (idKey integer auto_increment primary key, idCRC integer, idTitle integer, strTrainerPath text, strSettings text, Active integer)\n");
     }
   }
   catch (...)
@@ -300,6 +291,232 @@ long CProgramDatabase::AddFile(long lPathId, const CStdString& strFileName , DWO
     CLog::Log(LOGERROR, "programdatabase:unable to addfile (%s)", strSQL.c_str());
   }
   return -1;
+}
+
+bool CProgramDatabase::ItemHasTrainer(unsigned int iTitleId)
+{
+  CStdString strSQL;
+  try
+  {
+    strSQL = FormatSQL("select * from trainers where idTitle=%u",iTitleId);
+    if (!m_pDS->query(strSQL.c_str()))
+      return false;
+    if (m_pDS->num_rows())
+      return true;
+
+    return false;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR,"error checking for title's trainers (%s)",strSQL.c_str());
+  }
+  return false;
+}
+
+bool CProgramDatabase::HasTrainer(const CStdString& strTrainerPath)
+{
+  CStdString strSQL;
+  Crc32 crc; crc.ComputeFromLowerCase(strTrainerPath);
+  try
+  {
+    strSQL = FormatSQL("select * from trainers where idCRC=%u",crc);
+    if (!m_pDS->query(strSQL.c_str()))
+      return false;
+    if (m_pDS->num_rows())
+      return true;
+
+    return false;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR,"error checking for trainer existance (%s)",strSQL.c_str());
+  }
+  return false;
+}
+
+bool CProgramDatabase::AddTrainer(int iTitleId, const CStdString& strTrainerPath)
+{
+  CStdString strSQL;
+  Crc32 crc; crc.ComputeFromLowerCase(strTrainerPath);
+  try
+  {
+    char temp[101];
+    for( int i=0;i<100;++i)
+      temp[i] = '0';
+    temp[100] = '\0';
+    strSQL=FormatSQL("insert into trainers (idKey,idCRC,idTitle,strTrainerPath,strSettings,Active) values(NULL,%u,%u,'%s','%s',%i)",crc,iTitleId,strTrainerPath.c_str(),temp,0);
+    if (!m_pDS->exec(strSQL.c_str()))
+      return false;
+
+    return true;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR,"programdatabase: unable to add trainer (%s)",strSQL.c_str());
+  }
+  return false;
+}
+
+bool CProgramDatabase::RemoveTrainer(const CStdString& strTrainerPath)
+{
+  CStdString strSQL;
+  Crc32 crc; crc.ComputeFromLowerCase(strTrainerPath);
+  try
+  {
+    strSQL=FormatSQL("delete from trainers where idCRC=%u",crc);
+    if (!m_pDS->exec(strSQL.c_str()))
+      return false;
+
+    return true;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR,"programdatabase: unable to remove trainer (%s)",strSQL.c_str());
+  }
+  return false;
+}
+
+bool CProgramDatabase::GetTrainers(unsigned int iTitleId, std::vector<CStdString>& vecTrainers)
+{
+  vecTrainers.clear();
+  CStdString strSQL;
+  try 
+  {
+    strSQL = FormatSQL("select * from trainers where idTitle=%u",iTitleId);
+    if (!m_pDS->query(strSQL.c_str()))
+      return false;
+    
+    while (!m_pDS->eof())
+    {
+      vecTrainers.push_back(m_pDS->fv("strTrainerPath").get_asString());
+      m_pDS->next();
+    }
+    
+    
+    return true;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR,"programdatabase: error reading trainers for %i (%s)",iTitleId,strSQL.c_str());
+  }
+  return false;
+}
+
+bool CProgramDatabase::GetAllTrainers(std::vector<CStdString>& vecTrainers)
+{
+  vecTrainers.clear();
+  CStdString strSQL;
+  try 
+  {
+    strSQL = FormatSQL("select * from trainers");
+    if (!m_pDS->query(strSQL.c_str()))
+      return false;
+    
+    while (!m_pDS->eof())
+    {
+      vecTrainers.push_back(m_pDS->fv("strTrainerPath").get_asString());
+      m_pDS->next();
+    }
+    
+    
+    return true;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR,"programdatabase: error reading trainers (%s)",strSQL.c_str());
+  }
+  return false;
+}
+
+bool CProgramDatabase::SetTrainerOptions(const CStdString& strTrainerPath, unsigned int iTitleId, unsigned char* data)
+{
+  CStdString strSQL;
+  Crc32 crc; crc.ComputeFromLowerCase(strTrainerPath);
+  try
+  {
+    char temp[101];
+    for (int i=0;i<100;++i)
+    {
+      if (data[i] == 1)
+        temp[i] = '1';
+      else
+        temp[i] = '0';
+    }
+    temp[100] = '\0';
+
+    strSQL = FormatSQL("update trainers set strSettings='%s' where idCRC=%u and idTitle=%u",temp,crc,iTitleId);
+    if (m_pDS->exec(strSQL.c_str()))
+      return true;
+
+    return false;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR,"CProgramDatabase::SetTrainerOptions failed (%s)",strSQL);
+  }
+  
+  return false;
+}
+
+void CProgramDatabase::SetTrainerActive(const CStdString& strTrainerPath, unsigned int iTitleId, bool bActive)
+{
+  CStdString strSQL;
+  Crc32 crc; crc.ComputeFromLowerCase(strTrainerPath);
+  try
+  {
+    strSQL = FormatSQL("update trainers set Active=%u where idCRC=%u and idTitle=%u",bActive?1:0,crc,iTitleId);
+    m_pDS->exec(strSQL.c_str());
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR,"CProgramDatabase::SetTrainerOptions failed (%s)",strSQL);
+  }
+}
+
+CStdString CProgramDatabase::GetActiveTrainer(unsigned int iTitleId)
+{
+  CStdString strSQL;
+  try 
+  {
+    strSQL = FormatSQL("select * from trainers where idTitle=%u and Active=1",iTitleId);
+    if (!m_pDS->query(strSQL.c_str()))
+      return "";
+    
+    if (!m_pDS->eof())
+      return m_pDS->fv("strTrainerPath").get_asString();
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR,"programdatabase: error finding active trainer for %i (%s)",iTitleId,strSQL.c_str());
+  }
+  
+  return "";
+}
+
+bool CProgramDatabase::GetTrainerOptions(const CStdString& strTrainerPath, unsigned int iTitleId, unsigned char* data)
+{
+  CStdString strSQL;
+  Crc32 crc; crc.ComputeFromLowerCase(strTrainerPath);
+  try
+  {
+    strSQL = FormatSQL("select * from trainers where idCRC=%u and idTitle=%u",crc,iTitleId);
+    if (m_pDS->query(strSQL.c_str()))
+    {
+      CStdString strSettings = m_pDS->fv("strSettings").get_asString();
+      for (int i=0;i<100;++i)
+        data[i] = strSettings[i]=='1'?1:0;
+
+      return true;
+    }
+    
+    return false;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR,"CProgramDatabase::GetTrainerOptions failed (%s)",strSQL);
+  }
+  
+  return false;
 }
 
 //********************************************************************************************************************************
