@@ -3980,7 +3980,7 @@ bool CUtil::XboxAutoDetection() // GeminiServer: Xbox Autodetection!
   if (g_guiSettings.GetBool("Autodetect.OnOff"))
   {
     static DWORD pingTimer = 0;
-    if( timeGetTime() - pingTimer < (DWORD)g_guiSettings.GetInt("Autodetect.PingTime" ) * 1000)
+    if( timeGetTime() - pingTimer < (DWORD)g_advancedSettings.m_autoDetectPingTime * 1000)
       return false;
     pingTimer = timeGetTime();
 

@@ -154,11 +154,9 @@ CGUISettings::CGUISettings(void)
   AddBool(6, "Pictures.HandleArchives", 516, true);
 
   AddCategory(0, "Slideshow", 108);
-  AddInt(1, "Slideshow.StayTime", 224, 9, 1, 1, 100, SPIN_CONTROL_INT_PLUS, MASK_SECS);
+  AddInt(1, "Slideshow.StayTime", 12378, 9, 1, 1, 100, SPIN_CONTROL_INT_PLUS, MASK_SECS);
   AddInt(2, "Slideshow.TransistionTime", 225, 2500, 100, 100, 10000, SPIN_CONTROL_INT_PLUS, MASK_MS);
-  AddInt(3, "Slideshow.MoveAmount", 13311, 10, 0, 1, 40, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
-  AddInt(4, "Slideshow.ZoomAmount", 13310, 30, 0, 1, 40, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
-  AddInt(5, "Slideshow.BlackBarCompensation", 13312, 20, 0, 1, 40, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
+  AddBool(3, "Slideshow.DisplayEffects", 12379, true);
   AddSeparator(6, "Slideshow.Sep1");
   AddBool(7, "Slideshow.Shuffle", 13319, false);
 
@@ -184,7 +182,6 @@ CGUISettings::CGUISettings(void)
   AddCategory(1, "XLinkKai", 714);
   AddBool(1, "XLinkKai.Enabled", 14072, false);
   AddBool(2, "XLinkKai.EnableNotifications", 14008, true);
-  AddString(3, "XLinkKai.GamesDir", 14009, "f:\\games", BUTTON_CONTROL_MISC_INPUT, false, 14009);
   AddString(4, "XLinkKai.UserName", 709, "", BUTTON_CONTROL_INPUT, false, 709);
   AddString(5, "XLinkKai.Password", 710, "", BUTTON_CONTROL_HIDDEN_INPUT, false, 710);
   AddString(6, "XLinkKai.Server", 14042, "", BUTTON_CONTROL_IP_INPUT);
@@ -262,67 +259,12 @@ CGUISettings::CGUISettings(void)
   AddInt(3, "Karaoke.ForegroundAlpha", 13325, 255, 0, 5, 255, SPIN_CONTROL_INT);
   AddFloat(4, "Karaoke.SyncDelay", 13326, -0.8f, -3.0f, 0.1f, 3.0f, SPIN_CONTROL_FLOAT);
   AddSeparator(5, "Karaoke.Sep1");
-
-  // Karaoke patch (114097) ...
   AddBool(6, "Karaoke.VoiceEnabled", 13361, false);
   AddString(7, "Karaoke.Port0VoiceMask", 13382, "None", SPIN_CONTROL_TEXT);
   AddString(8, "Karaoke.Port1VoiceMask", 13383, "None", SPIN_CONTROL_TEXT);
   AddString(9, "Karaoke.Port2VoiceMask", 13384, "None", SPIN_CONTROL_TEXT);
   AddString(10, "Karaoke.Port3VoiceMask", 13385, "None", SPIN_CONTROL_TEXT);
   AddInt(11, "Karaoke.Volume", 13376, 100, 0, 1, 100, SPIN_CONTROL_INT, MASK_PERCENT);
-
-//  AddCategory(3, "VoiceOnPort0", 13371);
-//  AddBool(2, "VoiceOnPort0.EnableDevice", 13375, false);
-  AddInt(3, "VoiceOnPort0.Volume", 13376, 100, 0, 1 , 100, SPIN_CONTROL_INT);
-  AddString(4, "VoiceOnPort0.VoiceMask", 13362, "None", SPIN_CONTROL_TEXT);
-  AddBool(5, "VoiceOnPort0.EnablefSpecEnergyWeight", 13363, false);
-  AddFloat(6, "VoiceOnPort0.fSpecEnergyWeight", 13364, 0.0f, 0.0f, 0.01f, 1.0f, SPIN_CONTROL_FLOAT);
-  AddBool(7, "VoiceOnPort0.EnablefPitchScale", 13365, false);
-  AddFloat(8, "VoiceOnPort0.fPitchScale", 13366, 0.8f, 0.0f, 0.01f, 1.0f, SPIN_CONTROL_FLOAT);
-  AddBool(9, "VoiceOnPort0.EnablefWhisperValue", 13367, false);
-  AddFloat(10, "VoiceOnPort0.fWhisperValue", 13368, 0.0f, 0.0f, 0.01f, 1.0f, SPIN_CONTROL_FLOAT);
-  AddBool(11, "VoiceOnPort0.EnablefRoboticValue", 13369, false);
-  AddFloat(12, "VoiceOnPort0.fRoboticValue", 13370, 0.0f, 0.0f, 0.01f, 1.0f, SPIN_CONTROL_FLOAT);
-
-//  AddCategory(3, "VoiceOnPort1", 13372);
-//  AddBool(2, "VoiceOnPort1.EnableDevice", 13375, false);
-  AddInt(3, "VoiceOnPort1.Volume", 13376, 100, 0, 1 , 100, SPIN_CONTROL_INT);
-  AddString(4, "VoiceOnPort1.VoiceMask", 13362, "None", SPIN_CONTROL_TEXT);
-  AddBool(5, "VoiceOnPort1.EnablefSpecEnergyWeight", 13363, false);
-  AddFloat(6, "VoiceOnPort1.fSpecEnergyWeight", 13364, 0.0f, 0.0f, 0.01f, 1.0f, SPIN_CONTROL_FLOAT);
-  AddBool(7, "VoiceOnPort1.EnablefPitchScale", 13365, false);
-  AddFloat(8, "VoiceOnPort1.fPitchScale", 13366, 0.0f, 0.0f, 0.01f, 1.0f, SPIN_CONTROL_FLOAT);
-  AddBool(9, "VoiceOnPort1.EnablefWhisperValue", 13367, false);
-  AddFloat(10, "VoiceOnPort1.fWhisperValue", 13368, 0.0f, 0.0f, 0.01f, 1.0f, SPIN_CONTROL_FLOAT);
-  AddBool(11, "VoiceOnPort1.EnablefRoboticValue", 13369, false);
-  AddFloat(12, "VoiceOnPort1.fRoboticValue", 13370, 0.0f, 0.0f, 0.01f, 1.0f, SPIN_CONTROL_FLOAT);
-
-//  AddCategory(3, "VoiceOnPort2", 13373);
-//  AddBool(2, "VoiceOnPort2.EnableDevice", 13375, false);
-  AddInt(3, "VoiceOnPort2.Volume", 13376, 100, 0, 1 , 100, SPIN_CONTROL_INT);
-  AddString(4, "VoiceOnPort2.VoiceMask", 13362, "None", SPIN_CONTROL_TEXT);
-  AddBool(5, "VoiceOnPort2.EnablefSpecEnergyWeight", 13363, false);
-  AddFloat(6, "VoiceOnPort2.fSpecEnergyWeight", 13364, 0.0f, 0.0f, 0.01f, 1.0f, SPIN_CONTROL_FLOAT);
-  AddBool(7, "VoiceOnPort2.EnablefPitchScale", 13365, false);
-  AddFloat(8, "VoiceOnPort2.fPitchScale", 13366, 0.0f, 0.0f, 0.01f, 1.0f, SPIN_CONTROL_FLOAT);
-  AddBool(9, "VoiceOnPort2.EnablefWhisperValue", 13367, false);
-  AddFloat(10, "VoiceOnPort2.fWhisperValue", 13368, 0.0f, 0.0f, 0.01f, 1.0f, SPIN_CONTROL_FLOAT);
-  AddBool(11, "VoiceOnPort2.EnablefRoboticValue", 13369, false);
-  AddFloat(12, "VoiceOnPort2.fRoboticValue", 13370, 0.0f, 0.0f, 0.01f, 1.0f, SPIN_CONTROL_FLOAT);
-
-//  AddCategory(3, "VoiceOnPort3", 13374);
-//  AddBool(2, "VoiceOnPort3.EnableDevice", 13375, false);
-  AddInt(3, "VoiceOnPort3.Volume", 13376, 100, 0, 1 , 100, SPIN_CONTROL_INT);
-  AddString(4, "VoiceOnPort3.VoiceMask", 13362, "None", SPIN_CONTROL_TEXT);
-  AddBool(5, "VoiceOnPort3.EnablefSpecEnergyWeight", 13363, false);
-  AddFloat(6, "VoiceOnPort3.fSpecEnergyWeight", 13364, 0.0f, 0.0f, 0.01f, 1.0f, SPIN_CONTROL_FLOAT);
-  AddBool(7, "VoiceOnPort3.EnablefPitchScale", 13365, false);
-  AddFloat(8, "VoiceOnPort3.fPitchScale", 13366, 0.0f, 0.0f, 0.01f, 1.0f, SPIN_CONTROL_FLOAT);
-  AddBool(9, "VoiceOnPort3.EnablefWhisperValue", 13367, false);
-  AddFloat(10, "VoiceOnPort3.fWhisperValue", 13368, 0.0f, 0.0f, 0.01f, 1.0f, SPIN_CONTROL_FLOAT);
-  AddBool(11, "VoiceOnPort3.EnablefRoboticValue", 13369, false);
-  AddFloat(12, "VoiceOnPort3.fRoboticValue", 13370, 0.0f, 0.0f, 0.01f, 1.0f, SPIN_CONTROL_FLOAT);
-  // ... Karaoke patch (114097)
 
   // System settings
   AddGroup(4, 13000);
@@ -371,21 +313,12 @@ CGUISettings::CGUISettings(void)
   AddInt(2, "LED.DisableOnPlayback", 13345, LED_PLAYBACK_OFF, LED_PLAYBACK_OFF, 1, LED_PLAYBACK_VIDEO_MUSIC, SPIN_CONTROL_TEXT);
 
   AddCategory(4, "LCD", 448);
-  AddInt(1, "LCD.Mode", 456, LCD_MODE_NONE, LCD_MODE_NONE, 1, LCD_MODE_NOTV, SPIN_CONTROL_TEXT);
-  AddInt(2, "LCD.Type", 4501, LCD_TYPE_LCD_HD44780, LCD_TYPE_LCD_HD44780, 1, LCD_TYPE_VFD, SPIN_CONTROL_TEXT);
+  AddInt(2, "LCD.Type", 4501, LCD_TYPE_NONE, LCD_TYPE_NONE, 1, LCD_TYPE_VFD, SPIN_CONTROL_TEXT);
   AddInt(3, "LCD.ModChip", 471, MODCHIP_SMARTXX, MODCHIP_SMARTXX, 1, MODCHIP_XECUTER3, SPIN_CONTROL_TEXT);
-  AddInt(4, "LCD.Columns", 450, 20, 1, 1, 20, SPIN_CONTROL_INT);
-  AddInt(5, "LCD.Rows", 455, 4, 1, 1, 4, SPIN_CONTROL_INT);
-  AddInt(6, "LCD.BackLight", 463, 80, 0, 5, 100, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
-  AddInt(7, "LCD.Contrast", 465, 100, 0, 5, 100, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
-  AddHex(8, "LCD.Row1Address", 451, 0, 0, 0x4, 0x100, SPIN_CONTROL_INT_PLUS, "%x");
-  AddHex(9, "LCD.Row2Address", 452, 0x40, 0, 0x4, 0x100, SPIN_CONTROL_INT_PLUS, "%x");
-  AddHex(10, "LCD.Row3Address", 453, 0x14, 0, 0x4, 0x100, SPIN_CONTROL_INT_PLUS, "%x");
-  AddHex(11, "LCD.Row4Address", 454, 0x54, 0, 0x4, 0x100, SPIN_CONTROL_INT_PLUS, "%x");
+  AddInt(4, "LCD.BackLight", 463, 80, 0, 5, 100, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
+  AddInt(5, "LCD.Contrast", 465, 100, 0, 5, 100, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
 
   AddCategory(4, "AudioOutput", 772);
-  AddInt(1, "AudioOutput.Headroom", 494, 6, 0, 6, 12, SPIN_CONTROL_INT_PLUS, MASK_DB);
-  AddSeparator(2, "AudioOutput.Sep1");
   AddInt(3, "AudioOutput.Mode", 337, AUDIO_ANALOG, AUDIO_ANALOG, 1, AUDIO_DIGITAL, SPIN_CONTROL_TEXT);
   AddBool(4, "AudioOutput.AC3PassThrough", 364, true);
   AddBool(5, "AudioOutput.DTSPassThrough", 254, true);
@@ -395,15 +328,9 @@ CGUISettings::CGUISettings(void)
   AddCategory(5, "MyVideos", 16000);
   AddString(1, "MyVideos.Calibrate", 214, "", BUTTON_CONTROL_STANDARD);
   AddBool(2, "MyVideos.WidescreenSwitching", 223, false);
-  AddBool(3, "MyVideos.PAL60Switching", 226, true);
-  AddBool(4, "MyVideos.FrameRateConversions", 336, false);
+  AddInt(4, "MyVideos.FrameRateConversions", 336, FRAME_RATE_LEAVE_AS_IS, FRAME_RATE_LEAVE_AS_IS, 1, FRAME_RATE_USE_PAL60, SPIN_CONTROL_TEXT);
   AddSeparator(5, "MyVideos.Sep1");
   AddInt(6, "MyVideos.OSDTimeout", 472, 5, 0, 1, 60, SPIN_CONTROL_INT_PLUS, MASK_SECS, TEXT_OFF);
-  AddSeparator(7, "MyVideos.Sep2");
-  AddInt(8, "MyVideos.ViewMode", 13377, VIEW_MODE_NORMAL, VIEW_MODE_NORMAL, 1, VIEW_MODE_CUSTOM, SPIN_CONTROL_TEXT);
-  AddInt(9, "MyVideos.Brightness", 13378, 50, 0, 1, 100, SPIN_CONTROL_INT);
-  AddInt(10, "MyVideos.Contrast", 13379, 50, 0, 1, 100, SPIN_CONTROL_INT);
-  AddInt(11, "MyVideos.Gamma", 13380, 20, 0, 1, 100, SPIN_CONTROL_INT);
   AddSeparator(12, "MyVideos.Sep3");
   AddBool(13, "MyVideos.HideParentDirItems", 13306, true);
   AddBool(14, "MyVideos.IgnoreTheWhenSorting", 13399, true);
@@ -424,12 +351,9 @@ CGUISettings::CGUISettings(void)
   AddString(1, "VideoPlayer.JumpToAudioHardware", 16001, "", BUTTON_CONTROL_STANDARD);
   AddBool(2, "VideoPlayer.OutputToAllSpeakers", 252, false);
   AddSeparator(3, "VideoPlayer.Sep1");
-  AddInt(4, "VideoPlayer.VolumeAmplification", 290, 0, -200, 1, 60, SPIN_CONTROL_INT_PLUS, MASK_DB);
-  AddSeparator(5, "VideoPlayer.Sep2");
   AddInt(6, "VideoPlayer.RenderMethod", 13354, RENDER_HQ_RGB_SHADER, RENDER_LQ_RGB_SHADER, 1, RENDER_HQ_RGB_SHADER, SPIN_CONTROL_TEXT);
   AddBool(7, "VideoPlayer.UseGUIResolution", 495, true);
   AddSeparator(10, "VideoPlayer.Sep3");
-  AddBool(11, "VideoPlayer.UseTimeBasedSeeking", 13386, false);
   AddInt(12, "VideoPlayer.BypassCDSelection", 13169, 0, 0, 1, 37, SPIN_CONTROL_TEXT);
 
   AddCategory(5, "Subtitles", 287);
@@ -458,9 +382,6 @@ CGUISettings::CGUISettings(void)
   AddInt(1, "Filters.Flicker", 13100, 1, 0, 1, 5, SPIN_CONTROL_INT);
   AddBool(2, "Filters.Soften", 215, false);
   AddSeparator(3, "Filters.Sep1");
-  AddBool(4, "Filters.Noise", 14058, false);
-  AddInt(5, "Filters.NoiseLevel", 14058, 10, 1, 1, 100, SPIN_CONTROL_INT);
-  AddSeparator(6, "Filters.Sep2");
   AddBool(7, "Filters.UseAutosync", 15214, false);
 
   // network settings
@@ -495,7 +416,6 @@ CGUISettings::CGUISettings(void)
   AddCategory(6,"Autodetect",           1250  );
   AddBool(1,    "Autodetect.OnOff",     1251, true);
   AddString(2,  "Autodetect.NickName",  1252, "XBMC-NickName",BUTTON_CONTROL_INPUT, false, 1252);
-  AddInt(3,     "Autodetect.PingTime",  1256, 30, 5, 5, 240, SPIN_CONTROL_INT, MASK_SECS);
   AddBool(4,    "Autodetect.PopUpInfo", 1254, true);
   AddSeparator(5, "Autodetect.Sep1");
   AddBool(6,    "Autodetect.SendUserPw",1255, true);
@@ -552,8 +472,8 @@ CGUISettings::CGUISettings(void)
 
   // GeminiServer
   AddCategory(7, "XBDateTime", 14063);
-  AddBool(1,   "XBDateTime.Clock12Hour"      , 14051, false);
-  AddBool(2,   "XBDateTime.SwapMonthAndDay"  , 14052, false);
+  AddInt(1,   "XBDateTime.TimeFormat", 14051, DATETIME_FORMAT_EU, DATETIME_FORMAT_EU, 1, DATETIME_FORMAT_US, SPIN_CONTROL_TEXT);
+  AddInt(2,   "XBDateTime.DateFormat", 14052, DATETIME_FORMAT_EU, DATETIME_FORMAT_EU, 1, DATETIME_FORMAT_US, SPIN_CONTROL_TEXT);
   AddSeparator(3, "XBDateTime.Sep1");
   AddBool(4,   "XBDateTime.TimeServer"       , 168  , false);
   AddString(5, "XBDateTime.TimeAddress"      , 731  , "207.46.130.100", BUTTON_CONTROL_IP_INPUT);

@@ -6,7 +6,6 @@
     <posx>250</posx>
     <posy>116</posy>
   </coordinates>
-  <visible>Window.IsActive(123) | Window.IsActive(124)</visible>
   <animation effect="fade" time="400">WindowOpen</animation>
   <animation effect="fade" time="400">WindowClose</animation>
   <controls>
@@ -58,8 +57,8 @@
       <description>Next page button</description>
       <type>spincontrol</type>
       <id>60</id>
-      <posx>335</posx>
-      <posy>320</posy>
+      <posx>360</posx>
+      <posy>336</posy>
       <subtype>int</subtype>
       <font>font13</font>
       <onleft>60</onleft>
@@ -74,7 +73,7 @@
       <posx>5</posx>
       <posy>30</posy>
       <width>408</width>
-      <height>290</height>
+      <height>300</height>
       <texture>-</texture>
     </control>
 

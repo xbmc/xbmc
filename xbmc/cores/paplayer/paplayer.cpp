@@ -260,7 +260,7 @@ void PAPlayer::SetupDirectSound(int channels)
     return;
   // Set the default mixbins headroom to appropriate level as set in the settings file (to allow the maximum volume)
   for (DWORD i = 0; i < 8;i++)
-    pDSound->SetMixBinHeadroom(i, DWORD(g_guiSettings.GetInt("AudioOutput.Headroom") / 6));
+    pDSound->SetMixBinHeadroom(i, DWORD(g_advancedSettings.m_audioHeadRoom / 6));
 }
 
 bool PAPlayer::CreateStream(int num, int channels, int samplerate, int bitspersample)

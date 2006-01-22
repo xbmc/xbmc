@@ -90,15 +90,15 @@ void CSlideShowPic::SetTexture(int iSlideNumber, D3DTexture *pTexture, int iWidt
     // Calculate start and end positions
     // choose a random direction
     float angle = (rand() % 1000) / 1000.0f * 2 * (float)M_PI;
-    m_fPosX = cos(angle) * g_guiSettings.GetInt("Slideshow.MoveAmount") / 100.0f;
-    m_fPosY = sin(angle) * g_guiSettings.GetInt("Slideshow.MoveAmount") / 100.0f;
-    m_fVelocityX = -m_fPosX * 2.0f / (float)m_iTotalFrames;
-    m_fVelocityY = -m_fPosY * 2.0f / (float)m_iTotalFrames;
+    m_fPosX = cos(angle) * g_advancedSettings.m_slideshowPanAmount * m_iTotalFrames * 0.00005f;
+    m_fPosY = sin(angle) * g_advancedSettings.m_slideshowPanAmount * m_iTotalFrames * 0.00005f;
+    m_fVelocityX = -m_fPosX * 2.0f / m_iTotalFrames;
+    m_fVelocityY = -m_fPosY * 2.0f / m_iTotalFrames;
   }
   else if (m_displayEffect == EFFECT_ZOOM)
   {
     m_fPosZ = 1.0f;
-    m_fVelocityZ = (0.01f * g_guiSettings.GetInt("Slideshow.ZoomAmount")) / m_iTotalFrames;
+    m_fVelocityZ = 0.0001f * g_advancedSettings.m_slideshowZoomAmount;
   }
 
   m_bIsFinished = false;
@@ -208,7 +208,7 @@ void CSlideShowPic::Process()
     {
       m_fPosX += m_fVelocityX;
       m_fPosY += m_fVelocityY;
-      float fMoveAmount = 0.01f * g_guiSettings.GetInt("Slideshow.MoveAmount");
+      float fMoveAmount = g_advancedSettings.m_slideshowPanAmount * m_iTotalFrames * 0.0001f;
       if (m_fPosX > fMoveAmount)
       {
         m_fPosX = fMoveAmount;
@@ -233,7 +233,7 @@ void CSlideShowPic::Process()
     else if (m_displayEffect == EFFECT_ZOOM)
     {
       m_fPosZ += m_fVelocityZ;
-      if (m_fPosZ > 1.0f + 0.01f*g_guiSettings.GetInt("Slideshow.ZoomAmount"))
+/*      if (m_fPosZ > 1.0f + 0.01f*g_guiSettings.GetInt("Slideshow.ZoomAmount"))
       {
         m_fPosZ = 1.0f + 0.01f * g_guiSettings.GetInt("Slideshow.ZoomAmount");
         m_fVelocityZ = -m_fVelocityZ;
@@ -242,7 +242,7 @@ void CSlideShowPic::Process()
       {
         m_fPosZ = 1.0f;
         m_fVelocityZ = -m_fVelocityZ;
-      }
+      }*/
     }
   }
   if (m_displayEffect != EFFECT_NO_TIMEOUT && bPaused && !m_bTransistionImmediately)
@@ -251,7 +251,7 @@ void CSlideShowPic::Process()
   }
   if (m_iCounter >= m_transistionEnd.start)
   { // do end transistion
-    CLog::DebugLog("Transistioning");
+//    CLog::DebugLog("Transistioning");
     m_bDrawNextImage = true;
     if (m_transistionEnd.type == CROSSFADE)
     { // fade out at 1x speed
@@ -393,7 +393,7 @@ void CSlideShowPic::Render()
   float fScaleInv = fScreenWidth / m_fHeight;
 
   bool bFillScreen = false;
-  float fComp = 1.0f + 0.01f * g_guiSettings.GetInt("Slideshow.BlackBarCompensation");
+  float fComp = 1.0f + 0.01f * g_advancedSettings.m_slideshowBlackBarCompensation;
   float fScreenRatio = fScreenWidth / fScreenHeight * fPixelRatio;
   // work out if we should be compensating the zoom to minimize blackbars
   // we should compute this based on the % of black bars on screen perhaps??
@@ -411,7 +411,7 @@ void CSlideShowPic::Render()
   float fScale = si * si * (fScaleInv - fScaleNorm) + fScaleNorm;
   // scale if we need to due to the effect we're using
   if (m_displayEffect == EFFECT_FLOAT)
-    fScale *= (1.0f + 0.02f * g_guiSettings.GetInt("Slideshow.MoveAmount"));
+    fScale *= (1.0f + g_advancedSettings.m_slideshowPanAmount * m_iTotalFrames * 0.0001f);
   if (m_displayEffect == EFFECT_ZOOM)
     fScale *= m_fPosZ;
   // zoom image

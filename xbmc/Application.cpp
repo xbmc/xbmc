@@ -1315,11 +1315,6 @@ HRESULT CApplication::Initialize()
   }
 
   CLog::Log(LOGNOTICE, "initialize done");
-/*  if (g_guiSettings.GetInt("LCD.Mode") == LCD_MODE_NOTV)
-  {
-    // jump to my music when we're in NO tv mode
-    m_gWindowManager.ActivateWindow(WINDOW_MUSIC_FILES);
-  }*/
 
   CScrobbler::GetInstance()->Init();
   StartKai();
@@ -1481,7 +1476,7 @@ void CApplication::StartLEDControl(bool switchoff)
 
 void CApplication::DimLCDOnPlayback(bool dim)
 {
-  if (g_lcd && g_guiSettings.GetInt("LCD.Mode") != LCD_MODE_NONE)
+  if (g_lcd && g_guiSettings.GetInt("LCD.Type") != LCD_TYPE_NONE)
   {
     CLog::Log(LOGNOTICE, "Dim LCD On Playback");
     if (IsPlayingVideo() && dim == true && g_guiSettings.GetInt("LED.DisableOnPlayback") == LED_PLAYBACK_VIDEO)
@@ -2335,7 +2330,7 @@ void CApplication::UpdateLCD()
 {
   static lTickCount = 0;
 
-  if (g_guiSettings.GetInt("LCD.Mode") == LCD_MODE_NONE)
+  if (g_guiSettings.GetInt("LCD.Type") == LCD_TYPE_NONE)
     return ;
   long lTimeOut = 1000;
   if ( m_iPlaySpeed != 1)
@@ -2355,151 +2350,6 @@ void CApplication::UpdateLCD()
     lTickCount = GetTickCount();
   }
 }
-/*    CStdString strTime;
-    CStdString strIcon;
-    CStdString strLine;
-    CStdString strProgressBar;
-    if (IsPlayingVideo())
-    {
-      // line 0: play symbol current time/total time
-      // line 1: movie filename / title
-      // line 2: genre
-      // line 3: year
-      CStdString strTotalTime;
-      unsigned int tmpvar = (unsigned int)GetTotalTime();
-      if (tmpvar != 0)
-      {
-        int ihour = tmpvar / 3600;
-        int imin = (tmpvar - ihour * 3600) / 60;
-        int isec = (tmpvar - ihour * 3600) % 60;
-        strTotalTime.Format("/%2.2d:%2.2d:%2.2d", ihour, imin, isec);
-      }
-      else
-      {
-        strTotalTime = " ";
-      }
-
-      strTime = g_infoManager.GetVideoLabel(254); // time
-
-      if (m_iPlaySpeed < 1)
-        strIcon.Format("\3 %ix", m_iPlaySpeed);
-      else if (m_iPlaySpeed > 1)
-        strIcon.Format("\4 %ix", m_iPlaySpeed);
-      else if (m_pPlayer->IsPaused())
-        strIcon.Format("\7");
-      else
-        strIcon.Format("\5");
-      strLine.Format("%s %s%s", strIcon.c_str(), strTime.c_str(), strTotalTime.c_str());
-      g_lcd->SetLine(0, strLine);
-
-      int iLine = 1;
-      g_lcd->SetLine(iLine++, g_infoManager.GetVideoLabel(250));  // time
-
-      if (iLine < 4 && g_infoManager.GetVideoLabel(251) != "")  // genre
-        g_lcd->SetLine(iLine++, g_infoManager.GetVideoLabel(251));
-
-      strProgressBar = g_lcd->GetProgressBar(GetTime(),GetTotalTime());
-      g_lcd->SetLine(iLine++, strProgressBar);
-
-      if (iLine<4 && m_tagCurrentMovie.m_iYear>1900)
-      {
-       strLine.Format("%i", m_tagCurrentMovie.m_iYear);
-       g_lcd->SetLine(iLine++,strLine);
-      }
-
-      if (iLine < 4)
-      {
-        MEMORYSTATUS stat;
-        GlobalMemoryStatus(&stat);
-        DWORD dwMegFree = stat.dwAvailPhys / (1024 * 1024);
-        strTime.Format("Freemem:%i meg", dwMegFree);
-        g_lcd->SetLine(iLine++, strTime);
-
-      }
-      while (iLine < 4)
-        g_lcd->SetLine(iLine++, "");
-
-    }
-    else if (IsPlayingAudio())
-    {
-      // Show:
-      // line 0: play symbol current time/total time
-      // line 1: song title
-      // line 2: artist
-      // line 3: release date
-      strTime = g_infoManager.GetMusicLabel(205); // time
-      CStdString strDuration = g_infoManager.GetMusicLabel(209);  // duration
-
-      if (m_iPlaySpeed < 1)
-        strIcon.Format("\3:%ix", m_iPlaySpeed);
-      else if (m_iPlaySpeed > 1)
-        strIcon.Format("\4:%ix", m_iPlaySpeed);
-      else if (m_pPlayer->IsPaused())
-        strIcon.Format("\7");
-      else
-        strIcon.Format("\5");
-      if (strDuration.size())
-        strLine.Format("%s %s/%s", strIcon.c_str(), strTime.c_str(), strDuration.c_str());
-      else
-        strLine.Format("%s %s", strIcon.c_str(), strTime.c_str());
-      g_lcd->SetLine(0, strLine);
-      int iLine = 1;
-      strLine = g_infoManager.GetMusicLabel(200); // title
-      if (iLine < 4 && strLine != "")
-        g_lcd->SetLine(iLine++, strLine);
-      strLine = g_infoManager.GetMusicLabel(202);  // artist
-      if (iLine < 4 && strLine != "")
-        g_lcd->SetLine(iLine++, strLine);
-      strLine = g_infoManager.GetMusicLabel(201);   // album
-
-      strProgressBar = g_lcd->GetProgressBar(GetTime(), GetTotalTime());
-
-      g_lcd->SetLine(iLine++, strProgressBar);
-
-      if (iLine < 4 && strLine != "")
-      {
-        CStdString strYear = g_infoManager.GetMusicLabel(204);  // year
-        if (strYear.size())
-        {
-          CStdString strYearLine;
-          strYearLine.Format("%s (%s)", strLine.c_str(), strYear.c_str());
-          g_lcd->SetLine(iLine++, strYearLine);
-        }
-        else
-        {
-          g_lcd->SetLine(iLine++, strLine);
-        }
-      }
-      while (iLine < 4)
-        g_lcd->SetLine(iLine++, "");
-    }
-    else
-    {
-      if (g_guiSettings.GetInt("LCD.Mode") == LCD_MODE_NORMAL)
-      {
-        // line 0: XBMC running...
-        // line 1: time/date
-        // line 2: free memory (megs)
-        // line 3: GUI resolution
-        g_lcd->SetLine(0, "XBMC running...");
-        CStdString strDateTime = g_infoManager.GetTime() + " " + g_infoManager.GetDate(true);
-        g_lcd->SetLine(1, strDateTime);
-        MEMORYSTATUS stat;
-        GlobalMemoryStatus(&stat);
-        DWORD dwMegFree = stat.dwAvailPhys / (1024 * 1024);
-        strTime.Format("Freemem:%i meg", dwMegFree);
-        g_lcd->SetLine(2, strTime);
-        int iResolution = g_graphicsContext.GetVideoResolution();
-        strTime.Format("%ix%i %s", g_settings.m_ResInfo[iResolution].iWidth, g_settings.m_ResInfo[iResolution].iHeight, g_settings.m_ResInfo[iResolution].strMode);
-        g_lcd->SetLine(3, strTime);
-      }
-      if (g_guiSettings.GetInt("LCD.Mode") == LCD_MODE_NOTV)
-      {
-      }
-    }
-  }
-}
-*/
 
 void CApplication::FrameMove()
 {
@@ -3172,13 +3022,6 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
   {
     OutputDebugString("new file set audiostream:0\n");
     // Switch to default options
-    g_stSettings.m_defaultVideoSettings.m_AdjustFrameRate = g_guiSettings.GetBool("MyVideos.FrameRateConversions");
-    g_stSettings.m_defaultVideoSettings.m_FilmGrain = g_guiSettings.GetBool("Filters.Noise") ? g_guiSettings.GetInt("Filters.NoiseLevel") : 0;
-    g_stSettings.m_defaultVideoSettings.m_ViewMode = g_guiSettings.GetInt("MyVideos.ViewMode");
-    g_stSettings.m_defaultVideoSettings.m_Brightness = g_guiSettings.GetInt("MyVideos.Brightness");
-    g_stSettings.m_defaultVideoSettings.m_Contrast = g_guiSettings.GetInt("MyVideos.Contrast");
-    g_stSettings.m_defaultVideoSettings.m_Gamma = g_guiSettings.GetInt("MyVideos.Gamma");
-    
     g_stSettings.m_currentVideoSettings = g_stSettings.m_defaultVideoSettings;
     // see if we have saved options in the database
     if (item.IsVideo())
@@ -3503,8 +3346,6 @@ bool CApplication::ResetScreenSaverWindow()
 void CApplication::CheckScreenSaver()
 {
   if ( m_gWindowManager.IsRouted())
-    return ;
-  if (g_guiSettings.GetInt("LCD.Mode") == LCD_MODE_NOTV)
     return ;
 
   if (!m_bInactive)

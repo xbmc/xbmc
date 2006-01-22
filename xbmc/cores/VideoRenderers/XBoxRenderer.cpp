@@ -556,7 +556,7 @@ void CXBoxRenderer::ChooseBestResolution(float fps)
 
   // Work out if the framerate suits PAL50 or PAL60
   bool bPal60 = false;
-  if (bUsingPAL && g_guiSettings.GetBool("MyVideos.PAL60Switching") && g_videoConfig.HasPAL60())
+  if (bUsingPAL && g_guiSettings.GetInt("MyVideos.FrameRateConversions") == FRAME_RATE_USE_PAL60 && g_videoConfig.HasPAL60())
   {
     // yes we're in PAL
     // yes PAL60 is allowed
