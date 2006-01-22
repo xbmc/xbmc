@@ -106,7 +106,7 @@ bool CGUIAudioManager::CreateBuffer(LPWAVEFORMATEX wfx, int iLength, LPDIRECTSOU
 
   // Set the default mixbins headroom to appropriate level as set in the settings file (to allow the maximum volume)
   for (DWORD i = 0; i < mixbins.dwMixBinCount;i++)
-    m_lpDirectSound->SetMixBinHeadroom(i, DWORD(g_guiSettings.GetInt("AudioOutput.Headroom") / 6));
+    m_lpDirectSound->SetMixBinHeadroom(i, DWORD(g_advancedSettings.m_audioHeadRoom / 6));
 
   return true; 
 }

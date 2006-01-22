@@ -320,7 +320,7 @@ bool CGUIWindowOSD::OnMessage(CGUIMessage& message)
         if (m_bSubMenuOn)
         {
           // set the controls values
-          SetSliderValue( -g_stSettings.m_fSubsDelayRange, g_stSettings.m_fSubsDelayRange, g_application.m_pPlayer->GetSubTitleDelay(), OSD_SUBTITLE_DELAY);
+          SetSliderValue( -g_advancedSettings.m_videoSubsDelayRange, g_advancedSettings.m_videoSubsDelayRange, g_application.m_pPlayer->GetSubTitleDelay(), OSD_SUBTITLE_DELAY);
           SetCheckmarkValue(g_application.m_pPlayer->GetSubtitleVisible(), OSD_SUBTITLE_ONOFF);
 
           // show the controls on this sub menu
@@ -365,7 +365,7 @@ bool CGUIWindowOSD::OnMessage(CGUIMessage& message)
 
           SetCheckmarkValue(g_stSettings.m_currentVideoSettings.m_NonInterleaved, OSD_NONINTERLEAVED);
           SetCheckmarkValue(g_stSettings.m_currentVideoSettings.m_NoCache, OSD_NOCACHE);
-          SetCheckmarkValue(g_stSettings.m_currentVideoSettings.m_AdjustFrameRate, OSD_ADJFRAMERATE);
+//          SetCheckmarkValue(g_stSettings.m_currentVideoSettings.m_AdjustFrameRate, OSD_ADJFRAMERATE);
           SetCheckmarkValue(g_stSettings.m_currentVideoSettings.m_Crop, OSD_AUTOCROP);
 
           // show the controls on this sub menu
@@ -395,7 +395,7 @@ bool CGUIWindowOSD::OnMessage(CGUIMessage& message)
         if (m_bSubMenuOn)      // is sub menu on?
         {
           // set the controls values
-          SetSliderValue( -g_stSettings.m_fAudioDelayRange, g_stSettings.m_fAudioDelayRange, g_application.m_pPlayer->GetAVDelay(), OSD_AVDELAY);
+          SetSliderValue( -g_advancedSettings.m_videoAudioDelayRange, g_advancedSettings.m_videoAudioDelayRange, g_application.m_pPlayer->GetAVDelay(), OSD_AVDELAY);
           SetSliderValue( 0.0f, 100.0f, (float)g_application.GetVolume(), OSD_AUDIO_VOLUME_SLIDER);
 
           // show the controls on this sub menu
@@ -784,8 +784,6 @@ void CGUIWindowOSD::Handle_ControlSetting(DWORD iControlID, DWORD wID)
 
   case OSD_ADJFRAMERATE:
     {
-      //g_guiSettings.ToggleBool("MyVideos.FrameRateConversions");
-      g_stSettings.m_currentVideoSettings.m_AdjustFrameRate = !g_stSettings.m_currentVideoSettings.m_AdjustFrameRate;
       m_bSubMenuOn = false;          // hide the sub menu
       OutputDebugString("OSD:RESTART4\n");
       g_application.Restart(true);        // restart to make the new setting active

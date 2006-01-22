@@ -116,7 +116,7 @@ CSmartXXLCD::~CSmartXXLCD()
 void CSmartXXLCD::Initialize()
 {
   StopThread();
-  if (g_guiSettings.GetInt("LCD.Mode") == LCD_MODE_NONE) 
+  if (g_guiSettings.GetInt("LCD.Type") == LCD_TYPE_NONE) 
   {
     CLog::Log(LOGINFO, "lcd not used");
     return;
@@ -137,14 +137,14 @@ void CSmartXXLCD::SetContrast(int iContrast)
 //*************************************************************************************************************
 void CSmartXXLCD::Stop()
 {
-  if (g_guiSettings.GetInt("LCD.Mode") == LCD_MODE_NONE) return;
+  if (g_guiSettings.GetInt("LCD.Type") == LCD_TYPE_NONE) return;
   StopThread();
 }
 
 //*************************************************************************************************************
 void CSmartXXLCD::SetLine(int iLine, const CStdString& strLine)
 {
-  if (g_guiSettings.GetInt("LCD.Mode") == LCD_MODE_NONE) return;
+  if (g_guiSettings.GetInt("LCD.Type") == LCD_TYPE_NONE) return;
   if (iLine < 0 || iLine >= (int)m_iRows) return;
   
   CStdString strLineLong=strLine;
@@ -507,12 +507,12 @@ void CSmartXXLCD::Process()
   int iOldContrast=-1;
 
   
-  m_iColumns = g_guiSettings.GetInt("LCD.Columns");
-  m_iRows    = g_guiSettings.GetInt("LCD.Rows");
-  m_iRow1adr = g_guiSettings.GetInt("LCD.Row1Address");
-  m_iRow2adr = g_guiSettings.GetInt("LCD.Row2Address");
-  m_iRow3adr = g_guiSettings.GetInt("LCD.Row3Address");
-  m_iRow4adr = g_guiSettings.GetInt("LCD.Row4Address");
+  m_iColumns = g_advancedSettings.m_lcdColumns;
+  m_iRows    = g_advancedSettings.m_lcdRows;
+  m_iRow1adr = g_advancedSettings.m_lcdAddress1;
+  m_iRow2adr = g_advancedSettings.m_lcdAddress2;
+  m_iRow3adr = g_advancedSettings.m_lcdAddress3;
+  m_iRow4adr = g_advancedSettings.m_lcdAddress4;
   m_iBackLight= g_guiSettings.GetInt("LCD.BackLight");
   m_iContrast = g_guiSettings.GetInt("LCD.Contrast");
   if (m_iRows >= MAX_ROWS) m_iRows=MAX_ROWS-1;

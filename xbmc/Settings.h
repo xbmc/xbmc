@@ -4,6 +4,7 @@
 #define PRE_SKIN_VERSION_2_0_COMPATIBILITY 1
 // REMOVE ME WHEN WE SWITCH TO SKIN VERSION 2.0
 
+#include <xvoice.h>
 #include "Profile.h"
 #include "settings/VideoSettings.h"
 #include "../xbmc/StringUtils.h"
@@ -235,6 +236,40 @@ public:
   bool GetSkinSetting(const char *setting) const;
   void ToggleSkinSetting(const char *setting);
 
+  struct AdvancedSettings
+  {
+public:
+
+    int m_audioHeadRoom;
+
+    float m_videoSubsDelayRange;
+    float m_videoAudioDelayRange;
+    int m_videoSmallStepBackSeconds;
+    int m_videoSmallStepBackTries;
+    int m_videoSmallStepBackDelay;
+    bool m_videoUseTimeSeeking;
+    int m_videoTimeSeekForward;
+    int m_videoTimeSeekBackward;
+    int m_videoTimeSeekForwardBig;
+    int m_videoTimeSeekBackwardBig;
+    int m_videoPercentSeekForward;
+    int m_videoPercentSeekBackward;
+    int m_videoPercentSeekForwardBig;
+    int m_videoPercentSeekBackwardBig;
+
+    float m_slideshowBlackBarCompensation;
+    float m_slideshowZoomAmount;
+    float m_slideshowPanAmount;
+
+    int m_lcdRows;
+    int m_lcdColumns;
+    int m_lcdAddress1;
+    int m_lcdAddress2;
+    int m_lcdAddress3;
+    int m_lcdAddress4;
+
+    int m_autoDetectPingTime;
+  };
   struct stSettings
   {
 public:
@@ -350,12 +385,6 @@ public:
     bool m_bMyMusicOldUseTags;
     bool m_bMyMusicOldFindThumbs;
 
-    int m_iSmallStepBackSeconds;
-    int m_iSmallStepBackTries;
-    int m_iSmallStepBackDelay;
-    float m_fSubsDelayRange;
-    float m_fAudioDelayRange;
-
     CVideoSettings m_defaultVideoSettings;
     CVideoSettings m_currentVideoSettings;
 
@@ -404,16 +433,6 @@ public:
     bool m_bMyVideoPlaylistRepeat;
     bool m_bMyVideoPlaylistShuffle;
 
-    int m_iMyVideoTimeSeekForward;
-    int m_iMyVideoTimeSeekBackward;
-    int m_iMyVideoTimeSeekForwardBig;
-    int m_iMyVideoTimeSeekBackwardBig;
-
-    int m_iMyVideoPercentSeekForward;
-    int m_iMyVideoPercentSeekBackward;
-    int m_iMyVideoPercentSeekForwardBig;
-    int m_iMyVideoPercentSeekBackwardBig;
-
     int m_iVideoStartWindow;
 
     int m_iMyVideoStack;
@@ -460,7 +479,7 @@ public:
     int m_iSystemTimeTotalUp;    // Uptime in minutes!
     char szScreenSaverSlideShowPath[1024];
 
-
+    XVOICE_MASK m_karaokeVoiceMask[4];
   };
 
   CStdStringArray m_MyVideoStackRegExps;
@@ -527,3 +546,4 @@ protected:
 
 extern class CSettings g_settings;
 extern struct CSettings::stSettings g_stSettings;
+extern struct CSettings::AdvancedSettings g_advancedSettings;
