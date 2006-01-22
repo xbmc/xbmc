@@ -254,6 +254,7 @@ public:
     char m_szScreenshotsDirectory[256];
     char m_szCacheDirectory[256];
     char m_szPlaylistsDirectory[256];
+    char m_szTrainerDirectory[256];
 
     /*
     bool m_bMyFilesSourceViewMethod;
