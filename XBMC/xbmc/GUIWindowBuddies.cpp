@@ -1539,11 +1539,8 @@ void CGUIWindowBuddies::Play(CStdString& aVector)
 
     if (!foundPath)
     {
-      //else try the original way..last ditch effort
-      if (!g_guiSettings.GetString("XLinkKai.GamesDir").IsEmpty())
-      {
-        foundPath = GetGamePathFromTitleId(dwTitleId, strGamePath);
-      }
+      // else try searching through our bookmarks
+      foundPath = GetGamePathFromTitleId(dwTitleId, strGamePath);
     }
 
     //finally, if we found the game path..run it!
@@ -1605,9 +1602,13 @@ bool CGUIWindowBuddies::GetGamePathFromTitleId(DWORD aTitleId, CStdString& aGame
   WIN32_FIND_DATA wfd;
   memset(&wfd, 0, sizeof(wfd));
 
-  //split the string in case there are multiple dirs
+  // Run through our bookmarks and construct a multi folder path to search
   CStdStringArray gamesDirs;
-  StringUtils::SplitString(g_guiSettings.GetString("XLinkKai.GamesDir"), ";", gamesDirs);
+  for (unsigned int i = 0; i < g_settings.m_vecMyProgramsBookmarks.size(); i++)
+  {
+    CShare &share = g_settings.m_vecMyProgramsBookmarks[i];
+    gamesDirs.push_back(share.strPath);
+  }
 
   for (int i = 0; i < (int)gamesDirs.size(); ++i)
   {

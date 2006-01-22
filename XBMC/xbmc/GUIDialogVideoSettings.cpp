@@ -6,6 +6,7 @@
 #include "utils/GUIInfoManager.h"
 #include "application.h"
 #include "cores/VideoRenderers/RenderManager.h"
+#include "VideoDatabase.h"
 
 #define CONTROL_SETTINGS_LABEL      2
 #define CONTROL_NONE_AVAILABLE      3
@@ -434,22 +435,25 @@ void CGUIDialogVideoSettings::AddSeparator(unsigned int id)
 #define VIDEO_SETTINGS_CONTRAST           6
 #define VIDEO_SETTINGS_GAMMA              7
 #define VIDEO_SETTINGS_INTERLACEMETHOD    8
+// separator 9
+#define VIDEO_SETTINGS_MAKE_DEFAULT       10
 
-#define VIDEO_SETTINGS_CALIBRATION        10
-#define VIDEO_SETTINGS_FLICKER            11
-#define VIDEO_SETTINGS_SOFTEN             12
-#define VIDEO_SETTINGS_ADJUST_FRAME_RATE  13
+#define VIDEO_SETTINGS_CALIBRATION        11
+#define VIDEO_SETTINGS_FLICKER            12
+#define VIDEO_SETTINGS_SOFTEN             13
 #define VIDEO_SETTINGS_NON_INTERLEAVED    14
 #define VIDEO_SETTINGS_NO_CACHE           15
 #define VIDEO_SETTINGS_FORCE_INDEX        16
 
 #define AUDIO_SETTINGS_VOLUME             1
-#define AUDIO_SETTINGS_DELAY              2
-#define AUDIO_SETTINGS_STREAM             3
-#define SUBTITLE_SETTINGS_ENABLE          5
-#define SUBTITLE_SETTINGS_DELAY           6
-#define SUBTITLE_SETTINGS_STREAM          7
-#define SUBTITLE_SETTINGS_BROWSER         8
+#define AUDIO_SETTINGS_VOLUME_AMPLIFICATION 2
+#define AUDIO_SETTINGS_DELAY              3
+#define AUDIO_SETTINGS_STREAM             4
+// separator 5
+#define SUBTITLE_SETTINGS_ENABLE          6
+#define SUBTITLE_SETTINGS_DELAY           7
+#define SUBTITLE_SETTINGS_STREAM          8
+#define SUBTITLE_SETTINGS_BROWSER         9
 
 void CGUIDialogVideoSettings::CreateSettings()
 {
@@ -474,27 +478,30 @@ void CGUIDialogVideoSettings::CreateSettings()
       AddSpin(VIDEO_SETTINGS_INTERLACEMETHOD, 16023, (int*)&g_stSettings.m_currentVideoSettings.m_InterlaceMethod, 5, entries);
     }
 
+    AddSeparator(8);
+    AddButton(VIDEO_SETTINGS_MAKE_DEFAULT, 12376);
     m_flickerFilter = g_guiSettings.GetInt("Filters.Flicker");
     AddSpin(VIDEO_SETTINGS_FLICKER, 13100, &m_flickerFilter, 0, 5);
     m_soften = g_guiSettings.GetBool("Filters.Soften");
     AddBool(VIDEO_SETTINGS_SOFTEN, 215, &m_soften);
     AddButton(VIDEO_SETTINGS_CALIBRATION, 214);
-    AddBool(VIDEO_SETTINGS_ADJUST_FRAME_RATE, 343, &g_stSettings.m_currentVideoSettings.m_AdjustFrameRate);
     AddBool(VIDEO_SETTINGS_NON_INTERLEAVED, 306, &g_stSettings.m_currentVideoSettings.m_NonInterleaved);
     AddBool(VIDEO_SETTINGS_NO_CACHE, 431, &g_stSettings.m_currentVideoSettings.m_NoCache);
-    AddButton(VIDEO_SETTINGS_FORCE_INDEX,12009);
+    AddButton(VIDEO_SETTINGS_FORCE_INDEX, 12009);
   }
   else
   { // Audio and Subtitle settings
     m_volume = g_stSettings.m_nVolumeLevel * 0.01f;
     AddSlider(AUDIO_SETTINGS_VOLUME, 13376, &m_volume, VOLUME_MINIMUM * 0.01f, (VOLUME_MAXIMUM - VOLUME_MINIMUM) * 0.0001f, VOLUME_MAXIMUM * 0.01f, "%2.1f dB");
-    AddSlider(AUDIO_SETTINGS_DELAY, 297, &g_stSettings.m_currentVideoSettings.m_AudioDelay, -g_stSettings.m_fAudioDelayRange, 0.1f, g_stSettings.m_fAudioDelayRange, "%2.1fs");
+    AddSlider(AUDIO_SETTINGS_VOLUME_AMPLIFICATION, 290, &g_stSettings.m_currentVideoSettings.m_VolumeAmplification, 0, 5, 30, "%2.1f dB");
+    AddSlider(AUDIO_SETTINGS_DELAY, 297, &g_stSettings.m_currentVideoSettings.m_AudioDelay, -g_advancedSettings.m_videoAudioDelayRange, 0.1f, g_advancedSettings.m_videoAudioDelayRange, "%2.1fs");
     AddAudioStreams(AUDIO_SETTINGS_STREAM);
-    AddSeparator(4);
+    AddSeparator(5);
     AddBool(SUBTITLE_SETTINGS_ENABLE, 13397, &g_stSettings.m_currentVideoSettings.m_SubtitleOn);
-    AddSlider(SUBTITLE_SETTINGS_DELAY, 303, &g_stSettings.m_currentVideoSettings.m_SubtitleDelay, -g_stSettings.m_fSubsDelayRange, 0.1f, g_stSettings.m_fSubsDelayRange, "%2.1fs");
+    AddSlider(SUBTITLE_SETTINGS_DELAY, 303, &g_stSettings.m_currentVideoSettings.m_SubtitleDelay, -g_advancedSettings.m_videoSubsDelayRange, 0.1f, g_advancedSettings.m_videoSubsDelayRange, "%2.1fs");
     AddSubtitleStreams(SUBTITLE_SETTINGS_STREAM);
     AddButton(SUBTITLE_SETTINGS_BROWSER,13250);
+    AddButton(VIDEO_SETTINGS_MAKE_DEFAULT, 12376);
   }
 }
 
@@ -601,7 +608,7 @@ void CGUIDialogVideoSettings::OnSettingChanged(unsigned int num)
   // check and update anything that needs it
   if (m_iScreen == WINDOW_DIALOG_VIDEO_OSD_SETTINGS)
   {
-    if (setting.id == VIDEO_SETTINGS_ADJUST_FRAME_RATE || setting.id == VIDEO_SETTINGS_NON_INTERLEAVED ||  setting.id == VIDEO_SETTINGS_NO_CACHE )
+    if (setting.id == VIDEO_SETTINGS_NON_INTERLEAVED ||  setting.id == VIDEO_SETTINGS_NO_CACHE )
       g_application.Restart(true);
     else if (setting.id == VIDEO_SETTINGS_CROP)
       g_renderManager.AutoCrop(g_stSettings.m_currentVideoSettings.m_Crop);
@@ -648,6 +655,10 @@ void CGUIDialogVideoSettings::OnSettingChanged(unsigned int num)
     {
       g_stSettings.m_nVolumeLevel = (long)(m_volume * 100.0f);
       g_application.SetVolume(int(((float)(g_stSettings.m_nVolumeLevel - VOLUME_MINIMUM)) / (VOLUME_MAXIMUM - VOLUME_MINIMUM)*100.0f + 0.5f));
+    }
+    else if (setting.id == AUDIO_SETTINGS_VOLUME_AMPLIFICATION)
+    {
+      g_application.Restart(true);
     }
     else if (setting.id == AUDIO_SETTINGS_DELAY)
     {
@@ -731,6 +742,19 @@ void CGUIDialogVideoSettings::OnSettingChanged(unsigned int num)
           }
         }
       }
+    }
+  }
+  if (setting.id == VIDEO_SETTINGS_MAKE_DEFAULT)
+  {
+    // prompt user if they are sure
+    if (CGUIDialogYesNo::ShowAndGetInput(12376, 750, 0, 12377))
+    { // reset the settings
+      CVideoDatabase db;
+      db.Open();
+      db.EraseVideoSettings();
+      db.Close();
+      g_stSettings.m_defaultVideoSettings = g_stSettings.m_currentVideoSettings;
+      g_settings.Save();
     }
   }
 }

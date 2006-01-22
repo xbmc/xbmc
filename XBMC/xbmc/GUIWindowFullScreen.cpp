@@ -283,15 +283,15 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
         bNeedPause = true;
       }
       int orgpos = (int)g_application.GetTime();
-      int triesleft = g_stSettings.m_iSmallStepBackTries;
-      int jumpsize = g_stSettings.m_iSmallStepBackSeconds; // secs
+      int triesleft = g_advancedSettings.m_videoSmallStepBackTries;
+      int jumpsize = g_advancedSettings.m_videoSmallStepBackSeconds; // secs
       int setpos = (orgpos > jumpsize) ? orgpos - jumpsize : 0; // First jump = 2*jumpsize
       int newpos;
       do
       {
         setpos = (setpos > jumpsize) ? setpos - jumpsize : 0;
         g_application.SeekTime((double)setpos);
-        Sleep(g_stSettings.m_iSmallStepBackDelay); // delay to let mplayer finish its seek (in ms)
+        Sleep(g_advancedSettings.m_videoSmallStepBackDelay); // delay to let mplayer finish its seek (in ms)
         newpos = (int)g_application.GetTime();
       }
       while ( (newpos > orgpos - jumpsize) && (setpos > 0) && (--triesleft > 0));
@@ -771,7 +771,7 @@ void CGUIWindowFullScreen::ChangetheTimeCode(DWORD remote)
         g_application.SeekTime((double)itotal);
       if (bNeedsPause)
       {
-        Sleep(g_stSettings.m_iSmallStepBackDelay);  // allow mplayer to finish it's seek (nasty hack)
+        Sleep(g_advancedSettings.m_videoSmallStepBackDelay);  // allow mplayer to finish it's seek (nasty hack)
         g_application.m_pPlayer->Pause();
       }
       m_iTimeCodePosition = 0;
@@ -797,7 +797,7 @@ void CGUIWindowFullScreen::Seek(bool bPlus, bool bLargeStep)
   // And repause it
   if (bNeedsPause)
   {
-    Sleep(g_stSettings.m_iSmallStepBackDelay);  // allow mplayer to finish it's seek (nasty hack)
+    Sleep(g_advancedSettings.m_videoSmallStepBackDelay);  // allow mplayer to finish it's seek (nasty hack)
     g_application.m_pPlayer->Pause();
   }
 

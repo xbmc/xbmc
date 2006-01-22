@@ -228,7 +228,7 @@ CASyncDirectSound::CASyncDirectSound(IAudioCallback* pCallback, int iChannels, u
   m_pStream->SetHeadroom(0);
   // Set the default mixbins headroom to appropriate level as set in the settings file (to allow the maximum volume)
   for (DWORD i = 0; i < dsmb.dwMixBinCount;i++)
-    m_pDSound->SetMixBinHeadroom(i, DWORD(g_guiSettings.GetInt("AudioOutput.Headroom") / 6));
+    m_pDSound->SetMixBinHeadroom(i, DWORD(g_advancedSettings.m_audioHeadRoom / 6));
 
   m_bIsAllocated = true;
   if (m_pCallback)
@@ -716,6 +716,6 @@ void CASyncDirectSound::SwitchChannels(int iAudioStream, bool bAudioOnAllSpeaker
   m_pStream->SetHeadroom(0);
   // Set the default mixbins headroom to appropriate level as set in the settings file (to allow the maximum volume)
   for (DWORD i = 0; i < dsmb.dwMixBinCount;i++)
-    m_pDSound->SetMixBinHeadroom(i, DWORD(g_guiSettings.GetInt("AudioOutput.Headroom") / 6));
+    m_pDSound->SetMixBinHeadroom(i, DWORD(g_advancedSettings.m_audioHeadRoom / 6));
   m_iCurrentAudioStream = iAudioStream;
 }

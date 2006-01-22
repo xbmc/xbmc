@@ -41,13 +41,13 @@ public:
   float m_CustomZoomAmount; // custom setting zoom amount
   float m_CustomPixelRatio; // custom setting pixel ratio
   int m_AudioStream;
+  float m_VolumeAmplification;
   int m_SubtitleStream;
   float m_SubtitleDelay;
   bool m_SubtitleOn;
   int m_Brightness;
   int m_Contrast;
   int m_Gamma;
-  bool m_AdjustFrameRate;
   float m_AudioDelay;
   int m_ResumeTime;
   bool m_Crop;

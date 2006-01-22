@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 22-01-2006 added: Ability to set default settings for all movies from the video OSD.
+ - 22-01-2006 changed: Removed some unused/rarely used settings.
  - 21-01-2006 added: xored trainer engine! thanks to team xored and to britneyspair for skinwork!
  - 21-01-2006 fixed/changed: tuned the subtitle caching a bit. should avoid most issues with rarred subs.
  - 21-01-2006 added: adplug codec to paplayer. add .adplug to the end of the filename of the file you want to play.

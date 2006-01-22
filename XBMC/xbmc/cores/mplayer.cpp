@@ -842,7 +842,7 @@ bool CMPlayer::OpenFile(const CFileItem& file, __int64 iStartTime)
 
     if (bIsVideo)
     {
-      options.SetVolumeAmplification((float)g_guiSettings.GetInt("VideoPlayer.VolumeAmplification"));
+      options.SetVolumeAmplification(g_stSettings.m_currentVideoSettings.m_VolumeAmplification);
     }
 
     //Make sure we set the dvd-device parameter if we are playing dvdimages or dvdfolders
@@ -980,7 +980,7 @@ bool CMPlayer::OpenFile(const CFileItem& file, __int64 iStartTime)
 
 
       // do we need 2 do frame rate conversions ?
-      if (g_stSettings.m_currentVideoSettings.m_AdjustFrameRate && file.IsVideo() )
+      if (g_guiSettings.GetInt("MyVideos.FrameRateConversions") == FRAME_RATE_CONVERT && file.IsVideo() )
       {
         if (g_videoConfig.HasPAL())
         {
@@ -1077,13 +1077,14 @@ bool CMPlayer::OpenFile(const CFileItem& file, __int64 iStartTime)
 
     // set up defaults
     SetSubtitleVisible(g_stSettings.m_currentVideoSettings.m_SubtitleOn);
+/*  Why should we do anything other than the defaults (as set by the user)
     if (g_stSettings.m_currentVideoSettings.m_SubtitleStream < 0)
     {
       if (bIsDVD) //Default subtitles for dvd's off
         SetSubtitleVisible(false);
       else
         SetSubtitleVisible(true);
-    }
+    }*/
     SetAVDelay(g_stSettings.m_currentVideoSettings.m_AudioDelay);
     if (g_stSettings.m_currentVideoSettings.m_AudioStream < -1)
     { // check + fix up the stereo/left/right setting
@@ -1405,21 +1406,21 @@ void CMPlayer::Seek(bool bPlus, bool bLargeStep)
 
   __int64 iTime = GetTotalTime();
 
-  if ((iTime == 0) || (g_guiSettings.GetBool("VideoPlayer.UseTimeBasedSeeking") && iTime > 2*g_stSettings.m_iMyVideoTimeSeekForwardBig))
+  if ((iTime == 0) || (g_advancedSettings.m_videoUseTimeSeeking && iTime > 2*g_advancedSettings.m_videoTimeSeekForwardBig))
   {
     if (bLargeStep)
     {
       if (bPlus)
-        SeekRelativeTime(g_stSettings.m_iMyVideoTimeSeekForwardBig);
+        SeekRelativeTime(g_advancedSettings.m_videoTimeSeekForwardBig);
       else
-        SeekRelativeTime(g_stSettings.m_iMyVideoTimeSeekBackwardBig);
+        SeekRelativeTime(g_advancedSettings.m_videoTimeSeekBackwardBig);
     }
     else
     {
       if (bPlus)
-        SeekRelativeTime(g_stSettings.m_iMyVideoTimeSeekForward);
+        SeekRelativeTime(g_advancedSettings.m_videoTimeSeekForward);
       else
-        SeekRelativeTime(g_stSettings.m_iMyVideoTimeSeekBackward);
+        SeekRelativeTime(g_advancedSettings.m_videoTimeSeekBackward);
     }
   }
   else
@@ -1428,16 +1429,16 @@ void CMPlayer::Seek(bool bPlus, bool bLargeStep)
     if (bLargeStep)
     {
       if (bPlus)
-        percent += g_stSettings.m_iMyVideoPercentSeekForwardBig;
+        percent += g_advancedSettings.m_videoPercentSeekForwardBig;
       else
-        percent += g_stSettings.m_iMyVideoPercentSeekBackwardBig;
+        percent += g_advancedSettings.m_videoPercentSeekBackwardBig;
     }
     else
     {
       if (bPlus)
-        percent += g_stSettings.m_iMyVideoPercentSeekForward;
+        percent += g_advancedSettings.m_videoPercentSeekForward;
       else
-        percent += g_stSettings.m_iMyVideoPercentSeekBackward;
+        percent += g_advancedSettings.m_videoPercentSeekBackward;
     }
 
     //If current time isn't bound by the total time, 
