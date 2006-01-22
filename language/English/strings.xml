@@ -706,6 +706,11 @@
   <string><id>12009</id><value>Rebuild index...</value></string>
   <string><id>12010</id><value>Return to My Music</value></string>
   <string><id>12011</id><value>Return to My Video</value></string>
+  <string><id>12012</id><value>Update trainer list</value></string>
+  <string><id>12013</id><value>Trainer</value></string>
+  <string><id>12014</id><value>No trainers found</value></string>
+  <string><id>12015</id><value>Trainer settings</value></string>
+  <string><id>12016</id><value>All registered trailers are missing. Update your list</value></string>
 
   <string><id>12310</id><value>0</value></string>
   <string><id>12311</id><value>1</value></string>

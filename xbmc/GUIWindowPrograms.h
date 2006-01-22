@@ -23,7 +23,7 @@ protected:
   void LoadDirectory(const CStdString& strDirectory, int depth);
   void DeleteThumbs(CFileItemList& items);
   int GetRegion(int iItem, bool bReload=false);
-
+  void PopulateTrainersList();
   CGUIDialogProgress* m_dlgProgress;
 
   CStdString m_shareDirectory;

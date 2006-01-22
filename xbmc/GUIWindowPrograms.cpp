@@ -9,7 +9,11 @@
 #include "GUIThumbnailPanel.h"
 #include "GUIPassword.h"
 #include "GUIDialogContextMenu.h"
+#include "GUIDialogTrainerSettings.h"
 #include "xbox/xbeheader.h"
+#include "SortFileItem.h"
+#include "utils/Trainer.h"
+#include "utils/kaiclient.h"
 #ifdef PRE_SKIN_VERSION_2_0_COMPATIBILITY
 #include "SkinInfo.h"
 #endif
@@ -348,6 +352,16 @@ bool CGUIWindowPrograms::OnPopupMenu(int iItem)
       btn_LaunchIn = pMenu->AddButton(519); // launch in video mode
     if (m_vecItems[iItem]->IsType(".xbe"))
       btn_Rename = pMenu->AddButton(520); // edit xbe title
+    DWORD dwTitleId = CUtil::GetXbeID(m_vecItems[iItem]->m_strPath);
+    int btn_Trainers = -2;
+    if (m_database.ItemHasTrainer(dwTitleId) && !CKaiClient::GetInstance()->IsEngineConnected())
+    {
+      CStdStringW strOptions = g_localizeStrings.Get(12015);
+      if (m_database.GetActiveTrainer(dwTitleId) != "")
+        strOptions += CStdStringW(" ") + g_localizeStrings.Get(461);
+      btn_Trainers = pMenu->AddButton(strOptions); // trainer options
+    }
+    int btn_ScanTrainers = pMenu->AddButton(12012);
     int btn_Settings = pMenu->AddButton(5); // Settings
 
     // position it correctly
@@ -372,6 +386,13 @@ bool CGUIWindowPrograms::OnPopupMenu(int iItem)
         Update(m_vecItems.m_strPath);
       }
     }
+    if (btnid == btn_Trainers)
+    {
+      DWORD dwTitleId = CUtil::GetXbeID(m_vecItems[iItem]->m_strPath);
+      CGUIDialogTrainerSettings::ShowForTitle(dwTitleId,&m_database);
+    }
+    if (btnid == btn_ScanTrainers)
+      PopulateTrainersList();
     if (btnid == btn_Settings)
     {
       //MasterPassword
@@ -817,6 +838,18 @@ bool CGUIWindowPrograms::OnClick(int iItem)
 
     int iRegion = m_iRegionSet?m_iRegionSet:GetRegion(iItem);
 
+    DWORD dwTitleId = CUtil::GetXbeID(pItem->m_strPath);
+    CStdString strTrainer = m_database.GetActiveTrainer(dwTitleId);
+    if (strTrainer != "" && !CKaiClient::GetInstance()->IsEngineConnected())
+    {
+      CTrainer trainer;
+      if (trainer.Load(strTrainer))
+      {
+        m_database.GetTrainerOptions(strTrainer,dwTitleId,trainer.GetOptions());
+        CUtil::InstallTrainer(trainer);
+      }
+    }
+
     m_database.Close();
     memset(szParameters, 0, sizeof(szParameters));
 
@@ -1048,4 +1081,86 @@ int CGUIWindowPrograms::GetRegion(int iItem, bool bReload)
     return CXBE::FilterRegion(iRegion,true);
   else
     return CXBE::FilterRegion(iRegion);
+}
+
+void CGUIWindowPrograms::PopulateTrainersList()
+{
+  CDirectory directory;
+  CFileItemList trainers;
+  CFileItemList archives;
+  CFileItemList inArchives;
+  // first, remove any dead items
+  std::vector<CStdString> vecTrainerPath;
+  m_database.GetAllTrainers(vecTrainerPath);
+  if (!m_dlgProgress)
+    m_dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+  m_dlgProgress->SetLine(0,"Validating existing trainers");
+  m_dlgProgress->SetLine(1,"");
+  m_dlgProgress->SetLine(2,"");
+  m_dlgProgress->StartModal(GetID());
+  m_dlgProgress->SetHeading(12012);
+  m_dlgProgress->ShowProgressBar(false);
+  m_dlgProgress->Progress();
+  
+  for (unsigned int i=0;i<vecTrainerPath.size();++i)
+    if (!CFile::Exists(vecTrainerPath[i]))
+      m_database.RemoveTrainer(vecTrainerPath[i]);
+
+  directory.GetDirectory(g_stSettings.m_szTrainerDirectory,trainers,".xbtf|.etm");
+  directory.GetDirectory(g_stSettings.m_szTrainerDirectory,archives,".rar"); // TODO: ZIP SUPPORT
+  for( int i=0;i<archives.Size();++i)
+  {
+    if (stricmp(CUtil::GetExtension(archives[i]->m_strPath),".rar") == 0)
+    {
+      g_RarManager.GetFilesInRar(inArchives,archives[i]->m_strPath,false);
+      CHDDirectory dir;
+      dir.SetMask(".xbtf|.etm");
+      for (int j=0;j<inArchives.Size();++j)
+        if (dir.IsAllowed(inArchives[j]->m_strPath))
+        {
+          CFileItem* item = new CFileItem(*inArchives[j]);
+          CStdString strPathInArchive = item->m_strPath;
+          item->m_strPath.Format("rar://%s,2,,%s,\\%s",g_stSettings.m_szCacheDirectory,archives[i]->m_strPath.c_str(),strPathInArchive.c_str());
+          trainers.Add(item);
+        }
+    }      
+  }
+  if (!m_dlgProgress)
+    m_dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+  m_dlgProgress->SetPercentage(0);
+  m_dlgProgress->ShowProgressBar(true);
+  
+  for (int i=0;i<trainers.Size();++i)
+  {
+    m_dlgProgress->SetPercentage((int)((float)(i)/trainers.Size()*100.f));
+    CStdStringW strLine;
+    strLine = g_localizeStrings.Get(12013);
+    CStdString strTemp;
+    strTemp.Format(" %i / %i",i+1,trainers.Size());
+    strLine += strTemp;
+    
+    m_dlgProgress->SetLine(0,strLine);
+    m_dlgProgress->Progress();
+    if (m_database.HasTrainer(trainers[i]->m_strPath)) // skip existing trainers
+      continue;
+
+    CTrainer trainer;
+    if (trainer.Load(trainers[i]->m_strPath))
+    { 
+      m_dlgProgress->SetLine(1,trainer.GetName());
+      m_dlgProgress->SetLine(2,"");
+      m_dlgProgress->Progress();
+      unsigned int iTitle1, iTitle2, iTitle3;
+      trainer.GetTitleIds(iTitle1,iTitle2,iTitle3);
+      if (iTitle1)
+        m_database.AddTrainer(iTitle1,trainers[i]->m_strPath);
+      if (iTitle2)
+        m_database.AddTrainer(iTitle2,trainers[i]->m_strPath);
+      if (iTitle3)
+        m_database.AddTrainer(iTitle3,trainers[i]->m_strPath);
+    }
+    if (m_dlgProgress->IsCanceled())
+      break;
+  }
+  m_dlgProgress->Close();
 }

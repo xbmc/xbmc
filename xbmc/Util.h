@@ -3,6 +3,7 @@
 #include "filesystem/rarmanager.h"
 #include "settings.h"
 
+class CTrainer;
 //#define SKIN_VERSION_1_3 1
 
 struct network_info
@@ -53,6 +54,31 @@ static BYTE PatchData[70]=
 extern "C"	int __stdcall MmQueryAddressProtect(void *Adr);
 extern "C"	void __stdcall MmSetAddressProtect(void *Adr, int Size, int Type);  
 
+// for trainers
+#define KERNEL_STORE_ADDRESS 0x8000000C // this is address in kernel we store the address of our allocated memory block
+#define KERNEL_START_ADDRESS 0x80010000 // base addy of kernel
+#define KERNEL_ALLOCATE_ADDRESS 0x7FFD2200 // where we want to put our allocated memory block (under kernel so it works retail)
+#define KERNEL_SEARCH_RANGE 0x02AF90 // used for loop control base + search range to look xbe entry point bytes
+
+#define SIZEOFLOADERDATA 82 // loaderdata is our kernel hack to handle if trainer (com file) is executed for title about to run
+#define XBTF_HEAP_SIZE 15360 // plenty of room for trainer + xbtf support functions
+#define ETM_HEAP_SIZE 2282  // just enough room to match evox's etm spec limit (no need to give them more room then evox does)
+// magic kernel patch (asm included w/ source)
+static unsigned char trainerloaderdata[82] =
+{
+	0x60, 0xBA, 0x34, 0x12, 0x00, 0x00, 0x8B, 0x35, 0x18, 0x01, 0x01, 0x00, 0x83, 0xC6, 0x08, 0x8B, 
+	0x06, 0x8B, 0x72, 0x12, 0x03, 0xF2, 0xB9, 0x03, 0x00, 0x00, 0x00, 0x3B, 0x06, 0x74, 0x07, 0x83, 
+	0xC6, 0x04, 0xE2, 0xF7, 0xEB, 0x24, 0x8B, 0xEA, 0x83, 0x7A, 0x1A, 0x00, 0x74, 0x05, 0x8B, 0x4A, 
+	0x1A, 0xEB, 0x03, 0x8B, 0x4A, 0x16, 0x03, 0xCA, 0x0F, 0x20, 0xC0, 0x50, 0x25, 0xFF, 0xFF, 0xFE, 
+	0xFF, 0x0F, 0x22, 0xC0, 0xFF, 0xD1, 0x58, 0x0F, 0x22, 0xC0, 0x61, 0xFF, 0x15, 0x28, 0x01, 0x01, 
+	0x00, 0xC3, 
+};
+
+extern "C" XBOXAPI PVOID * WINAPI MmAllocateContiguousMemoryEx(IN SIZE_T NumberOfBytes, IN ULONG_PTR LowestAcceptableAddress, IN ULONG_PTR HighestAcceptableAddress, IN ULONG_PTR Alignment, IN ULONG Protect);
+extern "C" XBOXAPI DWORD WINAPI MmPersistContiguousMemory(IN PVOID BaseAddress, IN SIZE_T NumberOfBytes, IN BOOLEAN Persist);
+
+static unsigned char trainerdata[XBTF_HEAP_SIZE] = { NULL }; // buffer to hold trainer in mem - needs to be global?
+
 using namespace std;
 using namespace PLAYLIST;
 
@@ -74,6 +100,8 @@ public:
   static int cmpnocase(const char* str1, const char* str2);
   static bool GetParentPath(const CStdString& strPath, CStdString& strParent);
   static void GetQualifiedFilename(const CStdString &strBasePath, CStdString &strFilename);
+  static bool InstallTrainer(CTrainer& trainer);
+  static bool RemoveTrainer();
   static bool PatchCountryVideo(F_COUNTRY Country, F_VIDEO Video);
   static void RunXBE(const char* szPath, char* szParameters = NULL, F_VIDEO ForceVideo=VIDEO_NULL, F_COUNTRY ForceCountry=COUNTRY_NULL);
   static void LaunchXbe(const char* szPath, const char* szXbe, const char* szParameters, F_VIDEO ForceVideo=VIDEO_NULL, F_COUNTRY ForceCountry=COUNTRY_NULL); 
