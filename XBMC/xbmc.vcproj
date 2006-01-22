@@ -856,6 +856,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\ThumbnailCache.cpp">
 				</File>
 				<File
+					RelativePath=".\xbmc\utils\Trainer.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\utils\Trainer.h">
+				</File>
+				<File
 					RelativePath=".\xbmc\utils\UdpClient.cpp">
 				</File>
 				<File
@@ -991,6 +997,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				</File>
 				<File
 					RelativePath=".\xbmc\GUIDialogSubMenu.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\GUIDialogTrainerSettings.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\GUIDialogTrainerSettings.h">
 				</File>
 				<File
 					RelativePath=".\xbmc\GUIDialogVideoBookmarks.cpp">
