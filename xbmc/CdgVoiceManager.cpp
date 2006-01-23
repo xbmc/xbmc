@@ -96,8 +96,19 @@ HRESULT CCdgChatter::Initialize(CCdgVoiceManager* pManager, DWORD dwPort, CDG_DE
     }
   }
   // Set up the voice stream
-  DSMIXBINVOLUMEPAIR dsmbvp = { DSMIXBIN_FRONT_CENTER, DSBVOLUME_MAX };
-  DSMIXBINS dsmb = { 1, &dsmbvp};
+  // Change to all front and center channels
+  DSMIXBINVOLUMEPAIR dsmbvp[6] = {
+    {DSMIXBIN_FRONT_LEFT, DSBVOLUME_MAX},
+    {DSMIXBIN_FRONT_RIGHT, DSBVOLUME_MAX},
+    {DSMIXBIN_FRONT_CENTER, DSBVOLUME_MIN},
+    {DSMIXBIN_BACK_LEFT, DSBVOLUME_MIN},
+    {DSMIXBIN_BACK_RIGHT, DSBVOLUME_MIN},
+    {DSMIXBIN_LOW_FREQUENCY, DSBVOLUME_MIN}};
+
+  DSMIXBINS dsmb;
+  dsmb.dwMixBinCount = 6;
+  dsmb.lpMixBinVolumePairs = dsmbvp;
+
   DSSTREAMDESC dssd = {0};
   dssd.dwMaxAttachedPackets = m_pVoiceManager->m_dwNumPackets;
   dssd.lpwfxFormat = &m_wfx;
