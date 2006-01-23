@@ -13,14 +13,13 @@
 
 #include "DVDCodecs\DVDCodecs.h"
 
-CDVDPlayerVideo::CDVDPlayerVideo(CDVDDemuxSPU* spu, CDVDClock* pClock, CDVDOverlayContainer* pOverlayContainer) 
+CDVDPlayerVideo::CDVDPlayerVideo(CDVDClock* pClock, CDVDOverlayContainer* pOverlayContainer) 
 : CThread()
 , m_PresentThread( pClock )
 {
-  m_pDVDSpu = spu;
   m_pClock = pClock;
   m_pOverlayContainer = pOverlayContainer;
-  
+  m_pTempOverlayPicture = NULL;
   m_pVideoCodec = NULL;
   m_bInitializedOutputDevice = false;
   
@@ -96,7 +95,13 @@ void CDVDPlayerVideo::CloseStream(bool bWaitForBuffers)
     m_pVideoCodec->Dispose();
     delete m_pVideoCodec;
     m_pVideoCodec = NULL;
-  }  
+  }
+
+  if (m_pTempOverlayPicture)
+  {
+    CDVDCodecUtils::FreePicture(m_pTempOverlayPicture);
+    m_pTempOverlayPicture = NULL;
+  }
 }
 
 void CDVDPlayerVideo::OnStartup()
@@ -134,7 +139,7 @@ void CDVDPlayerVideo::Process()
     while (m_iSpeed == 0 && !m_packetQueue.RecievedAbortRequest()) Sleep(5);
 
 
-    int ret = m_packetQueue.Get(&pPacket, bDetectedStill ? iFrameTime : iFrameTime * 4, (void**)&dvdstate);
+    int ret = m_packetQueue.Get(&pPacket, (bDetectedStill ? iFrameTime : iFrameTime * 4) / 1000, (void**)&dvdstate);
     if( ret < 0 ) break;
     else if( ret == 0 )
     {
@@ -151,7 +156,7 @@ void CDVDPlayerVideo::Process()
       //Okey, start rendering at stream fps now instead, we are likely in a stillframe
       if( !bDetectedStill )
       {
-        CLog::Log(LOGINFO, "CDVDPlayerVideo - Stillframe detected, switching to forced %d fps", ( 1000 / iFrameTime ));
+        CLog::Log(LOGINFO, "CDVDPlayerVideo - Stillframe detected, switching to forced %d fps", (DVD_TIME_BASE / iFrameTime));
         bDetectedStill = true;
       }
       continue;
@@ -222,6 +227,7 @@ void CDVDPlayerVideo::Process()
           if (m_pVideoCodec->GetPicture(&picture))
           {          
             if (picture.iDuration == 0)
+              // should not use iFrameTime here. cause framerate can change while playing video
               picture.iDuration = iFrameTime;
 
             if (m_iNrOfPicturesNotToSkip > 0)
@@ -349,6 +355,57 @@ void CDVDPlayerVideo::Flush()
   m_iCurrentPts = DVD_NOPTS_VALUE;
 }
 
+void CDVDPlayerVideo::ProcessOverlays(DVDVideoPicture* pSource, YV12Image* pDest, __int64 pts)
+{
+  // remove any overlays that are out of time
+  m_pOverlayContainer->CleanUp(pts);
+
+  // rendering spu overlay types directly on video memory costs a lot of processing power.
+  // thus we allocate a temp picture, copy the original to it (needed because the same picture can be used more than once).
+  // then do all the rendering on that temp picture and finaly copy it to video memory.
+  // In almost all cases this is 5 or more times faster!.
+  bool bHasSpecialOverlay = m_pOverlayContainer->ContainsOverlayType(DVDOVERLAY_TYPE_SPU);
+  
+  if (bHasSpecialOverlay)
+  {
+    if (m_pTempOverlayPicture && (m_pTempOverlayPicture->iWidth != pSource->iWidth || m_pTempOverlayPicture->iHeight != pSource->iHeight))
+    {
+      CDVDCodecUtils::FreePicture(m_pTempOverlayPicture);
+      m_pTempOverlayPicture = NULL;
+    }
+    
+    if (!m_pTempOverlayPicture) m_pTempOverlayPicture = CDVDCodecUtils::AllocatePicture(pSource->iWidth, pSource->iHeight);
+  }
+
+  if (bHasSpecialOverlay && m_pTempOverlayPicture) CDVDCodecUtils::CopyPicture(m_pTempOverlayPicture, pSource);
+  else CDVDCodecUtils::CopyPictureToOverlay(pDest, pSource);
+  
+  m_pOverlayContainer->Lock();
+
+  VecOverlays* pVecOverlays = m_pOverlayContainer->GetOverlays();
+  VecOverlaysIter it = pVecOverlays->begin();
+  
+  //Check all overlays and render those that should be rendered, based on time and forced
+  //Both forced and subs should check timeing, pts == 0 in the stillframe case
+  while (it != pVecOverlays->end())
+  {
+    CDVDOverlay* pOverlay = *it;
+    if ((pOverlay->bForced || m_bRenderSubs) &&
+        ((pOverlay->iPTSStartTime <= pts && (pOverlay->iPTSStopTime >= pts || pOverlay->iPTSStopTime == 0LL)) || pts == 0))
+    {
+      if (bHasSpecialOverlay && m_pTempOverlayPicture) CDVDOverlayRenderer::Render(m_pTempOverlayPicture, pOverlay);
+      else CDVDOverlayRenderer::Render(pDest, pOverlay);
+    }
+    it++;
+  }
+  
+  m_pOverlayContainer->Unlock();
+  
+  if (bHasSpecialOverlay && m_pTempOverlayPicture)
+  {
+    CDVDCodecUtils::CopyPictureToOverlay(pDest, m_pTempOverlayPicture);
+  }
+}
 
 CDVDPlayerVideo::EOUTPUTSTATUS CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, __int64 pts)
 {
@@ -376,52 +433,7 @@ CDVDPlayerVideo::EOUTPUTSTATUS CDVDPlayerVideo::OutputPicture(DVDVideoPicture* p
       YV12Image image;
       if( !g_renderManager.GetImage(&image) ) return EOS_DROPPED;
 
-      // remove any overlays that are out of time
-      m_pOverlayContainer->CleanUp(pts);
-
-      m_pOverlayContainer->Lock();
-      
-      // rendering spu overlay types directly on video memory costs a lot of processing power.
-      // thus we allocate a temp picture, copy the original to it (needed because the same picture can be used more than once).
-      // then do all the rendering on that temp picture and finaly copy it to video memory.
-      // In almost all cases this is 5 or more times faster!.
-      DVDVideoPicture* pTempPicture = NULL;
-      if (m_pOverlayContainer->ContainsOverlayType(DVDOVERLAY_TYPE_SPU))
-      {
-        pTempPicture = CDVDCodecUtils::AllocatePicture(pPicture->iWidth, pPicture->iHeight);
-        CDVDCodecUtils::CopyPicture(pTempPicture, pPicture);
-      }
-      else
-      {
-        CDVDCodecUtils::CopyPictureToOverlay(&image, pPicture);
-      }
-      
-      CDVDOverlay* pOverlay;
-      VecOverlays* pVecOverlays = m_pOverlayContainer->GetOverlays();
-      VecOverlaysIter it = pVecOverlays->begin();
-      
-      //Check all overlays and render those that should be rendered, based on time and forced
-      //Both forced and subs should check timeing, pts == 0 in the stillframe case
-      while (it != pVecOverlays->end())
-      {
-        pOverlay = *it;
-        if ((pOverlay->bForced || m_bRenderSubs) &&
-            ((pOverlay->iPTSStartTime <= pts && (pOverlay->iPTSStopTime >= pts || pOverlay->iPTSStopTime == 0LL)) || pts == 0))
-        {
-          if (pTempPicture) CDVDOverlayRenderer::Render(pTempPicture, pOverlay);
-          else CDVDOverlayRenderer::Render(&image, pOverlay);
-        }
-        it++;
-      }
-      
-      if (pTempPicture)
-      {
-        CDVDCodecUtils::CopyPictureToOverlay(&image, pTempPicture);
-        CDVDCodecUtils::FreePicture(pTempPicture);
-        pTempPicture = NULL;
-      }
-      
-      m_pOverlayContainer->Unlock();
+      ProcessOverlays(pPicture, &image, pts);
       
       // tell the renderer that we've finished with the image (so it can do any
       // post processing before FlipPage() is called.)
