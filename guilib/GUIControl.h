@@ -163,6 +163,8 @@ public:
   GUICONTROLTYPES GetControlType() const { return ControlType; }
 
   void SetAnimations(const vector<CAnimation> &animations);
+  const vector<CAnimation> &GetAnimations() { return m_animations; };
+
   void QueueAnimation(ANIMATION_TYPE anim);
   bool IsAnimating(ANIMATION_TYPE anim);
   CAnimation *GetAnimation(ANIMATION_TYPE type);
