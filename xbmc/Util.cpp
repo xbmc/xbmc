@@ -25,12 +25,15 @@
 #include "utils/trainer.h"
 #include "FileSystem/ZipManager.h"
 #include "FileSystem/RarManager.h"
+#include <xbdm.h>
 
 #define clamp(x) (x) > 255.f ? 255 : ((x) < 0 ? 0 : (BYTE)(x+0.5f)) // Valid ranges: brightness[-1 -> 1 (0 is default)] contrast[0 -> 2 (1 is default)]  gamma[0.5 -> 3.5 (1 is default)] default[ramp is linear]
 static const __int64 SECS_BETWEEN_EPOCHS = 11644473600;
 static const __int64 SECS_TO_100NS = 10000000;
 
 bool CUtil::m_bNetworkUp = false;
+HANDLE CUtil::m_hCurrentCpuUsage = NULL;
+
 char g_szTitleIP[32];
 CStdString strHasClientIP="",strHasClientInfo="",strNewClientIP,strNewClientInfo; 
 using namespace AUTOPTR;
@@ -4271,4 +4274,24 @@ bool CUtil::MakeShortenPath(CStdString StrInput, CStdString& StrOutput, int iTex
   }
   StrOutput = StrInput;
   return true;
+}
+
+float CUtil::CurrentCpuUsage()
+{
+  float fCpuUsage = -1.0;
+  
+  if (!m_hCurrentCpuUsage)
+  {
+    DmOpenPerformanceCounter("% CPU:total", &m_hCurrentCpuUsage);
+  }
+  
+  if (m_hCurrentCpuUsage)
+  {
+    DM_COUNTDATA data;
+
+    DmQueryPerformanceCounterHandle(m_hCurrentCpuUsage, DMCOUNT_PRATIO, &data);
+    fCpuUsage = (float)data.CountValue.LowPart / (float)data.RateValue.LowPart * 100.0f;
+  }
+  
+  return fCpuUsage;
 }
