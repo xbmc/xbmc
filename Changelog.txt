@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 23-01-2006 fixed: checks for skin labels aliases were reaching compiler limits (too much else if's)
  - 23-01-2006 fixed: <animation> tags in references.xml weren't being used.
  - 23-01-2006 fixed: updating menu overlays on dvdstills took 40 seconds, now instant again
  - 23-01-2006 added: cpu usage to codecinfo overlay

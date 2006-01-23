@@ -235,6 +235,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
   strTest.ToLower();
   strTest.TrimLeft(" ");
   strTest.TrimRight(" ");
+  CStdString strCategory = strTest.Left(strTest.Find("."));
   bool bNegate = strTest[0] == '!';
   int ret = 0;
 
@@ -244,122 +245,165 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
   // check playing conditions...
   if (strTest.Equals("false") || strTest.Equals("no") || strTest.Equals("off") || strTest.Equals("disabled")) ret = SYSTEM_ALWAYS_FALSE;
   else if (strTest.Equals("true") || strTest.Equals("yes") || strTest.Equals("on") || strTest.Equals("enabled")) ret = SYSTEM_ALWAYS_TRUE;
-  else if (strTest.Equals("player.hasmedia")) ret = PLAYER_HAS_MEDIA;
-  else if (strTest.Equals("player.hasaudio")) ret = PLAYER_HAS_AUDIO;
-  else if (strTest.Equals("player.hasvideo")) ret = PLAYER_HAS_VIDEO;
-  else if (strTest.Equals("player.playing")) ret = PLAYER_PLAYING;
-  else if (strTest.Equals("player.paused")) ret = PLAYER_PAUSED;
-  else if (strTest.Equals("player.rewinding")) ret = PLAYER_REWINDING;
-  else if (strTest.Equals("player.forwarding")) ret = PLAYER_FORWARDING;
-  else if (strTest.Equals("player.rewinding2x")) ret = PLAYER_REWINDING_2x;
-  else if (strTest.Equals("player.rewinding4x")) ret = PLAYER_REWINDING_4x;
-  else if (strTest.Equals("player.rewinding8x")) ret = PLAYER_REWINDING_8x;
-  else if (strTest.Equals("player.rewinding16x")) ret = PLAYER_REWINDING_16x;
-  else if (strTest.Equals("player.rewinding32x")) ret = PLAYER_REWINDING_32x;
-  else if (strTest.Equals("player.forwarding2x")) ret = PLAYER_FORWARDING_2x;
-  else if (strTest.Equals("player.forwarding4x")) ret = PLAYER_FORWARDING_4x;
-  else if (strTest.Equals("player.forwarding8x")) ret = PLAYER_FORWARDING_8x;
-  else if (strTest.Equals("player.forwarding16x")) ret = PLAYER_FORWARDING_16x;
-  else if (strTest.Equals("player.forwarding32x")) ret = PLAYER_FORWARDING_32x;
-  else if (strTest.Equals("player.canrecord")) ret = PLAYER_CAN_RECORD;
-  else if (strTest.Equals("player.recording")) ret = PLAYER_RECORDING;
-  else if (strTest.Equals("player.displayafterseek")) ret = PLAYER_DISPLAY_AFTER_SEEK;
-  else if (strTest.Equals("player.caching")) ret = PLAYER_CACHING;
-  else if (strTest.Equals("player.seekbar")) ret = PLAYER_SEEKBAR;
-  else if (strTest.Equals("player.seektime")) ret = PLAYER_SEEKTIME;
-  else if (strTest.Equals("player.progress")) ret = PLAYER_PROGRESS;
-  else if (strTest.Equals("player.seeking")) ret = PLAYER_SEEKING;
-  else if (strTest.Equals("player.showtime")) ret = PLAYER_SHOWTIME;
-  else if (strTest.Equals("player.showcodec")) ret = PLAYER_SHOWCODEC;
-  else if (strTest.Equals("player.showinfo")) ret = PLAYER_SHOWINFO;
-  else if (strTest.Equals("player.time")) ret = PLAYER_TIME;
-  else if (strTest.Equals("player.timeremaining")) ret = PLAYER_TIME_REMAINING;
-  else if (strTest.Equals("player.duration")) ret = PLAYER_DURATION;
-  else if (strTest.Equals("player.volume")) ret = PLAYER_VOLUME;
-  else if (strTest.Equals("player.muted")) ret = PLAYER_MUTED;
-  else if (strTest.Equals("weather.conditions")) ret = WEATHER_CONDITIONS;
-  else if (strTest.Equals("weather.temperature")) ret = WEATHER_TEMPERATURE;
-  else if (strTest.Equals("weather.location")) ret = WEATHER_LOCATION;
-  else if (strTest.Equals("system.date")) ret = SYSTEM_DATE;
-  else if (strTest.Equals("system.time")) ret = SYSTEM_TIME;
-  else if (strTest.Equals("system.cputemperature")) ret = SYSTEM_CPU_TEMPERATURE;
-  else if (strTest.Equals("system.gputemperature")) ret = SYSTEM_GPU_TEMPERATURE;
-  else if (strTest.Equals("system.fanspeed")) ret = SYSTEM_FAN_SPEED;
-  else if (strTest.Equals("system.freespace(c)")) ret = SYSTEM_FREE_SPACE_C;
-  else if (strTest.Equals("system.freespace(e)")) ret = SYSTEM_FREE_SPACE_E;
-  else if (strTest.Equals("system.freespace(f)")) ret = SYSTEM_FREE_SPACE_F;
-  else if (strTest.Equals("system.freespace(g)")) ret = SYSTEM_FREE_SPACE_G;
-  else if (strTest.Equals("system.buildversion")) ret = SYSTEM_BUILD_VERSION;
-  else if (strTest.Equals("system.builddate")) ret = SYSTEM_BUILD_DATE;
-  else if (strTest.Equals("system.hasnetwork")) ret = SYSTEM_ETHERNET_LINK_ACTIVE;
-  else if (strTest.Equals("system.fps")) ret = SYSTEM_FPS;
-  else if (strTest.Equals("system.kaiconnected")) ret = SYSTEM_KAI_CONNECTED;
-  else if (strTest.Equals("system.hasmediadvd")) ret = SYSTEM_MEDIA_DVD;
-  else if (strTest.Equals("system.autodetection")) ret = SYSTEM_AUTODETECTION;
-  else if (strTest.Equals("system.freememory")) ret = SYSTEM_FREE_MEMORY;
-  else if (strTest.Equals("system.screenmode")) ret = SYSTEM_SCREEN_MODE;
-  else if (strTest.Equals("system.screenwidth")) ret = SYSTEM_SCREEN_WIDTH;
-  else if (strTest.Equals("system.screenheight")) ret = SYSTEM_SCREEN_HEIGHT;
-  else if (strTest.Equals("system.currentwindow")) ret = SYSTEM_CURRENT_WINDOW;
-  else if (strTest.Equals("system.currentcontrol")) ret = SYSTEM_CURRENT_CONTROL;
-  else if (strTest.Equals("lcd.playicon")) ret = LCD_PLAY_ICON;
-  else if (strTest.Equals("lcd.progressbar")) ret = LCD_PROGRESS_BAR;
-  else if (strTest.Equals("network.ipaddress")) ret = NETWORK_IP_ADDRESS;
-  else if (strTest.Equals("musicplayer.title")) ret = MUSICPLAYER_TITLE;
-  else if (strTest.Equals("musicplayer.album")) ret = MUSICPLAYER_ALBUM;
-  else if (strTest.Equals("musicplayer.artist")) ret = MUSICPLAYER_ARTIST;
-  else if (strTest.Equals("musicplayer.year")) ret = MUSICPLAYER_YEAR;
-  else if (strTest.Equals("musicplayer.genre")) ret = MUSICPLAYER_GENRE;
-  else if (strTest.Equals("musicplayer.time")) ret = MUSICPLAYER_TIME;
-  else if (strTest.Equals("musicplayer.timeremaining")) ret = MUSICPLAYER_TIME_REMAINING;
-  else if (strTest.Equals("musicplayer.timespeed")) ret = MUSICPLAYER_TIME_SPEED;
-  else if (strTest.Equals("musicplayer.tracknumber")) ret = MUSICPLAYER_TRACK_NUMBER;
-  else if (strTest.Equals("musicplayer.duration")) ret = MUSICPLAYER_DURATION;
-  else if (strTest.Equals("musicplayer.cover")) ret = MUSICPLAYER_COVER;
-  else if (strTest.Equals("musicplayer.bitrate")) ret = MUSICPLAYER_BITRATE;
-  else if (strTest.Equals("musicplayer.playlistlength")) ret = MUSICPLAYER_PLAYLISTLEN;
-  else if (strTest.Equals("musicplayer.playlistposition")) ret = MUSICPLAYER_PLAYLISTPOS;
-  else if (strTest.Equals("musicplayer.channels")) ret = MUSICPLAYER_CHANNELS;
-  else if (strTest.Equals("musicplayer.bitspersample")) ret = MUSICPLAYER_BITSPERSAMPLE;
-  else if (strTest.Equals("musicplayer.samplerate")) ret = MUSICPLAYER_SAMPLERATE;
-  else if (strTest.Equals("musicplayer.codec")) ret = MUSICPLAYER_CODEC;
-  else if (strTest.Equals("videoplayer.title")) ret = VIDEOPLAYER_TITLE;
-  else if (strTest.Equals("videoplayer.genre")) ret = VIDEOPLAYER_GENRE;
-  else if (strTest.Equals("videoplayer.director")) ret = VIDEOPLAYER_DIRECTOR;
-  else if (strTest.Equals("videoplayer.year")) ret = VIDEOPLAYER_YEAR;
-  else if (strTest.Equals("videoplayer.time")) ret = VIDEOPLAYER_TIME;
-  else if (strTest.Equals("videoplayer.timeremaining")) ret = VIDEOPLAYER_TIME_REMAINING;
-  else if (strTest.Equals("videoplayer.timespeed")) ret = VIDEOPLAYER_TIME_SPEED;
-  else if (strTest.Equals("videoplayer.duration")) ret = VIDEOPLAYER_DURATION;
-  else if (strTest.Equals("videoplayer.cover")) ret = VIDEOPLAYER_COVER;
-  else if (strTest.Equals("videoplayer.usingoverlays")) ret = VIDEOPLAYER_USING_OVERLAYS;
-  else if (strTest.Equals("videoplayer.isfullscreen")) ret = VIDEOPLAYER_ISFULLSCREEN;
-  else if (strTest.Equals("videoplayer.hasmenu")) ret = VIDEOPLAYER_HASMENU;
-  else if (strTest.Equals("audioscrobbler.enabled")) ret = AUDIOSCROBBLER_ENABLED;
-  else if (strTest.Equals("audioscrobbler.connectstate")) ret = AUDIOSCROBBLER_CONN_STATE;
-  else if (strTest.Equals("audioscrobbler.submitinterval")) ret = AUDIOSCROBBLER_SUBMIT_INT;
-  else if (strTest.Equals("audioscrobbler.filescached")) ret = AUDIOSCROBBLER_FILES_CACHED;
-  else if (strTest.Equals("audioscrobbler.submitstate")) ret = AUDIOSCROBBLER_SUBMIT_STATE;
-  else if (strTest.Equals("listitem.thumb")) ret = LISTITEM_THUMB;
-  else if (strTest.Equals("listitem.label")) ret = LISTITEM_LABEL;
-  else if (strTest.Equals("listitem.title")) ret = LISTITEM_TITLE;
-  else if (strTest.Equals("listitem.tracknumber")) ret = LISTITEM_TRACKNUMBER;
-  else if (strTest.Equals("listitem.artist")) ret = LISTITEM_ARTIST;
-  else if (strTest.Equals("listitem.album")) ret = LISTITEM_ALBUM;
-  else if (strTest.Equals("listitem.year")) ret = LISTITEM_YEAR;
-  else if (strTest.Equals("listitem.genre")) ret = LISTITEM_GENRE;
-  else if (strTest.Equals("visualisation.locked")) ret = VISUALISATION_LOCKED;
-  else if (strTest.Equals("visualisation.preset")) ret = VISUALISATION_PRESET;
-  else if (strTest.Equals("visualisation.name")) ret = VISUALISATION_NAME;
-  else if (strTest.Equals("visualisation.enabled")) ret = VISUALISATION_ENABLED;
-  else if (strTest.Left(16).Equals("skin.hassetting("))
+  if (strCategory.Equals("player"))
   {
-    CStdString settingName;
-    settingName.Format("%s.%s", g_guiSettings.GetString("LookAndFeel.Skin").c_str(), strTest.Mid(16, strTest.GetLength() - 17).c_str());
-    ret = SKIN_HAS_SETTING_START + ConditionalStringParameter(settingName);
+    if (strTest.Equals("player.hasmedia")) ret = PLAYER_HAS_MEDIA;
+    else if (strTest.Equals("player.hasaudio")) ret = PLAYER_HAS_AUDIO;
+    else if (strTest.Equals("player.hasvideo")) ret = PLAYER_HAS_VIDEO;
+    else if (strTest.Equals("player.playing")) ret = PLAYER_PLAYING;
+    else if (strTest.Equals("player.paused")) ret = PLAYER_PAUSED;
+    else if (strTest.Equals("player.rewinding")) ret = PLAYER_REWINDING;
+    else if (strTest.Equals("player.forwarding")) ret = PLAYER_FORWARDING;
+    else if (strTest.Equals("player.rewinding2x")) ret = PLAYER_REWINDING_2x;
+    else if (strTest.Equals("player.rewinding4x")) ret = PLAYER_REWINDING_4x;
+    else if (strTest.Equals("player.rewinding8x")) ret = PLAYER_REWINDING_8x;
+    else if (strTest.Equals("player.rewinding16x")) ret = PLAYER_REWINDING_16x;
+    else if (strTest.Equals("player.rewinding32x")) ret = PLAYER_REWINDING_32x;
+    else if (strTest.Equals("player.forwarding2x")) ret = PLAYER_FORWARDING_2x;
+    else if (strTest.Equals("player.forwarding4x")) ret = PLAYER_FORWARDING_4x;
+    else if (strTest.Equals("player.forwarding8x")) ret = PLAYER_FORWARDING_8x;
+    else if (strTest.Equals("player.forwarding16x")) ret = PLAYER_FORWARDING_16x;
+    else if (strTest.Equals("player.forwarding32x")) ret = PLAYER_FORWARDING_32x;
+    else if (strTest.Equals("player.canrecord")) ret = PLAYER_CAN_RECORD;
+    else if (strTest.Equals("player.recording")) ret = PLAYER_RECORDING;
+    else if (strTest.Equals("player.displayafterseek")) ret = PLAYER_DISPLAY_AFTER_SEEK;
+    else if (strTest.Equals("player.caching")) ret = PLAYER_CACHING;
+    else if (strTest.Equals("player.seekbar")) ret = PLAYER_SEEKBAR;
+    else if (strTest.Equals("player.seektime")) ret = PLAYER_SEEKTIME;
+    else if (strTest.Equals("player.progress")) ret = PLAYER_PROGRESS;
+    else if (strTest.Equals("player.seeking")) ret = PLAYER_SEEKING;
+    else if (strTest.Equals("player.showtime")) ret = PLAYER_SHOWTIME;
+    else if (strTest.Equals("player.showcodec")) ret = PLAYER_SHOWCODEC;
+    else if (strTest.Equals("player.showinfo")) ret = PLAYER_SHOWINFO;
+    else if (strTest.Equals("player.time")) ret = PLAYER_TIME;
+    else if (strTest.Equals("player.timeremaining")) ret = PLAYER_TIME_REMAINING;
+    else if (strTest.Equals("player.duration")) ret = PLAYER_DURATION;
+    else if (strTest.Equals("player.volume")) ret = PLAYER_VOLUME;
+    else if (strTest.Equals("player.muted")) ret = PLAYER_MUTED;
   }
-  else if (strTest.Left(14).Equals("skin.hastheme("))
-    ret = SKIN_HAS_THEME_START + ConditionalStringParameter(strTest.Mid(14, strTest.GetLength() -  15));
+  else if (strCategory.Equals("weather"))
+  {
+    if (strTest.Equals("weather.conditions")) ret = WEATHER_CONDITIONS;
+    else if (strTest.Equals("weather.temperature")) ret = WEATHER_TEMPERATURE;
+    else if (strTest.Equals("weather.location")) ret = WEATHER_LOCATION;
+  }
+  else if (strCategory.Equals("system"))
+  {
+    if (strTest.Equals("system.date")) ret = SYSTEM_DATE;
+    else if (strTest.Equals("system.time")) ret = SYSTEM_TIME;
+    else if (strTest.Equals("system.cputemperature")) ret = SYSTEM_CPU_TEMPERATURE;
+    else if (strTest.Equals("system.gputemperature")) ret = SYSTEM_GPU_TEMPERATURE;
+    else if (strTest.Equals("system.fanspeed")) ret = SYSTEM_FAN_SPEED;
+    else if (strTest.Equals("system.freespace(c)")) ret = SYSTEM_FREE_SPACE_C;
+    else if (strTest.Equals("system.freespace(e)")) ret = SYSTEM_FREE_SPACE_E;
+    else if (strTest.Equals("system.freespace(f)")) ret = SYSTEM_FREE_SPACE_F;
+    else if (strTest.Equals("system.freespace(g)")) ret = SYSTEM_FREE_SPACE_G;
+    else if (strTest.Equals("system.buildversion")) ret = SYSTEM_BUILD_VERSION;
+    else if (strTest.Equals("system.builddate")) ret = SYSTEM_BUILD_DATE;
+    else if (strTest.Equals("system.hasnetwork")) ret = SYSTEM_ETHERNET_LINK_ACTIVE;
+    else if (strTest.Equals("system.fps")) ret = SYSTEM_FPS;
+    else if (strTest.Equals("system.kaiconnected")) ret = SYSTEM_KAI_CONNECTED;
+    else if (strTest.Equals("system.hasmediadvd")) ret = SYSTEM_MEDIA_DVD;
+    else if (strTest.Equals("system.autodetection")) ret = SYSTEM_AUTODETECTION;
+    else if (strTest.Equals("system.freememory")) ret = SYSTEM_FREE_MEMORY;
+    else if (strTest.Equals("system.screenmode")) ret = SYSTEM_SCREEN_MODE;
+    else if (strTest.Equals("system.screenwidth")) ret = SYSTEM_SCREEN_WIDTH;
+    else if (strTest.Equals("system.screenheight")) ret = SYSTEM_SCREEN_HEIGHT;
+    else if (strTest.Equals("system.currentwindow")) ret = SYSTEM_CURRENT_WINDOW;
+    else if (strTest.Equals("system.currentcontrol")) ret = SYSTEM_CURRENT_CONTROL;
+    else if (strTest.Left(16).Equals("system.idletime("))
+    {
+      int time = atoi((strTest.Mid(16, strTest.GetLength() - 17).c_str()));
+      if (time > SYSTEM_IDLE_TIME_FINISH - SYSTEM_IDLE_TIME_START)
+        time = SYSTEM_IDLE_TIME_FINISH - SYSTEM_IDLE_TIME_START;
+      if (time > 0)
+        ret = SYSTEM_IDLE_TIME_START + time;
+    }
+    else if (strTest.Left(16).Equals("system.hasalarm("))
+      ret = SYSTEM_NO_SUCH_ALARM+g_alarmClock.hasAlarm(strTest.Mid(16,strTest.size()-17));
+  }
+  else if (strCategory.Equals("lcd"))
+  {
+    if (strTest.Equals("lcd.playicon")) ret = LCD_PLAY_ICON;
+    else if (strTest.Equals("lcd.progressbar")) ret = LCD_PROGRESS_BAR;
+  }
+  else if (strCategory.Equals("network"))
+  {
+    if (strTest.Equals("network.ipaddress")) ret = NETWORK_IP_ADDRESS;
+  }
+  else if (strCategory.Equals("musicplayer"))
+  {
+    if (strTest.Equals("musicplayer.title")) ret = MUSICPLAYER_TITLE;
+    else if (strTest.Equals("musicplayer.album")) ret = MUSICPLAYER_ALBUM;
+    else if (strTest.Equals("musicplayer.artist")) ret = MUSICPLAYER_ARTIST;
+    else if (strTest.Equals("musicplayer.year")) ret = MUSICPLAYER_YEAR;
+    else if (strTest.Equals("musicplayer.genre")) ret = MUSICPLAYER_GENRE;
+    else if (strTest.Equals("musicplayer.time")) ret = MUSICPLAYER_TIME;
+    else if (strTest.Equals("musicplayer.timeremaining")) ret = MUSICPLAYER_TIME_REMAINING;
+    else if (strTest.Equals("musicplayer.timespeed")) ret = MUSICPLAYER_TIME_SPEED;
+    else if (strTest.Equals("musicplayer.tracknumber")) ret = MUSICPLAYER_TRACK_NUMBER;
+    else if (strTest.Equals("musicplayer.duration")) ret = MUSICPLAYER_DURATION;
+    else if (strTest.Equals("musicplayer.cover")) ret = MUSICPLAYER_COVER;
+    else if (strTest.Equals("musicplayer.bitrate")) ret = MUSICPLAYER_BITRATE;
+    else if (strTest.Equals("musicplayer.playlistlength")) ret = MUSICPLAYER_PLAYLISTLEN;
+    else if (strTest.Equals("musicplayer.playlistposition")) ret = MUSICPLAYER_PLAYLISTPOS;
+    else if (strTest.Equals("musicplayer.channels")) ret = MUSICPLAYER_CHANNELS;
+    else if (strTest.Equals("musicplayer.bitspersample")) ret = MUSICPLAYER_BITSPERSAMPLE;
+    else if (strTest.Equals("musicplayer.samplerate")) ret = MUSICPLAYER_SAMPLERATE;
+    else if (strTest.Equals("musicplayer.codec")) ret = MUSICPLAYER_CODEC;
+  }
+  else if (strCategory.Equals("videoplayer"))
+  {
+    if (strTest.Equals("videoplayer.title")) ret = VIDEOPLAYER_TITLE;
+    else if (strTest.Equals("videoplayer.genre")) ret = VIDEOPLAYER_GENRE;
+    else if (strTest.Equals("videoplayer.director")) ret = VIDEOPLAYER_DIRECTOR;
+    else if (strTest.Equals("videoplayer.year")) ret = VIDEOPLAYER_YEAR;
+    else if (strTest.Equals("videoplayer.time")) ret = VIDEOPLAYER_TIME;
+    else if (strTest.Equals("videoplayer.timeremaining")) ret = VIDEOPLAYER_TIME_REMAINING;
+    else if (strTest.Equals("videoplayer.timespeed")) ret = VIDEOPLAYER_TIME_SPEED;
+    else if (strTest.Equals("videoplayer.duration")) ret = VIDEOPLAYER_DURATION;
+    else if (strTest.Equals("videoplayer.cover")) ret = VIDEOPLAYER_COVER;
+    else if (strTest.Equals("videoplayer.usingoverlays")) ret = VIDEOPLAYER_USING_OVERLAYS;
+    else if (strTest.Equals("videoplayer.isfullscreen")) ret = VIDEOPLAYER_ISFULLSCREEN;
+    else if (strTest.Equals("videoplayer.hasmenu")) ret = VIDEOPLAYER_HASMENU;
+  }
+  else if (strCategory.Equals("audioscrobbler"))
+  {
+    if (strTest.Equals("audioscrobbler.enabled")) ret = AUDIOSCROBBLER_ENABLED;
+    else if (strTest.Equals("audioscrobbler.connectstate")) ret = AUDIOSCROBBLER_CONN_STATE;
+    else if (strTest.Equals("audioscrobbler.submitinterval")) ret = AUDIOSCROBBLER_SUBMIT_INT;
+    else if (strTest.Equals("audioscrobbler.filescached")) ret = AUDIOSCROBBLER_FILES_CACHED;
+    else if (strTest.Equals("audioscrobbler.submitstate")) ret = AUDIOSCROBBLER_SUBMIT_STATE;
+  }
+  else if (strCategory.Equals("listitem"))
+  {
+    if (strTest.Equals("listitem.thumb")) ret = LISTITEM_THUMB;
+    else if (strTest.Equals("listitem.label")) ret = LISTITEM_LABEL;
+    else if (strTest.Equals("listitem.title")) ret = LISTITEM_TITLE;
+    else if (strTest.Equals("listitem.tracknumber")) ret = LISTITEM_TRACKNUMBER;
+    else if (strTest.Equals("listitem.artist")) ret = LISTITEM_ARTIST;
+    else if (strTest.Equals("listitem.album")) ret = LISTITEM_ALBUM;
+    else if (strTest.Equals("listitem.year")) ret = LISTITEM_YEAR;
+    else if (strTest.Equals("listitem.genre")) ret = LISTITEM_GENRE;
+  }
+  else if (strCategory.Equals("visualisation"))
+  {
+    if (strTest.Equals("visualisation.locked")) ret = VISUALISATION_LOCKED;
+    else if (strTest.Equals("visualisation.preset")) ret = VISUALISATION_PRESET;
+    else if (strTest.Equals("visualisation.name")) ret = VISUALISATION_NAME;
+    else if (strTest.Equals("visualisation.enabled")) ret = VISUALISATION_ENABLED;
+  }
+  else if (strCategory.Equals("skin"))
+  {
+    if (strTest.Left(16).Equals("skin.hassetting("))
+    {
+      CStdString settingName;
+      settingName.Format("%s.%s", g_guiSettings.GetString("LookAndFeel.Skin").c_str(), strTest.Mid(16, strTest.GetLength() - 17).c_str());
+      ret = SKIN_HAS_SETTING_START + ConditionalStringParameter(settingName);
+    }
+    else if (strTest.Left(14).Equals("skin.hastheme("))
+      ret = SKIN_HAS_THEME_START + ConditionalStringParameter(strTest.Mid(14, strTest.GetLength() -  15));
+  }
   else if (strTest.Left(16).Equals("window.isactive("))
   {
     int winID = g_buttonTranslator.TranslateWindowString(strTest.Mid(16, strTest.GetLength() - 17).c_str());
@@ -378,16 +422,6 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     if (controlID)
       ret = controlID + BUTTON_SCROLLER_HAS_ICON_START;
   }
-  else if (strTest.Left(16).Equals("system.idletime("))
-  {
-    int time = atoi((strTest.Mid(16, strTest.GetLength() - 17).c_str()));
-    if (time > SYSTEM_IDLE_TIME_FINISH - SYSTEM_IDLE_TIME_START)
-      time = SYSTEM_IDLE_TIME_FINISH - SYSTEM_IDLE_TIME_START;
-    if (time > 0)
-      ret = SYSTEM_IDLE_TIME_START + time;
-  }
-  else if (strTest.Left(16).Equals("system.hasalarm("))
-    ret = SYSTEM_NO_SUCH_ALARM+g_alarmClock.hasAlarm(strTest.Mid(16,strTest.size()-17));
 
   return bNegate ? -ret : ret;
 }
