@@ -178,6 +178,7 @@ bool CGUIControlFactory::GetAnimations(const TiXmlNode *control, vector<CAnimati
   { // versions earlier than 1.90 used animations only on the visible condition
     TiXmlElement *node = control->FirstChildElement("visible");
     if (!node) return false;
+    animations.clear();
     CVisibleEffect effect;
     effect.Create(node);
     // translate to animation effects
@@ -214,6 +215,8 @@ bool CGUIControlFactory::GetAnimations(const TiXmlNode *control, vector<CAnimati
   {
     TiXmlElement* node = control->FirstChildElement("animation");
     bool ret = false;
+    if (node)
+      animations.clear();
     while (node)
     {
       ret = true;
@@ -361,6 +364,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     dwHeight = pReference->GetHeight();
     bPulse = pReference->GetPulseOnSelect();
     iVisibleCondition = pReference->GetVisibleCondition();
+    animations = pReference->GetAnimations();
     if (strType == "label")
     {
       strLabel = ((CGUILabelControl*)pReference)->GetLabel();
