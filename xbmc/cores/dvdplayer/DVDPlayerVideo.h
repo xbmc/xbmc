@@ -10,7 +10,6 @@
 #include "../VideoRenderers/RenderManager.h"
 
 enum CodecID;
-class CDVDDemuxSPU;
 class CDemuxStreamVideo;
 
 #define VIDEO_PICTURE_QUEUE_SIZE 1
@@ -18,7 +17,7 @@ class CDemuxStreamVideo;
 class CDVDPlayerVideo : public CThread
 {
 public:
-  CDVDPlayerVideo(CDVDDemuxSPU* spu, CDVDClock* pClock, CDVDOverlayContainer* pOverlayContainer);
+  CDVDPlayerVideo(CDVDClock* pClock, CDVDOverlayContainer* pOverlayContainer);
   virtual ~CDVDPlayerVideo();
 
   bool OpenStream(CDemuxStreamVideo* pDemuxStreamVideo);
@@ -71,6 +70,7 @@ protected:
   };
 
   EOUTPUTSTATUS OutputPicture(DVDVideoPicture* pPicture, __int64 pts);
+  void ProcessOverlays(DVDVideoPicture* pSource, YV12Image* pDest, __int64 pts);
 
   __int64 m_iCurrentPts; // last pts displayed
   __int64 m_iVideoDelay; // not really needed to be an __int64  
@@ -90,6 +90,8 @@ protected:
   // classes
   CDVDDemuxSPU* m_pDVDSpu;
   CDVDVideoCodec* m_pVideoCodec;
+  
+  DVDVideoPicture* m_pTempOverlayPicture;
   
   CRITICAL_SECTION m_critCodecSection;
 

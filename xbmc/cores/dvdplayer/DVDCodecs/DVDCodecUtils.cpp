@@ -10,22 +10,34 @@ void fast_memcpy(void* d, const void* s, unsigned n);
 DVDVideoPicture* CDVDCodecUtils::AllocatePicture(int iWidth, int iHeight)
 {
   DVDVideoPicture* pPicture = new DVDVideoPicture;
-  pPicture->iWidth = iWidth;
-  pPicture->iHeight = iHeight;
+  if (pPicture)
+  {
+    pPicture->iWidth = iWidth;
+    pPicture->iHeight = iHeight;
 
-  int w = iWidth / 2;
-  int h = iHeight / 2;
-  int size = w * h;
-  int totalsize = (iWidth * iHeight) + size * 2;
-  pPicture->data[0] = new BYTE[totalsize];
-  pPicture->data[1] = pPicture->data[0] + (iWidth * iHeight);
-  pPicture->data[2] = pPicture->data[1] + size;
-  pPicture->data[3] = NULL;
-  pPicture->iLineSize[0] = iWidth;
-  pPicture->iLineSize[1] = w;
-  pPicture->iLineSize[2] = w;
-  pPicture->iLineSize[3] = 0;
-
+    int w = iWidth / 2;
+    int h = iHeight / 2;
+    int size = w * h;
+    int totalsize = (iWidth * iHeight) + size * 2;
+    BYTE* data = new BYTE[totalsize];
+    if (data)
+    {
+      pPicture->data[0] = data;
+      pPicture->data[1] = pPicture->data[0] + (iWidth * iHeight);
+      pPicture->data[2] = pPicture->data[1] + size;
+      pPicture->data[3] = NULL;
+      pPicture->iLineSize[0] = iWidth;
+      pPicture->iLineSize[1] = w;
+      pPicture->iLineSize[2] = w;
+      pPicture->iLineSize[3] = 0;
+    }
+    else
+    {
+      CLog::Log(LOGFATAL, "CDVDCodecUtils::AllocatePicture, unable to allocate new video picture, out of memory.");
+      delete pPicture;
+      pPicture = NULL;
+    }
+  }
   return pPicture;
 }
 
