@@ -24,7 +24,7 @@
 CDVDPlayer::CDVDPlayer(IPlayerCallback& callback)
     : IPlayer(callback),
       CThread(),
-      m_dvdPlayerVideo(&m_dvdspus, &m_clock, &m_overlayContainer),
+      m_dvdPlayerVideo(&m_clock, &m_overlayContainer),
       m_dvdPlayerAudio(&m_clock),
       m_dvdPlayerSubtitle(&m_overlayContainer)
 {
