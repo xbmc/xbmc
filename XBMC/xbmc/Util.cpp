@@ -693,7 +693,6 @@ cleanup:
 		// adjust ourmemaddr pointer past loaderdata
 		ourmemaddr=(PVOID *)(((unsigned int) ourmemaddr) + sizeof(trainerloaderdata));
 
-/*  JM commented on request from XoReD
 
     // blacklist check 
 		if (trainer.IsXBTF())// && !check_blacklist(creation_key))
@@ -717,7 +716,6 @@ cleanup:
 			}
       memcpy(trainer.data(),trainerdata,XBTF_HEAP_SIZE);
 		}
-*/
 		// copy our trainer data into allocated mem
 		memcpy(ourmemaddr, trainer.data(), trainer.Size());
 
