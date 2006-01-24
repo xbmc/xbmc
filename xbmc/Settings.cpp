@@ -335,7 +335,7 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
   GetString(pRootElement, "albums", g_stSettings.m_szAlbumDirectory, "");
   GetString(pRootElement, "subtitles", g_stSettings.m_szAlternateSubtitleDirectory, "");
   GetString(pRootElement, "cachepath", g_stSettings.m_szCacheDirectory,"Z:\\");
-  GetString(pRootElement, "trainerpath", g_stSettings.m_szTrainerDirectory,"c:\\trainers");
+  GetString(pRootElement, "trainerpath", g_stSettings.m_szTrainerDirectory,"$HOME\\system\\trainers");
 
   GetString(pRootElement, "pictureextensions", g_stSettings.m_szMyPicturesExtensions, ".bmp|.jpg|.png|.gif|.pcx|.tif|.jpeg");
 
@@ -493,6 +493,10 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
   ConvertHomeVar(strDir);
   CUtil::AddSlashAtEnd(strDir);
   strcpy( g_stSettings.m_szCacheDirectory, strDir.c_str() );
+
+  strDir = g_stSettings.m_szTrainerDirectory;
+  ConvertHomeVar(strDir);
+  strcpy( g_stSettings.m_szTrainerDirectory, strDir.c_str() );
 
   while ( CUtil::HasSlashAtEnd(g_stSettings.m_szScreenshotsDirectory) )
   {

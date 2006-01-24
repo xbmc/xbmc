@@ -7,9 +7,21 @@
     <posy>116</posy>
   </coordinates>
   <visible>Window.IsActive(127)</visible>
-  <animation effect="fade" time="400">WindowOpen</animation>
-  <animation effect="fade" time="400">WindowClose</animation>
+  <animation effect="slide" time="400" start="-600,0" acceleration="1">WindowOpen</animation>
+  <animation effect="slide" time="400" end="-600,-0" acceleration="1">WindowClose</animation>
   <controls>
+
+
+    <control>
+      <description>background image</description>
+      <type>image</type>
+      <id>1</id>
+      <posx>-200</posx>
+      <posy>20</posy>
+      <width>205</width>
+      <height>320</height>
+      <texture>trainer.png</texture>
+    </control>
     <control>
       <description>background image</description>
       <type>image</type>
@@ -24,6 +36,16 @@
     <control>
       <description>background image</description>
       <type>image</type>
+      <id>1</id>
+      <posx>0</posx>
+      <posy>25</posy>
+      <width>420</width>
+      <height>336</height>
+      <texture>osd_menu_bg.png</texture>
+    </control>
+    <control>
+      <description>background image</description>
+      <type>image</type>
       <id>0</id>
       <posx>0</posx>
       <posy>-5</posy>
@@ -31,6 +53,7 @@
       <height>31</height>
       <texture>osd_settings_header.png</texture>
     </control>
+
 
     <control>
       <description>Settings Label</description>
@@ -143,7 +166,7 @@
       <description>Default Slider</description>
       <type>sliderex</type>
       <id>10</id>
-      <posx>530</posx>
+      <posx>1530</posx>
       <posy>150</posy>
       <height>31</height>
       <width>300</width>
