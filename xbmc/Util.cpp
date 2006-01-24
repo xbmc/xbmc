@@ -4278,6 +4278,8 @@ bool CUtil::MakeShortenPath(CStdString StrInput, CStdString& StrOutput, int iTex
 
 float CUtil::CurrentCpuUsage()
 {
+  return 0.0f;
+/*
   float fCpuUsage = -1.0;
   
   if (!m_hCurrentCpuUsage)
@@ -4294,4 +4296,5 @@ float CUtil::CurrentCpuUsage()
   }
   
   return fCpuUsage;
+*/
 }
