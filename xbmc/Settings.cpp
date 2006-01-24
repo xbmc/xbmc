@@ -1288,10 +1288,10 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile, const bool loadp
     {
       CStdString setting;
       setting.Format("karaoke%i", i);
-      GetFloat(pElement, setting + "energy", g_stSettings.m_karaokeVoiceMask[i].fSpecEnergyWeight, XVOICE_MASK_PARAM_DISABLED, XVOICE_MASK_PARAM_DISABLED, 1.0f);
-      GetFloat(pElement, setting + "pitch", g_stSettings.m_karaokeVoiceMask[i].fPitchScale, XVOICE_MASK_PARAM_DISABLED, XVOICE_MASK_PARAM_DISABLED, 1.0f);
-      GetFloat(pElement, setting + "whisper", g_stSettings.m_karaokeVoiceMask[i].fWhisperValue, XVOICE_MASK_PARAM_DISABLED, XVOICE_MASK_PARAM_DISABLED, 1.0f);
-      GetFloat(pElement, setting + "robotic", g_stSettings.m_karaokeVoiceMask[i].fRoboticValue, XVOICE_MASK_PARAM_DISABLED, XVOICE_MASK_PARAM_DISABLED, 1.0f);
+      GetFloat(pElement, setting + "energy", g_stSettings.m_karaokeVoiceMask[i].energy, XVOICE_MASK_PARAM_DISABLED, XVOICE_MASK_PARAM_DISABLED, 1.0f);
+      GetFloat(pElement, setting + "pitch", g_stSettings.m_karaokeVoiceMask[i].pitch, XVOICE_MASK_PARAM_DISABLED, XVOICE_MASK_PARAM_DISABLED, 1.0f);
+      GetFloat(pElement, setting + "whisper", g_stSettings.m_karaokeVoiceMask[i].whisper, XVOICE_MASK_PARAM_DISABLED, XVOICE_MASK_PARAM_DISABLED, 1.0f);
+      GetFloat(pElement, setting + "robotic", g_stSettings.m_karaokeVoiceMask[i].robotic, XVOICE_MASK_PARAM_DISABLED, XVOICE_MASK_PARAM_DISABLED, 1.0f);
     }
   }
 
@@ -1625,10 +1625,10 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile, const bool savep
   {
     CStdString setting;
     setting.Format("karaoke%i", i);
-    SetFloat(pNode, setting + "energy", g_stSettings.m_karaokeVoiceMask[i].fSpecEnergyWeight);
-    SetFloat(pNode, setting + "pitch", g_stSettings.m_karaokeVoiceMask[i].fPitchScale);
-    SetFloat(pNode, setting + "whisper", g_stSettings.m_karaokeVoiceMask[i].fWhisperValue);
-    SetFloat(pNode, setting + "robotic", g_stSettings.m_karaokeVoiceMask[i].fRoboticValue);
+    SetFloat(pNode, setting + "energy", g_stSettings.m_karaokeVoiceMask[i].energy);
+    SetFloat(pNode, setting + "pitch", g_stSettings.m_karaokeVoiceMask[i].pitch);
+    SetFloat(pNode, setting + "whisper", g_stSettings.m_karaokeVoiceMask[i].whisper);
+    SetFloat(pNode, setting + "robotic", g_stSettings.m_karaokeVoiceMask[i].robotic);
   }
   SaveCalibration(pRoot);
 

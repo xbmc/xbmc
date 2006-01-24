@@ -208,7 +208,10 @@ void CCdgChatter::LoadSettings()
     if (!m_pVoiceMask)
       m_pVoiceMask = new XVOICE_MASK;
     if (!m_pVoiceMask) return ;
-    memcpy(m_pVoiceMask, &g_stSettings.m_karaokeVoiceMask[m_dwPort], sizeof(XVOICE_MASK));
+    m_pVoiceMask->fSpecEnergyWeight = g_stSettings.m_karaokeVoiceMask[m_dwPort].energy;
+    m_pVoiceMask->fPitchScale = g_stSettings.m_karaokeVoiceMask[m_dwPort].pitch;
+    m_pVoiceMask->fWhisperValue = g_stSettings.m_karaokeVoiceMask[m_dwPort].whisper;
+    m_pVoiceMask->fRoboticValue = g_stSettings.m_karaokeVoiceMask[m_dwPort].robotic;
   }
   //Calculate other useful constants
   DWORD dwSamplingRate, dwVoicePacketTime;

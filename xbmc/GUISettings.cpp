@@ -499,8 +499,6 @@ CGUISettings::CGUISettings(void)
   AddSeparator(12, "Masterlock.Sep4");
   AddString(13,"Masterlock.SetMasterlock"   , 14070, "", BUTTON_CONTROL_STANDARD);
   
-  AddInt( -1, "UIOffset.X", 0, 0, -128, 1, 128, SPIN_CONTROL_INT);
-  AddInt( -1, "UIOffset.Y", 0, 0, -128, 1, 128, SPIN_CONTROL_INT);
 }
 
 CGUISettings::~CGUISettings(void)
