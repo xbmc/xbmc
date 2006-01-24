@@ -1044,7 +1044,6 @@ HRESULT CApplication::Create()
             g_settings.m_ResInfo[iResolution].iWidth,
             g_settings.m_ResInfo[iResolution].iHeight,
             g_settings.m_ResInfo[iResolution].strMode);
-  CLog::Log(LOGINFO, " GUI screen offset (%i,%i)", g_guiSettings.GetInt("UIOffset.X"), g_guiSettings.GetInt("UIOffset.Y"));
   m_gWindowManager.Initialize();
 
   g_actionManager.SetScriptActionCallback(&g_pythonParser);
