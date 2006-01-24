@@ -4,7 +4,6 @@
 #define PRE_SKIN_VERSION_2_0_COMPATIBILITY 1
 // REMOVE ME WHEN WE SWITCH TO SKIN VERSION 2.0
 
-#include <xvoice.h>
 #include "Profile.h"
 #include "settings/VideoSettings.h"
 #include "../xbmc/StringUtils.h"
@@ -205,6 +204,13 @@ public:
 };
 #endif
 
+struct VOICE_MASK {
+  float energy;
+  float pitch;
+  float robotic;
+  float whisper;
+};
+
 class CSettings
 {
 public:
@@ -290,21 +296,6 @@ public:
     char m_szCacheDirectory[256];
     char m_szPlaylistsDirectory[256];
     char m_szTrainerDirectory[256];
-
-    /*
-    bool m_bMyFilesSourceViewMethod;
-    bool m_bMyFilesSourceRootViewMethod;
-    bool m_bMyFilesDestViewMethod;
-    bool m_bMyFilesDestRootViewMethod;
-    int m_iMyFilesSourceSortMethod;
-    int m_iMyFilesSourceRootSortMethod;
-    bool m_bMyFilesSourceSortOrder;
-    bool m_bMyFilesSourceRootSortOrder;
-    int m_iMyFilesDestSortMethod;
-    int m_iMyFilesDestRootSortMethod;
-    bool m_bMyFilesDestSortOrder;
-    bool m_bMyFilesDestRootSortOrder;
-    */
 
     int m_iRepeatDelayIR;
     int m_iMoveDelayController;
@@ -479,7 +470,7 @@ public:
     int m_iSystemTimeTotalUp;    // Uptime in minutes!
     char szScreenSaverSlideShowPath[1024];
 
-    XVOICE_MASK m_karaokeVoiceMask[4];
+    VOICE_MASK m_karaokeVoiceMask[4];
   };
 
   CStdStringArray m_MyVideoStackRegExps;

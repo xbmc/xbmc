@@ -2512,10 +2512,10 @@ void CGUIWindowSettingsCategory::FillInVoiceMaskValues(DWORD dwPort, CSetting *p
   CStdString strCurMask = g_guiSettings.GetString(pSetting->GetSetting());
   if (strCurMask.CompareNoCase("None") == 0 || strCurMask.CompareNoCase("Custom") == 0 )
   {
-    g_stSettings.m_karaokeVoiceMask[dwPort].fSpecEnergyWeight = XVOICE_MASK_PARAM_DISABLED;
-    g_stSettings.m_karaokeVoiceMask[dwPort].fPitchScale = XVOICE_MASK_PARAM_DISABLED;
-    g_stSettings.m_karaokeVoiceMask[dwPort].fWhisperValue = XVOICE_MASK_PARAM_DISABLED;
-    g_stSettings.m_karaokeVoiceMask[dwPort].fRoboticValue = XVOICE_MASK_PARAM_DISABLED;
+    g_stSettings.m_karaokeVoiceMask[dwPort].energy = XVOICE_MASK_PARAM_DISABLED;
+    g_stSettings.m_karaokeVoiceMask[dwPort].pitch = XVOICE_MASK_PARAM_DISABLED;
+    g_stSettings.m_karaokeVoiceMask[dwPort].whisper = XVOICE_MASK_PARAM_DISABLED;
+    g_stSettings.m_karaokeVoiceMask[dwPort].robotic = XVOICE_MASK_PARAM_DISABLED;
     return;
   }
 
@@ -2544,7 +2544,7 @@ void CGUIWindowSettingsCategory::FillInVoiceMaskValues(DWORD dwPort, CSetting *p
               if (pChild->FirstChild())
               {
                 CStdString strName = pChild->FirstChild()->Value();
-                g_stSettings.m_karaokeVoiceMask[dwPort].fSpecEnergyWeight = (float) atof(strName.c_str());
+                g_stSettings.m_karaokeVoiceMask[dwPort].energy = (float) atof(strName.c_str());
               }
             }
             else if (strValue.CompareNoCase("fPitchScale") == 0)
@@ -2552,7 +2552,7 @@ void CGUIWindowSettingsCategory::FillInVoiceMaskValues(DWORD dwPort, CSetting *p
               if (pChild->FirstChild())
               {
                 CStdString strName = pChild->FirstChild()->Value();
-                g_stSettings.m_karaokeVoiceMask[dwPort].fPitchScale = (float) atof(strName.c_str());
+                g_stSettings.m_karaokeVoiceMask[dwPort].pitch = (float) atof(strName.c_str());
               }
             }
             else if (strValue.CompareNoCase("fWhisperValue") == 0)
@@ -2560,7 +2560,7 @@ void CGUIWindowSettingsCategory::FillInVoiceMaskValues(DWORD dwPort, CSetting *p
               if (pChild->FirstChild())
               {
                 CStdString strName = pChild->FirstChild()->Value();
-                g_stSettings.m_karaokeVoiceMask[dwPort].fWhisperValue = (float) atof(strName.c_str());
+                g_stSettings.m_karaokeVoiceMask[dwPort].whisper = (float) atof(strName.c_str());
               }
             }
             else if (strValue.CompareNoCase("fRoboticValue") == 0)
@@ -2568,7 +2568,7 @@ void CGUIWindowSettingsCategory::FillInVoiceMaskValues(DWORD dwPort, CSetting *p
               if (pChild->FirstChild())
               {
                 CStdString strName = pChild->FirstChild()->Value();
-                g_stSettings.m_karaokeVoiceMask[dwPort].fRoboticValue = (float) atof(strName.c_str());
+                g_stSettings.m_karaokeVoiceMask[dwPort].robotic = (float) atof(strName.c_str());
               }
             }
           }
