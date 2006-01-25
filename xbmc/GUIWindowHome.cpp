@@ -81,7 +81,10 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
       ON_POLL_BUTTON_CONDITION(CONTROL_BTN_XLINK_KAI, CGUIWindowHome, OnPollXLinkClient, 50);
     }
 #endif
+    if (m_saveLastControl)
+    {
       SET_CONTROL_FOCUS(iFocusControl, 0);
+    }
 #ifndef HOME_HANDLES_FADES
       SetControlVisibility();
 #endif
