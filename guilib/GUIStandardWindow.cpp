@@ -34,22 +34,20 @@ bool CGUIStandardWindow::OnMessage(CGUIMessage& message)
 
   case GUI_MSG_WINDOW_INIT:
     {
-      int iFocusControl = m_iLastControl;
-
       CGUIWindow::OnMessage(message);
 
-      if (iFocusControl > -1)
+      if (m_saveLastControl && m_iLastControl > -1)
       {
-        SET_CONTROL_FOCUS(iFocusControl, 0);
+        SET_CONTROL_FOCUS(m_iLastControl, 0);
       }
-
       return true;
     }
     break;
 
   case GUI_MSG_SETFOCUS:
     {
-      m_iLastControl = message.GetControlId();
+      if (m_saveLastControl)
+        m_iLastControl = message.GetControlId();
     }
     break;
 

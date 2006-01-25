@@ -644,22 +644,28 @@ void CGUIControl::UpdateStates(ANIMATION_TYPE type, ANIMATION_PROCESS currentPro
         m_bVisible = m_lastVisible;
     }
   }
+  else if (type == ANIM_TYPE_FOCUS)
+  {
+    // call the focus function if we have finished a focus animation
+    // (buttons can "click" on focus)
+    if (currentProcess == ANIM_PROCESS_NORMAL && currentState == ANIM_STATE_APPLIED)
+      OnFocus();
+  }
 //  if (visible != m_bVisible)
 //    CLog::DebugLog("UpdateControlState of control id %i - now %s (type=%d, process=%d, state=%d)", m_dwControlID, m_bVisible ? "visible" : "hidden", type, currentProcess, currentState);
 }
 
 void CGUIControl::Animate()
 {
-  DWORD currentTime = timeGetTime();
   for (unsigned int i = 0; i < m_animations.size(); i++)
   {
     CAnimation &anim = m_animations[i];
-    anim.Animate(currentTime, HasRendered());
+    anim.Animate(m_animTime, HasRendered());
     // Update the control states (such as visibility)
     UpdateStates(anim.type, anim.currentProcess, anim.currentState);
     // and render the animation effect
     g_graphicsContext.AddControlAnimation(anim.RenderAnimation());
-/*
+
     // debug stuff
     if (anim.currentProcess != ANIM_PROCESS_NONE)
     {
@@ -674,11 +680,10 @@ void CGUIControl::Animate()
           CLog::DebugLog("Animating control %d with a %s fade effect %s. Amount is %2.1f. Visible=%s", m_dwControlID, anim.type == ANIM_TYPE_VISIBLE ? "visible" : "hidden", anim.currentProcess == ANIM_PROCESS_NORMAL ? "normal" : "reverse", anim.amount, IsVisible() ? "true" : "false");
       }
     }
-  */  
   }
 #ifdef PRE_SKIN_VERSION_2_0_COMPATIBILITY
   // do the temporary fade effect as well
-  m_tempAnimation.Animate(currentTime, HasRendered());
+  m_tempAnimation.Animate(m_animTime, HasRendered());
   UpdateStates(m_tempAnimation.type, m_tempAnimation.currentProcess, m_tempAnimation.currentState);
   g_graphicsContext.AddControlAnimation(m_tempAnimation.RenderAnimation());
   CAnimation anim = m_tempAnimation;
