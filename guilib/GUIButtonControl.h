@@ -40,13 +40,15 @@ public:
   void SetText2(const CStdString &aLabel2);
   void SetText2(const wstring & aLabel2);
   void SetHyperLink(long dwWindowID);
-  void SetExecuteAction(const CStdString& strExecuteAction);
+  void SetClickAction(const CStdString& clickAction) { m_clickAction = clickAction; };
+  const CStdString &GetClickAction() const { return m_clickAction; };
+  void SetFocusAction(const CStdString& focusAction) { m_focusAction = focusAction; };
+  const CStdString &GetFocusAction() const { return m_focusAction; };
   const CStdString& GetTextureFocusName() const { return m_imgFocus.GetFileName(); };
   const CStdString& GetTextureNoFocusName() const { return m_imgNoFocus.GetFileName(); };
   const CLabelInfo& GetLabelInfo() const { return m_label; };
   const wstring GetLabel() const { return m_strLabel; };
   DWORD GetHyperLink() const { return m_lHyperLinkWindowID;};
-  const CStdString& GetExecuteAction() const { return m_strExecuteAction; };
   void SetTabButton(bool bIsTabButton = TRUE) { m_bTabButton = bIsTabButton; };
   void Flicker(bool bFlicker = TRUE);
   virtual void Update();
@@ -57,6 +59,8 @@ public:
   void RAMSetTextColor(DWORD dwTextColor);
   void SettingsCategorySetTextAlign(DWORD dwAlign);
 protected:
+  void OnClick();
+  void OnFocus();
 
   CGUIImage m_imgFocus;
   CGUIImage m_imgNoFocus;
@@ -69,7 +73,8 @@ protected:
   CLabelInfo m_label;
 
   long m_lHyperLinkWindowID;
-  CStdString m_strExecuteAction;
+  CStdString m_clickAction;
+  CStdString m_focusAction;
   bool m_bTabButton;
 };
 #endif

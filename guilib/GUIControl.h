@@ -63,6 +63,7 @@ public:
   virtual void OnDown();
   virtual void OnLeft();
   virtual void OnRight();
+  virtual void OnFocus() {};
 
   /// \brief Called when the mouse is over the control.  Default implementation selects the control.
   virtual void OnMouseOver();
@@ -168,6 +169,8 @@ public:
   void QueueAnimation(ANIMATION_TYPE anim);
   bool IsAnimating(ANIMATION_TYPE anim);
   CAnimation *GetAnimation(ANIMATION_TYPE type);
+  void SetAnimTime(DWORD time) { m_animTime = time; };
+
 protected:
   void Animate();
   void UpdateStates(ANIMATION_TYPE type, ANIMATION_PROCESS currentProcess, ANIMATION_STATE currentState);
@@ -205,6 +208,7 @@ protected:
   // animation effects
   vector<CAnimation> m_animations;
   CAnimation m_tempAnimation;   // We can remove this once we have got rid of the effects
+  DWORD m_animTime;
 };
 
 #endif
