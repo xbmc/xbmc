@@ -20,7 +20,6 @@ CGUIButtonControl::CGUIButtonControl(DWORD dwParentID, DWORD dwControlId, int iP
   m_strLabel2 = L"";
   m_label = labelInfo;
   m_lHyperLinkWindowID = WINDOW_INVALID;
-  m_strExecuteAction = "";
   ControlType = GUICONTROL_BUTTON;
 }
 
@@ -119,27 +118,7 @@ bool CGUIButtonControl::OnAction(const CAction &action)
 {
   if (action.wID == ACTION_SELECT_ITEM)
   {
-    // Save values, SEND_CLICK_MESSAGE may deactivate the window
-    long lHyperLinkWindowID = m_lHyperLinkWindowID;
-    CStdString strExecuteAction = m_strExecuteAction;
-    DWORD dwControlID = GetID();
-    DWORD dwParentID = GetParentID();
-
-    // button selected, send a message
-    SEND_CLICK_MESSAGE(dwControlID, dwParentID, 0);
-
-    if (strExecuteAction.length() > 0)
-    {
-      CGUIMessage message(GUI_MSG_EXECUTE, dwControlID, dwParentID);
-      message.SetStringParam(strExecuteAction);
-      g_graphicsContext.SendMessage(message);
-      return true;
-    }
-
-    if (lHyperLinkWindowID != WINDOW_INVALID)
-    {
-      m_gWindowManager.ActivateWindow(lHyperLinkWindowID);
-    }
+    OnClick();
     return true;
   }
   return CGUIControl::OnAction(action);
@@ -254,11 +233,6 @@ void CGUIButtonControl::SetHyperLink(long dwWindowID)
   m_lHyperLinkWindowID = dwWindowID;
 }
 
-void CGUIButtonControl::SetExecuteAction(const CStdString& strExecuteAction)
-{
-  m_strExecuteAction = strExecuteAction;
-}
-
 void CGUIButtonControl::OnMouseClick(DWORD dwButton)
 {
   if (dwButton == MOUSE_LEFT_BUTTON)
@@ -301,4 +275,39 @@ void CGUIButtonControl::RAMSetTextColor(DWORD dwTextColor)
 void CGUIButtonControl::SettingsCategorySetTextAlign(DWORD dwAlign)
 {
   m_label.align = dwAlign;
+}
+
+void CGUIButtonControl::OnClick()
+{
+  // Save values, SEND_CLICK_MESSAGE may deactivate the window
+  long lHyperLinkWindowID = m_lHyperLinkWindowID;
+  CStdString clickAction = m_clickAction;
+  DWORD dwControlID = GetID();
+  DWORD dwParentID = GetParentID();
+
+  // button selected, send a message
+  SEND_CLICK_MESSAGE(dwControlID, dwParentID, 0);
+
+  if (!clickAction.IsEmpty())
+  {
+    CGUIMessage message(GUI_MSG_EXECUTE, dwControlID, dwParentID);
+    message.SetStringParam(clickAction);
+    g_graphicsContext.SendMessage(message);
+    return;
+  }
+
+  if (lHyperLinkWindowID != WINDOW_INVALID)
+  {
+    m_gWindowManager.ActivateWindow(lHyperLinkWindowID);
+  }
+}
+
+void CGUIButtonControl::OnFocus()
+{
+  if (!m_focusAction.IsEmpty())
+  { // send as a thread message so that the render can finish
+    CGUIMessage message(GUI_MSG_EXECUTE, m_dwControlID, m_dwParentID);
+    message.SetStringParam(m_focusAction);
+    m_gWindowManager.SendThreadMessage(message);
+  }
 }

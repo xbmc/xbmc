@@ -216,9 +216,9 @@ void CGUIDialog::UpdateStates(ANIMATION_TYPE type, ANIMATION_PROCESS currentProc
   }
 }
 
-bool CGUIDialog::RenderAnimation()
+bool CGUIDialog::RenderAnimation(DWORD time)
 {
-  CGUIWindow::RenderAnimation();
+  CGUIWindow::RenderAnimation(time);
   // debug stuff
 /*  CAnimation anim = m_showAnimation;
   if (anim.currentProcess != ANIM_PROCESS_NONE)
