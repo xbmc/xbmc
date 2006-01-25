@@ -45,6 +45,7 @@ CGUIWindow::CGUIWindow(DWORD dwID, const CStdString &xmlFile)
   m_dwWindowId = dwID;
   m_xmlFile = xmlFile;
   m_dwIDRange = 1;
+  m_saveLastControl = false;
   m_dwDefaultFocusControlID = 0;
   m_bRelativeCoords = false;
   m_iPosX = m_iPosY = m_dwWidth = m_dwHeight = 0;
@@ -399,6 +400,7 @@ bool CGUIWindow::Load(TiXmlElement* pRootElement, RESOLUTION resToUse)
   // Resolve any includes that may be present
   g_SkinInfo.ResolveIncludes(pRootElement);
   // now load in the skin file
+  bool m_saveLastControl = true;
   m_dwDefaultFocusControlID = 0;
   m_bRelativeCoords = false;
   m_iPosX = m_iPosY = m_dwWidth = m_dwHeight = 0;
@@ -421,6 +423,9 @@ bool CGUIWindow::Load(TiXmlElement* pRootElement, RESOLUTION resToUse)
     }
     else if (strValue == "defaultcontrol" && pChild->FirstChild())
     {
+      const char *always = pChild->Attribute("always");
+      if (always && strcmpi(always, "true") == 0)
+        m_saveLastControl = false;
       m_dwDefaultFocusControlID = atoi(pChild->FirstChild()->Value());
     }
     else if (strValue == "visible" && pChild->FirstChild())
@@ -649,8 +654,9 @@ void CGUIWindow::Render()
   }
   g_graphicsContext.SetScalingResolution(m_coordsRes, posX, posY, m_needsScaling);
 
+  DWORD currentTime = timeGetTime();
   // render our window animation - returns false if it needs to stop rendering
-  if (!RenderAnimation())
+  if (!RenderAnimation(currentTime))
     return;
 
   for (int i = 0; i < (int)m_vecControls.size(); i++)
@@ -659,6 +665,7 @@ void CGUIWindow::Render()
     if (pControl)
     {
       g_graphicsContext.ResetControlAnimation();
+      pControl->SetAnimTime(currentTime);
       pControl->Render();
     }
   }
@@ -1272,16 +1279,15 @@ bool CGUIWindow::IsAnimating(ANIMATION_TYPE animType)
   return false;
 }
 
-bool CGUIWindow::RenderAnimation()
+bool CGUIWindow::RenderAnimation(DWORD time)
 {
   g_graphicsContext.ResetWindowAnimation();
-  DWORD currentTime = timeGetTime();
   // show animation
-  m_showAnimation.Animate(currentTime, true);
+  m_showAnimation.Animate(time, true);
   UpdateStates(m_showAnimation.type, m_showAnimation.currentProcess, m_showAnimation.currentState);
   g_graphicsContext.AddWindowAnimation(m_showAnimation.RenderAnimation());
   // close animation
-  m_closeAnimation.Animate(currentTime, true);
+  m_closeAnimation.Animate(time, true);
   UpdateStates(m_closeAnimation.type, m_closeAnimation.currentProcess, m_closeAnimation.currentState);
   g_graphicsContext.AddWindowAnimation(m_closeAnimation.RenderAnimation());
   return true;

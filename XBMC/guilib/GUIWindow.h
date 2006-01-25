@@ -125,7 +125,7 @@ protected:
   virtual void OnWindowLoaded();
   virtual void OnInitWindow();
   virtual void OnWindowCloseAnimation();
-  virtual bool RenderAnimation();
+  virtual bool RenderAnimation(DWORD time);
   virtual void UpdateStates(ANIMATION_TYPE type, ANIMATION_PROCESS currentProcess, ANIMATION_STATE currentState);
   bool HasAnimation(ANIMATION_TYPE animType);
 
@@ -177,6 +177,8 @@ protected:
   int m_renderOrder;      // for render order of dialogs
 
   vector<COrigin> m_origins;
+
+  bool m_saveLastControl;
 };
 
 #endif

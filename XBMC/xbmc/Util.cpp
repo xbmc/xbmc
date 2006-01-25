@@ -3136,6 +3136,7 @@ const BUILT_IN commands[] = {
   "Credits", "Run XBMCs Credits",
   "Reset", "Reset the xbox (warm reboot)",
   "ActivateWindow", "Activate the specified window",
+  "ReplaceWindow", "Replaces the current window with the new one",
   "TakeScreenshot", "Takes a Screenshot",
   "RunScript", "Run the specified script",
   "RunXBE", "Run the specified executeable",
@@ -3239,7 +3240,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   {
     g_applicationMessenger.Reset();
   }
-  else if (execute.Equals("activatewindow"))
+  else if (execute.Equals("activatewindow") || execute.Equals("replacewindow"))
   {
     // get the parameters
     CStdString strWindow;
@@ -3251,7 +3252,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     {
       // error condition missing path
       // XMBC.ActivateWindow(1,)
-      CLog::Log(LOGERROR, "ActivateWindow called with invalid parameter: %s", parameter.c_str());
+      CLog::Log(LOGERROR, "Activate/ReplaceWindow called with invalid parameter: %s", parameter.c_str());
       return -7;
     }
     else if (iPos < 0)
@@ -3300,11 +3301,14 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     {
       // disable the screensaver
       g_application.ResetScreenSaverWindow();
-      m_gWindowManager.ActivateWindow(iWindow, strPath);
+      if (execute.Equals("activatewindow"))
+        m_gWindowManager.ActivateWindow(iWindow, strPath);
+      else  // ReplaceWindow
+        m_gWindowManager.ChangeActiveWindow(iWindow, strPath);
     }
     else
     {
-      CLog::Log(LOGERROR, "ActivateWindow called with invalid destination window: %s", strWindow.c_str());
+      CLog::Log(LOGERROR, "Activate/ReplaceWindow called with invalid destination window: %s", strWindow.c_str());
       return false;
     }
   }
