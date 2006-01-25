@@ -31,7 +31,7 @@ public:
 
 protected:
   virtual void OnWindowCloseAnimation();
-  virtual bool RenderAnimation();
+  virtual bool RenderAnimation(DWORD time);
   virtual void UpdateStates(ANIMATION_TYPE type, ANIMATION_PROCESS currentProcess, ANIMATION_STATE currentState);
 
   DWORD m_dwParentWindowID;
