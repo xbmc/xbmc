@@ -47,24 +47,6 @@
       <font>font12</font>
     </control>
 
-    <!-- Dummy! remove after skin version bump -->
-    <control>
-      <description>Progressbar</description>
-      <type>progress</type>
-      <id>23</id>
-      <posx>506</posx>
-      <posy>83</posy>
-      <width>128</width>
-      <height>5</height>
-      <info>Player.Progress</info>
-      <texturebg>progress_back.png</texturebg>
-      <lefttexture>progress_left.png</lefttexture>
-      <midtexture>progress_mid.png</midtexture>
-      <righttexture>progress_right.png</righttexture>
-      <overlaytexture>-</overlaytexture>
-      <visible>!VideoPlayer.IsFullscreen</visible>
-    </control>
-
     <!-- buffering dialog -->
     <control>
       <description>buffering label</description>
