@@ -922,7 +922,7 @@ HRESULT CApplication::Create()
   }
   else
   {
-    CLog::Log(LOGNOTICE, "skinpath %s does not exist (or no keymap.xml), trying defaults", (strHomePath + "\\skin").c_str());
+    CLog::Log(LOGNOTICE, "skinpath %s does not exist (or no keymap.xml).  It could be that the <home> tag is wrong.  Trying default homepaths.", (strHomePath + "\\skin").c_str());
     // failed - lets try defaults:
     // E:\apps\xbmc
     // E:\xbmc
