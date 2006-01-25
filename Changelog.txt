@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 25-01-2001 changed: Multiple <visible> tags in the same control are ANDed together.
  - 25-01-2001 added: <onclick> (replaces <execute>) and <onfocus> actions to the button control.  The <onfocus> action is performed at the end of any Focus animation.
  - 25-01-2001 changed: Made the <id> optional for label/image/fadelabel controls.
  - 25-01-2001 added: ReplaceWindow(window, path) built in command.  The same as ActivateWindow, but it doesn't add to the window history (so back will take you to the previous window's previous window.)
