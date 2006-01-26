@@ -769,7 +769,6 @@ void CGUIWindowVideoFiles::GetIMDBDetails(CFileItem *pItem, CIMDBUrl &url)
     // get & save thumbnail
     CStdString strThumb = "";
     CStdString strImage = movieDetails.m_strPictureURL;
-    CLog::Log(LOGDEBUG,"THUMBNAIL URL: %s", strImage.c_str());
     if (strImage.size() > 0 && movieDetails.m_strSearchString.size() > 0)
     {
       CUtil::GetVideoThumbnail(movieDetails.m_strIMDBNumber, strThumb);
