@@ -20,7 +20,7 @@
 */
 
 #include "HTMLScraper.h"
-#include "RegExp.h"
+#include "../../xbmc/utils/RegExp.h"
 
 char *ConvertHTMLToAnsi(const char *szHTML)
 {
@@ -334,7 +334,8 @@ extern "C"
     ParseDetails(szXML, szHTML, "mpaa", "MPAA</a>:</b>([^<]*)<");
     ParseDetails(szXML, szHTML, "tagline", "Tagline:</b>([^<]*)<");
     ParseDetails(szXML, szHTML, "runtime", "Runtime:</b>([^<]*)<");
-    ParseDetails(szXML, szHTML, "thumb", "<img border=\"0\" alt=\"cover\" src=\"([^\"]*)\"");
+    // new regexp to find the imdb thumb
+    ParseDetails(szXML, szHTML, "thumb", "<a name=\"poster\"[^<]+><[^>]+src=\"([^\"]*)\"");
 
     // Credits
 		char *pCredits=strstr(szHTML,"Writing credits");
