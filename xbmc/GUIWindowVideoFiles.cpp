@@ -341,11 +341,11 @@ void CGUIWindowVideoFiles::OnInfo(int iItem)
     }
   }
 
-  //vector<CStdString> movies;
   CFileItem item(strFile, false);
-  CLog::Log(LOGDEBUG,"Adding file to video database [%s]", item.m_strPath.c_str());
   AddFileToDatabase(&item);
-  /*
+
+  /* uncommented stack code for consistency with OnRetrieveVideoInfo */
+  vector<CStdString> movies;
   if (pItem->IsStack())
   { // add the individual files as well at this point
     // TODO: This should be removed as soon as we no longer need the individual
@@ -357,7 +357,6 @@ void CGUIWindowVideoFiles::OnInfo(int iItem)
       AddFileToDatabase(&item);
     }
   }
-  */
 
   ShowIMDB(strMovie, strFile, strFolder, bFolder);
   m_viewControl.SetSelectedItem(iSelectedItem);
@@ -480,7 +479,9 @@ void CGUIWindowVideoFiles::OnRetrieveVideoInfo(CFileItemList& items)
               CLog::Log(LOGERROR,"Unable to cache nfo file: %s", strNfoFile.c_str());
           }
           CStdString strMovieName;
-          if (pItem->IsOnDVD() || pItem->IsDVDFile())
+
+          // this causes very bad matches for files on a disc!
+          if ( /* pItem->IsOnDVD() || */ pItem->IsDVDFile())
           {
             // find the name by back-drilling to the folder name
             CStdString strFolder;
@@ -505,10 +506,9 @@ void CGUIWindowVideoFiles::OnRetrieveVideoInfo(CFileItemList& items)
             m_dlgProgress->Progress();
           }
 
-
           CIMDB IMDB;
           IMDB_MOVIELIST movielist;
-          if (IMDB.FindMovie(strMovieName, movielist, m_dlgProgress) )
+          if (IMDB.FindMovie(strMovieName, movielist, m_dlgProgress))
           {
             int iMoviesFound = movielist.size();
             if (iMoviesFound > 0)
@@ -769,6 +769,7 @@ void CGUIWindowVideoFiles::GetIMDBDetails(CFileItem *pItem, CIMDBUrl &url)
     // get & save thumbnail
     CStdString strThumb = "";
     CStdString strImage = movieDetails.m_strPictureURL;
+    CLog::Log(LOGDEBUG,"THUMBNAIL URL: %s", strImage.c_str());
     if (strImage.size() > 0 && movieDetails.m_strSearchString.size() > 0)
     {
       CUtil::GetVideoThumbnail(movieDetails.m_strIMDBNumber, strThumb);
@@ -794,6 +795,7 @@ void CGUIWindowVideoFiles::GetIMDBDetails(CFileItem *pItem, CIMDBUrl &url)
       }
       catch (...)
       {
+        CLog::Log(LOGERROR,"Could not make imdb thumb from %s", strImage.c_str());
         ::DeleteFile(strThumb.c_str());
       }
       ::DeleteFile(strTemp.c_str());

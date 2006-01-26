@@ -424,6 +424,7 @@ void CIMDB::Process()
 
 bool CIMDB::FindMovie(const CStdString &strMovie, IMDB_MOVIELIST& movieList, CGUIDialogProgress *pProgress /* = NULL */)
 {
+  //CLog::Log(LOGDEBUG,"CIMDB::FindMovie(%s)", strMovie.c_str());
   m_strMovie = strMovie;
   if (pProgress)
   { // threaded version
@@ -455,6 +456,7 @@ bool CIMDB::FindMovie(const CStdString &strMovie, IMDB_MOVIELIST& movieList, CGU
 
 bool CIMDB::GetDetails(const CIMDBUrl &url, CIMDBMovie &movieDetails, CGUIDialogProgress *pProgress /* = NULL */)
 {
+  //CLog::Log(LOGDEBUG,"CIMDB::GetDetails(%s)", url.m_strURL.c_str());
   m_url = url;
   m_movieDetails = movieDetails;
   if (pProgress)
