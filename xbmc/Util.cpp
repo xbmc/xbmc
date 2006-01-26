@@ -2172,7 +2172,7 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
   {
     CStdString strParent;
     CUtil::GetParentPath(strLookInPaths[i],strParent);
-    if (CURL(strParent).GetHostName() == "" && !IsHD(strParent))
+    if (CURL(strParent).GetFileName() == "")
       strParent = "";
     for (int j=0; common_sub_dirs[j]; j++)
     {
