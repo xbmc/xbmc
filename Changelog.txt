@@ -5,13 +5,17 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
- - 25-01-2001 changed: Multiple <visible> tags in the same control are ANDed together.
- - 25-01-2001 added: <onclick> (replaces <execute>) and <onfocus> actions to the button control.  The <onfocus> action is performed at the end of any Focus animation.
- - 25-01-2001 changed: Made the <id> optional for label/image/fadelabel controls.
- - 25-01-2001 added: ReplaceWindow(window, path) built in command.  The same as ActivateWindow, but it doesn't add to the window history (so back will take you to the previous window's previous window.)
- - 25-01-2001 changed: Slightly improved timing for animations.
- - 25-01-2001 added: always attribute to <defaultcontrol> in home and custom windows.  If true, it will always return to the default control on window start.
- - 24-01-2001 fixed: forgot to add trainer path to xboxmediacenter.xml
+ - 25-01-2006 added: gui indication when trainers are disabled due to kai.
+ - 25-01-2006 fixed: better handling of broken trainers.
+ - 25-01-2006 changed: trainer enigine update to v2.2. thanks to team xored!
+ - 25-01-2006 fixed: xbtf support. thanks to team xored!
+ - 25-01-2006 changed: Multiple <visible> tags in the same control are ANDed together.
+ - 25-01-2006 added: <onclick> (replaces <execute>) and <onfocus> actions to the button control.  The <onfocus> action is performed at the end of any Focus animation.
+ - 25-01-2006 changed: Made the <id> optional for label/image/fadelabel controls.
+ - 25-01-2006 added: ReplaceWindow(window, path) built in command.  The same as ActivateWindow, but it doesn't add to the window history (so back will take you to the previous window's previous window.)
+ - 25-01-2006 changed: Slightly improved timing for animations.
+ - 25-01-2006 added: always attribute to <defaultcontrol> in home and custom windows.  If true, it will always return to the default control on window start.
+ - 24-01-2006 fixed: forgot to add trainer path to xboxmediacenter.xml
  - 23-01-2006 fixed: checks for skin labels aliases were reaching compiler limits (too much else if's)
  - 23-01-2006 fixed: <animation> tags in references.xml weren't being used.
  - 23-01-2006 fixed: updating menu overlays on dvdstills took 40 seconds, now instant again

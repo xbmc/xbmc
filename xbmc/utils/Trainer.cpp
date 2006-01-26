@@ -44,7 +44,13 @@ bool CTrainer::Load(const CStdString& strPath)
     m_bIsXBTF = false;
 
   m_iSize = (unsigned int)file.GetLength();
-  m_pData = new unsigned char[(unsigned int)file.GetLength()];
+  if (m_iSize < ETM_SELECTIONS_OFFSET)
+  {
+    CLog::Log(LOGINFO,"CTrainer::Load: Broken trainer %s",strPath.c_str());
+    return false;
+  }
+  m_pData = new unsigned char[(unsigned int)file.GetLength()+1];
+  m_pData[file.GetLength()] = '\0'; // to make sure strlen doesn't crash
   file.Read(m_pData,m_iSize);
   file.Close();
 
@@ -105,6 +111,12 @@ bool CTrainer::Load(const CStdString& strPath)
     m_pTrainerData = m_pData;
   }
   
+  if (iTextOffset > m_iSize)
+  {
+    CLog::Log(LOGINFO,"CTrainer::Load: Broken trainer %s",strPath.c_str());
+    return false;
+  }
+
   m_iNumOptions = iTextOffset-m_iOptions;
      
   char temp[85];
@@ -116,6 +128,11 @@ bool CTrainer::Load(const CStdString& strPath)
     if (!iOffset)
       break;
 
+    if (iOffset > m_iSize || iTextOffset+4*i > m_iSize)
+    {
+      CLog::Log(LOGINFO,"CTrainer::Load: Broken trainer %s",strPath.c_str());
+      return false;
+    }
     strcpy(temp,(char*)(m_pTrainerData+iOffset));
     m_vecText.push_back(temp);
   }
