@@ -354,12 +354,17 @@ bool CGUIWindowPrograms::OnPopupMenu(int iItem)
       btn_Rename = pMenu->AddButton(520); // edit xbe title
     DWORD dwTitleId = CUtil::GetXbeID(m_vecItems[iItem]->m_strPath);
     int btn_Trainers = -2;
-    if (m_database.ItemHasTrainer(dwTitleId) && !CKaiClient::GetInstance()->IsEngineConnected())
+    if (m_database.ItemHasTrainer(dwTitleId))
     {
       CStdStringW strOptions = g_localizeStrings.Get(12015);
+      if (CKaiClient::GetInstance()->IsEngineConnected())
+        strOptions += CStdStringW(" (KAI)");
+      else
       if (m_database.GetActiveTrainer(dwTitleId) != "")
         strOptions += CStdStringW(" ") + g_localizeStrings.Get(461);
       btn_Trainers = pMenu->AddButton(strOptions); // trainer options
+      if (CKaiClient::GetInstance()->IsEngineConnected())
+        pMenu->EnableButton(btn_Trainers,false);
     }
     int btn_ScanTrainers = pMenu->AddButton(12012);
     int btn_Settings = pMenu->AddButton(5); // Settings
@@ -1106,6 +1111,7 @@ void CGUIWindowPrograms::PopulateTrainersList()
     if (!CFile::Exists(vecTrainerPath[i]))
       m_database.RemoveTrainer(vecTrainerPath[i]);
 
+  CLog::Log(LOGDEBUG,"trainerpath %s",g_stSettings.m_szTrainerDirectory);
   directory.GetDirectory(g_stSettings.m_szTrainerDirectory,trainers,".xbtf|.etm");
   directory.GetDirectory(g_stSettings.m_szTrainerDirectory,archives,".rar"); // TODO: ZIP SUPPORT
   for( int i=0;i<archives.Size();++i)
@@ -1130,8 +1136,10 @@ void CGUIWindowPrograms::PopulateTrainersList()
   m_dlgProgress->SetPercentage(0);
   m_dlgProgress->ShowProgressBar(true);
   
+  CLog::Log(LOGDEBUG,"# trainers %i",trainers.Size());
   for (int i=0;i<trainers.Size();++i)
   {
+    CLog::Log(LOGDEBUG,"found trainer %s",trainers[i]->m_strPath.c_str());
     m_dlgProgress->SetPercentage((int)((float)(i)/trainers.Size()*100.f));
     CStdStringW strLine;
     strLine = g_localizeStrings.Get(12013);
