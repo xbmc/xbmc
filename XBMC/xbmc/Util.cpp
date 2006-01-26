@@ -696,35 +696,192 @@ cleanup:
 		// adjust ourmemaddr pointer past loaderdata
 		ourmemaddr=(PVOID *)(((unsigned int) ourmemaddr) + sizeof(trainerloaderdata));
 
-
-    // blacklist check 
-		if (trainer.IsXBTF())// && !check_blacklist(creation_key))
-		{
-      memcpy(trainerdata,trainer.data(),XBTF_HEAP_SIZE);
-			__asm
-			{
-				pushad
-
-				mov edx, offset trainerdata
-				push edx
-				xor ecx, ecx
-				mov cl, 0x1A
-				add edx, ecx
-				mov ecx, [edx]
-				pop edx
-				add edx, ecx
-				mov byte ptr [edx], 0C3h // patch return into entry point :)
-
-				popad
-			}
-      memcpy(trainer.data(),trainerdata,XBTF_HEAP_SIZE);
-		}
 		// copy our trainer data into allocated mem
 		memcpy(ourmemaddr, trainer.data(), trainer.Size());
 
-/*		if (bXBTFTrainer)
-			inject_xbtf_toys(); // lcd support, hookit, patchit, ect...*/
-	}
+    if (trainer.IsXBTF())
+    {
+      DWORD dwSection = 0;
+
+      // get address of XBTF_Section
+      _asm
+      {
+        pushad
+
+        mov eax, ourmemaddr
+
+        cmp dword ptr [eax+0x1A], 0 // real xbtf or just a converted etm? - XBTF_ENTRYPOINT
+        je converted_etm
+
+        push eax
+        mov ebx, 0x16
+        add eax, ebx
+        mov ecx, DWORD PTR [eax]
+        pop	eax
+        add eax, ecx
+        mov dwSection, eax // get address of xbtf_section
+      
+      converted_etm:
+        popad
+      }
+
+      if (dwSection == 0)
+        return Found; // its a converted etm so we do not have toys section :)
+
+      // adjust past trainer
+      ourmemaddr=(PVOID *)(((unsigned int) ourmemaddr) + trainer.Size());
+
+      // inject SMBus code
+      memcpy(ourmemaddr, sm_bus, sizeof(sm_bus));
+      _asm
+      {
+        pushad
+
+        mov eax, dwSection
+        mov ebx, ourmemaddr
+        cmp dword ptr [eax], 0
+        jne nosmbus
+        mov DWORD PTR [eax], ebx
+      nosmbus:
+        popad
+      }
+      // adjust past SMBus
+      ourmemaddr=(PVOID *)(((unsigned int) ourmemaddr) + sizeof(sm_bus));
+
+      // PatchIt
+      memcpy(ourmemaddr, patch_it_toy, sizeof(patch_it_toy));
+      _asm
+      {
+        pushad
+
+        mov eax, dwSection
+        add eax, 4 // 2nd dword in XBTF_Section
+        mov ebx, ourmemaddr
+        cmp dword PTR [eax], 0
+        jne nopatchit
+        mov DWORD PTR [eax], ebx
+      nopatchit:
+        popad
+      }
+
+      // adjust past PatchIt
+      ourmemaddr=(PVOID *)(((unsigned int) ourmemaddr) + sizeof(patch_it_toy));
+
+      // HookIt
+      memcpy(ourmemaddr, hookit_toy, sizeof(hookit_toy));
+      _asm
+      {
+        pushad
+
+        mov eax, dwSection
+        add eax, 8 // 3rd dword in XBTF_Section
+        mov ebx, ourmemaddr
+        cmp dword PTR [eax], 0
+        jne nohookit
+        mov DWORD PTR [eax], ebx
+      nohookit:
+        popad
+      }
+
+      // adjust past HookIt
+      ourmemaddr=(PVOID *)(((unsigned int) ourmemaddr) + sizeof(hookit_toy));
+
+      // igk_main_toy
+      memcpy(ourmemaddr, igk_main_toy, sizeof(igk_main_toy));
+      _asm
+      {
+        // patch hook_igk_toy w/ address
+        pushad
+
+        mov edx, offset hook_igk_toy
+        add edx, 5
+        mov ecx, ourmemaddr
+        mov dword PTR [edx], ecx
+
+        popad
+      }
+
+      // adjust past igk_main_toy
+      ourmemaddr=(PVOID *)(((unsigned int) ourmemaddr) + sizeof(igk_main_toy));
+
+      // hook_igk_toy
+      memcpy(ourmemaddr, hook_igk_toy, sizeof(hook_igk_toy));
+      _asm
+      {
+        pushad
+
+        mov eax, dwSection
+        add eax, 0ch // 4th dword in XBTF_Section
+        mov ebx, ourmemaddr
+        cmp dword PTR [eax], 0
+        jne nohookigk
+        mov DWORD PTR [eax], ebx
+      nohookigk:
+        popad
+      }
+      ourmemaddr=(PVOID *)(((unsigned int) ourmemaddr) + sizeof(igk_main_toy));
+
+      if (g_guiSettings.GetInt("LCD.Mode") > 0 && g_guiSettings.GetInt("LCD.Type") == MODCHIP_SMARTXX)
+      {
+        memcpy(ourmemaddr, lcd_toy_xx, sizeof(lcd_toy_xx));
+        _asm
+        {
+          pushad
+
+          mov ecx, ourmemaddr
+          add ecx, 0141h // lcd clear
+
+          mov eax, dwSection
+          add eax, 010h // 5th dword
+
+          cmp dword PTR [eax], 0
+          jne nolcdxx
+
+          mov dword PTR [eax], ecx
+          add ecx, 0ah // lcd writestring
+          add eax, 4 // 6th dword
+
+          cmp dword ptr [eax], 0
+          jne nolcd
+
+          mov dword ptr [eax], ecx
+        nolcdxx:
+          popad
+        }
+        ourmemaddr=(PVOID *)(((unsigned int) ourmemaddr) + sizeof(lcd_toy_xx));
+      }
+      else
+      {
+        // lcd toy
+        memcpy(ourmemaddr, lcd_toy_x3, sizeof(lcd_toy_x3));
+        _asm
+        {
+          pushad
+
+          mov ecx, ourmemaddr
+          add ecx, 0bdh // lcd clear
+
+          mov eax, dwSection
+          add eax, 010h // 5th dword
+
+          cmp dword PTR [eax], 0
+          jne nolcd
+
+          mov dword PTR [eax], ecx
+          add ecx, 0ah // lcd writestring
+          add eax, 4 // 6th dword
+
+          cmp dword ptr [eax], 0
+          jne nolcd
+
+          mov dword ptr [eax], ecx
+        nolcd:
+          popad
+        }
+        ourmemaddr=(PVOID *)(((unsigned int) ourmemaddr) + sizeof(lcd_toy_x3));
+      }
+    }
+  }
 
 	return Found;
 }
