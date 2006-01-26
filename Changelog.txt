@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 25-01-2006 fixed: typo in cachesubtitles. really fixes caching subs 'hangs'.
  - 25-01-2006 added: gui indication when trainers are disabled due to kai.
  - 25-01-2006 fixed: better handling of broken trainers.
  - 25-01-2006 changed: trainer enigine update to v2.2. thanks to team xored!
