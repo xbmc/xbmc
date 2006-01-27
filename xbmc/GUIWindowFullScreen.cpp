@@ -397,10 +397,7 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
         fontPath += g_guiSettings.GetString("Subtitles.Font");
         m_subtitleFont = g_fontManager.LoadTTF("__subtitle__", fontPath, color[g_guiSettings.GetInt("Subtitles.Color")], 0, g_guiSettings.GetInt("Subtitles.Height"), g_guiSettings.GetInt("Subtitles.Style"));
         if (!m_subtitleFont)
-        {
-          delete m_subtitleFont;
-          m_subtitleFont = NULL;
-        }
+          CLog::Log(LOGERROR, "CGUIWindowFullScreen::OnMessage(WINDOW_INIT) - Unable to load subtitle font");
       }
       else
         m_subtitleFont = NULL;
