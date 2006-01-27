@@ -43,6 +43,7 @@ public:
   virtual int Read(BYTE* buf, int buf_size);
   virtual __int64 Seek(__int64 offset, int whence);
   virtual int GetBlockSize() { return DVDSTREAM_BLOCK_SIZE_DVD; }
+  virtual bool IsEOF() { return m_bEOF; }
   
   void ActivateButton();
   void SelectButton(int iButton);
@@ -103,7 +104,7 @@ protected:
   DllDvdNav m_dll;
   bool m_bDiscardHop;
   bool m_bCheckButtons;
-  bool m_bStopped;
+  bool m_bEOF;
 
   int m_iTotalTime;
   int m_iTime;
