@@ -60,9 +60,8 @@ extern "C"	void __stdcall MmSetAddressProtect(void *Adr, int Size, int Type);
 #define KERNEL_ALLOCATE_ADDRESS 0x7FFD2200 // where we want to put our allocated memory block (under kernel so it works retail)
 #define KERNEL_SEARCH_RANGE 0x02AF90 // used for loop control base + search range to look xbe entry point bytes
 
-#define SIZEOFLOADERDATA 82 // loaderdata is our kernel hack to handle if trainer (com file) is executed for title about to run
 #define XBTF_HEAP_SIZE 15360 // plenty of room for trainer + xbtf support functions
-#define ETM_HEAP_SIZE 2282  // just enough room to match evox's etm spec limit (no need to give them more room then evox does)
+#define ETM_HEAP_SIZE 2400  // just enough room to match evox's etm spec limit (no need to give them more room then evox does)
 // magic kernel patch (asm included w/ source)
 static unsigned char trainerloaderdata[167] =
 {
@@ -78,6 +77,8 @@ static unsigned char trainerloaderdata[167] =
        0xEE, 0xEE, 0x66, 0xBA, 0x02, 0xC0, 0xB0, 0x1A, 0xEE, 0x50, 0xB8, 0x40, 0x42, 0x0F, 0x00, 0x48,
        0x75, 0xFD, 0x58, 0xC9, 0xC2, 0x08, 0x00,
 };
+
+#define SIZEOFLOADERDATA 167// loaderdata is our kernel hack to handle if trainer (com file) is executed for title about to run
 
 extern "C" XBOXAPI PVOID * WINAPI MmAllocateContiguousMemoryEx(IN SIZE_T NumberOfBytes, IN ULONG_PTR LowestAcceptableAddress, IN ULONG_PTR HighestAcceptableAddress, IN ULONG_PTR Alignment, IN ULONG Protect);
 extern "C" XBOXAPI DWORD WINAPI MmPersistContiguousMemory(IN PVOID BaseAddress, IN SIZE_T NumberOfBytes, IN BOOLEAN Persist);
