@@ -41,7 +41,11 @@ void CSMB::Init()
     char szIPAddress[20];
     char szNetMask[20];
     strcpy(szIPAddress, strTitleIP.c_str());
-    strcpy(szNetMask, strTitleIP.c_str()); //Weird, we really should have the subnetmask here
+
+    // use a fixed subnet of a class C network. most users should be on that.
+    // if not, samba should still work just it will prioritize hosts on the same
+    // network
+    strcpy(szNetMask, "255.255.255.0"); 
 
     set_xbox_interface(szIPAddress, szNetMask);
     // set log function
