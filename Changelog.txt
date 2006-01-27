@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 27-01-2006 fixed: dvdplayer wouldn't stop playback at eof, just spit out error messages
+ - 27-01-2006 fixed: dvdplayer will now decode AAC audio in mpg containers correctly (extradata wasn't passed on)
  - 26-01-2006 fixed: some small stuff (message when reset settings on boot, a couple of defines in util.h).
  - 25-01-2006 fixed: IMDB thumbs (imdb.com changed their webpage slightly)
  - 25-01-2006 fixed: My Video "Query Info For All Files" for paths on a disc
