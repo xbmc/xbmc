@@ -745,7 +745,7 @@ HRESULT CApplication::Create()
   if (((m_DefaultGamepad.wButtons & XINPUT_GAMEPAD_LEFT_THUMB + XINPUT_GAMEPAD_RIGHT_THUMB) && !(m_DefaultGamepad.wButtons & KEY_BUTTON_LEFT_TRIGGER+KEY_BUTTON_RIGHT_TRIGGER)) ||
       ((m_DefaultGamepad.bAnalogButtons[XINPUT_GAMEPAD_BLACK] && m_DefaultGamepad.bAnalogButtons[XINPUT_GAMEPAD_WHITE]) && !(m_DefaultGamepad.wButtons & KEY_BUTTON_LEFT_TRIGGER+KEY_BUTTON_RIGHT_TRIGGER)))
   {
-    CLog::Log(LOGINFO, "Key combination detected for TDATA deletion (START+BACK or BLACK+WHITE)");
+    CLog::Log(LOGINFO, "Key combination detected for TDATA deletion (LTHUMB+RTHUMB or BLACK+WHITE)");
     InitBasicD3D();
     // D3D is up, load default font
     XFONT* pFont;
