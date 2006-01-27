@@ -28,11 +28,10 @@ public:
   
   int GetBlockSize() { return DVDSTREAM_BLOCK_SIZE_FILE; }
   bool IsStreamType(DVDStreamType type) { return m_streamType == type; }
-  bool IsEOF() { return m_bEOF; }  
+  virtual bool IsEOF() = 0;  
   
 
 protected:
-  DVDStreamType m_streamType;
-  bool m_bEOF;
+  DVDStreamType m_streamType;  
   char* m_strFileName;
 };

@@ -24,7 +24,26 @@ bool CDVDAudioCodecLibFaad::Open(CodecID codecID, int iChannels, int iSampleRate
   
   memset(&m_frameInfo, 0, sizeof(m_frameInfo));
   
-  return OpenDecoder();
+  if (!OpenDecoder() ) 
+    return false;
+
+  if( ExtraSize )
+  {
+    unsigned long samplerate;
+    unsigned char channels;
+
+    int res = m_dll.faacDecInit2(m_pHandle, (unsigned char*)ExtraData, ExtraSize, &samplerate, &channels);
+    if (res >= 0)
+    {
+      m_iSourceSampleRate = samplerate;
+      m_iSourceChannels = channels;
+      m_iSourceBitrate = 0;
+  
+      m_bInitializedDecoder = true;
+    }
+  }
+
+  return true;
 }
 
 void CDVDAudioCodecLibFaad::Dispose()
@@ -59,7 +78,7 @@ int CDVDAudioCodecLibFaad::Decode(BYTE* pData, int iSize)
       unsigned char channels;
       
       int res = m_dll.faacDecInit(m_pHandle, m_inputBuffer, m_iInputBufferSize, &samplerate, &channels);
-      if (0 == res)
+      if (res >= 0)
       {
         m_iSourceSampleRate = samplerate;
         m_iSourceChannels = channels;
