@@ -18,11 +18,17 @@ CDVDInputStreamMemory::~CDVDInputStreamMemory()
   Close();
 }
 
+bool CDVDInputStreamMemory::IsEOF()
+{
+  if(m_iDataPos >= m_iDataSize)
+    return true;
+
+  return false;
+}
+
 bool CDVDInputStreamMemory::Open(const char* strFile)
 {
   if (!CDVDInputStream::Open(strFile)) return false;
-
-  m_bEOF = false;
 
   return true;
 }
@@ -33,8 +39,7 @@ void CDVDInputStreamMemory::Close()
   if (m_pData) delete[] m_pData;
   m_pData = NULL;
   m_iDataSize = 0;
-  m_iDataPos = 0;
-  m_bEOF = true;
+  m_iDataPos = 0;  
   
   CDVDInputStream::Close();
 }
@@ -49,10 +54,6 @@ int CDVDInputStreamMemory::Read(BYTE* buf, int buf_size)
   {
     fast_memcpy(buf, m_pData + m_iDataPos, iBytesToCopy);
     m_iDataPos += iBytesToCopy;
-  }
-  if( iBytesLeft <= 0 )
-  {
-    m_bEOF = true;
   }
   
   return iBytesToCopy;

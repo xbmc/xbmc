@@ -6,7 +6,6 @@
 CDVDInputStream::CDVDInputStream()
 {
   m_strFileName = NULL;
-  m_bEOF = true;
 }
 
 CDVDInputStream::~CDVDInputStream()
@@ -25,7 +24,6 @@ void CDVDInputStream::Close()
 {
   if (m_strFileName) delete m_strFileName;
   m_strFileName = NULL;
-  m_bEOF = true;
 }
 
 const char* CDVDInputStream::GetFileName()
