@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 27-01-2006 fixed: samba client could select wrong ip when connecting to multihomed server. 
+                     subnet mask of xbox is now assumed to be 255.255.255.0 since it doesn't seem like it's possible to get from the xdk.                     
  - 27-01-2006 fixed: dvdplayer wouldn't stop playback at eof, just spit out error messages
  - 27-01-2006 fixed: dvdplayer will now decode AAC audio in mpg containers correctly (extradata wasn't passed on)
  - 26-01-2006 fixed: some small stuff (message when reset settings on boot, a couple of defines in util.h).
