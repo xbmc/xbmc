@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 26-01-2006 fixed: some small stuff (message when reset settings on boot, a couple of defines in util.h).
  - 25-01-2006 fixed: IMDB thumbs (imdb.com changed their webpage slightly)
  - 25-01-2006 fixed: My Video "Query Info For All Files" for paths on a disc
  - 25-01-2006 fixed: typo in cachesubtitles. really fixes caching subs 'hangs'.
