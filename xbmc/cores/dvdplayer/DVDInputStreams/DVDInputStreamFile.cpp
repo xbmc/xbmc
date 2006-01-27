@@ -16,6 +16,18 @@ CDVDInputStreamFile::~CDVDInputStreamFile()
   Close();
 }
 
+bool CDVDInputStreamFile::IsEOF()
+{
+  if(m_pFile)
+  {
+    __int64 size = m_pFile->GetLength();
+    if( size > 0 && m_pFile->GetPosition() >= size )
+      return true;
+  }
+
+  return false;
+}
+
 bool CDVDInputStreamFile::Open(const char* strFile)
 {
   if (!CDVDInputStream::Open(strFile)) return false;
@@ -30,7 +42,6 @@ bool CDVDInputStreamFile::Open(const char* strFile)
     m_pFile = NULL;
     return false;
   }
-  m_bEOF = false;
 
   return true;
 }
@@ -45,8 +56,7 @@ void CDVDInputStreamFile::Close()
   }
 
   CDVDInputStream::Close();
-  m_pFile = NULL;
-  m_bEOF = true;
+  m_pFile = NULL;  
 }
 
 int CDVDInputStreamFile::Read(BYTE* buf, int buf_size)
@@ -55,11 +65,6 @@ int CDVDInputStreamFile::Read(BYTE* buf, int buf_size)
   if (m_pFile) ret = m_pFile->Read(buf, buf_size);
   else return -1;
 
-  if( ret <= 0 ) {
-    if( m_pFile->GetPosition() >= m_pFile->GetLength() ) 
-      m_bEOF = true;
-  }
-
   return (int)(ret & 0xFFFFFFFF);
 }
 
@@ -67,7 +72,6 @@ __int64 CDVDInputStreamFile::Seek(__int64 offset, int whence)
 {
   __int64 ret = 0;
   if (m_pFile) ret = m_pFile->Seek(offset, whence);
-
   else return -1;
 
   return ret;
