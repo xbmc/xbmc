@@ -169,7 +169,7 @@ CGUISettings::CGUISettings(void)
   AddBool(4, "MyPrograms.NoShortcuts", 508, true);
   AddBool(5, "MyPrograms.CacheProgramThumbs", 509, true);
   AddSeparator(6,"MyPrograms.Sep1");
-  AddBool(7, "MyPrograms.GameAutoRegion",511,true);
+  AddBool(7, "MyPrograms.GameAutoRegion",511,false);
   AddInt(8, "MyPrograms.NTSCMode", 16110, 0, 0, 1, 3, SPIN_CONTROL_TEXT);
   
   AddCategory(1,"ProgramFiles",744);
@@ -355,6 +355,8 @@ CGUISettings::CGUISettings(void)
   AddBool(7, "VideoPlayer.UseGUIResolution", 495, true);
   AddSeparator(10, "VideoPlayer.Sep3");
   AddInt(12, "VideoPlayer.BypassCDSelection", 13169, 0, 0, 1, 37, SPIN_CONTROL_TEXT);
+  AddSeparator(13,"VideoPlayer.Sep4");
+  AddBool(14,"VideoPlayer.AutoResume",12017, false);
 
   AddCategory(5, "Subtitles", 287);
   AddString(1, "Subtitles.Font", 288, "arial-iso-8859-1", SPIN_CONTROL_TEXT);
@@ -366,7 +368,6 @@ CGUISettings::CGUISettings(void)
   AddSeparator(7, "Subtitles.Sep1");
   AddInt(8, "Subtitles.EnlargePercentage", 492, 100, 30, 10, 200, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
   AddBool(9, "Subtitles.SearchRars", 13249, false);
-
 
   AddCategory(5, "PostProcessing", 14041);
   AddBool(2, "PostProcessing.Enable", 286, false);
