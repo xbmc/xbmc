@@ -355,6 +355,9 @@ void CGUIWindowVideoBase::ShowIMDB(const CStdString& strMovie, const CStdString&
       {
         CIMDBUrl url;
         CIMDBMovie movieDetails;
+        /*url.m_strURL[0] = nfoReader.m_strImDbUrl;
+        //url.m_strURL.push_back(nfoReader.m_strImDbUrl);
+        CLog::Log(LOGDEBUG,"-- imdb url: %s", url.m_strURL[0].c_str());*/
         url.m_strURL = nfoReader.m_strImDbUrl;
         //url.m_strURL.push_back(nfoReader.m_strImDbUrl);
         CLog::Log(LOGDEBUG,"-- imdb url: %s", url.m_strURL.c_str());
@@ -763,10 +766,20 @@ int  CGUIWindowVideoBase::ResumeItemOffset(int iItem)
   return startOffset;
 }
 
+bool CGUIWindowVideoBase::OnClick(int iItem)
+{
+  if (g_guiSettings.GetBool("VideoPlayer.AutoResume"))
+    OnResumeItem(iItem);
+  else
+    return CGUIMediaWindow::OnClick(iItem);
+  
+  return true;
+}
+
 void CGUIWindowVideoBase::OnResumeItem(int iItem)
 {
   m_vecItems[iItem]->m_lStartOffset = ResumeItemOffset(iItem);
-  OnClick(iItem);
+  CGUIMediaWindow::OnClick(iItem);
 }
 
 void CGUIWindowVideoBase::OnPopupMenu(int iItem)
@@ -1159,7 +1172,5 @@ void CGUIWindowVideoBase::PlayItem(int iItem)
   }
   // otherwise just play the song
   else
-  {
     OnClick(iItem);
-  }
 }

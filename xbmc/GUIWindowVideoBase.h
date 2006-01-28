@@ -29,6 +29,7 @@ protected:
   virtual void OnDeleteItem(int iItem);
   virtual void OnRenameItem(int iItem);
 
+  bool OnClick(int iItem);
   void OnResumeItem(int iItem);
   void PlayItem(int iItem);
   virtual void OnPlayMedia(int iItem);
