@@ -21,6 +21,7 @@
 #include "GYMCodec.h"
 #include "SIDCodec.h"
 #include "AdplugCodec.h"
+#include "CubeCodec.h"
 
 ICodec* CodecFactory::CreateCodec(const CStdString& strFileType)
 {
@@ -60,6 +61,8 @@ ICodec* CodecFactory::CreateCodec(const CStdString& strFileType)
     return new SIDCodec();
   else if (AdplugCodec::IsSupportedFormat(strFileType))
     return new AdplugCodec();
+  else if (CubeCodec::IsSupportedFormat(strFileType))
+    return new CubeCodec();
 
   return NULL;
 }

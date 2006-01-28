@@ -2766,6 +2766,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\cores\paplayer\CodecFactory.h">
 				</File>
 				<File
+					RelativePath=".\xbmc\cores\paplayer\CubeCodec.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\paplayer\CubeCodec.h">
+				</File>
+				<File
 					RelativePath=".\xbmc\cores\paplayer\DllAACCodec.h">
 				</File>
 				<File
@@ -2773,6 +2779,9 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				</File>
 				<File
 					RelativePath=".\xbmc\cores\paplayer\DllAdplug.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\paplayer\DllCube.h">
 				</File>
 				<File
 					RelativePath=".\xbmc\cores\paplayer\DllDCACodec.h">
