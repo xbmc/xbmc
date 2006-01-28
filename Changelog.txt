@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 28-01-2006 added: cube codec to paplayer. plays gamecube/ps2/xbox music (from games). based on in_cube.
  - 28-01-2006 added: option to auto resume from last position in video settings.
  - 27-01-2006 fixed: samba client could select wrong ip when connecting to multihomed server. 
                      subnet mask of xbox is now assumed to be 255.255.255.0 since it doesn't seem like it's possible to get from the xdk.                     
