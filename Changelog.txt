@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 29-01-2006 fixed: seeking in cube codec. also added .hps.
  - 29-01-2006 fixed: Caching of Textures.xpr to Z: when run from DVD, thanks to Zak.
  - 29-01-2006 fixed: Large EXIF thumbs in images could cause thumbs to not display.
  - 29-01-2006 fixed: Scripts Info window did not close correctly.
