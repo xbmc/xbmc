@@ -235,14 +235,15 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
   strTest.ToLower();
   strTest.TrimLeft(" ");
   strTest.TrimRight(" ");
-  CStdString strCategory = strTest.Left(strTest.Find("."));
   bool bNegate = strTest[0] == '!';
   int ret = 0;
 
   if(bNegate)
     strTest.Delete(0, 1);
 
-  // check playing conditions...
+  CStdString strCategory = strTest.Left(strTest.Find("."));
+
+  // translate conditions...
   if (strTest.Equals("false") || strTest.Equals("no") || strTest.Equals("off") || strTest.Equals("disabled")) ret = SYSTEM_ALWAYS_FALSE;
   else if (strTest.Equals("true") || strTest.Equals("yes") || strTest.Equals("on") || strTest.Equals("enabled")) ret = SYSTEM_ALWAYS_TRUE;
   if (strCategory.Equals("player"))
