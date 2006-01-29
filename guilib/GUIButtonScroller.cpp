@@ -149,6 +149,9 @@ void CGUIButtonScroller::LoadButtons(const TiXmlNode *node)
     childNode = buttonNode->FirstChild("execute");
     if (childNode && childNode->FirstChild())
       button->strExecute = childNode->FirstChild()->Value();
+    childNode = buttonNode->FirstChild("onclick");
+    if (childNode && childNode->FirstChild())
+      button->strExecute = childNode->FirstChild()->Value();
     childNode = buttonNode->FirstChild("texturefocus");
     if (childNode && childNode->FirstChild())
       button->imageFocus = new CGUIImage(GetParentID(), GetID(), m_iPosX, m_iPosY, m_dwWidth, m_dwHeight, childNode->FirstChild()->Value());
