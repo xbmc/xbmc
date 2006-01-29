@@ -59,7 +59,6 @@ int CubeCodec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
 
   if (m_iDataPos >= m_TotalTime/1000*m_SampleRate*m_BitsPerSample*m_Channels/8)
   {
-    printf("eof!");
     return READ_EOF;
   }
   
@@ -79,7 +78,7 @@ bool CubeCodec::CanInit()
 
 bool CubeCodec::IsSupportedFormat(const CStdString& strExt)
 {
-  if (strExt == "adx" || strExt == "dsp" || strExt == "adp" || strExt == "ymf" || strExt == "ast" || strExt == "afc")
+  if (strExt == "adx" || strExt == "dsp" || strExt == "adp" || strExt == "ymf" || strExt == "ast" || strExt == "afc" || strExt == "hps")
     return true;
   
   return false;
