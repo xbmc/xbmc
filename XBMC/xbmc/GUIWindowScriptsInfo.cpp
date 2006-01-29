@@ -13,11 +13,6 @@ CGUIWindowScriptsInfo::~CGUIWindowScriptsInfo(void)
 
 bool CGUIWindowScriptsInfo::OnAction(const CAction &action)
 {
-  if (action.wID == ACTION_PREVIOUS_MENU)
-  {
-    Close();
-    return true;
-  }
   if (action.wID == ACTION_SHOW_INFO)
   {
     // erase debug screen
@@ -27,20 +22,16 @@ bool CGUIWindowScriptsInfo::OnAction(const CAction &action)
     OnMessage(msg);
     return true;
   }
-  return CGUIWindow::OnAction(action);
+  return CGUIDialog::OnAction(action);
 }
 
 bool CGUIWindowScriptsInfo::OnMessage(CGUIMessage& message)
 {
   switch ( message.GetMessage() )
   {
-  case GUI_MSG_WINDOW_DEINIT:
-  {}
-    break;
-
   case GUI_MSG_WINDOW_INIT:
     {
-      CGUIWindow::OnMessage(message);
+      CGUIDialog::OnMessage(message);
       CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), CONTROL_TEXTAREA);
       msg.SetLabel(strInfo);
       msg.SetParam1(5); // 5 pages max
@@ -59,5 +50,5 @@ bool CGUIWindowScriptsInfo::OnMessage(CGUIMessage& message)
     }
     break;
   }
-  return CGUIWindow::OnMessage(message);
+  return CGUIDialog::OnMessage(message);
 }
