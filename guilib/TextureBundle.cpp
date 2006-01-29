@@ -125,6 +125,7 @@ bool CTextureBundle::OpenBundle()
     if (hFind == INVALID_HANDLE_VALUE || FindData[0].nFileSizeLow != FindData[1].nFileSizeLow ||
         CompareFileTime(&FindData[0].ftLastWriteTime, &FindData[1].ftLastWriteTime))
     {
+      SetFileAttributes("Z:\\Textures.xpr", FILE_ATTRIBUTE_NORMAL); //must set readable before overwriting
       if (!CopyFile(strPath, "Z:\\Textures.xpr", FALSE))
       {
         CLog::Log(LOGERROR, "Unable to open file: %s: %x", strPath.c_str(), GetLastError());
