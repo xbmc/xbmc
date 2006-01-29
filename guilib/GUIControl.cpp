@@ -665,21 +665,21 @@ void CGUIControl::Animate()
     UpdateStates(anim.type, anim.currentProcess, anim.currentState);
     // and render the animation effect
     g_graphicsContext.AddControlAnimation(anim.RenderAnimation());
-
+/*
     // debug stuff
     if (anim.currentProcess != ANIM_PROCESS_NONE)
     {
       if (anim.effect == EFFECT_TYPE_SLIDE)
       {
-        if (IsVisible() && m_dwParentID == WINDOW_VISUALISATION)
+        if (IsVisible())
           CLog::DebugLog("Animating control %d with a %s slide effect %s. Amount is %2.1f, visible=%s", m_dwControlID, anim.type == ANIM_TYPE_VISIBLE ? "visible" : "hidden", anim.currentProcess == ANIM_PROCESS_NORMAL ? "normal" : "reverse", anim.amount, IsVisible() ? "true" : "false");
       }
       else if (anim.effect == EFFECT_TYPE_FADE)
       {
-        if (IsVisible() && m_dwParentID == WINDOW_VISUALISATION)
+        if (IsVisible())
           CLog::DebugLog("Animating control %d with a %s fade effect %s. Amount is %2.1f. Visible=%s", m_dwControlID, anim.type == ANIM_TYPE_VISIBLE ? "visible" : "hidden", anim.currentProcess == ANIM_PROCESS_NORMAL ? "normal" : "reverse", anim.amount, IsVisible() ? "true" : "false");
       }
-    }
+    }*/
   }
 #ifdef PRE_SKIN_VERSION_2_0_COMPATIBILITY
   // do the temporary fade effect as well
