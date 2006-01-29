@@ -22,9 +22,7 @@ CURL::CURL(const CStdString& strURL)
   //
   // first need 2 check if this is a protocol or just a normal drive & path
   if (!strURL.size()) return ;
-  char szURL[1024];
-  strcpy(szURL, strURL.c_str());
-  if ( szURL[1] == ':')
+  if (strURL[1] == ':')
   {
     // form is drive:directoryandfile
     m_strFileName = strURL;
@@ -109,30 +107,30 @@ CURL::CURL(const CStdString& strURL)
   {
     // username/password found
     CStdString strUserNamePassword = strURL.Mid(iPos, iAlphaSign - iPos);
+
+    // first extract domain, if protocol is smb
+    if (m_strProtocol.Equals("smb"))
+    {
+      int iSemiColon = strUserNamePassword.Find(";");
+      if (iSemiColon > 0)
+      {
+        m_strDomain = strUserNamePassword.Left(iSemiColon);
+        strUserNamePassword.Delete(0, iSemiColon + 1);
+      }
+    }
+
+    // username:password
     int iColon = strUserNamePassword.Find(":");
     if (iColon > 0)
     {
       m_strUserName = strUserNamePassword.Left(iColon);
       iColon++;
       m_strPassword = strUserNamePassword.Right(strUserNamePassword.size() - iColon);
-      // smb domain in username
-      iColon = m_strUserName.Find(";");
-      if (iColon > 0)
-      {
-        m_strDomain = m_strUserName.Left(iColon);
-        m_strUserName.Delete(0, iColon + 1);
-      }
     }
+    // username
     else
     {
-      // smb domain without password
       m_strUserName = strUserNamePassword;
-      int iColon = strUserNamePassword.Find(";");
-      if (iColon > 0)
-      {
-        m_strDomain = strUserNamePassword.Left(iColon);
-        m_strUserName.Delete(0, iColon + 1);
-      }
     }
 
     iPos = iAlphaSign + 1;
