@@ -50,7 +50,7 @@ bool NSFCodec::Init(const CStdString &strFile, unsigned int filecache)
     CLog::Log(LOGERROR,"NSFCodec: error opening file %s!",strFile.c_str());
     return false;
   }
-  m_Channels = 2;
+  m_Channels = 1;
   m_SampleRate = 48000;
   m_BitsPerSample = 16;
   m_TotalTime = 4*60*1000; // fixme?
@@ -73,27 +73,27 @@ void NSFCodec::DeInit()
 
 __int64 NSFCodec::Seek(__int64 iSeekTime)
 {
-  if (m_iDataPos > iSeekTime/1000*48000*4)
+  if (m_iDataPos > iSeekTime/1000*48000*2)
   {
     m_dll.StartPlayback(m_nsf,m_iTrack);
     m_iDataPos = 0;
   }
-  while (m_iDataPos+2*48000/m_dll.GetPlaybackRate(m_nsf)*4 < iSeekTime/1000*48000*4)
+  while (m_iDataPos+2*48000/m_dll.GetPlaybackRate(m_nsf)*2 < iSeekTime/1000*48000*2)
   {
     m_dll.FrameAdvance(m_nsf);
     
-    m_iDataInBuffer = 48000/m_dll.GetPlaybackRate(m_nsf)*4;
+    m_iDataInBuffer = 48000/m_dll.GetPlaybackRate(m_nsf)*2;
     m_szStartOfBuffer = m_szBuffer;
-    m_iDataPos += 48000/m_dll.GetPlaybackRate(m_nsf)*4;
+    m_iDataPos += 48000/m_dll.GetPlaybackRate(m_nsf)*2;
   }
-  m_dll.FillBuffer(m_nsf,m_szBuffer,48000/m_dll.GetPlaybackRate(m_nsf)*2); // *2 since two channels
-  if (iSeekTime/1000*48000*4 > 48000/m_dll.GetPlaybackRate(m_nsf)*4)
-    m_iDataPos += 48000/m_dll.GetPlaybackRate(m_nsf)*4;
+  m_dll.FillBuffer(m_nsf,m_szBuffer,48000/m_dll.GetPlaybackRate(m_nsf)); // *2 since two channels
+  if (iSeekTime/1000*48000*2 > 48000/m_dll.GetPlaybackRate(m_nsf)*2)
+    m_iDataPos += 48000/m_dll.GetPlaybackRate(m_nsf)*2;
   else
     m_iDataPos = 0;
-  m_iDataInBuffer -= int(iSeekTime/1000*48000*4-m_iDataPos);
-  m_szStartOfBuffer += (iSeekTime/1000*48000*4-m_iDataPos);
-  m_iDataPos = iSeekTime/1000*48000*4;
+  m_iDataInBuffer -= int(iSeekTime/1000*48000*2-m_iDataPos);
+  m_szStartOfBuffer += (iSeekTime/1000*48000*2-m_iDataPos);
+  m_iDataPos = iSeekTime/1000*48000*2;
 
   return iSeekTime;
 }
@@ -103,22 +103,21 @@ int NSFCodec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
   if (!m_nsf)
     return READ_ERROR;
   
-  if (m_iDataPos >= m_TotalTime/1000*48000*4)
+  if (m_iDataPos >= m_TotalTime/1000*48000*2)
     return READ_EOF;
     
   if (!m_bIsPlaying)
   {
     m_dll.StartPlayback(m_nsf,m_iTrack);
     m_bIsPlaying = true;
-    m_szBuffer = new char[48000/m_dll.GetPlaybackRate(m_nsf)*4];
+    m_szBuffer = new char[48000/m_dll.GetPlaybackRate(m_nsf)*2];
     m_szStartOfBuffer = m_szBuffer;
     m_iDataPos = 0;
   }
 
   if (m_iDataInBuffer <= 0)
   {
-    m_dll.FillBuffer(m_nsf,m_szBuffer,48000/m_dll.GetPlaybackRate(m_nsf)*2); // *2 since two channels
-    m_iDataInBuffer = 48000/m_dll.GetPlaybackRate(m_nsf)*4;
+    m_iDataInBuffer = m_dll.FillBuffer(m_nsf,m_szBuffer,48000/m_dll.GetPlaybackRate(m_nsf)); // *2 since two channels
     
     m_szStartOfBuffer = m_szBuffer;
   }
