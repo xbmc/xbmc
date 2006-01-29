@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 29-01-2006 changed: only smb:// urls are checked for workgroup/domain. allows semicolon to be used as username and password in other protocols.
  - 29-01-2006 fixed: SF.net bug report [ 1411396 ] NSF audio pitched up. 
  - 28-01-2006 added: cube codec to paplayer. plays gamecube/ps2/xbox music (from games). based on in_cube.
  - 28-01-2006 added: option to auto resume from last position in video settings.
