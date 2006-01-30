@@ -129,16 +129,18 @@ void ILCD::LoadSkin(const CStdString &xmlFile)
 {
   Reset();
 
+  bool condensed = TiXmlBase::IsWhiteSpaceCondensed();
+  TiXmlBase::SetCondenseWhiteSpace(false);
   TiXmlDocument doc;
   if (!doc.LoadFile(xmlFile.c_str()))
   {
     CLog::Log(LOGERROR, "Unable to load LCD skin file %s", xmlFile.c_str());
-    return;
+    goto done;
   }
 
   TiXmlElement *element = doc.RootElement();
   if (!element || strcmp(element->Value(), "lcd") != 0)
-    return;
+    goto done;
 
   TiXmlElement *mode = element->FirstChildElement();
   while (mode)
@@ -161,6 +163,8 @@ void ILCD::LoadSkin(const CStdString &xmlFile)
     }
     mode = mode->NextSiblingElement();
   }
+done:
+  TiXmlBase::SetCondenseWhiteSpace(condensed);
 }
 
 void ILCD::LoadMode(TiXmlNode *node, LCD_MODE mode)
@@ -191,4 +195,7 @@ void ILCD::Render(LCD_MODE mode)
     if (!line.IsEmpty())
       SetLine(outLine++, line);
   }
+  // fill remainder with empty space
+  while (outLine < 4)
+    SetLine(outLine++, "");
 }
