@@ -27,13 +27,13 @@ rem	CONFIG START
 	set OPTS=xbmc.sln /build release
 	set CLEAN=xbmc.sln /clean release
 	set XBE=xbepatch.exe
-	set RAR="%ProgramFiles%\Winrar\rar.exe"
+	rem set RAR="%ProgramFiles%\Winrar\rar.exe"
 	set RAROPS=a -r -idp -inul -m5 XBMC.rar BUILD
 rem	CONFIG END
 rem ---------------------------------------------
 ECHO Compiling Solution...
-%NET% %CLEAN%
-del release\xbmc.map
+rem %NET% %CLEAN%
+rem del release\xbmc.map
 %NET% %OPTS%
 IF NOT EXIST release\default.xbe (
 	set DIETEXT=Default.xbe failed to build!  See .\Release\BuildLog.htm for details.
