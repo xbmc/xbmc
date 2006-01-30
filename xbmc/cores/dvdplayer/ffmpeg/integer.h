@@ -14,23 +14,23 @@
  *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  */
- 
+
 /**
  * @file integer.h
  * arbitrary precision integers
  * @author Michael Niedermayer <michaelni@gmx.at>
  */
- 
+
 #ifndef INTEGER_H
 #define INTEGER_H
 
 #define AV_INTEGER_SIZE 8
 
 typedef struct AVInteger{
-    uint16_t v[AV_INTEGER_SIZE]; 
+    uint16_t v[AV_INTEGER_SIZE];
 } AVInteger;
 
 AVInteger av_add_i(AVInteger a, AVInteger b);
