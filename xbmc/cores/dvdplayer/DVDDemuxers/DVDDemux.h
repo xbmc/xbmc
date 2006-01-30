@@ -30,12 +30,16 @@ public:
     pPrivate = NULL;
     ExtraData = NULL;
     ExtraSize = NULL;
+    language[0] = 0;
+    disabled = false;
   }
 
   virtual void GetStreamInfo(std::string& strInfo)
   {
     strInfo = "";
   }
+
+  virtual void GetStreamName(CStdString& strInfo);
 
   int iId;         // most of the time starting from 0
   int iPhysicalId; // id
@@ -46,6 +50,9 @@ public:
   void* pPrivate; // private pointer for the demuxer
   void* ExtraData; // extra data for codec to use
   unsigned int ExtraSize; // size of extra data
+
+  char language[4]; // ISO 639 3-letter language code (empty string if undefined)
+  bool disabled; // set when stream is disabled. (when no decoder exists)
 };
 
 class CDemuxStreamVideo : public CDemuxStream
