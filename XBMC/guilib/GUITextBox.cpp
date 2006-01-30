@@ -32,7 +32,8 @@ CGUITextBox::~CGUITextBox(void)
 
 void CGUITextBox::Render()
 {
-  if (!UpdateEffectState()) return ;
+  if (!IsVisible()) return;
+
   int iPosY = m_iPosY;
 
   if (m_label.font)

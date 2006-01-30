@@ -331,12 +331,8 @@ void CGUISpinControl::DynamicResourceAlloc(bool bOnOff)
 
 void CGUISpinControl::Render()
 {
-  if (!UpdateEffectState())
-  {
-    m_iTypedPos = 0;
-    strcpy(m_szTyped, "");
-    return ;
-  }
+  if (!IsVisible()) return;
+
   if (!HasFocus())
   {
     m_iTypedPos = 0;

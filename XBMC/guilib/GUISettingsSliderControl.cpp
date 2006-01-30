@@ -20,7 +20,8 @@ CGUISettingsSliderControl::~CGUISettingsSliderControl(void)
 
 void CGUISettingsSliderControl::Render()
 {
-  if (!UpdateEffectState()) return ;
+  if (!IsVisible()) return;
+
   if (IsDisabled()) return ;
 
   // make sure the button has focus if it should have...

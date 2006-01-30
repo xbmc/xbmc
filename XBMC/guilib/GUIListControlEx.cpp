@@ -42,10 +42,7 @@ CGUIListControlEx::~CGUIListControlEx(void)
 
 void CGUIListControlEx::Render()
 {
-  if (!UpdateEffectState())
-  {
-    return ;
-  }
+  if (!IsVisible()) return;
 
   if ( m_pList && m_label.font )
   {

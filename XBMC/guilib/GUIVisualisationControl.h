@@ -33,6 +33,7 @@ public:
   virtual void OnAudioData(const unsigned char* pAudioData, int iAudioDataLength);
   virtual bool OnAction(const CAction &action);
   virtual bool OnMessage(CGUIMessage& message);
+
   CVisualisation *GetVisualisation() { return m_pVisualisation; };
 private:
   void FreeVisualisation();

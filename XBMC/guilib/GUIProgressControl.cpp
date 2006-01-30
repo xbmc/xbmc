@@ -30,8 +30,8 @@ void CGUIProgressControl::SetPosition(int iPosX, int iPosY)
 
 void CGUIProgressControl::Render()
 {
-  if (!UpdateEffectState()) return ;
-  
+  if (!IsVisible()) return;
+
   if (!IsDisabled())
   {
     if (m_iInfoCode) m_fPercent = (float)g_infoManager.GetInt(m_iInfoCode);
