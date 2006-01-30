@@ -495,28 +495,36 @@ int CDVDInputStreamNavigator::GetCurrentButton()
 void CDVDInputStreamNavigator::CheckButtons()
 {
   if (m_dvdnav)
-  {
+  {    
+    
     pci_t* pci = m_dll.dvdnav_get_current_nav_pci(m_dvdnav);
     int iCurrentButton = GetCurrentButton();
-    btni_t* button = &(pci->hli.btnit[iCurrentButton]);
-    
-    // menu buttons are always cropped overlays, so if there is no such information
-    // we assume the button is invalid
-    if (!(button->x_start || button->x_end || button->y_start || button->y_end))
+
+    if( iCurrentButton > 0 && iCurrentButton < 37 )
     {
-      for (int i = 0; i < 36; i++)
+      btni_t* button = &(pci->hli.btnit[iCurrentButton-1]);
+
+      // menu buttons are always cropped overlays, so if there is no such information
+      // we assume the button is invalid
+      if ((button->x_start || button->x_end || button->y_start || button->y_end))
       {
-        // select first valid button.
-        if (pci->hli.btnit[i].x_start ||
-            pci->hli.btnit[i].x_end ||
-            pci->hli.btnit[i].y_start ||
-            pci->hli.btnit[i].y_end)
-        {
-          CLog::Log(LOGWARNING, "CDVDInputStreamNavigator: found invalid button(%d)", iCurrentButton);
-          CLog::Log(LOGWARNING, "CDVDInputStreamNavigator: switching to button(%d) instead", i + 1);
-          m_dll.dvdnav_button_select(m_dvdnav, pci, i + 1);
-          break;
-        }
+        // button has info, it's valid
+        return;
+      }
+    }
+
+    // select first valid button.
+    for (int i = 0; i < 36; i++)
+    {      
+      if (pci->hli.btnit[i].x_start ||
+          pci->hli.btnit[i].x_end ||
+          pci->hli.btnit[i].y_start ||
+          pci->hli.btnit[i].y_end)
+      {
+        CLog::Log(LOGWARNING, "CDVDInputStreamNavigator: found invalid button(%d)", iCurrentButton);
+        CLog::Log(LOGWARNING, "CDVDInputStreamNavigator: switching to button(%d) instead", i + 1);
+        m_dll.dvdnav_button_select(m_dvdnav, pci, i + 1);
+        break;
       }
     }
   }
