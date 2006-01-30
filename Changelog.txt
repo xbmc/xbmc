@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 30-01-2006 changed: settings are only saved on app exit if settings.xml exists.
+ - 30-01-2006 changed: If less than 4 lines are active on the LCD, the others are blanked out, and whitespace in the xml file should now be respected.
  - 29-01-2006 fixed: playing dts streams in dvdplayer resulted in almost only noise
  - 29-01-2006 updated: ffmpeg for dvdplayer
  - 29-01-2006 fixed: big memory leak in dvdplayer

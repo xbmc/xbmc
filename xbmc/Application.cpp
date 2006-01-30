@@ -2792,8 +2792,15 @@ void CApplication::Stop()
     CLog::Log(LOGNOTICE, "Storing total System Uptime");  //GeminiServer: Total System Up-Running Time
     g_stSettings.m_iSystemTimeTotalUp = g_stSettings.m_iSystemTimeTotalUp + (int)(timeGetTime() / 60000);
 
-    CLog::Log(LOGNOTICE, "Saving settings");
-    g_settings.Save();
+    // Update the settings information (volume, uptime etc. need saving)
+    if (CFile::Exists("T:\\settings.xml"))
+    {
+      CLog::Log(LOGNOTICE, "Saving settings");
+      g_settings.Save();
+    }
+    else
+      CLog::Log(LOGNOTICE, "Not saving settings (settings.xml is not present)");
+
     m_bStop = true;
     CLog::Log(LOGNOTICE, "stop all");
 
