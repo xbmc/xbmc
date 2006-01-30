@@ -150,10 +150,11 @@ private:
   bool m_bAbortRequest;
 
   char m_filename[1024];
-
+    
   int m_iCurrentStreamVideo;
   int m_iCurrentStreamAudio;
-  int m_iCurrentPhysicalAudioStream; //The x:th audio stream will be opened by default
+  int m_iCurrentStreamSubtitle;
+
   int m_iSpeed; // 1 is normal speed, 0 is paused
   
   // classes
