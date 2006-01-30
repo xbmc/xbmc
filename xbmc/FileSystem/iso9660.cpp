@@ -551,10 +551,10 @@ struct iso_dirtree *iso9660::FindFolder( char *Folder )
     strcpy(work, Folder);
 
   temp = work + 1;
-  while ( strpbrk( temp + 1, "\\" ) )
+  while ( strlen( temp ) > 1 && strpbrk( temp + 1, "\\" ) )
     temp = strpbrk( temp + 1, "\\" );
 
-  if ( work[ strlen(work) - 1 ] == '*' )
+  if ( strlen( work ) > 1 && work[ strlen(work) - 1 ] == '*' )
   {
     work[ strlen(work) - 1 ] = 0;
   }

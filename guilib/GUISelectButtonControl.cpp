@@ -40,15 +40,10 @@ CGUISelectButtonControl::~CGUISelectButtonControl(void)
 
 void CGUISelectButtonControl::Render()
 {
-  if (!UpdateEffectState() ) return ;
-
   // Are we in selection mode
   if (m_bShowSelect)
   {
-    // Yes, render the select control
-
     // render background, left and right arrow
-
     m_imgBackground.Render();
 
     D3DCOLOR dwTextColor = m_label.textColor;

@@ -29,10 +29,7 @@ CGUIButtonControl::~CGUIButtonControl(void)
 
 void CGUIButtonControl::Render()
 {
-  if (!UpdateEffectState())
-  {
-    return ;
-  }
+  if (!IsVisible()) return;
 
   m_dwFrameCounter++;
 

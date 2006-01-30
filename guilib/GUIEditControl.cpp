@@ -120,31 +120,30 @@ void CGUIEditControl::RecalcLabelPosition()
 
 void CGUIEditControl::Render()
 {
-  if (UpdateEffectState())
+  if (!IsVisible()) return;
+
+  // we can only perform view port operations if we have an area to display
+  if (m_dwHeight > 0 && m_dwWidth > 0)
   {
-    // we can only perform view port operations if we have an area to display
-    if (m_dwHeight > 0 && m_dwWidth > 0)
-    {
-      D3DVIEWPORT8 newviewport, oldviewport;
-      g_graphicsContext.Get3DDevice()->GetViewport(&oldviewport);
+    D3DVIEWPORT8 newviewport, oldviewport;
+    g_graphicsContext.Get3DDevice()->GetViewport(&oldviewport);
 
-      newviewport.X = (DWORD)m_iOriginalPosX;
-      newviewport.Y = (DWORD)m_iPosY;
-      newviewport.Width = m_dwWidth;
-      newviewport.Height = m_dwHeight;
-      newviewport.MinZ = 0.0f;
-      newviewport.MaxZ = 1.0f;
+    newviewport.X = (DWORD)m_iOriginalPosX;
+    newviewport.Y = (DWORD)m_iPosY;
+    newviewport.Width = m_dwWidth;
+    newviewport.Height = m_dwHeight;
+    newviewport.MinZ = 0.0f;
+    newviewport.MaxZ = 1.0f;
 
-      g_graphicsContext.Get3DDevice()->SetViewport(&newviewport);
+    g_graphicsContext.Get3DDevice()->SetViewport(&newviewport);
 
-      CGUILabelControl::Render();
+    CGUILabelControl::Render();
 
-      g_graphicsContext.Get3DDevice()->SetViewport(&oldviewport);
-    }
-    else
-    {
-      // use default rendering until we have recalculated label position
-      CGUILabelControl::Render();
-    }
+    g_graphicsContext.Get3DDevice()->SetViewport(&oldviewport);
+  }
+  else
+  {
+    // use default rendering until we have recalculated label position
+    CGUILabelControl::Render();
   }
 }

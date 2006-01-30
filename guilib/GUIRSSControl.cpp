@@ -53,10 +53,7 @@ void CGUIRSSControl::SetIntervals(const vector<int>& vecIntervals)
 
 void CGUIRSSControl::Render()
 {
-  if (!UpdateEffectState())
-  {
-    return ;
-  }
+  if (!IsVisible()) return;
 
   // only render the control if they are enabled and the network is available
   if (g_guiSettings.GetBool("Network.EnableRSSFeeds") && g_guiSettings.GetBool("Network.EnableInternet"))
