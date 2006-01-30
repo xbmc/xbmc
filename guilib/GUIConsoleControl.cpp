@@ -65,10 +65,7 @@ bool CGUIConsoleControl::OnAction(const CAction &action)
 
 void CGUIConsoleControl::Render()
 {
-  if (!UpdateEffectState())
-  {
-    return ;
-  }
+  if (!IsVisible()) return;
 
   m_dwFrameCounter++;
 

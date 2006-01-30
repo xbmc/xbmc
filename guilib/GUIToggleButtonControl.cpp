@@ -23,14 +23,13 @@ CGUIToggleButtonControl::~CGUIToggleButtonControl(void)
 
 void CGUIToggleButtonControl::Render()
 {
-  if (!UpdateEffectState() ) return ;
-
   // ask our infoManager whether we are selected or not...
   if (m_toggleSelect)
     m_bSelected = !g_infoManager.GetBool(m_toggleSelect, m_dwParentID);
 
   if (m_bSelected)
-  { // render our Alt textures...
+  {
+    // render our Alt textures...
     m_selectButton.SetFocus(HasFocus());
     m_selectButton.SetVisible(IsVisible());
     m_selectButton.SetEnabled(!IsDisabled());
