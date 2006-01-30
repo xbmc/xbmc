@@ -26,7 +26,7 @@ CGUIResizeControl::~CGUIResizeControl(void)
 
 void CGUIResizeControl::Render()
 {
-  if (!UpdateEffectState() ) return ;
+  if (!IsVisible()) return;
 
   if (HasFocus())
   {

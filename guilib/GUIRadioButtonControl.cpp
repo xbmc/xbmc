@@ -20,8 +20,8 @@ CGUIRadioButtonControl::~CGUIRadioButtonControl(void)
 
 void CGUIRadioButtonControl::Render()
 {
-  if (!UpdateEffectState()) return ;
   CGUIButtonControl::Render();
+
   if ( IsSelected() && !IsDisabled() )
   {
     //    if ( HasFocus() )

@@ -30,10 +30,7 @@ void CGUIFadeLabelControl::SetLabel(const vector<wstring> &vecLabel)
 
 void CGUIFadeLabelControl::Render()
 {
-	if (!UpdateEffectState())
-	{
-		return ;
-	}
+  if (!IsVisible()) return;
 
 	if (!m_label.font || (m_vecLabels.size() == 0 && m_vecInfo.size() == 0))
   {

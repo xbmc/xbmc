@@ -20,7 +20,8 @@ CGUICheckMarkControl::~CGUICheckMarkControl(void)
 
 void CGUICheckMarkControl::Render()
 {
-  if (!UpdateEffectState()) return ;
+  if (!IsVisible()) return;
+
   int iTextPosX = m_iPosX;
   int iTextPosY = m_iPosY;
   int iCheckMarkPosX = m_iPosX;

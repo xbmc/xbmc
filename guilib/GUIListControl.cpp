@@ -42,7 +42,7 @@ CGUIListControl::~CGUIListControl(void)
 
 void CGUIListControl::Render()
 {
-  if (!UpdateEffectState()) return ;
+  if (!IsVisible()) return;
 
   // Free memory not used on screen at the moment, do this first so there's more memory for the new items.
   if (m_iOffset < 30000)
