@@ -5,7 +5,7 @@
 #define EMULATE_INTTYPES
 #define HAVE_MMX
 #include "avformat.h"
-
+ 
 static bool ffmpeg_printed_newline = false;
 static void dvdplayer_log(void* ptr, int level, const char* format, va_list va)
 {
