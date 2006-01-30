@@ -220,6 +220,7 @@ public:
   bool Load(bool& bXboxMediacenter, bool& bSettings);
   bool QuickXMLLoad(CStdString strElement);
   void Save() const;
+  bool Reset();
 
   void Clear();
 

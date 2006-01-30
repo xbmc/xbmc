@@ -218,6 +218,15 @@ bool CSettings::QuickXMLLoad(CStdString strElement)
   //
   
 }
+
+bool CSettings::Reset()
+{
+  CLog::Log(LOGINFO, "Resetting settings");
+  CFile::Delete("T:\\settings.xml");
+  Save();
+  return LoadSettings("T:\\settings.xml", true);
+}
+
 bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
 {
   // load settings file...
@@ -227,7 +236,7 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
   {
     CLog::Log(LOGERROR, "Unable to load T:\\settings.xml, creating new T:\\settings.xml with default values");
     Save();
-    if (!(bSettings = LoadSettings("T:\\settings.xml", true)))
+    if (!(bSettings = Reset()))
       return false;
   }
 
