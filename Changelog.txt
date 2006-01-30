@@ -5,6 +5,9 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 29-01-2006 fixed: playing dts streams in dvdplayer resulted in almost only noise
+ - 29-01-2006 updated: ffmpeg for dvdplayer
+ - 29-01-2006 fixed: big memory leak in dvdplayer
  - 29-01-2006 fixed: Window.IsActive() didn't return correctly for dialogs that have multiple id's (eg Audio and Video OSD settings).
  - 29-01-2006 fixed: seeking in cube codec. also added .hps.
  - 29-01-2006 fixed: Caching of Textures.xpr to Z: when run from DVD, thanks to Zak.
