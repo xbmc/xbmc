@@ -52,6 +52,9 @@ bool CDVDAudioCodecLiba52::Open(CodecID codecID, int iChannels, int iSampleRate,
 
   SetDefault();
 
+  // analog output is only supported in stereo
+  iChannels = 2;
+  
   m_pState = m_dll.a52_init(0);
   if (!m_pState)
   {
