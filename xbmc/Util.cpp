@@ -3751,13 +3751,23 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
 }
 int CUtil::GetMatchingShare(const CStdString& strPath1, VECSHARES& vecShares, bool& bIsBookmarkName)
 {
-  //CLog::Log(LOGDEBUG,"CUtil::GetMatchingShare, testing path/name [%s]", strPath.c_str());
+  CLog::Log(LOGDEBUG,"CUtil::GetMatchingShare, testing original path/name [%s]", strPath1.c_str());
 
-  CStdString strPath = strPath1;  // copy as we may change strPath
-  // Check special protocols, such as stack://
+  // copy as we may change strPath
+  CStdString strPath = strPath1;  
+
+  // Check for special protocols
   CURL checkURL(strPath);
+
+  // stack://
   if (checkURL.GetProtocol() == "stack")
     strPath.Delete(0, 8); // remove the stack protocol
+
+  // rar:// and zip://
+  // get the hostname portion of the url since it contains the archive file
+  // (see URL.cpp for details of how archives are processed)
+  if (checkURL.GetProtocol().Equals("rar") || checkURL.GetProtocol().Equals("zip"))
+    strPath = checkURL.GetHostName();
 
   // remove user details, and ensure path only uses forward slashes
   // and ends with a trailing slash so as not to match a substring
@@ -3768,7 +3778,8 @@ int CUtil::GetMatchingShare(const CStdString& strPath1, VECSHARES& vecShares, bo
   if (!HasSlashAtEnd(strDest))
     strDest += "/";
   int iLenPath = strDest.size();
-  //CLog::Log(LOGDEBUG,"CUtil::GetMatchingShare, testing url [%s]", strDest.c_str());
+
+  CLog::Log(LOGDEBUG,"CUtil::GetMatchingShare, testing url [%s]", strDest.c_str());
 
   bIsBookmarkName = false;
   int iIndex = -1;
@@ -3822,11 +3833,11 @@ int CUtil::GetMatchingShare(const CStdString& strPath1, VECSHARES& vecShares, bo
       if (!HasSlashAtEnd(strShare))
         strShare += "/";
       int iLenShare = strShare.size();
-      //CLog::Log(LOGDEBUG,"CUtil::GetMatchingShare, comparing url [%s]", strShare.c_str());
+      CLog::Log(LOGDEBUG,"CUtil::GetMatchingShare, comparing url [%s]", strShare.c_str());
 
       if ((iLenPath >= iLenShare) && (strDest.Left(iLenShare).Equals(strShare)) && (iLenShare > iLength))
       {
-        //CLog::Log(LOGDEBUG,"Found matching bookmark at index %i: [%s], Len = [%i]", i, strShare.c_str(), iLenShare);
+        CLog::Log(LOGDEBUG,"Found matching bookmark at index %i: [%s], Len = [%i]", i, strShare.c_str(), iLenShare);
 
         // if exact match, return it immediately
         if (iLenPath == iLenShare)
