@@ -24,16 +24,14 @@ CGUIMultiImage::~CGUIMultiImage(void)
 
 void CGUIMultiImage::Render()
 {
-  // check for conditional visibility
-  bool bVisible = UpdateEffectState();
-
-  if (m_bDynamicResourceAlloc && !bVisible && IsAllocated())
-    FreeResources();
-
-  if (!bVisible)
+  if (!IsVisible())
+  {
+    if (m_bDynamicResourceAlloc && IsAllocated())
+      FreeResources();
     return;
+  }
 
-  if (m_bDynamicResourceAlloc && bVisible && !IsAllocated())
+  if (m_bDynamicResourceAlloc && !IsAllocated())
     AllocResources();
   else if (!m_bDynamicResourceAlloc && !IsAllocated())
     AllocResources();  // not dynamic, make sure we allocate!

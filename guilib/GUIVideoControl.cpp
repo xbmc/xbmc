@@ -14,7 +14,7 @@ CGUIVideoControl::~CGUIVideoControl(void)
 
 void CGUIVideoControl::Render()
 {
-  if (!UpdateEffectState()) return ;
+  if (!IsVisible()) return;
 
   // don't render if we aren't playing video, or if the renderer isn't started
   // (otherwise the lock we have from CApplication::Render() may clash with the startup
