@@ -73,12 +73,13 @@ __int64 dvd_input_stream_seek(void *opaque, __int64 offset, int whence)
 }
 
 URLProtocol dvd_file_protocol = {
-                                  "file",
-                                  dvd_file_open,
+                                  "CDVDInputStream",
+                                  NULL,
                                   dvd_file_read,
-                                  dvd_file_write,
+                                  NULL,
                                   dvd_file_seek,
                                   dvd_file_close,
+                                  NULL
                                 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -312,58 +313,58 @@ CDVDDemux::DemuxPacket* CDVDDemuxFFmpeg::Read()
       if (pkt.size <= 0 || num == 0 || den == 0 || pkt.stream_index >= MAX_STREAMS)
       {
         CLog::Log(LOGERROR, "CDVDDemuxFFmpeg::Read() no valid packet");
-        Unlock();
-        return NULL;
       }
-      
-      pPacket = CDVDDemuxUtils::AllocateDemuxPacket(pkt.size);
-      if (pPacket)
+      else
       {
-        // copy contents into our own packet
-        pPacket->iSize = pkt.size;
-        
-        // maybe we can avoid a memcpy here by detecting where pkt.destruct is pointing too?
-        fast_memcpy(pPacket->pData, pkt.data, pPacket->iSize);
-        
-        if (pkt.pts == AV_NOPTS_VALUE) pPacket->pts = DVD_NOPTS_VALUE;
-        else
+        pPacket = CDVDDemuxUtils::AllocateDemuxPacket(pkt.size);
+        if (pPacket)
         {
-          pPacket->pts = (num * pkt.pts * AV_TIME_BASE) / den;
-          if (m_pFormatContext->start_time != AV_NOPTS_VALUE)              
+          // copy contents into our own packet
+          pPacket->iSize = pkt.size;
+          
+          // maybe we can avoid a memcpy here by detecting where pkt.destruct is pointing too?
+          fast_memcpy(pPacket->pData, pkt.data, pPacket->iSize);
+          
+          if (pkt.pts == AV_NOPTS_VALUE) pPacket->pts = DVD_NOPTS_VALUE;
+          else
           {
-            if( pPacket->pts > (unsigned __int64)m_pFormatContext->start_time )
-              pPacket->pts -= m_pFormatContext->start_time;
-            else if( pPacket->pts + PTS_START_THREASHOLD > (unsigned __int64)m_pFormatContext->start_time )
-              pPacket->pts = 0;
+            pPacket->pts = (num * pkt.pts * AV_TIME_BASE) / den;
+            if (m_pFormatContext->start_time != AV_NOPTS_VALUE)              
+            {
+              if( pPacket->pts > (unsigned __int64)m_pFormatContext->start_time )
+                pPacket->pts -= m_pFormatContext->start_time;
+              else if( pPacket->pts + PTS_START_THREASHOLD > (unsigned __int64)m_pFormatContext->start_time )
+                pPacket->pts = 0;
+            }
+            
+            // convert to dvdplayer clock ticks
+            pPacket->pts = (pPacket->pts * DVD_TIME_BASE) / AV_TIME_BASE;
           }
           
-          // convert to dvdplayer clock ticks
-          pPacket->pts = (pPacket->pts * DVD_TIME_BASE) / AV_TIME_BASE;
+          if (pkt.dts == AV_NOPTS_VALUE) pPacket->dts = DVD_NOPTS_VALUE;
+          else
+          {
+            pPacket->dts = (num * pkt.dts * AV_TIME_BASE) / den;
+            if (m_pFormatContext->start_time !=  AV_NOPTS_VALUE)
+            {
+              if( pPacket->dts > (unsigned __int64)m_pFormatContext->start_time )
+                pPacket->dts -= m_pFormatContext->start_time;
+              else if( pPacket->dts + PTS_START_THREASHOLD > (unsigned __int64)m_pFormatContext->start_time )
+                pPacket->dts = 0;
+            }
+            
+            // convert to dvdplayer clock ticks
+            pPacket->dts = (pPacket->dts * DVD_TIME_BASE) / AV_TIME_BASE;
+            
+            // used to guess streamlength
+            if (pPacket->dts > m_iCurrentPts)
+            {
+              m_iCurrentPts = pPacket->dts;
+            }
+          }
+          
+          pPacket->iStreamId = pkt.stream_index; // XXX just for now
         }
-        
-        if (pkt.dts == AV_NOPTS_VALUE) pPacket->dts = DVD_NOPTS_VALUE;
-        else
-        {
-          pPacket->dts = (num * pkt.dts * AV_TIME_BASE) / den;
-          if (m_pFormatContext->start_time !=  AV_NOPTS_VALUE)
-          {
-            if( pPacket->dts > (unsigned __int64)m_pFormatContext->start_time )
-              pPacket->dts -= m_pFormatContext->start_time;
-            else if( pPacket->dts + PTS_START_THREASHOLD > (unsigned __int64)m_pFormatContext->start_time )
-              pPacket->dts = 0;
-          }
-          
-          // convert to dvdplayer clock ticks
-          pPacket->dts = (pPacket->dts * DVD_TIME_BASE) / AV_TIME_BASE;
-          
-          // used to guess streamlength
-          if (pPacket->dts > m_iCurrentPts)
-          {
-            m_iCurrentPts = pPacket->dts;
-          }
-        }
-        
-        pPacket->iStreamId = pkt.stream_index; // XXX just for now
       }
       av_free_packet(&pkt);
     }
