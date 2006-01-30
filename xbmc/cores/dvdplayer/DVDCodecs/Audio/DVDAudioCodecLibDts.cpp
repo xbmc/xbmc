@@ -186,6 +186,9 @@ bool CDVDAudioCodecLibDts::Open(CodecID codecID, int iChannels, int iSampleRate,
 
   SetDefault();
 
+  // analog output is only supported in stereo
+  iChannels = 2;
+  
   m_pState = m_dll.dts_init(0);
   if (!m_pState)
   {

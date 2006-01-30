@@ -50,15 +50,6 @@ bool CDVDPlayerAudio::OpenStream( CDemuxStreamAudio *pDemuxStream )
 
   CodecID codecID = pDemuxStream->codec;
 
-  int iWantedChannels = pDemuxStream->iChannels;
-  if (iWantedChannels == 5) iWantedChannels = 6;
-
-  //Let codec downmix for us int the case of ac3
-  if (pDemuxStream->codec == CODEC_ID_AC3 || pDemuxStream->codec == CODEC_ID_DTS)
-  {
-    iWantedChannels = 2;
-  }
-
   CLog::Log(LOGNOTICE, "Finding audio codec for: %i", codecID);
   m_pAudioCodec = CDVDFactoryCodec::CreateAudioCodec( pDemuxStream );
   if( !m_pAudioCodec )

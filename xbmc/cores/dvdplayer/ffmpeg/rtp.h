@@ -14,7 +14,7 @@
  *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 #ifndef RTP_H
 #define RTP_H
@@ -29,7 +29,7 @@ int rtp_get_payload_type(AVCodecContext *codec);
 typedef struct RTPDemuxContext RTPDemuxContext;
 typedef struct rtp_payload_data_s rtp_payload_data_s;
 RTPDemuxContext *rtp_parse_open(AVFormatContext *s1, AVStream *st, int payload_type, rtp_payload_data_s *rtp_payload_data);
-int rtp_parse_packet(RTPDemuxContext *s, AVPacket *pkt, 
+int rtp_parse_packet(RTPDemuxContext *s, AVPacket *pkt,
                      const uint8_t *buf, int len);
 void rtp_parse_close(RTPDemuxContext *s);
 
