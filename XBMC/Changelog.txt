@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 30-01-2006 fixed: focused button was not remembered sometimes (homescreen most obvious)
  - 30-01-2006 fixed: detection of invalid highlights didn't see button 0 as invalid
  - 30-01-2006 added: auto disable unsupported streams in dvdplayer
  - 30-01-2006 changed: subtitle stream selection to work same as audio stream selection in dvdplayer
