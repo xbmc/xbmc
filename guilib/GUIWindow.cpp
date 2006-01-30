@@ -400,7 +400,7 @@ bool CGUIWindow::Load(TiXmlElement* pRootElement, RESOLUTION resToUse)
   // Resolve any includes that may be present
   g_SkinInfo.ResolveIncludes(pRootElement);
   // now load in the skin file
-  bool m_saveLastControl = true;
+  m_saveLastControl = true;
   m_dwDefaultFocusControlID = 0;
   m_bRelativeCoords = false;
   m_iPosX = m_iPosY = m_dwWidth = m_dwHeight = 0;
