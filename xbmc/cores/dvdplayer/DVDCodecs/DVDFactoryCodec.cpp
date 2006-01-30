@@ -84,7 +84,7 @@ CDVDAudioCodec* CDVDFactoryCodec::CreateAudioCodec( CDemuxStreamAudio *pDemuxStr
 
   pCodec = OpenCodec( new CDVDAudioCodecPassthrough(), pDemuxStream );
   if( pCodec ) return pCodec;
-  
+
   switch (pDemuxStream->codec)
   {
   case CODEC_ID_AC3:

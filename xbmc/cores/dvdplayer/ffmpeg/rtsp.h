@@ -14,7 +14,7 @@
  *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 #ifndef RTSP_H
 #define RTSP_H
@@ -55,7 +55,7 @@ typedef struct RTSPHeader {
     enum RTSPStatusCode status_code; /* response code from server */
     int nb_transports;
     /* in AV_TIME_BASE unit, AV_NOPTS_VALUE if not used */
-    int64_t range_start, range_end; 
+    int64_t range_start, range_end;
     RTSPTransportField transports[RTSP_MAX_TRANSPORTS];
     int seq; /* sequence number */
     char session_id[512];
@@ -74,7 +74,7 @@ typedef struct RTSPActionServerSetup {
     char transport_option[512];
 } RTSPActionServerSetup;
 
-typedef int FFRTSPCallback(enum RTSPCallbackAction action, 
+typedef int FFRTSPCallback(enum RTSPCallbackAction action,
                            const char *session_id,
                            char *buf, int buf_size,
                            void *arg);
