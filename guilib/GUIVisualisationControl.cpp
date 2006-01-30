@@ -146,12 +146,13 @@ void CGUIVisualisationControl::LoadVisualisation()
 
 void CGUIVisualisationControl::Render()
 {
-  if (!UpdateEffectState())
+  if (!IsVisible())
   {
     if (m_bInitialized)
       FreeVisualisation();
     return;
   }
+  
   if (!m_bInitialized)
   { // check if we need to load
     if (g_application.IsPlayingAudio())

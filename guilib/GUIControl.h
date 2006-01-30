@@ -117,7 +117,7 @@ public:
   int GetVisibleCondition() const { return m_visibleCondition; };
   void UpdateVisibility();
   void SetInitialVisibility();
-  bool UpdateEffectState();
+  void UpdateEffectState(DWORD currentTime);
   void SetSelected(bool bSelected);
   virtual void SetEnabled(bool bEnable);
   bool CalibrationEnabled() const;
@@ -169,10 +169,9 @@ public:
   void QueueAnimation(ANIMATION_TYPE anim);
   bool IsAnimating(ANIMATION_TYPE anim);
   CAnimation *GetAnimation(ANIMATION_TYPE type);
-  void SetAnimTime(DWORD time) { m_animTime = time; };
 
 protected:
-  void Animate();
+  void Animate(DWORD currentTime);
   void UpdateStates(ANIMATION_TYPE type, ANIMATION_PROCESS currentProcess, ANIMATION_STATE currentState);
 
   DWORD m_dwControlLeft;
@@ -208,7 +207,6 @@ protected:
   // animation effects
   vector<CAnimation> m_animations;
   CAnimation m_tempAnimation;   // We can remove this once we have got rid of the effects
-  DWORD m_animTime;
 };
 
 #endif

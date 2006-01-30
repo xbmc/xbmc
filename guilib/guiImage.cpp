@@ -84,10 +84,10 @@ void CGUIImage::Render(int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight)
 
 void CGUIImage::Render()
 {
-  // check for conditional visibility
-  bool bVisible = UpdateEffectState();
+  bool bVisible = IsVisible();
 
-  // check for conditional information
+  // check for conditional information before we free and
+  // alloc as this does free and allocation as well
   if (m_Info)
   {
     CStdString strImage = g_infoManager.GetImage(m_Info);
@@ -101,10 +101,10 @@ void CGUIImage::Render()
   if (!bVisible)
   {
     m_bWasVisible = false;
-    return ;
+    return;
   }
-  
-  if (m_bDynamicResourceAlloc && bVisible && !IsAllocated())
+
+  if (m_bDynamicResourceAlloc && !IsAllocated())
     AllocResources();
   else if (!m_bDynamicResourceAlloc && !IsAllocated())
     AllocResources();  // not dynamic, make sure we allocate!

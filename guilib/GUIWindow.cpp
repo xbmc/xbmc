@@ -665,7 +665,7 @@ void CGUIWindow::Render()
     if (pControl)
     {
       g_graphicsContext.ResetControlAnimation();
-      pControl->SetAnimTime(currentTime);
+      pControl->UpdateEffectState(currentTime);
       pControl->Render();
     }
   }
@@ -730,21 +730,19 @@ void CGUIWindow::OnMouseAction()
     }
   }
 
-  // run through the controls, and find which one is under the pointer
+  // run through the controls, and unfocus all those that aren't under the pointer,
   for (ivecControls i = m_vecControls.begin(); i != m_vecControls.end(); ++i)
   {
     CGUIControl *pControl = *i;
-    if (pControl->CanFocus())
-    {
-      if (!bHandled && pControl->HitTest(g_Mouse.iPosX, g_Mouse.iPosY))
-      { // OK, now check which action we should perform
-        bHandled = HandleMouse(pControl);
-      }
-      else
-      { // make sure that focus is not set
-        pControl->SetFocus(false);
-      }
-    }
+    if (pControl->CanFocus() && !pControl->HitTest(g_Mouse.iPosX, g_Mouse.iPosY))
+      pControl->SetFocus(false);
+  }
+  // and find which one is under the pointer
+  for (ivecControls i = m_vecControls.begin(); i != m_vecControls.end(); ++i)
+  {
+    CGUIControl *pControl = *i;
+    if (!bHandled && pControl->CanFocus() && pControl->HitTest(g_Mouse.iPosX, g_Mouse.iPosY))
+      bHandled = HandleMouse(pControl);
   }
   if (!bHandled)
   { // haven't handled this action - call the window message handlers

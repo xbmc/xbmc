@@ -261,8 +261,8 @@ void CGUIButtonScroller::DynamicResourceAlloc(bool bOnOff)
 
 void CGUIButtonScroller::Render()
 {
-	if (!UpdateEffectState())
-		return;
+  if (!IsVisible()) return;
+
   int iPosX = m_iPosX;
   int iPosY = m_iPosY;
   // set our viewport

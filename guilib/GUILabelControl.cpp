@@ -40,12 +40,8 @@ void CGUILabelControl::SetInfo(const vector<int> &vecInfo)
 
 void CGUILabelControl::Render()
 {
-  if (!UpdateEffectState())
-  {
-    return;
-  }
+  if (!IsVisible()) return;
 
- 
 	WCHAR szLabel[1024];
 	swprintf(szLabel, L"%s", m_strLabel.c_str() );
 	CStdString strRenderLabel = szLabel;
