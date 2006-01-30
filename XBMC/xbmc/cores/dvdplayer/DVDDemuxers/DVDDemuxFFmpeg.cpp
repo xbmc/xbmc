@@ -525,6 +525,8 @@ void CDVDDemuxFFmpeg::AddStream(int iId)
     m_streams[iId]->codec = pStream->codec->codec_id;
     m_streams[iId]->iId = iId;
 
+    strcpy( m_streams[iId]->language, pStream->language );
+
     if( pStream->codec->extradata && pStream->codec->extradata_size > 0 )
     {
       m_streams[iId]->ExtraSize = pStream->codec->extradata_size;
@@ -536,24 +538,35 @@ void CDVDDemuxFFmpeg::AddStream(int iId)
     if( m_streams[iId]->codec == CODEC_ID_AC3 && (pStream->id >= 136 && pStream->id <= 143) )
       m_streams[iId]->codec = CODEC_ID_DTS;
 
-    switch(m_streams[iId]->codec)
+    if( m_pInput->IsStreamType(DVDSTREAM_TYPE_DVD) )
     {
-      case CODEC_ID_AC3:
-        m_streams[iId]->iPhysicalId = pStream->id - 128;
-        break;
-      case CODEC_ID_DTS:
-        m_streams[iId]->iPhysicalId = pStream->id - 136;
-        break;
-      case CODEC_ID_MP2:
-        m_streams[iId]->iPhysicalId = pStream->id - 448;
-        break;
-      case CODEC_ID_PCM_S16BE:
-        m_streams[iId]->iPhysicalId = pStream->id - 160;
-        break;
-      default:
-        m_streams[iId]->iPhysicalId = pStream->id;
-        break;
+      // this stuff is really only valid for dvd's.
+      // this is so that the physicalid matches the 
+      // id's reported from libdvdnav
+      switch(m_streams[iId]->codec)
+      {
+        case CODEC_ID_AC3:
+          m_streams[iId]->iPhysicalId = pStream->id - 128;
+          break;
+        case CODEC_ID_DTS:
+          m_streams[iId]->iPhysicalId = pStream->id - 136;
+          break;
+        case CODEC_ID_MP2:
+          m_streams[iId]->iPhysicalId = pStream->id - 448;
+          break;
+        case CODEC_ID_PCM_S16BE:
+          m_streams[iId]->iPhysicalId = pStream->id - 160;
+          break;
+        case CODEC_ID_DVD_SUBTITLE:
+          m_streams[iId]->iPhysicalId = pStream->id - 0x20;
+          break;
+        default:
+          m_streams[iId]->iPhysicalId = pStream->id;
+          break;
+      }
     }
+    else
+      m_streams[iId]->iPhysicalId = pStream->id;
 
     // we set this pointer to detect a stream changed inside ffmpeg
     // used to extract info too

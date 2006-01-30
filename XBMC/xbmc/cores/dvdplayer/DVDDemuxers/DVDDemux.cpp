@@ -2,6 +2,7 @@
 #include "../../../stdafx.h"
 #include "DVDDemux.h"
 #include "..\DVDCodecs\DVDCodecs.h"
+#include "..\..\..\LangCodeExpander.h"
 
 void CDemuxStreamAudio::GetStreamType(std::string& strInfo)
 {
@@ -109,4 +110,12 @@ CDemuxStream* CDVDDemux::GetStreamFromSubtitleId(int iSubtitleIndex)
     }
   }
   return NULL;
+}
+
+void CDemuxStream::GetStreamName( CStdString& strInfo )
+{   
+  if( language[0] == 0 )
+    strInfo = "Unknown";
+  else
+    g_LangCodeExpander.Lookup( strInfo, language, CLangCodeExpander::ELangCodeTypes::ELT_ISO639_2 );
 }
