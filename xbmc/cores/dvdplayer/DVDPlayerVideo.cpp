@@ -166,6 +166,11 @@ void CDVDPlayerVideo::Process()
     {
       CLog::Log(LOGINFO, "CDVDPlayerVideo - Stillframe left, switching to normal playback");      
       bDetectedStill = false;
+
+      //don't allow the first frames after a still to be dropped
+      //sometimes we get multiple stills (long duration frames) after each other
+      //in normal mpegs
+      m_iNrOfPicturesNotToSkip = 5; 
     }
 
     EnterCriticalSection(&m_critCodecSection);
