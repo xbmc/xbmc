@@ -1000,6 +1000,11 @@ void CGUIWindowVideoBase::GetStackedFiles(const CStdString &strFilePath1, vector
 
 void CGUIWindowVideoBase::OnPlayMedia(int iItem)
 {
+  // Reset Playlistplayer, playback started now does
+  // not use the playlistplayer.
+  g_playlistPlayer.Reset();
+  g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_NONE);
+
   if ( iItem < 0 || iItem >= (int)m_vecItems.Size() ) return;
   CFileItem* pItem = m_vecItems[iItem];
 

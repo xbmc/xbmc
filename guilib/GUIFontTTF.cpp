@@ -166,7 +166,7 @@ void CGUIFontTTF::DrawTextInternal( FLOAT sx, FLOAT sy, const CAngle &angle, DWO
     // If starting text on a new line, determine justification effects
     if ( bStartingNewLine )
     {
-      posX = sx + angle.sine * m_pTrueTypeFont->GetTextHeight() * numLines;
+      posX = sx - angle.sine * m_pTrueTypeFont->GetTextHeight() * numLines;
       posY = sy + angle.cosine * m_pTrueTypeFont->GetTextHeight() * numLines;
       if ( dwFlags & (XBFONT_RIGHT | XBFONT_CENTER_X) )
       {
@@ -180,7 +180,7 @@ void CGUIFontTTF::DrawTextInternal( FLOAT sx, FLOAT sy, const CAngle &angle, DWO
           w *= 0.5f;
         // Offset this line's starting position
         posX -= angle.cosine * w;
-        posY += angle.sine * w;
+        posY -= angle.sine * w;
       }
       bStartingNewLine = FALSE;
       alignedStartX = (int)posX;
@@ -220,7 +220,7 @@ void CGUIFontTTF::DrawTextInternal( FLOAT sx, FLOAT sy, const CAngle &angle, DWO
         {
           RenderCharacter(posX, posY, angle, GetCharacter(L'.'), dwColor);
           posX += m_ellipsesWidth * angle.cosine;
-          posY -= m_ellipsesWidth * angle.sine;
+          posY += m_ellipsesWidth * angle.sine;
         }
         End();
         return;
@@ -228,7 +228,7 @@ void CGUIFontTTF::DrawTextInternal( FLOAT sx, FLOAT sy, const CAngle &angle, DWO
     }
     RenderCharacter(posX, posY, angle, ch, dwColor);
     posX += ch->width * angle.cosine;
-    posY -= ch->width * angle.sine;
+    posY += ch->width * angle.sine;
   }
   End();
 }
@@ -433,13 +433,13 @@ void CGUIFontTTF::RenderCharacter(float posX, float posY, const CAngle &angle, c
   m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, posX, posY, 0, 1.0f );
 
   m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)ch->right + m_charGap, (float)ch->top );
-  m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, posX + angle.cosine * ch->width, posY - angle.sine * ch->width, 0, 1.0f );
+  m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, posX + angle.cosine * ch->width, posY + angle.sine * ch->width, 0, 1.0f );
 
   m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)ch->right + m_charGap, (float)ch->bottom );
-  m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, posX + angle.cosine * ch->width + angle.sine * ch->height, posY - angle.sine * ch->width + angle.cosine * ch->height, 0, 1.0f );
+  m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, posX + angle.cosine * ch->width - angle.sine * ch->height, posY + angle.sine * ch->width + angle.cosine * ch->height, 0, 1.0f );
 
   m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)ch->left, (float)ch->bottom );
-  m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, posX + angle.sine * ch->height, posY + angle.cosine * ch->height, 0, 1.0f );
+  m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, posX - angle.sine * ch->height, posY + angle.cosine * ch->height, 0, 1.0f );
 }
 
 void CGUIFontTTF::CreateShaderAndTexture()

@@ -30,7 +30,6 @@ public:
   virtual bool IsDialog() const { return true;};
 
 protected:
-  virtual void OnWindowCloseAnimation();
   virtual bool RenderAnimation(DWORD time);
   virtual void UpdateStates(ANIMATION_TYPE type, ANIMATION_PROCESS currentProcess, ANIMATION_STATE currentState);
 

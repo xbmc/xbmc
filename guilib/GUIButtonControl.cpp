@@ -230,7 +230,7 @@ void CGUIButtonControl::SetHyperLink(long dwWindowID)
   m_lHyperLinkWindowID = dwWindowID;
 }
 
-void CGUIButtonControl::OnMouseClick(DWORD dwButton)
+bool CGUIButtonControl::OnMouseClick(DWORD dwButton)
 {
   if (dwButton == MOUSE_LEFT_BUTTON)
   {
@@ -238,7 +238,9 @@ void CGUIButtonControl::OnMouseClick(DWORD dwButton)
     CAction action;
     action.wID = ACTION_SELECT_ITEM;
     OnAction(action);
+    return true;
   }
+  return false;
 }
 
 void CGUIButtonControl::Flicker(bool bFlicker)

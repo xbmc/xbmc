@@ -36,13 +36,15 @@ void CGUIVideoControl::Render()
   CGUIControl::Render();
 }
 
-void CGUIVideoControl::OnMouseClick(DWORD dwButton)
+bool CGUIVideoControl::OnMouseClick(DWORD dwButton)
 { // mouse has clicked in the video control
   // switch to fullscreen video
+  if (!g_application.IsPlayingVideo()) return false;
   if (dwButton == MOUSE_LEFT_BUTTON)
   {
     CGUIMessage message(GUI_MSG_FULLSCREEN, GetID(), GetParentID());
     g_graphicsContext.SendMessage(message);
+    return true;
   }
   if (dwButton == MOUSE_RIGHT_BUTTON)
   { // toggle the playlist window
@@ -52,5 +54,7 @@ void CGUIVideoControl::OnMouseClick(DWORD dwButton)
       m_gWindowManager.ActivateWindow(WINDOW_VIDEO_PLAYLIST);
     // reset the mouse button.
     g_Mouse.bClick[MOUSE_RIGHT_BUTTON] = false;
+    return true;
   }
+  return false;
 }
