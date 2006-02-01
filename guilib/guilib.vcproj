@@ -587,6 +587,9 @@
 				RelativePath=".\TextureManager.h">
 			</File>
 			<File
+				RelativePath=".\TransformMatrix.h">
+			</File>
+			<File
 				RelativePath=".\VisibleEffect.h">
 			</File>
 			<File

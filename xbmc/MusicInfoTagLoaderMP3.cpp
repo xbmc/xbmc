@@ -72,9 +72,15 @@ bool CMusicInfoTagLoaderMP3::Load(const CStdString& strFileName, CMusicInfoTag& 
     if (apeTag.ReadTag(strFileName.c_str()))
     { // found - let's copy over the additional info (if any)
       if (apeTag.GetArtist().size())
+      {
         tag.SetArtist(apeTag.GetArtist());
+        tag.SetLoaded();
+      }
       if (apeTag.GetAlbum().size())
+      {
         tag.SetAlbum(apeTag.GetAlbum());
+        tag.SetLoaded();
+      }
       if (apeTag.GetTitle().size())
       {
         tag.SetTitle(apeTag.GetTitle());

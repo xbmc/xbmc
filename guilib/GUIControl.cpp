@@ -452,12 +452,14 @@ bool CGUIControl::HitTest(int iPosX, int iPosY) const
 }
 
 // override this function to implement custom mouse behaviour
-void CGUIControl::OnMouseOver()
+bool CGUIControl::OnMouseOver()
 {
   if (g_Mouse.GetState() != MOUSE_STATE_DRAG)
     g_Mouse.SetState(MOUSE_STATE_FOCUS);
+  if (!CanFocus()) return false;
   CGUIMessage msg(GUI_MSG_SETFOCUS, GetParentID(), GetID());
   g_graphicsContext.SendMessage(msg);
+  return true;
 }
 
 void CGUIControl::SetGroup(int iGroup)
@@ -656,6 +658,7 @@ void CGUIControl::UpdateStates(ANIMATION_TYPE type, ANIMATION_PROCESS currentPro
 
 void CGUIControl::Animate(DWORD currentTime)
 {
+  TransformMatrix transform;
   for (unsigned int i = 0; i < m_animations.size(); i++)
   {
     CAnimation &anim = m_animations[i];
@@ -663,7 +666,7 @@ void CGUIControl::Animate(DWORD currentTime)
     // Update the control states (such as visibility)
     UpdateStates(anim.type, anim.currentProcess, anim.currentState);
     // and render the animation effect
-    g_graphicsContext.AddControlAnimation(anim.RenderAnimation());
+    transform *= anim.RenderAnimation();
 /*
     // debug stuff
     if (anim.currentProcess != ANIM_PROCESS_NONE)
@@ -684,7 +687,7 @@ void CGUIControl::Animate(DWORD currentTime)
   // do the temporary fade effect as well
   m_tempAnimation.Animate(currentTime, HasRendered());
   UpdateStates(m_tempAnimation.type, m_tempAnimation.currentProcess, m_tempAnimation.currentState);
-  g_graphicsContext.AddControlAnimation(m_tempAnimation.RenderAnimation());
+  transform *= m_tempAnimation.RenderAnimation();
   CAnimation anim = m_tempAnimation;
 /*    // debug stuff
     if (anim.currentProcess != ANIM_PROCESS_NONE)
@@ -701,6 +704,7 @@ void CGUIControl::Animate(DWORD currentTime)
       }
     }*/
 #endif
+  g_graphicsContext.SetControlTransform(transform);
 }
 
 bool CGUIControl::IsAnimating(ANIMATION_TYPE animType)

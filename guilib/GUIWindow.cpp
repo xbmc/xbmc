@@ -52,6 +52,7 @@ CGUIWindow::CGUIWindow(DWORD dwID, const CStdString &xmlFile)
   m_overlayState = OVERLAY_STATE_PARENT_WINDOW;   // Use parent or previous window's state
   m_WindowAllocated = false;
   m_coordsRes = g_guiSettings.m_LookAndFeelResolution;
+  m_isDialog = false;
   m_needsScaling = true;
   m_visibleCondition = 0;
   m_windowLoaded = false;
@@ -421,6 +422,13 @@ bool CGUIWindow::Load(TiXmlElement* pRootElement, RESOLUTION resToUse)
     {
       m_dwWindowId = WINDOW_HOME + atoi(pChild->FirstChild()->Value());            // window Id's start at WINDOW_HOME
     }
+    else if (strValue == "type" && pChild->FirstChild())
+    {
+      // if we have are a window type (ie not a dialog), and we have <type>dialog</type>
+      // then make this window act like a dialog
+      if (!IsDialog() && strcmpi(pChild->FirstChild()->Value(), "dialog") == 0)
+        m_isDialog = true;
+    }
     else if (strValue == "defaultcontrol" && pChild->FirstChild())
     {
       const char *always = pChild->Attribute("always");
@@ -664,7 +672,6 @@ void CGUIWindow::Render()
     CGUIControl *pControl = m_vecControls[i];
     if (pControl)
     {
-      g_graphicsContext.ResetControlAnimation();
       pControl->UpdateEffectState(currentTime);
       pControl->Render();
     }
@@ -741,8 +748,12 @@ void CGUIWindow::OnMouseAction()
   for (ivecControls i = m_vecControls.begin(); i != m_vecControls.end(); ++i)
   {
     CGUIControl *pControl = *i;
-    if (!bHandled && pControl->CanFocus() && pControl->HitTest(g_Mouse.iPosX, g_Mouse.iPosY))
+    if (pControl->CanFocus() && pControl->HitTest(g_Mouse.iPosX, g_Mouse.iPosY))
+    {
       bHandled = HandleMouse(pControl);
+      if (bHandled)
+        break;
+    }
   }
   if (!bHandled)
   { // haven't handled this action - call the window message handlers
@@ -776,34 +787,29 @@ bool CGUIWindow::HandleMouse(CGUIControl *pControl)
   pControl->OnMouseOver();
   if (g_Mouse.bClick[MOUSE_LEFT_BUTTON])
   { // Left click
-    pControl->OnMouseClick(MOUSE_LEFT_BUTTON);
-    bHandled = true;
+    bHandled = pControl->OnMouseClick(MOUSE_LEFT_BUTTON);
   }
   if (g_Mouse.bClick[MOUSE_RIGHT_BUTTON])
   { // Right click
-    pControl->OnMouseClick(MOUSE_RIGHT_BUTTON);
-    bHandled = true;
+    bHandled = pControl->OnMouseClick(MOUSE_RIGHT_BUTTON);
   }
   if (g_Mouse.bClick[MOUSE_MIDDLE_BUTTON])
   { // Middle click
-    pControl->OnMouseClick(MOUSE_MIDDLE_BUTTON);
-    bHandled = true;
+    bHandled = pControl->OnMouseClick(MOUSE_MIDDLE_BUTTON);
   }
   if (g_Mouse.bDoubleClick[MOUSE_LEFT_BUTTON])
   { // Left double click
-    pControl->OnMouseDoubleClick(MOUSE_LEFT_BUTTON);
-    bHandled = true;
+    bHandled = pControl->OnMouseDoubleClick(MOUSE_LEFT_BUTTON);
   }
   if (g_Mouse.bHold[MOUSE_LEFT_BUTTON] && (g_Mouse.cMickeyX || g_Mouse.cMickeyY))
   { // Mouse Drag
-    pControl->OnMouseDrag();
+    bHandled = pControl->OnMouseDrag();
   }
   if (g_Mouse.cWheel)
   { // Mouse wheel
-    pControl->OnMouseWheel();
-    bHandled = true;
+    bHandled = pControl->OnMouseWheel();
   }
-  return true; //bHandled;
+  return bHandled;
 }
 
 DWORD CGUIWindow::GetID(void) const
@@ -831,12 +837,13 @@ void CGUIWindow::OnInitWindow()
 
 void CGUIWindow::OnWindowCloseAnimation()
 {
-  if (!HasAnimation(ANIM_TYPE_WINDOW_CLOSE))
+  // Dialog animations are handled in Close() rather than here
+  if (!HasAnimation(ANIM_TYPE_WINDOW_CLOSE) || IsDialog())
     return;
 
   // Perform the window out effect
   QueueAnimation(ANIM_TYPE_WINDOW_CLOSE);
-  while (IsAnimating(ANIM_TYPE_WINDOW_CLOSE) && !IsDialog())
+  while (IsAnimating(ANIM_TYPE_WINDOW_CLOSE))
   {
     m_gWindowManager.Process(true);
   }
@@ -1279,15 +1286,16 @@ bool CGUIWindow::IsAnimating(ANIMATION_TYPE animType)
 
 bool CGUIWindow::RenderAnimation(DWORD time)
 {
-  g_graphicsContext.ResetWindowAnimation();
+  TransformMatrix transform;
   // show animation
   m_showAnimation.Animate(time, true);
   UpdateStates(m_showAnimation.type, m_showAnimation.currentProcess, m_showAnimation.currentState);
-  g_graphicsContext.AddWindowAnimation(m_showAnimation.RenderAnimation());
+  transform *= m_showAnimation.RenderAnimation();
   // close animation
   m_closeAnimation.Animate(time, true);
   UpdateStates(m_closeAnimation.type, m_closeAnimation.currentProcess, m_closeAnimation.currentState);
-  g_graphicsContext.AddWindowAnimation(m_closeAnimation.RenderAnimation());
+  transform *= m_closeAnimation.RenderAnimation();
+  g_graphicsContext.SetWindowTransform(transform);
   return true;
 }
 

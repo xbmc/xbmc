@@ -32,7 +32,6 @@ public:
   virtual ~CGUIDialogTrainerSettings(void);
   virtual bool OnMessage(CGUIMessage &message);
   virtual void Render();
-  virtual bool HasID(DWORD dwID);
 
   static void ShowForTitle(unsigned int iTitleId, CProgramDatabase* database);
 protected:

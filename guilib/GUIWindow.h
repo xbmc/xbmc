@@ -168,6 +168,7 @@ protected:
   CStdString m_xmlFile;  // xml file to load
   bool m_windowLoaded;  // true if the window's xml file has been loaded
   bool m_loadOnDemand;  // true if the window should be loaded only as needed
+  bool m_isDialog;      // true if we have a dialog, false otherwise.
   bool m_dynamicResourceAlloc;
   int m_visibleCondition;
 
