@@ -326,9 +326,9 @@ void CGUISelectButtonControl::OnRight()
   }
 }
 
-void CGUISelectButtonControl::OnMouseOver()
+bool CGUISelectButtonControl::OnMouseOver()
 {
-  CGUIControl::OnMouseOver();
+  bool ret = CGUIControl::OnMouseOver();
   m_bLeftSelected = false;
   m_bRightSelected = false;
   if (m_imgLeft.HitTest(g_Mouse.iPosX, g_Mouse.iPosY))
@@ -341,11 +341,12 @@ void CGUISelectButtonControl::OnMouseOver()
   }
   // reset ticks
   m_dwTicks = timeGetTime();
+  return ret;
 }
 
-void CGUISelectButtonControl::OnMouseClick(DWORD dwButton)
+bool CGUISelectButtonControl::OnMouseClick(DWORD dwButton)
 { // only left click handled
-  if (dwButton != MOUSE_LEFT_BUTTON) return ;
+  if (dwButton != MOUSE_LEFT_BUTTON) return false;
   if (m_bShowSelect && m_imgLeft.HitTest(g_Mouse.iPosX, g_Mouse.iPosY))
   { // move left
     OnLeft();
@@ -358,14 +359,16 @@ void CGUISelectButtonControl::OnMouseClick(DWORD dwButton)
   { // normal select
     CGUIButtonControl::OnMouseClick(dwButton);
   }
+  return true;
 }
 
-void CGUISelectButtonControl::OnMouseWheel()
+bool CGUISelectButtonControl::OnMouseWheel()
 {
   if (g_Mouse.cWheel > 0)
     OnLeft();
   else
     OnRight();
+  return true;
 }
 
 void CGUISelectButtonControl::SetPosition(int iPosX, int iPosY)

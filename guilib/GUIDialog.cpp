@@ -197,10 +197,6 @@ void CGUIDialog::Show(DWORD dwParentId)
 //  m_bRunning = true;
 }
 
-void CGUIDialog::OnWindowCloseAnimation()
-{
-}
-
 void CGUIDialog::UpdateStates(ANIMATION_TYPE type, ANIMATION_PROCESS currentProcess, ANIMATION_STATE currentState)
 {
   // Make sure dialog is closed at the appropriate time

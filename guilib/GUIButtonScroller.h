@@ -34,9 +34,9 @@ public:
   virtual void OnLeft();
   virtual void OnRight();
   virtual void OnDown();
-  virtual void OnMouseOver();
-  virtual void OnMouseClick(DWORD dwButton);
-  virtual void OnMouseWheel();
+  virtual bool OnMouseOver();
+  virtual bool OnMouseClick(DWORD dwButton);
+  virtual bool OnMouseWheel();
   virtual void Render();
   virtual void PreAllocResources();
   virtual void AllocResources();

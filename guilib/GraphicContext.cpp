@@ -20,8 +20,9 @@ CGraphicContext::CGraphicContext(void)
   m_pCallback = NULL;
   m_stateBlock = 0xffffffff;
   m_windowScaleX = m_windowScaleY = 1.0f;
-  m_windowPosX = m_windowPosY = 0.0f;
   MergeAlpha(10); // this just here so the inline function is included (why doesn't it include it normally??)
+  float x=0,y=0;
+  ScaleFinalCoords(x, y);
 }
 
 CGraphicContext::~CGraphicContext(void)
@@ -72,8 +73,8 @@ bool CGraphicContext::SetViewPort(float fx, float fy , float fwidth, float fheig
   D3DVIEWPORT8 *oldviewport = new D3DVIEWPORT8;
   Get3DDevice()->GetViewport(oldviewport);
   // transform coordinates
-  fx = ScaleFinalXCoord(fx);
-  fy = ScaleFinalYCoord(fy);
+  fx = ScaleFinalXCoord(fx, fy);
+  fy = ScaleFinalYCoord(fx, fy);
   fwidth *= m_windowScaleX;
   fheight *= m_windowScaleY;
   if (fx < 0) fx = 0;
@@ -150,10 +151,10 @@ void CGraphicContext::SetViewWindow(const RECT& rc)
   }
   else
   {
-    m_videoRect.left = (long)(ScaleFinalXCoord((float)rc.left) + 0.5f);
-    m_videoRect.top = (long)(ScaleFinalYCoord((float)rc.top) + 0.5f);
-    m_videoRect.right = (long)(ScaleFinalXCoord((float)rc.right) + 0.5f);
-    m_videoRect.bottom = (long)(ScaleFinalYCoord((float)rc.bottom) + 0.5f);
+    m_videoRect.left = (long)(ScaleFinalXCoord((float)rc.left, (float)rc.top) + 0.5f);
+    m_videoRect.top = (long)(ScaleFinalYCoord((float)rc.left, (float)rc.top) + 0.5f);
+    m_videoRect.right = (long)(ScaleFinalXCoord((float)rc.right, (float)rc.bottom) + 0.5f);
+    m_videoRect.bottom = (long)(ScaleFinalYCoord((float)rc.right, (float)rc.bottom) + 0.5f);
     if (m_bShowPreviewWindow && !m_bFullScreenVideo)
     {
       D3DRECT d3dRC;
@@ -585,31 +586,40 @@ void CGraphicContext::SetScalingResolution(RESOLUTION res, int posX, int posY, b
   {
     m_windowScaleX = fToWidth / fFromWidth;
     m_windowScaleY = fToHeight / fFromHeight;
-    m_windowPosX = fToPosX + m_windowScaleX * posX;
-    m_windowPosY = fToPosY + m_windowScaleY * posY;
+    TransformMatrix windowOffset = TransformMatrix::CreateTranslation((float)posX, (float)posY);
+    TransformMatrix guiScaler = TransformMatrix::CreateScaler(fToWidth / fFromWidth, fToHeight / fFromHeight);
+    TransformMatrix guiOffset = TransformMatrix::CreateTranslation(fToPosX, fToPosY);
+    m_guiTransform = guiOffset * guiScaler * windowOffset;
   }
   else
   {
+    m_guiTransform = TransformMatrix::CreateTranslation((float)posX, (float)posY);
     m_windowScaleX = 1.0f;
     m_windowScaleY = 1.0f;
-    m_windowPosX = (float)posX;
-    m_windowPosY = (float)posY;
   }
+  // reset the final transform and window transforms
+  m_finalWindowTransform = m_guiTransform;
+  m_finalTransform = m_guiTransform;
 }
 
-inline float CGraphicContext::ScaleFinalXCoord(float x) const
+inline void CGraphicContext::ScaleFinalCoords(float &x, float &y) const
 {
-  return (x + m_controlAttribute.offsetX) * m_windowScaleX + m_windowPosX + m_windowAttribute.offsetX;
+  m_finalTransform.TransformPosition(x, y);
 }
 
-inline float CGraphicContext::ScaleFinalYCoord(float y) const
+inline float CGraphicContext::ScaleFinalXCoord(float x, float y) const
 {
-  return (y + m_controlAttribute.offsetY) * m_windowScaleY + m_windowPosY + m_windowAttribute.offsetY;
+  return m_finalTransform.TransformXCoord(x, y);
+}
+
+inline float CGraphicContext::ScaleFinalYCoord(float x, float y) const
+{
+  return m_finalTransform.TransformYCoord(x, y);
 }
 
 inline DWORD CGraphicContext::MergeAlpha(DWORD color) const
 {
-  DWORD alpha = ((color >> 24) & 0xff) * m_controlAttribute.alpha * m_windowAttribute.alpha / 65025;
+  DWORD alpha = m_finalTransform.TransformAlpha((color >> 24) & 0xff);
   return ((alpha << 24) & 0xff000000) | (color & 0xffffff);
 }
 

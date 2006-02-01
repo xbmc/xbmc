@@ -5,6 +5,17 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 01-02-2006 fixed: List and Thumb contents were cleared before the WindowClose animation was started.
+ - 01-02-2006 added: Rotation effect.  See online manual for more information.
+ - 01-02-2006 changed: Generalized the storing of effect information to allow for more possibilities.
+ - 01-02-2006 fixed: Radio buttons would still render when they were hidden.
+ - 01-02-2006 fixed: Film grain filter is back.
+ - 01-02-2006 fixed: Slideshows reset the music playlist.
+ - 01-02-2006 fixed: Mouse response didn't work with "My Files" button on the home screen (and elsewhere).
+ - 01-02-2006 fixed: Initial Scan music didn't add thumbs to library view.
+ - 01-02-2006 fixed: Music Tags were not set as loaded if the Title didn't exist.  Is now marked as loaded if one (or more) of Title, Album or Artist exist.
+ - 01-02-2006 fixed: Stacked files played back "seamlessly" did a seek at the start of the next track (ie weren't seamless).
+ - 01-02-2006 changed: Cleaned up Video and Audio/Subtitle settings code.  Window.IsActive() should work again for these independently.
  - 01-02-2006 fixed: not all parts of dvd menu's are displayed
  - 01-02-2006 fixed: some dvd menu colors
  - 01-02-2006 fixed: stuttering in .hps.

@@ -80,9 +80,9 @@ public:
   virtual void OnLeft();
   virtual void OnRight();
   virtual bool OnMessage(CGUIMessage& message);
-  virtual void OnMouseOver();
-  virtual void OnMouseClick(DWORD dwButton);
-  virtual void OnMouseWheel();
+  virtual bool OnMouseOver();
+  virtual bool OnMouseClick(DWORD dwButton);
+  virtual bool OnMouseWheel();
 
   virtual void PreAllocResources();
   virtual void AllocResources();

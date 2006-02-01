@@ -700,8 +700,6 @@ void CGUIWindowFullScreen::RenderTTFSubtitles()
   {
     CSingleLock lock (m_fontLock);
 
-    // reset the window attributes
-    g_graphicsContext.ResetWindowAnimation();
     g_graphicsContext.SetScalingResolution(g_graphicsContext.GetVideoResolution(), 0, 0, false);
 
     CStdStringW subtitleText = L"";

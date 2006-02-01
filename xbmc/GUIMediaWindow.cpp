@@ -83,8 +83,10 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
     {
       m_iSelectedItem = m_viewControl.GetSelectedItem();
       m_iLastControl = GetFocusedControl();
-      ClearFileItems();
       CGUIWindow::OnMessage(message);
+      // Call ClearFileItems() after our window has finished doing any WindowClose
+      // animations
+      ClearFileItems();
       return true;
     }
     break;
@@ -654,10 +656,6 @@ bool CGUIMediaWindow::OnClick(int iItem)
     }
     else
     {
-      // Reset Playlistplayer, playback started now does
-      // not use the playlistplayer.
-      g_playlistPlayer.Reset();
-      g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_NONE);
       OnPlayMedia(iItem);
       return true;
     }
@@ -837,6 +835,10 @@ void CGUIMediaWindow::SetHistoryForPath(const CStdString& strDirectory)
 
 void CGUIMediaWindow::OnPlayMedia(int iItem)
 {
+  // Reset Playlistplayer, playback started now does
+  // not use the playlistplayer.
+  g_playlistPlayer.Reset();
+  g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_NONE);
   CFileItem* pItem=m_vecItems[iItem];
   g_application.PlayFile(*pItem);
 }

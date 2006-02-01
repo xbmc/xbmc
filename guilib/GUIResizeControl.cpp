@@ -96,17 +96,19 @@ void CGUIResizeControl::OnRight()
   Resize((int)m_fSpeed, 0);
 }
 
-void CGUIResizeControl::OnMouseDrag()
+bool CGUIResizeControl::OnMouseDrag()
 {
   g_Mouse.SetState(MOUSE_STATE_DRAG);
   g_Mouse.SetExclusiveAccess(GetID(), GetParentID());
   Resize((int)g_Mouse.cMickeyX, (int)g_Mouse.cMickeyY);
+  return true;
 }
 
-void CGUIResizeControl::OnMouseClick(DWORD dwButton)
+bool CGUIResizeControl::OnMouseClick(DWORD dwButton)
 {
-  if (dwButton != MOUSE_LEFT_BUTTON) return ;
+  if (dwButton != MOUSE_LEFT_BUTTON) return false;
   g_Mouse.EndExclusiveAccess(GetID(), GetParentID());
+  return true;
 }
 
 void CGUIResizeControl::UpdateSpeed(int nDirection)

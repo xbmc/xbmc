@@ -90,10 +90,10 @@ public:
   const wstring& GetSuffix() const { return m_strSuffix;};
   void SetThumbDimensionsLow(int iXpos, int iYpos, int iWidth, int iHeight) { m_iThumbXPosLow = iXpos;m_iThumbYPosLow = iYpos;m_iThumbWidthLow = iWidth;m_iThumbHeightLow = iHeight;};
   void SetThumbDimensionsBig(int iXpos, int iYpos, int iWidth, int iHeight) { m_iThumbXPosBig = iXpos;m_iThumbYPosBig = iYpos;m_iThumbWidthBig = iWidth;m_iThumbHeightBig = iHeight;};
-  virtual void OnMouseOver();
-  virtual void OnMouseClick(DWORD dwButton);
-  virtual void OnMouseDoubleClick(DWORD dwButton);
-  virtual void OnMouseWheel();
+  virtual bool OnMouseOver();
+  virtual bool OnMouseClick(DWORD dwButton);
+  virtual bool OnMouseDoubleClick(DWORD dwButton);
+  virtual bool OnMouseWheel();
   bool ScrollDown();
   void ScrollUp();
   virtual bool HitTest(int iPosX, int iPosY) const;

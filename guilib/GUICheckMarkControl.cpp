@@ -142,13 +142,14 @@ bool CGUICheckMarkControl::GetSelected() const
   return m_bSelected;
 }
 
-void CGUICheckMarkControl::OnMouseClick(DWORD dwButton)
+bool CGUICheckMarkControl::OnMouseClick(DWORD dwButton)
 {
-  if (dwButton != MOUSE_LEFT_BUTTON) return ;
+  if (dwButton != MOUSE_LEFT_BUTTON) return false;
   g_Mouse.SetState(MOUSE_STATE_CLICK);
   CAction action;
   action.wID = ACTION_SELECT_ITEM;
   OnAction(action);
+  return true;
 }
 
 void CGUICheckMarkControl::SetText(const CStdString &aLabel)

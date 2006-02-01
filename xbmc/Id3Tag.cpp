@@ -80,12 +80,13 @@ bool CID3Tag::Parse()
   tag.SetGenre(GetGenre());
 
   tag.SetTitle(GetTitle());
-  if (!tag.GetTitle().IsEmpty())
-    tag.SetLoaded();
 
   tag.SetArtist(GetArtist());
 
   tag.SetAlbum(GetAlbum());
+
+  if (!tag.GetTitle().IsEmpty() || !tag.GetArtist().IsEmpty() || !tag.GetAlbum().IsEmpty())
+    tag.SetLoaded();
 
   SYSTEMTIME dateTime;
   dateTime.wYear = atoi(GetYear());

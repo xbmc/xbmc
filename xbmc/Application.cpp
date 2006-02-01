@@ -101,6 +101,7 @@
 #include "GUIDialogVisualisationSettings.h"
 #include "GUIDialogVisualisationPresetList.h"
 #include "GUIDialogVideoSettings.h"
+#include "GUIDialogAudioSubtitleSettings.h"
 #include "GUIDialogVideoBookmarks.h"
 #include "GUIDialogFileBrowser.h"
 #include "GUIDialogTrainerSettings.h"
@@ -1237,7 +1238,8 @@ HRESULT CApplication::Initialize()
   m_gWindowManager.Add(new CGUIDialogMusicOSD);           // window id = 120
   m_gWindowManager.Add(new CGUIDialogVisualisationSettings);     // window id = 121
   m_gWindowManager.Add(new CGUIDialogVisualisationPresetList);   // window id = 122
-  m_gWindowManager.Add(new CGUIDialogVideoSettings);      // window id = 123, 124
+  m_gWindowManager.Add(new CGUIDialogVideoSettings);             // window id = 123
+  m_gWindowManager.Add(new CGUIDialogAudioSubtitleSettings);     // window id = 124
   m_gWindowManager.Add(new CGUIDialogVideoBookmarks);      // window id = 125
   m_gWindowManager.Add(new CGUIDialogFileBrowser);      // window id = 126
   m_gWindowManager.Add(new CGUIDialogTrainerSettings);  // window id = 127
@@ -1952,8 +1954,6 @@ void CApplication::Render()
 
     // reset image scaling and effect states
     g_graphicsContext.SetScalingResolution(g_graphicsContext.GetVideoResolution(), 0, 0, false);
-    g_graphicsContext.ResetWindowAnimation();
-    g_graphicsContext.ResetControlAnimation();
 
     // If we have the remote codes enabled, then show them
     if (g_stSettings.m_bDisplayRemoteCodes)
@@ -2006,8 +2006,6 @@ void CApplication::RenderMemoryStatus()
   {
     // reset the window scaling and fade status
     g_graphicsContext.SetScalingResolution(g_graphicsContext.GetVideoResolution(), 0, 0, false);
-    g_graphicsContext.ResetWindowAnimation();
-    g_graphicsContext.ResetControlAnimation();
 
     // in debug mode, show freememory
     CStdStringW wszText;
@@ -2981,7 +2979,6 @@ bool CApplication::PlayStack(const CFileItem& item, bool bRestart)
   CStackDirectory dir;
   dir.GetDirectory(item.m_strPath, m_currentStack);
   long totalTime = 0;
-  m_currentStack[0]->m_lStartOffset = totalTime;
   for (int i = 0; i < m_currentStack.Size(); i++)
   {
     if (!PlayFile(*m_currentStack[i], true))
@@ -2990,10 +2987,7 @@ bool CApplication::PlayStack(const CFileItem& item, bool bRestart)
       return false;
     }
     totalTime += (long)GetTotalTime();
-    if (i < m_currentStack.Size() - 1)
-      m_currentStack[i+1]->m_lStartOffset = m_currentStack[i]->m_lEndOffset = totalTime;
-    else
-      m_currentStack[i]->m_lEndOffset = totalTime;
+    m_currentStack[i]->m_lEndOffset = totalTime;
     if (m_pPlayer)
       m_pPlayer->CloseFile();
   }
@@ -3007,7 +3001,8 @@ bool CApplication::PlayStack(const CFileItem& item, bool bRestart)
       if (seconds < m_currentStack[i]->m_lEndOffset)
       {
         CFileItem item(*m_currentStack[i]);
-        item.m_lStartOffset = (long)(seconds - m_currentStack[i]->m_lStartOffset) * 75;
+        long start = (i > 0) ? m_currentStack[i-1]->m_lEndOffset : 0;
+        item.m_lStartOffset = (long)(seconds - start) * 75;
         m_currentStackPosition = i;
         return PlayFile(item, true);
       }
@@ -4137,7 +4132,10 @@ double CApplication::GetTime() const
   if (IsPlaying() && m_pPlayer)
   {
     if (m_itemCurrentFile.IsStack())
-      rc = (double)m_currentStack[m_currentStackPosition]->m_lStartOffset + m_pPlayer->GetTime() * 0.001;
+    {
+      long startOfCurrentFile = (m_currentStackPosition > 0) ? m_currentStack[m_currentStackPosition-1]->m_lEndOffset : 0;
+      rc = (double)startOfCurrentFile + m_pPlayer->GetTime() * 0.001;
+    }
     else
       rc = static_cast<double>(m_pPlayer->GetTime() * 0.001f);
   }
@@ -4164,13 +4162,14 @@ void CApplication::SeekTime( double dTime )
       {
         if (m_currentStack[i]->m_lEndOffset > dTime)
         {
+          long startOfNewFile = (i > 0) ? m_currentStack[i-1]->m_lEndOffset : 0;
           if (m_currentStackPosition == i)
-            m_pPlayer->SeekTime((__int64)((dTime - m_currentStack[i]->m_lStartOffset) * 1000.0));
+            m_pPlayer->SeekTime((__int64)((dTime - startOfNewFile) * 1000.0));
           else
           { // seeking to a new file
             m_currentStackPosition = i;
             CFileItem item(*m_currentStack[i]);
-            item.m_lStartOffset = (long)((dTime - m_currentStack[i]->m_lStartOffset) * 75.0);
+            item.m_lStartOffset = (long)((dTime - startOfNewFile) * 75.0);
             // don't just call "PlayFile" here, as we are quite likely called from the
             // player thread, so we won't be able to delete ourselves.
             g_applicationMessenger.PlayFile(item, true);
