@@ -35,7 +35,8 @@ CDVDDemuxSPU::~CDVDDemuxSPU()
 void CDVDDemuxSPU::Flush()
 {
   memset(&m_spuData, 0, sizeof(m_spuData));
-  memset(m_clut, 0, sizeof(m_clut));  
+  // clut should not be reset, because CDVDInputStreamNavigator is not setting it again
+  //memset(m_clut, 0, sizeof(m_clut));
 }
 
 CSPUInfo* CDVDDemuxSPU::AddData(BYTE* data, int iSize, __int64 pts)
@@ -466,8 +467,15 @@ CSPUInfo* CDVDDemuxSPU::ParseRLE(CSPUInfo* pSPU, BYTE* pUnparsedData)
   DebugLog("ParseRLE: valid subtitle, size: %ix%i, position: %i,%i",
            pSPU->width, pSPU->height, pSPU->x, pSPU->y );
 
+  // FIXME: Check correctnes
   // Handle color if no palette was found.  for xbmc we do this always for subtitles
-  if ((!pSPU->bHasColor || pSPU->iPTSStartTime > 0.0) && i_border >= 0 && i_border < 4)
+  // spu overlays are identified as non menu overlays (thus subtitles) if :
+  //    - there is no color information
+  //    - the start time is > than 0 ???? is this still correct ????
+  //    - the overlay is not forced
+  //
+  // and we only set it if there is a valid i_border color
+  if ((!pSPU->bHasColor || pSPU->iPTSStartTime > 0LL) && !pSPU->bForced && i_border >= 0 && i_border < 4)
   {
     int i, i_inner = -1, i_shade = -1;
 
