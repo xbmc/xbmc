@@ -130,9 +130,11 @@ private:
   bool OpenDefaultAudioStream();
   bool OpenAudioStream(int iStream);
   bool OpenVideoStream(int iStream);
+  bool OpenSubtitleStream(int iStream);
   bool CloseAudioStream(bool bWaitForBuffers);
   bool CloseVideoStream(bool bWaitForBuffers);
-  
+  bool CloseSubtitleStream(bool bKeepOverlays);
+
   void ProcessAudioData(CDemuxStream* pStream, CDVDDemux::DemuxPacket* pPacket);
   void ProcessVideoData(CDemuxStream* pStream, CDVDDemux::DemuxPacket* pPacket);
   void ProcessSubData(CDemuxStream* pStream, CDVDDemux::DemuxPacket* pPacket);
