@@ -40,6 +40,8 @@ public:
 
   CSPUInfo* ParseRLE(CSPUInfo* pSPU, BYTE* pUnparsedData);
 
+  void CDVDDemuxSPU::Flush(); // flushes current unparsed data
+
   // m_clut set by libdvdnav once in a time
   // color lokup table is representing 16 different yuv colors
   // [][0] = Y, [][1] = Cr, [][2] = Cb
