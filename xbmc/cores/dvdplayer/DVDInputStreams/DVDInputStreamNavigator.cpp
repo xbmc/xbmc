@@ -818,7 +818,7 @@ bool CDVDInputStreamNavigator::GetCurrentButtonInfo(CDVDOverlaySpu* pOverlayPict
       pOverlayPicture->alpha[3] = alpha[iButtonType][3];
     }
     
-    for (int i = 0; i < 3; i++)
+    for (int i = 0; i < 4; i++)
       for (int j = 0; j < 3; j++)
         pOverlayPicture->color[i][j] = pSPU->m_clut[color[iButtonType][i]][j];
   }

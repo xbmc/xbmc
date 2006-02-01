@@ -32,50 +32,68 @@ void CDVDOverlayRenderer::Render(DVDPictureRenderer* pPicture, CDVDOverlay* pOve
 // render the parsed sub (parsed rle) onto the yuv image
 void CDVDOverlayRenderer::Render_SPU_YUV(DVDPictureRenderer* pPicture, CDVDOverlaySpu* pOverlay, bool bCrop)
 {
-  unsigned __int8* p_dest[3];
-  unsigned __int8* p_destptr;
+  unsigned __int8*  p_destptr = NULL;
   unsigned __int16* p_source = (unsigned __int16*)pOverlay->pData;
+  unsigned __int8*  p_dest[3];
 
   int i_x, i_y;
-  int i_len, i_color;
+  int rp_len, i_color, pixels_to_draw;
   unsigned __int16 i_colprecomp, i_destalpha;
-
-  int button_i_x_start = pOverlay->crop_i_x_start;
-  int button_i_x_end = pOverlay->crop_i_x_end;
-  int button_i_y_start = pOverlay->crop_i_y_start;
-  int button_i_y_end = pOverlay->crop_i_y_end;
   
-  p_dest[0] = pPicture->data[0] + pOverlay->y * pPicture->stride[0];
-  p_dest[1] = pPicture->data[1] + (pOverlay->y >> 1) * pPicture->stride[1];
-  p_dest[2] = pPicture->data[2] + (pOverlay->y >> 1) * pPicture->stride[2];;
+  int btn_x_start = pOverlay->crop_i_x_start;
+  int btn_x_end   = pOverlay->crop_i_x_end;
+  int btn_y_start = pOverlay->crop_i_y_start;
+  int btn_y_end   = pOverlay->crop_i_y_end;
+  
+  p_dest[0] = pPicture->data[0] + pPicture->stride[0] * pOverlay->y;
+  p_dest[1] = pPicture->data[1] + pPicture->stride[1] * (pOverlay->y >> 1);
+  p_dest[2] = pPicture->data[2] + pPicture->stride[2] * (pOverlay->y >> 1);
 
   /* Draw until we reach the bottom of the subtitle */
-  for ( i_y = pOverlay->y; i_y < pOverlay->y + pOverlay->height; i_y ++ )
+  for (i_y = pOverlay->y; i_y < pOverlay->y + pOverlay->height; i_y++)
   {
     /* Draw until we reach the end of the line */
-    for (i_x = pOverlay->x; i_x < pOverlay->x + pOverlay->width ; i_x += i_len)
+    for (i_x = pOverlay->x; i_x < pOverlay->x + pOverlay->width ; i_x += rp_len)
     {
       /* Get the RLE part, then draw the line */
       i_color = *p_source & 0x3;
-      i_len = *p_source++ >> 2;
+      rp_len = *p_source++ >> 2;
 
-      // skip drawing if we are outside the crop region
-      if (bCrop && ( i_x < button_i_x_start || i_x > button_i_x_end
-                    || i_y < button_i_y_start || i_y > button_i_y_end ) )
+      pixels_to_draw = rp_len;
+      
+      if (bCrop)
       {
-        continue;
-      }
+        // skip if this line is not drawn at all
+        if (i_y < btn_y_start || i_y > btn_y_end) continue;
 
+        // skip if this rle part is not drawn at all
+        if ((i_x + rp_len) < btn_x_start || i_x > btn_x_end) continue;
+        
+        // at least one part of the rle part has to be drawn, figure out how much and what
+        if (i_x < btn_x_start)
+        {
+          // skip beginning of rle part
+          rp_len -= btn_x_start - i_x;
+          i_x = btn_x_start;
+        }
+        
+        // check if we need to skip a part at the end
+        pixels_to_draw = rp_len;
+        if (pixels_to_draw > (btn_x_end - i_x)) pixels_to_draw = (btn_x_end - i_x);
+      }
+      
       switch (pOverlay->alpha[i_color])
       {
       case 0x00:
         break;
 
       case 0x0f:
-        memset(p_dest[0] + i_x, pOverlay->color[i_color][0], i_len);
-        if (i_y & 1) continue; // Only draw even lines
-        memset(p_dest[1] + (i_x >> 1), pOverlay->color[i_color][2], i_len >> 1);
-        memset(p_dest[2] + (i_x >> 1), pOverlay->color[i_color][1], i_len >> 1);
+        memset(p_dest[0] + i_x, pOverlay->color[i_color][0], pixels_to_draw);
+        if (!(i_y & 1)) // Only draw even lines
+        {
+          memset(p_dest[1] + (i_x >> 1), pOverlay->color[i_color][2], pixels_to_draw >> 1);
+          memset(p_dest[2] + (i_x >> 1), pOverlay->color[i_color][1], pixels_to_draw >> 1);
+        }
         break;
 
       default:
@@ -86,24 +104,28 @@ void CDVDOverlayRenderer::Render_SPU_YUV(DVDPictureRenderer* pPicture, CDVDOverl
         i_colprecomp = (unsigned __int16)pOverlay->color[i_color][0]
                       * (unsigned __int16)(pOverlay->alpha[i_color] + 1);
         i_destalpha = 15 - pOverlay->alpha[i_color];
-        for ( p_destptr = p_dest[0] + i_x; p_destptr < p_dest[0] + i_x + i_len; p_destptr++)
+        
+        for (p_destptr = p_dest[0] + i_x; p_destptr < p_dest[0] + i_x + pixels_to_draw; p_destptr++)
         {
           *p_destptr = (( i_colprecomp + (unsigned __int16) * p_destptr * i_destalpha ) >> 4) & 0xFF;
         }
-        if (i_y & 1) continue; // Only draw even lines
-        // now U
-        i_colprecomp = (unsigned __int16)pOverlay->color[i_color][2]
-                      * (unsigned __int16)(pOverlay->alpha[i_color] + 1);
-        for ( p_destptr = p_dest[1] + (i_x >> 1); p_destptr < p_dest[1] + ((i_x + i_len) >> 1); p_destptr++)
+        
+        if (!(i_y & 1)) // Only draw even lines
         {
-          *p_destptr = (( i_colprecomp + (unsigned __int16) * p_destptr * i_destalpha ) >> 4) & 0xFF;
-        }
-        // and finally V
-        i_colprecomp = (unsigned __int16)pOverlay->color[i_color][1]
-                      * (unsigned __int16)(pOverlay->alpha[i_color] + 1);
-        for ( p_destptr = p_dest[2] + (i_x >> 1); p_destptr < p_dest[2] + ((i_x + i_len) >> 1); p_destptr++)
-        {
-          *p_destptr = (( i_colprecomp + (unsigned __int16) * p_destptr * i_destalpha ) >> 4) & 0xFF;
+          // now U
+          i_colprecomp = (unsigned __int16)pOverlay->color[i_color][2]
+                        * (unsigned __int16)(pOverlay->alpha[i_color] + 1);
+          for ( p_destptr = p_dest[1] + (i_x >> 1); p_destptr < p_dest[1] + ((i_x + pixels_to_draw) >> 1); p_destptr++)
+          {
+            *p_destptr = (( i_colprecomp + (unsigned __int16) * p_destptr * i_destalpha ) >> 4) & 0xFF;
+          }
+          // and finally V
+          i_colprecomp = (unsigned __int16)pOverlay->color[i_color][1]
+                        * (unsigned __int16)(pOverlay->alpha[i_color] + 1);
+          for ( p_destptr = p_dest[2] + (i_x >> 1); p_destptr < p_dest[2] + ((i_x + pixels_to_draw) >> 1); p_destptr++)
+          {
+            *p_destptr = (( i_colprecomp + (unsigned __int16) * p_destptr * i_destalpha ) >> 4) & 0xFF;
+          }
         }
         break;
       }
