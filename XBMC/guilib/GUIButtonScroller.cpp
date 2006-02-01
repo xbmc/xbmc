@@ -766,7 +766,7 @@ void CGUIButtonScroller::GetScrollZone(float &fStartAlpha, float &fEndAlpha)
   }
 }
 
-void CGUIButtonScroller::OnMouseOver()
+bool CGUIButtonScroller::OnMouseOver()
 {
   float fStartAlpha, fEndAlpha;
   GetScrollZone(fStartAlpha, fEndAlpha);
@@ -826,12 +826,12 @@ void CGUIButtonScroller::OnMouseOver()
       m_iCurrentSlot = (g_Mouse.iPosY - m_iPosY) / (m_imgFocus.GetHeight() + m_iButtonGap);
     }
   }
-  CGUIControl::OnMouseOver();
+  return CGUIControl::OnMouseOver();
 }
 
-void CGUIButtonScroller::OnMouseClick(DWORD dwButton)
+bool CGUIButtonScroller::OnMouseClick(DWORD dwButton)
 {
-  if (dwButton != MOUSE_LEFT_BUTTON && dwButton != MOUSE_RIGHT_BUTTON) return ;
+  if (dwButton != MOUSE_LEFT_BUTTON && dwButton != MOUSE_RIGHT_BUTTON) return false;
   // check if we are in the clickable button zone
   float fStartAlpha, fEndAlpha;
   GetScrollZone(fStartAlpha, fEndAlpha);
@@ -846,6 +846,7 @@ void CGUIButtonScroller::OnMouseClick(DWORD dwButton)
       if (dwButton == MOUSE_RIGHT_BUTTON)
         action.wID = ACTION_CONTEXT_MENU;
       OnAction(action);
+      return true;
     }
   }
   else
@@ -859,11 +860,13 @@ void CGUIButtonScroller::OnMouseClick(DWORD dwButton)
       if (dwButton == MOUSE_RIGHT_BUTTON)
         action.wID = ACTION_CONTEXT_MENU;
       OnAction(action);
+      return true;
     }
   }
+  return false;
 }
 
-void CGUIButtonScroller::OnMouseWheel()
+bool CGUIButtonScroller::OnMouseWheel()
 {
   // check if we are within the clickable button zone
   float fStartAlpha, fEndAlpha;
@@ -876,7 +879,9 @@ void CGUIButtonScroller::OnMouseWheel()
     else
       m_bScrollUp = true;
     m_fScrollSpeed = SCROLL_SPEED;
+    return true;
   }
+  return false;
 }
 
 CStdString CGUIButtonScroller::GetDescription() const

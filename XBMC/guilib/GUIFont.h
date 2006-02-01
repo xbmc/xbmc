@@ -73,6 +73,8 @@ protected:
   DWORD m_shadowColor;
   DWORD m_textColor;
   CGUIFontBase *m_font;
+private:
+  CAngle Transform(const CAngle &angle);
 };
 
 #endif

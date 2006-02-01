@@ -671,62 +671,68 @@ bool CGUIListControl::HitTest(int iPosX, int iPosY) const
   return CGUIControl::HitTest(iPosX, iPosY);
 }
 
-void CGUIListControl::OnMouseOver()
+bool CGUIListControl::OnMouseOver()
 {
   // check if we are near the spin control
   if (m_upDown.HitTest(g_Mouse.iPosX, g_Mouse.iPosY))
   {
-    m_upDown.OnMouseOver();
+    return m_upDown.OnMouseOver();
   }
   else
   {
     m_upDown.SetFocus(false);
     // select the item under the pointer
     if (SelectItemFromPoint(g_Mouse.iPosX - m_iPosX, g_Mouse.iPosY - m_iPosY))
-      CGUIControl::OnMouseOver();
+      return CGUIControl::OnMouseOver();
   }
+  return false;
 }
 
-void CGUIListControl::OnMouseClick(DWORD dwButton)
+bool CGUIListControl::OnMouseClick(DWORD dwButton)
 {
   if (m_upDown.HitTest(g_Mouse.iPosX, g_Mouse.iPosY))
   {
-    m_upDown.OnMouseClick(dwButton);
+    return m_upDown.OnMouseClick(dwButton);
   }
   else
   {
     if (SelectItemFromPoint(g_Mouse.iPosX - m_iPosX, g_Mouse.iPosY - m_iPosY))
     { // send click message to window
       SEND_CLICK_MESSAGE(GetID(), GetParentID(), ACTION_MOUSE_CLICK + dwButton);
+      return true;
     }
   }
+  return false;
 }
 
-void CGUIListControl::OnMouseDoubleClick(DWORD dwButton)
+bool CGUIListControl::OnMouseDoubleClick(DWORD dwButton)
 {
   if (m_upDown.HitTest(g_Mouse.iPosX, g_Mouse.iPosY))
   {
-    m_upDown.OnMouseDoubleClick(dwButton);
+    return m_upDown.OnMouseDoubleClick(dwButton);
   }
   else
   {
     if (SelectItemFromPoint(g_Mouse.iPosX - m_iPosX, g_Mouse.iPosY - m_iPosY))
     { // send double click message to window
       SEND_CLICK_MESSAGE(GetID(), GetParentID(), ACTION_MOUSE_DOUBLE_CLICK + dwButton);
+      return true;
     }
   }
+  return false;
 }
 
-void CGUIListControl::OnMouseWheel()
+bool CGUIListControl::OnMouseWheel()
 {
   if (m_upDown.HitTest(g_Mouse.iPosX, g_Mouse.iPosY))
   {
-    m_upDown.OnMouseWheel();
+    return m_upDown.OnMouseWheel();
   }
   else
   { // scroll
     Scroll( -g_Mouse.cWheel);
   }
+  return true;
 }
 
 bool CGUIListControl::CanFocus() const

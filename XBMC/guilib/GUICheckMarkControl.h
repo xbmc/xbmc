@@ -37,7 +37,7 @@ public:
   const CStdString& GetCheckMarkTextureNameNF() const { return m_imgCheckMarkNoFocus.GetFileName(); };
   void SetSelected(bool bOnOff);
   bool GetSelected() const;
-  void OnMouseClick(DWORD dwButton);
+  bool OnMouseClick(DWORD dwButton);
 
   void PythonSetLabel(const CStdString &strFont, const wstring &strText, DWORD dwTextColor);
   void PythonSetDisabledColor(DWORD dwDisabledColor);

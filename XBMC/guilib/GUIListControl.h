@@ -32,10 +32,10 @@ public:
   virtual void OnLeft();
   virtual void OnDown();
   virtual void OnUp();
-  virtual void OnMouseOver();
-  virtual void OnMouseClick(DWORD dwButton);
-  virtual void OnMouseDoubleClick(DWORD dwButton);
-  virtual void OnMouseWheel();
+  virtual bool OnMouseOver();
+  virtual bool OnMouseClick(DWORD dwButton);
+  virtual bool OnMouseDoubleClick(DWORD dwButton);
+  virtual bool OnMouseWheel();
   virtual bool OnMessage(CGUIMessage& message);
   virtual void SetNavigation(DWORD dwUp, DWORD dwDown, DWORD dwLeft, DWORD dwRight);
   virtual void SetPosition(int iPosX, int iPosY);

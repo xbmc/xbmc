@@ -597,7 +597,7 @@ HRESULT CXBFont::DrawTextEx( FLOAT fOriginX, FLOAT fOriginY, const CAngle &angle
   {
     FLOAT w, h;
     GetTextExtent( strText, &w, &h );
-    fOriginX -= angle.sine * h * 0.5f;
+    fOriginX += angle.sine * h * 0.5f;
     fOriginY -= angle.cosine * h * 0.5f;
   }
 
@@ -611,7 +611,7 @@ HRESULT CXBFont::DrawTextEx( FLOAT fOriginX, FLOAT fOriginY, const CAngle &angle
     // If starting text on a new line, determine justification effects
     if ( bStartingNewLine )
     {
-      m_fCursorX = fOriginX + angle.sine * m_fFontYAdvance * numLines;
+      m_fCursorX = fOriginX - angle.sine * m_fFontYAdvance * numLines;
       m_fCursorY = fOriginY + angle.cosine * m_fFontYAdvance * numLines;
       if ( dwFlags & (XBFONT_RIGHT | XBFONT_CENTER_X) )
       {
@@ -627,7 +627,7 @@ HRESULT CXBFont::DrawTextEx( FLOAT fOriginX, FLOAT fOriginY, const CAngle &angle
 
         // Offset this line's starting m_fCursorX value
         m_fCursorX -= angle.cosine * w;
-        m_fCursorY += angle.sine * w;
+        m_fCursorY -= angle.sine * w;
       }
       bStartingNewLine = FALSE;
       fAlignedOriginX = m_fCursorX;
@@ -669,19 +669,19 @@ HRESULT CXBFont::DrawTextEx( FLOAT fOriginX, FLOAT fOriginY, const CAngle &angle
 
     // Setup the screen coordinates
     m_fCursorX += fOffset * angle.cosine;
-    m_fCursorY -= fOffset * angle.sine;
+    m_fCursorY += fOffset * angle.sine;
 
     FLOAT left1 = m_fCursorX + m_fSlantFactor;
-    FLOAT left2 = m_fCursorX + angle.sine * fHeight;
+    FLOAT left2 = m_fCursorX - angle.sine * fHeight;
     FLOAT right1 = left1 + angle.cosine * fWidth;
     FLOAT right2 = left2 + angle.cosine * fWidth;
     FLOAT top1 = m_fCursorY;
-    FLOAT top2 = top1 - angle.sine * fWidth;
+    FLOAT top2 = top1 + angle.sine * fWidth;
     FLOAT bottom1 = top1 + angle.cosine * fHeight;
     FLOAT bottom2 = top2 + angle.cosine * fHeight;
 
     m_fCursorX += fAdvance * angle.cosine;
-    m_fCursorY -= fAdvance * angle.sine;
+    m_fCursorY += fAdvance * angle.sine;
 
     D3DDevice::SetVertexData4f( 0, left1, top1, pGlyph->tu1, pGlyph->tv1 );
     D3DDevice::SetVertexData4f( 0, right1, top2, pGlyph->tu2, pGlyph->tv1 );
@@ -733,7 +733,7 @@ HRESULT CXBFont::DrawColourText( FLOAT fOriginX, FLOAT fOriginY, const CAngle &a
   {
     FLOAT w, h;
     GetTextExtent( strText, &w, &h );
-    fOriginX -= angle.sine * h * 0.5f;
+    fOriginX += angle.sine * h * 0.5f;
     fOriginY -= angle.cosine * h * 0.5f;
   }
 
@@ -746,7 +746,7 @@ HRESULT CXBFont::DrawColourText( FLOAT fOriginX, FLOAT fOriginY, const CAngle &a
     // If starting text on a new line, determine justification effects
     if ( bStartingNewLine )
     {
-      m_fCursorX = fOriginX + angle.sine * m_fFontYAdvance * numLines;
+      m_fCursorX = fOriginX - angle.sine * m_fFontYAdvance * numLines;
       m_fCursorY = fOriginY + angle.cosine * m_fFontYAdvance * numLines;
       if ( dwFlags & (XBFONT_RIGHT | XBFONT_CENTER_X) )
       {
@@ -758,7 +758,7 @@ HRESULT CXBFont::DrawColourText( FLOAT fOriginX, FLOAT fOriginY, const CAngle &a
           w *= 0.5;
 
         m_fCursorX -= angle.cosine * w;
-        m_fCursorY += angle.sine * w;
+        m_fCursorY -= angle.sine * w;
       }
       bStartingNewLine = FALSE;
       // align to an integer so that aliasing doesn't occur
@@ -808,19 +808,19 @@ HRESULT CXBFont::DrawColourText( FLOAT fOriginX, FLOAT fOriginY, const CAngle &a
 
     // Setup the screen coordinates
     m_fCursorX += fOffset * angle.cosine;
-    m_fCursorY -= fOffset * angle.sine;
+    m_fCursorY += fOffset * angle.sine;
 
     FLOAT left1 = m_fCursorX + m_fSlantFactor;
-    FLOAT left2 = m_fCursorX + angle.sine * fHeight;
+    FLOAT left2 = m_fCursorX - angle.sine * fHeight;
     FLOAT right1 = left1 + angle.cosine * fWidth;
     FLOAT right2 = left2 + angle.cosine * fWidth;
     FLOAT top1 = m_fCursorY;
-    FLOAT top2 = top1 - angle.sine * fWidth;
+    FLOAT top2 = top1 + angle.sine * fWidth;
     FLOAT bottom1 = top1 + angle.cosine * fHeight;
     FLOAT bottom2 = top2 + angle.cosine * fHeight;
 
     m_fCursorX += fAdvance * angle.cosine;
-    m_fCursorY -= fAdvance * angle.sine;
+    m_fCursorY += fAdvance * angle.sine;
 
     D3DDevice::SetVertexData4f( 0, left1, top1, pGlyph->tu1, pGlyph->tv1 );
     D3DDevice::SetVertexData4f( 0, right1, top2, pGlyph->tu2, pGlyph->tv1 );
