@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 01-02-2006 fixed: not all parts of dvd menu's are displayed
+ - 01-02-2006 fixed: some dvd menu colors
  - 01-02-2006 fixed: stuttering in .hps.
  - 31-01-2006 fixed: dvdplayer would more often display garbled menu overlays after last change to subtitle stream selection
  - 31-01-2006 changed: don't allow next frames to be dropped after having detected a long duration frame in dvdplayer.
