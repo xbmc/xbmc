@@ -1018,8 +1018,8 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     if (XMLUtils::GetInt(pControlNode, "textyoff", labelInfo.offsetY)) g_graphicsContext.ScaleYCoord(labelInfo.offsetY, res);
     if (XMLUtils::GetInt(pControlNode, "textxoff2", labelInfo2.offsetX)) g_graphicsContext.ScaleXCoord(labelInfo2.offsetX, res);
     if (XMLUtils::GetInt(pControlNode, "textyoff2", labelInfo2.offsetY)) g_graphicsContext.ScaleYCoord(labelInfo2.offsetY, res);
-    int angle = 0;
-    if (XMLUtils::GetInt(pControlNode, "angle", angle)) labelInfo.angle = CAngle(angle);
+    int angle = 0;  // use the negative angle to compensate for our vertically flipped cartesian plane
+    if (XMLUtils::GetInt(pControlNode, "angle", angle)) labelInfo.angle = CAngle(-angle);
     CStdString strFont;
     if (XMLUtils::GetString(pControlNode, "font", strFont))
       labelInfo.font = g_fontManager.GetFont(strFont);

@@ -927,6 +927,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				Name="GUI Dialog"
 				Filter="">
 				<File
+					RelativePath=".\xbmc\GUIDialogAudioSubtitleSettings.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\GUIDialogAudioSubtitleSettings.h">
+				</File>
+				<File
 					RelativePath=".\xbmc\GUIDialogBoxBase.cpp">
 				</File>
 				<File
@@ -994,6 +1000,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				</File>
 				<File
 					RelativePath=".\xbmc\GuiDialogSelect.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\GUIDialogSettings.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\GUIDialogSettings.h">
 				</File>
 				<File
 					RelativePath=".\xbmc\GUIDialogSubMenu.cpp">

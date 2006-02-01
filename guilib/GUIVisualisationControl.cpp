@@ -121,10 +121,10 @@ void CGUIVisualisationControl::LoadVisualisation()
   {
     OutputDebugString("Visualisation::Create()\n");
     g_graphicsContext.CaptureStateBlock();
-    float x = g_graphicsContext.ScaleFinalXCoord((float)GetXPosition());
-    float y = g_graphicsContext.ScaleFinalYCoord((float)GetYPosition());
-    float w = g_graphicsContext.ScaleFinalXCoord((float)GetXPosition() + GetWidth()) - x;
-    float h = g_graphicsContext.ScaleFinalYCoord((float)GetYPosition() + GetHeight()) - y;
+    float x = g_graphicsContext.ScaleFinalXCoord((float)GetXPosition(), (float)GetYPosition());
+    float y = g_graphicsContext.ScaleFinalYCoord((float)GetXPosition(), (float)GetYPosition());
+    float w = g_graphicsContext.ScaleFinalXCoord((float)GetXPosition() + GetWidth(), (float)GetYPosition() + GetHeight()) - x;
+    float h = g_graphicsContext.ScaleFinalYCoord((float)GetXPosition() + GetWidth(), (float)GetYPosition() + GetHeight()) - y;
     if (x < 0) x = 0;
     if (y < 0) y = 0;
     if (x + w > g_graphicsContext.GetWidth()) w = g_graphicsContext.GetWidth() - x;

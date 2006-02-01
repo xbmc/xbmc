@@ -339,24 +339,25 @@ bool CGUITextBox::HitTest(int iPosX, int iPosY) const
   return CGUIControl::HitTest(iPosX, iPosY);
 }
 
-void CGUITextBox::OnMouseOver()
+bool CGUITextBox::OnMouseOver()
 {
   if (m_upDown.HitTest(g_Mouse.iPosX, g_Mouse.iPosY))
     m_upDown.OnMouseOver();
-  CGUIControl::OnMouseOver();
+  return CGUIControl::OnMouseOver();
 }
 
-void CGUITextBox::OnMouseClick(DWORD dwButton)
+bool CGUITextBox::OnMouseClick(DWORD dwButton)
 {
   if (m_upDown.HitTest(g_Mouse.iPosX, g_Mouse.iPosY))
-    m_upDown.OnMouseClick(dwButton);
+    return m_upDown.OnMouseClick(dwButton);
+  return false;
 }
 
-void CGUITextBox::OnMouseWheel()
+bool CGUITextBox::OnMouseWheel()
 {
   if (m_upDown.HitTest(g_Mouse.iPosX, g_Mouse.iPosY))
   {
-    m_upDown.OnMouseWheel();
+    return m_upDown.OnMouseWheel();
   }
   else
   { // increase or decrease our offset by the appropriate amount.
@@ -372,6 +373,7 @@ void CGUITextBox::OnMouseWheel()
       iPage = m_upDown.GetMaximum();
     m_upDown.SetValue(iPage);
   }
+  return true;
 }
 
 void CGUITextBox::SetPosition(int iPosX, int iPosY)

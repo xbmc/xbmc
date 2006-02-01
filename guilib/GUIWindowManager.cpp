@@ -530,13 +530,13 @@ bool CGUIWindowManager::IsWindowActive(DWORD dwID) const
   for (unsigned int i = 0; i < m_vecModalWindows.size(); i++)
   {
     CGUIWindow *pWindow = m_vecModalWindows[i];
-    if (pWindow->HasID(dwID) && !pWindow->IsAnimating(ANIM_TYPE_WINDOW_CLOSE))
+    if (pWindow->GetID() == dwID && !pWindow->IsAnimating(ANIM_TYPE_WINDOW_CLOSE))
       return true;
   }
   for (unsigned int i = 0; i < m_vecModelessWindows.size(); i++)
   {
     CGUIWindow *pWindow = m_vecModelessWindows[i];
-    if (pWindow->HasID(dwID) && !pWindow->IsAnimating(ANIM_TYPE_WINDOW_CLOSE))
+    if (pWindow->GetID() == dwID && !pWindow->IsAnimating(ANIM_TYPE_WINDOW_CLOSE))
       return true;
   }
   return false; // window isn't active

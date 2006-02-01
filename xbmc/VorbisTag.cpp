@@ -36,6 +36,7 @@ int CVorbisTag::ParseTagEntry(CStdString& strTagEntry)
     }
     else
       tag.SetArtist(strTagValue);
+    tag.SetLoaded();
   }
 
   if ( strTagType == "TITLE" )
@@ -47,6 +48,7 @@ int CVorbisTag::ParseTagEntry(CStdString& strTagEntry)
   if ( strTagType == "ALBUM" )
   {
     tag.SetAlbum(strTagValue);
+    tag.SetLoaded();
   }
 
   if ( strTagType == "TRACKNUMBER" )

@@ -54,9 +54,9 @@ public:
   int GetSpinY() const { return m_iSpinPosY;};
   void SetText(const wstring &strText);
   virtual bool HitTest(int iPosX, int iPosY) const;
-  virtual void OnMouseOver();
-  virtual void OnMouseClick(DWORD dwButton);
-  virtual void OnMouseWheel();
+  virtual bool OnMouseOver();
+  virtual bool OnMouseClick(DWORD dwButton);
+  virtual bool OnMouseWheel();
 
 protected:
   void OnPageUp();

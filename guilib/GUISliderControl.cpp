@@ -341,7 +341,7 @@ void CGUISliderControl::SetFromPosition(int iPosX, int iPosY)
   SEND_CLICK_MESSAGE(GetID(), GetParentID(), 0);
 }
 
-void CGUISliderControl::OnMouseClick(DWORD dwButton)
+bool CGUISliderControl::OnMouseClick(DWORD dwButton)
 {
   g_Mouse.SetState(MOUSE_STATE_CLICK);
   // turn off any exclusive access, if it's on...
@@ -349,21 +349,25 @@ void CGUISliderControl::OnMouseClick(DWORD dwButton)
   if (m_guiBackground.HitTest(g_Mouse.iPosX, g_Mouse.iPosY))
   { // set the position
     SetFromPosition(g_Mouse.iPosX, g_Mouse.iPosY);
+    return true;
   }
+  return false;
 }
 
-void CGUISliderControl::OnMouseDrag()
+bool CGUISliderControl::OnMouseDrag()
 {
   g_Mouse.SetState(MOUSE_STATE_DRAG);
   // get exclusive access to the mouse
   g_Mouse.SetExclusiveAccess(GetID(), GetParentID());
   // get the position of the mouse
   SetFromPosition(g_Mouse.iPosX, g_Mouse.iPosY);
+  return true;
 }
 
-void CGUISliderControl::OnMouseWheel()
+bool CGUISliderControl::OnMouseWheel()
 { // move the slider 10 steps in the appropriate direction
   Move(g_Mouse.cWheel*10);
+  return true;
 }
 
 void CGUISliderControl::SetInfo(int iInfo)
