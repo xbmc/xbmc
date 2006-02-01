@@ -306,7 +306,8 @@ void CDVDPlayer::Process()
        && pStream->iId != m_iCurrentStreamSubtitle )
       {
         // dvd subtitle stream changed
-        m_iCurrentStreamSubtitle = pStream->iId;
+        CloseSubtitleStream( true ); 
+        OpenSubtitleStream( pStream->iId );
       }
       if( pStream->type == STREAM_AUDIO
        && iPhysicalId == m_dvd.iSelectedAudioStream       
@@ -338,10 +339,10 @@ void CDVDPlayer::Process()
     //       even thou the dvd as selected that none should be opened
     //       yet. 
 
-    int iNrOfStreams = m_pDemuxer->GetNrOfStreams();
-    if (m_iCurrentStreamAudio >= iNrOfStreams) CloseAudioStream(false);
-    if (m_iCurrentStreamVideo >= iNrOfStreams) CloseVideoStream(false);
-    if (m_iCurrentStreamSubtitle >= iNrOfStreams) m_iCurrentStreamSubtitle = -1;
+    //int iNrOfStreams = m_pDemuxer->GetNrOfStreams(); //GetNrOfStreams can't really be trusted.
+    if (m_iCurrentStreamAudio >= 0 && m_pDemuxer->GetStream(m_iCurrentStreamAudio) == NULL) CloseAudioStream(false);
+    if (m_iCurrentStreamVideo >= 0 && m_pDemuxer->GetStream(m_iCurrentStreamVideo) == NULL) CloseVideoStream(false);    
+    if( m_iCurrentStreamSubtitle >= 0 && m_pDemuxer->GetStream(m_iCurrentStreamSubtitle) == NULL ) CloseSubtitleStream(false);
 
     LockStreams();
     {
@@ -428,8 +429,7 @@ void CDVDPlayer::ProcessVideoData(CDemuxStream* pStream, CDVDDemux::DemuxPacket*
 void CDVDPlayer::ProcessSubData(CDemuxStream* pStream, CDVDDemux::DemuxPacket* pPacket)
 {  
   // if no subtitle stream is selected, select this one
-  if( m_iCurrentStreamSubtitle < 0 ) 
-    m_iCurrentStreamSubtitle = pStream->iId;
+  if( m_iCurrentStreamSubtitle < 0 ) OpenSubtitleStream( pStream->iId );
 
   if (pStream->codec == 0x17000) //CODEC_ID_DVD_SUBTITLE)
   {
@@ -572,8 +572,13 @@ void CDVDPlayer::HandleMessages()
       {
         CDemuxStream* pStream = m_pDemuxer->GetStreamFromSubtitleId(pMessage->iValue);
         if( pStream )
-        {          
-          m_iCurrentStreamSubtitle = pStream->iId;
+        {
+          LockStreams();
+
+          CloseSubtitleStream(false);
+          OpenSubtitleStream(pStream->iId);
+
+          UnlockStreams();
         }
       }
       break;
@@ -1102,6 +1107,13 @@ bool CDVDPlayer::OpenVideoStream(int iStream)
   return false;
 }
 
+bool CDVDPlayer::OpenSubtitleStream(int iStream)
+{
+  if( m_pDemuxer->GetStream(iStream) == NULL ) return false;
+  m_iCurrentStreamSubtitle = iStream;
+  return true;
+}
+
 bool CDVDPlayer::CloseAudioStream(bool bWaitForBuffers)
 {
   CLog::Log(LOGNOTICE, "Closing audio stream");
@@ -1128,6 +1140,17 @@ bool CDVDPlayer::CloseVideoStream(bool bWaitForBuffers) // bWaitForBuffers curre
   m_dvdPlayerVideo.CloseStream(bWaitForBuffers);
 
   m_iCurrentStreamVideo = -1;
+
+  return true;
+}
+
+bool CDVDPlayer::CloseSubtitleStream(bool bKeepOverlays)
+{
+  m_dvdspus.Flush();
+
+  if( !bKeepOverlays ) m_overlayContainer.Clear();
+  
+  m_iCurrentStreamSubtitle = -1;
 
   return true;
 }

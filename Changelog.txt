@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 31-01-2006 fixed: dvdplayer would more often display garbled menu overlays after last change to subtitle stream selection
  - 31-01-2006 changed: don't allow next frames to be dropped after having detected a long duration frame in dvdplayer.
  - 30-01-2006 fixed: Effect speed was double on some controls (select, radio, edit, toggle)
  - 30-01-2006 fixed: Exceptions in mouse handling and in iso9660
