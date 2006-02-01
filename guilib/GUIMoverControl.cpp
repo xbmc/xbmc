@@ -109,17 +109,19 @@ void CGUIMoverControl::OnRight()
   Move((int)m_fSpeed, 0);
 }
 
-void CGUIMoverControl::OnMouseDrag()
+bool CGUIMoverControl::OnMouseDrag()
 {
   g_Mouse.SetState(MOUSE_STATE_DRAG);
   g_Mouse.SetExclusiveAccess(GetID(), GetParentID());
   Move((int)g_Mouse.cMickeyX, (int)g_Mouse.cMickeyY);
+  return true;
 }
 
-void CGUIMoverControl::OnMouseClick(DWORD dwButton)
+bool CGUIMoverControl::OnMouseClick(DWORD dwButton)
 {
-  if (dwButton != MOUSE_LEFT_BUTTON) return ;
+  if (dwButton != MOUSE_LEFT_BUTTON) return false;
   g_Mouse.EndExclusiveAccess(GetID(), GetParentID());
+  return true;
 }
 
 void CGUIMoverControl::UpdateSpeed(int nDirection)

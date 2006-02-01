@@ -844,53 +844,62 @@ bool CGUIThumbnailPanel::HitTest(int iPosX, int iPosY) const
   return CGUIControl::HitTest(iPosX, iPosY);
 }
 
-void CGUIThumbnailPanel::OnMouseOver()
+bool CGUIThumbnailPanel::OnMouseOver()
 {
   // check if we are near the spin control
   if (m_upDown.HitTest(g_Mouse.iPosX, g_Mouse.iPosY))
   {
-    m_upDown.OnMouseOver();
+    return m_upDown.OnMouseOver();
   }
   else
   {
     m_upDown.SetFocus(false);
     // select the item under the pointer
     if (SelectItemFromPoint(g_Mouse.iPosX - m_iPosX, g_Mouse.iPosY - m_iPosY))
-      CGUIControl::OnMouseOver();
+      return CGUIControl::OnMouseOver();
   }
+  return false;
 }
 
-void CGUIThumbnailPanel::OnMouseClick(DWORD dwButton)
+bool CGUIThumbnailPanel::OnMouseClick(DWORD dwButton)
 {
   if (m_upDown.HitTest(g_Mouse.iPosX, g_Mouse.iPosY))
   {
-    m_upDown.OnMouseClick(dwButton);
+    return m_upDown.OnMouseClick(dwButton);
   }
   else
   {
     if (SelectItemFromPoint(g_Mouse.iPosX - m_iPosX, g_Mouse.iPosY - m_iPosY))
+    {
       SEND_CLICK_MESSAGE(GetID(), GetParentID(), ACTION_MOUSE_CLICK + dwButton);
+      return true;
+    }
   }
+  return false;
 }
 
-void CGUIThumbnailPanel::OnMouseDoubleClick(DWORD dwButton)
+bool CGUIThumbnailPanel::OnMouseDoubleClick(DWORD dwButton)
 {
   if (m_upDown.HitTest(g_Mouse.iPosX, g_Mouse.iPosY))
   {
-    m_upDown.OnMouseClick(dwButton);
+    return m_upDown.OnMouseClick(dwButton);
   }
   else
   {
     if (SelectItemFromPoint(g_Mouse.iPosX - m_iPosX, g_Mouse.iPosY - m_iPosY))
+    {
       SEND_CLICK_MESSAGE(GetID(), GetParentID(), ACTION_MOUSE_DOUBLE_CLICK + dwButton);
+      return true;
+    }
   }
+  return false;
 }
 
-void CGUIThumbnailPanel::OnMouseWheel()
+bool CGUIThumbnailPanel::OnMouseWheel()
 {
   if (m_upDown.HitTest(g_Mouse.iPosX, g_Mouse.iPosY))
   {
-    m_upDown.OnMouseWheel();
+    return m_upDown.OnMouseWheel();
   }
   else
   {
@@ -898,6 +907,7 @@ void CGUIThumbnailPanel::OnMouseWheel()
       ScrollUp();
     else
       ScrollDown();
+    return true;
   }
 }
 

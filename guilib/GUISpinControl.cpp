@@ -866,7 +866,7 @@ bool CGUISpinControl::HitTest(int iPosX, int iPosY) const
   return m_rectHit.PtInRect(iPosX, iPosY);
 }
 
-void CGUISpinControl::OnMouseOver()
+bool CGUISpinControl::OnMouseOver()
 {
   if (m_imgspinUpFocus.HitTest(g_Mouse.iPosX, g_Mouse.iPosY))
   {
@@ -883,11 +883,12 @@ void CGUISpinControl::OnMouseOver()
     CGUIControl::OnMouseOver();
     m_iSelect = SPIN_BUTTON_UP;
   }
+  return true;
 }
 
-void CGUISpinControl::OnMouseClick(DWORD dwButton)
+bool CGUISpinControl::OnMouseClick(DWORD dwButton)
 { // only left button handled
-  if (dwButton != MOUSE_LEFT_BUTTON) return ;
+  if (dwButton != MOUSE_LEFT_BUTTON) return false;
   if (m_imgspinUpFocus.HitTest(g_Mouse.iPosX, g_Mouse.iPosY))
   {
     MoveUp();
@@ -896,9 +897,10 @@ void CGUISpinControl::OnMouseClick(DWORD dwButton)
   {
     MoveDown();
   }
+  return true;
 }
 
-void CGUISpinControl::OnMouseWheel()
+bool CGUISpinControl::OnMouseWheel()
 {
   for (int i = 0; i < abs(g_Mouse.cWheel); i++)
   {
@@ -911,6 +913,7 @@ void CGUISpinControl::OnMouseWheel()
       MoveDown();
     }
   }
+  return true;
 }
 
 CStdString CGUISpinControl::GetDescription() const

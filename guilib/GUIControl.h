@@ -66,15 +66,15 @@ public:
   virtual void OnFocus() {};
 
   /// \brief Called when the mouse is over the control.  Default implementation selects the control.
-  virtual void OnMouseOver();
+  virtual bool OnMouseOver();
   /// \brief Called when the mouse is dragging over the control.  Default implementation does nothing.
-  virtual void OnMouseDrag() {};
+  virtual bool OnMouseDrag() { return false; };
   /// \brief Called when the left mouse button is pressed on the control.  Default implementation does nothing.
-  virtual void OnMouseClick(DWORD dwButton) {};
+  virtual bool OnMouseClick(DWORD dwButton) { return false; };
   /// \brief Called when the left mouse button is pressed on the control.  Default implementation does nothing.
-  virtual void OnMouseDoubleClick(DWORD dwButton) {};
+  virtual bool OnMouseDoubleClick(DWORD dwButton) { return false; };
   /// \brief Called when the mouse wheel has moved whilst over the control.  Default implementation does nothing
-  virtual void OnMouseWheel() {};
+  virtual bool OnMouseWheel() { return false; };
   virtual bool OnMessage(CGUIMessage& message);
   DWORD GetID(void) const;
   void SetID(DWORD dwID) { m_dwControlID = dwID; };

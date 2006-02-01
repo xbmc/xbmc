@@ -51,9 +51,9 @@ public:
   void SetControlOffsetX(int iControlOffsetX) { m_iControlOffsetX = iControlOffsetX;};
   void SetControlOffsetY(int iControlOffsetY) { m_iControlOffsetY = iControlOffsetY;};
   virtual bool HitTest(int iPosX, int iPosY) const;
-  virtual void OnMouseClick(DWORD dwButton);
-  virtual void OnMouseDrag();
-  virtual void OnMouseWheel();
+  virtual bool OnMouseClick(DWORD dwButton);
+  virtual bool OnMouseDrag();
+  virtual bool OnMouseWheel();
   virtual CStdString GetDescription() const;
   void SetFormatString(const char *format) { if (format) m_formatString = format; };
 protected:

@@ -35,8 +35,8 @@ public:
   virtual void OnDown();
   virtual void OnLeft();
   virtual void OnRight();
-  virtual void OnMouseDrag();
-  virtual void OnMouseClick(DWORD dwButton);
+  virtual bool OnMouseDrag();
+  virtual bool OnMouseClick(DWORD dwButton);
   virtual void PreAllocResources();
   virtual void AllocResources();
   virtual void FreeResources();

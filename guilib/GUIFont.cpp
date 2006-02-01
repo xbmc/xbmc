@@ -27,14 +27,13 @@ void CGUIFont::DrawTextWidth(FLOAT fOriginX, FLOAT fOriginY, const CAngle &angle
                              const WCHAR* strText, float fMaxWidth)
 {
   if (!m_font) return;
-  fOriginX = g_graphicsContext.ScaleFinalXCoord(fOriginX);
-  fOriginY = g_graphicsContext.ScaleFinalYCoord(fOriginY);
+  g_graphicsContext.ScaleFinalCoords(fOriginX, fOriginY);
   fMaxWidth *= g_graphicsContext.ScaleFinalX();
   if (!dwColor) dwColor = m_textColor;
   if (!dwShadowColor) dwShadowColor = m_shadowColor;
   if (dwShadowColor)
-    m_font->DrawTextWidthInternal(fOriginX + 1, fOriginY + 1, angle, g_graphicsContext.MergeAlpha(dwShadowColor), strText, fMaxWidth);
-  m_font->DrawTextWidthInternal(fOriginX, fOriginY, angle, g_graphicsContext.MergeAlpha(dwColor), strText, fMaxWidth);
+    m_font->DrawTextWidthInternal(fOriginX + 1, fOriginY + 1, Transform(angle), g_graphicsContext.MergeAlpha(dwShadowColor), strText, fMaxWidth);
+  m_font->DrawTextWidthInternal(fOriginX, fOriginY, Transform(angle), g_graphicsContext.MergeAlpha(dwColor), strText, fMaxWidth);
 }
 
 
@@ -69,8 +68,7 @@ void CGUIFont::DrawColourTextWidth(FLOAT fOriginX, FLOAT fOriginY, const CAngle 
   if (!dwShadowColor) dwShadowColor = m_shadowColor;
   dwShadowColor = g_graphicsContext.MergeAlpha(dwShadowColor);
 
-  fOriginX = g_graphicsContext.ScaleFinalXCoord(fOriginX);
-  fOriginY = g_graphicsContext.ScaleFinalYCoord(fOriginY);
+  g_graphicsContext.ScaleFinalCoords(fOriginX, fOriginY);
   DWORD *alphaColor = new DWORD[numColors];
   for (int i = 0; i < numColors; i++)
   {
@@ -79,7 +77,7 @@ void CGUIFont::DrawColourTextWidth(FLOAT fOriginX, FLOAT fOriginY, const CAngle 
     alphaColor[i] = g_graphicsContext.MergeAlpha(pdw256ColorPalette[i]);
   }
   fMaxWidth *= g_graphicsContext.ScaleFinalX();
-  m_font->DrawColourTextWidth(fOriginX, fOriginY, angle, alphaColor, numColors, dwShadowColor, strText, pbColours, fMaxWidth);
+  m_font->DrawColourTextWidth(fOriginX, fOriginY, Transform(angle), alphaColor, numColors, dwShadowColor, strText, pbColours, fMaxWidth);
   delete[] alphaColor;
 }
 
@@ -87,14 +85,13 @@ void CGUIFont::DrawText( FLOAT sx, FLOAT sy, const CAngle &angle, DWORD dwColor,
 {
   if (!m_font) return;
   float nw = 0.0f, nh = 0.0f;
-  sx = g_graphicsContext.ScaleFinalXCoord(sx);
-  sy = g_graphicsContext.ScaleFinalYCoord(sy);
+  g_graphicsContext.ScaleFinalCoords(sx, sy);
   fMaxPixelWidth *= g_graphicsContext.ScaleFinalX();
   if (!dwColor) dwColor = m_textColor;
   if (!dwShadowColor) dwShadowColor = m_shadowColor;
   if (dwShadowColor)
-    m_font->DrawTextImpl(sx + 1, sy + 1, angle, g_graphicsContext.MergeAlpha(dwShadowColor), strText, wcslen( strText ), dwFlags, fMaxPixelWidth);
-  m_font->DrawTextImpl( sx, sy, angle, g_graphicsContext.MergeAlpha(dwColor), strText, wcslen( strText ), dwFlags, fMaxPixelWidth );
+    m_font->DrawTextImpl(sx + 1, sy + 1, Transform(angle), g_graphicsContext.MergeAlpha(dwShadowColor), strText, wcslen( strText ), dwFlags, fMaxPixelWidth);
+  m_font->DrawTextImpl( sx, sy, Transform(angle), g_graphicsContext.MergeAlpha(dwColor), strText, wcslen( strText ), dwFlags, fMaxPixelWidth );
 }
 
 FLOAT CGUIFont::GetTextWidth(const WCHAR* strText)
@@ -126,8 +123,7 @@ void CGUIFont::DrawScrollingText(float x, float y, const CAngle &angle, DWORD *c
   GetTextExtent(L"W", &unneeded, &h);
   if (!g_graphicsContext.SetViewPort(x, y, w, h, true))
     return; // nothing to render
-  x = g_graphicsContext.ScaleFinalXCoord(x);
-  y = g_graphicsContext.ScaleFinalYCoord(y);
+  g_graphicsContext.ScaleFinalCoords(x,y);
   // draw at our scroll position
   // we handle the scrolling as follows:
   //   We scroll on a per-pixel basis up until we have scrolled the first character outside
@@ -207,19 +203,35 @@ void CGUIFont::DrawScrollingText(float x, float y, const CAngle &angle, DWORD *c
       alphaColor[i] = g_graphicsContext.MergeAlpha(color[i]);
     }
     if (dwShadowColor)
-      m_font->DrawTextImpl(x - scrollInfo.pixelPos + 1, y + 1, angle, g_graphicsContext.MergeAlpha(dwShadowColor), pOutput, wcslen(pOutput), 0, w + scrollInfo.pixelPos + h*2);
-    m_font->DrawColourTextImpl(x - scrollInfo.pixelPos, y, angle, color, pOutput, pOutPalette, wcslen(pOutput), 0, w + scrollInfo.pixelPos + h*2);
+      m_font->DrawTextImpl(x - scrollInfo.pixelPos + 1, y + 1, Transform(angle), g_graphicsContext.MergeAlpha(dwShadowColor), pOutput, wcslen(pOutput), 0, w + scrollInfo.pixelPos + h*2);
+    m_font->DrawColourTextImpl(x - scrollInfo.pixelPos, y, Transform(angle), color, pOutput, pOutPalette, wcslen(pOutput), 0, w + scrollInfo.pixelPos + h*2);
     delete[] alphaColor;
   }
   else
   {
     if (!*color) *color = m_textColor;
     if (dwShadowColor)
-      m_font->DrawTextImpl(x - scrollInfo.pixelPos + 1, y + 1, angle, g_graphicsContext.MergeAlpha(dwShadowColor), pOutput, wcslen(pOutput), 0, w + scrollInfo.pixelPos + h*2);
-    m_font->DrawTextWidthInternal(x - scrollInfo.pixelPos, y, angle, g_graphicsContext.MergeAlpha(*color), pOutput, w + scrollInfo.pixelPos + h*2);
+      m_font->DrawTextImpl(x - scrollInfo.pixelPos + 1, y + 1, Transform(angle), g_graphicsContext.MergeAlpha(dwShadowColor), pOutput, wcslen(pOutput), 0, w + scrollInfo.pixelPos + h*2);
+    m_font->DrawTextWidthInternal(x - scrollInfo.pixelPos, y, Transform(angle), g_graphicsContext.MergeAlpha(*color), pOutput, w + scrollInfo.pixelPos + h*2);
   }
   delete[] pOutput;
   if (pPalette)
     delete[] pOutPalette;
   g_graphicsContext.RestoreViewPort();
+}
+
+// transform our "angle" vector by the appropriate amount.
+// note that our transform is non-linear, so we must subtract off the transform
+// of the origin.  Plus, our transform is scaling, and we don't wish to scale fonts
+// as this screws up the aliasing.
+CAngle CGUIFont::Transform(const CAngle &angle)
+{
+  CAngle result;
+  result.cosine = g_graphicsContext.ScaleFinalXCoord(angle.cosine, angle.sine) - g_graphicsContext.ScaleFinalXCoord(0, 0);
+  result.sine = g_graphicsContext.ScaleFinalYCoord(angle.cosine, angle.sine) - g_graphicsContext.ScaleFinalYCoord(0, 0);
+  // Normalize the result
+  float norm = sqrt(result.cosine * result.cosine + result.sine * result.sine);
+  result.cosine /= norm;
+  result.sine /= norm;
+  return result;
 }

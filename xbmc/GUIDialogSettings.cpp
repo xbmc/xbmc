@@ -1,10 +1,5 @@
 #include "stdafx.h"
-#include "GUIDialogTrainerSettings.h"
-#include "GUIWindowSettingsCategory.h"
-#include "util.h"
-#include "utils/GUIInfoManager.h"
-#include "utils/trainer.h"
-#include "application.h"
+#include "GUIDialogSettings.h"
 
 #define CONTROL_SETTINGS_LABEL      2
 #define CONTROL_NONE_AVAILABLE      3
@@ -13,33 +8,31 @@
 #define CONTROL_DEFAULT_BUTTON      7
 #define CONTROL_DEFAULT_RADIOBUTTON 8
 #define CONTROL_DEFAULT_SPIN        9
+#define CONTROL_DEFAULT_SLIDER     10
 #define CONTROL_DEFAULT_SEPARATOR  11
 #define CONTROL_START              50
 #define CONTROL_PAGE               60
 
-CGUIDialogTrainerSettings::CGUIDialogTrainerSettings(void)
-    : CGUIDialog(WINDOW_DIALOG_TRAINER_SETTINGS, "TrainerSettings.xml")
+CGUIDialogSettings::CGUIDialogSettings(DWORD id, const char *xmlFile)
+    : CGUIDialog(id, xmlFile)
 {
   m_iLastControl = -1;
+  m_pOriginalSpin = NULL;
   m_pOriginalRadioButton = NULL;
   m_pOriginalSettingsButton = NULL;
-  m_pOriginalSpinButton = NULL;
+  m_pOriginalSlider = NULL;
   m_pOriginalSeparator = NULL;
-
   m_iCurrentPage = 0;
   m_iNumPages = 0;
   m_iNumPerPage = 0;
   m_loadOnDemand = false;
-  m_iTrainer = 0;
-  m_iOldTrainer = 0;
-  m_bNeedSave = false;
 }
 
-CGUIDialogTrainerSettings::~CGUIDialogTrainerSettings(void)
+CGUIDialogSettings::~CGUIDialogSettings(void)
 {
 }
 
-bool CGUIDialogTrainerSettings::OnMessage(CGUIMessage &message)
+bool CGUIDialogSettings::OnMessage(CGUIMessage &message)
 {
   switch (message.GetMessage())
   {
@@ -62,66 +55,19 @@ bool CGUIDialogTrainerSettings::OnMessage(CGUIMessage &message)
     {
       CGUIDialog::OnMessage(message);
 
-      m_database->GetTrainers(m_iTitleId,m_vecOptions);
-      m_strActive = m_database->GetActiveTrainer(m_iTitleId);
-      m_iTrainer = 0;
-      m_iOldTrainer = 0;
-      m_bNeedSave = false;
-      for (unsigned int i=0;i<m_vecOptions.size();++i)
-      {
-        CTrainer* trainer = new CTrainer;
-        if (trainer->Load(m_vecOptions[i]))
-        {
-          if (m_vecOptions[i] == m_strActive)
-            m_iTrainer = i+1;
-          m_vecTrainers.push_back(trainer);
-        }
-        else
-          delete trainer;
-      }
-      if (m_iTrainer)
-        m_database->GetTrainerOptions(m_vecTrainers[m_iTrainer-1]->GetPath(),m_iTitleId,m_vecTrainers[m_iTrainer-1]->GetOptions());
-     
       CreateSettings();
 
       m_iCurrentPage = 0;
       m_iNumPages = 0;
 
       SetupPage();
-  
+
       SET_CONTROL_FOCUS(CONTROL_START, 0);
       return true;
     }
     break;
   case GUI_MSG_WINDOW_DEINIT:
     {
-      if (m_iTrainer)
-      {
-        if (m_bNeedSave)
-          m_database->SetTrainerOptions(m_vecTrainers[m_iTrainer-1]->GetPath(),m_iTitleId,m_vecTrainers[m_iTrainer-1]->GetOptions());
-
-        if (m_strActive != m_vecTrainers[m_iTrainer-1]->GetPath())
-          {
-            m_database->SetTrainerActive(m_vecTrainers[m_iTrainer-1]->GetPath(),m_iTitleId,true);
-            m_bNeedSave = true;
-          }
-          else
-            m_bNeedSave = false;
-      }
-      else 
-      {
-        if (m_strActive == "")
-          m_bNeedSave = false;
-        else
-          m_bNeedSave = true;
-      }
-      for (unsigned int i=0;i<m_vecTrainers.size();++i)
-      {
-        if (i != m_iTrainer-1 && m_bNeedSave)
-          m_database->SetTrainerActive(m_vecTrainers[i]->GetPath(),m_iTitleId,false);
-        delete m_vecTrainers[i];
-      }
-      m_vecTrainers.clear();
       FreeControls();
       m_settings.clear();
     }
@@ -130,22 +76,25 @@ bool CGUIDialogTrainerSettings::OnMessage(CGUIMessage &message)
   return CGUIDialog::OnMessage(message);
 }
 
-void CGUIDialogTrainerSettings::SetupPage()
+void CGUIDialogSettings::SetupPage()
 {
   // cleanup first, if necessary
   FreeControls();
-  m_pOriginalSpinButton = (CGUISpinControlEx*)GetControl(CONTROL_DEFAULT_SPIN);
+  m_pOriginalSpin = (CGUISpinControlEx*)GetControl(CONTROL_DEFAULT_SPIN);
   m_pOriginalRadioButton = (CGUIRadioButtonControl *)GetControl(CONTROL_DEFAULT_RADIOBUTTON);
+  m_pOriginalSettingsButton = (CGUIButtonControl *)GetControl(CONTROL_DEFAULT_BUTTON);
+  m_pOriginalSlider = (CGUISettingsSliderControl *)GetControl(CONTROL_DEFAULT_SLIDER);
   m_pOriginalSeparator = (CGUIImage *)GetControl(CONTROL_DEFAULT_SEPARATOR);
-  if (!m_pOriginalRadioButton || !m_pOriginalSpinButton || !m_pOriginalSeparator)
+  if (!m_pOriginalSpin || !m_pOriginalRadioButton || !m_pOriginalSettingsButton || !m_pOriginalSlider || !m_pOriginalSeparator)
     return;
-  
-  m_pOriginalSpinButton->SetVisible(false);
+  m_pOriginalSpin->SetVisible(false);
   m_pOriginalRadioButton->SetVisible(false);
+  m_pOriginalSettingsButton->SetVisible(false);
+  m_pOriginalSlider->SetVisible(false);
   m_pOriginalSeparator->SetVisible(false);
 
   // update our settings label
-  SET_CONTROL_LABEL(CONTROL_SETTINGS_LABEL, g_localizeStrings.Get(12015));
+  SET_CONTROL_LABEL(CONTROL_SETTINGS_LABEL, g_localizeStrings.Get(13395 + GetID() - WINDOW_DIALOG_VIDEO_OSD_SETTINGS));
 
   // our controls for layout...
   const CGUIControl *pControlArea = GetControl(CONTROL_AREA);
@@ -171,7 +120,7 @@ void CGUIDialogTrainerSettings::SetupPage()
   int iGapY = pControlGap->GetHeight();
   int numSettings = 0;
   for (unsigned int i=0; i < m_settings.size(); i++)
-    if (m_settings[i].type != TrainerSetting::SEPARATOR)
+    if (m_settings[i].type != SettingInfo::SEPARATOR)
       numSettings++;
 
   int numPerPage = (int)pControlArea->GetHeight() / iGapY;
@@ -198,7 +147,7 @@ void CGUIDialogTrainerSettings::SetupPage()
     int j = 0;
     while (j < numPerPage)
     {
-      if (m_settings[m_iPageOffset].type != TrainerSetting::SEPARATOR)
+      if (m_settings[m_iPageOffset].type != SettingInfo::SEPARATOR)
         j++;
       m_iPageOffset++;
     }
@@ -208,16 +157,15 @@ void CGUIDialogTrainerSettings::SetupPage()
   int numControlsOnPage = 0;
   for (unsigned int i = m_iPageOffset; i < m_settings.size(); i++)
   {
-    TrainerSetting &setting = m_settings.at(i);
+    SettingInfo &setting = m_settings.at(i);
     AddSetting(setting, iPosX, iPosY, iWidth, CONTROL_START + i - m_iPageOffset);
-    if (setting.type == TrainerSetting::SEPARATOR)
-       iPosY += m_pOriginalSeparator->GetHeight();
+    if (setting.type == SettingInfo::SEPARATOR)
+      iPosY += m_pOriginalSeparator->GetHeight();
     else
     {
       iPosY += iGapY;
       numSettingsOnPage++;
     }
-
     numControlsOnPage++;
     if (numSettingsOnPage == numPerPage)
       break;
@@ -235,7 +183,7 @@ void CGUIDialogTrainerSettings::SetupPage()
 }
 
 
-void CGUIDialogTrainerSettings::UpdateSetting(unsigned int num)
+void CGUIDialogSettings::UpdateSetting(unsigned int num)
 {
   unsigned int settingNum = 0;
   for (unsigned int i = 0; i < m_settings.size(); i++)
@@ -246,46 +194,59 @@ void CGUIDialogTrainerSettings::UpdateSetting(unsigned int num)
       break;
     }
   }
-  TrainerSetting &setting = m_settings.at(settingNum);
+  SettingInfo &setting = m_settings.at(settingNum);
   unsigned int controlID = settingNum + CONTROL_START + m_iPageOffset;
-  if (setting.type == TrainerSetting::SPIN)
+  if (setting.type == SettingInfo::SPIN)
   {
     CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(controlID);
     if (pControl && setting.data) pControl->SetValue(*(int *)setting.data);
   }
-  else if (setting.type == TrainerSetting::CHECK)
+  else if (setting.type == SettingInfo::CHECK)
   {
     CGUIRadioButtonControl *pControl = (CGUIRadioButtonControl *)GetControl(controlID);
-    if (pControl && setting.data) pControl->SetSelected(*(unsigned char*)setting.data?true:false);
+    if (pControl && setting.data) pControl->SetSelected(*(bool *)setting.data);
+  }
+  else if (setting.type == SettingInfo::SLIDER)
+  {
+    CGUISettingsSliderControl *pControl = (CGUISettingsSliderControl *)GetControl(controlID);
+    if (pControl && setting.data) pControl->SetFloatValue(*(float *)setting.data);
+  }
+  else if (setting.type == SettingInfo::SLIDER_INT)
+  {
+    CGUISettingsSliderControl *pControl = (CGUISettingsSliderControl *)GetControl(controlID);
+    if (pControl && setting.data) pControl->SetIntValue(*(int *)setting.data);
   }
 }
 
-void CGUIDialogTrainerSettings::OnClick(int iID)
+void CGUIDialogSettings::OnClick(int iID)
 {
   unsigned int settingNum = iID - CONTROL_START + m_iPageOffset;
   if (settingNum >= m_settings.size()) return;
-  TrainerSetting &setting = m_settings.at(settingNum);
-  if (setting.type == TrainerSetting::SPIN)
+  SettingInfo &setting = m_settings.at(settingNum);
+  if (setting.type == SettingInfo::SPIN)
   {
     CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(iID);
-    if (setting.data) 
-    {
-      m_iOldTrainer = m_iTrainer;
-      *(int *)setting.data = pControl->GetValue();
-    }
+    if (setting.data) *(int *)setting.data = pControl->GetValue();
   }
-  else if (setting.type == TrainerSetting::CHECK)
+  else if (setting.type == SettingInfo::CHECK)
   {
     CGUIRadioButtonControl *pControl = (CGUIRadioButtonControl *)GetControl(iID);
-    if (setting.data) 
-    {
-      *(unsigned char*)setting.data = pControl->IsSelected()?1:0;
-    }
+    if (setting.data) *(bool *)setting.data = pControl->IsSelected();
+  }
+  else if (setting.type == SettingInfo::SLIDER)
+  {
+    CGUISettingsSliderControl *pControl = (CGUISettingsSliderControl *)GetControl(iID);
+    if (setting.data) *(float *)setting.data = pControl->GetFloatValue();
+  }
+  else if (setting.type == SettingInfo::SLIDER_INT)
+  {
+    CGUISettingsSliderControl *pControl = (CGUISettingsSliderControl *)GetControl(iID);
+    if (setting.data) *(int *)setting.data = pControl->GetIntValue();
   }
   OnSettingChanged(settingNum);
 }
 
-void CGUIDialogTrainerSettings::FreeControls()
+void CGUIDialogSettings::FreeControls()
 {
   // free any created controls
   for (unsigned int i = CONTROL_START; i < CONTROL_PAGE; i++)
@@ -300,31 +261,36 @@ void CGUIDialogTrainerSettings::FreeControls()
   }
 }
 
-void CGUIDialogTrainerSettings::AddSetting(TrainerSetting &setting, int iPosX, int iPosY, int iWidth, int iControlID)
+void CGUIDialogSettings::AddSetting(SettingInfo &setting, int iPosX, int iPosY, int iWidth, int iControlID)
 {
   CGUIControl *pControl = NULL;
-  if (setting.type == TrainerSetting::SEPARATOR)
+  if (setting.type == SettingInfo::BUTTON)
+  {
+    pControl = new CGUIButtonControl(*m_pOriginalSettingsButton);
+    if (!pControl) return ;
+    ((CGUIButtonControl *)pControl)->SetText(setting.name);
+    pControl->SetPosition(iPosX, iPosY);
+    pControl->SetWidth(iWidth);
+  }
+  else if (setting.type == SettingInfo::SEPARATOR)
   {
     pControl = new CGUIImage(*m_pOriginalSeparator);
     if (!pControl) return ;
     pControl->SetPosition(iPosX, iPosY);
     pControl->SetWidth(iWidth);
   }
-  else if (setting.type == TrainerSetting::CHECK)
+  else if (setting.type == SettingInfo::CHECK)
   {
     pControl = new CGUIRadioButtonControl(*m_pOriginalRadioButton);
     if (!pControl) return ;
     ((CGUIRadioButtonControl *)pControl)->SetText(setting.name);
     pControl->SetPosition(iPosX, iPosY);
     pControl->SetWidth(iWidth);
-    if (setting.data) 
-    {
-      pControl->SetSelected(*(unsigned char*)setting.data==1);
-    }
+    if (setting.data) pControl->SetSelected(*(bool *)setting.data == 1);
   }
-  else if (setting.type == TrainerSetting::SPIN && setting.entry.size() > 0)
+  else if (setting.type == SettingInfo::SPIN && setting.entry.size() > 0)
   {
-    pControl = new CGUISpinControlEx(*m_pOriginalSpinButton);
+    pControl = new CGUISpinControlEx(*m_pOriginalSpin);
     if (!pControl) return ;
     pControl->SetPosition(iPosX, iPosY);
     pControl->SetWidth(iWidth);
@@ -334,7 +300,28 @@ void CGUIDialogTrainerSettings::AddSetting(TrainerSetting &setting, int iPosX, i
       ((CGUISpinControlEx *)pControl)->AddLabel(setting.entry[i], i);
     if (setting.data) ((CGUISpinControlEx *)pControl)->SetValue(*(int *)setting.data);
   }
-  
+  else if (setting.type == SettingInfo::SLIDER || setting.type == SettingInfo::SLIDER_INT)
+  {
+    pControl = new CGUISettingsSliderControl(*m_pOriginalSlider);
+    if (!pControl) return ;
+    pControl->SetPosition(iPosX, iPosY);
+    pControl->SetWidth(iWidth);
+    ((CGUISettingsSliderControl *)pControl)->SetText(setting.name);
+    if (setting.type == SettingInfo::SLIDER)
+    {
+      ((CGUISettingsSliderControl *)pControl)->SetFormatString(setting.format);
+      ((CGUISettingsSliderControl *)pControl)->SetType(SPIN_CONTROL_TYPE_FLOAT);
+      ((CGUISettingsSliderControl *)pControl)->SetFloatRange(setting.min, setting.max);
+      ((CGUISettingsSliderControl *)pControl)->SetFloatInterval(setting.interval);
+      if (setting.data) ((CGUISettingsSliderControl *)pControl)->SetFloatValue(*(float *)setting.data);
+    }
+    else
+    {
+      ((CGUISettingsSliderControl *)pControl)->SetType(SPIN_CONTROL_TYPE_INT);
+      ((CGUISettingsSliderControl *)pControl)->SetRange((int)setting.min, (int)setting.max);
+      if (setting.data) ((CGUISettingsSliderControl *)pControl)->SetIntValue(*(int *)setting.data);
+    }
+  }
   if (!pControl) return;
   pControl->SetNavigation(iControlID - 1,
                           iControlID + 1,
@@ -346,91 +333,85 @@ void CGUIDialogTrainerSettings::AddSetting(TrainerSetting &setting, int iPosX, i
   pControl->AllocResources();
 }
 
-void CGUIDialogTrainerSettings::AddSpin(unsigned int id, int label, int *current)
+void CGUIDialogSettings::AddButton(unsigned int id, int label)
 {
-  TrainerSetting setting;
+  SettingInfo setting;
   setting.id = id;
-  setting.name = "";
-  setting.type = TrainerSetting::SPIN;
-  setting.data = current;
-  setting.entry.push_back("None");
-  for (unsigned int i = 0; i < m_vecTrainers.size(); i++)
-    setting.entry.push_back(m_vecTrainers[i]->GetName());
-  
-  m_settings.push_back(setting);
-}
-
-void CGUIDialogTrainerSettings::AddBool(unsigned int id, const CStdString& strLabel, unsigned char* on)
-{
-  TrainerSetting setting;
-  setting.id = id;
-  setting.name = strLabel;
-  setting.type = TrainerSetting::CHECK;
-  setting.data = on;
-  m_settings.push_back(setting);
-}
-
-void CGUIDialogTrainerSettings::AddSeparator(unsigned int id)
-{
-  TrainerSetting setting;
-  setting.id = id;
-  setting.type = TrainerSetting::SEPARATOR;
+  setting.name = g_localizeStrings.Get(label);
+  setting.type = SettingInfo::BUTTON;
   setting.data = NULL;
   m_settings.push_back(setting);
 }
 
-void CGUIDialogTrainerSettings::CreateSettings()
+void CGUIDialogSettings::AddBool(unsigned int id, int label, bool *on)
 {
-  // clear out any old settings
-  m_settings.clear();
-  // create our settings
-  if (m_vecTrainers.size())
-  {
-    AddSpin(1,12013,&m_iTrainer);
-    AddSeparator(2);
-    if (m_iTrainer && m_iTrainer < (int)m_vecTrainers.size()+1)
-    {
-      m_vecTrainers[m_iTrainer-1]->GetOptionLabels(m_vecOptions);
-      for (unsigned int i=0;i<m_vecOptions.size();++i)
-        AddBool(i+2,m_vecOptions[i],m_vecTrainers[m_iTrainer-1]->GetOptions()+i);
-    }
-  }    
+  SettingInfo setting;
+  setting.id = id;
+  setting.name = g_localizeStrings.Get(label);
+  setting.type = SettingInfo::CHECK;
+  setting.data = on;
+  m_settings.push_back(setting);
 }
 
-void CGUIDialogTrainerSettings::OnSettingChanged(unsigned int num)
+void CGUIDialogSettings::AddSpin(unsigned int id, int label, int *current, unsigned int max, const int *entries)
 {
-  // setting has changed - update anything that needs it
-  if (num >= m_settings.size()) return;
-  TrainerSetting &setting = m_settings.at(num);
-  // check and update anything that needs it
-  if (setting.id == 1)
-  {
-    if (m_iOldTrainer && m_bNeedSave)
-      m_database->SetTrainerOptions(m_vecTrainers[m_iOldTrainer-1]->GetPath(),m_iTitleId,m_vecTrainers[m_iOldTrainer-1]->GetOptions());
+  SettingInfo setting;
+  setting.id = id;
+  setting.name = g_localizeStrings.Get(label);
+  setting.type = SettingInfo::SPIN;
+  setting.data = current;
+  for (unsigned int i = 0; i < max; i++)
+    setting.entry.push_back(g_localizeStrings.Get(entries[i]));
+  m_settings.push_back(setting);
+}
 
-    if (m_iTrainer)
-      m_database->GetTrainerOptions(m_vecTrainers[m_iTrainer-1]->GetPath(),m_iTitleId,m_vecTrainers[m_iTrainer-1]->GetOptions());
-  
-    CreateSettings();
-    SetupPage();
-    SET_CONTROL_FOCUS(CONTROL_START, 0);
-    m_bNeedSave = false;
+void CGUIDialogSettings::AddSpin(unsigned int id, int label, int *current, unsigned int min, unsigned int max)
+{
+  SettingInfo setting;
+  setting.id = id;
+  setting.name = g_localizeStrings.Get(label);
+  setting.type = SettingInfo::SPIN;
+  setting.data = current;
+  for (unsigned int i = min; i <= max; i++)
+  {
+    CStdString format;
+    format.Format("%i", i);
+    setting.entry.push_back(format);
   }
-  else
-    m_bNeedSave = true;
+  m_settings.push_back(setting);
 }
 
-void CGUIDialogTrainerSettings::Render()
+void CGUIDialogSettings::AddSlider(unsigned int id, int label, float *current, float min, float interval, float max, const char *format /*= NULL*/)
 {
-  CGUIDialog::Render();
+  SettingInfo setting;
+  setting.id = id;
+  setting.name = g_localizeStrings.Get(label);
+  setting.type = SettingInfo::SLIDER;
+  setting.min = min;
+  setting.interval = interval;
+  setting.max = max;
+  setting.data = current;
+  if (format) setting.format = format;
+  m_settings.push_back(setting);
 }
 
-void CGUIDialogTrainerSettings::ShowForTitle(unsigned int iTitleId, CProgramDatabase* database)
+void CGUIDialogSettings::AddSlider(unsigned int id, int label, int *current, int min, int max)
 {
-  CGUIDialogTrainerSettings *dialog = (CGUIDialogTrainerSettings *)m_gWindowManager.GetWindow(WINDOW_DIALOG_TRAINER_SETTINGS);
-  if (!dialog) return;
-  dialog->m_iTitleId = iTitleId;
-  dialog->m_database = database;
-  dialog->DoModal(m_gWindowManager.GetActiveWindow());
-  return ;
+  SettingInfo setting;
+  setting.id = id;
+  setting.name = g_localizeStrings.Get(label);
+  setting.type = SettingInfo::SLIDER_INT;
+  setting.min = (float)min;
+  setting.max = (float)max;
+  setting.data = current;
+  m_settings.push_back(setting);
+}
+
+void CGUIDialogSettings::AddSeparator(unsigned int id)
+{
+  SettingInfo setting;
+  setting.id = id;
+  setting.type = SettingInfo::SEPARATOR;
+  setting.data = NULL;
+  m_settings.push_back(setting);
 }

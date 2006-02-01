@@ -15,6 +15,7 @@
 #include "common/mouse.h"
 #include "../xbmc/utils/CriticalSection.h"
 #include "../xbmc/utils/SingleLock.h"
+#include "TransformMatrix.h"
 
 /*!
  \ingroup graphics
@@ -62,23 +63,6 @@ struct RESOLUTION_INFO
   DWORD dwFlags;
   float fPixelRatio;
   char strMode[11];
-};
-
-class CAttribute
-{
-public:
-  CAttribute()
-  {
-    Reset();
-  };
-  void Reset()
-  {
-    alpha = 255;
-    offsetX = offsetY = 0;
-  };
-  DWORD alpha;
-  int offsetX;
-  int offsetY;
 };
 
 /*!
@@ -137,24 +121,19 @@ public:
 
   // output scaling
   void SetScalingResolution(RESOLUTION res, int posX, int posY, bool needsScaling);  // sets the input skin resolution.
-  inline float ScaleFinalXCoord(float x) const;
-  inline float ScaleFinalYCoord(float y) const;
+  inline float ScaleFinalXCoord(float x, float y) const;
+  inline float ScaleFinalYCoord(float x, float y) const;
+  inline void ScaleFinalCoords(float &x, float &y) const;
   inline float ScaleFinalX() const { return m_windowScaleX; };
   inline float ScaleFinalY() const { return m_windowScaleY; };
   inline DWORD MergeAlpha(DWORD color) const;
-  inline void ResetControlAnimation() { m_controlAttribute.Reset(); };
-  inline void AddControlAnimation(CAttribute &attribute)
+  inline void SetWindowTransform(const TransformMatrix &matrix)
   {
-    m_controlAttribute.alpha = m_controlAttribute.alpha * attribute.alpha / 255;
-    m_controlAttribute.offsetX += attribute.offsetX;
-    m_controlAttribute.offsetY += attribute.offsetY;
+    m_finalWindowTransform = m_guiTransform * matrix;
   };
-  inline void ResetWindowAnimation() { m_windowAttribute.Reset(); };
-  inline void AddWindowAnimation(CAttribute &attribute)
+  inline void SetControlTransform(const TransformMatrix &matrix)
   {
-    m_windowAttribute.alpha = m_windowAttribute.alpha * attribute.alpha / 255;
-    m_windowAttribute.offsetX += attribute.offsetX;
-    m_windowAttribute.offsetY += attribute.offsetY;
+    m_finalTransform = m_finalWindowTransform * matrix;
   };
 
 protected:
@@ -177,10 +156,11 @@ protected:
 private:
   float m_windowScaleX;
   float m_windowScaleY;
-  float m_windowPosX;
-  float m_windowPosY;
-  CAttribute m_controlAttribute;
-  CAttribute m_windowAttribute;
+
+  TransformMatrix m_guiTransform;
+  TransformMatrix m_windowTransform;
+  TransformMatrix m_finalWindowTransform;
+  TransformMatrix m_finalTransform;
 };
 
 /*!

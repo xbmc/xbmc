@@ -21,6 +21,6 @@ public:
   CGUIVideoControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight);
   virtual ~CGUIVideoControl(void);
   virtual void Render();
-  virtual void OnMouseClick(DWORD dwButton);
+  virtual bool OnMouseClick(DWORD dwButton);
 };
 #endif

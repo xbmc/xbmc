@@ -96,10 +96,12 @@ void CAnimation::Create(TiXmlElement *node, RESOLUTION res)
   if (!effectType)
     return;
   // effect type
-  if (effectType && strcmpi(effectType, "fade") == 0)
+  if (strcmpi(effectType, "fade") == 0)
     effect = EFFECT_TYPE_FADE;
-  else if (effectType && strcmpi(effectType, "slide") == 0)
+  else if (strcmpi(effectType, "slide") == 0)
     effect = EFFECT_TYPE_SLIDE;
+  else if (strcmpi(effectType, "rotate") == 0)
+    effect = EFFECT_TYPE_ROTATE;
   // time and delay
   node->Attribute("time", (int *)&length);
   node->Attribute("delay", (int *)&delay);
@@ -132,7 +134,7 @@ void CAnimation::Create(TiXmlElement *node, RESOLUTION res)
     g_graphicsContext.ScaleXCoord(endX, res);
     g_graphicsContext.ScaleYCoord(endY, res);
   }
-  else
+  else if (effect == EFFECT_TYPE_FADE)
   {  // alpha parameters
     if (type < 0)
     { // out effect defaults
@@ -150,6 +152,24 @@ void CAnimation::Create(TiXmlElement *node, RESOLUTION res)
     if (endAlpha > 100) endAlpha = 100;
     if (startAlpha < 0) startAlpha = 0;
     if (endAlpha < 0) endAlpha = 0;
+  }
+  else // if (effect == EFFECT_TYPE_ROTATE)
+  {
+    if (node->Attribute("start")) node->Attribute("start", &startX);
+    if (node->Attribute("end")) node->Attribute("end", &endX);
+
+    // convert to a negative to account for our reversed vertical axis
+    startX *= -1;
+    endX *= -1;
+
+    const char *centerPos = node->Attribute("center");
+    if (centerPos)
+    {
+      startY = atoi(centerPos);
+      const char *comma = strstr(centerPos, ",");
+      if (comma)
+        endY = atoi(comma + 1);
+    }
   }
 }
 
@@ -220,7 +240,9 @@ void CAnimation::Animate(DWORD time, bool hasRendered)
     amount = 1.0f - amount;
 }
 
-CAttribute CAnimation::RenderAnimation()
+#define DEGREE_TO_RADIAN 0.01745329f
+
+TransformMatrix CAnimation::RenderAnimation()
 {
   // If we have finished an animation, reset the animation state
   // We do this here (rather than in Animate()) as we need the
@@ -229,19 +251,24 @@ CAttribute CAnimation::RenderAnimation()
   if (currentState == ANIM_STATE_APPLIED)
     currentProcess = ANIM_PROCESS_NONE;
   // Now do the real animation
-  CAttribute attribute;
   if (currentProcess != ANIM_PROCESS_NONE || currentState == ANIM_STATE_APPLIED)
   {
     if (effect == EFFECT_TYPE_FADE)
-      attribute.alpha = (DWORD)(((float)(endAlpha - startAlpha) * amount + startAlpha) * 2.55f);
+      return TransformMatrix::CreateFader(((float)(endAlpha - startAlpha) * amount + startAlpha) * 0.01f);
     else if (effect == EFFECT_TYPE_SLIDE)
     {
       float offset = amount * (acceleration * amount + 1.0f - acceleration);
-      attribute.offsetX = (int)((endX - startX)*offset + startX);
-      attribute.offsetY = (int)((endY - startY)*offset + startY);
+      return TransformMatrix::CreateTranslation((endX - startX)*offset + startX, (endY - startY)*offset + startY);
+    }
+    else if (effect == EFFECT_TYPE_ROTATE)
+    {
+      TransformMatrix translation1 = TransformMatrix::CreateTranslation((float)-startY, (float)-endY);
+      TransformMatrix rotation = TransformMatrix::CreateRotation(((endX - startX)*amount + startX) * DEGREE_TO_RADIAN);
+      TransformMatrix translation2 = TransformMatrix::CreateTranslation((float)startY, (float)endY);
+      return translation2 * rotation * translation1;
     }
   }
-  return attribute;
+  return TransformMatrix();
 }
 
 void CAnimation::ResetAnimation()
