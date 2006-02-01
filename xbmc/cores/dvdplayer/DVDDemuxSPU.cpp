@@ -32,6 +32,12 @@ CDVDDemuxSPU::~CDVDDemuxSPU()
   if (m_spuData.data) delete[] m_spuData.data;
 }
 
+void CDVDDemuxSPU::Flush()
+{
+  memset(&m_spuData, 0, sizeof(m_spuData));
+  memset(m_clut, 0, sizeof(m_clut));  
+}
+
 CSPUInfo* CDVDDemuxSPU::AddData(BYTE* data, int iSize, __int64 pts)
 {
   SPUData* pSPUData = &m_spuData;
