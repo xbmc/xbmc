@@ -28,7 +28,7 @@ public:
   static bool IsLoaded(const CStdString& strSection);
   static bool Load(const CStdString& strSection);
   static void Unload(const CStdString& strSection);
-  static DllLoader* LoadDLL(const CStdString& strSection, bool bDelayUnload=true);
+  static DllLoader* LoadDLL(const CStdString& strSection, bool bDelayUnload=true, bool bLoadSymbols=false);
   static void UnloadDLL(const CStdString& strSection);
   static void UnloadDelayed();
   static void UnloadAll();

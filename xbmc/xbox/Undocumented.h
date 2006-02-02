@@ -1363,7 +1363,20 @@ extern "C"
     IN PKSTART_ROUTINE StartRoutine
   );
 
-
+  NTSYSAPI
+  NTSTATUS
+  NTAPI
+  DbgLoadImageSymbols(IN PANSI_STRING Name,
+                      IN ULONG Base,
+                      IN ULONG Unknown3
+                      );
+  NTSYSAPI
+  NTSTATUS
+  NTAPI
+  DbgUnLoadImageSymbols(IN PANSI_STRING Name,
+                      IN ULONG Base,
+                      IN ULONG Unknown3
+                      );
 
   // Error codes
 #define STATUS_SUCCESS     0x00000000
