@@ -4,6 +4,8 @@
 #include "../xbmc/settings.h"
 #include "../xbmc/buttontranslator.h"
 
+#include "../xbmc/Settings.h" // FOR PRE_SKIN_VERSION_2_0_COMPATIBILITY
+
 typedef struct
 {
   char chunk_id[4];
@@ -389,6 +391,7 @@ bool CGUIAudioManager::Load()
       {
         g_buttonTranslator.TranslateActionString(pIdNode->FirstChild()->Value(), wID);
       }
+#ifdef PRE_SKIN_VERSION_2_0_COMPATIBILITY
       else
       {
         TiXmlNode* pIdNode = pAction->FirstChild("id");
@@ -398,6 +401,7 @@ bool CGUIAudioManager::Load()
           wID=(WORD)atol(strID.c_str());
         }
       }
+#endif
 
       TiXmlNode* pFileNode = pAction->FirstChild("file");
       CStdString strFile;
@@ -430,6 +434,7 @@ bool CGUIAudioManager::Load()
           wID = g_buttonTranslator.TranslateWindowString(pIdNode->FirstChild()->Value());
         }
       }
+#ifdef PRE_SKIN_VERSION_2_0_COMPATIBILITY
       else
       {
         TiXmlNode* pIdNode = pWindow->FirstChild("id");
@@ -442,6 +447,7 @@ bool CGUIAudioManager::Load()
           }
         }
       }
+#endif
 
       CWindowSounds sounds;
       LoadWindowSound(pWindow, "activate", sounds.strInitFile);
