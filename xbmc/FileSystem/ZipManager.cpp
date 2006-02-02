@@ -1,3 +1,4 @@
+#include "../stdafx.h"
 #include "ZipManager.h"
 #include "../url.h"
 #include "../utils/log.h"
