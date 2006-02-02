@@ -64,6 +64,7 @@ bool CRTVDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
         // share of either type--simple file listing or ReplayGuide listing.
         pItem->m_strPath = strRoot + rtv[i].hostname;
         pItem->m_bIsFolder = true;
+        pItem->SetLabelPreformated(true);
         items.Add(pItem);
       }
       free(rtv);
@@ -237,6 +238,7 @@ bool CRTVDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
           // E.g., a 30 minute show will show as 29.3 KB in XBMC.
           pItem->m_dwSize = dwFileSize * 1000;
           pItem->m_bIsFolder = bIsFolder;
+          pItem->SetLabelPreformated(true);
           items.Add(pItem);
         }
       }
@@ -287,6 +289,7 @@ bool CRTVDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
             pItem->m_bIsFolder = false;
             // The list returned by the RTV doesn't include file sizes, unfortunately
             //pItem->m_dwSize = atol(szSize);
+            pItem->SetLabelPreformated(true);
             items.Add(pItem);
           }
         }
