@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 02-02-2006 fixed: some wmv/asf files wouldn't play either audio or video (updated mplayer.dll)
  - 02-02-2006 changed: OSD is closed when the user selects the DVD Menu.
  - 01-02-2006 fixed: List and Thumb contents were cleared before the WindowClose animation was started.
  - 01-02-2006 added: Rotation effect.  See online manual for more information.
