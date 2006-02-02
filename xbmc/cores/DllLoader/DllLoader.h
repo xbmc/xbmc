@@ -29,10 +29,10 @@ typedef struct _LoadedList
   _LoadedList* pNext;
 } LoadedList;
   
-class DllLoader : public CoffLoader
+class DllLoader : protected CoffLoader
 {
 public:
-  DllLoader(const char *dll, bool track = false, bool bSystemDll = false);
+  DllLoader(const char *dll, bool track = false, bool bSystemDll = false, bool bLoadSymbols = false);
   ~DllLoader();
 
   bool Load();
@@ -50,6 +50,7 @@ public:
   Export* GetExportByOrdinal(unsigned long ordinal);
   Export* GetExportByFunctionName(const char* sFunctionName);
   bool IsSystemDll() { return m_bSystemDll; }
+  bool HasSymbols() { return m_bLoadSymbols; }
   
   void AddExport(unsigned long ordinal, unsigned long function, void* track_function = NULL);
   void AddExport(char* sFunctionName, unsigned long ordinal, unsigned long function, void* track_function = NULL);
@@ -64,6 +65,7 @@ private:
   int m_iRefCount;
   bool m_bTrack;
   bool m_bSystemDll; // true if this dll should not be removed
+  bool m_bLoadSymbols; // when true this dll should not be removed
   ExportList* m_pExports;
   LoadedList* m_pDlls;
 
@@ -75,4 +77,5 @@ private:
   int ResolveName(char*, char*, void **);
   char* ResolveReferencedDll(char* dll);
   int LoadExports();
+  void LoadSymbols();
 };

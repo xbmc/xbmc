@@ -24,7 +24,7 @@ bool DllDynamic::Load()
   if (m_dll)
     return true;
 
-  if (!(m_dll=CSectionLoader::LoadDLL(m_strDllName, m_DelayUnload)))
+  if (!(m_dll=CSectionLoader::LoadDLL(m_strDllName, m_DelayUnload, LoadSymbols())))
     return false;
 
   if (!ResolveExports())
