@@ -202,6 +202,11 @@ bool CGUIWindowOSD::OnMessage(CGUIMessage& message)
 {
   switch ( message.GetMessage() )
   {
+  case GUI_MSG_VIDEO_MENU_STARTED:
+    {
+      // We have gone to the DVD menu, so close the OSD.
+      Close();
+    }
   case GUI_MSG_WINDOW_DEINIT:  // fired when OSD is hidden
     {
       if (g_SkinInfo.GetVersion() < 1.85)
