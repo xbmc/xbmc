@@ -103,7 +103,7 @@ DllLoader* DllLoaderContainer::GetModule(const char* sName)
   return NULL;
 }
 
-DllLoader* DllLoaderContainer::LoadModule(const char* sName, const char* sCurrentDir/*=NULL*/)
+DllLoader* DllLoaderContainer::LoadModule(const char* sName, const char* sCurrentDir/*=NULL*/, bool bLoadSymbols/*=false*/)
 {
   DllLoader* pDll=NULL;
 
@@ -124,7 +124,7 @@ DllLoader* DllLoaderContainer::LoadModule(const char* sName, const char* sCurren
 
   if (!pDll)
   {
-    pDll=g_dlls.FindModule(sName, sCurrentDir);
+    pDll=g_dlls.FindModule(sName, sCurrentDir, bLoadSymbols);
   }
   else if (!pDll->IsSystemDll())
   {
@@ -139,11 +139,11 @@ DllLoader* DllLoaderContainer::LoadModule(const char* sName, const char* sCurren
   return pDll;
 }
 
-DllLoader* DllLoaderContainer::FindModule(const char* sName, const char* sCurrentDir)
+DllLoader* DllLoaderContainer::FindModule(const char* sName, const char* sCurrentDir, bool bLoadSymbols)
 {
   if (strlen(sName) > 1 && sName[1] == ':')
   { //  Has a path, just try to load
-    return LoadDll(sName);
+    return LoadDll(sName, bLoadSymbols);
   }
   else if (sCurrentDir)
   { // in the path of the parent dll?
@@ -151,7 +151,7 @@ DllLoader* DllLoaderContainer::FindModule(const char* sName, const char* sCurren
     strPath+=sName;
 
     if (CFile::Exists(strPath))
-      return LoadDll(strPath.c_str());
+      return LoadDll(strPath.c_str(), bLoadSymbols);
   }
 
   //  in environment variable?
@@ -168,7 +168,7 @@ DllLoader* DllLoaderContainer::FindModule(const char* sName, const char* sCurren
 
     strPath+=sName;
     if (CFile::Exists(strPath))
-      return LoadDll(strPath.c_str());
+      return LoadDll(strPath.c_str(), bLoadSymbols);
   }
 
   CLog::Log(LOGERROR, "Dll %s was not found in path", sName);
@@ -192,9 +192,14 @@ void DllLoaderContainer::ReleaseModule(DllLoader*& pDll)
     CLog::Log(LOGDEBUG, "Releasing Dll %s", pDll->GetFileName());
 #endif
 
-    pDll->Unload();
-    delete pDll;
-    pDll=NULL;
+    if (!pDll->HasSymbols())
+    {
+      pDll->Unload();
+      delete pDll;
+      pDll=NULL;
+    }
+    else
+      CLog::Log(LOGINFO, "%s has symbols loaded and can never be unloaded", pDll->GetName());
   }
 #ifdef LOGALL
   else
@@ -204,14 +209,14 @@ void DllLoaderContainer::ReleaseModule(DllLoader*& pDll)
 #endif
 }
 
-DllLoader* DllLoaderContainer::LoadDll(const char* sName)
+DllLoader* DllLoaderContainer::LoadDll(const char* sName, bool bLoadSymbols)
 {
 
 #ifdef LOGALL
   CLog::Log(LOGDEBUG, "Loading dll %s", sName);
 #endif
 
-  DllLoader* pLoader = new DllLoader(sName, m_bTrack);
+  DllLoader* pLoader = new DllLoader(sName, m_bTrack, false, bLoadSymbols);
   if (!pLoader)
   {
     CLog::Log(LOGERROR, "Unable to create dll %s", sName);

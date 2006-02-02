@@ -160,4 +160,6 @@ void export_kernel32()
   g_dlls.kernel32.AddExport("VirtualQuery", (unsigned long)VirtualQuery);
   g_dlls.kernel32.AddExport("VirtualProtect", (unsigned long)VirtualProtect);
   g_dlls.kernel32.AddExport("UnhandledExceptionFilter", (unsigned long)UnhandledExceptionFilter);
+  g_dlls.kernel32.AddExport("RaiseException", (unsigned long)RaiseException);
+  g_dlls.kernel32.AddExport("DebugBreak", (unsigned long)DebugBreak);
 }

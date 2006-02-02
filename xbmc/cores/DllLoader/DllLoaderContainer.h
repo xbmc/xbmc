@@ -41,15 +41,15 @@ public:
   DllLoader* GetModule(int iPos);
   DllLoader* GetModule(const char* sName);
   
-  DllLoader* LoadModule(const char* sName, const char* sCurrentDir=NULL);
+  DllLoader* LoadModule(const char* sName, const char* sCurrentDir=NULL, bool bLoadSymbols=false);
   void ReleaseModule(DllLoader*& pDll);
 
   void RegisterDll(DllLoader* pDll);
   void UnRegisterDll(DllLoader* pDll);
   
 private:
-  DllLoader* FindModule(const char* sName, const char* sCurrentDir);
-  DllLoader* LoadDll(const char* sName);
+  DllLoader* FindModule(const char* sName, const char* sCurrentDir, bool bLoadSymbols);
+  DllLoader* LoadDll(const char* sName, bool bLoadSymbols);
   bool IsSystemDll(const char* sName);
   DllLoader* m_dlls[64];
   int m_iNrOfDlls;

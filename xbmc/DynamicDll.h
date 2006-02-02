@@ -34,6 +34,16 @@ public: \
 public: \
   classname##() {} \
 
+
+///////////////////////////////////////////////////////////
+//
+//  LOAD_SYMBOLS
+//
+//  Tells the dllloader to load Debug symblos when possible
+#define LOAD_SYMBOLS() \
+  protected: \
+    virtual bool LoadSymbols() { return true; }
+
 ///////////////////////////////////////////////////////////
 //
 //  DEFINE_METHOD_FP
@@ -409,6 +419,7 @@ public: \
 //  class DllExample : public DllDynamic, DllExampleInterface
 //  {
 //    DECLARE_DLL_WRAPPER(DllExample, Q:\\system\\Example.dll)
+//    LOAD_SYMBOLS()  // add this if you want to load debug symbols for the dll
 //    DEFINE_METHOD2(void, foo, (int p1, char* p2))
 //    DEFINE_METHOD_LINKAGE2(void, __stdcall, bar, (char* p1, int p2))
 //    DEFINE_METHOD_FP(void, foobar, (int type, char* szTest))  //  No need to define this function in the 
@@ -427,6 +438,8 @@ public: \
 //  {
 //  public:
 //    DllExample() : DllDynamic( "Q:\\system\\Example.dll" ) {}
+//  protected:
+//    virtual bool LoadSymbols() { return true; }
 //  protected:
 //    typedef void (* foo_METHOD) ( int p1, char* p2 );
 //    foo_METHOD m_foo;
@@ -490,6 +503,7 @@ public:
 
 protected:
   virtual bool ResolveExports()=0;
+  virtual bool LoadSymbols() { return false; }
   bool  m_DelayUnload;
   DllLoader* m_dll;
   CStdString m_strDllName;
