@@ -4,6 +4,10 @@
 #include "DllLoaderContainer.h"
 #include "dll_tracker.h"
 #include "dll_util.h"
+#include "../../xbox/undocumented.h"
+#include "XbDm.h"
+#include <io.h>
+
 
 #define DLL_PROCESS_DETACH   0
 #define DLL_PROCESS_ATTACH   1
@@ -11,13 +15,70 @@
 #define DLL_THREAD_DETACH    3
 #define DLL_PROCESS_VERIFIER 4
 
+// internal structure of xbdm.dll
+// which represents the HANDLE to
+// a dll. Used for symbol loading.
+typedef struct _LDR_DATA_TABLE_ENTRY
+{
+  LIST_ENTRY InLoadOrderLinks;
+  LIST_ENTRY InMemoryOrderLinks;
+  LIST_ENTRY InInitializationOrderLinks;
+  void* DllBase;
+  void* EntryPoint;
+  ULONG SizeOfImage;
+  UNICODE_STRING FullDllName;
+  UNICODE_STRING BaseDllName;
+  ULONG Flags;
+  USHORT LoadCount;
+  USHORT TlsIndex;
+  LIST_ENTRY HashLinks;
+  void* SectionPointer;
+  ULONG CheckSum;
+  ULONG TimeDateStamp;
+  void* LoadedImports;
+} LDR_DATA_TABLE_ENTRY, *LPLDR_DATA_TABLE_ENTRY;
+
+// Raw offset within the xbdm.dll to the
+// FFinishImageLoad function.
+// Dll baseaddress + offset = function
+int finishimageloadOffsets[][2] = {
+// dll checksum, function offset
+   {0x000652DE,  0x00016E1B}, // xdk version 5558
+   {0x0006BFBE,  0x00016E5A}, // xdk version 5788
+   {0,0}
+};
+
+// To get the checksum of xbdm.dll from an other xdk version then the ones above,
+// use dumpbin /HEADERS on it and look at the OPTIONAL HEADER VALUES for the checksum
+// To get the offset use dia2dump (installed with vs.net) and dump the xbdm.pdb 
+// of your xdk version to a textfile. Open the textfile and search for 
+// FFinishImageLoad until you get a result with an address in front of it, 
+// this is the offset you need.
+
+// Helper function to get the offset by using the checksum of the dll
+int GetFFinishImageLoadOffset(int dllchecksum)
+{
+  for (int i=0; finishimageloadOffsets[i][0]!=0; i++)
+  {
+    if (finishimageloadOffsets[i][0]==dllchecksum)
+      return finishimageloadOffsets[i][1];
+  }
+
+  return 0;
+}
+
+typedef void (WINAPI *fnFFinishImageLoad)(LPLDR_DATA_TABLE_ENTRY pldteT, 
+                                          const char * szName, 
+                                          LPLDR_DATA_TABLE_ENTRY* ppldteout);
+
+
 //  Entry point of a dll (DllMain)
 typedef BOOL WINAPI EntryFunc(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved);
 
 // is it really needed?
 void* fs_seg = NULL;
 
-DllLoader::DllLoader(const char *sDll, bool bTrack, bool bSystemDll)
+DllLoader::DllLoader(const char *sDll, bool bTrack, bool bSystemDll, bool bLoadSymbols)
 {
   ImportDirTable = 0;
   m_sFileName = strdup(sDll);
@@ -55,6 +116,7 @@ DllLoader::DllLoader(const char *sDll, bool bTrack, bool bSystemDll)
 
   if (!m_bSystemDll) g_dlls.RegisterDll(this);
   if (m_bTrack) tracker_dll_add(this);
+  m_bLoadSymbols=bLoadSymbols;
 }
 
 DllLoader::~DllLoader()
@@ -304,7 +366,7 @@ int DllLoader::ResolveImports(void)
 
 char* DllLoader::ResolveReferencedDll(char* dll)
 {
-  DllLoader* pDll = g_dlls.LoadModule(dll, GetPath());
+  DllLoader* pDll = g_dlls.LoadModule(dll, GetPath(), m_bLoadSymbols);
 
   if (!pDll)
   {
@@ -543,6 +605,8 @@ bool DllLoader::Load()
 
   ResolveImports();
 
+  LoadSymbols();
+
   // only execute DllMain if no EntryPoint is found
   if (!EntryAddress)
   {
@@ -631,4 +695,73 @@ void DllLoader::Unload()
 #ifdef LOGALL
   CLog::Log(LOGDEBUG, "EntryPoint with DLL_PROCESS_DETACH called - Dll: %s", pDll->GetFileName());
 #endif
+}
+
+// This function is a hack to get symbols loaded for 
+// dlls. The function FFinishImageLoad internally allocates 
+// memory which is/can never be freed. And the dll can not be 
+// unloaded.
+void DllLoader::LoadSymbols()
+{
+  if (!m_bLoadSymbols || !DmIsDebuggerPresent())
+  {
+    m_bLoadSymbols=false;
+    return;
+  }
+
+  PDM_WALK_MODULES pWalkMod = NULL;
+  LPVOID pBaseAddress=NULL;
+  DMN_MODLOAD modLoad;
+  HRESULT error;
+
+  // Look for xbdm.dll, if its loaded...
+  while((error=DmWalkLoadedModules(&pWalkMod, &modLoad))==XBDM_NOERR)
+  {
+      if (stricmp(modLoad.Name, "xbdm.dll")==0)
+      {
+        // ... and get its base address
+        // where the dll is loaded into 
+        // memory.
+        pBaseAddress=modLoad.BaseAddress;
+        break;
+      }
+  }
+  if (pWalkMod)
+    DmCloseLoadedModules(pWalkMod);
+
+  if (pBaseAddress)
+  {
+    CoffLoader dllxbdm;
+    if (dllxbdm.ParseHeaders(pBaseAddress))
+    {
+      int offset=GetFFinishImageLoadOffset(dllxbdm.WindowsHeader->CheckSum);
+
+      if (offset==0)
+      {
+        CLog::DebugLog("DllLoader: Unable to load symbols for %s. No offset for xbdm.dll with checksum 0x%08X found", GetName(), dllxbdm.WindowsHeader->CheckSum);
+        return;
+      }
+
+      // Get a function pointer to the unexported function FFinishImageLoad
+      fnFFinishImageLoad FFinishImageLoad=(fnFFinishImageLoad)((LPBYTE)pBaseAddress+offset);
+
+      // Prepare parameter for the function call
+      LDR_DATA_TABLE_ENTRY ldte;
+      ldte.DllBase=hModule; // Address where this dll is loaded into memory
+      char* szName=GetName(); // Name of this dll without path
+      LPLDR_DATA_TABLE_ENTRY pldteout;
+
+      try
+      {
+        // Call FFinishImageLoad to register this dll to the debugger and load its symbols. 
+        FFinishImageLoad(&ldte, szName, &pldteout);
+      }
+      catch(...)
+      {
+        CLog::Log(LOGERROR, "DllLoader: Loading symbols for %s failed with an exception.", GetName());
+      }
+    }
+  }
+  else
+    CLog::DebugLog("DllLoader: Can't load symbols for %s. xbdm.dll is needed and not loaded", GetName());
 }

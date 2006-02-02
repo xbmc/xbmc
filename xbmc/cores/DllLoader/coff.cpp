@@ -36,10 +36,20 @@ const char *DATA_DIR_NAME[16] =
 
 CoffLoader::CoffLoader()
 {
-  hModule = NULL;
+  CoffFileHeader = 0;
+  OptionHeader = 0;
+  WindowsHeader = 0;
+  Directory = 0;
+  SectionHeader = 0;
   SymTable = 0;
   StringTable = 0;
   SectionData = 0;
+
+  NumberOfSymbols = 0;
+  SizeOfStringTable = 0;
+  NumOfDirectories = 0;
+  NumOfSections = 0;
+  FileHeaderOffset = 0;
 }
 
 CoffLoader::~CoffLoader()
@@ -64,6 +74,78 @@ CoffLoader::~CoffLoader()
     delete [] SectionData;
     SectionData = 0;
   }
+}
+
+// Has nothing to do with the coff loader itself
+// it can be used to parse the headers of a dll 
+// already loaded into memory
+int CoffLoader::ParseHeaders(void* hModule)
+{
+  if (strncmp((char*)hModule, "MZ", 2) != 0)
+    return 0;
+
+  int* Offset = (int*)((char*)hModule+0x3c);
+  if (*Offset <= 0)
+    return 0;
+
+  if (strncmp((char*)hModule+*Offset, "PE\0\0", 4) != 0)
+    return 0;
+
+  FileHeaderOffset = *Offset + 4;
+
+  CoffFileHeader = (COFF_FileHeader_t *) ( (char*)hModule + FileHeaderOffset );
+  NumOfSections = CoffFileHeader->NumberOfSections;
+
+  OptionHeader = (OptionHeader_t *) ( (char*)CoffFileHeader + sizeof(COFF_FileHeader_t) );
+  WindowsHeader = (WindowsHeader_t *) ( (char*)OptionHeader + OPTHDR_SIZE );
+  EntryAddress = OptionHeader->Entry;
+  NumOfDirectories = WindowsHeader->NumDirectories;
+
+  Directory = (Image_Data_Directory_t *) ( (char*)WindowsHeader + WINHDR_SIZE);
+  SectionHeader = (SectionHeader_t *) ( (char*)Directory + sizeof(Image_Data_Directory_t) * NumOfDirectories);
+
+  if (CoffFileHeader->MachineType != IMAGE_FILE_MACHINE_I386)
+    return 0;
+
+#ifdef DUMPING_DATA
+  PrintFileHeader(CoffFileHeader);
+#endif
+
+  if ( CoffFileHeader->SizeOfOptionHeader == 0 ) //not an image file, object file maybe
+    return 0;
+
+  // process Option Header
+  if (OptionHeader->Magic == OPTMAGIC_PE32P)
+  {
+    printf("PE32+ not supported\n");
+    return 0;
+  }
+  else if (OptionHeader->Magic == OPTMAGIC_PE32)
+  {
+
+#ifdef DUMPING_DATA
+    PrintOptionHeader(OptionHeader);
+    PrintWindowsHeader(WindowsHeader);
+#endif
+
+  }
+  else
+  {
+    //add error message
+    return 0;
+  }
+
+#ifdef DUMPING_DATA
+  for (int DirCount = 0; DirCount < NumOfDirectories; DirCount++)
+  {
+    printf("Data Directory %02d: %s\n", DirCount + 1, DATA_DIR_NAME[DirCount]);
+    printf("                    RVA:  %08X\n", Directory[DirCount].RVA);
+    printf("                    Size: %08X\n\n", Directory[DirCount].Size);
+  }
+#endif
+
+  return 1;
+
 }
 
 int CoffLoader::LoadCoffHModule(FILE *fp)
@@ -225,17 +307,19 @@ int CoffLoader::LoadSections(FILE *fp)
   if ( !SectionData )
     return 0;
 
-  //////check VMA size!!!!!
-  unsigned long vma_size = 0;
-  for (int SctnCnt = 0; SctnCnt < NumOfSections; SctnCnt++)
-  {
-    SectionHeader_t *ScnHdr = (SectionHeader_t *)(SectionHeader + SctnCnt);
-    vma_size = max(vma_size, ScnHdr->VirtualAddress + ScnHdr->SizeOfRawData);
-    vma_size = max(vma_size, ScnHdr->VirtualAddress + ScnHdr->VirtualSize);
-  }
+  // Bobbin007: for debug dlls this check always fails
 
-  if (WindowsHeader->SizeOfImage < vma_size)
-    return 0;   //something wrong with file
+  //////check VMA size!!!!!
+  //unsigned long vma_size = 0;
+  //for (int SctnCnt = 0; SctnCnt < NumOfSections; SctnCnt++)
+  //{
+  //  SectionHeader_t *ScnHdr = (SectionHeader_t *)(SectionHeader + SctnCnt);
+  //  vma_size = max(vma_size, ScnHdr->VirtualAddress + ScnHdr->SizeOfRawData);
+  //  vma_size = max(vma_size, ScnHdr->VirtualAddress + ScnHdr->VirtualSize);
+  //}
+
+  //if (WindowsHeader->SizeOfImage < vma_size)
+  //  return 0;   //something wrong with file
 
   for (int SctnCnt = 0; SctnCnt < NumOfSections; SctnCnt++)
   {
@@ -245,6 +329,7 @@ int CoffLoader::LoadSections(FILE *fp)
     fseek(fp, ScnHdr->PtrToRawData, SEEK_SET);
     fread(SectionData[SctnCnt], 1, ScnHdr->SizeOfRawData, fp);
 
+#ifdef DUMPING_DATA
     //debug blocks
     char szBuf[128];
     char namebuf[9];
@@ -254,6 +339,7 @@ int CoffLoader::LoadSections(FILE *fp)
     sprintf(szBuf, "Load code Sections %s Memory %p,Length %x\n", namebuf,
             SectionData[SctnCnt], max(ScnHdr->VirtualSize, ScnHdr->SizeOfRawData));
     OutputDebugString(szBuf);
+#endif
 
     if ( ScnHdr->SizeOfRawData < ScnHdr->VirtualSize )  //initialize BSS data in the end of section
     {
