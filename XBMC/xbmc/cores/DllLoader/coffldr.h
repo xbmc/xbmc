@@ -22,8 +22,14 @@ typedef struct _iobuf FILE;
 
 class CoffLoader
 {
-protected:
+public:
+  CoffLoader();
+  ~CoffLoader();
 
+  int ParseCoff(FILE *fp);
+  int ParseHeaders(void* hModule);
+
+  void *hModule;   //standard windows HINSTANCE handle hold the whole image
   //Pointers to somewhere in hModule, do not free these pointers
   COFF_FileHeader_t *CoffFileHeader;
   OptionHeader_t *OptionHeader;
@@ -31,10 +37,14 @@ protected:
   Image_Data_Directory_t *Directory;
   SectionHeader_t *SectionHeader;
 
+protected:
+
   // Allocated structures... hModule now hold the master Memory handle
   SymbolTable_t *SymTable;
   char *StringTable;
   char **SectionData;
+
+  unsigned long EntryAddress; //Initialize entry point
 
   // Unnecessary data
   //  This is data that is used only during linking and is not necessary
@@ -69,14 +79,6 @@ protected:
   char *GetSymbolName(int index);
 
   void PerformFixups(void);
-
-public:
-  void *hModule;   //standard windows HINSTANCE handle hold the whole image
-  unsigned long EntryAddress; //Initialize entry point
-  int ParseCoff(FILE *fp);
-  CoffLoader();
-  ~CoffLoader();
-
 };
 
 #endif

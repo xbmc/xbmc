@@ -44,7 +44,7 @@ void tracker_dll_free(DllLoader* pDll)
       }
       // free all functions which where created at the time we loaded the dll
 	    DummyListIter dit = (*it)->dummyList.begin();
-	    while (dit != (*it)->dummyList.end()) { delete(*dit); dit++;	}
+	    while (dit != (*it)->dummyList.end()) { free(*dit); dit++;	}
 	    (*it)->dummyList.clear();
 	
       delete (*it);
