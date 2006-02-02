@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 02-02-2006 changed: old style sound.xml entries for actions and windows with numbers marked for removal with skin version 2
  - 02-02-2006 added: possibility to load debug symbols for dlls
  - 02-02-2006 fixed: some wmv/asf files wouldn't play either audio or video (updated mplayer.dll)
  - 02-02-2006 changed: OSD is closed when the user selects the DVD Menu.
