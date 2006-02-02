@@ -63,3 +63,5 @@
 #define GUI_MSG_VISUALISATION_LOADED    GUI_MSG_USER + 18 // sent by vis
 #define GUI_MSG_GET_VISUALISATION       GUI_MSG_USER + 19 // request to vis for the visualisation object
 #define GUI_MSG_VISUALISATION_ACTION    GUI_MSG_USER + 20 // request the vis perform an action
+
+#define GUI_MSG_VIDEO_MENU_STARTED      GUI_MSG_USER + 21 // sent by dvdplayer on entry to the menu

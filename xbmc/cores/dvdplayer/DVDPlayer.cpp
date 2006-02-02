@@ -1385,6 +1385,9 @@ bool CDVDPlayer::OnAction(const CAction &action)
       {
         CLog::Log(LOGDEBUG, " - go to menu");
         pStream->OnMenu();
+        // send a message to everyone that we've gone to the menu
+        CGUIMessage msg(GUI_MSG_VIDEO_MENU_STARTED, 0, 0);
+        g_graphicsContext.SendMessage(msg);
         return true;
       }
       break;
