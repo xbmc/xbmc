@@ -32,7 +32,7 @@
 				EnableEnhancedInstructionSet="1"
 				RuntimeTypeInfo="TRUE"
 				UsePrecompiledHeader="2"
-				AssemblerOutput="4"
+				AssemblerOutput="0"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="FALSE"
 				DebugInformationFormat="3"/>
