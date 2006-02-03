@@ -152,7 +152,7 @@ void CGUIDialogAudioSubtitleSettings::OnSettingChanged(unsigned int num)
   }
   else if (setting.id == AUDIO_SETTINGS_VOLUME_AMPLIFICATION)
   {
-    g_application.Restart(true);
+    g_application.DelayedPlayerRestart();
   }
   else if (setting.id == AUDIO_SETTINGS_DELAY)
   {
