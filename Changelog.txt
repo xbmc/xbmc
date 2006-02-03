@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 03-02-2006 added: support for slave command sub_load/sub_remove. supports loading any text subtitle format after start
   - 02-02-2006 fixed: audio stream in some avi's wouldn't be detected. mplayerhq:asfheader.c:1.43
   - 09-01-2006 added: additional fourcc codes in codec.conf
   - 09-01-2006 added: ffmpeg data padding patch ( malloc padding to avoid access beyond allocated memory ) , hopefully fixes fast wmv's. 

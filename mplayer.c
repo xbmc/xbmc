@@ -5023,8 +5023,9 @@ int mplayer_getSubtitle()
 
 void mplayer_setSubtitle(int iSubtitle)
 {
-  global_sub_pos = iSubtitle;
-  mp_input_queue_cmd(mp_input_parse_cmd("sub_select"));
+  char buffer[20];
+  sprintf(buffer, "sub_select %d", iSubtitle);
+  mp_input_queue_cmd(mp_input_parse_cmd(buffer));
 }
 
 void mplayer_showSubtitle(int bOnOff)
