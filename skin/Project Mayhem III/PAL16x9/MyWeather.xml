@@ -237,6 +237,7 @@
       <posx>520</posx>
       <posy>178</posy>
       <width>120</width>
+      <wrapmultiline>true</wrapmultiline>
       <label>-</label>
       <font>font10</font>
     </control>
@@ -351,6 +352,7 @@
       <align>center</align>
       <aligny>top</aligny>
       <width>110</width>
+      <wrapmultiline>true</wrapmultiline>
       <id>34</id>
       <posx>211</posx>
       <posy>465</posy>
@@ -422,6 +424,7 @@
       <align>center</align>
       <aligny>top</aligny>
       <width>110</width>
+      <wrapmultiline>true</wrapmultiline>
       <id>44</id>
       <posx>329</posx>
       <posy>465</posy>
@@ -493,6 +496,7 @@
       <align>center</align>
       <aligny>top</aligny>
       <width>110</width>
+      <wrapmultiline>true</wrapmultiline>
       <id>54</id>
       <posx>447</posx>
       <posy>465</posy>
@@ -564,6 +568,7 @@
       <align>center</align>
       <aligny>top</aligny>
       <width>110</width>
+      <wrapmultiline>true</wrapmultiline>
       <id>64</id>
       <posx>565</posx>
       <posy>465</posy>
