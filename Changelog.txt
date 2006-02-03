@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 04-02-2006 fixed: cubecodec. echo in .hps, also upped buffer sizes for .adx (should avoid some stuttering).
  - 03-02-2006 added: Better handling of multi-line label controls using <wrapmultiline>.  See online manual for more details.
  - 03-02-2006 fixed: Karaoke Voice Mask settings were not showing correctly.
  - 03-02-2006 fixed: Nicer restart of player from slider controls in the OSD, and more accurate seeking on restart.
