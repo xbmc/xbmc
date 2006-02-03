@@ -14,6 +14,7 @@ CGUILabelControl::CGUILabelControl(DWORD dwParentID, DWORD dwControlId, int iPos
   m_dwCounter = 0;
   ControlType = GUICONTROL_LABEL;
   m_ScrollInsteadOfTruncate = false;
+  m_wrapMultiLine = false;
 }
 
 CGUILabelControl::~CGUILabelControl(void)
@@ -54,6 +55,8 @@ void CGUILabelControl::Render()
 	{
 		strRenderLabel = g_infoManager.ParseLabel(strRenderLabel);
 	}
+  if (m_wrapMultiLine && m_dwWidth > 0)
+    WrapText(strRenderLabel);
 
   if (m_label.font)
   {
@@ -169,6 +172,71 @@ bool CGUILabelControl::OnMessage(CGUIMessage& message)
   }
 
   return CGUIControl::OnMessage(message);
+}
+
+void CGUILabelControl::WrapText(CStdString &text)
+{
+  // run through and force line breaks at spaces as and when necessary
+  if (!m_label.font)
+    return;
+  BOOL bStartingNewLine = TRUE;
+  BOOL bBreakAtSpace = FALSE;
+  int pos = 0;
+  text += "\n";
+  int iTextSize = (int)text.size();
+  int lpos = 0;
+  int iLastSpace = -1;
+  int iLastSpaceInLine = -1;
+  CStdString multiLine, line;
+  while (pos < iTextSize)
+  {
+    // Get the current letter in the string
+    char letter = text[pos];
+
+    // Handle the newline character
+    if (letter == '\n' )
+    {
+      if (!multiLine.IsEmpty())
+        multiLine += "\n";
+      multiLine += line;
+      iLastSpace = -1;
+      iLastSpaceInLine = -1;
+      lpos = 0;
+      line.Empty();
+    }
+    else
+    {
+      if (letter == ' ')
+      {
+        CStdStringW wLine = line;
+        float width = m_label.font->GetTextWidth(wLine.c_str());
+        if (width > m_dwWidth)
+        {
+          if (iLastSpace > 0 && iLastSpaceInLine > 0)
+          {
+            if (!multiLine.IsEmpty())
+              multiLine += "\n";
+            multiLine += line.Left(iLastSpaceInLine);
+            line.Empty();
+            pos = iLastSpace + 1;
+            iLastSpaceInLine = -1;
+            iLastSpace = -1;
+            continue;
+          }
+        }
+        // only add spaces if we're not empty
+        if (!line.IsEmpty())
+        {
+          iLastSpace = pos;
+          iLastSpaceInLine = line.size();
+          line += letter;
+        }
+      }
+      else
+        line += letter;
+    }
+    pos++;
+  }
 }
 
 void CGUILabelControl::ShortenPath()

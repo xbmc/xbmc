@@ -73,8 +73,10 @@ void CGUIDialogVideoSettings::OnSettingChanged(unsigned int num)
   if (num >= m_settings.size()) return;
   SettingInfo &setting = m_settings.at(num);
   // check and update anything that needs it
-  if (setting.id == VIDEO_SETTINGS_NON_INTERLEAVED ||  setting.id == VIDEO_SETTINGS_NO_CACHE || setting.id == VIDEO_SETTINGS_FILM_GRAIN)
+  if (setting.id == VIDEO_SETTINGS_NON_INTERLEAVED ||  setting.id == VIDEO_SETTINGS_NO_CACHE)
     g_application.Restart(true);
+  else if (setting.id == VIDEO_SETTINGS_FILM_GRAIN)
+    g_application.DelayedPlayerRestart();
   else if (setting.id == VIDEO_SETTINGS_CROP)
     g_renderManager.AutoCrop(g_stSettings.m_currentVideoSettings.m_Crop);
   else if (setting.id == VIDEO_SETTINGS_VIEW_MODE)

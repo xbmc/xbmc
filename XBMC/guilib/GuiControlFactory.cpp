@@ -366,6 +366,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
   DWORD fadeTime = 0;
   bool randomized = false;
   bool loop = true;
+  bool wrapMultiLine = false;
 
   CLabelInfo labelInfo;
   CLabelInfo labelInfo2;
@@ -392,6 +393,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
       labelInfo = ((CGUILabelControl*)pReference)->GetLabelInfo();
       vecInfo = ((CGUILabelControl*)pReference)->GetInfo();
       bScrollLabel = ((CGUILabelControl*)pReference)->GetWidthControl();
+      wrapMultiLine = ((CGUILabelControl*)pReference)->GetWrapMultiLine();
     }
     else if (strType == "edit")
     {
@@ -920,6 +922,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
       }
     }
 
+    XMLUtils::GetBoolean(pControlNode, "wrapmultiline", wrapMultiLine);
     XMLUtils::GetInt(pControlNode,"urlset",iUrlSet);
 
     /*  CStdStringArray strVecUrl;
@@ -1194,6 +1197,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
       }
     }
 
+    XMLUtils::GetBoolean(pControlNode, "wrapmultiline", wrapMultiLine);
     XMLUtils::GetInt(pControlNode,"urlset",iUrlSet);
 
     // stuff for button scroller
@@ -1241,6 +1245,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     pControl->SetAnimations(animations);
     pControl->SetInfo(vecInfo);
     pControl->SetWidthControl(bScrollLabel);
+    pControl->SetWrapMultiLine(wrapMultiLine);
     return pControl;
   }
   else if (strType == "edit")
