@@ -822,10 +822,10 @@ subtitle *sub_read_line_jacosub(FILE * fd, subtitle * current)
     static unsigned jacoTimeres = 30;
     static int jacoShift = 0;
 
-    bzero(current, sizeof(subtitle));
-    bzero(line1, LINE_LEN);
-    bzero(line2, LINE_LEN);
-    bzero(directive, LINE_LEN);
+    memset(current, 0, sizeof(subtitle));
+    memset(line1, 0, LINE_LEN);
+    memset(line2, 0, LINE_LEN);
+    memset(directive, 0, LINE_LEN);
     while (!current->text[0]) {
 	if (!fgets(line1, LINE_LEN, fd)) {
 	    return NULL;
@@ -1326,11 +1326,16 @@ void* guess_cp(FILE *fd, char *preferred_language, char *fallback)
     mp_msg(MSGT_SUBREADER, MSGL_V, "\n");
     
     for (i = 0; i < langcnt; i++) {
+	char *tmp;
+	
 	if (strcasecmp(languages[i], preferred_language) != 0) continue;
 	analyser = enca_analyser_alloc(languages[i]);
 	encoding = enca_analyse_const(analyser, buffer, buflen);
-	mp_msg(MSGT_SUBREADER, MSGL_INFO, "ENCA detected charset: %s\n", enca_charset_name(encoding.charset, ENCA_NAME_STYLE_ICONV));
-	detected_sub_cp = strdup(enca_charset_name(encoding.charset, ENCA_NAME_STYLE_ICONV));
+	tmp = enca_charset_name(encoding.charset, ENCA_NAME_STYLE_ICONV);
+	if (tmp && encoding.charset != ENCA_CS_UNKNOWN) {
+	    detected_sub_cp = strdup(tmp);
+	    mp_msg(MSGT_SUBREADER, MSGL_INFO, "ENCA detected charset: %s\n", tmp);
+	}
 	enca_analyser_free(analyser);
     }
     
@@ -1338,7 +1343,10 @@ void* guess_cp(FILE *fd, char *preferred_language, char *fallback)
     free(buffer);
     rewind(fd);
 
-    if (!detected_sub_cp) detected_sub_cp = strdup(fallback);
+    if (!detected_sub_cp) {
+	detected_sub_cp = strdup(fallback);
+	mp_msg(MSGT_SUBREADER, MSGL_INFO, "ENCA detection failed: fallback to %s\n", fallback);
+    }
 
     return detected_sub_cp;
 }
@@ -1717,11 +1725,7 @@ if ((suboverlap_enabled == 2) ||
 }
     if (return_sub == NULL) return NULL;
     subt_data = (sub_data *)malloc(sizeof(sub_data));
-#ifdef _XBOX
     subt_data->filename = strdup(filename);
-#else
-    subt_data->filename = filename;
-#endif
     subt_data->sub_uses_time = uses_time;
     subt_data->sub_num = sub_num;
     subt_data->sub_errs = sub_errs;
