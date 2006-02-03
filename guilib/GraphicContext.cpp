@@ -94,7 +94,7 @@ bool CGraphicContext::SetViewPort(float fx, float fy , float fwidth, float fheig
       return false;
     }
     if (newviewport.X + newviewport.Width > oldviewport->X + oldviewport->Width)
-      newviewport.Width = oldviewport->Y + oldviewport->Width - newviewport.X;
+      newviewport.Width = oldviewport->X + oldviewport->Width - newviewport.X;
     if (newviewport.Y + newviewport.Height > oldviewport->Y + oldviewport->Height)
       newviewport.Height = oldviewport->Y + oldviewport->Height - newviewport.Y;
   }

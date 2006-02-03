@@ -379,6 +379,22 @@ void CGUIWindowSettingsCategory::CreateSettings()
     {
       FillInVisualisations(pSetting, GetSetting(pSetting->GetSetting())->GetID());
     }
+    else if (strSetting == "Karaoke.Port0VoiceMask")
+    {
+      FillInVoiceMasks(0, pSetting);
+    }
+    else if (strSetting == "Karaoke.Port1VoiceMask")
+    {
+      FillInVoiceMasks(1, pSetting);
+    }
+    else if (strSetting == "Karaoke.Port2VoiceMask")
+    {
+      FillInVoiceMasks(2, pSetting);
+    }
+    else if (strSetting == "Karaoke.Port3VoiceMask")
+    {
+      FillInVoiceMasks(3, pSetting);
+    }
     else if (strSetting == "AudioOutput.Mode")
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;

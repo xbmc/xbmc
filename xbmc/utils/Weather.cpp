@@ -237,7 +237,6 @@ void CWeather::LocalizeOverview(char *szStr)
   LocalizeOverviewToken(szToken);        //localize
   strcpy(loc + strlen(loc), szToken);       //add it to the end of loc
   strcpy(szStr, loc);           //copy loc over the original input string
-  SplitLongString(szStr, 7, 15);    //split to 2 lines if needed
 }
 
 int CWeather::ConvertSpeed(int curSpeed)
@@ -426,22 +425,6 @@ bool CWeather::LoadWeather(const CStdString &strWeatherFile)
   }
   return true;
 }
-
-//splitStart + End are the chars to search between for a space to replace with a \n
-void CWeather::SplitLongString(char *szString, int splitStart, int splitEnd)
-{
-  //search chars 10 to 15 for a space
-  //if we find one, replace it with a newline
-  for (int i = splitStart; i < splitEnd && i < (int)strlen(szString); i++)
-  {
-    if (szString[i] == ' ')
-    {
-      szString[i] = '\n';
-      return ;
-    }
-  }
-}
-
 
 //convert weather.com day strings into localized string id's
 void CWeather::LocalizeDay(char *szDay)
