@@ -3969,6 +3969,9 @@ void CApplication::Process()
 
   // GeminiServer Xbox Autodetection // Send in X sec PingTime Interval
   CUtil::XboxAutoDetection();
+
+  // check if we should restart the player
+  CheckDelayedPlayerRestart();
 }
 
 // GeminiServer: Global Idle Time in Seconds
@@ -3983,6 +3986,22 @@ int CApplication::GlobalIdleTime()
   }
   return (int)m_idleTimer.GetElapsedSeconds();
 }
+
+void CApplication::DelayedPlayerRestart()
+{
+  m_restartPlayerTimer.StartZero();
+}
+
+void CApplication::CheckDelayedPlayerRestart()
+{
+  if (m_restartPlayerTimer.GetElapsedSeconds() > 3)
+  {
+    m_restartPlayerTimer.Stop();
+    m_restartPlayerTimer.Reset();
+    Restart(true);
+  }
+}
+
 void CApplication::Restart(bool bSamePosition)
 {
   // this function gets called when the user changes a setting (like noninterleaved)
@@ -4001,13 +4020,13 @@ void CApplication::Restart(bool bSamePosition)
   }
 
   // else get current position
-  float fPercentage = GetPercentage();
+  double time = GetTime();
 
   // reopen the file
   if ( PlayFile(m_itemCurrentFile, true) )
   {
     // and seek to the position
-    SeekPercentage(fPercentage);
+    SeekTime(time);
   }
 }
 

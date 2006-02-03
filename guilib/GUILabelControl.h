@@ -35,10 +35,14 @@ public:
   void SetInfo(const vector<int> &vecInfo);
   const vector<int> &GetInfo() const { return m_vecInfo; };
   void SetWidthControl(bool bScroll);
-  bool GetWidthControl() { return m_ScrollInsteadOfTruncate; };
+  bool GetWidthControl() const { return m_ScrollInsteadOfTruncate; };
   void SetTruncate(bool bTruncate);
+  void SetWrapMultiLine(bool wrapMultiLine) { m_wrapMultiLine = wrapMultiLine; };
+  bool GetWrapMultiLine() const { return m_wrapMultiLine; };
 protected:
   void ShortenPath();
+  void WrapText(CStdString &text);
+
 protected:
   CLabelInfo m_label;
 
@@ -49,6 +53,7 @@ protected:
   DWORD m_dwCounter;
   vector<int> m_vecInfo;
   // stuff for scrolling
+  bool m_wrapMultiLine;
   bool m_ScrollInsteadOfTruncate;
   CScrollInfo m_ScrollInfo;
 };
