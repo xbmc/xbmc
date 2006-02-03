@@ -73,6 +73,8 @@ public:
   bool PlayFile(const CFileItem& item, bool bRestart = false);
   void StopPlaying();
   void Restart(bool bSamePosition = true);
+  void DelayedPlayerRestart();
+  void CheckDelayedPlayerRestart();
   bool IsPlaying() const ;
   bool IsPlayingAudio() const ;
   bool IsPlayingVideo() const ;
@@ -179,6 +181,7 @@ protected:
 
   // timer information
   CXBStopWatch m_idleTimer;
+  CXBStopWatch m_restartPlayerTimer;
 };
 
 extern CApplication g_application;
