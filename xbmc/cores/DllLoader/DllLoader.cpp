@@ -703,7 +703,12 @@ void DllLoader::Unload()
 // unloaded.
 void DllLoader::LoadSymbols()
 {
-  if (!m_bLoadSymbols || !DmIsDebuggerPresent())
+  if (!m_bLoadSymbols ) return;
+
+  // don't load debug symbols unless we have a debugger present
+  // seems these calls break on some bioses. i suppose it could
+  // be related to if the bios has debug capabilities.
+  if (!DmIsDebuggerPresent())
   {
     m_bLoadSymbols=false;
     return;
