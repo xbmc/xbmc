@@ -221,13 +221,13 @@
   <string><id>287</id><value>Untertitel</value></string>
   <string><id>288</id><value>Schriftart</value></string>
   <string><id>289</id><value>Größe</value></string>
-  <string><id>290</id><value>Lautstärke</value></string>
+  <string><id>290</id><value>Lautstärke-Verstärkung</value></string>
   <string><id>291</id><value>Video</value></string>
   <string><id>292</id><value>Audio</value></string>
   <string><id>293</id><value>Untertitel</value></string>
   <string><id>294</id><value>Lesezeichen erst.</value></string>
   <string><id>295</id><value>Lesezeichen tausch</value></string>
-  <string><id>296</id><value>Lesezeichen lösch.</value></string>
+  <string><id>296</id><value>Lesezeichen löschen</value></string>
   <string><id>297</id><value>Audioverzögerung</value></string>
   <string><id>298</id><value>Suchleiste</value></string>
   <string><id>300</id><value>Sprache</value></string>
@@ -432,7 +432,7 @@
   <string><id>500</id><value>Fehler beim Erhalten der Albuminformationen!</value></string>
   <string><id>501</id><value>Albuminformationen werden gesucht..</value></string>
   <string><id>502</id><value>offen</value></string>
-  <string><id>503</id><value>ladend...</value></string>
+  <string><id>503</id><value>laden...</value></string>
   <string><id>504</id><value>Leer</value></string>
   <string><id>505</id><value>Informationen werden geladen...</value></string>
   <string><id>506</id><value>Verzeichnisnamen verwenden</value></string>
@@ -469,10 +469,10 @@
   <string><id>625</id><value>Alle Titel von</value></string>
   <string><id>629</id><value>Ansicht</value></string>
   <string><id>630</id><value>Normal</value></string>
-  <string><id>631</id><value>Zoom</value></string>
-  <string><id>632</id><value>Stretch 4:3</value></string>
-  <string><id>633</id><value>Stretch 14:9</value></string>
-  <string><id>634</id><value>Stretch 16:9</value></string>
+  <string><id>631</id><value>Vergrößern</value></string>
+  <string><id>632</id><value>Ausgabe 4:3</value></string>
+  <string><id>633</id><value>Ausgabe 14:9</value></string>
+  <string><id>634</id><value>Ausgabe 16:9</value></string>
   <string><id>635</id><value>Original Größe</value></string>
   <string><id>636</id><value>Benutzerdefiniert</value></string>
   <string><id>637</id><value>Lautstärke</value></string> 
@@ -703,7 +703,13 @@
   <string><id>12008</id><value>Koppeln</value></string>
   <string><id>12009</id><value>Index wiederherstellen..</value></string>
   <string><id>12010</id><value>Zurück zu Eigene Musik</value></string> 
-  <string><id>12011</id><value>Zurück zu Eigene Videos</value></string> 
+  <string><id>12011</id><value>Zurück zu Eigene Videos</value></string>
+  <string><id>12012</id><value>Trainerliste aktualisieren</value></string> 
+  <string><id>12013</id><value>Trainer</value></string> 
+  <string><id>12014</id><value>Es wurden keine Trainer gefunden</value></string> 
+  <string><id>12015</id><value>Trainer Einstellungen</value></string> 
+  <string><id>12016</id><value>Es fehlen registrierte Einträge, aktualisieren sie ihre Liste</value></string>
+  <string><id>12017</id><value>Wiedergabe an letzter Position fortfahren</value></string>
 
   <string><id>12310</id><value>0</value></string> 
   <string><id>12311</id><value>1</value></string> 
@@ -726,7 +732,7 @@
   <string><id>12328</id><value>Kennwort eingeben..</value></string> 
 
   <string><id>12330</id><value>Gamepad Tastenkombination eingeben und</value></string> 
-  <string><id>12331</id><value>Start drücken, oder Back um abzubrechen</value></string> 
+  <string><id>12331</id><value>[Start] drücken, oder [Back] um abzubrechen</value></string> 
   <string><id>12332</id><value>Zugriff sperren</value></string> 
   <string><id>12333</id><value>Entsperren</value></string> 
   <string><id>12334</id><value>Sperre zurücksetzen</value></string> 
@@ -771,6 +777,17 @@
   <string><id>12373</id><value>Einst. &amp; Dateien</value></string> 
   <string><id>12374</id><value>Medien sperren</value></string>
   <string><id>12375</id><value>Hauptkennwort-Modus</value></string>
+  <string><id>12376</id><value>Aktuelle Einstellung als Standard setzen..</value></string> 
+  <string><id>12377</id><value>Sämtliche zuvor getroffenen Einstellungen gehen verloren.</value></string> 
+  <string><id>12378</id><value>Dauer der Wiedergabe eines Bildes</value></string> 
+  <string><id>12379</id><value>Pan und Zoom Effekte verwenden</value></string> 
+  <string><id>12380</id><value>NTSC-Videos mit PAL-25fps abspielen</value></string> 
+  <string><id>12381</id><value>PAL-Videos mit NTSC-29fps abspielen</value></string> 
+  <string><id>12382</id><value>NTSC-Videos in PAL60 abspielen</value></string> 
+  <string><id>12383</id><value>12-Stunden-Anzeige</value></string> 
+  <string><id>12384</id><value>24-Stunden-Anzeige</value></string> 
+  <string><id>12385</id><value>Tag.Monat</value></string> 
+  <string><id>12386</id><value>Monat.Tag</value></string> 
 
   <string><id>12390</id><value>Betriebszeit</value></string> 
   <string><id>12391</id><value>Minuten</value></string> 
@@ -827,7 +844,13 @@
   <string><id>13210</id><value>Gestartet, Alarm in %im</value></string> 
   <string><id>13211</id><value>Alarm!</value></string> 
   <string><id>13212</id><value>Abgebrochen mit %im%is übrig</value></string> 
+
+  <string><id>13249</id><value>RAR-Dateien nach Untertiteln untersuchen</value></string>
   <string><id>13250</id><value>Untertitel auswählen..</value></string>
+  <string><id>13251</id><value>Verschieben</value></string> 
+  <string><id>13252</id><value>An diese Stelle</value></string> 
+  <string><id>13253</id><value>Verschieben abbrechen</value></string> 
+
 
   <string><id>13270</id><value>System:</value></string> 
   <string><id>13271</id><value>CPU-Geschwindigkeit:</value></string> 
@@ -1011,8 +1034,8 @@
   <string><id>14048</id><value>%i kbps</value></string>
   <string><id>14049</id><value>%i kb</value></string>
   <string><id>14050</id><value>%i.0 dB</value></string>
-  <string><id>14051</id><value>12-Stundenformat anzeigen</value></string>
-  <string><id>14052</id><value>Europäische Datumsanzeige</value></string>
+  <string><id>14051</id><value>Zeitformat</value></string>
+  <string><id>14052</id><value>Datumsformat</value></string>
   <string><id>14053</id><value>GUI-Filter</value></string>
   <string><id>14054</id><value>Internetmenüpunkte aktivieren</value></string>
   <string><id>14055</id><value>Durchsuchen im Hintergrund aktivieren</value></string> 
@@ -1055,12 +1078,12 @@
   <string><id>15017</id><value>Ansicht: Spiele</value></string> 
   <string><id>15018</id><value>Eintreten</value></string> 
   <string><id>15019</id><value>Hinzufügen</value></string> 
-  <string><id>15020</id><value>Hosten</value></string> 
+  <string><id>15020</id><value>Einladen</value></string> 
   <string><id>15021</id><value>Arena</value></string> 
   <string><id>15022</id><value>Ansicht: Arena</value></string> 
   <string><id>15023</id><value>Spielen</value></string> 
   <string><id>15024</id><value>Hinzufügen</value></string> 
-  <string><id>15025</id><value>Hosten</value></string> 
+  <string><id>15025</id><value>Einladen</value></string> 
   <string><id>15026</id><value>Chat</value></string> 
   <string><id>15027</id><value>Ansicht: Chat</value></string> 
   <string><id>15028</id><value>Tastatur</value></string> 
@@ -1073,10 +1096,10 @@
   <string><id>15035</id><value>hat ein Gespräch ermöglicht</value></string> 
   <string><id>15036</id><value>hat eine Einladung gesendet</value></string>
   <string><id>15037</id><value>Netzwerkerreichbarkeit nicht feststellbar.</value></string> 
-  <string><id>15038</id><value>Probleme Spiele zu hosten oder beizutreten möglich.</value></string> 
+  <string><id>15038</id><value>FEHLER - Probleme können autreten.</value></string> 
   <string><id>15039</id><value>Spiel wurde von XBMC nicht gefunden.</value></string> 
   <string><id>15040</id><value>Bitte DVD einlegen und Spiel manuell starten,</value></string> 
-  <string><id>15041</id><value>oder um abzubrechen A drücken.</value></string> 
+  <string><id>15041</id><value>oder um abzubrechen [A] drücken.</value></string> 
   <string><id>15042</id><value>Zugriff verweigert</value></string> 
   <string><id>15043</id><value>%s dem Chat beigetreten.</value></string> 
   <string><id>15044</id><value>%s hat Chat verlassen.</value></string> 
@@ -1084,8 +1107,8 @@
   <string><id>15046</id><value>Aktuelle Arena</value></string> 
   <string><id>15047</id><value>Arena Kennwort bitte eingeben:</value></string> 
   <string><id>15048</id><value>Arena Beschreibung bitte eingeben:</value></string> 
-  <string><id>15049</id><value>Spiel hosten</value></string> 
-  <string><id>15050</id><value>Privat Arena hosten</value></string> 
+  <string><id>15049</id><value>Spieler einladen</value></string> 
+  <string><id>15050</id><value>Privat Arena</value></string> 
   <string><id>15051</id><value>Spieler-Anzahl</value></string> 
   <string><id>15052</id><value>Kennwort</value></string> 
   <string><id>15053</id><value>Beschreibung</value></string> 
@@ -1093,7 +1116,7 @@
   <string><id>15055</id><value>Spiel wählen:</value></string> 
   <string><id>15056</id><value>Nachricht eingeben:</value></string> 
   <string><id>15057</id><value>Senden</value></string> 
-  <string><id>15058</id><value>Host</value></string> 
+  <string><id>15058</id><value>Gastgeber</value></string> 
   <string><id>15059</id><value>Einladung angenommen!</value></string> 
   <string><id>15060</id><value>Nachricht:</value></string> 
   <string><id>15061</id><value>Einladung bei %s mitzuspielen.</value></string>
@@ -1132,7 +1155,36 @@
   <string><id>15250</id><value>Last.fm Radio an AudioScrobbler senden</value></string> 
   <string><id>15251</id><value>Last.fm verbinden...</value></string> 
   <string><id>15252</id><value>Station wählend...</value></string> 
-
+  <string><id>15253</id><value>Suche nach ähnlichen Interpreten...</value></string>
+  <string><id>15254</id><value>Suche nach ähnlichen Attributen...</value></string>
+  <string><id>15255</id><value>Profil: (%name%)</value></string>
+  <string><id>15256</id><value>Die besten Tags</value></string>
+  <string><id>15257</id><value>Die besten Interpreten des Tags %name%</value></string>
+  <string><id>15258</id><value>Die besten Alben des Tags %name%</value></string>
+  <string><id>15259</id><value>Die besten Songs des Tags %name%</value></string>
+  <string><id>15260</id><value>%name% Last.fm Radio Tag anhören</value></string>
+  <string><id>15261</id><value>Ähnliche Interpreten wie %name%</value></string>
+  <string><id>15262</id><value>Die besten %name% Alben</value></string>
+  <string><id>15263</id><value>Die besten %name% Songs</value></string>
+  <string><id>15264</id><value>Die besten %name% Tags</value></string>
+  <string><id>15265</id><value>Größte Fans von %name%</value></string>
+  <string><id>15266</id><value>%name% Fan Last.fm Radio anhören</value></string>
+  <string><id>15267</id><value>Ähnliche Interpreten wie %name% im Last.fm Radio anhören</value></string>
+  <string><id>15268</id><value>Lieblingsinterpreten des Benutzers %name%</value></string>
+  <string><id>15269</id><value>Lieblingsalben des Benutzers %name%</value></string>
+  <string><id>15270</id><value>Lieblingssongs des Benutzers %name%</value></string>
+  <string><id>15271</id><value>Freunde des Benutzers %name%</value></string>
+  <string><id>15272</id><value>Nachbarn des Benutzers %name%</value></string>
+  <string><id>15273</id><value>Wöchentliche Interpretencharts von %name%</value></string>
+  <string><id>15274</id><value>Wöchentliche Albumcharts von %name%</value></string>
+  <string><id>15275</id><value>Wöchentliche Songcharts von %name%</value></string>
+  <string><id>15276</id><value>Last.fm Radio der Nachbarn von %name% anhören</value></string>
+  <string><id>15277</id><value>Privates Last.fm Radio von %name% anhören</value></string>
+  <string><id>15278</id><value>Last.fm Radio mit den Lieblingssongs von %name% anhören</value></string>
+  <string><id>15279</id><value>Liste von Last.fm wird übertragen...</value></string>
+  <string><id>15280</id><value>Liste kann nicht von Last.fm übertragen werden...</value></string>
+  <string><id>15281</id><value>Bitte einen Interpreten eingeben, um ähnliche zu finden</value></string>
+  <string><id>15282</id><value>Bitte einen Tagnamen eingeben, um ähnliche Tags zu finden</value></string>
   <string><id>15283</id><value>Zuletzt gehörte Lieder n. %name% ord.</value></string>
 
   <string><id>15300</id><value>Pfad wurde nicht gefunden oder ist ungültig</value></string> 
@@ -1167,6 +1219,8 @@
   <string><id>16023</id><value>Interlaced</value></string> 
   <string><id>16024</id><value>Abbrechen..</value></string> 
   <string><id>16025</id><value>Künstlername eingeben..</value></string>
+  <string><id>16026</id><value>Abspielen der Wiedergabeliste abgebrochen</value></string>
+  <string><id>16027</id><value>"Zu viele fehlerhafte Einträge"</value></string>
 
   <string><id>16100</id><value>Alle Videos</value></string> 
   <string><id>16101</id><value>Unabgespielt</value></string> 
@@ -1174,7 +1228,6 @@
   <string><id>16103</id><value>Als abgespielt setzen</value></string> 
   <string><id>16104</id><value>Als unabgespielt setzen</value></string> 
   <string><id>16105</id><value>Video umbennenen</value></string> 
-
   <string><id>16106</id><value>NTSC-M &amp; NTSC-J</value></string> 
   <string><id>16107</id><value>NTSC-M</value></string> 
   <string><id>16108</id><value>NTSC-J</value></string> 
