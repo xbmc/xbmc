@@ -2159,6 +2159,21 @@ bool CApplication::OnKey(CKey& key)
   if (m_gWindowManager.OnAction(action)) return true;
 
   /* handle extra global presses */
+
+  // show info : Shows the current video or song information
+  if (action.wID == ACTION_SHOW_INFO)
+  {
+    g_infoManager.ToggleShowInfo();
+    return true;
+  }
+
+  // codec info : Shows the current song, video or picture codec information
+  if (action.wID == ACTION_SHOW_CODEC)
+  {
+    g_infoManager.ToggleShowCodec();
+    return true;
+  }
+
   // stop : stops playing current audio song
   if (action.wID == ACTION_STOP)
   {

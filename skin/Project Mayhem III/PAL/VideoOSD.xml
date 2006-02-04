@@ -21,7 +21,7 @@
       <onright>918</onright>
       <onup>918</onup>
       <ondown>210</ondown>
-      <execute>XBMC.PlayerControl(ShowVideoMenu)</execute>
+      <onclick>XBMC.PlayerControl(ShowVideoMenu)</onclick>
       <visible>VideoPlayer.HasMenu</visible>
     </control>
 
@@ -41,7 +41,7 @@
       <onright>921</onright>
       <onup>921</onup>
       <ondown>211</ondown>
-      <execute>XBMC.PlayerControl(ShowVideoMenu)</execute>
+      <onclick>XBMC.PlayerControl(ShowVideoMenu)</onclick>
       <visible>VideoPlayer.HasMenu</visible>
     </control>
 
@@ -67,7 +67,7 @@
       <height>45</height>
       <texturefocus>osd_button_skip_minusSELFO.png</texturefocus>
       <texturenofocus>-</texturenofocus>
-      <execute>XBMC.PlayerControl(BigSkipBackward)</execute>
+      <onclick>XBMC.PlayerControl(BigSkipBackward)</onclick>
       <label>-</label>
       <font>-</font>
       <onleft>215</onleft>
@@ -95,7 +95,7 @@
       <onright>213</onright>
       <onup>209</onup>
       <ondown>920</ondown>
-      <execute>XBMC.PlayerControl(Rewind)</execute>
+      <onclick>XBMC.PlayerControl(Rewind)</onclick>
     </control>
 
     <!-- <control>
@@ -135,7 +135,7 @@
       <onright>214</onright>
       <onup>921</onup>
       <ondown>920</ondown>
-      <execute>XBMC.PlayerControl(Play)</execute>
+      <onclick>XBMC.PlayerControl(Play)</onclick>
     </control>
 
     <control>
@@ -157,7 +157,7 @@
       <onright>215</onright>
       <onup>921</onup>
       <ondown>920</ondown>
-      <execute>XBMC.PlayerControl(Forward)</execute>
+      <onclick>XBMC.PlayerControl(Forward)</onclick>
     </control>
 
     <control>
@@ -170,7 +170,7 @@
       <height>40</height>
       <texturefocus>osd_button_skip_plusSELFO.png</texturefocus>
       <texturenofocus>-</texturenofocus>
-      <execute>XBMC.PlayerControl(BigSkipForward)</execute>
+      <onclick>XBMC.PlayerControl(BigSkipForward)</onclick>
       <label>-</label>
       <font>-</font>
       <onleft>214</onleft>
@@ -209,7 +209,7 @@
       <height>38</height>
       <texturefocus>osd_button_playlistFO.png</texturefocus>
       <texturenofocus>-</texturenofocus>
-      <execute>XBMC.ActivateWindow(28)</execute>
+      <onclick>XBMC.ActivateWindow(28)</onclick>
       <label>-</label>
       <font>-</font>
       <onleft>208</onleft>
@@ -231,7 +231,7 @@
       <usealttexture>Window.IsActive(124) | Window.IsActive(123)</usealttexture>
       <alttexturefocus>osd_button_audioSELNF.png</alttexturefocus>
       <alttexturenofocus>-</alttexturenofocus>
-      <execute>XBMC.ActivateWindow(124)</execute>
+      <onclick>XBMC.ActivateWindow(124)</onclick>
       <label>-</label>
       <font>-</font>
       <onleft>209</onleft>
@@ -253,7 +253,7 @@
       <usealttexture>Window.IsActive(123)</usealttexture>
       <alttexturefocus>osd_button_videoSELNF.png</alttexturefocus>
       <alttexturenofocus>-</alttexturenofocus>
-      <execute>XBMC.ActivateWindow(123)</execute>
+      <onclick>XBMC.ActivateWindow(123)</onclick>
       <label>-</label>
       <font>-</font>
       <onleft>211</onleft>
@@ -275,7 +275,7 @@
       <usealttexture>Window.IsActive(125)</usealttexture>
       <alttexturefocus>osd_button_bookmarkSELNF.png</alttexturefocus>
       <alttexturenofocus>-</alttexturenofocus>
-      <execute>XBMC.ActivateWindow(125)</execute>
+      <onclick>XBMC.ActivateWindow(125)</onclick>
       <label>-</label>
       <font>-</font>
       <onleft>210</onleft>

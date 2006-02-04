@@ -1,3 +1,11 @@
+2006-02-04 changed:	Notifications dialog should scroll if text is too long.
+2006-02-04 changed:     Home.xml now uses the ControlGroup().HasFocus() rather than relying on the home code (v2.0 ready).
+2006-02-04 removed:	Custom4.xml no longer needed (controls moved to Slideshow.xml)
+2006-02-04 changed:	All occurences of <execute> replaced with <onclick>
+2006-02-04 changed:	Player.ShowInfo -> Player.ShowCodec in Slideshow.xml.
+
+2006-02-01 changed:	Using <wrapmultiline> in MyWeather.xml.
+
 2006-01-25 fixed:	Fullscreen showed progressbar below real progressbar.
 
 2006-01-20 fixed:	Credits ran twice when run from Settings.

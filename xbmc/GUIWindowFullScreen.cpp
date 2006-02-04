@@ -74,14 +74,13 @@ static DWORD color[6] = { 0xFFFFFF00, 0xFFFFFFFF, 0xFF0099FF, 0xFF00FF00, 0xFFCC
 CGUIWindowFullScreen::CGUIWindowFullScreen(void)
     : CGUIWindow(WINDOW_FULLSCREEN_VIDEO, "VideoFullscreen.xml")
 {
-  m_strTimeStamp[0] = 0;
-  m_iTimeCodePosition = 0;
-  m_bShowTime = false;
-  m_bShowCodecInfo = false;
+  m_timeCodeStamp[0] = 0;
+  m_timeCodePosition = 0;
+  m_timeCodeShow = false;
+  m_timeCodeTimeout = 0;
   m_bShowViewModeInfo = false;
   m_dwShowViewModeTimeout = 0;
   m_bShowCurrentTime = false;
-  m_dwTimeCodeTimeout = 0;
   m_subtitleFont = NULL;
 //  m_needsScaling = false;         // we handle all the scaling
   // audio
@@ -210,13 +209,6 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
   case ACTION_SHOW_SUBTITLES:
     {
       g_application.m_pPlayer->ToggleSubtitles();
-    }
-    return true;
-    break;
-
-  case ACTION_SHOW_CODEC:
-    {
-      m_bShowCodecInfo = !m_bShowCodecInfo;
     }
     return true;
     break;
@@ -352,6 +344,8 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
         return true;
       }
       m_bLastRender = false;
+      g_infoManager.SetShowInfo(false);
+      g_infoManager.SetShowCodec(false);
       m_bShowCurrentTime = false;
       g_infoManager.SetDisplayAfterSeek(0); // Make sure display after seek is off.
 
@@ -376,8 +370,6 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
       if (g_application.m_pPlayer)
         g_application.m_pPlayer->Update();
 
-      m_iCurrentBookmark = 0;
-      m_bShowCodecInfo = false;
       m_bShowViewModeInfo = false;
 
       // set the correct view mode
@@ -425,8 +417,6 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
       g_graphicsContext.SetFullScreenVideo(false);
       g_graphicsContext.SetGUIResolution(g_guiSettings.m_LookAndFeelResolution);
       g_graphicsContext.Unlock();
-
-      m_iCurrentBookmark = 0;
 
       CSingleLock lockFont(m_fontLock);
       if (m_subtitleFont)
@@ -490,8 +480,8 @@ bool CGUIWindowFullScreen::NeedRenderFullScreen()
     if (g_application.m_pPlayer->IsCaching() ) return true;
   }
   if (g_application.GetPlaySpeed() != 1) return true;
-  if (m_bShowTime) return true;
-  if (m_bShowCodecInfo) return true;
+  if (m_timeCodeShow) return true;
+  if (g_infoManager.GetBool(PLAYER_SHOWCODEC)) return true;
   if (m_bShowViewModeInfo) return true;
   if (m_bShowCurrentTime) return true;
   if (g_infoManager.GetDisplayAfterSeek()) return true;
@@ -538,7 +528,7 @@ void CGUIWindowFullScreen::RenderFullScreen()
     bRenderGUI = true;
 
   //------------------------
-  if (m_bShowCodecInfo)
+  if (g_infoManager.GetBool(PLAYER_SHOWCODEC))
   {
     bRenderGUI = true;
     // show audio codec info
@@ -623,24 +613,24 @@ void CGUIWindowFullScreen::RenderFullScreen()
 
   RenderTTFSubtitles();
 
-  if (m_bShowTime && m_iTimeCodePosition != 0)
+  if (m_timeCodeShow && m_timeCodePosition != 0)
   {
-    if ( (timeGetTime() - m_dwTimeCodeTimeout) >= 2500)
+    if ( (timeGetTime() - m_timeCodeTimeout) >= 2500)
     {
-      m_bShowTime = false;
-      m_iTimeCodePosition = 0;
+      m_timeCodeShow = false;
+      m_timeCodePosition = 0;
       goto renderDialogs;
     }
     bRenderGUI = true;
     CStdString strDispTime = "??:??";
 
     CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_ROW1);
-    for (int count = 0; count < m_iTimeCodePosition; count++)
+    for (int count = 0; count < m_timeCodePosition; count++)
     {
-      if (m_strTimeStamp[count] == -1)
+      if (m_timeCodeStamp[count] == -1)
         strDispTime[count] = ':';
       else
-        strDispTime[count] = (char)m_strTimeStamp[count] + 48;
+        strDispTime[count] = (char)m_timeCodeStamp[count] + 48;
     }
     strDispTime += "/" + g_infoManager.GetVideoLabel(257) + " [" + g_infoManager.GetVideoLabel(254) + "]"; // duration [ time ]
     msg.SetLabel(strDispTime);
@@ -660,14 +650,14 @@ void CGUIWindowFullScreen::RenderFullScreen()
       SET_CONTROL_HIDDEN(LABEL_ROW3);
       SET_CONTROL_HIDDEN(BLUE_BAR);
     }
-    else if (m_bShowCodecInfo || m_bShowViewModeInfo)
+    else if (g_infoManager.GetBool(PLAYER_SHOWCODEC) || m_bShowViewModeInfo)
     {
       SET_CONTROL_VISIBLE(LABEL_ROW1);
       SET_CONTROL_VISIBLE(LABEL_ROW2);
       SET_CONTROL_VISIBLE(LABEL_ROW3);
       SET_CONTROL_VISIBLE(BLUE_BAR);
     }
-    else if (m_bShowTime)
+    else if (m_timeCodeShow)
     {
       SET_CONTROL_VISIBLE(LABEL_ROW1);
       SET_CONTROL_HIDDEN(LABEL_ROW2);
@@ -739,22 +729,22 @@ void CGUIWindowFullScreen::ChangetheTimeCode(DWORD remote)
 {
   if (remote >= 58 && remote <= 67) //Make sure it's only for the remote
   {
-    m_bShowTime = true;
-    m_dwTimeCodeTimeout = timeGetTime();
+    m_timeCodeShow = true;
+    m_timeCodeTimeout = timeGetTime();
     int itime = remote - 58;
-    if (m_iTimeCodePosition <= 4 && m_iTimeCodePosition != 2)
+    if (m_timeCodePosition <= 4 && m_timeCodePosition != 2)
     {
-      m_strTimeStamp[m_iTimeCodePosition++] = itime;
-      if (m_iTimeCodePosition == 2)
-        m_strTimeStamp[m_iTimeCodePosition++] = -1;
+      m_timeCodeStamp[m_timeCodePosition++] = itime;
+      if (m_timeCodePosition == 2)
+        m_timeCodeStamp[m_timeCodePosition++] = -1;
     }
-    if (m_iTimeCodePosition > 4)
+    if (m_timeCodePosition > 4)
     {
       long itotal, ih, im, is = 0;
-      ih = (m_strTimeStamp[0] - 0) * 10;
-      ih += (m_strTimeStamp[1] - 0);
-      im = (m_strTimeStamp[3] - 0) * 10;
-      im += (m_strTimeStamp[4] - 0);
+      ih = (m_timeCodeStamp[0] - 0) * 10;
+      ih += (m_timeCodeStamp[1] - 0);
+      im = (m_timeCodeStamp[3] - 0) * 10;
+      im += (m_timeCodeStamp[4] - 0);
       im *= 60;
       ih *= 3600;
       itotal = ih + im + is;
@@ -771,8 +761,8 @@ void CGUIWindowFullScreen::ChangetheTimeCode(DWORD remote)
         Sleep(g_advancedSettings.m_videoSmallStepBackDelay);  // allow mplayer to finish it's seek (nasty hack)
         g_application.m_pPlayer->Pause();
       }
-      m_iTimeCodePosition = 0;
-      m_bShowTime = false;
+      m_timeCodePosition = 0;
+      m_timeCodeShow = false;
     }
   }
 }

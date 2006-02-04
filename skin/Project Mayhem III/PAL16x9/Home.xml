@@ -5,7 +5,7 @@
   <controls>
     <control>
       <type>multiimage</type>
-      <id>102</id>
+      <id>0</id>
       <posx>182</posx>
       <posy>105</posy>
       <width>538</width>
@@ -13,13 +13,13 @@
       <imagepath>16x9home-myprograms</imagepath>
       <timeperimage>5000</timeperimage>
       <fadetime>2000</fadetime>
-      <visible>!Player.HasMedia</visible>
+      <visible>!Player.HasMedia + ControlGroup(1).HasFocus(2)</visible>
       <animation effect="fade" time="200">VisibleChange</animation>
     </control>
 
     <control>
       <type>multiimage</type>
-      <id>106</id>
+      <id>0</id>
       <posx>182</posx>
       <posy>105</posy>
       <width>538</width>
@@ -27,13 +27,13 @@
       <imagepath>16x9home-myfiles</imagepath>
       <timeperimage>5000</timeperimage>
       <fadetime>2000</fadetime>
-      <visible>!Player.HasMedia</visible>
+      <visible>!Player.HasMedia + ControlGroup(1).HasFocus(6)</visible>
       <animation effect="fade" time="200">VisibleChange</animation>
     </control>
 
     <control>
       <type>multiimage</type>
-      <id>103</id>
+      <id>0</id>
       <posx>182</posx>
       <posy>105</posy>
       <width>538</width>
@@ -41,13 +41,13 @@
       <imagepath>16x9home-mymusic</imagepath>
       <timeperimage>5000</timeperimage>
       <fadetime>2000</fadetime>
-      <visible>!Player.HasMedia</visible>
+      <visible>!Player.HasMedia + ControlGroup(1).HasFocus(3)</visible>
       <animation effect="fade" time="200">VisibleChange</animation>
     </control>
 
     <control>
       <type>multiimage</type>
-      <id>104</id>
+      <id>0</id>
       <posx>182</posx>
       <posy>105</posy>
       <width>538</width>
@@ -55,13 +55,13 @@
       <imagepath>16x9home-mypictures</imagepath>
       <timeperimage>5000</timeperimage>
       <fadetime>2000</fadetime>
-      <visible>!Player.HasMedia</visible>
+      <visible>!Player.HasMedia + ControlGroup(1).HasFocus(4)</visible>
       <animation effect="fade" time="200">VisibleChange</animation>
     </control>
 
     <control>
       <type>multiimage</type>
-      <id>105</id>
+      <id>0</id>
       <posx>182</posx>
       <posy>105</posy>
       <width>538</width>
@@ -69,13 +69,13 @@
       <imagepath>16x9home-myvideos</imagepath>
       <timeperimage>5000</timeperimage>
       <fadetime>2000</fadetime>
-      <visible>!Player.HasMedia</visible>
+      <visible>!Player.HasMedia + ControlGroup(1).HasFocus(5)</visible>
       <animation effect="fade" time="200">VisibleChange</animation>
     </control>
 
     <control>
       <type>multiimage</type>
-      <id>107</id>
+      <id>0</id>
       <posx>182</posx>
       <posy>105</posy>
       <width>538</width>
@@ -83,13 +83,13 @@
       <imagepath>16x9home-myweather</imagepath>
       <timeperimage>5000</timeperimage>
       <fadetime>2000</fadetime>
-      <visible>!Player.HasMedia</visible>
+      <visible>!Player.HasMedia + ControlGroup(1).HasFocus(7)</visible>
       <animation effect="fade" time="200">VisibleChange</animation>
     </control>
 
     <control>
       <type>multiimage</type>
-      <id>109</id>
+      <id>0</id>
       <posx>182</posx>
       <posy>105</posy>
       <width>538</width>
@@ -97,7 +97,7 @@
       <imagepath>16x9home-settings</imagepath>
       <timeperimage>5000</timeperimage>
       <fadetime>2000</fadetime>
-      <visible>!Player.HasMedia</visible>
+      <visible>!Player.HasMedia + ControlGroup(1).HasFocus(9)</visible>
       <animation effect="fade" time="200">VisibleChange</animation>
     </control>
 
@@ -295,7 +295,7 @@
       <animation effect="fade" time="1000">VisibleChange</animation>
     </control>
 
-    <controlgroup>
+    <controlgroup id="1">
       <control>
         <description>My Programs normal push button</description>
         <type>button</type>
@@ -549,7 +549,7 @@
       <textoffsetx>26</textoffsetx>
       <visible>System.HasMediaDVD + System.KaiConnected + ![Player.HasAudio + System.IdleTime(60)]</visible>
       <animation effect="fade" time="1000">VisibleChange</animation>
-      <execute>XBMC.PlayDVD()</execute>
+      <onclick>XBMC.PlayDVD()</onclick>
       <onleft>96</onleft>
       <onright>97</onright>
       <onup>2</onup>
@@ -571,7 +571,7 @@
       <textoffsetx>26</textoffsetx>
       <visible>System.HasMediaDVD + !System.KaiConnected + ![Player.HasAudio + System.IdleTime(60)]</visible>
       <animation effect="fade" time="1000">VisibleChange</animation>
-      <execute>XBMC.PlayDVD()</execute>
+      <onclick>XBMC.PlayDVD()</onclick>
       <onleft>2</onleft>
       <onright>95</onright>
       <onup>2</onup>
