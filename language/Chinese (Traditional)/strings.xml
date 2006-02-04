@@ -214,7 +214,7 @@
   <string><id>279</id><value>無法讀取設定</value></string>
   <string><id>280</id><value>回復為預設值</value></string>
   <string><id>281</id><value>請檢查 .xml 檔案</value></string>
-  <string><id>282</id><value>找到 %i 條</value></string>
+  <string><id>282</id><value>找到%i條</value></string>
   <string><id>283</id><value>搜尋結果</value></string>
   <string><id>284</id><value>無結果</value></string>
   <string><id>285</id><value>反交錯濾鏡</value></string>
@@ -560,7 +560,7 @@
   <string><id>767</id><value>保留</value></string>
   <string><id>768</id><value>保留</value></string>
   <string><id>769</id><value>保留</value></string>
-  <string><id>770</id><value>錯誤 %i：不能共享</value></string>
+  <string><id>770</id><value>錯誤%i：不能共享</value></string>
   <string><id>771</id><value>FTP 伺服器限定工作在FATX格式</value></string>
   <string><id>772</id><value>聲音硬體</value></string>
   <string><id>773</id><value>搜尋中</value></string>
@@ -706,6 +706,12 @@
   <string><id>12009</id><value>重建目錄…</value></string>
   <string><id>12010</id><value>回到 我的音樂</value></string>
   <string><id>12011</id><value>回到 我的影片</value></string>
+  <string><id>12012</id><value>更新金手指目錄</value></string>
+  <string><id>12013</id><value>金手指</value></string>
+  <string><id>12014</id><value>找不到金手指</value></string>
+  <string><id>12015</id><value>金手指設定</value></string>
+  <string><id>12016</id><value>所有金手指的紀錄遺失！請更新你的目錄</value></string>
+  <string><id>12017</id><value>自動恢復上次的位置</value></string>
   
   <string><id>12310</id><value>0</value></string>
   <string><id>12311</id><value>1</value></string>
@@ -771,6 +777,17 @@
   <string><id>12373</id><value>設置 &amp; 我的檔案</value></string>
   <string><id>12374</id><value>鎖定媒體檔案</value></string>
   <string><id>12375</id><value>管理員模式</value></string>
+  <string><id>12376</id><value>為所有電影設置預設檔</value></string>
+  <string><id>12377</id><value>這將會重設任何之前的存檔</value></string>
+  <string><id>12378</id><value>顯示各個圖示</value></string>
+  <string><id>12379</id><value>使用移動和縮放特效</value></string>
+  <string><id>12380</id><value>在 PAL 模式播放 NTSC 影片</value></string>
+  <string><id>12381</id><value>在 NTSC 模式播放 PAL 影片</value></string>
+  <string><id>12382</id><value>以 PAL60 播放 NTSC 影片</value></string>
+  <string><id>12383</id><value>12小時制</value></string>
+  <string><id>12384</id><value>24小時制</value></string>
+  <string><id>12385</id><value>日/月</value></string>
+  <string><id>12386</id><value>月/日</value></string>
   
   <string><id>12390</id><value>系統啟動時間</value></string>
   <string><id>12391</id><value>分鐘</value></string>
@@ -812,7 +829,7 @@
   <string><id>13167</id><value>記憶卡在埠號：</value></string>
   <string><id>13168</id><value>遙控器在埠號：</value></string>
   <string><id>13169</id><value>忽略 CD 選擇</value></string>
-  <string><id>13170</id><value>不要</value></string>
+  <string><id>13170</id><value>從不</value></string>
   <string><id>13171</id><value>立即</value></string>
   <string><id>13172</id><value>隔%i秒之後</value></string>
   
@@ -830,7 +847,12 @@
   <string><id>13211</id><value>鬧鈴提醒！</value></string>
   <string><id>13212</id><value>鬧鈴取消，剩下%i分%i秒。</value></string>
   
-  <string><id>13250</id><value>瀏覽字幕…</value></string>
+  
+  <string><id>13249</id><value>尋找RAR壓縮檔中的字幕</value></string>
+  <string><id>13250</id><value>選擇字幕…</value></string>
+  <string><id>13251</id><value>移動該項目</value></string>
+  <string><id>13252</id><value>將項目移動至此</value></string>
+  <string><id>13253</id><value>取消移動</value></string>
   
   <string><id>13270</id><value>硬體：</value></string>
   <string><id>13271</id><value>中央處理器速度：</value></string>
@@ -888,9 +910,9 @@
   <string><id>13325</id><value>前景透明度</value></string>
   <string><id>13326</id><value>影音延遲</value></string>
   <string><id>13327</id><value>卡拉 OK</value></string>
-  <string><id>13328</id><value>%s 找不到。</value></string>
-  <string><id>13329</id><value>打開 %s 發生錯誤</value></string>
-  <string><id>13330</id><value>無法載入 %s</value></string>
+  <string><id>13328</id><value>%s找不到。</value></string>
+  <string><id>13329</id><value>打開%s發生錯誤</value></string>
+  <string><id>13330</id><value>無法載入%s</value></string>
   <string><id>13331</id><value>錯誤：記憶體不足。</value></string>
   <string><id>13332</id><value>上移</value></string>
   <string><id>13333</id><value>下移</value></string>
@@ -1005,15 +1027,15 @@
   <string><id>14041</id><value>後期處理</value></string>
   <string><id>14042</id><value>執行 XLink Kai 電腦的 IP 位址</value></string>
   <string><id>14043</id><value>- 執行時關閉</value></string>
-  <string><id>14044</id><value>%i 分</value></string>
-  <string><id>14045</id><value>%i 秒</value></string>
-  <string><id>14046</id><value>%i 毫秒</value></string>
-  <string><id>14047</id><value>%i %%</value></string>
-  <string><id>14048</id><value>%i kbps</value></string>
-  <string><id>14049</id><value>%i kb</value></string>
+  <string><id>14044</id><value>%i分</value></string>
+  <string><id>14045</id><value>%i秒</value></string>
+  <string><id>14046</id><value>%i毫秒</value></string>
+  <string><id>14047</id><value>%i%%</value></string>
+  <string><id>14048</id><value>%ikbps</value></string>
+  <string><id>14049</id><value>%ikb</value></string>
   <string><id>14050</id><value>%i.0 dB</value></string>
-  <string><id>14051</id><value>時間顯示 12 小時制</value></string>
-  <string><id>14052</id><value>顯示日期時日在月之前</value></string>
+  <string><id>14051</id><value>時間顯示設定</value></string>
+  <string><id>14052</id><value>日期顯示設定</value></string>
   <string><id>14053</id><value>畫面濾鏡</value></string>
   <string><id>14054</id><value>開啟網路資訊搜尋</value></string>
   <string><id>14055</id><value>使用背景搜尋</value></string>
@@ -1040,11 +1062,11 @@
   <string><id>15001</id><value>目前並沒有連線到執行 XLink Kai 的電腦，</value></string>
   <string><id>15002</id><value>請檢查設定無誤後再嘗試連線。</value></string>
   <string><id>15003</id><value>輸入你的訊息。</value></string>
-  <string><id>15004</id><value>有人邀請你玩 %s。</value></string>
+  <string><id>15004</id><value>有人邀請你玩%s。</value></string>
   <string><id>15005</id><value>日期：%s</value></string>
   <string><id>15006</id><value>來自：%s</value></string>
   <string><id>15007</id><value>邀請</value></string>
-  <string><id>15008</id><value>有人邀請你加入 %s。</value></string>
+  <string><id>15008</id><value>有人邀請你加入%s。</value></string>
   <string><id>15009</id><value>離線</value></string>
   <string><id>15010</id><value>朋友</value></string>
   <string><id>15011</id><value>顯示：好友</value></string>
@@ -1079,8 +1101,8 @@
   <string><id>15040</id><value>放入遊戲片或按'A'取消，</value></string>
   <string><id>15041</id><value>並參考遊戲相關說明。</value></string>
   <string><id>15042</id><value>存取被拒</value></string>
-  <string><id>15043</id><value>%s 加入聊天室。</value></string>
-  <string><id>15044</id><value>%s 離開聊天室。</value></string>
+  <string><id>15043</id><value>%s加入聊天室。</value></string>
+  <string><id>15044</id><value>%s離開聊天室。</value></string>
   <string><id>15045</id><value>輸入你的訊息。</value></string>
   <string><id>15046</id><value>目前的遊戲室</value></string>
   <string><id>15047</id><value>輸入遊戲場密碼。</value></string>
@@ -1097,7 +1119,7 @@
   <string><id>15058</id><value>主持遊戲</value></string>
   <string><id>15059</id><value>接受邀請！</value></string>
   <string><id>15060</id><value>訊息</value></string>
-  <string><id>15061</id><value>你邀請玩家 %s。</value></string>
+  <string><id>15061</id><value>你邀請玩家%s。</value></string>
   <string><id>15062</id><value>使用替代的 mplayer 位置</value></string> 
   
   <string><id>15100</id><value>瀏覽</value></string>
@@ -1197,6 +1219,8 @@
   <string><id>16023</id><value>交錯式掃描</value></string>
   <string><id>16024</id><value>取消中…</value></string>
   <string><id>16025</id><value>輸入藝人名稱</value></string>
+  <string><id>16026</id><value>取消播放"播放列表"</value></string>
+  <string><id>16027</id><value>太多連續性錯誤</value></string>
   
   <string><id>16100</id><value>所有影片</value></string>
   <string><id>16101</id><value>未觀看的</value></string>
@@ -1204,10 +1228,10 @@
   <string><id>16103</id><value>標記成已看的</value></string>
   <string><id>16104</id><value>標記成未看的</value></string>
   <string><id>16105</id><value>編輯標題</value></string>
-  <string><id>16106</id><value>使用 NTSC-M &amp; NTSC-J 系統</value></string>
-  <string><id>16107</id><value>使用 NTSC-M 系統</value></string>
-  <string><id>16108</id><value>使用 NTSC-J 系統</value></string>
-  <string><id>16109</id><value>使用 PAL-60 系統</value></string>
+  <string><id>16106</id><value>使用 NTSC-M &amp; NTSC-J 模式</value></string>
+  <string><id>16107</id><value>使用 NTSC-M 模式</value></string>
+  <string><id>16108</id><value>使用 NTSC-J 模式</value></string>
+  <string><id>16109</id><value>使用 PAL-60 模式</value></string>
   <string><id>16110</id><value>60hz 遊戲設置</value></string>
   
 </strings>

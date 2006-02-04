@@ -1,4 +1,4 @@
-  <!-- XML languaje file created with XBMCTranslator. Idea and code by Jose_T. Corrected and updated by Traxis !-->
+  <!-- XML languaje file created with XBMCTranslator. Idea and code by Jose_T !-->
 
 
 <strings>
@@ -7,7 +7,7 @@
   <string><id>2</id><value>Música</value></string>
   <string><id>3</id><value>Vídeos</value></string>
   <string><id>4</id><value>Guía de TV</value></string>
-  <string><id>5</id><value>Configuración</value></string>
+  <string><id>5</id><value>Ajustes</value></string>
   <!-- String with id 6 should not be set here, only in the english language file !-->
   <string><id>7</id><value>Archivos</value></string>
   <string><id>8</id><value>El Tiempo</value></string>
@@ -54,7 +54,7 @@
   <string><id>116</id><value>Mover</value></string>
   <string><id>117</id><value>Eliminar</value></string>
   <string><id>118</id><value>Cambiar Nombre</value></string>
-  <string><id>119</id><value>Nueva carpeta</value></string>
+  <string><id>119</id><value>Nueva Carpeta</value></string>
   <string><id>120</id><value>Confirmar copia de archivos</value></string>
   <string><id>121</id><value>Confirmar movimiento de archivos</value></string>
   <string><id>122</id><value>Confirmar eliminación de archivos</value></string>
@@ -74,7 +74,7 @@
   <string><id>136</id><value>Listas de Reprod.</value></string>
   <string><id>137</id><value>Buscar</value></string>
   <string><id>138</id><value>Información del Sistema</value></string>
-  <string><id>139</id><value>Temperaturas</value></string>
+  <string><id>139</id><value>Temperaturas:</value></string>
   <string><id>140</id><value>CPU:</value></string>
   <string><id>141</id><value>GPU:</value></string>
   <string><id>142</id><value>Fecha y Hora</value></string>
@@ -492,6 +492,7 @@
   <string><id>643</id><value>Evitar Distorsión Digital en Ficheros con ReplayGain</value></string>
   <string><id>644</id><value>Eliminar Bordes Negros</value></string>
   <string><id>645</id><value>Es necesario cachear un fichero grande. Continuar?</value></string>
+  <string><id>646</id><value>Eliminar Título</value></string>
 
   <string><id>700</id><value>Limpiar la biblioteca</value></string>
   <string><id>701</id><value>Eliminando las canciones antiguas de la biblioteca</value></string>
@@ -621,6 +622,7 @@
   <string><id>1254</id><value>Ventana Emergente de Aviso</value></string>
   <string><id>1255</id><value>Enviar Usuario y Contraseña FTP</value></string>
   <string><id>1256</id><value>Intervalo de Ping</value></string>
+  <string><id>1257</id><value>¿ Desea conectar a la XBOX Autodetectada ?</value></string>
 
   <string><id>1396</id><value>A la deriva</value></string>
   <string><id>1397</id><value>y</value></string>
@@ -711,7 +713,15 @@
   <string><id>12006</id><value>Visualización de Audio</value></string>
   <string><id>12007</id><value>Imágenes/presentación</value></string>
   <string><id>12008</id><value>Cuadro de diálogo Agrupar archivos</value></string>
-  <string><id>12009</id><value>Forzar reconstruccion del índice...</value></string>
+  <string><id>12009</id><value>Reconstruir índice...</value></string>
+  <string><id>12010</id><value>Volver a Música</value></string>
+  <string><id>12011</id><value>Volver a Videos</value></string>
+  <string><id>12012</id><value>Actualizar lista de Trainers</value></string>
+  <string><id>12013</id><value>Trainer</value></string>
+  <string><id>12014</id><value>No se encontraron Trainers</value></string>
+  <string><id>12015</id><value>Configuración de Trainers</value></string>
+  <string><id>12016</id><value>Faltan todos los trailers registrados. Actualice su lista</value></string>
+  <string><id>12017</id><value>Continuar automáticamente desde la última posición</value></string>
 
   <string><id>12310</id><value>0</value></string>
   <string><id>12311</id><value>1</value></string>
@@ -779,12 +789,23 @@
   <string><id>12373</id><value>Bloqueo de Configuración</value></string>
   <string><id>12374</id><value>Bloqueo de Medios</value></string>
   <string><id>12375</id><value>Modo Usuario Maestro</value></string>
+  <string><id>12376</id><value>Asignar como por defecto para todas las Películas</value></string>
+  <string><id>12377</id><value>Esto eliminará cualquier valor previamente salvado</value></string>
+  <string><id>12378</id><value>Mostrar cada imagen para</value></string>
+  <string><id>12379</id><value>Usar efectos Pan y Zoom</value></string>
+  <string><id>12380</id><value>Reproducir videos NTSC con ratios PAL</value></string>
+  <string><id>12381</id><value>Reproducir videos PAL con ratios NTSC</value></string>
+  <string><id>12382</id><value>Reproducir videos NTSC en PAL60</value></string>
+  <string><id>12383</id><value>Reloj de 12 horas</value></string>
+  <string><id>12384</id><value>Reloj de 24 horas</value></string>
+  <string><id>12385</id><value>Día/Mes</value></string>
+  <string><id>12386</id><value>Mes/Día</value></string>
 
-  <string><id>12390</id><value>Sistema encendido desde</value></string>
+  <string><id>12390</id><value>Activo desde</value></string>
   <string><id>12391</id><value>Minutos</value></string>
   <string><id>12392</id><value>Horas</value></string>
   <string><id>12393</id><value>Días</value></string>
-  <string><id>12394</id><value>Tiempo total encendido</value></string>
+  <string><id>12394</id><value>Tiempo Total Encendido</value></string>
 
   <string><id>12600</id><value>Meteorología</value></string>
 
@@ -820,6 +841,10 @@
   <string><id>13166</id><value>Cascos/Micrófono en puerto:</value></string>
   <string><id>13167</id><value>MemoryStick en puerto:</value></string>
   <string><id>13168</id><value>Mando a distancia en puerto:</value></string>
+  <string><id>13169</id><value>Omitir Selección CD</value></string>
+  <string><id>13170</id><value>Nunca</value></string>
+  <string><id>13171</id><value>Inmediatamente</value></string>
+  <string><id>13172</id><value>Después de %i segs.</value></string>
 
   <string><id>13200</id><value>Perfiles</value></string>
   <string><id>13201</id><value>¿Eliminar el perfil '%s'?</value></string>
@@ -835,9 +860,16 @@
   <string><id>13211</id><value>Alarma!</value></string>
   <string><id>13212</id><value>Cancelada antes de %im%is</value></string>
 
+  <string><id>13249</id><value>Buscar subtítulos en Rar's</value></string>
+  <string><id>13250</id><value>Buscar subtítulos...</value></string>
+  <string><id>13251</id><value>Mover Elemento</value></string>
+  <string><id>13252</id><value>Mover Elemento Aquí</value></string>
+  <string><id>13253</id><value>Cancelar Movimiento</value></string>
+
   <string><id>13270</id><value>Hardware:</value></string>
   <string><id>13271</id><value>Velocidad de CPU:</value></string>
 
+  <string><id>13274</id><value>Xbox conectada, pero no hay disponible un DNS.</value></string>
   <string><id>13275</id><value>Disco Duro</value></string>
   <string><id>13276</id><value>DVD-ROM</value></string>
   <string><id>13277</id><value>Almacenamiento</value></string>
@@ -877,7 +909,7 @@
   <string><id>13311</id><value>Efecto de flotar</value></string>
   <string><id>13312</id><value>Disminución de las bandas negras</value></string>
   <string><id>13313</id><value>Restablecer/Reiniciar</value></string>
-  <string><id>13314</id><value>Mezclar entre pistas</value></string>
+  <string><id>13314</id><value>Tiempo hasta ocultar el OSD musical</value></string>
   <string><id>13315</id><value>Crear miniaturas</value></string>
   <string><id>13316</id><value>Miniaturas recursivas</value></string>
   <string><id>13317</id><value>Ver Presentación</value></string>
@@ -966,6 +998,7 @@ para esta visualización</value></string>
   <string><id>13398</id><value>Marcas</value></string>
   <string><id>13399</id><value>Ignorar "The" al ordenar</value></string>
   <string><id>13400</id><value>Mezclar pistas de álbumes</value></string>
+  <string><id>13401</id><value>Buscar %s</value></string>
 
   <string><id>14000</id><value>Agrupar: No</value></string>
   <string><id>14001</id><value>Agrupar: Si</value></string>
@@ -1038,7 +1071,7 @@ para esta visualización</value></string>
   <string><id>14068</id><value>Establecer Minuto</value></string>
   <string><id>14069</id><value>¿Quieres aplicar las opciones ahora?</value></string>
   <string><id>14070</id><value>Aplicar cambios ahora</value></string>
-  <string><id>14071</id><value>Permitir Borrado de Ficheros</value></string>
+  <string><id>14071</id><value>Permitir Renombrar y Borrar Ficheros</value></string>
   <string><id>14072</id><value>Habilitar XLink Kai</value></string>
   <string><id>14073</id><value>XLink Kai no está habilitado.</value></string>
 
@@ -1116,6 +1149,9 @@ para esta visualización</value></string>
   <string><id>15107</id><value>Almacenando...</value></string>
   <string><id>15108</id><value>Sonidos de Navegación</value></string>
   <string><id>15109</id><value>Tema por Defecto</value></string>
+  <string><id>15110</id><value>Vibración del Mando</value></string>
+  <string><id>15111</id><value>Tema Visual</value></string>
+  <string><id>15112</id><value>Tema por Defecto</value></string>
 
   <string><id>15200</id><value>AudioScrobbler</value></string>
   <string><id>15201</id><value>Enviar Info de Canciones a AudioScrobbler</value></string>
@@ -1200,6 +1236,8 @@ para esta visualización</value></string>
   <string><id>16023</id><value>Gestión del Entrelazado</value></string>
   <string><id>16024</id><value>Cancelando...</value></string>
   <string><id>16025</id><value>Introduzca el Nombre del Intérprete</value></string>
+  <string><id>16026</id><value>Abortar reproducción de lista</value></string>
+  <string><id>16027</id><value>Demasiados elementos fallidos consecutivos</value></string>
 
   <string><id>16100</id><value>Todos los vídeos</value></string>
   <string><id>16101</id><value>Los no vistos</value></string>
