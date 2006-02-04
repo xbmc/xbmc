@@ -408,9 +408,20 @@ extern "C"
     }
   }
 
-  void mplayer_SlaveCommand(const char * s)
+  void mplayer_SlaveCommand(const char * s, ... )
   {
-    if (pSlaveCommand) pSlaveCommand(s);
+    if (pSlaveCommand)
+    {
+      va_list va;
+      va_start(va, s);
+      int size = _vscprintf(s, va);
+      char *buffer = new char[size+1];
+      _vsnprintf(buffer,size+1, s, va);
+      va_end(va);
+
+      pSlaveCommand(buffer);
+      delete[] buffer;
+    }
   }
 
   int mplayer_GetCacheLevel()
