@@ -460,10 +460,6 @@ bool CGUIWindowSlideShow::OnAction(const CAction &action)
     Move(0, -PICTURE_MOVE_AMOUNT);
     break;
 
-  case ACTION_SHOW_INFO:
-    g_infoManager.SetShowInfo(!g_infoManager.GetBool(PLAYER_SHOWINFO, GetID()));
-    break;
-
   case ACTION_PAUSE:
     if (m_bSlideShow)
       m_bPause = !m_bPause;

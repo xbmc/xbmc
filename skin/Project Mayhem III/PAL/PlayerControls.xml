@@ -35,7 +35,7 @@
       <onright>401</onright>
       <onup>400</onup>
       <ondown>400</ondown>
-      <execute>XBMC.PlayerControl(Previous)</execute>
+      <onclick>XBMC.PlayerControl(Previous)</onclick>
     </control>
 
     <control>
@@ -52,7 +52,7 @@
       <onright>402</onright>
       <onup>401</onup>
       <ondown>401</ondown>
-      <execute>XBMC.PlayerControl(Rewind)</execute>
+      <onclick>XBMC.PlayerControl(Rewind)</onclick>
     </control>
 
     <control>
@@ -69,7 +69,7 @@
       <onright>403</onright>
       <onup>402</onup>
       <ondown>402</ondown>
-      <execute>XBMC.PlayerControl(Stop)</execute>
+      <onclick>XBMC.PlayerControl(Stop)</onclick>
     </control>
 
     <control>
@@ -89,7 +89,7 @@
       <onright>404</onright>
       <onup>403</onup>
       <ondown>403</ondown>
-      <execute>XBMC.PlayerControl(Play)</execute>
+      <onclick>XBMC.PlayerControl(Play)</onclick>
     </control>
 
     <control>
@@ -106,7 +106,7 @@
       <onright>405</onright>
       <onup>404</onup>
       <ondown>404</ondown>
-      <execute>XBMC.PlayerControl(Forward)</execute>
+      <onclick>XBMC.PlayerControl(Forward)</onclick>
     </control>
 
     <control>
@@ -123,7 +123,7 @@
       <onright>400</onright>
       <onup>405</onup>
       <ondown>405</ondown>
-      <execute>XBMC.PlayerControl(Next)</execute>
+      <onclick>XBMC.PlayerControl(Next)</onclick>
     </control>
 
   </controls>

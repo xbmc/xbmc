@@ -102,6 +102,8 @@ void CAnimation::Create(TiXmlElement *node, RESOLUTION res)
     effect = EFFECT_TYPE_SLIDE;
   else if (strcmpi(effectType, "rotate") == 0)
     effect = EFFECT_TYPE_ROTATE;
+  else if (strcmpi(effectType, "zoom") == 0)
+    effect = EFFECT_TYPE_ZOOM;
   // time and delay
   node->Attribute("time", (int *)&length);
   node->Attribute("delay", (int *)&delay);
@@ -153,7 +155,7 @@ void CAnimation::Create(TiXmlElement *node, RESOLUTION res)
     if (startAlpha < 0) startAlpha = 0;
     if (endAlpha < 0) endAlpha = 0;
   }
-  else // if (effect == EFFECT_TYPE_ROTATE)
+  else if (effect == EFFECT_TYPE_ROTATE)
   {
     if (node->Attribute("start")) node->Attribute("start", &startX);
     if (node->Attribute("end")) node->Attribute("end", &endX);
@@ -161,6 +163,24 @@ void CAnimation::Create(TiXmlElement *node, RESOLUTION res)
     // convert to a negative to account for our reversed vertical axis
     startX *= -1;
     endX *= -1;
+
+    const char *centerPos = node->Attribute("center");
+    if (centerPos)
+    {
+      startY = atoi(centerPos);
+      const char *comma = strstr(centerPos, ",");
+      if (comma)
+        endY = atoi(comma + 1);
+    }
+  }
+  else // if (effect == EFFECT_TYPE_ZOOM)
+  {
+    // effect defaults
+    startX = 100;
+    endX = 100;
+
+    if (node->Attribute("start")) node->Attribute("start", &startX);
+    if (node->Attribute("end")) node->Attribute("end", &endX);
 
     const char *centerPos = node->Attribute("center");
     if (centerPos)
@@ -266,6 +286,15 @@ TransformMatrix CAnimation::RenderAnimation()
       TransformMatrix rotation = TransformMatrix::CreateRotation(((endX - startX)*amount + startX) * DEGREE_TO_RADIAN);
       TransformMatrix translation2 = TransformMatrix::CreateTranslation((float)startY, (float)endY);
       return translation2 * rotation * translation1;
+    }
+    else if (effect == EFFECT_TYPE_ZOOM)
+    {
+      // could be extended to different X and Y scalings reasonably easily
+      float scaleX = ((endX - startX)*amount + startX) * 0.01f;
+      TransformMatrix translation1 = TransformMatrix::CreateTranslation((float)-startY, (float)-endY);
+      TransformMatrix scaler = TransformMatrix::CreateScaler(scaleX, scaleX);
+      TransformMatrix translation2 = TransformMatrix::CreateTranslation((float)startY, (float)endY);
+      return translation2 * scaler * translation1;
     }
   }
   return TransformMatrix();
