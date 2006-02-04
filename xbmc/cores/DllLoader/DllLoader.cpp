@@ -15,6 +15,9 @@
 #define DLL_THREAD_DETACH    3
 #define DLL_PROCESS_VERIFIER 4
 
+// uncomment this to enable symbol loading for dlls
+//#define ENABLE_SYMBOL_LOADING 1
+
 // internal structure of xbdm.dll
 // which represents the HANDLE to
 // a dll. Used for symbol loading.
@@ -703,6 +706,7 @@ void DllLoader::Unload()
 // unloaded.
 void DllLoader::LoadSymbols()
 {
+#ifdef ENABLE_SYMBOL_LOADING
   if (!m_bLoadSymbols ) return;
 
   // don't load debug symbols unless we have a debugger present
@@ -769,4 +773,7 @@ void DllLoader::LoadSymbols()
   }
   else
     CLog::DebugLog("DllLoader: Can't load symbols for %s. xbdm.dll is needed and not loaded", GetName());
+#else
+  m_bLoadSymbols=false;
+#endif
 }
