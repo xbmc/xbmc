@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 04-02-2006 fixed: symbol loading for dlls breaks release builds on some bioses
  - 04-02-2006 fixed: xbmc built in release mode wouldn't launch on some bioses
  - 04-02-2006 added: id attribute to controlgroup, and ControlGroup(group).HasFocus(control) conditional - see online manual for more details.
  - 04-02-2006 added: Zoom effect to skin engine.  See online manual for more details.
@@ -15,6 +16,7 @@ added/fixed: (dd-mm-yyyy) (please specify date in CET)
  - 03-02-2006 added: Better handling of multi-line label controls using <wrapmultiline>.  See online manual for more details.
  - 03-02-2006 fixed: Karaoke Voice Mask settings were not showing correctly.
  - 03-02-2006 fixed: Nicer restart of player from slider controls in the OSD, and more accurate seeking on restart.
+ - 02-02-2006 fixed: ReplayTV labels showed numbers
  - 02-02-2006 changed: old style sound.xml entries for actions and windows with numbers marked for removal with skin version 2
  - 02-02-2006 added: possibility to load debug symbols for dlls
  - 02-02-2006 fixed: some wmv/asf files wouldn't play either audio or video (updated mplayer.dll)
