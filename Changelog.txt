@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 04-02-2006 fixed: xbmc built in release mode wouldn't launch on some bioses
  - 04-02-2006 added: id attribute to controlgroup, and ControlGroup(group).HasFocus(control) conditional - see online manual for more details.
  - 04-02-2006 added: Zoom effect to skin engine.  See online manual for more details.
  - 04-02-2006 changed: More consistent keymapping in fullscreen views (slideshow,video, visualisation).
