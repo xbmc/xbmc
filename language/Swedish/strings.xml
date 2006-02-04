@@ -1,3 +1,6 @@
+
+
+
 <strings>
   <string><id>0</id><value>Mina Program</value></string>
   <string><id>1</id><value>Mina Bilder</value></string>
@@ -713,6 +716,12 @@
   <string><id>12009</id><value>Tvinga &#229;teruppbyggnad av index...</value></string>
   <string><id>12010</id><value>&#197;terg&#229; till Min Musik</value></string>
   <string><id>12011</id><value>&#197;terg&#229; till Mina Filmer</value></string>
+  <string><id>12012</id><value>Uppdatera tr&#228;narlista</value></string>
+  <string><id>12013</id><value>Tr&#228;nare</value></string>
+  <string><id>12014</id><value>Inga tr&#228;nare hittade</value></string>
+  <string><id>12015</id><value>Tr&#228;nare inst&#228;llningar</value></string>
+  <string><id>12016</id><value>Alla registrerade trailers saknas. Uppdatera din lista</value></string>
+  <string><id>12017</id><value>&#197;teruppta fr&#229;n sista position</value></string>
 
   <string><id>12310</id><value>0</value></string>
   <string><id>12311</id><value>1</value></string>
@@ -780,6 +789,17 @@
   <string><id>12373</id><value>Inst&#228;llningar &#38; Mina Filer</value></string>
   <string><id>12374</id><value>L&#229;s media</value></string>
   <string><id>12375</id><value>Administrat&#246;rsl&#228;ge</value></string>
+  <string><id>12376</id><value>Anv&#228;nd som standard f&#246;r alla Filmer</value></string>
+  <string><id>12377</id><value>Detta kommer att ta bort alla tidigare sparade v&#228;rden</value></string>
+  <string><id>12378</id><value>Visa varje bild f&#246;r</value></string>
+  <string><id>12379</id><value>Anv&#228;nd Pan och Zoom effekter</value></string>
+  <string><id>12380</id><value>Spela NTSC filmer med PAL v&#228;rden</value></string>
+  <string><id>12381</id><value>Spela PAL filmer med NTSC v&#228;rden</value></string>
+  <string><id>12382</id><value>Spela NTSC filmer i PAL60</value></string>
+  <string><id>12383</id><value>12 timmars klocka</value></string>
+  <string><id>12384</id><value>24 timmars klocka</value></string>
+  <string><id>12385</id><value>Dag/M&#229;nad</value></string>
+  <string><id>12386</id><value>M&#229;nad/Dag</value></string>
 
   <string><id>12390</id><value>Systemets drifttid</value></string>
   <string><id>12391</id><value>minuter</value></string>

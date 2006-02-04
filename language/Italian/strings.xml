@@ -268,7 +268,7 @@
   <string><id>333</id><value>Vuoi riorganizzare l'archivio musicale?</value></string>
   <string><id>334</id><value>Riorganizza Archivio Musicale...</value></string>
   <string><id>335</id><value>Avvia</value></string>
-  <string><id>336</id><value>Adatta Framerate</value></string>
+  <string><id>336</id><value>Conversione Framerate</value></string>
   <string><id>337</id><value>Uscita Audio</value></string>
   <string><id>338</id><value>Analogica</value></string>
   <string><id>339</id><value>Digitale</value></string>
@@ -713,7 +713,11 @@
   <string><id>12009</id><value>Ricostruzione indice...</value></string>
   <string><id>12010</id><value>Ritorna in Musica</value></string> 
   <string><id>12011</id><value>Ritorna in Video</value></string> 
-
+  <string><id>12012</id><value>Aggiorna lista trainer</value></string> 
+  <string><id>12013</id><value>Trainer</value></string> 
+  <string><id>12014</id><value>Nessun trainer trovato</value></string> 
+  <string><id>12015</id><value>Impostazioni Trainer</value></string> 
+  <string><id>12016</id><value>Mancano tutti i trainers registrati. Aggiorna la tua lista</value></string> 
 
   <string><id>12310</id><value>0</value></string>
   <string><id>12311</id><value>1</value></string>
@@ -781,6 +785,18 @@
   <string><id>12373</id><value>Impostazioni &amp; Files</value></string>
   <string><id>12374</id><value>Lock Media</value></string>
   <string><id>12375</id><value>Modalità Master User</value></string>
+  <string><id>12376</id><value>Imposta come default per tutti i Filmati</value></string> 
+  <string><id>12377</id><value>Questo resetterà i valori salvati in precendeza</value></string> 
+  <string><id>12378</id><value>Mostra ogni immagine per</value></string> 
+  <string><id>12379</id><value>Usa effetti Pan e Zoom</value></string> 
+  <string><id>12380</id><value>Riproduci filmati NTSC con valori PAL</value></string> 
+  <string><id>12381</id><value>Riproduci filmati PAL con valori NTSC</value></string> 
+  <string><id>12382</id><value>Riproduci filmati NTSC in PAL60</value></string> 
+  <string><id>12383</id><value>Orario in 12 Ore</value></string> 
+  <string><id>12384</id><value>Orario in 24 Ore</value></string> 
+  <string><id>12385</id><value>Giorno/Mese</value></string> 
+  <string><id>12386</id><value>Mese/Giorno</value></string> 
+
 
   <string><id>12390</id><value>Tempo di Vita del Sistema</value></string>
   <string><id>12391</id><value>Minuti</value></string>
@@ -842,7 +858,11 @@
   <string><id>13211</id><value>Allarme!</value></string>
   <string><id>13212</id><value>Annullato con ancora %im%is</value></string>
 
+  <string><id>13249</id><value>Cerca Sottotili nei Rar</value></string>
   <string><id>13250</id><value>Mostra sottotili...</value></string>
+  <string><id>13251</id><value>Sposta Oggetto</value></string> 
+  <string><id>13252</id><value>Sposta Oggetto Qui</value></string> 
+  <string><id>13253</id><value>Annulla Spostamento</value></string> 
 
   <string><id>13270</id><value>Hardware:</value></string>
   <string><id>13271</id><value>CPU Speed:</value></string>
@@ -926,7 +946,7 @@
   <string><id>13349</id><value>Cerca Info Per Tutti i File</value></string>
   <string><id>13350</id><value>In Riproduzione...</value></string>
   <string><id>13351</id><value>Informazioni Album</value></string>
-  <string><id>13352</id><value>Scans.Tutti gli Oggetti nel Database</value></string>
+  <string><id>13352</id><value>Scans.Tutto nel DB</value></string>
   <string><id>13353</id><value>Ferma Scansione</value></string>
   <string><id>13354</id><value>Metodo di Render</value></string>
   <string><id>13355</id><value>Pixel Shader Bassa Qualità</value></string>
@@ -1030,8 +1050,8 @@ per questo effetto grafico</value></string>
   <string><id>14048</id><value>%i kbps</value></string>
   <string><id>14049</id><value>%i kb</value></string>
   <string><id>14050</id><value>%i.0 dB</value></string>
-  <string><id>14051</id><value>Mostra Orario in 12 Ore</value></string>
-  <string><id>14052</id><value>Scambia Mese e Giorno nella Home</value></string>
+  <string><id>14051</id><value>Formato Orario</value></string>
+  <string><id>14052</id><value>Formato Data</value></string>
   <string><id>14053</id><value>Filtri Interfaccia</value></string>
   <string><id>14054</id><value>Attiva Ricerca in Internet</value></string>
   <string><id>14055</id><value>Usa Scansione in Background</value></string>
@@ -1215,6 +1235,8 @@ per questo effetto grafico</value></string>
   <string><id>16023</id><value>Modifiche Interlacciate</value></string>
   <string><id>16024</id><value>Annullando...</value></string>
   <string><id>16025</id><value>Inserire Nome Artista</value></string>
+  <string><id>16026</id><value>Interrotta riproduzione Playlist</value></string> 
+  <string><id>16027</id><value>Troppi elementi consecutivi falliti</value></string> 
 
   <string><id>16100</id><value>Tutti i Video</value></string>
   <string><id>16101</id><value>Non Visti</value></string>

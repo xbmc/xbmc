@@ -5,6 +5,14 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 04-02-2006 updated: Icelandic language file (Thnx to kristjan)
+ - 04-02-2006 updated: Norwegian language file (Thnx to vnm)
+ - 04-02-2006 updated: Italian language file (Thnx to kotix)
+ - 04-02-2006 updated: Chinese (Traditional) language file (Thnx to omenpica)
+ - 04-02-2005 updated: Spanish language file (Thnx to jose_t)
+ - 04-02-2006 updated: German (Austrian) language file (Thnx to CEOMR)
+ - 04-02-2006 updated: German language file
+ - 04-02-2005 updated: Danish language file (Thnx to hugener)
  - 04-02-2006 fixed: symbol loading for dlls breaks release builds on some bioses
  - 04-02-2006 fixed: xbmc built in release mode wouldn't launch on some bioses
  - 04-02-2006 added: id attribute to controlgroup, and ControlGroup(group).HasFocus(control) conditional - see online manual for more details.
