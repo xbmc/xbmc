@@ -4036,8 +4036,7 @@ if (stream->type==STREAMTYPE_DVDNAV && dvd_nav_still)
         if (n != set_of_sub_size) {
           if (global_sub_indices[SUB_SOURCE_SUBS] < 0)
             global_sub_indices[SUB_SOURCE_SUBS] = global_sub_size;
-          ++global_sub_size;
-          mp_msg(MSGT_CPLAYER, MSGL_STATUS, "SUB: loaded subtitle %d - %s", global_sub_size, cmd->args[0].v.s);
+          ++global_sub_size;          
         }
       }
 #endif
