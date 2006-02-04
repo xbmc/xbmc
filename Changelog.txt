@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 04-02-2006 fixed: "Return to Videos" in the Videos Now Playing window goes to Videos and not the previous window
+ - 04-02-2006 fixed: "Return to Music" in the Music Now Playing window goes to Music and not the previous window
  - 04-02-2006 updated: Icelandic language file (Thnx to kristjan)
  - 04-02-2006 updated: Norwegian language file (Thnx to vnm)
  - 04-02-2006 updated: Italian language file (Thnx to kotix)
