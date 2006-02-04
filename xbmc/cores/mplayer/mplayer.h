@@ -96,7 +96,7 @@ extern "C"
   void mplayer_exit_player(void);
   subtitle* mplayer_GetCurrentSubtitle(void);
   bool mplayer_isTextSubLoaded(void);
-  void mplayer_SlaveCommand(const char* s);
+  void mplayer_SlaveCommand(const char* s, ... );
   int mplayer_GetCacheLevel();
 
 #ifdef __cplusplus

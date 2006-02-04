@@ -934,7 +934,7 @@ bool CMPlayer::OpenFile(const CFileItem& file, __int64 iStartTime)
     mplayer_init(argc, argv);
     mplayer_setcache_size(iCacheSize);
     mplayer_setcache_backbuffer(iCacheSizeBackBuffer);
-    mplayer_SlaveCommand("osd 0");
+    mplayer_SlaveCommand("osd 0");    
 
     if (bFileIsDVDImage || bFileIsDVDIfoFile)
     {
