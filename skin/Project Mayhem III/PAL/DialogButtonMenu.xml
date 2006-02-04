@@ -42,7 +42,7 @@
       <height>65</height>
       <texturefocus>sub-exit-focus.gif</texturefocus>
       <texturenofocus>sub-exit-nofocus.png</texturenofocus>
-      <execute>XBMC.Dashboard()</execute>
+      <onclick>XBMC.Dashboard()</onclick>
       <pulseonselect>no</pulseonselect>
       <onleft>3114</onleft>
       <onright>3111</onright>
@@ -62,7 +62,7 @@
       <height>65</height>
       <texturefocus>sub-eject-focus.gif</texturefocus>
       <texturenofocus>sub-eject-nofocus.png</texturenofocus>
-      <execute>XBMC.EjectTray()</execute>
+      <onclick>XBMC.EjectTray()</onclick>
       <pulseonselect>no</pulseonselect>
       <onleft>3110</onleft>
       <onright>3112</onright>
@@ -82,7 +82,7 @@
       <height>65</height>
       <texturefocus>sub-shutdown-focus.gif</texturefocus>
       <texturenofocus>sub-shutdown-nofocus.png</texturenofocus>
-      <execute>XBMC.ShutDown()</execute>
+      <onclick>XBMC.ShutDown()</onclick>
       <pulseonselect>no</pulseonselect>
       <onleft>3111</onleft>
       <onright>3113</onright>
@@ -102,7 +102,7 @@
       <height>65</height>
       <texturefocus>sub-info-focus.gif</texturefocus>
       <texturenofocus>sub-info-nofocus.png</texturenofocus>
-      <execute>XBMC.ActivateWindow(7)</execute>
+      <onclick>XBMC.ActivateWindow(7)</onclick>
       <pulseonselect>no</pulseonselect>
       <onleft>3112</onleft>
       <onright>3114</onright>
@@ -122,7 +122,7 @@
       <height>65</height>
       <texturefocus>sub-reboot-focus.gif</texturefocus>
       <texturenofocus>sub-reboot-nofocus.png</texturenofocus>
-      <execute>XBMC.Reset()</execute>
+      <onclick>XBMC.Reset()</onclick>
       <pulseonselect>no</pulseonselect>
       <onleft>3113</onleft>
       <onright>3110</onright>
@@ -142,7 +142,7 @@
       <height>65</height>
       <texturefocus>sub-shutdown-focus.gif</texturefocus>
       <texturenofocus>-</texturenofocus>
-      <execute>XBMC.ReloadSkin()</execute>
+      <onclick>XBMC.ReloadSkin()</onclick>
       <pulseonselect>no</pulseonselect>
       <onleft>3115</onleft>
       <onright>3115</onright>
@@ -162,7 +162,7 @@
       <height>65</height>
       <texturefocus>sub-shutdown-focus.gif</texturefocus>
       <texturenofocus>-</texturenofocus>
-      <execute>XBMC.RestartApp()</execute>
+      <onclick>XBMC.RestartApp()</onclick>
       <pulseonselect>no</pulseonselect>
       <onleft>3116</onleft>
       <onright>3116</onright>

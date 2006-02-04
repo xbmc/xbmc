@@ -49,6 +49,18 @@ public:
   int condition;
 };
 
+class CControlGroup
+{
+public:
+  CControlGroup(int id)
+  {
+    m_id = id;
+    m_lastControl = -1;
+  };
+  int m_lastControl;
+  int m_id;
+};
+
 /*!
  \ingroup winmsg
  \brief 
@@ -82,6 +94,7 @@ public:
   void Add(CGUIControl* pControl);
   void Remove(DWORD dwId);
   int GetFocusControl();
+  bool ControlGroupHasFocus(int groupID, int controlID);
   void SelectNextControl();
   void SelectPreviousControl();
   void SetID(DWORD dwID);
@@ -160,7 +173,7 @@ protected:
   int m_iPosY;
   DWORD m_dwWidth;
   DWORD m_dwHeight;
-  vector<int> m_vecGroups;
+  vector<CControlGroup> m_vecGroups;
   OVERLAY_STATE m_overlayState;
   bool m_WindowAllocated;
   RESOLUTION m_coordsRes; // resolution that the window coordinates are in.

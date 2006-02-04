@@ -5,6 +5,10 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 04-02-2006 added: id attribute to controlgroup, and ControlGroup(group).HasFocus(control) conditional - see online manual for more details.
+ - 04-02-2006 added: Zoom effect to skin engine.  See online manual for more details.
+ - 04-02-2006 changed: More consistent keymapping in fullscreen views (slideshow,video, visualisation).
+ - 04-02-2006 changed: Made Info and CodecInfo global functions - Slideshow now uses CodecInfo rather than Info to display the current file info.
  - 04-02-2006 added: support for sub_load <subtitle> slave command for mplayer.dll
  - 04-02-2006 fixed: cubecodec. echo in .hps, also upped buffer sizes for .adx (should avoid some stuttering).
  - 03-02-2006 added: Better handling of multi-line label controls using <wrapmultiline>.  See online manual for more details.

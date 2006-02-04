@@ -122,7 +122,7 @@
         <posx>50</posx>
         <posy>268</posy>
         <label>Local</label>
-        <execute>XBMC.ActivateWindow(MyMusic,Local)</execute>
+        <onclick>XBMC.ActivateWindow(MyMusic,Local)</onclick>
         <onleft>50</onleft>
         <onright>50</onright>
         <onup>7</onup>
@@ -137,7 +137,7 @@
         <posx>50</posx>
         <posy>305</posy>
         <label>Network</label>
-        <execute>XBMC.ActivateWindow(MyMusic,Network)</execute>
+        <onclick>XBMC.ActivateWindow(MyMusic,Network)</onclick>
         <onleft>50</onleft>
         <onright>50</onright>
         <onup>31</onup>
@@ -152,7 +152,7 @@
         <posx>50</posx>
         <posy>342</posy>
         <label>WebRadio</label>
-        <execute>q:\scripts\KMLbrowse.py</execute>
+        <onclick>q:\scripts\KMLbrowse.py</onclick>
         <onleft>50</onleft>
         <onright>50</onright>
         <onup>32</onup>

@@ -516,9 +516,11 @@ bool CGUIWindow::Load(TiXmlElement* pRootElement, RESOLUTION resToUse)
       int iGroup = 0;
       while (pControlGroup)
       {
+        int id = 0;
+        pControlGroup->Attribute("id", &id);
         TiXmlElement *pControl = pControlGroup->FirstChildElement("control");
         // In this group no focus of the controls is remembered
-        m_vecGroups.push_back( -1);
+        m_vecGroups.push_back(CControlGroup(id));
         while (pControl)
         {
           LoadControl(pControl, iGroup, referencecontrols, resToUse);
@@ -957,7 +959,7 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
 
           //  Save last control of the group if the group changes
           if (iOldControlGroup > -1 && pFocusedControl->GetGroup() != iOldControlGroup)
-            m_vecGroups[iOldControlGroup] = iOldControlId;
+            m_vecGroups[iOldControlGroup].m_lastControl = iOldControlId;
 
           //  if the control group changes...
           if (pFocusedControl->GetGroup() > -1 && pFocusedControl->GetGroup() != iOldControlGroup && iOldControlId > -1)
@@ -965,7 +967,7 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
             if (iOldControlId > -1)
             {
               //  ...get the last focused control of the new group...
-              int iLastFocusedControl = m_vecGroups[pFocusedControl->GetGroup()];
+              int iLastFocusedControl = m_vecGroups[pFocusedControl->GetGroup()].m_lastControl;
               for (i = m_vecControls.begin();i != m_vecControls.end(); ++i)
               {
                 CGUIControl* pControl = *i;
@@ -978,7 +980,7 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
                   //  at once to prevent a stack overflow.
                   CGUIMessage newFocusMsg(GUI_MSG_SETFOCUS, pControl->GetID(), pControl->GetID(), message.GetParam1());
                   //  Remember new last control of group
-                  m_vecGroups[pControl->GetGroup()] = pControl->GetID();
+                  m_vecGroups[pControl->GetGroup()].m_lastControl = pControl->GetID();
                   //  Send the message to the new focused
                   //  control throu the window.
                   OnMessage(newFocusMsg);
@@ -1312,5 +1314,29 @@ bool CGUIWindow::HasAnimation(ANIMATION_TYPE animType)
   // Now check the controls to see if we have this animation
   for (unsigned int i = 0; i < m_vecControls.size(); i++)
     if (m_vecControls[i]->GetAnimation(animType)) return true;
+  return false;
+}
+
+// returns true if the control group with id groupID has controlID as
+// its focused control
+bool CGUIWindow::ControlGroupHasFocus(int groupID, int controlID)
+{
+  if (groupID == 0) return false;
+  int focusedControl = GetFocusedControl();
+  const CGUIControl *control = GetControl(focusedControl);
+  int groupNo = control ? control->GetGroup() : -1;
+  if (groupNo > -1 && m_vecGroups[groupNo].m_id == groupID)
+  { // currently focused within the group requested
+    return controlID == focusedControl;
+  }
+  // not in the group requested - check whether the last control
+  // in the requested group was the one we want
+  for (unsigned int i = 0; i < m_vecGroups.size(); i++)
+  {
+    if (m_vecGroups[i].m_id == groupID)
+    {
+      return (m_vecGroups[i].m_lastControl == controlID);
+    }
+  }
   return false;
 }
