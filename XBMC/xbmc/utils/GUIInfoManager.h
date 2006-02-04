@@ -28,6 +28,26 @@
 #define PLAYER_SHOWCODEC             30
 #define PLAYER_SHOWINFO              31
 
+// structure to hold multiple integer data
+// for storage referenced from a single integer
+class GUIInfo
+{
+public:
+  GUIInfo(int info, int data1 = 0, int data2 = 0)
+  {
+    m_info = info;
+    m_data1 = data1;
+    m_data2 = data2;
+  }
+  bool operator ==(const GUIInfo &right) const
+  {
+    return (m_info == right.m_info && m_data1 == right.m_data1 && m_data2 == right.m_data2);
+  };
+  int m_info;
+  int m_data1;
+  int m_data2;
+};
+
 /*!
  \ingroup strings
  \brief 
@@ -80,6 +100,8 @@ public:
   void SetShowTime(bool showtime) { m_playerShowTime = showtime; };
   void SetShowCodec(bool showcodec) { m_playerShowCodec = showcodec; };
   void SetShowInfo(bool showinfo) { m_playerShowInfo = showinfo; };
+  void ToggleShowCodec() { m_playerShowCodec = !m_playerShowCodec; };
+  void ToggleShowInfo() { m_playerShowInfo = !m_playerShowInfo; };
 
   bool m_performingSeek;
 
@@ -93,17 +115,22 @@ public:
   CStdString ParseLabel(const CStdString &label);
 
 protected:
+  bool GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindow = 0) const;
   int TranslateSingleString(const CStdString &strCondition);
   CStdString GetItemLabel(const CFileItem *item, int info);
 
   // Conditional string parameters for testing are stored in a vector for later retrieval.
   // The offset into the string parameters array is returned.
   int ConditionalStringParameter(const CStdString &strParameter);
+  int AddMultiInfo(const GUIInfo &info);
 
   CStdString GetAudioScrobblerLabel(int item);
 
   // Conditional string parameters are stored here
   CStdStringArray m_stringParameters;
+
+  // Array of multiple information mapped to a single integer lookup
+  vector<GUIInfo> m_multiInfo;
 
   // Current playing stuff
   CFileItem m_currentSong;
