@@ -1,7 +1,7 @@
 <!-- German language for XBMC -->
 <!-- Based on translation German (AUSTRIAN) done by CEOMR -->
 <!-- Translation by Bobbin007 -->
-<!-- Corrections by Deezle -->
+<!-- Corrections by Deezle, sCAPe -->
 <strings>
   <string><id>0</id><value>Programme</value></string>
   <string><id>1</id><value>Bilder</value></string>
@@ -271,7 +271,7 @@
   <string><id>333</id><value>Wollen Sie die Musikbibliothek aufräumen?</value></string>
   <string><id>334</id><value>Musikbibliothek aufräumen...</value></string>
   <string><id>335</id><value>Start</value></string>
-  <string><id>336</id><value>Framerate anpassen</value></string>
+  <string><id>336</id><value>Framerate Konvertierung</value></string>
   <string><id>337</id><value>Audio-Ausgabe</value></string>
   <string><id>338</id><value>Analog</value></string>
   <string><id>339</id><value>Digital</value></string>
@@ -710,6 +710,12 @@
   <string><id>12009</id><value>Index neu aufbauen...</value></string>
   <string><id>12010</id><value>Zurück zu Musik</value></string>
   <string><id>12011</id><value>Zurück zu Videos</value></string>
+  <string><id>12012</id><value>Trainer-Liste wird aktualisiert...</value></string>
+  <string><id>12013</id><value>Trainer</value></string>
+  <string><id>12014</id><value>Keine Trainer gefunden</value></string>
+  <string><id>12015</id><value>Trainer-Einstellungen</value></string>
+  <string><id>12016</id><value>Alle registrierten Trainer fehlen. Bitte die Liste aktualisieren.</value></string>
+  <string><id>12017</id><value>Wiedergabe an der letzten Position fortsetzen</value></string>
 
   <string><id>12310</id><value>0</value></string>
   <string><id>12311</id><value>1</value></string>
@@ -775,13 +781,24 @@
   <string><id>12373</id><value>Einstellungen  &amp; Filemanager</value></string>
   <string><id>12374</id><value>Medien sperren</value></string>
   <string><id>12375</id><value>Master-User-Mode</value></string>
+  <string><id>12376</id><value>Als Standard für alle Filme setzen</value></string>
+  <string><id>12377</id><value>Dieser Vorgang wird alle vorherigen Werte zurücksetzen.</value></string>
+  <string><id>12378</id><value>Dauer der Wiedergabe eines Bildes</value></string>
+  <string><id>12379</id><value>Pan und Zoom Effekte verwenden</value></string>
+  <string><id>12380</id><value>NTSC-Videos mit PAL Rate abspielen</value></string>
+  <string><id>12381</id><value>PAL-Videos mit NTSC Rate abspielen</value></string>
+  <string><id>12382</id><value>NTSC-Videos als PAL60 abpielen</value></string>
+  <string><id>12383</id><value>12 Stunden Uhr</value></string>
+  <string><id>12384</id><value>24 Stunden Uhr</value></string>
+  <string><id>12385</id><value>Tag/Monat</value></string>
+  <string><id>12386</id><value>Monat/Tag</value></string>
 
   <string><id>12390</id><value>Betriebszeit</value></string>
   <string><id>12391</id><value>Minuten</value></string>
   <string><id>12392</id><value>Stunden</value></string>
   <string><id>12393</id><value>Tage</value></string>
   <string><id>12394</id><value>Betriebszeit gesamt</value></string>
-
+  
   <string><id>12600</id><value>Wetter</value></string>
 
   <string><id>12900</id><value>Bildschirmschoner</value></string>
@@ -833,6 +850,7 @@
   <string><id>13210</id><value>Gestartet, Alarm in %im</value></string>
   <string><id>13211</id><value>Alarm!</value></string>
   <string><id>13212</id><value>Abgebrochen, es sind %im%is übrig</value></string>
+
 
   <string><id>13249</id><value>Untertitel in RAR-Dateien suchen</value></string>
   <string><id>13250</id><value>Untertitel suchen...</value></string>
@@ -1020,8 +1038,8 @@
   <string><id>14048</id><value>%i kbps</value></string>
   <string><id>14049</id><value>%i kb</value></string>
   <string><id>14050</id><value>%i.0 dB</value></string>
-  <string><id>14051</id><value>12-Stunden-Uhr anzeigen</value></string>
-  <string><id>14052</id><value>Europäische Datumsanzeige</value></string>
+  <string><id>14051</id><value>Zeitformat</value></string>
+  <string><id>14052</id><value>Datumsformat</value></string>
   <string><id>14053</id><value>GUI-Filter</value></string>
   <string><id>14054</id><value>Internet-Anfragen zulassen</value></string>
   <string><id>14055</id><value>Durchsuchen im Hintergrund</value></string>
