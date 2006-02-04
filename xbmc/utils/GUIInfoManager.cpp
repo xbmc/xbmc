@@ -168,11 +168,16 @@ extern char g_szTitleIP[32];
 #define SYSTEM_IDLE_TIME_START      20000
 #define SYSTEM_IDLE_TIME_FINISH     21000 // 1000 seconds
 
+#define CONTROL_GROUP_HAS_FOCUS     29999
 #define CONTROL_HAS_FOCUS_START     30000
 #define CONTROL_HAS_FOCUS_END       31000 // only up to control id 1000
 
 #define BUTTON_SCROLLER_HAS_ICON_START 31000
 #define BUTTON_SCROLLER_HAS_ICON_END   31200  // only allow 100 buttons (normally start at 101)
+
+// the multiple information vector
+#define MULTI_INFO_START              40000
+#define MULTI_INFO_END                41000 // 1000 references is all we have for now
 
 #define COMBINED_VALUES_START        100000
 
@@ -416,6 +421,18 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     int controlID = atoi(strTest.Mid(17, strTest.GetLength() - 18).c_str());
     if (controlID)
       ret = controlID + CONTROL_HAS_FOCUS_START;
+  }
+  else if (strTest.Left(13).Equals("controlgroup("))
+  {
+    int groupID = atoi(strTest.Mid(13).c_str());
+    int controlID = 0;
+    int controlPos = strTest.Find(".hasfocus(");
+    if (controlPos > 0)
+      controlID = atoi(strTest.Mid(controlPos + 10).c_str());
+    if (groupID && controlID)
+    {
+      return AddMultiInfo(GUIInfo(bNegate ? -CONTROL_GROUP_HAS_FOCUS : CONTROL_GROUP_HAS_FOCUS, groupID, controlID));
+    }
   }
   else if ((strTest.Left(23).Equals("buttonscroller.hasicon(") && g_SkinInfo.GetVersion() < 1.8) || strTest.Left(24).Equals("buttonscroller.hasfocus("))
   {
@@ -731,6 +748,10 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow) const
   }
   else if (condition >= SKIN_HAS_SETTING_START && condition <= SKIN_HAS_SETTING_END)
     bReturn = g_settings.GetSkinSetting(m_stringParameters[condition - SKIN_HAS_SETTING_START].c_str());
+  else if (condition >= MULTI_INFO_START && condition <= MULTI_INFO_END)
+  {
+    return GetMultiInfoBool(m_multiInfo[condition - MULTI_INFO_START], dwContextWindow);
+  }
   else if (g_application.IsPlaying())
   {
     switch (condition)
@@ -839,6 +860,24 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow) const
     }
   }
   return (condition1 < 0) ? !bReturn : bReturn;
+}
+
+/// \brief Examines the multi information sent and returns true or false accordingly.
+bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindow) const
+{
+  bool bReturn = false;
+  int condition = abs(info.m_info);
+  switch (condition)
+  {
+    case CONTROL_GROUP_HAS_FOCUS:
+      if( !dwContextWindow ) dwContextWindow = m_gWindowManager.GetActiveWindow();
+
+      CGUIWindow *pWindow = m_gWindowManager.GetWindow(dwContextWindow);
+      if (pWindow) 
+        bReturn = pWindow->ControlGroupHasFocus(info.m_data1, info.m_data2);
+    break;
+  }
+  return (info.m_info < 0) ? !bReturn : bReturn;
 }
 
 /// \brief Obtains the filename of the image to show from whichever subsystem is needed
@@ -1625,6 +1664,17 @@ void CGUIInfoManager::UpdateFPS()
     m_lastFPSTime = timeGetTime();
     m_frameCounter = 0;
   }
+}
+
+int CGUIInfoManager::AddMultiInfo(const GUIInfo &info)
+{
+  // check to see if we have this info already
+  for (unsigned int i = 0; i < m_multiInfo.size(); i++)
+    if (m_multiInfo[i] == info)
+      return (int)i;
+  // return the new offset
+  m_multiInfo.push_back(info);
+  return (int)m_multiInfo.size() + MULTI_INFO_START - 1;
 }
 
 int CGUIInfoManager::ConditionalStringParameter(const CStdString &parameter)

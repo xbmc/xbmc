@@ -3,7 +3,7 @@
   <defaultcontrol>1</defaultcontrol>
   <animation effect="slide" time="500" start="0,-117" acceleration="-1">WindowOpen</animation>
   <animation effect="slide" time="500" end="0,-117" acceleration="1">WindowClose</animation>
-  <visible>Player.Seeking | Player.DisplayAfterSeek | Window.IsActive(VideoOSD) | Window.IsActive(MusicOSD) | Player.Paused | Player.Forwarding | Player.Rewinding</visible>
+  <visible>Player.Seeking | Player.DisplayAfterSeek | [Player.ShowInfo + Window.IsActive(FullScreenVideo)] | Window.IsActive(VideoOSD) | Window.IsActive(MusicOSD) | Player.Paused | Player.Forwarding | Player.Rewinding</visible>
   <controls>
     <!-- playstate images -->
     <control>

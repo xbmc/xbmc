@@ -21,7 +21,7 @@
       <onright>499</onright>
       <onup>499</onup>
       <ondown>210</ondown>
-      <execute>XBMC.PlayerControl(Record)</execute>
+      <onclick>XBMC.PlayerControl(Record)</onclick>
       <visible>Player.CanRecord</visible>
     </control>
 
@@ -41,7 +41,7 @@
       <onright>500</onright>
       <onup>500</onup>
       <ondown>211</ondown>
-      <execute>XBMC.PlayerControl(Record)</execute>
+      <onclick>XBMC.PlayerControl(Record)</onclick>
       <visible>Player.CanRecord</visible>
     </control>
 
@@ -73,7 +73,7 @@
       <onright>211</onright>
       <onup>208</onup>
       <ondown>219</ondown>
-      <execute>XBMC.PlayerControl(Previous)</execute>
+      <onclick>XBMC.PlayerControl(Previous)</onclick>
     </control>
 
     <control>
@@ -95,7 +95,7 @@
       <onright>213</onright>
       <onup>209</onup>
       <ondown>220</ondown>
-      <execute>XBMC.PlayerControl(Rewind)</execute>
+      <onclick>XBMC.PlayerControl(Rewind)</onclick>
     </control>
 
     <control>
@@ -117,7 +117,7 @@
       <onright>214</onright>
       <onup>500</onup>
       <ondown>220</ondown>
-      <execute>XBMC.PlayerControl(Play)</execute>
+      <onclick>XBMC.PlayerControl(Play)</onclick>
     </control>
 
     <control>
@@ -139,7 +139,7 @@
       <onright>215</onright>
       <onup>500</onup>
       <ondown>220</ondown>
-      <execute>XBMC.PlayerControl(Forward)</execute>
+      <onclick>XBMC.PlayerControl(Forward)</onclick>
     </control>
 
     <control>
@@ -158,7 +158,7 @@
       <onright>210</onright>
       <onup>499</onup>
       <ondown>219</ondown>
-      <execute>XBMC.PlayerControl(Next)</execute>
+      <onclick>XBMC.PlayerControl(Next)</onclick>
     </control>
 
     <control>
@@ -171,7 +171,7 @@
       <height>38</height>
       <texturefocus>osd_button_playlistFO.png</texturefocus>
       <texturenofocus>-</texturenofocus>
-      <execute>XBMC.ActivateWindow(500)</execute>
+      <onclick>XBMC.ActivateWindow(500)</onclick>
       <label>-</label>
       <font>-</font>
       <onleft>208</onleft>
@@ -214,7 +214,7 @@
       <onright>214</onright>
       <onup>213</onup>
       <ondown>219</ondown>
-      <execute>XBMC.ActivateWindow(122)</execute>
+      <onclick>XBMC.ActivateWindow(122)</onclick>
     </control>
 
     <control>
@@ -233,7 +233,7 @@
       <onright>215</onright>
       <onup>220</onup>
       <ondown>499</ondown>
-      <execute>XBMC.ActivateWindow(121)</execute>
+      <onclick>XBMC.ActivateWindow(121)</onclick>
     </control>
 
     <control>

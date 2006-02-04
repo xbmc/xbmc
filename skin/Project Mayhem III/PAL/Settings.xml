@@ -44,7 +44,7 @@
         <posx>50</posx>
         <posy>120</posy>
         <label>13200</label>
-        <execute>XBMC.ActivateWindow(34)</execute>
+        <onclick>XBMC.ActivateWindow(34)</onclick>
         <onleft>8</onleft>
         <onright>6</onright>
         <onup>13</onup>
@@ -58,7 +58,7 @@
         <posx>50</posx>
         <posy>157</posy>
         <label>482</label>
-        <execute>XBMC.Credits()</execute>
+        <onclick>XBMC.Credits()</onclick>
         <onleft>8</onleft>
         <onright>6</onright>
         <onup>11</onup>
@@ -72,7 +72,7 @@
         <posx>50</posx>
         <posy>194</posy>
         <label>PY Skin Builder</label>
-        <execute>XBMC.ActivateWindow(57)</execute>
+        <onclick>XBMC.ActivateWindow(57)</onclick>
         <onleft>8</onleft>
         <onright>6</onright>
         <onup>112</onup>
@@ -86,7 +86,7 @@
         <posx>50</posx>
         <posy>231</posy>
         <label>Reload Skin</label>
-        <execute>XBMC.ReloadSkin()</execute>
+        <onclick>XBMC.ReloadSkin()</onclick>
         <onleft>8</onleft>
         <onright>6</onright>
         <onup>14</onup>
