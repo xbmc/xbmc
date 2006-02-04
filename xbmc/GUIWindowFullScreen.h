@@ -28,17 +28,20 @@ private:
   void Seek(bool bPlus, bool bLargeStep);
   void PreloadDialog(unsigned int windowID);
   void UnloadDialog(unsigned int windowID);
-  bool m_bShowTime;
-  bool m_bShowCodecInfo;
+
   bool m_bShowViewModeInfo;
   DWORD m_dwShowViewModeTimeout;
+
   bool m_bShowCurrentTime;
-  DWORD m_dwTimeCodeTimeout;
-  CCriticalSection m_section;
-  CCriticalSection m_fontLock;
   bool m_bLastRender;
-  int m_strTimeStamp[5];
-  int m_iTimeCodePosition;
-  int m_iCurrentBookmark;
+
+  bool m_timeCodeShow;
+  DWORD m_timeCodeTimeout;
+  int m_timeCodeStamp[5];
+  int m_timeCodePosition;
+
+  CCriticalSection m_section;
+
+  CCriticalSection m_fontLock;
   CGUIFont* m_subtitleFont;
 };
