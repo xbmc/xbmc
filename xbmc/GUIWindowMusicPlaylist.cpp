@@ -732,7 +732,7 @@ void CGUIWindowMusicPlayList::OnPopupMenu(int iItem)
     // return to my music
     else if (btnid == btn_Return)
     {
-      m_gWindowManager.PreviousWindow();
+      m_gWindowManager.ActivateWindow(WINDOW_MUSIC);
       return;
     }
   }

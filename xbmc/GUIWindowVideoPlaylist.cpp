@@ -642,7 +642,7 @@ void CGUIWindowVideoPlaylist::OnPopupMenu(int iItem)
     // return to my videos
     else if (btnid == btn_Return)
     {
-      m_gWindowManager.PreviousWindow();
+      m_gWindowManager.ActivateWindow(WINDOW_VIDEOS);
       return;
     }
   }
