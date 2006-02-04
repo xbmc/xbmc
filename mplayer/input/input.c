@@ -638,7 +638,7 @@ mp_input_parse_cmd(char* str) {
       } else if(!e) e = ptr+strlen(ptr);
       l = e-start;
       ptr2 = start;
-       for(e = strchr(ptr2,'\\') ; e ; e = strchr(ptr2,'\\')) {
+      for(e = strchr(ptr2,'\\') ; e && e<start+l ; e = strchr(ptr2,'\\')) {
 	memmove(e,e+1,strlen(e));
 	ptr2 = e + 1;
         l--;
@@ -646,9 +646,11 @@ mp_input_parse_cmd(char* str) {
       cmd->args[i].v.s = (char*)malloc((l+1)*sizeof(char));
       strncpy(cmd->args[i].v.s,start,l);
       cmd->args[i].v.s[l] = '\0';
+      if(term != ' ') ptr += l+2;
     } break;
     case -1:
       ptr = NULL;
+      break;
     default :
       mp_msg(MSGT_INPUT,MSGL_ERR,"Unknown argument %d\n",i);
     }
