@@ -1,4 +1,4 @@
-<!-- Based on English XML v1.286. Last updated by vnmartinsen  !-->
+<!-- Based on English XML v1.289. Last updated by vnmartinsen  !-->
 <strings>
   <string><id>0</id><value>Mine Programmer</value></string>
   <string><id>1</id><value>Mine Bilder</value></string>
@@ -275,7 +275,7 @@
   <string><id>340</id><value>Diverse artister</value></string>
   <string><id>341</id><value>Spill plate</value></string>
   <string><id>342</id><value>Filmer</value></string>
-  <string><id>343</id><value>Justér bildehastighet</value></string>
+  <string><id>343</id><value>Konverter bildehastighet</value></string>
   <string><id>344</id><value>Skuespillere</value></string>
   <string><id>345</id><value>År</value></string>
   <string><id>346</id><value>Stabling: Av</value></string>
@@ -707,6 +707,12 @@
   <string><id>12009</id><value>Gjenoppbygg index...</value></string>
   <string><id>12010</id><value>Returner til Min musikk</value></string>
   <string><id>12011</id><value>Returner til Min video</value></string>
+  <string><id>12012</id><value>Oppdater trainer-liste</value></string>
+  <string><id>12013</id><value>Trainer</value></string>
+  <string><id>12014</id><value>Ingen trainere funnet</value></string>
+  <string><id>12015</id><value>Trainer-innstillinger</value></string>
+  <string><id>12016</id><value>Alle registrerte trainere mangler. Oppdater din liste</value></string>
+  <string><id>12017</id><value>Gjenoppta avspilling</value></string>
 
   <string><id>12310</id><value>0</value></string>
   <string><id>12311</id><value>1</value></string>
@@ -772,6 +778,17 @@
   <string><id>12373</id><value>Innstillinger &amp; Mine filer</value></string>
   <string><id>12374</id><value>Lås media</value></string>
   <string><id>12375</id><value>Master brukermodus</value></string>
+  <string><id>12376</id><value>Sett som standard for alle filmer</value></string>
+  <string><id>12377</id><value>Dette vil slitte alle tidligere innstillinger</value></string>
+  <string><id>12378</id><value>Vis hvert bilde for</value></string>
+  <string><id>12379</id><value>Bruk Pan & Zoom effekter</value></string>
+  <string><id>12380</id><value>Spill av NTSCC-videoer i PAL</value></string>
+  <string><id>12381</id><value>Spill av PALC-videoer i NTSC</value></string>
+  <string><id>12382</id><value>Spill av NTSC-videoer i PAL60</value></string>
+  <string><id>12383</id><value>12-timers klokke</value></string>
+  <string><id>12384</id><value>24-timers klokke</value></string>
+  <string><id>12385</id><value>Dag/Måned</value></string>
+  <string><id>12386</id><value>Måned/Dag</value></string>
   
   <string><id>12390</id><value>Systemets oppetid</value></string>
   <string><id>12391</id><value>Minutter</value></string>
@@ -1018,8 +1035,8 @@
   <string><id>14048</id><value>%i kbps</value></string>
   <string><id>14049</id><value>%i kb</value></string>
   <string><id>14050</id><value>%i.0 dB</value></string>
-  <string><id>14051</id><value>Vis 12-timers klokke</value></string>
-  <string><id>14052</id><value>Bytt om måned og dag i startbildet</value></string>
+  <string><id>14051</id><value>Tidsformat</value></string>
+  <string><id>14052</id><value>Datoformat</value></string>
   <string><id>14053</id><value>GUI-filtere</value></string>
   <string><id>14054</id><value>Aktivér internett-søk</value></string>
   <string><id>14055</id><value>Bruk bakgrunnsskanning</value></string>
