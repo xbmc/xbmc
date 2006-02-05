@@ -280,7 +280,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
   DWORD dwItems;
   CStdString strUp, strDown;
   CStdString strUpFocus, strDownFocus;
-  DWORD dwSpinColor = 0xffffffff;
   DWORD dwSpinWidth = 16;
   DWORD dwSpinHeight = 16;
   int iSpinPosX, iSpinPosY;
@@ -370,6 +369,8 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
 
   CLabelInfo labelInfo;
   CLabelInfo labelInfo2;
+  CLabelInfo spinInfo;
+
   DWORD dwTextColor3 = labelInfo.textColor;
 
   /////////////////////////////////////////////////////////////////////////////
@@ -548,7 +549,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
       strDown = ((CGUIListControl*)pReference)->GetTextureDownName();
       strUpFocus = ((CGUIListControl*)pReference)->GetTextureUpFocusName();
       strDownFocus = ((CGUIListControl*)pReference)->GetTextureDownFocusName();
-      dwSpinColor = ((CGUIListControl*)pReference)->GetSpinTextColor();
+      spinInfo = ((CGUIListControl*)pReference)->GetSpinLabelInfo();
       iSpinPosX = ((CGUIListControl*)pReference)->GetSpinX();
       iSpinPosY = ((CGUIListControl*)pReference)->GetSpinY();
       strTextureNoFocus = ((CGUIListControl*)pReference)->GetButtonNoFocusName();
@@ -569,7 +570,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
       strDown = ((CGUIListControlEx*)pReference)->GetTextureDownName();
       strUpFocus = ((CGUIListControlEx*)pReference)->GetTextureUpFocusName();
       strDownFocus = ((CGUIListControlEx*)pReference)->GetTextureDownFocusName();
-      dwSpinColor = ((CGUIListControlEx*)pReference)->GetSpinTextColor();
+      spinInfo = ((CGUIListControlEx*)pReference)->GetSpinLabelInfo();
       iSpinPosX = ((CGUIListControlEx*)pReference)->GetSpinX();
       iSpinPosY = ((CGUIListControlEx*)pReference)->GetSpinY();
       strTextureNoFocus = ((CGUIListControlEx*)pReference)->GetButtonNoFocusName();
@@ -589,7 +590,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
       strDown = ((CGUITextBox*)pReference)->GetTextureDownName();
       strUpFocus = ((CGUITextBox*)pReference)->GetTextureUpFocusName();
       strDownFocus = ((CGUITextBox*)pReference)->GetTextureDownFocusName();
-      dwSpinColor = ((CGUITextBox*)pReference)->GetSpinTextColor();
+      spinInfo = ((CGUITextBox*)pReference)->GetSpinLabelInfo();
       iSpinPosX = ((CGUITextBox*)pReference)->GetSpinX();
       iSpinPosY = ((CGUITextBox*)pReference)->GetSpinY();
       dwSpinWidth = ((CGUITextBox*)pReference)->GetSpinWidth();
@@ -611,7 +612,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
       strDown = ((CGUIThumbnailPanel*)pReference)->GetTextureDownName();
       strUpFocus = ((CGUIThumbnailPanel*)pReference)->GetTextureUpFocusName();
       strDownFocus = ((CGUIThumbnailPanel*)pReference)->GetTextureDownFocusName();
-      dwSpinColor = ((CGUIThumbnailPanel*)pReference)->GetSpinTextColor();
+      spinInfo = ((CGUIThumbnailPanel*)pReference)->GetSpinLabelInfo();
       iSpinPosX = ((CGUIThumbnailPanel*)pReference)->GetSpinX();
       iSpinPosY = ((CGUIThumbnailPanel*)pReference)->GetSpinY();
       labelInfo = ((CGUIThumbnailPanel*)pReference)->GetLabelInfo();
@@ -797,7 +798,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     GetPath(pControlNode, "textureLeftFocus", strLeftFocus);
     GetPath(pControlNode, "textureRightFocus", strRightFocus);
 
-    XMLUtils::GetHex(pControlNode, "spinColor", dwSpinColor);
+    XMLUtils::GetHex(pControlNode, "spinColor", spinInfo.textColor);
     if (XMLUtils::GetDWORD(pControlNode, "spinWidth", dwSpinWidth)) g_graphicsContext.ScaleXCoord(dwSpinWidth, res);
     if (XMLUtils::GetDWORD(pControlNode, "spinHeight", dwSpinHeight)) g_graphicsContext.ScaleYCoord(dwSpinHeight, res);
     if (XMLUtils::GetInt(pControlNode, "spinPosX", iSpinPosX))
@@ -1081,7 +1082,11 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     GetPath(pControlNode, "textureleftfocus", strLeftFocus);
     GetPath(pControlNode, "texturerightfocus", strRightFocus);
 
-    XMLUtils::GetHex(pControlNode, "spincolor", dwSpinColor);
+    XMLUtils::GetHex(pControlNode, "spincolor", spinInfo.textColor);
+    if (XMLUtils::GetString(pControlNode, "spinfont", strFont))
+      spinInfo.font = g_fontManager.GetFont(strFont);
+    if (!spinInfo.font) spinInfo.font = labelInfo.font;
+
     if (XMLUtils::GetDWORD(pControlNode, "spinwidth", dwSpinWidth)) g_graphicsContext.ScaleXCoord(dwSpinWidth, res);
     if (XMLUtils::GetDWORD(pControlNode, "spinheight", dwSpinHeight)) g_graphicsContext.ScaleYCoord(dwSpinHeight, res);
     if (XMLUtils::GetInt(pControlNode, "spinposx", iSpinPosX)) g_graphicsContext.ScaleXCoord(iSpinPosX, res);
@@ -1429,7 +1434,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     CGUISpinControl* pControl = new CGUISpinControl(
       dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight,
       strUp, strDown, strUpFocus, strDownFocus,
-      labelInfo, labelInfo.textColor, iType);
+      labelInfo, iType);
 
     pControl->SetNavigation(up, down, left, right);
     pControl->SetColourDiffuse(dwColorDiffuse);
@@ -1529,7 +1534,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
       dwSpinWidth, dwSpinHeight,
       strUp, strDown,
       strUpFocus, strDownFocus,
-      dwSpinColor, iSpinPosX, iSpinPosY,
+      spinInfo, iSpinPosX, iSpinPosY,
       labelInfo, labelInfo2,
       strTextureNoFocus, strTextureFocus);
 
@@ -1552,7 +1557,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
       dwSpinWidth, dwSpinHeight,
       strUp, strDown,
       strUpFocus, strDownFocus,
-      dwSpinColor, iSpinPosX, iSpinPosY,
+      spinInfo, iSpinPosX, iSpinPosY,
       labelInfo, labelInfo2,
       strTextureNoFocus, strTextureFocus);
 
@@ -1575,7 +1580,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
       dwSpinWidth, dwSpinHeight,
       strUp, strDown,
       strUpFocus, strDownFocus,
-      dwSpinColor, iSpinPosX, iSpinPosY,
+      spinInfo, iSpinPosX, iSpinPosY,
       labelInfo);
 
     pControl->SetNavigation(up, down, left, right);
@@ -1594,7 +1599,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
       dwSpinWidth, dwSpinHeight,
       strUp, strDown,
       strUpFocus, strDownFocus,
-      dwSpinColor, iSpinPosX, iSpinPosY,
+      spinInfo, iSpinPosX, iSpinPosY,
       labelInfo);
 
     pControl->SetNavigation(up, down, left, right);
@@ -1670,7 +1675,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
   {
     CGUISpinControlEx* pControl = new CGUISpinControlEx(
       dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight, dwSpinWidth, dwSpinHeight,
-      dwSpinColor, strTextureFocus, strTextureNoFocus, strUp, strDown, strUpFocus, strDownFocus,
+      spinInfo, strTextureFocus, strTextureNoFocus, strUp, strDown, strUpFocus, strDownFocus,
       labelInfo, iType);
 
     pControl->SetText(strLabel);

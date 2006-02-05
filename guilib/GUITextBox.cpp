@@ -9,10 +9,10 @@ CGUITextBox::CGUITextBox(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPo
                          DWORD dwSpinWidth, DWORD dwSpinHeight,
                          const CStdString& strUp, const CStdString& strDown,
                          const CStdString& strUpFocus, const CStdString& strDownFocus,
-                         DWORD dwSpinColor, int iSpinX, int iSpinY,
+                         const CLabelInfo& spinInfo, int iSpinX, int iSpinY,
                          const CLabelInfo& labelInfo)
     : CGUIControl(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight)
-    , m_upDown(dwControlId, 0, 0, 0, dwSpinWidth, dwSpinHeight, strUp, strDown, strUpFocus, strDownFocus, labelInfo, dwSpinColor, SPIN_CONTROL_TYPE_INT)
+    , m_upDown(dwControlId, 0, 0, 0, dwSpinWidth, dwSpinHeight, strUp, strDown, strUpFocus, strDownFocus, spinInfo, SPIN_CONTROL_TYPE_INT)
 {
   m_upDown.SetSpinAlign(XBFONT_CENTER_Y | XBFONT_RIGHT, 0);
   m_iOffset = 0;

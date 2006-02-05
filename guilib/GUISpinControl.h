@@ -48,7 +48,7 @@ private:
 class CGUISpinControl : public CGUIControl
 {
 public:
-  CGUISpinControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strUp, const CStdString& strDown, const CStdString& strUpFocus, const CStdString& strDownFocus, const CLabelInfo& labelInfo, DWORD dwSpinColor, int iType);
+  CGUISpinControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strUp, const CStdString& strDown, const CStdString& strUpFocus, const CStdString& strDownFocus, const CLabelInfo& labelInfo, int iType);
   virtual ~CGUISpinControl(void);
   virtual void Render();
   virtual bool OnAction(const CAction &action);
