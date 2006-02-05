@@ -92,3 +92,10 @@ bool CKey::IsAnalogButton() const
 
   return false;
 }
+
+bool CKey::IsIRRemote() const
+{
+  if (GetButtonCode() < 256)
+    return true;
+  return false;
+}
