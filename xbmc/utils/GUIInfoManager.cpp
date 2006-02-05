@@ -1242,6 +1242,7 @@ void CGUIInfoManager::ResetCurrentItem()
 
 void CGUIInfoManager::SetCurrentItem(CFileItem &item)
 {
+  if (item.IsLastFM()) return; //last.fm handles it's own songinfo
   ResetCurrentItem();
   if (item.IsAudio())
     SetCurrentSong(item);
