@@ -5,6 +5,8 @@
 
 #define DATA_TO_KEEP_BEHIND 65536
 
+static int sleeptime = 0;
+
 CFileReader::CFileReader()
 {
   m_bufferedDataPos = 0;
@@ -19,6 +21,7 @@ CFileReader::~CFileReader()
 
 void CFileReader::Initialize(unsigned int bufferSize)
 {
+  sleeptime = 0;
   m_ringBuffer.Create(bufferSize + DATA_TO_KEEP_BEHIND, DATA_TO_KEEP_BEHIND);
 }
 
@@ -85,8 +88,6 @@ __int64 CFileReader::GetLength()
 {
   return m_file.GetLength();
 }
-
-static int sleeptime = 0;
 
 int CFileReader::Read(void *out, __int64 size)
 {
