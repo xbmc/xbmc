@@ -291,7 +291,7 @@ void CDVDPlayer::Process()
     }
         
 
-    CDemuxStream *pStream = m_pDemuxer->GetStream(pPacket->iStreamId);    
+    CDemuxStream *pStream = m_pDemuxer->GetStream(pPacket->iStreamId);
 
     
     if (m_pInputStream && pStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
@@ -299,10 +299,8 @@ void CDVDPlayer::Process()
       // Stream selection for DVD's this 
       // should probably come as messages in the packet instead      
   
-      int iPhysicalId = pStream->iPhysicalId;
-
       if( pStream->type == STREAM_SUBTITLE
-       && iPhysicalId == m_dvd.iSelectedSPUStream       
+       && pStream->iPhysicalId == m_dvd.iSelectedSPUStream       
        && pStream->iId != m_iCurrentStreamSubtitle )
       {
         // dvd subtitle stream changed
@@ -310,7 +308,7 @@ void CDVDPlayer::Process()
         OpenSubtitleStream( pStream->iId );
       }
       if( pStream->type == STREAM_AUDIO
-       && iPhysicalId == m_dvd.iSelectedAudioStream       
+       && pStream->iPhysicalId == m_dvd.iSelectedAudioStream       
        && pStream->iId != m_iCurrentStreamAudio )
       {
         // dvd audio stream changed
@@ -327,7 +325,7 @@ void CDVDPlayer::Process()
             // this happens if a new cell has audio data, but previous didn't
             // and both have video data
             
-            m_dvdPlayerVideo.m_packetQueue.WaitUntilEmpty();
+            m_dvdPlayerVideo.WaitForBuffers();
           }
         }
       }
@@ -1328,10 +1326,23 @@ int CDVDPlayer::OnDVDNavResult(void* pData, int iMessage)
 
           if( pci->pci_gi.vobu_s_ptm*10 != m_dvd.iNAVPackFinish)
           {
-            m_dvd.iFlagSentStart=0;
+            // we have a discontinuity in our stream.
+            CLog::Log(LOGDEBUG, "DVDNAV_DISCONTINUITY");
+
+            // make sure everything before this is completly played
+            // clock's can change dramatically here.
+            m_dvdPlayerAudio.WaitForBuffers();
+            m_dvdPlayerVideo.WaitForBuffers();
+            
+            // don't allow next frame to be skipped
+            m_bDontSkipNextFrame = true;
+
             //Only set this when we have the first non continous packet
-            m_dvd.iNAVPackStart = pci->pci_gi.vobu_s_ptm*10;
+            m_dvd.iFlagSentStart=0;
+            
           }
+
+          m_dvd.iNAVPackStart = pci->pci_gi.vobu_s_ptm*10;
           m_dvd.iNAVPackFinish = pci->pci_gi.vobu_e_ptm*10;      
       }
       break;
