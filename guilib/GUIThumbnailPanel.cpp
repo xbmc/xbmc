@@ -31,12 +31,12 @@ CGUIThumbnailPanel::CGUIThumbnailPanel(DWORD dwParentID, DWORD dwControlId, int 
                                        DWORD dwSpinWidth, DWORD dwSpinHeight,
                                        const CStdString& strUp, const CStdString& strDown,
                                        const CStdString& strUpFocus, const CStdString& strDownFocus,
-                                       DWORD dwSpinColor, int iSpinX, int iSpinY,
+                                       const CLabelInfo& spinInfo, int iSpinX, int iSpinY,
                                        const CLabelInfo &labelInfo)
     : CGUIControl(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight)
     , m_imgFolder(dwParentID, dwControlId, iPosX, iPosY, 0, 0, strImageIcon)
     , m_imgFolderFocus(dwParentID, dwControlId, iPosX, iPosY, 0, 0, strImageIconFocus)
-    , m_upDown(dwControlId, 0, 0, 0, dwSpinWidth, dwSpinHeight, strUp, strDown, strUpFocus, strDownFocus, labelInfo, dwSpinColor, SPIN_CONTROL_TYPE_INT)
+    , m_upDown(dwControlId, 0, 0, 0, dwSpinWidth, dwSpinHeight, strUp, strDown, strUpFocus, strDownFocus, spinInfo, SPIN_CONTROL_TYPE_INT)
     , m_scrollInfo(0)
 {
   m_label = labelInfo;

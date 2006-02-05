@@ -23,7 +23,7 @@ public:
               DWORD dwSpinWidth, DWORD dwSpinHeight,
               const CStdString& strUp, const CStdString& strDown,
               const CStdString& strUpFocus, const CStdString& strDownFocus,
-              DWORD dwSpinColor, int iSpinX, int iSpinY,
+              const CLabelInfo& spinInfo, int iSpinX, int iSpinY,
               const CLabelInfo &labelInfo);
   virtual ~CGUITextBox(void);
   virtual void Render();
@@ -49,7 +49,7 @@ public:
   const CStdString& GetTextureDownName() const { return m_upDown.GetTextureDownName(); };
   const CStdString& GetTextureUpFocusName() const { return m_upDown.GetTextureUpFocusName(); };
   const CStdString& GetTextureDownFocusName() const { return m_upDown.GetTextureDownFocusName(); };
-  DWORD GetSpinTextColor() const { return m_upDown.GetLabelInfo().textColor;};
+  const CLabelInfo& GetSpinLabelInfo() const { return m_upDown.GetLabelInfo();};
   int GetSpinX() const { return m_iSpinPosX;};
   int GetSpinY() const { return m_iSpinPosY;};
   void SetText(const wstring &strText);
