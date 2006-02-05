@@ -1675,7 +1675,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
   {
     CGUISpinControlEx* pControl = new CGUISpinControlEx(
       dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight, dwSpinWidth, dwSpinHeight,
-      spinInfo, strTextureFocus, strTextureNoFocus, strUp, strDown, strUpFocus, strDownFocus,
+      labelInfo, strTextureFocus, strTextureNoFocus, strUp, strDown, strUpFocus, strDownFocus,
       labelInfo, iType);
 
     pControl->SetText(strLabel);
