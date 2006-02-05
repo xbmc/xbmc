@@ -31,6 +31,9 @@ public:
   void Pause()                                          { m_dvdAudio.Pause(); }
   void Resume()                                         { m_dvdAudio.Resume(); }
   void Flush();
+
+  // waits untill all available data has been rendered  
+  void WaitForBuffers();
  
   void SetSpeed(int iSpeed)                             { m_iSpeed = iSpeed; }
 
