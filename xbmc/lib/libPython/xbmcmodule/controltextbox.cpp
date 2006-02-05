@@ -58,11 +58,14 @@ namespace PYXBMC
     CLabelInfo label;
     label.font = g_fontManager.GetFont(pControl->strFont);
     label.textColor = pControl->dwTextColor;
+    CLabelInfo spinLabel;
+    spinLabel.font = g_fontManager.GetFont(pControl->strFont);
+    spinLabel.textColor = pControl->pControlSpin->dwColor;
     pControl->pGUIControl = new CGUITextBox(pControl->iParentId, pControl->iControlId,
       pControl->dwPosX, pControl->dwPosY, pControl->dwWidth, pControl->dwHeight,
       pControl->pControlSpin->dwWidth, pControl->pControlSpin->dwHeight,
       pControl->pControlSpin->strTextureUp, pControl->pControlSpin->strTextureDown, pControl->pControlSpin->strTextureUpFocus,
-      pControl->pControlSpin->strTextureDownFocus, pControl->pControlSpin->dwColor, pControl->pControlSpin->dwPosX,
+      pControl->pControlSpin->strTextureDownFocus, spinLabel, pControl->pControlSpin->dwPosX,
       pControl->pControlSpin->dwPosY, label);
 
     // reset textbox

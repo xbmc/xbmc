@@ -165,7 +165,8 @@
       <height>430</height>
       <spinwidth>16</spinwidth>
       <spinheight>16</spinheight>
-      <spincolor>ddffffff</spincolor>
+      <spincolor>ffffffff</spincolor>
+      <spinfont>font10</spinfont>
       <spinposx>419</spinposx>
       <spinposy>406</spinposy>
       <textureup>scroll-up.png</textureup>

@@ -7,7 +7,7 @@
 #define SPIN_BUTTON_DOWN 1
 #define SPIN_BUTTON_UP   2
 
-CGUISpinControl::CGUISpinControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strUp, const CStdString& strDown, const CStdString& strUpFocus, const CStdString& strDownFocus, const CLabelInfo &labelInfo, DWORD dwSpinColor, int iType)
+CGUISpinControl::CGUISpinControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strUp, const CStdString& strDown, const CStdString& strUpFocus, const CStdString& strDownFocus, const CLabelInfo &labelInfo, int iType)
     : CGUIControl(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight)
     , m_imgspinUp(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight, strUp)
     , m_imgspinDown(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight, strDown)
@@ -24,7 +24,6 @@ CGUISpinControl::CGUISpinControl(DWORD dwParentID, DWORD dwControlId, int iPosX,
   m_iValue = 0;
   m_label = labelInfo;
   m_label.align |= XBFONT_CENTER_Y;
-  m_label.textColor = dwSpinColor;
   m_fValue = 0.0;
   m_iType = iType;
   m_iSelect = SPIN_BUTTON_DOWN;
