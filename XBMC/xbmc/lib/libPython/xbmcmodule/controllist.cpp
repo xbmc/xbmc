@@ -144,6 +144,10 @@ namespace PYXBMC
     // the offsets should be 0.
     CLabelInfo label2 = label;
     label2.offsetX = label2.offsetY = 0;
+    // Spin label
+    CLabelInfo spinLabel;
+    spinLabel.font = g_fontManager.GetFont(pControl->strFont);
+    spinLabel.textColor = pControl->pControlSpin->dwColor;
 		pControl->pGUIControl = new CGUIListControl(
       pControl->iParentId,
       pControl->iControlId,
@@ -157,7 +161,7 @@ namespace PYXBMC
       pControl->pControlSpin->strTextureDown,
       pControl->pControlSpin->strTextureUpFocus,
       pControl->pControlSpin->strTextureDownFocus,
-      pControl->pControlSpin->dwColor,
+      spinLabel,
       pControl->pControlSpin->dwPosX,
       pControl->pControlSpin->dwPosY,
       label, label2,
