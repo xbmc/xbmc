@@ -3,8 +3,8 @@
 #include "../xbmc/Util.h"
 
 
-CGUISpinControlEx::CGUISpinControlEx(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, DWORD dwSpinWidth, DWORD dwSpinHeight, DWORD dwSpinColor, const CStdString &strFocus, const CStdString &strNoFocus, const CStdString& strUp, const CStdString& strDown, const CStdString& strUpFocus, const CStdString& strDownFocus, const CLabelInfo& labelInfo, int iType)
-    : CGUISpinControl(dwParentID, dwControlId, iPosX, iPosY, dwSpinWidth, dwSpinHeight, strUp, strDown, strUpFocus, strDownFocus, labelInfo, dwSpinColor, iType)
+CGUISpinControlEx::CGUISpinControlEx(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, DWORD dwSpinWidth, DWORD dwSpinHeight, const CLabelInfo& spinInfo, const CStdString &strFocus, const CStdString &strNoFocus, const CStdString& strUp, const CStdString& strDown, const CStdString& strUpFocus, const CStdString& strDownFocus, const CLabelInfo& labelInfo, int iType)
+    : CGUISpinControl(dwParentID, dwControlId, iPosX, iPosY, dwSpinWidth, dwSpinHeight, strUp, strDown, strUpFocus, strDownFocus, spinInfo, iType)
     , m_buttonControl(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight, strFocus, strNoFocus, labelInfo)
 {
   ControlType = GUICONTROL_SPINEX;
