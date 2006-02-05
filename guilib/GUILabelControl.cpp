@@ -237,6 +237,7 @@ void CGUILabelControl::WrapText(CStdString &text)
     }
     pos++;
   }
+  text = multiLine;
 }
 
 void CGUILabelControl::ShortenPath()
