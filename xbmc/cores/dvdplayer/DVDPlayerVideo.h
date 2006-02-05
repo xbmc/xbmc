@@ -27,6 +27,10 @@ public:
   void Resume();
   void Flush();
 
+  // waits untill all available data has been rendered
+  // just waiting for packetqueue should be enough for video
+  void WaitForBuffers()                             { m_packetQueue.WaitUntilEmpty(); }
+
   void Update(bool bPauseDrawing)                   { g_renderManager.Update(bPauseDrawing); }
   void UpdateMenuPicture();
  

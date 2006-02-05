@@ -342,6 +342,20 @@ void CDVDPlayerAudio::Flush()
   }
 }
 
+void CDVDPlayerAudio::WaitForBuffers()
+{
+  // make sure there are no more packets available
+  m_packetQueue.WaitUntilEmpty();
+  
+  // make sure almost all has been rendered
+  // leave 500ms to avound buffer underruns
+
+  while( m_dvdAudio.GetDelay() > DVD_TIME_BASE/2 )
+  {
+    Sleep(5);
+  }
+}
+
 bool CDVDPlayerAudio::InitializeOutputDevice()
 {
   int iChannels = m_pAudioCodec->GetChannels();

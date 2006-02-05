@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 05-02-2006 fixed: dvdplayer would have wrong sync of audio/video in thx test discs. (ripped vobs from those tests will still have wrong sync)
  - 05-02-2006 fixed: spincontrols didn't display any values.
  - 05-02-2006 added: <spinfont> tag to list, thumb and textboxes.
  - 04-02-2006 fixed: "Return to Videos" in the Videos Now Playing window goes to Videos and not the previous window
