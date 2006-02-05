@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 05-02-2006 fixed: spincontrols didn't display any values.
  - 05-02-2006 added: <spinfont> tag to list, thumb and textboxes.
  - 04-02-2006 fixed: "Return to Videos" in the Videos Now Playing window goes to Videos and not the previous window
  - 04-02-2006 fixed: "Return to Music" in the Music Now Playing window goes to Music and not the previous window
