@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 06-02-2006 fixed: [ 1423069 ] Controller rumble when using IR remote (don't do it)
  - 05-02-2006 fixed: [ 1406355 ] Last.fm Crashing on Personal radio playback (no audio playable after pap filereader timed out)
  - 05-02-2006 fixed: Last.fm - trackinfo for first track in stream was not always shown.
  - 05-02-2006 fixed: dvdplayer would have wrong sync of audio/video in thx test discs. (ripped vobs from those tests will still have wrong sync)
