@@ -338,6 +338,7 @@ public:
   float GetRightThumbY() const;
   bool FromKeyboard() const;
   bool IsAnalogButton() const;
+  bool IsIRRemote() const;
 
 private:
   DWORD m_dwButtonCode;
