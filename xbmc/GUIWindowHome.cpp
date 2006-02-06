@@ -56,19 +56,21 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
 
       CGUIWindow::OnMessage(message);
 
-#ifdef HOME_HANDLES_FADES
-      // make controls 102-120 invisible...
-      for (int iControl = MENU_BUTTON_IMAGE_BACKGROUND_START; iControl < MENU_BUTTON_IMAGE_BACKGROUND_END; iControl++)
+#ifdef PRE_SKIN_VERSION_2_0_COMPATIBILITY
+      if (g_SkinInfo.GetVersion() < 1.99)
       {
-        SET_CONTROL_HIDDEN(iControl);
-      }
+        // make controls 102-120 invisible...
+        for (int iControl = MENU_BUTTON_IMAGE_BACKGROUND_START; iControl < MENU_BUTTON_IMAGE_BACKGROUND_END; iControl++)
+        {
+          SET_CONTROL_HIDDEN(iControl);
+        }
 
-      if (m_iLastMenuOption > 0)
-      {
-        SET_CONTROL_VISIBLE(m_iLastMenuOption + 100);
+        if (m_iLastMenuOption > 0)
+        {
+          SET_CONTROL_VISIBLE(m_iLastMenuOption + 100);
+        }
       }
 #endif
-
       if (iFocusControl < 0)
       {
         iFocusControl = GetFocusedControl();
@@ -81,13 +83,11 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
       ON_POLL_BUTTON_CONDITION(CONTROL_BTN_XLINK_KAI, CGUIWindowHome, OnPollXLinkClient, 50);
     }
 #endif
-    if (m_saveLastControl)
-    {
-      SET_CONTROL_FOCUS(iFocusControl, 0);
-    }
-#ifndef HOME_HANDLES_FADES
-      SetControlVisibility();
-#endif
+      if (m_saveLastControl && iFocusControl > -1)
+      {
+        SET_CONTROL_FOCUS(iFocusControl, 0);
+        SetControlVisibility();
+      }
       return true;
     }
     break;
@@ -104,8 +104,9 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
     {
       int iControl = message.GetControlId();
       m_iLastControl = iControl;
-#ifdef HOME_HANDLES_FADES
-      FadeBackgroundImages(message.GetControlId(), message.GetSenderId(), message.GetParam1());
+#ifdef PRE_SKIN_VERSION_2_0_COMPATIBILITY
+      if (g_SkinInfo.GetVersion() < 1.99)
+        FadeBackgroundImages(message.GetControlId(), message.GetSenderId(), message.GetParam1());
 #endif
       break;
     }
@@ -152,22 +153,25 @@ void CGUIWindowHome::Render()
       }
     }
   }
-#ifdef HOME_HANDLES_FADES
-  // Hack for when music/video stops while on homepage (images will all display
-  // in this case, whereas normally only 2 are allowed at the same time (during
-  // fading)  We check for more than 5 images as a safety check from very fast
-  // scrolling.  Note that this may well destroy skins designed purely using
-  // the new visibility flags.  This needs removing once agreement is reached
-  // that doing the fading both here and in the skin is not good.
-  int numBackgroundsVisible = 0;
-  for (int i = MENU_BUTTON_IMAGE_BACKGROUND_START; i <= MENU_BUTTON_IMAGE_BACKGROUND_END; ++i)
+#ifdef PRE_SKIN_VERSION_2_0_COMPATIBILITY
+  if (g_SkinInfo.GetVersion() < 1.99)
   {
-    const CGUIControl *pControl = GetControl(i);
-    if (pControl && pControl->IsVisible())
-      numBackgroundsVisible++;
+    // Hack for when music/video stops while on homepage (images will all display
+    // in this case, whereas normally only 2 are allowed at the same time (during
+    // fading)  We check for more than 5 images as a safety check from very fast
+    // scrolling.  Note that this may well destroy skins designed purely using
+    // the new visibility flags.  This needs removing once agreement is reached
+    // that doing the fading both here and in the skin is not good.
+    int numBackgroundsVisible = 0;
+    for (int i = MENU_BUTTON_IMAGE_BACKGROUND_START; i <= MENU_BUTTON_IMAGE_BACKGROUND_END; ++i)
+    {
+      const CGUIControl *pControl = GetControl(i);
+      if (pControl && pControl->IsVisible())
+        numBackgroundsVisible++;
+    }
+    if (numBackgroundsVisible > 5)
+      FadeBackgroundImages(GetFocusedControl(), GetFocusedControl(), 0);
   }
-  if (numBackgroundsVisible > 5)
-    FadeBackgroundImages(GetFocusedControl(), GetFocusedControl(), 0);
 #endif
   CGUIWindow::Render();
 }
