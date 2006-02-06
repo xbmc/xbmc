@@ -3113,7 +3113,12 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
     }
 
     if (item.IsAudio() && !item.IsInternetStream() && g_guiSettings.GetBool("Karaoke.Enabled"))
-      m_CdgParser.Start(item.m_strPath);
+    {
+      if (item.IsMusicDb())
+        m_CdgParser.Start(item.m_musicInfoTag.GetURL());
+      else
+        m_CdgParser.Start(item.m_strPath);
+    }
 
     if (bRestart)
     {
