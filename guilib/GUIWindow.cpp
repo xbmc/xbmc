@@ -503,32 +503,66 @@ bool CGUIWindow::Load(TiXmlElement* pRootElement, RESOLUTION resToUse)
     {
       // resolve any includes within controls tag (such as whole <control> includes)
       g_SkinInfo.ResolveIncludes(pChild);
-      TiXmlElement *pControl = pChild->FirstChildElement("control");
+#ifdef PRE_SKIN_VERSION_2_0_COMPATIBILITY
+      if (g_SkinInfo.GetVersion() < 1.99)
+	    {
+	      TiXmlElement *pControl = pChild->FirstChildElement("control");
+	      while (pControl)
+	      {
+	        LoadControl(pControl, -1, referencecontrols, resToUse);
+	        pControl = pControl->NextSiblingElement("control");
+	      }
+	
+	      TiXmlElement *pControlGroup = pChild->FirstChildElement("controlgroup");
+	      // resolve any includes within the <controlgroup> tag (such as whole <control> includes)
+	      g_SkinInfo.ResolveIncludes(pControlGroup);
+	      int iGroup = 0;
+	      while (pControlGroup)
+	      {
+	        TiXmlElement *pControl = pControlGroup->FirstChildElement("control");
+	        // In this group no focus of the controls is remembered
+	        m_vecGroups.push_back( -1);
+	        while (pControl)
+	        {
+	          LoadControl(pControl, iGroup, referencecontrols, resToUse);
+	          pControl = pControl->NextSiblingElement("control");
+	        }
+	        pControlGroup = pControlGroup->NextSiblingElement("controlgroup");
+	        iGroup++;
+	      }
+      }
+      else
+      {
+#endif
+      TiXmlElement *pControl = pChild->FirstChildElement();
+      int iGroup = 0;
       while (pControl)
       {
-        LoadControl(pControl, -1, referencecontrols, resToUse);
-        pControl = pControl->NextSiblingElement("control");
-      }
-
-      TiXmlElement *pControlGroup = pChild->FirstChildElement("controlgroup");
-      // resolve any includes within the <controlgroup> tag (such as whole <control> includes)
-      g_SkinInfo.ResolveIncludes(pControlGroup);
-      int iGroup = 0;
-      while (pControlGroup)
-      {
-        int id = 0;
-        pControlGroup->Attribute("id", &id);
-        TiXmlElement *pControl = pControlGroup->FirstChildElement("control");
-        // In this group no focus of the controls is remembered
-        m_vecGroups.push_back(CControlGroup(id));
-        while (pControl)
+        if (strcmpi(pControl->Value(), "control") == 0)
         {
-          LoadControl(pControl, iGroup, referencecontrols, resToUse);
-          pControl = pControl->NextSiblingElement("control");
+          LoadControl(pControl, -1, referencecontrols, resToUse);
         }
-        pControlGroup = pControlGroup->NextSiblingElement("controlgroup");
-        iGroup++;
+        else if (strcmpi(pControl->Value(), "controlgroup") == 0)
+        {
+          // resolve any includes within the <controlgroup> tag (such as whole <control> includes)
+          g_SkinInfo.ResolveIncludes(pControl);
+          int id = 0;
+          pControl->Attribute("id", &id);
+          TiXmlElement *pSubControl = pControl->FirstChildElement("control");
+          // In this group no focus of the controls is remembered
+          m_vecGroups.push_back(CControlGroup(id));
+          while (pSubControl)
+          {
+            LoadControl(pSubControl, iGroup, referencecontrols, resToUse);
+            pSubControl = pSubControl->NextSiblingElement("control");
+          }
+          iGroup++;
+        }
+        pControl = pControl->NextSiblingElement();
       }
+#ifdef PRE_SKIN_VERSION_2_0_COMPATIBILITY
+      }
+#endif
     }
     else if (strValue == "allowoverlay")
     {
@@ -920,6 +954,8 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
 //      CLog::DebugLog("set focus to control:%i window:%i (%i)\n", message.GetControlId(),message.GetSenderId(), GetID());
       if ( message.GetControlId() )
       {
+        int iOldControlGroup = -1;
+        int iOldControlId = -1;
         ivecControls i;
         for (i = m_vecControls.begin();i != m_vecControls.end(); ++i)
         {
@@ -928,6 +964,8 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
           {
             CGUIMessage msgLostFocus(GUI_MSG_LOSTFOCUS, GetID(), pControl->GetID(), message.GetControlId());
             pControl->OnMessage(msgLostFocus);
+            iOldControlGroup = pControl->GetGroup();
+            iOldControlId = pControl->GetID();
           }
         }
 
@@ -942,21 +980,18 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
         //  Handle control group changes
         if (pFocusedControl)
         {
-          int iOldControlGroup = -1;
-          int iOldControlId = message.GetSenderId();
-
-          //  Is Message sender a window?
-          if (iOldControlId > WINDOW_INVALID)
+          // Check if we are being called from a control (focus is set to false before
+          // we call SETFOCUS in the OnLeft, OnRight methods, so we just use the message
+          // sender id).
+          if (message.GetSenderId() < WINDOW_INVALID)
           {
-            iOldControlId = -1;
-          }
-          else
-          {
-            const CGUIControl* pOldFocusedControl = GetControl(message.GetSenderId());
+            const CGUIControl *pOldFocusedControl = GetControl(message.GetSenderId());
             if (pOldFocusedControl)
+            {
               iOldControlGroup = pOldFocusedControl->GetGroup();
+              iOldControlId = pOldFocusedControl->GetID();
+            }
           }
-
           //  Save last control of the group if the group changes
           if (iOldControlGroup > -1 && pFocusedControl->GetGroup() != iOldControlGroup)
             m_vecGroups[iOldControlGroup].m_lastControl = iOldControlId;
@@ -964,28 +999,25 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
           //  if the control group changes...
           if (pFocusedControl->GetGroup() > -1 && pFocusedControl->GetGroup() != iOldControlGroup && iOldControlId > -1)
           {
-            if (iOldControlId > -1)
+            //  ...get the last focused control of the new group...
+            int iLastFocusedControl = m_vecGroups[pFocusedControl->GetGroup()].m_lastControl;
+            for (i = m_vecControls.begin();i != m_vecControls.end(); ++i)
             {
-              //  ...get the last focused control of the new group...
-              int iLastFocusedControl = m_vecGroups[pFocusedControl->GetGroup()].m_lastControl;
-              for (i = m_vecControls.begin();i != m_vecControls.end(); ++i)
+              CGUIControl* pControl = *i;
+              if (pControl->GetID() == iLastFocusedControl )
               {
-                CGUIControl* pControl = *i;
-                if (pControl->GetID() == iLastFocusedControl )
-                {
-                  //  ...and focus the saved control.
+                //  ...and focus the saved control.
 
-                  //  Redirect our message to the new control and fake it a little
-                  //  by saying the new control is sender and target
-                  //  at once to prevent a stack overflow.
-                  CGUIMessage newFocusMsg(GUI_MSG_SETFOCUS, pControl->GetID(), pControl->GetID(), message.GetParam1());
-                  //  Remember new last control of group
-                  m_vecGroups[pControl->GetGroup()].m_lastControl = pControl->GetID();
-                  //  Send the message to the new focused
-                  //  control throu the window.
-                  OnMessage(newFocusMsg);
-                  return true;
-                }
+                //  Redirect our message to the new control and fake it a little
+                //  by saying the new control is sender and target
+                //  at once to prevent a stack overflow.
+                CGUIMessage newFocusMsg(GUI_MSG_SETFOCUS, pControl->GetID(), pControl->GetID(), message.GetParam1());
+                //  Remember new last control of group
+                m_vecGroups[pControl->GetGroup()].m_lastControl = pControl->GetID();
+                //  Send the message to the new focused
+                //  control throu the window.
+                OnMessage(newFocusMsg);
+                return true;
               }
             }
           }

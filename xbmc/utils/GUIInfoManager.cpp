@@ -738,6 +738,8 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow) const
   }
   else if (condition == PLAYER_SHOWINFO)
     bReturn = m_playerShowInfo;
+  else if (condition == PLAYER_SHOWCODEC)
+    bReturn = m_playerShowCodec;
   else if (condition >= SKIN_HAS_THEME_START && condition <= SKIN_HAS_THEME_END)
   { // Note that the code used here could probably be extended to general
     // settings conditions (parameter would need to store both the setting name and
@@ -827,9 +829,6 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow) const
     break;
     case PLAYER_SHOWTIME:
       bReturn = m_playerShowTime;
-    break;
-    case PLAYER_SHOWCODEC:
-      bReturn = m_playerShowCodec;
     break;
     case AUDIOSCROBBLER_ENABLED:
       bReturn = g_guiSettings.GetBool("MyMusic.UseAudioScrobbler");
