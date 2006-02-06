@@ -295,6 +295,30 @@
       <animation effect="fade" time="1000">VisibleChange</animation>
     </control>
 
+    <control>
+      <type>image</type>
+      <id>0</id>
+      <posx>77</posx>
+      <posy>430</posy>
+      <width>15</width>
+      <height>16</height>
+      <texture>homebutton-small.png</texture>
+      <visible>![Player.HasAudio + System.IdleTime(60)]</visible>
+      <animation effect="fade" time="1000">VisibleChange</animation>
+    </control>
+
+    <control>
+      <type>image</type>
+      <id>0</id>
+      <posx>192</posx>
+      <posy>430</posy>
+      <width>15</width>
+      <height>16</height>
+      <texture>homebutton-small.png</texture>
+      <visible>![Player.HasAudio + System.IdleTime(60)]</visible>
+      <animation effect="fade" time="1000">VisibleChange</animation>
+    </control>
+
     <controlgroup id="1">
       <control>
         <description>My Programs normal push button</description>
@@ -451,30 +475,6 @@
       </control>
 
     </controlgroup>
-
-    <control>
-      <type>image</type>
-      <id>102</id>
-      <posx>77</posx>
-      <posy>430</posy>
-      <width>15</width>
-      <height>16</height>
-      <texture>homebutton-small.png</texture>
-      <visible>![Player.HasAudio + System.IdleTime(60)]</visible>
-      <animation effect="fade" time="1000">VisibleChange</animation>
-    </control>
-
-    <control>
-      <type>image</type>
-      <id>102</id>
-      <posx>192</posx>
-      <posy>430</posy>
-      <width>15</width>
-      <height>16</height>
-      <texture>homebutton-small.png</texture>
-      <visible>![Player.HasAudio + System.IdleTime(60)]</visible>
-      <animation effect="fade" time="1000">VisibleChange</animation>
-    </control>
 
     <control>
       <description>date label</description>
