@@ -101,6 +101,10 @@ extern char g_szTitleIP[32];
 
 #define LCD_PLAY_ICON               180
 #define LCD_PROGRESS_BAR            181
+#define LCD_CPU_TEMPERATURE         182
+#define LCD_GPU_TEMPERATURE         183
+#define LCD_FAN_SPEED               184
+#define LCD_DATE                    186
 
 #define NETWORK_IP_ADDRESS          190
 
@@ -332,6 +336,10 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
   {
     if (strTest.Equals("lcd.playicon")) ret = LCD_PLAY_ICON;
     else if (strTest.Equals("lcd.progressbar")) ret = LCD_PROGRESS_BAR;
+    else if (strTest.Equals("lcd.cputemperature")) ret = LCD_CPU_TEMPERATURE;
+    else if (strTest.Equals("lcd.gputemperature")) ret = LCD_GPU_TEMPERATURE;
+    else if (strTest.Equals("lcd.fanspeed")) ret = LCD_FAN_SPEED;
+    else if (strTest.Equals("lcd.date")) ret = LCD_DATE;
   }
   else if (strCategory.Equals("network"))
   {
@@ -464,6 +472,9 @@ wstring CGUIInfoManager::GetLabel(int info)
   case SYSTEM_DATE:
     strLabel = GetDate();
     break;
+  case LCD_DATE:
+    strLabel = GetDate(true);
+    break;
   case SYSTEM_FPS:
     strLabel.Format("%02.2f", m_fps);
     break;
@@ -525,6 +536,15 @@ wstring CGUIInfoManager::GetLabel(int info)
     break;
   case SYSTEM_FAN_SPEED:
     return GetSystemHeatInfo("fan");
+    break;
+  case LCD_CPU_TEMPERATURE:
+    return GetSystemHeatInfo("lcdcpu");
+    break;
+  case LCD_GPU_TEMPERATURE:
+    return GetSystemHeatInfo("lcdgpu");
+    break;
+  case LCD_FAN_SPEED:
+    return GetSystemHeatInfo("lcdfan");
     break;
   case SYSTEM_BUILD_VERSION:
     strLabel = GetVersion();
@@ -1410,31 +1430,51 @@ wstring CGUIInfoManager::GetSystemHeatInfo(const CStdString &strInfo)
     m_gpuTemp = CFanController::Instance()->GetGPUTemp();
     m_cpuTemp = CFanController::Instance()->GetCPUTemp();
   }
+
+  WCHAR Text[32];
+
   if (strInfo == "cpu")
   {
-    WCHAR CPUText[32];
     if (g_guiSettings.GetInt("Weather.TemperatureUnits") == 1 /*DEGREES_F*/)
-      swprintf(CPUText, L"%s %2.2f%cF", g_localizeStrings.Get(140).c_str(), ((9.0 / 5.0) * m_cpuTemp) + 32.0, 176);
+      swprintf(Text, L"%s %2.2f%cF", g_localizeStrings.Get(140).c_str(), ((9.0 / 5.0) * m_cpuTemp) + 32.0, 176);
     else
-      swprintf(CPUText, L"%s %2.2f%cC", g_localizeStrings.Get(140).c_str(), m_cpuTemp, 176);
-    return CPUText;
+      swprintf(Text, L"%s %2.2f%cC", g_localizeStrings.Get(140).c_str(), m_cpuTemp, 176);
+  }
+  else if (strInfo == "lcdcpu")
+  {
+    if (g_guiSettings.GetInt("Weather.TemperatureUnits") == 1 /*DEGREES_F*/)
+      swprintf(Text, L"%3.0f%cF", ((9.0 / 5.0) * m_cpuTemp) + 32.0, 176);
+    else
+      swprintf(Text, L"%2.0f%cC", m_cpuTemp, 176);
   }
   else if (strInfo == "gpu")
   {
-    WCHAR GPUText[32];
     if (g_guiSettings.GetInt("Weather.TemperatureUnits") == 1 /*DEGREES_F*/)
-      swprintf(GPUText, L"%s %2.2f%cF", g_localizeStrings.Get(141).c_str(), ((9.0 / 5.0) * m_gpuTemp) + 32.0, 176);
+      swprintf(Text, L"%s %2.2f%cF", g_localizeStrings.Get(141).c_str(), ((9.0 / 5.0) * m_gpuTemp) + 32.0, 176);
     else
-      swprintf(GPUText, L"%s %2.2f%cC", g_localizeStrings.Get(141).c_str(), m_gpuTemp, 176);
-    return GPUText;
+      swprintf(Text, L"%s %2.2f%cC", g_localizeStrings.Get(141).c_str(), m_gpuTemp, 176);
+  }
+  else if (strInfo == "lcdgpu")
+  {
+    if (g_guiSettings.GetInt("Weather.TemperatureUnits") == 1 /*DEGREES_F*/)
+      swprintf(Text, L"%3.0f%cF", ((9.0 / 5.0) * m_gpuTemp) + 32.0, 176);
+    else
+      swprintf(Text, L"%2.0f%cC", m_gpuTemp, 176);
   }
   else if (strInfo == "fan")
   {
-    WCHAR FanText[32];
-    swprintf(FanText, L"%s: %i%%", g_localizeStrings.Get(13300).c_str(), m_fanSpeed * 2);
-    return FanText;
+    swprintf(Text, L"%s: %i%%", g_localizeStrings.Get(13300).c_str(), m_fanSpeed * 2);
   }
-  return L"";
+  else if (strInfo == "lcdfan")
+  {
+    swprintf(Text, L"%i%%", m_fanSpeed * 2);
+  }
+  else
+  {
+    swprintf(Text, L"");
+  }
+
+  return Text;
 }
 
 wstring CGUIInfoManager::GetFreeSpace(int drive)
