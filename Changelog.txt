@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 07-02-2006 added: New LCD info labels thanks to Jeff McClain.
  - 06-02-2006 fixed: sf.net bug report [1425166]: CDG not working in Library.
  - 06-02-2006 fixed: Player.ShowCodec didn't work if music wasn't playing (eg in Slideshow)
  - 06-02-2006 changed: Bumped skin version to 1.99.  Changes are the render order of control groups is more consistent, and there is no home page fading code.
