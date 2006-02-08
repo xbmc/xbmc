@@ -7,6 +7,4 @@ class CGUIDialogPlayerControls :
 public:
   CGUIDialogPlayerControls(void);
   virtual ~CGUIDialogPlayerControls(void);
-
-  virtual void Render();
 };
