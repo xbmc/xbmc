@@ -132,7 +132,7 @@ bool CGUIControl::OnAction(const CAction &action)
 // Movement controls (derived classes can override)
 void CGUIControl::OnUp()
 {
-  if (HasFocus())
+  if (HasFocus() && m_dwControlID != m_dwControlUp)
   {
     SetFocus(false);
     CGUIMessage msg(GUI_MSG_SETFOCUS, GetID(), m_dwControlUp, ACTION_MOVE_UP);
@@ -142,7 +142,7 @@ void CGUIControl::OnUp()
 
 void CGUIControl::OnDown()
 {
-  if (HasFocus())
+  if (HasFocus() && m_dwControlID != m_dwControlDown)
   {
     SetFocus(false);
     CGUIMessage msg(GUI_MSG_SETFOCUS, GetID(), m_dwControlDown, ACTION_MOVE_DOWN);
@@ -152,7 +152,7 @@ void CGUIControl::OnDown()
 
 void CGUIControl::OnLeft()
 {
-  if (HasFocus())
+  if (HasFocus() && m_dwControlID != m_dwControlLeft)
   {
     SetFocus(false);
     CGUIMessage msg(GUI_MSG_SETFOCUS, GetID(), m_dwControlLeft, ACTION_MOVE_LEFT);
@@ -162,7 +162,7 @@ void CGUIControl::OnLeft()
 
 void CGUIControl::OnRight()
 {
-  if (HasFocus())
+  if (HasFocus() && m_dwControlID != m_dwControlRight)
   {
     SetFocus(false);
     CGUIMessage msg(GUI_MSG_SETFOCUS, GetID(), m_dwControlRight, ACTION_MOVE_RIGHT);

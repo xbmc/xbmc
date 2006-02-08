@@ -130,6 +130,7 @@ void CGUIWindowFullScreen::AllocResources(bool forceLoad)
   DynamicResourceAlloc(false);
   PreloadDialog(WINDOW_OSD);
   PreloadDialog(WINDOW_DIALOG_VIDEO_OSD_SETTINGS);
+  PreloadDialog(WINDOW_DIALOG_AUDIO_OSD_SETTINGS);
   PreloadDialog(WINDOW_DIALOG_SEEK_BAR);
   PreloadDialog(WINDOW_DIALOG_VOLUME_BAR);
   PreloadDialog(WINDOW_DIALOG_MUTE_BUG);
@@ -141,6 +142,7 @@ void CGUIWindowFullScreen::FreeResources(bool forceUnload)
   DynamicResourceAlloc(true);
   UnloadDialog(WINDOW_OSD);
   UnloadDialog(WINDOW_DIALOG_VIDEO_OSD_SETTINGS);
+  UnloadDialog(WINDOW_DIALOG_AUDIO_OSD_SETTINGS);
   UnloadDialog(WINDOW_DIALOG_SEEK_BAR);
   UnloadDialog(WINDOW_DIALOG_VOLUME_BAR);
   UnloadDialog(WINDOW_DIALOG_MUTE_BUG);
@@ -429,8 +431,6 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
         g_application.m_pPlayer->Update();
 
       CGUIDialog *pDialog = (CGUIDialog *)m_gWindowManager.GetWindow(WINDOW_OSD);
-      if (pDialog) pDialog->Close(true);
-      pDialog = (CGUIDialog *)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_OSD_SETTINGS);
       if (pDialog) pDialog->Close(true);
 
       g_audioManager.Enable(true);
