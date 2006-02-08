@@ -238,7 +238,7 @@ void CAnimation::Animate(DWORD time, bool hasRendered)
       || (currentState == ANIM_STATE_DELAYED && type > 0))
     queuedProcess = ANIM_PROCESS_NONE;
   // Update our animation process
-  if (currentProcess != ANIM_PROCESS_NONE)
+  if (currentProcess == ANIM_PROCESS_NORMAL)
   {
     if (time - start < delay)
     {
@@ -256,8 +256,19 @@ void CAnimation::Animate(DWORD time, bool hasRendered)
       currentState = ANIM_STATE_APPLIED;
     }
   }
-  if (currentProcess == ANIM_PROCESS_REVERSE)
-    amount = 1.0f - amount;
+  else if (currentProcess == ANIM_PROCESS_REVERSE)
+  {
+    if (time - start < length)
+    {
+      amount = 1.0f - (float)(time - start) / length;
+      currentState = ANIM_STATE_IN_PROCESS;
+    }
+    else
+    {
+      amount = 0.0f;
+      currentState = ANIM_STATE_APPLIED;
+    }
+  }
 }
 
 #define DEGREE_TO_RADIAN 0.01745329f

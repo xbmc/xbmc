@@ -418,11 +418,7 @@ bool CGUIWindow::Load(TiXmlElement* pRootElement, RESOLUTION resToUse)
   while (pChild)
   {
     CStdString strValue = pChild->Value();
-    if (strValue == "id" && pChild->FirstChild())
-    {
-      m_dwWindowId = WINDOW_HOME + atoi(pChild->FirstChild()->Value());            // window Id's start at WINDOW_HOME
-    }
-    else if (strValue == "type" && pChild->FirstChild())
+    if (strValue == "type" && pChild->FirstChild())
     {
       // if we have are a window type (ie not a dialog), and we have <type>dialog</type>
       // then make this window act like a dialog
