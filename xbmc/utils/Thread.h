@@ -38,6 +38,9 @@ public:
   bool IsAutoDelete() const;
   virtual void StopThread();
 
+  // returns the relative cpu usage of this thread since last call
+  float GetRelativeUsage();
+
 protected:
   virtual void OnStartup(){};
   virtual void OnExit(){};
@@ -48,6 +51,11 @@ protected:
   HANDLE m_ThreadHandle;
   DWORD m_dwThreadId;
   IRunnable* m_pRunnable;
+
+  unsigned __int64 m_iLastUsage;
+  unsigned __int64 m_iLastTime;
+  float m_fLastUsage;
+
 private:
   static DWORD WINAPI CThread::staticThread(LPVOID* data);
 };
