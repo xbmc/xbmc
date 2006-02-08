@@ -29,7 +29,6 @@ CGUIDialogTrainerSettings::CGUIDialogTrainerSettings(void)
   m_iCurrentPage = 0;
   m_iNumPages = 0;
   m_iNumPerPage = 0;
-  m_loadOnDemand = false;
   m_iTrainer = 0;
   m_iOldTrainer = 0;
   m_bNeedSave = false;

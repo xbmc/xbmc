@@ -220,7 +220,10 @@ void CGUIDialogFileBrowser::Render()
     else
       m_selectedPath = m_vecItems[item]->m_strPath;
     // Update the current path label
-    SET_CONTROL_LABEL(CONTROL_LABEL_PATH, m_selectedPath);
+    CURL url(m_selectedPath);
+    CStdString safePath;
+    url.GetURLWithoutUserDetails(safePath);
+    SET_CONTROL_LABEL(CONTROL_LABEL_PATH, safePath);
     if (!m_browsingForFolders && m_vecItems[item]->m_bIsFolder)
     {
       CONTROL_DISABLE(CONTROL_OK);
