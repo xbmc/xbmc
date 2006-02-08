@@ -977,12 +977,6 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\GUIDialogMuteBug.cpp">
 				</File>
 				<File
-					RelativePath=".\xbmc\GUIDialogNetworkSetup.cpp">
-				</File>
-				<File
-					RelativePath=".\xbmc\GUIDialogNetworkSetup.h">
-				</File>
-				<File
 					RelativePath=".\xbmc\GUIDialogNumeric.cpp">
 				</File>
 				<File
