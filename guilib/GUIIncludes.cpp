@@ -64,7 +64,9 @@ void CGUIIncludes::ResolveIncludes(TiXmlElement *node)
       TiXmlElement *tag = element.FirstChildElement();
       while (tag)
       {
-        node->InsertAfterChild(include, *tag);
+        // we insert before the <include> element to keep the correct
+        // order (we render in the order given in the xml file)
+        node->InsertBeforeChild(include, *tag);
         tag = tag->NextSiblingElement();
       }
       // remove the <include>tagName</include> element

@@ -5,6 +5,12 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 08-02-2006 fixed: Includes messed up the order in the xml file.
+ - 08-02-2006 fixed: Audio/Subtitle settings dialog was not working correctly.
+ - 08-02-2006 changed: <id> is only read for custom windows.
+ - 08-02-2006 fixed: Dialogs without WindowClose animations but with controls that had WindowClose animations didn't close.
+ - 08-02-2006 changed: Movement off a control is only attempted if we are moving to a different control.
+ - 08-02-2006 fixed: Better animation timing when animations are reversed and they have delays.
  - 07-02-2006 added: New LCD info labels thanks to Jeff McClain.
  - 06-02-2006 fixed: sf.net bug report [1425166]: CDG not working in Library.
  - 06-02-2006 fixed: Player.ShowCodec didn't work if music wasn't playing (eg in Slideshow)

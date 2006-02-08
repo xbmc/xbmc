@@ -37,5 +37,5 @@ protected:
   CGUIWindow* m_pParentWindow;
   bool m_bRunning;
   bool m_bModal;
-  unsigned int m_dialogClosing;
+  bool m_dialogClosing;
 };
