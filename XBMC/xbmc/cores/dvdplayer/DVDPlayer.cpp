@@ -674,7 +674,7 @@ void CDVDPlayer::GetAudioInfo(CStdString& strAudioInfo)
       if (bsize > 0) bsize = (int)(((double)m_dvdPlayerAudio.m_packetQueue.GetSize() / m_dvdPlayerAudio.m_packetQueue.GetMaxSize()) * 100);
       if (bsize > 99) bsize = 99;
 
-      strAudioInfo.Format("%s, aq size: %i", strDemuxerInfo.c_str(), bsize);
+      strAudioInfo.Format("%s, aq size: %i, cpu: %i%%", strDemuxerInfo.c_str(), bsize, (int)(m_dvdPlayerAudio.GetRelativeUsage()*100));
     }
   }
 }
@@ -693,7 +693,7 @@ void CDVDPlayer::GetVideoInfo(CStdString& strVideoInfo)
       if (bsize > 0) bsize = (int)(((double)m_dvdPlayerVideo.m_packetQueue.GetSize() / m_dvdPlayerVideo.m_packetQueue.GetMaxSize()) * 100);
       if (bsize > 99) bsize = 99;
 
-      strVideoInfo.Format("%s, vq size: %i", strDemuxerInfo.c_str(), bsize);
+      strVideoInfo.Format("%s, vq size: %i, cpu: %i%%", strDemuxerInfo.c_str(), bsize, (int)(m_dvdPlayerVideo.GetRelativeUsage()*100+m_dvdPlayerVideo.m_PresentThread.GetRelativeUsage()*100));
     }
   }
 }
@@ -706,7 +706,7 @@ void CDVDPlayer::GetGeneralInfo(CStdString& strGeneralInfo)
     double dDiff = (double)m_dvdPlayerVideo.GetDiff() / DVD_TIME_BASE;
     int iFramesDropped = m_dvdPlayerVideo.GetNrOfDroppedFrames();
     
-    strGeneralInfo.Format("DVD Player ad:%6.3f, diff:%6.3f, dropped:%d", dDelay, dDiff, iFramesDropped);
+    strGeneralInfo.Format("DVD Player ad:%6.3f, diff:%6.3f, dropped:%d, cpu: %i%%", dDelay, dDiff, iFramesDropped, (int)(GetRelativeUsage()*100));
   }
 }
 

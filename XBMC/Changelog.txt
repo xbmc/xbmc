@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 08-02-2006 added: display cpu usage for audio/video/player thread in dvdplayer.
  - 08-02-2006 fixed: Includes messed up the order in the xml file.
  - 08-02-2006 fixed: Audio/Subtitle settings dialog was not working correctly.
  - 08-02-2006 changed: <id> is only read for custom windows.
