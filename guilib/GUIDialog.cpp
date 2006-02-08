@@ -12,7 +12,7 @@ CGUIDialog::CGUIDialog(DWORD dwID, const CStdString &xmlFile)
   m_pParentWindow = NULL;
   m_bModal = true;
   m_bRunning = false;
-  m_dialogClosing = 0;
+  m_dialogClosing = false;
   m_renderOrder = 1;
 }
 
@@ -90,6 +90,7 @@ bool CGUIDialog::OnMessage(CGUIMessage& message)
     }
   case GUI_MSG_WINDOW_INIT:
     {
+      m_dialogClosing = false;
       CGUIWindow::OnMessage(message);
       return true;
     }
@@ -107,6 +108,8 @@ void CGUIDialog::Close(bool forceClose /*= false*/)
   if (!m_bRunning) return;
 
   CLog::DebugLog("Dialog::Close called");
+  m_dialogClosing = true;
+
   // don't close if we should be animating
   if (!forceClose && HasAnimation(ANIM_TYPE_WINDOW_CLOSE))
   {
@@ -215,6 +218,9 @@ void CGUIDialog::UpdateStates(ANIMATION_TYPE type, ANIMATION_PROCESS currentProc
 bool CGUIDialog::RenderAnimation(DWORD time)
 {
   CGUIWindow::RenderAnimation(time);
+  // Check to see if we should close at this point
+  if (m_dialogClosing && !IsAnimating(ANIM_TYPE_WINDOW_CLOSE))
+    Close(true);
   // debug stuff
 /*  CAnimation anim = m_showAnimation;
   if (anim.currentProcess != ANIM_PROCESS_NONE)
