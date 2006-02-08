@@ -47,6 +47,9 @@ CThread::CThread()
   m_bAutoDelete = false;
   m_dwThreadId = 0;
   m_ThreadHandle = NULL;
+  m_iLastTime = 0;
+  m_iLastUsage = 0;
+  m_fLastUsage = 0.0f;
 
   m_pRunnable=NULL;
 }
@@ -58,6 +61,9 @@ CThread::CThread(IRunnable* pRunnable)
   m_bAutoDelete = false;
   m_dwThreadId = 0;
   m_ThreadHandle = NULL;
+  m_iLastTime = 0;
+  m_iLastUsage = 0;
+  m_fLastUsage = 0.0f;
 
   m_pRunnable=pRunnable;
 }
@@ -97,6 +103,8 @@ void CThread::Create(bool bAutoDelete)
   {
     throw 1; //ERROR should not b possible!!!
   }
+  m_iLastTime = GetTickCount();
+  m_iLastTime *= 10000;
   m_bAutoDelete = bAutoDelete;
   m_eventStop.Reset();
   m_bStop = false;
@@ -201,4 +209,30 @@ void CThread::Process()
 {
   if(m_pRunnable)
     m_pRunnable->Run(); 
+}
+
+float CThread::GetRelativeUsage()
+{
+  unsigned __int64 iTime = GetTickCount();
+  iTime *= 10000; // convert into 100ns tics
+
+  // only update every 1 second
+  if( iTime < m_iLastTime + 1000*10000 ) return m_fLastUsage;
+
+  FILETIME CreationTime, ExitTime, UserTime, KernelTime;
+  if( GetThreadTimes( m_ThreadHandle, &CreationTime, &ExitTime, &KernelTime, &UserTime ) )
+  {    
+
+    unsigned __int64 iUsage = 0;
+    iUsage += (((unsigned __int64)UserTime.dwHighDateTime) << 32) + ((unsigned __int64)UserTime.dwLowDateTime);
+    iUsage += (((unsigned __int64)KernelTime.dwHighDateTime) << 32) + ((unsigned __int64)KernelTime.dwLowDateTime);
+
+    m_fLastUsage = (float)( iUsage - m_iLastUsage ) / (float)( iTime - m_iLastTime );
+    
+    m_iLastUsage = iUsage;
+    m_iLastTime = iTime;
+
+    return m_fLastUsage;
+  }    
+  return 0.0f; 
 }
