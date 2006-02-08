@@ -99,6 +99,7 @@ protected:
   
   CRITICAL_SECTION m_critCodecSection;
 
+public:
   class CPresentThread : public CThread
   {
   public:
