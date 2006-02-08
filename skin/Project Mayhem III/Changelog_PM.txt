@@ -1,3 +1,5 @@
+2006-02-08 changed:	PlayerControls.xml only shows when media is playing.
+
 2006-02-06 changed:	Updated to v1.99 compatible.
 
 2006-02-05 changed:	Used <spinfont> and it now uses font10.

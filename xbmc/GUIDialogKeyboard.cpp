@@ -32,6 +32,7 @@ CGUIDialogKeyboard::CGUIDialogKeyboard(void)
   m_hiddenInput = false;
   m_keyType = LOWER;
   m_strHeading = "";
+  m_lastRemoteClickTime = 0;
 }
 
 CGUIDialogKeyboard::~CGUIDialogKeyboard(void)
@@ -203,10 +204,7 @@ void CGUIDialogKeyboard::Render()
 {
   // reset the hide state of the label when the remote
   // sms style input times out
-  if (m_lastRemoteClickTime + 1000 < timeGetTime())
-  {
-    UpdateLabel();
-  }
+  UpdateLabel();
   CGUIDialog::Render();
 }
 
