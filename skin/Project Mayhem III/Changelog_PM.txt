@@ -1,3 +1,5 @@
+2006-02-09 fixed:	base texture for the settings button in home.xml disappeared when anything but My Programs had focus (changed ID from 102 to 0)
+
 2006-02-08 changed:	PlayerControls.xml only shows when media is playing.
 
 2006-02-06 changed:	Updated to v1.99 compatible.
