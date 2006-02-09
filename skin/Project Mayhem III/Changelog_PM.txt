@@ -1,3 +1,4 @@
+2006-02-09 fixed:	Very wide album images could overlap the text in MusicVisualisation.
 2006-02-09 changed:	Added an "IP Address" button to the keyboard.
 2006-02-09 fixed:	base texture for the settings button in home.xml disappeared when anything but My Programs had focus (changed ID from 102 to 0)
 
