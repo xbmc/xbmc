@@ -14,6 +14,7 @@
 
 #define ABS(a) ((a) >= 0 ? (a) : (-(a)))
 
+#define USEOLDSYNC
 
 CDVDPlayerAudio::CDVDPlayerAudio(CDVDClock* pClock) : CThread()
 {
@@ -38,6 +39,37 @@ CDVDPlayerAudio::~CDVDPlayerAudio()
   // CloseStream(true);
   DeleteCriticalSection(&m_critCodecSection);
 }
+
+void CDVDPlayerAudio::AddPTSQueue(__int64 pts, __int64 delay)
+{
+  TPTSItem item;
+  item.pts = pts;
+  item.timestamp = m_pClock->GetAbsoluteClock() + delay;
+  m_quePTSQueue.push(item);
+
+  // call function to make sure the queue 
+  // doesn't grow should nobody call it
+  GetCurrentPts();
+}
+void CDVDPlayerAudio::FlushPTSQueue()
+{
+  while( !m_quePTSQueue.empty() ) m_quePTSQueue.pop();
+  m_currentPTSItem.timestamp = 0;
+  //m_currentPTSItem.pts = 0;
+}
+
+__int64 CDVDPlayerAudio::GetCurrentPts()
+{   
+  while( !m_quePTSQueue.empty() && m_pClock->GetAbsoluteClock() >= m_quePTSQueue.front().timestamp )
+  {
+    m_currentPTSItem = m_quePTSQueue.front();
+    m_quePTSQueue.pop();
+  }
+
+  if( m_currentPTSItem.timestamp == 0 ) return m_currentPTSItem.pts;
+
+  return m_currentPTSItem.pts + (m_pClock->GetAbsoluteClock() - m_currentPTSItem.timestamp);  
+}  
 
 bool CDVDPlayerAudio::OpenStream( CDemuxStreamAudio *pDemuxStream )                                 
 {
@@ -94,10 +126,11 @@ void CDVDPlayerAudio::CloseStream(bool bWaitForBuffers)
     m_pAudioCodec = NULL;
   }
 
-  pAudioPacket = NULL;
+  // flush any remaining pts values
+  FlushPTSQueue();
 }
 // decode one audio frame and returns its uncompressed size
-int CDVDPlayerAudio::DecodeFrame(BYTE** pAudioBuffer, int *data_size,bool bDropPacket)
+int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket)
 {
   CDVDDemux::DemuxPacket* pPacket = pAudioPacket;
   int n=48000*2*16/8, len;
@@ -107,6 +140,10 @@ int CDVDPlayerAudio::DecodeFrame(BYTE** pAudioBuffer, int *data_size,bool bDropP
   int first_pkt_size = 0; 
   int first_pkt_used = 0;
   int result = 0;
+
+  // make sure the sent frame is clean
+  memset(&audioframe, 0, sizeof(DVDAudioFrame));
+
   if (pPacket)
   {
     first_pkt_pts = pPacket->pts;
@@ -138,19 +175,24 @@ int CDVDPlayerAudio::DecodeFrame(BYTE** pAudioBuffer, int *data_size,bool bDropP
       }
 
       // get decoded data and the size of it
-      *data_size = m_pAudioCodec->GetData(pAudioBuffer);
+      audioframe.size = m_pAudioCodec->GetData(&audioframe.data);
 
       audio_pkt_data += len;
       audio_pkt_size -= len;
 
-      if (*data_size <= 0) continue;
-      
-      // compute pts.
+      if (audioframe.size <= 0) continue;
+
+      audioframe.pts = m_audioClock;
+
+      // compute duration.
       n = m_pAudioCodec->GetChannels() * m_pAudioCodec->GetBitsPerSample() / 8 * m_pAudioCodec->GetSampleRate();
       if (n > 0)
       {
         // safety check, if channels == 0, n will result in 0, and that will result in a nice devide exception
-        m_audioClock += ((__int64)(*data_size) * (__int64)DVD_TIME_BASE) / (__int64)n;
+        audioframe.duration = (unsigned int)(((__int64)audioframe.size * DVD_TIME_BASE) / n);
+
+        // increase audioclock to after the packet
+        m_audioClock += audioframe.duration;
       }
 
       //If we are asked to drop this packet, return a size of zero. then it won't be played
@@ -229,19 +271,20 @@ void CDVDPlayerAudio::Process()
 {
   CLog::Log(LOGNOTICE, "running thread: CDVDPlayerAudio::Process()");
 
-  int len, result;
+  int result;
 
   // silence data
   BYTE silence[1024];
   memset(silence, 0, 1024);
+ 
+  DVDAudioFrame audioframe;
 
-  BYTE* pAudioBuffer;
   __int64 iClockDiff=0;
   while (!m_bStop)
   {
     //Don't let anybody mess with our global variables
     EnterCriticalSection(&m_critCodecSection);
-    result = DecodeFrame(&pAudioBuffer, &len, m_iSpeed != 1); // blocks if no audio is available, but leaves critical section before doing so
+    result = DecodeFrame(audioframe, m_iSpeed != 1); // blocks if no audio is available, but leaves critical section before doing so
     LeaveCriticalSection(&m_critCodecSection);
 
     if( result & DECODE_FLAG_ERROR ) 
@@ -256,27 +299,24 @@ void CDVDPlayerAudio::Process()
       break;
     }
 
-    if( result & DECODE_FLAG_RESYNC )
-    {
-      CLog::Log(LOGDEBUG, "CDVDPlayerAudio::Process - Resync recieved.");
-      m_pClock->Discontinuity(CLOCK_DISC_NORMAL, m_audioClock - m_dvdAudio.GetDelay());
-    }
-
     if( result & DECODE_FLAG_DROP )
     {
       //frame should be dropped. Don't let audio move ahead of the current time thou
       //we need to be able to start playing at any time
       //when playing backwords, we try to keep as small buffers as possible
 
-      if( m_iSpeed > 0 )
-      { 
-        while( !m_bStop && m_audioClock - m_dvdAudio.GetDelay() > m_pClock->GetClock() ) Sleep(1);
-      }
+      // set the time at this delay
+      AddPTSQueue(audioframe.pts, m_dvdAudio.GetDelay());
 
+      if( m_iSpeed > 0 )
+      {
+        __int64 timestamp = m_pClock->GetAbsoluteClock() + audioframe.duration / m_iSpeed;
+        while( !m_bStop && timestamp > m_pClock->GetAbsoluteClock() ) Sleep(1);
+      }
       continue;
     }
     
-    if( len > 0 )
+    if( audioframe.size > 0 )
     {
       // we have succesfully decoded an audio frame, openup the audio device if not already done
       if (!m_bInitializedOutputDevice)
@@ -285,9 +325,22 @@ void CDVDPlayerAudio::Process()
       }
 
       //Add any packets play
-      m_dvdAudio.AddPackets(pAudioBuffer, len );      
+      m_dvdAudio.AddPackets(audioframe.data, audioframe.size);
+
+      // store the delay for this pts value so we can calculate the current playing
+      AddPTSQueue(audioframe.pts, m_dvdAudio.GetDelay() - audioframe.duration);
+
     }
 
+    // if we where asked to resync on this packet, do so here
+    if( result & DECODE_FLAG_RESYNC )
+    {      
+      CLog::Log(LOGDEBUG, "CDVDPlayerAudio::Process - Resync recieved.");
+      while (!m_bStop && (unsigned int)m_dvdAudio.GetDelay() > audioframe.duration ) Sleep(5);
+      m_pClock->Discontinuity(CLOCK_DISC_NORMAL, audioframe.pts);
+    }
+
+#ifdef USEOLDSYNC
     //Clock should be calculated after packets have been added as m_audioClock points to the 
     //time after they have been played
 
@@ -300,7 +353,7 @@ void CDVDPlayerAudio::Process()
     {
       //Wait untill only the new audio frame wich triggered the discontinuity is left
       //then set disc state
-      while (!m_bStop && m_dvdAudio.GetBytesInBuffer() > len ) Sleep(5);
+      while (!m_bStop && (unsigned int)m_dvdAudio.GetBytesInBuffer() > audioframe.size ) Sleep(5);
 
       m_pClock->Discontinuity(CLOCK_DISC_NORMAL, m_audioClock - m_dvdAudio.GetDelay());
       CLog::DebugLog("CDVDPlayer:: Detected Audio Discontinuity, syncing clock. diff was: %I64d, %I64d, av: %I64d", iClockDiff, iCurrDiff, iAvDiff);
@@ -312,6 +365,7 @@ void CDVDPlayerAudio::Process()
       //m_pClock->AdjustSpeedToMatch(iClock + iAvDiff);
       iClockDiff = iCurrDiff;
     }
+#endif
   }
 }
 
@@ -332,11 +386,19 @@ void CDVDPlayerAudio::Flush()
   m_packetQueue.Flush();
   m_dvdAudio.Flush();
 
+  FlushPTSQueue();
+
   if (m_pAudioCodec)
   {
     EnterCriticalSection(&m_critCodecSection);
     audio_pkt_size = 0;
     audio_pkt_data = NULL;
+    if( pAudioPacket )
+    {
+      CDVDDemuxUtils::FreeDemuxPacket(pAudioPacket);
+      pAudioPacket = NULL;
+    }
+
     m_pAudioCodec->Reset();
     LeaveCriticalSection(&m_critCodecSection);
   }
