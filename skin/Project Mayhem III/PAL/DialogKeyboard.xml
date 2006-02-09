@@ -71,7 +71,7 @@
       <label>Done</label>
       <onleft>57</onleft>
       <onright>48</onright>
-      <onup>304</onup>
+      <onup>307</onup>
       <ondown>302</ondown>
       <texturenofocus>keyboard-btn-done.png</texturenofocus>
       <texturefocus>keyboard-btn-done-focus.png</texturefocus>
@@ -706,7 +706,7 @@
       <onleft>8</onleft>
       <onright>85</onright>
       <onup>303</onup>
-      <ondown>300</ondown>
+      <ondown>307</ondown>
       <alttexturenofocus>keyboard-btn-mid.png</alttexturenofocus>
       <alttexturefocus>keyboard-btn-mid-focus.png</alttexturefocus>
       <texturenofocus>keyboard-btn-mid-sel.png</texturenofocus>
@@ -851,14 +851,23 @@
     </control>
 
     <control>
-      <description>dummy left</description>
-      <type>image</type>
-      <id>0</id>
+      <description>IP Input button</description>
+      <type>button</type>
+      <id>307</id>
       <posx>150</posx>
       <posy>375</posy>
       <width>120</width>
       <height>30</height>
-      <texture>keyboard-btn-dummyleft.png</texture>
+      <texturenofocus>keyboard-btn-done.png</texturenofocus>
+      <texturefocus>keyboard-btn-done-focus.png</texturefocus>
+      <label>1006</label>
+      <font>special13</font>
+      <align>center</align>
+      <aligny>center</aligny>
+      <onleft>306</onleft>
+      <onright>32</onright>
+      <onup>304</onup>
+      <ondown>300</ondown>
     </control>
 
     <control>
@@ -870,7 +879,7 @@
       <width>180</width>
       <height>30</height>
       <label>Space</label>
-      <onleft>304</onleft>
+      <onleft>307</onleft>
       <onright>305</onright>
       <onup>85</onup>
       <ondown>48</ondown>
@@ -906,7 +915,7 @@
       <width>60</width>
       <height>30</height>
       <onleft>305</onleft>
-      <onright>32</onright>
+      <onright>307</onright>
       <onup>8</onup>
       <ondown>56</ondown>
       <texturenofocus>keyboard-btn-next.png</texturenofocus>
