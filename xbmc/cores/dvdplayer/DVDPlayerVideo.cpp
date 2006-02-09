@@ -479,7 +479,7 @@ CDVDPlayerVideo::EOUTPUTSTATUS CDVDPlayerVideo::OutputPicture(DVDVideoPicture* p
     if (iSleepTime > DVD_MSEC_TO_TIME(500) ) iSleepTime = DVD_MSEC_TO_TIME(500); // drop to a minimum of 2 frames/sec
 
     // current pts is always equal to the pts of a picture, at least it is for external subtitles
-    m_iCurrentPts = pts;
+    m_iCurrentPts = pts - (iSleepTime > 0 ? iSleepTime : 0);
 
     if( iSleepTime < 0 )
     { // we are late, try to figure out how late
