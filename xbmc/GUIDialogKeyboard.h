@@ -34,6 +34,7 @@ protected:
   void MoveCursor(int iAmount);
   int GetCursorPos() const;
   void OnSymbols();
+  void OnIPAddress();
 
 private:
 
