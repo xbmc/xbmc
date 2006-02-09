@@ -128,7 +128,7 @@ bool CFileRar::Open(const CURL& url, bool bBinary)
       break;
 
   if (i<items.Size())
-    if (items[i]->m_lStartOffset == 0x30) // stored
+    if (items[i]->m_idepth == 0x30) // stored
     {
       if (!OpenInArchive())
         return false;
