@@ -16,6 +16,14 @@ enum CodecID;
 #define DECODE_FLAG_ERROR   4
 #define DECODE_FLAG_ABORT   8
 
+typedef struct stDVDAudioFrame
+{
+  BYTE* data;
+  __int64 pts;
+  unsigned int duration;  
+  unsigned int size;
+} DVDAudioFrame;
+
 class CDVDPlayerAudio : public CThread
 {
 public:
@@ -46,6 +54,8 @@ public:
   int m_iSourceChannels; // number of audio channels for the current active stream
   
   CDVDPacketQueue m_packetQueue;
+  
+  __int64 GetCurrentPts();
 
 protected:
 
@@ -54,7 +64,7 @@ protected:
   virtual void Process();
 
   bool InitializeOutputDevice();
-  int DecodeFrame(BYTE** audio_buf, int *data_size, bool bDropPacket);
+  int DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket);
 
   bool m_bInitializedOutputDevice;
   __int64 m_audioClock;
@@ -69,6 +79,14 @@ protected:
   CDVDAudioCodec* m_pAudioCodec; // audio codec
 
   int m_iSpeed;  // wanted playback speed. if playback speed!=1, don't sync clock as it will loose track of position after seek
+
+  typedef struct {__int64 pts; __int64 timestamp;} TPTSItem;
+  TPTSItem m_currentPTSItem;
+  std::queue<TPTSItem> m_quePTSQueue;
+
+  void AddPTSQueue(__int64 pts, __int64 delay);
+  void FlushPTSQueue();
+
 
   CRITICAL_SECTION m_critCodecSection;
 };
