@@ -4,9 +4,8 @@
 #include "GUILabelControl.h"
 #include "GUIButtonControl.h"
 #include "Util.h"
-
-
-// TODO: Add support for symbols.
+#include "GUIDialogNumeric.h"
+#include "utils/RegExp.h"
 
 // Symbol mapping (based on MS virtual keyboard - may need improving)
 static char symbol_map[37] = "!@#$%^&*()[]{}-_=+;:\'\",.<>/?\\|`~    ";
@@ -18,6 +17,7 @@ static char symbol_map[37] = "!@#$%^&*()[]{}-_=+;:\'\",.<>/?\\|`~    ";
 #define CTL_BUTTON_SYMBOLS 304
 #define CTL_BUTTON_LEFT  305
 #define CTL_BUTTON_RIGHT 306
+#define CTL_BUTTON_IP_ADDRESS 307
 
 #define CTL_LABEL_EDIT  310
 #define CTL_LABEL_HEADING 311
@@ -174,6 +174,10 @@ bool CGUIDialogKeyboard::OnMessage(CGUIMessage& message)
           MoveCursor(1);
         }
         break;
+      case CTL_BUTTON_IP_ADDRESS:
+        {
+          OnIPAddress();
+        }
       default:
         m_lastRemoteKeyClicked = 0;
         OnClickButton(iControl);
@@ -235,8 +239,8 @@ void CGUIDialogKeyboard::Backspace()
   if (iPos > 0)
   {
     m_strEdit.erase(iPos - 1, 1);
-    UpdateLabel();
     MoveCursor(-1);
+    UpdateLabel();
   }
 }
 
@@ -544,6 +548,29 @@ void CGUIDialogKeyboard::OnShift()
 {
   m_bShift = !m_bShift;
   UpdateButtons();
+}
+
+void CGUIDialogKeyboard::OnIPAddress()
+{
+  // find any IP address in the current string if there is any
+  // We match to #.#.#.#
+  CStdString ip;
+  CRegExp reg;
+  reg.RegComp("[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+");
+  int start = reg.RegFind(m_strEdit.c_str());
+  int length = 0;
+  if (start > -1)
+  {
+    length = reg.GetSubLenght(0);
+    ip = m_strEdit.Mid(start, length);
+  }
+  else
+    start = m_strEdit.size();
+  if (CGUIDialogNumeric::ShowAndGetIPAddress(ip, m_strHeading))
+  {
+    m_strEdit = m_strEdit.Left(start) + ip + m_strEdit.Mid(start + length);
+    UpdateLabel();
+  }
 }
 
 const char* CGUIDialogKeyboard::s_charsSeries[10] = { " !@#$%^&*()[]{}<>/\\|0", ".,;:\'\"-+_=?`~1", "ABC2", "DEF3", "GHI4", "JKL5", "MNO6", "PQRS7", "TUV8", "WXYZ9" };
