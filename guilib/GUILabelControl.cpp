@@ -140,7 +140,7 @@ void CGUILabelControl::SetLabel(const wstring &strLabel)
     return;
   m_strLabel = strLabel;
   SetWidthControl(m_ScrollInsteadOfTruncate);
-  if (m_iCursorPos > m_strLabel.size())
+  if (m_iCursorPos > (int)m_strLabel.size())
     m_iCursorPos = m_strLabel.size();
 }
 
