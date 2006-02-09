@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 09-02-2006 added: display a/v sync in codecinfo during playback in dvdplayer + some new code to prepare for a new syncing system.
+ - 09-02-2006 fixed: some dvd's would stutter way more than before after the THX fix (not the major stutter issue). buffers are now only played out if timestamp wraps backwords
  - 09-02-2006 added: IP Address button from the normal virtual keyboard to link to the IP address input dialog.
  - 09-02-2006 changed: Controls that are initially hidden will not be animated using WindowOpen.
  - 09-02-2006 fixed: Some ID3 tags that used multiple strings per tag were using the last string (often empty).  Now we just use the first non-empty string.

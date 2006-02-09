@@ -703,10 +703,10 @@ void CDVDPlayer::GetGeneralInfo(CStdString& strGeneralInfo)
   if (!m_bStop)
   {
     double dDelay = (double)m_dvdPlayerVideo.GetDelay() / DVD_TIME_BASE;
-    double dDiff = (double)m_dvdPlayerVideo.GetDiff() / DVD_TIME_BASE;
+    double dDiff = (double)(m_dvdPlayerAudio.GetCurrentPts() - m_dvdPlayerVideo.GetCurrentPts()) / DVD_TIME_BASE;
     int iFramesDropped = m_dvdPlayerVideo.GetNrOfDroppedFrames();
     
-    strGeneralInfo.Format("DVD Player ad:%6.3f, diff:%6.3f, dropped:%d, cpu: %i%%", dDelay, dDiff, iFramesDropped, (int)(GetRelativeUsage()*100));
+    strGeneralInfo.Format("DVD Player ad:%6.3f, a/v:%6.3f, dropped:%d, cpu: %i%%", dDelay, dDiff, iFramesDropped, (int)(CThread::GetRelativeUsage()*100));
   }
 }
 
@@ -1329,11 +1329,13 @@ int CDVDPlayer::OnDVDNavResult(void* pData, int iMessage)
             // we have a discontinuity in our stream.
             CLog::Log(LOGDEBUG, "DVDNAV_DISCONTINUITY");
 
-            // make sure everything before this is completly played
-            // clock's can change dramatically here.
-            m_dvdPlayerAudio.WaitForBuffers();
-            m_dvdPlayerVideo.WaitForBuffers();
-            
+            if( pci->pci_gi.vobu_s_ptm*10 < m_dvd.iNAVPackFinish )
+            {
+              // clock is about to wrap back
+              // make sure everything before this is completly played
+              m_dvdPlayerAudio.WaitForBuffers();
+              m_dvdPlayerVideo.WaitForBuffers();
+            }
             // don't allow next frame to be skipped
             m_bDontSkipNextFrame = true;
 
@@ -1343,7 +1345,7 @@ int CDVDPlayer::OnDVDNavResult(void* pData, int iMessage)
           }
 
           m_dvd.iNAVPackStart = pci->pci_gi.vobu_s_ptm*10;
-          m_dvd.iNAVPackFinish = pci->pci_gi.vobu_e_ptm*10;      
+          m_dvd.iNAVPackFinish = pci->pci_gi.vobu_e_ptm*10;
       }
       break;
     case DVDNAV_HOP_CHANNEL:
