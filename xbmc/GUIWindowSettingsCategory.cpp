@@ -692,13 +692,14 @@ void CGUIWindowSettingsCategory::CreateSettings()
     }
     else if (strSetting == "LookAndFeel.StartUpWindow")
     {
+      // items in a spin control must be sequential. you cant skip values.
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
-      pControl->AddLabel(g_localizeStrings.Get(513),  0	);  // XBMC Home
-      pControl->AddLabel(g_localizeStrings.Get(0),    1	);  // My Programs
-      pControl->AddLabel(g_localizeStrings.Get(1),    2	);  // My Pictures
-      pControl->AddLabel(g_localizeStrings.Get(2),    5 );  // My Music
-      pControl->AddLabel(g_localizeStrings.Get(3),    6 );  // My Video
+      pControl->AddLabel(g_localizeStrings.Get(513),  STARTUP_HOME);  // XBMC Home
+      pControl->AddLabel(g_localizeStrings.Get(0),    STARTUP_PROGRAMS);  // My Programs
+      pControl->AddLabel(g_localizeStrings.Get(1),    STARTUP_PICTURES);  // My Pictures
+      pControl->AddLabel(g_localizeStrings.Get(2),    STARTUP_MUSIC);  // My Music
+      pControl->AddLabel(g_localizeStrings.Get(3),    STARTUP_VIDEO);  // My Video
       pControl->SetValue(pSettingInt->GetData());
     }
     else if (strSetting == "LookAndFeel.Rumble")
@@ -1538,7 +1539,27 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     // Set the Current XML or Previos StartWindow state!
     CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
     CStdString startWindow;
-    startWindow.Format("%i", pControl->GetValue());
+    int iValue = pControl->GetValue();
+    switch (iValue)
+    {
+    case STARTUP_HOME:
+      startWindow = "0";
+      break;
+    case STARTUP_PROGRAMS:
+      startWindow = "1";
+      break;
+    case STARTUP_PICTURES:
+      startWindow = "2";
+      break;
+    case STARTUP_MUSIC:
+      startWindow = "5";
+      break;
+    case STARTUP_VIDEO:
+      startWindow = "6";
+      break;
+    default:
+      startWindow.Format("%i", pControl->GetValue());
+    }
     g_settings.UpDateXbmcXML("startwindow", startWindow);
   }
   else if (strSetting == "UIFilters.Flicker" || strSetting == "UIFilters.Soften")
