@@ -703,7 +703,14 @@ void CDVDPlayer::GetGeneralInfo(CStdString& strGeneralInfo)
   if (!m_bStop)
   {
     double dDelay = (double)m_dvdPlayerVideo.GetDelay() / DVD_TIME_BASE;
-    double dDiff = (double)(m_dvdPlayerAudio.GetCurrentPts() - m_dvdPlayerVideo.GetCurrentPts()) / DVD_TIME_BASE;
+
+    __int64 apts = m_dvdPlayerAudio.GetCurrentPts();
+    __int64 vpts = m_dvdPlayerVideo.GetCurrentPts();
+    double dDiff = 0;
+
+    if( apts != DVD_NOPTS_VALUE && vpts != DVD_NOPTS_VALUE )
+      dDiff = (double)(apts - vpts) / DVD_TIME_BASE;    
+    
     int iFramesDropped = m_dvdPlayerVideo.GetNrOfDroppedFrames();
     
     strGeneralInfo.Format("DVD Player ad:%6.3f, a/v:%6.3f, dropped:%d, cpu: %i%%", dDelay, dDiff, iFramesDropped, (int)(CThread::GetRelativeUsage()*100));
@@ -1327,7 +1334,7 @@ int CDVDPlayer::OnDVDNavResult(void* pData, int iMessage)
           if( pci->pci_gi.vobu_s_ptm*10 != m_dvd.iNAVPackFinish)
           {
             // we have a discontinuity in our stream.
-            CLog::Log(LOGDEBUG, "DVDNAV_DISCONTINUITY");
+            CLog::Log(LOGDEBUG, "DVDNAV_DISCONTINUITY(from: %u, to: %u)", m_dvd.iNAVPackFinish, pci->pci_gi.vobu_s_ptm);
 
             if( pci->pci_gi.vobu_s_ptm*10 < m_dvd.iNAVPackFinish )
             {

@@ -24,6 +24,9 @@ CDVDPlayerAudio::CDVDPlayerAudio(CDVDClock* pClock) : CThread()
   m_iSourceChannels = 0;
   m_audioClock = 0;
 
+  m_currentPTSItem.pts = DVD_NOPTS_VALUE;
+  m_currentPTSItem.timestamp = 0;
+
   m_iSpeed = 1;
   
   InitializeCriticalSection(&m_critCodecSection);
@@ -55,7 +58,7 @@ void CDVDPlayerAudio::FlushPTSQueue()
 {
   while( !m_quePTSQueue.empty() ) m_quePTSQueue.pop();
   m_currentPTSItem.timestamp = 0;
-  //m_currentPTSItem.pts = 0;
+  m_currentPTSItem.pts = DVD_NOPTS_VALUE;
 }
 
 __int64 CDVDPlayerAudio::GetCurrentPts()
