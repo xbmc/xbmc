@@ -105,6 +105,12 @@
 #define LOCK_PROG_PIC_VI        14 // Musik & Picture & Video
 #define LOCK_MU_VI_PIC_PROG     15 // Musik & Video & Pictures & Programs
 
+#define STARTUP_HOME      0 // XBMC Home
+#define STARTUP_PROGRAMS  1 // My Programs
+#define STARTUP_PICTURES  2 // My Pictures
+#define STARTUP_MUSIC     3 // My Music
+#define STARTUP_VIDEO     4 // My Video
+
 #define FRAME_RATE_LEAVE_AS_IS  0
 #define FRAME_RATE_CONVERT      1
 #define FRAME_RATE_USE_PAL60    2
