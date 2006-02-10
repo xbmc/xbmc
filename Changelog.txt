@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 10-02-2006 fixed: music nav, the error message for a empty database was not shown
  - 10-02-2006 fixed: setting the startup window to music or video starts xmbc in the correct window
  - 09-02-2006 added: display a/v sync in codecinfo during playback in dvdplayer + some new code to prepare for a new syncing system.
  - 09-02-2006 fixed: some dvd's would stutter way more than before after the THX fix (not the major stutter issue). buffers are now only played out if timestamp wraps backwords
