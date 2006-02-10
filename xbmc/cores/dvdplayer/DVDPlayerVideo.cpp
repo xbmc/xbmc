@@ -178,6 +178,7 @@ void CDVDPlayerVideo::Process()
     if (dvdstate & DVDPACKET_MESSAGE_RESYNC)
     {
       //DVDPlayer asked us to sync playback clock
+      CLog::Log(LOGDEBUG, "CDVDPlayerVideo::Process - Resync recieved."); 
       m_pClock->Discontinuity(CLOCK_DISC_NORMAL, pPacket->dts);      
     }
     if (dvdstate & DVDPACKET_MESSAGE_NOSKIP)
