@@ -19,7 +19,7 @@ private:
 
   CRITICAL_SECTION m_critSection;
   HANDLE m_eventFree;
-
+  bool m_exclusive;
   long m_sharedLock;
 };
 
