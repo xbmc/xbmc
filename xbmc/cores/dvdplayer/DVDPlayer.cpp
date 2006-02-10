@@ -387,7 +387,10 @@ void CDVDPlayer::ProcessAudioData(CDemuxStream* pStream, CDVDDemux::DemuxPacket*
 
   //If this is the first packet after a discontinuity, send it as a resync
   if( !(m_dvd.iFlagSentStart & 1) ) 
-  {
+  {    
+    if( pPacket->pts < m_dvd.iNAVPackStart || pPacket->pts > m_dvd.iNAVPackFinish )
+      CLog::Log(LOGDEBUG, "CDVDPlayer::ProcessAudioData - First packet didn't belong to correct vobunit.");
+
     m_dvd.iFlagSentStart |= 1;
     iPacketMessage |= DVDPACKET_MESSAGE_RESYNC;
   }
@@ -414,6 +417,9 @@ void CDVDPlayer::ProcessVideoData(CDemuxStream* pStream, CDVDDemux::DemuxPacket*
   //If this is the first packet after a discontinuity, send it as a resync
   if( !(m_dvd.iFlagSentStart & 1) ) 
   {
+    if( pPacket->pts < m_dvd.iNAVPackStart || pPacket->pts > m_dvd.iNAVPackFinish )
+      CLog::Log(LOGDEBUG, "CDVDPlayer::ProcessVideoData - First packet didn't belong to correct vobunit.");
+
     m_dvd.iFlagSentStart |= 1;
     iPacketMessage |= DVDPACKET_MESSAGE_RESYNC;
   }
@@ -1331,28 +1337,41 @@ int CDVDPlayer::OnDVDNavResult(void* pData, int iMessage)
       {
           pci_t* pci = (pci_t*)pData;
 
-          if( pci->pci_gi.vobu_s_ptm*10 != m_dvd.iNAVPackFinish)
+          // this should be possible to use to make sure we get
+          // seamless transitions over these boundaries
+          // if we remember the old vobunits boundaries
+          // when a packet comes out of demuxer that has
+          // pts values outside that boundary, it belongs
+          // to the new vobunit, wich has new timestamps
+
+          // ptm is in a 90khz clock.
+          unsigned __int64 pts = ((unsigned __int64)pci->pci_gi.vobu_s_ptm) * 1000 / 90;
+          if( pts != m_dvd.iNAVPackFinish )
           {
             // we have a discontinuity in our stream.
-            CLog::Log(LOGDEBUG, "DVDNAV_DISCONTINUITY(from: %u, to: %u)", m_dvd.iNAVPackFinish, pci->pci_gi.vobu_s_ptm);
+            CLog::Log(LOGDEBUG, "DVDNAV_DISCONTINUITY(from: %I64d, to: %I64d)", m_dvd.iNAVPackFinish, pts);
 
-            if( pci->pci_gi.vobu_s_ptm*10 < m_dvd.iNAVPackFinish )
+            if( pts < m_dvd.iNAVPackFinish )
             {
               // clock is about to wrap back
               // make sure everything before this is completly played
+              // this doesn't work correctly all the time due to
+              // that ffmpeg might have a packet buffered wich is still
+              // part of the old pts
               m_dvdPlayerAudio.WaitForBuffers();
               m_dvdPlayerVideo.WaitForBuffers();
             }
             // don't allow next frame to be skipped
             m_bDontSkipNextFrame = true;
 
-            //Only set this when we have the first non continous packet
-            m_dvd.iFlagSentStart=0;
-            
+            // only set this when we have the first non continous packet
+            // so that we know at what packets this new continuous stream starts
+            m_dvd.iNAVPackStart = pts;
+            m_dvd.iFlagSentStart=0;                        
           }
 
-          m_dvd.iNAVPackStart = pci->pci_gi.vobu_s_ptm*10;
-          m_dvd.iNAVPackFinish = pci->pci_gi.vobu_e_ptm*10;
+          //m_dvd.iNAVPackStart = pts;
+          m_dvd.iNAVPackFinish = ((unsigned __int64)pci->pci_gi.vobu_e_ptm) * 1000 / 90;
       }
       break;
     case DVDNAV_HOP_CHANNEL:

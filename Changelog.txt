@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 10-02-2006 fixed: dvdnav discontinuites wheren't being logged correctly
  - 10-02-2006 fixed: potential bug in sharedsection handling
  - 10-02-2006 fixed: music nav, the error message for a empty database was not shown
  - 10-02-2006 fixed: setting the startup window to music or video starts xmbc in the correct window
