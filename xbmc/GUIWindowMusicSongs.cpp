@@ -65,23 +65,32 @@ bool CGUIWindowMusicSongs::OnMessage(CGUIMessage& message)
       // try to open the destination path
       if (!strDestination.IsEmpty())
       {
-        // default parameters if the jump fails
-        m_vecItems.m_strPath.Empty();
-
-        bool bIsBookmarkName = false;
-        int iIndex = CUtil::GetMatchingShare(strDestination, g_settings.m_vecMyMusicShares, bIsBookmarkName);
-        if (iIndex > -1)
+        // open playlists location
+        if (strDestination.Equals("$PLAYLISTS"))
         {
-          // set current directory to matching share
-          if (bIsBookmarkName)
-            m_vecItems.m_strPath=g_settings.m_vecMyMusicShares[iIndex].strPath;
-          else
-            m_vecItems.m_strPath=strDestination;
-          CLog::Log(LOGINFO, "  Success! Opened destination path: %s", strDestination.c_str());
+          m_vecItems.m_strPath = CUtil::MusicPlaylistsLocation();
+          CLog::Log(LOGINFO, "  Success! Opening destination path: %s", m_vecItems.m_strPath.c_str());
         }
         else
         {
-          CLog::Log(LOGERROR, "  Failed! Destination parameter (%s) does not match a valid share!", strDestination.c_str());
+          // default parameters if the jump fails
+          m_vecItems.m_strPath.Empty();
+
+          bool bIsBookmarkName = false;
+          int iIndex = CUtil::GetMatchingShare(strDestination, g_settings.m_vecMyMusicShares, bIsBookmarkName);
+          if (iIndex > -1)
+          {
+            // set current directory to matching share
+            if (bIsBookmarkName)
+              m_vecItems.m_strPath=g_settings.m_vecMyMusicShares[iIndex].strPath;
+            else
+              m_vecItems.m_strPath=strDestination;
+            CLog::Log(LOGINFO, "  Success! Opened destination path: %s", strDestination.c_str());
+          }
+          else
+          {
+            CLog::Log(LOGERROR, "  Failed! Destination parameter (%s) does not match a valid share!", strDestination.c_str());
+          }
         }
 
         // need file filters or GetDirectory in SetHistoryPath fails
