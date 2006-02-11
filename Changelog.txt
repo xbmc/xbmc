@@ -5,6 +5,9 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 11-02-2006 added: you can now jump directly to the saved playlists locations using the following commands:
+		Music: Xbmc.ActivateWindow(MyMusicFiles,$Playlists)
+		Video: Xbmc.ActivateWindow(MyVideos,$Playlists) 
  - 11-02-2006 added: videoplayer.playlistlength and videoplayer.playlistposition to info manager to match the musicplayer info items
  - 11-02-2006 added: my files, settings, xlink kai to startup window settings to match xboxmediacenter.xml
  - 10-02-2006 fixed: dvdnav discontinuites wheren't being logged correctly
