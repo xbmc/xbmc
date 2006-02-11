@@ -1241,17 +1241,9 @@ int CXbmcHttp::xbmcSetVolume(int numParas, CStdString paras[])
     return SetResponse(openTag+"Error:Missing Parameter");
   else
   {
-    int iPercent = atoi(paras[0].c_str()) ;
-    if (g_application.m_pPlayer!=0) {
-      if (iPercent<0) iPercent = 0;
-      if (iPercent>100) iPercent = 100;
-      float fHardwareVolume = ((float)iPercent)/100.0f * (VOLUME_MAXIMUM-VOLUME_MINIMUM) + VOLUME_MINIMUM;
-      g_stSettings.m_nVolumeLevel = (long)fHardwareVolume;
-      g_application.m_pPlayer->SetVolume(g_stSettings.m_nVolumeLevel);
-      return SetResponse(openTag+"OK");
-    }
-    else
-      return SetResponse(openTag+"Error");
+    int iPercent = atoi(paras[0].c_str());
+    g_application.SetVolume(iPercent);
+    return SetResponse(openTag+"OK");
   }
 }
 
