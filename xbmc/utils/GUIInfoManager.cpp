@@ -139,6 +139,8 @@ extern char g_szTitleIP[32];
 #define VIDEOPLAYER_USING_OVERLAYS  259
 #define VIDEOPLAYER_ISFULLSCREEN    260
 #define VIDEOPLAYER_HASMENU         261
+#define VIDEOPLAYER_PLAYLISTLEN     262
+#define VIDEOPLAYER_PLAYLISTPOS     263
 
 #define AUDIOSCROBBLER_ENABLED      300
 #define AUDIOSCROBBLER_CONN_STATE   301
@@ -380,6 +382,8 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("videoplayer.usingoverlays")) ret = VIDEOPLAYER_USING_OVERLAYS;
     else if (strTest.Equals("videoplayer.isfullscreen")) ret = VIDEOPLAYER_ISFULLSCREEN;
     else if (strTest.Equals("videoplayer.hasmenu")) ret = VIDEOPLAYER_HASMENU;
+    else if (strTest.Equals("videoplayer.playlistlength")) ret = VIDEOPLAYER_PLAYLISTLEN;
+    else if (strTest.Equals("videoplayer.playlistposition")) ret = VIDEOPLAYER_PLAYLISTPOS;
   }
   else if (strCategory.Equals("audioscrobbler"))
   {
@@ -520,6 +524,8 @@ wstring CGUIInfoManager::GetLabel(int info)
   case VIDEOPLAYER_TIME_REMAINING:
   case VIDEOPLAYER_TIME_SPEED:
   case VIDEOPLAYER_DURATION:
+  case VIDEOPLAYER_PLAYLISTLEN:
+  case VIDEOPLAYER_PLAYLISTPOS:
     strLabel = GetVideoLabel(info);
   break;
   case SYSTEM_FREE_SPACE_C:
@@ -1205,6 +1211,26 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
       return strDuration;
     }
     break;
+  case VIDEOPLAYER_PLAYLISTLEN:
+    {
+      CStdString strPlayListLength = L"";
+      if (g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_VIDEO || g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_VIDEO_TEMP)
+  	  {
+  			strPlayListLength.Format("%i", g_playlistPlayer.GetPlaylist(g_playlistPlayer.GetCurrentPlaylist()).size());
+  	  }
+      return strPlayListLength;
+  	}
+	  break;
+  case VIDEOPLAYER_PLAYLISTPOS:
+    {
+      CStdString strPlayListPosition = L"";
+      if (g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_VIDEO || g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_VIDEO_TEMP)
+  	  {
+  			strPlayListPosition.Format("%i",g_playlistPlayer.GetCurrentSong() + 1);
+  	  }
+      return strPlayListPosition;
+  	}
+  	break;
   }
   return "";
 }
