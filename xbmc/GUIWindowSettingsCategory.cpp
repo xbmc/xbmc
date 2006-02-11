@@ -698,8 +698,11 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->AddLabel(g_localizeStrings.Get(513),  STARTUP_HOME);  // XBMC Home
       pControl->AddLabel(g_localizeStrings.Get(0),    STARTUP_PROGRAMS);  // My Programs
       pControl->AddLabel(g_localizeStrings.Get(1),    STARTUP_PICTURES);  // My Pictures
+      pControl->AddLabel(g_localizeStrings.Get(7),    STARTUP_PROGRAMS);  // My Files
+      pControl->AddLabel(g_localizeStrings.Get(5),    STARTUP_SETTINGS);  // Settings
       pControl->AddLabel(g_localizeStrings.Get(2),    STARTUP_MUSIC);  // My Music
       pControl->AddLabel(g_localizeStrings.Get(3),    STARTUP_VIDEO);  // My Video
+      pControl->AddLabel(g_localizeStrings.Get(714),    STARTUP_KAI);  // Xlink Kai
       pControl->SetValue(pSettingInt->GetData());
     }
     else if (strSetting == "LookAndFeel.Rumble")
@@ -1542,20 +1545,8 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     int iValue = pControl->GetValue();
     switch (iValue)
     {
-    case STARTUP_HOME:
-      startWindow = "0";
-      break;
-    case STARTUP_PROGRAMS:
-      startWindow = "1";
-      break;
-    case STARTUP_PICTURES:
-      startWindow = "2";
-      break;
-    case STARTUP_MUSIC:
-      startWindow = "5";
-      break;
-    case STARTUP_VIDEO:
-      startWindow = "6";
+    case STARTUP_KAI:
+      startWindow = "2700";
       break;
     default:
       startWindow.Format("%i", pControl->GetValue());

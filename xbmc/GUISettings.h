@@ -108,8 +108,11 @@
 #define STARTUP_HOME      0 // XBMC Home
 #define STARTUP_PROGRAMS  1 // My Programs
 #define STARTUP_PICTURES  2 // My Pictures
-#define STARTUP_MUSIC     3 // My Music
-#define STARTUP_VIDEO     4 // My Video
+#define STARTUP_FILES     3 // My Files
+#define STARTUP_SETTINGS  4 // Settings
+#define STARTUP_MUSIC     5 // My Music
+#define STARTUP_VIDEO     6 // My Video
+#define STARTUP_KAI       7 // Xlink Kai
 
 #define FRAME_RATE_LEAVE_AS_IS  0
 #define FRAME_RATE_CONVERT      1
