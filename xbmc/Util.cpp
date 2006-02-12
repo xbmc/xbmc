@@ -2203,7 +2203,7 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
       CStdString strPath2;
       CUtil::AddFileToFolder(strLookInPaths[i],temp,strPath2);
       if (CDirectory::Exists(strPath2))
-        strLookInPaths.push_back(strLookInPaths[i]+temp);
+        strLookInPaths.push_back(strPath2);
     }
   }
   // .. done checking for cd-dirs
