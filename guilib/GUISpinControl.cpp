@@ -262,14 +262,9 @@ bool CGUISpinControl::OnMessage(CGUIMessage& message)
         {
           if ( m_iValue >= 0 && m_iValue < (int)m_vecLabels.size() )
             message.SetLabel( m_vecLabels[m_iValue]);
-
-          if ( m_iValue >= 0 && m_iValue < (int)m_vecValues.size() )
-            message.SetParam1(m_vecValues[m_iValue]);
         }
         return true;
       }
-
-
     }
   }
   return false;
@@ -493,6 +488,12 @@ void CGUISpinControl::SetFloatRange(float fStart, float fEnd)
 void CGUISpinControl::SetValue(int iValue)
 {
   m_iValue = iValue;
+  if (m_iType == SPIN_CONTROL_TYPE_TEXT)
+  {
+    for (unsigned int i = 0; i < m_vecValues.size(); i++)
+      if (iValue == m_vecValues[i])
+        m_iValue = i;
+  }
 }
 
 void CGUISpinControl::SetFloatValue(float fValue)
@@ -502,6 +503,11 @@ void CGUISpinControl::SetFloatValue(float fValue)
 
 int CGUISpinControl::GetValue() const
 {
+  if (m_iType == SPIN_CONTROL_TYPE_TEXT)
+  {
+    if (m_iValue >= 0 && m_iValue < (int)m_vecValues.size())
+      return m_vecValues[m_iValue];
+  }
   return m_iValue;
 }
 

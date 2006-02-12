@@ -64,7 +64,7 @@ CSpinExSettingControl::CSpinExSettingControl(CGUISpinControlEx *pSpin, DWORD dwI
       }
       else
         strLabel.Format(pSettingInt->m_strFormat, i);
-      m_pSpin->AddLabel(strLabel, (i - pSettingInt->m_iMin) / pSettingInt->m_iStep);
+      m_pSpin->AddLabel(strLabel, i);
     }
   }
   else // if (pSetting->GetControlType() == SPIN_CONTROL_TEXT)
@@ -87,7 +87,7 @@ void CSpinExSettingControl::OnClick()
     if (m_pSetting->GetType() != SETTINGS_TYPE_STRING)
     {
       CSettingInt *pSettingInt = (CSettingInt *)m_pSetting;
-      pSettingInt->SetData(m_pSpin->GetValue() * pSettingInt->m_iStep + pSettingInt->m_iMin);
+      pSettingInt->SetData(m_pSpin->GetValue());
     }
   }
 }

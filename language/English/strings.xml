@@ -569,6 +569,25 @@
   <string><id>998</id><value>XLink Kai</value></string>
   <string><id>999</id><value>Online Gaming</value></string>
   <string><id>1000</id><value>Screensaver Preview</value></string>
+  <string><id>1001</id><value>Unable to connect</value></string>
+  <string><id>1002</id><value>XBMC was unable to connect to the network location.</value></string>
+  <string><id>1003</id><value>This could be due to it not being connected.</value></string>
+  <string><id>1004</id><value>Would you like to add it anyway?</value></string>
+  <string><id>1005</id><value>Enter a name for this share</value></string>
+  <string><id>1006</id><value>IP Address</value></string>
+  <string><id>1007</id><value>Add Network Location</value></string>
+  <string><id>1008</id><value>Protocol</value></string>
+  <string><id>1009</id><value>Server Address</value></string>
+  <string><id>1010</id><value>Server Name</value></string>
+  <string><id>1011</id><value>Remote Path</value></string>
+  <string><id>1012</id><value>Shared Folder</value></string>
+  <string><id>1013</id><value>Port</value></string>
+  <string><id>1014</id><value>Username</value></string>
+  <string><id>1015</id><value>network server</value></string>
+  <string><id>1016</id><value>Enter the network address of the server</value></string>
+  <string><id>1017</id><value>Enter the path on the server</value></string>
+  <string><id>1018</id><value>Enter the port number</value></string>
+  <string><id>1019</id><value>Enter the username</value></string>
 
   <string><id>1200</id><value>SMB Share</value></string>
   <string><id>1201</id><value>SMB IP</value></string>

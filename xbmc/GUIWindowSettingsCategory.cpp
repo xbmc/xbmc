@@ -453,9 +453,9 @@ void CGUIWindowSettingsCategory::CreateSettings()
           strLabel.Format("%2.0f%cF", ((9.0 / 5.0) * (float)i) + 32.0, 176);
         else
           strLabel.Format("%i%cC", i, 176);
-        pControl->AddLabel(strLabel, i - pSettingInt->m_iMin);
+        pControl->AddLabel(strLabel, i);
       }
-      pControl->SetValue(pSettingInt->GetData() - pSettingInt->m_iMin);
+      pControl->SetValue(pSettingInt->GetData());
     }
     else if (strSetting == "System.FanSpeed")
     {
@@ -695,14 +695,14 @@ void CGUIWindowSettingsCategory::CreateSettings()
       // items in a spin control must be sequential. you cant skip values.
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
-      pControl->AddLabel(g_localizeStrings.Get(513),  STARTUP_HOME);  // XBMC Home
-      pControl->AddLabel(g_localizeStrings.Get(0),    STARTUP_PROGRAMS);  // My Programs
-      pControl->AddLabel(g_localizeStrings.Get(1),    STARTUP_PICTURES);  // My Pictures
-      pControl->AddLabel(g_localizeStrings.Get(7),    STARTUP_PROGRAMS);  // My Files
-      pControl->AddLabel(g_localizeStrings.Get(5),    STARTUP_SETTINGS);  // Settings
-      pControl->AddLabel(g_localizeStrings.Get(2),    STARTUP_MUSIC);  // My Music
-      pControl->AddLabel(g_localizeStrings.Get(3),    STARTUP_VIDEO);  // My Video
-      pControl->AddLabel(g_localizeStrings.Get(714),    STARTUP_KAI);  // Xlink Kai
+      pControl->AddLabel(g_localizeStrings.Get(513),  0	);  // XBMC Home
+      pControl->AddLabel(g_localizeStrings.Get(0),    1	);  // My Programs
+      pControl->AddLabel(g_localizeStrings.Get(1),    2	);  // My Pictures
+      pControl->AddLabel(g_localizeStrings.Get(2),    5 );  // My Music
+      pControl->AddLabel(g_localizeStrings.Get(3),    6 );  // My Video
+      pControl->AddLabel(g_localizeStrings.Get(7),    3 );  // My Files
+      pControl->AddLabel(g_localizeStrings.Get(5),    4 );  // Settings
+      pControl->AddLabel(g_localizeStrings.Get(714),2700 ); // Xlink Kai
       pControl->SetValue(pSettingInt->GetData());
     }
     else if (strSetting == "LookAndFeel.Rumble")
@@ -1542,15 +1542,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     // Set the Current XML or Previos StartWindow state!
     CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
     CStdString startWindow;
-    int iValue = pControl->GetValue();
-    switch (iValue)
-    {
-    case STARTUP_KAI:
-      startWindow = "2700";
-      break;
-    default:
-      startWindow.Format("%i", pControl->GetValue());
-    }
+    startWindow.Format("%i", pControl->GetValue());
     g_settings.UpDateXbmcXML("startwindow", startWindow);
   }
   else if (strSetting == "UIFilters.Flicker" || strSetting == "UIFilters.Soften")
@@ -2137,9 +2129,9 @@ void CGUIWindowSettingsCategory::FillInSubtitleHeights(CSetting *pSetting)
       }
       else
         strLabel.Format(pSettingInt->m_strFormat, i);
-      pControl->AddLabel(strLabel, (i - pSettingInt->m_iMin) / pSettingInt->m_iStep);
+      pControl->AddLabel(strLabel, i);
     }
-    pControl->SetValue((pSettingInt->GetData() - pSettingInt->m_iMin) / pSettingInt->m_iStep);
+    pControl->SetValue(pSettingInt->GetData());
   }
   else
   {
