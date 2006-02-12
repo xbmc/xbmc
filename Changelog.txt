@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 12-02-2006 fixed: the correct item should be highlighted for the currently playing item
  - 11-02-2006 added: you can now jump directly to the saved playlists locations using the following commands:
 		Music: Xbmc.ActivateWindow(MyMusicFiles,$Playlists)
 		Video: Xbmc.ActivateWindow(MyVideos,$Playlists) 
