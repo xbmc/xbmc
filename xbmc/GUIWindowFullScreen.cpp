@@ -482,6 +482,7 @@ bool CGUIWindowFullScreen::NeedRenderFullScreen()
   if (g_application.GetPlaySpeed() != 1) return true;
   if (m_timeCodeShow) return true;
   if (g_infoManager.GetBool(PLAYER_SHOWCODEC)) return true;
+  if (g_infoManager.GetBool(PLAYER_SHOWINFO)) return true;
   if (m_bShowViewModeInfo) return true;
   if (m_bShowCurrentTime) return true;
   if (g_infoManager.GetDisplayAfterSeek()) return true;
