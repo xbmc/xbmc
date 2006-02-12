@@ -289,32 +289,15 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
           nPreviousItem = HIWORD(message.GetParam2());
         }
         CStdString strCurrentItem = g_playlistPlayer.GetPlaylist(g_playlistPlayer.GetCurrentPlaylist())[nCurrentItem].m_strPath;
-        CStdString strPreviousItem;
-        if (nPreviousItem > -1)
-          strPreviousItem = g_playlistPlayer.GetPlaylist(g_playlistPlayer.GetCurrentPlaylist())[nPreviousItem].m_strPath;
 
         // need to mark currently playing item by path, not index
-        bool bFoundCurrent = false;
-        bool bFoundPrev = false;
-        if (strPreviousItem.IsEmpty())
-          bFoundPrev = true;
         for (int i = 0; i < m_vecItems.Size(); ++i)
         {
           CFileItem* pItem = m_vecItems[i];
           if (pItem->m_strPath.Equals(strCurrentItem))
-          {
             pItem->Select(true);
-            bFoundCurrent = true;
-          }
-          else if (!bFoundPrev && pItem->m_strPath.Equals(strPreviousItem))
-          {
+          else
             pItem->Select(false);
-            bFoundPrev = true;
-          }
-
-          // abort when both have been found
-          if (bFoundPrev && bFoundCurrent)
-            break;
         }
 
         /*
