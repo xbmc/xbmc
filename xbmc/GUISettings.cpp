@@ -444,7 +444,7 @@ CGUISettings::CGUISettings(void)
   AddString(3, "LookAndFeel.SoundSkin",15108,"SKINDEFAULT", SPIN_CONTROL_TEXT);
   AddInt(4, "LookAndFeel.Rumble",15110,0, 0, 1, 10, SPIN_CONTROL_TEXT);
   AddString(5, "LookAndFeel.Font",13303,"Default", SPIN_CONTROL_TEXT);
-  AddInt(6, "LookAndFeel.StartUpWindow",512,1, 0, 1, 6, SPIN_CONTROL_TEXT);
+  AddInt(6, "LookAndFeel.StartUpWindow",512,1, 0, 1, 3100, SPIN_CONTROL_TEXT);
   AddSeparator(7, "LookAndFeel.Sep1");
   AddString(8, "LookAndFeel.Language",248,"english", SPIN_CONTROL_TEXT);
   AddString(9, "LookAndFeel.CharSet",735,"ISO-8859-1", SPIN_CONTROL_TEXT);

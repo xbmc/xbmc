@@ -720,7 +720,7 @@ bool CGUIWindow::OnAction(const CAction &action)
   for (ivecControls i = m_vecControls.begin();i != m_vecControls.end(); ++i)
   {
     CGUIControl* pControl = *i;
-    if (pControl->HasFocus() && pControl->IsVisible())
+    if (pControl->HasFocus())
     {
       return pControl->OnAction(action);
     }
