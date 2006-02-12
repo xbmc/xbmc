@@ -284,6 +284,7 @@ bool CGUIWindowMusicBase::Update(const CStdString &strDirectory)
   strSelectedItem = m_history.GetSelectedItem(m_vecItems.m_strPath);
 
   int iCurrentPlaylistSong = -1;
+  CStdString strCurrentPlaylistSong;
   // Search current playlist item
   CStdString strCurrentDirectory = m_vecItems.m_strPath;
   if (CUtil::HasSlashAtEnd(strCurrentDirectory))
@@ -292,6 +293,7 @@ bool CGUIWindowMusicBase::Update(const CStdString &strDirectory)
   if (m_guiState.get() && g_playlistPlayer.GetCurrentPlaylist()==m_guiState->GetPlaylist() && strCurrentDirectory==m_guiState->GetPlaylistDirectory())
   {
     iCurrentPlaylistSong = g_playlistPlayer.GetCurrentSong();
+    strCurrentPlaylistSong = g_playlistPlayer.GetPlaylist(g_playlistPlayer.GetCurrentPlaylist())[iCurrentPlaylistSong].m_strPath;
   }
 
   bool bSelectedFound = false, bCurrentSongFound = false;
@@ -319,9 +321,18 @@ bool CGUIWindowMusicBase::Update(const CStdString &strDirectory)
     // synchronize playlist with current directory
     if (!bCurrentSongFound && iCurrentPlaylistSong > -1)
     {
+      /*
       if (!pItem->m_bIsFolder && !pItem->IsPlayList() && !pItem->IsNFO())
         iSongInDirectory++;
       if (iSongInDirectory == iCurrentPlaylistSong)
+      {
+        pItem->Select(true);
+        bCurrentSongFound = true;
+      }
+      */
+
+      // neet to match current song on the path, not the index
+      if (pItem->m_strPath.Equals(strCurrentPlaylistSong))
       {
         pItem->Select(true);
         bCurrentSongFound = true;
