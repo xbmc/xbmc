@@ -107,8 +107,22 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
         if (m_guiState.get())
           m_guiState->SetNextSortOrder();
 
+        int nItem = m_viewControl.GetSelectedItem();
+        CFileItem* pItem = m_vecItems[nItem];
+        const CStdString& strSelected = pItem->m_strPath;
+
         UpdateButtons();
         OnSort();
+
+        for (int i = 0; i < m_vecItems.Size(); i++)
+        {
+          CFileItem* pItem = m_vecItems[i];
+          if (pItem->m_strPath == strSelected)
+          {
+            m_viewControl.SetSelectedItem(i);
+            break;
+          }
+        }
 
         return true;
       }
