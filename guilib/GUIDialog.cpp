@@ -85,12 +85,12 @@ bool CGUIDialog::OnMessage(CGUIMessage& message)
 
         m_pParentWindow = NULL;
         m_bRunning = false;
+        m_dialogClosing = false;
       }
       return true;
     }
   case GUI_MSG_WINDOW_INIT:
     {
-      m_dialogClosing = false;
       CGUIWindow::OnMessage(message);
       return true;
     }
@@ -108,13 +108,15 @@ void CGUIDialog::Close(bool forceClose /*= false*/)
   if (!m_bRunning) return;
 
   CLog::DebugLog("Dialog::Close called");
-  m_dialogClosing = true;
 
   // don't close if we should be animating
   if (!forceClose && HasAnimation(ANIM_TYPE_WINDOW_CLOSE))
   {
-    if (!IsAnimating(ANIM_TYPE_WINDOW_CLOSE))
+    if (!m_dialogClosing && !IsAnimating(ANIM_TYPE_WINDOW_CLOSE))
+    {
       QueueAnimation(ANIM_TYPE_WINDOW_CLOSE);
+      m_dialogClosing = true;
+    }
     return;
   }
 
@@ -140,6 +142,7 @@ void CGUIDialog::DoModal(DWORD dwParentId, int iWindowID /*= WINDOW_INVALID */)
     return ;
   }
   
+  m_dialogClosing = false;
   m_bModal = true;
   // set running before it's added to the window manager, else the auto-show code
   // could show it as well if we are in a different thread from

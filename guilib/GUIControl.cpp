@@ -558,12 +558,14 @@ void CGUIControl::QueueAnimation(ANIMATION_TYPE animType)
   // rule out the animations we shouldn't perform
   if (!m_bVisible || !HasRendered()) 
   { // hidden or never rendered - don't allow exit or entry animations for this control
-    if (animType == ANIM_TYPE_WINDOW_CLOSE || animType == ANIM_TYPE_WINDOW_OPEN)
+    if (animType == ANIM_TYPE_WINDOW_CLOSE)
       return;
   }
   if (!m_bVisible)
   { // hidden - only allow hidden anims if we're animating a visible anim
     if (animType == ANIM_TYPE_HIDDEN && !IsAnimating(ANIM_TYPE_VISIBLE))
+      return;
+    if (animType == ANIM_TYPE_WINDOW_OPEN)
       return;
   }
   CAnimation *reverseAnim = GetAnimation((ANIMATION_TYPE)-animType);
