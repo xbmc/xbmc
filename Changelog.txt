@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 12-02-2006 fixed: music wouldnt highlight the correct item when switching the sorting between ascending and descending
  - 12-02-2006 fixed: sometimes more than one song could be highlighted
  - 12-02-2006 fixed: the correct item should be highlighted for the currently playing item
  - 11-02-2006 added: you can now jump directly to the saved playlists locations using the following commands:
