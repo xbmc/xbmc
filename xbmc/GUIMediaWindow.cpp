@@ -106,85 +106,14 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
       {
         if (m_guiState.get())
           m_guiState->SetNextSortOrder();
-
-        int nItem = m_viewControl.GetSelectedItem();
-        CFileItem* pItem = m_vecItems[nItem];
-        const CStdString& strSelected = pItem->m_strPath;
-
-        UpdateButtons();
-        OnSort();
-
-        for (int i = 0; i < m_vecItems.Size(); i++)
-        {
-          CFileItem* pItem = m_vecItems[i];
-          if (pItem->m_strPath == strSelected)
-          {
-            m_viewControl.SetSelectedItem(i);
-            break;
-          }
-        }
-
+        UpdateFileList();
         return true;
       }
       else if (iControl == CONTROL_BTNSORTBY) // sort by
       {
         if (m_guiState.get())
           m_guiState->SetNextSortMethod();
-
-        int nItem = m_viewControl.GetSelectedItem();
-        CFileItem* pItem = m_vecItems[nItem];
-        const CStdString& strSelected = pItem->m_strPath;
-
-        UpdateButtons();
-        OnSort();
-
-        for (int i = 0; i < m_vecItems.Size(); i++)
-        {
-          CFileItem* pItem = m_vecItems[i];
-          if (pItem->m_strPath == strSelected)
-          {
-            m_viewControl.SetSelectedItem(i);
-            break;
-          }
-        }
-
-        //  set the currently playing item as selected, if its in this directory
-        CStdString strDirectory = m_vecItems.m_strPath;
-        if (CUtil::HasSlashAtEnd(strDirectory))
-          strDirectory.Delete(strDirectory.size() - 1);
-        int iPlaylist=m_guiState->GetPlaylist();
-        if (iPlaylist!=PLAYLIST_NONE)
-        {
-          if (!strDirectory.IsEmpty() && m_guiState.get() && g_playlistPlayer.GetCurrentPlaylist()==iPlaylist && strDirectory==m_guiState->GetPlaylistDirectory())
-          {
-            int nSong = g_playlistPlayer.GetCurrentSong();
-            CStdString strCurrentSong = g_playlistPlayer.GetPlaylist(iPlaylist)[nSong].GetFileName();
-            g_playlistPlayer.GetPlaylist(iPlaylist).Clear();
-            g_playlistPlayer.Reset();
-            int nFolderCount = 0;
-            int iNoSongs = 0;
-            for (int i = 0; i < (int)m_vecItems.Size(); i++)
-            {
-              CFileItem* pItem = m_vecItems[i];
-              if (pItem->m_bIsFolder)
-              {
-                nFolderCount++;
-                continue;
-              }
-              if (!pItem->IsPlayList() && !pItem->IsZIP() && !pItem->IsRAR())
-              {
-                CPlayList::CPlayListItem playlistItem ;
-                CUtil::ConvertFileItemToPlayListItem(pItem, playlistItem);
-                g_playlistPlayer.GetPlaylist(iPlaylist).Add(playlistItem);
-              }
-              else iNoSongs++;
-
-              if (strCurrentSong == pItem->m_strPath)
-                g_playlistPlayer.SetCurrentSong(i - nFolderCount - iNoSongs);
-            }
-          }
-        }
-
+        UpdateFileList();
         return true;
       }
       else if (m_viewControl.HasControl(iControl))  // list/thumb control
@@ -879,4 +808,53 @@ void CGUIMediaWindow::OnPlayMedia(int iItem)
   g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_NONE);
   CFileItem* pItem=m_vecItems[iItem];
   g_application.PlayFile(*pItem);
+}
+
+void CGUIMediaWindow::UpdateFileList()
+{
+  int nItem = m_viewControl.GetSelectedItem();
+  CFileItem* pItem = m_vecItems[nItem];
+  const CStdString& strSelected = pItem->m_strPath;
+
+  UpdateButtons();
+  OnSort();
+  
+  m_viewControl.SetSelectedItem(strSelected);
+
+  //  set the currently playing item as selected, if its in this directory
+  CStdString strDirectory = m_vecItems.m_strPath;
+  if (CUtil::HasSlashAtEnd(strDirectory))
+    strDirectory.Delete(strDirectory.size() - 1);
+  int iPlaylist=m_guiState->GetPlaylist();
+  if (iPlaylist!=PLAYLIST_NONE)
+  {
+    if (!strDirectory.IsEmpty() && m_guiState.get() && g_playlistPlayer.GetCurrentPlaylist()==iPlaylist && strDirectory==m_guiState->GetPlaylistDirectory())
+    {
+      int nSong = g_playlistPlayer.GetCurrentSong();
+      CStdString strCurrentSong = g_playlistPlayer.GetPlaylist(iPlaylist)[nSong].GetFileName();
+      g_playlistPlayer.GetPlaylist(iPlaylist).Clear();
+      g_playlistPlayer.Reset();
+      int nFolderCount = 0;
+      int iNoSongs = 0;
+      for (int i = 0; i < (int)m_vecItems.Size(); i++)
+      {
+        CFileItem* pItem = m_vecItems[i];
+        if (pItem->m_bIsFolder)
+        {
+          nFolderCount++;
+          continue;
+        }
+        if (!pItem->IsPlayList() && !pItem->IsZIP() && !pItem->IsRAR())
+        {
+          CPlayList::CPlayListItem playlistItem ;
+          CUtil::ConvertFileItemToPlayListItem(pItem, playlistItem);
+          g_playlistPlayer.GetPlaylist(iPlaylist).Add(playlistItem);
+        }
+        else iNoSongs++;
+
+        if (strCurrentSong == pItem->m_strPath)
+          g_playlistPlayer.SetCurrentSong(i - nFolderCount - iNoSongs);
+      }
+    }
+  }
 }
