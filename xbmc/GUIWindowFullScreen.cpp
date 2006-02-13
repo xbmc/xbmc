@@ -642,6 +642,9 @@ void CGUIWindowFullScreen::RenderFullScreen()
   if (iSpeed != 1)
     bRenderGUI = true;
 
+  if (g_infoManager.GetBool(PLAYER_SHOWINFO))
+    bRenderGUI = true;
+
   if ( bRenderGUI)
   {
     if (g_application.m_pPlayer->IsPaused() || iSpeed != 1)
