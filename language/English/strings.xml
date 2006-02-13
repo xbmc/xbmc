@@ -453,6 +453,10 @@
   <string><id>519</id><value>Launch in..</value></string>
   <string><id>520</id><value>Edit XBE title</value></string>
 
+  <string><id>590</id><value>Random</value></string>
+  <string><id>591</id><value>One</value></string>
+  <string><id>592</id><value>All</value></string>
+
   <string><id>600</id><value>Rip CD Audio</value></string>
   <string><id>601</id><value>Medium</value></string>
   <string><id>602</id><value>Standard</value></string>
