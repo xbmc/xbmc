@@ -162,6 +162,11 @@ extern char g_szTitleIP[32];
 #define LISTITEM_YEAR               316
 #define LISTITEM_GENRE              317
 
+#define PLAYLIST_LENGTH             390
+#define PLAYLIST_POSITION           391
+#define PLAYLIST_RANDOM             392
+#define PLAYLIST_REPEAT             393
+
 #define VISUALISATION_LOCKED        400
 #define VISUALISATION_PRESET        401
 #define VISUALISATION_NAME          402
@@ -394,6 +399,13 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("videoplayer.playlistlength")) ret = VIDEOPLAYER_PLAYLISTLEN;
     else if (strTest.Equals("videoplayer.playlistposition")) ret = VIDEOPLAYER_PLAYLISTPOS;
   }
+  else if (strCategory.Equals("playlist"))
+  {
+    if (strTest.Equals("playlist.length")) ret = PLAYLIST_LENGTH;
+    else if (strTest.Equals("playlist.position")) ret = PLAYLIST_POSITION;
+    else if (strTest.Equals("playlist.random")) ret = PLAYLIST_RANDOM;
+    else if (strTest.Equals("playlist.repeat")) ret = PLAYLIST_REPEAT;
+  }
   else if (strCategory.Equals("audioscrobbler"))
   {
     if (strTest.Equals("audioscrobbler.enabled")) ret = AUDIOSCROBBLER_ENABLED;
@@ -536,6 +548,12 @@ wstring CGUIInfoManager::GetLabel(int info)
   case VIDEOPLAYER_PLAYLISTLEN:
   case VIDEOPLAYER_PLAYLISTPOS:
     strLabel = GetVideoLabel(info);
+  break;
+  case PLAYLIST_LENGTH:
+  case PLAYLIST_POSITION:
+  case PLAYLIST_RANDOM:
+  case PLAYLIST_REPEAT:
+    strLabel = GetPlaylistLabel(info);
   break;
   case SYSTEM_FREE_SPACE_C:
   case SYSTEM_FREE_SPACE_E:
@@ -1045,6 +1063,45 @@ CStdString CGUIInfoManager::GetTime(bool bSeconds)
   return text;
 }
 
+CStdString CGUIInfoManager::GetPlaylistLabel(int item)
+{
+  if (!g_application.IsPlaying()) return "";
+  int iPlaylist = g_playlistPlayer.GetCurrentPlaylist();
+  switch (item)
+  {
+  case PLAYLIST_LENGTH:
+    {
+      CStdString strLength = L"";
+  		strLength.Format("%i", g_playlistPlayer.GetPlaylist(iPlaylist).size());
+      return strLength;
+    }
+  case PLAYLIST_POSITION:
+    {
+      CStdString strPosition = L"";
+      strPosition.Format("%i", g_playlistPlayer.GetCurrentSong() + 1);
+      return strPosition;
+    }
+  case PLAYLIST_RANDOM:
+    {
+      if (g_playlistPlayer.ShuffledPlay(iPlaylist))
+        return g_localizeStrings.Get(590); // 590: Random
+      else
+        return g_localizeStrings.Get(351); // 351: Off
+    }
+  case PLAYLIST_REPEAT:
+    {
+      if (g_playlistPlayer.RepeatedOne(iPlaylist))
+        return g_localizeStrings.Get(591); // 591: One
+      else if (g_playlistPlayer.Repeated(iPlaylist))
+        return g_localizeStrings.Get(592); // 592: All
+      else
+        return g_localizeStrings.Get(351); // 351: Off
+    }
+  }
+  return "";
+}
+
+
 CStdString CGUIInfoManager::GetMusicLabel(int item)
 {
   if (!g_application.IsPlayingAudio()) return "";
@@ -1107,22 +1164,14 @@ CStdString CGUIInfoManager::GetMusicLabel(int item)
     break;
   case MUSICPLAYER_PLAYLISTLEN:
     {
-      CStdString strPlayListLength = L"";
       if (g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_MUSIC || g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_MUSIC_TEMP)
-  	  {
-  			strPlayListLength.Format("%i", g_playlistPlayer.GetPlaylist(g_playlistPlayer.GetCurrentPlaylist()).size());
-  	  }
-      return strPlayListLength;
+        return GetPlaylistLabel(PLAYLIST_LENGTH);
   	}
 	  break;
   case MUSICPLAYER_PLAYLISTPOS:
     {
-      CStdString strPlayListPosition = L"";
       if (g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_MUSIC || g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_MUSIC_TEMP)
-  	  {
-  			strPlayListPosition.Format("%i",g_playlistPlayer.GetCurrentSong() + 1);
-  	  }
-      return strPlayListPosition;
+        return GetPlaylistLabel(PLAYLIST_POSITION);
   	}
   	break;
   case MUSICPLAYER_BITRATE:
@@ -1228,22 +1277,14 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
     break;
   case VIDEOPLAYER_PLAYLISTLEN:
     {
-      CStdString strPlayListLength = L"";
       if (g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_VIDEO || g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_VIDEO_TEMP)
-  	  {
-  			strPlayListLength.Format("%i", g_playlistPlayer.GetPlaylist(g_playlistPlayer.GetCurrentPlaylist()).size());
-  	  }
-      return strPlayListLength;
+        return GetPlaylistLabel(PLAYLIST_LENGTH);
   	}
 	  break;
   case VIDEOPLAYER_PLAYLISTPOS:
     {
-      CStdString strPlayListPosition = L"";
       if (g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_VIDEO || g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_VIDEO_TEMP)
-  	  {
-  			strPlayListPosition.Format("%i",g_playlistPlayer.GetCurrentSong() + 1);
-  	  }
-      return strPlayListPosition;
+        return GetPlaylistLabel(PLAYLIST_POSITION);
   	}
   	break;
   }
