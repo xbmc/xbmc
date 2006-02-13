@@ -99,12 +99,17 @@ extern char g_szTitleIP[32];
 #define SYSTEM_CURRENT_WINDOW       135
 #define SYSTEM_CURRENT_CONTROL      136
 
-#define LCD_PLAY_ICON               180
-#define LCD_PROGRESS_BAR            181
-#define LCD_CPU_TEMPERATURE         182
-#define LCD_GPU_TEMPERATURE         183
-#define LCD_FAN_SPEED               184
-#define LCD_DATE                    186
+#define LCD_PLAY_ICON               160
+#define LCD_PROGRESS_BAR            161
+#define LCD_CPU_TEMPERATURE         162
+#define LCD_GPU_TEMPERATURE         163
+#define LCD_FAN_SPEED               164
+#define LCD_DATE                    166
+#define LCD_FREE_SPACE_C            167
+// 168 is reserved for space on D
+#define LCD_FREE_SPACE_E            169
+#define LCD_FREE_SPACE_F            170
+#define LCD_FREE_SPACE_G            171
 
 #define NETWORK_IP_ADDRESS          190
 
@@ -342,6 +347,10 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("lcd.gputemperature")) ret = LCD_GPU_TEMPERATURE;
     else if (strTest.Equals("lcd.fanspeed")) ret = LCD_FAN_SPEED;
     else if (strTest.Equals("lcd.date")) ret = LCD_DATE;
+    else if (strTest.Equals("lcd.freespace(c)")) ret = LCD_FREE_SPACE_C;
+    else if (strTest.Equals("lcd.freespace(e)")) ret = LCD_FREE_SPACE_E;
+    else if (strTest.Equals("lcd.freespace(f)")) ret = LCD_FREE_SPACE_F;
+    else if (strTest.Equals("lcd.freespace(g)")) ret = LCD_FREE_SPACE_G;
   }
   else if (strCategory.Equals("network"))
   {
@@ -534,6 +543,12 @@ wstring CGUIInfoManager::GetLabel(int info)
   case SYSTEM_FREE_SPACE_G:
     return GetFreeSpace(info);
   break;
+  case LCD_FREE_SPACE_C:
+  case LCD_FREE_SPACE_E:
+  case LCD_FREE_SPACE_F:
+  case LCD_FREE_SPACE_G:
+    return GetFreeSpace(info, true);
+  break;
   case SYSTEM_CPU_TEMPERATURE:
     return GetSystemHeatInfo("cpu");
     break;
@@ -562,7 +577,7 @@ wstring CGUIInfoManager::GetLabel(int info)
     {
       MEMORYSTATUS stat;
       GlobalMemoryStatus(&stat);
-      strLabel.Format("%i Mb", stat.dwAvailPhys / (1024 * 1024));
+      strLabel.Format("%iMB", stat.dwAvailPhys / (1024 * 1024));
     }
     break;
   case SYSTEM_SCREEN_MODE:
@@ -1503,7 +1518,7 @@ wstring CGUIInfoManager::GetSystemHeatInfo(const CStdString &strInfo)
   return Text;
 }
 
-wstring CGUIInfoManager::GetFreeSpace(int drive)
+wstring CGUIInfoManager::GetFreeSpace(int drive, bool shortText)
 {
   ULARGE_INTEGER lTotalFreeBytes;
   WCHAR wszHD[64];
@@ -1517,13 +1532,23 @@ wstring CGUIInfoManager::GetFreeSpace(int drive)
   const WCHAR *pszUnavailable = g_localizeStrings.Get(161).c_str();
   if (GetDiskFreeSpaceEx( strDriveFind.c_str(), NULL, NULL, &lTotalFreeBytes))
   {
-    swprintf(wszHD, L"%s %c: %u Mb ", pszDrive, cDrive, lTotalFreeBytes.QuadPart / 1048576); //To make it MB
-    wcscat(wszHD, pszFree);
+    if (shortText)
+      swprintf(wszHD, L"%uMB", lTotalFreeBytes.QuadPart / 1024 / 1024); //To make it MB
+  	else
+  	{  
+      swprintf(wszHD, L"%s %c: %u Mb ", pszDrive, cDrive, lTotalFreeBytes.QuadPart / 1048576); //To make it MB
+      wcscat(wszHD, pszFree);
+    }
   }
   else
   {
-    swprintf(wszHD, L"%s %c: ", pszDrive, cDrive);
-    wcscat(wszHD, pszUnavailable);
+    if (shortText)
+      swprintf(wszHD, L"N/A");
+    else
+    {
+      swprintf(wszHD, L"%s %c: ", pszDrive, cDrive);
+      wcscat(wszHD, pszUnavailable);
+    }
   }
   strReturn = wszHD;
   return strReturn;
