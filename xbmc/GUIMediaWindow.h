@@ -39,6 +39,8 @@ protected:
   void SetHistoryForPath(const CStdString& strDirectory);
   virtual void LoadPlayList(const CStdString& strFileName) {}
   virtual void OnPlayMedia(int iItem);
+  void CGUIMediaWindow::UpdateFileList();
+
 protected:
   CVirtualDirectory m_rootDir;
   CGUIViewControl m_viewControl;
