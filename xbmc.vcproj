@@ -795,6 +795,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\utils\LED.h">
 				</File>
 				<File
+					RelativePath=".\xbmc\MediaManager.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\MediaManager.h">
+				</File>
+				<File
 					RelativePath=".\xbmc\utils\MediaMonitor.cpp">
 				</File>
 				<File
@@ -968,6 +974,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\GUIDialogKeyboard.cpp">
 				</File>
 				<File
+					RelativePath=".\xbmc\GUIDialogMediaSource.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\GUIDialogMediaSource.h">
+				</File>
+				<File
 					RelativePath=".\xbmc\GUIDialogMusicOSD.cpp">
 				</File>
 				<File
@@ -975,6 +987,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				</File>
 				<File
 					RelativePath=".\xbmc\GUIDialogMuteBug.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\GUIDialogNetworkSetup.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\GUIDialogNetworkSetup.h">
 				</File>
 				<File
 					RelativePath=".\xbmc\GUIDialogNumeric.cpp">

@@ -59,6 +59,7 @@ CGUIWindow::CGUIWindow(DWORD dwID, const CStdString &xmlFile)
   m_loadOnDemand = true;
   m_renderOrder = 0;
   m_dynamicResourceAlloc = true;
+  m_hasRendered = false;
 }
 
 CGUIWindow::~CGUIWindow(void)
@@ -708,6 +709,7 @@ void CGUIWindow::Render()
       pControl->Render();
     }
   }
+  m_hasRendered = true;
 }
 
 bool CGUIWindow::OnAction(const CAction &action)
@@ -856,6 +858,7 @@ void CGUIWindow::SetID(DWORD dwID)
 
 void CGUIWindow::OnInitWindow()
 {
+  m_hasRendered = false;
   // set our initial visibility
   SetControlVisibility();
   QueueAnimation(ANIM_TYPE_WINDOW_OPEN);
@@ -1270,7 +1273,7 @@ void CGUIWindow::QueueAnimation(ANIMATION_TYPE animType)
   }
   if (animType == ANIM_TYPE_WINDOW_CLOSE)
   {
-    if (!m_WindowAllocated) // can't render an animation if we aren't allocated!
+    if (!m_WindowAllocated || !m_hasRendered) // can't render an animation if we aren't allocated or haven't rendered
       return;
     if (m_showAnimation.currentProcess == ANIM_PROCESS_NORMAL)
     {
