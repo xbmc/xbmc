@@ -6,6 +6,7 @@
 #include "application.h"
 #include "GUIPassword.h"
 #include "util.h"
+#include "GUIDialogMediaSource.h"
 
 #define BACKGROUND_IMAGE 999
 #define BACKGROUND_BOTTOM 998
@@ -151,12 +152,22 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CStdS
     pMenu->Initialize();
     
     // add the needed buttons
-    int btn_Rename = pMenu->AddButton(118); // Rename
+    int btn_Rename = 0;
+#ifdef SKIN_VERSION_PRE_2_0_COMPATIBILITY
+    if (!m_gWindowManager.GetWindow(WINDOW_DIALOG_MEDIA_SOURCE))
+      btn_Rename = pMenu->AddButton(118); // Rename
+#endif
     int btn_EditPath = 0;
+#ifdef SKIN_VERSION_PRE_2_0_COMPATIBILITY
     if (!CUtil::IsVirtualPath(strPath))
       btn_EditPath = pMenu->AddButton(748); // Edit Path
-    int btn_Delete = pMenu->AddButton(117); // Delete
     int btn_AddShare = pMenu->AddButton(bMyProgramsMenu ? 754 : 749); // 4: Add Program Link / Add Share
+#else
+    if (!CUtil::IsVirtualPath(strPath))
+      btn_EditPath = pMenu->AddButton(1027); // Edit Source
+    int btn_AddShare = pMenu->AddButton(1026); // Add Source
+#endif
+    int btn_Delete = pMenu->AddButton(117); // Delete
 
     int btn_Default = pMenu->AddButton(13335); // Set as Default
 
@@ -223,27 +234,36 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CStdS
       else if (btn == btn_EditPath)
       {
         if (!CheckMasterCode(iLockMode)) return false;
-        // edit path
-        CStdString strNewPath = strPath;
-        CStdString strHeading = g_localizeStrings.Get(bMyProgramsMenu ? 755 : 752);
-        if (CGUIDialogKeyboard::ShowAndGetInput(strNewPath, strHeading, false))
-        {
-          if (bMyProgramsMenu)
-          { // get a path depth
-            CStdString strNewDepth = "";
-            strHeading = g_localizeStrings.Get(757);
-            if (!(CGUIDialogKeyboard::ShowAndGetInput(strNewDepth, strHeading, false)))
-              return false;
-            if (!(CUtil::IsNaturalNumber(strNewDepth) && 0 < atoi(strNewDepth.c_str()) && 10 > atoi(strNewDepth.c_str())))
-            {
-              CGUIDialogOK::ShowAndGetInput(257, 759, 760, 0);
-              return false;
+#ifdef PRE_SKIN_VERSION_2_0_COMPATIBILITY
+        if (!m_gWindowManager.GetWindow(WINDOW_DIALOG_MEDIA_SOURCE))
+        { // edit path
+          CStdString strNewPath = strPath;
+          CStdString strHeading = g_localizeStrings.Get(bMyProgramsMenu ? 755 : 752);
+          if (CGUIDialogKeyboard::ShowAndGetInput(strNewPath, strHeading, false))
+          {
+            if (bMyProgramsMenu)
+            { // get a path depth
+              CStdString strNewDepth = "";
+              strHeading = g_localizeStrings.Get(757);
+              if (!(CGUIDialogKeyboard::ShowAndGetInput(strNewDepth, strHeading, false)))
+                return false;
+              if (!(CUtil::IsNaturalNumber(strNewDepth) && 0 < atoi(strNewDepth.c_str()) && 10 > atoi(strNewDepth.c_str())))
+              {
+                CGUIDialogOK::ShowAndGetInput(257, 759, 760, 0);
+                return false;
+              }
+              g_settings.UpdateBookmark(strType, strLabel, "depth", strNewDepth);
             }
-            g_settings.UpdateBookmark(strType, strLabel, "depth", strNewDepth);
+            g_settings.UpdateBookmark(strType, strLabel, "path", strNewPath);
+            return true;
           }
-          g_settings.UpdateBookmark(strType, strLabel, "path", strNewPath);
-          return true;
         }
+        else
+#endif
+        // TODO: No support here for <depth> parameter in My Programs.
+        // Ideally, we should simply search for xbe's more intelligently
+        // and display the results.  They can then be characterised by the user.
+        return CGUIDialogMediaSource::ShowAndEditMediaSource(strType, strLabel, strPath);
       }
       else if (btn == btn_Delete)
       {
@@ -259,27 +279,36 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CStdS
       else if (btn == btn_AddShare)
       {
         if (!CheckMasterCode(iLockMode)) return false;
-        // Add new share
-        CStdString strNewPath;
-        CStdString strHeading = g_localizeStrings.Get(bMyProgramsMenu ? 755 : 752);
-        if (CGUIDialogKeyboard::ShowAndGetInput(strNewPath, strHeading, false))
-        { // got a valid path
-          CStdString strNewDepth = "";
-          if (bMyProgramsMenu)
-          { // get a path depth
-            CStdString strHeading = g_localizeStrings.Get(757);
-            if (!(CGUIDialogKeyboard::ShowAndGetInput(strNewDepth, strHeading, false)))
-              return false;
+
+#ifdef SKIN_VERSION_PRE_2_0_COMPATIBILITY
+        if (!m_gWindowManager.GetWindow(WINDOW_DIALOG_MEDIA_SOURCE))
+        {
+          // Add new share
+          CStdString strNewPath;
+          CStdString strHeading = g_localizeStrings.Get(bMyProgramsMenu ? 755 : 752);
+          if (CGUIDialogKeyboard::ShowAndGetInput(strNewPath, strHeading, false))
+          { // got a valid path
+            CStdString strNewDepth = "";
+            if (bMyProgramsMenu)
+            { // get a path depth
+              CStdString strHeading = g_localizeStrings.Get(757);
+              if (!(CGUIDialogKeyboard::ShowAndGetInput(strNewDepth, strHeading, false)))
+                return false;
+            }
+            CStdString strNewName;
+            CStdString strHeading = g_localizeStrings.Get(bMyProgramsMenu ? 756 : 753);
+            if (CGUIDialogKeyboard::ShowAndGetInput(strNewName, strHeading, false))
+            {
+              // got a valid name, save the bookmark
+              g_settings.AddBookmark(strType, strNewName, strNewPath, atoi(strNewDepth.c_str()));
+              return true;
+            }
           }
-          CStdString strNewName;
-          CStdString strHeading = g_localizeStrings.Get(bMyProgramsMenu ? 756 : 753);
-          if (CGUIDialogKeyboard::ShowAndGetInput(strNewName, strHeading, false))
-          {
-            // got a valid name, save the bookmark
-            g_settings.AddBookmark(strType, strNewName, strNewPath, atoi(strNewDepth.c_str()));
-            return true;
-          }
+          return false;
         }
+        else
+#endif
+        return CGUIDialogMediaSource::ShowAndAddMediaSource(strType);
       }
       else if (btn == btn_Default)
       {

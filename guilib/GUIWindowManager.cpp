@@ -199,6 +199,7 @@ void CGUIWindowManager::PreviousWindow()
     while (m_windowHistory.size())
       m_windowHistory.pop();
     ActivateWindow(WINDOW_HOME);
+    return;
   }
 
   // ok, initialize the new window

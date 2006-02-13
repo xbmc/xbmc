@@ -992,7 +992,7 @@ bool CGUIThumbnailPanel::CanFocus() const
 void CGUIThumbnailPanel::SetNavigation(DWORD dwUp, DWORD dwDown, DWORD dwLeft, DWORD dwRight)
 {
   CGUIControl::SetNavigation(dwUp, dwDown, dwLeft, dwRight);
-  m_upDown.SetNavigation(0, 0, 0, dwRight);
+  m_upDown.SetNavigation(GetID(), dwDown, GetID(), dwRight);
 }
 
 void CGUIThumbnailPanel::SetPosition(int iPosX, int iPosY)

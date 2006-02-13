@@ -746,7 +746,7 @@ bool CGUIListControl::CanFocus() const
 void CGUIListControl::SetNavigation(DWORD dwUp, DWORD dwDown, DWORD dwLeft, DWORD dwRight)
 {
   CGUIControl::SetNavigation(dwUp, dwDown, dwLeft, dwRight);
-  m_upDown.SetNavigation(0, 0, 0, dwRight);
+  m_upDown.SetNavigation(GetID(), dwDown, GetID(), dwRight);
 }
 
 void CGUIListControl::SetPosition(int iPosX, int iPosY)
