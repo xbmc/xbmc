@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 13-02-2006 added: More lcd info labels thanks to Jeff McClain.
  - 13-02-2006 fixed: Windows with conditional visibility and WindowClose animations could flash on screen.
  - 13-02-2006 added: New Add/Edit media source dialogs.
  - 13-02-2006 fixed: Page up/down controls were hard to move off from.
