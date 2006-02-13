@@ -193,6 +193,7 @@ protected:
   vector<COrigin> m_origins;
 
   bool m_saveLastControl;
+  bool m_hasRendered;
 };
 
 #endif
