@@ -105,6 +105,8 @@
 #include "GUIDialogVideoBookmarks.h"
 #include "GUIDialogFileBrowser.h"
 #include "GUIDialogTrainerSettings.h"
+#include "GUIDialogNetworkSetup.h"
+#include "GUIDialogMediaSource.h"
 #include "GUIWindowOSD.h"
 #include "GUIWindowScriptsInfo.h"
 
@@ -1243,6 +1245,8 @@ HRESULT CApplication::Initialize()
   m_gWindowManager.Add(new CGUIDialogVideoBookmarks);      // window id = 125
   m_gWindowManager.Add(new CGUIDialogFileBrowser);      // window id = 126
   m_gWindowManager.Add(new CGUIDialogTrainerSettings);  // window id = 127
+  m_gWindowManager.Add(new CGUIDialogNetworkSetup);  // window id = 128
+  m_gWindowManager.Add(new CGUIDialogMediaSource);   // window id = 129
 
   m_gWindowManager.Add(new CGUIWindowMusicPlayList);          // window id = 500
   m_gWindowManager.Add(new CGUIWindowMusicSongs);             // window id = 501
@@ -2881,6 +2885,8 @@ void CApplication::Stop()
     m_gWindowManager.Delete(WINDOW_DIALOG_KEYBOARD);
     m_gWindowManager.Delete(WINDOW_FULLSCREEN_VIDEO);
     m_gWindowManager.Delete(WINDOW_DIALOG_TRAINER_SETTINGS);
+    m_gWindowManager.Delete(WINDOW_DIALOG_NETWORK_SETUP);
+    m_gWindowManager.Delete(WINDOW_DIALOG_MEDIA_SOURCE);
 
     m_gWindowManager.Delete(WINDOW_VISUALISATION);
     m_gWindowManager.Delete(WINDOW_SETTINGS_MENU);

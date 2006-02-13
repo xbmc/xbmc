@@ -1,0 +1,173 @@
+<window>
+  <defaultcontrol>10</defaultcontrol>
+  <coordinates>
+    <system>1</system>
+    <posx>150</posx>
+    <posy>150</posy>
+  </coordinates>
+  <animation effect="fade" time="400">WindowOpen</animation>
+  <animation effect="fade" time="400">WindowClose</animation>
+  <controls>
+    <control>
+      <description>background image</description>
+      <type>image</type>
+      <id>1</id>
+      <posx>0</posx>
+      <posy>25</posy>
+      <width>420</width>
+      <height>175</height>
+      <texture>osd_menu_bg.png</texture>
+    </control>
+
+    <control>
+      <description>background image</description>
+      <type>image</type>
+      <id>0</id>
+      <posx>0</posx>
+      <posy>-5</posy>
+      <width>420</width>
+      <height>31</height>
+      <texture>osd_settings_header.png</texture>
+    </control>
+
+    <control>
+      <description>Heading Label</description>
+      <type>label</type>
+      <id>2</id>
+      <posx>0</posx>
+      <posy>2</posy>
+      <width>420</width>
+      <align>center</align>
+      <font>font12</font>
+      <label>-</label>
+    </control>
+
+    <control>
+      <description>Heading Label</description>
+      <type>label</type>
+      <id>0</id>
+      <posx>10</posx>
+      <posy>35</posy>
+      <width>420</width>
+      <align>left</align>
+      <font>font12</font>
+      <label>1021</label>
+    </control>
+
+    <control>
+      <description>Path Button</description>
+      <type>button</type>
+      <id>10</id>
+      <posx>10</posx>
+      <posy>60</posy>
+      <width>320</width>
+      <height>31</height>
+      <font>font12</font>
+      <textoffsetx>12</textoffsetx>
+      <aligny>center</aligny>
+      <texturefocus>list-focus.png</texturefocus>
+      <texturenofocus>-</texturenofocus>
+      <label>-</label>
+      <onup>18</onup>
+      <onleft>11</onleft>
+      <onright>11</onright>
+      <ondown>12</ondown>
+    </control>
+
+    <control>
+      <description>Browse Button</description>
+      <type>button</type>
+      <id>11</id>
+      <posx>340</posx>
+      <posy>60</posy>
+      <width>70</width>
+      <height>31</height>
+      <font>font12</font>
+      <textoffsetx>12</textoffsetx>
+      <label>1024</label>
+      <align>center</align>
+      <aligny>center</aligny>
+      <texturefocus>button-focus.png</texturefocus>
+      <texturenofocus>button-nofocus.png</texturenofocus>
+      <onup>18</onup>
+      <onleft>10</onleft>
+      <onright>10</onright>
+      <ondown>12</ondown>
+    </control>
+
+    <control>
+      <description>Name Label</description>
+      <type>label</type>
+      <id>0</id>
+      <posx>10</posx>
+      <posy>95</posy>
+      <width>420</width>
+      <font>font12</font>
+      <label>1022</label>
+    </control>
+
+    <control>
+      <description>Name Button</description>
+      <type>button</type>
+      <id>12</id>
+      <posx>10</posx>
+      <posy>120</posy>
+      <width>400</width>
+      <height>31</height>
+      <font>font12</font>
+      <textoffsetx>12</textoffsetx>
+      <aligny>center</aligny>
+      <texturefocus>list-focus.png</texturefocus>
+      <texturenofocus>-</texturenofocus>
+      <label>-</label>
+      <onup>10</onup>
+      <onleft>12</onleft>
+      <onright>12</onright>
+      <ondown>18</ondown>
+    </control>
+
+    <control>
+      <description>Ok Button</description>
+      <type>button</type>
+      <id>18</id>
+      <posx>280</posx>
+      <posy>160</posy>
+      <width>60</width>
+      <height>31</height>
+      <font>font12</font>
+      <textoffsetx>12</textoffsetx>
+      <align>center</align>
+      <aligny>center</aligny>
+      <texturefocus>button-focus.png</texturefocus>
+      <texturenofocus>button-nofocus.png</texturenofocus>
+      <label>186</label>
+      <onup>12</onup>
+      <onleft>19</onleft>
+      <onright>19</onright>
+      <ondown>19</ondown>
+    </control>
+
+    <control>
+      <description>Cancel Button</description>
+      <type>button</type>
+      <id>19</id>
+      <posx>350</posx>
+      <posy>160</posy>
+      <width>60</width>
+      <height>31</height>
+      <font>font12</font>
+      <textoffsetx>12</textoffsetx>
+      <align>center</align>
+      <aligny>center</aligny>
+      <texturefocus>button-focus.png</texturefocus>
+      <texturenofocus>button-nofocus.png</texturenofocus>
+      <label>222</label>
+      <onup>12</onup>
+      <onleft>18</onleft>
+      <onright>18</onright>
+      <ondown>10</ondown>
+    </control>
+  </controls>
+
+</window>
+

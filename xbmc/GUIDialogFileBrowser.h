@@ -21,6 +21,9 @@ public:
 
   static bool ShowAndGetDirectory(VECSHARES &shares, const CStdStringW &heading, CStdString &path);
   static bool ShowAndGetFile(VECSHARES &shares, const CStdString &mask, const CStdStringW &heading, CStdString &path);
+  static bool ShowAndGetShare(CStdString &path, bool allowNetworkShares);
+
+  void SetShares(VECSHARES &shares);
 
 protected:
   void GoParentFolder();
@@ -29,7 +32,9 @@ protected:
   void ClearFileItems();
   void Update(const CStdString &strDirectory);
   bool HaveDiscOrConnection( CStdString& strPath, int iDriveType );
+  void OnAddNetworkLocation();
 
+  VECSHARES m_shares;
   CVirtualDirectory m_rootDir;
   CFileItemList m_vecItems;
   CFileItem m_Directory;
@@ -38,6 +43,7 @@ protected:
   CDirectoryHistory m_history;
   bool m_browsingForFolders;
   bool m_bConfirmed;
+  bool m_addNetworkShareEnabled;
 
   CGUIViewControl m_viewControl;
 };
