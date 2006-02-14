@@ -3656,7 +3656,85 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
         g_application.m_pPlayer->Record(!g_application.m_pPlayer->IsRecording());
       }
     }
+    else if (parameter.Equals("random"))
+    {
+      // get current playlist
+      int iPlaylist = g_playlistPlayer.GetCurrentPlaylist();
 
+      // reverse the current setting
+      g_playlistPlayer.ShufflePlay(iPlaylist, !(g_playlistPlayer.ShuffledPlay(iPlaylist)));
+
+      // save settings for now playing windows
+      switch (iPlaylist)
+      {
+      case PLAYLIST_MUSIC:
+        g_stSettings.m_bMyMusicPlaylistShuffle = g_playlistPlayer.ShuffledPlay(iPlaylist);
+        g_settings.Save();
+        break;
+      case PLAYLIST_VIDEO:
+        g_stSettings.m_bMyVideoPlaylistShuffle = g_playlistPlayer.ShuffledPlay(iPlaylist);
+        g_settings.Save();
+      }
+
+      // send message
+      CGUIMessage msg(GUI_MSG_PLAYLISTPLAYER_RANDOM, 0, 0, iPlaylist, g_playlistPlayer.ShuffledPlay(iPlaylist));
+      m_gWindowManager.SendThreadMessage(msg);
+
+    }
+    else if (parameter.Equals("repeat"))
+    {
+
+      // get current playlist
+      int iPlaylist = g_playlistPlayer.GetCurrentPlaylist();
+
+      // figure out next state from current state
+      // we cycle between off -> all -> one -> off
+      bool bRepeatAll = g_playlistPlayer.Repeated(iPlaylist);
+      bool bRepeatOne = g_playlistPlayer.RepeatedOne(iPlaylist);
+      int iState = -1;
+
+      // enable RepeatAll
+      if (!bRepeatAll && !bRepeatOne)
+      {
+        bRepeatAll = true;
+        bRepeatOne = false;
+        iState = 1; // repeat all
+      }
+      // enable RepeatOne
+      else if (bRepeatAll && !bRepeatOne)
+      {
+        bRepeatAll = false;
+        bRepeatOne = true;
+        iState = 2; // repeat one
+      }
+      // disable both
+      else
+      {
+        bRepeatAll = false;
+        bRepeatOne = false;
+        iState = 0; // disabled
+      }
+
+      // make changes
+      g_playlistPlayer.Repeat(iPlaylist, bRepeatAll);
+      g_playlistPlayer.RepeatOne(iPlaylist, bRepeatOne);
+
+      // save settings for now playing windows
+      switch (iPlaylist)
+      {
+      case PLAYLIST_MUSIC:
+        g_stSettings.m_bMyMusicPlaylistRepeat = g_playlistPlayer.Repeated(iPlaylist);
+        g_settings.Save();
+        break;
+      case PLAYLIST_VIDEO:
+        g_stSettings.m_bMyVideoPlaylistRepeat = g_playlistPlayer.Repeated(iPlaylist);
+        g_settings.Save();
+      }
+
+      // send messages so now playing window can get updated
+      CGUIMessage msg(GUI_MSG_PLAYLISTPLAYER_REPEAT, 0, 0, iPlaylist, iState);
+      m_gWindowManager.SendThreadMessage(msg);
+    }
   }
   else if (execute.Equals("mute"))
   {
