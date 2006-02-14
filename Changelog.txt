@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 13-02-2006 fixed: repeatone was ignored if randomize was enabled on a playlist
  - 13-02-2006 changed: httpapi playfile command to immediately start playback of a playlist.
 		it also accepts an extra parameter to force the playlist (note the playlist is CLEARED! before it playback starts).
 		if a playlist is not provided, the current playlist is used.
