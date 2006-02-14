@@ -71,22 +71,28 @@ int CPlayListPlayer::GetNextSong()
     return -1;
   int iSong = m_iCurrentSong;
 
+  // if repeat one, keep playing the current song
+  if (RepeatedOne(m_iCurrentPlayList))
+    return iSong;
+
+  // if random, get the next random song
   if (ShuffledPlay(m_iCurrentPlayList) && playlist.size() > 1)
   {
     while (iSong == m_iCurrentSong)
       iSong = NextShuffleItem();
   }
+  // if not random, increment the song
   else
   {
-    if (!RepeatedOne(m_iCurrentPlayList))
-      iSong++;
-  }
+    iSong++;
 
-  if (iSong >= playlist.size() && Repeated(m_iCurrentPlayList))
-  {
-    // clear played status and wrap around
-    playlist.ClearPlayed();
-    iSong = 0;
+    // if we've gone beyond the playlist and repeat all is enabled,
+    // then we clear played status and wrap around
+    if (iSong >= playlist.size() && Repeated(m_iCurrentPlayList))
+    {
+      playlist.ClearPlayed();
+      iSong = 0;
+    }
   }
 
   return iSong;
