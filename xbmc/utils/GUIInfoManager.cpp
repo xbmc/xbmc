@@ -166,6 +166,9 @@ extern char g_szTitleIP[32];
 #define PLAYLIST_POSITION           391
 #define PLAYLIST_RANDOM             392
 #define PLAYLIST_REPEAT             393
+#define PLAYLIST_ISRANDOM           394
+#define PLAYLIST_ISREPEAT           395
+#define PLAYLIST_ISREPEATONE        396
 
 #define VISUALISATION_LOCKED        400
 #define VISUALISATION_PRESET        401
@@ -405,6 +408,9 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("playlist.position")) ret = PLAYLIST_POSITION;
     else if (strTest.Equals("playlist.random")) ret = PLAYLIST_RANDOM;
     else if (strTest.Equals("playlist.repeat")) ret = PLAYLIST_REPEAT;
+    else if (strTest.Equals("playlist.israndom")) ret = PLAYLIST_ISRANDOM;
+    else if (strTest.Equals("playlist.isrepeat")) ret = PLAYLIST_ISREPEAT;
+    else if (strTest.Equals("playlist.isrepeatone")) ret = PLAYLIST_ISREPEATONE;
   }
   else if (strCategory.Equals("audioscrobbler"))
   {
@@ -901,6 +907,15 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow) const
     case VIDEOPLAYER_HASMENU:
       bReturn = g_application.m_pPlayer->HasMenu();
     break;
+    case PLAYLIST_ISRANDOM:
+      bReturn = g_playlistPlayer.ShuffledPlay(g_playlistPlayer.GetCurrentPlaylist());
+    break;
+    case PLAYLIST_ISREPEAT:
+      bReturn = g_playlistPlayer.Repeated(g_playlistPlayer.GetCurrentPlaylist());
+    break;
+    case PLAYLIST_ISREPEATONE:
+      bReturn = g_playlistPlayer.RepeatedOne(g_playlistPlayer.GetCurrentPlaylist());
+    break;
     case VISUALISATION_LOCKED:
       {
         CGUIMessage msg(GUI_MSG_GET_VISUALISATION, 0, 0);
@@ -1086,16 +1101,16 @@ CStdString CGUIInfoManager::GetPlaylistLabel(int item)
       if (g_playlistPlayer.ShuffledPlay(iPlaylist))
         return g_localizeStrings.Get(590); // 590: Random
       else
-        return g_localizeStrings.Get(351); // 351: Off
+        return g_localizeStrings.Get(591); // 591: Off
     }
   case PLAYLIST_REPEAT:
     {
       if (g_playlistPlayer.RepeatedOne(iPlaylist))
-        return g_localizeStrings.Get(591); // 591: One
+        return g_localizeStrings.Get(592); // 592: One
       else if (g_playlistPlayer.Repeated(iPlaylist))
-        return g_localizeStrings.Get(592); // 592: All
+        return g_localizeStrings.Get(593); // 593: All
       else
-        return g_localizeStrings.Get(351); // 351: Off
+        return g_localizeStrings.Get(594); // 594: Off
     }
   }
   return "";
