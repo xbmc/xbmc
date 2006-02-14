@@ -44,11 +44,13 @@ bool CGUIWindowMusicPlayList::OnMessage(CGUIMessage& message)
   switch ( message.GetMessage() )
   {
   case GUI_MSG_PLAYBACK_STOPPED:
+  case GUI_MSG_PLAYLISTPLAYER_RANDOM:
+  case GUI_MSG_PLAYLISTPLAYER_REPEAT:
     {
       UpdateButtons();
     }
     break;
-
+  
   case GUI_MSG_PLAYLIST_CHANGED:
     {
       // global playlist changed outside playlist window
@@ -70,43 +72,8 @@ bool CGUIWindowMusicPlayList::OnMessage(CGUIMessage& message)
 
       m_vecItems.m_strPath="";
 
+      // updatebuttons is called in here
       CGUIWindowMusicBase::OnMessage(message);
-
-      if (g_playlistPlayer.Repeated(PLAYLIST_MUSIC))
-      {
-        CONTROL_SELECT(CONTROL_BTNREPEAT);
-      }
-      else
-      {
-        CONTROL_DESELECT(CONTROL_BTNREPEAT);
-      }
-
-      if (g_playlistPlayer.RepeatedOne(PLAYLIST_MUSIC))
-      {
-        CONTROL_SELECT(CONTROL_BTNREPEATONE);
-      }
-      else
-      {
-        CONTROL_DESELECT(CONTROL_BTNREPEATONE);
-      }
-
-      if (g_playlistPlayer.ShuffledPlay(PLAYLIST_MUSIC))
-      {
-        CONTROL_SELECT(CONTROL_BTNRANDOMIZE);
-      }
-      else
-      {
-        CONTROL_DESELECT(CONTROL_BTNRANDOMIZE);
-      }
-
-      if (g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).IsShuffled())
-      {
-        CONTROL_SELECT(CONTROL_BTNSHUFFLE);
-      }
-      else
-      {
-        CONTROL_DESELECT(CONTROL_BTNSHUFFLE);
-      }
 
       if (m_viewControl.HasControl(m_iLastControl) && m_vecItems.Size() <= 0)
       {
@@ -511,6 +478,21 @@ void CGUIWindowMusicPlayList::UpdateButtons()
     CONTROL_DISABLE(CONTROL_BTNNEXT);
     CONTROL_DISABLE(CONTROL_BTNPREVIOUS);
   }
+
+  // update buttons
+  CONTROL_DESELECT(CONTROL_BTNSHUFFLE);
+  CONTROL_DESELECT(CONTROL_BTNRANDOMIZE);
+  CONTROL_DESELECT(CONTROL_BTNREPEAT);
+  CONTROL_DESELECT(CONTROL_BTNREPEATONE);
+  if (g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).IsShuffled())
+    CONTROL_SELECT(CONTROL_BTNSHUFFLE);
+  if (g_playlistPlayer.ShuffledPlay(PLAYLIST_MUSIC))
+    CONTROL_SELECT(CONTROL_BTNRANDOMIZE);
+  if (g_playlistPlayer.Repeated(PLAYLIST_MUSIC))
+    CONTROL_SELECT(CONTROL_BTNREPEAT);
+  if (g_playlistPlayer.RepeatedOne(PLAYLIST_MUSIC))
+    CONTROL_SELECT(CONTROL_BTNREPEATONE);
+
 
   // Update object count label
   int iItems = m_vecItems.Size();

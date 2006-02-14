@@ -41,6 +41,14 @@ bool CGUIWindowVideoPlaylist::OnMessage(CGUIMessage& message)
 {
   switch ( message.GetMessage() )
   {
+
+  case GUI_MSG_PLAYLISTPLAYER_RANDOM:
+  case GUI_MSG_PLAYLISTPLAYER_REPEAT:
+    {
+      UpdateButtons();
+    }
+    break;
+
   case GUI_MSG_WINDOW_DEINIT:
     {
       OutputDebugString("deinit guiwindowvideoplaylist!\n");
@@ -68,30 +76,6 @@ bool CGUIWindowVideoPlaylist::OnMessage(CGUIMessage& message)
         m_viewControl.SetSelectedItem(m_iSelectedItem);
       }
 
-      if (g_playlistPlayer.Repeated(PLAYLIST_VIDEO))
-      {
-        CONTROL_SELECT(CONTROL_BTNREPEAT);
-      }
-
-      if (g_playlistPlayer.RepeatedOne(PLAYLIST_VIDEO))
-      {
-        CONTROL_SELECT(CONTROL_BTNREPEATONE);
-      }
-
-      if (g_playlistPlayer.ShuffledPlay(PLAYLIST_VIDEO))
-      {
-        CONTROL_SELECT(CONTROL_BTNRANDOMIZE);
-      }
-
-      if (g_playlistPlayer.GetPlaylist(PLAYLIST_VIDEO).IsShuffled())
-      {
-        CONTROL_SELECT(CONTROL_BTNSHUFFLE);
-      }
-      else
-      {
-        CONTROL_DESELECT(CONTROL_BTNSHUFFLE);
-      }
-
       if (g_application.IsPlayingVideo() && g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_VIDEO)
       {
         int iSong = g_playlistPlayer.GetCurrentSong();
@@ -100,6 +84,9 @@ bool CGUIWindowVideoPlaylist::OnMessage(CGUIMessage& message)
           m_viewControl.SetSelectedItem(iSong);
         }
       }
+
+      UpdateButtons();
+
       return true;
     }
     break;
@@ -309,17 +296,19 @@ void CGUIWindowVideoPlaylist::UpdateButtons()
 
   CGUIMediaWindow::UpdateButtons();
 
-  // Update Repeat/Repeat One button
+  // update buttons
+  CONTROL_DESELECT(CONTROL_BTNSHUFFLE);
+  CONTROL_DESELECT(CONTROL_BTNRANDOMIZE);
+  CONTROL_DESELECT(CONTROL_BTNREPEAT);
+  CONTROL_DESELECT(CONTROL_BTNREPEATONE);
+  if (g_playlistPlayer.GetPlaylist(PLAYLIST_VIDEO).IsShuffled())
+    CONTROL_SELECT(CONTROL_BTNSHUFFLE);
+  if (g_playlistPlayer.ShuffledPlay(PLAYLIST_VIDEO))
+    CONTROL_SELECT(CONTROL_BTNRANDOMIZE);
   if (g_playlistPlayer.Repeated(PLAYLIST_VIDEO))
-  {
     CONTROL_SELECT(CONTROL_BTNREPEAT);
-  }
-
   if (g_playlistPlayer.RepeatedOne(PLAYLIST_VIDEO))
-  {
     CONTROL_SELECT(CONTROL_BTNREPEATONE);
-  }
-
 }
 
 
