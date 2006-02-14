@@ -456,6 +456,9 @@
   <string><id>590</id><value>Random</value></string>
   <string><id>591</id><value>One</value></string>
   <string><id>592</id><value>All</value></string>
+  <string><id>593</id><value>Repeat Off</value></string>
+  <string><id>594</id><value>Repeat One</value></string>
+  <string><id>595</id><value>Repeat All</value></string>
 
   <string><id>600</id><value>Rip CD Audio</value></string>
   <string><id>601</id><value>Medium</value></string>
