@@ -5,6 +5,9 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 13-02-2006 added: two new builtin commands for playlist control, they can be used in the skin or in keymap.xml
+		xbmc.playercontrol(random) = enables and disables random playback
+		xbmc.playercontrol(repeat) = cycles through states off -> all -> one and back around
  - 13-02-2006 fixed: repeatone was ignored if randomize was enabled on a playlist
  - 13-02-2006 changed: httpapi playfile command to immediately start playback of a playlist.
 		it also accepts an extra parameter to force the playlist (note the playlist is CLEARED! before it playback starts).
