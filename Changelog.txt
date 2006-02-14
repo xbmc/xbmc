@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 13-02-2006 added: three new visibility conditions: playlist.israndom, playlist.isrepeat, playlist.isrepeatone
+ - 13-02-2006 changed: the Repeat and Repeat One buttons in the Now Playing window have been consolidated into a single button
  - 13-02-2006 added: two new builtin commands for playlist control, they can be used in the skin or in keymap.xml
 		xbmc.playercontrol(random) = enables and disables random playback
 		xbmc.playercontrol(repeat) = cycles through states off -> all -> one and back around

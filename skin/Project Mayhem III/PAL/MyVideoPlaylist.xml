@@ -90,28 +90,13 @@
 
       <control>
         <description>Repeat button</description>
-        <type>radiobutton</type>
+        <type>button</type>
         <id>26</id>
         <posx>50</posx>
         <posy>231</posy>
-        <label>486</label>
         <onleft>50</onleft>
         <onright>50</onright>
         <onup>28</onup>
-        <ondown>27</ondown>
-      </control>
-
-      <control>
-        <description>Repeat one button</description>
-        <type>radiobutton</type>
-        <id>27</id>
-        <posx>50</posx>
-        <posy>268</posy>
-        <label>487</label>
-        <font>font13</font>
-        <onleft>50</onleft>
-        <onright>50</onright>
-        <onup>26</onup>
         <ondown>21</ondown>
       </control>
 
@@ -120,12 +105,12 @@
         <type>button</type>
         <id>21</id>
         <posx>50</posx>
-        <posy>305</posy>
+        <posy>268</posy>
         <label>190</label>
         <font>font13</font>
         <onleft>50</onleft>
         <onright>50</onright>
-        <onup>27</onup>
+        <onup>26</onup>
         <ondown>22</ondown>
       </control>
 
@@ -134,7 +119,7 @@
         <type>button</type>
         <id>22</id>
         <posx>50</posx>
-        <posy>342</posy>
+        <posy>305</posy>
         <label>192</label>
         <font>font13</font>
         <onleft>50</onleft>
