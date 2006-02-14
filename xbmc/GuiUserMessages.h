@@ -65,3 +65,16 @@
 #define GUI_MSG_VISUALISATION_ACTION    GUI_MSG_USER + 20 // request the vis perform an action
 
 #define GUI_MSG_VIDEO_MENU_STARTED      GUI_MSG_USER + 21 // sent by dvdplayer on entry to the menu
+
+//  Message is sent by built-in function to alert the playlist window
+//  that the user has initiated Random playback
+//  dwParam1 = Current Playlist (PLAYLIST_MUSIC, PLAYLIST_TEMP_MUSIC, PLAYLIST_VIDEO or PLAYLIST_TEMP_VIDEO)
+//  dwParam2 = 0 or 1 (Enabled or Disabled)
+#define GUI_MSG_PLAYLISTPLAYER_RANDOM   GUI_MSG_USER + 22
+
+//  Message is sent by built-in function to alert the playlist window
+//  that the user has initiated Repeat playback
+//  dwParam1 = Current Playlist (PLAYLIST_MUSIC, PLAYLIST_TEMP_MUSIC, PLAYLIST_VIDEO or PLAYLIST_TEMP_VIDEO)
+//  dwParam2 = 0 or 1 or 2 (Off, Repeat All, Repeat One)
+#define GUI_MSG_PLAYLISTPLAYER_REPEAT   GUI_MSG_USER + 23
+
