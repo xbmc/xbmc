@@ -24,7 +24,7 @@
 #define CONTROL_BTNPREVIOUS    25
 
 #define CONTROL_BTNREPEAT     26
-#define CONTROL_BTNREPEATONE   27
+//#define CONTROL_BTNREPEATONE   27
 #define CONTROL_BTNRANDOMIZE  28
 
 CGUIWindowVideoPlaylist::CGUIWindowVideoPlaylist()
@@ -131,16 +131,49 @@ bool CGUIWindowVideoPlaylist::OnMessage(CGUIMessage& message)
       }
       else if (iControl == CONTROL_BTNREPEAT)
       {
+        // figure out next state from current state
+        // we cycle between off -> all -> one -> off
+        bool bRepeatAll = g_playlistPlayer.Repeated(PLAYLIST_VIDEO);
+        bool bRepeatOne = g_playlistPlayer.RepeatedOne(PLAYLIST_VIDEO);
+        int iState = -1;
+
+        // enable RepeatAll
+        if (!bRepeatAll && !bRepeatOne)
+        {
+          bRepeatAll = true;
+          bRepeatOne = false;
+        }
+        // enable RepeatOne
+        else if (bRepeatAll && !bRepeatOne)
+        {
+          bRepeatAll = false;
+          bRepeatOne = true;
+        }
+        // disable both
+        else
+        {
+          bRepeatAll = false;
+          bRepeatOne = false;
+        }
+
+        // make changes
+        g_playlistPlayer.Repeat(PLAYLIST_VIDEO, bRepeatAll);
+        g_playlistPlayer.RepeatOne(PLAYLIST_VIDEO, bRepeatOne);
+
+        // save settings
         g_stSettings.m_bMyVideoPlaylistRepeat = !g_stSettings.m_bMyVideoPlaylistRepeat;
         g_settings.Save();
-        g_playlistPlayer.Repeat(PLAYLIST_VIDEO, g_stSettings.m_bMyVideoPlaylistRepeat);
+
+        UpdateButtons();
       }
+      /*
       else if (iControl == CONTROL_BTNREPEATONE)
       {
         static bool bRepeatOne = false;
         bRepeatOne = !bRepeatOne;
         g_playlistPlayer.RepeatOne(PLAYLIST_VIDEO, bRepeatOne);
       }
+      */
       else if (m_viewControl.HasControl(iControl))  // list/thumb control
       {
         int iAction = message.GetParam1();
@@ -268,7 +301,7 @@ void CGUIWindowVideoPlaylist::UpdateButtons()
     CONTROL_ENABLE(CONTROL_BTNSHUFFLE);
     CONTROL_ENABLE(CONTROL_BTNRANDOMIZE);
     CONTROL_ENABLE(CONTROL_BTNREPEAT);
-    CONTROL_ENABLE(CONTROL_BTNREPEATONE);
+    //CONTROL_ENABLE(CONTROL_BTNREPEATONE);
 
     if (g_application.IsPlayingVideo() && g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_VIDEO)
     {
@@ -291,7 +324,7 @@ void CGUIWindowVideoPlaylist::UpdateButtons()
     CONTROL_DISABLE(CONTROL_BTNNEXT);
     CONTROL_DISABLE(CONTROL_BTNPREVIOUS);
     CONTROL_DISABLE(CONTROL_BTNREPEAT);
-    CONTROL_DISABLE(CONTROL_BTNREPEATONE);
+    //CONTROL_DISABLE(CONTROL_BTNREPEATONE);
   }
 
   CGUIMediaWindow::UpdateButtons();
@@ -299,16 +332,18 @@ void CGUIWindowVideoPlaylist::UpdateButtons()
   // update buttons
   CONTROL_DESELECT(CONTROL_BTNSHUFFLE);
   CONTROL_DESELECT(CONTROL_BTNRANDOMIZE);
-  CONTROL_DESELECT(CONTROL_BTNREPEAT);
-  CONTROL_DESELECT(CONTROL_BTNREPEATONE);
   if (g_playlistPlayer.GetPlaylist(PLAYLIST_VIDEO).IsShuffled())
     CONTROL_SELECT(CONTROL_BTNSHUFFLE);
   if (g_playlistPlayer.ShuffledPlay(PLAYLIST_VIDEO))
     CONTROL_SELECT(CONTROL_BTNRANDOMIZE);
-  if (g_playlistPlayer.Repeated(PLAYLIST_VIDEO))
-    CONTROL_SELECT(CONTROL_BTNREPEAT);
+
+  // update repeat button
+  int iRepeat = 595; // Repeat Off
   if (g_playlistPlayer.RepeatedOne(PLAYLIST_VIDEO))
-    CONTROL_SELECT(CONTROL_BTNREPEATONE);
+    iRepeat = 596; // Repeat One
+  else if (g_playlistPlayer.Repeated(PLAYLIST_VIDEO))
+    iRepeat = 597; // Repeat All
+  SET_CONTROL_LABEL(CONTROL_BTNREPEAT, g_localizeStrings.Get(iRepeat));
 }
 
 
