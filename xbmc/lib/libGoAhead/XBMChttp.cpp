@@ -811,7 +811,9 @@ bool LoadPlayList(CStdString strPath, int iPlaylist, bool clearList, bool autoSt
       const CPlayList::CPlayListItem& item = playlist[0];
       g_playlistPlayer.SetCurrentPlaylist(iPlaylist);
       g_playlistPlayer.Reset();
-      g_playlistPlayer.Play(0);
+      // use thread message instead
+      //g_playlistPlayer.Play(0);
+      g_applicationMessenger.PlayListPlayerPlay(0);
       return true;
     } 
     else
@@ -1469,31 +1471,35 @@ int CXbmcHttp::xbmcGetThumbFilename(int numParas, CStdString paras[])
 
 int CXbmcHttp::xbmcPlayerPlayFile(int numParas, CStdString paras[])
 {
+  int iPlaylist = g_playlistPlayer.GetCurrentPlaylist();
+  // file
   if (numParas<1)
-    return SetResponse(openTag+"Error:Missing parameter");
+    return SetResponse(openTag+"Error:Missing file parameter");
+  // get playlist
+  if (numParas>1)
+    iPlaylist = atoi(paras[1]);
+  // test file parameter
+  CFileItem item(paras[0], FALSE);
+  if (item.IsPlayList())
+  {
+    // if no playlist, set the playlist to PLAYLIST_MUSIC_TEMP like playmedia
+    if (iPlaylist == PLAYLIST_NONE)
+      iPlaylist = PLAYLIST_MUSIC_TEMP;
+    LoadPlayList(paras[0], iPlaylist, true, true);
+    CStdString strPlaylist;
+    strPlaylist.Format("%i", iPlaylist);
+    return SetResponse(openTag+"OK:Playlist="+strPlaylist);
+  }
   else
   {
-    CFileItem item(paras[0], FALSE);
-    if (item.IsPlayList())
+    if (playableFile(paras[0]))
     {
-      LoadPlayList(paras[0], g_playlistPlayer.GetCurrentPlaylist(), false, false);
-      g_applicationMessenger.PlayListPlayerPlay(0);
-      return SetResponse(openTag+"OK:PlayList");
-    }
-    else
-    {
-      if (playableFile(paras[0]))
-      {
-        g_applicationMessenger.MediaPlay(paras[0]);
-        return SetResponse(openTag+"OK");
-      }
-      else
-        return SetResponse(openTag+"Error:File not found");
+      g_applicationMessenger.MediaPlay(paras[0]);
+      return SetResponse(openTag+"OK");
     }
   }
+  return SetResponse(openTag+"Error:Could not play file");
 }
-
-
 
 int CXbmcHttp::xbmcGetCurrentPlayList()
 {
