@@ -174,8 +174,10 @@ void CGUIDialogMediaSource::SetTypeOfMedia(const CStdString &type, bool editNotA
     typeStringID = 291;  // "Video"
   else if (type == "myprograms")
     typeStringID = 350;  // "Programs"
-  else // if (type == "pictures")
+  else if (type == "pictures")
     typeStringID = 1213;  // "Pictures"
+  else // if (type == "files");
+    typeStringID = 744;  // "Files"
   CStdStringW format;
   format.Format(g_localizeStrings.Get(editNotAdd ? 1028 : 1020).c_str(), g_localizeStrings.Get(typeStringID).c_str());
   SET_CONTROL_LABEL(CONTROL_HEADING, format);
