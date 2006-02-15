@@ -48,6 +48,8 @@ void CBackgroundPicLoader::Create(CGUIWindowSlideShow *pCallback)
 
 void CBackgroundPicLoader::Process()
 {
+  DWORD totalTime = 0;
+  DWORD count = 0;
   while (!m_bStop)
   { // loop around forever, waiting for the app to call LoadPic
     while (!m_bLoadPic && !m_bStop)
@@ -59,7 +61,10 @@ void CBackgroundPicLoader::Process()
       if (m_pCallback)
       {
         CPicture pic;
+        DWORD start = timeGetTime();
         D3DTexture *pTexture = pic.Load(m_strFileName, m_maxWidth, m_maxHeight);
+        totalTime += timeGetTime() - start;
+        count++;
         // tell our parent
         bool bFullSize = ((int)pic.GetWidth() < m_maxWidth) && ((int)pic.GetHeight() < m_maxHeight);
         if (!bFullSize)
@@ -77,6 +82,7 @@ void CBackgroundPicLoader::Process()
     }
     m_bLoadPic = false;
   }
+  CLog::Log(LOGDEBUG, "Time for loading %i images: %i ms, average %i ms", count, totalTime, totalTime / count);
 }
 
 void CBackgroundPicLoader::LoadPic(int iPic, int iSlideNumber, const CStdString &strFileName, const int maxWidth, const int maxHeight)
