@@ -318,37 +318,33 @@
 
     <control>
       <description>day 0 Hi label</description>
-      <type>button</type>
+      <type>label</type>
       <align>center</align>
       <width>110</width>
       <id>32</id>
       <posx>211</posx>
-      <posy>338</posy>
+      <posy>348</posy>
       <label>-</label>
       <font>font10</font>
       <textoffsetx>-</textoffsetx>
-      <texturefocus>-</texturefocus>
-      <texturenofocus>-</texturenofocus>
     </control>
 
     <control>
       <description>day 0 low label</description>
-      <type>button</type>
+      <type>label</type>
       <align>center</align>
       <width>110</width>
       <id>33</id>
       <posx>211</posx>
-      <posy>360</posy>
+      <posy>370</posy>
       <label>-</label>
       <font>font10</font>
       <textoffsetx>-</textoffsetx>
-      <texturefocus>-</texturefocus>
-      <texturenofocus>-</texturenofocus>
     </control>
 
     <control>
       <description>day 0 general weather label</description>
-      <type>button</type>
+      <type>label</type>
       <align>center</align>
       <aligny>top</aligny>
       <width>110</width>
@@ -359,8 +355,6 @@
       <label>-</label>
       <font>font10</font>
       <textoffsetx>-</textoffsetx>
-      <texturefocus>-</texturefocus>
-      <texturenofocus>-</texturenofocus>
     </control>
 
     <control>
@@ -390,37 +384,33 @@
 
     <control>
       <description>day 1 Hi label</description>
-      <type>button</type>
+      <type>label</type>
       <align>center</align>
       <width>110</width>
       <id>42</id>
       <posx>329</posx>
-      <posy>338</posy>
+      <posy>348</posy>
       <label>-</label>
       <font>font10</font>
       <textoffsetx>-</textoffsetx>
-      <texturefocus>-</texturefocus>
-      <texturenofocus>-</texturenofocus>
     </control>
 
     <control>
       <description>day 1 low label</description>
-      <type>button</type>
+      <type>label</type>
       <align>center</align>
       <width>110</width>
       <id>43</id>
       <posx>329</posx>
-      <posy>360</posy>
+      <posy>370</posy>
       <label>-</label>
       <font>font10</font>
       <textoffsetx>-</textoffsetx>
-      <texturefocus>-</texturefocus>
-      <texturenofocus>-</texturenofocus>
     </control>
 
     <control>
       <description>day 1 general weather label</description>
-      <type>button</type>
+      <type>label</type>
       <align>center</align>
       <aligny>top</aligny>
       <width>110</width>
@@ -431,8 +421,6 @@
       <label>-</label>
       <font>font10</font>
       <textoffsetx>-</textoffsetx>
-      <texturefocus>-</texturefocus>
-      <texturenofocus>-</texturenofocus>
     </control>
 
     <control>
@@ -462,37 +450,33 @@
 
     <control>
       <description>day 2 Hi label</description>
-      <type>button</type>
+      <type>label</type>
       <align>center</align>
       <width>110</width>
       <id>52</id>
       <posx>447</posx>
-      <posy>338</posy>
+      <posy>348</posy>
       <label>-</label>
       <font>font10</font>
       <textoffsetx>-</textoffsetx>
-      <texturefocus>-</texturefocus>
-      <texturenofocus>-</texturenofocus>
     </control>
 
     <control>
       <description>day 2 low label</description>
-      <type>button</type>
+      <type>label</type>
       <align>center</align>
       <width>110</width>
       <id>53</id>
       <posx>447</posx>
-      <posy>360</posy>
+      <posy>370</posy>
       <label>-</label>
       <font>font10</font>
       <textoffsetx>-</textoffsetx>
-      <texturefocus>-</texturefocus>
-      <texturenofocus>-</texturenofocus>
     </control>
 
     <control>
       <description>day 2 general weather label</description>
-      <type>button</type>
+      <type>label</type>
       <align>center</align>
       <aligny>top</aligny>
       <width>110</width>
@@ -503,8 +487,6 @@
       <label>-</label>
       <font>font10</font>
       <textoffsetx>-</textoffsetx>
-      <texturefocus>-</texturefocus>
-      <texturenofocus>-</texturenofocus>
     </control>
 
     <control>
@@ -534,37 +516,33 @@
 
     <control>
       <description>day 3 Hi label</description>
-      <type>button</type>
+      <type>label</type>
       <align>center</align>
       <width>110</width>
       <id>62</id>
       <posx>565</posx>
-      <posy>338</posy>
+      <posy>348</posy>
       <label>-</label>
       <font>font10</font>
       <textoffsetx>-</textoffsetx>
-      <texturefocus>-</texturefocus>
-      <texturenofocus>-</texturenofocus>
     </control>
 
     <control>
       <description>day 3 low label</description>
-      <type>button</type>
+      <type>label</type>
       <align>center</align>
       <width>110</width>
       <id>63</id>
       <posx>565</posx>
-      <posy>360</posy>
+      <posy>370</posy>
       <label>-</label>
       <font>font10</font>
       <textoffsetx>-</textoffsetx>
-      <texturefocus>-</texturefocus>
-      <texturenofocus>-</texturenofocus>
     </control>
 
     <control>
       <description>day 3 general weather label</description>
-      <type>button</type>
+      <type>label</type>
       <align>center</align>
       <aligny>top</aligny>
       <width>110</width>
@@ -575,8 +553,6 @@
       <label>-</label>
       <font>font10</font>
       <textoffsetx>-</textoffsetx>
-      <texturefocus>-</texturefocus>
-      <texturenofocus>-</texturenofocus>
     </control>
 
     <control>
