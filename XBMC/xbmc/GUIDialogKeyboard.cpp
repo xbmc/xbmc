@@ -227,6 +227,11 @@ void CGUIDialogKeyboard::UpdateLabel()
   if (pEdit)
   {
     CStdString edit = m_strEdit;
+    if (m_lastRemoteClickTime && m_lastRemoteClickTime + 1000 < timeGetTime())
+    {
+      // finished inputting a sms style character - turn off our shift and symbol states
+      ResetShiftAndSymbols();
+    }
     if (m_hiddenInput)
     { // convert to *'s
       edit.Empty();
@@ -267,15 +272,25 @@ void CGUIDialogKeyboard::OnRemoteNumberClick(int key)
 {
   DWORD now = timeGetTime();
 
-  if (key != m_lastRemoteKeyClicked || (key == m_lastRemoteKeyClicked && m_lastRemoteClickTime + 1000 < now))
-  {
-    m_lastRemoteKeyClicked = key;
-    m_indexInSeries = 0;
+  if (m_lastRemoteClickTime)
+  { // a remote key has been pressed
+    if (key != m_lastRemoteKeyClicked || m_lastRemoteClickTime + 1000 < now)
+    { // a different key was clicked than last time, or we have timed out
+      m_lastRemoteKeyClicked = key;
+      m_indexInSeries = 0;
+      // reset our shift and symbol states
+      ResetShiftAndSymbols();
+    }
+    else
+    { // same key as last time within the appropriate time period
+      m_indexInSeries++;
+      Backspace();
+    }
   }
   else
-  {
-    m_indexInSeries++;
-    Backspace();
+  { // key is pressed for the first time
+    m_lastRemoteKeyClicked = key;
+    m_indexInSeries = 0;
   }
 
   int arrayIndex = key - REMOTE_0;
@@ -594,6 +609,13 @@ void CGUIDialogKeyboard::OnIPAddress()
     m_strEdit = m_strEdit.Left(start) + ip + m_strEdit.Mid(start + length);
     UpdateLabel();
   }
+}
+
+void CGUIDialogKeyboard::ResetShiftAndSymbols()
+{
+  if (m_bShift) OnShift();
+  if (m_keyType == SYMBOLS) OnSymbols();
+  m_lastRemoteClickTime = 0;
 }
 
 const char* CGUIDialogKeyboard::s_charsSeries[10] = { " !@#$%^&*()[]{}<>/\\|0", ".,;:\'\"-+_=?`~1", "ABC2", "DEF3", "GHI4", "JKL5", "MNO6", "PQRS7", "TUV8", "WXYZ9" };
