@@ -337,6 +337,24 @@ void CGUIWindowVideoFiles::OnInfo(int iItem)
             break;
           }
         }
+        // check for a "CD1" folder
+        if (item->GetLabel().CompareNoCase("CD1") == 0)
+        {
+          CFileItemList items;
+          GetStackedDirectory(item->m_strPath, items);
+          for (int i = 0; i < items.Size(); i++)
+          {
+            CFileItem *item = items[i];
+            if (!item->m_bIsFolder && item->IsVideo() && !item->IsNFO() && !item->IsPlayList() )
+            {
+              bFoundFile = true;
+              strFile = item->m_strPath;
+              break;
+            }
+          }
+          if (bFoundFile)
+            break;
+        }
       }
     }
     if (!bFoundFile)
@@ -444,28 +462,7 @@ void CGUIWindowVideoFiles::OnRetrieveVideoInfo(CFileItemList& items)
         if (!m_database.HasMovieInfo(pItem->m_strPath))
         {
           // handle .nfo files
-          CStdString strNfoFile;
-          CUtil::ReplaceExtension(pItem->m_strPath, ".nfo", strNfoFile);
-          if (!CFile::Exists(strNfoFile))
-            strNfoFile.Empty();
-
-          // try looking for .nfo file for a stacked item
-          if (pItem->IsStack())
-          {
-            // first try .nfo file matching first file in stack
-            CStackDirectory dir;
-            CStdString firstFile = dir.GetFirstStackedFile(pItem->m_strPath);
-            CUtil::ReplaceExtension(firstFile, ".nfo", strNfoFile);
-            // else try .nfo file matching stacked title
-            if (!CFile::Exists(strNfoFile))
-            {
-              CStdString stackedTitlePath = dir.GetStackedTitlePath(pItem->m_strPath);
-              CUtil::ReplaceExtension(stackedTitlePath, ".nfo", strNfoFile);
-              if (!CFile::Exists(strNfoFile))
-                strNfoFile.Empty();
-            }
-          }
-
+          CStdString strNfoFile = GetnfoFile(pItem->m_strPath, false);
           if ( !strNfoFile.IsEmpty() )
           {
             CLog::Log(LOGDEBUG,"Found matching nfo file: %s", strNfoFile.c_str());

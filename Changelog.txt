@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 14-02-2006 added: Movie information lookup handles the folder/cd1/video_file case.
  - 14-02-2006 added: Support for /\._-@ keys on virtual keyboard.  Plus, right trigger puts a space if the cursor is at the end.
  - 14-02-2006 fixed: Kai Host dialog had missing text labels in private mode.
  - 14-02-2006 fixed: Add source title from Files window.
