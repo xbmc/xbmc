@@ -12,7 +12,7 @@ CGUITextBox::CGUITextBox(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPo
                          const CLabelInfo& spinInfo, int iSpinX, int iSpinY,
                          const CLabelInfo& labelInfo)
     : CGUIControl(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight)
-    , m_upDown(dwControlId, 0, 0, 0, dwSpinWidth, dwSpinHeight, strUp, strDown, strUpFocus, strDownFocus, spinInfo, SPIN_CONTROL_TYPE_INT)
+    , m_upDown(dwControlId, CONTROL_UPDOWN, 0, 0, dwSpinWidth, dwSpinHeight, strUp, strDown, strUpFocus, strDownFocus, spinInfo, SPIN_CONTROL_TYPE_INT)
 {
   m_upDown.SetSpinAlign(XBFONT_CENTER_Y | XBFONT_RIGHT, 0);
   m_iOffset = 0;
@@ -104,7 +104,7 @@ bool CGUITextBox::OnMessage(CGUIMessage& message)
 {
   if (message.GetControlId() == GetID() )
   {
-    if (message.GetSenderId() == 0)
+    if (message.GetSenderId() == CONTROL_UPDOWN)
     {
       if (message.GetMessage() == GUI_MSG_CLICKED)
       {
@@ -414,4 +414,10 @@ void CGUITextBox::SetPulseOnSelect(bool pulse)
 {
   m_upDown.SetPulseOnSelect(pulse);
   CGUIControl::SetPulseOnSelect(pulse);
+}
+
+void CGUITextBox::SetNavigation(DWORD up, DWORD down, DWORD left, DWORD right)
+{
+  CGUIControl::SetNavigation(up, down, left, right);
+  m_upDown.SetNavigation(up, down, left, right);
 }
