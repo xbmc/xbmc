@@ -478,7 +478,8 @@ void CGUIImage::SetFileName(const CStdString& strFileName)
   if (m_strFileName.Equals(strFileName)) return;
   FreeResources();
   m_strFileName = strFileName;
-  AllocResources();
+  // Don't allocate resources here as this is done at render time
+//  AllocResources();
 }
 
 void CGUIImage::SetCornerAlpha(DWORD dwLeftTop, DWORD dwRightTop, DWORD dwLeftBottom, DWORD dwRightBottom)
