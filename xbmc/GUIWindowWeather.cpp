@@ -134,30 +134,29 @@ void CGUIWindowWeather::UpdateButtons()
     if (pImage) pImage->SetFileName(g_weatherManager.m_dfForcast[i].m_szIcon);
   }
 
-  CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), CONTROL_SELECTLOCATION, 0, 0, NULL);
-  g_graphicsContext.SendMessage(msg);
-  CGUIMessage msg2(GUI_MSG_LABEL_ADD, GetID(), CONTROL_SELECTLOCATION, 0, 0);
-  for (int i = 0; i < MAX_LOCATION; i++)
+  CGUISpinControl *pLocation = (CGUISpinControl *)GetControl(CONTROL_SELECTLOCATION);
+  if (pLocation)
   {
-    char *szLocation = g_weatherManager.GetLocation(m_iCurWeather);
-    if (strlen(szLocation) > 1) //got the location string yet?
+    pLocation->Clear();
+    for (int i = 0; i < MAX_LOCATION; i++)
     {
-      CStdString strLabel = szLocation;
-      int iPos = strLabel.ReverseFind(", ");
-      if (iPos) strLabel = strLabel.Left(iPos); // strip off the country part
-      msg2.SetLabel(strLabel);    // so we just display the town
+      char *szLocation = g_weatherManager.GetLocation(i);
+      if (strlen(szLocation) > 1) //got the location string yet?
+      {
+        CStdString strLabel = szLocation;
+        int iPos = strLabel.ReverseFind(", ");
+        if (iPos) strLabel = strLabel.Left(iPos); // strip off the country part
+        pLocation->AddLabel(strLabel, i);
+      }
+      else
+      {
+        CStdString strSetting;
+        strSetting.Format("Weather.AreaCode%i", i + 1);
+        pLocation->AddLabel(g_guiSettings.GetString(strSetting), i);
+      }
     }
-    else
-    {
-      CStdString strSetting;
-      strSetting.Format("Weather.AreaCode%i", i + 1);
-      msg2.SetLabel(g_guiSettings.GetString(strSetting));
-    }
-    g_graphicsContext.SendMessage(msg2);
+    pLocation->SetValue(m_iCurWeather);
   }
-
-  CGUIMessage msgSet(GUI_MSG_ITEM_SELECT, GetID(), CONTROL_SELECTLOCATION, m_iCurWeather, 0, NULL);
-  g_graphicsContext.SendMessage(msgSet);
 }
 
 

@@ -42,6 +42,7 @@ public:
   virtual void SetWidth(int iWidth);
   virtual void SetHeight(int iHeight);
   virtual void SetPulseOnSelect(bool pulse);
+  virtual void SetNavigation(DWORD up, DWORD down, DWORD left, DWORD right);
   const CLabelInfo& GetLabelInfo() const { return m_label; };
   DWORD GetSpinWidth() const { return m_upDown.GetWidth() / 2; };
   DWORD GetSpinHeight() const { return m_upDown.GetHeight(); };

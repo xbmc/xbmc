@@ -2,7 +2,6 @@
 #include "GUIListControl.h"
 #include "../xbmc/utils/CharsetConverter.h"
 
-
 #define CONTROL_LIST  0
 #define CONTROL_UPDOWN 1
 CGUIListControl::CGUIListControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight,
@@ -13,7 +12,7 @@ CGUIListControl::CGUIListControl(DWORD dwParentID, DWORD dwControlId, int iPosX,
                                  const CLabelInfo& labelInfo, const CLabelInfo& labelInfo2,
                                  const CStdString& strButton, const CStdString& strButtonFocus)
     : CGUIControl(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight)
-    , m_upDown(dwControlId, 0, 0, 0, dwSpinWidth, dwSpinHeight, strUp, strDown, strUpFocus, strDownFocus, spinInfo, SPIN_CONTROL_TYPE_INT)
+    , m_upDown(dwControlId, CONTROL_UPDOWN, 0, 0, dwSpinWidth, dwSpinHeight, strUp, strDown, strUpFocus, strDownFocus, spinInfo, SPIN_CONTROL_TYPE_INT)
     , m_imgButton(dwControlId, 0, iPosX, iPosY, dwWidth, dwHeight, strButtonFocus, strButton, labelInfo)
 {
   m_label = labelInfo;
@@ -371,7 +370,7 @@ bool CGUIListControl::OnMessage(CGUIMessage& message)
 {
   if (message.GetControlId() == GetID() )
   {
-    if (message.GetSenderId() == 0) // page spin control
+    if (message.GetSenderId() == CONTROL_UPDOWN) // page spin control
     {
       if (message.GetMessage() == GUI_MSG_CLICKED)
       {

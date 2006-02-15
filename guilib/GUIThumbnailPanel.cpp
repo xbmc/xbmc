@@ -36,7 +36,7 @@ CGUIThumbnailPanel::CGUIThumbnailPanel(DWORD dwParentID, DWORD dwControlId, int 
     : CGUIControl(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight)
     , m_imgFolder(dwParentID, dwControlId, iPosX, iPosY, 0, 0, strImageIcon)
     , m_imgFolderFocus(dwParentID, dwControlId, iPosX, iPosY, 0, 0, strImageIconFocus)
-    , m_upDown(dwControlId, 0, 0, 0, dwSpinWidth, dwSpinHeight, strUp, strDown, strUpFocus, strDownFocus, spinInfo, SPIN_CONTROL_TYPE_INT)
+    , m_upDown(dwControlId, CONTROL_UPDOWN, 0, 0, dwSpinWidth, dwSpinHeight, strUp, strDown, strUpFocus, strDownFocus, spinInfo, SPIN_CONTROL_TYPE_INT)
     , m_scrollInfo(0)
 {
   m_label = labelInfo;
@@ -412,7 +412,7 @@ bool CGUIThumbnailPanel::OnMessage(CGUIMessage& message)
 {
   if (message.GetControlId() == GetID() )
   {
-    if (message.GetSenderId() == 0)
+    if (message.GetSenderId() == CONTROL_UPDOWN)
     {
       if (message.GetMessage() == GUI_MSG_CLICKED)
       { // Page Control

@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 14-02-2006 fixed: Navigation off page controls on dialogs.
  - 14-02-2006 fixed: Resolution spin control wasn't showing correct values after a change.
  - 14-02-2006 fixed: Info images would not show if the info changed while it was in a delayed animation.
  - 14-02-2006 fixed: [ 1429552] jpgs with garbage data at the start weren't loaded.  We now read up to 4096 bytes to find the real start of the jpeg.
