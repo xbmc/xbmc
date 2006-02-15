@@ -212,26 +212,26 @@ void CRssReader::GetNewsItems(TiXmlElement* channelXmlNode, int iFeed)
       {
         if (!childNode->NoChildren() && i->Equals(strName))
         {
-			CStdString htmlText = childNode->FirstChild()->Value();
+          CStdString htmlText = childNode->FirstChild()->Value();
 
-			// This usually happens in right-to-left languages where they want to
-			// specify in the RSS body that the text should be RTL.
-			// <title>
-			//		<div dir="RTL">עלו ברשת: שמרו על עצמכם</div> 
-			// </title>
-			if (htmlText.Equals("div") || htmlText.Equals("span"))
-			{
-				m_shouldFlip = true;
-				htmlText = childNode->FirstChild()->FirstChild()->Value();
-			}
+          // This usually happens in right-to-left languages where they want to
+          // specify in the RSS body that the text should be RTL.
+          // <title>
+          //		<div dir="RTL">עלו ברשת: שמרו על עצמכם</div> 
+          // </title>
+          if (htmlText.Equals("div") || htmlText.Equals("span"))
+          {
+	          m_shouldFlip = true;
+	          htmlText = childNode->FirstChild()->FirstChild()->Value();
+          }
 
-			CStdString text;
-		    CStdStringW unicodeText;
+          CStdString text;
+          CStdStringW unicodeText;
 
-			html.ConvertHTMLToAnsi(htmlText, text);
-			fromRSSToUTF16(text, unicodeText);
+          html.ConvertHTMLToAnsi(htmlText, text);
+          fromRSSToUTF16(text, unicodeText);
 
-			mTagElements.insert(StrPair(*i, unicodeText));
+          mTagElements.insert(StrPair(*i, unicodeText));
         }
       }
       childNode = childNode->NextSibling();
@@ -244,21 +244,14 @@ void CRssReader::GetNewsItems(TiXmlElement* channelXmlNode, int iFeed)
 
       if (j == mTagElements.end())
         continue;
-      
-	  CStdStringW& text = j->second;
+
+      CStdStringW& text = j->second;
       AddString(text, rsscolour, iFeed);
       rsscolour = RSS_COLOR_BODY;
       text = " - ";
       AddString(text, rsscolour, iFeed);
     }
     itemNode = itemNode->NextSiblingElement("item");
-  }
-
-  // spiff - avoid trailing ' - '
-  if( bEmpty )
-  {
-    m_strFeed[iFeed].erase(m_strFeed[iFeed].length()-3);
-    m_strColors[iFeed].erase(m_strColors[iFeed].length()-3);
   }
 }
 
@@ -382,6 +375,13 @@ bool CRssReader::Parse(int iFeed)
   }
 
   GetNewsItems(rssXmlNode,iFeed);
+
+  // avoid trailing ' - '
+  if( m_strFeed[iFeed].size() > 3 && m_strFeed[iFeed].Mid(m_strFeed[iFeed].size()-3) == L" - ")
+  {
+    m_strFeed[iFeed].erase(m_strFeed[iFeed].length()-3);
+    m_strColors[iFeed].erase(m_strColors[iFeed].length()-3);
+  }
   return true;
 }
 

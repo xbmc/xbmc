@@ -43,6 +43,7 @@ private:
   void UpdateButtons();
   WCHAR GetCharacter(int iButton);
   void UpdateLabel();
+  void ResetShiftAndSymbols();
 
   void Character(WCHAR wch);
   void Backspace();
