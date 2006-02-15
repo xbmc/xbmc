@@ -5,6 +5,9 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 14-02-2006 fixed: Kai Host dialog had missing text labels in private mode.
+ - 14-02-2006 fixed: Add source title from Files window.
+ - 14-02-2006 fixed: Album Info dialog wasn't displayed correctly.
  - 14-02-2006 fixed: Navigation off page controls on dialogs.
  - 14-02-2006 fixed: Resolution spin control wasn't showing correct values after a change.
  - 14-02-2006 fixed: Info images would not show if the info changed while it was in a delayed animation.
