@@ -1,3 +1,5 @@
+2006-02-15 fixed:	Weather now uses labels instead of buttons.
+
 2006-02-13 added:	New dialogs for Add Share function.
 
 2006-02-09 fixed:	Very wide album images could overlap the text in MusicVisualisation.
