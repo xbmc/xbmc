@@ -302,7 +302,7 @@
       <width>15</width>
       <height>16</height>
       <texture>homebutton-small.png</texture>
-      <visible>![Player.HasMedia + System.IdleTime(60)]</visible>
+      <visible>![Player.HasAudio + System.IdleTime(60)]</visible>
       <animation effect="fade" time="1000">VisibleChange</animation>
     </control>
 
@@ -314,7 +314,7 @@
       <width>15</width>
       <height>16</height>
       <texture>homebutton-small.png</texture>
-      <visible>![Player.HasMedia + System.IdleTime(60)]</visible>
+      <visible>![Player.HasAudio + System.IdleTime(60)]</visible>
       <animation effect="fade" time="1000">VisibleChange</animation>
     </control>
 
@@ -337,7 +337,7 @@
         <texturefocus>home-focus.gif</texturefocus>
         <texturenofocus>-</texturenofocus>
         <textoffsetx>30</textoffsetx>
-        <visible>![Player.HasMedia + System.IdleTime(60)]</visible>
+        <visible allowhiddenfocus="true">![Player.HasAudio + System.IdleTime(60)]</visible>
         <animation effect="fade" time="1000">VisibleChange</animation>
       </control>
 
@@ -359,7 +359,7 @@
         <texturefocus>home-focus.gif</texturefocus>
         <texturenofocus>-</texturenofocus>
         <textoffsetx>30</textoffsetx>
-        <visible>![Player.HasMedia + System.IdleTime(60)]</visible>
+        <visible allowhiddenfocus="true">![Player.HasAudio + System.IdleTime(60)]</visible>
         <animation effect="fade" time="1000">VisibleChange</animation>
       </control>
 
@@ -381,7 +381,7 @@
         <texturefocus>home-focus.gif</texturefocus>
         <texturenofocus>-</texturenofocus>
         <textoffsetx>30</textoffsetx>
-        <visible>![Player.HasMedia + System.IdleTime(60)]</visible>
+        <visible allowhiddenfocus="true">![Player.HasAudio + System.IdleTime(60)]</visible>
         <animation effect="fade" time="1000">VisibleChange</animation>
       </control>
 
@@ -403,7 +403,7 @@
         <texturefocus>home-focus.gif</texturefocus>
         <texturenofocus>-</texturenofocus>
         <textoffsetx>30</textoffsetx>
-        <visible>![Player.HasMedia + System.IdleTime(60)]</visible>
+        <visible allowhiddenfocus="true">![Player.HasAudio + System.IdleTime(60)]</visible>
         <animation effect="fade" time="1000">VisibleChange</animation>
       </control>
 
@@ -425,7 +425,7 @@
 	      <texturefocus>home-focus.gif</texturefocus>
 	      <texturenofocus>-</texturenofocus>
 	      <textoffsetx>30</textoffsetx>
-        <visible>![Player.HasMedia + System.IdleTime(60)]</visible>
+        <visible allowhiddenfocus="true">![Player.HasAudio + System.IdleTime(60)]</visible>
         <animation effect="fade" time="1000">VisibleChange</animation>
       </control>
 
@@ -447,7 +447,7 @@
 	      <texturefocus>home-focus.gif</texturefocus>
 	      <texturenofocus>-</texturenofocus>
 	      <textoffsetx>20</textoffsetx>
-        <visible>![Player.HasMedia + System.IdleTime(60)]</visible>
+        <visible allowhiddenfocus="true">![Player.HasAudio + System.IdleTime(60)]</visible>
         <animation effect="fade" time="1000">VisibleChange</animation>
       </control>
 
@@ -469,7 +469,7 @@
 	      <texturefocus>home-focus.gif</texturefocus>
 	      <texturenofocus>-</texturenofocus>
 	      <textoffsetx>20</textoffsetx>
-        <visible>![Player.HasMedia + System.IdleTime(60)]</visible>
+        <visible allowhiddenfocus="true">![Player.HasAudio + System.IdleTime(60)]</visible>
         <animation effect="fade" time="1000">VisibleChange</animation>
       </control>
 
@@ -485,7 +485,7 @@
       <info>System.Date</info>
       <align>right</align>
       <font>special12</font>
-      <visible>![Player.HasMedia + System.IdleTime(60)]</visible>
+      <visible>![Player.HasAudio + System.IdleTime(60)]</visible>
       <animation effect="fade" time="1000">VisibleChange</animation>
     </control>
 
@@ -499,7 +499,7 @@
       <align>left</align>
       <font>special12</font>
       <include>textcolorgrey</include>
-      <visible>![Player.HasMedia + System.IdleTime(60)]</visible>
+      <visible>![Player.HasAudio + System.IdleTime(60)]</visible>
       <animation effect="fade" time="1000">VisibleChange</animation>
     </control>
 
@@ -514,7 +514,7 @@
       <align>left</align>
       <font>special12</font>
       <include>textcolorgrey</include>
-      <visible>![Player.HasMedia + System.IdleTime(60)]</visible>
+      <visible>![Player.HasAudio + System.IdleTime(60)]</visible>
       <animation effect="fade" time="1000">VisibleChange</animation>
     </control>
 
@@ -546,7 +546,7 @@
       <texturenofocus>home-dvd-l.png</texturenofocus>
       <font>font12</font>
       <textoffsetx>26</textoffsetx>
-      <visible>System.hasmediadvd + System.KaiConnected + ![Player.HasMedia + System.IdleTime(60)]</visible>
+      <visible>System.hasmediadvd + System.KaiConnected + ![Player.HasAudio + System.IdleTime(60)]</visible>
       <animation effect="fade" time="1000">VisibleChange</animation>
       <onclick>XBMC.PlayDVD()</onclick>
       <onleft>96</onleft>
@@ -613,7 +613,7 @@
       <onright>98</onright>
       <onup>2</onup>
       <ondown>2</ondown>
-      <visible>![Player.HasAudio + System.IdleTime(60)]</visible>
+      <visible allowhiddenfocus="true">![Player.HasAudio + System.IdleTime(60)]</visible>
       <animation effect="fade" time="1000">VisibleChange</animation>
     </control>
 
@@ -633,7 +633,7 @@
       <onright>2</onright>
       <onup>2</onup>
       <ondown>2</ondown>
-      <visible>![Player.HasAudio + System.IdleTime(60)]</visible>
+      <visible allowhiddenfocus="true">![Player.HasAudio + System.IdleTime(60)]</visible>
       <animation effect="fade" time="1000">VisibleChange</animation>
     </control>
 
