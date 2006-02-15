@@ -312,43 +312,12 @@ void CGUIWindowVideoBase::ShowIMDB(const CStdString& strMovie, const CStdString&
   // quietly return if Internet lookups are disabled
   if (!g_guiSettings.GetBool("Network.EnableInternet")) return ;
 
-  // handle .nfo files
-  CStdString strExtension, strNfoFile;
-  CUtil::GetExtension(strFile, strExtension);
+  CStdString nfoFile = GetnfoFile(strFile, bFolder);
 
-  // already an .nfo file?
-  if ( strcmpi(strExtension.c_str(), ".nfo") == 0 )
-    strNfoFile = strFile;
-  // no, create .nfo file
-  else
-    CUtil::ReplaceExtension(strFile, ".nfo", strNfoFile);
-
-  // test file existance
-  if (!strNfoFile.IsEmpty() && !CFile::Exists(strNfoFile))
-      strNfoFile.Empty();
-
-  // try looking for .nfo file for a stacked item
-  CURL url(strFile);
-  if (url.GetProtocol() == "stack")
+  if ( !nfoFile.IsEmpty() )
   {
-    // first try .nfo file matching first file in stack
-    CStackDirectory dir;
-    CStdString firstFile = dir.GetFirstStackedFile(strFile);
-    CUtil::ReplaceExtension(firstFile, ".nfo", strNfoFile);
-    // else try .nfo file matching stacked title
-    if (!CFile::Exists(strNfoFile))
-    {
-      CStdString stackedTitlePath = dir.GetStackedTitlePath(strFile);
-      CUtil::ReplaceExtension(stackedTitlePath, ".nfo", strNfoFile);
-      if (!CFile::Exists(strNfoFile))
-        strNfoFile.Empty();
-    }
-  }
-
-  if ( !strNfoFile.IsEmpty() )
-  {
-    CLog::Log(LOGDEBUG,"Found matching nfo file: %s", strNfoFile.c_str());
-    if ( CFile::Cache(strNfoFile, "Z:\\movie.nfo", NULL, NULL))
+    CLog::Log(LOGDEBUG,"Found matching nfo file: %s", nfoFile.c_str());
+    if ( CFile::Cache(nfoFile, "Z:\\movie.nfo", NULL, NULL))
     {
       CNfoFile nfoReader;
       if ( nfoReader.Create("Z:\\movie.nfo") == S_OK)
@@ -384,10 +353,10 @@ void CGUIWindowVideoBase::ShowIMDB(const CStdString& strMovie, const CStdString&
         }
       }
       else
-        CLog::Log(LOGERROR,"Unable to find an imdb url in nfo file: %s", strNfoFile.c_str());
+        CLog::Log(LOGERROR,"Unable to find an imdb url in nfo file: %s", nfoFile.c_str());
     }
     else
-      CLog::Log(LOGERROR,"Unable to cache nfo file: %s", strNfoFile.c_str());
+      CLog::Log(LOGERROR,"Unable to cache nfo file: %s", nfoFile.c_str());
   }
 
   if (m_guiState.get() && m_guiState->HideExtensions() && !bFolder)
@@ -1178,4 +1147,70 @@ void CGUIWindowVideoBase::PlayItem(int iItem)
   // otherwise just play the song
   else
     OnClick(iItem);
+}
+
+CStdString CGUIWindowVideoBase::GetnfoFile(const CStdString &strFile, bool bFolder)
+{
+  CStdString nfoFile;
+  // Find a matching .nfo file
+  if (bFolder)
+  {
+    // see if there is a unique nfo file in this folder, and if so, use that
+    CFileItemList items;
+    CDirectory dir;
+    if (dir.GetDirectory(strFile, items, ".nfo") && items.Size())
+    {
+      int numNFO = -1;
+      for (int i = 0; i < items.Size(); i++)
+      {
+        if (items[i]->IsNFO())
+        {
+          if (numNFO == -1)
+            numNFO = i;
+          else
+          {
+            numNFO = -1;
+            break;
+          }
+        }
+      }
+      if (numNFO > -1)
+        return items[numNFO]->m_strPath;
+    }
+  }
+
+  // file
+  CStdString strExtension;
+  CUtil::GetExtension(strFile, strExtension);
+
+  // already an .nfo file?
+  if ( strcmpi(strExtension.c_str(), ".nfo") == 0 )
+    nfoFile = strFile;
+  // no, create .nfo file
+  else
+    CUtil::ReplaceExtension(strFile, ".nfo", nfoFile);
+
+  // test file existance
+  if (!nfoFile.IsEmpty() && !CFile::Exists(nfoFile))
+      nfoFile.Empty();
+
+  // try looking for .nfo file for a stacked item
+  CURL url(strFile);
+  if (url.GetProtocol() == "stack")
+  {
+    // first try .nfo file matching first file in stack
+    CStackDirectory dir;
+    CStdString firstFile = dir.GetFirstStackedFile(strFile);
+    CUtil::ReplaceExtension(firstFile, ".nfo", nfoFile);
+    // else try .nfo file matching stacked title
+    if (!CFile::Exists(nfoFile))
+    {
+      CStdString stackedTitlePath = dir.GetStackedTitlePath(strFile);
+      CUtil::ReplaceExtension(stackedTitlePath, ".nfo", nfoFile);
+      if (!CFile::Exists(nfoFile))
+        nfoFile.Empty();
+    }
+  }
+
+  return nfoFile;
 }
