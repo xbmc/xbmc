@@ -385,6 +385,14 @@ void CIMDB::GetURL(const CStdString &strMovie, CStdString& strURL)
   RemoveAllAfter(szMovie, " proper ");
   RemoveAllAfter(szMovie, " limited ");
   RemoveAllAfter(szMovie, " rerip ");
+  RemoveAllAfter(szMovie, " custom ");
+  RemoveAllAfter(szMovie, " dvdscr ");
+  RemoveAllAfter(szMovie, " unrated ");
+  RemoveAllAfter(szMovie, " multisubs ");
+  RemoveAllAfter(szMovie, " ws ");
+  RemoveAllAfter(szMovie, " swedish ");
+  RemoveAllAfter(szMovie, " pal ");
+  RemoveAllAfter(szMovie, " ntsc ");
 
   RemoveAllAfter(szMovie, "+divx+");
   RemoveAllAfter(szMovie, "+xvid+");
@@ -399,6 +407,14 @@ void CIMDB::GetURL(const CStdString &strMovie, CStdString& strURL)
   RemoveAllAfter(szMovie, "+proper+");
   RemoveAllAfter(szMovie, "+limited+");
   RemoveAllAfter(szMovie, "+rerip+");
+  RemoveAllAfter(szMovie, "+custom+");
+  RemoveAllAfter(szMovie, "+dvdscr+");
+  RemoveAllAfter(szMovie, "+unrated+");
+  RemoveAllAfter(szMovie, "+multisubs+");
+  RemoveAllAfter(szMovie, "+ws+");
+  RemoveAllAfter(szMovie, "+swedish+");
+  RemoveAllAfter(szMovie, "+pal+");
+  RemoveAllAfter(szMovie, "+ntsc+");
 
   // sprintf(szURL,"http://us.imdb.com/Tsearch?title=%s", szMovie);
   // strURL = szURL;
