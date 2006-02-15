@@ -3,6 +3,7 @@
 #include "../xbmc/utils/GUIInfoManager.h"
 #include "LocalizeStrings.h"
 #include "../xbmc/Util.h"
+#include "GUIWindowManager.h"
 
 #ifdef PRE_SKIN_VERSION_2_0_COMPATIBILITY
 #include "SkinInfo.h"
@@ -136,7 +137,7 @@ void CGUIControl::OnUp()
   {
     SetFocus(false);
     CGUIMessage msg(GUI_MSG_SETFOCUS, GetID(), m_dwControlUp, ACTION_MOVE_UP);
-    g_graphicsContext.SendMessage(msg);
+    SendWindowMessage(msg);
   }
 }
 
@@ -146,7 +147,7 @@ void CGUIControl::OnDown()
   {
     SetFocus(false);
     CGUIMessage msg(GUI_MSG_SETFOCUS, GetID(), m_dwControlDown, ACTION_MOVE_DOWN);
-    g_graphicsContext.SendMessage(msg);
+    SendWindowMessage(msg);
   }
 }
 
@@ -156,7 +157,7 @@ void CGUIControl::OnLeft()
   {
     SetFocus(false);
     CGUIMessage msg(GUI_MSG_SETFOCUS, GetID(), m_dwControlLeft, ACTION_MOVE_LEFT);
-    g_graphicsContext.SendMessage(msg);
+    SendWindowMessage(msg);
   }
 }
 
@@ -166,8 +167,17 @@ void CGUIControl::OnRight()
   {
     SetFocus(false);
     CGUIMessage msg(GUI_MSG_SETFOCUS, GetID(), m_dwControlRight, ACTION_MOVE_RIGHT);
-    g_graphicsContext.SendMessage(msg);
+    SendWindowMessage(msg);
   }
+}
+
+void CGUIControl::SendWindowMessage(CGUIMessage &message)
+{
+  CGUIWindow *pWindow = m_gWindowManager.GetWindow(GetParentID());
+  if (pWindow)
+    pWindow->OnMessage(message);
+  else
+    g_graphicsContext.SendMessage(message);
 }
 
 DWORD CGUIControl::GetID(void) const
@@ -213,7 +223,7 @@ bool CGUIControl::OnMessage(CGUIMessage& message)
         if (GetID() != dwControl)
         {
           CGUIMessage msg(GUI_MSG_SETFOCUS, GetID(), dwControl, message.GetParam1());
-          g_graphicsContext.SendMessage(msg);
+          SendWindowMessage(msg);
           return true;
         }
         else
@@ -237,7 +247,7 @@ bool CGUIControl::OnMessage(CGUIMessage& message)
             return true;
           }
           CGUIMessage msg(GUI_MSG_SETFOCUS, GetID(), dwControl, dwReverse);
-          g_graphicsContext.SendMessage(msg);
+          SendWindowMessage(msg);
           return true;
         }
       }
@@ -458,7 +468,7 @@ bool CGUIControl::OnMouseOver()
     g_Mouse.SetState(MOUSE_STATE_FOCUS);
   if (!CanFocus()) return false;
   CGUIMessage msg(GUI_MSG_SETFOCUS, GetParentID(), GetID());
-  g_graphicsContext.SendMessage(msg);
+  SendWindowMessage(msg);
   return true;
 }
 
