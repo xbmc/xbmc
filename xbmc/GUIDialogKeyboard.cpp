@@ -24,6 +24,9 @@ static char symbol_map[37] = "!@#$%^&*()[]{}-_=+;:\'\",.<>/?\\|`~    ";
 
 #define CTL_BUTTON_BACKSPACE  8
 
+static char symbolButtons[] = "._-@/\\";
+#define NUM_SYMBOLS sizeof(symbolButtons) - 1
+
 CGUIDialogKeyboard::CGUIDialogKeyboard(void)
 : CGUIDialog(WINDOW_DIALOG_KEYBOARD, "DialogKeyboard.xml")
 {
@@ -79,7 +82,12 @@ bool CGUIDialogKeyboard::OnAction(const CAction &action)
   }
   else if (action.wID == ACTION_CURSOR_RIGHT)
   {
-    MoveCursor(1);
+    if (GetCursorPos() == m_strEdit.size() && (m_strEdit.size() == 0 || m_strEdit[m_strEdit.size() - 1] != ' '))
+    { // add a space
+      Character(L' ');
+    }
+    else
+      MoveCursor(1);
     return true;
   }
   else if (action.wID == ACTION_SHIFT)
@@ -199,6 +207,7 @@ void CGUIDialogKeyboard::SetText(CStdString& aTextString)
 
 void CGUIDialogKeyboard::Character(WCHAR wch)
 {
+  if (!wch) return;
   m_strEdit.Insert(GetCursorPos(), (TCHAR)wch);
   UpdateLabel();
   MoveCursor(1);
@@ -246,18 +255,12 @@ void CGUIDialogKeyboard::Backspace()
 
 void CGUIDialogKeyboard::OnClickButton(int iButtonControl)
 {
-  if ( ((iButtonControl >= 48) && (iButtonControl <= 57)) || (iButtonControl == 32))
-  { // number or space
-    Character(GetCharacter(iButtonControl));
-  }
-  else if ((iButtonControl >= 65) && (iButtonControl <= 90))
-  { // letter
-    Character(GetCharacter(iButtonControl));
-  }
-  else if (iButtonControl == CTL_BUTTON_BACKSPACE)
+  if (iButtonControl == CTL_BUTTON_BACKSPACE)
   {
     Backspace();
   }
+  else
+    Character(GetCharacter(iButtonControl));
 }
 
 void CGUIDialogKeyboard::OnRemoteNumberClick(int key)
@@ -293,6 +296,7 @@ void CGUIDialogKeyboard::OnRemoteNumberClick(int key)
 
 WCHAR CGUIDialogKeyboard::GetCharacter(int iButton)
 {
+  // First the numbers
   if (iButton >= 48 && iButton <= 57)
   {
     if (m_keyType == SYMBOLS)
@@ -303,22 +307,32 @@ WCHAR CGUIDialogKeyboard::GetCharacter(int iButton)
     else
       return (WCHAR)iButton;
   }
-  if (iButton == 32) // space
+  else if (iButton == 32) // space
     return (WCHAR)iButton;
-  if (m_keyType == SYMBOLS)
-  { // symbol
-    OnSymbols();
-    return (WCHAR)symbol_map[iButton -65 + 10];
+  else if (iButton >= 65 && iButton < 91)
+  {
+    if (m_keyType == SYMBOLS)
+    { // symbol
+      OnSymbols();
+      return (WCHAR)symbol_map[iButton -65 + 10];
+    }
+    if ((m_keyType == CAPS && m_bShift) || (m_keyType == LOWER && !m_bShift))
+    { // make lower case
+      iButton += 32;
+    }
+    if (m_bShift)
+    { // turn off the shift key
+      OnShift();
+    }
+    return (WCHAR) iButton;
   }
-  if ((m_keyType == CAPS && m_bShift) || (m_keyType == LOWER && !m_bShift))
-  { // make lower case
-    iButton += 32;
+  else
+  { // check for symbols
+    for (int i = 0; i < NUM_SYMBOLS; i++)
+      if (iButton == symbolButtons[i])
+        return (WCHAR)iButton;
   }
-  if (m_bShift)
-  { // turn off the shift key
-    OnShift();
-  }
-  return (WCHAR) iButton;
+  return 0;
 }
 
 void CGUIDialogKeyboard::UpdateButtons()
@@ -394,6 +408,15 @@ void CGUIDialogKeyboard::UpdateButtons()
       {
         aLabel[0] = iButton;
       }
+      pButton->SetText(aLabel);
+    }
+  }
+  for (int i = 0; i < NUM_SYMBOLS; i++)
+  {
+    CGUIButtonControl* pButton = ((CGUIButtonControl*)GetControl(symbolButtons[i]));
+    if (pButton)
+    {
+      aLabel[0] = symbolButtons[i];
       pButton->SetText(aLabel);
     }
   }
