@@ -43,6 +43,7 @@ protected:
   int  ResumeItemOffset(int iItem);
   void AddItemToPlayList(const CFileItem* pItem, int iPlaylist = PLAYLIST_VIDEO);
   void GetStackedFiles(const CStdString &strFileName, std::vector<CStdString> &movies);
+  CStdString GetnfoFile(const CStdString &strFile, bool bFolder);
 
   void MarkUnWatched(int iItem);
   void MarkWatched(int iItem);
