@@ -102,7 +102,7 @@ void CSpinExSettingControl::Update()
   else if (m_pSetting->GetControlType() == SPIN_CONTROL_INT_PLUS || m_pSetting->GetControlType() == SPIN_CONTROL_INT)
   {
     CSettingInt *pSettingInt = (CSettingInt *)m_pSetting;
-    m_pSpin->SetValue((pSettingInt->GetData() - pSettingInt->m_iMin) / pSettingInt->m_iStep);
+    m_pSpin->SetValue(pSettingInt->GetData());
   }
 }
 
