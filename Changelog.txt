@@ -5,6 +5,10 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 14-02-2006 fixed: Resolution spin control wasn't showing correct values after a change.
+ - 14-02-2006 fixed: Info images would not show if the info changed while it was in a delayed animation.
+ - 14-02-2006 fixed: [ 1429552] jpgs with garbage data at the start weren't loaded.  We now read up to 4096 bytes to find the real start of the jpeg.
+ - 14-02-2006 fixed: [ 1428952 ] LCD.xml had an incorrect $INFO tag for ScreenMode.
  - 13-02-2006 added: three new visibility conditions: playlist.israndom, playlist.isrepeat, playlist.isrepeatone
  - 13-02-2006 changed: the Repeat and Repeat One buttons in the Now Playing window have been consolidated into a single button
  - 13-02-2006 added: two new builtin commands for playlist control, they can be used in the skin or in keymap.xml
