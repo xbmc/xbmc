@@ -321,7 +321,6 @@ bool CGUIWindowMusicBase::Update(const CStdString &strDirectory)
     // synchronize playlist with current directory
     if (!bCurrentSongFound && iCurrentPlaylistSong > -1)
     {
-      /*
       if (!pItem->m_bIsFolder && !pItem->IsPlayList() && !pItem->IsNFO())
         iSongInDirectory++;
       if (iSongInDirectory == iCurrentPlaylistSong)
@@ -329,14 +328,15 @@ bool CGUIWindowMusicBase::Update(const CStdString &strDirectory)
         pItem->Select(true);
         bCurrentSongFound = true;
       }
-      */
 
+      /*
       // neet to match current song on the path, not the index
       if (pItem->m_strPath.Equals(strCurrentPlaylistSong))
       {
         pItem->Select(true);
         bCurrentSongFound = true;
       }
+      */
     }
   }
 
@@ -1471,7 +1471,7 @@ void CGUIWindowMusicBase::PlayItem(int iItem)
 {
   // restrictions should be placed in the appropiate window code
   // only call the base code if the item passes since this clears
-  // the currently playing temp playlist
+  // the current playlist
 
   const CFileItem* pItem = m_vecItems[iItem];
   // if its a folder, build a temp playlist
@@ -1488,19 +1488,19 @@ void CGUIWindowMusicBase::PlayItem(int iItem)
     if (item.IsParentFolder())
       return;
 
-    int iPlaylist=m_guiState->GetPlaylist();
-    // clear current temp playlist
+    //int iPlaylist=m_guiState->GetPlaylist();
+    int iPlaylist = PLAYLIST_MUSIC;
     g_playlistPlayer.ClearPlaylist(iPlaylist);
     g_playlistPlayer.Reset();
 
-    // recursively add items to temp playlist
+    // recursively add items to playlist
     AddItemToPlayList(&item, iPlaylist);
 
     CStdString strPlayListDirectory = m_vecItems.m_strPath;
     if (CUtil::HasSlashAtEnd(strPlayListDirectory))
       strPlayListDirectory.Delete(strPlayListDirectory.size() - 1);
 
-    m_guiState->SetPlaylistDirectory(strPlayListDirectory);
+    //m_guiState->SetPlaylistDirectory(strPlayListDirectory);
     // play!
     g_playlistPlayer.SetCurrentPlaylist(iPlaylist);
     g_playlistPlayer.Play();
