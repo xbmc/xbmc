@@ -585,7 +585,7 @@ bool CGUIMediaWindow::OnClick(int iItem)
       if (iPlaylist!=PLAYLIST_NONE)
       {
         int nFolderCount = 0;
-        g_playlistPlayer.GetPlaylist( iPlaylist ).Clear();
+        g_playlistPlayer.ClearPlaylist( iPlaylist );
         g_playlistPlayer.Reset();
         int iNoSongs = 0;
         for ( int i = 0; i < m_vecItems.Size(); i++ )
@@ -832,7 +832,7 @@ void CGUIMediaWindow::UpdateFileList()
     {
       int nSong = g_playlistPlayer.GetCurrentSong();
       CStdString strCurrentSong = g_playlistPlayer.GetPlaylist(iPlaylist)[nSong].GetFileName();
-      g_playlistPlayer.GetPlaylist(iPlaylist).Clear();
+      g_playlistPlayer.ClearPlaylist(iPlaylist);
       g_playlistPlayer.Reset();
       int nFolderCount = 0;
       int iNoSongs = 0;

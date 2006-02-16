@@ -3683,41 +3683,11 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     }
     else if (parameter.Equals("repeat"))
     {
-
       // get current playlist
       int iPlaylist = g_playlistPlayer.GetCurrentPlaylist();
 
-      // figure out next state from current state
-      // we cycle between off -> all -> one -> off
-      bool bRepeatAll = g_playlistPlayer.Repeated(iPlaylist);
-      bool bRepeatOne = g_playlistPlayer.RepeatedOne(iPlaylist);
-      int iState = -1;
-
-      // enable RepeatAll
-      if (!bRepeatAll && !bRepeatOne)
-      {
-        bRepeatAll = true;
-        bRepeatOne = false;
-        iState = 1; // repeat all
-      }
-      // enable RepeatOne
-      else if (bRepeatAll && !bRepeatOne)
-      {
-        bRepeatAll = false;
-        bRepeatOne = true;
-        iState = 2; // repeat one
-      }
-      // disable both
-      else
-      {
-        bRepeatAll = false;
-        bRepeatOne = false;
-        iState = 0; // disabled
-      }
-
-      // make changes
-      g_playlistPlayer.Repeat(iPlaylist, bRepeatAll);
-      g_playlistPlayer.RepeatOne(iPlaylist, bRepeatOne);
+      // increment repeat state
+      g_playlistPlayer.Repeat(iPlaylist);
 
       // save settings for now playing windows
       switch (iPlaylist)
@@ -3730,6 +3700,12 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
         g_stSettings.m_bMyVideoPlaylistRepeat = g_playlistPlayer.Repeated(iPlaylist);
         g_settings.Save();
       }
+
+      int iState = 0; // disabled
+      if (g_playlistPlayer.Repeated(iPlaylist))
+        iState = 1; // repeat all
+      else if (g_playlistPlayer.RepeatedOne(iPlaylist))
+        iState = 2; // repeat one
 
       // send messages so now playing window can get updated
       CGUIMessage msg(GUI_MSG_PLAYLISTPLAYER_REPEAT, 0, 0, iPlaylist, iState);

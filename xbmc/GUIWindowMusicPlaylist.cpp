@@ -24,7 +24,6 @@
 #define CONTROL_BTNPREVIOUS    25
 
 #define CONTROL_BTNREPEAT     26
-//#define CONTROL_BTNREPEATONE   27
 #define CONTROL_BTNRANDOMIZE  28
 
 
@@ -159,34 +158,8 @@ bool CGUIWindowMusicPlayList::OnMessage(CGUIMessage& message)
       }
       else if (iControl == CONTROL_BTNREPEAT)
       {
-        // figure out next state from current state
-        // we cycle between off -> all -> one -> off
-        bool bRepeatAll = g_playlistPlayer.Repeated(PLAYLIST_MUSIC);
-        bool bRepeatOne = g_playlistPlayer.RepeatedOne(PLAYLIST_MUSIC);
-        int iState = -1;
-
-        // enable RepeatAll
-        if (!bRepeatAll && !bRepeatOne)
-        {
-          bRepeatAll = true;
-          bRepeatOne = false;
-        }
-        // enable RepeatOne
-        else if (bRepeatAll && !bRepeatOne)
-        {
-          bRepeatAll = false;
-          bRepeatOne = true;
-        }
-        // disable both
-        else
-        {
-          bRepeatAll = false;
-          bRepeatOne = false;
-        }
-
-        // make changes
-        g_playlistPlayer.Repeat(PLAYLIST_MUSIC, bRepeatAll);
-        g_playlistPlayer.RepeatOne(PLAYLIST_MUSIC, bRepeatOne);
+        // increment repeat state
+        g_playlistPlayer.Repeat(PLAYLIST_MUSIC);
 
         // save settings
         g_stSettings.m_bMyMusicPlaylistRepeat = g_playlistPlayer.Repeated(PLAYLIST_MUSIC);
@@ -194,14 +167,6 @@ bool CGUIWindowMusicPlayList::OnMessage(CGUIMessage& message)
 
         UpdateButtons();
       }
-      /*
-      else if (iControl == CONTROL_BTNREPEATONE)
-      {
-        static bool bRepeatOne = false;
-        bRepeatOne = !bRepeatOne;
-        g_playlistPlayer.RepeatOne(PLAYLIST_MUSIC, bRepeatOne);
-      }
-      */
       else if (m_viewControl.HasControl(iControl))
       {
         int iAction = message.GetParam1();
@@ -387,7 +352,7 @@ void CGUIWindowMusicPlayList::SavePlayList()
 void CGUIWindowMusicPlayList::ClearPlayList()
 {
   ClearFileItems();
-  g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).Clear();
+  g_playlistPlayer.ClearPlaylist(PLAYLIST_MUSIC);
   if (g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_MUSIC)
   {
     g_playlistPlayer.Reset();
@@ -476,7 +441,6 @@ void CGUIWindowMusicPlayList::UpdateButtons()
     CONTROL_ENABLE(CONTROL_BTNSAVE);
     CONTROL_ENABLE(CONTROL_BTNCLEAR);
     CONTROL_ENABLE(CONTROL_BTNREPEAT);
-    //CONTROL_ENABLE(CONTROL_BTNREPEATONE);
     CONTROL_ENABLE(CONTROL_BTNPLAY);
 
     if (g_application.IsPlayingAudio() && g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_MUSIC)
@@ -496,7 +460,6 @@ void CGUIWindowMusicPlayList::UpdateButtons()
       g_playlistPlayer.Repeat(PLAYLIST_MUSIC, false);
       g_playlistPlayer.RepeatOne(PLAYLIST_MUSIC, false);
       CONTROL_DISABLE(CONTROL_BTNREPEAT);
-      //CONTROL_DISABLE(CONTROL_BTNREPEATONE);
     }
   }
   else
@@ -506,7 +469,6 @@ void CGUIWindowMusicPlayList::UpdateButtons()
     CONTROL_DISABLE(CONTROL_BTNSAVE);
     CONTROL_DISABLE(CONTROL_BTNCLEAR);
     CONTROL_DISABLE(CONTROL_BTNREPEAT);
-    //CONTROL_DISABLE(CONTROL_BTNREPEATONE);
     CONTROL_DISABLE(CONTROL_BTNPLAY);
     CONTROL_DISABLE(CONTROL_BTNNEXT);
     CONTROL_DISABLE(CONTROL_BTNPREVIOUS);

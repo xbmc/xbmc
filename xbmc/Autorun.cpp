@@ -182,7 +182,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
             CDirectory::GetDirectory(pItem->m_strPath, items, ".dat");
             if (items.Size())
             {
-              g_playlistPlayer.GetPlaylist( PLAYLIST_VIDEO_TEMP ).Clear();
+              g_playlistPlayer.ClearPlaylist( PLAYLIST_VIDEO_TEMP );
               items.Sort(SORT_METHOD_LABEL, SORT_ORDER_ASC);
               for (int i=0; i<items.Size(); ++i)
               {
@@ -207,7 +207,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
             CDirectory::GetDirectory(pItem->m_strPath, items, ".mpg");
             if (items.Size())
             {
-              g_playlistPlayer.GetPlaylist( PLAYLIST_VIDEO_TEMP ).Clear();
+              g_playlistPlayer.ClearPlaylist( PLAYLIST_VIDEO_TEMP );
               items.Sort(SORT_METHOD_LABEL, SORT_ORDER_ASC);
               for (int i=0; i<items.Size(); ++i)
               {
@@ -254,7 +254,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
         if (pItem->IsStack())
         {
           // TODO: remove this once the app/player is capable of handling stacks immediately
-          g_playlistPlayer.GetPlaylist( PLAYLIST_VIDEO_TEMP ).Clear();
+          g_playlistPlayer.ClearPlaylist( PLAYLIST_VIDEO_TEMP );
           CStackDirectory dir;
           CFileItemList items;
           dir.GetDirectory(pItem->m_strPath, items);
@@ -510,7 +510,7 @@ bool CAutorun::PlayRunDisc(IDirectory* pDir, const CStdString& strDrive, int& nA
           CDirectory::GetDirectory(pItem->m_strPath, items, ".dat");
           if (items.Size())
           {
-            g_playlistPlayer.GetPlaylist( PLAYLIST_VIDEO_TEMP ).Clear();
+            g_playlistPlayer.ClearPlaylist( PLAYLIST_VIDEO_TEMP );
             items.Sort(SORT_METHOD_LABEL, SORT_ORDER_ASC);
             for (int i=0; i<items.Size(); ++i)
             {
@@ -532,7 +532,7 @@ bool CAutorun::PlayRunDisc(IDirectory* pDir, const CStdString& strDrive, int& nA
           CDirectory::GetDirectory(pItem->m_strPath, items, ".mpg");
           if (items.Size())
           {
-            g_playlistPlayer.GetPlaylist( PLAYLIST_VIDEO_TEMP ).Clear();
+            g_playlistPlayer.ClearPlaylist( PLAYLIST_VIDEO_TEMP );
             items.Sort(SORT_METHOD_LABEL, SORT_ORDER_ASC);
             for (int i=0; i<items.Size(); ++i)
             {
