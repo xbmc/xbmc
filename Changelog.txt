@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 16-02-2006 added: Update database to my programs.
  - 16-02-2006 fixed: Some RSS feeds were showing only the first item.  CDATA sections are now completely ignored.
  - 16-02-2006 fixed: Animations on ShowInfo or ShowCodec in fullscreen video weren't completed.
  - 16-02-2006 added: <textwidth> tag to button controls to truncate text if it's too long.
