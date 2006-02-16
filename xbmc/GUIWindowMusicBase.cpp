@@ -1125,7 +1125,11 @@ bool CGUIWindowMusicBase::FindAlbumInfo(const CStdString& strAlbum, const CStdSt
               // set the label to [relevance]  album - artist
               CStdString strTemp;
               strTemp.Format("[%0.2f]  %s", fRelevance, info.GetTitle2());
-              pDlg->Add(strTemp);
+              CFileItem *pItem = new CFileItem;
+              pItem->SetLabel(strTemp);
+              pItem->SetLabel2("");
+              pItem->m_idepth = i; // use this to hold the index of the album in the scraper
+              pDlg->Add(pItem);
             }
             // autochoose the iBest item
             if (iBest > -1)
@@ -1163,6 +1167,7 @@ bool CGUIWindowMusicBase::FindAlbumInfo(const CStdString& strAlbum, const CStdSt
               return FindAlbumInfo(strNewAlbum, strNewArtist, album);
             }
 
+            /*
             // match the selected item back to an item in the scraper vector...
             // dialog select only allows text items
             // we sorted the list by relevance but the scraper vector is not sorted similarly
@@ -1180,6 +1185,10 @@ bool CGUIWindowMusicBase::FindAlbumInfo(const CStdString& strAlbum, const CStdSt
                 i = iAlbumCount;
               }
             }
+            */
+
+            // if we had an item, get the scraper index
+            iSelectedAlbum = pDlg->GetSelectedItem()->m_idepth;
           }
         }
 
