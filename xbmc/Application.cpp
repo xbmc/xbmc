@@ -3169,7 +3169,7 @@ void CApplication::OnPlayBackEnded()
   CLog::Log(LOGDEBUG, "Playback has finished");
   if ((g_guiSettings.GetBool("MusicPlaylist.ClearPlaylistsOnEnd")) && (g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_MUSIC)) 
   {
-    g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).Clear();
+    g_playlistPlayer.ClearPlaylist(PLAYLIST_MUSIC);
     g_playlistPlayer.Reset();
     g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_NONE);
   } 
@@ -4389,7 +4389,7 @@ bool CApplication::ProcessAndStartPlaylist(const CStdString& strPlayList, CPlayL
     return g_application.PlayFile(CFileItem(item));
 
   // setup correct playlist
-  g_playlistPlayer.GetPlaylist(iPlaylist).Clear();
+  g_playlistPlayer.ClearPlaylist(iPlaylist);
   g_playlistPlayer.ShufflePlay(iPlaylist, false);
 
   // music option: shuffle playlists on load

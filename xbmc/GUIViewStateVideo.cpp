@@ -35,12 +35,16 @@ CGUIViewStateWindowVideoFiles::CGUIViewStateWindowVideoFiles(const CFileItemList
   }
   else
   {
+    CStdString strFileMask = "%F";
+    // when stacking is enabled, filenames are already cleaned so use the existing label
+    if (g_stSettings.m_iMyVideoStack != STACK_NONE)
+      strFileMask = "%L"; 
     if (g_guiSettings.GetBool("MyVideos.IgnoreTheWhenSorting"))
-      AddSortMethod(SORT_METHOD_LABEL_IGNORE_THE, 103, LABEL_MASKS("%F", "%I", "%F", ""));  // FileName, Size | Foldername, empty
+      AddSortMethod(SORT_METHOD_LABEL_IGNORE_THE, 103, LABEL_MASKS(strFileMask, "%I", "%F", ""));  // FileName, Size | Foldername, empty
     else
-      AddSortMethod(SORT_METHOD_LABEL, 103, LABEL_MASKS("%F", "%I", "%F", ""));  // FileName, Size | Foldername, empty
-    AddSortMethod(SORT_METHOD_SIZE, 105, LABEL_MASKS("%F", "%I", "%F", "%I"));  // FileName, Size | Foldername, Size
-    AddSortMethod(SORT_METHOD_DATE, 104, LABEL_MASKS("%F", "%J", "%F", "%J"));  // FileName, Date | Foldername, Date
+      AddSortMethod(SORT_METHOD_LABEL, 103, LABEL_MASKS(strFileMask, "%I", "%F", ""));  // FileName, Size | Foldername, empty
+    AddSortMethod(SORT_METHOD_SIZE, 105, LABEL_MASKS(strFileMask, "%I", "%F", "%I"));  // FileName, Size | Foldername, Size
+    AddSortMethod(SORT_METHOD_DATE, 104, LABEL_MASKS(strFileMask, "%J", "%F", "%J"));  // FileName, Date | Foldername, Date
     SetSortMethod(g_stSettings.m_MyVideoSortMethod);
 
     AddViewAsControl(VIEW_METHOD_LIST, 101);
