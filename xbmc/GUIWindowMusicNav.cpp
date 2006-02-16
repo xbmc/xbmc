@@ -24,7 +24,6 @@ using namespace MUSICDATABASEDIRECTORY;
 #define CONTROL_LABELFILES        12
 
 #define CONTROL_FILTER      15
-#define CONTROL_BTNSHUFFLE  21
 
 CGUIWindowMusicNav::CGUIWindowMusicNav(void)
     : CGUIWindowMusicBase(WINDOW_MUSIC_NAV, "MyMusicNav.xml")
@@ -152,16 +151,6 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
   case GUI_MSG_CLICKED:
     {
       int iControl = message.GetSenderId();
-      if (iControl == CONTROL_BTNSHUFFLE) // shuffle?
-      {
-        // inverse current playlist shuffle state but do not save!
-        g_stSettings.m_bMyMusicPlaylistShuffle = !g_playlistPlayer.ShuffledPlay(PLAYLIST_MUSIC_TEMP);
-        g_playlistPlayer.ShufflePlay(PLAYLIST_MUSIC_TEMP, g_stSettings.m_bMyMusicPlaylistShuffle);
-
-        UpdateButtons();
-
-        return true;
-      }
     }
     break;
   }
@@ -234,12 +223,6 @@ void CGUIWindowMusicNav::UpdateButtons()
   }
   
   SET_CONTROL_LABEL(CONTROL_FILTER, strLabel);
-
-  // Mark the shuffle button
-  if (g_playlistPlayer.ShuffledPlay(PLAYLIST_MUSIC_TEMP))
-  {
-    CONTROL_SELECT(CONTROL_BTNSHUFFLE);
-  }
 }
 
 bool CGUIWindowMusicNav::OnClick(int iItem)
