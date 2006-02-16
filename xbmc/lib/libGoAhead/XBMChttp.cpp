@@ -122,6 +122,7 @@ CStdString encodeFileToBase64( CStdString inFilename, int linesize )
         if( blocksout )
           strBase64 += closeTag ;
         blocksout = 0;
+        bOutput=false;
       }
     }
     fclose(infile);
@@ -1436,14 +1437,15 @@ int CXbmcHttp::xbmcGetGUIStatus()
   return SetResponse(output);
 }
 
-int CXbmcHttp::xbmcGetThumb(int numParas, CStdString paras[])
+int CXbmcHttp::xbmcGetThumb(int numParas, CStdString paras[], bool bGetThumb)
 {
   CStdString thumb="";
   int linesize=80;
   if (numParas<1)
     return SetResponse(openTag+"Error:Missing parameter");
   bool bImgTag=false;
-  if (numParas==2 && paras[1].Equals("imgtag"))
+  // only allow the old GetThumb command to accept "imgtag"
+  if (bGetThumb && numParas==2 && paras[1].Equals("imgtag"))
   {
     bImgTag=true;
     thumb="<img src=\"data:image/jpg;base64,";
@@ -2208,6 +2210,7 @@ int CXbmcHttp::xbmcTakeScreenshot(int numParas, CStdString paras[])
 //no paras
 //filename, flash, rotation, width, height, quality
 //filename, flash, rotation, width, height, quality, download
+//filename, flash, rotation, width, height, quality, download, imgtag
 //filename can be blank
 {
   if (numParas<1)
@@ -2260,10 +2263,25 @@ int CXbmcHttp::xbmcTakeScreenshot(int numParas, CStdString paras[])
         if (numParas>6)
           if (paras[6].ToLower()="true")
           {
-            CStdString b64;
-            b64=encodeFileToBase64(filepath,80);
+            CStdString b64="";
+            int linesize=80;
+            bool bImgTag=false;
+            // only allow the old GetThumb command to accept "imgtag"
+            if (numParas==8 && paras[7].Equals("imgtag"))
+            {
+              bImgTag=true;
+              b64="<img src=\"data:image/jpg;base64,";
+              linesize=0;
+            }
+            b64+=encodeFileToBase64(filepath,linesize);
             if (filepath=="Z:\\screenshot.jpg")
               ::DeleteFile(filepath.c_str());
+            if (bImgTag)
+            {
+              b64+="\" alt=\"Your browser doesnt support this\" title=\"";
+              b64+=paras[0];
+              b64+="\">";
+            }
             return SetResponse(b64) ;
           }
       }
@@ -2379,7 +2397,7 @@ int CXbmcHttp::xbmcCommand(CStdString parameter)
       else if (command == "getvolume")                retVal = xbmcGetVolume();
       else if (command == "setplayspeed")             retVal = xbmcSetPlaySpeed(numParas, paras);
       else if (command == "getplayspeed")             retVal = xbmcGetPlaySpeed();
-      else if (command == "filedownload")             retVal = xbmcGetThumb(numParas, paras);
+      else if (command == "filedownload")             retVal = xbmcGetThumb(numParas, paras, false);
       else if (command == "getthumbfilename")         retVal = xbmcGetThumbFilename(numParas, paras);
       else if (command == "lookupalbum")              retVal = xbmcLookupAlbum(numParas, paras);
       else if (command == "choosealbum")              retVal = xbmcChooseAlbum(numParas, paras);
@@ -2414,7 +2432,7 @@ int CXbmcHttp::xbmcCommand(CStdString parameter)
       else if (command == "deletefile")               retVal = xbmcDeleteFile(numParas, paras);
       else if (command == "copyfile")                 retVal = xbmcCopyFile(numParas, paras);
       else if (command == "downloadinternetfile")     retVal = xbmcDownloadInternetFile(numParas, paras);
-      else if (command == "getthumb")                 retVal = xbmcGetThumb(numParas, paras);
+      else if (command == "getthumb")                 retVal = xbmcGetThumb(numParas, paras, true);
       else if (command == "guisetting")               retVal = xbmcGUISetting(numParas, paras);
       else if (command == "setfile")                  retVal = xbmcSetFile(numParas, paras);
       else if (command == "setkey")                   retVal = xbmcSetKey(numParas, paras);
