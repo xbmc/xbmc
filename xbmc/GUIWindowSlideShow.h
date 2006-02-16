@@ -52,6 +52,7 @@ public:
   virtual void FreeResources();
   void OnLoadPic(int iPic, int iSlideNumber, D3DTexture *pTexture, int iWidth, int iHeight, int iOriginalWidth, int iOriginalHeight, int iRotate, bool bFullSize);
   int NumSlides();
+  void Shuffle();
 private:
   void AddItems(const CStdString &strPath, bool bRecursive);
   void RenderPause();
@@ -59,7 +60,6 @@ private:
   void Rotate();
   void Zoom(int iZoom);
   void Move(float fX, float fY);
-  void Shuffle();
 
   int m_iCurrentSlide;
   int m_iNextSlide;

@@ -15,8 +15,9 @@
 #define TMSG_PLAYLISTPLAYER_NEXT  211
 #define TMSG_PLAYLISTPLAYER_PREV  212
 
-#define TMSG_PICTURE_SHOW     220
-#define TMSG_PICTURE_SLIDESHOW     221
+#define TMSG_PICTURE_SHOW         220
+#define TMSG_PICTURE_SLIDESHOW    221
+#define TMSG_SLIDESHOW_SCREENSAVER  222
 
 #define TMSG_SHUTDOWN             300
 #define TMSG_DASHBOARD            301
@@ -58,7 +59,7 @@ public:
   void PlayListPlayerPrevious();
   void PlayFile(const CFileItem &item, bool bRestart = false); // thread safe version of g_application.PlayFile()
   void PictureShow(string filename);
-  void PictureSlideShow(string pathname);
+  void PictureSlideShow(string pathname, bool bScreensaver = false);
   void Shutdown();
   void Restart();
   void RebootToDashBoard();
