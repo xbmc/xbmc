@@ -3444,7 +3444,7 @@ void CApplication::ActivateScreenSaver()
     {
       fFadeLevel = 1.f;
       //g_applicationMessenger.PictureSlideShow(g_guiSettings.GetString("ScreenSaver.SlideShowPath"));
-      g_applicationMessenger.PictureSlideShow(g_stSettings.szScreenSaverSlideShowPath);
+      g_applicationMessenger.PictureSlideShow(g_stSettings.szScreenSaverSlideShowPath, true);
     }else return;
   }
   else if (strScreenSaver == "Dim")
@@ -4390,7 +4390,6 @@ bool CApplication::ProcessAndStartPlaylist(const CStdString& strPlayList, CPlayL
 
   // setup correct playlist
   g_playlistPlayer.ClearPlaylist(iPlaylist);
-  g_playlistPlayer.ShufflePlay(iPlaylist, false);
 
   // music option: shuffle playlists on load
   // if playlist_music_temp, shuffle items BEFORE they are added to the playlist player
