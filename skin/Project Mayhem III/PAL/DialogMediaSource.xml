@@ -64,6 +64,7 @@
       <height>31</height>
       <font>font12</font>
       <textoffsetx>12</textoffsetx>
+      <textwidth>300</textwidth>
       <aligny>center</aligny>
       <texturefocus>list-focus.png</texturefocus>
       <texturenofocus>-</texturenofocus>
@@ -116,6 +117,7 @@
       <height>31</height>
       <font>font12</font>
       <textoffsetx>12</textoffsetx>
+      <textwidth>380</textwidth>
       <aligny>center</aligny>
       <texturefocus>list-focus.png</texturefocus>
       <texturenofocus>-</texturenofocus>

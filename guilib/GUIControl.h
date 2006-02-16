@@ -25,6 +25,7 @@ public:
     font = NULL;
     align = XBFONT_LEFT;
     offsetX = offsetY = 0;
+    width = 0;
   };
   DWORD textColor;
   DWORD shadowColor;
@@ -33,6 +34,7 @@ public:
   DWORD align;
   int offsetX;
   int offsetY;
+  int width;
   CAngle angle;
   CGUIFont *font;
 };
