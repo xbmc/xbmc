@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 16-02-2006 added: httpapi takescreenshot command also accepts "imgtag" parameter after the download option
  - 16-02-2006 added: httpapi getthumb command accepts additional "imgtag" parameter to return a base64 encoded html img tag
  - 16-02-2006 changed: Songs off the root of the Music Library now fetches the songs in batches to work around memory constraints
  - 16-02-2006 fixed: album info lookup could sometimes return the wrong album from allmusic.com
