@@ -3079,6 +3079,59 @@ bool CMusicDatabase::GetSongsNav(const CStdString& strBaseDir, CFileItemList& it
 
     strSQL += strWhere;
 
+    // get all songs out of the database in fixed size chunks
+    // dont reserve the items ahead of time just in case it fails part way though
+    if (idAlbum == -1 && idArtist == -1 && idGenre == -1)
+    {
+      int iLIMIT = 5000;    // chunk size
+      int iSONGS = 0;       // number of songs added to items
+      int iITERATIONS = 0;  // number of iterations
+      for (int i=0;;i+=iLIMIT)
+      {
+        CStdString strSQL2=FormatSQL("%s limit %i offset %i", strSQL.c_str(), iLIMIT, i);
+        CLog::Log(LOGDEBUG, "CMusicDatabase::GetSongsNav() query: %s", strSQL2.c_str());
+        try
+        {
+          if (!m_pDS->query(strSQL2.c_str()))
+            return false;
+
+          // keep going until no rows are left!
+          int iRowsFound = m_pDS->num_rows();
+          if (iRowsFound == 0)
+          {
+            m_pDS->close();
+            if (iITERATIONS == 0)
+              return false; // failed on first iteration, so there's probably no songs in the db
+            else
+              return true; // there no more songs left to process (aborts the unbounded for loop)
+          }
+
+          // get songs from returned subtable
+          while (!m_pDS->eof())
+          {
+            CFileItem *item = new CFileItem;
+            GetFileItemFromDataset(item, strBaseDir);
+            items.Add(item);
+            iSONGS++;
+            m_pDS->next();
+          }
+        }
+        catch (...)
+        {
+          CLog::Log(LOGERROR, "CMusicDatabase::GetSongsNav() failed at iteration %i, num songs %i", iITERATIONS, iSONGS);
+
+          if (iSONGS > 0)
+            return true; // keep whatever songs we may have gotten before the failure
+          else
+            return false; // no songs, return false
+        }
+        // next iteration
+        iITERATIONS++;
+        m_pDS->close();
+      }
+      return true;
+    }
+
     // run query
     CLog::Log(LOGDEBUG, "CMusicDatabase::GetSongsNav() query: %s", strSQL.c_str());
     if (!m_pDS->query(strSQL.c_str())) return false;
