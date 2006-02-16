@@ -119,7 +119,9 @@ void CRssReader::Process()
         strCDATAElement = strXML.substr(iStart + 9, iEnd - iStart - 12);
 
         // replace CDATA section with new string
-        strXML = strXML.erase(iStart, iEnd - iStart).insert(iStart, strCDATAElement);
+        // Problem: CDATA sections don't contain valid XML - this will screw up the
+        // parsing of elements.
+        strXML = strXML.erase(iStart, iEnd - iStart);//.insert(iStart, strCDATAElement);
 
         iStart = strXML.Find("<![CDATA[");
       }
