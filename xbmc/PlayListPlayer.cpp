@@ -293,7 +293,7 @@ int CPlayListPlayer::GetCurrentPlaylist()
 /// - PLAYLIST_MUSIC_TEMP \n Playlist started in a normal music window
 /// - PLAYLIST_VIDEO \n Playlist from music playlist window
 /// - PLAYLIST_VIDEO_TEMP \n Playlist started in a normal video window
-void CPlayListPlayer::SetCurrentPlaylist( int iPlayList )
+void CPlayListPlayer::SetCurrentPlaylist(int iPlayList)
 {
   if (iPlayList == m_iCurrentPlayList)
     return ;
@@ -305,6 +305,48 @@ void CPlayListPlayer::SetCurrentPlaylist( int iPlayList )
   GetPlaylist(m_iCurrentPlayList).ClearPlayed();
 }
 
+void CPlayListPlayer::ClearPlaylist(int iPlayList)
+{
+  CPlayList& playlist = GetPlaylist(iPlayList);
+  playlist.Clear();
+
+  // if clearing temp playlists, then reset options
+  if (iPlayList == PLAYLIST_MUSIC_TEMP || iPlayList == PLAYLIST_VIDEO_TEMP)
+  {
+    int iShuffle   = -1;
+    int iRepeatAll = -1;
+    int iRepeatOne = -1;
+
+    switch (iPlayList)
+    {
+    case PLAYLIST_MUSIC_TEMP:
+      iShuffle = PLAYLIST_MUSIC_TEMP_SHUFFLE;
+      iRepeatAll = PLAYLIST_MUSIC_TEMP_REPEAT;
+      iRepeatOne = PLAYLIST_MUSIC_TEMP_REPEAT_ONE;
+      break;
+    case PLAYLIST_VIDEO_TEMP:
+      iShuffle = PLAYLIST_VIDEO_TEMP_SHUFFLE;
+      iRepeatAll = PLAYLIST_VIDEO_TEMP_REPEAT;
+      iRepeatOne = PLAYLIST_VIDEO_TEMP_REPEAT_ONE;
+      break;
+    default:
+      break;
+    }
+    
+    if ((iShuffle < 0) || (iRepeatAll < 0) || (iRepeatOne < 0))
+      return;
+
+    // disable all options
+    m_iOptions &= ~iShuffle;
+    m_iOptions &= ~iRepeatAll;
+    m_iOptions &= ~iRepeatOne;
+
+    // restore repeat for music temp
+    if (iPlayList == PLAYLIST_MUSIC_TEMP && g_guiSettings.GetBool("MusicFiles.Repeat"))
+      m_iOptions |= iRepeatAll;
+  }
+}
+
 /// \brief Get the playlist object specified in \e nPlayList
 /// \param nPlayList Values can be: \n
 /// - PLAYLIST_MUSIC \n Playlist from music playlist window
@@ -312,7 +354,7 @@ void CPlayListPlayer::SetCurrentPlaylist( int iPlayList )
 /// - PLAYLIST_VIDEO \n Playlist from music playlist window
 /// - PLAYLIST_VIDEO_TEMP \n Playlist started in a normal video window
 /// \return A reference to the CPlayList object.
-CPlayList& CPlayListPlayer::GetPlaylist( int nPlayList)
+CPlayList& CPlayListPlayer::GetPlaylist(int nPlayList)
 {
   switch ( nPlayList )
   {
@@ -363,9 +405,61 @@ bool CPlayListPlayer::HasPlayedFirstFile()
   return m_bPlayedFirstFile;
 }
 
+/// \brief Repeat a playlist: cycles off -> all -> one -> off
+/// \param iPlaylist Playlist to increment repeat type
+void CPlayListPlayer::Repeat(int iPlaylist)
+{
+  int iRepeatAll = -1;
+  int iRepeatOne = -1;
+
+  switch (iPlaylist)
+  {
+  case PLAYLIST_MUSIC:
+    iRepeatAll = PLAYLIST_MUSIC_REPEAT;
+    iRepeatOne = PLAYLIST_MUSIC_REPEAT_ONE;
+    break;
+  case PLAYLIST_MUSIC_TEMP:
+    iRepeatAll = PLAYLIST_MUSIC_TEMP_REPEAT;
+    iRepeatOne = PLAYLIST_MUSIC_TEMP_REPEAT_ONE;
+    break;
+  case PLAYLIST_VIDEO:
+    iRepeatAll = PLAYLIST_VIDEO_REPEAT;
+    iRepeatOne = PLAYLIST_VIDEO_REPEAT_ONE;
+    break;
+  case PLAYLIST_VIDEO_TEMP:
+    iRepeatAll = PLAYLIST_VIDEO_TEMP_REPEAT;
+    iRepeatOne = PLAYLIST_VIDEO_TEMP_REPEAT_ONE;
+    break;
+  default:
+    break;
+  }
+
+  if ((iRepeatAll < 0) || (iRepeatOne < 0))
+    return;
+
+  // currently repeat all, so go to repeat one
+  if (Repeated(iPlaylist))
+  {
+    m_iOptions &= ~iRepeatAll;
+    m_iOptions |= iRepeatOne;
+  }
+  // currently repeat one, so go to off
+  else if (RepeatedOne(iPlaylist))
+  {
+    m_iOptions &= ~iRepeatAll;
+    m_iOptions &= ~iRepeatOne;
+  }
+  // currently off, so go to repeat all
+  else
+  {
+    m_iOptions |= iRepeatAll;
+    m_iOptions &= ~iRepeatOne;
+  }
+}
+
 /// \brief Repeat a playlist
-/// \param iPlaylist Playlist to enable
-/// \param bYesNo To Enable Repeat set \e true
+/// \param iPlaylist Playlist to Repeat
+/// \param bYesNo To Enable Repeat one set \e true
 void CPlayListPlayer::Repeat(int iPlaylist, bool bYesNo)
 {
   int iOption = -1;

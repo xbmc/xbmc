@@ -36,6 +36,8 @@ public:
   CPlayList& GetPlaylist( int nPlayList);
   int RemoveDVDItems();
   void Reset();
+  void ClearPlaylist(int iPlayList);
+  void Repeat(int iPlaylist);
   void Repeat(int iPlaylist, bool bYesNo);
   bool Repeated(int iPlaylist);
   void RepeatOne(int iPlaylist, bool bYesNo);
