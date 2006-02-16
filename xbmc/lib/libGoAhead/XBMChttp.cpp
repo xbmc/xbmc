@@ -90,6 +90,7 @@ CStdString encodeFileToBase64( CStdString inFilename, int linesize )
   FILE *infile;
 
   infile = fopen( inFilename.c_str(), "rb" );
+  bool bOutput=false;
   if (infile != 0) 
   {
     while( !feof( infile ) ) 
@@ -110,10 +111,16 @@ CStdString encodeFileToBase64( CStdString inFilename, int linesize )
           strBase64 += out[i];
         blocksout++;
       }
-      if( blocksout >= (linesize/4) || feof( infile ) ) 
+      if(linesize == 0 && feof(infile))
+        bOutput=true;
+      else if ((linesize > 0) && (blocksout >= (linesize/4) || (feof(infile))))
+        bOutput=true;
+      if (bOutput)
       {
+        if( blocksout && linesize > 0 )
+          strBase64 += "\r";
         if( blocksout )
-          strBase64 += "\r"+closeTag ;
+          strBase64 += closeTag ;
         blocksout = 0;
       }
     }
@@ -1432,28 +1439,40 @@ int CXbmcHttp::xbmcGetGUIStatus()
 int CXbmcHttp::xbmcGetThumb(int numParas, CStdString paras[])
 {
   CStdString thumb="";
+  int linesize=80;
   if (numParas<1)
     return SetResponse(openTag+"Error:Missing parameter");
-  else
+  bool bImgTag=false;
+  if (numParas==2 && paras[1].Equals("imgtag"))
   {
-    if (CUtil::IsRemote(paras[0]))
+    bImgTag=true;
+    thumb="<img src=\"data:image/jpg;base64,";
+    linesize=0;
+  }
+  if (CUtil::IsRemote(paras[0]))
+  {
+    CStdString strDest="Z:\\xbmcDownloadFile.tmp";
+    CFile::Cache(paras[0], strDest.c_str(),NULL,NULL) ;
+    if (CFile::Exists(strDest))
     {
-      CStdString strDest="Z:\\xbmcDownloadFile.tmp";
-      CFile::Cache(paras[0], strDest.c_str(),NULL,NULL) ;
-      if (CFile::Exists(strDest))
-      {
-        thumb=encodeFileToBase64(strDest,80);
-        ::DeleteFile(strDest.c_str());
-      }
-      else
-      {
-        return SetResponse(openTag+"Error");
-      }
+      thumb+=encodeFileToBase64(strDest,linesize);
+      ::DeleteFile(strDest.c_str());
     }
     else
-      thumb=encodeFileToBase64(paras[0],80);
-    return SetResponse(thumb) ;
+    {
+      return SetResponse(openTag+"Error");
+    }
   }
+  else
+    thumb+=encodeFileToBase64(paras[0],linesize);
+
+  if (bImgTag)
+  {
+    thumb+="\" alt=\"Your browser doesnt support this\" title=\"";
+    thumb+=paras[0];
+    thumb+="\">";
+  }
+  return SetResponse(thumb) ;
 }
 
 int CXbmcHttp::xbmcGetThumbFilename(int numParas, CStdString paras[])
