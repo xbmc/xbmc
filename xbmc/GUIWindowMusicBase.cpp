@@ -1481,7 +1481,7 @@ void CGUIWindowMusicBase::PlayItem(int iItem)
 
     int iPlaylist=m_guiState->GetPlaylist();
     // clear current temp playlist
-    g_playlistPlayer.GetPlaylist(iPlaylist).Clear();
+    g_playlistPlayer.ClearPlaylist(iPlaylist);
     g_playlistPlayer.Reset();
 
     // recursively add items to temp playlist

@@ -778,7 +778,7 @@ bool LoadPlayList(CStdString strPath, int iPlaylist, bool clearList, bool autoSt
   }
 
   if (clearList)
-    g_playlistPlayer.GetPlaylist(iPlaylist).Clear();
+    g_playlistPlayer.ClearPlaylist(iPlaylist);
 
   // if autoshuffle playlist on load option is enabled
   //  then shuffle the playlist
@@ -998,7 +998,7 @@ int CXbmcHttp::xbmcClearPlayList(int numParas, CStdString paras[])
     playList = g_playlistPlayer.GetCurrentPlaylist() ;
   else
     playList=atoi(paras[0]) ;
-  g_playlistPlayer.GetPlaylist( playList ).Clear();
+  g_playlistPlayer.ClearPlaylist( playList );
   return SetResponse(openTag+"OK");
 }
 

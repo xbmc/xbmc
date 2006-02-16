@@ -1130,7 +1130,7 @@ void CGUIWindowVideoBase::PlayItem(int iItem)
       return;
 
     // clear current temp playlist
-    g_playlistPlayer.GetPlaylist(PLAYLIST_VIDEO_TEMP).Clear();
+    g_playlistPlayer.ClearPlaylist(PLAYLIST_VIDEO_TEMP);
     g_playlistPlayer.Reset();
 
     // recursively add items to temp playlist
