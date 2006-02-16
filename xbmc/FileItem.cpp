@@ -1101,6 +1101,7 @@ bool CFileItem::IsParentFolder() const
 // %R - Movie rating
 // %C - Programs count
 // %K - Movie/Game title
+// %L - existing Label
 void CFileItem::FormatLabel(const CStdString& strMask)
 {
   if (!strMask.IsEmpty())
@@ -1184,6 +1185,11 @@ CStdString CFileItem::ParseFormat(const CStdString& strMask)
         str = GetLabel();
       else
         str = CUtil::GetTitleFromPath(m_strPath);
+      bDoneSomething = true;
+    }
+    else if (strMask[iPos2 + 1] == 'L')
+    {
+      str = GetLabel();
       bDoneSomething = true;
     }
     else if (strMask[iPos2 + 1] == 'D')

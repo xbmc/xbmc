@@ -153,7 +153,7 @@ namespace PYXBMC
 				}
 
 				// clear current playlist
-				g_playlistPlayer.GetPlaylist(self->iPlayList).Clear();
+				g_playlistPlayer.ClearPlaylist(self->iPlayList);
 
 				// add each item of the playlist to the playlistplayer
 				for (int i=0; i < (int)pPlayList->size(); ++i)
