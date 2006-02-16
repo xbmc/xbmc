@@ -1010,6 +1010,11 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(GetSetting(strSetting)->GetID());
       pControl->SetEnabled(g_guiSettings.GetString("ScreenSaver.Mode") == "SlideShow");
     }
+    else if (strSetting == "ScreenSaver.SlideShowShuffle")
+    {
+      CGUIControl *pControl = (CGUIControl *)GetControl(GetSetting(strSetting)->GetID());
+      pControl->SetEnabled(g_guiSettings.GetString("ScreenSaver.Mode") == "SlideShow");
+    }
     else if (strSetting == "ScreenSaver.Preview")
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(GetSetting(strSetting)->GetID());
@@ -1587,6 +1592,11 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
       //  
     }
   }
+  /* nothing needed here?
+  else if (strSetting == "Screensaver.SlideShowShuffle")
+  {
+  }
+  */
   else if (strSetting == "LED.Colour")
   { // Alter LED Colour immediately
     ILED::CLEDControl(((CSettingInt *)pSettingControl->GetSetting())->GetData());

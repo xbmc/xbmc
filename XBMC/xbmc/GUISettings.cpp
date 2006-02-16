@@ -466,6 +466,7 @@ CGUISettings::CGUISettings(void)
   AddSeparator(5, "ScreenSaver.Sep1");
   AddInt(6, "ScreenSaver.DimLevel", 362, 20, 10, 10, 80, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
   AddString(7, "ScreenSaver.SlideShowPath", 774, "F:\\Pictures\\", BUTTON_CONTROL_MISC_INPUT, false, 774); // GeminiServer: PictureSlideShow
+  AddBool(8, "ScreenSaver.SlideShowShuffle", 191, false);
 
   AddCategory(7, "UIFilters", 14053);
   AddInt(1, "UIFilters.Flicker", 13100, 5, 0, 1, 5, SPIN_CONTROL_INT);
