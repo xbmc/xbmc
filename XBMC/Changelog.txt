@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 16-02-2006 fixed: random and repeat options are correctly reset for temporary playlists
+ - 16-02-2006 fixed: stacking now "cleans" single-file movie filenames
  - 16-02-2006 fixed: [ 1406020 ] Character ï problem with ftp-server.
  - 15-02-2006 fixed: Dialogs could vanish instead of changing the animation direction when they were reopened while they were closing.
  - 15-02-2006 fixed: Keyboard wouldn't reset shift state when using SMS style input from the remote.
