@@ -216,6 +216,7 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
       }
       break;
 
+    case TMSG_SLIDESHOW_SCREENSAVER:
     case TMSG_PICTURE_SLIDESHOW:
       {
         CGUIWindowSlideShow *pSlideShow = (CGUIWindowSlideShow *)m_gWindowManager.GetWindow(WINDOW_SLIDESHOW);
@@ -233,6 +234,9 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
             pSlideShow->Add(items[i]->m_strPath);
           pSlideShow->StartSlideShow(); //Start the slideshow!
         }
+        if (pMsg->dwMessage == TMSG_SLIDESHOW_SCREENSAVER)
+          pSlideShow->Shuffle();
+
         if (m_gWindowManager.GetActiveWindow() != WINDOW_SLIDESHOW)
           m_gWindowManager.ActivateWindow(WINDOW_SLIDESHOW);
         
@@ -425,9 +429,13 @@ void CApplicationMessenger::PictureShow(string filename)
   tMsg.strParam = filename;
   SendMessage(tMsg);
 }
-void CApplicationMessenger::PictureSlideShow(string pathname)
+
+void CApplicationMessenger::PictureSlideShow(string pathname, bool bScreensaver /* = false */)
 {
-  ThreadMessage tMsg = {TMSG_PICTURE_SLIDESHOW};
+  DWORD dwMessage = TMSG_PICTURE_SLIDESHOW;
+  if (bScreensaver)
+    dwMessage = TMSG_SLIDESHOW_SCREENSAVER;
+  ThreadMessage tMsg = {dwMessage};
   tMsg.strParam = pathname;
   SendMessage(tMsg);
 }
