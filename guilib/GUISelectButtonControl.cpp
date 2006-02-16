@@ -100,7 +100,7 @@ void CGUISelectButtonControl::Render()
         float fPosY = (float)m_iPosY + m_label.offsetY;
         if (m_label.align & XBFONT_CENTER_Y)
           fPosY = (float)m_iPosY + m_imgBackground.GetHeight() / 2;
-        m_label.font->DrawText( (float)m_iPosX + GetWidth()/2, fPosY, dwTextColor, m_label.shadowColor, itemStrUnicode.c_str(), dwAlign);
+        m_label.font->DrawText( (float)m_iPosX + GetWidth()/2, fPosY, dwTextColor, m_label.shadowColor, itemStrUnicode.c_str(), dwAlign, (float)m_label.width);
       }
     }
 

@@ -5,6 +5,9 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 16-02-2006 fixed: Some RSS feeds were showing only the first item.  CDATA sections are now completely ignored.
+ - 16-02-2006 fixed: Animations on ShowInfo or ShowCodec in fullscreen video weren't completed.
+ - 16-02-2006 added: <textwidth> tag to button controls to truncate text if it's too long.
  - 16-02-2006 added: shuffle option to the slideshow screensaver
  - 16-02-2006 added: httpapi takescreenshot command also accepts "imgtag" parameter after the download option
  - 16-02-2006 added: httpapi getthumb command accepts additional "imgtag" parameter to return a base64 encoded html img tag

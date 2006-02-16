@@ -1033,6 +1033,11 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     DWORD alignY = 0;
     if (GetAlignmentY(pControlNode, "aligny", alignY))
       labelInfo.align = alignY | (labelInfo.align & 3);
+    if (XMLUtils::GetInt(pControlNode, "textwidth", labelInfo.width))
+    {
+      g_graphicsContext.ScaleXCoord(labelInfo.width, res);
+      labelInfo.align |= XBFONT_TRUNCATED;
+    }
     labelInfo2.selectedColor = labelInfo.selectedColor;
     XMLUtils::GetHex(pControlNode, "selectedcolor2", labelInfo2.selectedColor);
     XMLUtils::GetHex(pControlNode, "textcolor2", labelInfo2.textColor);
