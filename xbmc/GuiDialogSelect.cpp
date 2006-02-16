@@ -59,7 +59,8 @@ bool CGUIDialogSelect::OnMessage(CGUIMessage& message)
 
       for (int i = 0; i < (int)m_vecList.size(); i++)
       {
-        CGUIListItem* pItem = m_vecList[i];
+        //CGUIListItem* pItem = m_vecList[i];
+        CFileItem* pItem = m_vecList[i];
         CGUIMessage msg(GUI_MSG_LABEL_ADD, GetID(), CONTROL_LIST, 0, 0, (void*)pItem);
         g_graphicsContext.SendMessage(msg);
       }
@@ -119,7 +120,8 @@ void CGUIDialogSelect::Close(bool forceClose)
 
   for (int i = 0; i < (int)m_vecList.size(); ++i)
   {
-    CGUIListItem* pItem = m_vecList[i];
+    //CGUIListItem* pItem = m_vecList[i];
+    CFileItem* pItem = m_vecList[i];
     delete pItem;
   }
   m_vecList.erase(m_vecList.begin(), m_vecList.end());
@@ -132,13 +134,24 @@ void CGUIDialogSelect::Reset()
 
 void CGUIDialogSelect::Add(const CStdString& strLabel)
 {
-  CGUIListItem* pItem = new CGUIListItem(strLabel);
+  //CGUIListItem* pItem = new CGUIListItem(strLabel);
+  CFileItem* pItem = new CFileItem(strLabel);
+  m_vecList.push_back(pItem);
+}
+
+void CGUIDialogSelect::Add(CFileItem* pItem)
+{
   m_vecList.push_back(pItem);
 }
 
 int CGUIDialogSelect::GetSelectedLabel() const
 {
   return m_iSelected;
+}
+
+const CFileItem* CGUIDialogSelect::GetSelectedItem()
+{
+  return m_vecList[m_iSelected];
 }
 
 const CStdString& CGUIDialogSelect::GetSelectedLabelText()
