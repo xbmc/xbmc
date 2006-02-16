@@ -826,6 +826,7 @@
   <string><id>12384</id><value>24 hour clock</value></string>
   <string><id>12385</id><value>Day/Month</value></string>
   <string><id>12386</id><value>Month/Day</value></string>
+  <string><id>12387</id><value>Update database</value></string>
 
   <string><id>12390</id><value>System Uptime</value></string>
   <string><id>12391</id><value>Minutes</value></string>
