@@ -367,6 +367,7 @@ bool CGUIWindowPrograms::OnPopupMenu(int iItem)
         pMenu->EnableButton(btn_Trainers,false);
     }
     int btn_ScanTrainers = pMenu->AddButton(12012);
+    int btn_UpdateDb = pMenu->AddButton(12387);
     int btn_Settings = pMenu->AddButton(5); // Settings
 
     // position it correctly
@@ -467,6 +468,38 @@ bool CGUIWindowPrograms::OnPopupMenu(int iItem)
 
       if (btnid > -1)
         OnClick(iItem);
+    }
+    else if (btnid == btn_UpdateDb)
+    {
+      if (!m_dlgProgress)
+        m_dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+      m_dlgProgress->SetLine(0,L"Validating programs");
+      m_dlgProgress->SetLine(1,L"");
+      m_dlgProgress->SetLine(2,L"");
+      m_dlgProgress->StartModal(GetID());
+      m_dlgProgress->SetHeading(12387);
+      m_dlgProgress->SetPercentage(0);
+      m_dlgProgress->ShowProgressBar(true);
+
+      for (unsigned int i=0;i<m_vecPaths.size();++i)
+      {
+        if (m_dlgProgress->IsCanceled())
+          break;
+        m_dlgProgress->SetLine(1,m_vecPaths[i]);
+        m_dlgProgress->SetPercentage((int)((float)i/(float)m_vecPaths.size()*100.f));
+        m_dlgProgress->Progress();
+
+        CStdString strPath;
+        CUtil::AddFileToFolder(m_vecPaths[i],"default.xbe",strPath);
+        if (!CFile::Exists(strPath))
+        {
+          strPath = m_vecPaths[i];
+          strPath.Replace("\\","/");
+          m_database.DeleteProgram(strPath);
+        }
+        Update(m_vecItems.m_strPath);
+      }
+      m_dlgProgress->Close();
     }
   }
   else
@@ -765,7 +798,7 @@ bool CGUIWindowPrograms::Update(const CStdString &strDirectory)
       bOnlyDefaultXBE = false;   // let's do this so that we don't only grab default.xbe from database when getting shortcuts
     if (bFlattenDir)
     {
-      // let's first delete the items in database that no longer exist       
+      // let's first delete the items in database that no longer exist
       if ( (int)m_vecPaths.size() != (int)m_vecPaths1.size())
       {
         bool found = true;
