@@ -483,6 +483,7 @@ bool CGUIWindowFullScreen::NeedRenderFullScreen()
   if (m_timeCodeShow) return true;
   if (g_infoManager.GetBool(PLAYER_SHOWCODEC)) return true;
   if (g_infoManager.GetBool(PLAYER_SHOWINFO)) return true;
+  if (IsAnimating(ANIM_TYPE_HIDDEN)) return true; // for the above info conditions
   if (m_bShowViewModeInfo) return true;
   if (m_bShowCurrentTime) return true;
   if (g_infoManager.GetDisplayAfterSeek()) return true;
@@ -512,26 +513,14 @@ void CGUIWindowFullScreen::RenderFullScreen()
 
   g_infoManager.UpdateFPS();
 
-  bool bRenderGUI = g_application.m_pPlayer->IsPaused();
-
-  //Display current progress
-  if( g_infoManager.GetDisplayAfterSeek() )
-    bRenderGUI = true;
-
   if( g_application.m_pPlayer->IsCaching() )
   {
     g_infoManager.SetDisplayAfterSeek(0); //Make sure these stuff aren't visible now
-    bRenderGUI = true;
   }
-
-  //We need to render should the seekbar be visible
-  if (g_infoManager.GetBool(PLAYER_SEEKBAR, GetID())) 
-    bRenderGUI = true;
 
   //------------------------
   if (g_infoManager.GetBool(PLAYER_SHOWCODEC))
   {
-    bRenderGUI = true;
     // show audio codec info
     CStdString strAudio, strVideo, strGeneral;
     g_application.m_pPlayer->GetAudioInfo(strAudio);
@@ -568,7 +557,6 @@ void CGUIWindowFullScreen::RenderFullScreen()
   }
   if (m_bShowViewModeInfo)
   {
-    bRenderGUI = true;
     {
       // get the "View Mode" string
       CStdString strTitle = g_localizeStrings.Get(629);
@@ -620,9 +608,7 @@ void CGUIWindowFullScreen::RenderFullScreen()
     {
       m_timeCodeShow = false;
       m_timeCodePosition = 0;
-      goto renderDialogs;
     }
-    bRenderGUI = true;
     CStdString strDispTime = "??:??";
 
     CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_ROW1);
@@ -639,49 +625,42 @@ void CGUIWindowFullScreen::RenderFullScreen()
   }
 
   int iSpeed = g_application.GetPlaySpeed();
-  if (iSpeed != 1)
-    bRenderGUI = true;
 
-  if (g_infoManager.GetBool(PLAYER_SHOWINFO))
-    bRenderGUI = true;
-
-  if ( bRenderGUI)
+  if (g_application.m_pPlayer->IsPaused() || iSpeed != 1)
   {
-    if (g_application.m_pPlayer->IsPaused() || iSpeed != 1)
-    {
-      SET_CONTROL_HIDDEN(LABEL_ROW1);
-      SET_CONTROL_HIDDEN(LABEL_ROW2);
-      SET_CONTROL_HIDDEN(LABEL_ROW3);
-      SET_CONTROL_HIDDEN(BLUE_BAR);
-    }
-    else if (g_infoManager.GetBool(PLAYER_SHOWCODEC) || m_bShowViewModeInfo)
-    {
-      SET_CONTROL_VISIBLE(LABEL_ROW1);
-      SET_CONTROL_VISIBLE(LABEL_ROW2);
-      SET_CONTROL_VISIBLE(LABEL_ROW3);
-      SET_CONTROL_VISIBLE(BLUE_BAR);
-    }
-    else if (m_timeCodeShow)
-    {
-      SET_CONTROL_VISIBLE(LABEL_ROW1);
-      SET_CONTROL_HIDDEN(LABEL_ROW2);
-      SET_CONTROL_HIDDEN(LABEL_ROW3);
-      SET_CONTROL_VISIBLE(BLUE_BAR);
-    }
-    else
-    {
-      SET_CONTROL_HIDDEN(LABEL_ROW1);
-      SET_CONTROL_HIDDEN(LABEL_ROW2);
-      SET_CONTROL_HIDDEN(LABEL_ROW3);
-      SET_CONTROL_HIDDEN(BLUE_BAR);
-    }
-    CGUIWindow::Render();
+    SET_CONTROL_HIDDEN(LABEL_ROW1);
+    SET_CONTROL_HIDDEN(LABEL_ROW2);
+    SET_CONTROL_HIDDEN(LABEL_ROW3);
+    SET_CONTROL_HIDDEN(BLUE_BAR);
   }
-renderDialogs:
+  else if (g_infoManager.GetBool(PLAYER_SHOWCODEC) || m_bShowViewModeInfo)
+  {
+    SET_CONTROL_VISIBLE(LABEL_ROW1);
+    SET_CONTROL_VISIBLE(LABEL_ROW2);
+    SET_CONTROL_VISIBLE(LABEL_ROW3);
+    SET_CONTROL_VISIBLE(BLUE_BAR);
+  }
+  else if (m_timeCodeShow)
+  {
+    SET_CONTROL_VISIBLE(LABEL_ROW1);
+    SET_CONTROL_HIDDEN(LABEL_ROW2);
+    SET_CONTROL_HIDDEN(LABEL_ROW3);
+    SET_CONTROL_VISIBLE(BLUE_BAR);
+  }
+  else
+  {
+    SET_CONTROL_HIDDEN(LABEL_ROW1);
+    SET_CONTROL_HIDDEN(LABEL_ROW2);
+    SET_CONTROL_HIDDEN(LABEL_ROW3);
+    SET_CONTROL_HIDDEN(BLUE_BAR);
+  }
+  CGUIWindow::Render();
+
   if (m_gWindowManager.IsRouted(true) || m_gWindowManager.IsModelessAvailable())
     m_gWindowManager.RenderDialogs();
   // Render the mouse pointer, if visible...
-  if (g_Mouse.IsActive()) g_application.m_guiPointer.Render();
+  if (g_Mouse.IsActive())
+    g_application.m_guiPointer.Render();
 }
 
 void CGUIWindowFullScreen::RenderTTFSubtitles()

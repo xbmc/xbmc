@@ -89,22 +89,24 @@ void CGUIButtonControl::Render()
 
     m_label.font->Begin();
     if (IsDisabled())
-      m_label.font->DrawText( fPosX, fPosY, m_label.angle, m_label.disabledColor, m_label.shadowColor, strLabelUnicode.c_str(), m_label.align);
+      m_label.font->DrawText( fPosX, fPosY, m_label.angle, m_label.disabledColor, m_label.shadowColor, strLabelUnicode.c_str(), m_label.align, (float)m_label.width);
     else
-      m_label.font->DrawText( fPosX, fPosY, m_label.angle, m_label.textColor, m_label.shadowColor, strLabelUnicode.c_str(), m_label.align);
+      m_label.font->DrawText( fPosX, fPosY, m_label.angle, m_label.textColor, m_label.shadowColor, strLabelUnicode.c_str(), m_label.align, (float)m_label.width);
 
     // render the second label if it exists
     if (m_strLabel2.size() > 0)
     {
+      float width = m_dwWidth - 2 * m_label.offsetX - m_label.font->GetTextWidth(strLabelUnicode.c_str()) - 5;
+      if (width < 0) width = 0;
       fPosX = (float)m_iPosX + m_dwWidth - m_label.offsetX;
       DWORD dwAlign = XBFONT_RIGHT | (m_label.align & XBFONT_CENTER_Y);
 
       g_charsetConverter.stringCharsetToFontCharset(m_strLabel2, strLabelUnicode);
 
       if (IsDisabled() )
-        m_label.font->DrawText( fPosX, fPosY, m_label.angle, m_label.disabledColor, m_label.shadowColor, strLabelUnicode.c_str(), dwAlign);
+        m_label.font->DrawText( fPosX, fPosY, m_label.angle, m_label.disabledColor, m_label.shadowColor, strLabelUnicode.c_str(), dwAlign, width);
       else
-        m_label.font->DrawText( fPosX, fPosY, m_label.angle, m_label.textColor, m_label.shadowColor, strLabelUnicode.c_str(), dwAlign);
+        m_label.font->DrawText( fPosX, fPosY, m_label.angle, m_label.textColor, m_label.shadowColor, strLabelUnicode.c_str(), dwAlign, width);
     }
     m_label.font->End();
   }
