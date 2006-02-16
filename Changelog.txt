@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 16-02-2006 removed: the Shuffle button from Music Library
+ - 16-02-2006 changed: In Music, the PLAY action and PLAY ITEM context menu options on a folder now clear the Now Playing window, queue the items, and start playback immediately
  - 16-02-2006 added: Update database to my programs.
  - 16-02-2006 fixed: Some RSS feeds were showing only the first item.  CDATA sections are now completely ignored.
  - 16-02-2006 fixed: Animations on ShowInfo or ShowCodec in fullscreen video weren't completed.

@@ -69,7 +69,7 @@
         <font>font13</font>
         <onleft>50</onleft>
         <onright>50</onright>
-        <onup>21</onup>
+        <onup>8</onup>
         <ondown>3</ondown>
       </control>
 
@@ -123,19 +123,6 @@
         <onleft>50</onleft>
         <onright>50</onright>
         <onup>5</onup>
-        <ondown>21</ondown>
-      </control>
-
-      <control>
-        <description>Shuffle button</description>
-        <type>radiobutton</type>
-        <id>21</id>
-        <posx>50</posx>
-        <posy>268</posy>
-        <label>191</label>
-        <onleft>50</onleft>
-        <onright>50</onright>
-        <onup>8</onup>
         <ondown>2</ondown>
       </control>
 
