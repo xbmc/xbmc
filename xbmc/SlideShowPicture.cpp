@@ -60,7 +60,7 @@ void CSlideShowPic::SetTexture(int iSlideNumber, D3DTexture *pTexture, int iWidt
   m_transistionEnd.type = transEffect;
   m_transistionEnd.start = m_transistionStart.length + (int)(g_infoManager.GetFPS() * g_guiSettings.GetInt("Slideshow.StayTime"));
   m_transistionEnd.length = (int)(g_infoManager.GetFPS() * g_guiSettings.GetInt("Slideshow.TransistionTime") * 0.001f); // transition time in msec
-  CLog::Log(LOGDEBUG,"Duration: %i", m_transistionEnd.start);
+  CLog::Log(LOGDEBUG,"Duration: %i (transistion out length %i)", m_transistionEnd.start, m_transistionEnd.length);
   m_transistionTemp.type = TRANSISTION_NONE;
   m_fTransistionAngle = 0;
   m_fTransistionZoom = 0;
@@ -268,7 +268,11 @@ void CSlideShowPic::Process()
     }
   }
   if (m_displayEffect != EFFECT_NO_TIMEOUT || m_iCounter < m_transistionStart.length || m_iCounter >= m_transistionEnd.start || (m_iCounter >= m_transistionTemp.start && m_iCounter < m_transistionTemp.start + m_transistionTemp.length))
+  {
+    if (m_displayEffect == EFFECT_NO_TIMEOUT)
+      CLog::Log(LOGDEBUG, "Incrementing counter (%i) while not in slideshow (startlength=%i,endstart=%i,endlength=%i)", m_iCounter, m_transistionStart.length, m_transistionEnd.start, m_transistionEnd.length);
     m_iCounter++;
+  }
   if (m_iCounter > m_transistionEnd.start + m_transistionEnd.length)
     m_bIsFinished = true;
 }
