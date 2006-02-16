@@ -1181,14 +1181,11 @@ CStdString CFileItem::ParseFormat(const CStdString& strMask)
     }
     else if (strMask[iPos2 + 1] == 'F')
     { // filename
-      if (IsStack())
-        str = GetLabel();
-      else
-        str = CUtil::GetTitleFromPath(m_strPath);
+      str = CUtil::GetTitleFromPath(m_strPath);
       bDoneSomething = true;
     }
     else if (strMask[iPos2 + 1] == 'L')
-    {
+    { // pre-existing label
       str = GetLabel();
       bDoneSomething = true;
     }
