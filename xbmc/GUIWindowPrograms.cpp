@@ -867,6 +867,18 @@ bool CGUIWindowPrograms::OnClick(int iItem)
   }
   else
   {
+    // xbe exists?
+    if (!CFile::Exists(pItem->m_strPath.c_str()))
+    {
+      CStdString strPath,strFile;
+      CUtil::Split(pItem->m_strPath,strPath,strFile);
+      if (CUtil::HasSlashAtEnd(strPath))
+        strPath.erase(strPath.size()-1);
+      strPath.Replace("\\","/");
+      m_database.DeleteProgram(strPath);
+      Update(m_vecItems.m_strPath);
+      return true;
+    }
 
     // launch xbe...
     char szPath[1024];
