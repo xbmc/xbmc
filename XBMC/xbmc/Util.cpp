@@ -25,6 +25,8 @@
 #include "utils/trainer.h"
 #include "FileSystem/ZipManager.h"
 #include "FileSystem/RarManager.h"
+#include "GUIDialogFileBrowser.h"
+#include "MediaManager.h"
 #include <xbdm.h>
 
 #define clamp(x) (x) > 255.f ? 255 : ((x) < 0 ? 0 : (BYTE)(x+0.5f)) // Valid ranges: brightness[-1 -> 1 (0 is default)] contrast[0 -> 2 (1 is default)]  gamma[0.5 -> 3.5 (1 is default)] default[ramp is linear]
@@ -3310,6 +3312,10 @@ const BUILT_IN commands[] = {
   "Notification", "Shows a notification on screen, specify header, then message.",
   "PlayDVD"," Plays the inserted CD or DVD media from the DVD-ROM Drive!",
   "Skin.ToggleSetting"," Toggles a skin setting on or off",
+  "Skin.SetString"," Prompts and sets skin string",
+  "Skin.SetPath"," Prompts and sets a skin path",
+  "Skin.SetImage"," Prompts and sets a skin image",
+  "Skin.ResetSettings"," Resets all skin settings",
   "Mute","Mute the player",
   "SetVolume","Set the current volume"
 };
@@ -3797,6 +3803,35 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   {
     g_settings.ToggleSkinSetting(parameter.c_str());
     g_settings.Save(); // To save the settings, this will keep them if a IGR follow.. 
+  }
+  else if (execute.Equals("skin.resetsettings"))
+  {
+    g_settings.ResetSkinSettings();
+    g_settings.Save();
+  }
+  else if (execute.Equals("skin.setstring") || execute.Equals("skin.setimage") || execute.Equals("skin.setpath"))
+  {
+    CStdString settingName;
+    settingName.Format("%s.%s", g_guiSettings.GetString("LookAndFeel.Skin").c_str(), parameter);
+    CStdString value = g_settings.GetSkinString(settingName);
+    VECSHARES shares;
+    g_mediaManager.GetLocalDrives(shares);
+    if (execute.Equals("skin.setstring"))
+    {
+      if (CGUIDialogKeyboard::ShowAndGetInput(value, g_localizeStrings.Get(1029), true))
+        g_settings.SetSkinString(parameter, value);
+    }
+    else if (execute.Equals("skin.setimage"))
+    {
+      if (CGUIDialogFileBrowser::ShowAndGetFile(shares, ".png|.jpg|.gif|.bmp", g_localizeStrings.Get(1030), value))
+        g_settings.SetSkinString(parameter, value);
+    }
+    else // execute.Equals("skin.setpath"))
+    {
+      if (CGUIDialogFileBrowser::ShowAndGetDirectory(shares, g_localizeStrings.Get(1031), value))
+        g_settings.SetSkinString(parameter, value);
+    }
+    g_settings.Save();
   }
 
   else
