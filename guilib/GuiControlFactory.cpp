@@ -373,6 +373,10 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
 
   DWORD dwTextColor3 = labelInfo.textColor;
 
+  DWORD radioWidth = 0;
+  DWORD radioHeight = 0;
+  int radioPosX = 0;
+  int radioPosY = 0;
   /////////////////////////////////////////////////////////////////////////////
   // Read default properties from reference controls
   //
@@ -483,6 +487,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
       strTextureNoFocus = ((CGUIRadioButtonControl*)pReference)->GetTextureNoFocusName();
       labelInfo = ((CGUIRadioButtonControl*)pReference)->GetLabelInfo();
       iHyperLink = ((CGUIRadioButtonControl*)pReference)->GetHyperLink();
+      ((CGUIRadioButtonControl*)pReference)->GetRadioDimensions(radioPosX, radioPosY, radioWidth, radioHeight);
     }
     else if (strType == "spincontrol")
     {
@@ -1238,6 +1243,11 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     XMLUtils::GetDWORD(pControlNode,"fadetime", fadeTime);
     XMLUtils::GetBoolean(pControlNode, "randomize", randomized);
     XMLUtils::GetBoolean(pControlNode, "loop", loop);
+
+    if (XMLUtils::GetDWORD(pControlNode, "radiowidth", radioWidth)) g_graphicsContext.ScaleXCoord(radioWidth, res);
+    if (XMLUtils::GetDWORD(pControlNode, "radioheight", radioHeight)) g_graphicsContext.ScaleYCoord(radioHeight, res);
+    if (XMLUtils::GetInt(pControlNode, "radioposx", radioPosX)) g_graphicsContext.ScaleXCoord(radioPosX, res);
+    if (XMLUtils::GetInt(pControlNode, "radioposy", radioPosY)) g_graphicsContext.ScaleYCoord(radioPosY, res);
   }
   /////////////////////////////////////////////////////////////////////////////
   // Instantiate a new control using the properties gathered above
@@ -1425,6 +1435,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
       strTextureRadioFocus, strTextureRadioNoFocus);
 
     pControl->SetText(strLabel);
+    pControl->SetRadioDimensions(radioPosX, radioPosY, radioWidth, radioHeight);
     pControl->SetNavigation(up, down, left, right);
     pControl->SetColourDiffuse(dwColorDiffuse);
     pControl->SetHyperLink(iHyperLink);
@@ -1530,6 +1541,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     pControl->SetVisible(bVisible);
     pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus, startHidden);
     pControl->SetAnimations(animations);
+    pControl->SetInfo(vecInfo.size() ? vecInfo[0] : 0);
     return pControl;
   }
   else if (strType == "listcontrol")

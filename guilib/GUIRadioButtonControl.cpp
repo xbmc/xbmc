@@ -11,6 +11,8 @@ CGUIRadioButtonControl::CGUIRadioButtonControl(DWORD dwParentID, DWORD dwControl
     , m_imgRadioFocus(dwParentID, dwControlId, iPosX, iPosY, 16, 16, strRadioFocus)
     , m_imgRadioNoFocus(dwParentID, dwControlId, iPosX, iPosY, 16, 16, strRadioNoFocus)
 {
+  m_radioPosX = 0;
+  m_radioPosY = 0;
   ControlType = GUICONTROL_RADIO;
 }
 
@@ -93,10 +95,27 @@ void CGUIRadioButtonControl::Update()
 void CGUIRadioButtonControl::SetPosition(int iPosX, int iPosY)
 {
   CGUIButtonControl::SetPosition(iPosX, iPosY);
-  int iRadioPosX = (m_iPosX + (int)m_dwWidth - 8) - 16;
-  int iRadioPosY = m_iPosY + ((int)m_dwHeight - 16) / 2;
+  int iRadioPosX = m_radioPosX ? m_radioPosX : (m_iPosX + (int)m_dwWidth - 8) - m_imgRadioFocus.GetWidth();
+  int iRadioPosY = m_radioPosY ? m_radioPosY : m_iPosY + ((int)m_dwHeight - m_imgRadioFocus.GetHeight()) / 2;
   m_imgRadioFocus.SetPosition(iRadioPosX, iRadioPosY);
   m_imgRadioNoFocus.SetPosition(iRadioPosX, iRadioPosY);
+}
+
+void CGUIRadioButtonControl::SetRadioDimensions(int posX, int posY, DWORD width, DWORD height)
+{
+  m_radioPosX = posX;
+  m_radioPosY = posY;
+  m_imgRadioFocus.SetWidth(width);
+  m_imgRadioFocus.SetHeight(height);
+  SetPosition(GetXPosition(), GetYPosition());
+}
+
+void CGUIRadioButtonControl::GetRadioDimensions(int &posX, int &posY, DWORD &width, DWORD &height)
+{
+  posX = m_radioPosX;
+  posY = m_radioPosY;
+  width = m_imgRadioFocus.GetWidth();
+  height = m_imgRadioFocus.GetHeight();
 }
 
 void CGUIRadioButtonControl::SetWidth(int iWidth)
