@@ -53,9 +53,10 @@ bool CGUIDialogFileBrowser::OnMessage(CGUIMessage& message)
       if (!CFile::Exists(m_selectedPath))
         m_selectedPath.Empty();
 
-      // find the parent folder
+      // find the parent folder if we are a file browser (don't do this for folders)
       m_Directory.m_strPath = m_selectedPath;
-//      CUtil::GetParentPath(m_selectedPath, m_Directory.m_strPath);
+      if (!m_browsingForFolders)
+        CUtil::GetParentPath(m_selectedPath, m_Directory.m_strPath);
       Update(m_Directory.m_strPath);
       m_viewControl.SetSelectedItem(m_selectedPath);
       return true;

@@ -37,6 +37,8 @@ public:
   DWORD GetFadeTime() const { return m_fadeTime; };
   bool GetRandomized() const { return m_randomized; };
   bool GetLoop() const { return m_loop; };
+  void SetInfo(int info) { m_Info = info; };
+  int GetInfo() const { return m_Info; };
 
 protected:
   void LoadImage(int image);
@@ -52,5 +54,7 @@ protected:
   vector <CGUIImage *> m_images;
 
   bool m_bDynamicResourceAlloc;
+
+  int m_Info;
 };
 #endif
