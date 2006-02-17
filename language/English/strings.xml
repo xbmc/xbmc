@@ -606,7 +606,9 @@
   <string><id>1026</id><value>Add Source</value></string>
   <string><id>1027</id><value>Edit Source</value></string>
   <string><id>1028</id><value>Edit %s Source</value></string>
-
+  <string><id>1029</id><value>Enter the new label</value></string>
+  <string><id>1030</id><value>an image</value></string>
+  <string><id>1031</id><value>an image folder</value></string>
 
   <string><id>1200</id><value>SMB Share</value></string>
   <string><id>1201</id><value>SMB IP</value></string>

@@ -34,8 +34,12 @@ public:
   const CStdString& GetTextureRadioFocusName() const { return m_imgRadioFocus.GetFileName(); };
   const CStdString& GetTextureRadioNoFocusName() const { return m_imgRadioNoFocus.GetFileName(); };
   virtual CStdString GetDescription() const;
+  void SetRadioDimensions(int posX, int posY, DWORD width, DWORD height);
+  void GetRadioDimensions(int &posX, int &posY, DWORD &width, DWORD &height);
 protected:
   virtual void Update();
   CGUIImage m_imgRadioFocus;
   CGUIImage m_imgRadioNoFocus;
+  int m_radioPosX;
+  int m_radioPosY;
 };

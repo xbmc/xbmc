@@ -3,6 +3,7 @@
 #include "GUIMultiImage.h"
 #include "TextureManager.h"
 #include "../xbmc/FileSystem/HDDirectory.h"
+#include "../xbmc/utils/GUIInfoManager.h"
 
 CGUIMultiImage::CGUIMultiImage(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strTexturePath, DWORD timePerImage, DWORD fadeTime, bool randomized, bool loop)
     : CGUIControl(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight)
@@ -16,6 +17,7 @@ CGUIMultiImage::CGUIMultiImage(DWORD dwParentID, DWORD dwControlId, int iPosX, i
   m_keepAspectRatio = false;
   ControlType = GUICONTROL_MULTI_IMAGE;
   m_bDynamicResourceAlloc=false;
+  m_Info = 0;
 }
 
 CGUIMultiImage::~CGUIMultiImage(void)
@@ -29,6 +31,18 @@ void CGUIMultiImage::Render()
     if (m_bDynamicResourceAlloc && IsAllocated())
       FreeResources();
     return;
+  }
+
+  // check for conditional information before we
+  // alloc as this can free our resources
+  if (m_Info)
+  {
+    CStdString texturePath = g_infoManager.GetImage(m_Info);
+    if (texturePath != m_texturePath)
+    {
+      m_texturePath = texturePath;
+      FreeResources();
+    }
   }
 
   if (m_bDynamicResourceAlloc && !IsAllocated())
