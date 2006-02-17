@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 17-02-2006 fixed: my programs. don't try to launch nonexisting entries.
  - 17-02-2006 added: <radiowidth>, <radioheight>, <radioposx>, <radioposy> tags to radiobuttons.
  - 17-02-2006 added: Skin.SetString(), Skin.SetImage(), Skin.SetPath() and Skin.ResetSettings built in functions.  Also made the multiimage control accept an <info> tag for it's path, and added Skin.String() as an info label/image/path.
  - 16-02-2006 removed: the Shuffle button from Music Library
