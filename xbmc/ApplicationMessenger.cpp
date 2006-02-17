@@ -234,7 +234,7 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
             pSlideShow->Add(items[i]->m_strPath);
           pSlideShow->StartSlideShow(); //Start the slideshow!
         }
-        if (pMsg->dwMessage == TMSG_SLIDESHOW_SCREENSAVER)
+        if (pMsg->dwMessage == TMSG_SLIDESHOW_SCREENSAVER && g_guiSettings.GetBool("Screensaver.SlideShowShuffle"))
           pSlideShow->Shuffle();
 
         if (m_gWindowManager.GetActiveWindow() != WINDOW_SLIDESHOW)
