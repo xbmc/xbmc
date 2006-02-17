@@ -105,8 +105,8 @@ void CGUIRadioButtonControl::SetRadioDimensions(int posX, int posY, DWORD width,
 {
   m_radioPosX = posX;
   m_radioPosY = posY;
-  m_imgRadioFocus.SetWidth(width);
-  m_imgRadioFocus.SetHeight(height);
+  if (width) m_imgRadioFocus.SetWidth(width);
+  if (height) m_imgRadioFocus.SetHeight(height);
   SetPosition(GetXPosition(), GetYPosition());
 }
 
