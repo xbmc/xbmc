@@ -440,6 +440,12 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
   }
   else if (strCategory.Equals("skin"))
   {
+    if (strTest.Left(12).Equals("skin.string("))
+    {
+      CStdString settingName;
+      settingName.Format("%s.%s", g_guiSettings.GetString("LookAndFeel.Skin").c_str(), strTest.Mid(12, strTest.GetLength() - 13).c_str());
+      ret = SKIN_HAS_SETTING_START + ConditionalStringParameter(settingName);
+    }
     if (strTest.Left(16).Equals("skin.hassetting("))
     {
       CStdString settingName;
@@ -486,6 +492,10 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
 wstring CGUIInfoManager::GetLabel(int info)
 {
   CStdString strLabel;
+  if (info >= SKIN_HAS_SETTING_START && info <= SKIN_HAS_SETTING_END)
+  {
+    strLabel = g_settings.GetSkinString(m_stringParameters[info - SKIN_HAS_SETTING_START].c_str());
+  }
   switch (info)
   {
   case WEATHER_CONDITIONS:
@@ -956,7 +966,11 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindo
 /// \brief Obtains the filename of the image to show from whichever subsystem is needed
 CStdString CGUIInfoManager::GetImage(int info)
 {
-  if (info == WEATHER_CONDITIONS)
+  if (info >= SKIN_HAS_SETTING_START && info <= SKIN_HAS_SETTING_END)
+  {
+    return g_settings.GetSkinString(m_stringParameters[info - SKIN_HAS_SETTING_START].c_str());
+  }
+  else if (info == WEATHER_CONDITIONS)
     return g_weatherManager.GetInfo(WEATHER_IMAGE_CURRENT_ICON);
   else if (info == MUSICPLAYER_COVER)
   {

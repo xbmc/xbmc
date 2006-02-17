@@ -241,7 +241,10 @@ public:
   bool UpDateXbmcXML(const CStdString &strFirstChild, const CStdString &strFirstChildValue);
 
   bool GetSkinSetting(const char *setting) const;
+  CStdString GetSkinString(const char *setting) const;
+  void SetSkinString(const char *setting, const CStdString &label);
   void ToggleSkinSetting(const char *setting);
+  void ResetSkinSettings();
 
   struct AdvancedSettings
   {
@@ -479,6 +482,7 @@ public:
 
   std::map<int,std::pair<std::vector<int>,std::vector<wstring> > > m_mapRssUrls;
   std::map<CStdString, bool> m_skinSettings;
+  std::map<CStdString, CStdString> m_skinStrings;
 
   // cache copies of these parsed values, to avoid re-parsing over and over
   CStdString m_szMyVideoStackSeparatorsString;
