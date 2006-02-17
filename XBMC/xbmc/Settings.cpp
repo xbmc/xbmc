@@ -2395,6 +2395,24 @@ void CSettings::ToggleSkinSetting(const char *setting)
 
 void CSettings::ResetSkinSettings()
 {
-  m_skinSettings.clear();
-  m_skinStrings.clear();
+  CStdString currentSkin = g_guiSettings.GetString("LookAndFeel.Skin") + ".";
+  // clear all the settings and strings from this skin.
+  std::map<CStdString, bool>::iterator it = m_skinSettings.begin();
+  while (it != m_skinSettings.end())
+  {
+    CStdString skinName = (*it).first;
+    if (skinName.Left(currentSkin.size()) == currentSkin)
+      it = m_skinSettings.erase(it);
+    else
+      it++;
+  }
+  std::map<CStdString, CStdString>::iterator it2 = m_skinStrings.begin();
+  while (it2 != m_skinStrings.end())
+  {
+    CStdString skinName = (*it2).first;
+    if (skinName.Left(currentSkin.size()) == currentSkin)
+      it2 = m_skinStrings.erase(it2);
+    else
+      it2++;
+  }
 }
