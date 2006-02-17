@@ -2120,8 +2120,15 @@ void CSettings::LoadSkinSettings(const TiXmlElement* pRootElement)
     while (pChild && pChild->FirstChild())
     {
       CStdString settingName = pChild->Attribute("name");
-      bool settingData = strcmpi(pChild->FirstChild()->Value(), "true") == 0;
-      m_skinSettings.insert(pair<CStdString, bool>(settingName, settingData));
+      if (pChild->Attribute("type") && strcmpi(pChild->Attribute("type"),"string") == 0)
+      { // string setting
+        m_skinStrings.insert(pair<CStdString, CStdString>(settingName, pChild->FirstChild()->Value()));
+      }
+      else
+      { // bool setting
+        bool settingData = strcmpi(pChild->FirstChild()->Value(), "true") == 0;
+        m_skinSettings.insert(pair<CStdString, bool>(settingName, settingData));
+      }
       pChild = pChild->NextSiblingElement("setting");
     }
   }
@@ -2135,11 +2142,22 @@ void CSettings::SaveSkinSettings(TiXmlNode *pRootElement) const
   if (!pSettingsNode) return;
   for (std::map<CStdString, bool>::const_iterator it = m_skinSettings.begin(); it != m_skinSettings.end(); ++it)
   {
-    // Add a <setting name="name">true/false</setting>
+    // Add a <setting type="bool" name="name">true/false</setting>
     TiXmlElement xmlSetting("setting");
+    xmlSetting.SetAttribute("type", "bool");
     xmlSetting.SetAttribute("name", (*it).first);
     TiXmlText xmlBool((*it).second ? "true" : "false");
     xmlSetting.InsertEndChild(xmlBool);
+    pSettingsNode->InsertEndChild(xmlSetting);
+  }
+  for (std::map<CStdString, CStdString>::const_iterator it = m_skinStrings.begin(); it != m_skinStrings.end(); ++it)
+  {
+    // Add a <setting type="string" name="name">string</setting>
+    TiXmlElement xmlSetting("setting");
+    xmlSetting.SetAttribute("type", "string");
+    xmlSetting.SetAttribute("name", (*it).first);
+    TiXmlText xmlLabel((*it).second);
+    xmlSetting.InsertEndChild(xmlLabel);
     pSettingsNode->InsertEndChild(xmlSetting);
   }
 }
@@ -2322,6 +2340,7 @@ void CSettings::Clear()
   m_mapRssUrls.clear();
   xbmcXml.Clear();
   m_skinSettings.clear();
+  m_skinStrings.clear();
 }
 
 bool CSettings::GetSkinSetting(const char *setting) const
@@ -2332,6 +2351,31 @@ bool CSettings::GetSkinSetting(const char *setting) const
     return (*it).second;
   }
   return false;
+}
+
+CStdString CSettings::GetSkinString(const char *setting) const
+{
+  std::map<CStdString, CStdString>::const_iterator it = m_skinStrings.find(setting);
+  if (it != m_skinStrings.end())
+  {
+    return (*it).second;
+  }
+  return "";
+}
+
+void CSettings::SetSkinString(const char *setting, const CStdString &label)
+{
+  CStdString settingName;
+  settingName.Format("%s.%s", g_guiSettings.GetString("LookAndFeel.Skin").c_str(), setting);
+  std::map<CStdString, CStdString>::iterator it = m_skinStrings.find(settingName);
+  if (it != m_skinStrings.end())
+  {
+    (*it).second = label;
+  }
+  else
+  { // insert setting
+    m_skinStrings.insert(pair<CStdString, CStdString>(settingName, label));
+  }
 }
 
 void CSettings::ToggleSkinSetting(const char *setting)
@@ -2347,4 +2391,10 @@ void CSettings::ToggleSkinSetting(const char *setting)
   { // insert setting
     m_skinSettings.insert(pair<CStdString, bool>(settingName, true)); // defaults are false
   }
+}
+
+void CSettings::ResetSkinSettings()
+{
+  m_skinSettings.clear();
+  m_skinStrings.clear();
 }
