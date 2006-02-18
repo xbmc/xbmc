@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 18-02-2006 changed: Keyboard updates all buttons with the same id when you change from Symbols -> Caps -> Lower case.
  - 18-02-2006 fixed: Video Calibration activated via the video OSD wasn't working.
  - 18-02-2006 fixed: Possible crashes in charset conversion.
  - 18-02-2006 changed: MultiImage only reads dir once instead of whenever it becomes visible.

@@ -30,6 +30,7 @@ protected:
   virtual void OnInitWindow();
   virtual bool OnAction(const CAction &action);
   virtual bool OnMessage(CGUIMessage& message);
+  void SetControlLabel(int id, const CStdStringW &label);
   void OnShift();
   void MoveCursor(int iAmount);
   int GetCursorPos() const;
