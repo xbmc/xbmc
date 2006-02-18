@@ -3583,12 +3583,6 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
         else          
           g_application.m_pPlayer->Pause();
       }
-      else
-      { // not currently playing, let's see if there's anything in the playlist
-//        CPlayList& playlist = g_playlistPlayer.GetPlaylist(g_playlistPlayer.GetCurrentPlaylist());
-//       if (playlist.size())
-//         g_playlistPlayer.Play(g_playlistPlayer.Pl
-      }
     } 
     else if (parameter.Equals("stop"))
     {
