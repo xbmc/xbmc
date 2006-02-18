@@ -223,7 +223,8 @@ bool CGUIWindowOSD::OnMessage(CGUIMessage& message)
       //g_settings.Save();
       // Remove our subdialogs if visible
       CGUIDialog *pDialog = (CGUIDialog *)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_OSD_SETTINGS);
-      if (pDialog && pDialog->IsRunning()) pDialog->Close();
+      if (pDialog && pDialog->IsRunning())
+        pDialog->Close(true);
       pDialog = (CGUIDialog *)m_gWindowManager.GetWindow(WINDOW_DIALOG_AUDIO_OSD_SETTINGS);
       if (pDialog && pDialog->IsRunning()) pDialog->Close();
       pDialog = (CGUIDialog *)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_BOOKMARKS);
