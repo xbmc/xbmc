@@ -278,6 +278,7 @@ public:
   static void ShortenFileName(CStdString& strFileNameAndPath);
   static bool IsISO9660(const CStdString& strFile);
   static bool IsSmb(const CStdString& strFile);
+  static bool IsDAAP(const CStdString& strFile);
   static void ConvertPathToUrl( const CStdString& strPath, const CStdString& strProtocol, CStdString& strOutUrl );
   static void GetDVDDriveIcon( const CStdString& strPath, CStdString& strIcon );
   static void RemoveTempFiles();
@@ -354,6 +355,7 @@ public:
   static double AlbumRelevance(const CStdString& strAlbumTemp1, const CStdString& strAlbum1, const CStdString& strArtistTemp1, const CStdString& strArtist1);
   static bool MakeShortenPath(CStdString StrInput, CStdString& StrOutput, int iTextMaxLength);
   static float CurrentCpuUsage();
+  static bool SupportsFileOperations(const CStdString& strPath);
   
 private:
   static bool m_bNetworkUp;
