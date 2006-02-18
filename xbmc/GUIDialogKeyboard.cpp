@@ -390,50 +390,36 @@ void CGUIDialogKeyboard::UpdateButtons()
   // set numerals
   for (int iButton = 48; iButton <= 57; iButton++)
   {
-    CGUIButtonControl* pButton = ((CGUIButtonControl*)GetControl(iButton));
-
-    if (pButton)
-    {
-      if (m_keyType == SYMBOLS)
-        aLabel[0] = (WCHAR)symbol_map[iButton - 48];
-      else
-        aLabel[0] = iButton;
-      pButton->SetText(aLabel);
-    }
+    if (m_keyType == SYMBOLS)
+      aLabel[0] = (WCHAR)symbol_map[iButton - 48];
+    else
+      aLabel[0] = iButton;
+    SetControlLabel(iButton, aLabel);
   }
 
   // set correct alphabet characters...
 
   for (int iButton = 65; iButton <= 90; iButton++)
   {
-    CGUIButtonControl* pButton = ((CGUIButtonControl*)GetControl(iButton));
-
-    if (pButton)
-    {
-      // set the correct case...
-      if ((m_keyType == CAPS && m_bShift) || (m_keyType == LOWER && !m_bShift))
-      { // make lower case
-        aLabel[0] = iButton + 32;
-      }
-      else if (m_keyType == SYMBOLS)
-      {
-        aLabel[0] = (WCHAR)symbol_map[iButton - 65 + 10];
-      }
-      else
-      {
-        aLabel[0] = iButton;
-      }
-      pButton->SetText(aLabel);
+    // set the correct case...
+    if ((m_keyType == CAPS && m_bShift) || (m_keyType == LOWER && !m_bShift))
+    { // make lower case
+      aLabel[0] = iButton + 32;
     }
+    else if (m_keyType == SYMBOLS)
+    {
+      aLabel[0] = (WCHAR)symbol_map[iButton - 65 + 10];
+    }
+    else
+    {
+      aLabel[0] = iButton;
+    }
+    SetControlLabel(iButton, aLabel);
   }
   for (int i = 0; i < NUM_SYMBOLS; i++)
   {
-    CGUIButtonControl* pButton = ((CGUIButtonControl*)GetControl(symbolButtons[i]));
-    if (pButton)
-    {
-      aLabel[0] = symbolButtons[i];
-      pButton->SetText(aLabel);
-    }
+    aLabel[0] = symbolButtons[i];
+    SetControlLabel(symbolButtons[i], aLabel);
   }
 }
 
@@ -619,3 +605,14 @@ void CGUIDialogKeyboard::ResetShiftAndSymbols()
 }
 
 const char* CGUIDialogKeyboard::s_charsSeries[10] = { " !@#$%^&*()[]{}<>/\\|0", ".,;:\'\"-+_=?`~1", "ABC2", "DEF3", "GHI4", "JKL5", "MNO6", "PQRS7", "TUV8", "WXYZ9" };
+
+void CGUIDialogKeyboard::SetControlLabel(int id, const CStdStringW &label)
+{ // find all controls with this id, and set all their labels
+  CGUIMessage message(GUI_MSG_LABEL_SET, GetID(), id);
+  message.SetLabel(label);
+  for (unsigned int i = 0; i < m_vecControls.size(); i++)
+  {
+    if (m_vecControls[i]->GetID() == id)
+      m_vecControls[i]->OnMessage(message);
+  }
+}
