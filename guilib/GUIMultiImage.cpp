@@ -18,6 +18,7 @@ CGUIMultiImage::CGUIMultiImage(DWORD dwParentID, DWORD dwControlId, int iPosX, i
   ControlType = GUICONTROL_MULTI_IMAGE;
   m_bDynamicResourceAlloc=false;
   m_Info = 0;
+  m_directoryLoaded = false;
 }
 
 CGUIMultiImage::~CGUIMultiImage(void)
@@ -42,6 +43,7 @@ void CGUIMultiImage::Render()
     {
       m_texturePath = texturePath;
       FreeResources();
+      LoadDirectory();
     }
   }
 
@@ -115,32 +117,12 @@ void CGUIMultiImage::AllocResources()
   FreeResources();
   CGUIControl::AllocResources();
 
-  // Load any images from our texture bundle first
-  CStdStringArray images;
-  g_TextureManager.GetBundledTexturesFromPath(m_texturePath, images);
+  if (!m_directoryLoaded)
+    LoadDirectory();
 
-  // Load in our images from the directory specified
-  // m_texturePath is relative (as are all skin paths)
-  CStdString realPath = g_TextureManager.GetTexturePath(m_texturePath);
-  CHDDirectory dir;
-  CFileItemList items;
-  dir.GetDirectory(realPath, items);
-  for (int i=0; i < items.Size(); i++)
+  for (unsigned int i=0; i < m_files.size(); i++)
   {
-    CFileItem *pItem = items[i];
-    if (pItem->IsPicture())
-      images.push_back(pItem->m_strPath);
-  }
-
-  // and sort them
-  if (m_randomized)
-    random_shuffle(images.begin(), images.end());
-  else
-    sort(images.begin(), images.end());
-
-  for (unsigned int i=0; i < images.size(); i++)
-  {
-    CGUIImage *pImage = new CGUIImage(GetParentID(), GetID(), m_iPosX, m_iPosY, m_dwWidth, m_dwHeight, images[i]);
+    CGUIImage *pImage = new CGUIImage(GetParentID(), GetID(), m_iPosX, m_iPosY, m_dwWidth, m_dwHeight, m_files[i]);
     if (pImage)
       m_images.push_back(pImage);
   }
@@ -220,3 +202,35 @@ bool CGUIMultiImage::GetKeepAspectRatio() const
   return m_keepAspectRatio;
 }
 
+void CGUIMultiImage::LoadDirectory()
+{
+  // Load any images from our texture bundle first
+  m_files.clear();
+
+  // don't load any images if our path is empty
+  if (m_texturePath.IsEmpty()) return;
+
+  g_TextureManager.GetBundledTexturesFromPath(m_texturePath, m_files);
+
+  // Load in our images from the directory specified
+  // m_texturePath is relative (as are all skin paths)
+  CStdString realPath = g_TextureManager.GetTexturePath(m_texturePath);
+  CHDDirectory dir;
+  CFileItemList items;
+  dir.GetDirectory(realPath, items);
+  for (int i=0; i < items.Size(); i++)
+  {
+    CFileItem *pItem = items[i];
+    if (pItem->IsPicture())
+      m_files.push_back(pItem->m_strPath);
+  }
+
+  // and sort them
+  if (m_randomized)
+    random_shuffle(m_files.begin(), m_files.end());
+  else
+    sort(m_files.begin(), m_files.end());
+
+  // flag as loaded - no point in constantly reloading them
+  m_directoryLoaded = true;
+}
