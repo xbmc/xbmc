@@ -173,7 +173,7 @@ void CGUIDialog::Show(DWORD dwParentId)
   //maybe we should have a critical section per window instead??
   CSingleLock lock(g_graphicsContext);
 
-  if (m_bRunning && !IsAnimating(ANIM_TYPE_WINDOW_CLOSE)) return;
+  if (m_bRunning && !m_dialogClosing && !IsAnimating(ANIM_TYPE_WINDOW_CLOSE)) return;
 
   m_dwParentWindowID = dwParentId;
   m_pParentWindow = m_gWindowManager.GetWindow( m_dwParentWindowID);
