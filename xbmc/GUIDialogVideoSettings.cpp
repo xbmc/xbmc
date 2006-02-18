@@ -104,9 +104,6 @@ void CGUIDialogVideoSettings::OnSettingChanged(unsigned int num)
   }
   else if (setting.id == VIDEO_SETTINGS_CALIBRATION)
   {
-    // close the OSD
-    CGUIDialog *pDialog = (CGUIDialog *)m_gWindowManager.GetWindow(WINDOW_OSD);
-    if (pDialog) pDialog->Close();
     // launch calibration window
     m_gWindowManager.ActivateWindow(WINDOW_MOVIE_CALIBRATION);
   }
