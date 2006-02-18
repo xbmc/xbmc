@@ -255,7 +255,9 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
         }
       }
       CheckNetworkSettings();
+      CGUIWindow::OnMessage(message);
       FreeControls();
+      return true;
     }
     break;
   }
