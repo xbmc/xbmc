@@ -3,6 +3,7 @@
 #include "MusicInfoTagLoaderFactory.h"
 #include "GUIWindowMusicInfo.h"
 #include "FileSystem/ZipManager.h"
+#include "FileSystem/DAAPDirectory.h"
 #include "PlayListFactory.h"
 #include "Util.h"
 #include "PlayListM3U.h"
@@ -1349,8 +1350,15 @@ void CGUIWindowMusicBase::OnPopupMenu(int iItem)
   {
     if (m_vecItems.m_strPath.Equals(CUtil::MusicPlaylistsLocation()) || g_guiSettings.GetBool("MusicFiles.AllowFileDeletion"))
     {
-      btn_Delete = pMenu->AddButton(117);               // Delete
-      btn_Rename = pMenu->AddButton(118);               // Rename
+      btn_Delete = pMenu->AddButton(117);
+      btn_Rename = pMenu->AddButton(118);
+
+      // disable these functions if not supported by the protocol
+      if (!CUtil::SupportsFileOperations(m_vecItems[iItem]->m_strPath))
+      {
+        pMenu->EnableButton(btn_Delete, false);
+        pMenu->EnableButton(btn_Rename, false);
+      }
     }
   }
 
@@ -1474,7 +1482,16 @@ void CGUIWindowMusicBase::PlayItem(int iItem)
   // the current playlist
 
   const CFileItem* pItem = m_vecItems[iItem];
-  // if its a folder, build a temp playlist
+
+  // special case for DAAP playlist folders
+  bool bIsDAAPplaylist = false;
+  if (pItem->IsDAAP() && pItem->m_bIsFolder)
+  {
+    CDAAPDirectory dirDAAP;
+    if (dirDAAP.GetCurrLevel(pItem->m_strPath) == 0)
+      bIsDAAPplaylist = true;
+  }
+  // if its a folder, build a playlist
   if (pItem->m_bIsFolder)
   {
     CFileItem item(*m_vecItems[iItem]);
@@ -1488,7 +1505,6 @@ void CGUIWindowMusicBase::PlayItem(int iItem)
     if (item.IsParentFolder())
       return;
 
-    //int iPlaylist=m_guiState->GetPlaylist();
     int iPlaylist = PLAYLIST_MUSIC;
     g_playlistPlayer.ClearPlaylist(iPlaylist);
     g_playlistPlayer.Reset();
@@ -1500,9 +1516,18 @@ void CGUIWindowMusicBase::PlayItem(int iItem)
     if (CUtil::HasSlashAtEnd(strPlayListDirectory))
       strPlayListDirectory.Delete(strPlayListDirectory.size() - 1);
 
-    //m_guiState->SetPlaylistDirectory(strPlayListDirectory);
-    // play!
     g_playlistPlayer.SetCurrentPlaylist(iPlaylist);
+
+    // shuffle playlist if folder is daap playlist folder
+    // and shuffle playlist on load is enabled
+    if (bIsDAAPplaylist && g_guiSettings.GetBool("MusicPlaylist.ShufflePlaylistsOnLoad"))
+      g_playlistPlayer.GetPlaylist(iPlaylist).Shuffle();
+
+    // activate the playlist window if its not activated yet
+    if (bIsDAAPplaylist && GetID() == m_gWindowManager.GetActiveWindow())
+      m_gWindowManager.ActivateWindow(WINDOW_MUSIC_PLAYLIST);
+
+    // play!
     g_playlistPlayer.Play();
   }
   else if (pItem->IsPlayList())
