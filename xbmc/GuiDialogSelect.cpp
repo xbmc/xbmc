@@ -1,34 +1,12 @@
 #include "stdafx.h"
 #include "GUIDialogSelect.h"
 #include "Application.h"
-
+#include "SortFileItem.h"
 
 #define CONTROL_HEADING       1
 #define CONTROL_LIST          3
 #define CONTROL_NUMBEROFFILES 2
 #define CONTROL_BUTTON        5
-
-struct SSortDialogSelect
-{
-  bool operator()(CGUIListItem* pStart, CGUIListItem* pEnd)
-  {
-    CGUIListItem& rpStart = *pStart;
-    CGUIListItem& rpEnd = *pEnd;
-
-    CStdString strLabel1 = rpStart.GetLabel();
-    strLabel1.ToLower();
-
-    CStdString strLabel2 = rpEnd.GetLabel();
-    strLabel2.ToLower();
-
-    if (m_bSortOrder)
-      return (strcmp(strLabel1.c_str(), strLabel2.c_str()) < 0);
-    else
-      return (strcmp(strLabel1.c_str(), strLabel2.c_str()) >= 0);
-  }
-
-  bool m_bSortOrder;
-};
 
 CGUIDialogSelect::CGUIDialogSelect(void)
     : CGUIDialogBoxBase(WINDOW_DIALOG_SELECT, "DialogSelect.xml")
@@ -45,7 +23,9 @@ bool CGUIDialogSelect::OnMessage(CGUIMessage& message)
   {
   case GUI_MSG_WINDOW_DEINIT:
     {
+      CGUIDialog::OnMessage(message);
       Reset();
+      return true;
     }
     break;
 
@@ -117,7 +97,11 @@ bool CGUIDialogSelect::OnMessage(CGUIMessage& message)
 void CGUIDialogSelect::Close(bool forceClose)
 {
   CGUIDialog::Close(forceClose);
+}
 
+void CGUIDialogSelect::Reset()
+{
+  m_bButtonEnabled = false;
   for (int i = 0; i < (int)m_vecList.size(); ++i)
   {
     //CGUIListItem* pItem = m_vecList[i];
@@ -125,11 +109,6 @@ void CGUIDialogSelect::Close(bool forceClose)
     delete pItem;
   }
   m_vecList.erase(m_vecList.begin(), m_vecList.end());
-}
-
-void CGUIDialogSelect::Reset()
-{
-  m_bButtonEnabled = false;
 }
 
 void CGUIDialogSelect::Add(const CStdString& strLabel)
@@ -178,9 +157,7 @@ bool CGUIDialogSelect::IsButtonPressed()
 
 void CGUIDialogSelect::Sort(bool bSortOrder /*=true*/)
 {
-  SSortDialogSelect sortmethod;
-  sortmethod.m_bSortOrder = bSortOrder;
-  sort(m_vecList.begin(), m_vecList.end(), sortmethod);
+  sort(m_vecList.begin(), m_vecList.end(), bSortOrder ? SSortFileItem::LabelAscending : SSortFileItem::LabelDescending);
 }
 
 void CGUIDialogSelect::SetSelected(int iSelected)

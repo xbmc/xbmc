@@ -174,8 +174,14 @@ void CCharsetConverter::stringCharsetToFontCharset(const CStdStringA& strSource,
     char *dst = new char[inBytes * 2];
     size_t outBytes = inBytes * 2;
     char *outdst = dst;
-    iconv(m_iconvStringCharsetToFontCharset, &src, &inBytes, &outdst, &outBytes);
-    strDest = (WCHAR *)dst;
+    if (iconv(m_iconvStringCharsetToFontCharset, &src, &inBytes, &outdst, &outBytes))
+    {
+      // For some reason it failed (maybe wrong charset?). Nothing to do but
+      // return the original..
+      strDest = strSource;
+    }
+    else
+      strDest = (WCHAR *)dst;
     delete[] dst;
   }
 }
@@ -198,7 +204,13 @@ void CCharsetConverter::subtitleCharsetToFontCharset(const CStdStringA& strSourc
     char *dst = (char*)strDest.GetBuffer(inBytes * 2);
     size_t outBytes = inBytes * 2;
 
-    iconv(m_iconvSubtitleCharsetToFontCharset, &src, &inBytes, &dst, &outBytes);
+    if (iconv(m_iconvSubtitleCharsetToFontCharset, &src, &inBytes, &dst, &outBytes))
+    {
+      strDest.ReleaseBuffer();
+      // For some reason it failed (maybe wrong charset?). Nothing to do but
+      // return the original..
+      strDest = strSource;
+    }
     strDest.ReleaseBuffer();
   }
 }
@@ -348,7 +360,13 @@ void CCharsetConverter::ucs2CharsetToStringCharset(const CStdStringW& strSource,
     char *dst = strDest.GetBuffer(inBytes);
     size_t outBytes = inBytes;
 
-    iconv(m_iconvUcs2CharsetToStringCharset, &src, &inBytes, &dst, &outBytes);
+    if (iconv(m_iconvUcs2CharsetToStringCharset, &src, &inBytes, &dst, &outBytes))
+    {
+      strDest.ReleaseBuffer();
+      // For some reason it failed (maybe wrong charset?). Nothing to do but
+      // return the original..
+      strDest = strSource;
+    }
     strDest.ReleaseBuffer();
   }
 }
@@ -370,7 +388,13 @@ void CCharsetConverter::utf32ToStringCharset(const unsigned long* strSource, CSt
     char *dst = strDest.GetBuffer(inBytes);
     size_t outBytes = inBytes;
 
-    iconv(m_iconvUtf32ToStringCharset, &src, &inBytes, &dst, &outBytes);
+    if (iconv(m_iconvUtf32ToStringCharset, &src, &inBytes, &dst, &outBytes))
+    {
+      strDest.ReleaseBuffer();
+      // For some reason it failed (maybe wrong charset?). Nothing to do but
+      // return the original..
+      strDest = (const char *)strSource;
+    }
     strDest.ReleaseBuffer();
   }
 }
