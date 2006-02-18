@@ -193,6 +193,7 @@ CApplication::CApplication(void)
   m_eForcedNextPlayer = EPC_NONE;
   m_strPlayListFile = "";
   m_nextPlaylistItem = -1;
+  m_bMusicPartyMode = false;
 }
 
 CApplication::~CApplication(void)
