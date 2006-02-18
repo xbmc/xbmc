@@ -4391,61 +4391,25 @@ bool CApplication::ProcessAndStartPlaylist(const CStdString& strPlayList, CPlayL
   // setup correct playlist
   g_playlistPlayer.ClearPlaylist(iPlaylist);
 
-  // music option: shuffle playlists on load
-  // if playlist_music_temp, shuffle items BEFORE they are added to the playlist player
-  // dont do this if the first item is a stream
-  if (
-    iPlaylist == PLAYLIST_MUSIC_TEMP &&
-    !item.IsShoutCast() &&
-    g_guiSettings.GetBool("MusicPlaylist.ShufflePlaylistsOnLoad")
-    )
-  {
-    playlist.Shuffle();
-  }
-
   // add each item of the playlist to the playlistplayer
   for (int i = 0; i < (int)playlist.size(); ++i)
   {
     g_playlistPlayer.GetPlaylist(iPlaylist).Add(playlist[i]);
-
-    // why was this done? its completely redundant. 
-    // the playlist is already loaded at this point.
-    // all we need to do is copy the playlist items into the
-    // playlist held by the playlist player.
-
-    /* 
-    const CPlayList::CPlayListItem& playListItem = playlist[i];
-    CStdString strLabel = playListItem.GetDescription();
-    if (strLabel.size() == 0)
-      strLabel = CUtil::GetTitleFromPath(playListItem.GetFileName());
-
-    CPlayList::CPlayListItem playlistItem;
-    playlistItem.SetDescription(playListItem.GetDescription());
-    playlistItem.SetDuration(playListItem.GetDuration());
-    playlistItem.SetFileName(playListItem.GetFileName());
-    g_playlistPlayer.GetPlaylist(iPlaylist).Add(playlistItem);
-    */
   }
 
   // music option: shuffle playlist on load
-  // if playlist_music, shuffle the list in the playlistplayer
-  // again, dont do this if the first item is a stream
+  // dont do this if the first item is a stream
   if (
-    iPlaylist == PLAYLIST_MUSIC &&
+    (iPlaylist == PLAYLIST_MUSIC || iPlaylist == PLAYLIST_MUSIC_TEMP) &&
     !item.IsShoutCast() &&
     g_guiSettings.GetBool("MusicPlaylist.ShufflePlaylistsOnLoad")
     )
   {
-    g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).Shuffle();
-
-    // uncomment these to enable both Shuffle and Randomize
-    //g_stSettings.m_bMyMusicPlaylistShuffle = true;
-    //g_settings.Save();
-    //g_playlistPlayer.ShufflePlay(PLAYLIST_MUSIC, g_stSettings.m_bMyMusicPlaylistShuffle);
+    g_playlistPlayer.GetPlaylist(iPlaylist).Shuffle();
   }
 
   // if we have a playlist 
-  if (g_playlistPlayer.GetPlaylist(iPlaylist).size() )
+  if (g_playlistPlayer.GetPlaylist(iPlaylist).size())
   {
     // start playing it
     g_playlistPlayer.SetCurrentPlaylist(iPlaylist);

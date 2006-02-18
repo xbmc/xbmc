@@ -105,8 +105,9 @@ void CAutorun::RunCdda()
     if ( vecItems.Size() <= 0 )
       return ;
 
-    int nSize = g_playlistPlayer.GetPlaylist( PLAYLIST_MUSIC ).size();
+    //int nSize = g_playlistPlayer.GetPlaylist( PLAYLIST_MUSIC ).size();
 
+    g_playlistPlayer.ClearPlaylist(PLAYLIST_MUSIC);
     for (int i = 0; i < vecItems.Size(); i++)
     {
       CFileItem* pItem = vecItems[i];
@@ -117,12 +118,11 @@ void CAutorun::RunCdda()
       g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).Add(playlistItem);
     }
 
-    CGUIMessage msg( GUI_MSG_PLAYLIST_CHANGED, 0, 0, 0, 0, NULL );
-    m_gWindowManager.SendMessage( msg );
+    //CGUIMessage msg( GUI_MSG_PLAYLIST_CHANGED, 0, 0, 0, 0, NULL );
+    //m_gWindowManager.SendMessage( msg );
 
     g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_MUSIC);
-    // Start playing the items we inserted
-    g_playlistPlayer.Play(nSize);
+    g_playlistPlayer.Play();
   }
 }
 

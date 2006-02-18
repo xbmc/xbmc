@@ -72,7 +72,7 @@ namespace PYXBMC
 			PlayList* pPlayList = (PlayList*)pObject;
 			self->iPlayList = pPlayList->iPlayList;
 			g_playlistPlayer.SetCurrentPlaylist(pPlayList->iPlayList);
-			g_applicationMessenger.PlayListPlayerPlay(0);
+			g_applicationMessenger.PlayListPlayerPlay();
 		}
 		else if (PyString_Check(pObject))
 		{

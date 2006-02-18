@@ -54,6 +54,7 @@ public:
   void MediaPause();
   void MediaRestart(bool bWait);
 
+  void PlayListPlayerPlay();
   void PlayListPlayerPlay(int iSong);
   void PlayListPlayerNext();
   void PlayListPlayerPrevious();

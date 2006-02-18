@@ -213,13 +213,10 @@ void CGUIWindowMusicNav::UpdateButtons()
     CUtil::Split(m_vecItems.m_strPath, strDummy, strLabel);
   }
   // everything else is from a musicdb:// path
-  // for now display "Library"
-  // TODO: add a "GetLabel" function to CMusicDatabase to restore filter label
   else
   {
     CMusicDatabaseDirectory dir;
     dir.GetLabel(m_vecItems.m_strPath, strLabel);
-    //strLabel = g_localizeStrings.Get(15100);
   }
   
   SET_CONTROL_LABEL(CONTROL_FILTER, strLabel);
