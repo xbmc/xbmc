@@ -457,6 +457,11 @@ bool CFileItem::IsSmb() const
   return CUtil::IsSmb(m_strPath);
 }
 
+bool CFileItem::IsDAAP() const
+{
+  return CUtil::IsDAAP(m_strPath);
+}
+
 bool CFileItem::IsHD() const
 {
   return CUtil::IsHD(m_strPath);

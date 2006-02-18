@@ -1379,6 +1379,12 @@ bool CUtil::IsSmb(const CStdString& strFile)
   return (strLeft.CompareNoCase("smb:") == 0);
 }
 
+bool CUtil::IsDAAP(const CStdString& strFile)
+{
+  CStdString strLeft = strFile.Left(5);
+  return (strLeft.CompareNoCase("daap:") == 0);
+}
+
 void CUtil::GetFileAndProtocol(const CStdString& strURL, CStdString& strDir)
 {
   strDir = strURL;
@@ -4552,4 +4558,14 @@ float CUtil::CurrentCpuUsage()
   
   return fCpuUsage;
 */
+}
+
+bool CUtil::SupportsFileOperations(const CStdString& strPath)
+{
+  // currently only hd and smb support delete and rename
+  if (IsHD(strPath))
+    return true;
+  if (IsSmb(strPath))
+    return true;
+  return false;
 }
