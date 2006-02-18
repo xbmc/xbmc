@@ -41,6 +41,7 @@ public:
   int GetInfo() const { return m_Info; };
 
 protected:
+  void LoadDirectory();
   void LoadImage(int image);
   CStdString m_texturePath;
   int m_currentImage;
@@ -54,7 +55,8 @@ protected:
   vector <CGUIImage *> m_images;
 
   bool m_bDynamicResourceAlloc;
-
+  bool m_directoryLoaded;
+  CStdStringArray m_files;
   int m_Info;
 };
 #endif
