@@ -20,12 +20,12 @@ public:
   virtual ~CDAAPDirectory(void);
   virtual bool GetDirectory(const CStdString& strPath, CFileItemList &items);
   //virtual void CloseDAAP(void);
+  int GetCurrLevel(CStdString strPath);
 
 private:
   void free_albums(albumPTR *alb);
   void free_artists();
   void AddToArtistAlbum(char *artist_s, char *album_s);
-  int GetCurrLevel(CStdString strPath);
 
   DAAP_ClientHost_DatabaseItem *m_currentSongItems;
   int m_currentSongItemCount;
