@@ -71,9 +71,21 @@ int CPlayListPlayer::GetNextSong()
     return -1;
   int iSong = m_iCurrentSong;
 
-  // if repeat one, keep playing the current song
+  // if repeat one, keep playing the current song if its valid
   if (RepeatedOne(m_iCurrentPlayList))
+  {
+    // otherwise immediately abort playback
+    if (playlist[m_iCurrentSong].IsUnPlayable())
+    {
+      CLog::Log(LOGERROR,"Playlist Player: RepeatOne stuck on unplayable item: %i, path [%s]", m_iCurrentSong, playlist[m_iCurrentSong].m_strPath.c_str());
+      CGUIMessage msg(GUI_MSG_PLAYLISTPLAYER_STOPPED, 0, 0, m_iCurrentPlayList, m_iCurrentSong);
+      m_gWindowManager.SendThreadMessage(msg);
+      Reset();
+      m_iCurrentPlayList = PLAYLIST_NONE;
+      return -1;
+    }
     return iSong;
+  }
 
   // if random, get the next random song
   if (ShuffledPlay(m_iCurrentPlayList) && playlist.size() > 1)

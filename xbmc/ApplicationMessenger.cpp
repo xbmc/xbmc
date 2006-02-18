@@ -286,7 +286,11 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
       break;
 
     case TMSG_PLAYLISTPLAYER_PLAY:
-      g_playlistPlayer.Play(pMsg->dwParam1);
+      if (pMsg->dwParam1 > -1)
+        g_playlistPlayer.Play(pMsg->dwParam1);
+      else
+        g_playlistPlayer.Play();
+
       break;
 
     case TMSG_PLAYLISTPLAYER_NEXT:
@@ -403,6 +407,12 @@ void CApplicationMessenger::MediaRestart(bool bWait)
 {
   ThreadMessage tMsg = {TMSG_MEDIA_RESTART};
   SendMessage(tMsg, bWait);
+}
+
+void CApplicationMessenger::PlayListPlayerPlay()
+{
+  ThreadMessage tMsg = {TMSG_PLAYLISTPLAYER_PLAY, -1};
+  SendMessage(tMsg, true);
 }
 
 void CApplicationMessenger::PlayListPlayerPlay(int iSong)
