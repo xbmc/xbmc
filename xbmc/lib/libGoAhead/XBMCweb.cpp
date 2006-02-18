@@ -800,7 +800,7 @@ int CXbmcWeb::xbmcCatalog( int eid, webs_t wp, char_t *parameter)
                   g_playlistPlayer.SetCurrentPlaylist(iPlayList);
 
                   // play first item in playlist
-                  g_applicationMessenger.PlayListPlayerPlay(0);
+                  g_applicationMessenger.PlayListPlayerPlay();
 
                   // set current file item
                   CFileItem item(playlist[0].GetDescription());
@@ -847,7 +847,7 @@ int CXbmcWeb::xbmcPlayerPlay( int eid, webs_t wp, char_t *parameter)
   else
   {
     // we haven't played an item through the webinterface yet. Try playing the current playlist
-    g_applicationMessenger.PlayListPlayerPlay(0);
+    g_applicationMessenger.PlayListPlayerPlay();
   }
   return 0;
 }
