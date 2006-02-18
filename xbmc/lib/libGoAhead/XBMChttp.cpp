@@ -744,7 +744,7 @@ void LoadPlayListOld(const CStdString& strPlayList, int playList)
     }
 
     g_playlistPlayer.SetCurrentPlaylist(playList);
-    g_applicationMessenger.PlayListPlayerPlay(0);
+    g_applicationMessenger.PlayListPlayerPlay();
     
     // set current file item
     CFileItem item(playlist[0].GetDescription());
@@ -776,27 +776,18 @@ bool LoadPlayList(CStdString strPath, int iPlaylist, bool clearList, bool autoSt
   if (playlist.size() == 0)
     return false;
 
+  // first item of the list, used to determine the intent
+  CPlayList::CPlayListItem playlistItem = playlist[0];
+
   if ((playlist.size() == 1) && (autoStart))
   {
     // just 1 song? then play it (no need to have a playlist of 1 song)
-    CPlayList::CPlayListItem item = playlist[0];
-    g_applicationMessenger.MediaPlay(CFileItem(item).m_strPath);
-    //g_application.PlayFile(CFileItem(item));
+    g_applicationMessenger.MediaPlay(CFileItem(playlistItem).m_strPath);
     return true;
   }
 
   if (clearList)
     g_playlistPlayer.ClearPlaylist(iPlaylist);
-
-  // if autoshuffle playlist on load option is enabled
-  //  then shuffle the playlist
-  // (dont do this for shoutcast .pls files)
-  if (playlist.size())
-  {
-    const CPlayList::CPlayListItem& playListItem = playlist[0];
-    if (!playListItem.IsShoutCast() && g_guiSettings.GetBool("MusicPlaylist.ShufflePlaylistsOnLoad"))
-      pPlayList->Shuffle();
-  }
 
   // add each item of the playlist to the playlistplayer
   for (int i = 0; i < (int)pPlayList->size(); ++i)
@@ -812,6 +803,18 @@ bool LoadPlayList(CStdString strPath, int iPlaylist, bool clearList, bool autoSt
     playlistItem.SetFileName(playListItem.GetFileName());
     g_playlistPlayer.GetPlaylist( iPlaylist ).Add(playlistItem);
   }
+
+  // music option: shuffle playlist on load
+  // dont do this if the first item is a stream
+  if (
+    (iPlaylist == PLAYLIST_MUSIC || iPlaylist == PLAYLIST_MUSIC_TEMP) &&
+    !playlistItem.IsShoutCast() &&
+    g_guiSettings.GetBool("MusicPlaylist.ShufflePlaylistsOnLoad")
+    )
+  {
+    g_playlistPlayer.GetPlaylist(iPlaylist).Shuffle();
+  }
+
   if (autoStart)
     if (g_playlistPlayer.GetPlaylist( iPlaylist ).size() )
     {
@@ -819,9 +822,7 @@ bool LoadPlayList(CStdString strPath, int iPlaylist, bool clearList, bool autoSt
       const CPlayList::CPlayListItem& item = playlist[0];
       g_playlistPlayer.SetCurrentPlaylist(iPlaylist);
       g_playlistPlayer.Reset();
-      // use thread message instead
-      //g_playlistPlayer.Play(0);
-      g_applicationMessenger.PlayListPlayerPlay(0);
+      g_applicationMessenger.PlayListPlayerPlay();
       return true;
     } 
     else
