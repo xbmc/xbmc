@@ -90,6 +90,7 @@ public:
   bool IsHD() const;
   bool IsRemote() const;
   bool IsSmb() const;
+  bool IsDAAP() const;
   bool IsStack() const;
   bool IsMusicDb() const;
   bool IsType(const char *ext) const;
