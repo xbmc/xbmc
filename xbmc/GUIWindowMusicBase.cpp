@@ -1494,6 +1494,10 @@ void CGUIWindowMusicBase::PlayItem(int iItem)
   // if its a folder, build a playlist
   if (pItem->m_bIsFolder)
   {
+    // for now, ignore PLAY on a folder if party mode is active
+    if (g_application.m_bMusicPartyMode)
+      return;
+
     CFileItem item(*m_vecItems[iItem]);
   
     //  Allow queuing of unqueueable items
@@ -1563,6 +1567,10 @@ void CGUIWindowMusicBase::OnRenameItem(int iItem)
 
 void CGUIWindowMusicBase::LoadPlayList(const CStdString& strPlayList)
 {
+  // for now, ignore PLAY on a playlist if party mode is active
+  if (g_application.m_bMusicPartyMode)
+    return;
+
   // load a playlist like .m3u, .pls
   // first get correct factory to load playlist
   CPlayListFactory factory;
@@ -1588,4 +1596,29 @@ void CGUIWindowMusicBase::LoadPlayList(const CStdString& strPlayList)
       m_gWindowManager.ActivateWindow(WINDOW_MUSIC_PLAYLIST);
     }
   }
+}
+
+void CGUIWindowMusicBase::OnPlayMedia(int iItem)
+{
+  // party mode
+  if (g_application.m_bMusicPartyMode)
+  {
+    // add item to playlist
+    CPlayList& playlist = g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC);
+    int iSize = playlist.size();
+
+    CPlayList::CPlayListItem playlistItem;
+    CUtil::ConvertFileItemToPlayListItem(m_vecItems[iItem], playlistItem);
+    playlist.Add(playlistItem);
+    CLog::Log(LOGINFO,"PARTY MODE: User added song at %i:[%s]", iSize, playlistItem.m_strPath.c_str());
+
+    // jump playback to the new item
+    // the previously playing song will be reaped from the playlist
+    g_playlistPlayer.Play(iSize);
+
+    CGUIMessage msg(GUI_MSG_PLAYLIST_CHANGED, 0, 0, 0, 0, NULL);
+    m_gWindowManager.SendMessage(msg);
+  }
+  else
+    CGUIMediaWindow::OnPlayMedia(iItem);
 }

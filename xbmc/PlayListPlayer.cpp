@@ -71,6 +71,16 @@ int CPlayListPlayer::GetNextSong()
     return -1;
   int iSong = m_iCurrentSong;
 
+  // party mode
+  if (g_application.m_bMusicPartyMode && GetCurrentPlaylist() == PLAYLIST_MUSIC)
+  {
+    // if we skipped ahead, go back to the top of the list
+    if (iSong != 0)
+      return 0;
+    else
+      return 1;
+  }
+
   // if repeat one, keep playing the current song if its valid
   if (RepeatedOne(m_iCurrentPlayList))
   {
@@ -308,7 +318,13 @@ int CPlayListPlayer::GetCurrentPlaylist()
 void CPlayListPlayer::SetCurrentPlaylist(int iPlayList)
 {
   if (iPlayList == m_iCurrentPlayList)
-    return ;
+    return;
+
+  // changing the current playlist while party mode is on
+  // disables party mode
+  if (m_iCurrentPlayList == PLAYLIST_MUSIC && g_application.m_bMusicPartyMode)
+    g_application.m_bMusicPartyMode = !g_application.m_bMusicPartyMode;
+
   m_iCurrentPlayList = iPlayList;
   m_bPlayedFirstFile = false;
   m_bChanged = true;
@@ -357,6 +373,10 @@ void CPlayListPlayer::ClearPlaylist(int iPlayList)
     if (iPlayList == PLAYLIST_MUSIC_TEMP && g_guiSettings.GetBool("MusicFiles.Repeat"))
       m_iOptions |= iRepeatAll;
   }
+
+  // its likely that the playlist changed
+  CGUIMessage msg(GUI_MSG_PLAYLIST_CHANGED, 0, 0, 0, 0, NULL);
+  m_gWindowManager.SendMessage(msg);
 }
 
 /// \brief Get the playlist object specified in \e nPlayList
@@ -409,6 +429,10 @@ void CPlayListPlayer::Reset()
 
   // reset the played items
   GetPlaylist(m_iCurrentPlayList).ClearPlayed();
+
+  // its likely that the playlist changed
+  CGUIMessage msg(GUI_MSG_PLAYLIST_CHANGED, 0, 0, 0, 0, NULL);
+  m_gWindowManager.SendMessage(msg);
 }
 
 /// \brief Whether or not something has been played yet or not from the current playlist.
@@ -448,6 +472,14 @@ void CPlayListPlayer::Repeat(int iPlaylist)
 
   if ((iRepeatAll < 0) || (iRepeatOne < 0))
     return;
+
+  // disable repeat in party mode
+  if (g_application.m_bMusicPartyMode && iPlaylist == PLAYLIST_MUSIC)
+  {
+    m_iOptions &= ~iRepeatAll;
+    m_iOptions &= ~iRepeatOne;
+    return;
+  }
 
   // currently repeat all, so go to repeat one
   if (Repeated(iPlaylist))
@@ -495,6 +527,13 @@ void CPlayListPlayer::Repeat(int iPlaylist, bool bYesNo)
 
   if (iOption < 0)
     return ;
+
+  // disable repeat in party mode
+  if (g_application.m_bMusicPartyMode && iPlaylist == PLAYLIST_MUSIC)
+  {
+    m_iOptions &= ~iOption;
+    return;
+  }
 
   if (bYesNo)
     m_iOptions |= iOption;
@@ -558,6 +597,13 @@ void CPlayListPlayer::RepeatOne(int iPlaylist, bool bYesNo)
   if (iOption < 0)
     return ;
 
+  // disable repeatone in party mode
+  if (g_application.m_bMusicPartyMode && iPlaylist == PLAYLIST_MUSIC)
+  {
+    m_iOptions &= ~iOption;
+    return;
+  }
+
   if (bYesNo)
     m_iOptions |= iOption;
   else
@@ -618,6 +664,13 @@ void CPlayListPlayer::ShufflePlay(int iPlaylist, bool bYesNo)
 
   if (iOption < 0)
     return ;
+
+  // disable shuffle in party mode
+  if (g_application.m_bMusicPartyMode && iPlaylist == PLAYLIST_MUSIC)
+  {
+    m_iOptions &= ~iOption;
+    return;
+  }
 
   bool bTest = ShuffledPlay(iPlaylist);
 
