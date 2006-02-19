@@ -51,6 +51,7 @@ protected:
 
   // new methods
   virtual void PlayItem(int iItem);
+  virtual void OnPlayMedia(int iItem);
 
   void OnDeleteItem(int iItem);
   virtual void OnRenameItem(int iItem);

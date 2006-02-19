@@ -23,7 +23,8 @@ using namespace MUSICDATABASEDIRECTORY;
 #define CONTROL_BIGLIST           52
 #define CONTROL_LABELFILES        12
 
-#define CONTROL_FILTER      15
+#define CONTROL_FILTER            15
+#define CONTROL_BTNPARTYMODE      16
 
 CGUIWindowMusicNav::CGUIWindowMusicNav(void)
     : CGUIWindowMusicBase(WINDOW_MUSIC_NAV, "MyMusicNav.xml")
@@ -151,6 +152,24 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
   case GUI_MSG_CLICKED:
     {
       int iControl = message.GetSenderId();
+      if (iControl == CONTROL_BTNPARTYMODE)
+      {
+        g_application.m_bMusicPartyMode = !g_application.m_bMusicPartyMode;
+        if (g_application.m_bMusicPartyMode)
+        {
+          // disable repeat and random
+          g_playlistPlayer.Repeat(PLAYLIST_MUSIC);
+          g_playlistPlayer.ShufflePlay(PLAYLIST_MUSIC, false);
+
+          // setup playlist
+          g_playlistPlayer.ClearPlaylist(PLAYLIST_MUSIC);
+          g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_MUSIC);
+
+          // start
+          g_application.m_dwPartyModeTick = timeGetTime();
+        }
+        UpdateButtons();
+      }
     }
     break;
   }
@@ -220,6 +239,10 @@ void CGUIWindowMusicNav::UpdateButtons()
   }
   
   SET_CONTROL_LABEL(CONTROL_FILTER, strLabel);
+
+  CONTROL_DESELECT(CONTROL_BTNPARTYMODE);
+  if (g_application.m_bMusicPartyMode)
+    CONTROL_SELECT(CONTROL_BTNPARTYMODE);
 }
 
 bool CGUIWindowMusicNav::OnClick(int iItem)

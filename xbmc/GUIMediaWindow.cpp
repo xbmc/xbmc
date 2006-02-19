@@ -578,7 +578,7 @@ bool CGUIMediaWindow::OnClick(int iItem)
       LoadPlayList(pItem->m_strPath);
       return true;
     }
-    else if (m_guiState.get() && m_guiState->AutoPlayNextItem())
+    else if (m_guiState.get() && m_guiState->AutoPlayNextItem() && !g_application.m_bMusicPartyMode)
     {
       //play and add current directory to temporary playlist
       int iPlaylist=m_guiState->GetPlaylist();
