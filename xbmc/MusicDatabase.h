@@ -130,6 +130,7 @@ public:
   bool GetArtistsNav(const CStdString& strBaseDir, CFileItemList& items, long idGenre);
   bool GetAlbumsNav(const CStdString& strBaseDir, CFileItemList& items, long idGenre, long idArtist);
   bool GetSongsNav(const CStdString& strBaseDir, CFileItemList& items, long idGenre, long idArtist,long idAlbum);
+  bool GetRandomSong(CFileItem* item);
 
   int GetSongsCount();
   bool GetPathFromAlbumId(long idAlbum, CStdString& strPath);
