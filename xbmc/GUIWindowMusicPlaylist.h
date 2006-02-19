@@ -11,6 +11,9 @@ public:
   virtual bool OnMessage(CGUIMessage& message);
   virtual bool OnAction(const CAction &action);
 
+  void RemovePlayListItem(int iItem);
+  void MoveItem(int iStart, int iDest);
+
 protected:
   virtual bool GetDirectory(const CStdString &strDirectory, CFileItemList &items);
   virtual void UpdateButtons();
@@ -26,9 +29,8 @@ protected:
   void SavePlayList();
   void ClearPlayList();
   void ShufflePlayList();
-  void RemovePlayListItem(int iItem);
+  
   bool MoveCurrentPlayListItem(int iItem, int iAction, bool bUpdate = true);
-  void MoveItem(int iStart, int iDest);
 
   MAPSONGS m_songsMap;
   CStdString m_strPrevPath;
