@@ -122,10 +122,12 @@ bool CGUIWindowMusicPlayList::OnMessage(CGUIMessage& message)
         g_stSettings.m_bMyMusicPlaylistShuffle = !g_playlistPlayer.ShuffledPlay(PLAYLIST_MUSIC);
         g_settings.Save();
         g_playlistPlayer.ShufflePlay(PLAYLIST_MUSIC, g_stSettings.m_bMyMusicPlaylistShuffle);
+        UpdateButtons();
       }
       else if (iControl == CONTROL_BTNSHUFFLE)
       {
         ShufflePlayList();
+        UpdateButtons();
       }
       else if (iControl == CONTROL_BTNSAVE)
       {
@@ -365,6 +367,10 @@ void CGUIWindowMusicPlayList::ClearPlayList()
 
 void CGUIWindowMusicPlayList::ShufflePlayList()
 {
+  // disallow shuffle in party mode
+  if (g_application.m_bMusicPartyMode)
+    return;
+
   int iPlaylist = PLAYLIST_MUSIC;
   ClearFileItems();
   CPlayList& playlist = g_playlistPlayer.GetPlaylist(iPlaylist);
@@ -506,28 +512,40 @@ void CGUIWindowMusicPlayList::UpdateButtons()
 
 void CGUIWindowMusicPlayList::OnPlayMedia(int iItem)
 {
-  int iPlaylist=m_guiState->GetPlaylist();
-  if (iPlaylist!=PLAYLIST_NONE)
+  if (g_application.m_bMusicPartyMode)
   {
-    CStdString strPlayListDirectory = m_vecItems.m_strPath;
-    if (CUtil::HasSlashAtEnd(strPlayListDirectory))
-      strPlayListDirectory.Delete(strPlayListDirectory.size() - 1);
+    // jump playback to the item selected
+    // the previously playing song will be reaped from the playlist
+    g_playlistPlayer.Play(iItem);
 
-    if (m_guiState.get())
-      m_guiState->SetPlaylistDirectory(strPlayListDirectory);
-
-    g_playlistPlayer.SetCurrentPlaylist( iPlaylist );
-    g_playlistPlayer.Reset();
-    g_playlistPlayer.Play( iItem );
+    CGUIMessage msg(GUI_MSG_PLAYLIST_CHANGED, 0, 0, 0, 0, NULL);
+    m_gWindowManager.SendMessage(msg);
   }
   else
   {
-    // Reset Playlistplayer, playback started now does
-    // not use the playlistplayer.
-    CFileItem* pItem=m_vecItems[iItem];
-    g_playlistPlayer.Reset();
-    g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_NONE);
-    g_application.PlayFile(*pItem);
+    int iPlaylist=m_guiState->GetPlaylist();
+    if (iPlaylist!=PLAYLIST_NONE)
+    {
+      CStdString strPlayListDirectory = m_vecItems.m_strPath;
+      if (CUtil::HasSlashAtEnd(strPlayListDirectory))
+        strPlayListDirectory.Delete(strPlayListDirectory.size() - 1);
+
+      if (m_guiState.get())
+        m_guiState->SetPlaylistDirectory(strPlayListDirectory);
+
+      g_playlistPlayer.SetCurrentPlaylist( iPlaylist );
+      g_playlistPlayer.Reset();
+      g_playlistPlayer.Play( iItem );
+    }
+    else
+    {
+      // Reset Playlistplayer, playback started now does
+      // not use the playlistplayer.
+      CFileItem* pItem=m_vecItems[iItem];
+      g_playlistPlayer.Reset();
+      g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_NONE);
+      g_application.PlayFile(*pItem);
+    }
   }
 }
 
