@@ -4518,11 +4518,6 @@ void CApplication::CheckMusicPlaylist()
       g_musicDatabase.Close();
     }
   }
-  else
-  {
-    CLog::Log(LOGERROR,"PARTY MODE: Cannot open database. Aborting.");
-    m_bMusicPartyMode = false;
-  }
 
   // start playing
   if (g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_MUSIC && !IsPlayingAudio())
