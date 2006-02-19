@@ -194,6 +194,7 @@ CApplication::CApplication(void)
   m_strPlayListFile = "";
   m_nextPlaylistItem = -1;
   m_bMusicPartyMode = false;
+  m_dwPartyModeTick = 0;
 }
 
 CApplication::~CApplication(void)
@@ -4449,12 +4450,53 @@ bool CApplication::SetControllerRumble(FLOAT m_fLeftMotorSpeed, FLOAT m_fRightMo
 
 void CApplication::CheckMusicPlaylist()
 {
-  if (!m_bMusicPartyMode)
+  // can only run when party mode is enabled, and then only every 250 msec
+  if (!m_bMusicPartyMode || ((long)timeGetTime() - m_dwPartyModeTick < 250L))
     return;
 
   bool bChanged = false;
   CPlayList& playlist = g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC);
 
+  // reap any played songs
+  int iSong = g_playlistPlayer.GetCurrentSong();
+  for (int i=0; i<playlist.size(); i++)
+  {
+    if (playlist[i].WasPlayed() && i != iSong)
+    {
+      CGUIWindowMusicPlayList* pWindow = (CGUIWindowMusicPlayList*)m_gWindowManager.GetWindow(WINDOW_MUSIC_PLAYLIST);
+      if (pWindow)
+      {
+        pWindow->RemovePlayListItem(i);
+        CLog::Log(LOGINFO,"PARTY MODE: Reaping played song at %i:[%s]", i, playlist[i].m_strPath.c_str());
+        bChanged = true;
+      }
+      else
+      {
+        CLog::Log(LOGERROR,"PARTY MODE: Cannot reap playing songs. Aborting.");
+        m_bMusicPartyMode = false;
+      }
+    }
+  }
+
+  // move current song to the top if its not there
+  iSong = g_playlistPlayer.GetCurrentSong();
+  if (iSong > 0)
+  {
+    CGUIWindowMusicPlayList* pWindow = (CGUIWindowMusicPlayList*)m_gWindowManager.GetWindow(WINDOW_MUSIC_PLAYLIST);
+    if (pWindow)
+    {
+      pWindow->MoveItem(iSong, 0);
+      CLog::Log(LOGINFO,"PARTY MODE: Moving current song at %i to 0", iSong);
+      bChanged = true;
+    }
+    else
+    {
+      CLog::Log(LOGERROR,"PARTY MODE: Cannot move songs. Aborting.");
+      m_bMusicPartyMode = false;
+    }
+  }
+
+  // add songs if queue depth < 10
   if (playlist.size() < 10)
   {
     if (g_musicDatabase.Open())
@@ -4465,33 +4507,34 @@ void CApplication::CheckMusicPlaylist()
         CPlayList::CPlayListItem playlistItem;
         CUtil::ConvertFileItemToPlayListItem(pItem, playlistItem);
         playlist.Add(playlistItem);
+        CLog::Log(LOGINFO,"PARTY MODE: Adding random song at %i:[%s]", playlist.size() - 1, pItem->m_strPath.c_str());
         bChanged = true;
+      }
+      else
+      {
+        CLog::Log(LOGERROR,"PARTY MODE: Cannot get songs from database. Aborting.");
+        m_bMusicPartyMode = false;
       }
       g_musicDatabase.Close();
     }
   }
+  else
+  {
+    CLog::Log(LOGERROR,"PARTY MODE: Cannot open database. Aborting.");
+    m_bMusicPartyMode = false;
+  }
 
   // start playing
-  if (!IsPlayingAudio())
+  if (g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_MUSIC && !IsPlayingAudio())
     g_playlistPlayer.Play(0);
 
-  // reap played songs
-  int iSong = g_playlistPlayer.GetCurrentSong();
-  for (int i=0; i<playlist.size(); i++)
-  {
-    if (playlist[i].WasPlayed() && i != iSong)
-    {
-      g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).Remove(i);
-      if (i < iSong) iSong--;
-      bChanged = true;
-    }
-  }
-  g_playlistPlayer.SetCurrentSong(iSong);
-
+  // let everyone know the playlist has changed 
   if (bChanged)
   {
-    // let everyone know the playlist has changed
     CGUIMessage msg(GUI_MSG_PLAYLIST_CHANGED, 0, 0, 0, 0, NULL);
     m_gWindowManager.SendMessage(msg);
   }
+
+  // update timer
+  m_dwPartyModeTick = timeGetTime();
 }

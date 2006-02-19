@@ -98,10 +98,12 @@ bool CGUIWindowVideoPlaylist::OnMessage(CGUIMessage& message)
         g_stSettings.m_bMyVideoPlaylistShuffle = !g_playlistPlayer.ShuffledPlay(PLAYLIST_VIDEO);
         g_settings.Save();
         g_playlistPlayer.ShufflePlay(PLAYLIST_VIDEO, g_stSettings.m_bMyVideoPlaylistShuffle);
+        UpdateButtons();
       }
       else if (iControl == CONTROL_BTNSHUFFLE)
       {
         ShufflePlayList();
+        UpdateButtons();
       }
       else if (iControl == CONTROL_BTNSAVE)
       {
