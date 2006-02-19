@@ -3741,6 +3741,8 @@ bool CApplication::OnMessage(CGUIMessage& message)
         CGUIMessage msg(GUI_MSG_PLAYLISTPLAYER_CHANGED, 0, 0, g_playlistPlayer.GetCurrentPlaylist(), dwParam, (LPVOID)&item);
         m_gWindowManager.SendThreadMessage(msg);
         g_playlistPlayer.SetCurrentSong(m_nextPlaylistItem);
+        // mark the song in the playlist as played
+        g_playlistPlayer.GetPlaylist(g_playlistPlayer.GetCurrentPlaylist()).SetPlayed(g_playlistPlayer.GetCurrentSong());
         m_itemCurrentFile = item;
       }
       g_infoManager.SetCurrentItem(m_itemCurrentFile);
@@ -3996,6 +3998,9 @@ void CApplication::Process()
 
   // GeminiServer Xbox Autodetection // Send in X sec PingTime Interval
   CUtil::XboxAutoDetection();
+
+  // Music Party Mode
+  CheckMusicPlaylist();
 
   // check if we should restart the player
   CheckDelayedPlayerRestart();
@@ -4440,4 +4445,53 @@ bool CApplication::SetControllerRumble(FLOAT m_fLeftMotorSpeed, FLOAT m_fRightMo
           }
       }
   }return true;
+}
+
+void CApplication::CheckMusicPlaylist()
+{
+  if (!m_bMusicPartyMode)
+    return;
+
+  bool bChanged = false;
+  CPlayList& playlist = g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC);
+
+  if (playlist.size() < 10)
+  {
+    if (g_musicDatabase.Open())
+    {
+      CFileItem* pItem = new CFileItem;
+      if (g_musicDatabase.GetRandomSong(pItem))
+      {
+        CPlayList::CPlayListItem playlistItem;
+        CUtil::ConvertFileItemToPlayListItem(pItem, playlistItem);
+        playlist.Add(playlistItem);
+        bChanged = true;
+      }
+      g_musicDatabase.Close();
+    }
+  }
+
+  // start playing
+  if (!IsPlayingAudio())
+    g_playlistPlayer.Play(0);
+
+  // reap played songs
+  int iSong = g_playlistPlayer.GetCurrentSong();
+  for (int i=0; i<playlist.size(); i++)
+  {
+    if (playlist[i].WasPlayed() && i != iSong)
+    {
+      g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).Remove(i);
+      if (i < iSong) iSong--;
+      bChanged = true;
+    }
+  }
+  g_playlistPlayer.SetCurrentSong(iSong);
+
+  if (bChanged)
+  {
+    // let everyone know the playlist has changed
+    CGUIMessage msg(GUI_MSG_PLAYLIST_CHANGED, 0, 0, 0, 0, NULL);
+    m_gWindowManager.SendMessage(msg);
+  }
 }
