@@ -532,6 +532,12 @@ void CGUIWindowPictures::OnPopupMenu(int iItem)
     {
       btn_Delete = pMenu->AddButton(117);           // Delete
       btn_Rename = pMenu->AddButton(118);           // Rename
+      // disable these functions if not supported by the protocol
+      if (!CUtil::SupportsFileOperations(m_vecItems[iItem]->m_strPath))
+      {
+        pMenu->EnableButton(btn_Delete, false);
+        pMenu->EnableButton(btn_Rename, false);
+      }
     }
     
     int btn_Settings = pMenu->AddButton(5);         // Settings
