@@ -848,8 +848,15 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem)
   {
     if ((m_vecItems.m_strPath.Equals(CUtil::VideoPlaylistsLocation())) || (GetID() == WINDOW_VIDEOS && g_guiSettings.GetBool("VideoFiles.AllowFileDeletion")))
     {
-      btn_Delete = pMenu->AddButton(117);             // Delete
-      btn_Rename = pMenu->AddButton(118);             // Rename
+      btn_Delete = pMenu->AddButton(117);
+      btn_Rename = pMenu->AddButton(118);
+
+      // disable these functions if not supported by the protocol
+      if (!CUtil::SupportsFileOperations(m_vecItems[iItem]->m_strPath))
+      {
+        pMenu->EnableButton(btn_Delete, false);
+        pMenu->EnableButton(btn_Rename, false);
+      }
     }
     if (GetID() == WINDOW_VIDEO_TITLE)
       btn_Delete = pMenu->AddButton(646);
