@@ -24,9 +24,6 @@ protected:
   bool OnPollXLinkClient(CGUIConditionalButtonControl* pButton);
   void OnClickOnlineGaming(CGUIMessage& aMessage);
   void FadeBackgroundImages(int focusedControl, int messageSender, int associatedImage);
-#endif
-
-  int m_iLastControl;
   int m_iLastMenuOption;
-  int m_iSelectedItem;
+#endif
 };

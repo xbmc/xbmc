@@ -856,18 +856,38 @@ void CGUIWindow::SetID(DWORD dwID)
   m_dwWindowId = dwID;
 }
 
+/// \brief Called on window open.
+///  * Restores the control state(s)
+///  * Sets initial visibility of controls
+///  * Queue WindowOpen animation
+///  * Set overlay state
+/// Override this function and do any window-specific initialisation such
+/// as filling control contents and setting control focus before
+/// calling the base method.
 void CGUIWindow::OnInitWindow()
 {
+  // set our rendered state
   m_hasRendered = false;
-  // set our initial visibility
-  SetControlVisibility();
-  QueueAnimation(ANIM_TYPE_WINDOW_OPEN);
 
+  RestoreControlStates();
   CGUIMessage msg(GUI_MSG_SETFOCUS, GetID(), m_dwDefaultFocusControlID);
   OnMessage(msg);
 
+  SetControlVisibility();
+  QueueAnimation(ANIM_TYPE_WINDOW_OPEN);
   if (m_overlayState != OVERLAY_STATE_PARENT_WINDOW) // True, use our own overlay state
     m_gWindowManager.ShowOverlay(m_overlayState==OVERLAY_STATE_SHOWN ? true : false);
+}
+
+// Called on window close.
+//  * Executes the window close animation(s)
+//  * Saves control state(s)
+// Override this function and call the base class before doing any dynamic memory freeing
+void CGUIWindow::OnDeinitWindow(int nextWindowID)
+{
+  if (nextWindowID != WINDOW_FULLSCREEN_VIDEO)
+    OnWindowCloseAnimation();
+  SaveControlStates();
 }
 
 void CGUIWindow::OnWindowCloseAnimation()
@@ -912,8 +932,7 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
       OutputDebugString("------------------- GUI_MSG_WINDOW_DEINIT ");
       OutputDebugString(strLine.c_str());
       OutputDebugString("------------------- \n");
-      if (message.GetParam1() != WINDOW_FULLSCREEN_VIDEO)
-        OnWindowCloseAnimation();
+      OnDeinitWindow(message.GetParam1());
       // now free the window
       if (m_dynamicResourceAlloc) FreeResources();
       return true;
@@ -1370,4 +1389,47 @@ bool CGUIWindow::ControlGroupHasFocus(int groupID, int controlID)
     }
   }
   return false;
+}
+
+void CGUIWindow::SaveControlStates()
+{
+  if (!m_saveLastControl) return;
+
+  ResetControlStates();
+  m_lastControlID = GetFocusedControl();
+  for (ivecControls it = m_vecControls.begin(); it != m_vecControls.end(); ++it)
+  {
+    CGUIControl *pControl = *it;
+    if (pControl->GetControlType() == CGUIControl::GUICONTROL_BUTTONBAR)
+    {
+      CGUIMessage message(GUI_MSG_ITEM_SELECTED, GetID(), pControl->GetID());
+      pControl->OnMessage(message);
+      m_controlStates.push_back(CControlState(pControl->GetID(), message.GetParam1()));
+    }
+  }
+}
+
+void CGUIWindow::RestoreControlStates()
+{
+  if (m_saveLastControl)
+  {
+    for (vector<CControlState>::iterator it = m_controlStates.begin(); it != m_controlStates.end(); ++it)
+    {
+      CGUIMessage message(GUI_MSG_ITEM_SELECT, GetID(), (*it).m_id, (*it).m_data);
+      OnMessage(message);
+    }
+    // set focus to our saved control
+    int focusControl = m_lastControlID ? m_lastControlID : m_dwDefaultFocusControlID;
+    SET_CONTROL_FOCUS(focusControl, 0);
+  }
+  else
+  { // set the default control focus
+    SET_CONTROL_FOCUS(m_dwDefaultFocusControlID, 0);
+  }
+}
+
+void CGUIWindow::ResetControlStates()
+{
+  m_lastControlID = 0;
+  m_controlStates.clear();
 }
