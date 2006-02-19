@@ -80,6 +80,15 @@ bool CGUIButtonScroller::OnMessage(CGUIMessage &message)
       OnChangeFocus();
     }
   }
+  else if (message.GetMessage() == GUI_MSG_ITEM_SELECT)
+  {
+    SetActiveButton(message.GetParam1());
+  }
+  else if (message.GetMessage() == GUI_MSG_ITEM_SELECTED)
+  {
+    message.SetParam1(GetActiveButton());
+    return true;
+  }
   return CGUIControl::OnMessage(message);
 }
 
