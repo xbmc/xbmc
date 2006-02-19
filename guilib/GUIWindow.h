@@ -49,6 +49,18 @@ public:
   int condition;
 };
 
+class CControlState
+{
+public:
+  CControlState(int id, int data)
+  {
+    m_id = id;
+    m_data = data;
+  }
+  int m_id;
+  int m_data;
+};
+
 class CControlGroup
 {
 public:
@@ -133,14 +145,21 @@ public:
 
   virtual void QueueAnimation(ANIMATION_TYPE animType);
   virtual bool IsAnimating(ANIMATION_TYPE animType);
+
+  virtual void ResetControlStates();
 protected:
   virtual void OnWindowUnload() {}
   virtual void OnWindowLoaded();
   virtual void OnInitWindow();
+  virtual void OnDeinitWindow(int nextWindowID);
   virtual void OnWindowCloseAnimation();
   virtual bool RenderAnimation(DWORD time);
   virtual void UpdateStates(ANIMATION_TYPE type, ANIMATION_PROCESS currentProcess, ANIMATION_STATE currentState);
   bool HasAnimation(ANIMATION_TYPE animType);
+
+  // control state saving on window close
+  virtual void SaveControlStates();
+  virtual void RestoreControlStates();
 
   struct stReferenceControl
   {
@@ -189,11 +208,14 @@ protected:
   CAnimation m_closeAnimation;
 
   int m_renderOrder;      // for render order of dialogs
-
-  vector<COrigin> m_origins;
-
-  bool m_saveLastControl;
   bool m_hasRendered;
+
+  vector<COrigin> m_origins;  // positions of dialogs depending on base window
+
+  // control states
+  bool m_saveLastControl;
+  int m_lastControlID;
+  vector<CControlState> m_controlStates;
 };
 
 #endif

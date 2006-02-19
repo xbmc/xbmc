@@ -397,6 +397,7 @@ void CGUIWindowManager::DeInitialize()
     CGUIWindow* pWindow = (*it).second;
     CGUIMessage msg(GUI_MSG_WINDOW_DEINIT, 0, 0);
     pWindow->OnMessage(msg);
+    pWindow->ResetControlStates();
     pWindow->FreeResources(true);
   }
   UnloadNotOnDemandWindows();

@@ -37,9 +37,7 @@
 #endif
 CGUIWindowHome::CGUIWindowHome(void) : CGUIWindow(WINDOW_HOME, "Home.xml")
 {
-  m_iLastControl = -1;
   m_iLastMenuOption = -1;
-  m_iSelectedItem = -1;
 }
 
 CGUIWindowHome::~CGUIWindowHome(void)
@@ -50,63 +48,12 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
 {
   switch ( message.GetMessage() )
   {
-  case GUI_MSG_WINDOW_INIT:
-    {
-      int iFocusControl = m_iLastControl;
-
-      CGUIWindow::OnMessage(message);
-
-#ifdef PRE_SKIN_VERSION_2_0_COMPATIBILITY
-      if (g_SkinInfo.GetVersion() < 1.99)
-      {
-        // make controls 102-120 invisible...
-        for (int iControl = MENU_BUTTON_IMAGE_BACKGROUND_START; iControl < MENU_BUTTON_IMAGE_BACKGROUND_END; iControl++)
-        {
-          SET_CONTROL_HIDDEN(iControl);
-        }
-
-        if (m_iLastMenuOption > 0)
-        {
-          SET_CONTROL_VISIBLE(m_iLastMenuOption + 100);
-        }
-      }
-#endif
-      if (iFocusControl < 0)
-      {
-        iFocusControl = GetFocusedControl();
-        m_iLastControl = iFocusControl;
-      }
-
-#ifdef PRE_SKIN_VERSION_2_0_COMPATIBILITY
-    if (g_SkinInfo.GetVersion() < 1.8)
-    {
-      ON_POLL_BUTTON_CONDITION(CONTROL_BTN_XLINK_KAI, CGUIWindowHome, OnPollXLinkClient, 50);
-    }
-#endif
-      if (m_saveLastControl && iFocusControl > -1)
-      {
-        SET_CONTROL_FOCUS(iFocusControl, 0);
-        SetControlVisibility();
-      }
-      return true;
-    }
-    break;
-
-  case GUI_MSG_WINDOW_DEINIT:
-    {
-      CGUIButtonScroller *pScroller = (CGUIButtonScroller *)GetControl(CONTROL_BTN_SCROLLER);
-      if (pScroller)
-        m_iSelectedItem = pScroller->GetActiveButton();
-    }
-    break;
-
   case GUI_MSG_SETFOCUS:
     {
-      int iControl = message.GetControlId();
-      m_iLastControl = iControl;
 #ifdef PRE_SKIN_VERSION_2_0_COMPATIBILITY
       if (g_SkinInfo.GetVersion() < 1.99)
         FadeBackgroundImages(message.GetControlId(), message.GetSenderId(), message.GetParam1());
+      m_iLastMenuOption = message.GetControlId();
 #endif
       break;
     }
@@ -118,7 +65,6 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
         //GeminiServer: to play a inserted media dvd
         CAutorun::PlayDisc();
       }
-      m_iLastControl = message.GetSenderId();
       break;
     }
   }
@@ -190,7 +136,6 @@ void CGUIWindowHome::FadeBackgroundImages(int focusedControl, int messageSender,
   const CGUIControl *pControl = GetControl(focusedControl);
   if (focusedControl >= MENU_BUTTON_START && focusedControl <= MENU_BUTTON_END && pControl && pControl->CanFocus())
   {
-    m_iLastMenuOption = m_iLastControl;
     bool fade = ((messageSender == CONTROL_BTN_SCROLLER) || (messageSender >= MENU_BUTTON_START && messageSender < MENU_BUTTON_END)) && (messageSender != focusedControl);
 
     // make controls 102-120 invisible...
@@ -257,10 +202,27 @@ void CGUIWindowHome::FadeBackgroundImages(int focusedControl, int messageSender,
 
 void CGUIWindowHome::OnInitWindow()
 {
-  if (m_iSelectedItem >= 0)
+#ifdef PRE_SKIN_VERSION_2_0_COMPATIBILITY
+  if (g_SkinInfo.GetVersion() < 1.99)
   {
-    CGUIButtonScroller *pScroller = (CGUIButtonScroller *)GetControl(CONTROL_BTN_SCROLLER);
-    if (pScroller) pScroller->SetActiveButton(m_iSelectedItem);
+    // make controls 102-120 invisible...
+    for (int iControl = MENU_BUTTON_IMAGE_BACKGROUND_START; iControl < MENU_BUTTON_IMAGE_BACKGROUND_END; iControl++)
+    {
+      SET_CONTROL_HIDDEN(iControl);
+    }
+
+    if (m_iLastMenuOption > 0)
+    {
+      SET_CONTROL_VISIBLE(m_iLastMenuOption + 100);
+    }
   }
+#endif
+
+#ifdef PRE_SKIN_VERSION_2_0_COMPATIBILITY
+  if (g_SkinInfo.GetVersion() < 1.8)
+  {
+    ON_POLL_BUTTON_CONDITION(CONTROL_BTN_XLINK_KAI, CGUIWindowHome, OnPollXLinkClient, 50);
+  }
+#endif
   CGUIWindow::OnInitWindow();
 }

@@ -9,8 +9,4 @@ public:
   virtual ~CGUIWindowSettings(void);
   virtual bool OnMessage(CGUIMessage& message);
   virtual bool OnAction(const CAction &action);
-
-protected:
-  int m_iLastControl;
-
 };
