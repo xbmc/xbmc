@@ -3729,3 +3729,50 @@ bool CMusicDatabase::GetAlbumById(long idAlbum, CStdString& strAlbum)
   return false;
 }
 
+bool CMusicDatabase::GetRandomSong(CFileItem* item)
+{
+  long lSongs = -1;
+
+  try
+  {
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS.get()) return false;
+
+    CStdString strSQL=FormatSQL("select count(*) as count from songview");
+
+    // run query
+    if (!m_pDS->query(strSQL.c_str())) return false;
+    int iRowsFound = m_pDS->num_rows();
+    if (iRowsFound != 1)
+    {
+      m_pDS->close();
+      return false;
+    }
+    lSongs = m_pDS->fv("songview.count").get_asLong();
+    m_pDS->close();
+
+    if (lSongs <= 0)
+      return false;
+
+    srand(timeGetTime());
+    long lRandom = rand() % lSongs;
+    strSQL=FormatSQL("select * from songview where idSong = %ld", lRandom);
+
+    // run query
+    if (!m_pDS->query(strSQL.c_str())) return false;
+    iRowsFound = m_pDS->num_rows();
+    if (iRowsFound != 1)
+    {
+      m_pDS->close();
+      return false;
+    }
+    GetFileItemFromDataset(item, "");
+    m_pDS->close();
+    return true;
+  }
+  catch(...)
+  {
+    CLog::Log(LOGERROR,"CMusicDatabase::GetRandomSong() failed");
+  }
+  return false;
+}
