@@ -895,7 +895,7 @@ bool CGUIWindowPrograms::OnClick(int iItem)
       CTrainer trainer;
       if (trainer.Load(strTrainer))
       {
-        m_database.GetTrainerOptions(strTrainer,dwTitleId,trainer.GetOptions());
+        m_database.GetTrainerOptions(strTrainer,dwTitleId,trainer.GetOptions(),trainer.GetNumberOfOptions());
         CUtil::InstallTrainer(trainer);
       }
     }

@@ -15,13 +15,13 @@ public:
   virtual bool OnMessage(CGUIMessage &message);
   virtual void Render();
 protected:
+  virtual void OnInitWindow();
   void SetVisualisation(CVisualisation *pVisualisation);
   virtual void SetupPage();
   void UpdateSettings();
   virtual void FreeControls();
   void OnClick(int iControl);
   void AddSetting(VisSetting &setting, int iPosX, int iPosY, int iWidth, int iControlID);
-  int m_iLastControl;
   int m_iCurrentPage;
   int m_iNumPages;
   int m_iNumPerPage;

@@ -990,6 +990,12 @@ CStdString CGUIInfoManager::GetImage(int info)
       const CFileItem *item = ((CGUIMediaWindow *)pWindow)->GetCurrentListItem();
       if (item)
       {
+        if (item->GetThumbnailImage().IsEmpty())
+        {
+          CStdString strThumb = item->GetIconImage();
+          strThumb.Insert(strThumb.Find("."), "Big");
+          return strThumb;
+        }
         return item->GetThumbnailImage();
       }
     }
