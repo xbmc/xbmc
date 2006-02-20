@@ -127,9 +127,7 @@ void CAnimation::Create(TiXmlElement *node, RESOLUTION res)
         endY = atoi(comma + 1);
     }
     double accel;
-    if (node->Attribute("accleration", &accel)) acceleration = (float)accel;
-    if (acceleration > 1.0f) acceleration = 1.0f;
-    if (acceleration < -1.0f) acceleration = -1.0f;
+    if (node->Attribute("acceleration", &accel)) acceleration = (float)accel;
     // scale our parameters
     g_graphicsContext.ScaleXCoord(startX, res);
     g_graphicsContext.ScaleYCoord(startY, res);
