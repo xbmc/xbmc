@@ -10,7 +10,6 @@
 CGUIDialogMusicOSD::CGUIDialogMusicOSD(void)
     : CGUIDialog(WINDOW_DIALOG_MUSIC_OSD, "MusicOSD.xml")
 {
-  m_iLastControl = -1;
   m_pVisualisation = NULL;
   LoadOnDemand(false);    // we are loaded by the vis window.
 }
@@ -57,18 +56,6 @@ bool CGUIDialogMusicOSD::OnMessage(CGUIMessage &message)
       return true;
     }
     break;
-  case GUI_MSG_WINDOW_INIT:
-    {
-      CGUIDialog::OnMessage(message);
-
-      CSetting *pSetting = g_guiSettings.GetSetting("MyMusic.Visualisation");
-      CGUIWindowSettingsCategory::FillInVisualisations(pSetting, CONTROL_VIS_CHOOSER);
-
-      SET_CONTROL_HIDDEN(CONTROL_VIS_CHOOSER);
-      SET_CONTROL_FOCUS(m_dwDefaultFocusControlID, 0);
-      return true;
-    }
-    break;
   case GUI_MSG_WINDOW_DEINIT:
   case GUI_MSG_VISUALISATION_UNLOADING:
     {
@@ -87,4 +74,13 @@ bool CGUIDialogMusicOSD::OnMessage(CGUIMessage &message)
 void CGUIDialogMusicOSD::Render()
 {
   CGUIDialog::Render();
+}
+
+void CGUIDialogMusicOSD::OnInitWindow()
+{
+  CSetting *pSetting = g_guiSettings.GetSetting("MyMusic.Visualisation");
+  CGUIWindowSettingsCategory::FillInVisualisations(pSetting, CONTROL_VIS_CHOOSER);
+
+  ResetControlStates();
+  CGUIDialog::OnInitWindow();
 }

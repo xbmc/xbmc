@@ -10,6 +10,7 @@
 #endif
 
 #define SCROLL_SPEED 6.0f
+#define ANALOG_SCROLL_START 0.8f
 
 CGUIButtonScroller::CGUIButtonScroller(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, int iGap, int iSlots, int iDefaultSlot, int iMovementRange, bool bHorizontal, int iAlpha, bool bWrapAround, bool bSmoothScrolling, const CStdString& strTextureFocus, const CStdString& strTextureNoFocus, const CLabelInfo& labelInfo)
     : CGUIControl(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight)
@@ -44,6 +45,7 @@ CGUIButtonScroller::CGUIButtonScroller(DWORD dwParentID, DWORD dwControlId, int 
   m_bScrollDown = false;
   m_bMoveUp = false;
   m_bMoveDown = false;
+  m_fAnalogScrollSpeed = 0;
   ControlType = GUICONTROL_BUTTONBAR;
   //  m_dwFrameCounter = 0;
   m_label = labelInfo;
@@ -67,6 +69,31 @@ bool CGUIButtonScroller::OnAction(const CAction &action)
   { // send a click message to our parent
     SEND_CLICK_MESSAGE(GetID(), GetParentID(), action.wID);
     return true;
+  }
+  // smooth scrolling (for analog controls)
+  if (action.wID == ACTION_SCROLL_UP)
+  {
+    m_fAnalogScrollSpeed += action.fAmount1 * action.fAmount1;
+    bool handled = false;
+    while (m_fAnalogScrollSpeed > ANALOG_SCROLL_START)
+    {
+      handled = true;
+      m_fAnalogScrollSpeed -= ANALOG_SCROLL_START;
+      DoUp();
+    }
+    return handled;
+  }
+  if (action.wID == ACTION_SCROLL_DOWN)
+  {
+    m_fAnalogScrollSpeed += action.fAmount1 * action.fAmount1;
+    bool handled = false;
+    while (m_fAnalogScrollSpeed > ANALOG_SCROLL_START)
+    {
+      handled = true;
+      m_fAnalogScrollSpeed -= ANALOG_SCROLL_START;
+      DoDown();
+    }
+    return handled;
   }
   return CGUIControl::OnAction(action);
 }

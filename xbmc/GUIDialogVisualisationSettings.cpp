@@ -18,7 +18,6 @@
 CGUIDialogVisualisationSettings::CGUIDialogVisualisationSettings(void)
     : CGUIDialog(WINDOW_DIALOG_VIS_SETTINGS, "MusicOSDVisSettings.xml")
 {
-  m_iLastControl = -1;
   m_pOriginalSpin = NULL;
   m_pOriginalRadioButton = NULL;
   m_pOriginalSettingsButton = NULL;
@@ -50,23 +49,6 @@ bool CGUIDialogVisualisationSettings::OnMessage(CGUIMessage &message)
       }
       else if (iControl >= CONTROL_START && iControl < CONTROL_PAGE)
         OnClick(iControl);
-      return true;
-    }
-    break;
-  case GUI_MSG_WINDOW_INIT:
-    {
-      CGUIDialog::OnMessage(message);
-
-      CGUIMessage msg(GUI_MSG_GET_VISUALISATION, 0, 0);
-      g_graphicsContext.SendMessage(msg);
-      SetVisualisation((CVisualisation *)msg.GetLPVOID());
-
-      m_iCurrentPage = 0;
-      m_iNumPages = 0;
-
-      SetupPage();
-
-      SET_CONTROL_FOCUS(CONTROL_START, 0);
       return true;
     }
     break;
@@ -260,3 +242,18 @@ void CGUIDialogVisualisationSettings::SetVisualisation(CVisualisation *pVisualis
   }
 }
 
+void CGUIDialogVisualisationSettings::OnInitWindow()
+{
+  // set our visualisation
+  CGUIMessage msg(GUI_MSG_GET_VISUALISATION, 0, 0);
+  g_graphicsContext.SendMessage(msg);
+  SetVisualisation((CVisualisation *)msg.GetLPVOID());
+
+  m_iCurrentPage = 0;
+  m_iNumPages = 0;
+
+  SetupPage();
+  // reset the default control
+  m_lastControlID = CONTROL_START;
+  CGUIDialog::OnInitWindow();
+}

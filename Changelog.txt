@@ -5,6 +5,10 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 20-02-2006 added: Analog scrolling (triggers) to the button scroller.
+ - 20-02-2006 fixed: Various initial control focus issues.
+ - 20-02-2006 changed: Redid the Trainers dialog to use the DialogSettings base class.
+ - 20-02-2006 fixed: Possible buffer overruns in setting and getting trainers settings from the database.
  - 19-02-2006 added: Initial support for Music Party Mode.  Enable it from the Library view as it requires the database.
  - 19-02-2006 changed: Refactored the window open and window close processes.
  - 18-02-2006 changed: "Delete" and "Rename" in the context menu are only enabled if the share supports them

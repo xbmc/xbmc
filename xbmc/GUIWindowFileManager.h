@@ -24,6 +24,9 @@ public:
   static bool RenameFile(const CStdString &strFile);
 
 protected:
+  virtual void OnInitWindow();
+  virtual void OnWindowLoaded();
+  void SetInitialPath(const CStdString &path);
   void GoParentFolder(int iList);
   void UpdateControl(int iList);
   __int64 CalculateFolderSize(const CStdString &strDirectory, CGUIDialogProgress *pProgress = NULL);
@@ -68,6 +71,4 @@ protected:
   CStdString m_strParentPath[2];
   CGUIDialogProgress* m_dlgProgress;
   CDirectoryHistory m_history[2];
-  int m_iItemSelected;
-  int m_iLastControl;
 };
