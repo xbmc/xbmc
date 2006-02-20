@@ -18,8 +18,8 @@ public:
   bool RemoveTrainer(const CStdString& strText);
   bool GetTrainers(unsigned int iTitleId, std::vector<CStdString>& vecTrainers);
   bool GetAllTrainers(std::vector<CStdString>& vecTrainers);
-  bool SetTrainerOptions(const CStdString& strTrainerPath, unsigned int iTitleId, unsigned char* data);
-  bool GetTrainerOptions(const CStdString& strTrainerPath, unsigned int iTitleId, unsigned char* data);
+  bool SetTrainerOptions(const CStdString& strTrainerPath, unsigned int iTitleId, unsigned char* data, int numOptions);
+  bool GetTrainerOptions(const CStdString& strTrainerPath, unsigned int iTitleId, unsigned char* data, int numOptions);
   void SetTrainerActive(const CStdString& strTrainerPath, unsigned int iTitleId, bool bActive);
   CStdString GetActiveTrainer(unsigned int iTitleId);
   long GetFile(const CStdString& strFilenameAndPath, CFileItemList& programs);

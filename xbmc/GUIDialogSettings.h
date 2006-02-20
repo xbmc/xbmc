@@ -9,7 +9,7 @@
 class SettingInfo
 {
 public:
-  enum SETTING_TYPE { NONE=0, BUTTON, CHECK, SPIN, SLIDER, SLIDER_INT, SEPARATOR };
+  enum SETTING_TYPE { NONE=0, BUTTON, CHECK, CHECK_UCHAR, SPIN, SLIDER, SLIDER_INT, SEPARATOR };
   SettingInfo()
   {
     id = 0;
@@ -35,6 +35,7 @@ public:
   virtual ~CGUIDialogSettings(void);
   virtual bool OnMessage(CGUIMessage &message);
 protected:
+  virtual void OnInitWindow();
   virtual void SetupPage();
   virtual void CreateSettings() {};
   void UpdateSetting(unsigned int setting);
@@ -52,7 +53,6 @@ protected:
   void AddSlider(unsigned int id, int label, int *current, int min, int max);
   void AddSeparator(unsigned int id);
 
-  int m_iLastControl;
   int m_iPageOffset;  // offset into the settings list of our current page.
   int m_iCurrentPage;
   int m_iNumPages;
