@@ -294,7 +294,7 @@ bool CGUIWindowMusicBase::Update(const CStdString &strDirectory)
   if (m_guiState.get() && g_playlistPlayer.GetCurrentPlaylist()==m_guiState->GetPlaylist() && strCurrentDirectory==m_guiState->GetPlaylistDirectory())
   {
     iCurrentPlaylistSong = g_playlistPlayer.GetCurrentSong();
-    strCurrentPlaylistSong = g_playlistPlayer.GetPlaylist(g_playlistPlayer.GetCurrentPlaylist())[iCurrentPlaylistSong].m_strPath;
+    if (iCurrentPlaylistSong >= 0) strCurrentPlaylistSong = g_playlistPlayer.GetPlaylist(g_playlistPlayer.GetCurrentPlaylist())[iCurrentPlaylistSong].m_strPath;
   }
 
   bool bSelectedFound = false, bCurrentSongFound = false;
