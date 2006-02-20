@@ -984,13 +984,21 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
           }
         }
 
+        // find the control to focus.  We do this as follows:
+        // 1.  First find a control that matches the id and is focusable.
+        // 2.  Else just use the first control that matches the id.
         CGUIControl* pFocusedControl = NULL;
         for (i = m_vecControls.begin();i != m_vecControls.end(); ++i)
         {
           CGUIControl* pControl = *i;
-          if (pControl->GetID() == message.GetControlId() )
+          if (pControl->GetID() == message.GetControlId() && pControl->CanFocus())
+          {
             pFocusedControl = pControl;
+            break;
+          }
         }
+        if (!pFocusedControl)
+          pFocusedControl = (CGUIControl *)GetControl(message.GetControlId());
 
         //  Handle control group changes
         if (pFocusedControl)
@@ -1019,7 +1027,7 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
             for (i = m_vecControls.begin();i != m_vecControls.end(); ++i)
             {
               CGUIControl* pControl = *i;
-              if (pControl->GetID() == iLastFocusedControl )
+              if (pControl->GetID() == iLastFocusedControl)
               {
                 //  ...and focus the saved control.
 
