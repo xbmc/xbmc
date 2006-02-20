@@ -428,21 +428,22 @@ bool CProgramDatabase::GetAllTrainers(std::vector<CStdString>& vecTrainers)
   return false;
 }
 
-bool CProgramDatabase::SetTrainerOptions(const CStdString& strTrainerPath, unsigned int iTitleId, unsigned char* data)
+bool CProgramDatabase::SetTrainerOptions(const CStdString& strTrainerPath, unsigned int iTitleId, unsigned char* data, int numOptions)
 {
   CStdString strSQL;
   Crc32 crc; crc.ComputeFromLowerCase(strTrainerPath);
   try
   {
     char temp[101];
-    for (int i=0;i<100;++i)
+    int i;
+    for (i=0;i<numOptions && i<100;++i)
     {
       if (data[i] == 1)
         temp[i] = '1';
       else
         temp[i] = '0';
     }
-    temp[100] = '\0';
+    temp[i] = '\0';
 
     strSQL = FormatSQL("update trainers set strSettings='%s' where idCRC=%u and idTitle=%u",temp,crc,iTitleId);
     if (m_pDS->exec(strSQL.c_str()))
@@ -493,7 +494,7 @@ CStdString CProgramDatabase::GetActiveTrainer(unsigned int iTitleId)
   return "";
 }
 
-bool CProgramDatabase::GetTrainerOptions(const CStdString& strTrainerPath, unsigned int iTitleId, unsigned char* data)
+bool CProgramDatabase::GetTrainerOptions(const CStdString& strTrainerPath, unsigned int iTitleId, unsigned char* data, int numOptions)
 {
   CStdString strSQL;
   Crc32 crc; crc.ComputeFromLowerCase(strTrainerPath);
@@ -503,7 +504,7 @@ bool CProgramDatabase::GetTrainerOptions(const CStdString& strTrainerPath, unsig
     if (m_pDS->query(strSQL.c_str()))
     {
       CStdString strSettings = m_pDS->fv("strSettings").get_asString();
-      for (int i=0;i<100;++i)
+      for (int i=0;i<numOptions && i < 100;++i)
         data[i] = strSettings[i]=='1'?1:0;
 
       return true;
@@ -513,7 +514,7 @@ bool CProgramDatabase::GetTrainerOptions(const CStdString& strTrainerPath, unsig
   }
   catch (...)
   {
-    CLog::Log(LOGERROR,"CProgramDatabase::GetTrainerOptions failed (%s)",strSQL);
+    CLog::Log(LOGERROR,"CProgramDatabase::GetTrainerOptions failed (%s)",strSQL.c_str());
   }
   
   return false;

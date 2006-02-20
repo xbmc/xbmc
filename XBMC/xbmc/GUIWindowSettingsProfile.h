@@ -11,7 +11,7 @@ public:
   virtual bool OnAction(const CAction &action);
 
 protected:
-  int m_iLastControl;
+  virtual void OnInitWindow();
   vector<CGUIListItem*> m_vecListItems;
 
   void OnPopupMenu(int iItem);

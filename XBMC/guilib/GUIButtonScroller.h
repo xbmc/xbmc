@@ -101,6 +101,7 @@ private:
   bool m_bMoveUp;      // true if we're scrolling up (or left)
   bool m_bMoveDown;     // true if scrolling down (or right)
   float m_fScrollSpeed;   // speed of scrolling
+  float m_fAnalogScrollSpeed;  // speed of analog scroll (triggers)
   // stuff we need for the buttons...
   vector<CButton*> m_vecButtons;
   typedef vector<CButton*>::iterator ivecButtons;

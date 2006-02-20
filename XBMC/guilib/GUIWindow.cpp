@@ -870,9 +870,6 @@ void CGUIWindow::OnInitWindow()
   m_hasRendered = false;
 
   RestoreControlStates();
-  CGUIMessage msg(GUI_MSG_SETFOCUS, GetID(), m_dwDefaultFocusControlID);
-  OnMessage(msg);
-
   SetControlVisibility();
   QueueAnimation(ANIM_TYPE_WINDOW_OPEN);
   if (m_overlayState != OVERLAY_STATE_PARENT_WINDOW) // True, use our own overlay state
@@ -1400,7 +1397,9 @@ void CGUIWindow::SaveControlStates()
   for (ivecControls it = m_vecControls.begin(); it != m_vecControls.end(); ++it)
   {
     CGUIControl *pControl = *it;
-    if (pControl->GetControlType() == CGUIControl::GUICONTROL_BUTTONBAR)
+    if (pControl->GetControlType() == CGUIControl::GUICONTROL_BUTTONBAR ||
+        pControl->GetControlType() == CGUIControl::GUICONTROL_LIST || 
+        pControl->GetControlType() == CGUIControl::GUICONTROL_THUMBNAIL)
     {
       CGUIMessage message(GUI_MSG_ITEM_SELECTED, GetID(), pControl->GetID());
       pControl->OnMessage(message);

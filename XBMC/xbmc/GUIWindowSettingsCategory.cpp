@@ -57,7 +57,6 @@ struct sortstringbyname
 CGUIWindowSettingsCategory::CGUIWindowSettingsCategory(void)
     : CGUIWindow(WINDOW_SETTINGS_MYPICTURES, "SettingsCategory.xml")
 {
-  m_iLastControl = -1;
   m_pOriginalSpin = NULL;
   m_pOriginalRadioButton = NULL;
   m_pOriginalButton = NULL;
@@ -91,9 +90,7 @@ bool CGUIWindowSettingsCategory::OnAction(const CAction &action)
       JumpToPreviousSection();
       return true;
     }
-
-    m_iLastControl = -1;
-
+    m_lastControlID = -1; // don't save the control as we go to a different window each time
     m_gWindowManager.PreviousWindow();
     return true;
   }
@@ -124,7 +121,6 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
     break;
   case GUI_MSG_SETFOCUS:
     {
-      m_iLastControl = message.GetControlId();
       CBaseSettingControl *pSkinControl = GetSetting("LookAndFeel.Skin");
       CBaseSettingControl *pLanguageControl = GetSetting("LookAndFeel.Language");
       if (g_application.m_dwSkinTime && ((pSkinControl && pSkinControl->GetID() == message.GetControlId()) || (pLanguageControl && pLanguageControl->GetID() == message.GetControlId())))
@@ -209,31 +205,7 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
         m_iSection = 0;
       }
       m_iScreen = (int)message.GetParam2() - (int)m_dwWindowId;
-      m_iNetworkAssignment = g_guiSettings.GetInt("Network.Assignment");
-      m_strNetworkIPAddress = g_guiSettings.GetString("Network.IPAddress");
-      m_strNetworkSubnet = g_guiSettings.GetString("Network.Subnet");
-      m_strNetworkGateway = g_guiSettings.GetString("Network.Gateway");
-      m_strNetworkDNS = g_guiSettings.GetString("Network.DNS");
-      m_strOldTrackFormat = g_guiSettings.GetString("MyMusic.TrackFormat");
-      m_strOldTrackFormatRight = g_guiSettings.GetString("MyMusic.TrackFormatRight");
-      m_dwResTime = 0;
-      m_OldResolution = (RESOLUTION)g_guiSettings.GetInt("LookAndFeel.Resolution");
-      int iFocusControl = m_iLastControl;
-
-      CGUIWindow::OnMessage(message);
-
-      SetupControls();
-
-      if (iFocusControl > -1)
-      {
-        SET_CONTROL_FOCUS(iFocusControl, 0);
-      }
-      else
-      {
-        SET_CONTROL_FOCUS(m_dwDefaultFocusControlID, 0);
-      }
-
-      return true;
+      return CGUIWindow::OnMessage(message);
     }
     break;
   case GUI_MSG_WINDOW_DEINIT:
@@ -2824,10 +2796,10 @@ void CGUIWindowSettingsCategory::JumpToSection(DWORD dwWindowId, int iSection)
   CGUIMessage msg(GUI_MSG_WINDOW_DEINIT, 0, 0, 0, 0);
   OnMessage(msg);
   m_iSectionBeforeJump=m_iSection;
-  m_iControlBeforeJump=m_iLastControl;
+  m_iControlBeforeJump=GetFocusedControl();
   m_iWindowBeforeJump=m_dwWindowId+m_iScreen;
   m_iSection=iSection;
-  m_iLastControl=CONTROL_START_CONTROL;
+  m_lastControlID=CONTROL_START_CONTROL;
   CGUIMessage msg1(GUI_MSG_WINDOW_INIT, 0, 0, WINDOW_INVALID, dwWindowId);
   OnMessage(msg1);
   for (unsigned int i=0; i<m_vecSections.size(); ++i)
@@ -2841,7 +2813,7 @@ void CGUIWindowSettingsCategory::JumpToPreviousSection()
   CGUIMessage msg(GUI_MSG_WINDOW_DEINIT, 0, 0, 0, 0);
   OnMessage(msg);
   m_iSection=m_iSectionBeforeJump;
-  m_iLastControl=m_iControlBeforeJump;
+  m_lastControlID=m_iControlBeforeJump;
   CGUIMessage msg1(GUI_MSG_WINDOW_INIT, 0, 0, WINDOW_INVALID, m_iWindowBeforeJump);
   OnMessage(msg1);
 
@@ -2910,4 +2882,19 @@ void CGUIWindowSettingsCategory::FillInSkinThemes(CSetting *pSetting)
   }
   // Set the Choosen Theme 
   pControl->SetValue(iCurrentTheme);
+}
+
+void CGUIWindowSettingsCategory::OnInitWindow()
+{
+  m_iNetworkAssignment = g_guiSettings.GetInt("Network.Assignment");
+  m_strNetworkIPAddress = g_guiSettings.GetString("Network.IPAddress");
+  m_strNetworkSubnet = g_guiSettings.GetString("Network.Subnet");
+  m_strNetworkGateway = g_guiSettings.GetString("Network.Gateway");
+  m_strNetworkDNS = g_guiSettings.GetString("Network.DNS");
+  m_strOldTrackFormat = g_guiSettings.GetString("MyMusic.TrackFormat");
+  m_strOldTrackFormatRight = g_guiSettings.GetString("MyMusic.TrackFormatRight");
+  m_dwResTime = 0;
+  m_OldResolution = (RESOLUTION)g_guiSettings.GetInt("LookAndFeel.Resolution");
+  SetupControls();
+  CGUIWindow::OnInitWindow();
 }

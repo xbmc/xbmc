@@ -16,7 +16,6 @@
 CGUIDialogSettings::CGUIDialogSettings(DWORD id, const char *xmlFile)
     : CGUIDialog(id, xmlFile)
 {
-  m_iLastControl = -1;
   m_pOriginalSpin = NULL;
   m_pOriginalRadioButton = NULL;
   m_pOriginalSettingsButton = NULL;
@@ -51,25 +50,12 @@ bool CGUIDialogSettings::OnMessage(CGUIMessage &message)
       return true;
     }
     break;
-  case GUI_MSG_WINDOW_INIT:
-    {
-      CGUIDialog::OnMessage(message);
-
-      CreateSettings();
-
-      m_iCurrentPage = 0;
-      m_iNumPages = 0;
-
-      SetupPage();
-
-      SET_CONTROL_FOCUS(CONTROL_START, 0);
-      return true;
-    }
-    break;
   case GUI_MSG_WINDOW_DEINIT:
     {
+      CGUIDialog::OnMessage(message);
       FreeControls();
       m_settings.clear();
+      return true;
     }
     break;
   }
@@ -85,13 +71,11 @@ void CGUIDialogSettings::SetupPage()
   m_pOriginalSettingsButton = (CGUIButtonControl *)GetControl(CONTROL_DEFAULT_BUTTON);
   m_pOriginalSlider = (CGUISettingsSliderControl *)GetControl(CONTROL_DEFAULT_SLIDER);
   m_pOriginalSeparator = (CGUIImage *)GetControl(CONTROL_DEFAULT_SEPARATOR);
-  if (!m_pOriginalSpin || !m_pOriginalRadioButton || !m_pOriginalSettingsButton || !m_pOriginalSlider || !m_pOriginalSeparator)
-    return;
-  m_pOriginalSpin->SetVisible(false);
-  m_pOriginalRadioButton->SetVisible(false);
-  m_pOriginalSettingsButton->SetVisible(false);
-  m_pOriginalSlider->SetVisible(false);
-  m_pOriginalSeparator->SetVisible(false);
+  if (m_pOriginalSpin) m_pOriginalSpin->SetVisible(false);
+  if (m_pOriginalRadioButton) m_pOriginalRadioButton->SetVisible(false);
+  if (m_pOriginalSettingsButton) m_pOriginalSettingsButton->SetVisible(false);
+  if (m_pOriginalSlider) m_pOriginalSlider->SetVisible(false);
+  if (m_pOriginalSeparator) m_pOriginalSeparator->SetVisible(false);
 
   // update our settings label
   SET_CONTROL_LABEL(CONTROL_SETTINGS_LABEL, g_localizeStrings.Get(13395 + GetID() - WINDOW_DIALOG_VIDEO_OSD_SETTINGS));
@@ -206,6 +190,11 @@ void CGUIDialogSettings::UpdateSetting(unsigned int num)
     CGUIRadioButtonControl *pControl = (CGUIRadioButtonControl *)GetControl(controlID);
     if (pControl && setting.data) pControl->SetSelected(*(bool *)setting.data);
   }
+  else if (setting.type == SettingInfo::CHECK_UCHAR)
+  {
+    CGUIRadioButtonControl *pControl = (CGUIRadioButtonControl *)GetControl(controlID);
+    if (pControl && setting.data) pControl->SetSelected(*(unsigned char*)setting.data ? true : false);
+  }
   else if (setting.type == SettingInfo::SLIDER)
   {
     CGUISettingsSliderControl *pControl = (CGUISettingsSliderControl *)GetControl(controlID);
@@ -232,6 +221,11 @@ void CGUIDialogSettings::OnClick(int iID)
   {
     CGUIRadioButtonControl *pControl = (CGUIRadioButtonControl *)GetControl(iID);
     if (setting.data) *(bool *)setting.data = pControl->IsSelected();
+  }
+  else if (setting.type == SettingInfo::CHECK_UCHAR)
+  {
+    CGUIRadioButtonControl *pControl = (CGUIRadioButtonControl *)GetControl(iID);
+    if (setting.data) *(unsigned char*)setting.data = pControl->IsSelected() ? 1 : 0;
   }
   else if (setting.type == SettingInfo::SLIDER)
   {
@@ -264,7 +258,7 @@ void CGUIDialogSettings::FreeControls()
 void CGUIDialogSettings::AddSetting(SettingInfo &setting, int iPosX, int iPosY, int iWidth, int iControlID)
 {
   CGUIControl *pControl = NULL;
-  if (setting.type == SettingInfo::BUTTON)
+  if (setting.type == SettingInfo::BUTTON && m_pOriginalSettingsButton)
   {
     pControl = new CGUIButtonControl(*m_pOriginalSettingsButton);
     if (!pControl) return ;
@@ -272,15 +266,16 @@ void CGUIDialogSettings::AddSetting(SettingInfo &setting, int iPosX, int iPosY, 
     pControl->SetPosition(iPosX, iPosY);
     pControl->SetWidth(iWidth);
   }
-  else if (setting.type == SettingInfo::SEPARATOR)
+  else if (setting.type == SettingInfo::SEPARATOR && m_pOriginalSeparator)
   {
     pControl = new CGUIImage(*m_pOriginalSeparator);
     if (!pControl) return ;
     pControl->SetPosition(iPosX, iPosY);
     pControl->SetWidth(iWidth);
   }
-  else if (setting.type == SettingInfo::CHECK)
+  else if (setting.type == SettingInfo::CHECK || setting.type == SettingInfo::CHECK_UCHAR)
   {
+    if (!m_pOriginalRadioButton) return;
     pControl = new CGUIRadioButtonControl(*m_pOriginalRadioButton);
     if (!pControl) return ;
     ((CGUIRadioButtonControl *)pControl)->SetText(setting.name);
@@ -288,7 +283,7 @@ void CGUIDialogSettings::AddSetting(SettingInfo &setting, int iPosX, int iPosY, 
     pControl->SetWidth(iWidth);
     if (setting.data) pControl->SetSelected(*(bool *)setting.data == 1);
   }
-  else if (setting.type == SettingInfo::SPIN && setting.entry.size() > 0)
+  else if (setting.type == SettingInfo::SPIN && setting.entry.size() > 0 && m_pOriginalSpin)
   {
     pControl = new CGUISpinControlEx(*m_pOriginalSpin);
     if (!pControl) return ;
@@ -302,6 +297,7 @@ void CGUIDialogSettings::AddSetting(SettingInfo &setting, int iPosX, int iPosY, 
   }
   else if (setting.type == SettingInfo::SLIDER || setting.type == SettingInfo::SLIDER_INT)
   {
+    if (!m_pOriginalSlider) return;
     pControl = new CGUISettingsSliderControl(*m_pOriginalSlider);
     if (!pControl) return ;
     pControl->SetPosition(iPosX, iPosY);
@@ -414,4 +410,15 @@ void CGUIDialogSettings::AddSeparator(unsigned int id)
   setting.type = SettingInfo::SEPARATOR;
   setting.data = NULL;
   m_settings.push_back(setting);
+}
+
+void CGUIDialogSettings::OnInitWindow()
+{
+  CreateSettings();
+  m_iCurrentPage = 0;
+  m_iNumPages = 0;
+  SetupPage();
+  // set the default focus control
+  m_lastControlID = CONTROL_START;
+  CGUIDialog::OnInitWindow();
 }

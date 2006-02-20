@@ -17,6 +17,7 @@ public:
   // static function as it's accessed elsewhere
   static void FillInVisualisations(CSetting *pSetting, int iControlID);
 protected:
+  virtual void OnInitWindow();
   void CheckNetworkSettings();
   void FillInSubtitleHeights(CSetting *pSetting);
   void FillInSubtitleFonts(CSetting *pSetting);
@@ -48,7 +49,6 @@ protected:
   void JumpToSection(DWORD dwWindowId, int iSection);
   void JumpToPreviousSection();
 
-  int m_iLastControl;
   vector<CBaseSettingControl *> m_vecSettings;
   int m_iSection;
   int m_iScreen;
