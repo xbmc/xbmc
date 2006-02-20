@@ -646,12 +646,12 @@ void CGUIWindowMusicPlayList::OnPopupMenu(int iItem)
   pMenu->Initialize();
 
   // is this playlist playing?
+  int i = g_playlistPlayer.GetCurrentSong();
   bool bIsPlaying = false;
   bool bItemIsPlaying = false;
   if ((g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_MUSIC) && (g_application.IsPlayingAudio()))
   {
     bIsPlaying = true;
-    int i = g_playlistPlayer.GetCurrentSong();
     if (iItem == i) bItemIsPlaying = true;
   }
 
@@ -662,6 +662,7 @@ void CGUIWindowMusicPlayList::OnPopupMenu(int iItem)
   int btn_MoveUp = 0; // move up
   int btn_MoveDn = 0; // move down
   int btn_Delete = 0; // delete
+  int btn_PartyMode = 0; // cancel party mode
 
   if (iPos < 0)
   {
@@ -675,6 +676,22 @@ void CGUIWindowMusicPlayList::OnPopupMenu(int iItem)
     btn_Delete = pMenu->AddButton(15015);     // delete
     if (bItemIsPlaying)
       pMenu->EnableButton(btn_Delete, false); // disable if current item
+
+    // party mode automatically moves the current song to the top
+    if (g_application.m_bMusicPartyMode) 
+    {
+      // cant move the current playing song
+      if (bItemIsPlaying)
+      {
+        pMenu->EnableButton(btn_Move, false);
+        pMenu->EnableButton(btn_MoveUp, false);
+        pMenu->EnableButton(btn_MoveDn, false);
+      }
+      if (iItem == (i-1))
+        pMenu->EnableButton(btn_MoveDn, false);
+      if (iItem == (i+1))
+        pMenu->EnableButton(btn_MoveUp, false);
+    }
   }
   // after selecting "move item" only two choices
   else
@@ -682,9 +699,13 @@ void CGUIWindowMusicPlayList::OnPopupMenu(int iItem)
     btn_MoveTo = pMenu->AddButton(13252);         // move item here
     if (iItem == iPos)
       pMenu->EnableButton(btn_MoveTo, false);     // disable the button if its the same position or current item
+    if (g_application.m_bMusicPartyMode && iItem >= i)
+      pMenu->EnableButton(btn_MoveTo, false);     // cant move a song above the currently playing
     btn_Cancel = pMenu->AddButton(13253);         // cancel move
   }
   int btn_Return = pMenu->AddButton(12010);     // return to my music
+  if (g_application.m_bMusicPartyMode)
+    btn_PartyMode = pMenu->AddButton(588);      // cancel party mode
 
   // position it correctly
   pMenu->SetPosition(iPosX - pMenu->GetWidth() / 2, iPosY - pMenu->GetHeight() / 2);
@@ -730,6 +751,10 @@ void CGUIWindowMusicPlayList::OnPopupMenu(int iItem)
     {
       m_gWindowManager.ActivateWindow(WINDOW_MUSIC);
       return;
+    }
+    else if (btnid == btn_PartyMode)
+    {
+      g_application.m_bMusicPartyMode = false;
     }
   }
   m_vecItems[iItem]->Select(false);

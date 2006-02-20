@@ -167,6 +167,12 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
 
           // start
           g_application.m_dwPartyModeTick = timeGetTime();
+
+          // open window if not already open
+          if (GetID() == m_gWindowManager.GetActiveWindow())
+            m_gWindowManager.ActivateWindow(WINDOW_MUSIC_PLAYLIST);
+
+          return true;
         }
         UpdateButtons();
       }
