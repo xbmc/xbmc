@@ -781,10 +781,9 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow) const
     bReturn = g_stSettings.m_bMute;
   else if (condition >= CONTROL_HAS_FOCUS_START && condition <= CONTROL_HAS_FOCUS_END)
   {
-    if( !dwContextWindow ) dwContextWindow = m_gWindowManager.GetActiveWindow();
-
     CGUIWindow *pWindow = m_gWindowManager.GetWindow(dwContextWindow);
-    if (pWindow) 
+    if( !pWindow ) pWindow = m_gWindowManager.GetWindow(m_gWindowManager.GetActiveWindow());
+    if (pWindow)
       bReturn = (pWindow->GetFocusedControl() == condition - CONTROL_HAS_FOCUS_START);
   }
   else if (condition >= BUTTON_SCROLLER_HAS_ICON_START && condition <= BUTTON_SCROLLER_HAS_ICON_END)
