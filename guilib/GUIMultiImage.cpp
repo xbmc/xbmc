@@ -120,6 +120,10 @@ void CGUIMultiImage::AllocResources()
   if (!m_directoryLoaded)
     LoadDirectory();
 
+  // Randomize or sort our images if necessary
+  if (m_randomized)
+    random_shuffle(m_files.begin(), m_files.end());
+
   for (unsigned int i=0; i < m_files.size(); i++)
   {
     CGUIImage *pImage = new CGUIImage(GetParentID(), GetID(), m_iPosX, m_iPosY, m_dwWidth, m_dwHeight, m_files[i]);
@@ -225,11 +229,8 @@ void CGUIMultiImage::LoadDirectory()
       m_files.push_back(pItem->m_strPath);
   }
 
-  // and sort them
-  if (m_randomized)
-    random_shuffle(m_files.begin(), m_files.end());
-  else
-    sort(m_files.begin(), m_files.end());
+  // sort our images - they'll be randomized in AllocResources() if necessary
+  sort(m_files.begin(), m_files.end());
 
   // flag as loaded - no point in constantly reloading them
   m_directoryLoaded = true;

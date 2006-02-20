@@ -44,8 +44,6 @@ using namespace XFILE;
 CGUIWindowFileManager::CGUIWindowFileManager(void)
     : CGUIWindow(WINDOW_FILES, "FileManager.xml")
 {
-  m_iItemSelected = -1;
-  m_iLastControl = -1;
   m_dlgProgress = NULL;
   m_Directory[0].m_strPath = "?";
   m_Directory[1].m_strPath = "?";
@@ -156,112 +154,22 @@ bool CGUIWindowFileManager::OnMessage(CGUIMessage& message)
     break;
   case GUI_MSG_WINDOW_DEINIT:
     {
-      m_iLastControl = GetFocusedControl();
-      m_iItemSelected = GetSelectedItem(m_iLastControl - CONTROL_LEFT_LIST);
+      CGUIWindow::OnMessage(message);
       m_dlgProgress = NULL;
       ClearFileItems(0);
       ClearFileItems(1);
+      return true;
     }
     break;
 
   case GUI_MSG_WINDOW_INIT:
     {
-      int iLastControl = m_iLastControl;
-      CGUIWindow::OnMessage(message);
-      // default sort methods
-/*      g_stSettings.m_iMyFilesSourceRootSortMethod = 0;
-      g_stSettings.m_bMyFilesSourceRootSortOrder = true;
-      g_stSettings.m_iMyFilesSourceSortMethod = 0;
-      g_stSettings.m_bMyFilesSourceSortOrder = true;
-*/
-      CGUIListControl *pControl = (CGUIListControl *)GetControl(CONTROL_LEFT_LIST);
-      if (pControl) pControl->SetPageControlVisible(false);
-      pControl = (CGUIListControl *)GetControl(CONTROL_RIGHT_LIST);
-      if (pControl) pControl->SetPageControlVisible(false);
+      SetInitialPath(message.GetStringParam());
+      message.SetStringParam("");
 
-      // check for a passed destination path
-      CStdString strDestination = message.GetStringParam();
-      CStdString strFTPTMP = g_localizeStrings.Get(1251); // ShareName: XBOX Autodetection
-      if (!g_infoManager.HasAutodetectedXbox())
-        m_rootDir.RemoveShareName(strFTPTMP);
-      //--------------------------------
-      if (g_guiSettings.GetBool("Autodetect.OnOff"))
-      {
-        if (g_infoManager.HasAutodetectedXbox() && !strDestination.IsEmpty()) // XBOX Autodetection: add a dummy share
-        {
-          m_rootDir.RemoveShareName(strFTPTMP); // Remove a previos share: to be sure to not have double stuff..
-          CShare shareTmp;
-          shareTmp.strName.Format(strFTPTMP);
-          shareTmp.strPath.Format(strDestination,1);
-          m_rootDir.AddShare(shareTmp);
-        }
-      }
-      //--------------------------------
-
-      m_rootDir.SetShares(g_settings.m_vecMyFilesShares);
-      if (!strDestination.IsEmpty())
-      {
-        message.SetStringParam("");
-        CLog::Log(LOGINFO, "Attempting to quickpath to: %s", strDestination.c_str());
-      }
-      // otherwise, is this the first time accessing this window?
-      else if (m_Directory[0].m_strPath == "?")
-      {
-        m_Directory[0].m_strPath = strDestination = g_stSettings.m_szDefaultFiles;
-        CLog::Log(LOGINFO, "Attempting to default to: %s", strDestination.c_str());
-      }
-      // try to open the destination path
-      if (!strDestination.IsEmpty())
-      {
-        // default parameters if the jump fails
-        m_Directory[0].m_strPath = "";
-
-        bool bIsBookmarkName = false;
-        int iIndex = CUtil::GetMatchingShare(strDestination, g_settings.m_vecMyFilesShares, bIsBookmarkName);
-        if (iIndex > -1)
-        {
-          // set current directory to matching share
-          if (bIsBookmarkName)
-            m_Directory[0].m_strPath = g_settings.m_vecMyFilesShares[iIndex].strPath;
-          else
-            m_Directory[0].m_strPath = strDestination;
-          CLog::Log(LOGINFO, "  Success! Opened destination path: %s", strDestination.c_str());
-        }
-        else
-        {
-          CLog::Log(LOGERROR, "  Failed! Destination parameter (%s) does not match a valid share!", strDestination.c_str());
-        }
-      }
-
-      if (m_Directory[1].m_strPath == "?") m_Directory[1].m_strPath = "";
-
-      m_dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
-      if (m_dlgProgress) m_dlgProgress->SetHeading(126);
-
-      for (int i = 0; i < 2; i++)
-      {
-        int iItem = GetSelectedItem(i);
-        Update(i, m_Directory[i].m_strPath);
-        if (CONTROL_LEFT_LIST + i == iLastControl)
-        {
-          CONTROL_SELECT_ITEM(CONTROL_LEFT_LIST + i, m_iItemSelected)
-        }
-      }
-
-      if (iLastControl > -1)
-      {
-        SET_CONTROL_FOCUS(iLastControl, 0);
-      }
-      else
-      {
-        SET_CONTROL_FOCUS(m_dwDefaultFocusControlID, 0);
-      }
-
-      
-      return true;
+      return CGUIWindow::OnMessage(message);
     }
     break;
-
   case GUI_MSG_CLICKED:
     {
       int iControl = message.GetSenderId();
@@ -484,7 +392,6 @@ void CGUIWindowFileManager::OnClick(int iList, int iItem)
     // save path + drive type as HaveBookmarkPermissions does a Refresh()
     CStdString strPath = pItem->m_strPath;
     int iDriveType = pItem->m_iDriveType;
-    m_iItemSelected = -1;
     if ( pItem->m_bIsShareOrDrive )
     {
       if ( !g_passwordManager.IsItemUnlocked( pItem, "files" ) )
@@ -515,7 +422,6 @@ void CGUIWindowFileManager::OnClick(int iList, int iItem)
   }
   else
   {
-    m_iItemSelected = GetSelectedItem(iList);
     OnStart(pItem);
     return ;
   }
@@ -1399,4 +1305,85 @@ void CGUIWindowFileManager::ShowShareErrorMessage(CFileItem* pItem)
 
     CGUIDialogOK::ShowAndGetInput(220, idMessageText, 0, 0);
   }
+}
+
+void CGUIWindowFileManager::OnWindowLoaded()
+{
+  CGUIWindow::OnWindowLoaded();
+  // disable the page spin controls
+  CGUIListControl *pControl = (CGUIListControl *)GetControl(CONTROL_LEFT_LIST);
+  if (pControl) pControl->SetPageControlVisible(false);
+  pControl = (CGUIListControl *)GetControl(CONTROL_RIGHT_LIST);
+  if (pControl) pControl->SetPageControlVisible(false);
+}
+
+void CGUIWindowFileManager::OnInitWindow()
+{
+  m_dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+  if (m_dlgProgress) m_dlgProgress->SetHeading(126);
+
+  for (int i = 0; i < 2; i++)
+  {
+    Update(i, m_Directory[i].m_strPath);
+  }
+
+  CGUIWindow::OnInitWindow();
+}
+
+void CGUIWindowFileManager::SetInitialPath(const CStdString &path)
+{
+  // check for a passed destination path
+  CStdString strDestination = path;
+  CStdString strFTPTMP = g_localizeStrings.Get(1251); // ShareName: XBOX Autodetection
+  if (!g_infoManager.HasAutodetectedXbox())
+    m_rootDir.RemoveShareName(strFTPTMP);
+  //--------------------------------
+  if (g_guiSettings.GetBool("Autodetect.OnOff"))
+  {
+    if (g_infoManager.HasAutodetectedXbox() && !strDestination.IsEmpty()) // XBOX Autodetection: add a dummy share
+    {
+      m_rootDir.RemoveShareName(strFTPTMP); // Remove a previos share: to be sure to not have double stuff..
+      CShare shareTmp;
+      shareTmp.strName.Format(strFTPTMP);
+      shareTmp.strPath.Format(strDestination,1);
+      m_rootDir.AddShare(shareTmp);
+    }
+  }
+  //--------------------------------
+
+  m_rootDir.SetShares(g_settings.m_vecMyFilesShares);
+  if (!strDestination.IsEmpty())
+  {
+    CLog::Log(LOGINFO, "Attempting to quickpath to: %s", strDestination.c_str());
+  }
+  // otherwise, is this the first time accessing this window?
+  else if (m_Directory[0].m_strPath == "?")
+  {
+    m_Directory[0].m_strPath = strDestination = g_stSettings.m_szDefaultFiles;
+    CLog::Log(LOGINFO, "Attempting to default to: %s", strDestination.c_str());
+  }
+  // try to open the destination path
+  if (!strDestination.IsEmpty())
+  {
+    // default parameters if the jump fails
+    m_Directory[0].m_strPath = "";
+
+    bool bIsBookmarkName = false;
+    int iIndex = CUtil::GetMatchingShare(strDestination, g_settings.m_vecMyFilesShares, bIsBookmarkName);
+    if (iIndex > -1)
+    {
+      // set current directory to matching share
+      if (bIsBookmarkName)
+        m_Directory[0].m_strPath = g_settings.m_vecMyFilesShares[iIndex].strPath;
+      else
+        m_Directory[0].m_strPath = strDestination;
+      CLog::Log(LOGINFO, "  Success! Opened destination path: %s", strDestination.c_str());
+    }
+    else
+    {
+      CLog::Log(LOGERROR, "  Failed! Destination parameter (%s) does not match a valid share!", strDestination.c_str());
+    }
+  }
+
+  if (m_Directory[1].m_strPath == "?") m_Directory[1].m_strPath = "";
 }

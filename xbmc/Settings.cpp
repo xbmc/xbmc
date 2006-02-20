@@ -167,6 +167,8 @@ CSettings::CSettings(void)
   g_advancedSettings.m_lcdAddress3 = 0x14;
   g_advancedSettings.m_lcdAddress4 = 0x54;
 
+  g_advancedSettings.m_autoDetectPingTime = 30;
+
   xbmcXmlLoaded = false;
 }
 

@@ -12,7 +12,6 @@ public:
   virtual bool OnMessage(CGUIMessage &message);
   virtual void Render();
 protected:
-  int m_iLastControl;
-
+  virtual void OnInitWindow();
   CVisualisation *m_pVisualisation;
 };

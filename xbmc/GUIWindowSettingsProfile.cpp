@@ -12,7 +12,6 @@
 CGUIWindowSettingsProfile::CGUIWindowSettingsProfile(void)
     : CGUIWindow(WINDOW_SETTINGS_PROFILES, "SettingsProfile.xml")
 {
-  m_iLastControl = -1;
 }
 
 CGUIWindowSettingsProfile::~CGUIWindowSettingsProfile(void)
@@ -145,21 +144,7 @@ bool CGUIWindowSettingsProfile::OnMessage(CGUIMessage& message)
   {
   case GUI_MSG_WINDOW_DEINIT:
     {
-      m_iLastControl = GetFocusedControl();
       ClearListItems();
-    }
-    break;
-
-  case GUI_MSG_WINDOW_INIT:
-    {
-      CGUIWindow::OnMessage(message);
-
-      LoadList();
-
-      if (m_iLastControl > -1)
-        SET_CONTROL_FOCUS(m_iLastControl, 0);
-
-      return true;
     }
     break;
 
@@ -321,4 +306,10 @@ void CGUIWindowSettingsProfile::ClearListItems()
   }
 
   m_vecListItems.erase(m_vecListItems.begin(), m_vecListItems.end());
+}
+
+void CGUIWindowSettingsProfile::OnInitWindow()
+{
+  LoadList();
+  CGUIWindow::OnInitWindow();
 }
