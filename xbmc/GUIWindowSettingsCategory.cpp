@@ -1575,7 +1575,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
   { // Alter LED Colour immediately
     ILED::CLEDControl(((CSettingInt *)pSettingControl->GetSetting())->GetData());
   }
-  else if (strSetting.Left(10).Equals("ReplayGain"))
+  else if (strSetting.Left(22).Equals("MusicPlayer.ReplayGain"))
   { // Update our replaygain settings
     g_guiSettings.m_replayGain.iType = g_guiSettings.GetInt("MusicPlayer.ReplayGainType");
     g_guiSettings.m_replayGain.iPreAmp = g_guiSettings.GetInt("MusicPlayer.ReplayGainPreAmp");
