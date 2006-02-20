@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 20-02-2006 added: Window.IsMedia conditional visibility.
  - 20-02-2006 added: some minor tweaks to party mode:  When first enabled, window switches to Now Playing window.
 			Better checking for the "Move" options in the Now Playing context menu since Party Mode takes over.
 			Added "Cancel Party Mode" option to Now Playing context menu.
