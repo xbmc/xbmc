@@ -181,6 +181,7 @@ extern char g_szTitleIP[32];
 #define SKIN_HAS_SETTING_START      510
 #define SKIN_HAS_SETTING_END        600 // allow 90
 
+#define WINDOW_IS_MEDIA             9998
 #define WINDOW_ACTIVE_START         WINDOW_HOME
 #define WINDOW_ACTIVE_END           WINDOW_PYTHON_END
 
@@ -461,6 +462,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     if (winID != WINDOW_INVALID)
       ret = winID;
   }
+  else if (strTest.Equals("window.ismedia")) return WINDOW_IS_MEDIA;
   else if (strTest.Left(17).Equals("control.hasfocus("))
   {
     int controlID = atoi(strTest.Mid(17, strTest.GetLength() - 18).c_str());
@@ -771,6 +773,11 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow) const
     bReturn = (g_application.GlobalIdleTime() >= condition - SYSTEM_IDLE_TIME_START);
   else if (condition >= WINDOW_ACTIVE_START && condition <= WINDOW_ACTIVE_END)// check for Window.IsActive(window)
     bReturn = m_gWindowManager.IsWindowActive(condition);
+  else if (condition == WINDOW_IS_MEDIA)
+  {
+    CGUIWindow *pWindow = m_gWindowManager.GetWindow(m_gWindowManager.GetActiveWindow());
+    bReturn = (pWindow && pWindow->IsMediaWindow());
+  }
   else if (condition == SYSTEM_HAS_ALARM)
     bReturn = true;
   else if (condition == SYSTEM_NO_SUCH_ALARM)
@@ -788,9 +795,8 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow) const
   }
   else if (condition >= BUTTON_SCROLLER_HAS_ICON_START && condition <= BUTTON_SCROLLER_HAS_ICON_END)
   {
-    if( !dwContextWindow ) dwContextWindow = m_gWindowManager.GetActiveWindow();
-
     CGUIWindow *pWindow = m_gWindowManager.GetWindow(dwContextWindow);
+    if( !pWindow ) pWindow = m_gWindowManager.GetWindow(m_gWindowManager.GetActiveWindow());
     if (pWindow)
     {
       CGUIControl *pControl = (CGUIControl *)pWindow->GetControl(pWindow->GetFocusedControl());
