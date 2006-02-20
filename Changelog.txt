@@ -5,6 +5,9 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 20-02-2006 fixed: Replaygain settings weren't being applied.
+ - 20-02-2006 fixed: Musicoverlay visibility on Control.HasFocus() wasn't working.
+ - 20-02-2006 changed: If no thumb is available, ListItem.Thumb uses the icon image.
  - 20-02-2006 added: Analog scrolling (triggers) to the button scroller.
  - 20-02-2006 fixed: Various initial control focus issues.
  - 20-02-2006 changed: Redid the Trainers dialog to use the DialogSettings base class.
