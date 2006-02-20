@@ -313,42 +313,35 @@
       <posy>310</posy>
       <label>-</label>
       <font>font10</font>
-      <textoffsetx>-</textoffsetx>
     </control>
 
     <control>
       <description>day 0 Hi label</description>
-      <type>button</type>
+      <type>label</type>
       <align>center</align>
       <width>110</width>
       <id>32</id>
       <posx>211</posx>
-      <posy>338</posy>
+      <posy>348</posy>
       <label>-</label>
       <font>font10</font>
-      <textoffsetx>-</textoffsetx>
-      <texturefocus>-</texturefocus>
-      <texturenofocus>-</texturenofocus>
     </control>
 
     <control>
       <description>day 0 low label</description>
-      <type>button</type>
+      <type>label</type>
       <align>center</align>
       <width>110</width>
       <id>33</id>
       <posx>211</posx>
-      <posy>360</posy>
+      <posy>370</posy>
       <label>-</label>
       <font>font10</font>
-      <textoffsetx>-</textoffsetx>
-      <texturefocus>-</texturefocus>
-      <texturenofocus>-</texturenofocus>
     </control>
 
     <control>
       <description>day 0 general weather label</description>
-      <type>button</type>
+      <type>label</type>
       <align>center</align>
       <aligny>top</aligny>
       <width>110</width>
@@ -358,9 +351,6 @@
       <posy>465</posy>
       <label>-</label>
       <font>font10</font>
-      <textoffsetx>-</textoffsetx>
-      <texturefocus>-</texturefocus>
-      <texturenofocus>-</texturenofocus>
     </control>
 
     <control>
@@ -385,7 +375,6 @@
       <posy>310</posy>
       <label>-</label>
       <font>font10</font>
-      <textoffsetx>-</textoffsetx>
     </control>
 
     <control>
@@ -398,7 +387,6 @@
       <posy>348</posy>
       <label>-</label>
       <font>font10</font>
-      <textoffsetx>-</textoffsetx>
     </control>
 
     <control>
@@ -411,7 +399,6 @@
       <posy>370</posy>
       <label>-</label>
       <font>font10</font>
-      <textoffsetx>-</textoffsetx>
     </control>
 
     <control>
@@ -426,7 +413,6 @@
       <posy>465</posy>
       <label>-</label>
       <font>font10</font>
-      <textoffsetx>-</textoffsetx>
     </control>
 
     <control>
@@ -451,7 +437,6 @@
       <posy>310</posy>
       <label>-</label>
       <font>font10</font>
-      <textoffsetx>-</textoffsetx>
     </control>
 
     <control>
@@ -464,7 +449,6 @@
       <posy>348</posy>
       <label>-</label>
       <font>font10</font>
-      <textoffsetx>-</textoffsetx>
     </control>
 
     <control>
@@ -477,7 +461,6 @@
       <posy>370</posy>
       <label>-</label>
       <font>font10</font>
-      <textoffsetx>-</textoffsetx>
     </control>
 
     <control>
@@ -492,7 +475,6 @@
       <posy>465</posy>
       <label>-</label>
       <font>font10</font>
-      <textoffsetx>-</textoffsetx>
     </control>
 
     <control>
@@ -517,7 +499,6 @@
       <posy>310</posy>
       <label>-</label>
       <font>font10</font>
-      <textoffsetx>-</textoffsetx>
     </control>
 
     <control>
@@ -530,7 +511,6 @@
       <posy>348</posy>
       <label>-</label>
       <font>font10</font>
-      <textoffsetx>-</textoffsetx>
     </control>
 
     <control>
@@ -543,7 +523,6 @@
       <posy>370</posy>
       <label>-</label>
       <font>font10</font>
-      <textoffsetx>-</textoffsetx>
     </control>
 
     <control>
@@ -558,7 +537,6 @@
       <posy>465</posy>
       <label>-</label>
       <font>font10</font>
-      <textoffsetx>-</textoffsetx>
     </control>
 
     <control>
