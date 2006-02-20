@@ -1,3 +1,5 @@
+2006-02-20 fixed:	Weather.xml still wasn't quite right in 16x9.
+
 2006-02-15 fixed:	Home.xml visibility on the buttons was Player.HasMedia rather than Player.HasAudio.  Also added allowhiddenfocus="true" to the non conditional buttons that hide.
 2006-02-15 fixed:	Weather now uses labels instead of buttons.
 
