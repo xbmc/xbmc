@@ -456,6 +456,18 @@
   <string><id>518</id><value>Starten</value></string>
   <string><id>519</id><value>Starten als...</value></string>
   <string><id>520</id><value>XBE-Titel bearbeiten</value></string>
+  <string><id>521</id><value>Sampler</value></string>
+
+  <string><id>588</id><value>Party Modus verlassen</value></string>
+  <string><id>589</id><value>Party Modus</value></string>
+  <string><id>590</id><value>Zufall</value></string>
+  <string><id>591</id><value>Aus</value></string>
+  <string><id>592</id><value>Eins</value></string>
+  <string><id>593</id><value>Alle</value></string>
+  <string><id>594</id><value>Aus</value></string>
+  <string><id>595</id><value>Repeat Aus</value></string>
+  <string><id>596</id><value>Repeat Eins</value></string>
+  <string><id>597</id><value>Repeat Alle</value></string>
 
   <string><id>600</id><value>CD rippen</value></string>
   <string><id>601</id><value>Medium</value></string>
@@ -573,6 +585,37 @@
   <string><id>998</id><value>XLink-KAI</value></string>
   <string><id>999</id><value>Online spielen</value></string>
   <string><id>1000</id><value>Vorschau</value></string>
+  <string><id>1001</id><value>Verbindung nicht möglich</value></string>
+  <string><id>1002</id><value>XBMC konnte sich nicht mit der Netzwerkfreigabe verbinden.</value></string>
+  <string><id>1003</id><value>Es könnte sein, daß Sie nicht mit dem Netzwerk verbunden sind.</value></string>
+  <string><id>1004</id><value>Soll die Freigabe trotzdem hinzugefügt werden?</value></string>
+  <string><id>1005</id><value>Bitte einen Namen eingeben</value></string>
+  <string><id>1006</id><value>IP-Adresse</value></string>
+  <string><id>1007</id><value>Netzwerkfreigabe hinzufügen</value></string>
+  <string><id>1008</id><value>Protokoll</value></string>
+  <string><id>1009</id><value>Server Adresse</value></string>
+  <string><id>1010</id><value>Server Name</value></string>
+  <string><id>1011</id><value>Remote Pfad</value></string>
+  <string><id>1012</id><value>Freigabe</value></string>
+  <string><id>1013</id><value>Port</value></string>
+  <string><id>1014</id><value>Benutzername</value></string>
+  <string><id>1015</id><value>Netzwerk-Server</value></string>
+  <string><id>1016</id><value>Bitte die Netzwerk-Adresse des Servers eingeben</value></string>
+  <string><id>1017</id><value>Bitte den Pfad auf den Netzwerk-Server eingeben</value></string>
+  <string><id>1018</id><value>Bitte die Port-Nummer eingeben</value></string>
+  <string><id>1019</id><value>Bitte den Benutzernamen eingeben</value></string>
+  <string><id>1020</id><value>Quelle %s hinzufügen</value></string>
+  <string><id>1021</id><value>Bitte den Pfad eingeben oder nach der Freigabe suchen</value></string>
+  <string><id>1022</id><value>Bitte den Namen der Medien-Quelle eingeben</value></string>
+  <string><id>1023</id><value>Nach neuer Freigabe suchen</value></string>
+  <string><id>1024</id><value>Suchen</value></string>
+  <string><id>1025</id><value>Verzeichnis konnte nicht geladen werden.</value></string>
+  <string><id>1026</id><value>Quelle hinzufügen</value></string>
+  <string><id>1027</id><value>Quelle bearbeiten</value></string>
+  <string><id>1028</id><value>Quelle %s bearbeiten</value></string>
+  <string><id>1029</id><value>Bitte die neue Bezeichnung eingeben</value></string>
+  <string><id>1030</id><value>Ein Bild</value></string>
+  <string><id>1031</id><value>Ein Verzeichnis mit Bildern</value></string>
 
   <string><id>1200</id><value>SMB-Share</value></string>
   <string><id>1201</id><value>SMB-IP</value></string>
@@ -792,6 +835,7 @@
   <string><id>12384</id><value>24 Stunden Uhr</value></string>
   <string><id>12385</id><value>Tag/Monat</value></string>
   <string><id>12386</id><value>Monat/Tag</value></string>
+  <string><id>12387</id><value>Datenbank nocheinmal Scannen</value></string>
 
   <string><id>12390</id><value>Betriebszeit</value></string>
   <string><id>12391</id><value>Minuten</value></string>

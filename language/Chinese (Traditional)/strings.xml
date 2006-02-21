@@ -34,7 +34,7 @@
   <string><id>99</id><value>顯示：自動大圖示</value></string>
   <string><id>100</id><value>顯示：圖示</value></string>
   <string><id>101</id><value>顯示：列表</value></string>
-  <string><id>102</id><value>重新掃瞄</value></string>
+  <string><id>102</id><value>掃瞄</value></string>
   <string><id>103</id><value>排序：名稱</value></string>
   <string><id>104</id><value>排序：日期</value></string>
   <string><id>105</id><value>排序：大小</value></string>
@@ -453,6 +453,17 @@
   <string><id>519</id><value>啟動方式</value></string>
   <string><id>520</id><value>編輯 XBE 標題</value></string>
   
+  <string><id>588</id><value>取消派對模式</value></string>
+  <string><id>589</id><value>派對模式</value></string>
+  <string><id>590</id><value>隨機</value></string>
+  <string><id>591</id><value>關</value></string>
+  <string><id>592</id><value>單一</value></string>
+  <string><id>593</id><value>全部</value></string>
+  <string><id>594</id><value>關</value></string>
+  <string><id>595</id><value>重複：關</value></string>
+  <string><id>596</id><value>重複：一次</value></string>
+  <string><id>597</id><value>重複：所有</value></string>
+  
   <string><id>600</id><value>擷取音樂 CD</value></string>
   <string><id>601</id><value>中等</value></string>
   <string><id>602</id><value>標準</value></string>
@@ -487,7 +498,7 @@
   <string><id>642</id><value>音量 - 不重覆播放的檔案</value></string>
   <string><id>643</id><value>循環播放</value></string>
   <string><id>644</id><value>修剪黑邊</value></string>
-  <string><id>645</id><value>一個大檔案需要緩衝區，是否繼續？</value></string>
+  <string><id>645</id><value>需要緩衝一個大檔案，是否繼續？</value></string>
   <string><id>646</id><value>刪除標題</value></string>
 
   <string><id>700</id><value>清除音樂庫</value></string>
@@ -569,6 +580,37 @@
   <string><id>998</id><value>XLink Kai</value></string>
   <string><id>999</id><value>線上遊戲</value></string>
   <string><id>1000</id><value>螢幕保護預覽</value></string>
+  <string><id>1001</id><value>無法連線</value></string>
+  <string><id>1002</id><value>XBMC 無法連線到網路設備！</value></string>
+  <string><id>1003</id><value>這可能是由於網路沒有連接。</value></string>
+  <string><id>1004</id><value>可以用其他方式來新增它嗎？</value></string>
+  <string><id>1005</id><value>輸入共享名稱</value></string>
+  <string><id>1006</id><value>IP 位址</value></string>
+  <string><id>1007</id><value>新增網路設備</value></string>
+  <string><id>1008</id><value>協議</value></string>
+  <string><id>1009</id><value>伺服器位址</value></string>
+  <string><id>1010</id><value>伺服器名稱</value></string>
+  <string><id>1011</id><value>遠端路徑</value></string>
+  <string><id>1012</id><value>共享資料夾</value></string>
+  <string><id>1013</id><value>埠</value></string>
+  <string><id>1014</id><value>使用者名稱</value></string>
+  <string><id>1015</id><value>網路伺服器</value></string>
+  <string><id>1016</id><value>輸入伺服器網路位址</value></string>
+  <string><id>1017</id><value>輸入伺服器遠端路徑</value></string>
+  <string><id>1018</id><value>輸入埠號</value></string>
+  <string><id>1019</id><value>輸入使用者名稱</value></string>
+  <string><id>1020</id><value>新增%s目錄</value></string>
+  <string><id>1021</id><value>輸入或選擇目錄。</value></string>
+  <string><id>1022</id><value>為該目錄命名。</value></string>
+  <string><id>1023</id><value>瀏覽目錄</value></string>
+  <string><id>1024</id><value>瀏覽</value></string>
+  <string><id>1025</id><value>無法獲得目錄資訊。</value></string>
+  <string><id>1026</id><value>新增目錄</value></string>
+  <string><id>1027</id><value>編輯目錄</value></string>
+  <string><id>1028</id><value>編輯%s目錄</value></string>
+  <string><id>1029</id><value>輸入新標籤</value></string>
+  <string><id>1030</id><value>圖示</value></string>
+  <string><id>1031</id><value>圖示資料夾</value></string>
   
   <string><id>1200</id><value>SMB 共享設定</value></string>
   <string><id>1201</id><value>SMB IP 位址</value></string>
@@ -594,7 +636,7 @@
   <string><id>1221</id><value>音樂 &amp; 影片 &amp; 圖片</value></string>
   <string><id>1222</id><value>音樂 &amp; 影片 &amp; 圖片 &amp; 檔案</value></string>
   <string><id>1223</id><value>禁用</value></string>
-  <string><id>1224</id><value>普通使用者</value></string>
+  <string><id>1224</id><value>一般使用者</value></string>
   <string><id>1225</id><value>進階使用者</value></string>
   <string><id>1226</id><value>檔案 &amp; 音樂 &amp; 影片</value></string>
   <string><id>1227</id><value>檔案 &amp; 圖片 &amp; 音樂</value></string>
@@ -710,7 +752,7 @@
   <string><id>12013</id><value>金手指</value></string>
   <string><id>12014</id><value>找不到金手指</value></string>
   <string><id>12015</id><value>金手指設定</value></string>
-  <string><id>12016</id><value>所有金手指的紀錄遺失！請更新你的目錄</value></string>
+  <string><id>12016</id><value>所有金手指的紀錄遺失，請更新你的目錄！</value></string>
   <string><id>12017</id><value>自動恢復上次的位置</value></string>
   
   <string><id>12310</id><value>0</value></string>
@@ -777,17 +819,18 @@
   <string><id>12373</id><value>設置 &amp; 我的檔案</value></string>
   <string><id>12374</id><value>鎖定媒體檔案</value></string>
   <string><id>12375</id><value>管理員模式</value></string>
-  <string><id>12376</id><value>為所有電影設置預設檔</value></string>
-  <string><id>12377</id><value>這將會重設任何之前的存檔</value></string>
+  <string><id>12376</id><value>為所有電影設定預設值</value></string>
+  <string><id>12377</id><value>將重設之前的設定</value></string>
   <string><id>12378</id><value>顯示各個圖示</value></string>
   <string><id>12379</id><value>使用移動和縮放特效</value></string>
   <string><id>12380</id><value>在 PAL 模式播放 NTSC 影片</value></string>
   <string><id>12381</id><value>在 NTSC 模式播放 PAL 影片</value></string>
-  <string><id>12382</id><value>以 PAL60 播放 NTSC 影片</value></string>
+  <string><id>12382</id><value>以 PAL60 模式播放 NTSC 影片</value></string>
   <string><id>12383</id><value>12小時制</value></string>
   <string><id>12384</id><value>24小時制</value></string>
   <string><id>12385</id><value>日/月</value></string>
   <string><id>12386</id><value>月/日</value></string>
+  <string><id>12387</id><value>重新掃描資料</value></string>
   
   <string><id>12390</id><value>系統啟動時間</value></string>
   <string><id>12391</id><value>分鐘</value></string>
@@ -1062,11 +1105,11 @@
   <string><id>15001</id><value>目前並沒有連線到執行 XLink Kai 的電腦，</value></string>
   <string><id>15002</id><value>請檢查設定無誤後再嘗試連線。</value></string>
   <string><id>15003</id><value>輸入你的訊息。</value></string>
-  <string><id>15004</id><value>有人邀請你玩%s。</value></string>
+  <string><id>15004</id><value>你被邀請玩%s。</value></string>
   <string><id>15005</id><value>日期：%s</value></string>
   <string><id>15006</id><value>來自：%s</value></string>
   <string><id>15007</id><value>邀請</value></string>
-  <string><id>15008</id><value>有人邀請你加入%s。</value></string>
+  <string><id>15008</id><value>你被邀請加入%s。</value></string>
   <string><id>15009</id><value>離線</value></string>
   <string><id>15010</id><value>朋友</value></string>
   <string><id>15011</id><value>顯示：好友</value></string>
@@ -1119,7 +1162,7 @@
   <string><id>15058</id><value>主持遊戲</value></string>
   <string><id>15059</id><value>接受邀請！</value></string>
   <string><id>15060</id><value>訊息</value></string>
-  <string><id>15061</id><value>你邀請玩家%s。</value></string>
+  <string><id>15061</id><value>邀請玩家%s。</value></string>
   <string><id>15062</id><value>使用替代的 mplayer 位置</value></string> 
   
   <string><id>15100</id><value>瀏覽</value></string>
@@ -1159,7 +1202,7 @@
   <string><id>15253</id><value>尋找同類型藝人…</value></string>
   <string><id>15254</id><value>尋找同類型標籤…</value></string>
   <string><id>15255</id><value>你的設置 (%name%)</value></string>
-  <string><id>15256</id><value>所有的高排名標籤</value></string>
+  <string><id>15256</id><value>Overall top tags</value></string>
   <string><id>15257</id><value>Top artists for tag %name%</value></string>
   <string><id>15258</id><value>Top albums for tag %name%</value></string>
   <string><id>15259</id><value>Top tracks for tag %name%</value></string>

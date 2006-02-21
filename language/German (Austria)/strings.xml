@@ -89,7 +89,7 @@
   <string><id>155</id><value>-</value></string>
   <string><id>156</id><value>Frei</value></string>
   <string><id>157</id><value>Bildschirm:</value></string>
-  <string><id>158</id><value>Freier Speicher</value></string>
+  <string><id>158</id><value>Freier Speicher:</value></string>
   <string><id>159</id><value> keine Verbindung</value></string>
   <string><id>160</id><value>frei</value></string>
   <string><id>161</id><value>Nicht verfügbar</value></string>
@@ -122,7 +122,7 @@
   <string><id>188</id><value>Alles markieren</value></string>
   <string><id>189</id><value>Auslesen von Informationen</value></string>
   <string><id>190</id><value>Speichern</value></string>
-  <string><id>191</id><value>Wdgb zufällig</value></string>
+  <string><id>191</id><value>Wdgb: zufällig</value></string>
   <string><id>192</id><value>Löschen</value></string>
   <string><id>193</id><value>Durchsuchen</value></string>
   <string><id>194</id><value>Durchsuche Datenbank..</value></string>
@@ -149,7 +149,7 @@
   <string><id>215</id><value>Weichzeichnen</value></string>
   <string><id>216</id><value>Vergrößerung</value></string>
   <string><id>217</id><value>Bildverhältnis</value></string>
-  <string><id>218</id><value>DVD-Laufwerk</value></string>
+  <string><id>218</id><value>DVD Laufwerk</value></string>
   <string><id>219</id><value>CD/DVD einlegen</value></string>
   <string><id>220</id><value>Freigabe</value></string>
   <string><id>221</id><value>Netzwerk: Verbindung nicht möglich</value></string>
@@ -305,12 +305,12 @@
   <string><id>372</id><value>Größtenteils</value></string>
   <string><id>373</id><value>Sonnig</value></string>
   <string><id>374</id><value>Wolken</value></string>
-  <string><id>375</id><value>Schnee</value></string>
+  <string><id>375</id><value>Schneefall</value></string>
   <string><id>376</id><value>Regen</value></string>
   <string><id>377</id><value>Leichter</value></string>
   <string><id>378</id><value>Vormittags</value></string>
   <string><id>379</id><value>Nachmittags</value></string>
-  <string><id>380</id><value>Schauer</value></string>
+  <string><id>380</id><value>Schneeschauer</value></string>
   <string><id>381</id><value>Wenig</value></string>
   <string><id>382</id><value>Vereinzelt</value></string>
   <string><id>383</id><value>Wind</value></string>
@@ -319,7 +319,7 @@
   <string><id>386</id><value>Klar</value></string>
   <string><id>387</id><value>Wolken</value></string>
   <string><id>388</id><value>Morgens</value></string>
-  <string><id>389</id><value>Schauer</value></string>
+  <string><id>389</id><value>Regenschauer</value></string>
   <string><id>390</id><value>Böen</value></string>
   <string><id>391</id><value>niedrig</value></string>
   <string><id>392</id><value>mittel</value></string>
@@ -451,6 +451,17 @@
   <string><id>519</id><value>Ausführen in..</value></string>
   <string><id>520</id><value>XBE umbenennen</value></string>
 
+  <string><id>588</id><value>Party Modus beenden</value></string>
+  <string><id>589</id><value>Party Modus</value></string>
+  <string><id>590</id><value>Zufällig</value></string>
+  <string><id>591</id><value>Deaktiviert</value></string>
+  <string><id>592</id><value>Einzelnes</value></string>
+  <string><id>593</id><value>Alles</value></string> 
+  <string><id>594</id><value>Deaktiviert</value></string> 
+  <string><id>595</id><value>Wdhl: deaktiviert</value></string> 
+  <string><id>596</id><value>Wdhl: aktuelles</value></string> 
+  <string><id>597</id><value>Wdhl: alles</value></string> 
+
   <string><id>600</id><value>CD rippen</value></string>
   <string><id>601</id><value>Medium</value></string>
   <string><id>602</id><value>Standard</value></string>
@@ -565,6 +576,38 @@
   <string><id>998</id><value>Online spielen</value></string>
   <string><id>999</id><value>Online spielen</value></string>
   <string><id>1000</id><value>Bildschirmschoner Vorschau</value></string>
+
+  <string><id>1001</id><value>Verbindung nicht möglich..</value></string> 
+  <string><id>1002</id><value>Es konnte keine Verbindung erstellt werden.</value></string> 
+  <string><id>1003</id><value>Überprüfen sie die Verbindung / das Netzwerk.</value></string> 
+  <string><id>1004</id><value>Den Eintrag trotzdem hinzufügen?</value></string> 
+  <string><id>1005</id><value>Geben Sie einen Namen für die Freigabe ein:</value></string> 
+  <string><id>1006</id><value>IP Adresse</value></string> 
+  <string><id>1007</id><value>Netzwerkadresse hinzufügen</value></string> 
+  <string><id>1008</id><value>Protokoll</value></string> 
+  <string><id>1009</id><value>Server Adresse</value></string> 
+  <string><id>1010</id><value>Server Name</value></string> 
+  <string><id>1011</id><value>Remote Pfad</value></string> 
+  <string><id>1012</id><value>Freigabe</value></string> 
+  <string><id>1013</id><value>Port</value></string> 
+  <string><id>1014</id><value>Benutzername</value></string> 
+  <string><id>1015</id><value>Netzwerk - Server</value></string> 
+  <string><id>1016</id><value>Server - Adresse eingeben..</value></string> 
+  <string><id>1017</id><value>Server - Pfad eingeben..</value></string> 
+  <string><id>1018</id><value>Server - Port eingeben..</value></string> 
+  <string><id>1019</id><value>Benutzername eingeben..</value></string> 
+  <string><id>1020</id><value>Quelle hinzufügen.. (%s)</value></string> 
+  <string><id>1021</id><value>Pfad eingeben oder Speicherort auswählen:</value></string> 
+  <string><id>1022</id><value>Geben Sie einen Namen für diese Quelle ein:</value></string> 
+  <string><id>1023</id><value>Neue Freigabe auswählen</value></string> 
+  <string><id>1024</id><value>Auswählen</value></string> 
+  <string><id>1025</id><value>Verzeichnis-Informationen nicht abrufbar.</value></string> 
+  <string><id>1026</id><value>Quelle hinzufügen</value></string> 
+  <string><id>1027</id><value>Quelle bearbeiten</value></string> 
+  <string><id>1028</id><value>Quelle bearbeiten.. (%s)</value></string> 
+  <string><id>1029</id><value>Neue Bezeichnung eingeben..</value></string> 
+  <string><id>1030</id><value>Neues Bild</value></string> 
+  <string><id>1031</id><value>Neuen Bilderordner</value></string>
 
   <string><id>1200</id><value>SMB Freigabe</value></string> 
   <string><id>1201</id><value>SMB IP-Adresse</value></string> 
@@ -709,7 +752,7 @@
   <string><id>12014</id><value>Es wurden keine Trainer gefunden</value></string> 
   <string><id>12015</id><value>Trainer Einstellungen</value></string> 
   <string><id>12016</id><value>Es fehlen registrierte Einträge, aktualisieren sie ihre Liste</value></string>
-  <string><id>12017</id><value>Wiedergabe an letzter Position fortfahren</value></string>
+  <string><id>12017</id><value>Wiedergabe an letzter Position fortsetzen</value></string>
 
   <string><id>12310</id><value>0</value></string> 
   <string><id>12311</id><value>1</value></string> 
@@ -788,6 +831,7 @@
   <string><id>12384</id><value>24-Stunden-Anzeige</value></string> 
   <string><id>12385</id><value>Tag.Monat</value></string> 
   <string><id>12386</id><value>Monat.Tag</value></string> 
+  <string><id>12387</id><value>Datenbank aktualisieren</value></string>
 
   <string><id>12390</id><value>Betriebszeit</value></string> 
   <string><id>12391</id><value>Minuten</value></string> 
@@ -858,7 +902,7 @@
   <string><id>13274</id><value>Netzwerkverbindung besteht, jedoch ist kein DNS erreichbar.</value></string> 
   <string><id>13276</id><value>DVD-Laufwerk</value></string> 
   <string><id>13277</id><value>Speicher</value></string> 
-  <string><id>13278</id><value>Standard</value></string> 
+  <string><id>13278</id><value>Allgemein</value></string> 
   <string><id>13279</id><value>Netzwerk</value></string> 
   <string><id>13280</id><value>Video</value></string> 
   <string><id>13281</id><value>System</value></string> 
@@ -879,8 +923,8 @@
   <string><id>13296</id><value>Xbox verbunden.</value></string> 
   <string><id>13297</id><value>Xbox nicht verbunden, Netzwerk prüfen.</value></string> 
   <string><id>13298</id><value>XBLIVE-Key:</value></string> 
-  <string><id>13299</id><value>Temperatur:</value></string>
-  <string><id>13300</id><value>Lüftergeschwindigkeit:</value></string>
+  <string><id>13299</id><value>Temperatur</value></string>
+  <string><id>13300</id><value>Lüftergeschwindigkeit</value></string>
   <string><id>13301</id><value>Automatische Temperaturkontrolle</value></string>
   <string><id>13302</id><value>Manuelle Lüftereinstellung</value></string>
   <string><id>13303</id><value>Schriftart</value></string>
@@ -1154,7 +1198,7 @@
 
   <string><id>15250</id><value>Last.fm Radio an AudioScrobbler senden</value></string> 
   <string><id>15251</id><value>Last.fm verbinden...</value></string> 
-  <string><id>15252</id><value>Station wählend...</value></string> 
+  <string><id>15252</id><value>Station wählen...</value></string> 
   <string><id>15253</id><value>Suche nach ähnlichen Interpreten...</value></string>
   <string><id>15254</id><value>Suche nach ähnlichen Attributen...</value></string>
   <string><id>15255</id><value>Profil: (%name%)</value></string>
