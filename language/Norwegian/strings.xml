@@ -1,4 +1,4 @@
-<!-- Based on English XML v1.289. Last updated by vnmartinsen  !-->
+<!-- Based on English XML v1.299. Last updated by vnmartinsen  !-->
 <strings>
   <string><id>0</id><value>Mine Programmer</value></string>
   <string><id>1</id><value>Mine Bilder</value></string>
@@ -454,6 +454,16 @@
   <string><id>519</id><value>Start om..</value></string>
   <string><id>520</id><value>Rediger XBE-tittel</value></string>
 
+  <string><id>589</id><value>Partymodus</value></string>
+  <string><id>590</id><value>Tilfeldig</value></string>
+  <string><id>591</id><value>Av</value></string>
+  <string><id>592</id><value>En</value></string>
+  <string><id>593</id><value>Alle</value></string>
+  <string><id>594</id><value>Av</value></string>
+  <string><id>595</id><value>Gjenta: Av</value></string>
+  <string><id>596</id><value>Gjenta: En</value></string>
+  <string><id>597</id><value>Gjenta: Alle</value></string>
+
   <string><id>600</id><value>Ripp musikk-CD</value></string>
   <string><id>601</id><value>Middels</value></string>
   <string><id>602</id><value>Standard</value></string>
@@ -570,6 +580,37 @@
   <string><id>998</id><value>XLink Kai</value></string>
   <string><id>999</id><value>Spill på nettet</value></string>
   <string><id>1000</id><value>Forhåndsvisning av skjermbeskytter</value></string>
+  <string><id>1001</id><value>Kan ikke koble til</value></string>
+  <string><id>1002</id><value>XBMC kunne ikke koble til denne nettverksbanen.</value></string>
+  <string><id>1003</id><value>Dette kan være fordi nettverket ikke er tilkoblet.</value></string>
+  <string><id>1004</id><value>Ønsker du å legge den til likevel?</value></string>
+  <string><id>1005</id><value>Skriv inn et navn for denne banen</value></string>
+  <string><id>1006</id><value>IP-adresse</value></string>
+  <string><id>1007</id><value>Legg til nettverkssted</value></string>
+  <string><id>1008</id><value>Protokoll</value></string>
+  <string><id>1009</id><value>Serveradresse</value></string>
+  <string><id>1010</id><value>Servernavn</value></string>
+  <string><id>1011</id><value>Nettverksbane</value></string>
+  <string><id>1012</id><value>Delt mappe</value></string>
+  <string><id>1013</id><value>Port</value></string>
+  <string><id>1014</id><value>Brukernavn</value></string>
+  <string><id>1015</id><value>nettverksserver</value></string>
+  <string><id>1016</id><value>Skriv inn adressen til serveren</value></string>
+  <string><id>1017</id><value>Skriv inn banen på serveren</value></string>
+  <string><id>1018</id><value>Skriv inn pornummeret</value></string>
+  <string><id>1019</id><value>Skriv inn brukernavn</value></string>
+  <string><id>1020</id><value>Legg til %s kilde</value></string>
+  <string><id>1021</id><value>Legg til banen eller lett etter media.</value></string>
+  <string><id>1022</id><value>Skriv inn et navn for denne media-kilden.</value></string>
+  <string><id>1023</id><value>Bla etter ny mappe</value></string>
+  <string><id>1024</id><value>Bla</value></string>
+  <string><id>1025</id><value>Kunne ikke motta mappeinformasjon.</value></string>
+  <string><id>1026</id><value>Legg til kilde</value></string>
+  <string><id>1027</id><value>Rediger kilde</value></string>
+  <string><id>1028</id><value>Rediger %s Kilde</value></string>
+  <string><id>1029</id><value>Skriv inn et nytt navn</value></string>
+  <string><id>1030</id><value>et bilde</value></string>
+  <string><id>1031</id><value>en bildemappe</value></string>
 
   <string><id>1200</id><value>SMB-mappe</value></string>
   <string><id>1201</id><value>SMB IP</value></string>
@@ -789,6 +830,7 @@
   <string><id>12384</id><value>24-timers klokke</value></string>
   <string><id>12385</id><value>Dag/Måned</value></string>
   <string><id>12386</id><value>Måned/Dag</value></string>
+  <string><id>12387</id><value>Skann database på nytt</value></string>
   
   <string><id>12390</id><value>Systemets oppetid</value></string>
   <string><id>12391</id><value>Minutter</value></string>
