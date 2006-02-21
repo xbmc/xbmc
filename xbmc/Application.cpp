@@ -3748,17 +3748,6 @@ bool CApplication::OnMessage(CGUIMessage& message)
       }
       g_infoManager.SetCurrentItem(m_itemCurrentFile);
 
-      if (IsPlayingAudio())
-      {
-        //  Activate audio scrobbler
-        if (!m_itemCurrentFile.IsInternetStream())
-        {
-          CScrobbler::GetInstance()->SetSongStartTime();
-          CScrobbler::GetInstance()->SetSubmitSong(true);
-        }
-        else
-          CScrobbler::GetInstance()->SetSubmitSong(false);
-      }
       return true;
     }
     break;
@@ -4337,6 +4326,16 @@ void CApplication::RestoreMusicScanSettings()
 
 void CApplication::CheckAudioScrobblerStatus()
 {
+  if (IsPlayingAudio() && !m_itemCurrentFile.IsInternetStream() && 
+      !CScrobbler::GetInstance()->ShouldSubmit() && GetTime()==0.0)
+  {
+    //  We seeked to the beginning of the file
+    //  reinit audio scrobbler
+    CScrobbler::GetInstance()->SetSongStartTime();
+    CScrobbler::GetInstance()->SetSubmitSong(true);
+    return;
+  }
+
   if (!IsPlayingAudio() || !CScrobbler::GetInstance()->ShouldSubmit())
     return;
 
