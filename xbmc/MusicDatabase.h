@@ -143,6 +143,9 @@ public:
   bool GetArtistById(long idArtist, CStdString& strArtist);
   bool GetAlbumById(long idAlbum, CStdString& strAlbum);
 
+  bool GetVariousArtistsAlbums(const CStdString& strBaseDir, CFileItemList& items);
+  bool GetVariousArtistsAlbumsSongs(const CStdString& strBaseDir, CFileItemList& items);
+
 protected:
   map<CStdString, CArtistCache> m_artistCache;
   map<CStdString, CGenreCache> m_genreCache;

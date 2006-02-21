@@ -122,6 +122,11 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
           m_vecItems.m_strPath = "musicdb://7/";
           SetHistoryForPath(m_vecItems.m_strPath);
         }
+        else if (strDestination.Equals("Compilations"))
+        {
+          m_vecItems.m_strPath = "musicdb://8/";
+          SetHistoryForPath(m_vecItems.m_strPath);
+        }
         else if (strDestination.Equals("Playlists"))
         {
           m_vecItems.m_strPath = CUtil::MusicPlaylistsLocation();

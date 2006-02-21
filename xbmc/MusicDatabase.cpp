@@ -3776,3 +3776,97 @@ bool CMusicDatabase::GetRandomSong(CFileItem* item)
   }
   return false;
 }
+
+bool CMusicDatabase::GetVariousArtistsAlbums(const CStdString& strBaseDir, CFileItemList& items)
+{
+  try
+  {
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS.get()) return false;
+
+    CStdString strVariousArtists = g_localizeStrings.Get(340);
+    long idVariousArtists=AddArtist(strVariousArtists);
+    if (idVariousArtists<0)
+      return false;
+
+    CStdString strSQL = FormatSQL("select * from albumview where idArtist=%ld", idVariousArtists);
+
+    // run query
+    CLog::Log(LOGDEBUG, "CMusicDatabase::GetVariousArtistsAlbums() query: %s", strSQL.c_str());
+    if (!m_pDS->query(strSQL.c_str())) return false;
+    int iRowsFound = m_pDS->num_rows();
+    if (iRowsFound == 0)
+    {
+      m_pDS->close();
+      return false;
+    }
+
+    // get data from returned rows
+    while (!m_pDS->eof())
+    {
+      CFileItem* pItem=new CFileItem(GetAlbumFromDataset());
+      CStdString strDir;
+      strDir.Format("%ld/", m_pDS->fv("idAlbum").get_asLong());
+      pItem->m_strPath=strBaseDir + strDir;
+      items.Add(pItem);
+
+      m_pDS->next();
+    }
+
+    // cleanup
+    m_pDS->close();
+    return true;
+
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "CMusicDatabase::GetVariousArtistsAlbums() failed");
+  }
+  return false;
+}
+
+bool CMusicDatabase::GetVariousArtistsAlbumsSongs(const CStdString& strBaseDir, CFileItemList& items)
+{
+  try
+  {
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS.get()) return false;
+
+    CStdString strVariousArtists = g_localizeStrings.Get(340);
+    long idVariousArtists=AddArtist(strVariousArtists);
+    if (idVariousArtists<0)
+      return false;
+
+    CStdString strSQL = FormatSQL("select * from songview where idAlbum IN (select idAlbum from album where idArtist=%ld)", idVariousArtists);
+
+    // run query
+    CLog::Log(LOGDEBUG, "CMusicDatabase::GetVariousArtistsAlbumsSongs() query: %s", strSQL.c_str());
+    if (!m_pDS->query(strSQL.c_str())) return false;
+    int iRowsFound = m_pDS->num_rows();
+    if (iRowsFound == 0)
+    {
+      m_pDS->close();
+      return false;
+    }
+
+    // get data from returned rows
+    while (!m_pDS->eof())
+    {
+      CFileItem *item = new CFileItem;
+      GetFileItemFromDataset(item, strBaseDir);
+      items.Add(item);
+
+      m_pDS->next();
+    }
+
+    // cleanup
+    m_pDS->close();
+    return true;
+
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "CMusicDatabase::GetVariousArtistsAlbumsSongs() failed");
+  }
+  return false;
+}
