@@ -3864,10 +3864,11 @@ bool CApplication::OnMessage(CGUIMessage& message)
             CGUIDialogMusicScan *dialog = (CGUIDialogMusicScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
             if (dialog && !dialog->IsRunning())
             {
-              if (g_musicDatabase.Open())
+              CMusicDatabase musicdatabase;
+              if (musicdatabase.Open())
               {
-                g_musicDatabase.IncrTop100CounterByFileName(pItem->GetFileName());
-                g_musicDatabase.Close();
+                musicdatabase.IncrTop100CounterByFileName(pItem->GetFileName());
+                musicdatabase.Close();
               }
             }
           }
@@ -4498,10 +4499,11 @@ void CApplication::CheckMusicPlaylist()
   // add songs if queue depth < 10
   if (playlist.size() < 10)
   {
-    if (g_musicDatabase.Open())
+    CMusicDatabase musicdatabase;
+    if (musicdatabase.Open())
     {
       CFileItem* pItem = new CFileItem;
-      if (g_musicDatabase.GetRandomSong(pItem))
+      if (musicdatabase.GetRandomSong(pItem))
       {
         CPlayList::CPlayListItem playlistItem;
         CUtil::ConvertFileItemToPlayListItem(pItem, playlistItem);
@@ -4514,7 +4516,7 @@ void CApplication::CheckMusicPlaylist()
         CLog::Log(LOGERROR,"PARTY MODE: Cannot get songs from database. Aborting.");
         m_bMusicPartyMode = false;
       }
-      g_musicDatabase.Close();
+      musicdatabase.Close();
     }
   }
 

@@ -144,7 +144,7 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
       CGUIWindowMusicBase::OnMessage(message);
 
       //  base class has opened the database, do our check
-      DisplayEmptyDatabaseMessage(g_musicDatabase.GetSongsCount() <= 0);
+      DisplayEmptyDatabaseMessage(m_musicdatabase.GetSongsCount() <= 0);
 
       if (m_bDisplayEmptyDatabaseMessage)
       {
@@ -281,7 +281,7 @@ void CGUIWindowMusicNav::DoSearch(const CStdString& strSearch, CFileItemList& it
 {
   // get matching genres
   VECGENRES genres;
-  g_musicDatabase.GetGenresByName(strSearch, genres);
+  m_musicdatabase.GetGenresByName(strSearch, genres);
 
   if (genres.size())
   {
@@ -298,7 +298,7 @@ void CGUIWindowMusicNav::DoSearch(const CStdString& strSearch, CFileItemList& it
 
   // get matching artists
   VECARTISTS artists;
-  g_musicDatabase.GetArtistsByName(strSearch, artists);
+  m_musicdatabase.GetArtistsByName(strSearch, artists);
 
   if (artists.size())
   {
@@ -315,7 +315,7 @@ void CGUIWindowMusicNav::DoSearch(const CStdString& strSearch, CFileItemList& it
 
   // get matching albums
   VECALBUMS albums;
-  g_musicDatabase.GetAlbumsByName(strSearch, albums);
+  m_musicdatabase.GetAlbumsByName(strSearch, albums);
 
   if (albums.size())
   {
@@ -332,7 +332,7 @@ void CGUIWindowMusicNav::DoSearch(const CStdString& strSearch, CFileItemList& it
 
   // get matching songs
   VECSONGS songs;
-  g_musicDatabase.FindSongsByName(strSearch, songs, true);
+  m_musicdatabase.FindSongsByName(strSearch, songs, true);
 
   if (songs.size())
   {
@@ -494,7 +494,7 @@ void CGUIWindowMusicNav::SetArtistImage(int iItem)
     //  browsing for the artist thumb
     VECALBUMS albums;
     long idArtist=atol(strPath.Right(strPath.size()-nPos-1));
-    g_musicDatabase.GetAlbumsByArtistId(idArtist, albums);
+    m_musicdatabase.GetAlbumsByArtistId(idArtist, albums);
     if (albums.size())
     {
       strPicture = albums[0].strPath;

@@ -182,7 +182,7 @@ void CGUIWindowMusicSongs::OnScan()
   // check whether we have scanned here before
   bool bUpdateAll = false;
   CStdString strPaths;
-  g_musicDatabase.GetSubpathsFromPath(m_vecItems.m_strPath, strPaths);
+  m_musicdatabase.GetSubpathsFromPath(m_vecItems.m_strPath, strPaths);
   if (strPaths.length() > 2)
   { // yes, we have, we should prompt the user to ask if they want
     // to do a full scan, or just add new items...
@@ -297,7 +297,7 @@ void CGUIWindowMusicSongs::OnRetrieveMusicInfo(CFileItemList& items)
 
   MAPSONGS songsMap;
   // get all information for all files in current directory from database
-  g_musicDatabase.GetSongsByPath(m_vecItems.m_strPath, songsMap);
+  m_musicdatabase.GetSongsByPath(m_vecItems.m_strPath, songsMap);
 
   // Nothing in database and id3 tags disabled; dont load tags from cdda files
   if (songsMap.size() == 0 && !g_guiSettings.GetBool("MusicFiles.UseTags"))
@@ -415,7 +415,7 @@ void CGUIWindowMusicSongs::OnRetrieveMusicInfo(CFileItemList& items)
 void CGUIWindowMusicSongs::DoSearch(const CStdString& strSearch, CFileItemList& items)
 {
   VECALBUMS albums;
-  g_musicDatabase.FindAlbumsByName(strSearch, albums);
+  m_musicdatabase.FindAlbumsByName(strSearch, albums);
 
   if (albums.size())
   {
@@ -430,7 +430,7 @@ void CGUIWindowMusicSongs::DoSearch(const CStdString& strSearch, CFileItemList& 
   }
 
   VECSONGS songs;
-  g_musicDatabase.FindSongsByNameAndArtist(strSearch, songs);
+  m_musicdatabase.FindSongsByNameAndArtist(strSearch, songs);
 
   if (songs.size())
   {
