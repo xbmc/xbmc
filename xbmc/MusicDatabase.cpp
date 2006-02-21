@@ -11,8 +11,6 @@
 
 using namespace CDDB;
 
-CMusicDatabase g_musicDatabase;
-
 CMusicDatabase::CMusicDatabase(void)
 {
   m_fVersion=MUSIC_DATABASE_VERSION;
@@ -2408,7 +2406,6 @@ bool CMusicDatabase::CleanupAlbumsArtistsGenres(const CStdString &strPathIds)
 
 int CMusicDatabase::Cleanup(CGUIDialogProgress *pDlgProgress)
 {
-  Open();
   if (NULL == m_pDB.get()) return ERROR_DATABASE;
   if (NULL == m_pDS.get()) return ERROR_DATABASE;
   // first cleanup any songs with invalid paths
@@ -2780,12 +2777,16 @@ void CMusicDatabase::Clean()
     CGUIDialogProgress* dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
     if (dlgProgress)
     {
-      int iReturnString = g_musicDatabase.Cleanup(dlgProgress);
-      g_musicDatabase.Close();
-
-      if (iReturnString != ERROR_OK)
+      CMusicDatabase musicdatabase;
+      if (musicdatabase.Open())
       {
-        CGUIDialogOK::ShowAndGetInput(313, iReturnString, 0, 0);
+        int iReturnString = musicdatabase.Cleanup(dlgProgress);
+        musicdatabase.Close();
+
+        if (iReturnString != ERROR_OK)
+        {
+          CGUIDialogOK::ShowAndGetInput(313, iReturnString, 0, 0);
+        }
       }
       dlgProgress->Close();
     }

@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 21-02-2006 changed: removed the global instance of the musicdatabase, reason: sqlite is thread save but it's not save to share the same connection across thread
  - 21-02-2006 fixed: music nav, an album from the "Compilation" folder, showed all songs
  - 21-02-2006 changed: a song is resubmitted to last.fm, when seeking to the beginning again
  - 21-02-2006 updated: Portuguese (Brazil) language file (Thnx to mvbm)
