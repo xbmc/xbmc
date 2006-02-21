@@ -24,7 +24,7 @@ protected:
   virtual bool Update(const CStdString& strDirectory);
   virtual void OnPopupMenu(int iItem);
   void OnMove(int iItem, int iAction);
-  virtual void OnPlayMedia(int iItem);
+  virtual bool OnPlayMedia(int iItem);
 
   void SavePlayList();
   void ClearPlayList();

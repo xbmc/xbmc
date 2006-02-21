@@ -66,4 +66,5 @@ public:
 protected:
   virtual void SaveViewState();
   virtual int GetPlaylist();
+  virtual bool HideExtensions();
 };

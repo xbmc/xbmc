@@ -117,7 +117,12 @@ bool CGUIWindowScripts::Update(const CStdString &strDirectory)
   return true;
 }
 
-void CGUIWindowScripts::OnPlayMedia(int iItem)
+void CGUIWindowScripts::OnPrepareFileItems(CFileItemList &items)
+{
+  items.SetThumbs();
+}
+
+bool CGUIWindowScripts::OnPlayMedia(int iItem)
 {
   CFileItem* pItem=m_vecItems[iItem];
   CStdString strPath = pItem->m_strPath;
@@ -139,10 +144,12 @@ void CGUIWindowScripts::OnPlayMedia(int iItem)
       int selectedItem = m_viewControl.GetSelectedItem();
       Update(m_vecItems.m_strPath);
       m_viewControl.SetSelectedItem(selectedItem);
-      return;
+      return true;
     }
   }
   g_pythonParser.evalFile(strPath);
+
+  return true;
 }
 
 void CGUIWindowScripts::OnInfo()
