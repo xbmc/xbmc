@@ -395,7 +395,28 @@ int CXbmcHttp::xbmcGetMediaLocation(int numParas, CStdString paras[])
   if (!pShares)
     return SetResponse(openTag+"Error");
 
-  if (!strLocation.IsEmpty())
+  // special locations
+  bool bSpecial = false;
+  if (strType.Equals("music"))
+  {
+    if (strLocation.Left(10).Equals("musicdb://"))
+      bSpecial = true;
+    else if (strLocation.Equals("$playlists"))
+    {
+      strLocation = CUtil::MusicPlaylistsLocation();
+      bSpecial = true;
+    }
+  }
+  else if (strType.Equals("video"))
+  {
+    if (strLocation.Equals("$playlists"))
+    {
+      strLocation = CUtil::VideoPlaylistsLocation();
+      bSpecial = true;
+    }
+  }
+
+  if (!strLocation.IsEmpty() && !bSpecial)
   {
     VECSHARES vecShares = *pShares;
     bool bIsShareName = false;
