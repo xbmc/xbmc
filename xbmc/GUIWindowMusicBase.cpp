@@ -106,7 +106,7 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
   {
   case GUI_MSG_WINDOW_DEINIT:
     {
-      g_musicDatabase.Close();
+      m_musicdatabase.Close();
     }
     break;
 
@@ -115,7 +115,7 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
       int iLastControl = m_iLastControl;
       CGUIWindow::OnMessage(message);
 
-      g_musicDatabase.Open();
+      m_musicdatabase.Open();
 
       m_dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
 
@@ -284,7 +284,7 @@ void CGUIWindowMusicBase::OnInfo(int iItem)
       if (nPos>-1)
       {
         int idAlbum=atol(strPath.Right(strPath.size()-nPos-1));
-        g_musicDatabase.GetPathFromAlbumId(idAlbum, strPath);
+        m_musicdatabase.GetPathFromAlbumId(idAlbum, strPath);
       }
     }
     else
@@ -295,11 +295,11 @@ void CGUIWindowMusicBase::OnInfo(int iItem)
       {
         CUtil::RemoveExtension(strPath);
         int idSong=atol(strPath.Right(strPath.size()-nPos-1));
-        g_musicDatabase.GetPathFromSongId(idSong, strPath);
+        m_musicdatabase.GetPathFromSongId(idSong, strPath);
       }
     }
 
-    if (g_musicDatabase.GetAlbumsByPath(strPath, albums))
+    if (m_musicdatabase.GetAlbumsByPath(strPath, albums))
     {
       if (albums.size() == 1)
         bSaveDirThumb = true;
@@ -314,7 +314,7 @@ void CGUIWindowMusicBase::OnInfo(int iItem)
     if (strAlbumName.IsEmpty())
       strAlbumName = strLabel;
 
-    if (g_musicDatabase.GetAlbumsByPath(strPath, albums))
+    if (m_musicdatabase.GetAlbumsByPath(strPath, albums))
     {
       if (albums.size() == 1)
         bSaveDirThumb = true;
@@ -345,7 +345,7 @@ void CGUIWindowMusicBase::OnInfo(int iItem)
       }
     }
   }
-  else if (pItem->m_bIsFolder && g_musicDatabase.GetAlbumsByPath(strPath, albums))
+  else if (pItem->m_bIsFolder && m_musicdatabase.GetAlbumsByPath(strPath, albums))
   { // Normal folder, query database for albums in this directory
 
     if (albums.size() == 1)
@@ -513,7 +513,7 @@ void CGUIWindowMusicBase::ShowAlbumInfo(const CStdString& strAlbum, const CStdSt
   // check cache
   CAlbum albuminfo;
   VECSONGS songs;
-  if (!bRefresh && g_musicDatabase.GetAlbumInfo(strAlbum, strPath, albuminfo, songs))
+  if (!bRefresh && m_musicdatabase.GetAlbumInfo(strAlbum, strPath, albuminfo, songs))
   {
     vector<CMusicSong> vecSongs;
     for (int i = 0; i < (int)songs.size(); i++)
@@ -589,9 +589,9 @@ void CGUIWindowMusicBase::ShowAlbumInfo(const CStdString& strAlbum, const CStdSt
 
         // save to database
         if (bRefresh)
-          g_musicDatabase.UpdateAlbumInfo(albuminfo, songs);
+          m_musicdatabase.UpdateAlbumInfo(albuminfo, songs);
         else
-          g_musicDatabase.AddAlbumInfo(albuminfo, songs);
+          m_musicdatabase.AddAlbumInfo(albuminfo, songs);
       }
       if (m_dlgProgress)
         m_dlgProgress->Close();
@@ -609,7 +609,7 @@ void CGUIWindowMusicBase::ShowAlbumInfo(const CStdString& strAlbum, const CStdSt
         http.Download(album.GetImageURL(), strThumb);
 
         if (bSaveDb && CFile::Exists(strThumb))
-          g_musicDatabase.SaveAlbumThumb(album.GetTitle(), album.GetAlbumPath(), strThumb);
+          m_musicdatabase.SaveAlbumThumb(album.GetTitle(), album.GetAlbumPath(), strThumb);
 
         pDlgAlbumInfo->SetAlbum(album);
         pDlgAlbumInfo->DoModal(GetID());
@@ -1276,7 +1276,7 @@ void CGUIWindowMusicBase::OnPopupMenu(int iItem)
     // CDDB lookup
     else if (btnid == btn_CDDB)
     {
-      if (g_musicDatabase.LookupCDDBInfo(true))
+      if (m_musicdatabase.LookupCDDBInfo(true))
         Update(m_vecItems.m_strPath);
     }
     // Delete
