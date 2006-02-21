@@ -233,21 +233,10 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
         }
         CStdString strCurrentItem = g_playlistPlayer.GetPlaylist(g_playlistPlayer.GetCurrentPlaylist())[nCurrentItem].m_strPath;
 
-        // need to mark currently playing item by path, not index
-        for (int i = 0; i < m_vecItems.Size(); ++i)
-        {
-          CFileItem* pItem = m_vecItems[i];
-          if (pItem->m_strPath.Equals(strCurrentItem))
-            pItem->Select(true);
-          else
-            pItem->Select(false);
-        }
-
-        /*
         int nFolderCount = m_vecItems.GetFolderCount();
 
         // is the previous item in this directory
-        for (int i = nFolderCount, n = 0; i < m_vecItems.Size(); i++)
+        for (int i = nFolderCount; i < m_vecItems.Size(); i++)
         {
           CFileItem* pItem = m_vecItems[i];
 
@@ -273,7 +262,6 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
             }
           } // for (int i=nFolderCount, n=0; i<(int)m_vecItems.size(); i++)
         }
-        */
 
       }
     }
@@ -283,6 +271,9 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
   return CGUIWindow::OnMessage(message);
 }
 
+// \brief Updates the states (enable, disable, visible...) 
+// of the controls defined by this window
+// Override this function in a derived class to add new controls
 void CGUIMediaWindow::UpdateButtons()
 {
   if (m_guiState.get())
@@ -340,6 +331,7 @@ void CGUIMediaWindow::ClearFileItems()
   m_vecItems.Clear(); // will clean up everything
 }
 
+// \brief Sorts Fileitems based on the sort method and sort oder provided by guiViewState
 void CGUIMediaWindow::SortItems(CFileItemList &items)
 {
   auto_ptr<CGUIViewState> guiState(CGUIViewState::GetViewState(GetID(), items));
@@ -354,6 +346,7 @@ void CGUIMediaWindow::SortItems(CFileItemList &items)
   }
 }
 
+// \brief Formats item labels based on the formatting provided by guiViewState
 void CGUIMediaWindow::FormatItemLabels()
 {
   if (!m_guiState.get())
@@ -374,6 +367,7 @@ void CGUIMediaWindow::FormatItemLabels()
   }
 }
 
+// \brief Prepares and adds the fileitems list/thumb panel
 void CGUIMediaWindow::OnSort()
 {
   FormatItemLabels();
@@ -412,6 +406,9 @@ bool CGUIMediaWindow::GetDirectory(const CStdString &strDirectory, CFileItemList
   return true;
 }
 
+// \brief Set window to a specific directory
+// \param strDirectory The directory to be displayed in list/thumb control
+// This function calls OnPrepareFileItems() and OnFinalizeFileItems()
 bool CGUIMediaWindow::Update(const CStdString &strDirectory)
 {
   // get selected item
@@ -445,19 +442,33 @@ bool CGUIMediaWindow::Update(const CStdString &strDirectory)
   if (strDirectory.IsEmpty())
     m_history.ClearPathHistory();
 
-  if (m_guiState.get() && m_guiState->HideExtensions())
-    m_vecItems.RemoveExtensions();
+  m_iLastControl = GetFocusedControl();
 
+  //  Ask the derived class if it wants to load additional info
+  //  for the fileitems like media info or additional 
+  //  filtering on the items, setting thumbs.
   if (!m_vecItems.IsVirtualDirectoryRoot())
   {
-    m_vecItems.SetThumbs();
+    OnPrepareFileItems(m_vecItems);
+
     m_vecItems.FillInDefaultIcons();
   }
 
-  m_iLastControl = GetFocusedControl();
   m_guiState.reset(CGUIViewState::GetViewState(GetID(), m_vecItems));
   OnSort();
   UpdateButtons();
+
+  if (!m_vecItems.IsVirtualDirectoryRoot())
+  {
+    // Ask the devived class if it wants to do custom list operations,
+    // eg. changing the label
+    OnFinalizeFileItems(m_vecItems);
+
+    if (m_guiState.get() && m_guiState->HideExtensions())
+      m_vecItems.RemoveExtensions();
+  }
+
+  strSelectedItem = m_history.GetSelectedItem(m_vecItems.m_strPath);
 
   int iCurrentPlaylistSong = -1;
   CStdString strCurrentPlaylistSong;
@@ -466,10 +477,11 @@ bool CGUIMediaWindow::Update(const CStdString &strDirectory)
   if (CUtil::HasSlashAtEnd(strCurrentDirectory))
     strCurrentDirectory.Delete(strCurrentDirectory.size() - 1);
   // Is this window responsible for the current playlist?
-  if (m_guiState.get() && g_playlistPlayer.GetCurrentPlaylist()==m_guiState->GetPlaylist() && strCurrentDirectory==m_guiState->GetPlaylistDirectory())
+  if (g_application.IsPlaying() && m_guiState.get() && 
+      g_playlistPlayer.GetCurrentPlaylist()==m_guiState->GetPlaylist() && 
+      strCurrentDirectory==m_guiState->GetPlaylistDirectory())
   {
     iCurrentPlaylistSong = g_playlistPlayer.GetCurrentSong();
-    strCurrentPlaylistSong = g_playlistPlayer.GetPlaylist(g_playlistPlayer.GetCurrentPlaylist())[iCurrentPlaylistSong].m_strPath;
   }
 
   bool bSelectedFound = false, bCurrentSongFound = false;
@@ -497,18 +509,9 @@ bool CGUIMediaWindow::Update(const CStdString &strDirectory)
     // synchronize playlist with current directory
     if (!bCurrentSongFound && iCurrentPlaylistSong > -1)
     {
-      /*
       if (!pItem->m_bIsFolder && !pItem->IsPlayList() && !pItem->IsNFO())
         iSongInDirectory++;
       if (iSongInDirectory == iCurrentPlaylistSong)
-      {
-        pItem->Select(true);
-        bCurrentSongFound = true;
-      }
-      */
-
-      // neet to match current song on the path, not the index
-      if (pItem->m_strPath.Equals(strCurrentPlaylistSong))
       {
         pItem->Select(true);
         bCurrentSongFound = true;
@@ -518,10 +521,31 @@ bool CGUIMediaWindow::Update(const CStdString &strDirectory)
 
   m_history.AddPath(strDirectory);
 
+  //m_history.DumpPathHistory();
+
   return true;
 }
 
-//  returns true, if the click is handled
+// \brief This function will be called by Update() before the
+// labels of the fileitems are formatted. Override this function
+// to set custom thumbs or load additional media info. 
+// It's used to load tag info for music.
+void CGUIMediaWindow::OnPrepareFileItems(CFileItemList &items)
+{
+
+}
+
+// \brief This function will be called by Update() after the
+// labels of the fileitems are formatted. Override this function
+// to modify the fileitems. Eg. to modify the item label
+void CGUIMediaWindow::OnFinalizeFileItems(CFileItemList &items)
+{
+
+}
+
+// \brief With this function you can react on a users click in the list/thumb panel.
+// It returns true, if the click is handled.
+// This function calls OnPlayMedia()
 bool CGUIMediaWindow::OnClick(int iItem)
 {
   if ( iItem < 0 || iItem >= (int)m_vecItems.Size() ) return true;
@@ -623,14 +647,15 @@ bool CGUIMediaWindow::OnClick(int iItem)
     }
     else
     {
-      OnPlayMedia(iItem);
-      return true;
+      return OnPlayMedia(iItem);
     }
   }
 
   return false;
 }
 
+// \brief Checks if there is a disc in the dvd drive and whether the
+// network is connected or not.
 bool CGUIMediaWindow::HaveDiscOrConnection(CStdString& strPath, int iDriveType)
 {
   if (iDriveType==SHARE_TYPE_DVD)
@@ -655,6 +680,7 @@ bool CGUIMediaWindow::HaveDiscOrConnection(CStdString& strPath, int iDriveType)
   return true;
 }
 
+// \brief Shows a standard errormessage for a given pItem.
 void CGUIMediaWindow::ShowShareErrorMessage(CFileItem* pItem)
 {
   if (pItem->m_bIsShareOrDrive)
@@ -676,9 +702,11 @@ void CGUIMediaWindow::ShowShareErrorMessage(CFileItem* pItem)
   }
 }
 
+// \brief The functon goes up one level in the directory tree
 void CGUIMediaWindow::GoParentFolder()
 {
-  m_history.DumpPathHistory();
+  //m_history.DumpPathHistory();
+
   // remove current directory if its on the stack
   if (m_history.GetParentPath() == m_vecItems.m_strPath)
       m_history.RemoveParentPath();
@@ -712,6 +740,8 @@ void CGUIMediaWindow::GoParentFolder()
 
 }
 
+// \brief Override the function to change the default behavior on how
+// a selected item history should look like
 void CGUIMediaWindow::GetDirectoryHistoryString(const CFileItem* pItem, CStdString& strHistoryString)
 {
   if (pItem->m_bIsShareOrDrive)
@@ -756,6 +786,8 @@ void CGUIMediaWindow::GetDirectoryHistoryString(const CFileItem* pItem, CStdStri
   }
 }
 
+// \brief Call this function to create a directory history for the
+// path given by strDirectory.
 void CGUIMediaWindow::SetHistoryForPath(const CStdString& strDirectory)
 {
   if (!strDirectory.IsEmpty())
@@ -785,6 +817,9 @@ void CGUIMediaWindow::SetHistoryForPath(const CStdString& strDirectory)
           GetDirectoryHistoryString(pItem, strHistory);
           m_history.SetSelectedItem(strHistory, "");
           m_history.AddPathFront(strPath);
+          m_history.AddPathFront("");
+
+          //m_history.DumpPathHistory();
           return ;
         }
       }
@@ -798,26 +833,35 @@ void CGUIMediaWindow::SetHistoryForPath(const CStdString& strDirectory)
   }
   else
     m_history.ClearPathHistory();
+
+  //m_history.DumpPathHistory();
 }
 
-void CGUIMediaWindow::OnPlayMedia(int iItem)
+// \brief Override if you want to change the default behavior, what is done
+// when the user clicks on a file.
+// This function is called by OnClick()
+bool CGUIMediaWindow::OnPlayMedia(int iItem)
 {
   // Reset Playlistplayer, playback started now does
   // not use the playlistplayer.
   g_playlistPlayer.Reset();
   g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_NONE);
   CFileItem* pItem=m_vecItems[iItem];
-  g_application.PlayFile(*pItem);
+
+  return g_application.PlayFile(*pItem);
 }
 
+// \brief Synchonize the fileitems with the playlistplayer
+// It recreated the playlist of the playlistplayer based
+// on the fileitems of the window
 void CGUIMediaWindow::UpdateFileList()
 {
   int nItem = m_viewControl.GetSelectedItem();
   CFileItem* pItem = m_vecItems[nItem];
   const CStdString& strSelected = pItem->m_strPath;
 
-  UpdateButtons();
   OnSort();
+  UpdateButtons();
   
   m_viewControl.SetSelectedItem(strSelected);
 

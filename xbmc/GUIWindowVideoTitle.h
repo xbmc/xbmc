@@ -10,7 +10,7 @@ public:
 
 protected:
   virtual bool GetDirectory(const CStdString &strDirectory, CFileItemList &items);
-  virtual bool Update(const CStdString &strDirectory);
+  virtual void OnPrepareFileItems(CFileItemList &items);
   virtual void UpdateButtons();
   virtual void OnDeleteItem(int iItem);
   virtual void OnQueueItem(int iItem);

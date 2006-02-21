@@ -10,6 +10,7 @@ public:
   virtual ~CGUIWindowMusicNav(void);
 
   virtual bool OnMessage(CGUIMessage& message);
+  virtual void Render();
   CFileItem CurrentDirectory() const { return m_vecItems;};
 
 
@@ -24,6 +25,9 @@ protected:
 
   void SetArtistImage(int iItem);
   bool GetSongsFromPlayList(const CStdString& strPlayList, CFileItemList &items);
+  void DisplayEmptyDatabaseMessage(bool bDisplay);
 
   VECSHARES m_shares;
+
+  bool m_bDisplayEmptyDatabaseMessage;  ///< If true we display a message informing the user to switch back to the Files view.
 };

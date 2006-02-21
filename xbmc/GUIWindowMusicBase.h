@@ -28,7 +28,6 @@ public:
   virtual ~CGUIWindowMusicBase(void);
   virtual bool OnMessage(CGUIMessage& message);
   virtual bool OnAction(const CAction& action);
-  virtual void Render();
   virtual void OnWindowLoaded();
 
 protected:
@@ -41,7 +40,6 @@ protected:
   \brief Overwrite to update your gui buttons (visible, enable,...)
   */
   virtual void UpdateButtons();
-  virtual bool Update(const CStdString &strDirectory);
 
   virtual void OnRetrieveMusicInfo(CFileItemList& items);
   virtual void AddItemToPlayList(const CFileItem* pItem, int iPlayList = PLAYLIST_MUSIC);
@@ -51,7 +49,7 @@ protected:
 
   // new methods
   virtual void PlayItem(int iItem);
-  virtual void OnPlayMedia(int iItem);
+  virtual bool OnPlayMedia(int iItem);
 
   void OnDeleteItem(int iItem);
   virtual void OnRenameItem(int iItem);
@@ -64,13 +62,10 @@ protected:
   void ShowAlbumInfo(const CStdString& strAlbum, const CStdString& strArtist, const CStdString& strPath, bool bSaveDb, bool bSaveDirThumb, bool bRefresh);
   void OnRipCD();
   void OnSearch();
-  void DisplayEmptyDatabaseMessage(bool bDisplay);
   virtual void LoadPlayList(const CStdString& strPlayList);
   
   typedef vector <CFileItem*>::iterator ivecItems; ///< CFileItem* vector Iterator
   CGUIDialogProgress* m_dlgProgress; ///< Progress dialog
-
-  bool m_bDisplayEmptyDatabaseMessage;  ///< If true we display a message informing the user to switch back to the Files view.
 
   // member variables to save frequently used g_guiSettings (which is slow)
   bool m_hideExtensions;

@@ -76,6 +76,7 @@ bool CGUIWindowVideoYear::GetDirectory(const CStdString &strDirectory, CFileItem
       pItem->m_strPath = years[i];
       pItem->m_bIsFolder = true;
       pItem->m_bIsShareOrDrive = false;
+      pItem->FillInDefaultIcon();
       m_vecItems.Add(pItem);
     }
   }
@@ -124,62 +125,29 @@ bool CGUIWindowVideoYear::GetDirectory(const CStdString &strDirectory, CFileItem
   return true;
 }
 
-//****************************************************************************************************************************
-bool CGUIWindowVideoYear::Update(const CStdString &strDirectory)
+void CGUIWindowVideoYear::OnPrepareFileItems(CFileItemList &items)
 {
-  // get selected item
-  int iItem = m_viewControl.GetSelectedItem();
-  CStdString strSelectedItem = "";
-  if (iItem >= 0 && iItem < m_vecItems.Size())
-  {
-    CFileItem* pItem = m_vecItems[iItem];
-    if (!pItem->IsParentFolder())
-    {
-      strSelectedItem = pItem->m_strPath;
-      m_history.SetSelectedItem(strSelectedItem, m_vecItems.m_strPath);
-    }
-  }
-  ClearFileItems();
-
-  CStdString strOldDirectory = m_vecItems.m_strPath;
-
-  if (!GetDirectory(strDirectory, m_vecItems))
-    return !Update(strOldDirectory); // We assume, we can get the parent 
-                                     // directory again, but we have to 
-                                     // return false to be able to eg. show 
-                                     // an error message.
-
-  m_vecItems.SetThumbs();
-  SetIMDBThumbs(m_vecItems);
+  items.SetThumbs();
 
   // Fill in default icons
+  // normally this is done by the base class for us
+  // but the m_strPath only contains the database id
+  // of the movie, so we must fake a videofile to fill
+  // in default icons
   CStdString strPath;
-  for (int i = 0; i < (int)m_vecItems.Size(); i++)
+  for (int i = 0; i < (int)items.Size(); i++)
   {
-    CFileItem* pItem = m_vecItems[i];
+    CFileItem* pItem = items[i];
+
+    if (pItem->m_bIsFolder)
+      continue;
+
     strPath = pItem->m_strPath;
     // Fake a videofile
     pItem->m_strPath = pItem->m_strPath + ".avi";
-
     pItem->FillInDefaultIcon();
     pItem->m_strPath = strPath;
   }
-
-  m_guiState.reset(CGUIViewState::GetViewState(GetID(), m_vecItems));
-  OnSort();
-  UpdateButtons();
-  strSelectedItem = m_history.GetSelectedItem(m_vecItems.m_strPath);
-  for (int i = 0; i < (int)m_vecItems.Size(); ++i)
-  {
-    CFileItem* pItem = m_vecItems[i];
-    if (pItem->m_strPath == strSelectedItem)
-    {
-      m_viewControl.SetSelectedItem(i);
-      break;
-    }
-  }
-
-  return true;
 }
 
 void CGUIWindowVideoYear::UpdateButtons()
