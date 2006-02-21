@@ -1990,6 +1990,18 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\FileSystem\MusicDatabaseDirectory\DirectoryNodeAlbum.h">
 				</File>
 				<File
+					RelativePath=".\xbmc\FileSystem\MusicDatabaseDirectory\DirectoryNodeAlbumCompilations.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\FileSystem\MusicDatabaseDirectory\DirectoryNodeAlbumCompilations.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\FileSystem\MusicDatabaseDirectory\DirectoryNodeAlbumCompilationsSongs.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\FileSystem\MusicDatabaseDirectory\DirectoryNodeAlbumCompilationsSongs.h">
+				</File>
+				<File
 					RelativePath=".\xbmc\FileSystem\MusicDatabaseDirectory\DirectoryNodeAlbumRecentlyAdded.cpp">
 				</File>
 				<File
