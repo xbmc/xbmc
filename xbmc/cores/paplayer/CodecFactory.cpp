@@ -22,6 +22,7 @@
 #include "SIDCodec.h"
 #include "AdplugCodec.h"
 #include "CubeCodec.h"
+#include "YMCodec.h"
 
 ICodec* CodecFactory::CreateCodec(const CStdString& strFileType)
 {
@@ -63,6 +64,8 @@ ICodec* CodecFactory::CreateCodec(const CStdString& strFileType)
     return new AdplugCodec();
   else if (CubeCodec::IsSupportedFormat(strFileType))
     return new CubeCodec();
+  else if (strFileType.Equals("ym"))
+    return new YMCodec();
 
   return NULL;
 }
