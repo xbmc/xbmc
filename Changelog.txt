@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 21-02-2006 added: Music Library "musicdb://" paths work with http api getmedialocation command.  
  - 21-02-2006 fixed: Initial control focus was wrong in many windows.
  - 21-02-2006 fixed: [ 1431850 ] Shoutcast video playlist labels showed server name instead of description.
  - 21-02-2006 fixed: WindowOpen animations weren't reversed on WindowClose if they hadn't passed the delay state.
