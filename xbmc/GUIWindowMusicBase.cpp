@@ -38,7 +38,7 @@ using namespace PLAYLIST;
 CGUIWindowMusicBase::CGUIWindowMusicBase(DWORD dwID, const CStdString &xmlFile)
     : CGUIMediaWindow(dwID, xmlFile)
 {
-  m_bDisplayEmptyDatabaseMessage = false;
+
 }
 
 CGUIWindowMusicBase::~CGUIWindowMusicBase ()
@@ -229,123 +229,6 @@ void CGUIWindowMusicBase::OnWindowLoaded()
   }
 #endif
   CGUIMediaWindow::OnWindowLoaded();
-}
-
-/// \brief Set window to a specific directory
-/// \param strDirectory The directory to be displayed in list/thumb control
-bool CGUIWindowMusicBase::Update(const CStdString &strDirectory)
-{
-  // get selected item
-  int iItem = m_viewControl.GetSelectedItem();
-  CStdString strSelectedItem = "";
-  if (iItem >= 0 && iItem < m_vecItems.Size())
-  {
-    CFileItem* pItem = m_vecItems[iItem];
-    if (!pItem->IsParentFolder())
-    {
-      GetDirectoryHistoryString(pItem, strSelectedItem);
-    }
-  }
-
-  CStdString strOldDirectory = m_vecItems.m_strPath;
-
-  m_history.SetSelectedItem(strSelectedItem, strOldDirectory);
-
-  ClearFileItems();
-
-  if (!GetDirectory(strDirectory, m_vecItems))
-    return !Update(strOldDirectory); // We assume, we can get the parent 
-                                     // directory again, but we have to 
-                                     // return false to be able to eg. show 
-                                     // an error message.
-
-  // if we're getting the root bookmark listing
-  // make sure the path history is clean
-  if (strDirectory.IsEmpty())
-    m_history.ClearPathHistory();
-
-  if (m_guiState.get() && m_guiState->HideExtensions())
-    m_vecItems.RemoveExtensions();
-
-  RetrieveMusicInfo();
-
-  if (!m_vecItems.IsVirtualDirectoryRoot())
-  {
-    m_vecItems.SetMusicThumbs();
-    m_vecItems.FillInDefaultIcons();
-  }
-
-  m_guiState.reset(CGUIViewState::GetViewState(GetID(), m_vecItems));
-  FormatItemLabels();
-  SortItems(m_vecItems);
-  m_viewControl.SetItems(m_vecItems);
-
-  UpdateButtons();
-
-  strSelectedItem = m_history.GetSelectedItem(m_vecItems.m_strPath);
-
-  int iCurrentPlaylistSong = -1;
-  CStdString strCurrentPlaylistSong;
-  // Search current playlist item
-  CStdString strCurrentDirectory = m_vecItems.m_strPath;
-  if (CUtil::HasSlashAtEnd(strCurrentDirectory))
-    strCurrentDirectory.Delete(strCurrentDirectory.size() - 1);
-  // Is this window responsible for the current playlist?
-  if (m_guiState.get() && g_playlistPlayer.GetCurrentPlaylist()==m_guiState->GetPlaylist() && strCurrentDirectory==m_guiState->GetPlaylistDirectory())
-  {
-    iCurrentPlaylistSong = g_playlistPlayer.GetCurrentSong();
-    if (iCurrentPlaylistSong >= 0) strCurrentPlaylistSong = g_playlistPlayer.GetPlaylist(g_playlistPlayer.GetCurrentPlaylist())[iCurrentPlaylistSong].m_strPath;
-  }
-
-  bool bSelectedFound = false, bCurrentSongFound = false;
-  int iSongInDirectory = -1;
-  for (int i = 0; i < m_vecItems.Size(); ++i)
-  {
-    CFileItem* pItem = m_vecItems[i];
-
-    // unselect all items
-    if (pItem)
-      pItem->Select(false);
-
-    // Update selected item
-    if (!bSelectedFound)
-    {
-      CStdString strHistory;
-      GetDirectoryHistoryString(pItem, strHistory);
-      if (strHistory == strSelectedItem)
-      {
-        m_viewControl.SetSelectedItem(i);
-        bSelectedFound = true;
-      }
-    }
-
-    // synchronize playlist with current directory
-    if (!bCurrentSongFound && iCurrentPlaylistSong > -1)
-    {
-      if (!pItem->m_bIsFolder && !pItem->IsPlayList() && !pItem->IsNFO())
-        iSongInDirectory++;
-      if (iSongInDirectory == iCurrentPlaylistSong)
-      {
-        pItem->Select(true);
-        bCurrentSongFound = true;
-      }
-
-      /*
-      // neet to match current song on the path, not the index
-      if (pItem->m_strPath.Equals(strCurrentPlaylistSong))
-      {
-        pItem->Select(true);
-        bCurrentSongFound = true;
-      }
-      */
-    }
-  }
-
-  m_history.AddPath(strDirectory);
-
-  m_history.DumpPathHistory();
-
-  return true;
 }
 
 /// \brief Retrieves music info for albums from allmusic.com and displays them in CGUIWindowMusicInfo
@@ -807,14 +690,11 @@ void CGUIWindowMusicBase::OnRetrieveMusicInfo(CFileItemList& items)
 /// \brief Retrieve tag information for \e m_vecItems
 void CGUIWindowMusicBase::RetrieveMusicInfo()
 {
-  DWORD dwTick = timeGetTime();
+  DWORD dwStartTick = timeGetTime();
 
   OnRetrieveMusicInfo(m_vecItems);
 
-  dwTick = timeGetTime() - dwTick;
-  CStdString strTmp;
-  strTmp.Format("RetrieveMusicInfo() took %imsec\n", dwTick);
-  OutputDebugString(strTmp.c_str());
+  CLog::Log(LOGDEBUG, "RetrieveMusicInfo() took %imsec", timeGetTime()-dwStartTick);
 }
 
 /// \brief Add selected list/thumb control item to playlist and start playing
@@ -1233,32 +1113,6 @@ bool CGUIWindowMusicBase::FindAlbumInfo(const CStdString& strAlbum, const CStdSt
   return false;
 }
 
-void CGUIWindowMusicBase::DisplayEmptyDatabaseMessage(bool bDisplay)
-{
-  m_bDisplayEmptyDatabaseMessage = bDisplay;
-}
-
-void CGUIWindowMusicBase::Render()
-{
-  CGUIWindow::Render();
-  if (m_bDisplayEmptyDatabaseMessage)
-  {
-    CGUIListControl *pControl = (CGUIListControl *)GetControl(CONTROL_LIST);
-    int iX = pControl->GetXPosition() + pControl->GetWidth() / 2;
-    int iY = pControl->GetYPosition() + pControl->GetHeight() / 2;
-    CGUIFont *pFont = pControl->GetLabelInfo().font;
-    if (pFont)
-    {
-      float fWidth, fHeight;
-      CStdStringW wszText = g_localizeStrings.Get(745); // "No scanned information for this view"
-      CStdStringW wszText2 = g_localizeStrings.Get(746); // "Switch back to Files view"
-      pFont->GetTextExtent(wszText, &fWidth, &fHeight);
-      pFont->DrawText((float)iX, (float)iY - fHeight, 0xffffffff, 0, wszText.c_str(), XBFONT_CENTER_X | XBFONT_CENTER_Y);
-      pFont->DrawText((float)iX, (float)iY + fHeight, 0xffffffff, 0, wszText2.c_str(), XBFONT_CENTER_X | XBFONT_CENTER_Y);
-    }
-  }
-}
-
 void CGUIWindowMusicBase::OnPopupMenu(int iItem)
 {
   if ( iItem < 0 || iItem >= m_vecItems.Size() ) return ;
@@ -1598,7 +1452,7 @@ void CGUIWindowMusicBase::LoadPlayList(const CStdString& strPlayList)
   }
 }
 
-void CGUIWindowMusicBase::OnPlayMedia(int iItem)
+bool CGUIWindowMusicBase::OnPlayMedia(int iItem)
 {
   // party mode
   if (g_application.m_bMusicPartyMode)
@@ -1618,7 +1472,9 @@ void CGUIWindowMusicBase::OnPlayMedia(int iItem)
 
     CGUIMessage msg(GUI_MSG_PLAYLIST_CHANGED, 0, 0, 0, 0, NULL);
     m_gWindowManager.SendMessage(msg);
+
+    return true;
   }
   else
-    CGUIMediaWindow::OnPlayMedia(iItem);
+    return CGUIMediaWindow::OnPlayMedia(iItem);
 }

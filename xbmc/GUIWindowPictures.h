@@ -25,7 +25,7 @@ protected:
 
   void OnPopupMenu(int iItem);
   void OnRegenerateThumbs();
-  void OnPlayMedia(int iItem);
+  virtual bool OnPlayMedia(int iItem);
   void OnShowPictureRecursive(const CStdString& strPicture);
   void OnSlideShow(const CStdString& strPicture);
   void OnSlideShow();
