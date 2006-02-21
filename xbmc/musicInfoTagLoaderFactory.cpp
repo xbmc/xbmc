@@ -19,6 +19,7 @@
 #include "MusicInfoTagLoaderSPC.h"
 #include "MusicInfoTagLoaderGYM.h"
 #include "MusicInfoTagLoaderAdplug.h"
+#include "MusicInfoTagLoaderYM.h"
 #include "util.h"
 
 
@@ -128,6 +129,11 @@ IMusicInfoTagLoader* CMusicInfoTagLoaderFactory::CreateLoader(const CStdString& 
   else if (strExtension == "gym")
   {
     CMusicInfoTagLoaderGYM *pTagLoader = new CMusicInfoTagLoaderGYM();
+    return (IMusicInfoTagLoader*)pTagLoader;
+  } 
+  else if (strExtension == "ym")
+  {
+    CMusicInfoTagLoaderYM *pTagLoader = new CMusicInfoTagLoaderYM();
     return (IMusicInfoTagLoader*)pTagLoader;
   } 
   else if (AdplugCodec::IsSupportedFormat(strExtension))
