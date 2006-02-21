@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 21-02-2006 fixed: music nav, albums like Ænima from Tool where sorted above the "* All Albums" item
  - 21-02-2006 changed: media window base class, consolidated Update()
  - 21-02-2006 fixed: music nav, couldn't navigate directories after performing a seach
  - 21-02-2006 fixed: system info shows 0°C or 32°F if the hdd temp couldn't be read
