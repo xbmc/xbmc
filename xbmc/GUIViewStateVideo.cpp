@@ -281,3 +281,7 @@ int CGUIViewStateWindowVideoPlaylist::GetPlaylist()
   return PLAYLIST_VIDEO;
 }
 
+bool CGUIViewStateWindowVideoPlaylist::HideExtensions()
+{
+  return true;
+}

@@ -50,7 +50,6 @@ bool CGUIWindowVideoPlaylist::OnMessage(CGUIMessage& message)
 
   case GUI_MSG_WINDOW_DEINIT:
     {
-      OutputDebugString("deinit guiwindowvideoplaylist!\n");
       m_iSelectedItem = m_viewControl.GetSelectedItem();
       m_iLastControl = GetFocusedControl();
 
@@ -60,19 +59,14 @@ bool CGUIWindowVideoPlaylist::OnMessage(CGUIMessage& message)
 
   case GUI_MSG_WINDOW_INIT:
     {
-      OutputDebugString("init guiwindowvideoplaylist!\n");
-      CGUIWindow::OnMessage(message);
+      m_vecItems.m_strPath="";
 
-      Update("");
+      CGUIWindowVideoBase::OnMessage(message);
 
-      if (m_viewControl.HasControl(m_iLastControl) && m_vecItems.Size() > 0)
+      if (m_viewControl.HasControl(m_iLastControl) && m_vecItems.Size() <= 0)
       {
-        m_viewControl.SetFocused();
-      }
-
-      if (m_iSelectedItem > -1)
-      {
-        m_viewControl.SetSelectedItem(m_iSelectedItem);
+        m_iLastControl = CONTROL_BTNVIEWASICONS;
+        SET_CONTROL_FOCUS(m_iLastControl, 0);
       }
 
       if (g_application.IsPlayingVideo() && g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_VIDEO)
@@ -83,8 +77,6 @@ bool CGUIWindowVideoPlaylist::OnMessage(CGUIMessage& message)
           m_viewControl.SetSelectedItem(iSong);
         }
       }
-
-      UpdateButtons();
 
       return true;
     }
@@ -228,33 +220,14 @@ void CGUIWindowVideoPlaylist::ClearPlayList()
     g_playlistPlayer.Reset();
     g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_NONE);
   }
-  UpdateListControl();
+  OnSort();
   UpdateButtons();
   SET_CONTROL_FOCUS(CONTROL_BTNVIEWASICONS, 0);
 }
 
-void CGUIWindowVideoPlaylist::UpdateListControl()
+void CGUIWindowVideoPlaylist::OnPrepareFileItems(CFileItemList &items)
 {
-  for (int i = 0; i < (int)m_vecItems.Size(); i++)
-  {
-    CFileItem* pItem = m_vecItems[i];
-
-    // Format label for listcontrol
-    // and set thumb/icon for item
-    OnFileItemFormatLabel(pItem);
-  }
-
-  SortItems(m_vecItems);
-
-  m_viewControl.SetItems(m_vecItems);
-}
-
-void CGUIWindowVideoPlaylist::OnFileItemFormatLabel(CFileItem* pItem)
-{
-  pItem->SetThumb();
-  pItem->FillInDefaultIcon();
-  // Remove extension from title if it exists
-  pItem->SetLabel(CUtil::GetTitleFromPath(pItem->GetLabel()));
+  items.SetThumbs();
 }
 
 void CGUIWindowVideoPlaylist::UpdateButtons()
@@ -358,80 +331,16 @@ bool CGUIWindowVideoPlaylist::GetDirectory(const CStdString &strDirectory, CFile
   return true;
 }
 
-bool CGUIWindowVideoPlaylist::Update(const CStdString &strDirectory)
+bool CGUIWindowVideoPlaylist::OnPlayMedia(int iItem)
 {
-  // get selected item
-  int iItem = m_viewControl.GetSelectedItem();
-  CStdString strSelectedItem = "";
-  if (iItem >= 0 && iItem < (int)m_vecItems.Size())
-  {
-    CFileItem* pItem = m_vecItems[iItem];
-    if (!pItem->IsParentFolder())
-    {
-      GetDirectoryHistoryString(pItem, strSelectedItem);
-    }
-  }
-
-  ClearFileItems();
-
-  m_history.SetSelectedItem(strSelectedItem, m_vecItems.m_strPath);
-  m_vecItems.m_strPath = strDirectory;
-
-  GetDirectory(m_vecItems.m_strPath, m_vecItems);
-
-  m_guiState.reset(CGUIViewState::GetViewState(GetID(), m_vecItems));
-  UpdateListControl();
-  UpdateButtons();
-
-  strSelectedItem = m_history.GetSelectedItem(m_vecItems.m_strPath);
-
-  int iCurrentSong = -1;
-  // Search current playlist item
-  CStdString strCurrentDirectory = m_vecItems.m_strPath;
-  if (CUtil::HasSlashAtEnd(strCurrentDirectory))
-    strCurrentDirectory.Delete(strCurrentDirectory.size() - 1);
-  // Is this window responsible for the current playlist?
-  if (m_guiState.get() && g_playlistPlayer.GetCurrentPlaylist()==m_guiState->GetPlaylist() && strCurrentDirectory==m_guiState->GetPlaylistDirectory())
-  {
-    iCurrentSong = g_playlistPlayer.GetCurrentSong();
-  }
-
-  bool bSelectedFound = false;
-  for (int i = 0; i < (int)m_vecItems.Size(); ++i)
-  {
-    CFileItem* pItem = m_vecItems[i];
-
-    // Update selected item
-    if (!bSelectedFound)
-    {
-      CStdString strHistory;
-      GetDirectoryHistoryString(pItem, strHistory);
-      if (strHistory == strSelectedItem)
-      {
-        m_viewControl.SetSelectedItem(i);
-        bSelectedFound = true;
-      }
-    }
-
-    // synchronize playlist with current directory
-    if (i == iCurrentSong)
-    {
-      pItem->Select(true);
-    }
-
-  }
-
-  return true;
-}
-
-void CGUIWindowVideoPlaylist::OnPlayMedia(int iItem)
-{
-  if ( iItem < 0 || iItem >= (int)m_vecItems.Size() ) return;
+  if ( iItem < 0 || iItem >= (int)m_vecItems.Size() ) return false;
   CFileItem* pItem = m_vecItems[iItem];
   CStdString strPath = pItem->m_strPath;
   g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_VIDEO);
   g_playlistPlayer.Reset();
   g_playlistPlayer.Play( iItem );
+
+  return true;
 }
 
 void CGUIWindowVideoPlaylist::RemovePlayListItem(int iItem)

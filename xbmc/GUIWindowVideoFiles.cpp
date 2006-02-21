@@ -183,90 +183,24 @@ void CGUIWindowVideoFiles::UpdateButtons()
   SET_CONTROL_LABEL(CONTROL_STACK, g_stSettings.m_iMyVideoStack + 14000);
 }
 
-bool CGUIWindowVideoFiles::GetDirectory(const CStdString &strDirectory, CFileItemList &items)
+void CGUIWindowVideoFiles::OnPrepareFileItems(CFileItemList &items)
 {
-  if (!CGUIWindowVideoBase::GetDirectory(strDirectory, items))
-    return false;
-
-  if (!m_vecItems.IsStack() && g_stSettings.m_iMyVideoStack != STACK_NONE)
+  if (!items.IsStack() && g_stSettings.m_iMyVideoStack != STACK_NONE)
   {
     //sort list ascending by filename before stacking...
-    m_vecItems.Sort(SORT_METHOD_LABEL, SORT_ORDER_ASC);
-    m_vecItems.Stack();
+    items.Sort(SORT_METHOD_LABEL, SORT_ORDER_ASC);
+    items.Stack();
   }
 
-  return true;
+  items.SetThumbs();
+  
+  SetIMDBThumbs(items);
 }
 
-bool CGUIWindowVideoFiles::Update(const CStdString &strDirectory)
+void CGUIWindowVideoFiles::OnFinalizeFileItems(CFileItemList &items)
 {
-  // get selected item
-  int iItem = m_viewControl.GetSelectedItem();
-  CStdString strSelectedItem = "";
-  if (iItem >= 0 && iItem < (int)m_vecItems.Size())
-  {
-    CFileItem* pItem = m_vecItems[iItem];
-    if (!pItem->IsParentFolder())
-    {
-      GetDirectoryHistoryString(pItem, strSelectedItem);
-      m_history.SetSelectedItem(strSelectedItem, m_vecItems.m_strPath);
-    }
-  }
-
-  CStdString strOldDirectory = m_vecItems.m_strPath;
-
-  m_history.SetSelectedItem(strSelectedItem, strOldDirectory);
-
-  ClearFileItems();
-
-  if (!GetDirectory(strDirectory, m_vecItems))
-    return !Update(strOldDirectory); // We assume, we can get the parent 
-                                     // directory again, but we have to 
-                                     // return false to be able to eg. show 
-                                     // an error message.
-
-  // if we're getting the root bookmark listing
-  // make sure the path history is clean
-  if (strDirectory.IsEmpty())
-    m_history.ClearPathHistory();
-
-  m_iLastControl = GetFocusedControl();
-
-  m_vecItems.SetThumbs();
-  
   if (g_stSettings.m_bMyVideoCleanTitles)
-    m_vecItems.CleanFileNames();
-  else if (m_guiState.get() && m_guiState->HideExtensions())
-    m_vecItems.RemoveExtensions();
-  
-  SetIMDBThumbs(m_vecItems);
-  m_vecItems.FillInDefaultIcons();
-
-  // changed this from OnSort() because it was incorrectly selecting
-  // the wrong item!
-  m_guiState.reset(CGUIViewState::GetViewState(GetID(), m_vecItems));
-  FormatItemLabels();
-  SortItems(m_vecItems);
-  m_viewControl.SetItems(m_vecItems);
-
-  UpdateButtons();
-
-  strSelectedItem = m_history.GetSelectedItem(m_vecItems.m_strPath);
-  for (int i = 0; i < (int)m_vecItems.Size(); ++i)
-  {
-    CFileItem* pItem = m_vecItems[i];
-    CStdString strHistory;
-    GetDirectoryHistoryString(pItem, strHistory);
-    if (strHistory == strSelectedItem)
-    {
-      m_viewControl.SetSelectedItem(i);
-      break;
-    }
-  }
-
-  m_history.AddPath(strDirectory);
-
-  return true;
+    items.CleanFileNames();
 }
 
 bool CGUIWindowVideoFiles::OnClick(int iItem)
@@ -285,14 +219,14 @@ bool CGUIWindowVideoFiles::OnClick(int iItem)
   return CGUIWindowVideoBase::OnClick(iItem);
 }
 
-void CGUIWindowVideoFiles::OnPlayMedia(int iItem)
+bool CGUIWindowVideoFiles::OnPlayMedia(int iItem)
 {
-  if ( iItem < 0 || iItem >= (int)m_vecItems.Size() ) return;
+  if ( iItem < 0 || iItem >= (int)m_vecItems.Size() ) return false;
   CFileItem* pItem = m_vecItems[iItem];
 
   AddFileToDatabase(pItem);
 
-  CGUIWindowVideoBase::OnPlayMedia(iItem);
+  return CGUIWindowVideoBase::OnPlayMedia(iItem);
 }
 
 void CGUIWindowVideoFiles::OnInfo(int iItem)

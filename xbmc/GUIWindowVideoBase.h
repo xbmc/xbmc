@@ -17,7 +17,6 @@ private:
   bool IsCorrectDiskInDrive(const CStdString& strFileName, const CStdString& strDVDLabel);
 protected:
   virtual void UpdateButtons();
-  virtual bool Update(const CStdString &strDirectory) { return false; }; // CONSOLIDATE??
   virtual void OnSort();
 
   virtual void SetIMDBThumbs(CFileItemList& items) {};
@@ -32,7 +31,7 @@ protected:
   bool OnClick(int iItem);
   void OnResumeItem(int iItem);
   void PlayItem(int iItem);
-  virtual void OnPlayMedia(int iItem);
+  virtual bool OnPlayMedia(int iItem);
   void LoadPlayList(const CStdString& strPlayList, int iPlayList = PLAYLIST_VIDEO);
   void DisplayEmptyDatabaseMessage(bool bDisplay);
 

@@ -62,6 +62,9 @@ bool CGUIWindowMusicSongs::OnMessage(CGUIMessage& message)
         CLog::Log(LOGINFO, "Attempting to default to: %s", strDestination.c_str());
       }
 
+      m_rootDir.SetMask(g_stSettings.m_szMyMusicExtensions);
+      m_rootDir.SetShares(g_settings.m_vecMyMusicShares);
+
       // try to open the destination path
       if (!strDestination.IsEmpty())
       {
@@ -94,13 +97,8 @@ bool CGUIWindowMusicSongs::OnMessage(CGUIMessage& message)
         }
 
         // need file filters or GetDirectory in SetHistoryPath fails
-        m_rootDir.SetMask(g_stSettings.m_szMyMusicExtensions);
-        m_rootDir.SetShares(g_settings.m_vecMyMusicShares);
         SetHistoryForPath(m_vecItems.m_strPath);
       }
-
-      m_rootDir.SetMask(g_stSettings.m_szMyMusicExtensions);
-      m_rootDir.SetShares(g_settings.m_vecMyMusicShares);
 
       return CGUIWindowMusicBase::OnMessage(message);
     }
@@ -202,15 +200,14 @@ void CGUIWindowMusicSongs::OnScan()
   return ;
 }
 
-bool CGUIWindowMusicSongs::GetDirectory(const CStdString &strDirectory, CFileItemList &items)
+void CGUIWindowMusicSongs::OnPrepareFileItems(CFileItemList &items)
 {
-  if (!CGUIWindowMusicBase::GetDirectory(strDirectory, items))
-    return false;
-
   // check for .CUE files here.
   items.FilterCueItems();
 
-  return true;
+  RetrieveMusicInfo();
+
+  items.SetMusicThumbs();
 }
 
 void CGUIWindowMusicSongs::UpdateButtons()

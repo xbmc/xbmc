@@ -735,18 +735,21 @@ bool CGUIWindowSystemInfo::GetHDDTemp(CStdString& strItemhdd)
 	CStdString lblhdd = g_localizeStrings.Get(13151).c_str();
 	DWORD	hddsmarttemp;
 	int	iSmartREQ	= 17; // SmartRequest HDD Temperature
-	hddsmarttemp = SYSINFO::Instance()->GetSmartValues(iSmartREQ);	
-	if(g_guiSettings.GetInt("Weather.TemperatureUnits") == 1 /*DEGREES_F*/)
-	{	
-		strItemhdd.Format("%s %2.2f%cF", lblhdd.c_str(), ((9.0 / 5.0) * hddsmarttemp) + 32.0, 176); 
+	hddsmarttemp = SYSINFO::Instance()->GetSmartValues(iSmartREQ);
+
+  if (hddsmarttemp>0)
+  {
+	  if(g_guiSettings.GetInt("Weather.TemperatureUnits") == 1 /*DEGREES_F*/)
+		  strItemhdd.Format("%s %2.2f%cF", lblhdd.c_str(), ((9.0 / 5.0) * hddsmarttemp) + 32.0, 176); 
+	  else
+		  strItemhdd.Format("%s %d.00%cC", lblhdd.c_str(),hddsmarttemp, 176);	
+
 		return true;
-	}
-	else
-	{	
-		strItemhdd.Format("%s %d.00%cC", lblhdd.c_str(),hddsmarttemp, 176);	
-		return true;
-	}
-	return false;
+  }
+
+  CStdString strUnknown=g_localizeStrings.Get(13205);
+	strItemhdd.Format("%s %s", lblhdd.c_str(), strUnknown.c_str());	
+	return true;
 }
 
 void CGUIWindowSystemInfo::GetFreeMemory(CStdString& strFreeMem)
