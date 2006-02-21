@@ -16,6 +16,8 @@
 #include "DirectoryNodeSongTop100.h"
 #include "DirectoryNodeAlbumTop100.h"
 #include "DirectoryNodeAlbumTop100Song.h"
+#include "DirectoryNodeAlbumCompilations.h"
+#include "DirectoryNodeAlbumCompilationsSongs.h"
 
 using namespace DIRECTORY::MUSICDATABASEDIRECTORY;
 
@@ -94,6 +96,10 @@ CDirectoryNode* CDirectoryNode::CreateNode(NODE_TYPE Type, const CStdString& str
     return new CDirectoryNodeAlbumRecentlyPlayed(strName, pParent);
   case NODE_TYPE_ALBUM_RECENTLY_PLAYED_SONGS:
     return new CDirectoryNodeAlbumRecentlyPlayedSong(strName, pParent);
+  case NODE_TYPE_ALBUM_COMPILATIONS:
+    return new CDirectoryNodeAlbumCompilations(strName, pParent);
+  case NODE_TYPE_ALBUM_COMPILATIONS_SONGS:
+    return new CDirectoryNodeAlbumCompilationsSongs(strName, pParent);
   }
 
   return NULL;
@@ -236,6 +242,7 @@ void CDirectoryNode::AddQueuingFolder(CFileItemList& items)
     //  All album related nodes
   case NODE_TYPE_ALBUM_RECENTLY_PLAYED:
   case NODE_TYPE_ALBUM_RECENTLY_ADDED:
+  case NODE_TYPE_ALBUM_COMPILATIONS:
   case NODE_TYPE_ALBUM_TOP100:
   case NODE_TYPE_ALBUM:
     pItem = new CFileItem(g_localizeStrings.Get(15102));  // "All Albums"
@@ -245,6 +252,7 @@ void CDirectoryNode::AddQueuingFolder(CFileItemList& items)
     //  All song related nodes
   case NODE_TYPE_ALBUM_RECENTLY_PLAYED_SONGS:
   case NODE_TYPE_ALBUM_RECENTLY_ADDED_SONGS:
+  case NODE_TYPE_ALBUM_COMPILATIONS_SONGS:
   case NODE_TYPE_ALBUM_TOP100_SONGS:
   case NODE_TYPE_SONG_TOP100:
   case NODE_TYPE_SONG:
