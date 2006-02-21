@@ -229,5 +229,3 @@ private:
 
   int m_iSongsBeforeCommit;
 };
-
-extern CMusicDatabase g_musicDatabase;

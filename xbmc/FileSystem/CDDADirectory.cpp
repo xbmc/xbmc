@@ -28,7 +28,8 @@ bool CCDDADirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
     return false;
 
   //  Preload CDDB info
-  g_musicDatabase.LookupCDDBInfo();
+  CMusicDatabase musicdatabase;
+  musicdatabase.LookupCDDBInfo();
 
   // If the disc has no tracks, we are finished here.
   int nTracks = pCdInfo->GetTrackCount();
