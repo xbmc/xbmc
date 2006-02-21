@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 21-02-2006 fixed: [ 1431850 ] Shoutcast video playlist labels showed server name instead of description.
  - 21-02-2006 fixed: WindowOpen animations weren't reversed on WindowClose if they hadn't passed the delay state.
  - 20-02-2006 fixed: acceleration wasn't being read for slide effects.
  - 20-02-2006 changed: SET_FOCUS now focuses the first focusable control with the given id (or attempts to focus the first non-focusable control with the given id if that fails).
