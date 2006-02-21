@@ -1205,7 +1205,7 @@ char* SYSINFO::ReturnBiosSign(char *str)
 	{
 		if ( str[cnt2] != ' ' )
 		{
-			RetStrSignBios[cnt1]=str[cnt2];
+			RetStrSignBios[cnt1]=toupper(str[cnt2]);
 			cnt1++;
 			cnt2++;
 		}
