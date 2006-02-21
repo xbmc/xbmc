@@ -1218,7 +1218,8 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
   }
   else if (strSetting == "MyMusic.CleanupMusicLibrary")
   {
-    g_musicDatabase.Clean();
+    CMusicDatabase musicdatabase;
+    musicdatabase.Clean();
     CUtil::DeleteDatabaseDirectoryCache();
   }
   else if (strSetting == "MusicPlayer.JumpToAudioHardware" || strSetting == "VideoPlayer.JumpToAudioHardware")

@@ -1415,12 +1415,13 @@ void CGUIInfoManager::SetCurrentSong(CFileItem &item)
     // we have a audio file.
     // Look if we have this file in database...
     bool bFound = false;
-    if (g_musicDatabase.Open())
+    CMusicDatabase musicdatabase;
+    if (musicdatabase.Open())
     {
       CSong song;
-      bFound = g_musicDatabase.GetSongByFileName(m_currentSong.m_strPath, song);
+      bFound = musicdatabase.GetSongByFileName(m_currentSong.m_strPath, song);
       m_currentSong.m_musicInfoTag.SetSong(song);
-      g_musicDatabase.Close();
+      musicdatabase.Close();
     }
 
     if (!bFound)

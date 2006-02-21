@@ -973,12 +973,13 @@ void CXbmcWeb::SetCurrentMediaItem(CFileItem& newItem)
   //	we have a audio file.
   //	Look if we have this file in database...
   bool bFound=false;
-  if (g_musicDatabase.Open())
+  CMusicDatabase musicdatabase;
+  if (musicdatabase.Open())
   {
     CSong song;
-    bFound=g_musicDatabase.GetSongByFileName(newItem.m_strPath, song);
+    bFound=musicdatabase.GetSongByFileName(newItem.m_strPath, song);
     tag.SetSong(song);
-    g_musicDatabase.Close();
+    musicdatabase.Close();
   }
 
   if (!bFound && g_guiSettings.GetBool("MusicFiles.UseTags"))
