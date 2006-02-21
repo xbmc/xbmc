@@ -335,6 +335,7 @@ bool CShoutcastDirectory::GetDirectory(const CStdString& strPath, CFileItemList 
 
           CFileItem* pItem = new CFileItem;
           pItem->m_strPath = pPlayListItem.GetFileName();
+          pItem->SetLabelPreformated(true);
           pItem->SetLabel(pPlayListItem.GetDescription());
           items.Add(pItem);
           vecCacheItems.Add(new CFileItem(*pItem));
