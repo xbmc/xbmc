@@ -41,7 +41,7 @@ bool CDirectoryNodeOverview::GetContent(CFileItemList& items)
   vecRoot.push_back(g_localizeStrings.Get(271));  // Top 100
   vecRoot.push_back(g_localizeStrings.Get(359));  // Recently Added Albums
   vecRoot.push_back(g_localizeStrings.Get(517));  // Recently Played Albums
-  vecRoot.push_back(g_localizeStrings.Get(521));  // Recently Played Albums
+  vecRoot.push_back(g_localizeStrings.Get(521));  // Compilations
 
   for (int i = 0; i < (int)vecRoot.size(); ++i)
   {
