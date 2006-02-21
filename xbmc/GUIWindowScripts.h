@@ -13,7 +13,8 @@ public:
 
 protected:
   virtual bool Update(const CStdString &strDirectory);
-  virtual void OnPlayMedia(int iItem);
+  virtual bool OnPlayMedia(int iItem);
+  virtual void OnPrepareFileItems(CFileItemList &items);
 
   void OnInfo();
 

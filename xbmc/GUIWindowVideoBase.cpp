@@ -974,17 +974,19 @@ void CGUIWindowVideoBase::GetStackedFiles(const CStdString &strFilePath1, vector
     movies.push_back(strFilePath);
 }
 
-void CGUIWindowVideoBase::OnPlayMedia(int iItem)
+bool CGUIWindowVideoBase::OnPlayMedia(int iItem)
 {
   // Reset Playlistplayer, playback started now does
   // not use the playlistplayer.
   g_playlistPlayer.Reset();
   g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_NONE);
 
-  if ( iItem < 0 || iItem >= (int)m_vecItems.Size() ) return;
+  if ( iItem < 0 || iItem >= (int)m_vecItems.Size() ) return false;
   CFileItem* pItem = m_vecItems[iItem];
 
   PlayMovie(pItem);
+
+  return true;
 }
 
 void CGUIWindowVideoBase::PlayMovie(const CFileItem *item)

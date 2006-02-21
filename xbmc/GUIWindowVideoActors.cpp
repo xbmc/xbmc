@@ -58,22 +58,8 @@ bool CGUIWindowVideoActors::OnMessage(CGUIMessage& message)
   return CGUIWindowVideoBase::OnMessage(message);
 }
 
-//****************************************************************************************************************************
-bool CGUIWindowVideoActors::Update(const CStdString &strDirectory)
+bool CGUIWindowVideoActors::GetDirectory(const CStdString &strDirectory, CFileItemList &items)
 {
-  // get selected item
-  int iItem = m_viewControl.GetSelectedItem();
-  CStdString strSelectedItem = "";
-  if (iItem >= 0 && iItem < m_vecItems.Size())
-  {
-    CFileItem* pItem = m_vecItems[iItem];
-    if (!pItem->IsParentFolder())
-    {
-      strSelectedItem = pItem->m_strPath;
-      m_history.SetSelectedItem(strSelectedItem, m_vecItems.m_strPath);
-    }
-  }
-  ClearFileItems();
   m_vecItems.m_strPath = strDirectory;
   if (m_vecItems.IsVirtualDirectoryRoot())
   {
@@ -87,10 +73,10 @@ bool CGUIWindowVideoActors::Update(const CStdString &strDirectory)
       pItem->m_strPath = actors[i];
       pItem->m_bIsFolder = true;
       pItem->m_bIsShareOrDrive = false;
+      pItem->FillInDefaultIcon();
       m_vecItems.Add(pItem);
     }
     m_vecItems.m_strPath = "";
-    SET_CONTROL_LABEL(LABEL_ACTOR, "");
   }
   else
   {
@@ -133,40 +119,40 @@ bool CGUIWindowVideoActors::Update(const CStdString &strDirectory)
         m_vecItems.Add(pItem);
       }
     }
-    SET_CONTROL_LABEL(LABEL_ACTOR, m_vecItems.m_strPath);
-  }
-  m_vecItems.SetThumbs();
-  SetIMDBThumbs(m_vecItems);
-
-  // Fill in default icons
-  CStdString strPath;
-  for (int i = 0; i < (int)m_vecItems.Size(); i++)
-  {
-    CFileItem* pItem = m_vecItems[i];
-    strPath = pItem->m_strPath;
-    // Fake a videofile
-    pItem->m_strPath = pItem->m_strPath + ".avi";
-
-    pItem->FillInDefaultIcon();
-    pItem->m_strPath = strPath;
-  }
-
-  m_guiState.reset(CGUIViewState::GetViewState(GetID(), m_vecItems));
-  OnSort();
-  UpdateButtons();
-  // update selected item
-  strSelectedItem = m_history.GetSelectedItem(m_vecItems.m_strPath);
-  for (int i = 0; i < (int)m_vecItems.Size(); ++i)
-  {
-    CFileItem* pItem = m_vecItems[i];
-    if (pItem->m_strPath == strSelectedItem)
-    {
-      m_viewControl.SetSelectedItem(i);
-      break;
-    }
   }
 
   return true;
+}
+
+void CGUIWindowVideoActors::OnPrepareFileItems(CFileItemList &items)
+{
+  items.SetThumbs();
+
+  // Fill in default icons
+  // normally this is done by the base class for us
+  // but the m_strPath only contains the database id
+  // of the movie, so we must fake a videofile to fill
+  // in default icons
+  CStdString strPath;
+  for (int i = 0; i < (int)items.Size(); i++)
+  {
+    CFileItem* pItem = items[i];
+
+    if (pItem->m_bIsFolder)
+      continue;
+
+    strPath = pItem->m_strPath;
+    // Fake a videofile
+    pItem->m_strPath = pItem->m_strPath + ".avi";
+    pItem->FillInDefaultIcon();
+    pItem->m_strPath = strPath;
+  }
+}
+
+void CGUIWindowVideoActors::UpdateButtons()
+{
+  CGUIWindowVideoBase::UpdateButtons();
+  SET_CONTROL_LABEL(LABEL_ACTOR, m_vecItems.m_strPath);
 }
 
 void CGUIWindowVideoActors::OnInfo(int iItem)

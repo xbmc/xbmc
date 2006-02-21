@@ -5,6 +5,9 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 21-02-2006 changed: media window base class, consolidated Update()
+ - 21-02-2006 fixed: music nav, couldn't navigate directories after performing a seach
+ - 21-02-2006 fixed: system info shows 0°C or 32°F if the hdd temp couldn't be read
  - 21-02-2006 added: Music Library "musicdb://" paths work with http api getmedialocation command.  
  - 21-02-2006 fixed: Initial control focus was wrong in many windows.
  - 21-02-2006 fixed: [ 1431850 ] Shoutcast video playlist labels showed server name instead of description.

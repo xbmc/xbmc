@@ -11,23 +11,21 @@ public:
   virtual bool OnAction(const CAction &action);
 
 protected:
-  virtual void OnPlayMedia(int iItem);
+  virtual bool OnPlayMedia(int iItem);
   virtual void SortItems(CFileItemList &items) {};
   virtual void FormatItemLabels() {};
   virtual void UpdateButtons();
-  virtual bool Update(const CStdString &strDirectory);
 
   virtual void OnPopupMenu(int iItem);
   void OnMove(int iItem, int iAction);
 
   virtual bool GetDirectory(const CStdString &strDirectory, CFileItemList &items);
   void ClearPlayList();
-  void UpdateListControl();
   void RemovePlayListItem(int iItem);
   bool MoveCurrentPlayListItem(int iItem, int iAction, bool bUpdate = true);
   void MoveItem(int iStart, int iDest);
 
-  void OnFileItemFormatLabel(CFileItem* pItem);
+  virtual void OnPrepareFileItems(CFileItemList &items);
   void ShufflePlayList();
   void SavePlayList();
 

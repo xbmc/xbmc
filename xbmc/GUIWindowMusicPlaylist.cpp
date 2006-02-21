@@ -510,7 +510,7 @@ void CGUIWindowMusicPlayList::UpdateButtons()
   SET_CONTROL_LABEL(CONTROL_LABELFILES, wszText);
 }
 
-void CGUIWindowMusicPlayList::OnPlayMedia(int iItem)
+bool CGUIWindowMusicPlayList::OnPlayMedia(int iItem)
 {
   if (g_application.m_bMusicPartyMode)
   {
@@ -547,6 +547,8 @@ void CGUIWindowMusicPlayList::OnPlayMedia(int iItem)
       g_application.PlayFile(*pItem);
     }
   }
+
+  return true;
 }
 
 void CGUIWindowMusicPlayList::OnItemLoaded(CFileItem* pItem)
@@ -612,11 +614,12 @@ bool CGUIWindowMusicPlayList::Update(const CStdString& strDirectory)
   if (m_tagloader.IsLoading())
     m_tagloader.StopThread();
 
-  bool bRet=CGUIWindowMusicBase::Update(strDirectory);
+  if (!CGUIWindowMusicBase::Update(strDirectory))
+    return false;
 
   m_tagloader.Load(m_vecItems);
 
-  return bRet;
+  return true;
 }
 
 void CGUIWindowMusicPlayList::ClearFileItems()

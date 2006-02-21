@@ -30,7 +30,9 @@ CGUIWindowMusicNav::CGUIWindowMusicNav(void)
     : CGUIWindowMusicBase(WINDOW_MUSIC_NAV, "MyMusicNav.xml")
 {
   m_vecItems.m_strPath = "?";
+  m_bDisplayEmptyDatabaseMessage = false;
 }
+
 CGUIWindowMusicNav::~CGUIWindowMusicNav(void)
 {
 }
@@ -565,4 +567,31 @@ bool CGUIWindowMusicNav::GetSongsFromPlayList(const CStdString& strPlayList, CFi
   }
 
   return true;
+}
+
+void CGUIWindowMusicNav::DisplayEmptyDatabaseMessage(bool bDisplay)
+{
+  m_bDisplayEmptyDatabaseMessage = bDisplay;
+}
+
+void CGUIWindowMusicNav::Render()
+{
+  CGUIWindowMusicBase::Render();
+
+  if (m_bDisplayEmptyDatabaseMessage)
+  {
+    CGUIListControl *pControl = (CGUIListControl *)GetControl(CONTROL_LIST);
+    int iX = pControl->GetXPosition() + pControl->GetWidth() / 2;
+    int iY = pControl->GetYPosition() + pControl->GetHeight() / 2;
+    CGUIFont *pFont = pControl->GetLabelInfo().font;
+    if (pFont)
+    {
+      float fWidth, fHeight;
+      CStdStringW wszText = g_localizeStrings.Get(745); // "No scanned information for this view"
+      CStdStringW wszText2 = g_localizeStrings.Get(746); // "Switch back to Files view"
+      pFont->GetTextExtent(wszText, &fWidth, &fHeight);
+      pFont->DrawText((float)iX, (float)iY - fHeight, 0xffffffff, 0, wszText.c_str(), XBFONT_CENTER_X | XBFONT_CENTER_Y);
+      pFont->DrawText((float)iX, (float)iY + fHeight, 0xffffffff, 0, wszText2.c_str(), XBFONT_CENTER_X | XBFONT_CENTER_Y);
+    }
+  }
 }

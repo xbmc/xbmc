@@ -228,60 +228,8 @@ bool CGUIWindowPictures::Update(const CStdString &strDirectory)
   if (m_thumbLoader.IsLoading())
     m_thumbLoader.StopThread();
 
-  // get selected item
-  int iItem = m_viewControl.GetSelectedItem();
-  CStdString strSelectedItem = "";
-  if (iItem >= 0 && iItem < (int)m_vecItems.Size())
-  {
-    CFileItem* pItem = m_vecItems[iItem];
-    if (!pItem->IsParentFolder())
-    {
-      GetDirectoryHistoryString(pItem, strSelectedItem);
-      m_history.SetSelectedItem(strSelectedItem, m_vecItems.m_strPath);
-    }
-  }
-
-  CStdString strOldDirectory=m_vecItems.m_strPath;
-
-  m_history.SetSelectedItem(strSelectedItem, strOldDirectory);
-
-  ClearFileItems();
-
-  if (!GetDirectory(strDirectory, m_vecItems))
-    return !Update(strOldDirectory); // We assume, we can get the parent 
-                                     // directory again, but we have to 
-                                     // return false to be able to eg. show 
-                                     // an error message.
-
-  CStdString strParentPath=m_history.GetParentPath();
-  // if we're getting the root bookmark listing
-  // make sure the path history is clean
-  if (strDirectory.IsEmpty())
-    m_history.ClearPathHistory();
-
-  if (m_guiState.get() && m_guiState->HideExtensions())
-    m_vecItems.RemoveExtensions();
-  m_vecItems.FillInDefaultIcons();
-
-  m_guiState.reset(CGUIViewState::GetViewState(GetID(), m_vecItems));
-  OnSort();
-  UpdateButtons();
-
-  strSelectedItem = m_history.GetSelectedItem(m_vecItems.m_strPath);
-
-  for (int i = 0; i < (int)m_vecItems.Size(); ++i)
-  {
-    CFileItem* pItem = m_vecItems[i];
-    CStdString strHistory;
-    GetDirectoryHistoryString(pItem, strHistory);
-    if (strHistory == strSelectedItem)
-    {
-      m_viewControl.SetSelectedItem(i);
-      break;
-    }
-  }
-
-  m_history.AddPath(strDirectory);
+  if (!CGUIMediaWindow::Update(strDirectory))
+    return false;
 
   m_thumbLoader.Load(m_vecItems);
 
@@ -347,15 +295,15 @@ bool CGUIWindowPictures::OnClick(int iItem)
   return false;
 }
 
-void CGUIWindowPictures::OnPlayMedia(int iItem)
+bool CGUIWindowPictures::OnPlayMedia(int iItem)
 {
-  if ( iItem < 0 || iItem >= (int)m_vecItems.Size() ) return;
+  if ( iItem < 0 || iItem >= (int)m_vecItems.Size() ) return false;
   CFileItem* pItem = m_vecItems[iItem];
   CStdString strPicture = pItem->m_strPath;
 
   CGUIWindowSlideShow *pSlideShow = (CGUIWindowSlideShow *)m_gWindowManager.GetWindow(WINDOW_SLIDESHOW);
   if (!pSlideShow)
-    return ;
+    return false;
   if (g_application.IsPlayingVideo())
     g_application.StopPlaying();
 
@@ -370,6 +318,8 @@ void CGUIWindowPictures::OnPlayMedia(int iItem)
   }
   pSlideShow->Select(strPicture);
   m_gWindowManager.ActivateWindow(WINDOW_SLIDESHOW);
+
+  return true;
 }
 
 void CGUIWindowPictures::OnShowPictureRecursive(const CStdString& strPicture)

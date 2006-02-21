@@ -27,6 +27,8 @@ protected:
   virtual bool GetDirectory(const CStdString &strDirectory, CFileItemList &items);
   virtual bool Update(const CStdString &strDirectory);
   virtual void OnSort();
+  virtual void OnPrepareFileItems(CFileItemList &items);
+  virtual void OnFinalizeFileItems(CFileItemList &items);
 
   virtual void ClearFileItems();
   virtual void SortItems(CFileItemList &items);
@@ -38,8 +40,8 @@ protected:
   void GetDirectoryHistoryString(const CFileItem* pItem, CStdString& strHistoryString);
   void SetHistoryForPath(const CStdString& strDirectory);
   virtual void LoadPlayList(const CStdString& strFileName) {}
-  virtual void OnPlayMedia(int iItem);
-  void CGUIMediaWindow::UpdateFileList();
+  virtual bool OnPlayMedia(int iItem);
+  void UpdateFileList();
 
 protected:
   CVirtualDirectory m_rootDir;
