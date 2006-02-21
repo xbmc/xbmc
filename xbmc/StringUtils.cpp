@@ -83,10 +83,10 @@ int StringUtils::FindNumber(const CStdString& strInput, const CStdString &strFin
 // and 0 if they are identical (essentially calculates left - right)
 int StringUtils::AlphaNumericCompare(const char *left, const char *right)
 {
-  char *l = (char *)left;
-  char *r = (char *)right;
-  char *ld, *rd;
-  char lc, rc;
+  unsigned char *l = (unsigned char *)left;
+  unsigned char *r = (unsigned char *)right;
+  unsigned char *ld, *rd;
+  unsigned char lc, rc;
   unsigned int lnum, rnum;
   while (*l != 0 && *r != 0)
   {
