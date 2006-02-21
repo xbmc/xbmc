@@ -103,6 +103,7 @@ CGUIViewStateMusicDatabase::CGUIViewStateMusicDatabase(const CFileItemList& item
       SetSortOrder(g_stSettings.m_MyMusicNavArtistsSortOrder);
     }
     break;
+  case NODE_TYPE_ALBUM_COMPILATIONS:
   case NODE_TYPE_ALBUM:
     {
       if (g_guiSettings.GetBool("MyMusic.IgnoreTheWhenSorting"))
@@ -192,6 +193,7 @@ CGUIViewStateMusicDatabase::CGUIViewStateMusicDatabase(const CFileItemList& item
       SetSortOrder(SORT_ORDER_NONE);
     }
     break;
+  case NODE_TYPE_ALBUM_COMPILATIONS_SONGS:
   case NODE_TYPE_SONG:
     {
       AddSortMethod(SORT_METHOD_TRACKNUM, 266, LABEL_MASKS("%N. %A - %T", "%D"));  // TrackNum, Artist, Title, Duration| empty, empty
@@ -270,6 +272,7 @@ void CGUIViewStateMusicDatabase::SaveViewState()
       g_stSettings.m_MyMusicNavArtistsSortOrder=GetSortOrder();
     }
     break;
+  case NODE_TYPE_ALBUM_COMPILATIONS:
   case NODE_TYPE_ALBUM:
     {
       g_stSettings.m_MyMusicNavAlbumsSortMethod=GetSortMethod();
@@ -304,6 +307,7 @@ void CGUIViewStateMusicDatabase::SaveViewState()
       g_stSettings.m_MyMusicNavAlbumsViewMethod=GetViewAsControl();
     }
     break;
+  case NODE_TYPE_ALBUM_COMPILATIONS_SONGS:
   case NODE_TYPE_SONG:
     {
       g_stSettings.m_MyMusicNavSongsSortMethod=GetSortMethod();
