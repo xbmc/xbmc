@@ -22,10 +22,11 @@ void CQueryParams::SetQueryParam(NODE_TYPE NodeType, const CStdString& strNodeNa
   case NODE_TYPE_ARTIST:
     m_idArtist=idDb;
     break;
-  case NODE_TYPE_ALBUM:
-  case NODE_TYPE_ALBUM_RECENTLY_ADDED:
   case NODE_TYPE_ALBUM_RECENTLY_PLAYED:
+  case NODE_TYPE_ALBUM_RECENTLY_ADDED:
+  case NODE_TYPE_ALBUM_COMPILATIONS:
   case NODE_TYPE_ALBUM_TOP100:
+  case NODE_TYPE_ALBUM:
     m_idAlbum=idDb;
     break;
   }
