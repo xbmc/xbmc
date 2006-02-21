@@ -457,6 +457,16 @@
   <string><id>519</id><value>Starta i...</value></string>
   <string><id>520</id><value>D&#246;p om XBE-titel</value></string>
 
+  <string><id>589</id><value>Festl&#228;ge</value></string>
+  <string><id>590</id><value>Slumpm&#228;ssig</value></string>
+  <string><id>591</id><value>Av</value></string>
+  <string><id>592</id><value>En</value></string>
+  <string><id>593</id><value>Alla</value></string>
+  <string><id>594</id><value>Av</value></string>
+  <string><id>595</id><value>Repetera: Av</value></string>
+  <string><id>596</id><value>Repetera: En</value></string>
+  <string><id>597</id><value>Repetera: Alla</value></string>
+
   <string><id>600</id><value>Rippa Audio-CD</value></string>
   <string><id>601</id><value>Medel</value></string>
   <string><id>602</id><value>Standard</value></string>
@@ -573,6 +583,37 @@
   <string><id>998</id><value>XLink Kai</value></string>
   <string><id>999</id><value>Online Spel</value></string>
   <string><id>1000</id><value>F&#246;rhandstitt av sk&#228;rmsl&#228;ckare</value></string>
+  <string><id>1001</id><value>Kunde inte ansluta</value></string>
+  <string><id>1002</id><value>XBMC kunde inte ansluta till n&#228;tverksplatsen.</value></string>
+  <string><id>1003</id><value>Detta kan bero p&#229; att inte n&#228;tverket &#228;r anslutet.</value></string>
+  <string><id>1004</id><value>Vill du l&#228;gga till det i alla fall?</value></string>
+  <string><id>1005</id><value>Skriv namn f&#246;r denna utdelning</value></string>
+  <string><id>1006</id><value>IP Adress</value></string>
+  <string><id>1007</id><value>L&#228;gg till n&#228;tverksplats</value></string>
+  <string><id>1008</id><value>Protokoll</value></string>
+  <string><id>1009</id><value>Serveradress</value></string>
+  <string><id>1010</id><value>Servernamn</value></string>
+  <string><id>1011</id><value>Fj&#228;rrs&#246;kv&#228;g</value></string>
+  <string><id>1012</id><value>Delad mapp</value></string>
+  <string><id>1013</id><value>Port</value></string>
+  <string><id>1014</id><value>Anv&#228;ndarnamn</value></string>
+  <string><id>1015</id><value>n&#228;tverksserver</value></string>
+  <string><id>1016</id><value>Skriv n&#228;tverksadress f&#246;r denna server</value></string>
+  <string><id>1017</id><value>Skriv s&#246;kv&#228;gen p&#229; servern</value></string>
+  <string><id>1018</id><value>Skriv in portnumret</value></string>
+  <string><id>1019</id><value>Skriv in anv&#228;ndarnamn</value></string>
+  <string><id>1020</id><value>L&#228;gg till %s k&#228;lla</value></string>
+  <string><id>1021</id><value>Skriv in s&#246;kv&#228;g eller bl&#228;ddra efter mediaplats.</value></string>
+  <string><id>1022</id><value>Skriv in namn f&#246;r denna mediak&#228;lla.</value></string>
+  <string><id>1023</id><value>Bl&#228;ddra efter ny utdelning</value></string>
+  <string><id>1024</id><value>Bl&#228;ddra</value></string>
+  <string><id>1025</id><value>Kunde inte h&#228;mta mappinformation.</value></string>
+  <string><id>1026</id><value>L&#228;gg till k&#228;lla</value></string>
+  <string><id>1027</id><value>Redigera k&#228;lla</value></string>
+  <string><id>1028</id><value>Redigera %s k&#228;lla</value></string>
+  <string><id>1029</id><value>Skriv in den nya beskrivningen</value></string>
+  <string><id>1030</id><value>en bild</value></string>
+  <string><id>1031</id><value>en bildmapp</value></string>
 
   <string><id>1200</id><value>SMB Utdelning</value></string>
   <string><id>1201</id><value>SMB IP</value></string>
@@ -800,6 +841,7 @@
   <string><id>12384</id><value>24 timmars klocka</value></string>
   <string><id>12385</id><value>Dag/M&#229;nad</value></string>
   <string><id>12386</id><value>M&#229;nad/Dag</value></string>
+  <string><id>12387</id><value>Skanna om databas</value></string>
 
   <string><id>12390</id><value>Systemets drifttid</value></string>
   <string><id>12391</id><value>minuter</value></string>

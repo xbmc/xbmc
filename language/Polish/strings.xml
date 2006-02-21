@@ -1,7 +1,7 @@
 
 <!-- T≥umaczenie NaPeK(napek@poczta.fm) -->
-<!-- Wszelkie modyfikacje t≥umaczenia powinny spe≥niaÊ nastÍpujπce warunki: -->
-<!-- Wprowadzajπcy modyfikacje nie moøe byÊ anonimowy, naleøy pozostawiÊ informacje o pierwotnym autorze -->
+<!-- Wszelkie modyfikacje t≥umaczenia powinny zawieraÊ informacje -->
+<!-- o autorze t≥umaczenia i wprowadzajπcym modyfikacje -->
 
 <strings>
   <string><id>0</id><value>Gry i Programy</value></string>
@@ -10,9 +10,10 @@
   <string><id>3</id><value>Filmy</value></string>
   <string><id>4</id><value>Przewodnik TV</value></string>
   <string><id>5</id><value>Ustawienia</value></string>
-  <!-- String with id 6 should not be set here, only in the english language file !-->
+
   <string><id>7</id><value>Eksplorator</value></string>
   <string><id>8</id><value>Pogoda</value></string>
+
   <string><id>11</id><value>Poniedzia≥ek</value></string>
   <string><id>12</id><value>Wtorek</value></string>
   <string><id>13</id><value>åroda</value></string>
@@ -20,6 +21,7 @@
   <string><id>15</id><value>Piπtek</value></string>
   <string><id>16</id><value>Sobota</value></string>
   <string><id>17</id><value>Niedziela</value></string>
+
   <string><id>21</id><value>Stycznia</value></string>
   <string><id>22</id><value>Lutego</value></string>
   <string><id>23</id><value>Marca</value></string>
@@ -32,6 +34,7 @@
   <string><id>30</id><value>Paüdziernika</value></string>
   <string><id>31</id><value>Listopada</value></string>
   <string><id>32</id><value>Grudnia</value></string>
+
   <string><id>98</id><value>Widok: Auto</value></string>
   <string><id>99</id><value>Widok: Auto Duøe</value></string>
   <string><id>100</id><value>Widok: Ikony</value></string>
@@ -139,7 +142,6 @@
   <string><id>202</id><value>O filmie:</value></string>
   <string><id>203</id><value>Opis:</value></string>
   <string><id>204</id><value>Ocena</value>:</string>
-  <string><id>2050</id><value>Czas trwania:</value></string>
   <string><id>205</id><value>G≥osy:</value></string>
   <string><id>206</id><value>Obsada:</value></string>
   <string><id>207</id><value>Opis</value></string>
@@ -306,7 +308,7 @@
   <string><id>369</id><value>Tytu≥</value></string>
   <string><id>370</id><value>Burze</value></string>
   <string><id>371</id><value>CzÍúciowo</value></string>
-  <string><id>372</id><value>CzeÍúciowe</value></string>
+  <string><id>372</id><value>CzÍúciowe</value></string>
   <string><id>373</id><value>Rozpogodzenia</value></string>
   <string><id>374</id><value>Zachmurzenie</value></string>
   <string><id>375</id><value>ånieg</value></string>
@@ -343,6 +345,7 @@
   <string><id>406</id><value>WilgotnoúÊ</value></string>
   <string><id>407</id><value>z</value></string>
   <string><id>408</id><value>na</value></string>
+
   <string><id>410</id><value>£πczÍ siÍ z Weather.com</value></string>
   <string><id>411</id><value>Pobieram pogodÍ dla:</value></string>
   <string><id>412</id><value>Nie mogÍ uzyskaÊ danych pogodowych</value></string>
@@ -384,7 +387,6 @@
   <string><id>448</id><value>LCD</value></string>
   <string><id>449</id><value>W≥πczone</value></string>
   <string><id>450</id><value>Kolumn</value></string>
-  <string><id>4501</id><value>Typ LCD</value></string>
   <string><id>451</id><value>Rzπd 1 adres</value></string>
   <string><id>452</id><value>Rzπd 2 adres</value></string>
   <string><id>453</id><value>Rzπd 3 adres</value></string>
@@ -455,6 +457,16 @@
   <string><id>518</id><value>Uruchom</value></string>
   <string><id>519</id><value>Uruchom w..</value></string>
   <string><id>520</id><value>Edytuj nazwÍ XBE</value></string>
+
+  <string><id>590</id><value>Losowo</value></string>
+  <string><id>591</id><value>Wy≥.</value></string>
+  <string><id>592</id><value>Raz</value></string>
+  <string><id>593</id><value>Wszystkie</value></string>
+  <string><id>594</id><value>Wy≥.</value></string>
+  <string><id>595</id><value>Powtarzanie: Wy≥.</value></string>
+  <string><id>596</id><value>Powtarzanie: Raz</value></string>
+  <string><id>597</id><value>Powtarzanie: Wszystkie</value></string>
+
   <string><id>600</id><value>Zgraj CD</value></string>
   <string><id>601</id><value>årednia</value></string>
   <string><id>602</id><value>Standardowa</value></string>
@@ -465,12 +477,14 @@
   <string><id>607</id><value>Do:</value></string>
   <string><id>608</id><value>Nie moøna zapisaÊ CD lub utworu</value></string>
   <string><id>609</id><value>CDDARipPath nie jest ustawiony w XboxMediaCenter.xml</value></string>
+
   <string><id>620</id><value>Rippowanie CD</value></string>
   <string><id>621</id><value>Koder</value></string>
   <string><id>622</id><value>JakoúÊ</value></string>
   <string><id>623</id><value>SzybkoúÊ transmisji</value></string>
   <string><id>624</id><value>Do≥πcz numer utworu</value></string>
   <string><id>625</id><value>Wszystkie piosenki</value></string>
+
   <string><id>629</id><value>Tryb wyúwietlania</value></string>
   <string><id>630</id><value>Normalny</value></string>
   <string><id>631</id><value>PowiÍkszenie</value></string>
@@ -479,7 +493,6 @@
   <string><id>634</id><value>Proporcje 16:9</value></string>
   <string><id>635</id><value>Oryginalny rozmiar</value></string>
   <string><id>636</id><value>W≥asny</value></string>
-
   <string><id>637</id><value>Odtwarzaj ponownie</value></string>
   <string><id>638</id><value>Tryb</value></string>
   <string><id>639</id><value>Uøyj poziomowania úcieøek</value></string>
@@ -488,7 +501,6 @@
   <string><id>642</id><value>Wzmocnienie poziomu - Pliki nie odtwarzane ponownie</value></string>
   <string><id>643</id><value>Unikaj obcinania powtÛrnie odtwarzanych plikÛw</value></string>
   <string><id>644</id><value>Przytnij czarne pasy</value></string>
-
   <string><id>645</id><value>MuszÍ buforowaÊ duøe pliki. KontynuowaÊ?</value></string>
   <string><id>646</id><value>UsuÒ tytu≥</value></string>
 
@@ -567,10 +579,40 @@
   <string><id>772</id><value>SprzÍt Audio</value></string>
   <string><id>773</id><value>PoszukujÍ</value></string>
   <string><id>774</id><value>Folder ze slajdami dla wygaszacza</value></string>
+
   <string><id>998</id><value>XLink KAI</value></string>
   <string><id>999</id><value>Rozgrywka Online</value></string>
-
   <string><id>1000</id><value>Podglπd wygaszacza</value></string>
+  <string><id>1001</id><value>Nie mogÍ po≥πczyÊ</value></string>
+  <string><id>1002</id><value>XBMC nie moøe siÍ po≥πczyÊ z lokacja sieciowπ.</value></string>
+  <string><id>1003</id><value>B≥πd moøe wystÍpowaÊ gdy sieÊ nie jest pod≥πczona.</value></string>
+  <string><id>1004</id><value>Czy chcesz dodaÊ mimo wszystko?</value></string>
+  <string><id>1005</id><value>Wpisz nazwÍ dla tego udzia≥u</value></string>
+  <string><id>1006</id><value>Adresy IP</value></string>
+  <string><id>1007</id><value>Dodaj lokacjÍ sieciowπ</value></string>
+  <string><id>1008</id><value>ProtokÛ≥</value></string>
+  <string><id>1009</id><value>Adresy serwera</value></string>
+  <string><id>1010</id><value>Nazwa serwera</value></string>
+  <string><id>1011</id><value>åcieøka</value></string>
+  <string><id>1012</id><value>UdostÍpniony folder</value></string>
+  <string><id>1013</id><value>Port</value></string>
+  <string><id>1014</id><value>Nazwa uøytkownika</value></string>
+  <string><id>1015</id><value>serwer sieciowy</value></string>
+  <string><id>1016</id><value>Wpisz adresy sieciowe serwera</value></string>
+  <string><id>1017</id><value>Wpisz úcieøkÍ na serwerze</value></string>
+  <string><id>1018</id><value>Wpisz numer portu</value></string>
+  <string><id>1019</id><value>Wpisz nazwÍ uøytkownika</value></string>
+  <string><id>1020</id><value>Dodaj %s èrÛd≥o</value></string>
+  <string><id>1021</id><value>Podaj úcieøkÍ lub wskaø lokacjÍ mediÛw.</value></string>
+  <string><id>1022</id><value>Wpisz nazwÍ dla tego ürÛd≥a mediÛw.</value></string>
+  <string><id>1023</id><value>Wskaø nowy udzia≥</value></string>
+  <string><id>1024</id><value>Przeglπdaj</value></string>
+  <string><id>1025</id><value>Nie mogÍ uzyskaÊ informacji o kjatalogu.</value></string>
+  <string><id>1026</id><value>Dodaj èrÛd≥o</value></string>
+  <string><id>1027</id><value>Edytuj èrÛd≥o</value></string>
+  <string><id>1028</id><value>Edytuj %s èrÛd≥o</value></string>
+
+
   <string><id>1200</id><value>SMB Udzia≥</value></string>
   <string><id>1201</id><value>SMB IP</value></string>
   <string><id>1202</id><value>SMB Grupa robocza</value></string>
@@ -600,7 +642,6 @@
   <string><id>1226</id><value>Pliki &amp; Muzyka &amp; Filmy</value></string>
   <string><id>1227</id><value>Pliki &amp; Obrazy &amp; Muzyka</value></string>
   <string><id>1228</id><value>Pliki &amp; Obrazy &amp; Filmy</value></string>
-
   <string><id>1229</id><value>Muzyka &amp; Programy</value></string>
   <string><id>1230</id><value>Filmy &amp; Programy</value></string>
   <string><id>1231</id><value>Obrazy &amp; Programy</value></string>
@@ -622,7 +663,6 @@
   <string><id>1256</id><value>Opoünienie ping'u</value></string>
   <string><id>1257</id><value>Czy chcesz siÍ pod≥πczyÊ do wykrytego XBOX'a ?</value></string>
 
-
   <string><id>1396</id><value>Zamiecie</value></string>
   <string><id>1397</id><value>i</value></string>
   <string><id>1398</id><value>ånieøyce</value></string>
@@ -638,6 +678,10 @@
   <string><id>1408</id><value>Kryszta≥ki</value></string>
   <string><id>1409</id><value>lodu</value></string>
   <string><id>1410</id><value>Spokojnie</value></string>
+
+  <string><id>2050</id><value>D≥ugoúÊ:</value></string>
+
+  <string><id>4501</id><value>Typ LCD</value></string>
 
   <string><id>10000</id><value>Ekran g≥Ûwny</value></string>
   <string><id>10001</id><value>Gry i Programy</value></string>
@@ -674,8 +718,6 @@
   <string><id>10503</id><value>Muzyka/artyúci</value></string>
   <string><id>10504</id><value>Top 100 Piosenki</value></string>
   <string><id>10505</id><value>Top 100 Albumy</value></string>
-
-
   <string><id>10506</id><value>Aplikacje</value></string>
   <string><id>10507</id><value>Konfiguracja</value></string>
   <string><id>10508</id><value>Prognoza pogody</value></string>
@@ -707,6 +749,12 @@
   <string><id>12009</id><value>PrzebudowujÍ index...</value></string>
   <string><id>12010</id><value>WrÛÊ do Muzyki</value></string>
   <string><id>12011</id><value>WrÛÊ do FilmÛw</value></string>
+  <string><id>12012</id><value>Uaktualnij listÍ trainerÛw</value></string>
+  <string><id>12013</id><value>Trainer</value></string>
+  <string><id>12014</id><value>Nie znaleziono trainerÛw</value></string>
+  <string><id>12015</id><value>Ustawienia</value></string>
+  <string><id>12016</id><value>Wszystkie zarejestrowane trainery znik≥y. Uaktualnij swojπ listÍ</value></string>
+  <string><id>12017</id><value>Wznawiaj od ostatniej pozycji</value></string>
 
   <string><id>12310</id><value>0</value></string>
   <string><id>12311</id><value>1</value></string>
@@ -772,6 +820,17 @@
   <string><id>12373</id><value>Zablokuj ustawienia</value></string>
   <string><id>12374</id><value>Zablokuj media</value></string>
   <string><id>12375</id><value>Tryb administratora</value></string>
+  <string><id>12376</id><value>Ustaw jako domyúlne dla wszystkich filmÛw</value></string>
+  <string><id>12377</id><value>Zapisane wczeúniej wartoúci zostanπ usuniÍte</value></string>
+  <string><id>12378</id><value>Pokazuj kaødy obraz dla</value></string>
+  <string><id>12379</id><value>Uøyj efektÛw Pan i Zoom</value></string>
+  <string><id>12380</id><value>Odtwarzaj filmy NTSC w czÍstotliwoúciach PAL</value></string>
+  <string><id>12381</id><value>Odtwarzaj filmy PAL w czÍstotliwoúciach NTSC</value></string>
+  <string><id>12382</id><value>Odtwarzaj filmy NTSC w PAL60</value></string>
+  <string><id>12383</id><value>12'sto godzinny zegar</value></string>
+  <string><id>12384</id><value>24'ro godzinny zegar</value></string>
+  <string><id>12385</id><value>DzieÒ/Miesiπc</value></string>
+  <string><id>12386</id><value>Miesiπc/DzieÒ</value></string>
 
   <string><id>12390</id><value>System pracuje</value></string>
   <string><id>12391</id><value>Minut</value></string>
@@ -779,10 +838,11 @@
   <string><id>12393</id><value>Dni</value></string>
   <string><id>12394</id><value>Ca≥kowity czas pracy</value></string>
   
-
   <string><id>12600</id><value>Pogoda</value></string>
+
   <string><id>12900</id><value>Wygaszacz</value></string>
   <string><id>12901</id><value>Pe≥noekranowe OSD</value></string>
+
   <string><id>13000</id><value>System</value></string>
   <string><id>13001</id><value>Natychmiastowe wy≥πczenie HDD</value></string>
   <string><id>13002</id><value>Tylko filmy</value></string>
@@ -790,7 +850,32 @@
   <string><id>13004</id><value>- Minimalny czas trwania</value></string>
   <string><id>13005</id><value>Wy≥πcz</value></string>
   <string><id>13006</id><value>Dashboard</value></string>
+
   <string><id>13100</id><value>Migotanie</value></string>
+ <string><id>13150</id><value>HDD Key:</value></string>
+  <string><id>13151</id><value>HDD Temp:</value></string>
+  <string><id>13152</id><value>DVD Model:</value></string>
+  <string><id>13153</id><value>DVD Firmware:</value></string>
+  <string><id>13154</id><value>HDD Model:</value></string>
+  <string><id>13155</id><value>HDD Serial:</value></string>
+  <string><id>13156</id><value>HDD Firmware:</value></string>
+  <string><id>13157</id><value>HDD Has≥o:</value></string>
+  <string><id>13158</id><value>HDD Stan blokady:</value></string>
+  <string><id>13159</id><value>Maska podsieci:</value></string>
+  <string><id>13160</id><value>Bramka:</value></string>
+  <string><id>13161</id><value>DNS:</value></string>
+  <string><id>13162</id><value>Nie moøna zainicjowaÊ</value></string>
+  <string><id>13163</id><value>GamePady na Porcie:</value></string>
+  <string><id>13164</id><value>Klawiatura na Porcie:</value></string>
+  <string><id>13165</id><value>Myszka na Porcie:</value></string>
+  <string><id>13166</id><value>Mikrofon na Porcie:</value></string>
+  <string><id>13167</id><value>MemoryStick na Porcie:</value></string>
+  <string><id>13168</id><value>Pilot na Porcie:</value></string>
+  <string><id>13169</id><value>Omijaj wybÛr CD</value></string>
+  <string><id>13170</id><value>Nigdy</value></string>
+  <string><id>13171</id><value>Natychmiast</value></string>
+  <string><id>13172</id><value>Po %i sekundach</value></string>
+
   <string><id>13200</id><value>Profile</value></string>
   <string><id>13201</id><value>UsuÒ profil '%s'?</value></string>
   <string><id>13202</id><value>Zapisz bieøπce ustawienia jako profil...</value></string>
@@ -799,15 +884,46 @@
   <string><id>13205</id><value>Nieznany</value></string>
   <string><id>13206</id><value>Nadpisz</value></string>
   <string><id>13207</id><value>Nadpisz profil '%s'?</value></string>
-
   <string><id>13208</id><value>Budzik</value></string>
   <string><id>13209</id><value>Przerwa budzika (w minutach)</value></string>
   <string><id>13210</id><value>Uruchomiony, alarm za %im</value></string>
   <string><id>13211</id><value>Alarm!</value></string>
   <string><id>13212</id><value>Anulowano pozosta≥o minut %im%</value></string>
 
-  <string><id>13250</id><value>Przeglπdaj napisy...</value></string>
 
+  <string><id>13249</id><value>Przeglπdaj Rar'y w poszukiwaniu napisÛw</value></string>
+  <string><id>13250</id><value>Przeglπdaj napisy...</value></string>
+  <string><id>13251</id><value>Przenieú</value></string>
+  <string><id>13252</id><value>Przenieú tu</value></string>
+  <string><id>13253</id><value>Anuluj przenoszenie</value></string>
+
+  <string><id>13270</id><value>SprzÍt:</value></string>
+  <string><id>13271</id><value>PrÍdkoúÊ CPU:</value></string>
+  <string><id>13274</id><value>Xbox jest pod≥πczony ale nie ma dostÍpnych DNS'Ûw.</value></string>
+  <string><id>13275</id><value>Dysk twardy</value></string>
+  <string><id>13276</id><value>DVD-ROM</value></string>
+  <string><id>13277</id><value>PamiÍÊ</value></string>
+  <string><id>13278</id><value>Domyúlnie</value></string>
+  <string><id>13279</id><value>SieÊ</value></string>
+  <string><id>13280</id><value>Obraz</value></string>
+  <string><id>13281</id><value>SprzÍt</value></string>
+  <string><id>13282</id><value>_</value></string>
+  <string><id>13283</id><value>Wersja Kernel'a:</value></string>
+  <string><id>13284</id><value>PrÍdkoúÊ CPU:</value></string>
+  <string><id>13285</id><value>Wykryty BIOS:</value></string>
+  <string><id>13286</id><value>Enkoder Video:</value></string>
+  <string><id>13287</id><value>RozdzielczoúÊ ekranu:</value></string>
+  <string><id>13288</id><value>Xbox wersja:</value></string>
+  <string><id>13289</id><value>Xbox numer seryjny:</value></string>
+  <string><id>13290</id><value>XBOX producent:</value></string>
+  <string><id>13291</id><value>ModChip:</value></string>
+  <string><id>13292</id><value>Kabel A/V:</value></string>
+  <string><id>13293</id><value>Region Video &amp; XBE:</value></string>
+  <string><id>13294</id><value>DVD Region:</value></string>
+  <string><id>13295</id><value>Internet:</value></string>
+  <string><id>13296</id><value>Xbox jest pod≥πczony</value></string>
+  <string><id>13297</id><value>Xbox nie jest pod≥πczony. Sprawdü ustawienia sieciowe.</value></string>
+  <string><id>13298</id><value>Klucz XBLIVE:</value></string>
   <string><id>13299</id><value>Temperatura</value></string>
   <string><id>13300</id><value>PrÍdkoúÊ wiatraka:</value></string>
   <string><id>13301</id><value>Kontrola temperatury</value></string>
@@ -973,7 +1089,6 @@
   <string><id>14060</id><value>Nieznany typ bufora</value></string>
   <string><id>14061</id><value>Automatycznie</value></string>
   <string><id>14062</id><value>Wpisz nazwÍ uøytkownika dla</value></string>
-
   <string><id>14063</id><value>Data &amp; Czas</value></string>
   <string><id>14064</id><value>Ustaw rok</value></string>
   <string><id>14065</id><value>Ustaw miesiπc</value></string>
@@ -1049,6 +1164,7 @@
   <string><id>15060</id><value>WiadomoúÊ</value></string>
   <string><id>15061</id><value>Zosta≥eú zaproszony do gry %s.</value></string>
   <string><id>15062</id><value>Uøyj alternatywnej wersji MPlayer'a</value></string>
+
   <string><id>15100</id><value>Biblioteka</value></string>
   <string><id>15101</id><value>Baza danych</value></string>
   <string><id>15102</id><value>* Wszystkie albumy</value></string>
@@ -1062,6 +1178,7 @@
   <string><id>15110</id><value>Wibracje kontrolera</value></string>
   <string><id>15111</id><value>Temat skÛry</value></string>
   <string><id>15112</id><value>Domyúlny temat</value></string>
+
   <string><id>15200</id><value>AudioScrobbler</value></string>
   <string><id>15201</id><value>Przesy≥anie informacji o utworze do AudioScrobbler</value></string>
   <string><id>15202</id><value>AudioScrobbler Uøytkownik</value></string>
@@ -1075,28 +1192,28 @@
   <string><id>15210</id><value>%i utworÛw w buforze</value></string>
   <string><id>15211</id><value>Przesy≥am...</value></string>
   <string><id>15212</id><value>Przes≥ano w %i sekund</value></string>
-  <string><id>15250</id><value>Pezeúlij ostatnie radio .fm do AudioScrobbler'a</value></string>
-  <string><id>15251</id><value>£πczÍ siÍ z ostatnim.fm...</value></string>
-  <string><id>15252</id><value>Wybieram stacjÍ...</value></string>
+  <string><id>15213</id><value>Odtwarzaj uøywajπc...</value></string>
+  <string><id>15214</id><value>Uøywaj ≥agodnej synchronizacji A/V</value></string>
+  <string><id>15215</id><value>Ukryj nazwy plikÛw w widoku miniatÛr</value></string>
 
+  <string><id>15250</id><value>Pezeúlij ostatnie radio .fm do AudioScrobbler'a</value></string>
+  <string><id>15251</id><value>£πczÍ siÍ z ostatnim .fm...</value></string>
+  <string><id>15252</id><value>Wybieram stacjÍ...</value></string>
   <string><id>15253</id><value>Wyszukaj podobnych artystÛw...</value></string>
   <string><id>15254</id><value>Wyszukaj podobne znaczniki...</value></string>
   <string><id>15255</id><value>TwÛj profil (%name%)</value></string>
   <string><id>15256</id><value>Najlepsze znaczniki</value></string>
-
   <string><id>15257</id><value>Top artyúci dla znacznika %name%</value></string>
   <string><id>15258</id><value>Top albumy dla znacznika %name%</value></string>
   <string><id>15259</id><value>Top úcieøki dla znacznika %name%</value></string>
   <string><id>15260</id><value>S≥uchasz znacznika %name% radia last.fm</value></string>
-
   <string><id>15261</id><value>Podobni artyúci jak w %name%</value></string>
   <string><id>15262</id><value>Najlepsze %name% albumy</value></string>
   <string><id>15263</id><value>Najlepsze %name% úcieøki</value></string>
   <string><id>15264</id><value>Najlepsze %name% znaczniki</value></string>
-  <string><id>15265</id><value>Biggest fans of %name%</value></string>
-  <string><id>15266</id><value>Listen to %name% fans last.fm radio</value></string>
-  <string><id>15267</id><value>Listen to %name% similar artists last.fm radio</value></string>
-  
+  <string><id>15265</id><value>NajwiÍksi fani %name%</value></string>
+  <string><id>15266</id><value>S≥uchasz %name% fanÛw last.fm radio</value></string>
+  <string><id>15267</id><value>S≥uchasz %name% podobnych artystÛw last.fm radio</value></string>
   <string><id>15268</id><value>Najlepsi artyúci dla uøytkownika %name%</value></string>
   <string><id>15269</id><value>Najlepsze albumy dla uøytkownika %name%</value></string>
   <string><id>15270</id><value>Najlepsze úcieøki dla uøytkownika %name%</value></string>
@@ -1105,70 +1222,14 @@
   <string><id>15273</id><value>Tygodniowy wykaz artystÛw dla  %name%</value></string>
   <string><id>15274</id><value>Tygodniowy wykaz albumÛw dla %name%</value></string>
   <string><id>15275</id><value>Tygodniowy wykaz úcieøek dla %name%</value></string>
-  <string><id>15283</id><value>NajczÍúciej s≥uchane úcieøki przez %name%</value></string>
   <string><id>15276</id><value>S≥uchaj %name% neighbours last.fm radio</value></string>
   <string><id>15277</id><value>S≥uchaj %name% personal last.fm radio</value></string>
   <string><id>15278</id><value>S≥uchaj %name% loved tracks last.fm radio</value></string>
-
   <string><id>15279</id><value>Odbieram listÍ z last.fm...</value></string>
   <string><id>15280</id><value>Nie mogÍ odebraÊlisty z last.fm...</value></string>
   <string><id>15281</id><value>Wpisz nazwÍ artysty aby wyszukaÊ pokrewnych</value></string>
   <string><id>15282</id><value>Wpisz nazwÍ znacznika aby wyszukaÊ podobne</value></string>
-
-  <string><id>13150</id><value>HDD Klucz:</value></string>
-  <string><id>13151</id><value>HDD Temp:</value></string>
-  <string><id>13152</id><value>DVD Model:</value></string>
-  <string><id>13153</id><value>DVD Firmware:</value></string>
-  <string><id>13154</id><value>HDD Model:</value></string>
-  <string><id>13155</id><value>HDD Nr. seryjny:</value></string>
-  <string><id>13156</id><value>HDD Firmware:</value></string>
-  <string><id>13157</id><value>HDD Has≥o:</value></string>
-  <string><id>13158</id><value>HDD stan blokady:</value></string>
-  <string><id>13159</id><value>Maska podsieci:</value></string>
-  <string><id>13160</id><value>Bramka:</value></string>
-  <string><id>13161</id><value>DNS:</value></string>
-  <string><id>13162</id><value>Inicjalizacja nie powiod≥a siÍ</value></string>
-  <string><id>13163</id><value>Pady - Port:</value></string>
-  <string><id>13164</id><value>Klawiatura - Port:</value></string>
-  <string><id>13165</id><value>Mysz - Port:</value></string>
-  <string><id>13166</id><value>S≥uchawki/Mikrofon - Port:</value></string>
-  <string><id>13167</id><value>MemoryStick - Port:</value></string>
-  <string><id>13168</id><value>Pilot - Port:</value></string>
-  <string><id>13169</id><value>OmiÒ wybÛr CD</value></string>
-  <string><id>13170</id><value>Nigdy</value></string>
-  <string><id>13171</id><value>Natychmiast</value></string>
-  <string><id>13172</id><value>Po %i sekundach</value></string>
-
-  <string><id>13270</id><value>SprzÍt:</value></string>
-  <string><id>13271</id><value>PrÍdkoúci CPU:</value></string>
-  <string><id>13275</id><value>Dysk twardy</value></string>
-  <string><id>13276</id><value>DVD-ROM</value></string>
-  <string><id>13277</id><value>PamiÍÊ</value></string>
-  <string><id>13278</id><value>Domyúlny</value></string>
-  <string><id>13279</id><value>SieÊ</value></string>
-  <string><id>13280</id><value>Obraz</value></string>
-  <string><id>13281</id><value>SprzÍt</value></string>
-  <string><id>13282</id><value>_</value></string>
-  <string><id>13283</id><value>Wersja Kernela:</value></string>
-  <string><id>13284</id><value>PrÍdkoúÊ CPU:</value></string>
-  <string><id>13285</id><value>Wykryty BIOS:</value></string>
-  <string><id>13286</id><value>Dekoder Obrazu:</value></string>
-  <string><id>13287</id><value>RozdzielczoúÊ ekranu:</value></string>
-  <string><id>13288</id><value>Wersja Xbox'a:</value></string>
-  <string><id>13289</id><value>Numer seryjny Xbox'a:</value></string>
-  <string><id>13290</id><value>Producent Xbox'a:</value></string>
-  <string><id>13291</id><value>ModChip:</value></string>
-  <string><id>13292</id><value>Kabel A/Ve:</value></string>
-  <string><id>13293</id><value>Region (.XBE):</value></string>
-  <string><id>13294</id><value>Region DVD:</value></string>
-  <string><id>13295</id><value>Internet:</value></string>
-  <string><id>13296</id><value>Xbox jest po≥πczony!</value></string>
-  <string><id>13297</id><value>Xbox nie jest po≥πczony! Sprawdü ustawienia sieci!</value></string>
-  <string><id>13298</id><value>Klucz XBLIVE:</value></string>
-
-  <string><id>15213</id><value>[WYPE£NIACZ]</value></string>
-  <string><id>15214</id><value>Uøywaj p≥ynnej synchronizacji A/V</value></string>
-  <string><id>15215</id><value>Ukrywaj nazwy plikÛw w widoku miniatÛr</value></string>
+  <string><id>15283</id><value>NajczÍúciej s≥uchane úcieøki przez %name%</value></string>
 
   <string><id>15300</id><value>Niepoprawna úcieøka</value></string>
   <string><id>15301</id><value>Nie mogÍ po≥πczyÊ siÍ z serwerem</value></string>
@@ -1193,17 +1254,16 @@
   <string><id>16015</id><value>Wpisz katalog</value></string>
   <string><id>16016</id><value>DostÍpne opcje: %A, %T, %N, %B, %D, %G, %Y, %F</value></string>
   <string><id>16017</id><value>Wpisz poszukiwany ciπg</value></string>
-  
   <string><id>16018</id><value>Øaden</value></string>
   <string><id>16019</id><value>Automatyczny wybÛr</value></string>
-  <string><id>16020</id><value>DeInterlace</value></string>
+  <string><id>16020</id><value>Bez przeplotu</value></string>
   <string><id>16021</id><value>Synchronizuj niepaøyste</value></string>
   <string><id>16022</id><value>Synchronizuj parzyste</value></string>
   <string><id>16023</id><value>Obs≥uga przeplotu</value></string>
-  
   <string><id>16024</id><value>AnulujÍ...</value></string>
-
   <string><id>16025</id><value>Wpisz nazwÍ artysty</value></string>
+  <string><id>16026</id><value>Odtwarzanie playlisty przerwane</value></string>
+  <string><id>16027</id><value>Za duøo kolejnych b≥Ídnych pozycji</value></string>
 
   <string><id>16100</id><value>Wszystkie filmy</value></string>
   <string><id>16101</id><value>Nieoglπdane</value></string>
@@ -1211,7 +1271,6 @@
   <string><id>16103</id><value>Oznacz jako Oglπdane</value></string>
   <string><id>16104</id><value>Oznacz jako Nieoglπdane</value></string>
   <string><id>16105</id><value>Edytuj nazwÍ</value></string>
-
   <string><id>16106</id><value>Uøywaj NTSC-M &amp; NTSC-J</value></string>
   <string><id>16107</id><value>Uøywaj tylko NTSC-M</value></string>
   <string><id>16108</id><value>Uøywaj tylko NTSC-J</value></string>

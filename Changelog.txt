@@ -5,6 +5,14 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 21-02-2006 updated: Portuguese (Brazil) language file (Thnx to mvbm)
+ - 21-02-2006 updated: Swedish language file (Thnx to blittan)
+ - 21-02-2006 updated: Norwegian language file (Thnx to vnm)
+ - 21-02-2006 updated: German (Austrian) language file (Thnx to CEOMR)
+ - 21-02-2006 updated: German language file
+ - 21-02-2006 updated: Dutch language file (Thnx to console-ombouw)
+ - 21-02-2006 updated: Chinese (Traditional) language file (Thnx to omenpica)
+ - 21-02-2006 updated: Polish language file (Thnx to napek)
  - 21-02-2006 added: music nav, "Compilation" folder, it shows all Various Artists albums
  - 21-02-2006 fixed: music nav, albums like Ænima from Tool where sorted above the "* All Albums" item
  - 21-02-2006 changed: media window base class, consolidated Update()
