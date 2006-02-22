@@ -50,16 +50,17 @@ bool CSMBDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
   struct smbc_dirent* dirEnt;
   CStdString strFile;
 
+  // Seems like what smbc_readdir() returns is 
+  // not thread save. Lock the whole loop
   smb.Lock();
   dirEnt = smbc_readdir(fd);
-  smb.Unlock();
 
   while (dirEnt)
   {
     if (dirEnt->name && strcmp(dirEnt->name, ".") && strcmp(dirEnt->name, "..") &&
         (dirEnt->name[dirEnt->namelen - 2] != '$'))
     {
-      unsigned __int64 iSize = 0;
+     unsigned __int64 iSize = 0;
       bool bIsDir = true;
       __int64 lTimeDate = 0;
 
@@ -78,9 +79,7 @@ bool CSMBDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
         struct __stat64 info;
         CStdString strFullName = strAuth + dirEnt->name; //Make sure we use the authenticated path wich contains any default username
 
-        smb.Lock();
-        smbc_stat(strFullName, &info);
-        smb.Unlock();
+        smbc_stat(strFullName.c_str(), &info);
 
         bIsDir = (info.st_mode & S_IFDIR) ? true : false;
         lTimeDate = info.st_mtime;
@@ -132,11 +131,9 @@ bool CSMBDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
         if (IsAllowed(dirEnt->name)) items.Add(new CFileItem(*pItem));
       }
     }
-    smb.Lock();
     dirEnt = smbc_readdir(fd);
-    smb.Unlock();
   }
-  smb.Lock();
+
   smbc_closedir(fd);
   smb.Unlock();
 
