@@ -1,10 +1,12 @@
 #include "stdafx.h"
 #include "GUIDialogMusicScan.h"
+#include "GUIProgressControl.h"
 #include "application.h"
 
 
-#define CONTROL_LABELSTATUS   401
-#define CONTROL_LABELDIRECTORY 402
+#define CONTROL_LABELSTATUS     401
+#define CONTROL_LABELDIRECTORY  402
+#define CONTROL_PROGRESS        403
 
 CGUIDialogMusicScan::CGUIDialogMusicScan(void)
 : CGUIDialog(WINDOW_DIALOG_MUSIC_SCAN, "DialogMusicScan.xml")
@@ -27,6 +29,8 @@ bool CGUIDialogMusicScan::OnMessage(CGUIMessage& message)
       m_ScanState = PREPARING;
 
       m_strCurrentDir.Empty();
+
+      m_fPercentDone=-1.0F;
 
       UpdateState();
       return true;
@@ -57,6 +61,12 @@ void CGUIDialogMusicScan::OnStateChanged(SCAN_STATE state)
   CSingleLock lock (m_critical);
 
   m_ScanState = state;
+}
+
+void CGUIDialogMusicScan::OnSetProgress(int currentItem, int itemCount)
+{
+  m_fPercentDone=(float)((currentItem*100)/itemCount);
+  if (m_fPercentDone>100.0F) m_fPercentDone=100.0F;
 }
 
 void CGUIDialogMusicScan::StartScanning(const CStdString& strDirectory, bool bUpdateAll)
@@ -112,10 +122,18 @@ void CGUIDialogMusicScan::UpdateState()
     url.GetURLWithoutUserDetails(strStrippedPath);
 
     SET_CONTROL_LABEL(CONTROL_LABELDIRECTORY, strStrippedPath);
+
+    if (m_fPercentDone>-1.0F)
+    {
+      SET_CONTROL_VISIBLE(CONTROL_PROGRESS);
+      CGUIProgressControl* pProgressCtrl=(CGUIProgressControl*)GetControl(CONTROL_PROGRESS);
+      if (pProgressCtrl) pProgressCtrl->SetPercentage(m_fPercentDone);
+    }
   }
   else
   {
     SET_CONTROL_LABEL(CONTROL_LABELDIRECTORY, "");
+    SET_CONTROL_HIDDEN(CONTROL_PROGRESS);
   }
 }
 

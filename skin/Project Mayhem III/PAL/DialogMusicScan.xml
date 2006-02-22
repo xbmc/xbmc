@@ -47,6 +47,17 @@
       <ondown>402</ondown>
     </control>
 
+    <control>
+      <description>progress control</description>
+      <type>progress</type>
+      <id>403</id>
+      <posx>60</posx>
+      <posy>64</posy>
+      <width>291</width>
+      <height>13</height>
+      <texturebg>progress_back2.png</texturebg>
+    </control>
+
   </controls>
 
 </window>
