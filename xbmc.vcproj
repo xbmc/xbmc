@@ -671,6 +671,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\MusicInfoTagLoaderWMA.cpp">
 				</File>
 				<File
+					RelativePath=".\xbmc\MusicInfoTagLoaderYM.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\MusicInfoTagLoaderYM.h">
+				</File>
+				<File
 					RelativePath=".\xbmc\OggTag.cpp">
 				</File>
 				<File
@@ -2967,6 +2973,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				</File>
 				<File
 					RelativePath=".\xbmc\cores\paplayer\WAVPackcodec.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\paplayer\YMCodec.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\paplayer\YMCodec.h">
 				</File>
 			</Filter>
 			<Filter
