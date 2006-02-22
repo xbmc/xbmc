@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 23-02-2006 fixed: subtitle selection wouldn't activate the correct subtitle (new mplayer.dll)
  - 22-02-2006 added: added a progress control to the music scan dialog (control id 403)
  - 22-02-2006 fixed: smb directory reading could fail when reading from different threads
  - 22-02-2006 added: atari ym codec to paplayer. based on stsound-library.
