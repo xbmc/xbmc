@@ -17,6 +17,8 @@ CMusicInfoScanner::CMusicInfoScanner()
   m_bRunning = false;
   m_pObserver = NULL;
   m_bCanInterrupt = false;
+  m_currentItem=0;
+  m_itemCount=-1;
 }
 
 CMusicInfoScanner::~CMusicInfoScanner()
@@ -71,6 +73,15 @@ void CMusicInfoScanner::Process()
       if (m_pObserver)
         m_pObserver->OnStateChanged(READING_MUSIC_INFO);
 
+      // Reset progress vars
+      m_currentItem=0;
+      m_itemCount=-1;
+
+      // Create the thread to count all files to be scanned
+      CThread fileCountReader(this);
+      if (m_pObserver)
+        fileCountReader.Create();
+
       // Database operations should not be canceled
       // using Interupt() while scanning as it could
       // result in unexpected behaviour.
@@ -94,6 +105,9 @@ void CMusicInfoScanner::Process()
       }
       else
         m_musicDatabase.RollbackTransaction();
+
+      fileCountReader.StopThread();
+
     }
     else
       m_musicDatabase.RollbackTransaction();
@@ -218,6 +232,7 @@ int CMusicInfoScanner::RetrieveMusicInfo(CFileItemList& items, const CStdString&
     // dont try reading id3tags for folders, playlists or shoutcast streams
     if (!pItem->m_bIsFolder && !pItem->IsPlayList() && !pItem->IsShoutCast() )
     {
+      m_currentItem++;
       // is tag for this file already loaded?
       bool bNewFile = false;
       CMusicInfoTag& tag = pItem->m_musicInfoTag;
@@ -261,6 +276,11 @@ int CMusicInfoScanner::RetrieveMusicInfo(CFileItemList& items, const CStdString&
           bNewFile = true;
       }
 
+      // if we have the itemcount, notify our 
+      // observer with the progress we made
+      if (m_pObserver && m_itemCount>-1)
+        m_pObserver->OnSetProgress(m_currentItem, m_itemCount);
+
       if (tag.Loaded() && bNewFile)
       {
         CSong song(tag);
@@ -277,3 +297,31 @@ int CMusicInfoScanner::RetrieveMusicInfo(CFileItemList& items, const CStdString&
   return iFilesAdded;
 }
 
+// This function is run by another thread
+void CMusicInfoScanner::Run()
+{
+  m_itemCount=CountFiles(m_strStartDir);
+}
+
+// Recurse through all folders we scan and count files
+int CMusicInfoScanner::CountFiles(const CStdString& strPath)
+{
+  int count=0;
+  // load subfolder
+  CFileItemList items;
+  CDirectory::GetDirectory(strPath, items, g_stSettings.m_szMyMusicExtensions, false);
+  for (int i=0; i<items.Size(); ++i)
+  {
+    CFileItem* pItem=items[i];
+
+    if (m_bStop)
+      return 0;
+
+    if (pItem->m_bIsFolder)
+      count+=CountFiles(pItem->m_strPath);
+    else if (pItem->IsAudio() && !pItem->IsPlayList() && !pItem->IsNFO())
+      count++;
+  }
+
+  return count;
+}
