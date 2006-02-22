@@ -65,6 +65,8 @@ void CGUIDialogMusicScan::OnStateChanged(SCAN_STATE state)
 
 void CGUIDialogMusicScan::OnSetProgress(int currentItem, int itemCount)
 {
+  CSingleLock lock (m_critical);
+
   m_fPercentDone=(float)((currentItem*100)/itemCount);
   if (m_fPercentDone>100.0F) m_fPercentDone=100.0F;
 }
