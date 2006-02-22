@@ -24,10 +24,15 @@ protected:
   virtual void OnDirectoryScanned(const CStdString& strDirectory);
   virtual void OnFinished();
   virtual void OnStateChanged(SCAN_STATE state);
+  virtual void OnSetProgress(int currentItem, int itemCount);
 
   CMusicInfoScanner m_musicInfoScanner;
   SCAN_STATE m_ScanState;
   CStdString m_strCurrentDir;
 
   CCriticalSection m_critical;
+
+  float m_fPercentDone;
+  int m_currentItem;
+  int m_itemCount;
 };
