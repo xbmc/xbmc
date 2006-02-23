@@ -131,8 +131,9 @@ public:
   bool GetAlbumsNav(const CStdString& strBaseDir, CFileItemList& items, long idGenre, long idArtist);
   bool GetSongsNav(const CStdString& strBaseDir, CFileItemList& items, long idGenre, long idArtist,long idAlbum);
   bool GetRandomSong(CFileItem* item);
-
+  bool GetRandomSong(CFileItem* item, CStdString& strWhere);
   int GetSongsCount();
+  int GetSongsCount(CStdString& strWhere);
   bool GetPathFromAlbumId(long idAlbum, CStdString& strPath);
   bool GetPathFromSongId(long idSong, CStdString& strPath);
   bool SaveAlbumThumb(const CStdString& strAlbum, const CStdString& strPath, const CStdString& strThumb);
