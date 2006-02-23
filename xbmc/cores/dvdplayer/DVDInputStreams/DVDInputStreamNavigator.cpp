@@ -5,6 +5,7 @@
 #include "..\..\..\LangCodeExpander.h"
 #include "..\DVDDemuxSPU.h"
 #include "..\DVDOverlay.h"
+#include "DVDStateSerializer.h"
 
 CDVDInputStreamNavigator::CDVDInputStreamNavigator(IDVDPlayer* player) : CDVDInputStream()
 {
@@ -13,7 +14,6 @@ CDVDInputStreamNavigator::CDVDInputStreamNavigator(IDVDPlayer* player) : CDVDInp
   m_pDVDPlayer = player;
   InitializeCriticalSection(&m_critSection);
   m_bCheckButtons = false;
-  m_bDiscardHop = false;
   m_iCellStart = 0;
 }
 
@@ -170,6 +170,8 @@ int CDVDInputStreamNavigator::ProcessBlock(BYTE* dest_buffer, int* read)
   int iNavresult;
 
   bool bFinished = false;
+
+  // m_tempbuffer will be used for anything that isn't a normal data block
   uint8_t* buf = m_tempbuffer;
   iNavresult = -1;
   
@@ -183,6 +185,7 @@ int CDVDInputStreamNavigator::ProcessBlock(BYTE* dest_buffer, int* read)
       CLog::DebugLog("Error getting next block: %s\n", m_dll.dvdnav_err_to_string(m_dvdnav));
       iNavresult = DVDNAV_STATUS_ERR;
       bFinished = true;
+      break;
     }
 
     switch (event)
@@ -266,7 +269,7 @@ int CDVDInputStreamNavigator::ProcessBlock(BYTE* dest_buffer, int* read)
 
         event->logical = GetActiveAudioStream();
         
-        m_pDVDPlayer->OnDVDNavResult(m_tempbuffer, DVDNAV_AUDIO_STREAM_CHANGE);
+        m_pDVDPlayer->OnDVDNavResult(buf, DVDNAV_AUDIO_STREAM_CHANGE);
       }
 
       break;
@@ -364,12 +367,7 @@ int CDVDInputStreamNavigator::ProcessBlock(BYTE* dest_buffer, int* read)
       // This event is issued whenever a non-seamless operation has been executed.
       // Applications with fifos should drop the fifos content to speed up responsiveness.
       {
-        if (!m_bDiscardHop)
-        {
-          m_pDVDPlayer->OnDVDNavResult(NULL, DVDNAV_HOP_CHANNEL);
-        }
-        //Reset skip flag.
-        m_bDiscardHop = false;
+        m_pDVDPlayer->OnDVDNavResult(NULL, DVDNAV_HOP_CHANNEL);
         
         iNavresult = -1; // return read error
         bFinished = true;
@@ -397,8 +395,13 @@ int CDVDInputStreamNavigator::ProcessBlock(BYTE* dest_buffer, int* read)
       break;
 
     }
+    
+    // check if libdvdnav gave us some other buffer to work with
+    // probably not needed since function will check if buf
+    // is part of the internal cache, but do it for good measure
+    if( buf != m_tempbuffer )
+      m_dll.dvdnav_free_cache_block(m_dvdnav, buf);
 
-    m_dll.dvdnav_free_cache_block(m_dvdnav, buf);
   }
   return iNavresult;
 }
@@ -470,7 +473,6 @@ void CDVDInputStreamNavigator::ActivateButton()
 {
   if (m_dvdnav)
   {
-    //m_bDiscardHop = true;
     m_dll.dvdnav_button_activate(m_dvdnav, m_dll.dvdnav_get_current_nav_pci(m_dvdnav));
   }
 }
@@ -585,7 +587,6 @@ void CDVDInputStreamNavigator::OnNext()
 {
   if (m_dvdnav && !IsInMenu())
   {
-    //m_bDiscardHop = true;
     m_dll.dvdnav_next_pg_search(m_dvdnav);
   }
 }
@@ -595,7 +596,6 @@ void CDVDInputStreamNavigator::OnPrevious()
 {
   if (m_dvdnav && !IsInMenu())
   {
-    //m_bDiscardHop = true;
     m_dll.dvdnav_prev_pg_search(m_dvdnav);
   }
 }
@@ -852,12 +852,9 @@ bool CDVDInputStreamNavigator::Seek(int iTimeInMsec)
 
   if( m_dll.dvdnav_time_search(m_dvdnav, iTimeInMsec * 90) == DVDNAV_STATUS_ERR )
   {
-    CLog::Log(LOGDEBUG, "dvdnav: dvdnav_time_search failed");
-    //CLog::Log(LOGDEBUG, "dvdnav: %s", m_dll.dvdnav_err_to_string(m_dvdnav)); doesn't set error message
+    CLog::Log(LOGDEBUG, "dvdnav: dvdnav_time_search failed( %s )", m_dll.dvdnav_err_to_string(m_dvdnav));
     return false;
   }
-
-  m_bDiscardHop = true;
   return true;
 }
 
@@ -940,4 +937,50 @@ void CDVDInputStreamNavigator::EnableSubtitleStream(bool bEnable)
     // hide subtitles
     SetActiveSubtitleStream(iCurrentStream | 0x80);
   }
+}
+
+bool CDVDInputStreamNavigator::GetNavigatorState(std::string &xmlstate)
+{
+  if( !m_dvdnav ) 
+    return false;
+
+  dvd_state_t save_state;
+  if( DVDNAV_STATUS_ERR == m_dll.dvdnav_get_state(m_dvdnav, &save_state) )
+  {
+    CLog::Log(LOGWARNING, "CDVDInputStreamNavigator::GetNavigatorState - Failed to get state (%s)", m_dll.dvdnav_err_to_string(m_dvdnav));
+    return false;
+  }
+
+  CDVDStateSerializer::test( &save_state );
+
+  if( !CDVDStateSerializer::DVDToXMLState(xmlstate, &save_state) )
+  {
+    CLog::Log(LOGWARNING, "CDVDInputStreamNavigator::SetNavigatorState - Failed to serialize state");
+    return false;
+  }
+
+  return true;
+}
+
+bool CDVDInputStreamNavigator::SetNavigatorState(std::string &xmlstate)
+{
+  if( !m_dvdnav ) 
+    return false;
+
+  dvd_state_t save_state;
+  memset( &save_state, 0, sizeof( save_state ) );
+
+  if( !CDVDStateSerializer::XMLToDVDState(&save_state, xmlstate)  )
+  {
+    CLog::Log(LOGWARNING, "CDVDInputStreamNavigator::SetNavigatorState - Failed to deserialize state");
+    return false;
+  }
+
+  if( DVDNAV_STATUS_ERR == m_dll.dvdnav_set_state(m_dvdnav, &save_state) )
+  {
+    CLog::Log(LOGWARNING, "CDVDInputStreamNavigator::SetNavigatorState - Failed to set state (%s)", m_dll.dvdnav_err_to_string(m_dvdnav));
+    return false;
+  }
+
+  return true;
 }

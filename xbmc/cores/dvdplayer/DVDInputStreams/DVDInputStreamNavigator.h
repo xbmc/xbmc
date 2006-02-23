@@ -77,7 +77,8 @@ public:
   bool SetActiveAudioStream(int iId);
   int GetMpegAudioStream(int iId);
 
-  
+  bool GetNavigatorState(std::string &xmlstate);
+  bool SetNavigatorState(std::string &xmlstate);
   
   int GetNrOfTitles();
   int GetNrOfParts(int iTitle);
@@ -102,7 +103,6 @@ protected:
   void Unlock() { LeaveCriticalSection(&m_critSection); }
   
   DllDvdNav m_dll;
-  bool m_bDiscardHop;
   bool m_bCheckButtons;
   bool m_bEOF;
 

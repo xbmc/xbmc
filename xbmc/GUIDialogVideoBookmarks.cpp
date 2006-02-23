@@ -116,7 +116,10 @@ void CGUIDialogVideoBookmarks::GotoBookmark(int item)
   videoDatabase.Close();
   if (item < 0 || item >= (int)bookmarks.size()) return;
   if (g_application.m_pPlayer)
+  {
+    g_application.m_pPlayer->SetPlayerState(bookmarks[item].playerState);
     g_application.SeekTime((double)bookmarks[item].timeInSeconds);
+  }
 }
 
 void CGUIDialogVideoBookmarks::ClearBookmarks()
@@ -133,6 +136,12 @@ void CGUIDialogVideoBookmarks::AddBookmark()
   CVideoDatabase videoDatabase;
   CBookmark bookmark;
   bookmark.timeInSeconds = (int)g_application.GetTime();
+
+  if( g_application.m_pPlayer )
+    bookmark.playerState = g_application.m_pPlayer->GetPlayerState();
+  else
+    bookmark.playerState.Empty();
+
   // create the thumbnail image
   RECT rs, rd;
   g_renderManager.GetVideoRect(rs, rd);
