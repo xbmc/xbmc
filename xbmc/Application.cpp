@@ -3273,6 +3273,21 @@ void CApplication::StopPlaying()
     if ( IsPlayingVideo() )
     { // save our position for resuming at a later date
       g_stSettings.m_currentVideoSettings.m_ResumeTime = (int)(GetTime() * 75); // need it in frames (75ths of a second)
+
+      if( m_pPlayer )
+      {
+        CBookmark bookmark;
+
+        bookmark.playerState = m_pPlayer->GetPlayerState();
+        bookmark.timeInSeconds = (int)GetTime();
+        bookmark.thumbNailImage.Empty();
+
+        CVideoDatabase db;
+        db.Open();
+        db.AddBookMarkToMovie(CurrentFile(),bookmark, true);
+        db.Close();
+      }
+
     }
     m_pPlayer->CloseFile();
     m_bMusicPartyMode = false;  // disable party mode on STOP
