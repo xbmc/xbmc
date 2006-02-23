@@ -17,6 +17,7 @@ struct CBookmark
 {
   int timeInSeconds;
   CStdString thumbNailImage;
+  CStdString playerState;
 };
 
 typedef vector<CBookmark> VECBOOKMARKS;
@@ -57,7 +58,7 @@ public:
   void SetMovieInfo(const CStdString& strFilenameAndPath, CIMDBMovie& details);
   void GetMoviesByPath(CStdString& strPath1, VECMOVIES& movies);
   void GetBookMarksForMovie(const CStdString& strFilenameAndPath, VECBOOKMARKS& bookmarks);
-  void AddBookMarkToMovie(const CStdString& strFilenameAndPath, const CBookmark &bookmark);
+  void AddBookMarkToMovie(const CStdString& strFilenameAndPath, const CBookmark &bookmark, bool bResumeMark = false);
   void ClearBookMarksOfMovie(const CStdString& strFilenameAndPath);
   void DeleteMovie(const CStdString& strFilenameAndPath);
   void GetDVDLabel(long lMovieId, CStdString& strDVDLabel);

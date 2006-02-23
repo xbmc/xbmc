@@ -5,6 +5,10 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 24-02-2006 added: bookmark support for dvd player in any section of the dvd
+ - 24-02-2006 added: automatic bookmarking of current position on stop of playback
+ - 24-02-2006 fixed: seeking and current position in libdvdnav didn't take different angles in a program chain into account. (black holes in time and seeking to wrong time)
+ - 24-02-2006 fixed: seeking in some improperly mastered dvd's where vobunit tables didn't correctly point to the start of a vobunit would lockup dvd player
  - 23-02-2006 changed: stop disables party mode if its enabled.
  - 23-02-2006 fixed: subtitle selection wouldn't activate the correct subtitle (new mplayer.dll)
  - 22-02-2006 added: added a progress control to the music scan dialog (control id 403)

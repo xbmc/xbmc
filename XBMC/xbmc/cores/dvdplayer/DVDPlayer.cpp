@@ -526,7 +526,7 @@ void CDVDPlayer::HandleMessages()
             if (((CDVDInputStreamNavigator*)m_pInputStream)->Seek(pMessage->iValue))
             {
               CLog::Log(LOGDEBUG, "CDVDInputStreamNavigator seek to: %d, succes", pMessage->iValue);
-              FlushBuffers();
+              //FlushBuffers(); buffers will be flushed by a hop from dvdnavigator
             }
             else CLog::Log(LOGWARNING, "error while seeking");
           }
@@ -1430,6 +1430,14 @@ bool CDVDPlayer::OnAction(const CAction &action)
         return true;
       }
       break;
+
+    case REMOTE_0:
+      {
+        std::string buffer;
+        pStream->GetNavigatorState(buffer);
+        pStream->SetNavigatorState(buffer);
+        return true;
+      }
     }
 
     if (pStream->IsInMenu())
@@ -1576,4 +1584,32 @@ bool CDVDPlayer::GetCurrentSubtitle(CStdStringW& strSubtitle)
   __int64 pts = m_dvdPlayerVideo.GetCurrentPts();
   bool bGotSubtitle = m_dvdPlayerSubtitle.GetCurrentSubtitle(strSubtitle, pts);
   return bGotSubtitle;
+}
+
+
+CStdString CDVDPlayer::GetPlayerState()
+{
+  if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
+  {
+    CDVDInputStreamNavigator* pStream = (CDVDInputStreamNavigator*)m_pInputStream;
+
+    std::string buffer;
+    if( pStream->GetNavigatorState(buffer) ) return buffer;
+  }
+
+  return "";
+}
+
+bool CDVDPlayer::SetPlayerState(CStdString state)
+{
+  if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
+  {
+    CDVDInputStreamNavigator* pStream = (CDVDInputStreamNavigator*)m_pInputStream;
+    
+    std::string buffer;
+    buffer = state;
+    if( pStream->SetNavigatorState(state) ) return true;
+  }
+
+  return false;
 }

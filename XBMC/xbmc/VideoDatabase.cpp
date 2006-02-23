@@ -12,7 +12,7 @@
 #include "filesystem/VirtualPathDirectory.h"
 #include "filesystem/StackDirectory.h"
 
-#define VIDEO_DATABASE_VERSION 1.6f
+#define VIDEO_DATABASE_VERSION 1.7f
 #define VIDEO_DATABASE_NAME "MyVideos31.db"
 
 //********************************************************************************************************************************
@@ -35,7 +35,7 @@ bool CVideoDatabase::CreateTables()
     CDatabase::CreateTables();
 
     CLog::Log(LOGINFO, "create bookmark table");
-    m_pDS->exec("CREATE TABLE bookmark ( idBookmark integer primary key, idFile integer, timeInSeconds integer, thumbNailImage text)\n");
+    m_pDS->exec("CREATE TABLE bookmark ( idBookmark integer primary key, idFile integer, timeInSeconds integer, thumbNailImage text, playerState text, type integer)\n");
 
     CLog::Log(LOGINFO, "create settings table");
     m_pDS->exec("CREATE TABLE settings ( idFile integer, Interleaved bool, NoCache bool, Deinterlace bool, FilmGrain integer,"
@@ -1137,6 +1137,7 @@ void CVideoDatabase::GetBookMarksForMovie(const CStdString& strFilenameAndPath, 
       CBookmark bookmark;
       bookmark.timeInSeconds = m_pDS->fv("timeInSeconds").get_asLong();
       bookmark.thumbNailImage = m_pDS->fv("thumbNailImage").get_asString();
+      bookmark.playerState = m_pDS->fv("playerState").get_asString();
       bookmarks.push_back(bookmark);
       m_pDS->next();
     }
@@ -1150,7 +1151,7 @@ void CVideoDatabase::GetBookMarksForMovie(const CStdString& strFilenameAndPath, 
 }
 
 //********************************************************************************************************************************
-void CVideoDatabase::AddBookMarkToMovie(const CStdString& strFilenameAndPath, const CBookmark &bookmark)
+void CVideoDatabase::AddBookMarkToMovie(const CStdString& strFilenameAndPath, const CBookmark &bookmark, bool bResumeMark /*= false*/)
 {
   try
   {
@@ -1169,15 +1170,32 @@ void CVideoDatabase::AddBookMarkToMovie(const CStdString& strFilenameAndPath, co
     if (NULL == m_pDB.get()) return ;
     if (NULL == m_pDS.get()) return ;
 
-    CStdString strSQL=FormatSQL("select * from bookmark where idFile=%i and timeInSeconds=%i", lFileId, bookmark.timeInSeconds);
+    CStdString strSQL;
+    int idBookmark=-1;
+    int type = 0;
+    if( bResumeMark ) // get the same resume mark bookmark each time type
+    {
+      strSQL=FormatSQL("select idBookmark from bookmark where idFile=%i and type = 1", lFileId);   
+      type = 1;
+    }
+    else // get the same bookmark again, and update. not sure here as a dvd can have same time in multiple places, state will differ thou
+    {
+      strSQL=FormatSQL("select idBookmark from bookmark where idFile=%i and type = 0 and timeInSeconds=%i and playerState='%s'", lFileId, bookmark.timeInSeconds, bookmark.playerState.c_str());   
+      type = 0;
+    }
+
+    // get current id
     m_pDS->query( strSQL.c_str() );
     if (m_pDS->num_rows() != 0)
-    {
-      m_pDS->close();
-      return ;
-    }
+      idBookmark = m_pDS->get_field_value("idBookmark").get_asInteger();            
     m_pDS->close();
-    strSQL=FormatSQL("insert into bookmark (idBookmark, idFile, timeInSeconds, thumbNailImage) values(NULL,%i,%i,'%s')", lFileId, bookmark.timeInSeconds, bookmark.thumbNailImage.c_str());
+
+    // update or insert depending if it existed before
+    if( idBookmark >= 0 )
+      strSQL=FormatSQL("update bookmark set timeInSeconds = %i, thumbNailImage = '%s', playerState = '%s' where idBookmark = %i", bookmark.timeInSeconds, bookmark.thumbNailImage.c_str(), bookmark.playerState.c_str(), idBookmark);
+    else
+      strSQL=FormatSQL("insert into bookmark (idBookmark, idFile, timeInSeconds, thumbNailImage, playerState, type) values(NULL,%i,%i,'%s','%s', %i)", lFileId, bookmark.timeInSeconds, bookmark.thumbNailImage.c_str(), bookmark.playerState.c_str(), type);
+
     m_pDS->exec(strSQL.c_str());
   }
   catch (...)
@@ -1514,8 +1532,7 @@ bool CVideoDatabase::UpdateOldVersion(float fVersion)
       m_pDS->exec("DROP TABLE movieinfo\n");
       m_pDS->exec("CREATE TABLE movieinfo ( idMovie integer, idDirector integer, strPlotOutline text, strPlot text, strTagLine text, strVotes text, strRuntime text, fRating text, strCast text,strCredits text, iYear integer, strGenre text, strPictureURL text, strTitle text, IMDBID text, bWatched bool)\n");
       m_pDS->exec("INSERT INTO movieinfo SELECT * FROM TMPmovieinfo\n");
-      m_pDS->exec("DROP TABLE TMPmovieinfo\n");
-      return true;
+      m_pDS->exec("DROP TABLE TMPmovieinfo\n");      
     }
     catch (...)
     {
@@ -1527,8 +1544,7 @@ bool CVideoDatabase::UpdateOldVersion(float fVersion)
     try
     {
       CLog::Log(LOGINFO, "Vacuuming movieinfo");
-      m_pDS->exec("VACUUM movieinfo\n");
-      return true;
+      m_pDS->exec("VACUUM movieinfo\n");      
     }
     catch (...)
     {
@@ -1548,6 +1564,29 @@ bool CVideoDatabase::UpdateOldVersion(float fVersion)
                 "SubtitleDelay float, SubtitlesOn bool, Brightness integer, Contrast integer, Gamma integer,"
                 "VolumeAmplification float, AudioDelay float, ResumeTime integer, Crop bool, CropLeft integer,"
                 "CropRight integer, CropTop integer, CropBottom integer)\n");
+  }
+
+//*************
+// 2006-02-20
+// dvdplayer state
+  if (fVersion < 1.7f)
+  {
+    try
+    {
+      CLog::Log(LOGINFO, "Adding playerState and type to bookmark");
+      m_pDS->exec("CREATE TABLE TMPbookmark ( idBookmark integer primary key, idFile integer, timeInSeconds integer, thumbNailImage text, playerState text, type integer)\n");
+      m_pDS->exec("INSERT INTO TMPbookmark SELECT idBookmark, idFile, timeInSeconds, thumbNailImage, '', 0 FROM bookmark");
+      m_pDS->exec("DROP TABLE bookmark");
+      m_pDS->exec("CREATE TABLE bookmark ( idBookmark integer primary key, idFile integer, timeInSeconds integer, thumbNailImage text, playerState text, type integer)\n");
+      m_pDS->exec("INSERT INTO bookmark SELECT * FROM TMPbookmark");
+      m_pDS->exec("DROP TABLE TMPbookmark");
+    }
+    catch(...)
+    {
+      CLog::Log(LOGERROR, "Failed to add playerState and type to bookmark");
+      return false;
+    }
+
   }
   return true;
 }
