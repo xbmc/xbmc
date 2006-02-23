@@ -3474,12 +3474,17 @@ long CMusicDatabase::AddThumb(const CStdString& strThumb1)
 
 int CMusicDatabase::GetSongsCount()
 {
+  return GetSongsCount((CStdString)"");
+}
+
+int CMusicDatabase::GetSongsCount(CStdString& strWhere)
+{
   try
   {
     if (NULL == m_pDB.get()) return 0;
     if (NULL == m_pDS.get()) return 0;
 
-    CStdString strSQL = "select count(idSong) as NumSongs from song";
+    CStdString strSQL = "select count(idSong) as NumSongs from songview " + strWhere;
     if (!m_pDS->query(strSQL.c_str())) return false;
     if (m_pDS->num_rows() == 0)
     {
@@ -3494,7 +3499,7 @@ int CMusicDatabase::GetSongsCount()
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "CMusicDatabase::GetSongsCount() failed");
+    CLog::Log(LOGERROR, "CMusicDatabase::GetSongsCount(%s) failed", strWhere.c_str());
   }
   return 0;
 }
@@ -3732,36 +3737,29 @@ bool CMusicDatabase::GetAlbumById(long idAlbum, CStdString& strAlbum)
 
 bool CMusicDatabase::GetRandomSong(CFileItem* item)
 {
-  long lSongs = -1;
+  return GetRandomSong(item, (CStdString)"");
+}
 
+bool CMusicDatabase::GetRandomSong(CFileItem* item, CStdString& strWhere)
+{
   try
   {
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
-    CStdString strSQL=FormatSQL("select count(*) as count from songview");
+    int iSongs = GetSongsCount(strWhere);
 
-    // run query
-    if (!m_pDS->query(strSQL.c_str())) return false;
-    int iRowsFound = m_pDS->num_rows();
-    if (iRowsFound != 1)
-    {
-      m_pDS->close();
-      return false;
-    }
-    lSongs = m_pDS->fv("songview.count").get_asLong();
-    m_pDS->close();
-
-    if (lSongs <= 0)
+    if (iSongs <= 0)
       return false;
 
     srand(timeGetTime());
-    long lRandom = rand() % lSongs;
-    strSQL=FormatSQL("select * from songview where idSong = %ld", lRandom);
+    int iRandom = rand() % iSongs;
 
+    CStdString strSQL=FormatSQL("select * from songview %s order by idSong limit 1 offset %i", strWhere.c_str(), iRandom);
+    CLog::Log(LOGDEBUG,"GetRandomSong(), query = %s", strSQL.c_str());
     // run query
     if (!m_pDS->query(strSQL.c_str())) return false;
-    iRowsFound = m_pDS->num_rows();
+    int iRowsFound = m_pDS->num_rows();
     if (iRowsFound != 1)
     {
       m_pDS->close();
@@ -3773,7 +3771,7 @@ bool CMusicDatabase::GetRandomSong(CFileItem* item)
   }
   catch(...)
   {
-    CLog::Log(LOGERROR,"CMusicDatabase::GetRandomSong() failed");
+    CLog::Log(LOGERROR,"CMusicDatabase::GetRandomSong(%s) failed", strWhere.c_str());
   }
   return false;
 }
