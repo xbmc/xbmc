@@ -1,3 +1,5 @@
+2006-02-21 changed:     Changed VideoOSD so it skips to Previous & Next file instead of Seek action.
+
 2006-02-20 fixed:	Weather.xml still wasn't quite right in 16x9.
 
 2006-02-15 fixed:	Home.xml visibility on the buttons was Player.HasMedia rather than Player.HasAudio.  Also added allowhiddenfocus="true" to the non conditional buttons that hide.
