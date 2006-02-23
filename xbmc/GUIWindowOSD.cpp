@@ -811,6 +811,11 @@ void CGUIWindowOSD::Handle_ControlSetting(DWORD iControlID, DWORD wID)
       CBookmark bookmark;
       bookmark.timeInSeconds = (int)g_application.GetTime();
       bookmark.thumbNailImage.Empty();
+      if( g_application.m_pPlayer )
+        bookmark.playerState = g_application.m_pPlayer->GetPlayerState();
+      else
+        bookmark.playerState.Empty();
+      
       dbs.Open();             // open the bookmark d/b
       dbs.AddBookMarkToMovie(strMovie, bookmark);    // add the current timestamp
       dbs.Close();            // close the d/b
@@ -831,7 +836,12 @@ void CGUIWindowOSD::Handle_ControlSetting(DWORD iControlID, DWORD wID)
         dbs.Close();           // close the d/b
         if (bookmarks.size() <= 0) return ;      // no bookmarks? leave if so ...
 
-        g_application.SeekTime((double)bookmarks[m_iCurrentBookmark].timeInSeconds); // set mplayers play position
+        if( g_application.m_pPlayer )
+        {
+          g_application.m_pPlayer->SetPlayerState(bookmarks[m_iCurrentBookmark].playerState);
+          g_application.SeekTime((double)bookmarks[m_iCurrentBookmark].timeInSeconds);
+        }
+
         PopulateBookmarks();
       }
     }

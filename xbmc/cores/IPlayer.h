@@ -98,7 +98,11 @@ public:
   virtual bool OnAction(const CAction &action) { return false; };
 
   virtual bool GetCurrentSubtitle(CStdStringW& strSubtitle) { strSubtitle = ""; return false; }
-  
+
+  //returns a state that is needed for resuming from a specific time
+  virtual CStdString GetPlayerState() { return ""; };
+  virtual bool SetPlayerState(CStdString state) { return false;};
+
   //virtual IChapterProvider* GetChapterProvider() { return NULL; }
   
 protected:
