@@ -3275,6 +3275,7 @@ void CApplication::StopPlaying()
       g_stSettings.m_currentVideoSettings.m_ResumeTime = (int)(GetTime() * 75); // need it in frames (75ths of a second)
     }
     m_pPlayer->CloseFile();
+    m_bMusicPartyMode = false;  // disable party mode on STOP
   }
   OnPlayBackStopped();
 }
@@ -4503,7 +4504,7 @@ void CApplication::CheckMusicPlaylist()
     if (musicdatabase.Open())
     {
       CFileItem* pItem = new CFileItem;
-      if (musicdatabase.GetRandomSong(pItem))
+      if (musicdatabase.GetRandomSong(pItem, (CStdString)""))
       {
         CPlayList::CPlayListItem playlistItem;
         CUtil::ConvertFileItemToPlayListItem(pItem, playlistItem);
