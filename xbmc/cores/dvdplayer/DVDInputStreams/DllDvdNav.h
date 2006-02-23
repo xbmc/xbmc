@@ -70,6 +70,8 @@ public:
   virtual dvdnav_status_t dvdnav_get_stitle_info(dvdnav_t * self, int32_t streamid, subp_attr_t* stitle_attributes)=0;
   virtual dvdnav_status_t dvdnav_time_search(dvdnav_t * self, uint64_t timepos)=0;
   virtual int64_t dvdnav_convert_time(dvd_time_t *time)=0;
+  virtual dvdnav_status_t dvdnav_get_state(dvdnav_t *self, dvd_state_t *save_state)=0;
+  virtual dvdnav_status_t dvdnav_set_state(dvdnav_t *self, dvd_state_t *save_state)=0;
 
 };
 
@@ -131,6 +133,8 @@ class DllDvdNav : public DllDynamic, DllDvdNavInterface
   DEFINE_METHOD3(dvdnav_status_t, dvdnav_get_stitle_info, (dvdnav_t * p1, int32_t p2, subp_attr_t* p3))
   DEFINE_METHOD2(dvdnav_status_t, dvdnav_time_search, (dvdnav_t * p1, uint64_t p2))
   DEFINE_METHOD1(int64_t, dvdnav_convert_time, (dvd_time_t *p1))
+  DEFINE_METHOD2(dvdnav_status_t, dvdnav_get_state, (dvdnav_t *p1, dvd_state_t *p2))
+  DEFINE_METHOD2(dvdnav_status_t, dvdnav_set_state, (dvdnav_t *p1, dvd_state_t *p2))
   BEGIN_METHOD_RESOLVE()
     RESOLVE_METHOD(dvdnav_open)
     RESOLVE_METHOD(dvdnav_close)
@@ -187,5 +191,7 @@ class DllDvdNav : public DllDynamic, DllDvdNavInterface
     RESOLVE_METHOD(dvdnav_get_stitle_info)
     RESOLVE_METHOD(dvdnav_time_search)
     RESOLVE_METHOD(dvdnav_convert_time)
+    RESOLVE_METHOD(dvdnav_get_state)
+    RESOLVE_METHOD(dvdnav_set_state)
 END_METHOD_RESOLVE()
 };

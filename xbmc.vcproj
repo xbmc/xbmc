@@ -2667,6 +2667,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					<File
 						RelativePath=".\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamNavigator.h">
 					</File>
+					<File
+						RelativePath=".\xbmc\cores\dvdplayer\DVDInputStreams\DVDStateSerializer.cpp">
+					</File>
+					<File
+						RelativePath=".\xbmc\cores\dvdplayer\DVDInputStreams\DVDStateSerializer.h">
+					</File>
 				</Filter>
 				<Filter
 					Name="DVDHeaders"

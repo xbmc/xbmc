@@ -115,6 +115,9 @@ public:
   
   virtual bool GetCurrentSubtitle(CStdStringW& strSubtitle);
   
+  virtual CStdString GetPlayerState();
+  virtual bool SetPlayerState(CStdString state);
+
   // virtual IChapterProvider* GetChapterProvider();
 
   virtual int OnDVDNavResult(void* pData, int iMessage);
