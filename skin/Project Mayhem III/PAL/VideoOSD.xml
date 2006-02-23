@@ -67,7 +67,7 @@
       <height>45</height>
       <texturefocus>osd_button_skip_minusSELFO.png</texturefocus>
       <texturenofocus>-</texturenofocus>
-      <onclick>XBMC.PlayerControl(BigSkipBackward)</onclick>
+      <onclick>XBMC.PlayerControl(Previous)</onclick>
       <label>-</label>
       <font>-</font>
       <onleft>215</onleft>
@@ -170,7 +170,7 @@
       <height>40</height>
       <texturefocus>osd_button_skip_plusSELFO.png</texturefocus>
       <texturenofocus>-</texturenofocus>
-      <onclick>XBMC.PlayerControl(BigSkipForward)</onclick>
+      <onclick>XBMC.PlayerControl(Next)</onclick>
       <label>-</label>
       <font>-</font>
       <onleft>214</onleft>
