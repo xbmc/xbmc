@@ -623,11 +623,9 @@ void CGUIWindowPictures::OnItemLoaded(CFileItem *pItem)
     CPicture pic;
     pic.CreateFolderThumb(pItem->m_strPath, strFiles);
     // refill in the icon to get it to update
-    g_graphicsContext.Lock();
-    pItem->FreeIcons();
     pItem->SetThumb();
     pItem->FillInDefaultIcon();
-    g_graphicsContext.Unlock();
+    pItem->SetImageChanged();
   }
 }
 
