@@ -19,8 +19,8 @@ private:
   int m_sampleBufferSize;
 
   CFileReader m_file;
-  MpcPlayFileStream m_stream;
-  MpcPlayState *m_handle;
+  mpc_reader m_reader;
+  mpc_decoder *m_handle;
 
   DllMPCCodec m_dll;
 };
