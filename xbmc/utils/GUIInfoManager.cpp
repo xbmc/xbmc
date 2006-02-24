@@ -161,6 +161,7 @@ extern char g_szTitleIP[32];
 #define LISTITEM_ALBUM              315
 #define LISTITEM_YEAR               316
 #define LISTITEM_GENRE              317
+#define LISTITEM_ICON               318
 
 #define PLAYLIST_LENGTH             390
 #define PLAYLIST_POSITION           391
@@ -424,6 +425,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
   else if (strCategory.Equals("listitem"))
   {
     if (strTest.Equals("listitem.thumb")) ret = LISTITEM_THUMB;
+    else if (strTest.Equals("listitem.icon")) ret = LISTITEM_ICON;
     else if (strTest.Equals("listitem.label")) ret = LISTITEM_LABEL;
     else if (strTest.Equals("listitem.title")) ret = LISTITEM_TITLE;
     else if (strTest.Equals("listitem.tracknumber")) ret = LISTITEM_TRACKNUMBER;
@@ -987,7 +989,7 @@ CStdString CGUIInfoManager::GetImage(int info)
     if (!g_application.IsPlayingVideo()) return "";
     return m_currentMovieThumb;
   }
-  else if (info == LISTITEM_THUMB)
+  else if (info == LISTITEM_THUMB || info == LISTITEM_ICON)
   {
     CGUIWindow *pWindow = m_gWindowManager.GetWindow(m_gWindowManager.GetActiveWindow());
     if (pWindow && pWindow->IsMediaWindow())
@@ -995,7 +997,7 @@ CStdString CGUIInfoManager::GetImage(int info)
       const CFileItem *item = ((CGUIMediaWindow *)pWindow)->GetCurrentListItem();
       if (item)
       {
-        if (item->GetThumbnailImage().IsEmpty())
+        if (info == LISTITEM_ICON && item->GetThumbnailImage().IsEmpty())
         {
           CStdString strThumb = item->GetIconImage();
           strThumb.Insert(strThumb.Find("."), "Big");
@@ -1606,7 +1608,11 @@ wstring CGUIInfoManager::GetFreeSpace(int drive, bool shortText)
   WCHAR wszHD[64];
   wstring strReturn;
 
-  char cDrive = drive - SYSTEM_FREE_SPACE_C + 'C';
+  char cDrive;
+  if (shortText)
+    cDrive = drive - LCD_FREE_SPACE_C + 'C';
+  else
+    cDrive = drive - SYSTEM_FREE_SPACE_C + 'C';
   CStdString strDriveFind;
   strDriveFind.Format("%c:\\", cDrive);
   const WCHAR *pszDrive = g_localizeStrings.Get(155).c_str();
