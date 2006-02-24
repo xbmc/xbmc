@@ -50,6 +50,20 @@
     </control>
 
     <control>
+      <description>thumbnailpanel</description>
+      <type>thumbnailpanel</type>
+      <id>451</id>
+      <posx>22</posx>
+      <posy>45</posy>
+      <width>474</width>
+      <height>390</height>
+      <onleft>413</onleft>
+      <onright>413</onright>
+      <onup>413</onup>
+      <ondown>413</ondown>
+    </control>
+
+    <control>
       <description>foreground image</description>
       <type>image</type>
       <id>0</id>
