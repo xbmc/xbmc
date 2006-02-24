@@ -257,7 +257,9 @@ void CGUIWindowSettingsCategory::SetupControls()
   if (m_pOriginalImage) m_pOriginalImage->SetVisible(false);
   // setup our control groups...
   m_vecGroups.clear();
-  m_vecGroups.push_back(CONTROL_START_BUTTONS + m_iSection);
+  CControlGroup group(0);
+  group.m_lastControl = CONTROL_START_BUTTONS + m_iSection;
+  m_vecGroups.push_back(group);
   // get a list of different sections
   CSettingsGroup *pSettingsGroup = g_guiSettings.GetGroup(m_iScreen);
   if (!pSettingsGroup) return ;
@@ -295,7 +297,7 @@ void CGUIWindowSettingsCategory::SetupControls()
 void CGUIWindowSettingsCategory::CreateSettings()
 {
   FreeSettingsControls();
-  m_vecGroups.push_back( -1); // add the control group
+  m_vecGroups.push_back(CControlGroup(1)); // add the control group
   const CGUIControl *pControlArea = GetControl(CONTROL_AREA);
   const CGUIControl *pControlGap = GetControl(CONTROL_GAP);
   if (!pControlArea || !pControlGap)
@@ -2797,7 +2799,7 @@ void CGUIWindowSettingsCategory::JumpToSection(DWORD dwWindowId, int iSection)
   CGUIMessage msg(GUI_MSG_WINDOW_DEINIT, 0, 0, 0, 0);
   OnMessage(msg);
   m_iSectionBeforeJump=m_iSection;
-  m_iControlBeforeJump=GetFocusedControl();
+  m_iControlBeforeJump=m_lastControlID;
   m_iWindowBeforeJump=m_dwWindowId+m_iScreen;
   m_iSection=iSection;
   m_lastControlID=CONTROL_START_CONTROL;
