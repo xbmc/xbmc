@@ -440,7 +440,9 @@ void CMusicInfoTagLoaderWMA::SetTagValueBinary(const CStdString& strFrameName, c
 
     picture.pbData = (pValue + iPicOffset);
 
-    if (picture.bPictureType == 3) // Cover Front
+    // many wma's don't have the bPictureType specified.  For now, just take
+    // Cover Front (3) or Other (0) as the cover.
+    if (picture.bPictureType == 3 || picture.bPictureType == 0) // Cover Front
     {
       CStdString strExtension(picture.pwszMIMEType);
       // if we don't have an album tag, cache with the full file path so that
