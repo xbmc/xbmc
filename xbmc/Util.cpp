@@ -2248,9 +2248,10 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
         // is this a rar-file .. 
         if (CUtil::IsRAR(strItem) && g_guiSettings.GetBool("Subtitles.SearchRars"))
         {
-          CStdString strRar;
+          CStdString strRar, strItemWithPath;
           CUtil::AddFileToFolder(strLookInPaths[step],strFileNameNoExt+".rar",strRar);
-          if (step != (strMovie.substr(0,6)=="rar://"?1:0) || strItem == strRar)
+          CUtil::AddFileToFolder(strLookInPaths[step],strItem,strItemWithPath);
+          if (step != (strMovie.substr(0,6)=="rar://"?1:0) || strItemWithPath == strRar)
             CacheRarSubtitles( vecExtensionsCached, items[j]->m_strPath, strFileNameNoExtNoCase);
         }
         else

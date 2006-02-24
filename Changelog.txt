@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 24-02-2006 fixed: movie.avi, movie.rar, movie.idx in same folder didn't work.
  - 24-02-2006 added: bookmark support for dvd player in any section of the dvd
  - 24-02-2006 added: automatic bookmarking of current position on stop of playback
  - 24-02-2006 fixed: seeking and current position in libdvdnav didn't take different angles in a program chain into account. (black holes in time and seeking to wrong time)
