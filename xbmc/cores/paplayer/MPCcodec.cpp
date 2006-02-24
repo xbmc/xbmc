@@ -3,49 +3,42 @@
 
 
 // Callbacks for file reading
-int Mpc_Callback_Read(MpcPlayStream * stream, void * buffer, int bytes, int * bytes_read)
+mpc_int32_t Mpc_Callback_Read(void *data, void * buffer, int bytes)
 {
-	MpcPlayFileStream *filestream = (MpcPlayFileStream *)stream;
-  if (!filestream || !buffer || !filestream->file) return 0;
-//  CLog::Log(LOGERROR, "Reading from MPC dll - stream @ %x, - file @ %x", (int)stream, filestream->file);
-  int amountread = (int)filestream->file->Read(buffer, bytes);
-  if (bytes_read)
-    *bytes_read = amountread;
-	if (amountread == bytes || filestream->file->GetPosition() == filestream->file->GetLength())
-		return 1;
-  CLog::Log(LOGERROR, "MPCCodec:Read callback.  Had %i bytes to read.  Returned %i", bytes, amountread);
-	return 0;
+	CFileReader *file = (CFileReader *)data;
+  if (!file || !buffer) return 0;
+  return (mpc_int32_t)file->Read(buffer, bytes);
 }
 
-int Mpc_Callback_Seek(MpcPlayStream * stream, int position)
+mpc_bool_t Mpc_Callback_Seek(void *data, int position)
 {
-	MpcPlayFileStream *filestream = (MpcPlayFileStream *)stream;
-  if (!filestream || !filestream->file) return 0;
+	CFileReader *file = (CFileReader *)data;
+  if (!file) return 0;
 
-  __int64 seek = (int)filestream->file->Seek(position, SEEK_SET);
+  int seek = (int)file->Seek(position, SEEK_SET);
   if (seek >= 0)
     return 1;
   CLog::Log(LOGERROR, "MPCCodec:Seek callback.  Seeking to position %i failed.", position);
   return 0;
 }
 
-int Mpc_Callback_CanSeek(MpcPlayStream * stream)
+mpc_bool_t Mpc_Callback_CanSeek(void *data)
 {
   return 1;
 }
 
-int Mpc_Callback_GetLength(MpcPlayStream * stream)
+mpc_int32_t Mpc_Callback_GetLength(void *data)
 {
-	MpcPlayFileStream *filestream = (MpcPlayFileStream *)stream;
-  if (!filestream || !filestream->file) return 0;
-  return (int)filestream->file->GetLength();
+  CFileReader *file = (CFileReader *)data;
+  if (!file) return 0;
+  return (int)file->GetLength();
 }
 
-int Mpc_Callback_GetPosition(MpcPlayStream * stream)
+mpc_int32_t Mpc_Callback_GetPosition(void *data)
 {
-	MpcPlayFileStream *filestream = (MpcPlayFileStream *)stream;
-  if (!filestream || !filestream->file) return 0;
-  int position = (int)filestream->file->GetPosition();
+  CFileReader *file = (CFileReader *)data;
+  if (!file) return 0;
+  int position = (int)file->GetPosition();
 	if (position >= 0)
 		return position;
 	return -1;
@@ -80,52 +73,52 @@ bool MPCCodec::Init(const CStdString &strFile, unsigned int filecache)
     return false;
 
   // setup our callbacks
-  m_stream.file = &m_file;
-  m_stream.vtbl.Read = Mpc_Callback_Read;
-  m_stream.vtbl.Seek = Mpc_Callback_Seek;
-  m_stream.vtbl.CanSeek = Mpc_Callback_CanSeek;
-  m_stream.vtbl.GetLength = Mpc_Callback_GetLength;
-  m_stream.vtbl.GetPosition = Mpc_Callback_GetPosition;
+  m_reader.data = &m_file;
+  m_reader.read = Mpc_Callback_Read;
+  m_reader.seek = Mpc_Callback_Seek;
+  m_reader.canseek = Mpc_Callback_CanSeek;
+  m_reader.get_size = Mpc_Callback_GetLength;
+  m_reader.tell = Mpc_Callback_GetPosition;
 
-  StreamInfo::BasicData data;
+  mpc_streaminfo info;
   double timeinseconds = 0.0;
-  if (!m_dll.Open(&m_handle, (MpcPlayStream *)&m_stream, &data, &timeinseconds))
+  if (!m_dll.Open(&m_handle, &m_reader, &info, &timeinseconds))
     return false;
 
   m_TotalTime = (__int64)(timeinseconds * 1000.0 + 0.5);
   m_BitsPerSample = 16;
 	m_Channels = 2;
-  m_SampleRate = (int)data.SampleFreq;
+  m_SampleRate = (int)info.sample_freq;
 
-  m_Bitrate = data.Bitrate;
+  m_Bitrate = info.bitrate;
   if (m_Bitrate == 0)
   {
-	  m_Bitrate = (int)data.AverageBitrate;
+	  m_Bitrate = (int)info.average_bitrate;
   }
   if (m_Bitrate == 0)
   {
-	  m_Bitrate = (int)((data.TotalFileLength * 8) / (m_TotalTime / 1000));
+	  m_Bitrate = (int)((info.total_file_length * 8) / (m_TotalTime / 1000));
   }
 
   // Replay gain
-  if (data.GainTitle || data.PeakTitle)
+  if (info.gain_title || info.peak_title)
   {
-		m_replayGain.iTrackGain = data.GainTitle;
+		m_replayGain.iTrackGain = info.gain_title;
     m_replayGain.iHasGainInfo |= REPLAY_GAIN_HAS_TRACK_INFO;
-		if (data.PeakTitle)
+		if (info.peak_title)
     {
-      m_replayGain.fTrackPeak = data.PeakTitle / 32768.0f;
+      m_replayGain.fTrackPeak = info.peak_title / 32768.0f;
       m_replayGain.iHasGainInfo |= REPLAY_GAIN_HAS_TRACK_PEAK;
     }
 	}
 
-	if (data.GainAlbum || data.PeakAlbum)
+	if (info.gain_album || info.gain_album)
   {
-		m_replayGain.iAlbumGain = data.GainAlbum;
+		m_replayGain.iAlbumGain = info.gain_album;
     m_replayGain.iHasGainInfo |= REPLAY_GAIN_HAS_ALBUM_INFO;
-		if (data.PeakAlbum)
+		if (info.gain_album)
     {
-      m_replayGain.fAlbumPeak = data.PeakAlbum / 32768.0f;
+      m_replayGain.fAlbumPeak = info.gain_album / 32768.0f;
       m_replayGain.iHasGainInfo |= REPLAY_GAIN_HAS_ALBUM_PEAK;
     }
 	}
@@ -140,8 +133,8 @@ void MPCCodec::DeInit()
   m_handle = NULL;
 
   m_file.Close();
-  if (m_stream.file)
-    m_stream.file = NULL;
+  if (m_reader.data)
+    m_reader.data = NULL;
 }
 
 __int64 MPCCodec::Seek(__int64 iSeekTime)
