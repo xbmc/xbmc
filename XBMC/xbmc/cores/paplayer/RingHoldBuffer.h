@@ -270,6 +270,7 @@ public:
   //
   BOOL WriteBinary( char * pBuf, unsigned int nBufLen )
   {
+//    CLog::Log(LOGDEBUG, "RingHoldBuffer::WriteBinary %i bytes, ReadPos=%i, BehindAmount=%i, AheadAmount=%i", nBufLen, m_iReadPtr, m_iBehindAmount, m_iAheadAmount);
     ::EnterCriticalSection(&m_critSection );
     BOOL bResult = FALSE;
     {
@@ -299,6 +300,7 @@ public:
       }
     }
     ::LeaveCriticalSection(&m_critSection );
+//    CLog::Log(LOGDEBUG, "RingHoldBuffer::WriteBinary Done %i bytes, ReadPos=%i, BehindAmount=%i, AheadAmount=%i, return=%s", nBufLen, m_iReadPtr, m_iBehindAmount, m_iAheadAmount, bResult ? "true" : "false");
     return bResult;
   }
 
@@ -312,7 +314,7 @@ public:
   //
   BOOL ReadBinary( char * pBuf, unsigned int nBufLen )
   {
-//    CLog::Log(LOGERROR, "RingHoldBuffer::ReadBinary %i bytes, ReadPos=%i, BehindAmount=%i, AheadAmount=%i", nBufLen, m_iReadPtr, m_iBehindAmount, m_iAheadAmount);
+//    CLog::Log(LOGDEBUG, "RingHoldBuffer::ReadBinary %i bytes, ReadPos=%i, BehindAmount=%i, AheadAmount=%i", nBufLen, m_iReadPtr, m_iBehindAmount, m_iAheadAmount);
     ::EnterCriticalSection(&m_critSection );
     BOOL bResult = FALSE;
     {
@@ -341,7 +343,7 @@ public:
       }
     }
     ::LeaveCriticalSection(&m_critSection );
- //   CLog::Log(LOGERROR, "RingHoldBuffer::ReadBinary Done %i bytes, ReadPos=%i, BehindAmount=%i, AheadAmount=%i", nBufLen, m_iReadPtr, m_iBehindAmount, m_iAheadAmount);
+//    CLog::Log(LOGDEBUG, "RingHoldBuffer::ReadBinary Done %i bytes, ReadPos=%i, BehindAmount=%i, AheadAmount=%i, return=%s", nBufLen, m_iReadPtr, m_iBehindAmount, m_iAheadAmount, bResult ? "true" : "false");
     return bResult;
 
   }
@@ -380,7 +382,7 @@ public:
 
   BOOL SkipBytes( int nBufLen ) // signed as we can go both ways
   {
-//    CLog::Log(LOGERROR, "RingHoldBuffer::SkipBytes %i bytes, ReadPos=%i, BehindAmount=%i, AheadAmount=%i", nBufLen, m_iReadPtr, m_iBehindAmount, m_iAheadAmount);
+//    CLog::Log(LOGDEBUG, "RingHoldBuffer::SkipBytes %i bytes, ReadPos=%i, BehindAmount=%i, AheadAmount=%i", nBufLen, m_iReadPtr, m_iBehindAmount, m_iAheadAmount);
     ::EnterCriticalSection(&m_critSection );
     BOOL bResult = FALSE;
     {
@@ -388,18 +390,17 @@ public:
       if ( nBufLen < 0 && m_iBehindAmount >= (unsigned int)(-nBufLen) )
       {
         if ((unsigned int)(-nBufLen) > m_iReadPtr) // wrap
-          m_iReadPtr = m_nBufSize + nBufLen;
+          m_iReadPtr = m_nBufSize + m_iReadPtr + nBufLen;
         else
           m_iReadPtr -= -nBufLen;
         m_iAheadAmount -= nBufLen;
         m_iBehindAmount += nBufLen;
         bResult = TRUE;
       }
-      // if we're going forwards...
-      if ( 0 <= nBufLen && (unsigned int)nBufLen <= GetMaxReadSize() )
-      {
+      else if ( 0 <= nBufLen && (unsigned int)nBufLen < m_iAheadAmount )
+      { // if we're going forwards...
         // easy case, no wrapping
-        if ( m_iReadPtr + (unsigned int)nBufLen <= m_nBufSize )
+        if ( m_iReadPtr + (unsigned int)nBufLen < m_nBufSize )
         {
           m_iReadPtr += nBufLen;
         }
@@ -416,7 +417,7 @@ public:
       }
     }
     ::LeaveCriticalSection(&m_critSection );
-//    CLog::Log(LOGERROR, "RingHoldBuffer::SkipBytes Done %i bytes, ReadPos=%i, BehindAmount=%i, AheadAmount=%i", nBufLen, m_iReadPtr, m_iBehindAmount, m_iAheadAmount);
+//    CLog::Log(LOGDEBUG, "RingHoldBuffer::SkipBytes Done %i bytes, ReadPos=%i, BehindAmount=%i, AheadAmount=%i, return=%s", nBufLen, m_iReadPtr, m_iBehindAmount, m_iAheadAmount, bResult ? "true" : "false");
     return bResult;
   }
 };
