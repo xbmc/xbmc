@@ -172,8 +172,12 @@ void CGraphicContext::ClipToViewWindow()
   D3DRECT clip = { m_videoRect.left, m_videoRect.top, m_videoRect.right, m_videoRect.bottom };
   if (m_videoRect.left < 0) clip.x1 = 0;
   if (m_videoRect.top < 0) clip.y1 = 0;
+  if (m_videoRect.left > m_iScreenWidth - 1) clip.x1 = m_iScreenWidth - 1;
+  if (m_videoRect.top > m_iScreenHeight - 1) clip.y1 = m_iScreenHeight - 1;
   if (m_videoRect.right > m_iScreenWidth) clip.x2 = m_iScreenWidth;
   if (m_videoRect.bottom > m_iScreenHeight) clip.y2 = m_iScreenHeight;
+  if (clip.x2 < clip.x1) clip.x2 = clip.x1 + 1;
+  if (clip.y2 < clip.y1) clip.y2 = clip.y1 + 1;
   m_pd3dDevice->SetScissors(1, FALSE, &clip);
 }
 
