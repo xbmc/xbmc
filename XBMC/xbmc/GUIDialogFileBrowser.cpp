@@ -4,9 +4,12 @@
 #include "detectdvdtype.h"
 #include "GUIDialogNetworkSetup.h"
 #include "GUIListControl.h"
+#include "GUIThumbnailPanel.h"
 #include "MediaManager.h"
+#include "AutoSwitch.h"
 
 #define CONTROL_LIST          450
+#define CONTROL_THUMBS        451
 #define CONTROL_HEADING_LABEL 411
 #define CONTROL_LABEL_PATH    412
 #define CONTROL_OK            413
@@ -18,11 +21,14 @@ CGUIDialogFileBrowser::CGUIDialogFileBrowser()
   m_bConfirmed = false;
   m_Directory.m_bIsFolder = true;
   m_browsingForFolders = false;
+  m_browsingForImages = false;
   m_addNetworkShareEnabled = false;
+  m_thumbLoader.SetObserver(this);
 }
 
 CGUIDialogFileBrowser::~CGUIDialogFileBrowser()
-{}
+{
+}
 
 bool CGUIDialogFileBrowser::OnAction(const CAction &action)
 {
@@ -40,6 +46,9 @@ bool CGUIDialogFileBrowser::OnMessage(CGUIMessage& message)
   {
   case GUI_MSG_WINDOW_DEINIT:
     {
+      if (m_thumbLoader.IsLoading())
+        m_thumbLoader.StopThread();
+      CGUIDialog::OnMessage(message);
       ClearFileItems();
       m_addNetworkShareEnabled = false;
     }
@@ -148,6 +157,8 @@ void CGUIDialogFileBrowser::OnSort()
 
 void CGUIDialogFileBrowser::Update(const CStdString &strDirectory)
 {
+  if (m_browsingForImages && m_thumbLoader.IsLoading())
+    m_thumbLoader.StopThread();
   // get selected item
   int iItem = m_viewControl.GetSelectedItem();
   CStdString strSelectedItem = "";
@@ -210,6 +221,8 @@ void CGUIDialogFileBrowser::Update(const CStdString &strDirectory)
   }
 
   m_viewControl.SetItems(m_vecItems);
+  if (m_browsingForImages)
+    m_viewControl.SetCurrentView(CAutoSwitch::ByFileCount(m_vecItems) ? VIEW_METHOD_ICONS : VIEW_METHOD_LIST);
 
   strSelectedItem = m_history.GetSelectedItem(m_Directory.m_strPath);
 
@@ -222,6 +235,8 @@ void CGUIDialogFileBrowser::Update(const CStdString &strDirectory)
       break;
     }
   }
+  if (m_browsingForImages)
+    m_thumbLoader.Load(m_vecItems);
 }
 
 void CGUIDialogFileBrowser::Render()
@@ -327,16 +342,31 @@ void CGUIDialogFileBrowser::OnWindowLoaded()
   m_viewControl.Reset();
   m_viewControl.SetParentWindow(GetID());
   m_viewControl.AddView(VIEW_METHOD_LIST, GetControl(CONTROL_LIST));
+  m_viewControl.AddView(VIEW_METHOD_ICONS, GetControl(CONTROL_THUMBS));
   m_viewControl.SetCurrentView(VIEW_METHOD_LIST);
-  // set the page spin control to hidden
-  CGUIListControl *pControl = (CGUIListControl *)GetControl(CONTROL_LIST);
-  if (pControl) pControl->SetPageControlVisible(false);
+  // set the page spin controls to hidden
+  CGUIListControl *pList = (CGUIListControl *)GetControl(CONTROL_LIST);
+  if (pList) pList->SetPageControlVisible(false);
+  CGUIThumbnailPanel *pThumbs = (CGUIThumbnailPanel *)GetControl(CONTROL_THUMBS);
+  if (pThumbs) pThumbs->SetPageControlVisible(false);
 }
 
 void CGUIDialogFileBrowser::OnWindowUnload()
 {
   CGUIDialog::OnWindowUnload();
   m_viewControl.Reset();
+}
+
+bool CGUIDialogFileBrowser::ShowAndGetImage(VECSHARES &shares, const CStdStringW &heading, CStdString &path)
+{
+  CStdString mask = ".png|.jpg|.bmp|.gif";
+  CGUIDialogFileBrowser *browser = (CGUIDialogFileBrowser *)m_gWindowManager.GetWindow(WINDOW_DIALOG_FILE_BROWSER);
+  if (!browser)
+    return false;
+  browser->m_browsingForImages = true;
+  bool success = ShowAndGetFile(shares, mask, heading, path);
+  browser->m_browsingForImages = false;
+  return success;
 }
 
 bool CGUIDialogFileBrowser::ShowAndGetDirectory(VECSHARES &shares, const CStdStringW &heading, CStdString &path)

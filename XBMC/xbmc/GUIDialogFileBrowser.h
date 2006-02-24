@@ -3,10 +3,11 @@
 #include "FileSystem/VirtualDirectory.h"
 #include "FileSystem/DirectoryHistory.h"
 #include "GUIViewControl.h"
+#include "PictureThumbLoader.h"
 
 using namespace DIRECTORY;
 
-class CGUIDialogFileBrowser : public CGUIDialog
+class CGUIDialogFileBrowser : public CGUIDialog, public IBackgroundLoaderObserver
 {
 public:
   CGUIDialogFileBrowser(void);
@@ -22,9 +23,11 @@ public:
   static bool ShowAndGetDirectory(VECSHARES &shares, const CStdStringW &heading, CStdString &path);
   static bool ShowAndGetFile(VECSHARES &shares, const CStdString &mask, const CStdStringW &heading, CStdString &path);
   static bool ShowAndGetShare(CStdString &path, bool allowNetworkShares);
+  static bool ShowAndGetImage(VECSHARES &shares, const CStdStringW &heading, CStdString &path);
 
   void SetShares(VECSHARES &shares);
 
+  virtual void OnItemLoaded(CFileItem *item) {};
 protected:
   void GoParentFolder();
   void OnClick(int iItem);
@@ -44,6 +47,8 @@ protected:
   bool m_browsingForFolders;
   bool m_bConfirmed;
   bool m_addNetworkShareEnabled;
+  bool m_browsingForImages;
 
+  CPictureThumbLoader m_thumbLoader;
   CGUIViewControl m_viewControl;
 };
