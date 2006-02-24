@@ -5,6 +5,14 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 24-02-2006 fixed: Control focus irregularities in Settings categories.
+ - 24-02-2006 fixed: <reverse> wasn't being read from references.xml for the spincontrol.
+ - 24-02-2006 changed: Thumb setting via the background thumb loaders (Pictures, Music Playlists) no longer lock the graphics device (should smooth out any running animations).
+ - 24-02-2006 fixed: WindowClose control animations on dialogs were truncated if the dialog had a shorter WindowClose animation.
+ - 24-02-2006 added: Thumbnail panel to the filebrowser dialog (used only via Skin.SetImage() at present).  Id is 451.
+ - 24-02-2006 changed: Reverted change to ListItem.Thumb, and made a new ListItem.Icon which will show either the thumb or the icon image (if no thumb exists).
+ - 24-02-2006 added: New Musepack (MPC) decoder and sources (now uses libmpcdec.dll, in system/players/paplayer)
+ - 24-02-2006 fixed: Ring buffer could seek backwards to the incorrect location, causing incorrect data to be read - caused seeking irregularities in paplayer.
  - 24-02-2006 fixed: movie.avi, movie.rar, movie.idx in same folder didn't work.
  - 24-02-2006 added: bookmark support for dvd player in any section of the dvd
  - 24-02-2006 added: automatic bookmarking of current position on stop of playback

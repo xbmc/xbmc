@@ -77,6 +77,7 @@ public:
   virtual void SetFocus(bool bOnOff);
   virtual void SetVisible(bool bVisible);
   void SetReverse(bool bOnOff);
+  bool GetReverse() const { return m_bReverse; };
   int GetMaximum() const;
   int GetMinimum() const;
   const CStdString& GetTextureUpName() const { return m_imgspinUp.GetFileName(); };
