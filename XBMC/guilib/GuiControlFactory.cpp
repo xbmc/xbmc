@@ -499,6 +499,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
       iType = ((CGUISpinControl*)pReference)->GetType();
       dwWidth = ((CGUISpinControl*)pReference)->GetSpinWidth();
       dwHeight = ((CGUISpinControl*)pReference)->GetSpinHeight();
+      bReverse = ((CGUISpinControl*)pReference)->GetReverse();
     }
     else if (strType == "slider")
     {
@@ -679,6 +680,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
       strTextureFocus = ((CGUISpinControlEx*)pReference)->GetTextureFocusName();
       strTextureNoFocus = ((CGUISpinControlEx*)pReference)->GetTextureNoFocusName();
       strLabel = ((CGUISpinControlEx*)pReference)->GetLabel();
+      bReverse = ((CGUISpinControlEx*)pReference)->GetReverse();
     }
     else if (strType == "visualisation")
     { // nothing to do here
