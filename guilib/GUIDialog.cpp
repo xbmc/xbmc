@@ -206,6 +206,7 @@ void CGUIDialog::Show(DWORD dwParentId)
 
 void CGUIDialog::UpdateStates(ANIMATION_TYPE type, ANIMATION_PROCESS currentProcess, ANIMATION_STATE currentState)
 {
+  /* Don't need this as we check in RenderAnimation() anyway
   // Make sure dialog is closed at the appropriate time
   if (type == ANIM_TYPE_WINDOW_OPEN)
   {
@@ -216,7 +217,7 @@ void CGUIDialog::UpdateStates(ANIMATION_TYPE type, ANIMATION_PROCESS currentProc
   {
     if (currentProcess == ANIM_PROCESS_NORMAL && currentState == ANIM_STATE_APPLIED)
       Close(true);
-  }
+  }*/
 }
 
 bool CGUIDialog::RenderAnimation(DWORD time)
