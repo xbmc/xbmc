@@ -3824,7 +3824,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     }
     else if (execute.Equals("skin.setimage"))
     {
-      if (CGUIDialogFileBrowser::ShowAndGetFile(shares, ".png|.jpg|.gif|.bmp", g_localizeStrings.Get(1030), value))
+      if (CGUIDialogFileBrowser::ShowAndGetImage(shares, g_localizeStrings.Get(1030), value))
         g_settings.SetSkinString(parameter, value);
     }
     else // execute.Equals("skin.setpath"))
