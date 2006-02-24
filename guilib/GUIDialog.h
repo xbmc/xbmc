@@ -31,7 +31,6 @@ public:
 
 protected:
   virtual bool RenderAnimation(DWORD time);
-  virtual void UpdateStates(ANIMATION_TYPE type, ANIMATION_PROCESS currentProcess, ANIMATION_STATE currentState);
 
   DWORD m_dwParentWindowID;
   CGUIWindow* m_pParentWindow;
