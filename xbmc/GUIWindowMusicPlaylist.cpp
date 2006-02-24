@@ -598,13 +598,10 @@ void CGUIWindowMusicPlayList::OnItemLoaded(CFileItem* pItem)
   //  MusicDb items already have thumbs
   if (!pItem->IsMusicDb())
   {
-    g_graphicsContext.Lock();
-    // Remove default icons
-    pItem->FreeIcons();
-    // and reset thumbs and default icons
-    pItem->SetMusicThumb();
+    // Reset thumbs and default icons
+    pItem->SetThumb();
     pItem->FillInDefaultIcon();
-    g_graphicsContext.Unlock();
+    pItem->SetImageChanged();
   }
   CLog::DebugLog("Finished OnItemLoaded for item at %p", pItem);
 }

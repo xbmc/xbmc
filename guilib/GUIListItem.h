@@ -53,6 +53,9 @@ public:
   CGUIImage* GetIcon();
   void FreeIcons();
   void FreeMemory();
+
+  void SetImageChanged() { m_thumbChanged = true; m_iconChanged = true; };
+
   bool m_bIsFolder;     ///< is item a folder or a file
 protected:
   CStdString m_strLabel;      // text of column1
@@ -62,5 +65,8 @@ protected:
   CGUIImage* m_pThumbnailImage;  // pointer to CImage containing the thumbnail
   CGUIImage* m_pIconImage;     // pointer to CImage containing the icon
   bool m_bSelected;     // item is selected or not
+
+  bool m_iconChanged;
+  bool m_thumbChanged;  // true if we have changed the thumb
 };
 #endif

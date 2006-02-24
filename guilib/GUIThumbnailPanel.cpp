@@ -64,6 +64,7 @@ CGUIThumbnailPanel::CGUIThumbnailPanel(DWORD dwParentID, DWORD dwControlId, int 
   m_iThumbXPos = 8;
   m_iThumbYPos = 8;
   m_bHideFileNameLabel = false;
+  m_pageControlVisible = true;   // show the spin control by default
   m_upDown.SetShowRange(true); // show the range by default
   ControlType = GUICONTROL_THUMBNAIL;
 }
@@ -314,7 +315,7 @@ void CGUIThumbnailPanel::Render()
       m_upDown.SetValue(iPage);
     }
   }
-  if (m_upDown.GetMaximum() > 1)
+  if (m_pageControlVisible && m_upDown.GetMaximum() > 1)
   {
     m_upDown.SetPosition(m_iPosX + m_iSpinPosX, m_iPosY + m_iSpinPosY);
     m_upDown.Render();
@@ -541,7 +542,7 @@ void CGUIThumbnailPanel::OnRight()
       return ;
     }
 
-    if (m_upDown.GetMaximum() > 1)
+    if (m_pageControlVisible && m_upDown.GetMaximum() > 1)
     {
       m_iSelect = CONTROL_UPDOWN;
       m_upDown.SetFocus(true);

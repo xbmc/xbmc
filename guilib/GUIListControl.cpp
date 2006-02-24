@@ -92,7 +92,7 @@ void CGUIListControl::Render()
           pItem->SetIconImage(strThumb);
         }
       }
-      if (pItem->HasIcon() )
+      if (pItem->HasIcon())
       {
         // show icon
         CGUIImage* pImage = pItem->GetIcon();

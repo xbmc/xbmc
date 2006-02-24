@@ -6,6 +6,7 @@
 CGUIListItem::CGUIListItem(const CGUIListItem& item)
 {
   *this = item;
+  m_thumbChanged = m_iconChanged = false;
 }
 
 CGUIListItem::CGUIListItem(void)
@@ -18,6 +19,7 @@ CGUIListItem::CGUIListItem(void)
   m_bSelected = false;
   m_strIcon = "";
   m_strThumbnailImage = "";
+  m_thumbChanged = m_iconChanged = false;
 }
 
 CGUIListItem::CGUIListItem(const CStdString& strLabel)
@@ -30,11 +32,13 @@ CGUIListItem::CGUIListItem(const CStdString& strLabel)
   m_bSelected = false;
   m_strIcon = "";
   m_strThumbnailImage = "";
+  m_thumbChanged = m_iconChanged = false;
 }
 
 CGUIListItem::~CGUIListItem(void)
 {
   FreeMemory();
+  DeleteCriticalSection(&m_critSection);
 }
 
 void CGUIListItem::SetLabel(const CStdString& strLabel)
@@ -102,12 +106,12 @@ bool CGUIListItem::IsSelected() const
 
 CGUIImage* CGUIListItem::GetThumbnail()
 {
-  return m_pThumbnailImage;
+  return m_thumbChanged ? NULL : m_pThumbnailImage;
 }
 
 CGUIImage* CGUIListItem::GetIcon()
 {
-  return m_pIconImage;
+  return m_iconChanged ? NULL : m_pIconImage;
 }
 
 
@@ -119,6 +123,7 @@ void CGUIListItem::SetThumbnail(CGUIImage* pImage)
     delete m_pThumbnailImage;
   }
   m_pThumbnailImage = pImage;
+  m_thumbChanged = false;
 }
 
 
@@ -130,6 +135,7 @@ void CGUIListItem::SetIcon(CGUIImage* pImage)
     delete m_pIconImage;
   }
   m_pIconImage = pImage;
+  m_iconChanged = false;
 }
 
 
@@ -168,4 +174,6 @@ void CGUIListItem::FreeMemory()
     delete m_pIconImage;
     m_pIconImage = NULL;
   }
+  m_thumbChanged = false;
+  m_iconChanged = false;
 }

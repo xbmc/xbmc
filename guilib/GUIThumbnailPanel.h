@@ -102,6 +102,7 @@ public:
   virtual CStdString GetDescription() const;
 
   void HideFileNameLabel(bool bOnOff) { m_bHideFileNameLabel=bOnOff; }
+  void SetPageControlVisible(bool visible) { m_pageControlVisible = visible; }
 
 protected:
   void Calculate(bool resetItem);
@@ -163,6 +164,7 @@ protected:
   int m_iThumbHeightBig;
 
   bool m_bHideFileNameLabel;
+  bool m_pageControlVisible;
 
   CLabelInfo m_label;
 
