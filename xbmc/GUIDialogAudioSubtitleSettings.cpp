@@ -20,12 +20,14 @@ CGUIDialogAudioSubtitleSettings::~CGUIDialogAudioSubtitleSettings(void)
 #define AUDIO_SETTINGS_VOLUME_AMPLIFICATION 2
 #define AUDIO_SETTINGS_DELAY              3
 #define AUDIO_SETTINGS_STREAM             4
-// separator 5
-#define SUBTITLE_SETTINGS_ENABLE          6
-#define SUBTITLE_SETTINGS_DELAY           7
-#define SUBTITLE_SETTINGS_STREAM          8
-#define SUBTITLE_SETTINGS_BROWSER         9
+#define AUDIO_SETTINGS_OUTPUT_TO_ALL_SPEAKERS 5
+
+// separator 6
+#define SUBTITLE_SETTINGS_ENABLE          7
+#define SUBTITLE_SETTINGS_DELAY           8
+#define SUBTITLE_SETTINGS_STREAM          9
 #define AUDIO_SETTINGS_MAKE_DEFAULT      10
+#define SUBTITLE_SETTINGS_BROWSER        11
 
 void CGUIDialogAudioSubtitleSettings::CreateSettings()
 {
@@ -37,7 +39,8 @@ void CGUIDialogAudioSubtitleSettings::CreateSettings()
   AddSlider(AUDIO_SETTINGS_VOLUME_AMPLIFICATION, 290, &g_stSettings.m_currentVideoSettings.m_VolumeAmplification, 0, 5, 30, "%2.1f dB");
   AddSlider(AUDIO_SETTINGS_DELAY, 297, &g_stSettings.m_currentVideoSettings.m_AudioDelay, -g_advancedSettings.m_videoAudioDelayRange, 0.1f, g_advancedSettings.m_videoAudioDelayRange, "%2.1fs");
   AddAudioStreams(AUDIO_SETTINGS_STREAM);
-  AddSeparator(5);
+  AddBool(AUDIO_SETTINGS_OUTPUT_TO_ALL_SPEAKERS, 252, &g_stSettings.m_currentVideoSettings.m_OutputToAllSpeakers, g_guiSettings.GetInt("AudioOutput.Mode") == AUDIO_DIGITAL);
+  AddSeparator(6);
   AddBool(SUBTITLE_SETTINGS_ENABLE, 13397, &g_stSettings.m_currentVideoSettings.m_SubtitleOn);
   AddSlider(SUBTITLE_SETTINGS_DELAY, 303, &g_stSettings.m_currentVideoSettings.m_SubtitleDelay, -g_advancedSettings.m_videoSubsDelayRange, 0.1f, g_advancedSettings.m_videoSubsDelayRange, "%2.1fs");
   AddSubtitleStreams(SUBTITLE_SETTINGS_STREAM);
@@ -169,7 +172,7 @@ void CGUIDialogAudioSubtitleSettings::OnSettingChanged(unsigned int num)
         // update the screen setting...
         g_stSettings.m_currentVideoSettings.m_AudioStream = -1 - m_audioStream;
         // call monkeyh1's code here...
-        bool bAudioOnAllSpeakers = (g_guiSettings.GetInt("AudioOutput.Mode") == AUDIO_DIGITAL) && g_guiSettings.GetBool("VideoPlayer.OutputToAllSpeakers");
+        bool bAudioOnAllSpeakers = (g_guiSettings.GetInt("AudioOutput.Mode") == AUDIO_DIGITAL) && g_stSettings.m_currentVideoSettings.m_OutputToAllSpeakers;
         xbox_audio_switch_channel(m_audioStream, bAudioOnAllSpeakers);
         return;
       }
@@ -180,6 +183,10 @@ void CGUIDialogAudioSubtitleSettings::OnSettingChanged(unsigned int num)
       g_stSettings.m_currentVideoSettings.m_AudioStream = m_audioStream;
       g_application.m_pPlayer->SetAudioStream(m_audioStream);    // Set the audio stream to the one selected
     }
+  }
+  else if (setting.id == AUDIO_SETTINGS_OUTPUT_TO_ALL_SPEAKERS)
+  {
+    g_application.Restart();
   }
   else if (setting.id == SUBTITLE_SETTINGS_ENABLE)
   {

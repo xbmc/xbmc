@@ -2076,7 +2076,7 @@ void CUtil::RemoveIllegalChars( CStdString& strText)
 {
   char szRemoveIllegal [1024];
   strcpy(szRemoveIllegal , strText.c_str());
-  static char legalChars[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890!#$%&'()-@[]^_`{}~.ßֵוִהײצÜüריטחאשךֲסבן ";
+  static char legalChars[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890!#$%&'()-@[]^_`{}~.ßֵוִהײצÜüריטחאשךֲסבןכלםס ";
   char *cursor;
   for (cursor = szRemoveIllegal; *(cursor += strspn(cursor, legalChars)); /**/ )
     *cursor = '_';

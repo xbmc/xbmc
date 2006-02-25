@@ -325,6 +325,7 @@ void CGUIDialogSettings::AddSetting(SettingInfo &setting, int iPosX, int iPosY, 
                           iControlID);
   pControl->SetID(iControlID);
   pControl->SetVisible(true);
+  pControl->SetEnabled(setting.enabled);
   Add(pControl);
   pControl->AllocResources();
 }
@@ -339,13 +340,14 @@ void CGUIDialogSettings::AddButton(unsigned int id, int label)
   m_settings.push_back(setting);
 }
 
-void CGUIDialogSettings::AddBool(unsigned int id, int label, bool *on)
+void CGUIDialogSettings::AddBool(unsigned int id, int label, bool *on, bool enabled)
 {
   SettingInfo setting;
   setting.id = id;
   setting.name = g_localizeStrings.Get(label);
   setting.type = SettingInfo::CHECK;
   setting.data = on;
+  setting.enabled = enabled;
   m_settings.push_back(setting);
 }
 
