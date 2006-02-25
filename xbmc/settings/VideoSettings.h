@@ -42,6 +42,7 @@ public:
   float m_CustomPixelRatio; // custom setting pixel ratio
   int m_AudioStream;
   float m_VolumeAmplification;
+  bool m_OutputToAllSpeakers;
   int m_SubtitleStream;
   float m_SubtitleDelay;
   bool m_SubtitleOn;
