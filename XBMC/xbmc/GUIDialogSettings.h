@@ -15,6 +15,7 @@ public:
     id = 0;
     data = NULL;
     type = NONE;
+    enabled = true;
   };
   SETTING_TYPE type;
   CStdString name;
@@ -25,6 +26,7 @@ public:
   float interval;
   CStdString format;
   std::vector<CStdString> entry;
+  bool enabled;
 };
 
 class CGUIDialogSettings :
@@ -46,7 +48,7 @@ protected:
   void AddSetting(SettingInfo &setting, int iPosX, int iPosY, int iWidth, int iControlID);
 
   void AddButton(unsigned int it, int label);
-  void AddBool(unsigned int id, int label, bool *on);
+  void AddBool(unsigned int id, int label, bool *on, bool enabled = true);
   void AddSpin(unsigned int id, int label, int *current, unsigned int max, const int *entries);
   void AddSpin(unsigned int id, int label, int *current, unsigned int min, unsigned int max);
   void AddSlider(unsigned int id, int label, float *current, float min, float interval, float max, const char *format = NULL);
