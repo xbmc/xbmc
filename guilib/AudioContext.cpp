@@ -85,7 +85,7 @@ void CAudioContext::SetupSpeakerConfig(int iChannels, bool& bAudioOnAllSpeakers,
 
   if (g_guiSettings.GetInt("AudioOutput.Mode") == AUDIO_DIGITAL)
   {
-    if (((g_guiSettings.GetBool("MusicPlayer.OutputToAllSpeakers")) && (bIsMusic)) || (g_guiSettings.GetBool("VideoPlayer.OutputToAllSpeakers") && !bIsMusic))
+    if (((g_guiSettings.GetBool("MusicPlayer.OutputToAllSpeakers")) && (bIsMusic)) || (g_stSettings.m_currentVideoSettings.m_OutputToAllSpeakers && !bIsMusic))
     {
       bAudioOnAllSpeakers = true;
       DirectSoundOverrideSpeakerConfig(DSSPEAKER_USE_DEFAULT); //Allows ac3 encoder should it be enabled
