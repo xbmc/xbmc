@@ -395,7 +395,13 @@ bool CGUIWindowPrograms::OnPopupMenu(int iItem)
     if (btnid == btn_Trainers)
     {
       DWORD dwTitleId = CUtil::GetXbeID(m_vecItems[iItem]->m_strPath);
-      CGUIDialogTrainerSettings::ShowForTitle(dwTitleId,&m_database);
+      if (CGUIDialogTrainerSettings::ShowForTitle(dwTitleId,&m_database))
+      {
+        SetOverlayIcons();
+        m_guiState.reset(CGUIViewState::GetViewState(GetID(), m_vecItems));
+        OnSort();
+        UpdateButtons();
+      }
     }
     if (btnid == btn_ScanTrainers)
       PopulateTrainersList();
