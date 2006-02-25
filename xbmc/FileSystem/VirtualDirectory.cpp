@@ -165,10 +165,10 @@ bool CVirtualDirectory::GetDirectory(const CStdString& strPath, CFileItemList &i
         strIcon = "defaultHardDisk.png";
     }
 
-    if (share.m_iLockMode > 0)
-      strIcon = "defaultLocked.png";
-
     pItem->SetIconImage(strIcon);
+    if (share.m_iLockMode > 0)
+      pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_LOCKED);
+
     items.Add(pItem);
   }
 

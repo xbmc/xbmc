@@ -20,6 +20,13 @@ class CGUIImage;
 class CGUIListItem
 {
 public:
+  enum GUIIconOverlay { ICON_OVERLAY_NONE = 0,
+                        ICON_OVERLAY_RAR,
+                        ICON_OVERLAY_ZIP,
+                        ICON_OVERLAY_LOCKED,
+                        ICON_OVERLAY_HAS_TRAINER,
+                        ICON_OVERLAY_TRAINED };
+
   CGUIListItem(void);
   CGUIListItem(const CGUIListItem& item);
   CGUIListItem(const CStdString& strLabel);
@@ -40,17 +47,25 @@ public:
   void SetThumbnailImage(const CStdString& strThumbnail);
   const CStdString& GetThumbnailImage() const;
 
+  void SetOverlayImage(GUIIconOverlay icon);
+  CStdString GetOverlayImage() const;
+
   void Select(bool bOnOff);
   bool IsSelected() const;
 
   bool HasIcon() const;
   bool HasThumbnail() const;
+  bool HasOverlay() const;
 
   void SetThumbnail(CGUIImage* pImage);
   CGUIImage* GetThumbnail();
 
   void SetIcon(CGUIImage* pImage);
   CGUIImage* GetIcon();
+
+  void SetOverlay(CGUIImage* pImage);
+  CGUIImage* GetOverlay();
+
   void FreeIcons();
   void FreeMemory();
 
@@ -62,8 +77,10 @@ protected:
   CStdString m_strLabel2;     // text of column2
   CStdString m_strThumbnailImage; // filename of thumbnail
   CStdString m_strIcon;      // filename of icon
+  GUIIconOverlay m_overlayIcon; // type of overlay icon
   CGUIImage* m_pThumbnailImage;  // pointer to CImage containing the thumbnail
   CGUIImage* m_pIconImage;     // pointer to CImage containing the icon
+  CGUIImage* m_overlayImage;    // CGUIImage containing the transparent overlay icon
   bool m_bSelected;     // item is selected or not
 
   bool m_iconChanged;
