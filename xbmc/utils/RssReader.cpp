@@ -6,6 +6,7 @@
 #include "RssReader.h"
 #include "Http.h"
 #include "../utils/HTMLUtil.h"
+#include "../util.h"
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
@@ -97,6 +98,21 @@ void CRssReader::Process()
     {
       nRetries--;
 
+      CURL url(strUrl);
+      if (url.GetProtocol() != "http")
+      {
+        CFile file;
+        if (file.Open(strUrl))
+        {
+          char *yo = new char[(int)file.GetLength()+1];
+          file.Read(yo,file.GetLength());
+          yo[file.GetLength()] = '\0';
+          strXML = yo;
+          delete[] yo;
+          break;
+        }
+      }
+      else
       if (http.Get(strUrl, strXML))
       {
         CLog::Log(LOGDEBUG, "Got rss feed: %s", strUrl.c_str());
