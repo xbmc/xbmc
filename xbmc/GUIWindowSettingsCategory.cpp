@@ -852,7 +852,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       if (pControl) pControl->SetEnabled((g_guiSettings.GetInt("CDDARipper.Encoder") != CDDARIP_ENCODER_WAV) &&
                                            (g_guiSettings.GetInt("CDDARipper.Quality") == CDDARIP_QUALITY_CBR));
     }
-    else if (strSetting == "MusicPlayer.OutputToAllSpeakers" || strSetting == "VideoPlayer.OutputToAllSpeakers"|| strSetting == "AudioOutput.AC3PassThrough" || strSetting == "AudioOutput.DTSPassThrough")
+    else if (strSetting == "MusicPlayer.OutputToAllSpeakers" || strSetting == "AudioOutput.AC3PassThrough" || strSetting == "AudioOutput.DTSPassThrough")
     { // only visible if we are in digital mode
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetInt("AudioOutput.Mode") == AUDIO_DIGITAL);
@@ -1242,7 +1242,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
       CScrobbler::GetInstance()->Term();
     }
   }
-  else if (strSetting == ("MusicPlayer.OutputToAllSpeakers") || (strSetting == "VideoPlayer.OutputToAllSpeakers") )
+  else if (strSetting == "MusicPlayer.OutputToAllSpeakers")
   {
     CSettingBool *pSetting = (CSettingBool*)pSettingControl->GetSetting();
 

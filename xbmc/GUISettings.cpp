@@ -349,7 +349,6 @@ CGUISettings::CGUISettings(void)
 
   AddCategory(5, "VideoPlayer", 16003);
   AddString(1, "VideoPlayer.JumpToAudioHardware", 16001, "", BUTTON_CONTROL_STANDARD);
-  AddBool(2, "VideoPlayer.OutputToAllSpeakers", 252, false);
   AddSeparator(3, "VideoPlayer.Sep1");
   AddInt(6, "VideoPlayer.RenderMethod", 13354, RENDER_HQ_RGB_SHADER, RENDER_LQ_RGB_SHADER, 1, RENDER_HQ_RGB_SHADER, SPIN_CONTROL_TEXT);
   AddBool(7, "VideoPlayer.UseGUIResolution", 495, true);

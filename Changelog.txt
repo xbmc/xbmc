@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 25-02-2006 changed: Output to all speakers is now saved per file for videos.
+ - 25-02-2006 fixed: More valid chars added to the FatX renamer.
  - 25-02-2006 fixed: some codec's (mostly mine :)) showed excessive 00's in duration.
  - 25-02-2006 added: rss reader now supports non-http sources (local/smb/ccx etc).
  - 25-02-2006 fixed: overlay state wasn't updated when trainer settings changed.
