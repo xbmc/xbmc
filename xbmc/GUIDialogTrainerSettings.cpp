@@ -129,14 +129,18 @@ void CGUIDialogTrainerSettings::OnSettingChanged(unsigned int num)
     m_bNeedSave = true;
 }
 
-void CGUIDialogTrainerSettings::ShowForTitle(unsigned int iTitleId, CProgramDatabase* database)
+bool CGUIDialogTrainerSettings::ShowForTitle(unsigned int iTitleId, CProgramDatabase* database)
 {
+  CStdString strTrainer = database->GetActiveTrainer(iTitleId);
   CGUIDialogTrainerSettings *dialog = (CGUIDialogTrainerSettings *)m_gWindowManager.GetWindow(WINDOW_DIALOG_TRAINER_SETTINGS);
-  if (!dialog) return;
+  if (!dialog) return false;
   dialog->m_iTitleId = iTitleId;
   dialog->m_database = database;
   dialog->DoModal(m_gWindowManager.GetActiveWindow());
-  return ;
+  if (database->GetActiveTrainer(iTitleId) != strTrainer)
+    return true;
+
+  return false;
 }
 
 void CGUIDialogTrainerSettings::OnInitWindow()

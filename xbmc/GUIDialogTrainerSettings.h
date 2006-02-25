@@ -12,7 +12,7 @@ public:
   virtual ~CGUIDialogTrainerSettings(void);
   virtual bool OnMessage(CGUIMessage &message);
 
-  static void ShowForTitle(unsigned int iTitleId, CProgramDatabase* database);
+  static bool ShowForTitle(unsigned int iTitleId, CProgramDatabase* database);
 protected:
   virtual void OnInitWindow();
   virtual void SetupPage();
