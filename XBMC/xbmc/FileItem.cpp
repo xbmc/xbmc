@@ -627,6 +627,15 @@ void CFileItem::FillInDefaultIcon()
         SetIconImage("defaultFolder.png");
       }
     }
+
+    // Set the icon overlays (if applicable)
+    if (!HasOverlay())
+    {
+      if (IsRAR())
+        SetOverlayImage(CGUIListItem::ICON_OVERLAY_RAR);
+      else if (IsZIP())
+        SetOverlayImage(CGUIListItem::ICON_OVERLAY_ZIP);
+    }
   }
 }
 

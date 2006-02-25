@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 25-02-2006 added: Support for Overlay icons over the top of thumbnails.  Currently supported are: OverlayZip.png, OverlayRar.png, OverlayHasTrainer.png, OverlayLocked.png, OverlayTrained.png.
  - 24-02-2006 fixed: Video window would crash if slid off screen in an animation.
  - 24-02-2006 changed: Embedded WMA images that were classified as "Other" rather than "Front Cover" are now included as thumbs.
  - 24-02-2006 fixed: Control focus irregularities in Settings categories.
