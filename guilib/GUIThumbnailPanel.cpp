@@ -104,6 +104,10 @@ void CGUIThumbnailPanel::RenderItem(bool bFocus, int iPosX, int iPosY, CGUIListI
         pImage->SetKeepAspectRatio(true);
         pImage->AllocResources();
         pItem->SetThumbnail(pImage);
+      }
+
+      if (pImage)
+      {
         int xOff = ((m_iThumbWidth - pImage->GetRenderWidth()) / 2);
         int yOff = ((m_iThumbHeight - pImage->GetRenderHeight()) / 2);
         //only supports center yet, 0 is default meaning use x/y position
@@ -116,10 +120,18 @@ void CGUIThumbnailPanel::RenderItem(bool bFocus, int iPosX, int iPosY, CGUIListI
         pImage->SetPosition(m_iThumbXPos + iCenteredPosX + xOff, m_iThumbYPos + iPosY + yOff);
         pImage->Render();
       }
-      else
+      // Add the overlay image
+      pImage = pItem->GetOverlay();
+      if (!pImage && pItem->HasOverlay())
       {
-        pImage->SetWidth(m_iThumbWidth);
-        pImage->SetHeight(m_iThumbHeight);
+        pImage = new CGUIImage(0, 0, m_iThumbXPos + iCenteredPosX, m_iThumbYPos + iPosY, m_iThumbWidth, m_iThumbHeight, pItem->GetOverlayImage(), 0x0);
+        pImage->SetKeepAspectRatio(true);
+        pImage->AllocResources();
+        pItem->SetOverlay(pImage);
+      }
+      // Render the image
+      if (pImage)
+      {
         int xOff = ((m_iThumbWidth - pImage->GetRenderWidth()) / 2);
         int yOff = ((m_iThumbHeight - pImage->GetRenderHeight()) / 2);
         //only supports center yet, 0 is default meaning use x/y position

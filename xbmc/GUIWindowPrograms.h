@@ -18,6 +18,7 @@ protected:
   virtual void GoParentFolder();
   virtual bool OnClick(int iItem);
   virtual bool Update(const CStdString& strDirectory);
+  void SetOverlayIcons();
 
   void OnScan(CFileItemList& items, int& iTotalAppsFound) ;
   void LoadDirectory(const CStdString& strDirectory, int depth);
