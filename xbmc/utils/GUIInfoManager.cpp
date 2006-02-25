@@ -1199,7 +1199,8 @@ CStdString CGUIInfoManager::GetMusicLabel(int item)
       {
         unsigned int iTotal = (unsigned int)g_application.GetTotalTime();
         if (iTotal > 0)
-          CUtil::SecondsToHMSString(iTotal, strDuration, true);
+          CUtil::SecondsToHMSString(iTotal, strDuration);
+
       }
       return strDuration;
     }
