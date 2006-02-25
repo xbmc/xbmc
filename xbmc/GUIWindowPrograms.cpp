@@ -830,6 +830,8 @@ bool CGUIWindowPrograms::Update(const CStdString &strDirectory)
   if (m_guiState.get() && m_guiState->HideExtensions())
     m_vecItems.RemoveExtensions();
   m_vecItems.FillInDefaultIcons();
+  // set our overlay icons
+  SetOverlayIcons();
 
   m_guiState.reset(CGUIViewState::GetViewState(GetID(), m_vecItems));
   OnSort();
@@ -1216,4 +1218,23 @@ void CGUIWindowPrograms::PopulateTrainersList()
       break;
   }
   m_dlgProgress->Close();
+}
+
+void CGUIWindowPrograms::SetOverlayIcons()
+{
+  for (int i = 0; i < m_vecItems.Size(); i++)
+  {
+    CFileItem *item = m_vecItems[i];
+    if (item->IsXBE())
+    {
+      DWORD dwTitleId = CUtil::GetXbeID(item->m_strPath);
+      if (m_database.ItemHasTrainer(dwTitleId))
+      {
+        if (m_database.GetActiveTrainer(dwTitleId) != "")
+          item->SetOverlayImage(CGUIListItem::ICON_OVERLAY_TRAINED);
+        else
+          item->SetOverlayImage(CGUIListItem::ICON_OVERLAY_HAS_TRAINER);
+      }
+    }
+  }
 }
