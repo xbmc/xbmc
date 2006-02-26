@@ -17,9 +17,9 @@ int CGUIViewStateWindowMusic::GetPlaylist()
   return PLAYLIST_MUSIC_TEMP;
 }
 
-bool CGUIViewStateWindowMusic::HandleArchives()
+bool CGUIViewStateWindowMusic::UnrollArchives()
 {
-  return g_guiSettings.GetBool("MusicFiles.HandleArchives");
+  return g_guiSettings.GetBool("MusicFiles.UnrollArchives");
 }
 
 bool CGUIViewStateWindowMusic::AutoPlayNextItem()

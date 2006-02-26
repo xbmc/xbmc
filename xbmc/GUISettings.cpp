@@ -151,7 +151,7 @@ CGUISettings::CGUISettings(void)
   AddBool(3, "Pictures.AutoSwitchUseLargeThumbs", 14012, false);
   AddBool(4, "Pictures.HideFilenamesInThumbPanel",15215,false);
   AddBool(5, "Pictures.AllowFileDeletion", 14071, false);
-  AddBool(6, "Pictures.HandleArchives", 516, true);
+  AddBool(6, "Pictures.UnrollArchives", 516, false);
 
   AddCategory(0, "Slideshow", 108);
   AddInt(1, "Slideshow.StayTime", 12378, 9, 1, 1, 100, SPIN_CONTROL_INT_PLUS, MASK_SECS);
@@ -228,7 +228,7 @@ CGUISettings::CGUISettings(void)
   AddInt(10, "MusicFiles.AutoSwitchMethod", 14013, 0, 0, 1, 2, SPIN_CONTROL_TEXT);
   AddInt(11, "MusicFiles.AutoSwitchPercentage", 14014, 50, 0, 5, 100, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
   AddBool(12, "MusicFiles.AllowFileDeletion", 14071, false);
-  AddBool(13, "MusicFiles.HandleArchives", 516, true);
+  AddBool(13, "MusicFiles.UnrollArchives", 516, false);
 
   AddCategory(3, "MusicPlaylist", 136);
   AddBool(1, "MusicPlaylist.ClearPlaylistsOnEnd",239,false);
@@ -345,7 +345,7 @@ CGUISettings::CGUISettings(void)
   AddInt(5, "VideoFiles.AutoSwitchMethod", 14013, 0, 0, 1, 2, SPIN_CONTROL_TEXT);
   AddInt(6, "VideoFiles.AutoSwitchPercentage", 14014, 50, 0, 5, 100, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
   AddBool(7, "VideoFiles.AllowFileDeletion", 14071, false);
-  AddBool(8,"VideoFiles.HandleArchives",516, true);
+  AddBool(8,"VideoFiles.UnrollArchives",516, false);
 
   AddCategory(5, "VideoPlayer", 16003);
   AddString(1, "VideoPlayer.JumpToAudioHardware", 16001, "", BUTTON_CONTROL_STANDARD);
@@ -356,6 +356,7 @@ CGUISettings::CGUISettings(void)
   AddInt(12, "VideoPlayer.BypassCDSelection", 13169, 0, 0, 1, 37, SPIN_CONTROL_TEXT);
   AddSeparator(13,"VideoPlayer.Sep4");
   AddBool(14,"VideoPlayer.AutoResume",12017, false);
+  //AddInt(14,"VideoPlayer.AutoResume",12017,0,0,1,2,SPIN_CONTROL_TEXT);
 
   AddCategory(5, "Subtitles", 287);
   AddString(1, "Subtitles.Font", 288, "arial-iso-8859-1", SPIN_CONTROL_TEXT);

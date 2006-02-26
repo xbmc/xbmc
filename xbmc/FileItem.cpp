@@ -627,15 +627,14 @@ void CFileItem::FillInDefaultIcon()
         SetIconImage("defaultFolder.png");
       }
     }
-
-    // Set the icon overlays (if applicable)
-    if (!HasOverlay())
-    {
-      if (IsRAR())
-        SetOverlayImage(CGUIListItem::ICON_OVERLAY_RAR);
-      else if (IsZIP())
-        SetOverlayImage(CGUIListItem::ICON_OVERLAY_ZIP);
-    }
+  }
+  // Set the icon overlays (if applicable)
+  if (!HasOverlay())
+  {
+    if (CUtil::IsInRAR(m_strPath))
+      SetOverlayImage(CGUIListItem::ICON_OVERLAY_RAR);
+    else if (CUtil::IsInZIP(m_strPath))
+      SetOverlayImage(CGUIListItem::ICON_OVERLAY_ZIP);
   }
 }
 
@@ -647,6 +646,13 @@ void CFileItem::SetThumb()
   // if it already has a thumbnail, then return
   if (HasThumbnail() || m_bIsShareOrDrive)
     return;
+
+  if (m_strPath.substr(0,6) == "zip://" || m_strPath.substr(0,6) == "rar://")
+  {
+    CURL url(m_strPath);
+    if (url.GetFileName().IsEmpty())
+      return;
+  }
 
   //  No thumb for parent folder items
   if (IsParentFolder()) return ;

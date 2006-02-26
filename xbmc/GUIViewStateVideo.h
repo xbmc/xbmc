@@ -10,7 +10,7 @@ public:
 protected:
   virtual bool HideParentDirItems();
   virtual CStdString GetLockType();
-  virtual bool HandleArchives();
+  virtual bool UnrollArchives();
 };
 
 class CGUIViewStateWindowVideoFiles : public CGUIViewStateWindowVideo
