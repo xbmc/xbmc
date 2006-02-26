@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 26-02-2006 fixed: Default interlaced and output to all speakers settings weren't saved.
+ - 26-02-2006 fixed: Buttonscroller shadow and text colours didn't allow alpha values.
  - 26-02-2006 changed: Removed <keepaspectratio> setting and added <aspectratio> setting to image, multiimage and thumbnailpanel controls.
  - 26-02-2006 fixed: GUI resolution setting wasn't selecting the correct item.
  - 26-02-2006 fixed: Item highlight in My Videos was unpredictable when first opening shares from root.
