@@ -39,11 +39,6 @@ static byte InitSubstTable[256]={
 };
 #endif
 
-CryptData::CryptData()
-{
-}
-
-
 
 
 void CryptData::DecryptBlock(byte *Buf,int Size)

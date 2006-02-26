@@ -13,6 +13,7 @@ struct FindData
   RarTime ctime;
   RarTime atime;
 #ifdef _WIN_32
+  char ShortName[NM];
   FILETIME ftCreationTime; 
   FILETIME ftLastAccessTime; 
   FILETIME ftLastWriteTime; 

@@ -345,6 +345,8 @@ void File::Write(const void *Data,int Size)
 #ifndef _WIN_32
         clearerr(hFile);
 #endif
+      if (Written<Size && Written>0)
+          Seek(Tell()-Written,SEEK_SET);
         continue;
       }
       ErrHandler.WriteError(NULL,FileName);

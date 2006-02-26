@@ -138,47 +138,46 @@ void Archive::ViewComment()
 #ifndef SFX_MODULE
 void Archive::ViewFileComment()
 {
-  if (!(NewLhd.Flags & LHD_COMMENT) || Cmd->DisableComment)
+  if (!(NewLhd.Flags & LHD_COMMENT) || Cmd->DisableComment || OldFormat)
     return;
 #ifndef GUI
   mprintf(St(MFileComment));
 #endif
-  Array<char> CmtBuf(0x8000);
+  const int MaxSize=0x8000;
+  Array<char> CmtBuf(MaxSize);
   SaveFilePos SavePos(*this);
-  if (OldFormat)
+  Seek(CurBlockPos+SIZEOF_NEWLHD+NewLhd.NameSize,SEEK_SET);
+  Int64 SaveCurBlockPos=CurBlockPos;
+  Int64 SaveNextBlockPos=NextBlockPos;
+
+  int Size=ReadHeader();
+
+  CurBlockPos=SaveCurBlockPos;
+  NextBlockPos=SaveNextBlockPos;
+
+  if (Size<7 || CommHead.HeadType!=COMM_HEAD)
+    return;
+  if (CommHead.HeadCRC!=HeaderCRC)
   {
-    uint CmtLength=GetByte()+(GetByte()<<8);
-    Read(&CmtBuf[0],CmtLength);
-    OutComment(&CmtBuf[0],CmtLength);
-#ifndef GUI
-    mprintf("\n");
+  	#ifndef GUI
+    Log(FileName,St(MLogCommHead));
 #endif
+    return;
+  }
+  if (CommHead.UnpVer < 15 || CommHead.UnpVer > UNP_VER ||
+      CommHead.Method > 0x30 || CommHead.UnpSize > MaxSize)
+    return;
+  Read(&CmtBuf[0],CommHead.UnpSize);
+  if (CommHead.CommCRC!=((~CRC(0xffffffff,&CmtBuf[0],CommHead.UnpSize)&0xffff)))
+  {
+    Log(FileName,St(MLogBrokFCmt));
   }
   else
   {
-    if (ReadHeader()<7 || CommHead.HeadType!=COMM_HEAD)
-      return;
-    if (CommHead.HeadCRC!=HeaderCRC)
-    {
+    OutComment(&CmtBuf[0],CommHead.UnpSize);
 #ifndef GUI
-      Log(FileName,St(MLogCommHead));
+    mprintf("\n");
 #endif
-      return;
-    }
-    if (CommHead.UnpVer < 15 || CommHead.UnpVer > UNP_VER || CommHead.Method > 0x30)
-      return;
-    Read(&CmtBuf[0],CommHead.UnpSize);
-    if (CommHead.CommCRC!=CRC(0xffffffff,&CmtBuf[0],CommHead.UnpSize))
-    {
-      Log(FileName,St(MLogBrokFCmt));
-    }
-    else
-    {
-      OutComment(&CmtBuf[0],CommHead.UnpSize);
-#ifndef GUI
-      mprintf("\n");
-#endif
-    }
   }
 }
 #endif

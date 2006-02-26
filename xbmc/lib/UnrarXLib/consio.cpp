@@ -20,7 +20,7 @@ void InitConsoleOptions(MESSAGE_TYPE MsgStream,bool Sound)
 #if !defined(GUI) && !defined(SILENT)
 void mprintf(const char *fmt,...)
 {
-  if (MsgStream==MSG_NULL)
+  if (MsgStream==MSG_NULL || MsgStream==MSG_ERRONLY)
     return;
   safebuf char Msg[MaxMsgSize];
   va_list argptr;
@@ -57,6 +57,7 @@ void RawPrint(char *Msg,MESSAGE_TYPE MessageType)
       OutFile.SetHandleType(FILE_HANDLESTD);
       break;
     case MSG_STDERR:
+    case MSG_ERRONLY:
       OutFile.SetHandleType(FILE_HANDLEERR);
       break;
     default:

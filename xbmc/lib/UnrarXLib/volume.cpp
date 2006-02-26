@@ -87,7 +87,6 @@ bool MergeArchive(Archive &Arc,ComprDataIO *DataIO,bool ShowFileName,char Comman
     if (!Cmd->VolumePause && !IsRemovable(NextName))
     {
       Log(Arc.FileName,St(MAbsNextVol),NextName);
-      CLog::Log(LOGDEBUG,"failedopen1");
       FailedOpen=true;
       break;
     }
@@ -96,7 +95,6 @@ bool MergeArchive(Archive &Arc,ComprDataIO *DataIO,bool ShowFileName,char Comman
     if (Cmd->AllYes || !AskNextVol(NextName))
 #endif
     {
-      CLog::Log(LOGDEBUG,"failedopen2");
       FailedOpen=true;
       break;
     }
@@ -106,7 +104,6 @@ bool MergeArchive(Archive &Arc,ComprDataIO *DataIO,bool ShowFileName,char Comman
   {
     Arc.Open(Arc.FileName,Arc.FileNameW);
     Arc.Seek(PosBeforeClose,SEEK_SET);
-    CLog::Log(LOGDEBUG,"failedopen3");
     return(false);
   }
   Arc.CheckArc(true);
@@ -153,9 +150,13 @@ bool MergeArchive(Archive &Arc,ComprDataIO *DataIO,bool ShowFileName,char Comman
       DataIO->UnpVolume=false;
     else
     {
-      DataIO->UnpVolume=(hd->Flags & LHD_SPLIT_AFTER) != 0;
+      DataIO->UnpVolume=(hd->Flags & LHD_SPLIT_AFTER);
       DataIO->SetPackedSizeToRead(hd->FullPackSize);
     }
+#ifdef SFX_MODULE
+    DataIO->UnpArcSize=Arc.FileLength();
+    DataIO->CurUnpRead=0;
+#endif
     DataIO->PackedCRC=0xffffffff;
 //    DataIO->SetFiles(&Arc,NULL);
   }

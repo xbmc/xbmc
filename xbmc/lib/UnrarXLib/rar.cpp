@@ -1,7 +1,6 @@
 #include "rar.hpp"
 #include "unrarx.hpp"
 #include "../../utils/log.h"
-#include "../../../guilib/GUIWindowManager.h"
 
 #include "smallfn.cpp"
 
@@ -228,7 +227,6 @@ int urarlib_get(char *rarfile, char *targetPath, char *fileToExtract, char *libp
         
         if( pExtract.get() )
 				{
-          pExtract->GetDataIO().hProgressBar = CreateEvent(NULL,true,false,NULL);
           pExtract->GetDataIO().SetCurrentCommand(*(pCmd->Command));
 					struct FindData FD;
 					if (FindFile::FastFind(rarfile,NULL,&FD))
@@ -236,54 +234,18 @@ int urarlib_get(char *rarfile, char *targetPath, char *fileToExtract, char *libp
           pExtract->ExtractArchiveInit(pCmd.get(),*pArc);
           while (1)
 					{
-            bool bProgressBar = false;
             int Size=pArc->ReadHeader();
             
             if (pArc->GetHeaderType() == ENDARC_HEAD)
               break;
 
-						bool Repeat=false;
-            
-            if (fileToExtract)
-            {
-              if(stricmp(pArc->NewLhd.FileName, fileToExtract) == 0)
-                bProgressBar = true;
-            }
-            else
-              bProgressBar = true;
-
-#define PROGRESSLIMIT 10*1024*1024 // 10 meg - probably change me
-
-            if (bProgressBar && pArc->NewLhd.FullUnpSize > PROGRESSLIMIT)
-            {
-              SetEvent(pExtract->GetDataIO().hProgressBar);              
-              pExtract->GetDataIO().hQuit = CreateEvent(NULL,true,false,NULL);
-
-              pExtract->GetDataIO().m_pDlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
-              pExtract->GetDataIO().m_pDlgProgress->StartModal(m_gWindowManager.GetActiveWindow());
-              pExtract->GetDataIO().m_pDlgProgress->SetPercentage(0);
-              pExtract->GetDataIO().m_pDlgProgress->SetHeading(115);
-              pExtract->GetDataIO().m_pDlgProgress->SetLine(0,pArc->NewLhd.FileName);
-              pExtract->GetDataIO().m_pDlgProgress->SetLine(1,"");
-              pExtract->GetDataIO().m_pDlgProgress->SetLine(2,pArc->FileName);
-              pExtract->GetDataIO().m_pDlgProgress->ShowProgressBar(true);
-            }
-            else
-              bProgressBar = false;
-
+						bool Repeat=false;           
             if (!pExtract->ExtractCurrentFile(pCmd.get(),*pArc,Size,Repeat))
 						{
                bRes = FALSE;
 						 	 break;
 						}
             
-            if (bProgressBar)
-            {
-              pExtract->GetDataIO().m_pDlgProgress->Close();
-              pExtract->GetDataIO().m_pDlgProgress = NULL;
-              ResetEvent(pExtract->GetDataIO().hProgressBar);
-            }
-
             if (pExtract->GetDataIO().bQuit) 
             {
               bRes = 2;
@@ -295,10 +257,8 @@ int urarlib_get(char *rarfile, char *targetPath, char *fileToExtract, char *libp
                 if(stricmp(pArc->NewLhd.FileName, fileToExtract) == 0)
 					  			break;
 					}
-					pExtract->GetDataIO().ProcessedArcSize+=FD.Size;
-          
-          CloseHandle(pExtract->GetDataIO().hProgressBar);
-         
+
+					pExtract->GetDataIO().ProcessedArcSize+=FD.Size;         
 				}
 			}
 		}
@@ -388,6 +348,56 @@ int urarlib_list(char *rarfile, ArchiveList_struct **ppList, char *libpassword)
 
 	File::RemoveCreated();
 	return FileCount;
+}
+
+bool urarlib_hasmultiple(const char *rarfile, char *libpassword)
+{
+	uint FileCount;
+	InitCRC();
+
+	// Set the arguments for the extract command
+  auto_ptr<CommandData> pCmd( new CommandData );
+
+	{
+		strcpy(pCmd->Command, "L");
+		pCmd->AddArcName(const_cast<char*>(rarfile), NULL);
+		pCmd->FileArgs->AddString(MASKALL);
+
+		// Set password for encrypted archives
+		if (libpassword)
+		{
+			strncpy(pCmd->Password, libpassword, sizeof(pCmd->Password) - 1);
+			pCmd->Password[sizeof(pCmd->Password) - 1] = '\0';
+		}
+
+		// Opent the archive
+		auto_ptr<Archive> pArc( new Archive(pCmd.get()) );
+		if ( pArc.get() )
+		{
+			if (!pArc->WOpen(rarfile,NULL))
+				return 0;
+
+			bool FileMatched=true;
+
+			Int64 TotalPackSize=0,TotalUnpSize=0;
+			FileCount=0;
+			if (pArc->IsOpened() && pArc->IsArchive(true))
+			{
+				ArchiveList_struct *pPrev = NULL;
+				bool TitleShown=false;
+				while(pArc->ReadHeader()>0 && FileCount < 2)
+				{
+					if (pArc->GetHeaderType() == FILE_HEAD)
+						FileCount++;
+
+					pArc->SeekToNext();
+				}
+			}
+		}
+	}
+
+	File::RemoveCreated();
+	return FileCount>1;
 }
 
 /*-------------------------------------------------------------------------*\

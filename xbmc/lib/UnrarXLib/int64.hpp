@@ -6,7 +6,7 @@
 typedef __int64 Int64;
 #endif
 
-#if defined(__GNUC__)
+#if defined(__GNUC__) || defined(__HP_aCC)
 #define NATIVE_INT64
 typedef long long Int64;
 #endif
@@ -78,6 +78,7 @@ inline uint int64to32(Int64 n) {return(n.GetLowPart());}
 #endif
 
 #define INT64ERR int32to64(0x80000000,0)
+#define INT64MAX int32to64(0x7fffffff,0)
 
 void itoa(Int64 n,char *Str);
 Int64 atoil(char *Str);

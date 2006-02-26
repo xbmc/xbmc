@@ -530,7 +530,7 @@ inline void ModelPPM::ClearMask()
 bool ModelPPM::DecodeInit(Unpack *UnpackRead,int &EscChar)
 {
   int MaxOrder=UnpackRead->GetChar();
-  bool Reset=(MaxOrder & 0x20) != 0;
+  bool Reset=(MaxOrder & 0x20);
 
   int MaxMB;
   if (Reset)
