@@ -104,8 +104,6 @@ bool CGUIWindowVideoYear::GetDirectory(const CStdString &strDirectory, CFileItem
       {
         // mark watched movies when showing all
         CStdString strTitle = movie.m_strTitle;
-        if (m_iShowMode == VIDEO_SHOW_ALL && movie.m_bWatched == true)
-          strTitle += " [W]";
         CFileItem *pItem = new CFileItem(strTitle);
         pItem->m_strPath = movie.m_strSearchString;
         pItem->m_strTitle=strTitle;
@@ -118,6 +116,8 @@ bool CGUIWindowVideoYear::GetDirectory(const CStdString &strDirectory, CFileItem
           pItem->SetThumbnailImage(strThumb);
         pItem->m_fRating = movie.m_fRating;
         pItem->m_stTime.wYear = movie.m_iYear;
+        if (!movie.m_bWatched)
+          pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED);
         items.Add(pItem);
       }
     }
