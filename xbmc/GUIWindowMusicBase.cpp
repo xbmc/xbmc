@@ -114,10 +114,10 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
     {
       m_dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
 
+      m_musicdatabase.Open();
+
       if (CGUIMediaWindow::OnMessage(message))
         return false;
-
-      m_musicdatabase.Open();
 
       // save current window, unless the current window is the music playlist window
       if (GetID() != WINDOW_MUSIC_PLAYLIST)
