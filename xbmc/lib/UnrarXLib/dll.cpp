@@ -118,8 +118,11 @@ int PASCAL RARReadHeader(HANDLE hArcData,struct RARHeaderData *D)
     }
     if (Data->OpenMode==RAR_OM_LIST && (Data->Arc.NewLhd.Flags & LHD_SPLIT_BEFORE))
     {
-      if (RARProcessFile(hArcData,RAR_SKIP,NULL,NULL)==0)
+      int Code=RARProcessFile(hArcData,RAR_SKIP,NULL,NULL);
+      if (Code==0)
         return(RARReadHeader(hArcData,D));
+      else
+        return(Code);
     }
     strncpy(D->ArcName,Data->Arc.FileName,sizeof(D->ArcName));
     strncpy(D->FileName,Data->Arc.NewLhd.FileName,sizeof(D->FileName));
@@ -163,8 +166,11 @@ int PASCAL RARReadHeaderEx(HANDLE hArcData,struct RARHeaderDataEx *D)
     }
     if (Data->OpenMode==RAR_OM_LIST && (Data->Arc.NewLhd.Flags & LHD_SPLIT_BEFORE))
     {
-      if (RARProcessFile(hArcData,RAR_SKIP,NULL,NULL)==0)
+      int Code=RARProcessFile(hArcData,RAR_SKIP,NULL,NULL);
+      if (Code==0)
         return(RARReadHeaderEx(hArcData,D));
+      else
+        return(Code);
     }
     strncpy(D->ArcName,Data->Arc.FileName,sizeof(D->ArcName));
     if (*Data->Arc.FileNameW)

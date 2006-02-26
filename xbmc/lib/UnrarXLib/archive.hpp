@@ -71,8 +71,6 @@ class Archive:public File
     bool IsArcDir();
     bool IsArcLabel();
     void ConvertAttributes();
-    int LhdSize();
-    int LhdExtraSize();
     int GetRecoverySize(bool Required);
     void VolSubtractHeaderSize(int SubSize);
     void AddSubData(byte *SrcData,int DataSize,File *SrcFile,char *Name,bool AllowSplit);
@@ -110,7 +108,7 @@ class Archive:public File
     bool NotFirstVolume;
     bool Protected;
     bool Encrypted;
-    unsigned int SFXSize;
+    uint SFXSize;
     bool BrokenFileHeader;
 
     bool Splitting;

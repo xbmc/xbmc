@@ -3,6 +3,8 @@
 
 enum {MATCH_NAMES,MATCH_PATH,MATCH_EXACTPATH,MATCH_SUBPATH,MATCH_WILDSUBPATH};
 
+#define MATCH_MODEMASK           0x0000ffff
+
 bool CmpName(char *Wildcard,char *Name,int CmpPath);
 bool CmpName(wchar *Wildcard,wchar *Name,int CmpPath);
 

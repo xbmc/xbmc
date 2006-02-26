@@ -51,7 +51,7 @@ void CreatePath(const char *Path,const wchar *PathW,bool SkipLastName)
   uint DirAttr=0777;
 #endif
 #ifdef UNICODE_SUPPORTED
-  bool Wide=PathW!=NULL && *PathW!=0;
+  bool Wide=PathW!=NULL && *PathW!=0 && UnicodeEnabled();
 #else
   bool Wide=false;
 #endif
@@ -78,6 +78,15 @@ void CreatePath(const char *Path,const wchar *PathW,bool SkipLastName)
         WideToChar(DirPtrW,DirName);
       else
       {
+#ifndef DBCS_SUPPORTED
+        if (*s!=CPATHDIVIDER)
+          for (const char *n=s;*n!=0 && n-Path<NM;n++)
+            if (*n==CPATHDIVIDER)
+            {
+              s=n;
+              break;
+            }
+#endif
         strncpy(DirName,Path,s-Path);
         DirName[s-Path]=0;
       }
@@ -485,7 +494,8 @@ uint CalcFileCRC(File *SrcFile,Int64 Size)
   SrcFile->Seek(0,SEEK_SET);
   while ((ReadSize=SrcFile->Read(&Data[0],int64to32(Size==INT64ERR ? Int64(BufSize):Min(Int64(BufSize),Size))))!=0)
   {
-    if ((++BlockCount & 15)==0)
+    ++BlockCount;
+    if ((BlockCount & 15)==0)
     {
       Wait();
     }

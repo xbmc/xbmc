@@ -7,7 +7,7 @@ bool ReadTextFile(char *Name,StringList *List,bool Config,bool AbortOnError,
 {
   char FileName[NM];
   if (Config)
-    GetConfigName(Name,FileName);
+    GetConfigName(Name,FileName,true);
   else
     strcpy(FileName,Name);
 

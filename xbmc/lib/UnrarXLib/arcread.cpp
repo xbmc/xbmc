@@ -19,7 +19,7 @@ int Archive::SearchBlock(int BlockType)
 int Archive::SearchSubBlock(const char *Type)
 {
   int Size;
-  while ((Size=ReadHeader())!=0)
+  while ((Size=ReadHeader())!=0 && GetHeaderType()!=ENDARC_HEAD)
   {
     if (GetHeaderType()==NEWSUB_HEAD && SubHead.CmpName(Type))
       return(Size);
@@ -121,6 +121,8 @@ int Archive::ReadHeader()
       *(BaseBlock *)&EndArcHead=ShortBlock;
       if (EndArcHead.Flags & EARC_DATACRC)
         Raw.Get(EndArcHead.ArcDataCRC);
+	  if (EndArcHead.Flags & EARC_VOLNUMBER)
+        Raw.Get(EndArcHead.VolNumber);
       break;
     case FILE_HEAD:
     case NEWSUB_HEAD:
@@ -142,7 +144,14 @@ int Archive::ReadHeader()
           Raw.Get(hd->HighUnpSize);
         }
         else 
+		{
           hd->HighPackSize=hd->HighUnpSize=0;
+          if (hd->UnpSize==0xffffffff)
+          {
+            hd->UnpSize=int64to32(INT64MAX);
+            hd->HighUnpSize=int64to32(INT64MAX>>32);
+          }
+        }
         hd->FullPackSize=int32to64(hd->HighPackSize,hd->PackSize);
         hd->FullUnpSize=int32to64(hd->HighUnpSize,hd->UnpSize);
 
@@ -424,6 +433,11 @@ int Archive::ReadOldHeader()
     NewLhd.FullPackSize=NewLhd.PackSize;
     NewLhd.FullUnpSize=NewLhd.UnpSize;
 
+    NewLhd.mtime.SetDos(NewLhd.FileTime);
+    NewLhd.ctime.Reset();
+    NewLhd.atime.Reset();
+    NewLhd.arctime.Reset();
+
     Raw.Read(OldLhd.NameSize);
     Raw.Get((byte *)NewLhd.FileName,OldLhd.NameSize);
     NewLhd.FileName[OldLhd.NameSize]=0;
@@ -434,7 +448,7 @@ int Archive::ReadOldHeader()
       NextBlockPos=CurBlockPos+NewLhd.HeadSize+NewLhd.PackSize;
     CurHeaderType=FILE_HEAD;
   }
-  return(Raw.Size());
+  return(NextBlockPos>CurBlockPos ? Raw.Size():0);
 }
 #endif
 
@@ -563,19 +577,6 @@ void Archive::ConvertUnknownHeader()
       *s=CPATHDIVIDER;
 }
 
-
-int Archive::LhdSize()
-{
-  return((NewLhd.Flags & LHD_LARGE) ? SIZEOF_NEWLHD+8:SIZEOF_NEWLHD);
-}
-
-
-int Archive::LhdExtraSize()
-{
-  return(NewLhd.HeadSize-NewLhd.NameSize-LhdSize());
-}
-
-
 #ifndef SHELL_EXT
 bool Archive::ReadSubData(Array<byte> *UnpData,File *DestFile)
 {
@@ -616,7 +617,7 @@ bool Archive::ReadSubData(Array<byte> *UnpData,File *DestFile)
   SubDataIO.SetPackedSizeToRead(SubHead.PackSize);
   SubDataIO.EnableShowProgress(false);
   SubDataIO.SetFiles(this,DestFile);
-  SubDataIO.UnpVolume=(SubHead.Flags & LHD_SPLIT_AFTER) != 0;
+  SubDataIO.UnpVolume=(SubHead.Flags & LHD_SPLIT_AFTER);
   SubDataIO.SetSubHeader(&SubHead,NULL);
   Unpack.SetDestSize(SubHead.UnpSize);
   if (SubHead.Method==0x30)

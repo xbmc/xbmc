@@ -23,7 +23,7 @@ RarTime& RarTime::operator =(FILETIME &ft)
   for (int I=1;I<rlt.Month;I++)
   {
     static int mdays[12]={31,28,31,30,31,30,31,31,30,31,30,31};
-    rlt.yDay+=mdays[I];
+    rlt.yDay+=mdays[I-1];
   }
   if (rlt.Month>2 && IsLeapYear(rlt.Year))
     rlt.yDay++;
@@ -118,7 +118,7 @@ void RarTime::SetRaw(Int64 RawTime)
 #elif defined(_UNIX) || defined(_EMX)
   time_t ut=int64to32(RawTime/10000000);
   *this=ut;
-  rlt.Reminder=RawTime%10000000;
+  rlt.Reminder=int64to32(RawTime%10000000);
 #endif
 }
 #endif
