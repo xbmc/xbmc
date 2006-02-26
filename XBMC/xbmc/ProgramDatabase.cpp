@@ -4,7 +4,7 @@
 #include "util.h"
 #include "xbox/xbeheader.h"
 
-#define PROGRAM_DATABASE_VERSION 0.7f
+#define PROGRAM_DATABASE_VERSION 0.71f
 
 //********************************************************************************************************************************
 CProgramDatabase::CProgramDatabase(void)
@@ -81,17 +81,16 @@ bool CProgramDatabase::UpdateOldVersion(float fVersion)
         dialog->StartModal(m_gWindowManager.GetActiveWindow());
         dialog->SetLine(1, L"Adding table entries");
         dialog->Progress();
-        dialog->Progress();
       }
       BeginTransaction();
       CLog::Log(LOGINFO, "Creating temporary files table");
-      m_pDS->exec("CREATE TABLE tempfiles ( idFile integer primary key, idPath integer, strFilename text, titleId text, xbedescription text, iTimesPlayed integer, lastAccessed integer)\n");
+      m_pDS->exec("CREATE TABLE tempfiles ( idFile integer primary key, idPath integer, strFilename text, titleId integer, xbedescription text, iTimesPlayed integer, lastAccessed integer)\n");
       CLog::Log(LOGINFO, "Copying files into temporary files table");
       m_pDS->exec("INSERT INTO tempfiles SELECT idFile,idPath,strFilename,titleId,xbedescription,iTimesPlayed,lastAccessed FROM files");
       CLog::Log(LOGINFO, "Destroying old files table");
       m_pDS->exec("DROP TABLE files");
       CLog::Log(LOGINFO, "Creating new files table");
-      m_pDS->exec("CREATE TABLE files ( idFile integer primary key, idPath integer, strFilename text, titleId text, xbedescription text, iTimesPlayed integer, lastAccessed integer, iRegion integer)\n");
+      m_pDS->exec("CREATE TABLE files ( idFile integer primary key, idPath integer, strFilename text, titleId integer, xbedescription text, iTimesPlayed integer, lastAccessed integer, iRegion integer)\n");
       CLog::Log(LOGINFO, "Copying files into new files table");
       m_pDS->exec("INSERT INTO files(idFile,idPath,strFilename,titleId,xbedescription,iTimesPlayed,lastAccessed) SELECT * FROM tempfiles");
       CLog::Log(LOGINFO, "Deleting temporary files table");
@@ -107,6 +106,38 @@ bool CProgramDatabase::UpdateOldVersion(float fVersion)
     { // Version 0.6 to 0.7 update - need to create the trainers table
       CLog::Log(LOGINFO,"Creating trainers table");    
       m_pDS->exec("CREATE TABLE trainers (idKey integer auto_increment primary key, idCRC integer, idTitle integer, strTrainerPath text, strSettings text, Active integer)\n");
+    }
+    if (fVersion < 0.71f)
+    { // Version 0.7 to 0.71 update - fix the idTitle bug
+      CGUIDialogProgress *dialog = (CGUIDialogProgress *)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+      if (dialog)
+      {
+        dialog->SetHeading("Updating old database version");
+        dialog->SetLine(0, L"");
+        dialog->SetLine(1, L"Adding table entries");
+        dialog->SetLine(2, L"");
+        dialog->StartModal(m_gWindowManager.GetActiveWindow());
+        dialog->Progress();
+      }
+      BeginTransaction();
+      CLog::Log(LOGINFO, "Creating temporary files table");
+      m_pDS->exec("CREATE TABLE tempfiles ( idFile integer primary key, idPath integer, strFilename text, xbedescription text, iTimesPlayed integer, lastAccessed integer, iRegion integer)\n");
+      CLog::Log(LOGINFO, "Copying files into temporary files table");
+      m_pDS->exec("INSERT INTO tempfiles SELECT idFile,idPath,strFilename,xbedescription,iTimesPlayed,lastAccessed,iRegion FROM files");
+      CLog::Log(LOGINFO, "Destroying old files table");
+      m_pDS->exec("DROP TABLE files");
+      CLog::Log(LOGINFO, "Creating new files table");
+      m_pDS->exec("CREATE TABLE files ( idFile integer primary key, idPath integer, strFilename text, titleId integer, xbedescription text, iTimesPlayed integer, lastAccessed integer, iRegion integer)\n");
+      CLog::Log(LOGINFO, "Copying files into new files table");
+      m_pDS->exec("INSERT INTO files(idFile,idPath,strFilename,xbedescription,iTimesPlayed,lastAccessed,iRegion) SELECT * FROM tempfiles");
+      CLog::Log(LOGINFO, "Deleting temporary files table");
+      m_pDS->exec("DROP TABLE tempfiles");
+
+      CStdString strSQL=FormatSQL("update files set titleId=%i",-1);
+      m_pDS->exec(strSQL.c_str());
+      
+      CommitTransaction();
+      if (dialog) dialog->Close();
     }
   }
   catch (...)
@@ -142,6 +173,31 @@ int CProgramDatabase::GetRegion(const CStdString& strFilenameAndPath)
   return iRegion;
 }
 
+DWORD CProgramDatabase::GetTitleId(const CStdString& strFilenameAndPath)
+{
+  CStdString strPath;
+  CUtil::GetDirectory(strFilenameAndPath, strPath);
+  strPath.Replace("\\", "/");
+
+  if (NULL == m_pDB.get()) return 0;
+  if (NULL == m_pDS.get()) return 0;
+
+  CStdString strSQL=FormatSQL("select * from files,path where files.idPath=path.idPath and path.strPath='%s'", strPath.c_str());
+  if (!m_pDS->query(strSQL.c_str())) 
+    return 0;
+
+  int iRowsFound = m_pDS->num_rows();
+  if (iRowsFound == 0)
+  {
+    m_pDS->close();
+    return 0;
+  }
+  DWORD dwTitleId = m_pDS->fv("files.TitleId").get_asLong();
+  m_pDS->close();
+
+  return dwTitleId;
+}
+
 bool CProgramDatabase::SetRegion(const CStdString& strFileName, int iRegion)
 {
   try
@@ -169,6 +225,44 @@ bool CProgramDatabase::SetRegion(const CStdString& strFileName, int iRegion)
 
     strSQL=FormatSQL("update files set iRegion=%i where idFile=%i",
                   iRegion, idFile);
+    m_pDS->exec(strSQL.c_str());
+    return true;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "CProgramDatabase:SetDescription(%s) failed", strFileName.c_str());
+  }
+
+  return false;
+}
+
+bool CProgramDatabase::SetTitleId(const CStdString& strFileName, DWORD dwTitleId)
+{
+  try
+  {
+    CStdString strPath;
+    CUtil::GetDirectory(strFileName, strPath);
+    strPath.Replace("\\", "/");
+
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS.get()) return false;
+
+    CStdString strSQL=FormatSQL("select * from files,path where files.idPath=path.idPath and path.strPath='%s'", strPath.c_str());
+    if (!m_pDS->query(strSQL.c_str())) return false;
+    int iRowsFound = m_pDS->num_rows();
+    if (iRowsFound == 0)
+    {
+      m_pDS->close();
+      return false;
+    }
+    int idFile = m_pDS->fv("files.idFile").get_asLong();
+    m_pDS->close();
+
+    CLog::Log(LOGDEBUG, "CProgramDatabase::SetTitle(%s), idFile=%i, region=%u",
+              strFileName.c_str(), idFile,dwTitleId);
+
+    strSQL=FormatSQL("update files set titleId=%u where idFile=%i",
+                  dwTitleId, idFile);
     m_pDS->exec(strSQL.c_str());
     return true;
   }
@@ -281,7 +375,7 @@ long CProgramDatabase::AddFile(long lPathId, const CStdString& strFileName , DWO
     SYSTEMTIME localTime;
     GetLocalTime(&localTime);
     unsigned __int64 lastAccessed = LocalTimeToTimeStamp(localTime);
-    strSQL=FormatSQL("insert into files (idFile, idPath, strFileName, titleId, xbedescription, iTimesPlayed, lastAccessed, iRegion) values(NULL, %i, '%s', '%x','%s',%i,%I64u,%i)", lPathId, strFileName.c_str(), titleId, strDescription.c_str(), 0, lastAccessed, iRegion);
+    strSQL=FormatSQL("insert into files (idFile, idPath, strFileName, titleId, xbedescription, iTimesPlayed, lastAccessed, iRegion) values(NULL, %i, '%s', %u,'%s',%i,%I64u,%i)", lPathId, strFileName.c_str(), titleId, strDescription.c_str(), 0, lastAccessed, iRegion);
     m_pDS->exec(strSQL.c_str());
     lFileId = (long)sqlite3_last_insert_rowid( m_pDB->getHandle() );
     return lFileId;

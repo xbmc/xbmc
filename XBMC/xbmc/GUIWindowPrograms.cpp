@@ -1222,6 +1222,11 @@ void CGUIWindowPrograms::PopulateTrainersList()
       break;
   }
   m_dlgProgress->Close();
+  
+  SetOverlayIcons();
+  m_guiState.reset(CGUIViewState::GetViewState(GetID(), m_vecItems));
+  OnSort();
+  UpdateButtons();
 }
 
 void CGUIWindowPrograms::SetOverlayIcons()
@@ -1231,7 +1236,12 @@ void CGUIWindowPrograms::SetOverlayIcons()
     CFileItem *item = m_vecItems[i];
     if (item->IsXBE())
     {
-      DWORD dwTitleId = CUtil::GetXbeID(item->m_strPath);
+      DWORD dwTitleId = m_database.GetTitleId(item->m_strPath);
+      if ((int)dwTitleId == -1)
+      {
+        dwTitleId = CUtil::GetXbeID(item->m_strPath);
+        m_database.SetTitleId(item->m_strPath,dwTitleId);
+      }
       if (m_database.ItemHasTrainer(dwTitleId))
       {
         if (m_database.GetActiveTrainer(dwTitleId) != "")
