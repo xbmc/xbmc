@@ -91,6 +91,35 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
     }
     break;
 
+  case GUI_MSG_WINDOW_INIT:
+    {
+      int iLastControl = m_iLastControl;
+
+      //m_dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+
+      if (!CGUIWindow::OnMessage(message))
+        return false;
+
+      Update(m_vecItems.m_strPath);
+
+      if (iLastControl > -1)
+      {
+        SET_CONTROL_FOCUS(iLastControl, 0);
+      }
+      else
+      {
+        SET_CONTROL_FOCUS(m_dwDefaultFocusControlID, 0);
+      }
+
+      if (m_iSelectedItem > -1)
+      {
+        m_viewControl.SetSelectedItem(m_iSelectedItem);
+      }
+
+      return true;
+    }
+    break;
+
   case GUI_MSG_CLICKED:
     {
       int iControl = message.GetSenderId();
@@ -447,26 +476,20 @@ bool CGUIMediaWindow::Update(const CStdString &strDirectory)
   //  Ask the derived class if it wants to load additional info
   //  for the fileitems like media info or additional 
   //  filtering on the items, setting thumbs.
-  if (!m_vecItems.IsVirtualDirectoryRoot())
-  {
-    OnPrepareFileItems(m_vecItems);
+  OnPrepareFileItems(m_vecItems);
 
-    m_vecItems.FillInDefaultIcons();
-  }
+  m_vecItems.FillInDefaultIcons();
 
   m_guiState.reset(CGUIViewState::GetViewState(GetID(), m_vecItems));
   OnSort();
   UpdateButtons();
 
-  if (!m_vecItems.IsVirtualDirectoryRoot())
-  {
-    // Ask the devived class if it wants to do custom list operations,
-    // eg. changing the label
-    OnFinalizeFileItems(m_vecItems);
+  // Ask the devived class if it wants to do custom list operations,
+  // eg. changing the label
+  OnFinalizeFileItems(m_vecItems);
 
-    if (m_guiState.get() && m_guiState->HideExtensions())
-      m_vecItems.RemoveExtensions();
-  }
+  if (m_guiState.get() && m_guiState->HideExtensions())
+    m_vecItems.RemoveExtensions();
 
   strSelectedItem = m_history.GetSelectedItem(m_vecItems.m_strPath);
 

@@ -12,8 +12,6 @@ public:
 
 protected:
   virtual bool OnPlayMedia(int iItem);
-  virtual void SortItems(CFileItemList &items) {};
-  virtual void FormatItemLabels() {};
   virtual void UpdateButtons();
 
   virtual void OnPopupMenu(int iItem);
