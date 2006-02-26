@@ -454,6 +454,17 @@
   <string><id>519</id><value>Avvia in..</value></string>
   <string><id>520</id><value>Modifica nome XBE</value></string>
 
+  <string><id>588</id><value>Esci dal Party Mode</value></string>
+  <string><id>589</id><value>Party Mode</value></string>
+  <string><id>590</id><value>Casuale</value></string> 
+  <string><id>591</id><value>Off</value></string>
+  <string><id>592</id><value>Una</value></string>
+  <string><id>593</id><value>Tutto</value></string>
+  <string><id>594</id><value>Off</value></string>
+  <string><id>595</id><value>Ripeti: Off</value></string>
+  <string><id>596</id><value>Ripeti: Uno</value></string>
+  <string><id>597</id><value>Ripeti: Tutto</value></string>
+
   <string><id>600</id><value>Rip CD Audio</value></string>
   <string><id>601</id><value>Medio</value></string>
   <string><id>602</id><value>Standard</value></string>
@@ -570,6 +581,37 @@
   <string><id>998</id><value>XLink KAI</value></string>
   <string><id>999</id><value>Gioco Online</value></string>
   <string><id>1000</id><value>Anteprima Screensaver</value></string>
+  <string><id>1001</id><value>Impossibile connettersi</value></string> 
+  <string><id>1002</id><value>XBMC nonè riuscito a connettersi all'indirizzo di rete.</value></string> 
+  <string><id>1003</id><value>La possibile causa potrebbe essere la rete scollegata.</value></string> 
+  <string><id>1004</id><value>Vuoi aggiungerlo comunque?</value></string> 
+  <string><id>1005</id><value>Inserire un nome per questa condivisione</value></string> 
+  <string><id>1006</id><value>Indirizzo IP</value></string> 
+  <string><id>1007</id><value>Aggiungi Indirizzo di rete</value></string> 
+  <string><id>1008</id><value>Protocollo</value></string> 
+  <string><id>1009</id><value>Indirizzo del Server</value></string> 
+  <string><id>1010</id><value>Nome del Server</value></string> 
+  <string><id>1011</id><value>Percorso Remoto</value></string> 
+  <string><id>1012</id><value>Cartella Condivisa</value></string> 
+  <string><id>1013</id><value>Porta</value></string> 
+  <string><id>1014</id><value>Nome Utente</value></string> 
+  <string><id>1015</id><value>server di rete</value></string> 
+  <string><id>1016</id><value>Inserire l'indirizzo di rete del server</value></string> 
+  <string><id>1017</id><value>Inserire il percorso sul server</value></string> 
+  <string><id>1018</id><value>Inserire il numero della porta</value></string> 
+  <string><id>1019</id><value>Inserire il nome utente</value></string> 
+  <string><id>1020</id><value>Aggiungi %s Sorgente</value></string> 
+  <string><id>1021</id><value>Inserire il percorso o esplora la locazione dei media.</value></string> 
+  <string><id>1022</id><value>Inserire nome per questa Sorgente.</value></string> 
+  <string><id>1023</id><value>Ricerca nuove condivisioni</value></string> 
+  <string><id>1024</id><value>Esplora</value></string> 
+  <string><id>1025</id><value>Impossibile avere informazioni sulla directory.</value></string> 
+  <string><id>1026</id><value>Aggiungi Sorgente</value></string> 
+  <string><id>1027</id><value>Modifica Sorgente</value></string> 
+  <string><id>1028</id><value>Modifica %s Sorgente</value></string> 
+  <string><id>1029</id><value>Inserire nuova etichetta</value></string> 
+  <string><id>1030</id><value>un immagine</value></string> 
+  <string><id>1031</id><value>una cartella immagini</value></string> 
 
   <string><id>1200</id><value>Condivisioni SMB</value></string>
   <string><id>1201</id><value>SMB IP</value></string>
@@ -718,6 +760,7 @@
   <string><id>12014</id><value>Nessun trainer trovato</value></string> 
   <string><id>12015</id><value>Impostazioni Trainer</value></string> 
   <string><id>12016</id><value>Mancano tutti i trainers registrati. Aggiorna la tua lista</value></string> 
+  <string><id>12017</id><value>Riprendi dall'ultimo punto automaticamente</value></string>
 
   <string><id>12310</id><value>0</value></string>
   <string><id>12311</id><value>1</value></string>
@@ -796,7 +839,7 @@
   <string><id>12384</id><value>Orario in 24 Ore</value></string> 
   <string><id>12385</id><value>Giorno/Mese</value></string> 
   <string><id>12386</id><value>Mese/Giorno</value></string> 
-
+  <string><id>12387</id><value>Riscansiona il database</value></string>
 
   <string><id>12390</id><value>Tempo di Vita del Sistema</value></string>
   <string><id>12391</id><value>Minuti</value></string>
