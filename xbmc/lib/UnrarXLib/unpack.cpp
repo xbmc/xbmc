@@ -420,7 +420,7 @@ bool Unpack::ReadEndOfBlock()
   else
   {
     NewFile=true;
-    NewTable=(BitField & 0x4000) != 0;
+    NewTable=(BitField & 0x4000);
     addbits(2);
   }
   TablesRead=!NewTable;
@@ -459,12 +459,27 @@ bool Unpack::ReadVMCode()
 bool Unpack::ReadVMCodePPM()
 {
   unsigned int FirstByte=PPM.DecodeChar();
+  if ((int)FirstByte==-1)
+    return(false);
   int Length=(FirstByte & 7)+1;
   if (Length==7)
-    Length=PPM.DecodeChar()+7;
+      {
+    int B1=PPM.DecodeChar();
+    if (B1==-1)
+      return(false);
+    Length=B1+7;
+  }
   else
     if (Length==8)
-      Length=PPM.DecodeChar()*256+PPM.DecodeChar();
+    {
+      int B1=PPM.DecodeChar();
+      if (B1==-1)
+        return(false);
+      int B2=PPM.DecodeChar();
+      if (B2==-1)
+        return(false);
+      Length=B1*256+B2;
+    }  
   Array<byte> VMCode(Length);
   for (int I=0;I<Length;I++)
   {
@@ -684,7 +699,7 @@ void Unpack::UnpWriteBuf()
         {
           UnpackFilter *NextFilter=PrgStack[I+1];
           if (NextFilter==NULL || NextFilter->BlockStart!=BlockStart ||
-              NextFilter->BlockLength!=FilteredDataSize)
+              NextFilter->BlockLength!=FilteredDataSize || NextFilter->NextWindow)
             break;
           VM.SetMemory(0,FilteredData,FilteredDataSize);
           VM_PreparedProgram *NextPrg=&PrgStack[I+1]->Prg;

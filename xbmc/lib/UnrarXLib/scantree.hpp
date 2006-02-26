@@ -7,6 +7,8 @@ enum { SCAN_SUCCESS,SCAN_DONE,SCAN_ERROR,SCAN_NEXT };
 
 #define MAXSCANDEPTH    (NM/2)
 
+class CommandData;
+
 class ScanTree
 {
   private:
@@ -16,7 +18,9 @@ class ScanTree
     FindFile *FindStack[MAXSCANDEPTH];
     int Depth;
 
-    ::StringList *FileMasks;
+    int SetAllMaskDepth;
+    
+    StringList *FileMasks;
     int Recurse;
     bool GetLinks;
     int GetDirs;
@@ -24,20 +28,25 @@ class ScanTree
 
     char CurMask[NM];
     wchar CurMaskW[NM];
+    char OrigCurMask[NM];
+    wchar OrigCurMaskW[NM];
     bool SearchAllInRoot;
     bool FastFindFile;
     int SpecPathLength;
     int SpecPathLengthW;
 
     char ErrArcName[NM];
+
+    CommandData *Cmd;
   public:
-    ScanTree(::StringList *FileMasks,int Recurse,bool GetLinks,int GetDirs);
+	ScanTree(StringList *FileMasks,int Recurse,bool GetLinks,int GetDirs);
     ~ScanTree();
     int GetNext(FindData *FindData);
     int GetSpecPathLength() {return(SpecPathLength);};
     int GetSpecPathLengthW() {return(SpecPathLengthW);};
     int GetErrors() {return(Errors);};
     void SetErrArcName(const char *Name) {strcpy(ErrArcName,Name);}
+    void SetCommandData(CommandData *Cmd) {ScanTree::Cmd=Cmd;}
 };
 
 #endif

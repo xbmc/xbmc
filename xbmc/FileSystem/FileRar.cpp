@@ -41,12 +41,13 @@ void CFileRarExtractThread::Start(Archive* pArc, CommandData* pCmd, CmdExtract* 
   m_pCmd = pCmd;
   m_pExtract = pExtract;
   m_iSize = iSize;
+  
   m_pExtract->GetDataIO().hBufferFilled = CreateEvent(NULL,false,false,NULL);
   m_pExtract->GetDataIO().hBufferEmpty = CreateEvent(NULL,false,false,NULL);
   m_pExtract->GetDataIO().hSeek = CreateEvent(NULL,true,false,NULL);
   m_pExtract->GetDataIO().hSeekDone = CreateEvent(NULL,false,false,NULL);
   m_pExtract->GetDataIO().hQuit = CreateEvent(NULL,true,false,NULL);
-  m_pExtract->GetDataIO().hProgressBar = CreateEvent(NULL,true,false,NULL);
+
   SetEvent(hRunning);
   SetEvent(hRestart);
 }
@@ -152,11 +153,11 @@ bool CFileRar::Open(const CURL& url, bool bBinary)
 
         return true;
     }
-    else
+    else 
     {
-      if (items[i]->m_dwSize > __int64(2)*1024*1024*1024) // 2 gig limit of fat-x
+      if (items[i]->m_dwSize > __int64(4)*1024*1024*1024) // 4 gig limit of fat-x
       {
-        CLog::Log(LOGERROR,"CFileRar::Open: Can't cache files bigger than 2GB due to fat-x limits.");
+        CLog::Log(LOGERROR,"CFileRar::Open: Can't cache files bigger than 4GB due to fat-x limits.");
         return false;
       }
       m_bUseFile = true;
@@ -164,13 +165,13 @@ bool CFileRar::Open(const CURL& url, bool bBinary)
       
       if (!g_RarManager.CacheRarredFile(strPathInCache, m_strRarPath, m_strPathInRar, EXFILE_AUTODELETE, m_strCacheDir, items[i]->m_dwSize))
       {
-        CLog::Log(LOGERROR,"filerar::open failed to cache file %s",m_strPathInRar.c_str());
+      	CLog::Log(LOGERROR,"filerar::open failed to cache file %s",m_strPathInRar.c_str());
         return false;
       }
       
       if (!m_File.Open( strPathInCache, bBinary)) 
       {
-        CLog::Log(LOGERROR,"filerar::open failed to open file in cache: %s",strPathInCache.c_str());
+		CLog::Log(LOGERROR,"filerar::open failed to open file in cache: %s",strPathInCache.c_str());
         return false;
       }
       
@@ -221,7 +222,7 @@ unsigned int CFileRar::Read(void *lpBuf, __int64 uiBufSize)
 {
   if (!m_bOpen)
     return 0;
-  
+
   if (m_bUseFile)
     return m_File.Read(lpBuf,uiBufSize);
   
@@ -241,6 +242,7 @@ unsigned int CFileRar::Read(void *lpBuf, __int64 uiBufSize)
     uicBufSize -= iCopy;
     m_iFilePosition += iCopy;
   }
+
   while ((uicBufSize > 0) && m_iFilePosition < GetLength() )
   {
     if (m_iDataInBuffer <= 0)
@@ -252,10 +254,10 @@ unsigned int CFileRar::Read(void *lpBuf, __int64 uiBufSize)
     
     SetEvent(m_pExtract->GetDataIO().hBufferFilled);
     WaitForSingleObject(m_pExtract->GetDataIO().hBufferEmpty,INFINITE);
-    
+
     if (m_pExtract->GetDataIO().NextVolumeMissing)
       break;
-
+   
     m_iDataInBuffer = MAXWINMEMSIZE-m_pExtract->GetDataIO().UnpackToMemorySize;
     
     if (m_iDataInBuffer == 0)
@@ -280,6 +282,7 @@ unsigned int CFileRar::Read(void *lpBuf, __int64 uiBufSize)
       m_iDataInBuffer = 0;
     }
   }
+  
   SetEvent(m_pExtract->GetDataIO().hBufferEmpty);
   
   return static_cast<unsigned int>(uiBufSize-uicBufSize);
@@ -329,8 +332,8 @@ __int64 CFileRar::Seek(__int64 iFilePosition, int iWhence)
     return m_File.Seek(iFilePosition,iWhence);
   
   WaitForSingleObject(m_pExtract->GetDataIO().hBufferEmpty,INFINITE);
-  
   SetEvent(m_pExtract->GetDataIO().hBufferEmpty);
+ 
   switch (iWhence)
   {
     case SEEK_CUR:
@@ -345,6 +348,7 @@ __int64 CFileRar::Seek(__int64 iFilePosition, int iWhence)
         m_iFilePosition = this->GetLength();
         m_iDataInBuffer = 0;
         m_iBufferStart = this->GetLength();
+        
         return this->GetLength();
       }
 
@@ -504,7 +508,6 @@ void CFileRar::CleanUp()
     CloseHandle(m_pExtract->GetDataIO().hSeek);
     CloseHandle(m_pExtract->GetDataIO().hSeekDone);
     CloseHandle(m_pExtract->GetDataIO().hQuit);
-    CloseHandle(m_pExtract->GetDataIO().hProgressBar);
   }
   if (m_pExtract)
   {

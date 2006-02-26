@@ -120,9 +120,9 @@ bool Archive::IsArchive(bool EnableBroken)
     return(false);
   }
 #endif
-	if (Read(MarkHead.Mark,SIZEOF_MARKHEAD)!=SIZEOF_MARKHEAD)
-		return(false);
-
+  if (Read(MarkHead.Mark,SIZEOF_MARKHEAD)!=SIZEOF_MARKHEAD)
+    return(false);
+    
   SFXSize=0;
   if (IsSignature(MarkHead.Mark))
   {
@@ -131,12 +131,18 @@ bool Archive::IsArchive(bool EnableBroken)
   }
   else
   {
-    Array<char> Buffer(0x40000);
+    Array<char> Buffer(0x80000);
     long CurPos=int64to32(Tell());
     int ReadSize=Read(&Buffer[0],Buffer.Size()-16);
     for (int I=0;I<ReadSize;I++)
       if (Buffer[I]==0x52 && IsSignature((byte *)&Buffer[I]))
       {
+        if (OldFormat && I>0 && CurPos<28 && ReadSize>31)
+        {
+          char *D=&Buffer[28-CurPos];
+          if (D[0]!=0x52 || D[1]!=0x53 || D[2]!=0x46 || D[3]!=0x58)
+            continue;
+        }
         SFXSize=CurPos+I;
         Seek(SFXSize,SEEK_SET);
         if (!OldFormat)

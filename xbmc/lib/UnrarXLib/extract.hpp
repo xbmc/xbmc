@@ -25,6 +25,7 @@ class CmdExtract
     bool SignatureFound;
     char DestFileName[NM];
     wchar DestFileNameW[NM];
+    bool PasswordCancelled;
   public:
     CmdExtract();
     ~CmdExtract();
