@@ -14,7 +14,7 @@ CGUIMultiImage::CGUIMultiImage(DWORD dwParentID, DWORD dwControlId, int iPosX, i
   m_fadeTime = fadeTime;
   m_randomized = randomized;
   m_loop = loop;
-  m_keepAspectRatio = false;
+  m_aspectRatio = CGUIImage::ASPECT_RATIO_STRETCH;
   ControlType = GUICONTROL_MULTI_IMAGE;
   m_bDynamicResourceAlloc=false;
   m_Info = 0;
@@ -148,7 +148,7 @@ void CGUIMultiImage::LoadImage(int image)
   m_images[image]->AllocResources();
 
   // Scale image so that it will fill our render area
-  if (m_keepAspectRatio)
+  if (m_aspectRatio != CGUIImage::ASPECT_RATIO_STRETCH)
   {
     // image is scaled so that the aspect ratio is maintained (taking into account the TV pixel ratio)
     // and so that it fills the allocated space (so is zoomed then cropped)
@@ -157,7 +157,8 @@ void CGUIMultiImage::LoadImage(int image)
 
     unsigned int newWidth = m_dwWidth;
     unsigned int newHeight = (unsigned int)((float)newWidth / aspectRatio);
-    if (newHeight < m_dwHeight)
+    if ((m_aspectRatio == CGUIImage::ASPECT_RATIO_SCALE && newHeight < m_dwHeight) ||
+        (m_aspectRatio == CGUIImage::ASPECT_RATIO_KEEP && newHeight > m_dwHeight))
     {
       newHeight = m_dwHeight;
       newWidth = (unsigned int)((float)newHeight * aspectRatio);
@@ -192,18 +193,18 @@ bool CGUIMultiImage::CanFocus() const
   return false;
 }
 
-void CGUIMultiImage::SetKeepAspectRatio(bool bOnOff)
+void CGUIMultiImage::SetAspectRatio(CGUIImage::GUIIMAGE_ASPECT_RATIO ratio)
 {
-  if (m_keepAspectRatio != bOnOff)
+  if (m_aspectRatio != ratio)
   {
-    m_keepAspectRatio = bOnOff;
+    m_aspectRatio = ratio;
     m_bInvalidated = true;
   }
 }
 
-bool CGUIMultiImage::GetKeepAspectRatio() const
-{
-  return m_keepAspectRatio;
+CGUIImage::GUIIMAGE_ASPECT_RATIO CGUIMultiImage::GetAspectRatio() const
+{ 
+  return m_aspectRatio;
 }
 
 void CGUIMultiImage::LoadDirectory()
