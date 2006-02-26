@@ -2596,8 +2596,6 @@ void CGUIWindowSettingsCategory::FillInResolutions(CSetting *pSetting)
   // Find the valid resolutions and add them as necessary
   vector<RESOLUTION> res;
   g_graphicsContext.GetAllowedResolutions(res);
-  int iCurrentRes = 0;
-  int iLabel = 0;
   for (vector<RESOLUTION>::iterator it = res.begin(); it != res.end();it++)
   {
     RESOLUTION res = *it;
@@ -2609,11 +2607,8 @@ void CGUIWindowSettingsCategory::FillInResolutions(CSetting *pSetting)
     {
       pControl->AddLabel(g_settings.m_ResInfo[res].strMode, res);
     }
-    if (pSettingInt->GetData() == res)
-      iCurrentRes = iLabel;
-    iLabel++;
   }
-  pControl->SetValue(iCurrentRes);
+  pControl->SetValue(pSettingInt->GetData());
 }
 
 void CGUIWindowSettingsCategory::FillInLanguages(CSetting *pSetting)
