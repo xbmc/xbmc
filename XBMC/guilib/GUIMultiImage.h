@@ -30,8 +30,8 @@ public:
   virtual bool IsDynamicallyAllocated() { return m_bDynamicResourceAlloc; };
   virtual bool CanFocus() const;
 
-  void SetKeepAspectRatio(bool bOnOff);
-  bool GetKeepAspectRatio() const;
+  void SetAspectRatio(CGUIImage::GUIIMAGE_ASPECT_RATIO ratio);
+  CGUIImage::GUIIMAGE_ASPECT_RATIO GetAspectRatio() const;
   const CStdString &GetTexturePath() const { return m_texturePath; };
   DWORD GetTimePerImage() const { return m_timePerImage; };
   DWORD GetFadeTime() const { return m_fadeTime; };
@@ -51,7 +51,7 @@ protected:
   DWORD m_fadeTime;
   bool m_randomized;
   bool m_loop;
-  bool m_keepAspectRatio;
+  CGUIImage::GUIIMAGE_ASPECT_RATIO m_aspectRatio;
   vector <CGUIImage *> m_images;
 
   bool m_bDynamicResourceAlloc;

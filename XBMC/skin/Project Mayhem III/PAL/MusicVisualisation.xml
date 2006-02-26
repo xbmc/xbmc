@@ -107,7 +107,7 @@
       <info>MusicPlayer.Cover</info>
       <visible>Player.ShowInfo</visible>
       <animation effect="fade" time="1000">VisibleChange</animation>
-      <keepaspectratio>true</keepaspectratio>
+      <aspectratio>keep</aspectratio>
     </control>
 
     <control>
