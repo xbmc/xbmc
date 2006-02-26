@@ -105,6 +105,8 @@ CStdString CGUIListItem::GetOverlayImage() const
     return "OverlayHasTrainer.png";
   case ICON_OVERLAY_LOCKED:
     return "OverlayLocked.png";
+  case ICON_OVERLAY_UNWATCHED:
+    return "OverlayUnwatched.png";
   }
   return "";
 }
