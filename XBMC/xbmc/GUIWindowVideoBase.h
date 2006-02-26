@@ -17,7 +17,6 @@ private:
   bool IsCorrectDiskInDrive(const CStdString& strFileName, const CStdString& strDVDLabel);
 protected:
   virtual void UpdateButtons();
-  virtual void OnSort();
 
   virtual void SetIMDBThumbs(CFileItemList& items) {};
 
