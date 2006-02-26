@@ -9,7 +9,7 @@ public:
 protected:
   virtual bool HideParentDirItems();
   virtual int GetPlaylist();
-  virtual bool HandleArchives();
+  virtual bool UnrollArchives();
   virtual bool AutoPlayNextItem();
   virtual CStdString GetLockType();
 };

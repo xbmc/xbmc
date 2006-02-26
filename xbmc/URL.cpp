@@ -61,9 +61,9 @@ CURL::CURL(const CStdString& strURL)
   //archive subpaths may contain delimiters so they need special processing
   //format 4: zip://CachePath,AutoDelMask,Password, RarPath,\FilePathInRar
   if ((m_strProtocol.CompareNoCase("rar")==0) || (m_strProtocol.CompareNoCase("zip")==0))
-	{
+  {
     CRegExp reg;
-    reg.RegComp("...://([^,]*),([0-9]*),([^,]*),(.*),[\\\\/](.*)$");
+    reg.RegComp("...://([^,]*),([0-9]*),([^,]*),(.*),[\\\\/]?(.*)?$");
     if( (reg.RegFind(strURL.c_str()) >= 0))
     {
       char* szDomain = reg.GetReplaceString("\\1");
@@ -75,9 +75,10 @@ CURL::CURL(const CStdString& strURL)
       m_iPort = atoi(szPort);
       m_strPassword = szPassword;
       m_strHostName = szHostName;
-      m_strFileName = szFileName;
+      if (szFileName)
+        m_strFileName = szFileName;
       int iFileType = m_strFileName.ReverseFind('.') + 1;
-      if (iFileType)
+      if (iFileType >= 1)
       {
         m_strFileType = m_strFileName.Right(m_strFileName.size() - iFileType);
         m_strFileType.Normalize();
@@ -95,7 +96,7 @@ CURL::CURL(const CStdString& strURL)
 
       return;
     }
-	}
+  }
 
   // check for username/password
   int iAlphaSign = strURL.Find("@", iPos);
