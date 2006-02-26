@@ -248,7 +248,7 @@ CStdString CGUIDialogNetworkSetup::ConstructPath() const
   if (m_protocol == NET_PROTOCOL_SMB)
     path = "smb://";
   else if (m_protocol == NET_PROTOCOL_XBMSP)
-    path = "xbmsp://";
+    path = "xbms://";
   else if (m_protocol == NET_PROTOCOL_FTP)
     path = "ftp://";
   if (!m_username.IsEmpty())
