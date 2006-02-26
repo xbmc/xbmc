@@ -10,7 +10,7 @@ protected:
   virtual bool HideParentDirItems();
   virtual void SaveViewState();
   virtual CStdString GetLockType();
-  virtual bool HandleArchives();
+  virtual bool UnrollArchives();
 };
 
 class CGUIViewStateWindowPrograms : public CGUIViewState

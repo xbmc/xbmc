@@ -359,9 +359,7 @@ bool CGUIWindowPrograms::OnPopupMenu(int iItem)
       CStdStringW strOptions = g_localizeStrings.Get(12015);
       if (CKaiClient::GetInstance()->IsEngineConnected())
         strOptions += CStdStringW(" (KAI)");
-      else
-      if (m_database.GetActiveTrainer(dwTitleId) != "")
-        strOptions += CStdStringW(" ") + g_localizeStrings.Get(461);
+        
       btn_Trainers = pMenu->AddButton(strOptions); // trainer options
       if (CKaiClient::GetInstance()->IsEngineConnected())
         pMenu->EnableButton(btn_Trainers,false);
