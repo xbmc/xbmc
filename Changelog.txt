@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 26-02-2006 fixed: thumbs in video and music playlist may not be displayed
+ - 26-02-2006 changed: media window base class, unified window init
  - 26-02-2006 added: unrolling of single file archives. this moves archive support into filedirectoryfactory. WARNING TO TRANSLATORS: CHANGES MEANING OF STRING 516
  - 26-02-2006 changed: updated rar libs to latest version (3.5.4) (also removed guilib dependencies)
  - 26-02-2006 added: overlay to indicate that a movie is unwatched in database views (overlayunwatched.png).
