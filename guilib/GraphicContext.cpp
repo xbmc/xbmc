@@ -99,6 +99,11 @@ bool CGraphicContext::SetViewPort(float fx, float fy , float fwidth, float fheig
       newviewport.Height = oldviewport->Y + oldviewport->Height - newviewport.Y;
   }
   // check range
+  if (newviewport.Width == 0 || newviewport.Height == 0)
+  {
+    delete oldviewport;
+    return false;
+  }
   if (newviewport.X + newviewport.Width > (DWORD)m_iScreenWidth)
   {
     if (newviewport.X >= (DWORD)m_iScreenWidth)
