@@ -451,12 +451,14 @@
   <string><id>513</id><value>Hemf&#246;nster</value></string>
   <string><id>514</id><value>Manuella inst&#228;llningar</value></string>
   <string><id>515</id><value>Genre</value></string>
-  <string><id>516</id><value>Hantera arkiv</value></string>
+  <string><id>516</id><value>G&#246;r arkiv med en fil osynliga</value></string>
   <string><id>517</id><value>Senast spelade album</value></string>
   <string><id>518</id><value>Starta</value></string>
   <string><id>519</id><value>Starta i...</value></string>
   <string><id>520</id><value>D&#246;p om XBE-titel</value></string>
+  <string><id>521</id><value>Kompilering</value></string>
 
+  <string><id>588</id><value>Avbryt Festl&#228;ge</value></string>
   <string><id>589</id><value>Festl&#228;ge</value></string>
   <string><id>590</id><value>Slumpm&#228;ssig</value></string>
   <string><id>591</id><value>Av</value></string>
@@ -763,6 +765,11 @@
   <string><id>12015</id><value>Tr&#228;nare inst&#228;llningar</value></string>
   <string><id>12016</id><value>Alla registrerade trailers saknas. Uppdatera din lista</value></string>
   <string><id>12017</id><value>&#197;teruppta fr&#229;n sista position</value></string>
+  <string><id>12018</id><value>Nej</value></string>
+  <string><id>12019</id><value>Ja</value></string>
+  <string><id>12020</id><value>Fr&#229;ga</value></string>
+  <string><id>12021</id><value>Starta fr&#229;n b&#246;rjan</value></string>
+  <string><id>12022</id><value>&#197;teruppta fr&#229;n senaste position</value></string>
 
   <string><id>12310</id><value>0</value></string>
   <string><id>12311</id><value>1</value></string>
