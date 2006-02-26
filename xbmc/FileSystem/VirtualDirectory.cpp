@@ -138,8 +138,6 @@ bool CVirtualDirectory::GetDirectory(const CStdString& strPath, CFileItemList &i
   for (int i = 0; i < (int)m_vecShares->size(); ++i)
   {
     CShare& share = m_vecShares->at(i);
-    if ((share.strPath.substr(0,6) == "rar://") || (share.strPath.substr(0,6) == "zip://")) // do not add the virtual archive shares to list
-      continue;
 
     CFileItem* pItem = new CFileItem(share);
     CStdString strPathUpper = pItem->m_strPath;
@@ -184,9 +182,6 @@ bool CVirtualDirectory::GetDirectory(const CStdString& strPath, CFileItemList &i
  */
 bool CVirtualDirectory::IsShare(const CStdString& strPath) const
 {
-  if (strPath.Left(6) == "zip://" || strPath.Left(6) == "rar://") // fucks up directory navigation otherwise..
-    return false; 
-
   CStdString strPathCpy = strPath;
   strPathCpy.TrimRight("/");
   strPathCpy.TrimRight("\\");

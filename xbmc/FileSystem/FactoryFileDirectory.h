@@ -8,6 +8,6 @@ class CFactoryFileDirectory
 public:
   CFactoryFileDirectory(void);
   virtual ~CFactoryFileDirectory(void);
-  static IFileDirectory* Create(const CStdString& strPath);
+  static IFileDirectory* Create(const CStdString& strPath, CFileItem* pItem, const CStdString& strMask="");
 };
 }

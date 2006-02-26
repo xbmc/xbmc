@@ -6,9 +6,6 @@
 
 #include <vector>
 
-// TODO: enable in my videos, fix bug with cbz in file manager, enable in my music, filezip::stat
-
-
 namespace DIRECTORY
 {
   CZipDirectory::CZipDirectory()
@@ -79,5 +76,20 @@ namespace DIRECTORY
     }
     items.SetFastLookup(bWasFast);
     return true;
+  }
+
+  bool CZipDirectory::ContainsFiles(const CStdString& strPath)
+  {
+    vector<SZipEntry> items;
+    g_ZipManager.GetZipList(strPath,items);
+    if (items.size())
+    {
+      if (items.size() > 1)
+        return true;
+
+      return false;
+    }
+
+    return false;
   }
 }
