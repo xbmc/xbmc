@@ -76,7 +76,6 @@ bool CGUIWindowVideoGenre::GetDirectory(const CStdString &strDirectory, CFileIte
       pItem->m_strPath = genres[i];
       pItem->m_bIsFolder = true;
       pItem->m_bIsShareOrDrive = false;
-      pItem->FillInDefaultIcon();
       items.Add(pItem);
     }
   }

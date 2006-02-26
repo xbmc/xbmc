@@ -112,28 +112,12 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
 
   case GUI_MSG_WINDOW_INIT:
     {
-      int iLastControl = m_iLastControl;
-      CGUIWindow::OnMessage(message);
-
-      m_musicdatabase.Open();
-
       m_dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
 
-      Update(m_vecItems.m_strPath);
+      if (CGUIMediaWindow::OnMessage(message))
+        return false;
 
-      if (iLastControl > -1)
-      {
-        SET_CONTROL_FOCUS(iLastControl, 0);
-      }
-      else
-      {
-        SET_CONTROL_FOCUS(m_dwDefaultFocusControlID, 0);
-      }
-
-      if (m_iSelectedItem > -1)
-      {
-        m_viewControl.SetSelectedItem(m_iSelectedItem);
-      }
+      m_musicdatabase.Open();
 
       // save current window, unless the current window is the music playlist window
       if (GetID() != WINDOW_MUSIC_PLAYLIST)
