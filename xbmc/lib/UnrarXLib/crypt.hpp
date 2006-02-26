@@ -46,7 +46,6 @@ class CryptData
     static CryptKeyCacheItem Cache[4];
     static int CachePos;
   public:
-    CryptData();
     void SetCryptKeys(char *Password,byte *Salt,bool Encrypt,bool OldOnly=false);
     void SetAV15Encryption();
     void SetCmt13Encryption();

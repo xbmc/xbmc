@@ -163,7 +163,14 @@ uint blen = ((uint)len)<<3;
         memcpy(&context->buffer[j], data, (i = 64-j));
         SHA1Transform(context->state, context->buffer);
         for ( ; i + 63 < len; i += 64) {
+#ifdef ALLOW_NOT_ALIGNED_INT
             SHA1Transform(context->state, &data[i]);
+#else
+            unsigned char buffer[64];
+            memcpy(buffer,data+i,sizeof(buffer));
+            SHA1Transform(context->state, buffer);
+            memcpy(data+i,buffer,sizeof(buffer));
+#endif
 #ifdef BIG_ENDIAN
             unsigned char *d=data+i;
             for (int k=0;k<64;k+=4)

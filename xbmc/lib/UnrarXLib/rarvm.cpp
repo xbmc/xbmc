@@ -10,7 +10,7 @@ RarVM::RarVM()
 
 RarVM::~RarVM()
 {
-  delete Mem;
+  delete[] Mem;
 }
 
 
@@ -503,6 +503,7 @@ void RarVM::Prepare(byte *Code,int CodeSize,VM_PreparedProgram *Prg)
       CurCmd->Op1.Data=FilterType;
       CurCmd->Op1.Addr=&CurCmd->Op1.Data;
       CurCmd->Op2.Addr=&CurCmd->Op2.Data;
+      CurCmd->Op1.Type=CurCmd->Op2.Type=VM_OPNONE;
       CodeSize=0;
     }
 #endif  
@@ -535,7 +536,7 @@ void RarVM::Prepare(byte *Code,int CodeSize,VM_PreparedProgram *Prg)
       }
       if (VM_CmdFlags[CurCmd->OpCode] & VMCF_BYTEMODE)
       {
-        CurCmd->ByteMode=(fgetbits()>>15) != 0;
+        CurCmd->ByteMode=fgetbits()>>15;
         faddbits(1);
       }
       else
@@ -579,6 +580,7 @@ void RarVM::Prepare(byte *Code,int CodeSize,VM_PreparedProgram *Prg)
   CurCmd->OpCode=VM_RET;
   CurCmd->Op1.Addr=&CurCmd->Op1.Data;
   CurCmd->Op2.Addr=&CurCmd->Op2.Data;
+  CurCmd->Op1.Type=CurCmd->Op2.Type=VM_OPNONE;
 
   for (int I=0;I<Prg->CmdCount;I++)
   {

@@ -66,6 +66,7 @@
 #define  EARC_NEXT_VOLUME   0x0001
 #define  EARC_DATACRC       0x0002
 #define  EARC_REVSPACE      0x0004
+#define  EARC_VOLNUMBER     0x0008
 
 enum HEADER_TYPE {
   MARK_HEAD=0x72,MAIN_HEAD=0x73,FILE_HEAD=0x74,COMM_HEAD=0x75,AV_HEAD=0x76,
@@ -216,6 +217,7 @@ struct FileHeader:BlockHeader
 struct EndArcHeader:BaseBlock
 {
   uint ArcDataCRC;
+  ushort VolNumber;
 };
 
 

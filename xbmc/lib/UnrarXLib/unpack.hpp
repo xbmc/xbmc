@@ -81,7 +81,7 @@ struct AudioVariables
 /***************************** Unpack v 2.0 *********************************/
 
 
-class Unpack:BitInput
+class Unpack:private BitInput
 {
   private:
     friend class Pack;

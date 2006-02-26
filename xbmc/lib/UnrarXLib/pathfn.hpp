@@ -24,18 +24,19 @@ void GetFilePath(const wchar *FullName,wchar *Path);
 void RemoveNameFromPath(char *Path);
 void RemoveNameFromPath(wchar *Path);
 bool EnumConfigPaths(char *Path,int Number);
-void GetConfigName(const char *Name,char *FullName);
+void GetConfigName(const char *Name,char *FullName,bool CheckExist);
 char* GetVolNumPart(char *ArcName);
 void NextVolumeName(char *ArcName,bool OldNumbering);
 bool IsNameUsable(const char *Name);
 void MakeNameUsable(char *Name,bool KeepExtension, bool IsFatx);
-char* UnixSlashToDos(char *SrcName,char *DestName=NULL);
-char* DosSlashToUnix(char *SrcName,char *DestName=NULL);
+char* UnixSlashToDos(char *SrcName,char *DestName=NULL,uint MaxLength=NM);
+char* DosSlashToUnix(char *SrcName,char *DestName=NULL,uint MaxLength=NM);
 bool IsFullPath(const char *Path);
 bool IsDiskLetter(const char *Path);
 void GetPathRoot(const char *Path,char *Root);
 int ParseVersionFileName(char *Name,wchar *NameW,bool Truncate);
 char* VolNameToFirstName(const char *VolName,char *FirstName,bool NewNumbering);
+wchar* GetWideName(const char *Name,const wchar *NameW,wchar *DestW);
 
 void MakeSubRar(char * destname, char * rarname);
 

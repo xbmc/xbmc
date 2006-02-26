@@ -6,8 +6,6 @@ class Unpack;
 
 #include <process.h>
 
-#include "../../GUIDialogProgress.h"
-
 class ComprDataIO
 {
   private:
@@ -84,8 +82,6 @@ class ComprDataIO
     int UnpackToMemorySize;
     
     // added stuff
-    CGUIDialogProgress* m_pDlgProgress;
-    HANDLE hProgressBar;
     HANDLE hBufferFilled;
     HANDLE hBufferEmpty;
     HANDLE hSeek;
