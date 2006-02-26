@@ -105,7 +105,7 @@
       <width>75</width>
       <height>100</height>
       <info>MusicPlayer.Cover</info>
-      <keepaspectratio>true</keepaspectratio>
+      <aspectratio>keep</aspectratio>
       <visible>Player.ShowInfo</visible>
       <animation effect="fade" time="1000">VisibleChange</animation>
     </control>

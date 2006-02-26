@@ -18,7 +18,7 @@ CGUIImage::CGUIImage(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, 
   m_dwItems = 1;
   m_iCurrentImage = 0;
   m_dwFrameCounter = -1;
-  m_bKeepAspectRatio = false;
+  m_aspectRatio = ASPECT_RATIO_STRETCH;
   m_iCurrentLoop = 0;
   m_iRenderWidth = dwWidth;
   m_iRenderHeight = dwHeight;
@@ -38,7 +38,7 @@ CGUIImage::CGUIImage(const CGUIImage &left)
   m_colDiffuse = left.m_colDiffuse;
   m_strFileName = left.m_strFileName;
   m_dwColorKey = left.m_dwColorKey;
-  m_bKeepAspectRatio = left.m_bKeepAspectRatio;
+  m_aspectRatio = left.m_aspectRatio;
   m_iRenderWidth = left.m_iRenderWidth;
   m_iRenderHeight = left.m_iRenderHeight;
   // defaults
@@ -114,6 +114,9 @@ void CGUIImage::Render()
     Process();
     if (m_bInvalidated) UpdateVB();
     // scale to screen output position
+    if (m_fNW > m_dwWidth || m_fNH > m_dwHeight)
+      if (!g_graphicsContext.SetViewPort((float)m_iPosX, (float)m_iPosY, (float)m_dwWidth, (float)m_dwHeight, true))
+        return;
     float x1 = g_graphicsContext.ScaleFinalXCoord(m_fX, m_fY) - 0.5f;
     float y1 = g_graphicsContext.ScaleFinalYCoord(m_fX, m_fY) - 0.5f;
     float x2 = g_graphicsContext.ScaleFinalXCoord(m_fX + m_fNW, m_fY) - 0.5f;
@@ -186,6 +189,8 @@ void CGUIImage::Render()
 #ifdef ALLOW_TEXTURE_COMPRESSION
     p3DDevice->SetPalette( 0, NULL);
 #endif
+    if (m_fNW > m_dwWidth || m_fNH > m_dwHeight)
+      g_graphicsContext.RestoreViewPort();
   }
   CGUIControl::Render();
 }
@@ -314,29 +319,25 @@ void CGUIImage::UpdateVB()
   m_fNW = (float)m_dwWidth;
   m_fNH = (float)m_dwHeight;
 
-  if (m_bKeepAspectRatio && m_iTextureWidth && m_iTextureHeight)
+  if (m_aspectRatio != ASPECT_RATIO_STRETCH && m_iTextureWidth && m_iTextureHeight)
   {
-    RESOLUTION iResolution = g_graphicsContext.GetVideoResolution();
     float fSourceFrameRatio = ((float)m_iTextureWidth) / ((float)m_iTextureHeight);
-    float fOutputFrameRatio = fSourceFrameRatio / g_graphicsContext.GetPixelRatio(iResolution);
+    float fOutputFrameRatio = fSourceFrameRatio / g_graphicsContext.GetPixelRatio(g_graphicsContext.GetVideoResolution());
 
     // maximize the thumbnails width
     float fNewWidth = (float)m_dwWidth;
     float fNewHeight = fNewWidth / fOutputFrameRatio;
 
-    if (fNewHeight > m_dwHeight)
+    if ((m_aspectRatio == CGUIImage::ASPECT_RATIO_SCALE && fNewHeight < m_dwHeight) ||
+        (m_aspectRatio == CGUIImage::ASPECT_RATIO_KEEP && fNewHeight > m_dwHeight))
     {
       fNewHeight = (float)m_dwHeight;
       fNewWidth = fNewHeight * fOutputFrameRatio;
     }
-    // this shouldnt happen, but just make sure that everything still fits onscreen
-    if (fNewWidth > m_dwWidth || fNewHeight > m_dwHeight)
-    {
-      fNewWidth = (float)m_dwWidth;
-      fNewHeight = (float)m_dwHeight;
-    }
     m_fNW = fNewWidth;
     m_fNH = fNewHeight;
+    m_fX = m_iPosX - (fNewWidth - m_dwWidth) * 0.5f;
+    m_fY = m_iPosY - (fNewHeight - m_dwHeight) * 0.5f;
   }
 
 
@@ -448,18 +449,18 @@ int CGUIImage::GetTextureHeight() const
   return m_iTextureHeight;
 }
 
-void CGUIImage::SetKeepAspectRatio(bool bOnOff)
+void CGUIImage::SetAspectRatio(GUIIMAGE_ASPECT_RATIO ratio)
 {
-  if (m_bKeepAspectRatio != bOnOff)
+  if (m_aspectRatio != ratio)
   {
-    m_bKeepAspectRatio = bOnOff;
+    m_aspectRatio = ratio;
     m_bInvalidated = true;
   }
 }
 
-bool CGUIImage::GetKeepAspectRatio() const
+CGUIImage::GUIIMAGE_ASPECT_RATIO CGUIImage::GetAspectRatio() const
 {
-  return m_bKeepAspectRatio;
+  return m_aspectRatio;
 }
 
 
