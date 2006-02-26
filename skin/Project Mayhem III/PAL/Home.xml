@@ -236,7 +236,7 @@
       <info>MusicPlayer.Cover</info>
       <visible>!System.IdleTime(60)</visible>
       <animation effect="fade" time="1000">VisibleChange</animation>
-      <keepaspectratio>true</keepaspectratio>
+      <aspectratio>keep</aspectratio>
     </control>
 
     <control>

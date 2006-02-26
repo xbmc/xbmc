@@ -349,7 +349,9 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
   int iAlpha = 0;
   bool bWrapAround = true;
   bool bSmoothScrolling = true;
-  bool bKeepAspectRatio = false;
+  CGUIImage::GUIIMAGE_ASPECT_RATIO aspectRatio = CGUIImage::ASPECT_RATIO_STRETCH;
+  if (strType == "thumbnailpanel")  // default for thumbpanel is keep
+    aspectRatio = CGUIImage::ASPECT_RATIO_KEEP;
 
   int iVisibleCondition = 0;
   bool allowHiddenFocus = false;
@@ -533,13 +535,13 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     {
       strTexture = ((CGUIImage *)pReference)->GetFileName();
       dwColorKey = ((CGUIImage *)pReference)->GetColorKey();
-      bKeepAspectRatio = ((CGUIImage *)pReference)->GetKeepAspectRatio();
+      aspectRatio = ((CGUIImage *)pReference)->GetAspectRatio();
       vecInfo.push_back(((CGUIImage *)pReference)->GetInfo());
     }
     else if (strType == "multiimage")
     {
       texturePath = ((CGUIMultiImage *)pReference)->GetTexturePath();
-      bKeepAspectRatio = ((CGUIMultiImage *)pReference)->GetKeepAspectRatio();
+      aspectRatio = ((CGUIMultiImage *)pReference)->GetAspectRatio();
       timePerImage =  ((CGUIMultiImage *)pReference)->GetTimePerImage();
       fadeTime =  ((CGUIMultiImage *)pReference)->GetFadeTime();
       loop = ((CGUIMultiImage *)pReference)->GetLoop();
@@ -626,6 +628,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
       iTextureHeight = ((CGUIThumbnailPanel*)pReference)->GetTextureHeightLow();
       strSuffix = ((CGUIThumbnailPanel*)pReference)->GetSuffix();
       dwThumbAlign = ((CGUIThumbnailPanel*)pReference)->GetThumbAlign();
+      aspectRatio = ((CGUIThumbnailPanel*)pReference)->GetAspectRatio();
       ((CGUIThumbnailPanel*)pReference)->GetThumbDimensions(iThumbXPos, iThumbYPos, iThumbWidth, iThumbHeight);
       ((CGUIThumbnailPanel*)pReference)->GetThumbDimensionsBig(iThumbXPosBig, iThumbYPosBig, iThumbWidthBig, iThumbHeightBig);
     }
@@ -969,7 +972,16 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     XMLUtils::GetInt(pControlNode, "alpha", iAlpha);
     XMLUtils::GetBoolean(pControlNode, "wraparound", bWrapAround);
     XMLUtils::GetBoolean(pControlNode, "smoothscrolling", bSmoothScrolling);
-    XMLUtils::GetBoolean(pControlNode, "keepaspectratio", bKeepAspectRatio);
+    bool keepAR;
+    if (XMLUtils::GetBoolean(pControlNode, "keepaspectratio", keepAR))
+      aspectRatio = CGUIImage::ASPECT_RATIO_KEEP;
+    CStdString aspect;
+    if (XMLUtils::GetString(pControlNode, "aspectratio", aspect))
+    {
+      if (aspect.CompareNoCase("keep") == 0) aspectRatio = CGUIImage::ASPECT_RATIO_KEEP;
+      else if (aspect.CompareNoCase("scale") == 0) aspectRatio = CGUIImage::ASPECT_RATIO_SCALE;
+    }
+   
     XMLUtils::GetBoolean(pControlNode, "scroll", bScrollLabel);
     XMLUtils::GetBoolean(pControlNode,"pulseonselect", bPulse);
 
@@ -1236,7 +1248,15 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     XMLUtils::GetInt(pControlNode, "alpha", iAlpha);
     XMLUtils::GetBoolean(pControlNode, "wraparound", bWrapAround);
     XMLUtils::GetBoolean(pControlNode, "smoothscrolling", bSmoothScrolling);
-    XMLUtils::GetBoolean(pControlNode, "keepaspectratio", bKeepAspectRatio);
+    bool keepAR;
+    if (XMLUtils::GetBoolean(pControlNode, "keepaspectratio", keepAR))
+      aspectRatio = CGUIImage::ASPECT_RATIO_KEEP;
+    CStdString aspect;
+    if (XMLUtils::GetString(pControlNode, "aspectratio", aspect))
+    {
+      if (aspect.CompareNoCase("keep") == 0) aspectRatio = CGUIImage::ASPECT_RATIO_KEEP;
+      else if (aspect.CompareNoCase("scale") == 0) aspectRatio = CGUIImage::ASPECT_RATIO_SCALE;
+    }
     XMLUtils::GetBoolean(pControlNode, "scroll", bScrollLabel);
     XMLUtils::GetBoolean(pControlNode,"pulseonselect", bPulse);
 
@@ -1527,7 +1547,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
 
     pControl->SetNavigation(up, down, left, right);
     pControl->SetColourDiffuse(dwColorDiffuse);
-    pControl->SetKeepAspectRatio(bKeepAspectRatio);
+    pControl->SetAspectRatio(aspectRatio);
     pControl->SetVisible(bVisible);
     pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus, startHidden);
     pControl->SetAnimations(animations);
@@ -1539,7 +1559,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     CGUIMultiImage* pControl = new CGUIMultiImage(
       dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight, texturePath, timePerImage, fadeTime, randomized, loop);
     pControl->SetNavigation(up, down, left, right);
-    pControl->SetKeepAspectRatio(bKeepAspectRatio);
+    pControl->SetAspectRatio(aspectRatio);
     pControl->SetVisible(bVisible);
     pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus, startHidden);
     pControl->SetAnimations(animations);
@@ -1639,6 +1659,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     pControl->SetThumbDimensionsLow(iThumbXPos, iThumbYPos, iThumbWidth, iThumbHeight);
     pControl->SetThumbDimensionsBig(iThumbXPosBig, iThumbYPosBig, iThumbWidthBig, iThumbHeightBig);
     pControl->SetThumbAlign(dwThumbAlign);
+    pControl->SetAspectRatio(aspectRatio);
     pControl->SetPulseOnSelect(bPulse);
 
     return pControl;

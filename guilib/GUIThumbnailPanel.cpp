@@ -66,6 +66,7 @@ CGUIThumbnailPanel::CGUIThumbnailPanel(DWORD dwParentID, DWORD dwControlId, int 
   m_bHideFileNameLabel = false;
   m_pageControlVisible = true;   // show the spin control by default
   m_upDown.SetShowRange(true); // show the range by default
+  m_aspectRatio = CGUIImage::ASPECT_RATIO_KEEP;
   ControlType = GUICONTROL_THUMBNAIL;
 }
 
@@ -101,15 +102,15 @@ void CGUIThumbnailPanel::RenderItem(bool bFocus, int iPosX, int iPosY, CGUIListI
       if (!pImage )
       {
         pImage = new CGUIImage(0, 0, m_iThumbXPos + iCenteredPosX, m_iThumbYPos + iPosY, m_iThumbWidth, m_iThumbHeight, strThumb, 0x0);
-        pImage->SetKeepAspectRatio(true);
+        pImage->SetAspectRatio(m_aspectRatio);
         pImage->AllocResources();
         pItem->SetThumbnail(pImage);
       }
 
       if (pImage)
       {
-        int xOff = ((m_iThumbWidth - pImage->GetRenderWidth()) / 2);
-        int yOff = ((m_iThumbHeight - pImage->GetRenderHeight()) / 2);
+        int xOff = 0;//((m_iThumbWidth - pImage->GetRenderWidth()) / 2);
+        int yOff = 0;//((m_iThumbHeight - pImage->GetRenderHeight()) / 2);
         //only supports center yet, 0 is default meaning use x/y position
         if (m_iThumbAlign != 0)
         {
@@ -125,7 +126,7 @@ void CGUIThumbnailPanel::RenderItem(bool bFocus, int iPosX, int iPosY, CGUIListI
       if (!pImage && pItem->HasOverlay())
       {
         pImage = new CGUIImage(0, 0, m_iThumbXPos + iCenteredPosX, m_iThumbYPos + iPosY, m_iThumbWidth, m_iThumbHeight, pItem->GetOverlayImage(), 0x0);
-        pImage->SetKeepAspectRatio(true);
+        pImage->SetAspectRatio(m_aspectRatio);
         pImage->AllocResources();
         pItem->SetOverlay(pImage);
       }
