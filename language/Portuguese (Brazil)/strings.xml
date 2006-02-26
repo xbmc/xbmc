@@ -1,5 +1,5 @@
-<!-- Translation date: 2/16/2006 -->
-<!-- Based on 2006-02-12 build -->
+<!-- Translation date: 2/22/2006 -->
+<!-- Based on 2006-02-20 build -->
 <!-- Translation by T1000 -->
 <!-- Language: Portuguese Brazil (pt_BR )-->
 <strings>
@@ -124,7 +124,7 @@
   <string><id>185</id><value>Procurando Álbum</value></string> 
   <string><id>186</id><value>OK</value></string>
   <string><id>187</id><value>Álbuns não encontrados!</value></string>
-  <string><id>188</id><value>Selec. todos</value></string>
+  <string><id>188</id><value>Selecionar todos</value></string>
   <string><id>189</id><value>Procurando informações da mídia</value></string>
   <string><id>190</id><value>Salvar</value></string>
   <string><id>191</id><value>Aletório</value></string>
@@ -457,6 +457,17 @@
   <string><id>519</id><value>Iniciar em..</value></string>
   <string><id>520</id><value>Editar títulos XBE</value></string>
 
+  <string><id>588</id><value>Cancelar Modo Festa</value></string>
+  <string><id>589</id><value>Modo Festa</value></string>
+  <string><id>590</id><value>Aleatório</value></string>
+  <string><id>591</id><value>Desligado</value></string>
+  <string><id>592</id><value>Uma</value></string>
+  <string><id>593</id><value>Todos</value></string>
+  <string><id>594</id><value>Desligado</value></string>
+  <string><id>595</id><value>Repetir: Desl.</value></string>
+  <string><id>596</id><value>Repetir: Uma</value></string>
+  <string><id>597</id><value>Repetir: Todos</value></string>  
+
   <string><id>600</id><value>Extrair CD</value></string>
   <string><id>601</id><value>Média</value></string>
   <string><id>602</id><value>Padrão</value></string>
@@ -573,6 +584,37 @@
   <string><id>998</id><value>XLink Kai</value></string>
   <string><id>999</id><value>Jogos Online</value></string>
   <string><id>1000</id><value>Preview da Proteção de Tela</value></string>
+  <string><id>1001</id><value>Incapaz de conectar</value></string>
+  <string><id>1002</id><value>O XBMC foi incapaz de conectar a rede local.</value></string>
+  <string><id>1003</id><value>Isto pode ser devido a rede não estar conectada.</value></string>
+  <string><id>1004</id><value>Gostaria de adicionar isto mesmo assim?</value></string>
+  <string><id>1005</id><value>Digite um nome para o compartilhamento</value></string>
+  <string><id>1006</id><value>Endereço IP</value></string>
+  <string><id>1007</id><value>Adicionar Rede Local</value></string>
+  <string><id>1008</id><value>Protocolo</value></string>
+  <string><id>1009</id><value>Endereço do Servidor</value></string>
+  <string><id>1010</id><value>Nome do Servidor</value></string>
+  <string><id>1011</id><value>Caminho Remoto</value></string>
+  <string><id>1012</id><value>Pasta Compartilhada</value></string>
+  <string><id>1013</id><value>Porta</value></string>
+  <string><id>1014</id><value>Nome de usuário</value></string>
+  <string><id>1015</id><value>Servidor de rede</value></string>
+  <string><id>1016</id><value>Digite o endereço do servidor de rede</value></string>
+  <string><id>1017</id><value>Digite o caminho do servidor</value></string>
+  <string><id>1018</id><value>Digite o número da porta</value></string>
+  <string><id>1019</id><value>Digite o nome de usuário</value></string>
+  <string><id>1020</id><value>Adicionar %s Origens</value></string>
+  <string><id>1021</id><value>Digite o caminho ou procure pela localização da mídia.</value></string>
+  <string><id>1022</id><value>Digite um nome para a Mídia de Origem.</value></string>
+  <string><id>1023</id><value>Procurar por novo compartilhamento</value></string>
+  <string><id>1024</id><value>Procurar</value></string>
+  <string><id>1025</id><value>Não foi possível encontrar informações do diretório.</value></string>
+  <string><id>1026</id><value>Adicionar Origem</value></string>
+  <string><id>1027</id><value>Editar Origem</value></string>
+  <string><id>1028</id><value>Editar %s Origem</value></string>
+  <string><id>1029</id><value>Digite o novo nome</value></string>
+  <string><id>1030</id><value>uma imagem</value></string>
+  <string><id>1031</id><value>uma pasta de imagem</value></string>
 
   <string><id>1200</id><value>SMB</value></string>
   <string><id>1201</id><value>IP SMB</value></string>
@@ -792,6 +834,7 @@
   <string><id>12384</id><value>24 horas</value></string>
   <string><id>12385</id><value>Dia/Mês</value></string>
   <string><id>12386</id><value>Mês/Dia</value></string>
+  <string><id>12387</id><value>Examinar Base de dados</value></string>
 
   <string><id>12390</id><value>Uptime do Sistema</value></string>
   <string><id>12391</id><value>Minutos</value></string>
@@ -920,7 +963,7 @@
   <string><id>13332</id><value>Mover Cima</value></string>
   <string><id>13333</id><value>Mover Baixo</value></string>
   <string><id>13334</id><value>Editar Etiqueta</value></string>
-  <string><id>13335</id><value>Fazer Padrão</value></string>
+  <string><id>13335</id><value>Tornar Padrão</value></string>
   <string><id>13336</id><value>Remover Botão</value></string>
   <string><id>13337</id><value>- 2 Canais PCM (Direto)</value></string>
   <string><id>13338</id><value>LED Frontal</value></string>

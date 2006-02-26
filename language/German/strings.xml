@@ -451,7 +451,7 @@
   <string><id>513</id><value>Home</value></string>
   <string><id>514</id><value>Manuell einstellen</value></string>
   <string><id>515</id><value>Genre</value></string>
-  <string><id>516</id><value>Archive handhaben</value></string>
+  <string><id>516</id><value>Archive mit einer Datei als Verzeichnis anzeigen</value></string>
   <string><id>517</id><value>Zuletzt gespielte Alben</value></string>
   <string><id>518</id><value>Starten</value></string>
   <string><id>519</id><value>Starten als...</value></string>
@@ -1032,6 +1032,7 @@
   <string><id>13399</id><value>"The" bei der Sortierung ignorieren</value></string>
   <string><id>13400</id><value>Crossfade bei Songs eines Albums</value></string>
   <string><id>13401</id><value>Durchsuchen nach %s</value></string>
+  <string><id>13402</id><value>Track-Position anzeigen</value></string>
 
   <string><id>14000</id><value>Stapeln: Aus</value></string>
   <string><id>14001</id><value>Stapeln: An</value></string>

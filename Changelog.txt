@@ -5,6 +5,11 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 26-02-2006 updated: German language file
+ - 26-02-2006 updated: Portuguese (Brazil) language file (Thnx to mvbm)
+ - 26-02-2006 updated: Swedish language file (Thnx to blittan)
+ - 26-02-2006 updated: Norwegian language file (Thnx to vnm)
+ - 26-02-2006 updated: Italian language file (Thnx to kotix)
  - 26-02-2006 fixed: thumbs in video and music playlist may not be displayed (Second try)
  - 26-02-2006 fixed: trainer overlay had a potentially big speed impact.
  - 26-02-2006 fixed: songs may not be submitted to last.fm
