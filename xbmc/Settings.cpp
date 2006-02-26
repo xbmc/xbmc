@@ -1265,7 +1265,6 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile, const bool loadp
   pElement = pRootElement->FirstChildElement("general");
   if (pElement)
   {
-    GetInteger(pElement, "audiostream", g_stSettings.m_defaultVideoSettings.m_AudioStream, -1, -1, INT_MAX);
     GetInteger(pElement, "systemtotaluptime", g_stSettings.m_iSystemTimeTotalUp, 0, 0, INT_MAX);
     GetString(pElement, "kaiarenapass", g_stSettings.szOnlineArenaPassword, "");
     GetString(pElement, "kaiarenadesc", g_stSettings.szOnlineArenaDescription, "");
@@ -1280,15 +1279,17 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile, const bool loadp
   pElement = pRootElement->FirstChildElement("DefaultVideoSettings");
   if (pElement)
   {
+    GetInteger(pElement, "interlacemethod", (int &)g_stSettings.m_defaultVideoSettings.m_InterlaceMethod, VS_INTERLACEMETHOD_NONE, 1, VS_INTERLACEMETHOD_SYNC_EVEN);
+    GetInteger(pElement, "filmgrain", g_stSettings.m_defaultVideoSettings.m_FilmGrain, 0, 1, 100);
     GetInteger(pElement, "viewmode", g_stSettings.m_defaultVideoSettings.m_ViewMode, VIEW_MODE_NORMAL, VIEW_MODE_NORMAL, VIEW_MODE_CUSTOM);
     GetFloat(pElement, "zoomamount", g_stSettings.m_defaultVideoSettings.m_CustomZoomAmount, 1.0f, 0.5f, 2.0f);
     GetFloat(pElement, "pixelratio", g_stSettings.m_defaultVideoSettings.m_CustomPixelRatio, 1.0f, 0.5f, 2.0f);
+    GetFloat(pElement, "volumeamplification", g_stSettings.m_defaultVideoSettings.m_VolumeAmplification, 0, 0, 30);
+    GetBoolean(pElement, "outputtoallspeakers", g_stSettings.m_defaultVideoSettings.m_OutputToAllSpeakers);
+    GetBoolean(pElement, "showsubtitles", g_stSettings.m_defaultVideoSettings.m_SubtitleOn);
     GetInteger(pElement, "brightness", g_stSettings.m_defaultVideoSettings.m_Brightness, 50, 0, 100);
     GetInteger(pElement, "contrast", g_stSettings.m_defaultVideoSettings.m_Contrast, 50, 0, 100);
     GetInteger(pElement, "gamma", g_stSettings.m_defaultVideoSettings.m_Gamma, 20, 0, 100);
-    GetInteger(pElement, "filmgrain", g_stSettings.m_defaultVideoSettings.m_FilmGrain, 0, 1, 100);
-    GetFloat(pElement, "volumeamplification", g_stSettings.m_defaultVideoSettings.m_VolumeAmplification, 0, 0, 30);
-    GetBoolean(pElement, "showsubtitles", g_stSettings.m_defaultVideoSettings.m_SubtitleOn);
   }
   // audio settings
   pElement = pRootElement->FirstChildElement("audio");
@@ -1617,15 +1618,17 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile, const bool savep
   TiXmlElement videoSettingsNode("DefaultVideoSettings");
   pNode = pRoot->InsertEndChild(videoSettingsNode);
   if (!pNode) return false;
+  SetInteger(pNode, "interlacemethod", g_stSettings.m_defaultVideoSettings.m_InterlaceMethod);
+  SetInteger(pNode, "filmgrain", g_stSettings.m_defaultVideoSettings.m_FilmGrain);
   SetInteger(pNode, "viewmode", g_stSettings.m_defaultVideoSettings.m_ViewMode);
   SetFloat(pNode, "zoomamount", g_stSettings.m_defaultVideoSettings.m_CustomZoomAmount);
   SetFloat(pNode, "pixelratio", g_stSettings.m_defaultVideoSettings.m_CustomPixelRatio);
+  SetFloat(pNode, "volumeamplification", g_stSettings.m_defaultVideoSettings.m_VolumeAmplification);
+  SetBoolean(pNode, "outputtoallspeakers", g_stSettings.m_defaultVideoSettings.m_OutputToAllSpeakers);
+  SetBoolean(pNode, "showsubtitles", g_stSettings.m_defaultVideoSettings.m_SubtitleOn);
   SetInteger(pNode, "brightness", g_stSettings.m_defaultVideoSettings.m_Brightness);
   SetInteger(pNode, "contrast", g_stSettings.m_defaultVideoSettings.m_Contrast);
   SetInteger(pNode, "gamma", g_stSettings.m_defaultVideoSettings.m_Gamma);
-  SetInteger(pNode, "filmgrain", g_stSettings.m_defaultVideoSettings.m_FilmGrain);
-  SetFloat(pNode, "volumeamplification", g_stSettings.m_defaultVideoSettings.m_VolumeAmplification);
-  SetBoolean(pNode, "showsubtitles", g_stSettings.m_defaultVideoSettings.m_SubtitleOn);
 
   // audio settings
   TiXmlElement volumeNode("audio");
