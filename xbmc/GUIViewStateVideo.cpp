@@ -13,9 +13,9 @@ CStdString CGUIViewStateWindowVideo::GetLockType()
   return "video";
 }
 
-bool CGUIViewStateWindowVideo::HandleArchives()
+bool CGUIViewStateWindowVideo::UnrollArchives()
 {
-  return g_guiSettings.GetBool("VideoFiles.HandleArchives");
+  return g_guiSettings.GetBool("VideoFiles.UnrollArchives");
 }
 
 CGUIViewStateWindowVideoFiles::CGUIViewStateWindowVideoFiles(const CFileItemList& items) : CGUIViewStateWindowVideo(items)

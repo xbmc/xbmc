@@ -47,7 +47,7 @@ public:
   virtual int GetPlaylist();
   const CStdString& GetPlaylistDirectory();
   void SetPlaylistDirectory(const CStdString& strDirectory);
-  virtual bool HandleArchives();
+  virtual bool UnrollArchives();
   virtual bool AutoPlayNextItem();
   virtual CStdString GetLockType();
 
