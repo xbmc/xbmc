@@ -226,9 +226,9 @@ bool CGUIWindowOSD::OnMessage(CGUIMessage& message)
       if (pDialog && pDialog->IsRunning())
         pDialog->Close(true);
       pDialog = (CGUIDialog *)m_gWindowManager.GetWindow(WINDOW_DIALOG_AUDIO_OSD_SETTINGS);
-      if (pDialog && pDialog->IsRunning()) pDialog->Close();
+      if (pDialog && pDialog->IsRunning()) pDialog->Close(true);
       pDialog = (CGUIDialog *)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_BOOKMARKS);
-      if (pDialog && pDialog->IsRunning()) pDialog->Close();
+      if (pDialog && pDialog->IsRunning()) pDialog->Close(true);
       //return true;
     }
     break;
