@@ -32,7 +32,7 @@ void CSplash::Process()
   int w = g_graphicsContext.GetWidth() / 2;
   int h = g_graphicsContext.GetHeight() / 2;
   CGUIImage* image = new CGUIImage(0, 0, 0, 0, w, h, m_ImageName);
-  image->SetKeepAspectRatio(true);
+  image->SetAspectRatio(CGUIImage::ASPECT_RATIO_KEEP);
   image->AllocResources();
   int x = (g_graphicsContext.GetWidth() - image->GetRenderWidth()) / 2;
   int y = (g_graphicsContext.GetHeight() - image->GetRenderHeight()) / 2;

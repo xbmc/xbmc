@@ -103,6 +103,8 @@ public:
 
   void HideFileNameLabel(bool bOnOff) { m_bHideFileNameLabel=bOnOff; }
   void SetPageControlVisible(bool visible) { m_pageControlVisible = visible; }
+  void SetAspectRatio(CGUIImage::GUIIMAGE_ASPECT_RATIO ratio) { m_aspectRatio = ratio; };
+  CGUIImage::GUIIMAGE_ASPECT_RATIO GetAspectRatio() const { return m_aspectRatio; };
 
 protected:
   void Calculate(bool resetItem);
@@ -165,6 +167,7 @@ protected:
 
   bool m_bHideFileNameLabel;
   bool m_pageControlVisible;
+  CGUIImage::GUIIMAGE_ASPECT_RATIO m_aspectRatio;
 
   CLabelInfo m_label;
 

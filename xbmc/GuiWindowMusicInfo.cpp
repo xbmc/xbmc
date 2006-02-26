@@ -187,7 +187,7 @@ void CGUIWindowMusicInfo::Refresh()
   if (pControl)
   {
     CGUIImage* pImageControl = (CGUIImage*)pControl;
-    pImageControl->SetKeepAspectRatio(true);
+    pImageControl->SetAspectRatio(CGUIImage::ASPECT_RATIO_KEEP);
     pImageControl->SetFileName(strThumb);
   }
   Update();

@@ -17,6 +17,8 @@
 class CGUIImage : public CGUIControl
 {
 public:
+  enum GUIIMAGE_ASPECT_RATIO { ASPECT_RATIO_KEEP = 0, ASPECT_RATIO_SCALE, ASPECT_RATIO_STRETCH };
+
   CGUIImage(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strTexture, DWORD dwColorKey = 0);
   CGUIImage(const CGUIImage &left);
   virtual ~CGUIImage(void);
@@ -42,8 +44,8 @@ public:
   void SetFileName(const CStdString& strFileName);
   const CStdString& GetFileName() const { return m_strFileName;};
   DWORD GetColorKey() const { return m_dwColorKey;};
-  void SetKeepAspectRatio(bool bOnOff);
-  bool GetKeepAspectRatio() const;
+  void SetAspectRatio(GUIIMAGE_ASPECT_RATIO ratio);
+  GUIIMAGE_ASPECT_RATIO GetAspectRatio() const;
   int GetRenderWidth() const;
   int GetRenderHeight() const;
   void SetCornerAlpha(DWORD dwLeftTop, DWORD dwRightTop, DWORD dwLeftBottom, DWORD dwRightBottom);
@@ -68,7 +70,7 @@ protected:
   int m_iCurrentLoop;
   int m_iCurrentImage;
   DWORD m_dwFrameCounter;
-  bool m_bKeepAspectRatio;
+  GUIIMAGE_ASPECT_RATIO m_aspectRatio;
   vector <LPDIRECT3DTEXTURE8> m_vecTextures;
   LPDIRECT3DPALETTE8 m_pPalette;
   int m_iRenderWidth;
