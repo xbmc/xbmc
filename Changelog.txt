@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 26-02-2006 fixed: songs may not be submitted to last.fm
  - 26-02-2006 fixed: thumbs in video and music playlist may not be displayed
  - 26-02-2006 changed: media window base class, unified window init
  - 26-02-2006 added: unrolling of single file archives. this moves archive support into filedirectoryfactory. WARNING TO TRANSLATORS: CHANGES MEANING OF STRING 516

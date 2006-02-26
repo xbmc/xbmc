@@ -3764,6 +3764,17 @@ bool CApplication::OnMessage(CGUIMessage& message)
       }
       g_infoManager.SetCurrentItem(m_itemCurrentFile);
 
+      if (IsPlayingAudio())
+      {
+        //  Activate audio scrobbler
+        if (!m_itemCurrentFile.IsInternetStream())
+        {
+          CScrobbler::GetInstance()->SetSongStartTime();
+          CScrobbler::GetInstance()->SetSubmitSong(true);
+        }
+        else
+          CScrobbler::GetInstance()->SetSubmitSong(false);
+      }
       return true;
     }
     break;
