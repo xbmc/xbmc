@@ -1219,18 +1219,26 @@ __int64 CUtil::CompareSystemTime(const SYSTEMTIME *a, const SYSTEMTIME *b)
 
 void CUtil::ReplaceExtension(const CStdString& strFile, const CStdString& strNewExtension, CStdString& strChangedFile)
 {
+  CURL url(strFile);
+  CStdString strSearch = strFile;
+  if (url.GetProtocol() == "zip" || url.GetProtocol() == "rar")
+    strSearch = url.GetFileName();
   CStdString strExtension;
-  GetExtension(strFile, strExtension);
+  GetExtension(strSearch, strExtension);
   if ( strExtension.size() )
   {
-
-    strChangedFile = strFile.substr(0, strFile.size() - strExtension.size()) ;
+    strChangedFile = strSearch.substr(0, strSearch.size() - strExtension.size()) ;
     strChangedFile += strNewExtension;
   }
   else
   {
-    strChangedFile = strFile;
+    strChangedFile = strSearch;
     strChangedFile += strNewExtension;
+  }
+  if (url.GetProtocol() == "zip" || url.GetProtocol() == "rar")
+  {
+    url.SetFileName(strChangedFile);
+    url.GetURL(strChangedFile);
   }
 }
 
@@ -1323,28 +1331,28 @@ bool CUtil::IsStack(const CStdString& strFile)
   return false;
 }
 
-bool CUtil::IsRAR(const CStdString& strFile) // also checks for comic books
+bool CUtil::IsRAR(const CStdString& strFile)
 {
   CStdString strExtension;
   CUtil::GetExtension(strFile,strExtension);
   if (strExtension.Equals(".001") && strFile.Mid(strFile.length()-7,7).CompareNoCase(".ts.001")) return true;
   if (strExtension.CompareNoCase(".cbr") == 0) return true;
   if (strExtension.CompareNoCase(".rar") == 0)
-  {
-    std::vector<CStdString> tokens;
-    CUtil::Tokenize(strFile,tokens,".");
-    if (tokens.size() < 2)
-      return false;
-    CStdString token = tokens[tokens.size()-2];
-    if (token.Left(4).CompareNoCase("part") == 0) // only list '.part01.rar'
-    {
-      if (atoi(token.Right(4).c_str()) == 1)
-        return true;
-    }
-    else
       return true;
-  }
+
   return false;
+}
+
+bool CUtil::IsInZIP(const CStdString& strFile)
+{
+  CURL url(strFile);
+  return strFile.substr(0,6) == "zip://" && url.GetFileName() != "";
+}
+
+bool CUtil::IsInRAR(const CStdString& strFile)
+{
+  CURL url(strFile);
+  return strFile.substr(0,6) == "rar://" && url.GetFileName() != "";
 }
 
 bool CUtil::IsZIP(const CStdString& strFile) // also checks for comic books!
@@ -2236,7 +2244,7 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
     {
       CFileItemList items;
 
-      CDirectory::GetDirectory(strLookInPaths[step], items);
+      CDirectory::GetDirectory(strLookInPaths[step], items,"",false);
       int fnl = strFileNameNoExt.size();
 
       CStdString strFileNameNoExtNoCase(strFileNameNoExt);

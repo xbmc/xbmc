@@ -574,24 +574,6 @@ bool CGUIMediaWindow::OnClick(int iItem)
 
     return true;
   }
-  else if (pItem->IsZIP() && m_guiState.get() && m_guiState->HandleArchives()) // mount zip archive
-  {
-    CShare shareZip;
-    shareZip.strPath.Format("zip://Z:\\,%i,,%s,\\",1, pItem->m_strPath.c_str() );
-    m_rootDir.AddShare(shareZip);
-    Update(shareZip.strPath);
-
-    return true;
-  }
-  else if (pItem->IsRAR()&& m_guiState.get() && m_guiState->HandleArchives()) // mount rar archive
-  {
-    CShare shareRar;
-    shareRar.strPath.Format("rar://Z:\\,%i,,%s,\\",EXFILE_AUTODELETE, pItem->m_strPath.c_str() );
-    m_rootDir.AddShare(shareRar);
-    Update(shareRar.strPath);
-
-    return true;
-  }
   else
   {
     m_iSelectedItem = m_viewControl.GetSelectedItem();
@@ -714,23 +696,6 @@ void CGUIMediaWindow::GoParentFolder()
   // if vector is not empty, pop parent
   // if vector is empty, parent is bookmark listing
   CStdString strParent=m_history.RemoveParentPath();
-
-  // check for special archive path
-  const CURL& url=m_vecItems.GetAsUrl();
-  if ((url.GetProtocol() == "rar") || (url.GetProtocol() == "zip")) 
-  {
-    // check for step-below, if, unmount rar
-    if (url.GetFileName().IsEmpty())
-    {
-      if (url.GetProtocol() == "zip")
-        g_ZipManager.release(m_vecItems.m_strPath); // release resources
-      m_rootDir.RemoveShare(m_vecItems.m_strPath);
-      CStdString strPath;
-      CUtil::GetDirectory(url.GetHostName(),strPath);
-      Update(strPath);
-      return;
-    }
-  }
 
   CStdString strOldPath(m_vecItems.m_strPath);
   Update(strParent);

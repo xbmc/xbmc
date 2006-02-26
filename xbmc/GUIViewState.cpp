@@ -9,6 +9,9 @@ CStdString CGUIViewState::m_strPlaylistDirectory;
 
 CGUIViewState* CGUIViewState::GetViewState(int windowId, const CFileItemList& items)
 {
+  if (windowId == 0)
+    return GetViewState(m_gWindowManager.GetActiveWindow(),items);
+
   const CURL& url=items.GetAsUrl();
 
   if (url.GetProtocol()=="musicdb")
@@ -216,7 +219,7 @@ void CGUIViewState::SetPlaylistDirectory(const CStdString& strDirectory)
   m_strPlaylistDirectory=strDirectory;
 }
 
-bool CGUIViewState::HandleArchives()
+bool CGUIViewState::UnrollArchives()
 {
   return false;
 }

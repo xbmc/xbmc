@@ -447,7 +447,7 @@
   <string><id>513</id><value>Home Window</value></string>
   <string><id>514</id><value>Manual Settings</value></string>
   <string><id>515</id><value>Genre</value></string>
-  <string><id>516</id><value>Handle Archives</value></string>
+  <string><id>516</id><value>Make archives with one file transparent</value></string>
   <string><id>517</id><value>Recently Played Albums</value></string>
   <string><id>518</id><value>Launch</value></string>
   <string><id>519</id><value>Launch in..</value></string>
@@ -755,6 +755,11 @@
   <string><id>12015</id><value>Trainer settings</value></string>
   <string><id>12016</id><value>All registered trailers are missing. Update your list</value></string>
   <string><id>12017</id><value>Auto resume from last position</value></string>
+  <string><id>12018</id><value>No</value></string>
+  <string><id>12019</id><value>Yes</value></string>
+  <string><id>12020</id><value>Ask</value></string>
+  <string><id>12021</id><value>Start from beginning</value></string>
+  <string><id>12022</id><value>Resume from last position</value></string>
 
   <string><id>12310</id><value>0</value></string>
   <string><id>12311</id><value>1</value></string>

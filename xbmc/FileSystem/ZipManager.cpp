@@ -15,6 +15,32 @@ CZipManager::~CZipManager()
 
 }
 
+bool CZipManager::HasMultipleEntries(const CStdString& strPath)
+{
+  // no comments ;D
+
+  if (mFile.Open(strPath.c_str()))
+  {
+    char buffer[23];
+    for (int i=22;i<1024;++i)
+    {
+      mFile.Seek(mFile.GetLength()-i,SEEK_SET);
+      mFile.Read(buffer,4);
+      if (*((int*)buffer) == 0x06054b50)
+      {
+        mFile.Seek(6,SEEK_CUR);
+        short iEntries;
+        mFile.Read(&iEntries,2);
+        mFile.Close();
+        return iEntries > 1;
+      }
+    }
+    mFile.Close();
+  }
+
+  return true;
+}
+
 bool CZipManager::GetZipList(const CStdString& strPath, std::vector<SZipEntry>& items)
 {
   CURL url(strPath);
@@ -36,7 +62,7 @@ bool CZipManager::GetZipList(const CStdString& strPath, std::vector<SZipEntry>& 
   mFile.Close();
   if (!mFile.Open(url.GetHostName()))
   {
-    CLog::Log(LOGDEBUG,"ZipManager: unable to open file!");
+    CLog::Log(LOGDEBUG,"ZipManager: unable to open file %s!",url.GetHostName().c_str());
     return false;
   }
 
@@ -63,7 +89,7 @@ bool CZipManager::GetZipList(const CStdString& strPath, std::vector<SZipEntry>& 
     if (ze.header != ZIP_LOCAL_HEADER)
       if (ze.header != ZIP_CENTRAL_HEADER)
       {
-        CLog::Log(LOGDEBUG,"ZipManager: broken file!");
+        CLog::Log(LOGDEBUG,"ZipManager: broken file %s!",url.GetHostName().c_str());
         return false;
       }
       else // no handling of zip central header, we are done

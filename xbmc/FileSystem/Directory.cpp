@@ -20,7 +20,7 @@ bool CDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items, C
 
   pDirectory->SetMask(strMask);
   pDirectory->SetAllowPrompting(allowPrompting);
-
+  
   items.m_strPath=strPath;
 
   bool bSuccess = pDirectory->GetDirectory(strPath, items);
@@ -34,15 +34,15 @@ bool CDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items, C
         CFileItem* pItem=items[i];
         if (!pItem->m_bIsFolder)
         {
-          //auto_ptr<IFileDirectory> pDirectory(CFactoryFileDirectory::Create(pItem->m_strPath,pItem,strMask));
-          auto_ptr<IFileDirectory> pDirectory(CFactoryFileDirectory::Create(pItem->m_strPath));
+          auto_ptr<IFileDirectory> pDirectory(CFactoryFileDirectory::Create(pItem->m_strPath,pItem,strMask));
           if (pDirectory.get())
             pItem->m_bIsFolder = true;
-          /*        if (!pDirectory.get() && pItem->m_bIsFolder)
-          {
-          items.Remove(i);
-          i--; // don't confuse loop
-          }*/
+          else
+            if (pItem->m_bIsFolder)
+            {
+              items.Remove(i);
+              i--; // don't confuse loop
+            }
         }
     }
   }
