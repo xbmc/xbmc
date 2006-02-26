@@ -1,3 +1,5 @@
+2006-02-26 added:       Trainer overlays, thx to BPairs for gfx!
+
 2006-02-21 changed:     Changed VideoOSD so it skips to Previous & Next file instead of Seek action.
 
 2006-02-20 fixed:	Weather.xml still wasn't quite right in 16x9.
