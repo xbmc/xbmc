@@ -54,19 +54,6 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
 
   case GUI_MSG_WINDOW_INIT:
     {
-      int iLastControl = m_iLastControl;
-      CGUIWindow::OnMessage(message);
-      if (message.GetParam1() != WINDOW_SLIDESHOW)
-      {
-        m_ImageLib.Load();
-      }
-
-      CGUIThumbnailPanel* pControl=(CGUIThumbnailPanel*)GetControl(CONTROL_THUMBS);
-      if (pControl)
-        pControl->HideFileNameLabel(g_guiSettings.GetBool("Pictures.HideFilenamesInThumbPanel"));
-      
-      m_dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
-            
       // check for a passed destination path
       CStdString strDestination = message.GetStringParam();
       if (!strDestination.IsEmpty())
@@ -126,22 +113,20 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
         SetHistoryForPath(m_vecItems.m_strPath);
       }
 
-      Update(m_vecItems.m_strPath);
-
-      if (iLastControl > -1)
+      m_dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+            
+      if (message.GetParam1() != WINDOW_SLIDESHOW)
       {
-        SET_CONTROL_FOCUS(iLastControl, 0);
-      }
-      else
-      {
-        SET_CONTROL_FOCUS(m_dwDefaultFocusControlID, 0);
+        m_ImageLib.Load();
       }
 
-      if (m_iSelectedItem >= 0)
-      {
-        m_viewControl.SetSelectedItem(m_iSelectedItem);
-      }
+      if (!CGUIMediaWindow::OnMessage(message))
+        return false;
 
+      CGUIThumbnailPanel* pControl=(CGUIThumbnailPanel*)GetControl(CONTROL_THUMBS);
+      if (pControl)
+        pControl->HideFileNameLabel(g_guiSettings.GetBool("Pictures.HideFilenamesInThumbPanel"));
+      
       return true;
     }
     break;

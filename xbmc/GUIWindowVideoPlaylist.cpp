@@ -50,9 +50,6 @@ bool CGUIWindowVideoPlaylist::OnMessage(CGUIMessage& message)
 
   case GUI_MSG_WINDOW_DEINIT:
     {
-      m_iSelectedItem = m_viewControl.GetSelectedItem();
-      m_iLastControl = GetFocusedControl();
-
       iPos = -1;
     }
     break;
@@ -61,9 +58,10 @@ bool CGUIWindowVideoPlaylist::OnMessage(CGUIMessage& message)
     {
       m_vecItems.m_strPath="";
 
-      CGUIWindowVideoBase::OnMessage(message);
+      if (!CGUIWindowVideoBase::OnMessage(message))
+        return false;
 
-      if (m_viewControl.HasControl(m_iLastControl) && m_vecItems.Size() <= 0)
+      if (m_vecItems.Size() <= 0)
       {
         m_iLastControl = CONTROL_BTNVIEWASICONS;
         SET_CONTROL_FOCUS(m_iLastControl, 0);

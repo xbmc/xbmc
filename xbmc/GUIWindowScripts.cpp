@@ -42,8 +42,6 @@ bool CGUIWindowScripts::OnMessage(CGUIMessage& message)
   {
   case GUI_MSG_WINDOW_INIT:
     {
-      int iLastControl = m_iLastControl;
-      CGUIWindow::OnMessage(message);
       m_shares.erase(m_shares.begin(), m_shares.end());
       if (m_vecItems.m_strPath == "?") m_vecItems.m_strPath = "Q:\\scripts"; //g_stSettings.m_szDefaultScripts;
 
@@ -58,21 +56,7 @@ bool CGUIWindowScripts::OnMessage(CGUIMessage& message)
 
       m_rootDir.SetShares(m_shares);
 
-      Update(m_vecItems.m_strPath);
-
-      if (iLastControl > -1)
-      {
-        SET_CONTROL_FOCUS(iLastControl, 0);
-      }
-      else
-      {
-        SET_CONTROL_FOCUS(m_dwDefaultFocusControlID, 0);
-      }
-
-      if (m_iSelectedItem > -1)
-        m_viewControl.SetSelectedItem(m_iSelectedItem);
-
-      return true;
+      return CGUIMediaWindow::OnMessage(message);
     }
     break;
   }
