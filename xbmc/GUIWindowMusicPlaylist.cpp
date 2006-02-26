@@ -72,9 +72,10 @@ bool CGUIWindowMusicPlayList::OnMessage(CGUIMessage& message)
       m_vecItems.m_strPath="";
 
       // updatebuttons is called in here
-      CGUIWindowMusicBase::OnMessage(message);
+      if (!CGUIWindowMusicBase::OnMessage(message))
+        return false;
 
-      if (m_viewControl.HasControl(m_iLastControl) && m_vecItems.Size() <= 0)
+      if (m_vecItems.Size() <= 0)
       {
         m_iLastControl = CONTROL_BTNVIEWASICONS;
         SET_CONTROL_FOCUS(m_iLastControl, 0);

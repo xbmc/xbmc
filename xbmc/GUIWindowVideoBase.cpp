@@ -58,31 +58,14 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
 
   case GUI_MSG_WINDOW_INIT:
     {
-      int iLastControl = m_iLastControl;
-      CGUIWindow::OnMessage(message);
-
-      m_database.Open();
-      m_dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
-      
       m_rootDir.SetMask(g_stSettings.m_szMyVideoExtensions);
       m_rootDir.SetShares(g_settings.m_vecMyVideoShares);
 
-      Update(m_vecItems.m_strPath);
+      m_database.Open();
 
-      if (iLastControl > -1)
-      {
-        SET_CONTROL_FOCUS(iLastControl, 0);
-      }
-      else
-      {
-        SET_CONTROL_FOCUS(m_dwDefaultFocusControlID, 0);
-      }
-
-      if (m_iSelectedItem >= 0)
-      {
-        m_viewControl.SetSelectedItem(m_iSelectedItem);
-      }
-      return true;
+      m_dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+      
+      return CGUIMediaWindow::OnMessage(message);
     }
     break;
 
@@ -516,7 +499,8 @@ void CGUIWindowVideoBase::ShowIMDB(const CStdString& strMovie, const CStdString&
 
 void CGUIWindowVideoBase::Render()
 {
-  CGUIWindow::Render();
+  CGUIMediaWindow::Render();
+
   if (m_bDisplayEmptyDatabaseMessage)
   {
     int iX = 400;

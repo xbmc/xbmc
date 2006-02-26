@@ -73,7 +73,6 @@ bool CGUIWindowVideoActors::GetDirectory(const CStdString &strDirectory, CFileIt
       pItem->m_strPath = actors[i];
       pItem->m_bIsFolder = true;
       pItem->m_bIsShareOrDrive = false;
-      pItem->FillInDefaultIcon();
       m_vecItems.Add(pItem);
     }
     m_vecItems.m_strPath = "";
