@@ -116,7 +116,7 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
 
       m_musicdatabase.Open();
 
-      if (CGUIMediaWindow::OnMessage(message))
+      if (!CGUIMediaWindow::OnMessage(message))
         return false;
 
       // save current window, unless the current window is the music playlist window
