@@ -1,4 +1,4 @@
-<!-- Based on English XML v1.299. Last updated by vnmartinsen  !-->
+<!-- Based on English XML v1.303. Last updated by vnmartinsen  !-->
 <strings>
   <string><id>0</id><value>Mine Programmer</value></string>
   <string><id>1</id><value>Mine Bilder</value></string>
@@ -448,12 +448,14 @@
   <string><id>513</id><value>Hovedmeny</value></string>
   <string><id>514</id><value>Manuelle innstillinger</value></string>
   <string><id>515</id><value>Sjanger</value></string>
-  <string><id>516</id><value>Behandle arkiver</value></string>
+  <string><id>516</id><value>Gjør arkiver med én fil transparente</value></string>
   <string><id>517</id><value>Nylig spilte albumer</value></string>
   <string><id>518</id><value>Start</value></string>
   <string><id>519</id><value>Start om..</value></string>
   <string><id>520</id><value>Rediger XBE-tittel</value></string>
+  <string><id>521</id><value>Samlinger</value></string>
 
+  <string><id>588</id><value>Avbryt partymodus</value></string>
   <string><id>589</id><value>Partymodus</value></string>
   <string><id>590</id><value>Tilfeldig</value></string>
   <string><id>591</id><value>Av</value></string>
@@ -754,6 +756,11 @@
   <string><id>12015</id><value>Trainer-innstillinger</value></string>
   <string><id>12016</id><value>Alle registrerte trainere mangler. Oppdater din liste</value></string>
   <string><id>12017</id><value>Gjenoppta avspilling</value></string>
+  <string><id>12018</id><value>Nei</value></string>
+  <string><id>12019</id><value>Ja</value></string>
+  <string><id>12020</id><value>Spør</value></string>
+  <string><id>12021</id><value>Start fra begynnelsen</value></string>
+  <string><id>12022</id><value>Fortsett fra siste posisjon</value></string>
 
   <string><id>12310</id><value>0</value></string>
   <string><id>12311</id><value>1</value></string>
