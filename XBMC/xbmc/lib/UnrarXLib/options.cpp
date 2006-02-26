@@ -22,5 +22,5 @@ void RAROptions::Init()
   ConvertNames=NAMES_ORIGINALCASE;
   ProcessEA=true;
   xmtime=EXTTIME_HIGH3;
-  NextVolNum=0;
+  CurVolNum=0;
 }

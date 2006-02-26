@@ -247,6 +247,9 @@
 				RelativePath=".\isnt.cpp">
 			</File>
 			<File
+				RelativePath=".\log.cpp">
+			</File>
+			<File
 				RelativePath=".\match.cpp">
 			</File>
 			<File

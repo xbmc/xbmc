@@ -80,7 +80,7 @@
     #include <emx/syscalls.h>
   #endif
 #else
-  #ifdef _MSC_VER
+  #if defined(_MSC_VER) || defined(__MINGW32__)
       #include <exception>
   #else
     #include <except.h>
@@ -205,7 +205,7 @@
 	#endif
 #endif
 
-#if defined(__sparc) || defined(sparc)
+#if defined(__sparc) || defined(sparc) || defined(__hpux)
   #ifndef BIG_ENDIAN
      #define BIG_ENDIAN
   #endif

@@ -4,7 +4,7 @@
 extern uint CRCTab[256];
 
 void InitCRC();
-uint CRC(uint StartCRC,void *Addr,uint Size);
-ushort OldCRC(ushort StartCRC,void *Addr,uint Size);
+uint CRC(uint StartCRC,const void *Addr,uint Size);
+ushort OldCRC(ushort StartCRC,const void *Addr,uint Size);
 
 #endif

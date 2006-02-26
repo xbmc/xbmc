@@ -73,7 +73,7 @@ struct VM_PreparedProgram
   unsigned int FilteredDataSize;
 };
 
-class RarVM:BitInput
+class RarVM:private BitInput
 {
   private:
     inline uint GetValue(bool ByteMode,uint *Addr);

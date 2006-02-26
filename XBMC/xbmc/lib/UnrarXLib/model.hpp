@@ -47,16 +47,19 @@ struct STATE
   PPM_CONTEXT* Successor;
 };
 
+struct FreqData
+{
+  ushort SummFreq;
+  STATE _PACK_ATTR * Stats;
+};
+
 struct PPM_CONTEXT 
 {
     ushort NumStats;
     union
     {
-      struct
-      {
-        ushort SummFreq;
-        STATE _PACK_ATTR * Stats;
-      } U;
+      FreqData U;
+
       STATE OneState;
     };
 
@@ -73,7 +76,11 @@ struct PPM_CONTEXT
     inline PPM_CONTEXT* createChild(ModelPPM *Model,STATE* pStats,STATE& FirstState);
     inline SEE2_CONTEXT* makeEscFreq2(ModelPPM *Model,int Diff);
 };
+#ifdef _AIX
+#pragma pack(pop)
+#else
 #pragma pack()
+#endif
 
 const uint UNIT_SIZE=sizeof(PPM_CONTEXT);
 const uint FIXED_UNIT_SIZE=12;
