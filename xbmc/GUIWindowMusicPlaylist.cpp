@@ -600,7 +600,7 @@ void CGUIWindowMusicPlayList::OnItemLoaded(CFileItem* pItem)
   if (!pItem->IsMusicDb())
   {
     // Reset thumbs and default icons
-    pItem->SetThumb();
+    pItem->SetMusicThumb();
     pItem->FillInDefaultIcon();
     pItem->SetImageChanged();
   }
