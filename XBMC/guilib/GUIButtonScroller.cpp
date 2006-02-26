@@ -678,8 +678,10 @@ void CGUIButtonScroller::RenderItem(int &iPosX, int &iPosY, int &iOffset, bool b
                                 // it's defined in the font class
     if (fAlpha > 255) fAlpha = 255.0f;
     DWORD dwAlpha = (DWORD)(fAlpha + 0.5f);
-    DWORD dwColor = (dwAlpha << 24) | (m_label.textColor & 0xFFFFFF);
-    DWORD dwShadowColor = (dwAlpha << 24) | (m_label.shadowColor & 0xFFFFFF);
+    DWORD alpha = (dwAlpha * ((m_label.textColor & 0xff000000) >> 24)) / 255;
+    DWORD dwColor = (alpha << 24) | (m_label.textColor & 0xFFFFFF);
+    alpha = (dwAlpha * ((m_label.shadowColor & 0xff000000) >> 24)) / 255;
+    DWORD dwShadowColor = (alpha << 24) | (m_label.shadowColor & 0xFFFFFF);
     m_label.font->DrawText( fPosX, fPosY, dwColor, dwShadowColor, strLabelUnicode.c_str(), m_label.align);
   }
   else
