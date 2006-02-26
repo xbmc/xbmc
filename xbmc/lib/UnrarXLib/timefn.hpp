@@ -32,7 +32,7 @@ class RarTime
 #endif
 #if defined(_UNIX) || defined(_EMX)
     RarTime& operator =(time_t ut);
-    time_t RarTime::GetUnix();
+    time_t GetUnix();
 #endif
     bool operator == (RarTime &rt);
     bool operator < (RarTime &rt);

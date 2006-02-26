@@ -8,7 +8,6 @@ struct RAR20_archive_entry                  /* These infos about files are  */
   char          *Name;
   unsigned short NameSize;
   unsigned long  PackSize;
-  //unsigned long  UnpSize;
   __int64 UnpSize;
   unsigned char  HostOS;                    /* MSDOS=0,OS2=1,WIN32=2,UNIX=3 */
   unsigned long  FileCRC;
@@ -35,11 +34,6 @@ typedef struct archivelist
 \*-------------------------------------------------------------------------*/
 int urarlib_get(char *rarfile, char *targetPath, char *fileToExtract, char *libpassword = NULL);
 
-/*	
-	Right now if it is extracting a file that contains ".sub" (usually the ending)
-	the destination filename will be rarfilename.sub. This is needed for some vobsubs.
-*/
-
 /*-------------------------------------------------------------------------*\
 	List the files in a RAR file
 	rarfile		- Name of the RAR file to uncompress
@@ -49,6 +43,7 @@ int urarlib_get(char *rarfile, char *targetPath, char *fileToExtract, char *libp
 \*-------------------------------------------------------------------------*/
 int urarlib_list(char *rarfile, ArchiveList_struct **ppList, char *libpassword = NULL);
 
+bool urarlib_hasmultiple(const char* rarfile, char* libpassword=NULL);
 
 /*-------------------------------------------------------------------------*\
 	Free the file list returned by urarlib_list()
@@ -58,7 +53,7 @@ void urarlib_freelist(ArchiveList_struct *list);
 
 /*-------------------------------------------------------------------------*\
 	Function used internally to change filenames if
-	they are fatx incompatible.
+	they are fatx incompatible - unnedded and unused
 \*-------------------------------------------------------------------------*/
 void MakeNameUsable(char* szPath,bool KeepExtension, bool IsFatx);
 

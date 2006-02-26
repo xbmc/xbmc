@@ -21,15 +21,17 @@ int KbdAnsi(char *Addr,int Size);
 void OutComment(char *Comment,int Size);
 
 #ifdef SILENT
-inline void mprintf(const char *fmt,byte *a) {}
-inline void mprintf(const char *fmt,char a,char b,char c,char d,char e,char f,char g=0,char h=0,char i=0,char j=0) {}
-inline void mprintf(const char *fmt,int a,int b,int c=0,int d=0) {}
-inline void mprintf(const char *fmt,const char *a=NULL,const char *b=NULL,const char *c=NULL) {}
-inline void eprintf(const char *fmt,const char *a=NULL,const char *b=NULL,const char *c=NULL) {}
-inline void mprintf(const char *fmt,int b,const char *c=NULL,const char *d=NULL,int e=0) {}
-inline void eprintf(const char *fmt,int b,const char *c=NULL,const char *d=NULL,int e=0) {}
-inline void mprintf(const char *fmt,const char *a,int b) {}
-inline void eprintf(const char *fmt,const char *a,int b) {}
+#ifdef __GNUC__
+  #define mprintf(args...)
+  #define eprintf(args...)
+#else
+  inline void mprintf(const char *fmt,const char *a=NULL,const char *b=NULL) {}
+  inline void eprintf(const char *fmt,const char *a=NULL,const char *b=NULL) {}
+  inline void mprintf(const char *fmt,int b) {}
+  inline void eprintf(const char *fmt,int b) {}
+  inline void mprintf(const char *fmt,const char *a,int b) {}
+  inline void eprintf(const char *fmt,const char *a,int b) {}
+#endif
 inline void Alarm() {}
 inline void GetPasswordText(char *Str,int MaxLength) {}
 inline unsigned int GetKey() {return(0);}

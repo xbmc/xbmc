@@ -11,6 +11,12 @@ void InitSystemOptions(int SleepTime)
 
 
 #if !defined(SFX_MODULE) && !defined(_WIN_CE)
+
+#if defined(_WIN_32) && !defined(BELOW_NORMAL_PRIORITY_CLASS)
+#define BELOW_NORMAL_PRIORITY_CLASS 0x00004000
+#define ABOVE_NORMAL_PRIORITY_CLASS 0x00008000
+#endif
+
 void SetPriority(int Priority)
 {
 #ifdef _XBOX

@@ -31,6 +31,8 @@ inline uint touppercw(uint ch)
 
 bool CmpName(char *Wildcard,char *Name,int CmpPath)
 {
+  CmpPath&=MATCH_MODEMASK;
+  
   if (CmpPath!=MATCH_NAMES)
   {
     int WildLength=strlen(Wildcard);
@@ -71,6 +73,8 @@ bool CmpName(char *Wildcard,char *Name,int CmpPath)
 #ifndef SFX_MODULE
 bool CmpName(wchar *Wildcard,wchar *Name,int CmpPath)
 {
+  CmpPath&=MATCH_MODEMASK;
+
   if (CmpPath!=MATCH_NAMES)
   {
     int WildLength=strlenw(Wildcard);
@@ -207,8 +211,6 @@ bool match(wchar *pattern,wchar *string)
 
 int stricompc(const char *Str1,const char *Str2)
 {
-/*
-*/
 #if defined(_UNIX)
   return(strcmp(Str1,Str2));
 #else
@@ -220,8 +222,6 @@ int stricompc(const char *Str1,const char *Str2)
 #ifndef SFX_MODULE
 int stricompcw(const wchar *Str1,const wchar *Str2)
 {
-/*
-*/
 #if defined(_UNIX)
   return(strcmpw(Str1,Str2));
 #else
@@ -233,8 +233,6 @@ int stricompcw(const wchar *Str1,const wchar *Str2)
 
 int strnicompc(const char *Str1,const char *Str2,int N)
 {
-/*
-*/
 #if defined(_UNIX)
   return(strncmp(Str1,Str2,N));
 #else
@@ -246,8 +244,6 @@ int strnicompc(const char *Str1,const char *Str2,int N)
 #ifndef SFX_MODULE
 int strnicompcw(const wchar *Str1,const wchar *Str2,int N)
 {
-/*
-*/
 #if defined(_UNIX)
   return(strncmpw(Str1,Str2,N));
 #else

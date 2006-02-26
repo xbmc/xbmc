@@ -106,6 +106,9 @@ bool FindFile::Next(struct FindData *fd,bool GetSymLink)
 #ifdef _APPLE
   if (!LowAscii(fd->Name))
     UtfToWide(fd->Name,fd->NameW,sizeof(fd->NameW));
+#elif defined(UNICODE_SUPPORTED)
+  if (!LowAscii(fd->Name) && UnicodeEnabled())
+    CharToWide(fd->Name,fd->NameW);
 #endif
 #endif
   fd->IsDir=IsDir(fd->FileAttr);
@@ -167,6 +170,9 @@ bool FindFile::FastFind(const char *FindMask,const wchar *FindMaskW,struct FindD
 #ifdef _APPLE
   if (!LowAscii(fd->Name))
     UtfToWide(fd->Name,fd->NameW,sizeof(fd->NameW));
+#elif defined(UNICODE_SUPPORTED)
+  if (!LowAscii(fd->Name) && UnicodeEnabled())
+    CharToWide(fd->Name,fd->NameW);
 #endif
 #endif
   fd->IsDir=IsDir(fd->FileAttr);
@@ -214,6 +220,7 @@ HANDLE FindFile::Win32Find(HANDLE hFind,const char *Mask,const wchar *MaskW,stru
       WideToChar(fd->NameW,fd->Name);
       fd->Size=int32to64(FindData.nFileSizeHigh,FindData.nFileSizeLow);
       fd->FileAttr=FindData.dwFileAttributes;
+      WideToChar(FindData.cAlternateFileName,fd->ShortName);
       fd->ftCreationTime=FindData.ftCreationTime;
       fd->ftLastAccessTime=FindData.ftLastAccessTime;
       fd->ftLastWriteTime=FindData.ftLastWriteTime;
@@ -262,6 +269,7 @@ HANDLE FindFile::Win32Find(HANDLE hFind,const char *Mask,const wchar *MaskW,stru
       CharToWide(fd->Name,fd->NameW);
       fd->Size=int32to64(FindData.nFileSizeHigh,FindData.nFileSizeLow);
       fd->FileAttr=FindData.dwFileAttributes;
+      strcpy(fd->ShortName,FindData.cAlternateFileName);
       fd->ftCreationTime=FindData.ftCreationTime;
       fd->ftLastAccessTime=FindData.ftLastAccessTime;
       fd->ftLastWriteTime=FindData.ftLastWriteTime;

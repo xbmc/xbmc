@@ -32,7 +32,13 @@ struct RAR_MEM_BLK
     next->prev=prev;
   }
 } _PACK_ATTR;
+
+#ifdef _AIX
+#pragma pack(pop)
+#else
 #pragma pack()
+#endif
+
 
 struct RAR_NODE
 {

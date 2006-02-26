@@ -4,6 +4,8 @@
 #include "../util.h"
 #include "../utils/singlelock.h"
 
+#include <set>
+
 #define EXTRACTION_WARN_SIZE 50*1024*1024
 
 CRarManager g_RarManager;
@@ -59,6 +61,7 @@ bool CRarManager::CacheRarredFile(CStdString& strPathInCache, const CStdString& 
     }
 	}
   
+  int iRes = 0;
   //Extract archived file, using existing local copy or overwriting if wanted...
   if (iSize > EXTRACTION_WARN_SIZE)
   {
@@ -71,7 +74,7 @@ bool CRarManager::CacheRarredFile(CStdString& strPathInCache, const CStdString& 
       pDialog->SetLine(2, L"");
       pDialog->DoModal(m_gWindowManager.GetActiveWindow());
       if (!pDialog->IsConfirmed())
-        return false;
+        iRes = 2; // pretend to be canceled
     }
   }
 
@@ -85,7 +88,7 @@ bool CRarManager::CacheRarredFile(CStdString& strPathInCache, const CStdString& 
     }
   }
   
-  int iRes = urarlib_get(const_cast<char*>(strRarPath.c_str()), const_cast<char*>(strDir.c_str()),const_cast<char*>(strPathInRar.c_str()),"");
+  if (iRes==0) iRes = urarlib_get(const_cast<char*>(strRarPath.c_str()), const_cast<char*>(strDir.c_str()),const_cast<char*>(strPathInRar.c_str()),NULL);
   if (iRes == 0)
   {
     CLog::Log(LOGERROR,"failed to extract file: %s",strPathInRar.c_str());
@@ -108,7 +111,7 @@ bool CRarManager::CacheRarredFile(CStdString& strPathInCache, const CStdString& 
         return false;
     } 
     j->second.second.push_back(fileInfo);
-    pFile = &(j->second.second.back());
+    pFile = &(j->second.second[j->second.second.size()-1]);
     pFile->m_iUsed = 1;
   }
   if (CUtil::HasSlashAtEnd(strDir))
@@ -126,7 +129,7 @@ bool CRarManager::CacheRarredFile(CStdString& strPathInCache, const CStdString& 
     return false;
   }
 
-	return true;
+  return true;
 }
 
 // NB: The rar manager expects paths in rars to be terminated with a "\".
@@ -149,7 +152,7 @@ bool CRarManager::GetFilesInRar(CFileItemList& vecpItems, const CStdString& strR
   else
     pFileList = it->second.first;
 
-CFileItem* pFileItem = NULL;
+	CFileItem* pFileItem = NULL;
   vector<CStdString> vec;
   std::set<CStdString> dirSet;
   CUtil::Tokenize(strPathInRar,vec,"\\/");
@@ -175,7 +178,7 @@ CFileItem* pFileItem = NULL;
       if (!bMask) continue;
       if (vec.size() == iDepth)
         continue; // remove root of listing
-
+        
       if (dirSet.find(vec[iDepth]) == dirSet.end())
       {
         dirSet.insert(vec[iDepth]);
@@ -315,4 +318,9 @@ __int64 CRarManager::CheckFreeSpace(const CStdString& strDrive)
     return lTotalFreeBytes.QuadPart;
 
   return 0;
+}
+
+bool CRarManager::HasMultipleEntries(const CStdString& strPath)
+{
+  return urarlib_hasmultiple(strPath.c_str());
 }

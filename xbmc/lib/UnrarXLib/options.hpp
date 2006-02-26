@@ -6,8 +6,8 @@
 #define DEFAULT_RECVOLUMES  -10
 
 enum PathExclMode {
-  EXCL_NONE,EXCL_BASEPATH,EXCL_SKIPWHOLEPATH,EXCL_SAVEFULLPATH,EXCL_SKIPABSPATH
-};
+  EXCL_NONE,EXCL_BASEPATH,EXCL_SKIPWHOLEPATH,EXCL_SAVEFULLPATH,
+  EXCL_SKIPABSPATH,EXCL_ABSPATH};
 enum {SOLID_NONE=0,SOLID_NORMAL=1,SOLID_COUNT=2,SOLID_FILEEXT=4,
       SOLID_VOLUME_DEPENDENT=8,SOLID_VOLUME_INDEPENDENT=16};
 enum {ARCTIME_NONE,ARCTIME_KEEP,ARCTIME_LATEST};
@@ -15,7 +15,7 @@ enum EXTTIME_MODE {
   EXTTIME_NONE,EXTTIME_1S,EXTTIME_HIGH1,EXTTIME_HIGH2,EXTTIME_HIGH3
 };
 enum {NAMES_ORIGINALCASE,NAMES_UPPERCASE,NAMES_LOWERCASE};
-enum MESSAGE_TYPE {MSG_STDOUT,MSG_STDERR,MSG_NULL};
+enum MESSAGE_TYPE {MSG_STDOUT,MSG_STDERR,MSG_ERRONLY,MSG_NULL};
 enum OVERWRITE_MODE { OVERWRITE_ASK,OVERWRITE_ALL,OVERWRITE_NONE};
 
 #define     MAX_FILTERS           16
@@ -37,6 +37,8 @@ class RAROptions
     void Init();
 
     uint ExclFileAttr;
+    uint InclFileAttr;
+    bool InclAttrSet;
     uint WinSize;
     char TempPath[NM];
     char SFXModule[NM];
@@ -54,6 +56,8 @@ class RAROptions
     int Recovery;
     int RecVolNumber;
     bool DisablePercentage;
+    bool DisableCopyright;
+    bool DisableDone;
     int Solid;
     int SolidCount;
     bool ClearArc;
@@ -66,7 +70,7 @@ class RAROptions
     int Recurse;
     Int64 VolSize;
     Array<Int64> NextVolSizes;
-    int NextVolNum;
+    int CurVolNum;
     bool AllYes;
     bool DisableViewAV;
     bool DisableSortSolid;
@@ -86,6 +90,7 @@ class RAROptions
     char GenerateMask[80];
     bool ProcessEA;
     bool SaveStreams;
+    bool SetCompressedAttr;
     uint FileTimeOlder;
     uint FileTimeNewer;
     RarTime FileTimeBefore;
@@ -108,7 +113,6 @@ class RAROptions
 
 
 
-//#if defined(RARDLL) || defined(_XBOX)
 #if defined(RARDLL)
     char DllDestName[NM];
     wchar DllDestNameW[NM];
