@@ -25,7 +25,8 @@ public:
                         ICON_OVERLAY_ZIP,
                         ICON_OVERLAY_LOCKED,
                         ICON_OVERLAY_HAS_TRAINER,
-                        ICON_OVERLAY_TRAINED };
+                        ICON_OVERLAY_TRAINED,
+                        ICON_OVERLAY_UNWATCHED};
 
   CGUIListItem(void);
   CGUIListItem(const CGUIListItem& item);
