@@ -30,6 +30,8 @@ public:
   bool IncTimesPlayed(const CStdString& strFileName1);
   bool SetDescription(const CStdString& strFileName1, const CStdString& strDescription);
   int GetRegion(const CStdString& strFilenameAndPath);
+  DWORD GetTitleId(const CStdString& strFilenameAndPath);
+  bool SetTitleId(const CStdString& strFilenameAndPath, DWORD dwTitleId);
   bool SetRegion(const CStdString& strFilenameAndPath, int iRegion=0);
   bool EntryExists(const CStdString& strPath, const CStdString& strBookmark);
   bool HasTrainer(const CStdString& strTrainerPath);
