@@ -76,7 +76,6 @@ bool CGUIWindowVideoYear::GetDirectory(const CStdString &strDirectory, CFileItem
       pItem->m_strPath = years[i];
       pItem->m_bIsFolder = true;
       pItem->m_bIsShareOrDrive = false;
-      pItem->FillInDefaultIcon();
       m_vecItems.Add(pItem);
     }
   }

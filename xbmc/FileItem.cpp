@@ -811,7 +811,7 @@ void CFileItem::SetArtistThumb()
 void CFileItem::SetMusicThumb()
 { 
   // if it already has a thumbnail, then return
-  if (HasThumbnail()) return;
+  if (HasThumbnail() || m_bIsShareOrDrive) return;
 
   // streams do not have thumbnails
   if (IsInternetStream()) return;
