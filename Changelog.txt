@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 27-02-2006 fixed: exception in music scanner when canceling before the filecount is calculated
  - 26-02-2006 updated: German language file
  - 26-02-2006 updated: Portuguese (Brazil) language file (Thnx to mvbm)
  - 26-02-2006 updated: Swedish language file (Thnx to blittan)
