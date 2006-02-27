@@ -189,11 +189,21 @@ bool CDVDAudioCodecPassthrough::Open(CodecID codecID, int iChannels, int iSample
 {
   bool bSupportsAC3Out = false,  bSupportsDTSOut = false;
 
+
+  // TODO - move this stuff somewhere else
   if (g_guiSettings.GetInt("AudioOutput.Mode") == AUDIO_DIGITAL)
   {
     bSupportsAC3Out = g_audioConfig.GetAC3Enabled();
     bSupportsDTSOut = g_audioConfig.GetDTSEnabled();
   }
+
+  // TODO - this is only valid for video files.
+  if( iChannels == 2 && g_stSettings.m_currentVideoSettings.m_OutputToAllSpeakers )
+  {
+    CLog::Log(LOGINFO, "CDVDAudioCodecPassthrough::Open - disabled passthrough due to video OTAS");
+    return false;
+  }
+  
 
   //Samplerate cannot be checked here as we don't know it at this point in time. 
   //We should probably have a way to try to decode data so that we know what samplerate it is.
