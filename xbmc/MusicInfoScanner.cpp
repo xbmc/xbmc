@@ -18,7 +18,7 @@ CMusicInfoScanner::CMusicInfoScanner()
   m_pObserver = NULL;
   m_bCanInterrupt = false;
   m_currentItem=0;
-  m_itemCount=-1;
+  m_itemCount=0;
 }
 
 CMusicInfoScanner::~CMusicInfoScanner()
@@ -278,7 +278,7 @@ int CMusicInfoScanner::RetrieveMusicInfo(CFileItemList& items, const CStdString&
 
       // if we have the itemcount, notify our 
       // observer with the progress we made
-      if (m_pObserver && m_itemCount>-1)
+      if (m_pObserver && m_itemCount>0)
         m_pObserver->OnSetProgress(m_currentItem, m_itemCount);
 
       if (tag.Loaded() && bNewFile)
