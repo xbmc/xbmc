@@ -195,20 +195,21 @@ bool CDVDAudioCodecPassthrough::Open(CodecID codecID, int iChannels, int iSample
   {
     bSupportsAC3Out = g_audioConfig.GetAC3Enabled();
     bSupportsDTSOut = g_audioConfig.GetDTSEnabled();
-  }
-
-  // TODO - this is only valid for video files.
-  if( iChannels == 2 && g_stSettings.m_currentVideoSettings.m_OutputToAllSpeakers )
-  {
-    CLog::Log(LOGINFO, "CDVDAudioCodecPassthrough::Open - disabled passthrough due to video OTAS");
-    return false;
-  }
-  
+  }  
 
   //Samplerate cannot be checked here as we don't know it at this point in time. 
   //We should probably have a way to try to decode data so that we know what samplerate it is.
   if ((codecID == CODEC_ID_AC3 && bSupportsAC3Out) || (codecID == CODEC_ID_DTS && bSupportsDTSOut))
   {
+
+    // TODO - this is only valid for video files, and should be moved somewhere else
+    if( iChannels == 2 && g_stSettings.m_currentVide5oSettings.m_OutputToAllSpeakers )
+    {
+      CLog::Log(LOGINFO, "CDVDAudioCodecPassthrough::Open - disabled passthrough due to video OTAS");
+      return false;
+    }
+
+
     //We load both libDTS and A54 independent on what codec it was. Some streams are marked wrong
     if (m_dllDTS.Load())
     {
