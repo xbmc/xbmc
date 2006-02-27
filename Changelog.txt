@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 27-02-2006 fixed: dvdplayer didn't respect "Output To All Speakers" setting for 2ch AC3's
  - 27-02-2006 fixed: threading problem with smb directory
  - 27-02-2006 fixed: threading problem with opening/closing of files from dll's
  - 27-02-2006 fixed: exception in music scanner when canceling before the filecount is calculated
