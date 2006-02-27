@@ -30,6 +30,7 @@ struct SDirData
 #define MAX_OPEN_FILES 50
 #define MAX_OPEN_DIRS 10
 static CFile* vecFilesOpen[MAX_OPEN_FILES];
+CCriticalSection csFile;
 static SDirData vecDirsOpen[MAX_OPEN_DIRS];
 bool bVecFilesInited = false;
 bool bVecDirsInited = false;
@@ -65,6 +66,7 @@ extern "C"
 
   void InitFiles()
   {
+    CSingleLock lock(csFile);
     if (bVecFilesInited) return ;
     memset(vecFilesOpen, 0, sizeof(vecFilesOpen));
     bVecFilesInited = true;
@@ -237,6 +239,7 @@ extern "C"
   int dll_open(const char* szFileName, int iMode)
   {
     if (!bVecFilesInited) InitFiles();
+    CSingleLock lock(csFile);
     int fd = -1;
     for (int i = 0; i < MAX_OPEN_FILES; ++i)
     {
@@ -305,6 +308,7 @@ extern "C"
   int dll_close(int fd)
   {
     if (!bVecFilesInited) InitFiles();
+    CSingleLock lock(csFile);
     if (fd < 0 || fd >= MAX_OPEN_FILES ) return -1;
     CFile* pFile = vecFilesOpen[fd];
     if (!pFile) return -1;
