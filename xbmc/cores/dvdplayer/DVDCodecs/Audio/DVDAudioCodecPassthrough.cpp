@@ -203,7 +203,7 @@ bool CDVDAudioCodecPassthrough::Open(CodecID codecID, int iChannels, int iSample
   {
 
     // TODO - this is only valid for video files, and should be moved somewhere else
-    if( iChannels == 2 && g_stSettings.m_currentVide5oSettings.m_OutputToAllSpeakers )
+    if( iChannels == 2 && g_stSettings.m_currentVideoSettings.m_OutputToAllSpeakers )
     {
       CLog::Log(LOGINFO, "CDVDAudioCodecPassthrough::Open - disabled passthrough due to video OTAS");
       return false;
