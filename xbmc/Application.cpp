@@ -3039,7 +3039,6 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
 {
   if (item.IsPlayList())
     return false;
-  float AVDelay = 0;
 
   m_iPlaySpeed = 1;
   if (!bRestart)
@@ -3057,10 +3056,6 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
       dbs.Close();
     }
   }
-  else if (m_pPlayer)
-  {
-    AVDelay = m_pPlayer->GetAVDelay();
-  }
 
   // if we have a stacked set of files, we need to setup our stack routines for
   // "seamless" seeking and total time of the movie etc.
@@ -3071,15 +3066,15 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
   
   EPLAYERCORES eNewCore = EPC_NONE;
 
-  if (m_eForcedNextPlayer != EPC_NONE)
-  {
+  if (bRestart && m_eCurrentPlayer != EPC_NONE)
+    eNewCore = m_eCurrentPlayer;
+  else if (m_eForcedNextPlayer != EPC_NONE)
     eNewCore = m_eForcedNextPlayer;
-    m_eForcedNextPlayer = EPC_NONE;
-  }
   else
-  {
     eNewCore = CPlayerCoreFactory::GetDefaultPlayer(item);
-  }
+  
+  // reset any forced player
+  m_eForcedNextPlayer = EPC_NONE;
 
   //We have to stop parsing a cdg before mplayer is deallocated
   m_CdgParser.Stop();
@@ -3126,11 +3121,6 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
         m_CdgParser.Start(item.m_musicInfoTag.GetURL());
       else
         m_CdgParser.Start(item.m_strPath);
-    }
-
-    if (bRestart)
-    {
-      m_pPlayer->SetAVDelay(AVDelay);
     }
 
     // if file happens to contain video stream
@@ -4061,6 +4051,9 @@ void CApplication::Restart(bool bSamePosition)
   if ( !IsPlayingVideo() && !IsPlayingAudio())
     return ;
 
+  if( !m_pPlayer )
+    return ;
+
   // do we want to return to the current position in the file
   if (false == bSamePosition)
   {
@@ -4072,10 +4065,14 @@ void CApplication::Restart(bool bSamePosition)
   // else get current position
   double time = GetTime();
 
+  // get player state, needed for dvd's
+  CStdString state = m_pPlayer->GetPlayerState();
+
   // reopen the file
-  if ( PlayFile(m_itemCurrentFile, true) )
+  if ( PlayFile(m_itemCurrentFile, true) && m_pPlayer )
   {
     // and seek to the position
+    m_pPlayer->SetPlayerState(state);
     SeekTime(time);
   }
 }
