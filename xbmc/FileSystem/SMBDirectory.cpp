@@ -135,10 +135,11 @@ bool CSMBDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
   }
 
   smbc_closedir(fd);
+  smb.PurgeEx(CURL(strPath));
   smb.Unlock();
 
   g_directoryCache.SetDirectory(strPath, vecCacheItems);
-  smb.PurgeEx(CURL(strPath));
+
   return true;
 }
 
