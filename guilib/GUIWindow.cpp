@@ -1052,19 +1052,18 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
     break;
   }
 
+  bool handled(false);
   ivecControls i;
   for (i = m_vecControls.begin();i != m_vecControls.end(); ++i)
   {
     CGUIControl* pControl = *i;
-    if (pControl)
+    if (pControl && message.GetControlId() == pControl->GetID())
     {
-      if ( message.GetControlId() == pControl->GetID() )
-      {
-        return pControl->OnMessage(message);
-      }
+      if (pControl->OnMessage(message))
+        handled = true;
     }
   }
-  return false;
+  return handled;
 }
 
 void CGUIWindow::AllocResources(bool forceLoad /*= FALSE */)
