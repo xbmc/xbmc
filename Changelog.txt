@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 28-02-2006 changed: Screensaver will now kick in if a modal dialog is onscreen.
+ - 28-02-2006 added: A little more exception handling to a couple of program database functions.
  - 28-02-2006 changed: GUI messages are sent to all controls with the given id, rather than just the first one.
  - 28-02-2006 changed: MultiImages with blank <info> fallback to the <imagepath> path.
  - 28-02-2006 added: Multiple <onclick> tags are allowed in button controls.  You can also use keymap actions in <onclick> tags as well.  Actions are executed in the order given.

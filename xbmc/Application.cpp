@@ -3380,8 +3380,9 @@ bool CApplication::ResetScreenSaverWindow()
 
 void CApplication::CheckScreenSaver()
 {
-  if ( m_gWindowManager.IsRouted())
-    return ;
+  // WHY if we have a Modal window should we not activate the screensaver?
+  //if ( m_gWindowManager.IsRouted())
+   // return ;
 
   if (!m_bInactive)
   {
