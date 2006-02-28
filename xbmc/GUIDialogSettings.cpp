@@ -324,7 +324,8 @@ void CGUIDialogSettings::AddSetting(SettingInfo &setting, int iPosX, int iPosY, 
                           iControlID,
                           iControlID);
   pControl->SetID(iControlID);
-  pControl->SetVisible(setting.enabled);
+  pControl->SetVisible(true);
+  pControl->SetEnabled(setting.enabled);
   Add(pControl);
   pControl->AllocResources();
 }

@@ -326,7 +326,10 @@ bool CGUIWindowManager::OnAction(const CAction &action)
   if (m_vecModalWindows.size() > 0)
   {
     // ...send the action to the top most.
-    return m_vecModalWindows[m_vecModalWindows.size() - 1]->OnAction(action);
+    CGUIWindow *window = m_vecModalWindows[m_vecModalWindows.size() - 1];
+    if (!window->IsAnimating(ANIM_TYPE_WINDOW_CLOSE))
+      return window->OnAction(action);
+    return true; // don't do anything with this action for now
   }
   else
   {
