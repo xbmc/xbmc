@@ -330,7 +330,7 @@
         <height>13</height>
         <label>0</label>
         <font>special13</font>
-        <hyperlink>1</hyperlink>
+        <onclick>ActivateWindow(MyPrograms)</onclick>
         <onleft>98</onleft>
         <onright>96</onright>
         <onup>9</onup>
@@ -351,7 +351,7 @@
         <width>14</width>
         <height>13</height>
         <label>1</label>
-        <hyperlink>2</hyperlink>
+        <onclick>ActivateWindow(MyPictures)</onclick>
         <font>special13</font>
         <onleft>98</onleft>
         <onright>96</onright>
@@ -374,7 +374,7 @@
         <height>13</height>
         <label>3</label>
         <font>special13</font>
-        <hyperlink>6</hyperlink>
+        <onclick>ActivateWindow(MyVideos)</onclick>
         <onleft>98</onleft>
         <onright>96</onright>
         <onup>4</onup>
@@ -395,7 +395,7 @@
         <width>14</width>
         <height>13</height>
         <label>2</label>
-        <hyperlink>5</hyperlink>
+        <onclick>ActivateWindow(MyMusic)</onclick>
         <font>special13</font>
         <onleft>98</onleft>
         <onright>96</onright>
@@ -418,7 +418,7 @@
         <height>13</height>
         <label>8</label>
         <font>special13</font>
-        <hyperlink>2600</hyperlink>
+        <onclick>ActivateWindow(Weather)</onclick>
         <onleft>98</onleft>
         <onright>96</onright>
         <onup>3</onup>
@@ -440,7 +440,7 @@
 	      <height>8</height>
 	      <label>5</label>
 	      <font>font10</font>
-	      <hyperlink>4</hyperlink>
+	      <onclick>ActivateWindow(Settings)</onclick>
 	      <onleft>98</onleft>
 	      <onright>6</onright>
 	      <onup>7</onup>
@@ -461,7 +461,7 @@
 	      <width>9</width>
 	      <height>8</height>
 	      <label>7</label>
-	      <hyperlink>3</hyperlink>
+	      <onclick>ActivateWindow(MyFiles)</onclick>
 	      <font>font10</font>
 	      <onleft>9</onleft>
 	      <onright>96</onright>
@@ -589,7 +589,7 @@
       <label>-</label>
       <texturefocus>home-kai.gif</texturefocus>
       <texturenofocus>home-kai.png</texturenofocus>
-      <hyperlink>2700</hyperlink>
+      <onclick>ActivateWindow(XLinkKai)</onclick>
       <onleft>95</onleft>
       <onright>100</onright>
       <onup>2</onup>
@@ -606,7 +606,7 @@
       <posy>501</posy>
       <width>30</width>
       <height>37</height>
-      <hyperlink>105</hyperlink>
+      <onclick>ActivateWindow(SubMenu)</onclick>
       <texturefocus>home-sub.gif</texturefocus>
       <texturenofocus>home-sub.png</texturenofocus>
       <label>-</label>
@@ -626,7 +626,7 @@
       <posy>501</posy>
       <width>30</width>
       <height>37</height>
-      <hyperlink>111</hyperlink>
+      <onclick>ActivateWindow(ShutdownMenu)</onclick>
       <texturefocus>home-power.gif</texturefocus>
       <texturenofocus>home-power.png</texturenofocus>
       <label>-</label>
