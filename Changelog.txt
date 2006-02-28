@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 28-02-2006 added: Controlgroup focus is now saved on window exit.
  - 28-02-2006 fixed: Actions could be sent to modal dialogs that were animating out.
  - 28-02-2006 fixed: Blank bookmark for resume time was shown in bookmarks.
  - 28-02-2006 fixed: [ 1438714 ] @-sign causes 'Invalid computer name'

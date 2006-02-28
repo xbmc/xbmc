@@ -1414,6 +1414,12 @@ void CGUIWindow::SaveControlStates()
       m_controlStates.push_back(CControlState(pControl->GetID(), message.GetParam1()));
     }
   }
+  // push back the group states as well
+  for (vector<CControlGroup>::iterator it = m_vecGroups.begin(); it != m_vecGroups.end(); ++it)
+  {
+    CControlGroup group = *it;
+    m_controlStates.push_back(CControlState(group.m_id, group.m_lastControl, true));
+  }
 }
 
 void CGUIWindow::RestoreControlStates()
@@ -1422,8 +1428,22 @@ void CGUIWindow::RestoreControlStates()
   {
     for (vector<CControlState>::iterator it = m_controlStates.begin(); it != m_controlStates.end(); ++it)
     {
-      CGUIMessage message(GUI_MSG_ITEM_SELECT, GetID(), (*it).m_id, (*it).m_data);
-      OnMessage(message);
+      if ((*it).m_group)
+      { // special case for control groups
+        for (unsigned int i = 0; i < m_vecGroups.size(); i++)
+        {
+          if (m_vecGroups[i].m_id == (*it).m_id)
+          {
+            m_vecGroups[i].m_lastControl = (*it).m_data;
+            break;
+          }
+        }
+      }
+      else
+      {
+        CGUIMessage message(GUI_MSG_ITEM_SELECT, GetID(), (*it).m_id, (*it).m_data);
+        OnMessage(message);
+      }
     }
     // set focus to our saved control
     int focusControl = m_lastControlID ? m_lastControlID : m_dwDefaultFocusControlID;
