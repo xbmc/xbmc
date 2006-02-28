@@ -59,10 +59,14 @@ bool CGUIButtonScroller::OnAction(const CAction &action)
   if (action.wID == ACTION_SELECT_ITEM)
   {
     // send the appropriate message to the parent window
-    CGUIMessage message(GUI_MSG_EXECUTE, GetID(), GetParentID());
-    // find our currently highlighted item
-    message.SetStringParam(m_vecButtons[GetActiveButton()]->strExecute.c_str());
-    g_graphicsContext.SendMessage(message);
+    CStdStringArray actions = m_vecButtons[GetActiveButton()]->clickActions;
+    for (unsigned int i = 0; i < actions.size(); i++)
+    {
+      CGUIMessage message(GUI_MSG_EXECUTE, GetID(), GetParentID());
+      // find our currently highlighted item
+      message.SetStringParam(actions[i]);
+      g_graphicsContext.SendMessage(message);
+    }
     return true;
   }
   if (action.wID == ACTION_CONTEXT_MENU)
@@ -184,10 +188,13 @@ void CGUIButtonScroller::LoadButtons(const TiXmlNode *node)
     }
     childNode = buttonNode->FirstChild("execute");
     if (childNode && childNode->FirstChild())
-      button->strExecute = childNode->FirstChild()->Value();
+      button->clickActions.push_back(childNode->FirstChild()->Value());
     childNode = buttonNode->FirstChild("onclick");
-    if (childNode && childNode->FirstChild())
-      button->strExecute = childNode->FirstChild()->Value();
+    while (childNode && childNode->FirstChild())
+    {
+      button->clickActions.push_back(childNode->FirstChild()->Value());
+      childNode = childNode->NextSibling("onclick");
+    }
     childNode = buttonNode->FirstChild("texturefocus");
     if (childNode && childNode->FirstChild())
       button->imageFocus = new CGUIImage(GetParentID(), GetID(), m_iPosX, m_iPosY, m_dwWidth, m_dwHeight, childNode->FirstChild()->Value());
@@ -207,7 +214,7 @@ void CGUIButtonScroller::AddButton(const wstring &strLabel, const CStdString &st
   if (pButton)
   {
     pButton->strLabel = strLabel;
-    pButton->strExecute = strExecute;
+    pButton->clickActions.push_back(strExecute);
     pButton->id = iID;
     m_vecButtons.push_back(pButton);
   }

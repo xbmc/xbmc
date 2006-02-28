@@ -8,7 +8,7 @@
 CGUIMultiImage::CGUIMultiImage(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strTexturePath, DWORD timePerImage, DWORD fadeTime, bool randomized, bool loop)
     : CGUIControl(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight)
 {
-  m_texturePath = strTexturePath;
+  m_currentPath = m_texturePath = strTexturePath;
   m_currentImage = 0;
   m_timePerImage = timePerImage;
   m_fadeTime = fadeTime;
@@ -39,9 +39,15 @@ void CGUIMultiImage::Render()
   if (m_Info)
   {
     CStdString texturePath = g_infoManager.GetImage(m_Info);
-    if (texturePath != m_texturePath)
+    if (texturePath != m_currentPath && !texturePath.IsEmpty())
     {
-      m_texturePath = texturePath;
+      m_currentPath = texturePath;
+      FreeResources();
+      LoadDirectory();
+    }
+    else if (texturePath.IsEmpty() && m_currentPath != m_texturePath)
+    {
+      m_currentPath = m_texturePath;
       FreeResources();
       LoadDirectory();
     }
@@ -213,13 +219,13 @@ void CGUIMultiImage::LoadDirectory()
   m_files.clear();
 
   // don't load any images if our path is empty
-  if (m_texturePath.IsEmpty()) return;
+  if (m_currentPath.IsEmpty()) return;
 
-  g_TextureManager.GetBundledTexturesFromPath(m_texturePath, m_files);
+  g_TextureManager.GetBundledTexturesFromPath(m_currentPath, m_files);
 
   // Load in our images from the directory specified
-  // m_texturePath is relative (as are all skin paths)
-  CStdString realPath = g_TextureManager.GetTexturePath(m_texturePath);
+  // m_currentPath is relative (as are all skin paths)
+  CStdString realPath = g_TextureManager.GetTexturePath(m_currentPath);
   CHDDirectory dir;
   CFileItemList items;
   dir.GetDirectory(realPath, items);

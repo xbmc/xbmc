@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 28-02-2006 changed: GUI messages are sent to all controls with the given id, rather than just the first one.
+ - 28-02-2006 changed: MultiImages with blank <info> fallback to the <imagepath> path.
  - 28-02-2006 added: Multiple <onclick> tags are allowed in button controls.  You can also use keymap actions in <onclick> tags as well.  Actions are executed in the order given.
  - 28-02-2006 added: Window.Next(id) and Window.Previous(id) conditionals active during changing of windows.
  - 28-02-2006 added: condition attribute to animations, allowing you to turn them off based on a condition.
