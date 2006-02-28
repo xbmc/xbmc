@@ -44,6 +44,7 @@ protected:
   void LoadDirectory();
   void LoadImage(int image);
   CStdString m_texturePath;
+  CStdString m_currentPath;
   int m_currentImage;
   CXBStopWatch m_imageTimer;
   CXBStopWatch m_fadeTimer;

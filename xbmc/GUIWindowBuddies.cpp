@@ -293,7 +293,7 @@ void CGUIWindowBuddies::OnInitWindow()
     else
     {
       m_gWindowManager.PreviousWindow();
-      break;
+      return;
     }
   }
 
