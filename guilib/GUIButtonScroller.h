@@ -17,7 +17,7 @@ public:
   }
   int id;
   wstring strLabel;
-  CStdString strExecute;
+  CStdStringArray clickActions;
   CGUIImage *imageFocus;
   CGUIImage *imageNoFocus;
 };
