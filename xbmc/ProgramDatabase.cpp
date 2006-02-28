@@ -157,20 +157,28 @@ int CProgramDatabase::GetRegion(const CStdString& strFilenameAndPath)
   if (NULL == m_pDB.get()) return 0;
   if (NULL == m_pDS.get()) return 0;
 
-  CStdString strSQL=FormatSQL("select * from files,path where files.idPath=path.idPath and path.strPath='%s'", strPath.c_str());
-  if (!m_pDS->query(strSQL.c_str())) 
-    return 0;
-
-  int iRowsFound = m_pDS->num_rows();
-  if (iRowsFound == 0)
+  try
   {
-    m_pDS->close();
-    return 0;
-  }
-  int iRegion = m_pDS->fv("files.iRegion").get_asLong();
-  m_pDS->close();
+    CStdString strSQL=FormatSQL("select * from files,path where files.idPath=path.idPath and path.strPath='%s'", strPath.c_str());
+    if (!m_pDS->query(strSQL.c_str())) 
+      return 0;
 
-  return iRegion;
+    int iRowsFound = m_pDS->num_rows();
+    if (iRowsFound == 0)
+    {
+      m_pDS->close();
+      return 0;
+    }
+    int iRegion = m_pDS->fv("files.iRegion").get_asLong();
+    m_pDS->close();
+
+    return iRegion;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "CProgramDatabase:GetRegion(%s) failed", strFilenameAndPath.c_str());
+  }
+  return 0;
 }
 
 DWORD CProgramDatabase::GetTitleId(const CStdString& strFilenameAndPath)
@@ -182,20 +190,27 @@ DWORD CProgramDatabase::GetTitleId(const CStdString& strFilenameAndPath)
   if (NULL == m_pDB.get()) return 0;
   if (NULL == m_pDS.get()) return 0;
 
-  CStdString strSQL=FormatSQL("select * from files,path where files.idPath=path.idPath and path.strPath='%s'", strPath.c_str());
-  if (!m_pDS->query(strSQL.c_str())) 
-    return 0;
-
-  int iRowsFound = m_pDS->num_rows();
-  if (iRowsFound == 0)
+  try
   {
-    m_pDS->close();
-    return 0;
-  }
-  DWORD dwTitleId = m_pDS->fv("files.TitleId").get_asLong();
-  m_pDS->close();
+    CStdString strSQL=FormatSQL("select * from files,path where files.idPath=path.idPath and path.strPath='%s'", strPath.c_str());
+    if (!m_pDS->query(strSQL.c_str())) 
+      return 0;
 
-  return dwTitleId;
+    int iRowsFound = m_pDS->num_rows();
+    if (iRowsFound == 0)
+    {
+      m_pDS->close();
+      return 0;
+    }
+    DWORD dwTitleId = m_pDS->fv("files.TitleId").get_asLong();
+    m_pDS->close();
+    return dwTitleId;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "CProgramDatabase:GetTitleId(%s) failed", strFilenameAndPath.c_str());
+  }
+  return 0;
 }
 
 bool CProgramDatabase::SetRegion(const CStdString& strFileName, int iRegion)
