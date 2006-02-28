@@ -1130,7 +1130,7 @@ void CVideoDatabase::GetBookMarksForMovie(const CStdString& strFilenameAndPath, 
     if (NULL == m_pDB.get()) return ;
     if (NULL == m_pDS.get()) return ;
 
-    CStdString strSQL=FormatSQL("select * from bookmark where idFile=%i order by timeInSeconds", lFileId);
+    CStdString strSQL=FormatSQL("select * from bookmark where idFile=%i and type=0 order by timeInSeconds", lFileId);
     m_pDS->query( strSQL.c_str() );
     while (!m_pDS->eof())
     {
