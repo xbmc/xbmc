@@ -280,11 +280,6 @@ void CGUIWindowBuddies::OnInitWindow()
 
   CArenaItem::SetIcons(12, 12, "arenaitem-private.png");
 
-  if (window_state == State::Uninitialized)
-    ChangeState(State::Buddies);
-  else
-    ChangeState(window_state);
-
   while (!m_pKaiClient->IsEngineConnected())
   {
     m_bContactNotifications = FALSE;
@@ -324,6 +319,14 @@ void CGUIWindowBuddies::OnInitWindow()
     }
   }
   CGUIWindow::OnInitWindow();
+
+  // set the window state after we have init'd our window
+  // so that control visibility is set correctly (else any <visible> tags
+  // in controls will override these)
+  if (window_state == State::Uninitialized)
+    ChangeState(State::Buddies);
+  else
+    ChangeState(window_state);
 }
 
 // Called just as soon as this window has be assigned to the CKaiClient as an observer

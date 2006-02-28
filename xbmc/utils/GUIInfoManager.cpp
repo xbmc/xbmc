@@ -182,6 +182,8 @@ extern char g_szTitleIP[32];
 #define SKIN_HAS_SETTING_START      510
 #define SKIN_HAS_SETTING_END        600 // allow 90
 
+#define WINDOW_NEXT                 9996
+#define WINDOW_PREVIOUS             9997
 #define WINDOW_IS_MEDIA             9998
 #define WINDOW_ACTIVE_START         WINDOW_HOME
 #define WINDOW_ACTIVE_END           WINDOW_PYTHON_END
@@ -221,6 +223,8 @@ CGUIInfoManager::CGUIInfoManager(void)
   m_AfterSeekTimeout = 0;
   m_playerSeeking = false;
   m_performingSeek = false;
+  m_nextWindowID = WINDOW_INVALID;
+  m_prevWindowID = WINDOW_INVALID;
 }
 
 CGUIInfoManager::~CGUIInfoManager(void)
@@ -465,6 +469,18 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
       ret = winID;
   }
   else if (strTest.Equals("window.ismedia")) return WINDOW_IS_MEDIA;
+  else if (strTest.Left(16).Equals("window.previous("))
+  {
+    int winID = g_buttonTranslator.TranslateWindowString(strTest.Mid(16, strTest.GetLength() - 17).c_str());
+    if (winID != WINDOW_INVALID)
+      return AddMultiInfo(GUIInfo(bNegate ? -WINDOW_PREVIOUS : WINDOW_PREVIOUS, winID, 0));
+  }
+  else if (strTest.Left(12).Equals("window.next("))
+  {
+    int winID = g_buttonTranslator.TranslateWindowString(strTest.Mid(12, strTest.GetLength() - 13).c_str());
+    if (winID != WINDOW_INVALID)
+      return AddMultiInfo(GUIInfo(bNegate ? -WINDOW_NEXT : WINDOW_NEXT, winID, 0));
+  }
   else if (strTest.Left(17).Equals("control.hasfocus("))
   {
     int controlID = atoi(strTest.Mid(17, strTest.GetLength() - 18).c_str());
@@ -960,12 +976,20 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindo
   switch (condition)
   {
     case CONTROL_GROUP_HAS_FOCUS:
-      if( !dwContextWindow ) dwContextWindow = m_gWindowManager.GetActiveWindow();
+      {
+        if( !dwContextWindow ) dwContextWindow = m_gWindowManager.GetActiveWindow();
 
-      CGUIWindow *pWindow = m_gWindowManager.GetWindow(dwContextWindow);
-      if (pWindow) 
-        bReturn = pWindow->ControlGroupHasFocus(info.m_data1, info.m_data2);
-    break;
+        CGUIWindow *pWindow = m_gWindowManager.GetWindow(dwContextWindow);
+        if (pWindow) 
+          bReturn = pWindow->ControlGroupHasFocus(info.m_data1, info.m_data2);
+      }
+      break;
+    case WINDOW_NEXT:
+      bReturn = (info.m_data1 == m_nextWindowID);
+      break;
+    case WINDOW_PREVIOUS:
+      bReturn = (info.m_data1 == m_prevWindowID);
+      break;
   }
   return (info.m_info < 0) ? !bReturn : bReturn;
 }
@@ -1851,7 +1875,7 @@ int CGUIInfoManager::AddMultiInfo(const GUIInfo &info)
   // check to see if we have this info already
   for (unsigned int i = 0; i < m_multiInfo.size(); i++)
     if (m_multiInfo[i] == info)
-      return (int)i;
+      return (int)i + MULTI_INFO_START;
   // return the new offset
   m_multiInfo.push_back(info);
   return (int)m_multiInfo.size() + MULTI_INFO_START - 1;
