@@ -318,7 +318,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
   CStdString strImage, strImageFocus;
   int iTextureWidth = 80;
   bool bHasPath = false;
-  CStdString clickAction = "";
+  CStdStringArray clickActions;
   CStdString focusAction = "";
   CStdString strTitle = "";
   CStdString strRSSTags = "";
@@ -444,7 +444,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
       strLabel = ((CGUIButtonControl*)pReference)->GetLabel();
       labelInfo = ((CGUIButtonControl*)pReference)->GetLabelInfo();
       iHyperLink = ((CGUIButtonControl*)pReference)->GetHyperLink();
-      clickAction = ((CGUIButtonControl*)pReference)->GetClickAction();
+      clickActions = ((CGUIButtonControl*)pReference)->GetClickActions();
       focusAction = ((CGUIButtonControl*)pReference)->GetFocusAction();
     }
 #ifdef PRE_SKIN_VERSION_2_0_COMPATIBILITY
@@ -455,7 +455,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
       labelInfo = ((CGUIConditionalButtonControl*)pReference)->GetLabelInfo();
       strLabel = ((CGUIConditionalButtonControl*)pReference)->GetLabel();
       iHyperLink = ((CGUIConditionalButtonControl*)pReference)->GetHyperLink();
-      clickAction = ((CGUIConditionalButtonControl*)pReference)->GetClickAction();
+      clickActions = ((CGUIConditionalButtonControl*)pReference)->GetClickActions();
       focusAction = ((CGUIConditionalButtonControl*)pReference)->GetFocusAction();
     }
 #endif
@@ -467,7 +467,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
       strTextureNoFocus = ((CGUIToggleButtonControl*)pReference)->GetTextureNoFocusName();
       labelInfo = ((CGUIToggleButtonControl*)pReference)->GetLabelInfo();
       strLabel = ((CGUIToggleButtonControl*)pReference)->GetLabel();
-      clickAction = ((CGUIToggleButtonControl*)pReference)->GetClickAction();
+      clickActions = ((CGUIToggleButtonControl*)pReference)->GetClickActions();
       focusAction = ((CGUIToggleButtonControl*)pReference)->GetFocusAction();
       iHyperLink = ((CGUIToggleButtonControl*)pReference)->GetHyperLink();
       iToggleSelect = ((CGUIToggleButtonControl*)pReference)->GetToggleSelect();
@@ -771,9 +771,11 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     if (!strWindow.IsEmpty())
       iHyperLink = g_buttonTranslator.TranslateWindowString(strWindow.c_str());
 
-    XMLUtils::GetString(pControlNode, "script", clickAction); // left in for backwards compatibility.
-    XMLUtils::GetString(pControlNode, "execute", clickAction);
-    XMLUtils::GetString(pControlNode, "onclick", clickAction);
+    CStdString click;
+    XMLUtils::GetString(pControlNode, "script", click); // left in for backwards compatibility.
+    XMLUtils::GetString(pControlNode, "execute", click);
+    if (!GetMultipleString(pControlNode, "onclick", clickActions) && !click.IsEmpty())
+      clickActions.push_back(click);
     XMLUtils::GetString(pControlNode, "onfocus", focusAction);
 
     CStdStringArray strVecInfo;
@@ -1069,9 +1071,11 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     if (!strWindow.IsEmpty())
       iHyperLink = g_buttonTranslator.TranslateWindowString(strWindow.c_str());
 
-    XMLUtils::GetString(pControlNode, "script", clickAction); // left in for backwards compatibility.
-    XMLUtils::GetString(pControlNode, "execute", clickAction);
-    XMLUtils::GetString(pControlNode, "onclick", clickAction);
+    CStdString click;
+    XMLUtils::GetString(pControlNode, "script", click); // left in for backwards compatibility.
+    XMLUtils::GetString(pControlNode, "execute", click);
+    if (!GetMultipleString(pControlNode, "onclick", clickActions) && !click.IsEmpty())
+      clickActions.push_back(click);
     XMLUtils::GetString(pControlNode, "onfocus", focusAction);
 
     CStdStringArray strVecInfo;
@@ -1383,7 +1387,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     pControl->SetNavigation(up, down, left, right);
     pControl->SetColourDiffuse(dwColorDiffuse);
     pControl->SetHyperLink(iHyperLink);
-    pControl->SetClickAction(clickAction);
+    pControl->SetClickActions(clickActions);
     pControl->SetFocusAction(focusAction);
     pControl->SetVisible(bVisible);
     pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus, startHidden);
@@ -1403,7 +1407,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     pControl->SetNavigation(up, down, left, right);
     pControl->SetColourDiffuse(dwColorDiffuse);
     pControl->SetHyperLink(iHyperLink);
-    pControl->SetClickAction(clickAction);
+    pControl->SetClickActions(clickActions);
     pControl->SetFocusAction(focusAction);
     pControl->SetVisible(bVisible);
     pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus, startHidden);
@@ -1423,7 +1427,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     pControl->SetNavigation(up, down, left, right);
     pControl->SetColourDiffuse(dwColorDiffuse);
     pControl->SetHyperLink(iHyperLink);
-    pControl->SetClickAction(clickAction);
+    pControl->SetClickActions(clickActions);
     pControl->SetFocusAction(focusAction);
     pControl->SetVisible(bVisible);
     pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus, startHidden);

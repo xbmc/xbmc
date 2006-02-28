@@ -1417,9 +1417,9 @@ int CXbmcHttp::xbmcGetGUIStatus()
         output += closeTag+openTag+"Type:Button";
         if (strTmp!="")
           output += closeTag+openTag+"Description:" + strTmp;
-        strTmp = ((CGUIButtonControl *)pControl)->GetClickAction();
-        if (strTmp!="")
-          output += closeTag+openTag+"Execution:" + strTmp;
+        CStdStringArray actions = ((CGUIButtonControl *)pControl)->GetClickActions();
+        if (actions.size())
+          output += closeTag+openTag+"Execution:" + actions[0];
         long lHyperLinkWindowID = ((CGUIButtonControl *)pControl)->GetHyperLink();
         if (lHyperLinkWindowID != WINDOW_INVALID)
         {
@@ -1433,7 +1433,9 @@ int CXbmcHttp::xbmcGetGUIStatus()
               output += closeTag+openTag+"DescriptionSub:" + (CStdString) ((CGUIButtonControl *)pHyperControl)->GetLabel();
               strTmp.Format("%d", ((CGUIButtonControl *)pHyperControl)->GetID());
               output += closeTag+openTag+"ControlIdSub:" + strTmp;
-              output += closeTag+openTag+"ExecutionSub:" + ((CGUIButtonControl *)pHyperControl)->GetClickAction();
+              CStdStringArray actions = ((CGUIButtonControl *)pControl)->GetClickActions();
+              if (actions.size())
+                output += closeTag+openTag+"ExecutionSub:" + actions[0];
             }
           }
         }

@@ -16,5 +16,6 @@ public:
   void SetHeading(const string& strLine);
   void SetHeading(int iString);
 protected:
+  virtual void OnInitWindow();
   bool m_bConfirmed;
 };

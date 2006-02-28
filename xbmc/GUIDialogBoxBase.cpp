@@ -85,3 +85,10 @@ void CGUIDialogBoxBase::SetLine(int iLine, int iString)
     msg.SetLabel("");
   OnMessage(msg);
 }
+
+void CGUIDialogBoxBase::OnInitWindow()
+{
+  // set focus to default
+  m_lastControlID = m_dwDefaultFocusControlID;
+  CGUIDialog::OnInitWindow();
+}

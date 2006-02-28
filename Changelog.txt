@@ -5,6 +5,11 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 28-02-2006 added: Multiple <onclick> tags are allowed in button controls.  You can also use keymap actions in <onclick> tags as well.  Actions are executed in the order given.
+ - 28-02-2006 added: Window.Next(id) and Window.Previous(id) conditionals active during changing of windows.
+ - 28-02-2006 added: condition attribute to animations, allowing you to turn them off based on a condition.
+ - 28-02-2006 changed: Files mode does not show tag info from the database if you have id3 reading disabled
+ - 28-02-2006 fixed: Initial control focus on Yes/No and Context menu is now set in the code.
  - 27-02-2006 fixed: dvdplayer would resume properly after changing setting that required restart 
  - 27-02-2006 fixed: when player was restarted due to some osd change, force player wasn't allways selected
  - 27-02-2006 fixed: dvdplayer didn't respect "Output To All Speakers" setting for 2ch AC3's
