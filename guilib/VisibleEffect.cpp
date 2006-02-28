@@ -1,4 +1,5 @@
 #include "VisibleEffect.h"
+#include "../xbmc/utils/GUIInfoManager.h"
 
 CVisibleEffect::CVisibleEffect()
 {
@@ -66,6 +67,7 @@ void CAnimation::Reset()
   startAlpha = 0;
   endAlpha = 100;
   acceleration = 0;
+  condition = 0;
 }
 
 void CAnimation::Create(TiXmlElement *node, RESOLUTION res)
@@ -92,6 +94,9 @@ void CAnimation::Create(TiXmlElement *node, RESOLUTION res)
     CLog::Log(LOGERROR, "Control has invalid animation type");
     return;
   }
+  const char *conditionString = node->Attribute("condition");
+  if (conditionString)
+    condition = g_infoManager.TranslateString(conditionString);
   const char *effectType = node->Attribute("effect");
   if (!effectType)
     return;

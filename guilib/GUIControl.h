@@ -170,7 +170,7 @@ public:
 
   void QueueAnimation(ANIMATION_TYPE anim);
   bool IsAnimating(ANIMATION_TYPE anim);
-  CAnimation *GetAnimation(ANIMATION_TYPE type);
+  CAnimation *GetAnimation(ANIMATION_TYPE type, bool checkConditions = true);
 
 protected:
   void Animate(DWORD currentTime);

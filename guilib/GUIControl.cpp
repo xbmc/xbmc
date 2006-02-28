@@ -578,7 +578,7 @@ void CGUIControl::QueueAnimation(ANIMATION_TYPE animType)
     if (animType == ANIM_TYPE_WINDOW_OPEN)
       return;
   }
-  CAnimation *reverseAnim = GetAnimation((ANIMATION_TYPE)-animType);
+  CAnimation *reverseAnim = GetAnimation((ANIMATION_TYPE)-animType, false);
   CAnimation *forwardAnim = GetAnimation(animType);
   // we first check whether the reverse animation is in progress (and reverse it)
   // then we check for the normal animation, and queue it
@@ -595,19 +595,20 @@ void CGUIControl::QueueAnimation(ANIMATION_TYPE animType)
   else
   { // hidden and visible animations delay the change of state.  If there is no animations
     // to perform, then we should just change the state straightaway
-//    if (m_dwParentID == WINDOW_VISUALISATION) CLog::DebugLog("No forward animation found for control %i, anim %i", m_dwControlID, animType);
     if (reverseAnim) reverseAnim->ResetAnimation();
-//    else if (m_dwParentID == WINDOW_VISUALISATION) CLog::DebugLog("Also no reverse animation found");
     UpdateStates(animType, ANIM_PROCESS_NORMAL, ANIM_STATE_APPLIED);
   }
 }
 
-CAnimation *CGUIControl::GetAnimation(ANIMATION_TYPE type)
+CAnimation *CGUIControl::GetAnimation(ANIMATION_TYPE type, bool checkConditions /* = true */)
 {
   for (unsigned int i = 0; i < m_animations.size(); i++)
   {
     if (m_animations[i].type == type)
-      return &m_animations[i];
+    {
+      if (!checkConditions || !m_animations[i].condition || g_infoManager.GetBool(m_animations[i].condition))
+        return &m_animations[i];
+    }
   }
   return NULL;
 }

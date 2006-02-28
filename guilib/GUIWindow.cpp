@@ -884,22 +884,19 @@ void CGUIWindow::OnInitWindow()
 void CGUIWindow::OnDeinitWindow(int nextWindowID)
 {
   if (nextWindowID != WINDOW_FULLSCREEN_VIDEO)
-    OnWindowCloseAnimation();
-  SaveControlStates();
-}
-
-void CGUIWindow::OnWindowCloseAnimation()
-{
-  // Dialog animations are handled in Close() rather than here
-  if (!HasAnimation(ANIM_TYPE_WINDOW_CLOSE) || IsDialog())
-    return;
-
-  // Perform the window out effect
-  QueueAnimation(ANIM_TYPE_WINDOW_CLOSE);
-  while (IsAnimating(ANIM_TYPE_WINDOW_CLOSE))
   {
-    m_gWindowManager.Process(true);
+    // Dialog animations are handled in Close() rather than here
+    if (HasAnimation(ANIM_TYPE_WINDOW_CLOSE) && !IsDialog())
+    {
+      // Perform the window out effect
+      QueueAnimation(ANIM_TYPE_WINDOW_CLOSE);
+      while (IsAnimating(ANIM_TYPE_WINDOW_CLOSE))
+      {
+        m_gWindowManager.Process(true);
+      }
+    }
   }
+  SaveControlStates();
 }
 
 bool CGUIWindow::OnMessage(CGUIMessage& message)
@@ -1293,7 +1290,8 @@ void CGUIWindow::QueueAnimation(ANIMATION_TYPE animType)
     }
     else
     {
-      m_showAnimation.queuedProcess = ANIM_PROCESS_NORMAL;
+      if (!m_showAnimation.condition || g_infoManager.GetBool(m_showAnimation.condition, GetID()))
+        m_showAnimation.queuedProcess = ANIM_PROCESS_NORMAL;
       m_closeAnimation.ResetAnimation();
     }
   }
@@ -1308,7 +1306,8 @@ void CGUIWindow::QueueAnimation(ANIMATION_TYPE animType)
     }
     else
     {
-      m_closeAnimation.queuedProcess = ANIM_PROCESS_NORMAL;
+      if (!m_closeAnimation.condition || g_infoManager.GetBool(m_closeAnimation.condition, GetID()))
+        m_closeAnimation.queuedProcess = ANIM_PROCESS_NORMAL;
       m_showAnimation.ResetAnimation();
     }
   }
