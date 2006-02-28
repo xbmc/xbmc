@@ -826,11 +826,13 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow) const
     bReturn = g_guiSettings.GetBool("XLinkKai.Enabled") && CKaiClient::GetInstance()->IsEngineConnected();
   else if (condition == SYSTEM_MEDIA_DVD)
   {
-    // GeminiServer: DVD Drive state
+    // we must: 1.  Check tray state.
+    //          2.  Check that we actually have a disc in the drive (detection
+    //              of disk type takes a while from a separate thread).
     CIoSupport TrayIO;
     int iTrayState = TrayIO.GetTrayState();
     if ( iTrayState == DRIVE_CLOSED_MEDIA_PRESENT || iTrayState == TRAY_CLOSED_MEDIA_PRESENT )
-      bReturn = true;
+      bReturn = CDetectDVDMedia::IsDiscInDrive();
     else 
       bReturn = false;
   }

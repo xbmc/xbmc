@@ -363,7 +363,8 @@ bool CAutorun::IsEnabled()
 bool CAutorun::PlayDisc()
 {
   CCdInfo* pInfo = CDetectDVDMedia::GetCdInfo();
-  if ( pInfo == NULL ) return false ;
+  if ( pInfo == NULL )
+    return false ;
   if ( pInfo->IsAudio( 1 ) )
   {
     CFileItemList vecItems;
