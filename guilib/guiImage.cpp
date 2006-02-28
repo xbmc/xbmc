@@ -117,15 +117,17 @@ void CGUIImage::Render()
     if (m_fNW > m_dwWidth || m_fNH > m_dwHeight)
       if (!g_graphicsContext.SetViewPort((float)m_iPosX, (float)m_iPosY, (float)m_dwWidth, (float)m_dwHeight, true))
         return;
-    float x1 = g_graphicsContext.ScaleFinalXCoord(m_fX, m_fY) - 0.5f;
-    float y1 = g_graphicsContext.ScaleFinalYCoord(m_fX, m_fY) - 0.5f;
-    float x2 = g_graphicsContext.ScaleFinalXCoord(m_fX + m_fNW, m_fY) - 0.5f;
-    float y2 = g_graphicsContext.ScaleFinalYCoord(m_fX + m_fNW, m_fY) - 0.5f;
-    float x3 = g_graphicsContext.ScaleFinalXCoord(m_fX + m_fNW, m_fY + m_fNH) - 0.5f;
-    float y3 = g_graphicsContext.ScaleFinalYCoord(m_fX + m_fNW, m_fY + m_fNH) - 0.5f;
-    float x4 = g_graphicsContext.ScaleFinalXCoord(m_fX, m_fY + m_fNH) - 0.5f;
-    float y4 = g_graphicsContext.ScaleFinalYCoord(m_fX, m_fY + m_fNH) - 0.5f;
+    float x1 = floor(g_graphicsContext.ScaleFinalXCoord(m_fX, m_fY) + 0.5f) - 0.5f;
+    float y1 = floor(g_graphicsContext.ScaleFinalYCoord(m_fX, m_fY) + 0.5f) - 0.5f;
+    float x2 = floor(g_graphicsContext.ScaleFinalXCoord(m_fX + m_fNW, m_fY) + 0.5f) - 0.5f;
+    float y2 = floor(g_graphicsContext.ScaleFinalYCoord(m_fX + m_fNW, m_fY) + 0.5f) - 0.5f;
+    float x3 = floor(g_graphicsContext.ScaleFinalXCoord(m_fX + m_fNW, m_fY + m_fNH) + 0.5f) - 0.5f;
+    float y3 = floor(g_graphicsContext.ScaleFinalYCoord(m_fX + m_fNW, m_fY + m_fNH) + 0.5f) - 0.5f;
+    float x4 = floor(g_graphicsContext.ScaleFinalXCoord(m_fX, m_fY + m_fNH) + 0.5f) - 0.5f;
+    float y4 = floor(g_graphicsContext.ScaleFinalYCoord(m_fX, m_fY + m_fNH) + 0.5f) - 0.5f;
 
+    if (y3 == y1) y3 += 1.0f; if (x2 == x1) x2 += 1.0f;
+    if (y4 == y2) y4 += 1.0f; if (x3 == x4) x3 += 1.0f;
     LPDIRECT3DDEVICE8 p3DDevice = g_graphicsContext.Get3DDevice();
     // Set state to render the image
 #ifdef ALLOW_TEXTURE_COMPRESSION

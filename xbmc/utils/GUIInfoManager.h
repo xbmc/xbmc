@@ -113,6 +113,9 @@ public:
   void SetAutodetectedXbox(bool set) { m_hasAutoDetectedXbox = set; };
   bool HasAutodetectedXbox() const { return m_hasAutoDetectedXbox; };
 
+  void SetNextWindow(int windowID) { m_nextWindowID = windowID; };
+  void SetPreviousWindow(int windowID) { m_prevWindowID = windowID; };
+
   CStdString ParseLabel(const CStdString &label);
 
 protected:
@@ -160,6 +163,9 @@ protected:
 
   // Xbox Autodetect stuff
   bool m_hasAutoDetectedXbox;
+
+  int m_nextWindowID;
+  int m_prevWindowID;
 
   class CCombinedValue
   {

@@ -72,6 +72,8 @@ public:
   ANIMATION_STATE currentState;
   ANIMATION_PROCESS currentProcess;
 
+  int condition;      // conditions that must be satisfied in order for this
+                      // animation to be performed
 private:
 //  float amount;
   // timing variables
