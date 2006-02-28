@@ -191,6 +191,7 @@ extern char g_szTitleIP[32];
 #define SYSTEM_IDLE_TIME_START      20000
 #define SYSTEM_IDLE_TIME_FINISH     21000 // 1000 seconds
 
+#define CONTROL_IS_VISIBLE          29998
 #define CONTROL_GROUP_HAS_FOCUS     29999
 #define CONTROL_HAS_FOCUS_START     30000
 #define CONTROL_HAS_FOCUS_END       31000 // only up to control id 1000
@@ -486,6 +487,12 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     int controlID = atoi(strTest.Mid(17, strTest.GetLength() - 18).c_str());
     if (controlID)
       ret = controlID + CONTROL_HAS_FOCUS_START;
+  }
+  else if (strTest.Left(18).Equals("control.isvisible("))
+  {
+    int controlID = atoi(strTest.Mid(18, strTest.GetLength() - 19).c_str());
+    if (controlID)
+      return AddMultiInfo(GUIInfo(bNegate ? -CONTROL_IS_VISIBLE : CONTROL_IS_VISIBLE, controlID, 0));
   }
   else if (strTest.Left(13).Equals("controlgroup("))
   {
@@ -979,11 +986,23 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindo
   {
     case CONTROL_GROUP_HAS_FOCUS:
       {
-        if( !dwContextWindow ) dwContextWindow = m_gWindowManager.GetActiveWindow();
-
         CGUIWindow *pWindow = m_gWindowManager.GetWindow(dwContextWindow);
+        if (!pWindow) pWindow = m_gWindowManager.GetWindow(m_gWindowManager.GetActiveWindow());
         if (pWindow) 
           bReturn = pWindow->ControlGroupHasFocus(info.m_data1, info.m_data2);
+      }
+      break;
+    case CONTROL_IS_VISIBLE:
+      {
+        CGUIWindow *pWindow = m_gWindowManager.GetWindow(dwContextWindow);
+        if (!pWindow) pWindow = m_gWindowManager.GetWindow(m_gWindowManager.GetActiveWindow());
+        if (pWindow)
+        {
+          // Note: This'll only work for unique id's
+          const CGUIControl *control = pWindow->GetControl(info.m_data1);
+          if (control)
+            bReturn = control->IsVisible();
+        }
       }
       break;
     case WINDOW_NEXT:
