@@ -110,7 +110,7 @@
       <textoffsety>117</textoffsety>
       <label>3</label>
       <align>center</align>
-      <hyperlink>17</hyperlink>
+      <onclick>ActivateWindow(MyVideosSettings)</onclick>
       <onleft>11</onleft>
       <onright>7</onright>
       <onup>10</onup>
@@ -132,7 +132,7 @@
       <textoffsety>117</textoffsety>
       <label>2</label>
       <align>center</align>
-      <hyperlink>15</hyperlink>
+      <onclick>ActivateWindow(MyMusicSettings)</onclick>
       <onleft>6</onleft>
       <onright>9</onright>
       <onup>2</onup>
@@ -154,7 +154,7 @@
       <textoffsety>117</textoffsety>
       <label>1</label>
       <align>center</align>
-      <hyperlink>12</hyperlink>
+      <onclick>ActivateWindow(MyPicturesSettings)</onclick>
       <onleft>7</onleft>
       <onright>8</onright>
       <onup>4</onup>
@@ -176,7 +176,7 @@
       <textoffsety>117</textoffsety>
       <label>0</label>
       <align>center</align>
-      <hyperlink>13</hyperlink>
+      <onclick>ActivateWindow(MyProgramsSettings)</onclick>
       <onleft>9</onleft>
       <onright>11</onright>
       <onup>3</onup>
@@ -198,7 +198,7 @@
       <textoffsety>117</textoffsety>
       <label>8</label>
       <align>center</align>
-      <hyperlink>14</hyperlink>
+      <onclick>ActivateWindow(MyWeatherSettings)</onclick>
       <onleft>11</onleft>
       <onright>2</onright>
       <onup>6</onup>
@@ -220,7 +220,7 @@
       <textoffsety>117</textoffsety>
       <label>705</label>
       <align>center</align>
-      <hyperlink>18</hyperlink>
+      <onclick>ActivateWindow(NetworkSettings)</onclick>
       <onleft>10</onleft>
       <onright>4</onright>
       <onup>7</onup>
@@ -242,7 +242,7 @@
       <textoffsety>117</textoffsety>
       <label>13000</label>
       <align>center</align>
-      <hyperlink>16</hyperlink>
+      <onclick>ActivateWindow(SystemSettings)</onclick>
       <onleft>2</onleft>
       <onright>3</onright>
       <onup>9</onup>
@@ -264,7 +264,7 @@
       <textoffsety>117</textoffsety>
       <label>480</label>
       <align>center</align>
-      <hyperlink>19</hyperlink>
+      <onclick>ActivateWindow(AppearanceSettings)</onclick>
       <onleft>4</onleft>
       <onright>11</onright>
       <onup>8</onup>

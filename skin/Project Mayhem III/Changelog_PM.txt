@@ -1,3 +1,5 @@
+2006-02-28 changed:	Removed all instances of <hyperlink> (2.0 compatible)
+
 2006-02-26 added:       Trainer overlays, thx to BPairs for gfx!
 
 2006-02-21 changed:     Changed VideoOSD so it skips to Previous & Next file instead of Seek action.
