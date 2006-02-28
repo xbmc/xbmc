@@ -282,18 +282,21 @@ void CGUIButtonControl::OnClick()
 {
   // Save values, SEND_CLICK_MESSAGE may deactivate the window
   long lHyperLinkWindowID = m_lHyperLinkWindowID;
-  CStdString clickAction = m_clickAction;
+  CStdStringArray clickActions = m_clickActions;
   DWORD dwControlID = GetID();
   DWORD dwParentID = GetParentID();
 
   // button selected, send a message
   SEND_CLICK_MESSAGE(dwControlID, dwParentID, 0);
 
-  if (!clickAction.IsEmpty())
+  if (clickActions.size())
   {
-    CGUIMessage message(GUI_MSG_EXECUTE, dwControlID, dwParentID);
-    message.SetStringParam(clickAction);
-    g_graphicsContext.SendMessage(message);
+    for (unsigned int i = 0; i < clickActions.size(); i++)
+    {
+      CGUIMessage message(GUI_MSG_EXECUTE, dwControlID, dwParentID);
+      message.SetStringParam(clickActions[i]);
+      g_graphicsContext.SendMessage(message);
+    }
     return;
   }
 

@@ -30,6 +30,7 @@ bool CGUIDialogContextMenu::OnMessage(CGUIMessage &message)
   }
   return CGUIDialog::OnMessage(message);
 }
+
 void CGUIDialogContextMenu::OnInitWindow()
 { // disable the template button control
   CGUIControl *pControl = (CGUIControl *)GetControl(BUTTON_TEMPLATE);
@@ -38,8 +39,11 @@ void CGUIDialogContextMenu::OnInitWindow()
     pControl->SetVisible(false);
   }
   m_iClickedButton = -1;
+  // set initial control focus
+  m_lastControlID = BUTTON_TEMPLATE + 1;
   CGUIDialog::OnInitWindow();
 }
+
 void CGUIDialogContextMenu::ClearButtons()
 { // destroy our buttons (if we have them from a previous viewing)
   for (int i = 1; i <= m_iNumButtons; i++)

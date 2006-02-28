@@ -3917,6 +3917,16 @@ bool CApplication::OnMessage(CGUIMessage& message)
         CUtil::ExecBuiltIn(message.GetStringParam());
       else
       {
+        // try translating the action from our ButtonTranslator
+        WORD actionID;
+        if (g_buttonTranslator.TranslateActionString(message.GetStringParam().c_str(), actionID))
+        {
+          CAction action;
+          action.wID = actionID;
+          action.fAmount1 = 1.0f;
+          m_gWindowManager.OnAction(action);
+          return true;
+        }
         CFileItem item(message.GetStringParam(), false);
         if (item.IsPythonScript())
         { // a python script

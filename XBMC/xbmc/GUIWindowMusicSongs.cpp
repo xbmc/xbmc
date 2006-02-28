@@ -296,12 +296,16 @@ void CGUIWindowMusicSongs::OnRetrieveMusicInfo(CFileItemList& items)
     return ;
 
   MAPSONGS songsMap;
+
   // get all information for all files in current directory from database
-  m_musicdatabase.GetSongsByPath(m_vecItems.m_strPath, songsMap);
+//  m_musicdatabase.GetSongsByPath(m_vecItems.m_strPath, songsMap);
 
   // Nothing in database and id3 tags disabled; dont load tags from cdda files
-  if (songsMap.size() == 0 && !g_guiSettings.GetBool("MusicFiles.UseTags"))
+  if (/*songsMap.size() == 0 &&*/ !g_guiSettings.GetBool("MusicFiles.UseTags"))
     return ;
+
+  // get all information for all files in current directory from database
+  m_musicdatabase.GetSongsByPath(m_vecItems.m_strPath, songsMap);
 
   // Do we have cached items
   CFileItemList itemsMap(m_vecItems.m_strPath);
