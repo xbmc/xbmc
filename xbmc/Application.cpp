@@ -2392,7 +2392,8 @@ void CApplication::FrameMove()
   // process mouse actions
   if (g_Mouse.IsActive())
   {
-    // Reset the screensaver
+    // Reset the screensaver and idle timers
+    m_idleTimer.StartZero();
     ResetScreenSaver();
     if (ResetScreenSaverWindow())
       return ;
