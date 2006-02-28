@@ -98,13 +98,13 @@ CURL::CURL(const CStdString& strURL)
     }
   }
 
-  // check for username/password
+  // check for username/password - should occur before first /
+  // unless it is after a :
   int iAlphaSign = strURL.Find("@", iPos);
-  int iSlash;
-  if (iAlphaSign >= 0) iSlash = strURL.Find("/", iAlphaSign); //to allow for @'s in filenames
-  else iSlash = strURL.Find("/", iPos);
+  int iSlash = strURL.Find("/", iPos);
+  int iColon = strURL.Find(":", iPos);
 
-  if (iAlphaSign >= 0 && (iAlphaSign < iSlash || iSlash < 0))
+  if (iAlphaSign >= 0 && (iAlphaSign < iSlash || iSlash < 0 || (iAlphaSign > iColon && iColon > 0)))
   {
     // username/password found
     CStdString strUserNamePassword = strURL.Mid(iPos, iAlphaSign - iPos);
@@ -135,6 +135,7 @@ CURL::CURL(const CStdString& strURL)
     }
 
     iPos = iAlphaSign + 1;
+    iSlash = strURL.Find("/", iAlphaSign);
   }
 
   // detect hostname:port/
