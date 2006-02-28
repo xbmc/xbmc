@@ -182,17 +182,18 @@ void CGUIWindowManager::PreviousWindow()
 {
   // deactivate any window
   CLog::DebugLog("CGUIWindowManager::PreviousWindow: Deactivate");
-  CGUIWindow *pWindow = GetWindow(GetActiveWindow());
-  if (!pWindow || m_windowHistory.size() < 2)
+  int currentWindow = GetActiveWindow();
+  CGUIWindow *pCurrentWindow = GetWindow(currentWindow);
+  if (!pCurrentWindow || m_windowHistory.size() < 2)
     return;     // no windows or window history yet
 
-  CGUIMessage msg(GUI_MSG_WINDOW_DEINIT, 0, 0);
-  pWindow->OnMessage(msg);
-  // pop the window off our window stack
+  // get the previous window in our stack
   m_windowHistory.pop();
+  int previousWindow = GetActiveWindow();
+  m_windowHistory.push(currentWindow);
 
-  pWindow = GetWindow(GetActiveWindow());
-  if (!pWindow)
+  CGUIWindow *pNewWindow = GetWindow(previousWindow);
+  if (!pNewWindow)
   {
     CLog::Log(LOGERROR, "Unable to activate the previous window");
  //   ClearWindowHistory();
@@ -202,10 +203,27 @@ void CGUIWindowManager::PreviousWindow()
     return;
   }
 
+  // ok to go to the previous window now
+
+  // tell our info manager which window we are going to
+  g_infoManager.SetNextWindow(previousWindow);
+
+  // deinitialize our window
+  CGUIMessage msg(GUI_MSG_WINDOW_DEINIT, 0, 0);
+  pCurrentWindow->OnMessage(msg);
+
+  g_infoManager.SetNextWindow(WINDOW_INVALID);
+  g_infoManager.SetPreviousWindow(currentWindow);
+
+  // remove the current window off our window stack
+  m_windowHistory.pop();
+
   // ok, initialize the new window
   CLog::DebugLog("CGUIWindowManager::PreviousWindow: Activate new");
   CGUIMessage msg2(GUI_MSG_WINDOW_INIT, 0, 0, WINDOW_INVALID, GetActiveWindow());
-  pWindow->OnMessage(msg2);
+  pNewWindow->OnMessage(msg2);
+
+  g_infoManager.SetPreviousWindow(WINDOW_INVALID);
   return;
 }
 
@@ -273,8 +291,10 @@ void CGUIWindowManager::ActivateWindow(int iWindowID, const CStdString& strPath,
     return;
   }
 
+  g_infoManager.SetNextWindow(iWindowID);
   // deactivate any window
-  CGUIWindow *pWindow = GetWindow(GetActiveWindow());
+  int currentWindow = GetActiveWindow();
+  CGUIWindow *pWindow = GetWindow(currentWindow);
   if (pWindow)
   {
     //  Play the window specific deinit sound
@@ -282,6 +302,7 @@ void CGUIWindowManager::ActivateWindow(int iWindowID, const CStdString& strPath,
     CGUIMessage msg(GUI_MSG_WINDOW_DEINIT, 0, 0, iWindowID);
     pWindow->OnMessage(msg);
   }
+  g_infoManager.SetNextWindow(WINDOW_INVALID);
 
   // Add window to the history list (we must do this before we activate it,
   // as all messages done in WINDOW_INIT will want to be sent to the new
@@ -291,10 +312,12 @@ void CGUIWindowManager::ActivateWindow(int iWindowID, const CStdString& strPath,
     m_windowHistory.pop();
   AddToWindowHistory(iWindowID);
 
+  g_infoManager.SetPreviousWindow(currentWindow);
   // Send the init message
   CGUIMessage msg(GUI_MSG_WINDOW_INIT, 0, 0, GetActiveWindow(), iWindowID);
   if (!strPath.IsEmpty()) msg.SetStringParam(strPath);
   pNewWindow->OnMessage(msg);
+  g_infoManager.SetPreviousWindow(WINDOW_INVALID);
 }
 
 bool CGUIWindowManager::OnAction(const CAction &action)

@@ -411,6 +411,9 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
 
       CGUIWindow::OnMessage(message);
 
+      CGUIDialog *pDialog = (CGUIDialog *)m_gWindowManager.GetWindow(WINDOW_OSD);
+      if (pDialog) pDialog->Close(true);
+
       FreeResources(true);
 
       CUtil::RestoreBrightnessContrastGamma();
@@ -430,8 +433,6 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
       if (g_application.m_pPlayer)
         g_application.m_pPlayer->Update();
 
-      CGUIDialog *pDialog = (CGUIDialog *)m_gWindowManager.GetWindow(WINDOW_OSD);
-      if (pDialog) pDialog->Close(true);
 
       g_audioManager.Enable(true);
       return true;

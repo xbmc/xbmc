@@ -216,9 +216,6 @@ void CGUIWindowHome::OnInitWindow()
       SET_CONTROL_VISIBLE(m_iLastMenuOption + 100);
     }
   }
-#endif
-
-#ifdef PRE_SKIN_VERSION_2_0_COMPATIBILITY
   if (g_SkinInfo.GetVersion() < 1.8)
   {
     ON_POLL_BUTTON_CONDITION(CONTROL_BTN_XLINK_KAI, CGUIWindowHome, OnPollXLinkClient, 50);

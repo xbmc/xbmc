@@ -207,9 +207,6 @@ void CGUIDialog::Show(DWORD dwParentId)
 bool CGUIDialog::RenderAnimation(DWORD time)
 {
   CGUIWindow::RenderAnimation(time);
-  // Check to see if we should close at this point
-  if (m_dialogClosing && !IsAnimating(ANIM_TYPE_WINDOW_CLOSE))
-    Close(true);
   // debug stuff
 /*  CAnimation anim = m_showAnimation;
   if (anim.currentProcess != ANIM_PROCESS_NONE)
@@ -245,4 +242,9 @@ bool CGUIDialog::RenderAnimation(DWORD time)
 void CGUIDialog::Render()
 {
   CGUIWindow::Render();
+  // Check to see if we should close at this point
+  // We check after the controls have finished rendering, as we may have to close due to
+  // the controls rendering after the window has finished it's animation
+  if (m_dialogClosing && !IsAnimating(ANIM_TYPE_WINDOW_CLOSE))
+    Close(true);
 }
