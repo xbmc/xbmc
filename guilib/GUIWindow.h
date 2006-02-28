@@ -52,13 +52,15 @@ public:
 class CControlState
 {
 public:
-  CControlState(int id, int data)
+  CControlState(int id, int data, bool group = false)
   {
     m_id = id;
     m_data = data;
+    m_group = group;
   }
   int m_id;
   int m_data;
+  bool m_group;
 };
 
 class CControlGroup
