@@ -5,6 +5,9 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 02-03-2006 fixed: Xbox soundtracks didn't show the soundtrack name.
+ - 02-03-2006 fixed: Album lookup select dialog didn't function correctly.
+ - 02-03-2006 fixed: Positioning of splash.
  - 01-03-2006 fixed: COntrol focus issues in Settings Category.
  - 01-03-2006 added: ListItem.Genre, ListItem.Director, ListItem.Year, ListItem.Title now work for Videos.
  - 01-03-2006 fixed: IMDb lookup stripping of filenames wasn't as good as it could be.
