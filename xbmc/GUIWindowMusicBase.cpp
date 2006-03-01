@@ -990,9 +990,7 @@ bool CGUIWindowMusicBase::FindAlbumInfo(const CStdString& strAlbum, const CStdSt
               // set the label to [relevance]  album - artist
               CStdString strTemp;
               strTemp.Format("[%0.2f]  %s", fRelevance, info.GetTitle2());
-              CFileItem *pItem = new CFileItem;
-              pItem->SetLabel(strTemp);
-              pItem->SetLabel2("");
+              CFileItem *pItem = new CFileItem(strTemp);
               pItem->m_idepth = i; // use this to hold the index of the album in the scraper
               pDlg->Add(pItem);
             }
@@ -1053,7 +1051,7 @@ bool CGUIWindowMusicBase::FindAlbumInfo(const CStdString& strAlbum, const CStdSt
             */
 
             // if we had an item, get the scraper index
-            iSelectedAlbum = pDlg->GetSelectedItem()->m_idepth;
+            iSelectedAlbum = pDlg->GetSelectedItem().m_idepth;
           }
         }
 

@@ -31,12 +31,9 @@ void CSplash::Process()
   g_graphicsContext.Get3DDevice()->Clear(0, NULL, D3DCLEAR_TARGET, 0, 0, 0);
   int w = g_graphicsContext.GetWidth() / 2;
   int h = g_graphicsContext.GetHeight() / 2;
-  CGUIImage* image = new CGUIImage(0, 0, 0, 0, w, h, m_ImageName);
+  CGUIImage* image = new CGUIImage(0, 0, w/2, h/2, w, h, m_ImageName);
   image->SetAspectRatio(CGUIImage::ASPECT_RATIO_KEEP);
   image->AllocResources();
-  int x = (g_graphicsContext.GetWidth() - image->GetRenderWidth()) / 2;
-  int y = (g_graphicsContext.GetHeight() - image->GetRenderHeight()) / 2;
-  image->SetPosition(x, y);
 
   // Store the old gamma ramp
   g_graphicsContext.Get3DDevice()->GetGammaRamp(&oldRamp);
