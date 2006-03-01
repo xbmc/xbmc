@@ -1,7 +1,7 @@
 
 #include "../../stdafx.h"
 #include "DVDPerformanceCounter.h"
-#include "DVDDemuxers\DVDPacketQueue.h"
+#include "DVDMessageQueue.h"
 
 // enable and use xbperfmon
 //#define DVD_WITH_PERFORMANCE_COUNTER
@@ -12,8 +12,8 @@ HRESULT __stdcall DVDPerformanceCounterAudioQueue(PLARGE_INTEGER numerator, PLAR
   //g_dvdPerformanceCounter.Lock();
   if (g_dvdPerformanceCounter.m_pAudioQueue)
   {
-    int iSize     = g_dvdPerformanceCounter.m_pAudioQueue->GetSize();
-    int iMaxSize  = g_dvdPerformanceCounter.m_pAudioQueue->GetMaxSize();
+    int iSize     = g_dvdPerformanceCounter.m_pAudioQueue->GetDataSize();
+    int iMaxSize  = g_dvdPerformanceCounter.m_pAudioQueue->GetMaxDataSize();
     if (iMaxSize > 0)
     {
       int iPercent  = (iSize * 100) / iMaxSize;
@@ -31,8 +31,8 @@ HRESULT __stdcall DVDPerformanceCounterVideoQueue(PLARGE_INTEGER numerator, PLAR
   //g_dvdPerformanceCounter.Lock();
   if (g_dvdPerformanceCounter.m_pAudioQueue)
   {
-    int iSize     = g_dvdPerformanceCounter.m_pVideoQueue->GetSize();
-    int iMaxSize  = g_dvdPerformanceCounter.m_pVideoQueue->GetMaxSize();
+    int iSize     = g_dvdPerformanceCounter.m_pVideoQueue->GetDataSize();
+    int iMaxSize  = g_dvdPerformanceCounter.m_pVideoQueue->GetMaxDataSize();
     if (iMaxSize > 0)
     {
       int iPercent  = (iSize * 100) / iMaxSize;
