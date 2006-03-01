@@ -214,7 +214,7 @@ void CGUIDialogFileBrowser::Update(const CStdString &strDirectory)
 
   if (m_Directory.m_strPath.IsEmpty() && m_addNetworkShareEnabled)
   { // we are in the virtual directory - add the "Add Network Location" item
-    CFileItem *pItem = new CFileItem("Add Network Location...");
+    CFileItem *pItem = new CFileItem(g_localizeStrings.Get(1032));
     pItem->m_strPath = "net://";
     pItem->m_bIsFolder = true;
     m_vecItems.Add(pItem);
@@ -252,7 +252,7 @@ void CGUIDialogFileBrowser::Render()
       m_selectedPath = m_vecItems[item]->m_strPath;
     if (m_selectedPath == "net://")
     {
-      SET_CONTROL_LABEL(CONTROL_LABEL_PATH, "Add Network Location...");
+      SET_CONTROL_LABEL(CONTROL_LABEL_PATH, g_localizeStrings.Get(1032)); // "Add Network Location..."
     }
     else
     {
