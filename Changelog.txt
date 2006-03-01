@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 01-03-2006 changed: Video database retrieves the real path, and thumbs are set based on that.  IMDb thumbs are now only used if a file or folder thumb isn't present.
  - 01-03-2006 added: delete single bookmark in video osd.
  - 01-03-2006 added: overlay to indicate that a movie is watched in database views (overlaywatched.png). you can now choose.
  - 01-03-2006 fixed: rar-compressed trainers.
