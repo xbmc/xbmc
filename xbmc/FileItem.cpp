@@ -107,6 +107,7 @@ const CFileItem& CFileItem::operator=(const CFileItem& item)
   m_bSelected = item.m_bSelected;
   m_strIcon = item.m_strIcon;
   m_strThumbnailImage = item.m_strThumbnailImage;
+  m_overlayIcon = item.m_overlayIcon;
   m_strPath = item.m_strPath;
   m_bIsFolder = item.m_bIsFolder;
   m_bIsParentFolder = item.m_bIsParentFolder;
@@ -134,6 +135,7 @@ void CFileItem::Reset()
   m_strLabel.Empty();
   m_bLabelPreformated=false;
   FreeIcons();
+  m_overlayIcon = ICON_OVERLAY_NONE;
   m_musicInfoTag.Clear();
   m_bSelected = false;
   m_fRating = 0.0f;
@@ -169,6 +171,7 @@ void CFileItem::Serialize(CArchive& ar)
     ar << m_strThumbnailImage;
     ar << m_strIcon;
     ar << m_bSelected;
+    ar << m_overlayIcon;
 
     ar << m_strPath;
     ar << m_bIsShareOrDrive;
@@ -200,6 +203,7 @@ void CFileItem::Serialize(CArchive& ar)
     ar >> m_strThumbnailImage;
     ar >> m_strIcon;
     ar >> m_bSelected;
+    ar >> (int&)m_overlayIcon;
 
     ar >> m_strPath;
     ar >> m_bIsShareOrDrive;
