@@ -86,9 +86,13 @@ const CStdString& CGUIListItem::GetIconImage() const
   return m_strIcon;
 }
 
-void CGUIListItem::SetOverlayImage(GUIIconOverlay icon)
+void CGUIListItem::SetOverlayImage(GUIIconOverlay icon, bool bOnOff)
 {
-  m_overlayIcon = icon;
+  if (bOnOff)
+    m_overlayIcon = GUIIconOverlay((int)(icon)+1);
+  else
+    m_overlayIcon = icon;
+  //m_overlayIcon = (GUIIconOverlay)((int)(icon)+bOnOff?1:0);
 }
 
 CStdString CGUIListItem::GetOverlayImage() const
@@ -107,6 +111,8 @@ CStdString CGUIListItem::GetOverlayImage() const
     return "OverlayLocked.png";
   case ICON_OVERLAY_UNWATCHED:
     return "OverlayUnwatched.png";
+  case ICON_OVERLAY_WATCHED:
+    return "OverlayWatched.png";
   }
   return "";
 }
