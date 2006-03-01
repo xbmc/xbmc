@@ -201,8 +201,9 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
     {
       if (message.GetParam1() != WINDOW_INVALID)
       { // coming to this window first time (ie not returning back from some other window)
-        // so we reset our section
+        // so we reset our section and control states
         m_iSection = 0;
+        ResetControlStates();
       }
       m_iScreen = (int)message.GetParam2() - (int)m_dwWindowId;
       return CGUIWindow::OnMessage(message);
@@ -2895,4 +2896,10 @@ void CGUIWindowSettingsCategory::OnInitWindow()
   m_OldResolution = (RESOLUTION)g_guiSettings.GetInt("LookAndFeel.Resolution");
   SetupControls();
   CGUIWindow::OnInitWindow();
+}
+
+void CGUIWindowSettingsCategory::RestoreControlStates()
+{ // we just restore the focused control - nothing else
+  int focusControl = m_lastControlID ? m_lastControlID : m_dwDefaultFocusControlID;
+  SET_CONTROL_FOCUS(focusControl, 0);
 }
