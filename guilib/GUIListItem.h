@@ -26,7 +26,8 @@ public:
                         ICON_OVERLAY_LOCKED,
                         ICON_OVERLAY_HAS_TRAINER,
                         ICON_OVERLAY_TRAINED,
-                        ICON_OVERLAY_UNWATCHED};
+                        ICON_OVERLAY_UNWATCHED,
+                        ICON_OVERLAY_WATCHED};
 
   CGUIListItem(void);
   CGUIListItem(const CGUIListItem& item);
@@ -48,7 +49,7 @@ public:
   void SetThumbnailImage(const CStdString& strThumbnail);
   const CStdString& GetThumbnailImage() const;
 
-  void SetOverlayImage(GUIIconOverlay icon);
+  void SetOverlayImage(GUIIconOverlay icon, bool bOnOff=false);
   CStdString GetOverlayImage() const;
 
   void Select(bool bOnOff);
