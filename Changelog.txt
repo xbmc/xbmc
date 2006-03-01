@@ -5,6 +5,9 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 01-03-2006 added: ListItem.Genre, ListItem.Director, ListItem.Year, ListItem.Title now work for Videos.
+ - 01-03-2006 fixed: IMDb lookup stripping of filenames wasn't as good as it could be.
+ - 01-03-2006 fixed: Lookup via a .nfo file on a folder would not set the folder icon.
  - 01-03-2006 changed: file browser, added "Add network location..." to strings.xml
  - 01-03-2006 fixed: overlay icon was not serialized to disc
  - 01-03-2006 fixed: HTMLScraper.dll couldn't handle "Monty Python and the Holy Grail" plot info, due to a coded tag on the IMDb.com page.

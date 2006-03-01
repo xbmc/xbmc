@@ -71,40 +71,7 @@ bool CGUIWindowVideoTitle::GetDirectory(const CStdString &strDirectory, CFileIte
   m_database.GetMovies(movies);
   // Display an error message if the database doesn't contain any movies
   DisplayEmptyDatabaseMessage(movies.empty());
-  for (int i = 0; i < (int)movies.size(); ++i)
-  {
-    CIMDBMovie movie = movies[i];
-    // add the appropiate movies to m_vecItems based on the showmode
-    if (
-      (m_iShowMode == VIDEO_SHOW_ALL) ||
-      (m_iShowMode == VIDEO_SHOW_WATCHED && movie.m_bWatched == true) ||
-      (m_iShowMode == VIDEO_SHOW_UNWATCHED && movie.m_bWatched == false)
-      ) 
-    {
-      // mark watched movies when showing all
-      CStdString strTitle = movie.m_strTitle;
-      CFileItem *pItem = new CFileItem(strTitle);
-      pItem->m_strPath = movie.m_strFileNameAndPath;
-      pItem->m_strTitle=strTitle;
-      pItem->m_bIsFolder = false;
-      pItem->m_bIsShareOrDrive = false;
-      pItem->SetThumb();
-      
-      if (!pItem->HasThumbnail())
-      {
-        CStdString strThumb;
-        CUtil::GetVideoThumbnail(movie.m_strIMDBNumber, strThumb);
-        if (CFile::Exists(strThumb))
-          pItem->SetThumbnailImage(strThumb);
-      }
-      pItem->m_fRating = movie.m_fRating;
-      pItem->m_stTime.wYear = movie.m_iYear & 0xFFFF;
-      pItem->m_strDVDLabel = movie.m_strDVDLabel;
-      pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED,movie.m_bWatched);
-      items.Add(pItem);
-    }
-  }
-
+  SetDatabaseDirectory(movies, items);
   return true;
 }
 

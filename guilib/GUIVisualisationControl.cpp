@@ -362,6 +362,5 @@ void CGUIVisualisationControl::FreeResources()
 CVisualisation *CGUIVisualisationControl::GetVisualisation()
 {
   CSingleLock lock (m_critSection);
-  CLog::Log(LOGDEBUG, "GetVisualisation called on id %i, parent %i", GetID(), GetParentID());
   return m_pVisualisation;
 }
