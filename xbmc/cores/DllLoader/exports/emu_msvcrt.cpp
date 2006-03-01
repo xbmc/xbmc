@@ -239,22 +239,6 @@ extern "C"
   int dll_open(const char* szFileName, int iMode)
   {
     if (!bVecFilesInited) InitFiles();
-    CSingleLock lock(csFile);
-    int fd = -1;
-    for (int i = 0; i < MAX_OPEN_FILES; ++i)
-    {
-      if (vecFilesOpen[i] == NULL)
-      {
-        fd = i;
-        break;
-      }
-    }
-    if (fd < 0)
-    {
-      // too many open files
-      VERIFY(0);
-    }
-
     char str[XBMC_MAX_PATH];
 
     // move to CFile classes
@@ -279,6 +263,24 @@ extern "C"
     // currently always overwrites
     if ((bWrite && pFile->OpenForWrite(str, bBinary, bOverwrite)) || pFile->Open(str, bBinary) )
     {
+      CSingleLock lock(csFile);
+      int fd = -1;
+      for (int i = 0; i < MAX_OPEN_FILES; ++i)
+      {
+        if (vecFilesOpen[i] == NULL)
+        {
+          fd = i;
+          break;
+        }
+      }
+      if (fd < 0)
+      {
+        // too many open files
+        VERIFY(0);
+        delete pFile;
+        return -1;
+      }
+
       vecFilesOpen[fd] = pFile;
       return fd;
     }
@@ -308,12 +310,12 @@ extern "C"
   int dll_close(int fd)
   {
     if (!bVecFilesInited) InitFiles();
-    CSingleLock lock(csFile);
     if (fd < 0 || fd >= MAX_OPEN_FILES ) return -1;
     CFile* pFile = vecFilesOpen[fd];
     if (!pFile) return -1;
     pFile->Close();
     delete pFile;
+    CSingleLock lock(csFile);
     vecFilesOpen[fd] = NULL;
     return 0;
   }
