@@ -148,10 +148,10 @@ public:
   bool GetVariousArtistsAlbumsSongs(const CStdString& strBaseDir, CFileItemList& items);
 
 protected:
-  map<CStdString, CArtistCache> m_artistCache;
-  map<CStdString, CGenreCache> m_genreCache;
-  map<CStdString, CPathCache> m_pathCache;
-  map<CStdString, CPathCache> m_thumbCache;
+  map<CStdString, int /*CArtistCache*/> m_artistCache;
+  map<CStdString, int /*CGenreCache*/> m_genreCache;
+  map<CStdString, int /*CPathCache*/> m_pathCache;
+  map<CStdString, int /*CPathCache*/> m_thumbCache;
   map<CStdString, CAlbumCache> m_albumCache;
   virtual bool CreateTables();
   long AddAlbum(const CStdString& strAlbum, long lArtistId, int iNumArtists, const CStdString& strArtist, long lPathId, const CStdString& strPath, long idThumb);

@@ -34,7 +34,7 @@ public:
   virtual bool OnAction(const CAction &action);
   virtual bool OnMessage(CGUIMessage& message);
 
-  CVisualisation *GetVisualisation() { return m_pVisualisation; };
+  CVisualisation *GetVisualisation();
 private:
   void FreeVisualisation();
   void LoadVisualisation();
