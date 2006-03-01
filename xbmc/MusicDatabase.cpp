@@ -410,11 +410,11 @@ long CMusicDatabase::AddGenre(const CStdString& strGenre1)
 
     if (NULL == m_pDB.get()) return -1;
     if (NULL == m_pDS.get()) return -1;
-    map <CStdString, CGenreCache>::const_iterator it;
+    map <CStdString, int>::const_iterator it;
 
     it = m_genreCache.find(strGenre);
     if (it != m_genreCache.end())
-      return it->second.idGenre;
+      return it->second;
 
 
     strSQL=FormatSQL("select * from genre where strGenre like '%s'", strGenre.c_str());
@@ -426,20 +426,16 @@ long CMusicDatabase::AddGenre(const CStdString& strGenre1)
       strSQL=FormatSQL("insert into genre (idGenre, strGenre) values( NULL, '%s' )", strGenre.c_str());
       m_pDS->exec(strSQL.c_str());
 
-      CGenreCache genre;
-      genre.idGenre = (long)sqlite3_last_insert_rowid(m_pDB->getHandle());
-      genre.strGenre = strGenre1;
-      m_genreCache.insert(pair<CStdString, CGenreCache>(genre.strGenre, genre));
-      return genre.idGenre;
+      int idGenre = (int)sqlite3_last_insert_rowid(m_pDB->getHandle());
+      m_genreCache.insert(pair<CStdString, int>(strGenre1, idGenre));
+      return idGenre;
     }
     else
     {
-      CGenreCache genre;
-      genre.idGenre = m_pDS->fv("idGenre").get_asLong();
-      genre.strGenre = strGenre1;
-      m_genreCache.insert(pair<CStdString, CGenreCache>(genre.strGenre, genre));
+      int idGenre = m_pDS->fv("idGenre").get_asLong();
+      m_genreCache.insert(pair<CStdString, int>(strGenre1, idGenre));
       m_pDS->close();
-      return genre.idGenre;
+      return idGenre;
     }
   }
   catch (...)
@@ -462,11 +458,11 @@ long CMusicDatabase::AddArtist(const CStdString& strArtist1)
     if (NULL == m_pDB.get()) return -1;
     if (NULL == m_pDS.get()) return -1;
 
-    map <CStdString, CArtistCache>::const_iterator it;
+    map <CStdString, int>::const_iterator it;
 
     it = m_artistCache.find(strArtist);
     if (it != m_artistCache.end())
-      return it->second.idArtist;
+      return it->second;//.idArtist;
 
     strSQL=FormatSQL("select * from artist where strArtist like '%s'", strArtist.c_str());
     m_pDS->query(strSQL.c_str());
@@ -477,20 +473,16 @@ long CMusicDatabase::AddArtist(const CStdString& strArtist1)
       // doesnt exists, add it
       strSQL=FormatSQL("insert into artist (idArtist, strArtist) values( NULL, '%s' )", strArtist.c_str());
       m_pDS->exec(strSQL.c_str());
-      CArtistCache artist;
-      artist.idArtist = (long)sqlite3_last_insert_rowid(m_pDB->getHandle());
-      artist.strArtist = strArtist1;
-      m_artistCache.insert(pair<CStdString, CArtistCache>(artist.strArtist, artist));
-      return artist.idArtist;
+      int idArtist = (long)sqlite3_last_insert_rowid(m_pDB->getHandle());
+      m_artistCache.insert(pair<CStdString, int>(strArtist1, idArtist));
+      return idArtist;
     }
     else
     {
-      CArtistCache artist;
-      artist.idArtist = m_pDS->fv("idArtist").get_asLong();
-      artist.strArtist = strArtist1;
-      m_artistCache.insert(pair<CStdString, CArtistCache>(artist.strArtist, artist));
+      int idArtist = (long)m_pDS->fv("idArtist").get_asLong();
+      m_artistCache.insert(pair<CStdString, int>(strArtist1, idArtist));
       m_pDS->close();
-      return artist.idArtist;
+      return idArtist;
     }
   }
   catch (...)
@@ -634,11 +626,11 @@ long CMusicDatabase::AddPath(const CStdString& strPath1)
     if (NULL == m_pDB.get()) return -1;
     if (NULL == m_pDS.get()) return -1;
 
-    map <CStdString, CPathCache>::const_iterator it;
+    map <CStdString, int>::const_iterator it;
 
     it = m_pathCache.find(strPath1);
     if (it != m_pathCache.end())
-      return it->second.idPath;
+      return it->second;
 
     strSQL=FormatSQL( "select * from path where strPath='%s'", strPath.c_str());
     m_pDS->query(strSQL.c_str());
@@ -649,20 +641,16 @@ long CMusicDatabase::AddPath(const CStdString& strPath1)
       strSQL=FormatSQL("insert into path (idPath, strPath) values( NULL, '%s' )", strPath.c_str());
       m_pDS->exec(strSQL.c_str());
 
-      CPathCache path;
-      path.idPath = (long)sqlite3_last_insert_rowid(m_pDB->getHandle());
-      path.strPath = strPath1;
-      m_pathCache.insert(pair<CStdString, CPathCache>(path.strPath, path));
-      return path.idPath;
+      int idPath = (long)sqlite3_last_insert_rowid(m_pDB->getHandle());
+      m_pathCache.insert(pair<CStdString, int>(strPath1, idPath));
+      return idPath;
     }
     else
     {
-      CPathCache path;
-      path.idPath = m_pDS->fv("idPath").get_asLong();
-      path.strPath = strPath1;
-      m_pathCache.insert(pair<CStdString, CPathCache>(path.strPath, path));
+      int idPath = m_pDS->fv("idPath").get_asLong();
+      m_pathCache.insert(pair<CStdString, int>(strPath1, idPath));
       m_pDS->close();
-      return path.idPath;
+      return idPath;
     }
   }
   catch (...)
@@ -3433,11 +3421,11 @@ long CMusicDatabase::AddThumb(const CStdString& strThumb1)
     if (NULL == m_pDB.get()) return -1;
     if (NULL == m_pDS.get()) return -1;
 
-    map <CStdString, CPathCache>::const_iterator it;
+    map <CStdString, int>::const_iterator it;
 
     it = m_thumbCache.find(strThumb1);
     if (it != m_thumbCache.end())
-      return it->second.idPath;
+      return it->second;
 
     strSQL=FormatSQL( "select * from thumb where strThumb='%s'", strThumb.c_str());
     m_pDS->query(strSQL.c_str());
@@ -3448,20 +3436,16 @@ long CMusicDatabase::AddThumb(const CStdString& strThumb1)
       strSQL=FormatSQL("insert into thumb (idThumb, strThumb) values( NULL, '%s' )", strThumb.c_str());
       m_pDS->exec(strSQL.c_str());
 
-      CPathCache thumb;
-      thumb.idPath = (long)sqlite3_last_insert_rowid(m_pDB->getHandle());
-      thumb.strPath = strThumb1;
-      m_thumbCache.insert(pair<CStdString, CPathCache>(thumb.strPath, thumb));
-      return thumb.idPath;
+      int idPath = (long)sqlite3_last_insert_rowid(m_pDB->getHandle());
+      m_thumbCache.insert(pair<CStdString, int>(strThumb1, idPath));
+      return idPath;
     }
     else
     {
-      CPathCache thumb;
-      thumb.idPath = m_pDS->fv("idThumb").get_asLong();
-      thumb.strPath = strThumb1;
-      m_thumbCache.insert(pair<CStdString, CPathCache>(thumb.strPath, thumb));
+      int idPath = m_pDS->fv("idThumb").get_asLong();
+      m_thumbCache.insert(pair<CStdString, int>(strThumb1, idPath));
       m_pDS->close();
-      return thumb.idPath;
+      return idPath;
     }
   }
   catch (...)
