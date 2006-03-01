@@ -77,7 +77,7 @@ bool CGUIDialogSelect::OnMessage(CGUIMessage& message)
           CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), iControl, 0, 0, NULL);
           g_graphicsContext.SendMessage(msg);
           m_iSelected = msg.GetParam1();
-          m_strSelected = m_vecList[m_iSelected]->GetLabel();
+          m_selectedItem = *m_vecList[m_iSelected];
           Close();
         }
       }
@@ -128,14 +128,14 @@ int CGUIDialogSelect::GetSelectedLabel() const
   return m_iSelected;
 }
 
-const CFileItem* CGUIDialogSelect::GetSelectedItem()
+const CFileItem& CGUIDialogSelect::GetSelectedItem()
 {
-  return m_vecList[m_iSelected];
+  return m_selectedItem;
 }
 
 const CStdString& CGUIDialogSelect::GetSelectedLabelText()
 {
-  return m_strSelected;
+  return m_selectedItem.GetLabel();
 }
 
 void CGUIDialogSelect::EnableButton(bool bOnOff)

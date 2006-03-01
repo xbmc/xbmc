@@ -16,7 +16,7 @@ public:
   void Add(CFileItem* pItem);
   int GetSelectedLabel() const;
   const CStdString& GetSelectedLabelText();
-  const CFileItem* GetSelectedItem();
+  const CFileItem& GetSelectedItem();
   void EnableButton(bool bOnOff);
   void SetButtonLabel(int iString);
   bool IsButtonPressed();
@@ -26,7 +26,7 @@ protected:
   bool m_bButtonEnabled;
   bool m_bButtonPressed;
   int m_iSelected;
-  CStdString m_strSelected;
-  //vector<CGUIListItem*> m_vecList;
+
+  CFileItem m_selectedItem;
   vector<CFileItem*> m_vecList;
 };

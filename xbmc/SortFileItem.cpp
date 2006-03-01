@@ -139,8 +139,6 @@ bool SSortFileItem::LabelAscending(CFileItem *left, CFileItem *right)
   // special items
   if (left->IsParentFolder()) return true;
   if (right->IsParentFolder()) return false;
-  if (left->m_strPath.IsEmpty()) return true;
-  if (right->m_strPath.IsEmpty()) return false;
   // only if they're both folders or both files do we do the full comparison
   if (left->m_bIsFolder == right->m_bIsFolder)
     return StringUtils::AlphaNumericCompare(left->GetLabel().c_str(),right->GetLabel().c_str()) <= 0;
@@ -152,8 +150,6 @@ bool SSortFileItem::LabelDescending(CFileItem *left, CFileItem *right)
   // special items
   if (left->IsParentFolder()) return true;
   if (right->IsParentFolder()) return false;
-  if (left->m_strPath.IsEmpty()) return true;
-  if (right->m_strPath.IsEmpty()) return false;
   // only if they're both folders or both files do we do the full comparison
   if (left->m_bIsFolder == right->m_bIsFolder)
     return StringUtils::AlphaNumericCompare(left->GetLabel().c_str(),right->GetLabel().c_str()) >= 0;
@@ -165,8 +161,6 @@ bool SSortFileItem::LabelAscendingNoThe(CFileItem *left, CFileItem *right)
   // special items
   if (left->IsParentFolder()) return true;
   if (right->IsParentFolder()) return false;
-  if (left->m_strPath.IsEmpty()) return true;
-  if (right->m_strPath.IsEmpty()) return false;
   // only if they're both folders or both files do we do the full comparison
   if (left->m_bIsFolder == right->m_bIsFolder)
   {
@@ -184,8 +178,6 @@ bool SSortFileItem::LabelDescendingNoThe(CFileItem *left, CFileItem *right)
   // special items
   if (left->IsParentFolder()) return true;
   if (right->IsParentFolder()) return false;
-  if (left->m_strPath.IsEmpty()) return true;
-  if (right->m_strPath.IsEmpty()) return false;
   // only if they're both folders or both files do we do the full comparison
   if (left->m_bIsFolder == right->m_bIsFolder)
   {
@@ -203,8 +195,6 @@ bool SSortFileItem::SongTrackNumAscending(CFileItem *left, CFileItem *right)
   // special items
   if (left->IsParentFolder()) return true;
   if (right->IsParentFolder()) return false;
-  if (left->m_strPath.IsEmpty()) return true;
-  if (right->m_strPath.IsEmpty()) return false;
   // only if they're both folders or both files do we do the full comparison
   if (left->m_bIsFolder == right->m_bIsFolder)
     return left->m_musicInfoTag.GetTrackAndDiskNumber() <= right->m_musicInfoTag.GetTrackAndDiskNumber();
@@ -216,8 +206,6 @@ bool SSortFileItem::SongTrackNumDescending(CFileItem *left, CFileItem *right)
   // special items
   if (left->IsParentFolder()) return true;
   if (right->IsParentFolder()) return false;
-  if (left->m_strPath.IsEmpty()) return true;
-  if (right->m_strPath.IsEmpty()) return false;
   // only if they're both folders or both files do we do the full comparison
   if (left->m_bIsFolder == right->m_bIsFolder)
     return left->m_musicInfoTag.GetTrackAndDiskNumber() >= right->m_musicInfoTag.GetTrackAndDiskNumber();
@@ -229,8 +217,6 @@ bool SSortFileItem::SongDurationAscending(CFileItem *left, CFileItem *right)
   // special items
   if (left->IsParentFolder()) return true;
   if (right->IsParentFolder()) return false;
-  if (left->m_strPath.IsEmpty()) return true;
-  if (right->m_strPath.IsEmpty()) return false;
   // only if they're both folders or both files do we do the full comparison
   if (left->m_bIsFolder == right->m_bIsFolder)
     return left->m_musicInfoTag.GetDuration() <= right->m_musicInfoTag.GetDuration();
@@ -242,8 +228,6 @@ bool SSortFileItem::SongDurationDescending(CFileItem *left, CFileItem *right)
   // special items
   if (left->IsParentFolder()) return true;
   if (right->IsParentFolder()) return false;
-  if (left->m_strPath.IsEmpty()) return true;
-  if (right->m_strPath.IsEmpty()) return false;
   // only if they're both folders or both files do we do the full comparison
   if (left->m_bIsFolder == right->m_bIsFolder)
     return left->m_musicInfoTag.GetDuration() >= right->m_musicInfoTag.GetDuration();
@@ -255,8 +239,6 @@ bool SSortFileItem::SongTitleAscending(CFileItem *left, CFileItem *right)
   // special cases
   if (left->IsParentFolder()) return true;
   if (right->IsParentFolder()) return false;
-  if (left->m_strPath.IsEmpty()) return true;
-  if (right->m_strPath.IsEmpty()) return false;
   // only if they're both folders or both files do we do the full comparison
   if (left->m_bIsFolder == right->m_bIsFolder)
   {
@@ -272,8 +254,6 @@ bool SSortFileItem::SongTitleDescending(CFileItem *left, CFileItem *right)
   // special cases
   if (left->IsParentFolder()) return true;
   if (right->IsParentFolder()) return false;
-  if (left->m_strPath.IsEmpty()) return true;
-  if (right->m_strPath.IsEmpty()) return false;
   // only if they're both folders or both files do we do the full comparison
   if (left->m_bIsFolder == right->m_bIsFolder)
   {
@@ -289,8 +269,6 @@ bool SSortFileItem::SongTitleAscendingNoThe(CFileItem *left, CFileItem *right)
   // special cases
   if (left->IsParentFolder()) return true;
   if (right->IsParentFolder()) return false;
-  if (left->m_strPath.IsEmpty()) return true;
-  if (right->m_strPath.IsEmpty()) return false;
   // only if they're both folders or both files do we do the full comparison
   if (left->m_bIsFolder == right->m_bIsFolder)
   {
@@ -308,8 +286,6 @@ bool SSortFileItem::SongTitleDescendingNoThe(CFileItem *left, CFileItem *right)
   // special cases
   if (left->IsParentFolder()) return true;
   if (right->IsParentFolder()) return false;
-  if (left->m_strPath.IsEmpty()) return true;
-  if (right->m_strPath.IsEmpty()) return false;
   // only if they're both folders or both files do we do the full comparison
   if (left->m_bIsFolder == right->m_bIsFolder)
   {
@@ -327,8 +303,6 @@ bool SSortFileItem::SongArtistAscending(CFileItem *left, CFileItem *right)
   // special cases
   if (left->IsParentFolder()) return true;
   if (right->IsParentFolder()) return false;
-  if (left->m_strPath.IsEmpty()) return true;
-  if (right->m_strPath.IsEmpty()) return false;
   // only if they're both folders or both files do we do the full comparison
   if (left->m_bIsFolder == right->m_bIsFolder)
   {
@@ -354,8 +328,6 @@ bool SSortFileItem::SongArtistDescending(CFileItem *left, CFileItem *right)
   // special cases
   if (left->IsParentFolder()) return true;
   if (right->IsParentFolder()) return false;
-  if (left->m_strPath.IsEmpty()) return true;
-  if (right->m_strPath.IsEmpty()) return false;
   // only if they're both folders or both files do we do the full comparison
   if (left->m_bIsFolder == right->m_bIsFolder)
   {
@@ -381,8 +353,6 @@ bool SSortFileItem::SongArtistAscendingNoThe(CFileItem *left, CFileItem *right)
   // special cases
   if (left->IsParentFolder()) return true;
   if (right->IsParentFolder()) return false;
-  if (left->m_strPath.IsEmpty()) return true;
-  if (right->m_strPath.IsEmpty()) return false;
   // only if they're both folders or both files do we do the full comparison
   if (left->m_bIsFolder == right->m_bIsFolder)
   {
@@ -412,8 +382,6 @@ bool SSortFileItem::SongArtistDescendingNoThe(CFileItem *left, CFileItem *right)
   // special cases
   if (left->IsParentFolder()) return true;
   if (right->IsParentFolder()) return false;
-  if (left->m_strPath.IsEmpty()) return true;
-  if (right->m_strPath.IsEmpty()) return false;
   // only if they're both folders or both files do we do the full comparison
   if (left->m_bIsFolder == right->m_bIsFolder)
   {
@@ -443,8 +411,6 @@ bool SSortFileItem::SongAlbumAscending(CFileItem *left, CFileItem *right)
   // special cases
   if (left->IsParentFolder()) return true;
   if (right->IsParentFolder()) return false;
-  if (left->m_strPath.IsEmpty()) return true;
-  if (right->m_strPath.IsEmpty()) return false;
   // only if they're both folders or both files do we do the full comparison
   if (left->m_bIsFolder == right->m_bIsFolder)
   {
@@ -470,8 +436,6 @@ bool SSortFileItem::SongAlbumDescending(CFileItem *left, CFileItem *right)
   // special cases
   if (left->IsParentFolder()) return true;
   if (right->IsParentFolder()) return false;
-  if (left->m_strPath.IsEmpty()) return true;
-  if (right->m_strPath.IsEmpty()) return false;
   // only if they're both folders or both files do we do the full comparison
   if (left->m_bIsFolder == right->m_bIsFolder)
   {
@@ -497,8 +461,6 @@ bool SSortFileItem::SongAlbumAscendingNoThe(CFileItem *left, CFileItem *right)
   // special cases
   if (left->IsParentFolder()) return true;
   if (right->IsParentFolder()) return false;
-  if (left->m_strPath.IsEmpty()) return true;
-  if (right->m_strPath.IsEmpty()) return false;
   // only if they're both folders or both files do we do the full comparison
   if (left->m_bIsFolder == right->m_bIsFolder)
   {
@@ -528,8 +490,6 @@ bool SSortFileItem::SongAlbumDescendingNoThe(CFileItem *left, CFileItem *right)
   // special cases
   if (left->IsParentFolder()) return true;
   if (right->IsParentFolder()) return false;
-  if (left->m_strPath.IsEmpty()) return true;
-  if (right->m_strPath.IsEmpty()) return false;
   // only if they're both folders or both files do we do the full comparison
   if (left->m_bIsFolder == right->m_bIsFolder)
   {
@@ -559,8 +519,6 @@ bool SSortFileItem::SongGenreAscending(CFileItem *left, CFileItem *right)
   // special items
   if (left->IsParentFolder()) return true;
   if (right->IsParentFolder()) return false;
-  if (left->m_strPath.IsEmpty()) return true;
-  if (right->m_strPath.IsEmpty()) return false;
   // only if they're both folders or both files do we do the full comparison
   if (left->m_bIsFolder == right->m_bIsFolder)
     return StringUtils::AlphaNumericCompare(left->m_musicInfoTag.GetGenre().c_str(),right->m_musicInfoTag.GetGenre().c_str()) <= 0;
@@ -572,8 +530,6 @@ bool SSortFileItem::SongGenreDescending(CFileItem *left, CFileItem *right)
   // special items
   if (left->IsParentFolder()) return true;
   if (right->IsParentFolder()) return false;
-  if (left->m_strPath.IsEmpty()) return true;
-  if (right->m_strPath.IsEmpty()) return false;
   // only if they're both folders or both files do we do the full comparison
   if (left->m_bIsFolder == right->m_bIsFolder)
     return StringUtils::AlphaNumericCompare(left->m_musicInfoTag.GetGenre().c_str(),right->m_musicInfoTag.GetGenre().c_str()) >= 0;
