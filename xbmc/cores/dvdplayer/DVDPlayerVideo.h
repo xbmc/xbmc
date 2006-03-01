@@ -2,7 +2,7 @@
 #pragma once
 
 #include "../../utils/thread.h"
-#include "DVDDemuxers\DVDPacketQueue.h"
+#include "DVDMessageQueue.h"
 #include "DVDDemuxers\DVDDemuxUtils.h"
 #include "DVDCodecs\Video\DVDVideoCodec.h"
 #include "DVDClock.h"
@@ -30,7 +30,8 @@ public:
   // waits untill all available data has been rendered
   // just waiting for packetqueue should be enough for video
   void WaitForBuffers()                             { m_packetQueue.WaitUntilEmpty(); }
-
+  bool AcceptsData()                                { return !m_packetQueue.IsFull(); }
+  
   void Update(bool bPauseDrawing)                   { g_renderManager.Update(bPauseDrawing); }
   void UpdateMenuPicture();
  
@@ -50,12 +51,10 @@ public:
   
   __int64 GetCurrentPts()                           { return m_iCurrentPts; }
 
-  void SetSpeed(int iSpeed)                         { m_iSpeed = iSpeed; }
+  void SetSpeed(int iSpeed);
 
-  int m_iSpeed;
-    
   // classes
-  CDVDPacketQueue m_packetQueue;
+  CDVDMessageQueue m_packetQueue;
   CDVDOverlayContainer* m_pOverlayContainer;
   
   CDVDClock* m_pClock;
@@ -90,6 +89,7 @@ protected:
   float m_fForcedAspectRatio;
   
   int m_iNrOfPicturesNotToSkip;
+  int m_speed;
   
   // classes
   CDVDDemuxSPU* m_pDVDSpu;
