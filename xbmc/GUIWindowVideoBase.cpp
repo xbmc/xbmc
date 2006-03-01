@@ -306,7 +306,12 @@ void CGUIWindowVideoBase::ShowIMDB(const CStdString& strMovie, const CStdString&
           pDlgInfo->DoModal(GetID());
           bFound = true;
           bUpdate = true;
-          if ( !pDlgInfo->NeedRefresh() ) return ;
+          if ( !pDlgInfo->NeedRefresh() )
+          {
+            if (bFolder)
+              ApplyIMDBThumbToFolder(strFolder, movieDetails.m_strIMDBNumber);
+            goto update;
+          }
           m_database.DeleteMovieInfo(strFile);
         }
       }
@@ -408,27 +413,7 @@ void CGUIWindowVideoBase::ShowIMDB(const CStdString& strMovie, const CStdString&
               {
                 bUpdate = true;
                 if (bFolder)
-                {
-                  // copy icon to folder also;
-                  CStdString strThumbOrg;
-                  CUtil::GetVideoThumbnail(movieDetails.m_strIMDBNumber, strThumbOrg);
-                  if (CFile::Exists(strThumbOrg))
-                  {
-                    CStdString strFolderImage;
-                    CUtil::AddFileToFolder(strFolder, "folder.jpg", strFolderImage);
-                    CFileItem folder(strFolder, true);
-                    if (folder.IsRemote() || folder.IsOnDVD())
-                    {
-                      CStdString strThumb;
-                      CUtil::GetThumbnail( strFolderImage, strThumb);
-                      CFile::Cache(strThumbOrg.c_str(), strThumb.c_str(), NULL, NULL);
-                    }
-                    else
-                    {
-                      CFile::Cache(strThumbOrg.c_str(), strFolderImage.c_str(), NULL, NULL);
-                    }
-                  }
-                }
+                  ApplyIMDBThumbToFolder(strFolder, movieDetails.m_strIMDBNumber);
               }
               else
               {
@@ -479,6 +464,7 @@ void CGUIWindowVideoBase::ShowIMDB(const CStdString& strMovie, const CStdString&
   }
   while (bContinue);
 
+update:
   if (bUpdate)
   {
     int iSelectedItem = m_viewControl.GetSelectedItem();
@@ -1182,3 +1168,71 @@ CStdString CGUIWindowVideoBase::GetnfoFile(const CStdString &strFile, bool bFold
 
   return nfoFile;
 }
+
+void CGUIWindowVideoBase::SetDatabaseDirectory(const VECMOVIES &movies, CFileItemList &items)
+{
+  for (int i = 0; i < (int)movies.size(); ++i)
+  {
+    CIMDBMovie movie = movies[i];
+    // add the appropiate movies to m_vecItems based on the showmode
+    if (
+      (m_iShowMode == VIDEO_SHOW_ALL) ||
+      (m_iShowMode == VIDEO_SHOW_WATCHED && movie.m_bWatched == true) ||
+      (m_iShowMode == VIDEO_SHOW_UNWATCHED && movie.m_bWatched == false)
+      )
+    {
+      // mark watched movies when showing all
+      CStdString strTitle = movie.m_strTitle;
+      CFileItem *pItem = new CFileItem(strTitle);
+      pItem->m_strTitle=strTitle;
+      pItem->m_strPath = movie.m_strFileNameAndPath;
+      pItem->m_bIsFolder = false;
+      pItem->m_bIsShareOrDrive = false;
+      pItem->SetThumb();
+      
+      if (!pItem->HasThumbnail())
+      {
+        CStdString strThumb;
+        CUtil::GetVideoThumbnail(movie.m_strIMDBNumber, strThumb);
+        if (CFile::Exists(strThumb))
+          pItem->SetThumbnailImage(strThumb);
+      }
+      pItem->m_fRating = movie.m_fRating;
+      pItem->m_stTime.wYear = movie.m_iYear;
+      pItem->m_strDVDLabel = movie.m_strDVDLabel;
+      pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED,movie.m_bWatched);
+
+      // Hack for extra info
+      pItem->m_musicInfoTag.SetTitle(movie.m_strTitle);
+      pItem->m_musicInfoTag.SetArtist(movie.m_strDirector);
+      pItem->m_musicInfoTag.SetGenre(movie.m_strGenre);
+      // End hack for extra info
+
+      m_vecItems.Add(pItem);
+    }
+  }
+}
+
+void CGUIWindowVideoBase::ApplyIMDBThumbToFolder(const CStdString &folder, const CStdString &imdbNumber)
+{
+  // copy icon to folder also;
+  CStdString strThumbOrg;
+  CUtil::GetVideoThumbnail(imdbNumber, strThumbOrg);
+  if (CFile::Exists(strThumbOrg))
+  {
+    CStdString strFolderImage;
+    CUtil::AddFileToFolder(folder, "folder.jpg", strFolderImage);
+    CFileItem folderItem(folder, true);
+    if (folderItem.IsRemote() || folderItem.IsOnDVD())
+    {
+      CStdString strThumb;
+      CUtil::GetThumbnail( strFolderImage, strThumb);
+      CFile::Cache(strThumbOrg.c_str(), strThumb.c_str(), NULL, NULL);
+    }
+    else
+    {
+      CFile::Cache(strThumbOrg.c_str(), strFolderImage.c_str(), NULL, NULL);
+    }
+  }
+}
+

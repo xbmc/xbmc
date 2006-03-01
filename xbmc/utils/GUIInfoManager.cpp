@@ -162,6 +162,7 @@ extern char g_szTitleIP[32];
 #define LISTITEM_YEAR               316
 #define LISTITEM_GENRE              317
 #define LISTITEM_ICON               318
+#define LISTITEM_DIRECTOR           319
 
 #define PLAYLIST_LENGTH             390
 #define PLAYLIST_POSITION           391
@@ -733,6 +734,7 @@ wstring CGUIInfoManager::GetLabel(int info)
   case LISTITEM_ALBUM:
   case LISTITEM_YEAR:
   case LISTITEM_GENRE:
+  case LISTITEM_DIRECTOR:
     {
       CGUIWindow *pWindow = m_gWindowManager.GetWindow(m_gWindowManager.GetActiveWindow());
       if (pWindow && pWindow->IsMediaWindow())
@@ -1924,7 +1926,11 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info)
     track.Format("%i", item->m_musicInfoTag.GetTrackNumber());
     return track;
   }
-  else if (info == LISTITEM_ARTIST) return item->m_musicInfoTag.GetArtist();
+  else if (info == LISTITEM_ARTIST || info == LISTITEM_DIRECTOR)
+  {
+    // HACK - director info is injected as the artist tag
+    return item->m_musicInfoTag.GetArtist();
+  }
   else if (info == LISTITEM_ALBUM) return item->m_musicInfoTag.GetAlbum();
   else if (info == LISTITEM_YEAR) return item->m_musicInfoTag.GetYear();
   else if (info == LISTITEM_GENRE) return item->m_musicInfoTag.GetGenre();
