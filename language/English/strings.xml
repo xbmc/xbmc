@@ -612,6 +612,7 @@
   <string><id>1029</id><value>Enter the new label</value></string>
   <string><id>1030</id><value>an image</value></string>
   <string><id>1031</id><value>an image folder</value></string>
+  <string><id>1032</id><value>Add Network Location...</value></string>
 
   <string><id>1200</id><value>SMB Share</value></string>
   <string><id>1201</id><value>SMB IP</value></string>
