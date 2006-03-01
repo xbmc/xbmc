@@ -1202,6 +1202,33 @@ void CVideoDatabase::AddBookMarkToMovie(const CStdString& strFilenameAndPath, co
   }
 }
 
+void CVideoDatabase::ClearBookMarkOfVideo(const CStdString& strFilenameAndPath, CBookmark& bookmark)
+{
+  try
+  {
+    long lPathId, lMovieId;
+    long lFileId = GetFile(strFilenameAndPath, lPathId, lMovieId, true);
+    if (lFileId < 0) return ;
+    if (NULL == m_pDB.get()) return ;
+    if (NULL == m_pDS.get()) return ;
+
+    CStdString strSQL=FormatSQL("select idBookmark from bookmark where idFile=%i and type=0 and timeInSeconds=%i", lFileId,bookmark.timeInSeconds);
+    m_pDS->query( strSQL.c_str() );
+    if (m_pDS->num_rows() != 0)
+    {
+      int idBookmark = m_pDS->get_field_value("idBookmark").get_asInteger();
+      strSQL=FormatSQL("delete from bookmark where idFile=%i and idBookmark=%i",lFileId,idBookmark);
+      m_pDS->exec(strSQL.c_str());
+    }
+
+    m_pDS->close();
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "CVideoDatabase::ClearBookMarkOfMovie(%s) failed", strFilenameAndPath.c_str());
+  }
+}
+
 //********************************************************************************************************************************
 void CVideoDatabase::ClearBookMarksOfMovie(const CStdString& strFilenameAndPath)
 {
