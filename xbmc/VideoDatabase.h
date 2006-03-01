@@ -59,6 +59,7 @@ public:
   void GetMoviesByPath(CStdString& strPath1, VECMOVIES& movies);
   void GetBookMarksForMovie(const CStdString& strFilenameAndPath, VECBOOKMARKS& bookmarks);
   void AddBookMarkToMovie(const CStdString& strFilenameAndPath, const CBookmark &bookmark, bool bResumeMark = false);
+  void ClearBookMarkOfVideo(const CStdString& strFilenameAndPath, CBookmark& bookmark);
   void ClearBookMarksOfMovie(const CStdString& strFilenameAndPath);
   void DeleteMovie(const CStdString& strFilenameAndPath);
   void GetDVDLabel(long lMovieId, CStdString& strDVDLabel);
