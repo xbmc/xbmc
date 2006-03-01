@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 01-03-2006 fixed: COntrol focus issues in Settings Category.
  - 01-03-2006 added: ListItem.Genre, ListItem.Director, ListItem.Year, ListItem.Title now work for Videos.
  - 01-03-2006 fixed: IMDb lookup stripping of filenames wasn't as good as it could be.
  - 01-03-2006 fixed: Lookup via a .nfo file on a folder would not set the folder icon.
