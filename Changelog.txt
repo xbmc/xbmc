@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 01-03-2006 fixed: IMDb lookups weren't matched correctly from My Files so were looked up again unnecessarily.
  - 28-02-2006 fixed: Mouse didn't reset the idle timer.
  - 28-02-2006 added: Controlgroup focus is now saved on window exit.
  - 28-02-2006 fixed: Actions could be sent to modal dialogs that were animating out.

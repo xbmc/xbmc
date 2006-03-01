@@ -239,12 +239,10 @@ long CVideoDatabase::GetMovieInfo(const CStdString& strFilenameAndPath)
 
     // needed for query parameters
     CStdString strPath, strFile;
-    CUtil::Split(strFilenameAndPath, strPath, strFile);
-    if (CUtil::HasSlashAtEnd(strPath))
-      strPath.Delete(strPath.size()-1);
+    Split(strFilenameAndPath, strPath, strFile);
 
     // have to join movieinfo table for correct results
-    CStdString strSQL=FormatSQL("select * from movie join path on movie.idPath = path.idPath join movieinfo on movie.idMovie = movieinfo.idMovie join files on movie.idMovie = files.idMovie where (path.strPath = '%s' or path.strPath = 'stack://%s') and files.strFilename LIKE '%%%s%%'", strPath.c_str(), strPath.c_str(), strFile.c_str());
+    CStdString strSQL=FormatSQL("select * from movie join path on movie.idPath = path.idPath join movieinfo on movie.idMovie = movieinfo.idMovie join files on movie.idMovie = files.idMovie where (path.strPath like '%s' or path.strPath like 'stack://%s') and files.strFilename LIKE '%%%s%%'", strPath.c_str(), strPath.c_str(), strFile.c_str());
     CLog::Log(LOGDEBUG,"CVideoDatabase::GetMovieInfo(%s), query = %s", strFilenameAndPath.c_str(), strSQL.c_str());
     m_pDS->query(strSQL.c_str());
     if (m_pDS->num_rows() > 0)
@@ -256,7 +254,7 @@ long CVideoDatabase::GetMovieInfo(const CStdString& strFilenameAndPath)
         CLog::Log(LOGDEBUG,"  Testing [%s]", strTest.c_str());
 
         // exact file match
-        if (strFilenameAndPath.Equals(strTest))
+        if (strFilenameAndPath.CompareNoCase(strTest) == 0)
           lMovieId = m_pDS->fv("movieinfo.idMovie").get_asLong();
 
         // file may be part of a stacked path
@@ -267,7 +265,7 @@ long CVideoDatabase::GetMovieInfo(const CStdString& strFilenameAndPath)
           dir.GetDirectory(strTest, items);
           for (int i = 0; i < items.Size(); ++i)
           {
-            if (strFilenameAndPath.Equals(items[i]->m_strPath))
+            if (strFilenameAndPath.CompareNoCase(items[i]->m_strPath) == 0)
             {
               lMovieId = m_pDS->fv("movieinfo.idMovie").get_asLong();
               break;
