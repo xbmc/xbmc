@@ -2409,6 +2409,18 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\cores\dvdplayer\DVDDemuxSPU.h">
 				</File>
 				<File
+					RelativePath=".\xbmc\cores\dvdplayer\DVDMessage.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\dvdplayer\DVDMessage.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\dvdplayer\DVDMessageQueue.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\dvdplayer\DVDMessageQueue.h">
+				</File>
+				<File
 					RelativePath=".\xbmc\cores\dvdplayer\DVDOverlay.h">
 				</File>
 				<File
@@ -2617,12 +2629,6 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					</File>
 					<File
 						RelativePath=".\xbmc\cores\dvdplayer\DVDDemuxers\DVDFactoryDemuxer.h">
-					</File>
-					<File
-						RelativePath=".\xbmc\cores\dvdplayer\DVDDemuxers\DVDPacketQueue.cpp">
-					</File>
-					<File
-						RelativePath=".\xbmc\cores\dvdplayer\DVDDemuxers\DVDPacketQueue.h">
 					</File>
 				</Filter>
 				<Filter

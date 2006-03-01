@@ -639,6 +639,8 @@ LONG WINAPI CApplication::UnhandledExceptionFilter(struct _EXCEPTION_POINTERS *E
 
   return ExceptionInfo->ExceptionRecord->ExceptionCode;
 }
+#include "xbox/undocumented.h"
+extern "C" HANDLE __stdcall KeGetCurrentThread(VOID);
 
 HRESULT CApplication::Create()
 {

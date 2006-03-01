@@ -5,7 +5,7 @@
 
 #define FILETIME_TO_ULARGE_INTEGER(ularge, filetime) { ularge.HighPart = filetime.dwHighDateTime; ularge.LowPart = filetime.dwLowDateTime; }
 
-class CDVDPacketQueue;
+class CDVDMessageQueue;
 
 typedef struct stProcessPerformance
 {
@@ -27,10 +27,10 @@ public:
   void Lock()                                       { EnterCriticalSection(&m_critSection); }
   void Unlock()                                     { LeaveCriticalSection(&m_critSection); }
   
-  void EnableAudioQueue(CDVDPacketQueue* pQueue)    { Lock(); m_pAudioQueue = pQueue; Unlock(); }
+  void EnableAudioQueue(CDVDMessageQueue* pQueue)   { Lock(); m_pAudioQueue = pQueue; Unlock(); }
   void DisableAudioQueue()                          { Lock(); m_pAudioQueue = NULL; Unlock(); }
 
-  void EnableVideoQueue(CDVDPacketQueue* pQueue)    { Lock(); m_pVideoQueue = pQueue; Unlock(); }
+  void EnableVideoQueue(CDVDMessageQueue* pQueue)   { Lock(); m_pVideoQueue = pQueue; Unlock(); }
   void DisableVideoQueue()                          { Lock(); m_pVideoQueue = NULL; Unlock(); }
   
   void EnableVideoDecodePerformance(HANDLE hThread) { Lock(); m_videoDecodePerformance.hThread = hThread; Unlock(); }
@@ -42,8 +42,8 @@ public:
   void EnableMainPerformance(HANDLE hThread)        { Lock(); m_mainPerformance.hThread = hThread; Unlock(); }
   void DisableMainPerformance()                     { Lock(); m_mainPerformance.hThread = NULL; Unlock(); }
 
-  CDVDPacketQueue*          m_pAudioQueue;
-  CDVDPacketQueue*          m_pVideoQueue;
+  CDVDMessageQueue*         m_pAudioQueue;
+  CDVDMessageQueue*         m_pVideoQueue;
   
   ProcessPerformance        m_videoDecodePerformance;
   ProcessPerformance        m_audioDecodePerformance;
