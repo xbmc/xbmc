@@ -97,8 +97,7 @@ bool CGUIWindowVideoTitle::GetDirectory(const CStdString &strDirectory, CFileIte
       pItem->m_fRating = movie.m_fRating;
       pItem->m_stTime.wYear = movie.m_iYear & 0xFFFF;
       pItem->m_strDVDLabel = movie.m_strDVDLabel;
-      if (!movie.m_bWatched)
-        pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED);
+      pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED,movie.m_bWatched);
       items.Add(pItem);
     }
   }
