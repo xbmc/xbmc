@@ -85,7 +85,7 @@ IFileDirectory* CFactoryFileDirectory::Create(const CStdString& strPath, CFileIt
 
     return NULL;
   }
-  if (strExtension.Equals(".rar"))
+  if (strExtension.Equals(".rar") || strExtension.Equals(".001"))
   {
     CStdString strUrl; strUrl.Format("rar://Z:\\,2,,%s,\\",strPath.c_str());
     std::vector<CStdString> tokens;
