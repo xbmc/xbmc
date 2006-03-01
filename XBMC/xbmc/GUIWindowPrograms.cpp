@@ -402,7 +402,13 @@ bool CGUIWindowPrograms::OnPopupMenu(int iItem)
       }
     }
     if (btnid == btn_ScanTrainers)
+    {
       PopulateTrainersList();
+      SetOverlayIcons();
+      m_guiState.reset(CGUIViewState::GetViewState(GetID(), m_vecItems));
+      OnSort();
+      UpdateButtons();
+    }
     if (btnid == btn_Settings)
     {
       //MasterPassword
@@ -1164,7 +1170,7 @@ void CGUIWindowPrograms::PopulateTrainersList()
 
   CLog::Log(LOGDEBUG,"trainerpath %s",g_stSettings.m_szTrainerDirectory);
   directory.GetDirectory(g_stSettings.m_szTrainerDirectory,trainers,".xbtf|.etm");
-  directory.GetDirectory(g_stSettings.m_szTrainerDirectory,archives,".rar"); // TODO: ZIP SUPPORT
+  directory.GetDirectory(g_stSettings.m_szTrainerDirectory,archives,".rar",false); // TODO: ZIP SUPPORT
   for( int i=0;i<archives.Size();++i)
   {
     if (stricmp(CUtil::GetExtension(archives[i]->m_strPath),".rar") == 0)
