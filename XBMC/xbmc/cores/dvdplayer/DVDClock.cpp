@@ -47,15 +47,14 @@ __int64 CDVDClock::GetClock()
 
 void CDVDClock::SetSpeed(int iSpeed)
 {
-    // this will sometimes be a little bit of due to rounding errors, ie clock might jump abit when changing speed
-    CExclusiveLock lock(m_critSection);
-    LARGE_INTEGER current;
-    __int64 newfreq = m_systemFrequency.QuadPart / iSpeed;
-    
-    QueryPerformanceCounter(&current);
-    m_startClock.QuadPart = current.QuadPart - ( newfreq * (current.QuadPart - m_startClock.QuadPart) ) / m_systemUsed.QuadPart;
-    m_systemUsed.QuadPart = newfreq;    
-
+  // this will sometimes be a little bit of due to rounding errors, ie clock might jump abit when changing speed
+  CExclusiveLock lock(m_critSection);
+  LARGE_INTEGER current;
+  __int64 newfreq = m_systemFrequency.QuadPart / iSpeed;
+  
+  QueryPerformanceCounter(&current);
+  m_startClock.QuadPart = current.QuadPart - ( newfreq * (current.QuadPart - m_startClock.QuadPart) ) / m_systemUsed.QuadPart;
+  m_systemUsed.QuadPart = newfreq;    
 }
 
 void CDVDClock::Discontinuity(ClockDiscontinuityType type, __int64 currentPts)
