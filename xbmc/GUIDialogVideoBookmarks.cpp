@@ -54,7 +54,22 @@ bool CGUIDialogVideoBookmarks::OnMessage(CGUIMessage& message)
       else if (m_viewControl.HasControl(iControl))  // list/thumb control
       {
         int iItem = m_viewControl.GetSelectedItem();
-        GotoBookmark(iItem);
+        int iAction = message.GetParam1();
+        if (iAction == ACTION_DELETE_ITEM)
+        {
+          // open the d/b and retrieve the bookmarks for the current movie
+          CVideoDatabase videoDatabase;
+          videoDatabase.Open();
+          
+          VECBOOKMARKS bookmarks;
+          videoDatabase.GetBookMarksForMovie(g_application.CurrentFile(), bookmarks);
+
+          videoDatabase.ClearBookMarkOfVideo(g_application.CurrentFile(),bookmarks[iItem]);
+          videoDatabase.Close();
+          Update();
+        }
+        else
+          GotoBookmark(iItem);
       }
     }
     break;
@@ -68,6 +83,7 @@ bool CGUIDialogVideoBookmarks::OnMessage(CGUIMessage& message)
     }
     break;
   }
+
   return CGUIDialog::OnMessage(message);
 }
 
