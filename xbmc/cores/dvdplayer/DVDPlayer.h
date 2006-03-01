@@ -4,7 +4,7 @@
 
 #include "IDVDPlayer.h"
 
-#include "DVDDemuxers\DVDPacketQueue.h"
+#include "DVDMessageQueue.h"
 #include "DVDDemuxSPU.h"
 #include "DVDClock.h"
 #include "DVDPlayerAudio.h"
@@ -21,13 +21,8 @@ class CDVDDemux;
 class CDemuxStreamVideo;
 class CDemuxStreamAudio;
 
-#define DVDSTATE_NORMAL 0x00000001 // normal dvd state
-#define DVDSTATE_STILL  0x00000002 // currently displaying a still frame
-
-#define DVDPACKET_MESSAGE_RESYNC 0x00000001 // will be set in a packet to signal that we have an discontinuity
-#define DVDPACKET_MESSAGE_STILL  0x00000002
-#define DVDPACKET_MESSAGE_NOSKIP 0x00000004
-#define DVDPACKET_MESSAGE_FLUSH  0x00000008
+#define DVDSTATE_NORMAL           0x00000001 // normal dvd state
+#define DVDSTATE_STILL            0x00000002 // currently displaying a still frame
 
 typedef struct DVDInfo
 {
@@ -123,8 +118,8 @@ public:
   virtual int OnDVDNavResult(void* pData, int iMessage);
   
 private:
-  void LockStreams()   { EnterCriticalSection(&m_critStreamSection); }
-  void UnlockStreams() { LeaveCriticalSection(&m_critStreamSection); }
+  void LockStreams()                                            { EnterCriticalSection(&m_critStreamSection); }
+  void UnlockStreams()                                          { LeaveCriticalSection(&m_critStreamSection); }
   
   virtual void OnStartup();
   virtual void OnExit();
@@ -141,6 +136,12 @@ private:
   void ProcessAudioData(CDemuxStream* pStream, CDVDDemux::DemuxPacket* pPacket);
   void ProcessVideoData(CDemuxStream* pStream, CDVDDemux::DemuxPacket* pPacket);
   void ProcessSubData(CDemuxStream* pStream, CDVDDemux::DemuxPacket* pPacket);
+  
+  /**
+   * one of the DVD_PLAYSPEED defines
+   */
+  void SetPlaySpeed(int iSpeed);
+  int GetPlaySpeed()                                                { return m_playSpeed; }
   
   __int64 GetTotalTimeInMsec();
   void FlushBuffers();
@@ -160,7 +161,7 @@ private:
   int m_iCurrentStreamAudio;
   int m_iCurrentStreamSubtitle;
 
-  int m_iSpeed; // 1 is normal speed, 0 is paused
+  int m_playSpeed;
   
   // classes
   CDVDPlayerAudio m_dvdPlayerAudio; // audio part
