@@ -2,9 +2,7 @@
 #include "SortFileItem.h"
 
 // TODO:
-// 1. Find cases where empty path makes sense (only MusicNav??)
-//
-// 2. See if the special case stuff can be moved out.  Problems are that you
+// 1. See if the special case stuff can be moved out.  Problems are that you
 //    have to keep the parent folder item separate from all other items in order
 //    to guarantee correct sort order.
 //
