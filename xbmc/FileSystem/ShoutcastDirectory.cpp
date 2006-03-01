@@ -266,9 +266,12 @@ bool CShoutcastDirectory::GetDirectory(const CStdString& strPath, CFileItemList 
   {
     if (IsCacheValid())
       LoadCachedItems(items);
+    else if (!DownloadPlaylists(items))
+    {
+      return false;
+    }
     else
     {
-      DownloadPlaylists(items);
       CLog::DebugLog("Returned from Parsing");
       CacheItems(items);
     }
