@@ -122,6 +122,7 @@ const CFileItem& CFileItem::operator=(const CFileItem& item)
   m_strDVDLabel = item.m_strDVDLabel;
   m_strTitle = item.m_strTitle;
   m_iprogramCount = item.m_iprogramCount;
+  m_idepth = item.m_idepth;
   m_iLockMode = item.m_iLockMode;
   m_strLockCode = item.m_strLockCode;
   m_iBadPwdCount = item.m_iBadPwdCount;

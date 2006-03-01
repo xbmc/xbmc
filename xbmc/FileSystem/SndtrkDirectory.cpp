@@ -36,6 +36,7 @@ bool CSndtrkDirectory::GetDirectory(const CStdString& strPath, CFileItemList &it
           datastorage.push_back(stInfo);
           CFileItem *pItem = new CFileItem(stData.szName);
           pItem->m_strPath = strRoot;
+          pItem->SetLabelPreformated(true);
           char tmpvar[4];
           itoa (stData.uSoundtrackId, tmpvar, 10);
           pItem->m_strPath += tmpvar;
@@ -97,10 +98,7 @@ bool CSndtrkDirectory::GetDirectory(const CStdString& strPath, CFileItemList &it
 
 bool CSndtrkDirectory::IsAlone(const CStdString& strPath)
 {
-  char tmpvar[33] = "soundtrack://";
-  if (strcmp(tmpvar, strPath) != 0)
-    return false;
-  return true;
+  return (strcmp("soundtrack://", strPath) == 0);
 }
 
 bool CSndtrkDirectory::FindTrackName(const CStdString& strPath, char *NameOfSong)
