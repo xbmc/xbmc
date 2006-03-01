@@ -220,13 +220,34 @@ void AddTag(char *szXML, const char *url, const char *title, const char *year = 
   free(ansiTitle);
 }
 
+char *RemoveTags(char *text)
+{
+  if (!text) return NULL;
+	bool inTag = false;
+	int pos = 0;
+	char* out = (char *)malloc(strlen(text)+1);
+	for (unsigned int i = 0; i < strlen(text); i++)
+	{
+		if (text[i] == '<')
+			inTag = true;
+		else if (text[i] == '>')
+			inTag = false;
+		else if (!inTag)
+			out[pos++] = text[i];
+	}
+	out[pos] = '\0';
+  return out;
+}
+
 void AddDetailsTag(char *szXML, const char *tag, const char *value)
 {
   char *ansiValue = ConvertHTMLToAnsi(value);
   if (!szXML || !ansiValue || !tag)
     return;
-  sprintf(szXML, "%s\t<%s>%s</%s>\n", szXML, tag, RemoveWhiteSpace(ansiValue), tag);
+  char *ansiStripped = RemoveTags(ansiValue);
   free(ansiValue);
+  sprintf(szXML, "%s\t<%s>%s</%s>\n", szXML, tag, RemoveWhiteSpace(ansiStripped), tag);
+  free(ansiStripped);
 }
 
 void ParseDetails(char *szXML, const char *szHTML, const char *tag, const char *regexp)
@@ -489,20 +510,7 @@ extern "C"
 			  if (plotend) *plotend=0;
 
 			  // Remove any tags that may appear in the text
-			  bool inTag = false;
-			  int iPlot = 0;
-			  char* plot = (char *)malloc(strlen(plotstart)+1);
-			  for (unsigned int i = 0; i < strlen(plotstart); i++)
-			  {
-				  if (plotstart[i] == '<')
-					  inTag = true;
-				  else if (plotstart[i] == '>')
-					  inTag = false;
-				  else if (!inTag)
-					  plot[iPlot++] = plotstart[i];
-			  }
-			  plot[iPlot] = '\0';
-
+			  char* plot = RemoveTags(plotstart);
         AddDetailsTag(szXML, "plot", plot);
         free(plot);
 		  }

@@ -305,7 +305,7 @@ bool CGUIVisualisationControl::OnMessage(CGUIMessage &message)
 {
   if (message.GetMessage() == GUI_MSG_GET_VISUALISATION)
   {
-    message.SetLPVOID(m_pVisualisation);
+    message.SetLPVOID(GetVisualisation());
     return true;
   }
   else if (message.GetMessage() == GUI_MSG_VISUALISATION_ACTION)
@@ -357,4 +357,11 @@ void CGUIVisualisationControl::FreeResources()
 {
   FreeVisualisation();
   CGUIControl::FreeResources();
+}
+
+CVisualisation *CGUIVisualisationControl::GetVisualisation()
+{
+  CSingleLock lock (m_critSection);
+  CLog::Log(LOGDEBUG, "GetVisualisation called on id %i, parent %i", GetID(), GetParentID());
+  return m_pVisualisation;
 }
