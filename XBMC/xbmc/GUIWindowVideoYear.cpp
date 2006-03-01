@@ -104,15 +104,19 @@ bool CGUIWindowVideoYear::GetDirectory(const CStdString &strDirectory, CFileItem
         // mark watched movies when showing all
         CStdString strTitle = movie.m_strTitle;
         CFileItem *pItem = new CFileItem(strTitle);
-        pItem->m_strPath = movie.m_strSearchString;
+        pItem->m_strPath = movie.m_strFileNameAndPath;
         pItem->m_strTitle=strTitle;
         pItem->m_bIsFolder = false;
         pItem->m_bIsShareOrDrive = false;
-
-        CStdString strThumb;
-        CUtil::GetVideoThumbnail(movie.m_strIMDBNumber, strThumb);
-        if (CFile::Exists(strThumb))
-          pItem->SetThumbnailImage(strThumb);
+        pItem->SetThumb();
+        
+        if (!pItem->HasThumbnail())
+        {
+          CStdString strThumb;
+          CUtil::GetVideoThumbnail(movie.m_strIMDBNumber, strThumb);
+          if (CFile::Exists(strThumb))
+            pItem->SetThumbnailImage(strThumb);
+        }
         pItem->m_fRating = movie.m_fRating;
         pItem->m_stTime.wYear = movie.m_iYear;
         pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED,movie.m_bWatched);
