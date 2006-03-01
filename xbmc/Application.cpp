@@ -1890,28 +1890,6 @@ void CApplication::Render()
 
   m_gWindowManager.UpdateModelessVisibility();
 
-  // render current window/dialog
-  m_gWindowManager.Render();
-
-  {
-    // if we're recording an audio stream then show blinking REC
-    if (IsPlayingAudio())
-    {
-      if (m_pPlayer->IsRecording() )
-      {
-        static iBlinkRecord = 0;
-        CGUIFont* pFont = g_fontManager.GetFont("font13");
-        if (pFont)
-        {
-          iBlinkRecord++;
-          if (iBlinkRecord > 25)
-            pFont->DrawText(60, 50, 0xffff0000, 0, L"REC"); //Draw REC in RED
-          if (iBlinkRecord > 50)
-            iBlinkRecord = 0;
-        }
-      }
-    }
-  }
   // check if we're playing a file
   if (m_gWindowManager.IsOverlayAllowed())
   {
@@ -1939,6 +1917,30 @@ void CApplication::Render()
     m_guiMusicOverlay.Close(true);
     m_guiVideoOverlay.Close(true);
   }
+
+  // render current window/dialog
+  m_gWindowManager.Render();
+
+  {
+    // if we're recording an audio stream then show blinking REC
+    if (IsPlayingAudio())
+    {
+      if (m_pPlayer->IsRecording() )
+      {
+        static iBlinkRecord = 0;
+        CGUIFont* pFont = g_fontManager.GetFont("font13");
+        if (pFont)
+        {
+          iBlinkRecord++;
+          if (iBlinkRecord > 25)
+            pFont->DrawText(60, 50, 0xffff0000, 0, L"REC"); //Draw REC in RED
+          if (iBlinkRecord > 50)
+            iBlinkRecord = 0;
+        }
+      }
+    }
+  }
+
   // Now render any dialogs
   m_gWindowManager.RenderDialogs();
 
