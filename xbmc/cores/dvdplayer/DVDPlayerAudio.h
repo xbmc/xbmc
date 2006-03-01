@@ -3,7 +3,7 @@
 
 #include "DVDAudio.h"
 #include "DVDClock.h"
-#include "DVDDemuxers\DVDPacketQueue.h"
+#include "DVDMessageQueue.h"
 #include "DVDDemuxers\DVDDemuxUtils.h"
 
 class CDVDPlayer;
@@ -35,15 +35,13 @@ public:
 
   bool OpenStream(CDemuxStreamAudio *pDemuxStream);
   void CloseStream(bool bWaitForBuffers);
-
-  void Pause()                                          { m_dvdAudio.Pause(); }
-  void Resume()                                         { m_dvdAudio.Resume(); }
+  
+  void SetSpeed(int speed);
   void Flush();
 
   // waits untill all available data has been rendered  
   void WaitForBuffers();
- 
-  void SetSpeed(int iSpeed)                             { m_iSpeed = iSpeed; }
+  bool AcceptsData()                                    { return !m_packetQueue.IsFull(); }
 
   void DoWork()                                         { m_dvdAudio.DoWork(); }
 
@@ -53,7 +51,7 @@ public:
   CodecID m_codec;    // codec id of the current active stream
   int m_iSourceChannels; // number of audio channels for the current active stream
   
-  CDVDPacketQueue m_packetQueue;
+  CDVDMessageQueue m_packetQueue;
   
   __int64 GetCurrentPts();
 
@@ -78,7 +76,7 @@ protected:
   CDVDClock* m_pClock; // dvd master clock
   CDVDAudioCodec* m_pAudioCodec; // audio codec
 
-  int m_iSpeed;  // wanted playback speed. if playback speed!=1, don't sync clock as it will loose track of position after seek
+  int m_speed;  // wanted playback speed. if playback speed!=DVD_PLAYSPEED_NORMAL, don't sync clock as it will loose track of position after seek
 
   typedef struct {__int64 pts; __int64 timestamp;} TPTSItem;
   TPTSItem m_currentPTSItem;

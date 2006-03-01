@@ -23,13 +23,13 @@ CDVDPlayerVideo::CDVDPlayerVideo(CDVDClock* pClock, CDVDOverlayContainer* pOverl
   m_pVideoCodec = NULL;
   m_bInitializedOutputDevice = false;
   
-  m_iSpeed = 1;
+  SetSpeed(DVD_PLAYSPEED_NORMAL);
   m_bRenderSubs = false;
   m_iVideoDelay = 0;
   m_fForcedAspectRatio = 0;
   m_iNrOfPicturesNotToSkip = 0;
   InitializeCriticalSection(&m_critCodecSection);
-  m_packetQueue.SetMaxSize(5 * 256 * 1024); // 1310720
+  m_packetQueue.SetMaxDataSize(5 * 256 * 1024); // 1310720
   g_dvdPerformanceCounter.EnableVideoQueue(&m_packetQueue);
   
   m_iCurrentPts = DVD_NOPTS_VALUE;
@@ -118,13 +118,11 @@ void CDVDPlayerVideo::Process()
 {
   CLog::Log(LOGNOTICE, "running thread: video_thread");
 
-  CDVDDemux::DemuxPacket* pPacket;
   DVDVideoPicture picture;
   CDVDVideoPPFFmpeg mDeinterlace(CDVDVideoPPFFmpeg::ED_DEINT_FFMPEG);
 
   memset(&picture, 0, sizeof(DVDVideoPicture));
   
-  int dvdstate;
   __int64 pts = 0;
 
   unsigned int iFrameTime = (unsigned int)(DVD_TIME_BASE / m_fFrameRate) ;  
@@ -136,12 +134,16 @@ void CDVDPlayerVideo::Process()
 
   while (!m_bStop)
   {
-    while (m_iSpeed == 0 && !m_packetQueue.RecievedAbortRequest()) Sleep(5);
+    while (m_speed == DVD_PLAYSPEED_PAUSE && !m_packetQueue.RecievedAbortRequest()) Sleep(5);
 
-
-    int ret = m_packetQueue.Get(&pPacket, (bDetectedStill ? iFrameTime : iFrameTime * 4) / 1000, (void**)&dvdstate);
-    if( ret < 0 ) break;
-    else if( ret == 0 )
+    int iQueueTimeOut = (bDetectedStill ? iFrameTime : iFrameTime * 4) / 1000;
+    
+    DVDMsg msg;
+    DVDMsgData msg_data;
+    MsgQueueReturnCode ret = m_packetQueue.Get(&msg, iQueueTimeOut, &msg_data);
+   
+    if (MSGQ_IS_ERROR(ret) || ret == MSGQ_ABORT) break;
+    else if (ret == MSGQ_TIMEOUT)
     {
       //Waiting timed out, output last picture
       if( picture.iFlags & DVP_FLAG_ALLOCATED )
@@ -175,13 +177,15 @@ void CDVDPlayerVideo::Process()
 
     EnterCriticalSection(&m_critCodecSection);
 
-    if (dvdstate & DVDPACKET_MESSAGE_RESYNC)
+    if (DVDMSG_IS(msg, DVDMSG_GENERAL_RESYNC) && DVDMSG_IS(msg, DVDMSG_DEMUX_DATA_PACKET))  // pts can be send as msg_data, saves us a data check
     {
+      CDVDDemux::DemuxPacket* pPacket = (CDVDDemux::DemuxPacket*)msg_data;
+      
       //DVDPlayer asked us to sync playback clock
       CLog::Log(LOGDEBUG, "CDVDPlayerVideo::Process - Resync recieved."); 
       m_pClock->Discontinuity(CLOCK_DISC_NORMAL, pPacket->dts);      
     }
-    if (dvdstate & DVDPACKET_MESSAGE_NOSKIP)
+    if (DVDMSG_IS(msg, DVDMSG_VIDEO_NOSKIP))
     {
       // libmpeg2 is also returning incomplete frames after a dvd cell change
       // so the first few pictures are not the correct ones to display in some cases
@@ -196,7 +200,7 @@ void CDVDPlayerVideo::Process()
       iDropped = 0;
     }
 
-    if( m_iSpeed < 0 )
+    if (m_speed < 0)
     { // playing backward, don't drop any pictures
       m_iNrOfPicturesNotToSkip = 5;
     }
@@ -210,15 +214,17 @@ void CDVDPlayerVideo::Process()
     // decoder still needs to provide an empty image structure, with correct flags
     m_pVideoCodec->SetDropState(bRequestDrop);
     
-    if (dvdstate & DVDPACKET_MESSAGE_FLUSH) // private mesasage sent by (CDVDPlayerVideo::Flush())
+    if (DVDMSG_IS(msg, DVDMSG_GENERAL_FLUSH)) // private mesasage sent by (CDVDPlayerVideo::Flush())
     {
       if (m_pVideoCodec)
       {
         m_pVideoCodec->Reset();
       }
     }
-    else
+    else if (DVDMSG_IS(msg, DVDMSG_DEMUX_DATA_PACKET))
     {
+      CDVDDemux::DemuxPacket* pPacket = (CDVDDemux::DemuxPacket*)msg_data;
+      
       int iDecoderState = m_pVideoCodec->Decode(pPacket->pData, pPacket->iSize);
       
       // loop while no error
@@ -320,7 +326,7 @@ void CDVDPlayerVideo::Process()
     LeaveCriticalSection(&m_critCodecSection);
     
     // all data is used by the decoder, we can safely free it now
-    if (pPacket) CDVDDemuxUtils::FreeDemuxPacket(pPacket);
+    CDVDMessage::FreeMessageData(msg, msg_data);
   }
 
   CLog::Log(LOGNOTICE, "thread end: video_thread");
@@ -338,19 +344,14 @@ void CDVDPlayerVideo::OnExit()
   CLog::Log(LOGNOTICE, "thread end: video_thread");
 }
 
-void CDVDPlayerVideo::Pause()
-{
-  m_iSpeed = 0;
-}
-
 bool CDVDPlayerVideo::InitializedOutputDevice()
 {
   return m_bInitializedOutputDevice;
 }
 
-void CDVDPlayerVideo::Resume()
+void CDVDPlayerVideo::SetSpeed(int speed)
 {
-  m_iSpeed = 1;
+  m_speed = speed;
 }
 
 void CDVDPlayerVideo::Flush()
@@ -456,7 +457,7 @@ CDVDPlayerVideo::EOUTPUTSTATUS CDVDPlayerVideo::OutputPicture(DVDVideoPicture* p
       iSleepTime = pPicture->iDuration;
       iSleepTime -= m_pClock->GetAbsoluteClock() - m_iFlipTimeStamp;
     }
-    else if( m_iSpeed < 0 )
+    else if (m_speed < 0)
     {
       // don't sleep when going backwords, just push frames out
       iSleepTime = 0;
