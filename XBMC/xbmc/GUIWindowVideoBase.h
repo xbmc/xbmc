@@ -33,8 +33,10 @@ protected:
   virtual bool OnPlayMedia(int iItem);
   void LoadPlayList(const CStdString& strPlayList, int iPlayList = PLAYLIST_VIDEO);
   void DisplayEmptyDatabaseMessage(bool bDisplay);
+  void SetDatabaseDirectory(const VECMOVIES &movies, CFileItemList &items);
 
   void ShowIMDB(const CStdString& strMovie, const CStdString& strFile, const CStdString& strFolder, bool bFolder);
+  void ApplyIMDBThumbToFolder(const CStdString &folder, const CStdString &imdbNumber);
   void OnManualIMDB();
   bool CheckMovie(const CStdString& strFileName);
 
