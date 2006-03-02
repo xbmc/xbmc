@@ -1020,7 +1020,7 @@ void CGUIWindowVideoBase::MarkUnWatched(int iItem)
   if ( iItem < 0 || iItem >= m_vecItems.Size() ) return ;
   CFileItem* pItem = m_vecItems[iItem];
   //m_database.MarkAsUnWatched(atol(pItem->m_strPath));
-  m_database.MarkAsWatched(atol(pItem->m_musicInfoTag.GetURL()));
+  m_database.MarkAsUnWatched(atol(pItem->m_musicInfoTag.GetURL()));
   Update(m_vecItems.m_strPath);
 }
 
