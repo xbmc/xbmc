@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 02-03-2006 changed: 'query info for all files' in my video now ignore sample/ folder.
  - 02-03-2006 fixed: Mark as Watched, Mark as Unwatched, Remove Title, Edit Title for Movies in the database
  - 02-03-2006 added: System.XboxNickname infolabel
  - 02-03-2006 fixed:[ 1378214 ] Nickname.xbn
