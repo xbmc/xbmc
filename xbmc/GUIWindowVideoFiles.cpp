@@ -238,13 +238,11 @@ void CGUIWindowVideoFiles::OnInfo(int iItem)
   int iSelectedItem = m_viewControl.GetSelectedItem();
   CFileItem* pItem = m_vecItems[iItem];
   CStdString strFile = pItem->m_strPath;
-  CStdString strMovie = pItem->GetLabel();
   if (pItem->m_bIsFolder && pItem->IsParentFolder()) return ;
   if (pItem->m_bIsFolder)
   {
     // IMDB is done on a folder
     // stack and then find first file in folder
-    strFolder = pItem->m_strPath;
     bFolder = true;
     CFileItemList vecitems;
     GetStackedDirectory(pItem->m_strPath, vecitems);
@@ -296,14 +294,19 @@ void CGUIWindowVideoFiles::OnInfo(int iItem)
     {
       // no video file in this folder?
       // then just lookup IMDB info and show it
-      ShowIMDB(strMovie, strFolder, strFolder, true /*false*/);  // true for bFolder will save the thumb to the local disk (if applicable)
-      // this should happen for the case where a folder only contains a bunch of folders as well.
+      ShowIMDB(pItem);
       m_viewControl.SetSelectedItem(iSelectedItem);
       return ;
     }
   }
 
+  // setup our item with the label and thumb information
   CFileItem item(strFile, false);
+  item.SetLabel(pItem->GetLabel());
+  item.SetThumb();
+  if (!item.HasThumbnail()) // inherit from the original item if it exists
+    item.SetThumbnailImage(pItem->GetThumbnailImage());
+
   AddFileToDatabase(&item);
 
   /* uncommented stack code for consistency with OnRetrieveVideoInfo */
@@ -320,7 +323,11 @@ void CGUIWindowVideoFiles::OnInfo(int iItem)
     }
   }
 
-  ShowIMDB(strMovie, strFile, strFolder, bFolder);
+  ShowIMDB(&item);
+  if (pItem->m_bIsFolder)
+  { // add IMDb icon to the folder as well
+    ApplyIMDBThumbToFolder(pItem->m_strPath, item.GetThumbnailImage());
+  }
   m_viewControl.SetSelectedItem(iSelectedItem);
 }
 
@@ -397,7 +404,7 @@ void CGUIWindowVideoFiles::OnRetrieveVideoInfo(CFileItemList& items)
         if (!m_database.HasMovieInfo(pItem->m_strPath))
         {
           // handle .nfo files
-          CStdString strNfoFile = GetnfoFile(pItem->m_strPath, false);
+          CStdString strNfoFile = GetnfoFile(pItem);
           if ( !strNfoFile.IsEmpty() )
           {
             CLog::Log(LOGDEBUG,"Found matching nfo file: %s", strNfoFile.c_str());
@@ -573,15 +580,15 @@ void CGUIWindowVideoFiles::SetIMDBThumbs(CFileItemList& items)
   m_database.GetMoviesByPath(m_vecItems.m_strPath, movies);
   for (int x = 0; x < (int)items.Size(); ++x)
   {
-    CFileItem* pItem = items[x];
-    if (!pItem->m_bIsFolder && pItem->GetThumbnailImage() == "")
+    CFileItem* item = items[x];
+    if (!item->m_bIsFolder && !item->HasThumbnail())
     {
       // if a stack item, get first file
-      CStdString strPath = pItem->m_strPath;
-      if (pItem->IsStack())
+      CStdString strPath = item->m_strPath;
+      if (item->IsStack())
       {
         CStackDirectory dir;
-        strPath = dir.GetFirstStackedFile(pItem->m_strPath);
+        strPath = dir.GetFirstStackedFile(item->m_strPath);
       }
       CStdString strFile = CUtil::GetFileName(strPath);
       //CLog::Log(LOGDEBUG,"Setting IMDB thumb for [%s] -> [%s]", pItem->m_strPath.c_str(), strFile.c_str());
@@ -620,10 +627,7 @@ void CGUIWindowVideoFiles::SetIMDBThumbs(CFileItemList& items)
 
           if (strMovieFile.Equals(strFile) /*|| pItem->GetLabel() == info.m_strTitle*/)
           {
-            CStdString strThumb;
-            CUtil::GetVideoThumbnail(info.m_strIMDBNumber, strThumb);
-            if (CFile::Exists(strThumb))
-              pItem->SetThumbnailImage(strThumb);
+            SetIMDBThumb(item, info.m_strIMDBNumber);
             break;
           }
         }
