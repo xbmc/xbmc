@@ -768,8 +768,17 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem)
   int btn_Mark_UnWatched = 0;
   int btn_Mark_Watched   = 0;
   int btn_Update_Title   = 0;
-  if (GetID() == WINDOW_VIDEO_TITLE || GetID() == WINDOW_VIDEO_GENRE || GetID() == WINDOW_VIDEO_ACTOR || GetID() == WINDOW_VIDEO_YEAR)
+  //if (GetID() == WINDOW_VIDEO_TITLE || GetID() == WINDOW_VIDEO_GENRE || GetID() == WINDOW_VIDEO_ACTOR || GetID() == WINDOW_VIDEO_YEAR)
+  // is the item a database movie?
+  if (GetID() != WINDOW_VIDEOS && !m_vecItems[iItem]->m_musicInfoTag.GetURL().IsEmpty())
   {
+    // uses Loaded to hold Watched/UnWatched status
+    if (m_vecItems[iItem]->m_musicInfoTag.Loaded())
+      btn_Mark_UnWatched = pMenu->AddButton(16104); //Mark as UnWatched
+    else
+      btn_Mark_Watched = pMenu->AddButton(16103);   //Mark as Watched
+
+    /*
 	  if (m_iShowMode == VIDEO_SHOW_ALL)
 	  {
       btn_Mark_Watched = pMenu->AddButton(16103);   //Mark as Watched
@@ -783,6 +792,8 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem)
     {
       btn_Mark_UnWatched = pMenu->AddButton(16104); //Mark as UnWatched
     }
+    */
+
     btn_Update_Title = pMenu->AddButton(16105); //Edit Title
   }
   
@@ -1008,7 +1019,8 @@ void CGUIWindowVideoBase::MarkUnWatched(int iItem)
 {
   if ( iItem < 0 || iItem >= m_vecItems.Size() ) return ;
   CFileItem* pItem = m_vecItems[iItem];
-  m_database.MarkAsUnWatched(atol(pItem->m_strPath));
+  //m_database.MarkAsUnWatched(atol(pItem->m_strPath));
+  m_database.MarkAsWatched(atol(pItem->m_musicInfoTag.GetURL()));
   Update(m_vecItems.m_strPath);
 }
 
@@ -1017,7 +1029,8 @@ void CGUIWindowVideoBase::MarkWatched(int iItem)
 {
   if ( iItem < 0 || iItem >= m_vecItems.Size() ) return ;
   CFileItem* pItem = m_vecItems[iItem];
-  m_database.MarkAsWatched(atol(pItem->m_strPath));
+  //m_database.MarkAsWatched(atol(pItem->m_strPath));
+  m_database.MarkAsWatched(atol(pItem->m_musicInfoTag.GetURL()));
   Update(m_vecItems.m_strPath);
 }
 
@@ -1035,7 +1048,8 @@ void CGUIWindowVideoBase::UpdateVideoTitle(int iItem)
 
   //Get the new title
   if (!CGUIDialogKeyboard::ShowAndGetInput(strInput, (CStdStringW)g_localizeStrings.Get(16105), false)) return ;
-  m_database.UpdateMovieTitle(atol(pItem->m_strPath), strInput);
+  //m_database.UpdateMovieTitle(atol(pItem->m_strPath), strInput);
+  m_database.UpdateMovieTitle(atol(pItem->m_musicInfoTag.GetURL()), strInput);
   Update(m_vecItems.m_strPath);
 }
 
@@ -1206,6 +1220,8 @@ void CGUIWindowVideoBase::SetDatabaseDirectory(const VECMOVIES &movies, CFileIte
       pItem->m_musicInfoTag.SetTitle(movie.m_strTitle);
       pItem->m_musicInfoTag.SetArtist(movie.m_strDirector);
       pItem->m_musicInfoTag.SetGenre(movie.m_strGenre);
+      pItem->m_musicInfoTag.SetURL(movie.m_strSearchString);
+      pItem->m_musicInfoTag.SetLoaded(movie.m_bWatched);
       // End hack for extra info
 
       m_vecItems.Add(pItem);
