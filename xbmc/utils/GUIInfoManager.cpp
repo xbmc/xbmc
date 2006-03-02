@@ -98,6 +98,7 @@ extern char g_szTitleIP[32];
 #define SYSTEM_SCREEN_HEIGHT        134
 #define SYSTEM_CURRENT_WINDOW       135
 #define SYSTEM_CURRENT_CONTROL      136
+#define SYSTEM_XBOX_NICKNAME        137
 
 #define LCD_PLAY_ICON               160
 #define LCD_PROGRESS_BAR            161
@@ -344,6 +345,8 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("system.screenheight")) ret = SYSTEM_SCREEN_HEIGHT;
     else if (strTest.Equals("system.currentwindow")) ret = SYSTEM_CURRENT_WINDOW;
     else if (strTest.Equals("system.currentcontrol")) ret = SYSTEM_CURRENT_CONTROL;
+    else if (strTest.Equals("system.xboxnickname")) ret = SYSTEM_XBOX_NICKNAME;
+
     else if (strTest.Left(16).Equals("system.idletime("))
     {
       int time = atoi((strTest.Mid(16, strTest.GetLength() - 17).c_str()));
@@ -665,6 +668,12 @@ wstring CGUIInfoManager::GetLabel(int info)
       }
     }
     break;
+  case SYSTEM_XBOX_NICKNAME:
+    {
+      if (!CUtil::GetXBOXNickName(strLabel))
+        strLabel=g_localizeStrings.Get(416); // 
+      break;
+    }
   case LCD_PLAY_ICON:
     {
       int iPlaySpeed = g_application.GetPlaySpeed();
