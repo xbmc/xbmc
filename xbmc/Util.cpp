@@ -2450,13 +2450,27 @@ void CUtil::AddFileToFolder(const CStdString& strFolder, const CStdString& strFi
 
 void CUtil::AddSlashAtEnd(CStdString& strFolder)
 {
+  // correct check for base url like smb://
+  if (strFolder.Right(3).Equals("://"))
+    return;
+
   if (!CUtil::HasSlashAtEnd(strFolder))
   {
-    if (strFolder.Find("//") >= 0 )
+    if (strFolder.Find("//") >= 0)
       strFolder += "/";
     else
       strFolder += "\\";
   }
+}
+
+void CUtil::RemoveSlashAtEnd(CStdString& strFolder)
+{
+  // correct check for base url like smb://
+  if (strFolder.Right(3).Equals("://"))
+    return;
+
+  if (CUtil::HasSlashAtEnd(strFolder))
+    strFolder.Delete(strFolder.size() - 1);
 }
 
 void CUtil::GetPath(const CStdString& strFileName, CStdString& strPath)
