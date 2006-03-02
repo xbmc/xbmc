@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 02-03-2006 fixed: System Info screen initialized twice on entry.
  - 02-03-2006 fixed: Xbox soundtracks didn't show the soundtrack name.
  - 02-03-2006 fixed: Album lookup select dialog didn't function correctly.
  - 02-03-2006 fixed: Positioning of splash.

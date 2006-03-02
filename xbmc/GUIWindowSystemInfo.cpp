@@ -154,7 +154,8 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
 				pDlgProgress.Close();
 				SetLabelDummy();
 				b_IsHome = TRUE;
-				Render();
+//				Render();
+        return true;
 			}
 			break;
 
