@@ -3849,7 +3849,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
 }
 int CUtil::GetMatchingShare(const CStdString& strPath1, VECSHARES& vecShares, bool& bIsBookmarkName)
 {
-  CLog::Log(LOGDEBUG,"CUtil::GetMatchingShare, testing original path/name [%s]", strPath1.c_str());
+  //CLog::Log(LOGDEBUG,"CUtil::GetMatchingShare, testing original path/name [%s]", strPath1.c_str());
 
   // copy as we may change strPath
   CStdString strPath = strPath1;  
@@ -3877,7 +3877,7 @@ int CUtil::GetMatchingShare(const CStdString& strPath1, VECSHARES& vecShares, bo
     strDest += "/";
   int iLenPath = strDest.size();
 
-  CLog::Log(LOGDEBUG,"CUtil::GetMatchingShare, testing url [%s]", strDest.c_str());
+  //CLog::Log(LOGDEBUG,"CUtil::GetMatchingShare, testing url [%s]", strDest.c_str());
 
   bIsBookmarkName = false;
   int iIndex = -1;
