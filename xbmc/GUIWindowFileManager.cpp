@@ -1377,6 +1377,7 @@ void CGUIWindowFileManager::SetInitialPath(const CStdString &path)
         m_Directory[0].m_strPath = g_settings.m_vecMyFilesShares[iIndex].strPath;
       else
         m_Directory[0].m_strPath = strDestination;
+      CUtil::RemoveSlashAtEnd(m_Directory[0].m_strPath);
       CLog::Log(LOGINFO, "  Success! Opened destination path: %s", strDestination.c_str());
     }
     else
