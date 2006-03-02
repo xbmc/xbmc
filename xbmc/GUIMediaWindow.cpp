@@ -6,6 +6,7 @@
 #include "FileSystem/ZipManager.h"
 #include "GUIPassword.h"
 #include "Application.h"
+#include "PartyModeManager.h"
 #ifdef PRE_SKIN_VERSION_2_0_COMPATIBILITY
 #include "SkinInfo.h"
 #endif
@@ -607,7 +608,7 @@ bool CGUIMediaWindow::OnClick(int iItem)
       LoadPlayList(pItem->m_strPath);
       return true;
     }
-    else if (m_guiState.get() && m_guiState->AutoPlayNextItem() && !g_application.m_bMusicPartyMode)
+    else if (m_guiState.get() && m_guiState->AutoPlayNextItem() && !g_partyModeManager.IsEnabled())
     {
       //play and add current directory to temporary playlist
       int iPlaylist=m_guiState->GetPlaylist();

@@ -3,6 +3,7 @@
 #include "PlayListPlayer.h"
 #include "application.h"
 #include "util.h"
+#include "PartyModeManager.h"
 
 
 #define PLAYLIST_MUSIC_REPEAT      0x001
@@ -72,7 +73,7 @@ int CPlayListPlayer::GetNextSong()
   int iSong = m_iCurrentSong;
 
   // party mode
-  if (g_application.m_bMusicPartyMode && GetCurrentPlaylist() == PLAYLIST_MUSIC)
+  if (g_partyModeManager.IsEnabled() && GetCurrentPlaylist() == PLAYLIST_MUSIC)
   {
     // if we skipped ahead, go back to the top of the list
     if (iSong != 0)
@@ -145,6 +146,7 @@ void CPlayListPlayer::PlayNext(bool bAutoPlay)
     }
   }
   Play(iSong, bAutoPlay);
+  g_partyModeManager.OnSongChange();
 }
 
 /// \brief Play previous entry in current playlist
@@ -322,8 +324,8 @@ void CPlayListPlayer::SetCurrentPlaylist(int iPlayList)
 
   // changing the current playlist while party mode is on
   // disables party mode
-  if (m_iCurrentPlayList == PLAYLIST_MUSIC && g_application.m_bMusicPartyMode)
-    g_application.m_bMusicPartyMode = !g_application.m_bMusicPartyMode;
+  if (g_partyModeManager.IsEnabled())
+    g_partyModeManager.Disable();
 
   m_iCurrentPlayList = iPlayList;
   m_bPlayedFirstFile = false;
@@ -474,7 +476,7 @@ void CPlayListPlayer::Repeat(int iPlaylist)
     return;
 
   // disable repeat in party mode
-  if (g_application.m_bMusicPartyMode && iPlaylist == PLAYLIST_MUSIC)
+  if (g_partyModeManager.IsEnabled() && iPlaylist == PLAYLIST_MUSIC)
   {
     m_iOptions &= ~iRepeatAll;
     m_iOptions &= ~iRepeatOne;
@@ -529,7 +531,7 @@ void CPlayListPlayer::Repeat(int iPlaylist, bool bYesNo)
     return ;
 
   // disable repeat in party mode
-  if (g_application.m_bMusicPartyMode && iPlaylist == PLAYLIST_MUSIC)
+  if (g_partyModeManager.IsEnabled() && iPlaylist == PLAYLIST_MUSIC)
   {
     m_iOptions &= ~iOption;
     return;
@@ -598,7 +600,7 @@ void CPlayListPlayer::RepeatOne(int iPlaylist, bool bYesNo)
     return ;
 
   // disable repeatone in party mode
-  if (g_application.m_bMusicPartyMode && iPlaylist == PLAYLIST_MUSIC)
+  if (g_partyModeManager.IsEnabled() && iPlaylist == PLAYLIST_MUSIC)
   {
     m_iOptions &= ~iOption;
     return;
@@ -666,7 +668,7 @@ void CPlayListPlayer::ShufflePlay(int iPlaylist, bool bYesNo)
     return ;
 
   // disable shuffle in party mode
-  if (g_application.m_bMusicPartyMode && iPlaylist == PLAYLIST_MUSIC)
+  if (g_partyModeManager.IsEnabled() && iPlaylist == PLAYLIST_MUSIC)
   {
     m_iOptions &= ~iOption;
     return;
