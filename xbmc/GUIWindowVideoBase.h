@@ -19,6 +19,7 @@ protected:
   virtual void UpdateButtons();
 
   virtual void SetIMDBThumbs(CFileItemList& items) {};
+  void SetIMDBThumb(CFileItem *item, const CStdString &imdbNumber);
 
   virtual void OnPopupMenu(int iItem);
   virtual void OnInfo(int iItem);
@@ -35,15 +36,15 @@ protected:
   void DisplayEmptyDatabaseMessage(bool bDisplay);
   void SetDatabaseDirectory(const VECMOVIES &movies, CFileItemList &items);
 
-  void ShowIMDB(const CStdString& strMovie, const CStdString& strFile, const CStdString& strFolder, bool bFolder);
-  void ApplyIMDBThumbToFolder(const CStdString &folder, const CStdString &imdbNumber);
+  void ShowIMDB(CFileItem *item);
+  void ApplyIMDBThumbToFolder(const CStdString &folder, const CStdString &imdbThumb);
   void OnManualIMDB();
   bool CheckMovie(const CStdString& strFileName);
 
   int  ResumeItemOffset(int iItem);
   void AddItemToPlayList(const CFileItem* pItem, int iPlaylist = PLAYLIST_VIDEO);
   void GetStackedFiles(const CStdString &strFileName, std::vector<CStdString> &movies);
-  CStdString GetnfoFile(const CStdString &strFile, bool bFolder);
+  CStdString GetnfoFile(CFileItem *item);
 
   void MarkUnWatched(int iItem);
   void MarkWatched(int iItem);

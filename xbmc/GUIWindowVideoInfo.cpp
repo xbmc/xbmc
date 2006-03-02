@@ -195,9 +195,10 @@ bool CGUIWindowVideoInfo::OnMessage(CGUIMessage& message)
   return CGUIDialog::OnMessage(message);
 }
 
-void CGUIWindowVideoInfo::SetMovie(CIMDBMovie& album)
+void CGUIWindowVideoInfo::SetMovie(CIMDBMovie& album, const CStdString &thumbNail)
 {
   m_pMovie = &album;
+  m_thumbNail = thumbNail;
 }
 
 void CGUIWindowVideoInfo::Update()
@@ -323,42 +324,40 @@ void CGUIWindowVideoInfo::Refresh()
   {
     OutputDebugString("Refresh\n");
 
-    CStdString strThumb = "";
     CStdString strImage = m_pMovie->m_strPictureURL;
-    if (strImage.size() > 0/* && m_pMovie->m_strSearchString.size() > 0*/)
-    {
-      CUtil::GetVideoThumbnail(m_pMovie->m_strIMDBNumber, strThumb);
-      if (!CFile::Exists(strThumb) )
-      {
-        CHTTP http;
-        CStdString strExtension;
-        CUtil::GetExtension(strImage, strExtension);
-        CStdString strTemp = "Z:\\temp";
-        strTemp += strExtension;
-        ::DeleteFile(strTemp.c_str());
-        http.Download(strImage, strTemp);
 
-        try
-        {
-          CPicture picture;
-          picture.Convert(strTemp, strThumb);
-        }
-        catch (...)
-        {
-          OutputDebugString("...\n");
-          ::DeleteFile(strThumb.c_str());
-        }
-        ::DeleteFile(strTemp.c_str());
+    if (m_thumbNail.IsEmpty() || !CFile::Exists(m_thumbNail))
+      CUtil::GetVideoThumbnail(m_pMovie->m_strIMDBNumber, m_thumbNail);
+    if (!CFile::Exists(m_thumbNail) && strImage.size() > 0)
+    {
+      CHTTP http;
+      CStdString strExtension;
+      CUtil::GetExtension(strImage, strExtension);
+      CStdString strTemp = "Z:\\temp";
+      strTemp += strExtension;
+      ::DeleteFile(strTemp.c_str());
+      http.Download(strImage, strTemp);
+
+      try
+      {
+        CPicture picture;
+        picture.Convert(strTemp, m_thumbNail);
       }
-      CUtil::GetVideoThumbnail(m_pMovie->m_strIMDBNumber, strThumb);
+      catch (...)
+      {
+        OutputDebugString("...\n");
+        ::DeleteFile(m_thumbNail.c_str());
+      }
+      ::DeleteFile(strTemp.c_str());
     }
+
     //CStdString strAlbum;
     //CUtil::GetIMDBInfo(m_pMovie->m_strSearchString,strAlbum);
     //m_pMovie->Save(strAlbum);
 
-    if (!CFile::Exists(strThumb) )
+    if (!CFile::Exists(m_thumbNail) )
     {
-      strThumb = "";
+      m_thumbNail = "";
     }
 
     const CGUIControl* pControl = GetControl(CONTROL_IMAGE);
@@ -366,7 +365,7 @@ void CGUIWindowVideoInfo::Refresh()
     {
       CGUIImage* pImageControl = (CGUIImage*)pControl;
       pImageControl->SetAspectRatio(CGUIImage::ASPECT_RATIO_KEEP);
-      pImageControl->SetFileName(strThumb);
+      pImageControl->SetFileName(m_thumbNail);
     }
     //OutputDebugString("update\n");
     Update();
@@ -458,7 +457,7 @@ void CGUIWindowVideoInfo::OnSearchItemFound(const CFileItem* pItem)
   CIMDBMovie movieDetails;
   m_database.GetMovieInfo(pItem->m_strPath, movieDetails, lMovieId);
   m_Movie = movieDetails;
-  SetMovie(m_Movie);
+  SetMovie(m_Movie, pItem->GetThumbnailImage());
   Refresh();
 }
 
