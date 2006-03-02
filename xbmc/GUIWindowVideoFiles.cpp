@@ -527,7 +527,7 @@ bool CGUIWindowVideoFiles::DoScan(const CStdString &strPath, CFileItemList& item
       }
       if ( pItem->m_bIsFolder)
       {
-        if (!pItem->IsParentFolder())
+        if (!pItem->IsParentFolder() && pItem->GetLabel().CompareNoCase("sample") != 0)
         {
           // load subfolder
           CFileItemList subDirItems;
