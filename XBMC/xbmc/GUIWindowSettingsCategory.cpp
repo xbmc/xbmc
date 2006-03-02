@@ -747,9 +747,10 @@ void CGUIWindowSettingsCategory::CreateSettings()
     else if (strSetting == "Autodetect.NickName")
     {
       //GeminiServer
-      CStdString strXboxNickNameIn = g_guiSettings.GetString("Autodetect.NickName");
+      //CStdString strXboxNickNameIn = g_guiSettings.GetString("Autodetect.NickName");
       CStdString strXboxNickNameOut;
-      if (CUtil::SetXBOXNickName(strXboxNickNameIn, strXboxNickNameOut))
+      //if (CUtil::SetXBOXNickName(strXboxNickNameIn, strXboxNickNameOut))
+      if (CUtil::GetXBOXNickName(strXboxNickNameOut))
         g_guiSettings.SetString("Autodetect.NickName", strXboxNickNameOut.c_str());
     }
     else if (strSetting == "XBDateTime.DateFormat")

@@ -4375,32 +4375,52 @@ bool CUtil::SetFTPServerUserPassword(CStdString strFtpUserName, CStdString strFt
   }
   return false;
 }
-//GeminiServer SetXBOXNickName
-//strXboxNickNameIn: New NickName
+//strXboxNickNameIn: New NickName to write
 //strXboxNickNameOut: Same if it is in NICKNAME Cache
 bool CUtil::SetXBOXNickName(CStdString strXboxNickNameIn, CStdString &strXboxNickNameOut)
 {
-  char pszNickName[64];
+  WCHAR pszNickName[MAX_NICKNAME];
   unsigned int uiSize = MAX_NICKNAME;
   bool bfound= false;
-  HANDLE hNickName = XFindFirstNickname(true,(LPWSTR)pszNickName,MAX_NICKNAME);
+  HANDLE hNickName = XFindFirstNickname(false,pszNickName,MAX_NICKNAME);
   if (hNickName != INVALID_HANDLE_VALUE)
-  {
-      do
-      { 
-        if (strXboxNickNameIn == pszNickName) 
-        {
-          strXboxNickNameOut = pszNickName; 
-          bfound = true;
+  { do
+      {
+        strXboxNickNameOut.Format("%ls",pszNickName );
+        if (strXboxNickNameIn.Equals(strXboxNickNameOut))
+        { 
+          bfound = true; 
+          break; 
         }
-        else if (strXboxNickNameIn == "") strXboxNickNameOut = "GeminiServer";
-        else strXboxNickNameOut = strXboxNickNameIn;
-      }while(XFindNextNickname(hNickName,((LPWSTR)pszNickName),uiSize) != false);
-      XFindClose(hNickName);
+        else if (strXboxNickNameIn.IsEmpty()) strXboxNickNameOut.Format("GeminiServer");
+      }while(XFindNextNickname(hNickName,pszNickName,uiSize) != false);
+    XFindClose(hNickName);
   }
-  if(bfound==false) XSetNickname((LPCWSTR)strXboxNickNameOut.c_str(), false);
-  
+  if(!bfound) 
+  {
+    CStdStringW wstrName = strXboxNickNameIn.c_str();
+    XSetNickname(wstrName.c_str(), false);
+  }
   return true;
+}
+//strXboxNickNameOut: Will fast receive the last XBOX NICKNAME from Cache
+bool CUtil::GetXBOXNickName(CStdString &strXboxNickNameOut)
+{
+  WCHAR wszXboxNickname[MAX_NICKNAME];
+  HANDLE hNickName = XFindFirstNickname( FALSE, wszXboxNickname, MAX_NICKNAME );
+	if ( hNickName != INVALID_HANDLE_VALUE )
+	{
+    strXboxNickNameOut.Format("%ls",wszXboxNickname);
+		XFindClose( hNickName ); 
+    return true;
+	}
+  else
+  { 
+    // it seems to be empty? should we create one? or the user
+    strXboxNickNameOut.Format("");
+    return false;
+  }
+  
 }
 
 void CUtil::GetRecursiveListing(const CStdString& strPath, CFileItemList& items, const CStdString& strMask)
