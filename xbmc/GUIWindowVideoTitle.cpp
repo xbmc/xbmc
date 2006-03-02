@@ -123,7 +123,8 @@ void CGUIWindowVideoTitle::OnDeleteItem(int iItem)
   if (!pDialog->IsConfirmed()) return;
 
   CStdString path;
-  m_database.GetFilePath(atol(pItem->m_strPath), path);
+  //m_database.GetFilePath(atol(pItem->m_strPath), path);
+  m_database.GetFilePath(atol(pItem->m_musicInfoTag.GetURL()), path);
   if (path.IsEmpty()) return;
   m_database.DeleteMovie(path);
 
