@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 02-03-2006 added: System.XboxNickname infolabel
+ - 02-03-2006 fixed:[ 1378214 ] Nickname.xbn
  - 02-03-2006 added: seperate track formatting options for the music now playing window.  (found in settings->music->playlist)
  - 02-03-2006 updated: completely rewritten party mode manager, new features:
 		- play on a folder queues up all the items at the top of the playlist and starts playing
