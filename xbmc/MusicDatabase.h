@@ -132,6 +132,8 @@ public:
   bool GetSongsNav(const CStdString& strBaseDir, CFileItemList& items, long idGenre, long idArtist,long idAlbum);
   bool GetRandomSong(CFileItem* item);
   bool GetRandomSong(CFileItem* item, CStdString& strWhere);
+  bool GetRandomSongs(CFileItemList& items, int iNumSongs, CStdString& strWhere);
+  bool GetRandomSongsWithHistory(CFileItemList& items, int iNumSongs, CStdString& strWhere, vector<long>& vecHistory);
   int GetSongsCount();
   int GetSongsCount(CStdString& strWhere);
   bool GetPathFromAlbumId(long idAlbum, CStdString& strPath);
@@ -182,6 +184,7 @@ private:
   bool CleanupGenres();
   bool CleanupAlbumsFromPaths(const CStdString &strPathIds);
   virtual bool UpdateOldVersion(float fVersion);
+  bool GetRandomSongs(CFileItemList& items, int iNumSongs, CStdString& strWhere, vector<long>& vecHistory, bool bUseHistory);
 
   // Fields should be ordered as they 
   // appear in the songview

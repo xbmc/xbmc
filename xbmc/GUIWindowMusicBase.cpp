@@ -16,6 +16,7 @@
 #include "GUIDialogMusicScan.h"
 #include "GUIDialogContextMenu.h"
 #include "GUIWindowFileManager.h"
+#include "PartyModeManager.h"
 #ifdef PRE_SKIN_VERSION_2_0_COMPATIBILITY
 #include "SkinInfo.h"
 #endif
@@ -700,11 +701,24 @@ void CGUIWindowMusicBase::OnQueueItem(int iItem)
   if (!item.CanQueue())
     item.SetCanQueue(true);
 
-  AddItemToPlayList(&item);
+  int iPlaylist = PLAYLIST_MUSIC;
+  if (g_partyModeManager.IsEnabled())
+    iPlaylist = PLAYLIST_MUSIC_TEMP;
 
-  //move to next item
+  AddItemToPlayList(&item, iPlaylist);
+
+  // select next item
   m_viewControl.SetSelectedItem(iItem + 1);
-  if (g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).size() && !g_application.IsPlayingAudio() )
+
+  // if party mode, add items but DONT start playing
+  if (g_partyModeManager.IsEnabled())
+  {
+    g_partyModeManager.AddUserSongs(g_playlistPlayer.GetPlaylist(iPlaylist), false);
+    g_playlistPlayer.ClearPlaylist(iPlaylist);
+    return;
+  }
+
+  if (g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).size() && !g_application.IsPlayingAudio())
   {
     if (m_guiState.get())
       m_guiState->SetPlaylistDirectory("");
@@ -1118,19 +1132,23 @@ void CGUIWindowMusicBase::OnPopupMenu(int iItem)
   // initialize the menu (loaded on demand)
   pMenu->Initialize();
   bool bIsGotoParent = m_vecItems[iItem]->IsParentFolder();
-  
-  int btn_Info      = 0; // Music Information
-  int btn_PlayWith  = 0; // Play using alternate player
-  int btn_Queue     = 0; // Queue Item
+
+  int btn_NowPlaying  = 0;  // Now Playing...
+  int btn_Info        = 0; // Music Information
+  int btn_PlayWith    = 0; // Play using alternate player
+  int btn_Queue       = 0; // Queue Item
   
   VECPLAYERCORES vecCores;
   CPlayerCoreFactory::GetPlayers(*m_vecItems[iItem], vecCores);
   
+  // if party mode is enabled, put Now Playing at the top of the context menu
+  if (g_partyModeManager.IsEnabled())
+    btn_NowPlaying = pMenu->AddButton(13350);
+
   // turn off info/play/queue if the current item is goto parent ..
   if (!bIsGotoParent)
   {
-    if (GetID() != WINDOW_MUSIC_PLAYLIST)
-      btn_Info = pMenu->AddButton(13351);
+    btn_Info = pMenu->AddButton(13351);
 
     if (vecCores.size() >= 1)
       btn_PlayWith = pMenu->AddButton(15213);
@@ -1138,27 +1156,24 @@ void CGUIWindowMusicBase::OnPopupMenu(int iItem)
     else if (m_vecItems[iItem]->m_bIsFolder || m_vecItems[iItem]->IsPlayList())
       btn_PlayWith = pMenu->AddButton(208);
 
-    // don't show the add to playlist button in playlist window
-    if (GetID() != WINDOW_MUSIC_PLAYLIST)
-      btn_Queue = pMenu->AddButton(13347);
+    btn_Queue = pMenu->AddButton(13347);
   }
   
-  // enable Now Playing if there are items in the playlist
-  int btn_Playlist = 0;
-  if (GetID() == WINDOW_MUSIC_FILES && g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).size() > 0)
-    btn_Playlist = pMenu->AddButton(13350);
+  // if party mode is enabled, put Now Playing at the top of the context menu
+  if (btn_NowPlaying == 0 && g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).size() > 0)
+    btn_NowPlaying = pMenu->AddButton(13350);
 
   int btn_Scan = 0;
   CGUIDialogMusicScan *pScanDlg = (CGUIDialogMusicScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
   if (pScanDlg && pScanDlg->IsRunning())
   {
     // turn off the Scan button if we're not in files view or a internet stream
-    if (GetID() == WINDOW_MUSIC_FILES || !m_vecItems.IsInternetStream() )
+    if (!m_vecItems.IsInternetStream())
       btn_Scan = pMenu->AddButton(13353);         // Stop Scanning
   }
   else
   {
-    if (GetID() == WINDOW_MUSIC_FILES || !m_vecItems.IsInternetStream() )
+    if (!m_vecItems.IsInternetStream())
       btn_Scan = pMenu->AddButton(13352);         // Scan Folder to Database
   }
 
@@ -1235,7 +1250,7 @@ void CGUIWindowMusicBase::OnPopupMenu(int iItem)
       OnQueueItem(iItem);
     }
     // Now Playing...
-    else if (btnid == btn_Playlist)
+    else if (btnid == btn_NowPlaying)
     {
       m_gWindowManager.ActivateWindow(WINDOW_MUSIC_PLAYLIST);
       return;
@@ -1330,10 +1345,6 @@ void CGUIWindowMusicBase::PlayItem(int iItem)
   // if its a folder, build a playlist
   if (pItem->m_bIsFolder)
   {
-    // for now, ignore PLAY on a folder if party mode is active
-    if (g_application.m_bMusicPartyMode)
-      return;
-
     CFileItem item(*m_vecItems[iItem]);
   
     //  Allow queuing of unqueueable items
@@ -1345,12 +1356,28 @@ void CGUIWindowMusicBase::PlayItem(int iItem)
     if (item.IsParentFolder())
       return;
 
+    // use PLAYLIST_MUSIC_TEMP as a holding location
+    // during party mode
     int iPlaylist = PLAYLIST_MUSIC;
+    if (g_partyModeManager.IsEnabled())
+      iPlaylist = PLAYLIST_MUSIC_TEMP;
+
     g_playlistPlayer.ClearPlaylist(iPlaylist);
-    g_playlistPlayer.Reset();
+
+    // dont reset during party mode
+    if (!g_partyModeManager.IsEnabled())
+      g_playlistPlayer.Reset();
 
     // recursively add items to playlist
     AddItemToPlayList(&item, iPlaylist);
+
+    // send the playlist to party mode
+    if (g_partyModeManager.IsEnabled())
+    {
+      g_partyModeManager.AddUserSongs(g_playlistPlayer.GetPlaylist(iPlaylist), true);
+      g_playlistPlayer.ClearPlaylist(iPlaylist);
+      return;
+    }
 
     CStdString strPlayListDirectory = m_vecItems.m_strPath;
     if (CUtil::HasSlashAtEnd(strPlayListDirectory))
@@ -1404,7 +1431,8 @@ void CGUIWindowMusicBase::OnRenameItem(int iItem)
 void CGUIWindowMusicBase::LoadPlayList(const CStdString& strPlayList)
 {
   // for now, ignore PLAY on a playlist if party mode is active
-  if (g_application.m_bMusicPartyMode)
+  //if (g_application.m_bMusicPartyMode)
+  if (g_partyModeManager.IsEnabled())
     return;
 
   // load a playlist like .m3u, .pls
@@ -1437,26 +1465,14 @@ void CGUIWindowMusicBase::LoadPlayList(const CStdString& strPlayList)
 bool CGUIWindowMusicBase::OnPlayMedia(int iItem)
 {
   // party mode
-  if (g_application.m_bMusicPartyMode)
+  if (g_partyModeManager.IsEnabled())
   {
-    // add item to playlist
-    CPlayList& playlist = g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC);
-    int iSize = playlist.size();
-
+    CPlayList playlistTemp;
     CPlayList::CPlayListItem playlistItem;
     CUtil::ConvertFileItemToPlayListItem(m_vecItems[iItem], playlistItem);
-    playlist.Add(playlistItem);
-    CLog::Log(LOGINFO,"PARTY MODE: User added song at %i:[%s]", iSize, playlistItem.m_strPath.c_str());
-
-    // jump playback to the new item
-    // the previously playing song will be reaped from the playlist
-    g_playlistPlayer.Play(iSize);
-
-    CGUIMessage msg(GUI_MSG_PLAYLIST_CHANGED, 0, 0, 0, 0, NULL);
-    m_gWindowManager.SendMessage(msg);
-
+    playlistTemp.Add(playlistItem);
+    g_partyModeManager.AddUserSongs(playlistTemp, true);
     return true;
   }
-  else
-    return CGUIMediaWindow::OnPlayMedia(iItem);
+  return CGUIMediaWindow::OnPlayMedia(iItem);
 }
