@@ -222,14 +222,33 @@ void CGUIWindowVideoBase::OnInfo(int iItem)
 {
   if ( iItem < 0 || iItem >= m_vecItems.Size() ) return ;
   CFileItem* pItem = m_vecItems[iItem];
-  CStdString strFilePath;
-  m_database.GetFilePath(atol(pItem->m_strPath), strFilePath);
-  if (strFilePath.IsEmpty()) return;
-  CStdString strFile = CUtil::GetFileName(strFilePath);
-  ShowIMDB(strFile, strFilePath, "" , false);
+  CStdString strFile = CUtil::GetFileName(pItem->m_strPath);
+  ShowIMDB(pItem);
 }
 
-void CGUIWindowVideoBase::ShowIMDB(const CStdString& strMovie, const CStdString& strFile, const CStdString& strFolder, bool bFolder)
+// ShowIMDB is called as follows:
+// 1.  To lookup info on a file.
+// 2.  To lookup info on a folder (which may or may not contain a file)
+// 3.  To lookup info just for fun (no file or folder related)
+
+// We just need the item object for this.
+// A "blank" item object is sent for 3.
+// If a folder is sent, currently it sets strFolder and bFolder
+// this is only used for setting the folder thumb, however.
+
+// Steps should be:
+
+// 1.  Check database to see if we have this information already
+// 2.  Else, check for a nfoFile to get the URL
+// 3.  Run a loop to check for refresh
+// 4.  If no URL is present do a search to get the URL
+// 4.  Once we have the URL, download the details
+// 5.  Once we have the details, add to the database if necessary (case 1,2)
+//     and show the information.
+// 6.  Check for a refresh, and if so, go to 3.
+// 7.  Update our view and return.
+
+void CGUIWindowVideoBase::ShowIMDB(CFileItem *item)
 {
   /*
   CLog::Log(LOGDEBUG,"CGUIWindowVideoBase::ShowIMDB");
@@ -251,27 +270,31 @@ void CGUIWindowVideoBase::ShowIMDB(const CStdString& strMovie, const CStdString&
   if (!pDlgSelect) return ;
   if (!pDlgInfo) return ;
   CUtil::ClearCache();
-  CStdString strMovieName = strMovie;
 
-  if (m_database.HasMovieInfo(strFile))
+  // 1.  Check for already downloaded information, and if we have it, display our dialog
+  //     Return if no Refresh is needed.
+  if (m_database.HasMovieInfo(item->m_strPath))
   {
     CIMDBMovie movieDetails;
-    m_database.GetMovieInfo(strFile, movieDetails);
-    pDlgInfo->SetMovie(movieDetails);
+    m_database.GetMovieInfo(item->m_strPath, movieDetails);
+    pDlgInfo->SetMovie(movieDetails, item->GetThumbnailImage());
     pDlgInfo->DoModal(GetID());
     if ( !pDlgInfo->NeedRefresh() ) return ;
 
     // quietly return if Internet lookups are disabled
     if (!g_guiSettings.GetBool("Network.EnableInternet")) return ;
 
-    m_database.DeleteMovieInfo(strFile);
+    m_database.DeleteMovieInfo(item->m_strPath);
   }
 
   // quietly return if Internet lookups are disabled
   if (!g_guiSettings.GetBool("Network.EnableInternet")) return ;
 
-  CStdString nfoFile = GetnfoFile(strFile, bFolder);
+  CIMDBUrl url;
+  CIMDBMovie movieDetails;
 
+  // 2. Look for a nfo File to get the search URL
+  CStdString nfoFile = GetnfoFile(item);
   if ( !nfoFile.IsEmpty() )
   {
     CLog::Log(LOGDEBUG,"Found matching nfo file: %s", nfoFile.c_str());
@@ -280,40 +303,9 @@ void CGUIWindowVideoBase::ShowIMDB(const CStdString& strMovie, const CStdString&
       CNfoFile nfoReader;
       if ( nfoReader.Create("Z:\\movie.nfo") == S_OK)
       {
-        CIMDBUrl url;
         CIMDBMovie movieDetails;
-        /*url.m_strURL[0] = nfoReader.m_strImDbUrl;
-        //url.m_strURL.push_back(nfoReader.m_strImDbUrl);
-        CLog::Log(LOGDEBUG,"-- imdb url: %s", url.m_strURL[0].c_str());*/
         url.m_strURL = nfoReader.m_strImDbUrl;
-        //url.m_strURL.push_back(nfoReader.m_strImDbUrl);
         CLog::Log(LOGDEBUG,"-- imdb url: %s", url.m_strURL.c_str());
-
-        // show dialog that we're downloading the movie info
-        pDlgProgress->SetHeading(198);
-        pDlgProgress->SetLine(0, strMovieName);
-        pDlgProgress->SetLine(1, url.m_strTitle);
-        pDlgProgress->SetLine(2, "");
-        pDlgProgress->StartModal(GetID());
-        pDlgProgress->Progress();
-
-        if ( IMDB.GetDetails(url, movieDetails, pDlgProgress) )
-        {
-          m_database.SetMovieInfo(strFile, movieDetails);
-          // now show the imdb info
-          pDlgProgress->Close();
-          pDlgInfo->SetMovie(movieDetails);
-          pDlgInfo->DoModal(GetID());
-          bFound = true;
-          bUpdate = true;
-          if ( !pDlgInfo->NeedRefresh() )
-          {
-            if (bFolder)
-              ApplyIMDBThumbToFolder(strFolder, movieDetails.m_strIMDBNumber);
-            goto update;
-          }
-          m_database.DeleteMovieInfo(strFile);
-        }
       }
       else
         CLog::Log(LOGERROR,"Unable to find an imdb url in nfo file: %s", nfoFile.c_str());
@@ -322,165 +314,120 @@ void CGUIWindowVideoBase::ShowIMDB(const CStdString& strMovie, const CStdString&
       CLog::Log(LOGERROR,"Unable to cache nfo file: %s", nfoFile.c_str());
   }
 
-  if (m_guiState.get() && m_guiState->HideExtensions() && !bFolder)
-    CUtil::RemoveExtension(strMovieName);
-
-  bool bContinue;
+  CStdString movieName = item->GetLabel();
+  // 3. Run a loop so that if we Refresh we re-run this block
+  bool needsRefresh(false);
   do
   {
-    bContinue = false;
-    if (!bFound)
+    // 4. if we don't have a url, or need to refresh the search
+    //    then do the web search
+    if (url.m_strURL.IsEmpty() || needsRefresh)
     {
-      // show dialog that we're busy querying www.imdb.com
+      // 4a. show dialog that we're busy querying www.imdb.com
       pDlgProgress->SetHeading(197);
-      pDlgProgress->SetLine(0, strMovieName);
+      pDlgProgress->SetLine(0, movieName);
       pDlgProgress->SetLine(1, "");
       pDlgProgress->SetLine(2, "");
       pDlgProgress->StartModal(GetID());
       pDlgProgress->Progress();
 
-      bool bError = true;
-
-
-      OutputDebugString("query imdb\n");
+      // 4b. do the websearch
       IMDB_MOVIELIST movielist;
-      if (IMDB.FindMovie(strMovieName, movielist, pDlgProgress))
+      if (IMDB.FindMovie(movieName, movielist, pDlgProgress))
       {
         pDlgProgress->Close();
-
-        int iMoviesFound = movielist.size();
-        if (iMoviesFound > 0)
+        if (movielist.size() > 0)
         {
-          OutputDebugString("found 1 or more movies\n");
-          int iSelectedMovie = 0;
-          if (iMoviesFound > 0)  // always ask user to select (allows manual lookup)
-          {
-            // more then 1 movie found
-            // ask user to select 1
-//            OutputDebugString("found more then 1 movie\n");
-            pDlgSelect->SetHeading(196);
-            pDlgSelect->Reset();
-            for (int i = 0; i < iMoviesFound; ++i)
-            {
-              CIMDBUrl url = movielist[i];
-              pDlgSelect->Add(url.m_strTitle);
-            }
-            pDlgSelect->EnableButton(true);
-            pDlgSelect->SetButtonLabel(413); // manual
+          // 4c. found movies - allow selection of the movie we found
+          pDlgSelect->SetHeading(196);
+          pDlgSelect->Reset();
+          for (unsigned int i = 0; i < movielist.size(); ++i)
+            pDlgSelect->Add(movielist[i].m_strTitle);
+          pDlgSelect->EnableButton(true);
+          pDlgSelect->SetButtonLabel(413); // manual
+          pDlgSelect->DoModal(GetID());
 
-            pDlgSelect->DoModal(GetID());
-
-            // and wait till user selects one
-            iSelectedMovie = pDlgSelect->GetSelectedLabel();
-            if (iSelectedMovie < 0)
-            {
-              if (!pDlgSelect->IsButtonPressed()) return ;
-              if (!CGUIDialogKeyboard::ShowAndGetInput(strMovieName, (CStdStringW)g_localizeStrings.Get(16009), false)) return ;
-              bContinue = true;
-              bError = false;
-            }
-          }
-
+          // and wait till user selects one
+          int iSelectedMovie = pDlgSelect->GetSelectedLabel();
           if (iSelectedMovie >= 0)
-          {
-            OutputDebugString("get details\n");
-            CIMDBMovie movieDetails;
-            movieDetails.m_strSearchString = strFile;
-            CIMDBUrl& url = movielist[iSelectedMovie];
-
-            // show dialog that we're downloading the movie info
-            pDlgProgress->SetHeading(198);
-            pDlgProgress->SetLine(0, strMovieName);
-            pDlgProgress->SetLine(1, url.m_strTitle);
-            pDlgProgress->SetLine(2, "");
-            pDlgProgress->StartModal(GetID());
-            pDlgProgress->Progress();
-
-            // get the movie info
-            if (IMDB.GetDetails(url, movieDetails, pDlgProgress))
-            {
-              // got all movie details :-)
-              OutputDebugString("got details\n");
-              pDlgProgress->Close();
-              bError = false;
-
-              // now show the imdb info
-              OutputDebugString("show info\n");
-              m_database.SetMovieInfo(strFile, movieDetails);
-              pDlgInfo->SetMovie(movieDetails);
-              pDlgInfo->DoModal(GetID());
-              if (!pDlgInfo->NeedRefresh())
-              {
-                bUpdate = true;
-                if (bFolder)
-                  ApplyIMDBThumbToFolder(strFolder, movieDetails.m_strIMDBNumber);
-              }
-              else
-              {
-                bContinue = true;
-                strMovieName = strMovie;
-              }
-            }
-            else
-            {
-              OutputDebugString("failed to get details\n");
-              pDlgProgress->Close();
-              bError = !pDlgProgress->IsCanceled();
-            }
-          }
+            url = movielist[iSelectedMovie];
+          else if (!pDlgSelect->IsButtonPressed())
+            return; // user backed out
         }
-        else
-        {
-          pDlgProgress->Close();
-          if (!CGUIDialogKeyboard::ShowAndGetInput(strMovieName, (CStdStringW)g_localizeStrings.Get(16009), false)) return ;
-          bContinue = true;
-          bError = false;
-        }
+      }
+    }
+    // 4c. Check if url is still empty - occurs if user has selected to do a manual
+    //     lookup, or if the IMDb lookup failed or was cancelled.
+    if (url.m_strURL.IsEmpty())
+    {
+      // Check for cancel of the progress dialog
+      pDlgProgress->Close();
+      if (pDlgProgress->IsCanceled())
+        return;
+
+      // Prompt the user to input the movieName
+      if (!CGUIDialogKeyboard::ShowAndGetInput(movieName, (CStdStringW)g_localizeStrings.Get(16009), false))
+        return; // user backed out
+
+      needsRefresh = true;
+    }
+    else
+    {
+      // 5. Download the movie information
+      // show dialog that we're downloading the movie info
+      pDlgProgress->SetHeading(198);
+      pDlgProgress->SetLine(0, movieName);
+      pDlgProgress->SetLine(1, url.m_strTitle);
+      pDlgProgress->SetLine(2, "");
+      pDlgProgress->StartModal(GetID());
+      pDlgProgress->Progress();
+
+      // get the movie info
+      if (IMDB.GetDetails(url, movieDetails, pDlgProgress))
+      {
+        // got all movie details :-)
+        OutputDebugString("got details\n");
+        pDlgProgress->Close();
+
+        // now show the imdb info
+        OutputDebugString("show info\n");
+
+        // Add to the database if applicable
+        if (item->m_strPath)
+          m_database.SetMovieInfo(item->m_strPath, movieDetails);
+
+        pDlgInfo->SetMovie(movieDetails, item->GetThumbnailImage());
+        pDlgInfo->DoModal(GetID());
+        needsRefresh = pDlgInfo->NeedRefresh();
       }
       else
       {
         pDlgProgress->Close();
-        if (pDlgProgress->IsCanceled()) return;
-        if (!CGUIDialogKeyboard::ShowAndGetInput(strMovieName, (CStdStringW)g_localizeStrings.Get(16009), false)) return ;
-        bContinue = true;
-        bError = false;
-      }
-
-      if (bError)
-      {
+        if (pDlgProgress->IsCanceled())
+          return; // user cancelled
+        OutputDebugString("failed to get details\n");
         // show dialog...
         CGUIDialogOK *pDlgOK = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
         if (pDlgOK)
         {
           pDlgOK->SetHeading(195);
-          pDlgOK->SetLine(0, strMovieName);
+          pDlgOK->SetLine(0, movieName);
           pDlgOK->SetLine(1, L"");
           pDlgOK->SetLine(2, L"");
           pDlgOK->SetLine(3, L"");
           pDlgOK->DoModal(GetID());
         }
+        return;
       }
     }
-  }
-  while (bContinue);
+    // 6. Check for a refresh
+  } while (needsRefresh);
 
-update:
-  if (bUpdate)
-  {
-    int iSelectedItem = m_viewControl.GetSelectedItem();
-
-    // Refresh all items
-    for (int i = 0; i < m_vecItems.Size(); ++i)
-    {
-      CFileItem* pItem = m_vecItems[i];
-      pItem->FreeIcons();
-    }
-
-    m_vecItems.SetThumbs();
-    SetIMDBThumbs(m_vecItems);
-    m_vecItems.FillInDefaultIcons();
-    UpdateButtons();
-  }
+  // 7. Update our item
+  SetIMDBThumb(item, movieDetails.m_strIMDBNumber);
+  item->FillInDefaultIcon();
+  item->FreeIcons();
+  UpdateButtons();
 }
 
 void CGUIWindowVideoBase::Render()
@@ -519,7 +466,8 @@ void CGUIWindowVideoBase::OnManualIMDB()
   CUtil::GetThumbnail("Z:\\", strThumb);
   ::DeleteFile(strThumb.c_str());
 
-  ShowIMDB(strInput, "Z:\\", "Z:\\", false);
+  CFileItem item(strInput);
+  ShowIMDB(&item);
   return ;
 }
 
@@ -1019,7 +967,6 @@ void CGUIWindowVideoBase::MarkUnWatched(int iItem)
 {
   if ( iItem < 0 || iItem >= m_vecItems.Size() ) return ;
   CFileItem* pItem = m_vecItems[iItem];
-  //m_database.MarkAsUnWatched(atol(pItem->m_strPath));
   m_database.MarkAsUnWatched(atol(pItem->m_musicInfoTag.GetURL()));
   Update(m_vecItems.m_strPath);
 }
@@ -1029,7 +976,6 @@ void CGUIWindowVideoBase::MarkWatched(int iItem)
 {
   if ( iItem < 0 || iItem >= m_vecItems.Size() ) return ;
   CFileItem* pItem = m_vecItems[iItem];
-  //m_database.MarkAsWatched(atol(pItem->m_strPath));
   m_database.MarkAsWatched(atol(pItem->m_musicInfoTag.GetURL()));
   Update(m_vecItems.m_strPath);
 }
@@ -1042,13 +988,12 @@ void CGUIWindowVideoBase::UpdateVideoTitle(int iItem)
 
   //Get Current Name
   CIMDBMovie detail;
-  m_database.GetMovieInfo(L"", detail, atol(pItem->m_strPath));
+  m_database.GetMovieInfo(L"", detail, atol(pItem->m_musicInfoTag.GetURL()));
   CStdString strInput;
   strInput = detail.m_strTitle;
 
   //Get the new title
   if (!CGUIDialogKeyboard::ShowAndGetInput(strInput, (CStdStringW)g_localizeStrings.Get(16105), false)) return ;
-  //m_database.UpdateMovieTitle(atol(pItem->m_strPath), strInput);
   m_database.UpdateMovieTitle(atol(pItem->m_musicInfoTag.GetURL()), strInput);
   Update(m_vecItems.m_strPath);
 }
@@ -1117,16 +1062,16 @@ void CGUIWindowVideoBase::PlayItem(int iItem)
     OnClick(iItem);
 }
 
-CStdString CGUIWindowVideoBase::GetnfoFile(const CStdString &strFile, bool bFolder)
+CStdString CGUIWindowVideoBase::GetnfoFile(CFileItem *item)
 {
   CStdString nfoFile;
   // Find a matching .nfo file
-  if (bFolder)
+  if (item->m_bIsFolder)
   {
     // see if there is a unique nfo file in this folder, and if so, use that
     CFileItemList items;
     CDirectory dir;
-    if (dir.GetDirectory(strFile, items, ".nfo") && items.Size())
+    if (dir.GetDirectory(item->m_strPath, items, ".nfo") && items.Size())
     {
       int numNFO = -1;
       for (int i = 0; i < items.Size(); i++)
@@ -1149,31 +1094,30 @@ CStdString CGUIWindowVideoBase::GetnfoFile(const CStdString &strFile, bool bFold
 
   // file
   CStdString strExtension;
-  CUtil::GetExtension(strFile, strExtension);
+  CUtil::GetExtension(item->m_strPath, strExtension);
 
   // already an .nfo file?
   if ( strcmpi(strExtension.c_str(), ".nfo") == 0 )
-    nfoFile = strFile;
+    nfoFile = item->m_strPath;
   // no, create .nfo file
   else
-    CUtil::ReplaceExtension(strFile, ".nfo", nfoFile);
+    CUtil::ReplaceExtension(item->m_strPath, ".nfo", nfoFile);
 
   // test file existance
   if (!nfoFile.IsEmpty() && !CFile::Exists(nfoFile))
       nfoFile.Empty();
 
   // try looking for .nfo file for a stacked item
-  CURL url(strFile);
-  if (url.GetProtocol() == "stack")
+  if (item->IsStack())
   {
     // first try .nfo file matching first file in stack
     CStackDirectory dir;
-    CStdString firstFile = dir.GetFirstStackedFile(strFile);
+    CStdString firstFile = dir.GetFirstStackedFile(item->m_strPath);
     CUtil::ReplaceExtension(firstFile, ".nfo", nfoFile);
     // else try .nfo file matching stacked title
     if (!CFile::Exists(nfoFile))
     {
-      CStdString stackedTitlePath = dir.GetStackedTitlePath(strFile);
+      CStdString stackedTitlePath = dir.GetStackedTitlePath(item->m_strPath);
       CUtil::ReplaceExtension(stackedTitlePath, ".nfo", nfoFile);
       if (!CFile::Exists(nfoFile))
         nfoFile.Empty();
@@ -1229,12 +1173,10 @@ void CGUIWindowVideoBase::SetDatabaseDirectory(const VECMOVIES &movies, CFileIte
   }
 }
 
-void CGUIWindowVideoBase::ApplyIMDBThumbToFolder(const CStdString &folder, const CStdString &imdbNumber)
+void CGUIWindowVideoBase::ApplyIMDBThumbToFolder(const CStdString &folder, const CStdString &imdbThumb)
 {
   // copy icon to folder also;
-  CStdString strThumbOrg;
-  CUtil::GetVideoThumbnail(imdbNumber, strThumbOrg);
-  if (CFile::Exists(strThumbOrg))
+  if (CFile::Exists(imdbThumb))
   {
     CStdString strFolderImage;
     CUtil::AddFileToFolder(folder, "folder.jpg", strFolderImage);
@@ -1243,12 +1185,23 @@ void CGUIWindowVideoBase::ApplyIMDBThumbToFolder(const CStdString &folder, const
     {
       CStdString strThumb;
       CUtil::GetThumbnail( strFolderImage, strThumb);
-      CFile::Cache(strThumbOrg.c_str(), strThumb.c_str(), NULL, NULL);
+      CFile::Cache(imdbThumb.c_str(), strThumb.c_str(), NULL, NULL);
     }
     else
     {
-      CFile::Cache(strThumbOrg.c_str(), strFolderImage.c_str(), NULL, NULL);
+      CFile::Cache(imdbThumb.c_str(), strFolderImage.c_str(), NULL, NULL);
     }
+  }
+}
+
+void CGUIWindowVideoBase::SetIMDBThumb(CFileItem *item, const CStdString &imdbNumber)
+{
+  if (!item->m_bIsFolder && !item->HasThumbnail())
+  {
+    CStdString strThumb;
+    CUtil::GetVideoThumbnail(imdbNumber, strThumb);
+    if (CFile::Exists(strThumb))
+      item->SetThumbnailImage(strThumb);
   }
 }
 
