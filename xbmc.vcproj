@@ -816,6 +816,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\NfoFile.cpp">
 				</File>
 				<File
+					RelativePath=".\xbmc\PartyModeManager.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\PartyModeManager.h">
+				</File>
+				<File
 					RelativePath=".\xbmc\Picture.cpp">
 				</File>
 				<File

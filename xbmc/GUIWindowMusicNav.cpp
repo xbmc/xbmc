@@ -11,6 +11,7 @@
 #include "GUIDialogFileBrowser.h"
 #include "Picture.h"
 #include "FileSystem/MusicDatabaseDirectory.h"
+#include "PartyModeManager.h"
 
 using namespace MUSICDATABASEDIRECTORY;
 
@@ -41,6 +42,11 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
 {
   switch (message.GetMessage())
   {
+  case GUI_MSG_PLAYLIST_CHANGED:
+    {
+      UpdateButtons();
+    }
+    break;
   case GUI_MSG_WINDOW_INIT:
     {
       //  first time
@@ -162,24 +168,11 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
       int iControl = message.GetSenderId();
       if (iControl == CONTROL_BTNPARTYMODE)
       {
-        g_application.m_bMusicPartyMode = !g_application.m_bMusicPartyMode;
-        if (g_application.m_bMusicPartyMode)
+        if (g_partyModeManager.IsEnabled())
+          g_partyModeManager.Disable();
+        else
         {
-          // disable repeat and random
-          g_playlistPlayer.Repeat(PLAYLIST_MUSIC);
-          g_playlistPlayer.ShufflePlay(PLAYLIST_MUSIC, false);
-
-          // setup playlist
-          g_playlistPlayer.ClearPlaylist(PLAYLIST_MUSIC);
-          g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_MUSIC);
-
-          // start
-          g_application.m_dwPartyModeTick = timeGetTime();
-
-          // open window if not already open
-          if (GetID() == m_gWindowManager.GetActiveWindow())
-            m_gWindowManager.ActivateWindow(WINDOW_MUSIC_PLAYLIST);
-
+          g_partyModeManager.Enable();
           return true;
         }
         UpdateButtons();
@@ -255,7 +248,7 @@ void CGUIWindowMusicNav::UpdateButtons()
   SET_CONTROL_LABEL(CONTROL_FILTER, strLabel);
 
   CONTROL_DESELECT(CONTROL_BTNPARTYMODE);
-  if (g_application.m_bMusicPartyMode)
+  if (g_partyModeManager.IsEnabled())
     CONTROL_SELECT(CONTROL_BTNPARTYMODE);
 }
 
@@ -382,16 +375,21 @@ void CGUIWindowMusicNav::OnPopupMenu(int iItem)
   // load our menu
   pMenu->Initialize();
   // add the needed buttons
-  int btn_Info     = 0;  // Music Information
-  int btn_PlayWith = 0;  // Play using alternate player
-  int btn_Queue    = 0;  // Queue Item
-
+  int btn_NowPlaying  = 0;  // Now Playing...
+  int btn_Info        = 0;  // Music Information
+  int btn_PlayWith    = 0;  // Play using alternate player
+  int btn_Queue       = 0;  // Queue Item
+  
   // directory tests
   CMusicDatabaseDirectory dir;
 
   // check what players we have, if we have multiple display play with option
   VECPLAYERCORES vecCores;
   CPlayerCoreFactory::GetPlayers(*m_vecItems[iItem], vecCores);
+
+  // if party mode is enabled, put Now Playing at the top of the context menu
+  if (g_partyModeManager.IsEnabled())
+    btn_NowPlaying = pMenu->AddButton(13350);
 
   // turn off info/queue/play/set artist thumb if the current item is goto parent ..
   bool bIsGotoParent = m_vecItems[iItem]->IsParentFolder();
@@ -411,9 +409,9 @@ void CGUIWindowMusicNav::OnPopupMenu(int iItem)
     btn_Queue = pMenu->AddButton(13347);
   }
 
-  int btn_NowPlay  = 0;  // Now Playing...
-  if (g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).size() > 0)
-    btn_NowPlay = pMenu->AddButton(13350);
+  // if the Now Playing item is still not in the list, add it here
+  if (btn_NowPlaying == 0 && g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).size() > 0)
+    btn_NowPlaying = pMenu->AddButton(13350);
 
   // always visible
   int btn_Search = pMenu->AddButton(137);     // Search...
@@ -457,7 +455,7 @@ void CGUIWindowMusicNav::OnPopupMenu(int iItem)
     {
       OnQueueItem(iItem);
     }
-    else if (btn == btn_NowPlay)  // Now Playing...
+    else if (btn == btn_NowPlaying)  // Now Playing...
     {
       m_gWindowManager.ActivateWindow(WINDOW_MUSIC_PLAYLIST);
       return;

@@ -6,7 +6,7 @@
 #include "playlistplayer.h"
 #include "GUIListControl.h"
 #include "GUIDialogContextMenu.h"
-
+#include "PartyModeManager.h"
 
 #define CONTROL_BTNVIEWASICONS     2 
 #define CONTROL_BTNSORTBY          3
@@ -369,7 +369,7 @@ void CGUIWindowMusicPlayList::ClearPlayList()
 void CGUIWindowMusicPlayList::ShufflePlayList()
 {
   // disallow shuffle in party mode
-  if (g_application.m_bMusicPartyMode)
+  if (g_partyModeManager.IsEnabled())
     return;
 
   int iPlaylist = PLAYLIST_MUSIC;
@@ -434,6 +434,8 @@ void CGUIWindowMusicPlayList::RemovePlayListItem(int iItem)
   {
     m_viewControl.SetSelectedItem(iItem);
   }
+
+  g_partyModeManager.OnSongChange();
 }
 
 void CGUIWindowMusicPlayList::UpdateButtons()
@@ -513,15 +515,8 @@ void CGUIWindowMusicPlayList::UpdateButtons()
 
 bool CGUIWindowMusicPlayList::OnPlayMedia(int iItem)
 {
-  if (g_application.m_bMusicPartyMode)
-  {
-    // jump playback to the item selected
-    // the previously playing song will be reaped from the playlist
-    g_playlistPlayer.Play(iItem);
-
-    CGUIMessage msg(GUI_MSG_PLAYLIST_CHANGED, 0, 0, 0, 0, NULL);
-    m_gWindowManager.SendMessage(msg);
-  }
+  if (g_partyModeManager.IsEnabled())
+    g_partyModeManager.Play(iItem);
   else
   {
     int iPlaylist=m_guiState->GetPlaylist();
@@ -569,9 +564,18 @@ void CGUIWindowMusicPlayList::OnItemLoaded(CFileItem* pItem)
   if (pItem->m_musicInfoTag.Loaded())
   { // set label 1+2 from tags
     if (m_guiState.get()) m_hideExtensions = m_guiState->HideExtensions();
-    pItem->FormatLabel(g_guiSettings.GetString("MyMusic.TrackFormat"));
-    pItem->FormatLabel2(g_guiSettings.GetString("MyMusic.TrackFormatRight"));
+    pItem->FormatLabel(g_guiSettings.GetString("MusicPlaylist.TrackFormat"));
+    pItem->FormatLabel2(g_guiSettings.GetString("MusicPlaylist.TrackFormatRight"));
 
+    /* this works funny. the labels keep changing?
+    // add position to label
+    if (g_guiSettings.GetBool("MusicPlaylist.ShowPosition"))
+    {
+      CStdString str;
+      str.Format("%02.2i. %s", iTrack, pItem->GetLabel());
+      pItem->SetLabel(str);
+    }
+    */
   } // if (pItem->m_musicInfoTag.Loaded())
   else
   {
@@ -679,7 +683,7 @@ void CGUIWindowMusicPlayList::OnPopupMenu(int iItem)
       pMenu->EnableButton(btn_Delete, false); // disable if current item
 
     // party mode automatically moves the current song to the top
-    if (g_application.m_bMusicPartyMode) 
+    if (g_partyModeManager.IsEnabled())
     {
       // cant move the current playing song
       if (bItemIsPlaying)
@@ -700,12 +704,12 @@ void CGUIWindowMusicPlayList::OnPopupMenu(int iItem)
     btn_MoveTo = pMenu->AddButton(13252);         // move item here
     if (iItem == iPos)
       pMenu->EnableButton(btn_MoveTo, false);     // disable the button if its the same position or current item
-    if (g_application.m_bMusicPartyMode && iItem >= i)
+    if (g_partyModeManager.IsEnabled() && iItem >= i)
       pMenu->EnableButton(btn_MoveTo, false);     // cant move a song above the currently playing
     btn_Cancel = pMenu->AddButton(13253);         // cancel move
   }
   int btn_Return = pMenu->AddButton(12010);     // return to my music
-  if (g_application.m_bMusicPartyMode)
+  if (g_partyModeManager.IsEnabled())
     btn_PartyMode = pMenu->AddButton(588);      // cancel party mode
 
   // position it correctly
@@ -755,7 +759,7 @@ void CGUIWindowMusicPlayList::OnPopupMenu(int iItem)
     }
     else if (btnid == btn_PartyMode)
     {
-      g_application.m_bMusicPartyMode = false;
+      g_partyModeManager.Disable();
     }
   }
   m_vecItems[iItem]->Select(false);

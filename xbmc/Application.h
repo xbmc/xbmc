@@ -151,10 +151,6 @@ public:
   int m_MasterUserModeCounter;  
   EPLAYERCORES m_eForcedNextPlayer;
 
-  // party mode
-  bool m_bMusicPartyMode;
-  DWORD m_dwPartyModeTick;
-
   CStdString m_strPlayListFile;
   
   int GlobalIdleTime();

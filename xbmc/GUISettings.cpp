@@ -233,6 +233,9 @@ CGUISettings::CGUISettings(void)
   AddCategory(3, "MusicPlaylist", 136);
   AddBool(1, "MusicPlaylist.ClearPlaylistsOnEnd",239,false);
   AddBool(2, "MusicPlaylist.ShufflePlaylistsOnLoad", 228, false);
+  AddString(3, "MusicPlaylist.TrackFormat", 13307, "%A - %T", BUTTON_CONTROL_INPUT, false, 16016);
+  AddString(4, "MusicPlaylist.TrackFormatRight", 13387, "%D", BUTTON_CONTROL_INPUT, false, 16016);
+  //AddBool(5, "MusicPlaylist.ShowPosition", 13402, false); // this is acting a little odd
 
   AddCategory(3, "CDDARipper", 620);
   AddBool(1, "CDDARipper.UseTrackNumber", 624, true);
@@ -252,7 +255,6 @@ CGUISettings::CGUISettings(void)
   AddInt(9, "MusicPlayer.CrossFade", 13314, 0, 0, 1, 10, SPIN_CONTROL_INT_PLUS, MASK_SECS, TEXT_OFF);
   AddBool(10, "MusicPlayer.CrossFadeAlbumTracks", 13400, true);
   
-
   AddCategory(3, "Karaoke", 13327);
   AddBool(1, "Karaoke.Enabled", 13323, false);
   AddInt(2, "Karaoke.BackgroundAlpha", 13324, 0, 0, 5, 255, SPIN_CONTROL_INT);
