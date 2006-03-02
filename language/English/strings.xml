@@ -1035,6 +1035,7 @@
   <string><id>13400</id><value>Crossfade albumtracks</value></string>
   <string><id>13401</id><value>Browse for %s</value></string>
   <string><id>13402</id><value>Show track position</value></string>
+  <string><id>13403</id><value>Clear Default</value></string>
 
   <string><id>14000</id><value>Stack</value></string>
   <string><id>14001</id><value>Unstack</value></string>
