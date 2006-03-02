@@ -14,7 +14,7 @@ public:
   virtual ~CGUIWindowVideoInfo(void);
   virtual bool OnMessage(CGUIMessage& message);
   virtual void Render();
-  void SetMovie(CIMDBMovie& movie);
+  void SetMovie(CIMDBMovie& movie, const CStdString &thumbNail);
   bool NeedRefresh() const;
 
 protected:
@@ -30,6 +30,7 @@ protected:
   void Play();
 
   CIMDBMovie* m_pMovie;
+  CStdString m_thumbNail;
   CIMDBMovie m_Movie;
   bool m_bViewReview;
   bool m_bRefresh;
