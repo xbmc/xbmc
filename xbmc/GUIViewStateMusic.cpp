@@ -433,8 +433,8 @@ void CGUIViewStateWindowMusicSongs::SaveViewState()
 
 CGUIViewStateWindowMusicPlaylist::CGUIViewStateWindowMusicPlaylist(const CFileItemList& items) : CGUIViewStateWindowMusic(items)
 {
-  CStdString strTrackLeft=g_guiSettings.GetString("MyMusic.TrackFormat");
-  CStdString strTrackRight=g_guiSettings.GetString("MyMusic.TrackFormatRight");
+  CStdString strTrackLeft=g_guiSettings.GetString("MusicPlaylist.TrackFormat");
+  CStdString strTrackRight=g_guiSettings.GetString("MusicPlaylist.TrackFormatRight");
 
   AddSortMethod(SORT_METHOD_NONE, 103, LABEL_MASKS(strTrackLeft, strTrackRight, "%F", ""));  // Userdefined, Userdefined | FolderName, empty
   SetSortMethod(SORT_METHOD_NONE);

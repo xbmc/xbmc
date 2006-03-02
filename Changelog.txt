@@ -5,6 +5,11 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 02-03-2006 added: seperate track formatting options for the music now playing window.  (found in settings->music->playlist)
+ - 02-03-2006 updated: completely rewritten party mode manager, new features:
+		- play on a folder queues up all the items at the top of the playlist and starts playing
+		- queue on a folder queues up all the items beneath the current song or the last user queued song
+		- limited song history for the last 25 randomly picked songs
  - 02-03-2006 fixed: System Info screen initialized twice on entry.
  - 02-03-2006 fixed: Xbox soundtracks didn't show the soundtrack name.
  - 02-03-2006 fixed: Album lookup select dialog didn't function correctly.
