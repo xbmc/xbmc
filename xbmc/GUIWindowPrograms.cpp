@@ -93,7 +93,8 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
             m_vecItems.m_strPath = g_settings.m_vecMyProgramsBookmarks[iIndex].strPath;
           else
             m_vecItems.m_strPath = strDestination;
-          m_shareDirectory = g_settings.m_vecMyProgramsBookmarks[iIndex].strPath;
+          CUtil::RemoveSlashAtEnd(m_vecItems.m_strPath);
+          m_shareDirectory = m_vecItems.m_strPath;
           m_iDepth = g_settings.m_vecMyProgramsBookmarks[iIndex].m_iDepthSize;
           m_strBookmarkName = g_settings.m_vecMyProgramsBookmarks[iIndex].strName;
           m_database.GetPathsByBookmark(m_strBookmarkName, m_vecPaths);
