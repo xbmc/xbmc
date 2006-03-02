@@ -3721,36 +3721,105 @@ bool CMusicDatabase::GetAlbumById(long idAlbum, CStdString& strAlbum)
 
 bool CMusicDatabase::GetRandomSong(CFileItem* item)
 {
-  return GetRandomSong(item, (CStdString)"");
+  CFileItemList items;
+  if (GetRandomSongs(items, 1, (CStdString)""))
+  {
+    item = items[0];
+    return true;
+  }
+  else
+    return false;
 }
 
 bool CMusicDatabase::GetRandomSong(CFileItem* item, CStdString& strWhere)
+{
+  CFileItemList items;
+  if (GetRandomSongs(items, 1, strWhere))
+  {
+    item = items[0];
+    return true;
+  }
+  else
+    return false;
+}
+
+bool CMusicDatabase::GetRandomSongs(CFileItemList& items, int iNumSongs, CStdString& strWhere)
+{
+  vector<long> vecHistory;
+  return GetRandomSongs(items, iNumSongs, strWhere, vecHistory, false);
+}
+
+bool CMusicDatabase::GetRandomSongsWithHistory(CFileItemList& items, int iNumSongs, CStdString& strWhere, vector<long>& vecHistory)
+{
+  return GetRandomSongs(items, iNumSongs, strWhere, vecHistory, true);
+}
+
+bool CMusicDatabase::GetRandomSongs(CFileItemList& items, int iNumSongs, CStdString& strWhere, vector<long>& vecHistory, bool bUseHistory)
 {
   try
   {
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
-    int iSongs = GetSongsCount(strWhere);
-
-    if (iSongs <= 0)
-      return false;
-
+    // seed random function
     srand(timeGetTime());
-    int iRandom = rand() % iSongs;
 
-    CStdString strSQL=FormatSQL("select * from songview %s order by idSong limit 1 offset %i", strWhere.c_str(), iRandom);
-    CLog::Log(LOGDEBUG,"GetRandomSong(), query = %s", strSQL.c_str());
-    // run query
-    if (!m_pDS->query(strSQL.c_str())) return false;
-    int iRowsFound = m_pDS->num_rows();
-    if (iRowsFound != 1)
+    // get the required number of random songs
+    // unfortunately, we cant seem to use the easy query of:
+    // select * from songview (where) order by random() limit iNumSongs
+    // so we'll loop instead
+    for (int i=0; i<iNumSongs; i++)
     {
+      // build exclusion list
+      CStdString strWhereTemp = strWhere;
+      if (bUseHistory)
+      {
+        CStdString strNotIn;
+        if (vecHistory.size() > 0)
+        {
+          strNotIn = "idSong not in (";
+          for (int i = 0; i < (int)vecHistory.size(); i++)
+          {
+            CStdString strTemp;
+            strTemp.Format("%ld,", vecHistory[i]);
+            strNotIn += strTemp;
+          }
+          strNotIn.TrimRight(",");
+          strNotIn += ")";
+        }
+
+        // add the exclusion list to the where clause
+        if (!strNotIn.IsEmpty())
+        {
+          if (strWhereTemp.IsEmpty())
+            strWhereTemp = "where ";
+          else
+            strWhereTemp += " and ";
+          strWhereTemp += strNotIn;
+        }
+      }
+
+      int iCount = GetSongsCount(strWhereTemp);
+      if (iCount <= 0)
+        return false;
+      int iRandom = rand() % iCount;
+
+      CStdString strSQL=FormatSQL("select * from songview %s order by idSong limit 1 offset %i", strWhereTemp.c_str(), iRandom);
+      CLog::Log(LOGDEBUG,"GetRandomSong(), query = %s", strSQL.c_str());
+      // run query
+      if (!m_pDS->query(strSQL.c_str())) return false;
+      int iRowsFound = m_pDS->num_rows();
+      if (iRowsFound != 1)
+      {
+        m_pDS->close();
+        return false;
+      }
+      CFileItem *item = new CFileItem;
+      GetFileItemFromDataset(item, "");
+      items.Add(item);
+      vecHistory.push_back(m_pDS->fv("songview.idSong").get_asLong());
       m_pDS->close();
-      return false;
     }
-    GetFileItemFromDataset(item, "");
-    m_pDS->close();
     return true;
   }
   catch(...)
