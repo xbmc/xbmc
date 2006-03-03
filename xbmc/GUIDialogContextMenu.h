@@ -24,6 +24,10 @@ public:
 protected:
   virtual void OnInitWindow();
   static bool CheckMasterCode(int iLockMode);
+  static CStdString GetDefaultShareNameByType(const CStdString &strType);
+  static void SetDefault(const CStdString &strType, const CStdString &strDefault);
+  static void ClearDefault(const CStdString &strType);
+
 private:
   int m_iNumButtons;
   int m_iClickedButton;
