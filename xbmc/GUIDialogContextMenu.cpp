@@ -154,6 +154,8 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CStdS
     
     // load our menu
     pMenu->Initialize();
+
+    CStdString strDefault = GetDefaultShareNameByType(strType);
     
     // add the needed buttons
     int btn_Rename = 0;
@@ -174,6 +176,9 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CStdS
     int btn_Delete = pMenu->AddButton(117); // Delete
 
     int btn_Default = pMenu->AddButton(13335); // Set as Default
+    int btn_ClearDefault = 0;
+    if (!strDefault.IsEmpty())
+      btn_ClearDefault = pMenu->AddButton(13403); // Clear Default
 
     // GeminiServer: DVD Drive Context menu stuff
     int btn_PlayDisc = 0;
@@ -277,6 +282,15 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CStdS
         {
           // delete this share
           g_settings.DeleteBookmark(strType, strLabel, strPath);
+
+          // check default
+          if (!strDefault.IsEmpty())
+          {
+            // need compare left anchored due to DVD's adding status and name
+            if (strLabel.Left(strDefault.size()).Equals(strDefault))
+              ClearDefault(strType);
+          }
+
           return true;
         }
       }
@@ -318,7 +332,15 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CStdS
       {
         if (!CheckMasterCode(iLockMode)) return false;
         // make share default
-        return g_settings.UpDateXbmcXML(strType.c_str(), "default", strLabel.c_str());
+        SetDefault(strType, strLabel);
+        return true;
+      }
+      else if (btn == btn_ClearDefault)
+      {
+        if (!CheckMasterCode(iLockMode)) return false;
+        // remove share default
+        ClearDefault(strType);
+        return true;
       }
       else if (btn == btn_PlayDisc)
       {
@@ -484,4 +506,70 @@ bool CGUIDialogContextMenu::CheckMasterCode(int iLockMode)
 void CGUIDialogContextMenu::OnWindowUnload()
 {
   ClearButtons();
+}
+
+CStdString CGUIDialogContextMenu::GetDefaultShareNameByType(const CStdString &strType)
+{
+  VECSHARES *pShares = NULL;
+  CStdString strDefault;
+
+  if (strType == "myprograms")
+  {
+    pShares = &g_settings.m_vecMyProgramsBookmarks;
+    strDefault = g_stSettings.m_szDefaultPrograms;
+  }
+  else if (strType == "files")
+  {
+    pShares = &g_settings.m_vecMyFilesShares;
+    strDefault = g_stSettings.m_szDefaultFiles;
+  }
+  else if (strType == "music")
+  {
+    pShares = &g_settings.m_vecMyMusicShares;
+    strDefault = g_stSettings.m_szDefaultMusic;
+  }
+  else if (strType == "video")
+  {
+    pShares = &g_settings.m_vecMyVideoShares;
+    strDefault = g_stSettings.m_szDefaultVideos;
+  }
+  else if (strType == "pictures")
+  {
+    pShares = &g_settings.m_vecMyPictureShares;
+    strDefault = g_stSettings.m_szDefaultPictures;
+  }
+
+  if (!pShares) return "";
+
+  VECSHARES vecShares = *pShares;
+  bool bIsBookmarkName = false;
+  int iIndex = CUtil::GetMatchingShare(strDefault, vecShares, bIsBookmarkName);
+  if (iIndex < 0)
+    return "";
+
+  return vecShares.at(iIndex).strName;
+}
+
+void CGUIDialogContextMenu::SetDefault(const CStdString &strType, const CStdString &strDefault)
+{
+  if (g_settings.UpDateXbmcXML(strType, "default", strDefault))
+  {
+    if (strType == "myprograms")
+      strcpy(g_stSettings.m_szDefaultPrograms, strDefault.c_str());
+    else if (strType == "files")
+      strcpy(g_stSettings.m_szDefaultFiles, strDefault.c_str());
+    else if (strType == "music")
+      strcpy(g_stSettings.m_szDefaultMusic, strDefault.c_str());
+    else if (strType == "video")
+      strcpy(g_stSettings.m_szDefaultVideos, strDefault.c_str());
+    else if (strType == "pictures")
+      strcpy(g_stSettings.m_szDefaultPictures, strDefault.c_str());
+  }
+  else
+    CLog::Log(LOGERROR, "Could not change default bookmark for %s", strType.c_str());
+}
+
+void CGUIDialogContextMenu::ClearDefault(const CStdString &strType)
+{
+  SetDefault(strType, "");
 }
