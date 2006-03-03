@@ -632,7 +632,7 @@ long CMusicDatabase::AddPath(const CStdString& strPath1)
     if (it != m_pathCache.end())
       return it->second;
 
-    strSQL=FormatSQL( "select * from path where strPath='%s'", strPath.c_str());
+    strSQL=FormatSQL( "select * from path where strPath like '%s'", strPath.c_str());
     m_pDS->query(strSQL.c_str());
     if (m_pDS->num_rows() == 0)
     {
@@ -790,7 +790,7 @@ bool CMusicDatabase::GetSongByFileName(const CStdString& strFileName, CSong& son
     crc.Compute(strFileName);
 
     CStdString strSQL=FormatSQL("select * from songview "
-                                "where dwFileNameCRC='%ul' and strPath='%s'"
+                                "where dwFileNameCRC='%ul' and strPath like'%s'"
                                 , crc,
                                 strPath.c_str());
 
@@ -1191,7 +1191,7 @@ bool CMusicDatabase::GetAlbumInfo(const CStdString& strAlbum, const CStdString& 
     CStdString strSQL=FormatSQL("select * from albuminfo "
                                   "join albumview on albuminfo.idAlbum=albumview.idAlbum "
                                   "join genre on albuminfo.idGenre=genre.idGenre "
-                                "where albumview.strAlbum like '%s' and albumview.strPath='%s'"
+                                "where albumview.strAlbum like '%s' and albumview.strPath like '%s'"
                                 , strAlbum.c_str(), strPath.c_str());
 
     if (!m_pDS->query(strSQL.c_str())) return false;
@@ -1355,7 +1355,7 @@ bool CMusicDatabase::GetTop100AlbumSongs(const CStdString& strBaseDir, CFileItem
     if (NULL == m_pDS.get()) return false;
 
     CStdString strSQL;
-    strSQL.Format("select * from songview join albumview on (songview.strAlbum = albumview.strAlbum and songview.strPath = albumview.strPath) where albumview.idalbum in (select song.idAlbum from song where song.iTimesPlayed>0 group by idalbum order by sum(song.iTimesPlayed) desc limit 100) order by albumview.idalbum in (select song.idAlbum from song where song.iTimesPlayed>0 group by idalbum order by sum(song.iTimesPlayed) desc limit 100)");
+    strSQL.Format("select * from songview join albumview on (songview.strAlbum = albumview.strAlbum and songview.strPath like albumview.strPath) where albumview.idalbum in (select song.idAlbum from song where song.iTimesPlayed>0 group by idalbum order by sum(song.iTimesPlayed) desc limit 100) order by albumview.idalbum in (select song.idAlbum from song where song.iTimesPlayed>0 group by idalbum order by sum(song.iTimesPlayed) desc limit 100)");
     CLog::Log(LOGDEBUG,"GetTop100AlbumSongs() query: %s", strSQL.c_str());
     if (!m_pDS->query(strSQL.c_str())) return false;
 
@@ -1430,7 +1430,7 @@ bool CMusicDatabase::GetRecentlyPlayedAlbumSongs(const CStdString& strBaseDir, C
     if (NULL == m_pDS.get()) return false;
 
     CStdString strSQL;
-    strSQL.Format("select * from songview join albumview on (songview.strAlbum = albumview.strAlbum and songview.strPath = albumview.strPath) where albumview.idalbum in (select distinct albumview.idalbum from albumview join song on albumview.idAlbum=song.idAlbum where song.lastplayed NOT NULL order by song.lastplayed desc limit %i)", RECENTLY_ADDED_LIMIT);
+    strSQL.Format("select * from songview join albumview on (songview.strAlbum = albumview.strAlbum and songview.strPath like albumview.strPath) where albumview.idalbum in (select distinct albumview.idalbum from albumview join song on albumview.idAlbum=song.idAlbum where song.lastplayed NOT NULL order by song.lastplayed desc limit %i)", RECENTLY_ADDED_LIMIT);
     CLog::Log(LOGDEBUG,"GetRecentlyPlayedAlbumSongs() query: %s", strSQL.c_str());
     if (!m_pDS->query(strSQL.c_str())) return false;
 
@@ -1507,7 +1507,7 @@ bool CMusicDatabase::GetRecentlyAddedAlbumSongs(const CStdString& strBaseDir, CF
     if (NULL == m_pDS.get()) return false;
 
     CStdString strSQL;
-    strSQL.Format("select * from songview join albumview on (songview.strAlbum = albumview.strAlbum and songview.strPath = albumview.strPath) where albumview.idalbum in ( select idAlbum from albumview order by idAlbum desc limit %i)", RECENTLY_ADDED_LIMIT);
+    strSQL.Format("select * from songview join albumview on (songview.strAlbum = albumview.strAlbum and songview.strPath like albumview.strPath) where albumview.idalbum in ( select idAlbum from albumview order by idAlbum desc limit %i)", RECENTLY_ADDED_LIMIT);
     CLog::Log(LOGDEBUG,"GetRecentlyAddedAlbumSongs() query: %s", strSQL.c_str());
     if (!m_pDS->query(strSQL.c_str())) return false;
 
@@ -1607,7 +1607,7 @@ bool CMusicDatabase::GetSongsByPath(const CStdString& strPath1, VECSONGS& songs)
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
-    CStdString strSQL=FormatSQL("select * from songview where strPath='%s'", strPath.c_str() );
+    CStdString strSQL=FormatSQL("select * from songview where strPath like '%s'", strPath.c_str() );
     if (!m_pDS->query(strSQL.c_str())) return false;
     int iRowsFound = m_pDS->num_rows();
     if (iRowsFound == 0)
@@ -1647,7 +1647,7 @@ bool CMusicDatabase::GetSongsByPath(const CStdString& strPath1, MAPSONGS& songs,
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
-    CStdString strSQL=FormatSQL("select * from songview where strPath='%s'", strPath.c_str() );
+    CStdString strSQL=FormatSQL("select * from songview where strPath like '%s'", strPath.c_str() );
     if (!m_pDS->query(strSQL.c_str())) return false;
     int iRowsFound = m_pDS->num_rows();
     if (iRowsFound == 0)
@@ -1696,7 +1696,7 @@ bool CMusicDatabase::GetAlbumsByPath(const CStdString& strPath1, VECALBUMS& albu
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
-    CStdString strSQL=FormatSQL("select * from albumview where strPath='%s'", strPath.c_str() );
+    CStdString strSQL=FormatSQL("select * from albumview where strPath like '%s'", strPath.c_str() );
     if (!m_pDS->query(strSQL.c_str())) return false;
     int iRowsFound = m_pDS->num_rows();
     if (iRowsFound == 0)
@@ -3560,7 +3560,7 @@ bool CMusicDatabase::SaveAlbumThumb(const CStdString& strAlbum, const CStdString
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
-    CStdString strSQL=FormatSQL("select idAlbum from album join path on album.idPath=path.idPath where strAlbum='%s' and strPath='%s'", strAlbum.c_str(), strPath.c_str());
+    CStdString strSQL=FormatSQL("select idAlbum from album join path on album.idPath=path.idPath where strAlbum='%s' and strPath like '%s'", strAlbum.c_str(), strPath.c_str());
     CLog::Log(LOGDEBUG, "CMusicDatabase::SaveAlbumThumb() query: %s", strSQL.c_str());
     if (!m_pDS->query(strSQL.c_str())) return false;
     int iRowsFound = m_pDS->num_rows();
