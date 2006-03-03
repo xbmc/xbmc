@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 02-03-2006 fixed: Possible crashes setting things such as default bookmark.
  - 02-03-2006 changed: Rewrote the ShowIMDB function.  Now any existing thumbnails will be used in the Show Information dialog.
  - 02-03-2006 changed: 'query info for all files' in my video now ignore sample/ folder.
  - 02-03-2006 fixed: Mark as Watched, Mark as Unwatched, Remove Title, Edit Title for Movies in the database

@@ -1859,11 +1859,19 @@ bool CSettings::UpDateXbmcXML(const CStdString &strFirstChild, const CStdString 
   //    <strChild>strChildValue</strChild>
   
   TiXmlElement *pRootElement = xbmcXml.RootElement();
-  TiXmlNode *pNode = pRootElement->FirstChild(strFirstChild);;
+  if (!pRootElement) return false;
+  TiXmlNode *pNode = pRootElement->FirstChild(strFirstChild);
+  if (!pNode) return false;
   TiXmlNode *pIt = pNode->FirstChild(strChild);;
   if (pIt)
   {
-    pIt->FirstChild()->SetValue(strChildValue);
+    if (pIt->FirstChild())
+      pIt->FirstChild()->SetValue(strChildValue);
+    else
+    {
+      TiXmlText xmlText(strChildValue);
+      pIt->InsertEndChild(xmlText);
+    }
     breturn = true;
   }
   else
@@ -1889,7 +1897,13 @@ bool CSettings::UpDateXbmcXML(const CStdString &strFirstChild, const CStdString 
   TiXmlNode *pNode = pRootElement->FirstChild(strFirstChild);;
   if (pNode)
   {
-    pNode->FirstChild()->SetValue(strFirstChildValue);
+    if (pNode->FirstChild())
+      pNode->FirstChild()->SetValue(strFirstChildValue);
+    else
+    {
+      TiXmlText xmlText(strFirstChildValue);
+      pNode->InsertEndChild(xmlText);
+    }
     return xbmcXml.SaveFile();
   }
   else return false;
