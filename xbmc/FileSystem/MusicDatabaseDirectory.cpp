@@ -105,7 +105,7 @@ bool CMusicDatabaseDirectory::GetLabel(const CStdString& strDirectory, CStdStrin
 
   // first see if there's any filter criteria
   CQueryParams params;
-  pNode->CollectQueryParams(params);
+  CDirectoryNode::GetDatabaseInfo(strDirectory, params);
 
   CMusicDatabase musicdatabase;
   if (!musicdatabase.Open())
