@@ -849,11 +849,24 @@ void CGUIWindowFileManager::OnNewFolder(int iList)
   if (CGUIDialogKeyboard::ShowAndGetInput(strNewFolder, (CStdStringW)g_localizeStrings.Get(16014), false))
   {
     CStdString strNewPath = m_Directory[iList].m_strPath;
-    if (!CUtil::HasSlashAtEnd(strNewPath) ) strNewPath += "\\";
+    if (!CUtil::HasSlashAtEnd(strNewPath) ) CUtil::AddSlashAtEnd(strNewPath);
     strNewPath += strNewFolder;
     CDirectory::Create(strNewPath);
+    Refresh(iList);
+  
+    //  select the new folder
+    for (int i=0; i<m_vecItems[iList].Size(); ++i)
+    {
+      CFileItem* pItem=m_vecItems[iList][i];
+      CStdString strPath=pItem->m_strPath;
+      if (CUtil::HasSlashAtEnd(strPath)) CUtil::RemoveSlashAtEnd(strPath);
+      if (strPath==strNewPath)
+      {
+        CONTROL_SELECT_ITEM(iList + CONTROL_LEFT_LIST, i);
+        break;
+      }
+    }
   }
-  Refresh(iList);
 }
 
 void CGUIWindowFileManager::Refresh(int iList)
