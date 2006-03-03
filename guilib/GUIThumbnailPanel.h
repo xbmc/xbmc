@@ -167,6 +167,7 @@ protected:
 
   bool m_bHideFileNameLabel;
   bool m_pageControlVisible;
+  bool m_usingBigIcons;
   CGUIImage::GUIIMAGE_ASPECT_RATIO m_aspectRatio;
 
   CLabelInfo m_label;
