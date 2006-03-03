@@ -133,8 +133,7 @@ void CMusicDatabase::AddSong(const CSong& song, bool bCheck)
     long lThumbId = AddThumb(song.strThumb);
     long lAlbumId = AddAlbum(song.strAlbum, lArtistId, iNumArtists, song.strArtist, lPathId, strPath, lThumbId);
 
-    Crc32 crc;
-    crc.Compute(song.strFileName);
+    DWORD crc = ComputeCRC(song.strFileName);
 
     bool bInsert = true;
     int lSongId = -1;
@@ -158,7 +157,7 @@ void CMusicDatabase::AddSong(const CSong& song, bool bCheck)
                     lAlbumId, lPathId, lArtistId, iNumArtists, lGenreId, iNumGenres,
                     song.strTitle.c_str(),
                     song.iTrack, song.iDuration, song.iYear,
-                    (DWORD)crc, strFileName.c_str(),
+                    crc, strFileName.c_str(),
                     song.strMusicBrainzTrackID.c_str(),
                     song.strMusicBrainzArtistID.c_str(),
                     song.strMusicBrainzAlbumID.c_str(),
@@ -786,8 +785,7 @@ bool CMusicDatabase::GetSongByFileName(const CStdString& strFileName, CSong& son
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
-    Crc32 crc;
-    crc.Compute(strFileName);
+    DWORD crc = ComputeCRC(strFileName);
 
     CStdString strSQL=FormatSQL("select * from songview "
                                 "where dwFileNameCRC='%ul' and strPath like'%s'"
@@ -1563,8 +1561,7 @@ bool CMusicDatabase::IncrTop100CounterByFileName(const CStdString& strFileName)
       if (CUtil::HasSlashAtEnd(strPath))
         strPath.Delete(strPath.size() - 1);
 
-      Crc32 crc;
-      crc.Compute(strFileName);
+      DWORD crc = ComputeCRC(strFileName);
 
       strSQL+=FormatSQL("where song.dwFileNameCRC='%ul'and path.strPath='%s'", crc, strPath.c_str());
     }
