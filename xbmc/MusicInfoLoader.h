@@ -24,7 +24,7 @@ protected:
   CStdString m_strCacheFileName;
   MAPFILEITEMS m_mapFileItems;
   IMAPFILEITEMS it;
-  MAPSONGS m_songsMap;
+  CSongMap m_songsMap;
   CStdString m_strPrevPath;
   CMusicDatabase m_musicDatabase;
 };

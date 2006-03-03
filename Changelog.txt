@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 03-03-2006 fixed: Better music database lower case comparisons (paths are stored as is, but compared lower case).
  - 03-03-2006 added: "Clear Default" to the root bookmark context menu
  - 03-03-2006 fixed: album lookups with a single 100% match in the list
  - 03-03-2006 changed: file manager, a new folder is now highlighted as current item after it is created
