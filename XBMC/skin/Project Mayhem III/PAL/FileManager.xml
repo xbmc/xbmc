@@ -58,7 +58,7 @@
       <description>Left File list</description>
       <type>listcontrol</type>
       <id>20</id>
-      <selectedcolor>FFFF9600</selectedcolor>
+      <include>listselectedcolor</include>
       <posx>74</posx>
       <posy>102</posy>
       <width>290</width>
@@ -73,7 +73,7 @@
       <description>Right File list</description>
       <type>listcontrol</type>
       <id>21</id>
-      <selectedcolor>FFFF9600</selectedcolor>
+      <include>listselectedcolor</include>
       <posx>364</posx>
       <posy>102</posy>
       <width>290</width>
