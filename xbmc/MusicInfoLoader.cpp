@@ -62,7 +62,7 @@ bool CMusicInfoLoader::LoadItem(CFileItem* pItem)
       m_musicDatabase.GetSongsByPath(strPath, m_songsMap);
 
       // ...and look if we find it
-      IMAPSONGS it = m_songsMap.find(pItem->m_strPath);
+      IMAPSONGS it = m_songsMap.find(pItem->m_strPath.ToLower());
       if (it != m_songsMap.end())
       {
         CSong& song = it->second;
