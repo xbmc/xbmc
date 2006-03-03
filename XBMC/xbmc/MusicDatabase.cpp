@@ -2,7 +2,11 @@
 #include "musicdatabase.h"
 #include "filesystem/cddb.h"
 #include "filesystem/directorycache.h"
+#include "filesystem/MusicdatabaseDirectory/directoryNode.h"
+#include "filesystem/musicdatabasedirectory/QueryParams.h"
 #include "GUIDialogMusicScan.h"
+
+using namespace DIRECTORY::MUSICDATABASEDIRECTORY;
 
 #define MUSIC_DATABASE_VERSION 1.4f
 #define MUSIC_DATABASE_NAME "MyMusic6.db"
@@ -2896,6 +2900,8 @@ bool CMusicDatabase::GetArtistsNav(const CStdString& strBaseDir, CFileItemList& 
       return false;
     }
 
+    items.Reserve(iRowsFound);
+
     // get data from returned rows
     while (!m_pDS->eof())
     {
@@ -2990,6 +2996,8 @@ bool CMusicDatabase::GetAlbumsNav(const CStdString& strBaseDir, CFileItemList& i
       m_pDS->close();
       return false;
     }
+
+    items.Reserve(iRowsFound);
 
     // get data from returned rows
     while (!m_pDS->eof())
@@ -3594,6 +3602,162 @@ bool CMusicDatabase::SaveAlbumThumb(const CStdString& strAlbum, const CStdString
   return false;
 }
 
+bool CMusicDatabase::RefreshMusicDbThumbs(CFileItem* pItem, CFileItemList &items)
+{
+  try
+  {
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS.get()) return false;
+
+    if (!pItem->IsMusicDb()) return false;
+
+    CQueryParams params;
+    CDirectoryNode::GetDatabaseInfo(pItem->m_strPath, params);
+
+    long idAlbum=params.GetAlbumId();
+    long idSong=params.GetSongId();
+
+    if (idAlbum>-1 && idSong==-1)
+    { // This is an album, the album id is known get the new thumb from the album table...
+      CStdString strSQL=FormatSQL("select strThumb from thumb where thumb.idThumb in (select idThumb from album where idAlbum=%ld)", idAlbum);
+      CLog::Log(LOGDEBUG, "CMusicDatabase::SaveAlbumThumb() query: %s", strSQL.c_str());
+      if (!m_pDS->query(strSQL.c_str())) return false;
+      int iRowsFound = m_pDS->num_rows();
+      if (iRowsFound == 0)
+      {
+        m_pDS->close();
+        return false;
+      }
+
+      CStdString strThumb=m_pDS->fv("strThumb").get_asString();
+      if (strThumb=="NONE")
+        return false;
+
+      // ..and set it.
+      pItem->FreeIcons();
+      pItem->SetThumbnailImage(strThumb);
+      pItem->FillInDefaultIcon();
+      pItem->SetImageChanged();
+
+      m_pDS->close(); // cleanup recordset data
+
+      return true;
+    }
+    else if (idSong>-1 && idAlbum>-1)
+    { // It is a song and we know its album
+      // get the new thumb from the album table...
+      CStdString strSQL=FormatSQL("select strThumb from thumb where thumb.idThumb in (select idThumb from album where idAlbum=%ld)", idAlbum);
+      CLog::Log(LOGDEBUG, "CMusicDatabase::RefreshMusicDbThumbs() query: %s", strSQL.c_str());
+      if (!m_pDS->query(strSQL.c_str())) return false;
+      int iRowsFound = m_pDS->num_rows();
+      if (iRowsFound == 0)
+      {
+        m_pDS->close();
+        return false;
+      }
+
+      CStdString strThumb=m_pDS->fv("strThumb").get_asString();
+
+      m_pDS->close(); // cleanup recordset data
+
+      if (strThumb=="NONE")
+        return false;
+
+      for (int i=0; i<items.Size(); ++i)
+      {
+        CFileItem* pItem=items[i];
+        if (pItem->IsMusicDb())
+        {
+          // ...and update every song with the 
+          // thumb where the album matches
+          CQueryParams params;
+          CDirectoryNode::GetDatabaseInfo(pItem->m_strPath, params);
+          if (params.GetSongId()>-1 && params.GetAlbumId()==idAlbum)
+          {
+            pItem->FreeIcons();
+            pItem->SetThumbnailImage(strThumb);
+            pItem->FillInDefaultIcon();
+            pItem->SetImageChanged();
+          }
+        }
+      }
+
+
+      return true;
+    }
+    else if (idSong>-1)
+    { // This is a song where we only know the song id...
+      CStdString strSQL=FormatSQL("select strThumb from thumb where thumb.idThumb in (select idThumb from song where idSong=%ld)", idSong);
+      CLog::Log(LOGDEBUG, "CMusicDatabase::RefreshMusicDbThumbs() query: %s", strSQL.c_str());
+      if (!m_pDS->query(strSQL.c_str())) return false;
+      int iRowsFound = m_pDS->num_rows();
+      if (iRowsFound == 0)
+      {
+        m_pDS->close();
+        return false;
+      }
+
+      CStdString strThumb=m_pDS->fv("strThumb").get_asString();
+
+      m_pDS->close();
+
+      if (strThumb=="NONE")
+        return false;
+
+      // ...get all songs of the album this song belongs to...
+      strSQL=FormatSQL("select idSong from song where idAlbum in (select idAlbum from song where idSong=%ld)", idSong);
+      CLog::Log(LOGDEBUG, "CMusicDatabase::RefreshMusicDbThumbs() query: %s", strSQL.c_str());
+      if (!m_pDS->query(strSQL.c_str())) return false;
+      iRowsFound = m_pDS->num_rows();
+      if (iRowsFound == 0)
+      {
+        m_pDS->close();
+        return false;
+      }
+
+      set<long> songids;
+      while (!m_pDS->eof())
+      {
+        songids.insert(m_pDS->fv("idSong").get_asLong());
+        m_pDS->next();
+      }
+
+      m_pDS->close(); // cleanup recordset data
+
+      for (int i=0; i<items.Size(); ++i)
+      {
+        CFileItem* pItem=items[i];
+        if (pItem->IsMusicDb())
+        {
+          CQueryParams params;
+          CDirectoryNode::GetDatabaseInfo(pItem->m_strPath, params);
+
+          // ...and see if we can find them here,
+          // if so update their thumbs
+          long idSong=params.GetSongId();
+          if (idSong>-1 && songids.find(idSong)!=songids.end())
+          {
+            pItem->FreeIcons();
+            pItem->SetThumbnailImage(strThumb);
+            pItem->FillInDefaultIcon();
+            pItem->SetImageChanged();
+          }
+        }
+      }
+
+      return true;
+    }
+
+    return false;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "CMusicDatabase:RefreshMusicDbThumbs() failed for path %s", items.m_strPath.c_str());
+  }
+
+  return false;
+}
+
 bool CMusicDatabase::GetAlbumsByArtistId(long idArtist, VECALBUMS& albums)
 {
   try
@@ -3851,6 +4015,8 @@ bool CMusicDatabase::GetVariousArtistsAlbums(const CStdString& strBaseDir, CFile
       return false;
     }
 
+    items.Reserve(iRowsFound);
+
     // get data from returned rows
     while (!m_pDS->eof())
     {
@@ -3898,6 +4064,8 @@ bool CMusicDatabase::GetVariousArtistsAlbumsSongs(const CStdString& strBaseDir, 
       m_pDS->close();
       return false;
     }
+
+    items.Reserve(iRowsFound);
 
     // get data from returned rows
     while (!m_pDS->eof())
