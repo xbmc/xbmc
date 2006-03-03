@@ -63,6 +63,17 @@ CDirectoryNode* CDirectoryNode::ParseURL(const CStdString& strPath)
   return pNode;
 }
 
+//  returns the database ids of the path,
+void CDirectoryNode::GetDatabaseInfo(const CStdString& strPath, CQueryParams& params)
+{
+  auto_ptr<CDirectoryNode> pNode(CDirectoryNode::ParseURL(strPath));
+
+  if (!pNode.get())
+    return;
+
+  pNode->CollectQueryParams(params);
+}
+
 //  Create a node object
 CDirectoryNode* CDirectoryNode::CreateNode(NODE_TYPE Type, const CStdString& strName, CDirectoryNode* pParent)
 {
@@ -115,14 +126,6 @@ const CStdString& CDirectoryNode::GetName()
 NODE_TYPE CDirectoryNode::GetType()
 {
   return m_Type;
-}
-
-//  returns the database id of the node,
-//  can be used in combination with GetType()
-//  to get the real object from the musicdatabase
-long CDirectoryNode::GetDatabaseId()
-{
-  return atol(GetName().c_str());
 }
 
 //  Return the parent directory node or NULL, if there is no
@@ -257,7 +260,7 @@ void CDirectoryNode::AddQueuingFolder(CFileItemList& items)
   case NODE_TYPE_SONG_TOP100:
   case NODE_TYPE_SONG:
     pItem = new CFileItem(g_localizeStrings.Get(15104));  // "All Songs"
-    pItem->m_strPath = BuildPath(); // points to itself
+    pItem->m_strPath = BuildPath() + "-1/";
     break;
   }
 
@@ -282,7 +285,12 @@ bool CDirectoryNode::CanCache()
   //  Only cache the directorys in the root
   NODE_TYPE childnode=GetChildType();
   NODE_TYPE node=GetType();
-  return ((childnode==NODE_TYPE_GENRE || childnode==NODE_TYPE_ARTIST || 
-          childnode==NODE_TYPE_ALBUM || childnode==NODE_TYPE_SONG) &&
+
+  // Bobbin007: I think albums, genre, and artists do not need to get cached.
+  // There are 3000 artists in average in a database, sqlite should be fast
+  // enough to return them in an appropriate time. There are less albums 
+  // and genre in a database then artists.
+  return ((/*childnode==NODE_TYPE_GENRE || childnode==NODE_TYPE_ARTIST || 
+          childnode==NODE_TYPE_ALBUM ||*/ childnode==NODE_TYPE_SONG) &&
           node==NODE_TYPE_OVERVIEW);
 }

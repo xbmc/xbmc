@@ -31,20 +31,21 @@ namespace DIRECTORY
     {
     public:
       static CDirectoryNode* ParseURL(const CStdString& strPath);
+      static void GetDatabaseInfo(const CStdString& strPath, CQueryParams& params);
       virtual ~CDirectoryNode();
 
       NODE_TYPE GetType();
-      long GetDatabaseId();
 
       bool GetChilds(CFileItemList& items);
       virtual NODE_TYPE GetChildType();
-      void CollectQueryParams(CQueryParams& params);
 
       CDirectoryNode* GetParent();
 
     protected:
       CDirectoryNode(NODE_TYPE Type, const CStdString& strName, CDirectoryNode* pParent);
       static CDirectoryNode* CreateNode(NODE_TYPE Type, const CStdString& strName, CDirectoryNode* pParent);
+
+      void CollectQueryParams(CQueryParams& params);
 
       const CStdString& GetName();
       void RemoveParent();

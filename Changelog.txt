@@ -5,7 +5,9 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
- - 02-03-2006 fixed: music nav, a cached dir in does not show the parent folder item
+ - 03-03-2006 fixed: music nav, after getting album information the thumb of the item is not updated
+ - 03-03-2006 changed: music nav, genres, artists and albums are not cached to disc anymore
+ - 03-03-2006 fixed: music nav, a cached dir in does not show the parent folder item
  - 02-03-2006 fixed: Musicdatabase paths weren't compared case-insensitive (albums + songs could double up if scanned from 2 different cased bookmarks)
  - 02-03-2006 changed: Overlay images are rendered in bottom right of thumb only.  Image is sized so that it is the normal size in Big Thumbs view, and is scaled for normal thumb views.
  - 02-03-2006 fixed: Possible crashes setting things such as default bookmark.
