@@ -1616,7 +1616,17 @@ void CFileItemList::Serialize(CArchive& ar)
   }
   else
   {
+    CFileItem* pParent=NULL;
+    if (!IsEmpty())
+    {
+      CFileItem* pItem=m_items[0];
+      if (pItem->IsParentFolder())
+        pParent = new CFileItem(*pItem);
+    }
+
+    SetFastLookup(false);
     Clear();
+
 
     CFileItem::Serialize(ar);
 
@@ -1625,14 +1635,20 @@ void CFileItemList::Serialize(CArchive& ar)
     if (iSize <= 0)
       return ;
 
+    if (pParent)
+      iSize++;
 
-    ar >> m_fastLookup;
+    m_items.reserve(iSize);
+
+    if (pParent)
+      m_items.push_back(pParent);
+
+    bool fastLookup=false;
+    ar >> fastLookup;
 
     ar >> (int&)m_sortMethod;
     ar >> (int&)m_sortOrder;
     ar >> m_bCacheToDisc;
-
-    m_items.reserve(iSize);
 
     for (int i = 0; i < iSize; ++i)
     {
@@ -1640,6 +1656,8 @@ void CFileItemList::Serialize(CArchive& ar)
       ar >> *pItem;
       Add(pItem);
     }
+
+    SetFastLookup(fastLookup);
   }
 }
 
