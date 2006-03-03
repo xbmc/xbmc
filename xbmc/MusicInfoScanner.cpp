@@ -242,7 +242,7 @@ int CMusicInfoScanner::RetrieveMusicInfo(CFileItemList& items, const CStdString&
         // first search for file in our list of the current directory
         CSong song;
         bool bFound(false);
-        IMAPSONGS it = songsMap.find(pItem->m_strPath);
+        IMAPSONGS it = songsMap.find(pItem->m_strPath.ToLower());
         if (it != songsMap.end())
         {
           song = it->second;
@@ -271,7 +271,7 @@ int CMusicInfoScanner::RetrieveMusicInfo(CFileItemList& items, const CStdString&
       } //if (!tag.Loaded() )
       else
       {
-        IMAPSONGS it = songsMap.find(pItem->m_strPath);
+        IMAPSONGS it = songsMap.find(pItem->m_strPath.ToLower());
         if (it == songsMap.end())
           bNewFile = true;
       }
