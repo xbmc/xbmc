@@ -214,7 +214,7 @@ int CMusicInfoScanner::RetrieveMusicInfo(CFileItemList& items, const CStdString&
   int nFileCount = items.Size() - nFolderCount;
 
   CStdString strItem;
-  MAPSONGS songsMap;
+  CSongMap songsMap;
   // get all information for all files in current directory from database
   m_musicDatabase.GetSongsByPath(strDirectory, songsMap);
 
@@ -240,15 +240,12 @@ int CMusicInfoScanner::RetrieveMusicInfo(CFileItemList& items, const CStdString&
       {
         // no, then we gonna load it.
         // first search for file in our list of the current directory
-        CSong song;
-        bool bFound(false);
-        IMAPSONGS it = songsMap.find(pItem->m_strPath.ToLower());
-        if (it != songsMap.end())
+        CSong *song = songsMap.Find(pItem->m_strPath);
+        if (song)
         {
-          song = it->second;
-          bFound = true;
+          tag.SetSong(*song);
         }
-        if ( !bFound )
+        else
         {
           // if id3 tag scanning is turned on OR we're scanning the directory
           // then parse id3tag from file
@@ -264,15 +261,11 @@ int CMusicInfoScanner::RetrieveMusicInfo(CFileItemList& items, const CStdString&
             }
           }
         }
-        else // of if ( !bFound )
-        {
-          tag.SetSong(song);
-        }
       } //if (!tag.Loaded() )
       else
       {
-        IMAPSONGS it = songsMap.find(pItem->m_strPath.ToLower());
-        if (it == songsMap.end())
+        CSong *song = songsMap.Find(pItem->m_strPath);
+        if (!song)
           bNewFile = true;
       }
 

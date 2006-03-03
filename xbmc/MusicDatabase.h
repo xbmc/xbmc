@@ -55,7 +55,7 @@ class CGUIDialogProgress;
  Here is the database layout:
   \image html musicdatabase.png
  
- \sa CAlbum, CSong, VECSONGS, MAPSONGS, VECARTISTS, VECALBUMS, VECGENRES
+ \sa CAlbum, CSong, VECSONGS, CMapSong, VECARTISTS, VECALBUMS, VECGENRES
  */
 class CMusicDatabase : public CDatabase
 {
@@ -104,7 +104,7 @@ public:
   bool GetSongByFileName(const CStdString& strFileName, CSong& song);
   bool GetSongById(long idSong, CSong& song);
   bool GetSongsByPath(const CStdString& strPath, VECSONGS& songs);
-  bool GetSongsByPath(const CStdString& strPath, MAPSONGS& songs, bool bAppendToMap = false);
+  bool GetSongsByPath(const CStdString& strPath, CSongMap& songs, bool bAppendToMap = false);
   bool GetSongsByAlbum(const CStdString& strAlbum, const CStdString& strPath, VECSONGS& songs);
   bool FindSongsByName(const CStdString& strSearch, VECSONGS& songs, bool bWithMusicDbPath=false);
   bool FindSongsByNameAndArtist(const CStdString& strSearch, VECSONGS& songs);
