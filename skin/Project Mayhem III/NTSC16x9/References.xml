@@ -117,7 +117,7 @@
     <image>icon-folder.png</image>
     <textureheight>25</textureheight>
     <font>font12</font>
-    <selectedcolor>FFffffff</selectedcolor>
+    <include>listselectedcolor</include>
     <include>textcolorwhite</include>
     <textcolor2>60ffffff</textcolor2>
     <include>controldefaults</include>

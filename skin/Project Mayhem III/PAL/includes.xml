@@ -15,4 +15,9 @@
     <include>textcolorwhite</include>
     <colordiffuse>ffffffff</colordiffuse>
   </include>
+
+  <include name="listselectedcolor">
+    <selectedcolor>FFe2ff43</selectedcolor>
+  </include>
+
 </includes>
