@@ -65,6 +65,7 @@ CGUIThumbnailPanel::CGUIThumbnailPanel(DWORD dwParentID, DWORD dwControlId, int 
   m_iThumbYPos = 8;
   m_bHideFileNameLabel = false;
   m_pageControlVisible = true;   // show the spin control by default
+  m_usingBigIcons = false;
   m_upDown.SetShowRange(true); // show the range by default
   m_aspectRatio = CGUIImage::ASPECT_RATIO_KEEP;
   ControlType = GUICONTROL_THUMBNAIL;
@@ -98,16 +99,16 @@ void CGUIThumbnailPanel::RenderItem(bool bFocus, int iPosX, int iPosY, CGUIListI
     }
     if (!strThumb.IsEmpty())
     {
-      CGUIImage *pImage = pItem->GetThumbnail();
-      if (!pImage )
+      CGUIImage *thumb = pItem->GetThumbnail();
+      if (!thumb )
       {
-        pImage = new CGUIImage(0, 0, m_iThumbXPos + iCenteredPosX, m_iThumbYPos + iPosY, m_iThumbWidth, m_iThumbHeight, strThumb, 0x0);
-        pImage->SetAspectRatio(m_aspectRatio);
-        pImage->AllocResources();
-        pItem->SetThumbnail(pImage);
+        thumb = new CGUIImage(0, 0, m_iThumbXPos + iCenteredPosX, m_iThumbYPos + iPosY, m_iThumbWidth, m_iThumbHeight, strThumb, 0x0);
+        thumb->SetAspectRatio(m_aspectRatio);
+        thumb->AllocResources();
+        pItem->SetThumbnail(thumb);
       }
 
-      if (pImage)
+      if (thumb)
       {
         int xOff = 0;//((m_iThumbWidth - pImage->GetRenderWidth()) / 2);
         int yOff = 0;//((m_iThumbHeight - pImage->GetRenderHeight()) / 2);
@@ -118,32 +119,37 @@ void CGUIThumbnailPanel::RenderItem(bool bFocus, int iPosX, int iPosY, CGUIListI
           yOff += ((m_iTextureHeight - m_iThumbHeight) / 2);
           //if thumbPosX or thumbPosX != 0 the thumb will be bumped off-center
         }
-        pImage->SetPosition(m_iThumbXPos + iCenteredPosX + xOff, m_iThumbYPos + iPosY + yOff);
-        pImage->Render();
-      }
-      // Add the overlay image
-      pImage = pItem->GetOverlay();
-      if (!pImage && pItem->HasOverlay())
-      {
-        pImage = new CGUIImage(0, 0, m_iThumbXPos + iCenteredPosX, m_iThumbYPos + iPosY, m_iThumbWidth, m_iThumbHeight, pItem->GetOverlayImage(), 0x0);
-        pImage->SetAspectRatio(m_aspectRatio);
-        pImage->AllocResources();
-        pItem->SetOverlay(pImage);
-      }
-      // Render the image
-      if (pImage)
-      {
-        int xOff = ((m_iThumbWidth - pImage->GetRenderWidth()) / 2);
-        int yOff = ((m_iThumbHeight - pImage->GetRenderHeight()) / 2);
-        //only supports center yet, 0 is default meaning use x/y position
-        if (m_iThumbAlign != 0)
+        thumb->SetPosition(m_iThumbXPos + iCenteredPosX + xOff, m_iThumbYPos + iPosY + yOff);
+        thumb->Render();
+
+        // Add the overlay image
+        CGUIImage *overlay = pItem->GetOverlay();
+        if (!overlay && pItem->HasOverlay())
         {
-          xOff += ((m_iTextureWidth - m_iThumbWidth) / 2);
-          yOff += ((m_iTextureHeight - m_iThumbHeight) / 2);
-          //if thumbPosX or thumbPosX != 0 the thumb will be bumped off-center
+          overlay = new CGUIImage(0, 0, 0, 0, 0, 0, pItem->GetOverlayImage(), 0x0);
+          overlay->SetAspectRatio(m_aspectRatio);
+          overlay->AllocResources();
+          pItem->SetOverlay(overlay);
         }
-        pImage->SetPosition(m_iThumbXPos + iCenteredPosX + xOff, m_iThumbYPos + iPosY + yOff);
-        pImage->Render();
+        // Render the image
+        if (overlay)
+        {
+          float x, y;
+          thumb->GetBottomRight(x, y);
+          if (m_usingBigIcons)
+          {
+            overlay->SetWidth(overlay->GetTextureWidth());
+            overlay->SetHeight(overlay->GetTextureWidth());
+          }
+          else
+          {
+            float scale = (m_iThumbHeightBig) ? (float)m_iThumbHeight / m_iThumbHeightBig : 1.0f;
+            overlay->SetWidth((int)(overlay->GetTextureWidth() * scale));
+            overlay->SetHeight((int)(overlay->GetTextureHeight() * scale));
+          }
+          overlay->SetPosition((int)x - overlay->GetWidth(), (int)y - overlay->GetHeight());
+          overlay->Render();
+        }
       }
     }
   }
@@ -816,6 +822,7 @@ void CGUIThumbnailPanel::SetSelectedItem(int iItem)
 
 void CGUIThumbnailPanel::ShowBigIcons(bool bOnOff)
 {
+  m_usingBigIcons = bOnOff;
   if (bOnOff)
   {
     m_iItemWidth = m_iItemWidthBig;
