@@ -341,7 +341,7 @@ void CGUIWindowMusicSongs::OnRetrieveMusicInfo(CFileItemList& items)
       CFileItem* mapItem;
 
       // Is items load from the database
-      if ((itSong = songsMap.find(pItem->m_strPath)) != songsMap.end())
+      if ((itSong = songsMap.find(pItem->m_strPath.ToLower())) != songsMap.end())
       {
         CSong song = itSong->second;
         pItem->m_musicInfoTag.SetSong(song);
