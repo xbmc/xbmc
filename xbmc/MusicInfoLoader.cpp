@@ -49,11 +49,10 @@ bool CMusicInfoLoader::LoadItem(CFileItem* pItem)
   else
   {
     // Have we loaded this item from database before
-    IMAPSONGS it = m_songsMap.find(pItem->m_strPath);
-    if (it != m_songsMap.end())
+    CSong *song = m_songsMap.Find(pItem->m_strPath);
+    if (song)
     {
-      CSong& song = it->second;
-      pItem->m_musicInfoTag.SetSong(song);
+      pItem->m_musicInfoTag.SetSong(*song);
     }
     else if (strPath != m_strPrevPath)
     {
@@ -62,11 +61,10 @@ bool CMusicInfoLoader::LoadItem(CFileItem* pItem)
       m_musicDatabase.GetSongsByPath(strPath, m_songsMap);
 
       // ...and look if we find it
-      IMAPSONGS it = m_songsMap.find(pItem->m_strPath.ToLower());
-      if (it != m_songsMap.end())
+      CSong *song = m_songsMap.Find(pItem->m_strPath);
+      if (song)
       {
-        CSong& song = it->second;
-        pItem->m_musicInfoTag.SetSong(song);
+        pItem->m_musicInfoTag.SetSong(*song);
       }
     }
 
@@ -92,7 +90,7 @@ void CMusicInfoLoader::OnLoaderFinish()
   g_directoryCache.ClearMusicThumbCache();
 
   // cleanup last loaded songs from database
-  m_songsMap.erase(m_songsMap.begin(), m_songsMap.end());
+  m_songsMap.Clear();
 
   // cleanup cache loaded from HD
   it = m_mapFileItems.begin();
