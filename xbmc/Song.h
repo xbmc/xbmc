@@ -93,24 +93,28 @@ public:
 
 /*!
  \ingroup music
+ \brief A map of CSong objects, used for CMusicDatabase
+ */
+class CSongMap
+{
+public:
+  CSongMap();
+
+  CSong *Find(const CStdString &file);
+  void Add(const CStdString &file, const CSong &song);
+  void Clear();
+  int Size();
+
+private:
+  std::map<CStdString, CSong> m_map;
+};
+
+/*!
+ \ingroup music
  \brief A vector of CSong objects, used for CMusicDatabase
  \sa CMusicDatabase
  */
 typedef std::vector<CSong> VECSONGS;
-
-/*!
- \ingroup music
- \brief A map of CSong objects, used for CMusicDatabase
- \sa IMAPSONGS, CMusicDatabase
- */
-typedef std::map<CStdString, CSong> MAPSONGS;
-
-/*!
- \ingroup music
- \brief The MAPSONGS iterator
- \sa MAPSONGS, CMusicDatabase
- */
-typedef std::map<CStdString, CSong>::iterator IMAPSONGS;
 
 /*!
  \ingroup music

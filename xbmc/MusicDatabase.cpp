@@ -161,7 +161,7 @@ void CMusicDatabase::AddSong(const CSong& song, bool bCheck)
                     lAlbumId, lPathId, lArtistId, iNumArtists, lGenreId, iNumGenres,
                     song.strTitle.c_str(),
                     song.iTrack, song.iDuration, song.iYear,
-                    crc, strFileName.ToLower().c_str(),
+                    crc, strFileName.c_str(),
                     song.strMusicBrainzTrackID.c_str(),
                     song.strMusicBrainzArtistID.c_str(),
                     song.strMusicBrainzAlbumID.c_str(),
@@ -621,7 +621,6 @@ long CMusicDatabase::AddPath(const CStdString& strPath1)
   try
   {
     CStdString strPath = strPath1;
-    strPath.ToLower();
     // musicdatabase always stores directories
     // without a slash at the end
     if (CUtil::HasSlashAtEnd(strPath))
@@ -1634,12 +1633,12 @@ bool CMusicDatabase::GetSongsByPath(const CStdString& strPath1, VECSONGS& songs)
   return false;
 }
 
-bool CMusicDatabase::GetSongsByPath(const CStdString& strPath1, MAPSONGS& songs, bool bAppendToMap)
+bool CMusicDatabase::GetSongsByPath(const CStdString& strPath1, CSongMap& songs, bool bAppendToMap)
 {
   try
   {
     if (!bAppendToMap)
-      songs.erase(songs.begin(), songs.end());
+      songs.Clear();
     CStdString strPath = strPath1;
     // musicdatabase always stores directories
     // without a slash at the end
@@ -1660,7 +1659,7 @@ bool CMusicDatabase::GetSongsByPath(const CStdString& strPath1, MAPSONGS& songs,
     while (!m_pDS->eof())
     {
       CSong song = GetSongFromDataset();
-      songs.insert(pair<CStdString, CSong>(song.strFileName, song));
+      songs.Add(song.strFileName, song);
       m_pDS->next();
     }
 

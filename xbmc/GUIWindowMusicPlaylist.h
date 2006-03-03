@@ -32,7 +32,6 @@ protected:
   
   bool MoveCurrentPlayListItem(int iItem, int iAction, bool bUpdate = true);
 
-  MAPSONGS m_songsMap;
   CStdString m_strPrevPath;
   CMusicInfoLoader m_tagloader;
   int iPos;

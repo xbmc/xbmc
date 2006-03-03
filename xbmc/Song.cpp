@@ -51,3 +51,33 @@ void CSong::Clear()
   idSong = -1;
 }
 
+CSongMap::CSongMap()
+{
+}
+
+void CSongMap::Add(const CStdString &file, const CSong &song)
+{
+  CStdString lower = file;
+  lower.ToLower();
+  m_map.insert(pair<CStdString, CSong>(lower, song));
+}
+
+CSong* CSongMap::Find(const CStdString &file)
+{
+  CStdString lower = file;
+  lower.ToLower();
+  std::map<CStdString, CSong>::iterator it = m_map.find(lower);
+  if (it == m_map.end())
+    return NULL;
+  return &(*it).second;
+}
+
+void CSongMap::Clear()
+{
+  m_map.erase(m_map.begin(), m_map.end());
+}
+
+int CSongMap::Size()
+{
+  return (int)m_map.size();
+}

@@ -296,7 +296,7 @@ void CGUIWindowMusicSongs::OnRetrieveMusicInfo(CFileItemList& items)
   if (nFolderCount == (int)items.Size() || items.IsMusicDb())
     return ;
 
-  MAPSONGS songsMap;
+  CSongMap songsMap;
 
   // get all information for all files in current directory from database
 //  m_musicdatabase.GetSongsByPath(m_vecItems.m_strPath, songsMap);
@@ -337,15 +337,14 @@ void CGUIWindowMusicSongs::OnRetrieveMusicInfo(CFileItemList& items)
     if (!pItem->m_musicInfoTag.Loaded())
     {
       // no, then we gonna load it.
-      IMAPSONGS itSong;
+      CSong *pSong;
       CFileItem* mapItem;
 
       // Is items load from the database
-      if ((itSong = songsMap.find(pItem->m_strPath.ToLower())) != songsMap.end())
+      if (NULL != (pSong = songsMap.Find(pItem->m_strPath)))
       {
-        CSong song = itSong->second;
-        pItem->m_musicInfoTag.SetSong(song);
-        pItem->SetThumbnailImage(song.strThumb);
+        pItem->m_musicInfoTag.SetSong(*pSong);
+        pItem->SetThumbnailImage(pSong->strThumb);
       } // Query map if we previously cached the file on HD
       else if ((mapItem=itemsMap[pItem->m_strPath])!=NULL && CUtil::CompareSystemTime(&mapItem->m_stTime, &pItem->m_stTime) == 0)
       {
@@ -404,7 +403,7 @@ void CGUIWindowMusicSongs::OnRetrieveMusicInfo(CFileItemList& items)
   } // for (int i=0; i < (int)items.size(); ++i)
 
   // Save the hdd cache if there are more songs in this directory then loaded from database
-  if ((m_dlgProgress && !m_dlgProgress->IsCanceled()) && songsMap.size() != (items.Size() - iTaglessFiles))
+  if ((m_dlgProgress && !m_dlgProgress->IsCanceled()) && songsMap.Size() != (items.Size() - iTaglessFiles))
     items.Save();
 
   // cleanup cache loaded from HD
