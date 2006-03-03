@@ -343,8 +343,8 @@ void CGUIImage::UpdateVB()
   }
 
 
-  m_iRenderWidth = (int)m_fNW;
-  m_iRenderHeight = (int)m_fNH;
+  m_iRenderWidth = (m_fNW > m_dwWidth) ? (int)m_dwWidth : (int)m_fNW;
+  m_iRenderHeight = (m_fNH > m_dwHeight) ? (int)m_dwHeight : (int)m_fNH;
 
 #ifdef ALLOW_TEXTURE_COMPRESSION
   m_fUOffs = float(m_iBitmap * m_dwWidth) / float(m_iImageWidth);
@@ -507,7 +507,7 @@ void CGUIImage::GetBottomRight(float &x, float &y) const
   x = m_fX + m_fNW;
   y = m_fY + m_fNH;
   if (m_fNW > m_dwWidth)
-    x = m_iPosX + m_dwWidth;
+    x = (float)m_iPosX + m_dwWidth;
   if (m_fNH > m_dwHeight)
-    y = m_iPosY + m_dwHeight;
+    y = (float)m_iPosY + m_dwHeight;
 }
