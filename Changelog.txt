@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 02-03-2006 fixed: Musicdatabase paths weren't compared case-insensitive (albums + songs could double up if scanned from 2 different cased bookmarks)
  - 02-03-2006 changed: Overlay images are rendered in bottom right of thumb only.  Image is sized so that it is the normal size in Big Thumbs view, and is scaled for normal thumb views.
  - 02-03-2006 fixed: Possible crashes setting things such as default bookmark.
  - 02-03-2006 changed: Rewrote the ShowIMDB function.  Now any existing thumbnails will be used in the Show Information dialog.
