@@ -40,6 +40,7 @@ public:
   void SetTextureHeight(int iHeight);
   int GetTextureWidth() const;
   int GetTextureHeight() const;
+  void GetBottomRight(float &x, float &y) const;
 
   void SetFileName(const CStdString& strFileName);
   const CStdString& GetFileName() const { return m_strFileName;};

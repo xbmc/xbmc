@@ -501,3 +501,13 @@ void CGUIImage::SetCornerAlpha(DWORD dwLeftTop, DWORD dwRightTop, DWORD dwLeftBo
     m_bInvalidated = true;
   }
 }
+
+void CGUIImage::GetBottomRight(float &x, float &y) const
+{
+  x = m_fX + m_fNW;
+  y = m_fY + m_fNH;
+  if (m_fNW > m_dwWidth)
+    x = m_iPosX + m_dwWidth;
+  if (m_fNH > m_dwHeight)
+    y = m_iPosY + m_dwHeight;
+}
