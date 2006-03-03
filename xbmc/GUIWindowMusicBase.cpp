@@ -636,29 +636,40 @@ void CGUIWindowMusicBase::ShowAlbumInfo(const CStdString& strAlbum, const CStdSt
   if (bUpdate)
   {
     int iSelectedItem = m_viewControl.GetSelectedItem();
-    if (iSelectedItem >= 0 && m_vecItems[iSelectedItem] && m_vecItems[iSelectedItem]->m_bIsFolder)
+    if (iSelectedItem >= 0 && m_vecItems[iSelectedItem])
     {
-      // refresh only the icon of
-      // the current folder
-      m_vecItems[iSelectedItem]->FreeIcons();
-      m_vecItems[iSelectedItem]->SetMusicThumb();
-      m_vecItems[iSelectedItem]->FillInDefaultIcon();
-    }
-    else
-    {
-      // Refresh all items
-      for (int i = 0; i < m_vecItems.Size(); ++i)
+      CFileItem* pSelectedItem=m_vecItems[iSelectedItem];
+      if (pSelectedItem->IsMusicDb())
       {
-        CFileItem* pItem = m_vecItems[i];
-        pItem->FreeIcons();
+        m_musicdatabase.RefreshMusicDbThumbs(pSelectedItem, m_vecItems);
+
+        if (m_vecItems.GetCacheToDisc())
+          m_vecItems.Save();
+      }
+      else if (pSelectedItem->m_bIsFolder)
+      {
+        // refresh only the icon of
+        // the current folder
+        pSelectedItem->FreeIcons();
+        pSelectedItem->SetMusicThumb();
+        pSelectedItem->FillInDefaultIcon();
+      }
+      else
+      {
+        // Refresh all items
+        for (int i = 0; i < m_vecItems.Size(); ++i)
+        {
+          CFileItem* pItem = m_vecItems[i];
+          pItem->FreeIcons();
+        }
+
+        m_vecItems.SetMusicThumbs();
+        m_vecItems.FillInDefaultIcons();
       }
 
-      m_vecItems.SetMusicThumbs();
-      m_vecItems.FillInDefaultIcons();
+      //  Do we have to autoswitch to the thumb control?
+      UpdateButtons();
     }
-
-    //  Do we have to autoswitch to the thumb control?
-    UpdateButtons();
   }
 
   if (m_dlgProgress)
