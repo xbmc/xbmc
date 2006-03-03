@@ -185,7 +185,7 @@
       <texturenofocus>blue-rectangleNF.png</texturenofocus>
       <font>font14</font>
       <font2>font13</font2>
-      <selectedcolor>FFFFffff</selectedcolor>
+      <include>listselectedcolor</include>
       <include>textcolorlightgrey</include>
       <selectedcolor2>FFFFffff</selectedcolor2>
       <textcolor2>d0ffffff</textcolor2>
