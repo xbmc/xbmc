@@ -27,6 +27,13 @@ void CDatabase::Split(const CStdString& strFileNameAndPath, CStdString& strPath,
   strFileName = strFileNameAndPath.Right(strFileNameAndPath.size() - i);
 }
 
+DWORD CDatabase::ComputeCRC(const CStdString &text)
+{
+  Crc32 crc;
+  crc.ComputeFromLowerCase(text);
+  return (DWORD)crc;
+}
+
 CStdString CDatabase::FormatSQL(CStdString strStmt, ...)
 {
   //  %q is the sqlite format string for %s.
