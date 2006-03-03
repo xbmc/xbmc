@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 03-03-2006 changed: file manager, a new folder is now highlighted as current item after it is created
  - 03-03-2006 fixed: music nav, after getting album information the thumb of the item is not updated
  - 03-03-2006 changed: music nav, genres, artists and albums are not cached to disc anymore
  - 03-03-2006 fixed: music nav, a cached dir in does not show the parent folder item
