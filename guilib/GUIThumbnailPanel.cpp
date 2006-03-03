@@ -147,7 +147,7 @@ void CGUIThumbnailPanel::RenderItem(bool bFocus, int iPosX, int iPosY, CGUIListI
             overlay->SetWidth((int)(overlay->GetTextureWidth() * scale));
             overlay->SetHeight((int)(overlay->GetTextureHeight() * scale));
           }
-          overlay->SetPosition((int)x - overlay->GetWidth(), (int)y - overlay->GetHeight());
+          overlay->SetPosition((int)x - overlay->GetRenderWidth(), (int)y - overlay->GetRenderHeight());
           overlay->Render();
         }
       }

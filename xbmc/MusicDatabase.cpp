@@ -157,7 +157,7 @@ void CMusicDatabase::AddSong(const CSong& song, bool bCheck)
                     lAlbumId, lPathId, lArtistId, iNumArtists, lGenreId, iNumGenres,
                     song.strTitle.c_str(),
                     song.iTrack, song.iDuration, song.iYear,
-                    crc, strFileName.c_str(),
+                    crc, strFileName.ToLower().c_str(),
                     song.strMusicBrainzTrackID.c_str(),
                     song.strMusicBrainzArtistID.c_str(),
                     song.strMusicBrainzAlbumID.c_str(),
@@ -617,6 +617,7 @@ long CMusicDatabase::AddPath(const CStdString& strPath1)
   try
   {
     CStdString strPath = strPath1;
+    strPath.ToLower();
     // musicdatabase always stores directories
     // without a slash at the end
     if (CUtil::HasSlashAtEnd(strPath))
@@ -627,7 +628,7 @@ long CMusicDatabase::AddPath(const CStdString& strPath1)
 
     map <CStdString, int>::const_iterator it;
 
-    it = m_pathCache.find(strPath1);
+    it = m_pathCache.find(strPath);
     if (it != m_pathCache.end())
       return it->second;
 
@@ -641,13 +642,13 @@ long CMusicDatabase::AddPath(const CStdString& strPath1)
       m_pDS->exec(strSQL.c_str());
 
       int idPath = (long)sqlite3_last_insert_rowid(m_pDB->getHandle());
-      m_pathCache.insert(pair<CStdString, int>(strPath1, idPath));
+      m_pathCache.insert(pair<CStdString, int>(strPath, idPath));
       return idPath;
     }
     else
     {
       int idPath = m_pDS->fv("idPath").get_asLong();
-      m_pathCache.insert(pair<CStdString, int>(strPath1, idPath));
+      m_pathCache.insert(pair<CStdString, int>(strPath, idPath));
       m_pDS->close();
       return idPath;
     }
