@@ -4,6 +4,7 @@
 
 #include "emu_kernel32.h"
 #include "../dll_tracker_library.h"
+#include "../dll_tracker_memory.h"
 #include "../dll_tracker_critical_section.h"
 
 void export_kernel32()
@@ -102,8 +103,8 @@ void export_kernel32()
   g_dlls.kernel32.AddExport("GetEnvironmentStrings", (unsigned long) dllGetEnvironmentStrings);
   g_dlls.kernel32.AddExport("GetEnvironmentStringsW", (unsigned long) dllGetEnvironmentStringsW);
   g_dlls.kernel32.AddExport("GetEnvironmentVariableA", (unsigned long) dllGetEnvironmentVariableA);
-  g_dlls.kernel32.AddExport("HeapDestroy", (unsigned long) HeapDestroy);
-  g_dlls.kernel32.AddExport("HeapCreate", (unsigned long) HeapCreate); //test
+  g_dlls.kernel32.AddExport("HeapDestroy", (unsigned long) HeapDestroy, (void*)track_HeapDestroy );
+  g_dlls.kernel32.AddExport("HeapCreate", (unsigned long) HeapCreate, (void*)track_HeapCreate );
   g_dlls.kernel32.AddExport("VirtualFree", (unsigned long) VirtualFree);
   g_dlls.kernel32.AddExport("MultiByteToWideChar", (unsigned long) MultiByteToWideChar);
   g_dlls.kernel32.AddExport("LCMapStringA", (unsigned long) dllLCMapStringA);
