@@ -596,7 +596,16 @@ void CDVDPlayer::HandleMessages()
         }
       }
       break;
+    case DVDMESSAGE_SET_STATE:
+      {
+        if (m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD)) 
+        {
+          ((CDVDInputStreamNavigator*)m_pInputStream)->SetNavigatorState(pMessage->sValue);
+        }
+      }
+      break;
     }
+    
 
     delete pMessage;
     pMessage = m_messenger.Recieve();
@@ -1430,14 +1439,6 @@ bool CDVDPlayer::OnAction(const CAction &action)
         return true;
       }
       break;
-
-    case REMOTE_0:
-      {
-        std::string buffer;
-        pStream->GetNavigatorState(buffer);
-        pStream->SetNavigatorState(buffer);
-        return true;
-      }
     }
 
     if (pStream->IsInMenu())
@@ -1589,6 +1590,8 @@ bool CDVDPlayer::GetCurrentSubtitle(CStdStringW& strSubtitle)
 
 CStdString CDVDPlayer::GetPlayerState()
 {
+  if (!m_pInputStream) return "";
+
   if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
   {
     CDVDInputStreamNavigator* pStream = (CDVDInputStreamNavigator*)m_pInputStream;
@@ -1601,15 +1604,10 @@ CStdString CDVDPlayer::GetPlayerState()
 }
 
 bool CDVDPlayer::SetPlayerState(CStdString state)
-{
-  if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
-  {
-    CDVDInputStreamNavigator* pStream = (CDVDInputStreamNavigator*)m_pInputStream;
-    
-    std::string buffer;
-    buffer = state;
-    if( pStream->SetNavigatorState(state) ) return true;
-  }
+{    
+  std::string buffer;
+  buffer = state;
 
-  return false;
+  m_messenger.SetPlayerState(state);
+  return true;
 }
