@@ -43,6 +43,9 @@ typedef std::list<LPCRITICAL_SECTION>::iterator CriticalSectionListIter;
 typedef std::list<SOCKET> SocketList;
 typedef std::list<SOCKET>::iterator SocketListIter;
 
+typedef std::list<HANDLE> HeapObjectList;
+typedef std::list<HANDLE>::iterator HeapObjectListIter;
+
 typedef struct _DllTrackInfo
 {
   DllLoader* pDll;
@@ -60,6 +63,8 @@ typedef struct _DllTrackInfo
   FileList fileList;
   SocketList socketList;
   CriticalSectionList criticalSectionList;
+
+  HeapObjectList heapobjectList;
   
 } DllTrackInfo;
 
