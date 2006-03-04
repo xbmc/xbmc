@@ -272,8 +272,8 @@ void CDVDPlayer::Process()
 
       if (!pPacket)
       {            
-        if (m_dvd.state == DVDSTATE_STILL) continue;
-        else if( m_pInputStream->IsEOF() ) break;
+        if( m_pInputStream->IsEOF() ) break;
+        else if (m_dvd.state == DVDSTATE_STILL) continue;        
         else 
         { 
           // keep on trying until user wants us to stop.
@@ -1206,12 +1206,12 @@ int CDVDPlayer::OnDVDNavResult(void* pData, int iMessage)
               m_dvd.iDVDStillStartTime = 0;
               pStream->SkipStill();
 
-              return NAVRESULT_SKIPPED_STILL;
+              return NAVRESULT_NOP;
             }
             else Sleep(200);
           }
           else Sleep(10);
-          return NAVRESULT_STILL_NOT_SKIPPED;
+          return NAVRESULT_HOLD;
         }
         else
         {
@@ -1312,7 +1312,9 @@ int CDVDPlayer::OnDVDNavResult(void* pData, int iMessage)
         //Force an aspect ratio that is set in the dvdheaders if available
         //techinally wrong place to do, should really be done when next video packet 
         //is decoded.. but won't cause too many problems
-        m_dvdPlayerVideo.SetAspectRatio(pStream->GetVideoAspectRatio());      
+        m_dvdPlayerVideo.SetAspectRatio(pStream->GetVideoAspectRatio());
+
+        return NAVRESULT_ERROR;
       }
       break;
     case DVDNAV_CELL_CHANGE:
@@ -1378,7 +1380,8 @@ int CDVDPlayer::OnDVDNavResult(void* pData, int iMessage)
         CLog::Log(LOGDEBUG, "DVDNAV_HOP_CHANNEL");
 
         FlushBuffers();
-        //m_bReadAgain = true;
+        // m_bReadAgain = true;
+        return NAVRESULT_ERROR;
       }
       break;
     case DVDNAV_STOP:
@@ -1392,7 +1395,7 @@ int CDVDPlayer::OnDVDNavResult(void* pData, int iMessage)
       break;
     }
   }
-  return NAVRESULT_OK;
+  return NAVRESULT_NOP;
 }
 
 bool CDVDPlayer::OnAction(const CAction &action)

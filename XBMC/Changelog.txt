@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 05-03-2006 fixed: if libdvdnav threw an exception, dvdplayer would lockup
  - 05-03-2006 fixed: audio stream opening could be delayed in dvdplayer causing stuttering
  - 05-03-2006 fixed: playing quicktime files would make xbmc leak 100k per file. reduced to about 50k. 
  - 03-03-2006 fixed: Better music database lower case comparisons (paths are stored as is, but compared lower case).
