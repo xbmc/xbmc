@@ -189,3 +189,76 @@ extern "C" char* __cdecl track_strdup(const char* str)
 
   return pdup;
 }
+
+extern "C" void tracker_heapobjects_free_all(DllTrackInfo* pInfo)
+{
+  if (!pInfo->heapobjectList.empty())
+  {
+    CLog::DebugLog("%s: Detected heapobject leaks: %d leaks", pInfo->pDll->GetFileName(), pInfo->heapobjectList.size());
+
+    for (HeapObjectListIter it = pInfo->heapobjectList.begin(); it != pInfo->heapobjectList.end(); ++it)
+    {
+      try
+      {
+        HeapDestroy(*it);
+      }
+      catch(...)
+      {
+        CLog::Log(LOGERROR, "failed to free heapobject. might have been freed from somewhere else");
+      }
+    }
+    pInfo->heapobjectList.erase(pInfo->heapobjectList.begin(), pInfo->heapobjectList.end());
+  }
+}
+
+WINBASEAPI
+HANDLE
+WINAPI
+track_HeapCreate(
+    IN DWORD flOptions,
+    IN SIZE_T dwInitialSize,
+    IN SIZE_T dwMaximumSize
+    )
+{
+  unsigned loc;
+  __asm mov eax, [ebp + 4]
+  __asm mov loc, eax
+
+  DllTrackInfo* pInfo = tracker_get_dlltrackinfo(loc);
+  HANDLE hHeap = HeapCreate(flOptions, dwInitialSize, dwMaximumSize);
+
+  if( pInfo && hHeap )
+  {
+    pInfo->heapobjectList.push_back(hHeap);    
+  }
+  
+  return hHeap;
+}
+
+WINBASEAPI
+BOOL
+WINAPI
+track_HeapDestroy(
+    IN OUT HANDLE hHeap
+    )
+{
+  unsigned loc;
+  __asm mov eax, [ebp + 4]
+  __asm mov loc, eax
+
+
+  DllTrackInfo* pInfo = tracker_get_dlltrackinfo(loc);
+  if (pInfo && hHeap)
+  {
+    for (HeapObjectListIter it = pInfo->heapobjectList.begin(); it != pInfo->heapobjectList.end(); ++it)
+    {
+      if (*it == hHeap)
+      {
+        pInfo->heapobjectList.erase(it);
+        break;
+      }
+    }
+  }
+
+  return HeapDestroy(hHeap);
+}
