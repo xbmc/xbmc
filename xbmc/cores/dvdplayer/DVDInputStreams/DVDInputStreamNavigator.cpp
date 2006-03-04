@@ -131,13 +131,12 @@ int CDVDInputStreamNavigator::Read(BYTE* buf, int buf_size)
   int navresult;
   int iBytesRead;
 
-  do
-  {
+  while(true) {
     navresult = ProcessBlock(buf, &iBytesRead);
-    if (navresult == DVDNAV_STILL_FRAME) return 0; // return 0 bytes read;
-    if (navresult == DVDNAV_STOP || navresult == -1) return -1;
+    if (navresult == NAVRESULT_HOLD)       return 0; // return 0 bytes read;
+    else if (navresult == NAVRESULT_ERROR) return -1;
+    else if (navresult == NAVRESULT_DATA)  return iBytesRead;
   }
-  while (navresult != DVDNAV_BLOCK_OK);
 
   return iBytesRead;
 }
@@ -167,26 +166,27 @@ int CDVDInputStreamNavigator::ProcessBlock(BYTE* dest_buffer, int* read)
   int result;
   int event;
   int len;
-  int iNavresult;
-
-  bool bFinished = false;
+  int iNavresult = NAVRESULT_NOP;
 
   // m_tempbuffer will be used for anything that isn't a normal data block
   uint8_t* buf = m_tempbuffer;
   iNavresult = -1;
   
-  while (!bFinished)
-  {
+  try {
     // the main reading function
     result = m_dll.dvdnav_get_next_cache_block(m_dvdnav, &buf, &event, &len);
+  }
+  catch(...) {
+    CLog::Log(LOGERROR, "CDVDInputStreamNavigator::ProcessBlock - exception thrown in dvdnav_get_next_cache_block.");
+    m_bEOF = true;
+    return NAVRESULT_ERROR;
+  }
 
-    if (result == DVDNAV_STATUS_ERR)
-    {
-      CLog::DebugLog("Error getting next block: %s\n", m_dll.dvdnav_err_to_string(m_dvdnav));
-      iNavresult = DVDNAV_STATUS_ERR;
-      bFinished = true;
-      break;
-    }
+  if (result == DVDNAV_STATUS_ERR)
+  {
+    CLog::DebugLog("Error getting next block: %s\n", m_dll.dvdnav_err_to_string(m_dvdnav));
+    return NAVRESULT_ERROR;
+  }
 
     switch (event)
     {
@@ -196,8 +196,7 @@ int CDVDInputStreamNavigator::ProcessBlock(BYTE* dest_buffer, int* read)
         // buf contains the data and len its length (obviously!) (which is always 2048 bytes btw)
         fast_memcpy(dest_buffer, buf, len);
         *read = len;
-        iNavresult = DVDNAV_BLOCK_OK;
-        bFinished = true;
+        iNavresult = NAVRESULT_DATA;
       }
       break;
 
@@ -212,9 +211,7 @@ int CDVDInputStreamNavigator::ProcessBlock(BYTE* dest_buffer, int* read)
         // user input to make menus and other interactive stills work.
         // A length of 0xff means an indefinite still which has to be skipped
         // indirectly by some user interaction.
-        int navres = m_pDVDPlayer->OnDVDNavResult(buf, DVDNAV_STILL_FRAME);
-        iNavresult = DVDNAV_STILL_FRAME;
-        if (navres == NAVRESULT_STILL_NOT_SKIPPED) bFinished = true;
+        iNavresult = m_pDVDPlayer->OnDVDNavResult(buf, DVDNAV_STILL_FRAME);
       }
       break;
 
@@ -236,7 +233,7 @@ int CDVDInputStreamNavigator::ProcessBlock(BYTE* dest_buffer, int* read)
       // Player applications should pass the new colour lookup table to their
       // SPU decoder. The CLUT is given as 16 uint32_t's in the buffer.
       {
-        m_pDVDPlayer->OnDVDNavResult(buf, DVDNAV_SPU_CLUT_CHANGE);
+        iNavresult = m_pDVDPlayer->OnDVDNavResult(buf, DVDNAV_SPU_CLUT_CHANGE);
       }
       break;
 
@@ -249,7 +246,7 @@ int CDVDInputStreamNavigator::ProcessBlock(BYTE* dest_buffer, int* read)
         event->logical = GetActiveSubtitleStream();
 
         m_bCheckButtons = true;
-        m_pDVDPlayer->OnDVDNavResult(buf, DVDNAV_SPU_STREAM_CHANGE);
+        iNavresult = m_pDVDPlayer->OnDVDNavResult(buf, DVDNAV_SPU_STREAM_CHANGE);
       }
       break;
 
@@ -269,14 +266,14 @@ int CDVDInputStreamNavigator::ProcessBlock(BYTE* dest_buffer, int* read)
 
         event->logical = GetActiveAudioStream();
         
-        m_pDVDPlayer->OnDVDNavResult(buf, DVDNAV_AUDIO_STREAM_CHANGE);
+        iNavresult = m_pDVDPlayer->OnDVDNavResult(buf, DVDNAV_AUDIO_STREAM_CHANGE);
       }
 
       break;
 
     case DVDNAV_HIGHLIGHT:
       {
-        m_pDVDPlayer->OnDVDNavResult(buf, DVDNAV_HIGHLIGHT);
+        iNavresult = m_pDVDPlayer->OnDVDNavResult(buf, DVDNAV_HIGHLIGHT);
       }
       break;
 
@@ -286,9 +283,7 @@ int CDVDInputStreamNavigator::ProcessBlock(BYTE* dest_buffer, int* read)
       // information only when necessary and update the decoding/displaying
       // accordingly.
       {
-        m_pDVDPlayer->OnDVDNavResult(buf, DVDNAV_VTS_CHANGE);
-        iNavresult = -1; // return read error
-        bFinished = true;
+        iNavresult = m_pDVDPlayer->OnDVDNavResult(buf, DVDNAV_VTS_CHANGE);        
       }
       break;
 
@@ -325,7 +320,7 @@ int CDVDInputStreamNavigator::ProcessBlock(BYTE* dest_buffer, int* read)
         m_iCellStart = cell_change_event->cell_start; // store cell time as we need that for time later
         m_iTotalTime = (int) (cell_change_event->pgc_length / 90);
         
-        m_pDVDPlayer->OnDVDNavResult(buf, DVDNAV_CELL_CHANGE);
+        iNavresult = m_pDVDPlayer->OnDVDNavResult(buf, DVDNAV_CELL_CHANGE);
       }
       break;
 
@@ -359,7 +354,7 @@ int CDVDInputStreamNavigator::ProcessBlock(BYTE* dest_buffer, int* read)
           m_bCheckButtons = false;
         }
 
-        m_pDVDPlayer->OnDVDNavResult((void*)pci, DVDNAV_NAV_PACKET);
+        iNavresult = m_pDVDPlayer->OnDVDNavResult((void*)pci, DVDNAV_NAV_PACKET);
       }
       break;
 
@@ -367,10 +362,7 @@ int CDVDInputStreamNavigator::ProcessBlock(BYTE* dest_buffer, int* read)
       // This event is issued whenever a non-seamless operation has been executed.
       // Applications with fifos should drop the fifos content to speed up responsiveness.
       {
-        m_pDVDPlayer->OnDVDNavResult(NULL, DVDNAV_HOP_CHANNEL);
-        
-        iNavresult = -1; // return read error
-        bFinished = true;
+        iNavresult = m_pDVDPlayer->OnDVDNavResult(NULL, DVDNAV_HOP_CHANNEL);                
       }
       break;
 
@@ -383,8 +375,7 @@ int CDVDInputStreamNavigator::ProcessBlock(BYTE* dest_buffer, int* read)
         m_bEOF = true;
         
         m_pDVDPlayer->OnDVDNavResult(NULL, DVDNAV_STOP);
-        iNavresult = DVDNAV_STOP;
-        bFinished = true;
+        iNavresult = NAVRESULT_ERROR;
       }
       break;
 
@@ -401,8 +392,7 @@ int CDVDInputStreamNavigator::ProcessBlock(BYTE* dest_buffer, int* read)
     // is part of the internal cache, but do it for good measure
     if( buf != m_tempbuffer )
       m_dll.dvdnav_free_cache_block(m_dvdnav, buf);
-
-  }
+  
   return iNavresult;
 }
 
