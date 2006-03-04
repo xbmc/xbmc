@@ -185,7 +185,7 @@ void CDVDPlayer::Process()
   //m_dvdPlayerSubtitle.FindSubtitles(m_filename);
   
   // open the streams
-  if (audio_index >= 0) OpenDefaultAudioStream();
+  if (audio_index >= 0) OpenAudioStream(audio_index);
   if (video_index >= 0) OpenVideoStream(video_index);
 
   // if we use libdvdnav, streaminfo is not avaiable, we will find this later on
@@ -1042,86 +1042,77 @@ void CDVDPlayer::UpdateSubtitlePosition()
 void CDVDPlayer::RenderSubtitles()
 {}
 
-/*
- * Opens the First valid available audio stream
- */
-bool CDVDPlayer::OpenDefaultAudioStream()
-{
-  for (int i = 0; i < m_pDemuxer->GetNrOfStreams(); i++)
-  {
-    CDemuxStream* pStream = m_pDemuxer->GetStream(i);
-    if (pStream->type == STREAM_AUDIO)
-    {
-      if (m_dvd.iSelectedAudioStream < 0 || pStream->iPhysicalId == m_dvd.iSelectedAudioStream)
-      {
-        CDemuxStreamAudio* pStreamAudio = (CDemuxStreamAudio*)pStream;
-        {
-          if (OpenAudioStream(i)) return true;
-        }
-      }
-    }
-  }
-  return false;
-}
-
 bool CDVDPlayer::OpenAudioStream(int iStream)
 {
   CLog::Log(LOGNOTICE, "Opening audio stream: %i", iStream);
 
-  if (iStream < 0 || iStream >= m_pDemuxer->GetNrOfStreams()) return false;
-  if (m_pDemuxer->GetStream(iStream)->type != STREAM_AUDIO)
+  CDemuxStream* pStream = m_pDemuxer->GetStream(iStream);
+
+  if( !pStream ) 
+  {
+    CLog::Log(LOGERROR, "Stream doesn't exist");
+    return false;
+  }
+
+  if( pStream->disabled )
+    return false;
+
+  if (pStream->type != STREAM_AUDIO)
   {
     CLog::Log(LOGERROR, "Streamtype is not STREAM_AUDIO");
     return false;
   }
-  CDemuxStreamAudio* pStreamAudio = (CDemuxStreamAudio*)m_pDemuxer->GetStream(iStream);
   
-  if( !pStreamAudio || pStreamAudio->disabled )
-    return false;
-
-  if (m_dvdPlayerAudio.OpenStream(pStreamAudio))
+  if (!m_dvdPlayerAudio.OpenStream( (CDemuxStreamAudio*)pStream) )
   {
-    m_dvdPlayerAudio.SetPriority(THREAD_PRIORITY_HIGHEST + 4);
+    // mark stream as disabled, to disallaw further attempts
+    CLog::Log(LOGWARNING, "CDVDPlayer::OpenAudioStream - Unsupported stream %d. Stream disabled.", iStream);
+    pStream->disabled = true;
 
-    m_iCurrentStreamAudio = iStream;
-    return true;
+    return false;
   }
   
-  // mark stream as disabled, to disallaw further attempts
-  CLog::Log(LOGWARNING, "CDVDPlayer::OpenAudioStream - Unsupported stream %d. Stream disabled.", iStream);
-  pStreamAudio->disabled = true;
+  m_dvdPlayerAudio.SetPriority(THREAD_PRIORITY_HIGHEST + 4);
 
-  return false;
+  m_iCurrentStreamAudio = iStream;
+
+  return true;
 }
 
 bool CDVDPlayer::OpenVideoStream(int iStream)
 {
   CLog::Log(LOGNOTICE, "Opening video stream: %i", iStream);
 
-  if (iStream < 0 || iStream >= m_pDemuxer->GetNrOfStreams()) return false;
-  if (m_pDemuxer->GetStream(iStream)->type != STREAM_VIDEO)
+  CDemuxStream* pStream = m_pDemuxer->GetStream(iStream);
+
+  if( !pStream ) 
+  {
+    CLog::Log(LOGERROR, "Stream doesn't exist");
+    return false;
+  }
+
+  if( pStream->disabled )
+    return false;
+
+  if (pStream->type != STREAM_VIDEO)
   {
     CLog::Log(LOGERROR, "Streamtype is not STREAM_VIDEO");
     return false;
   }
-  CDemuxStreamVideo* pStreamVideo = (CDemuxStreamVideo*)m_pDemuxer->GetStream(iStream);
 
-  if( !pStreamVideo || pStreamVideo->disabled )
-    return false;
-
-  if (m_dvdPlayerVideo.OpenStream(pStreamVideo))
+  if (!m_dvdPlayerVideo.OpenStream((CDemuxStreamVideo*)pStream))
   {
-    m_dvdPlayerVideo.SetPriority(THREAD_PRIORITY_ABOVE_NORMAL);
-
-    m_iCurrentStreamVideo = iStream;
-    return true;
+    // mark stream as disabled, to disallaw further attempts
+    CLog::Log(LOGWARNING, "CDVDPlayer::OpenVideoStream - Unsupported stream %d. Stream disabled.", iStream);
+    pStream->disabled = true;
+    return false;
   }
 
-  // mark stream as disabled, to disallaw further attempts
-  CLog::Log(LOGWARNING, "CDVDPlayer::OpenVideoStream - Unsupported stream %d. Stream disabled.", iStream);
-  pStreamVideo->disabled = true;
+  m_dvdPlayerVideo.SetPriority(THREAD_PRIORITY_ABOVE_NORMAL);
 
-  return false;
+  m_iCurrentStreamVideo = iStream;
+  return true;
+
 }
 
 bool CDVDPlayer::OpenSubtitleStream(int iStream)
