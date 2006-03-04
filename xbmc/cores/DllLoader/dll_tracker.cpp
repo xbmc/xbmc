@@ -33,6 +33,7 @@ void tracker_dll_free(DllLoader* pDll)
       try
       {
         tracker_memory_free_all(*it);
+        tracker_heapobjects_free_all(*it);
         tracker_library_free_all(*it);
         tracker_file_free_all(*it);
         tracker_socket_free_all(*it);
