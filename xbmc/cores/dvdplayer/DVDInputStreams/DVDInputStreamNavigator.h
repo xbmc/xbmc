@@ -10,9 +10,10 @@
 
 #define DVD_VIDEO_BLOCKSIZE         DVD_VIDEO_LB_LEN // 2048 bytes
 
-#define NAVRESULT_OK                0x00000001
-#define NAVRESULT_SKIPPED_STILL     0x00000002
-#define NAVRESULT_STILL_NOT_SKIPPED 0x00000004
+#define NAVRESULT_NOP               0x00000001 // keep processing messages
+#define NAVRESULT_DATA              0x00000002 // return data to demuxer
+#define NAVRESULT_ERROR             0x00000003 // return read error to demuxer
+#define NAVRESULT_HOLD              0x00000004 // return eof to demuxer
 
 #define LIBDVDNAV_BUTTON_NORMAL 0
 #define LIBDVDNAV_BUTTON_CLICKED 1
