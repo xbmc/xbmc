@@ -415,7 +415,7 @@ bool CGUIThumbnailPanel::OnAction(const CAction &action)
 
   default:
     {
-      if (m_iSelect == CONTROL_LIST)
+      if (m_iSelect == CONTROL_LIST && action.wID)
       {
         CGUIMessage msg(GUI_MSG_CLICKED, GetID(), GetParentID(), action.wID);
         return g_graphicsContext.SendMessage(msg);
