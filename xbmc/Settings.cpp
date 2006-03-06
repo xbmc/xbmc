@@ -2362,16 +2362,6 @@ void CSettings::Clear()
   m_skinStrings.clear();
 }
 
-bool CSettings::GetSkinSetting(const char *setting) const
-{
-  std::map<CStdString, bool>::const_iterator it = m_skinSettings.find(setting);
-  if (it != m_skinSettings.end())
-  {
-    return (*it).second;
-  }
-  return false;
-}
-
 CStdString CSettings::GetSkinString(const char *setting) const
 {
   std::map<CStdString, CStdString>::const_iterator it = m_skinStrings.find(setting);
@@ -2397,18 +2387,43 @@ void CSettings::SetSkinString(const char *setting, const CStdString &label)
   }
 }
 
-void CSettings::ToggleSkinSetting(const char *setting)
+void CSettings::ResetSkinSetting(const char *setting)
+{
+  CStdString settingName;
+  settingName.Format("%s.%s", g_guiSettings.GetString("LookAndFeel.Skin").c_str(), setting);
+  std::map<CStdString, CStdString>::iterator it = m_skinStrings.find(settingName);
+  if (it != m_skinStrings.end())
+  {
+    (*it).second.Empty();
+    return;
+  }
+  std::map<CStdString, bool>::iterator it2 = m_skinSettings.find(settingName);
+  if (it2 != m_skinSettings.end())
+    (*it2).second = false;
+}
+
+bool CSettings::GetSkinSetting(const char *setting) const
+{
+  std::map<CStdString, bool>::const_iterator it = m_skinSettings.find(setting);
+  if (it != m_skinSettings.end())
+  {
+    return (*it).second;
+  }
+  return false;
+}
+
+void CSettings::SetSkinSetting(const char *setting, bool set)
 {
   CStdString settingName;
   settingName.Format("%s.%s", g_guiSettings.GetString("LookAndFeel.Skin").c_str(), setting);
   std::map<CStdString, bool>::iterator it = m_skinSettings.find(settingName);
   if (it != m_skinSettings.end())
   {
-    (*it).second = !(*it).second;
+    (*it).second = set;
   }
   else
   { // insert setting
-    m_skinSettings.insert(pair<CStdString, bool>(settingName, true)); // defaults are false
+    m_skinSettings.insert(pair<CStdString, bool>(settingName, set)); // defaults are false
   }
 }
 

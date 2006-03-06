@@ -240,10 +240,11 @@ public:
   bool UpDateXbmcXML(const CStdString &strFirstChild, const CStdString &strChild, const CStdString &strChildValue);
   bool UpDateXbmcXML(const CStdString &strFirstChild, const CStdString &strFirstChildValue);
 
-  bool GetSkinSetting(const char *setting) const;
   CStdString GetSkinString(const char *setting) const;
   void SetSkinString(const char *setting, const CStdString &label);
-  void ToggleSkinSetting(const char *setting);
+  bool GetSkinSetting(const char *setting) const;
+  void SetSkinSetting(const char *setting, bool set);
+  void ResetSkinSetting(const char *setting);
   void ResetSkinSettings();
 
   struct AdvancedSettings
