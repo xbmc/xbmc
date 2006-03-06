@@ -850,21 +850,18 @@ void CGUIWindowBuddies::Render()
     {
       m_pMe->m_bProfileRequested = TRUE;
 
-      SET_CONTROL_HIDDEN(CONTROL_IMAGEME);
+//      SET_CONTROL_HIDDEN(CONTROL_IMAGEME);
 
       CGUIImage& placeholder = *(CGUIImage*)GetControl(CONTROL_IMAGEME);
-      int x = placeholder.GetXPosition();
-      int y = placeholder.GetYPosition();
-      DWORD w = placeholder.GetWidth();
-      DWORD h = placeholder.GetHeight();
-      m_pMe->m_pAvatar->SetPosition(x, y);
-      m_pMe->m_pAvatar->SetWidth((int)w);
-      m_pMe->m_pAvatar->SetHeight((int)h);
-      m_pMe->m_pAvatar->AllocResources();
+      placeholder.SetFileName(m_pMe->m_pAvatar->GetFileName());
+//      m_pMe->m_pAvatar->SetPosition(x, y);
+//      m_pMe->m_pAvatar->SetWidth((int)w);
+//      m_pMe->m_pAvatar->SetHeight((int)h);
+//      m_pMe->m_pAvatar->AllocResources();
     }
     else
     {
-      m_pMe->m_pAvatar->Render();
+//      m_pMe->m_pAvatar->Render();
     }
   }
 
