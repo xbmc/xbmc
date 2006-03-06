@@ -11,7 +11,7 @@ CVisibleEffect::CVisibleEffect()
   m_allowHiddenFocus = false;
 }
 
-void CVisibleEffect::Create(TiXmlElement *node)
+void CVisibleEffect::Create(const TiXmlElement *node)
 {
   const char *effectType = node->Attribute("effect");
   if (!effectType)
@@ -70,7 +70,7 @@ void CAnimation::Reset()
   condition = 0;
 }
 
-void CAnimation::Create(TiXmlElement *node, RESOLUTION res)
+void CAnimation::Create(const TiXmlElement *node, RESOLUTION res)
 {
   if (!node || !node->FirstChild())
     return;
