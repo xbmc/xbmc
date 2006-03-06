@@ -13,9 +13,10 @@ public:
   UINT uSongCount;
   UINT uSoundtrackId;
 };
-__MSL_FIX_ITERATORS__(CSoundtrack);
-typedef vector<CSoundtrack> SOUNDTRACK;
-typedef vector<CSoundtrack>::iterator ISOUNDTRACK;
+
+typedef map<UINT, CSoundtrack> SOUNDTRACK;
+typedef map<UINT, CSoundtrack>::iterator ISOUNDTRACK;
+typedef pair<UINT, CSoundtrack> SOUNDTRACK_PAIR;
 
 
 using namespace DIRECTORY;
