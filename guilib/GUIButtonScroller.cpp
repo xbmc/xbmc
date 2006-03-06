@@ -166,14 +166,14 @@ void CGUIButtonScroller::LoadButtons(const TiXmlNode *node)
   //    <texturefocus>
   //    <texturenofocus>
   // </button>
-  TiXmlNode *buttons = node->FirstChild("buttons");
+  const TiXmlNode *buttons = node->FirstChild("buttons");
   if (!buttons) return;
-  TiXmlElement *buttonNode = buttons->FirstChildElement("button");
+  const TiXmlElement *buttonNode = buttons->FirstChildElement("button");
   while (buttonNode)
   {
     CButton *button = new CButton;
     buttonNode->Attribute("id", &button->id);
-    TiXmlNode *childNode = buttonNode->FirstChild("label");
+    const TiXmlNode *childNode = buttonNode->FirstChild("label");
     if (childNode && childNode->FirstChild())
     {
       CStdString strLabel = childNode->FirstChild()->Value();

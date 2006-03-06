@@ -111,11 +111,11 @@ void CLangCodeExpander::LoadCodes(const TiXmlElement* pRootElement, CLangCodeExp
   int sLen, lLen;
   char* sShort, * sLong;
 
-  TiXmlNode* pLangCode = pRootElement->FirstChild("code");
+  const TiXmlNode* pLangCode = pRootElement->FirstChild("code");
   while (pLangCode)
   {
-    TiXmlNode* pShort = pLangCode->FirstChildElement("short");
-    TiXmlNode* pLong = pLangCode->FirstChildElement("long");
+    const TiXmlNode* pShort = pLangCode->FirstChildElement("short");
+    const TiXmlNode* pLong = pLangCode->FirstChildElement("long");
     if (pShort && pLong)
     {
       //Only use one allocation, might gain something on that

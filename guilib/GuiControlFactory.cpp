@@ -47,7 +47,7 @@ CGUIControlFactory::~CGUIControlFactory(void)
 
 bool CGUIControlFactory::GetIntRange(const TiXmlNode* pRootNode, const char* strTag, int& iMinValue, int& iMaxValue, int& iIntervalValue)
 {
-  TiXmlNode* pNode = pRootNode->FirstChild(strTag);
+  const TiXmlNode* pNode = pRootNode->FirstChild(strTag);
   if (!pNode || !pNode->FirstChild()) return false;
   iMinValue = atoi(pNode->FirstChild()->Value());
   char* maxValue = strchr(pNode->FirstChild()->Value(), ',');
@@ -69,7 +69,7 @@ bool CGUIControlFactory::GetIntRange(const TiXmlNode* pRootNode, const char* str
 
 bool CGUIControlFactory::GetFloatRange(const TiXmlNode* pRootNode, const char* strTag, float& fMinValue, float& fMaxValue, float& fIntervalValue)
 {
-  TiXmlNode* pNode = pRootNode->FirstChild(strTag);
+  const TiXmlNode* pNode = pRootNode->FirstChild(strTag);
   if (!pNode || !pNode->FirstChild()) return false;
   fMinValue = (float) atof(pNode->FirstChild()->Value());
   char* maxValue = strchr(pNode->FirstChild()->Value(), ',');
@@ -91,13 +91,13 @@ bool CGUIControlFactory::GetFloatRange(const TiXmlNode* pRootNode, const char* s
 
 bool CGUIControlFactory::GetMultipleString(const TiXmlNode* pRootNode, const char* strTag, CStdStringArray& vecStringValue)
 {
-  TiXmlNode* pNode = pRootNode->FirstChild(strTag );
+  const TiXmlNode* pNode = pRootNode->FirstChild(strTag );
   if (!pNode) return false;
   vecStringValue.clear();
   bool bFound = false;
   while (pNode)
   {
-    TiXmlNode *pChild = pNode->FirstChild();
+    const TiXmlNode *pChild = pNode->FirstChild();
     if (pChild != NULL)
     {
       vecStringValue.push_back(pChild->Value());
@@ -110,7 +110,7 @@ bool CGUIControlFactory::GetMultipleString(const TiXmlNode* pRootNode, const cha
 
 bool CGUIControlFactory::GetPath(const TiXmlNode* pRootNode, const char* strTag, CStdString& strStringPath)
 {
-  TiXmlNode* pNode = pRootNode->FirstChild(strTag );
+  const TiXmlNode* pNode = pRootNode->FirstChild(strTag );
   if (!pNode) return false;
   strStringPath = pNode->FirstChild() ? pNode->FirstChild()->Value() : "";
   strStringPath.Replace('/', '\\');
@@ -119,7 +119,7 @@ bool CGUIControlFactory::GetPath(const TiXmlNode* pRootNode, const char* strTag,
 
 bool CGUIControlFactory::GetAlignment(const TiXmlNode* pRootNode, const char* strTag, DWORD& dwAlignment)
 {
-  TiXmlNode* pNode = pRootNode->FirstChild(strTag);
+  const TiXmlNode* pNode = pRootNode->FirstChild(strTag);
   if (!pNode || !pNode->FirstChild()) return false;
 
   CStdString strAlign = pNode->FirstChild()->Value();
@@ -131,7 +131,7 @@ bool CGUIControlFactory::GetAlignment(const TiXmlNode* pRootNode, const char* st
 
 bool CGUIControlFactory::GetAlignmentY(const TiXmlNode* pRootNode, const char* strTag, DWORD& dwAlignment)
 {
-  TiXmlNode* pNode = pRootNode->FirstChild(strTag );
+  const TiXmlNode* pNode = pRootNode->FirstChild(strTag );
   if (!pNode || !pNode->FirstChild())
   {
     return false;
@@ -150,7 +150,7 @@ bool CGUIControlFactory::GetAlignmentY(const TiXmlNode* pRootNode, const char* s
 
 bool CGUIControlFactory::GetConditionalVisibility(const TiXmlNode* control, int &condition, bool &allowHiddenFocus, bool &startHidden)
 {
-  TiXmlElement* node = control->FirstChildElement("visible");
+  const TiXmlElement* node = control->FirstChildElement("visible");
   if (!node) return false;
   allowHiddenFocus = false;
   startHidden = false;
@@ -196,7 +196,7 @@ bool CGUIControlFactory::GetAnimations(const TiXmlNode *control, vector<CAnimati
 {
   if (g_SkinInfo.GetVersion() < 1.90)
   { // versions earlier than 1.90 used animations only on the visible condition
-    TiXmlElement *node = control->FirstChildElement("visible");
+    const TiXmlElement *node = control->FirstChildElement("visible");
     if (!node) return false;
     animations.clear();
     CVisibleEffect effect;
@@ -233,7 +233,7 @@ bool CGUIControlFactory::GetAnimations(const TiXmlNode *control, vector<CAnimati
   }
   else
   {
-    TiXmlElement* node = control->FirstChildElement("animation");
+    const TiXmlElement* node = control->FirstChildElement("animation");
     bool ret = false;
     if (node)
       animations.clear();
