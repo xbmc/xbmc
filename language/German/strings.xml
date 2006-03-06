@@ -616,6 +616,7 @@
   <string><id>1029</id><value>Bitte die neue Bezeichnung eingeben</value></string>
   <string><id>1030</id><value>Ein Bild</value></string>
   <string><id>1031</id><value>Ein Verzeichnis mit Bildern</value></string>
+  <string><id>1032</id><value>Ort im Netzwerk hinzufügen...</value></string>
 
   <string><id>1200</id><value>SMB-Share</value></string>
   <string><id>1201</id><value>SMB-IP</value></string>
@@ -753,7 +754,7 @@
   <string><id>12009</id><value>Index neu aufbauen...</value></string>
   <string><id>12010</id><value>Zurück zu Musik</value></string>
   <string><id>12011</id><value>Zurück zu Videos</value></string>
-  <string><id>12012</id><value>Trainer-Liste wird aktualisiert...</value></string>
+  <string><id>12012</id><value>Trainer-Liste aktualisieren...</value></string>
   <string><id>12013</id><value>Trainer</value></string>
   <string><id>12014</id><value>Keine Trainer gefunden</value></string>
   <string><id>12015</id><value>Trainer-Einstellungen</value></string>
@@ -835,7 +836,7 @@
   <string><id>12384</id><value>24 Stunden Uhr</value></string>
   <string><id>12385</id><value>Tag/Monat</value></string>
   <string><id>12386</id><value>Monat/Tag</value></string>
-  <string><id>12387</id><value>Datenbank nocheinmal Scannen</value></string>
+  <string><id>12387</id><value>Datenbank aktualisieren</value></string>
 
   <string><id>12390</id><value>Betriebszeit</value></string>
   <string><id>12391</id><value>Minuten</value></string>
@@ -1033,6 +1034,7 @@
   <string><id>13400</id><value>Crossfade bei Songs eines Albums</value></string>
   <string><id>13401</id><value>Durchsuchen nach %s</value></string>
   <string><id>13402</id><value>Track-Position anzeigen</value></string>
+  <string><id>13403</id><value>Standard entfernen</value></string>
 
   <string><id>14000</id><value>Stapeln: Aus</value></string>
   <string><id>14001</id><value>Stapeln: An</value></string>
