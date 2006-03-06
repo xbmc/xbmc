@@ -79,7 +79,7 @@ bool CIMDB::InternalFindMovie(const CStdString &strMovie, IMDB_MOVIELIST& moviel
 
 bool CIMDB::GetString(const TiXmlNode* pRootNode, const char* strTag, CStdString& strStringValue)
 {
-  TiXmlNode* pNode = pRootNode->FirstChild(strTag );
+  const TiXmlNode* pNode = pRootNode->FirstChild(strTag );
   if (!pNode) return false;
   pNode = pNode->FirstChild();
   if (pNode != NULL)

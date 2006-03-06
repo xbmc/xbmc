@@ -14,7 +14,7 @@ class CVisibleEffect
 {
 public:
   CVisibleEffect();
-  void Create(TiXmlElement *node);
+  void Create(const TiXmlElement *node);
 
   EFFECT_TYPE m_type;
   START_STATE m_startState;
@@ -46,7 +46,7 @@ class CAnimation
 public:
   CAnimation();
   void Reset();
-  void Create(TiXmlElement *node, RESOLUTION res);
+  void Create(const TiXmlElement *node, RESOLUTION res);
   void CreateReverse(const CAnimation &anim);
   void Animate(DWORD time, bool hasRendered);
   void ResetAnimation();

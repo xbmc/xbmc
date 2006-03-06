@@ -624,7 +624,7 @@ void CSettings::GetShares(const TiXmlElement* pRootElement, const CStdString& st
 
         // get multiple paths
         vector<CStdString> vecPaths;
-        TiXmlNode *pPathName = pChild->FirstChild("path");
+        const TiXmlNode *pPathName = pChild->FirstChild("path");
         while (pPathName)
         {
           if (pPathName->FirstChild())
@@ -993,7 +993,7 @@ bool CSettings::LoadCalibration(const TiXmlElement* pElement, const CStdString& 
     }
     return false;
   }
-  TiXmlElement *pResolution = pRootElement->FirstChildElement("resolution");
+  const TiXmlElement *pResolution = pRootElement->FirstChildElement("resolution");
   while (pResolution)
   {
     // get the data for this resolution
@@ -1011,7 +1011,7 @@ bool CSettings::LoadCalibration(const TiXmlElement* pElement, const CStdString& 
     GetInteger(pResolution, "osdyoffset", m_ResInfo[iRes].iOSDYOffset, 0, -m_ResInfo[iRes].iHeight, m_ResInfo[iRes].iHeight);
 
     // get the overscan info
-    TiXmlElement *pOverscan = pResolution->FirstChildElement("overscan");
+    const TiXmlElement *pOverscan = pResolution->FirstChildElement("overscan");
     if (pOverscan)
     {
       GetInteger(pOverscan, "left", m_ResInfo[iRes].Overscan.left, 0, -m_ResInfo[iRes].iWidth / 4, m_ResInfo[iRes].iWidth / 4);
@@ -1695,7 +1695,7 @@ bool CSettings::LoadProfiles(const TiXmlElement* pRootElement, const CStdString&
   if (pChild)
   {
     GetInteger(pChild, "lastloaded", m_iLastLoadedProfileIndex, -1, -1, INT_MAX);
-    TiXmlNode *pChildNode = pChild->FirstChild();
+    const TiXmlNode *pChildNode = pChild->FirstChild();
     while (pChildNode > 0)
     {
       CStdString strValue = pChildNode->Value();
@@ -2132,10 +2132,10 @@ bool CSettings::SetBookmarkLocks(const CStdString &strType, bool bEngageLocks)
 
 void CSettings::LoadSkinSettings(const TiXmlElement* pRootElement)
 {
-  TiXmlElement *pElement = pRootElement->FirstChildElement("skinsettings");
+  const TiXmlElement *pElement = pRootElement->FirstChildElement("skinsettings");
   if (pElement)
   {
-    TiXmlElement *pChild = pElement->FirstChildElement("setting");
+    const TiXmlElement *pChild = pElement->FirstChildElement("setting");
     while (pChild && pChild->FirstChild())
     {
       CStdString settingName = pChild->Attribute("name");
@@ -2273,16 +2273,16 @@ bool CSettings::LoadFolderViews(const CStdString &strFolderXML, VECFOLDERVIEWS &
     int iView = VIEW_METHOD_LIST;
     int iSort = 0;
     bool bSortUp = true;
-    TiXmlNode *pPath = pChild->FirstChild("path");
+    const TiXmlNode *pPath = pChild->FirstChild("path");
     if (pPath && pPath->FirstChild())
       strPath = pPath->FirstChild()->Value();
-    TiXmlNode *pView = pChild->FirstChild("view");
+    const TiXmlNode *pView = pChild->FirstChild("view");
     if (pView && pView->FirstChild())
       iView = atoi(pView->FirstChild()->Value());
-    TiXmlNode *pSort = pChild->FirstChild("sort");
+    const TiXmlNode *pSort = pChild->FirstChild("sort");
     if (pSort && pSort->FirstChild())
       iSort = atoi(pSort->FirstChild()->Value());
-    TiXmlNode *pDirection = pChild->FirstChild("direction");
+    const TiXmlNode *pDirection = pChild->FirstChild("direction");
     if (pDirection && pDirection->FirstChild())
       bSortUp = pDirection->FirstChild()->Value() == "up";
     // fill in element
