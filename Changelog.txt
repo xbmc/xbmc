@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 07-03-2006 fixed: Multiple paths in XBoxMediaCenter.xml would mean games wouldn't be found from Kai.
  - 06-03-2006 added: <number> tag to label control (for display of numbers)
  - 06-03-2006 added: Skin.SetBool and Skin.Reset <onclick> functions.
  - 06-03-2006 changed: Per button <texturefocus> images in scrolling button scrollers only show when scrolling has completed.
