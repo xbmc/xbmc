@@ -33,7 +33,13 @@ bool CSndtrkDirectory::GetDirectory(const CStdString& strPath, CFileItemList &it
           stInfo.uSoundtrackId = stData.uSoundtrackId;
           stInfo.uSongCount = stData.uSongCount;
           wcscpy(stInfo.strName, stData.szName );
-          datastorage.push_back(stInfo);
+
+          ISOUNDTRACK it=datastorage.find(stData.uSoundtrackId);
+          if (it==datastorage.end())
+            datastorage.insert(SOUNDTRACK_PAIR(stInfo.uSoundtrackId, stInfo));
+          else
+            it->second=stInfo;
+
           CFileItem *pItem = new CFileItem(stData.szName);
           pItem->m_strPath = strRoot;
           pItem->SetLabelPreformated(true);
@@ -45,29 +51,21 @@ bool CSndtrkDirectory::GetDirectory(const CStdString& strPath, CFileItemList &it
         }
       }
       while ( XFindNextSoundtrack( hSoundtrack, &stData ) );
+
+      XFindClose(hSoundtrack);
     }
   }
   else
   {
-    CFileItem *pItem2 = new CFileItem("..");
-    pItem2->m_strPath = "soundtrack://";
-    pItem2->m_bIsFolder = true;
-    pItem2->SetLabel("..");
-    items.Add(pItem2);
-    //  char *ptr=NULL;
     char *ptr = strstr(strRoot, "//");
     ptr += 2;
     int m_iconvert = atoi(ptr); //convert from char back to int to compare to data
-    CSoundtrack stInfo;
-    ISOUNDTRACK tmpdata;
-    tmpdata = datastorage.begin();
-    while (tmpdata != datastorage.end())
-    {
-      stInfo = *tmpdata;
-      if (stInfo.uSoundtrackId == m_iconvert)
-        break;
-      tmpdata++;
-    }
+
+    ISOUNDTRACK it=datastorage.find(m_iconvert);
+    if (it == datastorage.end())
+      return false;
+
+    CSoundtrack stInfo = it->second;
     for ( UINT i = 0; i < stInfo.uSongCount; ++i )
     {
       DWORD dwSongId;
