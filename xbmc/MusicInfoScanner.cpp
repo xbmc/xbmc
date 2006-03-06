@@ -2,11 +2,8 @@
 #include "MusicInfoScanner.h"
 #include "musicdatabase.h"
 #include "musicInfoTagLoaderFactory.h"
-#include "Filesystem/cddadirectory.h"
-#include "Filesystem/hddirectory.h"
 #include "FileSystem/DirectoryCache.h"
 #include "Util.h"
-#include "Application.h"
 
 
 using namespace MUSIC_INFO;
