@@ -391,7 +391,7 @@ http_debug_hdr( HTTP_header_t *http_hdr ) {
 
 int 
 base64_encode(const void *enc, int encLen, char *out, int outMax) {
-	static const char	b64[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
+	static const char	b64[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
 	unsigned char		*encBuf;
 	int			outLen;
@@ -417,11 +417,10 @@ base64_encode(const void *enc, int encLen, char *out, int outMax) {
 			bits <<= 6 - shift;
 			shift = 6;
 		} else {
-			// Terminate with Mime style '='
-			*out = '=';
-			outLen++;
-
-			return outLen;
+			// Pad with 0 to 2 '=' chars as needed
+			if (outLen & 3)
+				memset(out, '=', 4 - (outLen & 3) );
+			return (outLen + 3) & ~3;
 		}
 
 		// Encode 6 bit segments
