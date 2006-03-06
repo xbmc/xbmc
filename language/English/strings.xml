@@ -453,6 +453,7 @@
   <string><id>519</id><value>Launch in..</value></string>
   <string><id>520</id><value>Edit XBE title</value></string>
   <string><id>521</id><value>Compilations</value></string>
+  <string><id>522</id><value>Remove Source</value></string>
 
   <string><id>588</id><value>Cancel Party Mode</value></string>
   <string><id>589</id><value>Party Mode</value></string>
@@ -1273,6 +1274,12 @@
   <string><id>16025</id><value>Enter the Artist Name</value></string>
   <string><id>16026</id><value>Playlist playback aborted</value></string>
   <string><id>16027</id><value>Too many consecutive failed items</value></string>
+
+  <string><id>16030</id><value>Party Mode mode aborted.</value></string>
+  <string><id>16031</id><value>Too few songs in the database.</value></string>
+  <string><id>16032</id><value>Could not initialise database.</value></string>
+  <string><id>16033</id><value>Could not open database.</value></string>
+  <string><id>16034</id><value>Could not get songs from database.</value></string>
 
   <string><id>16100</id><value>All Videos</value></string>
   <string><id>16101</id><value>UnWatched</value></string>
