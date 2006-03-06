@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 06-03-2006 added: Skin.SetBool and Skin.Reset <onclick> functions.
+ - 06-03-2006 changed: Per button <texturefocus> images in scrolling button scrollers only show when scrolling has completed.
  - 06-03-2006 fixed: auth http streams containing special characters( mplayer.dll )
  - 06-03-2006 updated: tinyxml to version 2.4.3
  - 06-03-2006 fixed: ms soundtrack directory showed two parent folder items

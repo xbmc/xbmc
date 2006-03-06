@@ -3344,6 +3344,8 @@ const BUILT_IN commands[] = {
   "Skin.SetString"," Prompts and sets skin string",
   "Skin.SetPath"," Prompts and sets a skin path",
   "Skin.SetImage"," Prompts and sets a skin image",
+  "Skin.SetBool"," Sets a skin setting on",
+  "Skin.Reset"," Resets a skin setting to default",
   "Skin.ResetSettings"," Resets all skin settings",
   "Mute","Mute the player",
   "SetVolume","Set the current volume"
@@ -3824,8 +3826,18 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   }
   else if (execute.Equals("skin.togglesetting"))
   {
-    g_settings.ToggleSkinSetting(parameter.c_str());
-    g_settings.Save(); // To save the settings, this will keep them if a IGR follow.. 
+    g_settings.SetSkinSetting(parameter.c_str(), !g_settings.GetSkinSetting(g_guiSettings.GetString("LookAndFeel.Skin") + "." + parameter));
+    g_settings.Save();
+  }
+  else if (execute.Equals("skin.setbool"))
+  {
+    g_settings.SetSkinSetting(parameter.c_str(), true);
+    g_settings.Save();
+  }
+  else if (execute.Equals("skin.reset"))
+  {
+    g_settings.ResetSkinSetting(parameter.c_str());
+    g_settings.Save();
   }
   else if (execute.Equals("skin.resetsettings"))
   {

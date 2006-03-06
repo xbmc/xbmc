@@ -276,7 +276,9 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
   CStdString strTextureFocus, strTextureNoFocus;
   CStdString strTextureAltFocus, strTextureAltNoFocus;
   int iToggleSelect;
+#ifdef PRE_SKIN_VERSION_2_0_COMPATIBILITY
   int iHyperLink = WINDOW_INVALID;
+#endif
   DWORD dwItems;
   CStdString strUp, strDown;
   CStdString strUpFocus, strDownFocus;
@@ -1065,17 +1067,23 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     if (XMLUtils::GetString(pControlNode, "font2", strFont))
       labelInfo2.font = g_fontManager.GetFont(strFont);
     if (!labelInfo2.font) labelInfo2.font = labelInfo.font;
-    CStdString strWindow;
-    XMLUtils::GetString(pControlNode, "hyperlink", strWindow);
-    iHyperLink = WINDOW_INVALID;
-    if (!strWindow.IsEmpty())
-      iHyperLink = g_buttonTranslator.TranslateWindowString(strWindow.c_str());
-
-    CStdString click;
-    XMLUtils::GetString(pControlNode, "script", click); // left in for backwards compatibility.
-    XMLUtils::GetString(pControlNode, "execute", click);
-    if (!GetMultipleString(pControlNode, "onclick", clickActions) && !click.IsEmpty())
-      clickActions.push_back(click);
+#ifdef PRE_SKIN_VERSION_2_0_COMPATIBILITY
+    if (g_SkinInfo.GetVersion() < 2.0)
+    {
+      CStdString strWindow;
+      XMLUtils::GetString(pControlNode, "hyperlink", strWindow);
+      iHyperLink = WINDOW_INVALID;
+      if (!strWindow.IsEmpty())
+        iHyperLink = g_buttonTranslator.TranslateWindowString(strWindow.c_str());
+      CStdString click;
+      XMLUtils::GetString(pControlNode, "script", click); // left in for backwards compatibility.
+      XMLUtils::GetString(pControlNode, "execute", click);
+      if (!GetMultipleString(pControlNode, "onclick", clickActions) && !click.IsEmpty())
+        clickActions.push_back(click);
+    }
+    else
+      GetMultipleString(pControlNode, "onclick", clickActions);
+#endif
     XMLUtils::GetString(pControlNode, "onfocus", focusAction);
 
     CStdStringArray strVecInfo;
@@ -1200,6 +1208,13 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     if (XMLUtils::GetDWORD(pControlNode, "itemwidthbig", itemWidthBig)) g_graphicsContext.ScaleXCoord(itemWidthBig, res);
     if (XMLUtils::GetDWORD(pControlNode, "itemheightbig", itemHeightBig)) g_graphicsContext.ScaleYCoord(itemHeightBig, res);
 
+    int labelNumber = 0;
+    if (XMLUtils::GetInt(pControlNode, "number", labelNumber))
+    {
+      WCHAR wszTmp[16];
+      swprintf(wszTmp, L"%i", labelNumber);
+      strLabel = wszTmp;
+    }
     CStdStringArray strVecLabel;
     if (GetMultipleString(pControlNode, "label", strVecLabel))
     {

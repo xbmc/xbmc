@@ -418,12 +418,18 @@ void CGUIButtonScroller::Render()
       iPosY += m_iCurrentSlot * ((int)m_imgFocus.GetHeight() + m_iButtonGap);
     // check if we have a skinner-defined icon image
     CGUIImage *pImage = m_vecButtons[GetActiveButton()]->imageFocus;
-    if (!pImage) pImage = &m_imgFocus;
-    pImage->SetPosition(iPosX, iPosY);
-    pImage->SetVisible(true);
-    pImage->SetWidth(m_imgFocus.GetWidth());
-    pImage->SetHeight(m_imgFocus.GetHeight());
-    pImage->Render();
+    if (pImage && (m_bScrollUp || m_bScrollDown))
+      pImage = NULL;
+    else if (!pImage)
+      pImage = &m_imgFocus;
+    if (pImage)
+    {
+      pImage->SetPosition(iPosX, iPosY);
+      pImage->SetVisible(true);
+      pImage->SetWidth(m_imgFocus.GetWidth());
+      pImage->SetHeight(m_imgFocus.GetHeight());
+      pImage->Render();
+    }
   }
   // Now render the text
   iOffset = m_iOffset;
