@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 06-03-2006 changed: Album Info and Video Info cover images are no longer set to keep aspect ratio in the code (it can now be controlled in the skin).
  - 05-03-2006 fixed: dvdplayer would sometimes lock up when trying to restore a bookmark
  - 05-03-2006 fixed: if libdvdnav threw an exception, dvdplayer would lockup
  - 05-03-2006 fixed: audio stream opening could be delayed in dvdplayer causing stuttering
