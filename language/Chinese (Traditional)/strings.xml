@@ -203,10 +203,10 @@
   <string><id>268</id><value>排序：標題</value></string>
   <string><id>269</id><value>排序：藝人</value></string>
   <string><id>270</id><value>排序：專輯</value></string>
-  <string><id>271</id><value>排名前 100</value></string>
+  <string><id>271</id><value>排行前 100</value></string>
   <string><id>272</id><value>左上角位置</value></string>
   <string><id>273</id><value>右下角位置</value></string>
-  <string><id>274</id><value>位置</value></string>
+  <string><id>274</id><value>字幕位置</value></string>
   <string><id>275</id><value>像素比值調整</value></string>
   <string><id>276</id><value>設定角落位置</value></string>
   <string><id>277</id><value>改變字幕位置</value></string>
@@ -447,11 +447,12 @@
   <string><id>513</id><value>主界面</value></string>
   <string><id>514</id><value>設定界面</value></string>
   <string><id>515</id><value>類別</value></string>
-  <string><id>516</id><value>檔案管理</value></string>
+  <string><id>516</id><value>檔案管理使用透通式檔案</value></string>
   <string><id>517</id><value>最近播放的專輯</value></string>
   <string><id>518</id><value>啟動</value></string> 
   <string><id>519</id><value>啟動方式</value></string>
   <string><id>520</id><value>編輯 XBE 標題</value></string>
+  <string><id>521</id><value>編輯</value></string>
   
   <string><id>588</id><value>取消派對模式</value></string>
   <string><id>589</id><value>派對模式</value></string>
@@ -581,12 +582,12 @@
   <string><id>999</id><value>線上遊戲</value></string>
   <string><id>1000</id><value>螢幕保護預覽</value></string>
   <string><id>1001</id><value>無法連線</value></string>
-  <string><id>1002</id><value>XBMC 無法連線到網路設備！</value></string>
-  <string><id>1003</id><value>這可能是由於網路沒有連接。</value></string>
+  <string><id>1002</id><value>XBMC 無法連線到網路位置！</value></string>
+  <string><id>1003</id><value>這可能是由於網路沒有連線。</value></string>
   <string><id>1004</id><value>可以用其他方式來新增它嗎？</value></string>
   <string><id>1005</id><value>輸入共享名稱</value></string>
   <string><id>1006</id><value>IP 位址</value></string>
-  <string><id>1007</id><value>新增網路設備</value></string>
+  <string><id>1007</id><value>新增網路位置</value></string>
   <string><id>1008</id><value>協議</value></string>
   <string><id>1009</id><value>伺服器位址</value></string>
   <string><id>1010</id><value>伺服器名稱</value></string>
@@ -611,6 +612,7 @@
   <string><id>1029</id><value>輸入新標籤</value></string>
   <string><id>1030</id><value>圖示</value></string>
   <string><id>1031</id><value>圖示資料夾</value></string>
+  <string><id>1032</id><value>新增網路位置…</value></string>  
   
   <string><id>1200</id><value>SMB 共享設定</value></string>
   <string><id>1201</id><value>SMB IP 位址</value></string>
@@ -714,9 +716,9 @@
   <string><id>10500</id><value>我的音樂/播放列表</value></string>
   <string><id>10501</id><value>我的音樂/檔案</value></string>
   <string><id>10502</id><value>我的音樂/音樂庫</value></string>
-  <string><id>10503</id><value>我的音樂/排名前 100</value></string>
-  <string><id>10504</id><value>排名前 100 歌曲</value></string>
-  <string><id>10505</id><value>排名前 100 專輯</value></string>   
+  <string><id>10503</id><value>我的音樂/排行前 100</value></string>
+  <string><id>10504</id><value>排行前 100 歌曲</value></string>
+  <string><id>10505</id><value>排行前 100 專輯</value></string>   
   <string><id>10506</id><value>應用程式</value></string>
   <string><id>10507</id><value>系統設定</value></string>
   <string><id>10508</id><value>氣象預報</value></string>
@@ -726,7 +728,7 @@
   <string><id>10512</id><value>我的音樂 - 專輯</value></string>
   <string><id>10513</id><value>我的音樂 - 藝人</value></string>
   <string><id>10514</id><value>我的音樂 - 類別</value></string>
-  <string><id>10515</id><value>我的音樂 - 排名前 100</value></string>
+  <string><id>10515</id><value>我的音樂 - 排行前 100</value></string>
   <string><id>10516</id><value>我的音樂 - 資料</value></string>
   <string><id>10517</id><value>我的音樂 - 播放列表</value></string>
   <string><id>10518</id><value>我的影片 - 演員</value></string>
@@ -754,6 +756,11 @@
   <string><id>12015</id><value>金手指設定</value></string>
   <string><id>12016</id><value>所有金手指的紀錄遺失，請更新你的目錄！</value></string>
   <string><id>12017</id><value>自動恢復上次的位置</value></string>
+  <string><id>12018</id><value>不</value></string>
+  <string><id>12019</id><value>是</value></string>
+  <string><id>12020</id><value>詢問</value></string>
+  <string><id>12021</id><value>重新開始</value></string>
+  <string><id>12022</id><value>恢復上次的位置</value></string>
   
   <string><id>12310</id><value>0</value></string>
   <string><id>12311</id><value>1</value></string>
@@ -891,7 +898,7 @@
   <string><id>13212</id><value>鬧鈴取消，剩下%i分%i秒。</value></string>
   
   
-  <string><id>13249</id><value>尋找RAR壓縮檔中的字幕</value></string>
+  <string><id>13249</id><value>選擇 RAR 壓縮檔中的字幕</value></string>
   <string><id>13250</id><value>選擇字幕…</value></string>
   <string><id>13251</id><value>移動該項目</value></string>
   <string><id>13252</id><value>將項目移動至此</value></string>
@@ -977,7 +984,7 @@
   <string><id>13349</id><value>搜尋所有檔案資訊</value></string>
   <string><id>13350</id><value>切換至播放列表…</value></string>
   <string><id>13351</id><value>專輯資訊</value></string>
-  <string><id>13352</id><value>掃瞄資料夾到資料庫</value></string>
+  <string><id>13352</id><value>掃瞄資料到資料庫</value></string>
   <string><id>13353</id><value>停止搜尋</value></string>
   <string><id>13354</id><value>補償方式</value></string>
   <string><id>13355</id><value>低品質像素著色器</value></string>
@@ -1027,6 +1034,8 @@
   <string><id>13399</id><value>排序時忽略 "The" 字串</value></string>
   <string><id>13400</id><value>專輯音軌淡入淡出</value></string>
   <string><id>13401</id><value>瀏覽%s</value></string>
+  <string><id>13402</id><value>顯示音軌位置</value></string>
+  <string><id>13403</id><value>清除預設值</value></string>
 
   <string><id>14000</id><value>堆疊開啟</value></string>
   <string><id>14001</id><value>堆疊關閉</value></string>
@@ -1201,35 +1210,35 @@
   <string><id>15252</id><value>選擇電台…</value></string> 
   <string><id>15253</id><value>尋找同類型藝人…</value></string>
   <string><id>15254</id><value>尋找同類型標籤…</value></string>
-  <string><id>15255</id><value>你的設置 (%name%)</value></string>
-  <string><id>15256</id><value>Overall top tags</value></string>
-  <string><id>15257</id><value>Top artists for tag %name%</value></string>
-  <string><id>15258</id><value>Top albums for tag %name%</value></string>
-  <string><id>15259</id><value>Top tracks for tag %name%</value></string>
-  <string><id>15260</id><value>Listen to tag %name% last.fm radio</value></string>
-  <string><id>15261</id><value>Similar artists as %name%</value></string>
-  <string><id>15262</id><value>Top %name% albums</value></string>
-  <string><id>15263</id><value>Top %name% tracks</value></string>
-  <string><id>15264</id><value>Top %name% tags</value></string>
-  <string><id>15265</id><value>Biggest fans of %name%</value></string>
-  <string><id>15266</id><value>Listen to %name% fans last.fm radio</value></string>
-  <string><id>15267</id><value>Listen to %name% similar artists last.fm radio</value></string>  
-  <string><id>15268</id><value>Top artists for user %name%</value></string>
-  <string><id>15269</id><value>Top albums for user %name%</value></string>
-  <string><id>15270</id><value>Top tracks for user %name%</value></string>
-  <string><id>15271</id><value>Friends of user %name%</value></string>
-  <string><id>15272</id><value>Neighbours of user %name%</value></string>
-  <string><id>15273</id><value>Weekly artist chart for %name%</value></string>
-  <string><id>15274</id><value>Weekly album chart for %name%</value></string>
-  <string><id>15275</id><value>Weekly track chart for %name%</value></string>
-  <string><id>15276</id><value>Listen to %name%'s neighbours last.fm radio</value></string>
-  <string><id>15277</id><value>Listen to %name%'s personal last.fm radio</value></string>
-  <string><id>15278</id><value>Listen to %name%'s loved tracks last.fm radio</value></string>
+  <string><id>15255</id><value>%name% 的設置</value></string>
+  <string><id>15256</id><value>所有排行</value></string>
+  <string><id>15257</id><value>%name% 藝人排行</value></string>
+  <string><id>15258</id><value>%name% 專輯排行</value></string>
+  <string><id>15259</id><value>%name% 歌曲排行</value></string>
+  <string><id>15260</id><value>收聽 %name% last.fm 電台</value></string>
+  <string><id>15261</id><value>%name% 同類型藝人</value></string>
+  <string><id>15262</id><value>%name% 專輯排行</value></string>
+  <string><id>15263</id><value>%name% 歌曲排行</value></string>
+  <string><id>15264</id><value>%name% 標籤排行</value></string>
+  <string><id>15265</id><value>%name% 狂熱歌迷</value></string>
+  <string><id>15266</id><value>收聽 %name% 歌迷 last.fm 電台</value></string>
+  <string><id>15267</id><value>收聽 %name% 同類型藝人 last.fm 電台</value></string>  
+  <string><id>15268</id><value>%name% 藝人排行</value></string>
+  <string><id>15269</id><value>%name% 專輯排行</value></string>
+  <string><id>15270</id><value>%name% 歌曲排行</value></string>
+  <string><id>15271</id><value>%name% 好友</value></string>
+  <string><id>15272</id><value>%name% 同好</value></string>
+  <string><id>15273</id><value>%name% 藝人週排行</value></string>
+  <string><id>15274</id><value>%name% 專輯週排行</value></string>
+  <string><id>15275</id><value>%name% 歌曲週排行</value></string>
+  <string><id>15276</id><value>收聽 %name% 的同好 last.fm 電台</value></string>
+  <string><id>15277</id><value>收聽 %name% 的個人 last.fm 電台</value></string>
+  <string><id>15278</id><value>收聽 %name% 的最愛歌曲</value></string>
   <string><id>15279</id><value>正在從 last.fm 獲取目錄…</value></string>
   <string><id>15280</id><value>不能從 last.fm 獲取目錄…</value></string>
   <string><id>15281</id><value>輸入藝人名稱尋找相關資訊</value></string>
   <string><id>15282</id><value>輸入標籤名稱尋找相關資訊</value></string>
-  <string><id>15283</id><value>Tracks recently listened by %name%</value></string>
+  <string><id>15283</id><value>%name% 最近收聽的歌曲</value></string>
   
   <string><id>15300</id><value>路徑錯誤或無效！</value></string>
   <string><id>15301</id><value>無法連線到網路伺服器！</value></string>
