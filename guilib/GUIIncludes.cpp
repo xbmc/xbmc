@@ -61,7 +61,7 @@ void CGUIIncludes::ResolveIncludes(TiXmlElement *node)
     if (it != m_includes.end())
     { // found the tag(s) to include - let's replace it
       const TiXmlElement &element = (*it).second;
-      TiXmlElement *tag = element.FirstChildElement();
+      const TiXmlElement *tag = element.FirstChildElement();
       while (tag)
       {
         // we insert before the <include> element to keep the correct
