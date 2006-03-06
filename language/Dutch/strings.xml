@@ -447,13 +447,14 @@
   <string><id>513</id><value>Beginscherm</value></string>
   <string><id>514</id><value>Handmatige instellingen</value></string>
   <string><id>515</id><value>Genre</value></string>
-  <string><id>516</id><value>Behandel archieven</value></string>
+  <string><id>516</id><value>Maak archief met 1 bestand transparant</value></string>
   <string><id>517</id><value>Laatst afgespeelde albums</value></string>
   <string><id>518</id><value>Starten</value></string>
   <string><id>519</id><value>Starten in..</value></string>
   <string><id>520</id><value>Bewerk XBE naam</value></string>
+  <string><id>521</id><value>Compilaties</value></string>
 
-    <string><id>588</id><value>Party Modus annuleren</value></string>
+  <string><id>588</id><value>Party Modus annuleren</value></string>
   <string><id>589</id><value>Party Modus</value></string>
   <string><id>590</id><value>Willekeurig</value></string>
   <string><id>591</id><value>Uit</value></string>
@@ -754,6 +755,12 @@
   <string><id>12015</id><value>Trainer instellingen</value></string>
   <string><id>12016</id><value>Alle geregistreerde trainers missen,Update je lijst</value></string>
   <string><id>12017</id><value>Automatisch hervatten vanaf laatste positie</value></string>
+  <string><id>12018</id><value>Nee</value></string> 
+  <string><id>12019</id><value>Ja</value></string> 
+  <string><id>12020</id><value>Vragen</value></string> 
+  <string><id>12021</id><value>Starten vanaf begin</value></string> 
+  <string><id>12022</id><value>Hervatten vanaf laatste positie</value></string>
+
 
   <string><id>12310</id><value>0</value></string>
   <string><id>12311</id><value>1</value></string>
@@ -891,7 +898,7 @@
   <string><id>13212</id><value>Gestopt met nog %im%is te gaan</value></string>
 
 
-  <string><id>13249</id><value>Rar's zoeken voor ondertitels</value></string>
+  <string><id>13249</id><value>Zoeken naar ondertitels in rar's</value></string>
   <string><id>13250</id><value>Ondertitel zoeken</value></string>
   <string><id>13251</id><value>Item verplaatsen</value></string>
   <string><id>13252</id><value>Item naar hier verplaatsen</value></string>
@@ -1028,6 +1035,7 @@
   <string><id>13399</id><value>Negeer "The" tijdens sorteren</value></string>
   <string><id>13400</id><value>Albums crossfaden</value></string>
   <string><id>13401</id><value>Zoeken naar %s</value></string>
+  <string><id>13402</id><value>Trackpositie weergeven</value></string>
 
   <string><id>14000</id><value>Groeperen: Uit</value></string>
   <string><id>14001</id><value>Groeperen: Aan</value></string>
