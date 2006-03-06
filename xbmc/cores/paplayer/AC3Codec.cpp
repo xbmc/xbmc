@@ -246,7 +246,7 @@ bool AC3Codec::Init(const CStdString &strFile, unsigned int filecache)
     //decoding error, could still be a valid ac3-stream, try again at next byte
     istart += m_iDataStart + 1;
   } while (m_DecoderError && (m_decodedDataSize == 0) && (m_readBufferPos - istart > 0) );
-  if (m_decodedDataSize == 0)
+  if (m_DecoderError || m_decodedDataSize == 0)
   {
     return false;
   }
@@ -430,7 +430,7 @@ int AC3Codec::Decode(BYTE* pData, int iSize)
       {
         if (m_dll.a52_block(m_pState) != 0)
         {
-          OutputDebugString("Not a valid AC3 frame\n");
+          CLog::Log(LOGDEBUG, "Not a valid AC3 frame");
           m_pInputBuffer    = m_inputBuffer;
           m_iFrameSize      = 0;
           m_DecoderError = true;
