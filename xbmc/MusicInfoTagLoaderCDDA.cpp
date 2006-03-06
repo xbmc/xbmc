@@ -34,8 +34,7 @@ bool CMusicInfoTagLoaderCDDA::Load(const CStdString& strFileName, CMusicInfoTag&
 
     int iTrack = atoi(strFileName.substr(13, strFileName.size() - 13 - 5).c_str());
 
-    // Tracknumber and duration is always available
-    tag.SetTrackNumber(iTrack);
+    // duration is always available
     tag.SetDuration( ( pCdInfo->GetTrackInformation(iTrack).nMins * 60 )
                      + pCdInfo->GetTrackInformation(iTrack).nSecs );
 
@@ -49,6 +48,9 @@ bool CMusicInfoTagLoaderCDDA::Load(const CStdString& strFileName, CMusicInfoTag&
         CStdString strTitle = cddb.getTrackTitle(iTrack);
         if (strTitle.size() > 0)
         {
+          // Tracknumber
+          tag.SetTrackNumber(iTrack);
+
           // Title
           tag.SetTitle(strTitle);
 
@@ -85,6 +87,9 @@ bool CMusicInfoTagLoaderCDDA::Load(const CStdString& strFileName, CMusicInfoTag&
       CStdString strTitle = ti.cdtext.field[CDTEXT_TITLE];
       if (strTitle.size() > 0)
       {
+        // Tracknumber
+        tag.SetTrackNumber(iTrack);
+
         // Title
         tag.SetTitle(strTitle);
 
