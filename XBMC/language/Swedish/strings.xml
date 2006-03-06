@@ -616,6 +616,7 @@
   <string><id>1029</id><value>Skriv in den nya beskrivningen</value></string>
   <string><id>1030</id><value>en bild</value></string>
   <string><id>1031</id><value>en bildmapp</value></string>
+  <string><id>1032</id><value>L&#228;gg till n&#228;tverksplats...</value></string>
 
   <string><id>1200</id><value>SMB Utdelning</value></string>
   <string><id>1201</id><value>SMB IP</value></string>
@@ -1046,6 +1047,7 @@
   <string><id>13399</id><value>Ignorera &#34;The&#34; vid sortering</value></string>
   <string><id>13400</id><value>Anv&#228;nd crossfade p&#229; albumsp&#229;r</value></string>
   <string><id>13401</id><value>Bl&#228;ddra efter %s</value></string>
+  <string><id>13402</id><value>Visa sp&#229;rposition</value></string>
 
   <string><id>14000</id><value>Stapling: Av</value></string>
   <string><id>14001</id><value>Stapling: Enkel</value></string>

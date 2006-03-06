@@ -1,6 +1,6 @@
-<!-- Translation date: 2/22/2006 -->
-<!-- Based on 2006-02-20 build -->
-<!-- Translation by T1000 -->
+<!-- Translation date: 3/5/2006 -->
+<!-- Based on 2006-02-26 build -->
+<!-- Translation by T1000 (MVBM) -->
 <!-- Language: Portuguese Brazil (pt_BR )-->
 <strings>
   <string><id>0</id><value>Programas</value></string>
@@ -451,11 +451,12 @@
   <string><id>513</id><value>Janela Inicial</value></string>
   <string><id>514</id><value>Configurações Manuais</value></string>
   <string><id>515</id><value>Gênero</value></string>
-  <string><id>516</id><value>Manusear Arquivos</value></string>
+  <string><id>516</id><value>Criar arquivos com um arquivo transparente</value></string>
   <string><id>517</id><value>Albuns Recentemente Tocados</value></string>
   <string><id>518</id><value>Iniciar</value></string>
   <string><id>519</id><value>Iniciar em..</value></string>
   <string><id>520</id><value>Editar títulos XBE</value></string>
+  <string><id>521</id><value>Compilações</value></string>
 
   <string><id>588</id><value>Cancelar Modo Festa</value></string>
   <string><id>589</id><value>Modo Festa</value></string>
@@ -758,7 +759,12 @@
   <string><id>12015</id><value>Trainer configurações</value></string>
   <string><id>12016</id><value>Todos os trainers registrados estão perdidos. Atualize sua lista</value></string>
   <string><id>12017</id><value>Retornar automaticamente desde a última posição</value></string>
-  
+  <string><id>12018</id><value>Não</value></string>
+  <string><id>12019</id><value>Sim</value></string>
+  <string><id>12020</id><value>Perguntar</value></string>
+  <string><id>12021</id><value>Iniciar do começo</value></string>
+  <string><id>12022</id><value>Retomar da última posição</value></string>
+ 
   <string><id>12310</id><value>0</value></string>
   <string><id>12311</id><value>1</value></string>
   <string><id>12312</id><value>2</value></string>
@@ -1030,6 +1036,7 @@
   <string><id>13399</id><value>Ignorar "The" quando organizar</value></string>
   <string><id>13400</id><value>Crossfade albumtracks</value></string>
   <string><id>13401</id><value>Procurar por %s</value></string>
+  <string><id>13402</id><value>Mostrar posição da trilha</value></string>
 
   <string><id>14000</id><value>Empilhar</value></string>
   <string><id>14001</id><value>Não Empilhar</value></string>
