@@ -13,7 +13,6 @@
 
 CXbmcConfiguration::CXbmcConfiguration()
 {
-	xbmcCfg = NULL;
 	xbmcCfgLoaded = false;
 }
 
