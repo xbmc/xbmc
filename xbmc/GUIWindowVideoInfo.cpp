@@ -364,7 +364,6 @@ void CGUIWindowVideoInfo::Refresh()
     if (pControl)
     {
       CGUIImage* pImageControl = (CGUIImage*)pControl;
-      pImageControl->SetAspectRatio(CGUIImage::ASPECT_RATIO_KEEP);
       pImageControl->SetFileName(m_thumbNail);
     }
     //OutputDebugString("update\n");
