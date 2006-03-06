@@ -8,7 +8,7 @@
 
 using namespace DIRECTORY::MUSICDATABASEDIRECTORY;
 
-#define MUSIC_DATABASE_VERSION 1.4f
+#define MUSIC_DATABASE_VERSION 1.5f
 #define MUSIC_DATABASE_NAME "MyMusic6.db"
 #define RECENTLY_ADDED_LIMIT  25
 #define RECENTLY_PLAYED_LIMIT 25
@@ -99,7 +99,7 @@ bool CMusicDatabase::CreateTables()
     CLog::Log(LOGINFO, "create song view");
     m_pDS->exec("create view songview as select idSong, song.iNumArtists as iNumArtists, song.iNumGenres as iNumGenres, strTitle, iTrack, iDuration, iYear, dwFileNameCRC, strFileName, strMusicBrainzTrackID, strMusicBrainzArtistID, strMusicBrainzAlbumID, strMusicBrainzAlbumArtistID, strMusicBrainzTRMID, iTimesPlayed, iStartOffset, iEndOffset, lastplayed, song.idAlbum as idAlbum, strAlbum, strPath, song.idArtist as idArtist, strArtist, song.idGenre as idGenre, strGenre, strThumb from song join album on song.idAlbum=album.idAlbum join path on song.idPath=path.idPath join artist on song.idArtist=artist.idArtist join genre on song.idGenre=genre.idGenre join thumb on song.idThumb=thumb.idThumb");
     CLog::Log(LOGINFO, "create album view");
-    m_pDS->exec("create view albumview as select idAlbum, strAlbum, iNumArtists, album.idArtist as idArtist, strArtist, strPath, strThumb from album join path on album.idPath=path.idPath join artist on album.idArtist=artist.idArtist join thumb on album.idThumb=thumb.idThumb");
+    m_pDS->exec("create view albumview as select idAlbum, strAlbum, iNumArtists, album.idArtist as idArtist, strArtist, strPath, strThumb from album left outer join path on album.idPath=path.idPath left outer join artist on album.idArtist=artist.idArtist left outer join thumb on album.idThumb=thumb.idThumb");
   }
   catch (...)
   {
@@ -115,6 +115,10 @@ void CMusicDatabase::AddSong(const CSong& song, bool bCheck)
   CStdString strSQL;
   try
   {
+    // We need at least the title
+    if (song.strTitle.IsEmpty())
+      return;
+
     CStdString strPath, strFileName;
     CUtil::Split(song.strFileName, strPath, strFileName);
     if (CUtil::HasSlashAtEnd(strPath))
@@ -194,11 +198,32 @@ void CMusicDatabase::AddSong(const CSong& song, bool bCheck)
   }
 }
 
-long CMusicDatabase::AddAlbum(const CStdString& strAlbum, long lArtistId, int iNumArtists, const CStdString &strArtist, long lPathId, const CStdString& strPath, long idThumb)
+long CMusicDatabase::AddAlbum(const CStdString& strAlbum1, long lArtistId, int iNumArtists, const CStdString &strArtist1, long lPathId, const CStdString& strPath1, long idThumb)
 {
   CStdString strSQL;
   try
   {
+    CStdString strAlbum=strAlbum1;
+    strAlbum.TrimLeft(" ");
+    strAlbum.TrimRight(" ");
+
+    CStdString strPath=strPath1;
+    CStdString strArtist=strArtist1;
+
+    if (strAlbum.IsEmpty())
+    {
+      // album tag is empty, fake an album
+      // with no path and artist and add this
+      // instead of an empty string
+      strAlbum=g_localizeStrings.Get(13205); // Unknown
+      lPathId=-1;
+      strPath.Empty();
+      lArtistId=-1;
+      iNumArtists=0;
+      strArtist.Empty();
+      idThumb=AddThumb("");
+    }
+
     if (NULL == m_pDB.get()) return -1;
     if (NULL == m_pDS.get()) return -1;
 
@@ -261,6 +286,13 @@ void CMusicDatabase::CheckVariousArtistsAndCoverArt()
     for (it = m_albumCache.begin(); it != m_albumCache.end(); ++it)
     {
       CAlbumCache album = it->second;
+
+      // Skip the fake album "Unknown" it contains
+      // all sonngs with an empty album tag
+      CStdString strAlbum=g_localizeStrings.Get(13205); // "Unknown"
+      if (album.strAlbum==strAlbum)
+        continue;
+
       long lAlbumId = album.idAlbum;
       CStdString strSQL;
       // Albums by various artists will have different songs with different artists
@@ -457,6 +489,9 @@ long CMusicDatabase::AddArtist(const CStdString& strArtist1)
     CStdString strArtist = strArtist1;
     strArtist.TrimLeft(" ");
     strArtist.TrimRight(" ");
+
+    if (strArtist.IsEmpty())
+      strArtist=g_localizeStrings.Get(13205); // Unknown
 
     if (NULL == m_pDB.get()) return -1;
     if (NULL == m_pDS.get()) return -1;
@@ -3404,6 +3439,18 @@ bool CMusicDatabase::UpdateOldVersion(float fVersion)
       CommitTransaction();
 
       dialog->Close();
+    }
+    if (fVersion < 1.5f)
+    { // version 1.4 to 1.5 upgrade - recreate the album view with 
+      // left outer instead of inner joins to get albums without an artist
+      BeginTransaction();
+      
+      CLog::Log(LOGINFO, "Dropping album view");
+      m_pDS->exec("drop view albumview");
+      CLog::Log(LOGINFO, "create album view");
+      m_pDS->exec("create view albumview as select idAlbum, strAlbum, iNumArtists, album.idArtist as idArtist, strArtist, strPath, strThumb from album left outer join path on album.idPath=path.idPath left outer join artist on album.idArtist=artist.idArtist left outer join thumb on album.idThumb=thumb.idThumb");
+
+      CommitTransaction();
     }
   }
   catch (...)
