@@ -226,7 +226,7 @@
     </control>
 
     <control>
-      <description>start logo</description>
+      <description>Cover image</description>
       <type>image</type>
       <id>3</id>
       <posx>220</posx>
@@ -234,6 +234,7 @@
       <width>145</width>
       <height>205</height>
       <texture>-</texture>
+      <aspectratio>keep</aspectratio>
     </control>
 
     <control>
