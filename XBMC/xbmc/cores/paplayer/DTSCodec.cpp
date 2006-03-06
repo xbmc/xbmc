@@ -300,7 +300,7 @@ bool DTSCodec::Init(const CStdString &strFile, unsigned int filecache)
     //decoding error, could still be a valid dts-stream, try again at next byte
     istart += m_iDataStart + 1;
   } while (m_DecoderError && (m_decodedDataSize == 0) && (m_readBufferPos - istart > 0) );
-  if (m_decodedDataSize == 0)
+  if (m_DecoderError || m_decodedDataSize == 0)
   {
     return false;
   }
@@ -499,7 +499,7 @@ int DTSCodec::Decode(BYTE* pData, int iSize)
       {
         if (m_dll.dts_block(m_pState) != 0)
         {
-          OutputDebugString("Not a valid DTS frame\n");
+          CLog::Log(LOGDEBUG, "Not a valid DTS frame");
           m_pInputBuffer = m_inputBuffer;
           m_iFrameSize   = 0;
           m_DecoderError = true;
