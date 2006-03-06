@@ -149,7 +149,7 @@
   <string><id>210</id><value>Vorherige</value></string>
   <string><id>211</id><value>Anwendungen suchen</value></string>
   <string><id>212</id><value>Anwendungen gefunden</value></string>
-  <string><id>213</id><value>Benutzeroberfläche kalibrieren...</value></string>
+  <string><id>213</id><value>Benutzungsoberfläche kalibrieren...</value></string>
   <string><id>214</id><value>Bildschirm kalibrieren...</value></string>
   <string><id>215</id><value>Weichzeichnen</value></string>
   <string><id>216</id><value>Vergrößerung</value></string>
@@ -164,7 +164,7 @@
   <string><id>225</id><value>Übergangszeit</value></string>
   <string><id>226</id><value>PAL60 aktivieren</value></string>
   <string><id>227</id><value>CDDB aktivieren</value></string>
-  <string><id>228</id><value>Playlisten shuffeln nach dem Laden</value></string>
+  <string><id>228</id><value>Playliste shuffeln nach dem laden</value></string>
   <string><id>229</id><value>Festplatte abschalten</value></string>
   <string><id>230</id><value>Video-Filter</value></string>
   <string><id>231</id><value>Keine</value></string>
@@ -230,9 +230,9 @@
   <string><id>291</id><value>Video</value></string>
   <string><id>292</id><value>Audio</value></string>
   <string><id>293</id><value>Untertitel</value></string>
-  <string><id>294</id><value>Lesezeichen erst.</value></string>
-  <string><id>295</id><value>Lesezeichen tausch</value></string>
-  <string><id>296</id><value>Lesezeichen lösch.</value></string>
+  <string><id>294</id><value>Erstellen</value></string>
+  <string><id>295</id><value>Tauschen</value></string>
+  <string><id>296</id><value>Löschen</value></string>
   <string><id>297</id><value>Audio-Verzögerung</value></string>
   <string><id>298</id><value>Suchleiste</value></string>
   <string><id>300</id><value>1. Sprache</value></string>
@@ -241,7 +241,7 @@
   <string><id>303</id><value>Untertitel-Verzögerung</value></string>
   <string><id>304</id><value>Sprache</value></string>
   <string><id>305</id><value>Aktiviert</value></string>
-  <string><id>306</id><value>paralleles Audio/Video</value></string>
+  <string><id>306</id><value>Paralleles Audio/Video</value></string>
   <string><id>307</id><value>- Post-Processing</value></string>
   <string><id>308</id><value>- Vertikaler Deblocking-Filter</value></string>
   <string><id>309</id><value>- Horizontaler Deblocking-Filter</value></string>
@@ -271,7 +271,7 @@
   <string><id>333</id><value>Wollen Sie die Musikbibliothek aufräumen?</value></string>
   <string><id>334</id><value>Musikbibliothek aufräumen...</value></string>
   <string><id>335</id><value>Start</value></string>
-  <string><id>336</id><value>Framerate Konvertierung</value></string>
+  <string><id>336</id><value>Bildrate konvertieren</value></string>
   <string><id>337</id><value>Audio-Ausgabe</value></string>
   <string><id>338</id><value>Analog</value></string>
   <string><id>339</id><value>Digital</value></string>
@@ -291,7 +291,7 @@
   <string><id>353</id><value>Schwarz</value></string>
   <string><id>354</id><value>Matrix-Schleifen</value></string>
   <string><id>355</id><value>Wartezeit</value></string>
-  <string><id>356</id><value>Modus</value></string>
+  <string><id>356</id><value>Bildschirmschoner</value></string>
   <string><id>357</id><value>Automatisch ausschalten nach</value></string>
   <string><id>358</id><value>Alle Alben</value></string>
   <string><id>359</id><value>Zuletzt hinzugefügte Alben</value></string>
@@ -333,8 +333,8 @@
   <string><id>395</id><value>N/A</value></string>
   <string><id>396</id><value>Ortsauswahl</value></string>
   <string><id>397</id><value>Wetterdaten aktualisieren alle</value></string>
-  <string><id>398</id><value>Temperatureinheit</value></string>
-  <string><id>399</id><value>Windstärkeeinheit</value></string>
+  <string><id>398</id><value>Temperatur in</value></string>
+  <string><id>399</id><value>Windstärke in</value></string>
   <string><id>400</id><value>Wetter</value></string>
   <string><id>401</id><value>Temperatur</value></string>
   <string><id>402</id><value>Gefühlt</value></string>
@@ -499,9 +499,9 @@
   <string><id>638</id><value>Replay-Gain-Modus</value></string>
   <string><id>639</id><value>Niveau des Tracks benutzen</value></string>
   <string><id>640</id><value>Niveau des Albums benutzen</value></string>
-  <string><id>641</id><value>Lautstärke-Niveau - Dateien mit Replay-Gain</value></string>
-  <string><id>642</id><value>Lautstärke-Niveau - Dateien ohne Replay-Gain</value></string>
-  <string><id>643</id><value>Abschneidung verhindern bei Dateien mit Replay-Gain</value></string>
+  <string><id>641</id><value>Lautstärke-Niveau - Mit Replay-Gain</value></string>
+  <string><id>642</id><value>Lautstärke-Niveau - Ohne Replay-Gain</value></string>
+  <string><id>643</id><value>Abschneiden verhindern bei Dateien mit Replay-Gain</value></string>
   <string><id>644</id><value>Balken abschneiden</value></string>
   <string><id>645</id><value>Große Dateien müssen zwischengespeichert werden. Fortsetzen?</value></string>
   <string><id>646</id><value>Titel entfernen</value></string>
@@ -537,7 +537,7 @@
   <string><id>728</id><value>FTP-Server</value></string>
   <string><id>729</id><value>Internet-Zeit</value></string>
   <string><id>730</id><value>Web-Server-Port</value></string>
-  <string><id>731</id><value>Zeit-Server-Host</value></string>
+  <string><id>731</id><value>Zeit-Server</value></string>
   <string><id>732</id><value>Sichern &amp; Übernehmen</value></string>
   <string><id>733</id><value>Web-Server-Passwort</value></string>
   <string><id>734</id><value>Kein Passwort</value></string>
@@ -660,7 +660,7 @@
   <string><id>1247</id><value>Passwort erfolgreich gesetzt</value></string>
 
   <string><id>1250</id><value>Autodetect</value></string>
-  <string><id>1251</id><value>Andere XBOXen automatisch finden</value></string>
+  <string><id>1251</id><value>XBOX-Konsolen im Netzwerk suchen</value></string>
   <string><id>1252</id><value>Nick-Name</value></string>
   <string><id>1253</id><value>Automatisch einen FTP-Share in Dateien erstellen</value></string>
   <string><id>1254</id><value>Nachfragen ob Verbindung aufgebaut werden soll</value></string>
@@ -760,6 +760,11 @@
   <string><id>12015</id><value>Trainer-Einstellungen</value></string>
   <string><id>12016</id><value>Alle registrierten Trainer fehlen. Bitte die Liste aktualisieren.</value></string>
   <string><id>12017</id><value>Wiedergabe an der letzten Position fortsetzen</value></string>
+  <string><id>12018</id><value>Nein</value></string>
+  <string><id>12019</id><value>Ja</value></string>
+  <string><id>12020</id><value>Fragen</value></string>
+  <string><id>12021</id><value>Am Anfang starten</value></string>
+  <string><id>12022</id><value>An der letzten Positon fortsetzen</value></string>
 
   <string><id>12310</id><value>0</value></string>
   <string><id>12311</id><value>1</value></string>
@@ -827,11 +832,11 @@
   <string><id>12375</id><value>Master-User-Mode</value></string>
   <string><id>12376</id><value>Als Standard für alle Filme setzen</value></string>
   <string><id>12377</id><value>Dieser Vorgang wird alle vorherigen Werte zurücksetzen.</value></string>
-  <string><id>12378</id><value>Dauer der Wiedergabe eines Bildes</value></string>
+  <string><id>12378</id><value>Anzeigedauer eines Bildes</value></string>
   <string><id>12379</id><value>Pan und Zoom Effekte verwenden</value></string>
-  <string><id>12380</id><value>NTSC-Videos mit PAL Rate abspielen</value></string>
-  <string><id>12381</id><value>PAL-Videos mit NTSC Rate abspielen</value></string>
-  <string><id>12382</id><value>NTSC-Videos als PAL60 abpielen</value></string>
+  <string><id>12380</id><value>NTSC-Videos nach PAL</value></string>
+  <string><id>12381</id><value>PAL-Videos nach NTSC</value></string>
+  <string><id>12382</id><value>NTSC-Videos nach PAL60</value></string>
   <string><id>12383</id><value>12 Stunden Uhr</value></string>
   <string><id>12384</id><value>24 Stunden Uhr</value></string>
   <string><id>12385</id><value>Tag/Monat</value></string>
@@ -936,7 +941,7 @@
   <string><id>13302</id><value>Lüftergeschwindigkeit manuell einstellen</value></string>
   <string><id>13303</id><value>Schriftart</value></string>
   <string><id>13304</id><value>links-/rechtsläufige Zeichenfolgen ermöglichen</value></string>
-  <string><id>13305</id><value>RSS-Feed [Newsflash] aktivieren</value></string>
+  <string><id>13305</id><value>RSS-Newsfeeds aktivieren</value></string>
   <string><id>13306</id><value>Eintrag zum übergeordneten Verzeichnis ausblenden</value></string>
   <string><id>13307</id><value>Formatvorlage für Track-Namen</value></string>
   <string><id>13308</id><value>Drücke 'Ja' um die XBOX neu zu starten</value></string>
@@ -946,7 +951,7 @@
   <string><id>13312</id><value>Ränderreduktion</value></string>
   <string><id>13313</id><value>Neustart</value></string>
   <string><id>13314</id><value>Crossfade</value></string>
-  <string><id>13315</id><value>Thumbnails immer neu erstellen</value></string>
+  <string><id>13315</id><value>Thumbnails neu erstellen</value></string>
   <string><id>13316</id><value>Rekursive Thumbnails</value></string>
   <string><id>13317</id><value>Slideshow anzeigen</value></string>
   <string><id>13318</id><value>Rekursive Slideshow</value></string>
@@ -971,7 +976,7 @@
   <string><id>13337</id><value>- Stereo PCM durchreichen</value></string>
   <string><id>13338</id><value>Front-LED</value></string>
   <string><id>13339</id><value>Front-LED-Farbe</value></string>
-  <string><id>13340</id><value>Keine Änderung</value></string>
+  <string><id>13340</id><value>Nicht ändern</value></string>
   <string><id>13341</id><value>Grün</value></string>
   <string><id>13342</id><value>Orange</value></string>
   <string><id>13343</id><value>Rot</value></string>
@@ -980,7 +985,7 @@
   <string><id>13346</id><value>Film-Informationen</value></string>
   <string><id>13347</id><value>Zur Playlist hinzufügen</value></string>
   <string><id>13348</id><value>In IMDB suchen...</value></string>
-  <string><id>13349</id><value>Für alle Dateien</value></string>
+  <string><id>13349</id><value>IMDB-Suche für alle</value></string>
   <string><id>13350</id><value>Playlist anzeigen</value></string>
   <string><id>13351</id><value>Album-Informationen</value></string>
   <string><id>13352</id><value>Ordner durchsuchen</value></string>
@@ -1029,9 +1034,9 @@
   <string><id>13395</id><value>Video-Einstellungen</value></string>
   <string><id>13396</id><value>Audio- und Untertitel-Einstellungen</value></string>
   <string><id>13397</id><value>Untertitel aktivieren</value></string>
-  <string><id>13398</id><value>Bookmarks</value></string>
+  <string><id>13398</id><value>Lesezeichen</value></string>
   <string><id>13399</id><value>"The" bei der Sortierung ignorieren</value></string>
-  <string><id>13400</id><value>Crossfade bei Songs eines Albums</value></string>
+  <string><id>13400</id><value>Crossfade bei Songs des selben Albums</value></string>
   <string><id>13401</id><value>Durchsuchen nach %s</value></string>
   <string><id>13402</id><value>Track-Position anzeigen</value></string>
   <string><id>13403</id><value>Standard entfernen</value></string>
@@ -1085,8 +1090,8 @@
   <string><id>14048</id><value>%i kbps</value></string>
   <string><id>14049</id><value>%i kb</value></string>
   <string><id>14050</id><value>%i.0 dB</value></string>
-  <string><id>14051</id><value>Zeitformat</value></string>
-  <string><id>14052</id><value>Datumsformat</value></string>
+  <string><id>14051</id><value>Zeit-Format</value></string>
+  <string><id>14052</id><value>Datums-Format</value></string>
   <string><id>14053</id><value>GUI-Filter</value></string>
   <string><id>14054</id><value>Internet-Anfragen zulassen</value></string>
   <string><id>14055</id><value>Durchsuchen im Hintergrund</value></string>
@@ -1094,12 +1099,12 @@
   <string><id>14057</id><value>Nicht möglich während des Durchsuchens</value></string>
   <string><id>14058</id><value>Filmkörnungseffekt</value></string>
   <string><id>14059</id><value>Thumbnails von Netzwerk-Freigaben laden</value></string>
-  <string><id>14060</id><value>Unbekannter Cache-Typ - Internet</value></string>
+  <string><id>14060</id><value>Unbekannter Typ - Internet</value></string>
   <string><id>14061</id><value>Automatisch</value></string>
   <string><id>14062</id><value>Bitte Benutzernamen für</value></string>
   <string><id>14063</id><value>Datum &amp; Uhrzeit</value></string>
-  <string><id>14064</id><value>Datum setzen</value></string>
-  <string><id>14065</id><value>Zeit setzen</value></string>
+  <string><id>14064</id><value>Datum ändern</value></string>
+  <string><id>14065</id><value>Uhrzeit ändern</value></string>
   <string><id>14066</id><value>Bitte die Uhrzeit im 24-Stunden Format (HH:MM) eingeben</value></string>
   <string><id>14067</id><value>Bitte das Datum im Format DD/MM/YYYY eingeben</value></string>
   <string><id>14068</id><value>Bitte eine IP-Adresse eingeben</value></string>
@@ -1187,10 +1192,10 @@
   <string><id>15111</id><value>Skin Theme</value></string>
   <string><id>15112</id><value>Standard Theme</value></string>
 
-  <string><id>15200</id><value>LastFM</value></string>
-  <string><id>15201</id><value>Songs an LastFM übermitteln</value></string>
-  <string><id>15202</id><value>LastFM Benutzername</value></string>
-  <string><id>15203</id><value>LastFM Passwort</value></string>
+  <string><id>15200</id><value>Last.fm</value></string>
+  <string><id>15201</id><value>Songs an Last.fm übermitteln</value></string>
+  <string><id>15202</id><value>Last.fm Benutzername</value></string>
+  <string><id>15203</id><value>Last.fm Passwort</value></string>
   <string><id>15204</id><value>Verbindung fehlgeschlagen</value></string>
   <string><id>15205</id><value>Bitte eine neuere Version von XBMC benutzen</value></string>
   <string><id>15206</id><value>Übertragung fehlgeschlagen: Bitte Benutzerdaten prüfen</value></string>
@@ -1204,7 +1209,7 @@
   <string><id>15214</id><value>Weiche A/V-Synchronisation benutzen</value></string>
   <string><id>15215</id><value>Keine Dateinamen in der Symbolansicht</value></string>
 
-  <string><id>15250</id><value>Last.fm Radio an LastFM übertragen</value></string>
+  <string><id>15250</id><value>Last.fm Radio an Last.fm übertragen</value></string>
   <string><id>15251</id><value>Verbindung mit Last.fm herstellen...</value></string>
   <string><id>15252</id><value>Station wird ausgewählt...</value></string>
   <string><id>15253</id><value>Ähnliche Interpreten suchen...</value></string>
