@@ -173,6 +173,7 @@
       <posy>120</posy>
       <width>180</width>
       <height>180</height>
+      <aspectratio>keep</aspectratio>
       <texture>-</texture>
     </control>
 
