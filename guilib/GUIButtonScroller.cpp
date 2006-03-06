@@ -802,12 +802,12 @@ void CGUIButtonScroller::GetScrollZone(float &fStartAlpha, float &fEndAlpha)
   if (m_bHorizontal)
   {
     fStartAlpha = (float)m_iPosX + iMinSlot * (m_imgFocus.GetWidth() + m_iButtonGap);
-    fEndAlpha = (float)m_iPosX + iMaxSlot * (m_imgFocus.GetWidth() + m_iButtonGap);
+    fEndAlpha = (float)m_iPosX + iMaxSlot * (m_imgFocus.GetWidth() + m_iButtonGap) - m_iButtonGap;
   }
   else
   {
     fStartAlpha = (float)m_iPosY + (float)iMinSlot * (m_imgFocus.GetHeight() + m_iButtonGap);
-    fEndAlpha = (float)m_iPosY + (float)iMaxSlot * (m_imgFocus.GetHeight() + m_iButtonGap);
+    fEndAlpha = (float)m_iPosY + (float)iMaxSlot * (m_imgFocus.GetHeight() + m_iButtonGap) - m_iButtonGap;
   }
 }
 
