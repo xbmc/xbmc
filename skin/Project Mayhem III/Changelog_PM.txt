@@ -1,3 +1,5 @@
+2006-03-06 fixed:	DialogVideoInfo.xml, movieimage was overlapping text in 16x9.
+
 2006-03-02 changed:	List selectedcolor is now a different colour defined in includes.xml
 
 2006-02-28 changed:	Removed all instances of <hyperlink> (2.0 compatible)
