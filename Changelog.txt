@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 07-03-2006 fixed: some dvd menu's with still frames would have double overlays, one stuck one movable
  - 07-03-2006 fixed: ListItem.Directory etc. weren't working correctly.
  - 07-03-2006 changed: avoid closing audiocodec/renderer if stream's codec info didn't change over vts borders
  - 07-03-2006 changed: general stream discontinuity detection in dvdplayer (support for non dvd streams).
