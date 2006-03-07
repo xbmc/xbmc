@@ -22,6 +22,13 @@ CMusicInfoScanner::~CMusicInfoScanner()
 {
 }
 
+void OutputDebugMem(const char *comment)
+{
+  MEMORYSTATUS stat;
+  GlobalMemoryStatus(&stat);
+  CLog::Log(LOGDEBUG, "Mem: %d, %s", stat.dwAvailPhys, comment);
+}
+
 void CMusicInfoScanner::Process()
 {
   try
@@ -46,6 +53,7 @@ void CMusicInfoScanner::Process()
     CUtil::ThumbCacheClear();
     g_directoryCache.ClearMusicThumbCache();
 
+    OutputDebugMem("Starting scan");
     m_musicDatabase.BeginTransaction();
 
     bool bOKtoScan = true;
@@ -84,6 +92,7 @@ void CMusicInfoScanner::Process()
       // result in unexpected behaviour.
       m_bCanInterrupt = false;
 
+      OutputDebugMem("Loaded filecount reader, starting scan");
       bool bCommit = false;
       if (bOKtoScan)
         bCommit = DoScan(m_strStartDir);
@@ -109,12 +118,17 @@ void CMusicInfoScanner::Process()
     else
       m_musicDatabase.RollbackTransaction();
 
+    OutputDebugMem("Finished, emptying database cache");
     m_musicDatabase.EmptyCache();
 
+    OutputDebugMem("Finished, emptying thumb cache");
     CUtil::ThumbCacheClear();
+    OutputDebugMem("Finished, emptying music thumb cache");
     g_directoryCache.ClearMusicThumbCache();
+    OutputDebugMem("Finished, closing database");
 
     m_musicDatabase.Close();
+    OutputDebugMem("Finished");
 
     dwTick = timeGetTime() - dwTick;
     CStdString strTmp, strTmp1;
@@ -164,6 +178,9 @@ bool CMusicInfoScanner::DoScan(const CStdString& strDirectory)
   if (m_pObserver)
     m_pObserver->OnDirectoryChanged(strDirectory);
 
+  CStdString format;
+  format.Format("Scanning dir: %s", strDirectory.c_str());
+  OutputDebugMem(format.c_str());
   // load subfolder
   CFileItemList items;
   CDirectory::GetDirectory(strDirectory, items, g_stSettings.m_szMyMusicExtensions);
@@ -178,6 +195,8 @@ bool CMusicInfoScanner::DoScan(const CStdString& strDirectory)
     if (m_pObserver)
       m_pObserver->OnDirectoryScanned(strDirectory);
   }
+  format.Format("Finished scanning dir: %s", strDirectory.c_str());
+  OutputDebugMem(format.c_str());
 
   for (int i = 0; i < items.Size(); ++i)
   {
