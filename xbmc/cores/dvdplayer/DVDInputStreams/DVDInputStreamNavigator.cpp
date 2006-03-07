@@ -228,8 +228,7 @@ int CDVDInputStreamNavigator::ProcessBlock(BYTE* dest_buffer, int* read)
         // Such applications should wait until their fifos are empty
         // when they receive this type of event.
 
-        // xbmc, we don't use any fifos at this place
-        SkipWait();
+        iNavresult = m_pDVDPlayer->OnDVDNavResult(buf, DVDNAV_WAIT);
       }
       break;
 
@@ -630,22 +629,27 @@ int CDVDInputStreamNavigator::GetActiveSubtitleStream()
   if (!m_dvdnav) return -1;
 
   vm_t* vm = m_dll.dvdnav_get_vm(m_dvdnav);
-  if (vm)
+  if (vm && (vm->state).pgc)
   {
-    if((vm->state).domain != VTS_DOMAIN)
-      return 0;
+    int subpN;
 
-    int subpN = (vm->state).SPST_REG & ~0x40;
+    if((vm->state).domain == VTS_DOMAIN)
+      subpN = (vm->state).SPST_REG & ~0x40;
+    else
+      subpN = 0;
 
-    // If stream is larger than number of streams we have, use report first one
-    if (vm->vtsi && vm->vtsi->vtsi_mat &&
-        subpN >= vm->vtsi->vtsi_mat->nr_of_vts_subp_streams)
-      return 0;
-    // If it has info, it is an ok stream.. otherwise just use first as stream
+    if (subpN < 0 || subpN >= 32 ) 
+      subpN = 0;
+    
     if ((vm->state).pgc->subp_control[subpN] & (1<<31))
       return subpN;
-    else //If it was invalid, just set first as active
-      return 0;
+    else
+    {
+      // lookup first available
+      for( subpN = 0; subpN < 32; subpN++ )
+        if((vm->state).pgc->subp_control[subpN] & (1<<31))
+          return subpN;
+    }
   }
   return -1;
 
@@ -723,24 +727,28 @@ int CDVDInputStreamNavigator::GetActiveAudioStream()
   if (!m_dvdnav) return -1;
 
   vm_t* vm = m_dll.dvdnav_get_vm(m_dvdnav);
-  if( vm )
+  if( vm && (vm->state).pgc )
   {
-    if((vm->state).domain != VTS_DOMAIN)
-      return -1;
+    int audioN;
 
-    int audioN = (vm->state).AST_REG;
+    if((vm->state).domain == VTS_DOMAIN)
+      audioN = (vm->state).AST_REG;      
+    else
+      audioN = 0;
+   
+    if (audioN < 0 || audioN >= 8 ) audioN = 0;
 
-    // If stream is larger than number of streams we have, use report first one
-    if (vm->vtsi && vm->vtsi->vtsi_mat &&
-        audioN >= vm->vtsi->vtsi_mat->nr_of_vts_audio_streams )
-      return 0;
-    // If it has info, it is an ok stream.. otherwise just use first as stream
-    else if((vm->state).pgc->audio_control[audioN] & (1<<15))
+    // check that this stream is actually available
+    if((vm->state).pgc->audio_control[audioN] & (1<<15))
       return audioN;
     else
-      return 0;
-  }
-  
+    {
+      // lookup first available
+      for( audioN = 0; audioN < 8; audioN++ )
+        if((vm->state).pgc->audio_control[audioN] & (1<<15))
+          return audioN;
+    }
+  }  
   return -1;
 }
 

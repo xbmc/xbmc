@@ -44,11 +44,11 @@ CDVDPlayerVideo::~CDVDPlayerVideo()
   DeleteCriticalSection(&m_critCodecSection);
 }
 
-bool CDVDPlayerVideo::OpenStream(CDemuxStreamVideo* pDemuxStreamVideo)
+bool CDVDPlayerVideo::OpenStream( CDVDStreamInfo &hint )
 {  
 
-  if (pDemuxStreamVideo->iFpsRate && pDemuxStreamVideo->iFpsScale)
-    m_fFrameRate = (float)pDemuxStreamVideo->iFpsRate / pDemuxStreamVideo->iFpsScale;
+  if (hint.fpsrate && hint.fpsscale)
+    m_fFrameRate = (float)hint.fpsrate / hint.fpsscale;
   else
     m_fFrameRate = 25;
 
@@ -60,8 +60,8 @@ bool CDVDPlayerVideo::OpenStream(CDemuxStreamVideo* pDemuxStreamVideo)
     return false;
   }
 
-  CLog::Log(LOGNOTICE, "Creating video codec with codec id: %i", pDemuxStreamVideo->codec);
-  m_pVideoCodec = CDVDFactoryCodec::CreateVideoCodec( pDemuxStreamVideo );
+  CLog::Log(LOGNOTICE, "Creating video codec with codec id: %i", hint.codec);
+  m_pVideoCodec = CDVDFactoryCodec::CreateVideoCodec( hint );
 
   if( !m_pVideoCodec )
   {
