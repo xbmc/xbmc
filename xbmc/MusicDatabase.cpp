@@ -8,7 +8,7 @@
 
 using namespace DIRECTORY::MUSICDATABASEDIRECTORY;
 
-#define MUSIC_DATABASE_VERSION 1.5f
+#define MUSIC_DATABASE_VERSION 1.6f
 #define MUSIC_DATABASE_NAME "MyMusic6.db"
 #define RECENTLY_ADDED_LIMIT  25
 #define RECENTLY_PLAYED_LIMIT 25
@@ -3452,6 +3452,14 @@ bool CMusicDatabase::UpdateOldVersion(float fVersion)
 
       CommitTransaction();
     }
+    if (fVersion < 1.6f)
+    {
+      // upgrade from 1.5 to 1.6 - add partymode table
+      BeginTransaction();
+      CLog::Log(LOGINFO, "Adding partymode table");
+      m_pDS->exec("CREATE TABLE partymode (idRow integer primary key, idSong integer, bRelaxedRestrictions bool)\n");
+      CommitTransaction();
+    }
   }
   catch (...)
   {
@@ -3513,7 +3521,7 @@ int CMusicDatabase::GetSongsCount()
   return GetSongsCount((CStdString)"");
 }
 
-int CMusicDatabase::GetSongsCount(CStdString& strWhere)
+int CMusicDatabase::GetSongsCount(const CStdString& strWhere)
 {
   try
   {
@@ -3929,105 +3937,53 @@ bool CMusicDatabase::GetAlbumById(long idAlbum, CStdString& strAlbum)
 
 bool CMusicDatabase::GetRandomSong(CFileItem* item)
 {
-  CFileItemList items;
-  if (GetRandomSongs(items, 1, (CStdString)""))
-  {
-    item = items[0];
+  long lSongId;
+  if (GetRandomSong(item, lSongId, (CStdString)""))
     return true;
-  }
   else
     return false;
 }
 
-bool CMusicDatabase::GetRandomSong(CFileItem* item, CStdString& strWhere)
+bool CMusicDatabase::GetRandomSong(CFileItem* item, const CStdString& strWhere)
 {
-  CFileItemList items;
-  if (GetRandomSongs(items, 1, strWhere))
-  {
-    item = items[0];
+  long lSongId;
+  if (GetRandomSong(item, lSongId, strWhere))
     return true;
-  }
   else
     return false;
 }
 
-bool CMusicDatabase::GetRandomSongs(CFileItemList& items, int iNumSongs, CStdString& strWhere)
-{
-  vector<long> vecHistory;
-  return GetRandomSongs(items, iNumSongs, strWhere, vecHistory, false);
-}
-
-bool CMusicDatabase::GetRandomSongsWithHistory(CFileItemList& items, int iNumSongs, CStdString& strWhere, vector<long>& vecHistory)
-{
-  return GetRandomSongs(items, iNumSongs, strWhere, vecHistory, true);
-}
-
-bool CMusicDatabase::GetRandomSongs(CFileItemList& items, int iNumSongs, CStdString& strWhere, vector<long>& vecHistory, bool bUseHistory)
+bool CMusicDatabase::GetRandomSong(CFileItem* item, long& lSongId, const CStdString& strWhere)
 {
   try
   {
-    if (NULL == m_pDB.get()) return false;
-    if (NULL == m_pDS.get()) return false;
+    lSongId = -1;
 
     // seed random function
     srand(timeGetTime());
 
-    // get the required number of random songs
-    // unfortunately, we cant seem to use the easy query of:
-    // select * from songview (where) order by random() limit iNumSongs
-    // so we'll loop instead
-    for (int i=0; i<iNumSongs; i++)
+    int iCount = GetSongsCount(strWhere);
+    if (iCount <= 0)
+      return false;
+    int iRandom = rand() % iCount;
+
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS.get()) return false;
+
+    CStdString strSQL=FormatSQL("select * from songview %s order by idSong limit 1 offset %i", strWhere.c_str(), iRandom);
+    CLog::Log(LOGDEBUG,"CMusicDatabase::GetRandomSong(), query = %s", strSQL.c_str());
+    // run query
+    if (!m_pDS->query(strSQL.c_str()))
+      return false;
+    int iRowsFound = m_pDS->num_rows();
+    if (iRowsFound != 1)
     {
-      // build exclusion list
-      CStdString strWhereTemp = strWhere;
-      if (bUseHistory)
-      {
-        CStdString strNotIn;
-        if (vecHistory.size() > 0)
-        {
-          strNotIn = "idSong not in (";
-          for (int i = 0; i < (int)vecHistory.size(); i++)
-          {
-            CStdString strTemp;
-            strTemp.Format("%ld,", vecHistory[i]);
-            strNotIn += strTemp;
-          }
-          strNotIn.TrimRight(",");
-          strNotIn += ")";
-        }
-
-        // add the exclusion list to the where clause
-        if (!strNotIn.IsEmpty())
-        {
-          if (strWhereTemp.IsEmpty())
-            strWhereTemp = "where ";
-          else
-            strWhereTemp += " and ";
-          strWhereTemp += strNotIn;
-        }
-      }
-
-      int iCount = GetSongsCount(strWhereTemp);
-      if (iCount <= 0)
-        return false;
-      int iRandom = rand() % iCount;
-
-      CStdString strSQL=FormatSQL("select * from songview %s order by idSong limit 1 offset %i", strWhereTemp.c_str(), iRandom);
-      CLog::Log(LOGDEBUG,"GetRandomSong(), query = %s", strSQL.c_str());
-      // run query
-      if (!m_pDS->query(strSQL.c_str())) return false;
-      int iRowsFound = m_pDS->num_rows();
-      if (iRowsFound != 1)
-      {
-        m_pDS->close();
-        return false;
-      }
-      CFileItem *item = new CFileItem;
-      GetFileItemFromDataset(item, "");
-      items.Add(item);
-      vecHistory.push_back(m_pDS->fv("songview.idSong").get_asLong());
       m_pDS->close();
+      return false;
     }
+    GetFileItemFromDataset(item, "");
+    lSongId = m_pDS->fv("songview.idSong").get_asLong();
+    m_pDS->close();
     return true;
   }
   catch(...)
@@ -4035,6 +3991,73 @@ bool CMusicDatabase::GetRandomSongs(CFileItemList& items, int iNumSongs, CStdStr
     CLog::Log(LOGERROR,"CMusicDatabase::GetRandomSong(%s) failed", strWhere.c_str());
   }
   return false;
+}
+
+bool CMusicDatabase::GetRandomSongs(CFileItemList& items, int iNumSongs, const CStdString& strWhere)
+{
+  items.Clear();
+  for (int i = 0; i < iNumSongs; i++)
+  {
+    CFileItem* pItem = new CFileItem;
+    long lSongId;
+    if (GetRandomSong(pItem, lSongId, strWhere))
+      items.Add(pItem);
+    else
+    {
+      items.Clear();
+      return false;
+    }
+  }
+  return true;
+}
+
+bool CMusicDatabase::PartyModeGetRandomSongs(CFileItemList& items, int iNumSongs, int iHistory, const CStdString& strWhere)
+{
+  bool bError = false;
+  items.Clear();
+
+  // party mode history for duplicate prevention
+  CStdString strHistory;
+  strHistory.Format("songview.idsong not in (select partymode.idsong from partymode order by partymode.idrow desc limit %i)", iHistory);
+
+  // allow "relaxed restrictions" later
+  bool bRelaxRestrictions = false;
+
+  // build where clause
+  CStdString strWhereTemp;
+  if (!bRelaxRestrictions)
+    strWhereTemp = strWhere;
+  if (!strWhereTemp.IsEmpty())
+    strWhereTemp += " and ";
+  else
+    strWhereTemp = "where ";
+  strWhereTemp += strHistory;
+
+  for (int i = 0; i < iNumSongs; i++)
+  {
+    CFileItem* pItem = new CFileItem;
+    long lSongId;
+    if (GetRandomSong(pItem, lSongId, strWhere))
+    {
+      items.Add(pItem);
+      if (!UpdatePartyMode(lSongId, bRelaxRestrictions))
+      {
+        bError = true;
+        break;
+      }
+    }
+    else
+    {
+      bError = true;
+      break;
+    }
+  }
+  if (bError)
+  {
+    items.Clear();
+    return false;
+  }
+  return true;
 }
 
 bool CMusicDatabase::GetVariousArtistsAlbums(const CStdString& strBaseDir, CFileItemList& items)
@@ -4133,4 +4156,82 @@ bool CMusicDatabase::GetVariousArtistsAlbumsSongs(const CStdString& strBaseDir, 
     CLog::Log(LOGERROR, "CMusicDatabase::GetVariousArtistsAlbumsSongs() failed");
   }
   return false;
+}
+
+
+bool CMusicDatabase::InitialisePartyMode()
+{
+  try
+  {
+    m_pDS->exec("DELETE FROM partymode\n");
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "CMusicDatabase unable to clear partymode table:%i", GetLastError());
+    return false;
+  }
+  return true;
+}
+
+bool CMusicDatabase::UpdatePartyMode(long lSongId, bool bRelaxRestrictions)
+{
+  try
+  {
+    CStdString strInsert;
+    strInsert.Format("INSERT INTO partymode (idSong,bRelaxedRestrictions) VALUES (%i,%i)", lSongId, (int)bRelaxRestrictions);
+    m_pDS->exec(strInsert.c_str());
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "CMusicDatabase unable to insert into partymode table:%i", GetLastError());
+    return false;
+  }
+  return true;
+}
+
+int CMusicDatabase::PartyModeGetUniqueRandomSongsLeft(const CStdString& strWhere)
+{
+  int iReturn = 0;
+  int iTotalSongs = GetSongsCount(strWhere);
+  int iUniqueSongs = PartyModeGetRandomSongCount(true);
+  if (iTotalSongs > 0 && iUniqueSongs > 0 && (iTotalSongs > iUniqueSongs))
+    iReturn = (iTotalSongs - iUniqueSongs);
+  return iReturn;
+}
+
+int CMusicDatabase::PartyModeGetTotalRandomSongCount(bool bUnique)
+{
+  return PartyModeGetRandomSongCount(bUnique, true);
+}
+
+int CMusicDatabase::PartyModeGetRandomSongCount(bool bUnique, bool bRelaxed /* = false */)
+{
+  try
+  {
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS.get()) return false;
+
+    CStdString strQuery = "select count(partymode.idSong) as NumSongs from partymode";
+    if (bRelaxed)
+      strQuery += " where partymode.bRelaxedRestrictions = 'false'";
+    if (bUnique)
+      strQuery += " group by partymode.songid";
+    CStdString strSQL = FormatSQL(strQuery);
+    if (!m_pDS->query(strQuery.c_str())) return -1;
+    int iRowsFound = m_pDS->num_rows();
+    if (iRowsFound != 1)
+    {
+      m_pDS->close();
+      return -1;
+    }
+    int iNumSongs = m_pDS->fv("NumSongs").get_asLong();
+    // cleanup
+    m_pDS->close();
+    return iNumSongs;
+  }
+  catch(...)
+  {
+    CLog::Log(LOGERROR,"CMusicDatabase::PartyModeGetRandomSongCount(bUnique = %s, bRelaxed = %s) failed", bUnique ? "true" : "false", bRelaxed ? "true" : "false");
+  }
+  return -1;
 }

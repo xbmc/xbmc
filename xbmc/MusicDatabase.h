@@ -131,17 +131,21 @@ public:
   bool GetAlbumsNav(const CStdString& strBaseDir, CFileItemList& items, long idGenre, long idArtist);
   bool GetSongsNav(const CStdString& strBaseDir, CFileItemList& items, long idGenre, long idArtist,long idAlbum);
   bool GetRandomSong(CFileItem* item);
-  bool GetRandomSong(CFileItem* item, CStdString& strWhere);
-  bool GetRandomSongs(CFileItemList& items, int iNumSongs, CStdString& strWhere);
-  bool GetRandomSongsWithHistory(CFileItemList& items, int iNumSongs, CStdString& strWhere, vector<long>& vecHistory);
+  bool GetRandomSong(CFileItem* item, const CStdString& strWhere);
+  bool GetRandomSong(CFileItem* item, long& lSongId, const CStdString& strWhere);
+  bool GetRandomSongs(CFileItemList& items, int iNumSongs, const CStdString& strWhere);
+  bool PartyModeGetRandomSongs(CFileItemList& items, int iNumSongs, int iHistory, const CStdString& strWhere);
+  int PartyModeGetUniqueRandomSongsLeft(const CStdString& strWhere);
+  int PartyModeGetTotalRandomSongCount(bool bUnique);
+  int PartyModeGetRandomSongCount(bool bUnique, bool bRelaxed = false);
   int GetSongsCount();
-  int GetSongsCount(CStdString& strWhere);
+  int GetSongsCount(const CStdString& strWhere);
   bool GetPathFromAlbumId(long idAlbum, CStdString& strPath);
   bool GetPathFromSongId(long idSong, CStdString& strPath);
   bool SaveAlbumThumb(const CStdString& strAlbum, const CStdString& strPath, const CStdString& strThumb);
   bool RefreshMusicDbThumbs(CFileItem* pItem, CFileItemList &items);
   bool GetAlbumsByArtistId(long idArtist, VECALBUMS& albums);
-
+  bool InitialisePartyMode();
 
   bool GetGenreById(long idGenre, CStdString& strGenre);
   bool GetArtistById(long idArtist, CStdString& strArtist);
@@ -185,7 +189,7 @@ private:
   bool CleanupGenres();
   bool CleanupAlbumsFromPaths(const CStdString &strPathIds);
   virtual bool UpdateOldVersion(float fVersion);
-  bool GetRandomSongs(CFileItemList& items, int iNumSongs, CStdString& strWhere, vector<long>& vecHistory, bool bUseHistory);
+  bool UpdatePartyMode(long lSongId, bool bRelaxRestrictions);
 
   // Fields should be ordered as they 
   // appear in the songview
