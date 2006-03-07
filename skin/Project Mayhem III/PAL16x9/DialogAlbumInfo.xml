@@ -200,7 +200,7 @@
       <label>182</label>
       <onleft>4</onleft>
       <onright>4</onright>
-      <onup>6</onup>
+      <onup>10</onup>
       <ondown>6</ondown>
       <font>font13</font>
     </control>
@@ -216,6 +216,20 @@
       <onleft>4</onleft>
       <onright>4</onright>
       <onup>5</onup>
+      <ondown>10</ondown>
+    </control>
+
+    <control>
+      <description>Get Thumb</description>
+      <type>button</type>
+      <id>10</id>
+      <posx>50</posx>
+      <posy>194</posy>
+      <label>13405</label>
+      <font>font13</font>
+      <onleft>4</onleft>
+      <onright>4</onright>
+      <onup>6</onup>
       <ondown>5</ondown>
     </control>
 
