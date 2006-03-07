@@ -1018,7 +1018,7 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
             m_vecGroups[iOldControlGroup].m_lastControl = iOldControlId;
 
           //  if the control group changes...
-          if (pFocusedControl->GetGroup() > -1 && pFocusedControl->GetGroup() != iOldControlGroup && iOldControlId > -1)
+          if (pFocusedControl->GetGroup() > -1 && pFocusedControl->GetGroup() != iOldControlGroup)
           {
             //  ...get the last focused control of the new group...
             int iLastFocusedControl = m_vecGroups[pFocusedControl->GetGroup()].m_lastControl;
@@ -1409,10 +1409,9 @@ bool CGUIWindow::ControlGroupHasFocus(int groupID, int controlID)
 
 void CGUIWindow::SaveControlStates()
 {
-  if (!m_saveLastControl) return;
-
   ResetControlStates();
-  m_lastControlID = GetFocusedControl();
+  if (m_saveLastControl)
+    m_lastControlID = GetFocusedControl();
   for (ivecControls it = m_vecControls.begin(); it != m_vecControls.end(); ++it)
   {
     CGUIControl *pControl = *it;
@@ -1435,27 +1434,27 @@ void CGUIWindow::SaveControlStates()
 
 void CGUIWindow::RestoreControlStates()
 {
-  if (m_saveLastControl)
+  for (vector<CControlState>::iterator it = m_controlStates.begin(); it != m_controlStates.end(); ++it)
   {
-    for (vector<CControlState>::iterator it = m_controlStates.begin(); it != m_controlStates.end(); ++it)
-    {
-      if ((*it).m_group)
-      { // special case for control groups
-        for (unsigned int i = 0; i < m_vecGroups.size(); i++)
+    if ((*it).m_group)
+    { // special case for control groups
+      for (unsigned int i = 0; i < m_vecGroups.size(); i++)
+      {
+        if (m_vecGroups[i].m_id == (*it).m_id)
         {
-          if (m_vecGroups[i].m_id == (*it).m_id)
-          {
-            m_vecGroups[i].m_lastControl = (*it).m_data;
-            break;
-          }
+          m_vecGroups[i].m_lastControl = (*it).m_data;
+          break;
         }
       }
-      else
-      {
-        CGUIMessage message(GUI_MSG_ITEM_SELECT, GetID(), (*it).m_id, (*it).m_data);
-        OnMessage(message);
-      }
     }
+    else
+    {
+      CGUIMessage message(GUI_MSG_ITEM_SELECT, GetID(), (*it).m_id, (*it).m_data);
+      OnMessage(message);
+    }
+  }
+  if (m_saveLastControl)
+  {
     // set focus to our saved control
     int focusControl = m_lastControlID ? m_lastControlID : m_dwDefaultFocusControlID;
     SET_CONTROL_FOCUS(focusControl, 0);
