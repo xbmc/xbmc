@@ -2,14 +2,12 @@
 #include "../../stdafx.h"
 #include "DVDPlayerAudio.h"
 #include "DVDCodecs\Audio\DVDAudioCodec.h"
+#include "DVDCodecs\DVDCodecs.h"
 #include "DVDCodecs\DVDFactoryCodec.h"
-#include "DVDCodecs\Audio\dvdaudiocodecpassthrough.h"
 #include "DVDPerformanceCounter.h"
 
-#include "..\..\util.h"
 
-#define EMULATE_INTTYPES
-#include "ffmpeg\avcodec.h"
+#include "..\..\util.h"
 
 #define ABS(a) ((a) >= 0 ? (a) : (-(a)))
 
@@ -20,7 +18,6 @@ CDVDPlayerAudio::CDVDPlayerAudio(CDVDClock* pClock) : CThread()
   m_pClock = pClock;
   m_pAudioCodec = NULL;
   m_bInitializedOutputDevice = false;
-  m_iSourceChannels = 0;
   m_audioClock = 0;
 
   m_currentPTSItem.pts = DVD_NOPTS_VALUE;
@@ -73,7 +70,7 @@ __int64 CDVDPlayerAudio::GetCurrentPts()
   return m_currentPTSItem.pts + (m_pClock->GetAbsoluteClock() - m_currentPTSItem.timestamp);  
 }  
 
-bool CDVDPlayerAudio::OpenStream( CDemuxStreamAudio *pDemuxStream )                                 
+bool CDVDPlayerAudio::OpenStream( CDVDStreamInfo &hints )                                 
 {
   // should alway's be NULL!!!!, it will probably crash anyway when deleting m_pAudioCodec here.
   if (m_pAudioCodec)
@@ -82,18 +79,8 @@ bool CDVDPlayerAudio::OpenStream( CDemuxStreamAudio *pDemuxStream )
     return false;
   }
 
-  CodecID codecID = pDemuxStream->codec;
-
-  CLog::Log(LOGNOTICE, "Finding audio codec for: %i", codecID);
-  m_pAudioCodec = CDVDFactoryCodec::CreateAudioCodec( pDemuxStream );
-  if( !m_pAudioCodec )
-  {
-    CLog::Log(LOGERROR, "Unsupported audio codec");
-    return false;
-  }
-
-  m_codec = pDemuxStream->codec;
-  m_iSourceChannels = pDemuxStream->iChannels;
+  /* try to open decoder without probing, we could actually allow us to continue here */
+  if( !OpenDecoder(hints) ) return false;
 
   m_packetQueue.Init();
 
@@ -131,6 +118,49 @@ void CDVDPlayerAudio::CloseStream(bool bWaitForBuffers)
   // flush any remaining pts values
   FlushPTSQueue();
 }
+
+bool CDVDPlayerAudio::OpenDecoder(CDVDStreamInfo &hints, BYTE* buffer /* = NULL*/, unsigned int size /* = 0*/)
+{
+  EnterCriticalSection(&m_critCodecSection);
+
+  /* close current audio codec */
+  if( m_pAudioCodec )
+  {
+    CLog::Log(LOGNOTICE, "Deleting audio codec");
+    m_pAudioCodec->Dispose();
+    SAFE_DELETE(m_pAudioCodec);
+  }
+
+  /* if we have an audio device open, close it. (we could check for a change in output format too) */
+  if( m_bInitializedOutputDevice )
+  { 
+    m_dvdAudio.Destroy();
+    m_bInitializedOutputDevice = false;
+  }
+
+  /* store our stream hints */
+  m_streaminfo = hints;
+
+  CLog::Log(LOGNOTICE, "Finding audio codec for: %i", m_streaminfo.codec);
+  m_pAudioCodec = CDVDFactoryCodec::CreateAudioCodec( m_streaminfo );
+  if( !m_pAudioCodec )
+  {
+    CLog::Log(LOGERROR, "Unsupported audio codec");
+
+    m_streaminfo.Clear();
+    LeaveCriticalSection(&m_critCodecSection);
+    return false;
+  }
+
+  /* update codec information from what codec gave ut */  
+  m_streaminfo.channels = m_pAudioCodec->GetChannels();
+  m_streaminfo.samplerate = m_pAudioCodec->GetSampleRate();
+  
+  LeaveCriticalSection(&m_critCodecSection);
+
+  return true;
+}
+
 // decode one audio frame and returns its uncompressed size
 int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket)
 {
@@ -156,15 +186,22 @@ int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket)
   for (;;)
   {
     /* NOTE: the audio packet can contain several frames */
-    while (audio_pkt_size > 0)
+    while( audio_pkt_size > 0 )
     {
+      if( !m_pAudioCodec ) 
+      {
+        audio_pkt_size=0;
+        return DECODE_FLAG_ERROR;
+      }
+
       len = m_pAudioCodec->Decode(audio_pkt_data, audio_pkt_size);
       if (len < 0)
       {
-        /* if error, we skip the frame */
+        /* if error, we skip the packet */
+        CLog::Log(LOGERROR, "CDVDPlayerAudio::Process - Decode Error. Skipping audio packet");
         audio_pkt_size=0;
         m_pAudioCodec->Reset();
-        break;
+        return DECODE_FLAG_ERROR;
       }
 
       // fix for fucked up decoders
@@ -233,11 +270,25 @@ int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket)
       audio_pkt_data = pPacket->pData;
       audio_pkt_size = pPacket->iSize;
     }
+    else if (DVDMSG_IS(msg, DVDMSG_GENERAL_STREAMCHANGE))
+    {
+      CDVDStreamInfo* hints = (CDVDStreamInfo*)msg_data;
+
+      /* recieved a stream change, reopen codec. */
+      /* we should really not do this untill first packet arrives, to have a probe buffer */      
+
+      /* try to open decoder, if none is found keep consuming packets */
+      OpenDecoder( *hints );
+
+      CDVDMessage::FreeMessageData(msg, msg_data);
+      continue;
+    }
     else
     {
       // other data is not used here, free if
       // msg itself will still be available
       CDVDMessage::FreeMessageData(msg, msg_data);
+      continue;
     }
     
     // if update the audio clock with the pts
@@ -302,11 +353,7 @@ void CDVDPlayerAudio::Process()
     result = DecodeFrame(audioframe, m_speed != DVD_PLAYSPEED_NORMAL); // blocks if no audio is available, but leaves critical section before doing so
     LeaveCriticalSection(&m_critCodecSection);
 
-    if( result & DECODE_FLAG_ERROR ) 
-    {      
-      CLog::Log(LOGERROR, "CDVDPlayerAudio::Process - Decode Error. Skipping audio frame");
-      continue;
-    }
+    if( result & DECODE_FLAG_ERROR )  continue;
 
     if( result & DECODE_FLAG_ABORT )
     {
@@ -454,12 +501,12 @@ bool CDVDPlayerAudio::InitializeOutputDevice()
     return false;
   }
 
-  CLog::Log(LOGNOTICE, "Creating audio device with codec id: %i, channels: %i, sample rate: %i", m_codec, iChannels, iSampleRate);
+  CLog::Log(LOGNOTICE, "Creating audio device with codec id: %i, channels: %i, sample rate: %i", m_streaminfo.codec, iChannels, iSampleRate);
   if (m_dvdAudio.Create(iChannels, iSampleRate, iBitsPerSample, bPasstrough)) // always 16 bit with ffmpeg ?
   {
     return true;
   }
 
-  CLog::Log(LOGERROR, "Failed Creating audio device with codec id: %i, channels: %i, sample rate: %i", m_codec, iChannels, iSampleRate);
+  CLog::Log(LOGERROR, "Failed Creating audio device with codec id: %i, channels: %i, sample rate: %i", m_streaminfo.codec, iChannels, iSampleRate);
   return false;
 }

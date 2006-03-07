@@ -19,6 +19,7 @@ typedef void*        DVDMsgData;
 // general
 #define DVDMSG_GENERAL_RESYNC       0x00000001 // will be set in a packet to signal that we have an discontinuity
 #define DVDMSG_GENERAL_FLUSH        0x00000002
+#define DVDMSG_GENERAL_STREAMCHANGE 0x00000004
 
 // inputstreams
 

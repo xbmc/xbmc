@@ -5,10 +5,13 @@
 #include "DVDClock.h"
 #include "DVDMessageQueue.h"
 #include "DVDDemuxers\DVDDemuxUtils.h"
+#include "DVDStreamInfo.h"
 
 class CDVDPlayer;
 class CDVDAudioCodec;
 class IAudioCallback;
+class CDVDAudioCodec;
+
 enum CodecID;
 
 #define DECODE_FLAG_DROP    1
@@ -33,7 +36,7 @@ public:
   void RegisterAudioCallback(IAudioCallback* pCallback) { m_dvdAudio.RegisterAudioCallback(pCallback); }
   void UnRegisterAudioCallback()                        { m_dvdAudio.UnRegisterAudioCallback(); }
 
-  bool OpenStream(CDemuxStreamAudio *pDemuxStream);
+  bool OpenStream(CDVDStreamInfo &hints);
   void CloseStream(bool bWaitForBuffers);
   
   void SetSpeed(int speed);
@@ -48,8 +51,8 @@ public:
   void SetVolume(long nVolume)                          { m_dvdAudio.SetVolume(nVolume); }
   int GetVolume()                                       { return m_dvdAudio.GetVolume(); }
 
-  CodecID m_codec;    // codec id of the current active stream
-  int m_iSourceChannels; // number of audio channels for the current active stream
+  // holds stream information for current playing stream
+  CDVDStreamInfo m_streaminfo;
   
   CDVDMessageQueue m_packetQueue;
   
@@ -64,7 +67,10 @@ protected:
   bool InitializeOutputDevice();
   int DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket);
 
-  bool m_bInitializedOutputDevice;
+  // tries to open a decoder for the given data. 
+  bool OpenDecoder(CDVDStreamInfo &hint, BYTE* buffer = NULL, unsigned int size = 0);
+
+    bool m_bInitializedOutputDevice;
   __int64 m_audioClock;
   
   // for audio decoding

@@ -2,6 +2,7 @@
 #include "../../stdafx.h"
 #include "DVDMessage.h"
 #include "DVDDemuxers/DVDDemuxUtils.h"
+#include "DVDStreamInfo.h"
 
 void CDVDMessage::FreeMessageData(DVDMsg msg, DVDMsgData msg_data)
 {
@@ -13,5 +14,10 @@ void CDVDMessage::FreeMessageData(DVDMsg msg, DVDMsgData msg_data)
   {
     CDVDDemux::DemuxPacket* pPacket = (CDVDDemux::DemuxPacket*)msg_data;
     CDVDDemuxUtils::FreeDemuxPacket(pPacket);
+  }
+
+  if(DVDMSG_IS(msg, DVDMSG_GENERAL_STREAMCHANGE) && msg_data)
+  {
+    delete (CDVDStreamInfo*)msg_data;
   }
 }
