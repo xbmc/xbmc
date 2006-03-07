@@ -278,7 +278,7 @@
       <label>206</label>
       <onleft>50</onleft>
       <onright>4</onright>
-      <onup>6</onup>
+      <onup>10</onup>
       <ondown>8</ondown>
     </control>
 
@@ -292,6 +292,19 @@
       <onleft>4</onleft>
       <onright>4</onright>
       <onup>5</onup>
+      <ondown>9</ondown>
+    </control>
+
+    <control>
+      <description>Resume</description>
+      <type>button</type>
+      <id>9</id>
+      <posx>50</posx>
+      <posy>196</posy>
+      <label>13404</label>
+      <onleft>4</onleft>
+      <onright>4</onright>
+      <onup>8</onup>
       <ondown>6</ondown>
     </control>
 
@@ -300,11 +313,24 @@
       <type>button</type>
       <id>6</id>
       <posx>50</posx>
-      <posy>196</posy>
+      <posy>234</posy>
       <label>184</label>
       <onleft>4</onleft>
       <onright>4</onright>
       <onup>8</onup>
+      <ondown>10</ondown>
+    </control>
+
+    <control>
+      <description>Get Thumb</description>
+      <type>button</type>
+      <id>10</id>
+      <posx>50</posx>
+      <posy>272</posy>
+      <label>13405</label>
+      <onleft>4</onleft>
+      <onright>4</onright>
+      <onup>6</onup>
       <ondown>5</ondown>
     </control>
 
