@@ -1384,7 +1384,23 @@ CIMDBMovie CVideoDatabase::GetDetailsFromDataset(auto_ptr<Dataset> &pDS)
   details.m_strRuntime = pDS->fv("movieinfo.strRuntime").get_asString();
   details.m_strCast = pDS->fv("movieinfo.strCast").get_asString();
   details.m_iYear = pDS->fv("movieinfo.iYear").get_asLong();
-  details.m_strGenre = pDS->fv("movieinfo.strGenre").get_asString();
+  long lMovieId = pDS->fv("movieinfo.idMovie").get_asLong();
+  // Genre's are stored multiple times - we need to do a separate lookup for these
+  if (m_pDS2.get())
+  {
+    CStdString sql = FormatSQL("SELECT strGenre from genre join genrelinkmovie on genrelinkmovie.idGenre = genre.idGenre where genrelinkmovie.idMovie=%i", lMovieId);
+    if (m_pDS2->query(sql.c_str()) && m_pDS2->num_rows() > 0)
+    {
+      while (!m_pDS2->eof())
+      {
+        details.m_strGenre += m_pDS2->fv("strGenre").get_asString() + "/";
+        m_pDS2->next();
+      }
+      if (details.m_strGenre.size())
+        details.m_strGenre.Delete(details.m_strGenre.size() - 1);
+    }
+    m_pDS2->close();
+  }
   details.m_strPictureURL = pDS->fv("movieinfo.strPictureURL").get_asString();
   details.m_strTitle = pDS->fv("movieinfo.strTitle").get_asString();
   details.m_strPath = pDS->fv("path.strPath").get_asString();
@@ -1393,7 +1409,6 @@ CIMDBMovie CVideoDatabase::GetDetailsFromDataset(auto_ptr<Dataset> &pDS)
   details.m_bWatched = pDS->fv("movieinfo.bWatched").get_asBool();
   details.m_strFileNameAndPath = details.m_strPath + pDS->fv("files.strFileName").get_asString();
 
-  long lMovieId = pDS->fv("movieinfo.idMovie").get_asLong();
   details.m_strSearchString.Format("%i", lMovieId);
   return details;
 }
