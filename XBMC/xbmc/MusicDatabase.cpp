@@ -49,6 +49,8 @@ bool CMusicDatabase::CreateTables()
     m_pDS->exec("CREATE TABLE albuminfosong ( idAlbumInfoSong integer primary key, idAlbumInfo integer, iTrack integer, strTitle text, iDuration integer)\n");
     CLog::Log(LOGINFO, "create thumb table");
     m_pDS->exec("CREATE TABLE thumb (idThumb integer primary key, strThumb text)\n");
+    CLog::Log(LOGINFO, "create partymode table");
+    m_pDS->exec("CREATE TABLE partymode (idRow integer primary key, idSong integer, bRelaxedRestrictions bool)\n");
 
     CLog::Log(LOGINFO, "create exartistsong table");
     m_pDS->exec("CREATE TABLE exartistsong ( idSong integer, iPosition integer, idArtist integer)\n");
