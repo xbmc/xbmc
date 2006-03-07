@@ -16,6 +16,7 @@ public:
   void OnSongChange();
   void AddUserSongs(CPlayList& playlistTemp, bool bPlay = false);
   bool IsEnabled() { return m_bEnabled; };
+  int GetUniqueRandomSongsLeft();
 
 private:
   void Process();
@@ -24,10 +25,11 @@ private:
   bool ReapSongs();
   bool MovePlaying();
   void SendUpdateMessage();
+  void OnError(int iError, CStdString& strLogMessage);
 
   bool m_bEnabled;
-  int iLastUserSong;
-  vector<long> m_vecHistory;
+  int m_iLastUserSong;
+  CStdString m_strCurrentFilter;
 };
 
 extern CPartyModeManager g_partyModeManager;
