@@ -173,7 +173,7 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CStdS
       btn_EditPath = pMenu->AddButton(1027); // Edit Source
     int btn_AddShare = pMenu->AddButton(1026); // Add Source
 #endif
-    int btn_Delete = pMenu->AddButton(117); // Delete
+    int btn_Delete = pMenu->AddButton(522); // Remove Source
 
     int btn_Default = pMenu->AddButton(13335); // Set as Default
     int btn_ClearDefault = 0;
