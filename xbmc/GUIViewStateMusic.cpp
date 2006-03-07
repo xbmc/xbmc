@@ -339,7 +339,7 @@ CGUIViewStateWindowMusicNav::CGUIViewStateWindowMusicNav(const CFileItemList& it
     AddViewAsControl(VIEW_METHOD_LARGE_ICONS, 417);
     SetViewAsControl(g_stSettings.m_MyMusicNavRootViewMethod);
 
-    SetSortOrder(SORT_ORDER_ASC);
+    SetSortOrder(SORT_ORDER_NONE);
   }
   else
   {
