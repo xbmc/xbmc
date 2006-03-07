@@ -415,14 +415,6 @@ void CDVDPlayerAudio::Process()
 
     }
 
-    // if we where asked to resync on this packet, do so here
-    if( result & DECODE_FLAG_RESYNC )
-    {      
-      CLog::Log(LOGDEBUG, "CDVDPlayerAudio::Process - Resync recieved.");
-      while (!m_bStop && (unsigned int)m_dvdAudio.GetDelay() > audioframe.duration ) Sleep(5);
-      m_pClock->Discontinuity(CLOCK_DISC_NORMAL, audioframe.pts);
-    }
-
 #ifdef USEOLDSYNC
     //Clock should be calculated after packets have been added as m_audioClock points to the 
     //time after they have been played
@@ -432,14 +424,19 @@ void CDVDPlayerAudio::Process()
 
     //Check for discontinuity in the stream, use a moving average to
     //eliminate highfreq fluctuations of large packet sizes
-    if( ABS(iAvDiff) > 5000 ) // sync clock if average diff is bigger than 5 msec 
+    if( ABS(iAvDiff) > 5000 || result & DECODE_FLAG_RESYNC ) // sync clock if average diff is bigger than 5 msec 
     {
       //Wait untill only the new audio frame wich triggered the discontinuity is left
       //then set disc state
       while (!m_bStop && (unsigned int)m_dvdAudio.GetBytesInBuffer() > audioframe.size ) Sleep(5);
 
       m_pClock->Discontinuity(CLOCK_DISC_NORMAL, m_audioClock - m_dvdAudio.GetDelay());
-      CLog::DebugLog("CDVDPlayer:: Detected Audio Discontinuity, syncing clock. diff was: %I64d, %I64d, av: %I64d", iClockDiff, iCurrDiff, iAvDiff);
+      
+      if( result & DECODE_FLAG_RESYNC )
+        CLog::Log(LOGDEBUG, "CDVDPlayerAudio:: DECODE_FLAG_RESYNC, syncing clock. diff was: %I64d, %I64d, av: %I64d", iClockDiff, iCurrDiff, iAvDiff);
+      else
+        CLog::Log(LOGDEBUG, "CDVDPlayerAudio:: Detected Audio Discontinuity, syncing clock. diff was: %I64d, %I64d, av: %I64d", iClockDiff, iCurrDiff, iAvDiff);
+
       iClockDiff = 0;
     }
     else
