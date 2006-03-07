@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 07-03-2006 fixed: dvdplayer could lockup if demuxer reported a too high framerate
  - 07-03-2006 fixed: dvdplayer could stall if it tried to sync audio clock while playing a format with small audioframes (2ch pcm, 2c ac3 + OTAS)
  - 07-03-2006 added: sync message to avoid stalling dvdplayer thread when trying to sync audio/video on discontinuities
  - 07-03-2006 changed: disabled sort order button for bookmarks in music nav
