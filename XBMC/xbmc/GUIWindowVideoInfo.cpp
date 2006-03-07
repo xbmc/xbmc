@@ -30,6 +30,8 @@
 #define CONTROL_BTN_TRACKS   5
 #define CONTROL_BTN_REFRESH   6
 #define CONTROL_BTN_PLAY      8
+#define CONTROL_BTN_RESUME    9
+#define CONTROL_BTN_GET_THUMB 10
 
 #define CONTROL_LIST            50
 #define CONTROL_DISC             7
@@ -478,4 +480,12 @@ void CGUIWindowVideoInfo::Play()
   CFileItem movie(m_pMovie->m_strPath, false);
   CGUIWindowVideoFiles* pWindow = (CGUIWindowVideoFiles*)m_gWindowManager.GetWindow(WINDOW_VIDEOS);
   if (pWindow) pWindow->PlayMovie(&movie);
+}
+
+void CGUIWindowVideoInfo::OnInitWindow()
+{
+  CGUIDialog::OnInitWindow();
+  // disable buttons with id 9 and 10 as we don't have support for it yet!
+  CONTROL_DISABLE(9);
+  CONTROL_DISABLE(10);
 }
