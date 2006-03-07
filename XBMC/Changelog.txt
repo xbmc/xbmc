@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 07-03-2006 changed: Music Party Mode now uses a database table for its history, means another upgrade to version 1.6
+ - 07-03-2006 changed: when Music Party Mode is enabled, all the extraneous playlist buttons in the Now Playing window are disabled
  - 07-03-2006 changed: "Delete" option in the root share context menu to "Remove Source" for consistency
  - 07-03-2006 fixed: playlist caching
  - 07-03-2006 changed: files added to the musicdatabase with no artist or album set will be added to an artist/album "Unknown"
