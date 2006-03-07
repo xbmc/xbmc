@@ -426,14 +426,18 @@ void CDVDPlayer::ProcessAudioData(CDemuxStream* pStream, CDVDDemux::DemuxPacket*
   /* we should check for discontinuity here */
   if( pPacket->dts != DVD_NOPTS_VALUE )
   {
-    if( pPacket->dts + DVD_MSEC_TO_TIME(1) < m_CurrentAudio.dts )
+    if( m_CurrentAudio.dts == DVD_NOPTS_VALUE )
+    {
+      /* NOP */
+    }
+    else if( pPacket->dts + DVD_MSEC_TO_TIME(1) < m_CurrentAudio.dts )
     { /* timestamps is wrapping back */
-      m_dvd.iFlagSentStart = 0;
+      SyncronizePlayers(pPacket->dts, pPacket->dts);
     }
     else if( pPacket->dts > m_CurrentAudio.dts + DVD_MSEC_TO_TIME(200) )
     { /* timestamps larger than 200ms after last timestamp */
       /* should be using packet duration if avaliable */
-      m_dvd.iFlagSentStart = 0;
+      SyncronizePlayers(pPacket->dts, pPacket->dts);
     }
     m_CurrentAudio.dts = pPacket->dts;
   }
@@ -489,19 +493,18 @@ void CDVDPlayer::ProcessVideoData(CDemuxStream* pStream, CDVDDemux::DemuxPacket*
     /* monotonly increasing timestamps (<=), wich is probably what should be what we should check */
 
     /* to avoid unneeded resyncs if demuxer isn't exact on the dts we add 1ms to the value we check*/
-
-    if( pPacket->dts + DVD_MSEC_TO_TIME(1) < m_CurrentVideo.dts )
+    if( m_CurrentVideo.dts == DVD_NOPTS_VALUE )
+    {
+      /* NOP */
+    }
+    else if( pPacket->dts + DVD_MSEC_TO_TIME(1) < m_CurrentVideo.dts )
     { /* timestamps are wrapping back */
-      if( m_CurrentAudio.id < 0 )
-        m_dvd.iFlagSentStart = 0;
-      else
-        m_dvdPlayerAudio.WaitForBuffers();
+      SyncronizePlayers(pPacket->dts, pPacket->dts);
     }
     else if( pPacket->dts > m_CurrentVideo.dts + DVD_MSEC_TO_TIME(200) )
     { /* timestamps higher than last packet */
       /* should be using packet duration if avaliable*/
-      if( m_CurrentAudio.id < 0 )
-        m_dvd.iFlagSentStart = 0;
+      SyncronizePlayers(pPacket->dts, pPacket->dts);
     }
     m_CurrentVideo.dts = pPacket->dts;
   }
@@ -544,6 +547,42 @@ void CDVDPlayer::ProcessSubData(CDemuxStream* pStream, CDVDDemux::DemuxPacket* p
 
   // free it, content is already copied into a special structure
   CDVDDemuxUtils::FreeDemuxPacket(pPacket);
+}
+
+void CDVDPlayer::SyncronizePlayers(__int64 dts, __int64 pts)
+{
+  //TODO make sure dts/pts is a little bit away from last syncevent
+  //static __int64 olddts = DVD_NOPTS_VALUE;
+  
+  //if( olddts - DVD_MSEC_TO_TIME(500) < dts && dts < olddts + DVD_MSEC_TO_TIME(500) ) return;
+  //olddts = dts;
+
+  int players = 0;
+  if( m_CurrentAudio.id >= 0 ) players++;
+  if( m_CurrentVideo.id >= 0 ) players++;
+
+  if( players )
+  {
+    CDVDMsgSyncronize* message = new CDVDMsgSyncronize(players, DVD_MSEC_TO_TIME(1000));
+    if( m_CurrentAudio.id >= 0 )
+      m_dvdPlayerAudio.m_packetQueue.Put(DVDMSG_GENERAL_SYNCRONIZE, message, 0);
+    
+    if( m_CurrentVideo.id >= 0 )
+      m_dvdPlayerVideo.m_packetQueue.Put(DVDMSG_GENERAL_SYNCRONIZE, message, 0);
+
+    SDVDMsgSetClock* clock = new SDVDMsgSetClock;
+    clock->pts = pts;
+    clock->dts = dts;
+
+    if( m_CurrentVideo.id >= 0 &&  m_CurrentAudio.id < 0 )
+      m_dvdPlayerVideo.m_packetQueue.Put(DVDMSG_GENERAL_SETCLOCK, clock, 0);
+    else if( m_CurrentAudio.id >= 0 )
+      m_dvdPlayerAudio.m_packetQueue.Put(DVDMSG_GENERAL_SETCLOCK, clock, 0);
+    else
+      delete clock;
+  }
+
+  
 }
 
 void CDVDPlayer::OnExit()
@@ -1262,6 +1301,7 @@ bool CDVDPlayer::CloseAudioStream(bool bWaitForBuffers)
     m_dvdPlayerAudio.CloseStream(bWaitForBuffers);
 
     m_CurrentAudio.id = -1;
+    m_CurrentAudio.dts = DVD_NOPTS_VALUE;
     m_CurrentAudio.hint.Clear();
   }
   UnlockStreams();
@@ -1278,6 +1318,7 @@ bool CDVDPlayer::CloseVideoStream(bool bWaitForBuffers) // bWaitForBuffers curre
   m_dvdPlayerVideo.CloseStream(bWaitForBuffers);
 
   m_CurrentVideo.id = -1;
+  m_CurrentVideo.dts = DVD_NOPTS_VALUE;
   m_CurrentVideo.hint.Clear();
 
   return true;
@@ -1290,6 +1331,7 @@ bool CDVDPlayer::CloseSubtitleStream(bool bKeepOverlays)
   if( !bKeepOverlays ) m_overlayContainer.Clear();
 
   m_CurrentSubtitle.id = -1;
+  m_CurrentSubtitle.dts = DVD_NOPTS_VALUE;
   m_CurrentSubtitle.hint.Clear();
 
   return true;

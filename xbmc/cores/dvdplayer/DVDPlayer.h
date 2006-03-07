@@ -162,6 +162,8 @@ private:
   bool IsInMenu() const;
   void UpdateOverlayInfo(int iAction);
 
+  void SyncronizePlayers(__int64 dts, __int64 pts);
+
   bool m_bRenderSubtitle;
   bool m_bDontSkipNextFrame;
   bool m_bReadAgain; // tricky, if set to true, the main loop will start over again
