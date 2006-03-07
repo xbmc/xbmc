@@ -136,7 +136,7 @@ void CDVDPlayerVideo::Process()
   {
     while (m_speed == DVD_PLAYSPEED_PAUSE && !m_packetQueue.RecievedAbortRequest()) Sleep(5);
 
-    int iQueueTimeOut = (bDetectedStill ? iFrameTime : iFrameTime * 4) / 1000;
+    int iQueueTimeOut = (bDetectedStill ? iFrameTime / 4 : iFrameTime * 4) / 1000;
     
     DVDMsg msg;
     DVDMsgData msg_data;
@@ -145,6 +145,14 @@ void CDVDPlayerVideo::Process()
     if (MSGQ_IS_ERROR(ret) || ret == MSGQ_ABORT) break;
     else if (ret == MSGQ_TIMEOUT)
     {
+      //Okey, start rendering at stream fps now instead, we are likely in a stillframe
+      if( !bDetectedStill )
+      {
+        CLog::Log(LOGINFO, "CDVDPlayerVideo - Stillframe detected, switching to forced %d fps", (DVD_TIME_BASE / iFrameTime));
+        bDetectedStill = true;
+        pts = m_pClock->GetClock();
+      }
+
       //Waiting timed out, output last picture
       if( picture.iFlags & DVP_FLAG_ALLOCATED )
       {
@@ -152,15 +160,10 @@ void CDVDPlayerVideo::Process()
         //no need to output this as if it was interlaced
         picture.iFlags &= ~DVP_FLAG_INTERLACED;
         picture.iFlags |= DVP_FLAG_NOSKIP;
-        OutputPicture(&picture, 0);
+        OutputPicture(&picture, pts);
+        pts+= iFrameTime;
       }
 
-      //Okey, start rendering at stream fps now instead, we are likely in a stillframe
-      if( !bDetectedStill )
-      {
-        CLog::Log(LOGINFO, "CDVDPlayerVideo - Stillframe detected, switching to forced %d fps", (DVD_TIME_BASE / iFrameTime));
-        bDetectedStill = true;
-      }
       continue;
     }
 
