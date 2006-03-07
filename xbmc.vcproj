@@ -2478,6 +2478,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\cores\dvdplayer\DVDPlayerVideo.h">
 				</File>
 				<File
+					RelativePath=".\xbmc\cores\dvdplayer\DVDStreamInfo.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\dvdplayer\DVDStreamInfo.h">
+				</File>
+				<File
 					RelativePath=".\xbmc\cores\dvdplayer\IDVDPlayer.h">
 				</File>
 				<Filter

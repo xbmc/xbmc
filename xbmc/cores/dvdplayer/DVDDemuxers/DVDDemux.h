@@ -13,6 +13,7 @@ enum StreamType
   STREAM_SUBTITLE // subtitle stream
 };
 
+
 /*
  * CDemuxStream
  * Base class for all demuxer streams
