@@ -52,6 +52,13 @@ bool CDVDPlayerVideo::OpenStream( CDVDStreamInfo &hint )
   else
     m_fFrameRate = 25;
 
+  if( m_fFrameRate > 100 )
+  {
+    CLog::Log(LOGERROR, "CDVDPlayerVideo::OpenStream - Invalid framerate %d, using forced 25fps", (int)m_fFrameRate);
+    m_fFrameRate = 25;
+  }
+
+
 
   // should alway's be NULL!!!!, it will probably crash anyway when deleting m_pVideoCodec here.
   if (m_pVideoCodec)
