@@ -283,6 +283,27 @@ int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket)
       CDVDMessage::FreeMessageData(msg, msg_data);
       continue;
     }
+    else if (DVDMSG_IS(msg, DVDMSG_GENERAL_SYNCRONIZE) && msg_data)
+    {
+      CLog::Log(LOGDEBUG, "CDVDPlayerAudio - DVDMSG_GENERAL_SYNCRONIZE");
+
+      ((CDVDMsgSyncronize*)msg_data)->Wait( &m_bStop );
+      CDVDMessage::FreeMessageData(msg, msg_data);
+      continue;
+    } 
+    else if (DVDMSG_IS(msg, DVDMSG_GENERAL_SETCLOCK) && msg_data)
+    {
+      SDVDMsgSetClock* clock =  (SDVDMsgSetClock*)msg_data;
+      result |= DECODE_FLAG_RESYNC;
+
+      if( clock->pts != DVD_NOPTS_VALUE )
+        m_audioClock = clock->pts;
+      else
+        m_audioClock = clock->dts;
+
+      CDVDMessage::FreeMessageData(msg, msg_data);
+      continue;
+    } 
     else
     {
       // other data is not used here, free if

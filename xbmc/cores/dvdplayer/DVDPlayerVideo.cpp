@@ -167,6 +167,32 @@ void CDVDPlayerVideo::Process()
       continue;
     }
 
+    if (DVDMSG_IS(msg, DVDMSG_GENERAL_SYNCRONIZE) && msg_data)
+    {
+      CLog::Log(LOGDEBUG, "CDVDPlayerVideo - DVDMSG_GENERAL_SYNCRONIZE");
+
+      ((CDVDMsgSyncronize*)msg_data)->Wait( &m_bStop );
+      CDVDMessage::FreeMessageData(msg, msg_data);
+      /* we may be very much off correct pts here, but next picture may be a still*/
+      /* make sure it isn't dropped */
+      m_iNrOfPicturesNotToSkip = 5;
+      continue;
+    }
+    else if (DVDMSG_IS(msg, DVDMSG_GENERAL_SETCLOCK) && msg_data)
+    {
+      SDVDMsgSetClock* clock =  (SDVDMsgSetClock*)msg_data;      
+
+      CLog::Log(LOGDEBUG, "CDVDPlayerVideo::Process - Resync recieved."); 
+
+      if( clock->pts != DVD_NOPTS_VALUE )
+        m_pClock->Discontinuity(CLOCK_DISC_NORMAL, clock->pts);
+      else
+        m_pClock->Discontinuity(CLOCK_DISC_NORMAL, clock->pts);
+
+      CDVDMessage::FreeMessageData(msg, msg_data);
+      continue;
+    } 
+
     if (bDetectedStill)
     {
       CLog::Log(LOGINFO, "CDVDPlayerVideo - Stillframe left, switching to normal playback");      
