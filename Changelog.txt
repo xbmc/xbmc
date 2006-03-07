@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 07-03-2006 fixed: playlist caching
  - 07-03-2006 changed: files added to the musicdatabase with no artist or album set will be added to an artist/album "Unknown"
                        musicdatabase will be updated to version 1.5
                        This also fixes: some artists in music nav are not selectable
