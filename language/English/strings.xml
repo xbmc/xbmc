@@ -1037,6 +1037,8 @@
   <string><id>13401</id><value>Browse for %s</value></string>
   <string><id>13402</id><value>Show track position</value></string>
   <string><id>13403</id><value>Clear Default</value></string>
+  <string><id>13404</id><value>Resume</value></string>
+  <string><id>13405</id><value>Get Thumb</value></string>
 
   <string><id>14000</id><value>Stack</value></string>
   <string><id>14001</id><value>Unstack</value></string>
