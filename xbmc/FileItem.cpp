@@ -527,11 +527,68 @@ void CFileItem::FillInDefaultIcon()
         break;
       }
     }
+    // cache playlists
+    if ( IsPlayList() )
+    {
+      // playlist
+      SetIconImage("defaultPlaylist.png");
+
+      CUtil::GetExtension(m_strPath, strExtension);
+      if (!strExtension.Equals(".strm"))
+      {
+        //  Save playlists to playlist directroy
+        CStdString strFileName, strFolder;
+        CUtil::Split(m_strPath, strFolder, strFileName);
+        if (CUtil::HasSlashAtEnd(strFolder))
+          strFolder.Delete(strFolder.size() - 1);
+
+        // skip playlists found in the playlist subfolders
+        CStdString strPlaylistFolder = g_stSettings.m_szPlaylistsDirectory;
+        CUtil::AddSlashAtEnd(strPlaylistFolder);
+        if (!strFolder.Left(strPlaylistFolder.size()).Equals(strPlaylistFolder))
+        {
+          CPlayListFactory factory;
+          auto_ptr<CPlayList> pPlayList (factory.Create(m_strPath));
+          if (pPlayList.get() != NULL)
+          {
+            if (pPlayList->Load(m_strPath) && pPlayList->size() > 0)
+            {
+              // use first item in playlist to determine intent -- audio or video
+              const CPlayList::CPlayListItem& item = (*pPlayList.get())[0];
+              if (!item.IsInternetStream())
+              {
+                CStdString strPlaylist = "";
+                CStdString strType = "";
+                if (item.IsAudio())
+                {
+                  CUtil::AddFileToFolder(CUtil::MusicPlaylistsLocation(), strFileName, strPlaylist);
+                  strType = "music";
+                }
+                else if (item.IsVideo())
+                {
+                  CUtil::AddFileToFolder(CUtil::VideoPlaylistsLocation(), strFileName, strPlaylist);
+                  strType = "video";
+                }
+                if (!strPlaylist.IsEmpty())
+                {
+                  CLog::Log(LOGDEBUG,"Caching %s playlist: %s", strType.c_str(), m_strPath.c_str()); 
+                  if (CUtil::IsHD(strPlaylist))
+                    CUtil::GetFatXQualifiedPath(strPlaylist);
+                  if (!CFile::Exists(strPlaylist))
+                    pPlayList->Save(strPlaylist);
+                }
+              }
+            }
+          }
+        }
+      }
+    }
   }
   if (GetIconImage() == "")
   {
     if (!m_bIsFolder)
     {
+      /*
       if ( IsPlayList() )
       {
         // playlist
@@ -561,6 +618,7 @@ void CFileItem::FillInDefaultIcon()
                 const CPlayList::CPlayListItem& item = (*pPlayList.get())[0];
                 if (!item.IsInternetStream())
                 {
+                  CLog::Log(LOGDEBUG,"Caching playlist: %s", m_strPath.c_str()); 
                   CStdString strPlaylist = "";
                   if (item.IsAudio())
                     CUtil::AddFileToFolder(CUtil::MusicPlaylistsLocation(), strFileName, strPlaylist);
@@ -579,7 +637,8 @@ void CFileItem::FillInDefaultIcon()
           }
         }
       }
-      else if ( IsPicture() )
+      */
+      if ( IsPicture() )
       {
         // picture
         SetIconImage("defaultPicture.png");
