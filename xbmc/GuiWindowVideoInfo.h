@@ -18,6 +18,7 @@ public:
   bool NeedRefresh() const;
 
 protected:
+  virtual void OnInitWindow();
   void Refresh();
   void Update();
   void SetLabel(int iControl, const CStdString& strLabel);
