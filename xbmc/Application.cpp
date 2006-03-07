@@ -1892,7 +1892,7 @@ void CApplication::Render()
   m_gWindowManager.UpdateModelessVisibility();
 
   // check if we're playing a file
-  if (m_gWindowManager.IsOverlayAllowed())
+  if (!m_bScreenSave && m_gWindowManager.IsOverlayAllowed())
   {
     // if we're playing a movie
     if ( IsPlayingVideo() && m_gWindowManager.GetActiveWindow() != WINDOW_FULLSCREEN_VIDEO)
@@ -1943,7 +1943,8 @@ void CApplication::Render()
   }
 
   // Now render any dialogs
-  m_gWindowManager.RenderDialogs();
+  if (!m_bScreenSave)
+    m_gWindowManager.RenderDialogs();
 
   // Render the mouse pointer
   if (g_Mouse.IsActive())
@@ -3343,7 +3344,9 @@ bool CApplication::ResetScreenSaverWindow()
     }
     else if (iWin == WINDOW_VISUALISATION && g_guiSettings.GetBool("ScreenSaver.UseMusicVisInstead"))
     {
-      return false;    // don't need to do anything - just stay in vis mode
+      // then show previous window
+      m_gWindowManager.PreviousWindow();
+      return true;
     }
     // Fade to dim or black screensaver is active --> fade in
     float fFadeLevel = 1.0f;
