@@ -1027,7 +1027,18 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
               CGUIControl* pControl = *i;
               if (pControl->GetID() == iLastFocusedControl)
               {
-                //  ...and focus the saved control.
+                //  ...and try to focus the saved control.
+
+                if (!pControl->CanFocus())
+                {
+                  // We can not focus the last control of this group,
+                  // use the control we originally wanted to focus instead.
+                  int iControlGroup=pFocusedControl->GetGroup();
+                  if (iControlGroup > -1)
+                    m_vecGroups[iControlGroup].m_lastControl = pFocusedControl->GetID();
+                  pFocusedControl->OnMessage(message);
+                  return true;
+                }
 
                 //  Redirect our message to the new control and fake it a little
                 //  by saying the new control is sender and target
