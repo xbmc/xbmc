@@ -20,4 +20,43 @@ void CDVDMessage::FreeMessageData(DVDMsg msg, DVDMsgData msg_data)
   {
     delete (CDVDStreamInfo*)msg_data;
   }
+
+  if(DVDMSG_IS(msg, DVDMSG_GENERAL_SETCLOCK) && msg_data)
+  {
+    delete (SDVDMsgSetClock*)msg_data;
+  }
+
+  if(DVDMSG_IS(msg, DVDMSG_GENERAL_SYNCRONIZE) && msg_data)
+  {
+    ((CDVDMsgSyncronize*)msg_data)->Release();
+  }
+}
+
+CDVDMsgSyncronize::CDVDMsgSyncronize(long objects, DWORD timeout)
+{
+  m_objects = 0;
+  m_references = objects;
+  m_timeout = GetTickCount() + timeout;
+}
+
+CDVDMsgSyncronize::~CDVDMsgSyncronize()
+{
+
+}
+
+long CDVDMsgSyncronize::Release()
+{
+  long count = InterlockedDecrement(&m_references);
+  if( count == 0 ) delete this;
+  return count;
+}
+
+void CDVDMsgSyncronize::Wait(bool *abort)
+{
+  m_objects++;
+
+  if( abort )
+    while( !(*abort) && m_timeout > GetTickCount() && m_objects < m_references ) Sleep(1);
+  else
+    while( m_timeout > GetTickCount() && m_objects < m_references ) Sleep(1);
 }

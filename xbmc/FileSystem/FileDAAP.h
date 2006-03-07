@@ -74,6 +74,7 @@ protected:
 
   bool m_bOpened;
   bool m_bStreaming;
+  bool m_bDelayedStart;
 
   int m_iFileID;
   char m_sFileFormat[16];
