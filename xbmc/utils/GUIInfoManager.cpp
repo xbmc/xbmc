@@ -442,6 +442,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("listitem.album")) ret = LISTITEM_ALBUM;
     else if (strTest.Equals("listitem.year")) ret = LISTITEM_YEAR;
     else if (strTest.Equals("listitem.genre")) ret = LISTITEM_GENRE;
+    else if (strTest.Equals("listitem.director")) ret = LISTITEM_DIRECTOR;
   }
   else if (strCategory.Equals("visualisation"))
   {
