@@ -18,6 +18,7 @@
 
 #define CONTROL_BTN_TRACKS 5
 #define CONTROL_BTN_REFRESH 6
+#define CONTROL_BTN_GET_THUMB 10
 
 CGUIWindowMusicInfo::CGUIWindowMusicInfo(void)
     : CGUIDialog(WINDOW_MUSIC_INFO, "DialogAlbumInfo.xml")
@@ -195,4 +196,11 @@ void CGUIWindowMusicInfo::Refresh()
 bool CGUIWindowMusicInfo::NeedRefresh() const
 {
   return m_bRefresh;
+}
+
+void CGUIWindowMusicInfo::OnInitWindow()
+{
+  CGUIDialog::OnInitWindow();
+  // disable button with id 10 as we don't have support for it yet!
+  CONTROL_DISABLE(10);
 }
