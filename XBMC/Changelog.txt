@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 07-03-2006 changed: always="true" now only effects the default control saving - all other control saving still occurs (list positions, control group settings etc.)
  - 07-03-2006 fixed: Dialogs were rendered over the top of the screensaver.
  - 07-03-2006 changed: If visualisation is used as screensaver, a button press will disable it like with all other screensavers.
  - 07-03-2006 added: Get Thumbs and Resume button to album and video info dialogs (disabled until we get the code done).
