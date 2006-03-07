@@ -17,7 +17,8 @@ CPartyModeManager g_partyModeManager;
 CPartyModeManager::CPartyModeManager(void)
 {
   m_bEnabled = false;
-  iLastUserSong = -1;
+  m_iLastUserSong = -1;
+  m_strCurrentFilter = "";
 }
 
 CPartyModeManager::~CPartyModeManager(void)
@@ -31,24 +32,28 @@ bool CPartyModeManager::Enable()
   {
     if (musicdatabase.GetSongsCount((CStdString)"") < DB_MINIMUM)
     {
-      CLog::Log(LOGERROR,"PARTY MODE MANAGER: Party mode needs atleast 50 songs in the database. Aborting.");
-      SendUpdateMessage();
+      musicdatabase.Close();
+      OnError(16031, (CStdString)"Party mode needs atleast 50 songs in the database. Aborting.");
       return false;
     }
-    musicdatabase.Close();
+    if (!musicdatabase.InitialisePartyMode())
+    {
+      musicdatabase.Close();
+      OnError(16032, (CStdString)"Party mode could not initialise database. Aborting.");
+      return false;
+    }
   }
   else
   {
-    CLog::Log(LOGERROR,"PARTY MODE MANAGER: Party mode could not open database. Aborting.");
-    SendUpdateMessage();
+    OnError(16033, (CStdString)"Party mode could not open database. Aborting.");
     return false;
   }
-
+  musicdatabase.Close();
   CLog::Log(LOGINFO,"PARTY MODE MANAGER: Party mode enabled!");
 
   // clear any previous state
-  iLastUserSong = -1;
-  m_vecHistory.clear();
+  m_iLastUserSong = -1;
+  m_strCurrentFilter = "";
 
   // setup the playlist
   g_playlistPlayer.ClearPlaylist(PLAYLIST_MUSIC);
@@ -56,12 +61,9 @@ bool CPartyModeManager::Enable()
   g_playlistPlayer.Repeat(PLAYLIST_MUSIC, false);
   g_playlistPlayer.RepeatOne(PLAYLIST_MUSIC, false);
 
-  // add songs
+  // add initial songs
   if (!AddRandomSongs())
-  {
-    SendUpdateMessage();
     return false;
-  }
 
   // start playing
   g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_MUSIC);
@@ -97,13 +99,13 @@ void CPartyModeManager::AddUserSongs(CPlayList& playlistTemp, bool bPlay /* = fa
 
   // where do we add?
   int iAddAt = -1;
-  if (iLastUserSong < 0 || bPlay)
+  if (m_iLastUserSong < 0 || bPlay)
     iAddAt = 1; // under the currently playing song
   else
-    iAddAt = iLastUserSong + 1; // under the last user added song
+    iAddAt = m_iLastUserSong + 1; // under the last user added song
 
   int iNewUserSongs = playlistTemp.size();
-  CLog::Log(LOGINFO,"PARTY MODE MANAGER: Adding %i user selected songs at %i", playlistTemp.size(), iAddAt);
+  CLog::Log(LOGINFO,"PARTY MODE MANAGER: Adding %i user selected songs at %i", iNewUserSongs, iAddAt);
 
   // get songs starting at the AddAt location move them to the temp playlist
   // TODO: find a better way to do this
@@ -117,12 +119,14 @@ void CPartyModeManager::AddUserSongs(CPlayList& playlistTemp, bool bPlay /* = fa
 
   // now add temp playlist to back real playlist
   for (int i=0; i<playlistTemp.size(); i++)
+  {
     playlist.Add(playlistTemp[i]);
+  }
 
   // update last user added song location
-  if (iLastUserSong < 0)
-    iLastUserSong = 0;
-  iLastUserSong += iNewUserSongs;
+  if (m_iLastUserSong < 0)
+    m_iLastUserSong = 0;
+  m_iLastUserSong += iNewUserSongs;
 
   if (bPlay)
     Play(1);
@@ -147,26 +151,26 @@ bool CPartyModeManager::AddRandomSongs()
     CMusicDatabase musicdatabase;
     if (musicdatabase.Open())
     {
-      CStdString strWhere = ""; // to be used later for better filtering
       CFileItemList items;
-      if (musicdatabase.GetRandomSongsWithHistory(items, iMissingSongs, strWhere, m_vecHistory))
+      if (musicdatabase.PartyModeGetRandomSongs(items, iMissingSongs, HISTORY_SIZE, m_strCurrentFilter))
       {
         for (int i = 0; i < items.Size(); i++)
           Add(items[i]);
-        if (m_vecHistory.size() > HISTORY_SIZE)
-          m_vecHistory.erase(m_vecHistory.begin(), m_vecHistory.begin() + (m_vecHistory.size() - HISTORY_SIZE - 1));
       }
       else
       {
-        CLog::Log(LOGERROR,"PARTY MODE MANAGER: Cannot get songs from database. Aborting.");
-        m_bEnabled = false;
         musicdatabase.Close();
+        OnError(16034, (CStdString)"Cannot get songs from database. Aborting.");
         return false;
       }
-      musicdatabase.Close();
     }
+    else
+    {
+      OnError(16033, (CStdString)"Party mode could not open database. Aborting.");
+      return false;
+    }
+    musicdatabase.Close();
   }
-
   return true;
 }
 
@@ -199,7 +203,7 @@ bool CPartyModeManager::ReapSongs()
     CLog::Log(LOGINFO,"PARTY MODE MANAGER: Reaping played song at %i", iSong);
     g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).Remove(iSong);
     if (iSong < iCurrentSong) iCurrentSong--;
-    if (iSong <= iLastUserSong) iLastUserSong--;
+    if (iSong <= m_iLastUserSong) m_iLastUserSong--;
   }
   g_playlistPlayer.SetCurrentSong(iCurrentSong);
   return true;
@@ -238,4 +242,26 @@ void CPartyModeManager::Play(int iPos)
   g_playlistPlayer.Play(iPos);
   CLog::Log(LOGINFO,"PARTY MODE MANAGER: Playing song at %i", iPos);
   Process();
+}
+
+void CPartyModeManager::OnError(int iError, CStdString& strLogMessage)
+{
+  // open error dialog
+  CGUIDialogOK::ShowAndGetInput(257, 16030, iError, 0);
+  CLog::Log(LOGERROR, "PARTY MODE MANAGER: %s", strLogMessage.c_str());
+  m_bEnabled = false;
+  SendUpdateMessage();
+}
+
+int CPartyModeManager::GetUniqueRandomSongsLeft()
+{
+  int iSongs = -1;
+  if (IsEnabled())
+  {
+    CMusicDatabase musicdatabase;
+    if (musicdatabase.Open())
+      iSongs = musicdatabase.PartyModeGetUniqueRandomSongsLeft(m_strCurrentFilter);
+    musicdatabase.Close();
+  }
+  return iSongs;
 }

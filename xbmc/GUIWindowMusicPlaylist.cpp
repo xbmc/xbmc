@@ -443,7 +443,7 @@ void CGUIWindowMusicPlayList::UpdateButtons()
   CGUIWindowMusicBase::UpdateButtons();
 
   // Update playlist buttons
-  if (m_vecItems.Size() )
+  if (m_vecItems.Size() && !g_partyModeManager.IsEnabled())
   {
     CONTROL_ENABLE(CONTROL_BTNSHUFFLE);
     CONTROL_ENABLE(CONTROL_BTNRANDOMIZE);
@@ -473,6 +473,7 @@ void CGUIWindowMusicPlayList::UpdateButtons()
   }
   else
   {
+    // disable buttons if party mode is enabled too
     CONTROL_DISABLE(CONTROL_BTNSHUFFLE);
     CONTROL_DISABLE(CONTROL_BTNRANDOMIZE);
     CONTROL_DISABLE(CONTROL_BTNSAVE);
@@ -651,13 +652,13 @@ void CGUIWindowMusicPlayList::OnPopupMenu(int iItem)
   pMenu->Initialize();
 
   // is this playlist playing?
-  int i = g_playlistPlayer.GetCurrentSong();
+  int iPlaying = g_playlistPlayer.GetCurrentSong();
   bool bIsPlaying = false;
   bool bItemIsPlaying = false;
   if ((g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_MUSIC) && (g_application.IsPlayingAudio()))
   {
     bIsPlaying = true;
-    if (iItem == i) bItemIsPlaying = true;
+    if (iItem == iPlaying) bItemIsPlaying = true;
   }
 
   // add the buttons
@@ -692,9 +693,9 @@ void CGUIWindowMusicPlayList::OnPopupMenu(int iItem)
         pMenu->EnableButton(btn_MoveUp, false);
         pMenu->EnableButton(btn_MoveDn, false);
       }
-      if (iItem == (i-1))
+      if (iItem == (iPlaying-1))
         pMenu->EnableButton(btn_MoveDn, false);
-      if (iItem == (i+1))
+      if (iItem == (iPlaying+1))
         pMenu->EnableButton(btn_MoveUp, false);
     }
   }
@@ -704,7 +705,7 @@ void CGUIWindowMusicPlayList::OnPopupMenu(int iItem)
     btn_MoveTo = pMenu->AddButton(13252);         // move item here
     if (iItem == iPos)
       pMenu->EnableButton(btn_MoveTo, false);     // disable the button if its the same position or current item
-    if (g_partyModeManager.IsEnabled() && iItem >= i)
+    if (g_partyModeManager.IsEnabled() && iItem <= iPlaying)
       pMenu->EnableButton(btn_MoveTo, false);     // cant move a song above the currently playing
     btn_Cancel = pMenu->AddButton(13253);         // cancel move
   }
