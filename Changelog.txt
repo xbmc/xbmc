@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 07-03-2006 changed: avoid closing audiocodec/renderer if stream's codec info didn't change over vts borders
+ - 07-03-2006 changed: general stream discontinuity detection in dvdplayer (support for non dvd streams).
  - 07-03-2006 changed: Music Party Mode now uses a database table for its history, means another upgrade to version 1.6
  - 07-03-2006 changed: when Music Party Mode is enabled, all the extraneous playlist buttons in the Now Playing window are disabled
  - 07-03-2006 changed: "Delete" option in the root share context menu to "Remove Source" for consistency

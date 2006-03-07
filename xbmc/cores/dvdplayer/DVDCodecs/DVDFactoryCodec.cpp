@@ -16,16 +16,15 @@
 #include "Audio\DVDAudioCodecLPcm.h"
 #include "Audio\DVDAudioCodecPassthrough.h"
 
-#include "DVDCodecs.h"
-#include "../DVDDemuxers/DVDDemux.h"
+#include "../DVDStreamInfo.h"
 
 
-CDVDVideoCodec* CDVDFactoryCodec::OpenCodec(CDVDVideoCodec* pCodec, CDemuxStreamVideo *pDemuxStream )
+CDVDVideoCodec* CDVDFactoryCodec::OpenCodec(CDVDVideoCodec* pCodec, CDVDStreamInfo &hint )
 {  
   try
   {
     CLog::Log(LOGDEBUG, "FactoryCodec - Video: %s - Opening", pCodec->GetName());
-    if( pCodec->Open( pDemuxStream->codec, pDemuxStream->iWidth, pDemuxStream->iHeight, pDemuxStream->ExtraData, pDemuxStream->ExtraSize ) )
+    if( pCodec->Open( hint.codec, hint.width, hint.height, hint.extradata, hint.extrasize ) )
     {
       CLog::Log(LOGDEBUG, "FactoryCodec - Video: %s - Opened", pCodec->GetName());
       return pCodec;
@@ -42,12 +41,12 @@ CDVDVideoCodec* CDVDFactoryCodec::OpenCodec(CDVDVideoCodec* pCodec, CDemuxStream
   return NULL;
 }
 
-CDVDAudioCodec* CDVDFactoryCodec::OpenCodec(CDVDAudioCodec* pCodec, CDemuxStreamAudio *pDemuxStream )
+CDVDAudioCodec* CDVDFactoryCodec::OpenCodec(CDVDAudioCodec* pCodec, CDVDStreamInfo &hint  )
 {    
   try
   {
     CLog::Log(LOGDEBUG, "FactoryCodec - Audio: %s - Opening", pCodec->GetName());
-    if( pCodec->Open( pDemuxStream->codec, pDemuxStream->iChannels, pDemuxStream->iSampleRate, 16, pDemuxStream->ExtraData, pDemuxStream->ExtraSize ) )
+    if( pCodec->Open( hint.codec, hint.channels, hint.samplerate, 16, hint.extradata, hint.extrasize ) )
     {
       CLog::Log(LOGDEBUG, "FactoryCodec - Audio: %s - Opened", pCodec->GetName());
       return pCodec;
@@ -64,52 +63,52 @@ CDVDAudioCodec* CDVDFactoryCodec::OpenCodec(CDVDAudioCodec* pCodec, CDemuxStream
   return NULL;
 }
 
-CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec( CDemuxStreamVideo *pDemuxStream )
+CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec( CDVDStreamInfo &hint )
 {
   CDVDVideoCodec* pCodec = NULL;
 
-  if (pDemuxStream->codec == CODEC_ID_MPEG2VIDEO || pDemuxStream->codec == CODEC_ID_MPEG1VIDEO)
+  if (hint.codec == CODEC_ID_MPEG2VIDEO || hint.codec == CODEC_ID_MPEG1VIDEO)
   {
-    if( pCodec = OpenCodec(new CDVDVideoCodecLibMpeg2(), pDemuxStream) ) return pCodec;
+    if( pCodec = OpenCodec(new CDVDVideoCodecLibMpeg2(), hint) ) return pCodec;
   }
   
-  if( pCodec = OpenCodec(new CDVDVideoCodecFFmpeg(), pDemuxStream) ) return pCodec;
+  if( pCodec = OpenCodec(new CDVDVideoCodecFFmpeg(), hint) ) return pCodec;
 
   return NULL;
 }
 
-CDVDAudioCodec* CDVDFactoryCodec::CreateAudioCodec( CDemuxStreamAudio *pDemuxStream )
+CDVDAudioCodec* CDVDFactoryCodec::CreateAudioCodec( CDVDStreamInfo &hint )
 {
   CDVDAudioCodec* pCodec = NULL;
 
-  pCodec = OpenCodec( new CDVDAudioCodecPassthrough(), pDemuxStream );
+  pCodec = OpenCodec( new CDVDAudioCodecPassthrough(), hint );
   if( pCodec ) return pCodec;
 
-  switch (pDemuxStream->codec)
+  switch (hint.codec)
   {
   case CODEC_ID_AC3:
     {
-      pCodec = OpenCodec( new CDVDAudioCodecLiba52(), pDemuxStream );
+      pCodec = OpenCodec( new CDVDAudioCodecLiba52(), hint );
       if( pCodec ) return pCodec;
       break;
     }
   case CODEC_ID_DTS:
     {
-      pCodec = OpenCodec( new CDVDAudioCodecLibDts(), pDemuxStream );
+      pCodec = OpenCodec( new CDVDAudioCodecLibDts(), hint );
       if( pCodec ) return pCodec;
       break;
     }
   case CODEC_ID_MP2:
   case CODEC_ID_MP3:
     {
-      pCodec = OpenCodec( new CDVDAudioCodecLibMad(), pDemuxStream );
+      pCodec = OpenCodec( new CDVDAudioCodecLibMad(), hint );
       if( pCodec ) return pCodec;
       break;
     }
   case CODEC_ID_AAC:
   //case CODEC_ID_MPEG4AAC:
     {
-      pCodec = OpenCodec( new CDVDAudioCodecLibFaad(), pDemuxStream );
+      pCodec = OpenCodec( new CDVDAudioCodecLibFaad(), hint );
       if( pCodec ) return pCodec;
       break;
     }
@@ -131,7 +130,7 @@ CDVDAudioCodec* CDVDFactoryCodec::CreateAudioCodec( CDemuxStreamAudio *pDemuxStr
   case CODEC_ID_PCM_ALAW:
   case CODEC_ID_PCM_MULAW:
     {
-      pCodec = OpenCodec( new CDVDAudioCodecPcm(), pDemuxStream );
+      pCodec = OpenCodec( new CDVDAudioCodecPcm(), hint );
       if( pCodec ) return pCodec;
       break;
     }
@@ -139,7 +138,7 @@ CDVDAudioCodec* CDVDFactoryCodec::CreateAudioCodec( CDemuxStreamAudio *pDemuxStr
   //case CODEC_ID_LPCM_S20BE:
   case CODEC_ID_LPCM_S24BE:
     {
-      pCodec = OpenCodec( new CDVDAudioCodecLPcm(), pDemuxStream );
+      pCodec = OpenCodec( new CDVDAudioCodecLPcm(), hint );
       if( pCodec ) return pCodec;
       break;
     }
@@ -150,7 +149,7 @@ CDVDAudioCodec* CDVDFactoryCodec::CreateAudioCodec( CDemuxStreamAudio *pDemuxStr
     }
   }
 
-  pCodec = OpenCodec( new CDVDAudioCodecFFmpeg(), pDemuxStream );
+  pCodec = OpenCodec( new CDVDAudioCodecFFmpeg(), hint );
   if( pCodec ) return pCodec;
 
   return NULL;
