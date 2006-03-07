@@ -15,14 +15,17 @@
 //#include "DVDChapterReader.h"
 #include "DVDSubtitles\DVDFactorySubtitle.h"
 
+
 class CDVDInputStream;
 
 class CDVDDemux;
 class CDemuxStreamVideo;
 class CDemuxStreamAudio;
+class CStreamInfo;
 
 #define DVDSTATE_NORMAL           0x00000001 // normal dvd state
 #define DVDSTATE_STILL            0x00000002 // currently displaying a still frame
+#define DVDSTATE_WAIT             0x00000003 // waiting for demuxer read error
 
 typedef struct DVDInfo
 {
@@ -39,6 +42,15 @@ typedef struct DVDInfo
   int iFlagSentStart;
 }
 DVDInfo;
+
+typedef struct SCurrentStream
+{
+  int              id;     // demuxerid of current playing stream
+  unsigned __int64 dts;    // last dts from demuxer, used to find disncontinuities
+  CDVDStreamInfo      hint;   // stream hints, used to notice stream changes
+  void*            stream; // pointer or integer, identifying stream playing. if it changes stream changed
+} SCurrentStream;
+
 
 class CDVDPlayer : public IPlayer, public CThread, public IDVDPlayer
 {
@@ -157,9 +169,12 @@ private:
 
   char m_filename[1024];
     
-  int m_iCurrentStreamVideo;
-  int m_iCurrentStreamAudio;
+  int m_iCurrentStreamVideo;  
   int m_iCurrentStreamSubtitle;
+
+  SCurrentStream m_CurrentAudio;
+  SCurrentStream m_CurrentVideo;
+  SCurrentStream m_CurrentSubtitle;
 
   int m_playSpeed;
   
