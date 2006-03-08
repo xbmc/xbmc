@@ -561,9 +561,14 @@ void CDVDPlayer::SyncronizePlayers(__int64 dts, __int64 pts)
   if( m_CurrentAudio.id >= 0 ) players++;
   if( m_CurrentVideo.id >= 0 ) players++;
 
+  // timeout of this packet.. if timeout has passed when processed, no waiting will be done
+  // since our audio queue is quite large (around 7secs on 2ch ac3) this needs to be quite big
+  // it should only be a fallback if something goes wron anyway
+  const int timeout = 10*1000; // in milliseconds
+
   if( players )
   {
-    CDVDMsgSyncronize* message = new CDVDMsgSyncronize(players, DVD_MSEC_TO_TIME(1000));
+    CDVDMsgSyncronize* message = new CDVDMsgSyncronize(players, timeout);
     if( m_CurrentAudio.id >= 0 )
       m_dvdPlayerAudio.m_packetQueue.Put(DVDMSG_GENERAL_SYNCRONIZE, message, 0);
     
