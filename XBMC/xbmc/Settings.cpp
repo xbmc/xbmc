@@ -691,7 +691,7 @@ void CSettings::GetShares(const TiXmlElement* pRootElement, const CStdString& st
               if (strTagName.Equals("myprograms"))
               {
                 // only allow HD
-                if (protocol.IsEmpty())
+                if (url.IsLocal())
                   share.vecPaths.push_back(vecPaths[j]);
                 else
                   bIsInvalid = true;
@@ -701,7 +701,7 @@ void CSettings::GetShares(const TiXmlElement* pRootElement, const CStdString& st
               else
               {
                 // only allow HD, SMB, and XBMS
-                if (protocol.IsEmpty() || protocol.Equals("smb") || protocol.Equals("xbms"))
+                if (url.IsLocal() || protocol.Equals("smb") || protocol.Equals("xbms"))
                   share.vecPaths.push_back(vecPaths[j]);
                 else
                   bIsInvalid = true;

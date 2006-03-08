@@ -394,7 +394,7 @@ extern "C"
     char* p;
 
     CURL url(file);
-    if (url.GetProtocol() == "")
+    if (url.IsLocal())
     {
       // move to CFile classes
       if (strncmp(file, "\\Device\\Cdrom0", 14) == 0)

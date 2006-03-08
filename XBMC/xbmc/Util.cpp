@@ -70,7 +70,7 @@ char* CUtil::GetFileName(const CStdString& strFileNameAndPath)
   const char* extension;
   if ((url.GetProtocol() == "rar") || (url.GetProtocol() == "zip"))
     extension = strFileNameAndPath.c_str()+strFileNameAndPath.rfind("\\");
-  else
+  else if (url.IsLocal())
     extension = strrchr(strFileNameAndPath.c_str(), '\\');
   if (!extension)
   {
@@ -425,9 +425,9 @@ void CUtil::GetQualifiedFilename(const CStdString &strBasePath, CStdString &strF
   CURL plBaseUrl(strBasePath);
   int iDotDotLoc, iBeginCut, iEndCut;
 
-  if (plBaseUrl.GetProtocol().length() == 0) //Base in local directory
+  if (plBaseUrl.IsLocal()) //Base in local directory
   {
-    if (plItemUrl.GetProtocol().length() == 0 ) //Filename is local or not qualified
+    if (plItemUrl.IsLocal() ) //Filename is local or not qualified
     {
       if (!( strFilename.c_str()[1] == ':')) //Filename not fully qualified
       {
@@ -455,7 +455,7 @@ void CUtil::GetQualifiedFilename(const CStdString &strBasePath, CStdString &strF
   }
   else //Base is remote
   {
-    if (plItemUrl.GetProtocol().length() == 0 ) //Filename is local
+    if (plItemUrl.IsLocal() == 0 ) //Filename is local
     {
       if (strFilename.c_str()[0] == '/' || strFilename.c_str()[0] == '\\' || HasSlashAtEnd(strBasePath)) //Begins with a slash.. not good.. but we try to make the best of it..
 
@@ -1289,7 +1289,7 @@ bool CUtil::IsRemote(const CStdString& strFile)
   CStdString strProtocol = url.GetProtocol();
   strProtocol.ToLower();
   if (strProtocol == "cdda" || strProtocol == "iso9660") return false;
-  if ( url.GetProtocol().size() ) return true;
+  if ( !url.IsLocal() ) return true;
   return false;
 }
 
@@ -3260,15 +3260,15 @@ CStdString CUtil::MakeLegalFileName(const char* strFile, bool bKeepExtension, bo
 void CUtil::AddDirectorySeperator(CStdString& strPath)
 {
   CURL url(strPath);
-  if (url.GetProtocol().size() > 0) strPath += "/";
-  else strPath += "\\";
+  if (url.IsLocal()) strPath += "\\";
+  else strPath += "/";
 }
 
 char CUtil::GetDirectorySeperator(const CStdString& strPath)
 {
   CURL url(strPath);
-  if (url.GetProtocol().size() > 0) return '/';
-  return '\\';
+  if (url.IsLocal()) return '\\';
+  return '/';
 }
 
 void CUtil::ConvertFileItemToPlayListItem(const CFileItem *pItem, CPlayList::CPlayListItem &playlistitem)
