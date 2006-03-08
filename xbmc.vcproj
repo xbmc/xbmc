@@ -1945,6 +1945,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				RelativePath=".\xbmc\FileSystem\SIDFileDirectory.h">
 			</File>
 			<File
+				RelativePath=".\xbmc\FileSystem\SmartPlaylistDirectory.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\FileSystem\SmartPlaylistDirectory.h">
+			</File>
+			<File
 				RelativePath=".\xbmc\FileSystem\SMBDirectory.cpp">
 			</File>
 			<File
