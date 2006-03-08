@@ -85,9 +85,7 @@ bool CGUIWindowMusicPlayList::OnMessage(CGUIMessage& message)
       {
         int iSong = g_playlistPlayer.GetCurrentSong();
         if (iSong >= 0 && iSong <= m_vecItems.Size())
-        {
           m_viewControl.SetSelectedItem(iSong);
-        }
       }
 
       return true;
@@ -621,6 +619,14 @@ bool CGUIWindowMusicPlayList::Update(const CStdString& strDirectory)
     return false;
 
   m_tagloader.Load(m_vecItems);
+
+  // mark the currently playing song
+  if (g_application.IsPlayingAudio() && g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_MUSIC)
+  {
+    int iSong = g_playlistPlayer.GetCurrentSong();
+    if (iSong >= 0 && iSong <= m_vecItems.Size())
+      m_vecItems[iSong]->Select(true);
+  }
 
   return true;
 }
