@@ -6,6 +6,7 @@
 #include "Util.h"
 #include "FileItem.h"
 #include "GUIWindowMusicPlayList.h"
+#include "SmartPlaylist.h"
 
 #define QUEUE_DEPTH       10
 #define TIMER             30000L    // 30 seconds
@@ -27,10 +28,15 @@ CPartyModeManager::~CPartyModeManager(void)
 
 bool CPartyModeManager::Enable()
 {
+  // Filter using our PartyMode xml file
+  CSmartPlaylist playlist;
+  if (playlist.Load("Q:\\system\\PartyMode.xml"))
+    m_strCurrentFilter = playlist.GetWhereClause();
+
   CMusicDatabase musicdatabase;
   if (musicdatabase.Open())
   {
-    if (musicdatabase.GetSongsCount((CStdString)"") < DB_MINIMUM)
+    if (musicdatabase.GetSongsCount(m_strCurrentFilter) < DB_MINIMUM)
     {
       musicdatabase.Close();
       OnError(16031, (CStdString)"Party mode needs atleast 50 songs in the database. Aborting.");
@@ -53,7 +59,6 @@ bool CPartyModeManager::Enable()
 
   // clear any previous state
   m_iLastUserSong = -1;
-  m_strCurrentFilter = "";
 
   // setup the playlist
   g_playlistPlayer.ClearPlaylist(PLAYLIST_MUSIC);

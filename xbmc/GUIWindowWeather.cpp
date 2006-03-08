@@ -91,6 +91,12 @@ bool CGUIWindowWeather::OnMessage(CGUIMessage& message)
   return CGUIWindow::OnMessage(message);
 }
 
+void CGUIWindowWeather::OnInitWindow()
+{
+  // call UpdateButtons() so that we start with our initial stuff already present
+  UpdateButtons();
+  CGUIWindow::OnInitWindow();
+}
 
 void CGUIWindowWeather::UpdateButtons()
 {
