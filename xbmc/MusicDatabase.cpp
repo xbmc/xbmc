@@ -4041,7 +4041,7 @@ bool CMusicDatabase::PartyModeGetRandomSongs(CFileItemList& items, int iNumSongs
   {
     CFileItem* pItem = new CFileItem;
     long lSongId;
-    if (GetRandomSong(pItem, lSongId, strWhere))
+    if (GetRandomSong(pItem, lSongId, strWhereTemp))
     {
       items.Add(pItem);
       if (!UpdatePartyMode(lSongId, bRelaxRestrictions))
