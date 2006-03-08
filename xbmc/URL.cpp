@@ -417,3 +417,8 @@ void CURL::GetURLWithoutFilename(CStdString& strURL) const
     strURL += "/";
   }
 }
+
+bool CURL::IsLocal() const
+{
+  return m_strProtocol.IsEmpty();
+}
