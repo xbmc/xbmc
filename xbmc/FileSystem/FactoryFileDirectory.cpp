@@ -7,7 +7,7 @@
 #include "zipdirectory.h"
 #include "nsffiledirectory.h"
 #include "sidfiledirectory.h"
-
+#include "SmartPlaylistDirectory.h"
 
 CFactoryFileDirectory::CFactoryFileDirectory(void)
 {}
@@ -126,6 +126,15 @@ IFileDirectory* CFactoryFileDirectory::Create(const CStdString& strPath, CFileIt
       *pItem = *item[0];
     else
       pItem->m_bIsFolder = true;
+
+    return NULL;
+  }
+  if (strExtension.Equals(".xsp"))
+  { // XBMC Smart playlist - just XML renamed to XSP
+    IFileDirectory* pDir=new CSmartPlaylistDirectory;
+    //  Has the nsf file more then one track?
+    if (pDir->ContainsFiles(strPath))
+      return pDir; // treat as directory
 
     return NULL;
   }

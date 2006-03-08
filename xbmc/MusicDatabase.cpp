@@ -3059,6 +3059,48 @@ bool CMusicDatabase::GetAlbumsNav(const CStdString& strBaseDir, CFileItemList& i
   return false;
 }
 
+bool CMusicDatabase::GetSongsByWhere(const CStdString &whereClause, CFileItemList &items)
+{
+  try
+  {
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS.get()) return false;
+
+    // We don't use FormatSQL here, as the WHERE clause is already formatted.
+    CStdString strSQL = "select * from songview " + whereClause;
+    CLog::Log(LOGDEBUG,"CMusicDatabase::GetSongsByWhere(), query = %s", strSQL.c_str());
+    // run query
+    if (!m_pDS->query(strSQL.c_str()))
+      return false;
+    int iRowsFound = m_pDS->num_rows();
+    if (iRowsFound == 0)
+    {
+      m_pDS->close();
+      return false;
+    }
+
+    // get data from returned rows
+    items.Reserve(iRowsFound);
+    // get songs from returned subtable
+    while (!m_pDS->eof())
+    {
+      CFileItem *item = new CFileItem;
+      GetFileItemFromDataset(item, "");
+      items.Add(item);
+      m_pDS->next();
+    }
+
+    // cleanup
+    m_pDS->close();
+    return true;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR,"CMusicDatabase::GetSongsByWhere(%s) failed", whereClause.c_str());
+  }
+  return false;
+}
+
 bool CMusicDatabase::GetSongsNav(const CStdString& strBaseDir, CFileItemList& items, long idGenre, long idArtist,long idAlbum)
 {
   try
