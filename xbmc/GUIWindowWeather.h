@@ -11,6 +11,8 @@ public:
   virtual void Render();
 
 protected:
+  virtual void OnInitWindow();
+
   void UpdateButtons();
   void Refresh();
 
