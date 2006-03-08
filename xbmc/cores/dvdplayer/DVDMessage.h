@@ -55,7 +55,7 @@ public:
 
   // waits untill all threads is either waiting, released the object.
   // if abort is set somehow
-  void Wait(bool *abort); 
+  void Wait(volatile bool *abort); 
 private:
 
   long m_objects;
