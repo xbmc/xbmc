@@ -51,9 +51,9 @@ long CDVDMsgSyncronize::Release()
   return count;
 }
 
-void CDVDMsgSyncronize::Wait(bool *abort)
+void CDVDMsgSyncronize::Wait(volatile bool *abort)
 {
-  m_objects++;
+  InterlockedIncrement(&m_objects);
 
   if( abort )
     while( !(*abort) && m_timeout > GetTickCount() && m_objects < m_references ) Sleep(1);
