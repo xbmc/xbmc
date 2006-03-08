@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 08-03-2006 fixed: CUtil::GetFileName() was not using the correct directory separators.
  - 08-03-2006 changed: Video playlist now shows label, rather than filename.
  - 08-03-2006 added: Filtering of Party mode via a PartyMode.xml in system/ folder.
  - 07-03-2006 changed: always="true" now only effects the default control saving - all other control saving still occurs (list positions, control group settings etc.)
