@@ -14,6 +14,7 @@ int CDetectDVDMedia::m_DriveState = DRIVE_CLOSED_NO_MEDIA;
 CCdInfo* CDetectDVDMedia::m_pCdInfo = NULL;
 time_t CDetectDVDMedia::m_LastPoll = 0;
 CDetectDVDMedia* CDetectDVDMedia::m_pInstance = NULL;
+CStdString CDetectDVDMedia::m_diskLabel = "";
 
 CDetectDVDMedia::CDetectDVDMedia()
 {
@@ -244,6 +245,9 @@ void CDetectDVDMedia::SetNewDVDShareUrl( const CStdString& strNewUrl, bool bCDDA
 
   if (strDiscLabel != "") strDescription = strDiscLabel;
 
+  // store it in case others want it
+  m_diskLabel = strDescription;
+
   // Set new URL for every share group
   // My Music
   for (int i = 0; i < (int)g_settings.m_vecMyMusicShares.size(); ++i)
@@ -395,4 +399,9 @@ void CDetectDVDMedia::SetShareName(CStdString& strShareName, CStdString& strStat
   int iPos = strTemp.ReverseFind('(') - 1;
   if (iPos > 0) strTemp.erase(iPos, strTemp.size());
   strShareName.Format("%s (%s)", strTemp.c_str(), strStatus.c_str());
+}
+
+const CStdString &CDetectDVDMedia::GetDVDLabel()
+{
+  return m_diskLabel;
 }

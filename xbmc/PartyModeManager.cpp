@@ -32,6 +32,8 @@ bool CPartyModeManager::Enable()
   CSmartPlaylist playlist;
   if (playlist.Load("Q:\\system\\PartyMode.xml"))
     m_strCurrentFilter = playlist.GetWhereClause();
+  else
+    m_strCurrentFilter.Empty();
 
   CMusicDatabase musicdatabase;
   if (musicdatabase.Open())
