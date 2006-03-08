@@ -259,7 +259,7 @@ void CGUIViewStateWindowVideoYear::SaveViewState()
 
 CGUIViewStateWindowVideoPlaylist::CGUIViewStateWindowVideoPlaylist(const CFileItemList& items) : CGUIViewStateWindowVideo(items)
 {
-  AddSortMethod(SORT_METHOD_NONE, 103, LABEL_MASKS("%F", "", "%F", ""));  // FileName, "" | Foldername, empty
+  AddSortMethod(SORT_METHOD_NONE, 103, LABEL_MASKS("%L", "", "%L", ""));  // Label, "" | Label, empty
   SetSortMethod(SORT_METHOD_NONE);
 
   AddViewAsControl(VIEW_METHOD_LIST, 101);
