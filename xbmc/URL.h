@@ -27,7 +27,7 @@ public:
   void GetURLWithoutUserDetails(CStdString& strURL) const;
   void GetURLWithoutFilename(CStdString& strURL) const;
   CURL& operator= (const CURL& source);
-
+  bool IsLocal() const;
 
 protected:
   int m_iPort;
