@@ -30,6 +30,8 @@ public:
   static CCdInfo* GetCdInfo();
   static CEvent m_evAutorun;
 
+  static const CStdString &GetDVDLabel();
+
 protected:
   void UpdateDvdrom();
   DWORD GetTrayState();
@@ -55,5 +57,6 @@ private:
   DWORD m_dwTrayCount;
   DWORD m_dwLastTrayState;
 
+  static CStdString m_diskLabel;
 };
 }

@@ -99,6 +99,7 @@ extern char g_szTitleIP[32];
 #define SYSTEM_CURRENT_WINDOW       135
 #define SYSTEM_CURRENT_CONTROL      136
 #define SYSTEM_XBOX_NICKNAME        137
+#define SYSTEM_DVD_LABEL            138
 
 #define LCD_PLAY_ICON               160
 #define LCD_PROGRESS_BAR            161
@@ -346,6 +347,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("system.currentwindow")) ret = SYSTEM_CURRENT_WINDOW;
     else if (strTest.Equals("system.currentcontrol")) ret = SYSTEM_CURRENT_CONTROL;
     else if (strTest.Equals("system.xboxnickname")) ret = SYSTEM_XBOX_NICKNAME;
+    else if (strTest.Equals("system.dvdlabel")) ret = SYSTEM_DVD_LABEL;
 
     else if (strTest.Left(16).Equals("system.idletime("))
     {
@@ -675,6 +677,9 @@ wstring CGUIInfoManager::GetLabel(int info)
         strLabel=g_localizeStrings.Get(416); // 
       break;
     }
+  case SYSTEM_DVD_LABEL:
+    strLabel = CDetectDVDMedia::GetDVDLabel();
+    break;
   case LCD_PLAY_ICON:
     {
       int iPlaySpeed = g_application.GetPlaySpeed();
