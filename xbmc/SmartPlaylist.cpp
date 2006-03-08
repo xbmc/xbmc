@@ -201,7 +201,7 @@ CStdString CSmartPlaylist::GetWhereClause()
   for (vector<CSmartPlaylistRule>::iterator it = m_playlistRules.begin(); it != m_playlistRules.end(); ++it)
   {
     if (it != m_playlistRules.begin())
-      rule += " AND ";
+      rule += m_matchAllRules ? " AND " : " OR ";
     else
       rule += "WHERE ";
     rule += "(";
