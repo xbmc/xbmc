@@ -67,7 +67,7 @@ char* CUtil::GetExtension(const CStdString& strFileName)
 char* CUtil::GetFileName(const CStdString& strFileNameAndPath)
 {
   CURL url(strFileNameAndPath);
-  const char* extension;
+  const char* extension = NULL;
   if ((url.GetProtocol() == "rar") || (url.GetProtocol() == "zip"))
     extension = strFileNameAndPath.c_str()+strFileNameAndPath.rfind("\\");
   else if (url.IsLocal())
