@@ -1033,9 +1033,7 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
                 {
                   // We can not focus the last control of this group,
                   // use the control we originally wanted to focus instead.
-                  int iControlGroup=pFocusedControl->GetGroup();
-                  if (iControlGroup > -1)
-                    m_vecGroups[iControlGroup].m_lastControl = pFocusedControl->GetID();
+                  m_vecGroups[pFocusedControl->GetGroup()].m_lastControl = pFocusedControl->GetID();
                   pFocusedControl->OnMessage(message);
                   return true;
                 }
@@ -1054,7 +1052,9 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
             }
           }
 
-          //  Old and new control have no group, just pass the message
+          //  Old and new control have no group, or the same group, just pass the message
+          if (pFocusedControl->GetGroup() > -1)
+            m_vecGroups[pFocusedControl->GetGroup()].m_lastControl = pFocusedControl->GetID();
           pFocusedControl->OnMessage(message);
         }
       }
