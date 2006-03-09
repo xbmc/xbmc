@@ -181,17 +181,16 @@ void CDVDAudio::DoWork()
   if (m_pAudioDecoder) m_pAudioDecoder->DoWork();
 }
 
-int CDVDAudio::GetVolume()
-{
-  CSingleLock lock (m_critSection);
-  if (m_pAudioDecoder) return m_pAudioDecoder->GetCurrentVolume();
-  return 0;
-}
-
 void CDVDAudio::SetVolume(int iVolume)
 {
   CSingleLock lock (m_critSection);
   if (m_pAudioDecoder) m_pAudioDecoder->SetCurrentVolume(iVolume);
+}
+
+void CDVDAudio::SetDynamicRangeCompression(long drc)
+{
+  CSingleLock lock (m_critSection);
+  if (m_pAudioDecoder) m_pAudioDecoder->SetDynamicRangeCompression(drc);
 }
 
 void CDVDAudio::Pause()

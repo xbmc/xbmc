@@ -91,6 +91,7 @@ extern "C"
   __int64 mplayer_getCurrentTime();
   void mplayer_ToFFRW(int iSpeed);
   void mplayer_setVolume(long nVolume);
+  void mplayer_setDRC(long drc);
   int mplayer_getVolume();
   void mplayer_get_current_module(char* s, int n);
   void mplayer_exit_player(void);

@@ -64,6 +64,7 @@ public:
   virtual LONG GetCurrentVolume() const = 0;
   virtual void Mute(bool bMute) = 0;
   virtual HRESULT SetCurrentVolume(LONG nVolume) = 0;
+  virtual void SetDynamicRangeCompression(long drc) {};
   virtual bool SupportsSurroundSound() const = 0;
   virtual int SetPlaySpeed(int iSpeed) = 0;
   virtual void WaitCompletion() = 0;

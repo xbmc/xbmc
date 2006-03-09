@@ -47,24 +47,12 @@ extern "C" void mplayer_setVolume(long nVolume)
 {
   if (!m_pAudioDecoder) return ;
   m_pAudioDecoder->SetCurrentVolume(nVolume);
-  /*  float fVolumeMin=(float)m_pAudioDecoder->GetMinimumVolume();
-    float fVolumeMax=(float)m_pAudioDecoder->GetMaximumVolume();
-    if (fVolumeMax > fVolumeMin)
-    {
-      float fWidth = (fVolumeMax-fVolumeMin);
-      fWidth/=100.0f;
-      fWidth*= ((float)iPercentage);
-      fWidth+=fVolumeMin;
-      m_pAudioDecoder->SetCurrentVolume( (LONG)fWidth);
-    }
-    else
-    {
-      float fWidth = (fVolumeMin-fVolumeMax);
-      fWidth/=100.0f;
-      fWidth*= ((float)iPercentage);
-      fWidth+=fVolumeMax;
-      m_pAudioDecoder->SetCurrentVolume( (LONG)fWidth);
-    }*/
+}
+
+extern "C" void mplayer_setDRC(long drc)
+{
+  if (!m_pAudioDecoder) return ;
+  m_pAudioDecoder->SetDynamicRangeCompression(drc);
 }
 
 ao_data_t* pao_data = NULL;
@@ -222,6 +210,7 @@ void audio_uninit(int immed)
     delete m_pAudioDecoder;
     m_pAudioDecoder = NULL;
   }
+  m_pAudioCallback = NULL;
 }
 
 //******************************************************************************************
@@ -331,8 +320,8 @@ void xbox_audio_registercallback(IAudioCallback* pCallback)
 }
 void xbox_audio_unregistercallback()
 {
-  if (!m_pAudioDecoder) return ;
-  m_pAudioDecoder->UnRegisterAudioCallback();
+  if (m_pAudioDecoder)
+    m_pAudioDecoder->UnRegisterAudioCallback();
   m_pAudioCallback = NULL;
 }
 
