@@ -34,6 +34,8 @@
 
 #define VOLUME_MINIMUM -6000  // -60dB
 #define VOLUME_MAXIMUM 0      // 0dB
+#define VOLUME_DRC_MINIMUM 0    // 0dB
+#define VOLUME_DRC_MAXIMUM 3000 // 30dB
 
 #define VIEW_MODE_NORMAL        0
 #define VIEW_MODE_ZOOM          1
@@ -469,7 +471,8 @@ public:
     char m_strSambaDefaultPassword[128];
     char m_strSambaWinsServer[32];
 
-    int m_nVolumeLevel;       // measured in 100th's of a dB.  0dB is max, -60.00dB is min
+    int m_nVolumeLevel;                     // measured in milliBels -60dB -> 0dB range.
+    int m_dynamicRangeCompressionLevel;     // measured in milliBels  0dB -> 30dB range.
     int m_iPreMuteVolumeLevel;    // save the m_nVolumeLevel for proper restore
     bool m_bMute;
     int m_iSystemTimeTotalUp;    // Uptime in minutes!

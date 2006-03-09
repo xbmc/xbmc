@@ -156,8 +156,8 @@ public:
   int GlobalIdleTime();
   bool SetControllerRumble(FLOAT m_fLeftMotorSpeed, FLOAT m_fRightMotorSpeed,int iDuration);
   
-
 protected:
+  void SetHardwareVolume(long hardwareVolume);
   bool PlayStack(const CFileItem& item, bool bRestart);
   EPLAYERCORES m_eCurrentPlayer;
   void UpdateLCD();

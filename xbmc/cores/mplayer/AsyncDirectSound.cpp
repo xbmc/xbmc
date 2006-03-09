@@ -83,6 +83,11 @@ CASyncDirectSound::CASyncDirectSound(IAudioCallback* pCallback, int iChannels, u
   buffered_bytes = 0;
   m_pCallback = pCallback;
 
+  m_drcTable = NULL;
+  m_drcAmount = 0;
+  // TODO DRC
+  if (!bIsMusic) SetDynamicRangeCompression((long)(g_stSettings.m_currentVideoSettings.m_VolumeAmplification * 100));
+
   m_bResampleAudio = false;
   if (bResample && uiSamplesPerSec != 48000)
     m_bResampleAudio = true;
@@ -235,7 +240,7 @@ CASyncDirectSound::CASyncDirectSound(IAudioCallback* pCallback, int iChannels, u
   {
     if (m_bResampleAudio)
     {
-      pCallback->OnInitialize(iChannels, 48000, 16);
+      m_pCallback->OnInitialize(iChannels, 48000, 16);
       m_VisBuffer = (PBYTE)malloc(m_VisMaxBytes = iChannels * 96000 / 20);
     }
     else
@@ -296,6 +301,10 @@ HRESULT CASyncDirectSound::Deinitialize()
   m_pDSound = NULL;
   g_audioContext.RemoveActiveDevice();
   g_audioContext.SetActiveDevice(CAudioContext::DEFAULT_DEVICE);
+
+  if (m_drcTable)
+    delete [] m_drcTable;
+  m_drcTable = NULL;
 
   return S_OK;
 }
@@ -524,7 +533,10 @@ DWORD CASyncDirectSound::AddPackets(unsigned char *data, DWORD len)
       xmpAudio.prtTimestamp = NULL;
       xmpAudio.pContext = m_pbSampleData[dwIndex];
 
-      fast_memcpy(xmpAudio.pvBuffer, &data[iBytesCopied], iSize / m_iAudioSkip);
+      if (m_drcAmount)
+        ApplyDynamicRangeCompression(xmpAudio.pvBuffer, &data[iBytesCopied], iSize / m_iAudioSkip);
+      else
+        fast_memcpy(xmpAudio.pvBuffer, &data[iBytesCopied], iSize / m_iAudioSkip);
       //   if (m_pCallback)
       //   {
       //    m_pCallback->OnAudioData(&data[iBytesCopied],iSize/m_iAudioSkip);
@@ -718,4 +730,41 @@ void CASyncDirectSound::SwitchChannels(int iAudioStream, bool bAudioOnAllSpeaker
   for (DWORD i = 0; i < dsmb.dwMixBinCount;i++)
     m_pDSound->SetMixBinHeadroom(i, DWORD(g_advancedSettings.m_audioHeadRoom / 6));
   m_iCurrentAudioStream = iAudioStream;
+}
+
+void CASyncDirectSound::SetDynamicRangeCompression(long drc)
+{
+  if (m_drcAmount == drc)
+    return;
+
+  m_drcAmount = drc;
+
+  // compute DRC table
+  if (!m_drcTable)
+    m_drcTable = new short[32768];
+
+  short *table = m_drcTable;
+  float powerdB = (90.0f - m_drcAmount * 0.01f) / 90.0f;
+  float scaledB = pow(32767.0f, 1 - powerdB);
+  for (float in = 0; in <= 32767.0f; in++)
+  {
+    float out = pow(in, powerdB) * scaledB;
+    *table++ = (short)(out + 0.5f);
+  }
+}
+
+void CASyncDirectSound::ApplyDynamicRangeCompression(void *dest, const void *source, const int bytes)
+{
+  if (!m_drcTable)
+    return;
+  const int shorts = bytes >> 1;
+  short *input = (short *)source;
+  short *output = (short *)dest;
+  // now do the conversion
+  for (int i = 0; i < shorts; i++)
+  {
+    *output = m_drcTable[abs(*input)];
+    if (*input++ < 0) *output = -*output;
+    output++;
+  }
 }

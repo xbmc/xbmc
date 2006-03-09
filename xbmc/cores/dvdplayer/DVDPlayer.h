@@ -75,7 +75,7 @@ public:
   virtual void SeekPercentage(float iPercent);
   virtual float GetPercentage();
   virtual void SetVolume(long nVolume)                          { m_dvdPlayerAudio.SetVolume(nVolume); }
-  virtual int GetVolume()                                       { return m_dvdPlayerAudio.GetVolume(); }
+  virtual void SetDynamicRangeCompression(long drc)             { m_dvdPlayerAudio.SetDynamicRangeCompression(drc); }
   virtual void SetContrast(bool bPlus) {}
   virtual void SetBrightness(bool bPlus) {}
   virtual void SetHue(bool bPlus) {}

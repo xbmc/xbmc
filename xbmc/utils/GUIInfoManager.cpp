@@ -554,7 +554,7 @@ wstring CGUIInfoManager::GetLabel(int info)
     strLabel.Format("%02.2f", m_fps);
     break;
   case PLAYER_VOLUME:
-    strLabel.Format("%2.1f dB", (float)g_stSettings.m_nVolumeLevel * 0.01f);
+    strLabel.Format("%2.1f dB", (float)(g_stSettings.m_nVolumeLevel + g_stSettings.m_dynamicRangeCompressionLevel) * 0.01f);
     break;
   case PLAYER_TIME:
     strLabel = GetCurrentPlayTime();

@@ -14,8 +14,8 @@ public:
   void RegisterAudioCallback(IAudioCallback* pCallback);
   void UnRegisterAudioCallback();
 
-  int GetVolume();
   void SetVolume(int iVolume);
+  void SetDynamicRangeCompression(long drc);
   void Pause();
   void Resume();
   bool Create(int iChannels, int iBitrate, int iBitsPerSample, bool bPasstrough);
