@@ -10,6 +10,7 @@
 #define SMB_OFF_T UINT64
 
 #define NT_STATUS_INVALID_COMPUTER_NAME long(0xC0000000 | 0x0122)
+#define ENETUNREACH WSAENETUNREACH
 
 /* this defines the charset types used in samba */
 typedef enum {CH_UCS2=0, CH_UNIX=1, CH_DISPLAY=2, CH_DOS=3, CH_UTF8=4} charset_t;

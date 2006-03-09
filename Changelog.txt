@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 08-03-2006 fixed: trying to access a nonexisting smb computer showed authentication dialog instead of invalid computer name.
  - 08-03-2006 added: System.DVDLabel info label.  Shows the title of the dvd.
  - 08-03-2006 added: Smart Playlists in My Music.  Only loadable from a file (no GUI setup of smart playlists)
  - 08-03-2006 fixed: CUtil::GetFileName() was not using the correct directory separators.
