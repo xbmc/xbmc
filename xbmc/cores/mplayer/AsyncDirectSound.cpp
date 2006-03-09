@@ -86,7 +86,7 @@ CASyncDirectSound::CASyncDirectSound(IAudioCallback* pCallback, int iChannels, u
   m_drcTable = NULL;
   m_drcAmount = 0;
   // TODO DRC
-  if (!bIsMusic) SetDynamicRangeCompression((long)(g_stSettings.m_currentVideoSettings.m_VolumeAmplification * 100));
+  if (!bIsMusic && uiBitsPerSample == 16) SetDynamicRangeCompression((long)(g_stSettings.m_currentVideoSettings.m_VolumeAmplification * 100));
 
   m_bResampleAudio = false;
   if (bResample && uiSamplesPerSec != 48000)
@@ -457,6 +457,8 @@ DWORD CASyncDirectSound::AddPacketsResample(unsigned char *pData, DWORD iLeft)
         // check if we have resampled data to send
         if (m_Resampler.GetData(m_pbSampleData[dwIndex]))
         {
+          if (m_drcAmount)
+            ApplyDynamicRangeCompression(m_pbSampleData[dwIndex], m_pbSampleData[dwIndex], m_dwPacketSize);
           // Set up audio packet
           m_adwStatus[ dwIndex ] = XMEDIAPACKET_STATUS_PENDING;
           xmpAudio.dwMaxSize = m_dwPacketSize;
@@ -763,8 +765,8 @@ void CASyncDirectSound::ApplyDynamicRangeCompression(void *dest, const void *sou
   // now do the conversion
   for (int i = 0; i < shorts; i++)
   {
-    *output = m_drcTable[abs(*input)];
-    if (*input++ < 0) *output = -*output;
-    output++;
+    short out = m_drcTable[abs(*input)];
+    if (*input++ < 0) out = -out;
+    *output++ = out;
   }
 }
