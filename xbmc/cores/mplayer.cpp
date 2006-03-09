@@ -840,10 +840,12 @@ bool CMPlayer::OpenFile(const CFileItem& file, __int64 iStartTime)
       }
     }
 
-    if (bIsVideo)
+    // Volume amplification has been replaced with dynamic range compression
+    // TODO DRC Remove this code once we've stabilised the DRC.
+/*    if (bIsVideo)
     {
       options.SetVolumeAmplification(g_stSettings.m_currentVideoSettings.m_VolumeAmplification);
-    }
+    }*/
 
     //Make sure we set the dvd-device parameter if we are playing dvdimages or dvdfolders
     if (bFileIsDVDImage)
@@ -1485,13 +1487,14 @@ void CMPlayer::ToggleFrameDrop()
   mplayer_put_key('d');
 }
 
-int CMPlayer::GetVolume()
-{
-  return mplayer_getVolume();
-}
 void CMPlayer::SetVolume(long nVolume)
 {
   mplayer_setVolume(nVolume);
+}
+
+void CMPlayer::SetDynamicRangeCompression(long drc)
+{
+  mplayer_setDRC(drc);
 }
 
 void CMPlayer::SetContrast(bool bPlus)

@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 09-03-2006 fixed: [ 1446065 ] No Media can be played after stopping wma file.
+ - 09-03-2006 added: Dynamic range compensation to videos.  Replaces the old Volume Amplification which only worked with mplayer.  TRANSLATORS: Definition of string id 290 has changed.
  - 09-03-2006 fixed: Controlgroup default control saving wasn't working correctly.
  - 09-03-2006 fixed: Crash in Settings->Appearance if Font.xml wasn't of the usual form.
  - 08-03-2006 fixed: trying to access a nonexisting smb computer showed authentication dialog instead of invalid computer name.
