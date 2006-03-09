@@ -62,20 +62,6 @@
         <onleft>8</onleft>
         <onright>6</onright>
         <onup>11</onup>
-        <ondown>14</ondown>
-      </control>
-
-      <control>
-        <description>Skin builder</description>
-        <type>button</type>
-        <id>14</id>
-        <posx>50</posx>
-        <posy>194</posy>
-        <label>PY Skin Builder</label>
-        <onclick>XBMC.ActivateWindow(57)</onclick>
-        <onleft>8</onleft>
-        <onright>6</onright>
-        <onup>112</onup>
         <ondown>13</ondown>
       </control>
 
@@ -84,13 +70,28 @@
         <type>button</type>
         <id>13</id>
         <posx>50</posx>
-        <posy>231</posy>
+        <posy>194</posy>
         <label>Reload Skin</label>
         <onclick>XBMC.ReloadSkin()</onclick>
         <onleft>8</onleft>
         <onright>6</onright>
-        <onup>14</onup>
+        <onup>112</onup>
+        <ondown>14</ondown>
+      </control>
+
+      <control>
+        <description>Skin builder</description>
+        <type>button</type>
+        <id>14</id>
+        <posx>50</posx>
+        <posy>231</posy>
+        <label>PY Skin Builder</label>
+        <onclick>XBMC.ActivateWindow(57)</onclick>
+        <onleft>8</onleft>
+        <onright>6</onright>
+        <onup>13</onup>
         <ondown>11</ondown>
+        <visible>no</visible>
       </control>
 
     </controlgroup>
