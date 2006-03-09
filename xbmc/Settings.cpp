@@ -2409,6 +2409,12 @@ bool CSettings::GetSkinSetting(const char *setting) const
   {
     return (*it).second;
   }
+  // check the skin strings as well
+  std::map<CStdString, CStdString>::const_iterator it2 = m_skinStrings.find(setting);
+  if (it2 != m_skinStrings.end())
+  {
+    return !(*it2).second.IsEmpty();
+  }
   return false;
 }
 
