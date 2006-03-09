@@ -240,8 +240,10 @@ int CSMBDirectory::OpenDir(CStdString& strAuth)
     smb.Unlock();
     if (fd < 0)
     {
-      if (errno == ENODEV) nt_error = NT_STATUS_INVALID_COMPUTER_NAME;
-      else nt_error = map_nt_error_from_unix(errno);
+      int error = errno;
+      if (error == ENODEV) nt_error = NT_STATUS_INVALID_COMPUTER_NAME;
+      else if (error == ENETUNREACH) nt_error = NT_STATUS_INVALID_COMPUTER_NAME;
+      else nt_error = map_nt_error_from_unix(error);
 
       // if we have an 'invalid handle' error we don't display the error
       // because most of the time this means there is no cdrom in the server's
