@@ -44,6 +44,7 @@ public:
   virtual void SeekPercentage(float fPercent = 0.0f);
   virtual float GetPercentage();
   virtual void SetVolume(long nVolume);
+  virtual void SetDynamicRangeCompression(long drc);
   virtual void SetContrast(bool bPlus = true) {}
   virtual void SetBrightness(bool bPlus = true) {}
   virtual void SetHue(bool bPlus = true) {}

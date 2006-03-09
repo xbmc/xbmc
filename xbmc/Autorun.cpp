@@ -367,6 +367,7 @@ bool CAutorun::PlayDisc()
     return false ;
   if ( pInfo->IsAudio( 1 ) )
   {
+    CLog::Log(LOGDEBUG, "Playdisc called on an audio disk");
     CFileItemList vecItems;
     if (g_stSettings.m_szExternalCDDAPlayer[0])
       CUtil::RunXBE(g_stSettings.m_szExternalCDDAPlayer);
@@ -394,6 +395,7 @@ bool CAutorun::PlayDisc()
   }
   else if (pInfo->IsUDFX( 1 ) || pInfo->IsUDF(1))
   {
+    CLog::Log(LOGDEBUG, "Playdisc called on an UDFX/UDF disk");
     if ( CFile::Exists("D:\\default.xbe") )
     {
       int iRegion;
@@ -427,6 +429,7 @@ bool CAutorun::PlayDisc()
   }
   else if (pInfo->IsISOUDF(1) || pInfo->IsISOHFS(1) || pInfo->IsIso9660(1) || pInfo->IsIso9660Interactive(1))
   {
+    CLog::Log(LOGDEBUG, "Playdisc called on an ISOUDF/ISOHFS/iso9660/iso9660Interactive disk");
     int nSize = g_playlistPlayer.GetPlaylist( PLAYLIST_MUSIC ).size();
     int nAddedToPlaylist = 0;
     auto_ptr<IDirectory> pDir ( CFactoryDirectory::Create( "iso9660://" ));
@@ -442,6 +445,7 @@ bool CAutorun::PlayDisc()
   }
   else
   {
+    CLog::Log(LOGDEBUG, "Playdisc called on an unknown disk");
     if ( CFile::Exists("D:\\default.xbe") )
     {
       int iRegion;

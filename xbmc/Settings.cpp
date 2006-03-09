@@ -122,6 +122,7 @@ CSettings::CSettings(void)
   strcpy(g_stSettings.m_strSambaWinsServer, "");
 
   g_stSettings.m_nVolumeLevel = 0;
+  g_stSettings.m_dynamicRangeCompressionLevel = 0;
   g_stSettings.m_iPreMuteVolumeLevel = 0;
   g_stSettings.m_bMute = false;
   g_stSettings.m_fZoomAmount = 1.0f;
@@ -1296,6 +1297,7 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile, const bool loadp
   if (pElement)
   {
     GetInteger(pElement, "volumelevel", g_stSettings.m_nVolumeLevel, VOLUME_MAXIMUM, VOLUME_MINIMUM, VOLUME_MAXIMUM);
+    GetInteger(pElement, "dynamicrangecompression", g_stSettings.m_dynamicRangeCompressionLevel, VOLUME_DRC_MINIMUM, VOLUME_DRC_MINIMUM, VOLUME_DRC_MAXIMUM);
     for (int i = 0; i < 4; i++)
     {
       CStdString setting;
@@ -1635,6 +1637,7 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile, const bool savep
   pNode = pRoot->InsertEndChild(volumeNode);
   if (!pNode) return false;
   SetInteger(pNode, "volumelevel", g_stSettings.m_nVolumeLevel);
+  SetInteger(pNode, "dynamicrangecompression", g_stSettings.m_dynamicRangeCompressionLevel);
   for (int i = 0; i < 4; i++)
   {
     CStdString setting;

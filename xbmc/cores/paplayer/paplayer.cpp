@@ -379,6 +379,11 @@ void PAPlayer::SetVolume(long nVolume)
     m_pStream[m_currentStream]->SetVolume(nVolume);
 }
 
+void PAPlayer::SetDynamicRangeCompression(long drc)
+{
+  // TODO: Add volume amplification
+}
+
 void PAPlayer::Process()
 {
   CLog::Log(LOGDEBUG, "PAPlayer: Thread started");

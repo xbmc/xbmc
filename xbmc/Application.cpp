@@ -2300,27 +2300,15 @@ bool CApplication::OnKey(CKey& key)
     else // regular volume change
     {
       // increase or decrease the volume
+      int volume = g_stSettings.m_nVolumeLevel + g_stSettings.m_dynamicRangeCompressionLevel;
       if (action.wID == ACTION_VOLUME_UP)
-        g_stSettings.m_nVolumeLevel += (int)(action.fAmount1 * 100);
+        volume += (int)(action.fAmount1 * 100);
       else
-        g_stSettings.m_nVolumeLevel -= (int)(action.fAmount1 * 100);
+        volume -= (int)(action.fAmount1 * 100);
 
-      // sanity check
-      if (g_stSettings.m_nVolumeLevel >= VOLUME_MAXIMUM)
-      {
-        g_stSettings.m_nVolumeLevel = VOLUME_MAXIMUM;
-      }
-      if (g_stSettings.m_nVolumeLevel <= VOLUME_MINIMUM)
-      {
-        g_stSettings.m_nVolumeLevel = VOLUME_MINIMUM;
-        if (!g_stSettings.m_bMute)
-          Mute();   // activate mute when volume becomes 0
-      }
+      SetHardwareVolume(volume);
     }
 
-    // tell our hardware to update the volume level...
-    if (m_pPlayer)
-      m_pPlayer->SetVolume(g_stSettings.m_nVolumeLevel);
     // show visual feedback of volume change...
     m_guiDialogVolumeBar.Show(m_gWindowManager.GetActiveWindow());
     m_guiDialogVolumeBar.OnAction(action);
@@ -4125,24 +4113,46 @@ void CApplication::Mute(void)
 void CApplication::SetVolume(int iPercent)
 {
   // convert the percentage to a mB (milliBell) value (*100 for dB)
-  if (iPercent < 0)
-    iPercent = 0;
-  if (iPercent > 100)
-    iPercent = 100;
-  float fHardwareVolume = ((float)iPercent) / 100.0f * (VOLUME_MAXIMUM - VOLUME_MINIMUM) + VOLUME_MINIMUM;
+  long hardwareVolume = (long)((float)iPercent * 0.01f * (VOLUME_MAXIMUM - VOLUME_MINIMUM) + VOLUME_MINIMUM);
+  SetHardwareVolume(hardwareVolume);
+  g_audioManager.SetVolume(g_stSettings.m_nVolumeLevel);
+}
+
+void CApplication::SetHardwareVolume(long hardwareVolume)
+{
+  // TODO DRC
+  if (hardwareVolume >= VOLUME_MAXIMUM /*+ VOLUME_DRC_MAXIMUM*/)
+    hardwareVolume = VOLUME_MAXIMUM;// + VOLUME_DRC_MAXIMUM;
+  if (hardwareVolume <= VOLUME_MINIMUM)
+  {
+    hardwareVolume = VOLUME_MINIMUM;
+    if (!g_stSettings.m_bMute)
+      Mute();
+  }
   // update our settings
-  g_stSettings.m_nVolumeLevel = (long)fHardwareVolume;
+  if (hardwareVolume > VOLUME_MAXIMUM)
+  {
+    g_stSettings.m_dynamicRangeCompressionLevel = hardwareVolume - VOLUME_MAXIMUM;
+    g_stSettings.m_nVolumeLevel = VOLUME_MAXIMUM;
+  }
+  else
+  {
+    g_stSettings.m_dynamicRangeCompressionLevel = 0;
+    g_stSettings.m_nVolumeLevel = hardwareVolume;
+  }
   // and tell our player to update the volume
   if (m_pPlayer)
+  {
     m_pPlayer->SetVolume(g_stSettings.m_nVolumeLevel);
-
-  g_audioManager.SetVolume(g_stSettings.m_nVolumeLevel);
+    // TODO DRC
+//    m_pPlayer->SetDynamicRangeCompression(g_stSettings.m_dynamicRangeCompressionLevel);
+  }
 }
 
 int CApplication::GetVolume() const
 {
   // converts the hardware volume (in mB) to a percentage
-  return int(((float)(g_stSettings.m_nVolumeLevel - VOLUME_MINIMUM)) / (VOLUME_MAXIMUM - VOLUME_MINIMUM)*100.0f + 0.5f);
+  return int(((float)(g_stSettings.m_nVolumeLevel + g_stSettings.m_dynamicRangeCompressionLevel - VOLUME_MINIMUM)) / (VOLUME_MAXIMUM - VOLUME_MINIMUM)*100.0f + 0.5f);
 }
 
 void CApplication::SetPlaySpeed(int iSpeed)
