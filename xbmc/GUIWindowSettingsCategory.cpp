@@ -2264,8 +2264,8 @@ void CGUIWindowSettingsCategory::FillInSkinFonts(CSetting *pSetting)
           }
           pControl->AddLabel(idAttr, iSkinFontSet++);
         }
-        pChild = pChild->NextSibling();
       }
+      pChild = pChild->NextSibling();
     }
 
     pControl->SetValue(iCurrentSkinFontSet);
