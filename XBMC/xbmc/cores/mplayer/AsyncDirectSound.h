@@ -69,8 +69,11 @@ public:
   virtual void WaitCompletion();
   virtual void DoWork();
   virtual void SwitchChannels(int iAudioStream, bool bAudioOnAllSpeakers);
+  virtual void SetDynamicRangeCompression(long drc);
 
 private:
+  void ApplyDynamicRangeCompression(void *dest, const void *source, const int bytes);
+
   IAudioCallback* m_pCallback;
   LONG m_lFadeVolume;
 
@@ -111,6 +114,10 @@ private:
   bool m_bResampleAudio;  // Are we resampling?
   Cssrc m_Resampler;   // The Resampler class that does all the work
   int m_iCurrentAudioStream;   //The Variable tracking LEFT/RIGHT/STEREO
+
+  // Dynamic range compensation stuff
+  short *m_drcTable;      // lookup table for fast pow() function
+  int m_drcAmount;        // amount of dynamic range compression in milliBels.
 };
 
 #endif // !defined(AFX_ASYNCAUDIORENDERER_H__B590A94D_D15E_43A6_A41D_527BD441B5F5__INCLUDED_)

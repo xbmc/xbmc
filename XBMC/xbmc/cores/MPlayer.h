@@ -103,7 +103,7 @@ public:
   virtual void SubtitleOffset(bool bPlus = true);
   virtual void Seek(bool bPlus = true, bool bLargeStep = false);
   virtual void SetVolume(long nVolume);
-  virtual int GetVolume();
+  virtual void SetDynamicRangeCompression(long drc);
   virtual void SetContrast(bool bPlus = true);
   virtual void SetBrightness(bool bPlus = true);
   virtual void SetHue(bool bPlus = true);

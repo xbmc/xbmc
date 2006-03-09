@@ -49,7 +49,7 @@ public:
   void DoWork()                                         { m_dvdAudio.DoWork(); }
 
   void SetVolume(long nVolume)                          { m_dvdAudio.SetVolume(nVolume); }
-  int GetVolume()                                       { return m_dvdAudio.GetVolume(); }
+  void SetDynamicRangeCompression(long drc)             { m_dvdAudio.SetDynamicRangeCompression(drc); }
 
   // holds stream information for current playing stream
   CDVDStreamInfo m_streaminfo;
