@@ -1,3 +1,5 @@
+2006-03-09 changed:	Py Skin builder button is set to invisible.
+
 2006-03-07 changed:	Updated to v2.0 compatibility.
 
 2006-03-06 fixed:	DialogVideoInfo.xml, movieimage was overlapping text in 16x9.
