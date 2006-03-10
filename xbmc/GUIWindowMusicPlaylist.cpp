@@ -599,6 +599,29 @@ void CGUIWindowMusicPlayList::OnItemLoaded(CFileItem* pItem)
     }
   }
 
+  // FIXME: Highly inefficient. :)
+  // Since we can't directly use the items 
+  // of the playlistplayer, we need to set each
+  // label of the playlist items or else the label
+  // is reset to the filename each time Update() 
+  // is called and this is annoying. ;)
+  if (m_guiState.get())
+  {
+    CPlayList& playlist=g_playlistPlayer.GetPlaylist(m_guiState->GetPlaylist());
+    for (int i=0; i<playlist.size(); ++i)
+    {
+      CPlayList::CPlayListItem& item=playlist[i];
+
+      if (item.m_strPath==pItem->m_strPath && 
+          item.m_lStartOffset==pItem->m_lStartOffset && 
+          item.m_lEndOffset==pItem->m_lEndOffset)
+      {
+        item.SetDescription(pItem->GetLabel());
+        break;
+      }
+    }
+  }
+
   //  MusicDb items already have thumbs
   if (!pItem->IsMusicDb())
   {
