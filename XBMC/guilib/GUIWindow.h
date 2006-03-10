@@ -161,6 +161,7 @@ protected:
   // control state saving on window close
   virtual void SaveControlStates();
   virtual void RestoreControlStates();
+  void AddControlGroup(int id);
 
   struct stReferenceControl
   {
