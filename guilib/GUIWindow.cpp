@@ -519,7 +519,7 @@ bool CGUIWindow::Load(TiXmlElement* pRootElement, RESOLUTION resToUse)
 	      {
 	        TiXmlElement *pControl = pControlGroup->FirstChildElement("control");
 	        // In this group no focus of the controls is remembered
-	        m_vecGroups.push_back( -1);
+          AddControlGroup(0);
 	        while (pControl)
 	        {
 	          LoadControl(pControl, iGroup, referencecontrols, resToUse);
@@ -548,7 +548,7 @@ bool CGUIWindow::Load(TiXmlElement* pRootElement, RESOLUTION resToUse)
           pControl->Attribute("id", &id);
           TiXmlElement *pSubControl = pControl->FirstChildElement("control");
           // In this group no focus of the controls is remembered
-          m_vecGroups.push_back(CControlGroup(id));
+          AddControlGroup(id);
           while (pSubControl)
           {
             LoadControl(pSubControl, iGroup, referencecontrols, resToUse);
@@ -1480,4 +1480,18 @@ void CGUIWindow::ResetControlStates()
 {
   m_lastControlID = 0;
   m_controlStates.clear();
+}
+
+void CGUIWindow::AddControlGroup(int id)
+{
+  if (!id)
+  { // find an appropriate new id - max id plus one.
+    for (vector<CControlGroup>::iterator it = m_vecGroups.begin(); it != m_vecGroups.end(); ++it)
+    {
+      if ((*it).m_id > id)
+        id = (*it).m_id;
+    }
+    id++;
+  }
+  m_vecGroups.push_back(CControlGroup(id));
 }
