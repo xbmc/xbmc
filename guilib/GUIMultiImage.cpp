@@ -221,19 +221,28 @@ void CGUIMultiImage::LoadDirectory()
   // don't load any images if our path is empty
   if (m_currentPath.IsEmpty()) return;
 
-  g_TextureManager.GetBundledTexturesFromPath(m_currentPath, m_files);
-
-  // Load in our images from the directory specified
-  // m_currentPath is relative (as are all skin paths)
-  CStdString realPath = g_TextureManager.GetTexturePath(m_currentPath);
-  CHDDirectory dir;
-  CFileItemList items;
-  dir.GetDirectory(realPath, items);
-  for (int i=0; i < items.Size(); i++)
+  // check to see if we have a single image or a folder of images
+  CFileItem item(m_currentPath, true);
+  if (item.IsPicture())
   {
-    CFileItem *pItem = items[i];
-    if (pItem->IsPicture())
-      m_files.push_back(pItem->m_strPath);
+    m_files.push_back(g_TextureManager.GetTexturePath(m_currentPath));
+  }
+  else
+  { // folder of images
+    g_TextureManager.GetBundledTexturesFromPath(m_currentPath, m_files);
+
+    // Load in our images from the directory specified
+    // m_currentPath is relative (as are all skin paths)
+    CStdString realPath = g_TextureManager.GetTexturePath(m_currentPath);
+    CHDDirectory dir;
+    CFileItemList items;
+    dir.GetDirectory(realPath, items);
+    for (int i=0; i < items.Size(); i++)
+    {
+      CFileItem *pItem = items[i];
+      if (pItem->IsPicture())
+        m_files.push_back(pItem->m_strPath);
+    }
   }
 
   // sort our images - they'll be randomized in AllocResources() if necessary
