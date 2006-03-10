@@ -397,6 +397,7 @@ bool CGUIListControl::OnMessage(CGUIMessage& message)
       if (m_vecItems.size() % m_iItemsPerPage) iPages++;
       m_upDown.SetRange(1, iPages);
       m_upDown.SetValue(1);
+      return true;
     }
 
     if (message.GetMessage() == GUI_MSG_LABEL_RESET)
@@ -406,11 +407,13 @@ bool CGUIListControl::OnMessage(CGUIMessage& message)
       m_vecItems.erase(m_vecItems.begin(), m_vecItems.end());
       m_upDown.SetRange(1, 1);
       m_upDown.SetValue(1);
+      return true;
     }
 
     if (message.GetMessage() == GUI_MSG_ITEM_SELECTED)
     {
       message.SetParam1(m_iCursorY + m_iOffset);
+      return true;
     }
     if (message.GetMessage() == GUI_MSG_ITEM_SELECT)
     {
@@ -436,6 +439,7 @@ bool CGUIListControl::OnMessage(CGUIMessage& message)
           m_iOffset = iItem - m_iCursorY;
         }
       }
+      return true;
     }
   }
 
