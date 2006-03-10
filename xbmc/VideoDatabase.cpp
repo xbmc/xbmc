@@ -242,7 +242,7 @@ long CVideoDatabase::GetMovieInfo(const CStdString& strFilenameAndPath)
     Split(strFilenameAndPath, strPath, strFile);
 
     // have to join movieinfo table for correct results
-    CStdString strSQL=FormatSQL("select * from movie join path on movie.idPath = path.idPath join movieinfo on movie.idMovie = movieinfo.idMovie join files on movie.idMovie = files.idMovie where (path.strPath like '%s' or path.strPath like 'stack://%s') and files.strFilename LIKE '%%%s%%'", strPath.c_str(), strPath.c_str(), strFile.c_str());
+    CStdString strSQL=FormatSQL("select * from movie join path on movie.idPath = path.idPath join movieinfo on movie.idMovie = movieinfo.idMovie join files on movie.idMovie = files.idMovie where (path.strPath like '%s' and files.strFileName like '%s') or path.strPath like 'stack://%s'", strPath.c_str(), strFile.c_str(), strPath.c_str());
     CLog::Log(LOGDEBUG,"CVideoDatabase::GetMovieInfo(%s), query = %s", strFilenameAndPath.c_str(), strSQL.c_str());
     m_pDS->query(strSQL.c_str());
     if (m_pDS->num_rows() > 0)
