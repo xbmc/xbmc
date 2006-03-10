@@ -452,6 +452,7 @@ bool CGUIThumbnailPanel::OnMessage(CGUIMessage& message)
       if (m_vecItems.size() % iItemsPerPage) iPages++;
       m_upDown.SetRange(1, iPages);
       m_upDown.SetValue(1);
+      return true;
     }
 
     if (message.GetMessage() == GUI_MSG_LABEL_RESET)
@@ -462,14 +463,17 @@ bool CGUIThumbnailPanel::OnMessage(CGUIMessage& message)
       m_iCursorX = m_iCursorY = m_iRowOffset = 0;
       m_bScrollUp = false;
       m_bScrollDown = false;
+      return true;
     }
     if (message.GetMessage() == GUI_MSG_ITEM_SELECTED)
     {
       message.SetParam1((m_iRowOffset + m_iCursorY) * m_iColumns + m_iCursorX);
+      return true;
     }
     if (message.GetMessage() == GUI_MSG_ITEM_SELECT)
     {
       SetSelectedItem(message.GetParam1());
+      return true;
     }
   }
 
