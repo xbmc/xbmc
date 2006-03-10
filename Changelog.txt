@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 10-03-2006 fixed: Incorrect labels shown at start of filemanager copy, move and delete.
  - 10-03-2006 fixed: First few thumbs sometimes wouldn't update in My Pictures
  - 10-03-2006 changed: Visualisation screensaver doesn't reset on button press unless a dialog is active.
  - 10-03-2006 changed: GUI Messages are sent to the first visible control that matches the id, and only sent to invisible controls if the visible one does not handle it.
