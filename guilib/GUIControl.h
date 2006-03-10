@@ -85,7 +85,7 @@ public:
   virtual void PreAllocResources() {}
   virtual void AllocResources();
   virtual void FreeResources();
-          bool IsAllocated();
+  virtual bool IsAllocated() const;
   virtual void DynamicResourceAlloc(bool bOnOff);
   virtual bool IsDynamicallyAllocated() { return false; };
   virtual bool CanFocus() const;

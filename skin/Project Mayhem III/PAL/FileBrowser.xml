@@ -1,6 +1,6 @@
 <window>
   <id>126</id>
-  <defaultcontrol>450</defaultcontrol>
+  <defaultcontrol alwyays="true">450</defaultcontrol>
   <allowoverlay>yes</allowoverlay>
   <coordinates>
     <system>1</system>

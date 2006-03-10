@@ -3332,7 +3332,10 @@ bool CApplication::ResetScreenSaverWindow()
     }
     else if (iWin == WINDOW_VISUALISATION && g_guiSettings.GetBool("ScreenSaver.UseMusicVisInstead"))
     {
-      // then show previous window
+      // if there are no dialogs on screen, we can just continue as usual from vis mode
+      if (!m_gWindowManager.IsRouted())
+        return false;
+      // otherwise, we'll show the previous window
       m_gWindowManager.PreviousWindow();
       return true;
     }

@@ -51,14 +51,13 @@ bool CGUIDialogFileBrowser::OnMessage(CGUIMessage& message)
       CGUIDialog::OnMessage(message);
       ClearFileItems();
       m_addNetworkShareEnabled = false;
+      return true;
     }
     break;
 
   case GUI_MSG_WINDOW_INIT:
     {
-      CGUIDialog::OnMessage(message);
       m_bConfirmed = false;
-
       if (!CFile::Exists(m_selectedPath))
         m_selectedPath.Empty();
 
@@ -68,7 +67,7 @@ bool CGUIDialogFileBrowser::OnMessage(CGUIMessage& message)
         CUtil::GetParentPath(m_selectedPath, m_Directory.m_strPath);
       Update(m_Directory.m_strPath);
       m_viewControl.SetSelectedItem(m_selectedPath);
-      return true;
+      return CGUIDialog::OnMessage(message);
     }
     break;
 
