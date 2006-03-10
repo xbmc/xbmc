@@ -196,7 +196,7 @@ CGUIViewStateMusicDatabase::CGUIViewStateMusicDatabase(const CFileItemList& item
   case NODE_TYPE_ALBUM_COMPILATIONS_SONGS:
   case NODE_TYPE_SONG:
     {
-      AddSortMethod(SORT_METHOD_TRACKNUM, 266, LABEL_MASKS("%N. %A - %T", "%D"));  // TrackNum, Artist, Title, Duration| empty, empty
+      AddSortMethod(SORT_METHOD_TRACKNUM, 266, LABEL_MASKS(strTrackLeft, strTrackRight));  // Userdefined, Userdefined| empty, empty
       if (g_guiSettings.GetBool("MyMusic.IgnoreTheWhenSorting"))
         AddSortMethod(SORT_METHOD_TITLE_IGNORE_THE, 268, LABEL_MASKS("%T - %A", "%D"));  // Title, Artist, Duration| empty, empty
       else
