@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 10-03-2006 fixed: CUE sheet path name resolving (and other path name resolving) was broken on remote shares.
  - 10-03-2006 changed: music nav, restored track naming template for songs sorted by track num
  - 10-03-2006 fixed: last selected cue item in directory is not remembered
  - 10-03-2006 fixed: items of the music playlist are reset to file when the content of the playlist changes

@@ -455,7 +455,7 @@ void CUtil::GetQualifiedFilename(const CStdString &strBasePath, CStdString &strF
   }
   else //Base is remote
   {
-    if (plItemUrl.IsLocal() == 0 ) //Filename is local
+    if (plItemUrl.IsLocal()) //Filename is local
     {
       if (strFilename.c_str()[0] == '/' || strFilename.c_str()[0] == '\\' || HasSlashAtEnd(strBasePath)) //Begins with a slash.. not good.. but we try to make the best of it..
 
