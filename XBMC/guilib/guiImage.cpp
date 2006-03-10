@@ -29,6 +29,7 @@ CGUIImage::CGUIImage(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, 
     m_dwAlpha[i] = 0xFF;
   ControlType = GUICONTROL_IMAGE;
   m_bDynamicResourceAlloc=false;
+  m_texturesAllocated = false;
   m_Info = 0;
 }
 
@@ -56,6 +57,7 @@ CGUIImage::CGUIImage(const CGUIImage &left)
   m_pPalette = NULL;
   ControlType = GUICONTROL_IMAGE;
   m_bDynamicResourceAlloc=false;
+  m_texturesAllocated = false;
   m_Info = left.m_Info;
 }
 
@@ -217,7 +219,7 @@ void CGUIImage::AllocResources()
 {
   if (m_strFileName.IsEmpty())
     return;
-  FreeResources();
+  FreeTextures();
   CGUIControl::AllocResources();
 
   m_dwFrameCounter = 0;
@@ -235,9 +237,11 @@ void CGUIImage::AllocResources()
 
   // Set state to render the image
   UpdateVB();
+
+  m_texturesAllocated = true;
 }
 
-void CGUIImage::FreeResources()
+void CGUIImage::FreeTextures()
 {
   for (int i = 0; i < (int)m_vecTextures.size(); ++i)
   {
@@ -249,7 +253,12 @@ void CGUIImage::FreeResources()
   m_iCurrentLoop = 0;
   m_iImageWidth = 0;
   m_iImageHeight = 0;
+  m_texturesAllocated = false;
+}
 
+void CGUIImage::FreeResources()
+{
+  FreeTextures();
   CGUIControl::FreeResources();
 }
 
@@ -479,10 +488,11 @@ int CGUIImage::GetRenderHeight() const
 void CGUIImage::SetFileName(const CStdString& strFileName)
 {
   if (m_strFileName.Equals(strFileName)) return;
-  FreeResources();
   m_strFileName = strFileName;
+  // Don't completely free resources here - we may be just changing
+  // filenames mid-animation
+  FreeTextures();
   // Don't allocate resources here as this is done at render time
-//  AllocResources();
 }
 
 void CGUIImage::SetCornerAlpha(DWORD dwLeftTop, DWORD dwRightTop, DWORD dwLeftBottom, DWORD dwRightBottom)
@@ -510,4 +520,10 @@ void CGUIImage::GetBottomRight(float &x, float &y) const
     x = (float)m_iPosX + m_dwWidth;
   if (m_fNH > m_dwHeight)
     y = (float)m_iPosY + m_dwHeight;
+}
+
+bool CGUIImage::IsAllocated() const
+{
+  if (!m_texturesAllocated) return false;
+  return CGUIControl::IsAllocated();
 }
