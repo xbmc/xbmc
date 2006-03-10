@@ -765,6 +765,16 @@ void CGUIMediaWindow::GetDirectoryHistoryString(const CFileItem* pItem, CStdStri
       strHistoryString = pItem->GetLabel() + strPath;
     }
   }
+  else if (pItem->m_lEndOffset>pItem->m_lStartOffset)
+  {
+    // Could be a cue item, all items of a cue share the same filename
+    // so add the offsets to build the history string
+    strHistoryString.Format("%ld%ld", pItem->m_lStartOffset, pItem->m_lEndOffset);
+    strHistoryString += pItem->m_strPath;
+
+    if (CUtil::HasSlashAtEnd(strHistoryString))
+      strHistoryString.Delete(strHistoryString.size() - 1);
+  }
   else
   {
     // Normal directory items
