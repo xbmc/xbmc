@@ -745,13 +745,7 @@ void CGUIWindowFileManager::OnCopy(int iList)
   if (!CGUIDialogYesNo::ShowAndGetInput(120, 123, 0, 0))
     return;
 
-  if (m_dlgProgress)
-  {
-    m_dlgProgress->SetHeading(126);
-    m_dlgProgress->StartModal(GetID());
-    m_dlgProgress->SetPercentage(0);
-    m_dlgProgress->ShowProgressBar(true);
-  }
+  ResetProgressBar();
 
   DoProcess(ACTION_COPY, m_vecItems[iList], m_Directory[1 - iList].m_strPath);
 
@@ -765,13 +759,7 @@ void CGUIWindowFileManager::OnMove(int iList)
   if (!CGUIDialogYesNo::ShowAndGetInput(121, 124, 0, 0))
     return;
 
-  if (m_dlgProgress)
-  {
-    m_dlgProgress->SetHeading(126);
-    m_dlgProgress->StartModal(GetID());
-    m_dlgProgress->SetPercentage(0);
-    m_dlgProgress->ShowProgressBar(true);
-  }
+  ResetProgressBar();
 
   DoProcess(ACTION_MOVE, m_vecItems[iList], m_Directory[1 - iList].m_strPath);
 
@@ -785,7 +773,7 @@ void CGUIWindowFileManager::OnDelete(int iList)
   if (!CGUIDialogYesNo::ShowAndGetInput(122, 125, 0, 0))
     return;
 
-  if (m_dlgProgress) m_dlgProgress->StartModal(GetID());
+  ResetProgressBar();
 
   DoProcess(ACTION_DELETE, m_vecItems[iList], m_Directory[iList].m_strPath);
 
@@ -1400,4 +1388,18 @@ void CGUIWindowFileManager::SetInitialPath(const CStdString &path)
   }
 
   if (m_Directory[1].m_strPath == "?") m_Directory[1].m_strPath = "";
+}
+
+void CGUIWindowFileManager::ResetProgressBar()
+{
+  if (m_dlgProgress)
+  {
+    m_dlgProgress->SetHeading(126);
+    m_dlgProgress->SetLine(0, 0);
+    m_dlgProgress->SetLine(1, 0);
+    m_dlgProgress->SetLine(2, 0);
+    m_dlgProgress->StartModal(GetID());
+    m_dlgProgress->SetPercentage(0);
+    m_dlgProgress->ShowProgressBar(true);
+  }
 }
