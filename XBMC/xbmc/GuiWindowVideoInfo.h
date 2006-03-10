@@ -28,7 +28,8 @@ protected:
   void OnSearch(CStdString& strSearch);
   void DoSearch(CStdString& strSearch, CFileItemList& items);
   void OnSearchItemFound(const CFileItem* pItem);
-  void Play();
+  void Play(bool resume = false);
+  void DownloadThumbnail(const CStdString &thumb);
 
   CIMDBMovie* m_pMovie;
   CStdString m_thumbNail;
