@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 10-03-2006 changed: Visualisation screensaver doesn't reset on button press unless a dialog is active.
+ - 10-03-2006 changed: GUI Messages are sent to the first visible control that matches the id, and only sent to invisible controls if the visible one does not handle it.
  - 09-03-2006 fixed: [ 1446065 ] No Media can be played after stopping wma file.
  - 09-03-2006 added: Dynamic range compensation to videos.  Replaces the old Volume Amplification which only worked with mplayer.  TRANSLATORS: Definition of string id 290 has changed.
  - 09-03-2006 fixed: Controlgroup default control saving wasn't working correctly.
