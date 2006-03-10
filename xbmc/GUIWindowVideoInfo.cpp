@@ -148,6 +148,15 @@ bool CGUIWindowVideoInfo::OnMessage(CGUIMessage& message)
       {
         Play();
       }
+      else if (iControl == CONTROL_BTN_RESUME)
+      {
+        Play(true);
+      }
+      else if (iControl == CONTROL_BTN_GET_THUMB)
+      {
+        DownloadThumbnail(m_thumbNail);
+        Update();
+      }
       else if (iControl == CONTROL_DISC)
       {
         int iItem = 0;
@@ -294,6 +303,25 @@ void CGUIWindowVideoInfo::Update()
     SET_CONTROL_HIDDEN(CONTROL_TEXTAREA);
     SET_CONTROL_VISIBLE(CONTROL_LIST);
   }
+
+  // Check for resumability
+  CGUIWindowVideoFiles *window = (CGUIWindowVideoFiles *)m_gWindowManager.GetWindow(WINDOW_VIDEOS);
+  CFileItem movie(m_pMovie->m_strPath, false);
+  if (window && window->GetResumeItemOffset(&movie))
+  {
+    CONTROL_ENABLE(CONTROL_BTN_RESUME);
+  }
+  else
+  {
+    CONTROL_DISABLE(CONTROL_BTN_RESUME);
+  }
+  // update the thumbnail
+  const CGUIControl* pControl = GetControl(CONTROL_IMAGE);
+  if (pControl)
+  {
+    CGUIImage* pImageControl = (CGUIImage*)pControl;
+    pImageControl->SetFileName(m_thumbNail);
+  }
 }
 
 void CGUIWindowVideoInfo::SetLabel(int iControl, const CStdString& strLabel)
@@ -332,25 +360,7 @@ void CGUIWindowVideoInfo::Refresh()
       CUtil::GetVideoThumbnail(m_pMovie->m_strIMDBNumber, m_thumbNail);
     if (!CFile::Exists(m_thumbNail) && strImage.size() > 0)
     {
-      CHTTP http;
-      CStdString strExtension;
-      CUtil::GetExtension(strImage, strExtension);
-      CStdString strTemp = "Z:\\temp";
-      strTemp += strExtension;
-      ::DeleteFile(strTemp.c_str());
-      http.Download(strImage, strTemp);
-
-      try
-      {
-        CPicture picture;
-        picture.Convert(strTemp, m_thumbNail);
-      }
-      catch (...)
-      {
-        OutputDebugString("...\n");
-        ::DeleteFile(m_thumbNail.c_str());
-      }
-      ::DeleteFile(strTemp.c_str());
+      DownloadThumbnail(m_thumbNail);
     }
 
     //CStdString strAlbum;
@@ -362,12 +372,6 @@ void CGUIWindowVideoInfo::Refresh()
       m_thumbNail = "";
     }
 
-    const CGUIControl* pControl = GetControl(CONTROL_IMAGE);
-    if (pControl)
-    {
-      CGUIImage* pImageControl = (CGUIImage*)pControl;
-      pImageControl->SetFileName(m_thumbNail);
-    }
     //OutputDebugString("update\n");
     Update();
     //OutputDebugString("updated\n");
@@ -475,17 +479,51 @@ void CGUIWindowVideoInfo::AddItemsToList(const vector<CStdString> &vecStr)
   }
 }
 
-void CGUIWindowVideoInfo::Play()
+void CGUIWindowVideoInfo::Play(bool resume)
 {
   CFileItem movie(m_pMovie->m_strPath, false);
   CGUIWindowVideoFiles* pWindow = (CGUIWindowVideoFiles*)m_gWindowManager.GetWindow(WINDOW_VIDEOS);
-  if (pWindow) pWindow->PlayMovie(&movie);
+  if (pWindow)
+  {
+    // close our dialog
+    Close(true);
+    if (resume)
+      movie.m_lStartOffset = pWindow->GetResumeItemOffset(&movie);
+    pWindow->PlayMovie(&movie);
+  }
 }
 
 void CGUIWindowVideoInfo::OnInitWindow()
 {
   CGUIDialog::OnInitWindow();
-  // disable buttons with id 9 and 10 as we don't have support for it yet!
-  CONTROL_DISABLE(9);
+  // disable button with id 10 as we don't have support for it yet!
   CONTROL_DISABLE(10);
+}
+
+void CGUIWindowVideoInfo::DownloadThumbnail(const CStdString &thumb)
+{
+  if (m_pMovie->m_strPictureURL.IsEmpty())
+    return;
+  CHTTP http;
+  CStdString strExtension;
+  CUtil::GetExtension(m_pMovie->m_strPictureURL, strExtension);
+  CStdString strTemp = "Z:\\temp";
+  strTemp += strExtension;
+  ::DeleteFile(strTemp.c_str());
+  http.Download(m_pMovie->m_strPictureURL, strTemp);
+
+  try
+  {
+    // TODO: No need to do this if CPicture::DoCreateThumbnail() didn't
+    // check file existence
+    ::DeleteFile(thumb.c_str());
+    CPicture picture;
+    picture.Convert(strTemp, thumb);
+  }
+  catch (...)
+  {
+    OutputDebugString("...\n");
+    ::DeleteFile(thumb.c_str());
+  }
+  ::DeleteFile(strTemp.c_str());
 }
