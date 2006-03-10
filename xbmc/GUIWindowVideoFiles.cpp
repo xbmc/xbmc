@@ -184,8 +184,11 @@ void CGUIWindowVideoFiles::UpdateButtons()
   SET_CONTROL_LABEL(CONTROL_STACK, g_stSettings.m_iMyVideoStack + 14000);
 }
 
-void CGUIWindowVideoFiles::OnPrepareFileItems(CFileItemList &items)
+bool CGUIWindowVideoFiles::GetDirectory(const CStdString &strDirectory, CFileItemList &items)
 {
+  if (!CGUIWindowVideoBase::GetDirectory(strDirectory, items))
+    return false;
+
   if (!items.IsStack() && g_stSettings.m_iMyVideoStack != STACK_NONE)
   {
     //sort list ascending by filename before stacking...
@@ -193,6 +196,11 @@ void CGUIWindowVideoFiles::OnPrepareFileItems(CFileItemList &items)
     items.Stack();
   }
 
+  return true;
+}
+
+void CGUIWindowVideoFiles::OnPrepareFileItems(CFileItemList &items)
+{
   items.SetThumbs();
   
   SetIMDBThumbs(items);
