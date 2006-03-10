@@ -201,11 +201,19 @@ void CGUIWindowMusicSongs::OnScan()
   return ;
 }
 
-void CGUIWindowMusicSongs::OnPrepareFileItems(CFileItemList &items)
+bool CGUIWindowMusicSongs::GetDirectory(const CStdString &strDirectory, CFileItemList &items)
 {
+  if (!CGUIWindowMusicBase::GetDirectory(strDirectory, items))
+    return false;
+
   // check for .CUE files here.
   items.FilterCueItems();
 
+  return true;
+}
+
+void CGUIWindowMusicSongs::OnPrepareFileItems(CFileItemList &items)
+{
   RetrieveMusicInfo();
 
   items.SetMusicThumbs();
