@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 10-03-2006 fixed: cue items where not filtered when adding a folder to the playlist
  - 10-03-2006 fixed: Crash bug in some skins introduced by fix for first few thumbs.
  - 10-03-2006 added: Enabled the Resume button in dialog video info.
  - 10-03-2006 changed: <imagepath> or <info> in a multiimage control can now point to a single image file (doesn't have to be a folder of files).
