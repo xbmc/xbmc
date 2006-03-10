@@ -87,7 +87,7 @@ void CGUIControl::FreeResources()
   m_hasRendered = false;
 }
 
-bool CGUIControl::IsAllocated()
+bool CGUIControl::IsAllocated() const
 {
   return m_bAllocated;
 }

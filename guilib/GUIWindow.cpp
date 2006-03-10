@@ -1063,12 +1063,23 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
     break;
   }
 
-  bool handled(false);
   ivecControls i;
+  // Send to the visible matching control first
   for (i = m_vecControls.begin();i != m_vecControls.end(); ++i)
   {
     CGUIControl* pControl = *i;
-    if (pControl && message.GetControlId() == pControl->GetID())
+    if (pControl && message.GetControlId() == pControl->GetID() && pControl->IsVisible())
+    {
+      if (pControl->OnMessage(message))
+        return true;
+    }
+  }
+  // Unhandled - send to all matching invisible controls as well
+  bool handled(false);
+  for (i = m_vecControls.begin();i != m_vecControls.end(); ++i)
+  {
+    CGUIControl* pControl = *i;
+    if (pControl && message.GetControlId() == pControl->GetID() && !pControl->IsVisible())
     {
       if (pControl->OnMessage(message))
         handled = true;
@@ -1420,7 +1431,7 @@ void CGUIWindow::SaveControlStates()
         pControl->GetControlType() == CGUIControl::GUICONTROL_THUMBNAIL)
     {
       CGUIMessage message(GUI_MSG_ITEM_SELECTED, GetID(), pControl->GetID());
-      pControl->OnMessage(message);
+      OnMessage(message);
       m_controlStates.push_back(CControlState(pControl->GetID(), message.GetParam1()));
     }
   }

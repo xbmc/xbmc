@@ -33,6 +33,7 @@ public:
   virtual void DynamicResourceAlloc(bool bOnOff);
   virtual bool IsDynamicallyAllocated() { return m_bDynamicResourceAlloc; };
   virtual bool CanFocus() const;
+  virtual bool IsAllocated() const;
 
   void Select(int iBitmap);
   void SetItems(int iItems);
@@ -55,6 +56,7 @@ public:
   int GetInfo() const { return m_Info; };
 
 protected:
+  void FreeTextures();
   virtual void Update();
   void UpdateVB();
   void Process();
@@ -79,6 +81,9 @@ protected:
   bool m_bWasVisible;
   DWORD m_dwAlpha[4];
   bool m_bDynamicResourceAlloc;
+
+  // for when we are changing textures
+  bool m_texturesAllocated;
 
   //vertex values
   float m_fX;
