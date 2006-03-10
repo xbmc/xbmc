@@ -13,6 +13,7 @@ public:
 private:
   virtual void SetIMDBThumbs(CFileItemList& items);
 protected:
+  virtual bool GetDirectory(const CStdString &strDirectory, CFileItemList &items);
   virtual bool OnPlayMedia(int iItem);
   virtual void AddFileToDatabase(const CFileItem* pItem);
   virtual void OnPrepareFileItems(CFileItemList &items);
