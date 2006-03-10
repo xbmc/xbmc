@@ -119,6 +119,8 @@ void CGUIThumbnailPanel::RenderItem(bool bFocus, int iPosX, int iPosY, CGUIListI
           yOff += ((m_iTextureHeight - m_iThumbHeight) / 2);
           //if thumbPosX or thumbPosX != 0 the thumb will be bumped off-center
         }
+        // set file name to make sure it's always up to date (does nothing if it is)
+        thumb->SetFileName(strThumb);
         thumb->SetPosition(m_iThumbXPos + iCenteredPosX + xOff, m_iThumbYPos + iPosY + yOff);
         thumb->Render();
 

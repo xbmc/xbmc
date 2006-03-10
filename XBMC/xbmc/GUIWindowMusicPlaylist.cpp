@@ -605,7 +605,6 @@ void CGUIWindowMusicPlayList::OnItemLoaded(CFileItem* pItem)
     // Reset thumbs and default icons
     pItem->SetMusicThumb();
     pItem->FillInDefaultIcon();
-    pItem->SetImageChanged();
   }
   CLog::DebugLog("Finished OnItemLoaded for item at %p", pItem);
 }
