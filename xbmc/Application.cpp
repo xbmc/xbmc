@@ -1884,11 +1884,6 @@ void CApplication::Render()
 
   g_graphicsContext.Lock();
 
-  // draw GUI
-  g_graphicsContext.Clear();
-  //SWATHWIDTH of 2 improves fillrates (performance investigator)
-  m_pd3dDevice->SetRenderState(D3DRS_SWATHWIDTH, 2);
-
   m_gWindowManager.UpdateModelessVisibility();
 
   // check if we're playing a file
@@ -1920,8 +1915,20 @@ void CApplication::Render()
   }
 
   // render current window/dialog
-  m_gWindowManager.Render();
-
+  // In screensaver modes with a separate window (slideshow, vis, screensaver window)
+  // we render the window last.
+  int activeWindow = m_gWindowManager.GetActiveWindow();
+  bool renderLast = m_bScreenSave && (activeWindow == WINDOW_SLIDESHOW ||
+                                      activeWindow == WINDOW_VISUALISATION ||
+                                      activeWindow == WINDOW_SCREENSAVER);
+  if (!renderLast)
+  {
+    // draw GUI
+    g_graphicsContext.Clear();
+    //SWATHWIDTH of 2 improves fillrates (performance investigator)
+    m_pd3dDevice->SetRenderState(D3DRS_SWATHWIDTH, 2);
+    m_gWindowManager.Render();
+  }
   {
     // if we're recording an audio stream then show blinking REC
     if (IsPlayingAudio())
@@ -1943,9 +1950,16 @@ void CApplication::Render()
   }
 
   // Now render any dialogs
-  if (!m_bScreenSave)
-    m_gWindowManager.RenderDialogs();
+  m_gWindowManager.RenderDialogs();
 
+  // in screensaver mode, render the display on top of all dialogs etc.
+  if (renderLast)
+  {
+    g_graphicsContext.Clear();
+    //SWATHWIDTH of 2 improves fillrates (performance investigator)
+    m_pd3dDevice->SetRenderState(D3DRS_SWATHWIDTH, 2);
+    m_gWindowManager.Render();
+  }
   // Render the mouse pointer
   if (g_Mouse.IsActive())
   {

@@ -323,10 +323,12 @@ void CGUIWindowVideoFiles::OnInfo(int iItem)
     }
   }
 
+  // save the folder path
+  CStdString folderPath = pItem->m_bIsFolder ? pItem->m_strPath : "";
   ShowIMDB(&item);
-  if (pItem->m_bIsFolder)
+  if (!folderPath.IsEmpty())
   { // add IMDb icon to the folder as well
-    ApplyIMDBThumbToFolder(pItem->m_strPath, item.GetThumbnailImage());
+    ApplyIMDBThumbToFolder(folderPath, item.GetThumbnailImage());
   }
   m_viewControl.SetSelectedItem(iSelectedItem);
 }

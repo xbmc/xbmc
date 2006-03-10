@@ -593,19 +593,19 @@ void CGUIWindowVideoBase::DisplayEmptyDatabaseMessage(bool bDisplay)
   m_bDisplayEmptyDatabaseMessage = bDisplay;
 }
 
-int  CGUIWindowVideoBase::ResumeItemOffset(int iItem)
+int  CGUIWindowVideoBase::GetResumeItemOffset(CFileItem *item)
 {
   int startOffset = 0;
-  if (m_vecItems[iItem]->IsStack())
+  if (item->IsStack())
   {
     CVideoSettings settings;
-    if (m_database.GetVideoSettings(m_vecItems[iItem]->m_strPath, settings))
+    if (m_database.GetVideoSettings(item->m_strPath, settings))
       return settings.m_ResumeTime;
 
     // TODO: Remove this code once the player can handle the stack:// protocol.
     // grab the database info.  If stacking is enabled, we may have to check multiple files...
     vector<CStdString> movies;
-    GetStackedFiles(m_vecItems[iItem]->m_strPath, movies);
+    GetStackedFiles(item->m_strPath, movies);
     for (unsigned int i=0; i < movies.size(); i++)
     {
       CVideoSettings settings;
@@ -619,10 +619,10 @@ int  CGUIWindowVideoBase::ResumeItemOffset(int iItem)
       }
     }
   }
-  else if (!m_vecItems[iItem]->IsNFO() && !m_vecItems[iItem]->IsPlayList())
+  else if (!item->IsNFO() && !item->IsPlayList())
   {
     CVideoSettings settings;
-    m_database.GetVideoSettings(m_vecItems[iItem]->m_strPath, settings);
+    m_database.GetVideoSettings(item->m_strPath, settings);
     startOffset = settings.m_ResumeTime;
   }
   return startOffset;
@@ -640,7 +640,7 @@ bool CGUIWindowVideoBase::OnClick(int iItem)
 
 void CGUIWindowVideoBase::OnResumeItem(int iItem)
 {
-  m_vecItems[iItem]->m_lStartOffset = ResumeItemOffset(iItem);
+  m_vecItems[iItem]->m_lStartOffset = GetResumeItemOffset(m_vecItems[iItem]);
   CGUIMediaWindow::OnClick(iItem);
 }
 
@@ -685,7 +685,7 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem)
       btn_Show_Info = pMenu->AddButton(13346);
     
     // check to see if the Resume Video button is applicable
-    if(ResumeItemOffset(iItem)>0)               
+    if (GetResumeItemOffset(m_vecItems[iItem]) > 0)               
       btn_Resume = pMenu->AddButton(13381);     // Resume Video
 
     if (vecCores.size() >= 1)
