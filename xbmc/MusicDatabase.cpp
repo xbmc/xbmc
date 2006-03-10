@@ -3735,7 +3735,6 @@ bool CMusicDatabase::RefreshMusicDbThumbs(CFileItem* pItem, CFileItemList &items
       pItem->FreeIcons();
       pItem->SetThumbnailImage(strThumb);
       pItem->FillInDefaultIcon();
-      pItem->SetImageChanged();
 
       m_pDS->close(); // cleanup recordset data
 
@@ -3775,7 +3774,6 @@ bool CMusicDatabase::RefreshMusicDbThumbs(CFileItem* pItem, CFileItemList &items
             pItem->FreeIcons();
             pItem->SetThumbnailImage(strThumb);
             pItem->FillInDefaultIcon();
-            pItem->SetImageChanged();
           }
         }
       }
@@ -3838,7 +3836,6 @@ bool CMusicDatabase::RefreshMusicDbThumbs(CFileItem* pItem, CFileItemList &items
             pItem->FreeIcons();
             pItem->SetThumbnailImage(strThumb);
             pItem->FillInDefaultIcon();
-            pItem->SetImageChanged();
           }
         }
       }

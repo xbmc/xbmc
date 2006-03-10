@@ -611,7 +611,6 @@ void CGUIWindowPictures::OnItemLoaded(CFileItem *pItem)
     // refill in the icon to get it to update
     pItem->SetThumb();
     pItem->FillInDefaultIcon();
-    pItem->SetImageChanged();
   }
 }
 

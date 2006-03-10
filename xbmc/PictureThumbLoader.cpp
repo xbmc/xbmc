@@ -29,7 +29,6 @@ bool CPictureThumbLoader::LoadItem(CFileItem* pItem)
   // refill in the icon to get it to update
   pItem->SetThumb();
   pItem->FillInDefaultIcon();
-  pItem->SetImageChanged();
   return true;
 };
 
