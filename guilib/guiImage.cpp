@@ -488,10 +488,10 @@ int CGUIImage::GetRenderHeight() const
 void CGUIImage::SetFileName(const CStdString& strFileName)
 {
   if (m_strFileName.Equals(strFileName)) return;
-  m_strFileName = strFileName;
   // Don't completely free resources here - we may be just changing
   // filenames mid-animation
   FreeTextures();
+  m_strFileName = strFileName;
   // Don't allocate resources here as this is done at render time
 }
 

@@ -51,6 +51,9 @@ bool CPicture::CreateThumbnail(const CStdString& strFileName)
 
 bool CPicture::DoCreateThumbnail(const CStdString& strFileName, const CStdString& strThumbFileName)
 {
+  // TODO: It really shouldn't be the CPicture class' rule to determine
+  // whether or not thumbs are created.
+
   // don't create the thumb if it already exists
   if (CFile::Exists(strThumbFileName))
     return true;
