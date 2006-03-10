@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 10-03-2006 fixed: items of the music playlist are reset to file when the content of the playlist changes
  - 10-03-2006 fixed: movies where not stacked when adding a folder to the playlist
  - 10-03-2006 fixed: cue items where not filtered when adding a folder to the playlist
  - 10-03-2006 fixed: Crash bug in some skins introduced by fix for first few thumbs.
