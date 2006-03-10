@@ -12,6 +12,7 @@ public:
   virtual void Render();
 
   void PlayMovie(const CFileItem *item);
+  int  GetResumeItemOffset(CFileItem *item);
 
 private:
   bool IsCorrectDiskInDrive(const CStdString& strFileName, const CStdString& strDVDLabel);
@@ -41,7 +42,6 @@ protected:
   void OnManualIMDB();
   bool CheckMovie(const CStdString& strFileName);
 
-  int  ResumeItemOffset(int iItem);
   void AddItemToPlayList(const CFileItem* pItem, int iPlaylist = PLAYLIST_VIDEO);
   void GetStackedFiles(const CStdString &strFileName, std::vector<CStdString> &movies);
   CStdString GetnfoFile(CFileItem *item);
