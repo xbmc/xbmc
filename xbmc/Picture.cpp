@@ -39,23 +39,22 @@ bool CPicture::CreateAlbumThumbnail(const CStdString& strFileName, const CStdStr
 {
   CStdString strThumbnail;
   CUtil::GetAlbumFolderThumb(strAlbum, strThumbnail, true);
-  return DoCreateThumbnail(strFileName, strThumbnail);
+  // TODO: Do we need to check existence here?
+  return DoCreateThumbnail(strFileName, strThumbnail, true);
 }
 
 bool CPicture::CreateThumbnail(const CStdString& strFileName)
 {
   CStdString strThumbnail;
   CUtil::GetThumbnail(strFileName, strThumbnail);
-  return DoCreateThumbnail(strFileName, strThumbnail);
+  // TODO: Do we need to check existence here?
+  return DoCreateThumbnail(strFileName, strThumbnail ,true);
 }
 
-bool CPicture::DoCreateThumbnail(const CStdString& strFileName, const CStdString& strThumbFileName)
+bool CPicture::DoCreateThumbnail(const CStdString& strFileName, const CStdString& strThumbFileName, bool checkExistence /*= false*/)
 {
-  // TODO: It really shouldn't be the CPicture class' rule to determine
-  // whether or not thumbs are created.
-
   // don't create the thumb if it already exists
-  if (CFile::Exists(strThumbFileName))
+  if (checkExistence && CFile::Exists(strThumbFileName))
     return true;
 
   CLog::Log(LOGINFO, "Creating thumb from: %s as: %s", strFileName.c_str(),strThumbFileName.c_str());
@@ -148,11 +147,6 @@ void CPicture::RenderImage(IDirect3DTexture8* pTexture, float x, float y, float 
   // reset texture state
   g_graphicsContext.Get3DDevice()->SetTexture(0, NULL);
   m_pVB->Release();
-}
-
-bool CPicture::Convert(const CStdString& strSource, const CStdString& strDest)
-{
-  return DoCreateThumbnail(strSource, strDest);
 }
 
 void CPicture::CreateFolderThumb(CStdString &strFolder, CStdString *strThumbs)

@@ -122,9 +122,11 @@ void CKaiItem::OnFileComplete(TICKET aTicket, CStdString& aFilePath, INT aByteRx
 
     try
     {
-      CPicture picture;
-      picture.Convert(aFilePath, strAvatarFilePath);
-
+      if (!CFile::Exists(strAvatarFilePath))
+      { // download and convert image
+        CPicture picture;
+        picture.DoCreateThumbnail(aFilePath, strAvatarFilePath);
+      }
       DWORD dwAvatarWidth = 50;
       DWORD dwAvatarHeight = 50;
       if (m_pAvatar)

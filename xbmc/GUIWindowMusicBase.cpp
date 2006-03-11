@@ -716,6 +716,7 @@ void CGUIWindowMusicBase::OnQueueItem(int iItem)
   if (g_partyModeManager.IsEnabled())
     iPlaylist = PLAYLIST_MUSIC_TEMP;
 
+  CLog::Log(LOGDEBUG, "Adding file %s%s to %smusic playlist", item.m_strPath, item.m_bIsFolder ? " (folder) " : "", iPlaylist == PLAYLIST_MUSIC ? "" : "temp ");
   AddItemToPlayList(&item, iPlaylist);
 
   // select next item
