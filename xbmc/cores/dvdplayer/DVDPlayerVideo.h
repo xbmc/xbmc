@@ -44,8 +44,9 @@ public:
   void SetAspectRatio(float fAspectRatio);
 
   __int64 GetDelay();
-    void SetDelay(__int64 delay);
-  __int64 GetDiff();
+  void SetDelay(__int64 delay);
+
+  bool IsStalled()                                  { return m_DetectedStill;  }
   int GetNrOfDroppedFrames()                        { return m_iDroppedFrames; }
 
   bool InitializedOutputDevice();
@@ -91,6 +92,8 @@ protected:
   
   int m_iNrOfPicturesNotToSkip;
   int m_speed;
+
+  bool m_DetectedStill;
   
   // classes
   CDVDDemuxSPU* m_pDVDSpu;
@@ -108,6 +111,7 @@ public:
     {           
       m_pClock = pClock;
       m_iTimestamp = 0i64;
+      m_iDelay = 0;
       CThread::Create();
       CThread::SetPriority(THREAD_PRIORITY_TIME_CRITICAL);      
       CThread::SetName("CPresentThread");
@@ -126,8 +130,11 @@ public:
     // aborts any pending displays.
     void AbortPresent() { m_iTimestamp = 0i64; } 
 
-    //delay before we want to present this picture
+    // delay before we want to present this picture
     void Present(__int64 iTimeStamp, EFIELDSYNC m_OnField); 
+
+    // delay between when we wanted frame to be presented and it acually was
+    __int64 GetDelay() { return m_iDelay; }
 
   protected:
 
@@ -135,7 +142,7 @@ public:
 
   private:
     __int64 m_iTimestamp;
-
+    __int64 m_iDelay;
     CCriticalSection m_critSection;
     CEvent m_eventFrame;
     CDVDClock *m_pClock;
