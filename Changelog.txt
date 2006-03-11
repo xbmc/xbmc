@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 11-03-2006 fixed: [ 1435914 ] "Set lock" bug
  - 11-03-2006 added: Debug logging to xbmsp file opening.
  - 11-03-2006 fixed: [ 1394481 ] DVD Player - LCD Output.
  - 11-03-2006 fixed: Infinite loop if a media window is activated with a path that does not exist.
