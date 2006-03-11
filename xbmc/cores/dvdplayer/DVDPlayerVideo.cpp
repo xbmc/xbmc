@@ -13,6 +13,15 @@
 
 #include "DVDCodecs\DVDCodecs.h"
 
+static __forceinline __int64 abs(__int64 value)
+{
+  if( value < 0 )
+    return -value;
+  else
+    return value;
+}
+
+
 CDVDPlayerVideo::CDVDPlayerVideo(CDVDClock* pClock, CDVDOverlayContainer* pOverlayContainer) 
 : CThread()
 , m_PresentThread( pClock )
@@ -117,6 +126,8 @@ void CDVDPlayerVideo::OnStartup()
   m_iDroppedFrames = 0;
   
   m_iCurrentPts = DVD_NOPTS_VALUE;
+  m_iFlipTimeStamp = m_pClock->GetAbsoluteClock();
+  m_DetectedStill = false;
   
   g_dvdPerformanceCounter.EnableVideoDecodePerformance(ThreadHandle());
 }
@@ -134,8 +145,6 @@ void CDVDPlayerVideo::Process()
 
   unsigned int iFrameTime = (unsigned int)(DVD_TIME_BASE / m_fFrameRate) ;  
 
-  bool bDetectedStill = false;
-
   int iDropped = 0; //frames dropped in a row
   bool bRequestDrop = false;  
 
@@ -143,7 +152,7 @@ void CDVDPlayerVideo::Process()
   {
     while (m_speed == DVD_PLAYSPEED_PAUSE && !m_messageQueue.RecievedAbortRequest()) Sleep(5);
 
-    int iQueueTimeOut = (bDetectedStill ? iFrameTime / 4 : iFrameTime * 4) / 1000;
+    int iQueueTimeOut = (m_DetectedStill ? iFrameTime / 4 : iFrameTime * 4) / 1000;
     
     CDVDMsg* pMsg;
     MsgQueueReturnCode ret = m_messageQueue.Get(&pMsg, iQueueTimeOut);
@@ -152,10 +161,10 @@ void CDVDPlayerVideo::Process()
     else if (ret == MSGQ_TIMEOUT)
     {
       //Okey, start rendering at stream fps now instead, we are likely in a stillframe
-      if( !bDetectedStill )
+      if( !m_DetectedStill )
       {
         CLog::Log(LOGINFO, "CDVDPlayerVideo - Stillframe detected, switching to forced %d fps", (DVD_TIME_BASE / iFrameTime));
-        bDetectedStill = true;
+        m_DetectedStill = true;
         pts = m_pClock->GetClock();
       }
 
@@ -178,7 +187,7 @@ void CDVDPlayerVideo::Process()
       CLog::Log(LOGDEBUG, "CDVDPlayerVideo - CDVDMsg::GENERAL_SYNCHRONIZE");
 
       CDVDMsgGeneralSynchronize* pMsgGeneralSynchronize = (CDVDMsgGeneralSynchronize*)pMsg;
-      //pMsgGeneralSynchronize->Wait(&m_bStop);
+      pMsgGeneralSynchronize->Wait(&m_bStop, SYNCSOURCE_VIDEO);
 
       pMsgGeneralSynchronize->Release();
 
@@ -202,10 +211,10 @@ void CDVDPlayerVideo::Process()
       continue;
     } 
 
-    if (bDetectedStill)
+    if (m_DetectedStill)
     {
       CLog::Log(LOGINFO, "CDVDPlayerVideo - Stillframe left, switching to normal playback");      
-      bDetectedStill = false;
+      m_DetectedStill = false;
 
       //don't allow the first frames after a still to be dropped
       //sometimes we get multiple stills (long duration frames) after each other
@@ -222,7 +231,22 @@ void CDVDPlayerVideo::Process()
       CDVDMsgGeneralResync* pMsgGeneralResync = (CDVDMsgGeneralResync*)pMsg;
       
       //DVDPlayer asked us to sync playback clock
-      m_pClock->Discontinuity(CLOCK_DISC_NORMAL, pMsgGeneralResync->GetDts());      
+      pts = pMsgGeneralResync->GetDts();
+
+      //if( DVDMSG_IS(msg, DVDMSG_GENERAL_SETCLOCK) )
+      //{
+
+        __int64 delay = m_iFlipTimeStamp - m_pClock->GetAbsoluteClock();
+        
+        if( delay > iFrameTime ) delay = iFrameTime;
+        else if( delay < 0 ) delay = 0;
+
+        m_pClock->Discontinuity(CLOCK_DISC_NORMAL, pts, delay);
+        CLog::Log(LOGDEBUG, "CDVDPlayerVideo:: Resync - clock:%I64d, delay:%I64d", pts, delay);      
+      //}
+      //else
+      //  CLog::Log(LOGDEBUG, "CDVDPlayerVideo:: Resync - pts:%I64d", pts);      
+
     }
     else if (pMsg->IsType(CDVDMsg::VIDEO_NOSKIP))
     {
@@ -489,32 +513,43 @@ CDVDPlayerVideo::EOUTPUTSTATUS CDVDPlayerVideo::OutputPicture(DVDVideoPicture* p
     }
 
     // calculate the time we need to delay this picture before displaying
-    __int64 iSleepTime;
+    __int64 iSleepTime, iClockSleep, iFrameSleep;
 
-    if( m_pClock->HadDiscontinuity( DVD_MSEC_TO_TIME(1) ) )
-    {
-      //Playback at normal fps until after discontinuity
-      iSleepTime = pPicture->iDuration;
-      iSleepTime -= m_pClock->GetAbsoluteClock() - m_iFlipTimeStamp;
-    }
-    else if (m_speed < 0)
+    // sleep calculated by duration of frame
+    iFrameSleep = m_iFlipTimeStamp - m_pClock->GetAbsoluteClock();
+    // negative frame sleep possible after a stillframe, don't allow
+    if( iFrameSleep < 0 ) iFrameSleep = 0;
+
+    //sleep calculated by pts to clock comparison
+    iClockSleep = pts - m_pClock->GetClock();
+    //User set delay
+    iClockSleep += m_iVideoDelay;
+
+    if (m_speed < 0)
     {
       // don't sleep when going backwords, just push frames out
       iSleepTime = 0;
     }
     else
     {
-      iSleepTime = pts - m_pClock->GetClock();
+      /* try to decide on how to sync framerate */
+      /* during a discontinuity, we have have to rely on frame duration completly*/
+      /* otherwise we adjust against the playback clock to some extent */
 
-      //User set delay
-      iSleepTime += m_iVideoDelay;
+      /* autosync decides on how much of clock we should use when deciding sleep time */
+      /* the value is the same as 63% timeconstant, ie that the step response of */
+      /* iSleepTime will be at 63% of iClockSleep after autosync frames */
+      const __int64 autosync = 10;
 
-      // take any delay caused by waiting for vsync into consideration
-      iSleepTime -= DVD_MSEC_TO_TIME( g_renderManager.GetAsyncFlipTime() );
+      /* decouple clock and video as we approach a discontinuity */
+      /* decouple clock and video a while after a discontinuity */
+      const __int64 distance = m_pClock->DistanceToDisc();
+
+      if(  abs(distance) < pPicture->iDuration*3 )
+        iSleepTime = iFrameSleep + (iClockSleep - iFrameSleep) * 0;
+      else
+        iSleepTime = iFrameSleep + (iClockSleep - iFrameSleep) / autosync;
     }
-
-    // timestamp to find some sort of average frametime
-    m_iFlipTimeStamp = m_pClock->GetAbsoluteClock();
 
     // dropping to a very low framerate is not correct (it should not happen at all)
     // clock and audio could be adjusted
@@ -522,6 +557,18 @@ CDVDPlayerVideo::EOUTPUTSTATUS CDVDPlayerVideo::OutputPicture(DVDVideoPicture* p
 
     // current pts is always equal to the pts of a picture, at least it is for external subtitles
     m_iCurrentPts = pts - (iSleepTime > 0 ? iSleepTime : 0);
+
+    // timestamp when we think next picture should be displayed based on current duration
+    m_iFlipTimeStamp = m_pClock->GetAbsoluteClock() ;
+    m_iFlipTimeStamp += iSleepTime ;
+    m_iFlipTimeStamp += pPicture->iDuration;
+
+    // account delay caused by waiting for vsync.     
+    iSleepTime -= m_PresentThread.GetDelay();
+
+    /* adjust for speed */
+    if( m_speed > DVD_PLAYSPEED_NORMAL )
+      iSleepTime = iSleepTime * DVD_PLAYSPEED_NORMAL / m_speed;
 
     if( iSleepTime < 0 )
     { // we are late, try to figure out how late
@@ -543,7 +590,6 @@ CDVDPlayerVideo::EOUTPUTSTATUS CDVDPlayerVideo::OutputPicture(DVDVideoPicture* p
         }
 
       }
-
       iSleepTime = 0;
     }
 
@@ -591,11 +637,6 @@ void CDVDPlayerVideo::SetDelay(__int64 delay)
   m_iVideoDelay = delay;
 }
 
-__int64 CDVDPlayerVideo::GetDiff()
-{
-  return 0LL;
-}
-
 void CDVDPlayerVideo::SetAspectRatio(float fAspectRatio)
 {
   m_fForcedAspectRatio = fAspectRatio;
@@ -620,6 +661,11 @@ void CDVDPlayerVideo::CPresentThread::Present( __int64 iTimeStamp, EFIELDSYNC m_
 void CDVDPlayerVideo::CPresentThread::Process()
 {
   CLog::Log(LOGDEBUG, "CPresentThread - Starting()");
+
+  /* guess delay to be about 1 frame at 50fps */
+  m_iDelay = DVD_MSEC_TO_TIME(20);
+
+  __int64 iFlipStamp;
 
   while( !CThread::m_bStop )
   {
@@ -647,8 +693,14 @@ void CDVDPlayerVideo::CPresentThread::Process()
         break;
       }
 
+      iFlipStamp = m_pClock->GetAbsoluteClock();
+
       //Time to display
       g_renderManager.FlipPage();
+
+      /* calculate m_iDelay. m_iDelay will converge towards the correct value */
+      /* timeconstant of about 9 frames */
+      m_iDelay = (m_iDelay + 9*(m_pClock->GetAbsoluteClock() - iFlipStamp))/10;
     }
   }
 
