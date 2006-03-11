@@ -561,7 +561,7 @@ void CDVDDemuxFFmpeg::AddStream(int iId)
           m_streams[iId]->iPhysicalId = pStream->id - 0x20;
           break;
         default:
-          m_streams[iId]->iPhysicalId = pStream->id;
+          m_streams[iId]->iPhysicalId = pStream->id & 0x1f;
           break;
       }
     }

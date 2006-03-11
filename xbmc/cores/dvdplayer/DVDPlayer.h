@@ -50,6 +50,8 @@ typedef struct SCurrentStream
   void*            stream; // pointer or integer, identifying stream playing. if it changes stream changed
 } SCurrentStream;
 
+#define DVDPLAYER_AUDIO 1
+#define DVDPLAYER_VIDEO 2
 
 class CDVDPlayer : public IPlayer, public CThread, public IDVDPlayer
 {
@@ -161,7 +163,8 @@ private:
   bool IsInMenu() const;
   void UpdateOverlayInfo(int iAction);
 
-  void SyncronizePlayers(__int64 dts, __int64 pts);
+  void SyncronizePlayers(DWORD sources);
+  void CheckContinuity(CDVDDemux::DemuxPacket* pPacket, unsigned int source);
 
   bool m_bRenderSubtitle;
   bool m_bDontSkipNextFrame;
@@ -170,9 +173,6 @@ private:
 
   char m_filename[1024];
     
-  int m_iCurrentStreamVideo;  
-  int m_iCurrentStreamSubtitle;
-
   SCurrentStream m_CurrentAudio;
   SCurrentStream m_CurrentVideo;
   SCurrentStream m_CurrentSubtitle;
