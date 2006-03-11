@@ -4,59 +4,54 @@
 #include "DVDDemuxers/DVDDemuxUtils.h"
 #include "DVDStreamInfo.h"
 
-void CDVDMessage::FreeMessageData(DVDMsg msg, DVDMsgData msg_data)
+/**
+ * CDVDMsgGeneralStreamChange --- GENERAL_STREAMCHANGE
+ */
+CDVDMsgGeneralStreamChange::CDVDMsgGeneralStreamChange(CDVDStreamInfo* pInfo) : CDVDMsg(GENERAL_STREAMCHANGE)
 {
-  // a message can consist of more than one message type
-  // but in every case, there can only be one msg data type at most
-  // so only if else here
-  
-  if (DVDMSG_IS(msg, DVDMSG_DEMUX_DATA_PACKET))
-  {
-    CDVDDemux::DemuxPacket* pPacket = (CDVDDemux::DemuxPacket*)msg_data;
-    CDVDDemuxUtils::FreeDemuxPacket(pPacket);
-  }
+  m_pInfo = pInfo;
+}
 
-  if(DVDMSG_IS(msg, DVDMSG_GENERAL_STREAMCHANGE) && msg_data)
+CDVDMsgGeneralStreamChange::~CDVDMsgGeneralStreamChange()
+{
+  if (m_pInfo)
   {
-    delete (CDVDStreamInfo*)msg_data;
-  }
-
-  if(DVDMSG_IS(msg, DVDMSG_GENERAL_SETCLOCK) && msg_data)
-  {
-    delete (SDVDMsgSetClock*)msg_data;
-  }
-
-  if(DVDMSG_IS(msg, DVDMSG_GENERAL_SYNCRONIZE) && msg_data)
-  {
-    ((CDVDMsgSyncronize*)msg_data)->Release();
+    delete m_pInfo;
   }
 }
 
-CDVDMsgSyncronize::CDVDMsgSyncronize(long objects, DWORD timeout)
+/**
+ * CDVDMsgGeneralStreamChange --- GENERAL_STREAMCHANGE
+ */
+CDVDMsgGeneralSynchronize::CDVDMsgGeneralSynchronize(DWORD timeout) : CDVDMsg(GENERAL_SYNCHRONIZE)
 {
   m_objects = 0;
-  m_references = objects;
   m_timeout = GetTickCount() + timeout;
 }
 
-CDVDMsgSyncronize::~CDVDMsgSyncronize()
-{
-
-}
-
-long CDVDMsgSyncronize::Release()
-{
-  long count = InterlockedDecrement(&m_references);
-  if( count == 0 ) delete this;
-  return count;
-}
-
-void CDVDMsgSyncronize::Wait(volatile bool *abort)
+void CDVDMsgGeneralSynchronize::Wait(volatile bool *abort)
 {
   InterlockedIncrement(&m_objects);
 
   if( abort )
-    while( !(*abort) && m_timeout > GetTickCount() && m_objects < m_references ) Sleep(1);
+    while( !(*abort) && m_timeout > GetTickCount() && m_objects < GetNrOfReferences()) Sleep(1);
   else
-    while( m_timeout > GetTickCount() && m_objects < m_references ) Sleep(1);
+    while( m_timeout > GetTickCount() && m_objects < GetNrOfReferences() ) Sleep(1);
+}
+
+/**
+ * CDVDMsgDemuxerPacket --- DEMUXER_PACKET
+ */
+CDVDMsgDemuxerPacket::CDVDMsgDemuxerPacket(CDVDDemux::DemuxPacket* pPacket, unsigned int packetSize) : CDVDMsg(DEMUXER_PACKET)
+{
+  m_pPacket = pPacket;
+  m_packetSize = packetSize;
+}
+
+CDVDMsgDemuxerPacket::~CDVDMsgDemuxerPacket()
+{
+  if (m_pPacket)
+  {
+    CDVDDemuxUtils::FreeDemuxPacket(m_pPacket);
+  }
 }

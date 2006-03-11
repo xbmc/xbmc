@@ -12,7 +12,7 @@
 #define ABS(a) ((a) >= 0 ? (a) : (-(a)))
 
 #define USEOLDSYNC
-
+    
 CDVDPlayerAudio::CDVDPlayerAudio(CDVDClock* pClock) : CThread()
 {
   m_pClock = pClock;
@@ -24,10 +24,10 @@ CDVDPlayerAudio::CDVDPlayerAudio(CDVDClock* pClock) : CThread()
   m_currentPTSItem.timestamp = 0;
 
   SetSpeed(DVD_PLAYSPEED_NORMAL);
-  
+
   InitializeCriticalSection(&m_critCodecSection);
-  m_packetQueue.SetMaxDataSize(10 * 16 * 1024);
-  g_dvdPerformanceCounter.EnableAudioQueue(&m_packetQueue);
+  m_messageQueue.SetMaxDataSize(10 * 16 * 1024);
+  g_dvdPerformanceCounter.EnableAudioQueue(&m_messageQueue);
 }
 
 CDVDPlayerAudio::~CDVDPlayerAudio()
@@ -82,7 +82,7 @@ bool CDVDPlayerAudio::OpenStream( CDVDStreamInfo &hints )
   /* try to open decoder without probing, we could actually allow us to continue here */
   if( !OpenDecoder(hints) ) return false;
 
-  m_packetQueue.Init();
+  m_messageQueue.Init();
 
   CLog::Log(LOGNOTICE, "Creating audio thread");
   Create();
@@ -93,10 +93,10 @@ bool CDVDPlayerAudio::OpenStream( CDVDStreamInfo &hints )
 void CDVDPlayerAudio::CloseStream(bool bWaitForBuffers)
 {
   // wait until buffers are empty
-  if (bWaitForBuffers) m_packetQueue.WaitUntilEmpty();
+  if (bWaitForBuffers) m_messageQueue.WaitUntilEmpty();
 
   // send abort message to the audio queue
-  m_packetQueue.Abort();
+  m_messageQueue.Abort();
 
   CLog::Log(LOGNOTICE, "waiting for audio thread to exit");
 
@@ -105,7 +105,7 @@ void CDVDPlayerAudio::CloseStream(bool bWaitForBuffers)
   this->WaitForThreadExit(INFINITE);
 
   // uninit queue
-  m_packetQueue.End();
+  m_messageQueue.End();
 
   CLog::Log(LOGNOTICE, "Deleting audio codec");
   if (m_pAudioCodec)
@@ -251,28 +251,30 @@ int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket)
       pAudioPacket = NULL;
     }
 
-    if (m_packetQueue.RecievedAbortRequest()) return DECODE_FLAG_ABORT;
+    if (m_messageQueue.RecievedAbortRequest()) return DECODE_FLAG_ABORT;
     
     // read next packet and return -1 on error
     LeaveCriticalSection(&m_critCodecSection); //Leave here as this might stall a while
     
-    DVDMsg msg;
-    DVDMsgData msg_data;
-    MsgQueueReturnCode ret = m_packetQueue.Get(&msg, INFINITE, &msg_data);
+    CDVDMsg* pMsg;
+    MsgQueueReturnCode ret = m_messageQueue.Get(&pMsg, INFINITE);
     
     EnterCriticalSection(&m_critCodecSection);
     if (MSGQ_IS_ERROR(ret) || ret == MSGQ_ABORT) return DECODE_FLAG_ABORT;
 
-    if (DVDMSG_IS(msg, DVDMSG_DEMUX_DATA_PACKET))
+    if (pMsg->IsType(CDVDMsg::DEMUXER_PACKET))
     {
-      pPacket = (CDVDDemux::DemuxPacket*)msg_data;
+      CDVDMsgDemuxerPacket* pMsgDemuxerPacket = (CDVDMsgDemuxerPacket*)pMsg;
+      pPacket = pMsgDemuxerPacket->GetPacket();
+      pMsgDemuxerPacket->m_pPacket = NULL; // XXX, test
       pAudioPacket = pPacket;
       audio_pkt_data = pPacket->pData;
       audio_pkt_size = pPacket->iSize;
     }
-    else if (DVDMSG_IS(msg, DVDMSG_GENERAL_STREAMCHANGE))
+    else if (pMsg->IsType(CDVDMsg::GENERAL_STREAMCHANGE))
     {
-      CDVDStreamInfo* hints = (CDVDStreamInfo*)msg_data;
+      CDVDMsgGeneralStreamChange* pMsgStreamChange = (CDVDMsgGeneralStreamChange*)pMsg;
+      CDVDStreamInfo* hints = pMsgStreamChange->GetStreamInfo();
 
       /* recieved a stream change, reopen codec. */
       /* we should really not do this untill first packet arrives, to have a probe buffer */      
@@ -280,66 +282,67 @@ int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket)
       /* try to open decoder, if none is found keep consuming packets */
       OpenDecoder( *hints );
 
-      CDVDMessage::FreeMessageData(msg, msg_data);
+      pMsg->Release();
       continue;
     }
-    else if (DVDMSG_IS(msg, DVDMSG_GENERAL_SYNCRONIZE) && msg_data)
+    else if (pMsg->IsType(CDVDMsg::GENERAL_SYNCHRONIZE))
     {
-      CLog::Log(LOGDEBUG, "CDVDPlayerAudio - DVDMSG_GENERAL_SYNCRONIZE");
+      CDVDMsgGeneralSynchronize* pMsgGeneralSynchronize = (CDVDMsgGeneralSynchronize*)pMsg;
+      
+      CLog::Log(LOGDEBUG, "CDVDPlayerAudio - CDVDMsg::GENERAL_SYNCHRONIZE");
 
-      ((CDVDMsgSyncronize*)msg_data)->Wait( &m_bStop );
-      CDVDMessage::FreeMessageData(msg, msg_data);
+      pMsgGeneralSynchronize->Wait( &m_bStop );
+      
+      pMsg->Release();
       continue;
     } 
-    else if (DVDMSG_IS(msg, DVDMSG_GENERAL_SETCLOCK) && msg_data)
+    else if (pMsg->IsType(CDVDMsg::GENERAL_SET_CLOCK))
     {
-      SDVDMsgSetClock* clock =  (SDVDMsgSetClock*)msg_data;
+      CDVDMsgGeneralSetClock* pMsgGeneralSetClock = (CDVDMsgGeneralSetClock*)pMsg;
       result |= DECODE_FLAG_RESYNC;
 
-      if( clock->pts != DVD_NOPTS_VALUE )
-        m_audioClock = clock->pts;
+      if (pMsgGeneralSetClock->GetPts() != DVD_NOPTS_VALUE)
+        m_audioClock = pMsgGeneralSetClock->GetPts();
       else
-        m_audioClock = clock->dts;
+        m_audioClock = pMsgGeneralSetClock->GetDts();
 
-      CDVDMessage::FreeMessageData(msg, msg_data);
+      pMsg->Release();
       continue;
     } 
-    else
-    {
-      // other data is not used here, free if
-      // msg itself will still be available
-      CDVDMessage::FreeMessageData(msg, msg_data);
-      continue;
-    }
     
     // if update the audio clock with the pts
-    if (pPacket->pts != DVD_NOPTS_VALUE)
+    if (pMsg->IsType(CDVDMsg::DEMUXER_PACKET) || pMsg->IsType(CDVDMsg::GENERAL_RESYNC))
     {
-      if (first_pkt_size == 0) 
-      { //first package
-        m_audioClock = pPacket->pts;        
-      }
-      else if (DVDMSG_IS(msg, DVDMSG_GENERAL_RESYNC)) // pts can be send as msg_data, bit safer then assuming pPacket is correct
+      if (pMsg->IsType(CDVDMsg::GENERAL_RESYNC))
       { //player asked us to sync on this package
+        CDVDMsgGeneralResync* pMsgGeneralResync = (CDVDMsgGeneralResync*)pMsg;
         result |= DECODE_FLAG_RESYNC;
-        m_audioClock = pPacket->pts;
+        m_audioClock = pMsgGeneralResync->GetPts();
       }
-      else if( first_pkt_pts > pPacket->pts )
-      { //okey first packet in this continous stream, make sure we use the time here        
-        m_audioClock = pPacket->pts;        
-      }
-      else if((unsigned __int64)m_audioClock < first_pkt_pts || (unsigned __int64)m_audioClock > pPacket->pts)
+      else if (pPacket->pts != DVD_NOPTS_VALUE) // CDVDMsg::DEMUXER_PACKET, pPacket is already set above
       {
-        //crap, moved outsided correct pts
-        //Use pts from current packet, untill we find a better value for it.
-        //Should be ok after a couple of frames, as soon as it starts clean on a packet
-        m_audioClock = pPacket->pts;
-      }
-      else if(first_pkt_size == first_pkt_used)
-      { //Nice starting up freshly on the start of a packet, use pts from it
-        m_audioClock = pPacket->pts;
+        if (first_pkt_size == 0) 
+        { //first package
+          m_audioClock = pPacket->pts;        
+        }
+        else if (first_pkt_pts > pPacket->pts)
+        { //okey first packet in this continous stream, make sure we use the time here        
+          m_audioClock = pPacket->pts;        
+        }
+        else if((unsigned __int64)m_audioClock < pPacket->pts || (unsigned __int64)m_audioClock > pPacket->pts)
+        {
+          //crap, moved outsided correct pts
+          //Use pts from current packet, untill we find a better value for it.
+          //Should be ok after a couple of frames, as soon as it starts clean on a packet
+          m_audioClock = pPacket->pts;
+        }
+        else if(first_pkt_size == first_pkt_used)
+        { //Nice starting up freshly on the start of a packet, use pts from it
+          m_audioClock = pPacket->pts;
+        }
       }
     }
+    pMsg->Release();
   }
 }
 
@@ -471,7 +474,7 @@ void CDVDPlayerAudio::SetSpeed(int speed)
 
 void CDVDPlayerAudio::Flush()
 {
-  m_packetQueue.Flush();
+  m_messageQueue.Flush();
   m_dvdAudio.Flush();
 
   FlushPTSQueue();
@@ -495,7 +498,7 @@ void CDVDPlayerAudio::Flush()
 void CDVDPlayerAudio::WaitForBuffers()
 {
   // make sure there are no more packets available
-  m_packetQueue.WaitUntilEmpty();
+  m_messageQueue.WaitUntilEmpty();
   
   // make sure almost all has been rendered
   // leave 500ms to avound buffer underruns
