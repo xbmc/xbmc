@@ -44,8 +44,9 @@ public:
 
   // waits untill all available data has been rendered  
   void WaitForBuffers();
-  bool AcceptsData()                                    { return !m_packetQueue.IsFull(); }
-
+  bool AcceptsData()                                    { return !m_messageQueue.IsFull(); }
+  void SendMessage(CDVDMsg* pMsg)                       { m_messageQueue.Put(pMsg); }
+  
   void DoWork()                                         { m_dvdAudio.DoWork(); }
 
   void SetVolume(long nVolume)                          { m_dvdAudio.SetVolume(nVolume); }
@@ -54,7 +55,7 @@ public:
   // holds stream information for current playing stream
   CDVDStreamInfo m_streaminfo;
   
-  CDVDMessageQueue m_packetQueue;
+  CDVDMessageQueue m_messageQueue;
   
   __int64 GetCurrentPts();
 

@@ -46,9 +46,9 @@ void CDVDMessageQueue::Flush()
     {
       tmp_msg = msg->pNext;
       
-      CDVDMessage::FreeMessageData(msg->msg, msg->pData);
-      
+      msg->pMsg->Release();
       delete msg;
+      
       msg = tmp_msg;
     }
   }
@@ -87,14 +87,14 @@ void CDVDMessageQueue::End()
 }
 
 
-MsgQueueReturnCode CDVDMessageQueue::Put(DVDMsg msg, void* data, unsigned int data_size)
+MsgQueueReturnCode CDVDMessageQueue::Put(CDVDMsg* pMsg)
 {
   if (!m_bInitialized)
   {
     CLog::Log(LOGFATAL, "CDVDMessageQueue::Put MSGQ_NOT_INITIALIZED");
     return MSGQ_NOT_INITIALIZED;
   }
-  if (!msg)
+  if (!pMsg)
   {
     CLog::Log(LOGFATAL, "CDVDMessageQueue::Put MSGQ_INVALID_MSG");
     return MSGQ_INVALID_MSG;
@@ -108,9 +108,7 @@ MsgQueueReturnCode CDVDMessageQueue::Put(DVDMsg msg, void* data, unsigned int da
     return MSGQ_OUT_OF_MEMORY;
   }
   
-  msgItem->msg = msg;
-  msgItem->pData = data;
-  msgItem->dataSize = data_size;
+  msgItem->pMsg = pMsg;
   msgItem->pNext = NULL;
   
   EnterCriticalSection(&m_critSection);
@@ -120,8 +118,12 @@ MsgQueueReturnCode CDVDMessageQueue::Put(DVDMsg msg, void* data, unsigned int da
   
   m_pLastMessage = msgItem;
 
-  m_iDataSize += data_size;
-
+  if (pMsg->IsType(CDVDMsg::DEMUXER_PACKET))
+  {
+    CDVDMsgDemuxerPacket* pMsgDemuxerPacket = (CDVDMsgDemuxerPacket*)pMsg;
+    m_iDataSize += pMsgDemuxerPacket->GetPacketSize();
+  }
+  
   SetEvent(m_hEvent); // inform waiter for new packet
 
   LeaveCriticalSection(&m_critSection);
@@ -129,11 +131,9 @@ MsgQueueReturnCode CDVDMessageQueue::Put(DVDMsg msg, void* data, unsigned int da
   return MSGQ_OK;
 }
 
-MsgQueueReturnCode CDVDMessageQueue::Get(DVDMsg* msg, unsigned int iTimeoutInMilliSeconds, DVDMsgData* pMsgData, unsigned int* data_size)
+MsgQueueReturnCode CDVDMessageQueue::Get(CDVDMsg** pMsg, unsigned int iTimeoutInMilliSeconds)
 {
-  *msg = 0;
-  if (pMsgData) *pMsgData = NULL;
-  if (data_size) *data_size = 0;
+  *pMsg = NULL;
   
   DVDMessageListItem* msgItem;
   int ret;
@@ -155,13 +155,16 @@ MsgQueueReturnCode CDVDMessageQueue::Get(DVDMsg* msg, unsigned int iTimeoutInMil
       
       if (!m_pFirstMessage) m_pLastMessage = NULL;
 
-      m_iDataSize -= msgItem->dataSize;
+      if (msgItem->pMsg->IsType(CDVDMsg::DEMUXER_PACKET))
+      {
+        CDVDMsgDemuxerPacket* pMsgDemuxerPacket = (CDVDMsgDemuxerPacket*)msgItem->pMsg;
+        m_iDataSize -= pMsgDemuxerPacket->GetPacketSize();
+      }
 
-      *msg = msgItem->msg;
-      if (pMsgData)   *pMsgData = msgItem->pData;
-      if (data_size)  *data_size = msgItem->dataSize;
+      *pMsg = msgItem->pMsg;
       
       delete msgItem; // free the list item we allocated in ::Put()
+      
       ret = MSGQ_OK;
       break;
     }
