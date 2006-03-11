@@ -2569,6 +2569,7 @@ void CUtil::PlayDVD()
     CIoSupport helper;
     helper.Remount("D:", "Cdrom0");
     CFileItem item("dvd://1", false);
+    item.SetLabel(CDetectDVDMedia::GetDVDLabel());
     g_application.PlayFile(item);
   }
 }

@@ -1571,7 +1571,10 @@ void CGUIInfoManager::SetCurrentMovie(CFileItem &item)
 
   if (m_currentMovie.m_strTitle.IsEmpty())
   { // at least fill in the filename
-    m_currentMovie.m_strTitle = CUtil::GetTitleFromPath(item.m_strPath);
+    if (!item.GetLabel().IsEmpty())
+      m_currentMovie.m_strTitle = item.GetLabel();
+    else
+      m_currentMovie.m_strTitle = CUtil::GetTitleFromPath(item.m_strPath);
   }
   if (m_currentMovie.m_strPath.IsEmpty())
   {
