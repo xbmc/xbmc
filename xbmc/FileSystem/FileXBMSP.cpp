@@ -81,12 +81,12 @@ bool CFileXBMSP::Open(const CURL& url, bool bBinary)
                                 (iport > 0) ? iport : 1400,
                                 &m_connection) != CC_XSTREAM_CLIENT_OK)
   {
-    OutputDebugString("xbms:unable to connect\n");
+    CLog::Log(LOGDEBUG, "xbms:unable to connect");
     return false;
   }
   if (cc_xstream_client_version_handshake(m_connection) != CC_XSTREAM_CLIENT_OK)
   {
-    OutputDebugString("xbms:unable handshake\n");
+    CLog::Log(LOGDEBUG, "xbms:unable handshake");
     cc_xstream_client_disconnect(m_connection);
 
     return false;
@@ -139,7 +139,7 @@ bool CFileXBMSP::Open(const CURL& url, bool bBinary)
           OutputDebugString("\n");
           if (cc_xstream_client_setcwd(m_connection, strDir.c_str()) != CC_XSTREAM_CLIENT_OK)
           {
-            OutputDebugString("xbms:unable set dir\n");
+            CLog::Log(LOGDEBUG, "xbms:unable set dir");
             if (m_connection != NULL) cc_xstream_client_disconnect(m_connection);
             return false;
           }
@@ -154,7 +154,7 @@ bool CFileXBMSP::Open(const CURL& url, bool bBinary)
   }
   else
   {
-    OutputDebugString("xbms:unable set dir\n");
+    CLog::Log(LOGDEBUG, "xbms:unable set dir");
     if (m_connection != NULL) cc_xstream_client_disconnect(m_connection);
     return false;
   }
@@ -165,7 +165,7 @@ bool CFileXBMSP::Open(const CURL& url, bool bBinary)
     OutputDebugString("\n");
     if (cc_xstream_client_setcwd(m_connection, strDir.c_str()) != CC_XSTREAM_CLIENT_OK)
     {
-      OutputDebugString("xbms:unable set dir\n");
+      CLog::Log(LOGDEBUG, "xbms:unable set dir");
       if (m_connection != NULL) cc_xstream_client_disconnect(m_connection);
       return false;
     }
@@ -173,9 +173,7 @@ bool CFileXBMSP::Open(const CURL& url, bool bBinary)
 
   if (cc_xstream_client_file_info(m_connection, strFile.c_str(), &info) != CC_XSTREAM_CLIENT_OK)
   {
-    OutputDebugString("xbms:unable to get info for file:");
-    OutputDebugString(strFile.c_str());
-    OutputDebugString("\n");
+    CLog::Log(LOGDEBUG, "xbms:unable to get info for file: %s", strFile.c_str());
     cc_xstream_client_disconnect(m_connection);
     return false;
   }
@@ -201,9 +199,7 @@ bool CFileXBMSP::Open(const CURL& url, bool bBinary)
 
   if (cc_xstream_client_file_open(m_connection, strFile.c_str(), &m_handle) != CC_XSTREAM_CLIENT_OK)
   {
-    OutputDebugString("xbms:unable to open file:");
-    OutputDebugString(strFile.c_str());
-    OutputDebugString("\n");
+    CLog::Log(LOGDEBUG, "xbms:unable to open file: %s", strFile.c_str());
     cc_xstream_client_disconnect(m_connection);
 
     return false;
