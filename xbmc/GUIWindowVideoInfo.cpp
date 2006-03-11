@@ -155,6 +155,11 @@ bool CGUIWindowVideoInfo::OnMessage(CGUIMessage& message)
       else if (iControl == CONTROL_BTN_GET_THUMB)
       {
         DownloadThumbnail(m_thumbNail);
+        // tell our GUI to completely reload all controls (as some of them
+        // are likely to have had this image in use so will need refreshing)
+        CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_REFRESH_THUMBS, 0, NULL);
+        g_graphicsContext.SendMessage(msg);
+        // Update our screen
         Update();
       }
       else if (iControl == CONTROL_DISC)
@@ -320,6 +325,7 @@ void CGUIWindowVideoInfo::Update()
   if (pControl)
   {
     CGUIImage* pImageControl = (CGUIImage*)pControl;
+    pImageControl->FreeResources();
     pImageControl->SetFileName(m_thumbNail);
   }
 }
@@ -349,7 +355,6 @@ void CGUIWindowVideoInfo::Refresh()
     return ;
   }
 
-  CUtil::ClearCache();
   try
   {
     OutputDebugString("Refresh\n");
@@ -497,11 +502,16 @@ void CGUIWindowVideoInfo::OnInitWindow()
 {
   CGUIDialog::OnInitWindow();
   // disable button with id 10 as we don't have support for it yet!
-  CONTROL_DISABLE(10);
+//  CONTROL_DISABLE(10);
 }
 
 void CGUIWindowVideoInfo::DownloadThumbnail(const CStdString &thumb)
 {
+  // TODO: This routine should be generalised to allow more than one
+  // thumb to be downloaded (possibly from amazon.com or other sources)
+  // and then a thumb chooser should be presented, with the current thumb
+  // and the downloaded thumbs available (possibly also with a generic
+  // file browse option?)
   if (m_pMovie->m_strPictureURL.IsEmpty())
     return;
   CHTTP http;
@@ -514,11 +524,8 @@ void CGUIWindowVideoInfo::DownloadThumbnail(const CStdString &thumb)
 
   try
   {
-    // TODO: No need to do this if CPicture::DoCreateThumbnail() didn't
-    // check file existence
-    ::DeleteFile(thumb.c_str());
     CPicture picture;
-    picture.Convert(strTemp, thumb);
+    picture.DoCreateThumbnail(strTemp, thumb);
   }
   catch (...)
   {

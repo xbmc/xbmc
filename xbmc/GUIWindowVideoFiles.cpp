@@ -745,7 +745,7 @@ void CGUIWindowVideoFiles::GetIMDBDetails(CFileItem *pItem, CIMDBUrl &url)
       try
       {
         CPicture picture;
-        picture.Convert(strTemp, strThumb);
+        picture.DoCreateThumbnail(strTemp, strThumb);
       }
       catch (...)
       {
