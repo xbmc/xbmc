@@ -11,7 +11,6 @@
 #include "DVDPlayerVideo.h"
 #include "DVDPlayerSubtitle.h"
 
-#include "DVDPlayerMessenger.h"
 //#include "DVDChapterReader.h"
 #include "DVDSubtitles\DVDFactorySubtitle.h"
 
@@ -185,7 +184,8 @@ private:
   CDVDPlayerVideo m_dvdPlayerVideo; // video part
   CDVDPlayerSubtitle m_dvdPlayerSubtitle; // subtitle part
   
-  CDVDPlayerMessenger m_messenger;  // thread messenger
+  CDVDMessageQueue m_messenger;     // thread messenger, only the dvdplayer.cpp class itself may send message to this!
+  
   CDVDClock m_clock;                // master clock
   CDVDDemuxSPU m_dvdspus;           // dvd subtitle demuxer
   CDVDOverlayContainer m_overlayContainer;

@@ -6,9 +6,7 @@
 
 typedef struct stDVDMessageListItem
 {
-  DVDMsg msg;
-  DVDMsgData pData;
-  unsigned int dataSize;
+  CDVDMsg* pMsg;
   struct stDVDMessageListItem *pNext;
 }
 DVDMessageListItem;
@@ -36,38 +34,14 @@ public:
   void  Abort();
   void  End();
 
-  MsgQueueReturnCode  Put(DVDMsg msg, void* data, unsigned int data_size);
-  MsgQueueReturnCode  Put(DVDMsg msg, void* data)             { return Put(msg, data, 0); }
-  MsgQueueReturnCode  Put(DVDMsg msg)                         { return Put(msg, NULL, 0); }
+  MsgQueueReturnCode Put(CDVDMsg* pMsg);
  
   /**
-   * msg,       message type from DVDMessae.h
+   * msg,       message type from DVDMessage.h
    * timeout,   timeout in msec
-   * data,      pointer that recieves any additional data
-   * data_size, pointer that recieves any additional data size
    */
-  MsgQueueReturnCode  Get(DVDMsg* msg, unsigned int iTimeoutInMilliSeconds, DVDMsgData* pMsgData, unsigned int* data_size);
-  
-  MsgQueueReturnCode  Get(DVDMsg* msg, unsigned int iTimeoutInMilliSeconds, DVDMsgData* pMsgData)
-  {
-    return Get(msg, iTimeoutInMilliSeconds, pMsgData, NULL);
-  }
-  
-  MsgQueueReturnCode  Get(DVDMsg* msg, unsigned int iTimeoutInMilliSeconds)
-  {
-    DVDMsgData msg_data;
-    
-    MsgQueueReturnCode ret = Get(msg, iTimeoutInMilliSeconds, &msg_data, NULL);
-    
-    // safety, this function shouldn't be called at all when data can be expected.
-    // But it can come in handy
-    if (msg_data)
-    {
-      CDVDMessage::FreeMessageData(*msg, msg_data);
-    }
-    
-    return ret;
-  }
+  MsgQueueReturnCode Get(CDVDMsg** pMsg, unsigned int iTimeoutInMilliSeconds);
+
   
   int GetDataSize()                     { return m_iDataSize; }
   bool RecievedAbortRequest()           { return m_bAbortRequest; }
