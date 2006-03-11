@@ -458,8 +458,11 @@ void CDVDPlayer::ProcessVideoData(CDemuxStream* pStream, CDVDDemux::DemuxPacket*
     m_bDontSkipNextFrame = false;
   }
   
-  CheckContinuity( pPacket, DVDPLAYER_VIDEO );
-  m_CurrentVideo.dts = pPacket->dts;
+  if( pPacket->iSize != 4) //don't check the EOF_SEQUENCE of stillframes
+  {
+    CheckContinuity( pPacket, DVDPLAYER_VIDEO );
+    m_CurrentVideo.dts = pPacket->dts;
+  }
 
   //If this is the first packet after a discontinuity, send it as a resync
   if( !(m_dvd.iFlagSentStart & DVDPLAYER_VIDEO) )
@@ -505,18 +508,14 @@ void CDVDPlayer::ProcessSubData(CDemuxStream* pStream, CDVDDemux::DemuxPacket* p
 void CDVDPlayer::CheckContinuity(CDVDDemux::DemuxPacket* pPacket, unsigned int source)
 {
   /* special case for looping stillframes THX test discs*/
-  if( source == DVDPLAYER_VIDEO 
-   && m_CurrentAudio.dts != DVD_NOPTS_VALUE 
-   && m_CurrentVideo.dts != DVD_NOPTS_VALUE 
-   && pPacket->iSize != 4) //don't count the EOF_SEQUENCE
+  if (source == DVDPLAYER_VIDEO
+   && m_CurrentAudio.dts != DVD_NOPTS_VALUE
+   && m_CurrentVideo.dts != DVD_NOPTS_VALUE)
   {
     __int64 missing = m_CurrentAudio.dts - m_CurrentVideo.dts;
     if( missing > DVD_MSEC_TO_TIME(100) )
     {
-      __int64 diff = m_CurrentVideo.dts - pPacket->dts;
-      if( diff < 0 ) diff = -diff;
-
-      if( diff < DVD_MSEC_TO_TIME(50) )
+      if( m_CurrentVideo.dts == pPacket->dts )
       {
         CLog::Log(LOGDEBUG, "CDVDPlayer::CheckContinuity - Detected looping stillframe");
         SyncronizePlayers(SYNCSOURCE_VIDEO);
@@ -540,7 +539,7 @@ void CDVDPlayer::CheckContinuity(CDVDDemux::DemuxPacket* pPacket, unsigned int s
 
     m_dvd.iFlagSentStart  = 0;
   }
-  
+
   /* stream jump forward */
   if( pPacket->dts > max(m_CurrentAudio.dts, m_CurrentVideo.dts) + DVD_MSEC_TO_TIME(1000) )
   {
