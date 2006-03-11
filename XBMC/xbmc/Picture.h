@@ -13,7 +13,6 @@ public:
   bool CreateAlbumThumbnail(const CStdString& strFileName, const CStdString& strAlbum);
   bool CreateAlbumThumbnailFromMemory(const BYTE* pBuffer, int nBufSize, const CStdString& strExtension, const CStdString& strThumbFileName);
   bool CreateThumbnailFromSurface(BYTE* pBuffer, int width, int height, int stride, const CStdString &strThumbFileName);
-  bool Convert(const CStdString& strSource, const CStdString& strDest);
   int ConvertFile(const CStdString& srcFile, const CStdString& destFile, float rotateDegrees, int width, int height, unsigned int quality);
 
   ImageInfo GetInfo() const { return m_info; };
@@ -26,7 +25,7 @@ public:
   void RenderImage(IDirect3DTexture8* pTexture, float x, float y, float width, float height, int iTextureWidth, int iTextureHeight, int iTextureLeft = 0, int iTextureTop = 0, DWORD dwAlpha = 0xFF);
 
   void CreateFolderThumb(CStdString &strFolder, CStdString *strThumbs);
-  bool DoCreateThumbnail(const CStdString& strFileName, const CStdString& strThumbFileName);
+  bool DoCreateThumbnail(const CStdString& strFileName, const CStdString& strThumbFileName, bool checkExistence = false);
 
 protected:
   

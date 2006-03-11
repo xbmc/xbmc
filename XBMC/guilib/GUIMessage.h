@@ -44,6 +44,8 @@
 #define GUI_MSG_NOTIFY_ALL    21  // message will be send to all active and inactive(!) windows, all active modal and modeless dialogs
                                   // dwParam1 must contain an additional message the windows should react on
 
+#define GUI_MSG_REFRESH_THUMBS 22 // message is sent to all windows to refresh all thumbs
+
 #define GUI_MSG_USER         1000
 
 /*!
