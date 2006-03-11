@@ -49,6 +49,7 @@ protected:
   void MarkUnWatched(int iItem);
   void MarkWatched(int iItem);
   void UpdateVideoTitle(int iItem);
+  bool UpdateVideoTitleXML(const CStdString strIMDBNumber, CStdString& strTitle);
 
   CGUIDialogProgress* m_dlgProgress;
   CVideoDatabase m_database;
