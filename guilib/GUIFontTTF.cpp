@@ -133,7 +133,7 @@ void CGUIFontTTF::DrawTextInternal( FLOAT sx, FLOAT sy, const CAngle &angle, DWO
   // vertically centered
   if (dwFlags & XBFONT_CENTER_Y)
   {
-    sy = floorf( sy - (m_iHeight - m_descent + 1) / 2 );
+    sy = sy - (m_iHeight - m_descent + 1) * 0.5f;
   }
 
   // Check if we will really need to truncate the CStdString
@@ -185,8 +185,8 @@ void CGUIFontTTF::DrawTextInternal( FLOAT sx, FLOAT sy, const CAngle &angle, DWO
       bStartingNewLine = FALSE;
       alignedStartX = (int)posX;
       // align to an integer so that aliasing doesn't occur
-      posX = floorf(posX);
-      posY = floorf(posY);
+      posX = floorf(posX + 0.5f);
+      posY = floorf(posY + 0.5f);
     }
 
     // Get the current letter in the CStdString

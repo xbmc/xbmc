@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 11-03-2006 fixed: Text positioning could be up to 1 pixel out.
  - 11-03-2006 fixed: <origin>'s weren't being scaled for different resolutions.
  - 11-03-2006 added: GetThumb button to Movie information dialog to redownload the thumb (overwrites any existing)
  - 10-03-2006 changed: decoupled video playback from master clock in dvdplayer to allow for nicer transition when timestamps in dvd wrap back
