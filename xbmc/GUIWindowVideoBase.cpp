@@ -995,7 +995,35 @@ void CGUIWindowVideoBase::UpdateVideoTitle(int iItem)
   //Get the new title
   if (!CGUIDialogKeyboard::ShowAndGetInput(strInput, (CStdStringW)g_localizeStrings.Get(16105), false)) return ;
   m_database.UpdateMovieTitle(atol(pItem->m_musicInfoTag.GetURL()), strInput);
+  UpdateVideoTitleXML(detail.m_strIMDBNumber, strInput);
   Update(m_vecItems.m_strPath);
+}
+
+bool CGUIWindowVideoBase::UpdateVideoTitleXML(const CStdString strIMDBNumber, CStdString& strTitle)
+{
+  CStdString strXMLFile;
+  strXMLFile.Format("%s\\imdb\\%s.xml", g_stSettings.m_szAlbumDirectory, strIMDBNumber.c_str());
+  TiXmlBase::SetCondenseWhiteSpace(false);
+  TiXmlDocument doc;
+  if (!doc.LoadFile(strXMLFile))
+    return false;
+
+  TiXmlNode *details = doc.FirstChild("details");
+  if (!details)
+  {
+    CLog::Log(LOGERROR, "IMDB: Invalid xml file");
+    return false;
+  }
+
+  TiXmlNode* pNode = details->FirstChild("title");
+  if (!pNode)
+    return false;
+  if (pNode->FirstChild())
+      pNode->FirstChild()->SetValue(strTitle);
+  else
+    return false;
+
+  return doc.SaveFile();
 }
 
 void CGUIWindowVideoBase::LoadPlayList(const CStdString& strPlayList, int iPlayList /* = PLAYLIST_VIDEO */)
