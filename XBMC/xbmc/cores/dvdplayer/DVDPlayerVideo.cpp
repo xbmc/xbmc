@@ -57,14 +57,21 @@ bool CDVDPlayerVideo::OpenStream( CDVDStreamInfo &hint )
 {  
 
   if (hint.fpsrate && hint.fpsscale)
+  {
     m_fFrameRate = (float)hint.fpsrate / hint.fpsscale;
+    m_autosync = 10;
+  }
   else
+  {
     m_fFrameRate = 25;
+    m_autosync = 1; // avoid using frame time as we don't know it accurate
+  }
 
   if( m_fFrameRate > 100 )
   {
     CLog::Log(LOGERROR, "CDVDPlayerVideo::OpenStream - Invalid framerate %d, using forced 25fps", (int)m_fFrameRate);
     m_fFrameRate = 25;
+    m_autosync = 1; // avoid using frame time as we don't know it accurate
   }
 
 
@@ -202,14 +209,32 @@ void CDVDPlayerVideo::Process()
       
       CDVDMsgGeneralSetClock* pMsgGeneralSetClock = (CDVDMsgGeneralSetClock*)pMsg;
 
-      if (pMsgGeneralSetClock->GetPts() != DVD_NOPTS_VALUE)
-        m_pClock->Discontinuity(CLOCK_DISC_NORMAL, pMsgGeneralSetClock->GetPts());
-      else
-        m_pClock->Discontinuity(CLOCK_DISC_NORMAL, pMsgGeneralSetClock->GetPts());
+      //DVDPlayer asked us to sync playback clock
+      pts = pMsgGeneralSetClock->GetDts();
+
+      __int64 delay = m_iFlipTimeStamp - m_pClock->GetAbsoluteClock();
+      
+      if( delay > iFrameTime ) delay = iFrameTime;
+      else if( delay < 0 ) delay = 0;
+
+      m_pClock->Discontinuity(CLOCK_DISC_NORMAL, pts, delay);
+      CLog::Log(LOGDEBUG, "CDVDPlayerVideo:: Resync - clock:%I64d, delay:%I64d", pts, delay);      
 
       pMsgGeneralSetClock->Release();
       continue;
     } 
+    else if (pMsg->IsType(CDVDMsg::GENERAL_RESYNC))
+    {
+      CLog::Log(LOGDEBUG, "CDVDPlayerVideo - CDVDMsg::GENERAL_RESYNC"); 
+      
+      CDVDMsgGeneralResync* pMsgGeneralResync = (CDVDMsgGeneralResync*)pMsg;
+      
+      //DVDPlayer asked us to sync playback clock
+      pts = pMsgGeneralResync->GetDts();
+
+      pMsgGeneralResync->Release();
+      continue;
+    }
 
     if (m_DetectedStill)
     {
@@ -224,31 +249,7 @@ void CDVDPlayerVideo::Process()
 
     EnterCriticalSection(&m_critCodecSection);
 
-    if (pMsg->IsType(CDVDMsg::GENERAL_RESYNC))
-    {
-      CLog::Log(LOGDEBUG, "CDVDPlayerVideo - CDVDMsg::GENERAL_RESYNC"); 
-      
-      CDVDMsgGeneralResync* pMsgGeneralResync = (CDVDMsgGeneralResync*)pMsg;
-      
-      //DVDPlayer asked us to sync playback clock
-      pts = pMsgGeneralResync->GetDts();
-
-      //if( DVDMSG_IS(msg, DVDMSG_GENERAL_SETCLOCK) )
-      //{
-
-        __int64 delay = m_iFlipTimeStamp - m_pClock->GetAbsoluteClock();
-        
-        if( delay > iFrameTime ) delay = iFrameTime;
-        else if( delay < 0 ) delay = 0;
-
-        m_pClock->Discontinuity(CLOCK_DISC_NORMAL, pts, delay);
-        CLog::Log(LOGDEBUG, "CDVDPlayerVideo:: Resync - clock:%I64d, delay:%I64d", pts, delay);      
-      //}
-      //else
-      //  CLog::Log(LOGDEBUG, "CDVDPlayerVideo:: Resync - pts:%I64d", pts);      
-
-    }
-    else if (pMsg->IsType(CDVDMsg::VIDEO_NOSKIP))
+    if (pMsg->IsType(CDVDMsg::VIDEO_NOSKIP))
     {
       // libmpeg2 is also returning incomplete frames after a dvd cell change
       // so the first few pictures are not the correct ones to display in some cases
@@ -536,11 +537,6 @@ CDVDPlayerVideo::EOUTPUTSTATUS CDVDPlayerVideo::OutputPicture(DVDVideoPicture* p
       /* during a discontinuity, we have have to rely on frame duration completly*/
       /* otherwise we adjust against the playback clock to some extent */
 
-      /* autosync decides on how much of clock we should use when deciding sleep time */
-      /* the value is the same as 63% timeconstant, ie that the step response of */
-      /* iSleepTime will be at 63% of iClockSleep after autosync frames */
-      const __int64 autosync = 10;
-
       /* decouple clock and video as we approach a discontinuity */
       /* decouple clock and video a while after a discontinuity */
       const __int64 distance = m_pClock->DistanceToDisc();
@@ -548,7 +544,7 @@ CDVDPlayerVideo::EOUTPUTSTATUS CDVDPlayerVideo::OutputPicture(DVDVideoPicture* p
       if(  abs(distance) < pPicture->iDuration*3 )
         iSleepTime = iFrameSleep + (iClockSleep - iFrameSleep) * 0;
       else
-        iSleepTime = iFrameSleep + (iClockSleep - iFrameSleep) / autosync;
+        iSleepTime = iFrameSleep + (iClockSleep - iFrameSleep) / m_autosync;
     }
 
     // dropping to a very low framerate is not correct (it should not happen at all)
