@@ -506,11 +506,9 @@ void CDVDPlayer::ProcessSubData(CDemuxStream* pStream, CDVDDemux::DemuxPacket* p
 }
 
 void CDVDPlayer::CheckContinuity(CDVDDemux::DemuxPacket* pPacket, unsigned int source)
-{
+{  
   /* special case for looping stillframes THX test discs*/
-  if (source == DVDPLAYER_VIDEO
-   && m_CurrentAudio.dts != DVD_NOPTS_VALUE
-   && m_CurrentVideo.dts != DVD_NOPTS_VALUE)
+  if (source == DVDPLAYER_VIDEO)
   {
     __int64 missing = m_CurrentAudio.dts - m_CurrentVideo.dts;
     if( missing > DVD_MSEC_TO_TIME(100) )
@@ -530,11 +528,11 @@ void CDVDPlayer::CheckContinuity(CDVDDemux::DemuxPacket* pPacket, unsigned int s
     /* if video player is rendering a stillframe, we need to make sure */
     /* audio has finished processing it's data otherwise it will be */
     /* displayed too early */
-
-    if( m_dvdPlayerVideo.IsStalled() )
+ 
+    if( m_dvdPlayerVideo.IsStalled() && m_CurrentVideo.dts != DVD_NOPTS_VALUE )
       SyncronizePlayers(SYNCSOURCE_VIDEO);
 
-    if( m_dvdPlayerAudio.IsStalled() )
+    if( m_dvdPlayerAudio.IsStalled() && m_CurrentAudio.dts != DVD_NOPTS_VALUE )
       SyncronizePlayers(SYNCSOURCE_AUDIO);
 
     m_dvd.iFlagSentStart  = 0;
