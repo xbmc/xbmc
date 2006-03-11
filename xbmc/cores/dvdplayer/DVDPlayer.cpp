@@ -156,7 +156,7 @@ void CDVDPlayer::OnStartup()
   m_CurrentVideo.id = -1;
   m_CurrentAudio.id = -1;
 
-  m_messenger.Clear();
+  m_messenger.Init();
 
   g_dvdPerformanceCounter.EnableMainPerformance(ThreadHandle());
 }
@@ -401,8 +401,6 @@ void CDVDPlayer::Process()
 
 void CDVDPlayer::ProcessAudioData(CDemuxStream* pStream, CDVDDemux::DemuxPacket* pPacket)
 {
-  DVDMsg packetMessage = DVDMSG_DEMUX_DATA_PACKET;
-
   // if we have no audio stream yet, openup the audio device now
   if (m_CurrentAudio.id < 0) OpenAudioStream( pPacket->iStreamId );
 
@@ -446,19 +444,17 @@ void CDVDPlayer::ProcessAudioData(CDemuxStream* pStream, CDVDDemux::DemuxPacket*
   if( !(m_dvd.iFlagSentStart & 1) )
   {
     m_dvd.iFlagSentStart |= 1;
-    packetMessage |= DVDMSG_GENERAL_RESYNC;
+    m_dvdPlayerAudio.SendMessage(new CDVDMsgGeneralResync(pPacket->pts, pPacket->dts));
   }
 
   if (m_CurrentAudio.id >= 0)
-    m_dvdPlayerAudio.m_packetQueue.Put(packetMessage, pPacket, pPacket->iSize);
+    m_dvdPlayerAudio.SendMessage(new CDVDMsgDemuxerPacket(pPacket, pPacket->iSize));
   else
     CDVDDemuxUtils::FreeDemuxPacket(pPacket);
 }
 
 void CDVDPlayer::ProcessVideoData(CDemuxStream* pStream, CDVDDemux::DemuxPacket* pPacket)
 {
-  DVDMsg packetMessage = DVDMSG_DEMUX_DATA_PACKET;
-
   // if we have no video stream yet, openup the video device now
   if (m_CurrentVideo.id < 0) OpenVideoStream(pPacket->iStreamId);
 
@@ -479,7 +475,7 @@ void CDVDPlayer::ProcessVideoData(CDemuxStream* pStream, CDVDDemux::DemuxPacket*
 
   if (m_bDontSkipNextFrame)
   {
-    packetMessage |= DVDMSG_VIDEO_NOSKIP;
+    m_dvdPlayerVideo.SendMessage(new CDVDMsgVideoNoSkip());
     m_bDontSkipNextFrame = false;
   }
 
@@ -513,11 +509,11 @@ void CDVDPlayer::ProcessVideoData(CDemuxStream* pStream, CDVDDemux::DemuxPacket*
   if( !(m_dvd.iFlagSentStart & 1) )
   {
     m_dvd.iFlagSentStart |= 1;
-    packetMessage |= DVDMSG_GENERAL_RESYNC;
+    m_dvdPlayerVideo.SendMessage(new CDVDMsgGeneralResync(pPacket->pts, pPacket->dts));
   }
 
   if (m_CurrentVideo.id >= 0)
-    m_dvdPlayerVideo.m_packetQueue.Put(packetMessage, pPacket, pPacket->iSize);
+    m_dvdPlayerVideo.SendMessage(new CDVDMsgDemuxerPacket(pPacket, pPacket->iSize));
   else
     CDVDDemuxUtils::FreeDemuxPacket(pPacket);
 }
@@ -568,26 +564,32 @@ void CDVDPlayer::SyncronizePlayers(__int64 dts, __int64 pts)
 
   if( players )
   {
-    CDVDMsgSyncronize* message = new CDVDMsgSyncronize(players, timeout);
+    CDVDMsgGeneralSynchronize* message = new CDVDMsgGeneralSynchronize(timeout);
     if( m_CurrentAudio.id >= 0 )
-      m_dvdPlayerAudio.m_packetQueue.Put(DVDMSG_GENERAL_SYNCRONIZE, message, 0);
-    
+    {
+      message->Acquire();
+      m_dvdPlayerAudio.SendMessage(message);
+    }
     if( m_CurrentVideo.id >= 0 )
-      m_dvdPlayerVideo.m_packetQueue.Put(DVDMSG_GENERAL_SYNCRONIZE, message, 0);
+    {
+      message->Acquire();
+      m_dvdPlayerVideo.SendMessage(message);
+    }
+    message->Release();
 
-    SDVDMsgSetClock* clock = new SDVDMsgSetClock;
-    clock->pts = pts;
-    clock->dts = dts;
-
+    CDVDMsgGeneralSetClock* clock = new CDVDMsgGeneralSetClock(pts, dts);
     if( m_CurrentVideo.id >= 0 &&  m_CurrentAudio.id < 0 )
-      m_dvdPlayerVideo.m_packetQueue.Put(DVDMSG_GENERAL_SETCLOCK, clock, 0);
+    {
+      clock->Acquire();
+      m_dvdPlayerVideo.SendMessage(clock);
+    }
     else if( m_CurrentAudio.id >= 0 )
-      m_dvdPlayerAudio.m_packetQueue.Put(DVDMSG_GENERAL_SETCLOCK, clock, 0);
-    else
-      delete clock;
+    {
+      clock->Acquire();
+      m_dvdPlayerAudio.m_messageQueue.Put(clock);
+    }
+    clock->Release();
   }
-
-  
 }
 
 void CDVDPlayer::OnExit()
@@ -633,126 +635,130 @@ void CDVDPlayer::OnExit()
   // if we didn't stop playing, advance to the next item in xbmc's playlist
   if (!m_bAbortRequest) m_callback.OnPlayBackEnded();
 
+  m_messenger.End();
+  
   // set event to inform openfile something went wrong in case openfile is still waiting for this event
   SetEvent(m_hReadyEvent);
 }
 
 void CDVDPlayer::HandleMessages()
 {
-  DVDPlayerMessage* pMessage = m_messenger.Recieve();
-
-  while (pMessage)
+  CDVDMsg* pMsg;
+  
+  MsgQueueReturnCode ret = m_messenger.Get(&pMsg, 0);
+   
+  while (ret == MSGQ_OK)
   {
-    switch (pMessage->iMessage)
+    if (pMsg->IsType(CDVDMsg::PLAYER_SEEK))
     {
-    case DVDMESSAGE_SEEK:
+      CDVDMsgPlayerSeek* pMsgPlayerSeek = (CDVDMsgPlayerSeek*)pMsg;
+      
+      if (m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
       {
-        if (m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
+        // We can't seek in a menu
+        if (!IsInMenu())
         {
-          // We can't seek in a menu
-          if (!IsInMenu())
+          // need to get the seek based on file positition working in CDVDInputStreamNavigator
+          // so that demuxers can control the stream (seeking in this case)
+          // for now use time based seeking
+          CLog::Log(LOGDEBUG, "CDVDInputStreamNavigator seek to: %d", pMsgPlayerSeek->GetTime());
+          if (((CDVDInputStreamNavigator*)m_pInputStream)->Seek(pMsgPlayerSeek->GetTime()))
           {
-            // need to get the seek based on file positition working in CDVDInputStreamNavigator
-            // so that demuxers can control the stream (seeking in this case)
-            // for now use time based seeking
-            CLog::Log(LOGDEBUG, "CDVDInputStreamNavigator seek to: %d", pMessage->iValue);
-            if (((CDVDInputStreamNavigator*)m_pInputStream)->Seek(pMessage->iValue))
-            {
-              CLog::Log(LOGDEBUG, "CDVDInputStreamNavigator seek to: %d, succes", pMessage->iValue);
-              //FlushBuffers(); buffers will be flushed by a hop from dvdnavigator
-            }
-            else CLog::Log(LOGWARNING, "error while seeking");
-          }
-          else CLog::Log(LOGWARNING, "can't seek in a menu");
-        }
-        else
-        {
-          CLog::Log(LOGDEBUG, "demuxer seek to: %d", pMessage->iValue);
-          if (m_pDemuxer->Seek(pMessage->iValue))
-          {
-            CLog::Log(LOGDEBUG, "demuxer seek to: %d, succes", pMessage->iValue);
-            FlushBuffers();
+            CLog::Log(LOGDEBUG, "CDVDInputStreamNavigator seek to: %d, succes", pMsgPlayerSeek->GetTime());
+            //FlushBuffers(); buffers will be flushed by a hop from dvdnavigator
           }
           else CLog::Log(LOGWARNING, "error while seeking");
         }
-
-        // set flag to indicate we have finished a seeking request
-        g_infoManager.m_performingSeek = false;
+        else CLog::Log(LOGWARNING, "can't seek in a menu");
       }
-      break;
-    case DVDMESSAGE_RESET_DEMUXER:
+      else
       {
+        CLog::Log(LOGDEBUG, "demuxer seek to: %d", pMsgPlayerSeek->GetTime());
+        if (m_pDemuxer->Seek(pMsgPlayerSeek->GetTime()))
+        {
+          CLog::Log(LOGDEBUG, "demuxer seek to: %d, succes", pMsgPlayerSeek->GetTime());
+          FlushBuffers();
+        }
+        else CLog::Log(LOGWARNING, "error while seeking");
+      }
+
+      // set flag to indicate we have finished a seeking request
+      g_infoManager.m_performingSeek = false;
+    }
+    else if (pMsg->IsType(CDVDMsg::DEMUXER_RESET))
+    {
         m_CurrentAudio.stream = NULL;
         m_CurrentVideo.stream = NULL;
         m_CurrentSubtitle.stream = NULL;
 
         // we need to reset the demuxer, probably because the streams have changed
         m_pDemuxer->Reset();
-      }
-      break;
-    case DVDMESSAGE_SET_AUDIO:
-      {
-        CDemuxStream* pStream = m_pDemuxer->GetStreamFromAudioId(pMessage->iValue);
-        if( pStream )
-        {
-          LockStreams();
+    }
+    else if (pMsg->IsType(CDVDMsg::PLAYER_SET_AUDIOSTREAM))
+    {
+      CDVDMsgPlayerSetAudioStream* pMsgPlayerSetAudioStream = (CDVDMsgPlayerSetAudioStream*)pMsg;
 
-          CloseAudioStream(false);
-
-          // for dvd's we set it using the navigater, it will then send a change audio to the dvdplayer
-          if (m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
-          {
-            m_dvd.iSelectedAudioStream = -1;
-
-            CDVDInputStreamNavigator* pInput = (CDVDInputStreamNavigator*)m_pInputStream;
-            pInput->SetActiveAudioStream(pMessage->iValue);
-          }
-          else if (m_pDemuxer)
-          {
-            CDemuxStream* pStream = m_pDemuxer->GetStreamFromAudioId(pMessage->iValue);
-            if( pStream ) OpenAudioStream(pStream->iId);
-          }
-
-          UnlockStreams();
-        }
-      }
-      break;
-    case DVDMESSAGE_SET_SUBTITLE:
+      CDemuxStream* pStream = m_pDemuxer->GetStreamFromAudioId(pMsgPlayerSetAudioStream->GetStreamId());
+      if (pStream)
       {
         LockStreams();
 
-        CloseSubtitleStream(false);
+        CloseAudioStream(false);
 
-        // for dvd's we set it using the navigater, it will then send a change subtitle to the dvdplayer
+        // for dvd's we set it using the navigater, it will then send a change audio to the dvdplayer
         if (m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
         {
-          m_dvd.iSelectedSPUStream = -1;
+          m_dvd.iSelectedAudioStream = -1;
 
-          CDVDInputStreamNavigator* pStream = (CDVDInputStreamNavigator*)m_pInputStream;
-          pStream->SetActiveSubtitleStream(pMessage->iValue);
+          CDVDInputStreamNavigator* pInput = (CDVDInputStreamNavigator*)m_pInputStream;
+          pInput->SetActiveAudioStream(pMsgPlayerSetAudioStream->GetStreamId());
         }
         else if (m_pDemuxer)
         {
-          CDemuxStream* pStream = m_pDemuxer->GetStreamFromSubtitleId(pMessage->iValue);
-          if( pStream ) OpenSubtitleStream(pStream->iId);
+          CDemuxStream* pStream = m_pDemuxer->GetStreamFromAudioId(pMsgPlayerSetAudioStream->GetStreamId());
+          if( pStream ) OpenAudioStream(pStream->iId);
         }
 
         UnlockStreams();
       }
-      break;
-    case DVDMESSAGE_SET_STATE:
+    }
+    else if (pMsg->IsType(CDVDMsg::PLAYER_SET_SUBTITLESTREAM))
+    {
+      CDVDMsgPlayerSetSubtitleStream* pMsgPlayerSetSubtileStream = (CDVDMsgPlayerSetSubtitleStream*)pMsg;
+
+      LockStreams();
+
+      CloseSubtitleStream(false);
+
+      // for dvd's we set it using the navigater, it will then send a change subtitle to the dvdplayer
+      if (m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
       {
-        if (m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
-        {
-          ((CDVDInputStreamNavigator*)m_pInputStream)->SetNavigatorState(pMessage->sValue);
-        }
+        m_dvd.iSelectedSPUStream = -1;
+
+        CDVDInputStreamNavigator* pStream = (CDVDInputStreamNavigator*)m_pInputStream;
+        pStream->SetActiveSubtitleStream(pMsgPlayerSetSubtileStream->GetStreamId());
       }
-      break;
+      else if (m_pDemuxer)
+      {
+        CDemuxStream* pStream = m_pDemuxer->GetStreamFromSubtitleId(pMsgPlayerSetSubtileStream->GetStreamId());
+        if (pStream) OpenSubtitleStream(pStream->iId);
+      }
+
+      UnlockStreams();
+    }
+    else if (pMsg->IsType(CDVDMsg::PLAYER_SET_SUBTITLESTREAM))
+    {
+      CDVDMsgPlayerSetState* pMsgPlayerSetState = (CDVDMsgPlayerSetState*)pMsg;
+
+      if (m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
+      {
+        ((CDVDInputStreamNavigator*)m_pInputStream)->SetNavigatorState(pMsgPlayerSetState->GetState());
+      }
     }
 
 
-    delete pMessage;
-    pMessage = m_messenger.Recieve();
+    pMsg->Release();
+    ret = m_messenger.Get(&pMsg, 0);
   }
 }
 
@@ -848,8 +854,8 @@ void CDVDPlayer::GetAudioInfo(CStdString& strAudioInfo)
     }
   }
 
-  int bsize = m_dvdPlayerAudio.m_packetQueue.GetDataSize();
-  if (bsize > 0) bsize = (int)(((double)m_dvdPlayerAudio.m_packetQueue.GetDataSize() / m_dvdPlayerAudio.m_packetQueue.GetMaxDataSize()) * 100);
+  int bsize = m_dvdPlayerAudio.m_messageQueue.GetDataSize();
+  if (bsize > 0) bsize = (int)(((double)m_dvdPlayerAudio.m_messageQueue.GetDataSize() / m_dvdPlayerAudio.m_messageQueue.GetMaxDataSize()) * 100);
   if (bsize > 99) bsize = 99;
   strPlayerInfo.Format("aq size: %i, cpu: %i%%", bsize, (int)(m_dvdPlayerAudio.GetRelativeUsage()*100));
   strAudioInfo.Format("D( %s ), P( %s )", strDemuxerInfo.c_str(), strPlayerInfo.c_str());
@@ -870,8 +876,8 @@ void CDVDPlayer::GetVideoInfo(CStdString& strVideoInfo)
     }
   }
 
-  int bsize = m_dvdPlayerVideo.m_packetQueue.GetDataSize();
-  if (bsize > 0) bsize = (int)(((double)m_dvdPlayerVideo.m_packetQueue.GetDataSize() / m_dvdPlayerVideo.m_packetQueue.GetMaxDataSize()) * 100);
+  int bsize = m_dvdPlayerVideo.m_messageQueue.GetDataSize();
+  if (bsize > 0) bsize = (int)(((double)m_dvdPlayerVideo.m_messageQueue.GetDataSize() / m_dvdPlayerVideo.m_messageQueue.GetMaxDataSize()) * 100);
   if (bsize > 99) bsize = 99;
   strPlayerInfo.Format("vq size: %i, cpu: %i%%", bsize, (int)(m_dvdPlayerVideo.GetRelativeUsage()*100+m_dvdPlayerVideo.m_PresentThread.GetRelativeUsage()*100));
   strVideoInfo.Format("D( %s ), P( %s )", strDemuxerInfo.c_str(), strPlayerInfo.c_str());
@@ -1013,7 +1019,7 @@ void CDVDPlayer::GetSubtitleName(int iStream, CStdString &strStreamName)
 
 void CDVDPlayer::SetSubtitle(int iStream)
 {
-  m_messenger.SetSubtitle(iStream);
+  m_messenger.Put(new CDVDMsgPlayerSetSubtitleStream(iStream));
 }
 
 bool CDVDPlayer::GetSubtitleVisible()
@@ -1112,12 +1118,12 @@ void CDVDPlayer::GetAudioStreamName(int iStream, CStdString& strStreamName)
 
 void CDVDPlayer::SetAudioStream(int iStream)
 {
-  m_messenger.SetAudio(iStream);
+  m_messenger.Put(new CDVDMsgPlayerSetAudioStream(iStream));
 }
 
 void CDVDPlayer::SeekTime(__int64 iTime)
 {
-  if (m_pDemuxer) m_messenger.Seek((int)iTime);
+  if (m_pDemuxer) m_messenger.Put(new CDVDMsgPlayerSeek((int)iTime));
 }
 
 // return the time in milliseconds
@@ -1219,7 +1225,7 @@ bool CDVDPlayer::OpenAudioStream(int iStream)
   if( m_CurrentAudio.id >= 0 )
   {
     CDVDStreamInfo* phint = new CDVDStreamInfo(hint);
-    m_dvdPlayerAudio.m_packetQueue.Put(DVDMSG_GENERAL_STREAMCHANGE, phint, sizeof(CDVDStreamInfo));
+    m_dvdPlayerAudio.SendMessage(new CDVDMsgGeneralStreamChange(phint));
   }
   else if (!m_dvdPlayerAudio.OpenStream( hint ) )
   {
@@ -1500,7 +1506,7 @@ int CDVDPlayer::OnDVDNavResult(void* pData, int iMessage)
         // this is a bit tricky cause it's the demuxer that's is making this call in the end
         // so we send a message to indicate the main loop that the demuxer needs a reset
         // this also means the libdvdnav may not return any data packets after this command
-        m_messenger.ResetDemuxer();
+        m_messenger.Put(new CDVDMsgDemuxerReset());
         m_bReadAgain = true;
 
         //Force an aspect ratio that is set in the dvdheaders if available
@@ -1779,9 +1785,6 @@ CStdString CDVDPlayer::GetPlayerState()
 
 bool CDVDPlayer::SetPlayerState(CStdString state)
 {
-  std::string buffer;
-  buffer = state;
-
-  m_messenger.SetPlayerState(state);
+  m_messenger.Put(new CDVDMsgPlayerSetState(state));
   return true;
 }
