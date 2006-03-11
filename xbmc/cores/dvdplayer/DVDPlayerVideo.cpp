@@ -554,14 +554,6 @@ CDVDPlayerVideo::EOUTPUTSTATUS CDVDPlayerVideo::OutputPicture(DVDVideoPicture* p
     // current pts is always equal to the pts of a picture, at least it is for external subtitles
     m_iCurrentPts = pts - (iSleepTime > 0 ? iSleepTime : 0);
 
-    // timestamp when we think next picture should be displayed based on current duration
-    m_iFlipTimeStamp = m_pClock->GetAbsoluteClock() ;
-    m_iFlipTimeStamp += iSleepTime ;
-    m_iFlipTimeStamp += pPicture->iDuration;
-
-    // account delay caused by waiting for vsync.     
-    iSleepTime -= m_PresentThread.GetDelay();
-
     /* adjust for speed */
     if( m_speed > DVD_PLAYSPEED_NORMAL )
       iSleepTime = iSleepTime * DVD_PLAYSPEED_NORMAL / m_speed;
@@ -583,11 +575,17 @@ CDVDPlayerVideo::EOUTPUTSTATUS CDVDPlayerVideo::OutputPicture(DVDVideoPicture* p
         else if( iSleepTime > 2*pPicture->iDuration )
         { // one frame late, drop in renderer     
           pPicture->iFlags |= DVP_FLAG_DROPPED;
+          return EOS_DROPPED;
         }
 
       }
       iSleepTime = 0;
     }
+
+    // timestamp when we think next picture should be displayed based on current duration
+    m_iFlipTimeStamp = m_pClock->GetAbsoluteClock() ;
+    m_iFlipTimeStamp += iSleepTime ;
+    m_iFlipTimeStamp += pPicture->iDuration;
 
     if( (pPicture->iFlags & DVP_FLAG_DROPPED) ) return EOS_DROPPED;
 
@@ -600,6 +598,9 @@ CDVDPlayerVideo::EOUTPUTSTATUS CDVDPlayerVideo::OutputPicture(DVDVideoPicture* p
       else
         mDisplayField = FS_EVEN;
     }
+
+    // account delay caused by waiting for vsync.     
+    iSleepTime -= m_PresentThread.GetDelay();
 
     // present this image after the given delay
     m_PresentThread.Present( m_pClock->GetAbsoluteClock() + iSleepTime, mDisplayField );
