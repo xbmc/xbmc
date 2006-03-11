@@ -270,7 +270,8 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
           // do nothing if the bookmark is locked, and update the panel with new bookmark settings
           if ( !g_passwordManager.IsItemUnlocked( &share, "myprograms" ) )
           {
-            Update("");
+            //Update(""); //Does not update clean
+            GoParentFolder(); //The best way is to go back to root
             return false;
           }
           m_shareDirectory = share.strPath;    // since m_strDirectory can change, we always want something that won't.
