@@ -29,11 +29,12 @@ public:
   __int64 GetAbsoluteClock();
   __int64 GetFrequency() { return (__int64)m_systemFrequency.QuadPart ; }
 
-  void Discontinuity(ClockDiscontinuityType type, __int64 currentPts = 0LL);
+  /* delay should say how long in the future we expect to display this frame */
+  void Discontinuity(ClockDiscontinuityType type, __int64 currentPts = 0LL, __int64 delay = 0LL);
   
-  bool HadDiscontinuity(__int64 delay);
-  void AdjustSpeedToMatch(__int64 currPts );
-  
+  /* will return how close we are to a discontinuity */
+  __int64 CDVDClock::DistanceToDisc();
+
   void Pause();
   void Resume();
   void SetSpeed(int iSpeed);

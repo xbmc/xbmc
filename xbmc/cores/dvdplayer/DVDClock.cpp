@@ -50,14 +50,14 @@ void CDVDClock::SetSpeed(int iSpeed)
   // this will sometimes be a little bit of due to rounding errors, ie clock might jump abit when changing speed
   CExclusiveLock lock(m_critSection);
   LARGE_INTEGER current;
-  __int64 newfreq = m_systemFrequency.QuadPart / iSpeed;
+  __int64 newfreq = m_systemFrequency.QuadPart * DVD_PLAYSPEED_NORMAL / iSpeed;
   
   QueryPerformanceCounter(&current);
   m_startClock.QuadPart = current.QuadPart - ( newfreq * (current.QuadPart - m_startClock.QuadPart) ) / m_systemUsed.QuadPart;
   m_systemUsed.QuadPart = newfreq;    
 }
 
-void CDVDClock::Discontinuity(ClockDiscontinuityType type, __int64 currentPts)
+void CDVDClock::Discontinuity(ClockDiscontinuityType type, __int64 currentPts, __int64 delay)
 {
   CExclusiveLock lock(m_critSection);
   switch (type)
@@ -71,6 +71,7 @@ void CDVDClock::Discontinuity(ClockDiscontinuityType type, __int64 currentPts)
     {
 
       QueryPerformanceCounter(&m_startClock);
+      m_startClock.QuadPart += delay * m_systemUsed.QuadPart / DVD_TIME_BASE; 
       m_iDisc = currentPts;
 
       break;
@@ -91,47 +92,8 @@ void CDVDClock::Resume()
   m_iPaused = 0I64;
 }
 
-  
-bool CDVDClock::HadDiscontinuity(__int64 delay)
+__int64 CDVDClock::DistanceToDisc()
 {
   CSharedLock lock(m_critSection);
-  if(m_iDisc + delay > GetClock())
-    return true;
-  else
-    return false;
-}
-
-void CDVDClock::AdjustSpeedToMatch(__int64 currPts )
-{
-  //Placeholder for now, haven't been able to figure out a good routine for this yet.
-
-  //__int64 diff = ABS(GetClock() - currPts);
-  //int speedpercent;
-
-
-  //if(diff < 1000)
-  //  speedpercent = 0;
-  //else if(diff < 5000)
-  //  speedpercent = 1;
-  //else if(diff < 10000)
-  //  speedpercent = 5;
-  //else if(diff < 100000)
-  //  speedpercent = 20;
-  //else
-  //  speedpercent = 50;
-
-  //  if(currPts > GetClock())
-  //  {
-  //    speedpercent*=-1;
-  //  }
-  //  speedpercent+=10000;
-
-  //  __int64 newfreq = speedpercent*m_systemFrequency.QuadPart/10000;
-
-  //  LARGE_INTEGER current;
-  //  QueryPerformanceCounter(&current);
-  //  m_startClock.QuadPart += current.QuadPart/newfreq - current.QuadPart/m_systemUsed.QuadPart;
-  //  m_systemUsed.QuadPart = newfreq;
-
-  //  CLog::DebugLog("Diff: %I64d, FreqDiff: %I64d ticks",diff, m_systemFrequency.QuadPart - m_systemUsed.QuadPart);
+  return GetClock() - m_iDisc;
 }

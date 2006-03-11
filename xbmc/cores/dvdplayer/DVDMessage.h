@@ -142,15 +142,21 @@ private:
   CDVDStreamInfo* m_pInfo;
 };
 
+#define SYNCSOURCE_AUDIO  0x00000001
+#define SYNCSOURCE_VIDEO  0x00000002
+#define SYNCSOURCE_SUB    0x00000004
+#define SYNCSOURCE_ALL    (SYNCSOURCE_AUDIO | SYNCSOURCE_VIDEO | SYNCSOURCE_SUB)
+
 class CDVDMsgGeneralSynchronize : public CDVDMsg
 {
 public:
-  CDVDMsgGeneralSynchronize(DWORD timeout);
+  CDVDMsgGeneralSynchronize(DWORD timeout, DWORD sources);
 
   // waits untill all threads is either waiting, released the object.
   // if abort is set somehow
-  void Wait(volatile bool *abort); 
+  void Wait(volatile bool *abort, DWORD source); 
 private:
+  DWORD m_sources;
   long m_objects;
   unsigned int m_timeout;
 };

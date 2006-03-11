@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 10-03-2006 changed: decoupled video playback from master clock in dvdplayer to allow for nicer transition when timestamps in dvd wrap back
  - 10-03-2006 fixed: CUE sheet path name resolving (and other path name resolving) was broken on remote shares.
  - 10-03-2006 changed: music nav, restored track naming template for songs sorted by track num
  - 10-03-2006 fixed: last selected cue item in directory is not remembered
