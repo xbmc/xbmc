@@ -29,8 +29,9 @@ public:
 
   // waits untill all available data has been rendered
   // just waiting for packetqueue should be enough for video
-  void WaitForBuffers()                             { m_packetQueue.WaitUntilEmpty(); }
-  bool AcceptsData()                                { return !m_packetQueue.IsFull(); }
+  void WaitForBuffers()                             { m_messageQueue.WaitUntilEmpty(); }
+  bool AcceptsData()                                { return !m_messageQueue.IsFull(); }
+  void SendMessage(CDVDMsg* pMsg)                   { m_messageQueue.Put(pMsg); }
   
   void Update(bool bPauseDrawing)                   { g_renderManager.Update(bPauseDrawing); }
   void UpdateMenuPicture();
@@ -54,7 +55,7 @@ public:
   void SetSpeed(int iSpeed);
 
   // classes
-  CDVDMessageQueue m_packetQueue;
+  CDVDMessageQueue m_messageQueue;
   CDVDOverlayContainer* m_pOverlayContainer;
   
   CDVDClock* m_pClock;
