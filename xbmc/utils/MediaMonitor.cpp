@@ -358,7 +358,7 @@ bool CMediaMonitor::imdb_GetMovieArt(CStdString& strIMDBNumber, CStdString& strP
   try
   {
     CPicture picture;
-    picture.Convert(strTemp, strThum);
+    picture.DoCreateThumbnail(strTemp, strThum);
   }
   catch (...)
   {

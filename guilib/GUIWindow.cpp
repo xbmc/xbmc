@@ -491,6 +491,8 @@ bool CGUIWindow::Load(TiXmlElement* pRootElement, RESOLUTION resToUse)
         COrigin origin;
         originElement->Attribute("x", &origin.x);
         originElement->Attribute("y", &origin.y);
+        g_graphicsContext.ScaleXCoord(origin.x, resToUse);
+        g_graphicsContext.ScaleYCoord(origin.y, resToUse);
         if (originElement->FirstChild())
           origin.condition = g_infoManager.TranslateString(originElement->FirstChild()->Value());
         m_origins.push_back(origin);

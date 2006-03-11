@@ -11,6 +11,9 @@
 #include "SkinInfo.h"
 #endif
 
+#include "GUIImage.h"
+#include "GUIMultiImage.h"
+
 #define CONTROL_BTNVIEWASICONS     2
 #define CONTROL_BTNSORTBY          3
 #define CONTROL_BTNSORTASC         4
@@ -171,7 +174,20 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
 
   case GUI_MSG_NOTIFY_ALL:
     { // Message is received even if this window is inactive
-      
+      if ( message.GetParam1() == GUI_MSG_REFRESH_THUMBS )
+      {
+        for (int i = 0; i < m_vecItems.Size(); i++)
+          m_vecItems[i]->FreeMemory();
+        // and refresh any info images as well
+        for (ivecControls it = m_vecControls.begin(); it != m_vecControls.end(); ++it)
+        {
+          CGUIControl *control = (*it);
+          if (control->GetControlType() == CGUIControl::GUICONTROL_IMAGE && ((CGUIImage *)control)->GetInfo())
+            control->FreeResources();
+          if (control->GetControlType() == CGUIControl::GUICONTROL_MULTI_IMAGE && ((CGUIMultiImage *)control)->GetInfo())
+            control->FreeResources();
+        }
+      }
       //  Is there a dvd share in this window?
       if (!m_rootDir.GetDVDDriveUrl().IsEmpty())
       {
