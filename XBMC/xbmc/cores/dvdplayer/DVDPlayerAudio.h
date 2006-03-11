@@ -59,6 +59,7 @@ public:
   
   __int64 GetCurrentPts();
 
+  bool IsStalled()                                  { return m_Stalled;  }
 protected:
 
   virtual void OnStartup();
@@ -92,6 +93,6 @@ protected:
   void AddPTSQueue(__int64 pts, __int64 delay);
   void FlushPTSQueue();
 
-
+  bool m_Stalled;
   CRITICAL_SECTION m_critCodecSection;
 };
