@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 12-03-2006 fixed: dvdplayer would sometimes stall in the middle of a movie
+ - 12-03-2006 fixed: navigation (highlight) would apear to have laggy on menu's with multiple sequential overlays. (ex. original matrix ntsc dvd )
  - 12-03-2006 fixed: dvdplayer would drop loads of frames when resuming from pause.
  - 12-03-2006 fixed: Incorrect strings shown at start of Delete from Media windows.
  - 11-03-2006 changed: Edit Title for Video Database items now also changes the title in the xml file that holds the movie details.
