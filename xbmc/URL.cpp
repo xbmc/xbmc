@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "url.h"
 #include "utils/RegExp.h"
+#include "util.h"
 
 
 CURL::CURL(const CStdString& strURL)
@@ -63,8 +64,11 @@ CURL::CURL(const CStdString& strURL)
   if ((m_strProtocol.CompareNoCase("rar")==0) || (m_strProtocol.CompareNoCase("zip")==0))
   {
     CRegExp reg;
-    reg.RegComp("...://([^,]*),([0-9]*),([^,]*),(.*),[\\\\/]?(.*)?$");
-    if( (reg.RegFind(strURL.c_str()) >= 0))
+    reg.RegComp("...://([^,]*),([0-9]*),([^,]*),(.*),[\\\\/](.*)?$");
+    CStdString strURL2 = strURL;
+    if (strURL[strURL.size()-1] == ',')
+      CUtil::AddSlashAtEnd(strURL2);
+    if( (reg.RegFind(strURL2.c_str()) >= 0))
     {
       char* szDomain = reg.GetReplaceString("\\1");
       char* szPort = reg.GetReplaceString("\\2");
