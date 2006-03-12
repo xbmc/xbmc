@@ -8,6 +8,7 @@ CDVDInputStreamHttp::CDVDInputStreamHttp() : CDVDInputStream()
 {
   m_streamType = DVDSTREAM_TYPE_HTTP;
   m_pFile = NULL;
+  m_eof = true;
 }
 
 CDVDInputStreamHttp::~CDVDInputStreamHttp()
@@ -16,15 +17,18 @@ CDVDInputStreamHttp::~CDVDInputStreamHttp()
 }
 
 bool CDVDInputStreamHttp::IsEOF()
-{
-  if(m_pFile)
+{  
+  if(m_pFile && !m_eof)
   {
     __int64 size = m_pFile->GetLength();
     if( size > 0 && m_pFile->GetPosition() >= size )
+    {
+      m_eof = true;
       return true;
+    }
+    return false;
   }
-
-  return false;
+  return true;
 }
 
 bool CDVDInputStreamHttp::Open(const char* strFile)
@@ -39,7 +43,8 @@ bool CDVDInputStreamHttp::Open(const char* strFile)
   // this should go to the demuxer
   m_pFile->SetUserAgent("WinampMPEG/5.09");
   m_pFile->AddHeaderParam("Icy-MetaData:1");
-  
+  m_eof = false;
+
   // open file in binary mode
   if (!m_pFile->Open(CURL(strFile), true))
   {
@@ -71,6 +76,8 @@ int CDVDInputStreamHttp::Read(BYTE* buf, int buf_size)
   if (m_pFile) ret = m_pFile->Read(buf, buf_size);
   else return -1;
 
+  if( ret <= 0 ) m_eof = true;
+
   return (int)(ret & 0xFFFFFFFF);
 }
 
@@ -79,6 +86,8 @@ __int64 CDVDInputStreamHttp::Seek(__int64 offset, int whence)
   __int64 ret = 0;
   if (m_pFile) ret = m_pFile->Seek(offset, whence);
   else return -1;
+
+  m_eof = false;
 
   return ret;
 }
