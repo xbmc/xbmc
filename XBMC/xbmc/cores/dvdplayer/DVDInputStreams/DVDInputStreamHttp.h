@@ -23,4 +23,5 @@ public:
 protected:
   CFileCurl* m_pFile;
   CHttpHeader m_httpHeader;
+  bool m_eof;
 };
