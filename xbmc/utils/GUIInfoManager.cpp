@@ -761,9 +761,11 @@ wstring CGUIInfoManager::GetLabel(int info)
   }
 
   // convert our CStdString to a wstring (which the label expects!)
-  WCHAR szLabel[256];
+  int size = _scwprintf(L"%S", strLabel.c_str() );
+  WCHAR *szLabel = new WCHAR[size+1];
   swprintf(szLabel, L"%S", strLabel.c_str() );
   wstring strReturn = szLabel;
+  delete[] szLabel;
   return strReturn;
 }
 
