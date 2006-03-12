@@ -1111,7 +1111,7 @@ __int64 CDVDPlayer::GetTime()
     return ((CDVDInputStreamNavigator*)m_pInputStream)->GetTime(); // we should take our buffers into account
   }
 
-  int iMsecs = (int)(m_clock.GetClock() / (DVD_TIME_BASE / 1000));
+  __int64 iMsecs = (m_clock.GetClock() / (DVD_TIME_BASE / 1000));
   //if (m_pDemuxer)
   //{
   //  int iMsecsStart = m_pDemuxer->GetStreamStart();
