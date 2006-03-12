@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 12-03-2006 fixed: dvdplayer would drop loads of frames when resuming from pause.
  - 12-03-2006 fixed: Incorrect strings shown at start of Delete from Media windows.
  - 11-03-2006 changed: Edit Title for Video Database items now also changes the title in the xml file that holds the movie details.
 			This means the Movie Info window will now display the updated title as well.
