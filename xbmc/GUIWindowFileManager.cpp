@@ -1276,11 +1276,7 @@ bool CGUIWindowFileManager::DeleteItem(const CFileItem *pItem)
   if (pFileManager)
   {
     pFileManager->m_dlgProgress = (CGUIDialogProgress *)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
-    if (pFileManager->m_dlgProgress)
-    {
-      pFileManager->m_dlgProgress->SetHeading(126);
-      pFileManager->m_dlgProgress->StartModal(m_gWindowManager.GetActiveWindow());
-    }
+    pFileManager->ResetProgressBar();
     pFileManager->DoProcess(ACTION_DELETE, items, "");
     if (pFileManager->m_dlgProgress) pFileManager->m_dlgProgress->Close();
   }

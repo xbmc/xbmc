@@ -23,6 +23,7 @@ public:
   static bool DeleteItem(const CFileItem *pItem);
   static bool RenameFile(const CStdString &strFile);
 
+  void ResetProgressBar();
 protected:
   virtual void OnInitWindow();
   virtual void OnWindowLoaded();
@@ -63,7 +64,6 @@ protected:
   bool CanNewFolder(int iList);
   void OnPopupMenu(int iList, int iItem);
   void ShowShareErrorMessage(CFileItem* pItem);
-  void ResetProgressBar();
 
   CVirtualDirectory m_rootDir;
   CFileItemList m_vecItems[2];
