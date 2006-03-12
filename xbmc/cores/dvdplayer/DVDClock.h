@@ -43,8 +43,8 @@ protected:
   LARGE_INTEGER m_systemUsed;
   LARGE_INTEGER m_systemFrequency;
   LARGE_INTEGER m_startClock;
+  LARGE_INTEGER m_pauseClock;
   __int64 m_iDisc;
-  __int64 m_iPaused;
   bool m_bReset;
 
   __int64 m_lastPts;
