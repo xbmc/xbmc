@@ -679,9 +679,12 @@ void CDVDPlayerVideo::CPresentThread::Process()
         mTime = ( m_iTimestamp - m_pClock->GetAbsoluteClock() ) / (DVD_TIME_BASE / 1000000);
 
         if( mTime > DVD_MSEC_TO_TIME(500) )
-        {
+        {          
           usleep( DVD_MSEC_TO_TIME(500) );
-          continue;
+          
+          CLog::Log(LOGERROR, "CPresentThread - Too long sleeptime %I64d", mTime);
+          break; // break here since sometimes mTime is completly invalid, shouldn't need any longer than 500msec sleep anyway
+          //continue;
         }
         
         if( mTime > 0 )
@@ -698,6 +701,7 @@ void CDVDPlayerVideo::CPresentThread::Process()
       /* calculate m_iDelay. m_iDelay will converge towards the correct value */
       /* timeconstant of about 9 frames */
       m_iDelay = (m_iDelay + 9*(m_pClock->GetAbsoluteClock() - iFlipStamp))/10;
+      if( m_iDelay < 0 ) m_iDelay = 0; // fix for buggy clock
     }
   }
 
