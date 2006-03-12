@@ -7,8 +7,9 @@
 CDVDClock::CDVDClock()
 {
   QueryPerformanceFrequency(&m_systemFrequency);
+  m_systemUsed = m_systemFrequency;
+  m_pauseClock.QuadPart = 0;
   m_bReset = true;
-  m_iPaused = 0I64;
   m_iDisc = 0I64;
 }
 
@@ -27,19 +28,20 @@ __int64 CDVDClock::GetClock()
 {
   CSharedLock lock(m_critSection);
   LARGE_INTEGER current;
-  
-  if (m_iPaused > 0) return m_iPaused;
-  
+    
   if (m_bReset)
   {
     QueryPerformanceCounter(&m_startClock);
-    m_systemUsed.QuadPart = m_systemFrequency.QuadPart;
+    m_systemUsed = m_systemFrequency;
+    m_pauseClock.QuadPart = 0;
     m_iDisc = 0I64;
-    m_iPaused = 0I64;
     m_bReset = false;
   }
-  
-  QueryPerformanceCounter(&current);
+
+  if (m_pauseClock.QuadPart)
+    current = m_pauseClock;
+  else
+    QueryPerformanceCounter(&current);
 
   current.QuadPart -= m_startClock.QuadPart;
   return current.QuadPart * DVD_TIME_BASE / m_systemUsed.QuadPart + m_iDisc;
@@ -49,6 +51,7 @@ void CDVDClock::SetSpeed(int iSpeed)
 {
   // this will sometimes be a little bit of due to rounding errors, ie clock might jump abit when changing speed
   CExclusiveLock lock(m_critSection);
+
   LARGE_INTEGER current;
   __int64 newfreq = m_systemFrequency.QuadPart * DVD_PLAYSPEED_NORMAL / iSpeed;
   
@@ -73,7 +76,7 @@ void CDVDClock::Discontinuity(ClockDiscontinuityType type, __int64 currentPts, _
       QueryPerformanceCounter(&m_startClock);
       m_startClock.QuadPart += delay * m_systemUsed.QuadPart / DVD_TIME_BASE; 
       m_iDisc = currentPts;
-
+      m_bReset = false;
       break;
     }
   }
@@ -82,14 +85,18 @@ void CDVDClock::Discontinuity(ClockDiscontinuityType type, __int64 currentPts, _
 void CDVDClock::Pause()
 {
   CExclusiveLock lock(m_critSection);
-  m_iPaused = GetClock();
+  QueryPerformanceCounter(&m_pauseClock);
 }
 
 void CDVDClock::Resume()
 {
   CExclusiveLock lock(m_critSection);
-  m_bReset = true;
-  m_iPaused = 0I64;
+  
+  LARGE_INTEGER current;
+  QueryPerformanceCounter(&current);
+
+  m_startClock.QuadPart += current.QuadPart - m_pauseClock.QuadPart;
+  m_pauseClock.QuadPart = 0;
 }
 
 __int64 CDVDClock::DistanceToDisc()

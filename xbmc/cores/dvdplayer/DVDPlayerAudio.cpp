@@ -384,6 +384,9 @@ void CDVDPlayerAudio::Process()
   __int64 iClockDiff=0;
   while (!m_bStop)
   {
+    //make sure player doesn't keep processing data while paused
+    while (m_speed == DVD_PLAYSPEED_PAUSE && !m_messageQueue.RecievedAbortRequest()) Sleep(5);
+
     //Don't let anybody mess with our global variables
     EnterCriticalSection(&m_critCodecSection);
     result = DecodeFrame(audioframe, m_speed != DVD_PLAYSPEED_NORMAL); // blocks if no audio is available, but leaves critical section before doing so
