@@ -210,7 +210,8 @@ void CDVDPlayerVideo::Process()
       CDVDMsgGeneralSetClock* pMsgGeneralSetClock = (CDVDMsgGeneralSetClock*)pMsg;
 
       //DVDPlayer asked us to sync playback clock
-      pts = pMsgGeneralSetClock->GetDts();
+      if( pMsgGeneralSetClock->GetDts() != DVD_NOPTS_VALUE )
+        pts = pMsgGeneralSetClock->GetDts();
 
       __int64 delay = m_iFlipTimeStamp - m_pClock->GetAbsoluteClock();
       
@@ -230,7 +231,8 @@ void CDVDPlayerVideo::Process()
       CDVDMsgGeneralResync* pMsgGeneralResync = (CDVDMsgGeneralResync*)pMsg;
       
       //DVDPlayer asked us to sync playback clock
-      pts = pMsgGeneralResync->GetDts();
+      if( pMsgGeneralResync->GetDts() != DVD_NOPTS_VALUE )
+        pts = pMsgGeneralResync->GetDts();
 
       pMsgGeneralResync->Release();
       continue;
