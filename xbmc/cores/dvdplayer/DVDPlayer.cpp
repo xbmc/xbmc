@@ -1693,14 +1693,12 @@ void CDVDPlayer::UpdateOverlayInfo(int iAction)
 
     VecOverlays* pVecOverlays = m_overlayContainer.GetOverlays();
 
-    //It's the last packet recieved that is of interest currently
-    if (pVecOverlays->size() > 0)
+    //Update any forced overlays.
+    for(VecOverlays::iterator it = pVecOverlays->begin(); it != pVecOverlays->end(); it++ )     
     {
-      CDVDOverlay* pOverlay = pVecOverlays->back();
-
-      if (pOverlay->IsOverlayType(DVDOVERLAY_TYPE_SPU))
+      if ((*it)->IsOverlayType(DVDOVERLAY_TYPE_SPU))
       {
-        CDVDOverlaySpu* pOverlaySpu = (CDVDOverlaySpu*)pOverlay;
+        CDVDOverlaySpu* pOverlaySpu = (CDVDOverlaySpu*)(*it);
 
         // make sure its a forced (menu) overlay
         if (pOverlaySpu->bForced)
@@ -1708,10 +1706,6 @@ void CDVDPlayer::UpdateOverlayInfo(int iAction)
           // set menu spu color and alpha data if there is a valid menu overlay
           pStream->GetCurrentButtonInfo(pOverlaySpu, &m_dvdspus, iAction);
         }
-      }
-      else
-      {
-        CLog::Log(LOGERROR, "CDVDPlayer::UpdateOverlayInfo : last overlay container is not of a dvd SPU type, unable to update overlay info");
       }
     }
   }
