@@ -55,7 +55,11 @@ void CDVDClock::SetSpeed(int iSpeed)
   LARGE_INTEGER current;
   __int64 newfreq = m_systemFrequency.QuadPart * DVD_PLAYSPEED_NORMAL / iSpeed;
   
-  QueryPerformanceCounter(&current);
+  if( m_pauseClock.QuadPart )
+    current = m_pauseClock;
+  else
+    QueryPerformanceCounter(&current);
+
   m_startClock.QuadPart = current.QuadPart - ( newfreq * (current.QuadPart - m_startClock.QuadPart) ) / m_systemUsed.QuadPart;
   m_systemUsed.QuadPart = newfreq;    
 }
@@ -92,11 +96,16 @@ void CDVDClock::Resume()
 {
   CExclusiveLock lock(m_critSection);
   
-  LARGE_INTEGER current;
-  QueryPerformanceCounter(&current);
+  if( m_systemFrequency.QuadPart != m_systemUsed.QuadPart ) SetSpeed(DVD_PLAYSPEED_NORMAL);
 
-  m_startClock.QuadPart += current.QuadPart - m_pauseClock.QuadPart;
-  m_pauseClock.QuadPart = 0;
+  if( m_pauseClock.QuadPart )
+  {
+    LARGE_INTEGER current;
+    QueryPerformanceCounter(&current);
+
+    m_startClock.QuadPart += current.QuadPart - m_pauseClock.QuadPart;
+    m_pauseClock.QuadPart = 0;
+  }  
 }
 
 __int64 CDVDClock::DistanceToDisc()
