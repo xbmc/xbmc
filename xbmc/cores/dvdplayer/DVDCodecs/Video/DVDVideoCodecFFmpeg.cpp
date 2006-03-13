@@ -2,8 +2,10 @@
 #include "../../../../stdafx.h"
 #include "DVDVideoCodecFFmpeg.h"
 #include "..\..\DVDDemuxers\DVDDemux.h"
+#include "..\..\DVDStreamInfo.h"
 
 #include "..\..\ffmpeg\ffmpeg.h"
+#include "..\DVDCodecs.h"
 
 #define RINT(x) ((x) >= 0 ? ((int)((x) + 0.5)) : ((int)((x) - 0.5)))
 
@@ -25,7 +27,7 @@ CDVDVideoCodecFFmpeg::~CDVDVideoCodecFFmpeg()
   Dispose();
 }
 
-bool CDVDVideoCodecFFmpeg::Open(CodecID codecID, int iWidth, int iHeight, void* ExtraData, unsigned int ExtraSize)
+bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
 {
   AVCodec* pCodec;
 
@@ -38,7 +40,7 @@ bool CDVDVideoCodecFFmpeg::Open(CodecID codecID, int iWidth, int iHeight, void* 
   m_pCodecContext = m_dllAvCodec.avcodec_alloc_context();
   // avcodec_get_context_defaults(m_pCodecContext);
 
-  pCodec = m_dllAvCodec.avcodec_find_decoder(codecID);
+  pCodec = m_dllAvCodec.avcodec_find_decoder(hints.codec);
   if (!pCodec)
   {
     CLog::DebugLog("CDVDVideoCodecFFmpeg::Open() Unable to find codec");
@@ -62,19 +64,25 @@ bool CDVDVideoCodecFFmpeg::Open(CodecID codecID, int iWidth, int iHeight, void* 
     m_pCodecContext->time_base.num = 1000;
 
   // if we don't do this, then some codecs seem to fail.
-  m_pCodecContext->height = iHeight;
-  m_pCodecContext->width = iWidth;
+  m_pCodecContext->coded_height = hints.height;
+  m_pCodecContext->coded_width = hints.width;
 
-  if( ExtraData && ExtraSize > 0 )
+  if( hints.extradata && hints.extrasize > 0 )
   {
-    m_pCodecContext->extradata_size = ExtraSize;
-    m_pCodecContext->extradata = m_dllAvCodec.av_mallocz(ExtraSize + FF_INPUT_BUFFER_PADDING_SIZE);
-    memcpy(m_pCodecContext->extradata, ExtraData, ExtraSize);
+    m_pCodecContext->extradata_size = hints.extrasize;
+    m_pCodecContext->extradata = m_dllAvCodec.av_mallocz(hints.extrasize + FF_INPUT_BUFFER_PADDING_SIZE);
+    memcpy(m_pCodecContext->extradata, hints.extradata, hints.extrasize);
   }
 
   // set acceleration
   m_pCodecContext->dsp_mask = FF_MM_FORCE | FF_MM_MMX | FF_MM_MMXEXT | FF_MM_SSE;
-
+  
+  // set any special options
+  for(CDVDCodecOptions::iterator it = options.begin(); it != options.end(); it++)
+  {
+    m_dllAvCodec.av_set_string(m_pCodecContext, it->m_name.c_str(), it->m_value.c_str());
+  }
+  
   if (m_dllAvCodec.avcodec_open(m_pCodecContext, pCodec) < 0)
   {
     CLog::DebugLog("CDVDVideoCodecFFmpeg::Open() Unable to open codec");

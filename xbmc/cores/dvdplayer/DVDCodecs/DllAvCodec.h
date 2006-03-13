@@ -41,6 +41,7 @@ public:
   virtual ImgReSampleContext *img_resample_init(int output_width, int output_height, int input_width, int input_height)=0;
   virtual void img_resample(ImgReSampleContext *s, AVPicture *output, const AVPicture *input)=0;
   virtual void img_resample_close(ImgReSampleContext *s)=0;
+  virtual AVOption *av_set_string(void *obj, const char *name, const char *val)=0;
 };
 
 class DllAvCodec : public DllDynamic, DllAvCodecInterface
@@ -79,6 +80,7 @@ class DllAvCodec : public DllDynamic, DllAvCodecInterface
   DEFINE_METHOD4(ImgReSampleContext*, img_resample_init, (int p1, int p2, int p3, int p4))
   DEFINE_METHOD3(void, img_resample, (ImgReSampleContext *p1, AVPicture *p2, const AVPicture *p3))
   DEFINE_METHOD1(void, img_resample_close, (ImgReSampleContext *p1))
+  DEFINE_METHOD3(AVOption*, av_set_string, (void *p1, const char *p2, const char *p3))
   BEGIN_METHOD_RESOLVE()
     RESOLVE_METHOD(avcodec_flush_buffers)
     RESOLVE_METHOD(avcodec_thread_init)
@@ -111,5 +113,6 @@ class DllAvCodec : public DllDynamic, DllAvCodecInterface
     RESOLVE_METHOD(img_resample_init)
     RESOLVE_METHOD(img_resample)
     RESOLVE_METHOD(img_resample_close)
+    RESOLVE_METHOD(av_set_string)
   END_METHOD_RESOLVE()
 };
