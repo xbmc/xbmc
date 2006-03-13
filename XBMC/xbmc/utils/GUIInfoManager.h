@@ -65,7 +65,7 @@ public:
   int GetInt(int info) const;
   wstring GetLabel(int info);
 
-  CStdString GetImage(int info);
+  CStdString GetImage(int info, int contextWindow = WINDOW_INVALID);
 
   CStdString GetTime(bool bSeconds = false);
   CStdString GetDate(bool bNumbersOnly = false);

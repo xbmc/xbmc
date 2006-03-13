@@ -28,6 +28,7 @@ public:
   void SetShares(VECSHARES &shares);
 
   virtual void OnItemLoaded(CFileItem *item) {};
+  const CFileItem *GetCurrentListItem() const;
 protected:
   void GoParentFolder();
   void OnClick(int iItem);
