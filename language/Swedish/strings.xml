@@ -457,6 +457,7 @@
   <string><id>519</id><value>Starta i...</value></string>
   <string><id>520</id><value>D&#246;p om XBE-titel</value></string>
   <string><id>521</id><value>Kompilering</value></string>
+  <string><id>522</id><value>Ta bort k&#228;lla</value></string>
 
   <string><id>588</id><value>Avbryt Festl&#228;ge</value></string>
   <string><id>589</id><value>Festl&#228;ge</value></string>
@@ -1048,6 +1049,9 @@
   <string><id>13400</id><value>Anv&#228;nd crossfade p&#229; albumsp&#229;r</value></string>
   <string><id>13401</id><value>Bl&#228;ddra efter %s</value></string>
   <string><id>13402</id><value>Visa sp&#229;rposition</value></string>
+  <string><id>13403</id><value>Rensa standard</value></string>
+  <string><id>13404</id><value>&#197;teruppta</value></string>
+  <string><id>13405</id><value>H&#228;mta miniatyr</value></string>
 
   <string><id>14000</id><value>Stapling: Av</value></string>
   <string><id>14001</id><value>Stapling: Enkel</value></string>
@@ -1287,6 +1291,12 @@
   <string><id>16025</id><value>Skriv in Artistnamnet</value></string>
   <string><id>16026</id><value>Uppspelning av spellista avbruten</value></string>
   <string><id>16027</id><value>F&#246;r m&#229;nga felaktiga l&#229;tar i f&#246;ljd</value></string>
+
+  <string><id>16030</id><value>Festl&#228;ge avbrutet.</value></string>
+  <string><id>16031</id><value>F&#246;r lite l&#229;tar i databasen.</value></string>
+  <string><id>16032</id><value>Kunde inte initiera databasen.</value></string>
+  <string><id>16033</id><value>Kunde inte &#246;ppna databasen.</value></string>
+  <string><id>16034</id><value>Kunde inte h&#228;mta l&#229;tar fr&#229;n databasen.</value></string>
 
   <string><id>16100</id><value>Alla filmer</value></string>
   <string><id>16101</id><value>Ej sedd</value></string>

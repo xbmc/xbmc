@@ -222,7 +222,7 @@
   <string><id>287</id><value>Ondertitels</value></string>
   <string><id>288</id><value>Lettertype</value></string>
   <string><id>289</id><value>- Formaat</value></string>
-  <string><id>290</id><value>Volume versterking</value></string>
+  <string><id>290</id><value>Dynamische "Range" Compressie</value></string>
   <string><id>291</id><value>Beeld</value></string>
   <string><id>292</id><value>Geluid</value></string>
   <string><id>293</id><value>Ondertitels</value></string>
@@ -453,6 +453,7 @@
   <string><id>519</id><value>Starten in..</value></string>
   <string><id>520</id><value>Bewerk XBE naam</value></string>
   <string><id>521</id><value>Compilaties</value></string>
+  <string><id>522</id><value>Verwijder bron</value></string>
 
   <string><id>588</id><value>Party Modus annuleren</value></string>
   <string><id>589</id><value>Party Modus</value></string>
@@ -612,6 +613,7 @@
   <string><id>1029</id><value>Voer nieuwe label in</value></string>
   <string><id>1030</id><value>een afbeelding</value></string>
   <string><id>1031</id><value>een afbeelding</value></string>
+  <string><id>1032</id><value>Voeg netwerklocatie toe...</value></string>
 
   <string><id>1200</id><value>SMB deelmappen</value></string>
   <string><id>1201</id><value>SMB IP</value></string>
@@ -761,7 +763,6 @@
   <string><id>12021</id><value>Starten vanaf begin</value></string> 
   <string><id>12022</id><value>Hervatten vanaf laatste positie</value></string>
 
-
   <string><id>12310</id><value>0</value></string>
   <string><id>12311</id><value>1</value></string>
   <string><id>12312</id><value>2</value></string>
@@ -896,7 +897,6 @@
   <string><id>13210</id><value>Gestart, alarm over %im</value></string>
   <string><id>13211</id><value>Alarm!</value></string>
   <string><id>13212</id><value>Gestopt met nog %im%is te gaan</value></string>
-
 
   <string><id>13249</id><value>Zoeken naar ondertitels in rar's</value></string>
   <string><id>13250</id><value>Ondertitel zoeken</value></string>
@@ -1036,6 +1036,9 @@
   <string><id>13400</id><value>Albums crossfaden</value></string>
   <string><id>13401</id><value>Zoeken naar %s</value></string>
   <string><id>13402</id><value>Trackpositie weergeven</value></string>
+  <string><id>13403</id><value>Default leegmaken</value></string>
+  <string><id>13404</id><value>Hervatten</value></string> 
+  <string><id>13405</id><value>Verkrijg Thumb</value></string>
 
   <string><id>14000</id><value>Groeperen: Uit</value></string>
   <string><id>14001</id><value>Groeperen: Aan</value></string>
@@ -1188,7 +1191,6 @@
   <string><id>15111</id><value>Thema</value></string>
   <string><id>15112</id><value>Standaard thema</value></string>
 
-
   <string><id>15200</id><value>LastFM</value></string>
   <string><id>15201</id><value>Trackinformatie aan LastFM toevoegen</value></string>
   <string><id>15202</id><value>LastFM gebruikersnaam</value></string>
@@ -1275,6 +1277,12 @@
   <string><id>16025</id><value>Geef de artiest op</value></string>
   <string><id>16026</id><value>Playlist afspelen afgebroken</value></string>
   <string><id>16027</id><value>Teveel consecutive failed items</value></string>
+
+  <string><id>16030</id><value>Party Mode afgebroken.</value></string> 
+  <string><id>16031</id><value>Te weinig nummers in database.</value></string> 
+  <string><id>16032</id><value>Kon database niet initialeren.</value></string> 
+  <string><id>16033</id><value>Kon database niet openen.</value></string> 
+  <string><id>16034</id><value>Kon geen nummers van database verkrijgen.</value></string>
 
   <string><id>16100</id><value>Alle video's</value></string>
   <string><id>16101</id><value>Niet bekeken</value></string>
