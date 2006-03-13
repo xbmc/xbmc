@@ -39,9 +39,9 @@ DVDVideoPicture;
 #define DVP_FLAG_DROPPED            0x00000020 // indicate that this picture has been dropped in decoder stage, will have no data
 // DVP_FLAG 0x00000100 - 0x00000f00 is in use by libmpeg2!
 
-class CDemuxStreamVideo;
-enum CodecID;
-struct AVStream;
+class CDVDStreamInfo;
+class CDVDCodecOption;
+typedef std::vector<CDVDCodecOption> CDVDCodecOptions;
 
 // VC_ messages, messages can be combined
 #define VC_ERROR   0x00000001 // an error occured, no other messages will be returned
@@ -58,7 +58,7 @@ public:
   /*
    * Open the decoder, returns true on success
    */
-  virtual bool Open(CodecID codecID, int iWidth, int iHeight, void* ExtraData, unsigned int ExtraSize) = 0;
+  virtual bool Open(CDVDStreamInfo &hints, CDVDCodecOptions &options) = 0;
   
   /*
    * Dispose, Free all resources

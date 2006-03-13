@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 13-03-2006 added: half resolution decoding to dvdplayer and mplayer. if source is larger than 1280 pixels in width and decoded with ffmpeg, it will be decoded at half resolution
  - 13-03-2006 fixed: dvdplayer ff/rw didn't resume properly after the pause fix.
  - 12-03-2006 fixed: file names with ',' inside archives.
  - 12-03-2006 fixed: dvdplayer would sometimes stall in the middle of a movie
