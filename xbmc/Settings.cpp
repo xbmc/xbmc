@@ -2202,9 +2202,8 @@ void CSettings::LoadHomeButtons(TiXmlElement* pRootElement)
       CButtonScrollerSettings::CButton *pButton = NULL;
       if ((temp2[0] >= 'A') && (temp2[0] <= 'z'))
       {
-        WCHAR wszLabel[1024];
-        swprintf(wszLabel, L"%S", temp2);
-        pButton = new CButtonScrollerSettings::CButton(wszLabel, temp, iIcon);
+        CStdStringW label = temp2;
+        pButton = new CButtonScrollerSettings::CButton(label, temp, iIcon);
       }
       else
       {

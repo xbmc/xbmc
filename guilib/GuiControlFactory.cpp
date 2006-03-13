@@ -925,9 +925,8 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
             }
             else
             {
-              WCHAR wszTmp[512];
-              swprintf(wszTmp, L"%S", strTmp.c_str());
-              strLabel = wszTmp;
+              CStdStringW label(strTmp);
+              strLabel = label;
             }
             vecLabel.push_back(strLabel);
           }
@@ -939,23 +938,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
 
     XMLUtils::GetBoolean(pControlNode, "wrapmultiline", wrapMultiLine);
     XMLUtils::GetInt(pControlNode,"urlset",iUrlSet);
-
-    /*  CStdStringArray strVecUrl;
-    if (GetMultipleString(pControlNode, "feed", strVecUrl))
-    {
-      vecUrls.clear();
-      for (unsigned int i = 0; i < strVecUrl.size(); i++)
-      {
-        strTmp = strVecUrl[i];
-        if (strTmp.size() > 0)
-        {
-          WCHAR wszTmp[1024];
-          swprintf(wszTmp, L"%S", strTmp.c_str());
-          wstring tempUrl = wszTmp;
-          vecUrls.push_back(tempUrl);
-        }
-      }
-    }*/
 
     // stuff for button scroller
     if ( XMLUtils::GetString(pControlNode, "orientation", strTmp) )
@@ -1211,9 +1193,9 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     int labelNumber = 0;
     if (XMLUtils::GetInt(pControlNode, "number", labelNumber))
     {
-      WCHAR wszTmp[16];
-      swprintf(wszTmp, L"%i", labelNumber);
-      strLabel = wszTmp;
+      CStdStringW label;
+      label.Format(L"%i", labelNumber);
+      strLabel = label;
     }
     CStdStringArray strVecLabel;
     if (GetMultipleString(pControlNode, "label", strVecLabel))
@@ -1233,9 +1215,8 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
             }
             else
             {
-              WCHAR wszTmp[512];
-              swprintf(wszTmp, L"%S", strTmp.c_str());
-              strLabel = wszTmp;
+              CStdStringW label(strTmp);
+              strLabel = label;
             }
             vecLabel.push_back(strLabel);
           }

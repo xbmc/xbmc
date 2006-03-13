@@ -91,18 +91,19 @@ void CGUIMessage::SetLabel(const wstring& wstrLabel)
 {
   m_strLabel = wstrLabel;
 }
+
 const wstring& CGUIMessage::GetLabel() const
 {
   return m_strLabel;
 }
+
 void CGUIMessage::SetLabel(const string& strLabel)
 {
   if (!strLabel.size()) return ;
-  WCHAR* wszLabel = new WCHAR[strLabel.size() + 1];
-  swprintf(wszLabel, L"%S", strLabel.c_str());
-  m_strLabel = wszLabel;
-  delete [] wszLabel;
+  CStdStringW label(strLabel);
+  m_strLabel = label;
 }
+
 void CGUIMessage::SetLabel(int iString)
 {
   const WCHAR* pszString = g_localizeStrings.Get(iString).c_str();

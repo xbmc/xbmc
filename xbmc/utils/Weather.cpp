@@ -195,13 +195,11 @@ void CWeather::GetInteger(const TiXmlElement* pRootElement, const CStdString& st
 void CWeather::LocalizeOverviewToken(char *szToken, bool bAppendSpace)
 {
   CStdString strLocStr = "";
-  WCHAR wszText[1024];
-  swprintf(wszText, L"%S", szToken );
-  if (wcslen(wszText) > 0)
+  CStdStringW token = szToken;
+  if (!token.IsEmpty())
   {
-    wstring strText = wszText;
     ilocalizedTokens i;
-    i = m_localizedTokens.find(strText);
+    i = m_localizedTokens.find(token);
     if (i != m_localizedTokens.end())
     {
       strLocStr = g_localizeStrings.Get(i->second);
@@ -211,7 +209,7 @@ void CWeather::LocalizeOverviewToken(char *szToken, bool bAppendSpace)
     strLocStr = szToken; //if not found, let fallback
   if (bAppendSpace)
     strLocStr += " ";     //append space if applicable
-  strcpy(szToken, strLocStr.GetBuffer(strLocStr.GetLength()));
+  strcpy(szToken, strLocStr.c_str());
 }
 
 void CWeather::LocalizeOverview(char *szStr)
@@ -475,14 +473,9 @@ void CWeather::LoadLocalizedToken()
       if ( (LOCALIZED_TOKEN_FIRSTID <= dwID && dwID <= LOCALIZED_TOKEN_LASTID) ||
            (LOCALIZED_TOKEN_FIRSTID2 <= dwID && dwID <= LOCALIZED_TOKEN_LASTID2) )
       {
-        WCHAR wszText[1024];
-        swprintf(wszText, L"%S", pChildText->FirstChild()->Value() );
-        if (wcslen(wszText) > 0)
-        {
-          wstring strText = wszText;
-          m_localizedTokens.insert(std::pair<wstring, DWORD>(strText, dwID));
-        }
-
+        CStdStringW text = pChildText->FirstChild()->Value();
+        if (!text.IsEmpty())
+          m_localizedTokens.insert(std::pair<wstring, DWORD>(text, dwID));
       }
     }
     pChild = pChild->NextSibling();
