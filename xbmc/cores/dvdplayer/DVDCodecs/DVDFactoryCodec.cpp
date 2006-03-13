@@ -19,12 +19,12 @@
 #include "../DVDStreamInfo.h"
 
 
-CDVDVideoCodec* CDVDFactoryCodec::OpenCodec(CDVDVideoCodec* pCodec, CDVDStreamInfo &hint )
+CDVDVideoCodec* CDVDFactoryCodec::OpenCodec(CDVDVideoCodec* pCodec, CDVDStreamInfo &hints, CDVDCodecOptions &options )
 {  
   try
   {
     CLog::Log(LOGDEBUG, "FactoryCodec - Video: %s - Opening", pCodec->GetName());
-    if( pCodec->Open( hint.codec, hint.width, hint.height, hint.extradata, hint.extrasize ) )
+    if( pCodec->Open( hints, options ) )
     {
       CLog::Log(LOGDEBUG, "FactoryCodec - Video: %s - Opened", pCodec->GetName());
       return pCodec;
@@ -67,12 +67,20 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec( CDVDStreamInfo &hint )
 {
   CDVDVideoCodec* pCodec = NULL;
 
+  if( hint.width > 1280 )
+  {
+    CLog::Log(LOGINFO, "CDVDFactoryCodec - High video resolution detected %dx%d, trying half resolution decoding ", hint.width, hint.height);
+    CDVDCodecOptions options;
+    options.push_back(CDVDCodecOption("lowres","1"));
+    if( pCodec = OpenCodec(new CDVDVideoCodecFFmpeg(), hint, options) ) return pCodec;
+  }
+
   if (hint.codec == CODEC_ID_MPEG2VIDEO || hint.codec == CODEC_ID_MPEG1VIDEO)
   {
-    if( pCodec = OpenCodec(new CDVDVideoCodecLibMpeg2(), hint) ) return pCodec;
+    if( pCodec = OpenCodec(new CDVDVideoCodecLibMpeg2(), hint, CDVDCodecOptions()) ) return pCodec;
   }
   
-  if( pCodec = OpenCodec(new CDVDVideoCodecFFmpeg(), hint) ) return pCodec;
+  if( pCodec = OpenCodec(new CDVDVideoCodecFFmpeg(), hint, CDVDCodecOptions()) ) return pCodec;
 
   return NULL;
 }
