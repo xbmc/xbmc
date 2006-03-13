@@ -221,7 +221,7 @@
   <string><id>287</id><value>Untertitel</value></string>
   <string><id>288</id><value>Schriftart</value></string>
   <string><id>289</id><value>Größe</value></string>
-  <string><id>290</id><value>Lautstärke-Verstärkung</value></string>
+  <string><id>290</id><value>Lautstärkeumfangausgleich</value></string>
   <string><id>291</id><value>Video</value></string>
   <string><id>292</id><value>Audio</value></string>
   <string><id>293</id><value>Untertitel</value></string>
@@ -451,6 +451,7 @@
   <string><id>519</id><value>Ausführen in..</value></string>
   <string><id>520</id><value>XBE umbenennen</value></string>
   <string><id>521</id><value>Diverse</value></string>
+  <string><id>522</id><value>Quelle entfernen</value></string>
 
   <string><id>588</id><value>Party Modus beenden</value></string>
   <string><id>589</id><value>Party Modus</value></string>
@@ -902,7 +903,6 @@
   <string><id>13252</id><value>An diese Stelle</value></string> 
   <string><id>13253</id><value>Verschieben abbrechen</value></string> 
 
-
   <string><id>13270</id><value>System:</value></string> 
   <string><id>13271</id><value>CPU-Geschwindigkeit:</value></string> 
   <string><id>13275</id><value>Festplatte</value></string>
@@ -1035,6 +1035,8 @@
   <string><id>13401</id><value>%s auswählen..</value></string>
   <string><id>13402</id><value>Liedposition anzeigen</value></string>
   <string><id>13403</id><value>Standard zurücksetzen</value></string>
+  <string><id>13404</id><value>Fortsetzen</value></string>
+  <string><id>13405</id><value>Bild abrufen..</value></string>
 
   <string><id>14000</id><value>Koppeln deakt.</value></string>
   <string><id>14001</id><value>Koppeln aktiv.</value></string>
@@ -1274,6 +1276,12 @@
   <string><id>16025</id><value>Künstlername eingeben..</value></string>
   <string><id>16026</id><value>Abspielen der Wiedergabeliste abgebrochen</value></string>
   <string><id>16027</id><value>"Zu viele fehlerhafte Einträge"</value></string>
+
+  <string><id>16030</id><value>Party Modus wurde abgebrochen.</value></string> 
+  <string><id>16031</id><value>Es befinden sich zu wenige Lieder in der Datenbank.</value></string> 
+  <string><id>16032</id><value>Datenbank konnte nicht initialisiert werden.</value></string> 
+  <string><id>16033</id><value>Datenbank konnte nicht geöffnet werden.</value></string> 
+  <string><id>16034</id><value>Lieder in der Datenbank nicht auffindbar.</value></string> 
 
   <string><id>16100</id><value>Alle Videos</value></string> 
   <string><id>16101</id><value>Unabgespielt</value></string> 
