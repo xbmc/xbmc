@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 13-03-2006 fixed: dvdplayer ff/rw didn't resume properly after the pause fix.
  - 12-03-2006 fixed: file names with ',' inside archives.
  - 12-03-2006 fixed: dvdplayer would sometimes stall in the middle of a movie
  - 12-03-2006 fixed: navigation (highlight) would apear to have laggy on menu's with multiple sequential overlays. (ex. original matrix ntsc dvd )
