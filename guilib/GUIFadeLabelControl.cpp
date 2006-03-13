@@ -50,9 +50,7 @@ void CGUIFadeLabelControl::Render()
 	{
 		tempLabel = m_vecLabels[m_iCurrentLabel];
 	}
-	WCHAR szLabel[1024];
-	swprintf(szLabel, L"%s", tempLabel.c_str() );
-	CStdString strRenderLabel = szLabel;
+	CStdString strRenderLabel = tempLabel;
 
 	if (m_vecInfo.size())
 	{ 

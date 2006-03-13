@@ -466,7 +466,7 @@ void CGUIWindowOSD::Get_TimeInfo()
 
   // Get the estimated end time
   SYSTEMTIME time;
-  WCHAR szETATime[32];
+  CStdStringW etaTime;
   GetLocalTime(&time);
   unsigned int tmpvar = time.wHour * 3600 + time.wMinute * 60 + (unsigned int)g_application.GetTotalTime() - (unsigned int)g_application.GetTime();
   if (tmpvar != 0)
@@ -474,18 +474,12 @@ void CGUIWindowOSD::Get_TimeInfo()
     int iHour = tmpvar / 3600;
     int iMin = (tmpvar - iHour * 3600) / 60;
     if (iHour >= 24) iHour -= 24;
-    swprintf(szETATime, L"%02d:%02d", iHour, iMin);
+    etaTime.Format(L"%02d:%02d", iHour, iMin);
   }
-
-  CGUIMessage msg1(GUI_MSG_LABEL_SET, GetID(), OSD_ESTENDTIME);
-  msg1.SetLabel(szETATime);
-  OnMessage(msg1);
+  SET_CONTROL_LABEL(OSD_ESTENDTIME, etaTime);
 
   // Set the movie file name label
-  CStdString strMovieFileName = CUtil::GetFileName(g_application.CurrentFile());
-  CGUIMessage msg2(GUI_MSG_LABEL_SET, GetID(), OSD_MOVIENAME);
-  msg2.SetLabel(strMovieFileName);
-  OnMessage(msg2);
+  SET_CONTROL_LABEL(OSD_MOVIENAME, g_infoManager.GetLabel(250));
 }
 
 void CGUIWindowOSD::ToggleButton(DWORD iButtonID, bool bSelected)

@@ -359,50 +359,49 @@ void CGUISpinControl::Render()
   }
 #endif
   int iPosX = m_iPosX;
-  WCHAR wszText[1024];
+  CStdString text;
   CStdStringW strTextUnicode;
 
   if (m_iType == SPIN_CONTROL_TYPE_INT)
   {
     if (m_bShowRange)
     {
-      swprintf(wszText, L"%i/%i", m_iValue, m_iEnd);
+      text.Format("%i/%i", m_iValue, m_iEnd);
     }
     else
     {
-      swprintf(wszText, L"%i", m_iValue);
+      text.Format("%i", m_iValue);
     }
   }
   else if (m_iType == SPIN_CONTROL_TYPE_FLOAT)
   {
     if (m_bShowRange)
     {
-      swprintf(wszText, L"%02.2f/%02.2f", m_fValue, m_fEnd);
+      text.Format("%02.2f/%02.2f", m_fValue, m_fEnd);
     }
     else
     {
-      swprintf(wszText, L"%02.2f", m_fValue);
+      text.Format("%02.2f", m_fValue);
     }
   }
   else
   {
-    swprintf(wszText, L"");
     if (m_iValue >= 0 && m_iValue < (int)m_vecLabels.size() )
     {
       if (m_bShowRange)
       {
-        swprintf(wszText, L"(%i/%i) %s", m_iValue + 1, (int)m_vecLabels.size(), m_vecLabels[m_iValue].c_str() );
+        text.Format("(%i/%i) %s", m_iValue + 1, (int)m_vecLabels.size(), CStdString(m_vecLabels[m_iValue]).c_str() );
       }
       else
       {
-        swprintf(wszText, L"%s", m_vecLabels[m_iValue].c_str() );
+        text.Format("%s", CStdString(m_vecLabels[m_iValue]).c_str() );
       }
     }
-    else swprintf(wszText, L"?%i?", m_iValue);
+    else text.Format("?%i?", m_iValue);
 
   }
 
-  g_charsetConverter.stringCharsetToFontCharset(wszText, strTextUnicode);
+  g_charsetConverter.stringCharsetToFontCharset(text, strTextUnicode);
 
   // Calculate the size of our text (for use in HitTest)
   float fTextWidth, fTextHeight;
@@ -525,10 +524,8 @@ void CGUISpinControl::AddLabel(const wstring& strLabel, int iValue)
 
 void CGUISpinControl::AddLabel(CStdString aLabel, int iValue)
 {
-  WCHAR wszText[1024];
-  swprintf(wszText, L"%S", aLabel.c_str());
-  wstring strLabel = wszText;
-  m_vecLabels.push_back(strLabel);
+  CStdStringW label(aLabel);
+  m_vecLabels.push_back(label);
   m_vecValues.push_back(iValue);
 }
 

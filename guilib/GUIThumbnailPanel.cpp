@@ -706,9 +706,8 @@ void CGUIThumbnailPanel::RenderText(float fPosX, float fPosY, DWORD dwTextColor,
 
 void CGUIThumbnailPanel::SetScrollySuffix(CStdString wstrSuffix)
 {
-  WCHAR wsSuffix[128];
-  swprintf(wsSuffix, L"%S", wstrSuffix.c_str());
-  m_strSuffix = wsSuffix;
+  CStdStringW suffix = wstrSuffix;
+  m_strSuffix = suffix;
 }
 
 void CGUIThumbnailPanel::OnPageUp()

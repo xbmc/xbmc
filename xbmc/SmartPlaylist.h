@@ -10,10 +10,14 @@ public:
   CSmartPlaylistRule();
 
   enum SEARCH_FIELD { SONG_GENRE = 1,
-                            SONG_ALBUM,
-                            SONG_ARTIST,
-                            SONG_TITLE,
-                            SONG_YEAR };
+                      SONG_ALBUM,
+                      SONG_ARTIST,
+                      SONG_TITLE,
+                      SONG_YEAR,
+                      SONG_TIME,
+                      SONG_TRACKNUMBER,
+                      SONG_FILENAME,
+                      SONG_PLAYCOUNT };
 
   enum SEARCH_OPERATOR { OPERATOR_CONTAINS = 1,
                          OPERATOR_DOES_NOT_CONTAIN,
