@@ -1,5 +1,24 @@
 #include "SmartPlaylist.h"
 #include "utils/log.h"
+#include "StringUtils.h"
+
+typedef struct
+{
+  char string[13];
+  CSmartPlaylistRule::SEARCH_FIELD field;
+} translateField;
+
+static const translateField fields[] = { "genre", CSmartPlaylistRule::SONG_GENRE,
+                                         "album", CSmartPlaylistRule::SONG_ALBUM,
+                                         "artist", CSmartPlaylistRule::SONG_ARTIST,
+                                         "title", CSmartPlaylistRule::SONG_TITLE,
+                                         "year", CSmartPlaylistRule::SONG_YEAR,
+                                         "time", CSmartPlaylistRule::SONG_TIME,
+                                         "tracknumber", CSmartPlaylistRule::SONG_TRACKNUMBER,
+                                         "filename", CSmartPlaylistRule::SONG_FILENAME,
+                                         "playcount", CSmartPlaylistRule::SONG_PLAYCOUNT };
+
+#define NUM_FIELDS sizeof(fields) / sizeof(translateField)
 
 CSmartPlaylistRule::CSmartPlaylistRule()
 {
@@ -13,6 +32,18 @@ void CSmartPlaylistRule::TranslateStrings(const char *field, const char *oper, c
   m_field = TranslateField(field);
   m_operator = TranslateOperator(oper);
   m_parameter = parameter;
+  if (m_field == SONG_TIME)
+  { // translate time to seconds
+    CStdStringArray secs;
+    StringUtils::SplitString(m_parameter, ":", secs);
+    int timeInSecs = 0;
+    for (unsigned int i = 0; i < secs.size(); i++)
+    {
+      timeInSecs *= 60;
+      timeInSecs += atoi(secs[i]);
+    }
+    m_parameter.Format("%i", timeInSecs);
+  }
 }
 
 TiXmlElement CSmartPlaylistRule::GetAsElement()
@@ -27,21 +58,15 @@ TiXmlElement CSmartPlaylistRule::GetAsElement()
 
 CSmartPlaylistRule::SEARCH_FIELD CSmartPlaylistRule::TranslateField(const char *field)
 {
-  if (strcmpi(field, "genre") == 0) return SONG_GENRE;
-  else if (strcmpi(field, "artist") == 0) return SONG_ARTIST;
-  else if (strcmpi(field, "album") == 0) return SONG_ALBUM;
-  else if (strcmpi(field, "title") == 0) return SONG_TITLE;
-  else if (strcmpi(field, "year") == 0) return SONG_YEAR;
+  for (int i = 0; i < NUM_FIELDS; i++)
+    if (strcmpi(field, fields[i].string) == 0) return fields[i].field;
   return SONG_ALBUM;
 }
 
 CStdString CSmartPlaylistRule::TranslateField(SEARCH_FIELD field)
 {
-  if (field == SONG_GENRE) return "genre";
-  else if (field == SONG_ARTIST) return "artist";
-  else if (field == SONG_ALBUM) return "album";
-  else if (field == SONG_TITLE) return "title";
-  else if (field == SONG_YEAR) return "year";
+  for (int i = 0; i < NUM_FIELDS; i++)
+    if (field == fields[i].field) return fields[i].string;
   return "album";
 }
 
@@ -92,7 +117,7 @@ CStdString CSmartPlaylistRule::GetWhereClause()
   case OPERATOR_GREATER_THAN:
     operatorString = " > '%s'"; break;
   case OPERATOR_LESS_THAN:
-    operatorString = " LIKE '%s'"; break;
+    operatorString = " < '%s'"; break;
   }
   // TODO: This needs to be FormatSQL
   CStdString parameter;
@@ -109,6 +134,14 @@ CStdString CSmartPlaylistRule::GetWhereClause()
     query = "iYear" + parameter;
   else if (m_field == SONG_ARTIST)
     query = "(strArtist" + parameter + ") or (idsong IN (select idsong from artist,exartistsong where exartistsong.idartist = artist.idartist and artist.strArtist" + parameter + "))";
+  else if (m_field == SONG_TIME)
+    query = "iDuration" + parameter;
+  else if (m_field == SONG_FILENAME)
+    query = "strFilename" + parameter;
+  else if (m_field == SONG_PLAYCOUNT)
+    query = "iTimesPlayed" + parameter;
+  else if (m_field == SONG_TRACKNUMBER)
+    query = "iTrack" + parameter;
 
   return query;
 }

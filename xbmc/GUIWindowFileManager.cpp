@@ -298,16 +298,15 @@ void CGUIWindowFileManager::UpdateButtons()
   // update the number of items in each list
   for (int i = 0; i < 2; i++)
   {
-    WCHAR wszText[20];
-    const WCHAR* szText = g_localizeStrings.Get(127).c_str();
     int iItems = m_vecItems[i].Size();
     if (iItems)
     {
       CFileItem* pItem = m_vecItems[i][0];
       if (pItem->IsParentFolder()) iItems--;
     }
-    swprintf(wszText, L"%i %s", iItems, szText);
-    SET_CONTROL_LABEL(CONTROL_NUMFILES_LEFT + i, wszText);
+    CStdStringW items;
+    items.Format(L"%i %s", iItems, g_localizeStrings.Get(127).c_str());
+    SET_CONTROL_LABEL(CONTROL_NUMFILES_LEFT + i, items);
   }
 }
 

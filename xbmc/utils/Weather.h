@@ -66,8 +66,8 @@ protected:
   void LocalizeDay(char *szDay);
   void LoadLocalizedToken();
   int ConvertSpeed(int speed);
-  map<wstring, DWORD> m_localizedTokens;
-  typedef map<wstring, DWORD>::const_iterator ilocalizedTokens;
+  map<CStdStringW, DWORD> m_localizedTokens;
+  typedef map<CStdStringW, DWORD>::const_iterator ilocalizedTokens;
 
   char m_szLocation[3][100];
 

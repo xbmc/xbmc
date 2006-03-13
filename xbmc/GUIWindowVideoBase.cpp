@@ -279,6 +279,7 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item)
     m_database.GetMovieInfo(item->m_strPath, movieDetails);
     pDlgInfo->SetMovie(movieDetails, item->GetThumbnailImage());
     pDlgInfo->DoModal(GetID());
+    item->SetThumbnailImage(pDlgInfo->GetThumbnail());
     if ( !pDlgInfo->NeedRefresh() ) return ;
 
     // quietly return if Internet lookups are disabled
@@ -398,6 +399,7 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item)
 
         pDlgInfo->SetMovie(movieDetails, item->GetThumbnailImage());
         pDlgInfo->DoModal(GetID());
+        item->SetThumbnailImage(pDlgInfo->GetThumbnail());
         needsRefresh = pDlgInfo->NeedRefresh();
       }
       else
@@ -426,7 +428,7 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item)
   // 7. Update our item
   SetIMDBThumb(item, movieDetails.m_strIMDBNumber);
   item->FillInDefaultIcon();
-  item->FreeIcons();
+  item->FreeMemory();
   UpdateButtons();
 }
 
