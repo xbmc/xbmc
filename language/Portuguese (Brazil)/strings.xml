@@ -1,6 +1,6 @@
-<!-- Translation date: 3/5/2006 -->
-<!-- Based on 2006-02-26 build -->
-<!-- Translation by T1000 (MVBM) -->
+<!-- Translation date: 03/08/2006 -->
+<!-- Based on 2006-03-06 build -->
+<!-- Translation by MVBM (T1000) -->
 <!-- Language: Portuguese Brazil (pt_BR )-->
 <strings>
   <string><id>0</id><value>Programas</value></string>
@@ -616,6 +616,7 @@
   <string><id>1029</id><value>Digite o novo nome</value></string>
   <string><id>1030</id><value>uma imagem</value></string>
   <string><id>1031</id><value>uma pasta de imagem</value></string>
+  <string><id>1032</id><value>Adicionando Local de Rede...</value></string>
 
   <string><id>1200</id><value>SMB</value></string>
   <string><id>1201</id><value>IP SMB</value></string>
@@ -1037,6 +1038,7 @@
   <string><id>13400</id><value>Crossfade albumtracks</value></string>
   <string><id>13401</id><value>Procurar por %s</value></string>
   <string><id>13402</id><value>Mostrar posição da trilha</value></string>
+  <string><id>13403</id><value>Limpar Padrão</value></string>
 
   <string><id>14000</id><value>Empilhar</value></string>
   <string><id>14001</id><value>Não Empilhar</value></string>

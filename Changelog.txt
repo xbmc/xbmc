@@ -5,6 +5,16 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 13-03-2006 updated: Icelandic language file (Thnx to kristjan)
+ - 13-03-2005 updated: Spanish language file (Thnx to chevi)
+ - 13-03-2006 updated: French language file (Thnx to modhack)
+ - 13-03-2006 updated: Chinese (Traditional) language file (Thnx to omenpica)
+ - 13-03-2006 updated: German (Austrian) language file (Thnx to CEOMR)
+ - 13-03-2006 updated: German language file
+ - 13-03-2006 updated: Dutch language file (Thnx to console-ombouw)
+ - 13-03-2006 updated: Portuguese (Brazil) language file (Thnx to mvbm)
+ - 13-03-2006 updated: Swedish language file (Thnx to blittan)
+ - 13-03-2006 updated: Norwegian language file (Thnx to vnm)
  - 13-03-2006 added: Filename, time, playcount and tracknumber to Smart playlists.
  - 13-03-2006 fixed: IMDb thumbs were not applied to the folder correctly.
  - 13-03-2006 added: ListItem.Thumb works for the filebrowser as well as media windows.

@@ -226,7 +226,7 @@
   <string><id>287</id><value>Untertitel</value></string>
   <string><id>288</id><value>Schrift</value></string>
   <string><id>289</id><value>- Größe</value></string>
-  <string><id>290</id><value>Verstärkung</value></string>
+  <string><id>290</id><value>Lautstärkeumfang</value></string>
   <string><id>291</id><value>Video</value></string>
   <string><id>292</id><value>Audio</value></string>
   <string><id>293</id><value>Untertitel</value></string>
@@ -457,6 +457,7 @@
   <string><id>519</id><value>Starten als...</value></string>
   <string><id>520</id><value>XBE-Titel bearbeiten</value></string>
   <string><id>521</id><value>Sampler</value></string>
+  <string><id>522</id><value>Entfernen</value></string>
 
   <string><id>588</id><value>Party Modus verlassen</value></string>
   <string><id>589</id><value>Party Modus</value></string>
@@ -610,8 +611,8 @@
   <string><id>1023</id><value>Nach neuer Freigabe suchen</value></string>
   <string><id>1024</id><value>Suchen</value></string>
   <string><id>1025</id><value>Verzeichnis konnte nicht geladen werden.</value></string>
-  <string><id>1026</id><value>Quelle hinzufügen</value></string>
-  <string><id>1027</id><value>Quelle bearbeiten</value></string>
+  <string><id>1026</id><value>Hinzufügen</value></string>
+  <string><id>1027</id><value>Bearbeiten</value></string>
   <string><id>1028</id><value>Quelle %s bearbeiten</value></string>
   <string><id>1029</id><value>Bitte die neue Bezeichnung eingeben</value></string>
   <string><id>1030</id><value>Ein Bild</value></string>
@@ -1040,6 +1041,8 @@
   <string><id>13401</id><value>Durchsuchen nach %s</value></string>
   <string><id>13402</id><value>Track-Position anzeigen</value></string>
   <string><id>13403</id><value>Standard entfernen</value></string>
+  <string><id>13404</id><value>Fortsetzen</value></string>
+  <string><id>13405</id><value>Thumb holen</value></string>
 
   <string><id>14000</id><value>Stapeln: Aus</value></string>
   <string><id>14001</id><value>Stapeln: An</value></string>
@@ -1277,6 +1280,12 @@
   <string><id>16025</id><value>Bitte den Namen des Interpreten eingeben</value></string>
   <string><id>16026</id><value>Wiedergabe der Playlist abgebrochen</value></string>
   <string><id>16027</id><value>Zu viele Einträge konnten nicht wiedergegeben werden</value></string>
+
+  <string><id>16030</id><value>Party Modus beendet.</value></string>
+  <string><id>16031</id><value>Zu wenig Songs in der Datenbank.</value></string>
+  <string><id>16032</id><value>Die Datenbank konnte nicht gestartet werden.</value></string>
+  <string><id>16033</id><value>Die Datenbank konnte nicht geöffnet werden.</value></string>
+  <string><id>16034</id><value>Es konnten keine Songs aus der Datenbank geholt werden.</value></string>
 
   <string><id>16100</id><value>Alle Videos</value></string>
   <string><id>16101</id><value>Nicht gesehen</value></string>
