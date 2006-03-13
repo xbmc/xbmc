@@ -92,7 +92,7 @@ void CGUIImage::Render()
   // alloc as this does free and allocation as well
   if (m_Info)
   {
-    CStdString strImage = g_infoManager.GetImage(m_Info);
+    CStdString strImage = g_infoManager.GetImage(m_Info, m_dwParentID);
     if (strImage != m_strFileName)
       SetFileName(strImage);
   }

@@ -46,10 +46,10 @@ void CGUISliderControl::Render()
 
       if (m_renderText && pFont13)
       {
-        WCHAR strValue[128];
-        swprintf(strValue, L"%2.2f", m_fValue);
+        CStdStringW value;
+        value.Format(L"%2.2f", m_fValue);
         pFont13->DrawText( (float)m_iPosX, (float)m_iPosY, 0xffffffff, 0,
-                                strValue, 0, 0);
+                                value.c_str(), 0, 0);
       }
       m_guiBackground.SetPosition(m_iPosX + m_iControlOffsetX, m_iPosY + m_iControlOffsetY);
 
@@ -64,10 +64,10 @@ void CGUISliderControl::Render()
 
       if (m_renderText && pFont13)
       {
-        WCHAR strValue[128];
-        swprintf(strValue, L"%i/%i", m_iValue, m_iEnd);
+        CStdStringW value;
+        value.Format(L"%i/%i", m_iValue, m_iEnd);
         pFont13->DrawText( (float)m_iPosX, (float)m_iPosY, 0xffffffff, 0,
-                                strValue, 0, 0);
+                                value.c_str(), 0, 0);
       }
       m_guiBackground.SetPosition(m_iPosX + m_iControlOffsetX, m_iPosY + m_iControlOffsetY);
 

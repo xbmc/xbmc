@@ -181,8 +181,7 @@ void CGUIButtonScroller::LoadButtons(const TiXmlNode *node)
         button->strLabel = g_localizeStrings.Get(atoi(strLabel.c_str()));
       else
       {
-        WCHAR label[1024];
-        swprintf(label, L"%S", strLabel.c_str());
+        CStdStringW label = strLabel.c_str();
         button->strLabel = label;
       }
     }

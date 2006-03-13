@@ -5,6 +5,10 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 13-03-2006 added: Filename, time, playcount and tracknumber to Smart playlists.
+ - 13-03-2006 fixed: IMDb thumbs were not applied to the folder correctly.
+ - 13-03-2006 added: ListItem.Thumb works for the filebrowser as well as media windows.
+ - 13-03-2006 fixed: Removed a bunch of swprintf() (possible buffer overruns).
  - 13-03-2006 added: half resolution decoding to dvdplayer and mplayer. if source is larger than 1280 pixels in width and decoded with ffmpeg, it will be decoded at half resolution
  - 13-03-2006 fixed: dvdplayer ff/rw didn't resume properly after the pause fix.
  - 12-03-2006 fixed: file names with ',' inside archives.

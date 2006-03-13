@@ -14,6 +14,7 @@
 #include "../utils/Alarmclock.h"
 #include "../utils/lcd.h"
 #include "../GUIMediaWindow.h"
+#include "../GUIDialogFileBrowser.h"
 #ifdef PRE_SKIN_VERSION_2_0_COMPATIBILITY
 #include "SkinInfo.h"
 #endif
@@ -698,11 +699,9 @@ wstring CGUIInfoManager::GetLabel(int info)
     break;
   case NETWORK_IP_ADDRESS:
     {
-      const WCHAR* pszIP = g_localizeStrings.Get(150).c_str();
-      WCHAR wzIP[32];
-      swprintf(wzIP, L"%s: %S", pszIP, g_szTitleIP);
-      wstring strReturn = wzIP;
-      return strReturn;
+      CStdStringW ip;
+      ip.Format(L"%s: %S", g_localizeStrings.Get(150).c_str(), g_szTitleIP);
+      return ip;
     }
     break;
   case AUDIOSCROBBLER_CONN_STATE:
@@ -761,12 +760,8 @@ wstring CGUIInfoManager::GetLabel(int info)
   }
 
   // convert our CStdString to a wstring (which the label expects!)
-  int size = _scwprintf(L"%S", strLabel.c_str() );
-  WCHAR *szLabel = new WCHAR[size+1];
-  swprintf(szLabel, L"%S", strLabel.c_str() );
-  wstring strReturn = szLabel;
-  delete[] szLabel;
-  return strReturn;
+  CStdStringW label = strLabel;
+  return label;
 }
 
 // tries to get a integer value for use in progressbars/sliders and such
@@ -1035,7 +1030,7 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindo
 }
 
 /// \brief Obtains the filename of the image to show from whichever subsystem is needed
-CStdString CGUIInfoManager::GetImage(int info)
+CStdString CGUIInfoManager::GetImage(int info, int contextWindow)
 {
   if (info >= SKIN_HAS_SETTING_START && info <= SKIN_HAS_SETTING_END)
   {
@@ -1055,10 +1050,15 @@ CStdString CGUIInfoManager::GetImage(int info)
   }
   else if (info == LISTITEM_THUMB || info == LISTITEM_ICON)
   {
-    CGUIWindow *pWindow = m_gWindowManager.GetWindow(m_gWindowManager.GetActiveWindow());
-    if (pWindow && pWindow->IsMediaWindow())
+    CGUIWindow *window = m_gWindowManager.GetWindow(contextWindow);
+    if (!window) window = m_gWindowManager.GetWindow(m_gWindowManager.GetActiveWindow());
+    if (window && (window->IsMediaWindow() || window->GetID() == WINDOW_DIALOG_FILE_BROWSER))
     {
-      const CFileItem *item = ((CGUIMediaWindow *)pWindow)->GetCurrentListItem();
+      const CFileItem *item = NULL;
+      if (window->GetID() == WINDOW_DIALOG_FILE_BROWSER)
+        item = ((CGUIDialogFileBrowser *)window)->GetCurrentListItem();
+      else
+        item = ((CGUIMediaWindow *)window)->GetCurrentListItem();
       if (item)
       {
         if (info == LISTITEM_ICON && item->GetThumbnailImage().IsEmpty())
@@ -1624,57 +1624,51 @@ wstring CGUIInfoManager::GetSystemHeatInfo(const CStdString &strInfo)
     m_cpuTemp = CFanController::Instance()->GetCPUTemp();
   }
 
-  WCHAR Text[32];
+  CStdStringW text;
 
   if (strInfo == "cpu")
   {
     if (g_guiSettings.GetInt("Weather.TemperatureUnits") == 1 /*DEGREES_F*/)
-      swprintf(Text, L"%s %2.2f%cF", g_localizeStrings.Get(140).c_str(), ((9.0 / 5.0) * m_cpuTemp) + 32.0, 176);
+      text.Format(L"%s %2.2f%cF", g_localizeStrings.Get(140).c_str(), ((9.0 / 5.0) * m_cpuTemp) + 32.0, 176);
     else
-      swprintf(Text, L"%s %2.2f%cC", g_localizeStrings.Get(140).c_str(), m_cpuTemp, 176);
+      text.Format(L"%s %2.2f%cC", g_localizeStrings.Get(140).c_str(), m_cpuTemp, 176);
   }
   else if (strInfo == "lcdcpu")
   {
     if (g_guiSettings.GetInt("Weather.TemperatureUnits") == 1 /*DEGREES_F*/)
-      swprintf(Text, L"%3.0f%cF", ((9.0 / 5.0) * m_cpuTemp) + 32.0, 176);
+      text.Format(L"%3.0f%cF", ((9.0 / 5.0) * m_cpuTemp) + 32.0, 176);
     else
-      swprintf(Text, L"%2.0f%cC", m_cpuTemp, 176);
+      text.Format(L"%2.0f%cC", m_cpuTemp, 176);
   }
   else if (strInfo == "gpu")
   {
     if (g_guiSettings.GetInt("Weather.TemperatureUnits") == 1 /*DEGREES_F*/)
-      swprintf(Text, L"%s %2.2f%cF", g_localizeStrings.Get(141).c_str(), ((9.0 / 5.0) * m_gpuTemp) + 32.0, 176);
+      text.Format(L"%s %2.2f%cF", g_localizeStrings.Get(141).c_str(), ((9.0 / 5.0) * m_gpuTemp) + 32.0, 176);
     else
-      swprintf(Text, L"%s %2.2f%cC", g_localizeStrings.Get(141).c_str(), m_gpuTemp, 176);
+      text.Format(L"%s %2.2f%cC", g_localizeStrings.Get(141).c_str(), m_gpuTemp, 176);
   }
   else if (strInfo == "lcdgpu")
   {
     if (g_guiSettings.GetInt("Weather.TemperatureUnits") == 1 /*DEGREES_F*/)
-      swprintf(Text, L"%3.0f%cF", ((9.0 / 5.0) * m_gpuTemp) + 32.0, 176);
+      text.Format(L"%3.0f%cF", ((9.0 / 5.0) * m_gpuTemp) + 32.0, 176);
     else
-      swprintf(Text, L"%2.0f%cC", m_gpuTemp, 176);
+      text.Format(L"%2.0f%cC", m_gpuTemp, 176);
   }
   else if (strInfo == "fan")
   {
-    swprintf(Text, L"%s: %i%%", g_localizeStrings.Get(13300).c_str(), m_fanSpeed * 2);
+    text.Format(L"%s: %i%%", g_localizeStrings.Get(13300).c_str(), m_fanSpeed * 2);
   }
   else if (strInfo == "lcdfan")
   {
-    swprintf(Text, L"%i%%", m_fanSpeed * 2);
-  }
-  else
-  {
-    swprintf(Text, L"");
+    text.Format(L"%i%%", m_fanSpeed * 2);
   }
 
-  return Text;
+  return text;
 }
 
 wstring CGUIInfoManager::GetFreeSpace(int drive, bool shortText)
 {
   ULARGE_INTEGER lTotalFreeBytes;
-  WCHAR wszHD[64];
-  wstring strReturn;
 
   char cDrive;
   if (shortText)
@@ -1686,28 +1680,22 @@ wstring CGUIInfoManager::GetFreeSpace(int drive, bool shortText)
   const WCHAR *pszDrive = g_localizeStrings.Get(155).c_str();
   const WCHAR *pszFree = g_localizeStrings.Get(160).c_str();
   const WCHAR *pszUnavailable = g_localizeStrings.Get(161).c_str();
+  CStdStringW space;
   if (GetDiskFreeSpaceEx( strDriveFind.c_str(), NULL, NULL, &lTotalFreeBytes))
   {
     if (shortText)
-      swprintf(wszHD, L"%uMB", lTotalFreeBytes.QuadPart / 1024 / 1024); //To make it MB
+      space.Format(L"%uMB", lTotalFreeBytes.QuadPart / 1024 / 1024); //To make it MB
   	else
-  	{  
-      swprintf(wszHD, L"%s %c: %u Mb ", pszDrive, cDrive, lTotalFreeBytes.QuadPart / 1048576); //To make it MB
-      wcscat(wszHD, pszFree);
-    }
+      space.Format(L"%s %c: %u Mb %s", pszDrive, cDrive, lTotalFreeBytes.QuadPart / 1048576, pszFree); //To make it MB
   }
   else
   {
     if (shortText)
-      swprintf(wszHD, L"N/A");
+      space = L"N/A";
     else
-    {
-      swprintf(wszHD, L"%s %c: ", pszDrive, cDrive);
-      wcscat(wszHD, pszUnavailable);
-    }
+      space.Format(L"%s %c: %s", pszDrive, cDrive, pszUnavailable);
   }
-  strReturn = wszHD;
-  return strReturn;
+  return space;
 }
 
 CStdString CGUIInfoManager::GetVersion()

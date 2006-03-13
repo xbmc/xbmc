@@ -40,15 +40,11 @@ bool CLocalizeStrings::Load(const CStdString& strFileName)
         const TiXmlNode *pChildID = pChild->FirstChild("id");
         const TiXmlNode *pChildText = pChild->FirstChild("value");
         DWORD dwID = atoi(pChildID->FirstChild()->Value());
-        WCHAR wszText[1024];
-        wszText[0]='\0';
+        CStdStringW text;
         if (!pChildText->NoChildren())
-          swprintf(wszText, L"%S", pChildText->FirstChild()->Value() );
-        if (wcslen(wszText) > 0)
-        {
-          wstring strText = wszText;
-          m_vecStrings[dwID] = strText;
-        }
+          text = pChildText->FirstChild()->Value();
+        if (!text.IsEmpty())
+          m_vecStrings[dwID] = text;
       }
       pChild = pChild->NextSibling();
     }
@@ -80,10 +76,8 @@ bool CLocalizeStrings::Load(const CStdString& strFileName)
           i = m_vecStrings.find(dwID);
           if (i == m_vecStrings.end())
           {
-            WCHAR wszText[1024];
-            swprintf(wszText, L"%S", pChildText->FirstChild()->Value() );
-            wstring strText = wszText;
-            m_vecStrings[dwID] = strText;
+            CStdStringW text(pChildText->FirstChild()->Value());
+            m_vecStrings[dwID] = text;
           }
         }
       }

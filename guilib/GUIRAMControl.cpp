@@ -196,9 +196,9 @@ void CGUIRAMControl::Render()
       {
         float fTextWidth = 0;
         float fTextHeight = 0;
-        swprintf(wszText, L"%S", movie.strTitle.c_str() );
+        CStdStringW movieTitle = movie.strTitle;
         if (m_title.font)
-          m_title.font->GetTextExtent(wszText, &fTextWidth, &fTextHeight);
+          m_title.font->GetTextExtent(movieTitle.c_str(), &fTextWidth, &fTextHeight);
 
         int iButtonWidth = (int) (fTextWidth + BUTTON_WIDTH_ADJUSTMENT);
         int iButtonHeight = (int) (fTextHeight + BUTTON_HEIGHT_ADJUSTMENT);

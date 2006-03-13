@@ -154,9 +154,8 @@ bool CGUICheckMarkControl::OnMouseClick(DWORD dwButton)
 
 void CGUICheckMarkControl::SetText(const CStdString &aLabel)
 {
-  WCHAR wszText[1024];
-  swprintf(wszText, L"%S", aLabel.c_str());
-  m_strLabel = wszText;
+  CStdStringW text = aLabel;
+  m_strLabel = text;
 }
 
 void CGUICheckMarkControl::SetText(const wstring &label)

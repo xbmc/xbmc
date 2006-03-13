@@ -479,3 +479,10 @@ void CGUIDialogFileBrowser::OnAddNetworkLocation()
   m_selectedPath = "";
   DoModal(m_gWindowManager.GetActiveWindow());
 }
+
+const CFileItem *CGUIDialogFileBrowser::GetCurrentListItem() const
+{
+  int iItem = m_viewControl.GetSelectedItem();
+  if (iItem < 0) return NULL;
+  return m_vecItems[iItem];
+}
