@@ -78,10 +78,9 @@ bool CGUIFontTTF::Load(const CStdString& strFilename, int iHeight, int iStyle)
 
   m_strFilename = strFilename;
 
-  WCHAR wszFilename[256];
-  swprintf(wszFilename, L"%S", strFilename.c_str());
+  CStdStringW wFileName = m_strFilename;
 
-  if ( FAILED( XFONT_OpenTrueTypeFont ( wszFilename, dwFontCacheSize, &m_pTrueTypeFont ) ) )
+  if ( FAILED( XFONT_OpenTrueTypeFont ( wFileName.c_str(), dwFontCacheSize, &m_pTrueTypeFont ) ) )
     return false;
 
   m_pTrueTypeFont->SetTextHeight( m_iHeight );

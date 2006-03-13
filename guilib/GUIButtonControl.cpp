@@ -170,9 +170,8 @@ void CGUIButtonControl::DynamicResourceAlloc(bool bOnOff)
 
 void CGUIButtonControl::SetText(const CStdString &aLabel)
 {
-  WCHAR wszText[1024];
-  swprintf(wszText, L"%S", aLabel.c_str());
-  m_strLabel = wszText;
+  CStdStringW text = aLabel;
+  m_strLabel = text;
 }
 
 void CGUIButtonControl::SetText(const wstring &label)
@@ -182,9 +181,8 @@ void CGUIButtonControl::SetText(const wstring &label)
 
 void CGUIButtonControl::SetText2(const CStdString &aLabel2)
 {
-  WCHAR wszText[1024];
-  swprintf(wszText, L"%S", aLabel2.c_str());
-  m_strLabel2 = wszText;
+  CStdStringW text = aLabel2;
+  m_strLabel2 = text;
 }
 
 void CGUIButtonControl::SetText2(const wstring &label2)

@@ -43,9 +43,7 @@ void CGUILabelControl::Render()
 {
   if (!IsVisible()) return;
 
-	WCHAR szLabel[1024];
-	swprintf(szLabel, L"%s", m_strLabel.c_str() );
-	CStdString strRenderLabel = szLabel;
+	CStdString strRenderLabel = m_strLabel;
 
 	if (m_vecInfo.size())
 	{ 
@@ -152,9 +150,8 @@ void CGUILabelControl::SetWidthControl(bool bScroll)
 
 void CGUILabelControl::SetText(CStdString aLabel)
 {
-  WCHAR wszText[1024];
-  swprintf(wszText, L"%S", aLabel.c_str());
-  SetLabel(wszText);
+  CStdStringW label = aLabel;
+  SetLabel(label);
 }
 
 bool CGUILabelControl::OnMessage(CGUIMessage& message)

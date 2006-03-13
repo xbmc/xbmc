@@ -337,6 +337,8 @@ void CGUIWindowVideoFiles::OnInfo(int iItem)
   if (!folderPath.IsEmpty())
   { // add IMDb icon to the folder as well
     ApplyIMDBThumbToFolder(folderPath, item.GetThumbnailImage());
+    // and update our directory listing
+    Update(m_vecItems.m_strPath);
   }
   m_viewControl.SetSelectedItem(iSelectedItem);
 }

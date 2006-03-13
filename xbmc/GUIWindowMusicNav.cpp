@@ -219,11 +219,9 @@ void CGUIWindowMusicNav::UpdateButtons()
         iItems--;
     }
   }
-  WCHAR wszText[20];
-  const WCHAR* szText = g_localizeStrings.Get(127).c_str();
-  swprintf(wszText, L"%i %s", iItems, szText);
-
-  SET_CONTROL_LABEL(CONTROL_LABELFILES, wszText);
+  CStdStringW items;
+  items.Format(L"%i %s", iItems, g_localizeStrings.Get(127).c_str());
+  SET_CONTROL_LABEL(CONTROL_LABELFILES, items);
 
   // set the filter label
   CStdString strLabel;

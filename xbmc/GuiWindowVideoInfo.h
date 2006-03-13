@@ -16,6 +16,7 @@ public:
   virtual void Render();
   void SetMovie(CIMDBMovie& movie, const CStdString &thumbNail);
   bool NeedRefresh() const;
+  const CStdString &GetThumbnail() const { return m_thumbNail; };
 
 protected:
   virtual void OnInitWindow();

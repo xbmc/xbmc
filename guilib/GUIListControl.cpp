@@ -586,9 +586,8 @@ void CGUIListControl::OnDown()
 
 void CGUIListControl::SetScrollySuffix(const CStdString& wstrSuffix)
 {
-  WCHAR wsSuffix[128];
-  swprintf(wsSuffix, L"%S", wstrSuffix.c_str());
-  m_strSuffix = wsSuffix;
+  CStdStringW suffix = wstrSuffix;
+  m_strSuffix = suffix;
 }
 
 // scrolls the said amount
