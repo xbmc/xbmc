@@ -512,7 +512,7 @@ int CGUIDialogKeyboard::ShowAndVerifyPassword(CStdString& strPassword, const CSt
     strHeadingTemp.Format("%s - %i %s", g_localizeStrings.Get(12326).c_str(), g_stSettings.m_iMasterLockMaxRetry - iRetries, g_localizeStrings.Get(12343).c_str());
 
   CStdString strUserInput = "";
-  if (!ShowAndGetInput(strUserInput, strHeadingTemp, false))
+  if (!ShowAndGetInput(strUserInput, strHeadingTemp, false, true))  //bool hiddenInput = false/true ? TODO: GUI Setting to enable disable this feature y/n?
 	  return -1; // user canceled out
 
   if (!strPassword.IsEmpty())
