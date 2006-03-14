@@ -720,6 +720,20 @@ bool CGUIWindowBuddies::OnMessage(CGUIMessage &message)
       CArenaItem::FreeIcons();
     }
     break;
+  case GUI_MSG_WINDOW_INIT:
+    {
+      // check to see if we've come here with a string parameter
+      CStdString dest = message.GetStringParam();
+      if (dest.CompareNoCase("chat") == 0)
+        window_state = State::Chat;
+      else if (dest.CompareNoCase("arenas") == 0)
+        window_state = State::Arenas;
+      else if (dest.CompareNoCase("buddies") == 0)
+        window_state = State::Buddies;
+      else if (dest.CompareNoCase("games") == 0)
+        window_state = State::Games;
+    }
+    break;
   }
   return CGUIWindow::OnMessage(message);
 }
