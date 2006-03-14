@@ -96,7 +96,7 @@ bool CGUIDialogInvite::OnMessage(CGUIMessage& message)
           if (CGUIDialogKeyboard::ShowAndGetInput(m_strMessage, strHeading, false))
           {
             CGUIButtonControl& button = *((CGUIButtonControl*)GetControl(CTL_BUTTON_MESSAGE));
-            button.SetText(m_strMessage);
+            button.SetLabel(m_strMessage);
             m_bMessage = TRUE;
           }
           break;

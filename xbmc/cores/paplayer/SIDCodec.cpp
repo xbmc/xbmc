@@ -6,7 +6,7 @@
 
 SIDCodec::SIDCodec()
 {
-  m_CodecName = L"SID";
+  m_CodecName = "SID";
   m_sid = 0;
   m_iTrack = -1;
   m_iDataPos = -1; 

@@ -524,7 +524,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
   return bNegate ? -ret : ret;
 }
 
-wstring CGUIInfoManager::GetLabel(int info)
+string CGUIInfoManager::GetLabel(int info)
 {
   CStdString strLabel;
   if (info >= SKIN_HAS_SETTING_START && info <= SKIN_HAS_SETTING_END)
@@ -699,8 +699,8 @@ wstring CGUIInfoManager::GetLabel(int info)
     break;
   case NETWORK_IP_ADDRESS:
     {
-      CStdStringW ip;
-      ip.Format(L"%s: %S", g_localizeStrings.Get(150).c_str(), g_szTitleIP);
+      CStdString ip;
+      ip.Format("%s: %S", g_localizeStrings.Get(150).c_str(), g_szTitleIP);
       return ip;
     }
     break;
@@ -759,9 +759,7 @@ wstring CGUIInfoManager::GetLabel(int info)
     break;
   }
 
-  // convert our CStdString to a wstring (which the label expects!)
-  CStdStringW label = strLabel;
-  return label;
+  return strLabel;
 }
 
 // tries to get a integer value for use in progressbars/sliders and such
@@ -1177,13 +1175,13 @@ CStdString CGUIInfoManager::GetPlaylistLabel(int item)
   {
   case PLAYLIST_LENGTH:
     {
-      CStdString strLength = L"";
+      CStdString strLength = "";
   		strLength.Format("%i", g_playlistPlayer.GetPlaylist(iPlaylist).size());
       return strLength;
     }
   case PLAYLIST_POSITION:
     {
-      CStdString strPosition = L"";
+      CStdString strPosition = "";
       strPosition.Format("%i", g_playlistPlayer.GetCurrentSong() + 1);
       return strPosition;
     }
@@ -1289,7 +1287,7 @@ CStdString CGUIInfoManager::GetMusicLabel(int item)
         m_MusicBitrate = g_application.m_pPlayer->GetBitrate();
         m_lastMusicBitrateTime = timeGetTime();
       }
-      CStdString strBitrate = L"";
+      CStdString strBitrate = "";
       if (m_MusicBitrate > 0)
         strBitrate.Format("%i", m_MusicBitrate);
       return strBitrate;
@@ -1297,7 +1295,7 @@ CStdString CGUIInfoManager::GetMusicLabel(int item)
     break;
   case MUSICPLAYER_CHANNELS:
     {
-      CStdString strChannels = L"";
+      CStdString strChannels = "";
 	    if (g_application.m_pPlayer->GetChannels() > 0)
 	    {
 	      strChannels.Format("%i", g_application.m_pPlayer->GetChannels());
@@ -1307,7 +1305,7 @@ CStdString CGUIInfoManager::GetMusicLabel(int item)
     break;
   case MUSICPLAYER_BITSPERSAMPLE:
     {
-      CStdString strBitsPerSample = L"";
+      CStdString strBitsPerSample = "";
 	    if (g_application.m_pPlayer->GetBitsPerSample() > 0)
 	    {
 	      strBitsPerSample.Format("%i", g_application.m_pPlayer->GetBitsPerSample());
@@ -1317,7 +1315,7 @@ CStdString CGUIInfoManager::GetMusicLabel(int item)
     break;
   case MUSICPLAYER_SAMPLERATE:
     {
-      CStdString strSampleRate = L"";
+      CStdString strSampleRate = "";
 	    if (g_application.m_pPlayer->GetSampleRate() > 0)
 	    {
 	      strSampleRate.Format("%i",g_application.m_pPlayer->GetSampleRate());
@@ -1614,7 +1612,7 @@ void CGUIInfoManager::SetCurrentMovie(CFileItem &item)
   m_currentMovieThumb = item.GetThumbnailImage();
 }
 
-wstring CGUIInfoManager::GetSystemHeatInfo(const CStdString &strInfo)
+string CGUIInfoManager::GetSystemHeatInfo(const CStdString &strInfo)
 {
   if (timeGetTime() - m_lastSysHeatInfoTime >= 1000)
   { // update our variables
@@ -1624,49 +1622,49 @@ wstring CGUIInfoManager::GetSystemHeatInfo(const CStdString &strInfo)
     m_cpuTemp = CFanController::Instance()->GetCPUTemp();
   }
 
-  CStdStringW text;
+  CStdString text;
 
   if (strInfo == "cpu")
   {
     if (g_guiSettings.GetInt("Weather.TemperatureUnits") == 1 /*DEGREES_F*/)
-      text.Format(L"%s %2.2f%cF", g_localizeStrings.Get(140).c_str(), ((9.0 / 5.0) * m_cpuTemp) + 32.0, 176);
+      text.Format("%s %2.2f%cF", g_localizeStrings.Get(140).c_str(), ((9.0 / 5.0) * m_cpuTemp) + 32.0, 176);
     else
-      text.Format(L"%s %2.2f%cC", g_localizeStrings.Get(140).c_str(), m_cpuTemp, 176);
+      text.Format("%s %2.2f%cC", g_localizeStrings.Get(140).c_str(), m_cpuTemp, 176);
   }
   else if (strInfo == "lcdcpu")
   {
     if (g_guiSettings.GetInt("Weather.TemperatureUnits") == 1 /*DEGREES_F*/)
-      text.Format(L"%3.0f%cF", ((9.0 / 5.0) * m_cpuTemp) + 32.0, 176);
+      text.Format("%3.0f%cF", ((9.0 / 5.0) * m_cpuTemp) + 32.0, 176);
     else
-      text.Format(L"%2.0f%cC", m_cpuTemp, 176);
+      text.Format("%2.0f%cC", m_cpuTemp, 176);
   }
   else if (strInfo == "gpu")
   {
     if (g_guiSettings.GetInt("Weather.TemperatureUnits") == 1 /*DEGREES_F*/)
-      text.Format(L"%s %2.2f%cF", g_localizeStrings.Get(141).c_str(), ((9.0 / 5.0) * m_gpuTemp) + 32.0, 176);
+      text.Format("%s %2.2f%cF", g_localizeStrings.Get(141).c_str(), ((9.0 / 5.0) * m_gpuTemp) + 32.0, 176);
     else
-      text.Format(L"%s %2.2f%cC", g_localizeStrings.Get(141).c_str(), m_gpuTemp, 176);
+      text.Format("%s %2.2f%cC", g_localizeStrings.Get(141).c_str(), m_gpuTemp, 176);
   }
   else if (strInfo == "lcdgpu")
   {
     if (g_guiSettings.GetInt("Weather.TemperatureUnits") == 1 /*DEGREES_F*/)
-      text.Format(L"%3.0f%cF", ((9.0 / 5.0) * m_gpuTemp) + 32.0, 176);
+      text.Format("%3.0f%cF", ((9.0 / 5.0) * m_gpuTemp) + 32.0, 176);
     else
-      text.Format(L"%2.0f%cC", m_gpuTemp, 176);
+      text.Format("%2.0f%cC", m_gpuTemp, 176);
   }
   else if (strInfo == "fan")
   {
-    text.Format(L"%s: %i%%", g_localizeStrings.Get(13300).c_str(), m_fanSpeed * 2);
+    text.Format("%s: %i%%", g_localizeStrings.Get(13300).c_str(), m_fanSpeed * 2);
   }
   else if (strInfo == "lcdfan")
   {
-    text.Format(L"%i%%", m_fanSpeed * 2);
+    text.Format("%i%%", m_fanSpeed * 2);
   }
 
   return text;
 }
 
-wstring CGUIInfoManager::GetFreeSpace(int drive, bool shortText)
+string CGUIInfoManager::GetFreeSpace(int drive, bool shortText)
 {
   ULARGE_INTEGER lTotalFreeBytes;
 
@@ -1677,23 +1675,23 @@ wstring CGUIInfoManager::GetFreeSpace(int drive, bool shortText)
     cDrive = drive - SYSTEM_FREE_SPACE_C + 'C';
   CStdString strDriveFind;
   strDriveFind.Format("%c:\\", cDrive);
-  const WCHAR *pszDrive = g_localizeStrings.Get(155).c_str();
-  const WCHAR *pszFree = g_localizeStrings.Get(160).c_str();
-  const WCHAR *pszUnavailable = g_localizeStrings.Get(161).c_str();
-  CStdStringW space;
+  const char *pszDrive = g_localizeStrings.Get(155).c_str();
+  const char *pszFree = g_localizeStrings.Get(160).c_str();
+  const char *pszUnavailable = g_localizeStrings.Get(161).c_str();
+  CStdString space;
   if (GetDiskFreeSpaceEx( strDriveFind.c_str(), NULL, NULL, &lTotalFreeBytes))
   {
     if (shortText)
-      space.Format(L"%uMB", lTotalFreeBytes.QuadPart / 1024 / 1024); //To make it MB
+      space.Format("%uMB", lTotalFreeBytes.QuadPart / 1024 / 1024); //To make it MB
   	else
-      space.Format(L"%s %c: %u Mb %s", pszDrive, cDrive, lTotalFreeBytes.QuadPart / 1048576, pszFree); //To make it MB
+      space.Format("%s %c: %u Mb %s", pszDrive, cDrive, lTotalFreeBytes.QuadPart / 1048576, pszFree); //To make it MB
   }
   else
   {
     if (shortText)
-      space = L"N/A";
+      space = "N/A";
     else
-      space.Format(L"%s %c: %s", pszDrive, cDrive, pszUnavailable);
+      space.Format("%s %c: %s", pszDrive, cDrive, pszUnavailable);
   }
   return space;
 }

@@ -11,7 +11,7 @@ extern "C" {
 
 namespace PYXBMC
 {
-	int		PyGetUnicodeString(wstring& buf, PyObject* pObject, int pos = -1);
+	int		PyGetUnicodeString(string& buf, PyObject* pObject, int pos = -1);
 	void	PyGUILock();
 	void	PyGUIUnlock();
 	const char*	PyGetDefaultImage(char* controlType, char* textureType, char* cDefault);

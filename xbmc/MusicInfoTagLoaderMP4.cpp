@@ -80,10 +80,9 @@ static void ParseTag( unsigned int metaKey, const char* pMetaData, int metaSize,
       memcpy( dataWorkspace.get(), pMetaData, metaSize );
       dataWorkspace[ metaSize ] = '\0';
 
-      CStdString strTitle;
-      g_charsetConverter.utf8ToStringCharset( CStdString( dataWorkspace.get() ), strTitle );
+      // we use utf8 internally
       tag.SetLoaded( true );
-      tag.SetTitle( strTitle );
+      tag.SetTitle( dataWorkspace.get() );
 
       break;
     }
@@ -95,9 +94,7 @@ static void ParseTag( unsigned int metaKey, const char* pMetaData, int metaSize,
       memcpy( dataWorkspace.get(), pMetaData, metaSize );
       dataWorkspace[ metaSize ] = '\0';
 
-      CStdString strArtist;
-      g_charsetConverter.utf8ToStringCharset( CStdString( dataWorkspace.get() ), strArtist );
-      tag.SetArtist( strArtist );
+      tag.SetArtist( dataWorkspace.get() );
 
       break;
     }
@@ -109,9 +106,7 @@ static void ParseTag( unsigned int metaKey, const char* pMetaData, int metaSize,
       memcpy( dataWorkspace.get(), pMetaData, metaSize );
       dataWorkspace[ metaSize ] = '\0';
 
-      CStdString strAlbum;
-      g_charsetConverter.utf8ToStringCharset( CStdString( dataWorkspace.get() ), strAlbum );
-      tag.SetAlbum( strAlbum );
+      tag.SetAlbum( dataWorkspace.get() );
 
       break;
     }
@@ -137,9 +132,7 @@ static void ParseTag( unsigned int metaKey, const char* pMetaData, int metaSize,
       const char* pGenre = ID3_V1GENRE2DESCRIPTION( pMetaData[ 1 ] - 1 );
       if ( pGenre )
       {
-        CStdString strGenre;
-        g_charsetConverter.utf8ToStringCharset( CStdString( pGenre ), strGenre );
-        tag.SetGenre( strGenre );
+        tag.SetGenre( pGenre );
       }
 
       break;
@@ -152,9 +145,7 @@ static void ParseTag( unsigned int metaKey, const char* pMetaData, int metaSize,
       memcpy( dataWorkspace.get(), pMetaData, metaSize );
       dataWorkspace[ metaSize ] = '\0';
 
-      CStdString strGenre;
-      g_charsetConverter.utf8ToStringCharset( CStdString( dataWorkspace.get() ), strGenre );
-      tag.SetGenre( strGenre );
+      tag.SetGenre( dataWorkspace.get() );
 
       break;
     }

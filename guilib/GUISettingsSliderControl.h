@@ -43,8 +43,8 @@ public:
   const CLabelInfo& GetLabelInfo() const { return m_buttonControl.GetLabelInfo(); };
   const CStdString& GetTextureFocusName() const { return m_buttonControl.GetTextureFocusName(); };
   const CStdString& GetTextureNoFocusName() const { return m_buttonControl.GetTextureNoFocusName(); };
-  const wstring GetLabel() const { return m_buttonControl.GetLabel(); };
-  void SetText(const CStdString &label) {m_buttonControl.SetText(label);};
+  const string& GetLabel() const { return m_buttonControl.GetLabel(); };
+  void SetText(const string &label) {m_buttonControl.SetLabel(label);};
   virtual int GetXPosition() const { return m_buttonControl.GetXPosition();};
   virtual int GetYPosition() const { return m_buttonControl.GetYPosition();};
   virtual CStdString GetDescription() const;

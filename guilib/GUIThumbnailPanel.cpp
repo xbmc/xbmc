@@ -50,7 +50,7 @@ CGUIThumbnailPanel::CGUIThumbnailPanel(DWORD dwParentID, DWORD dwControlId, int 
   m_iCursorX = 0;
   m_iSpinPosX = iSpinX;
   m_iSpinPosY = iSpinY;
-  m_strSuffix = L"|";
+  m_strSuffix = "|";
   m_bScrollUp = false;
   m_bScrollDown = false;
   m_bShowTexture = true;
@@ -162,7 +162,7 @@ void CGUIThumbnailPanel::RenderItem(bool bFocus, int iPosX, int iPosY, CGUIListI
         return;
 
     CStdStringW strItemLabelUnicode;
-    g_charsetConverter.stringCharsetToFontCharset(pItem->GetLabel().c_str(), strItemLabelUnicode);
+    g_charsetConverter.utf8ToUTF16(pItem->GetLabel().c_str(), strItemLabelUnicode);
 
     DWORD dwColor = m_label.textColor;
     if (pItem->IsSelected()) dwColor = m_label.selectedColor;
@@ -704,10 +704,9 @@ void CGUIThumbnailPanel::RenderText(float fPosX, float fPosY, DWORD dwTextColor,
   }
 }
 
-void CGUIThumbnailPanel::SetScrollySuffix(CStdString wstrSuffix)
+void CGUIThumbnailPanel::SetScrollySuffix(const CStdString &strSuffix)
 {
-  CStdStringW suffix = wstrSuffix;
-  m_strSuffix = suffix;
+  m_strSuffix = strSuffix;
 }
 
 void CGUIThumbnailPanel::OnPageUp()

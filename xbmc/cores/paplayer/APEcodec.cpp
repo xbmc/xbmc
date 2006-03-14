@@ -10,7 +10,7 @@ APECodec::APECodec()
   m_Channels = 0;
   m_BitsPerSample = 0;
   m_Bitrate = 0;
-  m_CodecName = L"APE";
+  m_CodecName = "APE";
 }
 
 APECodec::~APECodec()

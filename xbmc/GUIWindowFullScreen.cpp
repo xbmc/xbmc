@@ -328,7 +328,7 @@ void CGUIWindowFullScreen::OnWindowLoaded()
   {
     pLabel->SetVisibleCondition(PLAYER_DISPLAY_AFTER_SEEK);
     pLabel->SetVisible(true);
-    pLabel->SetLabel(L"$INFO(VIDEOPLAYER.TIME) / $INFO(VIDEOPLAYER.DURATION)");
+    pLabel->SetLabel("$INFO(VIDEOPLAYER.TIME) / $INFO(VIDEOPLAYER.DURATION)");
   }
 }
 
@@ -676,6 +676,7 @@ void CGUIWindowFullScreen::RenderTTFSubtitles()
 
     g_graphicsContext.SetScalingResolution(g_graphicsContext.GetVideoResolution(), 0, 0, false);
 
+    // TODO: UTF-8: Currently our Subtitle text is sent from the player in UTF-16.
     CStdStringW subtitleText = L"";
     if (g_application.m_pPlayer && g_application.m_pPlayer->GetCurrentSubtitle(subtitleText))
     {

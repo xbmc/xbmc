@@ -4,7 +4,7 @@
 
 AdplugCodec::AdplugCodec()
 {
-  m_CodecName = L"Adplug";
+  m_CodecName = "Adplug";
   m_adl = 0;
   m_iTrack = -1;
   m_iDataPos = -1; 

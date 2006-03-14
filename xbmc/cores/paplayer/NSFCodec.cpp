@@ -5,7 +5,7 @@
 
 NSFCodec::NSFCodec()
 {
-  m_CodecName = L"NSF";
+  m_CodecName = "NSF";
   m_nsf = 0;
   m_bIsPlaying = false;
   m_iDataInBuffer = 0;

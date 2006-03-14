@@ -23,7 +23,7 @@ WAVCodec::WAVCodec()
   m_iDataStart=0;
   m_iDataLen=0;
   m_Bitrate = 0;
-  m_CodecName = L"WAV";
+  m_CodecName = "WAV";
 }
 
 WAVCodec::~WAVCodec()

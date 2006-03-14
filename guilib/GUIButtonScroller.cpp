@@ -166,6 +166,8 @@ void CGUIButtonScroller::LoadButtons(const TiXmlNode *node)
   //    <texturefocus>
   //    <texturenofocus>
   // </button>
+
+  // TODO: UTF-8 - what if the XML encoding is in UTF-8?
   const TiXmlNode *buttons = node->FirstChild("buttons");
   if (!buttons) return;
   const TiXmlElement *buttonNode = buttons->FirstChildElement("button");
@@ -180,9 +182,10 @@ void CGUIButtonScroller::LoadButtons(const TiXmlNode *node)
       if (CUtil::IsNaturalNumber(strLabel))
         button->strLabel = g_localizeStrings.Get(atoi(strLabel.c_str()));
       else
-      {
-        CStdStringW label = strLabel.c_str();
-        button->strLabel = label;
+      { // convert to UTF-8
+        CStdString utf8String;
+        g_charsetConverter.stringCharsetToUtf8(strLabel, utf8String);
+        button->strLabel = utf8String;
       }
     }
     childNode = buttonNode->FirstChild("execute");
@@ -206,7 +209,7 @@ void CGUIButtonScroller::LoadButtons(const TiXmlNode *node)
 }
 
 #ifdef PRE_SKIN_VERSION_2_0_COMPATIBILITY
-void CGUIButtonScroller::AddButton(const wstring &strLabel, const CStdString &strExecute, const int iID)
+void CGUIButtonScroller::AddButton(const string &strLabel, const CStdString &strExecute, const int iID)
 {
   // add a button to our control
   CButton *pButton = new CButton;
@@ -668,7 +671,7 @@ void CGUIButtonScroller::RenderItem(int &iPosX, int &iPosY, int &iOffset, bool b
       fPosY = (float)iPosY + m_imgFocus.GetHeight() / 2;
 
     CStdStringW strLabelUnicode;
-    g_charsetConverter.stringCharsetToFontCharset(m_vecButtons[iOffset]->strLabel, strLabelUnicode);
+    g_charsetConverter.utf8ToUTF16(m_vecButtons[iOffset]->strLabel, strLabelUnicode);
 
     float fAlpha = 255.0f;
     if (m_bHorizontal)

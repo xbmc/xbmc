@@ -160,8 +160,8 @@ void CArenaItem::OnPaint(CGUIItem::RenderContext* pContext)
         strInfo.Format("%d", (m_nPlayers > 0) ? m_nPlayers : 0);
       }
 
-      CStdStringW strInfoUnicode;
-      g_charsetConverter.stringCharsetToFontCharset(strInfo, strInfoUnicode);
+      // no need for charset conversions here - just rendering numbers
+      CStdStringW strInfoUnicode = strInfo;
       RenderText((FLOAT)iPosX, (FLOAT)iPosY + 2, (FLOAT)pDC->m_pButton->GetWidth(), dwColor, (WCHAR*) strInfoUnicode.c_str(), pDC->m_label);
     }
   }

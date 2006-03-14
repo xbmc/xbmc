@@ -103,8 +103,8 @@ bool CDAAPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
         CStdString strFile;
         //size_t strLen;
 
-        // convert from UTF8 to charset string
-        g_charsetConverter.utf8ToStringCharset(m_thisHost->dbplaylists->playlists[c].itemname, strFile);
+        // we use UTF-8 internally, so no need to convert
+        strFile = m_thisHost->dbplaylists->playlists[c].itemname;
 
         // Add item to directory list
         CLog::Log(LOGDEBUG, "DAAPDirectory: Adding item %s", strFile.c_str());
@@ -142,7 +142,7 @@ bool CDAAPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
           artistPTR *cur = m_artisthead;
           while (cur)
           {            
-            g_charsetConverter.utf8ToStringCharset(cur->artist, strBuffer);
+            strBuffer = cur->artist;
             CLog::Log(LOGDEBUG, "DAAPDirectory: Adding item %s", strBuffer.c_str());
             CFileItem* pItem = new CFileItem(strBuffer);
             pItem->m_strPath = strRoot + cur->artist;
@@ -175,12 +175,8 @@ bool CDAAPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
 
             if (idx > -1)
             {              
-              // convert from UTF8 to charset string
-              CStdString strBuffer;
-              g_charsetConverter.utf8ToStringCharset(m_currentSongItems[idx].itemname, strBuffer);
-
-              CLog::Log(LOGDEBUG, "DAAPDirectory: Adding item %s", strBuffer.c_str());
-              CFileItem* pItem = new CFileItem(strBuffer);
+              CLog::Log(LOGDEBUG, "DAAPDirectory: Adding item %s", m_currentSongItems[idx].itemname);
+              CFileItem* pItem = new CFileItem(m_currentSongItems[idx].itemname);
               pItem->m_strPath.Format("daap://%s/%d.%s", m_thisHost->host, m_currentSongItems[idx].id,
                                       m_currentSongItems[idx].songformat);
               pItem->m_bIsFolder = false;
@@ -189,13 +185,9 @@ bool CDAAPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
               pItem->m_musicInfoTag.SetURL(pItem->m_strPath);
 
               
-              pItem->m_musicInfoTag.SetTitle(strBuffer);
-
-              g_charsetConverter.utf8ToStringCharset(m_currentSongItems[idx].songartist, strBuffer);
-              pItem->m_musicInfoTag.SetArtist(strBuffer);
-
-              g_charsetConverter.utf8ToStringCharset(m_currentSongItems[idx].songalbum, strBuffer);
-              pItem->m_musicInfoTag.SetAlbum(strBuffer);
+              pItem->m_musicInfoTag.SetTitle(m_currentSongItems[idx].itemname);
+              pItem->m_musicInfoTag.SetArtist(m_currentSongItems[idx].songartist);
+              pItem->m_musicInfoTag.SetAlbum(m_currentSongItems[idx].songalbum);
 
               //pItem->m_musicInfoTag.SetTrackNumber(m_currentSongItems[idx].songtracknumber);
               pItem->m_musicInfoTag.SetTrackNumber(m_thisHost->dbplaylists->playlists[c].items[j].songid);
@@ -227,10 +219,8 @@ bool CDAAPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
         albumPTR *curAlbum = cur->albumhead;
         while (curAlbum)
         {
-          CStdString strBuffer;
-          g_charsetConverter.utf8ToStringCharset(curAlbum->album, strBuffer);
-          CLog::Log(LOGDEBUG, "DAAPDirectory: Adding item %s", strBuffer.c_str());
-          CFileItem* pItem = new CFileItem(strBuffer);
+          CLog::Log(LOGDEBUG, "DAAPDirectory: Adding item %s", curAlbum->album);
+          CFileItem* pItem = new CFileItem(curAlbum->album);
 
           pItem->m_strPath = strRoot + curAlbum->album;
           pItem->m_bIsFolder = true;
@@ -249,11 +239,8 @@ bool CDAAPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
         if (m_currentSongItems[c].songartist == m_selectedArtist &&
             m_currentSongItems[c].songalbum == m_selectedAlbum)
         {
-          CStdString strBuffer;
-          g_charsetConverter.utf8ToStringCharset(m_currentSongItems[c].itemname, strBuffer);
-
-          CLog::Log(LOGDEBUG, "DAAPDirectory: Adding item %s", strBuffer.c_str());
-          CFileItem* pItem = new CFileItem(strBuffer);
+          CLog::Log(LOGDEBUG, "DAAPDirectory: Adding item %s", m_currentSongItems[c].itemname);
+          CFileItem* pItem = new CFileItem(m_currentSongItems[c].itemname);
           pItem->m_strPath.Format("daap://%s/%d.%s", m_thisHost->host, m_currentSongItems[c].id,
                                   m_currentSongItems[c].songformat);
           pItem->m_bIsFolder = false;
@@ -261,13 +248,9 @@ bool CDAAPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
 
           pItem->m_musicInfoTag.SetURL(pItem->m_strPath);
 
-          pItem->m_musicInfoTag.SetTitle(strBuffer);
-
-          g_charsetConverter.utf8ToStringCharset(m_selectedArtist, strBuffer);
-          pItem->m_musicInfoTag.SetArtist(strBuffer);
-
-          g_charsetConverter.utf8ToStringCharset(m_selectedAlbum, strBuffer);
-          pItem->m_musicInfoTag.SetAlbum(strBuffer);
+          pItem->m_musicInfoTag.SetTitle(m_currentSongItems[c].itemname);
+          pItem->m_musicInfoTag.SetArtist(m_selectedArtist);
+          pItem->m_musicInfoTag.SetAlbum(m_selectedAlbum);
 
           pItem->m_musicInfoTag.SetTrackNumber(m_currentSongItems[c].songtracknumber);
           pItem->m_musicInfoTag.SetPartOfSet(m_currentSongItems[c].songdiscnumber);

@@ -67,7 +67,7 @@ CGUIWindowSettingsCategory::CGUIWindowSettingsCategory(void)
   m_iScreen = 0;
   // set the network settings so that we don't reset them unnecessarily
   m_iNetworkAssignment = -1;
-  m_strErrorMessage = L"";
+  m_strErrorMessage = "";
   m_strOldTrackFormat = "";
   m_strOldTrackFormatRight = "";
   m_iSectionBeforeJump=-1;
@@ -272,7 +272,7 @@ void CGUIWindowSettingsCategory::SetupControls()
   for (unsigned int i = 0; i < m_vecSections.size(); i++)
   {
     CGUIButtonControl *pButton = new CGUIButtonControl(*m_pOriginalSettingsButton);
-    pButton->SetText(g_localizeStrings.Get(m_vecSections[i]->m_dwLabelID));
+    pButton->SetLabel(g_localizeStrings.Get(m_vecSections[i]->m_dwLabelID));
     pButton->SetID(CONTROL_START_BUTTONS + i);
     pButton->SetGroup(CONTROL_GROUP_BUTTONS);
     pButton->SetPosition(pButtonArea->GetXPosition(), pButtonArea->GetYPosition() + i*pControlGap->GetHeight());
@@ -900,7 +900,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIButtonControl *pControl = (CGUIButtonControl *)GetControl(pSettingControl->GetID());
       if (((CSettingString *)pSettingControl->GetSetting())->GetData().size() == 0 && pControl)
       {
-        pControl->SetText2(g_localizeStrings.Get(734));
+        pControl->SetLabel2(g_localizeStrings.Get(734));
         pControl->SetEnabled(g_guiSettings.GetBool("Servers.WebServer"));
       }
     }
@@ -914,7 +914,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIButtonControl *pControl = (CGUIButtonControl *)GetControl(pSettingControl->GetID());
       if (pControl)
       {
-        if (g_guiSettings.GetInt("Network.Assignment") != NETWORK_STATIC) pControl->SetText2("-");
+        if (g_guiSettings.GetInt("Network.Assignment") != NETWORK_STATIC) pControl->SetLabel2("-");
         pControl->SetEnabled(g_guiSettings.GetInt("Network.Assignment") == NETWORK_STATIC);
       }
     }
@@ -1002,7 +1002,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
     {
       CSettingString *pSetting = (CSettingString *)GetSetting(strSetting)->GetSetting();
       CGUIButtonControl *pControl = (CGUIButtonControl *)GetControl(GetSetting(strSetting)->GetID());
-      pControl->SetText2(pSetting->GetData());
+      pControl->SetLabel2(pSetting->GetData());
     }
     else if (strSetting == "LED.DisableOnPlayback")
     {
@@ -1160,7 +1160,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
   if (strSetting.Left(16) == "Weather.AreaCode")
   {
     CStdString strSearch;
-    if (CGUIDialogKeyboard::ShowAndGetInput(strSearch, (CStdStringW)g_localizeStrings.Get(14024), false))
+    if (CGUIDialogKeyboard::ShowAndGetInput(strSearch, g_localizeStrings.Get(14024), false))
     {
       strSearch.Replace(" ", "+");
       CStdString strResult = ((CSettingString *)pSettingControl->GetSetting())->GetData();
@@ -1447,7 +1447,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     }
     else
     {
-      m_strErrorMessage.Format(L"Incompatible skin. We require skins of version %0.2f or higher", g_SkinInfo.GetMinVersion());
+      m_strErrorMessage.Format("Incompatible skin. We require skins of version %0.2f or higher", g_SkinInfo.GetMinVersion());
       m_strNewSkin.Empty();
       g_application.CancelDelayLoadSkin();
       pControl->SettingsCategorySetSpinTextColor(pControl->GetButtonLabelInfo().disabledColor);
@@ -1959,7 +1959,7 @@ void CGUIWindowSettingsCategory::AddSetting(CSetting *pSetting, int iPosX, int &
   {
     pControl = new CGUIRadioButtonControl(*m_pOriginalRadioButton);
     if (!pControl) return ;
-    ((CGUIRadioButtonControl *)pControl)->SetText(g_localizeStrings.Get(pSetting->GetLabel()));
+    ((CGUIRadioButtonControl *)pControl)->SetLabel(g_localizeStrings.Get(pSetting->GetLabel()));
     pControl->SetPosition(iPosX, iPosY);
     pControl->SetWidth(iWidth);
     pSettingControl = new CRadioButtonSettingControl((CGUIRadioButtonControl *)pControl, iControlID, pSetting);
@@ -1991,7 +1991,7 @@ void CGUIWindowSettingsCategory::AddSetting(CSetting *pSetting, int iPosX, int &
     if (!pControl) return ;
     pControl->SetPosition(iPosX, iPosY);
     ((CGUIButtonControl *)pControl)->SettingsCategorySetTextAlign(XBFONT_CENTER_Y);
-    ((CGUIButtonControl *)pControl)->SetText(g_localizeStrings.Get(pSetting->GetLabel()));
+    ((CGUIButtonControl *)pControl)->SetLabel(g_localizeStrings.Get(pSetting->GetLabel()));
     pControl->SetWidth(iWidth);
     pSettingControl = new CButtonSettingControl((CGUIButtonControl *)pControl, iControlID, pSetting);
     iPosY += iGap;
@@ -2056,9 +2056,11 @@ void CGUIWindowSettingsCategory::Render()
     CGUIFont *pFont = g_fontManager.GetFont("font13");
     if (pFont)
     {
+      // our error message is standard ASCII - no need for charset conversions.
+      CStdStringW strLabelUnicode = m_strErrorMessage;
       float fPosY = g_graphicsContext.GetHeight() * 0.8f;
       float fPosX = g_graphicsContext.GetWidth() * 0.5f;
-      pFont->DrawText(fPosX, fPosY, 0xFFFFFFFF, 0, m_strErrorMessage.c_str(), XBFONT_CENTER_X);
+      pFont->DrawText(fPosX, fPosY, 0xFFFFFFFF, 0, strLabelUnicode.c_str(), XBFONT_CENTER_X);
     }
   }
 }

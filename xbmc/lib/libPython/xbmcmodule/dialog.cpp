@@ -148,7 +148,6 @@ namespace PYXBMC
 	PyObject* Dialog_ProgressCreate(PyObject *self, PyObject *args)
 	{
 		const char *cLine[4];
-		wchar_t line[128];
 
 		for (int i = 0; i < 4; i++)	cLine[i] = NULL;
 		// get lines, last 3 lines are optional.
@@ -157,11 +156,8 @@ namespace PYXBMC
 		CGUIDialogProgress* pDialog= (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
 		if (PyWindowIsNull(pDialog)) return NULL;
 
-		// convert char strings to wchar strings and set the header + line 1, 2 and 3 for dialog
-		mbsrtowcs(line, &cLine[0], 128, NULL);
-
 		g_graphicsContext.Lock();
-		pDialog->SetHeading(line);
+		pDialog->SetHeading(cLine[0]);
 
 		for (int i = 0; i < 3; i++)
 		{

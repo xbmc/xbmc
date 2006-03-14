@@ -75,7 +75,7 @@ bool CGUIWindowSettingsUICalibration::OnMessage(CGUIMessage& message)
 void CGUIWindowSettingsUICalibration::Render()
 {
   // Get the information from the control
-  CStdStringW strStatus;
+  CStdString strStatus;
   RESOLUTION res = g_guiSettings.m_LookAndFeelResolution;
   CGUIMoverControl *pControl = (CGUIMoverControl *)GetControl(m_control);
   if (pControl)
@@ -84,7 +84,7 @@ void CGUIWindowSettingsUICalibration::Render()
     {
       g_settings.m_ResInfo[res].GUIOverscan.left = pControl->GetXLocation();
       g_settings.m_ResInfo[res].GUIOverscan.top = pControl->GetYLocation();
-      strStatus.Format(L"%s (%i,%i)", g_localizeStrings.Get(272).c_str(), pControl->GetXLocation(), pControl->GetYLocation());
+      strStatus.Format("%s (%i,%i)", g_localizeStrings.Get(272).c_str(), pControl->GetXLocation(), pControl->GetYLocation());
     }
     else //if (m_control == CONTROL_BOTTOMRIGHT)
     {
@@ -92,7 +92,7 @@ void CGUIWindowSettingsUICalibration::Render()
       g_settings.m_ResInfo[res].GUIOverscan.bottom = pControl->GetYLocation();
       int iXOff1 = g_settings.m_ResInfo[res].iWidth - pControl->GetXLocation();
       int iYOff1 = g_settings.m_ResInfo[res].iHeight - pControl->GetYLocation();
-      strStatus.Format(L"%s (%i,%i)", g_localizeStrings.Get(273).c_str(), iXOff1, iYOff1);
+      strStatus.Format("%s (%i,%i)", g_localizeStrings.Get(273).c_str(), iXOff1, iYOff1);
     }
   }
   // Set the label and hide our render controls

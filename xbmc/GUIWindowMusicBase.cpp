@@ -819,7 +819,7 @@ void CGUIWindowMusicBase::DoSearch(const CStdString& strSearch, CFileItemList& i
 void CGUIWindowMusicBase::OnSearch()
 {
   CStdString strSearch;
-  if ( !CGUIDialogKeyboard::ShowAndGetInput(strSearch, (CStdStringW)g_localizeStrings.Get(16017), false) )
+  if ( !CGUIDialogKeyboard::ShowAndGetInput(strSearch, g_localizeStrings.Get(16017), false) )
     return ;
 
   strSearch.ToLower();
@@ -827,8 +827,8 @@ void CGUIWindowMusicBase::OnSearch()
   {
     m_dlgProgress->SetHeading(194);
     m_dlgProgress->SetLine(0, strSearch);
-    m_dlgProgress->SetLine(1, L"");
-    m_dlgProgress->SetLine(2, L"");
+    m_dlgProgress->SetLine(1, "");
+    m_dlgProgress->SetLine(2, "");
     m_dlgProgress->StartModal(GetID());
     m_dlgProgress->Progress();
   }
@@ -987,11 +987,10 @@ bool CGUIWindowMusicBase::FindAlbumInfo(const CStdString& strAlbum, const CStdSt
         if (iAlbumCount > 1)
         {
           //show dialog with all albums found
-          const WCHAR* szText = g_localizeStrings.Get(181).c_str();
           CGUIDialogSelect *pDlg = (CGUIDialogSelect*)m_gWindowManager.GetWindow(WINDOW_DIALOG_SELECT);
           if (pDlg)
           {
-            pDlg->SetHeading(szText);
+            pDlg->SetHeading(g_localizeStrings.Get(181).c_str());
             pDlg->Reset();
             pDlg->EnableButton(true);
             pDlg->SetButtonLabel(413); // manual
@@ -1041,11 +1040,11 @@ bool CGUIWindowMusicBase::FindAlbumInfo(const CStdString& strAlbum, const CStdSt
             {
               if (!pDlg->IsButtonPressed()) return false;
               CStdString strNewAlbum = strAlbum;
-              if (!CGUIDialogKeyboard::ShowAndGetInput(strNewAlbum, (CStdStringW)g_localizeStrings.Get(16011), false)) return false;
+              if (!CGUIDialogKeyboard::ShowAndGetInput(strNewAlbum, g_localizeStrings.Get(16011), false)) return false;
               if (strNewAlbum == "") return false;
 
               CStdString strNewArtist = strArtist;
-              if (!CGUIDialogKeyboard::ShowAndGetInput(strNewArtist, (CStdStringW)g_localizeStrings.Get(16025), false)) return false;
+              if (!CGUIDialogKeyboard::ShowAndGetInput(strNewArtist, g_localizeStrings.Get(16025), false)) return false;
 
               if (m_dlgProgress)
               {

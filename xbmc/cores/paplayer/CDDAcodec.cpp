@@ -13,7 +13,7 @@ CDDACodec::CDDACodec()
   m_BitsPerSample = 16;
   m_TotalTime = 0;
   m_Bitrate = 0;
-  m_CodecName = L"CDDA";
+  m_CodecName = "CDDA";
 
   m_BufferSize=0;
   m_Buffer = new BYTE[MAX_BUFFER_SIZE];  

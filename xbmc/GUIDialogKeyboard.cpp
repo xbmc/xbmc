@@ -130,7 +130,7 @@ bool CGUIDialogKeyboard::OnAction(const CAction &action)
       Close();
       break;
     default:  //use character input
-      Character((WCHAR)ch);
+      Character(ch);
       break;
     }
     return true;
@@ -205,10 +205,10 @@ void CGUIDialogKeyboard::SetText(CStdString& aTextString)
   MoveCursor(m_strEdit.size());
 }
 
-void CGUIDialogKeyboard::Character(WCHAR wch)
+void CGUIDialogKeyboard::Character(char ch)
 {
-  if (!wch) return;
-  m_strEdit.Insert(GetCursorPos(), (TCHAR)wch);
+  if (!ch) return;
+  m_strEdit.Insert(GetCursorPos(), ch);
   UpdateLabel();
   MoveCursor(1);
 }
@@ -243,7 +243,7 @@ void CGUIDialogKeyboard::UpdateLabel()
       else
         edit.append(m_strEdit.size(), '*');
     }
-    pEdit->SetText(edit);
+    pEdit->SetLabel(edit);
   }
 }
 
@@ -302,14 +302,14 @@ void CGUIDialogKeyboard::OnRemoteNumberClick(int key)
   characterPressed += m_indexInSeries;
 
   // use caps where appropriate
-  WCHAR ch = (WCHAR) * characterPressed;
+  char ch = *characterPressed;
   bool caps = (m_keyType == CAPS && !m_bShift) || (m_keyType == LOWER && m_bShift);
   if (!caps && *characterPressed >= 'A' && *characterPressed <= 'Z')
     ch += 32;
   Character(ch);
 }
 
-WCHAR CGUIDialogKeyboard::GetCharacter(int iButton)
+char CGUIDialogKeyboard::GetCharacter(int iButton)
 {
   // First the numbers
   if (iButton >= 48 && iButton <= 57)
@@ -317,19 +317,19 @@ WCHAR CGUIDialogKeyboard::GetCharacter(int iButton)
     if (m_keyType == SYMBOLS)
     {
       OnSymbols();
-      return (WCHAR)symbol_map[iButton -48];
+      return symbol_map[iButton -48];
     }
     else
-      return (WCHAR)iButton;
+      return (char)iButton;
   }
   else if (iButton == 32) // space
-    return (WCHAR)iButton;
+    return (char)iButton;
   else if (iButton >= 65 && iButton < 91)
   {
     if (m_keyType == SYMBOLS)
     { // symbol
       OnSymbols();
-      return (WCHAR)symbol_map[iButton -65 + 10];
+      return symbol_map[iButton - 65 + 10];
     }
     if ((m_keyType == CAPS && m_bShift) || (m_keyType == LOWER && !m_bShift))
     { // make lower case
@@ -339,13 +339,13 @@ WCHAR CGUIDialogKeyboard::GetCharacter(int iButton)
     { // turn off the shift key
       OnShift();
     }
-    return (WCHAR) iButton;
+    return (char) iButton;
   }
   else
   { // check for symbols
     for (int i = 0; i < NUM_SYMBOLS; i++)
       if (iButton == symbolButtons[i])
-        return (WCHAR)iButton;
+        return (char)iButton;
   }
   return 0;
 }
@@ -385,13 +385,13 @@ void CGUIDialogKeyboard::UpdateButtons()
   char szLabel[2];
   szLabel[0] = 32;
   szLabel[1] = 0;
-  CStdStringW aLabel = szLabel;
+  CStdString aLabel = szLabel;
 
   // set numerals
   for (int iButton = 48; iButton <= 57; iButton++)
   {
     if (m_keyType == SYMBOLS)
-      aLabel[0] = (WCHAR)symbol_map[iButton - 48];
+      aLabel[0] = symbol_map[iButton - 48];
     else
       aLabel[0] = iButton;
     SetControlLabel(iButton, aLabel);
@@ -408,7 +408,7 @@ void CGUIDialogKeyboard::UpdateButtons()
     }
     else if (m_keyType == SYMBOLS)
     {
-      aLabel[0] = (WCHAR)symbol_map[iButton - 65 + 10];
+      aLabel[0] = symbol_map[iButton - 65 + 10];
     }
     else
     {
@@ -426,7 +426,7 @@ void CGUIDialogKeyboard::UpdateButtons()
 // Show keyboard with initial value (aTextString) and replace with result string.
 // Returns: true  - successful display and input (empty result may return true or false depending on parameter)
 //          false - unsucessful display of the keyboard or cancelled editing
-bool CGUIDialogKeyboard::ShowAndGetInput(CStdString& aTextString, const CStdStringW &strHeading, bool allowEmptyResult, bool hiddenInput /* = false */)
+bool CGUIDialogKeyboard::ShowAndGetInput(CStdString& aTextString, const CStdString &strHeading, bool allowEmptyResult, bool hiddenInput /* = false */)
 {
   CGUIDialogKeyboard *pKeyboard = (CGUIDialogKeyboard*)m_gWindowManager.GetWindow(WINDOW_DIALOG_KEYBOARD);
 
@@ -457,7 +457,7 @@ bool CGUIDialogKeyboard::ShowAndGetInput(CStdString& aTextString, const CStdStri
 
 bool CGUIDialogKeyboard::ShowAndGetInput(CStdString& aTextString, bool allowEmptyResult)
 {
-  return ShowAndGetInput(aTextString, L"", allowEmptyResult) != 0;
+  return ShowAndGetInput(aTextString, "", allowEmptyResult) != 0;
 }
 
 // \brief Show keyboard twice to get and confirm a user-entered password string.
@@ -465,7 +465,7 @@ bool CGUIDialogKeyboard::ShowAndGetInput(CStdString& aTextString, bool allowEmpt
 // \param heading Heading to display
 // \param allowEmpty Whether a blank password is valid or not.
 // \return true if successful display and user input entry/re-entry. false if unsucessful display, no user input, or canceled editing.
-bool CGUIDialogKeyboard::ShowAndGetNewPassword(CStdString& newPassword, const CStdStringW &heading, bool allowEmpty)
+bool CGUIDialogKeyboard::ShowAndGetNewPassword(CStdString& newPassword, const CStdString &heading, bool allowEmpty)
 {
   // Prompt user for password input
   CStdString userInput = "";
@@ -494,7 +494,7 @@ bool CGUIDialogKeyboard::ShowAndGetNewPassword(CStdString& newPassword, const CS
 // \return true if successful display and user input entry/re-entry. false if unsucessful display, no user input, or canceled editing.
 bool CGUIDialogKeyboard::ShowAndGetNewPassword(CStdString& newPassword)
 {
-  CStdStringW heading = g_localizeStrings.Get(12340);
+  CStdString heading = g_localizeStrings.Get(12340);
   return ShowAndGetNewPassword(newPassword, heading, false);
 }
 
@@ -503,13 +503,13 @@ bool CGUIDialogKeyboard::ShowAndGetNewPassword(CStdString& newPassword)
 // \param dlgHeading String shown on dialog title. Converts to localized string if contains a positive integer.
 // \param iRetries If greater than 0, shows "Incorrect password, %d retries left" on dialog line 2, else line 2 is blank.
 // \return 0 if successful display and user input. 1 if unsucessful input. -1 if no user input or canceled editing.
-int CGUIDialogKeyboard::ShowAndVerifyPassword(CStdString& strPassword, const CStdStringW& strHeading, int iRetries)
+int CGUIDialogKeyboard::ShowAndVerifyPassword(CStdString& strPassword, const CStdString& strHeading, int iRetries)
 {
-  CStdStringW strHeadingTemp;
+  CStdString strHeadingTemp;
   if (1 > iRetries && strHeading.size())
     strHeadingTemp = strHeading;
   else
-    strHeadingTemp.Format(L"%s - %i %s", g_localizeStrings.Get(12326).c_str(), g_stSettings.m_iMasterLockMaxRetry - iRetries, g_localizeStrings.Get(12343).c_str());
+    strHeadingTemp.Format("%s - %i %s", g_localizeStrings.Get(12326).c_str(), g_stSettings.m_iMasterLockMaxRetry - iRetries, g_localizeStrings.Get(12343).c_str());
 
   CStdString strUserInput = "";
   if (!ShowAndGetInput(strUserInput, strHeadingTemp, false))
@@ -606,7 +606,7 @@ void CGUIDialogKeyboard::ResetShiftAndSymbols()
 
 const char* CGUIDialogKeyboard::s_charsSeries[10] = { " !@#$%^&*()[]{}<>/\\|0", ".,;:\'\"-+_=?`~1", "ABC2", "DEF3", "GHI4", "JKL5", "MNO6", "PQRS7", "TUV8", "WXYZ9" };
 
-void CGUIDialogKeyboard::SetControlLabel(int id, const CStdStringW &label)
+void CGUIDialogKeyboard::SetControlLabel(int id, const CStdString &label)
 { // find all controls with this id, and set all their labels
   CGUIMessage message(GUI_MSG_LABEL_SET, GetID(), id);
   message.SetLabel(label);

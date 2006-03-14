@@ -204,7 +204,7 @@ void CGUIRAMControl::Render()
         int iButtonHeight = (int) (fTextHeight + BUTTON_HEIGHT_ADJUSTMENT);
         bool itemHasFocus = (i == m_iSelection) && HasFocus();
 
-        pButton->SetText(movie.strTitle);
+        pButton->SetLabel(movie.strTitle);
         pButton->RAMSetTextColor(itemHasFocus ? m_label.selectedColor : m_label.textColor);
         pButton->SetPosition(iTextX - iButtonWidth, (int)fTextY),
         pButton->SetWidth(iButtonWidth);
