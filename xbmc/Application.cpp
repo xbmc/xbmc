@@ -1016,6 +1016,9 @@ HRESULT CApplication::Create()
   m_splash = new CSplash("Q:\\media\\splash.png");
   m_splash->Start();
 
+  // initialize our charset convertor
+  g_charsetConverter.reset();
+
   CStdString strLanguagePath;
   strLanguagePath.Format("Q:\\language\\%s\\strings.xml", g_guiSettings.GetString("LookAndFeel.Language"));
 
@@ -1305,7 +1308,7 @@ HRESULT CApplication::Initialize()
       dialog->SetHeading(279);
       dialog->SetLine(0, "Error while loading settings");
       dialog->SetLine(1, test);
-      dialog->SetLine(2, L"");
+      dialog->SetLine(2, "");;
       dialog->DoModal(g_stSettings.m_iStartupWindow);
     }
   }

@@ -87,7 +87,7 @@ namespace PYXBMC
 	PyObject* ControlTextBox_SetText(ControlTextBox *self, PyObject *args)
 	{
 		PyObject *pObjectText;
-		wstring strText;
+		string strText;
 		if (!PyArg_ParseTuple(args, "O", &pObjectText))	return NULL;
 		if (!PyGetUnicodeString(strText, pObjectText, 1)) return NULL;
 

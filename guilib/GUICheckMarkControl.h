@@ -27,10 +27,9 @@ public:
   virtual void FreeResources();
   virtual void DynamicResourceAlloc(bool bOnOff);
 
-  void SetText(const wstring& strLabel);
-  void SetText(const CStdString& strLabel);
+  void SetLabel(const string& strLabel);
+  const string GetLabel() const { return m_strLabel; };
   const CLabelInfo& GetLabelInfo() const { return m_label; };
-  const wstring GetLabel() const { return m_strLabel; };
   DWORD GetCheckMarkWidth() const { return m_imgCheckMark.GetWidth(); };
   DWORD GetCheckMarkHeight() const { return m_imgCheckMark.GetHeight(); };
   const CStdString& GetCheckMarkTextureName() const { return m_imgCheckMark.GetFileName(); };
@@ -39,7 +38,7 @@ public:
   bool GetSelected() const;
   bool OnMouseClick(DWORD dwButton);
 
-  void PythonSetLabel(const CStdString &strFont, const wstring &strText, DWORD dwTextColor);
+  void PythonSetLabel(const CStdString &strFont, const string &strText, DWORD dwTextColor);
   void PythonSetDisabledColor(DWORD dwDisabledColor);
 
 protected:
@@ -47,6 +46,6 @@ protected:
   CGUIImage m_imgCheckMarkNoFocus;
 
   CLabelInfo m_label;
-  wstring m_strLabel;
+  string m_strLabel;
 };
 #endif

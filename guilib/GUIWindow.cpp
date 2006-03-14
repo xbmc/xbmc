@@ -907,12 +907,8 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
   {
   case GUI_MSG_WINDOW_INIT:
     {
-      CStdString strLine;
-      wstring wstrLine;
-      wstrLine = g_localizeStrings.Get(10000 + GetID());
-      CUtil::Unicode2Ansi(wstrLine, strLine);
       OutputDebugString("------------------- GUI_MSG_WINDOW_INIT ");
-      OutputDebugString(strLine.c_str());
+      OutputDebugString(g_localizeStrings.Get(10000 + GetID()).c_str());
       OutputDebugString("------------------- \n");
       if (m_dynamicResourceAlloc || !m_WindowAllocated) AllocResources();
       OnInitWindow();
@@ -922,12 +918,8 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
 
   case GUI_MSG_WINDOW_DEINIT:
     {
-      CStdString strLine;
-      wstring wstrLine;
-      wstrLine = g_localizeStrings.Get(10000 + GetID());
-      CUtil::Unicode2Ansi(wstrLine, strLine);
       OutputDebugString("------------------- GUI_MSG_WINDOW_DEINIT ");
-      OutputDebugString(strLine.c_str());
+      OutputDebugString(g_localizeStrings.Get(10000 + GetID()).c_str());
       OutputDebugString("------------------- \n");
       OnDeinitWindow(message.GetParam1());
       // now free the window

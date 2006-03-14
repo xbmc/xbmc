@@ -409,7 +409,7 @@ void CGUIWindowVideoPlaylist::ShufflePlayList()
 void CGUIWindowVideoPlaylist::SavePlayList()
 {
   CStdString strNewFileName;
-  if (CGUIDialogKeyboard::ShowAndGetInput(strNewFileName, (CStdStringW)g_localizeStrings.Get(16012), false))
+  if (CGUIDialogKeyboard::ShowAndGetInput(strNewFileName, g_localizeStrings.Get(16012), false))
   {
     // need 2 rename it
     CStdString strFolder, strPath;

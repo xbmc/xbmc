@@ -16,8 +16,8 @@ CGUIButtonControl::CGUIButtonControl(DWORD dwParentID, DWORD dwControlId, int iP
   m_dwFocusCounter = 0;
   m_dwFlickerCounter = 0;
   m_dwFrameCounter = 0;
-  m_strLabel = L"";
-  m_strLabel2 = L"";
+  m_strLabel = "";
+  m_strLabel2 = "";
   m_label = labelInfo;
   m_lHyperLinkWindowID = WINDOW_INVALID;
   ControlType = GUICONTROL_BUTTON;
@@ -85,7 +85,7 @@ void CGUIButtonControl::Render()
       fPosY = (float)m_iPosY + m_dwHeight / 2;
 
     CStdStringW strLabelUnicode;
-    g_charsetConverter.stringCharsetToFontCharset(m_strLabel, strLabelUnicode);
+    g_charsetConverter.utf8ToUTF16(m_strLabel, strLabelUnicode);
 
     m_label.font->Begin();
     if (IsDisabled())
@@ -101,7 +101,7 @@ void CGUIButtonControl::Render()
       fPosX = (float)m_iPosX + m_dwWidth - m_label.offsetX;
       DWORD dwAlign = XBFONT_RIGHT | (m_label.align & XBFONT_CENTER_Y);
 
-      g_charsetConverter.stringCharsetToFontCharset(m_strLabel2, strLabelUnicode);
+      g_charsetConverter.utf8ToUTF16(m_strLabel2, strLabelUnicode);
 
       if (IsDisabled() )
         m_label.font->DrawText( fPosX, fPosY, m_label.angle, m_label.disabledColor, m_label.shadowColor, strLabelUnicode.c_str(), dwAlign, width);
@@ -168,24 +168,12 @@ void CGUIButtonControl::DynamicResourceAlloc(bool bOnOff)
   m_imgNoFocus.DynamicResourceAlloc(bOnOff);
 }
 
-void CGUIButtonControl::SetText(const CStdString &aLabel)
-{
-  CStdStringW text = aLabel;
-  m_strLabel = text;
-}
-
-void CGUIButtonControl::SetText(const wstring &label)
+void CGUIButtonControl::SetLabel(const string &label)
 {
   m_strLabel = label;
 }
 
-void CGUIButtonControl::SetText2(const CStdString &aLabel2)
-{
-  CStdStringW text = aLabel2;
-  m_strLabel2 = text;
-}
-
-void CGUIButtonControl::SetText2(const wstring &label2)
+void CGUIButtonControl::SetLabel2(const string &label2)
 {
   m_strLabel2 = label2;
 }
@@ -254,7 +242,7 @@ CStdString CGUIButtonControl::GetDescription() const
   return strLabel;
 }
 
-void CGUIButtonControl::PythonSetLabel(const CStdString &strFont, const wstring &strText, DWORD dwTextColor)
+void CGUIButtonControl::PythonSetLabel(const CStdString &strFont, const string &strText, DWORD dwTextColor)
 {
   m_label.font = g_fontManager.GetFont(strFont);
   m_label.textColor = dwTextColor;

@@ -9,7 +9,7 @@ CGUICheckMarkControl::CGUICheckMarkControl(DWORD dwParentID, DWORD dwControlId, 
     , m_imgCheckMark(dwParentID, dwControlId, iPosX, iPosY, dwCheckWidth, dwCheckHeight, strTextureCheckMark)
     , m_imgCheckMarkNoFocus(dwParentID, dwControlId, iPosX, iPosY, dwCheckWidth, dwCheckHeight, strTextureCheckMarkNF)
 {
-  m_strLabel = L"";
+  m_strLabel = "";
   m_label = labelInfo;
   m_bSelected = false;
   ControlType = GUICONTROL_CHECKMARK;
@@ -28,7 +28,7 @@ void CGUICheckMarkControl::Render()
   if (m_label.font)
   {
     CStdStringW strLabelUnicode;
-    g_charsetConverter.stringCharsetToFontCharset(m_strLabel, strLabelUnicode);
+    g_charsetConverter.utf8ToUTF16(m_strLabel, strLabelUnicode);
 
     float fTextHeight, fTextWidth;
     m_label.font->GetTextExtent( strLabelUnicode.c_str(), &fTextWidth, &fTextHeight);
@@ -152,18 +152,12 @@ bool CGUICheckMarkControl::OnMouseClick(DWORD dwButton)
   return true;
 }
 
-void CGUICheckMarkControl::SetText(const CStdString &aLabel)
-{
-  CStdStringW text = aLabel;
-  m_strLabel = text;
-}
-
-void CGUICheckMarkControl::SetText(const wstring &label)
+void CGUICheckMarkControl::SetLabel(const string &label)
 {
   m_strLabel = label;
 }
 
-void CGUICheckMarkControl::PythonSetLabel(const CStdString &strFont, const wstring &strText, DWORD dwTextColor)
+void CGUICheckMarkControl::PythonSetLabel(const CStdString &strFont, const string &strText, DWORD dwTextColor)
 {
   m_label.font = g_fontManager.GetFont(strFont);
   m_label.textColor = dwTextColor;

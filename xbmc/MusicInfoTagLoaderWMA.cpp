@@ -122,12 +122,14 @@ bool CMusicInfoTagLoaderWMA::Load(const CStdString& strFileName, CMusicInfoTag& 
 
       iOffset += 10;
 
-      CStdString ansiString = "";
-      g_charsetConverter.ucs2CharsetToStringCharset((LPWSTR)(pData.get() + iOffset), ansiString);
-      tag.SetTitle(fixString(ansiString)); // titel
-      ansiString = "";
-      g_charsetConverter.ucs2CharsetToStringCharset((LPWSTR)(pData.get() + iOffset + nTitleSize), ansiString);
-      tag.SetArtist(fixString(ansiString));
+      // TODO: UTF-8 Do we need to "fixString" these strings at all?
+      CStdString utf8String = "";
+      g_charsetConverter.utf16toUTF8((LPWSTR)(pData.get() + iOffset), utf8String);
+      tag.SetTitle(utf8String);
+
+      utf8String = "";
+      g_charsetConverter.utf16toUTF8((LPWSTR)(pData.get() + iOffset + nTitleSize), utf8String);
+      tag.SetArtist(utf8String);
 
       //General(ZT("Copyright"))=(LPWSTR)(pData.get()+iOffset+(nTitleSize+nAuthorSize));
       //General(ZT("Comments"))=(LPWSTR)(pData.get()+iOffset+(nTitleSize+nAuthorSize+nCopyrightSize));
@@ -219,10 +221,10 @@ bool CMusicInfoTagLoaderWMA::Load(const CStdString& strFileName, CMusicInfoTag& 
         if (iFrameType == WMT_TYPE_STRING && iValueSize > 0)
         {
           LPWSTR pwszValue = (LPWSTR)(pData.get() + iOffset);
-          CStdString ansiString;
-          g_charsetConverter.ucs2CharsetToStringCharset(pwszValue, ansiString);
-          CStdString ansiStringValue = fixString(ansiString);
-          SetTagValueString(strFrameName, ansiStringValue, tag);
+          // TODO: UTF-8: Do we need to "fixString" these utf8 strings?
+          CStdString utf8String;
+          g_charsetConverter.utf16toUTF8(pwszValue, utf8String);
+          SetTagValueString(strFrameName, utf8String, tag);
         }
         else if (iFrameType == WMT_TYPE_BINARY && iValueSize > 0)
         {
@@ -291,10 +293,10 @@ bool CMusicInfoTagLoaderWMA::Load(const CStdString& strFileName, CMusicInfoTag& 
         if (iFrameType == WMT_TYPE_STRING && iValueSize > 0)
         {
           LPWSTR pwszValue = (LPWSTR)(pData.get() + iOffset);
-          CStdString ansiString;
-          g_charsetConverter.ucs2CharsetToStringCharset(pwszValue, ansiString);
-          CStdString ansiStringValue = fixString(ansiString);
-          SetTagValueString(strFrameName, ansiStringValue, tag);
+          // TODO: UTF-8: Do we need to "fixString" these utf8 strings?
+          CStdString utf8String;
+          g_charsetConverter.utf16toUTF8(pwszValue, utf8String);
+          SetTagValueString(strFrameName, utf8String, tag);
         }
         else if (iFrameType == WMT_TYPE_BINARY && iValueSize > 0)
         {

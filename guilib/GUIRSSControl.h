@@ -28,8 +28,8 @@ public:
   DWORD GetHeadlineTextColor() const { return m_dwHeadlineColor;};
   const CLabelInfo& GetLabelInfo() const { return m_label; };
   void SetIntervals(const std::vector<int>& vecIntervals);
-  void SetUrls(const std::vector<wstring>& vecUrl);
-  const std::vector<wstring>& GetUrls() const { return m_vecUrls; };
+  void SetUrls(const std::vector<string>& vecUrl);
+  const std::vector<string>& GetUrls() const { return m_vecUrls; };
   const CStdString& GetTags() const { return m_strRSSTags; };
 
 protected:
@@ -47,7 +47,7 @@ protected:
   CLabelInfo m_label;
 
   int m_iLeadingSpaces;
-  std::vector<wstring> m_vecUrls;
+  std::vector<string> m_vecUrls;
   std::vector<int> m_vecIntervals;
   CScrollInfo m_scrollInfo;
 };

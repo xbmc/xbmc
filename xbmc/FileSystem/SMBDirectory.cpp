@@ -64,8 +64,8 @@ bool CSMBDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
       bool bIsDir = true;
       __int64 lTimeDate = 0;
 
-      // Convert UTF8 to the user defined charset
-      g_charsetConverter.utf8ToStringCharset(dirEnt->name, strFile);
+      // We use UTF-8 internally, as does SMB
+      strFile = dirEnt->name;
 
       // doing stat on one of these types of shares leaves an open session
       // so just skip them and only stat real dirs / files.
@@ -272,7 +272,7 @@ int CSMBDirectory::OpenDir(CStdString& strAuth)
       }
       else
       {
-        CStdStringW cError;
+        CStdString cError;
         if (nt_error == 0xc0000034)
           cError.Format(g_localizeStrings.Get(770).c_str(),nt_error);
         else
@@ -283,8 +283,8 @@ int CSMBDirectory::OpenDir(CStdString& strAuth)
           CGUIDialogOK* pDialog = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
           pDialog->SetHeading(257);
           pDialog->SetLine(0, cError);
-          pDialog->SetLine(1, L"");
-          pDialog->SetLine(2, L"");
+          pDialog->SetLine(1, "");
+          pDialog->SetLine(2, "");
 
           ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, WINDOW_DIALOG_OK, m_gWindowManager.GetActiveWindow()};
           g_applicationMessenger.SendMessage(tMsg, false);

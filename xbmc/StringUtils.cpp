@@ -140,3 +140,16 @@ int StringUtils::AlphaNumericCompare(const char *left, const char *right)
   }
   return 0; // files are the same
 }
+
+int StringUtils::TimeStringToInt(const CStdString &timeString)
+{
+  CStdStringArray secs;
+  StringUtils::SplitString(timeString, ":", secs);
+  int timeInSecs = 0;
+  for (unsigned int i = 0; i < secs.size(); i++)
+  {
+    timeInSecs *= 60;
+    timeInSecs += atoi(secs[i]);
+  }
+  return timeInSecs;
+}

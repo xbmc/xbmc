@@ -108,11 +108,9 @@ void CLastFMDirectory::AddListEntry(const char *name, const char *artist, const 
   CFileItem *pItem = new CFileItem;
 
   if (artist)
-    g_charsetConverter.utf8ToStringCharset((CStdString)artist + " - " + (CStdString)name, strName);
-    //strName = (CStdString)artist + " - " + (CStdString)name;
+    strName.Format("%s - %s", artist, name);
   else
-    g_charsetConverter.utf8ToStringCharset((CStdString)name, strName);
-    //strName = (CStdString)name;
+    strName = name;
 
   if (count)
   {
@@ -502,8 +500,7 @@ bool CLastFMDirectory::GetDirectory(const CStdString& strPath, CFileItemList &it
   case 6:
     m_objrequest = vecURLParts[4];
   case 5:
-    g_charsetConverter.utf8ToStringCharset(vecURLParts[3], m_objname);
-    //m_objname = vecURLParts[3];
+    m_objname = vecURLParts[3];
     m_encodedobjname = vecURLParts[3];
     CUtil::URLEncode(m_encodedobjname);
     CUtil::UrlDecode(m_objname);

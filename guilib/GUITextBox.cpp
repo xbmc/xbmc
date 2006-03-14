@@ -50,13 +50,13 @@ void CGUITextBox::Render()
         CStdString strLabel2 = item.GetLabel2();
 
         CStdStringW strText1Unicode;
-        g_charsetConverter.stringCharsetToFontCharset(strLabel1, strText1Unicode);
+        g_charsetConverter.utf8ToUTF16(strLabel1, strText1Unicode);
 
         DWORD dMaxWidth = m_dwWidth + 16;
         if (strLabel2.size())
         {
           CStdStringW strText2Unicode;
-          g_charsetConverter.stringCharsetToFontCharset(strLabel2, strText2Unicode);
+          g_charsetConverter.utf8ToUTF16(strLabel2, strText2Unicode);
           float fTextWidth, fTextHeight;
           m_label.font->GetTextExtent( strText2Unicode.c_str(), &fTextWidth, &fTextHeight);
           dMaxWidth -= (DWORD)(fTextWidth);
@@ -244,7 +244,7 @@ void CGUITextBox::OnPageDown()
     m_iOffset = (m_upDown.GetValue() - 1) * m_iItemsPerPage;
   }
 }
-void CGUITextBox::SetText(const wstring &strText)
+void CGUITextBox::SetText(const string &strText)
 {
   m_vecItems.erase(m_vecItems.begin(), m_vecItems.end());
   // start wordwrapping

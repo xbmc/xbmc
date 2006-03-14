@@ -58,7 +58,7 @@ SHNCodec::SHNCodec()
   m_BitsPerSample = 0;
   m_TotalTime = 0;
   m_Bitrate = 0;
-  m_CodecName = L"SHN";
+  m_CodecName = "SHN";
 
   m_handle = NULL;
 }

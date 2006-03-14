@@ -75,7 +75,7 @@ namespace PYXBMC
 	 * allocate a new listitem. Used for c++ and not the python user
 	 * returns a new reference
 	 */
-	ListItem* ListItem_FromString(wstring strLabel)
+	ListItem* ListItem_FromString(string strLabel)
 	{
 		ListItem* self = (ListItem*)ListItem_Type.tp_alloc(&ListItem_Type, 0);
 		if (!self) return NULL;

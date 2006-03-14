@@ -8,7 +8,7 @@ WAVPackCodec::WAVPackCodec()
   m_Channels = 0;
   m_BitsPerSample = 0;
   m_Bitrate = 0;
-  m_CodecName = L"WAVPack";
+  m_CodecName = "WAVPack";
 
   m_Handle=NULL;
 

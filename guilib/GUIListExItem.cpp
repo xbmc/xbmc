@@ -109,7 +109,7 @@ void CGUIListExItem::OnPaint(CGUIItem::RenderContext* pContext)
       GetDisplayText(strDisplayText);
 
       CStdStringW strUnicode;
-      g_charsetConverter.stringCharsetToFontCharset(strDisplayText, strUnicode);
+      g_charsetConverter.utf8ToUTF16(strDisplayText, strUnicode);
 
       float fPosX = (float)iPosX + pDC->m_pButton->GetLabelInfo().offsetX;
       float fPosY = (float)iPosY + pDC->m_pButton->GetLabelInfo().offsetY;

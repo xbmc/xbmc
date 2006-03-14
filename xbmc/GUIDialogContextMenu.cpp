@@ -67,7 +67,7 @@ int CGUIDialogContextMenu::AddButton(int iLabel)
   return AddButton(g_localizeStrings.Get(iLabel));
 }
 
-int CGUIDialogContextMenu::AddButton(const CStdStringW &strLabel)
+int CGUIDialogContextMenu::AddButton(const CStdString &strLabel)
 { // add a button to our control
   CGUIButtonControl *pButtonTemplate = (CGUIButtonControl *)GetControl(BUTTON_TEMPLATE);
   if (!pButtonTemplate) return 0;
@@ -80,7 +80,7 @@ int CGUIDialogContextMenu::AddButton(const CStdStringW &strLabel)
   pButton->SetPosition(pButtonTemplate->GetXPosition(), (m_iNumButtons - 1)*(pButtonTemplate->GetHeight() + SPACE_BETWEEN_BUTTONS));
   pButton->SetVisible(true);
   pButton->SetNavigation(dwID - 1, dwID + 1, dwID, dwID);
-  pButton->SetText(strLabel);
+  pButton->SetLabel(strLabel);
   Add(pButton);
   // and update the size of our menu
   CGUIControl *pControl = (CGUIControl *)GetControl(BACKGROUND_IMAGE);

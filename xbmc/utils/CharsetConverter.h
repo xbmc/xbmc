@@ -15,6 +15,8 @@ public:
 
   void clear();
 
+  void utf8ToUTF16(const CStdStringA& utf8String, CStdStringW &utf16String);
+
   void stringCharsetToFontCharset(const CStdStringA& strSource, CStdStringW& strDest);
 
   void subtitleCharsetToFontCharset(const CStdStringA& strSource, CStdStringW& strDest);
@@ -25,7 +27,7 @@ public:
 
   void ucs2CharsetToStringCharset(const CStdStringW& strSource, CStdStringA& strDest, bool swap = false);
 
-  void UTF16toUTF8(const CStdStringW& strSource, CStdStringA &strDest);
+  void utf16toUTF8(const CStdStringW& strSource, CStdStringA &strDest);
 
   void utf32ToStringCharset(const unsigned long* strSource, CStdStringA& strDest);
 
@@ -50,6 +52,7 @@ private:
   iconv_t m_iconvUcs2CharsetToStringCharset;
   iconv_t m_iconvUtf32ToStringCharset;
   iconv_t m_iconvUtf16toUtf8;
+  iconv_t m_iconvUtf8toUtf16;
 
   FriBidiCharSet m_stringFribidiCharset;
 

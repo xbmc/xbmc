@@ -197,7 +197,7 @@ PyDoc_STRVAR(addItem__doc__,
 	PyObject* ControlList_AddItem(ControlList *self, PyObject *args)
 	{
 		PyObject *pObject;
-		wstring strText;
+		string strText;
 		
 		ListItem* pListItem = NULL;
 

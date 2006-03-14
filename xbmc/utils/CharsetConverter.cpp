@@ -133,6 +133,7 @@ void CCharsetConverter::reset(void)
   m_iconvSubtitleCharsetToFontCharset = (iconv_t) - 1;
   m_iconvUtf16toUtf8 = (iconv_t) - 1;
   m_iconvUtf32ToStringCharset = (iconv_t) - 1;
+  m_iconvUtf8toUtf16 = (iconv_t) - 1;
   m_stringFribidiCharset = FRIBIDI_CHARSET_NOT_FOUND;
 
   for (unsigned int i = 0; i < m_vecBidiCharsetNames.size(); i++)
@@ -141,6 +142,48 @@ void CCharsetConverter::reset(void)
     {
       m_stringFribidiCharset = m_vecBidiCharsets[i];
     }
+  }
+}
+
+void CCharsetConverter::utf8ToUTF16(const CStdStringA& utf8String, CStdStringW &utf16String)
+{
+  CStdStringA strFlipped;
+
+  const char* src;
+  size_t inBytes;
+
+  // If this is hebrew/arabic, flip the characters
+  if (m_stringFribidiCharset != FRIBIDI_CHARSET_NOT_FOUND)
+  {
+    logicalToVisualBiDi(utf8String, strFlipped, m_stringFribidiCharset);
+    src = strFlipped.c_str();
+    inBytes = strFlipped.length() + 1;
+  }
+  else
+  {
+    src = utf8String.c_str();
+    inBytes = utf8String.length() + 1;
+  }
+
+  if (m_iconvUtf8toUtf16 == (iconv_t) - 1)
+  {
+    m_iconvUtf8toUtf16 = iconv_open("UTF-16LE", "UTF-8");
+  }
+
+  if (m_iconvUtf8toUtf16 != (iconv_t) - 1)
+  {
+    char *dst = new char[inBytes * 2];
+    size_t outBytes = inBytes * 2;
+    char *outdst = dst;
+    if (iconv(m_iconvUtf8toUtf16, &src, &inBytes, &outdst, &outBytes))
+    {
+      // For some reason it failed (maybe wrong charset?). Nothing to do but
+      // return the original..
+      utf16String = utf8String;
+    }
+    else
+      utf16String = (WCHAR *)dst;
+    delete[] dst;
   }
 }
 
@@ -310,7 +353,7 @@ void CCharsetConverter::stringCharsetToUtf8(const CStdStringA& strSource, CStdSt
   }
 }
 
-void CCharsetConverter::UTF16toUTF8(const CStdStringW& strSource, CStdStringA &strDest)
+void CCharsetConverter::utf16toUTF8(const CStdStringW& strSource, CStdStringA &strDest)
 {
   if (m_iconvUtf16toUtf8 == (iconv_t) - 1)
     m_iconvUtf16toUtf8 = iconv_open("UTF-8", "UTF-16LE");

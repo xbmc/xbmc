@@ -184,9 +184,10 @@ int CScrobbler::AddSong(const CMusicInfoTag& tag)
   strftime(ti, sizeof(ti), "%Y-%m-%d %H:%M:%S", today);
 
   CStdString a, b, t;
-  g_charsetConverter.stringCharsetToUtf8(tag.GetArtist(), a);
-  g_charsetConverter.stringCharsetToUtf8(tag.GetAlbum(), b);
-  g_charsetConverter.stringCharsetToUtf8(tag.GetTitle(), t);
+  // our tags are stored as UTF-8, so no conversion needed
+  a = tag.GetArtist();
+  b = tag.GetAlbum();
+  t = tag.GetTitle();
   CStdString i=ti;
   CStdString m=tag.GetMusicBrainzTrackID();
   CUtil::URLEncode(a);

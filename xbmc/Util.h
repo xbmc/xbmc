@@ -238,7 +238,6 @@ public:
   static void ReplaceExtension(const CStdString& strFile, const CStdString& strNewExtension, CStdString& strChangedFile);
   static void GetExtension(const CStdString& strFile, CStdString& strExtension);
   static void Lower(CStdString& strText);
-  static void Unicode2Ansi(const wstring& wstrText, CStdString& strName);
   static bool HasSlashAtEnd(const CStdString& strFile);
   static bool IsRemote(const CStdString& strFile);
   static bool IsOnDVD(const CStdString& strFile);
@@ -330,7 +329,6 @@ public:
   static char GetDirectorySeperator(const CStdString& strFile);
 
   static bool IsNaturalNumber(const CStdString& str);
-  static bool IsNaturalNumber(const CStdStringW& str);
   static bool IsUsingTTFSubtitles();
   static void SplitExecFunction(const CStdString &execString, CStdString &strFunction, CStdString &strParam);
   static int GetMatchingShare(const CStdString& strPath, VECSHARES& vecShares, bool& bIsBookmarkName);

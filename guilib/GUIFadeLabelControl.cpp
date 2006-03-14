@@ -23,7 +23,7 @@ void CGUIFadeLabelControl::SetInfo(const vector<int> &vecInfo)
   m_vecInfo = vecInfo;
 }
 
-void CGUIFadeLabelControl::SetLabel(const vector<wstring> &vecLabel)
+void CGUIFadeLabelControl::SetLabel(const vector<string> &vecLabel)
 {
   m_vecLabels = vecLabel;
 }
@@ -44,13 +44,12 @@ void CGUIFadeLabelControl::Render()
 		m_iCurrentLabel = 0;
 	}
 
-	wstring tempLabel = L"";
+  CStdString strRenderLabel;
 	int iLabelCount = (int)m_vecLabels.size();
 	if (iLabelCount > 0)
 	{
-		tempLabel = m_vecLabels[m_iCurrentLabel];
+		strRenderLabel = m_vecLabels[m_iCurrentLabel];
 	}
-	CStdString strRenderLabel = tempLabel;
 
 	if (m_vecInfo.size())
 	{ 
@@ -68,7 +67,7 @@ void CGUIFadeLabelControl::Render()
 	}
 
   CStdStringW strLabelUnicode;
-  g_charsetConverter.stringCharsetToFontCharset(strRenderLabel, strLabelUnicode);
+  g_charsetConverter.utf8ToUTF16(strRenderLabel, strLabelUnicode);
 
   if (iLabelCount == 1)
   {
@@ -121,8 +120,7 @@ bool CGUIFadeLabelControl::OnMessage(CGUIMessage& message)
   {
     if (message.GetMessage() == GUI_MSG_LABEL_ADD)
     {
-      wstring strLabel = message.GetLabel();
-      m_vecLabels.push_back(strLabel);
+      m_vecLabels.push_back(message.GetLabel());
     }
     if (message.GetMessage() == GUI_MSG_LABEL_RESET)
     {

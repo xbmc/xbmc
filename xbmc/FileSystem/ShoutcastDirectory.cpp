@@ -67,8 +67,8 @@ bool CShoutcastDirectory::DownloadPlaylists(CFileItemList &items)
     dlgProgress->ShowProgressBar(false);
     dlgProgress->SetHeading(260);
     dlgProgress->SetLine(0, 14004);
-    dlgProgress->SetLine(1, L"");
-    dlgProgress->SetLine(2, L"");
+    dlgProgress->SetLine(1, "");
+    dlgProgress->SetLine(2, "");
     dlgProgress->StartModal(m_gWindowManager.GetActiveWindow());
     dlgProgress->Progress();
   }

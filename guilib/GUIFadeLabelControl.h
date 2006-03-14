@@ -26,13 +26,13 @@ public:
   const CLabelInfo& GetLabelInfo() const { return m_label; };
 
   void SetInfo(const vector<int> &vecInfo);
-  void SetLabel(const vector<wstring> &vecLabel);
+  void SetLabel(const vector<string> &vecLabel);
   const vector<int> &GetInfo() const { return m_vecInfo; };
-  const vector<wstring> &GetLabel() const { return m_vecLabels; };
+  const vector<string> &GetLabel() const { return m_vecLabels; };
 
 protected:
   void RenderText(float fPosX, float fPosY, float fMaxWidth, DWORD dwTextColor, WCHAR* wszText, bool bScroll );
-  vector<wstring> m_vecLabels;
+  vector<string> m_vecLabels;
 
   CLabelInfo m_label;
   int m_iCurrentLabel;

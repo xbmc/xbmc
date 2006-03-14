@@ -167,9 +167,7 @@ bool CGUIWindowVideoInfo::OnMessage(CGUIMessage& message)
         int iItem = 0;
         CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), iControl, 0, 0, NULL);
         g_graphicsContext.SendMessage(msg);
-        wstring wstrHD = msg.GetLabel();
-        CStdString strItem;
-        CUtil::Unicode2Ansi(wstrHD, strItem);
+        CStdString strItem = msg.GetLabel();
         if (strItem != "HD" && strItem != "share")
         {
           long lMovieId;
@@ -396,8 +394,8 @@ void CGUIWindowVideoInfo::OnSearch(CStdString& strSearch)
   {
     m_dlgProgress->SetHeading(194);
     m_dlgProgress->SetLine(0, strSearch);
-    m_dlgProgress->SetLine(1, L"");
-    m_dlgProgress->SetLine(2, L"");
+    m_dlgProgress->SetLine(1, "");
+    m_dlgProgress->SetLine(2, "");
     m_dlgProgress->StartModal(GetID());
     m_dlgProgress->Progress();
   }

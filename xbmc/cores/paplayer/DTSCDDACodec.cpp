@@ -4,7 +4,7 @@
 
 DTSCDDACodec::DTSCDDACodec() : DTSCodec()
 {
-  m_CodecName = L"DTS CDDA";
+  m_CodecName = "DTS CDDA";
 }
 
 DTSCDDACodec::~DTSCDDACodec()

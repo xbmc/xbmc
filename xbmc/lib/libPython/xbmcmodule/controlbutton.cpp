@@ -119,7 +119,7 @@ namespace PYXBMC
     CGUIButtonControl* pGuiButtonControl =
       (CGUIButtonControl*)pControl->pGUIControl;
 
-    pGuiButtonControl->SetText(pControl->strText);
+    pGuiButtonControl->SetLabel(pControl->strText);
 
     return pControl->pGUIControl;
   }

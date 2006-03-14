@@ -4,7 +4,7 @@
 
 AC3CDDACodec::AC3CDDACodec() : AC3Codec()
 {
-  m_CodecName = L"AC3 CDDA";
+  m_CodecName = "AC3 CDDA";
 }
 
 AC3CDDACodec::~AC3CDDACodec()

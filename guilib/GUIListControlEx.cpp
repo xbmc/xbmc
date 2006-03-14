@@ -24,7 +24,7 @@ CGUIListControlEx::CGUIListControlEx(DWORD dwParentID, DWORD dwControlId, int iP
   m_label2 = labelInfo2;
   m_iSelect = CONTROL_LIST;
   m_iCursorY = 0;
-  m_strSuffix = L"|";
+  m_strSuffix = "|";
   m_iImageWidth = 16;
   m_iImageHeight = 16;
   m_iSpaceBetweenItems = 4;
@@ -434,10 +434,9 @@ void CGUIListControlEx::OnDown()
   }
 }
 
-void CGUIListControlEx::SetScrollySuffix(const CStdString& wstrSuffix)
+void CGUIListControlEx::SetScrollySuffix(const CStdString& strSuffix)
 {
-  CStdStringW suffix = wstrSuffix;
-  m_strSuffix = suffix;
+  m_strSuffix = strSuffix;
 }
 
 
