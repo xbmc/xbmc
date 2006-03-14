@@ -34,7 +34,7 @@ bool CProgramDatabase::CreateTables()
     CLog::Log(LOGINFO, "create path table");
     m_pDS->exec("CREATE TABLE path ( idPath integer primary key, strPath text)\n");
     CLog::Log(LOGINFO, "create files table");
-    m_pDS->exec("CREATE TABLE files ( idFile integer primary key, idPath integer, strFilename text, titleId text, xbedescription text, iTimesPlayed integer, lastAccessed integer, iRegion integer)\n");
+    m_pDS->exec("CREATE TABLE files ( idFile integer primary key, idPath integer, strFilename text, titleId integer, xbedescription text, iTimesPlayed integer, lastAccessed integer, iRegion integer)\n");
     CLog::Log(LOGINFO, "create trainers table");
     m_pDS->exec("CREATE TABLE trainers (idKey integer auto_increment primary key, idCRC integer, idTitle integer, strTrainerPath text, strSettings text, Active integer)\n");
     CLog::Log(LOGINFO, "create bookmark index");
@@ -811,7 +811,7 @@ long CProgramDatabase::AddProgram(const CStdString& strFilenameAndPath, DWORD ti
 
     long lPathId = GetPath(strPath);
 
-    int iRegion = 0;
+    int iRegion = -1;
     if (g_guiSettings.GetBool("MyPrograms.GameAutoRegion"))
     {
       CXBE xbe;
