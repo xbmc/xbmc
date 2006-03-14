@@ -258,7 +258,7 @@ void CGUIWindowSettingsScreenCalibration::ResetControls()
 
 void CGUIWindowSettingsScreenCalibration::UpdateFromControl(int iControl)
 {
-  CStdStringW strStatus;
+  CStdString strStatus;
   if (iControl == CONTROL_PIXEL_RATIO)
   {
     CGUIResizeControl *pControl = (CGUIResizeControl*)GetControl(CONTROL_PIXEL_RATIO);
@@ -270,7 +270,7 @@ void CGUIWindowSettingsScreenCalibration::UpdateFromControl(int iControl)
       // recenter our control...
       pControl->SetPosition((g_settings.m_ResInfo[m_Res[m_iCurRes]].iWidth - pControl->GetWidth()) / 2,
                             (g_settings.m_ResInfo[m_Res[m_iCurRes]].iHeight - pControl->GetHeight()) / 2);
-      strStatus.Format(L"%s (%5.3f)", g_localizeStrings.Get(275).c_str(), g_settings.m_ResInfo[m_Res[m_iCurRes]].fPixelRatio);
+      strStatus.Format("%s (%5.3f)", g_localizeStrings.Get(275).c_str(), g_settings.m_ResInfo[m_Res[m_iCurRes]].fPixelRatio);
       SET_CONTROL_LABEL(CONTROL_LABEL_ROW2, 278);
     }
   }
@@ -285,7 +285,7 @@ void CGUIWindowSettingsScreenCalibration::UpdateFromControl(int iControl)
         {
           g_settings.m_ResInfo[m_Res[m_iCurRes]].Overscan.left = pControl->GetXLocation();
           g_settings.m_ResInfo[m_Res[m_iCurRes]].Overscan.top = pControl->GetYLocation();
-          strStatus.Format(L"%s (%i,%i)", g_localizeStrings.Get(272).c_str(), pControl->GetXLocation(), pControl->GetYLocation());
+          strStatus.Format("%s (%i,%i)", g_localizeStrings.Get(272).c_str(), pControl->GetXLocation(), pControl->GetYLocation());
           SET_CONTROL_LABEL(CONTROL_LABEL_ROW2, 276);
         }
         break;
@@ -296,7 +296,7 @@ void CGUIWindowSettingsScreenCalibration::UpdateFromControl(int iControl)
           g_settings.m_ResInfo[m_Res[m_iCurRes]].Overscan.bottom = pControl->GetYLocation();
           int iXOff1 = g_settings.m_ResInfo[m_Res[m_iCurRes]].iWidth - pControl->GetXLocation();
           int iYOff1 = g_settings.m_ResInfo[m_Res[m_iCurRes]].iHeight - pControl->GetYLocation();
-          strStatus.Format(L"%s (%i,%i)", g_localizeStrings.Get(273).c_str(), iXOff1, iYOff1);
+          strStatus.Format("%s (%i,%i)", g_localizeStrings.Get(273).c_str(), iXOff1, iYOff1);
           SET_CONTROL_LABEL(CONTROL_LABEL_ROW2, 276);
         }
         break;
@@ -304,7 +304,7 @@ void CGUIWindowSettingsScreenCalibration::UpdateFromControl(int iControl)
       case CONTROL_SUBTITLES:
         {
           g_settings.m_ResInfo[m_Res[m_iCurRes]].iSubtitles = pControl->GetYLocation();
-          strStatus.Format(L"%s (%i)", g_localizeStrings.Get(274).c_str(), pControl->GetYLocation());
+          strStatus.Format("%s (%i)", g_localizeStrings.Get(274).c_str(), pControl->GetYLocation());
           SET_CONTROL_LABEL(CONTROL_LABEL_ROW2, 277);
         }
         break;
@@ -312,7 +312,7 @@ void CGUIWindowSettingsScreenCalibration::UpdateFromControl(int iControl)
       case CONTROL_OSD:
         {
           g_settings.m_ResInfo[m_Res[m_iCurRes]].iOSDYOffset = pControl->GetYLocation() - g_settings.m_ResInfo[m_Res[m_iCurRes]].iHeight;
-          strStatus.Format(L"%s (%i, Offset=%i)", g_localizeStrings.Get(479).c_str(), pControl->GetYLocation(), g_settings.m_ResInfo[m_Res[m_iCurRes]].iOSDYOffset);
+          strStatus.Format("%s (%i, Offset=%i)", g_localizeStrings.Get(479).c_str(), pControl->GetYLocation(), g_settings.m_ResInfo[m_Res[m_iCurRes]].iOSDYOffset);
           SET_CONTROL_LABEL(CONTROL_LABEL_ROW2, 468);
           CGUIWindow *pOSD = m_gWindowManager.GetWindow(WINDOW_OSD);
           if (pOSD) pOSD->SetPosition(0, g_settings.m_ResInfo[m_Res[m_iCurRes]].iOSDYOffset);
@@ -322,8 +322,8 @@ void CGUIWindowSettingsScreenCalibration::UpdateFromControl(int iControl)
     }
   }
   // set the label control correctly
-  CStdStringW strText;
-  strText.Format(L"%S | %s", g_settings.m_ResInfo[m_Res[m_iCurRes]].strMode, strStatus.c_str());
+  CStdString strText;
+  strText.Format("%s | %s", g_settings.m_ResInfo[m_Res[m_iCurRes]].strMode, strStatus.c_str());
   SET_CONTROL_LABEL(CONTROL_LABEL_ROW1, strText);
 }
 

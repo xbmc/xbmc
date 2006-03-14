@@ -75,11 +75,11 @@ bool CProgramDatabase::UpdateOldVersion(float fVersion)
       if (dialog)
       {
         dialog->SetHeading("Updating old database version");
-        dialog->SetLine(0, L"");
-        dialog->SetLine(1, L"");
-        dialog->SetLine(2, L"");
+        dialog->SetLine(0, "");
+        dialog->SetLine(1, "");
+        dialog->SetLine(2, "");
         dialog->StartModal(m_gWindowManager.GetActiveWindow());
-        dialog->SetLine(1, L"Adding table entries");
+        dialog->SetLine(1, "Adding table entries");
         dialog->Progress();
       }
       BeginTransaction();
@@ -113,9 +113,9 @@ bool CProgramDatabase::UpdateOldVersion(float fVersion)
       if (dialog)
       {
         dialog->SetHeading("Updating old database version");
-        dialog->SetLine(0, L"");
-        dialog->SetLine(1, L"Adding table entries");
-        dialog->SetLine(2, L"");
+        dialog->SetLine(0, "");
+        dialog->SetLine(1, "Adding table entries");
+        dialog->SetLine(2, "");;
         dialog->StartModal(m_gWindowManager.GetActiveWindow());
         dialog->Progress();
       }

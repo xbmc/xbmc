@@ -35,10 +35,8 @@ public:
   virtual void SetPosition(int iPosX, int iPosY);
   virtual void SetAlpha(DWORD dwAlpha);
   virtual void SetColourDiffuse(D3DCOLOR colour);
-  void SetText(const CStdString &aLabel);
-  void SetText(const wstring & aLabel);
-  void SetText2(const CStdString &aLabel2);
-  void SetText2(const wstring & aLabel2);
+  void SetLabel(const string & aLabel);
+  void SetLabel2(const string & aLabel2);
   void SetHyperLink(long dwWindowID);
   void SetClickActions(const CStdStringArray& clickActions) { m_clickActions = clickActions; };
   const CStdStringArray &GetClickActions() const { return m_clickActions; };
@@ -47,13 +45,13 @@ public:
   const CStdString& GetTextureFocusName() const { return m_imgFocus.GetFileName(); };
   const CStdString& GetTextureNoFocusName() const { return m_imgNoFocus.GetFileName(); };
   const CLabelInfo& GetLabelInfo() const { return m_label; };
-  const wstring GetLabel() const { return m_strLabel; };
+  const string& GetLabel() const { return m_strLabel; };
   DWORD GetHyperLink() const { return m_lHyperLinkWindowID;};
   void SetTabButton(bool bIsTabButton = TRUE) { m_bTabButton = bIsTabButton; };
   void Flicker(bool bFlicker = TRUE);
   virtual void Update();
   virtual CStdString GetDescription() const;
-  void PythonSetLabel(const CStdString &strFont, const wstring &strText, DWORD dwTextColor);
+  void PythonSetLabel(const CStdString &strFont, const string &strText, DWORD dwTextColor);
   void PythonSetDisabledColor(DWORD dwDisabledColor);
 
   void RAMSetTextColor(DWORD dwTextColor);
@@ -68,8 +66,8 @@ protected:
   DWORD m_dwFlickerCounter;
   DWORD m_dwFrameCounter;
 
-  wstring m_strLabel;
-  wstring m_strLabel2;
+  string m_strLabel;
+  string m_strLabel2;
   CLabelInfo m_label;
 
   long m_lHyperLinkWindowID;

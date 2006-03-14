@@ -24,7 +24,7 @@ CGUIListControl::CGUIListControl(DWORD dwParentID, DWORD dwControlId, int iPosX,
   m_iItemHeight = 10;
   m_iSelect = CONTROL_LIST;
   m_iCursorY = 0;
-  m_strSuffix = L"|";
+  m_strSuffix = "|";
   m_iSpinPosX = iSpinX;
   m_iSpinPosY = iSpinY;
   m_iImageWidth = 16;
@@ -150,7 +150,7 @@ void CGUIListControl::Render()
         if ( strLabel2.size() > 0 && m_label2.font)
         {
           CStdStringW labelUnicode2;
-          g_charsetConverter.stringCharsetToFontCharset(strLabel2, labelUnicode2);
+          g_charsetConverter.utf8ToUTF16(strLabel2, labelUnicode2);
           if ( m_label.offsetY == m_label2.offsetY )
           {
             float fTextHeight = 0;
@@ -161,7 +161,7 @@ void CGUIListControl::Render()
         }
 
         CStdStringW labelUnicode;
-        g_charsetConverter.stringCharsetToFontCharset(pItem->GetLabel(), labelUnicode);
+        g_charsetConverter.utf8ToUTF16(pItem->GetLabel(), labelUnicode);
         float fPosY = (float)iPosY + m_label.offsetY;
         if (m_label.align & XBFONT_CENTER_Y)
         {
@@ -194,7 +194,7 @@ void CGUIListControl::Render()
         if (strLabel2.size() > 0 && m_label2.font)
         {
           CStdStringW labelUnicode2;
-          g_charsetConverter.stringCharsetToFontCharset(strLabel2, labelUnicode2);
+          g_charsetConverter.utf8ToUTF16(strLabel2, labelUnicode2);
           DWORD dwColor = m_label2.textColor;
           if (pItem->IsSelected())
           {
@@ -584,10 +584,9 @@ void CGUIListControl::OnDown()
   }
 }
 
-void CGUIListControl::SetScrollySuffix(const CStdString& wstrSuffix)
+void CGUIListControl::SetScrollySuffix(const CStdString& strSuffix)
 {
-  CStdStringW suffix = wstrSuffix;
-  m_strSuffix = suffix;
+  m_strSuffix = strSuffix;
 }
 
 // scrolls the said amount

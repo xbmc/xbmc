@@ -86,9 +86,9 @@ void CGUIDialogNetworkSetup::OnInitWindow()
     return;
   m_protocol = NET_PROTOCOL_SMB;
   pSpin->Clear();
-  pSpin->AddLabel(CStdStringW("Windows Network (SMB)"), NET_PROTOCOL_SMB);
-  pSpin->AddLabel(CStdStringW("XBMSP Server"), NET_PROTOCOL_XBMSP);
-  pSpin->AddLabel(CStdStringW("FTP Server"), NET_PROTOCOL_FTP);
+  pSpin->AddLabel(CStdString("Windows Network (SMB)"), NET_PROTOCOL_SMB);
+  pSpin->AddLabel(CStdString("XBMSP Server"), NET_PROTOCOL_XBMSP);
+  pSpin->AddLabel(CStdString("FTP Server"), NET_PROTOCOL_FTP);
   pSpin->SetValue(m_protocol);
   OnProtocolChange();
 }
@@ -202,7 +202,7 @@ void CGUIDialogNetworkSetup::UpdateButtons()
   CGUIButtonControl *server = (CGUIButtonControl *)GetControl(CONTROL_SERVER_ADDRESS);
   if (server)
   {
-    server->SetText2(m_server);
+    server->SetLabel2(m_server);
   }
   // server browse should be disabled if we are in FTP
   if (m_server.IsEmpty() && m_protocol == NET_PROTOCOL_FTP)
@@ -217,20 +217,20 @@ void CGUIDialogNetworkSetup::UpdateButtons()
   CGUIButtonControl *path = (CGUIButtonControl *)GetControl(CONTROL_REMOTE_PATH);
   if (path)
   {
-    path->SetText2(m_path);
+    path->SetLabel2(m_path);
   }
   // port
   CGUIButtonControl *port = (CGUIButtonControl *)GetControl(CONTROL_PORT_NUMBER);
   if (port)
   {
     port->SetEnabled(m_protocol == NET_PROTOCOL_XBMSP || m_protocol == NET_PROTOCOL_FTP);
-    port->SetText2(m_port);
+    port->SetLabel2(m_port);
   }
   // username
   CGUIButtonControl *username = (CGUIButtonControl *)GetControl(CONTROL_USERNAME);
   if (username)
   {
-    username->SetText2(m_username);
+    username->SetLabel2(m_username);
   }
   // password
   CGUIButtonControl *password = (CGUIButtonControl *)GetControl(CONTROL_PASSWORD);
@@ -238,7 +238,7 @@ void CGUIDialogNetworkSetup::UpdateButtons()
   {
     CStdString asterix;
     asterix.append(m_password.size(), '*');
-    password->SetText2(asterix);
+    password->SetLabel2(asterix);
   }
 }
 

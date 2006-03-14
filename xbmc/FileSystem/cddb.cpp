@@ -692,15 +692,12 @@ void Xcddb::addTitle(const char *buffer)
     strcpy(title, value);
   }
 
-  CStdString strArtist;
-  g_charsetConverter.utf8ToStringCharset(CStdString(artist), strArtist);  // convert UTF-8 to charset string
+  // we use UTF-8 throughout
+  CStdString strArtist = artist;
   m_mapArtists[trk_nr] = strArtist;
 
-  CStdString strTitle;
-  g_charsetConverter.utf8ToStringCharset(CStdString(title), strTitle);  // convert UTF-8 to charset string
+  CStdString strTitle = title;
   m_mapTitles[trk_nr] = strTitle;
-  // //writeLog(artist);
-  // //writeLog(title);
 }
 
 //-------------------------------------------------------------------------------------------------------------------
@@ -796,29 +793,25 @@ void Xcddb::parseData(const char *buffer)
         if (found)
         {
           CStdString strLine = (char*)(line + 7);
-          CStdString strDisk_artist = strLine.Left(i - 7);
-          CStdString strDisk_title = (char*)(line + i + 3);
-          g_charsetConverter.utf8ToStringCharset(strDisk_artist, m_strDisk_artist);  // convert UTF-8 to charset string
-          g_charsetConverter.utf8ToStringCharset(strDisk_title, m_strDisk_title);  // convert UTF-8 to charset string
+          m_strDisk_artist = strLine.Left(i - 7);
+          m_strDisk_title = (char*)(line + i + 3);
         }
         else
         {
-          CStdString strDisk_title;
-          strDisk_title = (char*)(line + 7);
-          g_charsetConverter.utf8ToStringCharset(strDisk_title, m_strDisk_title);  // convert UTF-8 to charset string
+          m_strDisk_title = (char*)(line + 7);
         }
       }
       else if (0 == strncmp(line, "DYEAR", 5))
       {
         CStdString strYear = (char*)(line + 5);
         strYear.TrimLeft("= ");
-        g_charsetConverter.utf8ToStringCharset(strYear, m_strYear);  // convert UTF-8 to charset string
+        m_strYear = strYear;
       }
       else if (0 == strncmp(line, "DGENRE", 6))
       {
         CStdString strGenre = (char*)(line + 6);
         strGenre.TrimLeft("= ");
-        g_charsetConverter.utf8ToStringCharset(strGenre, m_strGenre);  // convert UTF-8 to charset string
+        m_strGenre = strGenre;
       }
       else if (0 == strncmp(line, "TTITLE", 6))
       {
@@ -837,7 +830,7 @@ void Xcddb::parseData(const char *buffer)
           {
             CStdString strYear;
             strYear = strExtd.Mid(iPos + 6, 4);
-            g_charsetConverter.utf8ToStringCharset(strYear, m_strYear);  // convert UTF-8 to charset string
+            m_strYear = strYear;
           }
         }
 
@@ -895,9 +888,7 @@ void Xcddb::addExtended(const char *buffer)
     return ;
   }
 
-  CStdString strValue;
-  g_charsetConverter.utf8ToStringCharset(value, strValue);  // convert UTF-8 to charset string
-  m_mapExtended_track[trk_nr] = strValue;
+  m_mapExtended_track[trk_nr] = value;
 }
 
 //-------------------------------------------------------------------------------------------------------------------

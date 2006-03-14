@@ -7,7 +7,7 @@ HANDLE g_hSpcHandle = NULL;
 
 SPCCodec::SPCCodec()
 {
-  m_CodecName = L"SPC";
+  m_CodecName = "SPC";
   m_szBuffer = NULL;
   m_pDSP = NULL;
   m_pSPC = NULL;

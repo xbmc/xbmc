@@ -53,7 +53,7 @@ public:
   const CLabelInfo& GetSpinLabelInfo() const { return m_upDown.GetLabelInfo();};
   int GetSpinX() const { return m_iSpinPosX;};
   int GetSpinY() const { return m_iSpinPosY;};
-  void SetText(const wstring &strText);
+  void SetText(const string &strText);
   virtual bool HitTest(int iPosX, int iPosY) const;
   virtual bool OnMouseOver();
   virtual bool OnMouseClick(DWORD dwButton);

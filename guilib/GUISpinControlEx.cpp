@@ -96,9 +96,7 @@ void CGUISpinControlEx::SetEnabled(bool bEnable)
 
 const CStdString CGUISpinControlEx::GetCurrentLabel() const
 {
-  CStdString strLabel;
-  CUtil::Unicode2Ansi(CGUISpinControl::GetLabel(), strLabel);
-  return strLabel;
+  return CGUISpinControl::GetLabel();
 }
 
 CStdString CGUISpinControlEx::GetDescription() const

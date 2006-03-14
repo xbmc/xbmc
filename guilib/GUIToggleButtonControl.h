@@ -31,8 +31,7 @@ public:
   virtual void SetHeight(int iHeight);
   virtual void SetAlpha(DWORD dwAlpha);
   virtual void SetColourDiffuse(D3DCOLOR colour);
-  void SetText(const wstring& strLabel);
-  void SetText(const CStdString& strLabel);
+  void SetLabel(const string& strLabel);
   const CStdString& GetTextureAltFocusName() const { return m_selectButton.GetTextureFocusName(); };
   const CStdString& GetTextureAltNoFocusName() const { return m_selectButton.GetTextureNoFocusName(); };
   int GetToggleSelect() const { return m_toggleSelect; };

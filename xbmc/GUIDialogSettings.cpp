@@ -262,7 +262,7 @@ void CGUIDialogSettings::AddSetting(SettingInfo &setting, int iPosX, int iPosY, 
   {
     pControl = new CGUIButtonControl(*m_pOriginalSettingsButton);
     if (!pControl) return ;
-    ((CGUIButtonControl *)pControl)->SetText(setting.name);
+    ((CGUIButtonControl *)pControl)->SetLabel(setting.name);
     pControl->SetPosition(iPosX, iPosY);
     pControl->SetWidth(iWidth);
   }
@@ -278,7 +278,7 @@ void CGUIDialogSettings::AddSetting(SettingInfo &setting, int iPosX, int iPosY, 
     if (!m_pOriginalRadioButton) return;
     pControl = new CGUIRadioButtonControl(*m_pOriginalRadioButton);
     if (!pControl) return ;
-    ((CGUIRadioButtonControl *)pControl)->SetText(setting.name);
+    ((CGUIRadioButtonControl *)pControl)->SetLabel(setting.name);
     pControl->SetPosition(iPosX, iPosY);
     pControl->SetWidth(iWidth);
     if (setting.data) pControl->SetSelected(*(bool *)setting.data == 1);

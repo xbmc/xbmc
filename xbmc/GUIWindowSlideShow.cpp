@@ -511,8 +511,9 @@ void CGUIWindowSlideShow::RenderErrorMessage()
   CGUIFont *pFont = ((CGUILabelControl *)GetControl(LABEL_ROW1))->GetLabelInfo().font;
   if (pFont)
   {
-    wstring wszText = g_localizeStrings.Get(747);
-    pFont->DrawText((float)g_graphicsContext.GetWidth() / 2, (float)g_graphicsContext.GetHeight() / 2, 0xffffffff, 0, wszText.c_str(), XBFONT_CENTER_X | XBFONT_CENTER_Y);
+    CStdStringW utf16ErrorMessage;
+    g_charsetConverter.utf8ToUTF16(g_localizeStrings.Get(747), utf16ErrorMessage);
+    pFont->DrawText((float)g_graphicsContext.GetWidth() / 2, (float)g_graphicsContext.GetHeight() / 2, 0xffffffff, 0, utf16ErrorMessage.c_str(), XBFONT_CENTER_X | XBFONT_CENTER_Y);
   }
 }
 

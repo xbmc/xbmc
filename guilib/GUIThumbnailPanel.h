@@ -43,7 +43,7 @@ public:
   virtual void SetWidth(int iWidth);
   virtual void SetHeight(int iHeight);
   virtual void SetPulseOnSelect(bool pulse);
-  void SetScrollySuffix(CStdString wstrSuffix);
+  void SetScrollySuffix(const CStdString &strSuffix);
   void SetThumbAlign(int align);
   int GetThumbAlign();
   void SetThumbDimensions(int iXpos, int iYpos, int iWidth, int iHeight);
@@ -87,7 +87,7 @@ public:
   int GetItemWidthLow() const { return m_iItemWidthLow;};
   int GetItemHeightLow() const { return m_iItemHeightLow;};
   void ShowBigIcons(bool bOnOff);
-  const wstring& GetSuffix() const { return m_strSuffix;};
+  const string& GetSuffix() const { return m_strSuffix;};
   void SetThumbDimensionsLow(int iXpos, int iYpos, int iWidth, int iHeight) { m_iThumbXPosLow = iXpos;m_iThumbYPosLow = iYpos;m_iThumbWidthLow = iWidth;m_iThumbHeightLow = iHeight;};
   void SetThumbDimensionsBig(int iXpos, int iYpos, int iWidth, int iHeight) { m_iThumbXPosBig = iXpos;m_iThumbYPosBig = iYpos;m_iThumbWidthBig = iWidth;m_iThumbHeightBig = iHeight;};
   virtual bool OnMouseOver();
@@ -144,7 +144,7 @@ protected:
   bool m_bScrollUp;
   bool m_bScrollDown;
   int m_iScrollCounter;
-  wstring m_strSuffix;
+  string m_strSuffix;
 
   int m_iLastItem;
   int m_iTextureWidth;

@@ -143,7 +143,7 @@ void AC3Codec::convert2s16_multi (sample_t * _f, int16_t * s16, int flags)
 
 AC3Codec::AC3Codec()
 {
-  m_CodecName         = L"AC3";
+  m_CodecName         = "AC3";
   m_IsInitialized     = false;
   m_pState            = NULL;
   m_iSourceChannels   = 0;

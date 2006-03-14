@@ -86,12 +86,6 @@ CStdString CUtil::GetTitleFromPath(const CStdString& strFileNameAndPath)
   // use above to get the filename
   CStdString strFilename = GetFileName(strFileNameAndPath);
   // now remove the extension if needed
-  if (IsSmb(strFileNameAndPath))
-  {
-    CStdString strTempFilename;
-    g_charsetConverter.utf8ToStringCharset(strFilename, strTempFilename);
-    strFilename = strTempFilename;
-  }
   if (g_guiSettings.GetBool("FileLists.HideExtensions"))
   {
     RemoveExtension(strFilename);
@@ -1262,16 +1256,6 @@ void CUtil::Lower(CStdString& strText)
     szText[i] = tolower(szText[i]);
   strText = szText;
 };
-
-void CUtil::Unicode2Ansi(const wstring& wstrText, CStdString& strName)
-{
-  strName = "";
-  char *pstr = (char*)wstrText.c_str();
-  for (int i = 0; i < (int)wstrText.size();++i )
-  {
-    strName += pstr[i * 2];
-  }
-}
 
 bool CUtil::HasSlashAtEnd(const CStdString& strFile)
 {
@@ -3283,13 +3267,7 @@ void CUtil::ConvertFileItemToPlayListItem(const CFileItem *pItem, CPlayList::CPl
   playlistitem.SetThumbnailImage(pItem->GetThumbnailImage());
 }
 
-
 bool CUtil::IsNaturalNumber(const CStdString& str)
-{
-  return IsNaturalNumber((CStdStringW)str);
-}
-
-bool CUtil::IsNaturalNumber(const CStdStringW& str)
 {
   if (0 == (int)str.size())
     return false;

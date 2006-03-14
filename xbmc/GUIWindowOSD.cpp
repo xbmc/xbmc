@@ -466,7 +466,7 @@ void CGUIWindowOSD::Get_TimeInfo()
 
   // Get the estimated end time
   SYSTEMTIME time;
-  CStdStringW etaTime;
+  CStdString etaTime;
   GetLocalTime(&time);
   unsigned int tmpvar = time.wHour * 3600 + time.wMinute * 60 + (unsigned int)g_application.GetTotalTime() - (unsigned int)g_application.GetTime();
   if (tmpvar != 0)
@@ -474,7 +474,7 @@ void CGUIWindowOSD::Get_TimeInfo()
     int iHour = tmpvar / 3600;
     int iMin = (tmpvar - iHour * 3600) / 60;
     if (iHour >= 24) iHour -= 24;
-    etaTime.Format(L"%02d:%02d", iHour, iMin);
+    etaTime.Format("%02d:%02d", iHour, iMin);
   }
   SET_CONTROL_LABEL(OSD_ESTENDTIME, etaTime);
 

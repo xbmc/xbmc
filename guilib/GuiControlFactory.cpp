@@ -29,6 +29,7 @@
 #include "GUISettingsSliderControl.h"
 #include "GUIMultiImage.h"
 #include "../xbmc/utils/GUIInfoManager.h"
+#include "../xbmc/utils/CharsetConverter.h"
 #include "../xbmc/util.h"
 #include "../xbmc/ButtonTranslator.h"
 #include "XMLUtils.h"
@@ -270,8 +271,8 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
   bool bVisible = true;
   CStdString strTmp;
   vector<int> vecInfo;
-  vector<wstring> vecLabel;
-  wstring strLabel;
+  vector<string> vecLabel;
+  string strLabel;
   int iUrlSet=0;
   CStdString strTextureFocus, strTextureNoFocus;
   CStdString strTextureAltFocus, strTextureAltNoFocus;
@@ -924,14 +925,15 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
               strLabel = g_localizeStrings.Get(dwLabelID);
             }
             else
-            {
-              CStdStringW label(strTmp);
-              strLabel = label;
+            { // TODO: UTF-8: What if the xml is in UTF-8 already?
+              CStdString utf8Label;
+              g_charsetConverter.stringCharsetToUtf8(strTmp, utf8Label);
+              strLabel = utf8Label;
             }
             vecLabel.push_back(strLabel);
           }
           else
-            strLabel = L"";
+            strLabel = "";
         }
       }
     }
@@ -1193,8 +1195,8 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     int labelNumber = 0;
     if (XMLUtils::GetInt(pControlNode, "number", labelNumber))
     {
-      CStdStringW label;
-      label.Format(L"%i", labelNumber);
+      CStdString label;
+      label.Format("%i", labelNumber);
       strLabel = label;
     }
     CStdStringArray strVecLabel;
@@ -1214,14 +1216,15 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
               strLabel = g_localizeStrings.Get(dwLabelID);
             }
             else
-            {
-              CStdStringW label(strTmp);
-              strLabel = label;
+            { // TODO: UTF-8: What if the xml is encoded as UTF-8 already?
+              CStdString utf8String;
+              g_charsetConverter.stringCharsetToUtf8(strTmp, utf8String);
+              strLabel = utf8String;
             }
             vecLabel.push_back(strLabel);
           }
           else
-            strLabel = L"";
+            strLabel = "";
         }
       }
     }
@@ -1334,7 +1337,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     pControl->SetVisible(bVisible);
     pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus, startHidden);
     pControl->SetAnimations(animations);
-    std::map<int, std::pair<std::vector<int>,std::vector<wstring> > >::iterator iter=g_settings.m_mapRssUrls.find(iUrlSet);
+    std::map<int, std::pair<std::vector<int>,std::vector<string> > >::iterator iter=g_settings.m_mapRssUrls.find(iUrlSet);
     if (iter != g_settings.m_mapRssUrls.end())
     {
       pControl->SetUrls(iter->second.second);
@@ -1379,7 +1382,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
       strTextureFocus, strTextureNoFocus,
       labelInfo);
 
-    pControl->SetText(strLabel);
+    pControl->SetLabel(strLabel);
     pControl->SetNavigation(up, down, left, right);
     pControl->SetColourDiffuse(dwColorDiffuse);
     pControl->SetHyperLink(iHyperLink);
@@ -1399,7 +1402,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
       strTextureFocus, strTextureNoFocus,
       labelInfo);
 
-    pControl->SetText(strLabel);
+    pControl->SetLabel(strLabel);
     pControl->SetNavigation(up, down, left, right);
     pControl->SetColourDiffuse(dwColorDiffuse);
     pControl->SetHyperLink(iHyperLink);
@@ -1419,7 +1422,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
       strTextureFocus, strTextureNoFocus,
       strTextureAltFocus, strTextureAltNoFocus, labelInfo);
 
-    pControl->SetText(strLabel);
+    pControl->SetLabel(strLabel);
     pControl->SetNavigation(up, down, left, right);
     pControl->SetColourDiffuse(dwColorDiffuse);
     pControl->SetHyperLink(iHyperLink);
@@ -1439,7 +1442,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
       strTextureCheckMark, strTextureCheckMarkNF,
       dwCheckWidth, dwCheckHeight, labelInfo);
 
-    pControl->SetText(strLabel);
+    pControl->SetLabel(strLabel);
     pControl->SetNavigation(up, down, left, right);
     pControl->SetColourDiffuse(dwColorDiffuse);
     pControl->SetVisible(bVisible);
@@ -1456,7 +1459,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
       labelInfo,
       strTextureRadioFocus, strTextureRadioNoFocus);
 
-    pControl->SetText(strLabel);
+    pControl->SetLabel(strLabel);
     pControl->SetRadioDimensions(radioPosX, radioPosY, radioWidth, radioHeight);
     pControl->SetNavigation(up, down, left, right);
     pControl->SetColourDiffuse(dwColorDiffuse);
@@ -1672,7 +1675,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
       labelInfo,
       strTextureBg, strLeft, strLeftFocus, strRight, strRightFocus);
 
-    pControl->SetText(strLabel);
+    pControl->SetLabel(strLabel);
     pControl->SetNavigation(up, down, left, right);
     pControl->SetColourDiffuse(dwColorDiffuse);
     pControl->SetVisible(bVisible);

@@ -317,7 +317,7 @@ bool CGUIWindowMusicPlayList::GetDirectory(const CStdString &strDirectory, CFile
 void CGUIWindowMusicPlayList::SavePlayList()
 {
   CStdString strNewFileName;
-  if (CGUIDialogKeyboard::ShowAndGetInput(strNewFileName, (CStdStringW)g_localizeStrings.Get(16012), false))
+  if (CGUIDialogKeyboard::ShowAndGetInput(strNewFileName, g_localizeStrings.Get(16012), false))
   {
     // need 2 rename it
     CStdString strFolder, strPath;
@@ -505,8 +505,8 @@ void CGUIWindowMusicPlayList::UpdateButtons()
     CFileItem* pItem = m_vecItems[0];
     if (pItem->IsParentFolder()) iItems--;
   }
-  CStdStringW items;
-  items.Format(L"%i %s", iItems, g_localizeStrings.Get(127).c_str());
+  CStdString items;
+  items.Format("%i %s", iItems, g_localizeStrings.Get(127).c_str());
   SET_CONTROL_LABEL(CONTROL_LABELFILES, items);
 }
 

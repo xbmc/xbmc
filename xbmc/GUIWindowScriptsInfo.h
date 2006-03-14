@@ -11,5 +11,5 @@ public:
   virtual bool OnAction(const CAction &action);
   void AddText(const CStdString& strLabel);
 protected:
-  CStdStringW strInfo;
+  CStdString strInfo;
 };

@@ -195,7 +195,7 @@ void DTSCodec::convert2s16_multi (sample_t * _f, int16_t * s16, int flags)
 
 DTSCodec::DTSCodec()
 {
-  m_CodecName         = L"DTS";
+  m_CodecName         = "DTS";
   m_IsInitialized     = false;
   m_pState            = NULL;
   m_iSourceChannels   = 0;

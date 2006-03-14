@@ -41,7 +41,7 @@ CGUIRSSControl::~CGUIRSSControl(void)
   m_pbColors = NULL;
 }
 
-void CGUIRSSControl::SetUrls(const vector<wstring> &vecUrl)
+void CGUIRSSControl::SetUrls(const vector<string> &vecUrl)
 {
   m_vecUrls = vecUrl; 
 };

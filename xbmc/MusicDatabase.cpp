@@ -2554,11 +2554,10 @@ void CMusicDatabase::DeleteAlbumInfo()
   m_pDS->close();
 
   // Show a selectdialog that the user can select the albuminfo to delete
-  const WCHAR* szText = g_localizeStrings.Get(181).c_str();
   CGUIDialogSelect *pDlg = (CGUIDialogSelect*)m_gWindowManager.GetWindow(WINDOW_DIALOG_SELECT);
   if (pDlg)
   {
-    pDlg->SetHeading(szText);
+    pDlg->SetHeading(g_localizeStrings.Get(181).c_str());
     pDlg->Reset();
     for (int i = 0; i < (int)vecAlbums.size(); ++i)
     {
@@ -2722,11 +2721,10 @@ void CMusicDatabase::DeleteCDDBInfo()
   }
 
   // Show a selectdialog that the user can select the albuminfo to delete
-  const WCHAR* szText = g_localizeStrings.Get(181).c_str();
   CGUIDialogSelect *pDlg = (CGUIDialogSelect*)m_gWindowManager.GetWindow(WINDOW_DIALOG_SELECT);
   if (pDlg)
   {
-    pDlg->SetHeading(szText);
+    pDlg->SetHeading(g_localizeStrings.Get(181).c_str());
     pDlg->Reset();
     CStdString strDir;
     strDir.Format("%s\\cddb", g_stSettings.m_szAlbumDirectory);
