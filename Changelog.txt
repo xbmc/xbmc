@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 13-03-2006 changed: volume and seekbar speed is now independent on fps. at full speed 0-100% now takes 1 second.
  - 13-03-2006 updated: Icelandic language file (Thnx to kristjan)
  - 13-03-2005 updated: Spanish language file (Thnx to chevi)
  - 13-03-2006 updated: French language file (Thnx to modhack)
