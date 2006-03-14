@@ -53,24 +53,24 @@ CGUIWindowSystemInfo::~CGUIWindowSystemInfo(void)
 DWORD WINAPI GetMPlayerVersionW( LPVOID lpParam )
 {
   DllLoader* mplayerDll;
-  wchar_t wszVersion[50];
-  wchar_t wszCompileDate[50];
   const char* (__cdecl* pMplayerGetVersion)();
   const char* (__cdecl* pMplayerGetCompileDate)();
 
-  wszVersion[0] = 0; wszCompileDate[0] = 0;
+  const char *version = NULL;
+  const char *date = NULL;
+
   mplayerDll = new DllLoader("Q:\\system\\players\\mplayer\\mplayer.dll",true);
 
   if( mplayerDll->Parse() )
   {   
     if (mplayerDll->ResolveExport("mplayer_getversion", (void**)&pMplayerGetVersion))
-      mbstowcs(wszVersion, pMplayerGetVersion(), sizeof(wszVersion));
+      version = pMplayerGetVersion();
     if (mplayerDll->ResolveExport("mplayer_getcompiledate", (void**)&pMplayerGetCompileDate))
-      mbstowcs(wszCompileDate, pMplayerGetCompileDate(), sizeof(wszCompileDate));
-    if (wszVersion[0]!=0 && wszCompileDate[0]!=0)
-      _snwprintf((wchar_t *)lpParam, 50, L"%s (%s)", wszVersion, wszCompileDate);
-    else if (wszVersion[0]!=0)
-      _snwprintf((wchar_t *)lpParam, 50, L"%s", wszVersion);
+      date = pMplayerGetCompileDate();
+    if (version && date)
+      _snprintf((char *)lpParam, 50, "%s (%s)", version, date);
+    else if (version)
+      _snprintf((char *)lpParam, 50, "%s", version);
   }
 
   delete mplayerDll;
@@ -868,54 +868,42 @@ bool CGUIWindowSystemInfo::GetATAValues(int i_lblp1, int i_lblp2, int i_lblp3, i
 bool CGUIWindowSystemInfo::GetNetwork(int i_lblp1, int i_lblp2, int i_lblp3, int i_lblp4, int i_lblp5, int i_lblp6)
 {
   // Set Network Informations
-  WCHAR wszText[1024];
   XNADDR net_stat;
-  WCHAR wzIP[32];
+  CStdString ip;
 
   // Set IP Type [DHCP/Fixed]
-  const WCHAR *psztext3=g_localizeStrings.Get(146).c_str();
-  const WCHAR *psztype3;
-
   if(XNetGetTitleXnAddr(&net_stat) & XNET_GET_XNADDR_DHCP)  
-  {
-    psztype3=g_localizeStrings.Get(148).c_str();
-  }
+    ip.Format("%s %s", g_localizeStrings.Get(146).c_str(), g_localizeStrings.Get(148).c_str());
   else
-    psztype3=g_localizeStrings.Get(147).c_str();
+    ip.Format("%s %s", g_localizeStrings.Get(146).c_str(), g_localizeStrings.Get(147).c_str());
 
-  swprintf(wszText,L"%s %s", psztext3,psztype3);
-  SET_CONTROL_LABEL(i_lblp1,wszText);
+  SET_CONTROL_LABEL(i_lblp1,ip);
 
   // Set Ethernet Link State
-  const WCHAR* pszHalf=g_localizeStrings.Get(152).c_str();
-  const WCHAR* pszFull=g_localizeStrings.Get(153).c_str();
-  const WCHAR* pszLink=g_localizeStrings.Get(151).c_str();
-  const WCHAR* pszNoLink=g_localizeStrings.Get(159).c_str();
   DWORD dwnetstatus = XNetGetEthernetLinkStatus();
-  WCHAR linkstatus[64];
-  wcscpy(linkstatus,pszLink);
+  CStdString linkStatus = g_localizeStrings.Get(151);
   if (dwnetstatus & XNET_ETHERNET_LINK_ACTIVE)
   {
     if (dwnetstatus & XNET_ETHERNET_LINK_100MBPS)
-      wcscat(linkstatus,L"100mbps ");
+      linkStatus += "100mbps ";
     if (dwnetstatus & XNET_ETHERNET_LINK_10MBPS)
-      wcscat(linkstatus,L"10mbps ");
+      linkStatus += "10mbps ";
     if (dwnetstatus & XNET_ETHERNET_LINK_FULL_DUPLEX)
-      wcscat(linkstatus,pszFull);
+      linkStatus += g_localizeStrings.Get(153);
     if (dwnetstatus & XNET_ETHERNET_LINK_HALF_DUPLEX)
-      wcscat(linkstatus,pszHalf);
+      linkStatus += g_localizeStrings.Get(152); 
   } 
   else
-    wcscat(linkstatus,pszNoLink);
-  SET_CONTROL_LABEL(i_lblp3,linkstatus);
+    linkStatus += g_localizeStrings.Get(159);
+
+  SET_CONTROL_LABEL(i_lblp3,linkStatus);
 
   // Get IP/Subnet/Gateway/DNS
-  const WCHAR* pszIP=g_localizeStrings.Get(150).c_str();
+  const char* pszIP=g_localizeStrings.Get(150).c_str();
 
   CStdString strlblSubnet   = g_localizeStrings.Get(13159).c_str(); //"Subnet:";      
   CStdString strlblGateway  = g_localizeStrings.Get(13160).c_str(); //"Gateway:";
   CStdString strlblDNS    = g_localizeStrings.Get(13161).c_str(); //"DNS:";
-  CStdString strlblnetfail  = g_localizeStrings.Get(13162).c_str(); //"Initialize failed";
 
   if ( !CUtil::InitializeNetwork(g_guiSettings.GetInt("Network.Assignment"),
     g_guiSettings.GetString("Network.IPAddress"),
@@ -926,10 +914,10 @@ bool CGUIWindowSystemInfo::GetNetwork(int i_lblp1, int i_lblp2, int i_lblp3, int
     CLog::Log(LOGERROR, "Network: Initialize network failed");
 
     CStdString strp2, strp4, strp5, strp6;
-    strp2.Format("%s %s",pszIP,strlblnetfail);
-    strp4.Format("%s %s",strlblSubnet,strlblnetfail);
-    strp5.Format("%s %s",strlblGateway,strlblnetfail);
-    strp6.Format("%s %s",strlblDNS,strlblnetfail);
+    strp2.Format("%s %s",pszIP,g_localizeStrings.Get(13162).c_str());//"Initialize failed"
+    strp4.Format("%s %s",strlblSubnet,g_localizeStrings.Get(13162).c_str());
+    strp5.Format("%s %s",strlblGateway,g_localizeStrings.Get(13162).c_str());
+    strp6.Format("%s %s",strlblDNS,g_localizeStrings.Get(13162).c_str());
 
     SET_CONTROL_LABEL(i_lblp2,strp2);
     SET_CONTROL_LABEL(i_lblp4,strp4);
@@ -944,13 +932,12 @@ bool CGUIWindowSystemInfo::GetNetwork(int i_lblp1, int i_lblp2, int i_lblp3, int
 
     //17.05.2005 Todo: Complete Rewriting the Network Section in XBMC is needed to get all Network-Settings right!
     // Set IP Adress
-    swprintf(wzIP,L"%s: %S",pszIP,g_szTitleIP);
-    //swprintf(wzIP,L"%s: %S",pszIP,g_guiSettings.GetString("Network.IPAddress").c_str());
+    ip.Format("%s: %s",pszIP,g_szTitleIP);
     strItem1.Format("%s %s", strlblSubnet.c_str(), g_guiSettings.GetString("Network.Subnet").c_str());
     strItem2.Format("%s %s", strlblGateway.c_str(), g_guiSettings.GetString("Network.Gateway").c_str());
     strItem3.Format("%s %s", strlblDNS.c_str(), g_guiSettings.GetString("Network.DNS").c_str());
 
-    SET_CONTROL_LABEL(i_lblp2,wzIP);
+    SET_CONTROL_LABEL(i_lblp2,ip);
     SET_CONTROL_LABEL(i_lblp4,strItem1);
     SET_CONTROL_LABEL(i_lblp5,strItem2);
     SET_CONTROL_LABEL(i_lblp6,strItem3);
@@ -980,28 +967,11 @@ bool CGUIWindowSystemInfo::GetStorage(int i_lblp1, int i_lblp2, int i_lblp3, int
   ULARGE_INTEGER lTotalFreeBytesY;  ULARGE_INTEGER lTotalNumberOfBytesY;
   ULARGE_INTEGER lTotalFreeBytesZ;  ULARGE_INTEGER lTotalNumberOfBytesZ;
 
-  WCHAR wszHDc[64]; WCHAR wszHDca[64];  WCHAR wszHDTotalSize[64];
-  WCHAR wszHDe[64]; WCHAR wszHDea[64];  WCHAR wszHDTotalUsed[64];
-  WCHAR wszHDf[64]; WCHAR wszHDfa[64];  WCHAR wszHDTotalFree[64];
-  WCHAR wszHDg[64]; WCHAR wszHDga[64];  WCHAR wszDVDStatus[128];
-  WCHAR wszHDx[64]; WCHAR wszHDxa[64];  
-  WCHAR wszHDy[64]; WCHAR wszHDya[64];  WCHAR wszHDTotalUsedPercent[64];
-  WCHAR wszHDz[64]; WCHAR wszHDza[64];  WCHAR wszHDTotalFreePercent[64];
-
-  bool bUseDriveF;
-  bool bUseDriveG;
-
-  const WCHAR *pszDrive=g_localizeStrings.Get(155).c_str();
-  const WCHAR *pszFree=g_localizeStrings.Get(160).c_str();
-  const WCHAR *pszUnavailable=g_localizeStrings.Get(161).c_str();
-
   // Set DVD Drive State! [TrayOpen, NotReady....]
+  CStdString trayState = "D: ";
+  const char* pszStatus1;
+
   CIoSupport m_pIOhelp;
-  WCHAR wsztraystate[64];
-  const WCHAR *pszDrive1=g_localizeStrings.Get(155).c_str();
-  //swprintf(wsztraystate,L"%s D: ",pszDrive1);
-  swprintf(wsztraystate,L"D:");
-  const WCHAR* pszStatus1;
   switch (m_pIOhelp.GetTrayState())
   {
   case TRAY_OPEN:
@@ -1017,101 +987,26 @@ bool CGUIWindowSystemInfo::GetStorage(int i_lblp1, int i_lblp2, int i_lblp3, int
     pszStatus1=g_localizeStrings.Get(165).c_str();
     break;
   }
-  swprintf(wszDVDStatus,L"%s %s", wsztraystate,pszStatus1);
+  trayState += pszStatus1;
+  SET_CONTROL_LABEL(i_lblp2, trayState);
+ 
+  //For C and E
+  CStdString hdC, hdE;
+  GetDiskSpace("C", lTotalNumberOfBytesC, lTotalFreeBytesC, hdC);
+  GetDiskSpace("E", lTotalNumberOfBytesE, lTotalFreeBytesE, hdE);
+  SET_CONTROL_LABEL(i_lblp1,hdC);
+  SET_CONTROL_LABEL(i_lblp3,hdE);
 
-  //For C
-  if (GetDiskFreeSpaceEx( 
-    "C:\\",           // directory name   LPCSTR lpDirectoryName,                 
-    NULL,           // bytes available    PULARGE_INTEGER lpFreeBytesAvailable,   
-    &lTotalNumberOfBytesC,    // bytes on disk    PULARGE_INTEGER lpTotalNumberOfBytes,   
-    &lTotalFreeBytesC)      // free bytes on disk PULARGE_INTEGER lpTotalNumberOfFreeBytes
-    )
-  {
-    swprintf(wszHDc, L"C: %u MB of ",lTotalFreeBytesC.QuadPart/MB); //To make it MB
-    swprintf(wszHDca, L"%u MB Free",lTotalNumberOfBytesC.QuadPart/MB); //To make it MB
-    wcscat(wszHDc,wszHDca);
-  } 
-  else 
-  {
-    swprintf(wszHDc, L"%s C: ",pszDrive);
-    wcscat(wszHDc,pszUnavailable);
-  }
+  //For F and G
+  CStdString hdF,hdG;
+  bool bUseDriveF = GetDiskSpace("F", lTotalNumberOfBytesF, lTotalFreeBytesF, hdF);
+  bool bUseDriveG = GetDiskSpace("G", lTotalNumberOfBytesG, lTotalFreeBytesG, hdG);
 
-  //For E
-  if (GetDiskFreeSpaceEx( "E:\\", NULL, &lTotalNumberOfBytesE, &lTotalFreeBytesE))
-  {
-    swprintf(wszHDe, L"E: %u MB of ",lTotalFreeBytesE.QuadPart/MB ); //To make it MB
-    swprintf(wszHDea, L"%u MB Free",lTotalNumberOfBytesE.QuadPart/MB); //To make it MB
-    wcscat(wszHDe,wszHDea);
-  } 
-  else 
-  {
-    swprintf(wszHDe, L"%s E: ",pszDrive);
-    wcscat(wszHDe,pszUnavailable);
-  }
-  //For F
-  if (GetDiskFreeSpaceEx( "F:\\", NULL, &lTotalNumberOfBytesF, &lTotalFreeBytesF))
-  {
-    swprintf(wszHDf, L"F: %u MB of ",lTotalFreeBytesF.QuadPart/MB); //To make it MB
-    swprintf(wszHDfa, L"%u MB Free",lTotalNumberOfBytesF.QuadPart/MB); //To make it MB
-    wcscat(wszHDf,wszHDfa);
-    bUseDriveF=TRUE;
-  } 
-  else 
-  {
-    swprintf(wszHDf, L"%s F: ",pszDrive);
-    wcscat(wszHDf,pszUnavailable);
-    bUseDriveF=FALSE;
-  }
-  //For G
-  if (GetDiskFreeSpaceEx( "G:\\", NULL, &lTotalNumberOfBytesG, &lTotalFreeBytesG))
-  {
-    swprintf(wszHDg, L"G: %u MB of ",lTotalFreeBytesG.QuadPart/MB ); //To make it MB
-    swprintf(wszHDga, L"%u MB Free",lTotalNumberOfBytesG.QuadPart/MB); //To make it MB
-    wcscat(wszHDg,wszHDga);
-    bUseDriveG=TRUE;
-  }
-  else 
-  { swprintf(wszHDg, L"G: "); 
-  wcscat(wszHDg,pszUnavailable); 
-  bUseDriveG=FALSE;
-  }
-  //For X
-  if (GetDiskFreeSpaceEx( "X:\\", NULL, &lTotalNumberOfBytesX, &lTotalFreeBytesX))
-  {
-    swprintf(wszHDx, L"X: %u MB of ",lTotalFreeBytesX.QuadPart/MB); //To make it MB
-    swprintf(wszHDxa, L"%u MB Free",lTotalNumberOfBytesX.QuadPart/MB); //To make it MB
-    wcscat(wszHDx,wszHDxa);
-  } 
-  else 
-  {
-    swprintf(wszHDx, L"%s X: ",pszDrive);
-    wcscat(wszHDx,pszUnavailable);
-  }
-  //For Y
-  if (GetDiskFreeSpaceEx( "Y:\\", NULL, &lTotalNumberOfBytesY, &lTotalFreeBytesY))
-  {
-    swprintf(wszHDy, L"Y: %u MB of ",lTotalFreeBytesY.QuadPart/MB); //To make it MB
-    swprintf(wszHDya, L"%u MB Free",lTotalNumberOfBytesY.QuadPart/MB); //To make it MB
-    wcscat(wszHDy,wszHDya);
-  } 
-  else 
-  {
-    swprintf(wszHDy, L"%s Y: ",pszDrive);
-    wcscat(wszHDy,pszUnavailable);
-  }
-  //For Z
-  if (GetDiskFreeSpaceEx( "Z:\\", NULL, &lTotalNumberOfBytesZ, &lTotalFreeBytesZ))
-  {
-    swprintf(wszHDz, L"Z: %u MB of ",lTotalFreeBytesZ.QuadPart/MB); //To make it MB
-    swprintf(wszHDza, L"%u MB Free",lTotalNumberOfBytesZ.QuadPart/MB); //To make it MB
-    wcscat(wszHDz,wszHDza);
-  } 
-  else 
-  {
-    swprintf(wszHDz, L"%s Z: ",pszDrive);
-    wcscat(wszHDz,pszUnavailable);
-  }
+  //For X, Y, Z
+  CStdString hdX, hdY, hdZ;
+  GetDiskSpace("X", lTotalNumberOfBytesX, lTotalFreeBytesX, hdX);
+  GetDiskSpace("Y", lTotalNumberOfBytesY, lTotalFreeBytesY, hdY);
+  GetDiskSpace("Z", lTotalNumberOfBytesZ, lTotalFreeBytesZ, hdZ);
 
   // Total Free Size: Generate from Drives#
   ULARGE_INTEGER lTotalDiscSpace;
@@ -1121,6 +1016,7 @@ bool CGUIWindowSystemInfo::GetStorage(int i_lblp1, int i_lblp2, int i_lblp3, int
     lTotalNumberOfBytesX.QuadPart + 
     lTotalNumberOfBytesY.QuadPart + 
     lTotalNumberOfBytesZ.QuadPart );
+
   // Total Free Size: Generate from Drives#
   ULARGE_INTEGER lTotalDiscFree;
   lTotalDiscFree.QuadPart = ( 
@@ -1145,24 +1041,11 @@ bool CGUIWindowSystemInfo::GetStorage(int i_lblp1, int i_lblp2, int i_lblp3, int
   lTotalDiscUsed.QuadPart   = lTotalDiscSpace.QuadPart - lTotalDiscFree.QuadPart;
   lTotalDiscPercent.QuadPart  = lTotalDiscSpace.QuadPart/100;  // => 1%   
 
-  swprintf(wszHDTotalSize, L"Total: %u MB",lTotalDiscSpace.QuadPart/MB );   //Total Used To make it MB
-  swprintf(wszHDTotalUsed, L", Used: %u MB",lTotalDiscUsed.QuadPart/MB );   //Total Free To make it MB
-  swprintf(wszHDTotalFree, L", Free: %u MB ",lTotalDiscFree.QuadPart/MB );  //Total Free To make it MB
+  CStdString hdTotalSize, hdTotalUsedPercent;
+  hdTotalSize.Format("Total: %u MB, Used: %u MB, Free: %u MB ", lTotalDiscSpace.QuadPart/MB, lTotalDiscUsed.QuadPart/MB, lTotalDiscFree.QuadPart/MB );  //Total Free To make it MB
 
-  int iuAdd = 0, ifAdd = 0;
-  if (lTotalDiscUsed.QuadPart % lTotalDiscPercent.QuadPart >= lTotalDiscPercent.QuadPart/2 )
-    iuAdd = 1; 
-  else 
-    ifAdd = 1;
-
-  swprintf(wszHDTotalUsedPercent, L"Total HDD Used: %u%%",lTotalDiscUsed.QuadPart/lTotalDiscPercent.QuadPart+iuAdd ); //Total Used %
-  swprintf(wszHDTotalFreePercent, L"  Free: %u%%",lTotalDiscFree.QuadPart/lTotalDiscPercent.QuadPart+ifAdd);  //Total Free %
-
-  wcscat(wszHDTotalSize,wszHDTotalUsed);
-  wcscat(wszHDTotalSize,wszHDTotalFree);
-
-  wcscat(wszHDTotalUsedPercent,wszHDTotalFreePercent);
-
+  int percentUsed = (int)(100.0f * lTotalDiscUsed.QuadPart/lTotalDiscSpace.QuadPart + 0.5f);
+  hdTotalUsedPercent.Format("Total HDD Used: %u%%  Free: %u%%", percentUsed, 100 - percentUsed); //Total Free %
 
   CLog::Log(LOGDEBUG, "------------- HDD Space Info: -------------------");
   CLog::Log(LOGDEBUG, "HDD Total Size: %u MB", lTotalDiscSpace.QuadPart/MB);
@@ -1174,73 +1057,38 @@ bool CGUIWindowSystemInfo::GetStorage(int i_lblp1, int i_lblp2, int i_lblp3, int
   CLog::Log(LOGDEBUG, "-------------------------------------------------");
 
   // Detect which to show!! 
-  SET_CONTROL_LABEL(i_lblp1,wszHDc);
-  SET_CONTROL_LABEL(i_lblp2,wszDVDStatus);
-  SET_CONTROL_LABEL(i_lblp3,wszHDe);
-
   if(bUseDriveF)  // Show if Drive F is availible
   {
-    SET_CONTROL_LABEL(i_lblp4,wszHDf);
+    SET_CONTROL_LABEL(i_lblp4,hdF);
     if(bUseDriveG)
     {
-      SET_CONTROL_LABEL(i_lblp5,wszHDg);
-      SET_CONTROL_LABEL(i_lblp6,wszHDx);
-      SET_CONTROL_LABEL(i_lblp7,wszHDy);
-      SET_CONTROL_LABEL(i_lblp8,wszHDz);
-      SET_CONTROL_LABEL(i_lblp9,wszHDTotalSize);
-      SET_CONTROL_LABEL(i_lblp10,wszHDTotalUsedPercent);
-      //SET_CONTROL_LABEL(i_lblp10,wszHDTotalUsed);
-      //SET_CONTROL_LABEL(i_lblp11,wszHDTotalFree);
+      SET_CONTROL_LABEL(i_lblp5,hdG);
+      SET_CONTROL_LABEL(i_lblp6,hdX);
+      SET_CONTROL_LABEL(i_lblp7,hdY);
+      SET_CONTROL_LABEL(i_lblp8,hdZ);
+      SET_CONTROL_LABEL(i_lblp9,hdTotalSize);
+      SET_CONTROL_LABEL(i_lblp10,hdTotalUsedPercent);
     }
     else
     {
-      SET_CONTROL_LABEL(i_lblp5,wszHDx);
-      SET_CONTROL_LABEL(i_lblp6,wszHDy);
-      SET_CONTROL_LABEL(i_lblp7,wszHDz);
-      SET_CONTROL_LABEL(i_lblp8,wszHDTotalSize);
-      SET_CONTROL_LABEL(i_lblp9,wszHDTotalUsedPercent);
-      //SET_CONTROL_LABEL(i_lblp9,wszHDTotalUsed);
-      //SET_CONTROL_LABEL(i_lblp10,wszHDTotalFree);
+      SET_CONTROL_LABEL(i_lblp5,hdX);
+      SET_CONTROL_LABEL(i_lblp6,hdY);
+      SET_CONTROL_LABEL(i_lblp7,hdZ);
+      SET_CONTROL_LABEL(i_lblp8,hdTotalSize);
+      SET_CONTROL_LABEL(i_lblp9,hdTotalUsedPercent);
     }
 
   } 
-  if(bUseDriveG)  // Show if Drive G is availible
+  else  // F and G not available
   {
-    SET_CONTROL_LABEL(i_lblp4,wszHDg);
-    if(bUseDriveF)
-    {
-      SET_CONTROL_LABEL(i_lblp5,wszHDf);
-      SET_CONTROL_LABEL(i_lblp6,wszHDx);
-      SET_CONTROL_LABEL(i_lblp7,wszHDy);
-      SET_CONTROL_LABEL(i_lblp8,wszHDz);
-      SET_CONTROL_LABEL(i_lblp9,wszHDTotalSize);
-      SET_CONTROL_LABEL(i_lblp10,wszHDTotalUsedPercent);
-      //SET_CONTROL_LABEL(i_lblp10,wszHDTotalUsed);
-      //SET_CONTROL_LABEL(i_lblp11,wszHDTotalFree);
-    }
-    else
-    {
-      SET_CONTROL_LABEL(i_lblp5,wszHDx);
-      SET_CONTROL_LABEL(i_lblp6,wszHDy);
-      SET_CONTROL_LABEL(i_lblp7,wszHDz);
-      SET_CONTROL_LABEL(i_lblp8,wszHDTotalSize);
-      SET_CONTROL_LABEL(i_lblp9,wszHDTotalUsedPercent);
-      //SET_CONTROL_LABEL(i_lblp9,wszHDTotalUsed);
-      //SET_CONTROL_LABEL(i_lblp10,wszHDTotalFree);
-    }
-
-  }
-  if(!bUseDriveF && !bUseDriveG)
-  {
-    SET_CONTROL_LABEL(i_lblp4,wszHDx);
-    SET_CONTROL_LABEL(i_lblp5,wszHDy);
-    SET_CONTROL_LABEL(i_lblp6,wszHDz);
-    SET_CONTROL_LABEL(i_lblp7,wszHDTotalSize);
-    SET_CONTROL_LABEL(i_lblp8,wszHDTotalUsedPercent);
-    //SET_CONTROL_LABEL(i_lblp8,wszHDTotalUsed);
-    //SET_CONTROL_LABEL(i_lblp9,wszHDTotalFree);
+    SET_CONTROL_LABEL(i_lblp4,hdX);
+    SET_CONTROL_LABEL(i_lblp5,hdY);
+    SET_CONTROL_LABEL(i_lblp6,hdZ);
+    SET_CONTROL_LABEL(i_lblp7,hdTotalSize);
+    SET_CONTROL_LABEL(i_lblp8,hdTotalUsedPercent);
   }
 
+#ifdef _DEBUG
   //Only DebugOutput!
   MEMORYSTATUS stat;
   CHAR strOut[1024], *pstrOut;
@@ -1256,18 +1104,30 @@ bool CGUIWindowSystemInfo::GetStorage(int i_lblp1, int i_lblp2, int i_lblp3, int
   AddStr( "%4d  free MB of paging file.\n", stat.dwAvailPageFile / MB );
   AddStr( "%4d  percent of memory is in use.\n", stat.dwMemoryLoad );
   OutputDebugString( strOut );
+#endif
   return true;
+}
+
+bool CGUIWindowSystemInfo::GetDiskSpace(const CStdString &drive, ULARGE_INTEGER &total, ULARGE_INTEGER& totalFree, CStdString &string)
+{
+  CStdString driveName = drive + ":\\";
+  BOOL ret;
+  if ((ret = GetDiskFreeSpaceEx( driveName.c_str(), NULL, &total, &totalFree)))
+    string.Format("%s: %u MB of %u MB %s", drive.c_str(), totalFree.QuadPart/MB, total.QuadPart/MB, g_localizeStrings.Get(160).c_str());
+  else 
+    string.Format("%s %s: %s", g_localizeStrings.Get(155).c_str(), drive.c_str(), g_localizeStrings.Get(161).c_str());
+  return ret == TRUE;
 }
 
 bool CGUIWindowSystemInfo::GetBuildTime(int label1, int label2, int label3)
 {
-  CStdStringW version, buildDate, mplayerVersion;
-  buildDate.Format(L"XBMC Compile Date: %S", g_infoManager.GetBuild().c_str());
-  version.Format(L"%s %S", g_localizeStrings.Get(144).c_str(), g_infoManager.GetVersion().c_str());
+  CStdString version, buildDate, mplayerVersion;
+  buildDate.Format("XBMC Compile Date: %S", g_infoManager.GetBuild().c_str());
+  version.Format("%s %S", g_localizeStrings.Get(144).c_str(), g_infoManager.GetVersion().c_str());
   if (wcslen(m_wszMPlayerVersion))
-    mplayerVersion.Format(L"Mplayer Version: %s", m_wszMPlayerVersion);
+    mplayerVersion.Format("Mplayer Version: %ls", m_wszMPlayerVersion);
   else
-    mplayerVersion.Format(L"Mplayer Version: Finding...");
+    mplayerVersion.Format("Mplayer Version: Finding...");
   SET_CONTROL_LABEL(label1, version);
   SET_CONTROL_LABEL(label2, buildDate);
   SET_CONTROL_LABEL(label3, mplayerVersion);

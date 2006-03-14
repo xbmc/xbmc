@@ -15,7 +15,7 @@ public:
     m_BitsPerSample = 0;
     m_Channels = 0;
     m_Bitrate = 0;
-    m_CodecName = L"";
+    m_CodecName = "";
   };
   virtual ~ICodec() {};
 

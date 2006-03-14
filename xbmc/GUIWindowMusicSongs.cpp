@@ -290,8 +290,8 @@ void CGUIWindowMusicSongs::UpdateButtons()
     CFileItem* pItem = m_vecItems[0];
     if (pItem->IsParentFolder()) iItems--;
   }
-  CStdStringW items;
-  items.Format(L"%i %s", iItems, g_localizeStrings.Get(127).c_str());
+  CStdString items;
+  items.Format("%i %s", iItems, g_localizeStrings.Get(127).c_str());
   SET_CONTROL_LABEL(CONTROL_LABELFILES, items);
 }
 

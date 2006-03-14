@@ -121,7 +121,7 @@ void CButtonSettingControl::OnClick()
 {
   // grab the onscreen keyboard
   CStdString keyboardInput(((CSettingString *)m_pSetting)->GetData());
-  CStdStringW heading;
+  CStdString heading;
   if (((CSettingString *)m_pSetting)->m_iHeadingString > 0)
     heading = g_localizeStrings.Get(((CSettingString *)m_pSetting)->m_iHeadingString);
   if (m_pSetting->GetControlType() == BUTTON_CONTROL_INPUT)
@@ -155,7 +155,7 @@ void CButtonSettingControl::Update()
     for (int i = 0; i < iNumChars; i++)
       strText += '*';
   }
-  m_pButton->SetText2(strText);
+  m_pButton->SetLabel2(strText);
 }
 
 

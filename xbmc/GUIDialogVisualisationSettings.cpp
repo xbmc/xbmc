@@ -87,8 +87,8 @@ void CGUIDialogVisualisationSettings::SetupPage()
   m_pOriginalSettingsButton->SetVisible(false);
 
   // update our settings label
-  CStdStringW strSettings;
-  strSettings.Format(L"%s %s", g_infoManager.GetLabel(402).c_str(), g_localizeStrings.Get(5));
+  CStdString strSettings;
+  strSettings.Format("%s %s", g_infoManager.GetLabel(402).c_str(), g_localizeStrings.Get(5));
   SET_CONTROL_LABEL(CONTROL_SETTINGS_LABEL, strSettings);
 
   // our controls for layout...
@@ -200,7 +200,7 @@ void CGUIDialogVisualisationSettings::AddSetting(VisSetting &setting, int iPosX,
   {
     pControl = new CGUIRadioButtonControl(*m_pOriginalRadioButton);
     if (!pControl) return ;
-    ((CGUIRadioButtonControl *)pControl)->SetText(setting.name);
+    ((CGUIRadioButtonControl *)pControl)->SetLabel(setting.name);
     pControl->SetPosition(iPosX, iPosY);
     pControl->SetWidth(iWidth);
     pControl->SetSelected(setting.current == 1);

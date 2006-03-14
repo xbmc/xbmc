@@ -16,7 +16,7 @@ public:
     if (imageNoFocus) delete imageNoFocus;
   }
   int id;
-  wstring strLabel;
+  string strLabel;
   CStdStringArray clickActions;
   CGUIImage *imageFocus;
   CGUIImage *imageNoFocus;
@@ -46,7 +46,7 @@ public:
   virtual void SetWidth(int iWidth);
   virtual void SetHeight(int iHeight);
   void ClearButtons();
-  void AddButton(const wstring &strLabel, const CStdString &strExecute, const int iIcon);
+  void AddButton(const string &strLabel, const CStdString &strExecute, const int iIcon);
   void SetActiveButton(int iButton);
   int GetActiveButton() const;
   int GetActiveButtonID() const;

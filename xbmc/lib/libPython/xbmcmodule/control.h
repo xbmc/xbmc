@@ -75,7 +75,7 @@ namespace PYXBMC
 	typedef struct {
     PyObject_HEAD_XBMC_CONTROL
 		string strFont;
-		wstring strText;
+		string strText;
 		DWORD dwTextColor;
 		DWORD dwDisabledColor;
 		DWORD dwAlign;
@@ -106,7 +106,7 @@ namespace PYXBMC
 	typedef struct {
     PyObject_HEAD_XBMC_CONTROL
 		string strFont;
-		wstring strText;
+		string strText;
 		string strTextureFocus;
 		string strTextureNoFocus;
 		DWORD dwTextColor;
@@ -119,7 +119,7 @@ namespace PYXBMC
 	typedef struct {
     PyObject_HEAD_XBMC_CONTROL
 		string strFont;
-		wstring strText;
+		string strText;
 		string strTextureFocus;
 		string strTextureNoFocus;
 		DWORD dwTextColor;

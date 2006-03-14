@@ -48,9 +48,11 @@ bool CGUIPassword::IsItemUnlocked(CFileItem* pItem, const CStdString &strType)
       }
       
       // show the appropriate lock dialog
-      CStdStringW strHeading = L"";
-      if (pItem->m_bIsFolder) strHeading = g_localizeStrings.Get(12325);
-      else strHeading = g_localizeStrings.Get(12348);
+      CStdString strHeading = "";
+      if (pItem->m_bIsFolder)
+        strHeading = g_localizeStrings.Get(12325);
+      else
+        strHeading = g_localizeStrings.Get(12348);
       
       switch (pItem->m_iLockMode)
       {
@@ -137,8 +139,7 @@ bool CGUIPassword::IsItemUnlocked(CShare* pItem, const CStdString &strType)
     else
     {
       // show the appropriate lock dialog
-      CStdStringW strHeading = L""; /* CShares don't have this attribute if (pItem->m_bIsFolder) strHeading = g_localizeStrings.Get(12325); else  */
-      strHeading = g_localizeStrings.Get(12348);
+      CStdString strHeading = g_localizeStrings.Get(12348);
       switch (pItem->m_iLockMode)
       {
       case LOCK_MODE_NUMERIC:
@@ -216,7 +217,7 @@ bool CGUIPassword::IsMasterLockUnlocked(bool bPromptUser)
   if (g_application.m_bMasterLockOverridesLocalPasswords) return true; 
 
   int iVerifyPasswordResult = -1;
-  CStdStringW strHeading = g_localizeStrings.Get(12324);
+  CStdString strHeading = g_localizeStrings.Get(12324);
   switch (g_stSettings.m_iMasterLockMode)
   {
   case LOCK_MODE_NUMERIC:
@@ -280,7 +281,7 @@ bool CGUIPassword::IsMasterLockLocked(bool bPromptUser)
   }
 
   int iVerifyPasswordResult = -1;
-  CStdStringW strHeading = g_localizeStrings.Get(12324);
+  CStdString strHeading = g_localizeStrings.Get(12324);
   switch (g_stSettings.m_iMasterLockMode)
   {
   case LOCK_MODE_NUMERIC:
@@ -342,8 +343,9 @@ void CGUIPassword::UpdateMasterLockRetryCount(bool bResetCount)
         return ;
       }
     }
-    CStdStringW dlgLine1 = "";
-    if (0 < g_application.m_iMasterLockRetriesRemaining) dlgLine1.Format(L"%d %s", g_application.m_iMasterLockRetriesRemaining, g_localizeStrings.Get(12343));
+    CStdString dlgLine1 = "";
+    if (0 < g_application.m_iMasterLockRetriesRemaining)
+      dlgLine1.Format("%d %s", g_application.m_iMasterLockRetriesRemaining, g_localizeStrings.Get(12343));
     CGUIDialogOK *dialog = (CGUIDialogOK *)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK); // Tell user they entered a bad password
     if (dialog) 
     {
@@ -378,8 +380,8 @@ void CGUIPassword::GetSMBShareUserPassword()
   CStdString share;
   url.GetURLWithoutUserDetails(share);
 
-  CStdStringW header;
-  header.Format(L"%s %s", g_localizeStrings.Get(14062).c_str(), CStdStringW(share.c_str()).c_str());
+  CStdString header;
+  header.Format("%s %s", g_localizeStrings.Get(14062).c_str(), share.c_str());
 
   if (!CGUIDialogKeyboard::ShowAndGetInput(outusername, header, false))
   {

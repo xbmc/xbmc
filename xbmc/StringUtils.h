@@ -23,9 +23,10 @@ class StringUtils
 {
 
 public:
-  static int StringUtils::SplitString(const CStdString& input, const CStdString& delimiter, CStdStringArray &results);
-  static int StringUtils::FindNumber(const CStdString& strInput, const CStdString &strFind);
-  static int StringUtils::AlphaNumericCompare(const char *left, const char *right);
+  static int SplitString(const CStdString& input, const CStdString& delimiter, CStdStringArray &results);
+  static int FindNumber(const CStdString& strInput, const CStdString &strFind);
+  static int AlphaNumericCompare(const char *left, const char *right);
+  static int TimeStringToInt(const CStdString &timeString);
 };
 
 #endif

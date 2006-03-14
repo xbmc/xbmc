@@ -333,7 +333,7 @@ bool CGUIWindowPrograms::OnPopupMenu(int iItem)
     pMenu->Initialize();
     // add the needed buttons
     
-    CStdStringW strLaunch = g_localizeStrings.Get(518); // Launch
+    CStdString strLaunch = g_localizeStrings.Get(518); // Launch
     if (g_guiSettings.GetBool("MyPrograms.GameAutoRegion"))
     {
       int iRegion = GetRegion(iItem);
@@ -358,9 +358,9 @@ bool CGUIWindowPrograms::OnPopupMenu(int iItem)
     int btn_Trainers = -2;
     if (m_database.ItemHasTrainer(dwTitleId))
     {
-      CStdStringW strOptions = g_localizeStrings.Get(12015);
+      CStdString strOptions = g_localizeStrings.Get(12015);
       if (CKaiClient::GetInstance()->IsEngineConnected())
-        strOptions += CStdStringW(" (KAI)");
+        strOptions += " (KAI)";
         
       btn_Trainers = pMenu->AddButton(strOptions); // trainer options
       if (CKaiClient::GetInstance()->IsEngineConnected())
@@ -384,7 +384,7 @@ bool CGUIWindowPrograms::OnPopupMenu(int iItem)
     if (btnid == btn_Rename)
     {
       CStdString strDescription = m_vecItems[iItem]->GetLabel();
-      if (CGUIDialogKeyboard::ShowAndGetInput(strDescription, (CStdStringW)g_localizeStrings.Get(16013), false))
+      if (CGUIDialogKeyboard::ShowAndGetInput(strDescription, g_localizeStrings.Get(16013), false))
       {
         // SetXBEDescription will truncate to 40 characters.
         CUtil::SetXBEDescription(m_vecItems[iItem]->m_strPath,strDescription);
@@ -434,7 +434,7 @@ bool CGUIWindowPrograms::OnPopupMenu(int iItem)
       int btn_NTSCM;
       int btn_NTSCJ;
       int btn_PAL60;
-      CStdStringW strPAL, strNTSCJ, strNTSCM, strPAL60;
+      CStdString strPAL, strNTSCJ, strNTSCM, strPAL60;
       strPAL = "PAL";
       strNTSCM = "NTSC-M";
       strNTSCJ = "NTSC-J";
@@ -485,9 +485,9 @@ bool CGUIWindowPrograms::OnPopupMenu(int iItem)
     {
       if (!m_dlgProgress)
         m_dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
-      m_dlgProgress->SetLine(0,L"Validating programs");
-      m_dlgProgress->SetLine(1,L"");
-      m_dlgProgress->SetLine(2,L"");
+      m_dlgProgress->SetLine(0, "Validating programs");
+      m_dlgProgress->SetLine(1, "");
+      m_dlgProgress->SetLine(2, "");
       m_dlgProgress->StartModal(GetID());
       m_dlgProgress->SetHeading(12387);
       m_dlgProgress->SetPercentage(0);
@@ -1200,12 +1200,9 @@ void CGUIWindowPrograms::PopulateTrainersList()
   {
     CLog::Log(LOGDEBUG,"found trainer %s",trainers[i]->m_strPath.c_str());
     m_dlgProgress->SetPercentage((int)((float)(i)/trainers.Size()*100.f));
-    CStdStringW strLine;
-    strLine = g_localizeStrings.Get(12013);
-    CStdString strTemp;
-    strTemp.Format(" %i / %i",i+1,trainers.Size());
-    strLine += strTemp;
-    
+    CStdString strLine;
+    strLine.Format("%s %i / %i",g_localizeStrings.Get(12013).c_str(), i+1,trainers.Size());
+
     m_dlgProgress->SetLine(0,strLine);
     m_dlgProgress->Progress();
     if (m_database.HasTrainer(trainers[i]->m_strPath)) // skip existing trainers

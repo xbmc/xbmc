@@ -12,7 +12,7 @@ CGUIMessage::CGUIMessage(DWORD dwMsg, DWORD dwSenderID, DWORD dwControlID, DWORD
   m_dwParam1 = dwParam1;
   m_dwParam2 = dwParam2;
   m_lpVoid = lpVoid;
-  m_strLabel = L"";
+  m_strLabel = "";
   m_strParam = "";
 }
 
@@ -87,27 +87,19 @@ void CGUIMessage::SetLPVOID(void* lpVoid)
   m_lpVoid = lpVoid;
 }
 
-void CGUIMessage::SetLabel(const wstring& wstrLabel)
+void CGUIMessage::SetLabel(const string& wstrLabel)
 {
   m_strLabel = wstrLabel;
 }
 
-const wstring& CGUIMessage::GetLabel() const
+const string& CGUIMessage::GetLabel() const
 {
   return m_strLabel;
 }
 
-void CGUIMessage::SetLabel(const string& strLabel)
-{
-  if (!strLabel.size()) return ;
-  CStdStringW label(strLabel);
-  m_strLabel = label;
-}
-
 void CGUIMessage::SetLabel(int iString)
 {
-  const WCHAR* pszString = g_localizeStrings.Get(iString).c_str();
-  m_strLabel = pszString;
+  m_strLabel = g_localizeStrings.Get(iString);
 }
 
 void CGUIMessage::SetStringParam(const string& strParam)

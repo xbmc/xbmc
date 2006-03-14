@@ -12,7 +12,7 @@ bool ModuleCodec::IsSupportedFormat(const CStdString& strExt)
 
 ModuleCodec::ModuleCodec()
 {
-  m_CodecName = L"MOD";
+  m_CodecName = "MOD";
   m_module = 0;
   m_renderID = 0;
 }

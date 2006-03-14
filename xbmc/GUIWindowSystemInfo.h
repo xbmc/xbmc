@@ -54,6 +54,8 @@ public:
 
 	
 private:
+  bool GetDiskSpace(const CStdString &drive, ULARGE_INTEGER &total, ULARGE_INTEGER& totalFree, CStdString &string);
+
 	bool b_IsHome;
 	
 	#define CONTROL_BT_HDD			92

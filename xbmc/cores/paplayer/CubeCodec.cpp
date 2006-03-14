@@ -4,7 +4,7 @@
 
 CubeCodec::CubeCodec()
 {
-  m_CodecName = L"Cube";
+  m_CodecName = "Cube";
   m_adx = 0;
   m_iDataPos = -1; 
 }

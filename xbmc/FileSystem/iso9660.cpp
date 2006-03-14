@@ -635,12 +635,13 @@ bool iso9660::FindClose( HANDLE szLocalFolder )
 //******************************************************************************************************************
 string iso9660::GetThinText(WCHAR* strTxt, int iLen )
 {
+  // convert from "fat" text (UTF-16) to "thin" text (UTF-8)
   CStdStringW strTxtUnicode(strTxt, iLen);
-  CStdString strTxtCharset;
+  CStdString utf8String;
 
-  g_charsetConverter.ucs2CharsetToStringCharset(strTxtUnicode, strTxtCharset, true);
+  g_charsetConverter.utf16toUTF8(strTxtUnicode, utf8String);
 
-  return strTxtCharset;
+  return utf8String;
 }
 
 //************************************************************************************

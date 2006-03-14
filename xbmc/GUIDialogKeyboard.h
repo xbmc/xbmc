@@ -18,10 +18,10 @@ public:
   void SetHiddenInput(bool hiddenInput) { m_hiddenInput = hiddenInput; };
 
   static bool ShowAndGetInput(CStdString& aTextString, bool allowEmptyResult);
-  static bool ShowAndGetInput(CStdString& aTextString, const CStdStringW &strHeading, bool allowEmptyResult, bool hiddenInput = false);
+  static bool ShowAndGetInput(CStdString& aTextString, const CStdString &strHeading, bool allowEmptyResult, bool hiddenInput = false);
   static bool ShowAndGetNewPassword(CStdString& strNewPassword);
-  static bool ShowAndGetNewPassword(CStdString& newPassword, const CStdStringW &heading, bool allowEmpty);
-  static int ShowAndVerifyPassword(CStdString& strPassword, const CStdStringW& strHeading, int iRetries);
+  static bool ShowAndGetNewPassword(CStdString& newPassword, const CStdString &heading, bool allowEmpty);
+  static int ShowAndVerifyPassword(CStdString& strPassword, const CStdString& strHeading, int iRetries);
 
   virtual void Close(bool forceClose = false);
 
@@ -30,7 +30,7 @@ protected:
   virtual void OnInitWindow();
   virtual bool OnAction(const CAction &action);
   virtual bool OnMessage(CGUIMessage& message);
-  void SetControlLabel(int id, const CStdStringW &label);
+  void SetControlLabel(int id, const CStdString &label);
   void OnShift();
   void MoveCursor(int iAmount);
   int GetCursorPos() const;
@@ -42,11 +42,11 @@ private:
   void OnClickButton(int iButtonControl);
   void OnRemoteNumberClick(int key);
   void UpdateButtons();
-  WCHAR GetCharacter(int iButton);
+  char GetCharacter(int iButton);
   void UpdateLabel();
   void ResetShiftAndSymbols();
 
-  void Character(WCHAR wch);
+  void Character(char wch);
   void Backspace();
 
   CStdString m_strEdit;

@@ -29,19 +29,19 @@ bool CAPEv2Tag::ReadTag(const char* filename, bool checkID3Tag)
   int chars = 256;
   char buffer[256];
   if (tag->GetFieldString(L"Title", buffer, &chars, TRUE) != -1)
-    g_charsetConverter.utf8ToStringCharset(buffer, m_strTitle);
+    m_strTitle = buffer;
   chars = 256;
   if (tag->GetFieldString(L"Album", buffer, &chars, TRUE) != -1)
-    g_charsetConverter.utf8ToStringCharset(buffer, m_strAlbum);
+    m_strAlbum = buffer;
   chars = 256;
   if (tag->GetFieldString(L"Artist", buffer, &chars, TRUE) != -1)
-    g_charsetConverter.utf8ToStringCharset(buffer, m_strArtist);
+    m_strArtist = buffer;
   chars = 256;
   if (tag->GetFieldString(L"Genre", buffer, &chars, TRUE) != -1)
-    g_charsetConverter.utf8ToStringCharset(buffer, m_strGenre);
+    m_strGenre = buffer;
   chars = 256;
   if (tag->GetFieldString(L"Year", buffer, &chars, TRUE) != -1)
-    g_charsetConverter.utf8ToStringCharset(buffer, m_strYear);
+    m_strYear = buffer;
   chars = 256;
   if (tag->GetFieldString(L"Track", buffer, &chars, TRUE) != -1)
     m_nTrackNum = atoi(buffer);

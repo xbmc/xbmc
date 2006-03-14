@@ -10,7 +10,7 @@ OGGCodec::OGGCodec()
   m_Channels = 0;
   m_BitsPerSample = 0;
   m_Bitrate = 0;
-  m_CodecName = L"OGG";
+  m_CodecName = "OGG";
   m_TimeOffset = 0;
   m_CurrentStream=0;
   m_VorbisFile.datasource = NULL;
