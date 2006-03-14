@@ -32,15 +32,19 @@ bool CGUIDialogSeekBar::OnAction(const CAction &action)
 {
   if (action.wID == ACTION_ANALOG_SEEK_FORWARD || action.wID == ACTION_ANALOG_SEEK_BACK)
   {
-    if (!g_infoManager.GetBool(PLAYER_SEEKING))
+    if (!m_bRequireSeek)
     { // start of seeking
+
       if (g_infoManager.GetTotalPlayTime())
         m_fSeekPercentage = (float)g_infoManager.GetPlayTime() / g_infoManager.GetTotalPlayTime() * 0.1f;
-      // start timer
-      m_dwTimer = timeGetTime();
-      m_bRequireSeek = false;
+      else
+        m_fSeekPercentage = 0.0f;
+
+      // tell info manager that we have started a seekbar operation      
+      m_bRequireSeek = true;
       g_infoManager.SetSeeking(true);
     }
+
     // calculate our seek amount
     if (g_application.m_pPlayer && !g_infoManager.m_performingSeek)
     {
@@ -54,10 +58,10 @@ bool CGUIDialogSeekBar::OnAction(const CAction &action)
       if (m_fSeekPercentage > 100.0f) m_fSeekPercentage = 100.0f;
       if (m_fSeekPercentage < 0.0f) m_fSeekPercentage = 0.0f;
       CGUISliderControl *pSlider = (CGUISliderControl*)GetControl(POPUP_SEEK_SLIDER);
-      if (pSlider) pSlider->SetPercentage((int)m_fSeekPercentage);   // Update our seek bar accordingly
-      m_bRequireSeek = true;
-      ResetTimer();
+      if (pSlider) pSlider->SetPercentage((int)m_fSeekPercentage);   // Update our seek bar accordingly            
     }
+
+    ResetTimer();    
     return true;
   }
   return CGUIDialog::OnAction(action);
@@ -79,9 +83,10 @@ bool CGUIDialogSeekBar::OnMessage(CGUIMessage& message)
     break;
   case GUI_MSG_PLAYBACK_STARTED:
     { // new song started while our window is up - update our details
-      if (g_infoManager.GetTotalPlayTime())
-        m_fSeekPercentage = (float)g_infoManager.GetPlayTime() / g_infoManager.GetTotalPlayTime() * 0.1f;
+
       m_bRequireSeek = false;
+      m_fSeekPercentage = 0.0f;
+
     }
     break;
 
@@ -110,7 +115,9 @@ void CGUIDialogSeekBar::Render()
   if (!m_bRequireSeek && !g_infoManager.m_performingSeek)
   { // position the bar at our current time
     CGUISliderControl *pSlider = (CGUISliderControl*)GetControl(POPUP_SEEK_SLIDER);
-    if (pSlider) pSlider->SetPercentage((int)((float)g_infoManager.GetPlayTime()/g_infoManager.GetTotalPlayTime() * 0.1f));
+    if (pSlider && g_infoManager.GetTotalPlayTime()) 
+      pSlider->SetPercentage((int)((float)g_infoManager.GetPlayTime()/g_infoManager.GetTotalPlayTime() * 0.1f));
+
     CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), POPUP_SEEK_LABEL);
     msg.SetLabel(g_infoManager.GetCurrentPlayTime());
     OnMessage(msg);
