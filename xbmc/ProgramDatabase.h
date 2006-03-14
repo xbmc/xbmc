@@ -32,7 +32,7 @@ public:
   int GetRegion(const CStdString& strFilenameAndPath);
   DWORD GetTitleId(const CStdString& strFilenameAndPath);
   bool SetTitleId(const CStdString& strFilenameAndPath, DWORD dwTitleId);
-  bool SetRegion(const CStdString& strFilenameAndPath, int iRegion=0);
+  bool SetRegion(const CStdString& strFilenameAndPath, int iRegion=-1);
   bool EntryExists(const CStdString& strPath, const CStdString& strBookmark);
   bool HasTrainer(const CStdString& strTrainerPath);
   bool ItemHasTrainer(unsigned int iTitleId);
