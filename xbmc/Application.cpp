@@ -2306,22 +2306,18 @@ bool CApplication::OnKey(CKey& key)
   // Check for global volume control
   if (action.fAmount1 && (action.wID == ACTION_VOLUME_UP || action.wID == ACTION_VOLUME_DOWN))
   {
-    if (g_stSettings.m_bMute == true)
-    {
-      if (action.wID == ACTION_VOLUME_UP)   // restore level only on volume up
-        Mute();
-    }
-    else // regular volume change
-    {
-      // increase or decrease the volume
-      int volume = g_stSettings.m_nVolumeLevel + g_stSettings.m_dynamicRangeCompressionLevel;
-      if (action.wID == ACTION_VOLUME_UP)
-        volume += (int)(action.fAmount1 * 100);
-      else
-        volume -= (int)(action.fAmount1 * 100);
+    // increase or decrease the volume
+    int volume = g_stSettings.m_nVolumeLevel + g_stSettings.m_dynamicRangeCompressionLevel;
 
-      SetHardwareVolume(volume);
-    }
+    // calculate speed so that a full press will equal 1 second from min to max
+    float speed = float(VOLUME_MAXIMUM - VOLUME_MINIMUM) / g_infoManager.GetFPS();
+
+    if (action.wID == ACTION_VOLUME_UP)
+      volume += (int)(action.fAmount1 * action.fAmount1 * speed);
+    else
+      volume -= (int)(action.fAmount1 * action.fAmount1 * speed);
+    
+    SetHardwareVolume(volume);
 
     // show visual feedback of volume change...
     m_guiDialogVolumeBar.Show(m_gWindowManager.GetActiveWindow());
@@ -4111,19 +4107,15 @@ const CFileItem& CApplication::CurrentFileItem()
 void CApplication::Mute(void)
 {
   if (g_stSettings.m_bMute)
-  { // muted - unmute.
-    g_stSettings.m_bMute = false;
+  { // muted - unmute.    
+    // check so we don't get stuck in some muted state
+    if( g_stSettings.m_iPreMuteVolumeLevel == 0 ) g_stSettings.m_iPreMuteVolumeLevel = 1;
     SetVolume(g_stSettings.m_iPreMuteVolumeLevel);
-    if (m_guiDialogMuteBug.IsRunning())
-      m_guiDialogMuteBug.Close();
   }
   else
   { // mute
     g_stSettings.m_iPreMuteVolumeLevel = GetVolume();
-    g_stSettings.m_bMute = true;
     SetVolume(0);
-    if (!m_guiDialogMuteBug.IsRunning())
-      m_guiDialogMuteBug.Show(m_gWindowManager.GetActiveWindow());
   }
 }
 
@@ -4143,8 +4135,6 @@ void CApplication::SetHardwareVolume(long hardwareVolume)
   if (hardwareVolume <= VOLUME_MINIMUM)
   {
     hardwareVolume = VOLUME_MINIMUM;
-    if (!g_stSettings.m_bMute)
-      Mute();
   }
   // update our settings
   if (hardwareVolume > VOLUME_MAXIMUM)
@@ -4157,6 +4147,22 @@ void CApplication::SetHardwareVolume(long hardwareVolume)
     g_stSettings.m_dynamicRangeCompressionLevel = 0;
     g_stSettings.m_nVolumeLevel = hardwareVolume;
   }
+
+  // update mute state
+  if(!g_stSettings.m_bMute && hardwareVolume <= VOLUME_MINIMUM)
+  {
+    g_stSettings.m_bMute = true;
+    if (!m_guiDialogMuteBug.IsRunning())
+      m_guiDialogMuteBug.Show(m_gWindowManager.GetActiveWindow());
+  }
+  else if(g_stSettings.m_bMute && hardwareVolume > VOLUME_MINIMUM)
+  {
+    g_stSettings.m_bMute = false;
+    if (m_guiDialogMuteBug.IsRunning())
+      m_guiDialogMuteBug.Close();
+  }
+
+
   // and tell our player to update the volume
   if (m_pPlayer)
   {
