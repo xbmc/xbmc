@@ -9,17 +9,17 @@ public:
   virtual ~CGUIDialogGamepad(void);
   virtual bool OnMessage(CGUIMessage& message);
   bool IsCanceled() const;
-  CStdStringW m_strUserInput;
-  CStdStringW m_strPassword;
+  CStdString m_strUserInput;
+  CStdString m_strPassword;
   int m_iRetries;
   bool m_bUserInputCleanup;
   bool m_bHideInputChars;
-  static bool ShowAndGetInput(CStdString& aTextString, const CStdStringW &dlgHeading, bool bHideUserInput);
+  static bool ShowAndGetInput(CStdString& aTextString, const CStdString& dlgHeading, bool bHideUserInput);
   static bool ShowAndGetNewPassword(CStdString& strNewPassword);
-  static int ShowAndVerifyPassword(CStdString& strPassword, const CStdStringW& dlgHeading, int iRetries);
-  static bool ShowAndVerifyInput(CStdString& strPassword, const CStdStringW& dlgHeading, const CStdStringW& dlgLine0, const CStdStringW& dlgLine1, const CStdStringW& dlgLine2, bool bGetUserInput, bool bHideInputChars);
+  static int ShowAndVerifyPassword(CStdString& strPassword, const CStdString& dlgHeading, int iRetries);
+  static bool ShowAndVerifyInput(CStdString& strPassword, const CStdString& dlgHeading, const CStdString& dlgLine0, const CStdString& dlgLine1, const CStdString& dlgLine2, bool bGetUserInput, bool bHideInputChars);
 protected:
   virtual bool OnAction(const CAction &action);
   bool m_bCanceled;
-  wchar_t m_cHideInputChar;
+  char m_cHideInputChar;
 };

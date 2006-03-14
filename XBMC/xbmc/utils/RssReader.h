@@ -28,7 +28,7 @@ public:
   CRssReader();
   virtual ~CRssReader();
 
-  void Create(IRssObserver* aObserver, const vector<wstring>& aUrl, const vector<int>& times, INT iLeadingSpaces);
+  void Create(IRssObserver* aObserver, const vector<string>& aUrl, const vector<int>& times, INT iLeadingSpaces);
   bool Parse(LPSTR szBuffer, int iFeed);
   void getFeed(CStdStringW& strText, LPBYTE& pbColors);
   void AddTag(const CStdString addTag);
@@ -55,7 +55,7 @@ private:
   INT m_iLeadingSpaces;
   TiXmlDocument m_xml;
   std::list<CStdString> m_tagSet;
-  std::vector<wstring> m_vecUrls;
+  std::vector<string> m_vecUrls;
   std::vector<int> m_vecQueue;
   bool m_bIsRunning;
   iconv_t m_iconv;

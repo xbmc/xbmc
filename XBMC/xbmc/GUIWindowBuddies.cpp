@@ -1278,7 +1278,7 @@ void CGUIWindowBuddies::OnAuthenticationFailed(CStdString& aUsername)
   pDialog->SetHeading(15031); // XLink Kai Authentication
   pDialog->SetLine(0, 15032); // Your username and/or password was rejected by the
   pDialog->SetLine(1, 15033); // orbital server. Please check your configuration.
-  pDialog->SetLine(2, L"");
+  pDialog->SetLine(2, "");;
 
   ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, WINDOW_DIALOG_OK, m_gWindowManager.GetActiveWindow()};
   g_applicationMessenger.SendMessage(tMsg, false);
@@ -1737,8 +1737,8 @@ void CGUIWindowBuddies::OnEnterArenaFailed(CStdString& aVector, CStdString& aRea
   CGUIDialogOK* pDialog = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
   pDialog->SetHeading(15042); // Access Denied
   pDialog->SetLine(0, aReason);
-  pDialog->SetLine(1, L"");
-  pDialog->SetLine(2, L"");
+  pDialog->SetLine(1, "");
+  pDialog->SetLine(2, "");
 
   ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, WINDOW_DIALOG_OK, m_gWindowManager.GetActiveWindow()};
   g_applicationMessenger.SendMessage(tMsg, false);

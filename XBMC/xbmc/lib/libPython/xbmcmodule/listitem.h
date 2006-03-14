@@ -18,7 +18,7 @@ namespace PYXBMC
 		CGUIListItem* item;
 	} ListItem;
 
-	extern ListItem* ListItem_FromString(wstring strLabel);
+	extern ListItem* ListItem_FromString(string strLabel);
 }
 
 #ifdef __cplusplus

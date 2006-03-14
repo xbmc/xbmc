@@ -124,14 +124,14 @@ bool CCDDARipper::Rip(const CStdString& strTrackFile, const CStdString& strFile,
 
   // setup the progress dialog
   CGUIDialogProgress* pDlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
-  CStdStringW strLine0, strLine1;
+  CStdString strLine0, strLine1;
   int iTrack = atoi(strTrackFile.substr(13, strTrackFile.size() - 13 - 5).c_str());
-  strLine0.Format(L"%ls %i", g_localizeStrings.Get(606).c_str(), iTrack); // Track Number: %i
-  strLine1.Format(L"%ls %hs", g_localizeStrings.Get(607).c_str(), strFile); // To: %s
+  strLine0.Format("%s %i", g_localizeStrings.Get(606).c_str(), iTrack); // Track Number: %i
+  strLine1.Format("%s %s", g_localizeStrings.Get(607).c_str(), strFile); // To: %s
   pDlgProgress->SetHeading(605); // Ripping
   pDlgProgress->SetLine(0, strLine0);
   pDlgProgress->SetLine(1, strLine1);
-  pDlgProgress->SetLine(2, L"");
+  pDlgProgress->SetLine(2, "");
   pDlgProgress->StartModal(m_gWindowManager.GetActiveWindow());
   pDlgProgress->ShowProgressBar(true);
 
@@ -298,7 +298,7 @@ bool CCDDARipper::RipCD()
     while (1)
     {
       strDate.Format("%04i-%02i-%02i-%i", datetime.wYear, datetime.wMonth, datetime.wDay, iNumber);
-      if (!CGUIDialogKeyboard::ShowAndGetInput(strDate,(CStdStringW)g_localizeStrings.Get(748),false))
+      if (!CGUIDialogKeyboard::ShowAndGetInput(strDate, g_localizeStrings.Get(748), false))
         return false;
       if (!CFile::Exists(strDirectory + strDate))
       {

@@ -48,7 +48,7 @@ void CGUISpinControl::SetNonProportional(bool bOnOff)
 
     for (int i = 0;i < (int)m_vecLabels.size();i++)
     {
-      g_charsetConverter.stringCharsetToFontCharset(m_vecLabels[m_iValue].c_str(), strLabelUnicode);
+      g_charsetConverter.utf8ToUTF16(m_vecLabels[m_iValue].c_str(), strLabelUnicode);
       m_label.font->GetTextExtent( strLabelUnicode.c_str(), &fTextWidth, &fTextHeight);
 
       if (fTextWidth > m_fMaxTextWidth)
@@ -401,7 +401,7 @@ void CGUISpinControl::Render()
 
   }
 
-  g_charsetConverter.stringCharsetToFontCharset(text, strTextUnicode);
+  g_charsetConverter.utf8ToUTF16(text, strTextUnicode);
 
   // Calculate the size of our text (for use in HitTest)
   float fTextWidth, fTextHeight;
@@ -516,28 +516,19 @@ float CGUISpinControl::GetFloatValue() const
 }
 
 
-void CGUISpinControl::AddLabel(const wstring& strLabel, int iValue)
+void CGUISpinControl::AddLabel(const string& strLabel, int iValue)
 {
   m_vecLabels.push_back(strLabel);
   m_vecValues.push_back(iValue);
 }
 
-void CGUISpinControl::AddLabel(CStdString aLabel, int iValue)
-{
-  CStdStringW label(aLabel);
-  m_vecLabels.push_back(label);
-  m_vecValues.push_back(iValue);
-}
-
-
-const wstring CGUISpinControl::GetLabel() const
+const string CGUISpinControl::GetLabel() const
 {
   if (m_iValue >= 0 && m_iValue < (int)m_vecLabels.size())
   {
-    const wstring strLabel = m_vecLabels[ m_iValue];
-    return strLabel;
+    return m_vecLabels[ m_iValue];
   }
-  return L"";
+  return "";
 }
 
 void CGUISpinControl::SetPosition(int iPosX, int iPosY)

@@ -31,15 +31,6 @@ bool CGUIDialogBoxBase::IsConfirmed() const
   return m_bConfirmed;
 }
 
-
-void CGUIDialogBoxBase::SetHeading(const wstring& strLine)
-{
-  Initialize();
-  CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), 1);
-  msg.SetLabel(strLine);
-  OnMessage(msg);
-}
-
 void CGUIDialogBoxBase::SetHeading(const string& strLine)
 {
   Initialize();
@@ -56,14 +47,6 @@ void CGUIDialogBoxBase::SetHeading(int iString)
     msg.SetLabel(iString);
   else
     msg.SetLabel("");
-  OnMessage(msg);
-}
-
-void CGUIDialogBoxBase::SetLine(int iLine, const wstring& strLine)
-{
-  Initialize();
-  CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), iLine + 2);
-  msg.SetLabel(strLine);
   OnMessage(msg);
 }
 

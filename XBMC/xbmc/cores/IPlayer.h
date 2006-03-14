@@ -80,7 +80,7 @@ public:
   virtual int GetChannels(){ return 0;};
   virtual int GetBitsPerSample(){ return 0;};
   virtual int GetSampleRate(){ return 0;};
-  virtual CStdString GetCodecName(){ return L"";};
+  virtual CStdString GetCodecName(){ return "";};
   virtual void ToFFRW(int iSpeed = 0){};
   virtual void ShowOSD(bool bOnoff){};
   // Skip to next track/item inside the current media (if supported).
@@ -98,7 +98,6 @@ public:
   virtual bool OnAction(const CAction &action) { return false; };
 
   virtual bool GetCurrentSubtitle(CStdStringW& strSubtitle) { strSubtitle = ""; return false; }
-
   //returns a state that is needed for resuming from a specific time
   virtual CStdString GetPlayerState() { return ""; };
   virtual bool SetPlayerState(CStdString state) { return false;};

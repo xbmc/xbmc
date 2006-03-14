@@ -5,7 +5,7 @@
 
 YMCodec::YMCodec()
 {
-  m_CodecName = L"YM";
+  m_CodecName = "YM";
   m_ym = 0;
   m_iDataPos = -1; 
 }

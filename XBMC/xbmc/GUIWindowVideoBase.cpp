@@ -367,7 +367,7 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item)
         return;
 
       // Prompt the user to input the movieName
-      if (!CGUIDialogKeyboard::ShowAndGetInput(movieName, (CStdStringW)g_localizeStrings.Get(16009), false))
+      if (!CGUIDialogKeyboard::ShowAndGetInput(movieName, g_localizeStrings.Get(16009), false))
         return; // user backed out
 
       needsRefresh = true;
@@ -414,9 +414,9 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item)
         {
           pDlgOK->SetHeading(195);
           pDlgOK->SetLine(0, movieName);
-          pDlgOK->SetLine(1, L"");
-          pDlgOK->SetLine(2, L"");
-          pDlgOK->SetLine(3, L"");
+          pDlgOK->SetLine(1, "");
+          pDlgOK->SetLine(2, "");
+          pDlgOK->SetLine(3, "");
           pDlgOK->DoModal(GetID());
         }
         return;
@@ -450,11 +450,12 @@ void CGUIWindowVideoBase::Render()
     if (pFont)
     {
       float fWidth, fHeight;
-      CStdStringW wszText = g_localizeStrings.Get(745); // "No scanned information for this view"
-      CStdStringW wszText2 = g_localizeStrings.Get(746); // "Switch back to Files view"
-      pFont->GetTextExtent(wszText, &fWidth, &fHeight);
-      pFont->DrawText((float)iX, (float)iY - fHeight, 0xffffffff, 0, wszText.c_str(), XBFONT_CENTER_X | XBFONT_CENTER_Y);
-      pFont->DrawText((float)iX, (float)iY + fHeight, 0xffffffff, 0, wszText2.c_str(), XBFONT_CENTER_X | XBFONT_CENTER_Y);
+      CStdStringW utf16NoScannedInfo, utf16SwitchToFiles;
+      g_charsetConverter.utf8ToUTF16(g_localizeStrings.Get(745), utf16NoScannedInfo); // "No scanned information for this view"
+      g_charsetConverter.utf8ToUTF16(g_localizeStrings.Get(746), utf16SwitchToFiles); // "Switch back to Files view"
+      pFont->GetTextExtent(utf16NoScannedInfo.c_str(), &fWidth, &fHeight);
+      pFont->DrawText((float)iX, (float)iY - fHeight, 0xffffffff, 0, utf16NoScannedInfo.c_str(), XBFONT_CENTER_X | XBFONT_CENTER_Y);
+      pFont->DrawText((float)iX, (float)iY + fHeight, 0xffffffff, 0, utf16SwitchToFiles.c_str(), XBFONT_CENTER_X | XBFONT_CENTER_Y);
     }
   }
 }
@@ -462,7 +463,7 @@ void CGUIWindowVideoBase::Render()
 void CGUIWindowVideoBase::OnManualIMDB()
 {
   CStdString strInput;
-  if (!CGUIDialogKeyboard::ShowAndGetInput(strInput, (CStdStringW)g_localizeStrings.Get(16009), false)) return ;
+  if (!CGUIDialogKeyboard::ShowAndGetInput(strInput, g_localizeStrings.Get(16009), false)) return ;
 
   CStdString strThumb;
   CUtil::GetThumbnail("Z:\\", strThumb);
@@ -506,7 +507,7 @@ bool CGUIWindowVideoBase::CheckMovie(const CStdString& strFileName)
     pDlgOK->SetHeading( 428);
     pDlgOK->SetLine( 0, 429 );
     pDlgOK->SetLine( 1, movieDetails.m_strDVDLabel );
-    pDlgOK->SetLine( 2, L"" );
+    pDlgOK->SetLine( 2, "" );
     pDlgOK->DoModal( GetID() );
     if (!pDlgOK->IsConfirmed())
     {
@@ -990,12 +991,12 @@ void CGUIWindowVideoBase::UpdateVideoTitle(int iItem)
 
   //Get Current Name
   CIMDBMovie detail;
-  m_database.GetMovieInfo(L"", detail, atol(pItem->m_musicInfoTag.GetURL()));
+  m_database.GetMovieInfo("", detail, atol(pItem->m_musicInfoTag.GetURL()));
   CStdString strInput;
   strInput = detail.m_strTitle;
 
   //Get the new title
-  if (!CGUIDialogKeyboard::ShowAndGetInput(strInput, (CStdStringW)g_localizeStrings.Get(16105), false)) return ;
+  if (!CGUIDialogKeyboard::ShowAndGetInput(strInput, g_localizeStrings.Get(16105), false)) return ;
   m_database.UpdateMovieTitle(atol(pItem->m_musicInfoTag.GetURL()), strInput);
   UpdateVideoTitleXML(detail.m_strIMDBNumber, strInput);
   Update(m_vecItems.m_strPath);

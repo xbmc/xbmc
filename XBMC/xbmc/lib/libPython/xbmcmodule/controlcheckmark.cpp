@@ -112,7 +112,7 @@ namespace PYXBMC
 
     CGUICheckMarkControl* pGuiCheckMarkControl = (CGUICheckMarkControl*)pControl->pGUIControl;
 
-    pGuiCheckMarkControl->SetText(pControl->strText);
+    pGuiCheckMarkControl->SetLabel(pControl->strText);
 
     return pControl->pGUIControl;
   }

@@ -31,10 +31,9 @@ public:
   virtual void DynamicResourceAlloc(bool bOnOff);
   const CStdString& GetTextureFocusName() const { return m_buttonControl.GetTextureFocusName(); };
   const CStdString& GetTextureNoFocusName() const { return m_buttonControl.GetTextureNoFocusName(); };
-  const wstring GetLabel() const { return m_buttonControl.GetLabel(); };
+  const string GetLabel() const { return m_buttonControl.GetLabel(); };
   const CStdString GetCurrentLabel() const;
-  void SetText(const CStdString &aLabel) {m_buttonControl.SetText(aLabel);};
-  void SetText(const wstring & aLabel) {m_buttonControl.SetText(aLabel);};
+  void SetText(const string & aLabel) {m_buttonControl.SetLabel(aLabel);};
   virtual void SetVisible(bool bVisible);
   virtual void SetColourDiffuse(D3DCOLOR color);
   const CLabelInfo& GetButtonLabelInfo() { return m_buttonControl.GetLabelInfo(); };

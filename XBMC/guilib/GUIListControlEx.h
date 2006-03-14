@@ -67,7 +67,7 @@ public:
   DWORD GetImageWidth() const { return m_iImageWidth;};
   DWORD GetImageHeight() const { return m_iImageHeight;};
 
-  const wstring& GetSuffix() const { return m_strSuffix;};
+  const string& GetSuffix() const { return m_strSuffix;};
   const CStdString GetButtonFocusName() const { return m_imgButton.GetTextureFocusName();};
   const CStdString GetButtonNoFocusName() const { return m_imgButton.GetTextureNoFocusName();};
 protected:
@@ -95,7 +95,7 @@ protected:
 
   CGUISpinControl m_upDown;
   CGUIButtonControl m_imgButton;
-  wstring m_strSuffix;
+  string m_strSuffix;
   CGUIList* m_pList;
 };
 #endif

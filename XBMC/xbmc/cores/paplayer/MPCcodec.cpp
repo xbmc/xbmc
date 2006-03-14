@@ -51,7 +51,7 @@ MPCCodec::MPCCodec()
   m_BitsPerSample = 0;
   m_TotalTime = 0;
   m_Bitrate = 0;
-  m_CodecName = L"MPC";
+  m_CodecName = "MPC";
 
   m_sampleBufferSize = 0;
   m_handle = NULL;

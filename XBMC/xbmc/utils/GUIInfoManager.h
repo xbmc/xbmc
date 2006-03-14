@@ -63,7 +63,7 @@ public:
   int TranslateString(const CStdString &strCondition);
   bool GetBool(int condition, DWORD dwContextWindow = 0) const;
   int GetInt(int info) const;
-  wstring GetLabel(int info);
+  string GetLabel(int info);
 
   CStdString GetImage(int info, int contextWindow = WINDOW_INVALID);
 
@@ -86,7 +86,7 @@ public:
   CStdString GetMusicLabel(int item);
   CStdString GetVideoLabel(int item);
   CStdString GetPlaylistLabel(int item);
-  wstring GetFreeSpace(int drive, bool shortText = false);
+  string GetFreeSpace(int drive, bool shortText = false);
   __int64 GetPlayTime();  // in ms
   CStdString GetCurrentPlayTime();
   int GetPlayTimeRemaining();
@@ -106,7 +106,7 @@ public:
 
   bool m_performingSeek;
 
-  wstring GetSystemHeatInfo(const CStdString &strInfo);
+  string GetSystemHeatInfo(const CStdString &strInfo);
   void UpdateFPS();
   inline float GetFPS() const { return m_fps; };
 

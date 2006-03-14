@@ -71,7 +71,7 @@ bool CRarManager::CacheRarredFile(CStdString& strPathInCache, const CStdString& 
       pDialog->SetHeading(120);
       pDialog->SetLine(0, 645);
       pDialog->SetLine(1, CUtil::GetFileName(strPathInRar));
-      pDialog->SetLine(2, L"");
+      pDialog->SetLine(2, "");
       pDialog->DoModal(m_gWindowManager.GetActiveWindow());
       if (!pDialog->IsConfirmed())
         iRes = 2; // pretend to be canceled

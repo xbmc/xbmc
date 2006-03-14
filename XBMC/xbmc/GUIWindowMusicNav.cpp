@@ -219,8 +219,8 @@ void CGUIWindowMusicNav::UpdateButtons()
         iItems--;
     }
   }
-  CStdStringW items;
-  items.Format(L"%i %s", iItems, g_localizeStrings.Get(127).c_str());
+  CStdString items;
+  items.Format("%i %s", iItems, g_localizeStrings.Get(127).c_str());
   SET_CONTROL_LABEL(CONTROL_LABELFILES, items);
 
   // set the filter label
@@ -512,7 +512,7 @@ void CGUIWindowMusicNav::SetArtistImage(int iItem)
     }
   }
 
-  if (CGUIDialogFileBrowser::ShowAndGetFile( g_settings.m_vecMyMusicShares, ".jpg|.tbn", L"artist cover", strPicture))
+  if (CGUIDialogFileBrowser::ShowAndGetFile( g_settings.m_vecMyMusicShares, ".jpg|.tbn", "artist cover", strPicture))
   {
     CStdString strArtist = "artist" + pItem->GetLabel();
     CStdString strDestThumb;
@@ -589,11 +589,12 @@ void CGUIWindowMusicNav::Render()
     if (pFont)
     {
       float fWidth, fHeight;
-      CStdStringW wszText = g_localizeStrings.Get(745); // "No scanned information for this view"
-      CStdStringW wszText2 = g_localizeStrings.Get(746); // "Switch back to Files view"
-      pFont->GetTextExtent(wszText, &fWidth, &fHeight);
-      pFont->DrawText((float)iX, (float)iY - fHeight, 0xffffffff, 0, wszText.c_str(), XBFONT_CENTER_X | XBFONT_CENTER_Y);
-      pFont->DrawText((float)iX, (float)iY + fHeight, 0xffffffff, 0, wszText2.c_str(), XBFONT_CENTER_X | XBFONT_CENTER_Y);
+      CStdStringW utf16NoScannedInfo, utf16SwitchToFiles;
+      g_charsetConverter.utf8ToUTF16(g_localizeStrings.Get(745), utf16NoScannedInfo); // "No scanned information for this view"
+      g_charsetConverter.utf8ToUTF16(g_localizeStrings.Get(746), utf16SwitchToFiles); // "Switch back to Files view"
+      pFont->GetTextExtent(utf16NoScannedInfo.c_str(), &fWidth, &fHeight);
+      pFont->DrawText((float)iX, (float)iY - fHeight, 0xffffffff, 0, utf16NoScannedInfo.c_str(), XBFONT_CENTER_X | XBFONT_CENTER_Y);
+      pFont->DrawText((float)iX, (float)iY + fHeight, 0xffffffff, 0, utf16SwitchToFiles.c_str(), XBFONT_CENTER_X | XBFONT_CENTER_Y);
     }
   }
 }

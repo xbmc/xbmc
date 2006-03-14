@@ -14,20 +14,25 @@ static int iPyLoadedSkinReferences = 0;
 
 namespace PYXBMC
 {
-	int PyGetUnicodeString(wstring& buf, PyObject* pObject, int pos)
+	int PyGetUnicodeString(string& buf, PyObject* pObject, int pos)
 	{
+    // TODO: UTF-8: Does python use UTF-16?
+    //              Do we need to convert from the string charset to UTF-8
+    //              for non-unicode data?
 		if(PyUnicode_Check(pObject))
 		{
-			buf = PyUnicode_AsUnicode(pObject);
+      CStdString utf8String;
+      g_charsetConverter.utf16toUTF8(PyUnicode_AsUnicode(pObject), utf8String);
+      buf = utf8String;
 			return 1;
 		}
 		if(PyString_Check(pObject))
 		{
-			buf = CStdStringW(PyString_AsString(pObject));
+			buf = PyString_AsString(pObject);
 			return 1;
 		}
 		// object is not an unicode ar normal string
-		buf = L"";
+		buf = "";
 		if (pos != -1) PyErr_Format(PyExc_TypeError, "argument %.200i must be unicode or str", pos);
 		return 0;
 	}

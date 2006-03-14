@@ -304,8 +304,8 @@ void CGUIWindowFileManager::UpdateButtons()
       CFileItem* pItem = m_vecItems[i][0];
       if (pItem->IsParentFolder()) iItems--;
     }
-    CStdStringW items;
-    items.Format(L"%i %s", iItems, g_localizeStrings.Get(127).c_str());
+    CStdString items;
+    items.Format("%i %s", iItems, g_localizeStrings.Get(127).c_str());
     SET_CONTROL_LABEL(CONTROL_NUMFILES_LEFT + i, items);
   }
 }
@@ -558,7 +558,6 @@ bool CGUIWindowFileManager::DoProcessFile(int iAction, const CStdString& strFile
     {
       CLog::Log(LOGDEBUG,"FileManager: copy %s->%s\n", strFile.c_str(), strDestFile.c_str());
 
-      const WCHAR *szText = g_localizeStrings.Get(115).c_str();
       CURL url(strFile);
       if (!(url.GetProtocol() == "rar://"))
         if (m_dlgProgress)
@@ -636,7 +635,7 @@ bool CGUIWindowFileManager::DoProcessFile(int iAction, const CStdString& strFile
       {
         m_dlgProgress->SetLine(0, 117);
         m_dlgProgress->SetLine(1, strShortSourceFile);
-        m_dlgProgress->SetLine(2, L"");
+        m_dlgProgress->SetLine(2, "");
         m_dlgProgress->Progress();
       }
     }
@@ -651,7 +650,7 @@ bool CGUIWindowFileManager::DoProcessFile(int iAction, const CStdString& strFile
       {
         m_dlgProgress->SetLine(0, 117);
         m_dlgProgress->SetLine(1, strShortSourceFile);
-        m_dlgProgress->SetLine(2, L"");
+        m_dlgProgress->SetLine(2, "");
         m_dlgProgress->Progress();
       }
     }
@@ -667,7 +666,7 @@ bool CGUIWindowFileManager::DoProcessFile(int iAction, const CStdString& strFile
       {
         m_dlgProgress->SetLine(0, 119);
         m_dlgProgress->SetLine(1, strShortSourceFile);
-        m_dlgProgress->SetLine(2, L"");
+        m_dlgProgress->SetLine(2, "");
         m_dlgProgress->Progress();
       }
     }
@@ -815,7 +814,7 @@ bool CGUIWindowFileManager::RenameFile(const CStdString &strFile)
 {
   CStdString strFileName = CUtil::GetFileName(strFile);
   CStdString strPath = strFile.Left(strFile.size() - strFileName.size());
-  if (CGUIDialogKeyboard::ShowAndGetInput(strFileName, (CStdStringW)g_localizeStrings.Get(16013), false))
+  if (CGUIDialogKeyboard::ShowAndGetInput(strFileName, g_localizeStrings.Get(16013), false))
   {
     strPath += strFileName;
     
@@ -833,7 +832,7 @@ bool CGUIWindowFileManager::RenameFile(const CStdString &strFile)
 void CGUIWindowFileManager::OnNewFolder(int iList)
 {
   CStdString strNewFolder = "";
-  if (CGUIDialogKeyboard::ShowAndGetInput(strNewFolder, (CStdStringW)g_localizeStrings.Get(16014), false))
+  if (CGUIDialogKeyboard::ShowAndGetInput(strNewFolder, g_localizeStrings.Get(16014), false))
   {
     CStdString strNewPath = m_Directory[iList].m_strPath;
     if (!CUtil::HasSlashAtEnd(strNewPath) ) CUtil::AddSlashAtEnd(strNewPath);
@@ -1259,7 +1258,7 @@ bool CGUIWindowFileManager::DeleteItem(const CFileItem *pItem)
     pDialog->SetHeading(122);
     pDialog->SetLine(0, 125);
     pDialog->SetLine(1, CUtil::GetFileName(pItem->m_strPath));
-    pDialog->SetLine(2, L"");
+    pDialog->SetLine(2, "");
     pDialog->DoModal(m_gWindowManager.GetActiveWindow());
     if (!pDialog->IsConfirmed()) return false;
   }

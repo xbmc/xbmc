@@ -34,15 +34,7 @@ void CSmartPlaylistRule::TranslateStrings(const char *field, const char *oper, c
   m_parameter = parameter;
   if (m_field == SONG_TIME)
   { // translate time to seconds
-    CStdStringArray secs;
-    StringUtils::SplitString(m_parameter, ":", secs);
-    int timeInSecs = 0;
-    for (unsigned int i = 0; i < secs.size(); i++)
-    {
-      timeInSecs *= 60;
-      timeInSecs += atoi(secs[i]);
-    }
-    m_parameter.Format("%i", timeInSecs);
+    m_parameter.Format("%i", StringUtils::TimeStringToInt(m_parameter));
   }
 }
 

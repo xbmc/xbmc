@@ -1,5 +1,6 @@
 #include "include.h"
 #include "LocalizeStrings.h"
+#include "../xbmc/utils/CharsetConverter.h"
 
 
 CLocalizeStrings g_localizeStrings;
@@ -37,14 +38,15 @@ bool CLocalizeStrings::Load(const CStdString& strFileName)
       CStdString strValue = pChild->Value();
       if (strValue == "string")
       {
+        // TODO: UTF-8: What if the xml encoding is in UTF-8 already?
         const TiXmlNode *pChildID = pChild->FirstChild("id");
         const TiXmlNode *pChildText = pChild->FirstChild("value");
         DWORD dwID = atoi(pChildID->FirstChild()->Value());
-        CStdStringW text;
+        CStdString utf8String;
         if (!pChildText->NoChildren())
-          text = pChildText->FirstChild()->Value();
-        if (!text.IsEmpty())
-          m_vecStrings[dwID] = text;
+          g_charsetConverter.stringCharsetToUtf8(pChildText->FirstChild()->Value(), utf8String);
+        if (!utf8String.IsEmpty())
+          m_vecStrings[dwID] = utf8String;
       }
       pChild = pChild->NextSibling();
     }
@@ -76,8 +78,10 @@ bool CLocalizeStrings::Load(const CStdString& strFileName)
           i = m_vecStrings.find(dwID);
           if (i == m_vecStrings.end())
           {
-            CStdStringW text(pChildText->FirstChild()->Value());
-            m_vecStrings[dwID] = text;
+            // TODO: UTF-8: What if the xml encoding is in UTF-8 already?
+            CStdString utf8String;
+            g_charsetConverter.stringCharsetToUtf8(pChildText->FirstChild()->Value(), utf8String);
+            m_vecStrings[dwID] = utf8String;
           }
         }
       }
@@ -89,15 +93,15 @@ bool CLocalizeStrings::Load(const CStdString& strFileName)
   return true;
 }
 
-static wstring wszEmptyString = L"";
+static string szEmptyString = "";
 
-const wstring& CLocalizeStrings::Get(DWORD dwCode) const
+const string& CLocalizeStrings::Get(DWORD dwCode) const
 {
   ivecStrings i;
   i = m_vecStrings.find(dwCode);
   if (i == m_vecStrings.end())
   {
-    return wszEmptyString;
+    return szEmptyString;
   }
   return i->second;
 }

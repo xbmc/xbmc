@@ -1399,15 +1399,12 @@ int CXbmcHttp::xbmcGetGUIStatus()
   output += openTag+"ActiveWindow:" + tmp;
   if (pWindow)
   {
-    CStdString strLine;
-    wstring wstrLine;
-    wstrLine=g_localizeStrings.Get(iWin);
-    CUtil::Unicode2Ansi(wstrLine,strLine);
-    output += closeTag+openTag+"ActiveWindowName:" + strLine ; 
+    output += closeTag+openTag+"ActiveWindowName:" + g_localizeStrings.Get(iWin) ; 
     int iControl=pWindow->GetFocusedControl();
     CGUIControl* pControl=(CGUIControl* )pWindow->GetControl(iControl);
-    strLine.Format("%d",(int)pControl->GetID());
-    output += closeTag+openTag+"ControlId:" + strLine;
+    CStdString id;
+    id.Format("%d",(int)pControl->GetID());
+    output += closeTag+openTag+"ControlId:" + id;
     
     if (pControl)
     {
@@ -1443,8 +1440,9 @@ int CXbmcHttp::xbmcGetGUIStatus()
       else if (pControl->GetControlType() == CGUIControl::GUICONTROL_BUTTONBAR)
       {
         output += closeTag+openTag+"Type:ButtonBar"+closeTag+openTag+"Description:" + strTmp;
-        strLine.Format("%d",((CGUIButtonScroller *)pControl)->GetActiveButton());
-        output += closeTag+openTag+"ActiveButton:" + strLine;
+        CStdString button;
+        button.Format("%d",((CGUIButtonScroller *)pControl)->GetActiveButton());
+        output += closeTag+openTag+"ActiveButton:" + button;
       }
       else if (pControl->GetControlType() == CGUIControl::GUICONTROL_SPIN)
       {

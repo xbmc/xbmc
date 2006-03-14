@@ -166,7 +166,7 @@ EPLAYERCORES CPlayerCoreFactory::SelectPlayerDialog(VECPLAYERCORES &vecCores, in
     btn_Cores = new int[ vecCores.size() ];
     btn_Cores[0] = 0;
 
-    CStdStringW strCaption;
+    CStdString strCaption;
 
     //Add default player
     strCaption = CPlayerCoreFactory::GetPlayerName(vecCores[0]);
