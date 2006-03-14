@@ -695,7 +695,7 @@ CStdString PAPlayer::GetCodecName()
   ICodec* codec = m_decoder[m_currentDecoder].GetCodec();
   if (codec)
     return codec->m_CodecName;
-  return L"";
+  return "";
 }
 
 int PAPlayer::GetBitrate()

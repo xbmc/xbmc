@@ -5,7 +5,7 @@
 
 CGUIEditControl::CGUIEditControl(DWORD dwParentID, DWORD dwControlId,
                                  int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight,
-                                 const CLabelInfo& labelInfo, const wstring& strLabel)
+                                 const CLabelInfo& labelInfo, const string& strLabel)
     : CGUILabelControl(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight, strLabel, labelInfo, false)
 {
   ControlType = GUICONTROL_EDIT;
@@ -56,8 +56,7 @@ void CGUIEditControl::OnKeyPress(WORD wKeyId)
         // enter
         if (m_pObserver)
         {
-          CStdString strLineOfText;
-          CUtil::Unicode2Ansi(m_strLabel, strLineOfText);
+          CStdString strLineOfText = m_strLabel;
           m_strLabel.clear();
           m_iCursorPos = 0;
           m_pObserver->OnEditTextComplete(strLineOfText);
@@ -77,7 +76,7 @@ void CGUIEditControl::OnKeyPress(WORD wKeyId)
     default:
       {
         // use character input
-        m_strLabel.insert( m_strLabel.begin() + m_iCursorPos, (wchar_t)ch);
+        m_strLabel.insert( m_strLabel.begin() + m_iCursorPos, ch);
         m_iCursorPos++;
         break;
       }

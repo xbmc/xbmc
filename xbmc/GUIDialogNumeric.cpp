@@ -183,20 +183,20 @@ void CGUIDialogNumeric::OnNext()
 
 void CGUIDialogNumeric::Render()
 {
-  CStdStringW strLabel;
+  CStdString strLabel;
   BYTE *colors = NULL;
   if (m_mode == INPUT_PASSWORD)
   {
     for (unsigned int i=0; i < m_password.size(); i++)
-      strLabel += L'*';
+      strLabel += '*';
   }
   else if (m_mode == INPUT_NUMBER)
   { // simple - just render text directly
-    strLabel.Format(L"%d", m_integer);
+    strLabel.Format("%d", m_integer);
   }
   else if (m_mode == INPUT_TIME)
   { // format up the time
-    strLabel.Format(L"%2d:%02d", m_datetime.wHour, m_datetime.wMinute);
+    strLabel.Format("%2d:%02d", m_datetime.wHour, m_datetime.wMinute);
     colors = new BYTE[strLabel.GetLength()];
     for (unsigned int i=0; i < strLabel.size(); i++)
       colors[i] = 0;
@@ -204,7 +204,7 @@ void CGUIDialogNumeric::Render()
   }
   else if (m_mode == INPUT_DATE)
   { // format up the date
-    strLabel.Format(L"%2d/%2d/%4d", m_datetime.wDay, m_datetime.wMonth, m_datetime.wYear);
+    strLabel.Format("%2d/%2d/%4d", m_datetime.wDay, m_datetime.wMonth, m_datetime.wYear);
     colors = new BYTE[strLabel.GetLength()];
     for (unsigned int i=0; i < strLabel.size(); i++)
       colors[i] = 0;
@@ -214,7 +214,7 @@ void CGUIDialogNumeric::Render()
   }
   else if (m_mode == INPUT_IP_ADDRESS)
   { // format up the date
-    strLabel.Format(L"%3d.%3d.%3d.%3d", m_ip[0], m_ip[1], m_ip[2], m_ip[3]);
+    strLabel.Format("%3d.%3d.%3d.%3d", m_ip[0], m_ip[1], m_ip[2], m_ip[3]);
     colors = new BYTE[strLabel.GetLength()];
     for (unsigned int i=0; i < strLabel.size(); i++)
       colors[i] = 0;
@@ -225,16 +225,18 @@ void CGUIDialogNumeric::Render()
   CGUILabelControl *pLabel = (CGUILabelControl *)GetControl(CONTROL_INPUT_LABEL);
   if (pLabel)
   {
+    // our label is pure ascii - no need to convert to/from UTF-8
+    CStdStringW strUnicodeLabel = strLabel;
     CGUIFont *pFont = pLabel->GetLabelInfo().font;
     DWORD palette[2];
     palette[0] = pLabel->GetLabelInfo().disabledColor;
     palette[1] = pLabel->GetLabelInfo().textColor;
     float fPosX = (float)pLabel->GetXPosition();
     if (pLabel->GetLabelInfo().align & XBFONT_CENTER_X)
-      fPosX += (pLabel->GetWidth() - pFont->GetTextWidth(strLabel.c_str())) * 0.5f;
+      fPosX += (pLabel->GetWidth() - pFont->GetTextWidth(strUnicodeLabel.c_str())) * 0.5f;
     else if (pLabel->GetLabelInfo().align & XBFONT_RIGHT)
-      fPosX -= pFont->GetTextWidth(strLabel.c_str());
-    pFont->DrawColourTextWidth(fPosX, (float)pLabel->GetYPosition(), palette, 2, pLabel->GetLabelInfo().shadowColor, strLabel.c_str(), colors, 0);
+      fPosX -= pFont->GetTextWidth(strUnicodeLabel.c_str());
+    pFont->DrawColourTextWidth(fPosX, (float)pLabel->GetYPosition(), palette, 2, pLabel->GetLabelInfo().shadowColor, strUnicodeLabel.c_str(), colors, 0);
     delete[] colors;
   }
 }
@@ -447,7 +449,7 @@ void CGUIDialogNumeric::GetOutput(void *output)
   }
 }
 
-bool CGUIDialogNumeric::ShowAndGetTime(SYSTEMTIME &time, const CStdStringW &heading)
+bool CGUIDialogNumeric::ShowAndGetTime(SYSTEMTIME &time, const CStdString &heading)
 {
   CGUIDialogNumeric *pDialog = (CGUIDialogNumeric *)m_gWindowManager.GetWindow(WINDOW_DIALOG_NUMERIC);
   if (!pDialog) return false;
@@ -460,7 +462,7 @@ bool CGUIDialogNumeric::ShowAndGetTime(SYSTEMTIME &time, const CStdStringW &head
   return true;
 }
 
-bool CGUIDialogNumeric::ShowAndGetDate(SYSTEMTIME &date, const CStdStringW &heading)
+bool CGUIDialogNumeric::ShowAndGetDate(SYSTEMTIME &date, const CStdString &heading)
 {
   CGUIDialogNumeric *pDialog = (CGUIDialogNumeric *)m_gWindowManager.GetWindow(WINDOW_DIALOG_NUMERIC);
   if (!pDialog) return false;
@@ -473,7 +475,7 @@ bool CGUIDialogNumeric::ShowAndGetDate(SYSTEMTIME &date, const CStdStringW &head
   return true;
 }
 
-bool CGUIDialogNumeric::ShowAndGetIPAddress(CStdString &IPAddress, const CStdStringW &heading)
+bool CGUIDialogNumeric::ShowAndGetIPAddress(CStdString &IPAddress, const CStdString &heading)
 {
   CGUIDialogNumeric *pDialog = (CGUIDialogNumeric *)m_gWindowManager.GetWindow(WINDOW_DIALOG_NUMERIC);
   if (!pDialog || !IPAddress) return false;
@@ -486,7 +488,7 @@ bool CGUIDialogNumeric::ShowAndGetIPAddress(CStdString &IPAddress, const CStdStr
   return true;
 }
 
-bool CGUIDialogNumeric::ShowAndGetNumber(CStdString& strInput, const CStdStringW &strHeading)
+bool CGUIDialogNumeric::ShowAndGetNumber(CStdString& strInput, const CStdString &strHeading)
 {
   // Prompt user for password input
   CGUIDialogNumeric *pDialog = (CGUIDialogNumeric *)m_gWindowManager.GetWindow(WINDOW_DIALOG_NUMERIC);
@@ -537,13 +539,13 @@ bool CGUIDialogNumeric::ShowAndGetNewPassword(CStdString& strNewPassword)
 // \param strHeading String shown on dialog title. Converts to localized string if contains a positive integer.
 // \param iRetries If greater than 0, shows "Incorrect password, %d retries left" on dialog line 2, else line 2 is blank.
 // \return 0 if successful display and user input. 1 if unsucessful input. -1 if no user input or canceled editing.
-int CGUIDialogNumeric::ShowAndVerifyPassword(CStdString& strPassword, const CStdStringW& strHeading, int iRetries)
+int CGUIDialogNumeric::ShowAndVerifyPassword(CStdString& strPassword, const CStdString& strHeading, int iRetries)
 {
-  CStdStringW strTempHeading = strHeading;
+  CStdString strTempHeading = strHeading;
   if (0 < iRetries)
   {
     // Show a string telling user they have iRetries retries left
-    strTempHeading.Format(L"%s. %s %i %s", strHeading.c_str(), g_localizeStrings.Get(12342).c_str(), iRetries, g_localizeStrings.Get(12343).c_str());
+    strTempHeading.Format("%s. %s %i %s", strHeading.c_str(), g_localizeStrings.Get(12342).c_str(), iRetries, g_localizeStrings.Get(12343).c_str());
   }
   // make a copy of strPassword to prevent from overwriting it later
   CStdString strPassTemp = strPassword;
@@ -558,7 +560,7 @@ int CGUIDialogNumeric::ShowAndVerifyPassword(CStdString& strPassword, const CStd
 // \param dlgHeading String shown on dialog title.
 // \param bVerifyInput If set as true we verify the users input versus strToVerify.
 // \return true if successful display and user input. false if unsucessful display, no user input, or canceled editing.
-bool CGUIDialogNumeric::ShowAndVerifyInput(CStdString& strToVerify, const CStdStringW& dlgHeading, bool bVerifyInput)
+bool CGUIDialogNumeric::ShowAndVerifyInput(CStdString& strToVerify, const CStdString& dlgHeading, bool bVerifyInput)
 {
   // Prompt user for password input
   CGUIDialogNumeric *pDialog = (CGUIDialogNumeric *)m_gWindowManager.GetWindow(WINDOW_DIALOG_NUMERIC);
@@ -602,7 +604,7 @@ bool CGUIDialogNumeric::IsCanceled() const
   return m_bCanceled;
 }
 
-void CGUIDialogNumeric::SetHeading(const CStdStringW& strHeading)
+void CGUIDialogNumeric::SetHeading(const CStdString& strHeading)
 {
   Initialize();
   CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), CONTROL_HEADING_LABEL);

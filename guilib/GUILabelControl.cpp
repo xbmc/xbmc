@@ -3,7 +3,7 @@
 #include "../xbmc/utils/CharsetConverter.h"
 #include "../xbmc/utils/GUIInfoManager.h"
 
-CGUILabelControl::CGUILabelControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, const wstring& strLabel, const CLabelInfo& labelInfo, bool bHasPath)
+CGUILabelControl::CGUILabelControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, const string& strLabel, const CLabelInfo& labelInfo, bool bHasPath)
     : CGUIControl(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight)
 {
   SetLabel(strLabel);
@@ -59,7 +59,7 @@ void CGUILabelControl::Render()
   if (m_label.font)
   {
     CStdStringW strLabelUnicode;
-    g_charsetConverter.stringCharsetToFontCharset(strRenderLabel, strLabelUnicode);
+    g_charsetConverter.utf8ToUTF16(strRenderLabel, strLabelUnicode);
 
     // check for scrolling
     bool bNormalDraw = true;
@@ -132,7 +132,7 @@ void CGUILabelControl::SetAlpha(DWORD dwAlpha)
   m_label.disabledColor = (dwAlpha << 24) | (m_label.disabledColor & 0xFFFFFF);
 }
 
-void CGUILabelControl::SetLabel(const wstring &strLabel)
+void CGUILabelControl::SetLabel(const string &strLabel)
 {
   if (m_strLabel.compare(strLabel) == 0)
     return;
@@ -146,12 +146,6 @@ void CGUILabelControl::SetWidthControl(bool bScroll)
 {
   m_ScrollInsteadOfTruncate = bScroll;
   m_ScrollInfo.Reset();
-}
-
-void CGUILabelControl::SetText(CStdString aLabel)
-{
-  CStdStringW label = aLabel;
-  SetLabel(label);
 }
 
 bool CGUILabelControl::OnMessage(CGUIMessage& message)
@@ -272,7 +266,7 @@ void CGUILabelControl::ShortenPath()
   }
 
   CStdStringW strLabelUnicode;
-  g_charsetConverter.stringCharsetToFontCharset(m_strLabel, strLabelUnicode);
+  g_charsetConverter.utf8ToUTF16(m_strLabel, strLabelUnicode);
 
   m_label.font->GetTextExtent( strLabelUnicode.c_str(), &fTextWidth, &fTextHeight);
 
@@ -293,8 +287,8 @@ void CGUILabelControl::ShortenPath()
 
     if ( nGreaterDelim > nPos )
     {
-      m_strLabel.replace( nPos + 1, nGreaterDelim - nPos - 1, L"..." );
-      g_charsetConverter.stringCharsetToFontCharset(m_strLabel, strLabelUnicode);
+      m_strLabel.replace( nPos + 1, nGreaterDelim - nPos - 1, "..." );
+      g_charsetConverter.utf8ToUTF16(m_strLabel, strLabelUnicode);
     }
 
     m_label.font->GetTextExtent( strLabelUnicode.c_str(), &fTextWidth, &fTextHeight );

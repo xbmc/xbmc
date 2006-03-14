@@ -183,7 +183,7 @@ public:
   class CButton
   {
   public:
-    CButton(const wstring strLabel, const CStdString &strExecute, const int iIcon)
+    CButton(const string &strLabel, const CStdString &strExecute, const int iIcon)
     {
       m_dwLabel = -1;
       m_strLabel = strLabel;
@@ -197,7 +197,7 @@ public:
       m_iIcon = iIcon;
     };
     DWORD m_dwLabel;
-    wstring m_strLabel;
+    string m_strLabel;
     CStdString m_strExecute;
     int m_iIcon;
   };
@@ -484,7 +484,7 @@ public:
   CStdStringArray m_MyVideoStackRegExps;
   CStdStringArray m_vecPathSubstitutions;
 
-  std::map<int,std::pair<std::vector<int>,std::vector<wstring> > > m_mapRssUrls;
+  std::map<int,std::pair<std::vector<int>,std::vector<string> > > m_mapRssUrls;
   std::map<CStdString, bool> m_skinSettings;
   std::map<CStdString, CStdString> m_skinStrings;
 

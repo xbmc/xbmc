@@ -214,15 +214,14 @@ public:
   void SetParam1(DWORD dwParam1);
   void SetParam2(DWORD dwParam2);
   void SetLPVOID(void* lpVoid);
-  void SetLabel(const wstring& wstrLabel);
-  void SetLabel(const string& wstrLabel);
-  void SetLabel(int iString);
-  const wstring& GetLabel() const;
+  void SetLabel(const string& strLabel);
+  void SetLabel(int iString);               // for convience - looks up in strings.xml
+  const string& GetLabel() const;
   void SetStringParam(const string& strParam);
   const string& GetStringParam() const;
 
 private:
-  wstring m_strLabel;
+  string m_strLabel;
   string m_strParam;
   DWORD m_dwSenderID;
   DWORD m_dwControlID;

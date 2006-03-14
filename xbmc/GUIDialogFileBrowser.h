@@ -18,12 +18,12 @@ public:
   virtual void OnWindowLoaded();
   virtual void OnWindowUnload();
   bool IsConfirmed() { return m_bConfirmed; };
-  void SetHeading(const CStdStringW &heading);
+  void SetHeading(const CStdString &heading);
 
-  static bool ShowAndGetDirectory(VECSHARES &shares, const CStdStringW &heading, CStdString &path);
-  static bool ShowAndGetFile(VECSHARES &shares, const CStdString &mask, const CStdStringW &heading, CStdString &path);
+  static bool ShowAndGetDirectory(VECSHARES &shares, const CStdString &heading, CStdString &path);
+  static bool ShowAndGetFile(VECSHARES &shares, const CStdString &mask, const CStdString &heading, CStdString &path);
   static bool ShowAndGetShare(CStdString &path, bool allowNetworkShares);
-  static bool ShowAndGetImage(VECSHARES &shares, const CStdStringW &heading, CStdString &path);
+  static bool ShowAndGetImage(VECSHARES &shares, const CStdString &heading, CStdString &path);
 
   void SetShares(VECSHARES &shares);
 

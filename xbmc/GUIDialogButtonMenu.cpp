@@ -38,12 +38,7 @@ void CGUIDialogButtonMenu::Render()
     if (pControl && pControl->GetControlType() == CGUIControl::GUICONTROL_BUTTON)
     {
       CGUIButtonControl *pButton = (CGUIButtonControl *)pControl;
-      CStdStringW strLabel = L"";
-      if (pButton->GetLabel().size() > 0)
-      {
-        strLabel = pButton->GetLabel().c_str();
-      }
-      pLabel->SetLabel(strLabel);
+      pLabel->SetLabel(pButton->GetLabel());
     }
   }
   CGUIDialog::Render();

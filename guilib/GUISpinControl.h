@@ -71,9 +71,8 @@ public:
   void SetFloatValue(float fValue);
   int GetValue() const;
   float GetFloatValue() const;
-  void AddLabel(const wstring& strLabel, int iValue);
-  void AddLabel(CStdString aLabel, int iValue);
-  const wstring GetLabel() const;
+  void AddLabel(const string& strLabel, int iValue);
+  const string GetLabel() const;
   virtual void SetFocus(bool bOnOff);
   virtual void SetVisible(bool bVisible);
   void SetReverse(bool bOnOff);
@@ -116,7 +115,7 @@ protected:
   int m_iSelect;
   bool m_bReverse;
   float m_fInterval;
-  vector<wstring> m_vecLabels;
+  vector<string> m_vecLabels;
   vector<int> m_vecValues;
   CGUIImage m_imgspinUp;
   CGUIImage m_imgspinDown;

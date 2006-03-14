@@ -429,7 +429,7 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
       int iId;
       if (pSet->QueryIntAttribute("id", &iId) == TIXML_SUCCESS)
       {
-        std::vector<wstring> vecSet;
+        std::vector<string> vecSet;
         std::vector<int> vecIntervals;
         TiXmlElement* pFeed = pSet->FirstChildElement("feed");
         while (pFeed)
@@ -442,13 +442,15 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
           }
           if (pFeed->FirstChild())
           {
-            CStdStringW strUrl = pFeed->FirstChild()->Value();
+            // TODO: UTF-8: Do these URLs need to be converted to UTF-8?
+            //              What about the xml encoding?
+            CStdString strUrl = pFeed->FirstChild()->Value();
             vecSet.push_back(strUrl);
             vecIntervals.push_back(iInterval);
           }
           pFeed = pFeed->NextSiblingElement("feed");
         }
-        g_settings.m_mapRssUrls.insert(std::make_pair<int,std::pair<std::vector<int>,std::vector<wstring> > >(iId,std::make_pair<std::vector<int>,std::vector<wstring> >(vecIntervals,vecSet)));
+        g_settings.m_mapRssUrls.insert(std::make_pair<int,std::pair<std::vector<int>,std::vector<string> > >(iId,std::make_pair<std::vector<int>,std::vector<string> >(vecIntervals,vecSet)));
       } 
       else 
         CLog::Log(LOGERROR,"found rss url set with no id in XboxMediaCenter.xml, ignored");
@@ -2202,7 +2204,8 @@ void CSettings::LoadHomeButtons(TiXmlElement* pRootElement)
       CButtonScrollerSettings::CButton *pButton = NULL;
       if ((temp2[0] >= 'A') && (temp2[0] <= 'z'))
       {
-        CStdStringW label = temp2;
+        // TODO: UTF-8: No need to bother with this - it'll be removed in a few days.
+        CStdString label = temp2;
         pButton = new CButtonScrollerSettings::CButton(label, temp, iIcon);
       }
       else

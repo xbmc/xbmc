@@ -32,7 +32,7 @@ CRssReader::~CRssReader()
     delete m_vecTimeStamps[i];
 }
 
-void CRssReader::Create(IRssObserver* aObserver, const vector<wstring>& aUrls, const vector<int> &times, INT iLeadingSpaces)
+void CRssReader::Create(IRssObserver* aObserver, const vector<string>& aUrls, const vector<int> &times, INT iLeadingSpaces)
 {
   m_pObserver = aObserver;
   m_iLeadingSpaces = iLeadingSpaces;

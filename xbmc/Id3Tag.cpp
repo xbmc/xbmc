@@ -23,14 +23,18 @@ CStdString CID3Tag::ToStringCharset(const id3_ucs4_t* ucs4, id3_field_textencodi
   CStdString strValue;
 
   if (encoding==ID3_FIELD_TEXTENCODING_ISO_8859_1)
-  {
+  { // TODO: UTF-8: Should these be converted to UTF-8 ?
     id3_latin1_t* latin1=m_dll.id3_ucs4_latin1duplicate(ucs4);
-    strValue=(LPCSTR)latin1;
+    //strValue=(LPCSTR)latin1;
+    g_charsetConverter.stringCharsetToUtf8((LPCSTR)latin1, strValue);
     m_dll.id3_latin1_free(latin1);
   }
   else
   {
-    g_charsetConverter.utf32ToStringCharset(ucs4, strValue);
+    // convert to UTF-8
+    id3_utf8_t* utf8 = m_dll.id3_ucs4_utf8duplicate(ucs4);
+    strValue = (LPCSTR)utf8;
+    m_dll.id3_utf8_free(utf8);
   }
 
   return strValue;
@@ -38,10 +42,8 @@ CStdString CID3Tag::ToStringCharset(const id3_ucs4_t* ucs4, id3_field_textencodi
 
 id3_ucs4_t* CID3Tag::StringCharsetToUcs4(const CStdString& str) const
 {
-  CStdString strUtf8;
-  g_charsetConverter.stringCharsetToUtf8(str, strUtf8);
-
-  return m_dll.id3_utf8_ucs4duplicate((id3_utf8_t*)strUtf8.c_str());
+  // our StringCharset is UTF-8
+  return m_dll.id3_utf8_ucs4duplicate((id3_utf8_t*)str.c_str());
 }
 
 bool CID3Tag::Read(const CStdString& strFile)

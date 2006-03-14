@@ -10,7 +10,7 @@ FLACCodec::FLACCodec()
   m_BitsPerSample = 0;
   m_TotalTime=0;
   m_Bitrate = 0;
-  m_CodecName = L"FLAC";
+  m_CodecName = "FLAC";
 
   m_pFlacDecoder=NULL;
 

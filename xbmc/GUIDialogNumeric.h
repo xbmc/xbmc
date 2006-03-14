@@ -16,17 +16,17 @@ public:
   bool IsCanceled() const;
 
   static bool ShowAndGetNewPassword(CStdString& strNewPassword);
-  static int ShowAndVerifyPassword(CStdString& strPassword, const CStdStringW& strHeading, int iRetries);
-  static bool ShowAndVerifyInput(CStdString& strPassword, const CStdStringW& strHeading, bool bGetUserInput);
+  static int ShowAndVerifyPassword(CStdString& strPassword, const CStdString& strHeading, int iRetries);
+  static bool ShowAndVerifyInput(CStdString& strPassword, const CStdString& strHeading, bool bGetUserInput);
 
-  void SetHeading(const CStdStringW &strHeading);
+  void SetHeading(const CStdString &strHeading);
   void SetMode(INPUT_MODE mode, void *initial);
   void GetOutput(void *output);
 
-  static bool ShowAndGetTime(SYSTEMTIME &time, const CStdStringW &heading);
-  static bool ShowAndGetDate(SYSTEMTIME &date, const CStdStringW &heading);
-  static bool ShowAndGetIPAddress(CStdString &IPAddress, const CStdStringW &heading);
-  static bool ShowAndGetNumber(CStdString& strInput, const CStdStringW &strHeading);
+  static bool ShowAndGetTime(SYSTEMTIME &time, const CStdString &heading);
+  static bool ShowAndGetDate(SYSTEMTIME &date, const CStdString &heading);
+  static bool ShowAndGetIPAddress(CStdString &IPAddress, const CStdString &heading);
+  static bool ShowAndGetNumber(CStdString& strInput, const CStdString &strHeading);
 
 protected:
   void OnNumber(unsigned int num);
@@ -37,7 +37,6 @@ protected:
 
   bool m_bConfirmed;
   bool m_bCanceled;
-  wchar_t m_cHideInputChar;
 
   INPUT_MODE m_mode;                // the current input mode
   SYSTEMTIME m_datetime;            // for time and date modes

@@ -356,7 +356,7 @@ void CGUIDialogFileBrowser::OnWindowUnload()
   m_viewControl.Reset();
 }
 
-bool CGUIDialogFileBrowser::ShowAndGetImage(VECSHARES &shares, const CStdStringW &heading, CStdString &path)
+bool CGUIDialogFileBrowser::ShowAndGetImage(VECSHARES &shares, const CStdString &heading, CStdString &path)
 {
   CStdString mask = ".png|.jpg|.bmp|.gif";
   CGUIDialogFileBrowser *browser = (CGUIDialogFileBrowser *)m_gWindowManager.GetWindow(WINDOW_DIALOG_FILE_BROWSER);
@@ -368,18 +368,18 @@ bool CGUIDialogFileBrowser::ShowAndGetImage(VECSHARES &shares, const CStdStringW
   return success;
 }
 
-bool CGUIDialogFileBrowser::ShowAndGetDirectory(VECSHARES &shares, const CStdStringW &heading, CStdString &path)
+bool CGUIDialogFileBrowser::ShowAndGetDirectory(VECSHARES &shares, const CStdString &heading, CStdString &path)
 {
   // an extension mask of "/" ensures that no files are shown
   return ShowAndGetFile(shares, "/", heading, path);
 }
 
-bool CGUIDialogFileBrowser::ShowAndGetFile(VECSHARES &shares, const CStdString &mask, const CStdStringW &heading, CStdString &path)
+bool CGUIDialogFileBrowser::ShowAndGetFile(VECSHARES &shares, const CStdString &mask, const CStdString &heading, CStdString &path)
 {
   CGUIDialogFileBrowser *browser = (CGUIDialogFileBrowser *)m_gWindowManager.GetWindow(WINDOW_DIALOG_FILE_BROWSER);
   if (!browser)
     return false;
-  CStdStringW browseHeading;
+  CStdString browseHeading;
   browseHeading.Format(g_localizeStrings.Get(13401).c_str(), heading.c_str());
   browser->SetHeading(browseHeading);
   browser->SetShares(shares);
@@ -395,7 +395,7 @@ bool CGUIDialogFileBrowser::ShowAndGetFile(VECSHARES &shares, const CStdString &
   return false;
 }
 
-void CGUIDialogFileBrowser::SetHeading(const CStdStringW &heading)
+void CGUIDialogFileBrowser::SetHeading(const CStdString &heading)
 {
   Initialize();
   SET_CONTROL_LABEL(CONTROL_HEADING_LABEL, heading);

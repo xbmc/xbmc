@@ -195,7 +195,7 @@ void CWeather::GetInteger(const TiXmlElement* pRootElement, const CStdString& st
 void CWeather::LocalizeOverviewToken(char *szToken, bool bAppendSpace)
 {
   CStdString strLocStr = "";
-  CStdStringW token = szToken;
+  CStdString token = szToken;
   if (!token.IsEmpty())
   {
     ilocalizedTokens i;
@@ -469,13 +469,17 @@ void CWeather::LoadLocalizedToken()
     {
       const TiXmlNode *pChildID = pChild->FirstChild("id");
       const TiXmlNode *pChildText = pChild->FirstChild("value");
-      DWORD dwID = atoi(pChildID->FirstChild()->Value());
-      if ( (LOCALIZED_TOKEN_FIRSTID <= dwID && dwID <= LOCALIZED_TOKEN_LASTID) ||
-           (LOCALIZED_TOKEN_FIRSTID2 <= dwID && dwID <= LOCALIZED_TOKEN_LASTID2) )
+      if (pChildID && pChildID->FirstChild() && pChildText && pChildText->FirstChild())
       {
-        CStdStringW text = pChildText->FirstChild()->Value();
-        if (!text.IsEmpty())
-          m_localizedTokens.insert(std::pair<wstring, DWORD>(text, dwID));
+        DWORD dwID = atoi(pChildID->FirstChild()->Value());
+        if ( (LOCALIZED_TOKEN_FIRSTID <= dwID && dwID <= LOCALIZED_TOKEN_LASTID) ||
+            (LOCALIZED_TOKEN_FIRSTID2 <= dwID && dwID <= LOCALIZED_TOKEN_LASTID2) )
+        {
+          CStdString utf8Label;
+          g_charsetConverter.stringCharsetToUtf8(pChildText->FirstChild()->Value(), utf8Label);
+          if (!utf8Label.IsEmpty())
+            m_localizedTokens.insert(std::pair<string, DWORD>(utf8Label, dwID));
+        }
       }
     }
     pChild = pChild->NextSibling();

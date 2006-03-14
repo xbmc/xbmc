@@ -18,7 +18,7 @@ class CGUILabelControl :
       public CGUIControl
 {
 public:
-  CGUILabelControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, const wstring& strLabel, const CLabelInfo& labelInfo, bool bHasPath);
+  CGUILabelControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, const string& strLabel, const CLabelInfo& labelInfo, bool bHasPath);
   virtual ~CGUILabelControl(void);
   virtual void Render();
   virtual bool CanFocus() const;
@@ -26,9 +26,8 @@ public:
 
   virtual void SetAlpha(DWORD dwAlpha);
   const CLabelInfo& GetLabelInfo() const { return m_label; };
-  const wstring GetLabel() const { return m_strLabel; }
-  void SetLabel(const wstring &strLabel);
-  void SetText(CStdString aLabel);
+  const string& GetLabel() const { return m_strLabel; }
+  void SetLabel(const string &strLabel);
   void ShowCursor(bool bShow = true);
   void SetCursorPos(int iPos);
   int GetCursorPos() const { return m_iCursorPos;};
@@ -46,7 +45,7 @@ protected:
 protected:
   CLabelInfo m_label;
 
-  wstring m_strLabel;
+  string m_strLabel;
   bool m_bHasPath;
   bool m_bShowCursor;
   int m_iCursorPos;

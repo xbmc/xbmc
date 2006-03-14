@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 14-03-2006 changed: All strings/labels are internally UTF-8 now.  Will almost certainly require rescanning the databases if you use a non-Ascii charset.
  - 13-03-2006 changed: volume and seekbar speed is now independent on fps. at full speed 0-100% now takes 1 second.
  - 13-03-2006 updated: Icelandic language file (Thnx to kristjan)
  - 13-03-2005 updated: Spanish language file (Thnx to chevi)

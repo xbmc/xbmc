@@ -75,7 +75,7 @@ protected:
   CStdString m_strNewLanguage;
   CStdString m_strNewSkinTheme;
 
-  CStdStringW m_strErrorMessage;
+  CStdString m_strErrorMessage;
 
   CStdString m_strOldTrackFormat;
   CStdString m_strOldTrackFormatRight;

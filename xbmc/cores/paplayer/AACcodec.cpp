@@ -9,7 +9,7 @@ AACCodec::AACCodec()
   m_BitsPerSample = 0;
   m_TotalTime = 0;
   m_Bitrate = 0;
-  m_CodecName = L"AAC";
+  m_CodecName = "AAC";
 
   m_Handle=AAC_INVALID_HANDLE;
 
@@ -77,7 +77,7 @@ bool AACCodec::Init(const CStdString &strFile, unsigned int filecache)
     else if (info.objecttype==AAC_LD)
       strType="LD";
     else if (info.objecttype == ALAC)
-      m_CodecName = L"ALAC";
+      m_CodecName = "ALAC";
 
     if (!strType.IsEmpty())
       m_CodecName.Format("%s-AAC", strType.c_str());
