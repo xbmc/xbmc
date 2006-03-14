@@ -1135,10 +1135,10 @@ int CGUIWindowPrograms::GetRegion(int iItem, bool bReload)
       iRegion = xbe.ExtractGameRegion(m_vecItems[iItem]->m_strPath);
       if (iRegion < 1 || iRegion > 7)
         iRegion = 0;
+      m_database.SetRegion(m_vecItems[iItem]->m_strPath,iRegion);
     }
     else
       iRegion = 0;
-    m_database.SetRegion(m_vecItems[iItem]->m_strPath,iRegion);
   }
   
   if (bReload)
