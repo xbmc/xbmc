@@ -68,7 +68,10 @@ bool CDAAPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
   m_thisHost = g_DaapClient.GetHost(url.GetHostName());
   if (!m_thisHost)  
     return false;
-  
+
+  // find out where we are in the folder hierarchy
+  m_currLevel = GetCurrLevel(strRoot);
+  CLog::Log(LOGDEBUG, "DAAPDirectory: Current Level is %i", m_currLevel);
 
   // if we have at least one database we should show it's contents
   if (m_thisHost->nDatabases)
@@ -77,12 +80,12 @@ bool CDAAPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
     //Store the first database
     g_DaapClient.m_iDatabase = m_thisHost->databases[0].id;
 
-    // Get the songs from the database if we haven't already
-    if (!m_artisthead)
-    {
-      m_currentSongItems = m_thisHost->dbitems[0].items;
-      m_currentSongItemCount = m_thisHost->dbitems[0].nItems;
+	m_currentSongItems = m_thisHost->dbitems[0].items;
+    m_currentSongItemCount = m_thisHost->dbitems[0].nItems;
 
+    // Get the songs from the database if we haven't already
+    if (!m_artisthead && (m_currLevel >= 0 && m_currLevel < 2))
+    {
       CLog::Log(LOGDEBUG, "Getting songs from the database.  Have %i", m_currentSongItemCount);
       // Add each artist and album to an array
       int c;
@@ -92,10 +95,7 @@ bool CDAAPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
       }
     }
 
-    // find out where we are in the folder hierarchy
-    m_currLevel = GetCurrLevel(strRoot);
-
-    CLog::Log(LOGDEBUG, "DAAPDirectory: Current Level is %i", m_currLevel);
+    
     if (m_currLevel < 0) // root, so show playlists
     {
       for (c = 0; c < m_thisHost->dbplaylists->nPlaylists; c++)
@@ -235,32 +235,36 @@ bool CDAAPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
       int c;
       for (c = 0; c < m_currentSongItemCount; c++)
       {
-        // if this song is for the current artist & album add it to the file list
-        if (m_currentSongItems[c].songartist == m_selectedArtist &&
-            m_currentSongItems[c].songalbum == m_selectedAlbum)
-        {
-          CLog::Log(LOGDEBUG, "DAAPDirectory: Adding item %s", m_currentSongItems[c].itemname);
-          CFileItem* pItem = new CFileItem(m_currentSongItems[c].itemname);
-          pItem->m_strPath.Format("daap://%s/%d.%s", m_thisHost->host, m_currentSongItems[c].id,
-                                  m_currentSongItems[c].songformat);
-          pItem->m_bIsFolder = false;
-          pItem->m_dwSize = m_currentSongItems[c].songsize;
+        // mt-daapd will sometimes give us null artist and album names
+	    if (m_currentSongItems[c].songartist && m_currentSongItems[c].songalbum)
+		{
+	      // if this song is for the current artist & album add it to the file list
+          if (m_currentSongItems[c].songartist == m_selectedArtist &&
+              m_currentSongItems[c].songalbum == m_selectedAlbum)
+          {
+            CLog::Log(LOGDEBUG, "DAAPDirectory: Adding item %s", m_currentSongItems[c].itemname);
+            CFileItem* pItem = new CFileItem(m_currentSongItems[c].itemname);
+            pItem->m_strPath.Format("daap://%s/%d.%s", m_thisHost->host, m_currentSongItems[c].id,
+                                    m_currentSongItems[c].songformat);
+            pItem->m_bIsFolder = false;
+            pItem->m_dwSize = m_currentSongItems[c].songsize;
 
-          pItem->m_musicInfoTag.SetURL(pItem->m_strPath);
+            pItem->m_musicInfoTag.SetURL(pItem->m_strPath);
 
-          pItem->m_musicInfoTag.SetTitle(m_currentSongItems[c].itemname);
-          pItem->m_musicInfoTag.SetArtist(m_selectedArtist);
-          pItem->m_musicInfoTag.SetAlbum(m_selectedAlbum);
+            pItem->m_musicInfoTag.SetTitle(m_currentSongItems[c].itemname);
+            pItem->m_musicInfoTag.SetArtist(m_selectedArtist);
+            pItem->m_musicInfoTag.SetAlbum(m_selectedAlbum);
 
-          pItem->m_musicInfoTag.SetTrackNumber(m_currentSongItems[c].songtracknumber);
-          pItem->m_musicInfoTag.SetPartOfSet(m_currentSongItems[c].songdiscnumber);
-          pItem->m_musicInfoTag.SetDuration((int) (m_currentSongItems[c].songtime / 1000));
-          pItem->m_musicInfoTag.SetLoaded(true);
+            pItem->m_musicInfoTag.SetTrackNumber(m_currentSongItems[c].songtracknumber);
+            pItem->m_musicInfoTag.SetPartOfSet(m_currentSongItems[c].songdiscnumber);
+            pItem->m_musicInfoTag.SetDuration((int) (m_currentSongItems[c].songtime / 1000));
+            pItem->m_musicInfoTag.SetLoaded(true);
 
-          items.Add(new CFileItem(*pItem));
-          vecCacheItems.Add(pItem);
+            items.Add(new CFileItem(*pItem));
+            vecCacheItems.Add(pItem);
+          }
         }
-      }
+	  }
     }
   }
 
@@ -296,14 +300,18 @@ void CDAAPDirectory::free_artists()
 
 void CDAAPDirectory::AddToArtistAlbum(char *artist_s, char *album_s)
 {
-  if (artist_s && album_s)
+  /*if (artist_s && album_s)
     CLog::Log(LOGDEBUG, "DAAP::AddToArtistAlbum(%s, %s)", artist_s, album_s);
   else if (artist_s)
     CLog::Log(LOGDEBUG, "DAAP::AddToArtistAlbum called with NULL album_s");
   else if (album_s)
     CLog::Log(LOGDEBUG, "DAAP::AddToArtistAlbum called with NULL artist_s");
   else
-    CLog::Log(LOGDEBUG, "DAAP::AddToArtistAlbum called with NULL artist_s and NULL album_s");
+    CLog::Log(LOGDEBUG, "DAAP::AddToArtistAlbum called with NULL artist_s and NULL album_s");*/
+
+  // mt-daapd will sometimes give us null artist and album names
+  if (!artist_s || !album_s) return;
+
   artistPTR *cur_artist = m_artisthead;
   albumPTR *cur_album = NULL;
   while (cur_artist)
