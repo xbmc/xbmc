@@ -869,7 +869,7 @@ float CDVDInputStreamNavigator::GetVideoAspectRatio()
   //and such. should be able to give us info that we can zoom in automatically
   //not sure what to do with it currently
 
-  printf("DVD - Aspect wanted: %d, Scale permissions: %d", iAspect, iPerm);
+  CLog::Log(LOGINFO, __FUNCTION__" - Aspect wanted: %d, Scale permissions: %d", iAspect, iPerm);
   switch(iAspect)
   {
     case 2: //4:3
