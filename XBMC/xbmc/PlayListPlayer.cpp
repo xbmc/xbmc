@@ -146,7 +146,7 @@ void CPlayListPlayer::PlayNext(bool bAutoPlay)
     }
   }
   Play(iSong, bAutoPlay);
-  g_partyModeManager.OnSongChange();
+  //g_partyModeManager.OnSongChange();
 }
 
 /// \brief Play previous entry in current playlist

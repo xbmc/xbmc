@@ -5,6 +5,17 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 15-03-2006 added: new info labels related to music party mode:
+    		musicpartymode.enabled - visibilty condition, true is party mode is active
+		musicpartymode.songsplayed - number of songs played
+		musicpartymode.matchingsongs - number of matching songs
+		musicpartymode.matchingsongspicked - number of matching songs picked already
+		musicpartymode.matchingsongsleft - number of unpicked matching songs
+		musicpartymode.relaxedsongspicked - number of unique songs picked with relaxed restrictions (to be used later)
+		musicpartymode.randomsongspicked - number of unique randomly picked songs
+ - 15-03-2006 changed: music party mode song history is now a function of the number of matching songs.
+			if there's less than 50 matching songs, there is no history.
+			otherwise the history is 1/2 the number of matching songs, up to 200 songs.
  - 14-03-2006 added: more exception handling in dvdplayer and generic exception handling in most threads, onexit will be called on an exception in process
  - 14-03-2006 fixed: some chapters from ogg files may not play
  - 14-03-2006 fixed: mt-daapd 0.2.4 now supported
