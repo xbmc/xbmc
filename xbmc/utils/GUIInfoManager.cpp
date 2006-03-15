@@ -195,6 +195,7 @@ extern char g_szTitleIP[32];
 #define SKIN_HAS_SETTING_START      510
 #define SKIN_HAS_SETTING_END        600 // allow 90
 
+#define WINDOW_IS_VISIBLE           9995
 #define WINDOW_NEXT                 9996
 #define WINDOW_PREVIOUS             9997
 #define WINDOW_IS_MEDIA             9998
@@ -497,6 +498,12 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
       ret = winID;
   }
   else if (strTest.Equals("window.ismedia")) return WINDOW_IS_MEDIA;
+  else if (strTest.Left(17).Equals("window.isvisible("))
+  {
+    int winID = g_buttonTranslator.TranslateWindowString(strTest.Mid(17, strTest.GetLength() - 18).c_str());
+    if (winID != WINDOW_INVALID)
+      return AddMultiInfo(GUIInfo(bNegate ? -WINDOW_IS_VISIBLE : WINDOW_IS_VISIBLE, winID, 0));
+  }
   else if (strTest.Left(16).Equals("window.previous("))
   {
     int winID = g_buttonTranslator.TranslateWindowString(strTest.Mid(16, strTest.GetLength() - 17).c_str());
@@ -1052,6 +1059,9 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindo
       break;
     case WINDOW_PREVIOUS:
       bReturn = (info.m_data1 == m_prevWindowID);
+      break;
+    case WINDOW_IS_VISIBLE:
+      bReturn = m_gWindowManager.IsWindowVisible(info.m_data1);
       break;
   }
   return (info.m_info < 0) ? !bReturn : bReturn;
