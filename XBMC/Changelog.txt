@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 14-03-2006 fixed: mt-daapd 0.2.4 now supported
+ - 14-03-2006 fixed: daap now uses mPlayer for playback (faster start time)
  - 14-03-2006 fixed: [ 1448284 ] No hidden pass when unlock
  - 14-03-2006 added: You can activate specific parts of the Kai window using ActivateWindow(XLinkKai,part) where part is Chat,Games,Buddies or Arenas.
  - 14-03-2006 fixed: possible wrong xbe region stored in program database (update myprograms6.db)
