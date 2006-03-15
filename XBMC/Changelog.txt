@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 15-03-2006 fixed: forgot to commit new nosefart dll a long time ago :)
  - 15-03-2006 added: Window.IsVisible bool condition.
  - 15-03-2006 fixed: Codec info could show on slideshow screensaver if it was last shown in fullscreen vis or video.
  - 15-03-2006 added: new info labels related to music party mode:
