@@ -11,7 +11,7 @@ OGGCodec::OGGCodec()
   m_BitsPerSample = 0;
   m_Bitrate = 0;
   m_CodecName = "OGG";
-  m_TimeOffset = 0;
+  m_TimeOffset = 0.0;
   m_CurrentStream=0;
   m_VorbisFile.datasource = NULL;
 }
@@ -80,7 +80,7 @@ bool OGGCodec::Init(const CStdString &strFile1, unsigned int filecache)
 
   //  Calculate the offset in secs where the bitstream starts
   for (int i=0; i<m_CurrentStream; ++i)
-    m_TimeOffset += (__int64)m_dll.ov_time_total(&m_VorbisFile, i);
+    m_TimeOffset += m_dll.ov_time_total(&m_VorbisFile, i);
 
   //  get file info
   vorbis_info* pInfo=m_dll.ov_info(&m_VorbisFile, m_CurrentStream);
@@ -118,7 +118,7 @@ bool OGGCodec::Init(const CStdString &strFile1, unsigned int filecache)
   }
 
   //  Seek to the logical bitstream to play
-  if (m_TimeOffset>0)
+  if (m_TimeOffset>0.0)
   {
     if (m_dll.ov_time_seek_page(&m_VorbisFile, m_TimeOffset)!=0)
     {
