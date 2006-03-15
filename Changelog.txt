@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 14-03-2006 fixed: some chapters from ogg files may not play
  - 14-03-2006 fixed: mt-daapd 0.2.4 now supported
  - 14-03-2006 fixed: daap now uses mPlayer for playback (faster start time)
  - 14-03-2006 fixed: [ 1448284 ] No hidden pass when unlock
