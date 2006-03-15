@@ -9,17 +9,14 @@
 #include "SmartPlaylist.h"
 
 #define QUEUE_DEPTH       10
-#define TIMER             30000L    // 30 seconds
-#define HISTORY_SIZE      25
-#define DB_MINIMUM        HISTORY_SIZE * 2
 
 CPartyModeManager g_partyModeManager;
 
 CPartyModeManager::CPartyModeManager(void)
 {
   m_bEnabled = false;
-  m_iLastUserSong = -1;
   m_strCurrentFilter = "";
+  ClearState();
 }
 
 CPartyModeManager::~CPartyModeManager(void)
@@ -34,14 +31,17 @@ bool CPartyModeManager::Enable()
     m_strCurrentFilter = playlist.GetWhereClause();
   else
     m_strCurrentFilter.Empty();
+  CLog::Log(LOGINFO, "PARTY MODE MANAGER: Registering filter:[%s]", m_strCurrentFilter.c_str());
 
+  ClearState();
   CMusicDatabase musicdatabase;
   if (musicdatabase.Open())
   {
-    if (musicdatabase.GetSongsCount(m_strCurrentFilter) < DB_MINIMUM)
+    m_iMatchingSongs = musicdatabase.GetSongsCount(m_strCurrentFilter);
+    if (m_iMatchingSongs < 1)
     {
       musicdatabase.Close();
-      OnError(16031, (CStdString)"Party mode needs atleast 50 songs in the database. Aborting.");
+      OnError(16031, (CStdString)"Party mode found no matching songs. Aborting.");
       return false;
     }
     if (!musicdatabase.InitialisePartyMode())
@@ -57,10 +57,17 @@ bool CPartyModeManager::Enable()
     return false;
   }
   musicdatabase.Close();
-  CLog::Log(LOGINFO,"PARTY MODE MANAGER: Party mode enabled!");
 
-  // clear any previous state
-  m_iLastUserSong = -1;
+  // calculate history size
+  if (m_iMatchingSongs < 50)
+    m_iHistory = 0;
+  else
+    m_iHistory = (int)(m_iMatchingSongs/2);
+  if (m_iHistory > 200)
+    m_iHistory = 200;
+
+  CLog::Log(LOGINFO,"PARTY MODE MANAGER: Matching songs = %i, History size = %i", m_iMatchingSongs, m_iHistory);
+  CLog::Log(LOGINFO,"PARTY MODE MANAGER: Party mode enabled!");
 
   // setup the playlist
   g_playlistPlayer.ClearPlaylist(PLAYLIST_MUSIC);
@@ -74,7 +81,7 @@ bool CPartyModeManager::Enable()
 
   // start playing
   g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_MUSIC);
-  g_playlistPlayer.Play(0);
+  Play(0);
 
   // open now playing window
   if (m_gWindowManager.GetActiveWindow() != WINDOW_MUSIC_PLAYLIST)
@@ -82,7 +89,6 @@ bool CPartyModeManager::Enable()
 
   // done
   m_bEnabled = true;
-  SendUpdateMessage();
   return true;
 }
 
@@ -92,11 +98,13 @@ void CPartyModeManager::Disable()
   CLog::Log(LOGINFO,"PARTY MODE MANAGER: Party mode disabled.");
 }
 
-void CPartyModeManager::OnSongChange()
+void CPartyModeManager::OnSongChange(bool bUpdatePlayed /* = false */)
 {
   if (!IsEnabled())
     return;
   Process();
+  if (bUpdatePlayed)
+    m_iSongsPlayed++;
 }
 
 void CPartyModeManager::AddUserSongs(CPlayList& playlistTemp, bool bPlay /* = false */)
@@ -144,22 +152,24 @@ void CPartyModeManager::Process()
   ReapSongs();
   MovePlaying();
   AddRandomSongs();
-  Sleep(100);
+  UpdateStats();
   SendUpdateMessage();
 }
 
-bool CPartyModeManager::AddRandomSongs()
+bool CPartyModeManager::AddRandomSongs(int iSongs /* = 0 */)
 {
   CPlayList& playlist = g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC);
   int iMissingSongs = QUEUE_DEPTH - playlist.size();
-  if (iMissingSongs > 0)
+  if (iSongs <= 0)
+    iSongs = iMissingSongs;
+  if (iSongs > 0)
   {
     // add songs to fill queue
     CMusicDatabase musicdatabase;
     if (musicdatabase.Open())
     {
       CFileItemList items;
-      if (musicdatabase.PartyModeGetRandomSongs(items, iMissingSongs, HISTORY_SIZE, m_strCurrentFilter))
+      if (musicdatabase.PartyModeGetRandomSongs(items, iSongs, m_iHistory, m_strCurrentFilter))
       {
         for (int i = 0; i < items.Size(); i++)
           Add(items[i]);
@@ -260,15 +270,73 @@ void CPartyModeManager::OnError(int iError, CStdString& strLogMessage)
   SendUpdateMessage();
 }
 
-int CPartyModeManager::GetUniqueRandomSongsLeft()
+int CPartyModeManager::GetSongsPlayed()
 {
-  int iSongs = -1;
-  if (IsEnabled())
+  if (!IsEnabled())
+    return -1;
+  return m_iSongsPlayed;
+}
+
+int CPartyModeManager::GetMatchingSongs()
+{
+  if (!IsEnabled())
+    return -1;
+  return m_iMatchingSongs;
+}
+
+int CPartyModeManager::GetMatchingSongsPicked()
+{
+  if (!IsEnabled())
+    return -1;
+  return m_iMatchingSongsPicked;
+}
+
+int CPartyModeManager::GetMatchingSongsLeft()
+{
+  if (!IsEnabled())
+    return -1;
+  return m_iMatchingSongsLeft;
+}
+
+int CPartyModeManager::GetRelaxedSongs()
+{
+  if (!IsEnabled())
+    return -1;
+  return m_iRelaxedSongs;
+}
+
+int CPartyModeManager::GetRandomSongs()
+{
+  if (!IsEnabled())
+    return -1;
+  return m_iRandomSongs;
+}
+
+void CPartyModeManager::ClearState()
+{
+  m_iLastUserSong = -1;
+  m_iHistory = -1;
+  m_iSongsPlayed = 0;
+  m_iMatchingSongs = 0;
+  m_iMatchingSongsPicked = 0;
+  m_iMatchingSongsLeft = 0;
+  m_iRelaxedSongs = 0;
+  m_iRandomSongs = 0;
+}
+
+void CPartyModeManager::UpdateStats()
+{
+  // get database statistics
+  CMusicDatabase musicdatabase;
+  if (musicdatabase.Open())
   {
-    CMusicDatabase musicdatabase;
-    if (musicdatabase.Open())
-      iSongs = musicdatabase.PartyModeGetUniqueRandomSongsLeft(m_strCurrentFilter);
-    musicdatabase.Close();
+    m_iMatchingSongsPicked = musicdatabase.PartyModeGetMatchingSongCount();
+    if (m_iMatchingSongs > m_iMatchingSongsPicked)
+      m_iMatchingSongsLeft = m_iMatchingSongs - m_iMatchingSongsPicked;
+    else
+      m_iMatchingSongsLeft = 0;
+    m_iRelaxedSongs = musicdatabase.PartyModeGetRelaxedSongCount();
+    m_iRandomSongs = musicdatabase.PartyModeGetRandomSongCount();
   }
-  return iSongs;
+  musicdatabase.Close();
 }

@@ -136,9 +136,10 @@ public:
   bool GetRandomSong(CFileItem* item, long& lSongId, const CStdString& strWhere);
   bool GetRandomSongs(CFileItemList& items, int iNumSongs, const CStdString& strWhere);
   bool PartyModeGetRandomSongs(CFileItemList& items, int iNumSongs, int iHistory, const CStdString& strWhere);
-  int PartyModeGetUniqueRandomSongsLeft(const CStdString& strWhere);
-  int PartyModeGetTotalRandomSongCount(bool bUnique);
-  int PartyModeGetRandomSongCount(bool bUnique, bool bRelaxed = false);
+  int PartyModeGetMatchingSongCount(bool bUnique = true);
+  int PartyModeGetRandomSongCount(bool bUnique = true);
+  int PartyModeGetRelaxedSongCount(bool bUnique = true);
+  int PartyModeGetRandomSongCount(bool bUnique, bool bRelaxed = false, bool bOnlyRelaxed = false);
   int GetSongsCount();
   int GetSongsCount(const CStdString& strWhere);
   bool GetPathFromAlbumId(long idAlbum, CStdString& strPath);
