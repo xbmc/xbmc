@@ -58,7 +58,8 @@ public:
   bool IsRouted(bool includeFadeOuts = false) const;
   bool IsModelessAvailable() const;
   void UpdateModelessVisibility();
-  bool IsWindowActive(DWORD dwID) const;
+  bool IsWindowActive(DWORD dwID, bool ignoreClosing = true) const;
+  bool IsWindowVisible(DWORD id) const;
   bool IsOverlayAllowed() const;
   void ShowOverlay(bool bOnOff);
 
