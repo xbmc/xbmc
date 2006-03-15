@@ -72,6 +72,8 @@ CDVDPlayer::~CDVDPlayer()
 
 bool CDVDPlayer::OpenFile(const CFileItem& file, __int64 iStartTime)
 {
+  try {
+
   CStdString strFile = file.m_strPath;
 
   CLog::Log(LOGNOTICE, "DVDPlayer: Opening: %s", strFile.c_str());
@@ -117,6 +119,13 @@ bool CDVDPlayer::OpenFile(const CFileItem& file, __int64 iStartTime)
 
   // m_bPlaying could be set to false in the meantime, which indicates an error
   return (bProcessThreadIsAlive && !m_bStop);
+
+  }
+  catch(...)
+  {
+    CLog::Log(LOGERROR, __FUNCTION__" - Exception thrown on open");
+    return false;
+  }
 }
 
 bool CDVDPlayer::CloseFile()
@@ -181,11 +190,15 @@ void CDVDPlayer::Process()
   }
 
   CLog::Log(LOGNOTICE, "Creating Demuxer");
-  m_pDemuxer = CDVDFactoryDemuxer::CreateDemuxer(m_pInputStream);
-  if (!m_pDemuxer || !m_pDemuxer->Open(m_pInputStream))
-  {
-    CLog::Log(LOGERROR, "Demuxer: Error opening, demuxer");
-    // inputstream and the demuxer will be destroyed in OnExit()
+  try {
+    m_pDemuxer = CDVDFactoryDemuxer::CreateDemuxer(m_pInputStream);
+    if (!m_pDemuxer || !m_pDemuxer->Open(m_pInputStream))
+    {
+      throw;
+    }
+  }
+  catch(...) {
+    CLog::Log(LOGERROR, __FUNCTION__" - Demuxer: Error opening, demuxer");
     return;
   }
 
@@ -193,8 +206,11 @@ void CDVDPlayer::Process()
   for (int i = 0; i < m_pDemuxer->GetNrOfStreams(); i++)
   {
     CDemuxStream* pStream = m_pDemuxer->GetStream(i);
-    if (pStream->type == STREAM_AUDIO && audio_index < 0) audio_index = i;
-    else if (pStream->type == STREAM_VIDEO && video_index < 0) video_index = i;
+    if (pStream)
+    {
+      if (pStream->type == STREAM_AUDIO && audio_index < 0) audio_index = i;
+      else if (pStream->type == STREAM_VIDEO && video_index < 0) video_index = i;
+    }
   }
 
   //m_dvdPlayerSubtitle.Init();
@@ -279,10 +295,8 @@ void CDVDPlayer::Process()
       // us to read again
       if (m_bReadAgain)
       {
-        if (pPacket)
-        {
-          CDVDDemuxUtils::FreeDemuxPacket(pPacket);
-        }
+        CDVDDemuxUtils::FreeDemuxPacket(pPacket);
+        pPacket = NULL;
         continue;
       }
 
@@ -315,20 +329,15 @@ void CDVDPlayer::Process()
 
       iErrorCounter = 0;
 
-      // process subtitles
-      if (pPacket->dts != DVD_NOPTS_VALUE)
-      {
-        //m_dvdPlayerSubtitle.Process(pPacket->dts);
-      }
-
-
       CDemuxStream *pStream = m_pDemuxer->GetStream(pPacket->iStreamId);
 
       if( !pStream ) 
       {
-        CLog::Log(LOGERROR, "CDVDPlayer::Process - Error demux packet doesn't belong to any stream");
+        CLog::Log(LOGERROR, __FUNCTION__" - Error demux packet doesn't belong to any stream");
         continue;
       }
+
+      try {
 
       if (m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
       {
@@ -340,14 +349,13 @@ void CDVDPlayer::Process()
         && pStream->iId != m_CurrentSubtitle.id )
         {
           // dvd subtitle stream changed
-          CloseSubtitleStream( true );
           OpenSubtitleStream( pStream->iId );
         }
         else if( pStream->type == STREAM_AUDIO
         && pStream->iPhysicalId == m_dvd.iSelectedAudioStream
         && pStream->iId != m_CurrentAudio.id )
         {
-          // dvd audio stream changed,
+          // dvd audio stream changed,          
           OpenAudioStream( pStream->iId );
         }
         else if( pStream->type == STREAM_VIDEO
@@ -355,7 +363,6 @@ void CDVDPlayer::Process()
         && pStream->iId != m_CurrentVideo.id )
         {
           // dvd video stream changed
-          CloseVideoStream( true );
           OpenVideoStream(pStream->iId);
         }
 
@@ -376,10 +383,16 @@ void CDVDPlayer::Process()
         if (m_CurrentSubtitle.id >= 0 && m_pDemuxer->GetStream(m_CurrentSubtitle.id) == NULL ) CloseSubtitleStream(false);
         if (m_CurrentVideo.id >= 0    && m_pDemuxer->GetStream(m_CurrentVideo.id) == NULL)     CloseVideoStream(false);
       }
-
+      }
+      catch(...) {
+        CLog::Log(LOGERROR, __FUNCTION__" - Exception thrown when attempting to open stream");
+        break;
+      }
 
       /* process packet if it belongs to selected stream. for dvd's down't allow automatic opening of streams*/
       LockStreams();
+
+      try
       {
         if (pPacket->iStreamId == m_CurrentAudio.id && pStream->type == STREAM_AUDIO)
         {
@@ -395,6 +408,12 @@ void CDVDPlayer::Process()
         }
         else CDVDDemuxUtils::FreeDemuxPacket(pPacket); // free it since we won't do anything with it
       }
+      catch(...)
+      {
+        CLog::Log(LOGERROR, __FUNCTION__" - Exception thrown when processing demux packet");
+        break;
+      }
+
       UnlockStreams();
     }
   }
@@ -572,6 +591,8 @@ void CDVDPlayer::OnExit()
 {
   g_dvdPerformanceCounter.DisableMainPerformance();
 
+  try {
+
   CLog::Log(LOGNOTICE, "CDVDPlayer::OnExit()");
 
   // close each stream
@@ -612,7 +633,15 @@ void CDVDPlayer::OnExit()
   if (!m_bAbortRequest) m_callback.OnPlayBackEnded();
 
   m_messenger.End();
-  
+
+  }
+  catch(...) {
+    CLog::Log(LOGERROR, __FUNCTION__" - Exception thrown when trying to close down player, memory leak will follow");
+    m_pInputStream = NULL;
+    m_pDemuxer = NULL;   
+  }
+
+
   // set event to inform openfile something went wrong in case openfile is still waiting for this event
   SetEvent(m_hReadyEvent);
 }
@@ -620,64 +649,63 @@ void CDVDPlayer::OnExit()
 void CDVDPlayer::HandleMessages()
 {
   CDVDMsg* pMsg;
-  
+
   MsgQueueReturnCode ret = m_messenger.Get(&pMsg, 0);
    
   while (ret == MSGQ_OK)
   {
-    if (pMsg->IsType(CDVDMsg::PLAYER_SEEK))
-    {
-      CDVDMsgPlayerSeek* pMsgPlayerSeek = (CDVDMsgPlayerSeek*)pMsg;
-      
-      if (m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
+    LockStreams();
+
+    try {
+
+      if (pMsg->IsType(CDVDMsg::PLAYER_SEEK))
       {
-        // We can't seek in a menu
-        if (!IsInMenu())
+        CDVDMsgPlayerSeek* pMsgPlayerSeek = (CDVDMsgPlayerSeek*)pMsg;
+        
+        if (m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
         {
-          // need to get the seek based on file positition working in CDVDInputStreamNavigator
-          // so that demuxers can control the stream (seeking in this case)
-          // for now use time based seeking
-          CLog::Log(LOGDEBUG, "CDVDInputStreamNavigator seek to: %d", pMsgPlayerSeek->GetTime());
-          if (((CDVDInputStreamNavigator*)m_pInputStream)->Seek(pMsgPlayerSeek->GetTime()))
+          // We can't seek in a menu
+          if (!IsInMenu())
           {
-            CLog::Log(LOGDEBUG, "CDVDInputStreamNavigator seek to: %d, succes", pMsgPlayerSeek->GetTime());
-            //FlushBuffers(); buffers will be flushed by a hop from dvdnavigator
+            // need to get the seek based on file positition working in CDVDInputStreamNavigator
+            // so that demuxers can control the stream (seeking in this case)
+            // for now use time based seeking
+            CLog::Log(LOGDEBUG, "CDVDInputStreamNavigator seek to: %d", pMsgPlayerSeek->GetTime());
+            if (((CDVDInputStreamNavigator*)m_pInputStream)->Seek(pMsgPlayerSeek->GetTime()))
+            {
+              CLog::Log(LOGDEBUG, "CDVDInputStreamNavigator seek to: %d, succes", pMsgPlayerSeek->GetTime());
+              //FlushBuffers(); buffers will be flushed by a hop from dvdnavigator
+            }
+            else CLog::Log(LOGWARNING, "error while seeking");
+          }
+          else CLog::Log(LOGWARNING, "can't seek in a menu");
+        }
+        else
+        {
+          CLog::Log(LOGDEBUG, "demuxer seek to: %d", pMsgPlayerSeek->GetTime());
+          if (m_pDemuxer && m_pDemuxer->Seek(pMsgPlayerSeek->GetTime()))
+          {
+            CLog::Log(LOGDEBUG, "demuxer seek to: %d, succes", pMsgPlayerSeek->GetTime());
+            FlushBuffers();
           }
           else CLog::Log(LOGWARNING, "error while seeking");
         }
-        else CLog::Log(LOGWARNING, "can't seek in a menu");
+
+        // set flag to indicate we have finished a seeking request
+        g_infoManager.m_performingSeek = false;
       }
-      else
+      else if (pMsg->IsType(CDVDMsg::DEMUXER_RESET))
       {
-        CLog::Log(LOGDEBUG, "demuxer seek to: %d", pMsgPlayerSeek->GetTime());
-        if (m_pDemuxer->Seek(pMsgPlayerSeek->GetTime()))
-        {
-          CLog::Log(LOGDEBUG, "demuxer seek to: %d, succes", pMsgPlayerSeek->GetTime());
-          FlushBuffers();
-        }
-        else CLog::Log(LOGWARNING, "error while seeking");
+          m_CurrentAudio.stream = NULL;
+          m_CurrentVideo.stream = NULL;
+          m_CurrentSubtitle.stream = NULL;
+
+          // we need to reset the demuxer, probably because the streams have changed
+          m_pDemuxer->Reset();
       }
-
-      // set flag to indicate we have finished a seeking request
-      g_infoManager.m_performingSeek = false;
-    }
-    else if (pMsg->IsType(CDVDMsg::DEMUXER_RESET))
-    {
-        m_CurrentAudio.stream = NULL;
-        m_CurrentVideo.stream = NULL;
-        m_CurrentSubtitle.stream = NULL;
-
-        // we need to reset the demuxer, probably because the streams have changed
-        m_pDemuxer->Reset();
-    }
-    else if (pMsg->IsType(CDVDMsg::PLAYER_SET_AUDIOSTREAM))
-    {
-      CDVDMsgPlayerSetAudioStream* pMsgPlayerSetAudioStream = (CDVDMsgPlayerSetAudioStream*)pMsg;
-
-      CDemuxStream* pStream = m_pDemuxer->GetStreamFromAudioId(pMsgPlayerSetAudioStream->GetStreamId());
-      if (pStream)
+      else if (pMsg->IsType(CDVDMsg::PLAYER_SET_AUDIOSTREAM))
       {
-        LockStreams();
+        CDVDMsgPlayerSetAudioStream* pMsgPlayerSetAudioStream = (CDVDMsgPlayerSetAudioStream*)pMsg;        
 
         CloseAudioStream(false);
 
@@ -694,45 +722,44 @@ void CDVDPlayer::HandleMessages()
           CDemuxStream* pStream = m_pDemuxer->GetStreamFromAudioId(pMsgPlayerSetAudioStream->GetStreamId());
           if( pStream ) OpenAudioStream(pStream->iId);
         }
+      }
+      else if (pMsg->IsType(CDVDMsg::PLAYER_SET_SUBTITLESTREAM))
+      {
+        CDVDMsgPlayerSetSubtitleStream* pMsgPlayerSetSubtileStream = (CDVDMsgPlayerSetSubtitleStream*)pMsg;
 
-        UnlockStreams();
+        CloseSubtitleStream(false);
+
+        // for dvd's we set it using the navigater, it will then send a change subtitle to the dvdplayer
+        if (m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
+        {
+          m_dvd.iSelectedSPUStream = -1;
+
+          CDVDInputStreamNavigator* pStream = (CDVDInputStreamNavigator*)m_pInputStream;
+          pStream->SetActiveSubtitleStream(pMsgPlayerSetSubtileStream->GetStreamId());
+        }
+        else if (m_pDemuxer)
+        {
+          CDemuxStream* pStream = m_pDemuxer->GetStreamFromSubtitleId(pMsgPlayerSetSubtileStream->GetStreamId());
+          if (pStream) OpenSubtitleStream(pStream->iId);
+        }
+        
+      }
+      else if (pMsg->IsType(CDVDMsg::PLAYER_SET_STATE))
+      {
+        CDVDMsgPlayerSetState* pMsgPlayerSetState = (CDVDMsgPlayerSetState*)pMsg;
+
+        if (m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
+        {
+          ((CDVDInputStreamNavigator*)m_pInputStream)->SetNavigatorState(pMsgPlayerSetState->GetState());
+        }
       }
     }
-    else if (pMsg->IsType(CDVDMsg::PLAYER_SET_SUBTITLESTREAM))
-    {
-      CDVDMsgPlayerSetSubtitleStream* pMsgPlayerSetSubtileStream = (CDVDMsgPlayerSetSubtitleStream*)pMsg;
-
-      LockStreams();
-
-      CloseSubtitleStream(false);
-
-      // for dvd's we set it using the navigater, it will then send a change subtitle to the dvdplayer
-      if (m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
-      {
-        m_dvd.iSelectedSPUStream = -1;
-
-        CDVDInputStreamNavigator* pStream = (CDVDInputStreamNavigator*)m_pInputStream;
-        pStream->SetActiveSubtitleStream(pMsgPlayerSetSubtileStream->GetStreamId());
-      }
-      else if (m_pDemuxer)
-      {
-        CDemuxStream* pStream = m_pDemuxer->GetStreamFromSubtitleId(pMsgPlayerSetSubtileStream->GetStreamId());
-        if (pStream) OpenSubtitleStream(pStream->iId);
-      }
-
-      UnlockStreams();
+    catch(...) {
+      CLog::Log(LOGERROR, __FUNCTION__" - Exception thrown when handling message");
     }
-    else if (pMsg->IsType(CDVDMsg::PLAYER_SET_STATE))
-    {
-      CDVDMsgPlayerSetState* pMsgPlayerSetState = (CDVDMsgPlayerSetState*)pMsg;
-
-      if (m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
-      {
-        ((CDVDInputStreamNavigator*)m_pInputStream)->SetNavigatorState(pMsgPlayerSetState->GetState());
-      }
-    }
-
-
+    
+    UnlockStreams();
+    
     pMsg->Release();
     ret = m_messenger.Get(&pMsg, 0);
   }
@@ -1165,6 +1192,8 @@ void CDVDPlayer::RenderSubtitles()
 
 bool CDVDPlayer::OpenAudioStream(int iStream)
 {
+  if( m_CurrentAudio.id >= 0 ) CloseAudioStream( true );
+
   CLog::Log(LOGNOTICE, "Opening audio stream: %i", iStream);
 
   CDemuxStream* pStream = m_pDemuxer->GetStream(iStream);
@@ -1198,15 +1227,24 @@ bool CDVDPlayer::OpenAudioStream(int iStream)
   }
 
   CDVDStreamInfo hint(*pStream, true);
-  if( m_CurrentAudio.id >= 0 )
-  {
-    CDVDStreamInfo* phint = new CDVDStreamInfo(hint);
-    m_dvdPlayerAudio.SendMessage(new CDVDMsgGeneralStreamChange(phint));
+//  if( m_CurrentAudio.id >= 0 )
+//  {
+//    CDVDStreamInfo* phint = new CDVDStreamInfo(hint);
+//    m_dvdPlayerAudio.SendMessage(new CDVDMsgGeneralStreamChange(phint));
+//  }
+  bool success = false;
+  try {
+    success = m_dvdPlayerAudio.OpenStream( hint );
   }
-  else if (!m_dvdPlayerAudio.OpenStream( hint ) )
+  catch(...) {
+    CLog::Log(LOGERROR, __FUNCTION__" - Exception thrown in player");
+    success = false;
+  }
+
+  if (!success)
   {
     /* mark stream as disabled, to disallaw further attempts*/
-    CLog::Log(LOGWARNING, "CDVDPlayer::OpenAudioStream - Unsupported stream %d. Stream disabled.", iStream);
+    CLog::Log(LOGWARNING, __FUNCTION__" - Unsupported stream %d. Stream disabled.", iStream);
     pStream->disabled = true;
 
     return false;
@@ -1224,6 +1262,8 @@ bool CDVDPlayer::OpenAudioStream(int iStream)
 
 bool CDVDPlayer::OpenVideoStream(int iStream)
 {
+  if( m_CurrentVideo.id >= 0 ) CloseVideoStream( true );
+
   CLog::Log(LOGNOTICE, "Opening video stream: %i", iStream);
 
   CDemuxStream* pStream = m_pDemuxer->GetStream(iStream);
@@ -1245,10 +1285,19 @@ bool CDVDPlayer::OpenVideoStream(int iStream)
 
   CDVDStreamInfo hint(*pStream, true);
 
-  if (!m_dvdPlayerVideo.OpenStream(hint))
+  bool success = false;
+  try {    
+    success = m_dvdPlayerVideo.OpenStream(hint);
+  }
+  catch (...) {
+    CLog::Log(LOGERROR, __FUNCTION__" - Exception thrown in player");
+    success = false;
+  }
+
+  if (!success)
   {
     // mark stream as disabled, to disallaw further attempts
-    CLog::Log(LOGWARNING, "CDVDPlayer::OpenVideoStream - Unsupported stream %d. Stream disabled.", iStream);
+    CLog::Log(LOGWARNING, __FUNCTION__" - Unsupported stream %d. Stream disabled.", iStream);
     pStream->disabled = true;
     return false;
   }
@@ -1266,6 +1315,8 @@ bool CDVDPlayer::OpenVideoStream(int iStream)
 
 bool CDVDPlayer::OpenSubtitleStream(int iStream)
 {
+  if( m_CurrentSubtitle.id >= 0 ) CloseSubtitleStream(true);
+
   CDemuxStream* pStream = m_pDemuxer->GetStream(iStream);
 
   if( !pStream ) return false;

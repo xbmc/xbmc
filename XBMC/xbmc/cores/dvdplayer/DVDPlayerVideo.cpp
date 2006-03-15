@@ -339,8 +339,16 @@ void CDVDPlayerVideo::Process()
 
             EOUTPUTSTATUS iResult;
             do 
-            {              
-              iResult = OutputPicture(&picture, pts);
+            {
+              try 
+              {
+                iResult = OutputPicture(&picture, pts);
+              }
+              catch (...)
+              {
+                CLog::Log(LOGERROR, __FUNCTION__" - Exception caught when outputing picture");
+                iResult = EOS_ABORT;
+              }
 
               if (iResult == EOS_ABORT) break;
 
@@ -381,9 +389,16 @@ void CDVDPlayerVideo::Process()
         // if the decoder needs more data, we just break this loop
         // and try to get more data from the videoQueue
         if (iDecoderState & VC_BUFFER) break;
-
-        // the decoder didn't need more data, flush the remaning buffer
-        iDecoderState = m_pVideoCodec->Decode(NULL, NULL);
+        try
+        {
+          // the decoder didn't need more data, flush the remaning buffer
+          iDecoderState = m_pVideoCodec->Decode(NULL, NULL);
+        }
+        catch(...)
+        {
+          CLog::Log(LOGERROR, __FUNCTION__" - Exception caught when decoding data");
+          iDecoderState = VC_ERROR;
+        }
       }
 
       // if decoder had an error, tell it to reset to avoid more problems
