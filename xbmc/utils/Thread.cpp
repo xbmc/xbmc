@@ -84,9 +84,41 @@ DWORD WINAPI CThread::staticThread(LPVOID* data)
 
   CThread* pThread = (CThread*)(data);
   bool bDelete( pThread->IsAutoDelete() );
-  pThread->OnStartup();
-  pThread->Process();
-  pThread->OnExit();
+  
+  __try 
+  {
+    pThread->OnStartup();
+  }
+  __except (EXCEPTION_EXECUTE_HANDLER)
+  {
+    CLog::Log(LOGERROR, __FUNCTION__" - Unhandled exception caught in thread startup, aborting");
+    if( bDelete )
+    {
+      delete pThread;
+      _endthreadex(123);
+      return 0;
+    }
+
+  }
+
+  __try 
+  {
+    pThread->Process();
+  }
+  __except (EXCEPTION_EXECUTE_HANDLER) 
+  {
+    CLog::Log(LOGERROR, __FUNCTION__" - Unhandled exception caught in thread process, attemping cleanup in OnExit"); 
+  }
+
+  __try
+  {
+    pThread->OnExit();
+  }
+  __except (EXCEPTION_EXECUTE_HANDLER)
+  {
+    CLog::Log(LOGERROR, __FUNCTION__" - Unhandled exception caught in thread exit"); 
+  }
+
   pThread->m_eventStop.Set();
   if ( bDelete )
   {
