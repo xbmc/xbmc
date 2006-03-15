@@ -553,23 +553,28 @@ int CGUIWindowManager::GetActiveWindow() const
   return WINDOW_INVALID;
 }
 
-bool CGUIWindowManager::IsWindowActive(DWORD dwID) const
+bool CGUIWindowManager::IsWindowActive(DWORD dwID, bool ignoreClosing /* = true */) const
 {
   if (GetActiveWindow() == dwID) return true;
   // run through the modal + modeless windows
   for (unsigned int i = 0; i < m_vecModalWindows.size(); i++)
   {
     CGUIWindow *pWindow = m_vecModalWindows[i];
-    if (pWindow->GetID() == dwID && !pWindow->IsAnimating(ANIM_TYPE_WINDOW_CLOSE))
+    if (pWindow->GetID() == dwID && (!ignoreClosing || !pWindow->IsAnimating(ANIM_TYPE_WINDOW_CLOSE)))
       return true;
   }
   for (unsigned int i = 0; i < m_vecModelessWindows.size(); i++)
   {
     CGUIWindow *pWindow = m_vecModelessWindows[i];
-    if (pWindow->GetID() == dwID && !pWindow->IsAnimating(ANIM_TYPE_WINDOW_CLOSE))
+    if (pWindow->GetID() == dwID && (!ignoreClosing || !pWindow->IsAnimating(ANIM_TYPE_WINDOW_CLOSE)))
       return true;
   }
   return false; // window isn't active
+}
+
+bool CGUIWindowManager::IsWindowVisible(DWORD id) const
+{
+  return IsWindowActive(id, false);
 }
 
 void CGUIWindowManager::LoadNotOnDemandWindows()

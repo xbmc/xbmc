@@ -3463,9 +3463,11 @@ void CApplication::ActivateScreenSaver()
     if(!IsPlayingVideo())
     {
       fFadeLevel = 1.f;
-      //g_applicationMessenger.PictureSlideShow(g_guiSettings.GetString("ScreenSaver.SlideShowPath"));
+      // reset our codec info - don't want that on screen
+      g_infoManager.SetShowCodec(false);
       g_applicationMessenger.PictureSlideShow(g_stSettings.szScreenSaverSlideShowPath, true);
-    }else return;
+    }
+    else return;
   }
   else if (strScreenSaver == "Dim")
   {
