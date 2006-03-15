@@ -3765,7 +3765,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
         m_itemCurrentFile = item;
       }
       g_infoManager.SetCurrentItem(m_itemCurrentFile);
-      g_partyModeManager.OnSongChange();
+      g_partyModeManager.OnSongChange(true);
 
       if (IsPlayingAudio())
       {
