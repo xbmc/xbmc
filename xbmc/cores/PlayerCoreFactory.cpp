@@ -82,6 +82,13 @@ void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecC
     vecCores.push_back(EPC_PAPLAYER);
     bPAPlayer = true;
   }
+
+  if (url.GetProtocol().Equals("daap"))		// mplayer is better for daap
+  {
+    vecCores.push_back(EPC_MPLAYER);
+    bMPlayer = true;
+  }
+
   //Only mplayer can handle internetstreams for now
   //and daap bookmarks
   if ( item.IsInternetStream() )

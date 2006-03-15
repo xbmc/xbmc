@@ -426,7 +426,11 @@ __int64 CFileDAAP::Seek(__int64 iFilePosition, int iWhence)
   }
   else
   {
-    StopStreaming();
+    return -1;
+
+	// seeking in daap doesn't play nice
+
+    /*StopStreaming();
     m_DataBuffer.Clear();
 
     m_filePos = nextPos;
@@ -434,7 +438,7 @@ __int64 CFileDAAP::Seek(__int64 iFilePosition, int iWhence)
     if( StartStreaming() )
       return m_filePos;
     else
-      return -1;
+      return -1;*/
   }
   
 }
