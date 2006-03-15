@@ -86,6 +86,7 @@ public:
   CStdString GetMusicLabel(int item);
   CStdString GetVideoLabel(int item);
   CStdString GetPlaylistLabel(int item);
+  CStdString GetMusicPartyModeLabel(int item);
   string GetFreeSpace(int drive, bool shortText = false);
   __int64 GetPlayTime();  // in ms
   CStdString GetCurrentPlayTime();

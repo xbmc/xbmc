@@ -1278,7 +1278,7 @@
   <string><id>16027</id><value>Too many consecutive failed items</value></string>
 
   <string><id>16030</id><value>Party Mode mode aborted.</value></string>
-  <string><id>16031</id><value>Too few songs in the database.</value></string>
+  <string><id>16031</id><value>No matching songs in the database.</value></string>
   <string><id>16032</id><value>Could not initialise database.</value></string>
   <string><id>16033</id><value>Could not open database.</value></string>
   <string><id>16034</id><value>Could not get songs from database.</value></string>

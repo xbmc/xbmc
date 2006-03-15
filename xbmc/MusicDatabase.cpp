@@ -4066,13 +4066,18 @@ bool CMusicDatabase::PartyModeGetRandomSongs(CFileItemList& items, int iNumSongs
 
   // build where clause
   CStdString strWhereTemp;
+  // ignore filter if restrictions are relaxed
   if (!bRelaxRestrictions)
     strWhereTemp = strWhere;
-  if (!strWhereTemp.IsEmpty())
-    strWhereTemp += " and ";
-  else
-    strWhereTemp = "where ";
-  strWhereTemp += strHistory;
+  // add history if necessary
+  if (iHistory > 0)
+  {
+    if (!strWhereTemp.IsEmpty())
+      strWhereTemp += " and ";
+    else
+      strWhereTemp = "where ";
+    strWhereTemp += strHistory;
+  }
 
   for (int i = 0; i < iNumSongs; i++)
   {
@@ -4230,33 +4235,43 @@ bool CMusicDatabase::UpdatePartyMode(long lSongId, bool bRelaxRestrictions)
   return true;
 }
 
-int CMusicDatabase::PartyModeGetUniqueRandomSongsLeft(const CStdString& strWhere)
+int CMusicDatabase::PartyModeGetMatchingSongCount(bool bUnique /* = true */)
 {
-  int iReturn = 0;
-  int iTotalSongs = GetSongsCount(strWhere);
-  int iUniqueSongs = PartyModeGetRandomSongCount(true);
-  if (iTotalSongs > 0 && iUniqueSongs > 0 && (iTotalSongs > iUniqueSongs))
-    iReturn = (iTotalSongs - iUniqueSongs);
-  return iReturn;
+  return PartyModeGetRandomSongCount(bUnique, false, false);
 }
 
-int CMusicDatabase::PartyModeGetTotalRandomSongCount(bool bUnique)
+int CMusicDatabase::PartyModeGetRelaxedSongCount(bool bUnique /* = true */)
 {
-  return PartyModeGetRandomSongCount(bUnique, true);
+  return PartyModeGetRandomSongCount(bUnique, true, true);
 }
 
-int CMusicDatabase::PartyModeGetRandomSongCount(bool bUnique, bool bRelaxed /* = false */)
+int CMusicDatabase::PartyModeGetRandomSongCount(bool bUnique /* = true */)
+{
+  return PartyModeGetRandomSongCount(bUnique, true, false);
+}
+
+int CMusicDatabase::PartyModeGetRandomSongCount(bool bUnique, bool bRelaxed /* = false */, bool bOnlyRelaxed /* = false */)
 {
   try
   {
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
-    CStdString strQuery = "select count(partymode.idSong) as NumSongs from partymode";
-    if (bRelaxed)
-      strQuery += " where partymode.bRelaxedRestrictions = 'false'";
+    // query types:
+    // unique: select count(*) as NumSongs from (select distinct partymode.idsong from partymode [where partymode.bRelaxedRestrictions = x])
+    // not unique: select count(*) as NumSongs from partymode [where partymode.bRelaxedRestrictions = x]
+
+    CStdString strQuery = "select count(*) as NumSongs from ";
     if (bUnique)
-      strQuery += " group by partymode.songid";
+      strQuery += "(select distinct partymode.idsong from ";
+    strQuery += "partymode ";
+    // make bOnlyRelaxed and bRelaxed mutually exclusive
+    if (bOnlyRelaxed)
+      strQuery += " where partymode.bRelaxedRestrictions = 1";
+    else if (!bRelaxed)
+      strQuery += " where partymode.bRelaxedRestrictions = 0";
+    if (bUnique)
+      strQuery += ")";
     CStdString strSQL = FormatSQL(strQuery);
     if (!m_pDS->query(strQuery.c_str())) return -1;
     int iRowsFound = m_pDS->num_rows();
@@ -4272,7 +4287,7 @@ int CMusicDatabase::PartyModeGetRandomSongCount(bool bUnique, bool bRelaxed /* =
   }
   catch(...)
   {
-    CLog::Log(LOGERROR,"CMusicDatabase::PartyModeGetRandomSongCount(bUnique = %s, bRelaxed = %s) failed", bUnique ? "true" : "false", bRelaxed ? "true" : "false");
+    CLog::Log(LOGERROR,"CMusicDatabase::PartyModeGetRandomSongCount(bUnique = %s, bRelaxed = %s, bOnlyRelaxed) failed", bUnique ? "true" : "false", bRelaxed ? "true" : "false", bOnlyRelaxed ? "true" : "false");
   }
   return -1;
 }

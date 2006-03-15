@@ -15,6 +15,7 @@
 #include "../utils/lcd.h"
 #include "../GUIMediaWindow.h"
 #include "../GUIDialogFileBrowser.h"
+#include "../PartyModeManager.h"
 #ifdef PRE_SKIN_VERSION_2_0_COMPATIBILITY
 #include "SkinInfo.h"
 #endif
@@ -166,6 +167,14 @@ extern char g_szTitleIP[32];
 #define LISTITEM_GENRE              317
 #define LISTITEM_ICON               318
 #define LISTITEM_DIRECTOR           319
+
+#define MUSICPM_ENABLED             350
+#define MUSICPM_SONGSPLAYED         351
+#define MUSICPM_MATCHINGSONGS       352
+#define MUSICPM_MATCHINGSONGSPICKED 353
+#define MUSICPM_MATCHINGSONGSLEFT   354
+#define MUSICPM_RELAXEDSONGSPICKED  355
+#define MUSICPM_RANDOMSONGSPICKED   356
 
 #define PLAYLIST_LENGTH             390
 #define PLAYLIST_POSITION           391
@@ -426,6 +435,16 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("playlist.isrepeat")) ret = PLAYLIST_ISREPEAT;
     else if (strTest.Equals("playlist.isrepeatone")) ret = PLAYLIST_ISREPEATONE;
   }
+  else if (strCategory.Equals("musicpartymode"))
+  {
+    if (strTest.Equals("musicpartymode.enabled")) ret = MUSICPM_ENABLED;
+    else if (strTest.Equals("musicpartymode.songsplayed")) ret = MUSICPM_SONGSPLAYED;
+    else if (strTest.Equals("musicpartymode.matchingsongs")) ret = MUSICPM_MATCHINGSONGS;
+    else if (strTest.Equals("musicpartymode.matchingsongspicked")) ret = MUSICPM_MATCHINGSONGSPICKED;
+    else if (strTest.Equals("musicpartymode.matchingsongsleft")) ret = MUSICPM_MATCHINGSONGSLEFT;
+    else if (strTest.Equals("musicpartymode.relaxedsongspicked")) ret = MUSICPM_RELAXEDSONGSPICKED;
+    else if (strTest.Equals("musicpartymode.randomsongspicked")) ret = MUSICPM_RANDOMSONGSPICKED;
+  }
   else if (strCategory.Equals("audioscrobbler"))
   {
     if (strTest.Equals("audioscrobbler.enabled")) ret = AUDIOSCROBBLER_ENABLED;
@@ -605,6 +624,14 @@ string CGUIInfoManager::GetLabel(int info)
   case PLAYLIST_RANDOM:
   case PLAYLIST_REPEAT:
     strLabel = GetPlaylistLabel(info);
+  break;
+  case MUSICPM_SONGSPLAYED:
+  case MUSICPM_MATCHINGSONGS:
+  case MUSICPM_MATCHINGSONGSPICKED:
+  case MUSICPM_MATCHINGSONGSLEFT:
+  case MUSICPM_RELAXEDSONGSPICKED:
+  case MUSICPM_RANDOMSONGSPICKED:
+    strLabel = GetMusicPartyModeLabel(info);
   break;
   case SYSTEM_FREE_SPACE_C:
   case SYSTEM_FREE_SPACE_E:
@@ -949,6 +976,9 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow) const
     case PLAYER_SHOWTIME:
       bReturn = m_playerShowTime;
     break;
+    case MUSICPM_ENABLED:
+      bReturn = g_partyModeManager.IsEnabled();
+    break;
     case AUDIOSCROBBLER_ENABLED:
       bReturn = g_guiSettings.GetBool("MyMusic.UseAudioScrobbler");
     break;
@@ -1165,6 +1195,54 @@ CStdString CGUIInfoManager::GetTime(bool bSeconds)
       text.Format("%02d:%02d", iHour, time.wMinute);
   }
   return text;
+}
+
+CStdString CGUIInfoManager::GetMusicPartyModeLabel(int item)
+{
+  // get song counts
+  if (item >= MUSICPM_SONGSPLAYED && item <= MUSICPM_RANDOMSONGSPICKED)
+  {
+    int iSongs = -1;
+    switch (item)
+    {
+    case MUSICPM_SONGSPLAYED:
+      {
+        iSongs = g_partyModeManager.GetSongsPlayed();
+        break;
+      }
+    case MUSICPM_MATCHINGSONGS:
+      {
+        iSongs = g_partyModeManager.GetMatchingSongs();
+        break;
+      }
+    case MUSICPM_MATCHINGSONGSPICKED:
+      {
+        iSongs = g_partyModeManager.GetMatchingSongsPicked();
+        break;
+      }
+    case MUSICPM_MATCHINGSONGSLEFT:
+      {
+        iSongs = g_partyModeManager.GetMatchingSongsLeft();
+        break;
+      }
+    case MUSICPM_RELAXEDSONGSPICKED:
+      {
+        iSongs = g_partyModeManager.GetRelaxedSongs();
+        break;
+      }
+    case MUSICPM_RANDOMSONGSPICKED:
+      {
+        iSongs = g_partyModeManager.GetRandomSongs();
+        break;
+      }
+    }
+    if (iSongs < 0)
+      return "";
+    CStdString strLabel;
+    strLabel.Format("%i", iSongs);
+    return strLabel;
+  }
+  return "";
 }
 
 CStdString CGUIInfoManager::GetPlaylistLabel(int item)
