@@ -37,6 +37,9 @@ bool CUtil::m_bNetworkUp = false;
 HANDLE CUtil::m_hCurrentCpuUsage = NULL;
 
 char g_szTitleIP[32];
+char g_szDHCPServer[32];
+char g_szDNSServer2[32];
+
 CStdString strHasClientIP="",strHasClientInfo="",strNewClientIP,strNewClientInfo; 
 using namespace AUTOPTR;
 using namespace MEDIA_DETECT;
@@ -51,6 +54,8 @@ extern "C"
 CUtil::CUtil(void)
 {
   memset(g_szTitleIP, 0, sizeof(g_szTitleIP));
+  memset(g_szDHCPServer, 0, sizeof(g_szDHCPServer));
+  memset(g_szDNSServer2, 0, sizeof(g_szDNSServer2));
 }
 
 CUtil::~CUtil(void)
@@ -1110,7 +1115,11 @@ void CUtil::GetTitleIP(CStdString& ip)
 {
   ip = g_szTitleIP;
 }
-
+void CUtil::GetDHCPInfo(CStdString& dns2, CStdString& dhcpserver)
+{
+  dns2 = g_szDNSServer2;
+  dhcpserver = g_szDHCPServer;
+}
 bool CUtil::InitializeNetwork(int iAssignment, const char* szLocalAddress, const char* szLocalSubnet, const char* szLocalGateway, const char* szNameServer)
 {
   if (!IsEthernetConnected())
@@ -1137,6 +1146,15 @@ bool CUtil::InitializeNetwork(int iAssignment, const char* szLocalAddress, const
     strcpy(networkinfo.subnet, szLocalSubnet);
     strcpy(networkinfo.gateway, szLocalGateway);
     strcpy(networkinfo.DNS1, szNameServer);
+    //
+    g_guiSettings.SetString("Network.IPAddress", szLocalAddress);
+    g_guiSettings.SetString("Network.Subnet", szLocalSubnet);
+    g_guiSettings.SetString("Network.Gateway", szLocalGateway);
+    g_guiSettings.SetString("Network.DNS", szNameServer);
+    sprintf(g_szDHCPServer,"%s", szLocalGateway);
+    sprintf(g_szDNSServer2,"%s", szNameServer);
+
+    //
   }
   else
   {
@@ -2823,12 +2841,55 @@ DWORD CUtil::SetUpNetwork( bool resetmode, struct network_info& networkinfo )
 
           if ( vReturn & XNET_GET_XNADDR_DHCP )
           {
-            CLog::Log(LOGINFO, "  Dynamic IP");
+            // GeminiServer: Network Information Extracting 
+            // DHCP Informations
+            CStdString tClientIP,tSubnetMask, tGateway, tDHCPServer;
+            
+            //Client IP (MyIP got from DHCP!)
+            tClientIP.Format("%i.%i.%i.%i",params[352], params[353], params[354], params[355]);
+            
+            //SubnetMask
+            tSubnetMask.Format("%i.%i.%i.%i",params[356], params[357], params[358], params[359]);
+            
+            //Default Gateway (Router IP)
+            tGateway.Format("%i.%i.%i.%i",params[360], params[361], params[362], params[363]);
+            
+            //DHCP Server
+            tDHCPServer.Format("%i.%i.%i.%i",params[364], params[365], params[366], params[367]);
+            
+            CLog::Log(LOGINFO, "#----------------------------------------------------------------#");
+            CLog::Log(LOGINFO, "  XBMC Network Settings DHCP: (Dynamic IP)");
+            CLog::Log(LOGINFO, "         IP-Adress: %s",tClientIP.c_str());
+            CLog::Log(LOGINFO, "        Subnetmask: %s",tSubnetMask.c_str());
+            CLog::Log(LOGINFO, "   Default Gateway: %s",tGateway.c_str());
+            CLog::Log(LOGINFO, "       DHCP Server: %s",tDHCPServer.c_str());
+            
+            //Update our Network Settings
+            g_guiSettings.SetString("Network.IPAddress", tClientIP.c_str());
+            g_guiSettings.SetString("Network.Subnet", tSubnetMask.c_str());
+            g_guiSettings.SetString("Network.Gateway", tGateway.c_str());
+            //g_guiSettings.SetString("Network.DHCPServer", tDHCPServer.c_str()); // we don't have this yet in settings
+            sprintf(g_szDHCPServer,"%s", tDHCPServer.c_str());
+
           }
 
           if ( vReturn & XNET_GET_XNADDR_DNS )
           {
-            CLog::Log(LOGINFO, "  DNS");
+            // GeminiServer: Network Information Extracting 
+            // DNS Servers
+            CStdString tDNS1,tDNS2;
+            tDNS1.Format("%i.%i.%i.%i",params[380],params[381],params[382],params[383]); //DNS1
+            tDNS2.Format("%i.%i.%i.%i",params[384],params[385],params[386],params[387]); //DNS2
+            
+            CLog::Log(LOGINFO, "      DNS Server 1: %s",tDNS1.c_str());
+            CLog::Log(LOGINFO, "      DNS Server 2: %s",tDNS2.c_str());
+            CLog::Log(LOGINFO, "#----------------------------------------------------------------#");
+
+            // Update Our Network Settings
+            g_guiSettings.SetString("Network.DNS", tDNS1.c_str());  // 
+            //g_guiSettings.SetString("Network.DNS2", tDNS2.c_str());  // we don't have this yet in settings
+            sprintf(g_szDNSServer2,"%s", tDNS2.c_str());
+            
           }
 
           if ( vReturn & XNET_GET_XNADDR_ETHERNET )

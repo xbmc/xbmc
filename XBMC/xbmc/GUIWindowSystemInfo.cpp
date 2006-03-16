@@ -27,15 +27,16 @@ BUG: The XBE Region detection Is wrong! Need to Decyrpt the EEPROM! Port!
 #define DEBUG_MOUSE
 
 extern char g_szTitleIP[32];
+CStdString strMplayerVersion;
 extern "C" XPP_DEVICE_TYPE XDEVICE_TYPE_IR_REMOTE_TABLE;
 #define     XDEVICE_TYPE_IR_REMOTE  (&XDEVICE_TYPE_IR_REMOTE_TABLE)
 
-XKEEPROM*       m_pXKEEPROM;
-EEPROMDATA        m_EEPROMData;
-BOOL          m_EnryptedRegionValid;
-BOOL          m_XBOX_EEPROM_Current;
-XBOX_VERSION      m_XBOX_Version;
-DWORD         m_dwlastTime;
+XKEEPROM* m_pXKEEPROM;
+EEPROMDATA  m_EEPROMData;
+BOOL  m_EnryptedRegionValid;
+BOOL  m_XBOX_EEPROM_Current;
+XBOX_VERSION  m_XBOX_Version;
+DWORD m_dwlastTime;
 
 char* cTempEEPROMBackUPPath = "Q:\\System\\SystemInfo\\";
 
@@ -50,14 +51,16 @@ CGUIWindowSystemInfo::~CGUIWindowSystemInfo(void)
 
 }
 
-DWORD WINAPI GetMPlayerVersionW( LPVOID lpParam )
+bool CGUIWindowSystemInfo::GetMPlayerVersion(CStdString& strVersion)
 {
   DllLoader* mplayerDll;
   const char* (__cdecl* pMplayerGetVersion)();
   const char* (__cdecl* pMplayerGetCompileDate)();
+  const char* (__cdecl* pMplayerGetCompileTime)();
 
   const char *version = NULL;
   const char *date = NULL;
+  const char *btime = NULL;
 
   mplayerDll = new DllLoader("Q:\\system\\players\\mplayer\\mplayer.dll",true);
 
@@ -67,18 +70,21 @@ DWORD WINAPI GetMPlayerVersionW( LPVOID lpParam )
       version = pMplayerGetVersion();
     if (mplayerDll->ResolveExport("mplayer_getcompiledate", (void**)&pMplayerGetCompileDate))
       date = pMplayerGetCompileDate();
-    if (version && date)
-      _snprintf((char *)lpParam, 50, "%s (%s)", version, date);
+    if (mplayerDll->ResolveExport("mplayer_getcompiletime", (void**)&pMplayerGetCompileTime))
+      btime = pMplayerGetCompileTime();
+    if (version && date && btime)
+    {
+      strVersion.Format("%s (%s - %s)",version, date, btime);
+    }
     else if (version)
-      _snprintf((char *)lpParam, 50, "%s", version);
+    {
+      strVersion.Format("%s",version);
+    }
   }
-
   delete mplayerDll;
   mplayerDll=NULL;
-
-  return 0;
+  return true;
 }
-
 void CGUIWindowSystemInfo::BytesToHexStr(LPBYTE SrcBytes, DWORD byteCount, LPSTR DstString, UCHAR Seperator)
 {
   USHORT Inc = (Seperator == 0x00)?2:3;
@@ -145,9 +151,7 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
         pDlgProgress.Progress();
       }
       m_dwlastTime=0;
-      HANDLE hThread = CreateThread(NULL, 0,GetMPlayerVersionW,&m_wszMPlayerVersion,0, NULL);
-      if (hThread != NULL)  CloseHandle(hThread);
-
+      GetMPlayerVersion(strMplayerVersion);
       pDlgProgress.SetLine(1, "Detecting Done");
       pDlgProgress.SetPercentage(100);
       pDlgProgress.Progress();
@@ -266,7 +270,7 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
         pDlgProgress.SetLine(1, "Detecting Network");
         pDlgProgress.SetPercentage(20);
         pDlgProgress.Progress();
-        GetNetwork(2,4,3,5,6,7);  // Label 2-7
+        GetNetwork(2,5,3,6,7,8,9);  // Label 2-7
 
         // Label 8: Mac Adress
         pDlgProgress.SetLine(1, "Detecting Mac Address");
@@ -274,7 +278,7 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
         pDlgProgress.Progress();
         CStdString strMacAdress;
         if (GetMACAdress(strMacAdress))
-          SET_CONTROL_LABEL(8, strMacAdress);
+          SET_CONTROL_LABEL(4, strMacAdress);
 
         // Label 9: Online State
         pDlgProgress.SetLine(1, "Detecting Online State");
@@ -282,7 +286,7 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
         pDlgProgress.Progress();
         CStdString strInetCon;
         GetINetState(strInetCon);
-        SET_CONTROL_LABEL(9,strInetCon);
+        SET_CONTROL_LABEL(11,strInetCon);
         pDlgProgress.Close();
 
         CGUIWindow::Render();
@@ -412,14 +416,14 @@ void CGUIWindowSystemInfo::Render()
     SET_CONTROL_LABEL(3, g_infoManager.GetSystemHeatInfo("gpu")); // GPU Temperature
     SET_CONTROL_LABEL(4, g_infoManager.GetSystemHeatInfo("fan")); // Fan Speed
 
-    // Label 5: Set FreeMemeory Info
+    // Label 5: Set FreeMemeory Info 
     CStdString strFreeMem;
     GetFreeMemory(strFreeMem);
     SET_CONTROL_LABEL(5, strFreeMem);
 
     //Label 6: XBMC IP Adress
-    SET_CONTROL_LABEL(6, g_infoManager.GetLabel(190));
-
+    SET_CONTROL_LABEL(6, g_infoManager.GetLabel(NETWORK_IP_ADDRESS));
+    
     // Label 7: Set Resolution Info
     CStdString strResol;
     GetResolution(strResol);
@@ -520,7 +524,7 @@ bool CGUIWindowSystemInfo::GetResolution(CStdString& strResol)
 {
   // Set Screen Resolution Info
   CStdString lblResInf  = g_localizeStrings.Get(13287).c_str();
-  strResol.Format("%s %ix%i %S %02.2f Hz.",lblResInf,
+  strResol.Format("%s %ix%i %s %02.2f Hz.",lblResInf,
     g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iWidth,
     g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iHeight,
     g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].strMode,
@@ -865,7 +869,7 @@ bool CGUIWindowSystemInfo::GetATAValues(int i_lblp1, int i_lblp2, int i_lblp3, i
   return false;
 }
 
-bool CGUIWindowSystemInfo::GetNetwork(int i_lblp1, int i_lblp2, int i_lblp3, int i_lblp4, int i_lblp5, int i_lblp6)
+bool CGUIWindowSystemInfo::GetNetwork(int i_lblp1, int i_lblp2, int i_lblp3, int i_lblp4, int i_lblp5, int i_lblp6, int i_lblp7)
 {
   // Set Network Informations
   XNADDR net_stat;
@@ -898,12 +902,15 @@ bool CGUIWindowSystemInfo::GetNetwork(int i_lblp1, int i_lblp2, int i_lblp3, int
 
   SET_CONTROL_LABEL(i_lblp3,linkStatus);
 
-  // Get IP/Subnet/Gateway/DNS
+  // Get IP/Subnet/Gateway/DHCP Server/DNS1/DNS2
   const char* pszIP=g_localizeStrings.Get(150).c_str();
 
   CStdString strlblSubnet   = g_localizeStrings.Get(13159).c_str(); //"Subnet:";      
   CStdString strlblGateway  = g_localizeStrings.Get(13160).c_str(); //"Gateway:";
   CStdString strlblDNS    = g_localizeStrings.Get(13161).c_str(); //"DNS:";
+  CStdString strlblDNS2    = "DNS2:";
+  CStdString strlblDHCPServer = "DHCP-Server:";
+    
 
   if ( !CUtil::InitializeNetwork(g_guiSettings.GetInt("Network.Assignment"),
     g_guiSettings.GetString("Network.IPAddress"),
@@ -926,21 +933,23 @@ bool CGUIWindowSystemInfo::GetNetwork(int i_lblp1, int i_lblp2, int i_lblp3, int
   }
   else
   {
-    CStdString strItem1;
-    CStdString strItem2;
-    CStdString strItem3;
+    CStdString strItem1, strItem2, strItem3, strItem4;
+    CStdString dns2, dhcpserver;
+    CUtil::GetDHCPInfo(dns2, dhcpserver);
 
     //17.05.2005 Todo: Complete Rewriting the Network Section in XBMC is needed to get all Network-Settings right!
     // Set IP Adress
-    ip.Format("%s: %s",pszIP,g_szTitleIP);
-    strItem1.Format("%s %s", strlblSubnet.c_str(), g_guiSettings.GetString("Network.Subnet").c_str());
-    strItem2.Format("%s %s", strlblGateway.c_str(), g_guiSettings.GetString("Network.Gateway").c_str());
-    strItem3.Format("%s %s", strlblDNS.c_str(), g_guiSettings.GetString("Network.DNS").c_str());
-
+    ip.Format("%s: %s",pszIP,g_szTitleIP);  // IP
+    strItem1.Format("%s %s", strlblSubnet.c_str(), g_guiSettings.GetString("Network.Subnet").c_str()); // Subnetmask
+    strItem2.Format("%s %s", strlblGateway.c_str(), g_guiSettings.GetString("Network.Gateway").c_str()); //Gateway (Router IP)
+    strItem3.Format("%s %s", strlblDHCPServer.c_str(), dhcpserver.c_str()); // DHCP-Server IP
+    strItem4.Format("%s1: %s %s2: %s", strlblDNS.c_str(), g_guiSettings.GetString("Network.DNS").c_str(), strlblDNS.c_str(), dns2.c_str() ); // DNS1 / DNS2
+    
     SET_CONTROL_LABEL(i_lblp2,ip);
     SET_CONTROL_LABEL(i_lblp4,strItem1);
     SET_CONTROL_LABEL(i_lblp5,strItem2);
     SET_CONTROL_LABEL(i_lblp6,strItem3);
+    SET_CONTROL_LABEL(i_lblp7,strItem4);
   }
   return true;
 }
@@ -997,11 +1006,6 @@ bool CGUIWindowSystemInfo::GetStorage(int i_lblp1, int i_lblp2, int i_lblp3, int
   SET_CONTROL_LABEL(i_lblp1,hdC);
   SET_CONTROL_LABEL(i_lblp3,hdE);
 
-  //For F and G
-  CStdString hdF,hdG;
-  bool bUseDriveF = GetDiskSpace("F", lTotalNumberOfBytesF, lTotalFreeBytesF, hdF);
-  bool bUseDriveG = GetDiskSpace("G", lTotalNumberOfBytesG, lTotalFreeBytesG, hdG);
-
   //For X, Y, Z
   CStdString hdX, hdY, hdZ;
   GetDiskSpace("X", lTotalNumberOfBytesX, lTotalFreeBytesX, hdX);
@@ -1026,6 +1030,11 @@ bool CGUIWindowSystemInfo::GetStorage(int i_lblp1, int i_lblp2, int i_lblp3, int
     lTotalFreeBytesY.QuadPart + 
     lTotalFreeBytesZ.QuadPart );
 
+  //For F and G
+  CStdString hdF,hdG;
+  bool bUseDriveF = GetDiskSpace("F", lTotalNumberOfBytesF, lTotalFreeBytesF, hdF);
+  bool bUseDriveG = GetDiskSpace("G", lTotalNumberOfBytesG, lTotalFreeBytesG, hdG);
+
   if (bUseDriveF) {
     lTotalDiscSpace.QuadPart = lTotalDiscSpace.QuadPart + lTotalNumberOfBytesF.QuadPart;
     lTotalDiscFree.QuadPart = lTotalDiscFree.QuadPart + lTotalFreeBytesF.QuadPart;
@@ -1041,8 +1050,12 @@ bool CGUIWindowSystemInfo::GetStorage(int i_lblp1, int i_lblp2, int i_lblp3, int
   lTotalDiscUsed.QuadPart   = lTotalDiscSpace.QuadPart - lTotalDiscFree.QuadPart;
   lTotalDiscPercent.QuadPart  = lTotalDiscSpace.QuadPart/100;  // => 1%   
 
-  CStdString hdTotalSize, hdTotalUsedPercent;
-  hdTotalSize.Format("Total: %u MB, Used: %u MB, Free: %u MB ", lTotalDiscSpace.QuadPart/MB, lTotalDiscUsed.QuadPart/MB, lTotalDiscFree.QuadPart/MB );  //Total Free To make it MB
+  CStdString hdTotalSize, hdTotalUsedPercent, t1,t2,t3;
+  t1.Format("%u",lTotalDiscSpace.QuadPart/MB);
+  t2.Format("%u",lTotalDiscUsed.QuadPart/MB);
+  t3.Format("%u",lTotalDiscFree.QuadPart/MB);
+  hdTotalSize.Format("Total: %s MB, Used: %s MB, Free: %s MB ", t1, t2, t3);  //Total Free To make it MB
+  //hdTotalSize.Format("Total: %u MB, Used: %u MB, Free: %u MB ", lTotalDiscSpace.QuadPart/MB, lTotalDiscUsed.QuadPart/MB, lTotalDiscFree.QuadPart/MB );  //Total Free To make it MB
 
   int percentUsed = (int)(100.0f * lTotalDiscUsed.QuadPart/lTotalDiscSpace.QuadPart + 0.5f);
   hdTotalUsedPercent.Format("Total HDD Used: %u%%  Free: %u%%", percentUsed, 100 - percentUsed); //Total Free %
@@ -1111,9 +1124,15 @@ bool CGUIWindowSystemInfo::GetStorage(int i_lblp1, int i_lblp2, int i_lblp3, int
 bool CGUIWindowSystemInfo::GetDiskSpace(const CStdString &drive, ULARGE_INTEGER &total, ULARGE_INTEGER& totalFree, CStdString &string)
 {
   CStdString driveName = drive + ":\\";
+  CStdString t1,t2;
   BOOL ret;
   if ((ret = GetDiskFreeSpaceEx( driveName.c_str(), NULL, &total, &totalFree)))
-    string.Format("%s: %u MB of %u MB %s", drive.c_str(), totalFree.QuadPart/MB, total.QuadPart/MB, g_localizeStrings.Get(160).c_str());
+  {
+    t1.Format("%u",totalFree.QuadPart/MB);
+    t2.Format("%u",total.QuadPart/MB);
+    string.Format("%s: %s MB of %s MB %s", drive.c_str(),t1,t2, g_localizeStrings.Get(160).c_str());
+    //string.Format("%s: %u MB of %u MB %s", drive.c_str(), (totalFree.QuadPart/MB), (total.QuadPart/MB), g_localizeStrings.Get(160).c_str());
+  }
   else 
     string.Format("%s %s: %s", g_localizeStrings.Get(155).c_str(), drive.c_str(), g_localizeStrings.Get(161).c_str());
   return ret == TRUE;
@@ -1122,13 +1141,10 @@ bool CGUIWindowSystemInfo::GetDiskSpace(const CStdString &drive, ULARGE_INTEGER 
 bool CGUIWindowSystemInfo::GetBuildTime(int label1, int label2, int label3)
 {
   CStdString version, buildDate, mplayerVersion;
-  buildDate.Format("XBMC Compile Date: %S", g_infoManager.GetBuild().c_str());
-  version.Format("%s %S", g_localizeStrings.Get(144).c_str(), g_infoManager.GetVersion().c_str());
-  if (wcslen(m_wszMPlayerVersion))
-    mplayerVersion.Format("Mplayer Version: %ls", m_wszMPlayerVersion);
-  else
-    mplayerVersion.Format("Mplayer Version: Finding...");
-  SET_CONTROL_LABEL(label1, version);
+  version.Format("%s %s", g_localizeStrings.Get(144).c_str(), g_infoManager.GetVersion().c_str());
+  buildDate.Format("XBMC %s (Compiled :%s)", version, g_infoManager.GetBuild().c_str());
+  mplayerVersion.Format("Mplayer Build:%s",strMplayerVersion);
+  //SET_CONTROL_LABEL(label1, version);
   SET_CONTROL_LABEL(label2, buildDate);
   SET_CONTROL_LABEL(label3, mplayerVersion);
   return true;
