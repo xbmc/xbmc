@@ -23,6 +23,15 @@ protected:
   virtual void SaveViewState();
 };
 
+class CGUIViewStateMusicSmartPlaylist : public CGUIViewStateWindowMusic
+{
+public:
+  CGUIViewStateMusicSmartPlaylist(const CFileItemList& items);
+
+protected:
+  virtual void SaveViewState();
+};
+
 class CGUIViewStateWindowMusicNav : public CGUIViewStateWindowMusic
 {
 public:
