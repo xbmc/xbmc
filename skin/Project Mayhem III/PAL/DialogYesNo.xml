@@ -20,7 +20,7 @@
       <id>1</id>
       <posx>190</posx>
       <posy>218</posy>
-      <label>0</label>
+      <label>-</label>
       <font>special13</font>
       <textcolor>DDced8da</textcolor>
     </control>
@@ -31,7 +31,7 @@
       <id>2</id>
       <posx>190</posx>
       <posy>260</posy>
-      <label>0</label>
+      <label>-</label>
       <font>font10</font>
     </control>
 
@@ -41,7 +41,7 @@
       <id>3</id>
       <posx>190</posx>
       <posy>280</posy>
-      <label>0</label>
+      <label>-</label>
       <font>font10</font>
     </control>
 
@@ -51,7 +51,7 @@
       <id>4</id>
       <posx>190</posx>
       <posy>300</posy>
-      <label>0</label>
+      <label>-</label>
       <font>font10</font>
     </control>
 
