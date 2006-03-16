@@ -209,7 +209,7 @@ static void __cdecl FEH_TextOut(XFONT* pFont, int iLine, const wchar_t* fmt, ...
   va_end(args);
 
   if (!(iLine & 0x8000))
-    CLog::Log(LOGFATAL, "%S", buf);
+    CLog::Log(LOGFATAL, "%s", buf);
 
   bool Center = (iLine & 0x10000) > 0;
   pFont->SetTextAlignment(Center ? XFONT_TOP | XFONT_CENTER : XFONT_TOP | XFONT_LEFT);

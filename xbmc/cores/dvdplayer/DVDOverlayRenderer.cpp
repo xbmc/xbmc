@@ -21,7 +21,7 @@ void CDVDOverlayRenderer::Render(DVDPictureRenderer* pPicture, CDVDOverlay* pOve
       if (e->IsElementType(CDVDOverlayText::ELEMENT_TYPE_TEXT))
       {
         CDVDOverlayText::CElementText* t = (CDVDOverlayText::CElementText*)e;
-        CLog::DebugLog(" - %S", t->m_wszText);
+        CLog::DebugLog(" - %s", t->m_wszText);
       }
       e = e->pNext;
     }
