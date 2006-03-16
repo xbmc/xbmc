@@ -3327,7 +3327,8 @@ const BUILT_IN commands[] = {
   "Skin.Reset"," Resets a skin setting to default",
   "Skin.ResetSettings"," Resets all skin settings",
   "Mute","Mute the player",
-  "SetVolume","Set the current volume"
+  "SetVolume","Set the current volume",
+  "Dialog.Close","Close a dialog"
 };
 
 bool CUtil::IsBuiltIn(const CStdString& execString)
@@ -3847,7 +3848,13 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     }
     g_settings.Save();
   }
-
+  else if (execute.Equals("dialog.close"))
+  {
+    DWORD id = g_buttonTranslator.TranslateWindowString(parameter);
+    CGUIWindow *window = (CGUIWindow *)m_gWindowManager.GetWindow(id);
+    if (window && window->IsDialog())
+      ((CGUIDialog *)window)->Close();
+  }
   else
     return -1;
   return 0;
