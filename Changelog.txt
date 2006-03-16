@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 16-03-2006 fixed: Year in Title view was not correct.
+ - 16-03-2006 changed: Watched and Played status now get updated automatically once the 90% point is reached.  Configurable via settings.xml.
  - 16-03-2006 fixed: dvd playback over xbmsp (video_ts.ifo + vobs).
  - 16-03-2006 changed: Settings Network: On DHCP show received IP Informations Show instead of "-"!
  - 16-03-2006 added: Parsing of .cue sheet replaygain data (still unused though)
