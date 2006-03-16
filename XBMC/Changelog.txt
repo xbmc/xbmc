@@ -5,7 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
-
+ - 16-03-2006 changed: Screensaver uses Dim mode if a dialog is onscreen, or video is being played when it should activate.
+ - 16-03-2006 fixed: Textbox could cut text off if the UI was calibrated.
  - 16-03-2006 changed: defines in GUIInfomanager.cpp are now in GUIInfomanager.h, for global use
  - 16-03-2006 fixed: GUIInfomanager IP Detection
  - 16-03-2006 fixed: DebugLog in CDVDOverlayRenderer can cause Freeze
