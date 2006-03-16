@@ -40,6 +40,7 @@ public:
     // video related messages
     
     VIDEO_NOSKIP,                   // next pictures is not to be skipped by the video renderer
+    VIDEO_SET_ASPECT,                // set aspectratio of video
     
   };
   
@@ -237,4 +238,13 @@ class CDVDMsgVideoNoSkip : public CDVDMsg
 {
 public:
   CDVDMsgVideoNoSkip() : CDVDMsg(VIDEO_NOSKIP)  {}
+};
+
+class CDVDMsgVideoSetAspect : public CDVDMsg
+{
+public:
+  CDVDMsgVideoSetAspect(float aspect) : CDVDMsg(VIDEO_SET_ASPECT) { m_aspect = aspect; }
+  float GetAspect() { return m_aspect; }
+private:
+  float m_aspect;
 };
