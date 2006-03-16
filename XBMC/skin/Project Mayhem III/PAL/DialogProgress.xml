@@ -20,7 +20,7 @@
       <id>1</id>
       <posx>190</posx>
       <posy>218</posy>
-      <label>0</label>
+      <label>-</label>
       <font>special13</font>
       <textcolor>DDced8da</textcolor>
     </control>
@@ -32,7 +32,7 @@
       <posx>190</posx>
       <posy>260</posy>
       <haspath>yes</haspath>
-      <label>0</label>
+      <label>-</label>
       <font>font10</font>
     </control>
 
@@ -43,7 +43,7 @@
       <posx>190</posx>
       <posy>280</posy>
       <haspath>yes</haspath>
-      <label>0</label>
+      <label>-</label>
       <font>font10</font>
     </control>
 
@@ -54,7 +54,7 @@
       <posx>190</posx>
       <posy>300</posy>
       <haspath>yes</haspath>
-      <label>0</label>
+      <label>-</label>
       <font>font10</font>
     </control>
 
