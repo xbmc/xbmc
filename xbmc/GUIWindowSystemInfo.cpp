@@ -351,7 +351,7 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
         CStdString strXBSerial, strXBOXSerial;
         CStdString strlblXBSerial = g_localizeStrings.Get(13289).c_str();
         if (GetXBOXSerial(strXBSerial))
-          strXBOXSerial.Format("%s %s",strlblXBSerial.c_str(),strXBSerial);
+          strXBOXSerial.Format("%s %s",strlblXBSerial.c_str(),strXBSerial.c_str());
         SET_CONTROL_LABEL(3,strXBOXSerial);
 
         // Label 4: ModChip ID!
@@ -464,7 +464,7 @@ void CGUIWindowSystemInfo::SetLabelDummy()
 bool CGUIWindowSystemInfo::GetKernelVersion(CStdString& strKernel)
 {
   CStdString lblKernel=  g_localizeStrings.Get(13283).c_str();
-  strKernel.Format("%s %d.%d.%d.%d",lblKernel,*((USHORT*)XboxKrnlVersion),*((USHORT*)XboxKrnlVersion+1),*((USHORT*)XboxKrnlVersion+2),*((USHORT*)XboxKrnlVersion+3));
+  strKernel.Format("%s %d.%d.%d.%d",lblKernel.c_str(),*((USHORT*)XboxKrnlVersion),*((USHORT*)XboxKrnlVersion+1),*((USHORT*)XboxKrnlVersion+2),*((USHORT*)XboxKrnlVersion+3));
   return true;
 }
 
@@ -501,7 +501,7 @@ bool CGUIWindowSystemInfo::GetBIOSInfo(CStdString& strBiosName)
   CStdString strlblBios = g_localizeStrings.Get(13285).c_str();
   if (SYSINFO::CheckBios(cBIOSName))
   {
-    strBiosName.Format("%s %s", strlblBios.c_str(),cBIOSName);
+    strBiosName.Format("%s %s", strlblBios.c_str(),cBIOSName.c_str());
     return true;
   }
   else 
@@ -516,7 +516,7 @@ bool CGUIWindowSystemInfo::GetVideoEncInfo(CStdString& strItemVideoENC)
   // XBOX Video Encoder Detection
   CStdString lblVideoEnc  = g_localizeStrings.Get(13286).c_str();
   CStdString VideoEncoder = SYSINFO::Instance()->GetVideoEncoder();
-  strItemVideoENC.Format("%s %s", lblVideoEnc.c_str(),VideoEncoder);
+  strItemVideoENC.Format("%s %s", lblVideoEnc.c_str(),VideoEncoder.c_str());
   return true;
 }
 
@@ -524,7 +524,7 @@ bool CGUIWindowSystemInfo::GetResolution(CStdString& strResol)
 {
   // Set Screen Resolution Info
   CStdString lblResInf  = g_localizeStrings.Get(13287).c_str();
-  strResol.Format("%s %ix%i %s %02.2f Hz.",lblResInf,
+  strResol.Format("%s %ix%i %s %02.2f Hz.",lblResInf.c_str(),
     g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iWidth,
     g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iHeight,
     g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].strMode,
@@ -540,7 +540,7 @@ bool CGUIWindowSystemInfo::GetXBVerInfo(CStdString& strXBoxVer)
   CStdString lblXBver   =  g_localizeStrings.Get(13288).c_str();
   if (SYSINFO::GetXBOXVersionDetected(strXBOXVersion))
   {
-    strXBoxVer.Format("%s %s", lblXBver.c_str(),strXBOXVersion);
+    strXBoxVer.Format("%s %s", lblXBver.c_str(),strXBOXVersion.c_str());
     CLog::Log(LOGDEBUG,"XBOX Version: %s",strXBOXVersion.c_str());
     return true;
   }
@@ -605,13 +605,13 @@ bool CGUIWindowSystemInfo::GetModChipInfo(CStdString& strModChip)
   CStdString strIsSmartXX = SYSINFO::SmartXXModCHIP();
   if (strIsSmartXX != "None")
   { 
-    strModChip.Format("%s %s", lblModChip.c_str(),strIsSmartXX);
+    strModChip.Format("%s %s", lblModChip.c_str(),strIsSmartXX.c_str());
     CLog::Log(LOGDEBUG, "- Detected ModChip: %s",strIsSmartXX.c_str());
     return true;
   }
   else
   { 
-    strModChip.Format("%s %s", lblModChip.c_str(),ModChip); 
+    strModChip.Format("%s %s", lblModChip.c_str(),ModChip.c_str()); 
     return true;
   }
   return false; 
@@ -622,7 +622,7 @@ void CGUIWindowSystemInfo::GetAVPackInfo(CStdString& stravpack)
   //AV-[Cable]Pack Detection 
   CStdString DetectedAVpack = SYSINFO::Instance()->GetAVPackInfo();
   CStdString lblAVpack    = g_localizeStrings.Get(13292).c_str();
-  stravpack.Format("%s %s",lblAVpack.c_str(), DetectedAVpack);
+  stravpack.Format("%s %s",lblAVpack.c_str(), DetectedAVpack.c_str());
   return;
 }
 
@@ -762,7 +762,7 @@ void CGUIWindowSystemInfo::GetFreeMemory(CStdString& strFreeMem)
   MEMORYSTATUS stat;
   GlobalMemoryStatus(&stat);
   CStdString lblFreeMem = g_localizeStrings.Get(158).c_str();
-  strFreeMem.Format("%s %i/%iMB",lblFreeMem,stat.dwAvailPhys/MB, stat.dwTotalPhys/MB);
+  strFreeMem.Format("%s %i/%iMB",lblFreeMem.c_str(),stat.dwAvailPhys/MB, stat.dwTotalPhys/MB);
 }
 
 bool CGUIWindowSystemInfo::GetATAPIValues(int i_lblp1, int i_lblp2)
@@ -773,11 +773,11 @@ bool CGUIWindowSystemInfo::GetATAPIValues(int i_lblp1, int i_lblp2)
   if(SYSINFO::GetDVDInfo(strDVDModel, strDVDFirmware))
   {
     CStdString strDVDModelA;
-    strDVDModelA.Format("%s %s",lblDVDModel.c_str(), strDVDModel);
+    strDVDModelA.Format("%s %s",lblDVDModel.c_str(), strDVDModel.c_str());
     SET_CONTROL_LABEL(i_lblp1, strDVDModelA);
 
     CStdString lblDVDFirmwareA;
-    lblDVDFirmwareA.Format("%s %s",lblDVDFirmware.c_str(), strDVDFirmware);
+    lblDVDFirmwareA.Format("%s %s",lblDVDFirmware.c_str(), strDVDFirmware.c_str());
     SET_CONTROL_LABEL(i_lblp2, lblDVDFirmwareA);
     return true;
   }
@@ -840,27 +840,27 @@ bool CGUIWindowSystemInfo::GetATAValues(int i_lblp1, int i_lblp2, int i_lblp3, i
     CStdString lblhddlk = g_localizeStrings.Get(13158).c_str(); //"HDD Lock State";
 
     //HDD Model
-    strHDDModelA.Format("%s %s",lblhddm.c_str(),strHDDModel);
+    strHDDModelA.Format("%s %s",lblhddm.c_str(),strHDDModel.c_str());
     SET_CONTROL_LABEL(i_lblp1, strHDDModelA);
     //CLog::Log(LOGDEBUG, "HDD Model: %s",strHDDModelA);
 
     //HDD Serial
-    strHDDSerialA.Format("%s %s",lblhdds.c_str(),strHDDSerial);
+    strHDDSerialA.Format("%s %s",lblhdds.c_str(),strHDDSerial.c_str());
     SET_CONTROL_LABEL(i_lblp2, strHDDSerialA);
     //CLog::Log(LOGDEBUG, "HDD Serial: %s",strHDDSerialA);
 
     //HDD Firmware
-    strHDDFirmwareA.Format("%s %s",lblhddf.c_str(),strHDDFirmware);
+    strHDDFirmwareA.Format("%s %s",lblhddf.c_str(),strHDDFirmware.c_str());
     SET_CONTROL_LABEL(i_lblp3, strHDDFirmwareA);
     //CLog::Log(LOGDEBUG, "HDD Firmware: %s",strHDDFirmwareA);
 
     //HDD Lock State
-    strHDDLockStateA.Format("%s %s",lblhddlk.c_str(),strHDDLockState);
+    strHDDLockStateA.Format("%s %s",lblhddlk.c_str(),strHDDLockState.c_str());
     SET_CONTROL_LABEL(i_lblp4, strHDDLockStateA);
     //CLog::Log(LOGDEBUG, "HDD LockState: %s",strHDDLockStateA);
 
     //HDD Password
-    strHDDpwA.Format("%s %s",lblhddpw.c_str(),strHDDpw);
+    strHDDpwA.Format("%s %s",lblhddpw.c_str(),strHDDpw.c_str());
     //SET_CONTROL_LABEL(i_lblp5, strHDDpwA);
     //CLog::Log(LOGDEBUG, "HDD Password: %s",strHDDpwA);
 
@@ -922,9 +922,9 @@ bool CGUIWindowSystemInfo::GetNetwork(int i_lblp1, int i_lblp2, int i_lblp3, int
 
     CStdString strp2, strp4, strp5, strp6;
     strp2.Format("%s %s",pszIP,g_localizeStrings.Get(13162).c_str());//"Initialize failed"
-    strp4.Format("%s %s",strlblSubnet,g_localizeStrings.Get(13162).c_str());
-    strp5.Format("%s %s",strlblGateway,g_localizeStrings.Get(13162).c_str());
-    strp6.Format("%s %s",strlblDNS,g_localizeStrings.Get(13162).c_str());
+    strp4.Format("%s %s",strlblSubnet.c_str(),g_localizeStrings.Get(13162).c_str());
+    strp5.Format("%s %s",strlblGateway.c_str(),g_localizeStrings.Get(13162).c_str());
+    strp6.Format("%s %s",strlblDNS.c_str(),g_localizeStrings.Get(13162).c_str());
 
     SET_CONTROL_LABEL(i_lblp2,strp2);
     SET_CONTROL_LABEL(i_lblp4,strp4);
@@ -1054,7 +1054,7 @@ bool CGUIWindowSystemInfo::GetStorage(int i_lblp1, int i_lblp2, int i_lblp3, int
   t1.Format("%u",lTotalDiscSpace.QuadPart/MB);
   t2.Format("%u",lTotalDiscUsed.QuadPart/MB);
   t3.Format("%u",lTotalDiscFree.QuadPart/MB);
-  hdTotalSize.Format("Total: %s MB, Used: %s MB, Free: %s MB ", t1, t2, t3);  //Total Free To make it MB
+  hdTotalSize.Format("Total: %s MB, Used: %s MB, Free: %s MB ", t1.c_str(), t2.c_str(), t3.c_str());  //Total Free To make it MB
   //hdTotalSize.Format("Total: %u MB, Used: %u MB, Free: %u MB ", lTotalDiscSpace.QuadPart/MB, lTotalDiscUsed.QuadPart/MB, lTotalDiscFree.QuadPart/MB );  //Total Free To make it MB
 
   int percentUsed = (int)(100.0f * lTotalDiscUsed.QuadPart/lTotalDiscSpace.QuadPart + 0.5f);
@@ -1130,7 +1130,7 @@ bool CGUIWindowSystemInfo::GetDiskSpace(const CStdString &drive, ULARGE_INTEGER 
   {
     t1.Format("%u",totalFree.QuadPart/MB);
     t2.Format("%u",total.QuadPart/MB);
-    string.Format("%s: %s MB of %s MB %s", drive.c_str(),t1,t2, g_localizeStrings.Get(160).c_str());
+    string.Format("%s: %s MB of %s MB %s", drive.c_str(),t1.c_str(),t2.c_str(), g_localizeStrings.Get(160).c_str());
     //string.Format("%s: %u MB of %u MB %s", drive.c_str(), (totalFree.QuadPart/MB), (total.QuadPart/MB), g_localizeStrings.Get(160).c_str());
   }
   else 
@@ -1143,7 +1143,7 @@ bool CGUIWindowSystemInfo::GetBuildTime(int label1, int label2, int label3)
   CStdString version, buildDate, mplayerVersion;
   version.Format("%s %s", g_localizeStrings.Get(144).c_str(), g_infoManager.GetVersion().c_str());
   buildDate.Format("XBMC %s (Compiled :%s)", version, g_infoManager.GetBuild().c_str());
-  mplayerVersion.Format("Mplayer Build:%s",strMplayerVersion);
+  mplayerVersion.Format("Mplayer Build:%s",strMplayerVersion.c_str());
   //SET_CONTROL_LABEL(label1, version);
   SET_CONTROL_LABEL(label2, buildDate);
   SET_CONTROL_LABEL(label3, mplayerVersion);
@@ -1355,11 +1355,11 @@ bool CGUIWindowSystemInfo::GetUnits(int i_lblp1, int i_lblp2 )
   strItem1.Format("%s %s", strlblGamePads.c_str(), sclDeviceVle);
   strItem2.Format("%s %s", strlblKeyboard.c_str(), sclDeviceKeyb);
   strItem3.Format("%s %s", strlblMouse.c_str(), sclDeviceMouse);
-  strItem4.Format("%s %s %s", strItem1, strItem2, strItem3);
+  strItem4.Format("%s %s %s", strItem1.c_str(), strItem2.c_str(), strItem3.c_str());
 
   strItem5.Format("%s %s",  strlblIRRemote.c_str(), sclDeviceIRRemote);
   strItem6.Format("%s %s-%s", strlblHeadMicro.c_str(), sclDeviceHeadPhone, sclDeviceMicroPhone );
-  strItem7.Format("%s %s", strItem5, strItem6);
+  strItem7.Format("%s %s", strItem5.c_str(), strItem6.c_str());
 
   // !? Show Memory stick, because it only shows with USB->MemoryStick adapter!
   //strItem8.Format("%s %s", strlblMemoryStk.c_str(), sclDeviceMemory);
@@ -1660,9 +1660,9 @@ bool CGUIWindowSystemInfo::GetSystemUpTime(CStdString& strSystemUptime)
   iInputMinutes = (int)(timeGetTime() / 60000);
   SYSINFO::SystemUpTime(iInputMinutes,iMinutes, iHours, iDays);
   // Will Display Autodetected Values!
-  if (iDays > 0) strSystemUptime.Format("%s: %i %s, %i %s, %i %s",lbl1, iDays,lblDay, iHours,lblHou, iMinutes,lblMin);
-  else if (iDays == 0 && iHours >= 1 ) strSystemUptime.Format("%s: %i %s, %i %s",lbl1, iHours,lblHou, iMinutes,lblMin);
-  else if (iDays == 0 && iHours == 0 &&  iMinutes >= 0) strSystemUptime.Format("%s: %i %s",lbl1, iMinutes,lblMin);
+  if (iDays > 0) strSystemUptime.Format("%s: %i %s, %i %s, %i %s",lbl1.c_str(), iDays,lblDay.c_str(), iHours,lblHou.c_str(), iMinutes,lblMin.c_str());
+  else if (iDays == 0 && iHours >= 1 ) strSystemUptime.Format("%s: %i %s, %i %s",lbl1.c_str(), iHours,lblHou.c_str(), iMinutes,lblMin.c_str());
+  else if (iDays == 0 && iHours == 0 &&  iMinutes >= 0) strSystemUptime.Format("%s: %i %s",lbl1, iMinutes,lblMin.c_str());
 
   return true;
 }
@@ -1677,9 +1677,9 @@ bool CGUIWindowSystemInfo::GetSystemTotalUpTime(CStdString& strSystemUptime)
   iInputMinutes = g_stSettings.m_iSystemTimeTotalUp + ((int)(timeGetTime() / 60000));
   SYSINFO::SystemUpTime(iInputMinutes,iMinutes, iHours, iDays);
   // Will Display Autodetected Values!
-  if (iDays > 0) strSystemUptime.Format("%s: %i %s, %i %s, %i %s",lbl1, iDays,lblDay, iHours,lblHou, iMinutes,lblMin);
-  else if (iDays == 0 && iHours >= 1 ) strSystemUptime.Format("%s: %i %s, %i %s",lbl1, iHours,lblHou, iMinutes,lblMin);
-  else if (iDays == 0 && iHours == 0 &&  iMinutes >= 0) strSystemUptime.Format("%s: %i %s",lbl1, iMinutes,lblMin);
+  if (iDays > 0) strSystemUptime.Format("%s: %i %s, %i %s, %i %s",lbl1.c_str(), iDays,lblDay.c_str(), iHours,lblHou.c_str(), iMinutes,lblMin.c_str());
+  else if (iDays == 0 && iHours >= 1 ) strSystemUptime.Format("%s: %i %s, %i %s",lbl1.c_str(), iHours,lblHou.c_str(), iMinutes,lblMin.c_str());
+  else if (iDays == 0 && iHours == 0 &&  iMinutes >= 0) strSystemUptime.Format("%s: %i %s",lbl1.c_str(), iMinutes,lblMin.c_str());
 
   return true;
 }
