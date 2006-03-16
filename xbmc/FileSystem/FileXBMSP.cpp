@@ -227,15 +227,18 @@ int CFileXBMSP::Stat(const CURL& url, struct __stat64* buffer)
     errno = 0;
     return 0;
   }
-  
+
   CStdString strURL;
   url.GetURL(strURL);
-  if (CDirectory::Exists(strURL))
-  {
-    buffer->st_mode = _S_IFDIR;
-    errno = EISDIR;
-    return 0;
-  }
+
+  int dot = url.GetFileName().rfind('.');
+  int slash = url.GetFileName().rfind('/');
+  if (dot <= slash)
+    if (CDirectory::Exists(strURL))
+    {
+      buffer->st_mode = _S_IFDIR;
+      return 0;
+    }
 
   errno = ENOENT;
   return -1;
