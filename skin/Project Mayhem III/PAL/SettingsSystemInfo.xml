@@ -292,29 +292,30 @@
       <align>left</align>
       <font>font12</font>
     </control>
-
     -->
     <control>
       <description>Current Time</description>
       <type>label</type>
       <id>50</id>
       <posx>220</posx>
-      <posy>422</posy>
+      <posy>443</posy>
       <label>143</label>
       <font>font12</font>
       <include>textcolorgrey</include>
     </control>
 
+    <!--
     <control>
       <description>XBMC Version</description>
       <type>label</type>
       <id>51</id>
       <posx>220</posx>
-      <posy>443</posy>
+      <posy>422</posy>
       <label>144</label>
       <font>font12</font>
       <include>textcolorgrey</include>
     </control>
+    -->
 
     <control>
       <description>XBMC XBE BUILD Version</description>
