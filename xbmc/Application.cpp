@@ -1917,21 +1917,12 @@ void CApplication::Render()
     m_guiVideoOverlay.Close(true);
   }
 
-  // render current window/dialog
-  // In screensaver modes with a separate window (slideshow, vis, screensaver window)
-  // we render the window last.
-  int activeWindow = m_gWindowManager.GetActiveWindow();
-  bool renderLast = m_bScreenSave && (activeWindow == WINDOW_SLIDESHOW ||
-                                      activeWindow == WINDOW_VISUALISATION ||
-                                      activeWindow == WINDOW_SCREENSAVER);
-  if (!renderLast)
-  {
-    // draw GUI
-    g_graphicsContext.Clear();
-    //SWATHWIDTH of 2 improves fillrates (performance investigator)
-    m_pd3dDevice->SetRenderState(D3DRS_SWATHWIDTH, 2);
-    m_gWindowManager.Render();
-  }
+  // draw GUI
+  g_graphicsContext.Clear();
+  //SWATHWIDTH of 2 improves fillrates (performance investigator)
+  m_pd3dDevice->SetRenderState(D3DRS_SWATHWIDTH, 2);
+  m_gWindowManager.Render();
+
   {
     // if we're recording an audio stream then show blinking REC
     if (IsPlayingAudio())
@@ -1955,14 +1946,6 @@ void CApplication::Render()
   // Now render any dialogs
   m_gWindowManager.RenderDialogs();
 
-  // in screensaver mode, render the display on top of all dialogs etc.
-  if (renderLast)
-  {
-    g_graphicsContext.Clear();
-    //SWATHWIDTH of 2 improves fillrates (performance investigator)
-    m_pd3dDevice->SetRenderState(D3DRS_SWATHWIDTH, 2);
-    m_gWindowManager.Render();
-  }
   // Render the mouse pointer
   if (g_Mouse.IsActive())
   {
@@ -3345,12 +3328,10 @@ bool CApplication::ResetScreenSaverWindow()
     }
     else if (iWin == WINDOW_VISUALISATION && g_guiSettings.GetBool("ScreenSaver.UseMusicVisInstead"))
     {
-      // if there are no dialogs on screen, we can just continue as usual from vis mode
-      if (!m_gWindowManager.IsRouted())
-        return false;
-      // otherwise, we'll show the previous window
-      m_gWindowManager.PreviousWindow();
-      return true;
+      // we can just continue as usual from vis mode
+      return false;
+//      m_gWindowManager.PreviousWindow();
+//      return true;
     }
     // Fade to dim or black screensaver is active --> fade in
     float fFadeLevel = 1.0f;
@@ -3359,16 +3340,14 @@ bool CApplication::ResetScreenSaverWindow()
     {
       fFadeLevel = (float)g_guiSettings.GetInt("ScreenSaver.DimLevel") / 100;
     }
-    // Picture slideshow
-    else if (strScreenSaver == "SlideShow")
-    {
-      if(!IsPlayingVideo()) m_gWindowManager.PreviousWindow();
-      else 
-        return true;
-    }
     else if (strScreenSaver == "Fade")
     {
       fFadeLevel = 0;
+    }
+    else if (strScreenSaver == "SlideShow" && iWin == WINDOW_SLIDESHOW)
+    {
+      m_gWindowManager.PreviousWindow();
+      return true;
     }
     D3DGAMMARAMP Ramp;
     for (float fade = fFadeLevel; fade <= 1; fade += 0.01f)
@@ -3451,23 +3430,22 @@ void CApplication::ActivateScreenSaver()
   // Get Screensaver Mode
   CStdString strScreenSaver = g_guiSettings.GetString("ScreenSaver.Mode");
 
+  // set to Dim in the case of a dialog on screen or playing video
+  if (m_gWindowManager.IsRouted() || IsPlayingVideo())
+    strScreenSaver = "Dim";
   // Check if we are Playing Audio and Vis instead Screensaver!
-  if (IsPlayingAudio() && g_guiSettings.GetBool("ScreenSaver.UseMusicVisInstead"))
+  else if (IsPlayingAudio() && g_guiSettings.GetBool("ScreenSaver.UseMusicVisInstead"))
   { // activate the visualisation
     m_gWindowManager.ActivateWindow(WINDOW_VISUALISATION);
     return;
   }
   // Picture slideshow
-  else if (strScreenSaver == "SlideShow")
+  if (strScreenSaver == "SlideShow")
   {
-    if(!IsPlayingVideo())
-    {
-      fFadeLevel = 1.f;
-      // reset our codec info - don't want that on screen
-      g_infoManager.SetShowCodec(false);
-      g_applicationMessenger.PictureSlideShow(g_stSettings.szScreenSaverSlideShowPath, true);
-    }
-    else return;
+    // reset our codec info - don't want that on screen
+    g_infoManager.SetShowCodec(false);
+    g_applicationMessenger.PictureSlideShow(g_stSettings.szScreenSaverSlideShowPath, true);
+    return;
   }
   else if (strScreenSaver == "Dim")
   {
@@ -3479,18 +3457,11 @@ void CApplication::ActivateScreenSaver()
   }
   else if (strScreenSaver != "None")
   {
-    if (!IsPlayingVideo())
-    {
-      m_gWindowManager.ActivateWindow(WINDOW_SCREENSAVER);
-      return ;
-    }
-    else
-    {
-      fFadeLevel = (FLOAT) g_guiSettings.GetInt("ScreenSaver.DimLevel") / 100; // 0.07f;
-    }
+    m_gWindowManager.ActivateWindow(WINDOW_SCREENSAVER);
+    return ;
   }
-  m_pd3dDevice->GetGammaRamp(&m_OldRamp); // Store the old gamma ramp
   // Fade to fFadeLevel
+  m_pd3dDevice->GetGammaRamp(&m_OldRamp); // Store the old gamma ramp
   for (float fade = 1.f; fade >= fFadeLevel; fade -= 0.01f)
   {
     for (int i = 0;i < 256;i++)

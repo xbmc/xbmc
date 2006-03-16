@@ -34,6 +34,12 @@ void CGUITextBox::Render()
 {
   if (!IsVisible()) return;
 
+  if (!HasRendered())
+  { // do set text once so that we make sure
+    // we have all the sizing correct
+    SetText(m_strText);
+  }
+
   int iPosY = m_iPosY;
 
   if (m_label.font)
@@ -246,6 +252,7 @@ void CGUITextBox::OnPageDown()
 }
 void CGUITextBox::SetText(const string &strText)
 {
+  m_strText = strText;
   m_vecItems.erase(m_vecItems.begin(), m_vecItems.end());
   // start wordwrapping
   // Set a flag so we can determine initial justification effects
