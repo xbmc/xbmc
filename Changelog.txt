@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 16-03-2006 changed: Smart playlist listing now use the usual Songs view modes.
  - 16-03-2006 added: Dialog.Close(window) built in function.
  - 16-03-2006 fixed: IMDb thumbnails were not immediately shown after a lookup.
  - 15-03-2006 fixed: forgot to commit new nosefart dll a long time ago :)
