@@ -309,6 +309,14 @@ bool CFileItem::IsInternetStream() const
   return false;
 }
 
+bool CFileItem::IsSmartPlayList() const
+{
+  CStdString strExtension;
+  CUtil::GetExtension(m_strPath, strExtension);
+  strExtension.ToLower();
+  return (strExtension == ".xsp");
+}
+
 bool CFileItem::IsPlayList() const
 {
   CStdString strExtension;
