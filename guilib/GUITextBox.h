@@ -70,6 +70,7 @@ protected:
   int m_iItemHeight;
   int m_iMaxPages;
 
+  CStdString m_strText;
   CLabelInfo m_label;
   CGUISpinControl m_upDown;
   vector<CGUIListItem> m_vecItems;
