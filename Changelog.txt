@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+
+ - 16-03-2006 changed: Settings Network: On DHCP show received IP Informations Show instead of "-"!
  - 16-03-2006 added: Parsing of .cue sheet replaygain data (still unused though)
  - 16-03-2006 changed: Screensaver uses Dim mode if a dialog is onscreen, or video is being played when it should activate.
  - 16-03-2006 fixed: Textbox could cut text off if the UI was calibrated.

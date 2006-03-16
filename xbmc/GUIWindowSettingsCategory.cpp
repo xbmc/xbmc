@@ -914,7 +914,14 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIButtonControl *pControl = (CGUIButtonControl *)GetControl(pSettingControl->GetID());
       if (pControl)
       {
-        if (g_guiSettings.GetInt("Network.Assignment") != NETWORK_STATIC) pControl->SetLabel2("-");
+        if (g_guiSettings.GetInt("Network.Assignment") != NETWORK_STATIC) 
+        {
+          //We are in non Static Mode! Setting the Received IP Information
+          if(strSetting == "Network.IPAddress")pControl->SetLabel2(g_guiSettings.GetString("Network.IPAddress").c_str());
+          else if(strSetting == "Network.Subnet")pControl->SetLabel2(g_guiSettings.GetString("Network.Subnet").c_str());
+          else if(strSetting == "Network.Gateway")pControl->SetLabel2(g_guiSettings.GetString("Network.Gateway").c_str());
+          else if(strSetting == "Network.DNS")pControl->SetLabel2(g_guiSettings.GetString("Network.DNS").c_str());
+        }
         pControl->SetEnabled(g_guiSettings.GetInt("Network.Assignment") == NETWORK_STATIC);
       }
     }
@@ -2082,11 +2089,15 @@ void CGUIWindowSettingsCategory::CheckNetworkSettings()
          m_strNetworkSubnet != g_guiSettings.GetString("Network.Subnet") ||
          m_strNetworkGateway != g_guiSettings.GetString("Network.Gateway") ||
          m_strNetworkDNS != g_guiSettings.GetString("Network.DNS"))))
-  { // our network settings have changed - we should prompt the user to reset XBMC
+  { 
+    // our network settings have changed - we should prompt the user to reset XBMC
     if (CGUIDialogYesNo::ShowAndGetInput(14038, 14039, 14040, 0))
-    { // reset settings
+    { 
+      // reset settings
       g_applicationMessenger.RestartApp();
+      // Todo: aquire new network settings without restart app!
     }
+ 
     // update our settings variables
     m_iNetworkAssignment = g_guiSettings.GetInt("Network.Assignment");
     m_strNetworkIPAddress = g_guiSettings.GetString("Network.IPAddress");
