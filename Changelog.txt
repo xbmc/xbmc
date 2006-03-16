@@ -5,6 +5,16 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+
+ - 16-03-2006 changed: defines in GUIInfomanager.cpp are now in GUIInfomanager.h, for global use
+ - 16-03-2006 fixed: GUIInfomanager IP Detection
+ - 16-03-2006 fixed: DebugLog in CDVDOverlayRenderer can cause Freeze
+ - 16-03-2006 fixed: DNS Detection for Static and DHCP
+ - 16-03-2006 added: Systeminfo Network, full DHCP Informations!
+ - 16-03-2006 added: DCHP Network Informations to xbmc logfile
+ - 16-03-2006 fixed: Systeminfo Mplayer version detection was broken (added also mplayer compile time)
+ - 16-03-2006 fixed: Systeminfo Storage calculation was brocken
+ - 16-03-2006 fixed: LogFatal in Application.cpp can cause Freeze
  - 16-03-2006 fixed: aspect ratio of dvd's would sometimes not update between different parts of dvd.
  - 16-03-2006 changed: Smart playlist listing now use the usual Songs view modes.
  - 16-03-2006 added: Dialog.Close(window) built in function.
