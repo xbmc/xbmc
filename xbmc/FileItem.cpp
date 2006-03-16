@@ -1189,7 +1189,6 @@ bool CFileItem::IsParentFolder() const
 // %% - % sign
 // %I - Size
 // %J - Date
-// %Q - Movie year
 // %R - Movie rating
 // %C - Programs count
 // %K - Movie/Game title
