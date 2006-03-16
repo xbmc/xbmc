@@ -26,7 +26,7 @@ public:
 	
 	bool	GetUnits(int i_lblp1, int i_lblp2);
 	bool	GetATAPIValues(int i_lblp1, int i_lblp2);
-	bool	GetNetwork(int i_lblp1, int i_lblp2, int i_lblp3, int i_lblp4, int i_lblp5, int i_lblp6);
+	bool  GetNetwork(int i_lblp1, int i_lblp2, int i_lblp3, int i_lblp4, int i_lblp5, int i_lblp6, int i_lblp7);
 	bool	GetBuildTime(int i_lblp1, int i_lblp2, int i_lblp3);
 	bool	GetATAValues(int i_lblp1, int i_lblp2, int i_lblp3, int i_lblp4, int i_lblp5);
 	bool	GetStorage(int i_lblp1, int i_lblp2, int i_lblp3, int i_lblp4, int i_lblp5, int i_lblp6, int i_lblp7, int i_lblp8, int i_lblp9, int i_lblp10);
@@ -51,8 +51,8 @@ public:
 	static void GetFreeMemory(CStdString& strFreeMem);
   static bool GetSystemUpTime(CStdString& strSystemUptime);
   static bool GetSystemTotalUpTime(CStdString& strSystemUptime);
-
-	
+  static bool GetMPlayerVersion (CStdString& strVersion);
+  	
 private:
   bool GetDiskSpace(const CStdString &drive, ULARGE_INTEGER &total, ULARGE_INTEGER& totalFree, CStdString &string);
 
