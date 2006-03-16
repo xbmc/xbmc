@@ -136,6 +136,8 @@ void CDVDPlayerVideo::OnStartup()
   m_iFlipTimeStamp = m_pClock->GetAbsoluteClock();
   m_DetectedStill = false;
   
+  memset(&m_output, 0, sizeof(m_output));
+  
   g_dvdPerformanceCounter.EnableVideoDecodePerformance(ThreadHandle());
 }
 
@@ -236,6 +238,11 @@ void CDVDPlayerVideo::Process()
 
       pMsgGeneralResync->Release();
       continue;
+    }
+    else if (pMsg->IsType(CDVDMsg::VIDEO_SET_ASPECT))
+    {
+      CLog::Log(LOGDEBUG, "CDVDPlayerVideo - CDVDMsg::VIDEO_SET_ASPECT"); 
+      m_fForcedAspectRatio = ((CDVDMsgVideoSetAspect*)pMsg)->GetAspect();      
     }
 
     if (m_DetectedStill)
@@ -421,7 +428,7 @@ void CDVDPlayerVideo::OnExit()
   g_dvdPerformanceCounter.DisableVideoDecodePerformance();
   
   g_renderManager.UnInit();
-  m_bInitializedOutputDevice = false;
+  m_bInitializedOutputDevice = false;  
 
   CLog::Log(LOGNOTICE, "thread end: video_thread");
 }
@@ -502,16 +509,29 @@ CDVDPlayerVideo::EOUTPUTSTATUS CDVDPlayerVideo::OutputPicture(DVDVideoPicture* p
 
   if (!m_bInitializedOutputDevice)
   {
-
     CLog::Log(LOGNOTICE, "Initializing video device");
 
     g_renderManager.PreInit();
+    m_bInitializedOutputDevice = true;
+  }
 
+  /* check so that our format or aspect has changed. if it has, reconfigure renderer */
+  if (m_output.width != pPicture->iWidth
+   || m_output.height != pPicture->iHeight
+   || m_output.dwidth != pPicture->iDisplayWidth
+   || m_output.dheight != pPicture->iDisplayHeight
+   || m_output.framerate != m_fFrameRate)
+  {
     CLog::Log(LOGNOTICE, " fps: %f, pwidth: %i, pheight: %i, dwidth: %i, dheight: %i",
       m_fFrameRate, pPicture->iWidth, pPicture->iHeight, pPicture->iDisplayWidth, pPicture->iDisplayHeight);
 
     g_renderManager.Configure(pPicture->iWidth, pPicture->iHeight, pPicture->iDisplayWidth, pPicture->iDisplayHeight, m_fFrameRate);
-    m_bInitializedOutputDevice = true;
+
+    m_output.width = pPicture->iWidth;
+    m_output.height = pPicture->iHeight;
+    m_output.dwidth = pPicture->iDisplayWidth;
+    m_output.dheight = pPicture->iDisplayHeight;
+    m_output.framerate = m_fFrameRate;
   }
 
   if (m_bInitializedOutputDevice)
@@ -649,11 +669,6 @@ __int64 CDVDPlayerVideo::GetDelay()
 void CDVDPlayerVideo::SetDelay(__int64 delay)
 {
   m_iVideoDelay = delay;
-}
-
-void CDVDPlayerVideo::SetAspectRatio(float fAspectRatio)
-{
-  m_fForcedAspectRatio = fAspectRatio;
 }
 
 void CDVDPlayerVideo::CPresentThread::Present( __int64 iTimeStamp, EFIELDSYNC m_OnField )

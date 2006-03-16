@@ -40,9 +40,6 @@ public:
   void GetVideoRect(RECT& SrcRect, RECT& DestRect)  { g_renderManager.GetVideoRect(SrcRect, DestRect); }
   float GetAspectRatio()                            { return g_renderManager.GetAspectRatio(); }
 
-  //Set a forced aspect ratio
-  void SetAspectRatio(float fAspectRatio);
-
   __int64 GetDelay();
   void SetDelay(__int64 delay);
 
@@ -82,8 +79,17 @@ protected:
   __int64 m_iFlipTimeStamp; // time stamp of last flippage. used to play at a forced framerate
 
   int m_iDroppedFrames;
-  bool m_bInitializedOutputDevice;
+  bool m_bInitializedOutputDevice;  
   float m_fFrameRate;
+
+  struct SOutputConfiguration
+  {
+    unsigned int width;
+    unsigned int height;
+    unsigned int dwidth;
+    unsigned int dheight;
+    float framerate;
+  } m_output; //holds currently configured output
 
   
   bool m_bRenderSubs;

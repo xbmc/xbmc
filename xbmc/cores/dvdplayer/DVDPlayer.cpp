@@ -1257,6 +1257,10 @@ bool CDVDPlayer::OpenAudioStream(int iStream)
 
   m_dvdPlayerAudio.SetPriority(THREAD_PRIORITY_HIGHEST + 4);
 
+  /* set aspect ratio as requested by navigator for dvd's */
+  if( m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD) )
+    m_dvdPlayerVideo.m_messageQueue.Put(new CDVDMsgVideoSetAspect(static_cast<CDVDInputStreamNavigator*>(m_pInputStream)->GetVideoAspectRatio()));
+
   return true;
 }
 
@@ -1537,9 +1541,7 @@ int CDVDPlayer::OnDVDNavResult(void* pData, int iMessage)
         m_bReadAgain = true;
 
         //Force an aspect ratio that is set in the dvdheaders if available
-        //techinally wrong place to do, should really be done when next video packet
-        //is decoded.. but won't cause too many problems
-        m_dvdPlayerVideo.SetAspectRatio(pStream->GetVideoAspectRatio());
+        m_dvdPlayerVideo.m_messageQueue.Put(new CDVDMsgVideoSetAspect(pStream->GetVideoAspectRatio()));
 
         return NAVRESULT_ERROR;
       }
