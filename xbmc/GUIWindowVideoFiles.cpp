@@ -202,14 +202,15 @@ bool CGUIWindowVideoFiles::GetDirectory(const CStdString &strDirectory, CFileIte
 void CGUIWindowVideoFiles::OnPrepareFileItems(CFileItemList &items)
 {
   items.SetThumbs();
-  
   SetIMDBThumbs(items);
+  if (g_stSettings.m_bMyVideoCleanTitles)
+    items.CleanFileNames();
 }
 
 void CGUIWindowVideoFiles::OnFinalizeFileItems(CFileItemList &items)
 {
-  if (g_stSettings.m_bMyVideoCleanTitles)
-    items.CleanFileNames();
+//  if (g_stSettings.m_bMyVideoCleanTitles)
+//    items.CleanFileNames();
 }
 
 bool CGUIWindowVideoFiles::OnClick(int iItem)
@@ -331,16 +332,11 @@ void CGUIWindowVideoFiles::OnInfo(int iItem)
     }
   }
 
-  // save the folder path
-  CStdString folderPath = pItem->m_bIsFolder ? pItem->m_strPath : "";
   ShowIMDB(&item);
-  if (!folderPath.IsEmpty())
-  { // add IMDb icon to the folder as well
-    ApplyIMDBThumbToFolder(folderPath, item.GetThumbnailImage());
-    // and update our directory listing
-    Update(m_vecItems.m_strPath);
-  }
-  m_viewControl.SetSelectedItem(iSelectedItem);
+  // apply any IMDb icon to our item
+  if (pItem->m_bIsFolder)
+    ApplyIMDBThumbToFolder(pItem->m_strPath, item.GetThumbnailImage());
+  Update(m_vecItems.m_strPath);
 }
 
 void CGUIWindowVideoFiles::AddFileToDatabase(const CFileItem* pItem)
