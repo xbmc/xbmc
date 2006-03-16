@@ -194,6 +194,7 @@ CApplication::CApplication(void)
   m_eForcedNextPlayer = EPC_NONE;
   m_strPlayListFile = "";
   m_nextPlaylistItem = -1;
+  m_playCountUpdated = false;
 }
 
 CApplication::~CApplication(void)
@@ -3851,32 +3852,6 @@ bool CApplication::OnMessage(CGUIMessage& message)
   case GUI_MSG_PLAYLISTPLAYER_STARTED:
   case GUI_MSG_PLAYLISTPLAYER_CHANGED:
     {
-      if (message.GetParam1() == PLAYLIST_MUSIC || message.GetParam1() == PLAYLIST_MUSIC_TEMP)
-      {
-        CPlayList::CPlayListItem* pItem = (CPlayList::CPlayListItem*)message.GetLPVOID();
-        if (pItem)
-        {
-          // only Increment Top 100 Counter, if we have not clicked from inside the Top 100 view
-/*          if (g_stSettings.m_iMyMusicStartWindow == WINDOW_MUSIC_TOP100)
-          {
-            break;
-          }
-          else*/
-          {
-            // Can't write to the musicdatabase while scanning for music info
-            CGUIDialogMusicScan *dialog = (CGUIDialogMusicScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
-            if (dialog && !dialog->IsRunning())
-            {
-              CMusicDatabase musicdatabase;
-              if (musicdatabase.Open())
-              {
-                musicdatabase.IncrTop100CounterByFileName(pItem->GetFileName());
-                musicdatabase.Close();
-              }
-            }
-          }
-        }
-      }
       return true;
     }
     break;
@@ -3994,8 +3969,9 @@ void CApplication::Process()
   // check if we can free unused memory
   g_audioManager.FreeUnused();
 
-  //  Check if we should submit a song to audioscrobbler
-  CheckAudioScrobblerStatus();
+  // check how far we are through playing the current item
+  // and do anything that needs doing (lastfm submission, playcount updates etc)
+  CheckPlayingProgress();
 
   //  check if we can unload any unreferenced dlls or sections
   CSectionLoader::UnloadDelayed();
@@ -4372,6 +4348,48 @@ void CApplication::RestoreMusicScanSettings()
   g_guiSettings.SetBool("MusicFiles.FindRemoteThumbs", g_stSettings.m_bMyMusicOldFindThumbs);
   g_stSettings.m_bMyMusicIsScanning = false;
   g_settings.Save();
+}
+
+void CApplication::CheckPlayingProgress()
+{
+  if (IsPlayingAudio())
+    CheckAudioScrobblerStatus();
+
+  if (!IsPlaying()) return;
+
+  // work out where we are in the playing item
+  if (GetPercentage() >= g_advancedSettings.m_playCountMinimumPercent)
+  { // consider this item as played
+    if (m_playCountUpdated)
+      return;
+    m_playCountUpdated = true;
+    if (IsPlayingVideo() && !m_itemCurrentFile.m_musicInfoTag.GetURL().IsEmpty())
+    {
+      long movieID = atoi(m_itemCurrentFile.m_musicInfoTag.GetURL().c_str());
+      CVideoDatabase dbs;
+      if (dbs.Open())
+      {
+        dbs.MarkAsWatched(movieID);
+        dbs.Close();
+      }
+    }
+    else if (IsPlayingAudio())
+    {
+      // Can't write to the musicdatabase while scanning for music info
+      CGUIDialogMusicScan *dialog = (CGUIDialogMusicScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
+      if (dialog && !dialog->IsRunning())
+      {
+        CMusicDatabase musicdatabase;
+        if (musicdatabase.Open())
+        {
+          musicdatabase.IncrTop100CounterByFileName(m_itemCurrentFile.m_strPath);
+          musicdatabase.Close();
+        }
+      }
+    }
+  }
+  else
+    m_playCountUpdated = false;
 }
 
 void CApplication::CheckAudioScrobblerStatus()
