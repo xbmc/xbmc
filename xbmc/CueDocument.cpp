@@ -42,6 +42,8 @@ CCueDocument::CCueDocument(void)
   m_strFilePath = "";
   m_strArtist = "";
   m_strAlbum = "";
+  m_replayGainAlbumPeak = 0.0f;
+  m_replayGainAlbumGain = 0.0f;
 }
 
 CCueDocument::~CCueDocument(void)
@@ -68,7 +70,7 @@ bool CCueDocument::Parse(const CStdString &strFile)
       break;
     if (strLine.Left(8) == "INDEX 01")
     {
-      time = ExtractTimeFromString(strLine + 8);
+      time = ExtractTimeFromString(strLine.c_str() + 8);
       if (time == -1)
       { // Error!
         OutputDebugString("Mangled Time in INDEX 01 tag in CUE file!\n");
@@ -92,38 +94,46 @@ bool CCueDocument::Parse(const CStdString &strFile)
         m_Track[m_iTotalTracks++].iStartTime = time; // start time of the next track
       else
       { // Warning - Max tracks exceeded!
-        OutputDebugString("Max Cue Tracks (99) obtained!\n");
+        CLog::Log(LOGERROR,"Max Cue Tracks (99) obtained!");
         break;
       }
     }
     else if (strLine.Left(5) == "TITLE")
     {
       if (m_iTotalTracks == -1) // No tracks yet
-        ExtractQuoteInfo(m_strAlbum, strLine + 5);
+        ExtractQuoteInfo(m_strAlbum, strLine.c_str() + 5);
       else // New Artist for this track
-        ExtractQuoteInfo(m_Track[m_iTotalTracks].strTitle, strLine + 5);
+        ExtractQuoteInfo(m_Track[m_iTotalTracks].strTitle, strLine.c_str() + 5);
     }
     else if (strLine.Left(9) == "PERFORMER")
     {
       if (m_iTotalTracks == -1) // No tracks yet
-        ExtractQuoteInfo(m_strArtist, strLine + 9);
+        ExtractQuoteInfo(m_strArtist, strLine.c_str() + 9);
       else // New Artist for this track
-        ExtractQuoteInfo(m_Track[m_iTotalTracks].strArtist, strLine + 9);
+        ExtractQuoteInfo(m_Track[m_iTotalTracks].strArtist, strLine.c_str() + 9);
     }
     else if (strLine.Left(5) == "TRACK")
     {
       if (m_iTotalTracks == -1) // No tracks yet
         m_iTotalTracks = 0; // Starting the first track
-      iTrackNumber = ExtractNumericInfo(strLine + 5);
+      iTrackNumber = ExtractNumericInfo(strLine.c_str() + 5);
     }
     else if (strLine.Left(4) == "FILE")
     {
       if (m_iTotalTracks == -1)
-        ExtractQuoteInfo(m_strFilePath, strLine + 4);
+        ExtractQuoteInfo(m_strFilePath, strLine.c_str() + 4);
       else if (m_strFilePath.size())
         return false;                 // means we have more than 1 media file in the .cue
                                       // we don't currently handle these type of cue sheets.
     }
+    else if (strLine.Left(25) == "REM REPLAYGAIN_ALBUM_GAIN")
+      m_replayGainAlbumGain = (float)atof(strLine.Mid(26));
+    else if (strLine.Left(25) == "REM REPLAYGAIN_ALBUM_PEAK")
+      m_replayGainAlbumPeak = (float)atof(strLine.Mid(26));
+    else if (strLine.Left(25) == "REM REPLAYGAIN_TRACK_GAIN" && m_iTotalTracks >= 0)
+      m_Track[m_iTotalTracks].replayGainTrackGain = (float)atof(strLine.Mid(26));
+    else if (strLine.Left(25) == "REM REPLAYGAIN_TRACK_PEAK" && m_iTotalTracks >= 0)
+      m_Track[m_iTotalTracks].replayGainTrackPeak = (float)atof(strLine.Mid(26));
   }
   // Resolve absolute paths (if needed).
   if (m_strFilePath.length() > 0)
@@ -164,6 +174,7 @@ void CCueDocument::GetSongs(VECSONGS &songs)
       song.iDuration = (song.iEndOffset - song.iStartOffset + 37) / 75;
     else
       song.iDuration = 0;
+    // TODO: replayGain goes here
     songs.push_back(song);
   }
 }

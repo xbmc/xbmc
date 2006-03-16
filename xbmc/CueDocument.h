@@ -7,13 +7,24 @@
 
 class CCueDocument
 {
-  struct CUEITEM
+  class CCueTrack
   {
+  public:
+    CCueTrack()
+    {
+      iTrackNumber = 0;
+      iStartTime = 0;
+      iEndTime = 0;
+      replayGainTrackGain = 0.0f;
+      replayGainTrackPeak = 0.0f;
+    }
     CStdString strArtist;
     CStdString strTitle;
     int iTrackNumber;
     int iStartTime;
     int iEndTime;
+    float replayGainTrackGain;
+    float replayGainTrackPeak;
   };
 
 public:
@@ -37,9 +48,11 @@ private:
   CStdString m_strFilePath; // path of underlying media
   int m_iTrack;   // current track
   int m_iTotalTracks;  // total tracks
+  float m_replayGainAlbumGain;
+  float m_replayGainAlbumPeak;
 
   // cuetrack array
-  CUEITEM m_Track[MAX_CUE_TRACKS];
+  CCueTrack m_Track[MAX_CUE_TRACKS];
 
   bool ReadNextLine(CStdString &strLine);
   bool ExtractQuoteInfo(CStdString &szData, const char *szLine);
