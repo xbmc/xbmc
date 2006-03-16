@@ -72,6 +72,7 @@ public:
   bool IsLastFM() const;
   bool IsInternetStream() const;
   bool IsPlayList() const;
+  bool IsSmartPlayList() const;
   bool IsPythonScript() const;
   bool IsXBE() const;
   bool IsDefaultXBE() const;

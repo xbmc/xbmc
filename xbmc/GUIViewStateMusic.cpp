@@ -327,6 +327,44 @@ void CGUIViewStateMusicDatabase::SaveViewState()
   g_settings.Save();
 }
 
+
+CGUIViewStateMusicSmartPlaylist::CGUIViewStateMusicSmartPlaylist(const CFileItemList& items) : CGUIViewStateWindowMusic(items)
+{
+  CStdString strTrackLeft=g_guiSettings.GetString("MyMusic.TrackFormat");
+  CStdString strTrackRight=g_guiSettings.GetString("MyMusic.TrackFormatRight");
+  AddSortMethod(SORT_METHOD_TRACKNUM, 266, LABEL_MASKS(strTrackLeft, strTrackRight));  // Userdefined, Userdefined| empty, empty
+  if (g_guiSettings.GetBool("MyMusic.IgnoreTheWhenSorting"))
+    AddSortMethod(SORT_METHOD_TITLE_IGNORE_THE, 268, LABEL_MASKS("%T - %A", "%D"));  // Title, Artist, Duration| empty, empty
+  else
+    AddSortMethod(SORT_METHOD_TITLE, 268, LABEL_MASKS("%T - %A", "%D"));  // Title, Artist, Duration| empty, empty
+  if (g_guiSettings.GetBool("MyMusic.IgnoreTheWhenSorting"))
+    AddSortMethod(SORT_METHOD_ALBUM_IGNORE_THE, 270, LABEL_MASKS("%B - %T - %A", "%D"));  // Album, Titel, Artist, Duration| empty, empty
+  else
+    AddSortMethod(SORT_METHOD_ALBUM, 270, LABEL_MASKS("%B - %T - %A", "%D"));  // Album, Titel, Artist, Duration| empty, empty
+  if (g_guiSettings.GetBool("MyMusic.IgnoreTheWhenSorting"))
+    AddSortMethod(SORT_METHOD_ARTIST_IGNORE_THE, 269, LABEL_MASKS("%A - %T", "%D"));  // Artist, Titel, Duration| empty, empty
+  else
+    AddSortMethod(SORT_METHOD_ARTIST, 269, LABEL_MASKS("%A - %T", "%D"));  // Artist, Titel, Duration| empty, empty
+  AddSortMethod(SORT_METHOD_DURATION, 267, LABEL_MASKS("%T - %A", "%D"));  // Titel, Artist, Duration| empty, empty
+  SetSortMethod(g_stSettings.m_MyMusicNavSongsSortMethod);
+      
+  AddViewAsControl(VIEW_METHOD_LIST, 101);
+  AddViewAsControl(VIEW_METHOD_ICONS, 100);
+  AddViewAsControl(VIEW_METHOD_LARGE_ICONS, 417);
+  SetViewAsControl(g_stSettings.m_MyMusicNavSongsViewMethod);
+
+  SetSortOrder(g_stSettings.m_MyMusicNavSongsSortOrder);
+}
+
+void CGUIViewStateMusicSmartPlaylist::SaveViewState()
+{
+  g_stSettings.m_MyMusicNavSongsSortMethod=GetSortMethod();
+  g_stSettings.m_MyMusicNavSongsViewMethod=GetViewAsControl();
+  g_stSettings.m_MyMusicNavSongsSortOrder=GetSortOrder();
+  g_settings.Save();
+}
+
+
 CGUIViewStateWindowMusicNav::CGUIViewStateWindowMusicNav(const CFileItemList& items) : CGUIViewStateWindowMusic(items)
 {
   if (items.IsVirtualDirectoryRoot())
