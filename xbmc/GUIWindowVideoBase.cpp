@@ -224,6 +224,7 @@ void CGUIWindowVideoBase::OnInfo(int iItem)
   CFileItem* pItem = m_vecItems[iItem];
   CStdString strFile = CUtil::GetFileName(pItem->m_strPath);
   ShowIMDB(pItem);
+  Update(m_vecItems.m_strPath);
 }
 
 // ShowIMDB is called as follows:
@@ -246,7 +247,6 @@ void CGUIWindowVideoBase::OnInfo(int iItem)
 // 5.  Once we have the details, add to the database if necessary (case 1,2)
 //     and show the information.
 // 6.  Check for a refresh, and if so, go to 3.
-// 7.  Update our view and return.
 
 void CGUIWindowVideoBase::ShowIMDB(CFileItem *item)
 {
@@ -424,12 +424,6 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item)
     }
     // 6. Check for a refresh
   } while (needsRefresh);
-
-  // 7. Update our item
-  SetIMDBThumb(item, movieDetails.m_strIMDBNumber);
-  item->FillInDefaultIcon();
-  item->FreeMemory();
-  UpdateButtons();
 }
 
 void CGUIWindowVideoBase::Render()
