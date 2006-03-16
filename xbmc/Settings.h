@@ -282,6 +282,7 @@ public:
     int m_lcdAddress4;
 
     int m_autoDetectPingTime;
+    float m_playCountMinimumPercent;
   };
   struct stSettings
   {
