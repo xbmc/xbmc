@@ -86,6 +86,7 @@ public:
   void CheckNetworkHDSpinDown(bool playbackStarted = false);
   void CheckHDSpindown();
   void CheckScreenSaver();   // CB: SCREENSAVER PATCH
+  void CheckPlayingProgress();
   void CheckAudioScrobblerStatus();
   void ActivateScreenSaver();
   void CheckShutdown();
@@ -173,6 +174,7 @@ protected:
   CFileItemList m_currentStack;
   int m_currentStackPosition;
   int m_nextPlaylistItem;
+  bool m_playCountUpdated;
   D3DGAMMARAMP m_OldRamp;  // CB: SCREENSAVER PATCH
   CSplash* m_splash;
 

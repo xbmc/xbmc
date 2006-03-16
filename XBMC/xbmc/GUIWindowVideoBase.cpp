@@ -892,50 +892,53 @@ bool CGUIWindowVideoBase::OnPlayMedia(int iItem)
 
 void CGUIWindowVideoBase::PlayMovie(const CFileItem *item)
 {
-  CFileItem movie(*item);
-  vector<CStdString> movieList;
+  CFileItemList movieList;
   int selectedFile = 1;
-  if (CUtil::IsNaturalNumber(movie.m_strPath))
-  { // database file - get the true path
-    m_database.GetFilePath(atol(movie.m_strPath), movie.m_strPath);
-  }
   // VideoPlayer.BypassCDSelection values:
   // 0 = never
   // 1 = immediately
   // 2-37 = 5-180 seconds
-  if (movie.IsStack() && g_guiSettings.GetInt("VideoPlayer.BypassCDSelection") != 1)
+  if (item->IsStack() && g_guiSettings.GetInt("VideoPlayer.BypassCDSelection") != 1)
   {
     // TODO: Once the players are capable of playing a stack, we should remove
     // this code in favour of just using the resume feature.
-    GetStackedFiles(movie.m_strPath, movieList);
-    if (movie.m_lStartOffset)
-      selectedFile = ((movie.m_lStartOffset & 0x10000000) >> 28) + 1;
+    CStdStringArray movies;
+    GetStackedFiles(item->m_strPath, movies);
+    if (item->m_lStartOffset)
+      selectedFile = ((item->m_lStartOffset & 0x10000000) >> 28) + 1;
     else
     { // show file stacking dialog
       CGUIDialogFileStacking* dlg = (CGUIDialogFileStacking*)m_gWindowManager.GetWindow(WINDOW_DIALOG_FILESTACKING);
       if (dlg)
       {
-        dlg->SetNumberOfFiles(movieList.size());
+        dlg->SetNumberOfFiles(movies.size());
         dlg->DoModal(GetID());
         selectedFile = dlg->GetSelectedFile();
         if (selectedFile < 1) return ;
       }
     }
+    // add to our movie list
+    for (unsigned int i = 0; i < movies.size(); i++)
+    {
+      movieList.Add(new CFileItem(movies[i], false));
+    }
   }
   else
-    movieList.push_back(movie.m_strPath);
+  {
+    movieList.Add(new CFileItem(*item));
+  }
 
   g_playlistPlayer.Reset();
   g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_VIDEO_TEMP);
   CPlayList& playlist = g_playlistPlayer.GetPlaylist(PLAYLIST_VIDEO_TEMP);
   playlist.Clear();
-  for (int i = selectedFile - 1; i < (int)movieList.size(); ++i)
+  for (int i = selectedFile - 1; i < (int)movieList.Size(); ++i)
   {
-    CPlayList::CPlayListItem item;
-    item.SetFileName(movieList[i]);
+    CPlayList::CPlayListItem playlistItem;
+    CUtil::ConvertFileItemToPlayListItem(movieList[i], playlistItem);
     if (i == selectedFile - 1)
-      item.m_lStartOffset = movie.m_lStartOffset & 0x0fffffff;
-    playlist.Add(item);
+      playlistItem.m_lStartOffset = item->m_lStartOffset & 0x0fffffff;
+    playlist.Add(playlistItem);
   }
 
   // play movie...

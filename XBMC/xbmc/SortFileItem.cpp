@@ -561,8 +561,9 @@ bool SSortFileItem::MovieYearAscending(CFileItem *left, CFileItem *right)
   if (right->IsParentFolder()) return false;
   if (left->m_bIsFolder == right->m_bIsFolder)
   {
-    if (left->m_stTime.wYear < right->m_stTime.wYear) return true;
-    if (left->m_stTime.wYear > right->m_stTime.wYear) return false;
+    int result = StringUtils::AlphaNumericCompare(left->m_musicInfoTag.GetYear().c_str(), right->m_musicInfoTag.GetYear().c_str());
+    if (result < 0) return true;
+    if (result > 0) return false;
     return StringUtils::AlphaNumericCompare(left->GetLabel().c_str(), right->GetLabel().c_str()) <= 0;
   }
   return left->m_bIsFolder;
@@ -575,8 +576,9 @@ bool SSortFileItem::MovieYearDescending(CFileItem *left, CFileItem *right)
   if (right->IsParentFolder()) return false;
   if (left->m_bIsFolder == right->m_bIsFolder)
   {
-    if (left->m_stTime.wYear < right->m_stTime.wYear) return false;
-    if (left->m_stTime.wYear > right->m_stTime.wYear) return true;
+    int result = StringUtils::AlphaNumericCompare(left->m_musicInfoTag.GetYear().c_str(), right->m_musicInfoTag.GetYear().c_str());
+    if (result < 0) return false;
+    if (result > 0) return true;
     return StringUtils::AlphaNumericCompare(left->GetLabel().c_str(), right->GetLabel().c_str()) >= 0;
   }
   return left->m_bIsFolder;
