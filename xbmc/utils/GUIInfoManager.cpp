@@ -1,7 +1,5 @@
 #include "../stdafx.h"
-#include "GUIInfoManager.h"
 #include "../GUIDialogSeekBar.h"
-#include "Weather.h"
 #include "../Application.h"
 #include "../Util.h"
 #include "../lib/libscrobbler/scrobbler.h"
@@ -9,216 +7,28 @@
 #include "../ButtonTranslator.h"
 #include "../Visualizations/Visualisation.h"
 #include "../MusicDatabase.h"
-#include "KaiClient.h"
-#include "GUIButtonScroller.h"
 #include "../utils/Alarmclock.h"
 #include "../utils/lcd.h"
 #include "../GUIMediaWindow.h"
 #include "../GUIDialogFileBrowser.h"
 #include "../PartyModeManager.h"
-#ifdef PRE_SKIN_VERSION_2_0_COMPATIBILITY
-#include "SkinInfo.h"
-#endif
-
+#include "FanController.h"
+#include "GUIButtonScroller.h"
+#include "GUIInfoManager.h"
+#include "KaiClient.h"
+#include "Weather.h"
 #include <stack>
 
-#define VERSION_STRING "1.1.0"
+#ifdef PRE_SKIN_VERSION_2_0_COMPATIBILITY
+  #include "SkinInfo.h"
+#endif
 
 // stuff for current song
 #include "../filesystem/CDDADirectory.h"
 #include "../musicInfoTagLoaderFactory.h"
 #include "../filesystem/SndtrkDirectory.h"
 
-#include "FanController.h"
-
-
 extern char g_szTitleIP[32];
-
-#define PLAYER_HAS_MEDIA              1
-#define PLAYER_HAS_AUDIO              2
-#define PLAYER_HAS_VIDEO              3
-#define PLAYER_PLAYING                4
-#define PLAYER_PAUSED                 5 
-#define PLAYER_REWINDING              6
-#define PLAYER_REWINDING_2x           7
-#define PLAYER_REWINDING_4x           8
-#define PLAYER_REWINDING_8x           9
-#define PLAYER_REWINDING_16x         10
-#define PLAYER_REWINDING_32x         11
-#define PLAYER_FORWARDING            12
-#define PLAYER_FORWARDING_2x         13
-#define PLAYER_FORWARDING_4x         14
-#define PLAYER_FORWARDING_8x         15
-#define PLAYER_FORWARDING_16x        16
-#define PLAYER_FORWARDING_32x        17
-#define PLAYER_CAN_RECORD            18
-#define PLAYER_RECORDING             19
-//Defined in header instead as they are needed at other places
-//#define PLAYER_CACHING               20
-//#define PLAYER_DISPLAY_AFTER_SEEK    21
-//#define PLAYER_PROGRESS              22
-//#define PLAYER_SEEKBAR               23
-//#define PLAYER_SEEKTIME              24
-//#define PLAYER_SEEKING               25
-//#define PLAYER_SHOWTIME              26
-#define PLAYER_TIME                  27  
-#define PLAYER_TIME_REMAINING        28
-#define PLAYER_DURATION              29
-//#define PLAYER_SHOWCODEC             30
-//#define PLAYER_SHOWINFO              31
-#define PLAYER_VOLUME                32
-#define PLAYER_MUTED                 33
-
-#define WEATHER_CONDITIONS          100
-#define WEATHER_TEMPERATURE         101
-#define WEATHER_LOCATION            102
-
-#define SYSTEM_TIME                 110
-#define SYSTEM_DATE                 111
-#define SYSTEM_CPU_TEMPERATURE      112
-#define SYSTEM_GPU_TEMPERATURE      113
-#define SYSTEM_FAN_SPEED            114
-#define SYSTEM_FREE_SPACE_C         115
-// 116 is reserved for space on D
-#define SYSTEM_FREE_SPACE_E         117
-#define SYSTEM_FREE_SPACE_F         118
-#define SYSTEM_FREE_SPACE_G         119
-#define SYSTEM_BUILD_VERSION        120
-#define SYSTEM_BUILD_DATE           121
-#define SYSTEM_ETHERNET_LINK_ACTIVE 122
-#define SYSTEM_FPS                  123
-#define SYSTEM_KAI_CONNECTED        124
-#define SYSTEM_ALWAYS_TRUE          125   // useful for <visible fade="10" start="hidden">true</visible>, to fade in a control
-#define SYSTEM_ALWAYS_FALSE         126   // used for <visible fade="10">false</visible>, to fade out a control (ie not particularly useful!)
-#define SYSTEM_MEDIA_DVD            127
-#define SYSTEM_NO_SUCH_ALARM        128
-#define SYSTEM_HAS_ALARM            129
-#define SYSTEM_AUTODETECTION        130
-#define SYSTEM_FREE_MEMORY          131
-#define SYSTEM_SCREEN_MODE          132
-#define SYSTEM_SCREEN_WIDTH         133
-#define SYSTEM_SCREEN_HEIGHT        134
-#define SYSTEM_CURRENT_WINDOW       135
-#define SYSTEM_CURRENT_CONTROL      136
-#define SYSTEM_XBOX_NICKNAME        137
-#define SYSTEM_DVD_LABEL            138
-
-#define LCD_PLAY_ICON               160
-#define LCD_PROGRESS_BAR            161
-#define LCD_CPU_TEMPERATURE         162
-#define LCD_GPU_TEMPERATURE         163
-#define LCD_FAN_SPEED               164
-#define LCD_DATE                    166
-#define LCD_FREE_SPACE_C            167
-// 168 is reserved for space on D
-#define LCD_FREE_SPACE_E            169
-#define LCD_FREE_SPACE_F            170
-#define LCD_FREE_SPACE_G            171
-
-#define NETWORK_IP_ADDRESS          190
-
-#define MUSICPLAYER_TITLE           200
-#define MUSICPLAYER_ALBUM           201
-#define MUSICPLAYER_ARTIST          202
-#define MUSICPLAYER_GENRE           203
-#define MUSICPLAYER_YEAR            204
-#define MUSICPLAYER_TIME            205
-#define MUSICPLAYER_TIME_REMAINING  206
-#define MUSICPLAYER_TIME_SPEED      207
-#define MUSICPLAYER_TRACK_NUMBER    208
-#define MUSICPLAYER_DURATION        209
-#define MUSICPLAYER_COVER           210
-#define MUSICPLAYER_BITRATE         211
-#define MUSICPLAYER_PLAYLISTLEN     212
-#define MUSICPLAYER_PLAYLISTPOS     213
-#define MUSICPLAYER_CHANNELS        214
-#define MUSICPLAYER_BITSPERSAMPLE   215
-#define MUSICPLAYER_SAMPLERATE      216
-#define MUSICPLAYER_CODEC           217
-
-#define VIDEOPLAYER_TITLE           250
-#define VIDEOPLAYER_GENRE           251
-#define VIDEOPLAYER_DIRECTOR        252
-#define VIDEOPLAYER_YEAR            253
-#define VIDEOPLAYER_TIME            254
-#define VIDEOPLAYER_TIME_REMAINING  255
-#define VIDEOPLAYER_TIME_SPEED      256
-#define VIDEOPLAYER_DURATION        257
-#define VIDEOPLAYER_COVER           258
-#define VIDEOPLAYER_USING_OVERLAYS  259
-#define VIDEOPLAYER_ISFULLSCREEN    260
-#define VIDEOPLAYER_HASMENU         261
-#define VIDEOPLAYER_PLAYLISTLEN     262
-#define VIDEOPLAYER_PLAYLISTPOS     263
-
-#define AUDIOSCROBBLER_ENABLED      300
-#define AUDIOSCROBBLER_CONN_STATE   301
-#define AUDIOSCROBBLER_SUBMIT_INT   302
-#define AUDIOSCROBBLER_FILES_CACHED 303
-#define AUDIOSCROBBLER_SUBMIT_STATE 304
-
-#define LISTITEM_THUMB              310
-#define LISTITEM_LABEL              311
-#define LISTITEM_TITLE              312
-#define LISTITEM_TRACKNUMBER        313
-#define LISTITEM_ARTIST             314
-#define LISTITEM_ALBUM              315
-#define LISTITEM_YEAR               316
-#define LISTITEM_GENRE              317
-#define LISTITEM_ICON               318
-#define LISTITEM_DIRECTOR           319
-
-#define MUSICPM_ENABLED             350
-#define MUSICPM_SONGSPLAYED         351
-#define MUSICPM_MATCHINGSONGS       352
-#define MUSICPM_MATCHINGSONGSPICKED 353
-#define MUSICPM_MATCHINGSONGSLEFT   354
-#define MUSICPM_RELAXEDSONGSPICKED  355
-#define MUSICPM_RANDOMSONGSPICKED   356
-
-#define PLAYLIST_LENGTH             390
-#define PLAYLIST_POSITION           391
-#define PLAYLIST_RANDOM             392
-#define PLAYLIST_REPEAT             393
-#define PLAYLIST_ISRANDOM           394
-#define PLAYLIST_ISREPEAT           395
-#define PLAYLIST_ISREPEATONE        396
-
-#define VISUALISATION_LOCKED        400
-#define VISUALISATION_PRESET        401
-#define VISUALISATION_NAME          402
-#define VISUALISATION_ENABLED       403
-
-#define SKIN_HAS_THEME_START        500
-#define SKIN_HAS_THEME_END          509 // allow for max 10 themes
-
-#define SKIN_HAS_SETTING_START      510
-#define SKIN_HAS_SETTING_END        600 // allow 90
-
-#define WINDOW_IS_VISIBLE           9995
-#define WINDOW_NEXT                 9996
-#define WINDOW_PREVIOUS             9997
-#define WINDOW_IS_MEDIA             9998
-#define WINDOW_ACTIVE_START         WINDOW_HOME
-#define WINDOW_ACTIVE_END           WINDOW_PYTHON_END
-
-#define SYSTEM_IDLE_TIME_START      20000
-#define SYSTEM_IDLE_TIME_FINISH     21000 // 1000 seconds
-
-#define CONTROL_IS_VISIBLE          29998
-#define CONTROL_GROUP_HAS_FOCUS     29999
-#define CONTROL_HAS_FOCUS_START     30000
-#define CONTROL_HAS_FOCUS_END       31000 // only up to control id 1000
-
-#define BUTTON_SCROLLER_HAS_ICON_START 31000
-#define BUTTON_SCROLLER_HAS_ICON_END   31200  // only allow 100 buttons (normally start at 101)
-
-// the multiple information vector
-#define MULTI_INFO_START              40000
-#define MULTI_INFO_END                41000 // 1000 references is all we have for now
-
-#define COMBINED_VALUES_START        100000
-
 CGUIInfoManager g_infoManager;
 
 void CGUIInfoManager::CCombinedValue::operator =(const CGUIInfoManager::CCombinedValue& mSrc)
@@ -734,7 +544,7 @@ string CGUIInfoManager::GetLabel(int info)
   case NETWORK_IP_ADDRESS:
     {
       CStdString ip;
-      ip.Format("%s: %S", g_localizeStrings.Get(150).c_str(), g_szTitleIP);
+      ip.Format("%s: %s", g_localizeStrings.Get(150).c_str(), g_szTitleIP);
       return ip;
     }
     break;
