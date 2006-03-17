@@ -29,12 +29,18 @@ public:
   void Clear();
   void FreeFontFile(CGUIFontBase *pFont);
 
+  bool IsFontSetUnicode() { return m_fontsetUnicode; }
+  bool IsFontSetUnicode(const CStdString& strFontSet);
+  bool GetFirstFontSetUnicode(CStdString& strFontSet);
+
 protected:
   void LoadFonts(const TiXmlNode* fontNode);
   CGUIFontBase* GetFontFile(const CStdString& strFontFile);
+  bool OpenFontFile(TiXmlDocument& xmlDoc);
 
   vector<CGUIFont*> m_vecFonts;
   vector<CGUIFontBase*> m_vecFontFiles;
+  bool m_fontsetUnicode;
 };
 
 /*!

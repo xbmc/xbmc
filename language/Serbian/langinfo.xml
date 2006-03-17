@@ -1,0 +1,12 @@
+<language>
+  <charsets>
+    <gui>CP1250</gui>
+    <subtitle>CP1250</subtitle>
+  </charsets>
+
+  <dvd>
+    <menu>sr</menu>
+    <audio>sr</audio>
+    <subtitle>sr</subtitle>
+  </dvd>
+</language>

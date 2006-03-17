@@ -1,0 +1,12 @@
+<language>
+  <charsets>
+    <gui unicodefont="true">SHIFT_JIS</gui>
+    <subtitle>SHIFT_JIS</subtitle>
+  </charsets>
+
+  <dvd>
+    <menu>ja</menu>
+    <audio>ja</audio>
+    <subtitle>ja</subtitle>
+  </dvd>
+</language>

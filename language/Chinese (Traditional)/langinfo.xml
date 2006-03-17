@@ -1,0 +1,13 @@
+<language>
+  <charsets>
+    <gui unicodefont="true">BIG5</gui>
+    <subtitle>BIG5</subtitle>
+  </charsets>
+
+  <dvd>
+    <menu>zh</menu>
+    <audio>zh</audio>
+    <subtitle>zh</subtitle>
+  </dvd>
+</language>
+

@@ -206,6 +206,10 @@ bool CGUIWindowSettingsProfile::OnMessage(CGUIMessage& message)
           g_application.StopServices();
           g_settings.LoadProfile(iItem);
           //reload stuff
+          CStdString strLangInfoPath;
+          strLangInfoPath.Format("Q:\\language\\%s\\langinfo.xml", g_guiSettings.GetString("LookAndFeel.Language"));
+          g_langInfo.Load(strLangInfoPath);
+          g_charsetConverter.reset();
           CStdString strLanguagePath;
           strLanguagePath.Format("Q:\\language\\%s\\strings.xml", g_guiSettings.GetString("LookAndFeel.Language"));
           g_localizeStrings.Load(strLanguagePath);
