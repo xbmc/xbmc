@@ -3,7 +3,6 @@
 #include "FileFactory.h"
 #include "FileShoutcast.h"
 #include "FileISO.h"
-#include "FileRelax.h"
 #include "FileHD.h"
 #include "FileSMB.h"
 #include "FileXBMSP.h"
@@ -36,7 +35,6 @@ IFile* CFileFactory::CreateLoader(const CStdString& strFileName)
 
   if (strProtocol == "http") return NULL;
   else if (strProtocol == "iso9660") return new CFileISO();
-  else if (strProtocol == "xns") return new CFileRelax();
   else if (strProtocol == "smb") return new CFileSMB();
   else if (strProtocol == "xbms") return new CFileXBMSP();
   else if (strProtocol == "shout") return new CFileShoutcast();
