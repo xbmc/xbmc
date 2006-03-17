@@ -2843,7 +2843,7 @@ DWORD CUtil::SetUpNetwork( bool resetmode, struct network_info& networkinfo )
           {
             // GeminiServer: Network Information Extracting 
             // DHCP Informations
-            CStdString tClientIP,tSubnetMask, tGateway, tDHCPServer;
+            CStdString tClientIP,tSubnetMask, tGateway, tDHCPServer, tDNS1,tDNS2;
             
             //Client IP (MyIP got from DHCP!)
             tClientIP.Format("%i.%i.%i.%i",params[352], params[353], params[354], params[355]);
@@ -2856,6 +2856,10 @@ DWORD CUtil::SetUpNetwork( bool resetmode, struct network_info& networkinfo )
             
             //DHCP Server
             tDHCPServer.Format("%i.%i.%i.%i",params[364], params[365], params[366], params[367]);
+
+            // DNS Servers 1&2
+            tDNS1.Format("%i.%i.%i.%i",params[380],params[381],params[382],params[383]); //DNS1
+            tDNS2.Format("%i.%i.%i.%i",params[384],params[385],params[386],params[387]); //DNS2
             
             CLog::Log(LOGINFO, "#----------------------------------------------------------------#");
             CLog::Log(LOGINFO, "  XBMC Network Settings DHCP: (Dynamic IP)");
@@ -2863,35 +2867,25 @@ DWORD CUtil::SetUpNetwork( bool resetmode, struct network_info& networkinfo )
             CLog::Log(LOGINFO, "        Subnetmask: %s",tSubnetMask.c_str());
             CLog::Log(LOGINFO, "   Default Gateway: %s",tGateway.c_str());
             CLog::Log(LOGINFO, "       DHCP Server: %s",tDHCPServer.c_str());
-            
-            //Update our Network Settings
-            g_guiSettings.SetString("Network.IPAddress", tClientIP.c_str());
-            g_guiSettings.SetString("Network.Subnet", tSubnetMask.c_str());
-            g_guiSettings.SetString("Network.Gateway", tGateway.c_str());
-            //g_guiSettings.SetString("Network.DHCPServer", tDHCPServer.c_str()); // we don't have this yet in settings
-            sprintf(g_szDHCPServer,"%s", tDHCPServer.c_str());
-
-          }
-
-          // JM: only update DNS in the case of DHCP
-          //     As this falls over otherwise, setting a 0.0.0.0 address :(
-          if ( vReturn & XNET_GET_XNADDR_DNS && networkinfo.DHCP)
-          {
-            // GeminiServer: Network Information Extracting 
-            // DNS Servers
-            CStdString tDNS1,tDNS2;
-            tDNS1.Format("%i.%i.%i.%i",params[380],params[381],params[382],params[383]); //DNS1
-            tDNS2.Format("%i.%i.%i.%i",params[384],params[385],params[386],params[387]); //DNS2
-            
             CLog::Log(LOGINFO, "      DNS Server 1: %s",tDNS1.c_str());
             CLog::Log(LOGINFO, "      DNS Server 2: %s",tDNS2.c_str());
             CLog::Log(LOGINFO, "#----------------------------------------------------------------#");
 
             // Update Our Network Settings
-            g_guiSettings.SetString("Network.DNS", tDNS1.c_str());  // 
+            g_guiSettings.SetString("Network.IPAddress", tClientIP.c_str());
+            g_guiSettings.SetString("Network.Subnet", tSubnetMask.c_str());
+            g_guiSettings.SetString("Network.Gateway", tGateway.c_str());
+            //g_guiSettings.SetString("Network.DHCPServer", tDHCPServer.c_str()); // we don't have this yet in settings
+            sprintf(g_szDHCPServer,"%s", tDHCPServer.c_str()); // Temporary for SystemInfo
+            g_guiSettings.SetString("Network.DNS", tDNS1.c_str());  
             //g_guiSettings.SetString("Network.DNS2", tDNS2.c_str());  // we don't have this yet in settings
-            sprintf(g_szDNSServer2,"%s", tDNS2.c_str());
-            
+            sprintf(g_szDNSServer2,"%s", tDNS2.c_str()); // Temporary for SystemInfo
+          }
+
+          if ( vReturn & XNET_GET_XNADDR_DNS )
+          {
+            // do nothing we are in static mode
+            CLog::Log(LOGINFO, "  DNS");
           }
 
           if ( vReturn & XNET_GET_XNADDR_ETHERNET )
