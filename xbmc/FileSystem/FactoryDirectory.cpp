@@ -4,7 +4,6 @@
 #include "factoryfiledirectory.h"
 #include "HDDirectory.h"
 #include "ISO9660Directory.h"
-#include "XNSDirectory.h"
 #include "SMBDirectory.h"
 #include "XBMSDirectory.h"
 #include "CDDADirectory.h"
@@ -37,7 +36,6 @@ IDirectory* CFactoryDirectory::Create(const CStdString& strPath)
 
   CStdString strProtocol = url.GetProtocol();
   if (strProtocol == "iso9660") return new CISO9660Directory();
-  else if (strProtocol == "xns") return new CXNSDirectory();
   else if (strProtocol == "smb") return new CSMBDirectory();
   else if (strProtocol == "xbms") return new CXBMSDirectory();
   else if (strProtocol == "cdda") return new CCDDADirectory();
