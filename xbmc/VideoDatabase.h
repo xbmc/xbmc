@@ -70,6 +70,9 @@ public:
   void SetVideoSettings(const CStdString &strFilenameAndPath, const CVideoSettings &settings);
   void EraseVideoSettings();
 
+  bool GetStackTimes(const CStdString &filePath, vector<long> &times);
+  void SetStackTimes(const CStdString &filePath, vector<long> &times);
+
 protected:
   long GetPath(const CStdString& strPath);
   long AddPath(const CStdString& strPath);

@@ -2988,21 +2988,49 @@ bool CApplication::PlayStack(const CFileItem& item, bool bRestart)
   if (!item.IsStack())
     return false;
   
+  // see if we have the info in the database
+  // TODO: If user changes the time speed (FPS via framerate conversion stuff)
+  //       then these times will be wrong.
+  //       Also, this is really just a hack for the slow load up times we have
+  //       A much better solution is a fast reader of FPS and fileLength
+  //       that we can use on a file to get it's time.
+  vector<long> times;
+  bool haveTimes(false);
+  CVideoDatabase dbs;
+  if (dbs.Open())
+  {
+    haveTimes = dbs.GetStackTimes(item.m_strPath, times);
+    dbs.Close();
+  }
   // calculate the total time of the stack
   CStackDirectory dir;
   dir.GetDirectory(item.m_strPath, m_currentStack);
   long totalTime = 0;
   for (int i = 0; i < m_currentStack.Size(); i++)
   {
-    if (!PlayFile(*m_currentStack[i], true))
+    if (haveTimes)
+      m_currentStack[i]->m_lEndOffset = times[i];
+    else
     {
-      m_currentStack.Clear();
-      return false;
+      if (!PlayFile(*m_currentStack[i], true))
+      {
+        m_currentStack.Clear();
+        return false;
+      }
+      totalTime += (long)GetTotalTime();
+      m_currentStack[i]->m_lEndOffset = totalTime;
+      if (m_pPlayer)
+        m_pPlayer->CloseFile();
+      times.push_back(totalTime);
     }
-    totalTime += (long)GetTotalTime();
-    m_currentStack[i]->m_lEndOffset = totalTime;
-    if (m_pPlayer)
-      m_pPlayer->CloseFile();
+  }
+  if (!haveTimes)
+  {  // have our times now, so update the dB
+    if (dbs.Open())
+    {
+      dbs.SetStackTimes(item.m_strPath, times);
+      dbs.Close();
+    }
   }
   m_itemCurrentFile = item;
   if (item.m_lStartOffset)
