@@ -5,6 +5,7 @@
 #include "GUIWindowManager.h"
 #include "../xbmc/utils/CharsetConverter.h"
 #include "../xbmc/util.h"
+#include "../xbmc/utils/GUIInfoManager.h"
 #ifdef PRE_SKIN_VERSION_2_0_COMPATIBILITY
 #include "SkinInfo.h"
 #endif
@@ -188,6 +189,10 @@ void CGUIButtonScroller::LoadButtons(const TiXmlNode *node)
         button->strLabel = utf8String;
       }
     }
+    // get info
+    childNode = buttonNode->FirstChild("info");
+    if (childNode && childNode->FirstChild())
+      button->info = g_infoManager.TranslateString(childNode->FirstChild()->Value());
     childNode = buttonNode->FirstChild("execute");
     if (childNode && childNode->FirstChild())
       button->clickActions.push_back(childNode->FirstChild()->Value());
@@ -670,8 +675,14 @@ void CGUIButtonScroller::RenderItem(int &iPosX, int &iPosY, int &iOffset, bool b
     if (m_label.align & XBFONT_CENTER_Y)
       fPosY = (float)iPosY + m_imgFocus.GetHeight() / 2;
 
+    // label is from <info> tag first, and if that's blank,
+    // we use the <label> tag
+    CStdString label = g_infoManager.GetLabel(m_vecButtons[iOffset]->info);
+    if (label.IsEmpty())
+      label = m_vecButtons[iOffset]->strLabel;
+
     CStdStringW strLabelUnicode;
-    g_charsetConverter.utf8ToUTF16(m_vecButtons[iOffset]->strLabel, strLabelUnicode);
+    g_charsetConverter.utf8ToUTF16(label, strLabelUnicode);
 
     float fAlpha = 255.0f;
     if (m_bHorizontal)
