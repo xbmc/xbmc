@@ -1,0 +1,12 @@
+<language>
+  <charsets>
+    <gui>CP1252</gui>
+    <subtitle>CP1252</subtitle>
+  </charsets>
+
+  <dvd>
+    <menu>no</menu>
+    <audio>no</audio>
+    <subtitle>no</subtitle>
+  </dvd>
+</language>

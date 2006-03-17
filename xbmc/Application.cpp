@@ -1020,6 +1020,12 @@ HRESULT CApplication::Create()
   // initialize our charset convertor
   g_charsetConverter.reset();
 
+  CStdString strLangInfoPath;
+  strLangInfoPath.Format("Q:\\language\\%s\\langinfo.xml", g_guiSettings.GetString("LookAndFeel.Language"));
+
+  CLog::Log(LOGINFO, "load language info file:%s", strLangInfoPath.c_str());
+  g_langInfo.Load(strLangInfoPath);
+
   CStdString strLanguagePath;
   strLanguagePath.Format("Q:\\language\\%s\\strings.xml", g_guiSettings.GetString("LookAndFeel.Language"));
 
@@ -1641,6 +1647,19 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 
   CLog::Log(LOGINFO, "  load fonts for skin...");
   g_graphicsContext.SetMediaDir(strSkinPath);
+  if (g_langInfo.ForceUnicodeFont() && !g_fontManager.IsFontSetUnicode(g_guiSettings.GetString("LookAndFeel.Font")))
+  {
+    CLog::Log(LOGINFO, "    language needs a ttf font, loading first ttf font available");
+    CStdString strFontSet;
+    if (g_fontManager.GetFirstFontSetUnicode(strFontSet))
+    {
+      CLog::Log(LOGINFO, "    new font is '%s'", strFontSet.c_str());
+      g_guiSettings.SetString("LookAndFeel.Font", strFontSet);
+      g_settings.Save();
+    }
+    else
+      CLog::Log(LOGERROR, "    no ttf font found, but needed for the language %s.", g_guiSettings.GetString("LookAndFeel.Language").c_str());
+  }
   g_fontManager.LoadFonts(g_guiSettings.GetString("LookAndFeel.Font"));
 
   LARGE_INTEGER start;
