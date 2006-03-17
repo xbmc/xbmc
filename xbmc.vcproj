@@ -1290,9 +1290,6 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				RelativePath=".\xbmc\FileItem.h">
 			</File>
 			<File
-				RelativePath=".\xbmc\FileSystem\FileRelax.h">
-			</File>
-			<File
 				RelativePath=".\xbmc\FileSystem\FileRTV.h">
 			</File>
 			<File
@@ -1739,9 +1736,6 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 			<File
 				RelativePath=".\xbmc\xbox\XKUtils.h">
 			</File>
-			<File
-				RelativePath=".\xbmc\FileSystem\XNSDirectory.h">
-			</File>
 		</Filter>
 		<Filter
 			Name="filesystem"
@@ -1838,9 +1832,6 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 			</File>
 			<File
 				RelativePath=".\xbmc\FileSystem\FileRar.h">
-			</File>
-			<File
-				RelativePath=".\xbmc\FileSystem\FileRelax.cpp">
 			</File>
 			<File
 				RelativePath=".\xbmc\FileSystem\FileRTV.cpp">
@@ -1982,9 +1973,6 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 			</File>
 			<File
 				RelativePath=".\xbmc\FileSystem\XBMSDirectory.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\FileSystem\XNSDirectory.cpp">
 			</File>
 			<File
 				RelativePath=".\xbmc\FileSystem\zconf.h">
