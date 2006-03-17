@@ -13,7 +13,9 @@
 GUIFontManager g_fontManager;
 
 GUIFontManager::GUIFontManager(void)
-{}
+{
+  m_fontsetUnicode=false;
+}
 
 GUIFontManager::~GUIFontManager(void)
 {}
@@ -183,35 +185,21 @@ void GUIFontManager::Clear()
 
   m_vecFonts.clear();
   m_vecFontFiles.clear();
+  m_fontsetUnicode=false;
 }
 
 void GUIFontManager::LoadFonts(const CStdString& strFontSet)
 {
-  // Get the file to load fonts from:
-  RESOLUTION res;
-  CStdString strPath = g_SkinInfo.GetSkinPath("font.xml", &res);
-  CLog::Log(LOGINFO, "Loading fonts from %s", strPath.c_str());
-
   TiXmlDocument xmlDoc;
-  // first try our preferred file
-  if ( !xmlDoc.LoadFile(strPath.c_str()) )
-  {
-    CLog::Log(LOGERROR, "Couldn't load %s", strPath.c_str());
-    return ;
-  }
-  TiXmlElement* pRootElement = xmlDoc.RootElement();
+  if (!OpenFontFile(xmlDoc))
+    return;
 
-  CStdString strValue = pRootElement->Value();
-  if (strValue != CStdString("fonts"))
-  {
-    CLog::Log(LOGERROR, "file %s doesnt start with <fonts>", strPath.c_str());
-    return ;
-  }
+  TiXmlElement* pRootElement = xmlDoc.RootElement();
   const TiXmlNode *pChild = pRootElement->FirstChild();
 
   // If there are no fontset's defined in the XML (old skin format) run in backward compatibility
   // and ignore the fontset request
-  strValue = pChild->Value();
+  CStdString strValue = pChild->Value();
   if (strValue == "font")
   {
     LoadFonts(pChild);
@@ -225,12 +213,21 @@ void GUIFontManager::LoadFonts(const CStdString& strFontSet)
       {
         const char* idAttr = ((TiXmlElement*) pChild)->Attribute("id");
 
+        const char* unicodeAttr = ((TiXmlElement*) pChild)->Attribute("unicode");
+
         // Check if this is the fontset that we want
         if (idAttr != NULL && stricmp(strFontSet.c_str(), idAttr) == 0)
         {
+          m_fontsetUnicode=false;
+          // Check if this is the a ttf fontset
+          if (unicodeAttr != NULL && stricmp(unicodeAttr, "true") == 0)
+            m_fontsetUnicode=true;
+
           LoadFonts(pChild->FirstChild());
+
           break;
         }
+
       }
 
       pChild = pChild->NextSibling();
@@ -239,13 +236,13 @@ void GUIFontManager::LoadFonts(const CStdString& strFontSet)
     // If no fontset was loaded
     if (pChild == NULL)
     {
-      CLog::Log(LOGWARNING, "file %s doesnt have <fontset> with name '%s', defaulting to first fontset", strPath.c_str(), strFontSet.c_str());
+      CLog::Log(LOGWARNING, "file doesnt have <fontset> with name '%s', defaulting to first fontset", strFontSet.c_str());
       LoadFonts(pRootElement->FirstChild()->FirstChild());
     }
   }
   else
   {
-    CLog::Log(LOGERROR, "file %s doesnt have <font> or <fontset> in <fonts>, but rather %s", strPath.c_str(), strValue.c_str());
+    CLog::Log(LOGERROR, "file doesnt have <font> or <fontset> in <fonts>, but rather %s", strValue.c_str());
     return ;
   }
 }
@@ -304,4 +301,112 @@ void GUIFontManager::LoadFonts(const TiXmlNode* fontNode)
 
     fontNode = fontNode->NextSibling();
   }
+}
+
+bool GUIFontManager::OpenFontFile(TiXmlDocument& xmlDoc)
+{
+  // Get the file to load fonts from:
+  RESOLUTION res;
+  CStdString strPath = g_SkinInfo.GetSkinPath("font.xml", &res);
+  CLog::Log(LOGINFO, "Loading fonts from %s", strPath.c_str());
+
+  // first try our preferred file
+  if ( !xmlDoc.LoadFile(strPath.c_str()) )
+  {
+    CLog::Log(LOGERROR, "Couldn't load %s", strPath.c_str());
+    return false;
+  }
+  TiXmlElement* pRootElement = xmlDoc.RootElement();
+
+  CStdString strValue = pRootElement->Value();
+  if (strValue != CStdString("fonts"))
+  {
+    CLog::Log(LOGERROR, "file %s doesnt start with <fonts>", strPath.c_str());
+    return false;
+  }
+
+  return true;
+}
+
+bool GUIFontManager::GetFirstFontSetUnicode(CStdString& strFontSet)
+{
+  strFontSet.Empty();
+
+  // Load our font file
+  TiXmlDocument xmlDoc;
+  if (!OpenFontFile(xmlDoc))
+    return false;
+
+  TiXmlElement* pRootElement = xmlDoc.RootElement();
+  const TiXmlNode *pChild = pRootElement->FirstChild();
+
+  CStdString strValue = pChild->Value();
+  if (strValue == "fontset")
+  {
+    while (pChild)
+    {
+      strValue = pChild->Value();
+      if (strValue == "fontset")
+      {
+        const char* idAttr = ((TiXmlElement*) pChild)->Attribute("id");
+
+        const char* unicodeAttr = ((TiXmlElement*) pChild)->Attribute("unicode");
+
+        // Check if this is a fontset with a ttf attribute set to true
+        if (unicodeAttr != NULL && stricmp(unicodeAttr, "true") == 0)
+        {
+          //  This is the first ttf fontset
+          strFontSet=idAttr;
+          break;
+        }
+
+      }
+
+      pChild = pChild->NextSibling();
+    }
+
+    // If no fontset was loaded
+    if (pChild == NULL)
+      CLog::Log(LOGWARNING, "file doesnt have <fontset> with with attibute unicode=\"true\"");
+  }
+  else
+  {
+    CLog::Log(LOGERROR, "file doesnt have <fontset> in <fonts>, but rather %s", strValue.c_str());
+  }
+
+  return !strFontSet.IsEmpty();
+}
+
+bool GUIFontManager::IsFontSetUnicode(const CStdString& strFontSet)
+{
+  TiXmlDocument xmlDoc;
+  if (!OpenFontFile(xmlDoc))
+    return false;
+
+  TiXmlElement* pRootElement = xmlDoc.RootElement();
+  const TiXmlNode *pChild = pRootElement->FirstChild();
+
+  CStdString strValue = pChild->Value();
+  if (strValue == "fontset")
+  {
+    while (pChild)
+    {
+      strValue = pChild->Value();
+      if (strValue == "fontset")
+      {
+        const char* idAttr = ((TiXmlElement*) pChild)->Attribute("id");
+
+        const char* unicodeAttr = ((TiXmlElement*) pChild)->Attribute("unicode");
+
+        // Check if this is the fontset that we want
+        if (idAttr != NULL && stricmp(strFontSet.c_str(), idAttr) == 0)
+          return (unicodeAttr != NULL && stricmp(unicodeAttr, "true") == 0);
+
+      }
+
+      pChild = pChild->NextSibling();
+    }
+  }
+
+  return false;
 }

@@ -1,0 +1,13 @@
+<language>
+  <charsets>
+    <gui unicodefont="true">GBK</gui>
+    <subtitle>GBK</subtitle>
+  </charsets>
+
+  <dvd>
+    <menu>zh</menu>
+    <audio>zh</audio>
+    <subtitle>zh</subtitle>
+  </dvd>
+</language>
+

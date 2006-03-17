@@ -801,6 +801,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\LangCodeExpander.h">
 				</File>
 				<File
+					RelativePath=".\xbmc\LangInfo.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\LangInfo.h">
+				</File>
+				<File
 					RelativePath=".\xbmc\utils\LED.cpp">
 				</File>
 				<File
