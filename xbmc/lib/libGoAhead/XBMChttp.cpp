@@ -1386,7 +1386,6 @@ int CXbmcHttp::xbmcGetGUIDescription()
 int CXbmcHttp::xbmcGetGUIStatus()
 {
   CStdString output, tmp, strTmp;
-
   output = closeTag+openTag+"MusicPath:" + ((CGUIWindowMusicNav *)m_gWindowManager.GetWindow(WINDOW_MUSIC_FILES))->CurrentDirectory().m_strPath;
   output += closeTag+openTag+"VideoPath:" + ((CGUIWindowVideoFiles *)m_gWindowManager.GetWindow(WINDOW_VIDEOS))->CurrentDirectory().m_strPath;
   output += closeTag+openTag+"PicturePath:" + ((CGUIWindowPictures *)m_gWindowManager.GetWindow(WINDOW_PICTURES))->CurrentDirectory().m_strPath;
@@ -1402,12 +1401,11 @@ int CXbmcHttp::xbmcGetGUIStatus()
     output += closeTag+openTag+"ActiveWindowName:" + g_localizeStrings.Get(iWin) ; 
     int iControl=pWindow->GetFocusedControl();
     CGUIControl* pControl=(CGUIControl* )pWindow->GetControl(iControl);
-    CStdString id;
-    id.Format("%d",(int)pControl->GetID());
-    output += closeTag+openTag+"ControlId:" + id;
-    
     if (pControl)
     {
+      CStdString id;
+      id.Format("%d",(int)pControl->GetID());
+      output += closeTag+openTag+"ControlId:" + id;
       strTmp = pControl->GetDescription();
       if (pControl->GetControlType() == CGUIControl::GUICONTROL_BUTTON)
       {
@@ -2465,9 +2463,13 @@ int CXbmcHttp::xbmcCommand(CStdString parameter)
         retVal = SetResponse(openTag+"Error:Unknown command");
   else
     retVal = SetResponse(openTag+"Error:Missing command");
-  //if (g_applicationMessenger.GetResponse() == "")
-  //  SetResponse(openTag+"Error:Unknown error");
+#ifndef _DEBUG
   Sleep(100);
+#else
+  //Not sure why but to have a reliable debugging experience I need a bigger value here otherwise the thread sometimes gets lost.
+  //Perhaps time to upgrade my PC.
+  Sleep(500);
+#endif
   return retVal;
 }
 
