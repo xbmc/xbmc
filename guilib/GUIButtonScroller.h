@@ -8,6 +8,7 @@ public:
   CButton()
   {
     id = 0;
+    info = 0;
     imageFocus = imageNoFocus = NULL;
   };
   ~CButton()
@@ -16,6 +17,7 @@ public:
     if (imageNoFocus) delete imageNoFocus;
   }
   int id;
+  int info;
   string strLabel;
   CStdStringArray clickActions;
   CGUIImage *imageFocus;
