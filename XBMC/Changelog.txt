@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 17-03-2006 added: <info> tag now works on ButtonScroller buttons (for text)
+ - 17-03-2006 changed: Skin.SetString, Skin.SetImage, and Skin.SetPath can take the strings value as an extra parameter, thanks to Donno.
  - 17-03-2006 fixed: Network could be screwed up both on boot + going into System Info
  - 17-03-2006 added: Stacked files played seamlessly save their playtimes in the database for fast startup (more of a workaround than a true fix)
  - 16-03-2006 fixed: Year in Title view was not correct.
