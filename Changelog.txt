@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 17-03-2006 fixed: Static DNS setting was not correctly assigned to network settings
  - 17-03-2006 added: <info> tag now works on ButtonScroller buttons (for text)
  - 17-03-2006 changed: Skin.SetString, Skin.SetImage, and Skin.SetPath can take the strings value as an extra parameter, thanks to Donno.
  - 17-03-2006 fixed: Network could be screwed up both on boot + going into System Info
