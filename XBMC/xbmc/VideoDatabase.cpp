@@ -12,7 +12,7 @@
 #include "filesystem/VirtualPathDirectory.h"
 #include "filesystem/StackDirectory.h"
 
-#define VIDEO_DATABASE_VERSION 1.8f
+#define VIDEO_DATABASE_VERSION 1.9f
 #define VIDEO_DATABASE_NAME "MyVideos31.db"
 
 //********************************************************************************************************************************
@@ -43,6 +43,9 @@ bool CVideoDatabase::CreateTables()
                 "SubtitleDelay float, SubtitlesOn bool, Brightness integer, Contrast integer, Gamma integer,"
                 "VolumeAmplification float, AudioDelay float, OutputToAllSpeakers bool, ResumeTime integer, Crop bool, CropLeft integer,"
                 "CropRight integer, CropTop integer, CropBottom integer)\n");
+
+    CLog::Log(LOGINFO, "create stacktimes table");
+    m_pDS->exec("CREATE TABLE stacktimes (idFile integer, usingConversions bool, times text)\n");
 
     CLog::Log(LOGINFO, "create genre table");
     m_pDS->exec("CREATE TABLE genre ( idGenre integer primary key, strGenre text)\n");
@@ -1522,6 +1525,84 @@ void CVideoDatabase::SetVideoSettings(const CStdString& strFilenameAndPath, cons
   }
 }
 
+/// \brief GetStackTimes() obtains any saved video times for the stacked file
+/// \retval Returns true if the stack times exist, false otherwise.
+bool CVideoDatabase::GetStackTimes(const CStdString &filePath, vector<long> &times)
+{
+  try
+  {
+    // obtain the FileID (if it exists)
+    long lPathId, lMovieId;
+    long lFileId = GetFile(filePath, lPathId, lMovieId, true);
+    if (lFileId < 0) return false;
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS.get()) return false;
+    // ok, now obtain the settings for this file
+    CStdString strSQL=FormatSQL("select * from stacktimes where idFile='%i'\n", lFileId);
+    m_pDS->query( strSQL.c_str() );
+    if (m_pDS->num_rows() > 0)
+    { // get the video settings info
+      CStdStringArray timeString;
+      StringUtils::SplitString(m_pDS->fv("times").get_asString(), ",", timeString);
+      times.clear();
+      for (unsigned int i = 0; i < timeString.size(); i++)
+        times.push_back(atoi(timeString[i].c_str()));
+      m_pDS->close();
+      return true;
+    }
+    m_pDS->close();
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "CVideoDatabase::GetStackTimes() failed");
+  }
+  return false;
+}
+
+/// \brief Sets the stack times for a particular video file
+void CVideoDatabase::SetStackTimes(const CStdString& filePath, vector<long> &times)
+{
+  try
+  {
+    long lPathId, lMovieId;
+    if (NULL == m_pDB.get()) return ;
+    if (NULL == m_pDS.get()) return ;
+    long lFileId = GetFile(filePath, lPathId, lMovieId, true);
+    if (lFileId < 0)
+    { // no files found - we have to add one
+      lMovieId = AddMovie(filePath, "", false);
+      lFileId = GetFile(filePath, lPathId, lMovieId, true);
+      if (lFileId < 0) return ;
+    }
+    CStdString strSQL;
+    strSQL.Format("select * from stacktimes where idFile=%i", lFileId);
+    m_pDS->query( strSQL.c_str() );
+    if (m_pDS->num_rows() > 0)
+    {
+      m_pDS->close();
+      return ;
+    }
+    else
+    { // add the items
+      m_pDS->close();
+      CStdString timeString;
+      timeString.Format("%i", times[0]);
+      for (unsigned int i = 1; i < times.size(); i++)
+      {
+        CStdString time;
+        time.Format(",%i", times[i]);
+        timeString += time;
+      }
+      strSQL.Format("insert into stacktimes (idFile,usingConversions,times) values (%i,%i,'%s')\n", lFileId, false, timeString.c_str());
+      m_pDS->exec(strSQL.c_str());
+    }
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "CVideoDatabase::SetStackTimes(%s) failed", filePath.c_str());
+  }
+}
+
 bool CVideoDatabase::UpdateOldVersion(float fVersion)
 {
   if (fVersion < 0.5f)
@@ -1640,6 +1721,18 @@ bool CVideoDatabase::UpdateOldVersion(float fVersion)
                 "SubtitleDelay float, SubtitlesOn bool, Brightness integer, Contrast integer, Gamma integer,"
                 "VolumeAmplification float, AudioDelay float, OutputToAllSpeakers bool, ResumeTime integer, Crop bool, CropLeft integer,"
                 "CropRight integer, CropTop integer, CropBottom integer)\n");
+  }
+  if (fVersion < 1.9f)
+  { // Add the stacktimes table
+    try
+    {
+    CLog::Log(LOGINFO, "Adding stacktimes table");
+    m_pDS->exec("CREATE TABLE stacktimes (idFile integer, usingConversions bool, times text)\n");
+    }
+    catch (...)
+    {
+      CLog::Log(LOGERROR, "Error adding stacktimes table to the database");
+    }
   }
   return true;
 }
