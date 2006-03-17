@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 17-03-2006 fixed: httpapi: bug in getGUIStatus which could hang the web server thread
+ - 17-03-2006 fixed: httpapi: extended Sleep period in debug build to make debugging sessions more reliable (on my PC anyway)
  - 17-03-2006 added: the language folders now contain a file called langinfo.xml, this file contains defaults for each language
                      Defaults are:
                        - gui charset
