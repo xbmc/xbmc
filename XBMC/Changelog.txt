@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 17-03-2006 fixed: Network could be screwed up both on boot + going into System Info
  - 17-03-2006 added: Stacked files played seamlessly save their playtimes in the database for fast startup (more of a workaround than a true fix)
  - 16-03-2006 fixed: Year in Title view was not correct.
  - 16-03-2006 changed: Watched and Played status now get updated automatically once the 90% point is reached.  Configurable via settings.xml.
