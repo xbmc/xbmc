@@ -1197,10 +1197,10 @@ HRESULT CApplication::Initialize()
             g_guiSettings.GetString("Network.DNS").c_str());
 
   if ( !CUtil::InitializeNetwork(g_guiSettings.GetInt("Network.Assignment"),
-                                 g_guiSettings.GetString("Network.IPAddress"),
-                                 g_guiSettings.GetString("Network.Subnet"),
-                                 g_guiSettings.GetString("Network.Gateway"),
-                                 g_guiSettings.GetString("Network.DNS")))
+                                 g_guiSettings.GetString("Network.IPAddress").c_str(),
+                                 g_guiSettings.GetString("Network.Subnet").c_str(),
+                                 g_guiSettings.GetString("Network.Gateway").c_str(),
+                                 g_guiSettings.GetString("Network.DNS").c_str()))
   {
     CLog::Log(LOGERROR, "initialize network failed");
   }
