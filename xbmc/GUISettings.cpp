@@ -365,7 +365,7 @@ CGUISettings::CGUISettings(void)
   AddInt(2, "Subtitles.Height", 289, 28, 16, 2, 74, SPIN_CONTROL_TEXT); // use text as there is a disk based lookup needed
   AddInt(3, "Subtitles.Style", 736, XFONT_BOLD, XFONT_NORMAL, 1, XFONT_BOLDITALICS, SPIN_CONTROL_TEXT);
   AddInt(4, "Subtitles.Color", 737, SUBTITLE_COLOR_START, SUBTITLE_COLOR_START, 1, SUBTITLE_COLOR_END, SPIN_CONTROL_TEXT);
-  AddString(5, "Subtitles.CharSet", 735, "ISO-8859-1", SPIN_CONTROL_TEXT);
+  AddString(5, "Subtitles.CharSet", 735, "DEFAULT", SPIN_CONTROL_TEXT);
   AddBool(6, "Subtitles.FlipBiDiCharSet", 13304, false);
   AddSeparator(7, "Subtitles.Sep1");
   AddInt(8, "Subtitles.EnlargePercentage", 492, 100, 30, 10, 200, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
@@ -449,7 +449,7 @@ CGUISettings::CGUISettings(void)
   AddInt(6, "LookAndFeel.StartUpWindow",512,1, 0, 1, 3100, SPIN_CONTROL_TEXT);
   AddSeparator(7, "LookAndFeel.Sep1");
   AddString(8, "LookAndFeel.Language",248,"english", SPIN_CONTROL_TEXT);
-  AddString(9, "LookAndFeel.CharSet",735,"ISO-8859-1", SPIN_CONTROL_TEXT);
+  //AddString(9, "LookAndFeel.CharSet",735,"DEFAULT", SPIN_CONTROL_TEXT); // charset is set by the language file
   AddSeparator(10, "LookAndFeel.Sep2");
   AddInt(11, "LookAndFeel.Resolution",169,(int)AUTORES, (int)HDTV_1080i, 1, (int)AUTORES, SPIN_CONTROL_TEXT);
   AddString(12, "LookAndFeel.GUICentering",213,"", BUTTON_CONTROL_STANDARD);

@@ -1,0 +1,12 @@
+<language>
+  <charsets>
+    <gui unicodefont="true">CP949</gui>
+    <subtitle>CP949</subtitle>
+  </charsets>
+
+  <dvd>
+    <menu>ko</menu>
+    <audio>ko</audio>
+    <subtitle>ko</subtitle>
+  </dvd>
+</language>
