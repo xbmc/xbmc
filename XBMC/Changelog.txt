@@ -5,6 +5,15 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 17-03-2006 added: the language folders now contain a file called langinfo.xml, this file contains defaults for each language
+                     Defaults are:
+                       - gui charset
+                       - subtitle charset for ttf fonts
+                       - dvd menu language
+                       - dvd audio language (Not working yet)
+                       - dvd subtitle language (Not working yet)
+ - 17-03-2006 changed: new attribute in <fontset> tag of the fonts.xml. See online manual for more info.
+ - 17-03-2006 removed: setting for charset selection, charset is defined in langinfo.xml now
  - 17-03-2006 fixed: Static DNS setting was not correctly assigned to network settings
  - 17-03-2006 added: <info> tag now works on ButtonScroller buttons (for text)
  - 17-03-2006 changed: Skin.SetString, Skin.SetImage, and Skin.SetPath can take the strings value as an extra parameter, thanks to Donno.

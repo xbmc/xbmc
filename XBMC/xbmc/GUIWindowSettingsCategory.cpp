@@ -156,11 +156,27 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
         g_guiSettings.SetString("LookAndFeel.Language", m_strNewLanguage);
         g_settings.Save();
 
-        CStdString strLanguage = m_strNewLanguage;
-        CStdString strPath = "Q:\\language\\";
-        strPath += strLanguage;
-        strPath += "\\strings.xml";
-        g_localizeStrings.Load(strPath);
+        CStdString strLangInfoPath;
+        strLangInfoPath.Format("Q:\\language\\%s\\langinfo.xml", m_strNewLanguage.c_str());
+        g_langInfo.Load(strLangInfoPath);
+
+        if (g_langInfo.ForceUnicodeFont() && !g_fontManager.IsFontSetUnicode())
+        {
+          CLog::Log(LOGINFO, "Language needs a ttf font, loading first ttf font available");
+          CStdString strFontSet;
+          if (g_fontManager.GetFirstFontSetUnicode(strFontSet))
+          {
+            m_strNewSkinFontSet=strFontSet;
+          }
+          else
+            CLog::Log(LOGERROR, "No ttf font found but needed.", strFontSet.c_str());
+        }
+
+        g_charsetConverter.reset();
+
+        CStdString strLanguagePath;
+        strLanguagePath.Format("Q:\\language\\%s\\strings.xml", m_strNewLanguage.c_str());
+        g_localizeStrings.Load(strLanguagePath);
       }
 
       // Do we need to reload the skin font set
@@ -978,7 +994,8 @@ void CGUIWindowSettingsCategory::UpdateSettings()
     else if (strSetting == "Subtitles.FlipBiDiCharSet")
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(GetSetting(strSetting)->GetID());
-      pControl->SetEnabled( /*CUtil::IsUsingTTFSubtitles() &&*/ g_charsetConverter.isBidiCharset(g_guiSettings.GetString("Subtitles.CharSet")) > 0);
+      CStdString strCharset=g_langInfo.GetSubtitleCharSet();
+      pControl->SetEnabled( /*CUtil::IsUsingTTFSubtitles() &&*/ g_charsetConverter.isBidiCharset(strCharset) > 0);
     }
     else if (strSetting == "LookAndFeel.CharSet")
     { // TODO: Determine whether we are using a TTF font or not.
@@ -1397,8 +1414,10 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
   {
     CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
     CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
-    CStdString newCharset = g_charsetConverter.getCharsetNameByLabel(pControl->GetCurrentLabel());
-    if (newCharset != "" && newCharset != pSettingString->GetData())
+    CStdString newCharset="DEFAULT";
+    if (pControl->GetValue()!=0)
+     newCharset = g_charsetConverter.getCharsetNameByLabel(pControl->GetCurrentLabel());
+    if (newCharset != "" && (newCharset != pSettingString->GetData() || newCharset=="DEFAULT"))
     {
       pSettingString->SetData(newCharset);
       g_charsetConverter.reset();
@@ -1408,8 +1427,10 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
   {
     CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
     CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
-    CStdString newCharset = g_charsetConverter.getCharsetNameByLabel(pControl->GetCurrentLabel());
-    if (newCharset != "" && newCharset != pSettingString->GetData())
+    CStdString newCharset="DEFAULT";
+    if (pControl->GetValue()!=0)
+     newCharset = g_charsetConverter.getCharsetNameByLabel(pControl->GetCurrentLabel());
+    if (newCharset != "" && (newCharset != pSettingString->GetData() || newCharset=="DEFAULT"))
     {
       pSettingString->SetData(newCharset);
       g_charsetConverter.reset();
@@ -2235,7 +2256,6 @@ void CGUIWindowSettingsCategory::FillInSkinFonts(CSetting *pSetting)
   pControl->SetType(SPIN_CONTROL_TYPE_TEXT);
   pControl->Clear();
 
-  int iCurrentSkinFontSet = 0;
   int iSkinFontSet = 0;
 
   m_strNewSkinFontSet.Empty();
@@ -2269,19 +2289,25 @@ void CGUIWindowSettingsCategory::FillInSkinFonts(CSetting *pSetting)
       if (strValue == "fontset")
       {
         const char* idAttr = ((TiXmlElement*) pChild)->Attribute("id");
-        if (idAttr != NULL)
+        const char* unicodeAttr = ((TiXmlElement*) pChild)->Attribute("unicode");
+
+        bool isUnicode=(unicodeAttr && stricmp(unicodeAttr, "true") == 0);
+
+        bool isAllowed=true;
+        if (g_langInfo.ForceUnicodeFont() && !isUnicode)
+          isAllowed=false;
+
+        if (idAttr != NULL && isAllowed)
         {
           if (strcmpi(idAttr, g_guiSettings.GetString("LookAndFeel.Font").c_str()) == 0)
-          {
-            iCurrentSkinFontSet = iSkinFontSet;
-          }
+            pControl->SetValue(iSkinFontSet);
+
           pControl->AddLabel(idAttr, iSkinFontSet++);
         }
       }
       pChild = pChild->NextSibling();
     }
 
-    pControl->SetValue(iCurrentSkinFontSet);
   }
   else
   {
@@ -2398,15 +2424,22 @@ void CGUIWindowSettingsCategory::FillInCharSets(CSetting *pSetting)
   pControl->Clear();
   int iCurrentCharset = 0;
   vector<CStdString> vecCharsets = g_charsetConverter.getCharsetLabels();
-  CStdString& strCurrentCharsetLabel = g_charsetConverter.getCharsetLabelByName(pSettingString->GetData());
+  
+  CStdString strCurrentCharsetLabel="DEFAULT";
+  if (pSettingString->GetData()!="DEFAULT")
+    strCurrentCharsetLabel = g_charsetConverter.getCharsetLabelByName(pSettingString->GetData());
 
   sort(vecCharsets.begin(), vecCharsets.end(), sortstringbyname());
+
+  vecCharsets.insert(vecCharsets.begin(), g_localizeStrings.Get(13278)); // "Default"
+
+  bool bIsAuto=(pSettingString->GetData()=="DEFAULT");
 
   for (int i = 0; i < (int) vecCharsets.size(); ++i)
   {
     CStdString strCharsetLabel = vecCharsets[i];
 
-    if (strCharsetLabel == strCurrentCharsetLabel)
+    if (!bIsAuto && strCharsetLabel == strCurrentCharsetLabel)
       iCurrentCharset = i;
 
     pControl->AddLabel(strCharsetLabel, i);
