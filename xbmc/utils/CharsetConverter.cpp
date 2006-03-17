@@ -136,9 +136,11 @@ void CCharsetConverter::reset(void)
   m_iconvUtf8toUtf16 = (iconv_t) - 1;
   m_stringFribidiCharset = FRIBIDI_CHARSET_NOT_FOUND;
 
+  CStdString strCharset=g_langInfo.GetGuiCharSet();
+
   for (unsigned int i = 0; i < m_vecBidiCharsetNames.size(); i++)
   {
-    if (m_vecBidiCharsetNames[i] == g_guiSettings.GetString("LookAndFeel.CharSet"))
+    if (m_vecBidiCharsetNames[i] == strCharset)
     {
       m_stringFribidiCharset = m_vecBidiCharsets[i];
     }
@@ -152,14 +154,16 @@ void CCharsetConverter::utf8ToUTF16(const CStdStringA& utf8String, CStdStringW &
   const char* src;
   size_t inBytes;
 
+  // Bobbin007: Using fridibi switching here breaks
+  //            Hebrew language file display.
   // If this is hebrew/arabic, flip the characters
-  if (m_stringFribidiCharset != FRIBIDI_CHARSET_NOT_FOUND)
-  {
-    logicalToVisualBiDi(utf8String, strFlipped, m_stringFribidiCharset);
-    src = strFlipped.c_str();
-    inBytes = strFlipped.length() + 1;
-  }
-  else
+  //if (m_stringFribidiCharset != FRIBIDI_CHARSET_NOT_FOUND)
+  //{
+  //  logicalToVisualBiDi(utf8String, strFlipped, m_stringFribidiCharset);
+  //  src = strFlipped.c_str();
+  //  inBytes = strFlipped.length() + 1;
+  //}
+  //else
   {
     src = utf8String.c_str();
     inBytes = utf8String.length() + 1;
@@ -209,7 +213,8 @@ void CCharsetConverter::stringCharsetToFontCharset(const CStdStringA& strSource,
 
   if (m_iconvStringCharsetToFontCharset == (iconv_t) - 1)
   {
-    m_iconvStringCharsetToFontCharset = iconv_open("UTF-16LE", g_guiSettings.GetString("LookAndFeel.CharSet").c_str());
+    CStdString strCharset=g_langInfo.GetGuiCharSet();
+    m_iconvStringCharsetToFontCharset = iconv_open("UTF-16LE", strCharset.c_str());
   }
 
   if (m_iconvStringCharsetToFontCharset != (iconv_t) - 1)
@@ -237,7 +242,8 @@ void CCharsetConverter::subtitleCharsetToFontCharset(const CStdStringA& strSourc
 
   if (m_iconvSubtitleCharsetToFontCharset == (iconv_t) - 1)
   {
-    m_iconvSubtitleCharsetToFontCharset = iconv_open("UTF-16LE", g_guiSettings.GetString("Subtitles.CharSet").c_str());
+    CStdString strCharset=g_langInfo.GetSubtitleCharSet();
+    m_iconvSubtitleCharsetToFontCharset = iconv_open("UTF-16LE", strCharset.c_str());
   }
 
   if (m_iconvSubtitleCharsetToFontCharset != (iconv_t) - 1)
@@ -302,7 +308,8 @@ void CCharsetConverter::utf8ToStringCharset(const CStdStringA& strSource, CStdSt
 {
   if (m_iconvUtf8ToStringCharset == (iconv_t) - 1)
   {
-    m_iconvUtf8ToStringCharset = iconv_open(g_guiSettings.GetString("LookAndFeel.CharSet").c_str(), "UTF-8");
+    CStdString strCharset=g_langInfo.GetGuiCharSet();
+    m_iconvUtf8ToStringCharset = iconv_open(strCharset.c_str(), "UTF-8");
   }
 
   if (m_iconvUtf8ToStringCharset != (iconv_t) - 1)
@@ -328,7 +335,8 @@ void CCharsetConverter::stringCharsetToUtf8(const CStdStringA& strSource, CStdSt
 {
   if (m_iconvStringCharsetToUtf8 == (iconv_t) - 1)
   {
-    m_iconvStringCharsetToUtf8 = iconv_open("UTF-8", g_guiSettings.GetString("LookAndFeel.CharSet").c_str());
+    CStdString strCharset=g_langInfo.GetGuiCharSet();
+    m_iconvStringCharsetToUtf8 = iconv_open("UTF-8", strCharset.c_str());
   }
 
   if (m_iconvStringCharsetToUtf8 != (iconv_t) - 1)
@@ -377,7 +385,8 @@ void CCharsetConverter::ucs2CharsetToStringCharset(const CStdStringW& strSource,
 {
   if (m_iconvUcs2CharsetToStringCharset == (iconv_t) - 1)
   {
-    m_iconvUcs2CharsetToStringCharset = iconv_open(g_guiSettings.GetString("LookAndFeel.CharSet").c_str(), "UTF-16LE");
+    CStdString strCharset=g_langInfo.GetGuiCharSet();
+    m_iconvUcs2CharsetToStringCharset = iconv_open(strCharset.c_str(), "UTF-16LE");
   }
 
   if (m_iconvUcs2CharsetToStringCharset != (iconv_t) - 1)
@@ -418,7 +427,8 @@ void CCharsetConverter::utf32ToStringCharset(const unsigned long* strSource, CSt
 {
   if (m_iconvUtf32ToStringCharset == (iconv_t) - 1)
   {
-    m_iconvUtf32ToStringCharset = iconv_open(g_guiSettings.GetString("LookAndFeel.CharSet").c_str(), "UTF-32LE");
+    CStdString strCharset=g_langInfo.GetGuiCharSet();
+    m_iconvUtf32ToStringCharset = iconv_open(strCharset.c_str(), "UTF-32LE");
   }
 
   if (m_iconvUtf32ToStringCharset != (iconv_t) - 1)

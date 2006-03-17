@@ -1,0 +1,12 @@
+<language>
+  <charsets>
+    <gui unicodefont="true">CP1250</gui>
+    <subtitle>CP1250</subtitle>
+  </charsets>
+
+  <dvd>
+    <menu>hu</menu>
+    <audio>hu</audio>
+    <subtitle>hu</subtitle>
+  </dvd>
+</language>

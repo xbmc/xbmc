@@ -72,9 +72,9 @@ bool CDVDInputStreamNavigator::Open(const char* strFile)
   }
 
   // set defaults
-  if (m_dll.dvdnav_menu_language_select(m_dvdnav, "en") != DVDNAV_STATUS_OK ||
-      m_dll.dvdnav_audio_language_select(m_dvdnav, "en") != DVDNAV_STATUS_OK ||
-      m_dll.dvdnav_spu_language_select(m_dvdnav, "en") != DVDNAV_STATUS_OK)
+  if (m_dll.dvdnav_menu_language_select(m_dvdnav, (char*)g_langInfo.GetDVDMenuLanguage().c_str()) != DVDNAV_STATUS_OK ||
+      m_dll.dvdnav_audio_language_select(m_dvdnav, (char*)g_langInfo.GetDVDAudioLanguage().c_str()) != DVDNAV_STATUS_OK ||
+      m_dll.dvdnav_spu_language_select(m_dvdnav, (char*)g_langInfo.GetDVDSubtitleLanguage().c_str()) != DVDNAV_STATUS_OK)
   {
     CLog::DebugLog("Error on setting languages: %s\n", m_dll.dvdnav_err_to_string(m_dvdnav));
     Close();

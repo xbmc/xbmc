@@ -1,5 +1,5 @@
 <fonts>
-  <fontset id="Default">
+  <fontset id="Default" unicode="false">
 
     <font>
       <name>font13</name>
@@ -58,7 +58,7 @@
 
   </fontset>
 
-  <fontset id="Arial TTF">
+  <fontset id="Arial TTF" unicode="true">
 
     <font>
       <name>font13</name>

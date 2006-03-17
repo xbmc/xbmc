@@ -1,0 +1,13 @@
+<language>
+  <charsets>
+    <gui>CP1250</gui>
+    <subtitle>CP1250</subtitle>
+  </charsets>
+
+  <dvd>
+    <menu>sh</menu>
+    <audio>sh</audio>
+    <subtitle>sh</subtitle>
+  </dvd>
+</language>
+

@@ -50,8 +50,9 @@ bool CLocalizeStrings::Load(const CStdString& strFileName)
       }
       pChild = pChild->NextSibling();
     }
-
   }
+
+  if (!strFileName.Equals("Q:\\language\\english\\strings.xml"))
   {
     // load the original english file
     // and copy any missing texts

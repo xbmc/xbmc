@@ -1,0 +1,13 @@
+<language>
+  <charsets>
+    <gui unicodefont="true">CP1255</gui>
+    <subtitle>CP1255</subtitle>
+  </charsets>
+
+  <dvd>
+    <menu>he</menu>
+    <audio>he</audio>
+    <subtitle>he</subtitle>
+  </dvd>
+</language>
+
