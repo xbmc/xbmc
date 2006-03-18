@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 18-03-2006 fixed: iso9660 reading crash
  - 18-03-2006 fixed: iso9660 joliet directory entries need to be converted from utf16be to uft8
  - 18-03-2006 changed: Build.bat output of 'removal of cvs dirs' no longer points to null>. Thx to ljardine + enabled copying of python files
  - 18-03-2006 fixed: trainers now work with autolaunched titles.
