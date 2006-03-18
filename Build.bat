@@ -66,7 +66,7 @@ del BUILD\system\players\mplayer\codecs\.cvsignore
 
 ECHO ------------------------------
 ECHO Removing CVS directories from build
-FOR /R BUILD %%d IN (CVS) DO @RD /S /Q "%%d" 2>NUL
+FOR /R BUILD %%d IN (CVS) DO IF EXIST "%%d" RD /S /Q "%%d"
 
 ECHO ------------------------------
 IF NOT EXIST %RAR% (
