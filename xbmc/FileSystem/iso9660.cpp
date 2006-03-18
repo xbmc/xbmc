@@ -237,7 +237,7 @@ struct iso_dirtree *iso9660::ReadRecursiveDirFromSector( DWORD sector, const cha
         {
           bContinue = true;
           isodir.FileName[isodir.Len_Fi] = isodir.FileName[isodir.Len_Fi + 1] = 0; //put terminator by its length
-          temp_text = GetThinText((WCHAR*)(isodir.FileName), isodir.Len_Fi );
+          temp_text = GetThinText((WCHAR*)(isodir.FileName), isodir.Len_Fi/2 );
           //     temp_text.resize(isodir.Len_Fi);
         }
 
@@ -323,7 +323,7 @@ struct iso_dirtree *iso9660::ReadRecursiveDirFromSector( DWORD sector, const cha
         {
           bContinue = true;
           isodir.FileName[isodir.Len_Fi] = isodir.FileName[isodir.Len_Fi + 1] = 0; //put terminator by its length
-          temp_text = GetThinText((WCHAR*)(isodir.FileName), isodir.Len_Fi );
+          temp_text = GetThinText((WCHAR*)(isodir.FileName), isodir.Len_Fi/2 );
           //     temp_text.resize(isodir.Len_Fi);
         }
         if (!m_info.joliet && isodir.FileName[0] >= 0x20 )
@@ -635,11 +635,11 @@ bool iso9660::FindClose( HANDLE szLocalFolder )
 //******************************************************************************************************************
 string iso9660::GetThinText(WCHAR* strTxt, int iLen )
 {
-  // convert from "fat" text (UTF-16) to "thin" text (UTF-8)
+  // convert from "fat" text (UTF-16BE) to "thin" text (UTF-8)
   CStdStringW strTxtUnicode(strTxt, iLen);
   CStdString utf8String;
 
-  g_charsetConverter.utf16toUTF8(strTxtUnicode, utf8String);
+  g_charsetConverter.utf16BEtoUTF8(strTxtUnicode, utf8String);
 
   return utf8String;
 }
