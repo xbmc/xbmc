@@ -132,6 +132,7 @@ void CCharsetConverter::reset(void)
   m_iconvUcs2CharsetToStringCharset = (iconv_t) - 1;
   m_iconvSubtitleCharsetToFontCharset = (iconv_t) - 1;
   m_iconvUtf16toUtf8 = (iconv_t) - 1;
+  m_iconvUtf16BEtoUtf8 = (iconv_t) - 1;
   m_iconvUtf32ToStringCharset = (iconv_t) - 1;
   m_iconvUtf8toUtf16 = (iconv_t) - 1;
   m_stringFribidiCharset = FRIBIDI_CHARSET_NOT_FOUND;
@@ -373,6 +374,26 @@ void CCharsetConverter::utf16toUTF8(const CStdStringW& strSource, CStdStringA &s
     size_t outBytes = (inBytes * 2) + 1;  // some free for UTF8 conversion
     size_t originalOutBytes = outBytes;
     if (iconv(m_iconvUtf16toUtf8, &src, &inBytes, &dst, &outBytes))
+    { // failed :(
+      strDest.ReleaseBuffer();
+      strDest = strSource;
+    }
+    strDest.ReleaseBuffer();
+  }
+}
+
+void CCharsetConverter::utf16BEtoUTF8(const CStdStringW& strSource, CStdStringA &strDest)
+{
+  if (m_iconvUtf16BEtoUtf8 == (iconv_t) - 1)
+    m_iconvUtf16BEtoUtf8 = iconv_open("UTF-8", "UTF-16BE");
+  if (m_iconvUtf16BEtoUtf8 != (iconv_t) - 1)
+  {
+    const char* src = (const char*) strSource.c_str();
+    size_t inBytes = (strSource.length() + 1)*2;
+    char *dst = strDest.GetBuffer(inBytes);
+    size_t outBytes = (inBytes * 2) + 1;  // some free for UTF8 conversion
+    size_t originalOutBytes = outBytes;
+    if (iconv(m_iconvUtf16BEtoUtf8, &src, &inBytes, &dst, &outBytes))
     { // failed :(
       strDest.ReleaseBuffer();
       strDest = strSource;

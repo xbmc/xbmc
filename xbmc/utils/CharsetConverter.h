@@ -28,6 +28,7 @@ public:
   void ucs2CharsetToStringCharset(const CStdStringW& strSource, CStdStringA& strDest, bool swap = false);
 
   void utf16toUTF8(const CStdStringW& strSource, CStdStringA &strDest);
+  void utf16BEtoUTF8(const CStdStringW& strSource, CStdStringA &strDest);
 
   void utf32ToStringCharset(const unsigned long* strSource, CStdStringA& strDest);
 
@@ -52,6 +53,7 @@ private:
   iconv_t m_iconvUcs2CharsetToStringCharset;
   iconv_t m_iconvUtf32ToStringCharset;
   iconv_t m_iconvUtf16toUtf8;
+  iconv_t m_iconvUtf16BEtoUtf8;
   iconv_t m_iconvUtf8toUtf16;
 
   FriBidiCharSet m_stringFribidiCharset;
