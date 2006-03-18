@@ -6,6 +6,9 @@
 #include "playlistplayer.h"
 #include "xbox/xbeheader.h"
 #include "FileSystem/StackDirectory.h"
+#include "utils/kaiclient.h"
+#include "programdatabase.h"
+#include "utils/trainer.h"
 
 using namespace PLAYLIST;
 using namespace MEDIA_DETECT;
@@ -65,6 +68,21 @@ void CAutorun::RunXboxCd()
       else
         iRegion = 0;
 
+      CProgramDatabase database;
+      database.Open();
+      DWORD dwTitleId = CUtil::GetXbeID("D:\\default.xbe");
+      CStdString strTrainer = database.GetActiveTrainer(dwTitleId);
+      if (strTrainer != "" && !CKaiClient::GetInstance()->IsEngineConnected())
+      {
+        CTrainer trainer;
+        if (trainer.Load(strTrainer))
+        {
+          database.GetTrainerOptions(strTrainer,dwTitleId,trainer.GetOptions(),trainer.GetNumberOfOptions());
+          CUtil::InstallTrainer(trainer);
+        }
+      }
+
+      database.Close();
       g_application.Stop();
 
       CUtil::LaunchXbe( "Cdrom0", "D:\\default.xbe", NULL,F_VIDEO(iRegion));
@@ -409,6 +427,22 @@ bool CAutorun::PlayDisc()
       }
       else
         iRegion = 0;
+
+      CProgramDatabase database;
+      database.Open();
+      DWORD dwTitleId = CUtil::GetXbeID("D:\\default.xbe");
+      CStdString strTrainer = database.GetActiveTrainer(dwTitleId);
+      if (strTrainer != "" && !CKaiClient::GetInstance()->IsEngineConnected())
+      {
+        CTrainer trainer;
+        if (trainer.Load(strTrainer))
+        {
+          database.GetTrainerOptions(strTrainer,dwTitleId,trainer.GetOptions(),trainer.GetNumberOfOptions());
+          CUtil::InstallTrainer(trainer);
+        }
+      }
+
+      database.Close();
       g_application.Stop();
 
       CUtil::LaunchXbe( "Cdrom0", "D:\\default.xbe", NULL, F_VIDEO(iRegion) );
@@ -460,6 +494,21 @@ bool CAutorun::PlayDisc()
       else
         iRegion = 0;
 
+      CProgramDatabase database;
+      database.Open();
+      DWORD dwTitleId = CUtil::GetXbeID("D:\\default.xbe");
+      CStdString strTrainer = database.GetActiveTrainer(dwTitleId);
+      if (strTrainer != "" && !CKaiClient::GetInstance()->IsEngineConnected())
+      {
+        CTrainer trainer;
+        if (trainer.Load(strTrainer))
+        {
+          database.GetTrainerOptions(strTrainer,dwTitleId,trainer.GetOptions(),trainer.GetNumberOfOptions());
+          CUtil::InstallTrainer(trainer);
+        }
+      }
+
+      database.Close();
       g_application.Stop();
    
       CUtil::LaunchXbe( "Cdrom0", "D:\\default.xbe", NULL, F_VIDEO(iRegion) );
