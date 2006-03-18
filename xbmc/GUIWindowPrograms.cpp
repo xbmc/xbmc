@@ -920,7 +920,7 @@ bool CGUIWindowPrograms::OnClick(int iItem)
 
     int iRegion = m_iRegionSet?m_iRegionSet:GetRegion(iItem);
 
-    DWORD dwTitleId = CUtil::GetXbeID(pItem->m_strPath);
+    DWORD dwTitleId = m_database.GetTitleId(pItem->m_strPath);
     CStdString strTrainer = m_database.GetActiveTrainer(dwTitleId);
     if (strTrainer != "" && !CKaiClient::GetInstance()->IsEngineConnected())
     {
@@ -1266,7 +1266,11 @@ void CGUIWindowPrograms::SetOverlayIcons()
     CFileItem *item = m_vecItems[i];
     if (item->IsXBE())
     {
-      DWORD dwTitleId = m_database.GetTitleId(item->m_strPath);
+      DWORD dwTitleId;
+      if (item->IsOnDVD())
+        dwTitleId = CUtil::GetXbeID(item->m_strPath);
+      else
+        dwTitleId = m_database.GetTitleId(item->m_strPath);
       if ((int)dwTitleId == -1)
       {
         dwTitleId = CUtil::GetXbeID(item->m_strPath);
