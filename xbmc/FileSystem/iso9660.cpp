@@ -226,6 +226,8 @@ struct iso_dirtree *iso9660::ReadRecursiveDirFromSector( DWORD sector, const cha
     }
     int isize = min(sizeof(isodir), sizeof(m_info.isodir));
     memcpy( &isodir, pCurr_dir_cache + iso9660searchpointer, isize);
+    if (!isodir.ucRecordLength)
+      continue;
     if ( !(isodir.byFlags & Flag_NotExist) )
     {
       if ( (!( isodir.byFlags & Flag_Directory )) && ( isodir.Len_Fi > 1) )
@@ -313,6 +315,8 @@ struct iso_dirtree *iso9660::ReadRecursiveDirFromSector( DWORD sector, const cha
       return pDir;
     }
     memcpy( &isodir, pCurr_dir_cache + iso9660searchpointer, min(sizeof(isodir), sizeof(m_info.isodir)));
+    if (!isodir.ucRecordLength)
+      continue;
     if ( !(isodir.byFlags & Flag_NotExist) )
     {
       if ( (( isodir.byFlags & Flag_Directory )) && ( isodir.Len_Fi > 1) )
