@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 17-03-2006 added: directory navigation history in my programs.
  - 17-03-2006 fixed: trailing (null) behind freespace info strings.
  - 17-03-2006 removed: xns support (buggy, redundant).
  - 17-03-2006 fixed: httpapi: bug in getGUIStatus which could hang the web server thread
