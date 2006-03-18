@@ -350,7 +350,7 @@ bool CProgramDatabase::GetXBEPathByTitleId(const DWORD titleId, CStdString& strP
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
-    CStdString strSQL=FormatSQL("select path.strPath, files.strFilename from files join path on files.idPath=path.idPath where files.titleId='%x'", titleId);
+    CStdString strSQL=FormatSQL("select path.strPath, files.strFilename from files join path on files.idPath=path.idPath where files.titleId=%u", titleId);
     m_pDS->query(strSQL.c_str());
     if (m_pDS->num_rows() > 0)
     {
@@ -882,7 +882,7 @@ void CProgramDatabase::GetProgramsByBookmark(CStdString& strBookmark, CFileItemL
     long lBookmarkId = AddBookMark(strBookmark);
     CStdString strSQL;
     if (bOnlyDefaultXBE)
-      strSQL=FormatSQL("select strPath,strFilename,xbedescription,iTimesPlayed,lastAccessed from files,path,program where program.idBookmark=%i and program.idPath=path.idPath and files.idPath=program.idPath and files.strFilename like '/default.xbe'", lBookmarkId);
+      strSQL=FormatSQL("select strPath,strFilename,xbedescription,iTimesPlayed,lastAccessed from files,path,program where program.idBookmark=%i and program.idPath=path.idPath and files.idPath=program.idPath and files.strFilename like 'default.xbe'", lBookmarkId);
     else
       strSQL=FormatSQL("select strPath,strFilename,xbedescription,iTimesPlayed,lastAccessed from files,path,program where program.idBookmark=%i and program.idPath=path.idPath and files.idPath=program.idPath", lBookmarkId);
     m_pDS->query(strSQL.c_str());
@@ -891,7 +891,7 @@ void CProgramDatabase::GetProgramsByBookmark(CStdString& strBookmark, CFileItemL
       CStdString strPath, strFile, strPathandFile;
       strPath = m_pDS->fv("strPath").get_asString();
       strFile = m_pDS->fv("strFilename").get_asString();
-      strPathandFile = strPath + strFile;
+      CUtil::AddFileToFolder(strPath,strFile,strPathandFile);
       strPathandFile.Replace("/", "\\");
       CFileItem *pItem = new CFileItem(m_pDS->fv("xbedescription").get_asString());
       pItem->m_iprogramCount = m_pDS->fv("iTimesPlayed").get_asLong();
