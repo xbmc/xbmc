@@ -5,7 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
- - 18-03-2006 changed: Build.bat output of 'removal of cvs dirs' no longer points to null>. Thx to ljardine
+ - 18-03-2006 changed: Build.bat output of 'removal of cvs dirs' no longer points to null>. Thx to ljardine + enabled copying of python files
  - 18-03-2006 fixed: trainers now work with autolaunched titles.
  - 18-03-2006 fixed: trainer overlay for games on dvd.
  - 17-03-2006 added: directory navigation history in my programs.
