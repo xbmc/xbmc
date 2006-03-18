@@ -54,7 +54,6 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
       int iLastControl = m_iLastControl;
       m_iRegionSet = 0;
       CGUIWindow::OnMessage(message);
-      m_database.Open();
       m_dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
 
       // remove shortcuts
@@ -74,38 +73,6 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
         m_vecItems.m_strPath = strDestination = g_stSettings.m_szDefaultPrograms;
         CLog::Log(LOGINFO, "Attempting to default to: %s", strDestination.c_str());
       }
-      // try to open the destination path
-      if (!strDestination.IsEmpty())
-      {
-        // default parameters if the jump fails
-        m_vecItems.m_strPath = "";
-        m_shareDirectory = "";
-        m_iDepth = 1;
-        m_strBookmarkName = "default";
-        m_database.GetPathsByBookmark(m_strBookmarkName, m_vecPaths);
-
-        bool bIsBookmarkName = false;
-        int iIndex = CUtil::GetMatchingShare(strDestination, g_settings.m_vecMyProgramsBookmarks, bIsBookmarkName);
-        if (iIndex > -1)
-        {
-          // set current directory to matching share
-          if (bIsBookmarkName)
-            m_vecItems.m_strPath = g_settings.m_vecMyProgramsBookmarks[iIndex].strPath;
-          else
-            m_vecItems.m_strPath = strDestination;
-          CUtil::RemoveSlashAtEnd(m_vecItems.m_strPath);
-          m_shareDirectory = m_vecItems.m_strPath;
-          m_iDepth = g_settings.m_vecMyProgramsBookmarks[iIndex].m_iDepthSize;
-          m_strBookmarkName = g_settings.m_vecMyProgramsBookmarks[iIndex].strName;
-          m_database.GetPathsByBookmark(m_strBookmarkName, m_vecPaths);
-          CLog::Log(LOGINFO, "  Success! Opened destination path: %s", strDestination.c_str());
-        }
-        else
-        {
-          CLog::Log(LOGERROR, "  Failed! Destination parameter (%s) does not match a valid share!", strDestination.c_str());
-        }
-      }
-
       // make controls 100-110 invisible...
       for (int i = 100; i < 110; i++)
       {
@@ -134,8 +101,41 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
         SET_CONTROL_LABEL(i + iStartID, share.strName);
       }
 
+      m_database.Open();
+      // try to open the destination path
+      if (!strDestination.IsEmpty())
+      {
+        // default parameters if the jump fails
+        m_vecItems.m_strPath = "";
+        m_shareDirectory = "";
+        m_iDepth = 1;
+        m_strBookmarkName = "default";
+        m_database.GetPathsByBookmark(m_strBookmarkName, m_vecPaths);
 
-      
+        bool bIsBookmarkName = false;
+        int iIndex = CUtil::GetMatchingShare(strDestination, g_settings.m_vecMyProgramsBookmarks, bIsBookmarkName);
+        if (iIndex > -1)
+        {
+          // set current directory to matching share
+          if (bIsBookmarkName)
+          {
+            m_vecItems.m_strPath = g_settings.m_vecMyProgramsBookmarks[iIndex].strPath;
+            m_history.SetSelectedItem(m_vecItems.m_strPath,"empty");
+          }
+          else
+            m_vecItems.m_strPath = strDestination;
+          CUtil::RemoveSlashAtEnd(m_vecItems.m_strPath);
+          m_shareDirectory = m_vecItems.m_strPath;
+          m_iDepth = g_settings.m_vecMyProgramsBookmarks[iIndex].m_iDepthSize;
+          m_strBookmarkName = g_settings.m_vecMyProgramsBookmarks[iIndex].strName;
+          CLog::Log(LOGINFO, "  Success! Opened destination path: %s", strDestination.c_str());
+        }
+        else
+        {
+          CLog::Log(LOGERROR, "  Failed! Destination parameter (%s) does not match a valid share!", strDestination.c_str());
+        }
+      }
+
       m_vecPaths.clear();
       m_database.GetPathsByBookmark(m_strBookmarkName, m_vecPaths);
       Update(m_vecItems.m_strPath);
@@ -839,15 +839,27 @@ bool CGUIWindowPrograms::Update(const CStdString &strDirectory)
   
   CUtil::ClearCache();
   m_vecItems.SetThumbs();
+  CStdString strSelectedItem = m_history.GetSelectedItem(m_isRoot?"empty":strDirectory);
   if (m_guiState.get() && m_guiState->HideExtensions())
     m_vecItems.RemoveExtensions();
   m_vecItems.FillInDefaultIcons();
+  int i;
+  for (i=0;i<m_vecItems.Size();++i)
+  {
+    CStdString strHistory;
+    GetDirectoryHistoryString(m_vecItems[i], strHistory);
+    if (strHistory == strSelectedItem)
+      break;
+  }
+  if (i==m_vecItems.Size())
+    strSelectedItem = "";
   // set our overlay icons
   SetOverlayIcons();
 
   m_guiState.reset(CGUIViewState::GetViewState(GetID(), m_vecItems));
   OnSort();
   UpdateButtons();
+  m_viewControl.SetSelectedItem(strSelectedItem);
 
   return true;
 }
@@ -862,6 +874,12 @@ bool CGUIWindowPrograms::OnClick(int iItem)
     if ( !g_passwordManager.IsItemUnlocked( pItem, "myprograms" ) )
       return true;
 
+    CStdString strSelectedItem = "";
+    if (iItem >= 0 && iItem < m_vecItems.Size())
+      strSelectedItem = m_vecItems[iItem]->m_strPath;
+    if (strSelectedItem != "")
+      m_history.SetSelectedItem(strSelectedItem, m_isRoot?"empty":m_vecItems.m_strPath);
+    
     if (m_vecItems.IsVirtualDirectoryRoot())
       m_shareDirectory = pItem->m_strPath;
     m_vecItems.m_strPath = pItem->m_strPath;
@@ -1089,7 +1107,14 @@ void CGUIWindowPrograms::DeleteThumbs(CFileItemList& items)
 /// \brief Call to go to parent folder
 void CGUIWindowPrograms::GoParentFolder()
 {
-  //CStdString strPath=m_strParentPath;
+   // get selected item
+  int iItem = m_viewControl.GetSelectedItem();
+  CStdString strSelectedItem = "";
+  if (iItem >= 0 && iItem < m_vecItems.Size())
+    strSelectedItem = m_vecItems[iItem]->m_strPath;
+  if (strSelectedItem != "")
+    m_history.SetSelectedItem(strSelectedItem, m_isRoot?"empty":m_vecItems.m_strPath);
+
   m_vecItems.m_strPath = m_strParentPath;
   Update(m_vecItems.m_strPath);
 }
