@@ -15,9 +15,17 @@ CDatabase::~CDatabase(void)
 
 void CDatabase::Split(const CStdString& strFileNameAndPath, CStdString& strPath, CStdString& strFileName)
 {
-  CUtil::Split(strFileNameAndPath,strPath,strFileName);
-  if (CUtil::HasSlashAtEnd(strPath))
-    strPath.erase(strPath.size()-1);
+  strFileName = "";
+  strPath = "";
+  int i = strFileNameAndPath.size() - 1;
+  while (i > 0)
+  {
+    char ch = strFileNameAndPath[i];
+    if (ch == ':' || ch == '/' || ch == '\\') break;
+    else i--;
+  }
+  strPath = strFileNameAndPath.Left(i);
+  strFileName = strFileNameAndPath.Right(strFileNameAndPath.size() - i);
 }
 
 DWORD CDatabase::ComputeCRC(const CStdString &text)
