@@ -6,6 +6,6 @@ extern "C" void not_implement( LPCSTR debuginfo)
 {
   if (debuginfo)
   {
-    CLog::Log(LOGWARNING, debuginfo);
+    CLog::Log(LOGDEBUG, debuginfo);
   }
 }
