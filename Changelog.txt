@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 19-03-2006 changed: Moved a few things logged at LOGERROR to LOGDEBUG
+ - 19-03-2006 fixed: Python xbmc.getLocalizedString()
  - 19-03-2006 fixed: my last fix for programs broke other stuff.
  - 19-03-2006 fixed: my programs was broken.
  - 18-03-2006 fixed: iso9660 reading crash
