@@ -171,7 +171,7 @@ DllLoader* DllLoaderContainer::FindModule(const char* sName, const char* sCurren
       return LoadDll(strPath.c_str(), bLoadSymbols);
   }
 
-  CLog::Log(LOGERROR, "Dll %s was not found in path", sName);
+  CLog::Log(LOGDEBUG, "Dll %s was not found in path", sName);
 
   return NULL;
 }

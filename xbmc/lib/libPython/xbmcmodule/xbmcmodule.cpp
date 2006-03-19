@@ -200,7 +200,9 @@ namespace PYXBMC
 		int iString;
 		if (!PyArg_ParseTuple(args, "i", &iString))	return NULL;
 
-		return Py_BuildValue("u", g_localizeStrings.Get(iString).c_str());
+    CStdStringW unicodeLabel;
+    g_charsetConverter.utf8ToUTF16(g_localizeStrings.Get(iString), unicodeLabel);
+		return Py_BuildValue("u", unicodeLabel.c_str());
 	}
 
 	PyDoc_STRVAR(getSkinDir__doc__,
