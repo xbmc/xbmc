@@ -191,6 +191,7 @@ int urarlib_get(char *rarfile, char *targetPath, char *fileToExtract, char *libp
 		strncpy(pCmd->ExtrPath, targetPath, sizeof(pCmd->Command) - 2);
 		pCmd->ExtrPath[sizeof(pCmd->Command) - 2] = '\0';
 		AddEndSlash(pCmd->ExtrPath);
+    pCmd->ParseArg("-va",NULL);
 		if (fileToExtract)
 		{
       if (*fileToExtract)
@@ -289,6 +290,7 @@ int urarlib_list(char *rarfile, ArchiveList_struct **ppList, char *libpassword)
 		strcpy(pCmd->Command, "L");
 		pCmd->AddArcName(rarfile, NULL);
 		pCmd->FileArgs->AddString(MASKALL);
+    pCmd->ParseArg("-va",NULL);
 
 		// Set password for encrypted archives
 		if (libpassword)
@@ -305,45 +307,58 @@ int urarlib_list(char *rarfile, ArchiveList_struct **ppList, char *libpassword)
 				return 0;
 
 			bool FileMatched=true;
+      FileCount=0;
+      *ppList = NULL;
+      ArchiveList_struct *pPrev = NULL;
+      while (1)
+      {
+        Int64 TotalPackSize=0,TotalUnpSize=0;
+        if (pArc->IsOpened() && pArc->IsArchive(true))
+        {
+          bool TitleShown=false;
+          while(pArc->ReadHeader()>0)
+          {
+            if (pArc->GetHeaderType() == FILE_HEAD)
+            {
+              if (pPrev)
+                if (stricmp(pArc->NewLhd.FileName,pPrev->item.Name)==0)
+                {
+                  pArc->SeekToNext();
+                  continue;
+                }
 
-			Int64 TotalPackSize=0,TotalUnpSize=0;
-			FileCount=0;
-			*ppList = NULL;
-			if (pArc->IsOpened() && pArc->IsArchive(true))
-			{
-				ArchiveList_struct *pPrev = NULL;
-				bool TitleShown=false;
-				while(pArc->ReadHeader()>0)
-				{
-					if (pArc->GetHeaderType() == FILE_HEAD)
-					{
-            IntToExt(pArc->NewLhd.FileName,pArc->NewLhd.FileName);
-						ArchiveList_struct *pCurr = (ArchiveList_struct *)malloc(sizeof(ArchiveList_struct));
-						if (!pCurr)
-							break;
-						if (pPrev)
-							pPrev->next = pCurr;
-						if (!*ppList)
-							*ppList = pCurr;
-						pCurr->item.NameSize = strlen(pArc->NewLhd.FileName);
-						pCurr->item.Name = (char *)malloc(pCurr->item.NameSize + 1);
-						strcpy(pCurr->item.Name, pArc->NewLhd.FileName);
-						pCurr->item.PackSize = pArc->NewLhd.PackSize;
-            pCurr->item.UnpSize = int32to64(pArc->NewLhd.HighUnpSize,pArc->NewLhd.UnpSize);
-						pCurr->item.HostOS = pArc->NewLhd.HostOS;
-						pCurr->item.FileCRC = pArc->NewLhd.FileCRC;
-						pCurr->item.FileTime = pArc->NewLhd.FileTime;
-						pCurr->item.UnpVer = pArc->NewLhd.UnpVer;
-						pCurr->item.Method = pArc->NewLhd.Method;
-						pCurr->item.FileAttr = pArc->NewLhd.FileAttr;
-						pCurr->next = NULL;
-						pPrev = pCurr;
-						FileCount++;
-					}
-					pArc->SeekToNext();
-				}
-			}
-		}
+              IntToExt(pArc->NewLhd.FileName,pArc->NewLhd.FileName);
+              ArchiveList_struct *pCurr = (ArchiveList_struct *)malloc(sizeof(ArchiveList_struct));
+              if (!pCurr)
+                break;
+              if (pPrev)
+                pPrev->next = pCurr;
+              if (!*ppList)
+                *ppList = pCurr;
+              pCurr->item.NameSize = strlen(pArc->NewLhd.FileName);
+              pCurr->item.Name = (char *)malloc(pCurr->item.NameSize + 1);
+              strcpy(pCurr->item.Name, pArc->NewLhd.FileName);
+              pCurr->item.PackSize = pArc->NewLhd.PackSize;
+              pCurr->item.UnpSize = int32to64(pArc->NewLhd.HighUnpSize,pArc->NewLhd.UnpSize);
+              pCurr->item.HostOS = pArc->NewLhd.HostOS;
+              pCurr->item.FileCRC = pArc->NewLhd.FileCRC;
+              pCurr->item.FileTime = pArc->NewLhd.FileTime;
+              pCurr->item.UnpVer = pArc->NewLhd.UnpVer;
+              pCurr->item.Method = pArc->NewLhd.Method;
+              pCurr->item.FileAttr = pArc->NewLhd.FileAttr;
+              pCurr->next = NULL;
+              pPrev = pCurr;
+              FileCount++;
+            }
+            pArc->SeekToNext();
+          }
+          if (pCmd->VolSize!=0 && ((pArc->NewLhd.Flags & LHD_SPLIT_AFTER) || pArc->GetHeaderType()==ENDARC_HEAD && (pArc->EndArcHead.Flags & EARC_NEXT_VOLUME)!=0) && MergeArchive(*pArc,NULL,false,*pCmd->Command))
+            pArc->Seek(0,SEEK_SET); 
+          else
+            break;
+        }
+      }
+    }
 	}
 
 	File::RemoveCreated();

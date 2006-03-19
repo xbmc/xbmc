@@ -122,7 +122,7 @@ bool CFileRar::Open(const CURL& url, bool bBinary)
   
   InitFromUrl(url);
   CFileItemList items;
-  g_RarManager.GetFilesInRar(items,m_strRarPath,false); // fixme, query manager!
+  g_RarManager.GetFilesInRar(items,m_strRarPath,false);
   int i;
   for (i=0;i<items.Size();++i)
     if (items[i]->GetLabel() == m_strPathInRar)
@@ -196,12 +196,25 @@ bool CFileRar::Exists(const CURL& url)
 //*********************************************************************************************
 int CFileRar::Stat(const CURL& url, struct __stat64* buffer)
 {
-	/*InitFromUrl( url );
-	CStdString strPathInCache;
-	if( !g_RarManager.CacheRarredFile(strPathInCache, m_strRarPath, m_strPathInRar,  m_bFileOptions,  m_strCacheDir) ) 
-		return false;
-	CFile file;
-	return file.Stat(strPathInCache, buffer);*/
+  if (Open(url, true))
+  {
+    buffer->st_size = GetLength();
+    buffer->st_mode = _S_IFREG;
+    Close();
+    errno = 0;
+    return 0;
+  }
+
+  CStdString strURL;
+  url.GetURL(strURL);
+
+  if (CDirectory::Exists(strURL))
+  {
+    buffer->st_mode = _S_IFDIR;
+    return 0;
+  }
+
+  errno = ENOENT;
   return -1;
 }
 
@@ -209,12 +222,7 @@ int CFileRar::Stat(const CURL& url, struct __stat64* buffer)
 //*********************************************************************************************
 bool CFileRar::OpenForWrite(const CURL& url, bool bBinary)
 {
-/*	InitFromUrl( url );
-	CStdString strPathInCache;
-	if( !g_RarManager.CacheRarredFile(strPathInCache, m_strRarPath, m_strPathInRar,  m_bFileOptions,  m_strCacheDir) ) */
-		return false;
-	/*if(!m_File.OpenForWrite(strPathInCache, bBinary))  return false;
-	return true;*/
+  return false;
 }
 
 //*********************************************************************************************
@@ -291,7 +299,6 @@ unsigned int CFileRar::Read(void *lpBuf, __int64 uiBufSize)
 //*********************************************************************************************
 unsigned int CFileRar::Write(void *lpBuf, __int64 uiBufSize)
 {
-	//return m_File.Write(lpBuf, uiBufSize);
   return 0;
 }
 
@@ -447,20 +454,6 @@ int CFileRar::Write(const void* lpBuf, __int64 uiBufSize)
 
 bool CFileRar::Delete(const char* strFileName)
 {
-	/*//Deletes the cached rar and/or file according to the autodel values. 
-	CURL url(strFileName);
-	InitFromUrl( url );
-	bool bAutoDelFile = (m_bFileOptions & EXFILE_AUTODELETE) !=0;
-
-	CStdString strFileCachedPath, strRarCachedPath;
-	g_RarManager.MakeCachedPath(strFileCachedPath, m_strCacheDir, m_strPathInRar);
-	g_RarManager.MakeCachedPath(strRarCachedPath, m_strCacheDir, m_strRarPath);
-	CFile file;
-	bool bRes = true;
-	if(bAutoDelFile)
-		if( !file.Delete(strFileCachedPath) )	bRes = false;
-
-	return bRes;*/
   return false;
 }
 
@@ -483,6 +476,7 @@ void CFileRar::InitFromUrl(const CURL& url)
 	m_strRarPath = url.GetHostName();
 	m_strPassword = url.GetPassWord();
 	m_strPathInRar = url.GetFileName();
+    m_strPathInRar.Replace("/","\\");
 	int iAutoDelMask = url.GetPort();
 
 	m_bRarOptions = 0;
@@ -548,6 +542,7 @@ bool CFileRar::OpenInArchive()
   strncpy(m_pCmd->ExtrPath, m_strCacheDir.c_str(), sizeof(m_pCmd->Command) - 2);
   m_pCmd->ExtrPath[sizeof(m_pCmd->Command) - 2] = '\0';
   AddEndSlash(m_pCmd->ExtrPath);
+  m_pCmd->ParseArg("-va",NULL);
   m_pCmd->FileArgs->AddString(m_strPathInRar.c_str());
 
   // Set password for encrypted archives
