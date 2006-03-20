@@ -460,12 +460,27 @@ bool CGUIDialogKeyboard::ShowAndGetInput(CStdString& aTextString, bool allowEmpt
   return ShowAndGetInput(aTextString, "", allowEmptyResult) != 0;
 }
 
+// Shows keyboard and prompts for a password.
+// Differs from ShowAndVerifyNewPassword() in that no second verification is necessary.
+bool CGUIDialogKeyboard::ShowAndGetNewPassword(CStdString& newPassword, const CStdString &heading, bool allowEmpty)
+{
+  return ShowAndGetInput(newPassword, heading, allowEmpty, true);
+}
+
+// Shows keyboard and prompts for a password.
+// Differs from ShowAndVerifyNewPassword() in that no second verification is necessary.
+bool CGUIDialogKeyboard::ShowAndGetNewPassword(CStdString& newPassword)
+{
+  CStdString heading = g_localizeStrings.Get(12340);
+  return ShowAndGetNewPassword(newPassword, heading, false);
+}
+
 // \brief Show keyboard twice to get and confirm a user-entered password string.
 // \param newPassword Overwritten with user input if return=true.
 // \param heading Heading to display
 // \param allowEmpty Whether a blank password is valid or not.
 // \return true if successful display and user input entry/re-entry. false if unsucessful display, no user input, or canceled editing.
-bool CGUIDialogKeyboard::ShowAndGetNewPassword(CStdString& newPassword, const CStdString &heading, bool allowEmpty)
+bool CGUIDialogKeyboard::ShowAndVerifyNewPassword(CStdString& newPassword, const CStdString &heading, bool allowEmpty)
 {
   // Prompt user for password input
   CStdString userInput = "";
@@ -492,10 +507,10 @@ bool CGUIDialogKeyboard::ShowAndGetNewPassword(CStdString& newPassword, const CS
 // \brief Show keyboard twice to get and confirm a user-entered password string.
 // \param strNewPassword Overwritten with user input if return=true.
 // \return true if successful display and user input entry/re-entry. false if unsucessful display, no user input, or canceled editing.
-bool CGUIDialogKeyboard::ShowAndGetNewPassword(CStdString& newPassword)
+bool CGUIDialogKeyboard::ShowAndVerifyNewPassword(CStdString& newPassword)
 {
   CStdString heading = g_localizeStrings.Get(12340);
-  return ShowAndGetNewPassword(newPassword, heading, false);
+  return ShowAndVerifyNewPassword(newPassword, heading, false);
 }
 
 // \brief Show keyboard and verify user input against strPassword.

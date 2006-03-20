@@ -387,15 +387,15 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CStdS
           switch (pMenu->GetButton())
           {
           case 1:  // 1: Numeric Password
-            if (!CGUIDialogNumeric::ShowAndGetNewPassword(strNewPassword))
+            if (!CGUIDialogNumeric::ShowAndVerifyNewPassword(strNewPassword))
               return false;
             break;
           case 2:  // 2: Gamepad Password
-            if (!CGUIDialogGamepad::ShowAndGetNewPassword(strNewPassword))
+            if (!CGUIDialogGamepad::ShowAndVerifyNewPassword(strNewPassword))
               return false;
             break;
           case 3:  // 3: Fulltext Password
-            if (!CGUIDialogKeyboard::ShowAndGetNewPassword(strNewPassword))
+            if (!CGUIDialogKeyboard::ShowAndVerifyNewPassword(strNewPassword))
               return false;
             break;
           default:  // Not supported, abort
@@ -457,17 +457,17 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CStdS
 		      switch (iLockMode)
 		      {
 		      case -1:  // 1: Numeric Password
-			      if (!CGUIDialogNumeric::ShowAndGetNewPassword(strNewPW))
+			      if (!CGUIDialogNumeric::ShowAndVerifyNewPassword(strNewPW))
 			      return false;
 			      else strNewLockMode = "1";
 			      break;
 		      case -2:  // 2: Gamepad Password
-			      if (!CGUIDialogGamepad::ShowAndGetNewPassword(strNewPW))
+			      if (!CGUIDialogGamepad::ShowAndVerifyNewPassword(strNewPW))
 			      return false;
 			      else strNewLockMode = "2";
 			      break;
 		      case -3:  // 3: Fulltext Password
-			      if (!CGUIDialogKeyboard::ShowAndGetNewPassword(strNewPW))
+			      if (!CGUIDialogKeyboard::ShowAndVerifyNewPassword(strNewPW))
 			      return false;
 			      else strNewLockMode = "3";
 			      break;
