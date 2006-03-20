@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 20-03-2006 fixed: Password entry would prompt twice for the password.  Now only does so on XBMC passwords (lockcodes etc.)
  - 19-03-2006 fixed: list all volumes in multi volume rar sets (enables e.g. rarred dvd folders).
  - 19-03-2006 changed: Moved a few things logged at LOGERROR to LOGDEBUG
  - 19-03-2006 fixed: Python xbmc.getLocalizedString()

@@ -21,6 +21,8 @@ public:
   static bool ShowAndGetInput(CStdString& aTextString, const CStdString &strHeading, bool allowEmptyResult, bool hiddenInput = false);
   static bool ShowAndGetNewPassword(CStdString& strNewPassword);
   static bool ShowAndGetNewPassword(CStdString& newPassword, const CStdString &heading, bool allowEmpty);
+  static bool ShowAndVerifyNewPassword(CStdString& strNewPassword);
+  static bool ShowAndVerifyNewPassword(CStdString& newPassword, const CStdString &heading, bool allowEmpty);
   static int ShowAndVerifyPassword(CStdString& strPassword, const CStdString& strHeading, int iRetries);
 
   virtual void Close(bool forceClose = false);

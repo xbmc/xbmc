@@ -15,7 +15,7 @@ public:
   bool IsConfirmed() const;
   bool IsCanceled() const;
 
-  static bool ShowAndGetNewPassword(CStdString& strNewPassword);
+  static bool ShowAndVerifyNewPassword(CStdString& strNewPassword);
   static int ShowAndVerifyPassword(CStdString& strPassword, const CStdString& strHeading, int iRetries);
   static bool ShowAndVerifyInput(CStdString& strPassword, const CStdString& strHeading, bool bGetUserInput);
 
