@@ -1829,13 +1829,13 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
       switch (g_guiSettings.GetInt("Masterlock.Mastermode"))
       {
           case LOCK_MODE_NUMERIC:
-            CGUIDialogNumeric::ShowAndGetNewPassword(strNewPassword);
+            CGUIDialogNumeric::ShowAndVerifyNewPassword(strNewPassword);
             break;
           case LOCK_MODE_GAMEPAD:
-            CGUIDialogGamepad::ShowAndGetNewPassword(strNewPassword);
+            CGUIDialogGamepad::ShowAndVerifyNewPassword(strNewPassword);
             break;
           case LOCK_MODE_QWERTY:
-            CGUIDialogKeyboard::ShowAndGetNewPassword(strNewPassword);
+            CGUIDialogKeyboard::ShowAndVerifyNewPassword(strNewPassword);
             break;
       }
       strTempMasterCode = strNewPassword;
