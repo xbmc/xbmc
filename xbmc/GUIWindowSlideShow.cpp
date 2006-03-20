@@ -645,6 +645,11 @@ void CGUIWindowSlideShow::OnLoadPic(int iPic, int iSlideNumber, D3DTexture *pTex
     CLog::Log(LOGDEBUG, "Finished background loading %s", m_vecSlides[iSlideNumber].c_str());
     if (m_bReloadImage)
     {
+      if (m_Image[m_iCurrentPic].IsLoaded() && m_Image[m_iCurrentPic].SlideNumber() != iSlideNumber)
+      { // wrong image (ie we finished loading the next image, not the current image)
+        pTexture->Release();
+        return;
+      }
       m_Image[m_iCurrentPic].UpdateTexture(pTexture, iWidth, iHeight);
       m_Image[m_iCurrentPic].SetOriginalSize(iOriginalWidth, iOriginalHeight, bFullSize);
       m_bReloadImage = false;
