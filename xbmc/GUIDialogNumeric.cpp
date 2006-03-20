@@ -506,7 +506,7 @@ bool CGUIDialogNumeric::ShowAndGetNumber(CStdString& strInput, const CStdString 
 // \brief Show numeric keypad twice to get and confirm a user-entered password string.
 // \param strNewPassword String to preload into the keyboard accumulator. Overwritten with user input if return=true.
 // \return true if successful display and user input entry/re-entry. false if unsucessful display, no user input, or canceled editing.
-bool CGUIDialogNumeric::ShowAndGetNewPassword(CStdString& strNewPassword)
+bool CGUIDialogNumeric::ShowAndVerifyNewPassword(CStdString& strNewPassword)
 {
   // Prompt user for password input
   CStdString strUserInput = "";
