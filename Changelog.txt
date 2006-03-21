@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 21-03-2006 fixed: trainers for games on dvd.
  - 20-03-2006 added: RemapGlyph() routine to remap common missing characters in XPR fonts (only handles quotes and double quotes at this stage).
  - 20-03-2006 fixed: [ 1453490 ] zoom in causes skip in slideshow
  - 20-03-2006 fixed: Password entry would prompt twice for the password.  Now only does so on XBMC passwords (lockcodes etc.)
