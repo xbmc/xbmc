@@ -232,6 +232,7 @@ bool CFileCurl::Open(const CURL& url, bool bBinary)
 
   if (m_buffer.GetMaxReadSize() == 0 && !m_stillRunning)
   {
+    CLog::Log(LOGERROR, "CFileCurl:Open, didn't get any data from stream.");
     // if still_running is 0 now, we should return NULL
     Close();
     return false;
@@ -369,10 +370,10 @@ int CFileCurl::FillBuffer(unsigned int want, int waittime)
   FD_ZERO(&fdwrite);
   FD_ZERO(&fdexcep);
 
-  // 500 msec timeout
+  // waittime timeout
   struct timeval timeout;
-  timeout.tv_sec = 0;
-  timeout.tv_usec = 500 * 1000;
+  timeout.tv_sec = waittime;
+  timeout.tv_usec = 0;
     
   // only attempt to fill buffer if transactions still running and buffer
   // doesnt exceed required size already
