@@ -49,7 +49,11 @@ bool CGUIDialogSeekBar::OnAction(const CAction &action)
     if (g_application.m_pPlayer && !g_infoManager.m_performingSeek)
     {
       //100% over 1 second.
-      float speed = 100.0f / g_infoManager.GetFPS();
+      float speed = 100.0f;
+      if( action.fRepeat )
+        speed *= action.fRepeat;
+      else
+        speed /= g_infoManager.GetFPS();
 
       if (action.wID == ACTION_ANALOG_SEEK_FORWARD)
         m_fSeekPercentage += action.fAmount1 * action.fAmount1 * speed;
