@@ -67,6 +67,7 @@ public:
   inline void Begin() { if (m_font) m_font->Begin(); };
   inline void End() { if (m_font) m_font->End(); };
 
+  static SHORT RemapGlyph(SHORT letter);
 protected:
   CStdString m_strFontName;
   // for shadowed text

@@ -148,6 +148,9 @@ public:
   D3DTexture* GetTexture() const { return m_pFontTexture; }
   FLOAT GetFontHeight() const { return m_fFontYAdvance; }
 
+private:
+  inline SHORT GetGlyphToUse(SHORT letter) const;
+
 public:
   // Constructor/destructor
   CXBFont();
