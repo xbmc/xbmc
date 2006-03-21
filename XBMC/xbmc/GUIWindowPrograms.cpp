@@ -581,10 +581,8 @@ void CGUIWindowPrograms::LoadDirectory(const CStdString& strDirectory, int idept
             }                                                   
             if (!foundPath)                                     
               LoadDirectory(file.m_strPath, idepth - 1);
-            
           }
         }
-
       }
       else
       {
@@ -919,8 +917,12 @@ bool CGUIWindowPrograms::OnClick(int iItem)
       m_database.IncTimesPlayed(pItem->m_strPath);
 
     int iRegion = m_iRegionSet?m_iRegionSet:GetRegion(iItem);
-
-    DWORD dwTitleId = m_database.GetTitleId(pItem->m_strPath);
+    
+    DWORD dwTitleId;
+    if (!pItem->IsOnDVD())
+      dwTitleId = m_database.GetTitleId(pItem->m_strPath);
+    else
+      dwTitleId = CUtil::GetXbeID(pItem->m_strPath);
     CStdString strTrainer = m_database.GetActiveTrainer(dwTitleId);
     if (strTrainer != "" && !CKaiClient::GetInstance()->IsEngineConnected())
     {
