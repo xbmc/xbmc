@@ -90,3 +90,12 @@ bool CISO9660Directory::GetDirectory(const CStdString& strPath, CFileItemList &i
 
   return true;
 }
+
+bool CISO9660Directory::Exists(const char* strPath)
+{
+  CFileItemList items;
+  if (GetDirectory(strPath,items))
+    return true;
+
+  return false;
+}
