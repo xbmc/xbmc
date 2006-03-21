@@ -2316,7 +2316,11 @@ bool CApplication::OnKey(CKey& key)
     int volume = g_stSettings.m_nVolumeLevel + g_stSettings.m_dynamicRangeCompressionLevel;
 
     // calculate speed so that a full press will equal 1 second from min to max
-    float speed = float(VOLUME_MAXIMUM - VOLUME_MINIMUM) / g_infoManager.GetFPS();
+    float speed = float(VOLUME_MAXIMUM - VOLUME_MINIMUM);
+    if( action.fRepeat )
+      speed *= action.fRepeat;
+    else
+      speed /= 50; //50 fps
 
     if (action.wID == ACTION_VOLUME_UP)
       volume += (int)(action.fAmount1 * action.fAmount1 * speed);
@@ -2379,6 +2383,13 @@ void CApplication::UpdateLCD()
 
 void CApplication::FrameMove()
 {
+  /* currently we calculate the repeat time (ie time from last similar keypress) just global as fps */
+  float fFrameTime = m_frameTime.GetElapsedSeconds();
+  m_frameTime.StartZero();
+
+  /* never set a frametime less than 2 fps to avoid problems when debuggin and on breaks */
+  if( fFrameTime > 0.5 ) fFrameTime = 0.5;
+
   if (g_guiSettings.GetBool("XLinkKai.Enabled"))
   {
     CKaiClient::GetInstance()->DoWork();
@@ -2510,13 +2521,13 @@ void CApplication::FrameMove()
   if (pGamepad->fX1 || pGamepad->fY1)
   {
     bGotKey = true;
-    CKey key(KEY_BUTTON_LEFT_THUMB_STICK, bLeftTrigger, bRightTrigger, pGamepad->fX1, pGamepad->fY1, pGamepad->fX2, pGamepad->fY2);
+    CKey key(KEY_BUTTON_LEFT_THUMB_STICK, bLeftTrigger, bRightTrigger, pGamepad->fX1, pGamepad->fY1, pGamepad->fX2, pGamepad->fY2, fFrameTime);
     if (OnKey(key)) return;
   }
   if (pGamepad->fX2 || pGamepad->fY2)
   {
     bGotKey = true;
-    CKey key(KEY_BUTTON_RIGHT_THUMB_STICK, bLeftTrigger, bRightTrigger, pGamepad->fX1, pGamepad->fY1, pGamepad->fX2, pGamepad->fY2);
+    CKey key(KEY_BUTTON_RIGHT_THUMB_STICK, bLeftTrigger, bRightTrigger, pGamepad->fX1, pGamepad->fY1, pGamepad->fX2, pGamepad->fY2, fFrameTime);
     if (OnKey(key)) return;
   }
   // direction specific keys (for defining different actions for each direction)
@@ -2578,7 +2589,7 @@ void CApplication::FrameMove()
   // post the new key's message
   if (newRightStickKey)
   {
-    CKey key(newRightStickKey, bLeftTrigger, bRightTrigger, pGamepad->fX1, pGamepad->fY1, pGamepad->fX2, pGamepad->fY2);
+    CKey key(newRightStickKey, bLeftTrigger, bRightTrigger, pGamepad->fX1, pGamepad->fY1, pGamepad->fX2, pGamepad->fY2, fFrameTime);
     if (OnKey(key)) return;
   }
 
@@ -2632,7 +2643,7 @@ void CApplication::FrameMove()
   // post the new key's message
   if (newLeftStickKey)
   {
-    CKey key(newLeftStickKey, bLeftTrigger, bRightTrigger, pGamepad->fX1, pGamepad->fY1, pGamepad->fX2, pGamepad->fY2);
+    CKey key(newLeftStickKey, bLeftTrigger, bRightTrigger, pGamepad->fX1, pGamepad->fY1, pGamepad->fX2, pGamepad->fY2, fFrameTime);
     if (OnKey(key)) return;
   }
 
@@ -2654,7 +2665,7 @@ void CApplication::FrameMove()
   // post the new key's message
   if (newTriggerKey)
   {
-    CKey key(newTriggerKey, bLeftTrigger, bRightTrigger, pGamepad->fX1, pGamepad->fY1, pGamepad->fX2, pGamepad->fY2);
+    CKey key(newTriggerKey, bLeftTrigger, bRightTrigger, pGamepad->fX1, pGamepad->fY1, pGamepad->fX2, pGamepad->fY2, fFrameTime);
     if (OnKey(key)) return;
   }
 
@@ -2662,37 +2673,37 @@ void CApplication::FrameMove()
   if ( wDir & DC_LEFTTRIGGER)
   {
     bGotKey = true;
-    CKey key(KEY_BUTTON_LEFT_TRIGGER, bLeftTrigger, bRightTrigger, pGamepad->fX1, pGamepad->fY1, pGamepad->fX2, pGamepad->fY2);
+    CKey key(KEY_BUTTON_LEFT_TRIGGER, bLeftTrigger, bRightTrigger, pGamepad->fX1, pGamepad->fY1, pGamepad->fX2, pGamepad->fY2, fFrameTime);
     if (OnKey(key)) return;
   }
   if ( wDir & DC_RIGHTTRIGGER)
   {
     bGotKey = true;
-    CKey key(KEY_BUTTON_RIGHT_TRIGGER, bLeftTrigger, bRightTrigger, pGamepad->fX1, pGamepad->fY1, pGamepad->fX2, pGamepad->fY2);
+    CKey key(KEY_BUTTON_RIGHT_TRIGGER, bLeftTrigger, bRightTrigger, pGamepad->fX1, pGamepad->fY1, pGamepad->fX2, pGamepad->fY2, fFrameTime);
     if (OnKey(key)) return;
   }
   if ( wDir & DC_LEFT )
   {
     bGotKey = true;
-    CKey key(KEY_BUTTON_DPAD_LEFT, bLeftTrigger, bRightTrigger, pGamepad->fX1, pGamepad->fY1, pGamepad->fX2, pGamepad->fY2);
+    CKey key(KEY_BUTTON_DPAD_LEFT, bLeftTrigger, bRightTrigger, pGamepad->fX1, pGamepad->fY1, pGamepad->fX2, pGamepad->fY2, fFrameTime);
     if (OnKey(key)) return;
   }
   if ( wDir & DC_RIGHT)
   {
     bGotKey = true;
-    CKey key(KEY_BUTTON_DPAD_RIGHT, bLeftTrigger, bRightTrigger, pGamepad->fX1, pGamepad->fY1, pGamepad->fX2, pGamepad->fY2);
+    CKey key(KEY_BUTTON_DPAD_RIGHT, bLeftTrigger, bRightTrigger, pGamepad->fX1, pGamepad->fY1, pGamepad->fX2, pGamepad->fY2, fFrameTime);
     if (OnKey(key)) return;
   }
   if ( wDir & DC_UP )
   {
     bGotKey = true;
-    CKey key(KEY_BUTTON_DPAD_UP, bLeftTrigger, bRightTrigger, pGamepad->fX1, pGamepad->fY1, pGamepad->fX2, pGamepad->fY2);
+    CKey key(KEY_BUTTON_DPAD_UP, bLeftTrigger, bRightTrigger, pGamepad->fX1, pGamepad->fY1, pGamepad->fX2, pGamepad->fY2, fFrameTime);
     if (OnKey(key)) return;
   }
   if ( wDir & DC_DOWN )
   {
     bGotKey = true;
-    CKey key(KEY_BUTTON_DPAD_DOWN, bLeftTrigger, bRightTrigger, pGamepad->fX1, pGamepad->fY1, pGamepad->fX2, pGamepad->fY2);
+    CKey key(KEY_BUTTON_DPAD_DOWN, bLeftTrigger, bRightTrigger, pGamepad->fX1, pGamepad->fY1, pGamepad->fX2, pGamepad->fY2, fFrameTime);
     if (OnKey(key)) return;
   }
 
@@ -2700,27 +2711,27 @@ void CApplication::FrameMove()
   if ( pGamepad->wPressedButtons & XINPUT_GAMEPAD_BACK )
   {
     bGotKey = true;
-    CKey key(KEY_BUTTON_BACK, bLeftTrigger, bRightTrigger, pGamepad->fX1, pGamepad->fY1, pGamepad->fX2, pGamepad->fY2);
+    CKey key(KEY_BUTTON_BACK, bLeftTrigger, bRightTrigger, pGamepad->fX1, pGamepad->fY1, pGamepad->fX2, pGamepad->fY2, fFrameTime);
     if (OnKey(key)) return;
   }
   if ( pGamepad->wPressedButtons & XINPUT_GAMEPAD_START)
   {
     bGotKey = true;
-    CKey key(KEY_BUTTON_START, bLeftTrigger, bRightTrigger, pGamepad->fX1, pGamepad->fY1, pGamepad->fX2, pGamepad->fY2);
+    CKey key(KEY_BUTTON_START, bLeftTrigger, bRightTrigger, pGamepad->fX1, pGamepad->fY1, pGamepad->fX2, pGamepad->fY2, fFrameTime);
     if (OnKey(key)) return;
   }
 
   if ( pGamepad->wPressedButtons & XINPUT_GAMEPAD_LEFT_THUMB)
   {
     bGotKey = true;
-    CKey key(KEY_BUTTON_LEFT_THUMB_BUTTON, bLeftTrigger, bRightTrigger, pGamepad->fX1, pGamepad->fY1, pGamepad->fX2, pGamepad->fY2);
+    CKey key(KEY_BUTTON_LEFT_THUMB_BUTTON, bLeftTrigger, bRightTrigger, pGamepad->fX1, pGamepad->fY1, pGamepad->fX2, pGamepad->fY2, fFrameTime);
     if (OnKey(key)) return;
   }
 
   if ( pGamepad->wPressedButtons & XINPUT_GAMEPAD_RIGHT_THUMB)
   {
     bGotKey = true;
-    CKey key(KEY_BUTTON_RIGHT_THUMB_BUTTON, bLeftTrigger, bRightTrigger, pGamepad->fX1, pGamepad->fY1, pGamepad->fX2, pGamepad->fY2);
+    CKey key(KEY_BUTTON_RIGHT_THUMB_BUTTON, bLeftTrigger, bRightTrigger, pGamepad->fX1, pGamepad->fY1, pGamepad->fX2, pGamepad->fY2, fFrameTime);
     if (OnKey(key)) return;
   }
 
@@ -2728,38 +2739,38 @@ void CApplication::FrameMove()
   if (pGamepad->bPressedAnalogButtons[XINPUT_GAMEPAD_A])
   {
     bGotKey = true;
-    CKey key(KEY_BUTTON_A, bLeftTrigger, bRightTrigger, pGamepad->fX1, pGamepad->fY1, pGamepad->fX2, pGamepad->fY2);
+    CKey key(KEY_BUTTON_A, bLeftTrigger, bRightTrigger, pGamepad->fX1, pGamepad->fY1, pGamepad->fX2, pGamepad->fY2, fFrameTime);
     if (OnKey(key)) return;
   }
   if (pGamepad->bPressedAnalogButtons[XINPUT_GAMEPAD_B])
   {
     bGotKey = true;
-    CKey key(KEY_BUTTON_B, bLeftTrigger, bRightTrigger, pGamepad->fX1, pGamepad->fY1, pGamepad->fX2, pGamepad->fY2);
+    CKey key(KEY_BUTTON_B, bLeftTrigger, bRightTrigger, pGamepad->fX1, pGamepad->fY1, pGamepad->fX2, pGamepad->fY2, fFrameTime);
     if (OnKey(key)) return;
   }
 
   if (pGamepad->bPressedAnalogButtons[XINPUT_GAMEPAD_X])
   {
     bGotKey = true;
-    CKey key(KEY_BUTTON_X, bLeftTrigger, bRightTrigger, pGamepad->fX1, pGamepad->fY1, pGamepad->fX2, pGamepad->fY2);
+    CKey key(KEY_BUTTON_X, bLeftTrigger, bRightTrigger, pGamepad->fX1, pGamepad->fY1, pGamepad->fX2, pGamepad->fY2, fFrameTime);
     if (OnKey(key)) return;
   }
   if (pGamepad->bPressedAnalogButtons[XINPUT_GAMEPAD_Y])
   {
     bGotKey = true;
-    CKey key(KEY_BUTTON_Y, bLeftTrigger, bRightTrigger, pGamepad->fX1, pGamepad->fY1, pGamepad->fX2, pGamepad->fY2);
+    CKey key(KEY_BUTTON_Y, bLeftTrigger, bRightTrigger, pGamepad->fX1, pGamepad->fY1, pGamepad->fX2, pGamepad->fY2, fFrameTime);
     if (OnKey(key)) return;
   }
   if (pGamepad->bPressedAnalogButtons[XINPUT_GAMEPAD_BLACK])
   {
     bGotKey = true;
-    CKey key(KEY_BUTTON_BLACK, bLeftTrigger, bRightTrigger, pGamepad->fX1, pGamepad->fY1, pGamepad->fX2, pGamepad->fY2);
+    CKey key(KEY_BUTTON_BLACK, bLeftTrigger, bRightTrigger, pGamepad->fX1, pGamepad->fY1, pGamepad->fX2, pGamepad->fY2, fFrameTime);
     if (OnKey(key)) return;
   }
   if (pGamepad->bPressedAnalogButtons[XINPUT_GAMEPAD_WHITE])
   {
     bGotKey = true;
-    CKey key(KEY_BUTTON_WHITE, bLeftTrigger, bRightTrigger, pGamepad->fX1, pGamepad->fY1, pGamepad->fX2, pGamepad->fY2);
+    CKey key(KEY_BUTTON_WHITE, bLeftTrigger, bRightTrigger, pGamepad->fX1, pGamepad->fY1, pGamepad->fX2, pGamepad->fY2, fFrameTime);
     if (OnKey(key)) return;
   }
 
@@ -2772,7 +2783,9 @@ void CApplication::FrameMove()
   default:
     {
       bGotKey = true;
-      CKey key(wRemotes);
+      float fRepeat = 0.001f * g_stSettings.m_iRepeatDelayIR;
+
+      CKey key(wRemotes, 0, 0, 0, 0, 0, 0, max(fRepeat, fFrameTime) );
       OnKey(key);
       break;
     }

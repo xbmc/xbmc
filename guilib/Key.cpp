@@ -11,12 +11,13 @@ CKey::CKey(void)
   m_fLeftThumbY = 0.0f;
   m_fRightThumbX = 0.0f;
   m_fRightThumbY = 0.0f;
+  m_fRepeat = 0.0f;
 }
 
 CKey::~CKey(void)
 {}
 
-CKey::CKey(DWORD dwButtonCode, BYTE bLeftTrigger, BYTE bRightTrigger, float fLeftThumbX, float fLeftThumbY, float fRightThumbX, float fRightThumbY)
+CKey::CKey(DWORD dwButtonCode, BYTE bLeftTrigger, BYTE bRightTrigger, float fLeftThumbX, float fLeftThumbY, float fRightThumbX, float fRightThumbY, float fRepeat)
 {
   m_bLeftTrigger = bLeftTrigger;
   m_bRightTrigger = bRightTrigger;
@@ -25,6 +26,7 @@ CKey::CKey(DWORD dwButtonCode, BYTE bLeftTrigger, BYTE bRightTrigger, float fLef
   m_fRightThumbX = fRightThumbX;
   m_fRightThumbY = fRightThumbY;
   m_dwButtonCode = dwButtonCode;
+  m_fRepeat = fRepeat;
 }
 
 CKey::CKey(const CKey& key)
@@ -46,6 +48,7 @@ const CKey& CKey::operator=(const CKey& key)
   m_fLeftThumbY = key.m_fLeftThumbY;
   m_fRightThumbX = key.m_fRightThumbX;
   m_fRightThumbY = key.m_fRightThumbY;
+  m_fRepeat = key.m_fRepeat;
   return *this;
 }
 
@@ -98,4 +101,9 @@ bool CKey::IsIRRemote() const
   if (GetButtonCode() < 256)
     return true;
   return false;
+}
+
+float CKey::GetRepeat() const
+{
+  return m_fRepeat;
 }
