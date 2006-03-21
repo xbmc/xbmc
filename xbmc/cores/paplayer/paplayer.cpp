@@ -66,7 +66,8 @@ bool PAPlayer::OpenFile(const CFileItem& file, __int64 iStartTime)
   if (m_currentlyCrossFading) CloseFile(); //user seems to be in a hurry
 
   m_crossFading = g_guiSettings.GetInt("MusicPlayer.CrossFade");
-  if (file.IsCDDA()) m_crossFading = 0; //no crossfading for cdda, cd-reading goes mad
+  //no crossfading for cdda, cd-reading goes mad and no crossfading for last.fm doesn't like two connections
+  if (file.IsCDDA() || file.IsLastFM()) m_crossFading = 0;
   if (m_crossFading && IsPlaying())
   {
     //do a short crossfade on trackskip
@@ -457,7 +458,7 @@ bool PAPlayer::ProcessPAP()
       return false;
 
     // check whether we should queue the next file up
-    if (GetTotalTime64() - GetTime() < TIME_TO_CACHE_NEXT_FILE + m_crossFading * 1000L && !m_cachingNextFile)
+    if ((GetTotalTime64() > 0) && GetTotalTime64() - GetTime() < TIME_TO_CACHE_NEXT_FILE + m_crossFading * 1000L && !m_cachingNextFile)
     { // request the next file from our application
       m_callback.OnQueueNextItem();
       m_cachingNextFile = true;
