@@ -38,7 +38,6 @@ protected:
   HANDLE m_hWorkerEvent;
 
   void DownloadThread();
-  static DWORD WINAPI threadProc(void *param) { static_cast<CFileLastFM*>(param)->DownloadThread(); return 1; }
 
   bool m_bOpened;
   bool m_bDirectSkip;
