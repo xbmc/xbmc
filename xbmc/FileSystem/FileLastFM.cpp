@@ -266,6 +266,7 @@ bool CFileLastFM::OpenStream()
   m_pFile = new CFileCurl();
   if (!m_pFile) 
   {
+    CLog::Log(LOGERROR, "Last.fm could not create new CFileCurl.");
     return false;
   }
   
@@ -274,6 +275,7 @@ bool CFileLastFM::OpenStream()
   
   if (!m_pFile->Open(CURL(m_StreamUrl), true))
   {
+    CLog::Log(LOGERROR, "Last.fm could not open url %s.", m_StreamUrl.c_str());
     delete m_pFile;
     m_pFile = NULL;
     return false;
@@ -436,7 +438,7 @@ bool CFileLastFM::RetreiveMetaData()
     )
   {
     CStdString cachedFile = "";
-    if ((coverUrl != "") && (coverUrl.Find("noalbum") == -1))
+    if ((coverUrl != "") && (coverUrl.Find("noalbum") == -1) && (coverUrl.Right(1) != "/"))
     {
       CUtil::GetCachedThumbnail(coverUrl, cachedFile);
       if (!CFile::Exists(cachedFile))
