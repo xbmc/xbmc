@@ -65,6 +65,7 @@ void CButtonTranslator::GetAction(WORD wWindow, const CKey &key, CAction &action
   action.strAction = strAction;
   action.fAmount1 = 1; // digital button (could change this for repeat acceleration)
   action.fAmount2 = 0;
+  action.fRepeat = key.GetRepeat();
   action.m_dwButtonCode = key.GetButtonCode();
   // get the action amounts of the analog buttons
   if (key.GetButtonCode() == KEY_BUTTON_LEFT_ANALOG_TRIGGER)
