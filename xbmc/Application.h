@@ -185,6 +185,7 @@ protected:
   // timer information
   CXBStopWatch m_idleTimer;
   CXBStopWatch m_restartPlayerTimer;
+  CXBStopWatch m_frameTime;
 };
 
 extern CApplication g_application;
