@@ -569,7 +569,7 @@ struct iso_dirtree *iso9660::FindFolder( char *Folder )
   lastpath = m_paths->next;
   while ( lastpath )
   {
-    if ( !strcmp( lastpath->path, work))
+    if ( !stricmp( lastpath->path, work))
       return lastpath->dir;
     lastpath = lastpath->next;
   }
