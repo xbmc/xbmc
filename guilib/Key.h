@@ -314,6 +314,7 @@ struct CAction
   WORD wID;
   float fAmount1;
   float fAmount2;
+  float fRepeat;
   DWORD m_dwButtonCode;
   CStdString strAction;
 };
@@ -326,7 +327,7 @@ class CKey
 {
 public:
   CKey(void);
-  CKey(DWORD dwButtonCode, BYTE bLeftTrigger = 0, BYTE bRightTrigger = 0, float fLeftThumbX = 0.0f, float fLeftThumbY = 0.0f, float fRightThumbX = 0.0f, float fRightThumbY = 0.0f);
+  CKey(DWORD dwButtonCode, BYTE bLeftTrigger = 0, BYTE bRightTrigger = 0, float fLeftThumbX = 0.0f, float fLeftThumbY = 0.0f, float fRightThumbX = 0.0f, float fRightThumbY = 0.0f, float fRepeat = 0.0f);
   CKey(const CKey& key);
 
   virtual ~CKey(void);
@@ -338,6 +339,7 @@ public:
   float GetLeftThumbY() const;
   float GetRightThumbX() const;
   float GetRightThumbY() const;
+  float GetRepeat() const;
   bool FromKeyboard() const;
   bool IsAnalogButton() const;
   bool IsIRRemote() const;
@@ -350,5 +352,6 @@ private:
   float m_fLeftThumbY;
   float m_fRightThumbX;
   float m_fRightThumbY;
+  float m_fRepeat; // time since last keypress
 };
 #endif
