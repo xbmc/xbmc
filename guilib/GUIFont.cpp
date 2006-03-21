@@ -235,3 +235,11 @@ CAngle CGUIFont::Transform(const CAngle &angle)
   result.sine /= norm;
   return result;
 }
+
+// remaps unsupported font glpyhs to other suitable ones
+SHORT CGUIFont::RemapGlyph(SHORT letter)
+{
+  if (letter == 0x2019 || letter == 0x2018) return 0x0027;  // single quotes
+  else if (letter == 0x201c || letter == 0x201d) return 0x0022;
+  return 0; // no decent character map
+}
