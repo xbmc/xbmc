@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 21-03-2006 fixed: browse for subtitle now starts in movie directory.
  - 21-03-2006 fixed: subtitles in subdirs on dvds.
  - 21-03-2006 fixed: Starting another last.fm station if crossfading enabled stopped playing (crossfading for last.fm stations disabled now).
  - 21-03-2006 fixed: Pap's queuing of next file conflicted with last.fm streaming.

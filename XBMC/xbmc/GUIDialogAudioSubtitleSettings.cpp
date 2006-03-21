@@ -202,7 +202,15 @@ void CGUIDialogAudioSubtitleSettings::OnSettingChanged(unsigned int num)
   }
   else if (setting.id == SUBTITLE_SETTINGS_BROWSER)
   {
-    CStdString strPath="";
+    CStdString strPath;
+    if (CUtil::IsInRAR(g_application.CurrentFileItem().m_strPath))
+    {
+      CURL url(g_application.CurrentFileItem().m_strPath);
+      strPath = url.GetHostName();
+    }
+    else
+      strPath = g_application.CurrentFileItem().m_strPath;
+
     const CStdString strMask = ".utf|.utf8|.utf-8|.sub|.srt|.smi|.rt|.txt|.ssa|.aqt|.jss|.ass|.idx|.ifo|.rar";
     if (CGUIDialogFileBrowser::ShowAndGetFile(g_settings.m_vecMyVideoShares,strMask,g_localizeStrings.Get(293),strPath)) // "subtitles"
     {
