@@ -425,11 +425,7 @@ HRESULT CXBFont::GetTextExtent( const WCHAR* strText, DWORD cchText, FLOAT* pWid
     }
 
     // Translate unprintable characters
-    GLYPH_ATTR* pGlyph;
-    if ( letter > m_cMaxGlyph || m_TranslatorTable[letter] == 0 )
-      pGlyph = &m_Glyphs[0];
-    else
-      pGlyph = &m_Glyphs[m_TranslatorTable[letter]];
+    GLYPH_ATTR* pGlyph = &m_Glyphs[GetGlyphToUse(letter)];
 
     // Get text extent for this character's glyph
     sx += pGlyph->wOffset;
@@ -648,7 +644,7 @@ HRESULT CXBFont::DrawTextEx( FLOAT fOriginX, FLOAT fOriginY, const CAngle &angle
     }
 
     // Translate unprintable characters
-    GLYPH_ATTR* pGlyph = &m_Glyphs[ (letter <= m_cMaxGlyph) ? m_TranslatorTable[letter] : 0 ];
+    GLYPH_ATTR* pGlyph = &m_Glyphs[ GetGlyphToUse(letter) ];
 
     FLOAT fOffset = m_fXScaleFactor * (FLOAT)pGlyph->wOffset;
     FLOAT fAdvance = m_fXScaleFactor * (FLOAT)pGlyph->wAdvance;
@@ -787,7 +783,7 @@ HRESULT CXBFont::DrawColourText( FLOAT fOriginX, FLOAT fOriginY, const CAngle &a
     }
 
     // Translate unprintable characters
-    GLYPH_ATTR* pGlyph = &m_Glyphs[ (letter <= m_cMaxGlyph) ? m_TranslatorTable[letter] : 0 ];
+    GLYPH_ATTR* pGlyph = &m_Glyphs[ GetGlyphToUse(letter) ];
 
     FLOAT fOffset = m_fXScaleFactor * (FLOAT)pGlyph->wOffset;
     FLOAT fAdvance = m_fXScaleFactor * (FLOAT)pGlyph->wAdvance;
@@ -1040,6 +1036,16 @@ STDMETHODIMP CXBFont::GetTextSize(
   return hr;
 }
 
+inline SHORT CXBFont::GetGlyphToUse(SHORT letter) const
+{
+  if (letter > m_cMaxGlyph || m_TranslatorTable[letter] == 0)
+  { // remap our glyph
+    letter = CGUIFont::RemapGlyph(letter);
+    if (letter > m_cMaxGlyph)
+      return 0;
+  }
+  return m_TranslatorTable[letter];
+}
 
 
 
