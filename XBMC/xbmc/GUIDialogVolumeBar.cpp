@@ -7,12 +7,6 @@
 
 #define VOLUME_BAR_DISPLAY_TIME 1000L
 
-#ifdef PRE_SKIN_VERSION_2_0_COMPATIBILITY
-#include "SkinInfo.h"
-#define POPUP_VOLUME_SLIDER     401
-#define POPUP_VOLUME_LEVEL_TEXT 402
-#endif
-
 CGUIDialogVolumeBar::CGUIDialogVolumeBar(void)
     : CGUIDialog(WINDOW_DIALOG_VOLUME_BAR, "DialogVolumeBar.xml")
 {
@@ -51,15 +45,6 @@ bool CGUIDialogVolumeBar::OnMessage(CGUIMessage& message)
       return CGUIDialog::OnMessage(message);
     }
     break;
-
-  case GUI_MSG_LABEL_SET:
-    {
-      if (g_SkinInfo.GetVersion() < 1.86)
-      {
-        if (message.GetSenderId() == GetID() && message.GetControlId() == POPUP_VOLUME_LEVEL_TEXT)
-          CGUIDialog::OnMessage(message);
-      }
-    }
   }
   return false; // don't process anything other than what we need!
 }
@@ -71,14 +56,6 @@ void CGUIDialogVolumeBar::ResetTimer()
 
 void CGUIDialogVolumeBar::Render()
 {
-  // set the level on our slider
-  if (g_SkinInfo.GetVersion() < 1.86)
-  {
-    CGUISliderControl *pSlider = (CGUISliderControl*)GetControl(POPUP_VOLUME_SLIDER);
-    if (pSlider) pSlider->SetPercentage(g_application.GetVolume());   // Update our volume bar accordingly
-    // and set the level in our text label
-    SET_CONTROL_LABEL(POPUP_VOLUME_LEVEL_TEXT, g_infoManager.GetLabel(32));
-  }
   // and render the controls
   CGUIDialog::Render();
   // now check if we should exit

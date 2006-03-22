@@ -11,7 +11,6 @@ public:
   virtual ~CGUIWindowPrograms(void);
   virtual bool OnMessage(CGUIMessage& message);
   virtual bool OnPopupMenu(int iItem);
-  virtual void OnWindowLoaded();
   CFileItem CurrentDirectory() const { return m_vecItems;};
 
 protected:

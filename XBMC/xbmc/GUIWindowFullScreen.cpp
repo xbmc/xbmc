@@ -311,7 +311,7 @@ void CGUIWindowFullScreen::OnWindowLoaded()
     if( pProgress->GetInfo() == 0 || pProgress->GetVisibleCondition() == 0)
     {
       pProgress->SetInfo(PLAYER_PROGRESS);
-      pProgress->SetVisibleCondition(PLAYER_DISPLAY_AFTER_SEEK);
+      pProgress->SetVisibleCondition(PLAYER_DISPLAY_AFTER_SEEK, false);
       pProgress->SetVisible(true);
     }
   }
@@ -319,14 +319,14 @@ void CGUIWindowFullScreen::OnWindowLoaded()
   CGUILabelControl* pLabel = (CGUILabelControl*)GetControl(LABEL_BUFFERING);
   if(pLabel && pLabel->GetVisibleCondition() == 0)
   {
-    pLabel->SetVisibleCondition(PLAYER_CACHING);
+    pLabel->SetVisibleCondition(PLAYER_CACHING, false);
     pLabel->SetVisible(true);
   }
 
   pLabel = (CGUILabelControl*)GetControl(LABEL_CURRENT_TIME);
   if(pLabel && pLabel->GetVisibleCondition() == 0)
   {
-    pLabel->SetVisibleCondition(PLAYER_DISPLAY_AFTER_SEEK);
+    pLabel->SetVisibleCondition(PLAYER_DISPLAY_AFTER_SEEK, false);
     pLabel->SetVisible(true);
     pLabel->SetLabel("$INFO(VIDEOPLAYER.TIME) / $INFO(VIDEOPLAYER.DURATION)");
   }

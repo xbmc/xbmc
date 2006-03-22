@@ -35,11 +35,6 @@
 #include "XMLUtils.h"
 #include "GUIFontManager.h"
 
-#ifdef PRE_SKIN_VERSION_2_0_COMPATIBILITY
-#include "SkinInfo.h"
-#include "GUIConditionalButtonControl.h"
-#endif
-
 CGUIControlFactory::CGUIControlFactory(void)
 {}
 
@@ -149,24 +144,17 @@ bool CGUIControlFactory::GetAlignmentY(const TiXmlNode* pRootNode, const char* s
   return true;
 }
 
-bool CGUIControlFactory::GetConditionalVisibility(const TiXmlNode* control, int &condition, bool &allowHiddenFocus, bool &startHidden)
+bool CGUIControlFactory::GetConditionalVisibility(const TiXmlNode* control, int &condition, bool &allowHiddenFocus)
 {
   const TiXmlElement* node = control->FirstChildElement("visible");
   if (!node) return false;
   allowHiddenFocus = false;
-  startHidden = false;
   CStdStringArray conditions;
   while (node)
   {
     const char *hidden = node->Attribute("allowhiddenfocus");
     if (hidden && strcmpi(hidden, "true") == 0)
       allowHiddenFocus = true;
-    if (g_SkinInfo.GetVersion() < 1.90)
-    {
-      const char *hidden = node->Attribute("start");
-      if (hidden && strcmpi(hidden, "hidden") == 0)
-        startHidden = true;
-    }
     // add to our condition string
     if (!node->NoChildren())
       conditions.push_back(node->FirstChild()->Value());
@@ -189,74 +177,34 @@ bool CGUIControlFactory::GetConditionalVisibility(const TiXmlNode* control, int 
 
 bool CGUIControlFactory::GetConditionalVisibility(const TiXmlNode *control, int &condition)
 {
-  bool allowHiddenFocus, startHidden;
-  return GetConditionalVisibility(control, condition, allowHiddenFocus, startHidden);
+  bool allowHiddenFocus;
+  return GetConditionalVisibility(control, condition, allowHiddenFocus);
 }
 
 bool CGUIControlFactory::GetAnimations(const TiXmlNode *control, vector<CAnimation> &animations, RESOLUTION res)
 {
-  if (g_SkinInfo.GetVersion() < 1.90)
-  { // versions earlier than 1.90 used animations only on the visible condition
-    const TiXmlElement *node = control->FirstChildElement("visible");
-    if (!node) return false;
+  const TiXmlElement* node = control->FirstChildElement("animation");
+  bool ret = false;
+  if (node)
     animations.clear();
-    CVisibleEffect effect;
-    effect.Create(node);
-    // translate to animation effects
-    {
-      CAnimation anim;
-      anim.type = ANIM_TYPE_VISIBLE;
-      anim.effect = effect.m_type;
-      anim.delay = effect.m_inDelay;
-      anim.length = effect.m_inTime;
-      anim.startX = effect.m_startX;
-      anim.startY = effect.m_startY;
-      // old effect acceleration was in fact deceleration on normal effects
-      anim.acceleration = -effect.m_acceleration;
-      anim.startAlpha = 0;
-      anim.endAlpha = 100;
-      animations.push_back(anim);
-    }
-    {
-      CAnimation anim;
-      anim.type = ANIM_TYPE_HIDDEN;
-      anim.effect = effect.m_type;
-      anim.delay = effect.m_outDelay;
-      anim.length = effect.m_outTime;
-      anim.endX = effect.m_startX;
-      anim.endY = effect.m_startY;
-      anim.acceleration = effect.m_acceleration;
-      anim.startAlpha = 100;
-      anim.endAlpha = 0;
-      animations.push_back(anim);
-    }
-    return true;
-  }
-  else
+  while (node)
   {
-    const TiXmlElement* node = control->FirstChildElement("animation");
-    bool ret = false;
-    if (node)
-      animations.clear();
-    while (node)
+    ret = true;
+    if (node->FirstChild())
     {
-      ret = true;
-      if (node->FirstChild())
-      {
-        CAnimation anim;
-        anim.Create(node, res);
-        animations.push_back(anim);
-        if (strcmpi(node->FirstChild()->Value(), "VisibleChange") == 0)
-        { // add the hidden one as well
-          CAnimation anim2;
-          anim2.CreateReverse(anim);
-          animations.push_back(anim2);
-        }
+      CAnimation anim;
+      anim.Create(node, res);
+      animations.push_back(anim);
+      if (strcmpi(node->FirstChild()->Value(), "VisibleChange") == 0)
+      { // add the hidden one as well
+        CAnimation anim2;
+        anim2.CreateReverse(anim);
+        animations.push_back(anim2);
       }
-      node = node->NextSiblingElement("animation");
     }
-    return ret;
+    node = node->NextSiblingElement("animation");
   }
+  return ret;
 }
 
 CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pControlNode, CGUIControl* pReference, RESOLUTION res)
@@ -277,9 +225,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
   CStdString strTextureFocus, strTextureNoFocus;
   CStdString strTextureAltFocus, strTextureAltNoFocus;
   int iToggleSelect;
-#ifdef PRE_SKIN_VERSION_2_0_COMPATIBILITY
-  int iHyperLink = WINDOW_INVALID;
-#endif
+
   DWORD dwItems;
   CStdString strUp, strDown;
   CStdString strUpFocus, strDownFocus;
@@ -358,9 +304,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
 
   int iVisibleCondition = 0;
   bool allowHiddenFocus = false;
-#ifdef PRE_SKIN_VERSION_2_0_COMPATIBILITY
-  bool startHidden = false;
-#endif
+
   vector<CAnimation> animations;
 
   bool bScrollLabel = false;
@@ -446,22 +390,9 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
       strTextureNoFocus = ((CGUIButtonControl*)pReference)->GetTextureNoFocusName();
       strLabel = ((CGUIButtonControl*)pReference)->GetLabel();
       labelInfo = ((CGUIButtonControl*)pReference)->GetLabelInfo();
-      iHyperLink = ((CGUIButtonControl*)pReference)->GetHyperLink();
       clickActions = ((CGUIButtonControl*)pReference)->GetClickActions();
       focusAction = ((CGUIButtonControl*)pReference)->GetFocusAction();
     }
-#ifdef PRE_SKIN_VERSION_2_0_COMPATIBILITY
-    else if (g_SkinInfo.GetVersion() < 1.85 && strType == "conditionalbutton")
-    {
-      strTextureFocus = ((CGUIConditionalButtonControl*)pReference)->GetTextureFocusName();
-      strTextureNoFocus = ((CGUIConditionalButtonControl*)pReference)->GetTextureNoFocusName();
-      labelInfo = ((CGUIConditionalButtonControl*)pReference)->GetLabelInfo();
-      strLabel = ((CGUIConditionalButtonControl*)pReference)->GetLabel();
-      iHyperLink = ((CGUIConditionalButtonControl*)pReference)->GetHyperLink();
-      clickActions = ((CGUIConditionalButtonControl*)pReference)->GetClickActions();
-      focusAction = ((CGUIConditionalButtonControl*)pReference)->GetFocusAction();
-    }
-#endif
     else if (strType == "togglebutton")
     {
       strTextureAltFocus = ((CGUIToggleButtonControl*)pReference)->GetTextureAltFocusName();
@@ -472,7 +403,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
       strLabel = ((CGUIToggleButtonControl*)pReference)->GetLabel();
       clickActions = ((CGUIToggleButtonControl*)pReference)->GetClickActions();
       focusAction = ((CGUIToggleButtonControl*)pReference)->GetFocusAction();
-      iHyperLink = ((CGUIToggleButtonControl*)pReference)->GetHyperLink();
       iToggleSelect = ((CGUIToggleButtonControl*)pReference)->GetToggleSelect();
     }
     else if (strType == "checkmark")
@@ -491,7 +421,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
       strTextureFocus = ((CGUIRadioButtonControl*)pReference)->GetTextureFocusName();
       strTextureNoFocus = ((CGUIRadioButtonControl*)pReference)->GetTextureNoFocusName();
       labelInfo = ((CGUIRadioButtonControl*)pReference)->GetLabelInfo();
-      iHyperLink = ((CGUIRadioButtonControl*)pReference)->GetHyperLink();
       ((CGUIRadioButtonControl*)pReference)->GetRadioDimensions(radioPosX, radioPosY, radioWidth, radioHeight);
     }
     else if (strType == "spincontrol")
@@ -701,579 +630,284 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
   // TODO: Perhaps we should check here whether dwID is valid for focusable controls
   // such as buttons etc.  For labels/fadelabels/images it does not matter
 
-  if (g_SkinInfo.GetVersion() < 1.85)
+  if (XMLUtils::GetInt(pControlNode, "posx", iPosX)) g_graphicsContext.ScaleXCoord(iPosX, res);
+  if (XMLUtils::GetInt(pControlNode, "posy", iPosY)) g_graphicsContext.ScaleYCoord(iPosY, res);
+
+  if (XMLUtils::GetDWORD(pControlNode, "width", dwWidth)) g_graphicsContext.ScaleXCoord(dwWidth, res);
+  if (XMLUtils::GetDWORD(pControlNode, "height", dwHeight)) g_graphicsContext.ScaleYCoord(dwHeight, res);
+  if (XMLUtils::GetDWORD(pControlNode, "textspacey", dwTextSpaceY)) g_graphicsContext.ScaleYCoord(dwTextSpaceY, res);
+
+  if (XMLUtils::GetInt(pControlNode, "controloffsetx", iControlOffsetX)) g_graphicsContext.ScaleXCoord(iControlOffsetX, res);
+  if (XMLUtils::GetInt(pControlNode, "controloffsety", iControlOffsetY)) g_graphicsContext.ScaleYCoord(iControlOffsetY, res);
+
+  if (XMLUtils::GetDWORD(pControlNode, "gfxthumbwidth", dwThumbWidth)) g_graphicsContext.ScaleXCoord(dwThumbWidth, res);
+  if (XMLUtils::GetDWORD(pControlNode, "gfxthumbheight", dwThumbHeight)) g_graphicsContext.ScaleYCoord(dwThumbHeight, res);
+  if (XMLUtils::GetDWORD(pControlNode, "gfxthumbspacex", dwThumbSpaceX)) g_graphicsContext.ScaleXCoord(dwThumbSpaceX, res);
+  if (XMLUtils::GetDWORD(pControlNode, "gfxthumbspacey", dwThumbSpaceY)) g_graphicsContext.ScaleYCoord(dwThumbSpaceY, res);
+  XMLUtils::GetString(pControlNode, "gfxthumbdefault", strDefaultThumb);
+
+  if (!XMLUtils::GetDWORD(pControlNode, "onup" , up ))
   {
-    if (XMLUtils::GetInt(pControlNode, "posX", iPosX)) g_graphicsContext.ScaleXCoord(iPosX, res);
-    if (XMLUtils::GetInt(pControlNode, "posY", iPosY)) g_graphicsContext.ScaleYCoord(iPosY, res);
-
-    if (XMLUtils::GetDWORD(pControlNode, "width", dwWidth)) g_graphicsContext.ScaleXCoord(dwWidth, res);
-    if (XMLUtils::GetDWORD(pControlNode, "height", dwHeight)) g_graphicsContext.ScaleYCoord(dwHeight, res);
-    if (XMLUtils::GetDWORD(pControlNode, "textSpaceY", dwTextSpaceY)) g_graphicsContext.ScaleYCoord(dwTextSpaceY, res);
-
-    if (XMLUtils::GetInt(pControlNode, "controlOffsetX", iControlOffsetX)) g_graphicsContext.ScaleXCoord(iControlOffsetX, res);
-    if (XMLUtils::GetInt(pControlNode, "controlOffsetY", iControlOffsetY)) g_graphicsContext.ScaleYCoord(iControlOffsetY, res);
-
-    if (XMLUtils::GetDWORD(pControlNode, "gfxThumbWidth", dwThumbWidth)) g_graphicsContext.ScaleXCoord(dwThumbWidth, res);
-    if (XMLUtils::GetDWORD(pControlNode, "gfxThumbHeight", dwThumbHeight)) g_graphicsContext.ScaleYCoord(dwThumbHeight, res);
-    if (XMLUtils::GetDWORD(pControlNode, "gfxThumbSpaceX", dwThumbSpaceX)) g_graphicsContext.ScaleXCoord(dwThumbSpaceX, res);
-    if (XMLUtils::GetDWORD(pControlNode, "gfxThumbSpaceY", dwThumbSpaceY)) g_graphicsContext.ScaleYCoord(dwThumbSpaceY, res);
-    XMLUtils::GetString(pControlNode, "gfxThumbDefault", strDefaultThumb);
-
-    if (!XMLUtils::GetDWORD(pControlNode, "onup" , up ))
-    {
-      up = dwID - 1;
-    }
-    if (!XMLUtils::GetDWORD(pControlNode, "ondown" , down))
-    {
-      down = dwID + 1;
-    }
-    if (!XMLUtils::GetDWORD(pControlNode, "onleft" , left ))
-    {
-      left = dwID;
-    }
-    if (!XMLUtils::GetDWORD(pControlNode, "onright", right))
-    {
-      right = dwID;
-    }
-
-    XMLUtils::GetHex(pControlNode, "colordiffuse", dwColorDiffuse);
-    
-    GetConditionalVisibility(pControlNode, iVisibleCondition, allowHiddenFocus, startHidden);
-    GetAnimations(pControlNode, animations, res);
-
-    XMLUtils::GetHex(pControlNode, "disabledcolor", labelInfo.disabledColor);
-    XMLUtils::GetHex(pControlNode, "textcolor", labelInfo.textColor);
-    XMLUtils::GetHex(pControlNode, "shadowcolor", labelInfo.shadowColor);
-    XMLUtils::GetHex(pControlNode, "selectedColor", labelInfo.selectedColor);
-    labelInfo2.selectedColor = labelInfo.selectedColor;
-    if (XMLUtils::GetInt(pControlNode, "textOffsetX", labelInfo.offsetX)) g_graphicsContext.ScaleXCoord(labelInfo.offsetX, res);
-    if (XMLUtils::GetInt(pControlNode, "textOffsetY", labelInfo.offsetY)) g_graphicsContext.ScaleYCoord(labelInfo.offsetY, res);
-    if (XMLUtils::GetInt(pControlNode, "textXOff", labelInfo.offsetX)) g_graphicsContext.ScaleXCoord(labelInfo.offsetX, res);
-    if (XMLUtils::GetInt(pControlNode, "textYOff", labelInfo.offsetY)) g_graphicsContext.ScaleYCoord(labelInfo.offsetY, res);
-    if (XMLUtils::GetInt(pControlNode, "textXOff2", labelInfo2.offsetX)) g_graphicsContext.ScaleXCoord(labelInfo2.offsetX, res);
-    if (XMLUtils::GetInt(pControlNode, "textYOff2", labelInfo2.offsetY)) g_graphicsContext.ScaleYCoord(labelInfo2.offsetY, res);
-    CStdString strFont;
-    if (XMLUtils::GetString(pControlNode, "font", strFont))
-      labelInfo.font = g_fontManager.GetFont(strFont);
-
-    DWORD align = 0;
-    if (GetAlignment(pControlNode, "align", align))
-      labelInfo.align = align | (labelInfo.align & 4);
-    DWORD alignY = 0;
-    if (GetAlignmentY(pControlNode, "alignY", alignY))
-      labelInfo.align = alignY | (labelInfo.align & 3);
-    if (XMLUtils::GetString(pControlNode, "font2", strFont))
-      labelInfo2.font = g_fontManager.GetFont(strFont);
-    if (!labelInfo2.font) labelInfo2.font = labelInfo.font;
-    XMLUtils::GetHex(pControlNode, "selectedColor2", labelInfo2.selectedColor);
-    XMLUtils::GetHex(pControlNode, "textcolor2", labelInfo2.textColor);
-
-    CStdString strWindow;
-    XMLUtils::GetString(pControlNode, "hyperlink", strWindow);
-    iHyperLink = WINDOW_INVALID;
-    if (!strWindow.IsEmpty())
-      iHyperLink = g_buttonTranslator.TranslateWindowString(strWindow.c_str());
-
-    CStdString click;
-    XMLUtils::GetString(pControlNode, "script", click); // left in for backwards compatibility.
-    XMLUtils::GetString(pControlNode, "execute", click);
-    if (!GetMultipleString(pControlNode, "onclick", clickActions) && !click.IsEmpty())
-      clickActions.push_back(click);
-    XMLUtils::GetString(pControlNode, "onfocus", focusAction);
-
-    CStdStringArray strVecInfo;
-    if (GetMultipleString(pControlNode, "info", strVecInfo))
-    {
-      vecInfo.clear();
-      for (unsigned int i = 0; i < strVecInfo.size(); i++)
-      {
-        int info = g_infoManager.TranslateString(strVecInfo[i]);
-        if (info)
-          vecInfo.push_back(info);
-      }
-    }
-    GetPath(pControlNode, "textureFocus", strTextureFocus);
-    GetPath(pControlNode, "textureNoFocus", strTextureNoFocus);
-    GetPath(pControlNode, "AltTextureFocus", strTextureAltFocus);
-    GetPath(pControlNode, "AltTextureNoFocus", strTextureAltNoFocus);
-    CStdString strToggleSelect;
-    XMLUtils::GetString(pControlNode, "UseAltTexture", strToggleSelect);
-    iToggleSelect = g_infoManager.TranslateString(strToggleSelect);
-    XMLUtils::GetDWORD(pControlNode, "bitmaps", dwItems);
-
-    XMLUtils::GetBoolean(pControlNode, "hasPath", bHasPath);
-
-    GetPath(pControlNode, "textureUp", strUp);
-    GetPath(pControlNode, "textureDown", strDown);
-    GetPath(pControlNode, "textureUpFocus", strUpFocus);
-    GetPath(pControlNode, "textureDownFocus", strDownFocus);
-
-    GetPath(pControlNode, "textureLeft", strLeft);
-    GetPath(pControlNode, "textureRight", strRight);
-    GetPath(pControlNode, "textureLeftFocus", strLeftFocus);
-    GetPath(pControlNode, "textureRightFocus", strRightFocus);
-
-    XMLUtils::GetHex(pControlNode, "spinColor", spinInfo.textColor);
-    if (XMLUtils::GetDWORD(pControlNode, "spinWidth", dwSpinWidth)) g_graphicsContext.ScaleXCoord(dwSpinWidth, res);
-    if (XMLUtils::GetDWORD(pControlNode, "spinHeight", dwSpinHeight)) g_graphicsContext.ScaleYCoord(dwSpinHeight, res);
-    if (XMLUtils::GetInt(pControlNode, "spinPosX", iSpinPosX))
-    { // pre 1.85 skins had absolute spin positions
-      g_graphicsContext.ScaleXCoord(iSpinPosX, res);
-      iSpinPosX -= iPosX;
-    }
-    if (XMLUtils::GetInt(pControlNode, "spinPosY", iSpinPosY))
-    { // pre 1.85 skins had absolute spin positions
-      g_graphicsContext.ScaleYCoord(iSpinPosY, res);
-      iSpinPosY -= iPosY;
-    }
-
-    if (XMLUtils::GetDWORD(pControlNode, "MarkWidth", dwCheckWidth)) g_graphicsContext.ScaleXCoord(dwCheckWidth, res);
-    if (XMLUtils::GetDWORD(pControlNode, "MarkHeight", dwCheckHeight)) g_graphicsContext.ScaleYCoord(dwCheckHeight, res);
-    if (XMLUtils::GetDWORD(pControlNode, "sliderWidth", dwSliderWidth)) g_graphicsContext.ScaleXCoord(dwSliderWidth, res);
-    if (XMLUtils::GetDWORD(pControlNode, "sliderHeight", dwSliderHeight)) g_graphicsContext.ScaleYCoord(dwSliderHeight, res);
-    GetPath(pControlNode, "textureCheckmark", strTextureCheckMark);
-    GetPath(pControlNode, "textureCheckmarkNoFocus", strTextureCheckMarkNF);
-    GetPath(pControlNode, "textureRadioFocus", strTextureRadioFocus);
-    GetPath(pControlNode, "textureRadioNoFocus", strTextureRadioNoFocus);
-
-    GetPath(pControlNode, "textureSliderBar", strTextureBg);
-    GetPath(pControlNode, "textureSliderNib", strMid);
-    GetPath(pControlNode, "textureSliderNibFocus", strMidFocus);
-    XMLUtils::GetDWORD(pControlNode, "disposition", dwDisposition);
-
-    XMLUtils::GetString(pControlNode, "title", strTitle);
-    XMLUtils::GetString(pControlNode, "tagset", strRSSTags);
-    XMLUtils::GetHex(pControlNode, "headlinecolor", labelInfo2.textColor);
-    XMLUtils::GetHex(pControlNode, "titlecolor", dwTextColor3);
-
-    if (XMLUtils::GetString(pControlNode, "subtype", strSubType))
-    {
-      strSubType.ToLower();
-
-      if ( strSubType == "int")
-      {
-        iType = SPIN_CONTROL_TYPE_INT;
-      }
-      else if ( strSubType == "float")
-      {
-        iType = SPIN_CONTROL_TYPE_FLOAT;
-      }
-      else
-      {
-        iType = SPIN_CONTROL_TYPE_TEXT;
-      }
-    }
-
-    if (!GetIntRange(pControlNode, "range", iMin, iMax, iInterval))
-    {
-      GetFloatRange(pControlNode, "range", fMin, fMax, fInterval);
-    }
-
-    XMLUtils::GetBoolean(pControlNode, "reverse", bReverse);
-
-    GetPath(pControlNode, "texturebg", strTextureBg);
-    GetPath(pControlNode, "lefttexture", strLeft);
-    GetPath(pControlNode, "midtexture", strMid);
-    GetPath(pControlNode, "righttexture", strRight);
-    GetPath(pControlNode, "overlaytexture", strOverlay);
-    GetPath(pControlNode, "texture", strTexture);
-    XMLUtils::GetHex(pControlNode, "colorkey", dwColorKey);
-
-    XMLUtils::GetString(pControlNode, "suffix", strSuffix);
-
-    if (XMLUtils::GetDWORD(pControlNode, "itemWidth", dwitemWidth)) g_graphicsContext.ScaleXCoord(dwitemWidth, res);
-    if (XMLUtils::GetDWORD(pControlNode, "itemHeight", dwitemHeight)) g_graphicsContext.ScaleYCoord(dwitemHeight, res);
-    if (XMLUtils::GetInt(pControlNode, "spaceBetweenItems", iSpace)) g_graphicsContext.ScaleYCoord(iSpace, res);
-
-    GetPath(pControlNode, "imageFolder", strImage);
-    GetPath(pControlNode, "imageFolderFocus", strImageFocus);
-    if (XMLUtils::GetInt(pControlNode, "textureWidth", iTextureWidth)) g_graphicsContext.ScaleXCoord(iTextureWidth, res);
-    if (XMLUtils::GetInt(pControlNode, "textureHeight", iTextureHeight)) g_graphicsContext.ScaleYCoord(iTextureHeight, res);
-
-    if (XMLUtils::GetInt(pControlNode, "thumbWidth", iThumbWidth)) g_graphicsContext.ScaleXCoord(iThumbWidth, res);
-    if (XMLUtils::GetInt(pControlNode, "thumbHeight", iThumbHeight)) g_graphicsContext.ScaleYCoord(iThumbHeight, res);
-    if (XMLUtils::GetInt(pControlNode, "thumbPosX", iThumbXPos)) g_graphicsContext.ScaleXCoord(iThumbXPos, res);
-    if (XMLUtils::GetInt(pControlNode, "thumbPosY", iThumbYPos)) g_graphicsContext.ScaleYCoord(iThumbYPos, res);
-
-    GetAlignment(pControlNode, "thumbAlign", dwThumbAlign);
-
-    if (XMLUtils::GetInt(pControlNode, "thumbWidthBig", iThumbWidthBig)) g_graphicsContext.ScaleXCoord(iThumbWidthBig, res);
-    if (XMLUtils::GetInt(pControlNode, "thumbHeightBig", iThumbHeightBig)) g_graphicsContext.ScaleYCoord(iThumbHeightBig, res);
-    if (XMLUtils::GetInt(pControlNode, "thumbPosXBig", iThumbXPosBig)) g_graphicsContext.ScaleXCoord(iThumbXPosBig, res);
-    if (XMLUtils::GetInt(pControlNode, "thumbPosYBig", iThumbYPosBig)) g_graphicsContext.ScaleYCoord(iThumbYPosBig, res);
-
-    if (XMLUtils::GetDWORD(pControlNode, "textureWidthBig", textureWidthBig)) g_graphicsContext.ScaleXCoord(textureWidthBig, res);
-    if (XMLUtils::GetDWORD(pControlNode, "textureHeightBig", textureHeightBig)) g_graphicsContext.ScaleYCoord(textureHeightBig, res);
-    if (XMLUtils::GetDWORD(pControlNode, "itemWidthBig", itemWidthBig)) g_graphicsContext.ScaleXCoord(itemWidthBig, res);
-    if (XMLUtils::GetDWORD(pControlNode, "itemHeightBig", itemHeightBig)) g_graphicsContext.ScaleYCoord(itemHeightBig, res);
-    XMLUtils::GetDWORD(pControlNode, "buddycontrolid", dwBuddyControlID);
-
-    CStdStringArray strVecLabel;
-    if (GetMultipleString(pControlNode, "label", strVecLabel))
-    {
-      vecLabel.clear();
-      for (unsigned int i = 0; i < strVecLabel.size(); i++)
-      {
-        strTmp = strVecLabel[i];
-        if (strTmp.size() > 0)
-        {
-          if (strTmp[0] != '-')
-          {
-            if (CUtil::IsNaturalNumber(strTmp))
-            {
-              DWORD dwLabelID = atol(strTmp);
-              strLabel = g_localizeStrings.Get(dwLabelID);
-            }
-            else
-            { // TODO: UTF-8: What if the xml is in UTF-8 already?
-              CStdString utf8Label;
-              g_charsetConverter.stringCharsetToUtf8(strTmp, utf8Label);
-              strLabel = utf8Label;
-            }
-            vecLabel.push_back(strLabel);
-          }
-          else
-            strLabel = "";
-        }
-      }
-    }
-
-    XMLUtils::GetBoolean(pControlNode, "wrapmultiline", wrapMultiLine);
-    XMLUtils::GetInt(pControlNode,"urlset",iUrlSet);
-
-    // stuff for button scroller
-    if ( XMLUtils::GetString(pControlNode, "orientation", strTmp) )
-    {
-      if (strTmp.ToLower() == "horizontal")
-        bHorizontal = true;
-    }
-    if (XMLUtils::GetInt(pControlNode, "buttongap", iButtonGap))
-    {
-      if (bHorizontal)
-        g_graphicsContext.ScaleXCoord(iButtonGap, res);
-      else
-        g_graphicsContext.ScaleYCoord(iButtonGap, res);
-    }
-    XMLUtils::GetInt(pControlNode, "numbuttons", iNumSlots);
-    XMLUtils::GetInt(pControlNode, "movement", iMovementRange);
-    XMLUtils::GetInt(pControlNode, "defaultbutton", iDefaultSlot);
-    XMLUtils::GetInt(pControlNode, "alpha", iAlpha);
-    XMLUtils::GetBoolean(pControlNode, "wraparound", bWrapAround);
-    XMLUtils::GetBoolean(pControlNode, "smoothscrolling", bSmoothScrolling);
-    bool keepAR;
-    if (XMLUtils::GetBoolean(pControlNode, "keepaspectratio", keepAR))
-      aspectRatio = CGUIImage::ASPECT_RATIO_KEEP;
-    CStdString aspect;
-    if (XMLUtils::GetString(pControlNode, "aspectratio", aspect))
-    {
-      if (aspect.CompareNoCase("keep") == 0) aspectRatio = CGUIImage::ASPECT_RATIO_KEEP;
-      else if (aspect.CompareNoCase("scale") == 0) aspectRatio = CGUIImage::ASPECT_RATIO_SCALE;
-    }
-   
-    XMLUtils::GetBoolean(pControlNode, "scroll", bScrollLabel);
-    XMLUtils::GetBoolean(pControlNode,"pulseonselect", bPulse);
-
-    GetPath(pControlNode,"imagepath", texturePath);
-    XMLUtils::GetDWORD(pControlNode,"timeperimage", timePerImage);
-    XMLUtils::GetDWORD(pControlNode,"fadetime", fadeTime);
-    XMLUtils::GetBoolean(pControlNode, "randomize", randomized);
-    XMLUtils::GetBoolean(pControlNode, "loop", loop);
+    up = dwID - 1;
   }
-  else
+  if (!XMLUtils::GetDWORD(pControlNode, "ondown" , down))
   {
-    if (XMLUtils::GetInt(pControlNode, "posx", iPosX)) g_graphicsContext.ScaleXCoord(iPosX, res);
-    if (XMLUtils::GetInt(pControlNode, "posy", iPosY)) g_graphicsContext.ScaleYCoord(iPosY, res);
+    down = dwID + 1;
+  }
+  if (!XMLUtils::GetDWORD(pControlNode, "onleft" , left ))
+  {
+    left = dwID;
+  }
+  if (!XMLUtils::GetDWORD(pControlNode, "onright", right))
+  {
+    right = dwID;
+  }
 
-    if (XMLUtils::GetDWORD(pControlNode, "width", dwWidth)) g_graphicsContext.ScaleXCoord(dwWidth, res);
-    if (XMLUtils::GetDWORD(pControlNode, "height", dwHeight)) g_graphicsContext.ScaleYCoord(dwHeight, res);
-    if (XMLUtils::GetDWORD(pControlNode, "textspacey", dwTextSpaceY)) g_graphicsContext.ScaleYCoord(dwTextSpaceY, res);
+  XMLUtils::GetHex(pControlNode, "colordiffuse", dwColorDiffuse);
+  
+  GetConditionalVisibility(pControlNode, iVisibleCondition, allowHiddenFocus);
+  GetAnimations(pControlNode, animations, res);
 
-    if (XMLUtils::GetInt(pControlNode, "controloffsetx", iControlOffsetX)) g_graphicsContext.ScaleXCoord(iControlOffsetX, res);
-    if (XMLUtils::GetInt(pControlNode, "controloffsety", iControlOffsetY)) g_graphicsContext.ScaleYCoord(iControlOffsetY, res);
+  XMLUtils::GetHex(pControlNode, "textcolor", labelInfo.textColor);
+  XMLUtils::GetHex(pControlNode, "disabledcolor", labelInfo.disabledColor);
+  XMLUtils::GetHex(pControlNode, "shadowcolor", labelInfo.shadowColor);
+  XMLUtils::GetHex(pControlNode, "selectedcolor", labelInfo.selectedColor);
+  if (XMLUtils::GetInt(pControlNode, "textoffsetx", labelInfo.offsetX)) g_graphicsContext.ScaleXCoord(labelInfo.offsetX, res);
+  if (XMLUtils::GetInt(pControlNode, "textoffsety", labelInfo.offsetY)) g_graphicsContext.ScaleYCoord(labelInfo.offsetY, res);
+  if (XMLUtils::GetInt(pControlNode, "textxoff", labelInfo.offsetX)) g_graphicsContext.ScaleXCoord(labelInfo.offsetX, res);
+  if (XMLUtils::GetInt(pControlNode, "textyoff", labelInfo.offsetY)) g_graphicsContext.ScaleYCoord(labelInfo.offsetY, res);
+  if (XMLUtils::GetInt(pControlNode, "textxoff2", labelInfo2.offsetX)) g_graphicsContext.ScaleXCoord(labelInfo2.offsetX, res);
+  if (XMLUtils::GetInt(pControlNode, "textyoff2", labelInfo2.offsetY)) g_graphicsContext.ScaleYCoord(labelInfo2.offsetY, res);
+  int angle = 0;  // use the negative angle to compensate for our vertically flipped cartesian plane
+  if (XMLUtils::GetInt(pControlNode, "angle", angle)) labelInfo.angle = CAngle(-angle);
+  CStdString strFont;
+  if (XMLUtils::GetString(pControlNode, "font", strFont))
+    labelInfo.font = g_fontManager.GetFont(strFont);
+  DWORD align = 0;
+  if (GetAlignment(pControlNode, "align", align))
+    labelInfo.align = align | (labelInfo.align & 4);
+  DWORD alignY = 0;
+  if (GetAlignmentY(pControlNode, "aligny", alignY))
+    labelInfo.align = alignY | (labelInfo.align & 3);
+  if (XMLUtils::GetInt(pControlNode, "textwidth", labelInfo.width))
+  {
+    g_graphicsContext.ScaleXCoord(labelInfo.width, res);
+    labelInfo.align |= XBFONT_TRUNCATED;
+  }
+  labelInfo2.selectedColor = labelInfo.selectedColor;
+  XMLUtils::GetHex(pControlNode, "selectedcolor2", labelInfo2.selectedColor);
+  XMLUtils::GetHex(pControlNode, "textcolor2", labelInfo2.textColor);
+  if (XMLUtils::GetString(pControlNode, "font2", strFont))
+    labelInfo2.font = g_fontManager.GetFont(strFont);
+  if (!labelInfo2.font) labelInfo2.font = labelInfo.font;
 
-    if (XMLUtils::GetDWORD(pControlNode, "gfxthumbwidth", dwThumbWidth)) g_graphicsContext.ScaleXCoord(dwThumbWidth, res);
-    if (XMLUtils::GetDWORD(pControlNode, "gfxthumbheight", dwThumbHeight)) g_graphicsContext.ScaleYCoord(dwThumbHeight, res);
-    if (XMLUtils::GetDWORD(pControlNode, "gfxthumbspacex", dwThumbSpaceX)) g_graphicsContext.ScaleXCoord(dwThumbSpaceX, res);
-    if (XMLUtils::GetDWORD(pControlNode, "gfxthumbspacey", dwThumbSpaceY)) g_graphicsContext.ScaleYCoord(dwThumbSpaceY, res);
-    XMLUtils::GetString(pControlNode, "gfxthumbdefault", strDefaultThumb);
+  GetMultipleString(pControlNode, "onclick", clickActions);
+  XMLUtils::GetString(pControlNode, "onfocus", focusAction);
 
-    if (!XMLUtils::GetDWORD(pControlNode, "onup" , up ))
+  CStdStringArray strVecInfo;
+  if (GetMultipleString(pControlNode, "info", strVecInfo))
+  {
+    vecInfo.clear();
+    for (unsigned int i = 0; i < strVecInfo.size(); i++)
     {
-      up = dwID - 1;
+      int info = g_infoManager.TranslateString(strVecInfo[i]);
+      if (info)
+        vecInfo.push_back(info);
     }
-    if (!XMLUtils::GetDWORD(pControlNode, "ondown" , down))
-    {
-      down = dwID + 1;
-    }
-    if (!XMLUtils::GetDWORD(pControlNode, "onleft" , left ))
-    {
-      left = dwID;
-    }
-    if (!XMLUtils::GetDWORD(pControlNode, "onright", right))
-    {
-      right = dwID;
-    }
+  }
+  GetPath(pControlNode, "texturefocus", strTextureFocus);
+  GetPath(pControlNode, "texturenofocus", strTextureNoFocus);
+  GetPath(pControlNode, "alttexturefocus", strTextureAltFocus);
+  GetPath(pControlNode, "alttexturenofocus", strTextureAltNoFocus);
+  CStdString strToggleSelect;
+  XMLUtils::GetString(pControlNode, "usealttexture", strToggleSelect);
+  iToggleSelect = g_infoManager.TranslateString(strToggleSelect);
+  XMLUtils::GetDWORD(pControlNode, "bitmaps", dwItems);
 
-    XMLUtils::GetHex(pControlNode, "colordiffuse", dwColorDiffuse);
-    
-    GetConditionalVisibility(pControlNode, iVisibleCondition, allowHiddenFocus, startHidden);
-    GetAnimations(pControlNode, animations, res);
+  XMLUtils::GetBoolean(pControlNode, "haspath", bHasPath);
 
-    XMLUtils::GetHex(pControlNode, "textcolor", labelInfo.textColor);
-    XMLUtils::GetHex(pControlNode, "disabledcolor", labelInfo.disabledColor);
-    XMLUtils::GetHex(pControlNode, "shadowcolor", labelInfo.shadowColor);
-    XMLUtils::GetHex(pControlNode, "selectedcolor", labelInfo.selectedColor);
-    if (XMLUtils::GetInt(pControlNode, "textoffsetx", labelInfo.offsetX)) g_graphicsContext.ScaleXCoord(labelInfo.offsetX, res);
-    if (XMLUtils::GetInt(pControlNode, "textoffsety", labelInfo.offsetY)) g_graphicsContext.ScaleYCoord(labelInfo.offsetY, res);
-    if (XMLUtils::GetInt(pControlNode, "textxoff", labelInfo.offsetX)) g_graphicsContext.ScaleXCoord(labelInfo.offsetX, res);
-    if (XMLUtils::GetInt(pControlNode, "textyoff", labelInfo.offsetY)) g_graphicsContext.ScaleYCoord(labelInfo.offsetY, res);
-    if (XMLUtils::GetInt(pControlNode, "textxoff2", labelInfo2.offsetX)) g_graphicsContext.ScaleXCoord(labelInfo2.offsetX, res);
-    if (XMLUtils::GetInt(pControlNode, "textyoff2", labelInfo2.offsetY)) g_graphicsContext.ScaleYCoord(labelInfo2.offsetY, res);
-    int angle = 0;  // use the negative angle to compensate for our vertically flipped cartesian plane
-    if (XMLUtils::GetInt(pControlNode, "angle", angle)) labelInfo.angle = CAngle(-angle);
-    CStdString strFont;
-    if (XMLUtils::GetString(pControlNode, "font", strFont))
-      labelInfo.font = g_fontManager.GetFont(strFont);
-    DWORD align = 0;
-    if (GetAlignment(pControlNode, "align", align))
-      labelInfo.align = align | (labelInfo.align & 4);
-    DWORD alignY = 0;
-    if (GetAlignmentY(pControlNode, "aligny", alignY))
-      labelInfo.align = alignY | (labelInfo.align & 3);
-    if (XMLUtils::GetInt(pControlNode, "textwidth", labelInfo.width))
+  GetPath(pControlNode, "textureup", strUp);
+  GetPath(pControlNode, "texturedown", strDown);
+  GetPath(pControlNode, "textureupfocus", strUpFocus);
+  GetPath(pControlNode, "texturedownfocus", strDownFocus);
+
+  GetPath(pControlNode, "textureleft", strLeft);
+  GetPath(pControlNode, "textureright", strRight);
+  GetPath(pControlNode, "textureleftfocus", strLeftFocus);
+  GetPath(pControlNode, "texturerightfocus", strRightFocus);
+
+  XMLUtils::GetHex(pControlNode, "spincolor", spinInfo.textColor);
+  if (XMLUtils::GetString(pControlNode, "spinfont", strFont))
+    spinInfo.font = g_fontManager.GetFont(strFont);
+  if (!spinInfo.font) spinInfo.font = labelInfo.font;
+
+  if (XMLUtils::GetDWORD(pControlNode, "spinwidth", dwSpinWidth)) g_graphicsContext.ScaleXCoord(dwSpinWidth, res);
+  if (XMLUtils::GetDWORD(pControlNode, "spinheight", dwSpinHeight)) g_graphicsContext.ScaleYCoord(dwSpinHeight, res);
+  if (XMLUtils::GetInt(pControlNode, "spinposx", iSpinPosX)) g_graphicsContext.ScaleXCoord(iSpinPosX, res);
+  if (XMLUtils::GetInt(pControlNode, "spinposy", iSpinPosY)) g_graphicsContext.ScaleYCoord(iSpinPosY, res);
+
+  if (XMLUtils::GetDWORD(pControlNode, "markwidth", dwCheckWidth)) g_graphicsContext.ScaleXCoord(dwCheckWidth, res);
+  if (XMLUtils::GetDWORD(pControlNode, "markheight", dwCheckHeight)) g_graphicsContext.ScaleYCoord(dwCheckHeight, res);
+  if (XMLUtils::GetDWORD(pControlNode, "sliderwidth", dwSliderWidth)) g_graphicsContext.ScaleXCoord(dwSliderWidth, res);
+  if (XMLUtils::GetDWORD(pControlNode, "sliderheight", dwSliderHeight)) g_graphicsContext.ScaleYCoord(dwSliderHeight, res);
+  GetPath(pControlNode, "texturecheckmark", strTextureCheckMark);
+  GetPath(pControlNode, "texturecheckmarknofocus", strTextureCheckMarkNF);
+  GetPath(pControlNode, "textureradiofocus", strTextureRadioFocus);
+  GetPath(pControlNode, "textureradionofocus", strTextureRadioNoFocus);
+
+  GetPath(pControlNode, "texturesliderbar", strTextureBg);
+  GetPath(pControlNode, "textureslidernib", strMid);
+  GetPath(pControlNode, "textureslidernibfocus", strMidFocus);
+  XMLUtils::GetDWORD(pControlNode, "disposition", dwDisposition);
+
+  XMLUtils::GetString(pControlNode, "title", strTitle);
+  XMLUtils::GetString(pControlNode, "tagset", strRSSTags);
+  XMLUtils::GetHex(pControlNode, "headlinecolor", labelInfo2.textColor);
+  XMLUtils::GetHex(pControlNode, "titlecolor", dwTextColor3);
+
+  if (XMLUtils::GetString(pControlNode, "subtype", strSubType))
+  {
+    strSubType.ToLower();
+
+    if ( strSubType == "int")
     {
-      g_graphicsContext.ScaleXCoord(labelInfo.width, res);
-      labelInfo.align |= XBFONT_TRUNCATED;
+      iType = SPIN_CONTROL_TYPE_INT;
     }
-    labelInfo2.selectedColor = labelInfo.selectedColor;
-    XMLUtils::GetHex(pControlNode, "selectedcolor2", labelInfo2.selectedColor);
-    XMLUtils::GetHex(pControlNode, "textcolor2", labelInfo2.textColor);
-    if (XMLUtils::GetString(pControlNode, "font2", strFont))
-      labelInfo2.font = g_fontManager.GetFont(strFont);
-    if (!labelInfo2.font) labelInfo2.font = labelInfo.font;
-#ifdef PRE_SKIN_VERSION_2_0_COMPATIBILITY
-    if (g_SkinInfo.GetVersion() < 2.0)
+    else if ( strSubType == "float")
     {
-      CStdString strWindow;
-      XMLUtils::GetString(pControlNode, "hyperlink", strWindow);
-      iHyperLink = WINDOW_INVALID;
-      if (!strWindow.IsEmpty())
-        iHyperLink = g_buttonTranslator.TranslateWindowString(strWindow.c_str());
-      CStdString click;
-      XMLUtils::GetString(pControlNode, "script", click); // left in for backwards compatibility.
-      XMLUtils::GetString(pControlNode, "execute", click);
-      if (!GetMultipleString(pControlNode, "onclick", clickActions) && !click.IsEmpty())
-        clickActions.push_back(click);
+      iType = SPIN_CONTROL_TYPE_FLOAT;
     }
     else
-      GetMultipleString(pControlNode, "onclick", clickActions);
-#endif
-    XMLUtils::GetString(pControlNode, "onfocus", focusAction);
-
-    CStdStringArray strVecInfo;
-    if (GetMultipleString(pControlNode, "info", strVecInfo))
     {
-      vecInfo.clear();
-      for (unsigned int i = 0; i < strVecInfo.size(); i++)
-      {
-        int info = g_infoManager.TranslateString(strVecInfo[i]);
-        if (info)
-          vecInfo.push_back(info);
-      }
+      iType = SPIN_CONTROL_TYPE_TEXT;
     }
-    GetPath(pControlNode, "texturefocus", strTextureFocus);
-    GetPath(pControlNode, "texturenofocus", strTextureNoFocus);
-    GetPath(pControlNode, "alttexturefocus", strTextureAltFocus);
-    GetPath(pControlNode, "alttexturenofocus", strTextureAltNoFocus);
-    CStdString strToggleSelect;
-    XMLUtils::GetString(pControlNode, "usealttexture", strToggleSelect);
-    iToggleSelect = g_infoManager.TranslateString(strToggleSelect);
-    XMLUtils::GetDWORD(pControlNode, "bitmaps", dwItems);
+  }
 
-    XMLUtils::GetBoolean(pControlNode, "haspath", bHasPath);
+  if (!GetIntRange(pControlNode, "range", iMin, iMax, iInterval))
+  {
+    GetFloatRange(pControlNode, "range", fMin, fMax, fInterval);
+  }
 
-    GetPath(pControlNode, "textureup", strUp);
-    GetPath(pControlNode, "texturedown", strDown);
-    GetPath(pControlNode, "textureupfocus", strUpFocus);
-    GetPath(pControlNode, "texturedownfocus", strDownFocus);
+  XMLUtils::GetBoolean(pControlNode, "reverse", bReverse);
 
-    GetPath(pControlNode, "textureleft", strLeft);
-    GetPath(pControlNode, "textureright", strRight);
-    GetPath(pControlNode, "textureleftfocus", strLeftFocus);
-    GetPath(pControlNode, "texturerightfocus", strRightFocus);
+  GetPath(pControlNode, "texturebg", strTextureBg);
+  GetPath(pControlNode, "lefttexture", strLeft);
+  GetPath(pControlNode, "midtexture", strMid);
+  GetPath(pControlNode, "righttexture", strRight);
+  GetPath(pControlNode, "overlaytexture", strOverlay);
+  GetPath(pControlNode, "texture", strTexture);
+  XMLUtils::GetHex(pControlNode, "colorkey", dwColorKey);
 
-    XMLUtils::GetHex(pControlNode, "spincolor", spinInfo.textColor);
-    if (XMLUtils::GetString(pControlNode, "spinfont", strFont))
-      spinInfo.font = g_fontManager.GetFont(strFont);
-    if (!spinInfo.font) spinInfo.font = labelInfo.font;
+  XMLUtils::GetString(pControlNode, "suffix", strSuffix);
 
-    if (XMLUtils::GetDWORD(pControlNode, "spinwidth", dwSpinWidth)) g_graphicsContext.ScaleXCoord(dwSpinWidth, res);
-    if (XMLUtils::GetDWORD(pControlNode, "spinheight", dwSpinHeight)) g_graphicsContext.ScaleYCoord(dwSpinHeight, res);
-    if (XMLUtils::GetInt(pControlNode, "spinposx", iSpinPosX)) g_graphicsContext.ScaleXCoord(iSpinPosX, res);
-    if (XMLUtils::GetInt(pControlNode, "spinposy", iSpinPosY)) g_graphicsContext.ScaleYCoord(iSpinPosY, res);
+  if (XMLUtils::GetDWORD(pControlNode, "itemwidth", dwitemWidth)) g_graphicsContext.ScaleXCoord(dwitemWidth, res);
+  if (XMLUtils::GetDWORD(pControlNode, "itemheight", dwitemHeight)) g_graphicsContext.ScaleYCoord(dwitemHeight, res);
+  if (XMLUtils::GetInt(pControlNode, "spacebetweenitems", iSpace)) g_graphicsContext.ScaleYCoord(iSpace, res);
 
-    if (XMLUtils::GetDWORD(pControlNode, "markwidth", dwCheckWidth)) g_graphicsContext.ScaleXCoord(dwCheckWidth, res);
-    if (XMLUtils::GetDWORD(pControlNode, "markheight", dwCheckHeight)) g_graphicsContext.ScaleYCoord(dwCheckHeight, res);
-    if (XMLUtils::GetDWORD(pControlNode, "sliderwidth", dwSliderWidth)) g_graphicsContext.ScaleXCoord(dwSliderWidth, res);
-    if (XMLUtils::GetDWORD(pControlNode, "sliderheight", dwSliderHeight)) g_graphicsContext.ScaleYCoord(dwSliderHeight, res);
-    GetPath(pControlNode, "texturecheckmark", strTextureCheckMark);
-    GetPath(pControlNode, "texturecheckmarknofocus", strTextureCheckMarkNF);
-    GetPath(pControlNode, "textureradiofocus", strTextureRadioFocus);
-    GetPath(pControlNode, "textureradionofocus", strTextureRadioNoFocus);
+  GetPath(pControlNode, "imagefolder", strImage);
+  GetPath(pControlNode, "imagefolderfocus", strImageFocus);
+  if (XMLUtils::GetInt(pControlNode, "texturewidth", iTextureWidth)) g_graphicsContext.ScaleXCoord(iTextureWidth, res);
+  if (XMLUtils::GetInt(pControlNode, "textureheight", iTextureHeight)) g_graphicsContext.ScaleYCoord(iTextureHeight, res);
 
-    GetPath(pControlNode, "texturesliderbar", strTextureBg);
-    GetPath(pControlNode, "textureslidernib", strMid);
-    GetPath(pControlNode, "textureslidernibfocus", strMidFocus);
-    XMLUtils::GetDWORD(pControlNode, "disposition", dwDisposition);
+  if (XMLUtils::GetInt(pControlNode, "thumbwidth", iThumbWidth)) g_graphicsContext.ScaleXCoord(iThumbWidth, res);
+  if (XMLUtils::GetInt(pControlNode, "thumbheight", iThumbHeight)) g_graphicsContext.ScaleYCoord(iThumbHeight, res);
+  if (XMLUtils::GetInt(pControlNode, "thumbposx", iThumbXPos)) g_graphicsContext.ScaleXCoord(iThumbXPos, res);
+  if (XMLUtils::GetInt(pControlNode, "thumbposy", iThumbYPos)) g_graphicsContext.ScaleYCoord(iThumbYPos, res);
 
-    XMLUtils::GetString(pControlNode, "title", strTitle);
-    XMLUtils::GetString(pControlNode, "tagset", strRSSTags);
-    XMLUtils::GetHex(pControlNode, "headlinecolor", labelInfo2.textColor);
-    XMLUtils::GetHex(pControlNode, "titlecolor", dwTextColor3);
+  GetAlignment(pControlNode, "thumbalign", dwThumbAlign);
 
-    if (XMLUtils::GetString(pControlNode, "subtype", strSubType))
+  if (XMLUtils::GetInt(pControlNode, "thumbwidthbig", iThumbWidthBig)) g_graphicsContext.ScaleXCoord(iThumbWidthBig, res);
+  if (XMLUtils::GetInt(pControlNode, "thumbheightbig", iThumbHeightBig)) g_graphicsContext.ScaleYCoord(iThumbHeightBig, res);
+  if (XMLUtils::GetInt(pControlNode, "thumbposxbig", iThumbXPosBig)) g_graphicsContext.ScaleXCoord(iThumbXPosBig, res);
+  if (XMLUtils::GetInt(pControlNode, "thumbposybig", iThumbYPosBig)) g_graphicsContext.ScaleYCoord(iThumbYPosBig, res);
+
+  if (XMLUtils::GetDWORD(pControlNode, "texturewidthbig", textureWidthBig)) g_graphicsContext.ScaleXCoord(textureWidthBig, res);
+  if (XMLUtils::GetDWORD(pControlNode, "textureheightbig", textureHeightBig)) g_graphicsContext.ScaleYCoord(textureHeightBig, res);
+  if (XMLUtils::GetDWORD(pControlNode, "itemwidthbig", itemWidthBig)) g_graphicsContext.ScaleXCoord(itemWidthBig, res);
+  if (XMLUtils::GetDWORD(pControlNode, "itemheightbig", itemHeightBig)) g_graphicsContext.ScaleYCoord(itemHeightBig, res);
+
+  int labelNumber = 0;
+  if (XMLUtils::GetInt(pControlNode, "number", labelNumber))
+  {
+    CStdString label;
+    label.Format("%i", labelNumber);
+    strLabel = label;
+  }
+  CStdStringArray strVecLabel;
+  if (GetMultipleString(pControlNode, "label", strVecLabel))
+  {
+    vecLabel.clear();
+    for (unsigned int i = 0; i < strVecLabel.size(); i++)
     {
-      strSubType.ToLower();
-
-      if ( strSubType == "int")
+      strTmp = strVecLabel[i];
+      if (strTmp.size() > 0)
       {
-        iType = SPIN_CONTROL_TYPE_INT;
-      }
-      else if ( strSubType == "float")
-      {
-        iType = SPIN_CONTROL_TYPE_FLOAT;
-      }
-      else
-      {
-        iType = SPIN_CONTROL_TYPE_TEXT;
-      }
-    }
-
-    if (!GetIntRange(pControlNode, "range", iMin, iMax, iInterval))
-    {
-      GetFloatRange(pControlNode, "range", fMin, fMax, fInterval);
-    }
-
-    XMLUtils::GetBoolean(pControlNode, "reverse", bReverse);
-
-    GetPath(pControlNode, "texturebg", strTextureBg);
-    GetPath(pControlNode, "lefttexture", strLeft);
-    GetPath(pControlNode, "midtexture", strMid);
-    GetPath(pControlNode, "righttexture", strRight);
-    GetPath(pControlNode, "overlaytexture", strOverlay);
-    GetPath(pControlNode, "texture", strTexture);
-    XMLUtils::GetHex(pControlNode, "colorkey", dwColorKey);
-
-    XMLUtils::GetString(pControlNode, "suffix", strSuffix);
-
-    if (XMLUtils::GetDWORD(pControlNode, "itemwidth", dwitemWidth)) g_graphicsContext.ScaleXCoord(dwitemWidth, res);
-    if (XMLUtils::GetDWORD(pControlNode, "itemheight", dwitemHeight)) g_graphicsContext.ScaleYCoord(dwitemHeight, res);
-    if (XMLUtils::GetInt(pControlNode, "spacebetweenitems", iSpace)) g_graphicsContext.ScaleYCoord(iSpace, res);
-
-    GetPath(pControlNode, "imagefolder", strImage);
-    GetPath(pControlNode, "imagefolderfocus", strImageFocus);
-    if (XMLUtils::GetInt(pControlNode, "texturewidth", iTextureWidth)) g_graphicsContext.ScaleXCoord(iTextureWidth, res);
-    if (XMLUtils::GetInt(pControlNode, "textureheight", iTextureHeight)) g_graphicsContext.ScaleYCoord(iTextureHeight, res);
-
-    if (XMLUtils::GetInt(pControlNode, "thumbwidth", iThumbWidth)) g_graphicsContext.ScaleXCoord(iThumbWidth, res);
-    if (XMLUtils::GetInt(pControlNode, "thumbheight", iThumbHeight)) g_graphicsContext.ScaleYCoord(iThumbHeight, res);
-    if (XMLUtils::GetInt(pControlNode, "thumbposx", iThumbXPos)) g_graphicsContext.ScaleXCoord(iThumbXPos, res);
-    if (XMLUtils::GetInt(pControlNode, "thumbposy", iThumbYPos)) g_graphicsContext.ScaleYCoord(iThumbYPos, res);
-
-    GetAlignment(pControlNode, "thumbalign", dwThumbAlign);
-
-    if (XMLUtils::GetInt(pControlNode, "thumbwidthbig", iThumbWidthBig)) g_graphicsContext.ScaleXCoord(iThumbWidthBig, res);
-    if (XMLUtils::GetInt(pControlNode, "thumbheightbig", iThumbHeightBig)) g_graphicsContext.ScaleYCoord(iThumbHeightBig, res);
-    if (XMLUtils::GetInt(pControlNode, "thumbposxbig", iThumbXPosBig)) g_graphicsContext.ScaleXCoord(iThumbXPosBig, res);
-    if (XMLUtils::GetInt(pControlNode, "thumbposybig", iThumbYPosBig)) g_graphicsContext.ScaleYCoord(iThumbYPosBig, res);
-
-    if (XMLUtils::GetDWORD(pControlNode, "texturewidthbig", textureWidthBig)) g_graphicsContext.ScaleXCoord(textureWidthBig, res);
-    if (XMLUtils::GetDWORD(pControlNode, "textureheightbig", textureHeightBig)) g_graphicsContext.ScaleYCoord(textureHeightBig, res);
-    if (XMLUtils::GetDWORD(pControlNode, "itemwidthbig", itemWidthBig)) g_graphicsContext.ScaleXCoord(itemWidthBig, res);
-    if (XMLUtils::GetDWORD(pControlNode, "itemheightbig", itemHeightBig)) g_graphicsContext.ScaleYCoord(itemHeightBig, res);
-
-    int labelNumber = 0;
-    if (XMLUtils::GetInt(pControlNode, "number", labelNumber))
-    {
-      CStdString label;
-      label.Format("%i", labelNumber);
-      strLabel = label;
-    }
-    CStdStringArray strVecLabel;
-    if (GetMultipleString(pControlNode, "label", strVecLabel))
-    {
-      vecLabel.clear();
-      for (unsigned int i = 0; i < strVecLabel.size(); i++)
-      {
-        strTmp = strVecLabel[i];
-        if (strTmp.size() > 0)
+        if (strTmp[0] != '-')
         {
-          if (strTmp[0] != '-')
+          if (CUtil::IsNaturalNumber(strTmp))
           {
-            if (CUtil::IsNaturalNumber(strTmp))
-            {
-              DWORD dwLabelID = atol(strTmp);
-              strLabel = g_localizeStrings.Get(dwLabelID);
-            }
-            else
-            { // TODO: UTF-8: What if the xml is encoded as UTF-8 already?
-              CStdString utf8String;
-              g_charsetConverter.stringCharsetToUtf8(strTmp, utf8String);
-              strLabel = utf8String;
-            }
-            vecLabel.push_back(strLabel);
+            DWORD dwLabelID = atol(strTmp);
+            strLabel = g_localizeStrings.Get(dwLabelID);
           }
           else
-            strLabel = "";
+          { // TODO: UTF-8: What if the xml is encoded as UTF-8 already?
+            CStdString utf8String;
+            g_charsetConverter.stringCharsetToUtf8(strTmp, utf8String);
+            strLabel = utf8String;
+          }
+          vecLabel.push_back(strLabel);
         }
+        else
+          strLabel = "";
       }
     }
-
-    XMLUtils::GetBoolean(pControlNode, "wrapmultiline", wrapMultiLine);
-    XMLUtils::GetInt(pControlNode,"urlset",iUrlSet);
-
-    // stuff for button scroller
-    if ( XMLUtils::GetString(pControlNode, "orientation", strTmp) )
-    {
-      if (strTmp.ToLower() == "horizontal")
-        bHorizontal = true;
-    }
-    if (XMLUtils::GetInt(pControlNode, "buttongap", iButtonGap))
-    {
-      if (bHorizontal)
-        g_graphicsContext.ScaleXCoord(iButtonGap, res);
-      else
-        g_graphicsContext.ScaleYCoord(iButtonGap, res);
-    }
-    XMLUtils::GetInt(pControlNode, "numbuttons", iNumSlots);
-    XMLUtils::GetInt(pControlNode, "movement", iMovementRange);
-    XMLUtils::GetInt(pControlNode, "defaultbutton", iDefaultSlot);
-    XMLUtils::GetInt(pControlNode, "alpha", iAlpha);
-    XMLUtils::GetBoolean(pControlNode, "wraparound", bWrapAround);
-    XMLUtils::GetBoolean(pControlNode, "smoothscrolling", bSmoothScrolling);
-    bool keepAR;
-    if (XMLUtils::GetBoolean(pControlNode, "keepaspectratio", keepAR))
-      aspectRatio = CGUIImage::ASPECT_RATIO_KEEP;
-    CStdString aspect;
-    if (XMLUtils::GetString(pControlNode, "aspectratio", aspect))
-    {
-      if (aspect.CompareNoCase("keep") == 0) aspectRatio = CGUIImage::ASPECT_RATIO_KEEP;
-      else if (aspect.CompareNoCase("scale") == 0) aspectRatio = CGUIImage::ASPECT_RATIO_SCALE;
-    }
-    XMLUtils::GetBoolean(pControlNode, "scroll", bScrollLabel);
-    XMLUtils::GetBoolean(pControlNode,"pulseonselect", bPulse);
-
-    GetPath(pControlNode,"imagepath", texturePath);
-    XMLUtils::GetDWORD(pControlNode,"timeperimage", timePerImage);
-    XMLUtils::GetDWORD(pControlNode,"fadetime", fadeTime);
-    XMLUtils::GetBoolean(pControlNode, "randomize", randomized);
-    XMLUtils::GetBoolean(pControlNode, "loop", loop);
-
-    if (XMLUtils::GetDWORD(pControlNode, "radiowidth", radioWidth)) g_graphicsContext.ScaleXCoord(radioWidth, res);
-    if (XMLUtils::GetDWORD(pControlNode, "radioheight", radioHeight)) g_graphicsContext.ScaleYCoord(radioHeight, res);
-    if (XMLUtils::GetInt(pControlNode, "radioposx", radioPosX)) g_graphicsContext.ScaleXCoord(radioPosX, res);
-    if (XMLUtils::GetInt(pControlNode, "radioposy", radioPosY)) g_graphicsContext.ScaleYCoord(radioPosY, res);
   }
+
+  XMLUtils::GetBoolean(pControlNode, "wrapmultiline", wrapMultiLine);
+  XMLUtils::GetInt(pControlNode,"urlset",iUrlSet);
+
+  // stuff for button scroller
+  if ( XMLUtils::GetString(pControlNode, "orientation", strTmp) )
+  {
+    if (strTmp.ToLower() == "horizontal")
+      bHorizontal = true;
+  }
+  if (XMLUtils::GetInt(pControlNode, "buttongap", iButtonGap))
+  {
+    if (bHorizontal)
+      g_graphicsContext.ScaleXCoord(iButtonGap, res);
+    else
+      g_graphicsContext.ScaleYCoord(iButtonGap, res);
+  }
+  XMLUtils::GetInt(pControlNode, "numbuttons", iNumSlots);
+  XMLUtils::GetInt(pControlNode, "movement", iMovementRange);
+  XMLUtils::GetInt(pControlNode, "defaultbutton", iDefaultSlot);
+  XMLUtils::GetInt(pControlNode, "alpha", iAlpha);
+  XMLUtils::GetBoolean(pControlNode, "wraparound", bWrapAround);
+  XMLUtils::GetBoolean(pControlNode, "smoothscrolling", bSmoothScrolling);
+  bool keepAR;
+  if (XMLUtils::GetBoolean(pControlNode, "keepaspectratio", keepAR))
+    aspectRatio = CGUIImage::ASPECT_RATIO_KEEP;
+  CStdString aspect;
+  if (XMLUtils::GetString(pControlNode, "aspectratio", aspect))
+  {
+    if (aspect.CompareNoCase("keep") == 0) aspectRatio = CGUIImage::ASPECT_RATIO_KEEP;
+    else if (aspect.CompareNoCase("scale") == 0) aspectRatio = CGUIImage::ASPECT_RATIO_SCALE;
+  }
+  XMLUtils::GetBoolean(pControlNode, "scroll", bScrollLabel);
+  XMLUtils::GetBoolean(pControlNode,"pulseonselect", bPulse);
+
+  GetPath(pControlNode,"imagepath", texturePath);
+  XMLUtils::GetDWORD(pControlNode,"timeperimage", timePerImage);
+  XMLUtils::GetDWORD(pControlNode,"fadetime", fadeTime);
+  XMLUtils::GetBoolean(pControlNode, "randomize", randomized);
+  XMLUtils::GetBoolean(pControlNode, "loop", loop);
+
+  if (XMLUtils::GetDWORD(pControlNode, "radiowidth", radioWidth)) g_graphicsContext.ScaleXCoord(radioWidth, res);
+  if (XMLUtils::GetDWORD(pControlNode, "radioheight", radioHeight)) g_graphicsContext.ScaleYCoord(radioHeight, res);
+  if (XMLUtils::GetInt(pControlNode, "radioposx", radioPosX)) g_graphicsContext.ScaleXCoord(radioPosX, res);
+  if (XMLUtils::GetInt(pControlNode, "radioposy", radioPosY)) g_graphicsContext.ScaleYCoord(radioPosY, res);
+
   /////////////////////////////////////////////////////////////////////////////
   // Instantiate a new control using the properties gathered above
   //
@@ -1286,7 +920,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
 
     pControl->SetColourDiffuse(dwColorDiffuse);
     pControl->SetVisible(bVisible);
-    pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus, startHidden);
+    pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
     pControl->SetAnimations(animations);
     pControl->SetInfo(vecInfo);
     pControl->SetWidthControl(bScrollLabel);
@@ -1301,7 +935,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
 
     pControl->SetColourDiffuse(dwColorDiffuse);
     pControl->SetVisible(bVisible);
-    pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus, startHidden);
+    pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
     pControl->SetAnimations(animations);
     return pControl;
   }
@@ -1309,7 +943,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
   {
     CGUIVideoControl* pControl = new CGUIVideoControl(
       dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight);
-    pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus, startHidden);
+    pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
     pControl->SetAnimations(animations);
     return pControl;
   }
@@ -1321,7 +955,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
 
     pControl->SetColourDiffuse(dwColorDiffuse);
     pControl->SetVisible(bVisible);
-    pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus, startHidden);
+    pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
     pControl->SetAnimations(animations);
     pControl->SetLabel(vecLabel);
     pControl->SetInfo(vecInfo);
@@ -1335,7 +969,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
 
     pControl->SetColourDiffuse(dwColorDiffuse);
     pControl->SetVisible(bVisible);
-    pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus, startHidden);
+    pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
     pControl->SetAnimations(animations);
     std::map<int, std::pair<std::vector<int>,std::vector<string> > >::iterator iter=g_settings.m_mapRssUrls.find(iUrlSet);
     if (iter != g_settings.m_mapRssUrls.end())
@@ -1357,7 +991,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     pControl->SetThumbAttributes(dwThumbWidth, dwThumbHeight, dwThumbSpaceX, dwThumbSpaceY, strDefaultThumb);
     pControl->SetColourDiffuse(dwColorDiffuse);
     pControl->SetVisible(bVisible);
-    pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus, startHidden);
+    pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
     pControl->SetAnimations(animations);
     pControl->SetNavigation(up, down, left, right);
     pControl->SetPulseOnSelect(bPulse);
@@ -1370,7 +1004,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
       labelInfo, labelInfo.textColor, labelInfo2.textColor, dwTextColor3, labelInfo.selectedColor);
     pControl->SetColourDiffuse(dwColorDiffuse);
     pControl->SetVisible(bVisible);
-    pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus, startHidden);
+    pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
     pControl->SetAnimations(animations);
     pControl->SetNavigation(up, down, left, right);
     return pControl;
@@ -1385,36 +1019,14 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     pControl->SetLabel(strLabel);
     pControl->SetNavigation(up, down, left, right);
     pControl->SetColourDiffuse(dwColorDiffuse);
-    pControl->SetHyperLink(iHyperLink);
     pControl->SetClickActions(clickActions);
     pControl->SetFocusAction(focusAction);
     pControl->SetVisible(bVisible);
-    pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus, startHidden);
+    pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
     pControl->SetAnimations(animations);
     pControl->SetPulseOnSelect(bPulse);
     return pControl;
   }
-#ifdef PRE_SKIN_VERSION_2_0_COMPATIBILITY
-  else if (g_SkinInfo.GetVersion() < 1.85 && strType == "conditionalbutton")
-  {
-    CGUIConditionalButtonControl* pControl = new CGUIConditionalButtonControl(
-      dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight,
-      strTextureFocus, strTextureNoFocus,
-      labelInfo);
-
-    pControl->SetLabel(strLabel);
-    pControl->SetNavigation(up, down, left, right);
-    pControl->SetColourDiffuse(dwColorDiffuse);
-    pControl->SetHyperLink(iHyperLink);
-    pControl->SetClickActions(clickActions);
-    pControl->SetFocusAction(focusAction);
-    pControl->SetVisible(bVisible);
-    pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus, startHidden);
-    pControl->SetAnimations(animations);
-    pControl->SetPulseOnSelect(bPulse);
-    return pControl;
-  }
-#endif
   else if (strType == "togglebutton")
   {
     CGUIToggleButtonControl* pControl = new CGUIToggleButtonControl(
@@ -1425,11 +1037,10 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     pControl->SetLabel(strLabel);
     pControl->SetNavigation(up, down, left, right);
     pControl->SetColourDiffuse(dwColorDiffuse);
-    pControl->SetHyperLink(iHyperLink);
     pControl->SetClickActions(clickActions);
     pControl->SetFocusAction(focusAction);
     pControl->SetVisible(bVisible);
-    pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus, startHidden);
+    pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
     pControl->SetAnimations(animations);
     pControl->SetToggleSelect(iToggleSelect);
     pControl->SetPulseOnSelect(bPulse);
@@ -1446,7 +1057,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     pControl->SetNavigation(up, down, left, right);
     pControl->SetColourDiffuse(dwColorDiffuse);
     pControl->SetVisible(bVisible);
-    pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus, startHidden);
+    pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
     pControl->SetAnimations(animations);
     pControl->SetPulseOnSelect(bPulse);
     return pControl;
@@ -1463,9 +1074,8 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     pControl->SetRadioDimensions(radioPosX, radioPosY, radioWidth, radioHeight);
     pControl->SetNavigation(up, down, left, right);
     pControl->SetColourDiffuse(dwColorDiffuse);
-    pControl->SetHyperLink(iHyperLink);
     pControl->SetVisible(bVisible);
-    pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus, startHidden);
+    pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
     pControl->SetAnimations(animations);
     pControl->SetPulseOnSelect(bPulse);
     return pControl;
@@ -1480,11 +1090,9 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     pControl->SetNavigation(up, down, left, right);
     pControl->SetColourDiffuse(dwColorDiffuse);
     pControl->SetVisible(bVisible);
-    pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus, startHidden);
+    pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
     pControl->SetAnimations(animations);
     pControl->SetReverse(bReverse);
-    if (g_SkinInfo.GetVersion() < 1.85)
-      pControl->SetBuddyControlID(dwBuddyControlID);
     pControl->SetPulseOnSelect(bPulse);
 
     if (iType == SPIN_CONTROL_TYPE_INT)
@@ -1503,10 +1111,10 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
   {
     CGUISliderControl* pControl = new CGUISliderControl(
       dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight,
-      strTextureBg, strMid, strMidFocus, (g_SkinInfo.GetVersion() < 1.85) ? iType : SPIN_CONTROL_TYPE_TEXT);
+      strTextureBg, strMid, strMidFocus, SPIN_CONTROL_TYPE_TEXT);
 
     pControl->SetVisible(bVisible);
-    pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus, startHidden);
+    pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
     pControl->SetAnimations(animations);
     pControl->SetInfo(vecInfo.size() ? vecInfo[0] : 0);
     pControl->SetNavigation(up, down, left, right);
@@ -1520,12 +1128,12 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     labelInfo.align |= XBFONT_CENTER_Y;    // always center text vertically
     CGUISettingsSliderControl* pControl = new CGUISettingsSliderControl(
       dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight, dwSliderWidth, dwSliderHeight, strTextureFocus, strTextureNoFocus,
-      strTextureBg, strMid, strMidFocus, labelInfo, (g_SkinInfo.GetVersion() < 1.85) ? iType : SPIN_CONTROL_TYPE_TEXT);
+      strTextureBg, strMid, strMidFocus, labelInfo, SPIN_CONTROL_TYPE_TEXT);
 
     pControl->SetText(strLabel);
     pControl->SetColourDiffuse(dwColorDiffuse);
     pControl->SetVisible(bVisible);
-    pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus, startHidden);
+    pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
     pControl->SetAnimations(animations);
     pControl->SetInfo(vecInfo.size() ? vecInfo[0] : 0);
     pControl->SetNavigation(up, down, left, right);
@@ -1538,7 +1146,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
       strTextureBg, strLeft, strMid, strRight, strOverlay);
 
     pControl->SetVisible(bVisible);
-    pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus, startHidden);
+    pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
     pControl->SetAnimations(animations);
     pControl->SetInfo(vecInfo.size() ? vecInfo[0] : 0);
     return pControl;
@@ -1552,7 +1160,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     pControl->SetColourDiffuse(dwColorDiffuse);
     pControl->SetAspectRatio(aspectRatio);
     pControl->SetVisible(bVisible);
-    pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus, startHidden);
+    pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
     pControl->SetAnimations(animations);
     pControl->SetInfo(vecInfo.size() ? vecInfo[0] : 0);
     return pControl;
@@ -1564,7 +1172,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     pControl->SetNavigation(up, down, left, right);
     pControl->SetAspectRatio(aspectRatio);
     pControl->SetVisible(bVisible);
-    pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus, startHidden);
+    pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
     pControl->SetAnimations(animations);
     pControl->SetInfo(vecInfo.size() ? vecInfo[0] : 0);
     return pControl;
@@ -1584,7 +1192,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     pControl->SetColourDiffuse(dwColorDiffuse);
     pControl->SetScrollySuffix(strSuffix);
     pControl->SetVisible(bVisible);
-    pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus, startHidden);
+    pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
     pControl->SetAnimations(animations);
     pControl->SetImageDimensions(dwitemWidth, dwitemHeight);
     pControl->SetItemHeight(iTextureHeight);
@@ -1607,7 +1215,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     pControl->SetColourDiffuse(dwColorDiffuse);
     pControl->SetScrollySuffix(strSuffix);
     pControl->SetVisible(bVisible);
-    pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus, startHidden);
+    pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
     pControl->SetAnimations(animations);
     pControl->SetImageDimensions(dwitemWidth, dwitemHeight);
     pControl->SetItemHeight(iTextureHeight);
@@ -1628,7 +1236,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     pControl->SetNavigation(up, down, left, right);
     pControl->SetColourDiffuse(dwColorDiffuse);
     pControl->SetVisible(bVisible);
-    pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus, startHidden);
+    pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
     pControl->SetAnimations(animations);
     pControl->SetPulseOnSelect(bPulse);
     return pControl;
@@ -1648,7 +1256,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     pControl->SetColourDiffuse(dwColorDiffuse);
     pControl->SetScrollySuffix(strSuffix);
     pControl->SetVisible(bVisible);
-    pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus, startHidden);
+    pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
     pControl->SetAnimations(animations);
     pControl->SetThumbDimensions(iThumbXPos, iThumbYPos, iThumbWidth, iThumbHeight);
     pControl->SetTextureWidthBig(textureWidthBig);
@@ -1679,7 +1287,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     pControl->SetNavigation(up, down, left, right);
     pControl->SetColourDiffuse(dwColorDiffuse);
     pControl->SetVisible(bVisible);
-    pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus, startHidden);
+    pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
     pControl->SetAnimations(animations);
     pControl->SetPulseOnSelect(bPulse);
     return pControl;
@@ -1709,7 +1317,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     pControl->SetNavigation(up, down, left, right);
     pControl->SetPulseOnSelect(bPulse);
     pControl->SetVisible(bVisible);
-    pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus, startHidden);
+    pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
     pControl->SetAnimations(animations);
     pControl->LoadButtons(pControlNode);
     return pControl;
@@ -1725,7 +1333,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     pControl->SetNavigation(up, down, left, right);
     pControl->SetColourDiffuse(dwColorDiffuse);
     pControl->SetVisible(bVisible);
-    pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus, startHidden);
+    pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
     pControl->SetAnimations(animations);
     pControl->SetReverse(bReverse);
     pControl->SetText(strLabel);
@@ -1735,7 +1343,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
   else if (strType == "visualisation")
   {
     CGUIVisualisationControl* pControl = new CGUIVisualisationControl(dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight);
-    pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus, startHidden);
+    pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
     pControl->SetAnimations(animations);
     return pControl;
   }
