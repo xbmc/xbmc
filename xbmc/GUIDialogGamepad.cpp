@@ -225,22 +225,22 @@ bool CGUIDialogGamepad::ShowAndVerifyInput(CStdString& strToVerify, const CStdSt
   pDialog->m_bHideInputChars = bHideInputChars;
 
   // HACK: This won't work if the label specified is actually a positive numeric value, but that's very unlikely
-  if (!CUtil::IsNaturalNumber(dlgHeading))
+  if (!StringUtils::IsNaturalNumber(dlgHeading))
     pDialog->SetHeading( dlgHeading );
   else
     pDialog->SetHeading( atoi(dlgHeading.c_str()) );
 
-  if (!CUtil::IsNaturalNumber(dlgLine0))
+  if (!StringUtils::IsNaturalNumber(dlgLine0))
     pDialog->SetLine( 0, dlgLine0 );
   else
     pDialog->SetLine( 0, atoi(dlgLine0.c_str()) );
 
-  if (!CUtil::IsNaturalNumber(dlgLine1))
+  if (!StringUtils::IsNaturalNumber(dlgLine1))
     pDialog->SetLine( 1, dlgLine1 );
   else
     pDialog->SetLine( 1, atoi(dlgLine1.c_str()) );
 
-  if (!CUtil::IsNaturalNumber(dlgLine2))
+  if (!StringUtils::IsNaturalNumber(dlgLine2))
     pDialog->SetLine( 2, dlgLine2 );
   else
     pDialog->SetLine( 2, atoi(dlgLine2.c_str()) );

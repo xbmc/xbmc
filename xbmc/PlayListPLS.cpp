@@ -65,7 +65,7 @@ bool CPlayListPLS::Load(const CStdString& strFileName)
     return false;
   }
   CStdString strLine = szLine;
-  CUtil::RemoveCRLF(strLine);
+  StringUtils::RemoveCRLF(strLine);
   if (strLine != START_PLAYLIST_MARKER)
   {
     CFileItem item(strLine, false);
@@ -100,7 +100,7 @@ bool CPlayListPLS::Load(const CStdString& strFileName)
   while (file.ReadString(szLine, sizeof(szLine) ) )
   {
     strLine = szLine;
-    CUtil::RemoveCRLF(strLine);
+    StringUtils::RemoveCRLF(strLine);
     int iPosEqual = strLine.Find("=");
     if (iPosEqual > 0)
     {

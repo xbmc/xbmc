@@ -148,6 +148,6 @@ CStdString CGUIDialogSeekBar::GetSeekTimeLabel()
 {
   int time = (int)(g_infoManager.GetTotalPlayTime() * m_fSeekPercentage * 0.01f);
   CStdString strHMS;
-  CUtil::SecondsToHMSString(time, strHMS, g_application.IsPlayingVideo());
+  StringUtils::SecondsToTimeString(time, strHMS, g_application.IsPlayingVideo());
   return strHMS;
 }

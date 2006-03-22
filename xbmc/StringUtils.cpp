@@ -141,7 +141,7 @@ int StringUtils::AlphaNumericCompare(const char *left, const char *right)
   return 0; // files are the same
 }
 
-int StringUtils::TimeStringToInt(const CStdString &timeString)
+long StringUtils::TimeStringToSeconds(const CStdString &timeString)
 {
   CStdStringArray secs;
   StringUtils::SplitString(timeString, ":", secs);
@@ -152,4 +152,45 @@ int StringUtils::TimeStringToInt(const CStdString &timeString)
     timeInSecs += atoi(secs[i]);
   }
   return timeInSecs;
+}
+
+void StringUtils::SecondsToTimeString(long lSeconds, CStdString& strHMS, bool bMustUseHHMMSS)
+{
+  int hh = lSeconds / 3600;
+  lSeconds = lSeconds % 3600;
+  int mm = lSeconds / 60;
+  int ss = lSeconds % 60;
+
+  if (hh >= 1 || bMustUseHHMMSS)
+    strHMS.Format("%2.2i:%02.2i:%02.2i", hh, mm, ss);
+  else
+    strHMS.Format("%i:%02.2i", mm, ss);
+}
+
+CStdString StringUtils::SystemTimeToString(const SYSTEMTIME &dateTime)
+{
+  CStdString time;
+  time.Format("%04.2i-%02.2i-%02.2i %02.2i:%02.2i:%02.2i", 
+          dateTime.wYear, dateTime.wMonth, dateTime.wDay,
+          dateTime.wHour, dateTime.wMinute, dateTime.wSecond);
+  return time;
+}
+
+bool StringUtils::IsNaturalNumber(const CStdString& str)
+{
+  if (0 == (int)str.size())
+    return false;
+  for (int i = 0; i < (int)str.size(); i++)
+  {
+    if ((str[i] < '0') || (str[i] > '9')) return false;
+  }
+  return true;
+}
+
+void StringUtils::RemoveCRLF(CStdString& strLine)
+{
+  while ( strLine.size() && (strLine.Right(1) == "\n" || strLine.Right(1) == "\r") )
+  {
+    strLine = strLine.Left((int)strLine.size() - 1);
+  }
 }

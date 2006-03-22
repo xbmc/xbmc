@@ -26,7 +26,11 @@ public:
   static int SplitString(const CStdString& input, const CStdString& delimiter, CStdStringArray &results);
   static int FindNumber(const CStdString& strInput, const CStdString &strFind);
   static int AlphaNumericCompare(const char *left, const char *right);
-  static int TimeStringToInt(const CStdString &timeString);
+  static long TimeStringToSeconds(const CStdString &timeString);
+  static CStdString SystemTimeToString(const SYSTEMTIME &dateTime);
+  static void RemoveCRLF(CStdString& strLine);
+  static void SecondsToTimeString( long lSeconds, CStdString& strHMS, bool bMustUseHHMMSS = false);
+  static bool IsNaturalNumber(const CStdString& str);
 };
 
 #endif

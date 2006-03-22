@@ -30,7 +30,7 @@ bool CFileMusicDatabase::Open(const CURL& url, bool bBinary /*=true*/)
   CUtil::GetExtension(strFileName, strExtension);
   CUtil::RemoveExtension(strFileName);
 
-  if (!CUtil::IsNaturalNumber(strFileName) || strExtension.IsEmpty())
+  if (!StringUtils::IsNaturalNumber(strFileName) || strExtension.IsEmpty())
     return false;
 
   long idSong=atol(strFileName.c_str());
@@ -62,7 +62,7 @@ bool CFileMusicDatabase::Exists(const CURL& url)
   CUtil::GetExtension(strFileName, strExtension);
   CUtil::RemoveExtension(strFileName);
 
-  if (!CUtil::IsNaturalNumber(strFileName) || strExtension.IsEmpty())
+  if (!StringUtils::IsNaturalNumber(strFileName) || strExtension.IsEmpty())
     return false;
 
   long idSong=atol(strFileName.c_str());
@@ -91,7 +91,7 @@ int CFileMusicDatabase::Stat(const CURL& url, struct __stat64* buffer)
   CUtil::GetExtension(strFileName, strExtension);
   CUtil::RemoveExtension(strFileName);
 
-  if (!CUtil::IsNaturalNumber(strFileName) || strExtension.IsEmpty())
+  if (!StringUtils::IsNaturalNumber(strFileName) || strExtension.IsEmpty())
     return false;
 
   long idSong=atol(strFileName.c_str());

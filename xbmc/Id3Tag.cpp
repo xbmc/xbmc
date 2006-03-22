@@ -417,7 +417,7 @@ CStdString CID3Tag::ParseMP3Genre(const CStdString& str) const
       if (!t.size()) continue;
 
       // if the temp string is natural number try to convert it to a genre string
-      if (CUtil::IsNaturalNumber(t))
+      if (StringUtils::IsNaturalNumber(t))
       {
         char * pEnd;
         long l = strtol(t.c_str(), &pEnd, 0);
