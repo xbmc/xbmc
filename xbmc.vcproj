@@ -882,6 +882,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\utils\SystemInfo.cpp">
 				</File>
 				<File
+					RelativePath=".\xbmc\SystemTime.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\SystemTime.h">
+				</File>
+				<File
 					RelativePath=".\xbmc\ThumbnailCache.cpp">
 				</File>
 				<File

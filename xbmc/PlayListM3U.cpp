@@ -55,7 +55,7 @@ bool CPlayListM3U::Load(const CStdString& strFileName)
   while (file.ReadString(szLine, 1024))
   {
     strLine = szLine;
-    CUtil::RemoveCRLF(strLine);
+    StringUtils::RemoveCRLF(strLine);
 
     if (strLine.Left( (int)strlen(M3U_INFO_MARKER) ) == M3U_INFO_MARKER)
     {

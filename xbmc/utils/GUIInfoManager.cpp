@@ -1150,12 +1150,12 @@ CStdString CGUIInfoManager::GetMusicLabel(int item)
     {
       CStdString strDuration = "00:00";
       if (tag.GetDuration() > 0)
-        CUtil::SecondsToHMSString(tag.GetDuration(), strDuration);
+        StringUtils::SecondsToTimeString(tag.GetDuration(), strDuration);
       else
       {
         unsigned int iTotal = (unsigned int)g_application.GetTotalTime();
         if (iTotal > 0)
-          CUtil::SecondsToHMSString(iTotal, strDuration);
+          StringUtils::SecondsToTimeString(iTotal, strDuration);
 
       }
       return strDuration;
@@ -1270,7 +1270,7 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
       CStdString strDuration = "00:00:00";
       unsigned int iTotal = (unsigned int)g_application.GetTotalTime();
       if (iTotal > 0)
-        CUtil::SecondsToHMSString(iTotal, strDuration, true);
+        StringUtils::SecondsToTimeString(iTotal, strDuration, true);
       return strDuration;
     }
     break;
@@ -1305,9 +1305,9 @@ CStdString CGUIInfoManager::GetCurrentPlayTime()
 {
   CStdString strTime;
   if (g_application.IsPlayingAudio())
-    CUtil::SecondsToHMSString((int)(GetPlayTime()/1000), strTime);
+    StringUtils::SecondsToTimeString((int)(GetPlayTime()/1000), strTime);
   else if (g_application.IsPlayingVideo())
-    CUtil::SecondsToHMSString((int)(GetPlayTime()/1000), strTime, true);
+    StringUtils::SecondsToTimeString((int)(GetPlayTime()/1000), strTime, true);
   return strTime;
 }
 
@@ -1327,9 +1327,9 @@ CStdString CGUIInfoManager::GetCurrentPlayTimeRemaining()
 {
   CStdString strTime;
   if (g_application.IsPlayingAudio())
-    CUtil::SecondsToHMSString(GetPlayTimeRemaining(), strTime);
+    StringUtils::SecondsToTimeString(GetPlayTimeRemaining(), strTime);
   else if (g_application.IsPlayingVideo())
-    CUtil::SecondsToHMSString(GetPlayTimeRemaining(), strTime, true);
+    StringUtils::SecondsToTimeString(GetPlayTimeRemaining(), strTime, true);
   return strTime;
 }
 
@@ -1878,7 +1878,7 @@ CStdString CGUIInfoManager::ParseLabel(const CStdString& strLabel)
       iPos2 += strLocalize.size() + 1;
       iPos3 = strLabel.Find(']', iPos2);
       CStdString strValue = strLabel.Mid(iPos2,(iPos3 - iPos2));
-      if (CUtil::IsNaturalNumber(strValue))
+      if (StringUtils::IsNaturalNumber(strValue))
       {
         int iLocalize = atoi(strValue);
         str = g_localizeStrings.Get(iLocalize);

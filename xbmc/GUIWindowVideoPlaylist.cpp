@@ -317,7 +317,7 @@ bool CGUIWindowVideoPlaylist::GetDirectory(const CStdString &strDirectory, CFile
       if (nDuration > 0)
       {
         CStdString str;
-        CUtil::SecondsToHMSString(nDuration, str);
+        StringUtils::SecondsToTimeString(nDuration, str);
         pItem->SetLabel2(str);
       }
       else

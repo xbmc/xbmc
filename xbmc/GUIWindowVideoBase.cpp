@@ -516,12 +516,6 @@ void CGUIWindowVideoBase::OnQueueItem(int iItem)
   if ( iItem < 0 || iItem >= m_vecItems.Size() ) return ;
   // add item 2 playlist
   CFileItem movieItem(*m_vecItems[iItem]);
-
-  if (CUtil::IsNaturalNumber(movieItem.m_strPath))
-  {
-    CStdString filePath;
-    m_database.GetFilePath(atol(movieItem.m_strPath), movieItem.m_strPath);
-  }
   if (movieItem.IsRAR() || movieItem.IsZIP())
     return;
   if (movieItem.IsStack())
@@ -854,11 +848,6 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem)
 void CGUIWindowVideoBase::GetStackedFiles(const CStdString &strFilePath1, vector<CStdString> &movies)
 {
   CStdString strFilePath = strFilePath1;  // we're gonna be altering it
-
-  if (CUtil::IsNaturalNumber(strFilePath))
-  { // we have a database view
-    m_database.GetFilePath(atol(strFilePath.c_str()), strFilePath);
-  }
 
   movies.clear();
 

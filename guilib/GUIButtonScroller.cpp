@@ -155,7 +155,7 @@ void CGUIButtonScroller::LoadButtons(const TiXmlNode *node)
     if (childNode && childNode->FirstChild())
     {
       CStdString strLabel = childNode->FirstChild()->Value();
-      if (CUtil::IsNaturalNumber(strLabel))
+      if (StringUtils::IsNaturalNumber(strLabel))
         button->strLabel = g_localizeStrings.Get(atoi(strLabel.c_str()));
       else
       { // convert to UTF-8
