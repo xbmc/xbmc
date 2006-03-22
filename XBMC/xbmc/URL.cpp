@@ -117,7 +117,11 @@ CURL::CURL(const CStdString& strURL)
     if (m_strProtocol.Equals("smb"))
     {
       int iSemiColon = strUserNamePassword.Find(";");
-      if (iSemiColon > 0)
+      
+      if (iSemiColon < 0) // also allow windows standard of DOMAIN\Username
+        iSemiColon = strUserNamePassword.Find("\\");
+
+      if (iSemiColon >= 0)
       {
         m_strDomain = strUserNamePassword.Left(iSemiColon);
         strUserNamePassword.Delete(0, iSemiColon + 1);
@@ -126,7 +130,7 @@ CURL::CURL(const CStdString& strURL)
 
     // username:password
     int iColon = strUserNamePassword.Find(":");
-    if (iColon > 0)
+    if (iColon >= 0)
     {
       m_strUserName = strUserNamePassword.Left(iColon);
       iColon++;
@@ -147,7 +151,7 @@ CURL::CURL(const CStdString& strURL)
   {
     CStdString strHostNameAndPort = strURL.Right(strURL.size() - iPos);
     int iColon = strHostNameAndPort.Find(":");
-    if (iColon > 0)
+    if (iColon >= 0)
     {
       m_strHostName = strHostNameAndPort.Left(iColon);
       iColon++;
@@ -164,7 +168,7 @@ CURL::CURL(const CStdString& strURL)
   {
     CStdString strHostNameAndPort = strURL.Mid(iPos, iSlash - iPos);
     int iColon = strHostNameAndPort.Find(":");
-    if (iColon > 0)
+    if (iColon >= 0)
     {
       m_strHostName = strHostNameAndPort.Left(iColon);
       iColon++;
