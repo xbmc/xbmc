@@ -255,12 +255,6 @@ void CGUIWindowBuddies::OnWindowLoaded()
 
 void CGUIWindowBuddies::OnInitWindow()
 {
-  if (!m_pKaiClient)
-  {
-    CGUIDialogOK::ShowAndGetInput(15000, 0, 14073, 0);
-    m_gWindowManager.PreviousWindow();
-    return;
-  }
   SET_CONTROL_LABEL( CONTROL_LABELUSERNAME, g_guiSettings.GetString("XLinkKai.UserName"));
   SET_CONTROL_LABEL( CONTROL_LABELUPDATED, "");
   SET_CONTROL_LABEL( CONTROL_LABELBUDDYNAME, "");
@@ -280,41 +274,44 @@ void CGUIWindowBuddies::OnInitWindow()
 
   CArenaItem::SetIcons(12, 12, "arenaitem-private.png");
 
-  while (!m_pKaiClient->IsEngineConnected())
+  if (m_pKaiClient)
   {
-    m_bContactNotifications = FALSE;
-    CONTROL_DISABLE(CONTROL_BTNMODE);
-
-    if (CGUIDialogYesNo::ShowAndGetInput(15000, 15001, 15002, 0))
+    while (!m_pKaiClient->IsEngineConnected())
     {
-      m_pKaiClient->Reattach();
-      Sleep(3000);
-    }
-    else
-    {
-      m_gWindowManager.PreviousWindow();
-      return;
-    }
-  }
+      m_bContactNotifications = FALSE;
+      CONTROL_DISABLE(CONTROL_BTNMODE);
 
-  if (m_pKaiClient->IsEngineConnected())
-  {
-    if (m_vectors.IsEmpty())
-    {
-      m_vectors.Load(KAI_VECTOR_MAP_XML);
-      QueryInstalledGames();
-    }
-
-    CONTROL_ENABLE(CONTROL_BTNMODE);
-
-    if (m_pMe == NULL)
-    {
-      CStdString strXtag = g_guiSettings.GetString("XLinkKai.UserName");
-      m_pMe = new CBuddyItem(strXtag);
-
-      if (!m_pMe->m_pAvatar)
+      if (CGUIDialogYesNo::ShowAndGetInput(15000, 15001, 15002, 0))
       {
-        m_pKaiClient->QueryAvatar(strXtag);
+        m_pKaiClient->Reattach();
+        Sleep(3000);
+      }
+      else
+      {
+        m_gWindowManager.PreviousWindow();
+        return;
+      }
+    }
+
+    if (m_pKaiClient->IsEngineConnected())
+    {
+      if (m_vectors.IsEmpty())
+      {
+        m_vectors.Load(KAI_VECTOR_MAP_XML);
+        QueryInstalledGames();
+      }
+
+      CONTROL_ENABLE(CONTROL_BTNMODE);
+
+      if (m_pMe == NULL)
+      {
+        CStdString strXtag = g_guiSettings.GetString("XLinkKai.UserName");
+        m_pMe = new CBuddyItem(strXtag);
+
+        if (!m_pMe->m_pAvatar)
+        {
+          m_pKaiClient->QueryAvatar(strXtag);
+        }
       }
     }
   }
@@ -327,6 +324,12 @@ void CGUIWindowBuddies::OnInitWindow()
     ChangeState(State::Buddies);
   else
     ChangeState(window_state);
+
+  if (!m_pKaiClient)
+  {
+    CGUIDialogOK::ShowAndGetInput(15000, 0, 14073, 0);
+    m_gWindowManager.PreviousWindow();
+  }
 }
 
 // Called just as soon as this window has be assigned to the CKaiClient as an observer
