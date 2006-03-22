@@ -27,6 +27,8 @@ private:
   void CloseDecoder();
   bool OpenDecoder();
   
+  bool SyncStream();
+  
   int m_iSourceSampleRate;
   int m_iSourceChannels;
   int m_iSourceBitrate;
