@@ -155,8 +155,6 @@ void CCharsetConverter::utf8ToUTF16(const CStdStringA& utf8String, CStdStringW &
   const char* src;
   size_t inBytes;
 
-  // Bobbin007: Using fridibi switching here breaks
-  //            Hebrew language file display.
   // If this is hebrew/arabic, flip the characters
   if (m_stringFribidiCharset != FRIBIDI_CHARSET_NOT_FOUND)
   {
