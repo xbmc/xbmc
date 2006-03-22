@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 22-03-2006 fixed: [ 1455993 ] Minor cosmetic problem with Kai when not connected.
  - 22-03-2006 updated: Portuguese (Brazil) language file (Thnx to mvbm)
  - 22-03-2006 updated: Norwegian language file (Thnx to vnm)
  - 22-03-2006 updated: German (Austrian) language file (Thnx to CEOMR)
