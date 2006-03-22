@@ -844,7 +844,7 @@ void Xcddb::parseData(const char *buffer)
             CStdString strGenre;
             strGenre = strExtd.Mid(iPos + 5, 4);
             strGenre.TrimLeft(' ');
-            if (CUtil::IsNaturalNumber(strGenre))
+            if (StringUtils::IsNaturalNumber(strGenre))
             {
               CID3Tag tag;
               m_strGenre=tag.ParseMP3Genre(strGenre);

@@ -343,7 +343,7 @@ WORD CButtonTranslator::TranslateWindowString(const char *szWindow)
   // window12345, for custom window to be keymapped
   if (strWindow.length() > 6 && strWindow.Left(6).Equals("window"))
     strWindow = strWindow.Mid(6);
-  if (CUtil::IsNaturalNumber(strWindow))
+  if (StringUtils::IsNaturalNumber(strWindow))
   {
     // allow a full window id or a delta id
     int iWindow = atoi(strWindow.c_str());

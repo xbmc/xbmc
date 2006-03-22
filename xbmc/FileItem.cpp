@@ -233,7 +233,7 @@ bool CFileItem::IsVideo() const
   CStdString strExtension;
   CUtil::GetExtension(m_strPath, strExtension);
   if (strExtension.size() < 2) return false;
-  CUtil::Lower(strExtension);
+  strExtension.ToLower();
   if ( strstr( g_stSettings.m_szMyVideoExtensions, strExtension.c_str() ) )
     return true;
 
@@ -249,7 +249,7 @@ bool CFileItem::IsAudio() const
   CStdString strExtension;
   CUtil::GetExtension(m_strPath, strExtension);
   if (strExtension.size() < 2) return false;
-  CUtil::Lower(strExtension);
+  strExtension.ToLower();
 
   if ( strstr( g_stSettings.m_szMyMusicExtensions, strExtension.c_str() ) )
     return true;
@@ -262,7 +262,7 @@ bool CFileItem::IsPicture() const
   CStdString strExtension;
   CUtil::GetExtension(m_strPath, strExtension);
   if (strExtension.size() < 2) return false;
-  CUtil::Lower(strExtension);
+  strExtension.ToLower();
 
   if ( strstr( g_stSettings.m_szMyPicturesExtensions, strExtension.c_str() ) )
     return true;
@@ -1285,7 +1285,7 @@ CStdString CFileItem::ParseFormat(const CStdString& strMask)
       int nDuration = tag.GetDuration();
 
       if (nDuration > 0)
-        CUtil::SecondsToHMSString(nDuration, str);
+        StringUtils::SecondsToTimeString(nDuration, str);
       else if (m_dwSize > 0)
         str=BuildFileSizeLabel();
       bDoneSomething = true;
@@ -1297,7 +1297,7 @@ CStdString CFileItem::ParseFormat(const CStdString& strMask)
     }
     else if (strMask[iPos2 + 1] == 'J' && m_stTime.wYear > 0)
     { // date
-      CUtil::GetDate(m_stTime, str);
+      str = StringUtils::SystemTimeToString(m_stTime);
       bDoneSomething = true;
     }
     else if (strMask[iPos2 + 1] == 'R')

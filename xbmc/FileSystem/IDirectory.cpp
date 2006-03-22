@@ -28,7 +28,7 @@ bool IDirectory::IsAllowed(const CStdString& strFile)
 
   CUtil::GetExtension(strFile, strExtension);
   if (!strExtension.size()) return false;
-  CUtil::Lower(strExtension);
+  strExtension.ToLower();
   if ( m_strFileMask.Find(strExtension.c_str()) >= 0)
   {
     return true;
@@ -49,7 +49,7 @@ bool IDirectory::IsAllowed(const CStdString& strFile)
 void IDirectory::SetMask(const CStdString& strMask)
 {
   m_strFileMask = strMask;
-  CUtil::Lower(m_strFileMask);
+  m_strFileMask.ToLower();
 }
 
 /*!
