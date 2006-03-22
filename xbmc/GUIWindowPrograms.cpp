@@ -14,9 +14,6 @@
 #include "SortFileItem.h"
 #include "utils/Trainer.h"
 #include "utils/kaiclient.h"
-#ifdef PRE_SKIN_VERSION_2_0_COMPATIBILITY
-#include "SkinInfo.h"
-#endif
 
 using namespace DIRECTORY;
 
@@ -1119,22 +1116,6 @@ void CGUIWindowPrograms::GoParentFolder()
 
   m_vecItems.m_strPath = m_strParentPath;
   Update(m_vecItems.m_strPath);
-}
-
-void CGUIWindowPrograms::OnWindowLoaded()
-{
-#ifdef PRE_SKIN_VERSION_2_0_COMPATIBILITY
-  if (g_SkinInfo.GetVersion() < 1.8)
-  {
-    ChangeControlID(7, CONTROL_LIST, CGUIControl::GUICONTROL_LIST);
-    ChangeControlID(8, CONTROL_THUMBS, CGUIControl::GUICONTROL_THUMBNAIL);
-    ChangeControlID(9, CONTROL_LABELFILES, CGUIControl::GUICONTROL_LABEL);
-    ChangeControlID(3, CONTROL_BTNSCAN, CGUIControl::GUICONTROL_BUTTON);
-    ChangeControlID(4, CONTROL_BTNSORTBY, CGUIControl::GUICONTROL_BUTTON);
-    ChangeControlID(5, CONTROL_BTNSORTASC, CGUIControl::GUICONTROL_TOGGLEBUTTON);
-  }
-#endif
-  CGUIMediaWindow::OnWindowLoaded();
 }
 
 int CGUIWindowPrograms::GetRegion(int iItem, bool bReload)

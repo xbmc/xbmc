@@ -77,10 +77,10 @@ namespace PYXBMC
 		// if texture is supplied use it, else get default ones
 		self->strTextureFocus = cTextureFocus ?
             cTextureFocus :
-            PyGetDefaultImage("button", "textureFocus", "button-focus.png");		
+            PyGetDefaultImage("button", "texturefocus", "button-focus.png");		
 		self->strTextureNoFocus = cTextureNoFocus ?
             cTextureNoFocus :
-            PyGetDefaultImage("button", "textureNoFocus", "button-nofocus.jpg");
+            PyGetDefaultImage("button", "texturenofocus", "button-nofocus.jpg");
 
         if (cFont) self->strFont = cFont;
         if (cTextColor) sscanf( cTextColor, "%x", &self->dwTextColor );

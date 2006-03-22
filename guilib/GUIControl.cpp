@@ -5,10 +5,6 @@
 #include "../xbmc/Util.h"
 #include "GUIWindowManager.h"
 
-#ifdef PRE_SKIN_VERSION_2_0_COMPATIBILITY
-#include "SkinInfo.h"
-#endif
-
 CGUIControl::CGUIControl()
 {
   m_hasRendered = false;
@@ -500,21 +496,6 @@ void CGUIControl::UpdateVisibility()
 
 void CGUIControl::SetInitialVisibility()
 {
-  // NOTE: Remove the m_startHidden variable when we switch to 2.0 skin
-  if (g_SkinInfo.GetVersion() < 1.90)
-  {
-    if (m_startHidden)
-    {
-      m_lastVisible = m_bVisible = false;
-    }
-    else
-    {
-      m_lastVisible = m_bVisible = g_infoManager.GetBool(m_visibleCondition, m_dwParentID);
-    }
-//    CLog::DebugLog("Set initial visibility for control %i: %s", m_dwControlID, m_bVisible ? "visible" : "hidden");
-    UpdateVisibility();
-    return;
-  }
   m_lastVisible = m_bVisible = g_infoManager.GetBool(m_visibleCondition, m_dwParentID);
 //  CLog::DebugLog("Set initial visibility for control %i: %s", m_dwControlID, m_bVisible ? "visible" : "hidden");
 }
@@ -526,41 +507,15 @@ void CGUIControl::UpdateEffectState(DWORD currentTime)
   Animate(currentTime);
 }
 
-void CGUIControl::SetVisibleCondition(int visible)
-{
-  m_visibleCondition = visible;
-}
-
-void CGUIControl::SetVisibleCondition(int visible, bool allowHiddenFocus, bool startHidden)
+void CGUIControl::SetVisibleCondition(int visible, bool allowHiddenFocus)
 {
   m_visibleCondition = visible;
   m_allowHiddenFocus = allowHiddenFocus;
-  m_startHidden = startHidden;
 }
 
 void CGUIControl::SetAnimations(const vector<CAnimation> &animations)
 {
   m_animations = animations;
-  if (g_SkinInfo.GetVersion() < 1.86)
-  { // any slide effects are relative now
-    for (unsigned int i = 0; i < m_animations.size(); i++)
-    {
-      CAnimation &anim = m_animations[i];
-      if (anim.effect == EFFECT_TYPE_SLIDE)
-      {
-        if (anim.type == ANIM_TYPE_VISIBLE)
-        {
-          anim.startX -= m_iPosX;
-          anim.startY -= m_iPosY;
-        }
-        if (anim.type == ANIM_TYPE_HIDDEN)
-        {
-          anim.endX -= m_iPosX;
-          anim.endY -= m_iPosY;
-        }
-      }
-    }
-  }
 }
 
 void CGUIControl::QueueAnimation(ANIMATION_TYPE animType)
@@ -696,27 +651,6 @@ void CGUIControl::Animate(DWORD currentTime)
       }
     }*/
   }
-#ifdef PRE_SKIN_VERSION_2_0_COMPATIBILITY
-  // do the temporary fade effect as well
-  m_tempAnimation.Animate(currentTime, HasRendered());
-  UpdateStates(m_tempAnimation.type, m_tempAnimation.currentProcess, m_tempAnimation.currentState);
-  transform *= m_tempAnimation.RenderAnimation();
-  CAnimation anim = m_tempAnimation;
-/*    // debug stuff
-    if (anim.currentProcess != ANIM_PROCESS_NONE)
-    {
-      if (anim.effect == EFFECT_TYPE_SLIDE)
-      {
-        if (IsVisible())
-          CLog::DebugLog("Animating control %d with a %s slide effect %s. Amount is %2.1f, visible=%s", m_dwControlID, anim.type == ANIM_TYPE_VISIBLE ? "visible" : "hidden", anim.currentProcess == ANIM_PROCESS_NORMAL ? "normal" : "reverse", anim.amount, IsVisible() ? "true" : "false");
-      }
-      else if (anim.effect == EFFECT_TYPE_FADE)
-      {
-        if (IsVisible())
-          CLog::DebugLog("Animating control %d with a %s fade effect %s. Amount is %2.1f. Visible=%s", m_dwControlID, anim.type == ANIM_TYPE_VISIBLE ? "visible" : "hidden", anim.currentProcess == ANIM_PROCESS_NORMAL ? "normal" : "reverse", anim.amount, IsVisible() ? "true" : "false");
-      }
-    }*/
-#endif
   g_graphicsContext.SetControlTransform(transform);
 }
 

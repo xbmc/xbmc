@@ -17,9 +17,6 @@
 #include "GUIDialogContextMenu.h"
 #include "GUIWindowFileManager.h"
 #include "PartyModeManager.h"
-#ifdef PRE_SKIN_VERSION_2_0_COMPATIBILITY
-#include "SkinInfo.h"
-#endif
 
 #define CONTROL_BTNVIEWASICONS  2
 #define CONTROL_BTNSORTBY       3
@@ -203,17 +200,6 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
     }
   }
   return CGUIMediaWindow::OnMessage(message);
-}
-
-void CGUIWindowMusicBase::OnWindowLoaded()
-{
-#ifdef PRE_SKIN_VERSION_2_0_COMPATIBILITY
-  if (g_SkinInfo.GetVersion() < 1.8)
-  {
-    ChangeControlID(6, CONTROL_BTNTYPE, CGUIControl::GUICONTROL_SELECTBUTTON);
-  }
-#endif
-  CGUIMediaWindow::OnWindowLoaded();
 }
 
 /// \brief Retrieves music info for albums from allmusic.com and displays them in CGUIWindowMusicInfo

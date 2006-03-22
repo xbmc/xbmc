@@ -9,7 +9,6 @@ public:
   virtual bool OnMessage(CGUIMessage& message);
   virtual bool OnAction(const CAction &action);
   virtual void Render();
-  virtual void OnWindowLoaded();
 
 protected:
   virtual bool Update(const CStdString &strDirectory);

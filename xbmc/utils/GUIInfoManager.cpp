@@ -19,10 +19,6 @@
 #include "Weather.h"
 #include <stack>
 
-#ifdef PRE_SKIN_VERSION_2_0_COMPATIBILITY
-  #include "SkinInfo.h"
-#endif
-
 // stuff for current song
 #include "../filesystem/CDDADirectory.h"
 #include "../musicInfoTagLoaderFactory.h"
@@ -350,9 +346,9 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
       return AddMultiInfo(GUIInfo(bNegate ? -CONTROL_GROUP_HAS_FOCUS : CONTROL_GROUP_HAS_FOCUS, groupID, controlID));
     }
   }
-  else if ((strTest.Left(23).Equals("buttonscroller.hasicon(") && g_SkinInfo.GetVersion() < 1.8) || strTest.Left(24).Equals("buttonscroller.hasfocus("))
+  else if (strTest.Left(24).Equals("buttonscroller.hasfocus("))
   {
-    int controlID = atoi(strTest.Mid(g_SkinInfo.GetVersion() < 1.8 ? 23 : 24, strTest.GetLength() - 24).c_str());
+    int controlID = atoi(strTest.Mid(24, strTest.GetLength() - 24).c_str());
     if (controlID)
       ret = controlID + BUTTON_SCROLLER_HAS_ICON_START;
   }

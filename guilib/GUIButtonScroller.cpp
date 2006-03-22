@@ -6,9 +6,6 @@
 #include "../xbmc/utils/CharsetConverter.h"
 #include "../xbmc/util.h"
 #include "../xbmc/utils/GUIInfoManager.h"
-#ifdef PRE_SKIN_VERSION_2_0_COMPATIBILITY
-#include "SkinInfo.h"
-#endif
 
 #define SCROLL_SPEED 6.0f
 #define ANALOG_SCROLL_START 0.8f
@@ -137,28 +134,6 @@ void CGUIButtonScroller::ClearButtons()
 
 void CGUIButtonScroller::LoadButtons(const TiXmlNode *node)
 {
-#ifdef PRE_SKIN_VERSION_2_0_COMPATIBILITY
-  if (g_SkinInfo.GetVersion() < 1.8)
-  { // load from xboxmediacenter.xml instead
-    for (int i = 0; i < (int)g_settings.m_buttonSettings.m_vecButtons.size(); i++)
-    {
-      if (g_settings.m_buttonSettings.m_vecButtons[i]->m_dwLabel != -1)
-      { // grab the required label from our strings
-        AddButton(g_localizeStrings.Get(g_settings.m_buttonSettings.m_vecButtons[i]->m_dwLabel),
-                             g_settings.m_buttonSettings.m_vecButtons[i]->m_strExecute,
-                             g_settings.m_buttonSettings.m_vecButtons[i]->m_iIcon);
-      }
-      else
-      {
-        AddButton(g_settings.m_buttonSettings.m_vecButtons[i]->m_strLabel,
-                             g_settings.m_buttonSettings.m_vecButtons[i]->m_strExecute,
-                             g_settings.m_buttonSettings.m_vecButtons[i]->m_iIcon);
-      }
-    }
-    SetActiveButton(g_settings.m_buttonSettings.m_iDefaultButton);
-    return;
-  }
-#endif
   // run through and find all <button> tags
   // Format is:
   // <button id="1">
@@ -213,34 +188,6 @@ void CGUIButtonScroller::LoadButtons(const TiXmlNode *node)
   }
 }
 
-#ifdef PRE_SKIN_VERSION_2_0_COMPATIBILITY
-void CGUIButtonScroller::AddButton(const string &strLabel, const CStdString &strExecute, const int iID)
-{
-  // add a button to our control
-  CButton *pButton = new CButton;
-  if (pButton)
-  {
-    pButton->strLabel = strLabel;
-    pButton->clickActions.push_back(strExecute);
-    pButton->id = iID;
-    m_vecButtons.push_back(pButton);
-  }
-  // update the number of filled slots etc.
-  if ((int)m_vecButtons.size() < m_iXMLNumSlots)
-  {
-    m_iNumSlots = m_vecButtons.size();
-    m_iDefaultSlot = (int)((float)m_iXMLDefaultSlot / ((float)m_iXMLNumSlots - 1) * ((float)m_iNumSlots - 1));
-    Update();
-  }
-  else
-  {
-    m_iNumSlots = m_iXMLNumSlots;
-    m_iDefaultSlot = m_iXMLDefaultSlot;
-    Update();
-  }
-}
-#endif
-
 void CGUIButtonScroller::PreAllocResources()
 {
   CGUIControl::PreAllocResources();
@@ -254,17 +201,6 @@ void CGUIButtonScroller::AllocResources()
   //  m_dwFrameCounter=0;
   m_imgFocus.AllocResources();
   m_imgNoFocus.AllocResources();
-  if (g_SkinInfo.GetVersion() < 1.8)
-  {  // grab our button scroller images
-    for (unsigned int i = 0; i < m_vecButtons.size(); ++i)
-    {
-      CButton *button = m_vecButtons[i];
-      CGUIImage *image = (CGUIImage *)(m_gWindowManager.GetWindow(GetParentID())->GetControl(button->id + 20));
-      if (image) button->imageFocus = new CGUIImage(*image);
-      image = (CGUIImage *)(m_gWindowManager.GetWindow(GetParentID())->GetControl(button->id + 40));
-      if (image) button->imageNoFocus = new CGUIImage(*image);
-    }
-  }
   // calculate our correct width and height
   if (m_bHorizontal)
   {

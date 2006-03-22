@@ -3,9 +3,6 @@
 #include "util.h"
 #include "lib/libPython/XBPython.h"
 #include "GUIWindowScriptsInfo.h"
-#ifdef PRE_SKIN_VERSION_2_0_COMPATIBILITY
-#include "SkinInfo.h"
-#endif
 
 #define CONTROL_BTNVIEWASICONS     2
 #define CONTROL_BTNSORTBY          3
@@ -155,14 +152,3 @@ void CGUIWindowScripts::Render()
   CGUIWindow::Render();
 }
 
-void CGUIWindowScripts::OnWindowLoaded()
-{
-#ifdef PRE_SKIN_VERSION_2_0_COMPATIBILITY
-  if (g_SkinInfo.GetVersion() < 1.8)
-  {
-    ChangeControlID(10, CONTROL_LIST, CGUIControl::GUICONTROL_LIST);
-    ChangeControlID(11, CONTROL_THUMBS, CGUIControl::GUICONTROL_THUMBNAIL);
-  }
-#endif
-  CGUIMediaWindow::OnWindowLoaded();
-}
