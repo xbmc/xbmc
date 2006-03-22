@@ -895,7 +895,8 @@ CStdString CGUIInfoManager::GetImage(int info, int contextWindow)
   else if (info == LISTITEM_THUMB || info == LISTITEM_ICON)
   {
     CGUIWindow *window = m_gWindowManager.GetWindow(contextWindow);
-    if (!window) window = m_gWindowManager.GetWindow(m_gWindowManager.GetActiveWindow());
+    if (!window || !(window->IsMediaWindow() || window->GetID() == WINDOW_DIALOG_FILE_BROWSER))
+      window = m_gWindowManager.GetWindow(m_gWindowManager.GetActiveWindow());
     if (window && (window->IsMediaWindow() || window->GetID() == WINDOW_DIALOG_FILE_BROWSER))
     {
       const CFileItem *item = NULL;
