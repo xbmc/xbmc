@@ -5,7 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
-
+ - 22-03-2006 added: partial support for windows style domain specification. (smb://domain\user:password@host/...)
+ - 22-03-2006 fixed: urls with empty username would be parsed incorrectly (smb://:@host/....)
  - 22-03-2006 fixed: dvdplayer: some dvds used the wrong subtitle colors that resulted in funny subtitles. Thx to frov for sending me a dvd that had this problem
                      some subtitles still have color issues when selecting only the .vob file to play
  - 22-03-2006 fixed: dvdplayer: changed the way the number of subtitles and audiostreams are found.
