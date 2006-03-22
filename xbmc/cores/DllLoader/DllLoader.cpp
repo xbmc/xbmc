@@ -269,7 +269,7 @@ void DllLoader::PrintExportTable(ExportDirTable_t *ExportDirTable)
 
   CLog::Log(LOGDEBUG, "Public Exports:\n");
   CLog::Log(LOGDEBUG, "    ordinal hint RVA      name\n");
-  for (unsigned int i = 0; i < ExportDirTable->NumAddrTable; i++)
+  for (unsigned int i = 0; i < ExportDirTable->NumNamePtrs; i++)
   {
     int Sctn = RVA2Section(NamePointerTable[i]);
     char *Name = SectionData[Sctn] + (NamePointerTable[i] - SectionHeader[Sctn].VirtualAddress);
@@ -412,7 +412,7 @@ int DllLoader::LoadExports()
     unsigned short *OrdinalTable = (unsigned short*)
                                    (SectionData[Sctn] + (ExportDirTable->OrdinalTable_RVA - SectionHeader[Sctn].VirtualAddress));
 
-    for (unsigned int i = 0; i < ExportDirTable->NumAddrTable; i++)
+    for (unsigned int i = 0; i < ExportDirTable->NumNamePtrs; i++)
     {
       int Sctn = RVA2Section(NamePointerTable[i]);
       char *Name = SectionData[Sctn] + (NamePointerTable[i] - SectionHeader[Sctn].VirtualAddress);
