@@ -40,8 +40,8 @@ namespace PYXBMC
 		self->dwCheckWidth = 30;
     self->dwCheckHeight = 30;
     self->dwAlign = XBFONT_RIGHT;
-		self->strTextureFocus = PyGetDefaultImage( "checkmark", "textureFocus", "check-box.png" );
-		self->strTextureNoFocus = PyGetDefaultImage( "checkmark", "textureNoFocus", "check-boxNF.png" );
+		self->strTextureFocus = PyGetDefaultImage( "checkmark", "texturefocus", "check-box.png" );
+		self->strTextureNoFocus = PyGetDefaultImage( "checkmark", "texturenofocus", "check-boxNF.png" );
 		self->strFont = "font13";
 		self->dwTextColor = 0xffffffff;
 		self->dwDisabledColor = 0x60ffffff;

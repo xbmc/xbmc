@@ -531,11 +531,6 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
   ConvertHomeVar(strDir);
   strcpy( g_stSettings.m_szAlternateSubtitleDirectory, strDir.c_str() );
 
-#ifdef PRE_SKIN_VERSION_2_0_COMPATIBILITY
-  // Home page button scroller
-  LoadHomeButtons(pRootElement);
-#endif
-
   // parse my programs bookmarks...
   CStdString strDefault;
   GetShares(pRootElement, "myprograms", m_vecMyProgramsBookmarks, strDefault);
@@ -2197,63 +2192,6 @@ void CSettings::SaveSkinSettings(TiXmlNode *pRootElement) const
   }
 }
 
-#ifdef PRE_SKIN_VERSION_2_0_COMPATIBILITY
-void CSettings::LoadHomeButtons(TiXmlElement* pRootElement)
-{
-  TiXmlElement *pElement = pRootElement->FirstChildElement("homebuttons");
-  if (pElement)
-  {
-    TiXmlElement *pChild = pElement->FirstChildElement("button");
-    while (pChild)
-    {
-      char temp[1024];
-      int iIcon;
-      GetString(pChild, "execute", temp, "");
-      GetInteger(pChild, "icon", iIcon, ICON_TYPE_NONE, ICON_TYPE_NONE, ICON_TYPE_NONE + 19);
-      char temp2[1024];
-      GetString(pChild, "label", temp2, "");
-      CButtonScrollerSettings::CButton *pButton = NULL;
-      if ((temp2[0] >= 'A') && (temp2[0] <= 'z'))
-      {
-        // TODO: UTF-8: No need to bother with this - it'll be removed in a few days.
-        CStdString label = temp2;
-        pButton = new CButtonScrollerSettings::CButton(label, temp, iIcon);
-      }
-      else
-      {
-        DWORD dwLabelID = atol(temp2);
-        pButton = new CButtonScrollerSettings::CButton(dwLabelID, temp, iIcon);
-      }
-      if (pButton->m_strExecute.size() > 0)
-        g_settings.m_buttonSettings.m_vecButtons.push_back(pButton);
-      else
-        delete pButton;
-
-      pChild = pChild->NextSiblingElement();
-    }
-    GetInteger(pElement, "default", g_settings.m_buttonSettings.m_iDefaultButton, 0, 0, (int)g_settings.m_buttonSettings.m_vecButtons.size());
-  }
-  if (g_settings.m_buttonSettings.m_vecButtons.size() == 0)
-  { // fill in the defaults
-    CButtonScrollerSettings::CButton *button1 = new CButtonScrollerSettings::CButton(0, "XBMC.ActivateWindow(1)", ICON_TYPE_PROGRAMS);
-    CButtonScrollerSettings::CButton *button2 = new CButtonScrollerSettings::CButton(7, "XBMC.ActivateWindow(3)", ICON_TYPE_FILES);
-    CButtonScrollerSettings::CButton *button3 = new CButtonScrollerSettings::CButton(1, "XBMC.ActivateWindow(2)", ICON_TYPE_PICTURES);
-    CButtonScrollerSettings::CButton *button4 = new CButtonScrollerSettings::CButton(2, "XBMC.ActivateWindow(501)", ICON_TYPE_MUSIC);
-    CButtonScrollerSettings::CButton *button5 = new CButtonScrollerSettings::CButton(3, "XBMC.ActivateWindow(6)", ICON_TYPE_VIDEOS);
-    CButtonScrollerSettings::CButton *button6 = new CButtonScrollerSettings::CButton(8, "XBMC.ActivateWindow(2600)", ICON_TYPE_WEATHER);
-    CButtonScrollerSettings::CButton *button7 = new CButtonScrollerSettings::CButton(5, "XBMC.ActivateWindow(4)", ICON_TYPE_SETTINGS);
-    g_settings.m_buttonSettings.m_vecButtons.push_back(button1);
-    g_settings.m_buttonSettings.m_vecButtons.push_back(button2);
-    g_settings.m_buttonSettings.m_vecButtons.push_back(button3);
-    g_settings.m_buttonSettings.m_vecButtons.push_back(button4);
-    g_settings.m_buttonSettings.m_vecButtons.push_back(button5);
-    g_settings.m_buttonSettings.m_vecButtons.push_back(button6);
-    g_settings.m_buttonSettings.m_vecButtons.push_back(button7);
-    g_settings.m_buttonSettings.m_iDefaultButton = 0;
-  }
-}
-#endif
-
 bool CSettings::LoadFolderViews(const CStdString &strFolderXML, VECFOLDERVIEWS &vecFolders)
 { // load xml file...
   CStdString strXMLFile = "T:\\";
@@ -2366,9 +2304,6 @@ void CSettings::Clear()
   m_vecSambeShres.clear();
   m_vecIcons.clear();
   m_vecProfiles.clear();
-#ifdef PRE_SKIN_VERSION_2_0_COMPATIBILITY
-  m_buttonSettings.Clear();
-#endif
   m_szMyVideoStackTokensArray.clear();
   m_szMyVideoCleanTokensArray.clear();
   m_MyVideoStackRegExps.clear();

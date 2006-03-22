@@ -33,10 +33,6 @@
 #include "SkinInfo.h"
 #include "../xbmc/utils/GUIInfoManager.h"
 
-#ifdef PRE_SKIN_VERSION_2_0_COMPATIBILITY
-#include "GUIConditionalButtonControl.h"
-#endif
-
 CStdString CGUIWindow::CacheFilename = "";
 CGUIWindow::VECREFERENCECONTOLS CGUIWindow::ControlsCache;
 
@@ -113,12 +109,6 @@ bool CGUIWindow::LoadReference(VECREFERENCECONTOLS& controls)
       {
         stControl.m_pControl = new CGUIButtonControl(*((CGUIButtonControl*)it->m_pControl));
       }
-#ifdef PRE_SKIN_VERSION_2_0_COMPATIBILITY
-      else if (g_SkinInfo.GetVersion() < 1.85 && !strcmp(it->m_szType, "conditionalbutton"))
-      {
-        stControl.m_pControl = new CGUIConditionalButtonControl(*((CGUIConditionalButtonControl*)it->m_pControl));
-      }
-#endif
       else if (!strcmp(it->m_szType, "rss"))
       {
         stControl.m_pControl = new CGUIRSSControl(*((CGUIRSSControl*)it->m_pControl));
@@ -266,12 +256,6 @@ bool CGUIWindow::LoadReference(VECREFERENCECONTOLS& controls)
     {
       stControl.m_pControl = new CGUIButtonControl(*((CGUIButtonControl*)it->m_pControl));
     }
-#ifdef PRE_SKIN_VERSION_2_0_COMPATIBILITY
-    else if (g_SkinInfo.GetVersion() < 1.85 && !strcmp(it->m_szType, "conditionalbutton"))
-    {
-      stControl.m_pControl = new CGUIConditionalButtonControl(*((CGUIConditionalButtonControl*)it->m_pControl));
-    }
-#endif
     else if (!strcmp(it->m_szType, "rss"))
     {
       stControl.m_pControl = new CGUIRSSControl(*((CGUIRSSControl*)it->m_pControl));
@@ -438,15 +422,6 @@ bool CGUIWindow::Load(TiXmlElement* pRootElement, RESOLUTION resToUse)
     {
       CGUIControlFactory factory;
       factory.GetConditionalVisibility(pRootElement, m_visibleCondition);
-      if (g_SkinInfo.GetVersion() < 1.90)
-      {
-        vector<CAnimation> animations;
-        factory.GetAnimations(pRootElement, animations, resToUse);
-        m_showAnimation = animations[0];
-        m_closeAnimation = animations[1];
-        m_showAnimation.type = ANIM_TYPE_WINDOW_OPEN;
-        m_closeAnimation.type = ANIM_TYPE_WINDOW_CLOSE;
-      }
     }
     else if (strValue == "animation" && pChild->FirstChild())
     {
@@ -470,14 +445,14 @@ bool CGUIWindow::Load(TiXmlElement* pRootElement, RESOLUTION resToUse)
         m_bRelativeCoords = (iCoordinateSystem == 1);
       }
 
-      TiXmlNode* pPosX = (g_SkinInfo.GetVersion() < 1.85) ? pChild->FirstChild("posX") : pChild->FirstChild("posx");
+      TiXmlNode* pPosX = pChild->FirstChild("posx");
       if (pPosX && pPosX->FirstChild())
       {
         m_iPosX = atoi(pPosX->FirstChild()->Value());
         g_graphicsContext.ScaleXCoord(m_iPosX, resToUse);
       }
 
-      TiXmlNode* pPosY = (g_SkinInfo.GetVersion() < 1.85) ? pChild->FirstChild("posY") : pChild->FirstChild("posy");
+      TiXmlNode* pPosY = pChild->FirstChild("posy");
       if (pPosY && pPosY->FirstChild())
       {
         m_iPosY = atoi(pPosY->FirstChild()->Value());
@@ -503,37 +478,7 @@ bool CGUIWindow::Load(TiXmlElement* pRootElement, RESOLUTION resToUse)
     {
       // resolve any includes within controls tag (such as whole <control> includes)
       g_SkinInfo.ResolveIncludes(pChild);
-#ifdef PRE_SKIN_VERSION_2_0_COMPATIBILITY
-      if (g_SkinInfo.GetVersion() < 1.99)
-	    {
-	      TiXmlElement *pControl = pChild->FirstChildElement("control");
-	      while (pControl)
-	      {
-	        LoadControl(pControl, -1, referencecontrols, resToUse);
-	        pControl = pControl->NextSiblingElement("control");
-	      }
-	
-	      TiXmlElement *pControlGroup = pChild->FirstChildElement("controlgroup");
-	      // resolve any includes within the <controlgroup> tag (such as whole <control> includes)
-	      g_SkinInfo.ResolveIncludes(pControlGroup);
-	      int iGroup = 0;
-	      while (pControlGroup)
-	      {
-	        TiXmlElement *pControl = pControlGroup->FirstChildElement("control");
-	        // In this group no focus of the controls is remembered
-          AddControlGroup(0);
-	        while (pControl)
-	        {
-	          LoadControl(pControl, iGroup, referencecontrols, resToUse);
-	          pControl = pControl->NextSiblingElement("control");
-	        }
-	        pControlGroup = pControlGroup->NextSiblingElement("controlgroup");
-	        iGroup++;
-	      }
-      }
-      else
-      {
-#endif
+
       TiXmlElement *pControl = pChild->FirstChildElement();
       int iGroup = 0;
       while (pControl)
@@ -560,9 +505,6 @@ bool CGUIWindow::Load(TiXmlElement* pRootElement, RESOLUTION resToUse)
         }
         pControl = pControl->NextSiblingElement();
       }
-#ifdef PRE_SKIN_VERSION_2_0_COMPATIBILITY
-      }
-#endif
     }
     else if (strValue == "allowoverlay")
     {
@@ -582,23 +524,6 @@ bool CGUIWindow::Load(TiXmlElement* pRootElement, RESOLUTION resToUse)
     pChild = pChild->NextSiblingElement();
   }
 
-  if (g_SkinInfo.GetVersion() < 1.86)
-  {
-    if (m_showAnimation.effect == EFFECT_TYPE_SLIDE)
-    {
-      m_showAnimation.startX -= m_iPosX;
-      m_showAnimation.startY -= m_iPosY;
-      m_showAnimation.endX -= m_iPosX;
-      m_showAnimation.endY -= m_iPosY;
-    }
-    if (m_closeAnimation.effect == EFFECT_TYPE_SLIDE)
-    {
-      m_closeAnimation.startX -= m_iPosX;
-      m_closeAnimation.startY -= m_iPosY;
-      m_closeAnimation.endX -= m_iPosX;
-      m_closeAnimation.endY -= m_iPosY;
-    }
-  }
   for (int i = 0; i < (int)referencecontrols.size();++i)
   {
     struct stReferenceControl stControl = referencecontrols[i];

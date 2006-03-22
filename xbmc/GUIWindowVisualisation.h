@@ -14,7 +14,6 @@ public:
   virtual bool OnAction(const CAction &action);
   virtual bool OnMouse();
   virtual void Render();
-  virtual void OnWindowLoaded();
 protected:
   DWORD m_dwInitTimer;
   DWORD m_dwLockedTimer;

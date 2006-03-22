@@ -74,7 +74,6 @@ public:
   void AddLabel(const string& strLabel, int iValue);
   const string GetLabel() const;
   virtual void SetFocus(bool bOnOff);
-  virtual void SetVisible(bool bVisible);
   void SetReverse(bool bOnOff);
   bool GetReverse() const { return m_bReverse; };
   int GetMaximum() const;
@@ -125,8 +124,6 @@ protected:
   bool m_bShowRange;
   char m_szTyped[10];
   int m_iTypedPos;
-  DWORD m_dwBuddyControlID;
-  bool m_bBuddyDisabled;
   float m_fMaxTextWidth;
   CRect m_rectHit;   // rect for hit test on the Text
 };
