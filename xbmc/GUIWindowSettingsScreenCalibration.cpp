@@ -177,6 +177,7 @@ void CGUIWindowSettingsScreenCalibration::EnableControl(int iControl)
     SET_CONTROL_HIDDEN(CONTROL_PIXEL_RATIO);
     SET_CONTROL_VISIBLE(CONTROL_OSD);
     SET_CONTROL_FOCUS(CONTROL_OSD, 0);
+    // show the OSD dialog is handled in Render()
   }
   else
   {
@@ -186,7 +187,9 @@ void CGUIWindowSettingsScreenCalibration::EnableControl(int iControl)
     SET_CONTROL_VISIBLE(CONTROL_SUBTITLES);
     SET_CONTROL_VISIBLE(CONTROL_PIXEL_RATIO);
     SET_CONTROL_FOCUS(iControl, 0);
-    // set the controls positions
+    // hide the OSD dialog
+    CGUIDialog *pOSD = (CGUIDialog *)m_gWindowManager.GetWindow(WINDOW_OSD);
+    if (pOSD) pOSD->Close(true);
   }
 }
 
@@ -312,7 +315,7 @@ void CGUIWindowSettingsScreenCalibration::UpdateFromControl(int iControl)
       case CONTROL_OSD:
         {
           g_settings.m_ResInfo[m_Res[m_iCurRes]].iOSDYOffset = pControl->GetYLocation() - g_settings.m_ResInfo[m_Res[m_iCurRes]].iHeight;
-          strStatus.Format("%s (%i, Offset=%i)", g_localizeStrings.Get(479).c_str(), pControl->GetYLocation(), g_settings.m_ResInfo[m_Res[m_iCurRes]].iOSDYOffset);
+          strStatus.Format("%s (%i, Offset=%i)", g_localizeStrings.Get(469).c_str(), pControl->GetYLocation(), g_settings.m_ResInfo[m_Res[m_iCurRes]].iOSDYOffset);
           SET_CONTROL_LABEL(CONTROL_LABEL_ROW2, 468);
           CGUIWindow *pOSD = m_gWindowManager.GetWindow(WINDOW_OSD);
           if (pOSD) pOSD->SetPosition(0, g_settings.m_ResInfo[m_Res[m_iCurRes]].iOSDYOffset);
@@ -340,6 +343,13 @@ void CGUIWindowSettingsScreenCalibration::Render()
     SET_CONTROL_LABEL(CONTROL_LABEL_ROW1, "");
     SET_CONTROL_LABEL(CONTROL_LABEL_ROW2, "");
   }
+  // show the OSD if necessary (need to do this every frame, as otherwise
+  // it will time out.
+  if (m_iControl == CONTROL_OSD)
+  {
+    CGUIDialog *pOSD = (CGUIDialog *)m_gWindowManager.GetWindow(WINDOW_OSD);
+    if (pOSD) pOSD->Show(GetID());
+  }
   CGUIWindow::Render();
 
   // render the subtitles
@@ -348,10 +358,5 @@ void CGUIWindowSettingsScreenCalibration::Render()
     g_application.m_pPlayer->UpdateSubtitlePosition();
     g_application.m_pPlayer->RenderSubtitles();
   }
-  // render the OSD
-  if (m_iControl == CONTROL_OSD)
-  {
-    CGUIWindow *pOSD = m_gWindowManager.GetWindow(WINDOW_OSD);
-    if (pOSD) pOSD->Render();
-  }
+
 }
