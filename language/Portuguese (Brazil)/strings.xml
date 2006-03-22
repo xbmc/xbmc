@@ -1,5 +1,5 @@
-<!-- Translation date: 03/08/2006 -->
-<!-- Based on 2006-03-06 build -->
+<!-- Translation date: 03/16/2006 -->
+<!-- Based on 2006-03-12 build -->
 <!-- Translation by MVBM (T1000) -->
 <!-- Language: Portuguese Brazil (pt_BR )-->
 <strings>
@@ -226,7 +226,7 @@
   <string><id>287</id><value>Legendas</value></string>
   <string><id>288</id><value>Fonte</value></string>
   <string><id>289</id><value>- Tamanho</value></string>
-  <string><id>290</id><value>Amplificação de Volume (dB)</value></string>
+  <string><id>290</id><value>Faixa de Compressão Dinâmica</value></string>
   <string><id>291</id><value>Vídeo</value></string>
   <string><id>292</id><value>Áudio</value></string>
   <string><id>293</id><value>Legendas</value></string>
@@ -457,6 +457,7 @@
   <string><id>519</id><value>Iniciar em..</value></string>
   <string><id>520</id><value>Editar títulos XBE</value></string>
   <string><id>521</id><value>Compilações</value></string>
+  <string><id>522</id><value>Remover Origem</value></string>
 
   <string><id>588</id><value>Cancelar Modo Festa</value></string>
   <string><id>589</id><value>Modo Festa</value></string>
@@ -1039,6 +1040,8 @@
   <string><id>13401</id><value>Procurar por %s</value></string>
   <string><id>13402</id><value>Mostrar posição da trilha</value></string>
   <string><id>13403</id><value>Limpar Padrão</value></string>
+  <string><id>13404</id><value>Renovar</value></string>
+  <string><id>13405</id><value>Obter Thumb</value></string>
 
   <string><id>14000</id><value>Empilhar</value></string>
   <string><id>14001</id><value>Não Empilhar</value></string>
@@ -1152,9 +1155,9 @@
   <string><id>15036</id><value>enviado para você um convite</value></string>
   <string><id>15037</id><value>O XBMC é incapaz de confirmar se sua rede está acessível.</value></string>
   <string><id>15038</id><value>Você poderá ter dificuldades de conectar e receber conexões para jogar.</value></string>
-  <string><id>15039</id><value>Xbox Media Center não pode localizar o jogo automaticamente.</value></string>
-  <string><id>15040</id><value>Insira o disco de jogo em seu XBOX ou pressione 'A' para cancelar</value></string>
-  <string><id>15041</id><value>e inicie o jogo manualmente.</value></string>
+  <string><id>15039</id><value>XBMC não pode localizar o jogo automaticamente.</value></string>
+  <string><id>15040</id><value>Insira o disco de jogo em seu XBOX ou pressione </value></string>
+  <string><id>15041</id><value>'A' para cancelar e inicie o jogo manualmente.</value></string>
   <string><id>15042</id><value>Acesso Negado</value></string>
   <string><id>15043</id><value>%s entrou no chat.</value></string>
   <string><id>15044</id><value>%s saiu do chat.</value></string>
@@ -1277,6 +1280,12 @@
   <string><id>16026</id><value>Execução da Playlist abortada</value></string>
   <string><id>16027</id><value>Muitos itens falharam concecutivamente</value></string>
 
+  <string><id>16030</id><value>Modo Festa cancelado.</value></string>
+  <string><id>16031</id><value>Poucas músicas na base de dados.</value></string>
+  <string><id>16032</id><value>Não foi possível inicializar a base de dados.</value></string>
+  <string><id>16033</id><value>Não foi possível abrir a base de dados.</value></string>
+  <string><id>16034</id><value>Não foi possível obter as músicas da base de dados.</value></string>
+  
   <string><id>16100</id><value>Todos os Vídeos</value></string>
   <string><id>16101</id><value>Não Monitorado</value></string>
   <string><id>16102</id><value>Monitorado</value></string>
