@@ -18,7 +18,8 @@ public:
                       SONG_TIME,
                       SONG_TRACKNUMBER,
                       SONG_FILENAME,
-                      SONG_PLAYCOUNT };
+                      SONG_PLAYCOUNT,
+                      SONG_LASTPLAYED };
 
   enum SEARCH_OPERATOR { OPERATOR_CONTAINS = 1,
                          OPERATOR_DOES_NOT_CONTAIN,
@@ -27,7 +28,9 @@ public:
                          OPERATOR_STARTS_WITH,
                          OPERATOR_ENDS_WITH,
                          OPERATOR_GREATER_THAN,
-                         OPERATOR_LESS_THAN };
+                         OPERATOR_LESS_THAN,
+                         OPERATOR_IN_THE_LAST,
+                         OPERATOR_NOT_IN_THE_LAST };
 
   CStdString GetWhereClause();
   void TranslateStrings(const char *field, const char *oper, const char *parameter);

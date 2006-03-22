@@ -844,7 +844,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
       {
         if (strTmp[0] != '-')
         {
-          if (CUtil::IsNaturalNumber(strTmp))
+          if (StringUtils::IsNaturalNumber(strTmp))
           {
             DWORD dwLabelID = atol(strTmp);
             strLabel = g_localizeStrings.Get(dwLabelID);

@@ -298,7 +298,7 @@ bool CGUIWindowMusicPlayList::GetDirectory(const CStdString &strDirectory, CFile
       if (nDuration > 0)
       {
         CStdString str;
-        CUtil::SecondsToHMSString(nDuration, str);
+        StringUtils::SecondsToTimeString(nDuration, str);
         item->SetLabel2(str);
       }
       else
@@ -583,7 +583,7 @@ void CGUIWindowMusicPlayList::OnItemLoaded(CFileItem* pItem)
       if (nDuration > 0)
       {
         CStdString str;
-        CUtil::SecondsToHMSString(nDuration, str);
+        StringUtils::SecondsToTimeString(nDuration, str);
         pItem->SetLabel2(str);
       }
     }

@@ -101,7 +101,7 @@ bool CDirectoryCache::FileExists(const CStdString& strFile, bool& bInCache)
       for (int i = 0; i < (int) dir->m_Items.Size(); ++i)
       {
         CFileItem* pItem = dir->m_Items[i];
-        if ( CUtil::CmpNoCase(pItem->m_strPath, strFixedFile) ) return true;
+        if ( strcmpi(pItem->m_strPath.c_str(), strFixedFile.c_str()) == 0 ) return true;
       }
     }
     ++i;

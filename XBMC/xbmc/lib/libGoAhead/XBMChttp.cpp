@@ -470,9 +470,7 @@ int CXbmcHttp::xbmcGetMediaLocation(int numParas, CStdString paras[])
       strLine += ";" + strFolder;
     if (bShowDate)
     {
-      CStdString theDate;
-      CUtil::GetDate(item->m_stTime, theDate);
-      strLine += ";" + theDate;
+      strLine += ";" + StringUtils::SystemTimeToString(item->m_stTime);
     }
     strLine += closeTag;
     strOutput += strLine;
@@ -654,9 +652,7 @@ int displayDir(int numParas, CStdString paras[]) {
     if (aLine!="")
     {
       if (option=="1") {
-        CStdString theDate;
-        CUtil::GetDate(itm->m_stTime,theDate) ;
-        output+=aLine+"  ;" + theDate ;
+        output+=aLine+"  ;" + StringUtils::SystemTimeToString(itm->m_stTime);
       }
       else
         output+=aLine;

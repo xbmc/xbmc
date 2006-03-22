@@ -129,7 +129,7 @@ void CGUIWindowMusicInfo::Update()
       CStdString strTmp;
 
       if (song.GetDuration() > 0)
-        CUtil::SecondsToHMSString(song.GetDuration(), strTmp);
+        StringUtils::SecondsToTimeString(song.GetDuration(), strTmp);
 
       CGUIMessage msg3(GUI_MSG_LABEL2_SET, GetID(), CONTROL_TEXTAREA, i, 0);
       msg3.SetLabel(strTmp);
