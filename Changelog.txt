@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 22-03-2006 fixed: [ 1453519 ] OSD Not Visible Video Overscan Setup
  - 22-03-2006 fixed: Smart playlists didn't support ordering + limiting.
  - 22-03-2006 fixed: Hebrew GUI text was not flipped.
  - 22-03-2006 removed: Support for skins with versions < 2.0
