@@ -7,17 +7,18 @@
 #include "..\DVDClock.h" // for DVD_TIME_BASE
 #include "..\..\..\utils\HttpHeader.h"
 
-#define ICY_NOTICE1       "icy-notice1" // string
-#define ICY_NOTICE2       "icy-notice2" // string
-#define ICY_NAME          "icy-name"    // string
-#define ICY_GENRE         "icy-genre"   // string
-#define ICY_URL           "icy-url"     // string
-#define ICY_PUBLIC        "icy-pub"     // int (1 / 0)
-#define ICY_BITRATE       "icy-br"      // int (bitrate = val * 1000 ?)
-#define ICY_METAINTERVAL  "icy-metaint" // int
+#define ICY_NOTICE1           "icy-notice1" // string
+#define ICY_NOTICE2           "icy-notice2" // string
+#define ICY_NAME              "icy-name"    // string
+#define ICY_GENRE             "icy-genre"   // string
+#define ICY_URL               "icy-url"     // string
+#define ICY_PUBLIC            "icy-pub"     // int (1 / 0)
+#define ICY_BITRATE           "icy-br"      // int (bitrate = val * 1000 ?)
+#define ICY_METAINTERVAL      "icy-metaint" // int
 
-#define CONTENT_TYPE_MP3  "audio/mpeg"
-#define CONTENT_TYPE_AAC  "audio/aac"
+#define CONTENT_TYPE_MP3      "audio/mpeg"
+#define CONTENT_TYPE_AAC      "audio/aac"
+#define CONTENT_TYPE_AACPLUS  "audio/aacp"
 
 // class CDemuxStreamVideoFFmpeg
 void CDemuxStreamAudioShoutcast::GetStreamInfo(std::string& strInfo)
@@ -62,11 +63,11 @@ bool CDVDDemuxShoutcast::Open(CDVDInputStream* pInput)
   // set meta interval
   m_iMetaStreamInterval = atoi(strMetaInt.c_str());
   
-  if (stricmp(strContentType.c_str(), CONTENT_TYPE_AAC) == 0)
+  if (stricmp(strContentType.c_str(), CONTENT_TYPE_AAC) == 0 ||
+      stricmp(strContentType.c_str(), CONTENT_TYPE_AACPLUS) == 0)
   {
     // need an aac decoder first
     m_pDemuxStream->codec = CODEC_ID_AAC;
-    //m_pDemuxStream->codec = CODEC_ID_NONE;
   }
   else // (stricmp(strContentType, CONTENT_TYPE_MP3) == 0)
   {

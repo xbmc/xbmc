@@ -68,6 +68,19 @@ CStdString CHttpHeader::GetValue(CStdString strParam)
   return "";
 }
 
+void CHttpHeader::GetHeader(CStdString& strHeader)
+{
+  strHeader.clear();
+  
+  HeaderParamsIter iter = m_params.begin();
+  while (iter != m_params.end())
+  {
+    strHeader += ((*iter).first + ": " + (*iter).second + "\n");
+  }
+  
+  strHeader += "\n";
+}
+
 void CHttpHeader::Clear()
 {
   m_params.clear();
