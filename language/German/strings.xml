@@ -164,7 +164,7 @@
   <string><id>225</id><value>Übergangszeit</value></string>
   <string><id>226</id><value>PAL60 aktivieren</value></string>
   <string><id>227</id><value>CDDB aktivieren</value></string>
-  <string><id>228</id><value>Playliste shuffeln nach dem laden</value></string>
+  <string><id>228</id><value>Playliste shuffeln nach dem Laden</value></string>
   <string><id>229</id><value>Festplatte abschalten</value></string>
   <string><id>230</id><value>Video-Filter</value></string>
   <string><id>231</id><value>Keine</value></string>
@@ -214,7 +214,7 @@
   <string><id>275</id><value>Pixelverhältnis einstellen</value></string>
   <string><id>276</id><value>Bewege den Pfeil um den Bildbereich einzustellen</value></string>
   <string><id>277</id><value>Bewege den Balken um die Untertitelposition einzustellen</value></string>
-  <string><id>278</id><value>Ändere das Rechteck so, dass es ein perfektes Quadrat ergibt</value></string>
+  <string><id>278</id><value>Ändere das Rechteck, so dass es ein perfektes Quadrat ergibt</value></string>
   <string><id>279</id><value>Einstellungen können nicht geladen werden</value></string>
   <string><id>280</id><value>Benutze Standardeinstellungen</value></string>
   <string><id>281</id><value>Bitte die .xml-Dateien überprüfen</value></string>
@@ -403,7 +403,7 @@
   <string><id>465</id><value>Kontrast</value></string>
   <string><id>466</id><value>Gamma</value></string>
   <string><id>467</id><value>Typ</value></string>
-  <string><id>468</id><value>Bewege die Leiste, um die OSD-Einstellung zu ändern</value></string>
+  <string><id>468</id><value>Bewege die Leiste, um die OSD-Position zu ändern</value></string>
   <string><id>469</id><value>OSD-Position</value></string>
   <string><id>470</id><value>Credits</value></string>
   <string><id>471</id><value>Modchip</value></string>
@@ -459,8 +459,8 @@
   <string><id>521</id><value>Sampler</value></string>
   <string><id>522</id><value>Entfernen</value></string>
 
-  <string><id>588</id><value>Party Modus verlassen</value></string>
-  <string><id>589</id><value>Party Modus</value></string>
+  <string><id>588</id><value>Party-Modus verlassen</value></string>
+  <string><id>589</id><value>Party-Modus</value></string>
   <string><id>590</id><value>Zufall</value></string>
   <string><id>591</id><value>Aus</value></string>
   <string><id>592</id><value>Eins</value></string>
@@ -494,7 +494,7 @@
   <string><id>632</id><value>Stretch 4:3</value></string>
   <string><id>633</id><value>Stretch 14:9</value></string>
   <string><id>634</id><value>Stretch 16:9</value></string>
-  <string><id>635</id><value>Original Größe</value></string>
+  <string><id>635</id><value>Original-Größe</value></string>
   <string><id>636</id><value>Benutzerdefiniert</value></string>
   <string><id>637</id><value>Replay-Gain</value></string>
   <string><id>638</id><value>Replay-Gain-Modus</value></string>
@@ -510,7 +510,7 @@
   <string><id>700</id><value>Bibliothek aufräumen</value></string>
   <string><id>701</id><value>Alte Musikdaten aus der Bibliothek löschen</value></string>
   <string><id>702</id><value>Der Pfad wurde bereits durchsucht</value></string>
-  <string><id>703</id><value>Drücke 'Ja' um alle Songs nocheinmal einzulesen.</value></string>
+  <string><id>703</id><value>Drücke 'Ja' um alle Songs noch einmal einzulesen.</value></string>
   <string><id>704</id><value>Drücke 'Nein' um nur neue Songs hinzuzufügen.</value></string>
   <string><id>705</id><value>Netzwerk</value></string>
   <string><id>706</id><value>HTTP-Proxy-Host</value></string>
@@ -588,7 +588,7 @@
   <string><id>1000</id><value>Vorschau</value></string>
   <string><id>1001</id><value>Verbindung nicht möglich</value></string>
   <string><id>1002</id><value>XBMC konnte sich nicht mit der Netzwerkfreigabe verbinden.</value></string>
-  <string><id>1003</id><value>Es könnte sein, daß Sie nicht mit dem Netzwerk verbunden sind.</value></string>
+  <string><id>1003</id><value>Es könnte sein, dass Sie nicht mit dem Netzwerk verbunden sind.</value></string>
   <string><id>1004</id><value>Soll die Freigabe trotzdem hinzugefügt werden?</value></string>
   <string><id>1005</id><value>Bitte einen Namen eingeben</value></string>
   <string><id>1006</id><value>IP-Adresse</value></string>
@@ -788,10 +788,10 @@
   <string><id>12329</id><value>oder mit C abbrechen</value></string>
   <string><id>12330</id><value>Gamepad Tastenkombination eingeben und Start drücken </value></string>
   <string><id>12331</id><value>'Start' drücken, oder 'Back' um abzubrechen.</value></string>
-  <string><id>12332</id><value>Share sperren</value></string>
-  <string><id>12333</id><value>Share entsperren</value></string>
-  <string><id>12334</id><value>Share-Sperre zurücksetzen</value></string>
-  <string><id>12335</id><value>Share-Sperre entfernen</value></string>
+  <string><id>12332</id><value>Sperren</value></string>
+  <string><id>12333</id><value>Entsperren</value></string>
+  <string><id>12334</id><value>Sperre zurücksetzen</value></string>
+  <string><id>12335</id><value>Sperre entfernen</value></string>
   <string><id>12336</id><value>Bitte die Art der Sperre auswählen:</value></string>
   <string><id>12337</id><value>Nummerisches Passwort</value></string>
   <string><id>12338</id><value>Gamepad Tastenkombination</value></string>
@@ -809,11 +809,11 @@
   <string><id>12350</id><value>(Öffnen einer Einstellung wird die</value></string>
   <string><id>12351</id><value>Eingabe des Master-Codes automatisch reaktivieren.)</value></string>
   <string><id>12352</id><value>Master-Code Gamepad-Tastenkombination eingeben und Start drücken</value></string>
-  <string><id>12353</id><value>Share-Sperre reaktivieren</value></string>
-  <string><id>12354</id><value>Share-Sperre bis zum Neustart aufheben?</value></string>
-  <string><id>12355</id><value>Share-Sperre automatisch reaktivieren.)</value></string>
+  <string><id>12353</id><value>Sperre reaktivieren</value></string>
+  <string><id>12354</id><value>Sperre bis zum Neustart aufheben?</value></string>
+  <string><id>12355</id><value>Sperre automatisch reaktivieren.)</value></string>
   <string><id>12356</id><value>Sperre ändern</value></string>
-  <string><id>12357</id><value>Share-Sperre</value></string>
+  <string><id>12357</id><value>Sperre</value></string>
   <string><id>12358</id><value>Kein Passwort eingegeben. Bitte nochmal versuchen.</value></string>
   <string><id>12360</id><value>Master-Lock</value></string>
   <string><id>12361</id><value>Anzahl Versuche</value></string>
@@ -834,7 +834,7 @@
   <string><id>12376</id><value>Als Standard für alle Filme setzen</value></string>
   <string><id>12377</id><value>Dieser Vorgang wird alle vorherigen Werte zurücksetzen.</value></string>
   <string><id>12378</id><value>Anzeigedauer eines Bildes</value></string>
-  <string><id>12379</id><value>Pan und Zoom Effekte verwenden</value></string>
+  <string><id>12379</id><value>Pan- und Zoom-Effekte verwenden</value></string>
   <string><id>12380</id><value>NTSC-Videos nach PAL</value></string>
   <string><id>12381</id><value>PAL-Videos nach NTSC</value></string>
   <string><id>12382</id><value>NTSC-Videos nach PAL60</value></string>
@@ -911,7 +911,7 @@
 
   <string><id>13270</id><value>Hardware:</value></string>
   <string><id>13271</id><value>CPU-Speed:</value></string>
-  <string><id>13274</id><value>XBOX ist verbunden, es ist aber kein DNS verfügbar</value></string>
+  <string><id>13274</id><value>XBOX ist verbunden, aber es ist kein DNS verfügbar</value></string>
   <string><id>13275</id><value>Festplatte</value></string>
   <string><id>13276</id><value>DVD-ROM</value></string>
   <string><id>13277</id><value>Speicher</value></string>
