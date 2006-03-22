@@ -183,7 +183,7 @@ void CUtil::RemoveExtension(CStdString& strFileName)
   {
     CStdString strExtension;
     CUtil::GetExtension(strFileName, strExtension);
-    CUtil::Lower(strExtension);
+    strExtension.ToLower();
 
     CStdString strFileMask;
     strFileMask = g_stSettings.m_szMyMusicExtensions;
@@ -1084,15 +1084,6 @@ void CUtil::GetCachedThumbnail(const CStdString& strFileName, CStdString& strCac
   strCachedThumb.Format("%s\\%s\\%s.tbn", g_stSettings.szThumbnailsDirectory, strHex.Left(1).c_str(), strHex.c_str());
 }
 
-void CUtil::GetDate(SYSTEMTIME stTime, CStdString& strDateTime)
-{
-  char szTmp[128];
-  sprintf(szTmp, "%i-%i-%i %02.2i:%02.2i",
-          stTime.wDay, stTime.wMonth, stTime.wYear,
-          stTime.wHour, stTime.wMinute);
-  strDateTime = szTmp;
-}
-
 void CUtil::GetHomePath(CStdString& strPath)
 {
   char szXBEFileName[1024];
@@ -1265,16 +1256,6 @@ void CUtil::GetExtension(const CStdString& strFile, CStdString& strExtension)
   strExtension = strFile.Right( strFile.size() - iPos);
 }
 
-void CUtil::Lower(CStdString& strText)
-{
-  char szText[1024];
-  strcpy(szText, strText.c_str());
-  //for multi-byte language, the strText.size() is not correct
-  for (unsigned int i = 0; i < strlen(szText);++i)
-    szText[i] = tolower(szText[i]);
-  strText = szText;
-};
-
 bool CUtil::HasSlashAtEnd(const CStdString& strFile)
 {
   if (strFile.size() == 0) return false;
@@ -1403,15 +1384,6 @@ void CUtil::GetFileAndProtocol(const CStdString& strURL, CStdString& strDir)
 
   CURL url(strURL);
   strDir.Format("%s://%s", url.GetProtocol().c_str(), url.GetFileName().c_str());
-}
-
-void CUtil::RemoveCRLF(CStdString& strLine)
-{
-  while ( strLine.size() && (strLine.Right(1) == "\n" || strLine.Right(1) == "\r") )
-  {
-    strLine = strLine.Left((int)strLine.size() - 1);
-  }
-
 }
 
 int CUtil::GetDVDIfoTitle(const CStdString& strFile)
@@ -2371,19 +2343,6 @@ bool CUtil::CacheRarSubtitles(std::vector<CStdString>& vecExtensionsCached, cons
   return bFoundSubs;
 }
 
-void CUtil::SecondsToHMSString(long lSeconds, CStdString& strHMS, bool bMustUseHHMMSS)
-{
-  int hh = lSeconds / 3600;
-  lSeconds = lSeconds % 3600;
-  int mm = lSeconds / 60;
-  int ss = lSeconds % 60;
-
-  if (hh >= 1 || bMustUseHHMMSS)
-    strHMS.Format("%2.2i:%02.2i:%02.2i", hh, mm, ss);
-  else
-    strHMS.Format("%i:%02.2i", mm, ss);
-
-}
 void CUtil::PrepareSubtitleFonts()
 {
   if (g_guiSettings.GetString("Subtitles.Font").size() == 0) return ;
@@ -3322,17 +3281,6 @@ void CUtil::ConvertFileItemToPlayListItem(const CFileItem *pItem, CPlayList::CPl
   playlistitem.SetEndOffset(pItem->m_lEndOffset);
   playlistitem.SetMusicTag(pItem->m_musicInfoTag);
   playlistitem.SetThumbnailImage(pItem->GetThumbnailImage());
-}
-
-bool CUtil::IsNaturalNumber(const CStdString& str)
-{
-  if (0 == (int)str.size())
-    return false;
-  for (int i = 0; i < (int)str.size(); i++)
-  {
-    if ((str[i] < '0') || (str[i] > '9')) return false;
-  }
-  return true;
 }
 
 bool CUtil::IsUsingTTFSubtitles()
@@ -4404,16 +4352,7 @@ bool CUtil::IsFTP(const CStdString& strFile)
   if (url.GetProtocol() == "ftp") return true;
   else return false;
 }
-bool CUtil::CmpNoCase(const char* str1, const char* str2)
-{
-  int iLen = strlen(str1);
-  if ( strlen(str1) != strlen(str2) ) return false;
-  for (int i = 0; i < iLen;i++ )
-  {
-    if (tolower((unsigned char)str1[i]) != tolower((unsigned char)str2[i]) ) return false;
-  }
-  return true;
-}
+
 bool CUtil::GetFTPServerUserName(int iFTPUserID, CStdString &strFtpUser1, int &iUserMax )
 {
   class CXFUser*	m_pUser;

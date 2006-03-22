@@ -108,7 +108,7 @@ void CGUIDialogVideoBookmarks::Update()
   for (unsigned int i = 0; i < bookmarks.size(); ++i)
   {
     CStdString bookmarkTime;
-    CUtil::SecondsToHMSString(bookmarks[i].timeInSeconds, bookmarkTime, true);
+    StringUtils::SecondsToTimeString(bookmarks[i].timeInSeconds, bookmarkTime, true);
     CFileItem *item = new CFileItem(bookmarkTime);
     item->SetThumbnailImage(bookmarks[i].thumbNailImage);
     m_vecItems.Add(item);

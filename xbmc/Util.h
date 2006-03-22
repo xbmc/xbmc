@@ -216,7 +216,6 @@ public:
   static bool IsBuiltIn(const CStdString& execString);
   static void GetBuiltInHelp(CStdString &help);
   static int ExecBuiltIn(const CStdString& execString);
-  static int cmpnocase(const char* str1, const char* str2);
   static bool GetParentPath(const CStdString& strPath, CStdString& strParent);
   static void GetQualifiedFilename(const CStdString &strBasePath, CStdString &strFilename);
   static bool InstallTrainer(CTrainer& trainer);
@@ -227,7 +226,6 @@ public:
   static void GetDirectory(const CStdString& strFilePath, CStdString& strDirectoryPath);
   static void GetThumbnail(const CStdString& strFileName, CStdString& strThumb);
   static void GetCachedThumbnail(const CStdString& strFileName, CStdString& strCachedThumb);
-  static void GetDate(SYSTEMTIME stTime, CStdString& strDateTime);
   static void GetHomePath(CStdString& strPath);
   static bool InitializeNetwork(int iAssignment, const char* szLocalAddress, const char* szLocalSubnet, const char* szLocalGateway, const char* szNameServer);
   static bool IsEthernetConnected();
@@ -236,7 +234,6 @@ public:
   static __int64 CompareSystemTime(const SYSTEMTIME *a, const SYSTEMTIME *b);
   static void ReplaceExtension(const CStdString& strFile, const CStdString& strNewExtension, CStdString& strChangedFile);
   static void GetExtension(const CStdString& strFile, CStdString& strExtension);
-  static void Lower(CStdString& strText);
   static bool HasSlashAtEnd(const CStdString& strFile);
   static bool IsRemote(const CStdString& strFile);
   static bool IsOnDVD(const CStdString& strFile);
@@ -249,7 +246,6 @@ public:
   static bool IsInZIP(const CStdString& strFile);
   static bool IsCDDA(const CStdString& strFile);
   static void GetFileAndProtocol(const CStdString& strURL, CStdString& strDir);
-  static void RemoveCRLF(CStdString& strLine);
   static int GetDVDIfoTitle(const CStdString& strPathFile);
   static void UrlDecode(CStdString& strURLData);
   static void URLEncode(CStdString& strURLData);
@@ -289,7 +285,6 @@ public:
   static void CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionCached, XFILE::IFileCallback *pCallback = NULL);
   static bool CacheRarSubtitles(std::vector<CStdString>& vecExtensionsCached, const CStdString& strRarPath, const CStdString& strCompare, const CStdString& strExtExt="");
   static void ClearSubtitles();
-  static void SecondsToHMSString( long lSeconds, CStdString& strHMS, bool bMustUseHHMMSS = false);
   static void PrepareSubtitleFonts();
   static __int64 ToInt64(DWORD dwHigh, DWORD dwLow);
   static void AddFileToFolder(const CStdString& strFolder, const CStdString& strFile, CStdString& strResult);
@@ -327,7 +322,6 @@ public:
   static void AddDirectorySeperator(CStdString& strPath);
   static char GetDirectorySeperator(const CStdString& strFile);
 
-  static bool IsNaturalNumber(const CStdString& str);
   static bool IsUsingTTFSubtitles();
   static void SplitExecFunction(const CStdString &execString, CStdString &strFunction, CStdString &strParam);
   static int GetMatchingShare(const CStdString& strPath, VECSHARES& vecShares, bool& bIsBookmarkName);
@@ -343,7 +337,6 @@ public:
   static bool XboxAutoDetectionPing(bool bRefresh, CStdString strFTPUserName, CStdString strFTPPass, CStdString strNickName, int iFTPPort, CStdString &strHasClientIP, CStdString &strHasClientInfo, CStdString &strNewClientIP, CStdString &strNewClientInfo );
   static bool XboxAutoDetection();
   static bool IsFTP(const CStdString& strFile);
-  static bool CmpNoCase(const char* str1, const char* str2);
   static bool GetFTPServerUserName(int iFTPUserID, CStdString &strFtpUser1, int &iUserMax );
   static bool SetFTPServerUserPassword(CStdString strFtpUserName, CStdString strFtpUserPassword);
   static bool SetXBOXNickName(CStdString strXboxNickNameIn, CStdString &strXboxNickNameOut);
