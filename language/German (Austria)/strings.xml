@@ -10,6 +10,7 @@
   <!-- String with id 6 should not be set here, only in the english language file !-->
   <string><id>7</id><value>Eigene Dateien</value></string>
   <string><id>8</id><value>Wetterbericht</value></string>
+
   <string><id>11</id><value>Montag</value></string>
   <string><id>12</id><value>Dienstag</value></string>
   <string><id>13</id><value>Mittwoch</value></string>
@@ -17,6 +18,7 @@
   <string><id>15</id><value>Freitag</value></string>
   <string><id>16</id><value>Samstag</value></string>
   <string><id>17</id><value>Sonntag</value></string>
+
   <string><id>21</id><value>Jänner</value></string>
   <string><id>22</id><value>Februar</value></string>
   <string><id>23</id><value>März</value></string>
@@ -29,6 +31,7 @@
   <string><id>30</id><value>Oktober</value></string>
   <string><id>31</id><value>November</value></string>
   <string><id>32</id><value>Dezember</value></string>
+
   <string><id>98</id><value>Autom.Ansicht</value></string>
   <string><id>99</id><value>Autom.gr.Symbol</value></string>
   <string><id>100</id><value>Symbolansicht</value></string>
@@ -338,7 +341,8 @@
   <string><id>405</id><value>Taupunkt</value></string>
   <string><id>406</id><value>Feuchtigkeit</value></string>
   <string><id>407</id><value>von</value></string>
-  <string><id>408</id><value>mit</value></string>    
+  <string><id>408</id><value>mit</value></string>
+   
   <string><id>410</id><value>Wettervorhersage</value></string>     
   <string><id>411</id><value>Wetterinformationen werden geladen für:</value></string>
   <string><id>412</id><value>Wetterinformationen nicht erhältlich!</value></string>  
@@ -474,12 +478,14 @@
   <string><id>607</id><value>Nach:</value></string>
   <string><id>608</id><value>Unmöglich CD oder Titel zu rippen!</value></string>
   <string><id>609</id><value>CDDARipp-Pfad fehlt in XboxMediaCenter.xml!</value></string>
+
   <string><id>620</id><value>CD rippen</value></string>
   <string><id>621</id><value>Encoder</value></string>
   <string><id>622</id><value>Qualität</value></string>
   <string><id>623</id><value>Bitrate</value></string>
   <string><id>624</id><value>Titelnummer einbeziehen</value></string>
   <string><id>625</id><value>Alle Titel von</value></string>
+
   <string><id>629</id><value>Ansicht</value></string>
   <string><id>630</id><value>Normal</value></string>
   <string><id>631</id><value>Vergrößern</value></string>
@@ -578,7 +584,6 @@
   <string><id>998</id><value>Online spielen</value></string>
   <string><id>999</id><value>Online spielen</value></string>
   <string><id>1000</id><value>Bildschirmschoner Vorschau</value></string>
-
   <string><id>1001</id><value>Verbindung nicht möglich..</value></string> 
   <string><id>1002</id><value>Es konnte keine Verbindung erstellt werden.</value></string> 
   <string><id>1003</id><value>Überprüfen sie die Verbindung / das Netzwerk.</value></string> 
@@ -679,6 +684,7 @@
   <string><id>1410</id><value>Windstille</value></string> 
 
   <string><id>2050</id><value>Spieldauer:</value></string>
+
   <string><id>4501</id><value>LCD Typ</value></string>
 
   <string><id>10000</id><value>Hauptmenü</value></string>
@@ -848,8 +854,10 @@
   <string><id>12394</id><value>Gesamt-Betriebzeit</value></string> 
 
   <string><id>12600</id><value>Wetter</value></string>
+
   <string><id>12900</id><value>Bildschirmschoner</value></string>
   <string><id>12901</id><value>Vollbild-OSD</value></string>
+
   <string><id>13000</id><value>System</value></string>
   <string><id>13001</id><value>HDD ausschalten während Stream</value></string>
   <string><id>13002</id><value>Video</value></string>
@@ -857,6 +865,7 @@
   <string><id>13004</id><value>minimale Datendauer</value></string>
   <string><id>13005</id><value>MediaCenter ausschalten</value></string> 
   <string><id>13006</id><value>Microsoft Dashboard</value></string> 
+
   <string><id>13100</id><value>Flimmerfilter</value></string>
 
   <string><id>13150</id><value>Key:</value></string> 
@@ -870,7 +879,7 @@
   <string><id>13158</id><value>Sperr- Status:</value></string> 
   <string><id>13159</id><value>Subnetzmaske:</value></string> 
   <string><id>13160</id><value>Gateway:</value></string> 
-  <string><id>13161</id><value>DNS:</value></string> 
+  <string><id>13161</id><value>DNS</value></string> 
   <string><id>13162</id><value>Initialisierungs-Fehler</value></string> 
   <string><id>13163</id><value>GamePad an Port:</value></string> 
   <string><id>13164</id><value>Tastatur an Port:</value></string> 
@@ -1176,6 +1185,7 @@
   <string><id>15060</id><value>Nachricht:</value></string> 
   <string><id>15061</id><value>Einladung bei %s mitzuspielen.</value></string>
   <string><id>15062</id><value>Alternativen MediaPlayer verwenden</value></string>
+
   <string><id>15100</id><value>Bibliothek</value></string>
   <string><id>15101</id><value>Bibliothek</value></string> 
   <string><id>15102</id><value>* Alle Alben</value></string> 
@@ -1264,8 +1274,7 @@
   <string><id>16014</id><value>Ordnername eingeben</value></string> 
   <string><id>16015</id><value>Verzeichnis eingeben</value></string> 
   <string><id>16016</id><value>Optionen: %A, %T, %N, %B, %D, %G, %Y, %F, %S</value></string> 
-  <string><id>16017</id><value>Suchbegriff eingeben</value></string> 
-
+  <string><id>16017</id><value>Suchbegriff eingeben</value></string>
   <string><id>16018</id><value>Deaktiviert</value></string> 
   <string><id>16019</id><value>Auto</value></string> 
   <string><id>16020</id><value>DeInterlace</value></string> 
@@ -1278,7 +1287,7 @@
   <string><id>16027</id><value>"Zu viele fehlerhafte Einträge"</value></string>
 
   <string><id>16030</id><value>Party Modus wurde abgebrochen.</value></string> 
-  <string><id>16031</id><value>Es befinden sich zu wenige Lieder in der Datenbank.</value></string> 
+  <string><id>16031</id><value>Keine passenden Lieder in der Datenbank.</value></string> 
   <string><id>16032</id><value>Datenbank konnte nicht initialisiert werden.</value></string> 
   <string><id>16033</id><value>Datenbank konnte nicht geöffnet werden.</value></string> 
   <string><id>16034</id><value>Lieder in der Datenbank nicht auffindbar.</value></string> 
