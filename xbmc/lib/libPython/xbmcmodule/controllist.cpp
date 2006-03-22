@@ -104,7 +104,7 @@ namespace PYXBMC
                 "listcontrol", "textureNoFocus", "list-nofocus.png");		
 		self->strTextureButtonFocus = cTextureButtonFocus ?
             cTextureButtonFocus :
-            PyGetDefaultImage("listcontrol", "textureFocus", "list-focus.png");	
+            PyGetDefaultImage("listcontrol", "texturefocus", "list-focus.png");	
 
 		// default values for spin control
 		self->pControlSpin->dwPosX = self->dwWidth - 35;

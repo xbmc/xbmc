@@ -7,9 +7,6 @@
 #include "ButtonTranslator.h"
 #include "util.h"
 #include "GUIDialogVisualisationPresetList.h"
-#ifdef PRE_SKIN_VERSION_2_0_COMPATIBILITY
-#include "SkinInfo.h"
-#endif
 
 #define TRANSISTION_COUNT   50  // 1 second
 #define TRANSISTION_LENGTH 200  // 4 seconds
@@ -194,29 +191,6 @@ void CGUIWindowVisualisation::Render()
   }
   CGUIWindow::Render();
 }
-
-#ifdef PRE_SKIN_VERSION_2_0_COMPATIBILITY
-void CGUIWindowVisualisation::OnWindowLoaded()
-{
-  CGUIWindow::OnWindowLoaded();
-  if (g_SkinInfo.GetVersion() < 1.8)
-  {
-    // Check if we have a vis control
-    for (unsigned int i = 0; i < m_vecControls.size(); i++)
-    {
-      CGUIControl *pControl = m_vecControls[i];
-      if (pControl->GetControlType() == CGUIControl::GUICONTROL_VISUALISATION)
-        return;
-    }
-    // not found - let's add a new one
-    CGUIVisualisationControl *pVisControl = new CGUIVisualisationControl(GetID(), CONTROL_VIS, 0, 0, g_graphicsContext.GetWidth(), g_graphicsContext.GetHeight());
-    if (pVisControl)
-    {
-      m_vecControls.insert(m_vecControls.begin(), pVisControl);
-    }
-  }
-}
-#endif
 
 void CGUIWindowVisualisation::AllocResources(bool forceLoad)
 {

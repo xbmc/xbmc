@@ -28,7 +28,6 @@ public:
   virtual ~CGUIWindowMusicBase(void);
   virtual bool OnMessage(CGUIMessage& message);
   virtual bool OnAction(const CAction& action);
-  virtual void OnWindowLoaded();
 
 protected:
   /*!

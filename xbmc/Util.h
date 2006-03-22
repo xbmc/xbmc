@@ -4,7 +4,6 @@
 #include "settings.h"
 
 class CTrainer;
-//#define SKIN_VERSION_1_3 1
 
 struct network_info
 {

@@ -200,11 +200,7 @@ void GUIFontManager::LoadFonts(const CStdString& strFontSet)
   // If there are no fontset's defined in the XML (old skin format) run in backward compatibility
   // and ignore the fontset request
   CStdString strValue = pChild->Value();
-  if (strValue == "font")
-  {
-    LoadFonts(pChild);
-  }
-  else if (strValue == "fontset")
+  if (strValue == "fontset")
   {
     while (pChild)
     {
@@ -242,7 +238,7 @@ void GUIFontManager::LoadFonts(const CStdString& strFontSet)
   }
   else
   {
-    CLog::Log(LOGERROR, "file doesnt have <font> or <fontset> in <fonts>, but rather %s", strValue.c_str());
+    CLog::Log(LOGERROR, "file doesnt have <fontset> in <fonts>, but rather %s", strValue.c_str());
     return ;
   }
 }
