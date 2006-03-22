@@ -3,8 +3,7 @@
 #include "DVDPerformanceCounter.h"
 #include "DVDMessageQueue.h"
 
-// enable and use xbperfmon
-//#define DVD_WITH_PERFORMANCE_COUNTER
+#include "dvd_config.h"
 
 HRESULT __stdcall DVDPerformanceCounterAudioQueue(PLARGE_INTEGER numerator, PLARGE_INTEGER demoninator)
 {
@@ -121,7 +120,7 @@ bool CDVDPerformanceCounter::Initialize()
 {
   Lock();
   
-#ifdef DVD_WITH_PERFORMANCE_COUNTER
+#ifdef DVDDEBUG_WITH_PERFORMANCE_COUNTER
 
   DmRegisterPerformanceCounter("DVDAudioQueue",               DMCOUNT_SYNC, DVDPerformanceCounterAudioQueue);
   DmRegisterPerformanceCounter("DVDVideoQueue",               DMCOUNT_SYNC, DVDPerformanceCounterVideoQueue);
