@@ -5,6 +5,12 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+
+ - 22-03-2006 fixed: dvdplayer: some dvds used the wrong subtitle colors that resulted in funny subtitles. Thx to frov for sending me a dvd that had this problem
+ 					 some subtitles still have color issues when selecting only the .vob file to play
+ - 22-03-2006 fixed: dvdplayer: changed the way the number of subtitles and audiostreams are found.
+ 					 hopefully it will fix a lot of audio / subtitle issues in the osd (unknown streams and such)
+ - 22-03-2006 added: dvdplayer: some debugging utilities
  - 22-03-2006 fixed: bug in dll loader caused some dlls (not the ones in cvs) to crash when loading them
  - 22-03-2006 fixed: dvdplayer: libfaad sync issues (resulted in a crash for some streams)
  - 22-03-2006 fixed: [ 1453519 ] OSD Not Visible Video Overscan Setup

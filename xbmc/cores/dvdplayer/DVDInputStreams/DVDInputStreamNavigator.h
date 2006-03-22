@@ -68,15 +68,14 @@ public:
   int GetActiveSubtitleStream();
   std::string GetSubtitleStreamLanguage(int iId);
   int GetSubTitleStreamCount();
-  bool SetActiveSubtitleStream(int iId);
-  int GetMpegSubtitleStream(int iId);
+ 
+  bool SetActiveSubtitleStream(int iId, bool bDisplay = true);
   void EnableSubtitleStream(bool bEnable);
 
   int GetActiveAudioStream();
   std::string GetAudioStreamLanguage(int iId);
   int GetAudioStreamCount();
   bool SetActiveAudioStream(int iId);
-  int GetMpegAudioStream(int iId);
 
   bool GetNavigatorState(std::string &xmlstate);
   bool SetNavigatorState(std::string &xmlstate);
@@ -94,14 +93,27 @@ public:
   bool Seek(int iTimeInMsec); //seek within current pg(c)
 
 protected:
+  void Lock()   { EnterCriticalSection(&m_critSection); }
+  void Unlock() { LeaveCriticalSection(&m_critSection); }
 
   int ProcessBlock(BYTE* buffer, int* read);
 
   int GetTotalButtons();
   void CheckButtons();
   
-  void Lock()   { EnterCriticalSection(&m_critSection); }
-  void Unlock() { LeaveCriticalSection(&m_critSection); }
+  /**
+   * XBMC     : the audio stream id we use in xbmc
+   * external : the audio stream id that is used in libdvdnav
+   */
+  int ConvertAudioStreamId_XBMCToExternal(int id);
+  int ConvertAudioStreamId_ExternalToXBMC(int id);
+
+  /**
+   * XBMC     : the subtitle stream id we use in xbmc
+   * external : the subtitle stream id that is used in libdvdnav
+   */
+  int ConvertSubtitleStreamId_XBMCToExternal(int id);
+  int ConvertSubtitleStreamId_ExternalToXBMC(int id);
   
   DllDvdNav m_dll;
   bool m_bCheckButtons;

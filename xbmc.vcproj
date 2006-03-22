@@ -2409,6 +2409,9 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				Name="dvdplayer"
 				Filter="">
 				<File
+					RelativePath=".\xbmc\cores\dvdplayer\dvd_config.h">
+				</File>
+				<File
 					RelativePath=".\xbmc\cores\dvdplayer\DVDAudio.cpp">
 				</File>
 				<File
@@ -2437,6 +2440,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				</File>
 				<File
 					RelativePath=".\xbmc\cores\dvdplayer\DVDMessageQueue.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\dvdplayer\DVDMessageTracker.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\dvdplayer\DVDMessageTracker.h">
 				</File>
 				<File
 					RelativePath=".\xbmc\cores\dvdplayer\DVDOverlay.h">

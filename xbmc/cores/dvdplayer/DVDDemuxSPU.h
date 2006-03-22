@@ -39,9 +39,11 @@ public:
   CSPUInfo* AddData(BYTE* data, int iSize, __int64 pts); // returns a packet from ParsePacket if possible
 
   CSPUInfo* ParseRLE(CSPUInfo* pSPU, BYTE* pUnparsedData);
+  void FindSubtitleColor(int last_color, int stats[4], CSPUInfo* pSPU);
 
-  void CDVDDemuxSPU::Flush(); // flushes current unparsed data
-
+  void Reset();
+  void FlushCurrentPacket(); // flushes current unparsed data
+  
   // m_clut set by libdvdnav once in a time
   // color lokup table is representing 16 different yuv colors
   // [][0] = Y, [][1] = Cr, [][2] = Cb

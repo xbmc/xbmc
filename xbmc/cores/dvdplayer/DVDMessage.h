@@ -3,8 +3,7 @@
 
 // include as less is possible to prevent dependencies
 #include "DVDDemuxers/DVDDemux.h"
-
-//#define DVDMSG_IS(msg, type)        (msg & type)
+#include "DVDMessageTracker.h"
 
 class CDVDMsg
 {
@@ -48,17 +47,29 @@ public:
   {
     m_references = 1;
     m_message = msg;
+    
+#ifdef DVDDEBUG_MESSAGE_TRACKER
+    g_dvdMessageTracker.Register(this);
+#endif
   }
 
   CDVDMsg(Message msg, long references)
   {
     m_references = references;
     m_message = msg;
+    
+#ifdef DVDDEBUG_MESSAGE_TRACKER
+    g_dvdMessageTracker.Register(this);
+#endif
   }
   
   virtual ~CDVDMsg()
   {
     assert(m_references == 0);
+    
+#ifdef DVDDEBUG_MESSAGE_TRACKER
+    g_dvdMessageTracker.UnRegister(this);
+#endif
   }
 
   /**
@@ -67,6 +78,11 @@ public:
   bool IsType(Message msg)
   {
     return (m_message == msg);
+  }
+  
+  Message GetMessageType()
+  {
+    return m_message;
   }
   
   /**
@@ -92,7 +108,7 @@ public:
   {
     return m_references;
   }
-  
+
 private:
   long m_references;
   Message m_message;
