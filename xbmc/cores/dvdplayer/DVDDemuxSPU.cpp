@@ -32,11 +32,17 @@ CDVDDemuxSPU::~CDVDDemuxSPU()
   if (m_spuData.data) delete[] m_spuData.data;
 }
 
-void CDVDDemuxSPU::Flush()
+void CDVDDemuxSPU::Reset()
 {
+  FlushCurrentPacket();
+  m_bHasClut = false;
+  memset(m_clut, 0, sizeof(m_clut));
+}
+
+void CDVDDemuxSPU::FlushCurrentPacket()
+{
+  if (m_spuData.data) delete[] m_spuData.data;
   memset(&m_spuData, 0, sizeof(m_spuData));
-  // clut should not be reset, because CDVDInputStreamNavigator is not setting it again
-  //memset(m_clut, 0, sizeof(m_clut));
 }
 
 CSPUInfo* CDVDDemuxSPU::AddData(BYTE* data, int iSize, __int64 pts)
@@ -198,13 +204,14 @@ CSPUInfo* CDVDDemuxSPU::ParsePacket(SPUData* pSPUData)
           DebugLog("    GetPacket, STP_DSP: Stop Display, delay: %i", ((delay * 1024) / 90000));
         }
         break;
-      case SET_COLOR:  // yuv, after a bit of testing it seems this info here is incomplete and can only be used for subtitles
-        // we need to get the colors from libdvdnav to support menu overlay's
+      case SET_COLOR:
         {
           p++;
 
           if (m_bHasClut)
           {
+            pSPUInfo->bHasColor = true;
+            
             unsigned int idx[4];
             // 0, 1, 2, 3
             idx[0] = (p[0] >> 4) & 0x0f;
@@ -214,18 +221,14 @@ CSPUInfo* CDVDDemuxSPU::ParsePacket(SPUData* pSPUData)
 
             for (int i = 0; i < 4 ; i++) // emphasis 1, emphasis 2, pattern, back ground
             {
-              BYTE* iColor = m_clut[idx[i]]; // do we really to add a 1 ?
-              /*
-                            pSPUInfo->color[3 - i][0] = (iColor >> 16) & 0xff;
-                            pSPUInfo->color[3 - i][1] = (iColor >> 0) & 0xff;
-                            pSPUInfo->color[3 - i][2] = (iColor >> 8) & 0xff;
-              */
+              BYTE* iColor = m_clut[idx[i]];
+
               pSPUInfo->color[3 - i][0] = iColor[0]; // Y
               pSPUInfo->color[3 - i][1] = iColor[1]; // Cr
               pSPUInfo->color[3 - i][2] = iColor[2]; // Cb
             }
           }
-          pSPUInfo->bHasColor = true;
+          
           DebugLog("    GetPacket, SET_COLOR:");
           p += 2;
         }
@@ -353,7 +356,7 @@ CSPUInfo* CDVDDemuxSPU::ParseRLE(CSPUInfo* pSPU, BYTE* pUnparsedData)
   unsigned int *pi_offset;
 
   /* Colormap statistics */
-  int i_border = 0; //-1;
+  int i_border = -1;
   int stats[4]; stats[0] = stats[1] = stats[2] = stats[3] = 0;
 
   pi_table[ 0 ] = pSPU->pTFData << 1;
@@ -405,8 +408,8 @@ CSPUInfo* CDVDDemuxSPU::ParseRLE(CSPUInfo* pSPU, BYTE* pUnparsedData)
         return false;
       }
 
-      /* Try to find the border color */
-      if (pSPU->alpha[i_code & 0x3] != 0x00)
+      // count the number of pixels for every occouring part, the last non background pixel is probably the border color
+      if (pSPU->alpha[i_code & 0x3] != 0x00) // 0x00 is the background code
       {
         i_border = i_code & 0x3;
         stats[i_border] += i_code >> 2;
@@ -475,17 +478,79 @@ CSPUInfo* CDVDDemuxSPU::ParseRLE(CSPUInfo* pSPU, BYTE* pUnparsedData)
   //    - the overlay is not forced
   //
   // and we only set it if there is a valid i_border color
-  if ((!pSPU->bHasColor || pSPU->iPTSStartTime > 0LL) && !pSPU->bForced && i_border >= 0 && i_border < 4)
+  if ((!pSPU->bHasColor && pSPU->iPTSStartTime > 0LL) && !pSPU->bForced)
   {
+    FindSubtitleColor(i_border, stats, pSPU);
+  }
+
+  return pSPU;
+}
+
+void CDVDDemuxSPU::FindSubtitleColor(int last_color, int stats[4], CSPUInfo* pSPU)
+{
+  const int COLOR_INNER = 0;
+  const int COLOR_SHADE = 1;
+  const int COLOR_BORDER = 2;
+  
+  //BYTE custom_subtitle_color[4][3] = { // blue, yellow and something else (xine)
+  //  { 0x80, 0x90, 0x80 }, // inner color
+  //  { 0x00, 0x90, 0x00 }, // shade color
+  //  { 0x00, 0x90, 0xff }  // border color
+  //};
+  
+  BYTE custom_subtitle_color[4][3] = { // inner color white, gray shading and a black border
+    { 0xff, 0x80, 0x80 }, // inner color, white
+    { 0x80, 0x80, 0x80 }, // shade color, gray
+    { 0x00, 0x80, 0x80 }  // border color, black
+  };
+  
+  //BYTE custom_subtitle_color[4][3] = { // completely white and a black border
+  //  { 0xff, 0x80, 0x80 }, // inner color, white
+  //  { 0xff, 0x80, 0x80 }, // shade color, white
+  //  { 0x00, 0x80, 0x80 }  // border color, black
+  //};
+
+
+  int nrOfUsedColors = 0;
+  for (int i = 0; i < 4; i++)
+  {
+    if (pSPU->alpha[i] > 0) nrOfUsedColors++;
+  }
+  
+  if (nrOfUsedColors == 0)
+  {
+    // nothing todo
+    DebugLog("FindSubtitleColor: all 4 alpha channels are 0, nothing todo");
+  }
+  else if (nrOfUsedColors == 1)
+  {
+    // only one color is used, probably the inner color
+    for (int i = 0; i < 4; i++) // find the position that is used
+    {
+      if (pSPU->alpha[i] > 0)
+      {
+        pSPU->color[i][0] = custom_subtitle_color[COLOR_INNER][0]; // Y
+        pSPU->color[i][1] = custom_subtitle_color[COLOR_INNER][1]; // Cr ?
+        pSPU->color[i][2] = custom_subtitle_color[COLOR_INNER][2]; // Cb ?
+        return;
+      }
+    }
+
+  }
+  else
+  {
+    // old code
     int i, i_inner = -1, i_shade = -1;
 
-    /* Set the border color */
-    pSPU->color[i_border][0] = 0x00;
-    pSPU->color[i_border][1] = 0x80;
-    pSPU->color[i_border][2] = 0x80;
-    stats[i_border] = 0;
+    if (last_color >= 0 && last_color < 4)
+    {
+      // Set the border color, the last color is probably the border color
+      pSPU->color[last_color][0] = custom_subtitle_color[COLOR_BORDER][0];
+      pSPU->color[last_color][1] = custom_subtitle_color[COLOR_BORDER][1];
+      pSPU->color[last_color][2] = custom_subtitle_color[COLOR_BORDER][2];
+      stats[last_color] = 0;
 
-    /* Find the inner colors */
+    // find the inner colors
     for ( i = 0 ; i < 4 && i_inner == -1 ; i++ )
     {
       if ( stats[i] )
@@ -494,6 +559,7 @@ CSPUInfo* CDVDDemuxSPU::ParseRLE(CSPUInfo* pSPU, BYTE* pUnparsedData)
       }
     }
 
+    // try to find the shade color
     for ( ; i < 4 && i_shade == -1 ; i++)
     {
       if ( stats[i] )
@@ -514,23 +580,21 @@ CSPUInfo* CDVDDemuxSPU::ParseRLE(CSPUInfo* pSPU, BYTE* pUnparsedData)
     if ( i_inner != -1 )
     {
       // white color
-      pSPU->color[i_inner][0] = 0xff; // Y
-      pSPU->color[i_inner][1] = 0x80; // Cr ?
-      pSPU->color[i_inner][2] = 0x80; // Cb ?
+        pSPU->color[i_inner][0] = custom_subtitle_color[COLOR_INNER][0]; // Y
+        pSPU->color[i_inner][1] = custom_subtitle_color[COLOR_INNER][1]; // Cr ?
+        pSPU->color[i_inner][2] = custom_subtitle_color[COLOR_INNER][2]; // Cb ?
     }
 
     /* Set the anti-aliasing color */
     if ( i_shade != -1 )
     {
       // gray
-      pSPU->color[i_shade][0] = 0x80;
-      pSPU->color[i_shade][1] = 0x80;
-      pSPU->color[i_shade][2] = 0x80;
+        pSPU->color[i_shade][0] = custom_subtitle_color[COLOR_SHADE][0];
+        pSPU->color[i_shade][1] = custom_subtitle_color[COLOR_SHADE][1];
+        pSPU->color[i_shade][2] = custom_subtitle_color[COLOR_SHADE][2];
     }
 
-    DebugLog("ParseRLE: using custom palette (border %i, inner %i, shade %i)",
-             i_border, i_inner, i_shade );
+      DebugLog("ParseRLE: using custom palette (border %i, inner %i, shade %i)", last_color, i_inner, i_shade);
+    }
   }
-
-  return pSPU;
 }
