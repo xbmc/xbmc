@@ -17,6 +17,8 @@ public:
   void Parse(CStdString strData);
   CStdString GetValue(CStdString strParam);
   
+  void GetHeader(CStdString& strHeader);
+  
   CStdString GetContentType() { return GetValue(HTTPHEADER_CONTENT_TYPE); }
   
   void Clear();
