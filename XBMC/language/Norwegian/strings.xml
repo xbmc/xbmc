@@ -1,4 +1,4 @@
-<!-- Based on English XML v1.310. Last updated by vnmartinsen  !-->
+<!-- Based on English XML v1.312. Last updated by vnmartinsen  !-->
 <strings>
   <string><id>0</id><value>Mine Programmer</value></string>
   <string><id>1</id><value>Mine Bilder</value></string>
@@ -872,7 +872,7 @@
   <string><id>13158</id><value>HDD-låsstatus:</value></string>
   <string><id>13159</id><value>Nettverksmaske:</value></string>
   <string><id>13160</id><value>Gateway:</value></string>
-  <string><id>13161</id><value>DNS:</value></string>
+  <string><id>13161</id><value>DNS</value></string>
   <string><id>13162</id><value>Initialisering feilet</value></string>
   <string><id>13163</id><value>Kontrollere på port:</value></string>
   <string><id>13164</id><value>Tastatur på port:</value></string>
@@ -1279,7 +1279,7 @@
   <string><id>16027</id><value>For mange feilende enheter på rad</value></string>
 
   <string><id>16030</id><value>Partymodus avbrutt.</value></string>
-  <string><id>16031</id><value>For få sanger i databasen.</value></string>
+  <string><id>16031</id><value>Ingen matchende sanger i databasen.</value></string>
   <string><id>16032</id><value>Kunne ikke initialisere databasen.</value></string>
   <string><id>16033</id><value>Kunne ikke åpne databasen.</value></string>
   <string><id>16034</id><value>Kunne ikke hente sanger fra databasen.</value></string>
