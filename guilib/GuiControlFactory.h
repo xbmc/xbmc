@@ -20,9 +20,7 @@ public:
   CGUIControlFactory(void);
   virtual ~CGUIControlFactory(void);
   CGUIControl* Create(DWORD dwParentId, const TiXmlNode* pControlNode, CGUIControl* pReference, RESOLUTION res);
-//PRE_SKIN_VERSION_2_0_COMPATIBILITY
-  bool GetConditionalVisibility(const TiXmlNode* control, int &condition, bool &allowHiddenFocus, bool &startHidden);
-//  bool GetConditionalVisibility(const TiXmlNode* control, int &condition, bool &allowHiddenFocus);
+  bool GetConditionalVisibility(const TiXmlNode* control, int &condition, bool &allowHiddenFocus);
   bool GetConditionalVisibility(const TiXmlNode* control, int &condition);
   bool GetAnimations(const TiXmlNode *control, vector<CAnimation> &animation, RESOLUTION res);
 private:

@@ -1,8 +1,8 @@
 #pragma once
 
-// REMOVE ME WHEN WE SWITCH TO SKIN VERSION 2.0
-#define PRE_SKIN_VERSION_2_0_COMPATIBILITY 1
-// REMOVE ME WHEN WE SWITCH TO SKIN VERSION 2.0
+// REMOVE ME WHEN WE SWITCH TO SKIN VERSION 2.1
+#define PRE_SKIN_VERSION_2_1_COMPATIBILITY 1
+// REMOVE ME WHEN WE SWITCH TO SKIN VERSION 2.1
 
 #include "Profile.h"
 #include "settings/VideoSettings.h"
@@ -160,51 +160,6 @@ public:
 };
 typedef std::vector<CFileTypeIcon> VECFILETYPEICONS;
 typedef std::vector<CFileTypeIcon>::iterator IVECFILETYPEICONS;
-
-#ifdef PRE_SKIN_VERSION_2_0_COMPATIBILITY
-class CButtonScrollerSettings
-{
-public:
-  CButtonScrollerSettings() {};
-  ~CButtonScrollerSettings()
-  {
-    Clear();
-  }
-  void Clear()
-  {
-    for (unsigned int i = 0; i < m_vecButtons.size(); i++)
-    {
-      CButton *pButton = m_vecButtons[i];
-      if (pButton)
-        delete pButton;
-    }
-    m_vecButtons.clear();
-  };
-  class CButton
-  {
-  public:
-    CButton(const string &strLabel, const CStdString &strExecute, const int iIcon)
-    {
-      m_dwLabel = -1;
-      m_strLabel = strLabel;
-      m_strExecute = strExecute;
-      m_iIcon = iIcon;
-    };
-    CButton(DWORD dwLabel, const CStdString &strExecute, const int iIcon)
-    {
-      m_dwLabel = dwLabel;
-      m_strExecute = strExecute;
-      m_iIcon = iIcon;
-    };
-    DWORD m_dwLabel;
-    string m_strLabel;
-    CStdString m_strExecute;
-    int m_iIcon;
-  };
-  std::vector<CButton *> m_vecButtons;
-  int m_iDefaultButton;
-};
-#endif
 
 struct VOICE_MASK {
   float energy;
@@ -505,9 +460,7 @@ public:
   VECPROFILES m_vecProfiles;
   int m_iLastLoadedProfileIndex;
   RESOLUTION_INFO m_ResInfo[10];
-#ifdef PRE_SKIN_VERSION_2_0_COMPATIBILITY
-  CButtonScrollerSettings m_buttonSettings;
-#endif
+
 protected:
   void GetBoolean(const TiXmlElement* pRootElement, const CStdString& strTagName, bool& bValue);
   void GetInteger(const TiXmlElement* pRootElement, const CStdString& strTagName, int& iValue, const int iDefault, const int iMin, const int iMax);
@@ -534,9 +487,7 @@ protected:
 
   bool LoadXml();
   void CloseXml();
-#ifdef PRE_SKIN_VERSION_2_0_COMPATIBILITY
-  void LoadHomeButtons(TiXmlElement* pRootElement);
-#endif
+
   // skin activated settings
   void LoadSkinSettings(const TiXmlElement* pElement);
   void SaveSkinSettings(TiXmlNode *pElement) const;

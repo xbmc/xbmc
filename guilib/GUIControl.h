@@ -112,10 +112,7 @@ public:
   virtual void SetWidth(int iWidth);
   virtual void SetHeight(int iHeight);
   virtual void SetVisible(bool bVisible);
-  void SetVisibleCondition(int visible);
-//#ifdef PRE_SKIN_VERSION_2_0_COMPATIBILITY
-  void SetVisibleCondition(int visible, bool allowHiddenFocus, bool startHidden);
-//  void SetVisibleCondition(int visible, bool allowHiddenFocus);
+  void SetVisibleCondition(int visible, bool allowHiddenFocus);
   int GetVisibleCondition() const { return m_visibleCondition; };
   void UpdateVisibility();
   void SetInitialVisibility();
@@ -203,7 +200,6 @@ protected:
   int m_visibleCondition;
   bool m_allowHiddenFocus;
   bool m_lastVisible;
-  bool m_startHidden; // PRE_SKIN_VERSION_2_0_COMPATIBILITY
   bool m_hasRendered;
 
   // animation effects

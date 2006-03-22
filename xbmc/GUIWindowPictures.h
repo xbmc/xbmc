@@ -15,7 +15,6 @@ public:
   virtual ~CGUIWindowPictures(void);
   virtual bool OnMessage(CGUIMessage& message);
 
-  virtual void OnWindowLoaded();
   CFileItem CurrentDirectory() const { return m_vecItems;};
 
 protected:

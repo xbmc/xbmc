@@ -7,9 +7,6 @@
 #include "GUIPassword.h"
 #include "Application.h"
 #include "PartyModeManager.h"
-#ifdef PRE_SKIN_VERSION_2_0_COMPATIBILITY
-#include "SkinInfo.h"
-#endif
 
 #include "GUIImage.h"
 #include "GUIMultiImage.h"
