@@ -2783,9 +2783,7 @@ void CApplication::FrameMove()
   default:
     {
       bGotKey = true;
-      float fRepeat = 0.001f * g_stSettings.m_iRepeatDelayIR;
-
-      CKey key(wRemotes, 0, 0, 0, 0, 0, 0, max(fRepeat, fFrameTime) );
+      CKey key(wRemotes, 0, 0, 0, 0, 0, 0, fFrameTime);
       OnKey(key);
       break;
     }

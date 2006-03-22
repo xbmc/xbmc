@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 22-03-2006 fixed: Volume change with the remove moved in large chunks.
+ - 22-03-2006 fixed: ListItem.Thumb/Icon only worked in the actual window on screen, not in any dialogs.
  - 22-03-2006 added: partial support for windows style domain specification. (smb://domain\user:password@host/...)
  - 22-03-2006 fixed: urls with empty username would be parsed incorrectly (smb://:@host/....)
  - 22-03-2006 fixed: dvdplayer: some dvds used the wrong subtitle colors that resulted in funny subtitles. Thx to frov for sending me a dvd that had this problem
