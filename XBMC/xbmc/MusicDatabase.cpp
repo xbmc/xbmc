@@ -3080,10 +3080,13 @@ bool CMusicDatabase::GetSongsByWhere(const CStdString &whereClause, CFileItemLis
     // get data from returned rows
     items.Reserve(iRowsFound);
     // get songs from returned subtable
+    int count = 0;
     while (!m_pDS->eof())
     {
       CFileItem *item = new CFileItem;
       GetFileItemFromDataset(item, "");
+      // HACK for sorting by database returned order
+      item->m_iprogramCount = ++count;
       items.Add(item);
       m_pDS->next();
     }

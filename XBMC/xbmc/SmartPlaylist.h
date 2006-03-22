@@ -9,7 +9,8 @@ class CSmartPlaylistRule
 public:
   CSmartPlaylistRule();
 
-  enum SEARCH_FIELD { SONG_GENRE = 1,
+  enum SEARCH_FIELD { FIELD_NONE = 0,
+                      SONG_GENRE = 1,
                       SONG_ALBUM,
                       SONG_ARTIST,
                       SONG_TITLE,
@@ -30,6 +31,9 @@ public:
 
   CStdString GetWhereClause();
   void TranslateStrings(const char *field, const char *oper, const char *parameter);
+  static SEARCH_FIELD TranslateField(const char *field);
+  static CStdString   TranslateField(SEARCH_FIELD field);
+  static CStdString   GetDatabaseField(SEARCH_FIELD field);
 
   TiXmlElement GetAsElement();
 
@@ -37,9 +41,7 @@ public:
   SEARCH_OPERATOR    m_operator;
   CStdString         m_parameter;
 private:
-  SEARCH_FIELD       TranslateField(const char *field);
   SEARCH_OPERATOR    TranslateOperator(const char *oper);
-  CStdString         TranslateField(SEARCH_FIELD field);
   CStdString         TranslateOperator(SEARCH_OPERATOR oper);
 };
 
@@ -54,9 +56,14 @@ public:
   void SetName(const CStdString &name);
   void AddRule(const CSmartPlaylistRule &rule);
   CStdString GetWhereClause();
+  CStdString GetOrderClause();
 
 private:
   vector<CSmartPlaylistRule> m_playlistRules;
   CStdString m_playlistName;
   bool m_matchAllRules;
+  // order information
+  unsigned int m_limit;
+  CSmartPlaylistRule::SEARCH_FIELD m_orderField;
+  bool m_orderAscending;
 };
