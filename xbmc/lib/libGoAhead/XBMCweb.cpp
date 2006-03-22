@@ -1039,7 +1039,7 @@ void CXbmcWeb::SetCurrentMediaItem(CFileItem& newItem)
   if (strText.GetAt(strText.size()-1) != ' ')
   strText+=" ";
 
-  CUtil::SecondsToHMSString(tag.GetDuration(), strTime);
+  CUtil::SecondsToTimeString(tag.GetDuration(), strTime);
 
   strDuration=strText+strTime;		
   }
@@ -1070,7 +1070,7 @@ void CXbmcWeb::SetCurrentMediaItem(CFileItem& newItem)
   if (strText.GetAt(strText.size()-1) != ' ')
   strText+=" ";
 
-  CUtil::SecondsToHMSString(tag.GetDuration(), strTime);
+  CUtil::SecondsToTimeString(tag.GetDuration(), strTime);
 
   strDuration=strText+strTime;
   }

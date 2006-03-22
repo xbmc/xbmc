@@ -1,6 +1,7 @@
 #include "SmartPlaylist.h"
 #include "utils/log.h"
 #include "StringUtils.h"
+#include "SystemTime.h"
 
 typedef struct
 {
@@ -16,7 +17,8 @@ static const translateField fields[] = { "genre", CSmartPlaylistRule::SONG_GENRE
                                          "time", CSmartPlaylistRule::SONG_TIME,
                                          "tracknumber", CSmartPlaylistRule::SONG_TRACKNUMBER,
                                          "filename", CSmartPlaylistRule::SONG_FILENAME,
-                                         "playcount", CSmartPlaylistRule::SONG_PLAYCOUNT };
+                                         "playcount", CSmartPlaylistRule::SONG_PLAYCOUNT,
+                                         "lastplayed", CSmartPlaylistRule::SONG_LASTPLAYED };
 
 #define NUM_FIELDS sizeof(fields) / sizeof(translateField)
 
@@ -34,7 +36,18 @@ void CSmartPlaylistRule::TranslateStrings(const char *field, const char *oper, c
   m_parameter = parameter;
   if (m_field == SONG_TIME)
   { // translate time to seconds
-    m_parameter.Format("%i", StringUtils::TimeStringToInt(m_parameter));
+    m_parameter.Format("%i", StringUtils::TimeStringToSeconds(m_parameter));
+  }
+  if (m_field == SONG_LASTPLAYED)
+  { 
+    if (m_operator == OPERATOR_IN_THE_LAST || m_operator == OPERATOR_NOT_IN_THE_LAST)
+    { // translate time period
+      CSystemTime sysTime;
+      sysTime.Now();
+      sysTime.SubtractDays(CSystemTime::PeriodToDays(m_parameter));
+      m_parameter = sysTime.GetDate();
+      m_operator = (m_operator == OPERATOR_IN_THE_LAST) ? OPERATOR_GREATER_THAN : OPERATOR_LESS_THAN;
+    }
   }
 }
 
@@ -72,6 +85,8 @@ CSmartPlaylistRule::SEARCH_OPERATOR CSmartPlaylistRule::TranslateOperator(const 
   else if (strcmpi(oper, "endswith") == 0) return OPERATOR_ENDS_WITH;
   else if (strcmpi(oper, "greaterthan") == 0) return OPERATOR_GREATER_THAN;
   else if (strcmpi(oper, "lessthan") == 0) return OPERATOR_LESS_THAN;
+  else if (strcmpi(oper, "inthelast") == 0) return OPERATOR_IN_THE_LAST;
+  else if (strcmpi(oper, "notinthelast") == 0) return OPERATOR_NOT_IN_THE_LAST;
   return OPERATOR_CONTAINS;
 }
 
@@ -85,6 +100,8 @@ CStdString CSmartPlaylistRule::TranslateOperator(SEARCH_OPERATOR oper)
   else if (oper == OPERATOR_ENDS_WITH) return "endswith";
   else if (oper == OPERATOR_GREATER_THAN) return "greaterthan";
   else if (oper == OPERATOR_LESS_THAN) return "lessthan";
+  else if (oper == OPERATOR_IN_THE_LAST) return "inthelast";
+  else if (oper == OPERATOR_NOT_IN_THE_LAST) return "notinthelast";
   return "contains";
 }
 
@@ -136,6 +153,7 @@ CStdString CSmartPlaylistRule::GetDatabaseField(SEARCH_FIELD field)
   else if (field == SONG_PLAYCOUNT) return "iTimesPlayed";
   else if (field == SONG_FILENAME) return "strFilename";
   else if (field == SONG_TRACKNUMBER) return "iTrack";
+  else if (field == SONG_LASTPLAYED) return "lastplayed";
   return "";
 }
 

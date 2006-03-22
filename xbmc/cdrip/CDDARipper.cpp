@@ -345,7 +345,7 @@ bool CCDDARipper::RipCD()
 
     dwTick = timeGetTime() - dwTick;
     CStdString strTmp;
-    CUtil::SecondsToHMSString(dwTick / 1000, strTmp);
+    StringUtils::SecondsToTimeString(dwTick / 1000, strTmp);
     CLog::Log(LOGINFO, "Ripping Track %d took %s", iTrack, strTmp.c_str());
   }
   CLog::Log(LOGINFO, "Ripped CD succesfull");
