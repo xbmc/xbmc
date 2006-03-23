@@ -1,5 +1,5 @@
 #pragma once
-#include "../lib/common/xbstopwatch.h"
+#include "xbstopwatch.h"
 #include "Thread.h"
 #include "../stdafx.h"
 #include "../../guilib/LocalizeStrings.h"
