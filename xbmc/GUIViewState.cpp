@@ -71,7 +71,7 @@ CGUIViewState::~CGUIViewState()
 {
 }
 
-SORT_ORDER CGUIViewState::GetDisplaySortOrder()
+SORT_ORDER CGUIViewState::GetDisplaySortOrder() const
 {
   // we actually treat some sort orders in reverse, so that we can have
   // the one sort order variable to save but it can be ascending usually,
