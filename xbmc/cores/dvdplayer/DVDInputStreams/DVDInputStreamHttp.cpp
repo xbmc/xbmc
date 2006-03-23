@@ -38,6 +38,12 @@ bool CDVDInputStreamHttp::Open(const char* strFile)
   m_pFile = new CFileCurl();
   if (!m_pFile) return false;
 
+  std::string filename = strFile;
+
+  // shout protocol is same thing as http, but curl doesn't know what it is
+  if( filename.substr(0, 8) == "shout://" )
+    filename.replace(0, 8, "http://");
+
   m_pFile->SetHttpHeaderCallback(this);
   
   // this should go to the demuxer
@@ -46,7 +52,7 @@ bool CDVDInputStreamHttp::Open(const char* strFile)
   m_eof = false;
 
   // open file in binary mode
-  if (!m_pFile->Open(CURL(strFile), true))
+  if (!m_pFile->Open(CURL(filename), true))
   {
     delete m_pFile;
     m_pFile = NULL;
