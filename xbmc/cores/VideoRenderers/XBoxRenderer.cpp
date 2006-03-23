@@ -210,7 +210,7 @@ void CXBoxRenderer::DrawAlpha(int x0, int y0, int w, int h, unsigned char *src, 
   //Sometimes happens when switching between fullscreen and small window
   if( w == 0 || h == 0 ) 
   {
-    CLog::Log(LOGWARNING, "Zero dimensions specified to DrawAlpha, skipping");
+    CLog::Log(LOGINFO, "Zero dimensions specified to DrawAlpha, skipping");
     return;
   }
 
