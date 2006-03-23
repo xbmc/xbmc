@@ -1281,16 +1281,18 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
   else if (strSetting == "CDDARipper.Path")
     {
       CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
-      CStdString strPath = pSettingString->GetData();
+      CStdString strPath = g_stSettings.m_strRipPath;
       if (CGUIDialogFileBrowser::ShowAndGetDirectory(g_settings.m_vecMyFilesShares,g_localizeStrings.Get(607),strPath,true))
       {
         strcpy(g_stSettings.m_strRipPath,strPath.c_str());
-        g_settings.Save();
+        
         CStdString strOutput;
         if (CUtil::MakeShortenPath(strPath, strOutput, 30 ))
           pSettingString->SetData(strOutput);
         else 
           pSettingString->SetData(strPath);
+        
+        g_settings.Save();
       }
     }
   else if (strSetting == "XLinkKai.Enabled")
