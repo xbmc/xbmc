@@ -537,60 +537,25 @@ void CGUIWindowPictures::OnItemLoaded(CFileItem *pItem)
     // create the folder thumb by choosing 4 random thumbs within the folder and putting
     // them into one thumb.
     // count the number of images
-    int numFiles = 0;
-    for (int i=0; i < items.Size(); i++)
-      if (items[i]->IsPicture() && !items[i]->IsZIP() && !items[i]->IsRAR())
-        numFiles++;
-    if (!numFiles) return;
-
-    srand(timeGetTime());
-    int thumbs[4];
-    if (numFiles > 4)
-    { // choose 4 random thumbs
-      int i = 0;
-      while (i < 4)
-      {
-        int thumbnum = rand() % numFiles;
-        bool bFoundNew = true;
-        for (int j = 0; j < i; j++)
-        {
-          if (thumbnum == thumbs[j])
-          {
-            bFoundNew = false;
-          }
-        }
-        if (bFoundNew)
-          thumbs[i++] = thumbnum;
-      }
-    }
-    else
+    for (int i=0; i < items.Size();)
     {
-      for (int i = 0; i < numFiles; i++)
-        thumbs[i] = i;
-      for (int i = numFiles; i < 4; i++)
-        thumbs[i] = -1;
+      if (!items[i]->IsPicture() || items[i]->IsZIP() || items[i]->IsRAR())
+        items.Remove(i);
+      else
+        i++;
     }
+
+    if (items.IsEmpty())
+      return; // no images in this folder
+
+    // randomize them
+    items.Randomize();
+
     // ok, now we've got the files to get the thumbs from, lets create it...
     // we basically load the 4 thumbs, resample to 62x62 pixels, and add them
     CStdString strFiles[4];
-    for (int thumb = 0; thumb < 4; thumb++)
-    {
-      if (thumbs[thumb] >= 0)
-      {
-        int files = 0;
-        for (int i = 0; i < items.Size(); i++)
-        {
-          if (items[i]->IsPicture() && !items[i]->IsZIP() && !items[i]->IsRAR())
-          {
-            if (thumbs[thumb] == files)
-              strFiles[thumb] = items[i]->m_strPath;
-            files++;
-          }
-        }
-      }
-      else
-        strFiles[thumb] = "";
-    }
+    for (int thumb = 0; thumb < 4 && thumb < items.Size(); thumb++)
+      strFiles[thumb] = items[thumb]->m_strPath;
     CPicture pic;
     pic.CreateFolderThumb(pItem->m_strPath, strFiles);
     // refill in the icon to get it to update
