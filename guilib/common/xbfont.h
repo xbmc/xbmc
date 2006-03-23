@@ -48,7 +48,7 @@
 #ifdef _XBOX
 #include "XBResource.h"
 #include "xonline.h"
-#include "uix.h"
+//#include "uix.h"
 
 #define DEGREE_TO_RADIAN 0.01745329f
 class CAngle
@@ -102,7 +102,7 @@ struct GLYPH_ATTR
 //       the pre-rendered font is used to create the texture. A .abc file
 //       contains information for spacing the font characters (aka glyphs).
 //-----------------------------------------------------------------------------
-class CXBFont: public ITitleFontRenderer
+class CXBFont //: public ITitleFontRenderer
 {
 public:
   // Font vertical dimensions

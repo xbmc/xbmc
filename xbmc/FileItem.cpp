@@ -1641,6 +1641,8 @@ void CFileItemList::Sort(SORT_METHOD sortMethod, SORT_ORDER sortOrder)
     Sort(sortOrder==SORT_ORDER_ASC ? SSortFileItem::MovieYearAscending : SSortFileItem::MovieYearDescending);
     break;
   case SORT_METHOD_PROGRAM_COUNT:
+  case SORT_METHOD_PLAYLIST_ORDER:
+    // TODO: Playlist order is hacked into program count variable (not nice, but ok until 2.0)
     Sort(sortOrder==SORT_ORDER_ASC ? SSortFileItem::ProgramCountAscending : SSortFileItem::ProgramCountDescending);
     break;
   default:
