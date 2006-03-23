@@ -9,17 +9,18 @@ class CSmartPlaylistRule
 public:
   CSmartPlaylistRule();
 
-  enum SEARCH_FIELD { FIELD_NONE = 0,
-                      SONG_GENRE = 1,
-                      SONG_ALBUM,
-                      SONG_ARTIST,
-                      SONG_TITLE,
-                      SONG_YEAR,
-                      SONG_TIME,
-                      SONG_TRACKNUMBER,
-                      SONG_FILENAME,
-                      SONG_PLAYCOUNT,
-                      SONG_LASTPLAYED };
+  enum DATABASE_FIELD { FIELD_NONE = 0,
+                        SONG_GENRE = 1,
+                        SONG_ALBUM,
+                        SONG_ARTIST,
+                        SONG_TITLE,
+                        SONG_YEAR,
+                        SONG_TIME,
+                        SONG_TRACKNUMBER,
+                        SONG_FILENAME,
+                        SONG_PLAYCOUNT,
+                        SONG_LASTPLAYED,
+                        FIELD_RANDOM };
 
   enum SEARCH_OPERATOR { OPERATOR_CONTAINS = 1,
                          OPERATOR_DOES_NOT_CONTAIN,
@@ -34,13 +35,13 @@ public:
 
   CStdString GetWhereClause();
   void TranslateStrings(const char *field, const char *oper, const char *parameter);
-  static SEARCH_FIELD TranslateField(const char *field);
-  static CStdString   TranslateField(SEARCH_FIELD field);
-  static CStdString   GetDatabaseField(SEARCH_FIELD field);
+  static DATABASE_FIELD TranslateField(const char *field);
+  static CStdString     TranslateField(DATABASE_FIELD field);
+  static CStdString     GetDatabaseField(DATABASE_FIELD field);
 
   TiXmlElement GetAsElement();
 
-  SEARCH_FIELD       m_field;
+  DATABASE_FIELD     m_field;
   SEARCH_OPERATOR    m_operator;
   CStdString         m_parameter;
 private:
@@ -67,6 +68,6 @@ private:
   bool m_matchAllRules;
   // order information
   unsigned int m_limit;
-  CSmartPlaylistRule::SEARCH_FIELD m_orderField;
+  CSmartPlaylistRule::DATABASE_FIELD m_orderField;
   bool m_orderAscending;
 };
