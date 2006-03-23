@@ -179,6 +179,8 @@ private:
 
   int m_playSpeed;
   
+  unsigned int m_packetcount; // packet count from demuxer, may wrap around. used during startup
+  
   // classes
   CDVDPlayerAudio m_dvdPlayerAudio; // audio part
   CDVDPlayerVideo m_dvdPlayerVideo; // video part
