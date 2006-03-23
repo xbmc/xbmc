@@ -242,6 +242,7 @@ CGUISettings::CGUISettings(void)
   AddInt(2, "CDDARipper.Encoder", 621, CDDARIP_ENCODER_LAME, CDDARIP_ENCODER_LAME, 1, CDDARIP_ENCODER_WAV, SPIN_CONTROL_TEXT);
   AddInt(3, "CDDARipper.Quality", 622, CDDARIP_QUALITY_CBR, CDDARIP_QUALITY_CBR, 1, CDDARIP_QUALITY_EXTREME, SPIN_CONTROL_TEXT);
   AddInt(4, "CDDARipper.Bitrate", 623, 192, 128, 32, 320, SPIN_CONTROL_INT_PLUS, MASK_KBPS);
+  AddString(5, "CDDARipper.Path", 607, "E:\\Music\\CD-Rips", BUTTON_CONTROL_MISC_INPUT, false, 607);
 
   AddCategory(3, "MusicPlayer", 16003);
   AddString(1, "MusicPlayer.JumpToAudioHardware", 16001, "", BUTTON_CONTROL_STANDARD);
