@@ -20,7 +20,7 @@ CGUIDialogFileBrowser::CGUIDialogFileBrowser()
 {
   m_bConfirmed = false;
   m_Directory.m_bIsFolder = true;
-  m_browsingForFolders = false;
+  m_browsingForFolders = 0;
   m_browsingForImages = false;
   m_addNetworkShareEnabled = false;
   m_thumbLoader.SetObserver(this);
@@ -79,14 +79,26 @@ bool CGUIDialogFileBrowser::OnMessage(CGUIMessage& message)
         int iAction = message.GetParam1();
         if (iItem < 0) break;
         if (iAction == ACTION_SELECT_ITEM || iAction == ACTION_MOUSE_LEFT_CLICK)
-        {
           OnClick(iItem);
-        }
       }
       else if (message.GetSenderId() == CONTROL_OK)
       {
-        m_bConfirmed = true;
-        Close();
+        if (m_browsingForFolders == 2)
+          {
+            CStdString strTest;
+            int iItem = m_viewControl.GetSelectedItem();
+            CUtil::AddFileToFolder(m_vecItems[iItem]->m_strPath,"1",strTest);
+            CFile file;
+            if (file.OpenForWrite(strTest))
+            {
+              file.Close();
+              CFile::Delete(strTest);
+              m_bConfirmed = true;
+              Close();
+            }
+            else
+              CGUIDialogOK::ShowAndGetInput(257,0,0,0);
+          }
       }
       else if (message.GetSenderId() == CONTROL_CANCEL)
       {
@@ -368,9 +380,21 @@ bool CGUIDialogFileBrowser::ShowAndGetImage(VECSHARES &shares, const CStdString 
   return success;
 }
 
-bool CGUIDialogFileBrowser::ShowAndGetDirectory(VECSHARES &shares, const CStdString &heading, CStdString &path)
+bool CGUIDialogFileBrowser::ShowAndGetDirectory(VECSHARES &shares, const CStdString &heading, CStdString &path, bool bWriteOnly)
 {
   // an extension mask of "/" ensures that no files are shown
+  if (bWriteOnly)
+  {
+    VECSHARES shareWritable;
+    for (unsigned int i=0;i<shares.size();++i)
+    {
+      if (shares[i].isWritable())
+        shareWritable.push_back(shares[i]);
+    }
+
+    return ShowAndGetFile(shareWritable, "/w", heading, path);
+  }
+
   return ShowAndGetFile(shares, "/", heading, path);
 }
 
@@ -383,8 +407,19 @@ bool CGUIDialogFileBrowser::ShowAndGetFile(VECSHARES &shares, const CStdString &
   browseHeading.Format(g_localizeStrings.Get(13401).c_str(), heading.c_str());
   browser->SetHeading(browseHeading);
   browser->SetShares(shares);
-  browser->m_rootDir.SetMask(mask);
-  browser->m_browsingForFolders = (mask == "/");
+  CStdString strMask = mask;
+  if (mask == "/")
+    browser->m_browsingForFolders=1;
+  else
+  if (mask == "/w")
+  {
+    browser->m_browsingForFolders=2;
+    strMask = "/";
+  }
+  else
+    browser->m_browsingForFolders = 0;
+
+  browser->m_rootDir.SetMask(strMask);
   browser->m_selectedPath = path;
   browser->DoModal(m_gWindowManager.GetActiveWindow());
   if (browser->IsConfirmed())
