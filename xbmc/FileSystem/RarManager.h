@@ -10,7 +10,7 @@
 #include "../utils/criticalsection.h"
 #include <map>
 #include "../lib/UnrarXLib/UnrarX.hpp"
-#include "../lib/common/xbstopwatch.h"
+#include "xbstopwatch.h"
 
 #include "../utils/Thread.h"
 
