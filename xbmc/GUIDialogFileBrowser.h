@@ -20,7 +20,7 @@ public:
   bool IsConfirmed() { return m_bConfirmed; };
   void SetHeading(const CStdString &heading);
 
-  static bool ShowAndGetDirectory(VECSHARES &shares, const CStdString &heading, CStdString &path);
+  static bool ShowAndGetDirectory(VECSHARES &shares, const CStdString &heading, CStdString &path, bool bWriteOnly=false);
   static bool ShowAndGetFile(VECSHARES &shares, const CStdString &mask, const CStdString &heading, CStdString &path);
   static bool ShowAndGetShare(CStdString &path, bool allowNetworkShares);
   static bool ShowAndGetImage(VECSHARES &shares, const CStdString &heading, CStdString &path);
@@ -45,7 +45,7 @@ protected:
   CStdString m_strParentPath;
   CStdString m_selectedPath;
   CDirectoryHistory m_history;
-  bool m_browsingForFolders;
+  int m_browsingForFolders; // 0 - no, 1 - yes, 2 - yes, only writable
   bool m_bConfirmed;
   bool m_addNetworkShareEnabled;
   bool m_browsingForImages;
