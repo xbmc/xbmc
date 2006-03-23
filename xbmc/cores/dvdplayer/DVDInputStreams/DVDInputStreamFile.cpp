@@ -23,9 +23,11 @@ bool CDVDInputStreamFile::IsEOF()
     __int64 size = m_pFile->GetLength();
     if( size > 0 && m_pFile->GetPosition() >= size )
       return true;
+
+    return false;
   }
 
-  return false;
+  return true;
 }
 
 bool CDVDInputStreamFile::Open(const char* strFile)
@@ -64,6 +66,9 @@ int CDVDInputStreamFile::Read(BYTE* buf, int buf_size)
   int ret = 0;
   if (m_pFile) ret = m_pFile->Read(buf, buf_size);
   else return -1;
+
+  /* on error close file */
+  if( ret < 0 ) Close();
 
   return (int)(ret & 0xFFFFFFFF);
 }
