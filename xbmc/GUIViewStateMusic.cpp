@@ -332,8 +332,8 @@ CGUIViewStateMusicSmartPlaylist::CGUIViewStateMusicSmartPlaylist(const CFileItem
 {
   CStdString strTrackLeft=g_guiSettings.GetString("MyMusic.TrackFormat");
   CStdString strTrackRight=g_guiSettings.GetString("MyMusic.TrackFormatRight");
-  // 2.0 FIXME: HACK for playlist order - need new string
-  AddSortMethod(SORT_METHOD_PROGRAM_COUNT, 363, LABEL_MASKS(strTrackLeft, strTrackRight));
+  // 2.0 TODO: HACK for playlist order - need new string
+  AddSortMethod(SORT_METHOD_PLAYLIST_ORDER, 363, LABEL_MASKS(strTrackLeft, strTrackRight));
   AddSortMethod(SORT_METHOD_TRACKNUM, 266, LABEL_MASKS(strTrackLeft, strTrackRight));  // Userdefined, Userdefined| empty, empty
   if (g_guiSettings.GetBool("MyMusic.IgnoreTheWhenSorting"))
     AddSortMethod(SORT_METHOD_TITLE_IGNORE_THE, 268, LABEL_MASKS("%T - %A", "%D"));  // Title, Artist, Duration| empty, empty
