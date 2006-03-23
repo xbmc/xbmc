@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 23-03-2006 fixed: my programs dvd share didn't have play disc entry.
  - 23-03-2006 fixed: old cdda rip path could be lost when browser was opened.
  - 23-03-2006 fixed: dvdplayer would fail to play urls with shout:// instead of http:// (fixes play using in Shoutcast Top 500)
  - 23-03-2006 fixed: file browser was broken since yesterday
