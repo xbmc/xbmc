@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 23-03-2006 fixed: Trainer settings dialog couldn't take more than 8 buttons.
+ - 23-03-2006 fixed: Skin reload would crash after trainer settings dialog was on screen.
  - 23-03-2006 changed: Default sort direction for program count, date, rating and size is now descending.
  - 23-03-2006 fixed: cdda rip path had to be specified in xml instead of in gui.
  - 22-03-2006 fixed: [ 1455993 ] Minor cosmetic problem with Kai when not connected.
