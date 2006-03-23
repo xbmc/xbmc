@@ -476,8 +476,6 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
   GetString(pRootElement, "dvdplayer", g_stSettings.m_szExternalDVDPlayer, "");
   GetString(pRootElement, "cddaplayer", g_stSettings.m_szExternalCDDAPlayer, "");
 
-  GetString(pRootElement, "CDDARipPath", g_stSettings.m_strRipPath, "");
-
   CStdString strDir;
 
   strDir = g_stSettings.m_szShortcutDirectory;
@@ -1273,6 +1271,12 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile, const bool loadp
   if (pElement)
   {
     GetString(pElement, "ScreenSaverSlideShowPath", g_stSettings.szScreenSaverSlideShowPath, "");
+  }
+  
+  pElement = pRootElement->FirstChildElement("CDDARipper");
+  if (pElement)
+  {
+    GetString(pElement, "Path", g_stSettings.m_strRipPath, "");
   }
   
   pElement = pRootElement->FirstChildElement("DefaultVideoSettings");

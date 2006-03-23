@@ -1278,6 +1278,21 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
       g_audioContext.SetActiveDevice(CAudioContext::DEFAULT_DEVICE);
     }
   }
+  else if (strSetting == "CDDARipper.Path")
+    {
+      CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
+      CStdString strPath = pSettingString->GetData();
+      if (CGUIDialogFileBrowser::ShowAndGetDirectory(g_settings.m_vecMyFilesShares,g_localizeStrings.Get(607),strPath,true))
+      {
+        strcpy(g_stSettings.m_strRipPath,strPath.c_str());
+        g_settings.Save();
+        CStdString strOutput;
+        if (CUtil::MakeShortenPath(strPath, strOutput, 30 ))
+          pSettingString->SetData(strOutput);
+        else 
+          pSettingString->SetData(strPath);
+      }
+    }
   else if (strSetting == "XLinkKai.Enabled")
   {
     if (g_guiSettings.GetBool("XLinkKai.Enabled"))
