@@ -322,14 +322,14 @@ void CGUIMediaWindow::UpdateButtons()
   if (m_guiState.get())
   {
     // Update sorting controls
-    if (m_guiState->GetSortOrder()==SORT_ORDER_NONE)
+    if (m_guiState->GetDisplaySortOrder()==SORT_ORDER_NONE)
     {
       CONTROL_DISABLE(CONTROL_BTNSORTASC);
     }
     else
     {
       CONTROL_ENABLE(CONTROL_BTNSORTASC);
-      if (m_guiState->GetSortOrder()==SORT_ORDER_ASC)
+      if (m_guiState->GetDisplaySortOrder()==SORT_ORDER_ASC)
       {
         CGUIMessage msg(GUI_MSG_DESELECTED, GetID(), CONTROL_BTNSORTASC);
         g_graphicsContext.SendMessage(msg);
@@ -380,7 +380,7 @@ void CGUIMediaWindow::SortItems(CFileItemList &items)
 
   if (guiState.get())
   {
-    items.Sort(guiState->GetSortMethod(), guiState->GetSortOrder());
+    items.Sort(guiState->GetSortMethod(), guiState->GetDisplaySortOrder());
 
     // Should these items be saved to the hdd
     if (items.GetCacheToDisc())
