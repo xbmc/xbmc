@@ -288,6 +288,16 @@ void CDetectDVDMedia::SetNewDVDShareUrl( const CStdString& strNewUrl, bool bCDDA
       SetShareName(g_settings.m_vecMyVideoShares[i].strName, strDescription);
     }
   }
+
+  // My Programs
+  for (i = 0; i < (int)g_settings.m_vecMyProgramsBookmarks.size(); ++i)
+  {
+    if ( g_settings.m_vecMyProgramsBookmarks[i].m_iDriveType == SHARE_TYPE_DVD )
+    {
+      g_settings.m_vecMyProgramsBookmarks[i].strPath = strNewUrl;
+      SetShareName(g_settings.m_vecMyProgramsBookmarks[i].strName, strDescription);
+    }
+  }
 }
 
 DWORD CDetectDVDMedia::GetTrayState()
