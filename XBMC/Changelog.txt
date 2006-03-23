@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 23-03-2006 fixed: file browser was broken since yesterday
  - 23-03-2006 fixed: dvdplayer would allways assume an http stream was shoutcast.
  - 23-03-2006 fixed: dvdplayer would not end playback on read error when playing from file.
  - 23-03-2006 fixed: display of temparature texts in system info for non latin charsets
