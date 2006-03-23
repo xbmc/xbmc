@@ -300,7 +300,12 @@ void CDVDPlayerVideo::Process()
       CDVDDemux::DemuxPacket* pPacket = pMsgDemuxerPacket->GetPacket();
       
       int iDecoderState = m_pVideoCodec->Decode(pPacket->pData, pPacket->iSize);
-      
+
+      /* decoders might leave in an invalid mmx state, make sure this is reset before continuing */
+      __asm { 
+        emms
+      }
+
       // loop while no error
       while (!(iDecoderState & VC_ERROR))
       {
@@ -731,9 +736,12 @@ void CDVDPlayerVideo::CPresentThread::Process()
       g_renderManager.FlipPage();
 
       /* calculate m_iDelay. m_iDelay will converge towards the correct value */
-      /* timeconstant of about 9 frames */
-      m_iDelay = (m_iDelay + 9*(m_pClock->GetAbsoluteClock() - iFlipStamp))/10;
-      if( m_iDelay < 0 ) m_iDelay = 0; // fix for buggy clock
+      /* timeconstant of about 60 frames */
+      mTime = m_pClock->GetAbsoluteClock() - iFlipStamp;
+      if( 0 < mTime && mTime > 80000 ) // protect agains problems with clock and when debugging
+      {
+        m_iDelay = (59*m_iDelay + mTime)/60;
+      }
     }
   }
 
