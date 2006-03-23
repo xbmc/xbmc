@@ -1522,9 +1522,9 @@ string CGUIInfoManager::GetSystemHeatInfo(const CStdString &strInfo)
   if (strInfo == "cpu")
   {
     if (g_guiSettings.GetInt("Weather.TemperatureUnits") == 1 /*DEGREES_F*/)
-      text.Format("%s %2.2f%cF", g_localizeStrings.Get(140).c_str(), ((9.0 / 5.0) * m_cpuTemp) + 32.0, 176);
+      text.Format("%s %2.2f%c%cF", g_localizeStrings.Get(140).c_str(), ((9.0 / 5.0) * m_cpuTemp) + 32.0, 0xC2, 0xB0); // 0xC2B0=Degree sign in utf8
     else
-      text.Format("%s %2.2f%cC", g_localizeStrings.Get(140).c_str(), m_cpuTemp, 176);
+      text.Format("%s %2.2f%c%cC", g_localizeStrings.Get(140).c_str(), m_cpuTemp, 0xC2, 0xB0);
   }
   else if (strInfo == "lcdcpu")
   {
@@ -1536,9 +1536,9 @@ string CGUIInfoManager::GetSystemHeatInfo(const CStdString &strInfo)
   else if (strInfo == "gpu")
   {
     if (g_guiSettings.GetInt("Weather.TemperatureUnits") == 1 /*DEGREES_F*/)
-      text.Format("%s %2.2f%cF", g_localizeStrings.Get(141).c_str(), ((9.0 / 5.0) * m_gpuTemp) + 32.0, 176);
+      text.Format("%s %2.2f%c%cF", g_localizeStrings.Get(141).c_str(), ((9.0 / 5.0) * m_gpuTemp) + 32.0, 0xC2, 0xB0);
     else
-      text.Format("%s %2.2f%cC", g_localizeStrings.Get(141).c_str(), m_gpuTemp, 176);
+      text.Format("%s %2.2f%c%cC", g_localizeStrings.Get(141).c_str(), m_gpuTemp, 0xC2, 0xB0);
   }
   else if (strInfo == "lcdgpu")
   {
