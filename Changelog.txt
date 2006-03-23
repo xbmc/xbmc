@@ -14,7 +14,7 @@ added/fixed: (dd-mm-yyyy) (please specify date in CET)
  - 22-03-2006 updated: Norwegian language file (Thnx to vnm)
  - 22-03-2006 updated: German (Austrian) language file (Thnx to CEOMR)
  - 22-03-2006 updated: German language file
- - 22-03-2006 fixed: Volume change with the remove moved in large chunks.
+ - 22-03-2006 fixed: Volume change with the remote moved in large chunks.
  - 22-03-2006 fixed: ListItem.Thumb/Icon only worked in the actual window on screen, not in any dialogs.
  - 22-03-2006 added: partial support for windows style domain specification. (smb://domain\user:password@host/...)
  - 22-03-2006 fixed: urls with empty username would be parsed incorrectly (smb://:@host/....)
