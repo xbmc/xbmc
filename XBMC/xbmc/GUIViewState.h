@@ -41,7 +41,8 @@ public:
   void GetSortMethodLabelMasks(LABEL_MASKS& masks) const;
 
   SORT_ORDER SetNextSortOrder();
-  SORT_ORDER GetSortOrder() const { return m_sortOrder; }
+  SORT_ORDER GetSortOrder() { return m_sortOrder; };
+  SORT_ORDER GetDisplaySortOrder();
   virtual bool HideExtensions();
   virtual bool HideParentDirItems();
   virtual int GetPlaylist();
