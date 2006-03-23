@@ -115,14 +115,13 @@ bool CDVDPlayer::OpenFile(const CFileItem& file, __int64 iStartTime)
     // if we don't wait, the fullscreen window will init with a picture that is 0 pixels width and high
     // we also have to wait for the player to be initialized so that we can set and access all settings when playing a dvd
     bool bProcessThreadIsAlive = true;
-    if (m_CurrentVideo.id >= 0 ||
-        m_pInputStream && (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD) || m_pInputStream->HasExtension("vob")))
+    while (m_CurrentVideo.id >= 0 
+      && bProcessThreadIsAlive 
+      && !m_bAbortRequest 
+      && !m_dvdPlayerVideo.InitializedOutputDevice())
     {
-      while (bProcessThreadIsAlive && !m_bAbortRequest && !m_dvdPlayerVideo.InitializedOutputDevice())
-      {
-        bProcessThreadIsAlive = !WaitForThreadExit(0);
-        Sleep(1);
-      }
+      bProcessThreadIsAlive = !WaitForThreadExit(0);
+      Sleep(1);
     }
 
     // m_bPlaying could be set to false in the meantime, which indicates an error
