@@ -10,7 +10,7 @@
 #define CONTROL_DEFAULT_SPIN        9
 #define CONTROL_DEFAULT_SLIDER     10
 #define CONTROL_DEFAULT_SEPARATOR  11
-#define CONTROL_START              50
+#define CONTROL_START              30
 #define CONTROL_PAGE               60
 
 CGUIDialogSettings::CGUIDialogSettings(DWORD id, const char *xmlFile)
