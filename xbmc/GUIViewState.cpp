@@ -71,6 +71,22 @@ CGUIViewState::~CGUIViewState()
 {
 }
 
+SORT_ORDER CGUIViewState::GetDisplaySortOrder()
+{
+  // we actually treat some sort orders in reverse, so that we can have
+  // the one sort order variable to save but it can be ascending usually,
+  // and descending for the views which should be usually descending.
+  // default sort order for date, size, program count + rating is reversed
+  SORT_METHOD sortMethod = GetSortMethod();
+  if (sortMethod == SORT_METHOD_DATE || sortMethod == SORT_METHOD_SIZE ||
+      sortMethod == SORT_METHOD_VIDEO_RATING || sortMethod == SORT_METHOD_PROGRAM_COUNT)
+  {
+    if (m_sortOrder == SORT_ORDER_ASC) return SORT_ORDER_DESC;
+    if (m_sortOrder == SORT_ORDER_DESC) return SORT_ORDER_ASC;
+  }
+  return m_sortOrder;
+}
+
 SORT_ORDER CGUIViewState::SetNextSortOrder()
 {
   if (m_sortOrder==SORT_ORDER_ASC)

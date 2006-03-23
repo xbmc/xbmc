@@ -9,7 +9,7 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-#include "common/XBInput.h"
+#include "XBInput.h"
 #include "XBInputEx.h"
 #include "IWindowManagerCallback.h"
 #include "common/mouse.h"
