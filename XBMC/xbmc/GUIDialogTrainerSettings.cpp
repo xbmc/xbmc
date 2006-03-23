@@ -3,7 +3,7 @@
 #include "utils/trainer.h"
 
 #define CONTROL_SETTINGS_LABEL      2
-#define CONTROL_START              50
+#define CONTROL_START              30
 
 CGUIDialogTrainerSettings::CGUIDialogTrainerSettings(void)
     : CGUIDialogSettings(WINDOW_DIALOG_TRAINER_SETTINGS, "TrainerSettings.xml")
@@ -25,7 +25,7 @@ bool CGUIDialogTrainerSettings::OnMessage(CGUIMessage &message)
   case GUI_MSG_WINDOW_DEINIT:
     {
       CGUIDialogSettings::OnMessage(message);
-      if (m_iTrainer)
+      if (m_iTrainer && m_iTrainer <= (int)m_vecTrainers.size())
       {
         if (m_bNeedSave)
           m_database->SetTrainerOptions(m_vecTrainers[m_iTrainer-1]->GetPath(),m_iTitleId,m_vecTrainers[m_iTrainer-1]->GetOptions(),m_vecTrainers[m_iTrainer-1]->GetNumberOfOptions());
