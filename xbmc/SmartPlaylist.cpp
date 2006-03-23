@@ -6,7 +6,7 @@
 typedef struct
 {
   char string[13];
-  CSmartPlaylistRule::SEARCH_FIELD field;
+  CSmartPlaylistRule::DATABASE_FIELD field;
 } translateField;
 
 static const translateField fields[] = { "genre", CSmartPlaylistRule::SONG_GENRE,
@@ -18,7 +18,8 @@ static const translateField fields[] = { "genre", CSmartPlaylistRule::SONG_GENRE
                                          "tracknumber", CSmartPlaylistRule::SONG_TRACKNUMBER,
                                          "filename", CSmartPlaylistRule::SONG_FILENAME,
                                          "playcount", CSmartPlaylistRule::SONG_PLAYCOUNT,
-                                         "lastplayed", CSmartPlaylistRule::SONG_LASTPLAYED };
+                                         "lastplayed", CSmartPlaylistRule::SONG_LASTPLAYED,
+                                         "random", CSmartPlaylistRule::FIELD_RANDOM };
 
 #define NUM_FIELDS sizeof(fields) / sizeof(translateField)
 
@@ -61,14 +62,14 @@ TiXmlElement CSmartPlaylistRule::GetAsElement()
   return rule;
 }
 
-CSmartPlaylistRule::SEARCH_FIELD CSmartPlaylistRule::TranslateField(const char *field)
+CSmartPlaylistRule::DATABASE_FIELD CSmartPlaylistRule::TranslateField(const char *field)
 {
   for (int i = 0; i < NUM_FIELDS; i++)
     if (strcmpi(field, fields[i].string) == 0) return fields[i].field;
   return SONG_ALBUM;
 }
 
-CStdString CSmartPlaylistRule::TranslateField(SEARCH_FIELD field)
+CStdString CSmartPlaylistRule::TranslateField(DATABASE_FIELD field)
 {
   for (int i = 0; i < NUM_FIELDS; i++)
     if (field == fields[i].field) return fields[i].string;
@@ -142,7 +143,7 @@ CStdString CSmartPlaylistRule::GetWhereClause()
   return query;
 }
 
-CStdString CSmartPlaylistRule::GetDatabaseField(SEARCH_FIELD field)
+CStdString CSmartPlaylistRule::GetDatabaseField(DATABASE_FIELD field)
 {
   if (field == SONG_TITLE) return "strTitle";
   else if (field == SONG_GENRE) return "strGenre";
@@ -154,6 +155,7 @@ CStdString CSmartPlaylistRule::GetDatabaseField(SEARCH_FIELD field)
   else if (field == SONG_FILENAME) return "strFilename";
   else if (field == SONG_TRACKNUMBER) return "iTrack";
   else if (field == SONG_LASTPLAYED) return "lastplayed";
+  else if (field == FIELD_RANDOM) return "random()";      // only used for order clauses
   return "";
 }
 

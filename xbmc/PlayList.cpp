@@ -172,41 +172,23 @@ void CPlayList::Shuffle()
   int nItemCount = size();
 
   // iterate through each catalogue item performing arbitrary swaps
-  for (int nItem = 0; nItem < nItemCount; nItem++)
-  {
-    int nArbitrary = rand() % nItemCount;
-
-    CPlayListItem anItem = m_vecItems[nArbitrary];
-    m_vecItems[nArbitrary] = m_vecItems[nItem];
-    m_vecItems[nItem] = anItem;
-  }
+  random_shuffle(m_vecItems.begin(), m_vecItems.end());
 
   // the list is now shuffled!
   m_bShuffled = true;
 }
 
+struct SSortPlayListItem
+{
+  static bool PlaylistSort(const CPlayList::CPlayListItem &left, const CPlayList::CPlayListItem &right)
+  {
+    return (left.m_iOrder <= right.m_iOrder);
+  }
+};
+
 void CPlayList::UnShuffle()
 {
-  // iterate through the vector swapping items until original order is returned
-  for (int curIndex = 0; curIndex < size(); curIndex++)
-  {
-    //CLog::Log(LOGDEBUG,"UNSHUFFLE:: iteration = %i",curIndex);
-
-    // while the current item is not where it should be...
-    while (curIndex != m_vecItems[curIndex].m_iOrder)
-    {
-      int iDest = m_vecItems[curIndex].m_iOrder;
-      //CLog::Log(LOGDEBUG,"  mismatch %i != %i",curIndex,iDest);
-
-      // copy item in destination spot
-      CPlayListItem tempItem = m_vecItems[iDest];
-
-      // move item in current location to destination spot
-      m_vecItems[iDest]    = m_vecItems[curIndex];
-      m_vecItems[curIndex] = tempItem;
-    }
-  }
-
+  sort(m_vecItems.begin(), m_vecItems.end(), SSortPlayListItem::PlaylistSort);
   // the list is now unshuffled!
   m_bShuffled = false;
 }
