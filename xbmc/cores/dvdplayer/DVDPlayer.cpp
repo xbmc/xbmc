@@ -114,8 +114,9 @@ bool CDVDPlayer::OpenFile(const CFileItem& file, __int64 iStartTime)
     // if we are playing a media file with pictures, we should wait for the video output device to be initialized
     // if we don't wait, the fullscreen window will init with a picture that is 0 pixels width and high
     // we also have to wait for the player to be initialized so that we can set and access all settings when playing a dvd
-    bool bProcessThreadIsAlive = true;
-    while (m_CurrentVideo.id >= 0 
+    bool bProcessThreadIsAlive = true;    
+
+    while ((m_CurrentVideo.id >= 0 || m_packetcount < 10)
       && bProcessThreadIsAlive 
       && !m_bAbortRequest 
       && !m_dvdPlayerVideo.InitializedOutputDevice())
@@ -175,6 +176,7 @@ void CDVDPlayer::OnStartup()
   CThread::SetName("CDVDPlayer");
   m_CurrentVideo.id = -1;
   m_CurrentAudio.id = -1;
+  m_packetcount = 0;
 
   m_messenger.Init();
 
@@ -345,6 +347,7 @@ void CDVDPlayer::Process()
       }
 
       iErrorCounter = 0;
+      m_packetcount++;
 
       // process subtitles, do not remove (it is for external subtitle support in the future)
       if (pPacket->dts != DVD_NOPTS_VALUE)
