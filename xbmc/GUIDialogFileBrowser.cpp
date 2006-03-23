@@ -84,21 +84,26 @@ bool CGUIDialogFileBrowser::OnMessage(CGUIMessage& message)
       else if (message.GetSenderId() == CONTROL_OK)
       {
         if (m_browsingForFolders == 2)
+        {
+          CStdString strTest;
+          int iItem = m_viewControl.GetSelectedItem();
+          CUtil::AddFileToFolder(m_vecItems[iItem]->m_strPath,"1",strTest);
+          CFile file;
+          if (file.OpenForWrite(strTest))
           {
-            CStdString strTest;
-            int iItem = m_viewControl.GetSelectedItem();
-            CUtil::AddFileToFolder(m_vecItems[iItem]->m_strPath,"1",strTest);
-            CFile file;
-            if (file.OpenForWrite(strTest))
-            {
-              file.Close();
-              CFile::Delete(strTest);
-              m_bConfirmed = true;
-              Close();
-            }
-            else
-              CGUIDialogOK::ShowAndGetInput(257,0,0,0);
+            file.Close();
+            CFile::Delete(strTest);
+            m_bConfirmed = true;
+            Close();
           }
+          else
+            CGUIDialogOK::ShowAndGetInput(257,0,0,0);
+        }
+        else
+        {
+          m_bConfirmed = true;
+          Close();
+        }
       }
       else if (message.GetSenderId() == CONTROL_CANCEL)
       {
