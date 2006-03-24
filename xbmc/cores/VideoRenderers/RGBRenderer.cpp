@@ -119,8 +119,7 @@ void CRGBRenderer::ManageTextures()
 
 unsigned int CRGBRenderer::Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps)
 {
-  CXBoxRenderer::Configure(width, height, d_width, d_height, fps);
-  CreateLookupTextures();
+  CXBoxRenderer::Configure(width, height, d_width, d_height, fps);  
   m_bConfigured = true;
   return 0;
 }
@@ -487,7 +486,12 @@ unsigned int CRGBRenderer::PreInit()
     XGAssembleShader("YUV2RGBShader", yuv2rgb, strlen(yuv2rgb), 0, NULL, &pShader2, NULL, NULL, NULL, NULL, NULL);
     m_pD3DDevice->CreatePixelShader((D3DPIXELSHADERDEF*)pShader2->GetBufferPointer(), &m_hYUVtoRGBLookup);
     pShader2->Release();
+
+    // create our lookup textures for yv12->rgb translation, 
+    // with the !m_hInterleavingShader if to make sure it's only done once
+    CreateLookupTextures();
   }
+
   return 0;
 }
 

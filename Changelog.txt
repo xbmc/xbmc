@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 23-03-2006 fixed: dvdplayer would play out of sync for files with completly wrong frame rate in container. 5 < pts < 100 is considered valid
+ - 23-03-2006 fixed: rgb renderer would leak memory on multiple calls to configure (video file change res/fps/aspect during playback)
  - 23-03-2006 fixed: Some of the random routines weren't very optimal.
  - 23-03-2006 fixed: dvdplayer would microstutter alot more than normal since 2006-03-11
  - 23-03-2006 fixed: my programs dvd share didn't have play disc entry.
