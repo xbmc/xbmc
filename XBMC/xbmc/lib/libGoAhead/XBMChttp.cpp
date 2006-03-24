@@ -1092,131 +1092,86 @@ int CXbmcHttp::xbmcGetCurrentlyPlaying()
 {
   CStdString output="", tmp="", tag="";
   CGUIWindowSlideShow *pSlideShow = (CGUIWindowSlideShow *)m_gWindowManager.GetWindow(WINDOW_SLIDESHOW);
-  if (pSlideShow)
-    if (m_gWindowManager.GetActiveWindow() == WINDOW_SLIDESHOW)
-    {
-      output=openTag+"Filename:"+pSlideShow->GetCurrentSlide();
-      output+=closeTag+openTag+"Type:Picture" ;
-      int width=0, height=0;
-      pSlideShow->GetCurrentSlideInfo(width, height);
-      tmp.Format("%i",width);
-      output+=closeTag+openTag+"Width:" + tmp ;
-      tmp.Format("%i",height);
-      output+=closeTag+openTag+"Height:" + tmp ;
-      CStdString thumb, picFn=pSlideShow->GetCurrentSlide();
-      CUtil::GetThumbnail(picFn,thumb);
-      if (!CFile::Exists(thumb))
-      {
-        if (autoGetPictureThumbs)
-        {
-          CPicture pic;
-          pic.CreateThumbnail(picFn);
-          CUtil::GetThumbnail(picFn,thumb);
-        }
-        if (!CFile::Exists(thumb))
-          thumb = "[None] " + thumb;
-      }
-      output+=closeTag+openTag+"Thumb:"+thumb;
-      tag="1";
-    } 
-  CStdString fn=g_application.CurrentFile();
-  if (fn=="")
+  if (m_gWindowManager.GetActiveWindow() == WINDOW_SLIDESHOW && pSlideShow)
   {
-    if (tag=="")
-      output=openTag+"Filename:[Nothing Playing]";
-  }
-  else
-  { 
-    if (tag=="")
-      output=openTag+"Filename:"+fn;
-    else
-      output+=closeTag+openTag+"Filename"+tag+":"+fn;
-    tmp.Format("%i",g_playlistPlayer.GetCurrentSong());
-    output+=closeTag+openTag+"SongNo:"+tmp;
-    __int64 lPTS=-1;
-    if (g_application.IsPlayingVideo()) {
-      lPTS = (__int64)(g_application.GetTime() * 10);
-      output+=closeTag+openTag+"Type"+tag+":Video" ;
-      const CIMDBMovie& tagVal=g_infoManager.GetCurrentMovie();
-      if (tagVal.m_strTitle!="")
-        output+=closeTag+openTag+"Title"+tag+":"+tagVal.m_strTitle ;
-      if (tagVal.m_strGenre!="")
-        output+=closeTag+openTag+"Genre"+tag+":"+tagVal.m_strGenre;
-    }
-    else if (g_application.IsPlayingAudio()) {
-      lPTS = (__int64)(g_application.GetTime() * 10);
-      output+=closeTag+openTag+"Type"+tag+":Audio" ;
-      const CMusicInfoTag& tagVal=g_infoManager.GetCurrentSongTag();
-      if (tagVal.GetTitle()!="")
-        output+=closeTag+openTag+"Title"+tag+":"+tagVal.GetTitle() ;
-      if (tagVal.GetArtist()!="")
-        output+=closeTag+openTag+"Artist"+tag+":"+tagVal.GetArtist() ;
-      if (tagVal.GetAlbum()!="")
-        output+=closeTag+openTag+"Album"+tag+":"+tagVal.GetAlbum() ;
-      if (tagVal.GetGenre()!="")
-        output+=closeTag+openTag+"Genre"+tag+":"+tagVal.GetGenre() ;
-      if (tagVal.GetYear()!="")
-        output+=closeTag+openTag+"Year"+tag+":"+tagVal.GetYear() ;
-      if (!g_infoManager.GetMusicLabel(211).IsEmpty())
-        output+=closeTag+openTag+"Bitrate"+tag+":"+g_infoManager.GetMusicLabel(211);  // MUSICPLAYER_BITRATE
-      if (!g_infoManager.GetMusicLabel(216).IsEmpty())
-        output+=closeTag+openTag+"Samplerate"+tag+":"+g_infoManager.GetMusicLabel(216);  // MUSICPLAYER_SAMPLERATE
-    }
-    if (fn.Find("://")<0)
+    output=openTag+"Filename:"+pSlideShow->GetCurrentSlide();
+    output+=closeTag+openTag+"Type:Picture" ;
+    int width=0, height=0;
+    pSlideShow->GetCurrentSlideInfo(width, height);
+    tmp.Format("%i",width);
+    output+=closeTag+openTag+"Width:" + tmp ;
+    tmp.Format("%i",height);
+    output+=closeTag+openTag+"Height:" + tmp ;
+    CStdString thumb, picFn=pSlideShow->GetCurrentSlide();
+    CUtil::GetThumbnail(picFn,thumb);
+    if (!CFile::Exists(thumb))
     {
-      CStdString thumb;
-      CUtil::GetThumbnail(fn,thumb);
+      if (autoGetPictureThumbs)
+      {
+        CPicture pic;
+        pic.CreateThumbnail(picFn);
+        CUtil::GetThumbnail(picFn,thumb);
+      }
       if (!CFile::Exists(thumb))
         thumb = "[None] " + thumb;
-      output+=closeTag+openTag+"Thumb"+tag+":"+thumb;
     }
-    if (g_application.m_pPlayer && g_application.m_pPlayer->IsPaused()) 
-      output+=closeTag+openTag+"Paused:True" ;
-    else
-      output+=closeTag+openTag+"Paused:False" ;
-    if (g_application.IsPlaying()) 
-      output+=closeTag+openTag+"Playing:True" ;
-    else
-      output+=closeTag+openTag+"Playing:False" ;
-    if (lPTS!=-1)
-    {          
-      int hh = (int)(lPTS / 36000) % 100;
-      int mm = (int)((lPTS / 600) % 60);
-      int ss = (int)((lPTS /  10) % 60);
-      if (hh >=1)
-      {
-        tmp.Format("%02.2i:%02.2i:%02.2i",hh,mm,ss);
-      }
-      else
-      {
-        tmp.Format("%02.2i:%02.2i",mm,ss);
-      }
-      output+=closeTag+openTag+"Time:"+tmp;
-      CStdString strTotalTime;
-      unsigned int tmpvar = (unsigned int)g_application.GetTotalTime();
-      if(tmpvar != 0)
-      {
-        int hh = tmpvar / 3600;
-        int mm  = (tmpvar-hh*3600) / 60;
-        int ss = (tmpvar-hh*3600) % 60;
-        if (hh >=1)
-        {
-          tmp.Format("%02.2i:%02.2i:%02.2i",hh,mm,ss);
-        }
-        else
-        {
-          tmp.Format("%02.2i:%02.2i",mm,ss);
-        }
-        output+=closeTag+openTag+"Duration:"+tmp;
-      }
-      tmp.Format("%i",(int)g_application.GetPercentage());
-      output+=closeTag+openTag+"Percentage:"+tmp ;
-      _int64 fs=fileSize(fn);
-      if (fs>-1)
-      {
-        tmp.Format("%I64d",fs);
-        output+=closeTag+openTag+"File size:"+tmp ;
-      }
+    output+=closeTag+openTag+"Thumb:"+thumb;
+    return SetResponse(output);
+  }
+
+  const CFileItem &fileItem = g_application.CurrentFileItem();
+  if (fileItem.m_strPath.IsEmpty())
+  {
+    output=openTag+"Filename:[Nothing Playing]";
+  }
+  else
+  {
+    output = openTag + "Filename:" + fileItem.m_strPath;
+    if (g_application.IsPlayingVideo())
+    { // Video information
+      output+=closeTag+openTag+"Type"+tag+":Video" ;
+      const CIMDBMovie& tagVal=g_infoManager.GetCurrentMovie();
+      if (!tagVal.m_strTitle.IsEmpty())
+        output+=closeTag+openTag+"Title"+tag+":"+tagVal.m_strTitle ;
+      if (!tagVal.m_strGenre.IsEmpty())
+        output+=closeTag+openTag+"Genre"+tag+":"+tagVal.m_strGenre;
+    }
+    else if (g_application.IsPlayingAudio())
+    { // Audio information
+      output+=closeTag+openTag+"Type"+tag+":Audio";
+      const CMusicInfoTag& tagVal=g_infoManager.GetCurrentSongTag();
+      if (!tagVal.GetTitle().IsEmpty())
+        output+=closeTag+openTag+"Title"+tag+":"+tagVal.GetTitle();
+      if (!tagVal.GetArtist().IsEmpty())
+        output+=closeTag+openTag+"Artist"+tag+":"+tagVal.GetArtist();
+      if (!tagVal.GetAlbum().IsEmpty())
+        output+=closeTag+openTag+"Album"+tag+":"+tagVal.GetAlbum();
+      if (!tagVal.GetGenre().IsEmpty())
+        output+=closeTag+openTag+"Genre"+tag+":"+tagVal.GetGenre();
+      if (!tagVal.GetYear().IsEmpty())
+        output+=closeTag+openTag+"Year"+tag+":"+tagVal.GetYear();
+      // TODO: Should this be a tagitem member?? (wouldn't have vbr updates though)
+      CStdString bitRate(g_infoManager.GetMusicLabel(MUSICPLAYER_BITRATE)); 
+      // TODO: This should be a static tag item
+      CStdString sampleRate(g_infoManager.GetMusicLabel(MUSICPLAYER_SAMPLERATE));
+      if (!bitRate.IsEmpty())
+        output+=closeTag+openTag+"Bitrate"+tag+":"+bitRate;  
+      if (!sampleRate.IsEmpty())
+        output+=closeTag+openTag+"Samplerate"+tag+":"+sampleRate;  
+    }
+    // Thumb information - our fileItem has this information
+    if (fileItem.HasThumbnail())
+      output+=closeTag+openTag+"Thumb"+tag+":"+fileItem.GetThumbnailImage();
+    // play time
+    output+=closeTag+openTag+"Time:"+g_infoManager.GetCurrentPlayTime();
+    output+=closeTag+openTag+"Duration:"+g_infoManager.GetVideoLabel(PLAYER_DURATION);  // handles music time as well
+    tmp.Format("%i",(int)g_application.GetPercentage());
+    output+=closeTag+openTag+"Percentage:"+tmp;
+    // file size
+    if (fileItem.m_dwSize)
+    {
+      tmp.Format("%I64d",fileItem.m_dwSize);
+      output+=closeTag+openTag+"File size:"+tmp;
     }
   }
   return SetResponse(output);
@@ -2460,7 +2415,12 @@ int CXbmcHttp::xbmcCommand(CStdString parameter)
   else
     retVal = SetResponse(openTag+"Error:Missing command");
 #ifndef _DEBUG
-  Sleep(100);
+  // Why are we sleeping here??
+  // This gets called from the main XBMC thread, so any sleeps here will cause
+  // the GUI to be unresponsive.
+  // Perhaps the sleep is supposed to occur in the receiving thread??
+  // In the meantime, I've changed this from 100ms -> 10ms
+  Sleep(10);
 #else
   //Not sure why but to have a reliable debugging experience I need a bigger value here otherwise the thread sometimes gets lost.
   //Perhaps time to upgrade my PC.
