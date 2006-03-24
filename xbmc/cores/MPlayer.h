@@ -130,6 +130,7 @@ public:
 
   virtual int GetSubtitleCount();
   virtual int GetSubtitle();
+  virtual bool AddSubtitle(const CStdString& strFileName);
   virtual void GetSubtitleName(int iStream, CStdString &strStreamName);
   virtual void SetSubtitle(int iStream);
   virtual bool GetSubtitleVisible();
