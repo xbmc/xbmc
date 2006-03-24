@@ -1496,11 +1496,10 @@ void CGUIInfoManager::SetCurrentMovie(CFileItem &item)
 
     // else its a video
     CLog::Log(LOGDEBUG,"Streaming media detected... using %s to find a thumb", g_application.m_strPlayListFile.c_str());
-    CFileItem* pItemTemp = new CFileItem(g_application.m_strPlayListFile,false);
-    pItemTemp->SetThumb();
-    CStdString strThumb = pItemTemp->GetThumbnailImage();
-    if (CFile::Exists(strThumb))
-      item.SetThumbnailImage(strThumb);
+    CFileItem thumbItem(g_application.m_strPlayListFile,false);
+    thumbItem.SetThumb();
+    if (CFile::Exists(thumbItem.GetThumbnailImage()))
+      item.SetThumbnailImage(thumbItem.GetThumbnailImage());
   }
 
   item.FillInDefaultIcon();
