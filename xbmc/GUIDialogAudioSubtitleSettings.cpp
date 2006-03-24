@@ -44,7 +44,8 @@ void CGUIDialogAudioSubtitleSettings::CreateSettings()
   AddBool(SUBTITLE_SETTINGS_ENABLE, 13397, &g_stSettings.m_currentVideoSettings.m_SubtitleOn);
   AddSlider(SUBTITLE_SETTINGS_DELAY, 303, &g_stSettings.m_currentVideoSettings.m_SubtitleDelay, -g_advancedSettings.m_videoSubsDelayRange, 0.1f, g_advancedSettings.m_videoSubsDelayRange, "%2.1fs");
   AddSubtitleStreams(SUBTITLE_SETTINGS_STREAM);
-  AddButton(SUBTITLE_SETTINGS_BROWSER,13250);
+  if (g_application.GetCurrentPlayer() != EPC_DVDPLAYER)
+    AddButton(SUBTITLE_SETTINGS_BROWSER,13250);
   AddButton(AUDIO_SETTINGS_MAKE_DEFAULT, 12376);
 }
 
@@ -221,33 +222,40 @@ void CGUIDialogAudioSubtitleSettings::OnSettingChanged(unsigned int num)
         std::vector<CStdString> vecExtensionsCached;
         CUtil::CacheRarSubtitles(vecExtensionsCached,strPath,"",".keep");
         g_application.Restart(true); // to reread subtitles
-        CreateSettings();
-        SetupPage();
+        
+        Close();
+      }
+      else if (strExt.CompareNoCase(".idx") == 0)
+      {
+        if (CFile::Cache(strPath,"z:\\subtitle.idx.keep"))
+        {
+          CStdString strPath2;
+          CUtil::ReplaceExtension(strPath,".sub",strPath2);
+          CFile::Cache(strPath2,"z:\\subtitle.sub.keep");
+          g_application.Restart(true); // to reread subtitles
+          
+          Close();
+        }
+      }
+      else if (strExt.CompareNoCase(".sub") == 0)
+      {
+        if (CFile::Cache(strPath,"z:\\subtitle.sub.keep"))
+        {
+          CStdString strPath2;
+          CUtil::ReplaceExtension(strPath,".idx",strPath2);
+          CFile::Cache(strPath2,"z:\\subtitle.idx.keep");
+          g_application.Restart(true); // to reread subtitles
+
+          Close();
+        }
       }
       else
       {
-        if (CFile::Cache(strPath,"z:\\subtitle"+strExt+".keep"))
-        {
-          CStdString strPath2;
-          if (strExt.CompareNoCase(".idx") == 0)
-          {
-            CUtil::ReplaceExtension(strPath,".sub",strPath2);
-            if (!CFile::Cache(strPath2,"z:\\subtitle.sub.keep"))
-            {
-              CUtil::ReplaceExtension(strPath,".rar",strPath2);
-              std::vector<CStdString> vecExtensionsCached;
-              CUtil::CacheRarSubtitles(vecExtensionsCached,strPath2,CUtil::GetFileName(strPath),".keep");
-            }
-          }
-          if (strExt.CompareNoCase(".sub") == 0)
-          {
-            CUtil::ReplaceExtension(strPath,".idx",strPath2);
-            CFile::Cache(strPath2,"z:\\subtitle.idx.keep");
-          }
-          g_application.Restart(true); // to reread subtitles
-          CreateSettings();
-          SetupPage();
-        }
+        m_subtitleStream = g_application.m_pPlayer->GetSubtitleCount();
+        g_application.m_pPlayer->AddSubtitle(strPath);
+        g_application.m_pPlayer->SetSubtitle(m_subtitleStream);
+
+        Close();
       }
     }
   }
