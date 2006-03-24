@@ -76,6 +76,8 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
         SET_CONTROL_HIDDEN(i);
       }
 
+      m_rootDir.SetShares(g_settings.m_vecMyProgramsBookmarks);
+      
       if (g_guiSettings.GetBool("MyPrograms.NoShortcuts"))    // let's hide Scan button
       {
         SET_CONTROL_HIDDEN(CONTROL_BTNSCAN);
@@ -95,7 +97,13 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
         CShare& share = g_settings.m_vecMyProgramsBookmarks[i];
 
         SET_CONTROL_VISIBLE(i + iStartID);
-        SET_CONTROL_LABEL(i + iStartID, share.strName);
+        if (share.strPath.CompareNoCase("d:\\") == 0)
+        {
+          CStdString strName = share.strName.substr(0,share.strName.rfind("(")-1);
+          SET_CONTROL_LABEL(i + iStartID, strName);
+        }
+        else
+          SET_CONTROL_LABEL(i + iStartID, share.strName);
       }
 
       m_database.Open();
@@ -247,8 +255,13 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
             for (int i = 0; i < (int)g_settings.m_vecMyProgramsBookmarks.size(); ++i)
             {
               CShare& share = g_settings.m_vecMyProgramsBookmarks[i];
-              SET_CONTROL_VISIBLE(i + iStartID);
-              SET_CONTROL_LABEL(i + iStartID, share.strName);
+              if (share.strPath.CompareNoCase("d:\\") == 0)
+              {
+                CStdString strName = share.strName.substr(0,share.strName.rfind("(")-1);
+                SET_CONTROL_LABEL(i + iStartID, strName);
+              }
+              else
+                SET_CONTROL_LABEL(i + iStartID, share.strName);
             }
             // erase the button following the last updated button
             // incase the user just deleted a bookmark
@@ -664,8 +677,9 @@ bool CGUIWindowPrograms::Update(const CStdString &strDirectory)
       CFileItem *pItem = new CFileItem(share);
       pItem->m_bIsShareOrDrive = false;
       CUtil::Tokenize(pItem->m_strPath, vecShares, ",");
-      CStdString strThumb;
-      for (int j = 0; j < (int)vecShares.size(); j++)    // use the first folder image that we find in the vector of shares
+      CStdString strThumb="";
+      int j;
+      for (j = 0; j < (int)vecShares.size(); j++)    // use the first folder image that we find in the vector of shares
       {
         CFileItem item(vecShares[j], false);
         if (!item.IsXBE())
@@ -677,6 +691,16 @@ bool CGUIWindowPrograms::Update(const CStdString &strDirectory)
           }
         }
       }
+      if (j == vecShares.size())
+      {
+        CFileItem item(vecShares[0], false);
+        if (item.IsHD())
+          strThumb = "defaultHardDisk.png";
+        if (item.IsDVD())
+          CUtil::GetDVDDriveIcon( item.m_strPath, strThumb );
+        pItem->SetIconImage(strThumb);
+      }
+
       m_vecItems.Add(pItem);
     }
 
