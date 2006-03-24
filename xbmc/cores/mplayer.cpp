@@ -190,6 +190,7 @@ int CMPlayer::Options::GetSubtitleStream() const
 {
   return m_iSubtitleStream;
 }
+
 void CMPlayer::Options::SetSubtitleStream(int iStream)
 {
   m_iSubtitleStream = iStream;
@@ -1717,6 +1718,14 @@ float CMPlayer::GetSubTitleDelay()
 int CMPlayer::GetSubtitleCount()
 {
   return mplayer_getSubtitleCount();
+}
+
+bool CMPlayer::AddSubtitle(const CStdString& strSubPath)
+{
+  CStdString strFile = strSubPath;
+  strFile.Replace("\\","\\\\");
+  mplayer_SlaveCommand("sub_load \"%s\"", strFile.c_str());
+  return true;
 }
 
 int CMPlayer::GetSubtitle()
