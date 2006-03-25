@@ -3,6 +3,7 @@
 #include "dlllibcurl.h"
 #include "../Util.h"
 #include <sys/Stat.h>
+#include "curl/curl.h"
 
 extern "C" int __stdcall dllselect(int ntfs, fd_set *readfds, fd_set *writefds, fd_set *errorfds, const timeval *timeout);
 
@@ -60,8 +61,10 @@ size_t CFileCurl::HeaderCallback(void *ptr, size_t size, size_t nmemb)
 
 size_t CFileCurl::WriteCallback(char *buffer, size_t size, size_t nitems)
 {
-  unsigned int amount = size * nitems;
+  // if not running (or don't want any body data)
+  if(!m_opened) return 0;
 
+  unsigned int amount = size * nitems;
 //  CLog::Log(LOGDEBUG, "CFileCurl::WriteCallback (%p) with %i bytes, readsize = %i, writesize = %i", this, amount, m_buffer.GetMaxReadSize(), m_buffer.GetMaxWriteSize() - m_overflowSize);
   if (m_overflowSize)
   {
@@ -106,7 +109,9 @@ size_t CFileCurl::WriteCallback(char *buffer, size_t size, size_t nitems)
 
 CFileCurl::~CFileCurl()
 { 
-  Close(); 
+  Close();
+  g_curlInterface.easy_cleanup(m_easyHandle);
+  m_easyHandle = NULL;
 }
 
 #define BUFFER_SIZE 32768
@@ -152,12 +157,10 @@ void CFileCurl::Close()
   m_url.Empty();
   
   /* cleanup */
-  g_curlInterface.easy_cleanup(m_easyHandle);
   g_curlInterface.slist_free_all(m_curlAliasList);
   g_curlInterface.slist_free_all(m_curlHeaderList);
   
   m_multiHandle = NULL;
-  m_easyHandle = NULL;
   m_curlAliasList = NULL;
   m_curlHeaderList = NULL;
   
@@ -168,18 +171,15 @@ void CFileCurl::Close()
   m_overflowSize = 0;
 }
 
-
-bool CFileCurl::Open(const CURL& url, bool bBinary)
+void CFileCurl::SetCommonOptions()
 {
-  m_easyHandle = g_curlInterface.easy_init();
-
-  m_buffer.Create(m_bufferSize * 3, m_bufferSize);  // 3 times our buffer size (2 in front, 1 behind)
-  m_overflowBuffer = 0;
-  m_overflowSize = 0;
-
-  url.GetURL(m_url);
-  CLog::Log(LOGDEBUG, "FileCurl::Open(%p) %s", this, m_url.c_str());
-  g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_URL, m_url.c_str());
+  if( !m_easyHandle  )
+  {
+    // allows reuse of connection
+    // curl handle will only be closed on destruction
+    m_easyHandle = g_curlInterface.easy_init();
+  }  
+  g_curlInterface.easy_reset(m_easyHandle);
   
   g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_DEBUGFUNCTION, debug_callback);
   g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_VERBOSE, TRUE);
@@ -194,7 +194,6 @@ bool CFileCurl::Open(const CURL& url, bool bBinary)
   
   g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_FTP_USE_EPSV, 0); // turn off epsv
   g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_FOLLOWLOCATION, TRUE);
-  if (!bBinary) g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_TRANSFERTEXT, TRUE);
 
   // When using multiple threads you should set the CURLOPT_NOSIGNAL option to
   // TRUE for all handles. Everything will work fine except that timeouts are not
@@ -217,14 +216,30 @@ bool CFileCurl::Open(const CURL& url, bool bBinary)
   if (m_useOldHttpVersion)
     g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_0);
 
-  
+}
+
+bool CFileCurl::Open(const CURL& url, bool bBinary)
+{
+
+  m_buffer.Create(m_bufferSize * 3, m_bufferSize);  // 3 times our buffer size (2 in front, 1 behind)
+  m_overflowBuffer = 0;
+  m_overflowSize = 0;
+
+  url.GetURL(m_url);
+  CLog::Log(LOGDEBUG, "FileCurl::Open(%p) %s", this, m_url.c_str());  
+
+  // setup common curl options
+  SetCommonOptions();
+
+  g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_URL, m_url.c_str());
+  if (!bBinary) g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_TRANSFERTEXT, TRUE);  
+
   m_multiHandle = g_curlInterface.multi_init();
 
   g_curlInterface.multi_add_handle(m_multiHandle, m_easyHandle);
 
-  // start the transfer
-  while (g_curlInterface.multi_perform(m_multiHandle, &m_stillRunning) == CURLM_CALL_MULTI_PERFORM )
-        ;
+  m_stillRunning = 1;
+  m_opened = true;
 
   // read some data in to try and obtain the length
   // maybe there's a better way to get this info??
@@ -241,8 +256,7 @@ bool CFileCurl::Open(const CURL& url, bool bBinary)
   double length;
   if (CURLE_OK == g_curlInterface.easy_getinfo(m_easyHandle, CURLINFO_CONTENT_LENGTH_DOWNLOAD, &length))
     m_fileSize = (__int64)length;
-  
-  m_opened = true;
+    
   return true;
 }
 
@@ -254,7 +268,7 @@ bool CFileCurl::ReadString(char *szLine, int iLineLength)
 
 bool CFileCurl::Exists(const CURL& url)
 {
-	return Open(url);
+  return Stat(url, NULL) == 0;
 }
 
 __int64 CFileCurl::Seek(__int64 iFilePosition, int iWhence)
@@ -318,14 +332,50 @@ __int64 CFileCurl::GetPosition()
 }
 
 int CFileCurl::Stat(const CURL& url, struct __stat64* buffer)
-{
-	if (Open(url, true))
-	{
-		buffer->st_size = GetLength();
+{ 
+  // if file is already running, get infor from it
+  if( m_opened )
+  {
+    CLog::Log(LOGWARNING, __FUNCTION__" - Stat called on open file");
+    buffer->st_size = GetLength();
 		buffer->st_mode = _S_IFREG;
-		Close();
-		return 0;
-	}
+    return 0;
+  }
+
+  url.GetURL(m_url);
+	SetCommonOptions();
+  g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_URL, m_url.c_str());
+  g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_RANGE, "0-0");
+  m_opened = false; // will force a write failure
+
+  CURLcode result = g_curlInterface.easy_perform(m_easyHandle);
+
+  if( result == CURLE_HTTP_RANGE_ERROR )
+  {  
+    g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_RANGE, NULL);
+    result = g_curlInterface.easy_perform(m_easyHandle);
+  }
+
+  if( result == CURLE_WRITE_ERROR || result == CURLE_OK )
+  {
+    if(url.GetProtocol() == "http")
+    {
+      // check for an error code in http
+      int statuscode = 0;
+      g_curlInterface.easy_getinfo(m_easyHandle, CURLINFO_HTTP_CODE, &statuscode);
+      if( statuscode < 200 || statuscode > 299 ) return -1;
+    }
+
+    if( !buffer ) return 0;
+
+    double length;
+    if (CURLE_OK == g_curlInterface.easy_getinfo(m_easyHandle, CURLINFO_CONTENT_LENGTH_DOWNLOAD, &length))
+    {
+		  buffer->st_size = (__int64)length;
+		  buffer->st_mode = _S_IFREG;
+      return 0;
+    }    
+  }
 	errno = ENOENT;
 	return -1;
 }
@@ -335,7 +385,8 @@ unsigned int CFileCurl::Read(void *lpBuf, __int64 uiBufSize)
 //  CLog::Log(LOGDEBUG, "FileCurl::Read(%p) %i bytes", this, uiBufSize);
   unsigned int want = (unsigned int)uiBufSize;
 
-  FillBuffer(want,1);
+  if(!FillBuffer(want,1))
+    return -1;
 
   if (!m_stillRunning && !m_buffer.GetMaxReadSize() && m_filePos != m_fileSize)
   {
@@ -344,8 +395,7 @@ unsigned int CFileCurl::Read(void *lpBuf, __int64 uiBufSize)
   }
 
   /* ensure only available data is considered */
-  if(m_buffer.GetMaxReadSize() < want)
-    want = m_buffer.GetMaxReadSize();
+  want = min(m_buffer.GetMaxReadSize(), want);
 
   /* xfer data to caller */
   if (m_buffer.ReadBinary((char *)lpBuf, want))
@@ -359,7 +409,7 @@ unsigned int CFileCurl::Read(void *lpBuf, __int64 uiBufSize)
 }
 
 /* use to attempt to fill the read buffer up to requested number of bytes */
-int CFileCurl::FillBuffer(unsigned int want, int waittime)
+bool CFileCurl::FillBuffer(unsigned int want, int waittime)
 {
   int maxfd;
   fd_set fdread;
@@ -377,21 +427,39 @@ int CFileCurl::FillBuffer(unsigned int want, int waittime)
     
   // only attempt to fill buffer if transactions still running and buffer
   // doesnt exceed required size already
-  while (m_stillRunning && m_buffer.GetMaxReadSize() < want + m_bufferSize && m_buffer.GetMaxWriteSize() > 0)
+  while (m_stillRunning && m_buffer.GetMaxReadSize() < want && m_buffer.GetMaxWriteSize() > 0)
   {
-    // get file descriptors from the transfers
-    g_curlInterface.multi_fdset(m_multiHandle, &fdread, &fdwrite, &fdexcep, &maxfd);
-
-    // wait until data is avialable or a timeout occours
-    int rc = dllselect(maxfd + 1, &fdread, &fdwrite, &fdexcep, &timeout);
-    
-    // fill buffer
-    while(g_curlInterface.multi_perform(m_multiHandle, &m_stillRunning) == CURLM_CALL_MULTI_PERFORM)
+    CURLMcode result = g_curlInterface.multi_perform(m_multiHandle, &m_stillRunning);
+    switch(result)
     {
-      int test = 1;
+      case CURLM_OK:
+      {
+        // get file descriptors from the transfers
+        g_curlInterface.multi_fdset(m_multiHandle, &fdread, &fdwrite, &fdexcep, &maxfd);
+
+        // wait until data is avialable or a timeout occours
+        int rc = dllselect(maxfd + 1, &fdread, &fdwrite, &fdexcep, &timeout);
+        if( rc == SOCKET_ERROR ) return false;
+        
+      }
+      break;
+      case CURLM_CALL_MULTI_PERFORM:
+      {
+        // we don't keep calling here as that can easily overwrite our buffer wich we want to avoid
+        // docs says we should call it soon after, but aslong as we are reading data somewhere
+        // this aught to be soon enough. should stay in socket otherwise
+        continue;
+      }
+      break;
+      default:
+      {
+        CLog::Log(LOGERROR, __FUNCTION__" - curl multi perform failed with code %d, aborting", result);
+        return false;
+      }
+      break;
     }
   }
-  return 1;
+  return true;
 }
 
 void CFileCurl::AddHeaderParam(const char* sParam)
