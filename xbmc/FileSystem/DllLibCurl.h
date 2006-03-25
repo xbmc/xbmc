@@ -10,6 +10,7 @@ public:
   virtual CURL_HANDLE * easy_init(void)=0;
   //virtual CURLcode easy_setopt(CURL_HANDLE *handle, CURLoption option, ...)=0;
   virtual CURLcode easy_perform(CURL_HANDLE * handle )=0;
+  virtual void easy_reset(CURL_HANDLE * handle)=0;
   //virtual CURLcode easy_getinfo(CURL_HANDLE *curl, CURLINFO info, ... )=0;
   virtual void easy_cleanup(CURL_HANDLE * handle )=0;
   virtual CURLM * multi_init(void)=0;
@@ -29,6 +30,7 @@ class DllLibCurl : public DllDynamic, DllLibCurlInterface
   DEFINE_METHOD0(CURL_HANDLE *, easy_init)
   DEFINE_METHOD_FP(CURLcode, easy_setopt, (CURL_HANDLE *p1, CURLoption p2, ...))
   DEFINE_METHOD1(CURLcode, easy_perform, (CURL_HANDLE * p1 ))
+  DEFINE_METHOD1(void, easy_reset, (CURL_HANDLE * p1 ))
   DEFINE_METHOD_FP(CURLcode, easy_getinfo, (CURL_HANDLE *p1, CURLINFO p2, ... ))
   DEFINE_METHOD1(void, easy_cleanup, (CURL_HANDLE * p1))
   DEFINE_METHOD0(CURLM *, multi_init)
@@ -44,6 +46,7 @@ class DllLibCurl : public DllDynamic, DllLibCurlInterface
     RESOLVE_METHOD_RENAME(curl_easy_init, easy_init)
     RESOLVE_METHOD_RENAME_FP(curl_easy_setopt, easy_setopt)
     RESOLVE_METHOD_RENAME(curl_easy_perform, easy_perform)
+    RESOLVE_METHOD_RENAME(curl_easy_reset, easy_reset)
     RESOLVE_METHOD_RENAME_FP(curl_easy_getinfo, easy_getinfo)
     RESOLVE_METHOD_RENAME(curl_easy_cleanup, easy_cleanup)
     RESOLVE_METHOD_RENAME(curl_multi_init, multi_init)
