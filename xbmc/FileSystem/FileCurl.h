@@ -1,6 +1,5 @@
 #pragma once
 #include "IFile.h"
-#include "curl/curl.h"
 #include "../cores/paplayer/RingHoldBuffer.h"
 
 class IHttpHeaderCallback
@@ -11,8 +10,13 @@ public:
 
 using namespace XFILE;
 
+typedef void CURL_HANDLE;
+typedef void CURLM;
+struct curl_slist;
+
 namespace XFILE
 {
+
 	class CFileCurl : public IFile  
 	{
     public:
@@ -38,8 +42,9 @@ namespace XFILE
       void SetBufferSize(unsigned int size);
       
     protected:
-      int FillBuffer(unsigned int want, int waittime);
-      int UseBuffer(unsigned int want);
+      void SetCommonOptions();
+
+      bool FillBuffer(unsigned int want, int waittime);
 
     private:
       CURL_HANDLE*    m_easyHandle;
