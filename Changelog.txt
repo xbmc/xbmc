@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 25-03-2006 fixed: bug in mplayer subtitle selection (more of a workaround).
  - 24-03-2006 fixed: Optimized xbmcGetCurrentlyPlaying() a bit, and changed sleep in xbmcCommand() from 100 to 10ms.
  - 24-03-2006 fixed: browsed subtitles would show up in wrong places.
  - 24-03-2006 fixed: icons for shares, dvd label update, dvd button in my programs.
