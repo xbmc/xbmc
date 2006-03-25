@@ -199,7 +199,12 @@ void CGUIDialogAudioSubtitleSettings::OnSettingChanged(unsigned int num)
   else if (setting.id == SUBTITLE_SETTINGS_STREAM && setting.max > 0)
   {
     g_stSettings.m_currentVideoSettings.m_SubtitleStream = m_subtitleStream;
+    bool bOn = g_stSettings.m_currentVideoSettings.m_SubtitleOn;
     g_application.m_pPlayer->SetSubtitle(m_subtitleStream);
+    g_application.m_pPlayer->SetSubtitleVisible(false);
+    g_stSettings.m_currentVideoSettings.m_SubtitleOn = bOn;
+    Sleep(50);
+    g_application.m_pPlayer->SetSubtitleVisible(bOn);
   }
   else if (setting.id == SUBTITLE_SETTINGS_BROWSER)
   {
