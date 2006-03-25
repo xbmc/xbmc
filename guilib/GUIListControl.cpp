@@ -104,7 +104,6 @@ void CGUIListControl::Render()
         {
           pImage = new CGUIImage(0, 0, 0, 0, m_iImageWidth, m_iImageHeight, image, 0x0);
           pImage->SetAspectRatio(CGUIImage::ASPECT_RATIO_KEEP);
-          pImage->AllocResources();
           pItem->SetIcon(pImage);
         }
 

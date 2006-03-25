@@ -227,6 +227,9 @@ void CGUIImage::AllocResources()
   m_iCurrentLoop = 0;
 
   int iImages = g_TextureManager.Load(m_strFileName, m_dwColorKey);
+  // set allocated to true even if we couldn't load the image to save
+  // use hitting the disk every frame
+  m_texturesAllocated = true;
   if (!iImages) return ;
   for (int i = 0; i < iImages; i++)
   {
@@ -237,8 +240,6 @@ void CGUIImage::AllocResources()
 
   // Set state to render the image
   UpdateVB();
-
-  m_texturesAllocated = true;
 }
 
 void CGUIImage::FreeTextures()
