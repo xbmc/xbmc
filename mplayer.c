@@ -4135,6 +4135,8 @@ if (stream->type==STREAMTYPE_DVDNAV && dvd_nav_still)
         if (source == SUB_SOURCE_VOBSUB) {
           vobsub_id = global_sub_pos - global_sub_indices[SUB_SOURCE_VOBSUB];
           if (!global_sub_quiet_osd_hack) osd_show_vobsub_changed = sh_video->fps;
+          spudec_reset(vo_spudec);
+          vo_osd_changed(OSDTYPE_SPU);
 #ifdef USE_SUB
         } else if (source == SUB_SOURCE_SUBS) {
           set_of_sub_pos = global_sub_pos - global_sub_indices[SUB_SOURCE_SUBS];
