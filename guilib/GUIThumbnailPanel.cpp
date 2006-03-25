@@ -104,7 +104,6 @@ void CGUIThumbnailPanel::RenderItem(bool bFocus, int iPosX, int iPosY, CGUIListI
       {
         thumb = new CGUIImage(0, 0, m_iThumbXPos + iCenteredPosX, m_iThumbYPos + iPosY, m_iThumbWidth, m_iThumbHeight, strThumb, 0x0);
         thumb->SetAspectRatio(m_aspectRatio);
-        thumb->AllocResources();
         pItem->SetThumbnail(thumb);
       }
 
@@ -130,7 +129,6 @@ void CGUIThumbnailPanel::RenderItem(bool bFocus, int iPosX, int iPosY, CGUIListI
         {
           overlay = new CGUIImage(0, 0, 0, 0, 0, 0, pItem->GetOverlayImage(), 0x0);
           overlay->SetAspectRatio(m_aspectRatio);
-          overlay->AllocResources();
           pItem->SetOverlay(overlay);
         }
         // Render the image
