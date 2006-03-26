@@ -13,34 +13,24 @@
       <description>background image</description>
       <type>image</type>
       <id>1</id>
-      <posx>0</posx>
-      <posy>25</posy>
-      <width>420</width>
-      <height>265</height>
-      <texture>osd_menu_bg.png</texture>
+      <posx>-15</posx>
+      <posy>-15</posy>
+      <width>440</width>
+      <height>340</height>
+      <texture>dialog-panel.png</texture>
     </control>
 
     <control>
-      <description>background image</description>
-      <type>image</type>
-      <id>0</id>
-      <posx>0</posx>
-      <posy>-5</posy>
-      <width>420</width>
-      <height>31</height>
-      <texture>osd_settings_header.png</texture>
-    </control>
-
-    <control>
-      <description>Settings Label</description>
+      <description>Heading Label</description>
       <type>label</type>
       <id>2</id>
-      <posx>0</posx>
-      <posy>2</posy>
+      <posx>10</posx>
+      <posy>-2</posy>
       <width>420</width>
-      <align>center</align>
-      <font>font12</font>
+      <align>left</align>
       <label>1007</label>
+      <font>special13</font>
+      <textcolor>DDced8da</textcolor>
     </control>
 
     <control>
@@ -49,7 +39,7 @@
       <id>10</id>
       <posx>10</posx>
       <posy>35</posy>
-      <height>31</height>
+      <height>32</height>
       <width>400</width>
       <texturefocus>list-focus.png</texturefocus>
       <texturenofocus>-</texturenofocus>
@@ -76,8 +66,8 @@
       <id>11</id>
       <posx>10</posx>
       <posy>70</posy>
-      <width>360</width>
-      <height>31</height>
+      <width>320</width>
+      <height>32</height>
       <font>font12</font>
       <textoffsetx>12</textoffsetx>
       <aligny>center</aligny>
@@ -94,17 +84,17 @@
       <description>Server Browse Button</description>
       <type>button</type>
       <id>12</id>
-      <posx>380</posx>
+      <posx>333</posx>
       <posy>70</posy>
-      <width>30</width>
-      <height>31</height>
+      <width>77</width>
+      <height>32</height>
       <font>font12</font>
       <textoffsetx>12</textoffsetx>
-      <label>...</label>
+      <label>1024</label>
       <align>center</align>
       <aligny>center</aligny>
-      <texturefocus>button-focus.png</texturefocus>
-      <texturenofocus>button-nofocus.png</texturenofocus>
+      <texturenofocus>keyboard-btn-backspace.png</texturenofocus>
+      <texturefocus>keyboard-btn-backspace-focus.png</texturefocus>
       <onup>10</onup>
       <onleft>11</onleft>
       <onright>11</onright>
@@ -118,7 +108,7 @@
       <posx>10</posx>
       <posy>105</posy>
       <width>400</width>
-      <height>31</height>
+      <height>32</height>
       <font>font12</font>
       <textoffsetx>12</textoffsetx>
       <aligny>center</aligny>
@@ -138,7 +128,7 @@
       <posx>10</posx>
       <posy>140</posy>
       <width>400</width>
-      <height>31</height>
+      <height>32</height>
       <font>font12</font>
       <textoffsetx>12</textoffsetx>
       <aligny>center</aligny>
@@ -158,7 +148,7 @@
       <posx>10</posx>
       <posy>175</posy>
       <width>400</width>
-      <height>31</height>
+      <height>32</height>
       <font>font12</font>
       <textoffsetx>12</textoffsetx>
       <aligny>center</aligny>
@@ -178,7 +168,7 @@
       <posx>10</posx>
       <posy>210</posy>
       <width>400</width>
-      <height>31</height>
+      <height>32</height>
       <font>font12</font>
       <textoffsetx>12</textoffsetx>
       <aligny>center</aligny>
@@ -195,18 +185,18 @@
       <description>Ok Button</description>
       <type>button</type>
       <id>18</id>
-      <posx>280</posx>
-      <posy>245</posy>
-      <width>60</width>
-      <height>31</height>
+      <posx>253</posx>
+      <posy>255</posy>
+      <width>77</width>
+      <height>32</height>
       <font>font12</font>
       <textoffsetx>12</textoffsetx>
       <align>center</align>
       <aligny>center</aligny>
-      <texturefocus>button-focus.png</texturefocus>
-      <texturenofocus>button-nofocus.png</texturenofocus>
+      <texturenofocus>keyboard-btn-backspace.png</texturenofocus>
+      <texturefocus>keyboard-btn-backspace-focus.png</texturefocus>
       <label>186</label>
-      <onup>15</onup>
+      <onup>12</onup>
       <onleft>19</onleft>
       <onright>19</onright>
       <ondown>10</ondown>
@@ -216,18 +206,18 @@
       <description>Cancel Button</description>
       <type>button</type>
       <id>19</id>
-      <posx>350</posx>
-      <posy>245</posy>
-      <width>60</width>
-      <height>31</height>
+      <posx>333</posx>
+      <posy>255</posy>
+      <width>77</width>
+      <height>32</height>
       <font>font12</font>
       <textoffsetx>12</textoffsetx>
       <align>center</align>
       <aligny>center</aligny>
-      <texturefocus>button-focus.png</texturefocus>
-      <texturenofocus>button-nofocus.png</texturenofocus>
+      <texturenofocus>keyboard-btn-backspace.png</texturenofocus>
+      <texturefocus>keyboard-btn-backspace-focus.png</texturefocus>
       <label>222</label>
-      <onup>15</onup>
+      <onup>12</onup>
       <onleft>18</onleft>
       <onright>18</onright>
       <ondown>10</ondown>

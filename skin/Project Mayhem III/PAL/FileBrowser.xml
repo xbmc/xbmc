@@ -4,33 +4,45 @@
   <allowoverlay>yes</allowoverlay>
   <coordinates>
     <system>1</system>
-    <posx>50</posx>
-    <posy>50</posy>
+    <posx>110</posx>
+    <posy>110</posy>
   </coordinates>
 
   <controls>
+
     <control>
       <description>background image</description>
       <type>image</type>
-      <id>0</id>
-      <posx>0</posx>
-      <posy>0</posy>
-      <width>512</width>
-      <height>512</height>
-      <texture>background-filebrowser.png</texture>
+      <id>1</id>
+      <posx>-15</posx>
+      <posy>-15</posy>
+      <width>520</width>
+      <height>420</height>
+      <texture>dialog-panel.png</texture>
     </control>
 
-
+    <control>
+      <description>heading label</description>
+      <type>label</type>
+      <id>411</id>
+      <posx>10</posx>
+      <posy>-2</posy>
+      <width>420</width>
+      <align>left</align>
+      <font>special13</font>
+      <label>1023</label>
+      <textcolor>DDced8da</textcolor>
+    </control>
 
     <control>
       <description>path label control</description>
       <type>label</type>
       <id>412</id>
-      <posx>55</posx>
-      <posy>414</posy>
-      <width>442</width>
+      <posx>40</posx>
+      <posy>35</posy>
+      <width>480</width>
       <align>left</align>
-      <font>special13</font>
+      <font>font12</font>
       <haspath>true</haspath>
     </control>
 
@@ -39,10 +51,10 @@
       <description>listcontrol</description>
       <type>listcontrol</type>
       <id>450</id>
-      <posx>22</posx>
-      <posy>45</posy>
-      <width>474</width>
-      <height>390</height>
+      <posx>10</posx>
+      <posy>70</posy>
+      <width>400</width>
+      <height>340</height>
       <onleft>413</onleft>
       <onright>413</onright>
       <onup>413</onup>
@@ -53,8 +65,8 @@
       <description>thumbnailpanel</description>
       <type>thumbnailpanel</type>
       <id>451</id>
-      <posx>22</posx>
-      <posy>45</posy>
+      <posx>10</posx>
+      <posy>70</posy>
       <width>474</width>
       <height>390</height>
       <onleft>413</onleft>
@@ -63,57 +75,45 @@
       <ondown>413</ondown>
     </control>
 
-    <control>
-      <description>foreground image</description>
-      <type>image</type>
-      <id>0</id>
-      <posx>0</posx>
-      <posy>0</posy>
-      <width>512</width>
-      <height>512</height>
-      <texture>background-filebrowser-top.png</texture>
-    </control>
-
-
-    <control>
-      <description>heading label</description>
-      <type>label</type>
-      <id>411</id>
-      <posx>10</posx>
-      <posy>15</posy>
-      <width>480</width>
-      <align>center</align>
-    </control>
-
+    <controlgroup>
     <control>
       <description>OK button</description>
       <type>button</type>
       <id>413</id>
-      <posx>300</posx>
-      <posy>453</posy>
-      <width>80</width>
+      <posx>413</posx>
+      <posy>70</posy>
+      <width>77</width>
+      <height>32</height>
       <align>center</align>
       <label>186</label>
+      <font>font10</font>
+      <texturenofocus>keyboard-btn-backspace.png</texturenofocus>
+      <texturefocus>keyboard-btn-backspace-focus.png</texturefocus>
       <onleft>450</onleft>
-      <onright>414</onright>
-      <onup>450</onup>
-      <ondown>450</ondown>
+      <onright>413</onright>
+      <onup>413</onup>
+      <ondown>414</ondown>
     </control>
 
     <control>
       <description>Cancel button</description>
       <type>button</type>
       <id>414</id>
-      <posx>390</posx>
-      <posy>453</posy>
-      <width>80</width>
+      <posx>413</posx>
+      <posy>105</posy>
+      <width>77</width>
+      <height>32</height>
       <align>center</align>
       <label>222</label>
-      <onleft>413</onleft>
-      <onright>450</onright>
-      <onup>450</onup>
-      <ondown>450</ondown>
+      <font>font10</font>
+      <texturenofocus>keyboard-btn-backspace.png</texturenofocus>
+      <texturefocus>keyboard-btn-backspace-focus.png</texturefocus>
+      <onleft>450</onleft>
+      <onright>414</onright>
+      <onup>413</onup>
+      <ondown>414</ondown>
     </control>
+    </controlgroup>
 
 
 
