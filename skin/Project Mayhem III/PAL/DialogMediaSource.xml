@@ -3,8 +3,8 @@
   <defaultcontrol>10</defaultcontrol>
   <coordinates>
     <system>1</system>
-    <posx>150</posx>
-    <posy>150</posy>
+    <posx>155</posx>
+    <posy>194</posy>
   </coordinates>
   <animation effect="fade" time="400">WindowOpen</animation>
   <animation effect="fade" time="400">WindowClose</animation>
