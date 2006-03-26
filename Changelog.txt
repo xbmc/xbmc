@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 26-02-2006 changed: lowres decoding kicked in on 720p xvid files. limit changed to a width of 1400 from 1280 pixels
  - 26-02-2006 fixed: [ 1454103 ] dts frames with uneven size would play garbled when passed through in both dvdplayer and mplayer
  - 26-02-2006 fixed: dvdplayer, DVD-subtitles remain enabled after disabling them
  - 26-02-2006 fixed: changing subtitles in mplayer when having ttf subtitles, could cause subtitles to become invisible
