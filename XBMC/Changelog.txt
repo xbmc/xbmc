@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 27-03-2006 fixed: [1458767] Wrong items in "My programs" contextmenu.
+ - 27-03-2006 changed: Log entry if a filename is truncated.
  - 26-02-2006 fixed: dvdplayer, [ 1457717 ] DVD Menu Overlays on Stills
  - 26-02-2006 changed: lowres decoding kicked in on 720p xvid files. limit changed to a width of 1400 from 1280 pixels
  - 26-02-2006 fixed: [ 1454103 ] dts frames with uneven size would play garbled when passed through in both dvdplayer and mplayer
