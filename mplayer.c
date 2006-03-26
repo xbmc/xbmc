@@ -2318,14 +2318,9 @@ if(sh_video) {
 #endif
 
 if (global_sub_size) {
-  // find the best sub to use
-  if (vobsub_id >= 0) {
-    // if user asks for a vobsub id, use that first.
-    global_sub_pos = global_sub_indices[SUB_SOURCE_VOBSUB] + vobsub_id;
-  } else if (dvdsub_id >= 0 && global_sub_indices[SUB_SOURCE_DEMUX] >= 0) {
-    // if user asks for a dvd sub id, use that next.
-    global_sub_pos = global_sub_indices[SUB_SOURCE_DEMUX] + dvdsub_id;
 #ifdef _XBOX
+  if (dvdsub_id >= 0 && dvdsub_id < global_sub_size) {    
+    global_sub_pos = dvdsub_id;
   } else if (global_sub_indices[SUB_SOURCE_DEMUX] >= 0) { 
     //First select internal subs
     global_sub_pos = global_sub_indices[SUB_SOURCE_DEMUX];
@@ -2336,6 +2331,13 @@ if (global_sub_size) {
     //Third select text subs
     global_sub_pos = global_sub_indices[SUB_SOURCE_SUBS];
 #else
+  // find the best sub to use
+  if (vobsub_id >= 0) {
+    // if user asks for a vobsub id, use that first.
+    global_sub_pos = global_sub_indices[SUB_SOURCE_VOBSUB] + vobsub_id;
+  } else if (dvdsub_id >= 0 && global_sub_indices[SUB_SOURCE_DEMUX] >= 0) {
+    // if user asks for a dvd sub id, use that next.
+    global_sub_pos = global_sub_indices[SUB_SOURCE_DEMUX] + dvdsub_id;
   } else if (global_sub_indices[SUB_SOURCE_SUBS] >= 0) {
     // if there are text subs to use, use those.  (autosubs come last here)
     global_sub_pos = global_sub_indices[SUB_SOURCE_SUBS];
@@ -4132,17 +4134,23 @@ if (stream->type==STREAMTYPE_DVDNAV && dvd_nav_still)
         osd_show_vobsub_changed = 0;
         osd_show_sub_changed = 0;
 
+#ifdef _XBOX
+        /* make sure everything is reset before even selecting subtitle */
+        /* this should clear textures and such */
+        spudec_reset(vo_spudec);
+        vo_osd_changed(OSDTYPE_SPU);
+        vo_osd_changed(OSDTYPE_SUBTITLE);
+        vo_update_osd(sh_video->disp_w, sh_video->disp_h);
+#endif
+
         if (source == SUB_SOURCE_VOBSUB) {
           vobsub_id = global_sub_pos - global_sub_indices[SUB_SOURCE_VOBSUB];
-          if (!global_sub_quiet_osd_hack) osd_show_vobsub_changed = sh_video->fps;
-          spudec_reset(vo_spudec);
-          vo_osd_changed(OSDTYPE_SPU);
+          if (!global_sub_quiet_osd_hack) osd_show_vobsub_changed = sh_video->fps;          
 #ifdef USE_SUB
         } else if (source == SUB_SOURCE_SUBS) {
           set_of_sub_pos = global_sub_pos - global_sub_indices[SUB_SOURCE_SUBS];
           subdata = set_of_subtitles[set_of_sub_pos];
-          if (!global_sub_quiet_osd_hack) osd_show_sub_changed = sh_video->fps;
-          vo_osd_changed(OSDTYPE_SUBTITLE); 
+          if (!global_sub_quiet_osd_hack) osd_show_sub_changed = sh_video->fps;          
 #ifndef _XBOX
           // FIXME: is this the correct place for these?
           if(stream_dump_type==3) list_sub_file(subdata);
@@ -4159,12 +4167,12 @@ if (stream->type==STREAMTYPE_DVDNAV && dvd_nav_still)
 #ifdef USE_DVDREAD
             if (vo_spudec && stream->type == STREAMTYPE_DVD) {
               d_dvdsub->id = dvdsub_id;
-              spudec_reset(vo_spudec);
             }
 #endif
 #ifdef HAVE_OGGVORBIS
-            if (demuxer->type == DEMUXER_TYPE_OGG)
-              d_dvdsub->id = demux_ogg_sub_id(demuxer, dvdsub_id);
+            if (demuxer->type == DEMUXER_TYPE_OGG) {
+              d_dvdsub->id = demux_ogg_sub_id(demuxer, dvdsub_id);              
+            }
 #endif
 #ifdef HAVE_MATROSKA
             if (demuxer->type == DEMUXER_TYPE_MATROSKA) {
@@ -4195,6 +4203,7 @@ if (stream->type==STREAMTYPE_DVDNAV && dvd_nav_still)
           vo_osd_changed(OSDTYPE_SUBTITLE); 
 #endif
         }
+
         // it's annoying and dumb to show osd saying "off" at every subless file...
         global_sub_quiet_osd_hack = 0;
       }
