@@ -7,11 +7,11 @@
     <control>
       <type>image</type>
       <id>0</id>
-      <posx>135</posx>
+      <posx>165</posx>
       <posy>205</posy>
-      <width>466</width>
-      <height>210</height>
-      <texture>dialog-popup.png</texture>
+      <width>390</width>
+      <height>190</height>
+      <texture>dialog-panel.png</texture>
     </control>
 
     <control>
@@ -64,7 +64,7 @@
       <id>20</id>
       <posx>190</posx>
       <posy>346</posy>
-      <width>291</width>
+      <width>261</width>
       <height>13</height>
       <texturebg>progress_back2.png</texturebg>
     </control>
@@ -73,12 +73,14 @@
       <description>Cancel button</description>
       <type>button</type>
       <id>10</id>
-      <posx>493</posx>
+      <posx>463</posx>
       <posy>335</posy>
       <width>77</width>
       <height>32</height>
       <label>222</label>
       <font>font10</font>
+      <texturenofocus>keyboard-btn-backspace.png</texturenofocus>
+      <texturefocus>keyboard-btn-backspace-focus.png</texturefocus>
       <onleft>10</onleft>
       <align>center</align>
       <onright>10</onright>

@@ -13,38 +13,28 @@
       <description>background image</description>
       <type>image</type>
       <id>1</id>
-      <posx>0</posx>
-      <posy>25</posy>
-      <width>420</width>
-      <height>175</height>
-      <texture>osd_menu_bg.png</texture>
-    </control>
-
-    <control>
-      <description>background image</description>
-      <type>image</type>
-      <id>0</id>
-      <posx>0</posx>
-      <posy>-5</posy>
-      <width>420</width>
-      <height>31</height>
-      <texture>osd_settings_header.png</texture>
+      <posx>-15</posx>
+      <posy>-15</posy>
+      <width>440</width>
+      <height>240</height>
+      <texture>dialog-panel.png</texture>
     </control>
 
     <control>
       <description>Heading Label</description>
       <type>label</type>
       <id>2</id>
-      <posx>0</posx>
-      <posy>2</posy>
+      <posx>10</posx>
+      <posy>-2</posy>
       <width>420</width>
-      <align>center</align>
-      <font>font12</font>
+      <align>left</align>
       <label>-</label>
+      <font>special13</font>
+      <textcolor>DDced8da</textcolor>
     </control>
 
     <control>
-      <description>Heading Label</description>
+      <description>path Label</description>
       <type>label</type>
       <id>0</id>
       <posx>10</posx>
@@ -62,7 +52,7 @@
       <posx>10</posx>
       <posy>60</posy>
       <width>320</width>
-      <height>31</height>
+      <height>32</height>
       <font>font12</font>
       <textoffsetx>12</textoffsetx>
       <textwidth>300</textwidth>
@@ -80,17 +70,17 @@
       <description>Browse Button</description>
       <type>button</type>
       <id>11</id>
-      <posx>340</posx>
+      <posx>333</posx>
       <posy>60</posy>
-      <width>70</width>
-      <height>31</height>
+      <width>77</width>
+      <height>32</height>
       <font>font12</font>
       <textoffsetx>12</textoffsetx>
       <label>1024</label>
       <align>center</align>
       <aligny>center</aligny>
-      <texturefocus>button-focus.png</texturefocus>
-      <texturenofocus>button-nofocus.png</texturenofocus>
+      <texturenofocus>keyboard-btn-backspace.png</texturenofocus>
+      <texturefocus>keyboard-btn-backspace-focus.png</texturefocus>
       <onup>18</onup>
       <onleft>10</onleft>
       <onright>10</onright>
@@ -115,7 +105,7 @@
       <posx>10</posx>
       <posy>120</posy>
       <width>400</width>
-      <height>31</height>
+      <height>32</height>
       <font>font12</font>
       <textoffsetx>12</textoffsetx>
       <textwidth>380</textwidth>
@@ -133,37 +123,37 @@
       <description>Ok Button</description>
       <type>button</type>
       <id>18</id>
-      <posx>280</posx>
+      <posx>253</posx>
       <posy>160</posy>
-      <width>60</width>
-      <height>31</height>
+      <width>77</width>
+      <height>32</height>
       <font>font12</font>
       <textoffsetx>12</textoffsetx>
       <align>center</align>
       <aligny>center</aligny>
-      <texturefocus>button-focus.png</texturefocus>
-      <texturenofocus>button-nofocus.png</texturenofocus>
+      <texturenofocus>keyboard-btn-backspace.png</texturenofocus>
+      <texturefocus>keyboard-btn-backspace-focus.png</texturefocus>
       <label>186</label>
       <onup>12</onup>
       <onleft>19</onleft>
       <onright>19</onright>
-      <ondown>19</ondown>
+      <ondown>10</ondown>
     </control>
 
     <control>
       <description>Cancel Button</description>
       <type>button</type>
       <id>19</id>
-      <posx>350</posx>
+      <posx>333</posx>
       <posy>160</posy>
-      <width>60</width>
-      <height>31</height>
+      <width>77</width>
+      <height>32</height>
       <font>font12</font>
       <textoffsetx>12</textoffsetx>
       <align>center</align>
       <aligny>center</aligny>
-      <texturefocus>button-focus.png</texturefocus>
-      <texturenofocus>button-nofocus.png</texturenofocus>
+      <texturenofocus>keyboard-btn-backspace.png</texturenofocus>
+      <texturefocus>keyboard-btn-backspace-focus.png</texturefocus>
       <label>222</label>
       <onup>12</onup>
       <onleft>18</onleft>
