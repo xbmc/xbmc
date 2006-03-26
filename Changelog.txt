@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 26-02-2006 fixed: changing subtitles in mplayer when having ttf subtitles, could cause subtitles to become invisible
  - 26-02-2006 changed: added subtitle/audio stream numberering to osd, easier to see when having multiple English for example
  - 25-03-2006 fixed: slow opening of some dvd images due to css caching directory having to long name
  - 25-03-2006 changed: CFileCURL files will now write in smaller chunks and have less chance of overwriting buffer, also Stat/Exist should now work for http urls. (no knowledge about dir thou)
