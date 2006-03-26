@@ -15,9 +15,9 @@
       <type>image</type>
       <id>997</id>
       <posx>0</posx>
-      <posy>-30</posy>
-      <width>238</width>
-      <height>30</height>
+      <posy>-25</posy>
+      <width>235</width>
+      <height>26</height>
       <texture>dialog-context-top.png</texture>
     </control>
 
@@ -27,7 +27,7 @@
       <id>999</id>
       <posx>0</posx>
       <posy>0</posy>
-      <width>238</width>
+      <width>235</width>
       <texture>dialog-context-middle.png</texture>
     </control>
 
@@ -36,8 +36,8 @@
       <type>image</type>
       <id>998</id>
       <posx>0</posx>
-      <width>238</width>
-      <height>30</height>
+      <width>235</width>
+      <height>25</height>
       <texture>dialog-context-bottom.png</texture>
     </control>
 
@@ -48,8 +48,10 @@
       <posx>22</posx>
       <posy>15</posy>
       <width>200</width>
-      <height>30</height>
+      <height>32</height>
       <align>center</align>
+      <texturenofocus>keyboard-btn-space.png</texturenofocus>
+      <texturefocus>keyboard-btn-space-focus.png</texturefocus>
     </control>
 
   </controls>

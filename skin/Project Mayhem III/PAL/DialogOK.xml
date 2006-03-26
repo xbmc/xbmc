@@ -7,11 +7,11 @@
     <control>
       <type>image</type>
       <id>0</id>
-      <posx>135</posx>
+      <posx>165</posx>
       <posy>205</posy>
-      <width>466</width>
-      <height>210</height>
-      <texture>dialog-popup.png</texture>
+      <width>390</width>
+      <height>190</height>
+      <texture>dialog-panel.png</texture>
     </control>
 
     <control>
@@ -59,14 +59,16 @@
       <description>OK button</description>
       <type>button</type>
       <id>10</id>
-      <posx>355</posx>
+      <posx>325</posx>
       <posy>330</posy>
-      <width>50</width>
+      <width>77</width>
       <height>32</height>
       <label>186</label>
       <font>font10</font>
-      <onleft>10</onleft>
       <align>center</align>
+      <texturenofocus>keyboard-btn-backspace.png</texturenofocus>
+      <texturefocus>keyboard-btn-backspace-focus.png</texturefocus>
+      <onleft>10</onleft>
       <onright>10</onright>
       <onup>10</onup>
       <ondown>10</ondown>
