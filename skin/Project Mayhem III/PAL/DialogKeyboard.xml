@@ -858,8 +858,8 @@
       <posy>375</posy>
       <width>120</width>
       <height>30</height>
-      <texturenofocus>keyboard-btn-done.png</texturenofocus>
-      <texturefocus>keyboard-btn-done-focus.png</texturefocus>
+      <texturenofocus>keyboard-btn-ip.png</texturenofocus>
+      <texturefocus>keyboard-btn-ip-focus.png</texturefocus>
       <label>1006</label>
       <font>special13</font>
       <align>center</align>
