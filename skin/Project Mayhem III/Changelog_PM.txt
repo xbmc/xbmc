@@ -1,3 +1,5 @@
+2006-03-26 changed:	cosmetical and logical dialogs update
+
 2006-03-09 changed:	Py Skin builder button is set to invisible.
 
 2006-03-07 changed:	Updated to v2.0 compatibility.

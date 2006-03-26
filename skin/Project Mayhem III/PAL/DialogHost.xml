@@ -8,11 +8,11 @@
       <description>Dialog Background</description>
       <type>image</type>
       <id>0</id>
-      <posx>137</posx>
+      <posx>165</posx>
       <posy>177</posy>
-      <width>425</width>
-      <height>290</height>
-      <texture>dialog-invite.png</texture>
+      <width>390</width>
+      <height>273</height>
+      <texture>dialog-panel.png</texture>
     </control>
 
     <control>
@@ -31,7 +31,7 @@
       <id>3101</id>
       <posx>190</posx>
       <posy>230</posy>
-      <font>font13</font>
+      <font>font12</font>
       <label>15050</label>
       <onleft>3101</onleft>
       <onright>3101</onright>
@@ -40,16 +40,17 @@
     </control>
 
     <control>
+      <description>Player Limit label</description>
       <id>3102</id>
       <posx>190</posx>
       <posy>267</posy>
       <type>label</type>
-      <description>Player Limit label</description>
       <label>15051</label>
       <font>font12</font>
     </control>
 
     <control>
+      <description>Player Limit spin control</description>
       <id>3103</id>
       <posx>360</posx>
       <posy>267</posy>
@@ -58,64 +59,67 @@
       <onup>3101</onup>
       <ondown>3105</ondown>
       <type>spincontrol</type>
-      <description>Player Limit spin control</description>
       <font>font12</font>
       <reverse>yes</reverse>
     </control>
 
     <control>
+      <description>Password label</description>
       <id>3104</id>
       <posx>190</posx>
       <posy>303</posy>
       <type>label</type>
-      <description>Password label</description>
       <font>font12</font>
       <label>15052</label>
     </control>
 
     <control>
+      <description>Password button</description>
       <id>3105</id>
-      <posx>312</posx>
+      <posx>300</posx>
       <posy>298</posy>
       <onleft>3105</onleft>
       <onright>3105</onright>
       <onup>3103</onup>
       <ondown>3107</ondown>
       <type>button</type>
-      <description>Password button</description>
       <font>font12</font>
-      <width>210</width>
-      <height>33</height>
+      <width>240</width>
+      <height>32</height>
       <label>-</label>
       <aligny>center</aligny>
+      <texturefocus>list-focus.png</texturefocus>
+      <texturenofocus>-</texturenofocus>
       <font>font13</font>
     </control>
 
     <control>
+      <description>Description label</description>
       <id>3106</id>
       <posx>190</posx>
       <posy>338</posy>
       <type>label</type>
-      <description>Description label</description>
       <font>font12</font>
       <label>15053</label>
     </control>
 
     <control>
+      <description>Description button</description>
       <id>3107</id>
-      <posx>312</posx>
+      <posx>300</posx>
       <posy>333</posy>
       <onleft>3107</onleft>
       <onright>3107</onright>
       <onup>3105</onup>
       <ondown>3108</ondown>
       <type>button</type>
-      <description>Description button</description>
       <font>font12</font>
-      <width>210</width>
-      <height>35</height>
-      <label>This is a test</label>
+      <width>240</width>
+      <height>32</height>
+      <label>-</label>
       <aligny>center</aligny>
+      <texturefocus>list-focus.png</texturefocus>
+      <texturenofocus>-</texturenofocus>
       <font>font12</font>
     </control>
 
@@ -123,12 +127,15 @@
       <description>OK button</description>
       <type>button</type>
       <id>3108</id>
-      <posx>360</posx>
+      <posx>383</posx>
       <posy>380</posy>
-      <width>75</width>
-      <height>33</height>
+      <width>77</width>
+      <height>32</height>
       <label>186</label>
+      <font>font10</font>
       <align>center</align>
+      <texturenofocus>keyboard-btn-backspace.png</texturenofocus>
+      <texturefocus>keyboard-btn-backspace-focus.png</texturefocus>
       <onleft>3108</onleft>
       <onright>3109</onright>
       <onup>3107</onup>
@@ -139,12 +146,15 @@
       <description>Cancel button</description>
       <type>button</type>
       <id>3109</id>
-      <posx>445</posx>
+      <posx>463</posx>
       <posy>380</posy>
-      <width>75</width>
-      <height>35</height>
+      <width>77</width>
+      <height>32</height>
       <label>222</label>
+      <font>font10</font>
       <align>center</align>
+      <texturenofocus>keyboard-btn-backspace.png</texturenofocus>
+      <texturefocus>keyboard-btn-backspace-focus.png</texturefocus>
       <onleft>3108</onleft>
       <onright>3109</onright>
       <onup>3107</onup>
