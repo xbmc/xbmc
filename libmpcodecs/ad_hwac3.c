@@ -364,7 +364,7 @@ static int decode_audio_dts(unsigned char *indata_ptr, int len, unsigned char *b
   if(fsize < 0)
     return -1;
  
-  burst_len = fsize * 8;
+  burst_len = ((fsize+1)&~1) * 8;
   nr_samples = nblks * 32;
 
   buf[0] = 0x72; buf[1] = 0xf8; /* iec 61937     */
@@ -395,11 +395,14 @@ static int decode_audio_dts(unsigned char *indata_ptr, int len, unsigned char *b
   }
 #ifdef WORDS_BIGENDIAN
   memcpy(&buf[8], indata_ptr, fsize);  // untested
-#else
-  //TODO if fzise is odd, swab doesn't copy the last byte
+#else  
   swab(indata_ptr, &buf[8], fsize);
   if (fsize & 1)
-    buf[8+fsize] = indata_ptr[fsize];
+  {
+    buf[8+fsize-1] = 0x0;
+    buf[8+fsize] = indata_ptr[fsize-1];
+    fsize++;
+  }
 #endif
   memset(&buf[fsize + 8], 0, nr_samples * 2 * 2 - (fsize + 8));
 
