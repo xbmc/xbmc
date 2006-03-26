@@ -11,6 +11,17 @@
   <animation effect="fade" time="200">WindowClose</animation>
   <controls>
     <control>
+      <type>image</type>
+      <id>0</id>
+      <posx>-300</posx>
+      <posy>-300</posy>
+      <width>1300</width>
+      <height>1300</height>
+      <texture>black.png</texture>
+      <animation effect="fade" time="2000">WindowOpen</animation>
+    </control>
+
+    <control>
       <description>background top image</description>
       <type>image</type>
       <id>997</id>
@@ -51,7 +62,7 @@
       <height>32</height>
       <align>center</align>
       <texturenofocus>keyboard-btn-space.png</texturenofocus>
-      <texturefocus>keyboard-btn-space-focus.png</texturefocus>
+      <texturefocus>keyboard-btn-space-focus2.png</texturefocus>
     </control>
 
   </controls>
