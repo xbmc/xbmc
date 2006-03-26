@@ -33,7 +33,7 @@
 #include "avformat.h"
 #include "avi.h"
 
-#define PROBE_BUF_SIZE 2048
+#define PROBE_BUF_SIZE 4096*16*2
 
 typedef struct lavf_priv_t{
     AVInputFormat *avif;
