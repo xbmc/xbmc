@@ -1760,6 +1760,14 @@ void CMPlayer::SetSubtitle(int iStream)
   mplayer_setSubtitle(iStream);
   options.SetSubtitleStream(iStream);
   g_stSettings.m_currentVideoSettings.m_SubtitleStream = iStream;
+
+  if( CUtil::IsUsingTTFSubtitles() )
+  { // wait two frames to make sure subtitle change has been handled
+    m_evProcessDone.WaitMSec(1000);
+    m_evProcessDone.WaitMSec(1000);
+
+    SetSubtitleVisible(GetSubtitleVisible());
+  }
 };
 
 bool CMPlayer::GetSubtitleVisible()
