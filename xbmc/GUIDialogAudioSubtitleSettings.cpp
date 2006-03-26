@@ -93,9 +93,12 @@ void CGUIDialogAudioSubtitleSettings::AddAudioStreams(unsigned int id)
   for (int i = 0; i <= setting.max; ++i)
   {
     CStdString strItem;
-    g_application.m_pPlayer->GetAudioStreamName(i, strItem);
-    if (strItem.length() == 0)
-      strItem.Format("%2i", i + 1);
+    CStdString strName;
+    g_application.m_pPlayer->GetAudioStreamName(i, strName);
+    if (strName.length() == 0)
+      strName = "Unnamed";
+
+    strItem.Format("%s (%i/%i)", strName.c_str(), i + 1, (int)setting.max + 1);
     setting.entry.push_back(strItem);
   }
 
@@ -126,11 +129,15 @@ void CGUIDialogAudioSubtitleSettings::AddSubtitleStreams(unsigned int id)
 
   // cycle through each subtitle and add it to our entry list
   for (int i = 0; i <= setting.max; ++i)
-  {
+  {    
     CStdString strItem;
-    g_application.m_pPlayer->GetSubtitleName(i, strItem);
-    if (strItem.length() == 0)
-      strItem.Format("%2i", i + 1);
+    CStdString strName;
+    g_application.m_pPlayer->GetSubtitleName(i, strName);    
+    if (strName.length() == 0)
+      strName = "Unnamed";
+
+    strItem.Format("%s (%i/%i)", strName.c_str(), i + 1, (int)setting.max + 1);
+
     setting.entry.push_back(strItem);
   }
 
@@ -199,12 +206,7 @@ void CGUIDialogAudioSubtitleSettings::OnSettingChanged(unsigned int num)
   else if (setting.id == SUBTITLE_SETTINGS_STREAM && setting.max > 0)
   {
     g_stSettings.m_currentVideoSettings.m_SubtitleStream = m_subtitleStream;
-    bool bOn = g_stSettings.m_currentVideoSettings.m_SubtitleOn;
     g_application.m_pPlayer->SetSubtitle(m_subtitleStream);
-    g_application.m_pPlayer->SetSubtitleVisible(false);
-    g_stSettings.m_currentVideoSettings.m_SubtitleOn = bOn;
-    Sleep(50);
-    g_application.m_pPlayer->SetSubtitleVisible(bOn);
   }
   else if (setting.id == SUBTITLE_SETTINGS_BROWSER)
   {
