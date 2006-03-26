@@ -440,7 +440,7 @@ bool CDVDInputStreamNavigator::SetActiveSubtitleStream(int iId, bool bDisplay)
     int streamId = ConvertSubtitleStreamId_XBMCToExternal(iId);
     if (!bDisplay) streamId |= 0x80;
     
-    return (DVDNAV_STATUS_OK == m_dll.dvdnav_subpicture_change(m_dvdnav, iId));
+    return (DVDNAV_STATUS_OK == m_dll.dvdnav_subpicture_change(m_dvdnav, streamId));
   }
   return false; 
 }
@@ -652,7 +652,7 @@ std::string CDVDInputStreamNavigator::GetSubtitleStreamLanguage(int iId)
 
   subp_attr_t subp_attributes;
   int streamId = iId; //ConvertSubtitleStreamId_XBMCToExternal(iId);
-  if( m_dll.dvdnav_get_stitle_info(m_dvdnav, iId, &subp_attributes) == DVDNAV_STATUS_OK )
+  if( m_dll.dvdnav_get_stitle_info(m_dvdnav, streamId, &subp_attributes) == DVDNAV_STATUS_OK )
   {
     
     if (subp_attributes.type == DVD_SUBPICTURE_TYPE_Language ||
