@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 25-03-2005 added: ability to cancel vobsub parsing
   - 25-03-2005 fixed: switching from srt -> vobsub wouldn't reset spudec, nor osd
   - 06-02-2006 fixed: http.c authentication fix
   - 03-02-2006 added: support for slave command sub_load/sub_remove. supports loading any text subtitle format after start

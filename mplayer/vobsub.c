@@ -1312,6 +1312,13 @@ vobsub_open(const char *const name,const char *const ifo,const int force,void** 
 			break;
 		    }
 #ifdef XBMC_VOBSUB
+          extern int xbmc_cancel;
+          if( xbmc_cancel ) 
+          {
+            mp_msg(MSGT_VOBSUB,MSGL_STATUS,"VobSub: User canceled parsing\n");
+            break;
+          }
+
 					if (++i == 200)
 					{
             if( size )
