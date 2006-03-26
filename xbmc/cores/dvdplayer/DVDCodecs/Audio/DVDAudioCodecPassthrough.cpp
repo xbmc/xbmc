@@ -17,6 +17,26 @@
 
 #define OUT_SAMPLESTOBYTES(a) ((a) * OUT_CHANNELS * (OUT_SAMPLESIZE>>3))
 
+/* swab even and uneven data sizes. make sure dst can hold an size aligned to 2 */
+static inline int swabdata(char* dst, char* src, int size)
+{
+  if( size & 0x1 )
+  {
+    swab(src, dst, size-1);
+    dst+=size-1;
+    src+=size-1;
+
+    dst[0] = 0x0;
+    dst[1] = src[0];
+    return size+1;
+  }
+  else
+  {
+    swab(src, dst, size);
+    return size;
+  }
+
+}
 
 CDVDAudioCodecPassthrough::CDVDAudioCodecPassthrough(void)
 {
@@ -82,6 +102,9 @@ bool CDVDAudioCodecPassthrough::SyncDTSHeader(BYTE* pData, int iDataSize, int* i
 
 int CDVDAudioCodecPassthrough::PaddDTSData( BYTE* pData, int iDataSize, BYTE* pOut)
 {
+  /* we always output aligned sizes to allow for byteswapping*/
+  int iDataSize2 = (iDataSize+1) & ~1;
+
   pOut[0] = 0x72; pOut[1] = 0xf8; /* iec 61937     */
   pOut[2] = 0x1f; pOut[3] = 0x4e; /*  syncword     */
 
@@ -103,21 +126,25 @@ int CDVDAudioCodecPassthrough::PaddDTSData( BYTE* pData, int iDataSize, BYTE* pO
   }
 
   pOut[5] = 0;                      /* ?? */    
-  pOut[6] = (iDataSize << 3) & 0xFF;
-  pOut[7] = (iDataSize >> 5) & 0xFF;
+  pOut[6] = (iDataSize2 << 3) & 0xFF;
+  pOut[7] = (iDataSize2 >> 5) & 0xFF;
 
   int iOutputSize = OUT_SAMPLESTOBYTES(m_iSamplesPerFrame);
 
-  if ( iDataSize > iOutputSize - 8 ) 
+  if ( iDataSize2 > iOutputSize - 8 ) 
   {          
     //Crap frame with more data than we can handle, can be worked around i think
     CLog::Log(LOGERROR, "CDVDAudioCodecPassthrough::PaddDTSData - larger frame than will fit, skipping");
     return 0;
   }
 
-  //Swap byteorder
-  swab((char*)pData, (char*)pOut+8, iDataSize);
-  memset(pOut + iDataSize + 8, 0, iOutputSize - iDataSize - 8);  
+  //Swap byteorder if syncword indicates bigendian
+  if( pData[0] == 0x7f || pData[0] == 0x1f )
+    swabdata((char*)pOut+8, (char*)pData, iDataSize);
+  else
+    memcpy((char*)pOut+8, (char*)pData, iDataSize);
+
+  memset(pOut + iDataSize2 + 8, 0, iOutputSize - iDataSize2 - 8);  
 
   return iOutputSize;
 }
@@ -160,6 +187,9 @@ bool CDVDAudioCodecPassthrough::SyncAC3Header(BYTE* pData, int iDataSize, int* i
 
 int CDVDAudioCodecPassthrough::PaddAC3Data( BYTE* pData, int iDataSize, BYTE* pOut)
 {
+  /* we always output aligned sizes to allow for byteswapping*/
+  int iDataSize2 = (iDataSize+1) & ~1;
+
   //Setup ac3 header
   pOut[0] = 0x72;
   pOut[1] = 0xF8;
@@ -167,12 +197,12 @@ int CDVDAudioCodecPassthrough::PaddAC3Data( BYTE* pData, int iDataSize, BYTE* pO
   pOut[3] = 0x4E;
   pOut[4] = 0x01; //(length) ? data_type : 0; /* & 0x1F; */
   pOut[5] = 0x00;
-  pOut[6] = (iDataSize << 3) & 0xFF;
-  pOut[7] = (iDataSize >> 5) & 0xFF;
+  pOut[6] = (iDataSize2 << 3) & 0xFF;
+  pOut[7] = (iDataSize2 >> 5) & 0xFF;
 
   int iOutputSize = OUT_SAMPLESTOBYTES(m_iSamplesPerFrame);
 
-  if ( iDataSize > iOutputSize - 8 ) 
+  if ( iDataSize2 > iOutputSize - 8 ) 
   {          
     //Crap frame with more data than we can handle, can be worked around i think
     CLog::Log(LOGERROR, "CDVDAudioCodecPassthrough::PaddAC3Data - larger frame than will fit, skipping");
@@ -180,8 +210,8 @@ int CDVDAudioCodecPassthrough::PaddAC3Data( BYTE* pData, int iDataSize, BYTE* pO
   }
 
   //Swap byteorder
-  swab((char*)pData, (char*)pOut+8, iDataSize);
-  memset(pOut + iDataSize + 8, 0, iOutputSize - iDataSize - 8);
+  swabdata((char*)pData, (char*)pOut+8, iDataSize);
+  memset(pOut + iDataSize2 + 8, 0, iOutputSize - iDataSize2 - 8);
   return iOutputSize;
 }
 
