@@ -343,38 +343,42 @@ bool CGUIWindowPrograms::OnPopupMenu(int iItem)
     pMenu->Initialize();
     // add the needed buttons
     
-    CStdString strLaunch = g_localizeStrings.Get(518); // Launch
-    if (g_guiSettings.GetBool("MyPrograms.GameAutoRegion"))
-    {
-      int iRegion = GetRegion(iItem);
-      if (iRegion == VIDEO_NTSCM)
-        strLaunch += " (NTSC-M)";
-      if (iRegion == VIDEO_NTSCJ)
-        strLaunch += " (NTSC-J)";
-      if (iRegion == VIDEO_PAL50)
-        strLaunch += " (PAL)";
-      if (iRegion == VIDEO_PAL60)
-        strLaunch += " (PAL-60)";
-    }
-    
-    int btn_Launch = pMenu->AddButton(strLaunch); // launch
+    int btn_Launch = -2;
     int btn_Rename = -2;
     int btn_LaunchIn = -2;
-    if (g_guiSettings.GetBool("MyPrograms.GameAutoRegion"))
-      btn_LaunchIn = pMenu->AddButton(519); // launch in video mode
-    if (m_vecItems[iItem]->IsType(".xbe"))
-      btn_Rename = pMenu->AddButton(520); // edit xbe title
-    DWORD dwTitleId = CUtil::GetXbeID(m_vecItems[iItem]->m_strPath);
     int btn_Trainers = -2;
-    if (m_database.ItemHasTrainer(dwTitleId))
+    if (m_vecItems[iItem]->IsType(".xbe") || m_vecItems[iItem]->IsShortCut())
     {
-      CStdString strOptions = g_localizeStrings.Get(12015);
-      if (CKaiClient::GetInstance()->IsEngineConnected())
-        strOptions += " (KAI)";
-        
-      btn_Trainers = pMenu->AddButton(strOptions); // trainer options
-      if (CKaiClient::GetInstance()->IsEngineConnected())
-        pMenu->EnableButton(btn_Trainers,false);
+      CStdString strLaunch = g_localizeStrings.Get(518); // Launch
+      if (g_guiSettings.GetBool("MyPrograms.GameAutoRegion"))
+      {
+        int iRegion = GetRegion(iItem);
+        if (iRegion == VIDEO_NTSCM)
+          strLaunch += " (NTSC-M)";
+        if (iRegion == VIDEO_NTSCJ)
+          strLaunch += " (NTSC-J)";
+        if (iRegion == VIDEO_PAL50)
+          strLaunch += " (PAL)";
+        if (iRegion == VIDEO_PAL60)
+          strLaunch += " (PAL-60)";
+      }
+      btn_Launch = pMenu->AddButton(strLaunch); // launch
+
+      if (g_guiSettings.GetBool("MyPrograms.GameAutoRegion"))
+        btn_LaunchIn = pMenu->AddButton(519); // launch in video mode
+
+      btn_Rename = pMenu->AddButton(520); // edit xbe title
+      DWORD dwTitleId = CUtil::GetXbeID(m_vecItems[iItem]->m_strPath);
+      if (m_database.ItemHasTrainer(dwTitleId))
+      {
+        CStdString strOptions = g_localizeStrings.Get(12015);
+        if (CKaiClient::GetInstance()->IsEngineConnected())
+          strOptions += " (KAI)";
+
+        btn_Trainers = pMenu->AddButton(strOptions); // trainer options
+        if (CKaiClient::GetInstance()->IsEngineConnected())
+          pMenu->EnableButton(btn_Trainers,false);
+      }
     }
     int btn_ScanTrainers = pMenu->AddButton(12012);
     int btn_UpdateDb = pMenu->AddButton(12387);
