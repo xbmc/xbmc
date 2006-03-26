@@ -196,7 +196,7 @@
       <texturenofocus>keyboard-btn-backspace.png</texturenofocus>
       <texturefocus>keyboard-btn-backspace-focus.png</texturefocus>
       <label>186</label>
-      <onup>12</onup>
+      <onup>15</onup>
       <onleft>19</onleft>
       <onright>19</onright>
       <ondown>10</ondown>
@@ -217,7 +217,7 @@
       <texturenofocus>keyboard-btn-backspace.png</texturenofocus>
       <texturefocus>keyboard-btn-backspace-focus.png</texturefocus>
       <label>222</label>
-      <onup>12</onup>
+      <onup>15</onup>
       <onleft>18</onleft>
       <onright>18</onright>
       <ondown>10</ondown>
