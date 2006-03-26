@@ -798,10 +798,15 @@ bool CDVDInputStreamNavigator::GetCurrentButtonInfo(CDVDOverlaySpu* pOverlayPict
 
   if (m_dll.dvdnav_get_button_info(m_dvdnav, alpha, color) == 0)
   {
-
     // check if libdvdnav provided us correct alpha values
     int* a = alpha[iButtonType];
-    if (a[0] || a[1] || a[2] || a[3])
+    // if (a[0] || a[1] || a[2] || a[3])
+    
+    // assume alpha values from libdvdnav are correct, dvdnav_get_button_info can provide incorrect alpha values
+    if (!pOverlayPicture->alpha[0] &&
+        !pOverlayPicture->alpha[1] &&
+        !pOverlayPicture->alpha[2] &&
+        !pOverlayPicture->alpha[3]) 
     {
       pOverlayPicture->alpha[0] = alpha[iButtonType][0];
       pOverlayPicture->alpha[1] = alpha[iButtonType][1];
@@ -809,9 +814,12 @@ bool CDVDInputStreamNavigator::GetCurrentButtonInfo(CDVDOverlaySpu* pOverlayPict
       pOverlayPicture->alpha[3] = alpha[iButtonType][3];
     }
     
-    for (int i = 0; i < 4; i++)
-      for (int j = 0; j < 3; j++)
-        pOverlayPicture->color[i][j] = pSPU->m_clut[color[iButtonType][i]][j];
+    if (pSPU->m_bHasClut)
+    {
+      for (int i = 0; i < 4; i++)
+        for (int j = 0; j < 3; j++)
+          pOverlayPicture->color[i][j] = pSPU->m_clut[color[iButtonType][i]][j];
+    }
   }
   
   if (DVDNAV_STATUS_OK == m_dll.dvdnav_get_highlight_area(m_dll.dvdnav_get_current_nav_pci(m_dvdnav), iButton, iButtonType, &hl))
