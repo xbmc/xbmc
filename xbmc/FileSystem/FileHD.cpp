@@ -84,7 +84,12 @@ bool CFileHD::OpenForWrite(const CURL& url, bool bBinary, bool bOverWrite)
   url.GetURL(strPath);
 
   if (g_guiSettings.GetBool("Servers.FTPAutoFatX")) // allow overriding
+  {
+    CStdString strPathOriginal = strPath;
     CUtil::GetFatXQualifiedPath(strPath);
+    if (strPathOriginal != strPath)
+      CLog::Log(LOGINFO,"CFileHD::OpenForWrite: WARNING: Truncated filename %s %s",strPathOriginal,strPath);
+  }
     
   strPath.Replace("/", "\\");
   
