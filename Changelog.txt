@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 26-02-2006 fixed: [ 1454103 ] dts frames with uneven size would play garbled when passed through in both dvdplayer and mplayer
  - 26-02-2006 fixed: dvdplayer, DVD-subtitles remain enabled after disabling them
  - 26-02-2006 fixed: changing subtitles in mplayer when having ttf subtitles, could cause subtitles to become invisible
  - 26-02-2006 added: ability to abort mplayer while it is parsing of vobsubs
