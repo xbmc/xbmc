@@ -5,6 +5,17 @@
   <animation effect="fade" time="200">WindowClose</animation>
   <controls>
     <control>
+      <type>image</type>
+      <id>0</id>
+      <posx>0</posx>
+      <posy>0</posy>
+      <width>720</width>
+      <height>576</height>
+      <texture>black.png</texture>
+      <animation effect="fade" time="2000">WindowOpen</animation>
+    </control>
+
+    <control>
       <description>Dialog Background</description>
       <type>image</type>
       <id>0</id>
