@@ -50,7 +50,7 @@
       <type>label</type>
       <id>402</id>
       <posx>76</posx>
-      <posy>40</posy>
+      <posy>33</posy>
       <width>160</width>
       <label>has just signed in</label>
       <font>font10</font>
