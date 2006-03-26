@@ -21,10 +21,12 @@ public:
   {
     pData = result;
     bHasColor = false;
+    bHasAlpha = false;
   }
   
   BYTE result[65536 + 20];
   bool bHasColor;
+  bool bHasAlpha;
 };
 
 // upto 32 streams can exist

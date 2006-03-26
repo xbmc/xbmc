@@ -62,7 +62,7 @@ public:
   int GetCurrentButton();
   
   bool GetCurrentButtonInfo(CDVDOverlaySpu* pOverlayPicture, CDVDDemuxSPU* pSPU, int iButtonType /* 0 = selection, 1 = action (clicked)*/);
-  
+
   bool IsInMenu();
 
   int GetActiveSubtitleStream();

@@ -242,22 +242,16 @@ CSPUInfo* CDVDDemuxSPU::ParsePacket(SPUData* pSPUData)
           alpha[2] = (p[1] >> 4) & 0x0f;
           alpha[3] = (p[1]) & 0x0f;
 
-          /* Ignore blank alpha palette. */
+          // Ignore blank alpha palette.
           if (alpha[0] | alpha[1] | alpha[2] | alpha[3])
           {
+            pSPUInfo->bHasAlpha = true;
+            
             // 0, 1, 2, 3
             pSPUInfo->alpha[0] = alpha[3]; //0 // background, should be hidden
             pSPUInfo->alpha[1] = alpha[2]; //1
             pSPUInfo->alpha[2] = alpha[1]; //2 // wm button overlay
             pSPUInfo->alpha[3] = alpha[0]; //3
-          }
-          else
-          {
-            DebugLog("    GetPacket, SET_CONTR: ignoring blank alpha palette, using default" );
-            pSPUInfo->alpha[0] = 0x00; // back ground
-            pSPUInfo->alpha[1] = 0x0f;
-            pSPUInfo->alpha[2] = 0x0f;
-            pSPUInfo->alpha[3] = 0x0f;
           }
 
           DebugLog("    GetPacket, SET_CONTR:");
@@ -310,6 +304,18 @@ CSPUInfo* CDVDDemuxSPU::ParsePacket(SPUData* pSPUData)
     }
   }
 
+
+  // check alpha values, for non forced spu's we use a default value
+  // forced spu's (menu overlays) retrieve their alpha information from InputStreamNavigator::GetCurrentButtonInfo
+  if (!pSPUInfo->bHasAlpha && !pSPUInfo->bForced)
+  {
+    DebugLog("ParsePacket: ignoring blank alpha palette, using default" );
+    pSPUInfo->alpha[0] = 0x00; // back ground
+    pSPUInfo->alpha[1] = 0x0f;
+    pSPUInfo->alpha[2] = 0x0f;
+    pSPUInfo->alpha[3] = 0x0f;
+  }
+  
   // parse the rle.
   // this should be chnaged so it get's converted to a yuv overlay
   return ParseRLE(pSPUInfo, pUnparsedData);
