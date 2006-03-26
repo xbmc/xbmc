@@ -3,7 +3,7 @@
   <defaultcontrol>402</defaultcontrol>
   <coordinates>
     <system>1</system>
-    <posx>70</posx>
+    <posx>50</posx>
     <posy>27</posy>
   </coordinates>
 
@@ -25,11 +25,11 @@
       <description>Caption Label</description>
       <type>label</type>
       <id>401</id>
-      <posx>126</posx>
+      <posx>27</posx>
       <posy>21</posy>
       <font>font12</font>
-      <align>center</align>
-      <width>160</width>
+      <align>left</align>
+      <width>291</width>
       <height>20</height>
     </control>
 
@@ -37,8 +37,9 @@
       <description>Current Directory Label</description>
       <type>label</type>
       <id>402</id>
-      <posx>60</posx>
+      <posx>27</posx>
       <posy>43</posy>
+      <width>291</width>
       <haspath>yes</haspath>
       <font>font10</font>
       <onleft>402</onleft>
@@ -51,11 +52,12 @@
       <description>progress control</description>
       <type>progress</type>
       <id>403</id>
-      <posx>60</posx>
-      <posy>64</posy>
-      <width>291</width>
-      <height>13</height>
-      <texturebg>progress_back2.png</texturebg>
+      <posx>287</posx>
+      <posy>27</posy>
+      <width>100</width>
+      <height>5</height>
+      <texturebg>blue_rectangle_weather.png</texturebg>
+    <overlaytexture>-</overlaytexture>
     </control>
 
   </controls>
