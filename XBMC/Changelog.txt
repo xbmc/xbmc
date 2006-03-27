@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 27-03-2006 changed: play folder in my videos ignores sample/ folder.
  - 27-03-2006 changed: unified hide 'parent folder items' setting.
  - 27-03-2006 fixed: Folder thumbs on remote shares in My Videos.
  - 27-03-2006 fixed: notinthelast wasn't working correctly in Smart Playlists.
