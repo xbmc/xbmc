@@ -9,7 +9,8 @@ typedef struct
   CSmartPlaylistRule::DATABASE_FIELD field;
 } translateField;
 
-static const translateField fields[] = { "genre", CSmartPlaylistRule::SONG_GENRE,
+static const translateField fields[] = { "none", CSmartPlaylistRule::FIELD_NONE,
+                                         "genre", CSmartPlaylistRule::SONG_GENRE,
                                          "album", CSmartPlaylistRule::SONG_ALBUM,
                                          "artist", CSmartPlaylistRule::SONG_ARTIST,
                                          "title", CSmartPlaylistRule::SONG_TITLE,
@@ -66,14 +67,14 @@ CSmartPlaylistRule::DATABASE_FIELD CSmartPlaylistRule::TranslateField(const char
 {
   for (int i = 0; i < NUM_FIELDS; i++)
     if (strcmpi(field, fields[i].string) == 0) return fields[i].field;
-  return SONG_ALBUM;
+  return FIELD_NONE;
 }
 
 CStdString CSmartPlaylistRule::TranslateField(DATABASE_FIELD field)
 {
   for (int i = 0; i < NUM_FIELDS; i++)
     if (field == fields[i].field) return fields[i].string;
-  return "album";
+  return "none";
 }
 
 CSmartPlaylistRule::SEARCH_OPERATOR CSmartPlaylistRule::TranslateOperator(const char *oper)
@@ -138,6 +139,8 @@ CStdString CSmartPlaylistRule::GetWhereClause()
     query = "(strGenre" + parameter + ") or (idsong IN (select idsong from genre,exgenresong where exgenresong.idgenre = genre.idgenre and genre.strGenre" + parameter + "))";
   else if (m_field == SONG_ARTIST)
     query = "(strArtist" + parameter + ") or (idsong IN (select idsong from artist,exartistsong where exartistsong.idartist = artist.idartist and artist.strArtist" + parameter + "))";
+  else if (m_field == SONG_LASTPLAYED && m_operator == OPERATOR_LESS_THAN)
+    query = "lastPlayed is NULL or lastPlayed" + parameter;
   else if (m_field != FIELD_NONE)
     query = GetDatabaseField(m_field) + parameter;
   return query;
