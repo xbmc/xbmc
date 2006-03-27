@@ -562,6 +562,19 @@ void CGUIWindowVideoBase::AddItemToPlayList(const CFileItem* pItem, int iPlaylis
 
     for (int i = 0; i < items.Size(); ++i)
     {
+      if (items[i]->m_bIsFolder)
+      {
+        CStdString strPath = items[i]->m_strPath;
+        if (CUtil::HasSlashAtEnd(strPath))
+          strPath.erase(strPath.size()-1);
+        strPath.ToLower();
+        if (strPath.size() > 6)
+        {
+          CStdString strSub = strPath.substr(strPath.size()-6);
+          if (strPath.substr(strPath.size()-6) == "sample") // skip sample folders
+            continue;
+        }
+      }
       AddItemToPlayList(items[i], iPlaylist);
     }
     m_vecItems.m_strPath = strDirectory;
