@@ -99,7 +99,7 @@
       <height>32</height>
       <label>-</label>
       <aligny>center</aligny>
-      <texturefocus>list-focus.png</texturefocus>
+      <texturefocus>input-focus.png</texturefocus>
       <texturenofocus>-</texturenofocus>
       <font>font13</font>
     </control>
@@ -129,7 +129,7 @@
       <height>32</height>
       <label>-</label>
       <aligny>center</aligny>
-      <texturefocus>list-focus.png</texturefocus>
+      <texturefocus>input-focus.png</texturefocus>
       <texturenofocus>-</texturenofocus>
       <font>font12</font>
     </control>
