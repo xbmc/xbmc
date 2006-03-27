@@ -57,11 +57,6 @@ void CGUIViewStateWindowPictures::SaveViewState()
   g_settings.Save();
 }
 
-bool CGUIViewStateWindowPictures::HideParentDirItems()
-{
-  return g_guiSettings.GetBool("Pictures.HideParentDirItems");
-}
-
 CStdString CGUIViewStateWindowPictures::GetLockType()
 {
   return "pictures";
@@ -100,11 +95,6 @@ void CGUIViewStateWindowPrograms::SaveViewState()
   g_stSettings.m_MyProgramsViewMethod=GetViewAsControl();
   g_stSettings.m_MyProgramsSortOrder=GetSortOrder();
   g_settings.Save();
-}
-
-bool CGUIViewStateWindowPrograms::HideParentDirItems()
-{
-  return g_guiSettings.GetBool("ProgramFiles.HideParentDirItems");
 }
 
 CStdString CGUIViewStateWindowPrograms::GetLockType()
