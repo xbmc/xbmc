@@ -3,57 +3,46 @@
   <defaultcontrol>1</defaultcontrol>
   <coordinates>
     <system>1</system>
-    <posx>250</posx>
-    <posy>116</posy>
+    <posx>155</posx>
+    <posy>132</posy>
   </coordinates>
   <visible>Window.IsActive(127)</visible>
-  <animation effect="slide" time="400" start="-600,0" acceleration="1">WindowOpen</animation>
-  <animation effect="slide" time="400" end="-600,-0" acceleration="1">WindowClose</animation>
+  <animation effect="fade" time="200">WindowOpen</animation>
+  <animation effect="fade" time="200">WindowClose</animation>
   <controls>
-
-
     <control>
-      <description>background image</description>
-      <type>image</type>
-      <id>1</id>
-      <posx>-200</posx>
-      <posy>20</posy>
-      <width>205</width>
-      <height>320</height>
-      <texture>trainer.png</texture>
-    </control>
-    <control>
-      <description>background image</description>
-      <type>image</type>
-      <id>1</id>
-      <posx>0</posx>
-      <posy>25</posy>
-      <width>420</width>
-      <height>336</height>
-      <texture>osd_menu_bg.png</texture>
-    </control>
-
-    <control>
-      <description>background image</description>
-      <type>image</type>
-      <id>1</id>
-      <posx>0</posx>
-      <posy>25</posy>
-      <width>420</width>
-      <height>336</height>
-      <texture>osd_menu_bg.png</texture>
-    </control>
-    <control>
-      <description>background image</description>
       <type>image</type>
       <id>0</id>
-      <posx>0</posx>
-      <posy>-5</posy>
-      <width>420</width>
-      <height>31</height>
-      <texture>osd_settings_header.png</texture>
+      <posx>-300</posx>
+      <posy>-300</posy>
+      <width>1300</width>
+      <height>1300</height>
+      <texture>black.png</texture>
+      <animation effect="fade" time="2000">WindowOpen</animation>
     </control>
 
+    <control>
+      <description>background image</description>
+      <type>image</type>
+      <id>1</id>
+      <posx>-25</posx>
+      <posy>-11</posy>
+      <width>446</width>
+      <height>405</height>
+      <texture>dialog-panel.png</texture>
+    </control>
+
+    <control>
+      <description>background image</description>
+      <type>image</type>
+      <id>1</id>
+      <posx>90</posx>
+      <posy>150</posy>
+      <width>218</width>
+      <height>47</height>
+      <texture>trainer.png</texture>
+      <colordiffuse>30FFFFFF</colordiffuse>
+    </control>
 
     <control>
       <description>Settings Label</description>
@@ -62,8 +51,9 @@
       <posx>0</posx>
       <posy>2</posy>
       <width>420</width>
-      <align>center</align>
-      <font>font12</font>
+      <align>left</align>
+      <font>special13</font>
+      <textcolor>DDced8da</textcolor>
     </control>
 
     <control>
@@ -72,19 +62,20 @@
       <id>3</id>
       <posx>0</posx>
       <posy>170</posy>
-      <width>420</width>
+      <width>408</width>
       <align>center</align>
       <label>12016</label>
+      <font>font12</font>
     </control>
 
     <control>
       <description>Next page button</description>
       <type>spincontrol</type>
       <id>60</id>
-      <posx>335</posx>
-      <posy>320</posy>
+      <posx>371</posx>
+      <posy>8</posy>
       <subtype>int</subtype>
-      <font>font13</font>
+      <font>font12</font>
       <onleft>60</onleft>
       <onright>60</onright>
       <ondown>2</ondown>
@@ -94,10 +85,10 @@
       <description>control area</description>
       <type>image</type>
       <id>5</id>
-      <posx>5</posx>
-      <posy>30</posy>
+      <posx>-1</posx>
+      <posy>40</posy>
       <width>408</width>
-      <height>290</height>
+      <height>325</height>
       <texture>-</texture>
     </control>
 
@@ -106,7 +97,7 @@
       <type>image</type>
       <id>6</id>
       <width>350</width>
-      <height>33</height>
+      <height>31</height>
       <texture>-</texture>
     </control>
 
@@ -116,7 +107,7 @@
       <id>7</id>
       <posx>530</posx>
       <posy>150</posy>
-      <height>31</height>
+      <height>29</height>
       <font>font12</font>
       <textoffsetx>12</textoffsetx>
       <aligny>center</aligny>

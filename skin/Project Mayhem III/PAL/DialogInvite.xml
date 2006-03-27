@@ -79,8 +79,8 @@
       <width>350</width>
       <label>15060</label>
       <font>font12</font>
-      <texturefocus>list-focus.png</texturefocus>
-      <texturenofocus>list-nofocus.png</texturenofocus>
+      <texturefocus>input-focus.png</texturefocus>
+      <texturenofocus>input-nofocus.png</texturenofocus>
       <onleft>20</onleft>
       <onright>20</onright>
       <onup>30</onup>
