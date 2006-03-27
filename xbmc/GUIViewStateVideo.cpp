@@ -3,11 +3,6 @@
 #include "AutoSwitch.h"
 #include "playlistplayer.h"
 
-bool CGUIViewStateWindowVideo::HideParentDirItems()
-{
-  return g_guiSettings.GetBool("MyVideos.HideParentDirItems");
-}
-
 CStdString CGUIViewStateWindowVideo::GetLockType()
 {
   return "video";

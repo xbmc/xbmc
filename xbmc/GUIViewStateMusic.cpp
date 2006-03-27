@@ -7,11 +7,6 @@
 
 using namespace DIRECTORY::MUSICDATABASEDIRECTORY;
 
-bool CGUIViewStateWindowMusic::HideParentDirItems()
-{
-  return g_guiSettings.GetBool("MyMusic.HideParentDirItems");
-}
-
 int CGUIViewStateWindowMusic::GetPlaylist()
 {
   return PLAYLIST_MUSIC_TEMP;

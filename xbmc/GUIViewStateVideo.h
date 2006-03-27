@@ -8,7 +8,6 @@ public:
   CGUIViewStateWindowVideo(const CFileItemList& items) : CGUIViewState(items) {}
 
 protected:
-  virtual bool HideParentDirItems();
   virtual CStdString GetLockType();
   virtual bool UnrollArchives();
 };
