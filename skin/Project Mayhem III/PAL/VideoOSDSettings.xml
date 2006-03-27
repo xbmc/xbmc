@@ -3,8 +3,8 @@
   <defaultcontrol>2</defaultcontrol>
   <coordinates>
     <system>1</system>
-    <posx>250</posx>
-    <posy>116</posy>
+    <posx>232</posx>
+    <posy>140</posy>
   </coordinates>
   <animation effect="fade" time="400">WindowOpen</animation>
   <animation effect="fade" time="400">WindowClose</animation>
@@ -13,22 +13,12 @@
       <description>background image</description>
       <type>image</type>
       <id>1</id>
-      <posx>0</posx>
-      <posy>25</posy>
-      <width>420</width>
-      <height>336</height>
-      <texture>osd_menu_bg.png</texture>
-    </control>
-
-    <control>
-      <description>background image</description>
-      <type>image</type>
-      <id>0</id>
-      <posx>0</posx>
-      <posy>-5</posy>
-      <width>420</width>
-      <height>31</height>
-      <texture>osd_settings_header.png</texture>
+      <posx>-25</posx>
+      <posy>-11</posy>
+      <width>446</width>
+      <height>405</height>
+      <texture>dialog-panel.png</texture>
+      <colordiffuse>AA000000</colordiffuse>
     </control>
 
     <control>
@@ -38,8 +28,9 @@
       <posx>0</posx>
       <posy>2</posy>
       <width>420</width>
-      <align>center</align>
-      <font>font12</font>
+      <align>left</align>
+      <font>special13</font>
+      <textcolor>DDced8da</textcolor>
     </control>
 
     <control>
@@ -48,19 +39,20 @@
       <id>3</id>
       <posx>0</posx>
       <posy>170</posy>
-      <width>420</width>
+      <width>408</width>
       <align>center</align>
       <label>13390</label>
+      <font>font12</font>
     </control>
 
     <control>
       <description>Next page button</description>
       <type>spincontrol</type>
       <id>60</id>
-      <posx>360</posx>
-      <posy>336</posy>
+      <posx>371</posx>
+      <posy>8</posy>
       <subtype>int</subtype>
-      <font>font13</font>
+      <font>font12</font>
       <onleft>60</onleft>
       <onright>60</onright>
       <ondown>2</ondown>
@@ -70,10 +62,10 @@
       <description>control area</description>
       <type>image</type>
       <id>5</id>
-      <posx>5</posx>
-      <posy>30</posy>
+      <posx>-1</posx>
+      <posy>40</posy>
       <width>408</width>
-      <height>300</height>
+      <height>325</height>
       <texture>-</texture>
     </control>
 
@@ -82,7 +74,7 @@
       <type>image</type>
       <id>6</id>
       <width>350</width>
-      <height>33</height>
+      <height>31</height>
       <texture>-</texture>
     </control>
 
@@ -92,7 +84,7 @@
       <id>7</id>
       <posx>530</posx>
       <posy>150</posy>
-      <height>31</height>
+      <height>29</height>
       <font>font12</font>
       <textoffsetx>12</textoffsetx>
       <aligny>center</aligny>
