@@ -3,8 +3,8 @@
   <defaultcontrol>2</defaultcontrol>
   <coordinates>
     <system>1</system>
-    <posx>250</posx>
-    <posy>116</posy>
+    <posx>232</posx>
+    <posy>140</posy>
   </coordinates>
   <animation effect="fade" time="400">WindowOpen</animation>
   <animation effect="fade" time="400">WindowClose</animation>
@@ -13,22 +13,12 @@
       <description>background image</description>
       <type>image</type>
       <id>1</id>
-      <posx>0</posx>
-      <posy>25</posy>
-      <width>420</width>
-      <height>326</height>
-      <texture>osd_menu_bg.png</texture>
-    </control>
-
-    <control>
-      <description>background image</description>
-      <type>image</type>
-      <id>0</id>
-      <posx>0</posx>
-      <posy>-5</posy>
-      <width>420</width>
-      <height>31</height>
-      <texture>osd_settings_header.png</texture>
+      <posx>-25</posx>
+      <posy>-11</posy>
+      <width>446</width>
+      <height>405</height>
+      <texture>dialog-panel.png</texture>
+      <colordiffuse>AA000000</colordiffuse>
     </control>
 
     <control>
@@ -37,21 +27,22 @@
       <id>0</id>
       <posx>0</posx>
       <posy>2</posy>
-      <label>13398</label>
       <width>420</width>
-      <align>center</align>
-      <font>font12</font>
+      <align>left</align>
+      <font>special13</font>
+      <label>13398</label>
+      <textcolor>DDced8da</textcolor>
     </control>
 
     <control>
       <description>Create Bookmark button</description>
       <type>button</type>
       <id>2</id>
-      <posx>10</posx>
-      <posy>35</posy>
-      <width>195</width>
+      <posx>0</posx>
+      <posy>320</posy>
+      <width>197</width>
       <height>31</height>
-      <font>font12</font>
+      <font>font10</font>
       <textoffsetx>12</textoffsetx>
       <aligny>center</aligny>
       <align>center</align>
@@ -60,17 +51,19 @@
       <onright>3</onright>
       <ondown>11</ondown>
       <onup>11</onup>
+      <texturenofocus>keyboard-btn-space.png</texturenofocus>
+      <texturefocus>keyboard-btn-space-focus2.png</texturefocus>
     </control>
 
     <control>
       <description>Clear Bookmarks button</description>
       <type>button</type>
       <id>3</id>
-      <posx>215</posx>
-      <posy>35</posy>
-      <width>195</width>
+      <posx>208</posx>
+      <posy>320</posy>
+      <width>197</width>
       <height>31</height>
-      <font>font12</font>
+      <font>font10</font>
       <aligny>center</aligny>
       <align>center</align>
       <label>296</label>
@@ -78,14 +71,16 @@
       <onright>2</onright>
       <ondown>11</ondown>
       <onup>11</onup>
+      <texturenofocus>keyboard-btn-space.png</texturenofocus>
+      <texturefocus>keyboard-btn-space-focus2.png</texturefocus>
     </control>
 
     <control>
       <description>Bookmarks thumbnail panel</description>
       <type>thumbnailpanel</type>
       <id>11</id>
-      <posx>10</posx>
-      <posy>80</posy>
+      <posx>0</posx>
+      <posy>50</posy>
       <width>400</width>
       <height>300</height>
       <spinposx>350</spinposx>
