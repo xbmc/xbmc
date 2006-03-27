@@ -240,14 +240,15 @@
       <description>Visualisation Select Button</description>
       <type>selectbutton</type>
       <id>503</id>
-      <posx>250</posx>
-      <posy>431</posy>
-      <width>420</width>
+      <posx>270</posx>
+      <posy>481</posy>
+      <width>200</width>
       <height>35</height>
       <label>-</label>
+      <font>font12</font>
       <texturenofocus>-</texturenofocus>
       <texturefocus>-</texturefocus>
-      <texturebg>osd_settings_header.png</texturebg>
+      <texturebg>keyboard-btn-space-focus.png</texturebg>
       <onleft>500</onleft>
       <onright>500</onright>
       <onup>500</onup>
