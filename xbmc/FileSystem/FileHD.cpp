@@ -83,15 +83,16 @@ bool CFileHD::OpenForWrite(const CURL& url, bool bBinary, bool bOverWrite)
   CStdString strPath;
   url.GetURL(strPath);
 
+  // replace '/' with '\\' before GetFatXQualifiedPath() to prevent unnecessary logging of truncate messages.
+  strPath.Replace("/", "\\");
+
   if (g_guiSettings.GetBool("Servers.FTPAutoFatX")) // allow overriding
   {
     CStdString strPathOriginal = strPath;
     CUtil::GetFatXQualifiedPath(strPath);
     if (strPathOriginal != strPath)
-      CLog::Log(LOGINFO,"CFileHD::OpenForWrite: WARNING: Truncated filename %s %s",strPathOriginal,strPath);
+      CLog::Log(LOGINFO,"CFileHD::OpenForWrite: WARNING: Truncated filename %s %s", strPathOriginal.c_str(), strPath.c_str());
   }
-    
-  strPath.Replace("/", "\\");
   
   m_hFile.attach(CreateFile(strPath.c_str(), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ, NULL, bOverWrite ? CREATE_ALWAYS : OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL));
   if (!m_hFile.isValid()) 
