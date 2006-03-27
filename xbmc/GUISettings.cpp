@@ -146,12 +146,11 @@ CGUISettings::CGUISettings(void)
   // Pictures settings
   AddGroup(0, 1);
   AddCategory(0, "Pictures", 16000);
-  AddBool(1, "Pictures.HideParentDirItems", 13306, false);
-  AddBool(2, "Pictures.UseAutoSwitching", 14011, false);
-  AddBool(3, "Pictures.AutoSwitchUseLargeThumbs", 14012, false);
-  AddBool(4, "Pictures.HideFilenamesInThumbPanel",15215,false);
-  AddBool(5, "Pictures.AllowFileDeletion", 14071, false);
-  AddBool(6, "Pictures.UnrollArchives", 516, false);
+  AddBool(1, "Pictures.UseAutoSwitching", 14011, false);
+  AddBool(2, "Pictures.AutoSwitchUseLargeThumbs", 14012, false);
+  AddBool(3, "Pictures.HideFilenamesInThumbPanel",15215,false);
+  AddBool(4, "Pictures.AllowFileDeletion", 14071, false);
+  AddBool(5, "Pictures.UnrollArchives", 516, false);
 
   AddCategory(0, "Slideshow", 108);
   AddInt(1, "Slideshow.StayTime", 12378, 9, 1, 1, 100, SPIN_CONTROL_INT_PLUS, MASK_SECS);
@@ -173,11 +172,10 @@ CGUISettings::CGUISettings(void)
   AddInt(8, "MyPrograms.NTSCMode", 16110, 0, 0, 1, 3, SPIN_CONTROL_TEXT);
   
   AddCategory(1,"ProgramFiles",744);
-  AddBool(1, "ProgramFiles.HideParentDirItems", 13306, true);
-  AddBool(2, "ProgramFiles.UseAutoSwitching", 14011, false);
-  AddBool(3, "ProgramFiles.AutoSwitchUseLargeThumbs", 14012, false);
-  AddInt(4, "ProgramFiles.AutoSwitchMethod", 14013, 0, 0, 1, 2, SPIN_CONTROL_TEXT);
-  AddInt(5, "ProgramFiles.AutoSwitchPercentage", 14014, 50, 0, 5, 100, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
+  AddBool(1, "ProgramFiles.UseAutoSwitching", 14011, false);
+  AddBool(2, "ProgramFiles.AutoSwitchUseLargeThumbs", 14012, false);
+  AddInt(3, "ProgramFiles.AutoSwitchMethod", 14013, 0, 0, 1, 2, SPIN_CONTROL_TEXT);
+  AddInt(4, "ProgramFiles.AutoSwitchPercentage", 14014, 50, 0, 5, 100, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
 
   AddCategory(1, "XLinkKai", 714);
   AddBool(1, "XLinkKai.Enabled", 14072, false);
@@ -203,17 +201,16 @@ CGUISettings::CGUISettings(void)
   AddCategory(3, "MyMusic", 16000);
   AddString(1, "MyMusic.Visualisation", 250, "milkdrop.vis", SPIN_CONTROL_TEXT);
   AddSeparator(2, "MyMusic.Sep1");
-  AddBool(3, "MyMusic.HideParentDirItems", 13306, true);
-  AddBool(4, "MyMusic.IgnoreTheWhenSorting", 13399, true);
-  AddString(5, "MyMusic.TrackFormat", 13307, "%N. %A - %T", BUTTON_CONTROL_INPUT, false, 16016);
-  AddString(6, "MyMusic.TrackFormatRight", 13387, "%D", BUTTON_CONTROL_INPUT, false, 16016);
-  AddSeparator(7, "MyMusic.Sep2");
-  AddBool(8, "MyMusic.UseAudioScrobbler", 15201, false);
-  AddBool(9, "MyMusic.LastFMRecordToProfile", 15250, false);
-  AddString(10,"MyMusic.AudioScrobblerUserName", 15202, "", BUTTON_CONTROL_INPUT, false, 15202);
-  AddString(11,"MyMusic.AudioScrobblerPassword", 15203, "", BUTTON_CONTROL_HIDDEN_INPUT, false, 15203); 
-  AddSeparator(12, "MyMusic.Sep3");
-  AddString(13, "MyMusic.CleanupMusicLibrary", 334, "", BUTTON_CONTROL_STANDARD);
+  AddBool(3, "MyMusic.IgnoreTheWhenSorting", 13399, true);
+  AddString(4, "MyMusic.TrackFormat", 13307, "%N. %A - %T", BUTTON_CONTROL_INPUT, false, 16016);
+  AddString(5, "MyMusic.TrackFormatRight", 13387, "%D", BUTTON_CONTROL_INPUT, false, 16016);
+  AddSeparator(6, "MyMusic.Sep2");
+  AddBool(7, "MyMusic.UseAudioScrobbler", 15201, false);
+  AddBool(8, "MyMusic.LastFMRecordToProfile", 15250, false);
+  AddString(9,"MyMusic.AudioScrobblerUserName", 15202, "", BUTTON_CONTROL_INPUT, false, 15202);
+  AddString(10,"MyMusic.AudioScrobblerPassword", 15203, "", BUTTON_CONTROL_HIDDEN_INPUT, false, 15203); 
+  AddSeparator(11, "MyMusic.Sep3");
+  AddString(12, "MyMusic.CleanupMusicLibrary", 334, "", BUTTON_CONTROL_STANDARD);
 
   AddCategory(3, "MusicFiles", 744);
   AddBool(1, "MusicFiles.AutoPlayNextItem", 489, true);
@@ -335,8 +332,7 @@ CGUISettings::CGUISettings(void)
   AddSeparator(5, "MyVideos.Sep1");
   AddInt(6, "MyVideos.OSDTimeout", 472, 5, 0, 1, 60, SPIN_CONTROL_INT_PLUS, MASK_SECS, TEXT_OFF);
   AddSeparator(12, "MyVideos.Sep3");
-  AddBool(13, "MyVideos.HideParentDirItems", 13306, true);
-  AddBool(14, "MyVideos.IgnoreTheWhenSorting", 13399, true);
+  AddBool(13, "MyVideos.IgnoreTheWhenSorting", 13399, true);
   // hidden setting for blackbars
   AddInt(0, "Videos.BlackBarColour", 0, 1, 1, 1, 255, SPIN_CONTROL_INT);
 
