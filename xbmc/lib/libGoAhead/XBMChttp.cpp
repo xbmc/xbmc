@@ -1127,6 +1127,9 @@ int CXbmcHttp::xbmcGetCurrentlyPlaying()
   else
   {
     output = openTag + "Filename:" + fileItem.m_strPath;
+    // current playing item
+    tmp.Format("%i",g_playlistPlayer.GetCurrentSong()); 	 
+    output+=closeTag+openTag+"SongNo:"+tmp; 	 
     if (g_application.IsPlayingVideo())
     { // Video information
       output+=closeTag+openTag+"Type"+tag+":Video" ;
@@ -1164,7 +1167,11 @@ int CXbmcHttp::xbmcGetCurrentlyPlaying()
       output+=closeTag+openTag+"Thumb"+tag+":"+fileItem.GetThumbnailImage();
     // play time
     output+=closeTag+openTag+"Time:"+g_infoManager.GetCurrentPlayTime();
-    output+=closeTag+openTag+"Duration:"+g_infoManager.GetVideoLabel(PLAYER_DURATION);  // handles music time as well
+    output+=closeTag+openTag+"Duration:";
+    if (g_application.IsPlayingVideo())
+      output += g_infoManager.GetVideoLabel(PLAYER_DURATION);
+    else
+      output += g_infoManager.GetMusicLabel(PLAYER_DURATION);
     tmp.Format("%i",(int)g_application.GetPercentage());
     output+=closeTag+openTag+"Percentage:"+tmp;
     // file size
@@ -2426,6 +2433,7 @@ int CXbmcHttp::xbmcCommand(CStdString parameter)
   //Perhaps time to upgrade my PC.
   Sleep(500);
 #endif
+  CLog::Log(LOGDEBUG, "HttpApi Finished command: %s", command.c_str());
   return retVal;
 }
 
@@ -2465,6 +2473,7 @@ CStdString CXbmcHttpShim::xbmcExternalCall(char *command)
 CStdString CXbmcHttpShim::xbmcProcessCommand( int eid, webs_t wp, char_t *command, char_t *parameter)
 {
   CStdString cmd=command, paras=parameter, response="[No response yet]", retVal;
+  CLog::Log(LOGDEBUG, "XBMCHTTPShim: Received command %s (%s)", cmd.c_str(), paras.c_str());
   int cnt=0;
   if ((wp != NULL) && (eid==NO_EID) && (incWebHeader))
     websHeader(wp);
