@@ -2786,7 +2786,7 @@ void CApplication::FrameMove()
       // time depends on whether the movement is repeated (held down) or not.
       // If it is, we use the FPS timer to get a repeatable speed.
       // If it isn't, we use 20 to get repeatable jumps.
-      float time = (pRemote->bHeldDown) ? fFrameTime : 20.0f;
+      float time = (pRemote->bHeldDown) ? fFrameTime : 0.020f;
       CKey key(wRemotes, 0, 0, 0, 0, 0, 0, time);
       OnKey(key);
       break;
