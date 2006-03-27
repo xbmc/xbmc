@@ -190,6 +190,7 @@ VOID XBInput_GetInput( XBIR_REMOTE* pIR_Remote)
             // Copy remote to local structure
             memcpy( &pIR_Remote[i], &g_InputStatesEx[i].IR_Remote, sizeof(XINPUT_IR_REMOTE) );
             pIR_Remote[i].hDevice = (HANDLE)1;
+            pIR_Remote[i].bHeldDown = bIsRepeating;
             
 #ifdef REMOTE_DEBUG
                   strcat(szTmp, "accepted\n");
