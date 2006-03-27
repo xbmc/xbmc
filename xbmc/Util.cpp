@@ -1836,7 +1836,7 @@ bool CUtil::GetFolderThumb(const CStdString& strFolder, CStdString& strThumb)
     if (item.IsInternetStream())
       return false;
 
-    CUtil::GetThumbnail( strFolderImage, strThumb);
+    CUtil::GetCachedThumbnail( strFolder, strThumb);
     // if local cache of thumb doesnt exists yet
     if (!CFile::Exists( strThumb) )
     {
