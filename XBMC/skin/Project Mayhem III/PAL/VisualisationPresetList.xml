@@ -5,31 +5,21 @@
   <animation effect="fade" time="200">WindowClose</animation>
   <coordinates>
     <system>1</system>
-    <posx>250</posx>
-    <posy>116</posy>
+    <posx>232</posx>
+    <posy>140</posy>
   </coordinates>
 
   <controls>
     <control>
       <description>background image</description>
       <type>image</type>
-      <id>0</id>
-      <posx>0</posx>
-      <posy>25</posy>
-      <width>420</width>
-      <height>336</height>
-      <texture>osd_menu_bg.png</texture>
-    </control>
-
-    <control>
-      <description>background image</description>
-      <type>image</type>
-      <id>0</id>
-      <posx>0</posx>
-      <posy>-5</posy>
-      <width>420</width>
-      <height>31</height>
-      <texture>osd_settings_header.png</texture>
+      <id>1</id>
+      <posx>-25</posx>
+      <posy>-11</posy>
+      <width>446</width>
+      <height>405</height>
+      <texture>dialog-panel.png</texture>
+      <colordiffuse>AA000000</colordiffuse>
     </control>
 
     <control>
@@ -39,8 +29,9 @@
       <posx>0</posx>
       <posy>2</posy>
       <width>420</width>
-      <align>center</align>
-      <font>font12</font>
+      <align>left</align>
+      <font>special13</font>
+      <textcolor>DDced8da</textcolor>
     </control>
 
     <control>
@@ -49,22 +40,26 @@
       <id>4</id>
       <posx>0</posx>
       <posy>170</posy>
-      <width>420</width>
+      <width>408</width>
       <align>center</align>
       <label>13389</label>
+      <font>font12</font>
     </control>
 
     <control>
       <description>Preset List</description>
       <type>listcontrol</type>
       <id>2</id>
-      <posx>5</posx>
-      <posy>30</posy>
-      <width>408</width>
-      <height>320</height>
-      <spinposx>355</spinposx>
-      <spinposy>297</spinposy>
+      <posx>-1</posx>
+      <posy>40</posy>
+      <width>407</width>
+      <height>340</height>
+      <spinposx>371</spinposx>
+      <spinposy>-30</spinposy>
       <selectedcolor>FFD2FF00</selectedcolor>
+      <font>font12</font>
+      <textoffsetx>-15</textoffsetx>
+      <textureheight>29</textureheight>
       <onleft>2</onleft>
       <onright>2</onright>
       <onup>2</onup>
