@@ -27,7 +27,7 @@
       <posx>-15</posx>
       <posy>-15</posy>
       <width>440</width>
-      <height>240</height>
+      <height>255</height>
       <texture>dialog-panel.png</texture>
     </control>
 
@@ -68,8 +68,8 @@
       <textoffsetx>12</textoffsetx>
       <textwidth>300</textwidth>
       <aligny>center</aligny>
-      <texturefocus>list-focus.png</texturefocus>
-      <texturenofocus>-</texturenofocus>
+      <texturefocus>input-focus.png</texturefocus>
+      <texturenofocus>input-nofocus.png</texturenofocus>
       <label>-</label>
       <onup>18</onup>
       <onleft>11</onleft>
@@ -103,7 +103,7 @@
       <type>label</type>
       <id>0</id>
       <posx>10</posx>
-      <posy>95</posy>
+      <posy>105</posy>
       <width>420</width>
       <font>font12</font>
       <label>1022</label>
@@ -114,15 +114,15 @@
       <type>button</type>
       <id>12</id>
       <posx>10</posx>
-      <posy>120</posy>
+      <posy>130</posy>
       <width>400</width>
       <height>32</height>
       <font>font12</font>
       <textoffsetx>12</textoffsetx>
       <textwidth>380</textwidth>
       <aligny>center</aligny>
-      <texturefocus>list-focus.png</texturefocus>
-      <texturenofocus>-</texturenofocus>
+      <texturefocus>input-focus.png</texturefocus>
+      <texturenofocus>input-nofocus.png</texturenofocus>
       <label>-</label>
       <onup>10</onup>
       <onleft>12</onleft>
@@ -135,7 +135,7 @@
       <type>button</type>
       <id>18</id>
       <posx>253</posx>
-      <posy>160</posy>
+      <posy>175</posy>
       <width>77</width>
       <height>32</height>
       <font>font12</font>
@@ -156,7 +156,7 @@
       <type>button</type>
       <id>19</id>
       <posx>333</posx>
-      <posy>160</posy>
+      <posy>175</posy>
       <width>77</width>
       <height>32</height>
       <font>font12</font>
