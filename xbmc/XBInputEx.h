@@ -41,7 +41,6 @@ struct XBIR_REMOTE : public XINPUT_IR_REMOTE
   XINPUT_CAPABILITIES caps;
   HANDLE hDevice;
 
-
   // Rumble properties
   XINPUT_RUMBLE Remote_Feedback;
   XINPUT_FEEDBACK Feedback;
@@ -49,6 +48,9 @@ struct XBIR_REMOTE : public XINPUT_IR_REMOTE
   // Flags for whether game pad was just inserted or removed
   BOOL bInserted;
   BOOL bRemoved;
+
+  // Flag for held down push
+  BOOL bHeldDown;
 };
 
 //-----------------------------------------------------------------------------
