@@ -161,18 +161,17 @@
       <description>big listcontrol</description>
       <type>listcontrol</type>
       <id>52</id>
-      <posy>121</posy>
       <height>430</height>
       <spinwidth>16</spinwidth>
       <spinheight>16</spinheight>
       <spincolor>ffffffff</spincolor>
       <spinfont>font10</spinfont>
       <spinposx>419</spinposx>
-      <spinposy>406</spinposy>
+      <spinposy>404</spinposy>
       <textureup>scroll-up.png</textureup>
       <texturedown>scroll-down.png</texturedown>
-      <textureupfocus>scroll-up-focus.gif</textureupfocus>
-      <texturedownfocus>scroll-down-focus.gif</texturedownfocus>
+      <textureupfocus>scroll-up-focus.png</textureupfocus>
+      <texturedownfocus>scroll-down-focus.png</texturedownfocus>
       <texturefocus>blue-rectangle.png</texturefocus>
       <texturenofocus>blue-rectangleNF.png</texturenofocus>
       <font>font14</font>
@@ -184,17 +183,18 @@
       <suffix>|</suffix>
       <textxoff>10</textxoff>
       <textyoff>10</textyoff>
-      <textxoff2>435</textxoff2>
+      <textxoff2>445</textxoff2>
       <textyoff2>94</textyoff2>
       <aligny>top</aligny>
-      <itemwidth>70</itemwidth>
-      <itemheight>110</itemheight>
+      <itemwidth>50</itemwidth>
+      <itemheight>100</itemheight>
       <spacebetweenitems>10</spacebetweenitems>
       <textureheight>120</textureheight>
       <onleft>2</onleft>
       <onright>52</onright>
       <onup>2</onup>
       <ondown>2</ondown>
+      <keepaspectratio>false</keepaspectratio>
     </control>
 
   </controls>
