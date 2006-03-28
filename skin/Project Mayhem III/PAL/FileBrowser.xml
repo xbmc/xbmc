@@ -18,7 +18,7 @@
       <posy>-15</posy>
       <width>520</width>
       <height>420</height>
-      <texture>dialog-panel.png</texture>
+      <texture>dialog-panel2.png</texture>
     </control>
 
     <control>
@@ -54,7 +54,7 @@
       <posx>10</posx>
       <posy>70</posy>
       <width>400</width>
-      <height>340</height>
+      <height>323</height>
       <onleft>413</onleft>
       <onright>413</onright>
       <onup>413</onup>
