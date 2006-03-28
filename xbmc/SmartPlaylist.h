@@ -57,7 +57,11 @@ public:
   bool Load(const CStdString &path);
   bool Save(const CStdString &path);
 
+  TiXmlElement *OpenAndReadName(const CStdString &path);
+
   void SetName(const CStdString &name);
+  const CStdString& GetName() const { return m_playlistName; };
+
   void AddRule(const CSmartPlaylistRule &rule);
   CStdString GetWhereClause();
   CStdString GetOrderClause();
