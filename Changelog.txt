@@ -5,6 +5,9 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 28-03-2006 fixed: [ 1458161 ] LCD does not display uncommon characters.
+ - 28-03-2006 added: XLinkKai.UserName infolabel.
+ - 28-03-2006 fixed: [ 1457883 ] Another xlink problem when not connected.
  - 28-03-2006 fixed: blurps when seeking in mp3's.
  - 27-03-2006 changed: play folder in my videos ignores sample/ folder.
  - 27-03-2006 changed: unified hide 'parent folder items' setting.
