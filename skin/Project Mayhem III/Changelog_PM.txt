@@ -1,3 +1,5 @@
+2006-03-28 fixed:	Big Listview in Music Library and Video (Title)
+
 2006-03-27 changed:	new OSD dialogs and trainer settings dialog
 
 2006-03-26 fixed:	IP input button on the virtual keyboard used wrong textures
