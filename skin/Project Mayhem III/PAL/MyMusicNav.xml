@@ -179,8 +179,8 @@
       <spinposy>406</spinposy>
       <textureup>scroll-up.png</textureup>
       <texturedown>scroll-down.png</texturedown>
-      <textureupfocus>scroll-up-focus.gif</textureupfocus>
-      <texturedownfocus>scroll-down-focus.gif</texturedownfocus>
+      <textureupfocus>scroll-up-focus.png</textureupfocus>
+      <texturedownfocus>scroll-down-focus.png</texturedownfocus>
       <texturefocus>blue-rectangle.png</texturefocus>
       <texturenofocus>blue-rectangleNF.png</texturenofocus>
       <font>font14</font>
@@ -192,7 +192,7 @@
       <suffix>|</suffix>
       <textxoff>10</textxoff>
       <textyoff>10</textyoff>
-      <textxoff2>445</textxoff2>
+      <textxoff2>435</textxoff2>
       <textyoff2>94</textyoff2>
       <aligny>top</aligny>
       <itemwidth>100</itemwidth>
