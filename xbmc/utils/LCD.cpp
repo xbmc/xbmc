@@ -191,9 +191,14 @@ void ILCD::Render(LCD_MODE mode)
   unsigned int inLine = 0;
   while (outLine < 4 && inLine < m_lcdMode[mode].size())
   {
-    CStdString line = g_infoManager.ParseLabel(m_lcdMode[mode][inLine++]);
-    if (!line.IsEmpty())
+    CStdString utf8Line = g_infoManager.ParseLabel(m_lcdMode[mode][inLine++]);
+    if (!utf8Line.IsEmpty())
+    {
+      // convert to the user char set
+      CStdString line;
+      g_charsetConverter.utf8ToStringCharset(utf8Line, line);
       SetLine(outLine++, line);
+    }
   }
   // fill remainder with empty space
   while (outLine < 4)

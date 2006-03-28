@@ -177,6 +177,10 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Left(16).Equals("system.hasalarm("))
       ret = SYSTEM_NO_SUCH_ALARM+g_alarmClock.hasAlarm(strTest.Mid(16,strTest.size()-17));
   }
+  else if (strCategory.Equals("xlinkkai"))
+  {
+    if (strTest.Equals("xlinkkai.username")) ret = XLINK_KAI_USERNAME;
+  }
   else if (strCategory.Equals("lcd"))
   {
     if (strTest.Equals("lcd.playicon")) ret = LCD_PLAY_ICON;
@@ -520,6 +524,9 @@ string CGUIInfoManager::GetLabel(int info)
     }
   case SYSTEM_DVD_LABEL:
     strLabel = CDetectDVDMedia::GetDVDLabel();
+    break;
+  case XLINK_KAI_USERNAME:
+    strLabel = g_guiSettings.GetString("XLinkKai.UserName");
     break;
   case LCD_PLAY_ICON:
     {
