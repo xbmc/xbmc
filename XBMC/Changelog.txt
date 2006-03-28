@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 28-03-2006 fixed: The text in Big List view could go past the end of the list texture.
+ - 28-03-2006 fixed: Smartplaylists weren't showing up with their <name> tags.
  - 28-03-2006 fixed: [ 1458161 ] LCD does not display uncommon characters.
  - 28-03-2006 added: XLinkKai.UserName infolabel.
  - 28-03-2006 fixed: [ 1457883 ] Another xlink problem when not connected.
