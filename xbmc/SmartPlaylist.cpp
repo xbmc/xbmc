@@ -170,25 +170,34 @@ CSmartPlaylist::CSmartPlaylist()
   m_orderAscending = true;
 }
 
-bool CSmartPlaylist::Load(const CStdString &path)
+TiXmlElement *CSmartPlaylist::OpenAndReadName(const CStdString &path)
 {
   TiXmlDocument doc;
   if (!doc.LoadFile(path))
   {
     CLog::Log(LOGERROR, "Error loading Smart playlist %s", path.c_str());
-    return false;
+    return NULL;
   }
 
   TiXmlElement *root = doc.RootElement();
   if (!root || strcmpi(root->Value(),"smartplaylist") != 0)
   {
     CLog::Log(LOGERROR, "Error loading Smart playlist %s", path.c_str());
-    return false;
+    return NULL;
   }
   // load the playlist name
   TiXmlHandle name = ((TiXmlHandle)root->FirstChild("name")).FirstChild();
   if (name.Node())
     m_playlistName = name.Node()->Value();
+  return root;
+}
+
+bool CSmartPlaylist::Load(const CStdString &path)
+{
+  TiXmlElement *root = OpenAndReadName(path);
+  if (!root)
+    return false;
+
   TiXmlHandle match = ((TiXmlHandle)root->FirstChild("match")).FirstChild();
   if (match.Node())
     m_matchAllRules = strcmpi(match.Node()->Value(), "all") == 0;
