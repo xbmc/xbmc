@@ -145,7 +145,7 @@ void CGUIListControl::Render()
 
         bool bSelected(i == m_iCursorY && HasFocus() && m_iSelect == CONTROL_LIST);
 
-        DWORD dMaxWidth = (m_dwWidth - m_iImageWidth - 16);
+        DWORD dMaxWidth = (m_dwWidth - m_iImageWidth - m_label.offsetX - 20);
         if ( strLabel2.size() > 0 && m_label2.font)
         {
           CStdStringW labelUnicode2;
