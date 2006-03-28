@@ -176,6 +176,8 @@
 #define SKIN_HAS_SETTING_START      510
 #define SKIN_HAS_SETTING_END        600 // allow 90
 
+#define XLINK_KAI_USERNAME          701
+
 #define WINDOW_IS_VISIBLE           9995
 #define WINDOW_NEXT                 9996
 #define WINDOW_PREVIOUS             9997

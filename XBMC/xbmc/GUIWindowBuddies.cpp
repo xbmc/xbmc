@@ -274,6 +274,17 @@ void CGUIWindowBuddies::OnInitWindow()
 
   CArenaItem::SetIcons(12, 12, "arenaitem-private.png");
 
+  // initialize our window, and set our state
+  CGUIWindow::OnInitWindow();
+
+  // set the window state after we have init'd our window
+  // so that control visibility is set correctly (else any <visible> tags
+  // in controls will override these)
+  if (window_state == State::Uninitialized)
+    ChangeState(State::Buddies);
+  else
+    ChangeState(window_state);
+
   if (m_pKaiClient)
   {
     while (!m_pKaiClient->IsEngineConnected())
@@ -315,17 +326,7 @@ void CGUIWindowBuddies::OnInitWindow()
       }
     }
   }
-  CGUIWindow::OnInitWindow();
-
-  // set the window state after we have init'd our window
-  // so that control visibility is set correctly (else any <visible> tags
-  // in controls will override these)
-  if (window_state == State::Uninitialized)
-    ChangeState(State::Buddies);
   else
-    ChangeState(window_state);
-
-  if (!m_pKaiClient)
   {
     CGUIDialogOK::ShowAndGetInput(15000, 0, 14073, 0);
     m_gWindowManager.PreviousWindow();
