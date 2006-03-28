@@ -17,8 +17,8 @@
       <posy>-11</posy>
       <width>446</width>
       <height>405</height>
-      <texture>dialog-panel.png</texture>
-      <colordiffuse>AA000000</colordiffuse>
+      <texture>dialog-panel2.png</texture>
+      <colordiffuse>AAFFFFFF</colordiffuse>
     </control>
 
     <control>
