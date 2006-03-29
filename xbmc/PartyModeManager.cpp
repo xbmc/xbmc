@@ -94,6 +94,8 @@ bool CPartyModeManager::Enable()
 
 void CPartyModeManager::Disable()
 {
+  if (!IsEnabled())
+    return;
   m_bEnabled = false;
   CLog::Log(LOGINFO,"PARTY MODE MANAGER: Party mode disabled.");
 }
