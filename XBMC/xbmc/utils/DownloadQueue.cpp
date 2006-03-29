@@ -53,10 +53,31 @@ TICKET CDownloadQueue::RequestFile(CStdString& aUrl, CStdString& aFilePath, IDow
   return request.ticket;
 }
 
+void CDownloadQueue::CancelRequests(IDownloadQueueObserver *aObserver)
+{
+  EnterCriticalSection(&m_critical);
+
+  CLog::Log(LOGDEBUG, "CancelRequests from observer at %p", aObserver);
+  // run through our queue, and create a new queue with the requests
+  // from aObserver NULL'd out.
+  queue<Command> newQueue;
+  while (m_queue.size())
+  {
+    Command request = m_queue.front();
+    m_queue.pop();
+    if (request.observer == aObserver)
+      request.observer = NULL;
+    newQueue.push(request);
+  }
+  m_queue = newQueue;
+  LeaveCriticalSection(&m_critical);
+}
+
 TICKET CDownloadQueue::RequestFile(CStdString& aUrl, IDownloadQueueObserver* aObserver)
 {
   EnterCriticalSection(&m_critical);
 
+  CLog::Log(LOGDEBUG, "RequestFile from observer at %p", aObserver);
   // create a temporary destination
   CStdString strExtension;
   CUtil::GetExtension(aUrl, strExtension);
@@ -95,8 +116,9 @@ void CDownloadQueue::Process()
     {
       EnterCriticalSection(&m_critical);
 
+      // get the first item, but don't pop it from our queue
+      // so that the download can be interrupted
       Command request = m_queue.front();
-      m_queue.pop();
 
       LeaveCriticalSection(&m_critical);
 
@@ -113,34 +135,40 @@ void CDownloadQueue::Process()
         bSuccess = http.Get(request.location, request.content);
       }
 
-      assert(request.observer != NULL);
+      // now re-grab the item as we may have cancelled our download
+      // while we were working
+      EnterCriticalSection(&m_critical);
 
-      g_graphicsContext.Lock();
+      request = m_queue.front();
+      m_queue.pop();
 
-      try
+      // if the request has been cancelled our observer will be NULL
+      if (NULL != request.observer)
       {
-        if (bFileRequest)
+        try
         {
-          request.observer->OnFileComplete(request.ticket, request.content, dwSize,
-                                           bSuccess ? IDownloadQueueObserver::Succeeded : IDownloadQueueObserver::Failed );
+          if (bFileRequest)
+          {
+            request.observer->OnFileComplete(request.ticket, request.content, dwSize,
+                                            bSuccess ? IDownloadQueueObserver::Succeeded : IDownloadQueueObserver::Failed );
+          }
+          else
+          {
+            request.observer->OnContentComplete(request.ticket, request.content,
+                                                bSuccess ? IDownloadQueueObserver::Succeeded : IDownloadQueueObserver::Failed );
+          }
         }
-        else
+        catch (...)
         {
-          request.observer->OnContentComplete(request.ticket, request.content,
-                                              bSuccess ? IDownloadQueueObserver::Succeeded : IDownloadQueueObserver::Failed );
+          CLog::Log(LOGERROR, "exception while updating download observer.");
+
+          if (bFileRequest)
+          {
+            ::DeleteFile(request.content.c_str());
+          }
         }
       }
-      catch (...)
-      {
-        CLog::Log(LOGERROR, "exception while updating download observer.");
-
-        if (bFileRequest)
-        {
-          ::DeleteFile(request.content.c_str());
-        }
-      }
-
-      g_graphicsContext.Unlock();
+      LeaveCriticalSection(&m_critical);
     }
 
     Sleep(500);

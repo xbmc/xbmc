@@ -44,6 +44,18 @@ TICKET CDownloadQueueManager::RequestFile(CStdString& aUrl, IDownloadQueueObserv
   return ticket;
 }
 
+void CDownloadQueueManager::CancelRequests(IDownloadQueueObserver *aObserver)
+{
+  EnterCriticalSection(&m_critical);
+  // run through all our queues and remove all requests from this observer
+  for (QUEUEPOOL::iterator it = m_queues.begin(); it != m_queues.end(); ++it)
+  {
+    CDownloadQueue* downloadQueue = *it;
+    downloadQueue->CancelRequests(aObserver);
+  }
+  LeaveCriticalSection(&m_critical);
+}
+
 CDownloadQueue* CDownloadQueueManager::GetNextDownloadQueue()
 {
   CDownloadQueue* pQueueAvailable = NULL;
