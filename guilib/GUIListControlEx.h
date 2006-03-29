@@ -44,6 +44,7 @@ public:
   virtual void SetWidth(int iWidth);
   virtual void SetHeight(int iHeight);
   virtual void SetPulseOnSelect(bool pulse);
+  virtual void SetNavigation(DWORD dwUp, DWORD dwDown, DWORD dwLeft, DWORD dwRight);
 
   void SetScrollySuffix(const CStdString& wstrSuffix);
   void SetImageDimensions(int iWidth, int iHeight);

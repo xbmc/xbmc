@@ -13,6 +13,7 @@ public:
   TICKET RequestContent(CStdString& aUrl, IDownloadQueueObserver* aObserver);
   TICKET RequestFile(CStdString& aUrl, IDownloadQueueObserver* aObserver);
   TICKET RequestFile(CStdString& aUrl, CStdString& aFilePath, IDownloadQueueObserver* aObserver);
+  void CancelRequests(IDownloadQueueObserver *aObserver);
 
 protected:
 

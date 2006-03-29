@@ -12,7 +12,7 @@ CGUIListControlEx::CGUIListControlEx(DWORD dwParentID, DWORD dwControlId, int iP
                                      const CLabelInfo& labelInfo, const CLabelInfo& labelInfo2,
                                      const CStdString& strButton, const CStdString& strButtonFocus)
     : CGUIControl(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight)
-    , m_upDown(dwControlId, 0, 0, 0, dwSpinWidth, dwSpinHeight, strUp, strDown, strUpFocus, strDownFocus, spinInfo, SPIN_CONTROL_TYPE_INT)
+    , m_upDown(dwControlId, CONTROL_UPDOWN, 0, 0, dwSpinWidth, dwSpinHeight, strUp, strDown, strUpFocus, strDownFocus, spinInfo, SPIN_CONTROL_TYPE_INT)
     , m_imgButton(dwControlId, 0, iPosX, iPosY, dwWidth, dwHeight, strButtonFocus, strButton, labelInfo)
 {
   m_upDown.SetSpinAlign(XBFONT_CENTER_Y | XBFONT_RIGHT, 0);
@@ -151,11 +151,17 @@ bool CGUIListControlEx::OnAction(const CAction &action)
   case ACTION_SELECT_ITEM:
     {
       // generate a control clicked event
-      CGUIMessage msg(GUI_MSG_CLICKED, GetID(), GetParentID(), action.wID);
-      g_graphicsContext.SendMessage(msg);
-      return true;
-      break;
+      if (m_iSelect == CONTROL_LIST)
+      { // Don't know what to do, so send to our parent window.
+        CGUIMessage msg(GUI_MSG_CLICKED, GetID(), GetParentID(), action.wID);
+        return g_graphicsContext.SendMessage(msg);
+      }
+      else
+      { // send action to the page control
+        return m_upDown.OnAction(action);
+      }
     }
+    break;
   }
 
   // call the base class
@@ -186,7 +192,7 @@ bool CGUIListControlEx::OnMessage(CGUIMessage& message)
 {
   if (message.GetControlId() == GetID() )
   {
-    if (message.GetSenderId() == 0)
+    if (message.GetSenderId() == CONTROL_UPDOWN)
     {
       if (message.GetMessage() == GUI_MSG_CLICKED)
       {
@@ -314,40 +320,26 @@ void CGUIListControlEx::OnRight()
     {
       m_iSelect = CONTROL_UPDOWN;
       m_upDown.SetFocus(true);
-      if (!m_upDown.HasFocus())
-      {
-        m_iSelect = CONTROL_LIST;
-      }
+    }
+    else
+    {
+      CGUIControl::OnRight();
     }
   }
   else
-  {
     m_upDown.OnRight();
-    if (!m_upDown.HasFocus())
-    {
-      m_iSelect = CONTROL_LIST;
-    }
-  }
+  if (!m_upDown.HasFocus())
+    m_iSelect = CONTROL_LIST;
 }
 
 void CGUIListControlEx::OnLeft()
 {
   if (m_iSelect == CONTROL_LIST)
-  {
     CGUIControl::OnLeft();
-    if (!m_upDown.HasFocus())
-    {
-      m_iSelect = CONTROL_LIST;
-    }
-  }
   else
-  {
     m_upDown.OnLeft();
-    if (!m_upDown.HasFocus())
-    {
-      m_iSelect = CONTROL_LIST;
-    }
-  }
+  if (!m_upDown.HasFocus())
+    m_iSelect = CONTROL_LIST;
 }
 
 void CGUIListControlEx::OnUp()
@@ -596,4 +588,10 @@ void CGUIListControlEx::SetPulseOnSelect(bool pulse)
   m_imgButton.SetPulseOnSelect(pulse);
   m_upDown.SetPulseOnSelect(pulse);
   CGUIControl::SetPulseOnSelect(pulse);
+}
+
+void CGUIListControlEx::SetNavigation(DWORD dwUp, DWORD dwDown, DWORD dwLeft, DWORD dwRight)
+{
+  CGUIControl::SetNavigation(dwUp, dwDown, dwLeft, dwRight);
+  m_upDown.SetNavigation(GetID(), dwDown, GetID(), dwRight);
 }
