@@ -10,13 +10,17 @@ public:
 
 using namespace XFILE;
 
-typedef void CURL_HANDLE;
-typedef void CURLM;
-struct curl_slist;
+namespace XCURL
+{
+  typedef void CURL_HANDLE;
+  typedef void CURLM;
+  struct curl_slist;
+};
+
+class CHttpHeader;
 
 namespace XFILE
 {
-
 	class CFileCurl : public IFile  
 	{
     public:
@@ -41,14 +45,17 @@ namespace XFILE
       void AddHeaderParam(const char* sParam);
       void SetBufferSize(unsigned int size);
       
+
+      /* static function that will get content type of a file */      
+      static bool GetHttpHeader(const CURL &url, CHttpHeader &headers);
     protected:
       void SetCommonOptions();
 
       bool FillBuffer(unsigned int want, int waittime);
 
     private:
-      CURL_HANDLE*    m_easyHandle;
-      CURLM*          m_multiHandle;
+      XCURL::CURL_HANDLE*    m_easyHandle;
+      XCURL::CURLM*          m_multiHandle;
       CStdString      m_url;
       CStdString      m_userAgent;
 	    __int64					m_fileSize;
@@ -63,8 +70,8 @@ namespace XFILE
 
       int             m_stillRunning; /* Is background url fetch still in progress */
       
-      struct curl_slist* m_curlAliasList;
-      struct curl_slist* m_curlHeaderList;
+      struct XCURL::curl_slist* m_curlAliasList;
+      struct XCURL::curl_slist* m_curlHeaderList;
       IHttpHeaderCallback* m_pHeaderCallback;
   };
 };
