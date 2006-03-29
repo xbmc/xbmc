@@ -347,13 +347,7 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ)
     m_pd3dDevice->Clear( 0L, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER | D3DCLEAR_STENCIL, 0x00010001, 1.0f, 0L );
     m_pd3dDevice->Present( NULL, NULL, NULL, NULL );
   }
-  if ( /*NeedReset && */m_pd3dDevice)
-  {
-    // These are only valid here and nowhere else
-    // set soften on/off
-    m_pd3dDevice->SetSoftDisplayFilter(m_bFullScreenVideo ? g_guiSettings.GetBool("Filters.Soften") : g_guiSettings.GetBool("UIFilters.Soften"));
-    m_pd3dDevice->SetFlickerFilter(m_bFullScreenVideo ? g_guiSettings.GetInt("Filters.Flicker") : g_guiSettings.GetInt("UIFilters.Flicker"));
-  }
+  SetScreenFilters(m_bFullScreenVideo);
   Unlock();
   m_Resolution = res;
 }
@@ -361,6 +355,19 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ)
 RESOLUTION CGraphicContext::GetVideoResolution() const
 {
   return m_Resolution;
+}
+
+void CGraphicContext::SetScreenFilters(bool useFullScreenFilters)
+{
+  Lock();
+  if (m_pd3dDevice)
+  {
+    // These are only valid here and nowhere else
+    // set soften on/off
+    m_pd3dDevice->SetSoftDisplayFilter(useFullScreenFilters ? g_guiSettings.GetBool("Filters.Soften") : g_guiSettings.GetBool("UIFilters.Soften"));
+    m_pd3dDevice->SetFlickerFilter(useFullScreenFilters ? g_guiSettings.GetInt("Filters.Flicker") : g_guiSettings.GetInt("UIFilters.Flicker"));
+  }
+  Unlock();
 }
 
 void CGraphicContext::ScaleRectToScreenResolution(DWORD& left, DWORD& top, DWORD& right, DWORD& bottom, RESOLUTION res)
