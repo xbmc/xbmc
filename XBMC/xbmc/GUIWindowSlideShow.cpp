@@ -528,13 +528,10 @@ bool CGUIWindowSlideShow::OnMessage(CGUIMessage& message)
       {
         m_ImageLib.Unload();
       }
-      g_graphicsContext.Lock();
       m_gWindowManager.ShowOverlay(true);
-      g_graphicsContext.Get3DDevice()->EnableOverlay(FALSE);
-      // reset to gui mode so that we use it's filters
-      g_graphicsContext.SetFullScreenVideo(false);
-      g_graphicsContext.SetVideoResolution(g_guiSettings.m_LookAndFeelResolution, TRUE);
-      g_graphicsContext.Unlock();
+      // set screen filters to video filters so that we
+      // get sharper images
+      g_graphicsContext.SetScreenFilters(false);
       FreeResources();
     }
     break;
@@ -550,13 +547,10 @@ bool CGUIWindowSlideShow::OnMessage(CGUIMessage& message)
       {
         m_ImageLib.Load();
       }
-      g_graphicsContext.Lock();
       m_gWindowManager.ShowOverlay(false);
-      g_graphicsContext.Get3DDevice()->EnableOverlay(TRUE);
-      // set to video mode so that we use it's filters (to make pics sharper)
-      g_graphicsContext.SetFullScreenVideo(true);
-      g_graphicsContext.SetVideoResolution(g_guiSettings.m_LookAndFeelResolution, FALSE);
-      g_graphicsContext.Unlock();
+      // set screen filters to video filters so that we
+      // get sharper images
+      g_graphicsContext.SetScreenFilters(true);
 
       // shuffle
       if (g_guiSettings.GetBool("Slideshow.Shuffle") && m_bSlideShow)
