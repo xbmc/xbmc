@@ -1,9 +1,11 @@
 #include "../stdafx.h"
 #include "FileCurl.h"
-#include "dlllibcurl.h"
 #include "../Util.h"
 #include <sys/Stat.h>
-#include "curl/curl.h"
+
+#include "../utils/HttpHeader.h"
+#include "DllLibCurl.h"
+using namespace XCURL;
 
 extern "C" int __stdcall dllselect(int ntfs, fd_set *readfds, fd_set *writefds, fd_set *errorfds, const timeval *timeout);
 
@@ -28,6 +30,8 @@ extern "C" size_t write_callback(char *buffer,
                size_t nitems,
                void *userp)
 {
+  if(userp == NULL) return 0;
+ 
   CFileCurl *file = (CFileCurl *)userp;
   return file->WriteCallback(buffer, size, nitems);
 }
@@ -37,6 +41,22 @@ extern "C" size_t header_callback(void *ptr, size_t size, size_t nmemb, void *st
   CFileCurl *file = (CFileCurl *)stream;
   return file->HeaderCallback(ptr, size, nmemb);
 }
+
+/* small dummy class to be able to get headers simply */
+class CDummyHeaders : public IHttpHeaderCallback
+{
+public:
+  CDummyHeaders(CHttpHeader *headers)
+  {
+    m_headers = headers;
+  }
+
+  virtual void ParseHeaderData(CStdString strData)
+  {
+    m_headers->Parse(strData);
+  }
+  CHttpHeader *m_headers;
+};
 
 size_t CFileCurl::HeaderCallback(void *ptr, size_t size, size_t nmemb)
 {
@@ -61,9 +81,6 @@ size_t CFileCurl::HeaderCallback(void *ptr, size_t size, size_t nmemb)
 
 size_t CFileCurl::WriteCallback(char *buffer, size_t size, size_t nitems)
 {
-  // if not running (or don't want any body data)
-  if(!m_opened) return 0;
-
   unsigned int amount = size * nitems;
 //  CLog::Log(LOGDEBUG, "CFileCurl::WriteCallback (%p) with %i bytes, readsize = %i, writesize = %i", this, amount, m_buffer.GetMaxReadSize(), m_buffer.GetMaxWriteSize() - m_overflowSize);
   if (m_overflowSize)
@@ -110,8 +127,15 @@ size_t CFileCurl::WriteCallback(char *buffer, size_t size, size_t nitems)
 CFileCurl::~CFileCurl()
 { 
   Close();
-  g_curlInterface.easy_cleanup(m_easyHandle);
-  m_easyHandle = NULL;
+
+  /* release this session so it can be reused */
+  if( m_easyHandle )
+  {
+    g_curlInterface.easy_release(m_easyHandle);
+    m_easyHandle = NULL;
+  }
+
+  g_curlInterface.Unload();
 }
 
 #define BUFFER_SIZE 32768
@@ -146,19 +170,29 @@ void CFileCurl::Close()
 	m_fileSize = 0;
   m_opened = false;
 
-  /* make sure the easy handle is not in the multi handle anymore */
-  g_curlInterface.multi_remove_handle(m_multiHandle, m_easyHandle);
+  if( m_easyHandle )
+  {
+    if( m_multiHandle )
+    {
+      /* make sure the easy handle is not in the multi handle anymore */
+      g_curlInterface.multi_remove_handle(m_multiHandle, m_easyHandle);
+      g_curlInterface.multi_cleanup(m_multiHandle);
+      m_multiHandle = NULL;
+    }
 
-  /* set time out to 1 second to make sure we kill the stream quickly
-   * on ftp transfers (filezilla doesn't like just a QUIT) */
-  if (CUtil::IsFTP(m_url))
-    g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_TIMEOUT, 1);
+    /* set time out to 1 second to make sure we kill the stream quickly
+    * on ftp transfers (filezilla doesn't like just a QUIT) */
+    if (CUtil::IsFTP(m_url))
+      g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_TIMEOUT, 1);
+  }
 
   m_url.Empty();
   
   /* cleanup */
-  g_curlInterface.slist_free_all(m_curlAliasList);
-  g_curlInterface.slist_free_all(m_curlHeaderList);
+  if( m_curlAliasList )
+    g_curlInterface.slist_free_all(m_curlAliasList);
+  if( m_curlHeaderList )
+    g_curlInterface.slist_free_all(m_curlHeaderList);
   
   m_multiHandle = NULL;
   m_curlAliasList = NULL;
@@ -173,12 +207,6 @@ void CFileCurl::Close()
 
 void CFileCurl::SetCommonOptions()
 {
-  if( !m_easyHandle  )
-  {
-    // allows reuse of connection
-    // curl handle will only be closed on destruction
-    m_easyHandle = g_curlInterface.easy_init();
-  }  
   g_curlInterface.easy_reset(m_easyHandle);
   
   g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_DEBUGFUNCTION, debug_callback);
@@ -201,6 +229,9 @@ void CFileCurl::SetCommonOptions()
   // with c-ares support. c-ares is a library that provides asynchronous name
   // resolves. Unfortunately, c-ares does not yet support IPv6.
   g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_NOSIGNAL, TRUE);
+
+  // not interested in failed requests
+  g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_FAILONERROR, 1);
 
   // enable support for icecast / shoutcast streams
   m_curlAliasList = g_curlInterface.slist_append(m_curlAliasList, "ICY 200 OK"); 
@@ -227,6 +258,10 @@ bool CFileCurl::Open(const CURL& url, bool bBinary)
 
   url.GetURL(m_url);
   CLog::Log(LOGDEBUG, "FileCurl::Open(%p) %s", this, m_url.c_str());  
+  
+  if( m_easyHandle == NULL )
+    m_easyHandle = g_curlInterface.easy_aquire(url.GetProtocol(), url.GetHostName());
+
 
   // setup common curl options
   SetCommonOptions();
@@ -341,42 +376,58 @@ int CFileCurl::Stat(const CURL& url, struct __stat64* buffer)
 		buffer->st_mode = _S_IFREG;
     return 0;
   }
-
   url.GetURL(m_url);
-	SetCommonOptions();
+
+  if( m_easyHandle == NULL )
+    m_easyHandle = g_curlInterface.easy_aquire(url.GetProtocol(), url.GetHostName());
+
+  SetCommonOptions(); 
   g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_URL, m_url.c_str());
-  g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_RANGE, "0-0");
-  m_opened = false; // will force a write failure
+  g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_NOBODY, 1);
+  g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_WRITEDATA, NULL); /* will cause write failure*/
 
   CURLcode result = g_curlInterface.easy_perform(m_easyHandle);
 
-  if( result == CURLE_HTTP_RANGE_ERROR )
-  {  
+  
+  if (result == CURLE_GOT_NOTHING)
+  {
+    /* some http servers and shoutcast servers don't give us any data on a head request */
+    /* request normal and just fail out, it's their loss */
+    /* somehow curl doesn't reset CURLOPT_NOBODY properly so reset everything */    
+    SetCommonOptions(); 
+    g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_URL, m_url.c_str());
+    g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_RANGE, "0-0");
+    g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_WRITEDATA, NULL); /* will cause write failure*/    
+    result = g_curlInterface.easy_perform(m_easyHandle);
+  }
+
+  if(result == CURLE_HTTP_RANGE_ERROR )
+  {
+    /* crap can't use the range option, disable it and try again */
     g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_RANGE, NULL);
     result = g_curlInterface.easy_perform(m_easyHandle);
   }
 
   if( result == CURLE_WRITE_ERROR || result == CURLE_OK )
   {
-    if(url.GetProtocol() == "http")
-    {
-      // check for an error code in http
-      int statuscode = 0;
-      g_curlInterface.easy_getinfo(m_easyHandle, CURLINFO_HTTP_CODE, &statuscode);
-      if( statuscode < 200 || statuscode > 299 ) return -1;
-    }
-
-    if( !buffer ) return 0;
+    if( !buffer ) return -1;
 
     double length;
-    if (CURLE_OK == g_curlInterface.easy_getinfo(m_easyHandle, CURLINFO_CONTENT_LENGTH_DOWNLOAD, &length))
+    char content[255];
+    if (CURLE_OK == g_curlInterface.easy_getinfo(m_easyHandle, CURLINFO_CONTENT_LENGTH_DOWNLOAD, &length)
+     && CURLE_OK == g_curlInterface.easy_getinfo(m_easyHandle, CURLINFO_CONTENT_TYPE, content))
     {
 		  buffer->st_size = (__int64)length;
-		  buffer->st_mode = _S_IFREG;
+      if(strstr(content, "text/html")) //consider html files directories
+        buffer->st_mode = _S_IFDIR;
+      else
+        buffer->st_mode = _S_IFREG;
+
       return 0;
     }    
   }
-	errno = ENOENT;
+
+  errno = ENOENT;
 	return -1;
 }
 
@@ -466,4 +517,27 @@ void CFileCurl::AddHeaderParam(const char* sParam)
 {
   // libcurl is already initialized in the constructor
   m_curlHeaderList = g_curlInterface.slist_append(m_curlHeaderList, sParam); 
+}
+
+/* STATIC FUNCTIONS */
+bool CFileCurl::GetHttpHeader(const CURL &url, CHttpHeader &headers)
+{
+  try
+  {
+    CFileCurl file;
+    __stat64 dummy;
+    CDummyHeaders callback(&headers);
+
+    file.SetHttpHeaderCallback(&callback);
+    
+    /* calling stat should give us all needed data */
+    return file.Stat(url, &dummy) == 0;
+  }
+  catch(...)
+  {
+    CStdString path;
+    url.GetURL(path);
+    CLog::Log(LOGERROR, __FUNCTION__" - Exception thrown while trying to retrieve header url: %s", path.c_str());
+    return false;
+  }
 }
