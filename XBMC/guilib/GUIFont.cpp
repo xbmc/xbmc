@@ -204,7 +204,7 @@ void CGUIFont::DrawScrollingText(float x, float y, const CAngle &angle, DWORD *c
     }
     if (dwShadowColor)
       m_font->DrawTextImpl(x - scrollInfo.pixelPos + 1, y + 1, Transform(angle), g_graphicsContext.MergeAlpha(dwShadowColor), pOutput, wcslen(pOutput), 0, w + scrollInfo.pixelPos + h*2);
-    m_font->DrawColourTextImpl(x - scrollInfo.pixelPos, y, Transform(angle), color, pOutput, pOutPalette, wcslen(pOutput), 0, w + scrollInfo.pixelPos + h*2);
+    m_font->DrawColourTextImpl(x - scrollInfo.pixelPos, y, Transform(angle), alphaColor, pOutput, pOutPalette, wcslen(pOutput), 0, w + scrollInfo.pixelPos + h*2);
     delete[] alphaColor;
   }
   else
