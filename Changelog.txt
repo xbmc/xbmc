@@ -5,8 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 28-03-2006 added: content-type detection for playercore selection. fixes auto startup of aac+ streams on shoutcast and flv streams on google-video  
  - 28-03-2006 fixed: Slideshow would not present on vblank, causing tearing when zooming.
- - 28-03-2006 fixed: ac3 passthrough was broken since last dts fix for dvdplayer.
  - 28-03-2006 fixed: ac3 passthrough was broken since last dts fix for dvdplayer.
  - 28-03-2006 fixed: Crashes in XLink Kai when changing views/exploring arenas etc.
  - 28-03-2006 fixed: Some issues with the listcontrolex used in XLink Kai.
