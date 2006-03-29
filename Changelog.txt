@@ -5,18 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
- - 28-03-2006 fixed: Crashes in XLink Kai when changing views/exploring arenas etc.
- - 28-03-2006 fixed: Some issues with the listcontrolex used in XLink Kai.
- - 28-03-2006 fixed: The text in Big List view could go past the end of the list texture.
- - 28-03-2006 fixed: Smartplaylists weren't showing up with their <name> tags.
- - 28-03-2006 fixed: [ 1458161 ] LCD does not display uncommon characters.
- - 28-03-2006 added: XLinkKai.UserName infolabel.
- - 28-03-2006 fixed: [ 1457883 ] Another xlink problem when not connected.
- - 28-03-2006 fixed: blurps when seeking in mp3's.
- - 27-03-2006 changed: play folder in my videos ignores sample/ folder.
- - 27-03-2006 changed: unified hide 'parent folder items' setting.
- - 27-03-2006 fixed: Folder thumbs on remote shares in My Videos.
- - 27-03-2006 fixed: notinthelast wasn't working correctly in Smart Playlists.
+ - 27-03-2006 fixed: ac3 passthrough was broken since last dts fix for dvdplayer.
  - 27-03-2006 fixed: [1458767] Wrong items in "My programs" contextmenu.
  - 27-03-2006 changed: Log entry if a filename is truncated.
  - 26-02-2006 fixed: dvdplayer, [ 1457717 ] DVD Menu Overlays on Stills
