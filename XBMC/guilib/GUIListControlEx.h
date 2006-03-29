@@ -79,6 +79,8 @@ protected:
   virtual void OnUp();
   void OnPageUp();
   void OnPageDown();
+  int GetPage(int listSize);
+
   int m_iSpinPosX;
   int m_iSpinPosY;
   int m_iSpaceBetweenItems;
