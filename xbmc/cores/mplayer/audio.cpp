@@ -9,8 +9,8 @@
 #include "../VideoRenderers/RenderManager.h"
 
 
-IDirectSoundRenderer* m_pAudioDecoder = NULL;
-
+static IDirectSoundRenderer* m_pAudioDecoder = NULL;
+static CCriticalSection m_critAudio;
 static IAudioCallback* m_pAudioCallback = NULL;
 static int m_bHasVideo = false;
 void audio_uninit(int);
@@ -23,6 +23,7 @@ ao_info_t audio_info = {
                        };
 extern "C" int mplayer_getVolume()
 {
+  CSingleLock lock(m_critAudio);
   if (!m_pAudioDecoder) return 0;
   return m_pAudioDecoder->GetCurrentVolume();
   /*  float fVolumeMin=(float)m_pAudioDecoder->GetMinimumVolume();
@@ -45,12 +46,14 @@ extern "C" int mplayer_getVolume()
 
 extern "C" void mplayer_setVolume(long nVolume)
 {
+  CSingleLock lock(m_critAudio);
   if (!m_pAudioDecoder) return ;
   m_pAudioDecoder->SetCurrentVolume(nVolume);
 }
 
 extern "C" void mplayer_setDRC(long drc)
 {
+  CSingleLock lock(m_critAudio);
   if (!m_pAudioDecoder) return ;
   m_pAudioDecoder->SetDynamicRangeCompression(drc);
 }
@@ -60,6 +63,7 @@ ao_data_t* pao_data = NULL;
 // to set/get/query special features/parameters
 static int audio_control(int cmd, int arg)
 {
+  CSingleLock lock(m_critAudio);
   if (!m_pAudioDecoder) return CONTROL_OK;
   DWORD volume;
   DWORD maxvolume;
@@ -107,6 +111,7 @@ void UnRegisterAudioCallback()
 // return: 1=success 0=fail
 static int audio_init(int rate, int channels, int format, int flags)
 {
+  CSingleLock lock(m_critAudio);
   char strFourCC[10];
   char strAudioCodec[128];
   long lBitRate;
@@ -203,6 +208,7 @@ static int audio_init(int rate, int channels, int format, int flags)
 // close audio device
 void audio_uninit(int immed)
 {
+  CSingleLock lock(m_critAudio);
   if (m_pAudioDecoder)
   {
     if (!immed)
@@ -217,27 +223,34 @@ void audio_uninit(int immed)
 // stop playing and empty buffers (for seeking/pause)
 static void audio_reset()
 {
-  m_pAudioDecoder->Stop();
+  CSingleLock lock(m_critAudio);
+  if(m_pAudioDecoder)
+    m_pAudioDecoder->Stop();
 }
 
 //******************************************************************************************
 // stop playing, keep buffers (for pause)
 void audio_pause()
 {
-  m_pAudioDecoder->Pause();
+  CSingleLock lock(m_critAudio);
+  if(m_pAudioDecoder)
+    m_pAudioDecoder->Pause();
 }
 
 //******************************************************************************************
 // resume playing, after audio_pause()
 void audio_resume()
 {
-  m_pAudioDecoder->Resume();
+  CSingleLock lock(m_critAudio);
+  if(m_pAudioDecoder)
+    m_pAudioDecoder->Resume();
 }
 
 //******************************************************************************************
 // return: how many bytes can be played without blocking
 static int audio_get_space()
 {
+  CSingleLock lock(m_critAudio);
   if (!m_pAudioDecoder) return 0;
   return m_pAudioDecoder->GetSpace();
 }
@@ -248,6 +261,7 @@ static int audio_get_space()
 // return: number of bytes played
 static int audio_play(void* data, int len, int flags)
 {
+  CSingleLock lock(m_critAudio);
   if (!m_pAudioDecoder) return 0;
   //if we have video, don't process any audio before video is ready to go.
   if (m_bHasVideo && (!g_renderManager.IsStarted())) return 0;
@@ -258,6 +272,7 @@ static int audio_play(void* data, int len, int flags)
 // return: delay in seconds between first and last sample in buffer
 static float audio_get_delay()
 {
+  CSingleLock lock(m_critAudio);
   if (!m_pAudioDecoder) return 0;
   FLOAT fDelay = m_pAudioDecoder->GetDelay();
   // check our output rate...
@@ -274,6 +289,7 @@ static float audio_get_delay()
 // to set/get/query special features/parameters
 static int audio_control(int cmd, void *arg)
 {
+  CSingleLock lock(m_critAudio);
   //    DWORD volume;
   switch (cmd)
   {
@@ -314,12 +330,14 @@ ao_functions_t audio_functions =
 
 void xbox_audio_registercallback(IAudioCallback* pCallback)
 {
+  CSingleLock lock(m_critAudio);
   if (!m_pAudioDecoder) return ;
   m_pAudioCallback = pCallback;
   m_pAudioDecoder->RegisterAudioCallback(pCallback);
 }
 void xbox_audio_unregistercallback()
 {
+  CSingleLock lock(m_critAudio);
   if (m_pAudioDecoder)
     m_pAudioDecoder->UnRegisterAudioCallback();
   m_pAudioCallback = NULL;
@@ -328,21 +346,21 @@ void xbox_audio_unregistercallback()
 
 void xbox_audio_wait_completion()
 {
-  if (!m_pAudioDecoder)
-    return ;
-  m_pAudioDecoder->WaitCompletion();
+  CSingleLock lock(m_critAudio);
+  if (m_pAudioDecoder)    
+    m_pAudioDecoder->WaitCompletion();
 }
 
 void xbox_audio_do_work()
 {
-  if (!m_pAudioDecoder)
-    return ;
-  m_pAudioDecoder->DoWork();
+  CSingleLock lock(m_critAudio);
+  if (m_pAudioDecoder)   
+    m_pAudioDecoder->DoWork();
 }
 
 void xbox_audio_switch_channel(int iAudioStream, bool bAudioOnAllSpeakers)
 {
-  if (!m_pAudioDecoder)
-    return ;
-  m_pAudioDecoder->SwitchChannels(iAudioStream, bAudioOnAllSpeakers);
+  CSingleLock lock(m_critAudio);
+  if (m_pAudioDecoder)    
+    m_pAudioDecoder->SwitchChannels(iAudioStream, bAudioOnAllSpeakers);
 }
