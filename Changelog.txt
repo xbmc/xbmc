@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 28-03-2006 fixed: potential crash if audiorenderer was deleted while application was attempting to copy data to vis buffer
  - 28-03-2006 fixed: Remote is processed before gamepad to ensure if a gamepad stick is offcenter it doesn't effect the remote.
  - 28-03-2006 added: content-type detection for playercore selection. fixes auto startup of aac+ streams on shoutcast and flv streams on google-video  
  - 28-03-2006 fixed: Slideshow would not present on vblank, causing tearing when zooming.
