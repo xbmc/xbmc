@@ -8,11 +8,27 @@
 #include "paplayer\paplayer.h"
 #include "..\GUIDialogContextMenu.h"
 #include "../XBAudioConfig.h"
+#include "../FileSystem/FileCurl.h"
+#include "../utils/HttpHeader.h"
 
 CPlayerCoreFactory::CPlayerCoreFactory()
 {}
 CPlayerCoreFactory::~CPlayerCoreFactory()
 {}
+
+/* generic function to make a vector unique, removes later duplicates */
+template<typename T> void unique (T &con)
+{
+  typename T::iterator cur, end;
+  cur = con.begin();
+  end = con.end();
+  while (cur != end)
+  {
+    typename T::value_type i = *cur;
+    end = remove (++cur, end, i);
+  }
+  con.erase (end, con.end());
+} 
 
 IPlayer* CPlayerCoreFactory::CreatePlayer(const CStdString& strCore, IPlayerCallback& callback) const
 { 
@@ -72,35 +88,47 @@ void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecC
   CURL url(item.m_strPath);
 
   CLog::Log(LOGDEBUG,"CPlayerCoreFactor::GetPlayers(%s)",item.m_strPath.c_str());
-  bool bMPlayer(false), bDVDPlayer(false);
-  bool bPAPlayer(false);
-
-  bool bAllowDVD = true;
 
   if (url.GetProtocol().Equals("lastfm"))
   {
-    vecCores.push_back(EPC_PAPLAYER);
-    bPAPlayer = true;
+    vecCores.push_back(EPC_PAPLAYER);    
   }
 
   if (url.GetProtocol().Equals("daap"))		// mplayer is better for daap
   {
-    vecCores.push_back(EPC_MPLAYER);
-    bMPlayer = true;
+    vecCores.push_back(EPC_MPLAYER);    
   }
 
-  //Only mplayer can handle internetstreams for now
-  //and daap bookmarks
   if ( item.IsInternetStream() )
   {
+    CStdString protocol = item.GetAsUrl().GetProtocol();
+    if( protocol == "http" )
+    {
+      CHttpHeader headers;
+      if( CFileCurl::GetHttpHeader(item.GetAsUrl(), headers) )
+      {
+        if( headers.GetValue("icy-meta").length() > 0 
+         || headers.GetValue("icy-pub").length() > 0
+         || headers.GetValue("icy-br").length() > 0 
+         || headers.GetValue("icy-url").length() > 0 )
+        { // shoutcast stuff
+          //vecCores.push_back(EPC_DVDPLAYER);
+        }
+        CStdString content = headers.GetContentType();
+
+        if( content == "video/x-flv" // mplayer fails on these
+         || content == "audio/aacp") // mplayer has no support for AAC+         
+          vecCores.push_back(EPC_DVDPLAYER);
+      }
+    }
+
+    // allways add mplayer as a high prio player for internet streams
     vecCores.push_back(EPC_MPLAYER);
-    bMPlayer = true;
   }
 
-  if (bAllowDVD && ((item.IsDVD()) || item.IsDVDFile() || item.IsDVDImage()))
+  if (((item.IsDVD()) || item.IsDVDFile() || item.IsDVDImage()))
   {
     vecCores.push_back(EPC_DVDPLAYER);
-    bDVDPlayer = true;
   }
 
   if( PAPlayer::HandlesType(url.GetFileType()) )
@@ -108,7 +136,6 @@ void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecC
     if( g_guiSettings.GetInt("AudioOutput.Mode") == AUDIO_ANALOG )
     {
       vecCores.push_back(EPC_PAPLAYER);
-      bPAPlayer = true;
     }
     else if( ( url.GetFileType().Equals("ac3") && g_audioConfig.GetAC3Enabled() )
          ||  ( url.GetFileType().Equals("dts") && g_audioConfig.GetDTSEnabled() ) ) 
@@ -118,7 +145,6 @@ void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecC
     else
     {
       vecCores.push_back(EPC_PAPLAYER);
-      bPAPlayer = true;
     }
   }
   
@@ -135,16 +161,16 @@ void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecC
   //Add all normal players last so you can force them, should you want to
   if( item.IsVideo() || item.IsAudio() )
   {
-    if( !bMPlayer )
-      vecCores.push_back(EPC_MPLAYER);
+    vecCores.push_back(EPC_MPLAYER);
 
-    if( bAllowDVD && !bDVDPlayer )
-      vecCores.push_back(EPC_DVDPLAYER);
+    vecCores.push_back(EPC_DVDPLAYER);
 
-    if( item.IsAudio() && !bPAPlayer )
+    if( item.IsAudio())
       vecCores.push_back(EPC_PAPLAYER);
   }
 
+  /* make our list unique, presevering first added players */
+  unique(vecCores);
 }
 
 EPLAYERCORES CPlayerCoreFactory::GetDefaultPlayer( const CFileItem& item )
