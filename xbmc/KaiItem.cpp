@@ -19,6 +19,9 @@ CKaiItem::CKaiItem(CStdString& strLabel) : CGUIListExItem(strLabel)
 
 CKaiItem::~CKaiItem(void)
 {
+  CLog::Log(LOGDEBUG, "Destroying Kai Item at %p", this);
+  // remove any pending requests from this item
+  g_DownloadManager.CancelRequests(this);
   if (m_pAvatar)
   {
     m_pAvatar->FreeResources();
@@ -129,12 +132,12 @@ void CKaiItem::OnFileComplete(TICKET aTicket, CStdString& aFilePath, INT aByteRx
       }
       DWORD dwAvatarWidth = 50;
       DWORD dwAvatarHeight = 50;
+//      g_graphicsContext.Lock();
+      if (!m_pAvatar)
+        m_pAvatar = new CGUIImage(0, 0, 0, 0, dwAvatarWidth, dwAvatarHeight, strAvatarFilePath);
       if (m_pAvatar)
-      {
-        m_pAvatar->FreeResources();
-        delete m_pAvatar;
-      }
-      m_pAvatar = new CGUIImage(0, 0, 0, 0, dwAvatarWidth, dwAvatarHeight, strAvatarFilePath);
+        m_pAvatar->SetFileName(strAvatarFilePath);
+//      g_graphicsContext.Unlock();
     }
     catch (...)
     {
