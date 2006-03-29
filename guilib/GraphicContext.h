@@ -101,6 +101,7 @@ public:
   bool IsValidResolution(RESOLUTION res);
   void SetVideoResolution(RESOLUTION &res, BOOL NeedZ = FALSE);
   RESOLUTION GetVideoResolution() const;
+  void SetScreenFilters(bool useFullScreenFilters);
   void ResetOverscan(RESOLUTION res, OVERSCAN &overscan);
   void ResetScreenParameters(RESOLUTION res);
   void Lock() { EnterCriticalSection(*this); }
