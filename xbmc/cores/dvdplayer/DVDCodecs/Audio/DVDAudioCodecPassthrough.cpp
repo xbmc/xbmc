@@ -210,7 +210,7 @@ int CDVDAudioCodecPassthrough::PaddAC3Data( BYTE* pData, int iDataSize, BYTE* pO
   }
 
   //Swap byteorder
-  swabdata((char*)pData, (char*)pOut+8, iDataSize);
+  swabdata((char*)pOut+8, (char*)pData, iDataSize);
   memset(pOut + iDataSize2 + 8, 0, iOutputSize - iDataSize2 - 8);
   return iOutputSize;
 }
