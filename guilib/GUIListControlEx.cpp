@@ -81,7 +81,7 @@ void CGUIListControlEx::Render()
       }
       m_upDown.SetPosition(m_iPosX + m_iSpinPosX, m_iPosY + m_iSpinPosY);
       m_upDown.SetRange(1, iPages);
-      m_upDown.SetValue(1);
+      m_upDown.SetValue(GetPage(list.size()));
       m_upDown.Render();
     }
     m_pList->Release();
@@ -89,6 +89,25 @@ void CGUIListControlEx::Render()
   CGUIControl::Render();
 }
 
+// returns which page we are on
+int CGUIListControlEx::GetPage(int listSize)
+{
+  if (m_iOffset >= listSize - m_iItemsPerPage)
+  {
+    m_iOffset = listSize - m_iItemsPerPage;
+    if (m_iOffset <= 0)
+    {
+      m_iOffset = 0;
+      return 1;
+    }
+    if (listSize % m_iItemsPerPage)
+      return listSize / m_iItemsPerPage + 1;
+    else
+      return listSize / m_iItemsPerPage;
+  }
+  else
+    return m_iOffset / m_iItemsPerPage + 1;
+}
 
 bool CGUIListControlEx::OnAction(const CAction &action)
 {
