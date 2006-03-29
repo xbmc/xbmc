@@ -164,6 +164,11 @@ protected:
   void UpdateLCD();
   bool SwitchToFullScreen();
   void FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetwork);
+  bool ProcessMouse();
+  bool ProcessHTTPApiButtons();
+  bool ProcessKeyboard();
+  bool ProcessRemote(float frameTime);
+  bool ProcessGamepad(float frameTime);
   void InitBasicD3D();
   bool m_bXboxMediacenterLoaded;
   bool m_bSettingsLoaded;
