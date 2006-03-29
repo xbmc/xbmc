@@ -25,7 +25,6 @@ void CGUIViewControl::AddView(VIEW_METHOD type, const CGUIControl *control)
 {
   if (!control) return;
   m_vecViews.insert(pair<VIEW_METHOD, CGUIControl *>(type, (CGUIControl *)control));
-  ((CGUIControl *)control)->SetVisible(false); // set them all invisible
 }
 
 void CGUIViewControl::SetViewControlID(int control)
@@ -55,14 +54,18 @@ void CGUIViewControl::SetCurrentView(VIEW_METHOD viewMode)
   {
     // have an old view - let's clear it out and hide it.
     CGUIControl *pControl = (*it_old).second;
-    pControl->SetVisible(false);
     hasFocus = pControl->HasFocus();
     item = GetSelectedItem(pControl);
     CGUIMessage msg(GUI_MSG_LABEL_RESET, m_parentWindow, pControl->GetID(), 0, 0, NULL);
     pControl->OnMessage(msg);
   }
   m_currentView = viewMode;
-  // make current control visible...
+  // make only current control visible...
+  for (map_iter view = m_vecViews.begin(); view != m_vecViews.end(); view++)
+  {
+    CGUIControl *control = (*view).second;
+    control->SetVisible(false);
+  }
   pNewView->SetVisible(true);
   // and focus if necessary
   if (hasFocus)
