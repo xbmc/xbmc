@@ -50,6 +50,7 @@
 #include "filesystem/filedaap.h"
 #include "filesystem/StackDirectory.h"
 #include "PartyModeManager.h"
+#include "FileSystem/DllLibCurl.h"
 
 // Windows includes
 #include "GUIWindowMusicPlaylist.h"
@@ -4043,6 +4044,9 @@ void CApplication::Process()
 
   // check if we should restart the player
   CheckDelayedPlayerRestart();
+
+  // check for any idle curl connections
+  g_curlInterface.CheckIdle();
 }
 
 // GeminiServer: Global Idle Time in Seconds
@@ -4212,18 +4216,13 @@ void CApplication::SetPlaySpeed(int iSpeed)
   m_iPlaySpeed = iSpeed;
 
   m_pPlayer->ToFFRW(m_iPlaySpeed);
-  // if (m_pAudioDecoder)
-  {
-    if (m_iPlaySpeed == 1)
-    { // restore volume
-      m_pPlayer->SetVolume(g_stSettings.m_nVolumeLevel);
-      //   m_pAudioDecoder->Mute (false);
-    }
-    else
-    { // mute volume
-      m_pPlayer->SetVolume(VOLUME_MINIMUM);
-      //   m_pAudioDecoder->Mute (true);
-    }
+  if (m_iPlaySpeed == 1)
+  { // restore volume
+    m_pPlayer->SetVolume(g_stSettings.m_nVolumeLevel);
+  }
+  else
+  { // mute volume
+    m_pPlayer->SetVolume(VOLUME_MINIMUM);
   }
 }
 
