@@ -115,13 +115,13 @@ DWORD CDVDAudio::AddPacketsRenderer(unsigned char* data, DWORD len)
 // chunklenght. In combination with the code below thiswill result in dropped data.
 DWORD CDVDAudio::AddPackets(unsigned char* data, DWORD len)
 {
+  CSingleLock lock (m_critSection);
   if (!m_pAudioDecoder)
   {
     m_iBufferSize = 0;
     return -1;
   }
   int iTotalSize = len;
-  // CSingleLock lock(m_critSection);
 
   // wait until we can put something in the buffer, if we don't do this we have to check every time how
   // much is really written because it could be the buffer was still full.
@@ -178,6 +178,7 @@ DWORD CDVDAudio::AddPackets(unsigned char* data, DWORD len)
 
 void CDVDAudio::DoWork()
 {
+  CSingleLock lock (m_critSection);
   if (m_pAudioDecoder) m_pAudioDecoder->DoWork();
 }
 
@@ -232,6 +233,7 @@ __int64 CDVDAudio::GetDelay()
 
 int CDVDAudio::GetBytesInBuffer()
 {
+  CSingleLock lock (m_critSection);
   if(!m_pAudioDecoder) return 0;
   return m_pAudioDecoder->GetBytesInBuffer();
 }

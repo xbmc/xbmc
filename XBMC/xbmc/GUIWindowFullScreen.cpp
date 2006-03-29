@@ -67,8 +67,6 @@
 #define CONTROL_PROGRESS 23
 
 
-extern IDirectSoundRenderer* m_pAudioDecoder;
-
 static DWORD color[6] = { 0xFFFFFF00, 0xFFFFFFFF, 0xFF0099FF, 0xFF00FF00, 0xFFCCFF00, 0xFF00FFFF };
 
 CGUIWindowFullScreen::CGUIWindowFullScreen(void)
