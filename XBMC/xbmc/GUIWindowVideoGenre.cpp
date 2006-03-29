@@ -97,31 +97,6 @@ bool CGUIWindowVideoGenre::GetDirectory(const CStdString &strDirectory, CFileIte
   return true;
 }
 
-void CGUIWindowVideoGenre::OnPrepareFileItems(CFileItemList &items)
-{
-  items.SetThumbs();
-
-  // Fill in default icons
-  // normally this is done by the base class for us
-  // but the m_strPath only contains the database id
-  // of the movie, so we must fake a videofile to fill
-  // in default icons
-  CStdString strPath;
-  for (int i = 0; i < (int)items.Size(); i++)
-  {
-    CFileItem* pItem = items[i];
-
-    if (pItem->m_bIsFolder)
-      continue;
-
-    strPath = pItem->m_strPath;
-    // Fake a videofile
-    pItem->m_strPath = pItem->m_strPath + ".avi";
-    pItem->FillInDefaultIcon();
-    pItem->m_strPath = strPath;
-  }
-}
-
 void CGUIWindowVideoGenre::UpdateButtons()
 {
   CGUIWindowVideoBase::UpdateButtons();
