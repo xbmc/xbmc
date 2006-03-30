@@ -7,8 +7,7 @@
     <posx>185</posx>
     <posy>230</posy>
   </coordinates>
-  <animation effect="fade" time="200">WindowOpen</animation>
-  <animation effect="fade" time="200">WindowClose</animation>
+
   <controls>
     <control>
       <type>image</type>
@@ -18,10 +17,13 @@
       <width>720</width>
       <height>576</height>
       <texture>black.png</texture>
-      <animation effect="fade" time="2000">WindowOpen</animation>
+      <animation effect="fade" time="2000" delay="300">WindowOpen</animation>
+      <animation effect="fade" time="700" delay="300">WindowClose</animation>
     </control>
 
     <control>
+      <animation effect="zoom" start="600" center="175,288" time="700">WindowOpen</animation>
+      <animation effect="slide" time="700" end="0,-600" acceleration="2">WindowClose</animation>
       <type>image</type>
       <id>0</id>
       <posx>-245</posx>
@@ -33,6 +35,8 @@
 
     <control>
       <description>Dashboard button</description>
+      <animation effect="zoom" start="600" center="175,288" time="700">WindowOpen</animation>
+      <animation effect="slide" time="700" end="0,-600" acceleration="2">WindowClose</animation>
       <type>button</type>
       <id>3110</id>
       <posx>30</posx>
@@ -53,6 +57,8 @@
 
     <control>
       <description>eject button</description>
+      <animation effect="zoom" start="600" center="175,288" time="700">WindowOpen</animation>
+      <animation effect="slide" time="700" end="0,-600" acceleration="2">WindowClose</animation>
       <type>button</type>
       <id>3111</id>
       <posx>90</posx>
@@ -73,6 +79,8 @@
 
     <control>
       <description>Shutdown button</description>
+      <animation effect="zoom" start="600" center="175,288" time="700">WindowOpen</animation>
+      <animation effect="slide" time="700" end="0,-600" acceleration="2">WindowClose</animation>
       <type>button</type>
       <id>3112</id>
       <posx>150</posx>
@@ -93,6 +101,8 @@
 
     <control>
       <description>System Info button</description>
+      <animation effect="zoom" start="600" center="175,288" time="700">WindowOpen</animation>
+      <animation effect="slide" time="700" end="0,-600" acceleration="2">WindowClose</animation>
       <type>button</type>
       <id>3113</id>
       <posx>210</posx>
@@ -113,6 +123,8 @@
 
     <control>
       <description>reboot button</description>
+      <animation effect="zoom" start="600" center="175,288" time="700">WindowOpen</animation>
+      <animation effect="slide" time="700" end="0,-600" acceleration="2">WindowClose</animation>
       <type>button</type>
       <id>3114</id>
       <posx>270</posx>
@@ -133,6 +145,8 @@
 
     <control>
       <description>reload skin button</description>
+      <animation effect="zoom" start="600" center="175,288" time="700">WindowOpen</animation>
+      <animation effect="slide" time="700" end="0,-600" acceleration="2">WindowClose</animation>
       <type>button</type>
       <id>3115</id>
       <posx>150</posx>
@@ -153,6 +167,8 @@
 
     <control>
       <description>reload skin button</description>
+      <animation effect="zoom" start="600" center="175,288" time="700">WindowOpen</animation>
+      <animation effect="slide" time="700" end="0,-600" acceleration="2">WindowClose</animation>
       <type>button</type>
       <id>3116</id>
       <posx>150</posx>
@@ -172,6 +188,8 @@
     </control>
 
     <control>
+      <animation effect="zoom" start="600" center="175,288" time="700">WindowOpen</animation>
+      <animation effect="slide" time="700" end="0,-600" acceleration="2">WindowClose</animation>
       <type>image</type>
       <id>0</id>
       <posx>-245</posx>
@@ -183,6 +201,8 @@
 
     <control>
       <description>Label control</description>
+      <animation effect="zoom" start="600" center="175,288" time="700">WindowOpen</animation>
+      <animation effect="slide" time="700" end="0,-600" acceleration="2">WindowClose</animation>
       <type>label</type>
       <id>3100</id>
       <posx>19</posx>
