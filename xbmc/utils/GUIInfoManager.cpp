@@ -1444,12 +1444,15 @@ void CGUIInfoManager::SetCurrentSong(CFileItem &item)
   // find a thumb for this file.
   if (m_currentSong.IsInternetStream())
   {
-    CLog::Log(LOGDEBUG,"Streaming media detected... using %s to find a thumb", g_application.m_strPlayListFile.c_str());
-    CFileItem* pItemTemp = new CFileItem(g_application.m_strPlayListFile,false);
-    pItemTemp->SetMusicThumb();
-    CStdString strThumb = pItemTemp->GetThumbnailImage();
-    if (CFile::Exists(strThumb))
-      m_currentSong.SetThumbnailImage(strThumb);
+    if (!g_application.m_strPlayListFile.IsEmpty())
+    {
+      CLog::Log(LOGDEBUG,"Streaming media detected... using %s to find a thumb", g_application.m_strPlayListFile.c_str());
+      CFileItem streamingItem(g_application.m_strPlayListFile,false);
+      streamingItem.SetMusicThumb();
+      CStdString strThumb = streamingItem.GetThumbnailImage();
+      if (CFile::Exists(strThumb))
+        m_currentSong.SetThumbnailImage(strThumb);
+    }
   }
   else
     m_currentSong.SetMusicThumb();
@@ -1502,11 +1505,14 @@ void CGUIInfoManager::SetCurrentMovie(CFileItem &item)
     }
 
     // else its a video
-    CLog::Log(LOGDEBUG,"Streaming media detected... using %s to find a thumb", g_application.m_strPlayListFile.c_str());
-    CFileItem thumbItem(g_application.m_strPlayListFile,false);
-    thumbItem.SetThumb();
-    if (CFile::Exists(thumbItem.GetThumbnailImage()))
-      item.SetThumbnailImage(thumbItem.GetThumbnailImage());
+    if (!g_application.m_strPlayListFile.IsEmpty())
+    {
+      CLog::Log(LOGDEBUG,"Streaming media detected... using %s to find a thumb", g_application.m_strPlayListFile.c_str());
+      CFileItem thumbItem(g_application.m_strPlayListFile,false);
+      thumbItem.SetThumb();
+      if (CFile::Exists(thumbItem.GetThumbnailImage()))
+        item.SetThumbnailImage(thumbItem.GetThumbnailImage());
+    }
   }
 
   item.FillInDefaultIcon();
