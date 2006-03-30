@@ -1,5 +1,6 @@
 #include "VisibleEffect.h"
 #include "../xbmc/utils/GUIInfoManager.h"
+#include "../xbmc/Settings.h" // for g_advancedSettings
 
 CAnimation::CAnimation()
 {
@@ -63,6 +64,8 @@ void CAnimation::Create(const TiXmlElement *node, RESOLUTION res)
   // time and delay
   node->Attribute("time", (int *)&length);
   node->Attribute("delay", (int *)&delay);
+  length = (unsigned int)(length * g_advancedSettings.m_skinEffectsSlowdown);
+  delay = (unsigned int)(delay * g_advancedSettings.m_skinEffectsSlowdown);
   // slide parameters
   if (effect == EFFECT_TYPE_SLIDE)
   {
