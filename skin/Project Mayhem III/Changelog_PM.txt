@@ -1,3 +1,5 @@
+2006-03-30 changed:	new shutdownmenu effects
+
 2006-03-28 fixed:	Some issues with the new dialogs
 2006-03-28 fixed:	Big Listview in Music Library and Video (Title)
 
