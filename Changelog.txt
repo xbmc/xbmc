@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 28-03-2006 fixed: If an image failed to load, you couldn't move to the next image (while viewing pictures from My Pictures).
  - 28-03-2006 fixed: Fading on RSS controls wasn't working.
  - 28-03-2006 fixed: Animation of thumbs and lists on window open wasn't working.
  - 28-03-2006 fixed: potential crash if audiorenderer was deleted while application was attempting to copy data to vis buffer
