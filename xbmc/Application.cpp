@@ -4496,19 +4496,18 @@ bool CApplication::ProcessAndStartPlaylist(const CStdString& strPlayList, CPlayL
   if (iPlaylist < PLAYLIST_MUSIC || iPlaylist > PLAYLIST_VIDEO_TEMP)
     return false;
 
+  // setup correct playlist
+  g_playlistPlayer.ClearPlaylist(iPlaylist);
+
   // if the playlist contains an internet stream, this file will be used
   // to generate a thumbnail for musicplayer.cover 
   g_application.m_strPlayListFile = strPlayList;
 
-  // first item of the list, used to determine the intent
-  CPlayList::CPlayListItem item = playlist[0];
+  CFileItem item(playlist[0]);
 
   // just 1 item? then play it
   if (playlist.size() == 1)
-    return g_application.PlayFile(CFileItem(item));
-
-  // setup correct playlist
-  g_playlistPlayer.ClearPlaylist(iPlaylist);
+    return g_application.PlayFile(item);
 
   // add each item of the playlist to the playlistplayer
   for (int i = 0; i < (int)playlist.size(); ++i)
