@@ -276,6 +276,11 @@ void CGUIWindowSlideShow::Render()
         ShowNext();
         m_bErrorMessage = false;
       }
+      else if (m_bLoadNextPic)
+      {
+        m_iCurrentSlide = m_iNextSlide;
+        m_bErrorMessage = false;
+      }
       // else just drop through - there's nothing we can do (error message will be displayed)
     }
   }
