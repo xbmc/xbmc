@@ -5,11 +5,12 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
- - 28-03-2006 fixed: If an image failed to load, you couldn't move to the next image (while viewing pictures from My Pictures).
- - 28-03-2006 fixed: Fading on RSS controls wasn't working.
- - 28-03-2006 fixed: Animation of thumbs and lists on window open wasn't working.
- - 28-03-2006 fixed: potential crash if audiorenderer was deleted while application was attempting to copy data to vis buffer
- - 28-03-2006 fixed: Remote is processed before gamepad to ensure if a gamepad stick is offcenter it doesn't effect the remote.
+ - 30-03-2006 fixed: Current playlist source wasn't reset, and internet streams would always try and use it to lookup thumbs.
+ - 29-03-2006 fixed: If an image failed to load, you couldn't move to the next image (while viewing pictures from My Pictures).
+ - 29-03-2006 fixed: Fading on RSS controls wasn't working.
+ - 29-03-2006 fixed: Animation of thumbs and lists on window open wasn't working.
+ - 29-03-2006 fixed: potential crash if audiorenderer was deleted while application was attempting to copy data to vis buffer
+ - 29-03-2006 fixed: Remote is processed before gamepad to ensure if a gamepad stick is offcenter it doesn't effect the remote.
  - 28-03-2006 added: content-type detection for playercore selection. fixes auto startup of aac+ streams on shoutcast and flv streams on google-video  
  - 28-03-2006 fixed: Slideshow would not present on vblank, causing tearing when zooming.
  - 28-03-2006 fixed: ac3 passthrough was broken since last dts fix for dvdplayer.
