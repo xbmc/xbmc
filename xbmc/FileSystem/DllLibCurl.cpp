@@ -12,7 +12,8 @@ DllLibCurlGlobal g_curlInterface;
 
 bool DllLibCurlGlobal::Load()
 {
-  if(InterlockedIncrement(&g_curlReferences) < 2)
+  CSingleLock lock(m_critSection);
+  if(++g_curlReferences > 1)
     return true;
 
   if (!DllDynamic::Load())
@@ -29,13 +30,13 @@ bool DllLibCurlGlobal::Load()
     return false;
   }
 
-  InterlockedIncrement(&g_curlReferences);
   return true;
 }
 
 void DllLibCurlGlobal::Unload()
 {
-  if( InterlockedDecrement(&g_curlReferences) == 0 )
+  CSingleLock lock(m_critSection);
+  if (--g_curlReferences == 0)
   {
     if (!IsLoaded())
       return;
@@ -49,6 +50,7 @@ void DllLibCurlGlobal::Unload()
 
 void DllLibCurlGlobal::CheckIdle()
 {
+  CSingleLock lock(m_critSection);
   /* 5 seconds idle time before closing handle */
   const DWORD idletime = 5000;
 
@@ -59,8 +61,8 @@ void DllLibCurlGlobal::CheckIdle()
     {
       CLog::Log(LOGINFO, __FUNCTION__" - Closing session to %s://%s\n", it->m_protocol.c_str(), it->m_hostname.c_str());
 
-      g_curlInterface.easy_cleanup(it->m_session);
-      g_curlInterface.Unload();
+      easy_cleanup(it->m_session);
+      Unload();
 
       it = m_sessions.erase(it);
       continue;
@@ -71,6 +73,8 @@ void DllLibCurlGlobal::CheckIdle()
 
 CURL_HANDLE* DllLibCurlGlobal::easy_aquire(const char *protocol, const char *hostname)
 {
+  CSingleLock lock(m_critSection);
+
   VEC_CURLSESSIONS::iterator it;
 	for(it = m_sessions.begin(); it != m_sessions.end(); it++)
 	{
@@ -94,7 +98,7 @@ CURL_HANDLE* DllLibCurlGlobal::easy_aquire(const char *protocol, const char *hos
 
   /* count up global interface counter */
   Load();
-  session.m_session = g_curlInterface.easy_init();
+  session.m_session = easy_init();
 
   m_sessions.push_back(session);
 
@@ -107,6 +111,8 @@ CURL_HANDLE* DllLibCurlGlobal::easy_aquire(const char *protocol, const char *hos
 
 void DllLibCurlGlobal::easy_release(XCURL::CURL_HANDLE* easy_handle)
 {
+  CSingleLock lock(m_critSection);
+
 	VEC_CURLSESSIONS::iterator it;
 	for(it = m_sessions.begin(); it != m_sessions.end(); it++)
 	{
