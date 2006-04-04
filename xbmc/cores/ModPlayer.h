@@ -23,7 +23,6 @@ public:
   virtual void SwitchToNextLanguage();
   virtual void ToggleSubtitles();
   virtual void ToggleFrameDrop();
-  virtual void SubtitleOffset(bool bPlus = true);
   virtual void Seek(bool bPlus = true, bool bLargeStep = false);
   virtual void SetVolume(long nVolume);
   virtual void SetContrast(bool bPlus = true);

@@ -39,7 +39,6 @@ public:
   virtual void SwitchToNextLanguage() {}
   virtual void ToggleSubtitles() {}
   virtual void ToggleFrameDrop() {}
-  virtual void SubtitleOffset(bool bPlus = true) {}
   virtual void Seek(bool bPlus = true, bool bLargeStep = false) {}
   virtual void SeekPercentage(float fPercent = 0.0f);
   virtual float GetPercentage();

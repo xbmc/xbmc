@@ -221,19 +221,35 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
     break;
 
   case ACTION_SUBTITLE_DELAY_MIN:
-    g_application.m_pPlayer->SubtitleOffset(false);
+    g_stSettings.m_currentVideoSettings.m_SubtitleDelay -= 0.1f;
+    if (g_stSettings.m_currentVideoSettings.m_SubtitleDelay < -g_advancedSettings.m_videoSubsDelayRange)
+      g_stSettings.m_currentVideoSettings.m_SubtitleDelay = -g_advancedSettings.m_videoSubsDelayRange;
+    if (g_application.m_pPlayer)
+      g_application.m_pPlayer->SetSubTitleDelay(g_stSettings.m_currentVideoSettings.m_SubtitleDelay);
     return true;
     break;
   case ACTION_SUBTITLE_DELAY_PLUS:
-    g_application.m_pPlayer->SubtitleOffset(true);
+    g_stSettings.m_currentVideoSettings.m_SubtitleDelay += 0.1f;
+    if (g_stSettings.m_currentVideoSettings.m_SubtitleDelay > g_advancedSettings.m_videoSubsDelayRange)
+      g_stSettings.m_currentVideoSettings.m_SubtitleDelay = g_advancedSettings.m_videoSubsDelayRange;
+    if (g_application.m_pPlayer)
+      g_application.m_pPlayer->SetSubTitleDelay(g_stSettings.m_currentVideoSettings.m_SubtitleDelay);
     return true;
     break;
   case ACTION_AUDIO_DELAY_MIN:
-    g_application.m_pPlayer->AudioOffset(false);
+    g_stSettings.m_currentVideoSettings.m_AudioDelay -= 0.1f;
+    if (g_stSettings.m_currentVideoSettings.m_AudioDelay < -g_advancedSettings.m_videoAudioDelayRange)
+      g_stSettings.m_currentVideoSettings.m_AudioDelay = -g_advancedSettings.m_videoAudioDelayRange;
+    if (g_application.m_pPlayer)
+      g_application.m_pPlayer->SetAVDelay(g_stSettings.m_currentVideoSettings.m_AudioDelay);
     return true;
     break;
   case ACTION_AUDIO_DELAY_PLUS:
-    g_application.m_pPlayer->AudioOffset(true);
+    g_stSettings.m_currentVideoSettings.m_AudioDelay += 0.1f;
+    if (g_stSettings.m_currentVideoSettings.m_AudioDelay > g_advancedSettings.m_videoAudioDelayRange)
+      g_stSettings.m_currentVideoSettings.m_AudioDelay = g_advancedSettings.m_videoAudioDelayRange;
+    if (g_application.m_pPlayer)
+      g_application.m_pPlayer->SetAVDelay(g_stSettings.m_currentVideoSettings.m_AudioDelay);
     return true;
     break;
   case ACTION_AUDIO_NEXT_LANGUAGE:

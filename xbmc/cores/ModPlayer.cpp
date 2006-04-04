@@ -178,10 +178,6 @@ void ModPlayer::SwitchToNextLanguage()
 void ModPlayer::ToggleSubtitles()
 {}
 
-
-void ModPlayer::SubtitleOffset(bool bPlus)
-{}
-
 void ModPlayer::Seek(bool bPlus, bool bLargeStep)
 {}
 

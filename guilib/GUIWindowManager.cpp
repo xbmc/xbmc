@@ -317,7 +317,7 @@ void CGUIWindowManager::ActivateWindow(int iWindowID, const CStdString& strPath,
   CGUIMessage msg(GUI_MSG_WINDOW_INIT, 0, 0, GetActiveWindow(), iWindowID);
   if (!strPath.IsEmpty()) msg.SetStringParam(strPath);
   pNewWindow->OnMessage(msg);
-  g_infoManager.SetPreviousWindow(WINDOW_INVALID);
+//  g_infoManager.SetPreviousWindow(WINDOW_INVALID);
 }
 
 bool CGUIWindowManager::OnAction(const CAction &action)

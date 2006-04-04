@@ -851,10 +851,6 @@ void CDVDPlayer::ToggleSubtitles()
   //m_bRenderSubtitle = !m_bRenderSubtitle;
 }
 
-void CDVDPlayer::SubtitleOffset(bool bPlus)
-{
-}
-
 void CDVDPlayer::Seek(bool bPlus, bool bLargeStep)
 {
   float percent = (bLargeStep ? 10.0f : 2.0f);
@@ -932,10 +928,6 @@ void CDVDPlayer::GetGeneralInfo(CStdString& strGeneralInfo)
 
     strGeneralInfo.Format("DVD Player ad:%6.3f, a/v:%6.3f, dropped:%d, cpu: %i%%", dDelay, dDiff, iFramesDropped, (int)(CThread::GetRelativeUsage()*100));
   }
-}
-
-void CDVDPlayer::AudioOffset(bool bPlus)
-{
 }
 
 void CDVDPlayer::SwitchToNextAudioLanguage()
