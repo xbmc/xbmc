@@ -250,8 +250,6 @@ public:
 
     int m_autoDetectPingTime;
     float m_playCountMinimumPercent;
-
-    float m_skinEffectsSlowdown;
   };
   struct stSettings
   {

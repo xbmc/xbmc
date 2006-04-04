@@ -1223,7 +1223,7 @@ void CGUIWindow::QueueAnimation(ANIMATION_TYPE animType)
 {
   if (animType == ANIM_TYPE_WINDOW_OPEN)
   {
-    if (m_closeAnimation.currentProcess == ANIM_PROCESS_NORMAL)
+    if (m_closeAnimation.currentProcess == ANIM_PROCESS_NORMAL && m_closeAnimation.IsReversible())
     {
       m_closeAnimation.queuedProcess = ANIM_PROCESS_REVERSE;
       m_showAnimation.ResetAnimation();
@@ -1239,7 +1239,7 @@ void CGUIWindow::QueueAnimation(ANIMATION_TYPE animType)
   {
     if (!m_WindowAllocated || !m_hasRendered) // can't render an animation if we aren't allocated or haven't rendered
       return;
-    if (m_showAnimation.currentProcess == ANIM_PROCESS_NORMAL)
+    if (m_showAnimation.currentProcess == ANIM_PROCESS_NORMAL && m_showAnimation.IsReversible())
     {
       m_showAnimation.queuedProcess = ANIM_PROCESS_REVERSE;
       m_closeAnimation.ResetAnimation();

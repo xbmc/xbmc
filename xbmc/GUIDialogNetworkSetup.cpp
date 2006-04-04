@@ -280,7 +280,7 @@ void CGUIDialogNetworkSetup::SetPath(const CStdString &path)
   const CStdString &protocol = url.GetProtocol();
   if (protocol == "smb")
     m_protocol = NET_PROTOCOL_SMB;
-  else if (protocol == "xbmsp")
+  else if (protocol == "xbms")
     m_protocol = NET_PROTOCOL_XBMSP;
   else if (protocol == "ftp")
     m_protocol = NET_PROTOCOL_FTP;

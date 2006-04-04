@@ -79,6 +79,7 @@ bool CSMBDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
         struct __stat64 info;
         CStdString strFullName = strAuth + dirEnt->name; //Make sure we use the authenticated path wich contains any default username
 
+        // BUG: on files containing "%20" smbc_stat() fails.
         smbc_stat(strFullName.c_str(), &info);
 
         bIsDir = (info.st_mode & S_IFDIR) ? true : false;

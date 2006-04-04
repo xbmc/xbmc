@@ -233,22 +233,15 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
   case GUI_MSG_PLAYBACK_STOPPED:
   case GUI_MSG_PLAYLISTPLAYER_STOPPED:
     {
-      CStdString strDirectory = m_vecItems.m_strPath;
-      if (CUtil::HasSlashAtEnd(strDirectory))
-        strDirectory.Delete(strDirectory.size() - 1);
-      if (m_guiState.get() && strDirectory==m_guiState->GetPlaylistDirectory())
+      // Deselect all items.
+      // Ideally we'd just deselect the item that was playing, but we don't have
+      // this information at this point unless it was in fact a playlist item
+      // where the only info we have is the folder it was played from
+      for (int i = 0; i < m_vecItems.Size(); ++i)
       {
-        for (int i = 0; i < m_vecItems.Size(); ++i)
-        {
-          CFileItem* pItem = m_vecItems[i];
-          if (pItem && pItem->IsSelected())
-          {
-            pItem->Select(false);
-            break;
-          }
-        }
+        CFileItem* pItem = m_vecItems[i];
+        pItem->Select(false);
       }
-
       UpdateButtons();
     }
     break;
@@ -274,38 +267,24 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
           nCurrentItem = LOWORD(message.GetParam2());
           nPreviousItem = HIWORD(message.GetParam2());
         }
-        CStdString strCurrentItem = g_playlistPlayer.GetPlaylist(g_playlistPlayer.GetCurrentPlaylist())[nCurrentItem].m_strPath;
+        const CPlayList::CPlayListItem &currentItem = g_playlistPlayer.GetPlaylist(g_playlistPlayer.GetCurrentPlaylist())[nCurrentItem];
 
-        int nFolderCount = m_vecItems.GetFolderCount();
-
-        // is the previous item in this directory
-        for (int i = nFolderCount; i < m_vecItems.Size(); i++)
+        // run through and deselect all items
+        for (int i = 0; i < m_vecItems.Size(); i++)
         {
           CFileItem* pItem = m_vecItems[i];
-
-          if (pItem)
-            pItem->Select(false);
+          pItem->Select(false);
         }
-
-        if (nFolderCount + nCurrentItem < m_vecItems.Size())
+        // now select our current item
+        for (int i = 0; i < m_vecItems.Size(); i++)
         {
-          for (int i = nFolderCount, n = 0; i < m_vecItems.Size(); i++)
+          CFileItem* pItem = m_vecItems[i];
+          if (pItem->m_strPath == currentItem.m_strPath && pItem->m_lStartOffset == currentItem.m_lStartOffset)
           {
-            CFileItem* pItem = m_vecItems[i];
-
-            if (pItem)
-            {
-              if (!pItem->IsPlayList() && !pItem->IsNFO() && !pItem->IsRAR() && !pItem->IsZIP())
-                n++;
-              if ((n - 1) == nCurrentItem)
-              {
-                pItem->Select(true);
-                break;
-              }
-            }
-          } // for (int i=nFolderCount, n=0; i<(int)m_vecItems.size(); i++)
+            pItem->Select(true);
+            break;
+          }
         }
-
       }
     }
     break;
@@ -510,22 +489,10 @@ bool CGUIMediaWindow::Update(const CStdString &strDirectory)
 
   strSelectedItem = m_history.GetSelectedItem(m_vecItems.m_strPath);
 
-  int iCurrentPlaylistSong = -1;
-  CStdString strCurrentPlaylistSong;
-  // Search current playlist item
-  CStdString strCurrentDirectory = m_vecItems.m_strPath;
-  if (CUtil::HasSlashAtEnd(strCurrentDirectory))
-    strCurrentDirectory.Delete(strCurrentDirectory.size() - 1);
-  // Is this window responsible for the current playlist?
-  if (g_application.IsPlaying() && m_guiState.get() && 
-      g_playlistPlayer.GetCurrentPlaylist()==m_guiState->GetPlaylist() && 
-      strCurrentDirectory==m_guiState->GetPlaylistDirectory())
-  {
-    iCurrentPlaylistSong = g_playlistPlayer.GetCurrentSong();
-  }
+  const CFileItem &currentItem = g_application.CurrentFileItem();
 
   bool bSelectedFound = false, bCurrentSongFound = false;
-  int iSongInDirectory = -1;
+  //int iSongInDirectory = -1;
   for (int i = 0; i < m_vecItems.Size(); ++i)
   {
     CFileItem* pItem = m_vecItems[i];
@@ -547,11 +514,10 @@ bool CGUIMediaWindow::Update(const CStdString &strDirectory)
     }
 
     // synchronize playlist with current directory
-    if (!bCurrentSongFound && iCurrentPlaylistSong > -1)
+    if (!bCurrentSongFound && !currentItem.m_strPath.IsEmpty())
     {
-      if (!pItem->m_bIsFolder && !pItem->IsPlayList() && !pItem->IsNFO())
-        iSongInDirectory++;
-      if (iSongInDirectory == iCurrentPlaylistSong)
+      if (pItem->m_strPath == currentItem.m_strPath &&
+          pItem->m_lStartOffset == currentItem.m_lStartOffset)
       {
         pItem->Select(true);
         bCurrentSongFound = true;
