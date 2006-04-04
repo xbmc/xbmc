@@ -159,7 +159,7 @@ namespace PYXBMC
 		g_graphicsContext.Lock();
 		pDialog->SetHeading(cLine[0]);
 
-		for (int i = 0; i < 3; i++)
+		for (int i = 1; i < 4; i++)
 		{
 			if (cLine[i])
 				pDialog->SetLine(i,cLine[i]);

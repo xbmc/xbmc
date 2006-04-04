@@ -171,8 +171,6 @@ CSettings::CSettings(void)
   g_advancedSettings.m_autoDetectPingTime = 30;
   g_advancedSettings.m_playCountMinimumPercent = 90.0f;
 
-  g_advancedSettings.m_skinEffectsSlowdown = 1.0f;
-
   xbmcXmlLoaded = false;
 }
 
@@ -1364,11 +1362,10 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile, const bool loadp
   {
     GetInteger(pElement, "autodetectpingtime", g_advancedSettings.m_autoDetectPingTime, 30, 1, 240);
   }
-  pElement = pRootElement->FirstChildElement("AdvancedSettings");
+  pElement = pRootElement->FirstChildElement("PlaybackSettings");
   if (pElement)
   {
     GetFloat(pElement, "playcountminimumpercent", g_advancedSettings.m_playCountMinimumPercent, 10.0f, 1.0f, 100.0f);
-    GetFloat(pElement, "skinslowdowneffects", g_advancedSettings.m_skinEffectsSlowdown, 1.0f, 1.0f, 100.0f);
   }
   // my programs
   pElement = pRootElement->FirstChildElement("myprograms");
@@ -1626,11 +1623,10 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile, const bool savep
   if (!pNode) return false;
   SetInteger(pNode, "autodetectpingtime", g_advancedSettings.m_autoDetectPingTime);
 
-  TiXmlElement playbackNode("AdvancedSettings");
+  TiXmlElement playbackNode("PlaybackSettings");
   pNode = pRoot->InsertEndChild(playbackNode);
   if (!pNode) return false;
   SetFloat(pNode, "playcountminimumpercent", g_advancedSettings.m_playCountMinimumPercent);
-  SetFloat(pNode, "skinslowdowneffects", g_advancedSettings.m_skinEffectsSlowdown);
 
   // default video settings
   TiXmlElement videoSettingsNode("DefaultVideoSettings");

@@ -21,6 +21,8 @@ public:
 
   void ResolveIncludes(TiXmlElement *node);
 
+  double GetEffectsSlowdown() const { return m_effectsSlowDown; };
+
 protected:
   void LoadIncludes();
 
@@ -31,6 +33,7 @@ protected:
   CStdString m_strBaseDir;
   double m_Version;
 
+  double m_effectsSlowDown;
   CGUIIncludes m_includes;
 };
 

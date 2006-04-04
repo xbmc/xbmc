@@ -14,6 +14,7 @@ CSkinInfo::CSkinInfo()
   m_DefaultResolutionWide = INVALID;
   m_strBaseDir = "";
   m_iNumCreditLines = 0;
+  m_effectsSlowDown = 1.0;
 }
 
 CSkinInfo::~CSkinInfo()
@@ -24,6 +25,7 @@ void CSkinInfo::Load(const CStdString& strSkinDir)
   m_strBaseDir = strSkinDir;
   m_DefaultResolution = INVALID;  // set to INVALID to denote that there is no default res here
   m_DefaultResolutionWide = INVALID;
+  m_effectsSlowDown = 1.0;
   // Load from skin.xml
   TiXmlDocument xmlDoc;
   CStdString strFile = m_strBaseDir + "\\skin.xml";
@@ -75,6 +77,12 @@ void CSkinInfo::Load(const CStdString& strSkinDir)
         CLog::Log(LOGINFO, "Skin version is: %s", pChild->FirstChild()->Value());
       }
 
+      // get the effects slowdown parameter
+      pChild = pRootElement->FirstChild("effectslowdown");
+      if (pChild && pChild->FirstChild())
+      {
+        m_effectsSlowDown = atof(pChild->FirstChild()->Value());
+      }
       // now load the credits information
       pChild = pRootElement->FirstChild("credits");
       if (pChild)

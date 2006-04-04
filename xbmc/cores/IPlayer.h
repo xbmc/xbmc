@@ -31,7 +31,6 @@ public:
   virtual void SwitchToNextLanguage() = 0;
   virtual void ToggleSubtitles() = 0;
   virtual void ToggleFrameDrop() = 0;
-  virtual void SubtitleOffset(bool bPlus = true) = 0;
   virtual void Seek(bool bPlus = true, bool bLargeStep = false) = 0;
   virtual void SeekPercentage(float fPercent = 0){};
   virtual float GetPercentage(){ return 0;};
@@ -47,7 +46,6 @@ public:
   virtual void Update(bool bPauseDrawing = false) = 0;
   virtual void GetVideoRect(RECT& SrcRect, RECT& DestRect) = 0;
   virtual void GetVideoAspectRatio(float& fAR) = 0;
-  virtual void AudioOffset(bool bPlus = true){};
   virtual void SwitchToNextAudioLanguage(){};
   virtual void UpdateSubtitlePosition(){};
   virtual void RenderSubtitles(){};
