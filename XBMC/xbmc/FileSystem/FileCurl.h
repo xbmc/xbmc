@@ -1,6 +1,7 @@
 #pragma once
 #include "IFile.h"
 #include "../cores/paplayer/RingHoldBuffer.h"
+#include <map>
 
 class IHttpHeaderCallback
 {
@@ -41,8 +42,15 @@ namespace XFILE
       
       void SetHttpHeaderCallback(IHttpHeaderCallback* pCallback) { m_pHeaderCallback = pCallback; }
       void SetUserAgent(CStdString sUserAgent)                   { m_userAgent = sUserAgent; }
+      void SetProxy(CStdString &proxy)                           { m_proxy = proxy; }
+      void SetCustomRequest(CStdString &request)                 { m_customrequest = request; }
       void UseOldHttpVersion(bool bUse)                          { m_useOldHttpVersion = bUse; }
-      void AddHeaderParam(const char* sParam);
+            
+
+      void SetRequestHeader(CStdString header, CStdString value);
+      void SetRequestHeader(CStdString header, long value);
+
+      void ClearRequestHeaders();
       void SetBufferSize(unsigned int size);
       
 
@@ -50,6 +58,7 @@ namespace XFILE
       static bool GetHttpHeader(const CURL &url, CHttpHeader &headers);
     protected:
       void SetCommonOptions();
+      void SetRequestHeaders();
 
       bool FillBuffer(unsigned int want, int waittime);
 
@@ -58,6 +67,8 @@ namespace XFILE
       XCURL::CURLM*          m_multiHandle;
       CStdString      m_url;
       CStdString      m_userAgent;
+      CStdString      m_proxy;
+      CStdString      m_customrequest;
 	    __int64					m_fileSize;
 	    __int64					m_filePos;
       bool            m_opened;
@@ -73,5 +84,9 @@ namespace XFILE
       struct XCURL::curl_slist* m_curlAliasList;
       struct XCURL::curl_slist* m_curlHeaderList;
       IHttpHeaderCallback* m_pHeaderCallback;
+      
+      typedef std::map<CStdString, CStdString> MAPHTTPHEADERS;
+      MAPHTTPHEADERS m_requestheaders;
+
   };
 };
