@@ -354,7 +354,7 @@ void CSlideShowPic::Move(float fDeltaX, float fDeltaY)
   m_fZoomLeft += fDeltaX;
   m_fZoomTop += fDeltaY;
   // reset the timer
-  m_transistionEnd.start = m_iCounter + m_transistionStart.length + ((int)g_infoManager.GetFPS() * g_guiSettings.GetInt("Slideshow.StayTime"));
+ // m_transistionEnd.start = m_iCounter + m_transistionStart.length + ((int)g_infoManager.GetFPS() * g_guiSettings.GetInt("Slideshow.StayTime"));
 }
 
 void CSlideShowPic::Render()

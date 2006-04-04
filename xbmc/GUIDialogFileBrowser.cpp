@@ -87,9 +87,16 @@ bool CGUIDialogFileBrowser::OnMessage(CGUIMessage& message)
         {
           CStdString strTest;
           int iItem = m_viewControl.GetSelectedItem();
-          CUtil::AddFileToFolder(m_vecItems[iItem]->m_strPath,"1",strTest);
+
+          CStdString strPath;
+          if (iItem == 0)
+            strPath = m_selectedPath;
+          else
+            strPath = m_vecItems[iItem]->m_strPath;
+
+          CUtil::AddFileToFolder(strPath,"1",strTest);
           CFile file;
-          if (file.OpenForWrite(strTest))
+          if (file.OpenForWrite(strTest,true,true))
           {
             file.Close();
             CFile::Delete(strTest);

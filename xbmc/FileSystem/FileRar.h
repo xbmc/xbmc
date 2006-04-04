@@ -43,7 +43,7 @@ namespace XFILE
 	{
 	public:
 		CFileRar();
-    	CFileRar(bool bSeekable); // used for caching files
+    CFileRar(bool bSeekable); // used for caching files
 		virtual ~CFileRar();
 		virtual __int64			  GetPosition();
 		virtual __int64			  GetLength();

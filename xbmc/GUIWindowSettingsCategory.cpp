@@ -1287,7 +1287,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
         strcpy(g_stSettings.m_strRipPath,strPath.c_str());
         
         CStdString strOutput;
-        if (CUtil::MakeShortenPath(strPath, strOutput, 30 ))
+        if (CUtil::MakeShortenPath(strPath, strOutput, 25 ))
           pSettingString->SetData(strOutput);
         else 
           pSettingString->SetData(strPath);
