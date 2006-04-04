@@ -222,7 +222,7 @@
   <string><id>287</id><value>Sottotitoli</value></string>
   <string><id>288</id><value>Carattere</value></string>
   <string><id>289</id><value>- Dimensione</value></string>
-  <string><id>290</id><value>Amplificazione Volume</value></string>
+  <string><id>290</id><value>Dynamic Range Compression</value></string>
   <string><id>291</id><value>Video</value></string>
   <string><id>292</id><value>Audio</value></string>
   <string><id>293</id><value>Sottotitoli</value></string>
@@ -454,6 +454,7 @@
   <string><id>519</id><value>Avvia in..</value></string>
   <string><id>520</id><value>Modifica nome XBE</value></string>
   <string><id>521</id><value>Compilations</value></string>
+  <string><id>522</id><value>Rimuovi Sorgente</value></string>
 
   <string><id>588</id><value>Annulla Party Mode</value></string>
   <string><id>589</id><value>Party Mode</value></string>
@@ -892,7 +893,7 @@
   <string><id>13158</id><value>HDD Lock State:</value></string>
   <string><id>13159</id><value>Subnet mask:</value></string>
   <string><id>13160</id><value>Gateway:</value></string>
-  <string><id>13161</id><value>DNS:</value></string>
+  <string><id>13161</id><value>DNS</value></string>
   <string><id>13162</id><value>Inizializzazione fallita</value></string>
   <string><id>13163</id><value>GamePads In Porta:</value></string>
   <string><id>13164</id><value>Keyboard In Porta:</value></string>
@@ -1049,7 +1050,7 @@
 per questo effetto grafico</value></string>
   <string><id>13390</id><value>Nessuna impostazione disponibile
 per questo effetto grafico</value></string>
-  <string><id>13391</id><value>Apri / Chuidi</value></string>
+  <string><id>13391</id><value>Apri / Chiudi</value></string>
   <string><id>13392</id><value>Effetto Grafico in Automatico</value></string>
   <string><id>13393</id><value>Calcola Dimensione</value></string>
   <string><id>13394</id><value>Calcolo Dim. Cartella</value></string>
@@ -1062,6 +1063,9 @@ per questo effetto grafico</value></string>
   <string><id>13401</id><value>Mostra per %s</value></string>
   <string><id>13402</id><value>Mostra posizione traccia</value></string>
   <string><id>13403</id><value>Cancella Default</value></string>
+  <string><id>13404</id><value>Riprendi</value></string> 
+  <string><id>13405</id><value>Trova Icona</value></string> 
+
 
   <string><id>14000</id><value>Unisci Volumi</value></string>
   <string><id>14001</id><value>Dividi Volumi</value></string>
@@ -1301,6 +1305,13 @@ per questo effetto grafico</value></string>
   <string><id>16025</id><value>Inserire Nome Artista</value></string>
   <string><id>16026</id><value>Interrotta riproduzione Playlist</value></string> 
   <string><id>16027</id><value>Troppi elementi consecutivi falliti</value></string> 
+
+  <string><id>16030</id><value>Modalità Party Mode annullata.</value></string> 
+  <string><id>16031</id><value>Nessuna canzone adeguata nel database.</value></string> 
+  <string><id>16032</id><value>Impossibile inizializzare il database.</value></string> 
+  <string><id>16033</id><value>Impossibile aprire il database.</value></string> 
+  <string><id>16034</id><value>Impossibile ricavare canzoni dal database.</value></string> 
+
 
   <string><id>16100</id><value>Tutti i Video</value></string>
   <string><id>16101</id><value>Non Visti</value></string>

@@ -157,7 +157,7 @@
   <string><id>220</id><value>Freigabe</value></string>
   <string><id>221</id><value>Netzwerk: Verbindung nicht möglich</value></string>
   <string><id>222</id><value>Abbruch</value></string>
-  <string><id>223</id><value>Automatische Auflösung</value></string>
+  <string><id>223</id><value>Automatisch auf Breitbild schalten</value></string>
   <string><id>224</id><value>Abfolgezeit</value></string>
   <string><id>225</id><value>Übergangszeit</value></string>
   <string><id>226</id><value>PAL 60 aktivieren</value></string>
@@ -212,7 +212,7 @@
   <string><id>275</id><value>Bildverhältnis einstellen</value></string>
   <string><id>276</id><value>Bewege den Pfeil um den Bildbereich einzustellen</value></string>
   <string><id>277</id><value>Bewege den Balken um die Untertitelposition einzustellen</value></string>
-  <string><id>278</id><value>Ändere das Rechteck so, dass es ein perfektes Quadrat ergibt</value></string>
+  <string><id>278</id><value>Ändere das Rechteck, so dass es ein perfektes Quadrat ergibt</value></string>
   <string><id>279</id><value>Einstellungen können nicht geladen werden!</value></string>
   <string><id>280</id><value>Benutze Standardeinstellungen</value></string>
   <string><id>281</id><value>Bitte die .xml-Dateien überprüfen!</value></string>
@@ -351,9 +351,9 @@
   <string><id>415</id><value>Lade Abbild...</value></string>
   <string><id>416</id><value>Nicht verfügbar!</value></string>
   <string><id>417</id><value>Große Symbole</value></string>
-  <string><id>418</id><value>Videos/Genres</value></string>
+  <string><id>418</id><value>Videos/Genre</value></string>
   <string><id>419</id><value>Videos/Interpret</value></string>
-  <string><id>420</id><value>Videos/Jahre</value></string>
+  <string><id>420</id><value>Videos/Jahr</value></string>
   <string><id>421</id><value>Videos/Titel</value></string>
   <string><id>422</id><value>Album-Informationen löschen</value></string>
   <string><id>423</id><value>CDDB-Informationen löschen</value></string>
@@ -368,7 +368,7 @@
   <string><id>432</id><value>Lösche Film aus der Datenbank..</value></string>
   <string><id>433</id><value>Löschen! Sind sie sicher?</value></string>
   <string><id>434</id><value>Film löschen?</value></string>
-  <string><id>435</id><value>Track</value></string>
+  <string><id>435</id><value>Titel</value></string>
   <string><id>436</id><value>Jahr:</value></string>
   <string><id>437</id><value>Dauer:</value></string>
   <string><id>438</id><value>Datei wird geöffnet</value></string>
@@ -401,7 +401,7 @@
   <string><id>465</id><value>Kontrast</value></string>
   <string><id>466</id><value>Gamma</value></string>
   <string><id>467</id><value>Typ:</value></string>
-  <string><id>468</id><value>Bewege die Leiste um die OSD-Einstellung zu ändern</value></string>
+  <string><id>468</id><value>Bewege die Leiste um die OSD-Position zu ändern</value></string>
   <string><id>469</id><value>OSD-Position</value></string>
   <string><id>470</id><value>Informationen</value></string>
   <string><id>471</id><value>Modchip</value></string>
@@ -469,15 +469,15 @@
   <string><id>597</id><value>Wdhl: alles</value></string> 
 
   <string><id>600</id><value>CD rippen</value></string>
-  <string><id>601</id><value>Medium</value></string>
+  <string><id>601</id><value>Mittlere</value></string>
   <string><id>602</id><value>Standard</value></string>
   <string><id>603</id><value>Höchste</value></string>
   <string><id>604</id><value>konstante Bitrate</value></string>
   <string><id>605</id><value>Rippen...</value></string>
-  <string><id>606</id><value>Titel:</value></string>
-  <string><id>607</id><value>Nach:</value></string>
+  <string><id>606</id><value>Titel</value></string>
+  <string><id>607</id><value>Speicherort</value></string>
   <string><id>608</id><value>Unmöglich CD oder Titel zu rippen!</value></string>
-  <string><id>609</id><value>CDDARipp-Pfad fehlt in XboxMediaCenter.xml!</value></string>
+  <string><id>609</id><value>CDDARipp-Pfad ist fehlerhaft..</value></string>
 
   <string><id>620</id><value>CD rippen</value></string>
   <string><id>621</id><value>Encoder</value></string>
@@ -524,13 +524,13 @@
   <string><id>716</id><value>Automatisch (DHCP)</value></string>	
   <string><id>717</id><value>Manuell (Statisch)</value></string>	
   <string><id>718</id><value>Standard (Dashboard)</value></string>	
-  <string><id>719</id><value>IP-Addresse</value></string>	
+  <string><id>719</id><value>IP-Adresse</value></string>	
   <string><id>720</id><value>Netzmaske</value></string>	
   <string><id>721</id><value>Standard-Gateway</value></string>	
   <string><id>722</id><value>DNS-Server</value></string>
   <string><id>723</id><value>Sichern &amp; Neustarten</value></string>
-  <string><id>724</id><value>Ungültige Adresse angegeben. Werte müssen AAA.BBB.CCC.DDD sein.</value></string>
-  <string><id>725</id><value>mit Zahlen zwischen 0 und 255.</value></string>
+  <string><id>724</id><value>Ungültige Adresse angegeben. Werte müssen AAA.BBB.CCC.DDD</value></string>
+  <string><id>725</id><value>mit Zahlen zwischen 0 und 255 sein.</value></string>
   <string><id>726</id><value>Änderungen nicht gespeichert. Fortfahren?</value></string>
   <string><id>727</id><value>Web-Server</value></string>	
   <string><id>728</id><value>FTP-Server</value></string>	
@@ -659,7 +659,7 @@
   <string><id>1247</id><value>FTP Benutzername und Kennwort geändert.</value></string> 
   
   <string><id>1250</id><value>XBox2XBox</value></string> 
-  <string><id>1251</id><value>XBOX Erkennung</value></string> 
+  <string><id>1251</id><value>XBOX im Netzwerk suchen</value></string> 
   <string><id>1252</id><value>Beschreibung</value></string> 
   <string><id>1253</id><value>FTP Verknüpfung unter Eigene Dateien erstellen</value></string> 
   <string><id>1254</id><value>Abfrage vor Verbindung</value></string> 
@@ -735,7 +735,7 @@
   <string><id>10514</id><value>Musik - Genres</value></string> 
   <string><id>10515</id><value>Musik - Top 100</value></string> 
   <string><id>10516</id><value>Musik - Datenbank</value></string> 
-  <string><id>10517</id><value>Musik - Wiedergabe-liste</value></string> 
+  <string><id>10517</id><value>Musik - Wiedergabeliste</value></string> 
   <string><id>10518</id><value>Videos - Darsteller</value></string> 
   <string><id>10519</id><value>Videos - Genres</value></string> 
   <string><id>10520</id><value>Videos - Titel</value></string> 
@@ -750,7 +750,7 @@
   <string><id>12003</id><value>Videos/Info</value></string>
   <string><id>12004</id><value>Skripte/Info</value></string>
   <string><id>12005</id><value>Vollbild Video</value></string>
-  <string><id>12006</id><value>Audio Visualisation</value></string>
+  <string><id>12006</id><value>Audio Visualisierung</value></string>
   <string><id>12007</id><value>Bilder/Diaschau</value></string>
   <string><id>12008</id><value>Koppeln</value></string>
   <string><id>12009</id><value>Index wiederherstellen..</value></string>
@@ -837,7 +837,7 @@
   <string><id>12376</id><value>Aktuelle Einstellung als Standard setzen..</value></string> 
   <string><id>12377</id><value>Sämtliche zuvor getroffenen Einstellungen gehen verloren.</value></string> 
   <string><id>12378</id><value>Dauer der Wiedergabe eines Bildes</value></string> 
-  <string><id>12379</id><value>Pan und Zoom Effekte verwenden</value></string> 
+  <string><id>12379</id><value>Bewegungs- und Zoom-Effekte verwenden</value></string> 
   <string><id>12380</id><value>NTSC-Videos mit PAL-25fps abspielen</value></string> 
   <string><id>12381</id><value>PAL-Videos mit NTSC-29fps abspielen</value></string> 
   <string><id>12382</id><value>NTSC-Videos in PAL60 abspielen</value></string> 
@@ -868,7 +868,7 @@
 
   <string><id>13100</id><value>Flimmerfilter</value></string>
 
-  <string><id>13150</id><value>Key:</value></string> 
+  <string><id>13150</id><value>Schlüssel:</value></string> 
   <string><id>13151</id><value>Temperatur:</value></string> 
   <string><id>13152</id><value>Modell:</value></string> 
   <string><id>13153</id><value>Firmware:</value></string> 
@@ -938,7 +938,7 @@
   <string><id>13295</id><value>Internet:</value></string> 
   <string><id>13296</id><value>Xbox verbunden.</value></string> 
   <string><id>13297</id><value>Xbox nicht verbunden, Netzwerk prüfen.</value></string> 
-  <string><id>13298</id><value>XBLIVE-Key:</value></string> 
+  <string><id>13298</id><value>XBLIVE-Schlüssel:</value></string> 
   <string><id>13299</id><value>Temperatur</value></string>
   <string><id>13300</id><value>Lüftergeschwindigkeit</value></string>
   <string><id>13301</id><value>Automatische Temperaturkontrolle</value></string>
@@ -1050,7 +1050,7 @@
   <string><id>14000</id><value>Koppeln deakt.</value></string>
   <string><id>14001</id><value>Koppeln aktiv.</value></string>
 
-  <string><id>14003</id><value>Wiedergabeliste wird heruntergeladen...</value></string>
+  <string><id>14003</id><value>Wiedergabeliste wird geladen...</value></string>
   <string><id>14004</id><value>Streams werden heruntergeladen...</value></string>
   <string><id>14005</id><value>Streams werden verarbeitet...</value></string>
   <string><id>14006</id><value>Fehler beim Erhalt der Streams</value></string>
@@ -1058,7 +1058,7 @@
   <string><id>14008</id><value>Kai-Benachrichtigung aktivieren</value></string>
   <string><id>14009</id><value>Spieleverzeichnis</value></string>
   <string><id>14010</id><value>Ansichtenänderung</value></string>
-  <string><id>14011</id><value>Automatische Ansichtsänderung aktivieren</value></string>
+  <string><id>14011</id><value>Automatische Ansichtenänderung aktivieren</value></string>
   <string><id>14012</id><value>Große Symbole verwenden</value></string>
   <string><id>14013</id><value>Verfahrensweise</value></string>
   <string><id>14014</id><value>Prozentanteil</value></string>
@@ -1130,7 +1130,7 @@
   <string><id>15005</id><value>Datum: %s</value></string> 
   <string><id>15006</id><value>Von: %s</value></string> 
   <string><id>15007</id><value>Einladung</value></string> 
-  <string><id>15008</id><value>You've been invited to join %s.</value></string> 
+  <string><id>15008</id><value>Sie wurden eingeladen %s beizutreten.</value></string> 
   <string><id>15009</id><value>Offline</value></string> 
   <string><id>15010</id><value>Freunde</value></string> 
   <string><id>15011</id><value>Ansicht: Freunde</value></string> 
@@ -1226,26 +1226,26 @@
   <string><id>15256</id><value>Die besten Tags</value></string>
   <string><id>15257</id><value>Die besten Interpreten des Tags %name%</value></string>
   <string><id>15258</id><value>Die besten Alben des Tags %name%</value></string>
-  <string><id>15259</id><value>Die besten Songs des Tags %name%</value></string>
+  <string><id>15259</id><value>Die besten Titel des Tags %name%</value></string>
   <string><id>15260</id><value>%name% Last.fm Radio Tag anhören</value></string>
   <string><id>15261</id><value>Ähnliche Interpreten wie %name%</value></string>
   <string><id>15262</id><value>Die besten %name% Alben</value></string>
-  <string><id>15263</id><value>Die besten %name% Songs</value></string>
+  <string><id>15263</id><value>Die besten %name% Titel</value></string>
   <string><id>15264</id><value>Die besten %name% Tags</value></string>
   <string><id>15265</id><value>Größte Fans von %name%</value></string>
   <string><id>15266</id><value>%name% Fan Last.fm Radio anhören</value></string>
   <string><id>15267</id><value>Ähnliche Interpreten wie %name% im Last.fm Radio anhören</value></string>
   <string><id>15268</id><value>Lieblingsinterpreten des Benutzers %name%</value></string>
   <string><id>15269</id><value>Lieblingsalben des Benutzers %name%</value></string>
-  <string><id>15270</id><value>Lieblingssongs des Benutzers %name%</value></string>
+  <string><id>15270</id><value>Lieblingstitel des Benutzers %name%</value></string>
   <string><id>15271</id><value>Freunde des Benutzers %name%</value></string>
   <string><id>15272</id><value>Nachbarn des Benutzers %name%</value></string>
   <string><id>15273</id><value>Wöchentliche Interpretencharts von %name%</value></string>
   <string><id>15274</id><value>Wöchentliche Albumcharts von %name%</value></string>
-  <string><id>15275</id><value>Wöchentliche Songcharts von %name%</value></string>
+  <string><id>15275</id><value>Wöchentliche Titelcharts von %name%</value></string>
   <string><id>15276</id><value>Last.fm Radio der Nachbarn von %name% anhören</value></string>
   <string><id>15277</id><value>Privates Last.fm Radio von %name% anhören</value></string>
-  <string><id>15278</id><value>Last.fm Radio mit den Lieblingssongs von %name% anhören</value></string>
+  <string><id>15278</id><value>Last.fm Radio mit den Lieblingstitel von %name% anhören</value></string>
   <string><id>15279</id><value>Liste von Last.fm wird übertragen...</value></string>
   <string><id>15280</id><value>Liste kann nicht von Last.fm übertragen werden...</value></string>
   <string><id>15281</id><value>Bitte einen Interpreten eingeben, um ähnliche zu finden</value></string>
@@ -1257,7 +1257,7 @@
   <string><id>15302</id><value>Keine Server verfügbar</value></string> 
   <string><id>15303</id><value>Keine Arbeitsgruppe gefunden</value></string> 
 
-  <string><id>15310</id><value>MehrfachPfad Favoriten öffnen</value></string> 
+  <string><id>15310</id><value>Mehrfachverknüpfung wird geöffnet..</value></string> 
   <string><id>15311</id><value>Pfad:</value></string>
 
   <string><id>16000</id><value>Allgemein</value></string> 
