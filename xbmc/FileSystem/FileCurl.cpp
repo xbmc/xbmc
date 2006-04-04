@@ -237,15 +237,43 @@ void CFileCurl::SetCommonOptions()
   m_curlAliasList = g_curlInterface.slist_append(m_curlAliasList, "ICY 200 OK"); 
   g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_HTTP200ALIASES, m_curlAliasList); 
 
-  // add user defined headers
-  if (m_curlHeaderList)
-    g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_HTTPHEADER, m_curlHeaderList); 
+  // always allow gzip compression
+  g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_ENCODING, "gzip");
+
   
   if (m_userAgent.length() > 0)
     g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_USERAGENT, m_userAgent.c_str());
   
   if (m_useOldHttpVersion)
     g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_0);
+
+  if (m_proxy.length() > 0)
+    g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_PROXY, m_proxy.c_str());
+
+  if (m_customrequest.length() > 0)
+    g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_CUSTOMREQUEST, m_customrequest.c_str());
+  
+  SetRequestHeaders();
+}
+
+void CFileCurl::SetRequestHeaders()
+{
+  if(m_curlHeaderList) 
+  {
+    g_curlInterface.slist_free_all(m_curlHeaderList);
+    m_curlHeaderList = NULL;
+  }
+
+  MAPHTTPHEADERS::iterator it;
+  for(it = m_requestheaders.begin(); it != m_requestheaders.end(); it++)
+  {
+    CStdString buffer = it->first + ": " + it->second;
+    m_curlHeaderList = g_curlInterface.slist_append(m_curlHeaderList, buffer.c_str()); 
+  }
+
+  // add user defined headers
+  if (m_curlHeaderList && m_easyHandle)
+    g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_HTTPHEADER, m_curlHeaderList); 
 
 }
 
@@ -333,6 +361,9 @@ __int64 CFileCurl::Seek(__int64 iFilePosition, int iWhence)
     /* halt transaction */
     g_curlInterface.multi_remove_handle(m_multiHandle, m_easyHandle);
 
+    /* caller might have changed some headers (needed for daap)*/
+    SetRequestHeaders();
+
     /* set offset */
     CURLcode ret = g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_RESUME_FROM_LARGE, nextPos);
 //    if (CURLE_OK == ret)
@@ -340,8 +371,12 @@ __int64 CFileCurl::Seek(__int64 iFilePosition, int iWhence)
 //    else
 //      CLog::Log(LOGDEBUG, "FileCurl::Seek(%p) - resetting file fetch to %i (failed, code %i)", this, nextPos, ret);
 
+
     /* restart */
     g_curlInterface.multi_add_handle(m_multiHandle, m_easyHandle);
+
+    /* reset stillrunning as we now are going to reget data */
+    m_stillRunning = 1;
 
     /* ditch buffer - write will recreate - resets stream pos*/
     m_buffer.Clear();
@@ -462,7 +497,8 @@ unsigned int CFileCurl::Read(void *lpBuf, __int64 uiBufSize)
 /* use to attempt to fill the read buffer up to requested number of bytes */
 bool CFileCurl::FillBuffer(unsigned int want, int waittime)
 {
-  int maxfd;
+  //TODO implement some fillbuffer timeout
+  int maxfd;  
   fd_set fdread;
   fd_set fdwrite;
   fd_set fdexcep;
@@ -473,8 +509,8 @@ bool CFileCurl::FillBuffer(unsigned int want, int waittime)
 
   // waittime timeout
   struct timeval timeout;
-  timeout.tv_sec = waittime;
-  timeout.tv_usec = 0;
+  timeout.tv_sec = 0;
+  timeout.tv_usec = 200000; //timeout between calls to perform, doesn't timeout FillBuffer
     
   // only attempt to fill buffer if transactions still running and buffer
   // doesnt exceed required size already
@@ -513,10 +549,21 @@ bool CFileCurl::FillBuffer(unsigned int want, int waittime)
   return true;
 }
 
-void CFileCurl::AddHeaderParam(const char* sParam)
+void CFileCurl::ClearRequestHeaders()
 {
-  // libcurl is already initialized in the constructor
-  m_curlHeaderList = g_curlInterface.slist_append(m_curlHeaderList, sParam); 
+  m_requestheaders.clear();
+}
+
+void CFileCurl::SetRequestHeader(CStdString header, CStdString value)
+{
+  m_requestheaders[header] = value;
+}
+
+void CFileCurl::SetRequestHeader(CStdString header, long value)
+{
+  CStdString buffer;
+  buffer.Format("%ld", value);
+  m_requestheaders[header] = buffer;
 }
 
 /* STATIC FUNCTIONS */
