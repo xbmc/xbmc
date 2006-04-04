@@ -1,6 +1,6 @@
 #include "VisibleEffect.h"
 #include "../xbmc/utils/GUIInfoManager.h"
-#include "../xbmc/Settings.h" // for g_advancedSettings
+#include "SkinInfo.h" // for the effect time adjustments
 
 CAnimation::CAnimation()
 {
@@ -20,6 +20,7 @@ void CAnimation::Reset()
   endAlpha = 100;
   acceleration = 0;
   condition = 0;
+  reversible = true;
 }
 
 void CAnimation::Create(const TiXmlElement *node, RESOLUTION res)
@@ -64,8 +65,15 @@ void CAnimation::Create(const TiXmlElement *node, RESOLUTION res)
   // time and delay
   node->Attribute("time", (int *)&length);
   node->Attribute("delay", (int *)&delay);
-  length = (unsigned int)(length * g_advancedSettings.m_skinEffectsSlowdown);
-  delay = (unsigned int)(delay * g_advancedSettings.m_skinEffectsSlowdown);
+  length = (unsigned int)(length * g_SkinInfo.GetEffectsSlowdown());
+  delay = (unsigned int)(delay * g_SkinInfo.GetEffectsSlowdown());
+  // reversible (defaults to true)
+  const char *reverse = node->Attribute("reversible");
+  if (reverse && strcmpi(reverse, "false") == 0)
+    reversible = false;
+  // acceleration of effect
+  double accel;
+  if (node->Attribute("acceleration", &accel)) acceleration = (float)accel;
   // slide parameters
   if (effect == EFFECT_TYPE_SLIDE)
   {
@@ -85,8 +93,6 @@ void CAnimation::Create(const TiXmlElement *node, RESOLUTION res)
       if (comma)
         endY = atoi(comma + 1);
     }
-    double accel;
-    if (node->Attribute("acceleration", &accel)) acceleration = (float)accel;
     // scale our parameters
     g_graphicsContext.ScaleXCoord(startX, res);
     g_graphicsContext.ScaleYCoord(startY, res);
@@ -163,6 +169,7 @@ void CAnimation::CreateReverse(const CAnimation &anim)
   type = (ANIMATION_TYPE)-anim.type;
   effect = anim.effect;
   length = anim.length;
+  reversible = anim.reversible;
 }
 
 void CAnimation::Animate(DWORD time, bool hasRendered)
@@ -241,24 +248,24 @@ TransformMatrix CAnimation::RenderAnimation()
   // Now do the real animation
   if (currentProcess != ANIM_PROCESS_NONE || currentState == ANIM_STATE_APPLIED)
   {
+    float offset = amount * (acceleration * amount + 1.0f - acceleration);
     if (effect == EFFECT_TYPE_FADE)
       return TransformMatrix::CreateFader(((float)(endAlpha - startAlpha) * amount + startAlpha) * 0.01f);
     else if (effect == EFFECT_TYPE_SLIDE)
     {
-      float offset = amount * (acceleration * amount + 1.0f - acceleration);
       return TransformMatrix::CreateTranslation((endX - startX)*offset + startX, (endY - startY)*offset + startY);
     }
     else if (effect == EFFECT_TYPE_ROTATE)
     {
       TransformMatrix translation1 = TransformMatrix::CreateTranslation((float)-startY, (float)-endY);
-      TransformMatrix rotation = TransformMatrix::CreateRotation(((endX - startX)*amount + startX) * DEGREE_TO_RADIAN);
+      TransformMatrix rotation = TransformMatrix::CreateRotation(((endX - startX)*offset + startX) * DEGREE_TO_RADIAN);
       TransformMatrix translation2 = TransformMatrix::CreateTranslation((float)startY, (float)endY);
       return translation2 * rotation * translation1;
     }
     else if (effect == EFFECT_TYPE_ZOOM)
     {
       // could be extended to different X and Y scalings reasonably easily
-      float scaleX = ((endX - startX)*amount + startX) * 0.01f;
+      float scaleX = ((endX - startX)*offset + startX) * 0.01f;
       TransformMatrix translation1 = TransformMatrix::CreateTranslation((float)-startY, (float)-endY);
       TransformMatrix scaler = TransformMatrix::CreateScaler(scaleX, scaleX);
       TransformMatrix translation2 = TransformMatrix::CreateTranslation((float)startY, (float)endY);

@@ -1394,15 +1394,6 @@ void CMPlayer::ToggleSubtitles()
   g_stSettings.m_currentVideoSettings.m_SubtitleOn = !g_stSettings.m_currentVideoSettings.m_SubtitleOn;
 }
 
-
-void CMPlayer::SubtitleOffset(bool bPlus)
-{
-  if (bPlus)
-    mplayer_put_key('x');
-  else
-    mplayer_put_key('z');
-}
-
 void CMPlayer::Seek(bool bPlus, bool bLargeStep)
 {
   // Use relative time seeking if we dont know the length of the video
@@ -1627,13 +1618,6 @@ void CMPlayer::RegisterAudioCallback(IAudioCallback* pCallback)
 void CMPlayer::UnRegisterAudioCallback()
 {
   xbox_audio_unregistercallback();
-}
-void CMPlayer::AudioOffset(bool bPlus)
-{
-  if (bPlus)
-    mplayer_put_key('+');
-  else
-    mplayer_put_key('-');
 }
 void CMPlayer::SwitchToNextAudioLanguage()
 {

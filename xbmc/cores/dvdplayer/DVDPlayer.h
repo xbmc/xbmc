@@ -71,7 +71,6 @@ public:
   virtual void SwitchToNextLanguage();
   virtual void ToggleSubtitles();
   virtual void ToggleFrameDrop();
-  virtual void SubtitleOffset(bool bPlus = true);
   virtual void Seek(bool bPlus, bool bLargeStep);
   virtual void SeekPercentage(float iPercent);
   virtual float GetPercentage();
@@ -87,7 +86,6 @@ public:
   virtual void Update(bool bPauseDrawing)                       { m_dvdPlayerVideo.Update(bPauseDrawing); }
   virtual void GetVideoRect(RECT& SrcRect, RECT& DestRect)      { m_dvdPlayerVideo.GetVideoRect(SrcRect, DestRect); }
   virtual void GetVideoAspectRatio(float& fAR)                  { fAR = m_dvdPlayerVideo.GetAspectRatio(); }
-  virtual void AudioOffset(bool bPlus);
   virtual void SwitchToNextAudioLanguage();
   virtual void UpdateSubtitlePosition();
   virtual void RenderSubtitles();

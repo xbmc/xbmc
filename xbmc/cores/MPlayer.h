@@ -100,7 +100,6 @@ public:
 
   virtual void ToggleSubtitles();
   virtual void ToggleFrameDrop();
-  virtual void SubtitleOffset(bool bPlus = true);
   virtual void Seek(bool bPlus = true, bool bLargeStep = false);
   virtual void SetVolume(long nVolume);
   virtual void SetDynamicRangeCompression(long drc);
@@ -114,7 +113,6 @@ public:
   virtual void Update(bool bPauseDrawing = false);
   virtual void GetVideoRect(RECT& SrcRect, RECT& DestRect);
   virtual void GetVideoAspectRatio(float& fAR);
-  virtual void AudioOffset(bool bPlus = true);
   virtual void SwitchToNextAudioLanguage();
   virtual bool CanRecord() ;
   virtual bool IsRecording();

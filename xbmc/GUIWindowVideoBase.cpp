@@ -1210,17 +1210,17 @@ void CGUIWindowVideoBase::ApplyIMDBThumbToFolder(const CStdString &folder, const
   // copy icon to folder also;
   if (CFile::Exists(imdbThumb))
   {
-    CStdString strFolderImage;
-    CUtil::AddFileToFolder(folder, "folder.jpg", strFolderImage);
     CFileItem folderItem(folder, true);
     if (folderItem.IsRemote() || folderItem.IsOnDVD())
     {
       CStdString strThumb;
-      CUtil::GetThumbnail( strFolderImage, strThumb);
+      CUtil::GetCachedThumbnail(folder, strThumb);
       CFile::Cache(imdbThumb.c_str(), strThumb.c_str(), NULL, NULL);
     }
     else
     {
+      CStdString strFolderImage;
+      CUtil::AddFileToFolder(folder, "folder.jpg", strFolderImage);
       CFile::Cache(imdbThumb.c_str(), strFolderImage.c_str(), NULL, NULL);
     }
   }

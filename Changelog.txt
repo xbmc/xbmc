@@ -5,6 +5,17 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 04-04-2006 fixed: Karaoke transparency settings weren't honoured.
+ - 04-04-2006 changed: Window.Previous(id) applies for the whole time a window is on screen, rather than just while the window is initializing.
+ - 04-04-2006 fixed: Audio and subtitle delay via keymap.xml were not functioning.
+ - 04-04-2006 fixed: UTF16->UTF8 conversion crash on some strings.
+ - 04-04-2006 added: playlist field to SmartPlaylists.
+ - 04-04-2006 fixed: Setting of currently playing item was set by index rather than path + startoffset in the media windows.
+ - 04-04-2006 fixed: [ 1461096 ] Movie Trailers scrolling bug
+ - 04-04-2006 fixed: [ 1461095 ] certain features frozen with xlink kai enabled
+ - 04-04-2006 fixed: [ 1461745 ] Create xbmsp error.
+ - 04-04-2006 fixed: [ 1461817 ] Python Progress Dialog shows heading as line 1, thanks to frooby
+ - 04-04-2006 added: reversible attribute to animations, and <effectslowdown> tag to skin.xml to assist in developing skin animations.
  - 04-04-2006 fixed: XBMC should now read and display the right GPU and CPU temps for 1.6 xbox´s
               Thanks goes to pablot for the fix
  - 04-04-2006 Updated: dutch, french, german, german austria, hungarian, italian and spanish strings.xml´s

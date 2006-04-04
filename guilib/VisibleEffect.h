@@ -51,8 +51,12 @@ public:
 
   int condition;      // conditions that must be satisfied in order for this
                       // animation to be performed
+
+  inline bool IsReversible() const { return reversible; };
+
 private:
 //  float amount;
   // timing variables
   unsigned int start;
+  bool reversible;    // whether the animation is reversible or not
 };

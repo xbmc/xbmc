@@ -6,11 +6,7 @@
 #include "utils/GUIInfoManager.h"
 #include "Util.h"
 
-
-// May need to change this so that it is "modeless" rather than Modal,
-// though it works reasonably well as is...
-
-#define SEEK_BAR_DISPLAY_TIME 1000L
+#define SEEK_BAR_DISPLAY_TIME 2000L
 #define SEEK_BAR_SEEK_TIME    500L
 
 #define POPUP_SEEK_SLIDER     401

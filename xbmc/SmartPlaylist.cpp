@@ -2,6 +2,7 @@
 #include "utils/log.h"
 #include "StringUtils.h"
 #include "SystemTime.h"
+#include "FileSystem/SmartPlaylistDirectory.h"
 
 typedef struct
 {
@@ -20,7 +21,8 @@ static const translateField fields[] = { "none", CSmartPlaylistRule::FIELD_NONE,
                                          "filename", CSmartPlaylistRule::SONG_FILENAME,
                                          "playcount", CSmartPlaylistRule::SONG_PLAYCOUNT,
                                          "lastplayed", CSmartPlaylistRule::SONG_LASTPLAYED,
-                                         "random", CSmartPlaylistRule::FIELD_RANDOM };
+                                         "random", CSmartPlaylistRule::FIELD_RANDOM,
+                                         "playlist", CSmartPlaylistRule::FIELD_PLAYLIST };
 
 #define NUM_FIELDS sizeof(fields) / sizeof(translateField)
 
@@ -141,6 +143,20 @@ CStdString CSmartPlaylistRule::GetWhereClause()
     query = "(strArtist" + parameter + ") or (idsong IN (select idsong from artist,exartistsong where exartistsong.idartist = artist.idartist and artist.strArtist" + parameter + "))";
   else if (m_field == SONG_LASTPLAYED && m_operator == OPERATOR_LESS_THAN)
     query = "lastPlayed is NULL or lastPlayed" + parameter;
+  else if (m_field == FIELD_PLAYLIST)
+  { // playlist field - grab our playlist and add to our where clause
+    CStdString playlistFile = CSmartPlaylistDirectory::GetPlaylistByName(m_parameter);
+    if (!playlistFile.IsEmpty())
+    {
+      CSmartPlaylist playlist;
+      playlist.Load(playlistFile);
+      CStdString playlistQuery = playlist.GetWhereClause(false);
+      if (m_operator == OPERATOR_DOES_NOT_EQUAL)
+        query.Format("NOT (%s)", playlistQuery.c_str());
+      else if (m_operator == OPERATOR_EQUALS)
+        query = playlistQuery;
+    }
+  }
   else if (m_field != FIELD_NONE)
     query = GetDatabaseField(m_field) + parameter;
   return query;
@@ -172,14 +188,13 @@ CSmartPlaylist::CSmartPlaylist()
 
 TiXmlElement *CSmartPlaylist::OpenAndReadName(const CStdString &path)
 {
-  TiXmlDocument doc;
-  if (!doc.LoadFile(path))
+  if (!m_xmlDoc.LoadFile(path))
   {
     CLog::Log(LOGERROR, "Error loading Smart playlist %s", path.c_str());
     return NULL;
   }
 
-  TiXmlElement *root = doc.RootElement();
+  TiXmlElement *root = m_xmlDoc.RootElement();
   if (!root || strcmpi(root->Value(),"smartplaylist") != 0)
   {
     CLog::Log(LOGERROR, "Error loading Smart playlist %s", path.c_str());
@@ -290,14 +305,14 @@ void CSmartPlaylist::AddRule(const CSmartPlaylistRule &rule)
   m_playlistRules.push_back(rule);
 }
 
-CStdString CSmartPlaylist::GetWhereClause()
+CStdString CSmartPlaylist::GetWhereClause(bool needWhere /* = true */)
 {
   CStdString rule;
   for (vector<CSmartPlaylistRule>::iterator it = m_playlistRules.begin(); it != m_playlistRules.end(); ++it)
   {
     if (it != m_playlistRules.begin())
       rule += m_matchAllRules ? " AND " : " OR ";
-    else
+    else if (needWhere)
       rule += "WHERE ";
     rule += "(";
     rule += (*it).GetWhereClause();
