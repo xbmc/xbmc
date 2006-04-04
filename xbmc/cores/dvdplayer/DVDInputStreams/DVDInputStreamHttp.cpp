@@ -47,8 +47,8 @@ bool CDVDInputStreamHttp::Open(const char* strFile)
   m_pFile->SetHttpHeaderCallback(this);
   
   // this should go to the demuxer
-  m_pFile->SetUserAgent("WinampMPEG/5.09");
-  m_pFile->AddHeaderParam("Icy-MetaData:1");
+  m_pFile->SetUserAgent("WinampMPEG/5.09");  
+  m_pFile->SetRequestHeader("Icy-MetaData", "1");
   m_eof = false;
 
   // open file in binary mode

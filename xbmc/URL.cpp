@@ -212,6 +212,13 @@ CURL::CURL(const CStdString& strURL)
     }
   }
 
+  int iOptions = m_strFileName.Find("?");
+  if (iOptions >= 0 )
+  {
+    m_strOptions = m_strFileName.Mid(iOptions+1);
+    m_strFileName = m_strFileName.Left(iOptions);
+  }
+
   int iFileType = m_strFileName.ReverseFind('.') + 1;
   if (iFileType)
   {
@@ -225,6 +232,11 @@ CURL::CURL(const CStdString& strURL)
 CURL::CURL(const CURL &url)
 {
   *this = url;
+}
+
+CURL::CURL()
+{
+  m_iPort = 0;
 }
 
 CURL::~CURL()
@@ -241,6 +253,7 @@ CURL& CURL::operator= (const CURL& source)
   m_strFileName = source.m_strFileName;
   m_strProtocol = source.m_strProtocol;
   m_strFileType = source.m_strFileType;
+  m_strOptions  = source.m_strOptions;
   return *this;
 }
 
@@ -267,6 +280,22 @@ void CURL::SetPassword(const CStdString& strPassword)
 {
   m_strPassword = strPassword;
 }
+
+void CURL::SetProtocol(const CStdString& strProtocol)
+{
+  m_strProtocol = strProtocol;
+}
+
+void CURL::SetOptions(const CStdString& strOptions)
+{
+  m_strOptions = strOptions;
+}
+
+void CURL::SetPort(int port)
+{
+  m_iPort = port;
+}
+
 
 bool CURL::HasPort() const
 {
@@ -319,6 +348,11 @@ const CStdString& CURL::GetFileType() const
   return m_strFileType;
 }
 
+const CStdString& CURL::GetOptions() const
+{
+  return m_strOptions;
+}
+
 void CURL::GetURL(CStdString& strURL) const
 {
   if (m_strProtocol == "")
@@ -328,6 +362,9 @@ void CURL::GetURL(CStdString& strURL) const
   }
   GetURLWithoutFilename(strURL);
   strURL += m_strFileName;
+
+  if( m_strOptions.length() > 0 )
+    strURL += "?" + m_strOptions;
 }
 
 void CURL::GetURLWithoutUserDetails(CStdString& strURL) const
@@ -368,6 +405,9 @@ void CURL::GetURLWithoutUserDetails(CStdString& strURL) const
     strURL += "/";
   }
   strURL += m_strFileName;
+
+  if( m_strOptions.length() > 0 )
+    strURL += "?" + m_strOptions;
 }
 
 void CURL::GetURLWithoutFilename(CStdString& strURL) const

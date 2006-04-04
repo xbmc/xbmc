@@ -10,6 +10,7 @@
 #endif // _MSC_VER > 1000
 
 #include "../lib/libXDAAP/client.h"
+#include "FileCurl.h"
 
 class CDaapClient : public CCriticalSection 
 {
@@ -73,23 +74,10 @@ protected:
   DAAP_ClientHost_Song m_song;
 
   bool m_bOpened;
-  bool m_bStreaming;
-  bool m_bDelayedStart;
-
-  int m_iFileID;
-  char m_sFileFormat[16];
   
-  CRingHoldBuffer m_DataBuffer;
-
-
-  CEvent m_eventCallback;
-  CEvent m_eventNewData;
-  HANDLE m_hStreamThread;
-  bool m_bInterupt;  
-  int m_httpHeaderLength;
-  int m_httpContentLenght;
-
-  static int DAAPHttpCallback(const char *data, int size, int flag, int contentlength, void* context);
+  CStdString m_hashurl; // the url that should be used in hash calculation
+  CURL       m_url;     // the complete url we have connected too
+  CFileCurl  m_curl;
 };
 };
 
