@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 05-04-2006 fixed: odml index wouldn't be read for > 2.0gb files (http://thread.gmane.org/gmane.comp.video.mplayer.devel/31404)
   - 26-03-2006 fixed: dts frames with uneven data size would play garbled using hwdts output
   - 25-03-2006 added: ability to cancel vobsub parsing
   - 25-03-2006 fixed: switching from srt -> vobsub wouldn't reset spudec, nor osd
