@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 04-04-2006 Updated: dutch, french, german, german austria, hungarian, italian and spanish strings.xml´s
+              Thanks to: console-ombouw, jose_t,  modhack2,  kotix, bali001, silverscape and ceomr
  - 04-04-2006 changed: daap streaming moved over to curl instead and reneabled paplayer.
  - 04-04-2006 fixed: shout:// wasn't checked for contenttype
  - 04-04-2006 fixed: couldn't check extension in playerfactory on http with options at the end of the url. ie http://host/folder/file.mp3?option=value
