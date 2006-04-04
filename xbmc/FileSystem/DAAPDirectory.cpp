@@ -23,8 +23,10 @@
 #include "DAAPDirectory.h"
 #include "../util.h"
 #include "directorycache.h"
-// using the smb library for UTF-8 conversion
-#include "../lib/libsmb/xbLibSmb.h"
+
+// these are the different request urls that exist.. i think the first one would always work, but take safe route
+#define REQUEST42 "daap://%s/databases/%i/items/%i.%s?session-id=%i&revision-id=%i"
+#define REQUEST45 "daap://%s/databases/%i/items/%i.%s?session-id=%i"
 
 
 CDAAPDirectory::CDAAPDirectory(void)
@@ -177,8 +179,29 @@ bool CDAAPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
             {              
               CLog::Log(LOGDEBUG, "DAAPDirectory: Adding item %s", m_currentSongItems[idx].itemname);
               CFileItem* pItem = new CFileItem(m_currentSongItems[idx].itemname);
-              pItem->m_strPath.Format("daap://%s/%d.%s", m_thisHost->host, m_currentSongItems[idx].id,
-                                      m_currentSongItems[idx].songformat);
+
+
+              if( m_thisHost->version_major != 3 )
+              {
+                pItem->m_strPath.Format(REQUEST42, 
+                                        m_thisHost->host,  
+                                        g_DaapClient.m_iDatabase,
+                                        m_currentSongItems[idx].id,
+                                        m_currentSongItems[idx].songformat,
+                                        m_thisHost->sessionid, 
+                                        m_thisHost->revision_number);
+
+              }
+              else
+              {
+                pItem->m_strPath.Format(REQUEST45, 
+                                        m_thisHost->host,  
+                                        g_DaapClient.m_iDatabase,
+                                        m_currentSongItems[idx].id,
+                                        m_currentSongItems[idx].songformat,
+                                        m_thisHost->sessionid);
+              }
+
               pItem->m_bIsFolder = false;
               pItem->m_dwSize = m_currentSongItems[idx].songsize;
 
@@ -244,8 +267,28 @@ bool CDAAPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
           {
             CLog::Log(LOGDEBUG, "DAAPDirectory: Adding item %s", m_currentSongItems[c].itemname);
             CFileItem* pItem = new CFileItem(m_currentSongItems[c].itemname);
-            pItem->m_strPath.Format("daap://%s/%d.%s", m_thisHost->host, m_currentSongItems[c].id,
-                                    m_currentSongItems[c].songformat);
+
+            if( m_thisHost->version_major != 3 )
+            {
+              pItem->m_strPath.Format(REQUEST42, 
+                                      m_thisHost->host,  
+                                      g_DaapClient.m_iDatabase,
+                                      m_currentSongItems[c].id,
+                                      m_currentSongItems[c].songformat,
+                                      m_thisHost->sessionid, 
+                                      m_thisHost->revision_number);
+
+            }
+            else
+            {
+              pItem->m_strPath.Format(REQUEST45, 
+                                      m_thisHost->host,  
+                                      g_DaapClient.m_iDatabase,
+                                      m_currentSongItems[c].id,
+                                      m_currentSongItems[c].songformat,
+                                      m_thisHost->sessionid);
+            }
+
             pItem->m_bIsFolder = false;
             pItem->m_dwSize = m_currentSongItems[c].songsize;
 

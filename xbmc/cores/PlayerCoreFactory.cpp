@@ -96,16 +96,35 @@ void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecC
 
   if (url.GetProtocol().Equals("daap"))		// mplayer is better for daap
   {
-    vecCores.push_back(EPC_MPLAYER);    
+    // due to us not using curl for all url handling, extension checking doesn't work
+    // when there is an option at the end of the url. should eventually be moved over
+    // thou let's hack around it for now
+    if ( strstr( g_stSettings.m_szMyVideoExtensions, url.GetFileType().c_str() ) )
+    {
+      vecCores.push_back(EPC_MPLAYER);
+      vecCores.push_back(EPC_DVDPLAYER);
+    }
+
+    if ( strstr( g_stSettings.m_szMyMusicExtensions, url.GetFileType().c_str() ) )
+    {
+      vecCores.push_back(EPC_PAPLAYER);
+      vecCores.push_back(EPC_MPLAYER);
+      vecCores.push_back(EPC_DVDPLAYER);
+    }
   }
 
   if ( item.IsInternetStream() )
   {
-    CStdString protocol = item.GetAsUrl().GetProtocol();
-    if( protocol == "http" )
+    CURL url = item.GetAsUrl();
+
+    CStdString protocol = url.GetProtocol();
+    if( protocol == "http" || protocol == "shout" )
     {
+      /* curl is picky about protocol */
+      url.SetProtocol("http");
+
       CHttpHeader headers;
-      if( CFileCurl::GetHttpHeader(item.GetAsUrl(), headers) )
+      if( CFileCurl::GetHttpHeader(url, headers) )
       {
         if( headers.GetValue("icy-meta").length() > 0 
          || headers.GetValue("icy-pub").length() > 0
