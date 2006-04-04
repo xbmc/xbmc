@@ -1,3 +1,6 @@
+  <!-- XML languaje file created with XBMCTranslator. Idea and code by Jose_T !-->
+
+
 <strings>
   <string><id>0</id><value>Programok</value></string>
   <string><id>1</id><value>Képek</value></string>
@@ -8,6 +11,7 @@
   <!-- String with id 6 should not be set here, only in the english language file !-->
   <string><id>7</id><value>Fájlok</value></string>
   <string><id>8</id><value>Idõjárás</value></string>
+
   <string><id>11</id><value>Hétfõ</value></string>
   <string><id>12</id><value>Kedd</value></string>
   <string><id>13</id><value>Szerda</value></string>
@@ -15,6 +19,7 @@
   <string><id>15</id><value>Péntek</value></string>
   <string><id>16</id><value>Szombat</value></string>
   <string><id>17</id><value>Vasárnap</value></string>
+
   <string><id>21</id><value>Január</value></string>
   <string><id>22</id><value>Február</value></string>
   <string><id>23</id><value>Március</value></string>
@@ -27,6 +32,7 @@
   <string><id>30</id><value>Október</value></string>
   <string><id>31</id><value>November</value></string>
   <string><id>32</id><value>December</value></string>
+
   <string><id>98</id><value>Nézet: Auto</value></string>
   <string><id>99</id><value>Nézet: Auto nagy</value></string>
   <string><id>100</id><value>Nézet: Ikonok</value></string>
@@ -37,7 +43,7 @@
   <string><id>105</id><value>Méret szerint</value></string>
   <string><id>106</id><value>Nem</value></string>
   <string><id>107</id><value>Igen</value></string>
-  <string><id>108</id><value>SlideShow</value></string>
+  <string><id>108</id><value>> Diavetítés ></value></string>
   <string><id>109</id><value>Mintakészítés</value></string>
   <string><id>110</id><value>Mintakészítés</value></string>
   <string><id>111</id><value>Parancsikonok</value></string>
@@ -54,43 +60,43 @@
   <string><id>122</id><value>Törlés megerõsítése</value></string>
   <string><id>123</id><value>Átmásolod ezeket a fájlokat?</value></string>
   <string><id>124</id><value>Áthelyezed ezeket a fájlokat?</value></string>
-  <string><id>125</id><value>Letörlöd ezeket a fájlokat?</value></string>
+  <string><id>125</id><value>Törlöd ezeket a fájlokat?</value></string>
   <string><id>126</id><value>Állapot</value></string>
   <string><id>127</id><value>Objektumok</value></string>
   <string><id>128</id><value>Általános</value></string>
-  <string><id>129</id><value>Slideshow</value></string>
+  <string><id>129</id><value>Diavetítés</value></string>
   <string><id>130</id><value>Rendszer info</value></string>
   <string><id>131</id><value>Képernyõ</value></string>
   <string><id>132</id><value>Albumok</value></string>
   <string><id>133</id><value>Elõadók</value></string>
   <string><id>134</id><value>Számok</value></string>
   <string><id>135</id><value>Mûfajok</value></string>
-  <string><id>136</id><value>Playlistek</value></string>
+  <string><id>136</id><value>Playlist-ek</value></string>
   <string><id>137</id><value>Keresés</value></string>
   <string><id>138</id><value>RENDSZER INFORMÁCIÓ</value></string>
   <string><id>139</id><value>Hõmérsékletek:</value></string>
-  <string><id>140</id><value>CPU:</value></string>
-  <string><id>141</id><value>GPU:</value></string>
+  <string><id>140</id><value>CPU: </value></string>
+  <string><id>141</id><value>GPU: </value></string>
   <string><id>142</id><value>Idõ:</value></string>
   <string><id>143</id><value>Aktuális:</value></string>
   <string><id>144</id><value>Verzió:</value></string>
   <string><id>145</id><value>Hálózat:</value></string>
   <string><id>146</id><value>Típus:</value></string>
   <string><id>147</id><value>Statikus</value></string>
-  <string><id>148</id><value>DHCP</value></string>
+  <string><id>148</id><value>DHCP </value></string>
   <string><id>149</id><value>MAC</value></string>
-  <string><id>150</id><value>IP</value></string>
+  <string><id>150</id><value>IP </value></string>
   <string><id>151</id><value>Link: </value></string>
-  <string><id>152</id><value>Simplex</value></string>
+  <string><id>152</id><value>Szimplex</value></string>
   <string><id>153</id><value>Duplex</value></string>
   <string><id>154</id><value>Tároló</value></string>
   <string><id>155</id><value>Meghajtó</value></string>
   <string><id>156</id><value>Szabad</value></string>
-  <string><id>157</id><value>Video</value></string>
+  <string><id>157</id><value>Videó</value></string>
   <string><id>158</id><value>Szabad memória</value></string>
   <string><id>159</id><value>Nincs kapcsolat</value></string>
   <string><id>160</id><value>Szabad</value></string>
-  <string><id>161</id><value>Elérhetetlen</value></string>
+  <string><id>161</id><value>Nem elérhetõ</value></string>
   <string><id>162</id><value>Tálca nyitva</value></string>
   <string><id>163</id><value>Olvasás</value></string>
   <string><id>164</id><value>Nincs lemez</value></string>
@@ -99,7 +105,7 @@
   <string><id>167</id><value>FTP Server engedélyezése</value></string>
   <string><id>168</id><value>Netes Idõ Szinkronizáció engedélyezése</value></string>
   <string><id>169</id><value>Felbontás</value></string>
-  <string><id>170</id><value>Album:</value></string>
+  <string><id>170</id><value>Album: </value></string>
   <string><id>171</id><value>Elõadó:</value></string>
   <string><id>172</id><value>Kiadás dátuma:</value></string>
   <string><id>173</id><value>Értékelés:</value></string>
@@ -118,7 +124,7 @@
   <string><id>186</id><value>OK</value></string>
   <string><id>187</id><value>Nincs találat!</value></string>
   <string><id>188</id><value>Összes kiválasztása</value></string>
-  <string><id>189</id><value>Média info szkennelése</value></string>
+  <string><id>189</id><value>Média info scannelése</value></string>
   <string><id>190</id><value>Mentés</value></string>
   <string><id>191</id><value>Keverés</value></string>
   <string><id>192</id><value>Tisztítás</value></string>
@@ -132,7 +138,7 @@
   <string><id>200</id><value>Író:</value></string>
   <string><id>201</id><value>Év:</value></string>
   <string><id>202</id><value>Idézet:</value></string>
-  <string><id>203</id><value>Plot outline:</value></string>
+  <string><id>203</id><value>Rövid tartalom:</value></string>
   <string><id>204</id><value>Értékelés:</value></string>
   <string><id>205</id><value>Szavazatok:</value></string>
   <string><id>206</id><value>Szereplõk</value></string>
@@ -141,57 +147,57 @@
   <string><id>209</id><value>Következõ</value></string>
   <string><id>210</id><value>Elõzõ</value></string>
   <string><id>211</id><value>Programok keresése</value></string>
-  <string><id>212</id><value>program találat</value></string>
-  <string><id>213</id><value>UI Kalibráció</value></string>
-  <string><id>214</id><value>Képernyõ Kalibráció</value></string>
+  <string><id>212</id><value>Program találat</value></string>
+  <string><id>213</id><value>UI kalibráció</value></string>
+  <string><id>214</id><value>Képernyõ kalibráció</value></string>
   <string><id>215</id><value>Lágy</value></string>
-  <string><id>216</id><value>Zoom Mennyiség</value></string>
-  <string><id>217</id><value>Pixel Ráta</value></string>
-  <string><id>218</id><value>DVD Meghajtó</value></string>
+  <string><id>216</id><value>Zoom nagyság</value></string>
+  <string><id>217</id><value>Pixel ráta</value></string>
+  <string><id>218</id><value>DVD meghajtó</value></string>
   <string><id>219</id><value>Kérlek tegyél be egy lemezt</value></string>
   <string><id>220</id><value>Távoli megosztás</value></string>
-  <string><id>221</id><value>A Hálózat nincs csatlakoztatva</value></string>
+  <string><id>221</id><value>Nincs hálózati kapcsolat</value></string>
   <string><id>222</id><value>Mégse</value></string>
-  <string><id>223</id><value>Automatikus szélesvászon</value></string>
+  <string><id>223</id><value>Automatikus szélesvásznú</value></string>
   <string><id>224</id><value>Sebesség</value></string>
   <string><id>225</id><value>Átmeneti idõ</value></string>
   <string><id>226</id><value>PAL60 engedélyezése</value></string>
   <string><id>227</id><value>CDDB engedélyezése</value></string>
   <string><id>228</id><value>Playlist keverése betöltéskor</value></string>
-  <string><id>229</id><value>HD Lepörgési idõ (percek)</value></string>
-  <string><id>230</id><value>Szûrõk</value></string>
+  <string><id>229</id><value>Merevlemez kikapcsolása</value></string>
+  <string><id>230</id><value>Videó szûrõk</value></string>
   <string><id>231</id><value>Nincs</value></string>
   <string><id>232</id><value>Pont</value></string>
   <string><id>233</id><value>Lineáris</value></string>
   <string><id>234</id><value>Anisotropikus</value></string>
   <string><id>235</id><value>Quincunx</value></string>
-  <string><id>236</id><value>Gaussian Cubic</value></string>
+  <string><id>236</id><value>Gaussian Cubic </value></string>
   <string><id>237</id><value>Kicsinyítés</value></string>
   <string><id>238</id><value>Nagyítás</value></string>
-  <string><id>239</id><value>Playlist tisztítása ha vége</value></string>
-  <string><id>240</id><value>DVD-Video autoindítása</value></string>
-  <string><id>241</id><value>VCD/SVCD autoindítása</value></string>
-  <string><id>242</id><value>Audio-CD autoindítása</value></string>
-  <string><id>243</id><value>XBOX Játék autoindítása</value></string>
-  <string><id>244</id><value>Videók autoindítása</value></string>
-  <string><id>245</id><value>Zene autoindítása</value></string>
-  <string><id>246</id><value>Képek autoindítása</value></string>
+  <string><id>239</id><value>Playlist tartalom törlése ha vége</value></string>
+  <string><id>240</id><value>DVD-Video automatikus indítása</value></string>
+  <string><id>241</id><value>VCD/SVCD automatikus indítása</value></string>
+  <string><id>242</id><value>Audio-CD automatikus indítása</value></string>
+  <string><id>243</id><value>XBOX játék automatikus indítása</value></string>
+  <string><id>244</id><value>Videók automatikus indítása</value></string>
+  <string><id>245</id><value>Zene automatikus indítása</value></string>
+  <string><id>246</id><value>Képek automatikus indítása</value></string>
   <string><id>247</id><value>Scriptek</value></string>
   <string><id>248</id><value>Nyelv</value></string>
   <string><id>249</id><value>Zene</value></string>
   <string><id>250</id><value>Vizualizáció</value></string>
   <string><id>251</id><value>Válassz célkönyvtárt</value></string>
-  <string><id>252</id><value>- Stereo kimenet mindegyik hangszórón</value></string>
+  <string><id>252</id><value>Stereo kimenet mindegyik hangszórón</value></string>
   <string><id>253</id><value>Csatornák száma</value></string>
   <string><id>254</id><value>- DTS kompatibilis erõsítõ</value></string>
-  <string><id>255</id><value>CDDB</value></string>
+  <string><id>255</id><value>CD info</value></string>
   <string><id>256</id><value>Rákérdezés a freedb-nél a CDDB infóra</value></string>
   <string><id>257</id><value>Hiba</value></string>
   <string><id>258</id><value>ID3 engedélyezése</value></string>
   <string><id>259</id><value>Megnyitás</value></string>
-  <string><id>260</id><value>Shoutcast</value></string>
+  <string><id>260</id><value>SHOUTcast</value></string>
   <string><id>261</id><value>Várakozás az indításra....</value></string>
-  <string><id>262</id><value>Script Kimenete</value></string>
+  <string><id>262</id><value>Script-ek kimenete</value></string>
   <string><id>263</id><value>Web Server engedélyezése</value></string>
   <string><id>264</id><value>Felvétel</value></string>
   <string><id>265</id><value>Felvétel leáll..</value></string>
@@ -200,41 +206,42 @@
   <string><id>268</id><value>Cím szerint</value></string>
   <string><id>269</id><value>Elõadó szerint</value></string>
   <string><id>270</id><value>Album szerint</value></string>
-  <string><id>271</id><value>Top 100</value></string>
-  <string><id>272</id><value>Balfelsõ Képernyõszél Kompenzáció</value></string>
-  <string><id>273</id><value>Jobbalsó Képernyõszél Kompenzáció</value></string>
-  <string><id>274</id><value>Felírat poziciója</value></string>
-  <string><id>275</id><value>Pixel Ráta Kiegyenlítés</value></string>
+  <string><id>271</id><value>Top 100 </value></string>
+  <string><id>272</id><value>Bal felsõ túlfutás kompenzáció</value></string>
+  <string><id>273</id><value>Jobb alsó túlfutás Kompenzáció</value></string>
+  <string><id>274</id><value>Felirat poziciója</value></string>
+  <string><id>275</id><value>Pixel ráta kiegyenlítés</value></string>
   <string><id>276</id><value>Mozgasd a nyilat, hogy változtasd a képernyõ szélét</value></string>
-  <string><id>277</id><value>Mozgasd a vonalat, hogy változtasd a felírat helyét</value></string>
+  <string><id>277</id><value>Mozgasd a vonalat, hogy változtasd a felirat helyét</value></string>
   <string><id>278</id><value>Változtasd a négyszöget, míg tökéletes négyzet nem lessz</value></string>
   <string><id>279</id><value>Nem lehet betölteni a beállításokat</value></string>
-  <string><id>280</id><value>alap visszaesések használata</value></string>
+  <string><id>280</id><value>Alap beállítások visszaállítása</value></string>
   <string><id>281</id><value>Kérlek ellenõrizd az .xml fájlokat</value></string>
   <string><id>282</id><value>%i tárgyat találtam</value></string>
   <string><id>283</id><value>Keresési Eredmények</value></string>
   <string><id>284</id><value>Nincs találat</value></string>
   <string><id>285</id><value>Deinterlace szûrõ</value></string>
   <string><id>286</id><value>Postprocessing szûrõ</value></string>
-  <string><id>287</id><value>SRT Felíratok</value></string>
+  <string><id>287</id><value>SRT feliratok</value></string>
   <string><id>288</id><value>Betûtípus</value></string>
   <string><id>289</id><value>Méret</value></string>
-  <string><id>290</id><value>Hangerõ növelés (dB)</value></string>
-  <string><id>291</id><value>Video</value></string>
-  <string><id>292</id><value>Audio</value></string>
-  <string><id>293</id><value>Felíratok</value></string>
-  <string><id>294</id><value>Könyvjelzõ létr.</value></string>
-  <string><id>295</id><value>Könyvjelzõk nézése</value></string>
+  <string><id>290</id><value>Normalizálás (DRC)</value></string>
+  <string><id>291</id><value>Videó</value></string>
+  <string><id>292</id><value>Audió</value></string>
+  <string><id>293</id><value>Feliratok</value></string>
+  <string><id>294</id><value>Könyvjelzõ létrehozása</value></string>
+  <string><id>295</id><value>Könyvjelzõk böngészése</value></string>
   <string><id>296</id><value>Könyvjelzõk törlése</value></string>
   <string><id>297</id><value>AV Késleltetés</value></string>
   <string><id>298</id><value>Csúszka</value></string>
+
   <string><id>300</id><value>1. Nyelv</value></string>
   <string><id>301</id><value>2. Hangerõ</value></string>
   <string><id>302</id><value>3. Sáv</value></string>
   <string><id>303</id><value>Késleltetés</value></string>
   <string><id>304</id><value>Nyelv</value></string>
-  <string><id>305</id><value>Engedélyzve</value></string>
-  <string><id>306</id><value>Nem-Interleavelt</value></string>
+  <string><id>305</id><value>Engedélyezve</value></string>
+  <string><id>306</id><value>Nem-összefésült</value></string>
   <string><id>307</id><value>- Automatikus postprocessing</value></string>
   <string><id>308</id><value>- Vertikális deblocking szûrõ</value></string>
   <string><id>309</id><value>- Horizontális deblocking szûrõ</value></string>
@@ -252,8 +259,8 @@
   <string><id>321</id><value>Hiba az elõadók tisztítása közben</value></string>
   <string><id>322</id><value>Mûfajok tisztítása...</value></string>
   <string><id>323</id><value>Hiba a mûfajok tisztítása közben</value></string>
-  <string><id>324</id><value>Útonalok tisztítása...</value></string>
-  <string><id>325</id><value>Hiba az útvonalok tisztítása közben</value></string>
+  <string><id>324</id><value>Útvonalak tisztítása...</value></string>
+  <string><id>325</id><value>Hiba az útvonalak tisztítása közben</value></string>
   <string><id>326</id><value>Albumok tisztítása...</value></string>
   <string><id>327</id><value>Hiba az albumok tisztítása közben</value></string>
   <string><id>328</id><value>Változások felülírása...</value></string>
@@ -263,9 +270,9 @@
   <string><id>332</id><value>Hiba az adatbázis tömörítése közben</value></string>
   <string><id>333</id><value>Ki akarod tisztítani a zenei adatbázist?</value></string>
   <string><id>334</id><value>Zenei adatbázis tisztítása</value></string>
-  <string><id>335</id><value>Start</value></string>
+  <string><id>335</id><value>Start </value></string>
   <string><id>336</id><value>Framerate igazítása</value></string>
-  <string><id>337</id><value>Audio Kimenet</value></string>
+  <string><id>337</id><value>Audió kimenet</value></string>
   <string><id>338</id><value>Analóg</value></string>
   <string><id>339</id><value>Digitális</value></string>
   <string><id>340</id><value>Különféle elõadók</value></string>
@@ -274,24 +281,24 @@
   <string><id>343</id><value>Framerate igazítása</value></string>
   <string><id>344</id><value>Színészek</value></string>
   <string><id>345</id><value>Év</value></string>
-  <string><id>346</id><value>Halmazolás</value></string>
-  <string><id>347</id><value>Kihalmazolás</value></string>
-  <string><id>348</id><value>Elsimított Könyvtár Hierarchia</value></string>
+  <string><id>346</id><value>AVI-k összefûzése</value></string>
+  <string><id>347</id><value>AVI összefûzés feloldása</value></string>
+  <string><id>348</id><value>Elsimított könyvtár Hierarchia</value></string>
   <string><id>349</id><value>Csak a default.xbe mutatása</value></string>
   <string><id>350</id><value>Programok</value></string>
   <string><id>351</id><value>Ki</value></string>
   <string><id>352</id><value>Dim</value></string>
   <string><id>353</id><value>Fekete</value></string>
-  <string><id>354</id><value>Matrix Trails</value></string>
-  <string><id>355</id><value>Képernyõkímélõ ideje</value></string>
+  <string><id>354</id><value>Mátrix animáció</value></string>
+  <string><id>355</id><value>Képernyõkímélõ idõbeállítás</value></string>
   <string><id>356</id><value>Képernyõkímélõ módja</value></string>
   <string><id>357</id><value>Leállítás ideje</value></string>
-  <string><id>358</id><value>Össz. Album</value></string>
+  <string><id>358</id><value>Összes album</value></string>
   <string><id>359</id><value>Új albumok</value></string>
   <string><id>360</id><value>Képernyõkímélõ</value></string>
-  <string><id>361</id><value>R. SlideShow</value></string>
-  <string><id>362</id><value>Képernyõkímélõ takarása (%)</value></string>
-  <string><id>363</id><value>Fájlok szerint</value></string>
+  <string><id>361</id><value>&lt; Diavetítés &lt;</value></string>
+  <string><id>362</id><value>Képernyõkímélõ álfedése (%)</value></string>
+  <string><id>363</id><value>Fájlnév szerint</value></string>
   <string><id>364</id><value>- AC3 Kompatibilis erõsítõ</value></string>
   <string><id>365</id><value>Név szerint</value></string>
   <string><id>366</id><value>Év szerint</value></string>
@@ -300,15 +307,15 @@
   <string><id>369</id><value>Cím</value></string>
   <string><id>370</id><value>T-Viharok</value></string>
   <string><id>371</id><value>Részben</value></string>
-  <string><id>372</id><value>Fõleg</value></string>
+  <string><id>372</id><value>Többnyire</value></string>
   <string><id>373</id><value>Napos</value></string>
   <string><id>374</id><value>Felhõs</value></string>
-  <string><id>375</id><value>Hó</value></string>
+  <string><id>375</id><value>Havazás</value></string>
   <string><id>376</id><value>Esõs</value></string>
   <string><id>377</id><value>Enyhe</value></string>
   <string><id>378</id><value>DE</value></string>
   <string><id>379</id><value>DU</value></string>
-  <string><id>380</id><value>Zivatarok</value></string>
+  <string><id>380</id><value>Zivatar</value></string>
   <string><id>381</id><value>Néhány</value></string>
   <string><id>382</id><value>Szétszórt</value></string>
   <string><id>383</id><value>Szél</value></string>
@@ -316,27 +323,28 @@
   <string><id>385</id><value>Kedvezõ</value></string>
   <string><id>386</id><value>Tiszta</value></string>
   <string><id>387</id><value>Felhõk</value></string>
-  <string><id>388</id><value>N/A</value></string>
-  <string><id>389</id><value>N/A</value></string>
-  <string><id>390</id><value>N/A</value></string>
-  <string><id>391</id><value>N/A</value></string>
-  <string><id>392</id><value>N/A</value></string>
-  <string><id>393</id><value>N/A</value></string>
-  <string><id>394</id><value>N/A</value></string>
-  <string><id>395</id><value>N/A</value></string>
-  <string><id>396</id><value>Válassz Helyet</value></string>
-  <string><id>397</id><value>Idõ Frissítése</value></string>
+  <string><id>388</id><value>Korai</value></string>
+  <string><id>389</id><value>Zápor</value></string>
+  <string><id>390</id><value>Szélroham</value></string>
+  <string><id>391</id><value>Alacsony</value></string>
+  <string><id>392</id><value>Közepes</value></string>
+  <string><id>393</id><value>Magas</value></string>
+  <string><id>394</id><value>Ködös</value></string>
+  <string><id>395</id><value>Párás</value></string>
+  <string><id>396</id><value>Válassz helyet</value></string>
+  <string><id>397</id><value>Frissítési idõ</value></string>
   <string><id>398</id><value>Idõjárási mértékegységek</value></string>
   <string><id>399</id><value>Sebesség mértékegység</value></string>
   <string><id>400</id><value>Idõjárás</value></string>
-  <string><id>401</id><value>Hõ</value></string>
+  <string><id>401</id><value>Hõmérséklet</value></string>
   <string><id>402</id><value>Fok</value></string>
   <string><id>403</id><value>UV Index</value></string>
   <string><id>404</id><value>Szél</value></string>
   <string><id>405</id><value>Harmat pont</value></string>
   <string><id>406</id><value>Páratartalom</value></string>
-  <string><id>407</id><value>-</value></string>
-  <string><id>408</id><value>-</value></string>
+  <string><id>407</id><value>-tól/tõl</value></string>
+  <string><id>408</id><value>-án/én</value></string>
+
   <string><id>410</id><value>Hozzáférés a Weather.com-hoz</value></string>
   <string><id>411</id><value>Idõjárás lekérdezése:</value></string>
   <string><id>412</id><value>Hiba az idõjárás lekérdezése közben</value></string>
@@ -349,7 +357,7 @@
   <string><id>419</id><value>Videók/Színészek</value></string>
   <string><id>420</id><value>Videók/Évek</value></string>
   <string><id>421</id><value>Videók/Cím</value></string>
-  <string><id>422</id><value>Albuminfo törlése</value></string>
+  <string><id>422</id><value>Albuminfó törlése</value></string>
   <string><id>423</id><value>CDDB info törlése</value></string>
   <string><id>424</id><value>Kiválaszt</value></string>
   <string><id>425</id><value>Nincs találat.</value></string>
@@ -358,10 +366,10 @@
   <string><id>428</id><value>Tedd be a helyes CD/DVD-t</value></string>
   <string><id>429</id><value>Tedd be a következõ CD/DVD-t</value></string>
   <string><id>430</id><value>DVD# szerint</value></string>
-  <string><id>431</id><value>Nincs Cache</value></string>
+  <string><id>431</id><value>Nincs cache</value></string>
   <string><id>432</id><value>Film kitörlése az adatbázisból</value></string>
   <string><id>433</id><value>Biztos el akardot távolítani</value></string>
-  <string><id>434</id><value>a film?</value></string>
+  <string><id>434</id><value>A film?</value></string>
   <string><id>435</id><value>Szám</value></string>
   <string><id>436</id><value>Év:</value></string>
   <string><id>437</id><value>Hossz:</value></string>
@@ -371,14 +379,13 @@
   <string><id>441</id><value>UDF</value></string>
   <string><id>442</id><value>LAN</value></string>
   <string><id>443</id><value>Internet</value></string>
-  <string><id>444</id><value>video</value></string>
-  <string><id>445</id><value>audio</value></string>
+  <string><id>444</id><value>videó</value></string>
+  <string><id>445</id><value>Audió</value></string>
   <string><id>446</id><value>DVD</value></string>
   <string><id>447</id><value>Autoindítás</value></string>
   <string><id>448</id><value>LCD</value></string>
   <string><id>449</id><value>Engedélyezve</value></string>
   <string><id>450</id><value>Oszlopok</value></string>
-  <string><id>4501</id><value>LCD típusa</value></string>
   <string><id>451</id><value>Sor 1 cím</value></string>
   <string><id>452</id><value>Sor 2 cím</value></string>
   <string><id>453</id><value>Sor 3 cím</value></string>
@@ -386,30 +393,30 @@
   <string><id>455</id><value>Sorok</value></string>
   <string><id>456</id><value>Mód</value></string>
   <string><id>457</id><value>Nézet váltása</value></string>
-  <string><id>458</id><value>B/Mark</value></string>
+  <string><id>458</id><value>B/Kijelölés</value></string>
   <string><id>459</id><value>Subs</value></string>
   <string><id>460</id><value>Audio Sáv</value></string>
   <string><id>461</id><value>[aktív]</value></string>
-  <string><id>462</id><value>Felírat</value></string>
-  <string><id>463</id><value>Hátfény</value></string>
+  <string><id>462</id><value>Felirat</value></string>
+  <string><id>463</id><value>Háttér fényerõ</value></string>
   <string><id>464</id><value>Fényerõ</value></string>
   <string><id>465</id><value>Kontraszt</value></string>
-  <string><id>466</id><value>Gamma</value></string>
+  <string><id>466</id><value>Fehéregyensúly</value></string>
   <string><id>467</id><value>Típus</value></string>
   <string><id>468</id><value>Mozgasd a vonalat az osd pozicionálásához</value></string>
-  <string><id>469</id><value>OSD Pocíció</value></string>
+  <string><id>469</id><value>OSD pocíció</value></string>
   <string><id>470</id><value>Készítõk</value></string>
   <string><id>471</id><value>Modchip</value></string>
   <string><id>472</id><value>OSD idõ</value></string>
-  <string><id>473</id><value>Magas Minõségû Újramintázás</value></string>
+  <string><id>473</id><value>Magas minoségû újravételezés</value></string>
   <string><id>474</id><value>Ki</value></string>
-  <string><id>475</id><value>Csak Zene</value></string>
-  <string><id>476</id><value>Zene és Video</value></string>
-  <string><id>477</id><value>Nem lehet betölteni a Playlistet</value></string>
+  <string><id>475</id><value>Csak zene</value></string>
+  <string><id>476</id><value>Zene és Videó</value></string>
+  <string><id>477</id><value>Nem lehet betölteni a Playlist-et</value></string>
   <string><id>478</id><value>OSD</value></string>
   <string><id>479</id><value>Felület és Nyelv</value></string>
-  <string><id>480</id><value>Felhasználói felület</value></string>
-  <string><id>481</id><value>Audio Beállítások</value></string>
+  <string><id>480</id><value>Megjelenítés</value></string>
+  <string><id>481</id><value>Audió beállítások</value></string>
   <string><id>482</id><value>Az XBMC-rõl</value></string>
   <string><id>483</id><value>Album</value></string>
   <string><id>484</id><value>Elõadó</value></string>
@@ -417,12 +424,12 @@
   <string><id>486</id><value>Ismétlés</value></string>
   <string><id>487</id><value>Egyszeri ismétlés</value></string>
   <string><id>488</id><value>Könyvtár playlist ismétlése</value></string>
-  <string><id>489</id><value>Playlistek használata a könyvtárakban</value></string>
-  <string><id>490</id><value>Autóváltás ikonok és lista között a számokban</value></string>
+  <string><id>489</id><value>Playlist-ek használata a könyvtárakban</value></string>
+  <string><id>490</id><value>Autováltás ikonok és lista között a számokban</value></string>
   <string><id>491</id><value>- Nagy ikonok használata</value></string>
-  <string><id>492</id><value>Felíratok nagyítása</value></string>
+  <string><id>492</id><value>Feliratok állítása</value></string>
   <string><id>493</id><value>Haladó beállítások (Csak szakértõknek!)</value></string>
-  <string><id>494</id><value>Általános Audio Belsõ magasság (dB)</value></string>
+  <string><id>494</id><value>Általános audio belsõ magasság (dB)</value></string>
   <string><id>495</id><value>Videók átméretezése a GUI felbontásához</value></string>
   <string><id>496</id><value>Kalibrálás</value></string>
   <string><id>497</id><value>Kiterjesztések elhagyása</value></string>
@@ -434,58 +441,79 @@
   <string><id>503</id><value>Elfoglalt</value></string>
   <string><id>504</id><value>Üres</value></string>
   <string><id>505</id><value>A Média info betöltése a fájlokból...</value></string>
-  <string><id>506</id><value>Könyvtárnevek használása a leírásokhoz</value></string>
-  <string><id>507</id><value>Használat szerint</value></string>
-  <string><id>508</id><value>Parancsikonokat vagy Scannelés letiltása</value></string>
-  <string><id>509</id><value>Program Thumbnailek cache-elése</value></string>
+  <string><id>506</id><value>Könyvtárnevek szerinti megjelenítés</value></string>
+  <string><id>507</id><value>Haszn. szerint</value></string>
+  <string><id>508</id><value>Parancsikonok vagy scannelés letiltása</value></string>
+  <string><id>509</id><value>Program miniatûrök cache-elése</value></string>
   <string><id>510</id><value>Vizualizációk bekapcsolása</value></string>
-  <string><id>511</id><value>Automatikus video-mód váltás a játék-régiója alapján</value></string>
+  <string><id>511</id><value>Automatikus PAL-NTSC váltása</value></string>
   <string><id>512</id><value>Kezdõ ablak</value></string>
   <string><id>513</id><value>Fõképernyõ</value></string>
   <string><id>514</id><value>Kézi Beállítások</value></string>
   <string><id>515</id><value>Mûfaj</value></string>
   <string><id>516</id><value>Archívumok kezelése</value></string>
+  <string><id>517</id><value>Gyakran játszott albumok</value></string>
+  <string><id>518</id><value>Indítás</value></string>
+  <string><id>519</id><value>Indítás a ...-ból/bõl</value></string>
+  <string><id>520</id><value>XBE fejléc szerk.</value></string>
+  <string><id>521</id><value>Összeállítások</value></string>
+  <string><id>522</id><value>Forrás eltávolítása</value></string>
+
+  <string><id>588</id><value>Kilépés party módból</value></string>
+  <string><id>589</id><value>Party mód</value></string>
+  <string><id>590</id><value>Véletlenszerû</value></string>
+  <string><id>591</id><value>Ki</value></string>
+  <string><id>592</id><value>Aktuális</value></string>
+  <string><id>593</id><value>Mind</value></string>
+  <string><id>594</id><value>Ki</value></string>
+  <string><id>595</id><value>Ismétlés: Ki</value></string>
+  <string><id>596</id><value>Ismétlés: Aktuális</value></string>
+  <string><id>597</id><value>Ismétlés: Összes</value></string>
+
   <string><id>600</id><value>CD Rippelése</value></string>
   <string><id>601</id><value>Közepes</value></string>
-  <string><id>602</id><value>Standard</value></string>
+  <string><id>602</id><value>Normál</value></string>
   <string><id>603</id><value>Extrém</value></string>
   <string><id>604</id><value>Állandó Bit Ráta</value></string>
   <string><id>605</id><value>Rippelés...</value></string>
   <string><id>606</id><value>Sáv száma:</value></string>
-  <string><id>607</id><value>To:</value></string>
+  <string><id>607</id><value>Hova:</value></string>
   <string><id>608</id><value>Nem lehet rippelni a CD-t vagy a számot</value></string>
   <string><id>609</id><value>CDDARipPath nincs beállítva az XboxMediaCenter.xml-ben</value></string>
+
   <string><id>620</id><value>CD Rippelés</value></string>
-  <string><id>621</id><value>Encoder</value></string>
+  <string><id>621</id><value>Kódoló</value></string>
   <string><id>622</id><value>Minõség</value></string>
   <string><id>623</id><value>Bit Ráta</value></string>
   <string><id>624</id><value>Sáv szám hozzáadása</value></string>
   <string><id>625</id><value>Minden száma a(z)</value></string>
+
   <string><id>629</id><value>Nézet Mód</value></string>
   <string><id>630</id><value>Normál</value></string>
-  <string><id>631</id><value>Zoom</value></string>
+  <string><id>631</id><value>Nagyítás</value></string>
   <string><id>632</id><value>4:3</value></string>
   <string><id>633</id><value>14:9</value></string>
   <string><id>634</id><value>16:9</value></string>
   <string><id>635</id><value>Eredeti méret</value></string>
-  <string><id>636</id><value>Más</value></string>
+  <string><id>636</id><value>Egyéni</value></string>
   <string><id>637</id><value>Hangszint</value></string>
   <string><id>638</id><value>Mód</value></string>
   <string><id>639</id><value>Sávok szintje szerint</value></string>
   <string><id>640</id><value>Az album szintje szerint</value></string>
-  <string><id>641</id><value>Szintre hozás - Az erõsített számoknál</value></string>
-  <string><id>642</id><value>Szintre hozás - A nem-erõsített számoknál</value></string>
+  <string><id>641</id><value>Normalizálás hangos számoknál</value></string>
+  <string><id>642</id><value>Elõerõsítés halk számoknál</value></string>
   <string><id>643</id><value>Levágás tiltása erõsített számoknál</value></string>
   <string><id>644</id><value>Fekete csíkok eltávolítása</value></string>
-  <string><id>645</id><value>Egy nagy fájl cache-elése szükséges. Folytatod?</value></string>
-  
+  <string><id>645</id><value>Egy elég nagy fájl cache-elése szükséges. Folytatod?</value></string>
+  <string><id>646</id><value>Cím eltávolítása</value></string>
+
   <string><id>700</id><value>Adatbázis tisztítása</value></string>
   <string><id>701</id><value>A régi számok eltávolítása az adatbázisból</value></string>
   <string><id>702</id><value>Ez az útvonal már meg lett nézve.</value></string>
   <string><id>703</id><value>Nyomj az Igenre, hogy felújítsd a számokat ezen az útvonalon.</value></string>
   <string><id>704</id><value>Nyomj a Nemre, hogy hozzáadd az új számokat.</value></string>
   <string><id>705</id><value>Hálózat</value></string>
-  <string><id>706</id><value>HTTP Proxy Host</value></string>
+  <string><id>706</id><value>HTTP Proxy kiszolgáló</value></string>
   <string><id>707</id><value>HTTP Proxy Port</value></string>
   <string><id>708</id><value>HTTP Proxy Engedélyezése</value></string>
   <string><id>709</id><value>XLink Kai XTag</value></string>
@@ -495,14 +523,14 @@
   <string><id>713</id><value>HTTP Proxy</value></string>
   <string><id>714</id><value>XLink Kai</value></string>
   <string><id>715</id><value>Beosztás</value></string>
-  <string><id>716</id><value>Autómatikus (DHCP)</value></string>
+  <string><id>716</id><value>Automatikus (DHCP)</value></string>
   <string><id>717</id><value>Manuális (Statikus)</value></string>
   <string><id>718</id><value>Alap (Dashboard)</value></string>
   <string><id>719</id><value>IP Cím</value></string>
   <string><id>720</id><value>Hálózati maszk</value></string>
   <string><id>721</id><value>Alap Átjáró</value></string>
   <string><id>722</id><value>DNS Server</value></string>
-  <string><id>723</id><value>Mentés &amp; Újraindítás</value></string>
+  <string><id>723</id><value>Mentés & Újraindítás</value></string>
   <string><id>724</id><value>Helytelen cím. Az értéknek AAA.BBB.CCC.DDD-nek kell lennie.</value></string>
   <string><id>725</id><value>0 és 255 közötti számokkal.</value></string>
   <string><id>726</id><value>A Változtatások nincsenek elmentve. Folytatod?</value></string>
@@ -511,7 +539,7 @@
   <string><id>729</id><value>Internet Idõ</value></string>
   <string><id>730</id><value>Web Server Port</value></string>
   <string><id>731</id><value>Time Server Host</value></string>
-  <string><id>732</id><value>Mentés &amp; Alkalmazás</value></string>
+  <string><id>732</id><value>Mentés & Alkalmazás</value></string>
   <string><id>733</id><value>Web Server Jelszó</value></string>
   <string><id>734</id><value>Nincs jelszó</value></string>
   <string><id>735</id><value>Betûkészlet:</value></string>
@@ -532,30 +560,65 @@
   <string><id>750</id><value>Biztos vagy benne?</value></string>
   <string><id>751</id><value>Megosztás eltávolítása</value></string>
   <string><id>752</id><value>Megosztás útvonalának szerkesztése</value></string>
-  <string><id>753</id><value>Megosztás Nevének szerkesztése</value></string>
+  <string><id>753</id><value>Megosztás nevének szerkesztése</value></string>
   <string><id>754</id><value>Program Link hozzáadása</value></string>
   <string><id>755</id><value>Program elérési út szerk.</value></string>
   <string><id>756</id><value>Programnév szerkesztése</value></string>
   <string><id>757</id><value>Elérési út mélység szerkesztése</value></string>
-  <string><id>758</id><value>Program Link eltávolítása</value></string>  
-  <string><id>759</id><value>Nézet: Nagy Lista</value></string>
+  <string><id>758</id><value>Program Link eltávolítása</value></string>
+  <string><id>759</id><value>Nézet: Nagy lista</value></string>
   <string><id>760</id><value>Sárga</value></string>
   <string><id>761</id><value>Fehér</value></string>
   <string><id>762</id><value>Kék</value></string>
   <string><id>763</id><value>Világos zöld</value></string>
   <string><id>764</id><value>Sárgás-zöld</value></string>
   <string><id>765</id><value>Cián</value></string>
-  <string><id>766</id><value>Reserved</value></string>
-  <string><id>767</id><value>Reserved</value></string>
-  <string><id>768</id><value>Reserved</value></string>
-  <string><id>769</id><value>Reserved</value></string>
+  <string><id>766</id><value>Fenntartva</value></string>
+  <string><id>767</id><value>Fenntartva</value></string>
+  <string><id>768</id><value>Fenntartva</value></string>
+  <string><id>769</id><value>Fenntartva</value></string>
   <string><id>770</id><value>Hiba %i: megosztás nem elérhetõ</value></string>
   <string><id>771</id><value>Javítás a fatx korlátokhoz az FTP szerverhez</value></string>
   <string><id>772</id><value>Audio hardver</value></string>
   <string><id>773</id><value>Kutatás</value></string>
+  <string><id>774</id><value>Diavetítõ könyvtára</value></string>
+
   <string><id>998</id><value>XLink Kai</value></string>
   <string><id>999</id><value>Online Játék</value></string>
   <string><id>1000</id><value>Képernyõpihentetõ elõnézet</value></string>
+  <string><id>1001</id><value>Nem tudok kapcsolódni</value></string>
+  <string><id>1002</id><value>Az XBMC képtelen csatlakozni a hálózati helyhez</value></string>
+  <string><id>1003</id><value>Ez elõfordulhat, amennyiben nem csatlakoztattad a hálózatot</value></string>
+  <string><id>1004</id><value>Mindenképp hozzáadod?</value></string>
+  <string><id>1005</id><value>Adj nevet a megosztásnak</value></string>
+  <string><id>1006</id><value>IP cím</value></string>
+  <string><id>1007</id><value>Hálózati hely hozzáadása</value></string>
+  <string><id>1008</id><value>Protokoll</value></string>
+  <string><id>1009</id><value>Szerver címe</value></string>
+  <string><id>1010</id><value>Szerver neve</value></string>
+  <string><id>1011</id><value>Távoli elérési út:</value></string>
+  <string><id>1012</id><value>Megosztott könyvtár</value></string>
+  <string><id>1013</id><value>Port</value></string>
+  <string><id>1014</id><value>Felhasználói név</value></string>
+  <string><id>1015</id><value>Hálózati szerver</value></string>
+  <string><id>1016</id><value>Írd be a szerver hálózati címét</value></string>
+  <string><id>1017</id><value>Írd be a szerver elérési útját</value></string>
+  <string><id>1018</id><value>Kérem a port számát</value></string>
+  <string><id>1019</id><value>Kérem a felhasználó nevét</value></string>
+  <string><id>1020</id><value>%s forrás hozzáadása</value></string>
+  <string><id>1021</id><value>Hely megadása, vagy médiahely böngészése</value></string>
+  <string><id>1022</id><value>Adj nevet ennek a média-forrásnak</value></string>
+  <string><id>1023</id><value>Új megosztás böngészése</value></string>
+  <string><id>1024</id><value>Böngészés</value></string>
+  <string><id>1025</id><value>Könyvtárinformáció nem elérhetõ</value></string>
+  <string><id>1026</id><value>Forrás hozzáadása</value></string>
+  <string><id>1027</id><value>Forrás szerkesztése</value></string>
+  <string><id>1028</id><value>%s forrás szerkesztése</value></string>
+  <string><id>1029</id><value>Új név megadása</value></string>
+  <string><id>1030</id><value>Egy kép</value></string>
+  <string><id>1031</id><value>Egy (kép)könyvtár</value></string>
+  <string><id>1032</id><value>Hálózati hely hozzáadása</value></string>
+
   <string><id>1200</id><value>SMB Megosztás</value></string>
   <string><id>1201</id><value>SMB IP</value></string>
   <string><id>1202</id><value>SMB Munkacsoport</value></string>
@@ -568,61 +631,65 @@
   <string><id>1209</id><value>Az SMB-megosztás beállítása sikeresen megtörtént!</value></string>
   <string><id>1210</id><value>Eltávolítás</value></string>
   <string><id>1211</id><value>Zene</value></string>
-  <string><id>1212</id><value>Video</value></string>
+  <string><id>1212</id><value>Videó</value></string>
   <string><id>1213</id><value>Képek</value></string>
   <string><id>1214</id><value>Fájlok</value></string>
-  <string><id>1215</id><value>Zene és Video </value></string>
+  <string><id>1215</id><value>Zene és Videó </value></string>
   <string><id>1216</id><value>Zene és Képek</value></string>
   <string><id>1217</id><value>Zene és Fájlok</value></string>
-  <string><id>1218</id><value>Video és Képek</value></string>
-  <string><id>1219</id><value>Video és Fájlok</value></string>
+  <string><id>1218</id><value>Videó és Képek</value></string>
+  <string><id>1219</id><value>Videó és Fájlok</value></string>
   <string><id>1220</id><value>Képek és Fájlok</value></string>
-  <string><id>1221</id><value>Zene és Video és Képek</value></string>
-  <string><id>1222</id><value>Zene és Video és Képek és Fájlok</value></string>
+  <string><id>1221</id><value>Zene és Videó és Képek</value></string>
+  <string><id>1222</id><value>Zene, Videó, Képek, Fájlok</value></string>
   <string><id>1223</id><value>Letiltva</value></string>
   <string><id>1224</id><value>Normál Felhasználó</value></string>
   <string><id>1225</id><value>Haladó Felhasználó</value></string>
-  <string><id>1226</id><value>Fájlok &amp; Zene &amp; Video</value></string>
-  <string><id>1227</id><value>Fájlok &amp; Képek &amp; Zene</value></string>
-  <string><id>1228</id><value>Fájlok &amp; Képek &amp; Video</value></string>
- 
-  <string><id>1229</id><value>Zene &amp; Programok</value></string>
-  <string><id>1230</id><value>Video &amp; Programok</value></string>
-  <string><id>1231</id><value>Képek &amp; Programok</value></string>
-  <string><id>1232</id><value>Zene &amp; Video &amp; Képek &amp; Programok</value></string>
-  <string><id>1233</id><value>Programok &amp; Video &amp; Zene</value></string>
-  <string><id>1234</id><value>Programok &amp; Képek &amp; Zene</value></string>
-  <string><id>1235</id><value>Programok &amp; Képek &amp; Video</value></string>
+  <string><id>1226</id><value>Fájlok & Zene & Videó</value></string>
+  <string><id>1227</id><value>Fájlok & Képek & Zene</value></string>
+  <string><id>1228</id><value>Fájlok & Képek & Videó</value></string>
+  <string><id>1229</id><value>Zene & Programok</value></string>
+  <string><id>1230</id><value>Videó & Programok</value></string>
+  <string><id>1231</id><value>Képek & Programok</value></string>
+  <string><id>1232</id><value>Zene & Videó & Képek & Programok</value></string>
+  <string><id>1233</id><value>Programok & Videó & Zene</value></string>
+  <string><id>1234</id><value>Programok & Képek & Zene</value></string>
+  <string><id>1235</id><value>Programok & Képek & Video</value></string>
 
   <string><id>1245</id><value>FTP Felhasználónév</value></string>
   <string><id>1246</id><value>FTP Jelszó</value></string>
   <string><id>1247</id><value>Az FTP-Szerver jelszó beállítása sikerült!</value></string>
 
   <string><id>1250</id><value>Automata felism.</value></string>
-  <string><id>1251</id><value>XBOX Automata felismerése</value></string>
+  <string><id>1251</id><value>XBOX Automata felismerés</value></string>
   <string><id>1252</id><value>Nick-név</value></string>
   <string><id>1253</id><value>FTP Link létrehozása a Fájlok-ban</value></string>
   <string><id>1254</id><value>Felbukkanó figyelmeztetés</value></string>
   <string><id>1255</id><value>FTP felhasználónév és jelszó elküldése</value></string>
   <string><id>1256</id><value>Ping Idõköz</value></string>
-    
+  <string><id>1257</id><value>Szeretnéd csatlakoztatni az automatikusan felismert XBOX-ot?</value></string>
+
   <string><id>1396</id><value>Mozgás</value></string>
   <string><id>1397</id><value>és</value></string>
   <string><id>1398</id><value>Megállítás</value></string>
   <string><id>1399</id><value>Késõ</value></string>
   <string><id>1400</id><value>Izolált</value></string>
-  <string><id>1401</id><value>T-Showers</value></string>
+  <string><id>1401</id><value>T-záporok</value></string>
   <string><id>1402</id><value>Villám</value></string>
   <string><id>1403</id><value>Nap</value></string>
   <string><id>1404</id><value>Nehéz</value></string>
-  <string><id>1405</id><value></value></string>
+  <string><id>1405</id><value>-en/on</value></string>
   <string><id>1406</id><value>a(z)</value></string>
   <string><id>1407</id><value>Közelség</value></string>
   <string><id>1408</id><value>Jég</value></string>
   <string><id>1409</id><value>Kristályok</value></string>
   <string><id>1410</id><value>Nyugodt</value></string>
-  
-  <string><id>10000</id><value>Haza</value></string>
+
+  <string><id>2050</id><value>Teljes idõ:</value></string>
+
+  <string><id>4501</id><value>LCD típusa</value></string>
+
+  <string><id>10000</id><value>Saját XBOX-om</value></string>
   <string><id>10001</id><value>Programok</value></string>
   <string><id>10002</id><value>Képek</value></string>
   <string><id>10003</id><value>Fájlok</value></string>
@@ -630,27 +697,32 @@
   <string><id>10005</id><value>Zene</value></string>
   <string><id>10006</id><value>Videók</value></string>
   <string><id>10007</id><value>Rendszer információ</value></string>
-  <string><id>10008</id><value>Beállítások-&gt;Általános</value></string>
-  <string><id>10009</id><value>Beállítások-&gt;Képernyõ</value></string>
-  <string><id>10010</id><value>Beállítások-&gt;Képernyõ-&gt;UI Kalibráció</value></string>
-  <string><id>10011</id><value>Beállítások-&gt;Képernyõ-&gt;Képenyõ Kalibráció</value></string>
-  <string><id>10012</id><value>Beállítások-&gt;Képek</value></string>
-  <string><id>10013</id><value>Beállítások-&gt;Programok</value></string>
-  <string><id>10014</id><value>Beállítások-&gt;Idõjárás</value></string>
-  <string><id>10015</id><value>Beállítások-&gt;Zene</value></string>
-  <string><id>10016</id><value>Beállítások-&gt;Rendszer</value></string>
-  <string><id>10017</id><value>Beállítások-&gt;Videók</value></string>
-  <string><id>10018</id><value>Beállítások-&gt;Hálózat</value></string>
-  <string><id>10019</id><value>Beállítások-&gt;Megjelenés</value></string>
+  <string><id>10008</id><value>Beállítások->Általános</value></string>
+  <string><id>10009</id><value>Beállítások->Képernyõ</value></string>
+  <string><id>10010</id><value>Beállítások->Képernyõ->UI Kalibráció</value></string>
+  <string><id>10011</id><value>Beállítások->Képernyõ->Képenyõ Kalibráció</value></string>
+  <string><id>10012</id><value>Beállítások->Képek</value></string>
+  <string><id>10013</id><value>Beállítások->Programok</value></string>
+  <string><id>10014</id><value>Beállítások->Idõjárás</value></string>
+  <string><id>10015</id><value>Beállítások->Zene</value></string>
+  <string><id>10016</id><value>Beállítások->Rendszer</value></string>
+  <string><id>10017</id><value>Beállítások->Videók</value></string>
+  <string><id>10018</id><value>Beállítások->Hálózat</value></string>
+  <string><id>10019</id><value>Beállítások->Megjelenés</value></string>
   <string><id>10020</id><value>Szkriptek</value></string>
   <string><id>10021</id><value>Videók/mûfajok</value></string>
   <string><id>10022</id><value>Videók/színészek</value></string>
   <string><id>10023</id><value>Videók/évek</value></string>
+
   <string><id>10025</id><value>Videók/címek</value></string>
+
   <string><id>10028</id><value>Videók/playlist</value></string>
-  <string><id>10034</id><value>Beállítások-&gt;Profilok</value></string>
-  <string><id>10100</id><value>Igen/nem dialógus</value></string>
-  <string><id>10101</id><value>Folyamatjelzõ dialógus</value></string>
+
+  <string><id>10034</id><value>Beállítások->Profilok</value></string>
+
+  <string><id>10100</id><value>Igen/nem párbeszédpanel</value></string>
+  <string><id>10101</id><value>Folyamatjelzõ párbeszédpanel</value></string>
+
   <string><id>10500</id><value>Zenék/playlist</value></string>
   <string><id>10501</id><value>Zenék/fájlok</value></string>
   <string><id>10502</id><value>Zenék/albumok</value></string>
@@ -660,7 +732,7 @@
   <string><id>10506</id><value>Alkalmazások</value></string>
   <string><id>10507</id><value>Konfiguráció</value></string>
   <string><id>10508</id><value>Idõjárás-elõrejelzés</value></string>
-  <string><id>10509</id><value>Netes játék</value></string>
+  <string><id>10509</id><value>Hálózati játék</value></string>
   <string><id>10510</id><value>Kiterjesztések</value></string>
   <string><id>10511</id><value>Rendszerinfo</value></string>
   <string><id>10512</id><value>Zenék - Albumok</value></string>
@@ -674,29 +746,60 @@
   <string><id>10520</id><value>Filmek - Cím</value></string>
   <string><id>10521</id><value>Filmek - Év</value></string>
   <string><id>10522</id><value>Filmek - Lista</value></string>
-  <string><id>10523</id><value>Album Info</value></string>
-  <string><id>10524</id><value>Film Info</value></string>
+  <string><id>10523</id><value>Album info</value></string>
+  <string><id>10524</id><value>Film info</value></string>
+
   <string><id>11000</id><value>billentyûzet</value></string>
+
   <string><id>12000</id><value>Válassz dialógot</value></string>
   <string><id>12001</id><value>Zenék/info</value></string>
   <string><id>12002</id><value>Dialóg OK</value></string>
   <string><id>12003</id><value>Videók/Info</value></string>
   <string><id>12004</id><value>Scriptek/Info</value></string>
   <string><id>12005</id><value>Teljesképernyõs video</value></string>
-  <string><id>12006</id><value>Audio vizizalizáció</value></string>
+  <string><id>12006</id><value>Audio vizualizáció</value></string>
   <string><id>12007</id><value>Képek/slideshow</value></string>
-  <string><id>12008</id><value>Filehalmozás dialóg</value></string>
+  <string><id>12008</id><value>Fájl-halmozás dialóg</value></string>
+  <string><id>12009</id><value>Könyvtárszerkezet frissítése</value></string>
+  <string><id>12010</id><value>Vissza a Saját Zenékhez</value></string>
+  <string><id>12011</id><value>Vissza a Saját Videókhoz</value></string>
+  <string><id>12012</id><value>Trainer lista frissítése</value></string>
+  <string><id>12013</id><value>Trainer</value></string>
+  <string><id>12014</id><value>Nem találtam trainert</value></string>
+  <string><id>12015</id><value>Trainer beállításai</value></string>
+  <string><id>12016</id><value>Minden regisztrált trainer eltûnt. Frissítsd a listát!</value></string>
+  <string><id>12017</id><value>Automatikus folytatás az elõzõ helyrõl</value></string>
+  <string><id>12018</id><value>Nem</value></string>
+  <string><id>12019</id><value>Igen</value></string>
+  <string><id>12020</id><value>Kérdezzen</value></string>
+  <string><id>12021</id><value>Indítás elölrõl</value></string>
+  <string><id>12022</id><value>Folytatás az elõzõ helyrõl</value></string>
+
+  <string><id>12310</id><value>0</value></string>
+  <string><id>12311</id><value>1</value></string>
+  <string><id>12312</id><value>2</value></string>
+  <string><id>12313</id><value>3</value></string>
+  <string><id>12314</id><value>4</value></string>
+  <string><id>12315</id><value>5</value></string>
+  <string><id>12316</id><value>6</value></string>
+  <string><id>12317</id><value>7</value></string>
+  <string><id>12318</id><value>8</value></string>
+  <string><id>12319</id><value>9</value></string>
+  <string><id>12320</id><value>c</value></string>
+  <string><id>12321</id><value>ok</value></string>
+  <string><id>12322</id><value>*</value></string>
+
   <string><id>12324</id><value>XBMC Mester-zár</value></string>
   <string><id>12325</id><value>Könyvtár zárolva</value></string>
   <string><id>12326</id><value>Add meg a jelszót</value></string>
   <string><id>12327</id><value>Add meg a mester-jelszót és nyomd meg az Enter-t,</value></string>
-  <string><id>12328</id><value>Add meg a Feloldó-kódot és nyomd meg az Enter-t,</value></string> 
+  <string><id>12328</id><value>Add meg a Feloldó-kódot és nyomd meg az Enter-t,</value></string>
   <string><id>12329</id><value>ill. nyomj C-t a visszalépéshez</value></string>
   <string><id>12330</id><value>Add meg az XBOX-gamepad gomb-kombinációt és </value></string>
   <string><id>12331</id><value>nyomd meg a Start-ot, vagy a Back-et a visszalépéshez</value></string>
   <string><id>12332</id><value>Zárolás</value></string>
   <string><id>12333</id><value>Feloldás</value></string>
-  <string><id>12334</id><value>Zár Reset</value></string>
+  <string><id>12334</id><value>Reset zárolás</value></string>
   <string><id>12335</id><value>Zárolás feloldása</value></string>
   <string><id>12336</id><value>Állítsd be a zárolás típusát:</value></string>
   <string><id>12337</id><value>Numerikus jelszó</value></string>
@@ -717,10 +820,11 @@
   <string><id>12352</id><value>Add meg a Mester-kód gamepad gomb-kombinációt és </value></string>
   <string><id>12353</id><value>Zár újra-aktiválása</value></string>
   <string><id>12354</id><value>Felülbíráljam a mappa-zárakat a köv. indításig?</value></string>
-  <string><id>12355</id><value>A mappa-zárak automatikusan újra mûködésbe lépnek.)</value></string>
+  <string><id>12355</id><value>A mappa-zárak automatikusan újra muködésbe lépnek.)</value></string>
   <string><id>12356</id><value>Zárolás megváltoztatása</value></string>
   <string><id>12357</id><value>Megosztás zárolása</value></string>
   <string><id>12358</id><value>Üres jelszót adtál meg. Töltsd ki újra!</value></string>
+
   <string><id>12360</id><value>Mester Zár</value></string>
   <string><id>12361</id><value>Próbálkozások száma</value></string>
   <string><id>12362</id><value>Leállítás engedélyezése</value></string>
@@ -733,26 +837,68 @@
   <string><id>12369</id><value>XBMC indítási zár</value></string>
   <string><id>12370</id><value>A Mester-zár módja megváltozott, a Mester-kód nem volt beállítva!</value></string>
   <string><id>12371</id><value>Kérlek állíts be új Mester-kódot!</value></string>
-  <string><id>12372</id><value>Zárolási beállítások &amp; Fájlok</value></string>
-  <string><id>12373</id><value>Beállítások &amp; Fájlok</value></string>
+  <string><id>12372</id><value>Zárolási beállítások & Fájlok</value></string>
+  <string><id>12373</id><value>Beállítások & Fájlok</value></string>
   <string><id>12374</id><value>Lemez zárolása</value></string>
   <string><id>12375</id><value>Mester-felhasználói mód</value></string>
-  
-  <string><id>12390</id><value>Rendszer uptime</value></string>
+  <string><id>12376</id><value>Minden filmre alapbeállításként</value></string>
+  <string><id>12377</id><value>Ez törli az összes eddigi beállítást</value></string>
+  <string><id>12378</id><value>Minden kép bemutatása </value></string>
+  <string><id>12379</id><value>Forgatás és nagyítás használata</value></string>
+  <string><id>12380</id><value>NTSC videók PAL értékeken játszása</value></string>
+  <string><id>12381</id><value>PAL videók NTSC értékekkel játszása</value></string>
+  <string><id>12382</id><value>NTSC videók PAL60-ként játszása</value></string>
+  <string><id>12383</id><value>12 egységes óra</value></string>
+  <string><id>12384</id><value>24 egységes óra</value></string>
+  <string><id>12385</id><value>Nap/Hónap</value></string>
+  <string><id>12386</id><value>Hónap/Nap</value></string>
+  <string><id>12387</id><value>Adatbázis ellenõrzése</value></string>
+
+  <string><id>12390</id><value>Üzemidõ</value></string>
   <string><id>12391</id><value>perc</value></string>
   <string><id>12392</id><value>óra</value></string>
   <string><id>12393</id><value>nap</value></string>
-  
+  <string><id>12394</id><value>Összes üzemidõ</value></string>
+
   <string><id>12600</id><value>Idõjárás</value></string>
+
   <string><id>12900</id><value>Képernyõkímélõ</value></string>
   <string><id>12901</id><value>Teljesképernyõs OSD</value></string>
+
   <string><id>13000</id><value>Rendszer</value></string>
-  <string><id>13001</id><value>Közvetlen HD Lepörgés</value></string>
-  <string><id>13002</id><value>Csak Video</value></string>
+  <string><id>13001</id><value>Azonnali merevlemez kikapcsolás</value></string>
+  <string><id>13002</id><value>Csak Videó</value></string>
   <string><id>13003</id><value>- Késleltetés</value></string>
   <string><id>13004</id><value>- Minimum fájl hossz</value></string>
   <string><id>13005</id><value>Leállítás</value></string>
-  <string><id>13100</id><value>Flicker szûró</value></string>
+  <string><id>13006</id><value>Dashboard</value></string>
+
+  <string><id>13100</id><value>Flicker szûrõ</value></string>
+
+  <string><id>13150</id><value>HDD Kulcs:</value></string>
+  <string><id>13151</id><value>HDD Hõmérséklet:</value></string>
+  <string><id>13152</id><value>DVD típusa:</value></string>
+  <string><id>13153</id><value>DVD Firmware:</value></string>
+  <string><id>13154</id><value>HDD típusa:</value></string>
+  <string><id>13155</id><value>HDD sorozatszáma:</value></string>
+  <string><id>13156</id><value>HDD Firmware:</value></string>
+  <string><id>13157</id><value>HDD Jelszó:</value></string>
+  <string><id>13158</id><value>HDD Lock Állása:</value></string>
+  <string><id>13159</id><value>Alhálózati maszk:</value></string>
+  <string><id>13160</id><value>Átjáró:</value></string>
+  <string><id>13161</id><value>DNS-szerver</value></string>
+  <string><id>13162</id><value>A Beállíás meghiúsult</value></string>
+  <string><id>13163</id><value>Gamepad-ek ezeken a Portokon:</value></string>
+  <string><id>13164</id><value>Billentyûzet ezen a Porton:</value></string>
+  <string><id>13165</id><value>Egér ezen a Porton:</value></string>
+  <string><id>13166</id><value>Headset ezen a Porton:</value></string>
+  <string><id>13167</id><value>MemoryStick ezen a Porton:</value></string>
+  <string><id>13168</id><value>Távirányító ezen a Porton:</value></string>
+  <string><id>13169</id><value>CD választás mellõzése</value></string>
+  <string><id>13170</id><value>Soha</value></string>
+  <string><id>13171</id><value>Azonnal</value></string>
+  <string><id>13172</id><value>%i másodperc után</value></string>
+
   <string><id>13200</id><value>Profilok</value></string>
   <string><id>13201</id><value>Letörlöd a(z) '%s' profilt?</value></string>
   <string><id>13202</id><value>Aktuális beállítások lementése profilként...</value></string>
@@ -761,39 +907,56 @@
   <string><id>13205</id><value>Ismeretlen</value></string>
   <string><id>13206</id><value>Felülírás</value></string>
   <string><id>13207</id><value>Felülírod a(z) '%s' profilt?</value></string>
-  <string><id>13208</id><value>Ébresztõ óra</value></string>
-  <string><id>13209</id><value>Ébresztõ idõköze (percekben)</value></string>
-  <string><id>13210</id><value>Elindítva, ébresztés %i perc múlva!</value></string>
-  <string><id>13211</id><value>Ébresztõ!</value></string>
-  <string><id>13212</id><value>Visszavonva, %i perc %i mp volt vissza</value></string>
-  
-  <string><id>13300</id><value>Hûtõventillátor sebesség:</value></string>
-  <string><id>13301</id><value>Auto hõmérséklet irányítás</value></string>
-  <string><id>13302</id><value>Ventilátor sebesség irányítás</value></string>
-  <string><id>13303</id><value>Felület Betûtípusok</value></string>
-  <string><id>13304</id><value>Bi-Directional Stringek megfordítása</value></string>
-  <string><id>13305</id><value>RSS Üzenetek Engedélyezése</value></string>
-  <string><id>13306</id><value>Gyökérkönyvtár fálljainak elhagyása</value></string>
-  <string><id>13307</id><value>Sáv számok elhagyása</value></string>
-  <string><id>13308</id><value>Újraakarod indítani az egész Xbox-ot</value></string>
-  <string><id>13309</id><value>az XBMC helyett?</value></string>
-  
   <string><id>13208</id><value>Ébresztõóra</value></string>
   <string><id>13209</id><value>Jelzés intervalluma (hány perc múlva)</value></string>
   <string><id>13210</id><value>Elindítva, ébresztés %i perc múlva</value></string>
   <string><id>13211</id><value>Ébresztés!</value></string>
   <string><id>13212</id><value>Megszakítva, %i perc %i mp volt vissza</value></string>
+
+  <string><id>13249</id><value>Feliratok keresése RAR-ban</value></string>
+  <string><id>13250</id><value>Felirat keresése:</value></string>
+  <string><id>13251</id><value>Elem mozgatása</value></string>
+  <string><id>13252</id><value>Elem mozgatása ide:</value></string>
+  <string><id>13253</id><value>Mozgatás törlése</value></string>
+
+  <string><id>13270</id><value>Hardver:</value></string>
+  <string><id>13271</id><value>CPU Sebesség:</value></string>
+
+  <string><id>13274</id><value>Az XBOX csatlakoztatva, de DNS nem elérhetõ</value></string>
+  <string><id>13275</id><value>Merevlemez</value></string>
+  <string><id>13276</id><value>DVD-ROM</value></string>
+  <string><id>13277</id><value>Tárolóeszköz</value></string>
+  <string><id>13278</id><value>Alapértelmezett</value></string>
+  <string><id>13279</id><value>Hálózat</value></string>
+  <string><id>13280</id><value>Videó</value></string>
+  <string><id>13281</id><value>Hardver</value></string>
+  <string><id>13282</id><value>_</value></string>
+  <string><id>13283</id><value>Kernel Verzió:</value></string>
+  <string><id>13284</id><value>CPU Sebesség:</value></string>
+  <string><id>13285</id><value>Felismert BIOS:</value></string>
+  <string><id>13286</id><value>Video kódoló:</value></string>
+  <string><id>13287</id><value>Képernyõ-felbontás:</value></string>
+  <string><id>13288</id><value>XBox Verziószám:</value></string>
+  <string><id>13289</id><value>XBox Sorozatszám:</value></string>
+  <string><id>13290</id><value>XBOX gyártó:</value></string>
+  <string><id>13291</id><value>ModChip:</value></string>
+  <string><id>13292</id><value>A/V Kábel:</value></string>
+  <string><id>13293</id><value>Video és XBE Régiókód:</value></string>
+  <string><id>13294</id><value>DVD Régiókód:</value></string>
+  <string><id>13295</id><value>Internet:</value></string>
+  <string><id>13296</id><value>Az Xbox nincs csatlakoztatva!</value></string>
+  <string><id>13297</id><value>Az Xbox nincs csatlakoztatva! Ellenorizd a beállításokat!</value></string>
+  <string><id>13298</id><value>XBLIVE Kulcs:</value></string>
   <string><id>13299</id><value>Cél hõmérséklet</value></string>
-  
   <string><id>13300</id><value>Ventillátor sebesség</value></string>
   <string><id>13301</id><value>Automata hõmérséklet-vezérlés</value></string>
   <string><id>13302</id><value>Ventillátor-sebesség felülbírálása</value></string>
-  <string><id>13303</id><value>Skin betüi</value></string>
+  <string><id>13303</id><value>Skin betûkészlet</value></string>
   <string><id>13304</id><value>Kétirányú sztringek megfordításának bekapcs.</value></string>
   <string><id>13305</id><value>RSS-Feedek bekapcsolása</value></string>
   <string><id>13306</id><value>A szülõ-könyvtár elemeinek elrejtése</value></string>
   <string><id>13307</id><value>Sablon Zenesávok elnevezéséhez</value></string>
-  <string><id>13308</id><value>Szeretnéd újraindítani az xboxod?</value></string>
+  <string><id>13308</id><value>Szeretnéd újraindítani az XBoxod?</value></string>
   <string><id>13309</id><value>az XBMC helyett?</value></string>
   <string><id>13310</id><value>Zoom effekt</value></string>
   <string><id>13311</id><value>Float effekt</value></string>
@@ -801,16 +964,16 @@
   <string><id>13313</id><value>Reset/Újraindítás</value></string>
   <string><id>13314</id><value>Zene OSD Idõ</value></string>
   <string><id>13315</id><value>Minták létrehozása</value></string>
-  <string><id>13316</id><value>Rekurzív Minták</value></string>
-  <string><id>13317</id><value>Slideshow Nézése</value></string>
+  <string><id>13316</id><value>Rekurzív minták</value></string>
+  <string><id>13317</id><value>Slideshow nézése</value></string>
   <string><id>13318</id><value>Rekurzív Slideshow</value></string>
-  <string><id>13319</id><value>Randomizálás</value></string>
+  <string><id>13319</id><value>Véletlenszerû</value></string>
   <string><id>13320</id><value>Sztereo</value></string>
   <string><id>13321</id><value>Csak a Bal</value></string>
   <string><id>13322</id><value>Csak a Jobb</value></string>
-  <string><id>13323</id><value>CD+G Engedélyezése</value></string>
-  <string><id>13324</id><value>Háttér Átütés</value></string>
-  <string><id>13325</id><value>Elõtér Átütés</value></string>
+  <string><id>13323</id><value>CD+G engedélyezése</value></string>
+  <string><id>13324</id><value>Háttér áttûtés</value></string>
+  <string><id>13325</id><value>Elõtér áttûtés</value></string>
   <string><id>13326</id><value>A/V késleltetés</value></string>
   <string><id>13327</id><value>Karaoke</value></string>
   <string><id>13328</id><value>%s nem található.</value></string>
@@ -819,12 +982,12 @@
   <string><id>13331</id><value>Hiba: Nincs memória.</value></string>
   <string><id>13332</id><value>Mozgatás Fel</value></string>
   <string><id>13333</id><value>Mozgatás Le</value></string>
-  <string><id>13334</id><value>cím Szerkesztése</value></string>
-  <string><id>13335</id><value>Alappá tétel</value></string>
-  <string><id>13336</id><value>Gomb Eltávolítása</value></string>
+  <string><id>13334</id><value>cím szerkesztése</value></string>
+  <string><id>13335</id><value>Alapbeállítás módosítása</value></string>
+  <string><id>13336</id><value>Gomb eltávolítása</value></string>
   <string><id>13337</id><value>2 csatornás PCM áteresztés</value></string>
   <string><id>13338</id><value>Elülsõ LED</value></string>
-  <string><id>13339</id><value>Elülsõ LED Színe</value></string>
+  <string><id>13339</id><value>Elülsõ LED színe</value></string>
   <string><id>13340</id><value>Maradjon az eredeti</value></string>
   <string><id>13341</id><value>Zöld</value></string>
   <string><id>13342</id><value>Narancs</value></string>
@@ -833,40 +996,40 @@
   <string><id>13345</id><value>LED kikapcsolása lejátszás alatt</value></string>
   <string><id>13346</id><value>Film-információ</value></string>
   <string><id>13347</id><value>Elem felvétele</value></string>
-  <string><id>13348</id><value>Keresés IMDb-ben...</value></string>
+  <string><id>13348</id><value>Keresés IMDB-ben...</value></string>
   <string><id>13349</id><value>Info lekérése minden Fájlra</value></string>
   <string><id>13350</id><value>Most játszott...</value></string>
-  <string><id>13351</id><value>Album Információ</value></string>
+  <string><id>13351</id><value>Album információ</value></string>
   <string><id>13352</id><value>A teljes mappa beolvasása</value></string>
   <string><id>13353</id><value>Beolvasás megállítása</value></string>
-  <string><id>13354</id><value>Megjelenítési metódus</value></string>
-  <string><id>13355</id><value>Alacsony min. Pixel Shader</value></string>
+  <string><id>13354</id><value>Render mód</value></string>
+  <string><id>13355</id><value>Gyenge min. árnyalás</value></string>
   <string><id>13356</id><value>Hardveres átfedések</value></string>
-  <string><id>13357</id><value>Magas min. Pixel Shader</value></string>
+  <string><id>13357</id><value>Magas min. árnyalás</value></string>
   <string><id>13358</id><value>Elem lejátszása</value></string>
-  <string><id>13359</id><value>Elõadó-Thumb beállítása</value></string>
-  <string><id>13360</id><value>Thumbnailek legyártása</value></string>
-  <string><id>13361</id><value>Voice Engedélyezése</value></string>
-  <string><id>13362</id><value>Voice Maszk</value></string>
-  <string><id>13363</id><value>- Spectrum Energy Weight Engedélyezése</value></string>
-  <string><id>13364</id><value>-- Spectrum Energy Weight Értéke</value></string>
-  <string><id>13365</id><value>- Pitch Scaling Engedélyezése</value></string>
-  <string><id>13366</id><value>-- Pitch Scaling Értéke</value></string>
-  <string><id>13367</id><value>- Whisper Factor Engedélyezése</value></string>
-  <string><id>13368</id><value>-- Whisper Factor Értéke</value></string>
-  <string><id>13369</id><value>- Robotic Factor Engedélyezése</value></string>
-  <string><id>13370</id><value>-- Robotic Factor Értéke</value></string>
+  <string><id>13359</id><value>Elõadó-Miniatûr beállítása</value></string>
+  <string><id>13360</id><value>Miniatûrök készítése</value></string>
+  <string><id>13361</id><value>Voice engedélyezése</value></string>
+  <string><id>13362</id><value>Voice maszk</value></string>
+  <string><id>13363</id><value>- Spectrum Energy Weight engedélyezése</value></string>
+  <string><id>13364</id><value>-- Spectrum Energy Weight értéke</value></string>
+  <string><id>13365</id><value>- Pitch Scaling engedélyezése</value></string>
+  <string><id>13366</id><value>-- Pitch Scaling értéke</value></string>
+  <string><id>13367</id><value>- Whisper Factor engedélyezése</value></string>
+  <string><id>13368</id><value>-- Whisper Factor értéke</value></string>
+  <string><id>13369</id><value>- Robotic Factor engedélyezése</value></string>
+  <string><id>13370</id><value>-- Robotic Factor értéke</value></string>
   <string><id>13371</id><value>- Port 0 Hang</value></string>
   <string><id>13372</id><value>- Port 1 Hang</value></string>
   <string><id>13373</id><value>- Port 2 Hang</value></string>
   <string><id>13374</id><value>- Port 3 Hang</value></string>
-  <string><id>13375</id><value>Eszköz Engedélyezése</value></string>
+  <string><id>13375</id><value>Eszköz engedélyezése</value></string>
   <string><id>13376</id><value>Hangerõ</value></string>
-  <string><id>13377</id><value>Alapértelmezett Nézet</value></string>
-  <string><id>13378</id><value>Alapértelmezett Fényesség</value></string>
-  <string><id>13379</id><value>Alapértelmezett Kontraszt</value></string>
-  <string><id>13380</id><value>Alapértelmezett Gamma</value></string>
-  <string><id>13381</id><value>Video folytatása</value></string>
+  <string><id>13377</id><value>Alapértelmezett nézet</value></string>
+  <string><id>13378</id><value>Alapértelmezett fényesség</value></string>
+  <string><id>13379</id><value>Alapértelmezett kontraszt</value></string>
+  <string><id>13380</id><value>Alapértelmezett gamma</value></string>
+  <string><id>13381</id><value>Videó folytatása</value></string>
   <string><id>13382</id><value>Voice Mask - Port 0</value></string>
   <string><id>13383</id><value>Voice Mask - Port 1</value></string>
   <string><id>13384</id><value>Voice Mask - Port 2</value></string>
@@ -874,23 +1037,29 @@
   <string><id>13386</id><value>Idõ-alapú pörgetés</value></string>
   <string><id>13387</id><value>Sáv-elnevezési sablon jobbra</value></string>
   <string><id>13388</id><value>Gyári értékek</value></string>
-  <string><id>13389</id><value>Ehhez a vizualizációhoz&#10;nincsenek értékek</value></string>
-  <string><id>13390</id><value>Ehhez a vizualizációhoz&#10;nincsenek beállítások</value></string>
+  <string><id>13389</id><value>Ehhez a vizualizációhoz
+nincsenek értékek</value></string>
+  <string><id>13390</id><value>Ehhez a vizualizációhoz
+nincsenek beállítások</value></string>
   <string><id>13391</id><value>Tálca ki/be</value></string>
   <string><id>13392</id><value>Vizualizáció használata zene lejátszásakor</value></string>
   <string><id>13393</id><value>Méret kiszámolása</value></string>
   <string><id>13394</id><value>Mappa méretének kiszámolása</value></string>
-  <string><id>13395</id><value>Video beállítások</value></string>
+  <string><id>13395</id><value>Videó beállítások</value></string>
   <string><id>13396</id><value>Hang és felirat beállítások</value></string>
   <string><id>13397</id><value>Felirat bekapcsolása</value></string>
   <string><id>13398</id><value>Könyvjelzõk</value></string>
   <string><id>13399</id><value>A "The" szócska figyelmen kívül hagyása</value></string>
   <string><id>13400</id><value>Zenesávok összemosása (fade)</value></string>
+  <string><id>13401</id><value>%s utáni böngészés</value></string>
+  <string><id>13402</id><value>Szám státuszának mutatása</value></string>
+  <string><id>13403</id><value>Alapéártelmezés törlése</value></string>
+  <string><id>13404</id><value>Folytatás</value></string>
+  <string><id>13405</id><value>Miniatûrök kérése</value></string>
 
-
-  <string><id>14000</id><value>Halmozás: Ki</value></string>
-  <string><id>14001</id><value>Halmozás: Egyszerû</value></string>
-  <string><id>14002</id><value>Halmozás: Fuzzy</value></string>
+  <string><id>14000</id><value>Egyesítés: ki</value></string>
+  <string><id>14001</id><value>Egyesítés: be</value></string>
+  <string><id>14002</id><value>Egyesítés: Fuzzy</value></string>
   <string><id>14003</id><value>Playlist fájl letöltése...</value></string>
   <string><id>14004</id><value>Sávlista letöltése...</value></string>
   <string><id>14005</id><value>Sávlista elemzése...</value></string>
@@ -898,14 +1067,14 @@
   <string><id>14007</id><value>Hiba a playlist fájl letöltése közben</value></string>
   <string><id>14008</id><value>Kai Értesítések engedélyezése</value></string>
   <string><id>14009</id><value>Játék könyvtár</value></string>
-  <string><id>14010</id><value>Automatikus átváltás Thumbnail-alapú nézetre</value></string>
-  <string><id>14011</id><value>Automatikus átváltás engedélyezése Thumbnail-nézetre</value></string>
+  <string><id>14010</id><value>Automatikus átváltás miniatûr nézetre</value></string>
+  <string><id>14011</id><value>Automatikus váltás miniatûr nézetre</value></string>
   <string><id>14012</id><value>- Nagy ikonok használata</value></string>
-  <string><id>14013</id><value>- Átváltás</value></string>
+  <string><id>14013</id><value>- Átváltás: </value></string>
   <string><id>14014</id><value>- Százalék</value></string>
-  <string><id>14015</id><value>Ha Fájl nincs, de legalább egy Thumbn. van</value></string>
-  <string><id>14016</id><value>Legalább egy Fájl és Thumbnail</value></string>
-  <string><id>14017</id><value>Thumbnailek hányada</value></string>
+  <string><id>14015</id><value>egy miniatûr, fájlok nélkül</value></string>
+  <string><id>14016</id><value>legalább egy fájl és miniatûr</value></string>
+  <string><id>14017</id><value>Miniatûrök aránya</value></string>
   <string><id>14018</id><value>Nézet-opciók</value></string>
   <string><id>14019</id><value>1. Régió beállítása</value></string>
   <string><id>14020</id><value>2. Régió beállítása</value></string>
@@ -914,10 +1083,14 @@
   <string><id>14023</id><value>Nincs TV</value></string>
   <string><id>14024</id><value>Add meg a legközelebbi nagyvárost, vagy egy irányítószámot (USA)</value></string>
   <string><id>14025</id><value>Video/Audio/DVD Cache - Merevlemez</value></string>
+  <string><id>14026</id><value>Video Cache - DVDRom</value></string>
   <string><id>14027</id><value>- Helyi Hálózat</value></string>
   <string><id>14028</id><value>- Internet</value></string>
+
+  <string><id>14030</id><value>Audio Cache - DVDRom</value></string>
   <string><id>14031</id><value>- Helyi Hálózat</value></string>
   <string><id>14032</id><value>- Internet</value></string>
+
   <string><id>14034</id><value>DVD Cache - DVDRom</value></string>
   <string><id>14035</id><value>- Helyi Hálózat</value></string>
   <string><id>14036</id><value>Szerverek</value></string>
@@ -943,11 +1116,10 @@
   <string><id>14056</id><value>Beolvasás leállítása</value></string>
   <string><id>14057</id><value>Nem lehetséges, miközben a média-infókat olvasom be</value></string>
   <string><id>14058</id><value>Filmes szemcsék Effekt</value></string>
-  <string><id>14059</id><value>Saját thumbnailek keresése távoli megosztásokon</value></string>
+  <string><id>14059</id><value>Saját miniatûrök keresése távoli megosztásokon</value></string>
   <string><id>14060</id><value>Cache ismeretlen típusoknál - Internet</value></string>
   <string><id>14061</id><value>Auto</value></string>
   <string><id>14062</id><value>Add meg a felhasználónevet a következõhöz:</value></string>
-  
   <string><id>14063</id><value>Dátum és Idõ</value></string>
   <string><id>14064</id><value>Év beállítása</value></string>
   <string><id>14065</id><value>Hónap beállítása</value></string>
@@ -957,10 +1129,12 @@
   <string><id>14069</id><value>Szeretnéd most érvényesíteni ezeket a változásokat?</value></string>
   <string><id>14070</id><value>Változtatások alkalmazása most</value></string>
   <string><id>14071</id><value>Fájltörlés engedélyezése</value></string>
-	  
+  <string><id>14072</id><value>XLink Kai engedélyezése</value></string>
+  <string><id>14073</id><value>XLink Kai nincs engedélyezve</value></string>
+
   <string><id>15000</id><value>XLink Kai</value></string>
   <string><id>15001</id><value>Nem csatlakozol a szolgáltatáshoz, szeretnéd ha az XBMC</value></string>
-  <string><id>15002</id><value>megpróbálna most csatlakozni?</value></string>
+  <string><id>15002</id><value>Megpróbálna most csatlakozni?</value></string>
   <string><id>15003</id><value>Írd be az üzeneted.</value></string>
   <string><id>15004</id><value>Meghívást kaptál a következõ játékra: %s.</value></string>
   <string><id>15005</id><value>Dátum: %s</value></string>
@@ -971,19 +1145,19 @@
   <string><id>15010</id><value>Barátok</value></string>
   <string><id>15011</id><value>Nézet: Barátok</value></string>
   <string><id>15012</id><value>Csatlakozás</value></string>
-  <string><id>15013</id><value>Voice</value></string>
+  <string><id>15013</id><value>Hang</value></string>
   <string><id>15014</id><value>Meghívás</value></string>
   <string><id>15015</id><value>Eltávolítás</value></string>
   <string><id>15016</id><value>Játékok</value></string>
   <string><id>15017</id><value>Nézet: Játékok</value></string>
   <string><id>15018</id><value>Belépés</value></string>
   <string><id>15019</id><value>Hozzáadás</value></string>
-  <string><id>15020</id><value>Host</value></string>
+  <string><id>15020</id><value>Kiszolgáló</value></string>
   <string><id>15021</id><value>Arénák</value></string>
   <string><id>15022</id><value>Nézet: Arénák</value></string>
   <string><id>15023</id><value>Játék</value></string>
   <string><id>15024</id><value>Hozzáadás</value></string>
-  <string><id>15025</id><value>Host</value></string>
+  <string><id>15025</id><value>Kiszolgáló</value></string>
   <string><id>15026</id><value>Csevegés</value></string>
   <string><id>15027</id><value>Nézet: Csevegés</value></string>
   <string><id>15028</id><value>Billentyûzet</value></string>
@@ -996,7 +1170,7 @@
   <string><id>15035</id><value>beszélgetésre invitál</value></string>
   <string><id>15036</id><value>meghívást küldött</value></string>
   <string><id>15037</id><value>Az XBMC nem tudja megállapítani, hogy stabil-e a kapcsolatod.</value></string>
-  <string><id>15038</id><value>Valószínûleg problémáid adódnak, ha játékokat hozol létre, vagy csatlkozni akarsz.</value></string>
+  <string><id>15038</id><value>Valószínûleg problémáid adódnak, ha játékokat hozol létre, vagy csatlakozni akarsz.</value></string>
   <string><id>15039</id><value>Az Xbox Media Center nem találja a játékot.</value></string>
   <string><id>15040</id><value>Helyezd a játékot a meghajtóba, vagy nyomd meg az 'A'-t a megszakításhoz</value></string>
   <string><id>15041</id><value>A játék automatikusan elindul.</value></string>
@@ -1016,11 +1190,12 @@
   <string><id>15055</id><value>Válassz játékot:</value></string>
   <string><id>15056</id><value>Írj be egy üzenetet:</value></string>
   <string><id>15057</id><value>Elküldés</value></string>
-  <string><id>15058</id><value>Host</value></string>
+  <string><id>15058</id><value>Kiszolgáló</value></string>
   <string><id>15059</id><value>A meghívás elfogadva!</value></string>
   <string><id>15060</id><value>Üzenetet ide</value></string>
   <string><id>15061</id><value>Meghívtak a következõ játékra: %s.</value></string>
   <string><id>15062</id><value>Más mplayer elérési út használata</value></string>
+
   <string><id>15100</id><value>Könyvtár</value></string>
   <string><id>15101</id><value>Adatbázis</value></string>
   <string><id>15102</id><value>* Minden Album</value></string>
@@ -1031,81 +1206,76 @@
   <string><id>15107</id><value>Bufferelés...</value></string>
   <string><id>15108</id><value>Navigációs hangok</value></string>
   <string><id>15109</id><value>A Skin beállítása</value></string>
-  <string><id>15200</id><value>AudioScrobbler</value></string>
-  <string><id>15201</id><value>Dal Infók elküldése az AudioScrobbler-nek</value></string>
-  <string><id>15202</id><value>AudioScrobbler Felhasználónév</value></string>
-  <string><id>15203</id><value>AudioScrobbler Jelszó</value></string>
-  <string><id>15204</id><value>Kapcsolatfelvétel sikertelen: ennyi volt...</value></string>
+  <string><id>15110</id><value>Controller rezgés</value></string>
+  <string><id>15111</id><value>Skin téma</value></string>
+  <string><id>15112</id><value>Alapértelmezett téma</value></string>
+
+  <string><id>15200</id><value>LastFM</value></string>
+  <string><id>15201</id><value>Zene információk elküldése az LastFM-nek</value></string>
+  <string><id>15202</id><value>LastFM felhasználónév</value></string>
+  <string><id>15203</id><value>LastFM Jelszó</value></string>
+  <string><id>15204</id><value>Kapcsolatfelvétel sikertelen: ennyi...</value></string>
   <string><id>15205</id><value>Kérlek frissítsd az XBMC-t</value></string>
   <string><id>15206</id><value>Küldés sikertelen: rossz felhasználó/jelszó.</value></string>
   <string><id>15207</id><value>Csatlakoztatva</value></string>
   <string><id>15208</id><value>Nincs csatlakozás</value></string>
   <string><id>15209</id><value>Küldési idõköz %i</value></string>
-  <string><id>15210</id><value>%i Dal cache-elve</value></string>
+  <string><id>15210</id><value>%i szám cache-elve</value></string>
   <string><id>15211</id><value>Küldés...</value></string>
   <string><id>15212</id><value>Küldés %i mp. múlva</value></string>
-  
-  <string><id>13150</id><value>HDD Kulcs:</value></string>
-  <string><id>13151</id><value>HDD Hõmérséklet:</value></string>
-  <string><id>13152</id><value>DVD Model:</value></string>
-  <string><id>13153</id><value>DVD Firmware:</value></string>
-  <string><id>13154</id><value>HDD Model:</value></string>
-  <string><id>13155</id><value>HDD Serial:</value></string>
-  <string><id>13156</id><value>HDD Firmware:</value></string>
-  <string><id>13157</id><value>HDD Jelszó:</value></string>
-  <string><id>13158</id><value>HDD Lock Állása:</value></string>
-  <string><id>13159</id><value>Alhálózati maszk:</value></string>
-  <string><id>13160</id><value>Átjáró:</value></string>
-  <string><id>13161</id><value>DNS-szerver:</value></string>
-  <string><id>13162</id><value>A Beállíás meghiusúlt</value></string>
-  <string><id>13163</id><value>Gamepedek ezeken a Portokon:</value></string>
-  <string><id>13164</id><value>Billentyûzet ezen a Porton:</value></string>
-  <string><id>13165</id><value>Egér ezen a Porton:</value></string>
-  <string><id>13166</id><value>Headset ezen a Porton:</value></string>
-  <string><id>13167</id><value>MemoryStick ezen a Porton:</value></string>
-  <string><id>13168</id><value>Távirányító ezen a Porton:</value></string>
-
-  <string><id>13270</id><value>Hardver:</value></string>
-  <string><id>13271</id><value>CPU Sebesség:</value></string>
-  <string><id>13275</id><value>Merevlemez</value></string>
-  <string><id>13276</id><value>DVD-ROM</value></string>
-  <string><id>13277</id><value>Tárolóeszköz</value></string>
-  <string><id>13278</id><value>Alapértelmezett</value></string>
-  <string><id>13279</id><value>Hálózat</value></string>
-  <string><id>13280</id><value>Video</value></string>
-  <string><id>13281</id><value>Hardver</value></string>
-  <string><id>13282</id><value>_</value></string>
-  <string><id>13283</id><value>Kernel Verzió:</value></string>
-  <string><id>13284</id><value>CPU Sebesség:</value></string>
-  <string><id>13285</id><value>Felismert BIOS:</value></string>
-  <string><id>13286</id><value>Video Encoder:</value></string>
-  <string><id>13287</id><value>Képernyõ-felbontás:</value></string>
-  <string><id>13288</id><value>Xbox Verziószám:</value></string>
-  <string><id>13289</id><value>Xbox Sorozatszám:</value></string>
-  <string><id>13290</id><value>XBOX manufacturer:</value></string>
-  <string><id>13291</id><value>ModChip:</value></string>
-  <string><id>13292</id><value>A/V Kábel:</value></string>
-  <string><id>13293</id><value>Video és XBE Régiókód:</value></string>
-  <string><id>13294</id><value>DVD Régiókód:</value></string>
-  <string><id>13295</id><value>Internet:</value></string>
-  <string><id>13296</id><value>Az Xbox nincs csatlakoztatva!</value></string>
-  <string><id>13297</id><value>Az Xbox nincs csatlakoztatva! Ellenõrizd a beállításokat!</value></string>
-  <string><id>13298</id><value>XBLIVE Kulcs:</value></string>
-
   <string><id>15213</id><value>Lejátszás a következõvel...</value></string>
-  <string><id>15214</id><value>Lágyabb A/V Szinkronizáció beállítása</value></string>  
-  <string><id>15215</id><value>Fájlnevek elrejtése Thumbnail nézetben</value></string>
+  <string><id>15214</id><value>Lágyabb A/V Szinkronizáció beállítása</value></string>
+  <string><id>15215</id><value>Fájlnevek elrejtése Miniatûrök nézetben</value></string>
+
+  <string><id>15250</id><value>Last.fm adó küldése last.fm profilnak</value></string>
+  <string><id>15251</id><value>Csatlakozás a LAst.fm-hez</value></string>
+  <string><id>15252</id><value>Állomás kiválasztása</value></string>
+  <string><id>15253</id><value>Hasonló elõadók keresése</value></string>
+  <string><id>15254</id><value>Tag-ek keresése</value></string>
+  <string><id>15255</id><value>Profilod (%name%)</value></string>
+  <string><id>15256</id><value>Legnépszerûbb tag-ek</value></string>
+  <string><id>15257</id><value>Legjobb elõadók: %name%</value></string>
+  <string><id>15258</id><value>Legjobb albumok: %name%</value></string>
+  <string><id>15259</id><value>Legjobb számok: %name%</value></string>
+  <string><id>15260</id><value>%name% hallgatása last.fm-rõl</value></string>
+  <string><id>15261</id><value>Hasonló elõadók: %name%</value></string>
+  <string><id>15262</id><value>%name% legnépszerûbb albumai</value></string>
+  <string><id>15263</id><value>A legnépszerûbb %name% számok</value></string>
+  <string><id>15264</id><value>Legnépszerûbb tag-ek: %name%</value></string>
+  <string><id>15265</id><value>%name% legnagyobb rajongói</value></string>
+  <string><id>15266</id><value>%name% rajongók rádióinak hallgatása</value></string>
+  <string><id>15267</id><value>Hasonló elõadók hallgatása: %name%</value></string>
+  <string><id>15268</id><value>%name% kedvenc elõadói</value></string>
+  <string><id>15269</id><value>%name% kedvenc albumai</value></string>
+  <string><id>15270</id><value>%name% kedvenc számai</value></string>
+  <string><id>15271</id><value>%name% barátai</value></string>
+  <string><id>15272</id><value>%name% zenei "szomszédai"</value></string>
+  <string><id>15273</id><value>%name%: heti toplista - elõadók</value></string>
+  <string><id>15274</id><value>%name%: heti toplista - albumok</value></string>
+  <string><id>15275</id><value>%name%: heti toplista - számok</value></string>
+  <string><id>15276</id><value>%name% zenei "szomszédainak" rádióinak hallgatása</value></string>
+  <string><id>15277</id><value>%name% rádiójának hallgatása</value></string>
+  <string><id>15278</id><value>%name% kedvenc számainak hallgatása</value></string>
+  <string><id>15279</id><value>Lista lekérése a last.fm-rõl</value></string>
+  <string><id>15280</id><value>Nem lehet leszedni a listát a last.fm-rõl</value></string>
+  <string><id>15281</id><value>Írd be a keresett elõadó nevét</value></string>
+  <string><id>15282</id><value>Számcím keresése</value></string>
+  <string><id>15283</id><value>%name% mostanában hallgatott zenéi</value></string>
 
   <string><id>15300</id><value>Az elérési út érvénytelen, vagy nem található</value></string>
   <string><id>15301</id><value>Nem lehet csatlakozni a szerverhez</value></string>
   <string><id>15302</id><value>Nincs elérhetõ szerver</value></string>
   <string><id>15303</id><value>A Munkacsoport nem elérhetõ</value></string>
 
+  <string><id>15310</id><value>Többirányú könyvjelzõ megnyitása</value></string>
+  <string><id>15311</id><value>Elérési út:</value></string>
+
   <string><id>16000</id><value>Általános</value></string>
   <string><id>16001</id><value>Audio Hardver beállítása...</value></string>
   <string><id>16002</id><value>CDDB keresés</value></string>
   <string><id>16003</id><value>Lejátszó</value></string>
-  
+  <string><id>16004</id><value>Média lejátszása lemezrõl</value></string>
+
   <string><id>16009</id><value>Írd be a film címét</value></string>
   <string><id>16010</id><value>Írd be a profil nevét</value></string>
   <string><id>16011</id><value>Írd be az album nevét</value></string>
@@ -1115,15 +1285,32 @@
   <string><id>16015</id><value>Írd be a könyvtárat</value></string>
   <string><id>16016</id><value>Lehetõségek: %A, %T, %N, %B, %D, %G, %Y, %F, %S</value></string>
   <string><id>16017</id><value>Írd be mire szeretnél rákeresni</value></string>
-  
   <string><id>16018</id><value>Semmi</value></string>
   <string><id>16019</id><value>Automata kiválasztás</value></string>
   <string><id>16020</id><value>DeInterlace</value></string>
   <string><id>16021</id><value>Sync Odd</value></string>
   <string><id>16022</id><value>Sync Even</value></string>
   <string><id>16023</id><value>Interlace kezelése</value></string>
-  
-  <string><id>16024</id><value>Canceling...</value></string>
-  
-  
- </strings>
+  <string><id>16024</id><value>Megszakítás...</value></string>
+  <string><id>16025</id><value>Írd be az elõadót:</value></string>
+  <string><id>16026</id><value>Lejátszási lista megállítása</value></string>
+  <string><id>16027</id><value>Túl sok az olvashatatlan adat</value></string>
+
+  <string><id>16030</id><value>Party mód leállítva</value></string>
+  <string><id>16031</id><value>Nincs megfelelõ találat az adatbázisban</value></string>
+  <string><id>16032</id><value>Nem lehet beállítani az adatbázist</value></string>
+  <string><id>16033</id><value>Nem tudom megnyitni az adatbázist</value></string>
+  <string><id>16034</id><value>Nem lehet dalokat kiolvasni az adatbázisból</value></string>
+
+  <string><id>16100</id><value>Minden videó</value></string>
+  <string><id>16101</id><value>Nézetlen</value></string>
+  <string><id>16102</id><value>Megtekintve</value></string>
+  <string><id>16103</id><value>Megjelölés megtekintettként</value></string>
+  <string><id>16104</id><value>Megjelölés nézetlenként</value></string>
+  <string><id>16105</id><value>Cím szerkesztése</value></string>
+  <string><id>16106</id><value>NTSC (M vagy J) haszn.</value></string>
+  <string><id>16107</id><value>Csak NTSC-M használata</value></string>
+  <string><id>16108</id><value>Csak NTSC-J használata</value></string>
+  <string><id>16109</id><value>Csak PAL-60 használata</value></string>
+  <string><id>16110</id><value>60Hz-es játékhoz</value></string>
+</strings>
