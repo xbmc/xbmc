@@ -236,7 +236,7 @@ int urarlib_get(char *rarfile, char *targetPath, char *fileToExtract, char *libp
           while (1)
 					{
             int Size=pArc->ReadHeader();
-            
+          
             if (pArc->GetHeaderType() == ENDARC_HEAD)
               break;
 
@@ -310,6 +310,7 @@ int urarlib_list(char *rarfile, ArchiveList_struct **ppList, char *libpassword)
       FileCount=0;
       *ppList = NULL;
       ArchiveList_struct *pPrev = NULL;
+      int iArchive=0;
       while (1)
       {
         Int64 TotalPackSize=0,TotalUnpSize=0;
@@ -352,8 +353,47 @@ int urarlib_list(char *rarfile, ArchiveList_struct **ppList, char *libpassword)
             }
             pArc->SeekToNext();
           }
-          if (pCmd->VolSize!=0 && ((pArc->NewLhd.Flags & LHD_SPLIT_AFTER) || pArc->GetHeaderType()==ENDARC_HEAD && (pArc->EndArcHead.Flags & EARC_NEXT_VOLUME)!=0) && MergeArchive(*pArc,NULL,false,*pCmd->Command))
-            pArc->Seek(0,SEEK_SET); 
+          if (pCmd->VolSize!=0 && ((pArc->NewLhd.Flags & LHD_SPLIT_AFTER) || pArc->GetHeaderType()==ENDARC_HEAD && (pArc->EndArcHead.Flags & EARC_NEXT_VOLUME)!=0))
+          {
+            if (FileCount == 1 && iArchive==0)
+            {
+              char NextName[NM];
+              char LastName[NM];
+              strcpy(NextName,pArc->FileName);
+              while (CFile::Exists(NextName))
+              {
+                strcpy(LastName,NextName);
+                NextVolumeName(NextName,(pArc->NewMhd.Flags & MHD_NEWNUMBERING)==0 || pArc->OldFormat);
+              }
+         			Archive arc;
+              if (arc.WOpen(LastName,NULL))
+              {
+                bool bBreak=false;
+                while(arc.ReadHeader()>0)
+                {
+                  if (arc.GetHeaderType() == FILE_HEAD)
+                    if (stricmp(arc.NewLhd.FileName,pPrev->item.Name)==0)
+                    {
+                      bBreak=true;
+                      break;  
+                    }
+
+                  arc.SeekToNext();
+                }
+                if (bBreak)
+                {
+                  break;
+                }
+              }
+            }
+            if (MergeArchive(*pArc,NULL,false,*pCmd->Command))
+      			{
+              iArchive++;
+			        pArc->Seek(0,SEEK_SET); 
+			      }
+            else
+              break;
+          }
           else
             break;
         }
