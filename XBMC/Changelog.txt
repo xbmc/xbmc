@@ -5,6 +5,9 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 04-04-2006 fixed: single filed rar archives should be up to speed again.
+ - 04-04-2006 fixed: [ 1461737 ] Navigation in CBR/CBZ.
+ - 04-04-2006 fixed: [ 1460946 ] Unable to create CD rip dir on SMB share.
  - 04-04-2006 fixed: Karaoke transparency settings weren't honoured.
  - 04-04-2006 changed: Window.Previous(id) applies for the whole time a window is on screen, rather than just while the window is initializing.
  - 04-04-2006 fixed: Audio and subtitle delay via keymap.xml were not functioning.
