@@ -222,7 +222,7 @@
   <string><id>287</id><value>Ondertitels</value></string>
   <string><id>288</id><value>Lettertype</value></string>
   <string><id>289</id><value>- Formaat</value></string>
-  <string><id>290</id><value>Dynamische "Range" Compressie</value></string>
+  <string><id>290</id><value>Dynamische Range Compressie</value></string>
   <string><id>291</id><value>Beeld</value></string>
   <string><id>292</id><value>Geluid</value></string>
   <string><id>293</id><value>Ondertitels</value></string>
@@ -871,7 +871,7 @@
   <string><id>13158</id><value>HDD Lock Status:</value></string>
   <string><id>13159</id><value>Subnet mask:</value></string>
   <string><id>13160</id><value>Gateway:</value></string>
-  <string><id>13161</id><value>DNS:</value></string>
+  <string><id>13161</id><value>DNS</value></string>
   <string><id>13162</id><value>Initialeren mislukt</value></string>
   <string><id>13163</id><value>GamePads op Port:</value></string>
   <string><id>13164</id><value>Keyboard op Port:</value></string>
@@ -1279,7 +1279,7 @@
   <string><id>16027</id><value>Teveel consecutive failed items</value></string>
 
   <string><id>16030</id><value>Party Mode afgebroken.</value></string> 
-  <string><id>16031</id><value>Te weinig nummers in database.</value></string> 
+  <string><id>16031</id><value>Geen overeenkomstige nummers in database.</value></string> 
   <string><id>16032</id><value>Kon database niet initialeren.</value></string> 
   <string><id>16033</id><value>Kon database niet openen.</value></string> 
   <string><id>16034</id><value>Kon geen nummers van database verkrijgen.</value></string>
