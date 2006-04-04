@@ -771,6 +771,8 @@ void CFileItem::SetThumb()
     item.m_strPath = m_strPath;
 
   // get filename of cached thumbnail like Q:\thumbs\00aed638.tbn
+  // NOTE: Thumbs for both files and folders are cached using the CRC of the
+  //       path of the item.
   CStdString strCachedThumbnail;
   CUtil::GetCachedThumbnail(item.m_strPath,strCachedThumbnail);
 

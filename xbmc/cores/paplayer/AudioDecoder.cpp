@@ -64,7 +64,7 @@ bool CAudioDecoder::Create(const CFileItem &file, __int64 seekOffset, unsigned i
 
   if (!m_codec || !m_codec->Init(file.m_strPath, filecache * 1024))
   {
-    CLog::Log(LOGERROR, "CAudioDecoder: Unable to Init Codec!");
+    CLog::Log(LOGERROR, "CAudioDecoder: Unable to Init Codec while loading file %s", file.m_strPath.c_str());
     Destroy();
     return false;
   }

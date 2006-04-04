@@ -204,7 +204,6 @@ protected:
 
   // animation effects
   vector<CAnimation> m_animations;
-  CAnimation m_tempAnimation;   // We can remove this once we have got rid of the effects
 };
 
 #endif

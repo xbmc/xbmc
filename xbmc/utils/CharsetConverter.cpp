@@ -368,13 +368,13 @@ void CCharsetConverter::utf16toUTF8(const CStdStringW& strSource, CStdStringA &s
   {
     const char* src = (const char*) strSource.c_str();
     size_t inBytes = (strSource.length() + 1)*2;
-    char *dst = strDest.GetBuffer(inBytes);
-    size_t outBytes = (inBytes * 2) + 1;  // some free for UTF8 conversion
-    size_t originalOutBytes = outBytes;
+    size_t outBytes = (inBytes + 1)*2;  // some free for UTF-8 (up to 4 bytes/char)
+    char *dst = strDest.GetBuffer(outBytes);
     if (iconv(m_iconvUtf16toUtf8, &src, &inBytes, &dst, &outBytes))
     { // failed :(
       strDest.ReleaseBuffer();
       strDest = strSource;
+      return;
     }
     strDest.ReleaseBuffer();
   }
@@ -388,13 +388,13 @@ void CCharsetConverter::utf16BEtoUTF8(const CStdStringW& strSource, CStdStringA 
   {
     const char* src = (const char*) strSource.c_str();
     size_t inBytes = (strSource.length() + 1)*2;
-    char *dst = strDest.GetBuffer(inBytes);
-    size_t outBytes = (inBytes * 2) + 1;  // some free for UTF8 conversion
-    size_t originalOutBytes = outBytes;
+    size_t outBytes = (inBytes + 1)*2;  // UTF-8 is up to 4 bytes/character  
+    char *dst = strDest.GetBuffer(outBytes);
     if (iconv(m_iconvUtf16BEtoUtf8, &src, &inBytes, &dst, &outBytes))
     { // failed :(
       strDest.ReleaseBuffer();
       strDest = strSource;
+      return;
     }
     strDest.ReleaseBuffer();
   }

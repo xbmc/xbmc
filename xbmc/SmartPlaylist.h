@@ -20,7 +20,8 @@ public:
                         SONG_FILENAME,
                         SONG_PLAYCOUNT,
                         SONG_LASTPLAYED,
-                        FIELD_RANDOM };
+                        FIELD_RANDOM,
+                        FIELD_PLAYLIST };
 
   enum SEARCH_OPERATOR { OPERATOR_CONTAINS = 1,
                          OPERATOR_DOES_NOT_CONTAIN,
@@ -63,7 +64,7 @@ public:
   const CStdString& GetName() const { return m_playlistName; };
 
   void AddRule(const CSmartPlaylistRule &rule);
-  CStdString GetWhereClause();
+  CStdString GetWhereClause(bool needWhere = true);
   CStdString GetOrderClause();
 
 private:
@@ -74,4 +75,6 @@ private:
   unsigned int m_limit;
   CSmartPlaylistRule::DATABASE_FIELD m_orderField;
   bool m_orderAscending;
+
+  TiXmlDocument m_xmlDoc;
 };

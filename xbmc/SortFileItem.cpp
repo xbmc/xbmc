@@ -77,7 +77,11 @@ bool SSortFileItem::DateAscending(CFileItem *left, CFileItem *right)
     if ( left->m_stTime.wHour > right->m_stTime.wHour ) return false;
     if ( left->m_stTime.wMinute < right->m_stTime.wMinute ) return true;
     if ( left->m_stTime.wMinute > right->m_stTime.wMinute ) return false;
-    return left->m_stTime.wSecond <= right->m_stTime.wSecond;
+    if ( left->m_stTime.wSecond < right->m_stTime.wSecond ) return true;
+    if ( left->m_stTime.wSecond > right->m_stTime.wSecond ) return false;
+    // dates are the same, sort by label in reverse (as default sort
+    // method is descending for date, and ascending for label)
+    return StringUtils::AlphaNumericCompare(left->GetLabel().c_str(), right->GetLabel().c_str()) > 0;
   }
   return left->m_bIsFolder;
 }
@@ -99,7 +103,11 @@ bool SSortFileItem::DateDescending(CFileItem *left, CFileItem *right)
     if ( left->m_stTime.wHour > right->m_stTime.wHour ) return true;
     if ( left->m_stTime.wMinute < right->m_stTime.wMinute ) return false;
     if ( left->m_stTime.wMinute > right->m_stTime.wMinute ) return true;
-    return left->m_stTime.wSecond >= right->m_stTime.wSecond;
+    if ( left->m_stTime.wSecond < right->m_stTime.wSecond ) return false;
+    if ( left->m_stTime.wSecond > right->m_stTime.wSecond ) return true;
+    // dates are the same, sort by label in reverse (as default sort
+    // method is descending for date, and ascending for label)
+    return StringUtils::AlphaNumericCompare(left->GetLabel().c_str(), right->GetLabel().c_str()) < 0;
   }
   return left->m_bIsFolder;
 }

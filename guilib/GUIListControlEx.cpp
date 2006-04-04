@@ -3,7 +3,7 @@
 
 
 #define CONTROL_LIST  0
-#define CONTROL_UPDOWN 1
+#define CONTROL_UPDOWN 9998
 CGUIListControlEx::CGUIListControlEx(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight,
                                      DWORD dwSpinWidth, DWORD dwSpinHeight,
                                      const CStdString& strUp, const CStdString& strDown,
