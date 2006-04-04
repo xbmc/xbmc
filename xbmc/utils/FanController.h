@@ -36,6 +36,8 @@ private:
   bool inCustomMode;
   bool bIs16Box;
   float cpuTemp;
+  float cpuFrac;
+  int   cpuTempCount;
   float cpuLastTemp;
   float gpuTemp;
   float gpuLastTemp;

@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 04-04-2006 fixed: XBMC should now read and display the right GPU and CPU temps for 1.6 xbox´s
+              Thanks goes to pablot for the fix
  - 04-04-2006 Updated: dutch, french, german, german austria, hungarian, italian and spanish strings.xml´s
               Thanks to: console-ombouw, jose_t,  modhack2,  kotix, bali001, silverscape and ceomr
  - 04-04-2006 changed: daap streaming moved over to curl instead and reneabled paplayer.
