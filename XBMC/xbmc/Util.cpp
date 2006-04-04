@@ -1843,10 +1843,9 @@ bool CUtil::GetFolderThumb(const CStdString& strFolder, CStdString& strThumb)
       // then cache folder.jpg to xbox HD
       if ((g_guiSettings.GetBool("VideoFiles.FindRemoteThumbs") || item.IsOnDVD()) && CFile::Exists(strFolderImage))
       {
-        if ( CFile::Cache(strFolderImage.c_str(), strThumb.c_str(), NULL, NULL))
-        {
+        CPicture pic;
+        if (pic.DoCreateThumbnail(strFolderImage, strThumb))
           return true;
-        }
       }
     }
     else

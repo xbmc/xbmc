@@ -163,6 +163,7 @@ void CGUIWindowSlideShow::ShowNext()
   m_iNextSlide = m_iCurrentSlide + 1;
   if (m_iNextSlide >= (int)m_vecSlides.size())
     m_iNextSlide = 0;
+
   m_bLoadNextPic = true;
 }
 

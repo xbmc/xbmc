@@ -5,7 +5,7 @@
 #include "GUIWindowManager.h"
 
 #define CONTROL_LIST  0
-#define CONTROL_UPDOWN 1
+#define CONTROL_UPDOWN 9998
 
 /*
 total width/height for an item including space between items:

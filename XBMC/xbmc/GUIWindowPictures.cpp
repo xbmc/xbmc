@@ -529,7 +529,7 @@ void CGUIWindowPictures::OnItemLoaded(CFileItem *pItem)
   { // generate the thumb folder if necessary
     // we load the directory, grab 4 random thumb files (if available) and then generate
     // the thumb.
-    if (pItem->IsRemote() && !pItem->IsOnDVD() && !g_guiSettings.GetBool("VideoFiles.FindRemoteThumbs")) return;
+//    if (pItem->IsRemote() && !pItem->IsOnDVD() && !g_guiSettings.GetBool("VideoFiles.FindRemoteThumbs")) return;
 
     CFileItemList items;
     CDirectory::GetDirectory(pItem->m_strPath, items, g_stSettings.m_szMyPicturesExtensions, false, false);
@@ -551,13 +551,23 @@ void CGUIWindowPictures::OnItemLoaded(CFileItem *pItem)
     // randomize them
     items.Randomize();
 
-    // ok, now we've got the files to get the thumbs from, lets create it...
-    // we basically load the 4 thumbs, resample to 62x62 pixels, and add them
-    CStdString strFiles[4];
-    for (int thumb = 0; thumb < 4 && thumb < items.Size(); thumb++)
-      strFiles[thumb] = items[thumb]->m_strPath;
-    CPicture pic;
-    pic.CreateFolderThumb(pItem->m_strPath, strFiles);
+    if (items.Size() < 4)
+    { // less than 4 items, so just grab a single random thumb
+      CStdString folderThumb;
+      CUtil::GetThumbnail(pItem->m_strPath, folderThumb);
+      CPicture pic;
+      pic.DoCreateThumbnail(items[0]->m_strPath, folderThumb);
+    }
+    else
+    {
+      // ok, now we've got the files to get the thumbs from, lets create it...
+      // we basically load the 4 thumbs, resample to 62x62 pixels, and add them
+      CStdString strFiles[4];
+      for (int thumb = 0; thumb < 4; thumb++)
+        strFiles[thumb] = items[thumb]->m_strPath;
+      CPicture pic;
+      pic.CreateFolderThumb(pItem->m_strPath, strFiles);
+    }
     // refill in the icon to get it to update
     pItem->SetThumb();
     pItem->FillInDefaultIcon();

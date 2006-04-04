@@ -3,6 +3,7 @@
 #include "../utils/log.h"
 #include "../SmartPlaylist.h"
 #include "../MusicDatabase.h"
+#include "../Util.h"
 
 namespace DIRECTORY
 {
@@ -32,5 +33,22 @@ namespace DIRECTORY
   {
     // smart playlists always have files??
     return true;
+  }
+
+  CStdString CSmartPlaylistDirectory::GetPlaylistByName(const CStdString& name)
+  {
+    CFileItemList list;
+    if (CDirectory::GetDirectory(CUtil::MusicPlaylistsLocation(), list, "*.xsp"))
+    {
+      for (int i = 0; i < list.Size(); i++)
+      {
+        CFileItem *item = list[i];
+        if (item->GetLabel().CompareNoCase(name) == 0)
+        { // found :)
+          return item->m_strPath;
+        } 
+      }
+    }
+    return "";
   }
 }
