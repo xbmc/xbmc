@@ -5,6 +5,10 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 04-04-2006 changed: daap streaming moved over to curl instead and reneabled paplayer.
+ - 04-04-2006 fixed: shout:// wasn't checked for contenttype
+ - 04-04-2006 fixed: couldn't check extension in playerfactory on http with options at the end of the url. ie http://host/folder/file.mp3?option=value
+ - 04-04-2006 fixed: dvdplayer slowed xbmc to a crawl during music playback since (29-03-2006 fixed: potential crash if audiorenderer...)
  - 30-03-2006 fixed: Current playlist source wasn't reset, and internet streams would always try and use it to lookup thumbs.
  - 29-03-2006 fixed: If an image failed to load, you couldn't move to the next image (while viewing pictures from My Pictures).
  - 29-03-2006 fixed: Fading on RSS controls wasn't working.
