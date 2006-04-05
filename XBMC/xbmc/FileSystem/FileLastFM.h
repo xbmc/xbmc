@@ -3,6 +3,7 @@
 #include "IFile.h"
 #include "FileCurl.h"
 #include "ringbuffer.h"
+#include "..\cores\paplayer\RingHoldBuffer.h"
 
 
 class CFileLastFM : public IFile, public CThread
@@ -26,6 +27,7 @@ protected:
   bool HandShake();
   bool ChangeStation(const CURL& url);
   bool RetreiveMetaData();
+  bool DoSkipNext();
   bool OpenStream();
   void Parameter(const CStdString& key, const CStdString& data, CStdString& value);
   bool RecordToProfile(bool enabled);
