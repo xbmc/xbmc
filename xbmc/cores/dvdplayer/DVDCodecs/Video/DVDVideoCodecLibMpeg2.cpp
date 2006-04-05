@@ -8,6 +8,8 @@
 #define DVP_FLAG_LIBMPEG2_ALLOCATED 0x0000100 //Set to indicate that this has allocated data
 #define DVP_FLAG_LIBMPEG2_INUSE     0x0000200 //Set to show that libmpeg2 might need to read data from here again
 
+#define ALIGN(value, alignment) (((value)+(alignment-1))&~(alignment-1))
+
 CDVDVideoCodecLibMpeg2::CDVDVideoCodecLibMpeg2()
 {
   m_pHandle = NULL;
@@ -52,10 +54,10 @@ DVDVideoPicture* CDVDVideoCodecLibMpeg2::GetBuffer(unsigned int width, unsigned 
 
         m_pVideoBuffer[i].iWidth = width;
         m_pVideoBuffer[i].iHeight = height;
-
-        m_pVideoBuffer[i].data[0] = new BYTE[iPixels];    //Y
-        m_pVideoBuffer[i].data[1] = new BYTE[iPixels/4];  //U
-        m_pVideoBuffer[i].data[2] = new BYTE[iPixels/4];  //V
+        
+        m_pVideoBuffer[i].data[0] = (BYTE*)_aligned_malloc(iPixels, 16);    //Y
+        m_pVideoBuffer[i].data[1] = (BYTE*)_aligned_malloc(iPixels/4, 16);  //U
+        m_pVideoBuffer[i].data[2] = (BYTE*)_aligned_malloc(iPixels/4, 16);  //V
       
         //Set all data to 0 for less artifacts.. hmm.. what is black in YUV??
         memset( m_pVideoBuffer[i].data[0], 0, iPixels );
@@ -76,9 +78,9 @@ void CDVDVideoCodecLibMpeg2::DeleteBuffer(DVDVideoPicture* pPic)
 {
   if(pPic)
   {
-    delete[] pPic->data[0];
-    delete[] pPic->data[1];
-    delete[] pPic->data[2]; 
+    _aligned_free(pPic->data[0]);
+    _aligned_free(pPic->data[1]);
+    _aligned_free(pPic->data[2]);
        
     pPic->data[0] = 0;
     pPic->data[1] = 0;
@@ -119,7 +121,7 @@ bool CDVDVideoCodecLibMpeg2::Open(CDVDStreamInfo &hints, CDVDCodecOptions &optio
   if (!m_dll.Load())
     return false;
 
-  // m_dll.mpeg2_accel(MPEG2_ACCEL_DETECT);
+  m_dll.mpeg2_accel(MPEG2_ACCEL_X86_MMX);
 
   m_pHandle = m_dll.mpeg2_init();
   if (!m_pHandle) return false;
