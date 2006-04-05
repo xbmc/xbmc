@@ -29,7 +29,8 @@ public:
 
   virtual bool OpenFile(const CFileItem& file, __int64 iStartTime);
   virtual bool QueueNextFile(const CFileItem &file);
-  virtual bool CloseFile();
+  virtual bool CloseFile()       { return CloseFileInternal(true); }
+  virtual bool CloseFileInternal(bool bAudioDevice = true);
   virtual bool IsPlaying() const { return m_bIsPlaying; }
   virtual void Pause();
   virtual bool IsPaused() const { return m_bPaused; }

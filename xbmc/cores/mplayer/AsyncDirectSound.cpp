@@ -93,7 +93,6 @@ CASyncDirectSound::CASyncDirectSound(IAudioCallback* pCallback, int iChannels, u
     m_bResampleAudio = true;
 
   bool bAudioOnAllSpeakers(false);
-  g_audioContext.RemoveActiveDevice(); 
   g_audioContext.SetupSpeakerConfig(iChannels, bAudioOnAllSpeakers,bIsMusic);
   g_audioContext.SetActiveDevice(CAudioContext::DIRECTSOUND_DEVICE);
   m_pDSound=g_audioContext.GetDirectSoundDevice();
@@ -298,8 +297,7 @@ HRESULT CASyncDirectSound::Deinitialize()
     delete [] m_adwStatus;
   m_adwStatus = NULL;
 
-  m_pDSound = NULL;
-  g_audioContext.RemoveActiveDevice();
+  m_pDSound = NULL;  
   g_audioContext.SetActiveDevice(CAudioContext::DEFAULT_DEVICE);
 
   if (m_drcTable)

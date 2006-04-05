@@ -3,7 +3,7 @@
 class IAudioDeviceChangedCallback
 {
 public:
-  virtual void  Initialize()=0;
-  virtual void  DeInitialize()=0;
+  virtual void  Initialize(int iDevice)=0;
+  virtual void  DeInitialize(int iDevice)=0;
 };
 

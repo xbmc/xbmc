@@ -26,13 +26,26 @@ void CAudioContext::SetSoundDeviceCallback(IAudioDeviceChangedCallback* pCallbac
 // Note: DEFAULT_DEVICE is created by the IAudioDeviceChangedCallback
 void CAudioContext::SetActiveDevice(int iDevice)
 {
+  /* if device is the same, no need to bother */
+  if(m_iDevice == iDevice)
+    return;
+
+  if (iDevice==DEFAULT_DEVICE)
+  {
+    /* we just tell callbacks to init, it will setup audio */
+    if (m_pCallback)
+      m_pCallback->Initialize(iDevice);
+
+    return;
+  }
+
+  /* deinit current device */
+  RemoveActiveDevice();
+
   m_iDevice=iDevice;
 
   if (iDevice==DIRECTSOUND_DEVICE)
   {
-    SAFE_RELEASE(m_pAC97Device);
-    SAFE_RELEASE(m_pDirectSoundDevice);
-
     // Create DirectSound
     if (FAILED(DirectSoundCreate( NULL, &m_pDirectSoundDevice, NULL )))
     {
@@ -42,12 +55,6 @@ void CAudioContext::SetActiveDevice(int iDevice)
   }
   else if (iDevice==AC97_DEVICE)
   {
-    if (m_pCallback)
-      m_pCallback->DeInitialize();
-
-    SAFE_RELEASE(m_pDirectSoundDevice);
-    SAFE_RELEASE(m_pAC97Device);
-
     // Create AC97 Device
     if (FAILED(Ac97CreateMediaObject(DSAC97_CHANNEL_DIGITAL, NULL, NULL, &m_pAC97Device)))
     {
@@ -57,7 +64,7 @@ void CAudioContext::SetActiveDevice(int iDevice)
   }
 
   if (m_pCallback)
-    m_pCallback->Initialize();
+    m_pCallback->Initialize(m_iDevice);
 }
 
 // \brief Return the active device type (NONE, DEFAULT_DEVICE, DIRECTSOUND_DEVICE, AC97_DEVICE)
@@ -69,10 +76,10 @@ int CAudioContext::GetActiveDevice()
 // \brief Remove the current sound device, eg. to setup new speaker config
 void CAudioContext::RemoveActiveDevice()
 {
-  m_iDevice=NONE;
-
   if (m_pCallback)
-    m_pCallback->DeInitialize();
+    m_pCallback->DeInitialize(m_iDevice);
+
+  m_iDevice=NONE;
 
   SAFE_RELEASE(m_pAC97Device);
   SAFE_RELEASE(m_pDirectSoundDevice);
@@ -82,24 +89,24 @@ void CAudioContext::RemoveActiveDevice()
 void CAudioContext::SetupSpeakerConfig(int iChannels, bool& bAudioOnAllSpeakers, bool bIsMusic)
 {
   m_bAC3EncoderActive = false;
-
+  DWORD spconfig = DSSPEAKER_USE_DEFAULT;  
   if (g_guiSettings.GetInt("AudioOutput.Mode") == AUDIO_DIGITAL)
   {
     if (((g_guiSettings.GetBool("MusicPlayer.OutputToAllSpeakers")) && (bIsMusic)) || (g_stSettings.m_currentVideoSettings.m_OutputToAllSpeakers && !bIsMusic))
     {
-      bAudioOnAllSpeakers = true;
-      DirectSoundOverrideSpeakerConfig(DSSPEAKER_USE_DEFAULT); //Allows ac3 encoder should it be enabled
+      bAudioOnAllSpeakers = true;      
+      spconfig = DSSPEAKER_USE_DEFAULT; //Allows ac3 encoder should it be enabled
       m_bAC3EncoderActive = g_audioConfig.GetAC3Enabled();
     }
     else
     {
       if (iChannels == 1)
-        DirectSoundOverrideSpeakerConfig(DSSPEAKER_MONO);
+        spconfig = DSSPEAKER_MONO;
       else if (iChannels == 2)
-        DirectSoundOverrideSpeakerConfig(DSSPEAKER_STEREO);
+        spconfig = DSSPEAKER_STEREO;
       else
       {
-        DirectSoundOverrideSpeakerConfig(DSSPEAKER_USE_DEFAULT); //Allows ac3 encoder should it be enabled
+        spconfig = DSSPEAKER_USE_DEFAULT; //Allows ac3 encoder should it be enabled
         m_bAC3EncoderActive = g_audioConfig.GetAC3Enabled();
          
       }
@@ -108,14 +115,30 @@ void CAudioContext::SetupSpeakerConfig(int iChannels, bool& bAudioOnAllSpeakers,
   else // We don't want to use the Dolby Digital Encoder output. Downmix to surround instead.
   {
     if (iChannels == 1)
-      DirectSoundOverrideSpeakerConfig(DSSPEAKER_MONO);
+      spconfig = DSSPEAKER_MONO;
     else
     { // Use default as on a very few xboxes, Dolby surround can be broken
       // so we MUST use the default settings, else these few individuals will have
       // no sound at all.
-      DirectSoundOverrideSpeakerConfig(DSSPEAKER_USE_DEFAULT);
+      spconfig = DSSPEAKER_USE_DEFAULT;
     }
   }
+
+  DWORD spconfig_old = DSSPEAKER_USE_DEFAULT;
+  if(m_pDirectSoundDevice)
+  {
+    m_pDirectSoundDevice->GetSpeakerConfig(&spconfig_old);
+    DWORD spconfig_default = XGetAudioFlags();
+    if (spconfig_old == spconfig_default)
+      spconfig_old = DSSPEAKER_USE_DEFAULT;
+  }
+
+  /* speaker config identical, no need to do anything */
+  if(spconfig == spconfig_old) return;
+
+  /* speaker config has changed, caller need to recreate it */
+  RemoveActiveDevice();
+  DirectSoundOverrideSpeakerConfig(spconfig);
 }
 
 bool CAudioContext::IsAC3EncoderActive()
