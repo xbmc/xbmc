@@ -25,7 +25,7 @@ CGUIAudioManager::CGUIAudioManager()
   m_lpActionSoundBuffer=NULL;
   m_lpStartSoundBuffer=NULL;
   m_bEnabled=true;
-  g_audioContext.SetSoundDeviceCallback(this);
+  g_audioContext.SetSoundDeviceCallback(this);    
 }
 
 CGUIAudioManager::~CGUIAudioManager()
@@ -33,9 +33,8 @@ CGUIAudioManager::~CGUIAudioManager()
 
 }
 
-void CGUIAudioManager::Initialize()
-{
-  int iDevice=g_audioContext.GetActiveDevice();
+void CGUIAudioManager::Initialize(int iDevice)
+{  
   if (iDevice==CAudioContext::DEFAULT_DEVICE)
   {
     bool bAudioOnAllSpeakers=false;
@@ -48,8 +47,10 @@ void CGUIAudioManager::Initialize()
   }
 }
 
-void CGUIAudioManager::DeInitialize()
+void CGUIAudioManager::DeInitialize(int iDevice)
 {
+  if (!(iDevice == CAudioContext::DIRECTSOUND_DEVICE || iDevice == CAudioContext::DEFAULT_DEVICE)) return;
+
   //  Wait for finish when an action sound is playing
   while(IsPlaying(m_lpActionSoundBuffer));
   FreeBuffer(&m_lpActionSoundBuffer);
@@ -341,7 +342,7 @@ void CGUIAudioManager::PlayStartSound()
 // subfolder of the folder "sounds" in the root directory of
 // xbmc
 bool CGUIAudioManager::Load()
-{
+{  
   m_actionSoundMap.clear();
   m_windowSoundMap.clear();
 

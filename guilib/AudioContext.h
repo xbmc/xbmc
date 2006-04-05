@@ -25,7 +25,6 @@ public:
 
   void                        SetActiveDevice(int iDevice);
   int                         GetActiveDevice();
-  void                        RemoveActiveDevice();
 
   LPDIRECTSOUND8              GetDirectSoundDevice() { return m_pDirectSoundDevice; }
   LPAC97MEDIAOBJECT           GetAc97Device() { return m_pAC97Device; }
@@ -37,6 +36,8 @@ public:
 
   enum AUDIO_DEVICE {NONE=0, DEFAULT_DEVICE, DIRECTSOUND_DEVICE, AC97_DEVICE };
 protected:
+  void                         RemoveActiveDevice();
+
   LPAC97MEDIAOBJECT            m_pAC97Device;
   LPDIRECTSOUND8               m_pDirectSoundDevice;
 

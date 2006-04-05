@@ -1274,7 +1274,6 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
 
     if (!g_application.IsPlaying())
     {
-      g_audioContext.RemoveActiveDevice();
       g_audioContext.SetActiveDevice(CAudioContext::DEFAULT_DEVICE);
     }
   }
