@@ -49,6 +49,8 @@ PAPlayer::PAPlayer(IPlayerCallback& callback) : IPlayer(callback)
   m_pCallback = NULL;
 
   m_forceFadeToNext = false;
+  m_CacheLevel = 0;
+  m_LastCacheLevelCheck = 0;
 }
 
 PAPlayer::~PAPlayer()
@@ -363,14 +365,14 @@ void PAPlayer::Pause()
     if (m_pStream[m_currentStream]) m_pStream[m_currentStream]->Pause(DSSTREAMPAUSE_PAUSE);
     if (m_currentlyCrossFading && m_pStream[1 - m_currentStream])
       m_pStream[1 - m_currentStream]->Pause(DSSTREAMPAUSE_PAUSE);
-    CLog::Log(LOGINFO, "PAP Player: Playback paused");
+    CLog::Log(LOGDEBUG, "PAP Player: Playback paused");
   }
   else
   {
     if (m_pStream[m_currentStream]) m_pStream[m_currentStream]->Pause(DSSTREAMPAUSE_RESUME);
     if (m_currentlyCrossFading && m_pStream[1 - m_currentStream])
       m_pStream[1 - m_currentStream]->Pause(DSSTREAMPAUSE_RESUME);
-    CLog::Log(LOGINFO, "PAP Player: Playback resumed");
+    CLog::Log(LOGDEBUG, "PAP Player: Playback resumed");
   }
 }
 
@@ -422,6 +424,21 @@ void PAPlayer::ToFFRW(int iSpeed)
   m_iSpeed = iSpeed;
 }
 
+void PAPlayer::UpdateCacheLevel()
+{
+  //check cachelevel every .5 seconds
+  if (m_LastCacheLevelCheck + 500 < GetTickCount())
+  {
+    ICodec* codec = m_decoder[m_currentDecoder].GetCodec();
+    if (codec)
+    {
+      m_CacheLevel = codec->GetCacheLevel();
+      m_LastCacheLevelCheck = GetTickCount();
+      //CLog::DebugLog("Cachelevel: %i%%", m_CacheLevel);
+    }
+  }
+}
+
 bool PAPlayer::ProcessPAP()
 {
   /*
@@ -457,6 +474,8 @@ bool PAPlayer::ProcessPAP()
     if (status == STATUS_NO_FILE)
       return false;
 
+    UpdateCacheLevel();
+
     // check whether we should queue the next file up
     if ((GetTotalTime64() > 0) && GetTotalTime64() - GetTime() < TIME_TO_CACHE_NEXT_FILE + m_crossFading * 1000L && !m_cachingNextFile)
     { // request the next file from our application
@@ -483,7 +502,7 @@ bool PAPlayer::ProcessPAP()
           m_currentDecoder = 1 - m_currentDecoder;
           m_decoder[m_currentDecoder].Start();
           m_currentStream = 1 - m_currentStream;
-          CLog::Log(LOGINFO, "Starting Crossfade - resuming stream %i", m_currentStream);
+          CLog::Log(LOGDEBUG, "Starting Crossfade - resuming stream %i", m_currentStream);
           m_pStream[m_currentStream]->Pause(DSSTREAMPAUSE_RESUME);
           m_callback.OnPlayBackStarted();
           m_timeOffset = m_nextFile.m_lStartOffset * 1000 / 75;
@@ -505,11 +524,11 @@ bool PAPlayer::ProcessPAP()
         int nextstatus = m_decoder[1 - m_currentDecoder].GetStatus();
         if (nextstatus == STATUS_QUEUED || nextstatus == STATUS_QUEUING || nextstatus == STATUS_PLAYING)
         { // swap streams
-          CLog::Log(LOGINFO, "PAPlayer: Swapping tracks %i to %i", m_currentDecoder, 1-m_currentDecoder);
+          CLog::Log(LOGDEBUG, "PAPlayer: Swapping tracks %i to %i", m_currentDecoder, 1-m_currentDecoder);
           if (!m_crossFading || m_decoder[0].GetChannels() != m_decoder[1].GetChannels())
           { // playing gapless (we use only the 1 output stream in this case)
             int prefixAmount = m_decoder[m_currentDecoder].GetDataSize();
-            CLog::Log(LOGINFO, "PAPlayer::Prefixing %i bytes of old data to new track for gapless playback", prefixAmount);
+            CLog::Log(LOGDEBUG, "PAPlayer::Prefixing %i bytes of old data to new track for gapless playback", prefixAmount);
             m_decoder[1 - m_currentDecoder].PrefixData(m_decoder[m_currentDecoder].GetData(prefixAmount), prefixAmount);
             // check if we need to change the resampler (due to format change)
             unsigned int channels, samplerate, bitspersample;
@@ -614,7 +633,7 @@ bool PAPlayer::ProcessPAP()
     {
       if (GetTime() >= m_crossFadeLength)  // finished
       {
-        CLog::Log(LOGINFO, "Finished Crossfading");
+        CLog::Log(LOGDEBUG, "Finished Crossfading");
         m_currentlyCrossFading = false;
         SetStreamVolume(m_currentStream, g_stSettings.m_nVolumeLevel);
         FreeStream(1 - m_currentStream);
@@ -667,6 +686,11 @@ int PAPlayer::GetTotalTime()
   return (int)(GetTotalTime64()/1000);
 }
 
+int PAPlayer::GetCacheLevel() const
+{
+  return m_CacheLevel;
+}
+
 int PAPlayer::GetChannels()
 {
   ICodec* codec = m_decoder[m_currentDecoder].GetCodec();
@@ -712,7 +736,7 @@ void PAPlayer::SeekTime(__int64 iTime /*=0*/)
   if (m_currentFile.m_lStartOffset)
     iTime += m_currentFile.m_lStartOffset * 1000 / 75;
   m_SeekTime = iTime;
-  CLog::Log(LOGINFO, "PAPlayer::Seeking to time %f", 0.001f * m_SeekTime);
+  CLog::Log(LOGDEBUG, "PAPlayer::Seeking to time %f", 0.001f * m_SeekTime);
 }
 
 void PAPlayer::SeekPercentage(float fPercent /*=0*/)
@@ -733,7 +757,7 @@ void PAPlayer::HandleSeeking()
   {
     DWORD time = timeGetTime();
     m_timeOffset = m_decoder[m_currentDecoder].Seek(m_SeekTime);
-    CLog::Log(LOGINFO, "Seek to time %f took %i ms", 0.001f * m_SeekTime, timeGetTime() - time);
+    CLog::Log(LOGDEBUG, "Seek to time %f took %i ms", 0.001f * m_SeekTime, timeGetTime() - time);
     FlushStreams();
     m_bytesSentOut = 0;
     m_SeekTime = -1;
@@ -806,7 +830,7 @@ bool PAPlayer::HandleFFwdRewd()
     {
       // restore volume level so the next track isn't muted
       SetVolume(g_stSettings.m_nVolumeLevel);
-      CLog::Log(LOGINFO, "PAP Player: End of track reached while seeking");
+      CLog::Log(LOGDEBUG, "PAP Player: End of track reached while seeking");
       return false;
     }
   }

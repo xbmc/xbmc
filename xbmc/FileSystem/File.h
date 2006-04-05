@@ -37,6 +37,7 @@ public:
   void Close();
   int GetChunkSize() {if (m_pFile) return m_pFile->GetChunkSize(); return 0;}
   bool SkipNext(){if (m_pFile) return m_pFile->SkipNext(); return false;}
+  void SetObject(void* obj){if (m_pFile) m_pFile->Object = obj;} //generic object pointer to whatever
 
 
   static bool Exists(const CStdString& strFileName);

@@ -26,6 +26,7 @@ public:
   bool Download(const string &strURL, const string &strFileName, LPDWORD pdwSize = NULL);
   bool GetHeader(CStdString strName, CStdString& strValue) const;
   void Cancel();
+  void SetUserAgent(string strUserAgent);
 
   string m_redirectedURL;
   bool IsInternet(bool checkDNS = true);
@@ -52,6 +53,7 @@ private:
   string m_strHeaders;
   string m_strUsername;
   string m_strPassword;
+  string m_strUserAgent;
   map<CStdString, CStdString> m_mapHeaders;
 
   bool m_bProxyEnabled;

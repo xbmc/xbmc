@@ -81,6 +81,7 @@ CHTTP::CHTTP(const string& strProxyServer, int iProxyPort)
   m_RecvBytes = 0;
   m_RecvBuffer = 0;
   m_redirectedURL = "";
+  m_strUserAgent = "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)";
 }
 
 
@@ -99,6 +100,7 @@ CHTTP::CHTTP()
   m_RecvBytes = 0;
   m_RecvBuffer = 0;
   m_redirectedURL = "";
+  m_strUserAgent = "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)";
 }
 
 
@@ -695,6 +697,11 @@ void CHTTP::SetCookie(const string &strCookie)
   m_strCookie = strCookie;
 }
 
+void CHTTP::SetUserAgent(string strUserAgent)
+{
+  m_strUserAgent = strUserAgent;
+}
+
 //------------------------------------------------------------------------------------------------------------------
 
 int CHTTP::Open(const string& strURL, const char* verb, const char* pData)
@@ -728,8 +735,10 @@ int CHTTP::Open(const string& strURL, const char* verb, const char* pData)
   }
   strcat(szHTTPHEADER, "Host:");
   strcat(szHTTPHEADER, m_strHostName.c_str());
-  strcat(szHTTPHEADER, "\r\n"
-         "User-Agent: Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)\r\n");
+  strcat(szHTTPHEADER, "\r\n");
+  strcat(szHTTPHEADER, "User-Agent: ");
+  strcat(szHTTPHEADER, m_strUserAgent.c_str());
+  strcat(szHTTPHEADER, "\r\n");
   if (m_strCookie.size())
   {
     // is this even valid in http?

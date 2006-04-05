@@ -25,11 +25,17 @@ void CFileReader::Initialize(unsigned int bufferSize)
   m_ringBuffer.Create(bufferSize + DATA_TO_KEEP_BEHIND, DATA_TO_KEEP_BEHIND);
 }
 
+void CFileReader::OnClearEvent()
+{
+  if (OnClear) OnClear();
+}
+
 bool CFileReader::Open(const CStdString &strFile, bool autoBuffer, bool preBuffer)
 {
   Close();
   if (!m_file.Open(strFile))
     return false;
+  m_file.SetObject(&m_ringBuffer);
 
   if (!(m_chunk_size = m_file.GetChunkSize()))
     m_chunk_size = 16384;
@@ -40,6 +46,7 @@ bool CFileReader::Open(const CStdString &strFile, bool autoBuffer, bool preBuffe
   m_FileLength = m_file.GetLength();
   m_bufferedDataPos = 0;
   m_ringBuffer.Clear();
+  m_ringBuffer.OnClear = MakeDelegate(this, &CFileReader::OnClearEvent);
   m_readError = false;
   if (autoBuffer)
   {
@@ -47,7 +54,7 @@ bool CFileReader::Open(const CStdString &strFile, bool autoBuffer, bool preBuffe
     if (preBuffer)
     {
       unsigned int ms = 0;
-      unsigned int minBuffered = (unsigned int)((m_ringBuffer.Size() - DATA_TO_KEEP_BEHIND)*0.5f);
+      unsigned int minBuffered = (unsigned int)min(((m_ringBuffer.Size() - DATA_TO_KEEP_BEHIND)*0.5f), 32768);
       while ((m_ringBuffer.GetMaxReadSize() < minBuffered) && (ms < 10000))
       {
         Sleep(1);
@@ -66,6 +73,7 @@ bool CFileReader::Open(const CStdString &strFile, bool autoBuffer, bool preBuffe
 
 void CFileReader::Close()
 {
+  m_ringBuffer.OnClear.clear();
   // kill our background reader thread
   StopThread();
   // and close the file
@@ -227,10 +235,10 @@ void CFileReader::Process()
 
 bool CFileReader::SkipNext()
 {
-  if (m_file.SkipNext())
-  {
-    m_ringBuffer.Clear();
-    return true;
-  }
-  return false;
+  return m_file.SkipNext();
+}
+
+int CFileReader::GetCacheLevel()
+{
+  return m_ringBuffer.GetFillPercentage();
 }
