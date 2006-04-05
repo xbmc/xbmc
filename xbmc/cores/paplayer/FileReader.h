@@ -23,7 +23,9 @@ public:
   virtual __int64 GetLength();
   virtual bool SkipNext();
   unsigned int GetChunkSize() {return m_chunk_size;}
+  int GetCacheLevel();
 
+  EventHandler OnClear;
 protected:
   // thread functions
   virtual void OnStartup() {}
@@ -32,6 +34,7 @@ protected:
 
 private:
   int BufferChunk();
+  void OnClearEvent();
 
   CFile   m_file;
   __int64 m_bufferedDataPos;      // the position our client thinks we're at

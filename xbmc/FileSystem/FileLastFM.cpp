@@ -9,7 +9,8 @@ enum ACTION
   ACTION_Idle,
   ACTION_Handshaking,
   ACTION_ChangingStation,
-  ACTION_RetreivingMetaData
+  ACTION_RetreivingMetaData,
+  ACTION_SkipNext
 };
 typedef struct FileStateSt
 {
@@ -183,6 +184,7 @@ bool CFileLastFM::ChangeStation(const CURL& stationUrl)
 
 bool CFileLastFM::Open(const CURL& url, bool bBinary)
 {
+  Object = NULL;
   CGUIDialogProgress* dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
 
   url.GetURL(m_Url);
@@ -332,6 +334,12 @@ unsigned int CFileLastFM::Read(void* lpBuf, __int64 uiBufSize)
     {
       read -= (iSyncPos + 4);
       memmove(data, data + iSyncPos + 4, read);
+      //clear whatever is in the buffer and continue with the new track after a skip.
+      if (Object != NULL)
+      {
+        CRingHoldBuffer* ringHoldBuffer = (CRingHoldBuffer*)Object;
+        ringHoldBuffer->Clear();
+      }
       m_bDirectSkip = false;
     }
     else
@@ -344,11 +352,6 @@ unsigned int CFileLastFM::Read(void* lpBuf, __int64 uiBufSize)
   }
   //copy last 3 chars of data to first three chars of syncbuffer, might be "SYN"
   fast_memcpy(m_pSyncBuffer, (char*)lpBuf + max(0, read - 3), 3);
-  if (m_bDirectSkip)
-  {
-    //send only silence while skipping track
-    memset(lpBuf, 0, read);
-  }
   return read;
 }
 
@@ -363,7 +366,7 @@ __int64 CFileLastFM::Seek(__int64 iFilePosition, int iWhence)
 }
 
 
-bool CFileLastFM::SkipNext()
+bool CFileLastFM::DoSkipNext()
 {
   m_bDirectSkip = true;
   CHTTP http;
@@ -382,8 +385,20 @@ bool CFileLastFM::SkipNext()
   return false;
 }
 
+bool CFileLastFM::SkipNext()
+{
+  if (m_bDirectSkip) return true; //already skipping
+  if (m_fileState.Action == ACTION_Idle)
+  {
+    m_fileState.Action = ACTION_SkipNext;
+    SetEvent(m_hWorkerEvent);
+  }
+  return true; //only to indicate we handle the skipnext
+}
+
 void CFileLastFM::Close()
 {
+  Object = NULL;
   if (m_ThreadHandle)
   {
     m_bStop = true;
@@ -485,10 +500,17 @@ void CFileLastFM::Process()
       break;
     case ACTION_RetreivingMetaData:
       if (!RetreiveMetaData())
-      {
-        //Sleep(2000);
-        //SetEvent(m_hWorkerEvent);
-      }
+        m_fileState.bError = true;
+      else
+        m_fileState.bActionDone = true;
+      m_fileState.Action = ACTION_Idle;
+      break;
+    case ACTION_SkipNext:
+      if (!DoSkipNext())
+        m_fileState.bError = true;
+      else
+        m_fileState.bActionDone = true;
+      m_fileState.Action = ACTION_Idle;
       break;
     }
   }
