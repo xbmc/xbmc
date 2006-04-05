@@ -54,8 +54,6 @@ void CAc97DirectSound::StreamCallback(LPVOID pPacketContext, DWORD dwStatus)
 //***********************************************************************************************
 CAc97DirectSound::CAc97DirectSound(IAudioCallback* pCallback, int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bAC3DTS, bool bResample, int iNumBuffers)
 {
-  g_audioContext.RemoveActiveDevice();
-
   m_pCallback = pCallback;
   m_bAc3DTS = bAC3DTS;
 
@@ -129,8 +127,7 @@ HRESULT CAc97DirectSound::Deinitialize()
     delete [] m_adwStatus;
   m_adwStatus = NULL;
 
-  m_pDigitalOutput=NULL;
-  g_audioContext.RemoveActiveDevice();
+  m_pDigitalOutput=NULL;  
   g_audioContext.SetActiveDevice(CAudioContext::DEFAULT_DEVICE);
 
   return S_OK;

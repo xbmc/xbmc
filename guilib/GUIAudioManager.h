@@ -17,8 +17,8 @@ public:
   CGUIAudioManager();
   virtual ~CGUIAudioManager();
 
-  virtual void        Initialize();
-  virtual void        DeInitialize();
+  virtual void        Initialize(int iDevice);
+  virtual void        DeInitialize(int iDevice);
 
           bool        Load();
 

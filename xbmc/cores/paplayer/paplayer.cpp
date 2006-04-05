@@ -55,7 +55,7 @@ PAPlayer::PAPlayer(IPlayerCallback& callback) : IPlayer(callback)
 
 PAPlayer::~PAPlayer()
 {
-  CloseFile();
+  CloseFileInternal(true);
 }
 
 void PAPlayer::OnExit()
@@ -65,7 +65,7 @@ void PAPlayer::OnExit()
 
 bool PAPlayer::OpenFile(const CFileItem& file, __int64 iStartTime)
 {
-  if (m_currentlyCrossFading) CloseFile(); //user seems to be in a hurry
+  if (m_currentlyCrossFading) CloseFileInternal(false); //user seems to be in a hurry
 
   m_crossFading = g_guiSettings.GetInt("MusicPlayer.CrossFade");
   //no crossfading for cdda, cd-reading goes mad and no crossfading for last.fm doesn't like two connections
@@ -88,8 +88,9 @@ bool PAPlayer::OpenFile(const CFileItem& file, __int64 iStartTime)
     return result;
   }
 
-  //normal opening of file, nothing playing or crossfading not enabled
-  CloseFile();
+  // normal opening of file, nothing playing or crossfading not enabled
+  // however no need to return to gui audio device
+  CloseFileInternal(false);
 
   // always open the file using the current decoder
   m_currentDecoder = 0;
@@ -205,7 +206,9 @@ bool PAPlayer::QueueNextFile(const CFileItem &file, bool checkCrossFading)
   return true;
 }
 
-bool PAPlayer::CloseFile()
+
+
+bool PAPlayer::CloseFileInternal(bool bAudioDevice /*= true*/)
 {
   if (IsPaused())
     Pause();
@@ -225,8 +228,8 @@ bool PAPlayer::CloseFile()
   m_currentFile.Reset();
   m_nextFile.Reset();
 
-  g_audioContext.RemoveActiveDevice();
-  g_audioContext.SetActiveDevice(CAudioContext::DEFAULT_DEVICE);
+  if(bAudioDevice)
+    g_audioContext.SetActiveDevice(CAudioContext::DEFAULT_DEVICE);
 
   return true;
 }
@@ -254,8 +257,7 @@ void PAPlayer::FreeStream(int stream)
 
 void PAPlayer::SetupDirectSound(int channels)
 {
-  bool bAudioOnAllSpeakers(false);
-  g_audioContext.RemoveActiveDevice();
+  bool bAudioOnAllSpeakers(false);  
   g_audioContext.SetupSpeakerConfig(channels, bAudioOnAllSpeakers,true);
   g_audioContext.SetActiveDevice(CAudioContext::DIRECTSOUND_DEVICE);
   LPDIRECTSOUND pDSound=g_audioContext.GetDirectSoundDevice();
