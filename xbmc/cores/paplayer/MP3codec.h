@@ -16,7 +16,11 @@ public:
   virtual int ReadPCM(BYTE *pBuffer, int size, int *actualsize);
   virtual bool CanInit();
   virtual bool SkipNext();
+  virtual int GetCacheLevel();
 private:
+  void OnFileReaderClearEvent();
+  void FlushDecoder();
+
   // Decoding variables
   CFileReader   m_file;          // Our MP3 file
   __int64 m_lastByteOffset;

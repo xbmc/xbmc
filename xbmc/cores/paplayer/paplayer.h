@@ -55,6 +55,7 @@ public:
   virtual void GetVideoRect(RECT& SrcRect, RECT& DestRect){}
   virtual void GetVideoAspectRatio(float& fAR) {}
   virtual void ToFFRW(int iSpeed = 0);
+  virtual int GetCacheLevel() const; 
   virtual int GetTotalTime();
   __int64 GetTotalTime64();
   virtual int GetBitrate();
@@ -120,6 +121,7 @@ private:
   
   void UpdateCrossFadingTime(const CFileItem& file);
   bool QueueNextFile(const CFileItem &file, bool checkCrossFading);
+  void UpdateCacheLevel();
 
   int m_currentStream;
   IDirectSoundStream *m_pStream[2];
@@ -132,6 +134,9 @@ private:
   unsigned int     m_Channels;
   unsigned int     m_BitsPerSample;
   unsigned int     m_BytesPerSecond;
+
+  unsigned int     m_CacheLevel;
+  unsigned int     m_LastCacheLevelCheck;
 
     // resampler
   Cssrc            m_resampler[2];

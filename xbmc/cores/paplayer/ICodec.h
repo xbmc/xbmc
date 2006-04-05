@@ -57,6 +57,8 @@ public:
   // Skip to next track/item inside the current media (if supported).
   virtual bool SkipNext(){return false;}
 
+  virtual int GetCacheLevel(){return -1;}
+
   __int64 m_TotalTime;  // time in ms
   int m_SampleRate;
   int m_BitsPerSample;

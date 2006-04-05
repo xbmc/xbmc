@@ -49,6 +49,14 @@ MP3Codec::~MP3Codec()
   m_OutputBuffer = NULL;
 }
 
+//Eventhandler if filereader is clearedwe flush the decoder.
+void MP3Codec::OnFileReaderClearEvent()
+{
+  if (m_pDecoder) {
+    FlushDecoder();
+  }
+}
+
 bool MP3Codec::Init(const CStdString &strFile, unsigned int filecache)
 {
   m_file.Initialize(filecache);
@@ -90,7 +98,7 @@ bool MP3Codec::Init(const CStdString &strFile, unsigned int filecache)
     mp3info.GetReplayGain(m_replayGain);
   }
 
-  if (!m_file.Open(strFile))
+  if (!m_file.Open(strFile, true, bIsInternetStream))
   {
     CLog::Log(LOGERROR, "MP3Codec: Unable to open file %s", strFile.c_str());
     delete m_pDecoder;
@@ -142,12 +150,23 @@ bool MP3Codec::Init(const CStdString &strFile, unsigned int filecache)
     m_pDecoder->flush();
     m_file.Seek(id3v2Size);
   }
+  m_file.OnClear = MakeDelegate(this, &MP3Codec::OnFileReaderClearEvent);
   return true;
 }
 
 void MP3Codec::DeInit()
 {
+  m_file.OnClear.clear();
   m_file.Close();
+}
+
+void MP3Codec::FlushDecoder()
+{
+  // Flush the decoder
+  m_pDecoder->flush();
+  m_InputBufferPos = 0;
+  m_OutputBufferPos = 0;
+  m_CallAgainWithSameBuffer = false;
 }
 
 __int64 MP3Codec::Seek(__int64 iSeekTime)
@@ -155,11 +174,7 @@ __int64 MP3Codec::Seek(__int64 iSeekTime)
   // calculate our offset to seek to in the file
   m_lastByteOffset = m_seekInfo.GetByteOffset(0.001f * iSeekTime);
   m_file.Seek(m_lastByteOffset, SEEK_SET);
-  // Flush the decoder
-  m_pDecoder->flush();
-  m_InputBufferPos = 0;
-  m_OutputBufferPos = 0;
-  m_CallAgainWithSameBuffer = false;
+  FlushDecoder();
   return iSeekTime;
 }
 
@@ -292,4 +307,9 @@ bool MP3Codec::CanInit()
 bool MP3Codec::SkipNext()
 {
   return m_file.SkipNext();
+}
+
+int MP3Codec::GetCacheLevel()
+{
+  return m_file.GetCacheLevel();
 }
