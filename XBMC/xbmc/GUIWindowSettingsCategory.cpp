@@ -295,7 +295,7 @@ void CGUIWindowSettingsCategory::SetupControls()
     pButton->SetNavigation(CONTROL_START_BUTTONS + (int)i - 1, CONTROL_START_BUTTONS + i + 1, CONTROL_START_CONTROL, CONTROL_START_CONTROL);
     pButton->SetVisible(true);
     pButton->AllocResources();
-    Add(pButton);
+    Insert(pButton, m_pOriginalSettingsButton);
   }
   // update the first and last buttons...
   CGUIControl *pControl = (CGUIControl *)GetControl(CONTROL_START_BUTTONS);
@@ -2000,8 +2000,10 @@ void CGUIWindowSettingsCategory::AddSetting(CSetting *pSetting, int iPosX, int &
 {
   CBaseSettingControl *pSettingControl = NULL;
   CGUIControl *pControl = NULL;
+  CGUIControl *baseControl = NULL;
   if (pSetting->GetControlType() == CHECKMARK_CONTROL)
   {
+    baseControl = m_pOriginalRadioButton;
     pControl = new CGUIRadioButtonControl(*m_pOriginalRadioButton);
     if (!pControl) return ;
     ((CGUIRadioButtonControl *)pControl)->SetLabel(g_localizeStrings.Get(pSetting->GetLabel()));
@@ -2012,6 +2014,7 @@ void CGUIWindowSettingsCategory::AddSetting(CSetting *pSetting, int iPosX, int &
   }
   else if (pSetting->GetControlType() == SPIN_CONTROL_FLOAT || pSetting->GetControlType() == SPIN_CONTROL_INT_PLUS || pSetting->GetControlType() == SPIN_CONTROL_TEXT || pSetting->GetControlType() == SPIN_CONTROL_INT)
   {
+    baseControl = m_pOriginalSpin;
     pControl = new CGUISpinControlEx(*m_pOriginalSpin);
     if (!pControl) return ;
     pControl->SetPosition(iPosX, iPosY);
@@ -2023,6 +2026,7 @@ void CGUIWindowSettingsCategory::AddSetting(CSetting *pSetting, int iPosX, int &
   }
   else if (pSetting->GetControlType() == SEPARATOR_CONTROL && m_pOriginalImage)
   {
+    baseControl = m_pOriginalImage;
     pControl = new CGUIImage(*m_pOriginalImage);
     if (!pControl) return;
     pControl->SetPosition(iPosX, iPosY);
@@ -2032,6 +2036,7 @@ void CGUIWindowSettingsCategory::AddSetting(CSetting *pSetting, int iPosX, int &
   }
   else if (pSetting->GetControlType() != SEPARATOR_CONTROL) // button control
   {
+    baseControl = m_pOriginalButton;
     pControl = new CGUIButtonControl(*m_pOriginalButton);
     if (!pControl) return ;
     pControl->SetPosition(iPosX, iPosY);
@@ -2049,7 +2054,7 @@ void CGUIWindowSettingsCategory::AddSetting(CSetting *pSetting, int iPosX, int &
   pControl->SetID(iControlID++);
   pControl->SetGroup(CONTROL_GROUP_SETTINGS);
   pControl->SetVisible(true);
-  Add(pControl);
+  Insert(pControl, baseControl);
   pControl->AllocResources();
   m_vecSettings.push_back(pSettingControl);
 }

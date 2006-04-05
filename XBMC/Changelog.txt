@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 05-04-2006 fixed: [ 1464756 ] script output scrolling crash
+ - 05-04-2006 changed: The controls in SettingsCategory are added in the same position as their template controls.
  - 04-04-2006 fixed: single filed rar archives should be up to speed again.
  - 04-04-2006 fixed: [ 1461737 ] Navigation in CBR/CBZ.
  - 04-04-2006 fixed: [ 1460946 ] Unable to create CD rip dir on SMB share.
