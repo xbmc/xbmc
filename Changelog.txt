@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 05-04-2006 changed: use 16 byte aligned pointers in dvdplayer's libmpeg2, fixes potential crash on decoding (thou i doubt it ever happend)
  - 05-04-2006 changed: avoid closing audio device if properties didn't change, avoids ac3 reciever stuttering between audio tracks when using OTAS
  - 05-04-2006 fixed: Last.fm radio skip track.
  - 05-04-2006 changed: rss-reader useragent.
