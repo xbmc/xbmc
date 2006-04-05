@@ -334,7 +334,7 @@ void CGUITextBox::SetText(const string &strText)
   }
 
   int iPages = m_vecItems.size() / m_iItemsPerPage;
-  if (m_vecItems.size() % m_iItemsPerPage) iPages++;
+  if (m_vecItems.size() % m_iItemsPerPage || !iPages) iPages++;
   m_upDown.SetRange(1, iPages);
   m_upDown.SetValue(1);
 
@@ -413,7 +413,7 @@ void CGUITextBox::SetHeight(int iHeight)
   m_iItemsPerPage = (int)(fTotalHeight / fHeight);
 
   int iPages = m_vecItems.size() / m_iItemsPerPage;
-  if (m_vecItems.size() % m_iItemsPerPage) iPages++;
+  if (m_vecItems.size() % m_iItemsPerPage || !iPages) iPages++;
   m_upDown.SetRange(1, iPages);
 }
 
