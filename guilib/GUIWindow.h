@@ -106,6 +106,7 @@ public:
   bool HandleMouse(CGUIControl *pControl);
   virtual bool OnMessage(CGUIMessage& message);
   void Add(CGUIControl* pControl);
+  void Insert(CGUIControl *control, const CGUIControl *insertPoint);
   void Remove(DWORD dwId);
   int GetFocusControl();
   bool ControlGroupHasFocus(int groupID, int controlID);
