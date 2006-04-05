@@ -2183,6 +2183,9 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				RelativePath=".\xbmc\utils\Event.cpp">
 			</File>
 			<File
+				RelativePath=".\xbmc\utils\FastDelegate.h">
+			</File>
+			<File
 				RelativePath=".\xbmc\utils\fstrcmp.cpp">
 			</File>
 			<File

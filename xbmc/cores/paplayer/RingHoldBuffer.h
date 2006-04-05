@@ -91,9 +91,14 @@
 #include "../../utils/criticalsection.h"
 #include "../../utils/singlelock.h"
 #include "../../utils/log.h"
+#include "../../utils/FastDelegate.h"
 #if _MSC_VER > 1000
 #pragma once
 #endif // _MSC_VER > 1000
+
+using namespace fastdelegate;
+
+typedef FastDelegate<void()> EventHandler;
 
 
 class CRingHoldBuffer
@@ -111,6 +116,8 @@ protected:
 
   CRITICAL_SECTION m_critSection;
 public:
+   EventHandler OnClear;
+
   ///////////////////////////////////////////////////////////////////
   // Constructor
   //
@@ -215,6 +222,7 @@ public:
     m_iBehindAmount = 0;
     m_iAheadAmount = 0;
     m_iReadPtr = 0;
+    if (OnClear) OnClear();
     ::LeaveCriticalSection(&m_critSection );
   }
   ///////////////////////////////////////////////////////////////////
@@ -419,6 +427,12 @@ public:
     ::LeaveCriticalSection(&m_critSection );
 //    CLog::Log(LOGDEBUG, "RingHoldBuffer::SkipBytes Done %i bytes, ReadPos=%i, BehindAmount=%i, AheadAmount=%i, return=%s", nBufLen, m_iReadPtr, m_iBehindAmount, m_iAheadAmount, bResult ? "true" : "false");
     return bResult;
+  }
+
+  //Percentage filled, excluding the behindsize.
+  int GetFillPercentage()
+  {
+    return (int)(100*(GetMaxReadSize()/(float)(m_nBufSize - m_nBehindSize)));
   }
 };
 
