@@ -1075,6 +1075,19 @@ void CGUIWindow::Add(CGUIControl* pControl)
   m_vecControls.push_back(pControl);
 }
 
+void CGUIWindow::Insert(CGUIControl *control, const CGUIControl *insertPoint)
+{
+  // get the insertion point
+  ivecControls i = m_vecControls.begin();
+  while (i != m_vecControls.end())
+  {
+    if (*i == insertPoint)
+      break;
+    i++;
+  }
+  m_vecControls.insert(i, control);
+}
+
 void CGUIWindow::Remove(DWORD dwId)
 {
   ivecControls i = m_vecControls.begin();
