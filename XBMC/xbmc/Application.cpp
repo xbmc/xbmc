@@ -51,6 +51,7 @@
 #include "filesystem/StackDirectory.h"
 #include "PartyModeManager.h"
 #include "FileSystem/DllLibCurl.h"
+#include "audiocontext.h"
 
 // Windows includes
 #include "GUIWindowMusicPlaylist.h"
@@ -1702,7 +1703,7 @@ void CApplication::LoadSkin(const CStdString& strSkin)
   m_gWindowManager.AddMsgTarget(&g_playlistPlayer);
   m_gWindowManager.SetCallback(*this);
   m_gWindowManager.Initialize();
-  g_audioManager.Initialize();
+  g_audioManager.Initialize(CAudioContext::DEFAULT_DEVICE);
   g_audioManager.Load();
   CLog::Log(LOGINFO, "  skin loaded...");
 
@@ -1720,7 +1721,7 @@ void CApplication::UnloadSkin()
 {
   CGUIWindow::FlushReferenceCache(); // flush the cache
 
-  g_audioManager.DeInitialize();
+  g_audioManager.DeInitialize(CAudioContext::DEFAULT_DEVICE);
 
   //These windows are not handled by the windowmanager (why not?) so we should unload them manually
   m_guiPointer.FreeResources(true);
