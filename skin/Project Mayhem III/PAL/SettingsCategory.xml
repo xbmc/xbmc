@@ -37,6 +37,30 @@
     </control>
 
     <control>
+      <description>contentpanel slice</description>
+      <type>image</type>
+      <id>0</id>
+      <posx>160</posx>
+      <posy>108</posy>
+      <width>64</width>
+      <height>468</height>
+      <texture>contentpanel_left.png</texture>
+      <include>contentpanelslide</include>
+    </control>
+
+    <control>
+      <description>contentpanel slice</description>
+      <type>image</type>
+      <id>0</id>
+      <posx>224</posx>
+      <posy>108</posy>
+      <width>500</width>
+      <height>468</height>
+      <texture>contentpanel.png</texture>
+      <include>contentpanelslide</include>
+    </control>
+
+    <control>
       <description>button area</description>
       <type>image</type>
       <id>3</id>
@@ -65,6 +89,7 @@
       <width>445</width>
       <height>300</height>
       <texture>-</texture>
+      <include>contentpanelslide</include>
     </control>
 
     <control>
@@ -74,6 +99,7 @@
       <width>350</width>
       <height>34</height>
       <texture>-</texture>
+      <include>contentpanelslide</include>
     </control>
 
     <control>
@@ -86,6 +112,7 @@
       <textoffsetx>7</textoffsetx>
       <texturefocus>list-focus.png</texturefocus>
       <texturenofocus>-</texturenofocus>
+      <include>contentpanelslide</include>
     </control>
 
     <control>
@@ -100,6 +127,7 @@
       <textoffsetx>7</textoffsetx>
       <textureradiofocus>settings-check-box.png</textureradiofocus>
       <textureradionofocus>settings-check-boxNF.png</textureradionofocus>
+      <include>contentpanelslide</include>
     </control>
 
     <control>
@@ -121,6 +149,7 @@
       <textoffsetx>7</textoffsetx>
       <aligny>center</aligny>
       <reverse>yes</reverse>
+      <include>contentpanelslide</include>
     </control>
 
     <control>
@@ -134,6 +163,7 @@
       <align>left</align>
       <texturefocus>button-focus.png</texturefocus>
       <texturenofocus>button-nofocus.png</texturenofocus>
+      <include>buttonpanelslide</include>
     </control>
 
     <control>
@@ -143,6 +173,18 @@
       <width>350</width>
       <height>5</height>
       <texture>separator.png</texture>
+      <include>contentpanelslide</include>
+    </control>
+
+    <control>
+      <description>bg preview</description>
+      <type>image</type>
+      <id>0</id>
+      <posx>0</posx>
+      <posy>0</posy>
+      <width>720</width>
+      <height>576</height>
+      <include>windowswitchtransition</include>
     </control>
 
   </controls>

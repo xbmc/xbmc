@@ -37,6 +37,30 @@
     </control>
 
     <control>
+      <description>contentpanel slice</description>
+      <type>image</type>
+      <id>0</id>
+      <posx>160</posx>
+      <posy>108</posy>
+      <width>64</width>
+      <height>468</height>
+      <texture>contentpanel_left.png</texture>
+      <include>contentpanelslide</include>
+    </control>
+
+    <control>
+      <description>contentpanel slice</description>
+      <type>image</type>
+      <id>0</id>
+      <posx>224</posx>
+      <posy>108</posy>
+      <width>500</width>
+      <height>468</height>
+      <texture>contentpanel.png</texture>
+      <include>contentpanelslide</include>
+    </control>
+
+    <control>
       <description>number of files text label</description>
       <type>label</type>
       <id>12</id>
@@ -45,6 +69,7 @@
       <align>right</align>
       <label>-</label>
       <font>font10</font>
+      <include>contentpanelslide</include>
     </control>
 
     <controlgroup>
@@ -60,6 +85,7 @@
         <onright>50</onright>
         <onup>9</onup>
         <ondown>3</ondown>
+        <include>buttonpanelslide</include>
       </control>
 
       <control>
@@ -74,6 +100,7 @@
         <onright>4</onright>
         <onup>2</onup>
         <ondown>6</ondown>
+        <include>buttonpanelslide</include>
       </control>
 
       <control>
@@ -85,6 +112,7 @@
         <onright>50</onright>
         <onup>4</onup>
         <ondown>4</ondown>
+        <include>buttonpanelslide</include>
       </control>
 
       <control>
@@ -99,6 +127,7 @@
         <onright>50</onright>
         <onup>3</onup>
         <ondown>7</ondown>
+        <include>buttonpanelslide</include>
       </control>
 
       <control>
@@ -113,6 +142,7 @@
         <onright>50</onright>
         <onup>6</onup>
         <ondown>9</ondown>
+        <include>buttonpanelslide</include>
       </control>
 
       <control>
@@ -127,6 +157,7 @@
         <onright>50</onright>
         <onup>7</onup>
         <ondown>2</ondown>
+        <include>buttonpanelslide</include>
       </control>
 
     </controlgroup>
@@ -139,6 +170,7 @@
       <onright>50</onright>
       <onup>2</onup>
       <ondown>2</ondown>
+      <include>contentpanelslide</include>
     </control>
 
     <control>
@@ -165,6 +197,18 @@
       <onright>51</onright>
       <onup>51</onup>
       <ondown>51</ondown>
+      <include>contentpanelslide</include>
+    </control>
+
+    <control>
+      <description>bg preview</description>
+      <type>image</type>
+      <id>0</id>
+      <posx>0</posx>
+      <posy>0</posy>
+      <width>720</width>
+      <height>576</height>
+      <include>windowswitchtransition</include>
     </control>
 
   </controls>

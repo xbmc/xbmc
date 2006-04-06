@@ -1,8 +1,6 @@
 <window>
   <id>2004</id>
   <defaultcontrol>2</defaultcontrol>
-  <animation effect="fade" time="1000">WindowOpen</animation>
-  <animation effect="fade" time="1000">WindowClose</animation>
   <controls>
     <control>
       <description>music rectangle</description>
@@ -13,6 +11,7 @@
       <width>90</width>
       <height>120</height>
       <texture>blue_rectangle_music.png</texture>
+      <include>mediaoverlay</include>
     </control>
 
     <control>
@@ -25,6 +24,7 @@
       <height>109</height>
       <texture>defaultAlbumCover.png</texture>
       <info>MusicPlayer.Cover</info>
+      <include>mediaoverlay</include>
     </control>
 
     <control>
@@ -37,6 +37,7 @@
       <info>MusicPlayer.Time</info>
       <align>left</align>
       <font>font13</font>
+      <include>mediaoverlay</include>
     </control>
 
     <control>
@@ -48,6 +49,7 @@
       <font>font10</font>
       <label>$INFO[MusicPlayer.Artist] | $INFO[MusicPlayer.Title] | $INFO[MusicPlayer.Album] | $INFO[MusicPlayer.Year]</label>
       <include>textcolorwhite</include>
+      <include>mediaoverlay</include>
       <id>0</id>
     </control>
 
