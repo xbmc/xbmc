@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 06-04-2006 fixed: multiple visualisation controls on screen at same time would crash xbmc (now only first one loads)
  - 06-04-2006 fixed: [ 1458759 ] Little info screen problems
  - 06-04-2006 fixed: [ 1267265 ] Un-safe HD shutdown
  - 06-04-2006 fixed: [ 1454415 ] Philipps DVD Drive not recognized at System-Info

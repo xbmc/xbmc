@@ -11,6 +11,10 @@
 #define LABEL_ROW2 11
 #define LABEL_ROW3 12
 
+// uggly hack, we can only allow one visualisation at one time or stuff starts crashing
+static CCriticalSection m_critSection;
+static bool m_globalvis = false;
+
 CAudioBuffer::CAudioBuffer(int iSize)
 {
   m_iLen = iSize;
@@ -75,6 +79,7 @@ void CGUIVisualisationControl::FreeVisualisation()
   g_graphicsContext.SendMessage(msg);
 
   CSingleLock lock (m_critSection);
+
   CLog::Log(LOGDEBUG, "FreeVisualisation() started");
   m_bInitialized = false;
   if (g_application.m_pPlayer)
@@ -88,6 +93,9 @@ void CGUIVisualisationControl::FreeVisualisation()
     delete m_pVisualisation;
 
     g_graphicsContext.ApplyStateBlock();
+    
+    /* we released the global vis spot */
+    m_globalvis = false;
   }
   m_pVisualisation = NULL;
   ClearBuffers();
@@ -98,16 +106,12 @@ void CGUIVisualisationControl::LoadVisualisation()
 {
   CSingleLock lock (m_critSection);
   if (m_pVisualisation)
-  {
-    m_pVisualisation->Stop();
-    delete m_pVisualisation;
-    g_graphicsContext.ApplyStateBlock();
-  }
-  m_pVisualisation = NULL;
-  if (g_application.m_pPlayer)
-    g_application.m_pPlayer->UnRegisterAudioCallback();
+    FreeVisualisation();
 
-  m_bInitialized = false;
+  /* check if any other control beat us to the punch */
+  if(m_globalvis)
+    return;  
+
   CVisualisationFactory factory;
   CStdString strVisz;
   m_currentVis = g_guiSettings.GetString("MyMusic.Visualisation");
@@ -136,6 +140,8 @@ void CGUIVisualisationControl::LoadVisualisation()
 
     // Create new audio buffers
     CreateBuffers();
+
+    m_globalvis = true;
   }
   CLog::Log(LOGDEBUG, "LoadVisualisation() done");
 
