@@ -1,3 +1,4 @@
+2006-04-06 fixed:	DialogGamepad.xml and DialogNumeric.xml were the only dialog XMLs with a lower case D as first letter 
 2006-04-06 removed:	custom3.xml is no longer used (PY skin builder)
 2006-04-06 added:	function to toggle visualisation and video in the homescreen with the BLACK button (new keymap.xml needed!)
 2006-04-06 added:	skin animation (BETA); effects switchable in settings
