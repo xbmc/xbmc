@@ -5,6 +5,9 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 06-04-2006 fixed: [ 1458759 ] Little info screen problems
+ - 06-04-2006 fixed: [ 1267265 ] Un-safe HD shutdown
+ - 06-04-2006 fixed: [ 1454415 ] Philipps DVD Drive not recognized at System-Info
  - 05-04-2006 changed: use 16 byte aligned pointers in dvdplayer's libmpeg2, fixes potential crash on decoding (thou i doubt it ever happend)
  - 05-04-2006 changed: avoid closing audio device if properties didn't change, avoids ac3 reciever stuttering between audio tracks when using OTAS
  - 05-04-2006 fixed: Last.fm radio skip track.

@@ -567,6 +567,7 @@ bool CGUIWindowSystemInfo::GetXBProduceInfo(CStdString& strXBProDate)
 {
   // Print XBOX Production Place and Date 
   CStdString lbl = g_localizeStrings.Get(13290).c_str();
+  CStdString lblYear = g_localizeStrings.Get(201).c_str();
   if ( XKUtils::ReadEEPROMFromXBOX((LPBYTE)&m_EEPROMData, 0, 255))
   {
     char *info = (LPSTR)&m_EEPROMData.SerialNumber;
@@ -590,7 +591,7 @@ bool CGUIWindowSystemInfo::GetXBProduceInfo(CStdString& strXBProDate)
       break;
     }
     CLog::Log(LOGDEBUG, "- XBOX became produced: Country: %s, LineNumber: %c, Week %c%c, Year 200%c", country, info[0x00], info[0x08], info[0x09],info[0x07]);
-    strXBProDate.Format("%s Week: %c%c Year: 200%c in %s Line:#%c ",lbl.c_str(), info[0x08], info[0x09],info[0x07], country, info[0x00]);
+    strXBProDate.Format("%s %s, %s 200%c, Week: %c%c Line: %c",lbl.c_str(), country, lblYear.c_str(),info[0x07], info[0x08],info[0x09], info[0x00]);
     return true;
   }
   else return false;
@@ -1358,7 +1359,8 @@ bool CGUIWindowSystemInfo::GetUnits(int i_lblp1, int i_lblp2 )
   strItem4.Format("%s %s %s", strItem1.c_str(), strItem2.c_str(), strItem3.c_str());
 
   strItem5.Format("%s %s",  strlblIRRemote.c_str(), sclDeviceIRRemote);
-  strItem6.Format("%s %s-%s", strlblHeadMicro.c_str(), sclDeviceHeadPhone, sclDeviceMicroPhone );
+  //strItem6.Format("%s %s-%s", strlblHeadMicro.c_str(), sclDeviceHeadPhone, sclDeviceMicroPhone );
+  strItem6.Format("%s %s", strlblHeadMicro.c_str(), sclDeviceHeadPhone, sclDeviceMicroPhone );  // Head and Micro are normly on the same port!
   strItem7.Format("%s %s", strItem5.c_str(), strItem6.c_str());
 
   // !? Show Memory stick, because it only shows with USB->MemoryStick adapter!
