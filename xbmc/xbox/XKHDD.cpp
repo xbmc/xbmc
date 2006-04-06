@@ -170,7 +170,7 @@ BOOL XKHDD::SendATACommand(WORD IDEPort, LPATA_COMMAND_OBJ ATACommandObj, UCHAR 
 {
 	//XBOX Sending ATA Commands..  
 	BOOL retVal			= FALSE;
-	UCHAR waitcount		= 10;
+	UCHAR waitcount		= 15;
 	WORD inVal			= 0;
 	WORD SuccessRet		= 0x58;
 	LPDWORD PIDEDATA	= (LPDWORD) &ATACommandObj->DATA_BUFFER ;
