@@ -1,8 +1,6 @@
 <window>
   <id>2004</id>
   <defaultcontrol>2</defaultcontrol>
-  <animation effect="fade" time="1000">WindowOpen</animation>
-  <animation effect="fade" time="1000">WindowClose</animation>
   <controls>
     <control>
       <description>video rectangle</description>
@@ -14,6 +12,7 @@
       <height>118</height>
       <texture>blue_rectangle_video.png</texture>
       <colorkey>0</colorkey>
+      <include>mediaoverlay</include>
     </control>
 
     <control>
@@ -24,6 +23,9 @@
       <posy>385</posy>
       <width>130</width>
       <height>107</height>
+      <visible>!Window.Next(Home)</visible>
+      <animation effect="fade" time="1" delay="500">WindowOpen</animation>
+      <animation effect="fade" time="1" delay="0">VisibleChange</animation>
     </control>
 
     <control>
@@ -36,6 +38,7 @@
       <info>VideoPlayer.Time</info>
       <align>left</align>
       <font>font13</font>
+      <include>mediaoverlay</include>
     </control>
 
     <control>
@@ -47,6 +50,7 @@
       <font>font10</font>
       <id>0</id>
       <label>$INFO[VideoPlayer.Title] | $INFO[VideoPlayer.Year] | $INFO[VideoPlayer.Director] | $INFO[VideoPlayer.Genre]</label>
+      <include>mediaoverlay</include>
     </control>
 
   </controls>

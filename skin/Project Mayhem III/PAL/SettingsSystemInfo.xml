@@ -39,6 +39,30 @@
       <include>textcolorwhite</include>
     </control>
 
+    <control>
+      <description>contentpanel slice</description>
+      <type>image</type>
+      <id>0</id>
+      <posx>160</posx>
+      <posy>108</posy>
+      <width>64</width>
+      <height>468</height>
+      <texture>contentpanel_left.png</texture>
+      <include>contentpanelslide</include>
+    </control>
+
+    <control>
+      <description>contentpanel slice</description>
+      <type>image</type>
+      <id>0</id>
+      <posx>224</posx>
+      <posy>108</posy>
+      <width>500</width>
+      <height>468</height>
+      <texture>contentpanel.png</texture>
+      <include>contentpanelslide</include>
+    </control>
+
     <controlgroup>
       <control>
 	<description>Section Label</description>
@@ -48,6 +72,7 @@
 	<posy>120</posy>
 	<font>font13</font>
 	<label>139</label>
+      <include>contentpanelslide</include>
       </control>
 
       <control>
@@ -63,6 +88,7 @@
 	<onup>98</onup>
 	<ondown>94</ondown>
 	<align>Left</align>
+      <include>buttonpanelslide</include>
       </control>
 
       <control>
@@ -78,6 +104,7 @@
 	<onup>95</onup>
 	<ondown>92</ondown>
 	<align>Left</align>
+      <include>buttonpanelslide</include>
       </control>
 
       <control>
@@ -93,6 +120,7 @@
 	<onup>94</onup>
 	<ondown>93</ondown>
 	<align>Left</align>
+      <include>buttonpanelslide</include>
       </control>
 
       <control>
@@ -108,6 +136,7 @@
 	<onup>92</onup>
 	<ondown>96</ondown>
 	<align>Left</align>
+      <include>buttonpanelslide</include>
       </control>
 
       <control>
@@ -123,6 +152,7 @@
 	<onup>93</onup>
 	<ondown>97</ondown>
 	<align>Left</align>
+      <include>buttonpanelslide</include>
       </control>
 
       <control>
@@ -138,6 +168,7 @@
 	<onup>96</onup>
 	<ondown>98</ondown>
 	<align>Left</align>
+      <include>buttonpanelslide</include>
       </control>
 
       <control>
@@ -153,6 +184,7 @@
 	<onup>97</onup>
 	<ondown>95</ondown>
 	<align>Left</align>
+      <include>buttonpanelslide</include>
       </control>
 
     </controlgroup>
@@ -166,6 +198,7 @@
       <label>13282</label>
       <font>font13</font>
       <include>textcolorgrey</include>
+      <include>contentpanelslide</include>
     </control>
 
     <control>
@@ -177,6 +210,7 @@
       <label>13282</label>
       <font>font13</font>
       <include>textcolorgrey</include>
+      <include>contentpanelslide</include>
     </control>
 
     <control>
@@ -188,6 +222,7 @@
       <label>13282</label>
       <font>font13</font>
       <include>textcolorgrey</include>
+      <include>contentpanelslide</include>
     </control>
 
     <control>
@@ -199,6 +234,7 @@
       <label>13282</label>
       <font>font13</font>
       <include>textcolorgrey</include>
+      <include>contentpanelslide</include>
     </control>
 
     <control>
@@ -210,6 +246,7 @@
       <label>13282</label>
       <font>font13</font>
       <include>textcolorgrey</include>
+      <include>contentpanelslide</include>
     </control>
 
     <control>
@@ -221,6 +258,7 @@
       <label>13282</label>
       <font>font13</font>
       <include>textcolorgrey</include>
+      <include>contentpanelslide</include>
     </control>
 
     <control>
@@ -232,6 +270,7 @@
       <label>13282</label>
       <font>font13</font>
       <include>textcolorgrey</include>
+      <include>contentpanelslide</include>
     </control>
 
     <control>
@@ -243,6 +282,7 @@
       <label>13282</label>
       <font>font13</font>
       <include>textcolorgrey</include>
+      <include>contentpanelslide</include>
     </control>
 
     <control>
@@ -254,6 +294,7 @@
       <label>13282</label>
       <font>font13</font>
       <include>textcolorgrey</include>
+      <include>contentpanelslide</include>
     </control>
 
     <control>
@@ -265,6 +306,7 @@
       <label>13282</label>
       <font>font13</font>
       <include>textcolorgrey</include>
+      <include>contentpanelslide</include>
     </control>
 
     <!--
@@ -277,6 +319,7 @@
       <label>13282</label>
       <font>font13</font>
       <include>textcolorgrey</include>
+      <include>contentpanelslide</include>
     </control>
 
     -->
@@ -291,6 +334,7 @@
       <info>Network.IPAddress</info>
       <align>left</align>
       <font>font12</font>
+      <include>contentpanelslide</include>
     </control>
     -->
     <control>
@@ -302,6 +346,7 @@
       <label>143</label>
       <font>font12</font>
       <include>textcolorgrey</include>
+      <include>contentpanelslide</include>
     </control>
 
     <!--
@@ -314,6 +359,7 @@
       <label>144</label>
       <font>font12</font>
       <include>textcolorgrey</include>
+      <include>contentpanelslide</include>
     </control>
     -->
 
@@ -326,6 +372,7 @@
       <label>144</label>
       <font>font12</font>
       <include>textcolorgrey</include>
+      <include>contentpanelslide</include>
     </control>
 
     <control>
@@ -337,6 +384,7 @@
       <label>144</label>
       <font>font12</font>
       <include>textcolorgrey</include>
+      <include>contentpanelslide</include>
     </control>
 
   </controls>
