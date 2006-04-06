@@ -1,3 +1,5 @@
+2006-04-06 added:	skin animation (BETA); effects switchable in settings
+ 
 2006-03-30 changed:	new shutdownmenu effects
 
 2006-03-28 fixed:	Some issues with the new dialogs
