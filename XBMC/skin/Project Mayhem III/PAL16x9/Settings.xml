@@ -36,6 +36,30 @@
       <font>special13</font>
     </control>
 
+    <control>
+      <description>contentpanel slice</description>
+      <type>image</type>
+      <id>0</id>
+      <posx>160</posx>
+      <posy>108</posy>
+      <width>64</width>
+      <height>468</height>
+      <texture>contentpanel_left.png</texture>
+      <include>contentpanelslide</include>
+    </control>
+
+    <control>
+      <description>contentpanel slice</description>
+      <type>image</type>
+      <id>0</id>
+      <posx>224</posx>
+      <posy>108</posy>
+      <width>500</width>
+      <height>468</height>
+      <texture>contentpanel.png</texture>
+      <include>contentpanelslide</include>
+    </control>
+
     <controlgroup>
       <control>
         <description>profiles</description>
@@ -47,8 +71,9 @@
         <onclick>XBMC.ActivateWindow(34)</onclick>
         <onleft>8</onleft>
         <onright>6</onright>
-        <onup>13</onup>
+        <onup>14</onup>
         <ondown>112</ondown>
+        <include>buttonpanelslide</include>
       </control>
 
       <control>
@@ -63,6 +88,7 @@
         <onright>6</onright>
         <onup>11</onup>
         <ondown>13</ondown>
+        <include>buttonpanelslide</include>
       </control>
 
       <control>
@@ -77,22 +103,39 @@
         <onright>6</onright>
         <onup>112</onup>
         <ondown>14</ondown>
+        <include>buttonpanelslide</include>
       </control>
 
       <control>
-        <description>Skin builder</description>
+        <description>enable animations</description>
         <type>button</type>
         <id>14</id>
         <posx>50</posx>
         <posy>231</posy>
-        <label>PY Skin Builder</label>
-        <onclick>XBMC.ActivateWindow(57)</onclick>
+        <label>Animate Skin</label>
+        <onclick>Skin.ToggleSetting(animated)</onclick>
         <onleft>8</onleft>
         <onright>6</onright>
         <onup>13</onup>
         <ondown>11</ondown>
-        <visible>no</visible>
+        <visible>yes</visible>
+        <include>buttonpanelslide</include>
       </control>
+
+   <control>
+      <description>contentpanel slice</description>
+      <type>image</type>
+      <id>0</id>
+      <posx>173</posx>
+      <posy>240</posy>
+      <width>16</width>
+      <height>16</height>
+      <texture>radiobutton-focus.png</texture>
+      <include>buttonpanelslide</include>
+      <visible>!Skin.HasSetting(animated)</visible>
+    </control>
+
+
 
     </controlgroup>
 
@@ -116,6 +159,7 @@
       <onright>7</onright>
       <onup>10</onup>
       <ondown>10</ondown>
+      <include>contentpanelslide</include>
     </control>
 
     <control>
@@ -138,6 +182,7 @@
       <onright>9</onright>
       <onup>2</onup>
       <ondown>2</ondown>
+      <include>contentpanelslide</include>
     </control>
 
     <control>
@@ -160,6 +205,7 @@
       <onright>8</onright>
       <onup>4</onup>
       <ondown>4</ondown>
+      <include>contentpanelslide</include>
     </control>
 
     <control>
@@ -182,6 +228,7 @@
       <onright>11</onright>
       <onup>3</onup>
       <ondown>3</ondown>
+      <include>contentpanelslide</include>
     </control>
 
     <control>
@@ -204,6 +251,7 @@
       <onright>2</onright>
       <onup>6</onup>
       <ondown>6</ondown>
+      <include>contentpanelslide</include>
     </control>
 
     <control>
@@ -226,6 +274,7 @@
       <onright>4</onright>
       <onup>7</onup>
       <ondown>7</ondown>
+      <include>contentpanelslide</include>
     </control>
 
     <control>
@@ -248,6 +297,7 @@
       <onright>3</onright>
       <onup>9</onup>
       <ondown>9</ondown>
+      <include>contentpanelslide</include>
     </control>
 
     <control>
@@ -270,6 +320,18 @@
       <onright>11</onright>
       <onup>8</onup>
       <ondown>8</ondown>
+      <include>contentpanelslide</include>
+    </control>
+
+    <control>
+      <description>bg preview</description>
+      <type>image</type>
+      <id>0</id>
+      <posx>0</posx>
+      <posy>0</posy>
+      <width>720</width>
+      <height>576</height>
+      <include>windowswitchtransition</include>
     </control>
 
   </controls>

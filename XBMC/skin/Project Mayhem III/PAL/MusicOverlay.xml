@@ -13,6 +13,7 @@
       <width>110</width>
       <height>120</height>
       <texture>blue_rectangle_music.png</texture>
+      <include>mediaoverlay</include>
     </control>
 
     <control>
@@ -25,6 +26,7 @@
       <height>109</height>
       <texture>defaultAlbumCover.png</texture>
       <info>MusicPlayer.Cover</info>
+      <include>mediaoverlay</include>
     </control>
 
     <control>
@@ -37,6 +39,7 @@
       <info>MusicPlayer.Time</info>
       <align>left</align>
       <font>font13</font>
+      <include>mediaoverlay</include>
     </control>
 
     <control>
@@ -48,6 +51,7 @@
       <font>font10</font>
       <id>0</id>
       <label>$INFO[MusicPlayer.Artist] | $INFO[MusicPlayer.Title] | $INFO[MusicPlayer.Album] | $INFO[MusicPlayer.Year]</label>
+      <include>mediaoverlay</include>
     </control>
 
   </controls>
