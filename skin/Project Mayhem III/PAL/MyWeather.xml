@@ -37,6 +37,30 @@
     </control>
 
     <control>
+      <description>contentpanel slice</description>
+      <type>image</type>
+      <id>0</id>
+      <posx>160</posx>
+      <posy>108</posy>
+      <width>64</width>
+      <height>468</height>
+      <texture>contentpanel_left.png</texture>
+      <include>contentpanelslide</include>
+    </control>
+
+    <control>
+      <description>contentpanel slice</description>
+      <type>image</type>
+      <id>0</id>
+      <posx>224</posx>
+      <posy>108</posy>
+      <width>500</width>
+      <height>468</height>
+      <texture>contentpanel.png</texture>
+      <include>contentpanelslide</include>
+    </control>
+
+    <control>
       <description>Refresh Button</description>
       <type>button</type>
       <id>2</id>
@@ -51,6 +75,7 @@
       <onup>3</onup>
       <ondown>3</ondown>
       <align>center</align>
+        <include>buttonpanelslide</include>
     </control>
 
     <control>
@@ -60,6 +85,7 @@
       <posx>85</posx>
       <posy>190</posy>
       <texture>TWClogo_64px.png</texture>
+        <include>buttonpanelslide</include>
     </control>
 
     <control>
@@ -71,6 +97,7 @@
       <width>465</width>
       <height>180</height>
       <texture>blue_rectangle_weather.png</texture>
+      <include>contentpanelslide</include>
     </control>
 
     <control>
@@ -80,6 +107,7 @@
       <posx>211</posx>
       <posy>120</posy>
       <width>464</width>
+      <include>contentpanelslide</include>
     </control>
 
     <control>
@@ -91,6 +119,7 @@
       <width>111</width>
       <height>198</height>
       <texture>blue_rectangle_weather.png</texture>
+      <include>contentpanelslide</include>
     </control>
 
     <control>
@@ -102,6 +131,7 @@
       <width>111</width>
       <height>198</height>
       <texture>blue_rectangle_weather.png</texture>
+      <include>contentpanelslide</include>
     </control>
 
     <control>
@@ -113,6 +143,7 @@
       <width>111</width>
       <height>198</height>
       <texture>blue_rectangle_weather.png</texture>
+      <include>contentpanelslide</include>
     </control>
 
     <control>
@@ -124,6 +155,7 @@
       <width>111</width>
       <height>198</height>
       <texture>blue_rectangle_weather.png</texture>
+      <include>contentpanelslide</include>
     </control>
 
     <control>
@@ -145,6 +177,7 @@
       <textoffsetx>0</textoffsetx>
       <textoffsety>0</textoffsety>
       <aligny>center</aligny>
+      <include>contentpanelslide</include>
     </control>
 
     <control>
@@ -156,6 +189,7 @@
       <posy>129</posy>
       <label>-</label>
       <font>font10</font>
+      <include>contentpanelslide</include>
     </control>
 
     <control>
@@ -166,6 +200,7 @@
       <posy>168</posy>
       <label>Temp</label>
       <font>font10</font>
+      <include>contentpanelslide</include>
     </control>
 
     <control>
@@ -176,6 +211,7 @@
       <posy>188</posy>
       <label>-</label>
       <font>font10</font>
+      <include>contentpanelslide</include>
     </control>
 
     <control>
@@ -186,6 +222,7 @@
       <posy>248</posy>
       <label>-</label>
       <font>font10</font>
+      <include>contentpanelslide</include>
     </control>
 
     <control>
@@ -196,6 +233,7 @@
       <posy>268</posy>
       <label>-</label>
       <font>font10</font>
+      <include>contentpanelslide</include>
     </control>
 
     <control>
@@ -206,6 +244,7 @@
       <posy>208</posy>
       <label>-</label>
       <font>font10</font>
+      <include>contentpanelslide</include>
     </control>
 
     <control>
@@ -216,6 +255,7 @@
       <posy>228</posy>
       <label>-</label>
       <font>font10</font>
+      <include>contentpanelslide</include>
     </control>
 
     <control>
@@ -227,6 +267,7 @@
       <height>128</height>
       <width>128</width>
       <texture>background-myweather.png</texture>
+      <include>contentpanelslide</include>
     </control>
 
     <control>
@@ -240,6 +281,7 @@
       <wrapmultiline>true</wrapmultiline>
       <label>-</label>
       <font>font10</font>
+      <include>contentpanelslide</include>
     </control>
 
     <control>
@@ -250,6 +292,7 @@
       <posy>168</posy>
       <label>-</label>
       <font>font10</font>
+      <include>contentpanelslide</include>
     </control>
 
     <control>
@@ -260,6 +303,7 @@
       <posy>188</posy>
       <label>-</label>
       <font>font10</font>
+      <include>contentpanelslide</include>
     </control>
 
     <control>
@@ -270,6 +314,7 @@
       <posy>248</posy>
       <label>-</label>
       <font>font10</font>
+      <include>contentpanelslide</include>
     </control>
 
     <control>
@@ -280,6 +325,7 @@
       <posy>268</posy>
       <label>-</label>
       <font>font10</font>
+      <include>contentpanelslide</include>
     </control>
 
     <control>
@@ -290,6 +336,7 @@
       <posy>208</posy>
       <label>-</label>
       <font>font10</font>
+      <include>contentpanelslide</include>
     </control>
 
     <control>
@@ -300,6 +347,7 @@
       <posy>228</posy>
       <label>-</label>
       <font>font10</font>
+      <include>contentpanelslide</include>
     </control>
 
     <control>
@@ -313,6 +361,7 @@
       <posy>310</posy>
       <label>-</label>
       <font>font10</font>
+      <include>contentpanelslide</include>
     </control>
 
     <control>
@@ -325,6 +374,7 @@
       <posy>348</posy>
       <label>-</label>
       <font>font10</font>
+      <include>contentpanelslide</include>
     </control>
 
     <control>
@@ -337,6 +387,7 @@
       <posy>370</posy>
       <label>-</label>
       <font>font10</font>
+      <include>contentpanelslide</include>
     </control>
 
     <control>
@@ -351,6 +402,7 @@
       <posy>465</posy>
       <label>-</label>
       <font>font10</font>
+      <include>contentpanelslide</include>
     </control>
 
     <control>
@@ -362,6 +414,7 @@
       <height>64</height>
       <width>64</width>
       <texture>background-myweather.png</texture>
+      <include>contentpanelslide</include>
     </control>
 
     <control>
@@ -375,6 +428,7 @@
       <posy>310</posy>
       <label>-</label>
       <font>font10</font>
+      <include>contentpanelslide</include>
     </control>
 
     <control>
@@ -387,6 +441,7 @@
       <posy>348</posy>
       <label>-</label>
       <font>font10</font>
+      <include>contentpanelslide</include>
     </control>
 
     <control>
@@ -399,6 +454,7 @@
       <posy>370</posy>
       <label>-</label>
       <font>font10</font>
+      <include>contentpanelslide</include>
     </control>
 
     <control>
@@ -413,6 +469,7 @@
       <posy>465</posy>
       <label>-</label>
       <font>font10</font>
+      <include>contentpanelslide</include>
     </control>
 
     <control>
@@ -424,6 +481,7 @@
       <height>64</height>
       <width>64</width>
       <texture>background-myweather.png</texture>
+      <include>contentpanelslide</include>
     </control>
 
     <control>
@@ -437,6 +495,7 @@
       <posy>310</posy>
       <label>-</label>
       <font>font10</font>
+      <include>contentpanelslide</include>
     </control>
 
     <control>
@@ -449,6 +508,7 @@
       <posy>348</posy>
       <label>-</label>
       <font>font10</font>
+      <include>contentpanelslide</include>
     </control>
 
     <control>
@@ -461,6 +521,7 @@
       <posy>370</posy>
       <label>-</label>
       <font>font10</font>
+      <include>contentpanelslide</include>
     </control>
 
     <control>
@@ -475,6 +536,7 @@
       <posy>465</posy>
       <label>-</label>
       <font>font10</font>
+      <include>contentpanelslide</include>
     </control>
 
     <control>
@@ -486,6 +548,7 @@
       <height>64</height>
       <width>64</width>
       <texture>background-myweather.png</texture>
+      <include>contentpanelslide</include>
     </control>
 
     <control>
@@ -499,6 +562,7 @@
       <posy>310</posy>
       <label>-</label>
       <font>font10</font>
+      <include>contentpanelslide</include>
     </control>
 
     <control>
@@ -511,6 +575,7 @@
       <posy>348</posy>
       <label>-</label>
       <font>font10</font>
+      <include>contentpanelslide</include>
     </control>
 
     <control>
@@ -523,6 +588,7 @@
       <posy>370</posy>
       <label>-</label>
       <font>font10</font>
+      <include>contentpanelslide</include>
     </control>
 
     <control>
@@ -537,6 +603,7 @@
       <posy>465</posy>
       <label>-</label>
       <font>font10</font>
+      <include>contentpanelslide</include>
     </control>
 
     <control>
@@ -548,6 +615,18 @@
       <height>64</height>
       <width>64</width>
       <texture>background-myweather.png</texture>
+      <include>contentpanelslide</include>
+    </control>
+
+    <control>
+      <description>bg preview</description>
+      <type>image</type>
+      <id>0</id>
+      <posx>0</posx>
+      <posy>0</posy>
+      <width>720</width>
+      <height>576</height>
+      <include>windowswitchtransition</include>
     </control>
 
   </controls>
