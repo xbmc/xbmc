@@ -3,7 +3,6 @@
 #include "Application.h"
 #include "GUIDialogNumeric.h"
 #include "GUIDialogGamepad.h"
-#include "xbox/xkutils.h"
 #include "util.h"
 
 CGUIPassword g_passwordManager;
@@ -332,9 +331,7 @@ void CGUIPassword::UpdateMasterLockRetryCount(bool bResetCount)
           // Shutdown enabled, tell the user we're shutting off
           CGUIDialogOK::ShowAndGetInput(12345, 12346, 12347, 0);
 #ifndef _DEBUG  // don't actually shut off if debug build, it hangs VS for a long time
-          g_application.Stop();
-          Sleep(200);
-          XKUtils::XBOXPowerOff();
+          g_applicationMessenger.Shutdown();
 #endif
           return ;
         }

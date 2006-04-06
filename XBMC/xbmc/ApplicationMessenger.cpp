@@ -108,8 +108,9 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
   switch (pMsg->dwMessage)
   {
     case TMSG_SHUTDOWN:
-      g_application.Stop();
+      g_application.Stop(); 
       Sleep(200);
+      CIoSupport::SpindownHarddisk(); // Spindown the Harddisk
       XKUtils::XBOXPowerOff();
       break;
 
