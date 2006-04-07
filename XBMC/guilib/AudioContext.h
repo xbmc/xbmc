@@ -4,7 +4,9 @@
 */
 
 #pragma once
-#include "IAudioDeviceChangedCallback.h"
+
+// forward definitions
+class IAudioDeviceChangedCallback;
 
 #define DSMIXBINTYPE_STANDARD 1
 #define DSMIXBINTYPE_DMO 2

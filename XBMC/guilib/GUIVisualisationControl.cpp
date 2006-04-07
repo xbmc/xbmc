@@ -3,9 +3,10 @@
 #include "../xbmc/GUIUserMessages.h"
 #include "../xbmc/application.h"
 #include "../xbmc/util.h"
+#include "../xbmc/visualizations/Visualisation.h"
 #include "../xbmc/visualizations/VisualisationFactory.h"
 #include "../xbmc/visualizations/fft.h"
-
+#include "../xbmc/utils/CriticalSection.h"
 
 #define LABEL_ROW1 10
 #define LABEL_ROW2 11

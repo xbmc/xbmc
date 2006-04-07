@@ -1,5 +1,5 @@
+#include "include.h"
 #include "XMLUtils.h"
-
 
 bool XMLUtils::GetHex(const TiXmlNode* pRootNode, const char* strTag, DWORD& dwHexValue)
 {
