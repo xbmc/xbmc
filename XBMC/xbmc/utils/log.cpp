@@ -138,9 +138,9 @@ void CLog::MemDump(BYTE *pData, int length)
   {
     CStdString strLine;
     strLine.Format("MEM_DUMP: %04x ", i);
-    for (int k=0; k < 4; k++)
+    for (int k=0; k < 4 && i + 4*k < length; k++)
     {
-      for (int j=0; j < 4; j++)
+      for (int j=0; j < 4 && i + 4*k + j < length; j++)
       {
         CStdString strFormat;
         strFormat.Format(" %02x", *pData++);
