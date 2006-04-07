@@ -1263,6 +1263,8 @@ HRESULT CApplication::Initialize()
   m_gWindowManager.Add(new CGUIWindowScreensaver);        // window id = 2900 Screensaver
   m_gWindowManager.Add(new CGUIWindowWeather);                // window id = 2600 WEATHER
   m_gWindowManager.Add(new CGUIWindowBuddies);                // window id = 2700 BUDDIES
+
+  m_gWindowManager.Add(new CGUIWindow(WINDOW_STARTUP, "Startup.xml"));  // startup window (id 2999)
   /* window id's 3000 - 3100 are reserved for python */
   g_DownloadManager.Initialize();
 
@@ -1279,7 +1281,15 @@ HRESULT CApplication::Initialize()
     m_gWindowManager.ActivateWindow(WINDOW_HOME);                       
     m_gWindowManager.ActivateWindow(g_stSettings.m_iStartupWindow);
   }
-  else m_gWindowManager.ActivateWindow(g_stSettings.m_iStartupWindow);
+  else
+  {
+    // test for a startup window, and activate that instead of home
+    CGUIWindow *startupWindow = m_gWindowManager.GetWindow(WINDOW_STARTUP);
+    if (startupWindow && startupWindow->Initialize())
+      m_gWindowManager.ActivateWindow(WINDOW_STARTUP);
+    else
+      m_gWindowManager.ActivateWindow(WINDOW_HOME);
+  }
 
   CLog::Log(LOGINFO, "removing tempfiles");
   CUtil::RemoveTempFiles();
