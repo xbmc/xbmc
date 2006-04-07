@@ -516,9 +516,35 @@ void CGUIWindowSettingsCategory::CreateSettings()
     {
       FillInSubtitleFonts(pSetting);
     }
-    else if (strSetting == "Subtitles.CharSet" || strSetting == "LookAndFeel.CharSet" || strSetting == "Smb.DosCodepage")
+    else if (strSetting == "Subtitles.CharSet" || strSetting == "LookAndFeel.CharSet")
     {
       FillInCharSets(pSetting);
+    }
+    else if (strSetting == "Smb.DosCodepage")
+    {
+      CSettingString *pSettingString = (CSettingString*)pSetting;
+      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
+      pControl->SetType(SPIN_CONTROL_TYPE_TEXT);
+      pControl->Clear();
+      pControl->AddLabel("Default", 0);
+      pControl->AddLabel("DOS Latin US (CP437)", 437);
+      pControl->AddLabel("DOS Latin-1 (CP850)", 850);
+      pControl->AddLabel("DOS Latin-2 (CP852)", 852);
+      pControl->AddLabel("DOS Cyrillic (CP855)", 855);
+      pControl->AddLabel("DOS Cyrillic Russian (CP866)", 866);
+      pControl->AddLabel("DOS Greek (CP737)", 737);
+      pControl->AddLabel("DOS Baltic (CP775)", 775);
+      pControl->AddLabel("DOS Turkish (CP857)", 857);
+      pControl->AddLabel("DOS Portuguese (CP860)", 860);
+      pControl->AddLabel("DOS Icelandic (CP861)", 861);
+      pControl->AddLabel("DOS Hebrew (CP862)", 862);
+      pControl->AddLabel("DOS Arabic (CP864)", 864);
+      pControl->AddLabel("DOS Nordic (CP865)", 865);
+      pControl->AddLabel("DOS Greek2 (CP869)", 869);
+
+      int codepage = 0;
+      sscanf(g_stSettings.m_strSambaDosCodepage.c_str(), "CP%d", &codepage);
+      pControl->SetValue(codepage);
     }
     else if (strSetting == "LookAndFeel.Font")
     {
@@ -625,7 +651,6 @@ void CGUIWindowSettingsCategory::CreateSettings()
       g_guiSettings.SetString("Smb.Password",   g_stSettings.m_strSambaDefaultPassword);
       g_guiSettings.SetString("Smb.ShareName",  g_stSettings.m_strSambaShareName);
       g_guiSettings.SetString("Smb.Winsserver", g_stSettings.m_strSambaWinsServer);
-      //g_guiSettings.SetString("Smb.DosCodepage",g_stSettings.m_strSambaDosCodepage);
 	  }
     else if (strSetting == "Smb.ShareGroup")
 	  {	// GeminiServer
@@ -1447,6 +1472,15 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
       g_charsetConverter.reset();
     }
   }
+  else if (strSetting == "Smb.DosCodepage")
+  {
+    CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
+    CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
+    CStdString newCharset="";
+    if (pControl->GetValue()!=0)
+      newCharset.Format("CP%d", pControl->GetValue());
+    pSettingString->SetData(newCharset);
+  }
   else if (strSetting == "LookAndFeel.Font")
   { // new font choosen...
     CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
@@ -1691,7 +1725,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     //Set Default if all is Empty
     if (g_guiSettings.GetString("Smb.Ip")        == "") g_guiSettings.SetString("Smb.Ip", "192.168.0.5");
     if (g_guiSettings.GetString("Smb.Workgroup") == "") g_guiSettings.SetString("Smb.Workgroup", "WORKGROUP");
-    if (g_guiSettings.GetString("Smb.ShareName") == "") g_guiSettings.SetString("Smb.ShareName", "WORKGROUP (SMB) Network");    
+    if (g_guiSettings.GetString("Smb.ShareName") == "") g_guiSettings.SetString("Smb.ShareName", "WORKGROUP (SMB) Network");        
 
     //Set/Update
     g_stSettings.m_strSambaIPAdress = g_guiSettings.GetString("Smb.Ip");
@@ -1700,19 +1734,18 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     g_stSettings.m_strSambaDefaultPassword = g_guiSettings.GetString("Smb.Password");
     g_stSettings.m_strSambaShareName = g_guiSettings.GetString("Smb.ShareName");    
 
-    if( g_stSettings.m_strSambaWinsServer != g_guiSettings.GetString("Smb.Winsserver") )
+    if( g_stSettings.m_strSambaWinsServer != g_guiSettings.GetString("Smb.DosCodepage") )
     {
-      g_stSettings.m_strSambaWinsServer = g_guiSettings.GetString("Smb.Winsserver");
+      g_stSettings.m_strSambaWinsServer = g_guiSettings.GetString("Smb.DosCodepage");
       needrestart = true;
     }
 
-/*  for now don't allow this to be changed from gui 
-    if( g_stSettings.m_strSambaDosCodepage != g_guiSettings.GetString("Smb.DosCodepage") );
+    if( g_stSettings.m_strSambaDosCodepage != g_guiSettings.GetString("Smb.DosCodepage") )
     {
-      g_stSettings.m_strSambaDosCodepage = g_guiSettings.GetString("Smb.DosCodepage")
+      g_stSettings.m_strSambaDosCodepage = g_guiSettings.GetString("Smb.DosCodepage");
       needrestart = true;
     }
-*/
+
 
     g_settings.UpDateXbmcXML("samba", "winsserver",       g_guiSettings.GetString("Smb.Winsserver"));
     g_settings.UpDateXbmcXML("samba", "smbip",            g_guiSettings.GetString("Smb.Ip"));
@@ -1720,7 +1753,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     g_settings.UpDateXbmcXML("samba", "defaultusername",  g_guiSettings.GetString("Smb.Username"));
     g_settings.UpDateXbmcXML("samba", "defaultpassword",  g_guiSettings.GetString("Smb.Password"));
     g_settings.UpDateXbmcXML("samba", "smbsharename",     g_guiSettings.GetString("Smb.ShareName"));
-    //g_settings.UpDateXbmcXML("samba", "doscodepage",      g_guiSettings.GetString("Smb.DosCodepage"));
+    g_settings.UpDateXbmcXML("samba", "doscodepage",      g_guiSettings.GetString("Smb.DosCodepage"));
     
     //g_settings.UpDateXbmcXML("CDDBIpAddress", "194.97.4.18"); //This is a Test ;
 
