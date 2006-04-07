@@ -432,12 +432,13 @@ public:
     int m_iMasterLockHomeMedia;       // prompts user for MasterLockCode on Click Media [Video/Picture/Musik/Programs]!
     
     int m_iSambaDebugLevel;
-    char m_strSambaWorkgroup[128];
-    char m_strSambaIPAdress[32];
-    char m_strSambaShareName[32];
-    char m_strSambaDefaultUserName[128];
-    char m_strSambaDefaultPassword[128];
-    char m_strSambaWinsServer[32];
+    CStdString m_strSambaWorkgroup;
+    CStdString m_strSambaIPAdress;
+    CStdString m_strSambaShareName;
+    CStdString m_strSambaDefaultUserName;
+    CStdString m_strSambaDefaultPassword;
+    CStdString m_strSambaWinsServer;
+    CStdString m_strSambaDosCodepage;
 
     int m_nVolumeLevel;                     // measured in milliBels -60dB -> 0dB range.
     int m_dynamicRangeCompressionLevel;     // measured in milliBels  0dB -> 30dB range.
