@@ -291,6 +291,8 @@
 
 #define WINDOW_VIDEO_MENU                 12902
 
+#define WINDOW_STARTUP                    12999 // for startup animations
+
 // WINDOW_ID's from 13000 to 13099 reserved for Python
 
 #define WINDOW_PYTHON_START               13000
