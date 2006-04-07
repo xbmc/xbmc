@@ -1190,9 +1190,9 @@ void CGUIWindow::ResetAllControls()
   }
 }
 
-void CGUIWindow::Initialize()
+bool CGUIWindow::Initialize()
 {
-  Load(m_xmlFile);
+  return Load(m_xmlFile);
 }
 
 void CGUIWindow::SetControlVisibility()

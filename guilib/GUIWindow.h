@@ -87,7 +87,7 @@ public:
   CGUIWindow(DWORD dwID, const CStdString &xmlFile);
   virtual ~CGUIWindow(void);
 
-  void Initialize();  // loads the window
+  bool Initialize();  // loads the window
   virtual bool Load(const CStdString& strFileName, bool bContainsPath = false);
   virtual bool Load(TiXmlElement* pRootElement, RESOLUTION resToUse);
   virtual void SetPosition(int iPosX, int iPosY);
