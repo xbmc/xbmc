@@ -13,14 +13,15 @@ CDirectory::CDirectory()
 CDirectory::~CDirectory()
 {}
 
-bool CDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items, CStdString strMask /*=""*/, bool bUseFileDirectories /* = true */, bool allowPrompting /* = false */)
+bool CDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items, CStdString strMask /*=""*/, bool bUseFileDirectories /* = true */, bool allowPrompting /* = false */, bool cacheDirectory /* = false */)
 {
   auto_ptr<IDirectory> pDirectory(CFactoryDirectory::Create(strPath));
   if (!pDirectory.get()) return false;
 
   pDirectory->SetMask(strMask);
   pDirectory->SetAllowPrompting(allowPrompting);
-  
+  pDirectory->SetCacheDirectory(cacheDirectory);
+
   items.m_strPath=strPath;
 
   bool bSuccess = pDirectory->GetDirectory(strPath, items);
