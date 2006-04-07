@@ -7,8 +7,30 @@
 #define CGUILIB_GUIFONTBASE_H
 #pragma once
 
-#include "common/xbfont.h"
-#include <xfont.h>
+// flags for alignment
+#define XBFONT_LEFT       0x00000000
+#define XBFONT_RIGHT      0x00000001
+#define XBFONT_CENTER_X   0x00000002
+#define XBFONT_CENTER_Y   0x00000004
+#define XBFONT_TRUNCATED  0x00000008
+
+#define DEGREE_TO_RADIAN 0.01745329f
+class CAngle
+{
+public:
+  CAngle()
+  {
+    sine = 0;
+    cosine = 1;
+  }
+  CAngle(int theta)
+  {
+    sine = sin(theta * DEGREE_TO_RADIAN);
+    cosine = cos(theta * DEGREE_TO_RADIAN);
+  }
+  float sine;
+  float cosine;
+};
 
 /*!
  \ingroup textures

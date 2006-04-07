@@ -3,6 +3,7 @@
 #include "GUIWindowManager.h"
 #include "GUILabelControl.h"
 #include "GUIAudioManager.h"
+#include "../xbmc/utils/SingleLock.h"
 
 
 CGUIDialog::CGUIDialog(DWORD dwID, const CStdString &xmlFile)

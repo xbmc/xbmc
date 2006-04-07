@@ -1,5 +1,7 @@
 #include "include.h"
 #include "GraphicContext.h"
+#include "GUIMessage.h"
+#include "IMsgSenderCallback.h"
 #include "../xbmc/Settings.h"
 #include "../xbmc/XBVideoConfig.h"
 #include "xgraphics.h"
