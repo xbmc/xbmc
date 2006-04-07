@@ -615,16 +615,16 @@
   <string><id>1031</id><value>an image folder</value></string>
   <string><id>1032</id><value>Add Network Location...</value></string>
 
-  <string><id>1200</id><value>SMB Share</value></string>
-  <string><id>1201</id><value>SMB IP</value></string>
-  <string><id>1202</id><value>SMB Workgroup</value></string>
-  <string><id>1203</id><value>SMB Username</value></string>
-  <string><id>1204</id><value>SMB Password</value></string>
-  <string><id>1205</id><value>SMB Share Name</value></string>
-  <string><id>1206</id><value>SMB Share Group</value></string>
-  <string><id>1207</id><value>SMB WINS-Server</value></string>
-  <string><id>1208</id><value>Settings Mode</value></string>
-  <string><id>1209</id><value>The SMB Share Settings was set succesfully!</value></string>
+  <string><id>1200</id><value>SMB Client</value></string>
+  <string><id>1201</id><value>Share IP</value></string>
+  <string><id>1202</id><value>Workgroup</value></string>
+  <string><id>1203</id><value>Default Username</value></string>
+  <string><id>1204</id><value>Default Password</value></string>
+  <string><id>1205</id><value>Share Name</value></string>
+  <string><id>1206</id><value>Share Group</value></string>
+  <string><id>1207</id><value>WINS-Server</value></string>
+  <string><id>1208</id><value>Automatic Bookmarks</value></string>
+  <string><id>1209</id><value>The SMB Client Settings was set succesfully!</value></string>
   <string><id>1210</id><value>Remove</value></string>
   <string><id>1211</id><value>Music</value></string>
   <string><id>1212</id><value>Video</value></string>
