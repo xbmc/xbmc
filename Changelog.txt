@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 07-04-2006 updated: libsmb updated to 3.0.22 with enabled libiconv, supports switching dos codepage gui
  - 07-04-2006 updated: finnish and plosh langugae strings.xml
               Thanks jutski and NaPeK
  - 07-04-2006 fixed: don't use fixed width character arrays on user inputable settings for smb, also reorganzed smb settings in gui
