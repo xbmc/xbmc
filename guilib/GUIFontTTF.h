@@ -7,8 +7,8 @@
 #define CGUILIB_GUIFONTTTF_H
 #pragma once
 
-#include "common/xbfont.h"
 #include "GUIFontBase.h"
+#include <xfont.h>
 #include <hash_map>
 
 /*!

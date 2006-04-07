@@ -7,11 +7,11 @@
 #define GUILIB_GUICONTROL_H
 #pragma once
 
-#include "key.h"
-#include "GraphicContext.h"
-#include "GUICallback.h"
-#include "GUIFont.h"
-#include "VisibleEffect.h"
+#include "GraphicContext.h" // needed by any rendering operation (all controls)
+#include "key.h"            // needed by practically all controls (CAction + defines)
+#include "GUIMessage.h"     // needed by practically all controls
+#include "GUIFont.h"        // needed for the CAngle member (CLabelInfo) among other stuff
+#include "VisibleEffect.h"  // needed for the CAnimation members
 
 class CLabelInfo
 {

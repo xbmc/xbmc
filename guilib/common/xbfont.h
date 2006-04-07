@@ -50,35 +50,8 @@
 #include "xonline.h"
 //#include "uix.h"
 
-#define DEGREE_TO_RADIAN 0.01745329f
-class CAngle
-{
-public:
-  CAngle()
-  {
-    sine = 0;
-    cosine = 1;
-  }
-  CAngle(int theta)
-  {
-    sine = sin(theta * DEGREE_TO_RADIAN);
-    cosine = cos(theta * DEGREE_TO_RADIAN);
-  }
-  float sine;
-  float cosine;
-};
-
-
-//-----------------------------------------------------------------------------
-// Flags for the CXBFont::DrawText() function
-//-----------------------------------------------------------------------------
-#define XBFONT_LEFT       0x00000000
-#define XBFONT_RIGHT      0x00000001
-#define XBFONT_CENTER_X   0x00000002
-#define XBFONT_CENTER_Y   0x00000004
-#define XBFONT_TRUNCATED  0x00000008
-
-
+// forward definition
+class CAngle;
 
 
 //-----------------------------------------------------------------------------

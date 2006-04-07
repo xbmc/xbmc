@@ -1,9 +1,10 @@
 #pragma once
 
 #include "GUIControl.h"
-#include "../xbmc/visualizations/Visualisation.h"
 #include "../xbmc/cores/IAudioCallback.h"
-#include "../xbmc/utils/CriticalSection.h"
+
+// forward definitions
+class CVisualisation;
 
 #define AUDIO_BUFFER_SIZE 512 // MUST BE A POWER OF 2!!!
 #define MAX_AUDIO_BUFFERS 16
