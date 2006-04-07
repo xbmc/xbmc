@@ -20,9 +20,9 @@ VIEW_METHOD CAutoSwitch::GetView(const CFileItemList &vecItems)
 {
   int iSortMethod = -1;
   bool bBigThumbs = false;
-  bool bHideParentFolderItems = false;
   int iPercent = 0;
   int iCurrentWindow = m_gWindowManager.GetActiveWindow();
+  bool bHideParentFolderItems = g_guiSettings.GetBool("FileLists.HideParentDirItems");
 
   switch (iCurrentWindow)
   {
@@ -30,7 +30,6 @@ VIEW_METHOD CAutoSwitch::GetView(const CFileItemList &vecItems)
     {
       iSortMethod = g_guiSettings.GetInt("MusicFiles.AutoSwitchMethod");
       bBigThumbs = g_guiSettings.GetBool("MusicFiles.AutoSwitchUseLargeThumbs");
-      bHideParentFolderItems = g_guiSettings.GetBool("MyMusic.HideParentDirItems");
       if ( iSortMethod == METHOD_BYTHUMBPERCENT )
       {
         iPercent = g_guiSettings.GetInt("MusicFiles.AutoSwitchPercentage");
@@ -42,7 +41,6 @@ VIEW_METHOD CAutoSwitch::GetView(const CFileItemList &vecItems)
     {
       iSortMethod = g_guiSettings.GetInt("VideoFiles.AutoSwitchMethod");
       bBigThumbs = g_guiSettings.GetBool("VideoFiles.AutoSwitchUseLargeThumbs");
-      bHideParentFolderItems = g_guiSettings.GetBool("MyVideos.HideParentDirItems");
       if ( iSortMethod == METHOD_BYTHUMBPERCENT )
       {
         iPercent = g_guiSettings.GetInt("VideoFiles.AutoSwitchPercentage");
@@ -54,7 +52,6 @@ VIEW_METHOD CAutoSwitch::GetView(const CFileItemList &vecItems)
     {
       iSortMethod = METHOD_BYFILECOUNT;
       bBigThumbs = g_guiSettings.GetBool("Pictures.AutoSwitchUseLargeThumbs");
-      bHideParentFolderItems = g_guiSettings.GetBool("Pictures.HideParentDirItems");
     }
     break;
 
@@ -62,7 +59,6 @@ VIEW_METHOD CAutoSwitch::GetView(const CFileItemList &vecItems)
     {
       iSortMethod = g_guiSettings.GetInt("ProgramFiles.AutoSwitchMethod");
       bBigThumbs = g_guiSettings.GetBool("ProgramFiles.AutoSwitchUseLargeThumbs");
-      bHideParentFolderItems = g_guiSettings.GetBool("ProgramFiles.HideParentDirItems");
       if ( iSortMethod == METHOD_BYTHUMBPERCENT )
       {
         iPercent = g_guiSettings.GetInt("ProgramFiles.AutoSwitchPercentage");
