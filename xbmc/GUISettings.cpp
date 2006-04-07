@@ -422,11 +422,11 @@ CGUISettings::CGUISettings(void)
   
   //GeminiServer
   AddCategory(6, "Smb", 1200);  
-  AddString(1, "Smb.Username",    1203,   "", BUTTON_CONTROL_INPUT, false, 1203);
+  AddString(1, "Smb.Username",    1203,   "", BUTTON_CONTROL_INPUT, true, 1203);
   AddString(2, "Smb.Password",    1204,   "", BUTTON_CONTROL_HIDDEN_INPUT, true, 1204);
   AddString(3, "Smb.Winsserver",  1207,   "",  BUTTON_CONTROL_IP_INPUT);
   AddString(4, "Smb.Workgroup",   1202,   "WORKGROUP", BUTTON_CONTROL_INPUT, false, 1202);
-  //AddString(5, "Smb.DosCodepage", 735, "CP850", SPIN_CONTROL_TEXT);  
+  AddString(5, "Smb.DosCodepage", 735,    "DEFAULT", SPIN_CONTROL_TEXT);
   AddSeparator(6, "Smb.Sep1");
   AddInt(7,    "Smb.SimpAdvance", 1208,   1, 0, 1, 2, SPIN_CONTROL_TEXT);
   AddString(8, "Smb.Ip",          1201,   "192.168.0.106",  BUTTON_CONTROL_IP_INPUT);
