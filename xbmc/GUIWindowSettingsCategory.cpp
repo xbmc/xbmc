@@ -516,7 +516,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
     {
       FillInSubtitleFonts(pSetting);
     }
-    else if (strSetting == "Subtitles.CharSet" || strSetting == "LookAndFeel.CharSet")
+    else if (strSetting == "Subtitles.CharSet" || strSetting == "LookAndFeel.CharSet" || strSetting == "Smb.DosCodepage")
     {
       FillInCharSets(pSetting);
     }
@@ -625,6 +625,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
       g_guiSettings.SetString("Smb.Password",   g_stSettings.m_strSambaDefaultPassword);
       g_guiSettings.SetString("Smb.ShareName",  g_stSettings.m_strSambaShareName);
       g_guiSettings.SetString("Smb.Winsserver", g_stSettings.m_strSambaWinsServer);
+      //g_guiSettings.SetString("Smb.DosCodepage",g_stSettings.m_strSambaDosCodepage);
 	  }
     else if (strSetting == "Smb.ShareGroup")
 	  {	// GeminiServer
@@ -1064,7 +1065,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       pSettingString->SetData(time);
       pSettingControl->Update();
     }
-    else if (strSetting == "Smb.Ip" || strSetting == "Smb.Workgroup"  || strSetting == "Smb.Username" || strSetting == "Smb.Password" || strSetting == "Smb.SetSmb")
+    else if (strSetting == "Smb.Ip")
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       bool bState;
@@ -1073,7 +1074,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       if (g_guiSettings.GetInt("Smb.SimpAdvance") == 2) bState = true;  //Advanced User
       if (pControl) pControl->SetEnabled(bState);
     }
-    else if (strSetting == "Smb.Winsserver" || strSetting == "Smb.ShareName" || strSetting == "Smb.ShareGroup")
+    else if (strSetting == "Smb.ShareName" || strSetting == "Smb.ShareGroup")
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       bool bState;
@@ -1663,15 +1664,22 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
 			CUtil::SetSysDateTimeYear(curDate.wYear, curDate.wMonth, curDate.wDay, curTime.wHour, curTime.wMinute);
     }
   }
+  else if (strSetting == "Smb.Winsserver")
+  {
+    if (g_guiSettings.GetString("Smb.Winsserver") == "0.0.0.0") 
+      g_guiSettings.SetString("Smb.Winsserver", "");
+  }
   else if (strSetting == "Smb.SetSmb" || strSetting == "Smb.SimpAdvance")
   {
+    bool needrestart = false;
+
     //Let's get the ip and set the correct url string smb://IP !
     CStdString strSmbIp;
     strSmbIp.Format("smb://%s/",g_guiSettings.GetString("Smb.Ip"));
     
     // We need the previos smb share name to remove them
     CStdString strSmbShareName;
-    strSmbShareName.Format("%s",g_stSettings.m_strSambaShareName);
+    strSmbShareName = g_stSettings.m_strSambaShareName;
     
     //Delete all Previos Share neames before add. new/changed one!
     //!! If there are a share , with the same name but non SMB, this will be alo deleted!
@@ -1683,18 +1691,28 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     //Set Default if all is Empty
     if (g_guiSettings.GetString("Smb.Ip")        == "") g_guiSettings.SetString("Smb.Ip", "192.168.0.5");
     if (g_guiSettings.GetString("Smb.Workgroup") == "") g_guiSettings.SetString("Smb.Workgroup", "WORKGROUP");
-    if (g_guiSettings.GetString("Smb.Username")  == "") g_guiSettings.SetString("Smb.Username", "-");
-    if (g_guiSettings.GetString("Smb.Password")  == "") g_guiSettings.SetString("Smb.Password", "-");
-    if (g_guiSettings.GetString("Smb.ShareName") == "") g_guiSettings.SetString("Smb.ShareName", "WORKGROUP (SMB) Network");
-    if (g_guiSettings.GetString("Smb.Winsserver")== "") g_guiSettings.SetString("Smb.Winsserver", "-");
+    if (g_guiSettings.GetString("Smb.ShareName") == "") g_guiSettings.SetString("Smb.ShareName", "WORKGROUP (SMB) Network");    
 
     //Set/Update
-    strcpy(g_stSettings.m_strSambaIPAdress,         g_guiSettings.GetString("Smb.Ip"));
-    strcpy(g_stSettings.m_strSambaWorkgroup,        g_guiSettings.GetString("Smb.Workgroup"));
-    strcpy(g_stSettings.m_strSambaDefaultUserName,  g_guiSettings.GetString("Smb.Username"));
-    strcpy(g_stSettings.m_strSambaDefaultPassword,  g_guiSettings.GetString("Smb.Password"));
-    strcpy(g_stSettings.m_strSambaShareName,        g_guiSettings.GetString("Smb.ShareName"));
-    strcpy(g_stSettings.m_strSambaWinsServer,       g_guiSettings.GetString("Smb.Winsserver"));
+    g_stSettings.m_strSambaIPAdress = g_guiSettings.GetString("Smb.Ip");
+    g_stSettings.m_strSambaWorkgroup = g_guiSettings.GetString("Smb.Workgroup");
+    g_stSettings.m_strSambaDefaultUserName = g_guiSettings.GetString("Smb.Username");
+    g_stSettings.m_strSambaDefaultPassword = g_guiSettings.GetString("Smb.Password");
+    g_stSettings.m_strSambaShareName = g_guiSettings.GetString("Smb.ShareName");    
+
+    if( g_stSettings.m_strSambaWinsServer != g_guiSettings.GetString("Smb.Winsserver") )
+    {
+      g_stSettings.m_strSambaWinsServer = g_guiSettings.GetString("Smb.Winsserver");
+      needrestart = true;
+    }
+
+/*  for now don't allow this to be changed from gui 
+    if( g_stSettings.m_strSambaDosCodepage != g_guiSettings.GetString("Smb.DosCodepage") );
+    {
+      g_stSettings.m_strSambaDosCodepage = g_guiSettings.GetString("Smb.DosCodepage")
+      needrestart = true;
+    }
+*/
 
     g_settings.UpDateXbmcXML("samba", "winsserver",       g_guiSettings.GetString("Smb.Winsserver"));
     g_settings.UpDateXbmcXML("samba", "smbip",            g_guiSettings.GetString("Smb.Ip"));
@@ -1702,6 +1720,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     g_settings.UpDateXbmcXML("samba", "defaultusername",  g_guiSettings.GetString("Smb.Username"));
     g_settings.UpDateXbmcXML("samba", "defaultpassword",  g_guiSettings.GetString("Smb.Password"));
     g_settings.UpDateXbmcXML("samba", "smbsharename",     g_guiSettings.GetString("Smb.ShareName"));
+    //g_settings.UpDateXbmcXML("samba", "doscodepage",      g_guiSettings.GetString("Smb.DosCodepage"));
     
     //g_settings.UpDateXbmcXML("CDDBIpAddress", "194.97.4.18"); //This is a Test ;
 
@@ -1823,6 +1842,22 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
           break;
       }
     }
+    if( needrestart )
+    {
+      /* okey we really don't need to restarat, only deinit samba, but that could be damn hard if something is playing*/
+      CGUIDialogOK *dlg = (CGUIDialogOK *)m_gWindowManager.GetWindow(WINDOW_DIALOG_YES_NO);
+      if (!dlg) return ;
+      dlg->SetHeading( g_localizeStrings.Get(14038) );
+      dlg->SetLine( 0, g_localizeStrings.Get(14039) );
+      dlg->SetLine( 1, g_localizeStrings.Get(14040));
+      dlg->SetLine( 2, "");
+      dlg->DoModal( m_gWindowManager.GetActiveWindow() );
+
+      if (dlg->IsConfirmed())
+      {
+        g_applicationMessenger.RestartApp();
+      }
+    }
     if (strSetting == "Smb.SetSmb")
     {
       CGUIDialogOK *dlg = (CGUIDialogOK *)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
@@ -1834,6 +1869,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
       dlg->DoModal( m_gWindowManager.GetActiveWindow() );
       //if (dlg->IsConfirmed()) //Do nothing!
     }
+
 
   }
   else if (strSetting == "Masterlock.Mastercode")

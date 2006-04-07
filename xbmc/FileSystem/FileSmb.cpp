@@ -52,18 +52,23 @@ void CSMB::Init()
     set_log_callback(xb_smbc_log);
 
     // set workgroup for samba, after smbc_init it can be freed();
-    xb_setSambaWorkgroup(g_stSettings.m_strSambaWorkgroup);
+    xb_setSambaWorkgroup((char*)g_stSettings.m_strSambaWorkgroup.c_str());
 
     // initialize samba and do some hacking into the settings
     if (!smbc_init(xb_smbc_auth, g_stSettings.m_iSambaDebugLevel))
     {
       // if a wins-server is set, we have to change name resolve order to
-      if (strlen(g_stSettings.m_strSambaWinsServer) > 1)
+      if (g_stSettings.m_strSambaWinsServer.length() > 1)
       {
-        lp_do_parameter( -1, "wins server", g_stSettings.m_strSambaWinsServer);
+        lp_do_parameter( -1, "wins server", g_stSettings.m_strSambaWinsServer.c_str());
         lp_do_parameter( -1, "name resolve order", "bcast wins");
       }
       else lp_do_parameter( -1, "name resolve order", "bcast");
+
+      if (g_stSettings.m_strSambaDosCodepage.length() > 1)
+      {
+        lp_do_parameter( -1, "dos charset", g_stSettings.m_strSambaDosCodepage.c_str());
+      }
 
       binitialized = true;
     }

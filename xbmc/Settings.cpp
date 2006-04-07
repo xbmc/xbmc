@@ -116,10 +116,11 @@ CSettings::CSettings(void)
 
   g_stSettings.m_bDisplayRemoteCodes = false;
   g_stSettings.m_iSambaDebugLevel = 0;
-  strcpy(g_stSettings.m_strSambaWorkgroup, "WORKGROUP");
-  strcpy(g_stSettings.m_strSambaIPAdress, "192.168.0.5");
-  strcpy(g_stSettings.m_strSambaShareName, "WORKGROUP (SMB) Network");
-  strcpy(g_stSettings.m_strSambaWinsServer, "");
+  g_stSettings.m_strSambaWorkgroup = "WORKGROUP";
+  g_stSettings.m_strSambaIPAdress = "192.168.0.5";
+  g_stSettings.m_strSambaShareName = "WORKGROUP (SMB) Network";
+  g_stSettings.m_strSambaWinsServer = "";
+  g_stSettings.m_strSambaDosCodepage = "CP850";
 
   g_stSettings.m_nVolumeLevel = 0;
   g_stSettings.m_dynamicRangeCompressionLevel = 0;
@@ -307,6 +308,7 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
     GetInteger(pSambaElement, "debuglevel", g_stSettings.m_iSambaDebugLevel , 0, 0, 100);
     GetString(pSambaElement, "defaultusername", g_stSettings.m_strSambaDefaultUserName, "");
     GetString(pSambaElement, "defaultpassword", g_stSettings.m_strSambaDefaultPassword, "");
+    GetString(pSambaElement, "doscodepage", g_stSettings.m_strSambaDosCodepage, "");
 
   }
 
