@@ -17,7 +17,6 @@
 #include <stdio.h>
 #include "stdstring.h"
 #include "../xbmc/StringUtils.h"
-#include "../xbmc/memutil.h"
 using namespace std;
 
 #ifdef _DEBUG

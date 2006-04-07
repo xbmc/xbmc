@@ -4,8 +4,12 @@ enum EFFECT_TYPE { EFFECT_TYPE_NONE = 0, EFFECT_TYPE_FADE, EFFECT_TYPE_SLIDE, EF
 enum ANIMATION_PROCESS { ANIM_PROCESS_NONE = 0, ANIM_PROCESS_NORMAL, ANIM_PROCESS_REVERSE };
 enum ANIMATION_STATE { ANIM_STATE_NONE = 0, ANIM_STATE_DELAYED, ANIM_STATE_IN_PROCESS, ANIM_STATE_APPLIED };
 
-#include "include.h"
-#include "GraphicContext.h"
+// forward definitions
+
+class TiXmlElement;
+enum RESOLUTION;
+
+#include "TransformMatrix.h"  // needed for the TransformMatrix return type
 
 enum ANIMATION_TYPE
 {
@@ -23,9 +27,9 @@ class CAnimation
 public:
   CAnimation();
   void Reset();
-  void Create(const TiXmlElement *node, RESOLUTION res);
+  void Create(const TiXmlElement *node, RESOLUTION &res);
   void CreateReverse(const CAnimation &anim);
-  void Animate(DWORD time, bool hasRendered);
+  void Animate(unsigned int time, bool hasRendered);
   void ResetAnimation();
   TransformMatrix RenderAnimation();
 

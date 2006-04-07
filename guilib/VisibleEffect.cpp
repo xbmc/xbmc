@@ -1,3 +1,4 @@
+#include "include.h"
 #include "VisibleEffect.h"
 #include "../xbmc/utils/GUIInfoManager.h"
 #include "SkinInfo.h" // for the effect time adjustments
@@ -23,7 +24,7 @@ void CAnimation::Reset()
   reversible = true;
 }
 
-void CAnimation::Create(const TiXmlElement *node, RESOLUTION res)
+void CAnimation::Create(const TiXmlElement *node, RESOLUTION &res)
 {
   if (!node || !node->FirstChild())
     return;
@@ -172,7 +173,7 @@ void CAnimation::CreateReverse(const CAnimation &anim)
   reversible = anim.reversible;
 }
 
-void CAnimation::Animate(DWORD time, bool hasRendered)
+void CAnimation::Animate(unsigned int time, bool hasRendered)
 {
   // First start any queued animations
   if (queuedProcess == ANIM_PROCESS_NORMAL)

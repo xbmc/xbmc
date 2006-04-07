@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 07-04-2006 fixed: Cleaned up headers includes in guilib.
  - 07-04-2006 fixed: Scan music could run out of memory due to caching all paths.  CDirectory::GetDirectory no longer caches paths by default.
  - 07-04-2006 added: Startup.xml support for skin intros.  The skin itself should switch to Home.xml at the appropriate time using ReplaceWindow(Home).
  - 07-04-2006 added: Better video resolution choice for playback, thanks to Markeen.

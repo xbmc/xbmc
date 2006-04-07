@@ -28,6 +28,7 @@
 // ****************************************************************************
 
 #include "AnimatedGif.h"
+#include "../xbmc/memutil.h"
 
 
 #pragma pack(1) 

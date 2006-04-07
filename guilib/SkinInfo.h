@@ -1,6 +1,6 @@
 #pragma once
-#include "GraphicContext.h"
-#include "GUIIncludes.h"
+#include "GraphicContext.h" // needed for the RESOLUTION members
+#include "GUIIncludes.h"    // needed for the GUIInclude member
 
 class CSkinInfo
 {

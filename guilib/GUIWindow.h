@@ -9,6 +9,7 @@
 #pragma once
 
 #include "GUIControl.h"
+#include "GUICallback.h"  // for GUIEvent
 
 #include <map>
 #include <vector>

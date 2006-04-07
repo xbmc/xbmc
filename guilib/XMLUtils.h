@@ -1,6 +1,7 @@
 #pragma once
 
-#include "include.h"
+// forward
+class TiXmlNode;
 
 class XMLUtils
 {
