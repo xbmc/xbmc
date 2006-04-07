@@ -1,6 +1,7 @@
 #pragma once
 
-#include "include.h"
+// forward definitions
+class TiXmlElement;
 
 class CGUIIncludes
 {

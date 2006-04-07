@@ -4,8 +4,10 @@
 */
 
 #pragma once
-#include "GUIMessage.h"
-#include "IMsgSenderCallback.h"
+
+// forward definitions
+class CGUIMessage;
+class IMsgSenderCallback;
 
 /*!
  \ingroup actionkeys

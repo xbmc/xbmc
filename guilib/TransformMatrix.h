@@ -1,5 +1,8 @@
 #pragma once
 
+#include <math.h>
+#include <memory>
+
 class TransformMatrix
 {
 public:
@@ -95,9 +98,9 @@ public:
     return m[1][0] * x + m[1][1] * y + m[1][2];
   }
 
-  inline DWORD TransformAlpha(DWORD colour) const
+  inline unsigned int TransformAlpha(unsigned int colour) const
   {
-    return (DWORD)(colour * alpha);
+    return (unsigned int)(colour * alpha);
   }
 
 private:

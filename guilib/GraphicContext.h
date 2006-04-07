@@ -10,12 +10,14 @@
 
 #include <vector>
 #include <stack>
+#include "../xbmc/utils/CriticalSection.h"  // base class
+#include "TransformMatrix.h"                // for the members m_guiTransform etc.
 
-#include "IMsgSenderCallback.h"
-#include "common/mouse.h"
-#include "../xbmc/utils/CriticalSection.h"
-#include "../xbmc/utils/SingleLock.h"
-#include "TransformMatrix.h"
+// forward definitions
+class IMsgSenderCallback;
+class CGUIMessage;
+
+#include "common/mouse.h"     // TODO: this doesn't seem to be required for anything?
 
 /*!
  \ingroup graphics
