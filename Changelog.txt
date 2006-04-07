@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 06-04-2006 added: Better video resolution choice for playback, thanks to Markeen.
  - 06-04-2006 fixed: Skin scalings on load (eg PAL->NTSC) were truncated instead of rounded.
  - 06-04-2006 changed: changed default RSS feed in XboxMediaCenter.xml to another X-S feed
  - 06-04-2006 fixed: multiple visualisation controls on screen at same time would crash xbmc (now only first one loads)
