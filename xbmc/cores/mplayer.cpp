@@ -984,7 +984,7 @@ bool CMPlayer::OpenFile(const CFileItem& file, __int64 iStartTime)
 
 
       // do we need 2 do frame rate conversions ?
-      if (g_guiSettings.GetInt("MyVideos.FrameRateConversions") == FRAME_RATE_CONVERT && file.IsVideo() )
+      if (g_guiSettings.GetInt("VideoPlayer.FrameRateConversions") == FRAME_RATE_CONVERT && file.IsVideo() )
       {
         if (g_videoConfig.HasPAL())
         {
