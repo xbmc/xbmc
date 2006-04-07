@@ -1,8 +1,10 @@
 #include "include.h"
 #include "GUIAudioManager.h"
+#include "key.h"
 #include "audiocontext.h"
 #include "../xbmc/settings.h"
 #include "../xbmc/buttontranslator.h"
+#include "../xbmc/memutil.h"
 
 typedef struct
 {

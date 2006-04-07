@@ -3,6 +3,7 @@
 #include "AnimatedGif.h"
 #include "PackedTexture.h"
 #include "GraphicContext.h"
+#include "../xbmc/utils/SingleLock.h"
 #include <XGraphics.h>
 
 

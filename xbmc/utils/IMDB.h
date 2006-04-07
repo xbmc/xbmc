@@ -14,6 +14,9 @@
 #include "../GUIDialogProgress.h"
 #include "DllHtmlScraper.h"
 
+// forward definitions
+class TiXmlDocument;
+
 class CIMDBUrl
 {
 public:

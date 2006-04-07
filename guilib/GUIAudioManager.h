@@ -1,5 +1,7 @@
 #pragma once
-#include "key.h"
+
+// forward definitions
+struct CAction;
 #include "IAudioDeviceChangedCallback.h"
 
 enum WINDOW_SOUND { SOUND_INIT = 0, SOUND_DEINIT };

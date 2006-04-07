@@ -7,8 +7,8 @@
 #define CGUILIB_GUIFONTXPR_H
 #pragma once
 
-#include "common/xbfont.h"
 #include "GUIFontBase.h"
+#include "common/xbfont.h"
 
 /*!
  \ingroup textures
