@@ -549,6 +549,10 @@ void CGUIWindowSettingsCategory::CreateSettings()
     {
       FillInScreenSavers(pSetting);
     }
+    else if (strSetting == "VideoPlayer.DisplayResolution")
+    {
+      FillInResolutions(pSetting);
+    }
     else if (strSetting == "VideoPlayer.BypassCDSelection")
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
@@ -563,7 +567,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
       }
       pControl->SetValue(pSettingInt->GetData());
     }
-    else if (strSetting == "MyVideos.FrameRateConversions")
+    else if (strSetting == "VideoPlayer.FrameRateConversions")
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
@@ -971,20 +975,10 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIButtonControl *pControl = (CGUIButtonControl *)GetControl(pSettingControl->GetID());
       pControl->SetEnabled(g_guiSettings.GetBool("PostProcessing.Enable"));
     }
-    else if (strSetting == "MyVideos.WidescreenSwitching")
-    {
-      CGUIControl *pControl = (CGUIControl *)GetControl(GetSetting(strSetting)->GetID());
-      pControl->SetEnabled(g_videoConfig.HasWidescreen());
-    }
     else if (strSetting == "VideoPlayer.InvertFieldSync")
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(GetSetting(strSetting)->GetID());
       pControl->SetEnabled(g_guiSettings.GetBool("VideoPlayer.FieldSync"));
-    }
-    else if (strSetting == "VideoPlayer.UseGUIResolution")
-    {
-      CGUIControl *pControl = (CGUIControl *)GetControl(GetSetting(strSetting)->GetID());
-      pControl->SetEnabled(g_videoConfig.Has720p() || g_videoConfig.Has1080i());
     }
     else if (strSetting == "Subtitles.Color" || strSetting == "Subtitles.Style" || strSetting == "Subtitles.CharSet")
     {
@@ -1525,6 +1519,14 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     {
       m_dwResTime = timeGetTime() + 2000;
     }
+  }
+  else if (strSetting == "VideoPlayer.DisplayResolution")
+  {
+    CSettingInt *pSettingInt = (CSettingInt *)pSettingControl->GetSetting();
+    int iControlID = pSettingControl->GetID();
+    CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), iControlID, 0, 0, NULL);
+    g_graphicsContext.SendMessage(msg);
+    pSettingInt->SetData(msg.GetParam1());
   }
   else if (strSetting == "LookAndFeel.Language")
   { // new language choosen...

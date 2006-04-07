@@ -327,8 +327,6 @@ CGUISettings::CGUISettings(void)
   AddGroup(5, 3);
   AddCategory(5, "MyVideos", 16000);
   AddString(1, "MyVideos.Calibrate", 214, "", BUTTON_CONTROL_STANDARD);
-  AddBool(2, "MyVideos.WidescreenSwitching", 223, false);
-  AddInt(4, "MyVideos.FrameRateConversions", 336, FRAME_RATE_LEAVE_AS_IS, FRAME_RATE_LEAVE_AS_IS, 1, FRAME_RATE_USE_PAL60, SPIN_CONTROL_TEXT);
   AddSeparator(5, "MyVideos.Sep1");
   AddInt(6, "MyVideos.OSDTimeout", 472, 5, 0, 1, 60, SPIN_CONTROL_INT_PLUS, MASK_SECS, TEXT_OFF);
   AddSeparator(12, "MyVideos.Sep3");
@@ -350,7 +348,8 @@ CGUISettings::CGUISettings(void)
   AddString(1, "VideoPlayer.JumpToAudioHardware", 16001, "", BUTTON_CONTROL_STANDARD);
   AddSeparator(3, "VideoPlayer.Sep1");
   AddInt(6, "VideoPlayer.RenderMethod", 13354, RENDER_HQ_RGB_SHADER, RENDER_LQ_RGB_SHADER, 1, RENDER_HQ_RGB_SHADER, SPIN_CONTROL_TEXT);
-  AddBool(7, "VideoPlayer.UseGUIResolution", 495, true);
+  AddInt(8, "VideoPlayer.DisplayResolution", 169, (int)AUTORES, (int)HDTV_1080i, 1, (int)AUTORES, SPIN_CONTROL_TEXT);
+  AddInt(9, "VideoPlayer.FrameRateConversions", 336, FRAME_RATE_LEAVE_AS_IS, FRAME_RATE_LEAVE_AS_IS, 1, FRAME_RATE_USE_PAL60, SPIN_CONTROL_TEXT);
   AddSeparator(10, "VideoPlayer.Sep3");
   AddInt(12, "VideoPlayer.BypassCDSelection", 13169, 0, 0, 1, 37, SPIN_CONTROL_TEXT);
   AddSeparator(13,"VideoPlayer.Sep4");
