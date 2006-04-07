@@ -457,7 +457,11 @@
   <string><id>518</id><value>Uruchom</value></string>
   <string><id>519</id><value>Uruchom w..</value></string>
   <string><id>520</id><value>Edytuj nazwê XBE</value></string>
+  <string><id>521</id><value>Kompilacje</value></string>
+  <string><id>522</id><value>Usuñ Ÿród³o</value></string>
 
+  <string><id>588</id><value>Anuluj Tryb Przyjêcia</value></string>
+  <string><id>589</id><value>Tryb Przyjêcia</value></string>
   <string><id>590</id><value>Losowo</value></string>
   <string><id>591</id><value>Wy³.</value></string>
   <string><id>592</id><value>Raz</value></string>
@@ -611,7 +615,10 @@
   <string><id>1026</id><value>Dodaj ród³o</value></string>
   <string><id>1027</id><value>Edytuj ród³o</value></string>
   <string><id>1028</id><value>Edytuj %s ród³o</value></string>
-
+  <string><id>1029</id><value>Wpisz now¹ nazwê</value></string>
+  <string><id>1030</id><value>obraz</value></string>
+  <string><id>1031</id><value>folder obrazu</value></string>
+  <string><id>1032</id><value>Dodajh lokacjê sieciow¹...</value></string>
 
   <string><id>1200</id><value>SMB Udzia³</value></string>
   <string><id>1201</id><value>SMB IP</value></string>
@@ -752,9 +759,14 @@
   <string><id>12012</id><value>Uaktualnij listê trainerów</value></string>
   <string><id>12013</id><value>Trainer</value></string>
   <string><id>12014</id><value>Nie znaleziono trainerów</value></string>
-  <string><id>12015</id><value>Ustawienia</value></string>
+  <string><id>12015</id><value>Opcje trainera</value></string>
   <string><id>12016</id><value>Wszystkie zarejestrowane trainery znik³y. Uaktualnij swoj¹ listê</value></string>
   <string><id>12017</id><value>Wznawiaj od ostatniej pozycji</value></string>
+  <string><id>12018</id><value>Nie</value></string>
+  <string><id>12019</id><value>Tak</value></string>
+  <string><id>12020</id><value>Zapytaj</value></string>
+  <string><id>12021</id><value>Zacznij od pocz¹tku</value></string>
+  <string><id>12022</id><value>Wznów od ostatniej pozycji</value></string>
 
   <string><id>12310</id><value>0</value></string>
   <string><id>12311</id><value>1</value></string>
@@ -831,6 +843,7 @@
   <string><id>12384</id><value>24'ro godzinny zegar</value></string>
   <string><id>12385</id><value>Dzieñ/Miesi¹c</value></string>
   <string><id>12386</id><value>Miesi¹c/Dzieñ</value></string>
+  <string><id>12387</id><value>Przeskanuj bazê danych</value></string>
 
   <string><id>12390</id><value>System pracuje</value></string>
   <string><id>12391</id><value>Minut</value></string>
@@ -1027,6 +1040,10 @@
   <string><id>13399</id><value>Ignoruj "The" kiedy sortujesz</value></string>
   <string><id>13400</id><value>Przenikanie utworów</value></string>
   <string><id>13401</id><value>Przegl¹daj %s</value></string>
+  <string><id>13402</id><value>Poka¿ pozycjê œcie¿ki</value></string>
+  <string><id>13403</id><value>Wyczyœæ domyœlne</value></string>
+  <string><id>13404</id><value>Przywróæ</value></string>
+  <string><id>13405</id><value>Pobierz miniatórkê</value></string>
 
   <string><id>14000</id><value>Kaskadowanie wy³.</value></string>
   <string><id>14001</id><value>Kaskadowanie proste</value></string>
@@ -1264,6 +1281,12 @@
   <string><id>16025</id><value>Wpisz nazwê artysty</value></string>
   <string><id>16026</id><value>Odtwarzanie playlisty przerwane</value></string>
   <string><id>16027</id><value>Za du¿o kolejnych b³êdnych pozycji</value></string>
+
+  <string><id>16030</id><value>Przerwano Party Mode.</value></string>
+  <string><id>16031</id><value>W bazie danych nie ma zgodnych piosenek.</value></string>
+  <string><id>16032</id><value>Nie mo¿na zainicjowaæ bazy danych.</value></string>
+  <string><id>16033</id><value>Nie mo¿na otworzyæ bazy danych.</value></string>
+  <string><id>16034</id><value>Nie mogê dostaæ siê do piosenek z bazy danych.</value></string>
 
   <string><id>16100</id><value>Wszystkie filmy</value></string>
   <string><id>16101</id><value>Nieogl¹dane</value></string>
