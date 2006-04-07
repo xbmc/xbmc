@@ -88,7 +88,8 @@ bool CHDDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
     while (FindNextFile((HANDLE)hFind, &wfd));
     FindClose((HANDLE)hFind); //should be closed
   }
-  g_directoryCache.SetDirectory(strPath, vecCacheItems);
+  if (m_cacheDirectory)
+    g_directoryCache.SetDirectory(strPath, vecCacheItems);
   return true;
 }
 

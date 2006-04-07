@@ -139,7 +139,8 @@ bool CSMBDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
   smb.PurgeEx(CURL(strPath));
   smb.Unlock();
 
-  g_directoryCache.SetDirectory(strPath, vecCacheItems);
+  if (m_cacheDirectory)
+    g_directoryCache.SetDirectory(strPath, vecCacheItems);
 
   return true;
 }

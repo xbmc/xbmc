@@ -48,8 +48,10 @@ public:
   bool IsAllowed(const CStdString& strFile);
   void SetMask(const CStdString& strMask);
   void SetAllowPrompting(bool allowPrompting);
+  void SetCacheDirectory(bool cacheDirectory);
 protected:
   CStdString m_strFileMask;  ///< Holds the file mask specified by SetMask()
   bool m_allowPrompting;    ///< If true, the directory handlers may prompt the user
+  bool m_cacheDirectory;    ///< If true (default) the directory is cached by g_directoryCache.
 };
 }
