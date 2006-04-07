@@ -58,7 +58,7 @@ bool CSMBDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
   while (dirEnt)
   {
     if (dirEnt->name && strcmp(dirEnt->name, ".") && strcmp(dirEnt->name, "..") &&
-        (dirEnt->name[dirEnt->namelen - 2] != '$'))
+        (dirEnt->name[dirEnt->namelen+1 - 2] != '$'))
     {
      unsigned __int64 iSize = 0;
       bool bIsDir = true;
