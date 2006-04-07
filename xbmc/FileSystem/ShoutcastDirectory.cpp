@@ -348,7 +348,8 @@ bool CShoutcastDirectory::GetDirectory(const CStdString& strPath, CFileItemList 
     if (dlgProgress) dlgProgress->Close();
   }
 
-  g_directoryCache.SetDirectory(strRoot, vecCacheItems);
+  if (m_cacheDirectory)
+    g_directoryCache.SetDirectory(strRoot, vecCacheItems);
   return true;
 }
 

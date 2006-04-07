@@ -64,7 +64,8 @@ bool CDAAPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
 
   CFileItemList vecCacheItems;
   // Clear out any cached entries for this path
-  g_directoryCache.ClearDirectory(strPath);
+  if (m_cacheDirectory)
+    g_directoryCache.ClearDirectory(strPath);
 
 
   m_thisHost = g_DaapClient.GetHost(url.GetHostName());
@@ -311,7 +312,8 @@ bool CDAAPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
     }
   }
 
-  g_directoryCache.SetDirectory(strPath, vecCacheItems);
+  if (m_cacheDirectory)
+    g_directoryCache.SetDirectory(strPath, vecCacheItems);
   return true;
 }
 
