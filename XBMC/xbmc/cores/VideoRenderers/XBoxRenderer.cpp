@@ -553,10 +553,25 @@ void CXBoxRenderer::ChooseBestResolution(float fps)
 {
   bool bUsingPAL = g_videoConfig.HasPAL();    // current video standard:PAL or NTSC
   bool bCanDoWidescreen = g_videoConfig.HasWidescreen(); // can widescreen be enabled?
+  bool bWideScreenMode = false;
+
+  // If the resolution selection is on Auto the following rules apply :
+  //
+  // BIOS Settings     ||Display resolution
+  // WS|480p|720p/1080i||4:3 Videos     |16:6 Videos
+  // ------------------||------------------------------
+  // - | X  |    X     || 480p 4:3      | 720p 
+  // - | X  |    -     || 480p 4:3      | 480p 4:3
+  // - | -  |    X     || 720p          | 720p 
+  // - | -  |    -     || NTSC/PAL 4:3  |NTSC/PAL 4:3
+  // X | X  |    X     || 720p          | 720p
+  // X | X  |    -     || 480p 4:3      | 480p 16:9
+  // X | -  |    X     || 720p          | 720p
+  // X | -  |    -     || NTSC/PAL 4:3  |NTSC/PAL 16:9
 
   // Work out if the framerate suits PAL50 or PAL60
   bool bPal60 = false;
-  if (bUsingPAL && g_guiSettings.GetInt("MyVideos.FrameRateConversions") == FRAME_RATE_USE_PAL60 && g_videoConfig.HasPAL60())
+  if (bUsingPAL && g_guiSettings.GetInt("VideoPlayer.FrameRateConversions") == FRAME_RATE_USE_PAL60 && g_videoConfig.HasPAL60())
   {
     // yes we're in PAL
     // yes PAL60 is allowed
@@ -570,67 +585,28 @@ void CXBoxRenderer::ChooseBestResolution(float fps)
       bPal60 = true;
   }
 
+  // If the display resolution was specified by the user then use it, unless
+  // it's a PAL setting, whereby we use the above setting to autoswitch to PAL60
+  // if appropriate
+  RESOLUTION DisplayRes = (RESOLUTION) g_guiSettings.GetInt("VideoPlayer.DisplayResolution");
+  if ( DisplayRes != AUTORES )
+  {
+    if (bPal60)
+    {
+      if (DisplayRes == PAL_16x9) DisplayRes = PAL60_16x9;
+      if (DisplayRes == PAL_4x3) DisplayRes = PAL60_4x3;
+    }
+    CLog::Log(LOGNOTICE, "Display resolution USER : %s (%d)", g_settings.m_ResInfo[DisplayRes].strMode, DisplayRes);
+    m_iResolution = DisplayRes;
+    return;
+  }
+
   // Work out if framesize suits 4:3 or 16:9
   // Uses the frame aspect ratio of 8/(3*sqrt(3)) (=1.53960) which is the optimal point
   // where the percentage of black bars to screen area in 4:3 and 16:9 is equal
-  bool bWidescreen = false;
-  if (g_guiSettings.GetBool("MyVideos.WidescreenSwitching"))
-  { // allowed to switch
-    if (bCanDoWidescreen && m_fSourceFrameRatio > 8.0f / (3.0f*sqrt(3.0f)))
-      bWidescreen = true;
-    else
-      bWidescreen = false;
-  }
-  else
-  { // user doesn't want us to switch - use the GUI setting
-    bWidescreen = (g_settings.m_ResInfo[g_graphicsContext.GetVideoResolution()].dwFlags & D3DPRESENTFLAG_WIDESCREEN) != 0;
-  }
-
-  // if we always upsample video to the GUI resolution then use it (with pal 60 if needed)
-  // if we're not in fullscreen mode then use current resolution
-  // if we're calibrating the video  then use current resolution
-  if ( g_guiSettings.GetBool("VideoPlayer.UseGUIResolution") /*||
-         (! ( g_graphicsContext.IsFullScreenVideo()|| g_graphicsContext.IsCalibrating())  )*/
-     )
-  {
-    m_iResolution = g_graphicsContext.GetVideoResolution();
-    // Check to see if we are using a PAL screen capable of PAL60
-    if (bUsingPAL)
-    {
-      if (bPal60)
-      {
-        if (bWidescreen)
-          m_iResolution = PAL60_16x9;
-        else
-          m_iResolution = PAL60_4x3;
-      }
-      else
-      {
-        if (bWidescreen)
-          m_iResolution = PAL_16x9;
-        else
-          m_iResolution = PAL_4x3;
-      }
-    }
-    else if (m_iResolution == NTSC_4x3 || m_iResolution == NTSC_16x9)
-    {
-      if (bWidescreen)
-        m_iResolution = NTSC_16x9;
-      else
-        m_iResolution = NTSC_4x3;
-    }
-    else if (m_iResolution == HDTV_480p_4x3 || m_iResolution == HDTV_480p_16x9)
-    {
-      if (bWidescreen)
-        m_iResolution = HDTV_480p_16x9;
-      else
-        m_iResolution = HDTV_480p_4x3;
-    }
-    // Change our screen resolution
-    //  Sleep(1000);
-    //   g_graphicsContext.SetVideoResolution(m_iResolution);
-    return ;
-  }
+  static const float fOptimalSwitchPoint = 8.0f / (3.0f*sqrt(3.0f));
+  if (bCanDoWidescreen && m_fSourceFrameRatio > fOptimalSwitchPoint)
+    bWideScreenMode = true;
 
   // We are allowed to switch video resolutions, so we must
   // now decide which is the best resolution for the video we have
@@ -641,14 +617,14 @@ void CXBoxRenderer::ChooseBestResolution(float fps)
     // this may need revising as more knowledge is obtained.
     if (bPal60)
     {
-      if (bWidescreen)
+      if (bWideScreenMode)
         m_iResolution = PAL60_16x9;
       else
         m_iResolution = PAL60_4x3;
     }
     else    // PAL50
     {
-      if (bWidescreen)
+      if (bWideScreenMode)
         m_iResolution = PAL_16x9;
       else
         m_iResolution = PAL_4x3;
@@ -656,42 +632,63 @@ void CXBoxRenderer::ChooseBestResolution(float fps)
   }
   else      // NTSC resolutions
   {
-    // Check if the picture warrants HDTV mode
-    // And if HDTV modes (1080i and 720p) are available
-    if ((m_iSourceHeight > 720 || m_iSourceWidth > 1280) && g_videoConfig.Has1080i())
-    { //image suits 1080i if it's available
+    if (bCanDoWidescreen)
+    { // The TV set has a wide screen (16:9)
+      // So we always choose the best HD widescreen resolution no matter what
+      // the video aspect ratio is
+      // If the TV has no HD support widescreen mode is chossen according to video AR
+
+      if (g_videoConfig.Has1080i())     // Widescreen TV with 1080i res
       m_iResolution = HDTV_1080i;
-    }
-    else if ((m_iSourceHeight > 480 || m_iSourceWidth > 720) && g_videoConfig.Has720p())                  //1080i is available
-    { // image suits 720p if it is available
+      else if (g_videoConfig.Has720p()) // Widescreen TV with 720p res
       m_iResolution = HDTV_720p;
-    }
-    else if ((m_iSourceHeight > 480 || m_iSourceWidth > 720) && g_videoConfig.Has1080i())
-    { // image suits 720p and obviously 720p is unavailable
-      m_iResolution = HDTV_1080i;
-    }
-    else  // either picture does not warrant HDTV, or HDTV modes are unavailable
-    {
-      if (g_videoConfig.Has480p())
+      else if (g_videoConfig.Has480p()) // Widescreen TV with 480p
       {
-        if (bWidescreen)
+        if (bWideScreenMode) // Choose widescreen mode according to video AR
           m_iResolution = HDTV_480p_16x9;
         else
           m_iResolution = HDTV_480p_4x3;
+    }
+      else if (bWideScreenMode)         // Standard 16:9 TV set with no HD
+        m_iResolution = NTSC_16x9;
+      else
+        m_iResolution = NTSC_4x3;
+    }
+    else
+    { // The TV set has a 4:3 aspect ratio
+      // So 4:3 video sources will best fit the screen with 4:3 resolution
+      // We choose 16:9 resolution only for 16:9 video sources
+
+      if (m_fSourceFrameRatio >= 16.0f / 9.0f)
+    {
+        // The video fits best into widescreen modes so they are 
+        // the first choices
+        if (g_videoConfig.Has1080i())
+          m_iResolution = HDTV_1080i;
+        else if (g_videoConfig.Has720p())
+          m_iResolution = HDTV_720p;
+        else if (g_videoConfig.Has480p())
+          m_iResolution = HDTV_480p_4x3;
+        else
+          m_iResolution = NTSC_4x3;
       }
       else
       {
-        if (bWidescreen)
-          m_iResolution = NTSC_16x9;
+        // The video fits best into 4:3 modes so 480p
+        // is the first choice
+        if (g_videoConfig.Has480p())
+          m_iResolution = HDTV_480p_4x3;
+        else if (g_videoConfig.Has1080i())
+          m_iResolution = HDTV_1080i;
+        else if (g_videoConfig.Has720p())
+          m_iResolution = HDTV_720p;
         else
           m_iResolution = NTSC_4x3;
       }
     }
   }
 
-  // Finished - update our video resolution
-  // Sleep(1000);
-  //  g_graphicsContext.SetVideoResolution(m_iResolution);
+  CLog::Log(LOGNOTICE, "Display resolution AUTO : %s (%d)", g_settings.m_ResInfo[m_iResolution].strMode, m_iResolution);
 }
 
 void CXBoxRenderer::CreateTextures()
