@@ -213,8 +213,8 @@ bool CXBMSDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
   if (conn != NULL)
     cc_xstream_client_disconnect(conn);
 
-
-  g_directoryCache.SetDirectory(strPath, vecCacheItems);
+  if (m_cacheDirectory)
+    g_directoryCache.SetDirectory(strPath, vecCacheItems);
   return true;
 }
 

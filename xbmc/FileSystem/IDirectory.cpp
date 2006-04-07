@@ -10,6 +10,7 @@ IDirectory::IDirectory(void)
 {
   m_strFileMask = "";
   m_allowPrompting = false;
+  m_cacheDirectory = false;
 }
 
 IDirectory::~IDirectory(void)
@@ -64,3 +65,14 @@ void IDirectory::SetAllowPrompting(bool allowPrompting)
 {
   m_allowPrompting = allowPrompting;
 }
+
+/*!
+ \brief Set whether the directory should be cached by our directory cache.
+ \param cacheDirectory Set true to enable caching (default is false).
+ */
+
+void IDirectory::SetCacheDirectory(bool cacheDirectory)
+{
+  m_cacheDirectory = cacheDirectory;
+}
+

@@ -84,6 +84,7 @@ bool CFTPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
     //iline = iline + 1;
 	}
   while (chrs!=NULL);
-  g_directoryCache.SetDirectory(scPath, vecCacheItems);
+  if (m_cacheDirectory)
+    g_directoryCache.SetDirectory(scPath, vecCacheItems);
 	return true;
 }
