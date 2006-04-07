@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 07-04-2006 updated: finnish and plosh langugae strings.xml
+              Thanks jutski and NaPeK
  - 07-04-2006 fixed: don't use fixed width character arrays on user inputable settings for smb, also reorganzed smb settings in gui
  - 07-04-2006 fixed: Incorrect first and last letters in Hebrew (and other languages) - thanks to shahar for the assistance.
  - 07-04-2006 fixed: Cleaned up headers includes in guilib.
