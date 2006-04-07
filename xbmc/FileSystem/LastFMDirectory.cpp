@@ -538,7 +538,7 @@ bool CLastFMDirectory::GetDirectory(const CStdString& strPath, CFileItemList &it
   else
     return false;
 
-  if (!m_vecCachedItems.IsEmpty() )
+  if (m_cacheDirectory && !m_vecCachedItems.IsEmpty() )
     g_directoryCache.SetDirectory(strPath, m_vecCachedItems);
 
   return true;

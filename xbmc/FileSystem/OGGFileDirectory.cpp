@@ -44,7 +44,8 @@ bool COGGFileDirectory::GetDirectory(const CStdString& strPath1, CFileItemList &
     vecCacheItems.Add(new CFileItem(*pItem));
   }
 
-  g_directoryCache.SetDirectory(strPath, vecCacheItems);
+  if (m_cacheDirectory)
+    g_directoryCache.SetDirectory(strPath, vecCacheItems);
 
   return true;
 }
