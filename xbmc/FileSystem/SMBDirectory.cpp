@@ -193,7 +193,7 @@ int CSMBDirectory::OpenDir(CStdString& strAuth)
   else if( urlIn.GetUserName().IsEmpty() )
   { 
     //No username specified, try to authenticate using default password or anonomously
-    if( strlen(g_stSettings.m_strSambaDefaultUserName) > 0 )
+    if( g_stSettings.m_strSambaDefaultUserName.length() > 0 )
       iTryAutomatic = 2;
     else
       iTryAutomatic = 1;

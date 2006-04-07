@@ -421,18 +421,19 @@ CGUISettings::CGUISettings(void)
   AddBool(7,    "Autodetect.CreateLink",1253, false);
   
   //GeminiServer
-  AddCategory(6, "Smb", 1200);
-  AddInt(1,    "Smb.SimpAdvance", 1208,   1, 0, 1, 2, SPIN_CONTROL_TEXT);
-  AddString(2, "Smb.Ip",          1201,   "192.168.0.106",  BUTTON_CONTROL_IP_INPUT);
-  AddString(3, "Smb.Workgroup",   1202,   "WORKGROUP", BUTTON_CONTROL_INPUT, false, 1202);
-  AddString(4, "Smb.Username",    1203,   "Username", BUTTON_CONTROL_INPUT, false, 1203);
-  AddString(5, "Smb.Password",    1204,   "Password", BUTTON_CONTROL_HIDDEN_INPUT, true, 1204);
+  AddCategory(6, "Smb", 1200);  
+  AddString(1, "Smb.Username",    1203,   "", BUTTON_CONTROL_INPUT, false, 1203);
+  AddString(2, "Smb.Password",    1204,   "", BUTTON_CONTROL_HIDDEN_INPUT, true, 1204);
+  AddString(3, "Smb.Winsserver",  1207,   "",  BUTTON_CONTROL_IP_INPUT);
+  AddString(4, "Smb.Workgroup",   1202,   "WORKGROUP", BUTTON_CONTROL_INPUT, false, 1202);
+  //AddString(5, "Smb.DosCodepage", 735, "CP850", SPIN_CONTROL_TEXT);  
   AddSeparator(6, "Smb.Sep1");
-  AddString(7, "Smb.Winsserver",  1207,   "-",  BUTTON_CONTROL_IP_INPUT);
-  AddString(8, "Smb.ShareName",   1205,   "WORKGROUP (SMB) Network", BUTTON_CONTROL_INPUT, false, 1205);
-  AddInt(9,    "Smb.ShareGroup",  1206,   SMB_SHARE_MU_VI_PIC_FIL, SMB_SHARE_MUSIC, 1, SMB_SHARE_MU_VI_PIC_FIL, SPIN_CONTROL_TEXT);
-  AddSeparator(10, "Smb.Sep2");
-  AddString(11, "Smb.SetSmb",      14070,  "", BUTTON_CONTROL_STANDARD);
+  AddInt(7,    "Smb.SimpAdvance", 1208,   1, 0, 1, 2, SPIN_CONTROL_TEXT);
+  AddString(8, "Smb.Ip",          1201,   "192.168.0.106",  BUTTON_CONTROL_IP_INPUT);
+  AddString(9, "Smb.ShareName",   1205,   "WORKGROUP (SMB) Network", BUTTON_CONTROL_INPUT, false, 1205);
+  AddInt(10,    "Smb.ShareGroup",  1206,   SMB_SHARE_MU_VI_PIC_FIL, SMB_SHARE_MUSIC, 1, SMB_SHARE_MU_VI_PIC_FIL, SPIN_CONTROL_TEXT);
+  AddSeparator(11, "Smb.Sep2");
+  AddString(12, "Smb.SetSmb",      14070,  "", BUTTON_CONTROL_STANDARD);
 
   // appearance settings
   AddGroup(7, 480);
