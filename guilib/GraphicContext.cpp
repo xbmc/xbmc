@@ -375,10 +375,10 @@ void CGraphicContext::ScaleRectToScreenResolution(DWORD& left, DWORD& top, DWORD
   if (res == INVALID) return ;
   float fPercentX = ((float)m_iScreenWidth ) / ((float)g_settings.m_ResInfo[res].iWidth);
   float fPercentY = ((float)m_iScreenHeight) / ((float)g_settings.m_ResInfo[res].iHeight);
-  left = (DWORD) ( (float(left)) * fPercentX);
-  top = (DWORD) ( (float(top)) * fPercentY);
-  right = (DWORD) ( (float(right)) * fPercentX);
-  bottom = (DWORD) ( (float(bottom)) * fPercentY);
+  left = (DWORD) ( (float(left)) * fPercentX + 0.5f);
+  top = (DWORD) ( (float(top)) * fPercentY + 0.5f);
+  right = (DWORD) ( (float(right)) * fPercentX + 0.5f);
+  bottom = (DWORD) ( (float(bottom)) * fPercentY + 0.5f);
 }
 
 void CGraphicContext::ScalePosToScreenResolution(DWORD& x, DWORD& y, RESOLUTION res)
@@ -386,50 +386,50 @@ void CGraphicContext::ScalePosToScreenResolution(DWORD& x, DWORD& y, RESOLUTION 
   if (res == INVALID) return ;
   float fPercentX = ((float)m_iScreenWidth ) / ((float)g_settings.m_ResInfo[res].iWidth);
   float fPercentY = ((float)m_iScreenHeight) / ((float)g_settings.m_ResInfo[res].iHeight);
-  x = (DWORD) ( (float(x)) * fPercentX);
-  y = (DWORD) ( (float(y)) * fPercentY);
+  x = (DWORD) ( (float(x)) * fPercentX + 0.5f);
+  y = (DWORD) ( (float(y)) * fPercentY + 0.5f);
 }
 
 void CGraphicContext::ScaleXCoord(DWORD& x, RESOLUTION res)
 {
   if (res == INVALID) return ;
   float fPercentX = ((float)m_iScreenWidth ) / ((float)g_settings.m_ResInfo[res].iWidth);
-  x = (DWORD) ( (float(x)) * fPercentX);
+  x = (DWORD) ( (float(x)) * fPercentX + 0.5f);
 }
 
 void CGraphicContext::ScaleXCoord(int& x, RESOLUTION res)
 {
   if (res == INVALID) return ;
   float fPercentX = ((float)m_iScreenWidth ) / ((float)g_settings.m_ResInfo[res].iWidth);
-  x = (int) ( (float(x)) * fPercentX);
+  x = (int) ( (float(x)) * fPercentX + 0.5f);
 }
 
 void CGraphicContext::ScaleXCoord(long& x, RESOLUTION res)
 {
   if (res == INVALID) return ;
   float fPercentX = ((float)m_iScreenWidth ) / ((float)g_settings.m_ResInfo[res].iWidth);
-  x = (long) ( (float(x)) * fPercentX);
+  x = (long) ( (float(x)) * fPercentX + 0.5f);
 }
 
 void CGraphicContext::ScaleYCoord(DWORD& y, RESOLUTION res)
 {
   if (res == INVALID) return ;
   float fPercentY = ((float)m_iScreenHeight ) / ((float)g_settings.m_ResInfo[res].iHeight);
-  y = (DWORD) ( (float(y)) * fPercentY);
+  y = (DWORD) ( (float(y)) * fPercentY + 0.5f);
 }
 
 void CGraphicContext::ScaleYCoord(int& y, RESOLUTION res)
 {
   if (res == INVALID) return ;
   float fPercentY = ((float)m_iScreenHeight ) / ((float)g_settings.m_ResInfo[res].iHeight);
-  y = (int) ( (float(y)) * fPercentY);
+  y = (int) ( (float(y)) * fPercentY + 0.5f);
 }
 
 void CGraphicContext::ScaleYCoord(long& y, RESOLUTION res)
 {
   if (res == INVALID) return ;
   float fPercentY = ((float)m_iScreenHeight ) / ((float)g_settings.m_ResInfo[res].iHeight);
-  y = (long) ( (float(y)) * fPercentY);
+  y = (long) ( (float(y)) * fPercentY + 0.5f);
 }
 
 void CGraphicContext::ResetOverscan(RESOLUTION res, OVERSCAN &overscan)
