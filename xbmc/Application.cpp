@@ -627,13 +627,13 @@ HRESULT CApplication::Create()
   _controlfp(_PC_24, _MCW_PC);
 
   CIoSupport helper;
-  CStdString strPath;
+  CStdString strExecutablePath;
   char szDevicePath[1024];
 
   // map Q to home drive of xbe to load the config file
-  CUtil::GetHomePath(strPath);
-  helper.GetPartition(strPath, szDevicePath);
-  strcat(szDevicePath, &strPath.c_str()[2]);
+  CUtil::GetHomePath(strExecutablePath);
+  helper.GetPartition(strExecutablePath, szDevicePath);
+  strcat(szDevicePath, &strExecutablePath.c_str()[2]);
 
   helper.Mount("Q:", "Harddisk0\\Partition2");
   helper.Unmount("Q:");
@@ -649,13 +649,13 @@ HRESULT CApplication::Create()
     CStdString strLogPath = g_stSettings.m_szlogpath;
     if (!strLogPath.IsEmpty())
     {
+      //ensure there's a '\' on the end
+      if (!CUtil::HasSlashAtEnd(strLogPath))
+        strLogPath += "\\";
+          
       // proper parameter checking, make sure its an HD path
       if (CUtil::IsHD(strLogPath))
       {
-        //ensure there's a '\' on the end
-        if (!CUtil::HasSlashAtEnd(strLogPath))
-          strLogPath += "\\";
-
         //We need to mount before we can start the log File!
         helper.Remap("C:,Harddisk0\\Partition2");
         helper.Remap("E:,Harddisk0\\Partition1");
@@ -883,7 +883,8 @@ HRESULT CApplication::Create()
   CLog::Log(LOGINFO, "Checking skinpath existance, and existence of keymap.xml:%s...", (strHomePath + "\\skin").c_str());
   if (!access(strHomePath + "\\skin", 0) && !access(strHomePath + "\\keymap.xml", 0))
   {
-    if (strHomePath != "Q:")
+    // only remap if the new path is different than the original one
+    if (strHomePath != "Q:" && !strHomePath.Equals(strExecutablePath, false))
     {
       helper.GetPartition(strHomePath, szDevicePath);
       strcat(szDevicePath, &strHomePath.c_str()[2]);
