@@ -25,14 +25,26 @@ namespace PYXBMC
 	PyObject* Player_New(PyTypeObject *type, PyObject *args, PyObject *kwds)
 	{
 		Player *self;
-
+    int playerCore;
+    
 		self = (Player*)type->tp_alloc(type, 0);
 		if (!self) return NULL;
+
+		if (!PyArg_ParseTuple(args, "|i", &playerCore)) return NULL;
 
 		self->iPlayList = PLAYLIST_MUSIC;
 		self->pPlayer = new CPythonPlayer();
 		self->pPlayer->SetCallback((PyObject*)self);
-
+    self->playerCore = EPC_NONE;
+    
+		if (playerCore == EPC_DVDPLAYER ||
+		    playerCore == EPC_MPLAYER ||
+		    playerCore == EPC_PAPLAYER ||
+		    playerCore == EPC_MODPLAYER)
+		{
+		  self->playerCore = (EPLAYERCORES)playerCore;
+		}
+		
 		return (PyObject*)self;
 	}
 
@@ -57,6 +69,9 @@ namespace PYXBMC
 
 		if (!PyArg_ParseTuple(args, "|O", &pObject)) return NULL;
 
+    // force a playercore before playing
+    g_application.m_eForcedNextPlayer = self->playerCore;
+    
 		if (pObject == NULL)
 		{
 			// play current file in playlist
@@ -120,8 +135,11 @@ namespace PYXBMC
 	PyDoc_STRVAR(playnext__doc__,
 		"playnext() -- Play next item in playlist.");
 
-	PyObject* Player_PlayNext(PyObject *self, PyObject *args)
+	PyObject* Player_PlayNext(Player *self, PyObject *args)
 	{
+    // force a playercore before playing
+    g_application.m_eForcedNextPlayer = self->playerCore;
+	  
 		g_applicationMessenger.PlayListPlayerNext();
 
 		Py_INCREF(Py_None);
@@ -132,8 +150,11 @@ namespace PYXBMC
 	PyDoc_STRVAR(playprevious__doc__,
 		"playprevious() -- Play previous item in playlist.");
 
-	PyObject* Player_PlayPrevious(PyObject *self, PyObject *args)
+	PyObject* Player_PlayPrevious(Player *self, PyObject *args)
 	{
+    // force a playercore before playing
+    g_application.m_eForcedNextPlayer = self->playerCore;
+	  
 		g_applicationMessenger.PlayListPlayerPrevious();
 
 		Py_INCREF(Py_None);
@@ -149,6 +170,9 @@ namespace PYXBMC
 		int iItem;
 		if (!PyArg_ParseTuple(args, "i", &iItem)) return NULL;
 
+    // force a playercore before playing
+    g_application.m_eForcedNextPlayer = self->playerCore;
+    
     if (g_playlistPlayer.GetCurrentPlaylist() != self->iPlayList)
     {
       g_playlistPlayer.SetCurrentPlaylist(self->iPlayList);
@@ -371,7 +395,14 @@ namespace PYXBMC
 	PyDoc_STRVAR(player__doc__,
 		"Player class.\n"
 		"\n"
-		"Player() -- Creates a new Player with as default the xbmc music playlist.");
+		"Player([core]) -- Creates a new Player with as default the xbmc music playlist.\n"
+		"\n"
+		"core     : (optional) Use a specified playcore instead of letting xbmc decide the playercore to use.\n"
+		"         : - xbmc.PLAYER_CORE_AUTO\n"
+		"         : - xbmc.PLAYER_CORE_DVDPLAYER\n"
+		"         : - xbmc.PLAYER_CORE_MPLAYER\n"
+		"         : - xbmc.PLAYER_CORE_PAPLAYER\n"
+		"         : - xbmc.PLAYER_CORE_MODPLAYER\n");
 
 // Restore code and data sections to normal.
 #pragma code_seg()
