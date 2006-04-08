@@ -7,6 +7,7 @@
 #include "../xbmc/visualizations/VisualisationFactory.h"
 #include "../xbmc/visualizations/fft.h"
 #include "../xbmc/utils/CriticalSection.h"
+#include "../xbmc/utils/GUIInfoManager.h"
 
 #define LABEL_ROW1 10
 #define LABEL_ROW2 11
@@ -224,6 +225,7 @@ void CGUIVisualisationControl::OnInitialize(int iChannels, int iSamplesPerSec, i
   OutputDebugString("Visualisation::Start()\n");
   m_pVisualisation->Start(m_iChannels, m_iSamplesPerSec, m_iBitsPerSample, strFile);
   m_bInitialized = true;
+  UpdateAlbumArt();
   CLog::Log(LOGDEBUG, "OnInitialize() done");
 }
 
@@ -308,6 +310,18 @@ bool CGUIVisualisationControl::OnAction(const CAction &action)
   return m_pVisualisation->OnAction(visAction);
 }
 
+bool CGUIVisualisationControl::UpdateAlbumArt()
+{
+    m_AlbumThumb = g_infoManager.GetImage(MUSICPLAYER_COVER);
+    if (m_AlbumThumb == "defaultAlbumCover.png")
+    {
+      m_AlbumThumb = "";
+    }
+    CLog::DebugLog("Updating vis albumart: %s", m_AlbumThumb.c_str());
+    if (m_pVisualisation && m_pVisualisation->OnAction(CVisualisation::VIS_ACTION_UPDATE_ALBUMART, &m_AlbumThumb)) return true;
+    return false;
+}
+
 bool CGUIVisualisationControl::OnMessage(CGUIMessage &message)
 {
   if (message.GetMessage() == GUI_MSG_GET_VISUALISATION)
@@ -320,6 +334,10 @@ bool CGUIVisualisationControl::OnMessage(CGUIMessage &message)
     CAction action;
     action.wID = (WORD)message.GetParam1();
     return OnAction(action);
+  }
+  else if (message.GetMessage() == GUI_MSG_PLAYBACK_STARTED)
+  {
+    if (UpdateAlbumArt()) return true;
   }
   return CGUIControl::OnMessage(message);
 }

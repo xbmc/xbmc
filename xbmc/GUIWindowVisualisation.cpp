@@ -88,6 +88,13 @@ bool CGUIWindowVisualisation::OnMessage(CGUIMessage& message)
 {
   switch ( message.GetMessage() )
   {
+  case GUI_MSG_PLAYBACK_STARTED:
+    {
+      CGUIVisualisationControl *pVisControl = (CGUIVisualisationControl *)GetControl(CONTROL_VIS);
+      if (pVisControl)
+        return pVisControl->OnMessage(message);
+    }
+    break;
   case GUI_MSG_GET_VISUALISATION:
     {
 //      message.SetControlID(CONTROL_VIS);
