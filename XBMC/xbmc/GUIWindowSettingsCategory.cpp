@@ -461,7 +461,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
         strLabel.Format(strPercentMask.c_str(), i*2);
         pControl->AddLabel(strLabel, i);
       }
-      pControl->SetValue(int(pSettingInt->GetData() / 5) - 1);
+      pControl->SetValue(int(pSettingInt->GetData()));
     }
     else if (strSetting == "System.RemotePlayHDSpinDown")
     {
@@ -2391,10 +2391,10 @@ void CGUIWindowSettingsCategory::FillInSkinFonts(CSetting *pSetting)
 
         if (idAttr != NULL && isAllowed)
         {
+          pControl->AddLabel(idAttr, iSkinFontSet);
           if (strcmpi(idAttr, g_guiSettings.GetString("LookAndFeel.Font").c_str()) == 0)
             pControl->SetValue(iSkinFontSet);
-
-          pControl->AddLabel(idAttr, iSkinFontSet++);
+          iSkinFontSet++;
         }
       }
       pChild = pChild->NextSibling();
