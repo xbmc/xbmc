@@ -10,8 +10,8 @@
 #include "..\..\util.h"
 #include "DVDOverlayRenderer.h"
 #include "DVDPerformanceCounter.h"
-
 #include "DVDCodecs\DVDCodecs.h"
+#include "DVDCodecs\Overlay\DVDOverlayCodecCC.h"
 
 static __forceinline __int64 abs(__int64 value)
 {
@@ -30,6 +30,7 @@ CDVDPlayerVideo::CDVDPlayerVideo(CDVDClock* pClock, CDVDOverlayContainer* pOverl
   m_pOverlayContainer = pOverlayContainer;
   m_pTempOverlayPicture = NULL;
   m_pVideoCodec = NULL;
+  m_pOverlayCodecCC = NULL;
   m_bInitializedOutputDevice = false;
   
   SetSpeed(DVD_PLAYSPEED_NORMAL);
@@ -241,8 +242,8 @@ void CDVDPlayerVideo::Process()
     }
     else if (pMsg->IsType(CDVDMsg::VIDEO_SET_ASPECT))
     {
-      CLog::Log(LOGDEBUG, "CDVDPlayerVideo - CDVDMsg::VIDEO_SET_ASPECT"); 
-      m_fForcedAspectRatio = ((CDVDMsgVideoSetAspect*)pMsg)->GetAspect();      
+      CLog::Log(LOGDEBUG, "CDVDPlayerVideo - CDVDMsg::VIDEO_SET_ASPECT");
+      m_fForcedAspectRatio = ((CDVDMsgVideoSetAspect*)pMsg)->GetAspect();
     }
 
     if (m_DetectedStill)
@@ -397,7 +398,20 @@ void CDVDPlayerVideo::Process()
             m_pVideoCodec->Reset();
           }
         }
-
+        
+        /*
+        if (iDecoderState & VC_USERDATA)
+        {
+          // found some userdata while decoding a frame
+          // could be closed captioning
+          DVDVideoUserData videoUserData;
+          if (m_pVideoCodec->GetUserData(&videoUserData))
+          {
+            ProcessVideoUserData(&videoUserData, pts);
+          }
+        }
+        */
+        
         // if the decoder needs more data, we just break this loop
         // and try to get more data from the videoQueue
         if (iDecoderState & VC_BUFFER) break;
@@ -435,7 +449,57 @@ void CDVDPlayerVideo::OnExit()
   g_renderManager.UnInit();
   m_bInitializedOutputDevice = false;  
 
+  if (m_pOverlayCodecCC)
+  {
+    m_pOverlayCodecCC->Dispose();
+    m_pOverlayCodecCC = NULL;
+  }
+  
   CLog::Log(LOGNOTICE, "thread end: video_thread");
+}
+
+void CDVDPlayerVideo::ProcessVideoUserData(DVDVideoUserData* pVideoUserData, __int64 pts)
+{
+  // check userdata type
+  BYTE* data = pVideoUserData->data;
+  int size = pVideoUserData->size;
+  
+  if (size >= 2)
+  {
+    if (data[0] == 'C' && data[1] == 'C')
+    {
+      data += 2;
+      size -= 2;
+      
+      // closed captioning
+      if (!m_pOverlayCodecCC)
+      {
+        m_pOverlayCodecCC = new CDVDOverlayCodecCC();
+        if (!m_pOverlayCodecCC->Open())
+        {
+          delete m_pOverlayCodecCC;
+          m_pOverlayCodecCC = NULL;
+        }
+      }
+      
+      if (m_pOverlayCodecCC)
+      {
+        int iState = 0;
+        while (!(iState & OC_ERROR) && !(iState & OC_BUFFER))
+        {
+          iState = m_pOverlayCodecCC->Decode(data, size, pts);
+          data = NULL;
+          size = 0;
+          
+          if (iState & OC_OVERLAY)
+          {
+            CDVDOverlay* pOverlay = m_pOverlayCodecCC->GetOverlay();
+            m_pOverlayContainer->Add(pOverlay);
+          }
+        }
+      }
+    }
+  }
 }
 
 bool CDVDPlayerVideo::InitializedOutputDevice()

@@ -1,6 +1,7 @@
 
 #include "../../../stdafx.h"
 #include "DVDSubtitleParserSubrip.h"
+#include "..\DVDCodecs\Overlay\DVDOverlayText.h"
 #include "..\DVDClock.h"
 
 CDVDSubtitleParserSubrip::CDVDSubtitleParserSubrip(CDVDSubtitleStream* pStream, const char* strFile)
@@ -72,7 +73,7 @@ int CDVDSubtitleParserSubrip::ParseFile()
 		  else if (c == 14) // time info
 		  {
 		    CDVDOverlayText* pOverlay = new CDVDOverlayText();
-        pOverlay->bDontDelete = true;
+        pOverlay->Acquire(); // increase ref count with one so that we can hold a handle to this overlay
         
 	      pOverlay->iPTSStartTime = ((__int64)(((hh1 * 60 + mm1) * 60) + ss1) * 1000 + ms1) * (DVD_TIME_BASE / 1000);
 		    pOverlay->iPTSStopTime  = ((__int64)(((hh2 * 60 + mm2) * 60) + ss2) * 1000 + ms2) * (DVD_TIME_BASE / 1000);

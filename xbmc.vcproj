@@ -2620,6 +2620,38 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 							RelativePath=".\xbmc\cores\dvdplayer\DVDCodecs\Video\DVDVideoPPFFmpeg.h">
 						</File>
 					</Filter>
+					<Filter
+						Name="Overlay"
+						Filter="">
+						<File
+							RelativePath=".\xbmc\cores\dvdplayer\DVDCodecs\Overlay\DVDOverlay.h">
+						</File>
+						<File
+							RelativePath=".\xbmc\cores\dvdplayer\DVDCodecs\Overlay\DVDOverlayCodec.h">
+						</File>
+						<File
+							RelativePath=".\xbmc\cores\dvdplayer\DVDCodecs\Overlay\DVDOverlayCodecCC.cpp">
+						</File>
+						<File
+							RelativePath=".\xbmc\cores\dvdplayer\DVDCodecs\Overlay\DVDOverlayCodecCC.h">
+						</File>
+						<File
+							RelativePath=".\xbmc\cores\dvdplayer\DVDCodecs\Overlay\DVDOverlaySpu.h">
+						</File>
+						<File
+							RelativePath=".\xbmc\cores\dvdplayer\DVDCodecs\Overlay\DVDOverlayText.h">
+						</File>
+						<Filter
+							Name="libspucc"
+							Filter="">
+							<File
+								RelativePath=".\xbmc\cores\dvdplayer\DVDCodecs\Overlay\libspucc\cc_decoder.c">
+							</File>
+							<File
+								RelativePath=".\xbmc\cores\dvdplayer\DVDCodecs\Overlay\libspucc\cc_decoder.h">
+							</File>
+						</Filter>
+					</Filter>
 				</Filter>
 				<Filter
 					Name="DVDDemuxers"

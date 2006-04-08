@@ -18,7 +18,12 @@ CDVDOverlayContainer::~CDVDOverlayContainer()
 
 void CDVDOverlayContainer::Add(CDVDOverlay* pOverlay)
 {
-  CLog::DebugLog("add");
+  pOverlay->Acquire();
+
+#ifdef DVDDEBUG_OVERLAY_TRACKER
+  pOverlay->m_bTrackerReference++;
+#endif
+
   EnterCriticalSection(&m_critSection);
 
   if (m_overlays.size() > 0)
@@ -32,6 +37,7 @@ void CDVDOverlayContainer::Add(CDVDOverlay* pOverlay)
       back->iPTSStopTime = pOverlay->iPTSStartTime;
     }
   }
+  
   m_overlays.push_back(pOverlay);
   
   LeaveCriticalSection(&m_critSection);
@@ -46,7 +52,7 @@ CDVDOverlay* CDVDOverlayContainer::Remove(CDVDOverlay* pOverlay)
 {
   CDVDOverlay* pNext = NULL;
   
-  // EnterCriticalSection(&m_critSection);
+  EnterCriticalSection(&m_critSection);
   
   VecOverlaysIter it = m_overlays.begin();
   while (it != m_overlays.end())
@@ -59,9 +65,13 @@ CDVDOverlay* CDVDOverlayContainer::Remove(CDVDOverlay* pOverlay)
     else it++;
   }
     
-  // LeaveCriticalSection(&m_critSection);
+  LeaveCriticalSection(&m_critSection);
   
-  if (!pOverlay->bDontDelete) delete pOverlay;
+#ifdef DVDDEBUG_OVERLAY_TRACKER
+  pOverlay->m_bTrackerReference--;
+#endif
+
+  pOverlay->Release();
 
   return pNext;
 }
@@ -83,7 +93,8 @@ void CDVDOverlayContainer::CleanUp(__int64 pts)
     // which means we cannot delete overlays with stoptime 0
     if (!pOverlay->bForced && pOverlay->iPTSStopTime < pts && pOverlay->iPTSStopTime != 0)
     {
-      CLog::DebugLog("CDVDOverlay::CleanUp, removing %d", (int)(pts / 1000));
+      //CLog::DebugLog("CDVDOverlay::CleanUp, removing %d", (int)(pts / 1000));
+      //CLog::DebugLog("CDVDOverlay::CleanUp, remove, start : %d, stop : %d", (int)(pOverlay->iPTSStartTime / 1000), (int)(pOverlay->iPTSStopTime / 1000));
       pOverlay = Remove(pOverlay);
       continue;
     }
@@ -124,7 +135,11 @@ void CDVDOverlayContainer::Remove()
     
     LeaveCriticalSection(&m_critSection);
 
-    if (!pOverlay->bDontDelete) delete pOverlay;
+#ifdef DVDDEBUG_OVERLAY_TRACKER
+    pOverlay->m_bTrackerReference--;
+#endif
+
+    pOverlay->Release();
   }
 }
 
@@ -141,12 +156,18 @@ int CDVDOverlayContainer::GetSize()
 
 bool CDVDOverlayContainer::ContainsOverlayType(DVDOverlayType type)
 {
+  bool result = false;
+  
+  EnterCriticalSection(&m_critSection);
+  
   VecOverlaysIter it = m_overlays.begin();
-  while (it != m_overlays.end())
+  while (!result && it != m_overlays.end())
   {
-    if (((CDVDOverlay*)*it)->IsOverlayType(type)) return true;
+    if (((CDVDOverlay*)*it)->IsOverlayType(type)) result = true;
     it++;
   }
   
-  return false;
+  LeaveCriticalSection(&m_critSection);
+  
+  return result;
 }
