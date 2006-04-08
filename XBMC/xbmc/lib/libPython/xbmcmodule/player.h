@@ -1,5 +1,6 @@
 #include "..\python.h"
 #include "PythonPlayer.h"
+#include "..\..\..\cores\PlayerCoreFactory.h"
 #pragma once
 
 #ifdef __cplusplus
@@ -12,6 +13,7 @@ namespace PYXBMC
     PyObject_HEAD
 		int iPlayList;
 		CPythonPlayer* pPlayer;
+		EPLAYERCORES playerCore;
 	} Player;
 
 	extern PyTypeObject Player_Type;
