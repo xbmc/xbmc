@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 08-04-2006 added: pythonscripts can now decide what playcore to use. This allows playback of streams that mplayer does not support
+ 						example: xbmc.Player(xbmc.PLAYER_CORE_DVPLAYER).Play('.....');
  - 08-04-2006 fixed: [ 1459126 ] LogPath XML Setting Not Respected
  - 08-04-2006 fixed: reverted old menuoverlay fix for dvdplayer and fixed it a bit differently
  - 08-04-2006 fixed: Skin font and fanspeed setting spincontrols displayed "?-1?".
