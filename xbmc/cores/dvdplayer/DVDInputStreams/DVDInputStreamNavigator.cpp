@@ -4,7 +4,6 @@
 #include "..\..\..\util.h"
 #include "..\..\..\LangCodeExpander.h"
 #include "..\DVDDemuxSPU.h"
-#include "..\DVDOverlay.h"
 #include "DVDStateSerializer.h"
 
 CDVDInputStreamNavigator::CDVDInputStreamNavigator(IDVDPlayer* player) : CDVDInputStream()
@@ -798,15 +797,10 @@ bool CDVDInputStreamNavigator::GetCurrentButtonInfo(CDVDOverlaySpu* pOverlayPict
 
   if (m_dll.dvdnav_get_button_info(m_dvdnav, alpha, color) == 0)
   {
-    // check if libdvdnav provided us correct alpha values
     int* a = alpha[iButtonType];
-    // if (a[0] || a[1] || a[2] || a[3])
     
-    // assume alpha values from libdvdnav are correct, dvdnav_get_button_info can provide incorrect alpha values
-    if (!pOverlayPicture->alpha[0] &&
-        !pOverlayPicture->alpha[1] &&
-        !pOverlayPicture->alpha[2] &&
-        !pOverlayPicture->alpha[3]) 
+    // check if libdvdnav provided us correct alpha values
+    if (!pOverlayPicture->bHasAlpha && pOverlayPicture->CanDisplayWithAlphas(a))
     {
       pOverlayPicture->alpha[0] = alpha[iButtonType][0];
       pOverlayPicture->alpha[1] = alpha[iButtonType][1];

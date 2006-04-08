@@ -14,6 +14,8 @@ public:
   virtual int Decode(BYTE* pData, int iSize);
   virtual void Reset();
   virtual bool GetPicture(DVDVideoPicture* pDvdVideoPicture);
+  virtual bool GetUserData(DVDVideoUserData* pDvdVideoUserData);
+  
   virtual void SetDropState(bool bDrop);
   virtual const char* GetName() { return "libmpeg2"; }
 

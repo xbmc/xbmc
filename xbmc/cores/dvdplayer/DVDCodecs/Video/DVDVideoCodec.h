@@ -30,6 +30,13 @@ typedef struct stDVDVideoPicture
 }
 DVDVideoPicture;
 
+typedef struct stDVDVideoUserData
+{
+  BYTE* data;
+  int size;
+}
+DVDVideoUserData;
+
 #define DVP_FLAG_TOP_FIELD_FIRST    0x00000001
 #define DVP_FLAG_REPEAT_TOP_FIELD   0x00000002 //Set to indicate that the top field should be repeated
 #define DVP_FLAG_ALLOCATED          0x00000004 //Set to indicate that this has allocated data
@@ -44,9 +51,10 @@ class CDVDCodecOption;
 typedef std::vector<CDVDCodecOption> CDVDCodecOptions;
 
 // VC_ messages, messages can be combined
-#define VC_ERROR   0x00000001 // an error occured, no other messages will be returned
-#define VC_BUFFER  0x00000002  // the decoder needs more data
-#define VC_PICTURE 0x00000004  // the decoder got a picture, call Decode(NULL, 0) again to parse the rest of the data
+#define VC_ERROR    0x00000001  // an error occured, no other messages will be returned
+#define VC_BUFFER   0x00000002  // the decoder needs more data
+#define VC_PICTURE  0x00000004  // the decoder got a picture, call Decode(NULL, 0) again to parse the rest of the data
+#define VC_USERDATA 0x00000008  // the decoder found some userdata,  call Decode(NULL, 0) again to parse the rest of the data
 
 class CDVDVideoCodec
 {
@@ -83,6 +91,18 @@ public:
    */
   virtual bool GetPicture(DVDVideoPicture* pDvdVideoPicture) = 0;
 
+  /*
+   * returns true if successfull
+   * the data is valid until the next Decode call
+   * userdata can be anything, for now we use it for closed captioning
+   */
+  virtual bool GetUserData(DVDVideoUserData* pDvdVideoUserData)
+  {
+    pDvdVideoUserData->data = NULL;
+    pDvdVideoUserData->size = 0;
+    return false;
+  }
+   
   /*
    * will be called by video player indicating if a frame will eventually be dropped
    * codec can then skip actually decoding the data, just consume the data set picture headers
