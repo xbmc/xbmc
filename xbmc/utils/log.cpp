@@ -6,7 +6,7 @@
 #include "singlelock.h"
 #include "StdString.h"
 #include "../Settings.h"
-
+#include "../util.h"
 
 static CLog g_logger;
 
@@ -50,12 +50,21 @@ void CLog::Log(int loglevel, const char *format, ... )
         CStdString strLogPath = g_stSettings.m_szlogpath;
         if (!strLogPath.IsEmpty())
         {
-          sprintf(LogFile, "%sxbmc.log", strLogPath.c_str());
-          if (strLogPath.c_str() != "C:\\" || strLogPath.c_str()!= "E:\\" || strLogPath.c_str()!= "F:\\" || strLogPath.c_str()!= "G:\\" || strLogPath.c_str()!= "X:\\" || strLogPath.c_str()!= "Y:\\" || strLogPath.c_str()!= "Z:\\")
-          { 
-            // we need to create a folder, if the log file comes into a folder!
-            CreateDirectory(strLogPath.c_str(), NULL);
+          //ensure there's a '\' on the end
+          if (!CUtil::HasSlashAtEnd(strLogPath))
+            strLogPath += "\\";
+            
+          // proper parameter checking, make sure its an HD path
+          if (CUtil::IsHD(strLogPath))
+          {
+            sprintf(LogFile, "%sxbmc.log", strLogPath.c_str());
+            if (strLogPath.c_str() != "C:\\" || strLogPath.c_str()!= "E:\\" || strLogPath.c_str()!= "F:\\" || strLogPath.c_str()!= "G:\\" || strLogPath.c_str()!= "X:\\" || strLogPath.c_str()!= "Y:\\" || strLogPath.c_str()!= "Z:\\")
+            { 
+              // we need to create a folder, if the log file comes into a folder!
+              CreateDirectory(strLogPath.c_str(), NULL);
+            }
           }
+          else sprintf(LogFile, "Q:\\xbmc.log");
         }
         else sprintf(LogFile, "Q:\\xbmc.log");
       }
