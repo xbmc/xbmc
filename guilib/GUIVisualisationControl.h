@@ -41,6 +41,7 @@ private:
   void LoadVisualisation();
   void CreateBuffers();
   void ClearBuffers();
+  bool UpdateAlbumArt();
   CStdString      m_currentVis;
   CVisualisation* m_pVisualisation;
 
@@ -53,4 +54,5 @@ private:
   float m_fFreq[2*AUDIO_BUFFER_SIZE];         // Frequency data
   bool m_bCalculate_Freq;       // True if the vis wants freq data
   bool m_bInitialized;
+  CStdString m_AlbumThumb;
 };
