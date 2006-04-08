@@ -1,15 +1,17 @@
 
 #include "../../stdafx.h"
 #include "DVDOverlayRenderer.h"
+#include "DVDCodecs\Overlay\DVDOverlaySpu.h"
+#include "DVDCodecs\Overlay\DVDOverlayText.h"
 
 void CDVDOverlayRenderer::Render(DVDPictureRenderer* pPicture, CDVDOverlay* pOverlay)
 {
   if (pOverlay->IsOverlayType(DVDOVERLAY_TYPE_SPU))
   {
     // display subtitle, if bForced is true, it's a menu overlay and we should crop it
-    Render_SPU_YUV(pPicture, (CDVDOverlaySpu*)pOverlay, pOverlay->bForced);
+    Render_SPU_YUV(pPicture, pOverlay, pOverlay->bForced);
   }
-  else if (pOverlay->IsOverlayType(DVDOVERLAY_TYPE_TEXT))
+  else if (false && pOverlay->IsOverlayType(DVDOVERLAY_TYPE_TEXT))
   {
     CDVDOverlayText* pOverlayText = (CDVDOverlayText*)pOverlay;
     
@@ -30,8 +32,10 @@ void CDVDOverlayRenderer::Render(DVDPictureRenderer* pPicture, CDVDOverlay* pOve
 }
 
 // render the parsed sub (parsed rle) onto the yuv image
-void CDVDOverlayRenderer::Render_SPU_YUV(DVDPictureRenderer* pPicture, CDVDOverlaySpu* pOverlay, bool bCrop)
+void CDVDOverlayRenderer::Render_SPU_YUV(DVDPictureRenderer* pPicture, CDVDOverlay* pOverlaySpu, bool bCrop)
 {
+  CDVDOverlaySpu* pOverlay = (CDVDOverlaySpu*)pOverlaySpu;
+  
   unsigned __int8*  p_destptr = NULL;
   unsigned __int16* p_source = (unsigned __int16*)pOverlay->pData;
   unsigned __int8*  p_dest[3];

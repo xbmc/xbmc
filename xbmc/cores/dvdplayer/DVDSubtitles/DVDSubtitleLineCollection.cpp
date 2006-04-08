@@ -72,8 +72,7 @@ void CDVDSubtitleLineCollection::Clear()
     pElement = m_pHead;
     m_pHead = pElement->pNext;
 
-    // we dont look for pOverlay->bDoNotDelete. this class owns the overlay
-    delete pElement->pOverlay;
+    pElement->pOverlay->Release();
     delete pElement;
   }
   

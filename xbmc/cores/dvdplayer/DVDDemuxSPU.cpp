@@ -303,18 +303,6 @@ CSPUInfo* CDVDDemuxSPU::ParsePacket(SPUData* pSPUData)
       DebugLog("GetPacket, end off SP_DCSQT, but did not found 0xff (CMD_END)");
     }
   }
-
-
-  // check alpha values, for non forced spu's we use a default value
-  // forced spu's (menu overlays) retrieve their alpha information from InputStreamNavigator::GetCurrentButtonInfo
-  if (!pSPUInfo->bHasAlpha && !pSPUInfo->bForced)
-  {
-    DebugLog("ParsePacket: ignoring blank alpha palette, using default" );
-    pSPUInfo->alpha[0] = 0x00; // back ground
-    pSPUInfo->alpha[1] = 0x0f;
-    pSPUInfo->alpha[2] = 0x0f;
-    pSPUInfo->alpha[3] = 0x0f;
-  }
   
   // parse the rle.
   // this should be chnaged so it get's converted to a yuv overlay
@@ -414,9 +402,13 @@ CSPUInfo* CDVDDemuxSPU::ParseRLE(CSPUInfo* pSPU, BYTE* pUnparsedData)
         return false;
       }
 
-      // count the number of pixels for every occouring part, the last non background pixel is probably the border color
-      if (pSPU->alpha[i_code & 0x3] != 0x00) // 0x00 is the background code
+      // keep trace of all occouring pixels, even keeping the background in mind
+      pSPU->stats[i_code & 0x3] += i_code >> 2;
+      
+      // count the number of pixels for every occouring parts, without background
+      if (pSPU->alpha[i_code & 0x3] != 0x00)
       {
+        // the last non background pixel is probably the border color
         i_border = i_code & 0x3;
         stats[i_border] += i_code >> 2;
       }
@@ -475,9 +467,37 @@ CSPUInfo* CDVDDemuxSPU::ParseRLE(CSPUInfo* pSPU, BYTE* pUnparsedData)
 
   DebugLog("ParseRLE: valid subtitle, size: %ix%i, position: %i,%i",
            pSPU->width, pSPU->height, pSPU->x, pSPU->y );
-
-  // FIXME: Check correctnes
-  // Handle color if no palette was found.  for xbmc we do this always for subtitles
+  
+  // check alpha values, for non forced spu's we use a default value
+  // forced spu's (menu overlays) retrieve their alpha information from InputStreamNavigator::GetCurrentButtonInfo
+  if (!pSPU->bHasAlpha && !pSPU->bForced)
+  {
+    CLog::Log(LOGINFO, __FUNCTION__" - ignoring blank alpha palette, using default");
+    
+    pSPU->bHasAlpha = true;
+    pSPU->alpha[0] = 0x00; // back ground
+    pSPU->alpha[1] = 0x0f;
+    pSPU->alpha[2] = 0x0f;
+    pSPU->alpha[3] = 0x0f;
+  }
+  
+  // check alpha values
+  // the array stats represents the nr of pixels for each color channel
+  // thus if there are no pixels to display, we assume the alphas are incorrect.
+  if (!pSPU->CanDisplayWithAlphas(pSPU->alpha))
+  {
+    CLog::Log(LOGINFO, __FUNCTION__" - no  matching color and alpha found, resetting alpha");
+    pSPU->bHasAlpha = false;
+     
+    // set some alpha values, since pSPUInfo->bHasAlpha is false, those will be set correctly with the information
+    // from libdvdnav
+    pSPU->alpha[0] = 0x00; // back ground
+    pSPU->alpha[1] = 0x0f;
+    pSPU->alpha[2] = 0x0f;
+    pSPU->alpha[3] = 0x0f;
+  }
+  
+  // Handle color if no palette was found.  for xbmc we do this only for subtitles
   // spu overlays are identified as non menu overlays (thus subtitles) if :
   //    - there is no color information
   //    - the start time is > than 0 ???? is this still correct ????

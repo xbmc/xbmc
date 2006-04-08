@@ -1,7 +1,9 @@
 
 #include "../../stdafx.h"
 #include "DVDPlayerSubtitle.h"
-#include "DVDOverlay.h"
+#include "DVDCodecs\Overlay\DVDOverlay.h"
+#include "DVDCodecs\Overlay\DVDOverlaySpu.h"
+#include "DVDCodecs\Overlay\DVDOverlayText.h"
 #include "DVDClock.h"
 #include "DVDInputStreams/DVDFactoryInputStream.h"
 #include "DVDInputStreams/DVDInputStream.h"
@@ -146,26 +148,31 @@ bool CDVDPlayerSubtitle::GetCurrentSubtitle(CStdStringW& strSubtitle, __int64 pt
   VecOverlays* pOverlays = m_pOverlayContainer->GetOverlays();
   if (pOverlays && pOverlays->size() > 0)
   {
-    CDVDOverlay* pOverlay = pOverlays->front();
-
-    if (pOverlay->IsOverlayType(DVDOVERLAY_TYPE_TEXT) &&
-        (pOverlay->iPTSStartTime <= pts && pOverlay->iPTSStopTime >= pts))
+    VecOverlaysIter it = pOverlays->end();
+    while (!bGotSubtitle && it != pOverlays->begin())
     {
-      CDVDOverlayText* pOverlayText = (CDVDOverlayText*)pOverlay;
-      
-      CDVDOverlayText::CElement* e = pOverlayText->m_pHead;
-      while (e)
+      CDVDOverlay* pOverlay = *it;
+
+      if (pOverlay->IsOverlayType(DVDOVERLAY_TYPE_TEXT) &&
+          (pOverlay->iPTSStartTime <= pts && (pOverlay->iPTSStopTime >= pts || pOverlay->iPTSStopTime == 0LL)))
       {
-        if (e->IsElementType(CDVDOverlayText::ELEMENT_TYPE_TEXT))
+        CDVDOverlayText* pOverlayText = (CDVDOverlayText*)pOverlay;
+        
+        CDVDOverlayText::CElement* e = pOverlayText->m_pHead;
+        while (e)
         {
-          CDVDOverlayText::CElementText* t = (CDVDOverlayText::CElementText*)e;
-          strSubtitle += t->m_wszText;
-          if (e->pNext) strSubtitle += L"\n";
+          if (e->IsElementType(CDVDOverlayText::ELEMENT_TYPE_TEXT))
+          {
+            CDVDOverlayText::CElementText* t = (CDVDOverlayText::CElementText*)e;
+            strSubtitle += t->m_wszText;
+            if (e->pNext) strSubtitle += L"\n";
+          }
+          e = e->pNext;
         }
-        e = e->pNext;
+        
+        bGotSubtitle = true;
       }
-      
-      bGotSubtitle = true;
+      it--;
     }
   }
   m_pOverlayContainer->Unlock();
