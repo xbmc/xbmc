@@ -197,6 +197,15 @@ int CDVDVideoCodecLibMpeg2::Decode(BYTE* pData, int iSize)
         }
         break;
       }
+    case STATE_GOP:
+      {
+        // check for closed captioning or other userdata
+        if (m_pInfo->user_data && m_pInfo->user_data_len > 0)
+        {
+          return VC_USERDATA;
+        }
+        break;
+      }
     case STATE_PICTURE:
       {        
         //Not too interesting really
@@ -381,6 +390,17 @@ bool CDVDVideoCodecLibMpeg2::GetPicture(DVDVideoPicture* pDvdVideoPicture)
   }
   else
     return false;
+}
+
+bool CDVDVideoCodecLibMpeg2::GetUserData(DVDVideoUserData* pDvdVideoUserData)
+{
+  if (pDvdVideoUserData && m_pInfo && m_pInfo->user_data && m_pInfo->user_data_len > 0)
+  {
+    pDvdVideoUserData->data = (BYTE*)m_pInfo->user_data;
+    pDvdVideoUserData->size = m_pInfo->user_data_len;
+    return true;
+  }
+  return false;
 }
 
 // Redone mpeg2_guess_aspect() code from libmpeg2 (header.c)
