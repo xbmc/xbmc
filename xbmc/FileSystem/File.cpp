@@ -106,7 +106,7 @@ bool CFile::Cache(const CStdString& strFileName, const CStdString& strDest, XFIL
     // ouch, auto_ptr doesn't work for arrays!
     //auto_ptr<char> buffer ( new char[16384]);
     CAutoBuffer buffer(iBufferSize);
-    int iRead;
+    int iRead, iWrite;
 
     UINT64 llFileSize = file.GetLength();
     UINT64 llFileSizeOrg = llFileSize;
@@ -122,58 +122,55 @@ bool CFile::Cache(const CStdString& strFileName, const CStdString& strDest, XFIL
     ::SetFilePointerEx(hMovie, size, 0, FILE_BEGIN);
     ::SetEndOfFile(hMovie);
     size.QuadPart = 0;
-    ::SetFilePointerEx(hMovie, size, 0, FILE_BEGIN);*/
-
+    ::SetFilePointerEx(hMovie, size, 0, FILE_BEGIN);*/    
     while (llFileSize > 0)
     {
       g_application.ResetScreenSaver();
       int iBytesToRead = iBufferSize;
-      if (iBytesToRead > llFileSize)
-      {
-        iBytesToRead = llFileSize;
-      }
+      
+      /* make sure we don't try to read more than filesize*/
+      if (iBytesToRead > llFileSize) iBytesToRead = llFileSize;
+
       iRead = file.Read(buffer.get(), iBytesToRead);
-      if (iRead > 0)
+      if (iRead == 0) break;
+      else if (iRead < 0) 
       {
-        int iWrote = newFile.Write(buffer.get(), iRead);
-        // iWrote contains num bytes read - make sure it's the same as numbytes written
-        if (iWrote != iRead)
-        { // failed!
-          file.Close();
-          newFile.Close();
-          CFile::Delete(strDest);
-          return false;
-        }
-        llFileSize -= iRead;
-        llPos += iRead;
-        float fPercent = (float)llPos;
-        fPercent /= ((float)llFileSizeOrg);
-        fPercent *= 100.0;
-        if ((int)fPercent != ipercent)
-        {
-          ipercent = (int)fPercent;
-          if (pCallback)
-          {
-            if (!pCallback->OnFileCallback(pContext, ipercent))
-            {
-              // canceled
-              file.Close();
-              newFile.Close();
-              CFile::Delete(strDest);
-              return false;
-            }
-          }
-        }
+        CLog::Log(LOGERROR, __FUNCTION__" - Failed read from file %s", strFileName.c_str());
+        break;
       }
-      if (iRead != iBytesToRead)
+
+      /* write data and make sure we managed to write it all */
+      iWrite = newFile.Write(buffer.get(), iRead); 
+      if (iWrite != iRead)
       {
-        file.Close();
-        newFile.Close();
-        CFile::Delete(strDest);
-        return false;
+        CLog::Log(LOGERROR, __FUNCTION__" - Failed write to file %s", strDest.c_str());
+        break;
+      }
+      
+      llFileSize -= iRead;
+      llPos += iRead;
+
+      float fPercent = (float)llPos;
+      fPercent /= ((float)llFileSizeOrg);
+      fPercent *= 100.0;
+      if ((int)fPercent != ipercent)
+      {
+        ipercent = (int)fPercent;
+        if (pCallback)
+          if (!pCallback->OnFileCallback(pContext, ipercent)) break;
       }
     }
+
+    /* close both files */
+    newFile.Close();
     file.Close();
+
+    /* verify that we managed to completed the file */
+    if (llPos != llFileSizeOrg)
+    {      
+      CFile::Delete(strDest);
+      return false;
+    }
     return true;
   }
   return false;
