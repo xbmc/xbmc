@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 08-04-2006 added: initial code to provide albumart to visualisations
  - 08-04-2006 fixed: cache function would abort if filesystem wasn't able to read the exact requested size
  - 08-04-2006 fixed: new smb would cut of end of file. it seems new smb either missdetects CAP_LARGE_READX for server (should allow 64k reads) or has wrong syntax on read, causing it allways skip half the packet, and thus abort to early. workaround in libsmb/clireadwrite.c
  - 07-04-2006 updated: libsmb updated to 3.0.22 with enabled libiconv, supports switching dos codepage gui
