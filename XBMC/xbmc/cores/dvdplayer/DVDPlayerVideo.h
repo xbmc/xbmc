@@ -11,6 +11,7 @@
 
 enum CodecID;
 class CDemuxStreamVideo;
+class CDVDOverlayCodecCC;
 
 #define VIDEO_PICTURE_QUEUE_SIZE 1
 
@@ -73,7 +74,8 @@ protected:
 
   EOUTPUTSTATUS OutputPicture(DVDVideoPicture* pPicture, __int64 pts);
   void ProcessOverlays(DVDVideoPicture* pSource, YV12Image* pDest, __int64 pts);
-
+  void ProcessVideoUserData(DVDVideoUserData* pVideoUserData, __int64 pts);
+  
   __int64 m_iCurrentPts; // last pts displayed
   __int64 m_iVideoDelay; // not really needed to be an __int64  
   __int64 m_iFlipTimeStamp; // time stamp of last flippage. used to play at a forced framerate
@@ -109,6 +111,7 @@ protected:
   // classes
   CDVDDemuxSPU* m_pDVDSpu;
   CDVDVideoCodec* m_pVideoCodec;
+  CDVDOverlayCodecCC* m_pOverlayCodecCC;
   
   DVDVideoPicture* m_pTempOverlayPicture;
   

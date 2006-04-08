@@ -538,7 +538,8 @@ void CDVDPlayer::ProcessSubData(CDemuxStream* pStream, CDVDDemux::DemuxPacket* p
       CLog::Log(LOGDEBUG, "CDVDPlayer::ProcessSubData: Got complete SPU packet");
 
       m_overlayContainer.Add(pSPUInfo);
-
+      pSPUInfo->Release();
+      
       if (pSPUInfo->bForced)
       {
         // recieved new menu overlay (button), retrieve cropping information
@@ -1836,8 +1837,8 @@ bool CDVDPlayer::HasMenu()
 
 bool CDVDPlayer::GetCurrentSubtitle(CStdStringW& strSubtitle)
 {
-  __int64 pts = m_dvdPlayerVideo.GetCurrentPts();
-  bool bGotSubtitle = m_dvdPlayerSubtitle.GetCurrentSubtitle(strSubtitle, pts);
+  __int64 pts = m_clock.GetClock();
+  bool bGotSubtitle = false;//m_dvdPlayerSubtitle.GetCurrentSubtitle(strSubtitle, pts);
   return bGotSubtitle;
 }
 

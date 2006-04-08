@@ -1,7 +1,7 @@
 
 #pragma once
 #include "DVDCodecs\Video\DVDVideoCodec.h"
-#include "DVDOverlay.h"
+#include "DVDCodecs\Overlay\DVDOverlaySpu.h"
 struct AVPicture;
 
 typedef struct SPUData
@@ -20,13 +20,9 @@ public:
   CSPUInfo() : CDVDOverlaySpu()
   {
     pData = result;
-    bHasColor = false;
-    bHasAlpha = false;
   }
   
   BYTE result[65536 + 20];
-  bool bHasColor;
-  bool bHasAlpha;
 };
 
 // upto 32 streams can exist

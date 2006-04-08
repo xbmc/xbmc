@@ -3,7 +3,7 @@
 
 #include "DVDCodecs\Video\DVDVideoCodec.h"
 #include "..\VideoRenderers\XBoxRenderer.h" // YV12Image definition
-#include "DVDOverlay.h"
+#include "DVDCodecs\Overlay\DVDOverlay.h"
 
 typedef struct stDVDPictureRenderer
 {
@@ -53,5 +53,5 @@ public:
 
 private:
 
-  static void Render_SPU_YUV(DVDPictureRenderer* pPicture, CDVDOverlaySpu* pOverlay, bool bCrop);
+  static void Render_SPU_YUV(DVDPictureRenderer* pPicture, CDVDOverlay* pOverlaySpu, bool bCrop);
 };
