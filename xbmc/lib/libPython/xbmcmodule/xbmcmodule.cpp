@@ -353,7 +353,7 @@ namespace PYXBMC
 		// constants
 		PyModule_AddStringConstant(pXbmcModule, "__author__",			PY_XBMC_AUTHOR);
 		PyModule_AddStringConstant(pXbmcModule, "__date__",				"15 November 2005");
-		PyModule_AddStringConstant(pXbmcModule, "__version__",		"1.2");
+		PyModule_AddStringConstant(pXbmcModule, "__version__",		"1.3");
 		PyModule_AddStringConstant(pXbmcModule, "__credits__",		PY_XBMC_CREDITS);
 		PyModule_AddStringConstant(pXbmcModule, "__platform__",		PY_XBMC_PLATFORM);
 
@@ -363,6 +363,13 @@ namespace PYXBMC
 		PyModule_AddIntConstant(pXbmcModule, "PLAYLIST_VIDEO", PLAYLIST_VIDEO);
 		PyModule_AddIntConstant(pXbmcModule, "PLAYLIST_VIDEO_TEMP", PLAYLIST_VIDEO_TEMP);
 
+    // player constants
+    PyModule_AddIntConstant(pXbmcModule, "PLAYER_CORE_AUTO", EPC_NONE);
+    PyModule_AddIntConstant(pXbmcModule, "PLAYER_CORE_DVDPLAYER", EPC_DVDPLAYER);
+    PyModule_AddIntConstant(pXbmcModule, "PLAYER_CORE_MPLAYER", EPC_MPLAYER);
+    PyModule_AddIntConstant(pXbmcModule, "PLAYER_CORE_PAPLAYER", EPC_PAPLAYER);
+    PyModule_AddIntConstant(pXbmcModule, "PLAYER_CORE_MODPLAYER", EPC_MODPLAYER);
+    
 		// dvd state constants
 		PyModule_AddIntConstant(pXbmcModule, "TRAY_OPEN", TRAY_OPEN);
 		PyModule_AddIntConstant(pXbmcModule, "DRIVE_NOT_READY", DRIVE_NOT_READY);
