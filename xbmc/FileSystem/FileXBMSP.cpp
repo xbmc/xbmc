@@ -247,8 +247,8 @@ int CFileXBMSP::Stat(const CURL& url, struct __stat64* buffer)
 //*********************************************************************************************
 unsigned int CFileXBMSP::Read(void *lpBuf, __int64 uiBufSize)
 {
-  unsigned char *buf, *pBuf;
-  size_t buflen;
+  unsigned char *buf = NULL, *pBuf;
+  size_t buflen = 0;
   size_t totalbuf = 0;
 
   pBuf = (unsigned char*)lpBuf;
@@ -259,6 +259,8 @@ unsigned int CFileXBMSP::Read(void *lpBuf, __int64 uiBufSize)
     if (cc_xstream_client_file_read(m_connection, m_handle, size_t(uicBufSize>120*1024?120*1024:uicBufSize), &buf, &buflen) !=
         CC_XSTREAM_CLIENT_OK)
     {
+      CLog::Log(LOGERROR, "xbms:cc_xstream_client_file_read reported error on read");
+      if(buf) free(buf);
       return 0;
     }
     uicBufSize -= buflen;
