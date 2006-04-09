@@ -4,6 +4,7 @@
 #include "PackedTexture.h"
 #include "GraphicContext.h"
 #include "../xbmc/utils/SingleLock.h"
+#include "../xbmc/StringUtils.h"
 #include <XGraphics.h>
 
 
@@ -845,7 +846,7 @@ CStdString CGUITextureManager::GetTexturePath(const CStdString &textureName)
   return path;
 }
 
-void CGUITextureManager::GetBundledTexturesFromPath(const CStdString& texturePath, CStdStringArray &items)
+void CGUITextureManager::GetBundledTexturesFromPath(const CStdString& texturePath, std::vector<CStdString> &items)
 {
   m_TexBundle[0].GetTexturesFromPath(texturePath, items);
   if (items.empty())

@@ -38,8 +38,8 @@ public:
   void SetLabel(const string & aLabel);
   void SetLabel2(const string & aLabel2);
   void SetHyperLink(long dwWindowID);
-  void SetClickActions(const CStdStringArray& clickActions) { m_clickActions = clickActions; };
-  const CStdStringArray &GetClickActions() const { return m_clickActions; };
+  void SetClickActions(const vector<CStdString>& clickActions) { m_clickActions = clickActions; };
+  const vector<CStdString> &GetClickActions() const { return m_clickActions; };
   void SetFocusAction(const CStdString& focusAction) { m_focusAction = focusAction; };
   const CStdString &GetFocusAction() const { return m_focusAction; };
   const CStdString& GetTextureFocusName() const { return m_imgFocus.GetFileName(); };
@@ -71,7 +71,7 @@ protected:
   CLabelInfo m_label;
 
   long m_lHyperLinkWindowID;
-  CStdStringArray m_clickActions;
+  vector<CStdString> m_clickActions;
   CStdString m_focusAction;
   bool m_bTabButton;
 };

@@ -36,7 +36,7 @@ void CGUIDialogAudioSubtitleSettings::CreateSettings()
   // create our settings
   m_volume = g_stSettings.m_nVolumeLevel * 0.01f;
   AddSlider(AUDIO_SETTINGS_VOLUME, 13376, &m_volume, VOLUME_MINIMUM * 0.01f, (VOLUME_MAXIMUM - VOLUME_MINIMUM) * 0.0001f, VOLUME_MAXIMUM * 0.01f, "%2.1f dB");
-  AddSlider(AUDIO_SETTINGS_VOLUME_AMPLIFICATION, 290, &g_stSettings.m_currentVideoSettings.m_VolumeAmplification, 0, 3, 30, "%2.1f dB");
+  AddSlider(AUDIO_SETTINGS_VOLUME_AMPLIFICATION, 290, &g_stSettings.m_currentVideoSettings.m_VolumeAmplification, VOLUME_DRC_MINIMUM * 0.01f, (VOLUME_DRC_MAXIMUM - VOLUME_DRC_MINIMUM) * 0.001f, VOLUME_DRC_MAXIMUM * 0.01f, "%2.1f dB");
   AddSlider(AUDIO_SETTINGS_DELAY, 297, &g_stSettings.m_currentVideoSettings.m_AudioDelay, -g_advancedSettings.m_videoAudioDelayRange, 0.1f, g_advancedSettings.m_videoAudioDelayRange, "%2.1fs");
   AddAudioStreams(AUDIO_SETTINGS_STREAM);
   AddBool(AUDIO_SETTINGS_OUTPUT_TO_ALL_SPEAKERS, 252, &g_stSettings.m_currentVideoSettings.m_OutputToAllSpeakers, g_guiSettings.GetInt("AudioOutput.Mode") == AUDIO_DIGITAL);

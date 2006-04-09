@@ -57,7 +57,7 @@ bool CGUIButtonScroller::OnAction(const CAction &action)
   if (action.wID == ACTION_SELECT_ITEM)
   {
     // send the appropriate message to the parent window
-    CStdStringArray actions = m_vecButtons[GetActiveButton()]->clickActions;
+    vector<CStdString> actions = m_vecButtons[GetActiveButton()]->clickActions;
     for (unsigned int i = 0; i < actions.size(); i++)
     {
       CGUIMessage message(GUI_MSG_EXECUTE, GetID(), GetParentID());
