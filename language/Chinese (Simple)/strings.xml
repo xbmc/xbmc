@@ -158,7 +158,7 @@
   <string><id>222</id><value>取消</value></string>
   <string><id>223</id><value>自动宽屏转换</value></string>
   <string><id>224</id><value>速度</value></string>
-  <string><id>225</id><value>传送时间</value></string>
+  <string><id>225</id><value>特效过渡时间</value></string>
   <string><id>226</id><value>开启 PAL60</value></string>
   <string><id>227</id><value>开启 CDDB</value></string>
   <string><id>228</id><value>随机播放列表</value></string>
@@ -223,7 +223,7 @@
   <string><id>287</id><value>字幕</value></string>
   <string><id>288</id><value>字体</value></string>
   <string><id>289</id><value>- 尺寸</value></string>
-  <string><id>290</id><value>音量放大 (dB)</value></string>
+  <string><id>290</id><value>动态压缩</value></string>
   <string><id>291</id><value>视频</value></string>
   <string><id>292</id><value>音频</value></string>
   <string><id>293</id><value>字幕</value></string>
@@ -293,7 +293,7 @@
   <string><id>358</id><value>全部专辑</value></string>
   <string><id>359</id><value>新添加的专辑</value></string>
   <string><id>360</id><value>屏幕保护</value></string>
-  <string><id>361</id><value>R.幻灯片</value></string>
+  <string><id>361</id><value>幻灯片【循环】</value></string>
   <string><id>362</id><value>屏幕保护衰减级别(%)</value></string>
   <string><id>363</id><value>排序：文件</value></string>
   <string><id>364</id><value>- AC3/DTS 数码音效</value></string>
@@ -453,6 +453,19 @@
   <string><id>518</id><value>运行</value></string> 
   <string><id>519</id><value>运行方式</value></string> 
   <string><id>520</id><value>编辑软件标题</value></string>
+  <string><id>521</id><value>编辑</value></string>
+  <string><id>522</id><value>移除源</value></string>
+
+  <string><id>588</id><value>取消舞会模式</value></string>
+  <string><id>589</id><value>舞会模式</value></string>
+  <string><id>590</id><value>随机</value></string> 
+  <string><id>591</id><value>关</value></string> 
+  <string><id>592</id><value>单一</value></string> 
+  <string><id>593</id><value>全部</value></string> 
+  <string><id>594</id><value>关</value></string> 
+  <string><id>595</id><value>重复【关闭】</value></string> 
+  <string><id>596</id><value>重复【单个】</value></string> 
+  <string><id>597</id><value>重复【所有】</value></string> 
 
   <string><id>600</id><value>压缩音乐CD</value></string>
   <string><id>601</id><value>中等</value></string>
@@ -570,7 +583,39 @@
   <string><id>998</id><value>XLink KAI</value></string>
   <string><id>999</id><value>在线游戏</value></string>
   <string><id>1000</id><value>屏幕保护预览</value></string>
-
+  <string><id>1001</id><value>无法连接</value></string> 
+  <string><id>1002</id><value>XBMC无法连接到该网上邻居！</value></string> 
+  <string><id>1003</id><value>这可能是由于网络没有连接。</value></string> 
+  <string><id>1004</id><value>可以用其他方式来添加它吗？</value></string> 
+  <string><id>1005</id><value>共享名</value></string> 
+  <string><id>1006</id><value>IP地址</value></string> 
+  <string><id>1007</id><value>添加网上邻居</value></string> 
+  <string><id>1008</id><value>协议</value></string> 
+  <string><id>1009</id><value>服务器地址</value></string> 
+  <string><id>1010</id><value>服务器名称</value></string> 
+  <string><id>1011</id><value>远程路径</value></string> 
+  <string><id>1012</id><value>共享文件夹</value></string> 
+  <string><id>1013</id><value>端口</value></string> 
+  <string><id>1014</id><value>用户名</value></string> 
+  <string><id>1015</id><value>网络服务器</value></string> 
+  <string><id>1016</id><value>输入该服务器的网络地址</value></string> 
+  <string><id>1017</id><value>输入服务器远程路径</value></string> 
+  <string><id>1018</id><value>输入端口号</value></string> 
+  <string><id>1019</id><value>输入用户名</value></string> 
+  <string><id>1020</id><value>添加%s目录</value></string> 
+  <string><id>1021</id><value>输入或选择目录。</value></string> 
+  <string><id>1022</id><value>为该目录命名。</value></string> 
+  <string><id>1023</id><value>浏览目录</value></string> 
+  <string><id>1024</id><value>浏览</value></string> 
+  <string><id>1025</id><value>无法获得目录信息。</value></string> 
+  <string><id>1026</id><value>添加目录</value></string> 
+  <string><id>1027</id><value>编辑目录</value></string> 
+  <string><id>1028</id><value>编辑%s目录</value></string> 
+  <string><id>1029</id><value>输入新的标签</value></string>
+  <string><id>1030</id><value>镜像</value></string>
+  <string><id>1031</id><value>镜像目录</value></string>
+  <string><id>1032</id><value>添加一个网上邻居</value></string>
+    
   <string><id>1200</id><value>SMB 共享设置</value></string>
   <string><id>1201</id><value>SMB IP地址</value></string>
   <string><id>1202</id><value>SMB 工作组</value></string>
@@ -707,7 +752,18 @@
   <string><id>12009</id><value>重新生成检索…</value></string>
   <string><id>12010</id><value>返回到我的音乐</value></string> 
   <string><id>12011</id><value>返回到我的视频</value></string> 
-  
+  <string><id>12012</id><value>更新金手指列表</value></string> 
+  <string><id>12013</id><value>金手指</value></string> 
+  <string><id>12014</id><value>没有找到金手指</value></string> 
+  <string><id>12015</id><value>金手指设置</value></string> 
+  <string><id>12016</id><value>所有金手指信息丢失，更新金手指列表。</value></string> 
+  <string><id>12017</id><value>自动从上次中断的地方开始播放。</value></string>
+  <string><id>12018</id><value>否</value></string>
+  <string><id>12019</id><value>是</value></string>
+  <string><id>12020</id><value>询问</value></string>
+  <string><id>12021</id><value>从头开始播放</value></string>
+  <string><id>12022</id><value>从中断处开始播放</value></string>
+
   <string><id>12310</id><value>0</value></string>
   <string><id>12311</id><value>1</value></string>
   <string><id>12312</id><value>2</value></string>
@@ -772,7 +828,19 @@
   <string><id>12373</id><value>设置 &amp;  我的文件</value></string>
   <string><id>12374</id><value>锁定媒体文件</value></string>
   <string><id>12375</id><value>管理员模式</value></string>
-  
+  <string><id>12376</id><value>做为所有视频的默认设置</value></string> 
+  <string><id>12377</id><value>将要初始化所有配置</value></string> 
+  <string><id>12378</id><value>每副图片显示时间</value></string> 
+  <string><id>12379</id><value>使用Pan和Zoom特效</value></string> 
+  <string><id>12380</id><value>以PAL制式播放NTSC视频</value></string> 
+  <string><id>12381</id><value>以NTSC制式播放PAL视频</value></string> 
+  <string><id>12382</id><value>以PAL60制式播放NTSC视频</value></string> 
+  <string><id>12383</id><value>12小时制</value></string> 
+  <string><id>12384</id><value>24小时制</value></string> 
+  <string><id>12385</id><value>日/月</value></string> 
+  <string><id>12386</id><value>月/日</value></string> 
+  <string><id>12387</id><value>重新生成数据库</value></string>
+
   <string><id>12390</id><value>系统启动时间</value></string>
   <string><id>12391</id><value>分钟</value></string>
   <string><id>12392</id><value>小时</value></string>
@@ -968,6 +1036,10 @@
   <string><id>13399</id><value>排序时忽略"The"开头名称</value></string>
   <string><id>13400</id><value>专辑音轨平滑转换</value></string>
   <string><id>13401</id><value>浏览%s</value></string>
+  <string><id>13402</id><value>显示音轨位置</value></string>
+  <string><id>13403</id><value>清除为缺省值</value></string>
+  <string><id>13404</id><value>恢复</value></string>
+  <string><id>13405</id><value>取得方式</value></string>
 
   <string><id>14000</id><value>堆栈【已关闭】</value></string>
   <string><id>14001</id><value>堆栈【已开启】</value></string>
@@ -1018,8 +1090,8 @@
   <string><id>14048</id><value>%i kbps</value></string>
   <string><id>14049</id><value>%i kb</value></string>
   <string><id>14050</id><value>%i.0 dB</value></string>
-  <string><id>14051</id><value>12小时制时间显示</value></string>
-  <string><id>14052</id><value>切换主界面月份日期显示顺序</value></string>
+  <string><id>14051</id><value>时间显示格式</value></string>
+  <string><id>14052</id><value>日期显示格式</value></string>
   <string><id>14053</id><value>界面滤镜</value></string>
   <string><id>14054</id><value>启用互联网信息查询</value></string>
   <string><id>14055</id><value>使用后台扫描</value></string>
@@ -1163,7 +1235,6 @@
   <string><id>15273</id><value>Weekly artist chart for %name%</value></string>
   <string><id>15274</id><value>Weekly album chart for %name%</value></string>
   <string><id>15275</id><value>Weekly track chart for %name%</value></string>
-  <string><id>15283</id><value>Tracks recently listened by %name%</value></string>
   <string><id>15276</id><value>Listen to %name%'s neighbours last.fm radio</value></string>
   <string><id>15277</id><value>Listen to %name%'s personal last.fm radio</value></string>
   <string><id>15278</id><value>Listen to %name%'s loved tracks last.fm radio</value></string>
@@ -1171,6 +1242,7 @@
   <string><id>15280</id><value>不能从last.fm获取列表…</value></string>
   <string><id>15281</id><value>输入艺术家名字来寻找相关资料</value></string>
   <string><id>15282</id><value>输入一个标记来寻找其他相似的</value></string>
+  <string><id>15283</id><value>音轨最近被%name%听过</value></string>
 
   <string><id>15300</id><value>路径错误或无法找到！</value></string>
   <string><id>15301</id><value>无法连接服务器！</value></string>
@@ -1205,6 +1277,12 @@
   <string><id>16025</id><value>输入艺术家名字</value></string>
   <string><id>16026</id><value>播放列表回放取消。</value></string> 
   <string><id>16027</id><value>太多连续性错误</value></string> 
+
+  <string><id>16030</id><value>舞会模式取消！</value></string>
+  <string><id>16031</id><value>数据库中没有符合条件的歌曲！</value></string>
+  <string><id>16032</id><value>无法初始化数据库！</value></string>
+  <string><id>16033</id><value>无法打开数据库！</value></string>
+  <string><id>16034</id><value>无法从数据库获取歌曲文件！</value></string>
 
   <string><id>16100</id><value>所有视频文件</value></string>
   <string><id>16101</id><value>未观看的</value></string>
