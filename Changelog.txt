@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 09-04-2006 added: xml header with encoding to language files. Language files now support UTF-8
  - 09-04-2006 changed: A control set hidden from the code takes priority over visibility set from the skin.
  - 08-04-2006 added: pythonscripts can now decide what playcore to use. This allows playback of streams that mplayer does not support
  						example: xbmc.Player(xbmc.PLAYER_CORE_DVPLAYER).Play('.....');

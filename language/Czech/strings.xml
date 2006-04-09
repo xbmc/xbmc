@@ -1,7 +1,10 @@
+<?xml version="1.0" encoding="ISO-8859-2" standalone="yes"?>
+
 <!-- Czech language for XBMC -->
 <!-- Based on 2003-12-31 build -->
 <!-- Translation done by Johny52 -->
 <!-- Vsechny pripominky k prekladu posilejte na johny52@seznam.cz -->
+
 <strings>
   <string><id>0</id><value>Programy</value></string>
   <string><id>1</id><value>Obrazky</value></string>
