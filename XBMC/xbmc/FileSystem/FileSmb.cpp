@@ -318,13 +318,12 @@ unsigned int CFileSMB::Read(void *lpBuf, __int64 uiBufSize)
   smb.Lock();
   int bytesRead = smbc_read(m_fd, lpBuf, (int)uiBufSize);
   smb.Unlock();
-  if ( bytesRead <= 0 )
+  if ( bytesRead < 0 )
   {
-    char szTmp[128];
-    sprintf(szTmp, "SMB returned %i errno:%i\n", bytesRead, errno);
-    OutputDebugString(szTmp);
+    CLog::Log(LOGERROR, __FUNCTION__" - smbc_read returned error %i", errno);
     return 0;
   }
+
   return (unsigned int)bytesRead;
 }
 
