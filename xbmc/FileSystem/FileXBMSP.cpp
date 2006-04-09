@@ -66,7 +66,7 @@ bool CFileXBMSP::Open(const CURL& url, bool bBinary)
   const char* strFileName = url.GetFileName().c_str();
   int iport = url.GetPort();
 
-  char *fn = NULL, *tmp1, *tmp2, *info;
+  char *tmp1, *tmp2, *info;
 
   if (m_bOpened) Close();
 
@@ -103,13 +103,6 @@ bool CFileXBMSP::Open(const CURL& url, bool bBinary)
                                             strPassword);
   }
 
-  fn = strdup(strFileName);
-  if (fn == NULL)
-  {
-    cc_xstream_client_disconnect(m_connection);
-    return false;
-  }
-  free(fn);
   CStdString strFile = CUtil::GetFileName(strFileName);
 
   char szPath[1024];
