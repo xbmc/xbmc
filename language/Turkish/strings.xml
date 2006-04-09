@@ -1,7 +1,10 @@
-<!-Turkish XBMC language resource  -->
-<!-Translation by Horoz / GeminiServer -->
-<!-Contact: Melih@gmx.li -->
-<!-Last edited on 05.10.2004-->
+<?xml version="1.0" encoding="ISO-8859-9" standalone="yes"?>
+
+<!-- Turkish XBMC language resource  -->
+<!-- Translation by Horoz / GeminiServer -->
+<!-- Contact: Melih@gmx.li -->
+<!-- Last edited on 05.10.2004 -->
+
 <strings>
   <string><id>0</id><value>Proğramlarım</value></string>
   <string><id>1</id><value>Resimlerim</value></string>

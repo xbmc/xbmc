@@ -1,5 +1,8 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?>
+
 <!-- German (AUSTRIA) language for XBMC -->
 <!--     Translation done by CEOMR      -->
+
 <strings>
   <string><id>0</id><value>Anwendungen</value></string>
   <string><id>1</id><value>Eigene Bilder</value></string>
