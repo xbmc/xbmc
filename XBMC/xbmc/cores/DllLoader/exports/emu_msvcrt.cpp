@@ -96,9 +96,7 @@ extern "C"
     void* pBlock = malloc(size);
     if (!pBlock)
     {
-      char szTmp[129];
-      sprintf(szTmp, "malloc %u bytes failed\n", size);
-      OutputDebugString(szTmp);
+      CLog::Log(LOGSEVERE, "malloc %u bytes failed, crash imminent", size);
     }
     return pBlock;
   }
@@ -108,15 +106,24 @@ extern "C"
     free(pPtr);
   }
 
-  void* dllcalloc( size_t num, size_t size )
+  void* dllcalloc(size_t num, size_t size)
   {
     void* pBlock = calloc(num, size);
+    if (!pBlock)
+    {
+      CLog::Log(LOGSEVERE, "calloc %u bytes failed, crash imminent", size);
+    }
     return pBlock;
   }
 
   void* dllrealloc( void *memblock, size_t size )
   {
-    return realloc(memblock, size);
+    void* pBlock =  realloc(memblock, size);
+    if (!pBlock)
+    {
+      CLog::Log(LOGSEVERE, "realloc %u bytes failed, crash imminent", size);
+    }
+    return pBlock;
   }
 
   void dllexit(int iCode)
