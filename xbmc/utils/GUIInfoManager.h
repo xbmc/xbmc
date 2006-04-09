@@ -10,6 +10,7 @@
 #include "../MusicInfoTag.h"
 #include "../FileItem.h"
 #include "../videodatabase.h"
+#include "../StringUtils.h"
 
 #define PLAYER_HAS_MEDIA              1
 #define PLAYER_HAS_AUDIO              2
