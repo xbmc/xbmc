@@ -90,7 +90,7 @@ public:
   void Dump() const;
   void Flush();
   CStdString GetTexturePath(const CStdString& textureName);
-  void GetBundledTexturesFromPath(const CStdString& texturePath, CStdStringArray &items);
+  void GetBundledTexturesFromPath(const CStdString& texturePath, std::vector<CStdString> &items);
 protected:
   vector<CTextureMap*> m_vecTextures;
   typedef vector<CTextureMap*>::iterator ivecTextures;

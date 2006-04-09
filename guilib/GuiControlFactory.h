@@ -24,7 +24,7 @@ public:
   bool GetConditionalVisibility(const TiXmlNode* control, int &condition);
   bool GetAnimations(const TiXmlNode *control, vector<CAnimation> &animation, RESOLUTION res);
 private:
-  bool GetMultipleString(const TiXmlNode* pRootNode, const char* strTag, CStdStringArray& vecStringValue);
+  bool GetMultipleString(const TiXmlNode* pRootNode, const char* strTag, vector<CStdString>& vecStringValue);
   bool GetPath(const TiXmlNode* pRootNode, const char* strTag, CStdString& strStringPath);
   bool GetAlignment(const TiXmlNode* pRootNode, const char* strTag, DWORD& dwAlignment);
   bool GetAlignmentY(const TiXmlNode* pRootNode, const char* strTag, DWORD& dwAlignment);

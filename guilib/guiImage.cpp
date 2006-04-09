@@ -24,7 +24,7 @@ CGUIImage::CGUIImage(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, 
   m_iRenderHeight = dwHeight;
   m_iImageWidth = 0;
   m_iImageHeight = 0;
-  m_bWasVisible = m_bVisible;
+  m_bWasVisible = m_visible;
   for (int i = 0; i < 4; i++)
     m_dwAlpha[i] = 0xFF;
   ControlType = GUICONTROL_IMAGE;
