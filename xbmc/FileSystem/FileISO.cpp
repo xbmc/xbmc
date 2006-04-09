@@ -81,6 +81,7 @@ unsigned int CFileISO::Read(void *lpBuf, __int64 uiBufSize)
         if (lBytes2Read > uiBufSize) lBytes2Read = (long)uiBufSize;
         m_cache.ReadBinary((char*)lpBuf, lBytes2Read );
         uiBufSize -= lBytes2Read ;
+        lpBuf += lBytes2Read;
         lTotalBytesRead += lBytes2Read ;
       }
 
@@ -89,13 +90,9 @@ unsigned int CFileISO::Read(void *lpBuf, __int64 uiBufSize)
         byte buffer[5000];
         long lBytesRead = m_isoReader.ReadFile( m_hFile, buffer, sizeof(buffer));
         if (lBytesRead > 0)
-        {
           m_cache.WriteBinary((char*)buffer, lBytesRead);
-        }
         else
-        {
-          break;
-        }
+          return 0;
       }
     }
     return lTotalBytesRead;
