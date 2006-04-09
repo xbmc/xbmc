@@ -423,6 +423,7 @@ WORD CButtonTranslator::TranslateWindowString(const char *szWindow)
   else if (strWindow.Equals("videoosd")) wWindowID = WINDOW_OSD;
   else if (strWindow.Equals("videomenu")) wWindowID = WINDOW_VIDEO_MENU;
   else if (strWindow.Equals("filebrowser")) wWindowID = WINDOW_DIALOG_FILE_BROWSER;
+  else if (strWindow.Equals("startup")) wWindowID = WINDOW_STARTUP;
   else
     CLog::Log(LOGERROR, "Window Translator: Can't find window %s", strWindow.c_str());
 

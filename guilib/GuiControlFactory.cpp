@@ -85,7 +85,7 @@ bool CGUIControlFactory::GetFloatRange(const TiXmlNode* pRootNode, const char* s
   return true;
 }
 
-bool CGUIControlFactory::GetMultipleString(const TiXmlNode* pRootNode, const char* strTag, CStdStringArray& vecStringValue)
+bool CGUIControlFactory::GetMultipleString(const TiXmlNode* pRootNode, const char* strTag, vector<CStdString>& vecStringValue)
 {
   const TiXmlNode* pNode = pRootNode->FirstChild(strTag );
   if (!pNode) return false;
@@ -149,7 +149,7 @@ bool CGUIControlFactory::GetConditionalVisibility(const TiXmlNode* control, int 
   const TiXmlElement* node = control->FirstChildElement("visible");
   if (!node) return false;
   allowHiddenFocus = false;
-  CStdStringArray conditions;
+  vector<CStdString> conditions;
   while (node)
   {
     const char *hidden = node->Attribute("allowhiddenfocus");
@@ -216,7 +216,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
   DWORD dwWidth = 0, dwHeight = 0;
   DWORD dwID = 0, left = 0, right = 0, up = 0, down = 0;
   DWORD dwColorDiffuse = 0xFFFFFFFF;
-  bool bVisible = true;
   CStdString strTmp;
   vector<int> vecInfo;
   vector<string> vecLabel;
@@ -267,7 +266,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
   CStdString strImage, strImageFocus;
   int iTextureWidth = 80;
   bool bHasPath = false;
-  CStdStringArray clickActions;
+  vector<CStdString> clickActions;
   CStdString focusAction = "";
   CStdString strTitle = "";
   CStdString strRSSTags = "";
@@ -332,7 +331,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
 
   if (pReference)
   {
-    bVisible = pReference->IsVisible();
     dwColorDiffuse = pReference->GetColourDiffuse();
     iPosX = pReference->GetXPosition();
     iPosY = pReference->GetYPosition();
@@ -704,7 +702,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
   GetMultipleString(pControlNode, "onclick", clickActions);
   XMLUtils::GetString(pControlNode, "onfocus", focusAction);
 
-  CStdStringArray strVecInfo;
+  vector<CStdString> strVecInfo;
   if (GetMultipleString(pControlNode, "info", strVecInfo))
   {
     vecInfo.clear();
@@ -833,7 +831,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     label.Format("%i", labelNumber);
     strLabel = label;
   }
-  CStdStringArray strVecLabel;
+  vector<CStdString> strVecLabel;
   if (GetMultipleString(pControlNode, "label", strVecLabel))
   {
     vecLabel.clear();
@@ -919,7 +917,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
       strLabel, labelInfo, bHasPath);
 
     pControl->SetColourDiffuse(dwColorDiffuse);
-    pControl->SetVisible(bVisible);
     pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
     pControl->SetAnimations(animations);
     pControl->SetInfo(vecInfo);
@@ -934,7 +931,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
       labelInfo, strLabel);
 
     pControl->SetColourDiffuse(dwColorDiffuse);
-    pControl->SetVisible(bVisible);
     pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
     pControl->SetAnimations(animations);
     return pControl;
@@ -954,7 +950,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
       labelInfo);
 
     pControl->SetColourDiffuse(dwColorDiffuse);
-    pControl->SetVisible(bVisible);
     pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
     pControl->SetAnimations(animations);
     pControl->SetLabel(vecLabel);
@@ -968,7 +963,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
       labelInfo, dwTextColor3, labelInfo2.textColor, strRSSTags);
 
     pControl->SetColourDiffuse(dwColorDiffuse);
-    pControl->SetVisible(bVisible);
     pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
     pControl->SetAnimations(animations);
     std::map<int, std::pair<std::vector<int>,std::vector<string> > >::iterator iter=g_settings.m_mapRssUrls.find(iUrlSet);
@@ -990,7 +984,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     pControl->SetTextSpacing(dwTextSpaceY);
     pControl->SetThumbAttributes(dwThumbWidth, dwThumbHeight, dwThumbSpaceX, dwThumbSpaceY, strDefaultThumb);
     pControl->SetColourDiffuse(dwColorDiffuse);
-    pControl->SetVisible(bVisible);
     pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
     pControl->SetAnimations(animations);
     pControl->SetNavigation(up, down, left, right);
@@ -1003,7 +996,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
       dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight,
       labelInfo, labelInfo.textColor, labelInfo2.textColor, dwTextColor3, labelInfo.selectedColor);
     pControl->SetColourDiffuse(dwColorDiffuse);
-    pControl->SetVisible(bVisible);
     pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
     pControl->SetAnimations(animations);
     pControl->SetNavigation(up, down, left, right);
@@ -1021,7 +1013,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     pControl->SetColourDiffuse(dwColorDiffuse);
     pControl->SetClickActions(clickActions);
     pControl->SetFocusAction(focusAction);
-    pControl->SetVisible(bVisible);
     pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
     pControl->SetAnimations(animations);
     pControl->SetPulseOnSelect(bPulse);
@@ -1039,7 +1030,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     pControl->SetColourDiffuse(dwColorDiffuse);
     pControl->SetClickActions(clickActions);
     pControl->SetFocusAction(focusAction);
-    pControl->SetVisible(bVisible);
     pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
     pControl->SetAnimations(animations);
     pControl->SetToggleSelect(iToggleSelect);
@@ -1056,7 +1046,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     pControl->SetLabel(strLabel);
     pControl->SetNavigation(up, down, left, right);
     pControl->SetColourDiffuse(dwColorDiffuse);
-    pControl->SetVisible(bVisible);
     pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
     pControl->SetAnimations(animations);
     pControl->SetPulseOnSelect(bPulse);
@@ -1074,7 +1063,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     pControl->SetRadioDimensions(radioPosX, radioPosY, radioWidth, radioHeight);
     pControl->SetNavigation(up, down, left, right);
     pControl->SetColourDiffuse(dwColorDiffuse);
-    pControl->SetVisible(bVisible);
     pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
     pControl->SetAnimations(animations);
     pControl->SetPulseOnSelect(bPulse);
@@ -1089,7 +1077,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
 
     pControl->SetNavigation(up, down, left, right);
     pControl->SetColourDiffuse(dwColorDiffuse);
-    pControl->SetVisible(bVisible);
     pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
     pControl->SetAnimations(animations);
     pControl->SetReverse(bReverse);
@@ -1113,7 +1100,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
       dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight,
       strTextureBg, strMid, strMidFocus, SPIN_CONTROL_TYPE_TEXT);
 
-    pControl->SetVisible(bVisible);
     pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
     pControl->SetAnimations(animations);
     pControl->SetInfo(vecInfo.size() ? vecInfo[0] : 0);
@@ -1132,7 +1118,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
 
     pControl->SetText(strLabel);
     pControl->SetColourDiffuse(dwColorDiffuse);
-    pControl->SetVisible(bVisible);
     pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
     pControl->SetAnimations(animations);
     pControl->SetInfo(vecInfo.size() ? vecInfo[0] : 0);
@@ -1145,7 +1130,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
       dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight,
       strTextureBg, strLeft, strMid, strRight, strOverlay);
 
-    pControl->SetVisible(bVisible);
     pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
     pControl->SetAnimations(animations);
     pControl->SetInfo(vecInfo.size() ? vecInfo[0] : 0);
@@ -1159,7 +1143,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     pControl->SetNavigation(up, down, left, right);
     pControl->SetColourDiffuse(dwColorDiffuse);
     pControl->SetAspectRatio(aspectRatio);
-    pControl->SetVisible(bVisible);
     pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
     pControl->SetAnimations(animations);
     pControl->SetInfo(vecInfo.size() ? vecInfo[0] : 0);
@@ -1171,7 +1154,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
       dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight, texturePath, timePerImage, fadeTime, randomized, loop);
     pControl->SetNavigation(up, down, left, right);
     pControl->SetAspectRatio(aspectRatio);
-    pControl->SetVisible(bVisible);
     pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
     pControl->SetAnimations(animations);
     pControl->SetInfo(vecInfo.size() ? vecInfo[0] : 0);
@@ -1191,7 +1173,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     pControl->SetNavigation(up, down, left, right);
     pControl->SetColourDiffuse(dwColorDiffuse);
     pControl->SetScrollySuffix(strSuffix);
-    pControl->SetVisible(bVisible);
     pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
     pControl->SetAnimations(animations);
     pControl->SetImageDimensions(dwitemWidth, dwitemHeight);
@@ -1214,7 +1195,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     pControl->SetNavigation(up, down, left, right);
     pControl->SetColourDiffuse(dwColorDiffuse);
     pControl->SetScrollySuffix(strSuffix);
-    pControl->SetVisible(bVisible);
     pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
     pControl->SetAnimations(animations);
     pControl->SetImageDimensions(dwitemWidth, dwitemHeight);
@@ -1235,7 +1215,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
 
     pControl->SetNavigation(up, down, left, right);
     pControl->SetColourDiffuse(dwColorDiffuse);
-    pControl->SetVisible(bVisible);
     pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
     pControl->SetAnimations(animations);
     pControl->SetPulseOnSelect(bPulse);
@@ -1255,7 +1234,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     pControl->SetNavigation(up, down, left, right);
     pControl->SetColourDiffuse(dwColorDiffuse);
     pControl->SetScrollySuffix(strSuffix);
-    pControl->SetVisible(bVisible);
     pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
     pControl->SetAnimations(animations);
     pControl->SetThumbDimensions(iThumbXPos, iThumbYPos, iThumbWidth, iThumbHeight);
@@ -1286,7 +1264,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     pControl->SetLabel(strLabel);
     pControl->SetNavigation(up, down, left, right);
     pControl->SetColourDiffuse(dwColorDiffuse);
-    pControl->SetVisible(bVisible);
     pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
     pControl->SetAnimations(animations);
     pControl->SetPulseOnSelect(bPulse);
@@ -1316,7 +1293,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
       strTextureFocus, strTextureNoFocus, labelInfo);
     pControl->SetNavigation(up, down, left, right);
     pControl->SetPulseOnSelect(bPulse);
-    pControl->SetVisible(bVisible);
     pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
     pControl->SetAnimations(animations);
     pControl->LoadButtons(pControlNode);
@@ -1332,7 +1308,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     pControl->SetText(strLabel);
     pControl->SetNavigation(up, down, left, right);
     pControl->SetColourDiffuse(dwColorDiffuse);
-    pControl->SetVisible(bVisible);
     pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
     pControl->SetAnimations(animations);
     pControl->SetReverse(bReverse);
