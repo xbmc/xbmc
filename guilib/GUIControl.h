@@ -186,7 +186,6 @@ protected:
   DWORD m_dwControlID;
   DWORD m_dwParentID;
   bool m_bHasFocus;
-  bool m_bVisible;
   bool m_bDisabled;
   bool m_bSelected;
   int m_iGroup;
@@ -198,8 +197,10 @@ protected:
 
   // visibility condition/state
   int m_visibleCondition;
+  bool m_visible;
+  bool m_visibleFromSkinCondition;
+  bool m_forceHidden;       // set from the code when a hidden operation is given - overrides m_visible
   bool m_allowHiddenFocus;
-  bool m_lastVisible;
   bool m_hasRendered;
 
   // animation effects

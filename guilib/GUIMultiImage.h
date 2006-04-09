@@ -57,7 +57,7 @@ protected:
 
   bool m_bDynamicResourceAlloc;
   bool m_directoryLoaded;
-  CStdStringArray m_files;
+  vector<CStdString> m_files;
   int m_Info;
 };
 #endif
