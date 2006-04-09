@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="ISO-8859-8" standalone="yes"?>
 <strings>
   <string><id>0</id><value>התוכניות שלי</value></string>
   <string><id>1</id><value>התמונות שלי</value></string>
@@ -8,6 +9,7 @@
   <!-- String with id 6 should not be set here, only in the english language file !-->
   <string><id>7</id><value>הקבצים שלי</value></string>
   <string><id>8</id><value>מזג האויר שלי</value></string>
+
   <string><id>11</id><value>שני</value></string>
   <string><id>12</id><value>שלישי</value></string>
   <string><id>13</id><value>רביעי</value></string>
@@ -15,6 +17,7 @@
   <string><id>15</id><value>שישי</value></string>
   <string><id>16</id><value>שבת</value></string>
   <string><id>17</id><value>ראשון</value></string>
+
   <string><id>21</id><value>ינואר</value></string>
   <string><id>22</id><value>פברואר</value></string>
   <string><id>23</id><value>מרץ</value></string>
@@ -27,6 +30,9 @@
   <string><id>30</id><value>אוקטובר</value></string>
   <string><id>31</id><value>נובמבר</value></string>
   <string><id>32</id><value>דצמבר</value></string>
+
+  <string><id>98</id><value>View: Auto</value></string>
+  <string><id>99</id><value>View: Auto Big</value></string>
   <string><id>100</id><value>תצוגה: צלמיות</value></string>
   <string><id>101</id><value>תצוגה: רשימה</value></string>
   <string><id>102</id><value>סרוק</value></string>
@@ -75,18 +81,18 @@
   <string><id>145</id><value>:רשת</value></string>
   <string><id>146</id><value>:סוג</value></string>
   <string><id>147</id><value>סטאטי</value></string>
-  <string><id>148</id><value>DHCP</value></string>
+  <string><id>148</id><value>אוטומטי</value></string>
   <string><id>149</id><value>MAC</value></string>
   <string><id>150</id><value>IP</value></string>
   <string><id>151</id><value>:קישור</value></string>
-  <string><id>152</id><value>Half duplex</value></string>
-  <string><id>153</id><value>Full duplex</value></string>
+  <string><id>152</id><value> duplex חצי</value></string>
+  <string><id>153</id><value> duplex מלא</value></string>
   <string><id>154</id><value>אחסון</value></string>
   <string><id>155</id><value>כונן</value></string>
   <string><id>156</id><value>פנוי</value></string>
   <string><id>157</id><value>וידאו</value></string>
   <string><id>158</id><value>זיכרון פנוי</value></string>
-  <string><id>159</id><value>אין קיור</value></string>
+  <string><id>159</id><value>אין חיבור רשת</value></string>
   <string><id>160</id><value>פנוי</value></string>
   <string><id>161</id><value>לא זמין</value></string>
   <string><id>162</id><value>מגש פתוח</value></string>
@@ -95,7 +101,7 @@
   <string><id>165</id><value>דיסק נמצא</value></string>
   <string><id>166</id><value>סקין</value></string>
   <string><id>167</id><value>FTP שרת</value></string>
-  <string><id>168</id><value>שרת זמנים</value></string>
+  <string><id>168</id><value>שרת שעון אינטרנט</value></string>
   <string><id>169</id><value>רזולוציה</value></string>
   <string><id>170</id><value>:אלבום</value></string>
   <string><id>171</id><value>:אמן</value></string>
@@ -127,11 +133,11 @@
   <string><id>197</id><value>IMDB מחפש מידע</value></string>
   <string><id>198</id><value>טוען מידע אודות הסרט</value></string>
   <string><id>199</id><value>:במאי</value></string>
-  <string><id>200</id><value>:כותב</value></string>
+  <string><id>200</id><value>:תסריטאי</value></string>
   <string><id>201</id><value>:שנה</value></string>
   <string><id>202</id><value>:שורה</value></string>
   <string><id>203</id><value>:תקציר עלילה</value></string>
-  <string><id>204</id><value>:רייטינג</value></string>
+  <string><id>204</id><value>:מידרוג</value></string>
   <string><id>205</id><value>:הצבעות</value></string>
   <string><id>206</id><value>ליהוק</value></string>
   <string><id>207</id><value>עלילה</value></string>
@@ -156,16 +162,17 @@
   <string><id>226</id><value>PAL60 אפשר</value></string>
   <string><id>227</id><value>CDDB אפשר</value></string>
   <string><id>228</id><value>ערבב רשימת השמעה בעת הטעינה</value></string>
-  <string><id>229</id><value>זמן סיבוב הרדיסק (בדקות)</value></string>
+  <string><id>229</id><value> זמן סיבוב כונן קשיח בדקות  </value></string>
   <string><id>230</id><value>פילטרים</value></string>
   <string><id>231</id><value>ללא</value></string>
   <string><id>232</id><value>נקודה</value></string>
   <string><id>233</id><value>קווי</value></string>
-  <string><id>234</id><value>Anisotropic</value></string>
-  <string><id>235</id><value>Quincunx</value></string>
-  <string><id>236</id><value>Gaussian Cubic</value></string>
+  <string><id>234</id><value>אנזיאוטרופי</value></string>
+  <string><id>235</id><value>מחומש</value></string>
+  <string><id>236</id><value>קוביה גאוסנית</value></string>
   <string><id>237</id><value>צמצום</value></string>
   <string><id>238</id><value>הגדלה</value></string>
+  <string><id>239</id><value>Clear playlist on finish</value></string>
   <string><id>240</id><value>נגן אוטומאטית סרטי DVD</value></string>
   <string><id>241</id><value>נגן אוטומטית סרטי VCD/SVCD</value></string>
   <string><id>242</id><value>נגן מוזיקה אוטומאטית</value></string>
@@ -180,7 +187,7 @@
   <string><id>251</id><value>בחר ספרית יעד</value></string>
   <string><id>252</id><value>- פלט סטריאו לכל הרמקולים</value></string>
   <string><id>253</id><value>מספר ערוצים</value></string>
-  <string><id>254</id><value>- רסיבר תומך DTS</value></string>
+  <string><id>254</id><value> DTS רסיבר תומך</value></string>
   <string><id>255</id><value>CDDB</value></string>
   <string><id>256</id><value>CDDB מחפש ברשת מידע</value></string>
   <string><id>257</id><value>שגיאה</value></string>
@@ -197,7 +204,7 @@
   <string><id>268</id><value>מיין לפי : כותרת</value></string>
   <string><id>269</id><value>מיין לפי : אמן</value></string>
   <string><id>270</id><value>מיין לפי : אלבום</value></string>
-  <string><id>271</id><value>100 ראשונים</value></string>
+  <string><id>271</id><value>ראשונים 100</value></string>
   <string><id>272</id><value>פיצוי סריקת יתר משמאל למעלה</value></string>
   <string><id>273</id><value>פיצוי סריקת יתר מימין למטה</value></string>
   <string><id>274</id><value>מיקום כתוביות</value></string>
@@ -231,25 +238,25 @@
   <string><id>303</id><value>השהייה</value></string>
   <string><id>304</id><value>שפה</value></string>
   <string><id>305</id><value>זמין</value></string>
-  <string><id>306</id><value>Non-Interleaved</value></string>
+  <string><id>306</id><value>ללא-הפרדה</value></string>
   <string><id>307</id><value>- אוטומאטי עיבוד</value></string>
   <string><id>308</id><value>- פילטר הסרת חסימה לגובה</value></string>
   <string><id>309</id><value>- פילטר הסרת חסימה לרוחב</value></string>
   <string><id>310</id><value>- בהירות/ניגודיות אוטומאטיים</value></string>
   <string><id>311</id><value>- Dering</value></string>
-  <string><id>312</id><value>(0=auto)</value></string>
-  <string><id>313</id><value>נקה דטהבייס</value></string>
+  <string><id>312</id><value>(0=אוטומטי)</value></string>
+  <string><id>313</id><value>נקה מסד-נתונים</value></string>
   <string><id>314</id><value>...מתכונן</value></string>
-  <string><id>315</id><value>שגיאת דטהבייס</value></string>
+  <string><id>315</id><value>שגיאת מסד-נתונים</value></string>
   <string><id>316</id><value>...מחפש שירים</value></string>
   <string><id>317</id><value>ניקוי הושלם בהצלחה</value></string>
   <string><id>318</id><value>...מנקה שירים</value></string>
-  <string><id>319</id><value>שגיאה בנקוי שירים</value></string>
+  <string><id>319</id><value>שגיאה בניקוי שירים</value></string>
   <string><id>320</id><value>...ניקוי אמנים</value></string>
-  <string><id>321</id><value>שגיאה בנקוי אמנים</value></string>
+  <string><id>321</id><value>שגיאה בניקוי אמנים</value></string>
   <string><id>322</id><value>...ניקוי סגנונות</value></string>
-  <string><id>323</id><value>שגיאה בנקוי סגנונות</value></string>
-  <string><id>324</id><value>...ניקוי נתיבית</value></string>
+  <string><id>323</id><value>שגיאה בניקוי סגנונות</value></string>
+  <string><id>324</id><value>...ניקוי נתיבים</value></string>
   <string><id>325</id><value>שגיאה בנקוי נתיבים</value></string>
   <string><id>326</id><value>...ניקוי אלבומים</value></string>
   <string><id>327</id><value>שגיאה בנקוי אלבומים</value></string>
@@ -258,8 +265,8 @@
   <string><id>330</id><value>...פעולה זו עשויה לקחת זמן</value></string>
   <string><id>331</id><value>...דוחס נתונים</value></string>
   <string><id>332</id><value>שגיאה בדחיסת נתונים</value></string>
-  <string><id>333</id><value>?האם ברצונך לנקות את הדטהבייס</value></string>
-  <string><id>334</id><value>נהק את הדטהבייס</value></string>
+  <string><id>333</id><value>?האם ברצונך לנקות את מסד-הנתונים</value></string>
+  <string><id>334</id><value>נקה את מסד הנתונים</value></string>
   <string><id>335</id><value>התחל</value></string>
   <string><id>336</id><value>סדר קצב פריימים</value></string>
   <string><id>337</id><value>פלט אודיו</value></string>
@@ -289,7 +296,7 @@
   <string><id>361</id><value>מצגת רקורס.</value></string>
   <string><id>362</id><value>אחוזי עמעום מסך (%)</value></string>
   <string><id>363</id><value>סדר לפי : קובץ</value></string>
-  <string><id>364</id><value>- רסיבר תומך AC3</value></string>
+  <string><id>364</id><value>AC3 רסיבר תומך</value></string>
   <string><id>365</id><value>סדר לפי : שם</value></string>
   <string><id>366</id><value>סדר לפי : שנה</value></string>
   <string><id>367</id><value>סדר לפי : רייטינג</value></string>
@@ -313,14 +320,14 @@
   <string><id>385</id><value>קלילה</value></string>
   <string><id>386</id><value>בהיר</value></string>
   <string><id>387</id><value>עננים</value></string>
-  <string><id>388</id><value>N/A</value></string>
-  <string><id>389</id><value>N/A</value></string>
-  <string><id>390</id><value>N/A</value></string>
-  <string><id>391</id><value>N/A</value></string>
-  <string><id>392</id><value>N/A</value></string>
-  <string><id>393</id><value>N/A</value></string>
-  <string><id>394</id><value>N/A</value></string>
-  <string><id>395</id><value>N/A</value></string>
+  <string><id>388</id><value>מוקדם</value></string>
+  <string><id>389</id><value>ממטרים</value></string>
+  <string><id>390</id><value>סוער</value></string>
+  <string><id>391</id><value>נמוך</value></string>
+  <string><id>392</id><value>בינוני</value></string>
+  <string><id>393</id><value>גבוה</value></string>
+  <string><id>394</id><value>ערפילי</value></string>
+  <string><id>395</id><value>אביך</value></string>
   <string><id>396</id><value>בחר מיקום</value></string>
   <string><id>397</id><value>זמני רענון</value></string>
   <string><id>398</id><value>יחידות טמפרטורה</value></string>
@@ -334,6 +341,7 @@
   <string><id>406</id><value>לחות</value></string>
   <string><id>407</id><value>מ</value></string>
   <string><id>408</id><value>ב</value></string>
+
   <string><id>410</id><value>Weather.com ניגש ל</value></string>
   <string><id>411</id><value>:טוען מזג אויר עבור</value></string>
   <string><id>412</id><value>שגיאה בטעינת מזג אויר</value></string>
@@ -356,7 +364,7 @@
   <string><id>429</id><value>אנא הכנס את הדיסק הבא</value></string>
   <string><id>430</id><value>DVD# : מיין לפי</value></string>
   <string><id>431</id><value>ללא מטמון</value></string>
-  <string><id>432</id><value>מחק סרט מהדטהבייס</value></string>
+  <string><id>432</id><value>מחק סרט ממסד הנתונים</value></string>
   <string><id>433</id><value>האם אתה בטוח שברצונך למחוק</value></string>
   <string><id>434</id><value>?את הסרט</value></string>
   <string><id>435</id><value>רצועה</value></string>
@@ -375,7 +383,6 @@
   <string><id>448</id><value>LCD</value></string>
   <string><id>449</id><value>פעיל</value></string>
   <string><id>450</id><value>עמודות</value></string>
-  <string><id>4501</id><value>LCD סוג</value></string>
   <string><id>451</id><value>1: שורת כתובת</value></string>
   <string><id>452</id><value>2: שורת כתובת</value></string>
   <string><id>453</id><value>3: שורת כתובת</value></string>
@@ -383,7 +390,7 @@
   <string><id>455</id><value>:שורות</value></string>
   <string><id>456</id><value>:מצב</value></string>
   <string><id>457</id><value>החלף תצוגה</value></string>
-  <string><id>458</id><value>B/Mark</value></string>
+  <string><id>458</id><value>B/סימן</value></string>
   <string><id>459</id><value>כתוביות</value></string>
   <string><id>460</id><value>אודיו זורם</value></string>
   <string><id>461</id><value>]פעיל[</value></string>
@@ -396,7 +403,7 @@
   <string><id>468</id><value>הזז את הסמן כדי לשנות את מיקום התפריט</value></string>
   <string><id>469</id><value>מיקום תפריט</value></string>
   <string><id>470</id><value>תודות</value></string>
-  <string><id>471</id><value>מודצ&apos;יפ</value></string>
+  <string><id>471</id><value>מוד-צ'יפ</value></string>
   <string><id>472</id><value>זמן להעלמת תפריט</value></string>
   <string><id>473</id><value>דגימה מחדש באיכות גבוהה</value></string>
   <string><id>474</id><value>כבוי</value></string>
@@ -434,6 +441,32 @@
   <string><id>506</id><value>השתמש בשמות ספריות לתיאור</value></string>
   <string><id>507</id><value>מיין לפי : שימוש</value></string>
   <string><id>508</id><value>אל תשתמש בקיצורים וסריקה</value></string>
+  <string><id>509</id><value>Cache Program Thumbnails</value></string>
+  <string><id>510</id><value>Enable Visualisations</value></string>
+  <string><id>511</id><value>Enable video mode switching</value></string>
+  <string><id>512</id><value>Startup Window</value></string>
+  <string><id>513</id><value>Home Window</value></string>
+  <string><id>514</id><value>Manual Settings</value></string>
+  <string><id>515</id><value>Genre</value></string>
+  <string><id>516</id><value>Make archives with one file transparent</value></string>
+  <string><id>517</id><value>Recently Played Albums</value></string>
+  <string><id>518</id><value>Launch</value></string>
+  <string><id>519</id><value>Launch in..</value></string>
+  <string><id>520</id><value>Edit XBE title</value></string>
+  <string><id>521</id><value>Compilations</value></string>
+  <string><id>522</id><value>Remove Source</value></string>
+
+  <string><id>588</id><value>Cancel Party Mode</value></string>
+  <string><id>589</id><value>Party Mode</value></string>
+  <string><id>590</id><value>Random</value></string>
+  <string><id>591</id><value>Off</value></string>
+  <string><id>592</id><value>One</value></string>
+  <string><id>593</id><value>All</value></string>
+  <string><id>594</id><value>Off</value></string>
+  <string><id>595</id><value>Repeat: Off</value></string>
+  <string><id>596</id><value>Repeat: One</value></string>
+  <string><id>597</id><value>Repeat: All</value></string>
+
   <string><id>600</id><value>העתק דיסק</value></string>
   <string><id>601</id><value>בינוני</value></string>
   <string><id>602</id><value>רגיל</value></string>
@@ -444,12 +477,14 @@
   <string><id>607</id><value>אל:</value></string>
   <string><id>608</id><value>לא יכול להעתיק דיסק או רצועה</value></string>
   <string><id>609</id><value>CDDARipPath is not set in XboxMediaCenter.xml</value></string>
+
   <string><id>620</id><value>העתקת דיסק</value></string>
   <string><id>621</id><value>מקודד</value></string>
   <string><id>622</id><value>איכות</value></string>
   <string><id>623</id><value>קצב ביטים</value></string>
   <string><id>624</id><value>כלול מספר רצועה</value></string>
   <string><id>625</id><value>כל השירים של</value></string>
+
   <string><id>629</id><value>מצב תצוגה</value></string>
   <string><id>630</id><value>רגיל</value></string>
   <string><id>631</id><value>זום</value></string>
@@ -458,8 +493,19 @@
   <string><id>634</id><value>16:9 מתח</value></string>
   <string><id>635</id><value>גודל מקורי</value></string>
   <string><id>636</id><value>יחודי</value></string>
-  <string><id>700</id><value>מנקה דטהבייס</value></string>
-  <string><id>701</id><value>מוחק שירים ישנים מהדטהבייס</value></string>
+  <string><id>637</id><value>Replay Gain</value></string>
+  <string><id>638</id><value>Replay Gain Mode</value></string>
+  <string><id>639</id><value>Use Track Levels</value></string>
+  <string><id>640</id><value>Use Album Levels</value></string>
+  <string><id>641</id><value>PreAmp Level - Replay Gained Files</value></string>
+  <string><id>642</id><value>PreAmp Level - Non Replay Gained Files</value></string>
+  <string><id>643</id><value>Avoid Clipping on Replay Gained Files</value></string>
+  <string><id>644</id><value>Crop Black Bars</value></string>
+  <string><id>645</id><value>Need to cache a big file. Continue?</value></string>
+  <string><id>646</id><value>Remove Title</value></string>
+  
+  <string><id>700</id><value>מנקה מסד נתונים</value></string>
+  <string><id>701</id><value>מוחק שירים ישנים ממסד הנתונים</value></string>
   <string><id>702</id><value>הספריה נסרקה בעבר.</value></string>
   <string><id>703</id><value>לחץ כן לסריקה מחדש.</value></string>
   <string><id>704</id><value>לחץ לא להוסיף שירים חדשים.</value></string>
@@ -478,7 +524,7 @@
   <string><id>717</id><value>ידנית )סטטית(</value></string>
   <string><id>718</id><value>ברירת מחדל )Dashboard(</value></string>
   <string><id>719</id><value>כתובת IP</value></string>
-  <string><id>720</id><value>Netmask</value></string>
+  <string><id>720</id><value>-netmask</value></string>
   <string><id>721</id><value>Default Gateway</value></string>
   <string><id>722</id><value>שרת DNS</value></string>
   <string><id>723</id><value>שמור ואתחל</value></string>
@@ -512,8 +558,134 @@
   <string><id>751</id><value>מסיר חלוקה</value></string>
   <string><id>752</id><value>ערוך נתיב חלוקה</value></string>
   <string><id>753</id><value>ערוך שם חלוקה</value></string>
+  <string><id>754</id><value>Add Program Link</value></string>
+  <string><id>755</id><value>Edit Program Path</value></string>
+  <string><id>756</id><value>Edit Program Name</value></string>
+  <string><id>757</id><value>Edit Path Depth</value></string>
+  <string><id>758</id><value>Removing Program Link</value></string>  
+  <string><id>759</id><value>View: Big List</value></string>
+  <string><id>760</id><value>Yellow</value></string>
+  <string><id>761</id><value>White</value></string>
+  <string><id>762</id><value>Blue</value></string>
+  <string><id>763</id><value>Bright Green</value></string>
+  <string><id>764</id><value>Yellow Green</value></string>
+  <string><id>765</id><value>Cyan</value></string>
+  <string><id>766</id><value>Reserved</value></string>
+  <string><id>767</id><value>Reserved</value></string>
+  <string><id>768</id><value>Reserved</value></string>
+  <string><id>769</id><value>Reserved</value></string>
+  <string><id>770</id><value>Error %i: share not available</value></string>
+  <string><id>771</id><value>- Auto Fatx Limiter</value></string>
+  <string><id>772</id><value>Audio Hardware</value></string>
+  <string><id>773</id><value>Seeking</value></string>
+  <string><id>774</id><value>Slideshow Folder</value></string>
+
   <string><id>998</id><value>XLink Kai</value></string>
   <string><id>999</id><value>משחקים מקוונים</value></string>
+  <string><id>1000</id><value>Screensaver Preview</value></string>
+  <string><id>1001</id><value>Unable to connect</value></string>
+  <string><id>1002</id><value>XBMC was unable to connect to the network location.</value></string>
+  <string><id>1003</id><value>This could be due to the network not being connected.</value></string>
+  <string><id>1004</id><value>Would you like to add it anyway?</value></string>
+  <string><id>1005</id><value>Enter a name for this share</value></string>
+  <string><id>1006</id><value>IP Address</value></string>
+  <string><id>1007</id><value>Add Network Location</value></string>
+  <string><id>1008</id><value>Protocol</value></string>
+  <string><id>1009</id><value>Server Address</value></string>
+  <string><id>1010</id><value>Server Name</value></string>
+  <string><id>1011</id><value>Remote Path</value></string>
+  <string><id>1012</id><value>Shared Folder</value></string>
+  <string><id>1013</id><value>Port</value></string>
+  <string><id>1014</id><value>Username</value></string>
+  <string><id>1015</id><value>network server</value></string>
+  <string><id>1016</id><value>Enter the network address of the server</value></string>
+  <string><id>1017</id><value>Enter the path on the server</value></string>
+  <string><id>1018</id><value>Enter the port number</value></string>
+  <string><id>1019</id><value>Enter the username</value></string>
+  <string><id>1020</id><value>Add %s Source</value></string>
+  <string><id>1021</id><value>Enter the path or browse for the media location.</value></string>
+  <string><id>1022</id><value>Enter a name for this Media Source.</value></string>
+  <string><id>1023</id><value>Browse for new share</value></string>
+  <string><id>1024</id><value>Browse</value></string>
+  <string><id>1025</id><value>Could not retrieve directory information.</value></string>
+  <string><id>1026</id><value>Add Source</value></string>
+  <string><id>1027</id><value>Edit Source</value></string>
+  <string><id>1028</id><value>Edit %s Source</value></string>
+  <string><id>1029</id><value>Enter the new label</value></string>
+  <string><id>1030</id><value>an image</value></string>
+  <string><id>1031</id><value>an image folder</value></string>
+  <string><id>1032</id><value>Add Network Location...</value></string>
+
+  <string><id>1200</id><value>SMB Share</value></string>
+  <string><id>1201</id><value>SMB IP</value></string>
+  <string><id>1202</id><value>SMB Workgroup</value></string>
+  <string><id>1203</id><value>SMB Username</value></string>
+  <string><id>1204</id><value>SMB Password</value></string>
+  <string><id>1205</id><value>SMB Share Name</value></string>
+  <string><id>1206</id><value>SMB Share Group</value></string>
+  <string><id>1207</id><value>SMB WINS-Server</value></string>
+  <string><id>1208</id><value>Settings Mode</value></string>
+  <string><id>1209</id><value>The SMB Share Settings was set succesfully!</value></string>
+  <string><id>1210</id><value>Remove</value></string>
+  <string><id>1211</id><value>Music</value></string>
+  <string><id>1212</id><value>Video</value></string>
+  <string><id>1213</id><value>Pictures</value></string>
+  <string><id>1214</id><value>Files</value></string>
+  <string><id>1215</id><value>Music &amp; Video </value></string>
+  <string><id>1216</id><value>Music &amp; Pictures</value></string>
+  <string><id>1217</id><value>Music &amp; Files</value></string>
+  <string><id>1218</id><value>Video &amp; Pictures</value></string>
+  <string><id>1219</id><value>Video &amp; Files</value></string>
+  <string><id>1220</id><value>Pictures &amp; Files</value></string>
+  <string><id>1221</id><value>Music &amp; Video &amp; Pictures</value></string>
+  <string><id>1222</id><value>Music &amp; Video &amp; Pictures &amp; Files</value></string>
+  <string><id>1223</id><value>Disabled</value></string>
+  <string><id>1224</id><value>Normal User</value></string>
+  <string><id>1225</id><value>Advanced User</value></string>
+  <string><id>1226</id><value>Files &amp; Music &amp; Video</value></string>
+  <string><id>1227</id><value>Files &amp; Pictures &amp; Music</value></string>
+  <string><id>1228</id><value>Files &amp; Pictures &amp; Video</value></string>
+  <string><id>1229</id><value>Music &amp; Programs</value></string>
+  <string><id>1230</id><value>Video &amp; Programs</value></string>
+  <string><id>1231</id><value>Pictures &amp; Programs</value></string>
+  <string><id>1232</id><value>Music &amp; Video &amp; Pictures &amp; Programs</value></string>
+  <string><id>1233</id><value>Programs &amp; Video &amp; Music</value></string>
+  <string><id>1234</id><value>Programs &amp; Pictures &amp; Music</value></string>
+  <string><id>1235</id><value>Programs &amp; Pictures &amp; Video</value></string>
+
+  <string><id>1245</id><value>FTP User Name</value></string>
+  <string><id>1246</id><value>FTP User Password</value></string>
+  <string><id>1247</id><value>FTP Server User Password has been set sucessfully</value></string>
+
+  <string><id>1250</id><value>Autodetection</value></string>
+  <string><id>1251</id><value>XBOX Autodetection</value></string>
+  <string><id>1252</id><value>Nick Name</value></string>
+  <string><id>1253</id><value>Create FTP Link in My Files</value></string>
+  <string><id>1254</id><value>Ask to Connect</value></string>
+  <string><id>1255</id><value>Send FTP User and Password</value></string>
+  <string><id>1256</id><value>Ping Interval</value></string>
+  <string><id>1257</id><value>Would you like to connect to the Autodetected Xbox?</value></string>
+
+  <string><id>1396</id><value>Drifting</value></string>
+  <string><id>1397</id><value>and</value></string>
+  <string><id>1398</id><value>Freezing</value></string>
+  <string><id>1399</id><value>Late</value></string>
+  <string><id>1400</id><value>Isolated</value></string>
+  <string><id>1401</id><value>T-Showers</value></string>
+  <string><id>1402</id><value>Thunder</value></string>
+  <string><id>1403</id><value>Sun</value></string>
+  <string><id>1404</id><value>Heavy</value></string>
+  <string><id>1405</id><value>in</value></string>
+  <string><id>1406</id><value>the</value></string>
+  <string><id>1407</id><value>Vicinity</value></string>
+  <string><id>1408</id><value>Ice</value></string>
+  <string><id>1409</id><value>Crystals</value></string>
+  <string><id>1410</id><value>Calm</value></string>
+
+  <string><id>2050</id><value>Runtime:</value></string>
+
+  <string><id>4501</id><value>LCD סוג</value></string>
+
   <string><id>10000</id><value>דף הבית</value></string>
   <string><id>10001</id><value>התוכניות שלי</value></string>
   <string><id>10002</id><value>התמונות שלי</value></string>
@@ -532,16 +704,15 @@
   <string><id>10015</id><value>הגדרות -&gt; מסך -&gt; כתוביות</value></string>
   <string><id>10016</id><value>הגדרות -&gt; מסך -&gt; שומר מסך</value></string>
   <string><id>10017</id><value>הגדרות -&gt; מזג אוויר</value></string>
+  <string><id>10018</id><value>Settings-&gt;Network</value></string>
+  <string><id>10019</id><value>Settings-&gt;Appearance</value></string>
   <string><id>10020</id><value>הגדרות -&gt; סקריפטים</value></string>
   <string><id>10021</id><value>My Videos/genre</value></string>
   <string><id>10022</id><value>My Videos/actor</value></string>
   <string><id>10023</id><value>My Videos/year</value></string>
-  <string><id>10024</id><value>Settings-&gt;Programs</value></string>
   <string><id>10025</id><value>My Videos/title</value></string>
-  <string><id>10026</id><value>Settings-&gt;General-&gt;Cache</value></string>
-  <string><id>10027</id><value>Settings-&gt;General-&gt;Autorun</value></string>
   <string><id>10028</id><value>My Videos/playlist</value></string>
-  <string><id>10029</id><value>Settings-&gt;General-&gt;LCD</value></string>
+  <string><id>10034</id><value>Settings-&gt;Profiles</value></string>
   <string><id>10100</id><value>Yes/no dialog</value></string>
   <string><id>10101</id><value>Progress dialog</value></string>
   <string><id>10500</id><value>My Music/playlist</value></string>
@@ -550,7 +721,25 @@
   <string><id>10503</id><value>My Music/artists</value></string>
   <string><id>10504</id><value>My Music/genres</value></string>
   <string><id>10505</id><value>My Music/top100</value></string>
-  <string><id>11000</id><value>מקלדת</value></string>
+  <string><id>10506</id><value>Applications</value></string>
+  <string><id>10507</id><value>Configuration</value></string>
+  <string><id>10508</id><value>Weather Forecast</value></string>
+  <string><id>10509</id><value>Network Gaming</value></string>
+  <string><id>10510</id><value>Extensions</value></string>
+  <string><id>10511</id><value>System Info</value></string>
+  <string><id>10512</id><value>My Music - Albums</value></string>
+  <string><id>10513</id><value>My Music - Artists</value></string>
+  <string><id>10514</id><value>My Music - Genres</value></string>
+  <string><id>10515</id><value>My Music - Top 100</value></string>
+  <string><id>10516</id><value>My Music - Library</value></string>
+  <string><id>10517</id><value>My Music - Now Playing</value></string>
+  <string><id>10518</id><value>My Video - Actors</value></string>
+  <string><id>10519</id><value>My Video - Genres</value></string>
+  <string><id>10520</id><value>My Video - Title</value></string>
+  <string><id>10521</id><value>My Video - Year</value></string>
+  <string><id>10522</id><value>My Video - Now Playing</value></string>
+  <string><id>10523</id><value>Album Info</value></string>
+  <string><id>10524</id><value>Movie Info</value></string>
   <string><id>12000</id><value>בחר דיאלוג</value></string>
   <string><id>12001</id><value>My Music/info</value></string>
   <string><id>12002</id><value>דיאלוג אישור</value></string>
@@ -560,19 +749,191 @@
   <string><id>12006</id><value>תצוגת אודיו</value></string>
   <string><id>12007</id><value>My Picture/slideshow</value></string>
   <string><id>12008</id><value>Filestacking dialog</value></string>
+  <string><id>12009</id><value>Rebuild index...</value></string>
+  <string><id>12010</id><value>Return to My Music</value></string>
+  <string><id>12011</id><value>Return to My Video</value></string>
+  <string><id>12012</id><value>Update trainer list</value></string>
+  <string><id>12013</id><value>Trainer</value></string>
+  <string><id>12014</id><value>No trainers found</value></string>
+  <string><id>12015</id><value>Trainer settings</value></string>
+  <string><id>12016</id><value>All registered trailers are missing. Update your list</value></string>
+  <string><id>12017</id><value>Auto resume from last position</value></string>
+  <string><id>12018</id><value>No</value></string>
+  <string><id>12019</id><value>Yes</value></string>
+  <string><id>12020</id><value>Ask</value></string>
+  <string><id>12021</id><value>Start from beginning</value></string>
+  <string><id>12022</id><value>Resume from last position</value></string>
+
+  <string><id>12310</id><value>0</value></string>
+  <string><id>12311</id><value>1</value></string>
+  <string><id>12312</id><value>2</value></string>
+  <string><id>12313</id><value>3</value></string>
+  <string><id>12314</id><value>4</value></string>
+  <string><id>12315</id><value>5</value></string>
+  <string><id>12316</id><value>6</value></string>
+  <string><id>12317</id><value>7</value></string>
+  <string><id>12318</id><value>8</value></string>
+  <string><id>12319</id><value>9</value></string>
+  <string><id>12320</id><value>c</value></string>
+  <string><id>12321</id><value>ok</value></string>
+  <string><id>12322</id><value>*</value></string>
+  <string><id>12324</id><value>XBMC Master Lock</value></string>
+  <string><id>12325</id><value>Locked! Enter Code...</value></string>
+  <string><id>12326</id><value>Enter password</value></string>
+  <string><id>12327</id><value>Enter Master Code</value></string>
+  <string><id>12328</id><value>Enter Unlock Code</value></string> 
+  <string><id>12329</id><value>or press C to cancel</value></string>
+  <string><id>12330</id><value>Enter Gamepad button combo and press Start</value></string>
+  <string><id>12331</id><value>press Start, or Back to cancel</value></string>
+  <string><id>12332</id><value>Set Lock</value></string>
+  <string><id>12333</id><value>Unlock</value></string>
+  <string><id>12334</id><value>Reset Lock</value></string>
+  <string><id>12335</id><value>Remove Lock</value></string>
+  <string><id>12336</id><value>Select type of lock to use:</value></string>
+  <string><id>12337</id><value>Numeric Password</value></string>
+  <string><id>12338</id><value>Gamepad button combo</value></string>
+  <string><id>12339</id><value>Full-text Password</value></string>
+  <string><id>12340</id><value>Enter new password</value></string>
+  <string><id>12341</id><value>Re-Enter new password</value></string>
+  <string><id>12342</id><value>Incorrect password,</value></string>
+  <string><id>12343</id><value>retries left </value></string>
+  <string><id>12344</id><value>Passwords entered did not match.</value></string>
+  <string><id>12345</id><value>Access Denied</value></string>
+  <string><id>12346</id><value>Password retry limit exceeded.</value></string>
+  <string><id>12347</id><value>The XBOX will now shut off.</value></string>
+  <string><id>12348</id><value>Item Locked</value></string>
+  <string><id>12349</id><value>Remember Master Code until next boot?</value></string>
+  <string><id>12350</id><value>(Opening any item in Settings will</value></string>
+  <string><id>12351</id><value>automatically re-enable Master Lock.)</value></string>
+  <string><id>12352</id><value>Enter Master Code button combo and press Start</value></string>
+  <string><id>12353</id><value>Reactivate Lock</value></string>
+  <string><id>12354</id><value>Override folder locks until next boot?</value></string>
+  <string><id>12355</id><value>Automatically re-enable folder locks.)</value></string>
+  <string><id>12356</id><value>Change Lock</value></string>
+  <string><id>12357</id><value>Share Lock</value></string>
+  <string><id>12358</id><value>Password entry was blank. Try again.</value></string>
+  <string><id>12360</id><value>Master Lock</value></string>
+  <string><id>12361</id><value>Max Retry</value></string>
+  <string><id>12362</id><value>Enable Shutdown</value></string>
+  <string><id>12363</id><value>Protect Shares</value></string>
+  <string><id>12364</id><value>Master Mode</value></string>
+  <string><id>12365</id><value>Master Code</value></string>
+  <string><id>12366</id><value>Master Lock is changed. Master Code is now set to:</value></string>
+  <string><id>12367</id><value>Master Code is not Valid!</value></string>
+  <string><id>12368</id><value>Please Enter a Valid Master Code!</value></string>
+  <string><id>12369</id><value>XBMC Startup Lock</value></string>
+  <string><id>12370</id><value>Master Lock Mode changed, the Master Code wasn't set!</value></string>
+  <string><id>12371</id><value>Please Set a new Master Code!</value></string>
+  <string><id>12372</id><value>Lock Settings &amp; My Files</value></string>
+  <string><id>12373</id><value>Settings &amp;  My Files</value></string>
+  <string><id>12374</id><value>Lock Media</value></string>
+  <string><id>12375</id><value>Master User Mode</value></string>
+  <string><id>12376</id><value>Set as default for all Movies</value></string>
+  <string><id>12377</id><value>This will reset any previously saved values</value></string>
+  <string><id>12378</id><value>Show each image for</value></string>
+  <string><id>12379</id><value>Use Pan and Zoom effects</value></string>
+  <string><id>12380</id><value>Play NTSC videos at PAL rates</value></string>
+  <string><id>12381</id><value>Play PAL videos at NTSC rates</value></string>
+  <string><id>12382</id><value>Play NTSC videos in PAL60</value></string>
+  <string><id>12383</id><value>12 hour clock</value></string>
+  <string><id>12384</id><value>24 hour clock</value></string>
+  <string><id>12385</id><value>Day/Month</value></string>
+  <string><id>12386</id><value>Month/Day</value></string>
+  <string><id>12387</id><value>Rescan database</value></string>
+
+  <string><id>12390</id><value>System Uptime</value></string>
+  <string><id>12391</id><value>Minutes</value></string>
+  <string><id>12392</id><value>Hours</value></string>
+  <string><id>12393</id><value>Days</value></string>
+  <string><id>12394</id><value>Total Uptime</value></string>
+  
   <string><id>12600</id><value>מזג האויר שלי</value></string>
+
   <string><id>12900</id><value>שומר מסך</value></string>
   <string><id>12901</id><value>תפריט במסך מלא</value></string>
+
   <string><id>13000</id><value>מערכת</value></string>
-  <string><id>13001</id><value>סיבוב הרדיסק מיידי</value></string>
+  <string><id>13001</id><value>סיבוב  כונן קשיח מיידי</value></string>
   <string><id>13002</id><value>וידאו בלבד</value></string>
   <string><id>13003</id><value>- השהייה</value></string>
   <string><id>13004</id><value>- אורך קובץ מינימאלי</value></string>
+  <string><id>13005</id><value>Shutdown</value></string>
+  <string><id>13006</id><value>Dashboard</value></string>
+
   <string><id>13100</id><value>פילטר הבהובים</value></string>
+  <string><id>13150</id><value>HDD Key:</value></string>
+  <string><id>13151</id><value>HDD Temp:</value></string>
+  <string><id>13152</id><value>DVD Model:</value></string>
+  <string><id>13153</id><value>DVD Firmware:</value></string>
+  <string><id>13154</id><value>HDD Model:</value></string>
+  <string><id>13155</id><value>HDD Serial:</value></string>
+  <string><id>13156</id><value>HDD Firmware:</value></string>
+  <string><id>13157</id><value>HDD Password:</value></string>
+  <string><id>13158</id><value>HDD Lock State:</value></string>
+  <string><id>13159</id><value>Subnet mask:</value></string>
+  <string><id>13160</id><value>Gateway:</value></string>
+  <string><id>13161</id><value>DNS</value></string>
+  <string><id>13162</id><value>Initialize failed</value></string>
+  <string><id>13163</id><value>GamePads On Port:</value></string>
+  <string><id>13164</id><value>Keyboard On Port:</value></string>
+  <string><id>13165</id><value>Mouse On Port:</value></string>
+  <string><id>13166</id><value>Head/MicroPhone On Port:</value></string>
+  <string><id>13167</id><value>MemoryStick On Port:</value></string>
+  <string><id>13168</id><value>IR-Remote On Port:</value></string>
+  <string><id>13169</id><value>Bypass CD Selection</value></string>
+  <string><id>13170</id><value>Never</value></string>
+  <string><id>13171</id><value>Immediately</value></string>
+  <string><id>13172</id><value>After %i secs</value></string>
+
   <string><id>13200</id><value>פרופילים</value></string>
   <string><id>13201</id><value>למחוק פרופיל &apos;%s&apos;?</value></string>
-  <string><id>13202</id><value>שמור פרופיל נוחכי...</value></string>
+  <string><id>13202</id><value>שמור פרופיל נוכחי...</value></string>
   <string><id>13203</id><value>הפרופיל &apos;%s&apos; נטען בהצלחה</value></string>
+  <string><id>13204</id><value>Last loaded profile:</value></string>
+  <string><id>13205</id><value>Unknown</value></string>
+  <string><id>13206</id><value>Overwrite</value></string>
+  <string><id>13207</id><value>Overwrite profile '%s'?</value></string>
+  <string><id>13208</id><value>Alarm clock</value></string>
+  <string><id>13209</id><value>Alarm clock interval (in minutes)</value></string>
+  <string><id>13210</id><value>Started, alarm in %im</value></string>
+  <string><id>13211</id><value>Alarm!</value></string>
+  <string><id>13212</id><value>Canceled with %im%is left</value></string>
+
+
+  <string><id>13249</id><value>Search for Subtitles in RARs</value></string>
+  <string><id>13250</id><value>Browse for subtitle...</value></string>
+  <string><id>13251</id><value>Move Item</value></string>
+  <string><id>13252</id><value>Move Item Here</value></string>
+  <string><id>13253</id><value>Cancel Move</value></string>
+
+  <string><id>13270</id><value>Hardware:</value></string>
+  <string><id>13271</id><value>CPU Speed:</value></string>
+  <string><id>13274</id><value>Xbox is Connected, but no DNS is available.</value></string>
+  <string><id>13275</id><value>Hard Disk</value></string>
+  <string><id>13276</id><value>DVD-ROM</value></string>
+  <string><id>13277</id><value>Storage</value></string>
+  <string><id>13278</id><value>Default</value></string>
+  <string><id>13279</id><value>Network</value></string>
+  <string><id>13280</id><value>Video</value></string>
+  <string><id>13281</id><value>Hardware</value></string>
+  <string><id>13282</id><value>_</value></string>
+  <string><id>13283</id><value>Kernel Version:</value></string>
+  <string><id>13284</id><value>CPU Speed:</value></string>
+  <string><id>13285</id><value>Detected BIOS:</value></string>
+  <string><id>13286</id><value>Video Encoder:</value></string>
+  <string><id>13287</id><value>Screen Resolution:</value></string>
+  <string><id>13288</id><value>Xbox Version:</value></string>
+  <string><id>13289</id><value>Xbox Serial Number:</value></string>
+  <string><id>13290</id><value>XBOX Manufacturer:</value></string>
+  <string><id>13291</id><value>ModChip:</value></string>
+  <string><id>13292</id><value>A/V Cable:</value></string>
+  <string><id>13293</id><value>Video &amp; XBE Region:</value></string>
+  <string><id>13294</id><value>DVD Region:</value></string>
+  <string><id>13295</id><value>Internet:</value></string>
+  <string><id>13296</id><value>Xbox is Connected</value></string>
+  <string><id>13297</id><value>Xbox is not Connected. Check Network Settings.</value></string>
+  <string><id>13298</id><value>XBLIVE Key:</value></string>
+  <string><id>13299</id><value>Target Temperature</value></string>
   <string><id>13300</id><value>מהירות מאורר:</value></string>
   <string><id>13301</id><value>בקרת טמפרטורה אטומאטית</value></string>
   <string><id>13302</id><value>בקרת מהירות מאורר</value></string>
@@ -610,6 +971,76 @@
   <string><id>13334</id><value>ערוך תווית</value></string>
   <string><id>13335</id><value>קבע כברירת מחדל</value></string>
   <string><id>13336</id><value>הסר כפתור</value></string>
+  <string><id>13337</id><value>- 2 Channel PCM Passthrough</value></string>
+  <string><id>13338</id><value>Front LED</value></string>
+  <string><id>13339</id><value>Front LED Colour</value></string>
+  <string><id>13340</id><value>Leave As Is</value></string>
+  <string><id>13341</id><value>Green</value></string>
+  <string><id>13342</id><value>Orange</value></string>
+  <string><id>13343</id><value>Red</value></string>
+  <string><id>13344</id><value>Cycle</value></string>
+  <string><id>13345</id><value>Switch LED off on Playback</value></string>
+  <string><id>13346</id><value>Movie Information</value></string>
+  <string><id>13347</id><value>Queue Item</value></string>
+  <string><id>13348</id><value>Search IMDb...</value></string>
+  <string><id>13349</id><value>Query Info For All Files</value></string>
+  <string><id>13350</id><value>Now Playing...</value></string>
+  <string><id>13351</id><value>Album Information</value></string>
+  <string><id>13352</id><value>Scan All to Database</value></string>
+  <string><id>13353</id><value>Stop Scanning</value></string>
+  <string><id>13354</id><value>Render Method</value></string>
+  <string><id>13355</id><value>Low Quality Pixel Shader</value></string>
+  <string><id>13356</id><value>Hardware Overlays</value></string>
+  <string><id>13357</id><value>High Quality Pixel Shader</value></string>
+  <string><id>13358</id><value>Play Item</value></string>
+  <string><id>13359</id><value>Set Artist Thumb</value></string>
+  <string><id>13360</id><value>Generate Thumbs</value></string>
+  <string><id>13361</id><value>Enable Voice</value></string>
+  <string><id>13362</id><value>Voice Mask</value></string>
+  <string><id>13363</id><value>- Enable Spectrum Energy Weight</value></string>
+  <string><id>13364</id><value>-- Spectrum Energy Weight Value</value></string>
+  <string><id>13365</id><value>- Enable Pitch Scaling</value></string>
+  <string><id>13366</id><value>-- Pitch Scaling Value</value></string>
+  <string><id>13367</id><value>- Enable Whisper Factor</value></string>
+  <string><id>13368</id><value>-- Whisper Factor Value</value></string>
+  <string><id>13369</id><value>- Enable Robotic Factor</value></string>
+  <string><id>13370</id><value>-- Robotic Factor Value</value></string>
+  <string><id>13371</id><value>- Port 1 Voice</value></string>
+  <string><id>13372</id><value>- Port 2 Voice</value></string>
+  <string><id>13373</id><value>- Port 3 Voice</value></string>
+  <string><id>13374</id><value>- Port 4 Voice</value></string>
+  <string><id>13375</id><value>Enable Device</value></string>
+  <string><id>13376</id><value>Volume</value></string>
+  <string><id>13377</id><value>Default View Mode</value></string>
+  <string><id>13378</id><value>Default Brightness</value></string>
+  <string><id>13379</id><value>Default Contrast</value></string>
+  <string><id>13380</id><value>Default Gamma</value></string>
+  <string><id>13381</id><value>Resume Video</value></string>
+  <string><id>13382</id><value>Voice Mask - Port 1</value></string>
+  <string><id>13383</id><value>Voice Mask - Port 2</value></string>
+  <string><id>13384</id><value>Voice Mask - Port 3</value></string>
+  <string><id>13385</id><value>Voice Mask - Port 4</value></string>
+  <string><id>13386</id><value>Use Time Based Seeking</value></string>
+  <string><id>13387</id><value>Track Naming Template Right</value></string>
+  <string><id>13388</id><value>Presets</value></string>
+  <string><id>13389</id><value>There are no presets available&#10;for this visualisation</value></string>
+  <string><id>13390</id><value>There are no settings available&#10;for this visualisation</value></string>
+  <string><id>13391</id><value>Eject/Load</value></string>
+  <string><id>13392</id><value>Use Visualisation if playing audio</value></string>
+  <string><id>13393</id><value>Calculate Size</value></string>
+  <string><id>13394</id><value>Calculating folder size</value></string>
+  <string><id>13395</id><value>Video Settings</value></string>
+  <string><id>13396</id><value>Audio and Subtitle Settings</value></string>
+  <string><id>13397</id><value>Enable Subtitles</value></string>
+  <string><id>13398</id><value>Bookmarks</value></string>
+  <string><id>13399</id><value>Ignore "The" when sorting</value></string>
+  <string><id>13400</id><value>Crossfade albumtracks</value></string>
+  <string><id>13401</id><value>Browse for %s</value></string>
+  <string><id>13402</id><value>Show track position</value></string>
+  <string><id>13403</id><value>Clear Default</value></string>
+  <string><id>13404</id><value>Resume</value></string>
+  <string><id>13405</id><value>Get Thumb</value></string>
+
   <string><id>14000</id><value>צבירה: כבויה</value></string>
   <string><id>14001</id><value>צבירה: פשוטה</value></string>
   <string><id>14002</id><value>צבירה: מעורפלת</value></string>
@@ -639,11 +1070,9 @@
   <string><id>14026</id><value>וידאו מכונן DVD</value></string>
   <string><id>14027</id><value>וידאו מרשת מקומית</value></string>
   <string><id>14028</id><value>וידאו מהאינטרנט</value></string>
-  <string><id>14029</id><value>אודיו מהכונן הקשיח</value></string>
   <string><id>14030</id><value>אודיו מכונן DVD</value></string>
   <string><id>14031</id><value>אודיו מרשת מקומית</value></string>
   <string><id>14032</id><value>אודיו מהאינטרנט</value></string>
-  <string><id>14033</id><value>DVD מהכונן הקשיח</value></string>
   <string><id>14034</id><value>DVD מכונן DVD</value></string>
   <string><id>14035</id><value>DVD מרשת מקומית</value></string>
   <string><id>14036</id><value>שרתים</value></string>
@@ -661,4 +1090,210 @@
   <string><id>14048</id><value>%i kbps</value></string>
   <string><id>14049</id><value>%i kb</value></string>
   <string><id>14050</id><value>%i.0 dB</value></string>
+  <string><id>14051</id><value>Time Format</value></string>
+  <string><id>14052</id><value>Date Format</value></string>
+  <string><id>14053</id><value>GUI Filters</value></string>
+  <string><id>14054</id><value>Enable Internet Lookups</value></string>
+  <string><id>14055</id><value>Use Background Scanning</value></string>
+  <string><id>14056</id><value>Stop Scan</value></string>
+  <string><id>14057</id><value>Not possible while scanning for media info</value></string>
+  <string><id>14058</id><value>Film Grain Effect</value></string>
+  <string><id>14059</id><value>Look for custom thumbnails on remote shares</value></string>
+  <string><id>14060</id><value>Unknown type Cache - Internet</value></string>
+  <string><id>14061</id><value>Auto</value></string>
+  <string><id>14062</id><value>Enter username for</value></string>
+  <string><id>14063</id><value>Date &amp; Time</value></string>
+  <string><id>14064</id><value>Set Date</value></string>
+  <string><id>14065</id><value>Set Time</value></string>
+  <string><id>14066</id><value>Enter the Time in 24 hour HH:MM format</value></string>
+  <string><id>14067</id><value>Enter the Date in DD/MM/YYYY format</value></string>
+  <string><id>14068</id><value>Enter the IP address</value></string>
+  <string><id>14069</id><value>Do you want set these Settings now?</value></string> 	 
+  <string><id>14070</id><value>Apply Changes Now</value></string> 	 
+  <string><id>14071</id><value>Allow File Renaming and Deletion</value></string>
+  <string><id>14072</id><value>Enable XLink Kai</value></string>
+  <string><id>14073</id><value>XLink Kai is not enabled.</value></string>
+
+  <string><id>15000</id><value>XLink Kai</value></string>
+  <string><id>15001</id><value>The service is not connected, would you like to attempt</value></string>
+  <string><id>15002</id><value>reconnecting it with Xbox Media Center?</value></string>
+  <string><id>15003</id><value>Enter your message</value></string>
+  <string><id>15004</id><value>You've been invited to play %s.</value></string>
+  <string><id>15005</id><value>Date: %s</value></string>
+  <string><id>15006</id><value>From: %s</value></string>
+  <string><id>15007</id><value>Invitation</value></string>
+  <string><id>15008</id><value>You've been invited to join %s.</value></string>
+  <string><id>15009</id><value>Offline</value></string>
+  <string><id>15010</id><value>Friends</value></string>
+  <string><id>15011</id><value>View: Friends</value></string>
+  <string><id>15012</id><value>Join</value></string>
+  <string><id>15013</id><value>Voice</value></string>
+  <string><id>15014</id><value>Invite</value></string>
+  <string><id>15015</id><value>Remove</value></string>
+  <string><id>15016</id><value>Games</value></string>
+  <string><id>15017</id><value>View: Games</value></string>
+  <string><id>15018</id><value>Enter</value></string>
+  <string><id>15019</id><value>Add</value></string>
+  <string><id>15020</id><value>Host</value></string>
+  <string><id>15021</id><value>Arenas</value></string>
+  <string><id>15022</id><value>View: Arenas</value></string>
+  <string><id>15023</id><value>Play</value></string>
+  <string><id>15024</id><value>Add</value></string>
+  <string><id>15025</id><value>Host</value></string>
+  <string><id>15026</id><value>Chat</value></string>
+  <string><id>15027</id><value>View: Chat</value></string>
+  <string><id>15028</id><value>Keyboard</value></string>
+  <string><id>15029</id><value>A password is required to join this arena.</value></string>
+  <string><id>15030</id><value>Service has disconnected</value></string>
+  <string><id>15031</id><value>XLink Kai Authentication</value></string>
+  <string><id>15032</id><value>Your username and/or password was rejected by the</value></string>
+  <string><id>15033</id><value>orbital server. Please check your configuration.</value></string>
+  <string><id>15034</id><value>has just signed in</value></string>
+  <string><id>15035</id><value>has initiated voice chat</value></string>
+  <string><id>15036</id><value>has sent you an invitation</value></string>
+  <string><id>15037</id><value>XBMC is unable to confirm your network is reachable.</value></string>
+  <string><id>15038</id><value>You may experience difficulties joining or hosting games.</value></string>
+  <string><id>15039</id><value>Xbox Media Center unable to locate game automatically.</value></string>
+  <string><id>15040</id><value>Insert the game disk into your XBOX or press 'A' to cancel</value></string>
+  <string><id>15041</id><value>and launch the game manually.</value></string>
+  <string><id>15042</id><value>Access Denied</value></string>
+  <string><id>15043</id><value>%s joins chat.</value></string>
+  <string><id>15044</id><value>%s leaves chat.</value></string>
+  <string><id>15045</id><value>Enter your personal message.</value></string>
+  <string><id>15046</id><value>Current Arena</value></string>
+  <string><id>15047</id><value>Enter a password for your arena.</value></string>
+  <string><id>15048</id><value>Enter a description for your arena.</value></string>
+  <string><id>15049</id><value>Host Game</value></string>
+  <string><id>15050</id><value>Host in a private arena</value></string>
+  <string><id>15051</id><value>Player Limit</value></string>
+  <string><id>15052</id><value>Password</value></string>
+  <string><id>15053</id><value>Description</value></string>
+  <string><id>15054</id><value>Invite Dialog</value></string>
+  <string><id>15055</id><value>Choose game:</value></string>
+  <string><id>15056</id><value>Enter message:</value></string>
+  <string><id>15057</id><value>Send</value></string>
+  <string><id>15058</id><value>Host</value></string>
+  <string><id>15059</id><value>Invite accepted!</value></string>
+  <string><id>15060</id><value>Message Here</value></string>
+  <string><id>15061</id><value>You're invited to play %s.</value></string>
+  <string><id>15062</id><value>Use alternate mplayer location</value></string>
+
+  <string><id>15100</id><value>Library</value></string>
+  <string><id>15101</id><value>Database</value></string>
+  <string><id>15102</id><value>* All Albums</value></string>
+  <string><id>15103</id><value>* All Artists</value></string>
+  <string><id>15104</id><value>* All Songs</value></string>
+  <string><id>15105</id><value>* All Genres</value></string>
+  <string><id>15106</id><value>Remember selected file on forward navigation</value></string>
+  <string><id>15107</id><value>Buffering...</value></string>
+  <string><id>15108</id><value>Navigation Sounds</value></string>
+  <string><id>15109</id><value>Skin Default</value></string>
+  <string><id>15110</id><value>Controller Rumble</value></string>
+  <string><id>15111</id><value>Skin Theme</value></string>
+  <string><id>15112</id><value>Default Theme</value></string>
+
+  <string><id>15200</id><value>LastFM</value></string>
+  <string><id>15201</id><value>Submit Songs to LastFM</value></string>
+  <string><id>15202</id><value>LastFM Username</value></string>
+  <string><id>15203</id><value>LastFM Password</value></string>
+  <string><id>15204</id><value>Unable to handshake: sleeping...</value></string>
+  <string><id>15205</id><value>Please Update XBMC</value></string>
+  <string><id>15206</id><value>Submission failed: bad authorization.</value></string>
+  <string><id>15207</id><value>Connected</value></string>
+  <string><id>15208</id><value>Not Connected</value></string>
+  <string><id>15209</id><value>Submit Interval %i</value></string>
+  <string><id>15210</id><value>Cached %i Songs</value></string>
+  <string><id>15211</id><value>Submitting...</value></string>
+  <string><id>15212</id><value>Submitting in %i secs</value></string>
+  <string><id>15213</id><value>Play Using...</value></string>
+  <string><id>15214</id><value>Use Smoothed A/V Syncronization</value></string>
+  <string><id>15215</id><value>Hide File Names in Thumbs View</value></string>
+
+  <string><id>15250</id><value>Submit Last.fm Radio to LastFM</value></string>
+  <string><id>15251</id><value>Connecting to Last.fm...</value></string>
+  <string><id>15252</id><value>Selecting station...</value></string>
+  <string><id>15253</id><value>Search similar artists...</value></string>
+  <string><id>15254</id><value>Search similar tags...</value></string>
+  <string><id>15255</id><value>Your profile (%name%)</value></string>
+  <string><id>15256</id><value>Overall top tags</value></string>
+  <string><id>15257</id><value>Top artists for tag %name%</value></string>
+  <string><id>15258</id><value>Top albums for tag %name%</value></string>
+  <string><id>15259</id><value>Top tracks for tag %name%</value></string>
+  <string><id>15260</id><value>Listen to tag %name% last.fm radio</value></string>
+  <string><id>15261</id><value>Similar artists as %name%</value></string>
+  <string><id>15262</id><value>Top %name% albums</value></string>
+  <string><id>15263</id><value>Top %name% tracks</value></string>
+  <string><id>15264</id><value>Top %name% tags</value></string>
+  <string><id>15265</id><value>Biggest fans of %name%</value></string>
+  <string><id>15266</id><value>Listen to %name% fans last.fm radio</value></string>
+  <string><id>15267</id><value>Listen to %name% similar artists last.fm radio</value></string>
+  <string><id>15268</id><value>Top artists for user %name%</value></string>
+  <string><id>15269</id><value>Top albums for user %name%</value></string>
+  <string><id>15270</id><value>Top tracks for user %name%</value></string>
+  <string><id>15271</id><value>Friends of user %name%</value></string>
+  <string><id>15272</id><value>Neighbours of user %name%</value></string>
+  <string><id>15273</id><value>Weekly artist chart for %name%</value></string>
+  <string><id>15274</id><value>Weekly album chart for %name%</value></string>
+  <string><id>15275</id><value>Weekly track chart for %name%</value></string>
+  <string><id>15276</id><value>Listen to %name%'s neighbours last.fm radio</value></string>
+  <string><id>15277</id><value>Listen to %name%'s personal last.fm radio</value></string>
+  <string><id>15278</id><value>Listen to %name%'s loved tracks last.fm radio</value></string>
+  <string><id>15279</id><value>Retrieving list from last.fm...</value></string>
+  <string><id>15280</id><value>Can't retrieve list from last.fm...</value></string>
+  <string><id>15281</id><value>Enter an artist name to find related ones</value></string>
+  <string><id>15282</id><value>Enter a tag name to find similar ones</value></string>
+  <string><id>15283</id><value>Tracks recently listened by %name%</value></string>
+   
+  <string><id>15300</id><value>Path not found or invalid</value></string>
+  <string><id>15301</id><value>Could not connect to network server</value></string>
+  <string><id>15302</id><value>No servers found</value></string>
+  <string><id>15303</id><value>Workgroup not found</value></string>
+
+  <string><id>15310</id><value>Opening multi-path bookmark</value></string>
+  <string><id>15311</id><value>Path:</value></string>
+
+  <string><id>16000</id><value>General</value></string>
+  <string><id>16001</id><value>Configure Audio Hardware...</value></string>
+  <string><id>16002</id><value>CDDB lookup</value></string>
+  <string><id>16003</id><value>Player</value></string>
+  <string><id>16004</id><value>Play media from disc</value></string>
+  
+  <string><id>16009</id><value>Enter the Movie Name</value></string>
+  <string><id>16010</id><value>Enter the Profile Name</value></string>
+  <string><id>16011</id><value>Enter the Album Name</value></string>
+  <string><id>16012</id><value>Enter the Playlist Name</value></string>
+  <string><id>16013</id><value>Enter new filename</value></string>
+  <string><id>16014</id><value>Enter folder name</value></string>
+  <string><id>16015</id><value>Enter directory</value></string>
+  <string><id>16016</id><value>Available options: %A, %T, %N, %B, %D, %G, %Y, %F, %S</value></string>
+  <string><id>16017</id><value>Enter Search String</value></string>
+  <string><id>16018</id><value>None</value></string>
+  <string><id>16019</id><value>Auto Select</value></string>
+  <string><id>16020</id><value>DeInterlace</value></string>
+  <string><id>16021</id><value>Sync Odd</value></string>
+  <string><id>16022</id><value>Sync Even</value></string>
+  <string><id>16023</id><value>Interlaced Handling</value></string>
+  <string><id>16024</id><value>Canceling...</value></string>
+  <string><id>16025</id><value>Enter the Artist Name</value></string>
+  <string><id>16026</id><value>Playlist playback aborted</value></string>
+  <string><id>16027</id><value>Too many consecutive failed items</value></string>
+
+  <string><id>16030</id><value>Party Mode mode aborted.</value></string>
+  <string><id>16031</id><value>No matching songs in the database.</value></string>
+  <string><id>16032</id><value>Could not initialise database.</value></string>
+  <string><id>16033</id><value>Could not open database.</value></string>
+  <string><id>16034</id><value>Could not get songs from database.</value></string>
+
+  <string><id>16100</id><value>All Videos</value></string>
+  <string><id>16101</id><value>UnWatched</value></string>
+  <string><id>16102</id><value>Watched</value></string>
+  <string><id>16103</id><value>Mark as Watched</value></string>
+  <string><id>16104</id><value>Mark as UnWatched</value></string>
+  <string><id>16105</id><value>Edit Title</value></string>
+  <string><id>16106</id><value>Use NTSC-M &amp; NTSC-J</value></string>
+  <string><id>16107</id><value>Use only NTSC-M</value></string>
+  <string><id>16108</id><value>Use only NTSC-J</value></string>
+  <string><id>16109</id><value>Use only PAL-60</value></string>
+  <string><id>16110</id><value>For 60hz Games</value></string>
+
 </strings>

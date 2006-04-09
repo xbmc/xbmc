@@ -1,6 +1,7 @@
 #include "include.h"
 #include "LocalizeStrings.h"
 #include "../xbmc/utils/CharsetConverter.h"
+#include "XMLUtils.h"
 
 
 CLocalizeStrings g_localizeStrings;
@@ -24,6 +25,10 @@ bool CLocalizeStrings::Load(const CStdString& strFileName)
       g_LoadErrorStr.Format("%s, Line %d\n%s", strFileName.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
       return false;
     }
+    
+    CStdString strEncoding;
+    XMLUtils::GetEncoding(&xmlDoc, strEncoding);
+
     TiXmlElement* pRootElement = xmlDoc.RootElement();
     CStdString strValue = pRootElement->Value();
     if (strValue != CStdString("strings"))
@@ -38,13 +43,18 @@ bool CLocalizeStrings::Load(const CStdString& strFileName)
       CStdString strValue = pChild->Value();
       if (strValue == "string")
       {
-        // TODO: UTF-8: What if the xml encoding is in UTF-8 already?
         const TiXmlNode *pChildID = pChild->FirstChild("id");
         const TiXmlNode *pChildText = pChild->FirstChild("value");
         DWORD dwID = atoi(pChildID->FirstChild()->Value());
         CStdString utf8String;
         if (!pChildText->NoChildren())
-          g_charsetConverter.stringCharsetToUtf8(pChildText->FirstChild()->Value(), utf8String);
+        {
+          if (strEncoding.IsEmpty()) // Is language file utf8?
+            utf8String=pChildText->FirstChild()->Value();
+          else
+            g_charsetConverter.stringCharsetToUtf8(strEncoding, pChildText->FirstChild()->Value(), utf8String);
+        }
+
         if (!utf8String.IsEmpty())
           m_vecStrings[dwID] = utf8String;
       }
@@ -61,6 +71,10 @@ bool CLocalizeStrings::Load(const CStdString& strFileName)
     {
       return true;
     }
+
+    CStdString strEncoding;
+    XMLUtils::GetEncoding(&xmlDoc, strEncoding);
+
     TiXmlElement* pRootElement = xmlDoc.RootElement();
     CStdString strValue = pRootElement->Value();
     if (strValue != CStdString("strings")) return false;
@@ -79,9 +93,11 @@ bool CLocalizeStrings::Load(const CStdString& strFileName)
           i = m_vecStrings.find(dwID);
           if (i == m_vecStrings.end())
           {
-            // TODO: UTF-8: What if the xml encoding is in UTF-8 already?
             CStdString utf8String;
-            g_charsetConverter.stringCharsetToUtf8(pChildText->FirstChild()->Value(), utf8String);
+            if (strEncoding.IsEmpty()) // Is language file utf8?
+              utf8String=pChildText->FirstChild()->Value();
+            else
+              g_charsetConverter.stringCharsetToUtf8(strEncoding, pChildText->FirstChild()->Value(), utf8String);
             m_vecStrings[dwID] = utf8String;
           }
         }
