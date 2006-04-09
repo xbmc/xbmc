@@ -361,6 +361,33 @@ void CCharsetConverter::stringCharsetToUtf8(const CStdStringA& strSource, CStdSt
   }
 }
 
+void CCharsetConverter::stringCharsetToUtf8(const CStdStringA& strSourceCharset, const CStdStringA& strSource, CStdStringA& strDest)
+{
+  iconv_t iconvString=iconv_open("UTF-8", strSourceCharset.c_str());
+
+  if (iconvString != (iconv_t) - 1)
+  {
+    const char* src = strSource.c_str();
+    size_t inBytes = strSource.length() + 1;
+
+    size_t outBytes = (inBytes * 4) + 1;
+    char *dst = strDest.GetBuffer(outBytes);
+
+    if (iconv(iconvString, &src, &inBytes, &dst, &outBytes) == -1)
+    {
+      strDest.ReleaseBuffer();
+      // For some reason it failed (maybe wrong charset?). Nothing to do but
+      // return the original..
+      strDest = strSource;
+      return ;
+    }
+
+    strDest.ReleaseBuffer();
+
+    iconv_close(iconvString);
+  }
+}
+
 void CCharsetConverter::utf16toUTF8(const CStdStringW& strSource, CStdStringA &strDest)
 {
   if (m_iconvUtf16toUtf8 == (iconv_t) - 1)
