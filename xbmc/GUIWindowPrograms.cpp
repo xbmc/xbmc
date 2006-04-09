@@ -841,6 +841,7 @@ bool CGUIWindowPrograms::Update(const CStdString &strDirectory)
         {
           for (int i = 0; i < (int)m_vecPaths1.size(); i++)
           { 
+            CLog::Log(LOGDEBUG, "Comparing %i item (%s) from m_vecPaths with %i item (%s) from m_vecPaths1", j, m_vecPaths[j].c_str(), i, m_vecPaths1[i].c_str());
             if (m_vecPaths1[i]==m_vecPaths[j])
             {
               found = true;

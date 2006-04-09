@@ -16,7 +16,6 @@
 #include <queue>
 #include <stdio.h>
 #include "stdstring.h"
-#include "../xbmc/StringUtils.h"
 using namespace std;
 
 #ifdef _DEBUG

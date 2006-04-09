@@ -268,7 +268,7 @@ void CGUIButtonControl::OnClick()
 {
   // Save values, SEND_CLICK_MESSAGE may deactivate the window
   long lHyperLinkWindowID = m_lHyperLinkWindowID;
-  CStdStringArray clickActions = m_clickActions;
+  vector<CStdString> clickActions = m_clickActions;
   DWORD dwControlID = GetID();
   DWORD dwParentID = GetParentID();
 

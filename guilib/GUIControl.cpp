@@ -13,7 +13,9 @@ CGUIControl::CGUIControl()
   m_dwControlID = 0;
   m_iGroup = -1;
   m_dwParentID = 0;
-  m_bVisible = true;
+  m_visible = true;
+  m_visibleFromSkinCondition = true;
+  m_forceHidden = false;
   m_visibleCondition = 0;
   m_bDisabled = false;
   m_bSelected = false;
@@ -43,8 +45,9 @@ CGUIControl::CGUIControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPo
   m_dwControlID = dwControlId;
   m_iGroup = -1;
   m_dwParentID = dwParentID;
-  m_bVisible = true;
-  m_lastVisible = true;
+  m_visible = true;
+  m_visibleFromSkinCondition = true;
+  m_forceHidden = false;
   m_visibleCondition = 0;
   m_bDisabled = false;
   m_bSelected = false;
@@ -260,16 +263,17 @@ bool CGUIControl::OnMessage(CGUIMessage& message)
       break;
 
     case GUI_MSG_VISIBLE:
-      m_bVisible = m_visibleCondition ? g_infoManager.GetBool(m_visibleCondition, m_dwParentID) : true;
+      m_visible = m_visibleCondition ? g_infoManager.GetBool(m_visibleCondition, m_dwParentID) : true;
+      m_forceHidden = false;
       return true;
       break;
 
     case GUI_MSG_HIDDEN:
-      m_bVisible = false;
+      m_forceHidden = true;
       // reset any visible animations that are in process
       if (IsAnimating(ANIM_TYPE_VISIBLE))
       {
-//        CLog::DebugLog("Resetting visible animation on control %i (we are %s)", m_dwControlID, m_bVisible ? "visible" : "hidden");
+//        CLog::DebugLog("Resetting visible animation on control %i (we are %s)", m_dwControlID, m_visible ? "visible" : "hidden");
         CAnimation *visibleAnim = GetAnimation(ANIM_TYPE_VISIBLE);
         if (visibleAnim) visibleAnim->ResetAnimation();
       }
@@ -308,7 +312,8 @@ bool CGUIControl::CanFocus() const
 
 bool CGUIControl::IsVisible() const
 {
-  return m_bVisible;
+  if (m_forceHidden) return false;
+  return m_visible;
 }
 
 bool CGUIControl::IsSelected() const
@@ -400,14 +405,17 @@ void CGUIControl::SetHeight(int iHeight)
 
 void CGUIControl::SetVisible(bool bVisible)
 {
+  // just force to hidden if necessary
+  m_forceHidden = !bVisible;
+/*
   if (m_visibleCondition)
     bVisible = g_infoManager.GetBool(m_visibleCondition, m_dwParentID);
   if (m_bVisible != bVisible)
   {
-    m_bVisible = bVisible;
-    m_lastVisible = bVisible;
+    m_visible = bVisible;
+    m_visibleFromSkinCondition = bVisible;
     m_bInvalidated = true;
-  }
+  }*/
 }
 
 void CGUIControl::SetSelected(bool bSelected)
@@ -449,14 +457,14 @@ int CGUIControl::GetGroup(void) const
 
 void CGUIControl::UpdateVisibility()
 {
-  bool bWasVisible = m_lastVisible;
-  m_lastVisible = g_infoManager.GetBool(m_visibleCondition, m_dwParentID);
-  if (!bWasVisible && m_lastVisible)
+  bool bWasVisible = m_visibleFromSkinCondition;
+  m_visibleFromSkinCondition = g_infoManager.GetBool(m_visibleCondition, m_dwParentID);
+  if (!bWasVisible && m_visibleFromSkinCondition)
   { // automatic change of visibility - queue the in effect
 //    CLog::DebugLog("Visibility changed to visible for control id %i", m_dwControlID);
     QueueAnimation(ANIM_TYPE_VISIBLE);
   }
-  else if (bWasVisible && !m_lastVisible)
+  else if (bWasVisible && !m_visibleFromSkinCondition)
   { // automatic change of visibility - do the out effect
 //    CLog::DebugLog("Visibility changed to hidden for control id %i", m_dwControlID);
     QueueAnimation(ANIM_TYPE_HIDDEN);
@@ -465,8 +473,11 @@ void CGUIControl::UpdateVisibility()
 
 void CGUIControl::SetInitialVisibility()
 {
-  m_lastVisible = m_bVisible = g_infoManager.GetBool(m_visibleCondition, m_dwParentID);
-//  CLog::DebugLog("Set initial visibility for control %i: %s", m_dwControlID, m_bVisible ? "visible" : "hidden");
+  m_visibleFromSkinCondition = m_visible = g_infoManager.GetBool(m_visibleCondition, m_dwParentID);
+//  CLog::DebugLog("Set initial visibility for control %i: %s", m_dwControlID, m_visible ? "visible" : "hidden");
+  // no need to enquire every frame if we are always visible or always hidden
+  if (m_visibleCondition == SYSTEM_ALWAYS_TRUE || m_visibleCondition == SYSTEM_ALWAYS_FALSE)
+    m_visibleCondition = 0;
 }
 
 void CGUIControl::UpdateEffectState(DWORD currentTime)
@@ -490,12 +501,12 @@ void CGUIControl::SetAnimations(const vector<CAnimation> &animations)
 void CGUIControl::QueueAnimation(ANIMATION_TYPE animType)
 {
   // rule out the animations we shouldn't perform
-  if (!m_bVisible || !HasRendered()) 
+  if (!IsVisible() || !HasRendered()) 
   { // hidden or never rendered - don't allow exit or entry animations for this control
     if (animType == ANIM_TYPE_WINDOW_CLOSE && !IsAnimating(ANIM_TYPE_WINDOW_OPEN))
       return;
   }
-  if (!m_bVisible)
+  if (!IsVisible())
   { // hidden - only allow hidden anims if we're animating a visible anim
     if (animType == ANIM_TYPE_HIDDEN && !IsAnimating(ANIM_TYPE_VISIBLE))
       return;
@@ -539,7 +550,7 @@ CAnimation *CGUIControl::GetAnimation(ANIMATION_TYPE type, bool checkConditions 
 
 void CGUIControl::UpdateStates(ANIMATION_TYPE type, ANIMATION_PROCESS currentProcess, ANIMATION_STATE currentState)
 {
-  bool visible = m_bVisible;
+  bool visible = m_visible;
   // Make sure control is hidden or visible at the appropriate times
   // while processing a visible or hidden animation it needs to be visible,
   // but when finished a hidden operation it needs to be hidden
@@ -548,14 +559,14 @@ void CGUIControl::UpdateStates(ANIMATION_TYPE type, ANIMATION_PROCESS currentPro
     if (currentProcess == ANIM_PROCESS_REVERSE)
     {
       if (currentState == ANIM_STATE_APPLIED)
-        m_bVisible = false;
+        m_visible = false;
     }
     else if (currentProcess == ANIM_PROCESS_NORMAL)
     {
       if (currentState == ANIM_STATE_DELAYED)
-        m_bVisible = false;
+        m_visible = false;
       else
-        m_bVisible = m_lastVisible; // true ??
+        m_visible = m_visibleFromSkinCondition;
     }
   }
   else if (type == ANIM_TYPE_HIDDEN)
@@ -563,13 +574,13 @@ void CGUIControl::UpdateStates(ANIMATION_TYPE type, ANIMATION_PROCESS currentPro
     if (currentProcess == ANIM_PROCESS_NORMAL)  // a hide animation
     {
       if (currentState == ANIM_STATE_APPLIED)
-        m_bVisible = false; // finished
+        m_visible = false; // finished
       else
-        m_bVisible = true; // have to be visible until we are finished
+        m_visible = true; // have to be visible until we are finished
     }
     else if (currentProcess == ANIM_PROCESS_REVERSE)  // a visible animation
     { // no delay involved here - just make sure it's visible
-      m_bVisible = m_lastVisible;
+      m_visible = m_visibleFromSkinCondition;
     }
   }
   else if (type == ANIM_TYPE_WINDOW_OPEN)
@@ -577,9 +588,9 @@ void CGUIControl::UpdateStates(ANIMATION_TYPE type, ANIMATION_PROCESS currentPro
     if (currentProcess == ANIM_PROCESS_NORMAL)
     {
       if (currentState == ANIM_STATE_DELAYED)
-        m_bVisible = false; // delayed
+        m_visible = false; // delayed
       else
-        m_bVisible = m_lastVisible;
+        m_visible = m_visibleFromSkinCondition;
     }
   }
   else if (type == ANIM_TYPE_FOCUS)
@@ -589,8 +600,8 @@ void CGUIControl::UpdateStates(ANIMATION_TYPE type, ANIMATION_PROCESS currentPro
     if (currentProcess == ANIM_PROCESS_NORMAL && currentState == ANIM_STATE_APPLIED)
       OnFocus();
   }
-//  if (visible != m_bVisible)
-//    CLog::DebugLog("UpdateControlState of control id %i - now %s (type=%d, process=%d, state=%d)", m_dwControlID, m_bVisible ? "visible" : "hidden", type, currentProcess, currentState);
+//  if (visible != m_visible)
+//    CLog::DebugLog("UpdateControlState of control id %i - now %s (type=%d, process=%d, state=%d)", m_dwControlID, m_visible ? "visible" : "hidden", type, currentProcess, currentState);
 }
 
 void CGUIControl::Animate(DWORD currentTime)

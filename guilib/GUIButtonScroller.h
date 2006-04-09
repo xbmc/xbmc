@@ -19,7 +19,7 @@ public:
   int id;
   int info;
   string strLabel;
-  CStdStringArray clickActions;
+  vector<CStdString> clickActions;
   CGUIImage *imageFocus;
   CGUIImage *imageNoFocus;
 };
