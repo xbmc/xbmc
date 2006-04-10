@@ -39,7 +39,7 @@ bool CTrainer::Load(const CStdString& strPath)
   if (!file.Open(strPath))
     return false;
 
-  if (stricmp(CUtil::GetExtension(strPath),".xbtf") == 0)
+  if (CUtil::GetExtension(strPath).Equals(".xbtf"))
     m_bIsXBTF = true;
   else
     m_bIsXBTF = false;

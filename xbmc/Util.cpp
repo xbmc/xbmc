@@ -61,29 +61,18 @@ CUtil::CUtil(void)
 CUtil::~CUtil(void)
 {}
 
-char* CUtil::GetExtension(const CStdString& strFileName)
-{
+
+/* returns filename extension including period of given url */
+const CStdString CUtil::GetExtension(const CStdString& strFileName)
+{ 
   CURL url(strFileName);
-  const char* extension;
-  extension = strFileName.c_str()+strFileName.rfind(".");
-  return (char*)extension ;
+  return url.GetFileType();
 }
 
-char* CUtil::GetFileName(const CStdString& strFileNameAndPath)
+const CStdString CUtil::GetFileName(const CStdString& strFileName)
 {
-  CURL url(strFileNameAndPath);
-  const char* extension = NULL;
-  if ((url.GetProtocol() == "rar") || (url.GetProtocol() == "zip"))
-    extension = strFileNameAndPath.c_str()+strFileNameAndPath.rfind("\\");
-  else if (url.IsLocal())
-    extension = strrchr(strFileNameAndPath.c_str(), '\\');
-  if (!extension)
-  {
-    extension = strrchr(strFileNameAndPath.c_str(), '/');
-    if (!extension) return (char*)strFileNameAndPath.c_str();
-  }
-  extension++;
-  return (char*)extension;
+  CURL url(strFileName);
+  return url.GetFileNameWithoutPath();
 }
 
 CStdString CUtil::GetTitleFromPath(const CStdString& strFileNameAndPath)
@@ -3259,16 +3248,13 @@ CStdString CUtil::MakeLegalFileName(const char* strFile, bool bKeepExtension, bo
 
 void CUtil::AddDirectorySeperator(CStdString& strPath)
 {
-  CURL url(strPath);
-  if (url.IsLocal()) strPath += "\\";
-  else strPath += "/";
+  strPath += GetDirectorySeperator(strPath);
 }
 
-char CUtil::GetDirectorySeperator(const CStdString& strPath)
+char CUtil::GetDirectorySeperator(const CStdString &strFilename)
 {
-  CURL url(strPath);
-  if (url.IsLocal()) return '\\';
-  return '/';
+  CURL url(strFilename);
+  return url.GetDirectorySeparator();
 }
 
 void CUtil::ConvertFileItemToPlayListItem(const CFileItem *pItem, CPlayList::CPlayListItem &playlistitem)
@@ -3283,12 +3269,8 @@ void CUtil::ConvertFileItemToPlayListItem(const CFileItem *pItem, CPlayList::CPl
 }
 
 bool CUtil::IsUsingTTFSubtitles()
-{
-  char* ext = strrchr(g_guiSettings.GetString("Subtitles.Font").c_str(), '.');
-  if (ext && stricmp(ext, ".ttf") == 0)
-    return true;
-  else
-    return false;
+{  
+  return CUtil::GetExtension(g_guiSettings.GetString("Subtitles.Font")).Equals(".ttf");
 }
 
 typedef struct
