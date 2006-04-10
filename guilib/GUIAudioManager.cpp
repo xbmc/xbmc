@@ -42,6 +42,7 @@ void CGUIAudioManager::Initialize(int iDevice)
     bool bAudioOnAllSpeakers=false;
     g_audioContext.SetupSpeakerConfig(2, bAudioOnAllSpeakers);
     g_audioContext.SetActiveDevice(CAudioContext::DIRECTSOUND_DEVICE);
+    m_lpDirectSound=g_audioContext.GetDirectSoundDevice();
   }
   else if (iDevice==CAudioContext::DIRECTSOUND_DEVICE)
   {
