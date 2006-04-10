@@ -17,6 +17,7 @@
 #include "GUIDialogContextMenu.h"
 #include "GUIWindowFileManager.h"
 #include "PartyModeManager.h"
+#include "utils/GUIInfoManager.h"
 
 #define CONTROL_BTNVIEWASICONS  2
 #define CONTROL_BTNSORTBY       3
@@ -581,6 +582,18 @@ void CGUIWindowMusicBase::ShowAlbumInfo(const CStdString& strAlbum, const CStdSt
 
         if (bSaveDb && CFile::Exists(strThumb))
           m_musicdatabase.SaveAlbumThumb(album.GetTitle(), album.GetAlbumPath(), strThumb);
+
+        // Update current playing song...
+        if (g_application.IsPlayingAudio())
+        {
+          CStdString strSongFolder;
+          const CMusicInfoTag& tag=g_infoManager.GetCurrentSongTag();
+          CUtil::GetDirectory(tag.GetURL(), strSongFolder);
+
+          // ...if it's matching
+          if (strSongFolder.Equals(strPath) && tag.GetAlbum().Equals(strAlbum))
+            g_infoManager.SetCurrentAlbumThumb(strThumb);
+        }
 
         pDlgAlbumInfo->SetAlbum(album);
         pDlgAlbumInfo->DoModal(GetID());
