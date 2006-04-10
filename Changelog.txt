@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 10-04-2006 fixed: use correct subnet mask for samba instead of hardcoded 255.255.255.0
+ - 10-04-2006 fixed: xbmc would easily read garbage if asked to read text files from dvd.
  - 09-04-2006 changed: Added free memory logging to logfile and removed current date (time is still there)
  - 09-04-2006 updated: chinese (simple) langugae file (Thanks to hibaby)
  - 09-04-2006 updated: Hebrew language file (Thnx to vgs)
