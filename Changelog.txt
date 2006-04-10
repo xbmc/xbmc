@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 10-04-2006 changed: handling of file extension + code cleanup
  - 10-04-2006 added: if album info from the currently playling album is downloaded it will update the music overlay with the new cover
  - 10-04-2006 fixed: nav sounds are gone after skin change
  - 10-04-2006 fixed: use correct subnet mask for samba instead of hardcoded 255.255.255.0

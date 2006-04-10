@@ -27,6 +27,10 @@ public:
   const CStdString& GetFileType() const;
   const CStdString& GetShareName() const;
   const CStdString& GetOptions() const;
+  const CStdString  GetFileNameWithoutPath() const; /* return the filename excluding path */
+
+  inline const char GetDirectorySeparator() const;
+
   void GetURL(CStdString& strURL) const;
   void GetURLPath(CStdString& strPath) const;
   void GetURLWithoutUserDetails(CStdString& strURL) const;

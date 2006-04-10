@@ -740,8 +740,8 @@ CSong CMusicDatabase::GetSongFromDataset(bool bWithMusicDbPath/*=false*/)
   else
   {
     CStdString strFileName=m_pDS->fv(song_strFileName).get_asString();
-    char* szExt=CUtil::GetExtension(strFileName);
-    song.strFileName.Format("musicdb://3/%ld/%ld%s", m_pDS->fv(song_idAlbum).get_asLong(), m_pDS->fv(song_idSong).get_asLong(), szExt);
+    CStdString strExt=CUtil::GetExtension(strFileName);
+    song.strFileName.Format("musicdb://3/%ld/%ld%s", m_pDS->fv(song_idAlbum).get_asLong(), m_pDS->fv(song_idSong).get_asLong(), strExt.c_str());
   }
 
   return song;
@@ -792,8 +792,8 @@ void CMusicDatabase::GetFileItemFromDataset(CFileItem* item, const CStdString& s
   else
   {
     CStdString strFileName=m_pDS->fv(song_strFileName).get_asString();
-    char* szExt=CUtil::GetExtension(strFileName);
-    item->m_strPath.Format("%s%ld%s", strMusicDBbasePath.c_str(), m_pDS->fv(song_idSong).get_asLong(), szExt);
+    CStdString strExt=CUtil::GetExtension(strFileName);
+    item->m_strPath.Format("%s%ld%s", strMusicDBbasePath.c_str(), m_pDS->fv(song_idSong).get_asLong(), strExt.c_str());
   }
 }
 

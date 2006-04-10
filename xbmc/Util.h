@@ -206,11 +206,11 @@ class CUtil
 public:
   CUtil(void);
   virtual ~CUtil(void);
-  static char* GetExtension(const CStdString& strFileName);
+  static const CStdString GetExtension(const CStdString& strFileName);
   static void RemoveExtension(CStdString& strFileName);
   static bool GetVolumeFromFileName(const CStdString& strFileName, CStdString& strFileTitle, CStdString& strVolumeNumber);
   static void CleanFileName(CStdString& strFileName);
-  static char* GetFileName(const CStdString& strFileNameAndPath);
+  static const CStdString GetFileName(const CStdString& strFileNameAndPath);  
   static CStdString GetTitleFromPath(const CStdString& strFileNameAndPath);
   static bool IsHD(const CStdString& strFileName);
   static bool IsBuiltIn(const CStdString& execString);
