@@ -34,20 +34,10 @@ void CSMB::Init()
 {
   if (!binitialized)
   {
-    // set ip and subnet
-    CStdString strTitleIP;
-    CUtil::GetTitleIP(strTitleIP);
+    CStdString strIPAddress = g_guiSettings.GetString("Network.IPAddress");
+    CStdString strSubnet = g_guiSettings.GetString("Network.Subnet");
 
-    char szIPAddress[20];
-    char szNetMask[20];
-    strcpy(szIPAddress, strTitleIP.c_str());
-
-    // use a fixed subnet of a class C network. most users should be on that.
-    // if not, samba should still work just it will prioritize hosts on the same
-    // network
-    strcpy(szNetMask, "255.255.255.0"); 
-
-    set_xbox_interface(szIPAddress, szNetMask);
+    set_xbox_interface((char*)strIPAddress.c_str(), (char*)strSubnet.c_str());
     // set log function
     set_log_callback(xb_smbc_log);
 
