@@ -69,7 +69,7 @@ const CStdString CUtil::GetExtension(const CStdString& strFileName)
 {   
   int period = strFileName.find_last_of('.');
   if(period != -1)
-    return strFileName.substr(period+1);
+    return strFileName.substr(period);
   else
     return "";
 }
