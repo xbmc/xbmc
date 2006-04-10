@@ -26,13 +26,9 @@ CURL::CURL(const CStdString& strURL)
   if (strURL[1] == ':')
   {
     // form is drive:directoryandfile
-    m_strFileName = strURL;
-    int iFileType = m_strFileName.ReverseFind('.') + 1;
-    if (iFileType)
-    {
-      m_strFileType = m_strFileName.Right(m_strFileName.size() - iFileType);
-      m_strFileType.Normalize();
-    }
+
+    /* set filename and update extension*/
+    SetFileName(strURL);
     return ;
   }
 
@@ -80,13 +76,8 @@ CURL::CURL(const CStdString& strURL)
       m_strPassword = szPassword;
       m_strHostName = szHostName;
       if (szFileName)
-        m_strFileName = szFileName;
-      int iFileType = m_strFileName.ReverseFind('.') + 1;
-      if (iFileType >= 1)
-      {
-        m_strFileType = m_strFileName.Right(m_strFileName.size() - iFileType);
-        m_strFileType.Normalize();
-      }
+        SetFileName(szFileName);
+
       if (szDomain)
         free(szDomain);
       if (szPort)
@@ -218,15 +209,11 @@ CURL::CURL(const CStdString& strURL)
     m_strOptions = m_strFileName.Mid(iOptions+1);
     m_strFileName = m_strFileName.Left(iOptions);
   }
-
-  int iFileType = m_strFileName.ReverseFind('.') + 1;
-  if (iFileType)
-  {
-    m_strFileType = m_strFileName.Right(m_strFileName.size() - iFileType);
-    m_strFileType.Normalize();
-  }
-
+  
   m_strFileName.Replace("\\", "/");
+
+  /* update extension */
+  SetFileName(m_strFileName);
 }
 
 CURL::CURL(const CURL &url)
@@ -261,9 +248,14 @@ void CURL::SetFileName(const CStdString& strFileName)
 {
   m_strFileName = strFileName;
 
-  int iFileType = m_strFileName.ReverseFind('.');
-  if (iFileType != -1)
-    m_strFileType = m_strFileName.Right(m_strFileName.size() - iFileType);
+  int slash = m_strFileName.find_last_of(GetDirectorySeparator());
+  int period = m_strFileName.find_last_of('.');
+  if(period != -1 && (slash == -1 || period > slash))
+    m_strFileType = m_strFileName.substr(period);
+  else
+    m_strFileType = "";
+
+  m_strFileType.Normalize();
 }
 
 void CURL::SetHostName(const CStdString& strHostName)
@@ -351,6 +343,29 @@ const CStdString& CURL::GetFileType() const
 const CStdString& CURL::GetOptions() const
 {
   return m_strOptions;
+}
+
+const CStdString CURL::GetFileNameWithoutPath() const
+{
+  /* only apply filename checking to filename part*/
+  /* http streams may have options at the end*/
+  /* and since GetDirectorySeperator already needs url parsing */
+  /* there's no performance loss */
+  CStdString::size_type pos = m_strFileName.find_last_of(GetDirectorySeparator());
+
+  if(pos != CStdString::npos)
+    return m_strFileName.substr(pos+1);
+  else
+    return m_strFileName;
+
+}
+
+const char CURL::GetDirectorySeparator() const
+{
+  if ( IsLocal() || m_strProtocol.Equals("rar") || m_strProtocol.Equals("zip") ) 
+    return '\\';
+  else
+    return '/';
 }
 
 void CURL::GetURL(CStdString& strURL) const
