@@ -70,18 +70,20 @@ bool CFileISO::Open(const CURL& url, bool bBinary)
 unsigned int CFileISO::Read(void *lpBuf, __int64 uiBufSize)
 {
   if (!m_bOpened) return 0;
+  char *pData = (char *)lpBuf;
+
   if (m_cache.Size() > 0)
   {
-    long lTotalBytesRead = 0;
+    long lTotalBytesRead = 0;    
     while (uiBufSize > 0)
     {
       if (m_cache.GetMaxReadSize() )
       {
         long lBytes2Read = m_cache.GetMaxReadSize();
         if (lBytes2Read > uiBufSize) lBytes2Read = (long)uiBufSize;
-        m_cache.ReadBinary((char*)lpBuf, lBytes2Read );
+        m_cache.ReadBinary(pData, lBytes2Read );
         uiBufSize -= lBytes2Read ;
-        lpBuf += lBytes2Read;
+        pData += lBytes2Read;
         lTotalBytesRead += lBytes2Read ;
       }
 
@@ -97,7 +99,7 @@ unsigned int CFileISO::Read(void *lpBuf, __int64 uiBufSize)
     }
     return lTotalBytesRead;
   }
-  return m_isoReader.ReadFile( m_hFile, (byte*)lpBuf, (long)uiBufSize);
+  return m_isoReader.ReadFile( m_hFile, (byte*)pData, (long)uiBufSize);
 }
 
 //*********************************************************************************************
