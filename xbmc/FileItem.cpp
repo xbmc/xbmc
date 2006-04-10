@@ -332,49 +332,34 @@ bool CFileItem::IsPlayList() const
 
 bool CFileItem::IsPythonScript() const
 {
-  char* pExtension = CUtil::GetExtension(m_strPath);
-  if (!pExtension) return false;
-  if (strcmpi(pExtension, ".py") == 0) return true;
-  return false;
+  return CUtil::GetExtension(m_strPath).Equals(".py", false);  
 }
 
 bool CFileItem::IsXBE() const
 {
-  char* pExtension = CUtil::GetExtension(m_strPath);
-  if (!pExtension) return false;
-  if (strcmpi(pExtension, ".xbe") == 0) return true;
-  return false;
+  return CUtil::GetExtension(m_strPath).Equals(".xbe", false);  
 }
 
 bool CFileItem::IsType(const char *ext) const
 {
-  char* pExtension = CUtil::GetExtension(m_strPath);
-  if (!pExtension) return false;
-  return (strcmpi(pExtension, ext) == 0);
+  return CUtil::GetExtension(m_strPath).Equals("ext", false);  
 }
 
 bool CFileItem::IsDefaultXBE() const
 {
-  char* pFileName = CUtil::GetFileName(m_strPath);
-  if (!pFileName) return false;
-  if (strcmpi(pFileName, "default.xbe") == 0) return true;
+  CStdString filename = CUtil::GetFileName(m_strPath);  
+  if (filename.Equals("default.xbe")) return true;
   return false;
 }
 
 bool CFileItem::IsShortCut() const
 {
-  char* pExtension = CUtil::GetExtension(m_strPath);
-  if (!pExtension) return false;
-  if (strcmpi(pExtension, ".cut") == 0) return true;
-  return false;
+  return CUtil::GetExtension(m_strPath).Equals(".cut", false);  
 }
 
 bool CFileItem::IsNFO() const
 {
-  char *pExtension = CUtil::GetExtension(m_strPath);
-  if (!pExtension) return false;
-  if (strcmpi(pExtension, ".nfo") == 0) return true;
-  return false;
+  return CUtil::GetExtension(m_strPath).Equals(".nfo", false);  
 }
 
 bool CFileItem::IsDVDImage() const
@@ -412,26 +397,17 @@ bool CFileItem::IsRAR() const
 
 bool CFileItem::IsZIP() const
 {
-  CStdString strExtension;
-  CUtil::GetExtension(m_strPath, strExtension);
-  if (strExtension.CompareNoCase(".zip") == 0) return true;
-  return false;
+  return CUtil::GetExtension(m_strPath).Equals(".zip", false);  
 }
 
 bool CFileItem::IsCBZ() const
 {
-  CStdString strExtension;
-  CUtil::GetExtension(m_strPath, strExtension);
-  if (strExtension.CompareNoCase(".cbz") == 0) return true;
-  return false;
+  return CUtil::GetExtension(m_strPath).Equals(".cbz", false);  
 }
 
 bool CFileItem::IsCBR() const
 {
-  CStdString strExtension;
-  CUtil::GetExtension(m_strPath, strExtension);
-  if (strExtension.CompareNoCase(".cbr") == 0) return true;
-  return false;
+  return CUtil::GetExtension(m_strPath).Equals(".cbr", false);  
 }
 
 bool CFileItem::IsStack() const
