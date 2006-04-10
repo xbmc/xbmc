@@ -251,7 +251,7 @@ void CURL::SetFileName(const CStdString& strFileName)
   int slash = m_strFileName.find_last_of(GetDirectorySeparator());
   int period = m_strFileName.find_last_of('.');
   if(period != -1 && (slash == -1 || period > slash))
-    m_strFileType = m_strFileName.substr(period);
+    m_strFileType = m_strFileName.substr(period+1);
   else
     m_strFileType = "";
 
@@ -346,12 +346,16 @@ const CStdString& CURL::GetOptions() const
 }
 
 const CStdString CURL::GetFileNameWithoutPath() const
-{
-  /* only apply filename checking to filename part*/
-  /* http streams may have options at the end*/
-  /* and since GetDirectorySeperator already needs url parsing */
-  /* there's no performance loss */
-  CStdString::size_type pos = m_strFileName.find_last_of(GetDirectorySeparator());
+{  
+  CStdString::size_type pos = -1;
+  if(m_strProtocol.IsEmpty())
+  {
+    pos = m_strFileName.find_last_of('\\');
+    if(pos == -1) /* this check is needed as the url might be a partial url, wich doesn't have protocol */
+      pos = m_strFileName.find_last_of('/');
+  }
+  else
+    pos = m_strFileName.find_last_of(GetDirectorySeparator());
 
   if(pos != CStdString::npos)
     return m_strFileName.substr(pos+1);
