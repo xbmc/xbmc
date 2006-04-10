@@ -62,16 +62,21 @@ CUtil::~CUtil(void)
 {}
 
 
-/* returns filename extension including period of given url */
+/* returns filename extension including period of filename */
+/* WARNING avoid using this on full urls, as it might see a period in */
+/* a folder as extension separator if there is no in the file */
 const CStdString CUtil::GetExtension(const CStdString& strFileName)
-{ 
-  CURL url(strFileName);
-  return url.GetFileType();
+{   
+  int period = strFileName.find_last_of('.');
+  if(period != -1)
+    return strFileName.substr(period+1);
+  else
+    return "";
 }
 
-const CStdString CUtil::GetFileName(const CStdString& strFileName)
+const CStdString CUtil::GetFileName(const CStdString& strFileNameAndPath)
 {
-  CURL url(strFileName);
+  CURL url(strFileNameAndPath);
   return url.GetFileNameWithoutPath();
 }
 
