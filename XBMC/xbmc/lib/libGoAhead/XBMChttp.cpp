@@ -774,7 +774,7 @@ void LoadPlayListOld(const CStdString& strPlayList, int playList)
 bool LoadPlayList(CStdString strPath, int iPlaylist, bool clearList, bool autoStart)
 {
   //CStdString strPath = item.m_strPath;
-  CFileItem *item = new CFileItem(CUtil::GetFileName(strPath.c_str()));
+  CFileItem *item = new CFileItem(CUtil::GetFileName(strPath));
   item->m_strPath=strPath;
   if (item->IsInternetStream())
   {
@@ -918,7 +918,7 @@ int CXbmcHttp::xbmcGetTagFromFilename(int numParas, CStdString paras[])
   if (numParas==0) {
     return SetResponse(openTag+"Error:Missing Parameter");
   }
-  strFileName=CUtil::GetFileName(paras[0].c_str());
+  strFileName=CUtil::GetFileName(paras[0]);
   CFileItem *pItem = new CFileItem(strFileName);
   pItem->m_strPath=paras[0].c_str();
   if (!pItem->IsAudio())

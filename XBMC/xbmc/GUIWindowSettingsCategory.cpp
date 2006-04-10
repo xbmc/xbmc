@@ -2327,9 +2327,9 @@ void CGUIWindowSettingsCategory::FillInSubtitleFonts(CSetting *pSetting)
 
         if (!pItem->m_bIsFolder)
         {
-          char* extension = CUtil::GetExtension(pItem->GetLabel().c_str());
-          if (stricmp(extension, ".ttf") != 0) continue;
-          if (strcmpi(pItem->GetLabel().c_str(), pSettingString->GetData().c_str()) == 0)
+          
+          if ( CUtil::GetExtension(pItem->GetLabel()).Equals(".ttf") ) continue;
+          if (pItem->GetLabel().Equals(pSettingString->GetData(), false))
             iCurrentFont = iFont;
 
           pControl->AddLabel(pItem->GetLabel(), iFont++);

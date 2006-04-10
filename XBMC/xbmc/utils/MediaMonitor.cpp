@@ -648,8 +648,11 @@ void CMediaMonitor::parse_Clean(CStdString& strFilename)
 
 bool CMediaMonitor::parse_Similar(CStdString& strFilepath1, CStdString& strFilepath2, int aPercentage)
 {
-  char* szText1 = CUtil::GetFileName(strFilepath1);
-  char* szText2 = CUtil::GetFileName(strFilepath2);
+  /* we have to have local buffers of the paths, return value from GetFileName will be dostroyed*/
+  CStdString strText1 = CUtil::GetFileName(strFilepath1);
+  CStdString strText2 = CUtil::GetFileName(strFilepath2);
+  char* szText1 = (char*)strText1.c_str();
+  char* szText2 = (char*)strText2.c_str();
 
   for (int i = 0, identical = 0; ((szText1[i] != 0) && (szText2[i] != 0)); i++)
     if (szText1[i] == szText2[i])
