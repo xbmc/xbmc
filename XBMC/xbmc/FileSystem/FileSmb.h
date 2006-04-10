@@ -30,6 +30,10 @@ public:
   void PurgeEx(const CURL& url);
   void Lock();
   void Unlock();
+  
+  CStdString URLEncode(const CStdString &value);
+  CStdString URLEncode(const CURL &url);
+
 private:
   bool binitialized;
   CRITICAL_SECTION m_critSection;

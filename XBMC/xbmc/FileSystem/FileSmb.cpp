@@ -103,6 +103,55 @@ void CSMB::Unlock()
   ::LeaveCriticalSection(&m_critSection);
 }
 
+CStdString CSMB::URLEncode(const CURL &url)
+{
+  /* due to smb wanting encoded urls we have to build it manually */
+
+  CStdString flat = "smb://";
+
+  if(url.GetDomain().length() > 0)
+  {
+    flat += URLEncode(url.GetDomain());
+    flat += ";";
+  }
+
+  if(url.GetUserName().length() > 0 || url.GetPassWord().length() > 0)
+  {
+    flat += URLEncode(url.GetUserName());
+    flat += ":";
+    flat += URLEncode(url.GetPassWord());
+    flat += "@";
+  }
+
+  flat += URLEncode(url.GetHostName());  
+
+  /* okey sadly since a slash is an invalid name we have to tokenize */
+  std::vector<CStdString> parts;
+  std::vector<CStdString>::iterator it;
+  CUtil::Tokenize(url.GetFileName(), parts, "/");
+  for( it = parts.begin(); it != parts.end(); it++ )
+  {
+    flat += "/";
+    flat += URLEncode((*it));
+  }
+
+  /* okey options should go here, thou current samba doesn't support any */
+
+  return flat;
+}
+
+CStdString CSMB::URLEncode(const CStdString &value)
+{  
+  int buffer_len = value.length()*3+1;
+  char* buffer = (char*)malloc(buffer_len);
+
+  smbc_urlencode(buffer, (char*)value.c_str(), buffer_len);
+
+  CStdString encoded = buffer;
+  free(buffer);
+  return encoded;
+}
+
 
 CSMB smb;
 
@@ -148,8 +197,7 @@ bool CFileSMB::Open(const CURL& url, bool bBinary)
       return false;
   }
 
-  CStdString strFileName;
-  url.GetURL(strFileName);
+  CStdString strFileName = smb.URLEncode(url);
 
   smb.Lock();
 
@@ -273,8 +321,7 @@ bool CFileSMB::Exists(const CURL& url)
       url.GetFileName().at(0) == '.' ||
       url.GetFileName().Find("/.") >= 0) return false;
 
-  CStdString strFileName;
-  url.GetURL(strFileName);
+  CStdString strFileName = smb.URLEncode(url);
   strFileName = g_passwordManager.GetSMBAuthFilename(strFileName);
 
   struct __stat64 info;
@@ -290,8 +337,7 @@ bool CFileSMB::Exists(const CURL& url)
 
 int CFileSMB::Stat(const CURL& url, struct __stat64* buffer)
 {
-  CStdString strFileName;
-  url.GetURL(strFileName);
+  CStdString strFileName = smb.URLEncode(url);
   strFileName = g_passwordManager.GetSMBAuthFilename(strFileName);
 
   smb.Lock();
@@ -414,8 +460,8 @@ int CFileSMB::Write(const void* lpBuf, __int64 uiBufSize)
 
 bool CFileSMB::Delete(const char* strFileName)
 {
-  CStdString strFile;
-  strFile = g_passwordManager.GetSMBAuthFilename(strFileName);
+  CURL url(strFileName);
+  CStdString strFile = g_passwordManager.GetSMBAuthFilename(smb.URLEncode(url));
 
   smb.Init();
   smb.Lock();
@@ -426,9 +472,11 @@ bool CFileSMB::Delete(const char* strFileName)
 
 bool CFileSMB::Rename(const char* strFileName, const char* strNewFileName)
 {
-  CStdString strFile, strFileNew;
-  strFile = g_passwordManager.GetSMBAuthFilename(strFileName);
-  strFileNew = g_passwordManager.GetSMBAuthFilename(strNewFileName);
+  CURL strold(strFileName);
+  CURL strnew(strNewFileName);
+
+  CStdString strFile = g_passwordManager.GetSMBAuthFilename(smb.URLEncode(strFileName));
+  CStdString strFileNew = g_passwordManager.GetSMBAuthFilename(smb.URLEncode(strNewFileName));
 
   smb.Init();
   smb.Lock();
@@ -448,8 +496,7 @@ bool CFileSMB::OpenForWrite(const CURL& url, bool bBinary, bool bOverWrite)
   // if a file matches the if below return false, it can't exist on a samba share.
   if (!IsValidFile(url.GetFileName())) return false;
 
-  CStdString strFileName;
-  url.GetURL(strFileName);
+  CStdString strFileName = smb.URLEncode(url);
   strFileName = g_passwordManager.GetSMBAuthFilename(strFileName);
 
   smb.Lock();
