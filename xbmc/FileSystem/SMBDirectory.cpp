@@ -31,17 +31,15 @@ bool CSMBDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
   CFileItemList vecCacheItems;
   g_directoryCache.ClearDirectory(strPath);
 
-  //Separate roots for the authentication and the containing items to allow browsing to work correctly
-  CStdString strRoot = strPath, strAuth = strPath;
-  if (!CUtil::HasSlashAtEnd(strPath))
-  {
-    strRoot += "/";
-    strAuth += "/";
-  }
-
-
   smb.Init();
 
+  /* we need an url to do proper escaping */
+  CURL url(strPath);
+
+  //Separate roots for the authentication and the containing items to allow browsing to work correctly
+  CStdString strRoot = strPath, strAuth = smb.URLEncode(url);
+  if (!CUtil::HasSlashAtEnd(strRoot)) strRoot += "/";
+  if (!CUtil::HasSlashAtEnd(strAuth)) strAuth += "/";
 
   int fd = OpenDir(strAuth);
   if (fd < 0)
@@ -57,15 +55,14 @@ bool CSMBDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
 
   while (dirEnt)
   {
-    if (dirEnt->name && strcmp(dirEnt->name, ".") && strcmp(dirEnt->name, "..") &&
-        (dirEnt->name[dirEnt->namelen+1 - 2] != '$'))
+    // We use UTF-8 internally, as does SMB
+    strFile = dirEnt->name;
+
+    if (!strFile.Equals(".") && !strFile.Equals("..") && !strFile.Right(1).Equals("$"))
     {
      unsigned __int64 iSize = 0;
       bool bIsDir = true;
       __int64 lTimeDate = 0;
-
-      // We use UTF-8 internally, as does SMB
-      strFile = dirEnt->name;
 
       // doing stat on one of these types of shares leaves an open session
       // so just skip them and only stat real dirs / files.
@@ -77,9 +74,10 @@ bool CSMBDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
            dirEnt->smbc_type != SMBC_SERVER)
       {
         struct __stat64 info;
-        CStdString strFullName = strAuth + dirEnt->name; //Make sure we use the authenticated path wich contains any default username
 
-        // BUG: on files containing "%20" smbc_stat() fails.
+        //Make sure we use the authenticated path wich contains any default username
+        CStdString strFullName = strAuth + smb.URLEncode(strFile);
+
         smbc_stat(strFullName.c_str(), &info);
 
         bIsDir = (info.st_mode & S_IFDIR) ? true : false;
@@ -313,10 +311,12 @@ int CSMBDirectory::OpenDir(CStdString& strAuth)
 
 bool CSMBDirectory::Create(const char* strPath)
 {
-  CStdString strFileName(strPath);
+  smb.Init();
+
+  CURL url(strPath);
+  CStdString strFileName = smb.URLEncode(url);
   strFileName = g_passwordManager.GetSMBAuthFilename(strFileName);
 
-  smb.Init();
   smb.Lock();
   int result = smbc_mkdir(strFileName.c_str(), 0);
   smb.Unlock();
@@ -325,10 +325,12 @@ bool CSMBDirectory::Create(const char* strPath)
 
 bool CSMBDirectory::Remove(const char* strPath)
 {
-  CStdString strFileName(strPath);
+  smb.Init();
+
+  CURL url(strPath);
+  CStdString strFileName = smb.URLEncode(url);
   strFileName = g_passwordManager.GetSMBAuthFilename(strFileName);
 
-  smb.Init();
   smb.Lock();
   int result = smbc_rmdir(strFileName.c_str());
   smb.Unlock();
@@ -337,10 +339,12 @@ bool CSMBDirectory::Remove(const char* strPath)
 
 bool CSMBDirectory::Exists(const char* strPath)
 {
-  CStdString strFileName(strPath);
+  smb.Init();
+
+  CURL url(strPath);
+  CStdString strFileName = smb.URLEncode(url);
   strFileName = g_passwordManager.GetSMBAuthFilename(strFileName);
 
-  smb.Init();
   smb.Lock();
 
   SMB_STRUCT_STAT info;
