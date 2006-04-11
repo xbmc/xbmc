@@ -342,7 +342,7 @@ bool CFileItem::IsXBE() const
 
 bool CFileItem::IsType(const char *ext) const
 {
-  return CUtil::GetExtension(m_strPath).Equals("ext", false);  
+  return CUtil::GetExtension(m_strPath).Equals(ext, false);  
 }
 
 bool CFileItem::IsDefaultXBE() const
