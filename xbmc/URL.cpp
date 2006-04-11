@@ -46,6 +46,11 @@ CURL::CURL(const CStdString& strURL)
       m_strProtocol = strURL.Left(iPos);
       iPos += 1;
     }
+    else
+    {
+      CLog::Log(LOGWARNING, __FUNCTION__" - Url has no protocol %s, empty CURL created", strURL.c_str());
+      return;
+    }
   }
   else
   {
@@ -346,21 +351,7 @@ const CStdString& CURL::GetOptions() const
 
 const CStdString CURL::GetFileNameWithoutPath() const
 {  
-  CStdString::size_type pos = -1;
-  if(m_strProtocol.IsEmpty())
-  {
-    pos = m_strFileName.find_last_of('\\');
-    if(pos == -1) /* this check is needed as the url might be a partial url, wich doesn't have protocol */
-      pos = m_strFileName.find_last_of('/');
-  }
-  else
-    pos = m_strFileName.find_last_of(GetDirectorySeparator());
-
-  if(pos != CStdString::npos)
-    return m_strFileName.substr(pos+1);
-  else
-    return m_strFileName;
-
+  return CUtil::GetFileName(m_strFileName);
 }
 
 const char CURL::GetDirectorySeparator() const
