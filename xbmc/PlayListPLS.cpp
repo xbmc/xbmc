@@ -43,13 +43,14 @@ bool CPlayListPLS::Load(const CStdString& strFileName)
   }
   //read it from the file
   CStdString strBasePath;
+  m_strPlayListName = CUtil::GetFileName(strFileName);
+
   bool bShoutCast = false;
-  CStdString strExt = CUtil::GetExtension(strFileName);
+  CStdString strExt = CUtil::GetExtension(m_strPlayListName);
   strExt.ToLower();
   if ( strcmpi(strExt, ".pls") == 0) bShoutCast = true;
 
-  Clear();
-  m_strPlayListName = CUtil::GetFileName(strFileName);
+  Clear();  
   CUtil::GetParentPath(strFileName, strBasePath);
   CFile file;
   if (!file.Open(strFileName, false) )
