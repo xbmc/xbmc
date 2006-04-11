@@ -318,7 +318,7 @@ bool CGUIVisualisationControl::UpdateAlbumArt()
       m_AlbumThumb = "";
     }
     CLog::DebugLog("Updating vis albumart: %s", m_AlbumThumb.c_str());
-    if (m_pVisualisation && m_pVisualisation->OnAction(CVisualisation::VIS_ACTION_UPDATE_ALBUMART, &m_AlbumThumb)) return true;
+    if (m_pVisualisation && m_pVisualisation->OnAction(CVisualisation::VIS_ACTION_UPDATE_ALBUMART, (void*)(m_AlbumThumb.c_str()))) return true;
     return false;
 }
 
