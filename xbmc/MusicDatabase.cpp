@@ -2173,7 +2173,7 @@ bool CMusicDatabase::CleanupSongsByIds(const CStdString &strSongIds)
       //  Special case for streams inside an ogg file. (oggstream)
       //  The last dir in the path is the ogg file that 
       //  contains the stream, so test if its there
-      CStdString strExtension=CUtil::GetExtension(strFileName);
+      CStdString strExtension=CUtil::GetExtension(CUtil::GetFileName(strFileName));
       if (strExtension==".oggstream" || strExtension==".nsfstream")
       {
         CStdString strFileAndPath=strFileName;
