@@ -46,8 +46,6 @@ CURL::CURL(const CStdString& strURL)
       m_strProtocol = strURL.Left(iPos);
       iPos += 1;
     }
-    else
-      return;
   }
   else
   {
@@ -95,6 +93,7 @@ CURL::CURL(const CStdString& strURL)
 
   // check for username/password - should occur before first /
   // unless it is after a :
+  if (iPos == -1) iPos = 0;
   int iAlphaSign = strURL.Find("@", iPos);
   int iSlash = strURL.Find("/", iPos);
   int iColon = strURL.Find(":", iPos);

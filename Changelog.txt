@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 11-04-2006 fixed: ccx/xbmsp shares
  - 11-04-2006 fixed: MyPrograms contextmenu wouldn't display launch options for xbe's
  - 11-04-2006 fixed: [ 1467935 ] Unnecessary logging of ERROR: unable to load Startup.xml
  - 10-04-2006 fixed: files/directories with url encoding strings such as %20 in them would fail to work over smb
