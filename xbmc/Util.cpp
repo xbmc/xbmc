@@ -63,14 +63,22 @@ CUtil::~CUtil(void)
 
 
 /* returns filename extension including period of filename */
-/* WARNING avoid using this on full urls, as it might see a period in */
-/* a folder as extension separator if there is no in the file */
-/* also if url has options at the end it will fail */
 const CStdString CUtil::GetExtension(const CStdString& strFileName)
 {   
   int period = strFileName.find_last_of('.');
   if(period != -1)
-    return strFileName.substr(period);
+  {
+    if( strFileName.find_first_of('/', period+1) >= 0 ) return "";
+    if( strFileName.find_first_of('\\', period+1) >= 0 ) return "";
+
+    /* url options could be at the end of a url */
+    const int options = strFileName.find_first_of('?', period+1);
+
+    if(options >= 0)
+      return strFileName.substr(period, options-period);
+    else
+      return strFileName.substr(period);
+  }
   else
     return "";
 }
