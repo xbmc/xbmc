@@ -65,6 +65,7 @@ CUtil::~CUtil(void)
 /* returns filename extension including period of filename */
 /* WARNING avoid using this on full urls, as it might see a period in */
 /* a folder as extension separator if there is no in the file */
+/* also if url has options at the end it will fail */
 const CStdString CUtil::GetExtension(const CStdString& strFileName)
 {   
   int period = strFileName.find_last_of('.');
@@ -74,10 +75,27 @@ const CStdString CUtil::GetExtension(const CStdString& strFileName)
     return "";
 }
 
+/* returns a filename given an url */
+/* handles both / and \, and options in urls*/
 const CStdString CUtil::GetFileName(const CStdString& strFileNameAndPath)
 {
-  CURL url(strFileNameAndPath);
-  return url.GetFileNameWithoutPath();
+  /* find any slashes */
+  const int slash1 = strFileNameAndPath.find_last_of('/');
+  const int slash2 = strFileNameAndPath.find_last_of('\\');
+
+  /* select the last one */
+  int slash;
+  if(slash2>slash1)
+    slash = slash2;
+  else
+    slash = slash1;
+
+  /* check if there is any options in the url */
+  const int options = strFileNameAndPath.find_first_of('?', slash+1);
+  if(options < 0)
+    return strFileNameAndPath.substr(slash+1);
+  else
+    return strFileNameAndPath.substr(slash+1, options-(slash+1));
 }
 
 CStdString CUtil::GetTitleFromPath(const CStdString& strFileNameAndPath)
