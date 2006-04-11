@@ -19,7 +19,7 @@ CFactoryFileDirectory::~CFactoryFileDirectory(void)
 // return NULL + set pItem->m_bIsFolder to remove it completely from list.
 IFileDirectory* CFactoryFileDirectory::Create(const CStdString& strPath, CFileItem* pItem, const CStdString& strMask)
 {
-  CStdString strExtension=CUtil::GetExtension(strPath);
+  CStdString strExtension=CUtil::GetExtension(CUtil::GetFileName(strPath));
   strExtension.MakeLower();
 
   if (strExtension.Equals(".ogg") && CFile::Exists(strPath))
