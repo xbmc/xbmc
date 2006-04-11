@@ -66,10 +66,10 @@ CUtil::~CUtil(void)
 const CStdString CUtil::GetExtension(const CStdString& strFileName)
 {   
   int period = strFileName.find_last_of('.');
-  if(period != -1)
+  if(period >= 0)
   {
-    if( strFileName.find_first_of('/', period+1) >= 0 ) return "";
-    if( strFileName.find_first_of('\\', period+1) >= 0 ) return "";
+    if( strFileName.find_first_of('/', period+1) != -1 ) return "";
+    if( strFileName.find_first_of('\\', period+1) != -1 ) return "";
 
     /* url options could be at the end of a url */
     const int options = strFileName.find_first_of('?', period+1);
@@ -81,6 +81,11 @@ const CStdString CUtil::GetExtension(const CStdString& strFileName)
   }
   else
     return "";
+}
+
+void CUtil::GetExtension(const CStdString& strFile, CStdString& strExtension)
+{
+  strExtension = GetExtension(strFile);
 }
 
 /* returns a filename given an url */
@@ -1263,17 +1268,6 @@ void CUtil::ReplaceExtension(const CStdString& strFile, const CStdString& strNew
     url.SetFileName(strChangedFile);
     url.GetURL(strChangedFile);
   }
-}
-
-void CUtil::GetExtension(const CStdString& strFile, CStdString& strExtension)
-{
-  int iPos = strFile.ReverseFind(".");
-  if (iPos < 0)
-  {
-    strExtension = "";
-    return ;
-  }
-  strExtension = strFile.Right( strFile.size() - iPos);
 }
 
 bool CUtil::HasSlashAtEnd(const CStdString& strFile)
