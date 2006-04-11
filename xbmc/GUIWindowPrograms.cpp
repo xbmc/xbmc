@@ -347,7 +347,7 @@ bool CGUIWindowPrograms::OnPopupMenu(int iItem)
     int btn_Rename = -2;
     int btn_LaunchIn = -2;
     int btn_Trainers = -2;
-    if (m_vecItems[iItem]->IsType(".xbe") || m_vecItems[iItem]->IsShortCut())
+    if (m_vecItems[iItem]->IsXBE || m_vecItems[iItem]->IsShortCut())
     {
       CStdString strLaunch = g_localizeStrings.Get(518); // Launch
       if (g_guiSettings.GetBool("MyPrograms.GameAutoRegion"))
