@@ -5,7 +5,9 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 11-04-2006 fixed: MyPrograms contextmenu wouldn't display launch options for xbe's
  - 11-04-2006 fixed: [ 1467935 ] Unnecessary logging of ERROR: unable to load Startup.xml
+ - 10-04-2006 fixed: files/directories with url encoding strings such as %20 in them would fail to work over smb
  - 10-04-2006 changed: handling of file extension + code cleanup
  - 10-04-2006 added: if album info from the currently playling album is downloaded it will update the music overlay with the new cover
  - 10-04-2006 fixed: nav sounds are gone after skin change
