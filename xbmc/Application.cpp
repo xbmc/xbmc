@@ -1277,8 +1277,9 @@ HRESULT CApplication::Initialize()
   else
   {
     // test for a startup window, and activate that instead of home
-    CGUIWindow *startupWindow = m_gWindowManager.GetWindow(WINDOW_STARTUP);
-    if (startupWindow && startupWindow->Initialize())
+    RESOLUTION res = INVALID;
+    CStdString startupPath = g_SkinInfo.GetSkinPath("startup.xml", &res);
+    if (CFile::Exists(startupPath))
       m_gWindowManager.ActivateWindow(WINDOW_STARTUP);
     else
       m_gWindowManager.ActivateWindow(WINDOW_HOME);
