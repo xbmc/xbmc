@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 11-04-2006 fixed: [ 1467935 ] Unnecessary logging of ERROR: unable to load Startup.xml
  - 10-04-2006 changed: handling of file extension + code cleanup
  - 10-04-2006 added: if album info from the currently playling album is downloaded it will update the music overlay with the new cover
  - 10-04-2006 fixed: nav sounds are gone after skin change
