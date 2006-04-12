@@ -5,6 +5,9 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 12-04-2006 fixed: Controller thumbsticks could register left or right after first pushing up or down when the stick was rotated.
+ - 12-04-2006 fixed: Control.HasFocus and ButtonScroller.HasIcon had restricted ID ranges.
+ - 12-04-2006 fixed: Zoom animation couldn't assign different zoom amounts to x and y directions.
  - 12-04-2006 changed: filenames from local harddrive are converted to UTF-8 as bioses like the Evox M8 Plus can support GBK charset
                        This hopefully fixes parts of sf bug: [ 1456741 ] New Language Set Case some Unicode GUI Display Error
  - 12-04-2006 changed: content of zip archives is converted from user charset to UTF-8 now

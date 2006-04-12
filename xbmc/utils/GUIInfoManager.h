@@ -191,11 +191,8 @@
 
 #define CONTROL_IS_VISIBLE          29998
 #define CONTROL_GROUP_HAS_FOCUS     29999
-#define CONTROL_HAS_FOCUS_START     30000
-#define CONTROL_HAS_FOCUS_END       31000 // only up to control id 1000
-
-#define BUTTON_SCROLLER_HAS_ICON_START 31000
-#define BUTTON_SCROLLER_HAS_ICON_END   31200  // only allow 100 buttons (normally start at 101)
+#define CONTROL_HAS_FOCUS           30000
+#define BUTTON_SCROLLER_HAS_ICON    30001
 
 #define VERSION_STRING "1.1.0"
 
