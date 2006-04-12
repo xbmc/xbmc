@@ -330,7 +330,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
   {
     int controlID = atoi(strTest.Mid(17, strTest.GetLength() - 18).c_str());
     if (controlID)
-      ret = controlID + CONTROL_HAS_FOCUS_START;
+      return AddMultiInfo(GUIInfo(bNegate ? -CONTROL_HAS_FOCUS : CONTROL_HAS_FOCUS, controlID, 0));
   }
   else if (strTest.Left(18).Equals("control.isvisible("))
   {
@@ -354,7 +354,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
   {
     int controlID = atoi(strTest.Mid(24, strTest.GetLength() - 24).c_str());
     if (controlID)
-      ret = controlID + BUTTON_SCROLLER_HAS_ICON_START;
+      return AddMultiInfo(GUIInfo(bNegate ? -BUTTON_SCROLLER_HAS_ICON : BUTTON_SCROLLER_HAS_ICON, controlID, 0));
   }
 
   return bNegate ? -ret : ret;
@@ -670,24 +670,6 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow) const
     bReturn = HasAutodetectedXbox();
   else if (condition == PLAYER_MUTED)
     bReturn = g_stSettings.m_bMute;
-  else if (condition >= CONTROL_HAS_FOCUS_START && condition <= CONTROL_HAS_FOCUS_END)
-  {
-    CGUIWindow *pWindow = m_gWindowManager.GetWindow(dwContextWindow);
-    if( !pWindow ) pWindow = m_gWindowManager.GetWindow(m_gWindowManager.GetActiveWindow());
-    if (pWindow)
-      bReturn = (pWindow->GetFocusedControl() == condition - CONTROL_HAS_FOCUS_START);
-  }
-  else if (condition >= BUTTON_SCROLLER_HAS_ICON_START && condition <= BUTTON_SCROLLER_HAS_ICON_END)
-  {
-    CGUIWindow *pWindow = m_gWindowManager.GetWindow(dwContextWindow);
-    if( !pWindow ) pWindow = m_gWindowManager.GetWindow(m_gWindowManager.GetActiveWindow());
-    if (pWindow)
-    {
-      CGUIControl *pControl = (CGUIControl *)pWindow->GetControl(pWindow->GetFocusedControl());
-      if (pControl && pControl->GetControlType() == CGUIControl::GUICONTROL_BUTTONBAR)
-        bReturn = ((CGUIButtonScroller *)pControl)->GetActiveButtonID() == condition - BUTTON_SCROLLER_HAS_ICON_START;
-    }
-  }
   else if (condition == SYSTEM_KAI_CONNECTED)
     bReturn = g_guiSettings.GetBool("XLinkKai.Enabled") && CKaiClient::GetInstance()->IsEngineConnected();
   else if (condition == SYSTEM_MEDIA_DVD)
@@ -864,6 +846,26 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindo
           const CGUIControl *control = pWindow->GetControl(info.m_data1);
           if (control)
             bReturn = control->IsVisible();
+        }
+      }
+      break;
+    case CONTROL_HAS_FOCUS:
+      {
+        CGUIWindow *pWindow = m_gWindowManager.GetWindow(dwContextWindow);
+        if (!pWindow) pWindow = m_gWindowManager.GetWindow(m_gWindowManager.GetActiveWindow());
+        if (pWindow)
+          bReturn = (pWindow->GetFocusedControl() == info.m_data1);
+      }
+      break;
+    case BUTTON_SCROLLER_HAS_ICON:
+      {
+        CGUIWindow *pWindow = m_gWindowManager.GetWindow(dwContextWindow);
+        if( !pWindow ) pWindow = m_gWindowManager.GetWindow(m_gWindowManager.GetActiveWindow());
+        if (pWindow)
+        {
+          CGUIControl *pControl = (CGUIControl *)pWindow->GetControl(pWindow->GetFocusedControl());
+          if (pControl && pControl->GetControlType() == CGUIControl::GUICONTROL_BUTTONBAR)
+            bReturn = ((CGUIButtonScroller *)pControl)->GetActiveButtonID() == info.m_data1;
         }
       }
       break;

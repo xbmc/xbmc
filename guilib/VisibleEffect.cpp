@@ -17,6 +17,7 @@ void CAnimation::Reset()
   amount = 0;
   delay = start = length = 0;
   startX = startY = endX = endY = 0;
+  centerX = centerY = 0;
   startAlpha = 0;
   endAlpha = 100;
   acceleration = 0;
@@ -131,28 +132,41 @@ void CAnimation::Create(const TiXmlElement *node, RESOLUTION &res)
     const char *centerPos = node->Attribute("center");
     if (centerPos)
     {
-      startY = atoi(centerPos);
+      centerX = atoi(centerPos);
       const char *comma = strstr(centerPos, ",");
       if (comma)
-        endY = atoi(comma + 1);
+        centerY = atoi(comma + 1);
     }
   }
   else // if (effect == EFFECT_TYPE_ZOOM)
   {
     // effect defaults
-    startX = 100;
-    endX = 100;
+    startX = startY = 100;
+    endX = endY = 100;
 
-    if (node->Attribute("start")) node->Attribute("start", &startX);
-    if (node->Attribute("end")) node->Attribute("end", &endX);
-
+    const char *start = node->Attribute("start");
+    if (start)
+    {
+      startX = startY = atoi(start);
+      const char *comma = strstr(start, ",");
+      if (comma)
+        startY = atoi(comma + 1);
+    }
+    const char *end = node->Attribute("end");
+    if (end)
+    {
+      endX = endY = atoi(end);
+      const char *comma = strstr(end, ",");
+      if (comma)
+        endY = atoi(comma + 1);
+    }
     const char *centerPos = node->Attribute("center");
     if (centerPos)
     {
-      startY = atoi(centerPos);
+      centerX = atoi(centerPos);
       const char *comma = strstr(centerPos, ",");
       if (comma)
-        endY = atoi(comma + 1);
+        centerY = atoi(comma + 1);
     }
   }
 }
@@ -167,6 +181,8 @@ void CAnimation::CreateReverse(const CAnimation &anim)
   endY = anim.startY;
   endAlpha = anim.startAlpha;
   startAlpha = anim.endAlpha;
+  centerX = anim.centerX;
+  centerY = anim.centerY;
   type = (ANIMATION_TYPE)-anim.type;
   effect = anim.effect;
   length = anim.length;
@@ -258,18 +274,18 @@ TransformMatrix CAnimation::RenderAnimation()
     }
     else if (effect == EFFECT_TYPE_ROTATE)
     {
-      TransformMatrix translation1 = TransformMatrix::CreateTranslation((float)-startY, (float)-endY);
+      TransformMatrix translation1 = TransformMatrix::CreateTranslation((float)-centerX, (float)-centerY);
       TransformMatrix rotation = TransformMatrix::CreateRotation(((endX - startX)*offset + startX) * DEGREE_TO_RADIAN);
-      TransformMatrix translation2 = TransformMatrix::CreateTranslation((float)startY, (float)endY);
+      TransformMatrix translation2 = TransformMatrix::CreateTranslation((float)centerX, (float)centerY);
       return translation2 * rotation * translation1;
     }
     else if (effect == EFFECT_TYPE_ZOOM)
     {
-      // could be extended to different X and Y scalings reasonably easily
       float scaleX = ((endX - startX)*offset + startX) * 0.01f;
-      TransformMatrix translation1 = TransformMatrix::CreateTranslation((float)-startY, (float)-endY);
-      TransformMatrix scaler = TransformMatrix::CreateScaler(scaleX, scaleX);
-      TransformMatrix translation2 = TransformMatrix::CreateTranslation((float)startY, (float)endY);
+      float scaleY = ((endY - startY)*offset + startY) * 0.01f;
+      TransformMatrix translation1 = TransformMatrix::CreateTranslation((float)-centerX, (float)-centerY);
+      TransformMatrix scaler = TransformMatrix::CreateScaler(scaleX, scaleY);
+      TransformMatrix translation2 = TransformMatrix::CreateTranslation((float)centerX, (float)centerY);
       return translation2 * scaler * translation1;
     }
   }
