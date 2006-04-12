@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 12-04-2006 fixed: [ 1467762 ] Incorrect flash type shown on TSOP flashed boxes
  - 12-04-2006 fixed: redundant vis empty albumart update.
  - 12-04-2006 fixed: ttf font's wouldn't show up in subtitle font selection.
  - 11-04-2006 fixed: hopefully all issues caused by the extension handling and code cleanup [10-04-2006] should have been fixed
