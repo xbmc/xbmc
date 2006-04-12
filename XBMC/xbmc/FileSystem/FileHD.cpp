@@ -46,6 +46,8 @@ bool CFileHD::Open(const CURL& url, bool bBinary)
   CStdString strFile(url.GetFileName());
   strFile.Replace("/", "\\");
 
+  g_charsetConverter.utf8ToStringCharset(strFile);
+
   m_hFile.attach(CreateFile(strFile.c_str(), GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, 0, NULL));
   if (!m_hFile.isValid()) return false;
 
@@ -63,6 +65,8 @@ bool CFileHD::Exists(const CURL& url)
   CStdString strFile(url.GetFileName());
   strFile.Replace("/", "\\");
 
+  g_charsetConverter.utf8ToStringCharset(strFile);
+
   struct __stat64 buffer;
   return (_stat64(strFile.c_str(), &buffer)==0);
 }
@@ -71,6 +75,8 @@ int CFileHD::Stat(const CURL& url, struct __stat64* buffer)
 {
   CStdString strFile(url.GetFileName());
   strFile.Replace("/", "\\");
+
+  g_charsetConverter.utf8ToStringCharset(strFile);
 
   return _stat64(strFile.c_str(), buffer);
 }
@@ -85,6 +91,8 @@ bool CFileHD::OpenForWrite(const CURL& url, bool bBinary, bool bOverWrite)
 
   // replace '/' with '\\' before GetFatXQualifiedPath() to prevent unnecessary logging of truncate messages.
   strPath.Replace("/", "\\");
+
+  g_charsetConverter.utf8ToStringCharset(strPath);
 
   if (g_guiSettings.GetBool("Servers.FTPAutoFatX")) // allow overriding
   {
@@ -250,12 +258,20 @@ bool CFileHD::ReadString(char *szLine, int iLineLength)
 
 bool CFileHD::Delete(const char* strFileName)
 {
-  return ::DeleteFile(strFileName) ? true : false;
+  CStdString strFile=strFileName;
+  g_charsetConverter.utf8ToStringCharset(strFile);
+
+  return ::DeleteFile(strFile.c_str()) ? true : false;
 }
 
 bool CFileHD::Rename(const char* strFileName, const char* strNewFileName)
 {
-  return ::MoveFile(strFileName, strNewFileName) ? true : false;
+  CStdString strFile=strFileName;
+  g_charsetConverter.utf8ToStringCharset(strFile);
+  CStdString strNewFile=strNewFileName;
+  g_charsetConverter.utf8ToStringCharset(strNewFile);
+
+  return ::MoveFile(strFile.c_str(), strNewFile.c_str()) ? true : false;
 }
 
 void CFileHD::Flush()

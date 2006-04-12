@@ -990,17 +990,18 @@ HRESULT CApplication::Create()
   CUtil::InitGamma();
   g_graphicsContext.SetGUIResolution(g_guiSettings.m_LookAndFeelResolution);
 
-  m_splash = new CSplash("Q:\\media\\splash.png");
-  m_splash->Start();
-
-  // initialize our charset convertor
+  // initialize our charset converter
   g_charsetConverter.reset();
 
+  // Load the langinfo to have user charset <-> utf-8 conversion
   CStdString strLangInfoPath;
   strLangInfoPath.Format("Q:\\language\\%s\\langinfo.xml", g_guiSettings.GetString("LookAndFeel.Language"));
 
   CLog::Log(LOGINFO, "load language info file:%s", strLangInfoPath.c_str());
   g_langInfo.Load(strLangInfoPath);
+
+  m_splash = new CSplash("Q:\\media\\splash.png");
+  m_splash->Start();
 
   CStdString strLanguagePath;
   strLanguagePath.Format("Q:\\language\\%s\\strings.xml", g_guiSettings.GetString("LookAndFeel.Language"));
