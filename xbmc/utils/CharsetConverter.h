@@ -23,9 +23,13 @@ public:
 
   void utf8ToStringCharset(const CStdStringA& strSource, CStdStringA& strDest);
 
+  void utf8ToStringCharset(CStdStringA& strSourceDest);
+
   void stringCharsetToUtf8(const CStdStringA& strSource, CStdStringA& strDest);
 
   void stringCharsetToUtf8(const CStdStringA& strSourceCharset, const CStdStringA& strSource, CStdStringA& strDest);
+
+  void stringCharsetToUtf8(CStdStringA& strSourceDest);
 
   void ucs2CharsetToStringCharset(const CStdStringW& strSource, CStdStringA& strDest, bool swap = false);
 

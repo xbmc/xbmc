@@ -1,7 +1,5 @@
 #include "../stdafx.h"
 #include "ZipManager.h"
-#include "../url.h"
-#include "../utils/log.h"
 
 
 CZipManager g_ZipManager;
@@ -99,8 +97,12 @@ bool CZipManager::GetZipList(const CStdString& strPath, std::vector<SZipEntry>& 
         return true;
       }
 
-      mFile.Read(ze.name,ze.flength);
-      ze.name[ze.flength] = '\0';
+      CStdString strName;
+      mFile.Read(strName.GetBuffer(ze.flength), ze.flength);
+      strName.ReleaseBuffer();
+      g_charsetConverter.stringCharsetToUtf8(strName);
+      ZeroMemory(ze.name, 255);
+      strncpy(ze.name, strName.c_str(), strName.size()>254 ? 254 : strName.size());
       mFile.Seek(ze.elength,SEEK_CUR);
       ze.offset = mFile.GetPosition();
       mFile.Seek(ze.csize,SEEK_CUR);
