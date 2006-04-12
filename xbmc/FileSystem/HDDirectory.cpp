@@ -13,12 +13,16 @@ CHDDirectory::CHDDirectory(void)
 CHDDirectory::~CHDDirectory(void)
 {}
 
-bool CHDDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
+bool CHDDirectory::GetDirectory(const CStdString& strPath1, CFileItemList &items)
 {
   WIN32_FIND_DATA wfd;
 
+  CStdString strPath=strPath1;
+  g_charsetConverter.utf8ToStringCharset(strPath);
+
   CFileItemList vecCacheItems;
-  g_directoryCache.ClearDirectory(strPath);
+  g_directoryCache.ClearDirectory(strPath1);
+
 
   CStdString strRoot = strPath;
   CURL url(strPath);
@@ -54,9 +58,12 @@ bool CHDDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
           CStdString strDir = wfd.cFileName;
           if (strDir != "." && strDir != "..")
           {
-            CFileItem *pItem = new CFileItem(wfd.cFileName);
+            CStdString strLabel=wfd.cFileName;
+            g_charsetConverter.stringCharsetToUtf8(strLabel);
+            CFileItem *pItem = new CFileItem(strLabel);
             pItem->m_strPath = strRoot;
             pItem->m_strPath += wfd.cFileName;
+            g_charsetConverter.stringCharsetToUtf8(pItem->m_strPath);
             pItem->m_bIsFolder = true;
             FileTimeToLocalFileTime(&wfd.ftLastWriteTime, &localTime);
             FileTimeToSystemTime(&localTime, &pItem->m_stTime);
@@ -67,9 +74,12 @@ bool CHDDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
         }
         else
         {
-          CFileItem *pItem = new CFileItem(wfd.cFileName);
+          CStdString strLabel=wfd.cFileName;
+          g_charsetConverter.stringCharsetToUtf8(strLabel);
+          CFileItem *pItem = new CFileItem(strLabel);
           pItem->m_strPath = strRoot;
           pItem->m_strPath += wfd.cFileName;
+          g_charsetConverter.stringCharsetToUtf8(pItem->m_strPath);
 
           pItem->m_bIsFolder = false;
           pItem->m_dwSize = CUtil::ToInt64(wfd.nFileSizeHigh, wfd.nFileSizeLow);
@@ -89,13 +99,14 @@ bool CHDDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
     FindClose((HANDLE)hFind); //should be closed
   }
   if (m_cacheDirectory)
-    g_directoryCache.SetDirectory(strPath, vecCacheItems);
+    g_directoryCache.SetDirectory(strPath1, vecCacheItems);
   return true;
 }
 
 bool CHDDirectory::Create(const char* strPath)
 {
   CStdString strPath1 = strPath;
+  g_charsetConverter.utf8ToStringCharset(strPath1);
   if (!CUtil::HasSlashAtEnd(strPath1))
     strPath1 += '\\';
   if (g_guiSettings.GetBool("Servers.FTPAutoFatX"))
@@ -106,12 +117,15 @@ bool CHDDirectory::Create(const char* strPath)
 
 bool CHDDirectory::Remove(const char* strPath)
 {
-  return ::RemoveDirectory(strPath) ? true : false;
+  CStdString strPath1 = strPath;
+  g_charsetConverter.utf8ToStringCharset(strPath1);
+  return ::RemoveDirectory(strPath1) ? true : false;
 }
 
 bool CHDDirectory::Exists(const char* strPath)
 {
-  CStdString strReplaced = strPath;
+  CStdString strReplaced=strPath;
+  g_charsetConverter.utf8ToStringCharset(strReplaced);
   strReplaced.Replace("/","\\");
   if (!CUtil::HasSlashAtEnd(strReplaced))
     strReplaced += '\\';
