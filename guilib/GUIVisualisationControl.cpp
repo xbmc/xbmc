@@ -109,6 +109,7 @@ void CGUIVisualisationControl::LoadVisualisation()
   CSingleLock lock (m_critSection);
   if (m_pVisualisation)
     FreeVisualisation();
+  m_bInitialized = false;
 
   /* check if any other control beat us to the punch */
   if(m_globalvis)
@@ -215,7 +216,6 @@ void CGUIVisualisationControl::OnInitialize(int iChannels, int iSamplesPerSec, i
     return ;
   CLog::Log(LOGDEBUG, "OnInitialize() started");
 
-  m_bInitialized = true;
   m_iChannels = iChannels;
   m_iSamplesPerSec = iSamplesPerSec;
   m_iBitsPerSample = iBitsPerSample;
@@ -224,8 +224,11 @@ void CGUIVisualisationControl::OnInitialize(int iChannels, int iSamplesPerSec, i
   CStdString strFile = CUtil::GetFileName(g_application.CurrentFile());
   OutputDebugString("Visualisation::Start()\n");
   m_pVisualisation->Start(m_iChannels, m_iSamplesPerSec, m_iBitsPerSample, strFile);
+  if (!m_bInitialized)
+  {
+    UpdateAlbumArt();
+  }
   m_bInitialized = true;
-  UpdateAlbumArt();
   CLog::Log(LOGDEBUG, "OnInitialize() done");
 }
 
