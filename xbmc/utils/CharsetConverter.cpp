@@ -332,6 +332,13 @@ void CCharsetConverter::utf8ToStringCharset(const CStdStringA& strSource, CStdSt
   }
 }
 
+void CCharsetConverter::utf8ToStringCharset(CStdStringA& strSourceDest)
+{
+  CStdString strDest;
+  utf8ToStringCharset(strSourceDest, strDest);
+  strSourceDest=strDest;
+}
+
 void CCharsetConverter::stringCharsetToUtf8(const CStdStringA& strSource, CStdStringA& strDest)
 {
   if (m_iconvStringCharsetToUtf8 == (iconv_t) - 1)
@@ -359,6 +366,12 @@ void CCharsetConverter::stringCharsetToUtf8(const CStdStringA& strSource, CStdSt
 
     strDest.ReleaseBuffer();
   }
+}
+
+void CCharsetConverter::stringCharsetToUtf8(CStdStringA& strSourceDest)
+{
+  CStdString strSource=strSourceDest;
+  stringCharsetToUtf8(strSource, strSourceDest);
 }
 
 void CCharsetConverter::stringCharsetToUtf8(const CStdStringA& strSourceCharset, const CStdStringA& strSource, CStdStringA& strDest)
