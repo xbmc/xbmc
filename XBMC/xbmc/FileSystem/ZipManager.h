@@ -1,12 +1,6 @@
 #ifndef ZIP_MANAGER_H_
 #define ZIP_MANAGER_H_
 
-#include <map>
-#include <vector>
-
-#include "../../guilib/stdstring.h"
-#include "File.h"
-
 #define ZIP_LOCAL_HEADER 0x04034b50
 #define ZIP_CENTRAL_HEADER 0x02014b50
 
