@@ -1705,8 +1705,6 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 
 void CApplication::UnloadSkin()
 {
-  CGUIWindow::FlushReferenceCache(); // flush the cache
-
   g_audioManager.DeInitialize(CAudioContext::DEFAULT_DEVICE);
 
   //These windows are not handled by the windowmanager (why not?) so we should unload them manually
@@ -1715,6 +1713,8 @@ void CApplication::UnloadSkin()
   m_guiVideoOverlay.FreeResources(true); 	 
   m_guiMusicOverlay.FreeResources(true);
   m_gWindowManager.DeInitialize();
+
+  CGUIWindow::FlushReferenceCache(); // flush the cache
 
   g_TextureManager.Cleanup();
 
@@ -2453,11 +2453,11 @@ bool CApplication::ProcessGamepad(float frameTime)
       newRightStickKey = KEY_BUTTON_RIGHT_THUMB_STICK_UP;
     else if (m_DefaultGamepad.fY2 < 0)
       newRightStickKey = KEY_BUTTON_RIGHT_THUMB_STICK_DOWN;
-/*    else if (m_DefaultGamepad.fX2 != 0)
+    else if (m_DefaultGamepad.fX2 != 0)
     {
       newRightStickKey = KEY_BUTTON_RIGHT_THUMB_STICK_UP;
-      m_DefaultGamepad.fY2 = 0.00001f; // small amount of movement
-    }*/
+      //m_DefaultGamepad.fY2 = 0.00001f; // small amount of movement
+    }
   }
   else if (lastRightStickKey == KEY_BUTTON_RIGHT_THUMB_STICK_LEFT || lastRightStickKey == KEY_BUTTON_RIGHT_THUMB_STICK_RIGHT)
   {
@@ -2465,11 +2465,11 @@ bool CApplication::ProcessGamepad(float frameTime)
       newRightStickKey = KEY_BUTTON_RIGHT_THUMB_STICK_RIGHT;
     else if (m_DefaultGamepad.fX2 < 0)
       newRightStickKey = KEY_BUTTON_RIGHT_THUMB_STICK_LEFT;
-/*    else if (m_DefaultGamepad.fY2 != 0)
+    else if (m_DefaultGamepad.fY2 != 0)
     {
       newRightStickKey = KEY_BUTTON_RIGHT_THUMB_STICK_RIGHT;
-      m_DefaultGamepad.fX2 = 0.00001f; // small amount of movement
-    }*/
+      //m_DefaultGamepad.fX2 = 0.00001f; // small amount of movement
+    }
   }
   else
   {

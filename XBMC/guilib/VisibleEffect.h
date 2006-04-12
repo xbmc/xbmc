@@ -35,19 +35,6 @@ public:
 
   ANIMATION_TYPE type;
   EFFECT_TYPE effect;
-  int startX;
-  int startY;
-  int endX;
-  int endY;
-  int startAlpha;
-  int endAlpha;
-  float acceleration;
-
-  unsigned int length;
-  unsigned int delay;
-// for debug
-  float amount;
-// for debug
 
   ANIMATION_PROCESS queuedProcess;
   ANIMATION_STATE currentState;
@@ -59,8 +46,22 @@ public:
   inline bool IsReversible() const { return reversible; };
 
 private:
-//  float amount;
+  // animation variables
+  float acceleration;
+  int startX;
+  int startY;
+  int endX;
+  int endY;
+  int startAlpha;
+  int endAlpha;
+  int centerX;
+  int centerY;
+
   // timing variables
+  float amount;
   unsigned int start;
+  unsigned int length;
+  unsigned int delay;
+
   bool reversible;    // whether the animation is reversible or not
 };
