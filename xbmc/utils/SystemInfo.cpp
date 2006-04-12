@@ -227,7 +227,10 @@ CStdString SYSINFO::GetModCHIPDetected()
 {
 	mbFlash=new(CXBoxFlash);
 	{
-		// Known XBOX ModCHIP IDs&Names
+    // Unknown or TSOP
+    mbFlash->AddFCI(0x09,0x00,"Unknown/Onboard TSOP (protected)",0x00000);
+		
+    // Known XBOX ModCHIP IDs&Names
 		mbFlash->AddFCI(0x01,0xAD,"XECUTER 3",0x100000);
 		mbFlash->AddFCI(0x01,0xD5,"XECUTER 2",0x100000);
 		mbFlash->AddFCI(0x01,0xC4,"XENIUM",0x100000);
@@ -264,7 +267,8 @@ CStdString SYSINFO::GetModCHIPDetected()
 		mbFlash->AddFCI(0x01,0x38,"AMD Am29LV080B",0x100000);
 		mbFlash->AddFCI(0x01,0xda,"AMD Am29LV800BT/DT",0x100000);
 		mbFlash->AddFCI(0x01,0x5b,"AMD Am29LV800BB/DB",0x100000);
-		mbFlash->AddFCI(0x37,0x8c,"AMIC A29002T/290021T",0x40000);
+		
+    mbFlash->AddFCI(0x37,0x8c,"AMIC A29002T/290021T",0x40000);
 		mbFlash->AddFCI(0x37,0x0d,"AMIC A29002U/290021U",0x40000);
 		mbFlash->AddFCI(0x37,0x86,"AMIC A29040A",0x80000);
 		mbFlash->AddFCI(0x37,0xb0,"AMIC A29400T/294001T",0x80000);
@@ -276,7 +280,8 @@ CStdString SYSINFO::GetModCHIPDetected()
 		mbFlash->AddFCI(0x37,0x8f,"AMIC A29800U",0x100000);
 		mbFlash->AddFCI(0x37,0x1a,"AMIC A29L008T/A29L800T",0x100000);
 		mbFlash->AddFCI(0x37,0x9b,"AMIC A29L008U/A29L800U",0x100000);
-		mbFlash->AddFCI(0x04,0xb0,"Fujitsu MBM29F002TC",0x40000);
+		
+    mbFlash->AddFCI(0x04,0xb0,"Fujitsu MBM29F002TC",0x40000);
 		mbFlash->AddFCI(0x04,0x34,"Fujitsu MBM29F002BC",0x40000);
 		mbFlash->AddFCI(0x04,0x51,"Fujitsu MBM29F200TC",0x40000);
 		mbFlash->AddFCI(0x04,0x57,"Fujitsu MBM29F200BC",0x40000);
@@ -305,7 +310,8 @@ CStdString SYSINFO::GetModCHIPDetected()
 		mbFlash->AddFCI(0x04,0x38,"Fujitsu MBM29LV080A",0x100000);
 		mbFlash->AddFCI(0x04,0xda,"Fujitsu MBM29LV800TA/TE",0x100000);
 		mbFlash->AddFCI(0x04,0x5b,"Fujitsu MBM29LV800BA/BE",0x100000);
-		mbFlash->AddFCI(0xad,0xb0,"Hynix HY29F002",0x40000);
+		
+    mbFlash->AddFCI(0xad,0xb0,"Hynix HY29F002",0x40000);
 		mbFlash->AddFCI(0xad,0xa4,"Hynix HY29F040A",0x80000);
 		mbFlash->AddFCI(0xad,0x23,"Hynix HY29F400T/AT",0x80000);
 		mbFlash->AddFCI(0xad,0xab,"Hynix HY29F400B/AB",0x80000);
@@ -316,6 +322,7 @@ CStdString SYSINFO::GetModCHIPDetected()
 		mbFlash->AddFCI(0xad,0x58,"Hynix HY29F800B/AB",0x100000);
 		mbFlash->AddFCI(0xad,0xda,"Hynix HY29LV800T",0x100000);
 		mbFlash->AddFCI(0xad,0x5b,"Hynix HY29LV800B",0x100000);
+
 		mbFlash->AddFCI(0xc2,0xb0,"Macronix MX29F002T/NT",0x40000);
 		mbFlash->AddFCI(0xc2,0x34,"Macronix MX29F002B/NB",0x40000);
 		mbFlash->AddFCI(0xc2,0x36,"Macronix MX29F022T/NT",0x40000);
@@ -340,6 +347,7 @@ CStdString SYSINFO::GetModCHIPDetected()
 		mbFlash->AddFCI(0xc2,0x38,"Macronix MX29LV081",0x100000);
 		mbFlash->AddFCI(0xc2,0xda,"Macronix MX29LV800T",0x100000);
 		mbFlash->AddFCI(0xc2,0x5b,"Macronix MX29LV800B",0x100000);
+
 		mbFlash->AddFCI(0xb0,0xc9,"Sharp LHF00L02/L06/L07",0x100000);
 		mbFlash->AddFCI(0xb0,0xcf,"Sharp LHF00L03/L04/L05",0x100000);
 		mbFlash->AddFCI(0x89,0xa2,"Sharp LH28F008SA series",0x100000);
@@ -349,6 +357,7 @@ CStdString SYSINFO::GetModCHIPDetected()
 		mbFlash->AddFCI(0xb0,0x4b,"Sharp LH28F800BVxx-BTL series",0x100000);
 		mbFlash->AddFCI(0xb0,0x4c,"Sharp LH28F800BVxx-TV series",0x100000);
 		mbFlash->AddFCI(0xb0,0x4d,"Sharp LH28F800BVxx-BV series",0x100000);
+
 		mbFlash->AddFCI(0xbf,0x10,"SST 29EE020",0x40000);
 		mbFlash->AddFCI(0xbf,0x12,"SST 29LE020/29VE020",0x40000);
 		mbFlash->AddFCI(0xbf,0xd6,"SST 39LF020/39VF020",0x40000);
