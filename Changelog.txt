@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 12-04-2006 changed: filenames from local harddrive are converted to UTF-8 as bioses like the Evox M8 Plus can support GBK charset
+                       This hopefully fixes parts of sf bug: [ 1456741 ] New Language Set Case some Unicode GUI Display Error
  - 12-04-2006 changed: content of zip archives is converted from user charset to UTF-8 now
  - 12-04-2006 fixed: [ 1467762 ] Incorrect flash type shown on TSOP flashed boxes
  - 12-04-2006 fixed: redundant vis empty albumart update.
