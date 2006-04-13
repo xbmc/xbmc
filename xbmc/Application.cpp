@@ -1339,6 +1339,9 @@ void CApplication::PrintXBEToLCD(const char* xbePath)
     CUtil::ShortenFileName(strXBEName);
     CUtil::RemoveIllegalChars(strXBEName);
   }
+  // crop to LCD screen size
+  if ((int)strXBEName.size() > g_advancedSettings.m_lcdColumns)
+    strXBEName = strXBEName.Left(g_advancedSettings.m_lcdColumns);
   if (g_lcd)
   {
     g_lcd->SetLine(pLine++, "");
