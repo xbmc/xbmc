@@ -111,6 +111,8 @@ void CGUIListControl::Render()
         {
           // setting the filename will update the image if the thumb changes
           pImage->SetFileName(image);
+          if (!pImage->IsAllocated())
+            pImage->AllocResources();
           pImage->SetWidth(m_iImageWidth);
           pImage->SetHeight(m_iImageHeight);
           // center vertically
