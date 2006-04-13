@@ -120,6 +120,8 @@ void CGUIThumbnailPanel::RenderItem(bool bFocus, int iPosX, int iPosY, CGUIListI
         }
         // set file name to make sure it's always up to date (does nothing if it is)
         thumb->SetFileName(strThumb);
+        if (!thumb->IsAllocated())
+          thumb->AllocResources();
         thumb->SetPosition(m_iThumbXPos + iCenteredPosX + xOff, m_iThumbYPos + iPosY + yOff);
         thumb->Render();
 
@@ -129,6 +131,7 @@ void CGUIThumbnailPanel::RenderItem(bool bFocus, int iPosX, int iPosY, CGUIListI
         {
           overlay = new CGUIImage(0, 0, 0, 0, 0, 0, pItem->GetOverlayImage(), 0x0);
           overlay->SetAspectRatio(m_aspectRatio);
+          overlay->AllocResources();
           pItem->SetOverlay(overlay);
         }
         // Render the image
@@ -147,6 +150,9 @@ void CGUIThumbnailPanel::RenderItem(bool bFocus, int iPosX, int iPosY, CGUIListI
             overlay->SetWidth((int)(overlay->GetTextureWidth() * scale));
             overlay->SetHeight((int)(overlay->GetTextureHeight() * scale));
           }
+          // if we haven't yet rendered, make sure we update our sizing
+          if (!overlay->HasRendered())
+            overlay->CalculateSize();
           overlay->SetPosition((int)x - overlay->GetRenderWidth(), (int)y - overlay->GetRenderHeight());
           overlay->Render();
         }
