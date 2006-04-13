@@ -163,11 +163,20 @@ bool CRarManager::GetFilesInRar(CFileItemList& vecpItems, const CStdString& strR
   for( pIterator = pFileList; pIterator  ; pIterator ? pIterator = pIterator->next : NULL)
 	{
     CStdString strDirDelimiter = (pIterator->item.HostOS==3 ? "/":"\\"); // win32 or unix paths?
+    CStdString strName;
     if (bMask)
     {
       vec.clear();
-      CUtil::Tokenize(pIterator->item.Name,vec,strDirDelimiter);
-      if (!strstr(pIterator->item.Name,strPathInRar.c_str()))
+      CStdStringW strNameW=pIterator->item.NameW;
+      if (!strNameW.IsEmpty())
+        g_charsetConverter.utf16toUTF8(strNameW, strName);
+      else
+      {
+        strName=pIterator->item.Name;
+        g_charsetConverter.stringCharsetToUtf8(strName);
+      }
+      CUtil::Tokenize(strName.c_str(),vec,strDirDelimiter);
+      if (!strstr(strName.c_str(),strPathInRar.c_str()))
         continue;
       if (vec.size() < iDepth)
         continue;
@@ -195,8 +204,16 @@ bool CRarManager::GetFilesInRar(CFileItemList& vecpItems, const CStdString& strR
     {
       if (vec.size() == iDepth+1 || !bMask)
       {
-        pFileItem = new CFileItem(pIterator->item.Name+strPathInRar.size());
-		    pFileItem->m_strPath = pIterator->item.Name+strPathInRar.size();
+        CStdStringW strNameW=pIterator->item.NameW;
+        if (!strNameW.IsEmpty())
+          g_charsetConverter.utf16toUTF8(strNameW, strName);
+        else
+        {
+          strName=pIterator->item.Name;
+          g_charsetConverter.stringCharsetToUtf8(strName);
+        }
+        pFileItem = new CFileItem(strName.c_str()+strPathInRar.size());
+		    pFileItem->m_strPath = strName.c_str()+strPathInRar.size();
         pFileItem->m_strPath.Replace("/","\\");
         pFileItem->m_dwSize = pIterator->item.UnpSize;
         pFileItem->m_idepth = pIterator->item.Method;
