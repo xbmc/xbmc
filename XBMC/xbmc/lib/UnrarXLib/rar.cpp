@@ -339,6 +339,8 @@ int urarlib_list(char *rarfile, ArchiveList_struct **ppList, char *libpassword)
               pCurr->item.NameSize = strlen(pArc->NewLhd.FileName);
               pCurr->item.Name = (char *)malloc(pCurr->item.NameSize + 1);
               strcpy(pCurr->item.Name, pArc->NewLhd.FileName);
+              pCurr->item.NameW = (wchar *)malloc((pCurr->item.NameSize + 1)*sizeof(wchar));
+              wcscpy(pCurr->item.NameW, pArc->NewLhd.FileNameW);
               pCurr->item.PackSize = pArc->NewLhd.PackSize;
               pCurr->item.UnpSize = int32to64(pArc->NewLhd.HighUnpSize,pArc->NewLhd.UnpSize);
               pCurr->item.HostOS = pArc->NewLhd.HostOS;
@@ -466,6 +468,7 @@ void urarlib_freelist(ArchiveList_struct *list)
 	{
 		p = list->next;
 		free(list->item.Name);
+		free(list->item.NameW);
 		free(list);
 		list = p;
 	}
