@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 13-04-2006 fixed: mem leak in charset converter
  - 13-04-2006 fixed: window init sound for normal windows is not playing
  - 13-04-2006 fixed: List Icons and Thumb overlays would be rendered in the incorrect position the first frame, then would shift to the correct position.
  - 13-04-2006 fixed: <BlackBarColour> tag in settings.xml could not be set to 0 (pure black).

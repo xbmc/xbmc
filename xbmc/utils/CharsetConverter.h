@@ -17,8 +17,6 @@ public:
 
   void utf8ToUTF16(const CStdStringA& utf8String, CStdStringW &utf16String);
 
-  void stringCharsetToFontCharset(const CStdStringA& strSource, CStdStringW& strDest);
-
   void subtitleCharsetToFontCharset(const CStdStringA& strSource, CStdStringW& strDest);
 
   void utf8ToStringCharset(const CStdStringA& strSource, CStdStringA& strDest);
@@ -30,6 +28,10 @@ public:
   void stringCharsetToUtf8(const CStdStringA& strSourceCharset, const CStdStringA& strSource, CStdStringA& strDest);
 
   void stringCharsetToUtf8(CStdStringA& strSourceDest);
+
+  bool isValidUtf8(const CStdString& str);
+
+  bool isValidUtf8(const char *buf, unsigned int len);
 
   void ucs2CharsetToStringCharset(const CStdStringW& strSource, CStdStringA& strDest, bool swap = false);
 
