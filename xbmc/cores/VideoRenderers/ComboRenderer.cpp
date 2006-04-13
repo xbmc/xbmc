@@ -359,6 +359,9 @@ void CComboRenderer::Render()
 unsigned int CComboRenderer::PreInit()
 {
   CXBoxRenderer::PreInit();
+  // May have to set clearColour non-zero in future for HW overlays method?
+//  if (!m_clearColour)
+//    m_clearColour = 0x010001;
   m_NumYUY2Buffers = 0;
   m_iYUVDecodeBuffer = 0;
   m_iYUVRenderBuffer = 0;

@@ -332,7 +332,7 @@ CGUISettings::CGUISettings(void)
   AddSeparator(12, "MyVideos.Sep3");
   AddBool(13, "MyVideos.IgnoreTheWhenSorting", 13399, true);
   // hidden setting for blackbars
-  AddInt(0, "Videos.BlackBarColour", 0, 1, 1, 1, 255, SPIN_CONTROL_INT);
+  AddInt(0, "Videos.BlackBarColour", 0, 0, 0, 1, 255, SPIN_CONTROL_INT);
 
   AddCategory(5, "VideoFiles", 744);
   AddBool(1, "VideoFiles.FindRemoteThumbs", 14059, true);

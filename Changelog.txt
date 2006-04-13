@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 13-04-2006 fixed: List Icons and Thumb overlays would be rendered in the incorrect position the first frame, then would shift to the correct position.
+ - 13-04-2006 fixed: <BlackBarColour> tag in settings.xml could not be set to 0 (pure black).
  - 13-04-2006 fixed: [ 1468564 ] MP3 track change skipping issue not playing gapless properly
  - 13-04-2006 fixed: Updated Hebrew language file
  - 13-04-2006 fixed: sometimes a highlighted item in dvd menu's didn't change if another item was selected.
