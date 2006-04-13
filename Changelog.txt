@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 13-04-2006 fixed: [ 1425103 ] [Play-CD Button] MultiGameDisks (ISOUDF) don´t start.
  - 13-04-2006 fixed: [ 1449678 ] LCD Text scrolls after launching a game.
  - 13-04-2006 fixed: [ 1468002 ] Scan All to Database deletes album cover images.
  - 13-04-2006 fixed: Blank progress bar would show when deleting files.
