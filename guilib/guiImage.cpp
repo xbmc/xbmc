@@ -114,7 +114,7 @@ void CGUIImage::Render()
   if (m_vecTextures.size())
   {
     Process();
-    if (m_bInvalidated) UpdateVB();
+    if (m_bInvalidated) CalculateSize();
     // scale to screen output position
     if (m_fNW > m_dwWidth || m_fNH > m_dwHeight)
       if (!g_graphicsContext.SetViewPort((float)m_iPosX, (float)m_iPosY, (float)m_dwWidth, (float)m_dwHeight, true))
@@ -239,7 +239,7 @@ void CGUIImage::AllocResources()
   }
 
   // Set state to render the image
-  UpdateVB();
+  CalculateSize();
 }
 
 void CGUIImage::FreeTextures()
@@ -269,12 +269,7 @@ void CGUIImage::DynamicResourceAlloc(bool bOnOff)
   m_bDynamicResourceAlloc=bOnOff;
 }
 
-void CGUIImage::Update()
-{
-  CGUIControl::Update();
-}
-
-void CGUIImage::UpdateVB()
+void CGUIImage::CalculateSize()
 {
   if (m_vecTextures.size() == 0) return ;
 
@@ -378,7 +373,6 @@ void CGUIImage::Select(int iBitmap)
   {
     m_iBitmap = iBitmap;
     Update();
-    m_bInvalidated = true;
   }
 }
 
@@ -437,7 +431,6 @@ void CGUIImage::SetTextureWidth(int iWidth)
   {
     m_iTextureWidth = iWidth;
     Update();
-    m_bInvalidated = true;
   }
 }
 
@@ -447,7 +440,6 @@ void CGUIImage::SetTextureHeight(int iHeight)
   {
     m_iTextureHeight = iHeight;
     Update();
-    m_bInvalidated = true;
   }
 }
 
@@ -466,7 +458,7 @@ void CGUIImage::SetAspectRatio(GUIIMAGE_ASPECT_RATIO ratio)
   if (m_aspectRatio != ratio)
   {
     m_aspectRatio = ratio;
-    m_bInvalidated = true;
+    Update();
   }
 }
 
@@ -509,7 +501,7 @@ void CGUIImage::SetCornerAlpha(DWORD dwLeftTop, DWORD dwRightTop, DWORD dwLeftBo
     m_dwAlpha[1] = dwRightTop;
     m_dwAlpha[2] = dwLeftBottom;
     m_dwAlpha[3] = dwRightBottom;
-    m_bInvalidated = true;
+    Update();
   }
 }
 
