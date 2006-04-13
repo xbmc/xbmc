@@ -6,6 +6,7 @@
 struct RAR20_archive_entry                  /* These infos about files are  */
 {                                           /* stored in RAR v2.0 archives  */
   char          *Name;
+  wchar_t       *NameW;
   unsigned short NameSize;
   unsigned long  PackSize;
   __int64 UnpSize;
