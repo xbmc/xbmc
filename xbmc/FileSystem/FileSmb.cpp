@@ -55,7 +55,7 @@ void CSMB::Init()
       }
       else lp_do_parameter( -1, "name resolve order", "bcast");
 
-      if (g_stSettings.m_strSambaDosCodepage.length() > 1)
+      if (g_stSettings.m_strSambaDosCodepage.length() > 1 && !g_stSettings.m_strSambaDosCodepage.Equals("DEFAULT"))
       {
         lp_do_parameter( -1, "dos charset", g_stSettings.m_strSambaDosCodepage.c_str());
       }
