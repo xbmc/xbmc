@@ -313,6 +313,7 @@ void CGUIWindowManager::ActivateWindow(int iWindowID, const CStdString& strPath,
   AddToWindowHistory(iWindowID);
 
   g_infoManager.SetPreviousWindow(currentWindow);
+  g_audioManager.PlayWindowSound(pNewWindow->GetID(), SOUND_INIT);
   // Send the init message
   CGUIMessage msg(GUI_MSG_WINDOW_INIT, 0, 0, GetActiveWindow(), iWindowID);
   if (!strPath.IsEmpty()) msg.SetStringParam(strPath);
