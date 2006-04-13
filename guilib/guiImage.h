@@ -55,10 +55,9 @@ public:
   void SetInfo(int info) { m_Info = info; };
   int GetInfo() const { return m_Info; };
 
+  void CalculateSize();
 protected:
   void FreeTextures();
-  virtual void Update();
-  void UpdateVB();
   void Process();
   static const DWORD FVF_VERTEX = D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_TEX0;
 
