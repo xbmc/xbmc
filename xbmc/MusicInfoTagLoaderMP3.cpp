@@ -397,6 +397,8 @@ int CMusicInfoTagLoaderMP3::ReadDuration(const CStdString& strFileName)
             float *offset = new float[101];
             for (int j = 0; j < 100; j++)
               offset[j] = (float)xing[iOffset + j]/256.0f * nMp3DataSize + id3v2Size;
+            //first offset should be the location of the first frame, usually it is but some files have seektables that are a little off.
+            offset[0]   = (float)id3v2Size;
             offset[100] = (float)nMp3DataSize + id3v2Size;
             m_seekInfo.SetOffsets(100, offset);
             delete[] offset;
