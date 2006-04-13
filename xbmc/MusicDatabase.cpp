@@ -2100,7 +2100,9 @@ bool CMusicDatabase::CleanupAlbumsFromPaths(const CStdString &strPathIds)
 {
   try
   {
-    CStdString strSQL = "select * from album,path where album.idPath in " + strPathIds + " and album.idAlbum not in (select distinct idAlbum from song) and album.idPath=path.idPath";
+    // Delete all albums with these path ids that do not have songs
+    // and do not have album info
+    CStdString strSQL = "select * from album,path where album.idPath in " + strPathIds + " and album.idAlbum not in (select distinct idAlbum from song) and album.idAlbum not in (select distinct idAlbum from albuminfo) and album.idPath=path.idPath";
     //CStdString strSQL = "select * from album where album.idPath in " + strPathIds + " and album.idAlbum not in (select distinct idAlbum from song)";
     if (!m_pDS->query(strSQL.c_str())) return false;
     int iRowsFound = m_pDS->num_rows();
@@ -2253,8 +2255,8 @@ bool CMusicDatabase::CleanupAlbums()
   {
     // This must be run AFTER songs have been cleaned up
     // delete albums with no reference to songs
-    // TODO: shouldn't really delete them if they contain albuminfo
-    CStdString strSQL = "select * from album,path where album.idAlbum not in (select distinct idAlbum from song) and album.idPath=path.idPath";
+    // AND no reference to album info
+    CStdString strSQL = "select * from album,path where album.idAlbum not in (select distinct idAlbum from song) and album.idAlbum not in (select distinct idAlbum from albuminfo) and album.idPath=path.idPath";
     //  strSQL += " or idAlbum not in (select distinct idAlbum from albuminfo)";
     if (!m_pDS->query(strSQL.c_str())) return false;
     int iRowsFound = m_pDS->num_rows();
