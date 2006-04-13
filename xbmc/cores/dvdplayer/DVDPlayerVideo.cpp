@@ -604,7 +604,10 @@ CDVDPlayerVideo::EOUTPUTSTATUS CDVDPlayerVideo::OutputPicture(DVDVideoPicture* p
   }
 
   if (m_bInitializedOutputDevice)
-  {    
+  {
+    // make sure we do not drop pictures that should not be skipped
+    if (pPicture->iFlags & DVP_FLAG_NOSKIP) pPicture->iFlags &= ~DVP_FLAG_DROPPED;
+    
     if( !(pPicture->iFlags & DVP_FLAG_DROPPED) )
     {
       // copy picture to overlay
