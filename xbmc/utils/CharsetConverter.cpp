@@ -1,5 +1,7 @@
 #include "../stdafx.h"
 
+#define ICONV_PREPARE(iconv) iconv=(iconv_t)-1
+#define ICONV_SAFE_CLOSE(iconv) if (iconv!=(iconv_t)-1) { iconv_close(iconv); iconv=(iconv_t)-1; }
 
 CCharsetConverter g_charsetConverter;
 
@@ -69,7 +71,15 @@ CCharsetConverter::CCharsetConverter()
   m_vecBidiCharsetNames.push_back("Windows-1256");
   m_vecBidiCharsets.push_back(FRIBIDI_CHARSET_CP1256);
 
-  // reset();
+  ICONV_PREPARE(m_iconvStringCharsetToFontCharset);
+  ICONV_PREPARE(m_iconvUtf8ToStringCharset);
+  ICONV_PREPARE(m_iconvStringCharsetToUtf8);
+  ICONV_PREPARE(m_iconvUcs2CharsetToStringCharset);
+  ICONV_PREPARE(m_iconvSubtitleCharsetToFontCharset);
+  ICONV_PREPARE(m_iconvUtf16toUtf8);
+  ICONV_PREPARE(m_iconvUtf16BEtoUtf8);
+  ICONV_PREPARE(m_iconvUtf32ToStringCharset);
+  ICONV_PREPARE(m_iconvUtf8toUtf16);
 }
 
 void CCharsetConverter::clear()
@@ -126,15 +136,16 @@ boolean CCharsetConverter::isBidiCharset(const CStdString& charset)
 
 void CCharsetConverter::reset(void)
 {
-  m_iconvStringCharsetToFontCharset = (iconv_t) - 1;
-  m_iconvUtf8ToStringCharset = (iconv_t) - 1;
-  m_iconvStringCharsetToUtf8 = (iconv_t) - 1;
-  m_iconvUcs2CharsetToStringCharset = (iconv_t) - 1;
-  m_iconvSubtitleCharsetToFontCharset = (iconv_t) - 1;
-  m_iconvUtf16toUtf8 = (iconv_t) - 1;
-  m_iconvUtf16BEtoUtf8 = (iconv_t) - 1;
-  m_iconvUtf32ToStringCharset = (iconv_t) - 1;
-  m_iconvUtf8toUtf16 = (iconv_t) - 1;
+  ICONV_SAFE_CLOSE(m_iconvStringCharsetToFontCharset);
+  ICONV_SAFE_CLOSE(m_iconvUtf8ToStringCharset);
+  ICONV_SAFE_CLOSE(m_iconvStringCharsetToUtf8);
+  ICONV_SAFE_CLOSE(m_iconvUcs2CharsetToStringCharset);
+  ICONV_SAFE_CLOSE(m_iconvSubtitleCharsetToFontCharset);
+  ICONV_SAFE_CLOSE(m_iconvUtf16toUtf8);
+  ICONV_SAFE_CLOSE(m_iconvUtf16BEtoUtf8);
+  ICONV_SAFE_CLOSE(m_iconvUtf32ToStringCharset);
+  ICONV_SAFE_CLOSE(m_iconvUtf8toUtf16);
+
   m_stringFribidiCharset = FRIBIDI_CHARSET_NOT_FOUND;
 
   CStdString strCharset=g_langInfo.GetGuiCharSet();
@@ -188,49 +199,6 @@ void CCharsetConverter::utf8ToUTF16(const CStdStringA& utf8String, CStdStringW &
     {
       utf16String = (WCHAR *)dst;
     }
-    delete[] dst;
-  }
-}
-
-void CCharsetConverter::stringCharsetToFontCharset(const CStdStringA& strSource, CStdStringW& strDest)
-{
-  CStdStringA strFlipped;
-
-  const char* src;
-  size_t inBytes;
-
-  // If this is hebrew/arabic, flip the characters
-  if (m_stringFribidiCharset != FRIBIDI_CHARSET_NOT_FOUND)
-  {
-    logicalToVisualBiDi(strSource, strFlipped, m_stringFribidiCharset);
-    src = strFlipped.c_str();
-    inBytes = strFlipped.length() + 1;
-  }
-  else
-  {
-    src = strSource.c_str();
-    inBytes = strSource.length() + 1;
-  }
-
-  if (m_iconvStringCharsetToFontCharset == (iconv_t) - 1)
-  {
-    CStdString strCharset=g_langInfo.GetGuiCharSet();
-    m_iconvStringCharsetToFontCharset = iconv_open("UTF-16LE", strCharset.c_str());
-  }
-
-  if (m_iconvStringCharsetToFontCharset != (iconv_t) - 1)
-  {
-    char *dst = new char[inBytes * 2];
-    size_t outBytes = inBytes * 2;
-    char *outdst = dst;
-    if (iconv(m_iconvStringCharsetToFontCharset, &src, &inBytes, &outdst, &outBytes))
-    {
-      // For some reason it failed (maybe wrong charset?). Nothing to do but
-      // return the original..
-      strDest = strSource;
-    }
-    else
-      strDest = (WCHAR *)dst;
     delete[] dst;
   }
 }
@@ -512,3 +480,68 @@ void CCharsetConverter::utf32ToStringCharset(const unsigned long* strSource, CSt
   }
 }
 
+// Taken from RFC2640
+bool CCharsetConverter::isValidUtf8(const char *buf, unsigned int len)
+{
+  const unsigned char *endbuf = (unsigned char*)buf + len;
+  unsigned char byte2mask=0x00, c;
+  int trailing=0; // trailing (continuation) bytes to follow
+
+  while ((unsigned char*)buf != endbuf)
+  {
+    c = *buf++;
+    if (trailing)
+      if ((c & 0xc0) == 0x80) // does trailing byte follow UTF-8 format ?
+      {
+        if (byte2mask) // need to check 2nd byte for proper range
+        {
+          if (c & byte2mask) // are appropriate bits set ?
+            byte2mask = 0x00;
+          else
+            return false;
+        }
+        trailing--;
+      }
+      else
+        return 0;
+    else
+      if ((c & 0x80) == 0x00) continue; // valid 1-byte UTF-8
+      else if ((c & 0xe0) == 0xc0)      // valid 2-byte UTF-8
+        if (c & 0x1e)                   //is UTF-8 byte in proper range ?
+          trailing = 1;
+        else
+          return false;
+      else if ((c & 0xf0) == 0xe0)      // valid 3-byte UTF-8
+       {
+        if (!(c & 0x0f))                // is UTF-8 byte in proper range ?
+          byte2mask = 0x20;             // if not set mask
+        trailing = 2;                   // to check next byte
+      }
+      else if ((c & 0xf8) == 0xf0)      // valid 4-byte UTF-8
+      {
+        if (!(c & 0x07))                // is UTF-8 byte in proper range ?
+          byte2mask = 0x30;             // if not set mask
+        trailing = 3;                   // to check next byte
+      }
+      else if ((c & 0xfc) == 0xf8)      // valid 5-byte UTF-8
+      {
+        if (!(c & 0x03))                // is UTF-8 byte in proper range ?
+          byte2mask = 0x38;             // if not set mask
+        trailing = 4;                   // to check next byte
+      }
+      else if ((c & 0xfe) == 0xfc)      // valid 6-byte UTF-8
+      {
+        if (!(c & 0x01))                // is UTF-8 byte in proper range ?
+          byte2mask = 0x3c;             // if not set mask
+        trailing = 5;                   // to check next byte
+      }
+      else
+        return false;
+  }
+  return trailing == 0;
+}
+
+bool CCharsetConverter::isValidUtf8(const CStdString& str)
+{
+  return isValidUtf8(str.c_str(), str.size());
+}
