@@ -420,10 +420,7 @@ bool CGUIAudioManager::Load()
       if (pIdNode)
       {
         if (pIdNode->FirstChild())
-        {
-          g_buttonTranslator.TranslateWindowString(pIdNode->FirstChild()->Value());
           wID = g_buttonTranslator.TranslateWindowString(pIdNode->FirstChild()->Value());
-        }
       }
 
       CWindowSounds sounds;
