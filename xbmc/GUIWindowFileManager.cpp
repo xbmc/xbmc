@@ -771,7 +771,7 @@ void CGUIWindowFileManager::OnDelete(int iList)
   if (!CGUIDialogYesNo::ShowAndGetInput(122, 125, 0, 0))
     return;
 
-  ResetProgressBar();
+  ResetProgressBar(false);
 
   DoProcess(ACTION_DELETE, m_vecItems[iList], m_Directory[iList].m_strPath);
 
@@ -1274,7 +1274,7 @@ bool CGUIWindowFileManager::DeleteItem(const CFileItem *pItem)
   if (pFileManager)
   {
     pFileManager->m_dlgProgress = (CGUIDialogProgress *)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
-    pFileManager->ResetProgressBar();
+    pFileManager->ResetProgressBar(false);
     pFileManager->DoProcess(ACTION_DELETE, items, "");
     if (pFileManager->m_dlgProgress) pFileManager->m_dlgProgress->Close();
   }
@@ -1384,7 +1384,7 @@ void CGUIWindowFileManager::SetInitialPath(const CStdString &path)
   if (m_Directory[1].m_strPath == "?") m_Directory[1].m_strPath = "";
 }
 
-void CGUIWindowFileManager::ResetProgressBar()
+void CGUIWindowFileManager::ResetProgressBar(bool showProgress /*= true */)
 {
   if (m_dlgProgress)
   {
@@ -1394,6 +1394,6 @@ void CGUIWindowFileManager::ResetProgressBar()
     m_dlgProgress->SetLine(2, 0);
     m_dlgProgress->StartModal(GetID());
     m_dlgProgress->SetPercentage(0);
-    m_dlgProgress->ShowProgressBar(true);
+    m_dlgProgress->ShowProgressBar(showProgress);
   }
 }

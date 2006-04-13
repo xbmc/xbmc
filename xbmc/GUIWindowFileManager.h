@@ -23,7 +23,7 @@ public:
   static bool DeleteItem(const CFileItem *pItem);
   static bool RenameFile(const CStdString &strFile);
 
-  void ResetProgressBar();
+  void ResetProgressBar(bool showProgress = true);
 protected:
   virtual void OnInitWindow();
   virtual void OnWindowLoaded();

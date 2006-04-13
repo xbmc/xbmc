@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 13-04-2006 fixed: Blank progress bar would show when deleting files.
  - 12-04-2006 fixed: Controller thumbsticks could register left or right after first pushing up or down when the stick was rotated.
  - 12-04-2006 fixed: Control.HasFocus and ButtonScroller.HasIcon had restricted ID ranges.
  - 12-04-2006 fixed: Zoom animation couldn't assign different zoom amounts to x and y directions.
