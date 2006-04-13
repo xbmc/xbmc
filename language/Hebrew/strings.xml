@@ -632,7 +632,7 @@
   <string><id>1217</id><value>מוזיקה וקבצים</value></string>
   <string><id>1218</id><value>וידאו ותמונות</value></string>
   <string><id>1219</id><value>וידאו וקבצים</value></string>
-  <string><id>1220</id><value>תמונות וקבצים/value></string>
+  <string><id>1220</id><value>תמונות וקבצים</value></string>
   <string><id>1221</id><value>מוזיקה, וידאו ותמונות</value></string>
   <string><id>1222</id><value>מוזיקה, וידאו, תמונות וקבצים</value></string>
   <string><id>1223</id><value>מנוטרל</value></string>
@@ -830,7 +830,7 @@
   <string><id>12379</id><value>Pan and Zoom השתמש באפקט</value></string>
   <string><id>12380</id><value>PAL בקצבי רענון NTSC נגן וידאו</value></string>
   <string><id>12381</id><value>NTSC בקצבי רענון PAL נגן וידאו</value></string>
-  <string><id>12382</id><value>PAL60 ב NTSC נגן וידאו/value></string>
+  <string><id>12382</id><value>PAL60 ב NTSC נגן וידאו</value></string>
   <string><id>12383</id><value>שעון 12 שעות</value></string>
   <string><id>12384</id><value>שעון 24 שעות</value></string>
   <string><id>12385</id><value>יום/חודש</value></string>
@@ -926,7 +926,7 @@
   <string><id>13296</id><value>מחובר Xbox</value></string>
   <string><id>13297</id><value>לא מחובר. בדוק הגדרות רשת Xbox</value></string>
   <string><id>13298</id><value>XBLIVE מפתח:</value></string>
-  <string><id>13299</id><value>טמפרטורת יעד/value></string>
+  <string><id>13299</id><value>טמפרטורת יעד</value></string>
 
   <string><id>13300</id><value>מהירות מאורר:</value></string>
   <string><id>13301</id><value>בקרת טמפרטורה אטומאטית</value></string>
