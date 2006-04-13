@@ -411,109 +411,47 @@ bool CAutorun::PlayDisc()
       g_playlistPlayer.Play(nSize);
     }
   }
-  else if (pInfo->IsUDFX( 1 ) || pInfo->IsUDF(1))
+  else 
   {
-    CLog::Log(LOGDEBUG, "Playdisc called on an UDFX/UDF disk");
-    if ( CFile::Exists("D:\\default.xbe") )
-    {
-      int iRegion;
-      if (g_guiSettings.GetBool("MyPrograms.GameAutoRegion"))
+    if (!pInfo->IsISOHFS(1) && !pInfo->IsIso9660(1) && !pInfo->IsIso9660Interactive(1))
+    { // pInfo->IsISOHFS(1) || pInfo->IsIso9660(1) || pInfo->IsIso9660Interactive(1)
+      CLog::Log(LOGDEBUG, "Playdisc called on an UDFX/UDF/ISOUDFn or Unknown disk, attempting to run XBE");
+      if ( CFile::Exists("D:\\default.xbe") )
       {
-        CXBE xbe;
-        iRegion = xbe.ExtractGameRegion("D:\\default.xbe");
-        if (iRegion < 1 || iRegion > 7)
-          iRegion = 0;
-        iRegion = xbe.FilterRegion(iRegion);
-      }
-      else
-        iRegion = 0;
-
-      CProgramDatabase database;
-      database.Open();
-      DWORD dwTitleId = CUtil::GetXbeID("D:\\default.xbe");
-      CStdString strTrainer = database.GetActiveTrainer(dwTitleId);
-      if (strTrainer != "" && !CKaiClient::GetInstance()->IsEngineConnected())
-      {
-        CTrainer trainer;
-        if (trainer.Load(strTrainer))
+        int iRegion;
+        if (g_guiSettings.GetBool("MyPrograms.GameAutoRegion"))
         {
-          database.GetTrainerOptions(strTrainer,dwTitleId,trainer.GetOptions(),trainer.GetNumberOfOptions());
-          CUtil::InstallTrainer(trainer);
+          CXBE xbe;
+          iRegion = xbe.ExtractGameRegion("D:\\default.xbe");
+          if (iRegion < 1 || iRegion > 7)
+            iRegion = 0;
+          iRegion = xbe.FilterRegion(iRegion);
         }
-      }
-
-      database.Close();
-      g_application.Stop();
-
-      CUtil::LaunchXbe( "Cdrom0", "D:\\default.xbe", NULL, F_VIDEO(iRegion) );
-      return false;
-    }
-    int nSize = g_playlistPlayer.GetPlaylist( PLAYLIST_MUSIC ).size();
-    int nAddedToPlaylist = 0;
-    auto_ptr<IDirectory> pDir ( CFactoryDirectory::Create( "D:\\" ) );
-    bool bPlaying = PlayRunDisc(pDir.get(), "D:\\", nAddedToPlaylist, true);
-    if ( !bPlaying && nAddedToPlaylist > 0 )
-    {
-      CGUIMessage msg( GUI_MSG_PLAYLIST_CHANGED, 0, 0, 0, 0, NULL );
-      m_gWindowManager.SendMessage( msg );
-      g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_MUSIC);
-      // Start playing the items we inserted
-      g_playlistPlayer.Play( nSize );
-    }
-  }
-  else if (pInfo->IsISOUDF(1) || pInfo->IsISOHFS(1) || pInfo->IsIso9660(1) || pInfo->IsIso9660Interactive(1))
-  {
-    CLog::Log(LOGDEBUG, "Playdisc called on an ISOUDF/ISOHFS/iso9660/iso9660Interactive disk");
-    int nSize = g_playlistPlayer.GetPlaylist( PLAYLIST_MUSIC ).size();
-    int nAddedToPlaylist = 0;
-    auto_ptr<IDirectory> pDir ( CFactoryDirectory::Create( "iso9660://" ));
-    bool bPlaying = PlayRunDisc(pDir.get(), "iso9660://", nAddedToPlaylist, true);
-    if ( !bPlaying && nAddedToPlaylist > 0 )
-    {
-      CGUIMessage msg( GUI_MSG_PLAYLIST_CHANGED, 0, 0, 0, 0, NULL );
-      m_gWindowManager.SendMessage( msg );
-      g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_MUSIC);
-      // Start playing the items we inserted
-      g_playlistPlayer.Play(nSize);
-    }
-  }
-  else
-  {
-    CLog::Log(LOGDEBUG, "Playdisc called on an unknown disk");
-    if ( CFile::Exists("D:\\default.xbe") )
-    {
-      int iRegion;
-      if (g_guiSettings.GetBool("MyPrograms.GameAutoRegion"))
-      {
-        CXBE xbe;
-        iRegion = xbe.ExtractGameRegion("D:\\default.xbe");
-        if (iRegion < 1 || iRegion > 7)
+        else
           iRegion = 0;
-        iRegion = xbe.FilterRegion(iRegion);
-      }
-      else
-        iRegion = 0;
 
-      CProgramDatabase database;
-      database.Open();
-      DWORD dwTitleId = CUtil::GetXbeID("D:\\default.xbe");
-      CStdString strTrainer = database.GetActiveTrainer(dwTitleId);
-      if (strTrainer != "" && !CKaiClient::GetInstance()->IsEngineConnected())
-      {
-        CTrainer trainer;
-        if (trainer.Load(strTrainer))
+        CProgramDatabase database;
+        database.Open();
+        DWORD dwTitleId = CUtil::GetXbeID("D:\\default.xbe");
+        CStdString strTrainer = database.GetActiveTrainer(dwTitleId);
+        if (strTrainer != "" && !CKaiClient::GetInstance()->IsEngineConnected())
         {
-          database.GetTrainerOptions(strTrainer,dwTitleId,trainer.GetOptions(),trainer.GetNumberOfOptions());
-          CUtil::InstallTrainer(trainer);
+          CTrainer trainer;
+          if (trainer.Load(strTrainer))
+          {
+            database.GetTrainerOptions(strTrainer,dwTitleId,trainer.GetOptions(),trainer.GetNumberOfOptions());
+            CUtil::InstallTrainer(trainer);
+          }
         }
-      }
 
-      database.Close();
-      g_application.Stop();
-   
-      CUtil::LaunchXbe( "Cdrom0", "D:\\default.xbe", NULL, F_VIDEO(iRegion) );
-      return false;
+        database.Close();
+        g_application.Stop();
+
+        CUtil::LaunchXbe( "Cdrom0", "D:\\default.xbe", NULL, F_VIDEO(iRegion) );
+        return false;
+      }
     }
+    CLog::Log(LOGDEBUG, "Playdisc called on an ISOHFS/iso9660/iso9660Interactive disk, or no xbe found, searching for music files");
     int nSize = g_playlistPlayer.GetPlaylist( PLAYLIST_MUSIC ).size();
     int nAddedToPlaylist = 0;
     auto_ptr<IDirectory> pDir ( CFactoryDirectory::Create( "D:\\" ) );
