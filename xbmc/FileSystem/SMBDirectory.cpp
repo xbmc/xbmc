@@ -31,6 +31,9 @@ bool CSMBDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
   CFileItemList vecCacheItems;
   g_directoryCache.ClearDirectory(strPath);
 
+  /* samba isn't thread safe with old interface, always lock */
+  CSingleLock lock(smb);
+
   smb.Init();
 
   /* we need an url to do proper escaping */
@@ -48,9 +51,6 @@ bool CSMBDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
   struct smbc_dirent* dirEnt;
   CStdString strFile;
 
-  // Seems like what smbc_readdir() returns is 
-  // not thread save. Lock the whole loop
-  smb.Lock();
   dirEnt = smbc_readdir(fd);
 
   while (dirEnt)
@@ -73,16 +73,20 @@ bool CSMBDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
            dirEnt->smbc_type != SMBC_WORKGROUP &&
            dirEnt->smbc_type != SMBC_SERVER)
       {
-        struct __stat64 info;
+        struct __stat64 info = {0};
 
         //Make sure we use the authenticated path wich contains any default username
         CStdString strFullName = strAuth + smb.URLEncode(strFile);
 
-        smbc_stat(strFullName.c_str(), &info);
+        if( smbc_stat(strFullName.c_str(), &info) == 0 )
+        {
+          bIsDir = (info.st_mode & S_IFDIR) ? true : false;
+          lTimeDate = info.st_mtime;
+          iSize = info.st_size;
+        }
+        else
+          CLog::Log(LOGERROR, __FUNCTION__" - Failed to stat file %s", strFullName.c_str());
 
-        bIsDir = (info.st_mode & S_IFDIR) ? true : false;
-        lTimeDate = info.st_mtime;
-        iSize = info.st_size;
       }
 
       FILETIME fileTime, localTime;
@@ -134,8 +138,7 @@ bool CSMBDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
   }
 
   smbc_closedir(fd);
-  smb.PurgeEx(CURL(strPath));
-  smb.Unlock();
+  smb.PurgeEx(CURL(strAuth));
 
   if (m_cacheDirectory)
     g_directoryCache.SetDirectory(strPath, vecCacheItems);
@@ -235,9 +238,10 @@ int CSMBDirectory::OpenDir(CStdString& strAuth)
       s.erase(len - 1, 1);
     }
     
-    smb.Lock();
-    fd = smbc_opendir(s.c_str());
-    smb.Unlock();
+    { CSingleLock lock(smb);
+      fd = smbc_opendir(s.c_str());
+    }
+    
     if (fd < 0)
     {
       int error = errno;
@@ -311,48 +315,42 @@ int CSMBDirectory::OpenDir(CStdString& strAuth)
 
 bool CSMBDirectory::Create(const char* strPath)
 {
+  CSingleLock lock(smb);
   smb.Init();
 
   CURL url(strPath);
   CStdString strFileName = smb.URLEncode(url);
   strFileName = g_passwordManager.GetSMBAuthFilename(strFileName);
 
-  smb.Lock();
   int result = smbc_mkdir(strFileName.c_str(), 0);
-  smb.Unlock();
   return (result == 0 || EEXIST == result);
 }
 
 bool CSMBDirectory::Remove(const char* strPath)
 {
+  CSingleLock lock(smb);
   smb.Init();
 
   CURL url(strPath);
   CStdString strFileName = smb.URLEncode(url);
   strFileName = g_passwordManager.GetSMBAuthFilename(strFileName);
 
-  smb.Lock();
   int result = smbc_rmdir(strFileName.c_str());
-  smb.Unlock();
   return (result == 0);
 }
 
 bool CSMBDirectory::Exists(const char* strPath)
 {
+  CSingleLock lock(smb);
   smb.Init();
 
   CURL url(strPath);
   CStdString strFileName = smb.URLEncode(url);
   strFileName = g_passwordManager.GetSMBAuthFilename(strFileName);
 
-  smb.Lock();
-
   SMB_STRUCT_STAT info;
   if (smbc_stat(strFileName.c_str(), &info) != 0)
-  {
-    smb.Unlock();
     return false;
-  }
-  smb.Unlock();
+
   return (info.st_mode & S_IFDIR) ? true : false;
 }
