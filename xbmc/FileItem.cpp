@@ -1770,6 +1770,19 @@ int CFileItemList::GetFileCount() const
   return nFileCount;
 }
 
+int CFileItemList::GetSelectedCount() const
+{
+  int count = 0;
+  for (int i = 0; i < (int)m_items.size(); i++)
+  {
+    CFileItem* pItem = m_items[i];
+    if (pItem->IsSelected())
+      count++;
+  }
+
+  return count;
+}
+
 // Checks through our file list for the path specified in path.
 // Check is done case-insensitive
 bool CFileItemList::HasFileNoCase(CStdString& path)

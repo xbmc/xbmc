@@ -1123,6 +1123,7 @@ void CGUIWindowFileManager::OnPopupMenu(int list, int item)
   CGUIDialogContextMenu *pMenu = (CGUIDialogContextMenu *)m_gWindowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
   if (pMenu)
   {
+    bool showEntry=(!m_vecItems[list][item]->IsParentFolder() || (m_vecItems[list][item]->IsParentFolder() && m_vecItems[list].GetSelectedCount()>0));
     // load our menu
     pMenu->Initialize();
     // add the needed buttons
@@ -1134,10 +1135,10 @@ void CGUIWindowFileManager::OnPopupMenu(int list, int item)
     pMenu->AddButton(119); // New Folder
     pMenu->AddButton(13393); // Calculate Size
     pMenu->EnableButton(1, item >= 0);
-    pMenu->EnableButton(2, item >= 0 && CanRename(list));
-    pMenu->EnableButton(3, item >= 0 && CanDelete(list));
-    pMenu->EnableButton(4, item >= 0 && CanCopy(list));
-    pMenu->EnableButton(5, item >= 0 && CanMove(list));
+    pMenu->EnableButton(2, item >= 0 && CanRename(list) && !m_vecItems[list][item]->IsParentFolder());
+    pMenu->EnableButton(3, item >= 0 && CanDelete(list) && showEntry);
+    pMenu->EnableButton(4, item >= 0 && CanCopy(list) && showEntry);
+    pMenu->EnableButton(5, item >= 0 && CanMove(list) && showEntry);
     pMenu->EnableButton(6, CanNewFolder(list));
     pMenu->EnableButton(7, item >=0 && m_vecItems[list][item]->m_bIsFolder && !m_vecItems[list][item]->IsParentFolder());
     // position it correctly
