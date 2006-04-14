@@ -15,6 +15,9 @@ CDirectory::~CDirectory()
 
 bool CDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items, CStdString strMask /*=""*/, bool bUseFileDirectories /* = true */, bool allowPrompting /* = false */, bool cacheDirectory /* = false */)
 {
+  try 
+  {
+
   auto_ptr<IDirectory> pDirectory(CFactoryDirectory::Create(strPath));
   if (!pDirectory.get()) return false;
 
@@ -48,28 +51,60 @@ bool CDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items, C
     }
   }
   return bSuccess;
+
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, __FUNCTION__" - Unhandled exception getting %s", strPath.c_str());
+    return false;
+  }
 }
 
 bool CDirectory::Create(const CStdString& strPath)
 {
-  auto_ptr<IDirectory> pDirectory(CFactoryDirectory::Create(strPath));
-  if (!pDirectory.get()) return false;
+  try
+  {
+    auto_ptr<IDirectory> pDirectory(CFactoryDirectory::Create(strPath));
+    if (!pDirectory.get()) return false;
 
-  return pDirectory->Create(strPath.c_str());
+    return pDirectory->Create(strPath.c_str());
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, __FUNCTION__" - Unhandled exception (%s)", strPath.c_str());
+    return false;
+  }
 }
 
 bool CDirectory::Exists(const CStdString& strPath)
 {
-  auto_ptr<IDirectory> pDirectory(CFactoryDirectory::Create(strPath));
-  if (!pDirectory.get()) return false;
+  try
+  {
+    auto_ptr<IDirectory> pDirectory(CFactoryDirectory::Create(strPath));
+    if (!pDirectory.get()) return false;
 
-  return pDirectory->Exists(strPath.c_str());
+    return pDirectory->Exists(strPath.c_str());
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, __FUNCTION__" - Unhandled exception (%s)", strPath.c_str());
+    return false;
+  }
 }
 
 bool CDirectory::Remove(const CStdString& strPath)
 {
-  auto_ptr<IDirectory> pDirectory(CFactoryDirectory::Create(strPath));
-  if (!pDirectory.get()) return false;
+  try
+  {
+    auto_ptr<IDirectory> pDirectory(CFactoryDirectory::Create(strPath));
+    if (!pDirectory.get()) return false;
 
-  return pDirectory->Remove(strPath.c_str());
+    return pDirectory->Remove(strPath.c_str());
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, __FUNCTION__" - Unhandled exception (%s)", strPath.c_str());
+    return false;
+  }
+
 }

@@ -179,129 +179,243 @@ bool CFile::Cache(const CStdString& strFileName, const CStdString& strDest, XFIL
 //*********************************************************************************************
 bool CFile::Open(const CStdString& strFileName, bool bBinary)
 {
-  bool bPathInCache;
-  if (!g_directoryCache.FileExists(strFileName, bPathInCache) )
+  try 
   {
-    if (bPathInCache)
-      return false;
+    bool bPathInCache;
+    if (!g_directoryCache.FileExists(strFileName, bPathInCache) )
+    {
+      if (bPathInCache)
+        return false;
+    }
+   
+    m_pFile = CFileFactory::CreateLoader(strFileName);
+    if (!m_pFile) return false;
+
+    CURL url(strFileName);
+    return m_pFile->Open(url, bBinary);
   }
-
-  m_pFile = CFileFactory::CreateLoader(strFileName);
-  if (!m_pFile) return false;
-
-  CURL url(strFileName);
-
-  return m_pFile->Open(url, bBinary);
+  catch(...)
+  {
+    CLog::Log(LOGERROR, __FUNCTION__" - Unhandled exception opening %s", strFileName.c_str());
+    return false;
+  }
 }
 
 bool CFile::OpenForWrite(const CStdString& strFileName, bool bBinary, bool bOverWrite)
 {
-  m_pFile = CFileFactory::CreateLoader(strFileName);
-  if (!m_pFile) return false;
+  try 
+  {
+    m_pFile = CFileFactory::CreateLoader(strFileName);
+    if (!m_pFile) return false;
 
-  CURL url(strFileName);
-
-  return m_pFile->OpenForWrite(url, bBinary, bOverWrite);
+    CURL url(strFileName);
+    return m_pFile->OpenForWrite(url, bBinary, bOverWrite);
+  }
+  catch(...)
+  {
+    CLog::Log(LOGERROR, __FUNCTION__" - Unhandled exception opening %s", strFileName.c_str());
+    return false;
+  }
 }
 
 bool CFile::Exists(const CStdString& strFileName)
 {
-  if (strFileName.IsEmpty()) return false;
+  try
+  {
+    if (strFileName.IsEmpty()) return false;
 
-  bool bPathInCache;
-  if (g_directoryCache.FileExists(strFileName, bPathInCache) )
-    return true;
-  if (bPathInCache)
+    bool bPathInCache;
+    if (g_directoryCache.FileExists(strFileName, bPathInCache) )
+      return true;
+    if (bPathInCache)
+      return false;
+
+    auto_ptr<IFile> pFile(CFileFactory::CreateLoader(strFileName));
+    if (!pFile.get()) return false;
+
+    CURL url(strFileName);
+
+    return pFile->Exists(url);
+  }
+  catch(...)
+  {
+    CLog::Log(LOGERROR, __FUNCTION__" - Unhandled exception checking %s", strFileName.c_str());
     return false;
+  }
 
-  auto_ptr<IFile> pFile(CFileFactory::CreateLoader(strFileName));
-  if (!pFile.get()) return false;
-
-  CURL url(strFileName);
-
-  return pFile->Exists(url);
 }
 
 int CFile::Stat(const CStdString& strFileName, struct __stat64* buffer)
 {
-  auto_ptr<IFile> pFile(CFileFactory::CreateLoader(strFileName));
-  if (!pFile.get()) return false;
+  try
+  {
+    auto_ptr<IFile> pFile(CFileFactory::CreateLoader(strFileName));
+    if (!pFile.get()) return false;
 
-  CURL url(strFileName);
-  return pFile->Stat(url, buffer);
+    CURL url(strFileName);
+
+    return pFile->Stat(url, buffer);
+  }
+  catch(...)
+  {
+    CLog::Log(LOGERROR, __FUNCTION__" - Unhandled exception statting %s", strFileName.c_str());
+    return -1;
+  }
 }
 
 //*********************************************************************************************
 unsigned int CFile::Read(void *lpBuf, __int64 uiBufSize)
 {
-  if (m_pFile) return m_pFile->Read(lpBuf, uiBufSize);
-  return 0;
+  try
+  {
+    if (m_pFile) return m_pFile->Read(lpBuf, uiBufSize);
+    return 0;
+  }
+  catch(...)
+  {
+    CLog::Log(LOGERROR, __FUNCTION__" - Unhandled exception");
+    return 0;
+  }
 }
 
 //*********************************************************************************************
 void CFile::Close()
 {
-  if (m_pFile)
+  try
   {
-    m_pFile->Close();
-    delete m_pFile;
-    m_pFile = NULL;
+    if (m_pFile)
+    {
+      m_pFile->Close();
+      delete m_pFile;
+      m_pFile = NULL;
+    }
   }
+  catch(...)
+  {
+    CLog::Log(LOGERROR, __FUNCTION__" - Unhandled exception");
+    return;
+  }
+
 }
 
 void CFile::Flush()
 {
-  if (m_pFile) m_pFile->Flush();
+  try
+  {
+    if (m_pFile) m_pFile->Flush();
+  }
+  catch(...)
+  {
+    CLog::Log(LOGERROR, __FUNCTION__" - Unhandled exception");
+    return;
+  }
+
 }
 
 //*********************************************************************************************
 __int64 CFile::Seek(__int64 iFilePosition, int iWhence)
 {
-  if (m_pFile) return m_pFile->Seek(iFilePosition, iWhence);
-  return 0;
+  try
+  {
+    if (m_pFile) return m_pFile->Seek(iFilePosition, iWhence);
+    return 0;
+  }
+  catch(...)
+  {
+    CLog::Log(LOGERROR, __FUNCTION__" - Unhandled exception");
+    return 0;
+  }
 }
 
 //*********************************************************************************************
 __int64 CFile::GetLength()
 {
-  if (m_pFile) return m_pFile->GetLength();
-  return 0;
+  try
+  {
+    if (m_pFile) return m_pFile->GetLength();
+    return 0;
+  }
+  catch(...)
+  {
+    CLog::Log(LOGERROR, __FUNCTION__" - Unhandled exception");
+    return 0;
+  }
 }
 
 //*********************************************************************************************
 __int64 CFile::GetPosition()
 {
-  if (m_pFile) return m_pFile->GetPosition();
-  return -1;
+  try
+  {
+    if (m_pFile) return m_pFile->GetPosition();
+    return -1;
+  }
+  catch(...)
+  {
+    CLog::Log(LOGERROR, __FUNCTION__" - Unhandled exception");
+    return -1;
+  }
 }
 
 
 //*********************************************************************************************
 bool CFile::ReadString(char *szLine, int iLineLength)
 {
-  if (m_pFile) return m_pFile->ReadString(szLine, iLineLength);
-  return false;
+  try
+  {
+    if (m_pFile) return m_pFile->ReadString(szLine, iLineLength);
+    return false;
+  }
+  catch(...)
+  {
+    CLog::Log(LOGERROR, __FUNCTION__" - Unhandled exception");
+    return false;
+  }
 }
 
 int CFile::Write(const void* lpBuf, __int64 uiBufSize)
 {
-  if (m_pFile)
-    return m_pFile->Write(lpBuf, uiBufSize);
-  return -1;
+  try
+  {
+    if (m_pFile) return m_pFile->Write(lpBuf, uiBufSize);
+    return -1;
+  }
+  catch(...)
+  {
+    CLog::Log(LOGERROR, __FUNCTION__" - Unhandled exception");
+    return -1;
+  }
+
 }
 
 bool CFile::Delete(const CStdString& strFileName)
 {
-  auto_ptr<IFile> pFile(CFileFactory::CreateLoader(strFileName));
-  if (!pFile.get()) return false;
+  try
+  {
+    auto_ptr<IFile> pFile(CFileFactory::CreateLoader(strFileName));
+    if (!pFile.get()) return false;
 
-  return pFile->Delete(strFileName);
+    return pFile->Delete(strFileName);
+  }
+  catch(...)
+  {
+    CLog::Log(LOGERROR, __FUNCTION__" - Unhandled exception deleting file %s", strFileName.c_str());
+    return false;
+  }
 }
 
 bool CFile::Rename(const CStdString& strFileName, const CStdString& strNewFileName)
 {
-  auto_ptr<IFile> pFile(CFileFactory::CreateLoader(strFileName));
-  if (!pFile.get()) return false;
+  try
+  {
+    auto_ptr<IFile> pFile(CFileFactory::CreateLoader(strFileName));
+    if (!pFile.get()) return false;
 
-  return pFile->Rename(strFileName, strNewFileName);
+    return pFile->Rename(strFileName, strNewFileName);
+  }
+  catch(...)
+  {
+    CLog::Log(LOGERROR, __FUNCTION__" - Unhandled exception renaming file %s", strFileName.c_str());
+    return false;
+  }
 }
