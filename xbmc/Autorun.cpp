@@ -52,43 +52,43 @@ void CAutorun::ExecuteAutorun()
 
 void CAutorun::RunXboxCd()
 {
-  if (g_guiSettings.GetBool("Autorun.Xbox"))
+  if ( CFile::Exists("D:\\default.xbe") )
   {
-    if ( CFile::Exists("D:\\default.xbe") )
+    if (!g_guiSettings.GetBool("Autorun.Xbox"))
+      return;
+    int iRegion;
+    if (g_guiSettings.GetBool("MyPrograms.GameAutoRegion"))
     {
-      int iRegion;
-      if (g_guiSettings.GetBool("MyPrograms.GameAutoRegion"))
-      {
-        CXBE xbe;
-        iRegion = xbe.ExtractGameRegion("D:\\default.xbe");
-        if (iRegion < 1 || iRegion > 7)
-          iRegion = 0;
-        iRegion = xbe.FilterRegion(iRegion);
-      }
-      else
+      CXBE xbe;
+      iRegion = xbe.ExtractGameRegion("D:\\default.xbe");
+      if (iRegion < 1 || iRegion > 7)
         iRegion = 0;
-
-      CProgramDatabase database;
-      database.Open();
-      DWORD dwTitleId = CUtil::GetXbeID("D:\\default.xbe");
-      CStdString strTrainer = database.GetActiveTrainer(dwTitleId);
-      if (strTrainer != "" && !CKaiClient::GetInstance()->IsEngineConnected())
-      {
-        CTrainer trainer;
-        if (trainer.Load(strTrainer))
-        {
-          database.GetTrainerOptions(strTrainer,dwTitleId,trainer.GetOptions(),trainer.GetNumberOfOptions());
-          CUtil::InstallTrainer(trainer);
-        }
-      }
-
-      database.Close();
-      g_application.Stop();
-
-      CUtil::LaunchXbe( "Cdrom0", "D:\\default.xbe", NULL,F_VIDEO(iRegion));
-      return ;
+      iRegion = xbe.FilterRegion(iRegion);
     }
+    else
+      iRegion = 0;
+
+    CProgramDatabase database;
+    database.Open();
+    DWORD dwTitleId = CUtil::GetXbeID("D:\\default.xbe");
+    CStdString strTrainer = database.GetActiveTrainer(dwTitleId);
+    if (strTrainer != "" && !CKaiClient::GetInstance()->IsEngineConnected())
+    {
+      CTrainer trainer;
+      if (trainer.Load(strTrainer))
+      {
+        database.GetTrainerOptions(strTrainer,dwTitleId,trainer.GetOptions(),trainer.GetNumberOfOptions());
+        CUtil::InstallTrainer(trainer);
+      }
+    }
+
+    database.Close();
+    g_application.Stop();
+
+    CUtil::LaunchXbe( "Cdrom0", "D:\\default.xbe", NULL,F_VIDEO(iRegion));
+    return ;
   }
+  
   if ( !g_guiSettings.GetBool("Autorun.DVD") && !g_guiSettings.GetBool("Autorun.VCD") && !g_guiSettings.GetBool("Autorun.Video") && !g_guiSettings.GetBool("Autorun.Music") && !g_guiSettings.GetBool("Autorun.Pictures") )
     return ;
 
