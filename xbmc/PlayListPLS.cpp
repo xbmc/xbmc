@@ -130,6 +130,7 @@ bool CPlayListPLS::Load(const CStdString& strFileName)
         if (CUtil::IsRemote(strBasePath) && g_settings.m_vecPathSubstitutions.size() > 0)
          strValue = CUtil::SubstitutePath(strValue);
         CUtil::GetQualifiedFilename(strBasePath, strValue);
+        g_charsetConverter.stringCharsetToUtf8(strValue);
         m_vecItems[idx - 1].SetFileName(strValue);
       }
       else if (strLeft.Left(5) == "title")
@@ -139,6 +140,7 @@ bool CPlayListPLS::Load(const CStdString& strFileName)
           iMaxSize = idx;
           m_vecItems.resize(idx);
         }
+        g_charsetConverter.stringCharsetToUtf8(strValue);
         m_vecItems[idx - 1].SetDescription(strValue);
       }
       else if (strLeft.Left(6) == "length")
@@ -153,6 +155,7 @@ bool CPlayListPLS::Load(const CStdString& strFileName)
       else if (strLeft == "playlistname")
       {
         m_strPlayListName = strValue;
+        g_charsetConverter.stringCharsetToUtf8(m_strPlayListName);
       }
     }
   }
@@ -334,13 +337,19 @@ void CPlayListPLS::Save(const CStdString& strFileName) const
     return ;
   }
   fprintf(fd, "%s\n", START_PLAYLIST_MARKER);
-  fprintf(fd, "PlaylistName=%s\n", m_strPlayListName.c_str() );
+  CStdString strPlayListName=m_strPlayListName;
+  g_charsetConverter.utf8ToStringCharset(strPlayListName);
+  fprintf(fd, "PlaylistName=%s\n", strPlayListName.c_str() );
 
   for (int i = 0; i < (int)m_vecItems.size(); ++i)
   {
     const CPlayListItem& item = m_vecItems[i];
-    fprintf(fd, "File%i=%s\n", i + 1, item.GetFileName().c_str() );
-    fprintf(fd, "Title%i=%s\n", i + 1, item.GetDescription().c_str() );
+    CStdString strFileName=item.GetFileName();
+    g_charsetConverter.utf8ToStringCharset(strFileName);
+    CStdString strDescription=item.GetDescription();
+    g_charsetConverter.utf8ToStringCharset(strDescription);
+    fprintf(fd, "File%i=%s\n", i + 1, strFileName.c_str() );
+    fprintf(fd, "Title%i=%s\n", i + 1, strDescription.c_str() );
     fprintf(fd, "Length%i=%i\n", i + 1, item.GetDuration() / 1000 );
   }
 
