@@ -70,7 +70,7 @@ bool CPlayListM3U::Load(const CStdString& strFileName)
         lDuration = atoi(strLength.c_str());
         iComma++;
         strInfo = strLine.Right((int)strLine.size() - iComma);
-
+        g_charsetConverter.stringCharsetToUtf8(strInfo);
       }
     }
     else if (strLine != M3U_START_MARKER && strLine.Left(strlen(M3U_ARTIST_MARKER)) != M3U_ARTIST_MARKER && strLine.Left(strlen(M3U_ALBUM_MARKER)) != M3U_ALBUM_MARKER )
@@ -79,19 +79,12 @@ bool CPlayListM3U::Load(const CStdString& strFileName)
 
       if (strFileName.length() > 0)
       {
+        g_charsetConverter.stringCharsetToUtf8(strFileName);
+
         // If no info was read from from the extended tag information, use the file name
         if (strInfo.length() == 0)
         {
           strInfo = CUtil::GetFileName(strFileName);
-        }
-
-        // If this is a samba base path we need to translate the file name to UTF-8 since
-        // this is a samba requirement
-        if (CUtil::IsSmb(strBasePath))
-        {
-          CStdString strFileNameUtf8;
-          g_charsetConverter.stringCharsetToUtf8(strFileName, strFileNameUtf8);
-          strFileName = strFileNameUtf8;
         }
 
         // should substitition occur befor or after charset conversion??
@@ -132,8 +125,12 @@ void CPlayListM3U::Save(const CStdString& strFileName) const
   for (int i = 0; i < (int)m_vecItems.size(); ++i)
   {
     const CPlayListItem& item = m_vecItems[i];
-    fprintf(fd, "%s:%i,%s\n", M3U_INFO_MARKER, item.GetDuration() / 1000, item.GetDescription().c_str() );
-    fprintf(fd, "%s\n", item.GetFileName().c_str() );
+    CStdString strDescription=item.GetDescription();
+    g_charsetConverter.utf8ToStringCharset(strDescription);
+    fprintf(fd, "%s:%i,%s\n", M3U_INFO_MARKER, item.GetDuration() / 1000, strDescription.c_str() );
+    CStdString strFileName=item.GetFileName();
+    g_charsetConverter.utf8ToStringCharset(strFileName);
+    fprintf(fd, "%s\n", strFileName.c_str() );
   }
   fclose(fd);
 }
