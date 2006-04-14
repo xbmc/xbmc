@@ -108,7 +108,7 @@
       <height>66</height>
       <texturefocus>osd_button_pauseFO.png</texturefocus>
       <texturenofocus>osd_button_pauseNF.png</texturenofocus>
-      <usealttexture>Player.Paused</usealttexture>
+      <usealttexture>Player.Paused | Player.Forwarding | Player.Rewinding</usealttexture>
       <alttexturefocus>osd_button_playFO.png</alttexturefocus>
       <alttexturenofocus>osd_button_playNF.png</alttexturenofocus>
       <label>-</label>
