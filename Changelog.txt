@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 14-04-2006 fixed: Autorun would try to start a game disc as *something else* if autorun for games was not enabled.
  - 14-04-2006 fixed: [ 1469717 ] "My Files" [..] wrong contextmenu items
  - 13-04-2006 changed: content of cuesheets is converted to utf8
  - 13-04-2006 changed: content of playlists is converted to utf8
