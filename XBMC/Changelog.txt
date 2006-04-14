@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 12-04-2006 changed: content of playlists is converted to utf8
  - 12-04-2006 changed: unicode filenames from rar files are now read
  - 13-04-2006 fixed: mem leak in charset converter
  - 13-04-2006 fixed: window init sound for normal windows is not playing
