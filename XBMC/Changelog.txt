@@ -5,9 +5,10 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
- - 12-04-2006 changed: content of cuesheets is converted to utf8
- - 12-04-2006 changed: content of playlists is converted to utf8
- - 12-04-2006 changed: unicode filenames from rar files are now read
+ - 14-04-2006 fixed: [ 1469717 ] "My Files" [..] wrong contextmenu items
+ - 13-04-2006 changed: content of cuesheets is converted to utf8
+ - 13-04-2006 changed: content of playlists is converted to utf8
+ - 13-04-2006 changed: unicode filenames from rar files are now read
  - 13-04-2006 fixed: mem leak in charset converter
  - 13-04-2006 fixed: window init sound for normal windows is not playing
  - 13-04-2006 fixed: List Icons and Thumb overlays would be rendered in the incorrect position the first frame, then would shift to the correct position.
