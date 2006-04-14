@@ -20,14 +20,13 @@ void xb_smbc_auth(const char *srv, const char *shr, char *wg, int wglen,
 }
 
 CSMB::CSMB()
-{
-  InitializeCriticalSection(&m_critSection);
+{  
   binitialized = false;
 }
 
 CSMB::~CSMB()
 {
-  DeleteCriticalSection(&m_critSection);
+
 }
 
 void CSMB::Init()
@@ -67,9 +66,8 @@ void CSMB::Init()
 
 void CSMB::Purge()
 {
-  Lock();
+  CSingleLock(*this);
   smbc_purge();
-  Unlock();
 }
 
 /*
@@ -84,6 +82,7 @@ void CSMB::Purge()
  */
 void CSMB::PurgeEx(const CURL& url)
 {
+  CSingleLock(*this);
   CStdString strShare = url.GetFileName().substr(0, url.GetFileName().Find('/'));
 
   if (m_strLastShare.length() > 0 && (m_strLastShare != strShare || m_strLastHost != url.GetHostName()))
@@ -91,16 +90,6 @@ void CSMB::PurgeEx(const CURL& url)
 
   m_strLastShare = strShare;
   m_strLastHost = url.GetHostName();
-}
-
-void CSMB::Lock()
-{
-  ::EnterCriticalSection(&m_critSection);
-}
-
-void CSMB::Unlock()
-{
-  ::LeaveCriticalSection(&m_critSection);
 }
 
 CStdString CSMB::URLEncode(const CURL &url)
@@ -169,9 +158,8 @@ CFileSMB::~CFileSMB()
 __int64 CFileSMB::GetPosition()
 {
   if (m_fd == -1) return 0;
-  smb.Lock();
+  CSingleLock lock(smb);
   __int64 pos = smbc_lseek(m_fd, 0, SEEK_CUR);
-  smb.Unlock();
   if ( pos < 0 )
     return 0;
   return pos;
@@ -196,10 +184,10 @@ bool CFileSMB::Open(const CURL& url, bool bBinary)
       CLog::Log(LOGNOTICE,"FileSmb->Open: Bad URL : '%s'",url.GetFileName().c_str());
       return false;
   }
-
+  m_url = url;
   CStdString strFileName = smb.URLEncode(url);
 
-  smb.Lock();
+  CSingleLock lock(smb);
 
   // opening a file to another computer share will create a new session
   // when opening smb://server xbms will try to find folder.jpg in all shares
@@ -209,8 +197,7 @@ bool CFileSMB::Open(const CURL& url, bool bBinary)
 
   if (m_fd == -1)
   {
-    smb.PurgeEx(url);
-    smb.Unlock();
+    smb.PurgeEx(url);    
     // write error to logfile
     int nt_error = map_nt_error_from_unix(errno);
     CLog::Log(LOGINFO, "FileSmb->Open: Unable to open file : '%s'\nunix_err:'%x' nt_err : '%x' error : '%s'",
@@ -223,8 +210,7 @@ bool CFileSMB::Open(const CURL& url, bool bBinary)
   {
     smbc_close(m_fd);
     smb.PurgeEx(url);
-    m_fd = -1;
-    smb.Unlock();
+    m_fd = -1;    
     return false;
   }
 
@@ -234,12 +220,10 @@ bool CFileSMB::Open(const CURL& url, bool bBinary)
   {
     smbc_close(m_fd);
     smb.PurgeEx(url);
-    m_fd = -1;
-    smb.Unlock();
+    m_fd = -1;    
     return false;
   }
   // We've successfully opened the file!
-  smb.Unlock();
   return true;
 }
 
@@ -274,7 +258,10 @@ int CFileSMB::OpenFile(CStdString& strAuth)
   int fd = -1;
   
   CStdString strPath = g_passwordManager.GetSMBAuthFilename(strAuth);
-  fd = smbc_open(strPath.c_str(), O_RDONLY, 0);
+
+  { CSingleLock lock(smb);
+    fd = smbc_open(strPath.c_str(), O_RDONLY, 0);
+  }
 
   // file open failed, try to open the directory to force authentication
   if (fd < 0)
@@ -295,11 +282,10 @@ int CFileSMB::OpenFile(CStdString& strAuth)
       // directory open worked, try opening the file again
       if (fd >= 0)
       {
+        CSingleLock lock(smb);
         // close current directory filehandle
         // dont need to purge since its the same server and share
-        smb.Lock();
         smbc_closedir(fd);
-        smb.Unlock();
 
         // set up new filehandle (as CFileSMB::Open does)
         strPath = g_passwordManager.GetSMBAuthFilename(strAuth);
@@ -326,10 +312,9 @@ bool CFileSMB::Exists(const CURL& url)
 
   struct __stat64 info;
 
-  smb.Lock();
+  CSingleLock lock(smb);
   int iResult = smbc_stat(strFileName, &info);
   smb.PurgeEx(url);
-  smb.Unlock();
 
   if (iResult < 0) return false;
   return true;
@@ -340,10 +325,9 @@ int CFileSMB::Stat(const CURL& url, struct __stat64* buffer)
   CStdString strFileName = smb.URLEncode(url);
   strFileName = g_passwordManager.GetSMBAuthFilename(strFileName);
 
-  smb.Lock();
+  CSingleLock lock(smb);
   int iResult = smbc_stat(strFileName, buffer);
   smb.PurgeEx(url);
-  smb.Unlock();
 
   return iResult;
 }
@@ -351,9 +335,10 @@ int CFileSMB::Stat(const CURL& url, struct __stat64* buffer)
 unsigned int CFileSMB::Read(void *lpBuf, __int64 uiBufSize)
 {
   if (m_fd == -1) return 0;
-  smb.Lock();
+  CSingleLock lock(smb);
+
   int bytesRead = smbc_read(m_fd, lpBuf, (int)uiBufSize);
-  smb.Unlock();
+
   if ( bytesRead < 0 )
   {
     CLog::Log(LOGERROR, __FUNCTION__" - smbc_read returned error %i", errno);
@@ -368,9 +353,10 @@ bool CFileSMB::ReadString(char *szLine, int iLineLength)
   if (m_fd == -1) return false;
   __int64 iFilePos = GetPosition();
 
-  smb.Lock();
+  CSingleLock lock(smb);
+
   int iBytesRead = smbc_read(m_fd, (unsigned char*)szLine, iLineLength - 1);
-  smb.Unlock();
+
   if (iBytesRead <= 0)
   {
     return false;
@@ -422,10 +408,9 @@ bool CFileSMB::ReadString(char *szLine, int iLineLength)
 __int64 CFileSMB::Seek(__int64 iFilePosition, int iWhence)
 {
   if (m_fd == -1) return -1;
+  CSingleLock lock(smb);
 
-  smb.Lock();
   INT64 pos = smbc_lseek(m_fd, iFilePosition, iWhence);
-  smb.Unlock();
 
   if ( pos < 0 ) return -1;
 
@@ -436,11 +421,10 @@ void CFileSMB::Close()
 {
   if (m_fd != -1)
   {
-    smb.Lock();
+    CSingleLock lock(smb);
     smbc_close(m_fd);
-    // file is not needed anymore, just purge all open connections
-    smbc_purge();
-    smb.Unlock();
+    
+    smb.PurgeEx(m_url);
   }
   m_fd = -1;
 }
@@ -451,9 +435,8 @@ int CFileSMB::Write(const void* lpBuf, __int64 uiBufSize)
   DWORD dwNumberOfBytesWritten = 0;
 
   // lpBuf can be safely casted to void* since xmbc_write will only read from it.
-  smb.Lock();
+  CSingleLock lock(smb);
   dwNumberOfBytesWritten = smbc_write(m_fd, (void*)lpBuf, (DWORD)uiBufSize);
-  smb.Unlock();
 
   return (int)dwNumberOfBytesWritten;
 }
@@ -463,10 +446,9 @@ bool CFileSMB::Delete(const char* strFileName)
   CURL url(strFileName);
   CStdString strFile = g_passwordManager.GetSMBAuthFilename(smb.URLEncode(url));
 
+  CSingleLock lock(smb);
   smb.Init();
-  smb.Lock();
   int result = smbc_unlink(strFile.c_str());
-  smb.Unlock();
   return (result == 0);
 }
 
@@ -478,10 +460,9 @@ bool CFileSMB::Rename(const char* strFileName, const char* strNewFileName)
   CStdString strFile = g_passwordManager.GetSMBAuthFilename(smb.URLEncode(strFileName));
   CStdString strFileNew = g_passwordManager.GetSMBAuthFilename(smb.URLEncode(strNewFileName));
 
+  CSingleLock lock(smb);
   smb.Init();
-  smb.Lock();
   int result = smbc_rename(strFile.c_str(), strFileNew.c_str());
-  smb.Unlock();
   return (result == 0);
 }
 
@@ -499,7 +480,7 @@ bool CFileSMB::OpenForWrite(const CURL& url, bool bBinary, bool bOverWrite)
   CStdString strFileName = smb.URLEncode(url);
   strFileName = g_passwordManager.GetSMBAuthFilename(strFileName);
 
-  smb.Lock();
+  CSingleLock lock(smb);
 
   if (bOverWrite)
   {
@@ -514,7 +495,6 @@ bool CFileSMB::OpenForWrite(const CURL& url, bool bBinary, bool bOverWrite)
   if (m_fd == -1)
   {
     smb.PurgeEx(url);
-    smb.Unlock();
     // write error to logfile
     int nt_error = map_nt_error_from_unix(errno);
     CLog::Log(LOGERROR, "FileSmb->Open: Unable to open file : '%s'\nunix_err:'%x' nt_err : '%x' error : '%s'",
@@ -523,7 +503,6 @@ bool CFileSMB::OpenForWrite(const CURL& url, bool bBinary, bool bOverWrite)
   }
 
   // We've successfully opened the file!
-  smb.Unlock();
   return true;
 }
 

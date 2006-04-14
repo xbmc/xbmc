@@ -20,7 +20,7 @@
 #include "IFile.h"
 #include "../lib/libsmb/xbLibSmb.h"
 
-class CSMB
+class CSMB : public CCriticalSection
 {
 public:
   CSMB();
@@ -28,15 +28,12 @@ public:
   void Init();
   void Purge();
   void PurgeEx(const CURL& url);
-  void Lock();
-  void Unlock();
   
   CStdString URLEncode(const CStdString &value);
   CStdString URLEncode(const CURL &url);
 
 private:
-  bool binitialized;
-  CRITICAL_SECTION m_critSection;
+  bool binitialized;  
   CStdString m_strLastHost;
   CStdString m_strLastShare;
 };
@@ -70,6 +67,7 @@ public:
   virtual char GetDirectorySeperator() { return '/'; }
 
 protected:
+  CURL m_url;
   bool IsValidFile(const CStdString& strFileName);
   __int64 m_fileSize;
   bool m_bBinary;
