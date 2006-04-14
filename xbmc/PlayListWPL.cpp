@@ -21,6 +21,8 @@
       </body>
   </smil>
 ------------------------ end of example wpl playlist file ---------------------------------*/
+//Note: File is utf-8 encoded by default
+
 CPlayListWPL::CPlayListWPL(void)
 {}
 
