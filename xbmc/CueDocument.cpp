@@ -232,6 +232,7 @@ bool CCueDocument::ExtractQuoteInfo(CStdString &strData, const char *strLine)
     {
       *pos2 = 0x00;
       strData = &pos[1];
+      g_charsetConverter.stringCharsetToUtf8(strData);
       return true;
     }
   }
@@ -312,11 +313,6 @@ bool CCueDocument::ResolvePath(CStdString &strPath, const CStdString &strBase)
   CStdString strDirectory;
   CStdString strFilename;
   CUtil::GetDirectory(strBase, strDirectory);
-  if (CUtil::IsSmb(strDirectory))
-  {
-    g_charsetConverter.stringCharsetToUtf8(strPath, strFilename);
-    strPath = strFilename;
-  }
   CUtil::GetQualifiedFilename(strDirectory, strPath);
   return true;
 }
