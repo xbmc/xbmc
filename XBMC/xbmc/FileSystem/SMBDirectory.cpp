@@ -16,6 +16,10 @@
 #include "localizeStrings.h"
 #include "../GUIPassword.h"
 
+#define NT_STATUS_CONNECTION_REFUSED long(0xC0000000 | 0x0236)
+#define NT_STATUS_INVALID_HANDLE long(0xC0000000 | 0x0008)
+#define NT_STATUS_ACCESS_DENIED long(0xC0000000 | 0x0022)
+#define NT_STATUS_OBJECT_NAME_NOT_FOUND long(0xC0000000 | 0x0034)
 
 CSMBDirectory::CSMBDirectory(void)
 {
@@ -58,7 +62,8 @@ bool CSMBDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
     // We use UTF-8 internally, as does SMB
     strFile = dirEnt->name;
 
-    if (!strFile.Equals(".") && !strFile.Equals("..") && !strFile.Right(1).Equals("$"))
+    if (!strFile.Equals(".") && !strFile.Equals("..") && !strFile.Right(1).Equals("$")
+      && dirEnt->smbc_type != SMBC_PRINTER_SHARE && dirEnt->smbc_type != SMBC_IPC_SHARE)
     {
      unsigned __int64 iSize = 0;
       bool bIsDir = true;
@@ -246,17 +251,18 @@ int CSMBDirectory::OpenDir(CStdString& strAuth)
     {
       int error = errno;
       if (error == ENODEV || error == ENETUNREACH || error == WSAETIMEDOUT) nt_error = NT_STATUS_INVALID_COMPUTER_NAME;
+      else if(error == WSAECONNREFUSED || error == WSAECONNABORTED) nt_error = NT_STATUS_CONNECTION_REFUSED;
       else nt_error = map_nt_error_from_unix(error);
 
       // if we have an 'invalid handle' error we don't display the error
       // because most of the time this means there is no cdrom in the server's
       // cdrom drive.
-      if (nt_error == 0xc0000008)
+      if (nt_error == NT_STATUS_INVALID_HANDLE)
         break;
 
       // NOTE: be sure to warn in XML file about Windows account lock outs when too many attempts
       // if the error is access denied, prompt for a valid user name and password
-      if (nt_error == 0xc0000022)
+      if (nt_error == NT_STATUS_ACCESS_DENIED)
       {
         //if there is more automatic tries left, just continue
         if( iTryAutomatic ) 
@@ -276,7 +282,7 @@ int CSMBDirectory::OpenDir(CStdString& strAuth)
       else
       {
         CStdString cError;
-        if (nt_error == 0xc0000034)
+        if (nt_error == NT_STATUS_OBJECT_NAME_NOT_FOUND)
           cError.Format(g_localizeStrings.Get(770).c_str(),nt_error);
         else
           cError = get_friendly_nt_error_msg(nt_error);
