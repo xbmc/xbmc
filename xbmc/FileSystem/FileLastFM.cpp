@@ -188,6 +188,7 @@ bool CFileLastFM::Open(const CURL& url, bool bBinary)
   CGUIDialogProgress* dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
 
   url.GetURL(m_Url);
+  m_Url.Replace(" ", "%20");
   CStdString strUrl = m_Url;
   CUtil::UrlDecode(strUrl);
 
