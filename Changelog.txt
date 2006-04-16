@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 16-04-2006 fixed: Webserver failed to play last.fm url's containing spaces (urlencoding).
  - 16-04-2006 fixed: Webserver failed to play asx url's.
  - 14-04-2006 fixed: Autorun would try to start a game disc as *something else* if autorun for games was not enabled.
  - 14-04-2006 fixed: [ 1469717 ] "My Files" [..] wrong contextmenu items
