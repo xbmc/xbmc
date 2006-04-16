@@ -245,8 +245,7 @@ int CSMBDirectory::OpenDir(CStdString& strAuth)
     if (fd < 0)
     {
       int error = errno;
-      if (error == ENODEV) nt_error = NT_STATUS_INVALID_COMPUTER_NAME;
-      else if (error == ENETUNREACH) nt_error = NT_STATUS_INVALID_COMPUTER_NAME;
+      if (error == ENODEV || error == ENETUNREACH || error == WSAETIMEDOUT) nt_error = NT_STATUS_INVALID_COMPUTER_NAME;
       else nt_error = map_nt_error_from_unix(error);
 
       // if we have an 'invalid handle' error we don't display the error

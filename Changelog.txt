@@ -5,8 +5,11 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 16-04-2006 fixed: libsamba client didn't use nonblocking sockets during connection.. clienttimeout settings is now in xboxmediacenter.xml, defaults to 10 seconds
  - 16-04-2006 fixed: Webserver failed to play last.fm url's containing spaces (urlencoding).
  - 16-04-2006 fixed: Webserver failed to play asx url's.
+ - 15-04-2006 changed: don't purge all samba connections on file close. (happened on each file when checking tags)
+ - 15-04-2006 fixed: exception handling around our virtual filesystem to avoid exceptions propagating to main thread
  - 14-04-2006 fixed: Autorun would try to start a game disc as *something else* if autorun for games was not enabled.
  - 14-04-2006 fixed: [ 1469717 ] "My Files" [..] wrong contextmenu items
  - 13-04-2006 changed: content of cuesheets is converted to utf8

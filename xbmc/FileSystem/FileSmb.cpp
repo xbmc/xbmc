@@ -21,17 +21,21 @@ void xb_smbc_auth(const char *srv, const char *shr, char *wg, int wglen,
 
 CSMB::CSMB()
 {  
-  binitialized = false;
+  m_context = NULL;
 }
 
 CSMB::~CSMB()
 {
-
+  if (m_context)
+  {
+    smbc_free_context(m_context, 1);
+    m_context = NULL;
+  }
 }
 
 void CSMB::Init()
 {
-  if (!binitialized)
+  if (!m_context)
   {
     CStdString strIPAddress = g_guiSettings.GetString("Network.IPAddress");
     CStdString strSubnet = g_guiSettings.GetString("Network.Subnet");
@@ -43,9 +47,20 @@ void CSMB::Init()
     // set workgroup for samba, after smbc_init it can be freed();
     xb_setSambaWorkgroup((char*)g_stSettings.m_strSambaWorkgroup.c_str());
 
+    // setup our context
+    m_context = smbc_new_context();
+    m_context->debug = g_stSettings.m_iSambaDebugLevel;
+    m_context->callbacks.auth_fn = xb_smbc_auth;
+
+    /* set connection timeout. since samba always tries two ports, divide this by two the correct value */
+    m_context->timeout = g_stSettings.m_iSambaTimeout / 2 * 1000;    
+
     // initialize samba and do some hacking into the settings
-    if (!smbc_init(xb_smbc_auth, g_stSettings.m_iSambaDebugLevel))
+    if (smbc_init_context(m_context))
     {
+      /* setup old interface to use this context */
+      smbc_set_context(m_context);
+
       // if a wins-server is set, we have to change name resolve order to
       if (g_stSettings.m_strSambaWinsServer.length() > 1)
       {
@@ -53,13 +68,16 @@ void CSMB::Init()
         lp_do_parameter( -1, "name resolve order", "bcast wins");
       }
       else lp_do_parameter( -1, "name resolve order", "bcast");
-
+            
       if (g_stSettings.m_strSambaDosCodepage.length() > 1 && !g_stSettings.m_strSambaDosCodepage.Equals("DEFAULT"))
       {
         lp_do_parameter( -1, "dos charset", g_stSettings.m_strSambaDosCodepage.c_str());
-      }
-
-      binitialized = true;
+      }      
+    }
+    else
+    {
+      smbc_free_context(m_context, 1);
+      m_context = NULL;
     }
   }
 }
