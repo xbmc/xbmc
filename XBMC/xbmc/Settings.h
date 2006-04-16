@@ -432,6 +432,7 @@ public:
     int m_iMasterLockHomeMedia;       // prompts user for MasterLockCode on Click Media [Video/Picture/Musik/Programs]!
     
     int m_iSambaDebugLevel;
+    int m_iSambaTimeout;
     CStdString m_strSambaWorkgroup;
     CStdString m_strSambaIPAdress;
     CStdString m_strSambaShareName;
