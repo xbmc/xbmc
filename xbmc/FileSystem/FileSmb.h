@@ -33,7 +33,7 @@ public:
   CStdString URLEncode(const CURL &url);
 
 private:
-  bool binitialized;  
+  SMBCCTX *m_context;
   CStdString m_strLastHost;
   CStdString m_strLastShare;
 };
