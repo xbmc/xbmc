@@ -116,6 +116,7 @@ CSettings::CSettings(void)
 
   g_stSettings.m_bDisplayRemoteCodes = false;
   g_stSettings.m_iSambaDebugLevel = 0;
+  g_stSettings.m_iSambaTimeout = 0;
   g_stSettings.m_strSambaWorkgroup = "WORKGROUP";
   g_stSettings.m_strSambaIPAdress = "192.168.0.5";
   g_stSettings.m_strSambaShareName = "WORKGROUP (SMB) Network";
@@ -306,6 +307,7 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
     
     GetString(pSambaElement, "winsserver", g_stSettings.m_strSambaWinsServer, "");
     GetInteger(pSambaElement, "debuglevel", g_stSettings.m_iSambaDebugLevel , 0, 0, 100);
+    GetInteger(pSambaElement, "clienttimeout", g_stSettings.m_iSambaTimeout, 10, 0, 100);
     GetString(pSambaElement, "defaultusername", g_stSettings.m_strSambaDefaultUserName, "");
     GetString(pSambaElement, "defaultpassword", g_stSettings.m_strSambaDefaultPassword, "");
     GetString(pSambaElement, "doscodepage", g_stSettings.m_strSambaDosCodepage, "");
