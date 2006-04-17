@@ -103,6 +103,7 @@ typedef void (WINAPI *fnFFinishImageLoad)(LPLDR_DATA_TABLE_ENTRY pldteT,
                                           LPLDR_DATA_TABLE_ENTRY* ppldteout);
 
 
+#ifdef ENABLE_SYMBOL_LOADING
 LPVOID GetXbdmBaseAddress()
 {
   PDM_WALK_MODULES pWalkMod = NULL;
@@ -127,6 +128,7 @@ LPVOID GetXbdmBaseAddress()
 
   return pBaseAddress;
 }
+#endif
 
 //  Entry point of a dll (DllMain)
 typedef BOOL WINAPI EntryFunc(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved);
