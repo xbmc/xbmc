@@ -78,4 +78,5 @@ private:
   char* ResolveReferencedDll(char* dll);
   int LoadExports();
   void LoadSymbols();
+  void UnloadSymbols();
 };
