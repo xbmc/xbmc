@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 17-04-2006 updated: French language file
  - 16-04-2006 fixed: libsamba client didn't use nonblocking sockets during connection.. clienttimeout settings is now in xboxmediacenter.xml, defaults to 10 seconds
  - 16-04-2006 fixed: Webserver failed to play last.fm url's containing spaces (urlencoding).
  - 16-04-2006 fixed: Webserver failed to play asx url's.
