@@ -73,7 +73,7 @@ bool XMLUtils::GetEncoding(const TiXmlDocument* pDoc, CStdString& strEncoding)
   const TiXmlDeclaration* pDecl=pNode->ToDeclaration();
   if (!pDecl) return false;
   strEncoding=pDecl->Encoding();
-  if (strEncoding.Equals("UTF-8")) strEncoding.Empty();
+  if (strEncoding.Equals("UTF-8") || strEncoding.Equals("UTF8")) strEncoding.Empty();
   strEncoding.MakeUpper();
   return !strEncoding.IsEmpty(); // Other encoding then UTF8?
 }
