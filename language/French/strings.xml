@@ -616,16 +616,16 @@
   <string><id>1031</id><value>une image dossier</value></string>
   <string><id>1032</id><value>Ajouter un chemin réseau</value></string> 
 
-  <string><id>1200</id><value>Partage SMB</value></string>
-  <string><id>1201</id><value>SMB Adresse IP</value></string>
-  <string><id>1202</id><value>SMB Groupe de travail</value></string>
-  <string><id>1203</id><value>SMB Utilisateur</value></string>
-  <string><id>1204</id><value>SMB Mot de passe</value></string>
-  <string><id>1205</id><value>SMB Nom du partage</value></string>
-  <string><id>1206</id><value>SMB Groupe</value></string>
-  <string><id>1207</id><value>SMB Serveur WINS</value></string>
-  <string><id>1208</id><value>Mode de configuration</value></string>
-  <string><id>1209</id><value>La configuration du partage SMB a reussis</value></string>
+  <string><id>1200</id><value>Client SMB</value></string>
+  <string><id>1201</id><value>Partage IP</value></string>
+  <string><id>1202</id><value>Groupe de travail</value></string>
+  <string><id>1203</id><value>Utilisateur par défaut</value></string>
+  <string><id>1204</id><value>Mot de passe par défaut</value></string>
+  <string><id>1205</id><value>Nom du partage</value></string>
+  <string><id>1206</id><value>Groupe</value></string>
+  <string><id>1207</id><value>Serveur WINS</value></string>
+  <string><id>1208</id><value>Raccourcis automatiques</value></string>
+  <string><id>1209</id><value>La configuration du client SMB à été définis avec succès.</value></string>
   <string><id>1210</id><value>Supprimer</value></string>
   <string><id>1211</id><value>Musique</value></string>
   <string><id>1212</id><value>Vidéo</value></string>
