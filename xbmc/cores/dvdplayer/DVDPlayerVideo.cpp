@@ -20,7 +20,7 @@ static __forceinline __int64 abs(__int64 value)
   else
     return value;
 }
-
+#define ROUNDED_DIV(a,b) (((a)>0 ? (a) + ((b)>>1) : (a) - ((b)>>1))/(b))
 
 CDVDPlayerVideo::CDVDPlayerVideo(CDVDClock* pClock, CDVDOverlayContainer* pOverlayContainer) 
 : CThread()
@@ -622,18 +622,29 @@ CDVDPlayerVideo::EOUTPUTSTATUS CDVDPlayerVideo::OutputPicture(DVDVideoPicture* p
 
     }
 
-    // calculate the time we need to delay this picture before displaying
-    __int64 iSleepTime, iClockSleep, iFrameSleep;
+    //User set delay
+    pts += m_iVideoDelay;
 
-    // sleep calculated by duration of frame
-    iFrameSleep = m_iFlipTimeStamp - m_pClock->GetAbsoluteClock();
-    // negative frame sleep possible after a stillframe, don't allow
-    if( iFrameSleep < 0 ) iFrameSleep = 0;
+    // calculate the time we need to delay this picture before displaying
+    __int64 iSleepTime, iClockSleep, iFrameSleep, iCurrentClock;
+
+    // snapshot current clock, to use the same value in all calculations
+    iCurrentClock = m_pClock->GetAbsoluteClock();
 
     //sleep calculated by pts to clock comparison
     iClockSleep = pts - m_pClock->GetClock();
-    //User set delay
-    iClockSleep += m_iVideoDelay;
+
+    // account for delay caused by waiting for vsync.
+    // we can't really adjust for this here as we then end up
+    // bouncing back and forth between frames, cause stutter instead
+    // only display the actual delay to user */
+    //iClockSleep -= m_PresentThread.GetDelay();
+    iClockSleep -= 5000;
+
+    // sleep calculated by duration of frame
+    iFrameSleep = m_iFlipTimeStamp - iCurrentClock;
+    // negative frame sleep possible after a stillframe, don't allow
+    if( iFrameSleep < 0 ) iFrameSleep = 0;
 
     if (m_speed < 0)
     {
@@ -660,12 +671,18 @@ CDVDPlayerVideo::EOUTPUTSTATUS CDVDPlayerVideo::OutputPicture(DVDVideoPicture* p
     // clock and audio could be adjusted
     if (iSleepTime > DVD_MSEC_TO_TIME(500) ) iSleepTime = DVD_MSEC_TO_TIME(500); // drop to a minimum of 2 frames/sec
 
-    // current pts is always equal to the pts of a picture, at least it is for external subtitles
-    m_iCurrentPts = pts - (iSleepTime > 0 ? iSleepTime : 0);
-
     /* adjust for speed */
     if( m_speed > DVD_PLAYSPEED_NORMAL )
       iSleepTime = iSleepTime * DVD_PLAYSPEED_NORMAL / m_speed;
+
+    // present the current pts of this frame to user, and include the actual
+    // presentation delay, to allow him to adjust for it
+    m_iCurrentPts = pts - (iSleepTime > 0 ? iSleepTime : 0) - 5000 + m_PresentThread.GetDelay();
+
+    // timestamp when we think next picture should be displayed based on current duration
+    m_iFlipTimeStamp = iCurrentClock;
+    m_iFlipTimeStamp += iSleepTime > 0 ? iSleepTime : 0;
+    m_iFlipTimeStamp += pPicture->iDuration;
 
     if( iSleepTime < 0 )
     { // we are late, try to figure out how late
@@ -691,11 +708,6 @@ CDVDPlayerVideo::EOUTPUTSTATUS CDVDPlayerVideo::OutputPicture(DVDVideoPicture* p
       iSleepTime = 0;
     }
 
-    // timestamp when we think next picture should be displayed based on current duration
-    m_iFlipTimeStamp = m_pClock->GetAbsoluteClock() ;
-    m_iFlipTimeStamp += iSleepTime ;
-    m_iFlipTimeStamp += pPicture->iDuration;
-
     if( (pPicture->iFlags & DVP_FLAG_DROPPED) ) return EOS_DROPPED;
 
     // set fieldsync if picture is interlaced
@@ -708,11 +720,8 @@ CDVDPlayerVideo::EOUTPUTSTATUS CDVDPlayerVideo::OutputPicture(DVDVideoPicture* p
         mDisplayField = FS_EVEN;
     }
 
-    // account delay caused by waiting for vsync.     
-    iSleepTime -= m_PresentThread.GetDelay();
-
     // present this image after the given delay
-    m_PresentThread.Present( m_pClock->GetAbsoluteClock() + iSleepTime, mDisplayField );
+    m_PresentThread.Present( iCurrentClock + iSleepTime, mDisplayField );
 
   }
   return EOS_OK;
@@ -803,11 +812,13 @@ void CDVDPlayerVideo::CPresentThread::Process()
       g_renderManager.FlipPage();
 
       /* calculate m_iDelay. m_iDelay will converge towards the correct value */
-      /* timeconstant of about 60 frames */
+      /* timeconstant of about 120 frames or 4 seconds */
+      /* adjusting this to quick, causes too much microstutter */
+      /* i suppose a constant might be better here */
       mTime = m_pClock->GetAbsoluteClock() - iFlipStamp;
-      if( 0 < mTime && mTime > 80000 ) // protect agains problems with clock and when debugging
+      if( 0 < mTime && mTime < 80000 ) // protect agains problems with clock and when debugging
       {
-        m_iDelay = (59*m_iDelay + mTime)/60;
+        m_iDelay = (119*m_iDelay + mTime)/120;
       }
     }
   }
