@@ -18,6 +18,12 @@
 // uncomment this to enable symbol loading for dlls
 //#define ENABLE_SYMBOL_LOADING 1
 
+// uncomment this to enable symbol unloading for dlls
+// This is not working properly. If a dll is loaded 
+// multiple times, vs.net will not link your solution 
+// again until you restart vs.net.
+//#define ENABLE_SYMBOL_UNLOADING 1
+
 // internal structure of xbdm.dll
 // which represents the HANDLE to
 // a dll. Used for symbol loading.
@@ -44,10 +50,20 @@ typedef struct _LDR_DATA_TABLE_ENTRY
 // Raw offset within the xbdm.dll to the
 // FFinishImageLoad function.
 // Dll baseaddress + offset = function
-int finishimageloadOffsets[][2] = {
+int finishimageloadOffsets[][3] = {
 // dll checksum, function offset
    {0x000652DE,  0x00016E1B}, // xdk version 5558
    {0x0006BFBE,  0x00016E5A}, // xdk version 5788
+   {0,0}
+};
+
+// Raw offset within the xbdm.dll to the
+// g_dmi struct.
+// Dll baseaddress + offset = struct
+int dmiOffsets[][2] = {
+// dll checksum, function offset
+   {0x000652DE,  0x0005A0E0}, // xdk version 5558
+   {0x0006BFBE,  0x0005A4A0}, // xdk version 5788
    {0,0}
 };
 
@@ -70,10 +86,47 @@ int GetFFinishImageLoadOffset(int dllchecksum)
   return 0;
 }
 
+// Helper function to get the offset by using the checksum of the dll
+int GetDmiOffset(int dllchecksum)
+{
+  for (int i=0; dmiOffsets[i][0]!=0; i++)
+  {
+    if (dmiOffsets[i][0]==dllchecksum)
+      return dmiOffsets[i][1];
+  }
+
+  return 0;
+}
+
 typedef void (WINAPI *fnFFinishImageLoad)(LPLDR_DATA_TABLE_ENTRY pldteT, 
                                           const char * szName, 
                                           LPLDR_DATA_TABLE_ENTRY* ppldteout);
 
+
+LPVOID GetXbdmBaseAddress()
+{
+  PDM_WALK_MODULES pWalkMod = NULL;
+  LPVOID pBaseAddress=NULL;
+  DMN_MODLOAD modLoad;
+  HRESULT error;
+
+  // Look for xbdm.dll, if its loaded...
+  while((error=DmWalkLoadedModules(&pWalkMod, &modLoad))==XBDM_NOERR)
+  {
+    if (stricmp(modLoad.Name, "xbdm.dll")==0)
+    {
+      // ... and get its base address
+      // where the dll is loaded into 
+      // memory.
+      pBaseAddress=modLoad.BaseAddress;
+      break;
+    }
+  }
+  if (pWalkMod)
+    DmCloseLoadedModules(pWalkMod);
+
+  return pBaseAddress;
+}
 
 //  Entry point of a dll (DllMain)
 typedef BOOL WINAPI EntryFunc(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved);
@@ -698,6 +751,8 @@ void DllLoader::Unload()
 #ifdef LOGALL
   CLog::Log(LOGDEBUG, "EntryPoint with DLL_PROCESS_DETACH called - Dll: %s", pDll->GetFileName());
 #endif
+
+  UnloadSymbols();
 }
 
 // This function is a hack to get symbols loaded for 
@@ -718,25 +773,7 @@ void DllLoader::LoadSymbols()
     return;
   }
 
-  PDM_WALK_MODULES pWalkMod = NULL;
-  LPVOID pBaseAddress=NULL;
-  DMN_MODLOAD modLoad;
-  HRESULT error;
-
-  // Look for xbdm.dll, if its loaded...
-  while((error=DmWalkLoadedModules(&pWalkMod, &modLoad))==XBDM_NOERR)
-  {
-      if (stricmp(modLoad.Name, "xbdm.dll")==0)
-      {
-        // ... and get its base address
-        // where the dll is loaded into 
-        // memory.
-        pBaseAddress=modLoad.BaseAddress;
-        break;
-      }
-  }
-  if (pWalkMod)
-    DmCloseLoadedModules(pWalkMod);
+  LPVOID pBaseAddress=GetXbdmBaseAddress();
 
   if (pBaseAddress)
   {
@@ -756,9 +793,9 @@ void DllLoader::LoadSymbols()
 
       // Prepare parameter for the function call
       LDR_DATA_TABLE_ENTRY ldte;
+      LPLDR_DATA_TABLE_ENTRY pldteout;
       ldte.DllBase=hModule; // Address where this dll is loaded into memory
       char* szName=GetName(); // Name of this dll without path
-      LPLDR_DATA_TABLE_ENTRY pldteout;
 
       try
       {
@@ -767,13 +804,90 @@ void DllLoader::LoadSymbols()
       }
       catch(...)
       {
-        CLog::Log(LOGERROR, "DllLoader: Loading symbols for %s failed with an exception.", GetName());
+        CLog::DebugLog("DllLoader: Loading symbols for %s failed with an exception.", GetName());
       }
     }
   }
   else
     CLog::DebugLog("DllLoader: Can't load symbols for %s. xbdm.dll is needed and not loaded", GetName());
+
+#ifdef ENABLE_SYMBOL_UNLOADING
+  m_bLoadSymbols=false;  // Do this to allow unloading this dll from dllloadercontainer
+#endif
+
 #else
   m_bLoadSymbols=false;
+#endif
+}
+
+// This function is even more a hack
+// It will remove the dll from the Debug manager
+// but vs.net does not unload the symbols (don't know why)
+// The dll can be loaded again after unloading.
+// This function leaks memory.
+void DllLoader::UnloadSymbols()
+{
+#ifdef ENABLE_SYMBOL_UNLOADING
+  ANSI_STRING name;
+  OBJECT_ATTRIBUTES attributes;
+  RtlInitAnsiString(&name, GetName());
+  InitializeObjectAttributes(&attributes, &name, OBJ_CASE_INSENSITIVE, NULL);
+
+  // Try to unload the sybols from vs.net debugger
+  DbgUnLoadImageSymbols(&name, (ULONG)hModule, 0xFFFFFFFF);
+
+  LPVOID pBaseAddress=GetXbdmBaseAddress();
+
+  if (pBaseAddress)
+  {
+    CoffLoader dllxbdm;
+    if (dllxbdm.ParseHeaders(pBaseAddress))
+    {
+      int offset=GetDmiOffset(dllxbdm.WindowsHeader->CheckSum);
+
+      if (offset==0)
+      {
+        CLog::DebugLog("DllLoader: Unable to unload symbols for %s. No offset for xbdm.dll with checksum 0x%08X found", GetName(), dllxbdm.WindowsHeader->CheckSum);
+        return;
+      }
+
+      try
+      {
+        CStdStringW strNameW;
+        g_charsetConverter.utf8ToUTF16(GetName(), strNameW);
+
+        // Get the address of the global struct g_dmi
+        // It is located inside the xbdm.dll and
+        // get the LoadedModuleList member (here the entry var)
+        // of the structure.
+        LPBYTE g_dmi=((LPBYTE)pBaseAddress)+offset;
+        LIST_ENTRY* entry=(LIST_ENTRY*)(g_dmi+4);
+
+        //  Search for the dll we are unloading...
+        while (entry)
+        {
+          CStdStringW baseName=(wchar_t*)((LDR_DATA_TABLE_ENTRY*)entry)->BaseDllName.Buffer;
+          if (baseName.Equals(strNameW))
+          {
+            // ...and remove it from the LoadedModuleList and free its memory.
+            LIST_ENTRY* back=entry->Blink;
+            LIST_ENTRY* front=entry->Flink;
+            back->Flink=front;
+            front->Blink=back;
+            DmFreePool(entry);
+            break;
+          }
+
+          entry=entry->Flink;
+        }
+      }
+      catch(...)
+      {
+        CLog::DebugLog("DllLoader: Unloading symbols for %s failed with an exception.", GetName());
+      }
+    }
+  }
+  else
+    CLog::DebugLog("DllLoader: Can't unload symbols for %s. xbdm.dll is needed and not loaded", GetName());
 #endif
 }
