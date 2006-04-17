@@ -50,7 +50,7 @@ typedef struct _LDR_DATA_TABLE_ENTRY
 // Raw offset within the xbdm.dll to the
 // FFinishImageLoad function.
 // Dll baseaddress + offset = function
-int finishimageloadOffsets[][3] = {
+int finishimageloadOffsets[][2] = {
 // dll checksum, function offset
    {0x000652DE,  0x00016E1B}, // xdk version 5558
    {0x0006BFBE,  0x00016E5A}, // xdk version 5788
