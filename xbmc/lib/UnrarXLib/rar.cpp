@@ -232,7 +232,7 @@ int urarlib_get(char *rarfile, char *targetPath, char *fileToExtract, char *libp
 					struct FindData FD;
 					if (FindFile::FastFind(rarfile,NULL,&FD))
 						pExtract->GetDataIO().TotalArcSize+=FD.Size;
-          pExtract->ExtractArchiveInit(pCmd.get(),*pArc);
+          pExtract->ExtractArchiveInit(pCmd.get(),*pArc))          
           while (1)
 					{
             int Size=pArc->ReadHeader();
@@ -255,8 +255,13 @@ int urarlib_get(char *rarfile, char *targetPath, char *fileToExtract, char *libp
 
             if (fileToExtract)
               if (*fileToExtract)
-                if(stricmp(pArc->NewLhd.FileName, fileToExtract) == 0)
+              {
+                bool EqualNames=false;
+	              int MatchNumber=pCmd->IsProcessFile(pArc->NewLhd,&EqualNames);
+                bool ExactMatch=MatchNumber!=0;
+                if (ExactMatch)
 					  			break;
+              }
 					}
 
 					pExtract->GetDataIO().ProcessedArcSize+=FD.Size;         
@@ -399,6 +404,8 @@ int urarlib_list(char *rarfile, ArchiveList_struct **ppList, char *libpassword)
           else
             break;
         }
+        else
+          break;
       }
     }
 	}

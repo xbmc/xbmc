@@ -214,7 +214,7 @@ void CUtil::RemoveExtension(CStdString& strFileName)
     strFileMask = g_stSettings.m_szMyMusicExtensions;
     strFileMask += g_stSettings.m_szMyPicturesExtensions;
     strFileMask += g_stSettings.m_szMyVideoExtensions;
-    strFileMask += ".py|.xml|.milk|.xpr";
+    strFileMask += ".py|.xml|.milk|.xpr|.cdg";
 
     // Only remove if its a valid media extension
     if (strFileMask.Find(strExtension.c_str()) >= 0)
@@ -630,7 +630,9 @@ bool CUtil::InstallTrainer(CTrainer& trainer)
 	bool Found = false;
 	DWORD memsize;
 
-	if (trainer.IsXBTF()) // size of our allocation buffer for trainer
+  CLog::Log(LOGDEBUG,"installing trainer %s",trainer.GetPath().c_str());
+	
+  if (trainer.IsXBTF()) // size of our allocation buffer for trainer
 		memsize = XBTF_HEAP_SIZE;
 	else
 		memsize = ETM_HEAP_SIZE;
@@ -2324,34 +2326,32 @@ bool CUtil::CacheRarSubtitles(std::vector<CStdString>& vecExtensionsCached, cons
     // done checking if this is a rar-in-rar
 
     int iPos=0;
-    while (sub_exts[iPos])
-    {
-      CStdString strExt = CUtil::GetExtension(strPathInRar);
-      CStdString strFileName = CUtil::GetFileName(strPathInRar);
-      CStdString strFileNameNoCase(strFileName);
-      strFileNameNoCase.MakeLower();
-
-      if (strExt.CompareNoCase(sub_exts[iPos]) == 0 && strFileNameNoCase.find(strCompare) != string::npos)
-      {
-        CStdString strSourceUrl, strDestUrl;
-        CUtil::CreateRarPath(strSourceUrl, strRarPath, strPathInRar);
-
-        CStdString strDestFile;
-        strDestFile.Format("subtitle%s%s", sub_exts[iPos],strExtExt.c_str());
-
-        if (std::find(vecExtensionsCached.begin(),vecExtensionsCached.end(),CStdString(sub_exts[iPos]+1)) == vecExtensionsCached.end())
+    CStdString strExt = CUtil::GetExtension(strPathInRar);
+    CStdString strFileName = CUtil::GetFileName(strPathInRar);
+    CStdString strFileNameNoCase(strFileName);
+    strFileNameNoCase.MakeLower();
+    if (strFileNameNoCase.Find(strCompare) >= 0)
+      while (sub_exts[iPos])
+      {      
+        if (strExt.CompareNoCase(sub_exts[iPos]) == 0)
         {
-          if (CFile::Cache(strSourceUrl,"Z:\\"+strDestFile))
+          CStdString strSourceUrl, strDestUrl;
+          CUtil::CreateRarPath(strSourceUrl, strRarPath, strPathInRar);
+
+          CStdString strDestFile;
+          strDestFile.Format("z:\\subtitle%s%s", sub_exts[iPos],strExtExt.c_str());
+
+          if (CFile::Cache(strSourceUrl,strDestFile))
           {
-            vecExtensionsCached.push_back(CStdString(sub_exts[iPos]+1));
-            CLog::Log(LOGINFO, " cached subtitle %s->Z:\\%s", strPathInRar.c_str(), strDestFile.c_str());
+            vecExtensionsCached.push_back(CStdString(sub_exts[iPos]));
+            CLog::Log(LOGINFO, " cached subtitle %s->%s", strPathInRar.c_str(), strDestFile.c_str());
             bFoundSubs = true;
+            break;
           }
         }
-      }
 
-      iPos++;
-    }
+        iPos++;
+      }
   }
   return bFoundSubs;
 }
