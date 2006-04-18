@@ -5,7 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
- - 18-04-2006 fixed: italic ttf would render chopped of, off center and width invalid spacing.
+ - 18-04-2006 fixed: italic ttf would render chopped of, off center and with invalid spacing.
  - 18-04-2006 fixed: subtitle style setting would display wrong under settings but respect whatever you set it to
  - 18-04-2006 fixed: various rar issues (including browsing dirs with incomplete files).
  - 18-04-2006 fixed: dvd bookmark button label in my programs.
