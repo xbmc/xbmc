@@ -82,8 +82,8 @@ void CLangInfo::Clear()
 CStdString CLangInfo::GetGuiCharSet() const
 {
   CStdString strCharSet;
-  //strCharSet=g_guiSettings.GetString("LookAndFeel.CharSet");
-  //if (strCharSet=="DEFAULT")
+  strCharSet=g_guiSettings.GetString("LookAndFeel.CharSet");
+  if (strCharSet=="DEFAULT")
   {
     strCharSet=m_strGuiCharSet;
     if (strCharSet.IsEmpty())

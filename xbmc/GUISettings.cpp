@@ -446,7 +446,7 @@ CGUISettings::CGUISettings(void)
   AddInt(6, "LookAndFeel.StartUpWindow",512,1, 0, 1, 3100, SPIN_CONTROL_TEXT);
   AddSeparator(7, "LookAndFeel.Sep1");
   AddString(8, "LookAndFeel.Language",248,"english", SPIN_CONTROL_TEXT);
-  //AddString(9, "LookAndFeel.CharSet",735,"DEFAULT", SPIN_CONTROL_TEXT); // charset is set by the language file
+  AddString(9, "LookAndFeel.CharSet",735,"DEFAULT", SPIN_CONTROL_TEXT); // charset is set by the language file
   AddSeparator(10, "LookAndFeel.Sep2");
   AddInt(11, "LookAndFeel.Resolution",169,(int)AUTORES, (int)HDTV_1080i, 1, (int)AUTORES, SPIN_CONTROL_TEXT);
   AddString(12, "LookAndFeel.GUICentering",213,"", BUTTON_CONTROL_STANDARD);
