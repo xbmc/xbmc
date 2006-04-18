@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 18-04-2006 updated: German language file (Thnx to sCAPe)
  - 18-04-2006 fixed: album info lookup
  - 18-04-2006 added: .FLV extension to XboxMediaCenter.xml
  - 17-04-2006 added: limited support for unloading dll's with debug symbols
