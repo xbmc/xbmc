@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 18-04-2006 fixed: tbn files with none ascii characters do not show up
  - 18-04-2006 updated: German language file (Thnx to sCAPe)
  - 18-04-2006 fixed: album info lookup
  - 18-04-2006 added: .FLV extension to XboxMediaCenter.xml
