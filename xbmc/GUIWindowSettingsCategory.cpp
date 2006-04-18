@@ -498,7 +498,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->AddLabel(g_localizeStrings.Get(739), XFONT_BOLD);
       pControl->AddLabel(g_localizeStrings.Get(740), XFONT_ITALICS);
       pControl->AddLabel(g_localizeStrings.Get(741), XFONT_BOLDITALICS);
-      pControl->SetValue(pSettingInt->GetData() - 1);
+      pControl->SetValue(pSettingInt->GetData());
     }
     else if (strSetting == "Subtitles.Color")
     {
