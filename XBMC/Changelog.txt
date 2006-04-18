@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 18-04-2006 added: .FLV extension to XboxMediaCenter.xml
  - 17-04-2006 added: limited support for unloading dll's with debug symbols
  - 17-04-2006 updated: French language file
  - 16-04-2006 fixed: libsamba client didn't use nonblocking sockets during connection.. clienttimeout settings is now in xboxmediacenter.xml, defaults to 10 seconds
