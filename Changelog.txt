@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 18-04-2006 fixed: various rar issues (including browsing dirs with incomplete files).
  - 18-04-2006 fixed: dvd bookmark button label in my programs.
  - 18-04-2006 updated: Finnish language file (Thnx to jutski)
  - 18-04-2006 changed: re-added the setting to change the charset from the GUI
