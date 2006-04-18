@@ -505,14 +505,14 @@ void CGUIFontTTF::CopyTexture(int width)
   m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)0, (float)0 );
   m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, (float)m_posX, (float)m_posY, 0, 1.0f );
 
-  m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)width, (float)0 );
-  m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, (float)m_posX + width, (float)m_posY, 0, 1.0f );
+  m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)(width + m_charGap), (float)0 );
+  m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, (float)m_posX + (width + m_charGap), (float)m_posY, 0, 1.0f );
 
-  m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)width, (float)m_iHeight );
-  m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, (float)m_posX + width, (float)m_posY + m_iHeight, 0, 1.0f );
+  m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)(width + m_charGap), (float)(m_iHeight + m_descent));
+  m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, (float)m_posX + (width + m_charGap), (float)m_posY + (m_iHeight + m_descent), 0, 1.0f );
 
-  m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)0, (float)m_iHeight );
-  m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, (float)m_posX, (float)m_posY + m_iHeight, 0, 1.0f );
+  m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)0, (float)(m_iHeight + m_descent) );
+  m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, (float)m_posX, (float)m_posY + (m_iHeight + m_descent), 0, 1.0f );
   m_pD3DDevice->End();
   m_pD3DDevice->SetScreenSpaceOffset( 0, 0 );
 
