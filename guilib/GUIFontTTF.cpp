@@ -369,11 +369,11 @@ void CGUIFontTTF::CacheCharacter(WCHAR letter, Character *ch)
   ch->letter = letter;
   ch->left = m_posX;
   ch->top = m_posY;
-  ch->right = m_posX + (unsigned short)width;
-  ch->bottom = m_posY + (unsigned short)m_iHeight;
-  ch->width = (unsigned short)(width + m_charGap);
+  ch->right = m_posX + (unsigned short)(width + m_charGap);
+  ch->bottom = m_posY + (unsigned short)(m_iHeight + m_descent);
+  ch->width = (unsigned short)width;
   ch->height = (unsigned short)m_iHeight;
-  m_posX += ch->width + 1;  // 1 pixel extra to control kerning.
+  m_posX += ch->width + m_charGap + 1;  // 1 pixel extra to control kerning.
   m_numChars++;
 }
 
@@ -426,19 +426,24 @@ void CGUIFontTTF::End()
 
 void CGUIFontTTF::RenderCharacter(float posX, float posY, const CAngle &angle, const Character *ch, D3DCOLOR dwColor)
 {
+  // actual image width isn't same as the character width as that is
+  // just baseline width and hight should include the descent
+  const float width = (float)(ch->right - ch->left);
+  const float height = (float)(ch->bottom - ch->top);
+
   m_pD3DDevice->SetVertexDataColor( D3DVSDE_DIFFUSE, dwColor);
 
   m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)ch->left, (float)ch->top );
   m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, posX, posY, 0, 1.0f );
 
-  m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)ch->right + m_charGap, (float)ch->top );
-  m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, posX + angle.cosine * ch->width, posY + angle.sine * ch->width, 0, 1.0f );
+  m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)ch->right, (float)ch->top );
+  m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, posX + angle.cosine * width, posY + angle.sine * width, 0, 1.0f );
 
-  m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)ch->right + m_charGap, (float)ch->bottom );
-  m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, posX + angle.cosine * ch->width - angle.sine * ch->height, posY + angle.sine * ch->width + angle.cosine * ch->height, 0, 1.0f );
+  m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)ch->right, (float)ch->bottom );
+  m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, posX + angle.cosine * width - angle.sine * height, posY + angle.sine * width + angle.cosine * height, 0, 1.0f );
 
   m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)ch->left, (float)ch->bottom );
-  m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, posX - angle.sine * ch->height, posY + angle.cosine * ch->height, 0, 1.0f );
+  m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, posX - angle.sine * height, posY + angle.cosine * height, 0, 1.0f );
 }
 
 void CGUIFontTTF::CreateShaderAndTexture()
