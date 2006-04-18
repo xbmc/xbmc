@@ -97,7 +97,8 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
         CShare& share = g_settings.m_vecMyProgramsBookmarks[i];
 
         SET_CONTROL_VISIBLE(i + iStartID);
-        if (share.strPath.CompareNoCase("d:\\") == 0)
+
+        if (CUtil::IsDVD(share.strPath))
         {
           CStdString strName = share.strName.substr(0,share.strName.rfind("(")-1);
           SET_CONTROL_LABEL(i + iStartID, strName);
@@ -255,7 +256,7 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
             for (int i = 0; i < (int)g_settings.m_vecMyProgramsBookmarks.size(); ++i)
             {
               CShare& share = g_settings.m_vecMyProgramsBookmarks[i];
-              if (share.strPath.CompareNoCase("d:\\") == 0)
+              if (CUtil::IsDVD(share.strPath))
               {
                 CStdString strName = share.strName.substr(0,share.strName.rfind("(")-1);
                 SET_CONTROL_LABEL(i + iStartID, strName);
@@ -356,6 +357,7 @@ bool CGUIWindowPrograms::OnPopupMenu(int iItem)
         if (iRegion == VIDEO_NTSCM)
           strLaunch += " (NTSC-M)";
         if (iRegion == VIDEO_NTSCJ)
+
           strLaunch += " (NTSC-J)";
         if (iRegion == VIDEO_PAL50)
           strLaunch += " (PAL)";
@@ -861,7 +863,7 @@ bool CGUIWindowPrograms::Update(const CStdString &strDirectory)
     }
   }  
   
-  CUtil::ClearCache();
+  //CUtil::ClearCache();
   m_vecItems.SetThumbs();
   CStdString strSelectedItem = m_history.GetSelectedItem(m_isRoot?"empty":strDirectory);
   if (m_guiState.get() && m_guiState->HideExtensions())
