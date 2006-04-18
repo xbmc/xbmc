@@ -134,7 +134,9 @@ void CMusicInfoScraper::FindAlbuminfo()
         int iStartOfUrl = strColum.Find("<a href", 0);
         int iEndOfUrl = strColum.Find(">", iStartOfUrl);
         CStdString strTemp = strColum.Mid(iStartOfUrl, iEndOfUrl + 1);
-        util.getAttributeOfTag(strTemp, "href=\"", strAlbumURL);
+        CStdString strAttr;
+        util.getAttributeOfTag(strTemp, "href=\"", strAttr);
+        util.ConvertHTMLToAnsi(strAttr, strAlbumURL);
 
         if (!strAlbumURL.IsEmpty())
         {
