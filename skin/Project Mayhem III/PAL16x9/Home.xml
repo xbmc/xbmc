@@ -103,8 +103,8 @@
     </control>
 
     <control>
+      <description>Visualisation Preview</description>
       <type>visualisation</type>
-      <id>1</id>
       <posx>182</posx>
       <posy>105</posy>
       <width>538</width>
