@@ -892,11 +892,13 @@ void Usage()
 	puts("  -input <dir>     Input directory. Default: current dir");
 	puts("  -output <dir>    Output directory/filename. Default: Textures.xpr");
 	puts("  -quality <qual>  Quality setting (min, low, normal, high, max). Default: normal");
+  puts("  -noprotect       XPR contents viewable in skin editor");
 }
 
 int main(int argc, char* argv[])
 {
-	double MaxMSE = 4.0;
+  int NoProtect = 0;
+  double MaxMSE = 4.0;
 	if (argc == 1)
 	{
 		Usage();
@@ -921,7 +923,11 @@ int main(int argc, char* argv[])
 		{
 			OutputFilename = argv[++i];
 		}
-		else if (!stricmp(argv[i], "-quality") || !stricmp(argv[i], "-q"))
+    else if (!stricmp(argv[i], "-noprotect") || !stricmp(argv[i], "-i"))
+    {
+      NoProtect = 1;
+    }
+    else if (!stricmp(argv[i], "-quality") || !stricmp(argv[i], "-q"))
 		{
 			++i;
 			if (!stricmp(argv[i], "min"))
@@ -1016,7 +1022,7 @@ int main(int argc, char* argv[])
 	}
 
 	printf("\nWriting bundle: %s", OutputFilename);
-	int BundleSize = Bundler.WriteBundle(OutputFilename);
+  int BundleSize = Bundler.WriteBundle(OutputFilename, NoProtect);
 	if (BundleSize == -1)
 	{
 		printf("\nERROR: %08x\n", GetLastError());
