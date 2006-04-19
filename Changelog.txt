@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 19-04-2006 fixed: When using TTF, subtitles encode in UTF-8 are not displayed correctly
  - 19-04-2006 fixed: Various python unicode label issues.
  - 19-04-2006 fixed: Wordwrapping in textbox and label controls wasn't correct for multibyte characters.
  - 19-04-2006 fixed: [ 1471338 ] Input for IP-Adress sometimes wrong
