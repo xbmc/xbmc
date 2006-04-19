@@ -73,6 +73,7 @@ namespace XFILE
 	    __int64					m_filePos;
       bool            m_opened;
       bool            m_useOldHttpVersion;
+      bool            m_acceptGZip;
 
       CRingHoldBuffer m_buffer;           // our ringhold buffer
       char *          m_overflowBuffer;   // in the rare case we would overflow the above buffer
