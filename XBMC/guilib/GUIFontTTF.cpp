@@ -27,6 +27,22 @@ CGUIFontTTF::~CGUIFontTTF(void)
   Clear();
 }
 
+void CGUIFontTTF::ClearCharacterCache()
+{
+  if (m_texture)
+    m_texture->Release();
+  m_texture = NULL;
+  if (m_char)
+    delete[] m_char;
+  m_char = new Character[CHAR_CHUNK];
+  m_numChars = 0;
+  m_maxChars = CHAR_CHUNK;
+  m_textureRows = 0;
+  // set the posX and posY so that our texture will be created on first character write.
+  m_posX = TEXTURE_WIDTH;
+  m_posY = -(m_iHeight + (int)m_descent);
+}
+
 void CGUIFontTTF::Clear()
 {
   if (m_pTrueTypeFont)
@@ -313,13 +329,21 @@ CGUIFontTTF::Character* CGUIFontTTF::GetCharacter(WCHAR letter)
   DWORD dwNestedBeginCount = m_dwNestedBeginCount;
   m_dwNestedBeginCount = 1;
   End();
-  CacheCharacter(letter, m_char + low);
+  if (!CacheCharacter(letter, m_char + low))
+  { // unable to cache character - try clearing them all out and starting over
+    ClearCharacterCache();
+    low = 0;
+    if (!CacheCharacter(letter, m_char))
+    {
+      CLog::Log(LOGERROR, "Unable to cache character (out of memory?)");
+    }
+  }
   Begin();
   m_dwNestedBeginCount = dwNestedBeginCount;
   return m_char + low;
 }
 
-void CGUIFontTTF::CacheCharacter(WCHAR letter, Character *ch)
+bool CGUIFontTTF::CacheCharacter(WCHAR letter, Character *ch)
 {
   WCHAR text[2];
   text[0] = letter;
@@ -333,10 +357,7 @@ void CGUIFontTTF::CacheCharacter(WCHAR letter, Character *ch)
     // create the new larger texture
     LPDIRECT3DTEXTURE8 newTexture;
     if (D3D_OK != m_pD3DDevice->CreateTexture(TEXTURE_WIDTH, (m_iHeight + m_descent) * (m_textureRows + 1), 1, 0, D3DFMT_LIN_L8, 0, &newTexture))
-    {
-      CLog::Log(LOGERROR, "Unable to create texture for font");
-      return;
-    }
+      return false;
     D3DLOCKED_RECT lr;
     newTexture->LockRect(0, &lr, NULL, 0);
     if (m_texture)
@@ -375,6 +396,7 @@ void CGUIFontTTF::CacheCharacter(WCHAR letter, Character *ch)
   ch->height = (unsigned short)m_iHeight;
   m_posX += ch->width + m_charGap + 1;  // 1 pixel extra to control kerning.
   m_numChars++;
+  return true;
 }
 
 void CGUIFontTTF::Begin()
@@ -452,11 +474,15 @@ void CGUIFontTTF::CreateShaderAndTexture()
     m_charTexture->Release();
   m_charTexture = NULL;
 
-  m_pD3DDevice->CreateTexture(m_iHeight * 2, (m_iHeight + m_descent), 1, 0, D3DFMT_LIN_A8R8G8B8, 0, &m_charTexture);
-  D3DLOCKED_RECT lr;
-  m_charTexture->LockRect(0, &lr, NULL, 0);
-  memset(lr.pBits, 0, lr.Pitch * (m_iHeight + m_descent));
-  m_charTexture->UnlockRect(0);
+  if (D3D_OK == m_pD3DDevice->CreateTexture(m_iHeight * 2, (m_iHeight + m_descent), 1, 0, D3DFMT_LIN_A8R8G8B8, 0, &m_charTexture))
+  {
+    D3DLOCKED_RECT lr;
+    m_charTexture->LockRect(0, &lr, NULL, 0);
+    memset(lr.pBits, 0, lr.Pitch * (m_iHeight + m_descent));
+    m_charTexture->UnlockRect(0);
+  }
+  else
+    CLog::Log(LOGERROR, "Unable to create texture for TTF font -> out of memory?");
 
   if (!m_fontShader)
   {
