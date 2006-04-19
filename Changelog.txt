@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 19-04-2006 fixed: When TTF fonts run out of memory, the character cache is cleared.  Should fix movies that develop corrupt subtitles after a while in 1080i.
  - 19-04-2006 fixed: DVD-ROM bookmark could not be edited from the GUI.
  - 19-04-2006 fixed: Karaoke settings are now disabled when CDG reading is disabled.
  - 18-04-2006 fixed: Buffer overrun in FileZip::Read() when reading past the end of file.
