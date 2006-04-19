@@ -23,13 +23,13 @@ bool CBundler::StartBundle()
 	return true;
 }
 
-int CBundler::WriteBundle(const char* Filename)
+int CBundler::WriteBundle(const char* Filename, int NoProtect)
 {
 	// calc data offset
 	DWORD Offset = sizeof(XPR_HEADER) + FileHeaders.size() * sizeof(FileHeader_t);
 
 	// setup header
-	XPRHeader.dwMagic = XPR_MAGIC_VALUE | (2 << 24); // version 2
+	XPRHeader.dwMagic = XPR_MAGIC_VALUE | ((2+(NoProtect << 7)) << 24); // version 2
 	XPRHeader.dwHeaderSize = Offset;
 
 	Offset = (Offset + (ALIGN-1)) & ~(ALIGN-1);

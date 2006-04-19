@@ -164,6 +164,7 @@ bool CTextureBundle::OpenBundle()
   XPR_HEADER* pXPRHeader = (XPR_HEADER*)(BYTE*)HeaderBuf;
   int Version = (pXPRHeader->dwMagic >> 24) - '0';
   pXPRHeader->dwMagic -= Version << 24;
+  Version &= 0x0f;
 
   if (pXPRHeader->dwMagic != XPR_MAGIC_VALUE || Version < 2)
     goto LoadError;
