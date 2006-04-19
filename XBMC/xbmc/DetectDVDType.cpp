@@ -255,7 +255,7 @@ void CDetectDVDMedia::SetNewDVDShareUrl( const CStdString& strNewUrl, bool bCDDA
     if ( g_settings.m_vecMyMusicShares[i].m_iDriveType == SHARE_TYPE_DVD )
     {
       g_settings.m_vecMyMusicShares[i].strPath = strNewUrl;
-      SetShareName(g_settings.m_vecMyMusicShares[i].strName, strDescription);
+      g_settings.m_vecMyMusicShares[i].strStatus = strDescription;
     }
   }
 
@@ -265,7 +265,7 @@ void CDetectDVDMedia::SetNewDVDShareUrl( const CStdString& strNewUrl, bool bCDDA
     if ( g_settings.m_vecMyPictureShares[i].m_iDriveType == SHARE_TYPE_DVD )
     {
       g_settings.m_vecMyPictureShares[i].strPath = strNewUrl;
-      SetShareName(g_settings.m_vecMyPictureShares[i].strName, strDescription);
+      g_settings.m_vecMyPictureShares[i].strStatus = strDescription;
     }
   }
 
@@ -275,7 +275,7 @@ void CDetectDVDMedia::SetNewDVDShareUrl( const CStdString& strNewUrl, bool bCDDA
     if ( g_settings.m_vecMyFilesShares[i].m_iDriveType == SHARE_TYPE_DVD )
     {
       g_settings.m_vecMyFilesShares[i].strPath = strNewUrl;
-      SetShareName(g_settings.m_vecMyFilesShares[i].strName, strDescription);
+      g_settings.m_vecMyFilesShares[i].strStatus = strDescription;
     }
   }
 
@@ -285,7 +285,7 @@ void CDetectDVDMedia::SetNewDVDShareUrl( const CStdString& strNewUrl, bool bCDDA
     if ( g_settings.m_vecMyVideoShares[i].m_iDriveType == SHARE_TYPE_DVD )
     {
       g_settings.m_vecMyVideoShares[i].strPath = strNewUrl;
-      SetShareName(g_settings.m_vecMyVideoShares[i].strName, strDescription);
+      g_settings.m_vecMyVideoShares[i].strStatus = strDescription;
     }
   }
 
@@ -295,7 +295,7 @@ void CDetectDVDMedia::SetNewDVDShareUrl( const CStdString& strNewUrl, bool bCDDA
     if ( g_settings.m_vecMyProgramsBookmarks[i].m_iDriveType == SHARE_TYPE_DVD )
     {
       g_settings.m_vecMyProgramsBookmarks[i].strPath = strNewUrl;
-      SetShareName(g_settings.m_vecMyProgramsBookmarks[i].strName, strDescription);
+      g_settings.m_vecMyProgramsBookmarks[i].strStatus = strDescription;
     }
   }
 }
@@ -398,17 +398,6 @@ CCdInfo* CDetectDVDMedia::GetCdInfo()
   CSingleLock waitLock(m_muReadingMedia);
   CCdInfo* pCdInfo = m_pCdInfo;
   return pCdInfo;
-}
-
-// add status to sharename -> share (status)
-void CDetectDVDMedia::SetShareName(CStdString& strShareName, CStdString& strStatus)
-{
-  // find last '(' if it's there and remove it. Needed so user can define
-  // his own dvd share name in xboxmediacenter.xml
-  CStdString strTemp = strShareName;
-  int iPos = strTemp.ReverseFind('(') - 1;
-  if (iPos > 0) strTemp.erase(iPos, strTemp.size());
-  strShareName.Format("%s (%s)", strTemp.c_str(), strStatus.c_str());
 }
 
 const CStdString &CDetectDVDMedia::GetDVDLabel()

@@ -38,7 +38,6 @@ protected:
 
   void DetectMediaType();
   void SetNewDVDShareUrl( const CStdString& strNewUrl, bool bCDDA, const CStdString& strDiscLabel );
-  void SetShareName(CStdString& strShareName, CStdString& strStatus);
 
 private:
   CIoSupport m_helper;

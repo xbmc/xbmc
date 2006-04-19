@@ -140,8 +140,39 @@ void CGUIDialogContextMenu::EnableButton(int iButton, bool bEnable)
   CGUIControl *pControl = (CGUIControl *)GetControl(BUTTON_TEMPLATE + iButton);
   if (pControl) pControl->SetEnabled(bEnable);
 }
-bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CStdString &strLabel, const CStdString &strPath, int iLockMode, bool bMaxRetryExceeded, int iPosX, int iPosY)
+
+bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CFileItem *item, int iPosX, int iPosY)
 {
+  // TODO: This should be callable even if we don't have any valid items
+  if (!item)
+    return false;
+
+  bool bMaxRetryExceeded = false;
+  if (g_stSettings.m_iMasterLockMaxRetry != 0)
+    bMaxRetryExceeded = !(item->m_iBadPwdCount < g_stSettings.m_iMasterLockMaxRetry);
+
+  // Get the share object from our file object
+  VECSHARES *shares = g_settings.GetSharesFromType(strType);
+  if (!shares) return false;
+  CShare *share = NULL;
+  for (unsigned int i = 0; i < shares->size(); i++)
+  {
+    CShare &testShare = shares->at(i);
+    if (testShare.strPath.Equals(item->m_strPath))
+    { // paths match, what about share name - only match the leftmost
+      // characters as the label may contain other info (status for instance)
+      if (item->GetLabel().Left(testShare.strName.size()).Equals(testShare.strName))
+      {
+        share = &testShare;
+        break;
+      }
+    }
+  }
+
+  // TODO: This should be callable with no valid shares
+  if (!share)
+    return false;
+
   // popup the context menu
   CGUIDialogContextMenu *pMenu = (CGUIDialogContextMenu *)m_gWindowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
   if (pMenu)
@@ -159,7 +190,7 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CStdS
     
     // add the needed buttons
     int btn_EditPath = 0;
-    if (!CUtil::IsVirtualPath(strPath))
+    if (!CUtil::IsVirtualPath(item->m_strPath))
       btn_EditPath = pMenu->AddButton(1027); // Edit Source
     int btn_AddShare = pMenu->AddButton(1026); // Add Source
     int btn_Delete = pMenu->AddButton(522); // Remove Source
@@ -173,8 +204,8 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CStdS
     int btn_PlayDisc = 0;
     int btn_Eject = 0;
     CIoSupport TrayIO;
-    if (strPath == "D:\\" || strPath == "iso9660://" || strPath == "UDF://" || strPath == "cdda://" || strPath == "cdda://local/" )
-    { 
+    if (item->IsDVD() || item->IsCDDA())
+    {
       // We need to check if there is a detected is inserted! 
       int iTrayState = TrayIO.GetTrayState();
       if ( iTrayState == DRIVE_CLOSED_MEDIA_PRESENT || iTrayState == TRAY_CLOSED_MEDIA_PRESENT )
@@ -195,11 +226,12 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CStdS
     int btn_ChangeLock = 0; // Change Share Lock;
     if (LOCK_MODE_EVERYONE != g_stSettings.m_iMasterLockMode)
     {
-      if (LOCK_MODE_EVERYONE == iLockMode) 
+      // TODO: Check these and change to using the share object??
+      if (LOCK_MODE_EVERYONE == item->m_iLockMode) 
         btn_LockShare = pMenu->AddButton(12332);
-      else if (LOCK_MODE_EVERYONE < iLockMode && bMaxRetryExceeded) 
+      else if (LOCK_MODE_EVERYONE < item->m_iLockMode && bMaxRetryExceeded) 
         btn_ResetLock = pMenu->AddButton(12334);
-      else if (LOCK_MODE_EVERYONE > iLockMode && !bMaxRetryExceeded)
+      else if (LOCK_MODE_EVERYONE > item->m_iLockMode && !bMaxRetryExceeded)
       {
         btn_RemoveLock = pMenu->AddButton(12335);
         // don't show next button if folder locks are being overridden
@@ -219,26 +251,25 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CStdS
     {
       if (btn == btn_EditPath)
       {
-        if (!CheckMasterCode(iLockMode)) return false;
+        if (!CheckMasterCode(item->m_iLockMode)) return false;
         // TODO: No support here for <depth> parameter in My Programs.
         // Ideally, we should simply search for xbe's more intelligently
         // and display the results.  They can then be characterised by the user.
-        return CGUIDialogMediaSource::ShowAndEditMediaSource(strType, strLabel, strPath);
+        return CGUIDialogMediaSource::ShowAndEditMediaSource(strType, share->strName, share->strPath);
       }
       else if (btn == btn_Delete)
       {
-        if (!CheckMasterCode(iLockMode)) return false;
+        if (!CheckMasterCode(item->m_iLockMode)) return false;
         // prompt user if they want to really delete the bookmark
         if (CGUIDialogYesNo::ShowAndGetInput(bMyProgramsMenu ? 758 : 751, 0, 750, 0))
         {
           // delete this share
-          g_settings.DeleteBookmark(strType, strLabel, strPath);
+          g_settings.DeleteBookmark(strType, share->strName, share->strPath);
 
           // check default
           if (!strDefault.IsEmpty())
           {
-            // need compare left anchored due to DVD's adding status and name
-            if (strLabel.Left(strDefault.size()).Equals(strDefault))
+            if (share->strName.Equals(strDefault))
               ClearDefault(strType);
           }
 
@@ -247,19 +278,19 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CStdS
       }
       else if (btn == btn_AddShare)
       {
-        if (!CheckMasterCode(iLockMode)) return false;
+        if (!CheckMasterCode(item->m_iLockMode)) return false;
         return CGUIDialogMediaSource::ShowAndAddMediaSource(strType);
       }
       else if (btn == btn_Default)
       {
-        if (!CheckMasterCode(iLockMode)) return false;
+        if (!CheckMasterCode(item->m_iLockMode)) return false;
         // make share default
-        SetDefault(strType, strLabel);
+        SetDefault(strType, share->strName);
         return true;
       }
       else if (btn == btn_ClearDefault)
       {
-        if (!CheckMasterCode(iLockMode)) return false;
+        if (!CheckMasterCode(item->m_iLockMode)) return false;
         // remove share default
         ClearDefault(strType);
         return true;
@@ -325,9 +356,9 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CStdS
             break;
           }
           // password entry and re-entry succeeded, write out the lock data
-          g_settings.UpdateBookmark(strType, strLabel, "lockmode", strLockMode);
-          g_settings.UpdateBookmark(strType, strLabel, "lockcode", strNewPassword);
-          g_settings.UpdateBookmark(strType, strLabel, "badpwdcount", "0");
+          g_settings.UpdateBookmark(strType, share->strName, "lockmode", strLockMode);
+          g_settings.UpdateBookmark(strType, share->strName, "lockcode", strNewPassword);
+          g_settings.UpdateBookmark(strType, share->strName, "badpwdcount", "0");
           return true;
         }
       }
@@ -337,7 +368,7 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CStdS
         if (!g_passwordManager.IsMasterLockUnlocked(true))
           return false;
 
-        g_settings.UpdateBookmark(strType, strLabel, "badpwdcount", "0");
+        g_settings.UpdateBookmark(strType, share->strName, "badpwdcount", "0");
         return true;
       }
       else if (btn == btn_RemoveLock)
@@ -349,19 +380,19 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CStdS
         if (!CGUIDialogYesNo::ShowAndGetInput(0, 12335, 750, 0))
           return false;
 
-        g_settings.UpdateBookmark(strType, strLabel, "lockmode", "0");
-        g_settings.UpdateBookmark(strType, strLabel, "lockcode", "-");
-        g_settings.UpdateBookmark(strType, strLabel, "badpwdcount", "0");
+        g_settings.UpdateBookmark(strType, share->strName, "lockmode", "0");
+        g_settings.UpdateBookmark(strType, share->strName, "lockcode", "-");
+        g_settings.UpdateBookmark(strType, share->strName, "badpwdcount", "0");
         return true;
       }
       else if (btn == btn_ReactivateLock)
       {
-        if (LOCK_MODE_EVERYONE > iLockMode && !bMaxRetryExceeded && !g_application.m_bMasterLockOverridesLocalPasswords)
+        if (LOCK_MODE_EVERYONE > item->m_iLockMode && !bMaxRetryExceeded && !g_application.m_bMasterLockOverridesLocalPasswords)
         {
           // don't prompt user for mastercode when reactivating a lock
           CStdString strInvertedLockmode = "";
-          strInvertedLockmode.Format("%d", iLockMode * -1);
-          g_settings.UpdateBookmark(strType, strLabel, "lockmode", strInvertedLockmode);
+          strInvertedLockmode.Format("%d", item->m_iLockMode * -1);
+          g_settings.UpdateBookmark(strType, share->strName, "lockmode", strInvertedLockmode);
           return true;
         }
         else  // this should never happen, but if it does, don't perform any action
@@ -376,7 +407,7 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CStdS
 	      //{
 	      CStdString strNewPW;
 	      CStdString strNewLockMode;
-		      switch (iLockMode)
+		      switch (item->m_iLockMode)
 		      {
 		      case -1:  // 1: Numeric Password
 			      if (!CGUIDialogNumeric::ShowAndVerifyNewPassword(strNewPW))
@@ -398,9 +429,9 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CStdS
 			      break;
 		      }
 		      // password ReSet and re-entry succeeded, write out the lock data
-		      g_settings.UpdateBookmark(strType, strLabel, "lockcode", strNewPW);
-		      g_settings.UpdateBookmark(strType, strLabel, "lockmode", strNewLockMode);
-		      g_settings.UpdateBookmark(strType, strLabel, "badpwdcount", "0");
+		      g_settings.UpdateBookmark(strType, share->strName, "lockcode", strNewPW);
+		      g_settings.UpdateBookmark(strType, share->strName, "lockmode", strNewLockMode);
+		      g_settings.UpdateBookmark(strType, share->strName, "badpwdcount", "0");
 		      return true;
       //}
       }
@@ -432,44 +463,17 @@ void CGUIDialogContextMenu::OnWindowUnload()
 
 CStdString CGUIDialogContextMenu::GetDefaultShareNameByType(const CStdString &strType)
 {
-  VECSHARES *pShares = NULL;
-  CStdString strDefault;
-
-  if (strType == "myprograms")
-  {
-    pShares = &g_settings.m_vecMyProgramsBookmarks;
-    strDefault = g_stSettings.m_szDefaultPrograms;
-  }
-  else if (strType == "files")
-  {
-    pShares = &g_settings.m_vecMyFilesShares;
-    strDefault = g_stSettings.m_szDefaultFiles;
-  }
-  else if (strType == "music")
-  {
-    pShares = &g_settings.m_vecMyMusicShares;
-    strDefault = g_stSettings.m_szDefaultMusic;
-  }
-  else if (strType == "video")
-  {
-    pShares = &g_settings.m_vecMyVideoShares;
-    strDefault = g_stSettings.m_szDefaultVideos;
-  }
-  else if (strType == "pictures")
-  {
-    pShares = &g_settings.m_vecMyPictureShares;
-    strDefault = g_stSettings.m_szDefaultPictures;
-  }
+  VECSHARES *pShares = g_settings.GetSharesFromType(strType);
+  CStdString strDefault = g_settings.GetDefaultShareFromType(strType);
 
   if (!pShares) return "";
 
-  VECSHARES vecShares = *pShares;
-  bool bIsBookmarkName = false;
-  int iIndex = CUtil::GetMatchingShare(strDefault, vecShares, bIsBookmarkName);
+  bool bIsBookmarkName(false);
+  int iIndex = CUtil::GetMatchingShare(strDefault, *pShares, bIsBookmarkName);
   if (iIndex < 0)
     return "";
 
-  return vecShares.at(iIndex).strName;
+  return pShares->at(iIndex).strName;
 }
 
 void CGUIDialogContextMenu::SetDefault(const CStdString &strType, const CStdString &strDefault)
