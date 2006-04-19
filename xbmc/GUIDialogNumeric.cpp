@@ -59,6 +59,7 @@ bool CGUIDialogNumeric::OnMessage(CGUIMessage& message)
     {
       m_bConfirmed = false;
       m_bCanceled = false;
+      m_dirty = false;
       return CGUIDialog::OnMessage(message);
     }
     break;
