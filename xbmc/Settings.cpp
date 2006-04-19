@@ -604,6 +604,37 @@ void CSettings::ConvertHomeVar(CStdString& strText)
   }
 }
 
+VECSHARES *CSettings::GetSharesFromType(const CStdString &type)
+{
+  if (type == "myprograms")
+    return &g_settings.m_vecMyProgramsBookmarks;
+  else if (type == "files")
+    return &g_settings.m_vecMyFilesShares;
+  else if (type == "music")
+    return &g_settings.m_vecMyMusicShares;
+  else if (type == "video")
+    return &g_settings.m_vecMyVideoShares;
+  else if (type == "pictures")
+    return &g_settings.m_vecMyPictureShares;
+  return NULL;
+}
+
+CStdString CSettings::GetDefaultShareFromType(const CStdString &type)
+{
+  CStdString defaultShare;
+  if (type == "myprograms")
+    defaultShare = g_stSettings.m_szDefaultPrograms;
+  else if (type == "files")
+    defaultShare = g_stSettings.m_szDefaultFiles;
+  else if (type == "music")
+    defaultShare = g_stSettings.m_szDefaultMusic;
+  else if (type == "video")
+    defaultShare = g_stSettings.m_szDefaultVideos;
+  else if (type == "pictures")
+    defaultShare = g_stSettings.m_szDefaultPictures;
+  return defaultShare;
+}
+
 void CSettings::GetShares(const TiXmlElement* pRootElement, const CStdString& strTagName, VECSHARES& items, CStdString& strDefault)
 {
   CLog::Log(LOGDEBUG, "  Parsing <%s> tag", strTagName.c_str());
@@ -1797,13 +1828,7 @@ bool CSettings::UpdateBookmark(const CStdString &strType, const CStdString &strO
   bool breturn(false);
   if (!LoadXml()) return false;
 
-  VECSHARES *pShares = NULL;
-  if (strType == "myprograms") pShares = &m_vecMyProgramsBookmarks;
-  if (strType == "files") pShares = &m_vecMyFilesShares;
-  if (strType == "music") pShares = &m_vecMyMusicShares;
-  if (strType == "video") pShares = &m_vecMyVideoShares;
-  if (strType == "pictures") pShares = &m_vecMyPictureShares;
-
+  VECSHARES *pShares = GetSharesFromType(strType);
   if (!pShares) return false;
 
   // disallow virtual paths
@@ -1932,13 +1957,7 @@ bool CSettings::DeleteBookmark(const CStdString &strType, const CStdString &strN
    bool breturn; breturn = false;
   if (!LoadXml()) return false;
 
-  VECSHARES *pShares = NULL;
-  if (strType == "myprograms") pShares = &m_vecMyProgramsBookmarks;
-  if (strType == "files") pShares = &m_vecMyFilesShares;
-  if (strType == "music") pShares = &m_vecMyMusicShares;
-  if (strType == "video") pShares = &m_vecMyVideoShares;
-  if (strType == "pictures") pShares = &m_vecMyPictureShares;
-
+  VECSHARES *pShares = GetSharesFromType(strType);
   if (!pShares) return false;
 
   for (IVECSHARES it = pShares->begin(); it != pShares->end(); it++)
@@ -1994,13 +2013,7 @@ bool CSettings::AddBookmark(const CStdString &strType, const CStdString &strName
 {
   if (!LoadXml()) return false;
 
-  VECSHARES *pShares = NULL;
-  if (strType == "myprograms") pShares = &m_vecMyProgramsBookmarks;
-  if (strType == "files") pShares = &m_vecMyFilesShares;
-  if (strType == "music") pShares = &m_vecMyMusicShares;
-  if (strType == "video") pShares = &m_vecMyVideoShares;
-  if (strType == "pictures") pShares = &m_vecMyPictureShares;
-
+  VECSHARES *pShares = GetSharesFromType(strType);
   if (!pShares) return false;
 
   CShare share;
@@ -2093,13 +2106,7 @@ bool CSettings::SetBookmarkLocks(const CStdString &strType, bool bEngageLocks)
 {
   if (!LoadXml()) return false;
 
-  VECSHARES *pShares = NULL;
-  if (strType == "files") pShares = &g_settings.m_vecMyFilesShares;
-  if (strType == "music") pShares = &g_settings.m_vecMyMusicShares;
-  if (strType == "video") pShares = &g_settings.m_vecMyVideoShares;
-  if (strType == "pictures") pShares = &g_settings.m_vecMyPictureShares;
-  if (strType == "myprograms") pShares = &g_settings.m_vecMyProgramsBookmarks;
-
+  VECSHARES *pShares = GetSharesFromType(strType);
   if (!pShares) return false;
 
   for (IVECSHARES it = pShares->begin(); it != pShares->end(); it++)
