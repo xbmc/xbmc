@@ -155,6 +155,7 @@ CFileCurl::CFileCurl()
   m_overflowSize = 0;
   m_pHeaderCallback = NULL;
   m_bufferSize = BUFFER_SIZE;
+  m_acceptGZip = true;
 }
 
 //Has to be called before Open()
@@ -238,7 +239,8 @@ void CFileCurl::SetCommonOptions()
   g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_HTTP200ALIASES, m_curlAliasList); 
 
   // always allow gzip compression
-  g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_ENCODING, "gzip");
+  if (m_acceptGZip)
+    g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_ENCODING, "gzip");
 
   
   if (m_userAgent.length() > 0)
@@ -291,6 +293,8 @@ bool CFileCurl::Open(const CURL& url, bool bBinary)
     m_easyHandle = g_curlInterface.easy_aquire(url.GetProtocol(), url.GetHostName());
 
 
+  m_acceptGZip = bBinary;
+
   // setup common curl options
   SetCommonOptions();
 
@@ -325,8 +329,32 @@ bool CFileCurl::Open(const CURL& url, bool bBinary)
 
 bool CFileCurl::ReadString(char *szLine, int iLineLength)
 {
-  // unimplemented
-  return false;
+  unsigned int want = (unsigned int)iLineLength;
+
+  if(!FillBuffer(want,1))
+    return false;
+
+  if (!m_stillRunning && !m_buffer.GetMaxReadSize() && m_filePos != m_fileSize)
+  {
+    // means we've finished our transfer
+    return false;
+  }
+
+  /* ensure only available data is considered */
+  want = min(m_buffer.GetMaxReadSize(), want);
+
+  char* pLine = szLine;
+  do
+  {
+    if (!m_buffer.ReadBinary(pLine, 1))
+    {
+      break;
+    }
+    pLine++;
+  } while (((pLine - 1)[0] != '\n') && ((unsigned int)(pLine - szLine) < want));
+  pLine[0] = 0;
+  m_filePos += (pLine - szLine);
+  return (bool)((pLine - szLine) > 0);
 }
 
 bool CFileCurl::Exists(const CURL& url)
