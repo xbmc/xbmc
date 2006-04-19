@@ -283,7 +283,7 @@ unsigned int CFileZip::Read(void* lpBuf, __int64 uiBufSize)
   }
   else if (mZipItem.method == 0) // uncompressed. just read from file, but mind our boundaries.
   {
-    if (uiBufSize+m_iZipFilePos > mZipItem.csize)
+    if (uiBufSize+m_iFilePos > mZipItem.csize)
       uiBufSize = mZipItem.csize-m_iFilePos;
     if (uiBufSize < 0)
     {
