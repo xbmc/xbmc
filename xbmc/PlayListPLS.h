@@ -17,5 +17,6 @@ protected:
   bool LoadAsxInfo(CStdString& strData);
   bool LoadAsxIniInfo(CStdString& strData);
   bool LoadRAMInfo(CStdString& strData);
+  bool LoadPLSInfo(const CStdString& strFileName);
 };
 };
