@@ -910,6 +910,14 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetInt("MusicPlayer.CrossFade") > 0);
     }
+    else if (strSetting.Left(8) == "Karaoke." && strSetting != "Karaoke.Enabled")
+    {
+      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+      bool enabled = g_guiSettings.GetBool("Karaoke.Enabled");
+      if (strSetting.Left(12) == "Karaoke.Port" || strSetting == "Karaoke.Volume")
+        enabled = enabled && g_guiSettings.GetBool("Karaoke.VoiceEnabled");
+      if (pControl) pControl->SetEnabled(enabled);
+    }
     else if (strSetting == "System.FanSpeed")
     { // only visible if we have fancontrolspeed enabled
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
