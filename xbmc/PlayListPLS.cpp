@@ -26,21 +26,8 @@ CPlayListPLS::CPlayListPLS(void)
 CPlayListPLS::~CPlayListPLS(void)
 {}
 
-
-bool CPlayListPLS::Load(const CStdString& strFileName)
+bool CPlayListPLS::LoadPLSInfo(const CStdString& strFileName)
 {
-  m_vecItems.clear();
-  CFileItem item(strFileName, false);
-  if (item.IsInternetStream())
-  {
-    //load it from the url
-    if (!LoadFromWeb(item.m_strPath))
-    {
-      CPlayListItem newItem(item.m_strPath, item.m_strPath, 0);
-      Add(newItem);
-    }
-    return true;
-  }
   //read it from the file
   CStdString strBasePath;
   m_strPlayListName = CUtil::GetFileName(strFileName);
@@ -174,6 +161,23 @@ bool CPlayListPLS::Load(const CStdString& strFileName)
   return true;
 }
 
+bool CPlayListPLS::Load(const CStdString& strFileName)
+{
+  m_vecItems.clear();
+  CFileItem item(strFileName, false);
+  if (item.IsInternetStream())
+  {
+    //load it from the url
+    if (!LoadFromWeb(item.m_strPath))
+    {
+      CPlayListItem newItem(item.m_strPath, item.m_strPath, 0);
+      Add(newItem);
+    }
+    return true;
+  }
+  return LoadPLSInfo(strFileName);
+}
+
 bool CPlayListPLS::LoadFromWeb(CStdString& strURL)
 {
   CLog::Log(LOGINFO, "Loading web playlist %s", strURL.c_str());
@@ -207,6 +211,10 @@ bool CPlayListPLS::LoadFromWeb(CStdString& strURL)
   {
     httpUtil.Get(strURL, strData);
     return LoadRAMInfo(strData);
+  }
+  if (strContentType == "audio/x-scpls")
+  {
+    return LoadPLSInfo(strURL);
   }
 
   // Unknown type
