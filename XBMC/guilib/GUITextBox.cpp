@@ -1,7 +1,8 @@
 #include "include.h"
 #include "GUITextBox.h"
 #include "../xbmc/utils/CharsetConverter.h"
-
+#include "../xbmc/StringUtils.h"
+#include "GUILabelControl.h"
 
 #define CONTROL_LIST  0
 #define CONTROL_UPDOWN 9998
@@ -255,89 +256,25 @@ void CGUITextBox::SetText(const string &strText)
   m_strText = strText;
   m_vecItems.erase(m_vecItems.begin(), m_vecItems.end());
   // start wordwrapping
-  // Set a flag so we can determine initial justification effects
-  BOOL bStartingNewLine = TRUE;
-  BOOL bBreakAtSpace = FALSE;
-  int pos = 0;
-  int iTextSize = (int)strText.size();
-  int lpos = 0;
-  int iLastSpace = -1;
-  int iLastSpaceInLine = -1;
-  char szLine[1024];
-  WCHAR wsTmp[1024];
-  int iTotalLines = 0;
-  while (pos < iTextSize)
+
+  // word wrap to width at spaces
+  CStdString text(strText);
+  CGUILabelControl::WrapText(text, m_label.font, (float)m_dwWidth);
+
+  // convert to line by lines
+  CStdStringArray lines;
+  StringUtils::SplitString(text, "\n", lines);
+  for (unsigned int i = 0; i < lines.size(); i++)
   {
-    // Get the current letter in the string
-    char letter = (char)strText[pos];
-
-    // break if we get more pages then maxpages
-    if (((iTotalLines + 1) / m_iItemsPerPage) > (m_iMaxPages - 1)) break;
-
-    // Handle the newline character
-    if (letter == '\n' )
-    {
-      CGUIListItem item(szLine);
-      m_vecItems.push_back(item);
-      iTotalLines++;
-      iLastSpace = -1;
-      iLastSpaceInLine = -1;
-      lpos = 0;
-      szLine[0] = 0;  // reset in case of 2 line breaks in a row (don't want to add szLine twice)
-    }
-    else
-    {
-      if (letter == ' ')
-      {
-        iLastSpace = pos;
-        iLastSpaceInLine = lpos;
-      }
-
-      if (lpos < 0 || lpos > 1023)
-      {
-        OutputDebugString("CGUITextBox::SetText -> ERRROR\n");
-      }
-      szLine[lpos] = letter;
-      szLine[lpos + 1] = 0;
-
-      FLOAT fwidth, fheight;
-      swprintf(wsTmp, L"%S", szLine);
-      if (m_label.font)
-        m_label.font->GetTextExtent(wsTmp, &fwidth, &fheight);
-      if (fwidth > m_dwWidth)
-      {
-        if (iLastSpace > 0 && iLastSpaceInLine != lpos)
-        {
-          szLine[iLastSpaceInLine] = 0;
-          pos = iLastSpace;
-        }
-        CGUIListItem item(szLine);
-        m_vecItems.push_back(item);
-        iTotalLines++;
-        iLastSpaceInLine = -1;
-        iLastSpace = -1;
-        lpos = 0;
-      }
-      else
-      {
-        lpos++;
-      }
-    }
-    pos++;
-  }
-
-  if (lpos > 0)
-  {
-    CGUIListItem item(szLine);
+    CGUIListItem item(lines[i]);
     m_vecItems.push_back(item);
-    iTotalLines++;
   }
 
+  // and update our page control
   int iPages = m_vecItems.size() / m_iItemsPerPage;
   if (m_vecItems.size() % m_iItemsPerPage || !iPages) iPages++;
   m_upDown.SetRange(1, iPages);
   m_upDown.SetValue(1);
-
 }
 
 bool CGUITextBox::HitTest(int iPosX, int iPosY) const
