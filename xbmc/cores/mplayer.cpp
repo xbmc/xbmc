@@ -1954,7 +1954,10 @@ bool CMPlayer::GetCurrentSubtitle(CStdStringW& strSubtitle)
 
       CStdStringA S = sub->text[i];
       CStdStringW W;
-      g_charsetConverter.subtitleCharsetToFontCharset(S, W);
+      if (g_charsetConverter.isValidUtf8(S))
+        g_charsetConverter.utf8ToUTF16(S, W);
+      else
+        g_charsetConverter.subtitleCharsetToFontCharset(S, W);
       strSubtitle += W;
     }
     
