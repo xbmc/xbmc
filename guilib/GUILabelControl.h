@@ -38,9 +38,9 @@ public:
   void SetTruncate(bool bTruncate);
   void SetWrapMultiLine(bool wrapMultiLine) { m_wrapMultiLine = wrapMultiLine; };
   bool GetWrapMultiLine() const { return m_wrapMultiLine; };
+  static void WrapText(CStdString &text, CGUIFont *font, float maxWidth);
 protected:
   void ShortenPath();
-  void WrapText(CStdString &text);
 
 protected:
   CLabelInfo m_label;
