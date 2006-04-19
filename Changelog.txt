@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 19-04-2006 fixed: DVD-ROM bookmark could not be edited from the GUI.
  - 19-04-2006 fixed: Karaoke settings are now disabled when CDG reading is disabled.
  - 18-04-2006 fixed: Buffer overrun in FileZip::Read() when reading past the end of file.
  - 18-04-2006 fixed: italic ttf would render chopped of, off center and with invalid spacing.
