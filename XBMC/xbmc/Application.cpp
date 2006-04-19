@@ -2968,7 +2968,7 @@ bool CApplication::PlayMedia(const CFileItem& item, int iPlaylist)
   }
   //playlist
   CStdString strPath = item.m_strPath;
-  if (item.IsInternetStream())
+  if ((!item.IsPlayList()) && (item.IsInternetStream()))
   {
     //we got an url, create a dummy .strm playlist,
     //pPlayList->Load will handle loading it from url instead of from a file
