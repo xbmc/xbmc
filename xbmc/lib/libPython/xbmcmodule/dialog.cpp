@@ -49,18 +49,25 @@ namespace PYXBMC
 	PyObject* Dialog_OK(PyObject *self, PyObject *args)
 	{
 		const DWORD dWindow = WINDOW_DIALOG_OK;
-		char *cLine[4];
-		CGUIDialogOK* pDialog = (CGUIDialogOK*)m_gWindowManager.GetWindow(dWindow);
+		PyObject* unicodeLine[4];
+    for (int i = 0; i < 4; i++) unicodeLine[i] = NULL;
+
+    CGUIDialogOK* pDialog = (CGUIDialogOK*)m_gWindowManager.GetWindow(dWindow);
 		if (PyWindowIsNull(pDialog)) return NULL;
 
-		for (int i = 0; i < 4; i++)	cLine[i] = NULL;
 		// get lines, last 2 lines are optional.
-		if (!PyArg_ParseTuple(args, "ss|ss", &cLine[0], &cLine[1], &cLine[2], &cLine[3]))	return NULL;
+    string utf8Line[4];
+		if (!PyArg_ParseTuple(args, "OO|OO", &unicodeLine[0], &unicodeLine[1], &unicodeLine[2], &unicodeLine[3]))	return NULL;
 
-		pDialog->SetHeading(cLine[0] ? cLine[0] : "");
-		pDialog->SetLine(0, cLine[1] ? cLine[1] : "");
-		pDialog->SetLine(1, cLine[2] ? cLine[2] : "");
-		pDialog->SetLine(2, cLine[3] ? cLine[3] : "");
+    for (int i = 0; i < 4; i++)
+    {
+      if (unicodeLine[i] && !PyGetUnicodeString(utf8Line[i], unicodeLine[i], i+1))
+        return NULL;
+    }
+		pDialog->SetHeading(utf8Line[0]);
+		pDialog->SetLine(0, utf8Line[1]);
+		pDialog->SetLine(1, utf8Line[2]);
+		pDialog->SetLine(2, utf8Line[3]);
 
 		//send message and wait for user input
 		ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, dWindow, ACTIVE_WINDOW};
@@ -79,18 +86,24 @@ namespace PYXBMC
 	PyObject* Dialog_YesNo(PyObject *self, PyObject *args)
 	{
 		const DWORD dWindow = WINDOW_DIALOG_YES_NO;
-		char *cLine[4];
+		PyObject* unicodeLine[4];
+    for (int i = 0; i < 4; i++) unicodeLine[i] = NULL;
 		CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)m_gWindowManager.GetWindow(dWindow);
 		if (PyWindowIsNull(pDialog)) return NULL;
 
-		for (int i = 0; i < 4; i++)	cLine[i] = NULL;
 		// get lines, last 2 lines are optional.
-		if (!PyArg_ParseTuple(args, "ss|ss", &cLine[0], &cLine[1], &cLine[2], &cLine[3]))	return NULL;
+    string utf8Line[4];
+		if (!PyArg_ParseTuple(args, "OO|OO", &unicodeLine[0], &unicodeLine[1], &unicodeLine[2], &unicodeLine[3]))	return NULL;
 
-		pDialog->SetHeading(cLine[0] ? cLine[0] : "");
-		pDialog->SetLine(0, cLine[1] ? cLine[1] : "");
-		pDialog->SetLine(1, cLine[2] ? cLine[2] : "");
-		pDialog->SetLine(2, cLine[3] ? cLine[3] : "");
+    for (int i = 0; i < 4; i++)
+    {
+      if (unicodeLine[i] && !PyGetUnicodeString(utf8Line[i], unicodeLine[i], i+1))
+        return NULL;
+    }
+		pDialog->SetHeading(utf8Line[0]);
+		pDialog->SetLine(0, utf8Line[1]);
+		pDialog->SetLine(1, utf8Line[2]);
+		pDialog->SetLine(2, utf8Line[3]);
 
 		//send message and wait for user input
 		ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, dWindow, ACTIVE_WINDOW};		
@@ -147,25 +160,27 @@ namespace PYXBMC
 
 	PyObject* Dialog_ProgressCreate(PyObject *self, PyObject *args)
 	{
-		const char *cLine[4];
+		PyObject* unicodeLine[4];
+    for (int i = 0; i < 4; i++) unicodeLine[i] = NULL;
 
-		for (int i = 0; i < 4; i++)	cLine[i] = NULL;
 		// get lines, last 3 lines are optional.
-		if (!PyArg_ParseTuple(args, "s|sss", &cLine[0], &cLine[1], &cLine[2], &cLine[3]))	return NULL;
+		if (!PyArg_ParseTuple(args, "O|OOO", &unicodeLine[0], &unicodeLine[1], &unicodeLine[2], &unicodeLine[3]))	return NULL;
+
+    string utf8Line[4];
+    for (int i = 0; i < 4; i++)
+    {
+      if (unicodeLine[i] && !PyGetUnicodeString(utf8Line[i], unicodeLine[i], i+1))
+        return NULL;
+    }
 
 		CGUIDialogProgress* pDialog= (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
 		if (PyWindowIsNull(pDialog)) return NULL;
 
 		g_graphicsContext.Lock();
-		pDialog->SetHeading(cLine[0]);
+		pDialog->SetHeading(utf8Line[0]);
 
 		for (int i = 1; i < 4; i++)
-		{
-			if (cLine[i])
-				pDialog->SetLine(i,cLine[i]);
-			else
-				pDialog->SetLine(i,"");
-		}
+			pDialog->SetLine(i,utf8Line[i]);
 
 		pDialog->StartModal(m_gWindowManager.GetActiveWindow());
 		g_graphicsContext.Unlock();
