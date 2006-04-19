@@ -54,7 +54,7 @@ void CGUILabelControl::Render()
 		strRenderLabel = g_infoManager.ParseLabel(strRenderLabel);
 	}
   if (m_wrapMultiLine && m_dwWidth > 0)
-    WrapText(strRenderLabel);
+    WrapText(strRenderLabel, m_label.font, (float)m_dwWidth);
 
   if (m_label.font)
   {
@@ -167,30 +167,30 @@ bool CGUILabelControl::OnMessage(CGUIMessage& message)
   return CGUIControl::OnMessage(message);
 }
 
-void CGUILabelControl::WrapText(CStdString &text)
+void CGUILabelControl::WrapText(CStdString &text, CGUIFont *font, float maxWidth)
 {
   // run through and force line breaks at spaces as and when necessary
-  if (!m_label.font)
+  if (!font)
     return;
-  BOOL bStartingNewLine = TRUE;
-  BOOL bBreakAtSpace = FALSE;
-  int pos = 0;
+  unsigned int pos = 0;
   text += "\n";
-  int iTextSize = (int)text.size();
+  // Convert to utf16 so that each character is a single word.
+  CStdStringW utf16Text;
+  g_charsetConverter.utf8ToUTF16(text, utf16Text);
   int lpos = 0;
   int iLastSpace = -1;
   int iLastSpaceInLine = -1;
-  CStdString multiLine, line;
-  while (pos < iTextSize)
+  CStdStringW multiLine, line;
+  while (pos < utf16Text.size())
   {
     // Get the current letter in the string
-    char letter = text[pos];
+    WCHAR letter = utf16Text[pos];
 
     // Handle the newline character
-    if (letter == '\n' )
+    if (letter == L'\n' )
     {
       if (!multiLine.IsEmpty())
-        multiLine += "\n";
+        multiLine += L"\n";
       multiLine += line;
       iLastSpace = -1;
       iLastSpaceInLine = -1;
@@ -199,11 +199,10 @@ void CGUILabelControl::WrapText(CStdString &text)
     }
     else
     {
-      if (letter == ' ')
+      if (letter == L' ')
       {
-        CStdStringW wLine = line;
-        float width = m_label.font->GetTextWidth(wLine.c_str());
-        if (width > m_dwWidth)
+        float width = font->GetTextWidth(line.c_str());
+        if (width > maxWidth)
         {
           if (iLastSpace > 0 && iLastSpaceInLine > 0)
           {
@@ -230,7 +229,8 @@ void CGUILabelControl::WrapText(CStdString &text)
     }
     pos++;
   }
-  text = multiLine;
+  // convert back to utf8
+  g_charsetConverter.utf16toUTF8(multiLine, text);
 }
 
 void CGUILabelControl::ShortenPath()
