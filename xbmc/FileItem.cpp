@@ -84,6 +84,8 @@ CFileItem::CFileItem(const CShare& share)
   m_bIsShareOrDrive = true;
   m_strPath = share.strPath;
   m_strLabel = share.strName;
+  if (share.strStatus.size())
+    m_strLabel.Format("%s (%s)", share.strName.c_str(), share.strStatus.c_str());
   m_iLockMode = share.m_iLockMode;
   m_strLockCode = share.m_strLockCode;
   m_iBadPwdCount = share.m_iBadPwdCount;

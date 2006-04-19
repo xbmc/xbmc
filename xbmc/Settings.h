@@ -96,6 +96,7 @@ public:
     return false;
   }
   CStdString strName; ///< Name of the share, can be choosen freely.
+  CStdString strStatus; ///< Status of the share (eg has disk etc.)
   CStdString strPath; ///< Path of the share, eg. iso9660:// or F:
   CStdString strEntryPoint; ///< entry point of shares, used with archives
   int m_iBufferSize;   ///< Cachesize of the share
@@ -196,6 +197,9 @@ public:
   bool LoadProfile(int index);
   bool SaveSettingsToProfile(int index);
   void DeleteProfile(int index);
+
+  VECSHARES *GetSharesFromType(const CStdString &type);
+  CStdString GetDefaultShareFromType(const CStdString &type);
 
   bool UpdateBookmark(const CStdString &strType, const CStdString &strOldName, const CStdString &strUpdateChild, const CStdString &strUpdateValue);
   bool DeleteBookmark(const CStdString &strType, const CStdString &strName, const CStdString &strPath);
