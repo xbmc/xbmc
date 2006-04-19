@@ -232,7 +232,7 @@ int urarlib_get(char *rarfile, char *targetPath, char *fileToExtract, char *libp
 					struct FindData FD;
 					if (FindFile::FastFind(rarfile,NULL,&FD))
 						pExtract->GetDataIO().TotalArcSize+=FD.Size;
-          pExtract->ExtractArchiveInit(pCmd.get(),*pArc))          
+          pExtract->ExtractArchiveInit(pCmd.get(),*pArc);      
           while (1)
 					{
             int Size=pArc->ReadHeader();
