@@ -129,14 +129,17 @@ namespace PYXBMC
 
 	PyObject* ListItem_SetLabel(ListItem *self, PyObject *args)
 	{
-		char *cLine = NULL;
+		PyObject* unicodeLine = NULL;
 		if (!self->item) return NULL;
 
-		if (!PyArg_ParseTuple(args, "s", &cLine))	return NULL;
+		if (!PyArg_ParseTuple(args, "O", &unicodeLine))	return NULL;
 
+    string utf8Line;
+    if (unicodeLine && !PyGetUnicodeString(utf8Line, unicodeLine, 1))
+      return NULL;
 		// set label
 		PyGUILock();
-		self->item->SetLabel(cLine ? cLine : "");
+		self->item->SetLabel(utf8Line);
 		PyGUIUnlock();
 		
 		Py_INCREF(Py_None);
@@ -148,14 +151,17 @@ namespace PYXBMC
 
 	PyObject* ListItem_SetLabel2(ListItem *self, PyObject *args)
 	{
-		char *cLine = NULL;
+		PyObject* unicodeLine = NULL;
 		if (!self->item) return NULL;
 
-		if (!PyArg_ParseTuple(args, "s", &cLine))	return NULL;
+		if (!PyArg_ParseTuple(args, "O", &unicodeLine))	return NULL;
 
+    string utf8Line;
+    if (unicodeLine && !PyGetUnicodeString(utf8Line, unicodeLine, 1))
+      return NULL;
 		// set label
 		PyGUILock();
-		self->item->SetLabel2(cLine ? cLine : "");
+		self->item->SetLabel2(utf8Line);
 		PyGUIUnlock();
 		
 		Py_INCREF(Py_None);

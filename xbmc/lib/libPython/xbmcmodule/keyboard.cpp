@@ -21,12 +21,17 @@ namespace PYXBMC
 		self = (Keyboard*)type->tp_alloc(type, 0);
 		if (!self) return NULL;
 
-		char *cLine = NULL;
-		char *cHeading = NULL;
-    if (!PyArg_ParseTuple(args, "|ss", &cLine, &cHeading)) return NULL;
+		PyObject *line = NULL;
+		PyObject *heading = NULL;
+    if (!PyArg_ParseTuple(args, "|OO", &line, &heading)) return NULL;
 
-		self->strDefault = cLine ? cLine : "";
-    self->strHeading = cHeading ? cHeading : "";
+    string utf8Line;
+    if (line && !PyGetUnicodeString(utf8Line, line, 1)) return NULL;
+    string utf8Heading;
+    if (heading && !PyGetUnicodeString(utf8Heading, heading, 2)) return NULL;
+
+		self->strDefault = utf8Line;
+    self->strHeading = utf8Heading;
 
 		return (PyObject*)self;
 	}
@@ -66,10 +71,12 @@ namespace PYXBMC
 
 	PyObject* Keyboard_SetDefault(Keyboard *self, PyObject *args)
 	{
-		char *cLine = NULL;
-		if (!PyArg_ParseTuple(args, "|s", &cLine))	return NULL;
+		PyObject *line = NULL;
+		if (!PyArg_ParseTuple(args, "|O", &line))	return NULL;
 
-		self->strDefault = cLine ? cLine : "";
+    string utf8Line;
+    if (line && !PyGetUnicodeString(utf8Line, line, 1)) return NULL;
+		self->strDefault = utf8Line;
 
 		CGUIDialogKeyboard *pKeyboard = (CGUIDialogKeyboard*)m_gWindowManager.GetWindow(WINDOW_DIALOG_KEYBOARD);
 		if(!pKeyboard)
@@ -89,10 +96,12 @@ namespace PYXBMC
 
 	PyObject* Keyboard_SetHeading(Keyboard *self, PyObject *args)
 	{
-		char *cHeading = NULL;
-    if (!PyArg_ParseTuple(args, "| s", &cHeading)) return NULL;
+		PyObject *line = NULL;
+    if (!PyArg_ParseTuple(args, "| O", &line)) return NULL;
 
-    self->strHeading = cHeading ? cHeading : "";
+    string utf8Line;
+    if (line && !PyGetUnicodeString(utf8Line, line, 1)) return NULL;
+		self->strHeading = utf8Line;
 
 		CGUIDialogKeyboard *pKeyboard = (CGUIDialogKeyboard*)m_gWindowManager.GetWindow(WINDOW_DIALOG_KEYBOARD);
 		if(!pKeyboard)
