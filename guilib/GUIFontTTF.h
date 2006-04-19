@@ -59,10 +59,11 @@ protected:
 
   // Stuff for pre-rendering for speed
   Character *GetCharacter(WCHAR letter);
-  void CacheCharacter(WCHAR letter, Character *ch);
+  bool CacheCharacter(WCHAR letter, Character *ch);
   void RenderCharacter(float posX, float posY, const CAngle &angle, const Character *ch, D3DCOLOR dwColor);
   void CreateShaderAndTexture();
   void CopyTexture(int width);
+  void ClearCharacterCache();
 
   LPDIRECT3DTEXTURE8 m_texture;      // texture that holds our rendered characters (8bit alpha only)
   LPDIRECT3DTEXTURE8 m_charTexture;  // texture to use for first render of characters (32bit)
