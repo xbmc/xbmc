@@ -336,6 +336,12 @@ void CDVDPlayerVideo::Process()
               mDeinterlace.Process(&picture);
               mDeinterlace.GetPicture(&picture);
             }
+            else if( mInt == VS_INTERLACEMETHOD_SYNC_AUTO || mInt == VS_INTERLACEMETHOD_SYNC_EVEN || mInt == VS_INTERLACEMETHOD_SYNC_ODD )
+            { 
+              /* if we are syncing frames, dvdplayer will be forced to play at a given framerate */
+              /* unless we directly sync to the correct pts, we won't get a/v sync as video can never catch up */
+              picture.iFlags |= DVP_FLAG_NOAUTOSYNC;
+            }
             
 
             if ((picture.iFrameType == FRAME_TYPE_I || picture.iFrameType == FRAME_TYPE_UNDEF) &&
@@ -663,6 +669,8 @@ CDVDPlayerVideo::EOUTPUTSTATUS CDVDPlayerVideo::OutputPicture(DVDVideoPicture* p
 
       if(  abs(distance) < pPicture->iDuration*3 )
         iSleepTime = iFrameSleep + (iClockSleep - iFrameSleep) * 0;
+      else if( pPicture->iFlags & DVP_FLAG_NOAUTOSYNC )
+        iSleepTime = iClockSleep;
       else
         iSleepTime = iFrameSleep + (iClockSleep - iFrameSleep) / m_autosync;
     }
