@@ -1,3 +1,5 @@
+2006-04-20 fixed:	Label in MusicVisualisation.xml showed extra " - " if the visualisation had no presets.
+
 2006-04-19 fixed:	Animation of last button on left in My Programs.
 2006-04-19 fixed:	small visualistion bug in the homescreen
 
