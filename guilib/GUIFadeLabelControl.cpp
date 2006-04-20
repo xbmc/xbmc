@@ -25,30 +25,40 @@ void CGUIFadeLabelControl::SetInfo(const vector<int> &vecInfo)
 
 void CGUIFadeLabelControl::SetLabel(const vector<string> &vecLabel)
 {
-  m_vecLabels = vecLabel;
+  m_stringLabels = vecLabel;
+  m_infoLabels.clear();
+  for (unsigned int i = 0; i < vecLabel.size(); i++)
+    AddLabel(vecLabel[i]);
+}
+
+void CGUIFadeLabelControl::AddLabel(const string &label)
+{
+  vector<CInfoPortion> info;
+  g_infoManager.ParseLabel(label, info);
+  m_infoLabels.push_back(info);
 }
 
 void CGUIFadeLabelControl::Render()
 {
   if (!IsVisible()) return;
 
-	if (!m_label.font || (m_vecLabels.size() == 0 && m_vecInfo.size() == 0))
+	if (!m_label.font || (m_infoLabels.size() == 0 && m_vecInfo.size() == 0))
   {
     CGUIControl::Render();
     return ;
   }
 
 	int iTempLabelCount = m_iCurrentLabel;
-	if ((int)m_vecLabels.size() > 0 && m_iCurrentLabel >= (int)m_vecLabels.size() )
+	if ((int)m_infoLabels.size() > 0 && m_iCurrentLabel >= (int)m_infoLabels.size() )
 	{
 		m_iCurrentLabel = 0;
 	}
 
   CStdString strRenderLabel;
-	int iLabelCount = (int)m_vecLabels.size();
+	int iLabelCount = (int)m_infoLabels.size();
 	if (iLabelCount > 0)
 	{
-		strRenderLabel = m_vecLabels[m_iCurrentLabel];
+		strRenderLabel = g_infoManager.GetMultiLabel(m_infoLabels[m_iCurrentLabel]);
 	}
 
 	if (m_vecInfo.size())
@@ -60,10 +70,6 @@ void CGUIFadeLabelControl::Render()
 			m_iCurrentLabel = 0;
 		}
 		strRenderLabel = g_infoManager.GetLabel(m_vecInfo[m_iCurrentLabel]);
-	}
-	else
-	{
-		strRenderLabel = g_infoManager.ParseLabel(strRenderLabel);
 	}
 
   CStdStringW strLabelUnicode;
@@ -120,17 +126,19 @@ bool CGUIFadeLabelControl::OnMessage(CGUIMessage& message)
   {
     if (message.GetMessage() == GUI_MSG_LABEL_ADD)
     {
-      m_vecLabels.push_back(message.GetLabel());
+      AddLabel(message.GetLabel());
     }
     if (message.GetMessage() == GUI_MSG_LABEL_RESET)
     {
-      m_vecLabels.erase(m_vecLabels.begin(), m_vecLabels.end());
+      m_infoLabels.clear();
+      m_stringLabels.clear();
       m_scrollInfo.Reset();
     }
     if (message.GetMessage() == GUI_MSG_LABEL_SET)
     {
-      m_vecLabels.erase(m_vecLabels.begin(), m_vecLabels.end());
-      m_vecLabels.push_back(message.GetLabel());
+      m_infoLabels.clear();
+      m_stringLabels.clear();
+      AddLabel(message.GetLabel());
     }
   }
   return CGUIControl::OnMessage(message);
