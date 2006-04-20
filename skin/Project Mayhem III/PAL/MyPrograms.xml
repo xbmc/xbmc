@@ -196,7 +196,6 @@
         <onup>103</onup>
         <ondown>6</ondown>
         <include>buttonpanelslide</include>
-        <visible>no</visible>
       </control>
 
       <control>
