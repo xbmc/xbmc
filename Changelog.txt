@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 20-04-2006 fixed: some dvd's would display a completly white overlay over almost whole screen, or very odd overlays
  - 20-04-2006 fixed: if an invalid audio/sub stream was selected from dvdmenu, wrong stream would be indicated from osd. 
                      too many audio/sub streams would be shown in osd
  - 20-04-2006 fixed: audio/video sync would be of if syncing of fields was enabled. extremly so on 30fps movies if pal60 wasn't allowed.
