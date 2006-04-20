@@ -50,7 +50,7 @@ public:
   Export* GetExportByOrdinal(unsigned long ordinal);
   Export* GetExportByFunctionName(const char* sFunctionName);
   bool IsSystemDll() { return m_bSystemDll; }
-  bool HasSymbols() { return m_bLoadSymbols; }
+  bool HasSymbols() { return m_bLoadSymbols && !m_bUnloadSymbols; }
   
   void AddExport(unsigned long ordinal, unsigned long function, void* track_function = NULL);
   void AddExport(char* sFunctionName, unsigned long ordinal, unsigned long function, void* track_function = NULL);
