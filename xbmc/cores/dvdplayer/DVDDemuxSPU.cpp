@@ -485,8 +485,7 @@ CSPUInfo* CDVDDemuxSPU::ParseRLE(CSPUInfo* pSPU, BYTE* pUnparsedData)
   // the array stats represents the nr of pixels for each color channel
   // thus if there are no pixels to display, we assume the alphas are incorrect.
   // only do this if there are pixels to display at all, as we may get empty packets somehow
-  if (!pSPU->CanDisplayWithAlphas(pSPU->alpha) 
-    && stats[0] != 0 && stats[1] != 0 && stats[2] != 0 && stats[3] != 0)
+  if (!pSPU->CanDisplayWithAlphas(pSPU->alpha) && pSPU->bHasAlpha)
   {
     CLog::Log(LOGINFO, __FUNCTION__" - no  matching color and alpha found, resetting alpha");
     pSPU->bHasAlpha = false;
