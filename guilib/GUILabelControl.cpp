@@ -6,9 +6,9 @@
 CGUILabelControl::CGUILabelControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, const string& strLabel, const CLabelInfo& labelInfo, bool bHasPath)
     : CGUIControl(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight)
 {
+  m_bHasPath = bHasPath;
   SetLabel(strLabel);
   m_label = labelInfo;
-  m_bHasPath = bHasPath;
   m_bShowCursor = false;
   m_iCursorPos = 0;
   m_dwCounter = 0;
@@ -32,34 +32,31 @@ void CGUILabelControl::SetCursorPos(int iPos)
   m_iCursorPos = iPos;
 }
 
-void CGUILabelControl::SetInfo(const vector<int> &vecInfo)
+void CGUILabelControl::SetInfo(int singleInfo)
 {
-  m_vecInfo = vecInfo;
-  if (m_vecInfo.size() == 0)
-    return; // no info at all
+  m_singleInfo = singleInfo;
 }
 
 void CGUILabelControl::Render()
 {
   if (!IsVisible()) return;
 
-	CStdString strRenderLabel = m_strLabel;
-
-	if (m_vecInfo.size())
+  CStdString renderLabel;
+	if (m_singleInfo)
 	{ 
-		strRenderLabel = g_infoManager.GetLabel(m_vecInfo[0]);
+		renderLabel = g_infoManager.GetLabel(m_singleInfo);
 	}
 	else
 	{
-		strRenderLabel = g_infoManager.ParseLabel(strRenderLabel);
+    renderLabel = g_infoManager.GetMultiLabel(m_multiInfo);
 	}
   if (m_wrapMultiLine && m_dwWidth > 0)
-    WrapText(strRenderLabel, m_label.font, (float)m_dwWidth);
+    WrapText(renderLabel, m_label.font, (float)m_dwWidth);
 
   if (m_label.font)
   {
     CStdStringW strLabelUnicode;
-    g_charsetConverter.utf8ToUTF16(strRenderLabel, strLabelUnicode);
+    g_charsetConverter.utf8ToUTF16(renderLabel, strLabelUnicode);
 
     // check for scrolling
     bool bNormalDraw = true;
@@ -137,6 +134,15 @@ void CGUILabelControl::SetLabel(const string &strLabel)
   if (m_strLabel.compare(strLabel) == 0)
     return;
   m_strLabel = strLabel;
+
+  // shorten the path label
+  if ( m_bHasPath )
+  {
+    m_multiInfo.clear();
+    m_multiInfo.push_back(CInfoPortion(0, ShortenPath(strLabel), ""));
+  }
+  else // parse the label for info tags
+    g_infoManager.ParseLabel(strLabel, m_multiInfo);
   SetWidthControl(m_ScrollInsteadOfTruncate);
   if (m_iCursorPos > (int)m_strLabel.size())
     m_iCursorPos = m_strLabel.size();
@@ -155,11 +161,6 @@ bool CGUILabelControl::OnMessage(CGUIMessage& message)
     if (message.GetMessage() == GUI_MSG_LABEL_SET)
     {
       SetLabel(message.GetLabel());
-
-      if ( m_bHasPath )
-      {
-        ShortenPath();
-      }
       return true;
     }
   }
@@ -233,52 +234,46 @@ void CGUILabelControl::WrapText(CStdString &text, CGUIFont *font, float maxWidth
   g_charsetConverter.utf16toUTF8(multiLine, text);
 }
 
-void CGUILabelControl::ShortenPath()
+CStdString CGUILabelControl::ShortenPath(const CStdString &path)
 {
-  if (!m_label.font)
-    return ;
-  if ( m_dwWidth <= 0 )
-    return ;
-  if ( m_strLabel.size() <= 0 )
-    return ;
+  if (!m_label.font || m_dwWidth == 0 || path.IsEmpty())
+    return path;
+
+  // convert to utf16 for text extent measures
+  CStdStringW utf16Path;
+  g_charsetConverter.utf8ToUTF16(path, utf16Path);
 
   float fTextHeight, fTextWidth;
-  char cDelim = '\0';
+  WCHAR cDelim = L'\0';
   int nGreaterDelim, nPos;
 
-  nPos = m_strLabel.find_last_of( '\\' );
+  nPos = utf16Path.find_last_of( L'\\' );
   if ( nPos >= 0 )
-    cDelim = '\\';
+    cDelim = L'\\';
   else
   {
-    nPos = m_strLabel.find_last_of( '/' );
+    nPos = path.find_last_of( L'/' );
     if ( nPos >= 0 )
-      cDelim = '/';
+      cDelim = L'/';
   }
-  if ( cDelim == '\0' )
-    return ;
+  if ( cDelim == L'\0' )
+    return path;
 
   // remove trailing slashes
-  if (nPos == m_strLabel.size() - 1)
+  if (nPos == utf16Path.size() - 1)
   {
-    m_strLabel.erase(m_strLabel.size() - 1);
-    nPos = m_strLabel.find_last_of( cDelim );
+    utf16Path.erase(utf16Path.size() - 1);
+    nPos = utf16Path.find_last_of( cDelim );
   }
 
-  CStdStringW strLabelUnicode;
-  g_charsetConverter.utf8ToUTF16(m_strLabel, strLabelUnicode);
-
-  m_label.font->GetTextExtent( strLabelUnicode.c_str(), &fTextWidth, &fTextHeight);
-
-  if ( fTextWidth <= (m_dwWidth) )
-    return ;
+  m_label.font->GetTextExtent( utf16Path.c_str(), &fTextWidth, &fTextHeight);
 
   while ( fTextWidth > m_dwWidth )
   {
-    nPos = m_strLabel.find_last_of( cDelim, nPos );
+    nPos = utf16Path.find_last_of( cDelim, nPos );
     nGreaterDelim = nPos;
     if ( nPos >= 0 )
-      nPos = m_strLabel.find_last_of( cDelim, nPos - 1 );
+      nPos = utf16Path.find_last_of( cDelim, nPos - 1 );
     else
       break;
 
@@ -286,13 +281,14 @@ void CGUILabelControl::ShortenPath()
       break;
 
     if ( nGreaterDelim > nPos )
-    {
-      m_strLabel.replace( nPos + 1, nGreaterDelim - nPos - 1, "..." );
-      g_charsetConverter.utf8ToUTF16(m_strLabel, strLabelUnicode);
-    }
+      utf16Path.replace( nPos + 1, nGreaterDelim - nPos - 1, L"..." );
 
-    m_label.font->GetTextExtent( strLabelUnicode.c_str(), &fTextWidth, &fTextHeight );
+    m_label.font->GetTextExtent( utf16Path.c_str(), &fTextWidth, &fTextHeight );
   }
+  // convert back to utf8
+  CStdString utf8Path;
+  g_charsetConverter.utf16toUTF8(utf16Path, utf8Path);
+  return utf8Path;
 }
 
 void CGUILabelControl::SetTruncate(bool bTruncate)

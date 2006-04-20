@@ -10,6 +10,8 @@
 
 #include "GUIControl.h"
 
+#include "GUILabelControl.h"  // for CInfoPortion
+
 /*!
  \ingroup controls
  \brief 
@@ -28,11 +30,14 @@ public:
   void SetInfo(const vector<int> &vecInfo);
   void SetLabel(const vector<string> &vecLabel);
   const vector<int> &GetInfo() const { return m_vecInfo; };
-  const vector<string> &GetLabel() const { return m_vecLabels; };
+  const vector<string> &GetLabel() const { return m_stringLabels; };
 
 protected:
+  void AddLabel(const string &label);
   void RenderText(float fPosX, float fPosY, float fMaxWidth, DWORD dwTextColor, WCHAR* wszText, bool bScroll );
-  vector<string> m_vecLabels;
+
+  vector<string> m_stringLabels;
+  vector< vector<CInfoPortion> > m_infoLabels;
 
   CLabelInfo m_label;
   int m_iCurrentLabel;

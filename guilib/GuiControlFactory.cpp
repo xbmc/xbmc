@@ -343,7 +343,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     {
       strLabel = ((CGUILabelControl*)pReference)->GetLabel();
       labelInfo = ((CGUILabelControl*)pReference)->GetLabelInfo();
-      vecInfo = ((CGUILabelControl*)pReference)->GetInfo();
+      vecInfo.push_back(((CGUILabelControl*)pReference)->GetInfo());
       bScrollLabel = ((CGUILabelControl*)pReference)->GetWidthControl();
       wrapMultiLine = ((CGUILabelControl*)pReference)->GetWrapMultiLine();
     }
@@ -919,7 +919,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     pControl->SetColourDiffuse(dwColorDiffuse);
     pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
     pControl->SetAnimations(animations);
-    pControl->SetInfo(vecInfo);
+    pControl->SetInfo(vecInfo.size() ? vecInfo[0] : 0);
     pControl->SetWidthControl(bScrollLabel);
     pControl->SetWrapMultiLine(wrapMultiLine);
     return pControl;
