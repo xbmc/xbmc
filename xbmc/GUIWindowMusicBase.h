@@ -41,7 +41,8 @@ protected:
   virtual void UpdateButtons();
 
   virtual void OnRetrieveMusicInfo(CFileItemList& items);
-  virtual void AddItemToPlayList(const CFileItem* pItem, int iPlayList = PLAYLIST_MUSIC);
+  void AddItemToPlayList(const CFileItem* pItem, CFileItemList &queuedItems);
+  void AddItemToPlayList(const CFileItem* pItem, int playlist = PLAYLIST_MUSIC);
   virtual void OnSearchItemFound(const CFileItem* pItem);
   virtual void DoSearch(const CStdString& strSearch, CFileItemList& items);
   virtual void OnScan() {};
