@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 20-04-2006 fixed: Queuing of music folders that contained playlist files referencing the files in the same folder meant they were added more than once.
  - 19-04-2006 fixed: Loading of pls url's.
  - 19-04-2006 fixed: When using TTF, subtitles encode in UTF-8 are not displayed correctly
  - 19-04-2006 fixed: Various python unicode label issues.
