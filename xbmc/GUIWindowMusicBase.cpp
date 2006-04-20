@@ -743,9 +743,9 @@ void CGUIWindowMusicBase::OnQueueItem(int iItem)
   }
 }
 
-/// \brief Add file or folder and its subfolders to playlist
+/// \brief Add unique file and folders and its subfolders to playlist
 /// \param pItem The file item to add
-void CGUIWindowMusicBase::AddItemToPlayList(const CFileItem* pItem, int iPlayList /* = PLAYLIST_MUSIC */)
+void CGUIWindowMusicBase::AddItemToPlayList(const CFileItem* pItem, CFileItemList &queuedItems)
 {
   if (!pItem->CanQueue() || pItem->IsRAR() || pItem->IsZIP()) // no zip/rar enques thank you!
     return;
@@ -766,17 +766,18 @@ void CGUIWindowMusicBase::AddItemToPlayList(const CFileItem* pItem, int iPlayLis
     GetDirectory(pItem->m_strPath, items);
     SortItems(items);
     for (int i = 0; i < items.Size(); ++i)
-      AddItemToPlayList(items[i], iPlayList);
+      AddItemToPlayList(items[i], queuedItems);
   }
   else
   {
     if (!pItem->IsNFO() && pItem->IsAudio() && !pItem->IsPlayList())
     {
-      CPlayList::CPlayListItem playlistItem;
-      CUtil::ConvertFileItemToPlayListItem(pItem, playlistItem);
-      if (m_guiState.get() && m_guiState->HideExtensions())
-        playlistItem.RemoveExtension();
-      g_playlistPlayer.GetPlaylist(iPlayList).Add(playlistItem);
+      CFileItem *itemCheck = queuedItems.Get(pItem->m_strPath);
+      if (!itemCheck || itemCheck->m_lStartOffset != pItem->m_lStartOffset)
+      { // add item
+        CLog::Log(LOGDEBUG, "Adding item (%s) to playlist", pItem->m_strPath.c_str());
+        queuedItems.Add(new CFileItem(*pItem));
+      }
     }
     if (pItem->IsPlayList())
     {
@@ -796,14 +797,25 @@ void CGUIWindowMusicBase::AddItemToPlayList(const CFileItem* pItem, int iPlayLis
 
         CPlayList playlist = *pPlayList;
         for (int i = 0; i < (int)playlist.size(); ++i)
-        {
-          CPlayList::CPlayListItem playlistItem = playlist[i];
-          if (hideExtensions)
-            playlistItem.RemoveExtension();
-          g_playlistPlayer.GetPlaylist(iPlayList).Add(playlistItem);
-        }
+          AddItemToPlayList(&playlist[i], queuedItems);
       }
     }
+  }
+}
+
+void CGUIWindowMusicBase::AddItemToPlayList(const CFileItem *pItem, int playlist /* = PLAYLIST_MUSIC */)
+{
+  CFileItemList queuedItems;
+  queuedItems.SetFastLookup(true);
+  AddItemToPlayList(pItem, queuedItems);
+  // add these to the playlist player
+  for (int i = 0; i < queuedItems.Size(); i++)
+  {
+    CPlayList::CPlayListItem playlistItem;
+    CUtil::ConvertFileItemToPlayListItem(queuedItems[i], playlistItem);
+    if (m_guiState.get() && m_guiState->HideExtensions())
+      playlistItem.RemoveExtension();
+    g_playlistPlayer.GetPlaylist(playlist).Add(playlistItem);
   }
 }
 
