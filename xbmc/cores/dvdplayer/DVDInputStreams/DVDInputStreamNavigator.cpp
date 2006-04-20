@@ -291,7 +291,13 @@ int CDVDInputStreamNavigator::ProcessBlock(BYTE* dest_buffer, int* read)
         //logical should actually be set to the (vm->state).AST_REG
 
         event->logical = GetActiveAudioStream();
-        
+        if(event->logical<0)
+        {
+          /* this will not take effect in this event */
+          CLog::Log(LOGINFO, __FUNCTION__" - none or invalid audio stream selected, defaulting to first");
+          SetActiveAudioStream(0);
+        }
+
         iNavresult = m_pDVDPlayer->OnDVDNavResult(buf, DVDNAV_AUDIO_STREAM_CHANGE);
       }
 
@@ -424,19 +430,22 @@ int CDVDInputStreamNavigator::ProcessBlock(BYTE* dest_buffer, int* read)
 
 bool CDVDInputStreamNavigator::SetActiveAudioStream(int iId)
 {
-  if (m_dvdnav)
-  {
-    int streamId = ConvertAudioStreamId_XBMCToExternal(iId);
+  int streamId = ConvertAudioStreamId_XBMCToExternal(iId);
+
+  /* disable stream if an invalid was selected */
+  if (m_dvdnav /*&& streamId > 0*/)
     return (DVDNAV_STATUS_OK == m_dll.dvdnav_audio_change(m_dvdnav, streamId));
-  }
+
   return false; 
 }
 
 bool CDVDInputStreamNavigator::SetActiveSubtitleStream(int iId, bool bDisplay)
 {
-  if (m_dvdnav)
+  int streamId = ConvertSubtitleStreamId_XBMCToExternal(iId);
+
+  /* disable stream if an invalid was selected */
+  if (m_dvdnav /*&& streamId > 0*/)
   {
-    int streamId = ConvertSubtitleStreamId_XBMCToExternal(iId);
     if (!bDisplay) streamId |= 0x80;
     
     return (DVDNAV_STATUS_OK == m_dll.dvdnav_subpicture_change(m_dvdnav, streamId));
@@ -621,19 +630,11 @@ int CDVDInputStreamNavigator::GetActiveSubtitleStream()
       {
         subpN = vm->state.SPST_REG & ~0x40;
         
-        // If no such stream, then select the first one that exists.
+        /* make sure stream is valid, if not don't allow it */
         if (subpN < 0 || subpN >= 32)
-        {
-          subpN = 0;
-          for (int i = 0; i < 32; i++)
-          {
-            if (vm->state.pgc->subp_control[i] & (1<<31))
-            {
-              subpN = i;
-              break;
-            }
-          }
-        }
+          subpN = -1;
+        else if ( !(vm->state.pgc->subp_control[subpN] & (1<<31)) )
+          subpN = -1;
       }
       
       activeStream = ConvertSubtitleStreamId_ExternalToXBMC(subpN);
@@ -650,7 +651,7 @@ std::string CDVDInputStreamNavigator::GetSubtitleStreamLanguage(int iId)
   CStdString strLanguage;  
 
   subp_attr_t subp_attributes;
-  int streamId = iId; //ConvertSubtitleStreamId_XBMCToExternal(iId);
+  int streamId = ConvertSubtitleStreamId_XBMCToExternal(iId);
   if( m_dll.dvdnav_get_stitle_info(m_dvdnav, streamId, &subp_attributes) == DVDNAV_STATUS_OK )
   {
     
@@ -693,14 +694,28 @@ std::string CDVDInputStreamNavigator::GetSubtitleStreamLanguage(int iId)
 
 int CDVDInputStreamNavigator::GetSubTitleStreamCount()
 {
-  int count = 0;
+  if (!m_dvdnav) return 0;
   
-  if (m_dvdnav)
+  vm_t* vm = m_dll.dvdnav_get_vm(m_dvdnav);
+
+  if (!vm) return 0;
+  if (!vm->state.pgc) return 0;
+
+  if (vm->state.domain == VTS_DOMAIN)
   {
-    count = m_dll.dvdnav_get_nr_of_subtitle_streams(m_dvdnav);
+    int streamN = 0;
+    for (int i = 0; i < 8; i++)
+    {
+      if (vm->state.pgc->subp_control[i] & (1<<31)) 
+        streamN++;
+    }
+    return streamN;
   }
-  
-  return count;
+  else
+  {
+    /* just for good measure say that non vts domain always has one */
+    return 1;
+  }  
 }
 
 int CDVDInputStreamNavigator::GetActiveAudioStream()
@@ -718,19 +733,11 @@ int CDVDInputStreamNavigator::GetActiveAudioStream()
       {
         audioN = vm->state.AST_REG;
         
-        // If no such stream, then select the first one that exists.
+        /* make sure stream is valid, if not don't allow it */
         if (audioN < 0 || audioN >= 8)
-        {
-          audioN = 0;
-          for (int i = 0; i < 8; i++)
-          {
-            if (vm->state.pgc->audio_control[i] & (1<<15))
-            {
-              audioN = i;
-              break;
-            }
-          }
-        }
+          audioN = -1;
+        else if ( !(vm->state.pgc->audio_control[audioN] & (1<<15)) )
+          audioN = -1;
       }
   
       activeStream = ConvertAudioStreamId_ExternalToXBMC(audioN);
@@ -747,7 +754,7 @@ std::string CDVDInputStreamNavigator::GetAudioStreamLanguage(int iId)
   CStdString strLanguage;
 
   audio_attr_t audio_attributes;
-  int streamId = iId; //ConvertAudioStreamId_XBMCToExternal(iId);
+  int streamId = ConvertAudioStreamId_XBMCToExternal(iId);
   if( m_dll.dvdnav_get_audio_info(m_dvdnav, streamId, &audio_attributes) == DVDNAV_STATUS_OK )
   {
     if (!g_LangCodeExpander.LookupDVDLangCode(strLanguage, audio_attributes.lang_code)) strLanguage = "Unknown";
@@ -775,14 +782,28 @@ std::string CDVDInputStreamNavigator::GetAudioStreamLanguage(int iId)
 
 int CDVDInputStreamNavigator::GetAudioStreamCount()
 {
-  int count = 0;
+  if (!m_dvdnav) return 0;
   
-  if (m_dvdnav)
+  vm_t* vm = m_dll.dvdnav_get_vm(m_dvdnav);
+
+  if (!vm) return 0;
+  if (!vm->state.pgc) return 0;
+
+  if (vm->state.domain == VTS_DOMAIN)
   {
-    count = m_dll.dvdnav_get_nr_of_audio_streams(m_dvdnav);
+    int streamN = 0;
+    for (int i = 0; i < 8; i++)
+    {
+      if (vm->state.pgc->audio_control[i] & (1<<15)) 
+        streamN++;
+    }
+    return streamN;
   }
-  
-  return count;
+  else
+  {
+    /* just for good measure say that non vts domain always has one */
+    return 1;
+  }  
 }
 
 bool CDVDInputStreamNavigator::GetCurrentButtonInfo(CDVDOverlaySpu* pOverlayPicture, CDVDDemuxSPU* pSPU, int iButtonType)
@@ -994,38 +1015,54 @@ int CDVDInputStreamNavigator::ConvertAudioStreamId_XBMCToExternal(int id)
     }
   }
   
-  return 0;
+  return -1;
 }
 
 int CDVDInputStreamNavigator::ConvertAudioStreamId_ExternalToXBMC(int id)
 {
-  int stream = 0;
-  
-  if (id >= 0 && id < 8)
+  if  (!m_dvdnav) return -1;
+  vm_t* vm = m_dll.dvdnav_get_vm(m_dvdnav);
+
+  if (!vm) return -1;
+  if (!vm->state.pgc) return -1;
+  if (id < 0) return -1;
+
+  if( vm->state.domain == VTS_DOMAIN )
   {
-    if (m_dvdnav)
+    /* VTS domain can only have limited number of streams */
+    if (id <= 0 && id > 8)
     {
-      vm_t* vm = m_dll.dvdnav_get_vm(m_dvdnav);
-      if (vm && vm->state.pgc && vm->state.domain == VTS_DOMAIN)
+      CLog::Log(LOGWARNING, "ConvertAudioStreamId_XBMCToExternal, incorrect id : %d", id);
+      return -1;
+    }
+
+    /* make sure this is a valid id, otherwise the count below will be very wrong */
+    if ((vm->state.pgc->audio_control[id] & (1<<15)))
+    {
+      int stream = -1;
+      for (int i = 0; i <= id; i++)
       {
-        for (int i = 0; i < id; i++)
-        {
-          if (vm->state.pgc->audio_control[i] & (1<<15)) stream++;
-        }
+        if (vm->state.pgc->audio_control[i] & (1<<15)) stream++;
       }
-      else
-      {
-        // non VTS_DOMAIN, only one stream is available
-        stream = 0;
-      }
+      return stream;
+    }
+    else
+    {
+      CLog::Log(LOGWARNING, __FUNCTION__" - non existing id %d", id);
+      return -1;
     }
   }
   else
   {
-    CLog::Log(LOGWARNING, "ConvertAudioStreamId_XBMCToExternal, incorrect id : %d", id);
+    if( id != 0 )
+      CLog::Log(LOGWARNING, __FUNCTION__" - non vts domain can't have id %d", id);
+
+    // non VTS_DOMAIN, only one stream is available
+    return 0;
   }
   
-  return stream;
+  CLog::Log(LOGWARNING, __FUNCTION__" - no stream found %d", id);
+  return -1;
 }
 
 int CDVDInputStreamNavigator::ConvertSubtitleStreamId_XBMCToExternal(int id)
@@ -1044,36 +1081,52 @@ int CDVDInputStreamNavigator::ConvertSubtitleStreamId_XBMCToExternal(int id)
     }
   }
   
-  return 0;
+  return -1;
 }
 
 int CDVDInputStreamNavigator::ConvertSubtitleStreamId_ExternalToXBMC(int id)
 {
-  int stream = 0;
-  
-  if (id >= 0 && id < 8)
+  if  (!m_dvdnav) return -1;
+  vm_t* vm = m_dll.dvdnav_get_vm(m_dvdnav);
+
+  if (!vm) return -1;
+  if (!vm->state.pgc) return -1;
+  if (id < 0) return -1;
+
+  if( vm->state.domain == VTS_DOMAIN )
   {
-    if (m_dvdnav)
+    /* VTS domain can only have limited number of streams */
+    if (id <= 0 && id > 8)
     {
-      vm_t* vm = m_dll.dvdnav_get_vm(m_dvdnav);
-      if (vm && vm->state.pgc && vm->state.domain == VTS_DOMAIN)
+      CLog::Log(LOGWARNING, "ConvertAudioStreamId_XBMCToExternal, incorrect id : %d", id);
+      return -1;
+    }
+
+    /* make sure this is a valid id, otherwise the count below will be very wrong */
+    if ((vm->state.pgc->subp_control[id] & (1<<31)))
+    {
+      int stream = -1;
+      for (int i = 0; i <= id; i++)
       {
-        for (int i = 0; i < id; i++)
-        {
-          if (vm->state.pgc->subp_control[i] & (1<<31)) stream++;
-        }
+        if (vm->state.pgc->subp_control[i] & (1<<31)) stream++;
       }
-      else
-      {
-        // non VTS_DOMAIN, this function should not have been called anyway
-        stream = 0;
-      }
+      return stream;
+    }
+    else
+    {
+      CLog::Log(LOGWARNING, __FUNCTION__" - non existing id %d", id);
+      return -1;
     }
   }
   else
   {
-    CLog::Log(LOGWARNING, "ConvertAudioStreamId_XBMCToExternal, incorrect id : %d", id);
+    if( id != 0 )
+      CLog::Log(LOGWARNING, __FUNCTION__" - non vts domain can't have id %d", id);
+
+    // non VTS_DOMAIN, only one stream is available
+    return 0;
   }
   
-  return stream;
+  CLog::Log(LOGWARNING, __FUNCTION__" - no stream found %d", id);
+  return -1;
 }

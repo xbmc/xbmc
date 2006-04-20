@@ -735,15 +735,15 @@ void CDVDPlayer::HandleMessages()
       {
         CDVDMsgPlayerSetAudioStream* pMsgPlayerSetAudioStream = (CDVDMsgPlayerSetAudioStream*)pMsg;        
 
-        CloseAudioStream(false);
-
         // for dvd's we set it using the navigater, it will then send a change audio to the dvdplayer
         if (m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
-        {
-          m_dvd.iSelectedAudioStream = -1;
-
+        {          
           CDVDInputStreamNavigator* pInput = (CDVDInputStreamNavigator*)m_pInputStream;
-          pInput->SetActiveAudioStream(pMsgPlayerSetAudioStream->GetStreamId());
+          if( pInput->SetActiveAudioStream(pMsgPlayerSetAudioStream->GetStreamId()) )
+          {
+            m_dvd.iSelectedAudioStream = -1;
+            CloseAudioStream(false);            
+          }
         }
         else if (m_pDemuxer)
         {
@@ -755,15 +755,15 @@ void CDVDPlayer::HandleMessages()
       {
         CDVDMsgPlayerSetSubtitleStream* pMsgPlayerSetSubtileStream = (CDVDMsgPlayerSetSubtitleStream*)pMsg;
 
-        CloseSubtitleStream(false);
-
         // for dvd's we set it using the navigater, it will then send a change subtitle to the dvdplayer
         if (m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
         {
-          m_dvd.iSelectedSPUStream = -1;
-
           CDVDInputStreamNavigator* pStream = (CDVDInputStreamNavigator*)m_pInputStream;
-          pStream->SetActiveSubtitleStream(pMsgPlayerSetSubtileStream->GetStreamId());
+          if( pStream->SetActiveSubtitleStream(pMsgPlayerSetSubtileStream->GetStreamId()) )
+          {
+            m_dvd.iSelectedSPUStream = -1;
+            CloseSubtitleStream(false);            
+          }
         }
         else if (m_pDemuxer)
         {
