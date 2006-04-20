@@ -175,6 +175,8 @@ DllLoader::DllLoader(const char *sDll, bool bTrack, bool bSystemDll, bool bLoadS
   if (!m_bSystemDll) g_dlls.RegisterDll(this);
   if (m_bTrack) tracker_dll_add(this);
   m_bLoadSymbols=bLoadSymbols;
+
+  m_bUnloadSymbols=false;
 }
 
 DllLoader::~DllLoader()
@@ -754,7 +756,8 @@ void DllLoader::Unload()
   CLog::Log(LOGDEBUG, "EntryPoint with DLL_PROCESS_DETACH called - Dll: %s", pDll->GetFileName());
 #endif
 
-  UnloadSymbols();
+  if (m_bUnloadSymbols)
+    UnloadSymbols();
 }
 
 // This function is a hack to get symbols loaded for 
@@ -814,7 +817,7 @@ void DllLoader::LoadSymbols()
     CLog::DebugLog("DllLoader: Can't load symbols for %s. xbdm.dll is needed and not loaded", GetName());
 
 #ifdef ENABLE_SYMBOL_UNLOADING
-  m_bLoadSymbols=false;  // Do this to allow unloading this dll from dllloadercontainer
+  m_bUnloadSymbols=true;  // Do this to allow unloading this dll from dllloadercontainer
 #endif
 
 #else

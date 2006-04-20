@@ -29,7 +29,7 @@ typedef struct _LoadedList
   _LoadedList* pNext;
 } LoadedList;
   
-class DllLoader : protected CoffLoader
+class DllLoader : public CoffLoader
 {
 public:
   DllLoader(const char *dll, bool track = false, bool bSystemDll = false, bool bLoadSymbols = false);
@@ -66,6 +66,7 @@ private:
   bool m_bTrack;
   bool m_bSystemDll; // true if this dll should not be removed
   bool m_bLoadSymbols; // when true this dll should not be removed
+  bool m_bUnloadSymbols;
   ExportList* m_pExports;
   LoadedList* m_pDlls;
 
