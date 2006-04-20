@@ -1,3 +1,4 @@
+2006-04-19 fixed:	Animation of last button on left in My Programs.
 2006-04-19 fixed:	small visualistion bug in the homescreen
 
 2006-04-17 fixed:	DialogScriptInfo.xml didn't have the content panel.
