@@ -174,7 +174,11 @@ void ILCD::LoadMode(TiXmlNode *node, LCD_MODE mode)
   while (line)
   {
     if (line->FirstChild())
-      m_lcdMode[mode].push_back(line->FirstChild()->Value());
+    {
+      vector<CInfoPortion> info;
+      g_infoManager.ParseLabel(line->FirstChild()->Value(), info);
+      m_lcdMode[mode].push_back(info);
+    }
     line = line->NextSibling("line");
   }
 }
@@ -191,7 +195,7 @@ void ILCD::Render(LCD_MODE mode)
   unsigned int inLine = 0;
   while (outLine < 4 && inLine < m_lcdMode[mode].size())
   {
-    CStdString utf8Line = g_infoManager.ParseLabel(m_lcdMode[mode][inLine++]);
+    CStdString utf8Line = g_infoManager.GetMultiLabel(m_lcdMode[mode][inLine++]);
     if (!utf8Line.IsEmpty())
     {
       // convert to the user char set

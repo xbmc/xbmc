@@ -1,6 +1,7 @@
 #pragma once
 #include "thread.h"
 
+#include "GUILabelControl.h"  // for CInfoPortion
 #define MAX_ROWS 20
 
 class ILCD : public CThread
@@ -21,6 +22,6 @@ protected:
   void StringToLCDCharSet(CStdString& strText);
   void LoadMode(TiXmlNode *node, LCD_MODE mode);
 private:
-  vector<CStdString> m_lcdMode[4];
+  vector< vector<CInfoPortion> > m_lcdMode[4];
 };
 extern ILCD* g_lcd;
