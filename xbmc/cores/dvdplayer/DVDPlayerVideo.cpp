@@ -647,6 +647,12 @@ CDVDPlayerVideo::EOUTPUTSTATUS CDVDPlayerVideo::OutputPicture(DVDVideoPicture* p
     //iClockSleep -= m_PresentThread.GetDelay();
     iClockSleep -= 5000;
 
+    // dropping to a very low framerate is not correct (it should not happen at all)
+    // clock and audio could be adjusted
+    if (iClockSleep > DVD_MSEC_TO_TIME(500) ) 
+      iClockSleep = DVD_MSEC_TO_TIME(500); // drop to a minimum of 2 frames/sec
+
+
     // sleep calculated by duration of frame
     iFrameSleep = m_iFlipTimeStamp - iCurrentClock;
     // negative frame sleep possible after a stillframe, don't allow
@@ -674,10 +680,6 @@ CDVDPlayerVideo::EOUTPUTSTATUS CDVDPlayerVideo::OutputPicture(DVDVideoPicture* p
       else
         iSleepTime = iFrameSleep + (iClockSleep - iFrameSleep) / m_autosync;
     }
-
-    // dropping to a very low framerate is not correct (it should not happen at all)
-    // clock and audio could be adjusted
-    if (iSleepTime > DVD_MSEC_TO_TIME(500) ) iSleepTime = DVD_MSEC_TO_TIME(500); // drop to a minimum of 2 frames/sec
 
     /* adjust for speed */
     if( m_speed > DVD_PLAYSPEED_NORMAL )
