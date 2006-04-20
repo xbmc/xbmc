@@ -355,12 +355,19 @@ bool CGUIFontTTF::CacheCharacter(WCHAR letter, Character *ch)
   CLog::Log(LOGDEBUG, "Caching character %i from size %i", (int)letter, m_iHeight);
   if (m_posX + width + m_charGap > TEXTURE_WIDTH)
   { // no space - gotta drop to the next line (which means creating a new texture and copying it across)
-    CLog::Log(LOGDEBUG, "Caching character %i - extending texture for size %i", (int)letter, m_iHeight);
+    int newHeight = (m_iHeight + m_descent) * (m_textureRows + 1);
+    CLog::Log(LOGDEBUG, "Caching character %i - extending texture for size %i to %i pixels", (int)letter, m_iHeight, newHeight);
     m_posX = 0;
     m_posY += m_iHeight + m_descent;
     // create the new larger texture
     LPDIRECT3DTEXTURE8 newTexture;
-    if (D3D_OK != m_pD3DDevice->CreateTexture(TEXTURE_WIDTH, (m_iHeight + m_descent) * (m_textureRows + 1), 1, 0, D3DFMT_LIN_L8, 0, &newTexture))
+    // check for max height (can't be more than 4096 texels)
+    if (newHeight > 4096)
+    {
+      CLog::Log(LOGDEBUG, "CacheCharacter %i: Error creating new cache texture (%i > 4096 pixels long)", (int)letter, newHeight);
+      return false;
+    }
+    if (D3D_OK != m_pD3DDevice->CreateTexture(TEXTURE_WIDTH, newHeight, 1, 0, D3DFMT_LIN_L8, 0, &newTexture))
     {
       CLog::Log(LOGDEBUG, "CacheCharacter %i: Error on creating new cache texture for size %i", (int)letter, m_iHeight);
       return false;
