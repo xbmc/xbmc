@@ -331,9 +331,10 @@ CGUIFontTTF::Character* CGUIFontTTF::GetCharacter(WCHAR letter)
   End();
   if (!CacheCharacter(letter, m_char + low))
   { // unable to cache character - try clearing them all out and starting over
+    CLog::Log(LOGDEBUG, "Unable to cache character.  Clearing character cache of %i characters", m_numChars);
     ClearCharacterCache();
     low = 0;
-    if (!CacheCharacter(letter, m_char))
+    if (!CacheCharacter(letter, m_char + low))
     {
       CLog::Log(LOGERROR, "Unable to cache character (out of memory?)");
     }
