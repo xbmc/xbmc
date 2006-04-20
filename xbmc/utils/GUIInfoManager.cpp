@@ -24,6 +24,8 @@
 #include "../musicInfoTagLoaderFactory.h"
 #include "../filesystem/SndtrkDirectory.h"
 
+#include "GUILabelControl.h"  // for CInfoPortion
+
 extern char g_szTitleIP[32];
 CGUIInfoManager g_infoManager;
 
@@ -1852,79 +1854,87 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info)
   return "";
 }
 
-
-CStdString CGUIInfoManager::ParseLabel(const CStdString& strLabel)
+CStdString CGUIInfoManager::GetMultiLabel(const vector<CInfoPortion> &multiInfo)
 {
-  CStdString strReturn = "";
-  int iPos1 = 0;
-  int iPos2 = strLabel.Find('$', iPos1);
-  bool bDoneSomething = !(iPos1 == iPos2);
-  while (iPos2 >= 0)
+  CStdString label;
+  for (unsigned int i = 0; i < multiInfo.size(); i++)
   {
-    if( (iPos2 > iPos1) && bDoneSomething )
+    const CInfoPortion &portion = multiInfo[i];
+    if (portion.m_info)
     {
-      strReturn += strLabel.Mid(iPos1, iPos2 - iPos1);
-      bDoneSomething = false;  
-    }
-
-    int iPos3 = 0;
-    CStdString str;
-    CStdString strInfo = "INFO[";
-    CStdString strLocalize = "LOCALIZE[";
-
-    // $INFO[something]
-    if (strLabel.Mid(iPos2 + 1,strInfo.size()).Equals(strInfo))
-    {
-      iPos2 += strInfo.size() + 1;
-      iPos3 = strLabel.Find(']', iPos2);
-      CStdString strValue = strLabel.Mid(iPos2,(iPos3 - iPos2));
-      int iInfo = g_infoManager.TranslateString(strValue);
-      if (iInfo)
+      CStdString infoLabel = g_infoManager.GetLabel(portion.m_info);
+      if (!infoLabel.IsEmpty())
       {
-        str = g_infoManager.GetLabel(iInfo);
-        if (str.size() > 0)
-          bDoneSomething = true;
+        label += portion.m_prefix;
+        label += infoLabel;
+        label += portion.m_postfix;
       }
     }
+    else
+    { // no info, so just append the prefix
+      label += portion.m_prefix;
+    }
+  }
+  return label;
+}
 
-    // $LOCALIZE[something]
-    else if (strLabel.Mid(iPos2 + 1,strLocalize.size()).Equals(strLocalize))
+void CGUIInfoManager::ParseLabel(const CStdString &strLabel, vector<CInfoPortion> &multiInfo)
+{
+  multiInfo.clear();
+  CStdString work(strLabel);
+  // Step 1: Replace all $LOCALIZE[number] with the real string
+  int pos1 = work.Find("$LOCALIZE[");
+  while (pos1 >= 0)
+  {
+    int pos2 = work.Find(']', pos1);
+    if (pos2 > pos1)
     {
-      iPos2 += strLocalize.size() + 1;
-      iPos3 = strLabel.Find(']', iPos2);
-      CStdString strValue = strLabel.Mid(iPos2,(iPos3 - iPos2));
-      if (StringUtils::IsNaturalNumber(strValue))
-      {
-        int iLocalize = atoi(strValue);
-        str = g_localizeStrings.Get(iLocalize);
-        if (str.size() > 0)
-          bDoneSomething = true;
-      }
+      CStdString left = work.Left(pos1);
+      CStdString right = work.Mid(pos2 + 1);
+      CStdString replace = g_localizeStrings.Get(atoi(work.Mid(pos1 + 10).c_str()));
+      work = left + replace + right;
     }
-
-    // $$ prints $
-    else if (strLabel[iPos2 + 1] == '$')
-    { 
-      iPos3 = iPos2 + 1;
-      str = '$';
-      bDoneSomething = true;
-    }
-
-    //Okey, nothing found, just print it right out
     else
     {
-      iPos3 = iPos2;
-      str = '$';
-      bDoneSomething = true;
+      CLog::Log(LOGERROR, "Error parsing label - missing ']'");
+      return;
     }
-
-    strReturn += str;
-    iPos1 = iPos3 + 1;
-    iPos2 = strLabel.Find('$', iPos1);
+    pos1 = work.Find("$LOCALIZE[", pos1);
   }
+  // Step 2: Find all $INFO[info,prefix,postfix] blocks
+  pos1 = work.Find("$INFO[");
+  while (pos1 >= 0)
+  {
+    // output the first block (contents before first $INFO)
+    if (pos1 > 0)
+      multiInfo.push_back(CInfoPortion(0, work.Left(pos1), ""));
 
-  if (iPos1 < (int)strLabel.size())
-    strReturn += strLabel.Right(strLabel.size() - iPos1);
-
-  return strReturn;
+    // ok, now decipher the $INFO block
+    int pos2 = work.Find(']', pos1);
+    if (pos2 > pos1)
+    {
+      // decipher the block
+      CStdString block = work.Mid(pos1 + 6, pos2 - pos1 - 6);
+      CStdStringArray params;
+      StringUtils::SplitString(block, ",", params);
+      int info = TranslateString(params[0]);
+      CStdString prefix, postfix;
+      if (params.size() > 1)
+        prefix = params[1];
+      if (params.size() > 2)
+        postfix = params[2];
+      multiInfo.push_back(CInfoPortion(info, prefix, postfix));
+      // and delete it from our work string
+      work = work.Mid(pos2 + 1);
+    }
+    else
+    {
+      CLog::Log(LOGERROR, "Error parsing label - missing ']'");
+      return;
+    }
+    pos1 = work.Find("$INFO[");
+  }
+  // add any last block
+  if (!work.IsEmpty())
+    multiInfo.push_back(CInfoPortion(0, work, ""));
 }
