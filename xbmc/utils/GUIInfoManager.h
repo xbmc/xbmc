@@ -201,7 +201,8 @@
 #define MULTI_INFO_END                41000 // 1000 references is all we have for now
 #define COMBINED_VALUES_START        100000
 
-
+// forward
+class CInfoPortion;
 
 // structure to hold multiple integer data
 // for storage referenced from a single integer
@@ -292,7 +293,8 @@ public:
   void SetNextWindow(int windowID) { m_nextWindowID = windowID; };
   void SetPreviousWindow(int windowID) { m_prevWindowID = windowID; };
 
-  CStdString ParseLabel(const CStdString &label);
+  void ParseLabel(const CStdString &strLabel, vector<CInfoPortion> &multiInfo);
+  CStdString GetMultiLabel(const vector<CInfoPortion> &multiInfo);
 
 protected:
   bool GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindow = 0) const;
