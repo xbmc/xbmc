@@ -190,17 +190,27 @@ namespace PYXBMC
 	}
 
 	PyDoc_STRVAR(update__doc__,
-		"update(int value) -- Update's the progress dialog.\n"
+		"update(int value[, line 1, line 2, line3]) -- Update's the progress dialog.\n"
 		"\n"
 		"value       : int from 0 - 100\n"
+		"lines       : string or unicode string\n"
 		"\n"
 		"If value is 0, the progress bar will be hidden.");
 
 	PyObject* Dialog_ProgressUpdate(PyObject *self, PyObject *args)
 	{
 		int percentage = 0;
-		if (!PyArg_ParseTuple(args, "i", &percentage))	return NULL;
+		PyObject *unicodeLine[3];
+		for (int i = 0; i < 3; i++)	unicodeLine[i] = NULL;
+		if (!PyArg_ParseTuple(args, "i|OOO", &percentage,&unicodeLine[0], &unicodeLine[1], &unicodeLine[2]))	return NULL;
 
+    string utf8Line[3];
+    for (int i = 0; i < 3; i++)
+    {
+      if (unicodeLine[i] && !PyGetUnicodeString(utf8Line[i], unicodeLine[i], i+2))
+        return NULL;
+    }
+  
 		CGUIDialogProgress* pDialog= (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
 		if (PyWindowIsNull(pDialog)) return NULL;
 
@@ -213,6 +223,11 @@ namespace PYXBMC
 		else
 		{
 			pDialog->ShowProgressBar(false);
+		}
+		for (int i = 0; i < 3; i++)
+		{
+			if (unicodeLine[i])
+				pDialog->SetLine(i,utf8Line[i]);
 		}
 		g_graphicsContext.Unlock();
 
