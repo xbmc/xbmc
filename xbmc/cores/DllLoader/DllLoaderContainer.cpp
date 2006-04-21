@@ -167,6 +167,12 @@ DllLoader* DllLoaderContainer::FindModule(const char* sName, const char* sCurren
 #endif
 
     strPath+=sName;
+
+    // Have we already loaded this dll
+    DllLoader* pDll = g_dlls.GetModule(strPath.c_str());
+    if (pDll)
+      return pDll;
+
     if (CFile::Exists(strPath))
       return LoadDll(strPath.c_str(), bLoadSymbols);
   }
