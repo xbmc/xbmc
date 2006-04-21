@@ -23,6 +23,8 @@ CTexture::CTexture()
   m_iLoops = 0;
   m_pPalette = NULL;
   m_bPacked = false;
+  m_memUsage = 0;
+  m_format = D3DFMT_UNKNOWN;
 }
 
 CTexture::CTexture(LPDIRECT3DTEXTURE8 pTexture, int iWidth, int iHeight, bool bPacked, int iDelay, LPDIRECT3DPALETTE8 pPalette)
@@ -37,6 +39,7 @@ CTexture::CTexture(LPDIRECT3DTEXTURE8 pTexture, int iWidth, int iHeight, bool bP
   if (m_pPalette)
     m_pPalette->AddRef();
   m_bPacked = bPacked;
+  ReadTextureInfo();
 }
 
 CTexture::~CTexture()
@@ -139,14 +142,37 @@ int CTexture::GetRef() const
   return m_iReferenceCount;
 }
 
+void CTexture::ReadTextureInfo()
+{
+  m_memUsage = 0;
+  D3DSURFACE_DESC desc;
+  if (m_pTexture && D3D_OK == m_pTexture->GetLevelDesc(0, &desc))
+  {
+    m_memUsage += desc.Size;
+    m_format = desc.Format;
+  }
+  // palette as well? if (m_pPalette)
+/*
+  if (m_pPalette)
+  {
+    D3DPALETTESIZE size = m_pPalette->GetSize();
+    switch size
+  }*/
+}
 
-LPDIRECT3DTEXTURE8 CTexture::GetTexture(int& iWidth, int& iHeight, LPDIRECT3DPALETTE8& pPal)
+DWORD CTexture::GetMemoryUsage() const
+{
+  return m_memUsage;
+}
+
+LPDIRECT3DTEXTURE8 CTexture::GetTexture(int& iWidth, int& iHeight, LPDIRECT3DPALETTE8& pPal, bool &linearTexture)
 {
   if (!m_pTexture) return NULL;
   m_iReferenceCount++;
   iWidth = m_iWidth;
   iHeight = m_iHeight;
   pPal = m_pPalette;
+  linearTexture = (m_format == D3DFMT_LIN_A8R8G8B8);
   return m_pTexture;
 }
 
@@ -238,12 +264,12 @@ int CTextureMap::GetDelay(int iPicture) const
 }
 
 
-LPDIRECT3DTEXTURE8 CTextureMap::GetTexture(int iPicture, int& iWidth, int& iHeight, LPDIRECT3DPALETTE8& pPal)
+LPDIRECT3DTEXTURE8 CTextureMap::GetTexture(int iPicture, int& iWidth, int& iHeight, LPDIRECT3DPALETTE8& pPal, bool &linearTexture)
 {
   if (iPicture < 0 || iPicture >= (int)m_vecTexures.size()) return NULL;
 
   CTexture* pTexture = m_vecTexures[iPicture];
-  return pTexture->GetTexture(iWidth, iHeight, pPal);
+  return pTexture->GetTexture(iWidth, iHeight, pPal, linearTexture);
 }
 
 void CTextureMap::Flush()
@@ -253,6 +279,17 @@ void CTextureMap::Flush()
     m_vecTexures[i]->Flush();
   }
 }
+
+DWORD CTextureMap::GetMemoryUsage() const
+{
+  DWORD memUsage = 0;
+  for (int i = 0; i < (int)m_vecTexures.size(); ++i)
+  {
+    memUsage += m_vecTexures[i]->GetMemoryUsage();
+  }
+  return memUsage;
+}
+
 
 //------------------------------------------------------------------------------
 CGUITextureManager::CGUITextureManager(void)
@@ -270,7 +307,7 @@ CGUITextureManager::~CGUITextureManager(void)
 }
 
 
-LPDIRECT3DTEXTURE8 CGUITextureManager::GetTexture(const CStdString& strTextureName, int iItem, int& iWidth, int& iHeight, LPDIRECT3DPALETTE8& pPal)
+LPDIRECT3DTEXTURE8 CGUITextureManager::GetTexture(const CStdString& strTextureName, int iItem, int& iWidth, int& iHeight, LPDIRECT3DPALETTE8& pPal, bool &linearTexture)
 {
   //  CLog::Log(LOGINFO, " refcount++ for  GetTexture(%s)\n", strTextureName.c_str());
   for (int i = 0; i < (int)m_vecTextures.size(); ++i)
@@ -278,7 +315,9 @@ LPDIRECT3DTEXTURE8 CGUITextureManager::GetTexture(const CStdString& strTextureNa
     CTextureMap *pMap = m_vecTextures[i];
     if (pMap->GetName() == strTextureName)
     {
-      return pMap->GetTexture(iItem, iWidth, iHeight, pPal);
+      LPDIRECT3DTEXTURE8 texture = pMap->GetTexture(iItem, iWidth, iHeight, pPal, linearTexture);
+      CLog::Log(LOGDEBUG, "Total memusage %u", GetMemoryUsage());
+      return texture;
     }
   }
   return NULL;
@@ -604,7 +643,7 @@ int CGUITextureManager::Load(const CStdString& strTextureName, DWORD dwColorKey)
     {
       // normal picture
       if ( D3DXCreateTextureFromFileEx(g_graphicsContext.Get3DDevice(), strPath.c_str(),
-                                       D3DX_DEFAULT, D3DX_DEFAULT, 1, 0, D3DFMT_A8R8G8B8, D3DPOOL_MANAGED,
+                                       D3DX_DEFAULT, D3DX_DEFAULT, 1, 0, D3DFMT_LIN_A8R8G8B8, D3DPOOL_MANAGED,
                                        D3DX_FILTER_NONE , D3DX_FILTER_NONE, dwColorKey, &info, NULL, &pTexture) != D3D_OK)
       {
         if (!strnicmp(strPath.c_str(), "q:\\skin", 7))
@@ -712,7 +751,7 @@ int CGUITextureManager::Load(const CStdString& strTextureName, DWORD dwColorKey)
   // normal picture
   D3DXIMAGE_INFO info;
   if ( D3DXCreateTextureFromFileEx(g_graphicsContext.Get3DDevice(), strPath.c_str(),
-                                   D3DX_DEFAULT, D3DX_DEFAULT, 1, 0, D3DFMT_LIN_A8R8G8B8, D3DPOOL_MANAGED,
+                                   D3DX_DEFAULT, D3DX_DEFAULT, 1, 0, D3DFMT_A8R8G8B8, D3DPOOL_MANAGED,
                                    D3DX_FILTER_NONE , D3DX_FILTER_NONE, dwColorKey, &info, NULL, &pTexture) != D3D_OK)
   {
     CStdString strText = strPath;
@@ -834,6 +873,16 @@ void CGUITextureManager::Flush()
       ++i;
     }
   }
+}
+
+DWORD CGUITextureManager::GetMemoryUsage() const
+{
+  DWORD memUsage = 0;
+  for (int i = 0; i < (int)m_vecTextures.size(); ++i)
+  {
+    memUsage += m_vecTextures[i]->GetMemoryUsage();
+  }
+  return memUsage;
 }
 
 CStdString CGUITextureManager::GetTexturePath(const CStdString &textureName)
