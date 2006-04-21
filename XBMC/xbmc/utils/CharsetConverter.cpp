@@ -75,7 +75,7 @@ CCharsetConverter::CCharsetConverter()
   ICONV_PREPARE(m_iconvUtf8ToStringCharset);
   ICONV_PREPARE(m_iconvStringCharsetToUtf8);
   ICONV_PREPARE(m_iconvUcs2CharsetToStringCharset);
-  ICONV_PREPARE(m_iconvSubtitleCharsetToFontCharset);
+  ICONV_PREPARE(m_iconvSubtitleCharsetToUtf16);
   ICONV_PREPARE(m_iconvUtf16toUtf8);
   ICONV_PREPARE(m_iconvUtf16BEtoUtf8);
   ICONV_PREPARE(m_iconvUtf32ToStringCharset);
@@ -140,7 +140,7 @@ void CCharsetConverter::reset(void)
   ICONV_SAFE_CLOSE(m_iconvUtf8ToStringCharset);
   ICONV_SAFE_CLOSE(m_iconvStringCharsetToUtf8);
   ICONV_SAFE_CLOSE(m_iconvUcs2CharsetToStringCharset);
-  ICONV_SAFE_CLOSE(m_iconvSubtitleCharsetToFontCharset);
+  ICONV_SAFE_CLOSE(m_iconvSubtitleCharsetToUtf16);
   ICONV_SAFE_CLOSE(m_iconvUtf16toUtf8);
   ICONV_SAFE_CLOSE(m_iconvUtf16BEtoUtf8);
   ICONV_SAFE_CLOSE(m_iconvUtf32ToStringCharset);
@@ -159,15 +159,17 @@ void CCharsetConverter::reset(void)
   }
 }
 
-void CCharsetConverter::utf8ToUTF16(const CStdStringA& utf8String, CStdStringW &utf16String)
+// The bVisualBiDiFlip forces a flip of characters for hebrew/arabic languages, only set to false if the flipping
+// of the string is already made or the string is not displayed in the GUI
+void CCharsetConverter::utf8ToUTF16(const CStdStringA& utf8String, CStdStringW &utf16String, bool bVisualBiDiFlip/*=true*/)
 {
   CStdStringA strFlipped;
 
   const char* src;
   size_t inBytes;
 
-  // If this is hebrew/arabic, flip the characters
-  if (m_stringFribidiCharset != FRIBIDI_CHARSET_NOT_FOUND)
+  // Try to flip hebrew/arabic characters, if any
+  if (bVisualBiDiFlip)
   {
     logicalToVisualBiDi(utf8String, strFlipped, FRIBIDI_CHARSET_UTF8);
     src = strFlipped.c_str();
@@ -203,26 +205,26 @@ void CCharsetConverter::utf8ToUTF16(const CStdStringA& utf8String, CStdStringW &
   }
 }
 
-void CCharsetConverter::subtitleCharsetToFontCharset(const CStdStringA& strSource, CStdStringW& strDest)
+void CCharsetConverter::subtitleCharsetToUTF16(const CStdStringA& strSource, CStdStringW& strDest)
 {
   CStdStringA strFlipped;
 
   // No need to flip hebrew/arabic as mplayer does the flipping
 
-  if (m_iconvSubtitleCharsetToFontCharset == (iconv_t) - 1)
+  if (m_iconvSubtitleCharsetToUtf16 == (iconv_t) - 1)
   {
     CStdString strCharset=g_langInfo.GetSubtitleCharSet();
-    m_iconvSubtitleCharsetToFontCharset = iconv_open("UTF-16LE", strCharset.c_str());
+    m_iconvSubtitleCharsetToUtf16 = iconv_open("UTF-16LE", strCharset.c_str());
   }
 
-  if (m_iconvSubtitleCharsetToFontCharset != (iconv_t) - 1)
+  if (m_iconvSubtitleCharsetToUtf16 != (iconv_t) - 1)
   {
     const char* src = strSource.c_str();
     size_t inBytes = strSource.length() + 1;
     char *dst = (char*)strDest.GetBuffer(inBytes * 2);
     size_t outBytes = inBytes * 2;
 
-    if (iconv(m_iconvSubtitleCharsetToFontCharset, &src, &inBytes, &dst, &outBytes))
+    if (iconv(m_iconvSubtitleCharsetToUtf16, &src, &inBytes, &dst, &outBytes))
     {
       strDest.ReleaseBuffer();
       // For some reason it failed (maybe wrong charset?). Nothing to do but
