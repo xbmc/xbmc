@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?>
 
-<!-- Based on English XML v1.312. Last updated by vnmartinsen  !-->
+<!-- Based on English XML v1.314. Last updated by vnmartinsen  !-->
 
 <strings>
   <string><id>0</id><value>Mine Programmer</value></string>
@@ -619,16 +619,16 @@
   <string><id>1031</id><value>en bildemappe</value></string>
   <string><id>1032</id><value>Legg til nettverkssted...</value></string>
 
-  <string><id>1200</id><value>SMB-mappe</value></string>
+  <string><id>1200</id><value>SMB-klient</value></string>
   <string><id>1201</id><value>SMB IP</value></string>
-  <string><id>1202</id><value>SMB arbeidsgruppe</value></string>
-  <string><id>1203</id><value>SMB brukernavn</value></string>
-  <string><id>1204</id><value>SMB passord</value></string>
-  <string><id>1205</id><value>SMB delingsnavn</value></string>
-  <string><id>1206</id><value>SMB delingsgruppe</value></string>
-  <string><id>1207</id><value>SMB WINS-server</value></string>
-  <string><id>1208</id><value>Instillinger</value></string>
-  <string><id>1209</id><value>SMB delingsinstillinger ble lagret!</value></string>
+  <string><id>1202</id><value>Arbeidsgruppe</value></string>
+  <string><id>1203</id><value>Standard brukernavn</value></string>
+  <string><id>1204</id><value>Standard passord</value></string>
+  <string><id>1205</id><value>SMB navn</value></string>
+  <string><id>1206</id><value>SMB gruppe</value></string>
+  <string><id>1207</id><value>WINS-server</value></string>
+  <string><id>1208</id><value>Automatiske bokmerker</value></string>
+  <string><id>1209</id><value>SMB-klientinstillinger ble lagret!</value></string>
   <string><id>1210</id><value>Fjern</value></string>
   <string><id>1211</id><value>Musikk</value></string>
   <string><id>1212</id><value>Video</value></string>
