@@ -652,6 +652,7 @@
   <string><id>1233</id><value>Programs &amp; Video &amp; Music</value></string>
   <string><id>1234</id><value>Programs &amp; Pictures &amp; Music</value></string>
   <string><id>1235</id><value>Programs &amp; Pictures &amp; Video</value></string>
+  <string><id>1236</id><value>- Client Timeout</value></string>
 
   <string><id>1245</id><value>FTP User Name</value></string>
   <string><id>1246</id><value>FTP User Password</value></string>
