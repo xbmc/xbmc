@@ -196,15 +196,13 @@ void CSettings::Save() const
   }
 }
 
-bool CSettings::QuickXMLLoad(CStdString strElement)
+bool CSettings::QuickXMLLoad(const CStdString &strElement, bool forceToQ /* = false */)
 {
-  //
-  // load xml file...
-  CStdString strXMLFile = "Q:\\XboxMediaCenter.xml";
-  TiXmlDocument xmlDoc;
-  if ( !xmlDoc.LoadFile( strXMLFile.c_str() ) ) return false;
+  if (!LoadXml(forceToQ))
+    return false;
+
   CStdString strValue;
-  TiXmlElement* pRootElement = xmlDoc.RootElement();
+  TiXmlElement* pRootElement = xbmcXml.RootElement();
   if (pRootElement) strValue = pRootElement->Value();
   if ( strValue != "xboxmediacenter") return false;
   //
@@ -1803,17 +1801,24 @@ bool CSettings::SaveProfiles(TiXmlNode* pRootElement) const
   return true;
 }
 
-bool CSettings::LoadXml()
+bool CSettings::LoadXml(bool forceToQ /* = false */)
 {
   // load xml file - we use the xbe path in case we were loaded as dash
   if (!xbmcXmlLoaded)
   {
     CStdString strPath;
-    char szXBEFileName[1024];
-    CIoSupport helper;
-    helper.GetXbePath(szXBEFileName);
-    strrchr(szXBEFileName, '\\')[0] = 0;
-    strPath.Format("%s\\%s", szXBEFileName, "XboxMediaCenter.xml");
+    if (forceToQ)
+    {
+      strPath = "Q:\\XBoxMediaCenter.xml";
+    }
+    else
+    {
+      char szXBEFileName[1024];
+      CIoSupport helper;
+      helper.GetXbePath(szXBEFileName);
+      strrchr(szXBEFileName, '\\')[0] = 0;
+      strPath.Format("%s\\%s", szXBEFileName, "XboxMediaCenter.xml");
+    }
     if ( !xbmcXml.LoadFile( strPath.c_str() ) )
     {
       return false;
