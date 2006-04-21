@@ -225,7 +225,7 @@ CStdString SYSINFO::GetVideoEncoder()
 
 CStdString SYSINFO::GetModCHIPDetected()
 {
-	mbFlash=new(CXBoxFlash);
+	mbFlash=new(CXBoxFlash); //Max description Leng= 40
 	{
     // Unknown or TSOP
     mbFlash->AddFCI(0x09,0x00,"Unknown/Onboard TSOP (protected)",0x00000);
@@ -236,7 +236,7 @@ CStdString SYSINFO::GetModCHIPDetected()
 		mbFlash->AddFCI(0x01,0xC4,"XENIUM",0x100000);
 		mbFlash->AddFCI(0x01,0xC4,"XENIUM",0x000000);
 		mbFlash->AddFCI(0x04,0xBA,"ALX2+ R3 FLASH",0x40000);
-		// XBOX Possible FLash CHIPs
+		// XBOX Possible Flash CHIPs
 		mbFlash->AddFCI(0x01,0xb0,"AMD Am29F002BT/NBT",0x40000);
 		mbFlash->AddFCI(0x01,0x34,"AMD Am29F002BB/NBB",0x40000);
 		mbFlash->AddFCI(0x01,0x51,"AMD Am29F200BT",0x40000);
