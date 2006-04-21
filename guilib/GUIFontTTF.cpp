@@ -309,7 +309,6 @@ CGUIFontTTF::Character* CGUIFontTTF::GetCharacter(WCHAR letter)
   // increase the size of the buffer if we need it
   if (m_numChars >= m_maxChars)
   { // need to increase the size of the buffer
-    CLog::Log(LOGDEBUG, "Increasing size of character cache for size %i to %i", m_iHeight, (m_maxChars + CHAR_CHUNK) * sizeof(Character));
     Character *newTable = new Character[m_maxChars + CHAR_CHUNK];
     if (m_char)
     {
@@ -332,12 +331,12 @@ CGUIFontTTF::Character* CGUIFontTTF::GetCharacter(WCHAR letter)
   End();
   if (!CacheCharacter(letter, m_char + low))
   { // unable to cache character - try clearing them all out and starting over
-    CLog::Log(LOGDEBUG, "Unable to cache character.  Clearing character cache of %i characters", m_numChars);
+    CLog::Log(LOGDEBUG, "GUIFontTTF::GetCharacter: Unable to cache character.  Clearing character cache of %i characters", m_numChars);
     ClearCharacterCache();
     low = 0;
     if (!CacheCharacter(letter, m_char + low))
     {
-      CLog::Log(LOGERROR, "Unable to cache character (out of memory?)");
+      CLog::Log(LOGERROR, "GUIFontTTF::GetCharacter: Unable to cache character (out of memory?)");
     }
   }
   Begin();
@@ -352,11 +351,9 @@ bool CGUIFontTTF::CacheCharacter(WCHAR letter, Character *ch)
   text[1] = 0;
   unsigned int width;
   m_pTrueTypeFont->GetTextExtent(&letter, 1, &width);
-  CLog::Log(LOGDEBUG, "Caching character %i from size %i", (int)letter, m_iHeight);
   if (m_posX + width + m_charGap > TEXTURE_WIDTH)
   { // no space - gotta drop to the next line (which means creating a new texture and copying it across)
     int newHeight = (m_iHeight + m_descent) * (m_textureRows + 1);
-    CLog::Log(LOGDEBUG, "Caching character %i - extending texture for size %i to %i pixels", (int)letter, m_iHeight, newHeight);
     m_posX = 0;
     m_posY += m_iHeight + m_descent;
     // create the new larger texture
@@ -364,12 +361,12 @@ bool CGUIFontTTF::CacheCharacter(WCHAR letter, Character *ch)
     // check for max height (can't be more than 4096 texels)
     if (newHeight > 4096)
     {
-      CLog::Log(LOGDEBUG, "CacheCharacter %i: Error creating new cache texture (%i > 4096 pixels long)", (int)letter, newHeight);
+      CLog::Log(LOGDEBUG, "GUIFontTTF::CacheCharacter: New cache texture is too large (%i > 4096 pixels long)", newHeight);
       return false;
     }
     if (D3D_OK != m_pD3DDevice->CreateTexture(TEXTURE_WIDTH, newHeight, 1, 0, D3DFMT_LIN_L8, 0, &newTexture))
     {
-      CLog::Log(LOGDEBUG, "CacheCharacter %i: Error on creating new cache texture for size %i", (int)letter, m_iHeight);
+      CLog::Log(LOGDEBUG, "GUIFontTTF::CacheCharacter: Error creating new cache texture for size %i", m_iHeight);
       return false;
     }
     D3DLOCKED_RECT lr;
@@ -397,7 +394,7 @@ bool CGUIFontTTF::CacheCharacter(WCHAR letter, Character *ch)
   surface->UnlockRect();
   if (D3D_OK != m_pTrueTypeFont->TextOut(surface, text, 1, 0, 0))
   {
-    CLog::Log(LOGERROR, "CacheCharacter %i: Error on TextOut for size %i", (int)letter, m_iHeight);
+    CLog::Log(LOGDEBUG, "GUIFontTTF::CacheCharacter: Error on TextOut for size %i", m_iHeight);
     surface->Release();
     return false;
   }
