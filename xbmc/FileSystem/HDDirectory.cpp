@@ -127,10 +127,10 @@ bool CHDDirectory::Exists(const char* strPath)
   CStdString strReplaced=strPath;
   g_charsetConverter.utf8ToStringCharset(strReplaced);
   strReplaced.Replace("/","\\");
+  CUtil::GetFatXQualifiedPath(strReplaced);
   if (!CUtil::HasSlashAtEnd(strReplaced))
     strReplaced += '\\';
-  CUtil::GetFatXQualifiedPath(strReplaced);
-  DWORD attributes = GetFileAttributes(strReplaced);
+  DWORD attributes = GetFileAttributes(strReplaced.c_str());
   if (FILE_ATTRIBUTE_DIRECTORY == attributes) return true;
   return false;
 }

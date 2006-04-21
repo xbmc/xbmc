@@ -174,22 +174,24 @@ BOOL XKHDD::SendATACommand(WORD IDEPort, LPATA_COMMAND_OBJ ATACommandObj, UCHAR 
 	WORD inVal			= 0;
 	WORD SuccessRet		= 0x58;
 	LPDWORD PIDEDATA	= (LPDWORD) &ATACommandObj->DATA_BUFFER ;
-		
+
+  const int writeSleepTime = 10;
+  const int readSleepTime = 300;
 	//Write IDE Registers to IDE Port.. and in essence Execute the ATA Command..
-	_outp(IDEPort + 1, ATACommandObj->IPReg.bFeaturesReg);		Sleep(10);
-	_outp(IDEPort + 2, ATACommandObj->IPReg.bSectorCountReg); 	Sleep(10);
-	_outp(IDEPort + 3, ATACommandObj->IPReg.bSectorNumberReg);	Sleep(10);
-	_outp(IDEPort + 4, ATACommandObj->IPReg.bCylLowReg);		Sleep(10);
-	_outp(IDEPort + 5, ATACommandObj->IPReg.bCylHighReg);		Sleep(10);
-	_outp(IDEPort + 6, ATACommandObj->IPReg.bDriveHeadReg);		Sleep(10);
-	_outp(IDEPort + 7, ATACommandObj->IPReg.bCommandReg);		Sleep(300);
+	_outp(IDEPort + 1, ATACommandObj->IPReg.bFeaturesReg);		Sleep(writeSleepTime);
+	_outp(IDEPort + 2, ATACommandObj->IPReg.bSectorCountReg); 	Sleep(writeSleepTime);
+	_outp(IDEPort + 3, ATACommandObj->IPReg.bSectorNumberReg);	Sleep(writeSleepTime);
+	_outp(IDEPort + 4, ATACommandObj->IPReg.bCylLowReg);		Sleep(writeSleepTime);
+	_outp(IDEPort + 5, ATACommandObj->IPReg.bCylHighReg);		Sleep(writeSleepTime);
+	_outp(IDEPort + 6, ATACommandObj->IPReg.bDriveHeadReg);		Sleep(writeSleepTime);
+	_outp(IDEPort + 7, ATACommandObj->IPReg.bCommandReg);		Sleep(readSleepTime);
 
 	//Command Executed, Check Status.. If not success, wait a while..
 	inVal = _inp(IDEPort+7); 
 	while (((inVal & SuccessRet) != SuccessRet) && (waitcount > 0))
 	{
 		inVal = _inp(IDEPort+7); //Check Status..
-		Sleep(300);
+		Sleep(readSleepTime);
 		waitcount--;
 	}
 
