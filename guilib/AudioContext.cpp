@@ -90,24 +90,32 @@ void CAudioContext::RemoveActiveDevice()
 void CAudioContext::SetupSpeakerConfig(int iChannels, bool& bAudioOnAllSpeakers, bool bIsMusic)
 {
   m_bAC3EncoderActive = false;
-  DWORD spconfig = XGetAudioFlags();  
+  DWORD spconfig = DSSPEAKER_USE_DEFAULT;  
   if (g_guiSettings.GetInt("AudioOutput.Mode") == AUDIO_DIGITAL)
   {
     if (((g_guiSettings.GetBool("MusicPlayer.OutputToAllSpeakers")) && (bIsMusic)) || (g_stSettings.m_currentVideoSettings.m_OutputToAllSpeakers && !bIsMusic))
-    {      
-      spconfig = DSSPEAKER_SURROUND;
-
-      /* technically we could really don't give a damn about what the dash settings are */
+    {
       if( g_audioConfig.GetAC3Enabled() )
       {
-        spconfig |= DSSPEAKER_ENABLE_AC3;
-        bAudioOnAllSpeakers = true;
+        bAudioOnAllSpeakers = true;      
         m_bAC3EncoderActive = true;
+        spconfig = DSSPEAKER_USE_DEFAULT; //Allows ac3 encoder should it be enabled
       }
-      
-      if( g_audioConfig.GetDTSEnabled() )
-        spconfig |= DSSPEAKER_ENABLE_DTS;
-      
+      else
+      {
+        if (iChannels == 1)
+          spconfig = DSSPEAKER_MONO;
+        else
+        { 
+          // check if surround mode is allowed, if not then use normal stereo  
+          // don't always set it to default as that enabled ac3 encoder if that is allowed in dash
+          // ruining quality
+          if( XC_AUDIO_FLAGS_BASIC( XGetAudioFlags() ) == XC_AUDIO_FLAGS_SURROUND )
+            spconfig = DSSPEAKER_SURROUND;
+          else
+            spconfig = DSSPEAKER_STEREO;
+        }
+      }        
     }
     else
     {
@@ -117,21 +125,8 @@ void CAudioContext::SetupSpeakerConfig(int iChannels, bool& bAudioOnAllSpeakers,
         spconfig = DSSPEAKER_STEREO;
       else
       {
-        spconfig = DSSPEAKER_SURROUND;
-
-        /* technically we could really don't give a damn about what the dash settings are */
-        if( g_audioConfig.GetAC3Enabled() )
-        {
-          spconfig |= DSSPEAKER_ENABLE_AC3;
-          m_bAC3EncoderActive = true;
-        }
-        
-        if( g_audioConfig.GetDTSEnabled() )
-          spconfig |= DSSPEAKER_ENABLE_DTS;
-
-        
-        
-         
+        spconfig = DSSPEAKER_USE_DEFAULT; //Allows ac3 encoder should it be enabled
+        m_bAC3EncoderActive = g_audioConfig.GetAC3Enabled();
       }
     }
   }
