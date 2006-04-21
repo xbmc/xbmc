@@ -2295,7 +2295,10 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
   CFileItemList items;
   CDirectory::GetDirectory("z:\\",items,".keep");
   for (int i=0;i<items.Size();++i)
+  {
+    CFile::Delete(items[i]->m_strPath.Left(items[i]->m_strPath.size()-5));
     CFile::Rename(items[i]->m_strPath,items[i]->m_strPath.Left(items[i]->m_strPath.size()-5));
+  }
   
   // construct string of added exts?
   for (std::vector<CStdString>::iterator it=vecExtensionsCached.begin(); it != vecExtensionsCached.end(); ++it)

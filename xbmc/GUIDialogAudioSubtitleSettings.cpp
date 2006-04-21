@@ -200,6 +200,11 @@ void CGUIDialogAudioSubtitleSettings::OnSettingChanged(unsigned int num)
   else if (setting.id == SUBTITLE_SETTINGS_ENABLE)
   {
     g_application.m_pPlayer->SetSubtitleVisible(g_stSettings.m_currentVideoSettings.m_SubtitleOn);
+    if (!g_stSettings.m_currentVideoSettings.m_SubtitleCached && g_stSettings.m_currentVideoSettings.m_SubtitleOn)
+    {
+      g_application.Restart(true); // cache subtitles
+      Close();
+    }
   }
   else if (setting.id == SUBTITLE_SETTINGS_DELAY)
     g_application.m_pPlayer->SetSubTitleDelay(g_stSettings.m_currentVideoSettings.m_SubtitleDelay);
@@ -219,51 +224,63 @@ void CGUIDialogAudioSubtitleSettings::OnSettingChanged(unsigned int num)
     else
       strPath = g_application.CurrentFileItem().m_strPath;
 
-    const CStdString strMask = ".utf|.utf8|.utf-8|.sub|.srt|.smi|.rt|.txt|.ssa|.aqt|.jss|.ass|.idx|.ifo|.rar";
+    const CStdString strMask = ".utf|.utf8|.utf-8|.sub|.srt|.smi|.rt|.txt|.ssa|.aqt|.jss|.ass|.idx|.ifo|.rar|.zip";
     if (CGUIDialogFileBrowser::ShowAndGetFile(g_settings.m_vecMyVideoShares,strMask,g_localizeStrings.Get(293),strPath)) // "subtitles"
     {
       CStdString strExt;
       CUtil::GetExtension(strPath,strExt);
-      if (strExt.CompareNoCase(".rar") == 0)
+      if (strExt.CompareNoCase(".idx") == 0 || strExt.CompareNoCase(".sub") == 0)
       {
-        std::vector<CStdString> vecExtensionsCached;
-        CUtil::CacheRarSubtitles(vecExtensionsCached,strPath,"",".keep");
-        g_application.Restart(true); // to reread subtitles
-        
-        Close();
-      }
-      else if (strExt.CompareNoCase(".idx") == 0)
-      {
-        if (CFile::Cache(strPath,"z:\\subtitle.idx.keep"))
+        if (CFile::Cache(strPath,"z:\\subtitle"+strExt+".keep"))
         {
           CStdString strPath2;
-          CUtil::ReplaceExtension(strPath,".sub",strPath2);
-          CFile::Cache(strPath2,"z:\\subtitle.sub.keep");
+          CStdString strPath3;
+          if (strExt.CompareNoCase(".idx") == 0)
+          {
+            CUtil::ReplaceExtension(strPath,".sub",strPath2);
+            strPath3 = "z:\\subtitle.sub.keep";
+          }
+          else
+          {
+            CUtil::ReplaceExtension(strPath,".idx",strPath2);
+            strPath3 = "z:\\subtitle.idx.keep";
+          }
+          if (CFile::Exists(strPath2))
+            CFile::Cache(strPath2,strPath3);
+          else 
+          {
+            CFileItemList items;
+            CStdString strDir,strFileNameNoExtNoCase;
+            CUtil::Split(strPath,strDir,strPath3);
+            CUtil::ReplaceExtension(strPath3,".",strFileNameNoExtNoCase);
+            strFileNameNoExtNoCase.ToLower();
+            CUtil::GetDirectory(strPath,strDir);
+            CDirectory::GetDirectory(strDir,items,".rar",false);
+            vector<CStdString> vecExts;
+            for (int i=0;i<items.Size();++i)
+              CUtil::CacheRarSubtitles(vecExts,items[i]->m_strPath,strFileNameNoExtNoCase,".keep");
+          }
+          g_stSettings.m_currentVideoSettings.m_SubtitleCached = false;
+          g_stSettings.m_currentVideoSettings.m_SubtitleOn = true;
           g_application.Restart(true); // to reread subtitles
           
-          Close();
-        }
-      }
-      else if (strExt.CompareNoCase(".sub") == 0)
-      {
-        if (CFile::Cache(strPath,"z:\\subtitle.sub.keep"))
-        {
-          CStdString strPath2;
-          CUtil::ReplaceExtension(strPath,".idx",strPath2);
-          CFile::Cache(strPath2,"z:\\subtitle.idx.keep");
-          g_application.Restart(true); // to reread subtitles
-
           Close();
         }
       }
       else
       {
         m_subtitleStream = g_application.m_pPlayer->GetSubtitleCount();
-        g_application.m_pPlayer->AddSubtitle(strPath);
-        g_application.m_pPlayer->SetSubtitle(m_subtitleStream);
+        CStdString strExt;
+        CUtil::GetExtension(strPath,strExt);
+        if (CFile::Cache(strPath,"z:\\subtitle.browsed"+strExt))
+        {
+          g_application.m_pPlayer->AddSubtitle("z:\\subtitle.browsed"+strExt);
+          g_application.m_pPlayer->SetSubtitle(m_subtitleStream);
+        }
 
         Close();
       }
+      g_stSettings.m_currentVideoSettings.m_SubtitleCached = true;
     }
   }
   else if (setting.id == AUDIO_SETTINGS_MAKE_DEFAULT)
