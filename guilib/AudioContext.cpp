@@ -90,14 +90,24 @@ void CAudioContext::RemoveActiveDevice()
 void CAudioContext::SetupSpeakerConfig(int iChannels, bool& bAudioOnAllSpeakers, bool bIsMusic)
 {
   m_bAC3EncoderActive = false;
-  DWORD spconfig = DSSPEAKER_USE_DEFAULT;  
+  DWORD spconfig = XGetAudioFlags();  
   if (g_guiSettings.GetInt("AudioOutput.Mode") == AUDIO_DIGITAL)
   {
     if (((g_guiSettings.GetBool("MusicPlayer.OutputToAllSpeakers")) && (bIsMusic)) || (g_stSettings.m_currentVideoSettings.m_OutputToAllSpeakers && !bIsMusic))
-    {
-      bAudioOnAllSpeakers = true;      
-      spconfig = DSSPEAKER_USE_DEFAULT; //Allows ac3 encoder should it be enabled
-      m_bAC3EncoderActive = g_audioConfig.GetAC3Enabled();
+    {      
+      spconfig = DSSPEAKER_SURROUND;
+
+      /* technically we could really don't give a damn about what the dash settings are */
+      if( g_audioConfig.GetAC3Enabled() )
+      {
+        spconfig |= DSSPEAKER_ENABLE_AC3;
+        bAudioOnAllSpeakers = true;
+        m_bAC3EncoderActive = true;
+      }
+      
+      if( g_audioConfig.GetDTSEnabled() )
+        spconfig |= DSSPEAKER_ENABLE_DTS;
+      
     }
     else
     {
@@ -107,8 +117,20 @@ void CAudioContext::SetupSpeakerConfig(int iChannels, bool& bAudioOnAllSpeakers,
         spconfig = DSSPEAKER_STEREO;
       else
       {
-        spconfig = DSSPEAKER_USE_DEFAULT; //Allows ac3 encoder should it be enabled
-        m_bAC3EncoderActive = g_audioConfig.GetAC3Enabled();
+        spconfig = DSSPEAKER_SURROUND;
+
+        /* technically we could really don't give a damn about what the dash settings are */
+        if( g_audioConfig.GetAC3Enabled() )
+        {
+          spconfig |= DSSPEAKER_ENABLE_AC3;
+          m_bAC3EncoderActive = true;
+        }
+        
+        if( g_audioConfig.GetDTSEnabled() )
+          spconfig |= DSSPEAKER_ENABLE_DTS;
+
+        
+        
          
       }
     }
@@ -118,21 +140,20 @@ void CAudioContext::SetupSpeakerConfig(int iChannels, bool& bAudioOnAllSpeakers,
     if (iChannels == 1)
       spconfig = DSSPEAKER_MONO;
     else
-    { // Use default as on a very few xboxes, Dolby surround can be broken
-      // so we MUST use the default settings, else these few individuals will have
-      // no sound at all.
-      spconfig = DSSPEAKER_USE_DEFAULT;
+    { 
+      // check if surround mode is allowed, if not then use normal stereo  
+      // don't always set it to default as that enabled ac3 encoder if that is allowed in dash
+      // ruining quality
+      if( XC_AUDIO_FLAGS_BASIC( XGetAudioFlags() ) == XC_AUDIO_FLAGS_SURROUND )
+        spconfig = DSSPEAKER_SURROUND;
+      else
+        spconfig = DSSPEAKER_STEREO;
     }
   }
 
-  DWORD spconfig_old = DSSPEAKER_USE_DEFAULT;
+  DWORD spconfig_old = XGetAudioFlags();
   if(m_pDirectSoundDevice)
-  {
     m_pDirectSoundDevice->GetSpeakerConfig(&spconfig_old);
-    DWORD spconfig_default = XGetAudioFlags();
-    if (spconfig_old == spconfig_default)
-      spconfig_old = DSSPEAKER_USE_DEFAULT;
-  }
 
   /* speaker config identical, no need to do anything */
   if(spconfig == spconfig_old) return;
