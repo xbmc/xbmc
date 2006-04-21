@@ -90,6 +90,7 @@ void CAudioContext::RemoveActiveDevice()
 void CAudioContext::SetupSpeakerConfig(int iChannels, bool& bAudioOnAllSpeakers, bool bIsMusic)
 {
   m_bAC3EncoderActive = false;
+  bAudioOnAllSpeakers = false;
   DWORD spconfig = DSSPEAKER_USE_DEFAULT;  
   if (g_guiSettings.GetInt("AudioOutput.Mode") == AUDIO_DIGITAL)
   {
@@ -146,9 +147,14 @@ void CAudioContext::SetupSpeakerConfig(int iChannels, bool& bAudioOnAllSpeakers,
     }
   }
 
-  DWORD spconfig_old = XGetAudioFlags();
+  DWORD spconfig_old = DSSPEAKER_USE_DEFAULT;
   if(m_pDirectSoundDevice)
+  {
     m_pDirectSoundDevice->GetSpeakerConfig(&spconfig_old);
+    DWORD spconfig_default = XGetAudioFlags();
+    if (spconfig_old == spconfig_default)
+      spconfig_old = DSSPEAKER_USE_DEFAULT;
+  }
 
   /* speaker config identical, no need to do anything */
   if(spconfig == spconfig_old) return;
