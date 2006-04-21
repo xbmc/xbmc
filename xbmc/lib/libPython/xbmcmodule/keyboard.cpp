@@ -97,7 +97,7 @@ namespace PYXBMC
 	PyObject* Keyboard_SetHeading(Keyboard *self, PyObject *args)
 	{
 		PyObject *line = NULL;
-    if (!PyArg_ParseTuple(args, "| O", &line)) return NULL;
+    if (!PyArg_ParseTuple(args, "|O", &line)) return NULL;
 
     string utf8Line;
     if (line && !PyGetUnicodeString(utf8Line, line, 1)) return NULL;
