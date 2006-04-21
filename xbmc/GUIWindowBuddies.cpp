@@ -1532,7 +1532,9 @@ void CGUIWindowBuddies::Play(CStdString& aVector)
 {
   if (!m_pKaiClient->IsNetworkReachable())
   {
-    CGUIDialogOK::ShowAndGetInput(15000, 15037, 15038, 0);
+    // TODO 2.0: string 518 is "Launch", whereas we are asking a question
+    if (!CGUIDialogYesNo::ShowAndGetInput(15000, 15037, 15038, 518))
+      return;
   }
 
   CStdString strGame;
@@ -1591,15 +1593,9 @@ void CGUIWindowBuddies::Play(CStdString& aVector)
   dialog.SetLine(0, 15039); // Xbox Media Center unable to locate game automatically.
   dialog.SetLine(1, 15040); // Insert the game disk into your XBOX or press 'A' to cancel
   dialog.SetLine(2, 15041); // and launch the game manually.
-  dialog.StartModal(GetID());
 
   while (true)
   {
-    if (dialog.IsCanceled())
-    {
-      break;
-    }
-
     if (CDetectDVDMedia::IsDiscInDrive())
     {
       if ( CFile::Exists("D:\\default.xbe") )
@@ -1609,7 +1605,12 @@ void CGUIWindowBuddies::Play(CStdString& aVector)
       }
     }
 
+    // process the dialog
+    if (!dialog.IsRunning())
+      dialog.StartModal(GetID());
     dialog.Progress();
+    if (dialog.IsCanceled())
+      break;
   }
 
   dialog.Close();
