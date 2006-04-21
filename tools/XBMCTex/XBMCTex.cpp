@@ -17,6 +17,8 @@ UINT CompressedSize;
 UINT TotalSrcPixels;
 UINT TotalDstPixels;
 
+bool AllowLinear;
+
 // Round a number to the nearest power of 2 rounding up
 // runs pretty quickly - the only expensive op is the bsr
 // alternive would be to dec the source, round down and double the result
@@ -386,7 +388,9 @@ bool ConvertP8(LPDIRECT3DSURFACE8 pSrcSurf, LPDIRECT3DSURFACE8& pDstSurf, DWORD*
 	pSrcSurf->GetDesc(&desc);
 
 	// convert to p8
-	HRESULT hr = pD3DDevice->CreateImageSurface(desc.Width, desc.Height, D3DFMT_A8R8G8B8, &pDstSurf);
+  UINT Width = PadPow2(desc.Width);
+  UINT Height = PadPow2(desc.Height);
+	HRESULT hr = pD3DDevice->CreateImageSurface(Width, Height, D3DFMT_A8R8G8B8, &pDstSurf);
 	CheckHR(hr);
 
 	D3DLOCKED_RECT slr, dlr;
@@ -465,13 +469,13 @@ void ConvertFile(const char* Dir, const char* Filename, double MaxMSE)
 	UINT Width = PadPow2(info.Width);
 	UINT Height = PadPow2(info.Height);
 
-	TotalSrcPixels += info.Width * info.Height;
-	TotalDstPixels += Width * Height;
 	float Waste = 100.f * (float)(Width * Height - info.Width * info.Height) / (float)(Width * Height);
 
 	UncompressedSize += Width * Height * 4;
+	TotalSrcPixels += info.Width * info.Height;
+	TotalDstPixels += Width * Height;
 
-	// Special case for 256-colour files - just directly drop into a P8 xpr
+  // Special case for 256-colour files - just directly drop into a P8 xpr
 	if (info.Format == D3DFMT_P8)
 	{
 		hr = pD3DDevice->CreateImageSurface(Width, Height, D3DFMT_A8R8G8B8, &pSrcSurf);
@@ -524,20 +528,54 @@ void ConvertFile(const char* Dir, const char* Filename, double MaxMSE)
 		return;
 	}
 
+  // test linear format versus non-linear format
+  // Linear format requires 64 pixel aligned width, whereas
+  // Non-linear format requires power of 2 width and height
+  bool useLinearFormat(false);
+  UINT linearWidth = (info.Width + 0x3f) & ~0x3f;
+  if (AllowLinear && linearWidth * info.Height < Width * Height)
+    useLinearFormat = true;
+
 	hr = pD3DDevice->CreateImageSurface(Width, Height, D3DFMT_A8R8G8B8, &pSrcSurf);
 	CheckHR(hr);
-
+  
 	hr = D3DXLoadSurfaceFromFile(pSrcSurf, NULL, NULL, Filename, NULL, D3DX_FILTER_NONE, 0, NULL);
 	CheckHR(hr);
+
+  // create the linear version as well
+	LPDIRECT3DSURFACE8 pLinearSrcSurf = NULL;
+  if (useLinearFormat)
+  {
+	  hr = pD3DDevice->CreateImageSurface(linearWidth, info.Height, D3DFMT_A8R8G8B8, &pLinearSrcSurf);
+	  CheckHR(hr);
+	  hr = D3DXLoadSurfaceFromFile(pLinearSrcSurf, NULL, NULL, Filename, NULL, D3DX_FILTER_NONE, 0, NULL);
+	  CheckHR(hr);
+  }
+
 
 	// special case for small files - all textures are alloced on page granularity so just output uncompressed
 	// dxt is crap on small files anyway
 	if (Width * Height <= 1024)
 	{
-		printf("A8R8G8B8 %4dx%-4d (%5.2f%% waste)\n", Width, Height, Waste);
-		TRACE0(" Selected Format: A8R8G8B8\n");
+    if (useLinearFormat)
+    {
+      // correct sizing amounts
+	    UncompressedSize -= Width * Height * 4;
+      UncompressedSize += linearWidth * info.Height * 4;
+	    TotalDstPixels -= Width * Height;
+      TotalDstPixels += linearWidth * info.Height;
 
-		WriteXPR(OutFilename, info, pSrcSurf, XB_D3DFMT_A8R8G8B8, NULL);
+	    Waste = 100.f * (float)(linearWidth * info.Height - info.Width * info.Height) / (float)(linearWidth * info.Height);
+		  printf("LIN_A8R8G8B8 %4dx%-4d (%5.2f%% waste)\n", linearWidth, info.Height, Waste);
+		  TRACE0(" Selected Format: LIN_A8R8G8B8\n");
+      WriteXPR(OutFilename, info, pLinearSrcSurf, XB_D3DFMT_LIN_A8R8G8B8, NULL);
+    }
+    else
+    {
+		  printf("A8R8G8B8 %4dx%-4d (%5.2f%% waste)\n", Width, Height, Waste);
+		  TRACE0(" Selected Format: A8R8G8B8\n");
+      WriteXPR(OutFilename, info, pSrcSurf, XB_D3DFMT_A8R8G8B8, NULL);
+    }
 		return;
 	}
 
@@ -634,10 +672,24 @@ void ConvertFile(const char* Dir, const char* Filename, double MaxMSE)
 	}
 
 	// Use A8R8G8B8
-	printf("A8R8G8B8 %4dx%-4d (%5.2f%% waste)\n", Width, Height, Waste);
-	TRACE0(" Selected Format: A8R8G8B8\n");
-
-	WriteXPR(OutFilename, info, pSrcSurf, XB_D3DFMT_A8R8G8B8, NULL);
+  if (useLinearFormat)
+  {
+    // correct sizing information
+	  UncompressedSize -= Width * Height * 4;
+    UncompressedSize += linearWidth * info.Height * 4;
+	  TotalDstPixels -= Width * Height;
+    TotalDstPixels += linearWidth * info.Height;
+	  Waste = 100.f * (float)(linearWidth * info.Height - info.Width * info.Height) / (float)(linearWidth * info.Height);
+		printf("LIN_A8R8G8B8 %4dx%-4d (%5.2f%% waste)\n", linearWidth, info.Height, Waste);
+		TRACE0(" Selected Format: LIN_A8R8G8B8\n");
+    WriteXPR(OutFilename, info, pLinearSrcSurf, XB_D3DFMT_LIN_A8R8G8B8, NULL);
+  }
+  else
+  {
+		printf("A8R8G8B8 %4dx%-4d (%5.2f%% waste)\n", Width, Height, Waste);
+		TRACE0(" Selected Format: A8R8G8B8\n");
+    WriteXPR(OutFilename, info, pSrcSurf, XB_D3DFMT_A8R8G8B8, NULL);
+  }
 
 	if (pSrcSurf)
 		pSrcSurf->Release();
@@ -892,12 +944,14 @@ void Usage()
 	puts("  -input <dir>     Input directory. Default: current dir");
 	puts("  -output <dir>    Output directory/filename. Default: Textures.xpr");
 	puts("  -quality <qual>  Quality setting (min, low, normal, high, max). Default: normal");
-  puts("  -noprotect       XPR contents viewable in skin editor");
+  puts("  -noprotect       XPR contents viewable at full quality in skin editor");
+  puts("  -onlyswizzled    Only allow swizzled textures (faster rendering, larger memory use) rather than linear textures");
 }
 
 int main(int argc, char* argv[])
 {
   int NoProtect = 0;
+  AllowLinear = true;
   double MaxMSE = 4.0;
 	if (argc == 1)
 	{
@@ -923,9 +977,13 @@ int main(int argc, char* argv[])
 		{
 			OutputFilename = argv[++i];
 		}
-    else if (!stricmp(argv[i], "-noprotect") || !stricmp(argv[i], "-i"))
+    else if (!stricmp(argv[i], "-noprotect") || !stricmp(argv[i], "-p"))
     {
       NoProtect = 1;
+    }
+    else if (!stricmp(argv[i], "-onlyswizzled") || !stricmp(argv[i], "-s"))
+    {
+      AllowLinear = false;
     }
     else if (!stricmp(argv[i], "-quality") || !stricmp(argv[i], "-q"))
 		{

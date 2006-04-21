@@ -92,6 +92,7 @@ protected:
   float m_fV;
   float m_fNW;
   float m_fNH;
+  bool m_linearTexture; // true if it's a linear 32bit texture
 
   // conditional info
   int m_Info;
