@@ -188,7 +188,7 @@ public:
   virtual ~CSettings(void);
 
   bool Load(bool& bXboxMediacenter, bool& bSettings);
-  bool QuickXMLLoad(CStdString strElement);
+  bool QuickXMLLoad(const CStdString &strElement, bool forceToQ = false);
   void Save() const;
   bool Reset();
 
@@ -503,7 +503,7 @@ protected:
   bool LoadProfiles(const TiXmlElement* pRootElement, const CStdString& strSettingsFile);
   bool SaveProfiles(TiXmlNode* pRootElement) const;
 
-  bool LoadXml();
+  bool LoadXml(bool forceToQ = false);
   void CloseXml();
 
   // skin activated settings
