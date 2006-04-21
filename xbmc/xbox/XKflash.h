@@ -54,7 +54,7 @@
 typedef struct fci_s {
 	unsigned char mfct;
 	unsigned char devc;
-	char text[30];
+	char text[40];
 	unsigned long size;
 	struct fci_s *next;
 } fci_t;
@@ -157,8 +157,8 @@ fci_t* CheckID(void)
 
 	manuf=Read(FLASH_BASE_ADDRESS);
 	code=Read(FLASH_BASE_ADDRESS+1);
-	
-	// All done
+  
+  // All done
 	SetReadMode();
 
 	return FindFCI(manuf,code);

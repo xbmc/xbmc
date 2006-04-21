@@ -427,13 +427,14 @@ CGUISettings::CGUISettings(void)
   AddString(3, "Smb.Winsserver",  1207,   "",  BUTTON_CONTROL_IP_INPUT);
   AddString(4, "Smb.Workgroup",   1202,   "WORKGROUP", BUTTON_CONTROL_INPUT, false, 1202);
   AddString(5, "Smb.DosCodepage", 735,    "", SPIN_CONTROL_TEXT);
-  AddSeparator(6, "Smb.Sep1");
-  AddInt(7,    "Smb.SimpAdvance", 1208,   1, 0, 1, 2, SPIN_CONTROL_TEXT);
-  AddString(8, "Smb.Ip",          1201,   "192.168.0.106",  BUTTON_CONTROL_IP_INPUT);
-  AddString(9, "Smb.ShareName",   1205,   "WORKGROUP (SMB) Network", BUTTON_CONTROL_INPUT, false, 1205);
-  AddInt(10,    "Smb.ShareGroup",  1206,   SMB_SHARE_MU_VI_PIC_FIL, SMB_SHARE_MUSIC, 1, SMB_SHARE_MU_VI_PIC_FIL, SPIN_CONTROL_TEXT);
-  AddSeparator(11, "Smb.Sep2");
-  AddString(12, "Smb.SetSmb",      14070,  "", BUTTON_CONTROL_STANDARD);
+  AddInt(6, "Smb.ClientTimeOut",1236, 10, 0, 1, 100, SPIN_CONTROL_INT_PLUS, MASK_SECS);
+  AddSeparator(7, "Smb.Sep1");
+  AddInt(8, "Smb.SimpAdvance", 1208,   1, 0, 1, 2, SPIN_CONTROL_TEXT);
+  AddString(9, "Smb.Ip",          1201,   "192.168.0.106",  BUTTON_CONTROL_IP_INPUT);
+  AddString(10, "Smb.ShareName",   1205,   "WORKGROUP (SMB) Network", BUTTON_CONTROL_INPUT, false, 1205);
+  AddInt(11, "Smb.ShareGroup",  1206,   SMB_SHARE_MU_VI_PIC_FIL, SMB_SHARE_MUSIC, 1, SMB_SHARE_MU_VI_PIC_FIL, SPIN_CONTROL_TEXT);
+  AddSeparator(12, "Smb.Sep2");
+  AddString(13,"Smb.SetSmb",      14070,  "", BUTTON_CONTROL_STANDARD);
 
   // appearance settings
   AddGroup(7, 480);
