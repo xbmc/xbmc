@@ -44,8 +44,8 @@ void CLog::Log(int loglevel, const char *format, ... )
         {
           if( !CUtil::HasSlashAtEnd(strLogPath) )
             strLogPath += "\\";
-            
-          if( CreateDirectory(strLogPath.c_str(), NULL) )
+          // check for existence
+          if (CDirectory::Exists(strLogPath) || CreateDirectory(strLogPath.c_str(), NULL) )
             LogFile.Format("%sxbmc.log", strLogPath.c_str());
         }
       }
