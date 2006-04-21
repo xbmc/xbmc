@@ -316,7 +316,7 @@ LPDIRECT3DTEXTURE8 CGUITextureManager::GetTexture(const CStdString& strTextureNa
     if (pMap->GetName() == strTextureName)
     {
       LPDIRECT3DTEXTURE8 texture = pMap->GetTexture(iItem, iWidth, iHeight, pPal, linearTexture);
-      CLog::Log(LOGDEBUG, "Total memusage %u", GetMemoryUsage());
+      //CLog::Log(LOGDEBUG, "Total memusage %u", GetMemoryUsage());
       return texture;
     }
   }

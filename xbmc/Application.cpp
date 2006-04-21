@@ -644,7 +644,7 @@ HRESULT CApplication::Create()
   strLogFile.Format("Q:\\xbmc.log");
   strLogFileOld.Format("Q:\\xbmc.old.log");
 
-  if (g_settings.QuickXMLLoad("logpath"))
+  if (g_settings.QuickXMLLoad("logpath", true))
   {
     CStdString strLogPath = g_stSettings.m_szlogpath;
     if (!strLogPath.IsEmpty())
