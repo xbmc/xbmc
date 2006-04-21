@@ -24,6 +24,7 @@ CVideoSettings::CVideoSettings()
   m_SubtitleStream = -1;
   m_SubtitleDelay = 0.0f;
   m_SubtitleOn = true;
+  m_SubtitleCached = false;
   m_Brightness = 50;
   m_Contrast = 50;
   m_Gamma = 20;
@@ -52,6 +53,7 @@ bool CVideoSettings::operator!=(const CVideoSettings &right) const
   if (m_SubtitleStream != right.m_SubtitleStream) return true;
   if (m_SubtitleDelay != right.m_SubtitleDelay) return true;
   if (m_SubtitleOn != right.m_SubtitleOn) return true;
+  if (m_SubtitleCached != right.m_SubtitleCached) return true;
   if (m_Brightness != right.m_Brightness) return true;
   if (m_Contrast != right.m_Contrast) return true;
   if (m_Gamma != right.m_Gamma) return true;
