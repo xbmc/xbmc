@@ -1955,9 +1955,9 @@ bool CMPlayer::GetCurrentSubtitle(CStdStringW& strSubtitle)
       CStdStringA S = sub->text[i];
       CStdStringW W;
       if (g_charsetConverter.isValidUtf8(S))
-        g_charsetConverter.utf8ToUTF16(S, W);
+        g_charsetConverter.utf8ToUTF16(S, W, false); // mplayer does flipping of hebrew/arabic for use
       else
-        g_charsetConverter.subtitleCharsetToFontCharset(S, W);
+        g_charsetConverter.subtitleCharsetToUTF16(S, W);
       strSubtitle += W;
     }
     
