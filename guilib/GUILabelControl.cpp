@@ -15,6 +15,7 @@ CGUILabelControl::CGUILabelControl(DWORD dwParentID, DWORD dwControlId, int iPos
   ControlType = GUICONTROL_LABEL;
   m_ScrollInsteadOfTruncate = false;
   m_wrapMultiLine = false;
+  m_singleInfo = 0;
 }
 
 CGUILabelControl::~CGUILabelControl(void)
