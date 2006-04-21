@@ -1,3 +1,4 @@
+2006-04-21 fixed:	Album and Video info dialogs didn't have the content panel background.
 2006-04-21 fixed:	[ 1474061 ] Browse subtitle (cosmetic problem)
 
 2006-04-20 fixed:	Label in MusicVisualisation.xml showed extra " - " if the visualisation had no presets.
