@@ -1108,7 +1108,7 @@
   <string><id>14066</id><value>Enter the Time in 24 hour HH:MM format</value></string>
   <string><id>14067</id><value>Enter the Date in DD/MM/YYYY format</value></string>
   <string><id>14068</id><value>Enter the IP address</value></string>
-  <string><id>14069</id><value>Do you want set these Settings now?</value></string> 	 
+  <string><id>14069</id><value>Apply these settings now?</value></string> 	 
   <string><id>14070</id><value>Apply Changes Now</value></string> 	 
   <string><id>14071</id><value>Allow File Renaming and Deletion</value></string>
   <string><id>14072</id><value>Enable XLink Kai</value></string>
