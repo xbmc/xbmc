@@ -133,7 +133,8 @@ void CGUIImage::Render()
     LPDIRECT3DDEVICE8 p3DDevice = g_graphicsContext.Get3DDevice();
     // Set state to render the image
 #ifdef ALLOW_TEXTURE_COMPRESSION
-    p3DDevice->SetPalette( 0, m_pPalette);
+    if (!m_linearTexture)
+      p3DDevice->SetPalette( 0, m_pPalette);
 #endif
     p3DDevice->SetTexture( 0, m_vecTextures[m_iCurrentImage] );
     p3DDevice->SetTextureStageState( 0, D3DTSS_COLOROP, D3DTOP_MODULATE );
@@ -191,7 +192,8 @@ void CGUIImage::Render()
     // unset the texture and palette or the texture caching crashes because the runtime still has a reference
     p3DDevice->SetTexture( 0, NULL);
 #ifdef ALLOW_TEXTURE_COMPRESSION
-    p3DDevice->SetPalette( 0, NULL);
+    if (!m_linearTexture)
+      p3DDevice->SetPalette( 0, NULL);
 #endif
     if (m_fNW > m_dwWidth || m_fNH > m_dwHeight)
       g_graphicsContext.RestoreViewPort();
@@ -234,7 +236,7 @@ void CGUIImage::AllocResources()
   for (int i = 0; i < iImages; i++)
   {
     LPDIRECT3DTEXTURE8 pTexture;
-    pTexture = g_TextureManager.GetTexture(m_strFileName, i, m_iTextureWidth, m_iTextureHeight, m_pPalette);
+    pTexture = g_TextureManager.GetTexture(m_strFileName, i, m_iTextureWidth, m_iTextureHeight, m_pPalette, m_linearTexture);
     m_vecTextures.push_back(pTexture);
   }
 
@@ -276,40 +278,47 @@ void CGUIImage::CalculateSize()
   m_fX = (float)m_iPosX;
   m_fY = (float)m_iPosY;
 #ifdef ALLOW_TEXTURE_COMPRESSION
-  if (0 == m_iImageWidth || 0 == m_iImageHeight)
+  if (!m_linearTexture)
   {
+    if (0 == m_iImageWidth || 0 == m_iImageHeight)
+    {
+      D3DSURFACE_DESC desc;
+      m_vecTextures[m_iCurrentImage]->GetLevelDesc(0, &desc);
+
+      m_iImageWidth = desc.Width;
+      m_iImageHeight = desc.Height;
+    }
+
+    if (0 == m_iTextureWidth || 0 == m_iTextureHeight)
+    {
+      m_iTextureWidth = m_iImageWidth / m_dwItems;
+      m_iTextureHeight = m_iImageHeight;
+
+      if (m_iTextureHeight > (int)g_graphicsContext.GetHeight() )
+        m_iTextureHeight = (int)g_graphicsContext.GetHeight();
+
+      if (m_iTextureWidth > (int)g_graphicsContext.GetWidth() )
+        m_iTextureWidth = (int)g_graphicsContext.GetWidth();
+    }
+  }
+  else
+  {
+#endif
     D3DSURFACE_DESC desc;
     m_vecTextures[m_iCurrentImage]->GetLevelDesc(0, &desc);
 
-    m_iImageWidth = desc.Width;
-    m_iImageHeight = desc.Height;
-  }
+    if (0 == m_iTextureWidth || 0 == m_iTextureHeight)
+    {
+      m_iTextureWidth = (DWORD) desc.Width / m_dwItems;
+      m_iTextureHeight = (DWORD) desc.Height;
 
-  if (0 == m_iTextureWidth || 0 == m_iTextureHeight)
-  {
-    m_iTextureWidth = m_iImageWidth / m_dwItems;
-    m_iTextureHeight = m_iImageHeight;
+      if (m_iTextureHeight > (int)g_graphicsContext.GetHeight() )
+        m_iTextureHeight = (int)g_graphicsContext.GetHeight();
 
-    if (m_iTextureHeight > (int)g_graphicsContext.GetHeight() )
-      m_iTextureHeight = (int)g_graphicsContext.GetHeight();
-
-    if (m_iTextureWidth > (int)g_graphicsContext.GetWidth() )
-      m_iTextureWidth = (int)g_graphicsContext.GetWidth();
-  }
-#else
-  D3DSURFACE_DESC desc;
-  m_vecTextures[m_iCurrentImage]->GetLevelDesc(0, &desc);
-
-  if (0 == m_iTextureWidth || 0 == m_iTextureHeight)
-  {
-    m_iTextureWidth = (DWORD) desc.Width / m_dwItems;
-    m_iTextureHeight = (DWORD) desc.Height;
-
-    if (m_iTextureHeight > (int)g_graphicsContext.GetHeight() )
-      m_iTextureHeight = (int)g_graphicsContext.GetHeight();
-
-    if (m_iTextureWidth > (int)g_graphicsContext.GetWidth() )
-      m_iTextureWidth = (int)g_graphicsContext.GetWidth();
+      if (m_iTextureWidth > (int)g_graphicsContext.GetWidth() )
+        m_iTextureWidth = (int)g_graphicsContext.GetWidth();
+    }
+#ifdef ALLOW_TEXTURE_COMPRESSION
   }
 #endif
   if (m_dwWidth && m_dwItems > 1)
@@ -352,13 +361,20 @@ void CGUIImage::CalculateSize()
   m_iRenderHeight = (m_fNH > m_dwHeight) ? (int)m_dwHeight : (int)m_fNH;
 
 #ifdef ALLOW_TEXTURE_COMPRESSION
-  m_fUOffs = float(m_iBitmap * m_dwWidth) / float(m_iImageWidth);
-  m_fU = float(m_iTextureWidth) / float(m_iImageWidth);
-  m_fV = float(m_iTextureHeight) / float(m_iImageHeight);
-#else
-  m_fUOffs = float(m_iBitmap * m_dwWidth);
-  m_fU = float(m_iTextureWidth);
-  m_fV = float(m_iTextureHeight);
+  if (!m_linearTexture)
+  {
+    m_fUOffs = float(m_iBitmap * m_dwWidth) / float(m_iImageWidth);
+    m_fU = float(m_iTextureWidth) / float(m_iImageWidth);
+    m_fV = float(m_iTextureHeight) / float(m_iImageHeight);
+  }
+  else
+  {
+#endif
+    m_fUOffs = float(m_iBitmap * m_dwWidth);
+    m_fU = float(m_iTextureWidth);
+    m_fV = float(m_iTextureHeight);
+#ifdef ALLOW_TEXTURE_COMPRESSION
+  }
 #endif
 }
 
