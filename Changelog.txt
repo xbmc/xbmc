@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 21-04-2006 fixed: [ 1473940 ] ControlLabel don't always display
  - 21-04-2006 fixed: [ 1459126 ] LogPath XML Setting Not Respected.
  - 21-04-2006 fixed: SetHeading method in python keyboard wasn't working.  Thanks to Nuka1195.
  - 21-04-2006 added: Support for unswizzled 32 bit textures in Textures.xpr
