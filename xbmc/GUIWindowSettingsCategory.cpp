@@ -1734,17 +1734,18 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     if (g_guiSettings.GetString("Smb.Ip")        == "") g_guiSettings.SetString("Smb.Ip", "192.168.0.5");
     if (g_guiSettings.GetString("Smb.Workgroup") == "") g_guiSettings.SetString("Smb.Workgroup", "WORKGROUP");
     if (g_guiSettings.GetString("Smb.ShareName") == "") g_guiSettings.SetString("Smb.ShareName", "WORKGROUP (SMB) Network");        
-
+    
     //Set/Update
     g_stSettings.m_strSambaIPAdress = g_guiSettings.GetString("Smb.Ip");
     g_stSettings.m_strSambaWorkgroup = g_guiSettings.GetString("Smb.Workgroup");
     g_stSettings.m_strSambaDefaultUserName = g_guiSettings.GetString("Smb.Username");
     g_stSettings.m_strSambaDefaultPassword = g_guiSettings.GetString("Smb.Password");
-    g_stSettings.m_strSambaShareName = g_guiSettings.GetString("Smb.ShareName");    
+    g_stSettings.m_strSambaShareName = g_guiSettings.GetString("Smb.ShareName");   
+    g_stSettings.m_iSambaTimeout = g_guiSettings.GetInt("Smb.ClientTimeOut");   
 
-    if( g_stSettings.m_strSambaWinsServer != g_guiSettings.GetString("Smb.DosCodepage") )
+    if( g_stSettings.m_strSambaWinsServer != g_guiSettings.GetString("Smb.Winsserver") )
     {
-      g_stSettings.m_strSambaWinsServer = g_guiSettings.GetString("Smb.DosCodepage");
+      g_stSettings.m_strSambaWinsServer = g_guiSettings.GetString("Smb.Winsserver");
       needrestart = true;
     }
 
@@ -1754,7 +1755,6 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
       needrestart = true;
     }
 
-
     g_settings.UpDateXbmcXML("samba", "winsserver",       g_guiSettings.GetString("Smb.Winsserver"));
     g_settings.UpDateXbmcXML("samba", "smbip",            g_guiSettings.GetString("Smb.Ip"));
     g_settings.UpDateXbmcXML("samba", "workgroup",        g_guiSettings.GetString("Smb.Workgroup"));
@@ -1762,6 +1762,9 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     g_settings.UpDateXbmcXML("samba", "defaultpassword",  g_guiSettings.GetString("Smb.Password"));
     g_settings.UpDateXbmcXML("samba", "smbsharename",     g_guiSettings.GetString("Smb.ShareName"));
     g_settings.UpDateXbmcXML("samba", "doscodepage",      g_guiSettings.GetString("Smb.DosCodepage"));
+    
+    CStdString striValue; striValue.Format("%d", g_guiSettings.GetInt("Smb.ClientTimeOut"));
+    g_settings.UpDateXbmcXML("samba", "clienttimeout",    striValue.c_str());
     
     //g_settings.UpDateXbmcXML("CDDBIpAddress", "194.97.4.18"); //This is a Test ;
 

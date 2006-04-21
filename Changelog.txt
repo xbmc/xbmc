@@ -5,6 +5,10 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+
+ - 21-04-2006 added: SMB ClientTimeOut to SMB Client GUI Settings
+ - 21-04-2006 fixed: Samba GUI Settings: SambaDosCodepage change effects to SambaWinsServer !!
+ - 21-04-2006 fixed: [ 1474060 ] Little modchip message problem
  - 21-04-2006 changed: do a bidi flip of strings independently of the language codepage (eg. unicode strings may contain hebrew strings and the codepage may differ)
  - 21-04-2006 changed: progress dialog update() python method can now update the dialog text, thanks to Donno.
  - 21-04-2006 fixed: [ 1470736 ] Kai game launch problems.
