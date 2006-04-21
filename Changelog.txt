@@ -5,6 +5,9 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 21-04-2006 added: Indonesian language file (Thnx to djoens)
+ - 21-04-2006 updated: Swedish language file (Thnx to blittan)
+ - 21-04-2006 updated: Norwegian language file (Thnx to vnm)
  - 21-04-2006 fixed: [ 1473159 ] Big size font subtitles long time play error.
  - 21-04-2006 fixed: [ 1473940 ] ControlLabel don't always display
  - 21-04-2006 fixed: [ 1459126 ] LogPath XML Setting Not Respected.
