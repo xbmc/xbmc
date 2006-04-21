@@ -37,7 +37,7 @@ bool CFileZip::Open(const CURL&url, bool bBinary)
 
   if (!mFile.Open(url.GetHostName(),true)) // this is the zip-file, always open binary
   {
-    CLog::Log(LOGERROR,"FileZip: unable to open zip file!");
+    CLog::Log(LOGERROR,"FileZip: unable to open zip file %s!",url.GetHostName().c_str());
     return false;
   }
   mFile.Seek(mZipItem.offset,SEEK_SET);
@@ -81,6 +81,7 @@ __int64 CFileZip::Seek(__int64 iFilePosition, int iWhence)
       if (iFilePosition > mZipItem.usize)
         return -1;
       m_iFilePos = iFilePosition;
+      m_iZipFilePos = m_iFilePos;
       iResult = mFile.Seek(iFilePosition+mZipItem.offset,SEEK_SET)-mZipItem.offset;
       return iResult;
       break;
@@ -89,6 +90,7 @@ __int64 CFileZip::Seek(__int64 iFilePosition, int iWhence)
       if (m_iFilePos+iFilePosition > mZipItem.usize)
         return -1;
       m_iFilePos += iFilePosition;
+      m_iZipFilePos = m_iFilePos;
       iResult = mFile.Seek(iFilePosition,SEEK_CUR)-mZipItem.offset;
       return iResult;
       break;
@@ -97,6 +99,7 @@ __int64 CFileZip::Seek(__int64 iFilePosition, int iWhence)
       if (iFilePosition > mZipItem.usize)
         return -1;
       m_iFilePos = mZipItem.usize+iFilePosition;
+      m_iZipFilePos = m_iFilePos;
       iResult = mFile.Seek(mZipItem.offset+mZipItem.usize+iFilePosition,SEEK_SET)-mZipItem.offset;
       return iResult;
       break;
