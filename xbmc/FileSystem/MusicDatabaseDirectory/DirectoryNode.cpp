@@ -253,7 +253,7 @@ void CDirectoryNode::AddQueuingFolder(CFileItemList& items)
     break;
 
     //  All song related nodes
-  case NODE_TYPE_ALBUM_RECENTLY_PLAYED_SONGS:
+/*  case NODE_TYPE_ALBUM_RECENTLY_PLAYED_SONGS:
   case NODE_TYPE_ALBUM_RECENTLY_ADDED_SONGS:
   case NODE_TYPE_ALBUM_COMPILATIONS_SONGS:
   case NODE_TYPE_ALBUM_TOP100_SONGS:
@@ -261,7 +261,7 @@ void CDirectoryNode::AddQueuingFolder(CFileItemList& items)
   case NODE_TYPE_SONG:
     pItem = new CFileItem(g_localizeStrings.Get(15104));  // "All Songs"
     pItem->m_strPath = BuildPath() + "-1/";
-    break;
+    break;*/
   }
 
   if (pItem)
