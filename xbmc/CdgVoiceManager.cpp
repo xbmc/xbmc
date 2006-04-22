@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "CdgVoiceManager.h"
-
+#include "AudioContext.h"
 
 //CdgChatter
 CCdgChatter::CCdgChatter()
@@ -118,6 +118,8 @@ HRESULT CCdgChatter::Initialize(CCdgVoiceManager* pManager, DWORD dwPort, CDG_DE
   dssd.lpvContext = (void*) this;
 
   // Create a stream with the specified context
+  if (g_audioContext.IsPassthroughActive())
+    return -1;
   hr = DirectSoundCreateStream( &dssd, & m_pOutputStream );
   if ( FAILED( hr ) ) return hr;
   // Set the stream headroom to 0
