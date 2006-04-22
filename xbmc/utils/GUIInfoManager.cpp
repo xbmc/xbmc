@@ -1545,9 +1545,9 @@ string CGUIInfoManager::GetSystemHeatInfo(const CStdString &strInfo)
   else if (strInfo == "lcdcpu")
   {
     if (g_guiSettings.GetInt("Weather.TemperatureUnits") == 1 /*DEGREES_F*/)
-      text.Format("%3.0f%cF", ((9.0 / 5.0) * m_cpuTemp) + 32.0, 176);
+      text.Format("%3.0f%c%cF", ((9.0 / 5.0) * m_cpuTemp) + 32.0, 0xC2,0xB0);
     else
-      text.Format("%2.0f%cC", m_cpuTemp, 176);
+      text.Format("%2.0f%c%cC", m_cpuTemp, 0xC2,0xB0);
   }
   else if (strInfo == "gpu")
   {
@@ -1559,9 +1559,9 @@ string CGUIInfoManager::GetSystemHeatInfo(const CStdString &strInfo)
   else if (strInfo == "lcdgpu")
   {
     if (g_guiSettings.GetInt("Weather.TemperatureUnits") == 1 /*DEGREES_F*/)
-      text.Format("%3.0f%cF", ((9.0 / 5.0) * m_gpuTemp) + 32.0, 176);
+      text.Format("%3.0f%c%cF", ((9.0 / 5.0) * m_gpuTemp) + 32.0, 0xC2,0xB0);
     else
-      text.Format("%2.0f%cC", m_gpuTemp, 176);
+      text.Format("%2.0f%c%cC", m_gpuTemp, 0xC2,0xB0);
   }
   else if (strInfo == "fan")
   {
