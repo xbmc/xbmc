@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 22-04-2006 fixed: if user canceled caching during startup of a shoutcast playlist, when mplayer went to next file in playlist, user wasn't able to cancel next one.
  - 22-04-2006 fixed: entering a folder with invalid pls files (strm files names pls), would connect to the url specified
  - 22-04-2006 fixed/changed: old discontinued shoutcast 500 replaced with new system. all streams now available
  - 21-04-2006 removed: * All Songs item in library view.
