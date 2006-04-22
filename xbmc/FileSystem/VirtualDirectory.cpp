@@ -118,7 +118,11 @@ bool CVirtualDirectory::GetDirectory(const CStdString& strPath, CFileItemList &i
     VECSHARES vecShares = *m_vecShares;
     int iIndex = CUtil::GetMatchingShare(strPath, vecShares, bIsBookmarkName);
     // added exception for various local hd items
-    if (iIndex > -1 || strPath.Mid(1, 1) == ":")
+    // function doesn't work for http/shout streams with options..
+    if (iIndex > -1 || strPath.Mid(1, 1) == ":" 
+      || strPath.Left(8).Equals("shout://") 
+      || strPath.Left(7).Equals("http://") 
+      || strPath.Left(7).Equals("daap://") )
     {
       // Only cache directory we are getting now
       if (strPath.Left(7) != "lastfm:")

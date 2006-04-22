@@ -45,14 +45,13 @@ namespace XFILE
       void SetProxy(CStdString &proxy)                           { m_proxy = proxy; }
       void SetCustomRequest(CStdString &request)                 { m_customrequest = request; }
       void UseOldHttpVersion(bool bUse)                          { m_useOldHttpVersion = bUse; }
-            
+      void SetContentEncoding(CStdString encoding)               { m_contentencoding = encoding; }
 
       void SetRequestHeader(CStdString header, CStdString value);
-      void SetRequestHeader(CStdString header, long value);
+      void SetRequestHeader(CStdString header, long value);      
 
       void ClearRequestHeaders();
       void SetBufferSize(unsigned int size);
-      
 
       /* static function that will get content type of a file */      
       static bool GetHttpHeader(const CURL &url, CHttpHeader &headers);
@@ -69,11 +68,12 @@ namespace XFILE
       CStdString      m_userAgent;
       CStdString      m_proxy;
       CStdString      m_customrequest;
+      CStdString      m_contentencoding;
+
 	    __int64					m_fileSize;
 	    __int64					m_filePos;
       bool            m_opened;
-      bool            m_useOldHttpVersion;
-      bool            m_acceptGZip;
+      bool            m_useOldHttpVersion;      
 
       CRingHoldBuffer m_buffer;           // our ringhold buffer
       char *          m_overflowBuffer;   // in the rare case we would overflow the above buffer
