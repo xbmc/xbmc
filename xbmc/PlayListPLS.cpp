@@ -65,6 +65,11 @@ bool CPlayListPLS::LoadPLSInfo(CStdString strFileName, const CStdString& content
   StringUtils::RemoveCRLF(strLine);
   if (strLine != START_PLAYLIST_MARKER)
   {
+    /* DISABLED FOR NOW
+       CFileItem parses playlists when it tries to get default icons
+       and since this happens as soon as you enter a folder, this could slow
+       us down to a crawl
+
     CFileItem item(strLine, false);
     CURL url(strLine);
     CStdString strProtocol = url.GetProtocol();
@@ -89,6 +94,7 @@ bool CPlayListPLS::LoadPLSInfo(CStdString strFileName, const CStdString& content
       file.Close();
       return true;
     }
+    */
     file.Close();
     return false;
   }
