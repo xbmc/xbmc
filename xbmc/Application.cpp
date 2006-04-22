@@ -3142,8 +3142,11 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
       m_pPlayer->Pause();
     }
 
-    if (item.IsAudio() && !item.IsInternetStream() && g_guiSettings.GetBool("Karaoke.Enabled"))
+    // Enable Karaoke voice as necessary
+    if (g_guiSettings.GetBool("Karaoke.VoiceEnabled"))
     {
+//    if (item.IsAudio() && !item.IsInternetStream() && g_guiSettings.GetBool("Karaoke.Enabled"))
+//    {
       if (item.IsMusicDb())
         m_CdgParser.Start(item.m_musicInfoTag.GetURL());
       else
