@@ -443,9 +443,9 @@ void CGUIWindowSettingsCategory::CreateSettings()
       {
         CStdString strLabel;
         if (g_guiSettings.GetInt("Weather.TemperatureUnits") == 1 /* DEGREES_F */)
-          strLabel.Format("%2.0f%cF", ((9.0 / 5.0) * (float)i) + 32.0, 176);
+          strLabel.Format("%2.0f%c%cF", ((9.0 / 5.0) * (float)i) + 32.0, 0xC2,0xB0);
         else
-          strLabel.Format("%i%cC", i, 176);
+          strLabel.Format("%i%c%cC", i, 0xC2,0xB0);
         pControl->AddLabel(strLabel, i);
       }
       pControl->SetValue(pSettingInt->GetData());
@@ -910,13 +910,16 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetInt("MusicPlayer.CrossFade") > 0);
     }
-    else if (strSetting.Left(8) == "Karaoke." && strSetting != "Karaoke.Enabled")
+    else if (strSetting == "Karaoke.BackgroundAlpha" || strSetting == "Karaoke.ForegroundAlpha"
+          || strSetting == "Karaoke.SyncDelay")
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      bool enabled = g_guiSettings.GetBool("Karaoke.Enabled");
-      if (strSetting.Left(12) == "Karaoke.Port" || strSetting == "Karaoke.Volume")
-        enabled = enabled && g_guiSettings.GetBool("Karaoke.VoiceEnabled");
-      if (pControl) pControl->SetEnabled(enabled);
+      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("Karaoke.Enabled"));
+    }
+    else if (strSetting.Left(12) == "Karaoke.Port" || strSetting == "Karaoke.Volume")
+    {
+      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("Karaoke.VoiceEnabled"));
     }
     else if (strSetting == "System.FanSpeed")
     { // only visible if we have fancontrolspeed enabled
