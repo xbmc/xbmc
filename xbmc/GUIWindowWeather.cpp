@@ -30,8 +30,6 @@
 #define CONTROL_LABELD0GEN  34
 #define CONTROL_IMAGED0IMG  35
 
-#define DEGREE_CHARACTER  (char)176 //the degree 'o' character
-
 #define PARTNER_ID    "1004124588"   //weather.com partner id
 #define PARTNER_KEY    "079f24145f208494"  //weather.com partner key
 
