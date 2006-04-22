@@ -162,7 +162,7 @@ void CGUIVisualisationControl::Render()
     return;
   }
   
-  if (!m_bInitialized)
+  if (m_pVisualisation == NULL)
   { // check if we need to load
     if (g_application.IsPlayingAudio())
     {
