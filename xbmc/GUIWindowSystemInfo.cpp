@@ -745,9 +745,9 @@ bool CGUIWindowSystemInfo::GetHDDTemp(CStdString& strItemhdd)
   if (hddsmarttemp>0)
   {
     if(g_guiSettings.GetInt("Weather.TemperatureUnits") == 1 /*DEGREES_F*/)
-      strItemhdd.Format("%s %2.2f%cF", lblhdd.c_str(), ((9.0 / 5.0) * hddsmarttemp) + 32.0, 176); 
+      strItemhdd.Format("%s %2.2f%c%cF", lblhdd.c_str(), ((9.0 / 5.0) * hddsmarttemp) + 32.0, 0xC2,0xB0); 
     else
-      strItemhdd.Format("%s %d.00%cC", lblhdd.c_str(),hddsmarttemp, 176); 
+      strItemhdd.Format("%s %d.00%c%cC", lblhdd.c_str(),hddsmarttemp, 0xC2,0xB0); 
 
     return true;
   }

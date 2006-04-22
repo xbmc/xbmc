@@ -41,7 +41,7 @@
 #define CONTROL_LABELD0GEN  34
 #define CONTROL_IMAGED0IMG  35
 
-#define DEGREE_CHARACTER  (char)176 //the degree 'o' character
+#define DEGREE_CHARACTER  0xC2,0xB0 // 0xC2B0=Degree sign in utf8
 
 #define PARTNER_ID    "1004124588"   //weather.com partner id
 #define PARTNER_KEY    "079f24145f208494"  //weather.com partner key
@@ -337,9 +337,9 @@ bool CWeather::LoadWeather(const CStdString &strWeatherFile)
     LocalizeOverview(m_szCurrentConditions);
 
     GetInteger(pElement, "tmp", iTmpInt);    //current temp
-    sprintf(m_szCurrentTemperature, "%i%c%s", iTmpInt, DEGREE_CHARACTER, szUnitTemp);
+    sprintf(m_szCurrentTemperature, "%i%c%c%s", iTmpInt, DEGREE_CHARACTER, szUnitTemp);
     GetInteger(pElement, "flik", iTmpInt);    //current 'Feels Like'
-    sprintf(m_szCurrentFeelsLike, "%i%c%s", iTmpInt, DEGREE_CHARACTER, szUnitTemp);
+    sprintf(m_szCurrentFeelsLike, "%i%c%c%s", iTmpInt, DEGREE_CHARACTER, szUnitTemp);
 
     TiXmlElement *pNestElement = pElement->FirstChildElement("wind"); //current wind
     if (pNestElement)
@@ -375,7 +375,7 @@ bool CWeather::LoadWeather(const CStdString &strWeatherFile)
     }
 
     GetInteger(pElement, "dewp", iTmpInt);    //current dew point
-    sprintf(m_szCurrentDewPoint, "%i%c%s", iTmpInt, DEGREE_CHARACTER, szUnitTemp);
+    sprintf(m_szCurrentDewPoint, "%i%c%c%s", iTmpInt, DEGREE_CHARACTER, szUnitTemp);
 
   }
   //future forcast
@@ -394,13 +394,13 @@ bool CWeather::LoadWeather(const CStdString &strWeatherFile)
         if (strcmp(iTmpStr, "N/A") == 0)
           strcpy(m_dfForcast[i].m_szHigh, "");
         else
-          sprintf(m_dfForcast[i].m_szHigh, "%s%c%s", iTmpStr, DEGREE_CHARACTER, szUnitTemp);
+          sprintf(m_dfForcast[i].m_szHigh, "%s%c%c%s", iTmpStr, DEGREE_CHARACTER, szUnitTemp);
 
         GetString(pOneDayElement, "low", iTmpStr, "");
         if (strcmp(iTmpStr, "N/A") == 0)
           strcpy(m_dfForcast[i].m_szHigh, "");
         else
-          sprintf(m_dfForcast[i].m_szLow, "%s%c%s", iTmpStr, DEGREE_CHARACTER, szUnitTemp);
+          sprintf(m_dfForcast[i].m_szLow, "%s%c%c%s", iTmpStr, DEGREE_CHARACTER, szUnitTemp);
 
         TiXmlElement *pDayTimeElement = pOneDayElement->FirstChildElement("part"); //grab the first day/night part (should be day)
         if (i == 0 && (time.wHour < 7 || time.wHour >= 19)) //weather.com works on a 7am to 7pm basis so grab night if its late in the day
