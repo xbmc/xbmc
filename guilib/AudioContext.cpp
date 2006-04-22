@@ -164,9 +164,14 @@ void CAudioContext::SetupSpeakerConfig(int iChannels, bool& bAudioOnAllSpeakers,
   DirectSoundOverrideSpeakerConfig(spconfig);
 }
 
-bool CAudioContext::IsAC3EncoderActive()
+bool CAudioContext::IsAC3EncoderActive() const
 {
   return m_bAC3EncoderActive;
+}
+
+bool CAudioContext::IsPassthroughActive() const
+{
+  return (m_iDevice == AC97_DEVICE);
 }
 
 bool CAudioContext::GetMixBin(DSMIXBINVOLUMEPAIR* dsmbvp, int* MixBinCount, DWORD* dwChannelMask, int Type, int Channels)
