@@ -65,6 +65,17 @@ bool CPlayListPLS::LoadPLSInfo(CStdString strFileName, const CStdString& content
   StringUtils::RemoveCRLF(strLine);
   if (strLine != START_PLAYLIST_MARKER)
   {
+    /* attempt to parse it as an url */
+    CURL url(strLine);
+    CStdString strUrl;
+    url.GetURL(strUrl);
+    if( !strUrl.IsEmpty() )
+    {
+      CPlayListItem item(strUrl, strUrl, 0);
+      Add(item);
+      file.Close();
+      return true;
+    }
     /* DISABLED FOR NOW
        CFileItem parses playlists when it tries to get default icons
        and since this happens as soon as you enter a folder, this could slow
