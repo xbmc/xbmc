@@ -6,14 +6,18 @@ extern "C" void mplayer_exit_player(void);
 
 CDlgCache::CDlgCache(DWORD dwDelay)
 {
+  m_pDlg = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+
+  /* if progress dialog is already running, take it over */
+  if( m_pDlg->IsRunning() )
+    dwDelay = 0;
+
   m_pDlg = NULL;
+
   m_strLinePrev = "";
-  m_bOpenTried = false;
+
   if(dwDelay == 0)
-  {
-    OpenDialog();
-    m_bOpenTried = true;
-  }
+    OpenDialog();    
   else
     m_dwTimeStamp = GetTickCount() + dwDelay;
 
@@ -37,26 +41,31 @@ CDlgCache::~CDlgCache()
 
 void CDlgCache::OpenDialog()
 {
-  if (m_gWindowManager.IsRouted(true))
+  m_pDlg = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+  if(m_pDlg == NULL) return;
+
+  /* if any other modal dialog is open, don't open this one */
+  if (m_gWindowManager.IsRouted(true) && !m_pDlg->IsRunning() )
   {
     m_pDlg = NULL;
     return;
   }
-  m_pDlg = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
-  if (m_pDlg)
-  {
-    m_pDlg->SetHeading(438);
-    m_pDlg->SetLine(0, m_strLinePrev);
-    m_pDlg->SetLine(1, "");
-    m_pDlg->SetLine(2, "");
-    m_pDlg->StartModal( m_gWindowManager.GetActiveWindow());
-    m_strLinePrev = "";
-  }
+  
+  m_pDlg->SetHeading(438);
+  m_pDlg->SetLine(0, m_strLinePrev);
+  m_pDlg->SetLine(1, "");
+  m_pDlg->SetLine(2, "");
+  m_pDlg->StartModal( m_gWindowManager.GetActiveWindow());
+  m_strLinePrev = "";
+
   bSentCancel = false;
 }
 
 void CDlgCache::Update()
 {
+  if( g_graphicsContext.IsFullScreenVideo() )
+    return;
+
   if (m_pDlg)
   {
     m_pDlg->Progress();
@@ -72,17 +81,8 @@ void CDlgCache::Update()
       }
     }
   }
-  else if( g_graphicsContext.IsFullScreenVideo() )
-  {
-    //Could be used to display some progress while in fullscreen
-    return;
-  }
-  else if( GetTickCount() > m_dwTimeStamp  && !m_bOpenTried )
-  {
-    m_bOpenTried = true;
+  else if( GetTickCount() > m_dwTimeStamp )
     OpenDialog();
-    if (m_pDlg) m_pDlg->Progress();
-  }
 }
 
 void CDlgCache::SetMessage(const CStdString& strMessage)
