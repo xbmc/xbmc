@@ -520,7 +520,7 @@ void CFileItem::FillInDefaultIcon()
       SetIconImage("defaultPlaylist.png");
 
       CUtil::GetExtension(m_strPath, strExtension);
-      if (!strExtension.Equals(".strm"))
+      if (!strExtension.Equals(".strm") && !IsInternetStream() )
       {
         //  Save playlists to playlist directroy
         CStdString strFileName, strFolder;

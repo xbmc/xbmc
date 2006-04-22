@@ -155,7 +155,6 @@ CFileCurl::CFileCurl()
   m_overflowSize = 0;
   m_pHeaderCallback = NULL;
   m_bufferSize = BUFFER_SIZE;
-  m_acceptGZip = true;
 }
 
 //Has to be called before Open()
@@ -239,12 +238,13 @@ void CFileCurl::SetCommonOptions()
   g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_HTTP200ALIASES, m_curlAliasList); 
 
   // always allow gzip compression
-  if (m_acceptGZip)
-    g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_ENCODING, "gzip");
-
+  if( m_contentencoding.length() > 0 )
+    g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_ENCODING, m_contentencoding.c_str());
   
   if (m_userAgent.length() > 0)
     g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_USERAGENT, m_userAgent.c_str());
+  else /* set some default agent as shoutcast doesn't return proper stuff otherwise */
+    g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_USERAGENT, "XBMC/2.0.0 (compatible; MSIE 6.0; Windows NT 5.1; WinampMPEG/5.09)");
   
   if (m_useOldHttpVersion)
     g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_0);
@@ -293,7 +293,8 @@ bool CFileCurl::Open(const CURL& url, bool bBinary)
     m_easyHandle = g_curlInterface.easy_aquire(url.GetProtocol(), url.GetHostName());
 
 
-  m_acceptGZip = bBinary;
+  if( m_contentencoding.length() == 0 && bBinary)
+    m_contentencoding = "gzip";
 
   // setup common curl options
   SetCommonOptions();
