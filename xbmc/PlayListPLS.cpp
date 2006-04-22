@@ -26,19 +26,28 @@ CPlayListPLS::CPlayListPLS(void)
 CPlayListPLS::~CPlayListPLS(void)
 {}
 
-bool CPlayListPLS::LoadPLSInfo(const CStdString& strFileName)
+bool CPlayListPLS::LoadPLSInfo(CStdString strFileName, const CStdString& content)
 {
   //read it from the file
   CStdString strBasePath;
   m_strPlayListName = CUtil::GetFileName(strFileName);
 
-  bool bShoutCast = false;
-  CStdString strExt = CUtil::GetExtension(m_strPlayListName);
-  strExt.ToLower();
-  if ( strcmpi(strExt, ".pls") == 0) bShoutCast = true;
+  Clear();
 
-  Clear();  
-  CUtil::GetParentPath(strFileName, strBasePath);
+  bool bShoutCast = false;
+  if ( content.Equals("audio/x-scpls") ) 
+  {
+    bShoutCast = true;
+    if( strFileName.Left(8).Equals("shout://") )
+    {
+      strFileName.Delete(0, 8);
+      strFileName.Insert(0, "http://");
+    }
+    strBasePath = "";
+  }
+  else
+    CUtil::GetParentPath(strFileName, strBasePath);
+
   CFile file;
   if (!file.Open(strFileName, false) )
   {
@@ -175,7 +184,7 @@ bool CPlayListPLS::Load(const CStdString& strFileName)
     }
     return true;
   }
-  return LoadPLSInfo(strFileName);
+  return LoadPLSInfo(strFileName, "");
 }
 
 bool CPlayListPLS::LoadFromWeb(CStdString& strURL)
@@ -214,7 +223,7 @@ bool CPlayListPLS::LoadFromWeb(CStdString& strURL)
   }
   if (strContentType == "audio/x-scpls")
   {
-    return LoadPLSInfo(strURL);
+    return LoadPLSInfo(strURL, strContentType);
   }
 
   // Unknown type
