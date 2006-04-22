@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 21-04-2006 fixed: Appearance of the degree symbol in Weather, System Information and the LCD.
  - 21-04-2006 fixed: [ 1447371 ] no karaoke over video.
  - 21-04-2006 changed: enable/disable subtitles now enable/disable caching of subtitles. also polished browsing a bit.
  - 21-04-2006 fixed: fixed the error in filezip properly.
