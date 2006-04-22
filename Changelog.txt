@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 22-04-2006 fixed: entering a folder with invalid pls files (strm files names pls), would connect to the url specified
  - 22-04-2006 fixed/changed: old discontinued shoutcast 500 replaced with new system. all streams now available
  - 21-04-2006 removed: * All Songs item in library view.
  - 21-04-2006 fixed: Appearance of the degree symbol in Weather, System Information and the LCD.
