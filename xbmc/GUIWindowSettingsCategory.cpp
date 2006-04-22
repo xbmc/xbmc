@@ -355,8 +355,11 @@ void CGUIWindowSettingsCategory::CreateSettings()
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
-      pControl->AddLabel("°C", 0);
-      pControl->AddLabel("°F", 1);
+      CStdString weather;
+      weather.Format("%c%cC", 0xC2, 0xB0);
+      pControl->AddLabel(weather, 0);
+      weather.Format("%c%cF", 0xC2, 0xB0);
+      pControl->AddLabel(weather, 1);
       pControl->SetValue(pSettingInt->GetData());
     }
     else if (strSetting == "Weather.SpeedUnits")
