@@ -24,6 +24,7 @@ public:
   virtual bool SkipNext();
   unsigned int GetChunkSize() {return m_chunk_size;}
   int GetCacheLevel();
+  bool CanSeek();
 
   EventHandler OnClear;
 protected:

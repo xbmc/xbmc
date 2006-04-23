@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 23-04-2006 fixed: Seeking was enabled for media that doesn't support it (last.fm, shoutcast..)
  - 23-04-2006 fixed: Incorrect "CDDB" errormessage when unable to connect to a shoutcast station.
  - 23-04-2006 fixed: Playlist files (strm/pls) containing an url to an online playlist (asx/pls) would not play.
  - 23-04-2006 fixed: Parts of [ 1398400 ] Multiple Bugs (5): Karaoke, Audio, MP3 + CDG Playback.

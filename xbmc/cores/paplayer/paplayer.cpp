@@ -733,8 +733,14 @@ int PAPlayer::GetBitrate()
   return 0;
 }
 
+bool PAPlayer::CanSeek()
+{
+  return ((m_decoder[m_currentDecoder].TotalTime() > 0) && m_decoder[m_currentDecoder].CanSeek());
+}
+
 void PAPlayer::SeekTime(__int64 iTime /*=0*/)
 {
+  if (!CanSeek()) return;
   if (m_currentFile.m_lStartOffset)
     iTime += m_currentFile.m_lStartOffset * 1000 / 75;
   m_SeekTime = iTime;
