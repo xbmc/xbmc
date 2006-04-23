@@ -8,6 +8,7 @@
 #include "Picture.h"
 #include "GUIDialogContextMenu.h"
 #include "GUIListControl.h"
+#include "GUIDialogMediaSource.h"
 #include "GUIPassword.h"
 #include "lib/libPython/XBPython.h"
 #include "GUIWindowSlideShow.h"
@@ -385,6 +386,15 @@ void CGUIWindowFileManager::OnClick(int iList, int iItem)
   if ( iItem < 0 || iItem >= m_vecItems[iList].Size() ) return ;
 
   CFileItem *pItem = m_vecItems[iList][iItem];
+  if (pItem->m_strPath == "add" && pItem->GetLabel() == g_localizeStrings.Get(1026)) // 'add source button' in empty root
+  {
+    if (CGUIDialogMediaSource::ShowAndAddMediaSource("files"))
+    {
+      Update(0,m_Directory[0].m_strPath);
+      Update(1,m_Directory[1].m_strPath);
+    }
+    return;
+  }
 
   if (pItem->m_bIsFolder)
   {

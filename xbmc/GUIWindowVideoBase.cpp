@@ -18,6 +18,7 @@
 #include "FileSystem/StackDirectory.h"
 #include "GUIDialogContextMenu.h"
 #include "GUIDialogFileStacking.h"
+#include "GUIDialogMediaSource.h"
 #include "GUIWindowFileManager.h"
 
 #include "SkinInfo.h"
@@ -886,6 +887,16 @@ bool CGUIWindowVideoBase::OnPlayMedia(int iItem)
 
   if ( iItem < 0 || iItem >= (int)m_vecItems.Size() ) return false;
   CFileItem* pItem = m_vecItems[iItem];
+  
+  if (pItem->m_strPath == "add" && pItem->GetLabel() == g_localizeStrings.Get(1026)) // 'add source button' in empty root
+  {
+    if (CGUIDialogMediaSource::ShowAndAddMediaSource("video"))
+    {
+      Update("");
+      return true;
+    }
+    return false;
+  }
 
   PlayMovie(pItem);
 
