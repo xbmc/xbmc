@@ -9,6 +9,7 @@
 #include "GUIThumbnailPanel.h"
 #include "GUIPassword.h"
 #include "GUIDialogContextMenu.h"
+#include "GUIDialogMediaSource.h"
 #include "GUIDialogTrainerSettings.h"
 #include "xbox/xbeheader.h"
 #include "SortFileItem.h"
@@ -890,6 +891,17 @@ bool CGUIWindowPrograms::OnClick(int iItem)
 {
   if ( iItem < 0 || iItem >= (int)m_vecItems.Size() ) return true;
   CFileItem* pItem = m_vecItems[iItem];
+  
+  if (pItem->m_strPath == "add" && pItem->GetLabel() == g_localizeStrings.Get(1026)) // 'add source button' in empty root
+  {
+    if (CGUIDialogMediaSource::ShowAndAddMediaSource("myprograms"))
+    {
+      Update("");
+      return true;
+    }
+    return false;
+  }
+
   if (pItem->m_bIsFolder)
   {
     // do nothing if the bookmark is locked
