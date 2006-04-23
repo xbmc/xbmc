@@ -123,6 +123,7 @@ bool CShoutcastDirectory::ParseStations(TiXmlElement *root, CFileItemList &items
 
 bool CShoutcastDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
 {
+
   CStdString strRoot = strPath;
   if (CUtil::HasSlashAtEnd(strRoot))
     strRoot.Delete(strRoot.size() - 1);
@@ -130,6 +131,9 @@ bool CShoutcastDirectory::GetDirectory(const CStdString& strPath, CFileItemList 
   /* for old users wich doesn't have the full url */
   if( strRoot.Equals("shout://www.shoutcast.com") )
     strRoot = "shout://www.shoutcast.com/sbin/newxml.phtml";
+
+  if (g_directoryCache.GetDirectory(strRoot, items))
+    return true;
 
   /* display progress dialog after 2 seconds */
   DWORD dwTimeStamp = GetTickCount() + 2000;
