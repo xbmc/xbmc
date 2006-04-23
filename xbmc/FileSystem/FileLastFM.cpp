@@ -466,6 +466,11 @@ bool CFileLastFM::RetreiveMetaData()
     tag.SetLoaded();
     g_infoManager.SetCurrentSongTag(tag);
 
+    //inform app a new track has started
+    CGUIMessage msg(GUI_MSG_PLAYBACK_STARTED, 0, 0, 0, 0, NULL);
+    m_gWindowManager.SendThreadMessage(msg);
+
+
     //check recordtoprofile, only update if server has wrong setting
     Parameter("recordtoprofile", html, value);
     bool bRTP = g_guiSettings.GetBool("MyMusic.LastFMRecordToProfile");
