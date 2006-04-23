@@ -7,6 +7,7 @@
 #include "GUIPassword.h"
 #include "Application.h"
 #include "PartyModeManager.h"
+#include "GUIDialogMediaSource.h"
 
 #include "GUIImage.h"
 #include "GUIMultiImage.h"
@@ -467,6 +468,15 @@ bool CGUIMediaWindow::Update(const CStdString &strDirectory)
   if (strDirectory.IsEmpty())
     m_history.ClearPathHistory();
 
+  if (strDirectory.IsEmpty() && m_vecItems.IsEmpty()) // add 'add source button'
+  {
+    CStdString strLabel = g_localizeStrings.Get(1026);
+    CFileItem *pItem = new CFileItem(strLabel);
+    pItem->m_strPath = "add";
+    pItem->SetLabel(strLabel);
+    pItem->SetLabelPreformated(true);
+    m_vecItems.Add(pItem);
+  }
   m_iLastControl = GetFocusedControl();
 
   //  Ask the derived class if it wants to load additional info
@@ -592,6 +602,15 @@ bool CGUIMediaWindow::OnClick(int iItem)
     }
     else if (m_guiState.get() && m_guiState->AutoPlayNextItem() && !g_partyModeManager.IsEnabled())
     {
+      if (pItem->m_strPath == "add" && pItem->GetLabel() == g_localizeStrings.Get(1026)) // 'add source button' in empty root
+      {
+        if (CGUIDialogMediaSource::ShowAndAddMediaSource("music"))
+        {
+          Update("");
+          return true;
+        }
+        return false;
+      }
       //play and add current directory to temporary playlist
       int iPlaylist=m_guiState->GetPlaylist();
       if (iPlaylist!=PLAYLIST_NONE)

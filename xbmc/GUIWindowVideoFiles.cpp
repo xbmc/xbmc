@@ -15,6 +15,7 @@
 #include "GUIListControl.h"
 #include "GUIPassword.h"
 #include "GUIDialogContextMenu.h"
+#include "GUIDialogMediaSource.h"
 #include "FileSystem/StackDirectory.h"
 
 #define CONTROL_LIST              50
@@ -234,9 +235,21 @@ bool CGUIWindowVideoFiles::OnPlayMedia(int iItem)
   if ( iItem < 0 || iItem >= (int)m_vecItems.Size() ) return false;
   CFileItem* pItem = m_vecItems[iItem];
 
-  AddFileToDatabase(pItem);
+  if (pItem->m_strPath == "add" && pItem->GetLabel() == g_localizeStrings.Get(1026)) // 'add source button' in empty root
+  {
+    if (CGUIDialogMediaSource::ShowAndAddMediaSource("video"))
+    {
+      Update("");
+      return true;
+    }
+    return false;
+  }
+  else
+  {
+    AddFileToDatabase(pItem);
 
-  return CGUIWindowVideoBase::OnPlayMedia(iItem);
+    return CGUIWindowVideoBase::OnPlayMedia(iItem);
+  }
 }
 
 void CGUIWindowVideoFiles::OnInfo(int iItem)
@@ -574,12 +587,16 @@ void CGUIWindowVideoFiles::GetStackedDirectory(const CStdString &strPath, CFileI
   int iStack = g_stSettings.m_iMyVideoStack;
   g_stSettings.m_iMyVideoStack = STACK_SIMPLE;
 
+  /*bool bUnroll = m_guiState->UnrollArchives();
+  g_guiSettings.SetBool("VideoFiles.UnrollArchives",true);*/
+
   //sort list ascending by filename before stacking...
   items.Sort(SORT_METHOD_LABEL, SORT_ORDER_ASC);
   items.Stack();
 
   // restore stack
   g_stSettings.m_iMyVideoStack = iStack;
+  //g_guiSettings.SetBool("VideoFiles.UnrollArchives",bUnroll);
 }
 
 void CGUIWindowVideoFiles::SetIMDBThumbs(CFileItemList& items)
