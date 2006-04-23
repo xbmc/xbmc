@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 23-04-2006 fixed: bug in samba port code for retrieving directory listing from old lanman servers. 
+                     also reneabled large read requests with workaround for bug in windows servers as per samba.org.
  - 22-04-2006 fixed: Degree symbol wasn't displaying correctly in Settings->Weather->Temperature Units.
  - 22-04-2006 fixed: if user canceled caching during startup of a shoutcast playlist, when mplayer went to next file in playlist, user wasn't able to cancel next one.
  - 22-04-2006 fixed: entering a folder with invalid pls files (strm files names pls), would connect to the url specified
