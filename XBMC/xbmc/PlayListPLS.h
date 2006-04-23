@@ -9,7 +9,7 @@ class CPlayListPLS :
 public:
   CPlayListPLS(void);
   virtual ~CPlayListPLS(void);
-  virtual bool Load(const CStdString& strFileName);
+  virtual bool Load(const CStdString& strFileName, bool bDeep);
   virtual void Save(const CStdString& strFileName) const;
 
 protected:
@@ -17,6 +17,6 @@ protected:
   bool LoadAsxInfo(CStdString& strData);
   bool LoadAsxIniInfo(CStdString& strData);
   bool LoadRAMInfo(CStdString& strData);
-  bool LoadPLSInfo(CStdString strFileName, const CStdString &content);
+  bool LoadPLSInfo(CStdString strFileName, const CStdString &content, bool bDeep);
 };
 };

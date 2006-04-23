@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 23-04-2006 fixed: Playlist files (strm/pls) containing an url to an online playlist (asx/pls) would not play.
  - 23-04-2006 fixed: Parts of [ 1398400 ] Multiple Bugs (5): Karaoke, Audio, MP3 + CDG Playback.
  - 23-04-2006 fixed: [ 1395189 ] CDG Seeking loses sync,  [ 1450824 ] Lyrics Lose Sync on FF / RW. Stup duping bug reports already!
  - 23-04-2006 fixed: bug in samba port code for retrieving directory listing from old lanman servers. 
