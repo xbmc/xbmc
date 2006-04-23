@@ -125,7 +125,7 @@ bool CVirtualDirectory::GetDirectory(const CStdString& strPath, CFileItemList &i
       || strPath.Left(7).Equals("daap://") )
     {
       // Only cache directory we are getting now
-      if (strPath.Left(7) != "lastfm:")
+      if (!strPath.Left(7).Equals("lastfm:") && !strPath.Left(8).Equals("shout://"))
         g_directoryCache.Clear();
       return CDirectory::GetDirectory(strPath, items, m_strFileMask, bUseFileDirectories, m_allowPrompting, m_cacheDirectory);
     }
