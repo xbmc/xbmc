@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 23-04-2006 fixed: Parts of [ 1398400 ] Multiple Bugs (5): Karaoke, Audio, MP3 + CDG Playback.
+ - 23-04-2006 fixed: [ 1395189 ] CDG Seeking loses sync,  [ 1450824 ] Lyrics Lose Sync on FF / RW. Stup duping bug reports already!
  - 23-04-2006 fixed: bug in samba port code for retrieving directory listing from old lanman servers. 
                      also reneabled large read requests with workaround for bug in windows servers as per samba.org.
  - 22-04-2006 fixed: Degree symbol wasn't displaying correctly in Settings->Weather->Temperature Units.
