@@ -537,7 +537,7 @@ void CFileItem::FillInDefaultIcon()
           auto_ptr<CPlayList> pPlayList (factory.Create(m_strPath));
           if (pPlayList.get() != NULL)
           {
-            if (pPlayList->Load(m_strPath) && pPlayList->size() > 0)
+            if (pPlayList->Load(m_strPath, false) && pPlayList->size() > 0)
             {
               // use first item in playlist to determine intent -- audio or video
               const CPlayList::CPlayListItem& item = (*pPlayList.get())[0];
