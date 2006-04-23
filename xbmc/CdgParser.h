@@ -17,7 +17,8 @@ typedef enum
   FILE_ERR_LOADING,
   FILE_LOADING,
   FILE_LOADED,
-  FILE_NOT_LOADED
+  FILE_NOT_LOADED,
+  FILE_SKIP
 } errCode;
 
 class CCdgLoader : public CThread
@@ -77,6 +78,7 @@ public:
   CCdg* GetCdg();
 
 protected:
+  errCode m_FileState;
   CCdgLoader* m_pLoader;
   CCdg m_Cdg;
   CXBStopWatch m_Timer;
@@ -86,6 +88,7 @@ protected:
   CCriticalSection m_CritSection;
 
   void ReadUpToTime(float secs);
+  void SkipUpToTime(float secs);
   virtual void OnStartup();
   virtual void OnExit();
   virtual void Process();
