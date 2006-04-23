@@ -9,7 +9,7 @@ class CPlayListM3U :
 public:
   CPlayListM3U(void);
   virtual ~CPlayListM3U(void);
-  virtual bool Load(const CStdString& strFileName);
+  virtual bool Load(const CStdString& strFileName, bool bDeep);
   virtual void Save(const CStdString& strFileName) const;
 };
 };

@@ -27,7 +27,7 @@ CPlayListB4S::~CPlayListB4S(void)
 {}
 
 
-bool CPlayListB4S::Load(const CStdString& strFileName)
+bool CPlayListB4S::Load(const CStdString& strFileName, bool bDeep)
 {
   CStdString strBasePath;
   CUtil::GetParentPath(strFileName, strBasePath);
