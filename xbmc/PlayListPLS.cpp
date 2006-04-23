@@ -26,7 +26,7 @@ CPlayListPLS::CPlayListPLS(void)
 CPlayListPLS::~CPlayListPLS(void)
 {}
 
-bool CPlayListPLS::LoadPLSInfo(CStdString strFileName, const CStdString& content)
+bool CPlayListPLS::LoadPLSInfo(CStdString strFileName, const CStdString& content, bool bDeep)
 {
   //read it from the file
   CStdString strBasePath;
@@ -65,22 +65,6 @@ bool CPlayListPLS::LoadPLSInfo(CStdString strFileName, const CStdString& content
   StringUtils::RemoveCRLF(strLine);
   if (strLine != START_PLAYLIST_MARKER)
   {
-    /* attempt to parse it as an url */
-    CURL url(strLine);
-    CStdString strUrl;
-    url.GetURL(strUrl);
-    if( !strUrl.IsEmpty() )
-    {
-      CPlayListItem item(strUrl, strUrl, 0);
-      Add(item);
-      file.Close();
-      return true;
-    }
-    /* DISABLED FOR NOW
-       CFileItem parses playlists when it tries to get default icons
-       and since this happens as soon as you enter a folder, this could slow
-       us down to a crawl
-
     CFileItem item(strLine, false);
     CURL url(strLine);
     CStdString strProtocol = url.GetProtocol();
@@ -91,7 +75,7 @@ bool CPlayListPLS::LoadPLSInfo(CStdString strFileName, const CStdString& content
         strLine.Replace("http:", "shout:");
       }
 
-      if (!bShoutCast && strProtocol == "http")
+      if (bDeep && !bShoutCast && strProtocol == "http")
       {
         if (LoadFromWeb(strLine))
         {
@@ -105,7 +89,6 @@ bool CPlayListPLS::LoadPLSInfo(CStdString strFileName, const CStdString& content
       file.Close();
       return true;
     }
-    */
     file.Close();
     return false;
   }
@@ -187,11 +170,11 @@ bool CPlayListPLS::LoadPLSInfo(CStdString strFileName, const CStdString& content
   return true;
 }
 
-bool CPlayListPLS::Load(const CStdString& strFileName)
+bool CPlayListPLS::Load(const CStdString& strFileName, bool bDeep)
 {
   m_vecItems.clear();
   CFileItem item(strFileName, false);
-  if (item.IsInternetStream())
+  if (bDeep && item.IsInternetStream())
   {
     //load it from the url
     if (!LoadFromWeb(item.m_strPath))
@@ -201,7 +184,7 @@ bool CPlayListPLS::Load(const CStdString& strFileName)
     }
     return true;
   }
-  return LoadPLSInfo(strFileName, "");
+  return LoadPLSInfo(strFileName, "", bDeep);
 }
 
 bool CPlayListPLS::LoadFromWeb(CStdString& strURL)
@@ -240,7 +223,7 @@ bool CPlayListPLS::LoadFromWeb(CStdString& strURL)
   }
   if (strContentType == "audio/x-scpls")
   {
-    return LoadPLSInfo(strURL, strContentType);
+    return LoadPLSInfo(strURL, strContentType, true);
   }
 
   // Unknown type
