@@ -273,7 +273,7 @@ bool CFileShoutcast::Open(const CURL& url, bool bBinary)
   {
     if (dlgProgress)
     {
-      dlgProgress->SetLine(1, 255);
+      dlgProgress->SetLine(1, 257);
       dlgProgress->SetLine(2, m_errorInfo.error_str);
       dlgProgress->Progress();
 
