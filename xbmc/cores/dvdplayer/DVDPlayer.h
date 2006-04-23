@@ -71,6 +71,7 @@ public:
   virtual void SwitchToNextLanguage();
   virtual void ToggleSubtitles();
   virtual void ToggleFrameDrop();
+  virtual bool CanSeek();
   virtual void Seek(bool bPlus, bool bLargeStep);
   virtual void SeekPercentage(float iPercent);
   virtual float GetPercentage();
