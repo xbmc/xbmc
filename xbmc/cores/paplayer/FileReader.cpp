@@ -242,3 +242,8 @@ int CFileReader::GetCacheLevel()
 {
   return m_ringBuffer.GetFillPercentage();
 }
+
+bool CFileReader::CanSeek()
+{
+  return m_file.CanSeek();
+}

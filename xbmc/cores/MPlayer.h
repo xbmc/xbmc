@@ -140,6 +140,7 @@ public:
   virtual void GetAudioStreamName(int iStream, CStdString& strStreamName);
   virtual void SetAudioStream(int iStream);
 
+  virtual bool CanSeek();
   virtual void SeekTime(__int64 iTime = 0);
   virtual int GetTotalTime();
   virtual __int64 GetTime();
