@@ -48,7 +48,7 @@ CURL::CURL(const CStdString& strURL)
     }
     else
     {
-      CLog::Log(LOGWARNING, __FUNCTION__" - Url has no protocol %s, empty CURL created", strURL.c_str());
+      CLog::Log(LOGDEBUG, __FUNCTION__" - Url has no protocol %s, empty CURL created", strURL.c_str());
       return;
     }
   }
