@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 23-04-2006 changed: "empty CURL created" logs from warning to debug level.
+ - 23-04-2006 fixed: Application notification about last.fm trackchanges.
  - 23-04-2006 fixed: Seeking was enabled for media that doesn't support it (last.fm, shoutcast..)
  - 23-04-2006 fixed: Incorrect "CDDB" errormessage when unable to connect to a shoutcast station.
  - 23-04-2006 fixed: Playlist files (strm/pls) containing an url to an online playlist (asx/pls) would not play.
