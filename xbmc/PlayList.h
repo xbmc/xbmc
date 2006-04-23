@@ -51,7 +51,7 @@ class CPlayListItem : public CFileItem
   };
   CPlayList(void);
   virtual ~CPlayList(void);
-  virtual bool Load(const CStdString& strFileName){ return false;};
+  virtual bool Load(const CStdString& strFileName, bool bDeep = true){ return false;};
   virtual void Save(const CStdString& strFileName) const {};
   void Add(CPlayListItem& item);
   const CStdString& GetName() const;
