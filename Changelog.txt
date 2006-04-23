@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 23-04-2006 fixed: Shoutcast directory did no caching.
  - 23-04-2006 fixed: [ 1474835 ] Cannot add media source after all are deleted.
  - 23-04-2006 added: Player.HasDuration conditional visibility tag.
  - 23-04-2006 changed: "empty CURL created" logs from warning to debug level.
