@@ -32,6 +32,7 @@ public:
 
   int ReadData(int size);
 
+  bool CanSeek() { if (m_codec) return m_codec->CanSeek(); else return false; };
   __int64 Seek(__int64 time);
   __int64 TotalTime();
   void Start() { m_canPlay = true;}; // cause a pre-buffered stream to start.

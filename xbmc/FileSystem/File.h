@@ -31,6 +31,7 @@ public:
   bool ReadString(char *szLine, int iLineLength);
   int Write(const void* lpBuf, __int64 uiBufSize);
   void Flush();
+  bool CanSeek() {if (m_pFile) return m_pFile->CanSeek(); return false;}
   __int64 Seek(__int64 iFilePosition, int iWhence = SEEK_SET);
   __int64 GetPosition();
   __int64 GetLength();
