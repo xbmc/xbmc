@@ -1817,6 +1817,10 @@ void CMPlayer::SetAudioStream(int iStream)
   g_applicationMessenger.MediaRestart(false);
 }
 
+bool CMPlayer::CanSeek()
+{
+  return GetTotalTime() > 0;
+}
 
 void CMPlayer::SeekTime(__int64 iTime)
 {

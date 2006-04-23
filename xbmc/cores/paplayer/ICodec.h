@@ -36,6 +36,8 @@ public:
   // are allocated and destroyed in the destructor.
   virtual void DeInit()=0;
 
+  virtual bool CanSeek() {return true;}
+
   // Seek()
   // Should seek to the appropriate time (in ms) in the file, and return the
   // time to which we managed to seek (in the case where seeking is problematic)

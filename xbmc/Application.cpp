@@ -2330,6 +2330,7 @@ bool CApplication::OnKey(CKey& key)
   // Check for global seek control
   if (IsPlaying() && action.fAmount1 && (action.wID == ACTION_ANALOG_SEEK_FORWARD || action.wID == ACTION_ANALOG_SEEK_BACK))
   {
+    if (!m_pPlayer->CanSeek()) return false;
     CScrobbler::GetInstance()->SetSubmitSong(false);  // Do not submit songs to Audioscrobbler when seeking, see CheckAudioScrobblerStatus()
     m_guiDialogSeekBar.OnAction(action);
     return true;
@@ -4181,6 +4182,8 @@ void CApplication::SetPlaySpeed(int iSpeed)
     return ;
   if (m_iPlaySpeed == iSpeed)
     return ;
+  if (!m_pPlayer->CanSeek())
+    return;
   if (m_pPlayer->IsPaused())
   {
     if (
@@ -4259,6 +4262,7 @@ void CApplication::SeekTime( double dTime )
 {
   if (IsPlaying() && m_pPlayer && (dTime >= 0.0))
   {
+    if (!m_pPlayer->CanSeek()) return;
     if (m_itemCurrentFile.IsStack())
     {
       // find the item in the stack we are seeking to, and load the new
@@ -4306,6 +4310,7 @@ void CApplication::SeekPercentage(float percent)
 {
   if (IsPlaying() && m_pPlayer && (percent >= 0.0))
   {
+    if (!m_pPlayer->CanSeek()) return;
     if (m_itemCurrentFile.IsStack())
       SeekTime(percent * 0.01 * GetTotalTime());
     else
