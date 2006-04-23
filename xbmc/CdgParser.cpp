@@ -36,7 +36,6 @@ void CCdgLoader::StopStream()
   m_CdgFileState = FILE_NOT_LOADED;
   if (m_pBuffer)
     SAFE_DELETE_ARRAY(m_pBuffer);
-  m_pSubCode = NULL;
 }
 
 SubCode* CCdgLoader::GetCurSubCode()
@@ -111,7 +110,7 @@ void CCdgLoader::OnStartup()
 
 void CCdgLoader::Process()
 {
-  if (m_CdgFileState != FILE_LOADING) return ;
+  if (m_CdgFileState != FILE_LOADING && m_CdgFileState != FILE_SKIP) return ;
 
   if (m_uiFileLength < m_uiStreamChunk)
     m_uiLoadedBytes = m_File.Read(m_pBuffer, m_uiFileLength);
@@ -174,6 +173,7 @@ bool CCdgReader::Start(float fStartTime)
   SetAVDelay(g_guiSettings.GetFloat("Karaoke.SyncDelay"));
   m_uiNumReadSubCodes = 0;
   m_Cdg.ClearDisplay();
+  m_FileState = FILE_LOADED;
   CThread::Create(false);
   return true;
 }
@@ -201,6 +201,10 @@ float CCdgReader::GetAVDelay()
 errCode CCdgReader::GetFileState()
 {
   CSingleLock lock (m_CritSection);
+
+  if (m_FileState == FILE_SKIP)
+    return m_FileState;
+
   if (!m_pLoader) return FILE_NOT_LOADED;
   return m_pLoader->GetFileState();
 }
@@ -231,27 +235,66 @@ void CCdgReader::ReadUpToTime(float secs)
       m_uiNumReadSubCodes++;
   }
 }
+
+void CCdgReader::SkipUpToTime(float secs)
+{
+  if (secs < 0) return ;
+  m_FileState= FILE_SKIP;
+
+  UINT uiFinalOffset = (UINT) (secs * PARSING_FREQ);
+  if ( m_uiNumReadSubCodes >= uiFinalOffset) return ;
+  UINT i;
+  for (i = m_uiNumReadSubCodes; i <= uiFinalOffset; i++)
+  {
+    //m_Cdg.ReadSubCode(m_pLoader->GetCurSubCode());
+    if (m_pLoader->SetNextSubCode())
+      m_uiNumReadSubCodes++;
+  }
+  m_FileState = FILE_LOADING;
+}
+
 void CCdgReader::OnStartup()
 {}
 
 void CCdgReader::Process()
 {
-  float fCurTime = 0.0f;
+  double fCurTime = 0.0f;
   bool bIsFirstPass = true;
-
+  double fNewTime=0.f;
+  CStdString strExt;
+  CUtil::GetExtension(m_pLoader->GetFileName(),strExt);
+  strExt = m_pLoader->GetFileName().substr(0,m_pLoader->GetFileName().size()-strExt.size());
   while (!CThread::m_bStop)
   {
     CSingleLock lock (m_CritSection);
-    fCurTime = m_Timer.GetElapsedSeconds();
-    if (fCurTime > 2.0f && bIsFirstPass)
+    m_fAVDelay=0.f;
+    double fDiff;
+    //if (!g_application.IsPlaying())
+    if (g_application.GetCurrentSong()->GetURL().substr(0,strExt.size()) != strExt)
     {
-      //Sync the playback with mplayer after 2 secs.
-      m_fStartingTime = (float)g_application.GetTime();
-      m_Timer.StartZero();
-      fCurTime = 0.0f;
-      bIsFirstPass = false;
+      Sleep(15);
+      fDiff = -0.4f;
     }
-    ReadUpToTime(fCurTime + m_fStartingTime - m_fAVDelay);
+    else
+    {
+      fNewTime=g_application.GetTime();
+      fDiff = fNewTime-fCurTime;
+    }
+    if (fDiff < -0.3f)
+    {
+      CStdString strFile = m_pLoader->GetFileName();
+      m_pLoader->StopStream();
+      while (m_pLoader->GetCurSubCode());
+      m_pLoader->StreamFile(strFile);
+      m_uiNumReadSubCodes = 0;
+      m_Cdg.ClearDisplay();
+      fNewTime = g_application.GetTime();
+      SkipUpToTime((float)fNewTime);
+    }
+    else
+      ReadUpToTime((float)fNewTime);
+    
+    fCurTime = fNewTime;
     lock.Leave();
     Sleep(15);
   }
@@ -303,7 +346,7 @@ void CCdgRenderer::Render()
   CSingleLock lock (m_CritSection);
   if (!m_pReader) return ;
   m_FileState = m_pReader->GetFileState();
-  if (m_FileState == FILE_NOT_LOADED) return ;
+  if (m_FileState == FILE_NOT_LOADED || m_FileState == FILE_SKIP) return ;
   if (m_FileState == FILE_LOADED || m_FileState == FILE_LOADING )
   {
     if (!m_bRender) return ;
@@ -486,7 +529,12 @@ void CCdgParser::FreeGraphics()
 
 bool CCdgParser::Start(CStdString strSongPath)
 {
-  if (!StartLoader(strSongPath)) return false;
+  if (StartLoader(strSongPath)) 
+  {
+    if (m_gWindowManager.GetActiveWindow() != WINDOW_VISUALISATION)
+      m_gWindowManager.ActivateWindow(WINDOW_VISUALISATION);
+  }
+
   if (!StartReader()) return false;
 
   // Karaoke patch (114097) ...
@@ -572,8 +620,16 @@ bool CCdgParser::StartLoader(CStdString strSongPath)
 {
   CSingleLock lock (m_CritSection);
   if (!AllocLoader()) return false;
-  m_pLoader->StreamFile(strSongPath);
-  return true;
+  
+  CUtil::RemoveExtension(strSongPath);
+  strSongPath += ".cdg";
+  if (CFile::Exists(strSongPath))
+  {
+    m_pLoader->StreamFile(strSongPath);
+    return true;
+  }
+
+  return false;
 }
 void CCdgParser::StopLoader()
 {
