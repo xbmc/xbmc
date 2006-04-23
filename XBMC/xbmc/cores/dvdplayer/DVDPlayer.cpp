@@ -852,6 +852,11 @@ void CDVDPlayer::ToggleSubtitles()
   //m_bRenderSubtitle = !m_bRenderSubtitle;
 }
 
+bool CDVDPlayer::CanSeek()
+{
+  return GetTotalTime() > 0;
+}
+
 void CDVDPlayer::Seek(bool bPlus, bool bLargeStep)
 {
   float percent = (bLargeStep ? 10.0f : 2.0f);
