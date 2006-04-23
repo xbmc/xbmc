@@ -16,6 +16,7 @@
 #include "GUIDialogMusicScan.h"
 #include "GUIDialogContextMenu.h"
 #include "GUIWindowFileManager.h"
+#include "GUIDialogMediaSource.h"
 #include "PartyModeManager.h"
 #include "utils/GUIInfoManager.h"
 
@@ -1469,6 +1470,17 @@ void CGUIWindowMusicBase::LoadPlayList(const CStdString& strPlayList)
 
 bool CGUIWindowMusicBase::OnPlayMedia(int iItem)
 {
+  CFileItem* pItem = m_vecItems[iItem];
+  if (pItem->m_strPath == "add" && pItem->GetLabel() == g_localizeStrings.Get(1026)) // 'add source button' in empty root
+  {
+    if (CGUIDialogMediaSource::ShowAndAddMediaSource("music"))
+    {
+      Update("");
+      return true;
+    }
+    return false;
+  }
+
   // party mode
   if (g_partyModeManager.IsEnabled())
   {
