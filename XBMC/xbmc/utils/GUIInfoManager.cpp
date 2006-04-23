@@ -134,6 +134,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("player.duration")) ret = PLAYER_DURATION;
     else if (strTest.Equals("player.volume")) ret = PLAYER_VOLUME;
     else if (strTest.Equals("player.muted")) ret = PLAYER_MUTED;
+    else if (strTest.Equals("player.hasduration")) ret = PLAYER_HASDURATION;
   }
   else if (strCategory.Equals("weather"))
   {
@@ -804,6 +805,9 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow) const
     case PLAYLIST_ISREPEATONE:
       bReturn = g_playlistPlayer.RepeatedOne(g_playlistPlayer.GetCurrentPlaylist());
     break;
+    case PLAYER_HASDURATION:
+      bReturn = g_application.GetTotalTime() > 0;
+      break;
     case VISUALISATION_LOCKED:
       {
         CGUIMessage msg(GUI_MSG_GET_VISUALISATION, 0, 0);

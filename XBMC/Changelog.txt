@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 23-04-2006 added: Player.HasDuration conditional visibility tag.
  - 23-04-2006 changed: "empty CURL created" logs from warning to debug level.
  - 23-04-2006 fixed: Application notification about last.fm trackchanges.
  - 23-04-2006 fixed: Seeking was enabled for media that doesn't support it (last.fm, shoutcast..)
