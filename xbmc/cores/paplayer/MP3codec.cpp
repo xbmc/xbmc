@@ -171,6 +171,7 @@ void MP3Codec::FlushDecoder()
 
 __int64 MP3Codec::Seek(__int64 iSeekTime)
 {
+  if (!m_file.CanSeek()) return -1;
   // calculate our offset to seek to in the file
   m_lastByteOffset = m_seekInfo.GetByteOffset(0.001f * iSeekTime);
   m_file.Seek(m_lastByteOffset, SEEK_SET);
@@ -312,4 +313,9 @@ bool MP3Codec::SkipNext()
 int MP3Codec::GetCacheLevel()
 {
   return m_file.GetCacheLevel();
+}
+
+bool MP3Codec::CanSeek()
+{
+  return m_file.CanSeek();
 }
