@@ -45,6 +45,7 @@
 #define PLAYER_SHOWINFO              31
 #define PLAYER_VOLUME                32
 #define PLAYER_MUTED                 33
+#define PLAYER_HASDURATION           34
 
 #define WEATHER_CONDITIONS          100
 #define WEATHER_TEMPERATURE         101
