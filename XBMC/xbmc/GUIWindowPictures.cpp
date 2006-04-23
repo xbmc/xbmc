@@ -9,6 +9,7 @@
 #include "FileSystem/ZipManager.h"
 #include "GUIDialogContextMenu.h"
 #include "GUIWindowFileManager.h"
+#include "GUIDialogMediaSource.h"
 #include "PlayListFactory.h"
 
 #define CONTROL_BTNVIEWASICONS      2
@@ -283,6 +284,16 @@ bool CGUIWindowPictures::OnPlayMedia(int iItem)
   if ( iItem < 0 || iItem >= (int)m_vecItems.Size() ) return false;
   CFileItem* pItem = m_vecItems[iItem];
   CStdString strPicture = pItem->m_strPath;
+  
+  if (pItem->m_strPath == "add" && pItem->GetLabel() == g_localizeStrings.Get(1026)) // 'add source button' in empty root
+  {
+    if (CGUIDialogMediaSource::ShowAndAddMediaSource("pictures"))
+    {
+      Update("");
+      return true;
+    }
+    return false;
+  }
 
   CGUIWindowSlideShow *pSlideShow = (CGUIWindowSlideShow *)m_gWindowManager.GetWindow(WINDOW_SLIDESHOW);
   if (!pSlideShow)
