@@ -100,6 +100,7 @@ protected:
 #define TEXWIDTH    512  // Texture size = power of 2
 #define TEXHEIGHT  256
 #define TEX_COLOR DWORD  //Texture color format is A8R8G8B8
+
 #define D3DFVF_CUSTOMVERTEX (D3DFVF_XYZRHW | D3DFVF_TEX1) 
 //Message strings:
 #define KARAOKE 13327
@@ -127,7 +128,6 @@ public:
 
 protected:
   LPDIRECT3DDEVICE8 m_pd3dDevice;
-  LPDIRECT3DVERTEXBUFFER8 m_pVertexBuffer;
   LPDIRECT3DTEXTURE8 m_pCdgTexture;
   CCdgReader* m_pReader;
   CCdg* m_pCdg;

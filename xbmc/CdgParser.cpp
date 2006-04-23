@@ -309,7 +309,6 @@ CCdgRenderer::CCdgRenderer()
 {
   m_pd3dDevice = NULL;
   m_pCdgTexture = NULL;
-  m_pVertexBuffer = NULL;
   m_pReader = NULL;
   m_pCdg = NULL;
   m_bRender = false;
@@ -389,34 +388,6 @@ bool CCdgRenderer::InitGraphics()
     m_pd3dDevice = g_graphicsContext.Get3DDevice();
   if (!m_pd3dDevice) return false;
 
-  if (!m_pVertexBuffer)
-  {
-    m_pd3dDevice->CreateVertexBuffer(4 * sizeof(CUSTOMVERTEX), D3DUSAGE_WRITEONLY,
-                                     D3DFVF_CUSTOMVERTEX, D3DPOOL_MANAGED, &m_pVertexBuffer);
-    if (!m_pVertexBuffer) return false;
-    RESOLUTION iRes = g_graphicsContext.GetVideoResolution();
-    CUSTOMVERTEX* pVertices = NULL;
-    m_pVertexBuffer->Lock(0, 4 * sizeof(CUSTOMVERTEX), (BYTE**)&pVertices, 0L);
-    pVertices[0].x = pVertices[3].x = (float) g_settings.m_ResInfo[iRes].Overscan.left;
-    pVertices[1].x = pVertices[2].x = (float) g_settings.m_ResInfo[iRes].Overscan.right;
-    pVertices[0].y = pVertices[1].y = (float) g_settings.m_ResInfo[iRes].Overscan.top;
-    pVertices[2].y = pVertices[3].y = (float) g_settings.m_ResInfo[iRes].Overscan.bottom;
-    pVertices[0].z = pVertices[1].z = (float) pVertices[2].z = pVertices[3].z = 1.0f;
-    pVertices[0].rhw = pVertices[1].rhw = pVertices[2].rhw = pVertices[3].rhw = 1.0f;
-#ifdef _DEBUG   //In debug mode, show the border area
-    pVertices[1].u = pVertices[2].u = (float) WIDTH / (float)TEXWIDTH;
-    pVertices[0].u = pVertices[3].u = 0;
-    pVertices[0].v = pVertices[1].v = 0;
-    pVertices[2].v = pVertices[3].v = (float) HEIGHT / (float) TEXHEIGHT;
-#else // Don't show the border in release mode
-    pVertices[1].u = pVertices[2].u = ((float) WIDTH - (float)BORDERWIDTH) / (float)TEXWIDTH;
-    pVertices[0].u = pVertices[3].u = (float)BORDERWIDTH / (float) TEXWIDTH;
-    pVertices[0].v = pVertices[1].v = (float) BORDERHEIGHT / (float)TEXHEIGHT;
-    pVertices[2].v = pVertices[3].v = ((float) HEIGHT - (float)BORDERHEIGHT) / (float) TEXHEIGHT;
-#endif
-    m_pVertexBuffer->Unlock();
-  }
-
   // set the colours
   m_bgAlpha = ((TEX_COLOR) (g_guiSettings.GetInt("Karaoke.BackgroundAlpha") & 0x000000FF)) << 24;
   m_fgAlpha = ((TEX_COLOR) (g_guiSettings.GetInt("Karaoke.ForegroundAlpha") & 0x000000FF)) << 24;
@@ -432,7 +403,6 @@ void CCdgRenderer::ReleaseGraphics()
 {
   CSingleLock lock (m_CritSection);
   SAFE_RELEASE(m_pCdgTexture);
-  SAFE_RELEASE(m_pVertexBuffer);
   m_bRender = false;
 }
 
@@ -443,7 +413,6 @@ void CCdgRenderer::DrawTexture()
   m_pd3dDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
   m_pd3dDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
   m_pd3dDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
-  m_pd3dDevice->SetStreamSource( 0, m_pVertexBuffer, sizeof(CUSTOMVERTEX) );
   m_pd3dDevice->SetTextureStageState( 0, D3DTSS_COLOROP, D3DTOP_MODULATE );
   m_pd3dDevice->SetTextureStageState( 0, D3DTSS_COLORARG1, D3DTA_TEXTURE );
   m_pd3dDevice->SetTextureStageState( 0, D3DTSS_COLORARG2, D3DTA_DIFFUSE );
@@ -451,7 +420,23 @@ void CCdgRenderer::DrawTexture()
   m_pd3dDevice->SetTextureStageState( 0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE );
   m_pd3dDevice->SetTextureStageState( 0, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE );
   m_pd3dDevice->SetTexture(0, m_pCdgTexture);
-  m_pd3dDevice->DrawPrimitive( D3DPT_QUADLIST, 0, 1 );
+
+  m_pd3dDevice->Begin(D3DPT_QUADLIST);
+
+  RESOLUTION res = g_graphicsContext.GetVideoResolution();
+  m_pd3dDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)BORDERWIDTH / (float) TEXWIDTH, (float) BORDERHEIGHT / (float)TEXHEIGHT);
+  m_pd3dDevice->SetVertexData4f( D3DVSDE_VERTEX, (float)g_settings.m_ResInfo[res].GUIOverscan.left, (float) g_settings.m_ResInfo[res].GUIOverscan.top, 0, 0 );
+
+  m_pd3dDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, ((float)WIDTH - (float)BORDERWIDTH) / (float)TEXWIDTH, (float) BORDERHEIGHT / (float)TEXHEIGHT);
+  m_pd3dDevice->SetVertexData4f( D3DVSDE_VERTEX, (float)g_settings.m_ResInfo[res].GUIOverscan.right, (float) g_settings.m_ResInfo[res].GUIOverscan.top, 0, 0 );
+
+  m_pd3dDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, ((float)WIDTH - (float)BORDERWIDTH) / (float)TEXWIDTH, ((float) HEIGHT - (float)BORDERHEIGHT) / (float) TEXHEIGHT);
+  m_pd3dDevice->SetVertexData4f( D3DVSDE_VERTEX, (float)g_settings.m_ResInfo[res].GUIOverscan.right, (float) g_settings.m_ResInfo[res].GUIOverscan.bottom, 0, 0);
+
+  m_pd3dDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)BORDERWIDTH / (float) TEXWIDTH, ((float) HEIGHT - (float)BORDERHEIGHT) / (float) TEXHEIGHT);
+  m_pd3dDevice->SetVertexData4f( D3DVSDE_VERTEX, (float)g_settings.m_ResInfo[res].GUIOverscan.left, (float) g_settings.m_ResInfo[res].GUIOverscan.bottom, 0, 0 );
+
+  m_pd3dDevice->End();
 }
 
 void CCdgRenderer::UpdateTexture()
