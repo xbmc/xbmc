@@ -115,6 +115,12 @@ public:
   bool IsLabelPreformated() const { return m_bLabelPreformated; }
   void SetLabelPreformated(bool bYesNo) { m_bLabelPreformated=bYesNo; }
 
+  /* returns the content type of this item if known. will lookup for http streams */  
+  const CStdString& GetContentType() const; 
+
+  /* sets the contenttype if known beforehand */
+  void              SetContentType(const CStdString& content) { m_contenttype = content; } ;  
+
 private:
   CStdString ParseFormat(const CStdString& strMask);
   CStdString BuildFileSizeLabel();
@@ -140,6 +146,7 @@ private:
   bool m_bIsParentFolder;
   bool m_bCanQueue;
   bool m_bLabelPreformated;
+  CStdString m_contenttype;
 };
 
 /*!

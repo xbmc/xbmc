@@ -9,6 +9,12 @@
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
+
+/* needed for the shoutcast headers */
+#if defined(_XBOX) && !defined(WIN32)
+#define WIN32 1
+#endif
+
 #include "../lib/libshout/types.h"
 #include "../lib/libshout/rip_manager.h"
 #include "../lib/libshout/util.h"
@@ -173,10 +179,10 @@ bool CFileShoutcast::Open(const CURL& url, bool bBinary)
   bool bProxyEnabled = g_guiSettings.GetBool("Network.UseHTTPProxy");
   if (bProxyEnabled)
   {
-    CStdString& strProxyServer = g_guiSettings.GetString("Network.HTTPProxyServer");
-    CStdString& strProxyPort = g_guiSettings.GetString("Network.HTTPProxyPort");
-	// Should we check for valid strings here?
-	_snprintf( m_opt.proxyurl, MAX_URL_LEN, "http://%s:%s", strProxyServer.c_str(), strProxyPort.c_str() );
+    CStdString strProxyServer = g_guiSettings.GetString("Network.HTTPProxyServer");
+    CStdString strProxyPort = g_guiSettings.GetString("Network.HTTPProxyPort");
+	  // Should we check for valid strings here?
+	  _snprintf( m_opt.proxyurl, MAX_URL_LEN, "http://%s:%s", strProxyServer.c_str(), strProxyPort.c_str() );
   }
 
   CStdString strUrl;
@@ -224,6 +230,9 @@ bool CFileShoutcast::Open(const CURL& url, bool bBinary)
     }
     iCount++;
   }
+
+  /* store content type of stream */
+  m_contenttype = m_ripInfo.contenttype;
 
   //CHANGED CODE: Don't reset timer anymore.
 
@@ -353,4 +362,9 @@ bool CFileShoutcast::GetMusicInfoTag(CMusicInfoTag& tag)
 {
   m_ripFile.GetMusicInfoTag(tag);
   return true;
+}
+
+CStdString CFileShoutcast::GetContent()
+{
+  return m_contenttype;
 }
