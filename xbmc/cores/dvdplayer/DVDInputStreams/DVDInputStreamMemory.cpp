@@ -26,9 +26,9 @@ bool CDVDInputStreamMemory::IsEOF()
   return false;
 }
 
-bool CDVDInputStreamMemory::Open(const char* strFile)
+bool CDVDInputStreamMemory::Open(const char* strFile, const std::string& content)
 {
-  if (!CDVDInputStream::Open(strFile)) return false;
+  if (!CDVDInputStream::Open(strFile, content)) return false;
 
   return true;
 }
@@ -82,4 +82,9 @@ __int64 CDVDInputStreamMemory::Seek(__int64 offset, int whence)
     }
   }
   return m_iDataPos;
+}
+
+__int64 CDVDInputStreamMemory::GetLength()
+{
+  return m_iDataSize;
 }

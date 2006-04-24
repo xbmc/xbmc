@@ -60,7 +60,7 @@ bool CAudioDecoder::Create(const CFileItem &file, __int64 seekOffset, unsigned i
     filecache = g_guiSettings.GetInt("CacheAudio.Internet");
 
   // create our codec
-  m_codec=CodecFactory::CreateCodecDemux(file.m_strPath, filecache * 1024);
+  m_codec=CodecFactory::CreateCodecDemux(file.m_strPath, file.GetContentType(), filecache * 1024);
 
   if (!m_codec || !m_codec->Init(file.m_strPath, filecache * 1024))
   {
