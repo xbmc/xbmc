@@ -1180,6 +1180,8 @@ void CFileItem::FormatLabel(const CStdString& strMask)
     const CStdString& strLabel=ParseFormat(strMask);
     if (!strLabel.IsEmpty())
       SetLabel(strLabel);
+    else if (!m_bIsFolder && g_guiSettings.GetBool("FileLists.HideExtensions"))
+      RemoveExtension();
   }
   else
     SetLabel(strMask);
