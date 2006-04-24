@@ -39,7 +39,6 @@ CDVDPlayer::CDVDPlayer(IPlayerCallback& callback)
   m_dvd.iSelectedSPUStream = -1;
 
 
-  m_filename[0] = '\0';
   m_bAbortRequest = false;
 
   m_CurrentAudio.id = -1;
@@ -103,9 +102,12 @@ bool CDVDPlayer::OpenFile(const CFileItem& file, __int64 iStartTime)
         strFile.CompareNoCase("d:\\video_ts\\video_ts.ifo") == 0 ||
         strFile.CompareNoCase("iso9660://video_ts/video_ts.ifo") == 0)
     {
-      strcpy(m_filename, "\\Device\\Cdrom0");
+      m_filename = "\\Device\\Cdrom0";
     }
-    else strcpy(m_filename, strFile.c_str());
+    else 
+      m_filename = strFile;
+
+    m_content = file.GetContentType();
 
     ResetEvent(m_hReadyEvent);
     Create();
@@ -190,10 +192,10 @@ void CDVDPlayer::Process()
 
   CLog::Log(LOGNOTICE, "Creating InputStream");
   
-  m_pInputStream = CDVDFactoryInputStream::CreateInputStream(this, m_filename);
-  if (!m_pInputStream || !m_pInputStream->Open(m_filename))
+  m_pInputStream = CDVDFactoryInputStream::CreateInputStream(this, m_filename, m_content);
+  if (!m_pInputStream || !m_pInputStream->Open(m_filename.c_str(), m_content))
   {
-    CLog::Log(LOGERROR, "InputStream: Error opening, %s", m_filename);
+    CLog::Log(LOGERROR, "InputStream: Error opening, %s", m_filename.c_str());
     // inputstream will be destroyed in OnExit()
     return;
   }
@@ -242,7 +244,7 @@ void CDVDPlayer::Process()
       m_pInputStream->IsStreamType(DVDSTREAM_TYPE_FILE) &&
       !m_pInputStream->HasExtension("vob"))
   {
-    CLog::Log(LOGERROR, "%s: could not open codecs\n", m_filename);
+    CLog::Log(LOGERROR, "%s: could not open codecs\n", m_filename.c_str());
     return;
   }
 

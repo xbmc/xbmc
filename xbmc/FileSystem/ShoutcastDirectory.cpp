@@ -7,23 +7,6 @@
 #include "FileCurl.h"
 #include "../utils/HttpHeader.h"
 
-/* small dummy class to be able to get headers simply */
-class CDummyHeaders : public IHttpHeaderCallback
-{
-public:
-  CDummyHeaders(CHttpHeader *headers)
-  {
-    m_headers = headers;
-  }
-
-  virtual void ParseHeaderData(CStdString strData)
-  {
-    m_headers->Parse(strData);
-  }
-  CHttpHeader *m_headers;
-};
-
-
 CShoutcastDirectory::CShoutcastDirectory(void)
 {
 }
@@ -111,6 +94,9 @@ bool CShoutcastDirectory::ParseStations(TiXmlElement *root, CFileItemList &items
     pItem->SetLabel(label);
     pItem->SetLabel2(label2);
 
+    /* content type is known before hand, should save later lookup */
+    pItem->SetContentType("audio/x-scpls");
+
     pItem->m_strPath = path;
     
     items.Add(pItem);
@@ -155,11 +141,6 @@ bool CShoutcastDirectory::GetDirectory(const CStdString& strPath, CFileItemList 
 
   CFileCurl http;
 
-
-  CHttpHeader headers;
-  CDummyHeaders dummy(&headers);
-  http.SetHttpHeaderCallback(&dummy);
-
   //CURL doesn't seem to understand that data is encoded.. odd
   // opening as text for now
   //http.SetContentEncoding("deflate");
@@ -174,10 +155,10 @@ bool CShoutcastDirectory::GetDirectory(const CStdString& strPath, CFileItemList 
   /* restore protocol */
   url.SetProtocol(protocol);
 
-  CStdString content = headers.GetContentType();
+  CStdString content = http.GetContent();
   if( !(content.Equals("text/html") || content.Equals("text/xml")) )
   {
-    CLog::Log(LOGERROR, __FUNCTION__" - Invalid content type %s", headers.GetContentType().c_str());
+    CLog::Log(LOGERROR, __FUNCTION__" - Invalid content type %s", content.c_str());
     if (dlgProgress) dlgProgress->Close();
     return false;
   }
