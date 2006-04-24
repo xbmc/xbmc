@@ -658,6 +658,7 @@
   <string><id>1233</id><value>Programme / Videos / Musik</value></string>
   <string><id>1234</id><value>Programme / Bilder / Musik</value></string>
   <string><id>1235</id><value>Programme / Bilder / Videos</value></string>
+  <string><id>1236</id><value>Timeout</value></string>
 
   <string><id>1245</id><value>FTP-Benutzername</value></string>
   <string><id>1246</id><value>FTP-Passwort</value></string>
