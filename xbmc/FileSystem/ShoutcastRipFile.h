@@ -1,8 +1,6 @@
 #ifndef CShoutcastRipFile_H
 #define CShoutcastRipFile_H
 
-#include "../lib/libshout/rip_manager.h"
-
 typedef struct RecStateSt
 {
   bool bRecording;
@@ -14,6 +12,8 @@ typedef struct RecStateSt
 }
 RecState;
 
+/* prototype */
+typedef struct RIP_MANAGER_INFOst RIP_MANAGER_INFO;
 
 //if one would like to make other IFiles recordable, it would be
 //great, to define a superclass for this one with differend useful
