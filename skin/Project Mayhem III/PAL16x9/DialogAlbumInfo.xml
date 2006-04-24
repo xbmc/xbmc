@@ -298,7 +298,7 @@
       <posy>525</posy>
       <font>font10</font>
       <id>0</id>
-      <label>$INFO[VideoPlayer.Title] | $INFO[VideoPlayer.Year] | $INFO[VideoPlayer.Director] | $INFO[VideoPlayer.Genre]</label>
+      <label>$INFO[VideoPlayer.Title]$INFO[VideoPlayer.Year, | ]$INFO[VideoPlayer.Director, | ]$INFO[VideoPlayer.Genre, | ]</label>
     </control>
 
     <control>
@@ -344,7 +344,7 @@
       <posx>65</posx>
       <posy>525</posy>
       <font>font10</font>
-      <label>$INFO[MusicPlayer.Artist] | $INFO[MusicPlayer.Title] | $INFO[MusicPlayer.Album] | $INFO[MusicPlayer.Year]</label>
+      <label>$INFO[MusicPlayer.Artist]$INFO[MusicPlayer.Title, | ]$INFO[MusicPlayer.Album, | ]$INFO[MusicPlayer.Year, | ]</label>
       <include>textcolorwhite</include>
       <id>0</id>
     </control>
