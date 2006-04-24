@@ -201,8 +201,8 @@ public:
   VECSHARES *GetSharesFromType(const CStdString &type);
   CStdString GetDefaultShareFromType(const CStdString &type);
 
-  bool UpdateBookmark(const CStdString &strType, const CStdString &strOldName, const CStdString &strUpdateChild, const CStdString &strUpdateValue);
-  bool DeleteBookmark(const CStdString &strType, const CStdString &strName, const CStdString &strPath);
+  bool UpdateBookmark(const CStdString &strType, const CStdString strOldName, const CStdString &strUpdateChild, const CStdString &strUpdateValue);
+  bool DeleteBookmark(const CStdString &strType, const CStdString strName, const CStdString strPath);
   bool AddBookmark(const CStdString &strType, const CStdString &strName, const CStdString &strPath);
   bool AddBookmark(const CStdString &strType, const CStdString &strName, const CStdString &strPath, const int iDepth);
   bool SetBookmarkLocks(const CStdString& strType, bool bEngageLocks);
