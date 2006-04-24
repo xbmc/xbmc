@@ -18,7 +18,6 @@ void CApplicationMessenger::Cleanup()
   while (it != m_vecMessages.end())
   {
     ThreadMessage* pMsg = *it;
-    if (pMsg->hWaitEvent) CloseHandle(pMsg->hWaitEvent);
     delete pMsg;
     it = m_vecMessages.erase(it);
   }
@@ -27,7 +26,6 @@ void CApplicationMessenger::Cleanup()
   while (it != m_vecWindowMessages.end())
   {
     ThreadMessage* pMsg = *it;
-    if (pMsg->hWaitEvent) CloseHandle(pMsg->hWaitEvent);
     delete pMsg;
     it = m_vecWindowMessages.erase(it);
   }
@@ -339,10 +337,8 @@ void CApplicationMessenger::ProcessWindowMessages()
       lock.Leave();
       ProcessMessage(pMsg);
       if (pMsg->hWaitEvent)
-      {
-        PulseEvent(pMsg->hWaitEvent);
-        CloseHandle(pMsg->hWaitEvent);
-      }
+        SetEvent(pMsg->hWaitEvent);
+
       delete pMsg;
       // reenter
       lock.Enter();
