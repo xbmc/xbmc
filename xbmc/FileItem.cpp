@@ -306,7 +306,8 @@ bool CFileItem::IsInternetStream() const
   if (strProtocol == "shout" || strProtocol == "mms" ||
       strProtocol == "http" || strProtocol == "ftp" ||
       strProtocol == "rtsp" || strProtocol == "rtp" ||
-      strProtocol == "udp"  || strProtocol == "lastfm")
+      strProtocol == "udp"  || strProtocol == "lastfm" ||
+      strProtocol == "https")
     return true;
 
   return false;
@@ -1332,6 +1333,11 @@ const CStdString& CFileItem::GetContentType() const
     {
       CURL url(m_strPath);
       url.SetProtocol("http");
+      CFileCurl::GetContent(url, m_ref);
+    }
+    else if( m_strPath.Left(8).Equals("https://") )
+    {
+      CURL url(m_strPath);      
       CFileCurl::GetContent(url, m_ref);
     }
 

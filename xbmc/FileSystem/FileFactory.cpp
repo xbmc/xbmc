@@ -33,7 +33,7 @@ IFile* CFileFactory::CreateLoader(const CStdString& strFileName)
   CStdString strProtocol = url.GetProtocol();
   strProtocol.MakeLower();
 
-  if (strProtocol == "http") return new CFileCurl();
+  if (strProtocol.Equals("http") || strProtocol.Equals("https")) return new CFileCurl();
   else if (strProtocol == "iso9660") return new CFileISO();
   else if (strProtocol == "smb") return new CFileSMB();
   else if (strProtocol == "xbms") return new CFileXBMSP();
