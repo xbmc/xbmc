@@ -50,7 +50,7 @@
       <posy>525</posy>
       <font>font10</font>
       <id>0</id>
-      <label>$INFO[MusicPlayer.Artist] | $INFO[MusicPlayer.Title] | $INFO[MusicPlayer.Album] | $INFO[MusicPlayer.Year]</label>
+      <label>$INFO[MusicPlayer.Artist]$INFO[MusicPlayer.Title, | ]$INFO[MusicPlayer.Album, | ]$INFO[MusicPlayer.Year, | ]</label>
       <include>mediaoverlay</include>
     </control>
 
