@@ -624,7 +624,12 @@ void CGUIThumbnailPanel::OnUp()
     }
     else
     {
-      return CGUIControl::OnUp();
+      if (m_dwControlUp == GetID() && m_vecItems.size() > 0)
+      { // move 2 last item in list
+        SetSelectedItem(m_vecItems.size() - 1);
+      }
+      else
+        CGUIControl::OnUp();
     }
   }
   else
@@ -641,10 +646,8 @@ void CGUIThumbnailPanel::OnDown()
 {
   if (m_iSelect == CONTROL_LIST)
   {
-    if (m_iCursorY + 1 == m_iRows)
+    if (m_iCursorY + 1 == m_iRows && ScrollDown())
     {
-      if (!ScrollDown())  // unable to scroll down
-        CGUIControl::OnDown();
       return;
     }
     if ( ValidItem(m_iCursorX, m_iCursorY + 1) )
@@ -652,7 +655,12 @@ void CGUIThumbnailPanel::OnDown()
       m_iCursorY++;
     }
     else
-      CGUIControl::OnDown();
+    {
+      if (m_dwControlDown == GetID() && m_vecItems.size())
+        SetSelectedItem(0);
+      else
+        CGUIControl::OnDown();
+    }
   }
   else
   {
@@ -808,23 +816,26 @@ void CGUIThumbnailPanel::SetSelectedItem(int iItem)
 {
   if (iItem >= 0 && iItem < (int)m_vecItems.size())
   {
-    int iPage = 1;
     m_iCursorX = 0;
     m_iCursorY = 0;
     m_iRowOffset = 0;
     while (iItem >= (m_iRows*m_iColumns) )
     {
-      m_iRowOffset += m_iRows;
-      iItem -= (m_iRows * m_iColumns);
-      iPage++;
+      m_iRowOffset++;
+      iItem -= m_iColumns;
     }
     while (iItem >= m_iColumns)
     {
       m_iCursorY++;
       iItem -= m_iColumns;
     }
-    m_upDown.SetValue(iPage);
     m_iCursorX = iItem;
+    // calculate page
+//    SetPageNumber();
+    int iPage = m_iRowOffset / m_iRows + 1;
+    if ((m_iRowOffset + m_iRows)*m_iColumns >= (int)m_vecItems.size() && iPage < m_upDown.GetMaximum())
+      iPage++; // last page
+    m_upDown.SetValue(iPage);
   }
 }
 
