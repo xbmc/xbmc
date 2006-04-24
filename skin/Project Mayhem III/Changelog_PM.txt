@@ -1,3 +1,4 @@
+2006-04-24 fixed:	Same thing in Album and Movie Info screens.
 2006-04-24 fixed:	Music and Video overlay fadelabels could display " |  |  | " when no information was present.
 
 2006-04-21 fixed:	Album and Video info dialogs didn't have the content panel background.
