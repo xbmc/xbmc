@@ -1,3 +1,5 @@
+2006-04-24 fixed:	Music and Video overlay fadelabels could display " |  |  | " when no information was present.
+
 2006-04-21 fixed:	Album and Video info dialogs didn't have the content panel background.
 2006-04-21 fixed:	[ 1474061 ] Browse subtitle (cosmetic problem)
 
