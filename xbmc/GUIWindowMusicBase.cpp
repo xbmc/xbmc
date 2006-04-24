@@ -793,9 +793,6 @@ void CGUIWindowMusicBase::AddItemToPlayList(const CFileItem* pItem, CFileItemLis
           return; //hmmm unable to load playlist?
         }
 
-        bool hideExtensions=false;
-        if (m_guiState.get()) hideExtensions=m_guiState->HideExtensions();
-
         CPlayList playlist = *pPlayList;
         for (int i = 0; i < (int)playlist.size(); ++i)
           AddItemToPlayList(&playlist[i], queuedItems);

@@ -494,9 +494,6 @@ bool CGUIMediaWindow::Update(const CStdString &strDirectory)
   // eg. changing the label
   OnFinalizeFileItems(m_vecItems);
 
-  if (m_guiState.get() && m_guiState->HideExtensions())
-    m_vecItems.RemoveExtensions();
-
   strSelectedItem = m_history.GetSelectedItem(m_vecItems.m_strPath);
 
   const CFileItem &currentItem = g_application.CurrentFileItem();
