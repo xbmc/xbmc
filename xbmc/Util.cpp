@@ -4624,5 +4624,10 @@ bool CUtil::SupportsFileOperations(const CStdString& strPath)
     return true;
   if (IsSmb(strPath))
     return true;
+  if (IsStack(strPath))
+  {
+    CStackDirectory dir;
+    return SupportsFileOperations(dir.GetFirstStackedFile(strPath));
+  }
   return false;
 }
