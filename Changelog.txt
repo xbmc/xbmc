@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 24-04-2006 fixed: [ 1474938 ] non UTF-8 coded files displyed incorrectly (ccxstream share)
  - 24-04-2006 fixed: cdgreader tried to load on each frame
  - 24-04-2006 updated: french language file
  - 24-04-2006 fixed: Delete and Rename was disabled for stacked files.

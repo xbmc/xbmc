@@ -33,13 +33,15 @@ CXBMSDirectory::~CXBMSDirectory(void)
   CSectionLoader::Unload("LIBXBMS");
 }
 
-
-
-bool CXBMSDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
+bool CXBMSDirectory::GetDirectory(const CStdString& strPathUtf8, CFileItemList &items)
 {
   unsigned long handle;
   char *filename, *fileinfo;
   bool rv = false;
+
+  CStdString strPath=strPathUtf8;
+  g_charsetConverter.utf8ToStringCharset(strPath);
+
   CURL url(strPath);
 
   CStdString strRoot = strPath;
@@ -47,7 +49,7 @@ bool CXBMSDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
     strRoot += "/";
 
   CFileItemList vecCacheItems;
-  g_directoryCache.ClearDirectory(strPath);
+  g_directoryCache.ClearDirectory(strPathUtf8);
 
   CcXstreamServerConnection conn = NULL;
 
@@ -159,7 +161,9 @@ bool CXBMSDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
     if (strstr(fileinfo, "<ATTRIB>directory</ATTRIB>"))
       bIsDirectory = true;
 
-    CFileItem* pItem = new CFileItem(filename);
+    CStdString strLabel=filename;
+    g_charsetConverter.stringCharsetToUtf8(strLabel);
+    CFileItem* pItem = new CFileItem(strLabel);
 
     char* pstrSizeStart = strstr(fileinfo, "<SIZE>");
     char* pstrSizeEnd = strstr(fileinfo, "</SIZE>");
@@ -195,6 +199,7 @@ bool CXBMSDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
 
     pItem->m_strPath = strRoot;
     pItem->m_strPath += filename;
+    g_charsetConverter.stringCharsetToUtf8(pItem->m_strPath);
     pItem->m_bIsFolder = bIsDirectory;
 
     if ( bIsDirectory || IsAllowed( filename) )
@@ -214,7 +219,7 @@ bool CXBMSDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
     cc_xstream_client_disconnect(conn);
 
   if (m_cacheDirectory)
-    g_directoryCache.SetDirectory(strPath, vecCacheItems);
+    g_directoryCache.SetDirectory(strPathUtf8, vecCacheItems);
   return true;
 }
 
@@ -257,8 +262,10 @@ static void DiscoveryCallback(const char *addr, const char *port, const char *ve
   strPath += "/";
 
   // Add to items
+  g_charsetConverter.stringCharsetToUtf8(itemName);
   CFileItem* pItem = new CFileItem(itemName);
   pItem->m_strPath = strPath;
+  g_charsetConverter.stringCharsetToUtf8(pItem->m_strPath);
   pItem->m_bIsFolder = true;
   pItem->m_bIsShareOrDrive = true;
   pItem->SetIconImage("defaultNetwork.png");
