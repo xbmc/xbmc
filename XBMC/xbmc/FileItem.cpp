@@ -7,6 +7,7 @@
 #include "crc32.h"
 #include "filesystem/DirectoryCache.h"
 #include "filesystem/StackDirectory.h"
+#include "filesystem/filecurl.h"
 #include "musicInfoTagLoaderFactory.h"
 #include "cuedocument.h"
 #include "Utils/fstrcmp.h"
@@ -1315,6 +1316,32 @@ CStdString CFileItem::ParseFormat(const CStdString& strMask)
     strLabel += strMask.Right(strMask.size() - iPos1);
 
   return strLabel;
+}
+
+const CStdString& CFileItem::GetContentType() const
+{
+  if( m_contenttype.IsEmpty() )
+  {
+    /* discard const qualifyier*/
+    CStdString& m_ref = (CStdString&)m_contenttype;
+
+    if( m_bIsFolder )
+      m_ref = "x-directory/normal";
+    else if( m_strPath.Left(8).Equals("shout://") 
+     || m_strPath.Left(7).Equals("http://"))
+    {
+      CURL url(m_strPath);
+      url.SetProtocol("http");
+      CFileCurl::GetContent(url, m_ref);
+    }
+
+    /* if it's still empty set to an unknown type*/
+    if( m_ref.IsEmpty() )
+      m_ref = "application/octet-stream";
+
+  }
+
+  return m_contenttype;
 }
 
 /////////////////////////////////////////////////////////////////////////////////
