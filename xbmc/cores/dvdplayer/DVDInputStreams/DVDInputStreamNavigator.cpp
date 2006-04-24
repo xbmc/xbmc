@@ -22,11 +22,11 @@ CDVDInputStreamNavigator::~CDVDInputStreamNavigator()
   DeleteCriticalSection(&m_critSection);
 }
 
-bool CDVDInputStreamNavigator::Open(const char* strFile)
+bool CDVDInputStreamNavigator::Open(const char* strFile, const std::string& content)
 {
   char* strDVDFile;
   
-  if (!CDVDInputStream::Open(strFile)) return false;
+  if (!CDVDInputStream::Open(strFile, "video/mpeg")) return false;
   
   // load libdvdnav.dll
   if (!m_dll.Load())
