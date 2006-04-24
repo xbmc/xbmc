@@ -5,6 +5,14 @@
 
 #define MAX_RECORDED_TRACKS 999
 
+#if !defined(WIN32)
+#define WIN32 1
+#endif
+
+#include "../lib/libshout/rip_manager.h"
+
+
+
 CShoutcastRipFile::CShoutcastRipFile()
 {
   m_recState.bRecording = false;
