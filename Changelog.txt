@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 24-04-2006 fixed: Hide File Extensions option applied to formatted labels instead of just filenames.
  - 24-04-2006 fixed: Unicode string input to xbmcgui.Dialog().select"
  - 24-04-2006 fixed: Thumbnail panels didn't wrap around when going up from first item or down from last item.
  - 24-04-2006 fixed: Crash when changing GUI resolution while playing media.
