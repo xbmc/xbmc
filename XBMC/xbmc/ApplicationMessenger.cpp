@@ -40,7 +40,7 @@ void CApplicationMessenger::SendMessage(ThreadMessage& message, bool wait)
   { // check that we're not being called from our application thread, else we'll be waiting
     // forever!
     if (GetCurrentThreadId() != g_application.GetThreadId())
-      message.hWaitEvent = CreateEvent(NULL, false, false, NULL);
+      message.hWaitEvent = CreateEvent(NULL, true, false, NULL);
     else
     {
       //OutputDebugString("Attempting to wait on a SendMessage() from our application thread will cause lockup!\n");
@@ -70,6 +70,7 @@ void CApplicationMessenger::SendMessage(ThreadMessage& message, bool wait)
   if (message.hWaitEvent)
   {
     WaitForSingleObject(message.hWaitEvent, INFINITE);
+    CloseHandle(message.hWaitEvent);
   }
 }
 
@@ -92,10 +93,8 @@ void CApplicationMessenger::ProcessMessages()
     ProcessMessage(pMsg);
 
     if (pMsg->hWaitEvent)
-    {
-      PulseEvent(pMsg->hWaitEvent);
-      CloseHandle(pMsg->hWaitEvent);
-    }
+      SetEvent(pMsg->hWaitEvent);      
+
     delete pMsg;
 
     //Reenter here again, to not ruin message vector
