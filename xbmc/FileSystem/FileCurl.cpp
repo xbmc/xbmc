@@ -3,7 +3,6 @@
 #include "../Util.h"
 #include <sys/Stat.h>
 
-#include "../utils/HttpHeader.h"
 #include "DllLibCurl.h"
 using namespace XCURL;
 
@@ -74,6 +73,8 @@ size_t CFileCurl::HeaderCallback(void *ptr, size_t size, size_t nmemb)
   
   if (m_pHeaderCallback) m_pHeaderCallback->ParseHeaderData(strData);
   
+  m_httpheader.Parse(strData);
+
   free(strData);
   
   return iSize;
@@ -324,7 +325,16 @@ bool CFileCurl::Open(const CURL& url, bool bBinary)
   double length;
   if (CURLE_OK == g_curlInterface.easy_getinfo(m_easyHandle, CURLINFO_CONTENT_LENGTH_DOWNLOAD, &length))
     m_fileSize = (__int64)length;
-    
+
+  /* workaround for shoutcast server wich doesn't set content type on standard mp3 */
+  if( m_httpheader.GetContentType().IsEmpty() )
+  {
+    if( !m_httpheader.GetValue("icy-notice1").IsEmpty()
+     || !m_httpheader.GetValue("icy-name").IsEmpty()
+     || !m_httpheader.GetValue("icy-br").IsEmpty() )
+     m_httpheader.Parse("Content-Type: audio/mpeg");
+  }
+
   return true;
 }
 
@@ -474,7 +484,7 @@ int CFileCurl::Stat(const CURL& url, struct __stat64* buffer)
 
   if( result == CURLE_WRITE_ERROR || result == CURLE_OK )
   {
-    if( !buffer ) return -1;
+    if( !buffer ) return 0;
 
     double length;
     char content[255];
@@ -616,4 +626,18 @@ bool CFileCurl::GetHttpHeader(const CURL &url, CHttpHeader &headers)
     CLog::Log(LOGERROR, __FUNCTION__" - Exception thrown while trying to retrieve header url: %s", path.c_str());
     return false;
   }
+}
+
+bool CFileCurl::GetContent(const CURL &url, CStdString &content)
+{
+    __stat64 dummy;
+   CFileCurl file;
+   if( file.Stat(url, &dummy) == 0 )
+   {
+     content = file.GetContent();
+     return true;
+   }
+   
+   content = "";
+   return false;
 }
