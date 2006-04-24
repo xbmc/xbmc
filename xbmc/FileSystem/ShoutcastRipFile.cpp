@@ -3,6 +3,7 @@
 #include "ShoutcastRipFile.h"
 #include "../id3tag.h"
 
+#define MAX_RECORDED_TRACKS 999
 
 CShoutcastRipFile::CShoutcastRipFile()
 {
@@ -326,7 +327,7 @@ void CShoutcastRipFile::SetFilename( const char* filePath, const char* fileName 
     CreateDirectory( szTempFilePath, NULL );
   }
 
-  for ( i = m_iTrackCount; i <= 100; i++ )
+  for ( i = m_iTrackCount; i <= MAX_RECORDED_TRACKS; i++ )
   {
     if ( m_recState.bHasMetaData )
     {
@@ -356,7 +357,7 @@ void CShoutcastRipFile::SetFilename( const char* filePath, const char* fileName 
       strcpy( szTempFilePath, filePath ); //file exists, reset
     }
   }
-  //if its the 100. file, we overwrite it
+  //if its the MAX_RECORDED_TRACKS. file, we overwrite it
   strcpy( m_szFilteredFileName, szNewFileName );
   FindClose( hFind );
   return ;
