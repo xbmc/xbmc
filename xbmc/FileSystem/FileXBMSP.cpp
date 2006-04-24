@@ -58,8 +58,13 @@ CFileXBMSP::~CFileXBMSP()
 }
 
 //*********************************************************************************************
-bool CFileXBMSP::Open(const CURL& url, bool bBinary)
+bool CFileXBMSP::Open(const CURL& urlUtf8, bool bBinary)
 {
+  CStdString strURL;
+  urlUtf8.GetURL(strURL);
+  g_charsetConverter.utf8ToStringCharset(strURL);
+
+  CURL url(strURL);
   const char* strUserName = url.GetUserName().c_str();
   const char* strPassword = url.GetPassWord().c_str();
   const char* strHostName = url.GetHostName().c_str();
