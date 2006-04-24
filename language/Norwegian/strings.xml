@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?>
 
-<!-- Based on English XML v1.314. Last updated by vnmartinsen  !-->
+<!-- Based on English XML v1.316. Last updated by vnmartinsen  !-->
 
 <strings>
   <string><id>0</id><value>Mine Programmer</value></string>
@@ -655,6 +655,7 @@
   <string><id>1233</id><value>Programmer &amp; Video &amp; Musikk</value></string>
   <string><id>1234</id><value>Programmer &amp; Bilder &amp; Musikk</value></string>
   <string><id>1235</id><value>Programmer &amp; Bilder &amp; Video</value></string>
+  <string><id>1236</id><value>- Tidsavbrudd for klient</value></string>
 
   <string><id>1245</id><value>FTP brukernavn</value></string>
   <string><id>1246</id><value>FTP passord</value></string>
