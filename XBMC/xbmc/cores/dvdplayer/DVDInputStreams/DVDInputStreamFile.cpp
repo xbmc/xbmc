@@ -30,9 +30,9 @@ bool CDVDInputStreamFile::IsEOF()
   return true;
 }
 
-bool CDVDInputStreamFile::Open(const char* strFile)
+bool CDVDInputStreamFile::Open(const char* strFile, const std::string& content)
 {
-  if (!CDVDInputStream::Open(strFile)) return false;
+  if (!CDVDInputStream::Open(strFile, content)) return false;
 
   m_pFile = new CFile();
   if (!m_pFile) return false;
@@ -80,4 +80,11 @@ __int64 CDVDInputStreamFile::Seek(__int64 offset, int whence)
   else return -1;
 
   return ret;
+}
+
+__int64 CDVDInputStreamFile::GetLength()
+{
+  if (m_pFile)
+    return m_pFile->GetLength();
+  return 0;
 }

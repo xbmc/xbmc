@@ -31,9 +31,9 @@ bool CDVDInputStreamHttp::IsEOF()
   return true;
 }
 
-bool CDVDInputStreamHttp::Open(const char* strFile)
+bool CDVDInputStreamHttp::Open(const char* strFile, const std::string& content)
 {
-  if (!CDVDInputStream::Open(strFile)) return false;
+  if (!CDVDInputStream::Open(strFile, content)) return false;
 
   m_pFile = new CFileCurl();
   if (!m_pFile) return false;
@@ -102,4 +102,10 @@ void CDVDInputStreamHttp::ParseHeaderData(CStdString strData)
 {
   m_httpHeader.Parse(strData);
 }
-  
+
+__int64 CDVDInputStreamHttp::GetLength()
+{
+  if (m_pFile)
+    return m_pFile->GetLength();
+  return 0;
+}

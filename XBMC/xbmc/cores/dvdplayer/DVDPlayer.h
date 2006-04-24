@@ -170,7 +170,8 @@ private:
   bool m_bReadAgain; // tricky, if set to true, the main loop will start over again
   bool m_bAbortRequest;
 
-  char m_filename[1024];
+  std::string m_filename; // holds the actual filename
+  std::string m_content;  // hold a hint to what content file contains (mime type)
     
   SCurrentStream m_CurrentAudio;
   SCurrentStream m_CurrentVideo;

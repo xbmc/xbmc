@@ -332,7 +332,7 @@ bool CFileCurl::Open(const CURL& url, bool bBinary)
     if( !m_httpheader.GetValue("icy-notice1").IsEmpty()
      || !m_httpheader.GetValue("icy-name").IsEmpty()
      || !m_httpheader.GetValue("icy-br").IsEmpty() )
-     m_httpheader.Parse("Content-Type: audio/mpeg");
+     m_httpheader.Parse("Content-Type: audio/mpeg\r\n");
   }
 
   return true;
@@ -484,6 +484,16 @@ int CFileCurl::Stat(const CURL& url, struct __stat64* buffer)
 
   if( result == CURLE_WRITE_ERROR || result == CURLE_OK )
   {
+
+    /* workaround for shoutcast server wich doesn't set content type on standard mp3 */
+    if( m_httpheader.GetContentType().IsEmpty() )
+    {
+      if( !m_httpheader.GetValue("icy-notice1").IsEmpty()
+      || !m_httpheader.GetValue("icy-name").IsEmpty()
+      || !m_httpheader.GetValue("icy-br").IsEmpty() )
+      m_httpheader.Parse("Content-Type: audio/mpeg\r\n");
+    }
+
     if( !buffer ) return 0;
 
     double length;
@@ -611,13 +621,12 @@ bool CFileCurl::GetHttpHeader(const CURL &url, CHttpHeader &headers)
   try
   {
     CFileCurl file;
-    __stat64 dummy;
     CDummyHeaders callback(&headers);
 
     file.SetHttpHeaderCallback(&callback);
     
     /* calling stat should give us all needed data */
-    return file.Stat(url, &dummy) == 0;
+    return file.Stat(url, NULL) == 0;
   }
   catch(...)
   {
@@ -630,9 +639,8 @@ bool CFileCurl::GetHttpHeader(const CURL &url, CHttpHeader &headers)
 
 bool CFileCurl::GetContent(const CURL &url, CStdString &content)
 {
-    __stat64 dummy;
    CFileCurl file;
-   if( file.Stat(url, &dummy) == 0 )
+   if( file.Stat(url, NULL) == 0 )
    {
      content = file.GetContent();
      return true;
