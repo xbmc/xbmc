@@ -44,7 +44,7 @@ CDVDSubtitleStream::~CDVDSubtitleStream()
 
 bool CDVDSubtitleStream::Open(const char* strFile)
 {
-  if (m_pInputStream && m_pInputStream->Open(strFile))
+  if (m_pInputStream && m_pInputStream->Open(strFile, ""))
   {
     // set up our buffers
     int iBlockSize = m_pInputStream->GetBlockSize();

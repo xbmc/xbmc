@@ -18,11 +18,13 @@ class CDVDInputStream
 public:
   CDVDInputStream();
   virtual ~CDVDInputStream();
-  virtual bool Open(const char* strFile) = 0;
+  virtual bool Open(const char* strFileName, const std::string& content) = 0;
   virtual void Close() = 0;
   virtual int Read(BYTE* buf, int buf_size) = 0;
   virtual __int64 Seek(__int64 offset, int whence) = 0;
-   
+  virtual __int64 GetLength() = 0;
+  virtual std::string GetContent() { return m_content; };
+
   const char* GetFileName();
   bool HasExtension(char* sExtension);
   
@@ -32,6 +34,7 @@ public:
   
 
 protected:
-  DVDStreamType m_streamType;  
+  DVDStreamType m_streamType;
   char* m_strFileName;
+  std::string m_content;
 };

@@ -122,19 +122,32 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
 
   m_pInput = pInput;
   strFile = m_pInput->GetFileName();
-
-  if (m_pInput->IsStreamType(DVDSTREAM_TYPE_DVD))
+  
+  /* check if we can get a hint from content */
+  if( m_pInput->GetContent().compare("audio/aacp") == 0 
+    || m_pInput->GetContent().compare("audio/aac") == 0 )
   {
-    // we are playing form a dvd, just open the mpeg demuxer here
-    iformat = m_dllAvFormat.av_find_input_format("mpeg");
-    if (!iformat)
-    {
-      CLog::DebugLog("error opening ffmpeg's mpeg demuxer");
-      return false;
-    }
+    iformat = m_dllAvFormat.av_find_input_format("aac");
   }
-  else
+  else if( m_pInput->GetContent().compare("audio/mpeg") == 0  )  
   {
+    iformat = m_dllAvFormat.av_find_input_format("mp3"); // maybe should be for audio
+  }
+  else if( m_pInput->GetContent().compare("video/mpeg") == 0 )
+  {
+    iformat = m_dllAvFormat.av_find_input_format("mpeg"); // maybe should be for audio
+  }
+  
+  if (m_pInput->IsStreamType(DVDSTREAM_TYPE_DVD) && iformat == NULL)
+  {
+    CLog::Log(LOGERROR, __FUNCTION__" - error opening ffmpeg's mpeg demuxer");
+    return false;
+  }
+
+  if( iformat == NULL )
+  {
+    // no input type found try to probe
+
     // let ffmpeg decide which demuxer we have to open
     AVProbeData pd;
     BYTE probe_buffer[2048];
@@ -183,11 +196,12 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
 
   // in combination with libdvdnav seek, av_find_stream_info wont work
   // so we do this for files only
-  if (m_pInput->IsStreamType(DVDSTREAM_TYPE_FILE))// &&
-  //    !m_pInput->HasExtension("vob"))
+  if (m_pInput->IsStreamType(DVDSTREAM_TYPE_FILE))  
   {
     // disable the AVFMT_NOFILE just once, else ffmpeg isn't able to find stream info
-    iformat->flags &= ~AVFMT_NOFILE;
+    if( m_pInput->GetLength() > 0 )
+      iformat->flags &= ~AVFMT_NOFILE;
+
     int iErr = m_dllAvFormat.av_find_stream_info(m_pFormatContext);
     iformat->flags |= AVFMT_NOFILE;
 

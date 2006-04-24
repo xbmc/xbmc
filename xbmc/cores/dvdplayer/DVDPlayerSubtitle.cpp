@@ -87,7 +87,7 @@ void CDVDPlayerSubtitle::Process(__int64 pts)
     {
       bool bError = false;
       
-      m_pInputStream = CDVDFactoryInputStream::CreateInputStream(NULL, (m_vecSubtitleFiles[0]).c_str());
+      m_pInputStream = CDVDFactoryInputStream::CreateInputStream(NULL, (m_vecSubtitleFiles[0]).c_str(), "");
       if (!m_pInputStream)
       {
         bError = true;

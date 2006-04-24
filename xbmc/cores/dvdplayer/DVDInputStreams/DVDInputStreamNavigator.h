@@ -39,13 +39,14 @@ public:
   CDVDInputStreamNavigator(IDVDPlayer* player);
   virtual ~CDVDInputStreamNavigator();
 
-  virtual bool Open(const char* strFile);
+  virtual bool Open(const char* strFile, const std::string& content);
   virtual void Close();
   virtual int Read(BYTE* buf, int buf_size);
   virtual __int64 Seek(__int64 offset, int whence);
   virtual int GetBlockSize() { return DVDSTREAM_BLOCK_SIZE_DVD; }
   virtual bool IsEOF() { return m_bEOF; }
-  
+  virtual __int64 GetLength()             { return 0; }
+
   void ActivateButton();
   void SelectButton(int iButton);
   void SkipStill();
