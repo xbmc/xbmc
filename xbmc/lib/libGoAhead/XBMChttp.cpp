@@ -283,7 +283,7 @@ bool playableFile(CStdString filename)
 {
   CStdString strExtension;
   CUtil::GetExtension(filename, strExtension);
-  return (CUtil::IsRemote(filename)) || ((CFile::Exists(filename)) && (strExtension!=""));
+  return /*(CUtil::IsRemote(filename)) ||*/ ((CFile::Exists(filename)) && (strExtension!=""));
 }
 
 int SetResponse(CStdString response)
@@ -2022,6 +2022,8 @@ int CXbmcHttp::xbmcShowPicture(int numParas, CStdString paras[])
     return SetResponse(openTag+"Error:Missing parameter");
   else
   {
+    if (!playableFile(paras[0]))
+      return SetResponse(openTag+"Error:Unable to open file");
     g_applicationMessenger.PictureShow(paras[0]);
     return SetResponse(openTag+"OK");
   }
