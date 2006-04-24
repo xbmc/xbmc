@@ -121,6 +121,7 @@ bool CVirtualDirectory::GetDirectory(const CStdString& strPath, CFileItemList &i
     // function doesn't work for http/shout streams with options..
     if (iIndex > -1 || strPath.Mid(1, 1) == ":" 
       || strPath.Left(8).Equals("shout://") 
+      || strPath.Left(8).Equals("https://") 
       || strPath.Left(7).Equals("http://") 
       || strPath.Left(7).Equals("daap://") )
     {
