@@ -25,6 +25,7 @@
 #include "utils/trainer.h"
 #include "FileSystem/ZipManager.h"
 #include "FileSystem/RarManager.h"
+#include "FileSystem/StackDirectory.h"
 #include "GUIDialogFileBrowser.h"
 #include "MediaManager.h"
 #include <xbdm.h>
