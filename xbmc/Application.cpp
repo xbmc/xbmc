@@ -2100,21 +2100,11 @@ bool CApplication::OnKey(CKey& key)
     // to map key->action
     if (key.FromKeyboard() && (iWin == WINDOW_DIALOG_KEYBOARD || iWin == WINDOW_BUDDIES) )
     {
-      //check for key received over HttpApi first
-      action.wID = 0;
-      if (m_pWebServer && pXbmcHttp)
-      {
-        CKey keyHttp(pXbmcHttp->GetKey());
-        if (keyHttp.GetButtonCode() != KEY_INVALID)
-          action.wID = (WORD) keyHttp.GetButtonCode();
-      }
-      ;
-      if (action.wID == 0)
-        // see if we've got an ascii key
-        if (g_Keyboard.GetAscii() != 0)
-          action.wID = (WORD)g_Keyboard.GetAscii() | KEY_ASCII;
-        else
-          action.wID = (WORD)g_Keyboard.GetKey() | KEY_VKEY;
+      // see if we've got an ascii key
+      if (g_Keyboard.GetAscii() != 0)
+        action.wID = (WORD)g_Keyboard.GetAscii() | KEY_ASCII;
+      else
+        action.wID = (WORD)g_Keyboard.GetKey() | KEY_VKEY;
     }
     else
       g_buttonTranslator.GetAction(iWin, key, action);
@@ -2718,7 +2708,10 @@ bool CApplication::ProcessHTTPApiButtons()
 {
   if (m_pWebServer && pXbmcHttp)
   {
+    // copy key from webserver, and reset it in case we're called again before
+    // via whatever happens in OnKey()
     CKey keyHttp(pXbmcHttp->GetKey());
+    pXbmcHttp->ResetKey();
     if (keyHttp.GetButtonCode() != KEY_INVALID)
     {
       if (keyHttp.GetButtonCode() == KEY_VMOUSE) //virtual mouse
@@ -2752,7 +2745,6 @@ bool CApplication::ProcessHTTPApiButtons()
       }
       else
         OnKey(keyHttp);
-      pXbmcHttp->ResetKey();
       return true;
     }
   }
