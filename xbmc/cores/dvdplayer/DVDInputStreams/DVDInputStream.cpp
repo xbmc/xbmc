@@ -13,10 +13,11 @@ CDVDInputStream::~CDVDInputStream()
   if (m_strFileName) delete m_strFileName;
 }
 
-bool CDVDInputStream::Open(const char* strFile)
+bool CDVDInputStream::Open(const char* strFile, const std::string &content)
 {
   if (m_strFileName) delete m_strFileName;
   m_strFileName = strdup(strFile);
+  m_content = content;
   return true;
 }
 

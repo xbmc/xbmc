@@ -115,31 +115,11 @@ void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecC
 
   if ( item.IsInternetStream() )
   {
-    CURL url = item.GetAsUrl();
+    CStdString content = item.GetContentType();
 
-    CStdString protocol = url.GetProtocol();
-    if( protocol == "http" || protocol == "shout" )
-    {
-      /* curl is picky about protocol */
-      url.SetProtocol("http");
-
-      CHttpHeader headers;
-      if( CFileCurl::GetHttpHeader(url, headers) )
-      {
-        if( headers.GetValue("icy-meta").length() > 0 
-         || headers.GetValue("icy-pub").length() > 0
-         || headers.GetValue("icy-br").length() > 0 
-         || headers.GetValue("icy-url").length() > 0 )
-        { // shoutcast stuff
-          //vecCores.push_back(EPC_DVDPLAYER);
-        }
-        CStdString content = headers.GetContentType();
-
-        if( content == "video/x-flv" // mplayer fails on these
-         || content == "audio/aacp") // mplayer has no support for AAC+         
-          vecCores.push_back(EPC_DVDPLAYER);
-      }
-    }
+    if( content == "video/x-flv" // mplayer fails on these
+      || content == "audio/aacp") // mplayer has no support for AAC+         
+      vecCores.push_back(EPC_DVDPLAYER);
 
     // allways add mplayer as a high prio player for internet streams
     vecCores.push_back(EPC_MPLAYER);

@@ -70,8 +70,14 @@ ICodec* CodecFactory::CreateCodec(const CStdString& strFileType)
   return NULL;
 }
 
-ICodec* CodecFactory::CreateCodecDemux(const CStdString& strFile, unsigned int filecache)
+ICodec* CodecFactory::CreateCodecDemux(const CStdString& strFile, const CStdString& strContent, unsigned int filecache)
 {
+  if( strContent.Equals("audio/mpeg") )
+    return new MP3Codec();
+  else if( strContent.Equals("audio/aac") 
+    || strContent.Equals("audio/aacp") )
+    return new AACCodec();
+
   CURL urlFile(strFile);
   if (urlFile.GetProtocol() == "lastfm")
   {

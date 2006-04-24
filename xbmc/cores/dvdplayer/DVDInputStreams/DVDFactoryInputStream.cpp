@@ -6,18 +6,20 @@
 #include "DVDInputStreamNavigator.h"
 #include "DVDInputStreamHttp.h"
 
-CDVDInputStream* CDVDFactoryInputStream::CreateInputStream(IDVDPlayer* pPlayer, const char* strFile)
+CDVDInputStream* CDVDFactoryInputStream::CreateInputStream(IDVDPlayer* pPlayer, const std::string& file, const std::string& content)
 {
-  CFileItem item(strFile, false);
+  CFileItem item(file.c_str(), false);
   if (item.IsDVDFile(false, true) || item.IsDVDImage() ||
-      strncmp(strFile, "\\Device\\Cdrom0", 14) == 0)
+      file.compare("\\Device\\Cdrom0") == 0)
   {
     return (new CDVDInputStreamNavigator(pPlayer));
   }
-  else if (item.IsInternetStream())
-  {
+  else if (item.IsShoutCast())
+    /* this should be replaced with standard file as soon as ffmpeg can handle raw aac */
+    /* currently ffmpeg isn't able to detect that */
     return (new CDVDInputStreamHttp());
-  }
+  else if (item.IsInternetStream() )  
+    return (new CDVDInputStreamHttp());
   
   return (new CDVDInputStreamFile());
 }
