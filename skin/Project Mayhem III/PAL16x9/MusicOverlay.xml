@@ -47,7 +47,7 @@
       <posx>65</posx>
       <posy>525</posy>
       <font>font10</font>
-      <label>$INFO[MusicPlayer.Artist] | $INFO[MusicPlayer.Title] | $INFO[MusicPlayer.Album] | $INFO[MusicPlayer.Year]</label>
+      <label>$INFO[MusicPlayer.Artist]$INFO[MusicPlayer.Title, | ]$INFO[MusicPlayer.Album, | ]$INFO[MusicPlayer.Year, | ]</label>
       <include>textcolorwhite</include>
       <include>mediaoverlay</include>
       <id>0</id>
