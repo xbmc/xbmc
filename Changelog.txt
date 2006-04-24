@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 24-04-2006 changed: [ 1042376 ] Recording stops after 100 songs - now goes to 999 songs.
  - 24-04-2006 fixed: Unicode xbe descriptions were mangled.
  - 24-04-2006 fixed: [ 1475007 ] Sending button presses to webserver inconsistencies.
  - 24-04-2006 fixed: Hide File Extensions option applied to formatted labels instead of just filenames.
