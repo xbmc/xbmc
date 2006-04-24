@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 24-04-2006 fixed: cdgreader tried to load on each frame
  - 24-04-2006 updated: french language file
  - 24-04-2006 fixed: Delete and Rename was disabled for stacked files.
  - 24-04-2006 changed: [ 1042376 ] Recording stops after 100 songs - now goes to 999 songs.
