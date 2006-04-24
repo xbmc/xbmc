@@ -122,23 +122,27 @@ namespace PYXBMC
 	PyObject* Dialog_Select(PyObject *self, PyObject *args)
 	{
 		const DWORD dWindow = WINDOW_DIALOG_SELECT;
-		char *cHeader;
+    PyObject *heading = NULL;
 		PyObject *list = NULL;
 			
-		if (!PyArg_ParseTuple(args, "sO", &cHeader, &list))	return NULL;
+		if (!PyArg_ParseTuple(args, "OO", &heading, &list))	return NULL;
 		if (!PyList_Check(list)) return NULL;
 
 		CGUIDialogSelect* pDialog= (CGUIDialogSelect*)m_gWindowManager.GetWindow(dWindow);
 		if (PyWindowIsNull(pDialog)) return NULL;
 
-		pDialog->Reset();
-		pDialog->SetHeading(cHeader);
+	  pDialog->Reset();
+    CStdString utf8Heading;
+    if (heading && PyGetUnicodeString(utf8Heading, heading, 1))
+		  pDialog->SetHeading(utf8Heading);
 
 		PyObject *listLine = NULL;
 		for(int i = 0; i < PyList_Size(list); i++)
 		{
 			listLine = PyList_GetItem(list, i);
-			if (PyString_Check(listLine)) pDialog->Add(PyString_AsString(listLine));
+      CStdString utf8Line;
+			if (listLine && PyGetUnicodeString(utf8Line, listLine, i))
+        pDialog->Add(utf8Line);
 		}
 
 		//send message and wait for user input
