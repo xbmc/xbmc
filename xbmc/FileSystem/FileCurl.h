@@ -2,6 +2,7 @@
 #include "IFile.h"
 #include "../cores/paplayer/RingHoldBuffer.h"
 #include <map>
+#include "../utils/HttpHeader.h"
 
 class IHttpHeaderCallback
 {
@@ -36,6 +37,7 @@ namespace XFILE
       virtual int	Stat(const CURL& url, struct __stat64* buffer);
 	    virtual void Close();
       virtual unsigned int Read(void* lpBuf, __int64 uiBufSize);
+      virtual CStdString GetContent()                            { return m_httpheader.GetContentType(); }
 
       size_t WriteCallback(char *buffer, size_t size, size_t nitems);
       size_t HeaderCallback(void *ptr, size_t size, size_t nmemb);
@@ -53,8 +55,11 @@ namespace XFILE
       void ClearRequestHeaders();
       void SetBufferSize(unsigned int size);
 
+      const CHttpHeader& GetHttpHeader() { return m_httpheader; }
+
       /* static function that will get content type of a file */      
       static bool GetHttpHeader(const CURL &url, CHttpHeader &headers);
+      static bool GetContent(const CURL &url, CStdString &content);
     protected:
       void SetCommonOptions();
       void SetRequestHeaders();
@@ -89,5 +94,7 @@ namespace XFILE
       typedef std::map<CStdString, CStdString> MAPHTTPHEADERS;
       MAPHTTPHEADERS m_requestheaders;
 
+      /* returned http header */
+      CHttpHeader m_httpheader;
   };
 };
