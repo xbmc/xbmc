@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 24-04-2006 fixed: Edit/Delete source (bookmark) did not work properly from UI 
  - 24-04-2006 fixed: CFileCUrl::Exists (http reader) would return that a file at the specified url didn't exist even if it really did.
  - 24-04-2006 fixed: if a proxy port was set, shout:// would read unallocated memory.
  - 24-04-2006 updated: German language file
