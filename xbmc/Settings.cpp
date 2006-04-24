@@ -1829,12 +1829,13 @@ bool CSettings::LoadXml(bool forceToQ /* = false */)
   return true;
 }
 
-bool CSettings::UpdateBookmark(const CStdString &strType, const CStdString &strOldName, const CStdString &strUpdateElement, const CStdString &strUpdateText)
+bool CSettings::UpdateBookmark(const CStdString &strType, const CStdString strOldName, const CStdString &strUpdateElement, const CStdString &strUpdateText)
 {
   bool breturn(false);
   if (!LoadXml()) return false;
 
   VECSHARES *pShares = GetSharesFromType(strType);
+  
   if (!pShares) return false;
 
   // disallow virtual paths
@@ -1958,9 +1959,10 @@ bool CSettings::UpDateXbmcXML(const CStdString &strFirstChild, const CStdString 
   }
   else return false;
 }  
-bool CSettings::DeleteBookmark(const CStdString &strType, const CStdString &strName, const CStdString &strPath)
+bool CSettings::DeleteBookmark(const CStdString &strType, const CStdString strName, const CStdString strPath)
 {
    bool breturn; breturn = false;
+   
   if (!LoadXml()) return false;
 
   VECSHARES *pShares = GetSharesFromType(strType);
