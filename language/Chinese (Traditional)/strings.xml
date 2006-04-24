@@ -185,7 +185,7 @@
   <string><id>249</id><value>音樂</value></string>
   <string><id>250</id><value>視覺效果</value></string>
   <string><id>251</id><value>選擇目的目錄</value></string>
-  <string><id>252</id><value>- 立體聲輸出到所有喇叭</value></string>
+  <string><id>252</id><value>- 輸出立體聲到所有喇叭</value></string>
   <string><id>253</id><value>頻道</value></string>
   <string><id>254</id><value>- DTS 數位音效</value></string>
   <string><id>255</id><value>CDDB</value></string>
@@ -284,7 +284,7 @@
   <string><id>349</id><value>只顯示預設的執行檔</value></string>
   <string><id>350</id><value>程式</value></string>
   <string><id>351</id><value>關閉</value></string>
-  <string><id>352</id><value>陰黯</value></string>
+  <string><id>352</id><value>漸暗</value></string>
   <string><id>353</id><value>全黑</value></string>
   <string><id>354</id><value>駭客任務</value></string>
   <string><id>355</id><value>啟動螢幕保護時間</value></string>
@@ -652,6 +652,7 @@
   <string><id>1233</id><value>程式 &amp; 影片 &amp; 音樂</value></string>
   <string><id>1234</id><value>程式 &amp; 圖片 &amp; 音樂</value></string>
   <string><id>1235</id><value>程式 &amp; 圖片 &amp; 影片</value></string>
+  <string><id>1236</id><value>- 客戶端連線逾時</value></string>
 
   <string><id>1245</id><value> - FTP 使用者名稱</value></string>
   <string><id>1246</id><value> - FTP 密碼</value></string>
@@ -914,7 +915,7 @@
   <string><id>13277</id><value>儲存設備</value></string>
   <string><id>13278</id><value>預設</value></string>
   <string><id>13279</id><value>網路</value></string>
-  <string><id>13280</id><value>影片</value></string>
+  <string><id>13280</id><value>視訊</value></string>
   <string><id>13281</id><value>硬體</value></string>
   <string><id>13282</id><value>_</value></string>
   <string><id>13283</id><value>核心版本：</value></string>
@@ -1224,7 +1225,7 @@
   <string><id>15262</id><value>%name% 專輯排行</value></string>
   <string><id>15263</id><value>%name% 歌曲排行</value></string>
   <string><id>15264</id><value>%name% 標籤排行</value></string>
-  <string><id>15265</id><value>%name% 狂熱歌迷</value></string>
+  <string><id>15265</id><value>%name% 最愛歌迷</value></string>
   <string><id>15266</id><value>收聽 %name% 歌迷 last.fm 電台</value></string>
   <string><id>15267</id><value>收聽 %name% 同類型藝人 last.fm 電台</value></string>  
   <string><id>15268</id><value>%name% 藝人排行</value></string>
@@ -1265,7 +1266,7 @@
   <string><id>16013</id><value>輸入新檔案名稱</value></string>
   <string><id>16014</id><value>輸入資料夾名稱</value></string>
   <string><id>16015</id><value>輸入目錄名稱</value></string>
-  <string><id>16016</id><value>可用選項：%A, %T, %N, %B, %D, %G, %Y, %F</value></string>
+  <string><id>16016</id><value>可用選項：%A, %T, %N, %B, %D, %G, %Y, %F, %S</value></string>
   <string><id>16017</id><value>輸入搜尋字串</value></string>
   <string><id>16018</id><value>關閉</value></string>
   <string><id>16019</id><value>自動選擇</value></string>
@@ -1279,7 +1280,7 @@
   <string><id>16027</id><value>太多連續性錯誤</value></string>
   
   <string><id>16030</id><value>派對模式取消！</value></string>
-  <string><id>16031</id><value>資料庫歌曲檔案太少！</value></string>
+  <string><id>16031</id><value>資料庫歌曲檔案不符！</value></string>
   <string><id>16032</id><value>無法重建資料庫！</value></string>
   <string><id>16033</id><value>無法打開資料庫！</value></string>
   <string><id>16034</id><value>無法從資料庫取得歌曲檔案！</value></string>
