@@ -1603,6 +1603,8 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 
   CLog::Log(LOGINFO, "  load skin from:%s", strSkinPath.c_str());
 
+  StopPlaying();
+/*
   if ( IsPlaying() )
   {
     CLog::Log(LOGINFO, " stop playing...");
@@ -1612,7 +1614,7 @@ void CApplication::LoadSkin(const CStdString& strSkin)
     m_currentStack.Clear();
     delete m_pPlayer;
     m_pPlayer = NULL;
-  }
+  }*/
 
   //  When the app is started the instance of the
   //  kai client should not be created until the
