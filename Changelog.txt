@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 24-04-2006 fixed: Crash when changing GUI resolution while playing media.
  - 23-04-2006 fixed: If screensaver window is activated externally (via web or python or whatever) it wouldn't register, so would be activated again after the usual timeout.
  - 23-04-2006 fixed: Karaoke is always rendered on top of visualisations.
  - 23-04-2006 fixed: Shoutcast directory did no caching.

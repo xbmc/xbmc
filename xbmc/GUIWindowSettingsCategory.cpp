@@ -73,8 +73,6 @@ CGUIWindowSettingsCategory::CGUIWindowSettingsCategory(void)
   m_iSectionBeforeJump=-1;
   m_iControlBeforeJump=-1;
   m_iWindowBeforeJump=WINDOW_INVALID;
-  m_OldResolution = INVALID;
-  m_dwResTime = 0;
 }
 
 CGUIWindowSettingsCategory::~CGUIWindowSettingsCategory(void)
@@ -200,6 +198,15 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
         g_settings.Save();
       }
 
+      // Reload a resolution
+      if (m_NewResolution != INVALID)
+      {
+        g_guiSettings.SetInt("LookAndFeel.Resolution", m_NewResolution);
+        //set the gui resolution, if newRes is AUTORES newRes will be set to the highest available resolution
+        g_graphicsContext.SetGUIResolution(m_NewResolution);
+        //set our lookandfeelres to the resolution set in graphiccontext
+        g_guiSettings.m_LookAndFeelResolution = m_NewResolution;
+      }
       // Reload the skin.  Save the current focused control, and refocus it
       // when done.
       unsigned iCtrlID = GetFocusedControl();
@@ -227,10 +234,6 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
     break;
   case GUI_MSG_WINDOW_DEINIT:
     {
-      //restore resolution setting to original if we were in the middle of changing
-      if (m_dwResTime && m_OldResolution != INVALID) g_guiSettings.SetInt("LookAndFeel.Resolution", m_OldResolution);
-      m_OldResolution = INVALID;
-
       // Hardware based stuff
       // TODO: This should be done in a completely separate screen
       // to give warning to the user that it writes to the EEPROM.
@@ -1563,10 +1566,16 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), iControlID, 0, 0, NULL);
     g_graphicsContext.SendMessage(msg);
     m_NewResolution = (RESOLUTION)msg.GetParam1();
+    // reset our skin if necessary
     // delay change of resolution
-    if (m_NewResolution != m_OldResolution)
+    if (m_NewResolution != g_guiSettings.m_LookAndFeelResolution)
     {
-      m_dwResTime = timeGetTime() + 2000;
+      g_application.DelayLoadSkin();
+    }
+    else
+    { // Do not reload the resolution we are using
+      m_NewResolution = INVALID;
+      g_application.CancelDelayLoadSkin();
     }
   }
   else if (strSetting == "VideoPlayer.DisplayResolution")
@@ -2148,28 +2157,6 @@ void CGUIWindowSettingsCategory::AddSetting(CSetting *pSetting, int iPosX, int &
 
 void CGUIWindowSettingsCategory::Render()
 {
-  // check if we need to set a new resolution
-  if (m_dwResTime && timeGetTime() >= m_dwResTime)
-  {
-    m_dwResTime = 0;
-
-    if (m_NewResolution != m_OldResolution)
-    {
-      unsigned iCtrlID = GetFocusedControl();
-      CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), iCtrlID, 0, 0, NULL);
-      g_graphicsContext.SendMessage(msg);
-      //set our option
-      g_guiSettings.SetInt("LookAndFeel.Resolution", m_NewResolution);
-      m_OldResolution = m_NewResolution;
-      //set the gui resolution, if newRes is AUTORES newRes will be set to the highest available resolution
-      g_graphicsContext.SetGUIResolution(m_NewResolution);
-      //set our lookandfeelres to the resolution set in graphiccontext
-      g_guiSettings.m_LookAndFeelResolution = m_NewResolution;
-      g_application.LoadSkin(g_guiSettings.GetString("LookAndFeel.Skin"));
-      m_gWindowManager.ActivateWindow(GetID());
-      SET_CONTROL_FOCUS(iCtrlID, g_guiSettings.GetInt("LookAndFeel.Resolution"));
-    }
-  }
   // update realtime changeable stuff
   UpdateRealTimeSettings();
   // update alpha status of current button
@@ -3048,8 +3035,7 @@ void CGUIWindowSettingsCategory::OnInitWindow()
   m_strNetworkDNS = g_guiSettings.GetString("Network.DNS");
   m_strOldTrackFormat = g_guiSettings.GetString("MyMusic.TrackFormat");
   m_strOldTrackFormatRight = g_guiSettings.GetString("MyMusic.TrackFormatRight");
-  m_dwResTime = 0;
-  m_OldResolution = (RESOLUTION)g_guiSettings.GetInt("LookAndFeel.Resolution");
+  m_NewResolution = INVALID;
   SetupControls();
   CGUIWindow::OnInitWindow();
 }
