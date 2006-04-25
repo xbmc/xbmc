@@ -424,7 +424,7 @@
   <string><id>489</id><value>自动播放下一个项目</value></string>
   <string><id>490</id><value>自动选择歌曲的列表和图表</value></string>
   <string><id>491</id><value>使用大图标</value></string>
-  <string><id>492</id><value>放大字幕</value></string>
+  <string><id>492</id><value>放大.Vobsub字幕</value></string>
   <string><id>493</id><value>高级选项 (适合专家！)</value></string>
   <string><id>494</id><value>总体音量 (dB)</value></string>
   <string><id>495</id><value>以桌面的解析度播放影片</value></string>
@@ -453,7 +453,7 @@
   <string><id>518</id><value>运行</value></string> 
   <string><id>519</id><value>运行方式</value></string> 
   <string><id>520</id><value>编辑软件标题</value></string>
-  <string><id>521</id><value>编辑</value></string>
+  <string><id>521</id><value>合辑</value></string>
   <string><id>522</id><value>移除源</value></string>
 
   <string><id>588</id><value>取消舞会模式</value></string>
@@ -732,8 +732,8 @@
   <string><id>10514</id><value>我的音乐 - 流派</value></string>
   <string><id>10515</id><value>我的音乐 - Top 100</value></string>
   <string><id>10516</id><value>我的音乐 - 资料</value></string>
-  <string><id>10517</id><value>我的音乐 - 播放列表</value></string>
-  <string><id>10518</id><value>我的视频 - 艺术家</value></string>
+  <string><id>10517</id><value>我的音乐 - 正在播放的...</value></string>
+  <string><id>10518</id><value>我的视频 - 演员</value></string>
   <string><id>10519</id><value>我的视频 - 流派</value></string>
   <string><id>10520</id><value>我的视频 - 标题</value></string>
   <string><id>10521</id><value>我的视频 - 年份</value></string>
@@ -1192,10 +1192,10 @@
   <string><id>15111</id><value>皮肤主题</value></string> 
   <string><id>15112</id><value>缺省主题</value></string> 
 
-  <string><id>15200</id><value>AudioScrobbler</value></string>
-  <string><id>15201</id><value>将歌曲提交到 AudioScrobbler</value></string>
-  <string><id>15202</id><value>AudioScrobbler 用户名</value></string>
-  <string><id>15203</id><value>AudioScrobbler 密码</value></string>
+  <string><id>15200</id><value>LastFM</value></string>
+  <string><id>15201</id><value>将歌曲提交到 LastFM</value></string>
+  <string><id>15202</id><value>LastFM 用户名</value></string>
+  <string><id>15203</id><value>LastFM 密码</value></string>
   <string><id>15204</id><value>无法连接：休眠中…</value></string>
   <string><id>15205</id><value>请升级XBMC</value></string>
   <string><id>15206</id><value>上传失败：无法通过认证！</value></string>
@@ -1209,7 +1209,7 @@
   <string><id>15214</id><value>使用平滑的A/V同步</value></string>
   <string><id>15215</id><value>缩略图显示时隐藏文件名</value></string>
 
-  <string><id>15250</id><value>提交 Last.fm 电台到AudioScrobbler</value></string>
+  <string><id>15250</id><value>提交 Last.fm 电台到LastFM</value></string>
   <string><id>15251</id><value>连接到 Last.fm…</value></string>
   <string><id>15252</id><value>选择电台…</value></string>
   <string><id>15253</id><value>寻找相似的艺术家…</value></string>
