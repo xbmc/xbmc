@@ -66,6 +66,17 @@ struct iso9660_VolumeDescriptor
 } ;
 
 
+struct	iso9660_Datetime {
+  BYTE year;   /* Number of years since 1900 */
+  BYTE month;  /* Has value in range 1..12. Note starts
+                              at 1, not 0 like a tm struct. */
+  BYTE day;    /* Day of the month from 1 to 31 */
+  BYTE hour;   /* Hour of the day from 0 to 23 */
+  BYTE minute; /* Minute of the hour from 0 to 59 */
+  BYTE second; /* Second of the minute from 0 to 59 */
+  char gmtoff; /* GMT values -48 .. + 52 in 15 minute intervals */
+};
+
 struct iso9660_Directory
 {
 
@@ -81,7 +92,7 @@ struct iso9660_Directory
   DWORD dwFileLocationBE;     //6..9
   DWORD dwFileLengthLE;      //10..13 number of bytes of file data or length of directory
   DWORD dwFileLengthBE;           //14..17
-  BYTE byDateTime[7];      //18..24 date
+  iso9660_Datetime DateTime;      //18..24 date
   BYTE byFlags;         //25     flags
   BYTE UnitSize;         //26     file unit size for an interleaved file
   BYTE InterleaveGapSize;    //27     interleave gap size for an interleaved file
@@ -124,6 +135,7 @@ struct iso_dirtree
   char type;  // bit 0 = no entry, bit 1 = file, bit 2 = dir
   DWORD Location; // number of the first sector of file data or directory
   DWORD Length;      // number of bytes of file data or length of directory
+  FILETIME filetime; // date time of the directory/file
 
   struct iso_dirtree *dirpointer; // if type is a dir, this will point to the list in that dir
   struct iso_dirtree *next;  // pointer to next file/dir in this directory
@@ -172,6 +184,7 @@ public:
   bool IsScanned();
 
 protected:
+  void IsoDateTimeToFileTime(iso9660_Datetime* isoDateTime, FILETIME* filetime);
   struct iso_dirtree* ReadRecursiveDirFromSector( DWORD sector, const char * );
   struct iso_dirtree* FindFolder( char *Folder );
   string GetThinText(WCHAR* strTxt, int iLen );
