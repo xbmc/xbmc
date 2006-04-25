@@ -393,7 +393,7 @@ bool CCdgRenderer::InitGraphics()
   m_fgAlpha = ((TEX_COLOR) (g_guiSettings.GetInt("Karaoke.ForegroundAlpha") & 0x000000FF)) << 24;
 
   if (!m_pCdgTexture)
-    m_pd3dDevice->CreateTexture(TEXWIDTH, TEXHEIGHT, 0, 0, D3DFMT_A8R8G8B8, D3DPOOL_MANAGED, &m_pCdgTexture);
+    m_pd3dDevice->CreateTexture(WIDTH, HEIGHT, 0, 0, D3DFMT_LIN_A8R8G8B8, D3DPOOL_MANAGED, &m_pCdgTexture);
   if (!m_pCdgTexture) return false;
   m_bRender = true;
   return true;
@@ -413,6 +413,8 @@ void CCdgRenderer::DrawTexture()
   m_pd3dDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
   m_pd3dDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
   m_pd3dDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
+  m_pd3dDevice->SetTextureStageState( 0, D3DTSS_ADDRESSU, D3DTADDRESS_CLAMP );
+  m_pd3dDevice->SetTextureStageState( 0, D3DTSS_ADDRESSV, D3DTADDRESS_CLAMP );
   m_pd3dDevice->SetTextureStageState( 0, D3DTSS_COLOROP, D3DTOP_MODULATE );
   m_pd3dDevice->SetTextureStageState( 0, D3DTSS_COLORARG1, D3DTA_TEXTURE );
   m_pd3dDevice->SetTextureStageState( 0, D3DTSS_COLORARG2, D3DTA_DIFFUSE );
@@ -424,16 +426,16 @@ void CCdgRenderer::DrawTexture()
   m_pd3dDevice->Begin(D3DPT_QUADLIST);
 
   RESOLUTION res = g_graphicsContext.GetVideoResolution();
-  m_pd3dDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)BORDERWIDTH / (float) TEXWIDTH, (float) BORDERHEIGHT / (float)TEXHEIGHT);
+  m_pd3dDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)BORDERWIDTH, (float) BORDERHEIGHT);
   m_pd3dDevice->SetVertexData4f( D3DVSDE_VERTEX, (float)g_settings.m_ResInfo[res].GUIOverscan.left, (float) g_settings.m_ResInfo[res].GUIOverscan.top, 0, 0 );
 
-  m_pd3dDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, ((float)WIDTH - (float)BORDERWIDTH) / (float)TEXWIDTH, (float) BORDERHEIGHT / (float)TEXHEIGHT);
+  m_pd3dDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)(WIDTH - BORDERWIDTH), (float) BORDERHEIGHT);
   m_pd3dDevice->SetVertexData4f( D3DVSDE_VERTEX, (float)g_settings.m_ResInfo[res].GUIOverscan.right, (float) g_settings.m_ResInfo[res].GUIOverscan.top, 0, 0 );
 
-  m_pd3dDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, ((float)WIDTH - (float)BORDERWIDTH) / (float)TEXWIDTH, ((float) HEIGHT - (float)BORDERHEIGHT) / (float) TEXHEIGHT);
+  m_pd3dDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)(WIDTH - BORDERWIDTH), (float)(HEIGHT - BORDERHEIGHT));
   m_pd3dDevice->SetVertexData4f( D3DVSDE_VERTEX, (float)g_settings.m_ResInfo[res].GUIOverscan.right, (float) g_settings.m_ResInfo[res].GUIOverscan.bottom, 0, 0);
 
-  m_pd3dDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)BORDERWIDTH / (float) TEXWIDTH, ((float) HEIGHT - (float)BORDERHEIGHT) / (float) TEXHEIGHT);
+  m_pd3dDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)BORDERWIDTH, (float)(HEIGHT - BORDERHEIGHT));
   m_pd3dDevice->SetVertexData4f( D3DVSDE_VERTEX, (float)g_settings.m_ResInfo[res].GUIOverscan.left, (float) g_settings.m_ResInfo[res].GUIOverscan.bottom, 0, 0 );
 
   m_pd3dDevice->End();
@@ -443,20 +445,13 @@ void CCdgRenderer::UpdateTexture()
 {
   D3DLOCKED_RECT LockedRect;
   m_pCdgTexture->LockRect(0, &LockedRect, NULL, 0L);
-  void *pTexel = (void*) LockedRect.pBits;
-
-  TEX_COLOR TexColor;
-  BYTE ClutOffset;
-  UINT i, j;
-  Swizzler s( TEXWIDTH, TEXHEIGHT, 0);
-  s.SetU(0);
-  for ( i = 0; i < WIDTH; i++ )
+  for (UINT j = 0; j < HEIGHT; j++ )
   {
-    s.SetV(0);
-    for ( j = 0; j < HEIGHT; j++ )
+    DWORD *texel = (DWORD *)((BYTE *)LockedRect.pBits + j * LockedRect.Pitch);
+    for (UINT i = 0; i < WIDTH; i++ )
     {
-      ClutOffset = m_pCdg->GetClutOffset(j + m_pCdg->GetVOffset() , i + m_pCdg->GetHOffset());
-      TexColor = ConvertColor(m_pCdg->GetColor(ClutOffset));
+      BYTE ClutOffset = m_pCdg->GetClutOffset(j + m_pCdg->GetVOffset() , i + m_pCdg->GetHOffset());
+      TEX_COLOR TexColor = ConvertColor(m_pCdg->GetColor(ClutOffset));
       if (TexColor >> 24) //Only override transp. for opaque alpha
       {
         TexColor &= 0x00FFFFFF;
@@ -465,10 +460,8 @@ void CCdgRenderer::UpdateTexture()
         else
           TexColor |= m_fgAlpha;
       }
-      ((TEX_COLOR*)pTexel)[s.Get2D()] = TexColor;
-      s.IncV();
+      *texel++ = TexColor;
     }
-    s.IncU();
   }
   m_pCdgTexture->UnlockRect(0);
 }
