@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 25-04-2004 updated: Maltese language file (Thnx to michelbugeja)
  - 25-04-2006 changed: dvdplayer now uses xbmc filesystem for shout/http streams instead of it's own. means shoutcast information will be displayed for aacp streams
  - 25-04-2006 updated: dvdplayer ffmpeg to mplayerhq cvs and changed maxstreams to 42 instead of the standard 20 ( don't forget to update your system/dvdplayer dir )
  - 25-04-2006 fixed: directory/file date of iso discs was not read
