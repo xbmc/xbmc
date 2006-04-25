@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 25-04-2006 updated: dvdplayer ffmpeg to mplayerhq cvs and changed maxstreams to 42 instead of the standard 20
  - 25-04-2006 fixed: directory/file date of iso discs was not read
  - 25-04-2006 updated: Italian language file (Thnx to kotix)
  - 25-04-2006 updated: Chinese (Simple) language file (Thnx to gamepc)

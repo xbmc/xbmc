@@ -5,9 +5,6 @@
 #include "..\DllAvCodec.h"
 #include "..\..\DVDDemuxers\DllAvFormat.h"
 
-// should be the same as in avcodec.h
-#define AVCODEC_MAX_AUDIO_FRAME_SIZE 131072
-
 class CDVDAudioCodecFFmpeg : public CDVDAudioCodec
 {
 public:
