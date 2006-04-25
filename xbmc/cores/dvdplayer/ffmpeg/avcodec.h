@@ -21,8 +21,8 @@ extern "C" {
 #define AV_STRINGIFY(s)         AV_TOSTRING(s)
 #define AV_TOSTRING(s) #s
 
-#define LIBAVCODEC_VERSION_INT  ((51<<16)+(1<<8)+0)
-#define LIBAVCODEC_VERSION      51.1.0
+#define LIBAVCODEC_VERSION_INT  ((51<<16)+(9<<8)+0)
+#define LIBAVCODEC_VERSION      51.9.0
 #define LIBAVCODEC_BUILD        LIBAVCODEC_VERSION_INT
 
 #define LIBAVCODEC_IDENT        "Lavc" AV_STRINGIFY(LIBAVCODEC_VERSION)
@@ -115,6 +115,12 @@ enum CodecID {
     CODEC_ID_TRUEMOTION2,
     CODEC_ID_BMP,
     CODEC_ID_CSCD,
+    CODEC_ID_MMVIDEO,
+    CODEC_ID_ZMBV,
+    CODEC_ID_AVS,
+    CODEC_ID_SMACKVIDEO,
+    CODEC_ID_NUV,
+    CODEC_ID_KMVC,
 
     /* various pcm "codecs" */
     CODEC_ID_PCM_S16LE= 0x10000,
@@ -151,6 +157,9 @@ enum CodecID {
     CODEC_ID_ADPCM_CT,
     CODEC_ID_ADPCM_SWF,
     CODEC_ID_ADPCM_YAMAHA,
+    CODEC_ID_ADPCM_SBPRO_4,
+    CODEC_ID_ADPCM_SBPRO_3,
+    CODEC_ID_ADPCM_SBPRO_2,
 
     /* AMR */
     CODEC_ID_AMR_NB= 0x12000,
@@ -191,6 +200,8 @@ enum CodecID {
     CODEC_ID_QDM2,
     CODEC_ID_COOK,
     CODEC_ID_TRUESPEECH,
+    CODEC_ID_TTA,
+    CODEC_ID_SMACKAUDIO,
 
     CODEC_ID_OGGTHEORA= 0x16000,
 
@@ -222,61 +233,19 @@ enum CodecType {
     CODEC_TYPE_SUBTITLE,
 };
 
-/**
- * Pixel format. Notes:
- *
- * PIX_FMT_RGBA32 is handled in an endian-specific manner. A RGBA
- * color is put together as:
- *  (A << 24) | (R << 16) | (G << 8) | B
- * This is stored as BGRA on little endian CPU architectures and ARGB on
- * big endian CPUs.
- *
- * When the pixel format is palettized RGB (PIX_FMT_PAL8), the palettized
- * image data is stored in AVFrame.data[0]. The palette is transported in
- * AVFrame.data[1] and, is 1024 bytes long (256 4-byte entries) and is
- * formatted the same as in PIX_FMT_RGBA32 described above (i.e., it is
- * also endian-specific). Note also that the individual RGB palette
- * components stored in AVFrame.data[1] should be in the range 0..255.
- * This is important as many custom PAL8 video codecs that were designed
- * to run on the IBM VGA graphics adapter use 6-bit palette components.
- */
-enum PixelFormat {
-    PIX_FMT_NONE= -1,
-    PIX_FMT_YUV420P,   ///< Planar YUV 4:2:0 (1 Cr & Cb sample per 2x2 Y samples)
-    PIX_FMT_YUV422,    ///< Packed pixel, Y0 Cb Y1 Cr
-    PIX_FMT_RGB24,     ///< Packed pixel, 3 bytes per pixel, RGBRGB...
-    PIX_FMT_BGR24,     ///< Packed pixel, 3 bytes per pixel, BGRBGR...
-    PIX_FMT_YUV422P,   ///< Planar YUV 4:2:2 (1 Cr & Cb sample per 2x1 Y samples)
-    PIX_FMT_YUV444P,   ///< Planar YUV 4:4:4 (1 Cr & Cb sample per 1x1 Y samples)
-    PIX_FMT_RGBA32,    ///< Packed pixel, 4 bytes per pixel, BGRABGRA..., stored in cpu endianness
-    PIX_FMT_YUV410P,   ///< Planar YUV 4:1:0 (1 Cr & Cb sample per 4x4 Y samples)
-    PIX_FMT_YUV411P,   ///< Planar YUV 4:1:1 (1 Cr & Cb sample per 4x1 Y samples)
-    PIX_FMT_RGB565,    ///< always stored in cpu endianness
-    PIX_FMT_RGB555,    ///< always stored in cpu endianness, most significant bit to 1
-    PIX_FMT_GRAY8,
-    PIX_FMT_MONOWHITE, ///< 0 is white
-    PIX_FMT_MONOBLACK, ///< 0 is black
-    PIX_FMT_PAL8,      ///< 8 bit with RGBA palette
-    PIX_FMT_YUVJ420P,  ///< Planar YUV 4:2:0 full scale (jpeg)
-    PIX_FMT_YUVJ422P,  ///< Planar YUV 4:2:2 full scale (jpeg)
-    PIX_FMT_YUVJ444P,  ///< Planar YUV 4:4:4 full scale (jpeg)
-    PIX_FMT_XVMC_MPEG2_MC,///< XVideo Motion Acceleration via common packet passing(xvmc_render.h)
-    PIX_FMT_XVMC_MPEG2_IDCT,
-    PIX_FMT_UYVY422,   ///< Packed pixel, Cb Y0 Cr Y1
-    PIX_FMT_UYVY411,   ///< Packed pixel, Cb Y0 Y1 Cr Y2 Y3
-    PIX_FMT_NB,
-};
-
 /* currently unused, may be used if 24/32 bits samples ever supported */
+/* all in native endian */
 enum SampleFormat {
-    SAMPLE_FMT_S16 = 0,         ///< signed 16 bits
+    SAMPLE_FMT_NONE = -1,
+    SAMPLE_FMT_U8,              ///< unsigned 8 bits
+    SAMPLE_FMT_S16,             ///< signed 16 bits
+    SAMPLE_FMT_S24,             ///< signed 24 bits
     SAMPLE_FMT_S32,             ///< signed 32 bits
     SAMPLE_FMT_FLT,             ///< float
-    SAMPLE_FMT_DBL,             ///< double
 };
 
 /* in bytes */
-#define AVCODEC_MAX_AUDIO_FRAME_SIZE 131072
+#define AVCODEC_MAX_AUDIO_FRAME_SIZE 192000 // 1 second of 48khz 32bit audio
 
 /**
  * Required number of additionally allocated bytes at the end of the input bitstream for decoding.
@@ -326,7 +295,7 @@ typedef struct RcOverride{
 /* only for ME compatiblity with old apps */
 extern int motion_estimation_method;
 
-#define FF_MAX_B_FRAMES 8
+#define FF_MAX_B_FRAMES 16
 
 /* encoding support
    these flags can be passed in AVCodecContext.flags before initing
@@ -2163,6 +2132,7 @@ extern AVCodec mp3on4_decoder;
 extern AVCodec qdm2_decoder;
 extern AVCodec cook_decoder;
 extern AVCodec truespeech_decoder;
+extern AVCodec tta_decoder;
 extern AVCodec mace3_decoder;
 extern AVCodec mace6_decoder;
 extern AVCodec huffyuv_decoder;
@@ -2217,6 +2187,7 @@ extern AVCodec qtrle_decoder;
 extern AVCodec flac_decoder;
 extern AVCodec tscc_decoder;
 extern AVCodec cscd_decoder;
+extern AVCodec nuv_decoder;
 extern AVCodec ulti_decoder;
 extern AVCodec qdraw_decoder;
 extern AVCodec xl_decoder;
@@ -2233,6 +2204,12 @@ extern AVCodec fraps_decoder;
 extern AVCodec libgsm_encoder;
 extern AVCodec libgsm_decoder;
 extern AVCodec bmp_decoder;
+extern AVCodec mmvideo_decoder;
+extern AVCodec zmbv_decoder;
+extern AVCodec avs_decoder;
+extern AVCodec smacker_decoder;
+extern AVCodec smackaud_decoder;
+extern AVCodec kmvc_decoder;
 
 /* pcm codecs */
 #define PCM_CODEC(id, name) \
@@ -2274,6 +2251,9 @@ PCM_CODEC(CODEC_ID_ADPCM_G726, adpcm_g726);
 PCM_CODEC(CODEC_ID_ADPCM_CT, adpcm_ct);
 PCM_CODEC(CODEC_ID_ADPCM_SWF, adpcm_swf);
 PCM_CODEC(CODEC_ID_ADPCM_YAMAHA, adpcm_yamaha);
+PCM_CODEC(CODEC_ID_ADPCM_SBPRO_4, adpcm_sbpro_4);
+PCM_CODEC(CODEC_ID_ADPCM_SBPRO_3, adpcm_sbpro_3);
+PCM_CODEC(CODEC_ID_ADPCM_SBPRO_2, adpcm_sbpro_2);
 
 #undef PCM_CODEC
 
@@ -2525,6 +2505,7 @@ extern AVCodecParser mpegaudio_parser;
 extern AVCodecParser ac3_parser;
 extern AVCodecParser dvdsub_parser;
 extern AVCodecParser dvbsub_parser;
+extern AVCodecParser aac_parser;
 
 /* memory */
 void *av_malloc(unsigned int size);
@@ -2545,6 +2526,12 @@ int is_adx(const unsigned char *buf,size_t bufsize);
 
 void img_copy(AVPicture *dst, const AVPicture *src,
               int pix_fmt, int width, int height);
+
+int img_crop(AVPicture *dst, const AVPicture *src,
+             int pix_fmt, int top_band, int left_band);
+
+int img_pad(AVPicture *dst, const AVPicture *src, int height, int width, int pix_fmt,
+            int padtop, int padbottom, int padleft, int padright, int *color);
 
 /* av_log API */
 
