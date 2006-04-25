@@ -140,6 +140,18 @@
 #define INT16_MAX       0x7fff
 #endif
 
+#ifndef INT32_MIN
+#define INT32_MIN       (-0x7fffffff-1)
+#endif
+
+#ifndef INT32_MAX
+#define INT32_MAX       0x7fffffff
+#endif
+
+#ifndef UINT32_MAX
+#define UINT32_MAX      0xffffffff
+#endif
+
 #ifndef INT64_MIN
 #define INT64_MIN       (-0x7fffffffffffffffLL-1)
 #endif
@@ -247,6 +259,13 @@ static inline float floorf(float f) {
 
 #ifdef HAVE_AV_CONFIG_H
 
+#if defined(__MINGW32__) && !defined(BUILD_AVUTIL) && defined(BUILD_SHARED_AV)
+#  define FF_IMPORT_ATTR __declspec(dllimport)
+#else
+#  define FF_IMPORT_ATTR
+#endif
+
+
 #    include "bswap.h"
 
 // Use rip-relative addressing if compiling PIC code on x86-64.
@@ -260,6 +279,8 @@ static inline float floorf(float f) {
 #    else
 #        if defined(ARCH_X86_64) && defined(PIC)
 #            define MANGLE(a) #a"(%%rip)"
+#        elif defined(CONFIG_DARWIN)
+#            define MANGLE(a) "_" #a
 #        else
 #            define MANGLE(a) #a
 #        endif
@@ -345,7 +366,7 @@ void print_stats(void);
 #endif
 
 /* misc math functions */
-extern const uint8_t ff_log2_tab[256];
+extern FF_IMPORT_ATTR const uint8_t ff_log2_tab[256];
 
 static inline int av_log2(unsigned int v)
 {
@@ -423,7 +444,7 @@ static inline int clip_uint8(int a)
 }
 
 /* math */
-extern const uint8_t ff_sqrt_tab[128];
+extern FF_IMPORT_ATTR const uint8_t ff_sqrt_tab[128];
 
 int64_t ff_gcd(int64_t a, int64_t b);
 
