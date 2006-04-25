@@ -12,25 +12,34 @@ public:
   virtual ~CGUIPassword(void);
   bool IsConfirmed() const;
   bool IsCanceled() const;
+
   bool IsItemUnlocked(CFileItem* pItem, const CStdString &strType);
   bool IsItemUnlocked(CShare* pItem, const CStdString &strType);
-  bool IsMasterLockUnlocked(bool bPromptUser);
-  bool IsMasterLockLocked(bool bPromptUser);  // This one does not ask for saving the MasterCode!
-  void UpdateMasterLockRetryCount(bool bResetCount);
+  bool IsDatabasePathUnlocked(CStdString& strPath, VECSHARES& vecShares);
+
   void GetSMBShareUserPassword();
   void SetSMBShare(const CStdString &strShare);
   CStdString GetSMBShare();
-  bool CheckStartUpLock();
-  bool CheckMenuLock(int iWindowID);
-  bool MasterUser();
-  CStdString CGUIPassword::GetSMBAuthFilename(const CStdString& strAuth);
-  bool IsDatabasePathUnlocked(CStdString& strPath, VECSHARES& vecShares);
+  CStdString GetSMBAuthFilename(const CStdString& strAuth);
 
 	MAPPASSWORDS			m_mapSMBPasswordCache; // SMB share password cache
+
+  bool IsMasterUser();
+  bool MasterUserOverridesPasswords();
+  bool MasterLockDisabled();
+  void LogoutMasterUser();
+
+  bool CheckMasterLock(bool shutdownOnFailure = false);
+  bool CheckStartUpLock();
+  bool CheckMenuLock(int iWindowID);
+
 protected:
   bool m_bConfirmed;
   bool m_bCanceled;
   CStdString m_SMBShare;
+
+  bool m_masterUserMode;    // true once the master lock password has been entered
+  int  m_masterLockRetriesRemaining;
 };
 
 extern CGUIPassword g_passwordManager;

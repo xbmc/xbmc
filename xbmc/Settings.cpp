@@ -281,20 +281,6 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
     pFileType = pFileType->NextSibling();
   }
 
-  TiXmlElement* pMasterLockElement = pRootElement->FirstChildElement("masterlock");
-  if (pMasterLockElement)
-  {
-    GetInteger(pMasterLockElement, "maxretry", g_stSettings.m_iMasterLockMaxRetry , 0, 0, 100);
-    GetInteger(pMasterLockElement, "enableshutdown", g_stSettings.m_iMasterLockEnableShutdown , 0, 0, 1);
-    GetInteger(pMasterLockElement, "protectshares", g_stSettings.m_iMasterLockProtectShares , 0, 0, 1);
-    GetInteger(pMasterLockElement, "mastermode", g_stSettings.m_iMasterLockMode , 0, 0, 3);
-    GetString(pMasterLockElement, "mastercode", g_stSettings.m_masterLockCode, "");
-    GetInteger(pMasterLockElement, "startuplock", g_stSettings.m_iMasterLockStartupLock , 0, 0, 1);
-    GetInteger(pMasterLockElement, "LockFilemanager", g_stSettings.m_iMasterLockFilemanager , 0, 0, 1);
-    GetInteger(pMasterLockElement, "LockSettings", g_stSettings.m_iMasterLockSettings , 0, 0, 1);
-    GetInteger(pMasterLockElement, "LockHomeMedia", g_stSettings.m_iMasterLockHomeMedia , 0, 0, 15);
-  }
-
   TiXmlElement* pSambaElement = pRootElement->FirstChildElement("samba");
   if (pSambaElement)
   {

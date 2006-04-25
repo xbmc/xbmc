@@ -695,7 +695,8 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow) const
   { // Note that the code used here could probably be extended to general
     // settings conditions (parameter would need to store both the setting name and
     // the and the comparison string)
-    CStdString theme = g_guiSettings.GetString("LookAndFeel.SkinTheme").ToLower();
+    CStdString theme = g_guiSettings.GetString("LookAndFeel.SkinTheme");
+    theme.ToLower();
     CUtil::RemoveExtension(theme);
     bReturn = theme.Equals(m_stringParameters[condition - SKIN_HAS_THEME_START]);
   }
