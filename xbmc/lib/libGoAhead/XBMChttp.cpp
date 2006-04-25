@@ -281,9 +281,14 @@ int splitParameter(CStdString parameter, CStdString& command, CStdString paras[]
 
 bool playableFile(CStdString filename)
 {
-  CStdString strExtension;
-  CUtil::GetExtension(filename, strExtension);
-  return /*(CUtil::IsRemote(filename)) ||*/ ((CFile::Exists(filename)) && (strExtension!=""));
+  CURL url(filename);
+
+  /* okey this is silly, but don't feel like creating a CFileItem to check for internet stream */
+  return url.GetProtocol().Equals("http")
+      || url.GetProtocol().Equals("https")
+      || url.GetProtocol().Equals("lastfm")
+      || url.GetProtocol().Equals("shout")    
+      || CFile::Exists(filename) ;
 }
 
 int SetResponse(CStdString response)
