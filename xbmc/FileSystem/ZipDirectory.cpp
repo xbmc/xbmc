@@ -29,7 +29,6 @@ namespace DIRECTORY
     std::vector<CStdString> baseTokens;
     if (!url.GetFileName().IsEmpty())
       CUtil::Tokenize(url.GetFileName(),baseTokens,"/\\");
-    baseTokens.push_back("krake"); // need one extra.. don't give a damn 'bout what it is
     for (std::vector<SZipEntry>::iterator ze=entries.begin();ze!=entries.end();++ze)
     {      
       CStdString strEntryName(ze->name);
@@ -38,20 +37,26 @@ namespace DIRECTORY
         continue; 
       std::vector<CStdString> pathTokens;
       CUtil::Tokenize(strEntryName,pathTokens,"\\");
-      if (pathTokens.size() != baseTokens.size())
+      if (pathTokens.size() < baseTokens.size()+1)
         continue;
       bool bAdd=true;
-      for ( unsigned int i=0;i<baseTokens.size()-1;++i )
+      strEntryName = "";
+      for ( unsigned int i=0;i<baseTokens.size();++i )
       {
         if (pathTokens[i] != baseTokens[i])
         {
           bAdd = false;
           break;
         }
+        strEntryName += pathTokens[i]+"\\";
       }
       if (!bAdd)
         continue;
 
+      strEntryName += pathTokens[baseTokens.size()];
+      char c=ze->name[strEntryName.size()];
+      if (c == '/' || c == '\\')
+        strEntryName += '\\';
       bool bIsFolder = false;
       if (strEntryName[strEntryName.size()-1] != '\\') // this is a file
       {
@@ -68,8 +73,11 @@ namespace DIRECTORY
           continue;
       }
       CFileItem* pFileItem = new CFileItem;
-      pFileItem->SetLabel(pathTokens[pathTokens.size()-1]);
-      pFileItem->m_dwSize = ze->usize;
+      pFileItem->SetLabel(pathTokens[baseTokens.size()]);
+      if (bIsFolder)
+        pFileItem->m_dwSize = 0;
+      else
+        pFileItem->m_dwSize = ze->usize;
       pFileItem->m_strPath = strEntryName;
       pFileItem->m_bIsFolder = bIsFolder;
       items.Add(pFileItem);
