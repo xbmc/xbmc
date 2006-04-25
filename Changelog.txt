@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 25-04-2006 changed: Karaoke display now uses a linear texture (should be marginally faster + less memory)
  - 25-04-2006 changed: Removed mastercode settings from xboxmediacenter.xml - they're now only in the GUI.  Cleaned up the code + GUI look as well.
  - 25-04-2006 updated: Maltese language file (Thnx to michelbugeja)
  - 25-04-2006 changed: dvdplayer now uses xbmc filesystem for shout/http streams instead of it's own. means shoutcast information will be displayed for aacp streams
