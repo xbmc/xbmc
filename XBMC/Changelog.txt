@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 25-04-2006 changed: viz and karaoke is now separated.
  - 24-04-2006 fixed: paplayer can now play shoutcast mp3 streams
  - 24-04-2006 changed: content type is now available in the CFileItem, and thus available to players for codec selection
  - 24-04-2006 fixed: Edit/Delete source (bookmark) did not work properly from UI 

@@ -169,6 +169,9 @@ void CGUIVisualisationControl::Render()
       LoadVisualisation();
     }
     CGUIControl::Render();
+    if (g_guiSettings.GetBool("Karaoke.Enabled"))
+      g_application.m_CdgParser.Render();
+
     return;
   }
   else
@@ -182,6 +185,9 @@ void CGUIVisualisationControl::Render()
     else if (!m_currentVis.Equals(g_guiSettings.GetString("MyMusic.Visualisation")))
     { // vis changed - reload
       LoadVisualisation();
+
+      if (g_guiSettings.GetBool("Karaoke.Enabled"))
+        g_application.m_CdgParser.Render();
       CGUIControl::Render();
       return;
     }
@@ -205,6 +211,9 @@ void CGUIVisualisationControl::Render()
       g_graphicsContext.RestoreViewPort();
     }
   }
+  if (g_guiSettings.GetBool("Karaoke.Enabled"))
+    g_application.m_CdgParser.Render();
+
   CGUIControl::Render();
 }
 
