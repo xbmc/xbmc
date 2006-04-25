@@ -45,7 +45,6 @@ bool CISO9660Directory::GetDirectory(const CStdString& strPath, CFileItemList &i
     if (strSearchMask[i] == '/') strSearchMask[i] = '\\';
   }
 
-  //      FILETIME localTime;
   hFind = m_isoReader.FindFirstFile((char*)strSearchMask.c_str(), &wfd);
   if (hFind == NULL)
     return false;
@@ -63,8 +62,7 @@ bool CISO9660Directory::GetDirectory(const CStdString& strPath, CFileItemList &i
           pItem->m_strPath = strRoot;
           pItem->m_strPath += wfd.cFileName;
           pItem->m_bIsFolder = true;
-          //               FileTimeToLocalFileTime(&wfd.ftLastWriteTime,&localTime);
-          //               FileTimeToSystemTime(&localTime, &pItem->m_stTime);
+          FileTimeToSystemTime(&wfd.ftLastWriteTime, &pItem->m_stTime);
 
           items.Add(pItem);
         }
@@ -78,8 +76,7 @@ bool CISO9660Directory::GetDirectory(const CStdString& strPath, CFileItemList &i
           pItem->m_strPath += wfd.cFileName;
           pItem->m_bIsFolder = false;
           pItem->m_dwSize = CUtil::ToInt64(wfd.nFileSizeHigh, wfd.nFileSizeLow);
-          //           FileTimeToLocalFileTime(&wfd.ftLastWriteTime,&localTime);
-          //           FileTimeToSystemTime(&localTime, &pItem->m_stTime);
+          FileTimeToSystemTime(&wfd.ftLastWriteTime, &pItem->m_stTime);
           items.Add(pItem);
         }
       }
