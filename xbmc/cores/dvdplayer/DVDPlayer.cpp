@@ -109,6 +109,9 @@ bool CDVDPlayer::OpenFile(const CFileItem& file, __int64 iStartTime)
 
     m_content = file.GetContentType();
 
+    /* otherwise player will think we need to be restarted */
+    g_stSettings.m_currentVideoSettings.m_SubtitleCached = true;
+
     ResetEvent(m_hReadyEvent);
     Create();
     WaitForSingleObject(m_hReadyEvent, INFINITE);
