@@ -70,7 +70,7 @@ protected:
 
   CRITICAL_SECTION m_critSection;
   // #define MAX_STREAMS 20 // from avformat.h
-  CDemuxStream* m_streams[20]; // maximum number of streams that ffmpeg can handle
+  CDemuxStream* m_streams[MAX_STREAMS]; // maximum number of streams that ffmpeg can handle
 
   BYTE m_ffmpegBuffer[FFMPEG_FILE_BUFFER_SIZE];
   ByteIOContext m_ioContext;

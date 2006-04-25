@@ -235,6 +235,7 @@ extern "C" void* dll_findnext();
 extern "C" void* fsetpos();
 extern "C" void* _strtoi64();
 extern "C" void* dll_clearerr();
+extern "C" void* _tempnam();
 
 // tracker functions
 extern "C" void* track_close();
@@ -424,6 +425,7 @@ void export_msvcrt()
   g_dlls.msvcrt.AddExport("__CxxFrameHandler", (unsigned long)__CxxFrameHandler);
   g_dlls.msvcrt.AddExport("clearerr", (unsigned long)dll_clearerr);
   g_dlls.msvcrt.AddExport("_sys_nerr", (unsigned long)&_sys_nerr);
+  g_dlls.msvcrt.AddExport("_tempnam", (unsigned long)_tempnam);
 }
 
 void export_msvcr71()
@@ -634,6 +636,7 @@ void export_msvcr71()
   g_dlls.msvcr71.AddExport("_fstati64", (unsigned long)dll_fstati64);
   g_dlls.msvcr71.AddExport("_strtoi64", (unsigned long)_strtoi64);
   g_dlls.msvcr71.AddExport("clearerr", (unsigned long)dll_clearerr);
+  g_dlls.msvcr71.AddExport("_tempnam", (unsigned long)_tempnam);
 }
 
 void export_pncrt()
