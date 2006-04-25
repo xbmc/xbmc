@@ -23,9 +23,9 @@
 #include <xfont.h>
 #include "GUIDialogGamepad.h"
 #include "GUIDialogNumeric.h"
-//TODO: Remove to SettingsControl
 #include "GUIDialogFileBrowser.h"
 #include "GUIFontManager.h"
+#include "GUIDialogContextMenu.h"
 
 #define CONTROL_GROUP_BUTTONS           0
 #define CONTROL_GROUP_SETTINGS          1
@@ -688,10 +688,9 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->AddLabel(g_localizeStrings.Get(1225), 2 );    //Advanced User
       pControl->SetValue(pSettingInt->GetData());
     }
-    else if (strSetting == "Masterlock.Mastermode")
+/*    else if (strSetting == "MasterUser.LockMode")
     {
       //GeminiServer
-      g_guiSettings.SetInt("Masterlock.Mastermode", g_stSettings.m_iMasterLockMode );
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
       pControl->AddLabel(g_localizeStrings.Get(1223), LOCK_MODE_EVERYONE );    //Disabled
@@ -699,25 +698,16 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->AddLabel(g_localizeStrings.Get(12338), LOCK_MODE_GAMEPAD );    //Gamepad
       pControl->AddLabel(g_localizeStrings.Get(12339), LOCK_MODE_QWERTY );    //Text
       pControl->SetValue(pSettingInt->GetData());
-    }
-    else if (strSetting == "Masterlock.Maxretry")
+    }*/
+    else if (strSetting == "MasterLock.MaxRetries")
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
-      CStdString cLbl[10]= {"0","1","2","3","4","5","6","7","8","9"};
+      CStdString label[10]= {"0","1","2","3","4","5","6","7","8","9"};
       pControl->AddLabel(g_localizeStrings.Get(1223), 0);   //Disabled
-      for (unsigned int i = 1; i <= 9; i++)  pControl->AddLabel(cLbl[i], i);
+      for (unsigned int i = 1; i <= 9; i++)
+        pControl->AddLabel(label[i], i);
       pControl->SetValue(pSettingInt->GetData());
-    }
-    else if (strSetting == "Masterlock.Enableshutdown")
-    {
-      bool bmcesState, bmcptState;
-      if (g_stSettings.m_iMasterLockEnableShutdown == 0) bmcesState = false;  else bmcesState = true;
-      if (g_stSettings.m_iMasterLockProtectShares  == 0) bmcptState = false;  else bmcptState = true;
-      g_guiSettings.SetBool("Masterlock.Enableshutdown", bmcesState);
-      g_guiSettings.SetBool("Masterlock.Protectshares", bmcptState);
-      g_guiSettings.SetInt("Masterlock.Maxretry", g_stSettings.m_iMasterLockMaxRetry);
-      g_guiSettings.SetString("Masterlock.Mastercode", g_stSettings.m_masterLockCode);
     }
     else if (strSetting == "LookAndFeel.StartUpWindow")
     {
@@ -746,20 +736,8 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->AddLabel("0.9",     9 ); pControl->AddLabel("1.0",     10 );
       pControl->SetValue(pSettingInt->GetData());
     }
-    else if (strSetting == "Masterlock.LockSettingsFilemanager")
+    else if (strSetting == "MasterLock.LockSettingsFileManager")
     {
-      int iLFState, iLSState, iTmpState;
-      iLFState = g_stSettings.m_iMasterLockFilemanager;
-      iLSState = g_stSettings.m_iMasterLockSettings;
-      
-      if(iLFState == 0 && iLSState == 0) iTmpState = 0;
-      else if(iLFState == 0 && iLSState == 1) iTmpState = 1;
-      else if(iLFState == 1 && iLSState == 0) iTmpState = 2;
-      else if(iLFState == 1 && iLSState == 1) iTmpState = 3;
-      else iTmpState = 0;
-      
-      g_guiSettings.SetInt("Masterlock.LockSettingsFilemanager", iTmpState);
-
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
       pControl->AddLabel(g_localizeStrings.Get(1223)  , 0 );  // 0 Disabled
@@ -768,9 +746,8 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->AddLabel(g_localizeStrings.Get(12373) , 3 );  // 3 Settings and Filemanager
       pControl->SetValue(pSettingInt->GetData());
     }
-    else if (strSetting == "Masterlock.LockHomeMedia")
+    else if (strSetting == "MasterLock.LockHomeMedia")
     {
-      g_guiSettings.SetInt("Masterlock.LockHomeMedia", g_stSettings.m_iMasterLockHomeMedia);
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
       pControl->AddLabel(g_localizeStrings.Get(1223)  , LOCK_DISABLED      );  // 0 Disabled
@@ -1102,7 +1079,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       if (strSetting == "XBDateTime.Time")
         time = g_infoManager.GetTime(false);  // false for no seconds
       else
-        time = g_infoManager.GetDate();  // false as we want numbers
+        time = g_infoManager.GetDate();
       CSettingString *pSettingString = (CSettingString*)pSettingControl->GetSetting();
       pSettingString->SetData(time);
       pSettingControl->Update();
@@ -1125,39 +1102,13 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       if (g_guiSettings.GetInt("Smb.SimpAdvance") == 2) bState = true;  //Advanced User
       if (pControl) pControl->SetEnabled(bState);
     }
-    else if (strSetting == "Masterlock.Mastermode")
+/*    else if (strSetting == "MasterUser.LockMode")
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());  
-      if (g_guiSettings.GetInt("Masterlock.Mastermode") == 1) g_guiSettings.GetString("Masterlock.Mastercode") = "-";
-      if (g_guiSettings.GetInt("Masterlock.Mastermode") == 2) g_guiSettings.GetString("Masterlock.Mastercode") = "-";
-      if (g_guiSettings.GetInt("Masterlock.Mastermode") == 3) g_guiSettings.GetString("Masterlock.Mastercode") = "-";
-
-      if (g_guiSettings.GetInt("Masterlock.Mastermode") == 0) // Disabled !!
+      if (g_guiSettings.GetInt("MasterUser.LockMode") == 0) // Disabled !!
       {
-        if(CheckMasterLockCode())
+        if (g_passwordManager.CheckMasterLock())
         {
-          g_stSettings.m_iMasterLockMaxRetry              = 0;
-          g_stSettings.m_iMasterLockEnableShutdown        = 0;
-          g_stSettings.m_iMasterLockProtectShares         = 0;
-          g_stSettings.m_iMasterLockMode                  = 0;
-          g_stSettings.m_iMasterLockStartupLock           = 0;
-          g_stSettings.m_masterLockCode = "-";
-          g_stSettings.m_iMasterLockFilemanager           = 0;
-          g_stSettings.m_iMasterLockSettings              = 0;
-          g_stSettings.m_iMasterLockHomeMedia             = 0;
-
-          g_guiSettings.SetBool("Masterlock.MasterUser",false);
-          
-          g_settings.UpDateXbmcXML("masterlock", "mastermode",      "0");
-          g_settings.UpDateXbmcXML("masterlock", "mastercode",      "-");
-          g_settings.UpDateXbmcXML("masterlock", "maxretry",        "0");
-          g_settings.UpDateXbmcXML("masterlock", "enableshutdown",  "0");
-          g_settings.UpDateXbmcXML("masterlock", "protectshares",   "0");
-          g_settings.UpDateXbmcXML("masterlock", "startuplock",     "0");
-
-          g_settings.UpDateXbmcXML("masterlock", "LockFilemanager", "0");
-          g_settings.UpDateXbmcXML("masterlock", "LockSettings",    "0");
-          g_settings.UpDateXbmcXML("masterlock", "LockHomeMedia",   "0");
         }
         else
         {
@@ -1165,22 +1116,17 @@ void CGUIWindowSettingsCategory::UpdateSettings()
           CGUIDialogOK::ShowAndGetInput(12360, 12367, 12368, 0);
         }
       }
+    }*/
+    else if (strSetting.Left(11) == "MasterLock." && strSetting != "MasterLock.MasterUser" && strSetting != "MasterLock.MasterCode")
+    { // disable all controls unless master lock mode is enabled
+      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+      bool enabled = g_passwordManager.IsMasterUser() && (g_guiSettings.GetInt("MasterUser.LockMode") != LOCK_MODE_EVERYONE);
+      if (pControl) pControl->SetEnabled(enabled);
     }
-    else if (strSetting == "Masterlock.MasterUser" || strSetting == "Masterlock.Enableshutdown" || strSetting == "Masterlock.Protectshares" || strSetting == "Masterlock.Maxretry" || strSetting == "Masterlock.Mastercode" || strSetting == "Masterlock.SetMasterlock" || strSetting == "Masterlock.StartupLock" || strSetting =="Masterlock.LockSettingsFilemanager" || strSetting =="Masterlock.LockHomeMedia")
+    else if (strSetting == "MasterLock.MasterUser")
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      bool bState;
-      if (g_guiSettings.GetInt("Masterlock.Mastermode") == 0) bState = false; //Disable
-        else bState = true;
-      if (pControl) pControl->SetEnabled(bState);
-      if (strSetting == "Masterlock.MasterUser")
-      {
-        if ((!g_guiSettings.GetBool("Masterlock.MasterUser")) && g_application.m_bMasterLockOverridesLocalPasswords)
-        {
-          g_application.m_bMasterLockOverridesLocalPasswords = false;
-          g_application.m_MasterUserModeCounter = 2;  // reset the count "to Overwrite the local Pass stuff!"
-        }
-      }
+      if (pControl) pControl->SetEnabled(g_guiSettings.GetInt("MasterUser.LockMode") != LOCK_MODE_EVERYONE);
     }
     else if (strSetting == "Autodetect.NickName" || strSetting == "Autodetect.CreateLink" || strSetting == "Autodetect.PopUpInfo" || strSetting == "Autodetect.SendUserPw")
     {
@@ -1191,6 +1137,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
 
   }
 }
+
 void CGUIWindowSettingsCategory::UpdateRealTimeSettings()
 {
   for (unsigned int i = 0; i < m_vecSettings.size(); i++)
@@ -1928,116 +1875,99 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
       dlg->DoModal( m_gWindowManager.GetActiveWindow() );
       //if (dlg->IsConfirmed()) //Do nothing!
     }
-
-
   }
-  else if (strSetting == "Masterlock.Mastercode")
+  else if (strSetting == "MasterLock.MasterUser")
   {
-    
-   CStdString strTempMasterCode;
-    // prompt user for mastercode if the mastercode was set b4 or by xml
-   if (CheckMasterLockCode()) // Now Prompt User to enter the old and then the new MasterCode! Choosed GUI LOCK Mode will appear!
+    if (g_guiSettings.GetBool("MasterLock.MasterUser"))
+    { // prompt use for master code
+      if (!g_passwordManager.CheckMasterLock())
+        g_guiSettings.SetBool("MasterLock.MasterUser", false);
+    }
+    else
+    { // masteruser mode has been disabled
+      g_passwordManager.LogoutMasterUser();
+    }
+  }
+  else if (strSetting == "MasterLock.MasterCode")
+  {
+    if (g_passwordManager.CheckMasterLock())
     {
-      CStdString strNewPassword;
-      switch (g_guiSettings.GetInt("Masterlock.Mastermode"))
+      g_guiSettings.SetBool("MasterLock.MasterUser", true);
+      // load a context menu with the options for the mastercode...
+      CGUIDialogContextMenu *menu = (CGUIDialogContextMenu *)m_gWindowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
+      if (menu)
       {
-          case LOCK_MODE_NUMERIC:
-            CGUIDialogNumeric::ShowAndVerifyNewPassword(strNewPassword);
-            break;
-          case LOCK_MODE_GAMEPAD:
-            CGUIDialogGamepad::ShowAndVerifyNewPassword(strNewPassword);
-            break;
-          case LOCK_MODE_QWERTY:
-            CGUIDialogKeyboard::ShowAndVerifyNewPassword(strNewPassword);
-            break;
-      }
-      strTempMasterCode = strNewPassword;
-    }
-   if (strTempMasterCode != "" && strTempMasterCode != "-")
-    {
-     g_guiSettings.SetString("Masterlock.Mastercode", strTempMasterCode.c_str());
-    }
-   CStdString strTEST = g_guiSettings.GetString("Masterlock.Mastercode");
-  }
-  else if (strSetting == "Masterlock.SetMasterlock")
-  {
-    bool bIsMasterMode = true;
-    int iStateSD, iStatePS, iStateSL, iLockModeP, iLockModeN, iLFState, iLSState;
-    CStdString csMMode, csMRetry, csStateSD, csStatePS, csStateSL, csMCode, strMLC, csLFState, csLSState;
-    CStdString cLbl[16]= {"0","1","2","3","4","5","6","7","8","9","10","11","12","13","14","15"};
-    csMCode = g_guiSettings.GetString("Masterlock.Mastercode");
-    strMLC  = g_stSettings.m_masterLockCode;
-    iLockModeP = g_stSettings.m_iMasterLockMode;
-    iLockModeN = g_guiSettings.GetInt("Masterlock.Mastermode");
-    
-    //Some Converting stuff!
-    csMMode   = cLbl[g_guiSettings.GetInt("Masterlock.Mastermode")];
-    csMRetry  = cLbl[g_guiSettings.GetInt("Masterlock.Maxretry")];
-    
-    if (g_guiSettings.GetBool("Masterlock.Enableshutdown")) { iStateSD = 1; csStateSD = "1"; } else { iStateSD = 0; csStateSD = "0"; }
-    if (g_guiSettings.GetBool("Masterlock.Protectshares"))  { iStatePS = 1; csStatePS = "1"; } else { iStatePS = 0; csStatePS = "0"; }
-    if (g_guiSettings.GetBool("Masterlock.StartupLock"))    { iStateSL = 1; csStateSL = "1"; } else { iStateSL = 0; csStateSL = "0"; }
+        menu->Initialize();
+        menu->AddButton(1223);
+        menu->AddButton(12337);
+        menu->AddButton(12338);
+        menu->AddButton(12339);
+        menu->SetPosition((g_graphicsContext.GetWidth() - menu->GetWidth()) / 2, (g_graphicsContext.GetHeight() - menu->GetHeight()) / 2);
+        menu->DoModal(GetID());
 
-    switch (g_guiSettings.GetInt("Masterlock.LockSettingsFilemanager"))
-    {
-      case 0: //Disabled
-        iLFState = 0; csLFState = "0";
-        iLSState = 0; csLSState = "0";
-        break;
-      case 1: // Settings 
-        iLFState = 0; csLFState = "0";
-        iLSState = 1; csLSState = "1";
-        break;
-      case 2: // Filemanager 
-        iLFState = 1; csLFState = "1";
-        iLSState = 0; csLSState = "0";
-        break;
-      case 3: // Settings and File Manager
-        iLFState = 1; csLFState = "1";
-        iLSState = 1; csLSState = "1";
-        break;
+        CStdString newPassword;
+        switch(menu->GetButton())
+        {
+        case 1:
+          g_guiSettings.SetInt("MasterUser.LockMode", LOCK_MODE_EVERYONE);
+          break;
+        case 2:
+          g_guiSettings.SetInt("MasterUser.LockMode", LOCK_MODE_NUMERIC);
+          CGUIDialogNumeric::ShowAndVerifyNewPassword(newPassword);
+          break;
+        case 3:
+          g_guiSettings.SetInt("MasterUser.LockMode", LOCK_MODE_GAMEPAD);
+          CGUIDialogGamepad::ShowAndVerifyNewPassword(newPassword);
+          break;
+        case 4:
+          g_guiSettings.SetInt("MasterUser.LockMode", LOCK_MODE_QWERTY);
+          CGUIDialogKeyboard::ShowAndVerifyNewPassword(newPassword);
+          break;
+        }
+        if (!newPassword.IsEmpty() && newPassword != "-")
+        {
+          g_guiSettings.SetString("MasterLock.MasterCode", newPassword.c_str());
+        }
+      }
     }
-    
-    if((iLockModeP == iLockModeN && csMCode == strMLC)||(iLockModeP != iLockModeN && csMCode != strMLC)||(iLockModeP == iLockModeN && csMCode != strMLC))
+  }
+/*  else if (strSetting == "MasterLock.SetMasterLock")
+  {
+    // TODO: Masterlock - fix this mess
+    bool bIsMasterMode = true;
+
+    CStdString newMasterCode = g_guiSettings.GetString("MasterLock.MasterCode");
+    CStdString oldMasterCode  = newMasterCode; //g_stSettings.m_masterLockCode;
+    int newLockMode = g_guiSettings.GetInt("MasterUser.LockMode");
+    int oldLockMode = newLockMode; //g_stSettings.m_iMasterLockMode;
+
+    // This used to check:
+    // 1.  If the MasterLock Mode and Masterlock Code hadn't changed, OR
+    // 2.  If the Masterlock Mode had changed but the Code hadn't changed, OR
+    // 3.  If the MasterLock mode hadn't changed but the Code had changed.
+
+    // same as:
+    // if (!(oldLockMode != newLockMode && newMasterCode == oldMasterCode))
+    // or:
+    if (oldLockMode == newLockMode || newMasterCode != oldMasterCode)
     {
-      if (g_guiSettings.GetString("Masterlock.Mastercode")!= "" && g_guiSettings.GetString("Masterlock.Mastercode")!= "-")
+      if (!newMasterCode.IsEmpty() && newMasterCode != "-")
       {
         //Check if the MasterLockCode is changed or not! If not PopUP MasterLockCode! 
-        if (g_stSettings.m_masterLockCode == g_guiSettings.GetString("Masterlock.Mastercode"))
-        { if(!CheckMasterLockCode()) bIsMasterMode = false; }
+        if (oldMasterCode == newMasterCode)
+        {
+          if(!CheckMasterLockCode())
+            bIsMasterMode = false;
+        }
         
         if (bIsMasterMode)
         {
-          //Set Master Lock Changes to the Internal Settings!
-          g_stSettings.m_iMasterLockMaxRetry              = g_guiSettings.GetInt("Masterlock.Maxretry");
-          g_application.m_iMasterLockRetriesRemaining     = g_stSettings.m_iMasterLockMaxRetry;
-          g_stSettings.m_iMasterLockEnableShutdown        = iStateSD;
-          g_stSettings.m_iMasterLockProtectShares         = iStatePS;
-          g_stSettings.m_iMasterLockStartupLock           = iStateSL;
-          g_stSettings.m_iMasterLockMode                  = g_guiSettings.GetInt("Masterlock.Mastermode");
-          g_stSettings.m_masterLockCode                   = g_guiSettings.GetString("Masterlock.Mastercode");
-
-          g_stSettings.m_iMasterLockFilemanager           = iLFState;
-          g_stSettings.m_iMasterLockSettings              = iLSState;
-          g_stSettings.m_iMasterLockHomeMedia             = g_guiSettings.GetInt("Masterlock.LockHomeMedia");
-          
-          // Set Master Lock Changes to the XML
-          g_settings.UpDateXbmcXML("masterlock", "mastermode",      csMMode);
-          g_settings.UpDateXbmcXML("masterlock", "mastercode",      csMCode);
-          g_settings.UpDateXbmcXML("masterlock", "maxretry",        csMRetry);
-          g_settings.UpDateXbmcXML("masterlock", "enableshutdown",  csStateSD);
-          g_settings.UpDateXbmcXML("masterlock", "protectshares",   csStatePS);
-          g_settings.UpDateXbmcXML("masterlock", "startuplock",     csStateSL);
-          g_settings.UpDateXbmcXML("masterlock", "LockFilemanager", csLFState);
-          g_settings.UpDateXbmcXML("masterlock", "LockSettings",    csLSState);
-          g_settings.UpDateXbmcXML("masterlock", "LockHomeMedia",   cLbl[g_stSettings.m_iMasterLockHomeMedia]);
-          
           // PopUp OK and Display the Changed MasterCode!
           CGUIDialogOK *dlg = (CGUIDialogOK *)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
           if (!dlg) return ;
           dlg->SetHeading( g_localizeStrings.Get(12360));
           dlg->SetLine( 0, g_localizeStrings.Get(12366));
-          dlg->SetLine( 1, csMCode);
+          dlg->SetLine( 1, newMasterCode);
           dlg->SetLine( 2, "");
           dlg->DoModal( m_gWindowManager.GetActiveWindow());
         }
@@ -2053,9 +1983,10 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
       // PopUp OK and Display: MasterLock mode has changed but no no Mastercode has been set!
       CGUIDialogOK::ShowAndGetInput(12360, 12370, 12371, 0);
     }
-  }
+  }*/
   UpdateSettings();
 }
+
 void CGUIWindowSettingsCategory::FreeControls()
 {
   // free any created controls
@@ -2866,14 +2797,6 @@ void CGUIWindowSettingsCategory::FillInScreenSavers(CSetting *pSetting)
   pControl->SetValue(iCurrentScr);
 }
 
-bool CGUIWindowSettingsCategory::CheckMasterLockCode()
-{
-  // GeminiServer
-  // prompt user for mastercode if the mastercode was set b4 or by xml
-  // prompt user for mastercode when changing lock settings
-  if (g_passwordManager.IsMasterLockLocked(true))  return true;
-  else return false;
-}
 void CGUIWindowSettingsCategory::FillInFTPServerUser(CSetting *pSetting)
 {
   //GeminiServer

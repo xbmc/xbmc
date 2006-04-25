@@ -105,6 +105,9 @@
 #define LOCK_PROG_PIC_VI        14 // Musik & Picture & Video
 #define LOCK_MU_VI_PIC_PROG     15 // Musik & Video & Pictures & Programs
 
+#define LOCK_MASK_SETTINGS      1
+#define LOCK_MASK_FILE_MANAGER  2
+
 #define FRAME_RATE_LEAVE_AS_IS  0
 #define FRAME_RATE_CONVERT      1
 #define FRAME_RATE_USE_PAL60    2
@@ -264,7 +267,7 @@ public:
   virtual CStdString ToString();
 
   void SetData(const char *strData) { m_strData = strData; };
-  CStdString GetData() const { return m_strData; };
+  const CStdString &GetData() const { return m_strData; };
 
   bool m_bAllowEmpty;
   int m_iHeadingString;
@@ -345,35 +348,33 @@ public:
   CSettingsGroup *GetGroup(DWORD dwWindowID);
 
   void AddBool(int iOrder, const char *strSetting, int iLabel, bool bSetting, int iControlType = CHECKMARK_CONTROL);
-  bool GetBool(const char *strSetting);
+  bool GetBool(const char *strSetting) const;
   void SetBool(const char *strSetting, bool bSetting);
   void ToggleBool(const char *strSetting);
 
   void AddFloat(int iOrder, const char *strSetting, int iLabel, float fSetting, float fMin, float fStep, float fMax, int iControlType = SPIN_CONTROL_FLOAT);
-  float GetFloat(const char *strSetting);
+  float GetFloat(const char *strSetting) const;
   void SetFloat(const char *strSetting, float fSetting);
 
   void AddInt(int iOrder, const char *strSetting, int iLabel, int fSetting, int iMin, int iStep, int iMax, int iControlType, const char *strFormat = NULL);
   void AddInt(int iOrder, const char *strSetting, int iLabel, int iData, int iMin, int iStep, int iMax, int iControlType, int iFormat, int iLabelMin=-1);
-  int GetInt(const char *strSetting);
+  int GetInt(const char *strSetting) const;
   void SetInt(const char *strSetting, int fSetting);
 
   void AddHex(int iOrder, const char *strSetting, int iLabel, int fSetting, int iMin, int iStep, int iMax, int iControlType, const char *strFormat = NULL);
 
   void AddString(int iOrder, const char *strSetting, int iLabel, const char *strData, int iControlType = BUTTON_CONTROL_INPUT, bool bAllowEmpty = false, int iHeadingString = -1);
-  CStdString GetString(const char *strSetting);
+  const CStdString &GetString(const char *strSetting) const;
   void SetString(const char *strSetting, const char *strData);
 
   void AddSeparator(int iOrder, const char *strSetting);
 
   CSetting *GetSetting(const char *strSetting);
 
-  void ReadXML(TiXmlElement* pRootElement, const char *strSetting);
-  void WriteXML(TiXmlNode* pRootNode , const char *strSetting);
-
   void GetSettingsGroup(const char *strGroup, vecSettings &settings);
   void LoadXML(TiXmlElement *pRootElement);
   void SaveXML(TiXmlNode *pRootNode);
+  void LoadMasterLock(TiXmlElement *pRootElement);
 
   //m_LookAndFeelResolution holds the real gui resolution,
   //also when g_guiSettings.GetInt("LookAndFeel.Resolution") is set to AUTORES
@@ -384,8 +385,10 @@ public:
 
 private:
   typedef std::map<CStdString, CSetting*>::iterator mapIter;
+  typedef std::map<CStdString, CSetting*>::const_iterator constMapIter;
   std::map<CStdString, CSetting*> settingsMap;
   std::vector<CSettingsGroup *> settingsGroups;
+  void LoadFromXML(TiXmlElement *pRootElement, mapIter &it);
 };
 
 extern class CGUISettings g_guiSettings;

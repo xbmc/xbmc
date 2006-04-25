@@ -148,8 +148,8 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CFile
     return false;
 
   bool bMaxRetryExceeded = false;
-  if (g_stSettings.m_iMasterLockMaxRetry != 0)
-    bMaxRetryExceeded = !(item->m_iBadPwdCount < g_stSettings.m_iMasterLockMaxRetry);
+  if (g_guiSettings.GetInt("MasterLock.MaxRetries") != 0)
+    bMaxRetryExceeded = !(item->m_iBadPwdCount < g_guiSettings.GetInt("MasterLock.MaxRetries"));
 
   // Get the share object from our file object
   VECSHARES *shares = g_settings.GetSharesFromType(strType);
@@ -224,7 +224,7 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CFile
     int btn_RemoveLock = 0; // Remove Share Lock
     int btn_ReactivateLock = 0; // Reactivate Share Lock
     int btn_ChangeLock = 0; // Change Share Lock;
-    if (LOCK_MODE_EVERYONE != g_stSettings.m_iMasterLockMode)
+    if (LOCK_MODE_EVERYONE != g_guiSettings.GetInt("MasterUser.LockMode"))
     {
       // TODO: Check these and change to using the share object??
       if (LOCK_MODE_EVERYONE == item->m_iLockMode) 
@@ -235,7 +235,7 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CFile
       {
         btn_RemoveLock = pMenu->AddButton(12335);
         // don't show next button if folder locks are being overridden
-        if (!g_application.m_bMasterLockOverridesLocalPasswords) 
+        if (g_passwordManager.MasterLockDisabled()) 
         {
           btn_ReactivateLock = pMenu->AddButton(12353);
 		      btn_ChangeLock = pMenu->AddButton(12356);
@@ -316,7 +316,7 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CFile
       else if (btn == btn_LockShare)
       {
         // prompt user for mastercode when changing lock settings
-        if (!g_passwordManager.IsMasterLockUnlocked(true))
+        if (!g_passwordManager.CheckMasterLock())
           return false;
 
         // popup the context menu
@@ -365,7 +365,7 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CFile
       else if (btn == btn_ResetLock)
       {
         // prompt user for mastercode when changing lock settings
-        if (!g_passwordManager.IsMasterLockUnlocked(true))
+        if (!g_passwordManager.CheckMasterLock())
           return false;
 
         g_settings.UpdateBookmark(strType, share->strName, "badpwdcount", "0");
@@ -374,7 +374,7 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CFile
       else if (btn == btn_RemoveLock)
       {
         // prompt user for mastercode when changing lock settings
-        if (!g_passwordManager.IsMasterLockUnlocked(true))
+        if (!g_passwordManager.CheckMasterLock())
           return false;
 
         if (!CGUIDialogYesNo::ShowAndGetInput(0, 12335, 750, 0))
@@ -387,7 +387,7 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CFile
       }
       else if (btn == btn_ReactivateLock)
       {
-        if (LOCK_MODE_EVERYONE > item->m_iLockMode && !bMaxRetryExceeded && !g_application.m_bMasterLockOverridesLocalPasswords)
+        if (LOCK_MODE_EVERYONE > item->m_iLockMode && !bMaxRetryExceeded && g_passwordManager.MasterLockDisabled())
         {
           // don't prompt user for mastercode when reactivating a lock
           CStdString strInvertedLockmode = "";
@@ -400,11 +400,6 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CFile
       }
       else if (btn == btn_ChangeLock)
       {
-	      // prompt user for mastercode when changing lock settings
-	      //if (!g_passwordManager.IsMasterLockUnlocked(true))
-	      //   return false;
-	      //else
-	      //{
 	      CStdString strNewPW;
 	      CStdString strNewLockMode;
 		      switch (item->m_iLockMode)
@@ -443,17 +438,10 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CFile
 bool CGUIDialogContextMenu::CheckMasterCode(int iLockMode)
 {
   // prompt user for mastercode if the bookmark is locked
-  // or if m_iMasterLockProtectShares is enabled
-  if (LOCK_MODE_EVERYONE < iLockMode || 0 != g_stSettings.m_iMasterLockProtectShares)
-  {
-    // Prompt user for mastercode
-    return g_passwordManager.IsMasterLockUnlocked(true);
-  }
-  else
-  {
-    // we don't need to prompt for mastercode
+  if (LOCK_MODE_EVERYONE == iLockMode)
     return true;
-  }
+
+  return g_passwordManager.CheckMasterLock();
 }
 
 void CGUIDialogContextMenu::OnWindowUnload()
