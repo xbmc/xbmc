@@ -1291,16 +1291,9 @@ void CGUIWindowMusicBase::OnPopupMenu(int iItem)
     }
     // Settings
     else if (btnid == btn_Settings)
-    {
-      //MasterPassword
-      int iLockSettings = g_guiSettings.GetInt("Masterlock.LockSettingsFilemanager");
-      if (iLockSettings == 1 || iLockSettings == 3) 
-      {
-        if (g_passwordManager.IsMasterLockLocked(true))
-          m_gWindowManager.ActivateWindow(WINDOW_SETTINGS_MYMUSIC); 
-          
-      }
-      else m_gWindowManager.ActivateWindow(WINDOW_SETTINGS_MYMUSIC); 
+    { // Check Master Lock
+      if (!(g_guiSettings.GetInt("MasterLock.LockSettingsFileManager") & LOCK_MASK_SETTINGS) || g_passwordManager.CheckMasterLock()) 
+        m_gWindowManager.ActivateWindow(WINDOW_SETTINGS_MYMUSIC); 
       return;
     }
   }
