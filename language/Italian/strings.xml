@@ -628,16 +628,16 @@
   <string><id>1031</id><value>una cartella immagini</value></string> 
   <string><id>1032</id><value>Aggiungi Locazione di Rete...</value></string>
 
-  <string><id>1200</id><value>Condivisioni SMB</value></string>
-  <string><id>1201</id><value>SMB IP</value></string>
-  <string><id>1202</id><value>SMB Workgroup</value></string>
-  <string><id>1203</id><value>SMB Username</value></string>
-  <string><id>1204</id><value>SMB Password</value></string>
-  <string><id>1205</id><value>Nome Condivisione SMB</value></string>
-  <string><id>1206</id><value>Gruppo Cond. SMB</value></string>
-  <string><id>1207</id><value>SMB WINS-Server</value></string>
-  <string><id>1208</id><value>Modalità Impostazioni</value></string>
-  <string><id>1209</id><value>Le Impostazioni SMB sono state salvate!</value></string>
+  <string><id>1200</id><value>SMB Client</value></string>
+  <string><id>1201</id><value>IP Condivisione</value></string>
+  <string><id>1202</id><value>Workgroup</value></string>
+  <string><id>1203</id><value>Default Username</value></string>
+  <string><id>1204</id><value>Default Password</value></string>
+  <string><id>1205</id><value>Nome Condivisione</value></string>
+  <string><id>1206</id><value>Gruppo Condivisione</value></string>
+  <string><id>1207</id><value>WINS-Server</value></string>
+  <string><id>1208</id><value>Preferenze Automatiche</value></string>
+  <string><id>1209</id><value>Impostazioni SMB salvate con successo!</value></string>
   <string><id>1210</id><value>Rimuovi</value></string>
   <string><id>1211</id><value>Musica</value></string>
   <string><id>1212</id><value>Video</value></string>
@@ -664,6 +664,7 @@
   <string><id>1233</id><value>Programmi, Video e Musica</value></string>
   <string><id>1234</id><value>Programmi, Immagini e Musica</value></string>
   <string><id>1235</id><value>Programmi, Immagini e Video</value></string>
+  <string><id>1236</id><value>- Client Timeout</value></string>
 
   <string><id>1245</id><value>FTP User Name</value></string>
   <string><id>1246</id><value>FTP User Password</value></string>
@@ -1047,10 +1048,8 @@
   <string><id>13386</id><value>Usa ricerca basata sul tempo</value></string>
   <string><id>13387</id><value>Formato Titolo della Traccia a Destra</value></string>
   <string><id>13388</id><value>Presets</value></string>
-  <string><id>13389</id><value>Nessun preset disponibile
-per questo effetto grafico</value></string>
-  <string><id>13390</id><value>Nessuna impostazione disponibile
-per questo effetto grafico</value></string>
+  <string><id>13389</id><value>Nessun preset disponibile per questo effetto grafico</value></string>
+  <string><id>13390</id><value>Nessuna impostazione disponibile per questo effetto grafico</value></string>
   <string><id>13391</id><value>Apri / Chiudi</value></string>
   <string><id>13392</id><value>Effetto Grafico in Automatico</value></string>
   <string><id>13393</id><value>Calcola Dimensione</value></string>
@@ -1308,11 +1307,10 @@ per questo effetto grafico</value></string>
   <string><id>16027</id><value>Troppi elementi consecutivi falliti</value></string> 
 
   <string><id>16030</id><value>Modalità Party Mode annullata.</value></string> 
-  <string><id>16031</id><value>Nessuna canzone adeguata nel database.</value></string> 
+  <string><id>16031</id><value>Nessuna canzone corrispondente nel database.</value></string> 
   <string><id>16032</id><value>Impossibile inizializzare il database.</value></string> 
   <string><id>16033</id><value>Impossibile aprire il database.</value></string> 
   <string><id>16034</id><value>Impossibile ricavare canzoni dal database.</value></string> 
-
 
   <string><id>16100</id><value>Tutti i Video</value></string>
   <string><id>16101</id><value>Non Visti</value></string>
