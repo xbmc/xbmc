@@ -8,6 +8,7 @@
 
 
 #define MAX_SOCKETS 50
+#define SO_ERROR    0x1007
 
 static bool m_bSocketsInit = false;
 static int m_sockets[MAX_SOCKETS + 1];
@@ -209,7 +210,15 @@ extern "C"
   {
     int socket = GetSocketForIndex(s);
 
-    return getsockopt(socket, level, optname, optval, optlen);
+    if(optname == SO_ERROR)
+    {
+      /* unsupported option */
+      /* just hope there was no error, we could probably check connetion state if we wanted */
+      *((int*)optval) = 0;
+      return 0;
+    }
+    else
+      return getsockopt(socket, level, optname, optval, optlen);
   }
 
   int __stdcall dllioctlsocket(int s, long cmd, DWORD FAR * argp)
