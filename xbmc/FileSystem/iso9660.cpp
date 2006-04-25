@@ -290,6 +290,8 @@ struct iso_dirtree *iso9660::ReadRecursiveDirFromSector( DWORD sector, const cha
           pFile_Pointer->dirpointer = NULL;
           pFile_Pointer ->Length = isodir.dwFileLengthLE;
 
+          IsoDateTimeToFileTime(&isodir.DateTime, &pFile_Pointer->filetime);
+
           pFile_Pointer->type = 1;
         }
       }
@@ -380,6 +382,8 @@ struct iso_dirtree *iso9660::ReadRecursiveDirFromSector( DWORD sector, const cha
           pFile_Pointer->Location = isodir.dwFileLocationLE;
           pFile_Pointer->dirpointer = NULL;
           pFile_Pointer->Length = isodir.dwFileLengthLE;
+
+          IsoDateTimeToFileTime(&isodir.DateTime, &pFile_Pointer->filetime);
 
           string strPath = path;
           if ( strlen( path ) > 1 ) strPath += "\\";
@@ -596,6 +600,10 @@ HANDLE iso9660::FindFirstFile( char *szLocalFolder, WIN32_FIND_DATA *wfdFile )
       if ( m_searchpointer->type == 2 )
         wfdFile->dwFileAttributes |= FILE_ATTRIBUTE_DIRECTORY;
 
+      wfdFile->ftLastWriteTime = m_searchpointer->filetime;
+      wfdFile->ftLastAccessTime = m_searchpointer->filetime;
+      wfdFile->ftCreationTime = m_searchpointer->filetime;
+
       wfdFile->nFileSizeLow = m_searchpointer->Length;
       return (HANDLE)1;
     }
@@ -617,6 +625,10 @@ int iso9660::FindNextFile( HANDLE szLocalFolder, WIN32_FIND_DATA *wfdFile )
 
     if ( m_searchpointer->type == 2 )
       wfdFile->dwFileAttributes |= FILE_ATTRIBUTE_DIRECTORY;
+
+    wfdFile->ftLastWriteTime = m_searchpointer->filetime;
+    wfdFile->ftLastAccessTime = m_searchpointer->filetime;
+    wfdFile->ftCreationTime = m_searchpointer->filetime;
 
     wfdFile->nFileSizeLow = m_searchpointer->Length;
     return 1;
@@ -975,4 +987,30 @@ iso9660::isofile* iso9660::GetFileContext(HANDLE hFile)
 bool iso9660::IsScanned()
 {
   return (m_hCDROM != NULL);
+}
+
+//************************************************************************************
+void iso9660::IsoDateTimeToFileTime(iso9660_Datetime* isoDateTime, FILETIME* filetime)
+{
+  tm t;
+  ZeroMemory(&t, sizeof(tm));
+  t.tm_year=isoDateTime->year;
+  t.tm_mon=isoDateTime->month-1;
+  t.tm_mday=isoDateTime->day;
+  t.tm_hour=isoDateTime->hour;
+  t.tm_min=isoDateTime->minute;
+  t.tm_sec=isoDateTime->second + (isoDateTime->gmtoff * (15 * 60));
+  t.tm_isdst=-1;
+  mktime(&t);
+
+  SYSTEMTIME time;
+  time.wYear=t.tm_year+1900;
+  time.wMonth=t.tm_mon+1;
+  time.wDayOfWeek=t.tm_wday;
+  time.wDay=t.tm_mday;
+  time.wHour=t.tm_hour;
+  time.wMinute=t.tm_min;
+  time.wSecond=t.tm_sec;
+  time.wMilliseconds=0;
+  SystemTimeToFileTime(&time, filetime);
 }
