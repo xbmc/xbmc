@@ -424,17 +424,6 @@ public:
     char szOnlineArenaPassword[32]; // private arena password
     char szOnlineArenaDescription[64]; // private arena description
 
-
-    int m_iMasterLockMaxRetry;        // maximum # of password retries a user gets for all locked shares
-    int m_iMasterLockEnableShutdown;  // allows XBMC Master Lock to shut off XBOX if true
-    int m_iMasterLockProtectShares;   // prompts for mastercode when editing shares with context menu if true
-    int m_iMasterLockMode;            // determines the type of master lock UI to present to the user, if any
-    CStdString m_masterLockCode;      // password to check for on startup
-    int m_iMasterLockStartupLock;     // prompts user for szMasterLockCode on startup if true
-    int m_iMasterLockFilemanager;     // prompts user for MasterLockCode on Click Filemanager! 
-    int m_iMasterLockSettings;        // prompts user for MasterLockCode on Click Settings!
-    int m_iMasterLockHomeMedia;       // prompts user for MasterLockCode on Click Media [Video/Picture/Musik/Programs]!
-    
     int m_iSambaDebugLevel;
     int m_iSambaTimeout;
     CStdString m_strSambaWorkgroup;

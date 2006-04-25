@@ -375,12 +375,12 @@ extern "C"
         bool bProxyEnabled = g_guiSettings.GetBool("Network.UseHTTPProxy");
         if (bProxyEnabled)
         {
-          CStdString& strProxyServer = g_guiSettings.GetString("Network.HTTPProxyServer");
-          CStdString& strProxyPort = g_guiSettings.GetString("Network.HTTPProxyPort");
+          const CStdString &strProxyServer = g_guiSettings.GetString("Network.HTTPProxyServer");
+          const CStdString &strProxyPort = g_guiSettings.GetString("Network.HTTPProxyPort");
           // Should we check for valid strings here?
-  static char opt_proxyurl[256];
+          static char opt_proxyurl[256];
           _snprintf( opt_proxyurl, 256, "http://%s:%s", strProxyServer.c_str(), strProxyPort.c_str() );
-		  return opt_proxyurl;
+		      return opt_proxyurl;
         }
 	  }
 
