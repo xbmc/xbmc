@@ -484,23 +484,20 @@ CGUISettings::CGUISettings(void)
   AddString(8, "XBDateTime.Date", 14064, "", BUTTON_CONTROL_MISC_INPUT);
 
   //GeminiServer
-  AddCategory(7, "Masterlock", 12360);
-  AddInt(1,   "Masterlock.Mastermode"       , 12364, LOCK_MODE_EVERYONE, LOCK_MODE_EVERYONE, 1, LOCK_MODE_QWERTY, SPIN_CONTROL_TEXT); // 0:always Unlocked, 1:Numeric, 2:Gamepad, 3:Text
-  AddString(2,"Masterlock.Mastercode"       , 12365, "-", BUTTON_CONTROL_STANDARD); // This is the CODE, Changing in addition with Mastermode!
-  AddBool(3,  "Masterlock.MasterUser"       , 12375,false); //true: master user can open all shares without cheking the fixed share lock in xml
-  AddSeparator(4, "Masterlock.Sep1");
-  AddInt(5,   "Masterlock.Maxretry"         , 12361, 0, 0, 1, 9, SPIN_CONTROL_TEXT); //Max Retry is 3, 0 is off
-  AddBool(6,  "Masterlock.Enableshutdown"   , 12362,false); //talse:0 is off, true:1 will shutdows if Maxrety is reached
-  AddSeparator(7, "Masterlock.Sep2");     // The seperator is cool but this section needs space!
-  AddBool(8,  "Masterlock.Protectshares"    , 12363,false); //false:0 is Normal user Mode, true:1 is Mastermode
-  AddBool(9,  "Masterlock.StartupLock"      , 12369,false); //false:0 is no ask StarupCode, true:1 ask for MasterCode if is false switxh off xbmc
-  AddSeparator(10, "Masterlock.Sep3");     // The seperator is cool but this section needs space!
-  AddInt(11,   "Masterlock.LockSettingsFilemanager"    , 12372, 0, 0, 1, 3, SPIN_CONTROL_TEXT);
-  AddInt(12,   "Masterlock.LockHomeMedia"    , 12374, LOCK_DISABLED, LOCK_DISABLED, 1, LOCK_MU_VI_PIC_PROG, SPIN_CONTROL_TEXT); // LockHomeMedia, for lock the Video/Music/Programs/Pictures
-
-  AddSeparator(12, "Masterlock.Sep4");
-  AddString(13,"Masterlock.SetMasterlock"   , 14070, "", BUTTON_CONTROL_STANDARD);
-  
+  AddCategory(7, "MasterLock", 12360);
+  AddString(1,"MasterLock.MasterCode"       , 12365, "", BUTTON_CONTROL_STANDARD); // This is the CODE, Changing in addition with Mastermode!
+  AddBool(2, "MasterLock.MasterUser"        , 12375, false);
+  AddSeparator(4, "MasterLock.Sep1");
+  AddInt(5,   "MasterLock.MaxRetries"         , 12361, 0, 0, 1, 9, SPIN_CONTROL_TEXT); //Max Retry is 3, 0 is off
+  AddBool(6,  "MasterLock.EnableShutdown"   , 12362,false); //talse:0 is off, true:1 will shutdows if Maxrety is reached
+  AddSeparator(7, "MasterLock.Sep2");     // The seperator is cool but this section needs space!
+  AddBool(8,  "MasterLock.ProtectShares"    , 12363,false); //false:0 is Normal user Mode, true:1 is Mastermode
+  AddBool(9,  "MasterLock.StartupLock"      , 12369,false); //false:0 is no ask StarupCode, true:1 ask for MasterCode if is false switxh off xbmc
+  AddSeparator(10, "MasterLock.Sep3");     // The seperator is cool but this section needs space!
+  AddInt(11,   "MasterLock.LockSettingsFileManager"    , 12372, 0, 0, 1, 3, SPIN_CONTROL_TEXT);
+  AddInt(12,   "MasterLock.LockHomeMedia"    , 12374, LOCK_DISABLED, LOCK_DISABLED, 1, LOCK_MU_VI_PIC_PROG, SPIN_CONTROL_TEXT); // LockHomeMedia, for lock the Video/Music/Programs/Pictures
+  // hidden mode setting
+  AddInt(0,   "MasterUser.LockMode"       , 12364, LOCK_MODE_EVERYONE, LOCK_MODE_EVERYONE, 1, LOCK_MODE_QWERTY, SPIN_CONTROL_TEXT); // 0:always Unlocked, 1:Numeric, 2:Gamepad, 3:Text
 }
 
 CGUISettings::~CGUISettings(void)
@@ -546,15 +543,16 @@ void CGUISettings::AddBool(int iOrder, const char *strSetting, int iLabel, bool 
   if (!pSetting) return ;
   settingsMap.insert(pair<CStdString, CSetting*>(strSetting, pSetting));
 }
-bool CGUISettings::GetBool(const char *strSetting)
+bool CGUISettings::GetBool(const char *strSetting) const
 {
   ASSERT(settingsMap.size());
-  mapIter it = settingsMap.find(strSetting);
+  constMapIter it = settingsMap.find(strSetting);
   if (it != settingsMap.end())
   { // old category
     return ((CSettingBool*)(*it).second)->GetData();
   }
   // Assert here and write debug output
+  ASSERT(false);
   CLog::DebugLog("Error: Requested setting (%s) was not found.  It must be case-sensitive", strSetting);
   return false;
 }
@@ -592,15 +590,16 @@ void CGUISettings::AddFloat(int iOrder, const char *strSetting, int iLabel, floa
   settingsMap.insert(pair<CStdString, CSetting*>(strSetting, pSetting));
 }
 
-float CGUISettings::GetFloat(const char *strSetting)
+float CGUISettings::GetFloat(const char *strSetting) const
 {
   ASSERT(settingsMap.size());
-  mapIter it = settingsMap.find(strSetting);
+  constMapIter it = settingsMap.find(strSetting);
   if (it != settingsMap.end())
   {
     return ((CSettingFloat *)(*it).second)->GetData();
   }
   // Assert here and write debug output
+  ASSERT(false);
   CLog::DebugLog("Error: Requested setting (%s) was not found.  It must be case-sensitive", strSetting);
   return 0.0f;
 }
@@ -615,6 +614,7 @@ void CGUISettings::SetFloat(const char *strSetting, float fSetting)
     return ;
   }
   // Assert here and write debug output
+  ASSERT(false);
   CLog::DebugLog("Error: Requested setting (%s) was not found.  It must be case-sensitive", strSetting);
 }
 
@@ -639,15 +639,16 @@ void CGUISettings::AddHex(int iOrder, const char *strSetting, int iLabel, int iD
   settingsMap.insert(pair<CStdString, CSetting*>(strSetting, pSetting));
 }
 
-int CGUISettings::GetInt(const char *strSetting)
+int CGUISettings::GetInt(const char *strSetting) const
 {
   ASSERT(settingsMap.size());
-  mapIter it = settingsMap.find(strSetting);
+  constMapIter it = settingsMap.find(strSetting);
   if (it != settingsMap.end())
   {
     return ((CSettingInt *)(*it).second)->GetData();
   }
   // Assert here and write debug output
+  ASSERT(false);
   CLog::DebugLog("Error: Requested setting (%s) was not found.  It must be case-sensitive", strSetting);
   return 0;
 }
@@ -664,6 +665,7 @@ void CGUISettings::SetInt(const char *strSetting, int iSetting)
     return ;
   }
   // Assert here and write debug output
+  ASSERT(false);
   CLog::DebugLog("Error: Requested setting (%s) was not found.  It must be case-sensitive", strSetting);
 }
 
@@ -674,17 +676,19 @@ void CGUISettings::AddString(int iOrder, const char *strSetting, int iLabel, con
   settingsMap.insert(pair<CStdString, CSetting*>(strSetting, pSetting));
 }
 
-CStdString CGUISettings::GetString(const char *strSetting)
+const CStdString &CGUISettings::GetString(const char *strSetting) const
 {
   ASSERT(settingsMap.size());
-  mapIter it = settingsMap.find(strSetting);
+  constMapIter it = settingsMap.find(strSetting);
   if (it != settingsMap.end())
   {
     return ((CSettingString *)(*it).second)->GetData();
   }
   // Assert here and write debug output
   CLog::DebugLog("Error: Requested setting (%s) was not found.  It must be case-sensitive", strSetting);
-  return "";
+  ASSERT(false);
+  // hardcoded return value so that compiler is happy
+  return ((CSettingString *)(*settingsMap.begin()).second)->GetData();
 }
 
 void CGUISettings::SetString(const char *strSetting, const char *strData)
@@ -697,6 +701,7 @@ void CGUISettings::SetString(const char *strSetting, const char *strData)
     return ;
   }
   // Assert here and write debug output
+  ASSERT(false);
   CLog::DebugLog("Error: Requested setting (%s) was not found.  It must be case-sensitive", strSetting);
 }
 
@@ -708,47 +713,6 @@ CSetting *CGUISettings::GetSetting(const char *strSetting)
     return (*it).second;
   else
     return NULL;
-}
-
-void CGUISettings::ReadXML(TiXmlElement* pRootElement, const char *strSetting)
-{
-  mapIter it = settingsMap.find(strSetting);
-  if (it == settingsMap.end())
-  {
-    CLog::DebugLog("Error: Requested setting (%s) was not found.  It must be case-sensitive", strSetting);
-    return ;
-  }
-  const TiXmlNode *pChild = pRootElement->FirstChild(strSetting);
-  if (pChild)
-  {
-    if (pChild->FirstChild())
-    {
-      CStdString strValue = pChild->FirstChild()->Value();
-      if (strValue.size() )
-      {
-        if (strValue != "-")
-        { // update our item
-          (*it).second->FromString(strValue);
-        }
-      }
-    }
-  }
-  CLog::Log(LOGDEBUG, "  %s: %s", strSetting, (*it).second->ToString().c_str());
-}
-
-void CGUISettings::WriteXML(TiXmlNode* pRootNode, const char *strSetting)
-{
-  TiXmlElement newElement(strSetting);
-  TiXmlNode *pNewNode = pRootNode->InsertEndChild(newElement);
-  if (pNewNode)
-  {
-    mapIter it = settingsMap.find(strSetting);
-    if (it != settingsMap.end())
-    {
-      TiXmlText value((*it).second->ToString());
-      pNewNode->InsertEndChild(value);
-    }
-  }
 }
 
 // get all the settings beginning with the term "strGroup"
@@ -764,32 +728,21 @@ void CGUISettings::GetSettingsGroup(const char *strGroup, vecSettings &settings)
   sort(settings.begin(), settings.end(), sortsettings());
 }
 
+void CGUISettings::LoadMasterLock(TiXmlElement *pRootElement)
+{
+  mapIter it = settingsMap.find("MasterUser.LockMode");
+  if (it != settingsMap.end())
+    LoadFromXML(pRootElement, it);
+  it = settingsMap.find("MasterLock.MasterCode");
+  if (it != settingsMap.end())
+    LoadFromXML(pRootElement, it);
+}
+
 void CGUISettings::LoadXML(TiXmlElement *pRootElement)
 { // load our stuff...
   for (mapIter it = settingsMap.begin(); it != settingsMap.end(); it++)
   {
-    CStdStringArray strSplit;
-    StringUtils::SplitString((*it).first, ".", strSplit);
-    if (strSplit.size() > 1)
-    {
-      const TiXmlNode *pChild = pRootElement->FirstChild(strSplit[0].c_str());
-      if (pChild)
-      {
-        const TiXmlNode *pGrandChild = pChild->FirstChild(strSplit[1].c_str());
-        if (pGrandChild && pGrandChild->FirstChild())
-        {
-          CStdString strValue = pGrandChild->FirstChild()->Value();
-          if (strValue.size() )
-          {
-            if (strValue != "-")
-            { // update our item
-              (*it).second->FromString(strValue);
-              CLog::Log(LOGDEBUG, "  %s: %s", (*it).first.c_str(), (*it).second->ToString().c_str());
-            }
-          }
-        }
-      }
-    }
+    LoadFromXML(pRootElement, it);
   }
   // Get hardware based stuff...
   CLog::Log(LOGNOTICE, "Getting hardware information now...");
@@ -826,6 +779,35 @@ void CGUISettings::LoadXML(TiXmlElement *pRootElement)
   m_replayGain.iNoGainPreAmp = GetInt("MusicPlayer.ReplayGainNoGainPreAmp");
   m_replayGain.iType = GetInt("MusicPlayer.ReplayGainType");
   m_replayGain.bAvoidClipping = GetBool("MusicPlayer.ReplayGainAvoidClipping");
+
+  // Master User mode is always off initially
+  SetBool("MasterLock.MasterUser", false);
+}
+
+void CGUISettings::LoadFromXML(TiXmlElement *pRootElement, mapIter &it)
+{
+  CStdStringArray strSplit;
+  StringUtils::SplitString((*it).first, ".", strSplit);
+  if (strSplit.size() > 1)
+  {
+    const TiXmlNode *pChild = pRootElement->FirstChild(strSplit[0].c_str());
+    if (pChild)
+    {
+      const TiXmlNode *pGrandChild = pChild->FirstChild(strSplit[1].c_str());
+      if (pGrandChild && pGrandChild->FirstChild())
+      {
+        CStdString strValue = pGrandChild->FirstChild()->Value();
+        if (strValue.size() )
+        {
+          if (strValue != "-")
+          { // update our item
+            (*it).second->FromString(strValue);
+            CLog::Log(LOGDEBUG, "  %s: %s", (*it).first.c_str(), (*it).second->ToString().c_str());
+          }
+        }
+      }
+    }
+  }
 }
 
 void CGUISettings::SaveXML(TiXmlNode *pRootNode)
