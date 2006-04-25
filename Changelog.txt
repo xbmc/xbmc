@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 25-04-2006 fixed: subtitles could end up disabled even if they where enabled in dvd menu
  - 25-04-2006 fixed: enable/disable of subtitles with an id higher than 8 would always fails
  - 25-04-2006 fixed: dvdplayer would restart when disabling/enabling substitles
  - 25-04-2006 changed: viz and karaoke is now separated.

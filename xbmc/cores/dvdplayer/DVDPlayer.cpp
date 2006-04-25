@@ -1537,7 +1537,7 @@ int CDVDPlayer::OnDVDNavResult(void* pData, int iMessage)
         dvdnav_spu_stream_change_event_t* event = (dvdnav_spu_stream_change_event_t*)pData;
 
         int iStream = event->physical_wide;
-        if (!(iStream & 0x80) && !IsInMenu())
+        if (!(iStream & 0x80))
         {
           // subtitles are enabled in the dvd, do so in the osd if we are in the main movie
           g_stSettings.m_currentVideoSettings.m_SubtitleOn = true;
