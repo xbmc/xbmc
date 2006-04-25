@@ -2033,6 +2033,12 @@ void CUtil::RemoveTempFiles()
 
 void CUtil::DeleteTDATA()
 {
+  // Load in master code first to ensure it's setting isn't reset
+  TiXmlDocument doc;
+  if (doc.LoadFile("T:\\settings.xml"))
+  {
+    g_guiSettings.LoadMasterLock(doc.RootElement());
+  }
   // delete T:\\settings.xml only
   CLog::Log(LOGINFO, "  DeleteFile(T:\\settings.xml)");
   ::DeleteFile("T:\\settings.xml");
