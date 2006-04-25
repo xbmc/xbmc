@@ -131,11 +131,11 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
   }
   else if( m_pInput->GetContent().compare("audio/mpeg") == 0  )  
   {
-    iformat = m_dllAvFormat.av_find_input_format("mp3"); // maybe should be for audio
+    iformat = m_dllAvFormat.av_find_input_format("mp3");
   }
   else if( m_pInput->GetContent().compare("video/mpeg") == 0 )
   {
-    iformat = m_dllAvFormat.av_find_input_format("mpeg"); // maybe should be for audio
+    iformat = m_dllAvFormat.av_find_input_format("mpeg");
   }
   
   if (m_pInput->IsStreamType(DVDSTREAM_TYPE_DVD) && iformat == NULL)
