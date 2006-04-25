@@ -5,8 +5,8 @@
 extern "C" {
 #endif
 
-#define LIBAVFORMAT_VERSION_INT ((50<<16)+(0<<8)+0)
-#define LIBAVFORMAT_VERSION     50.0.0
+#define LIBAVFORMAT_VERSION_INT ((50<<16)+(4<<8)+0)
+#define LIBAVFORMAT_VERSION     50.4.0
 #define LIBAVFORMAT_BUILD       LIBAVFORMAT_VERSION_INT
 
 #define LIBAVFORMAT_IDENT       "Lavf" AV_STRINGIFY(LIBAVFORMAT_VERSION)
@@ -208,8 +208,8 @@ typedef struct AVIndexEntry {
     int64_t pos;
     int64_t timestamp;
 #define AVINDEX_KEYFRAME 0x0001
-/* the following 2 flags indicate that the next/prev keyframe is known, and scaning for it isnt needed */
-    int flags;
+    int flags:2;
+    int size:30; //yeah trying to keep the size of this small to reduce memory requirements (its 24 vs 32 byte due to possible 8byte align)
     int min_distance;         /* min distance between this and the previous keyframe, used to avoid unneeded searching */
 } AVIndexEntry;
 
@@ -272,8 +272,12 @@ typedef struct AVStream {
 
 #define AVFMTCTX_NOHEADER      0x0001 /* signal that no header is present
                                          (streams are added dynamically) */
-
+#ifdef _XBOX
+/* dvd's can have maximally 41 streams */
+#define MAX_STREAMS 42
+#else
 #define MAX_STREAMS 20
+#endif
 
 /* format I/O context */
 typedef struct AVFormatContext {
@@ -549,6 +553,30 @@ int nsvdec_init(void);
 /* daud.c */
 int daud_init(void);
 
+/* nuv.c */
+int nuv_init(void);
+
+/* aiff.c */
+int ff_aiff_init(void);
+
+/* voc.c */
+int voc_init(void);
+
+/* tta.c */
+int tta_init(void);
+
+/* adts.c */
+int ff_adts_init(void);
+
+/* mm.c */
+int mm_init(void);
+
+/* avs.c */
+int avs_init(void);
+
+/* smacker.c */
+int smacker_init(void);
+
 #include "rtp.h"
 
 #include "rtsp.h"
@@ -623,7 +651,7 @@ void av_set_pts_info(AVStream *s, int pts_wrap_bits,
 int av_find_default_stream_index(AVFormatContext *s);
 int av_index_search_timestamp(AVStream *st, int64_t timestamp, int flags);
 int av_add_index_entry(AVStream *st,
-                       int64_t pos, int64_t timestamp, int distance, int flags);
+                       int64_t pos, int64_t timestamp, int size, int distance, int flags);
 int av_seek_frame_binary(AVFormatContext *s, int stream_index, int64_t target_ts, int flags);
 
 /* media file output */
