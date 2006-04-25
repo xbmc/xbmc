@@ -19,7 +19,6 @@ CVisualisation::CVisualisation(struct Visualisation* pVisz, DllVisualisation* pD
 
 CVisualisation::~CVisualisation()
 {
-  g_application.m_CdgParser.FreeGraphics();
 }
 
 void CVisualisation::Create(int posx, int posy, int width, int height)
@@ -32,8 +31,6 @@ void CVisualisation::Create(int posx, int posy, int width, int height)
   OutputDebugString(szTmp);
   
   m_pVisz->Create (g_graphicsContext.Get3DDevice(), posx, posy, width, height, m_strVisualisationName.c_str(), g_graphicsContext.GetPixelRatio(g_graphicsContext.GetVideoResolution()));
-  if (g_guiSettings.GetBool("Karaoke.Enabled"))
-    g_application.m_CdgParser.AllocGraphics();
 }
 
 void CVisualisation::Start(int iChannels, int iSamplesPerSec, int iBitsPerSample, const CStdString strSongName)
@@ -57,8 +54,6 @@ void CVisualisation::Render()
 {
   // ask visz. to render itself
   m_pVisz->Render();
-  if (g_guiSettings.GetBool("Karaoke.Enabled"))
-    g_application.m_CdgParser.Render();
   // CLog::Log(LOGERROR, "Test");
 }
 
