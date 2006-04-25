@@ -163,4 +163,5 @@ void export_kernel32()
   g_dlls.kernel32.AddExport("UnhandledExceptionFilter", (unsigned long)UnhandledExceptionFilter);
   g_dlls.kernel32.AddExport("RaiseException", (unsigned long)RaiseException);
   g_dlls.kernel32.AddExport("DebugBreak", (unsigned long)DebugBreak);
+  g_dlls.kernel32.AddExport("GetThreadTimes", (unsigned long)GetThreadTimes);
 }

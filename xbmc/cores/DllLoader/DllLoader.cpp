@@ -479,7 +479,7 @@ int DllLoader::LoadExports()
       unsigned long Addr = (unsigned long)
                            (SectionData[FSctn] + (RVA - SectionHeader[FSctn].VirtualAddress));
     
-      AddExport(Name, Addr);
+      AddExport(Name, OrdinalTable[i], Addr);
     }
   }
   return 0;

@@ -33,6 +33,12 @@ void export_wsock32()
   g_dlls.wsock32.AddExport("htons", 9, (unsigned long)htons);
   g_dlls.wsock32.AddExport("__WSAFDIsSet", 151, (unsigned long)dll__WSAFDIsSet);
   g_dlls.wsock32.AddExport("WSASetLastError", 112, (unsigned long)WSASetLastError);
+  g_dlls.wsock32.AddExport("getsockopt", 7, (unsigned long)dllgetsockopt);
+  g_dlls.wsock32.AddExport("getservbyname", 55, (unsigned long)dllgetservbyname);
+  g_dlls.wsock32.AddExport("getprotobyname", 53, (unsigned long)dllgetprotobyname);
+  g_dlls.wsock32.AddExport("getpeername", 5, (unsigned long)dllgetpeername);
+  g_dlls.wsock32.AddExport("getservbyport", 56, (unsigned long)dllgetservbyport);
+  g_dlls.wsock32.AddExport("gethostbyaddr", 51, (unsigned long)dllgethostbyaddr);
 }
 
 /*
