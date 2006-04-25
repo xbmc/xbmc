@@ -1030,9 +1030,9 @@ int CDVDInputStreamNavigator::ConvertAudioStreamId_ExternalToXBMC(int id)
   if( vm->state.domain == VTS_DOMAIN )
   {
     /* VTS domain can only have limited number of streams */
-    if (id <= 0 && id > 8)
+    if (id >= 8)
     {
-      CLog::Log(LOGWARNING, "ConvertAudioStreamId_XBMCToExternal, incorrect id : %d", id);
+      CLog::Log(LOGWARNING, __FUNCTION__" - incorrect id : %d", id);
       return -1;
     }
 
@@ -1096,9 +1096,9 @@ int CDVDInputStreamNavigator::ConvertSubtitleStreamId_ExternalToXBMC(int id)
   if( vm->state.domain == VTS_DOMAIN )
   {
     /* VTS domain can only have limited number of streams */
-    if (id <= 0 && id > 8)
+    if (id >= 32)
     {
-      CLog::Log(LOGWARNING, "ConvertAudioStreamId_XBMCToExternal, incorrect id : %d", id);
+      CLog::Log(LOGWARNING, __FUNCTION__" - incorrect id : %d", id);
       return -1;
     }
 
