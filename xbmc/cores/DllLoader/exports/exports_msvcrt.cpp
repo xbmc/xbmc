@@ -423,6 +423,7 @@ void export_msvcrt()
   g_dlls.msvcrt.AddExport("_except_handler3", (unsigned long)_except_handler3);
   g_dlls.msvcrt.AddExport("__CxxFrameHandler", (unsigned long)__CxxFrameHandler);
   g_dlls.msvcrt.AddExport("clearerr", (unsigned long)dll_clearerr);
+  g_dlls.msvcrt.AddExport("_sys_nerr", (unsigned long)&_sys_nerr);
 }
 
 void export_msvcr71()
