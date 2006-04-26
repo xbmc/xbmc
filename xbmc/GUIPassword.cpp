@@ -13,7 +13,6 @@ CGUIPassword::CGUIPassword(void)
   m_bConfirmed = false;
   m_bCanceled = false;
   m_SMBShare = "";
-  m_masterUserMode = false;
   m_masterLockRetriesRemaining = 0;
 }
 
@@ -310,13 +309,13 @@ bool CGUIPassword::MasterUserOverridesPasswords()
 bool CGUIPassword::IsMasterUser()
 {
   if (g_guiSettings.GetInt("MasterUser.LockMode") == LOCK_MODE_EVERYONE)
-    m_masterUserMode = true;
-  return m_masterUserMode;
+    g_guiSettings.SetBool("MasterLock.MasterUser", true);
+  return g_guiSettings.GetBool("MasterLock.MasterUser");
 }
 
 void CGUIPassword::LogoutMasterUser()
 {
-  m_masterUserMode = false;
+  g_guiSettings.SetBool("MasterLock.MasterUser", false);
   m_masterLockRetriesRemaining = g_guiSettings.GetInt("MasterLock.MaxRetries");
 }
 
@@ -386,7 +385,7 @@ bool CGUIPassword::CheckMasterLock(bool shutdownOnFailure /* = false*/)
     }
     if (iVerifyPasswordResult == 0)
     {
-      m_masterUserMode = true;
+      g_guiSettings.SetBool("MasterLock.MasterUser", true);
       return true;
     }
     if (iVerifyPasswordResult == -1)
