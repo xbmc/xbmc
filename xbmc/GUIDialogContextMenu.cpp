@@ -377,7 +377,7 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CFile
         if (!g_passwordManager.CheckMasterLock())
           return false;
 
-        if (!CGUIDialogYesNo::ShowAndGetInput(0, 12335, 750, 0))
+        if (!CGUIDialogYesNo::ShowAndGetInput(12335, 0, 750, 0))
           return false;
 
         g_settings.UpdateBookmark(strType, share->strName, "lockmode", "0");
