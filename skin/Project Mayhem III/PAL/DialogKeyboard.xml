@@ -1,6 +1,6 @@
 <window>
   <id>103</id>
-  <defaultcontrol>65</defaultcontrol>
+  <defaultcontrol always="true">65</defaultcontrol>
   <animation effect="fade" time="200">WindowOpen</animation>
   <animation effect="fade" time="200">WindowClose</animation>
   <controls>
