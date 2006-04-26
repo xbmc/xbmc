@@ -38,7 +38,6 @@ protected:
   bool m_bCanceled;
   CStdString m_SMBShare;
 
-  bool m_masterUserMode;    // true once the master lock password has been entered
   int  m_masterLockRetriesRemaining;
 };
 
