@@ -1,6 +1,6 @@
 <window>
   <id>114</id>
-  <defaultcontrol>403</defaultcontrol>
+  <defaultcontrol always="true">403</defaultcontrol>
   <visible>Player.HasMedia + Window.IsActive(PlayerControls) + !Window.IsActive(FullscreenVideo)</visible>
   <animation effect="fade" time="200">WindowOpen</animation>
   <animation effect="fade" time="200">WindowClose</animation>
