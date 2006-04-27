@@ -95,7 +95,8 @@ void CGUIListControl::Render()
       if (pItem->HasIcon())
       {
         CStdString image = pItem->GetIconImage();
-        if (m_iImageWidth * m_iImageHeight > 32*32 && !pItem->HasThumbnail())
+        bool bigImage(m_iImageWidth * m_iImageHeight > 1024); // bigger than 32x32
+        if (bigImage && !pItem->HasThumbnail())
           image.Insert(image.Find("."), "Big");
 
         // show icon
@@ -118,6 +119,34 @@ void CGUIListControl::Render()
           // center vertically
           pImage->SetPosition(iPosX + 8 + (m_iImageWidth - pImage->GetRenderWidth()) / 2, iPosY + (m_iItemHeight - pImage->GetRenderHeight()) / 2);
           pImage->Render();
+
+          if (bigImage)
+          { // Add the overlay image if we're a big list
+            CGUIImage *overlay = pItem->GetOverlay();
+            if (!overlay && pItem->HasOverlay())
+            {
+              overlay = new CGUIImage(0, 0, 0, 0, 0, 0, pItem->GetOverlayImage(), 0x0);
+              overlay->SetAspectRatio(CGUIImage::ASPECT_RATIO_KEEP);
+              overlay->AllocResources();
+              pItem->SetOverlay(overlay);
+            }
+            // Render the image
+            if (overlay)
+            {
+              float x, y;
+              pImage->GetBottomRight(x, y);
+              // FIXME: fixed scaling to try and get it a similar size on MOST skins as
+              //        small thumbs view
+              float scale = 0.75f;
+              overlay->SetWidth((int)(overlay->GetTextureWidth() * scale));
+              overlay->SetHeight((int)(overlay->GetTextureHeight() * scale));
+              // if we haven't yet rendered, make sure we update our sizing
+              if (!overlay->HasRendered())
+                overlay->CalculateSize();
+              overlay->SetPosition((int)x - overlay->GetRenderWidth(), (int)y - overlay->GetRenderHeight());
+              overlay->Render();
+            }
+          }
         }
       }
       iPosY += m_iItemHeight + m_iSpaceBetweenItems;
