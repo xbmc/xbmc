@@ -1,5 +1,9 @@
 
+// python.h should always be included first before any other includes
 #include "../../stdafx.h"
+#include "python\python.h" 
+
+
 #include "XBPyThread.h"
 #include "XBPython.h"
 
@@ -7,6 +11,12 @@
 #pragma data_seg("PY_DATA")
 #pragma bss_seg("PY_BSS")
 #pragma const_seg("PY_RDATA")
+
+extern "C"
+{
+  int xbp_chdir(const char *dirname);
+  char* dll_getenv(const char* szKey);
+}
 
 int xbTrace(PyObject *obj, _frame *frame, int what, PyObject *arg)
 {
@@ -73,36 +83,37 @@ void XBPyThread::Process()
 	strcpy(strrchr(sourcedir, '\\'), ";");
 	
 	strcpy(path, sourcedir);
-	strcat(path, getenv("PYTHONPATH"));
+	strcat(path, dll_getenv("PYTHONPATH"));
 
 	// set current directory and python's path.
 	PySys_SetPath(path);
-	chdir(sourcedir);
+	xbp_chdir(sourcedir); // XXX, there is a ';' at the end
 
-	if (type == 'F') {
+	if (type == 'F')
+	{
 		// run script from file
 		FILE *fp = fopen(source, "r");
 		if (fp)
 		{
 			if (PyRun_SimpleFile(fp, source) == -1)
 			{
-				OutputDebugString("Scriptresult: Error\n");
+				CLog::Log(LOGERROR, "Scriptresult: Error\n");
 				if (PyErr_Occurred())	PyErr_Print();
 			}
-			else OutputDebugString("Scriptresult: Succes\n");
+			else CLog::Log(LOGINFO, "Scriptresult: Succes\n");
 			fclose(fp);
 		}
-		else Py_Output("%s not found!\n", source);
+		else CLog::Log(LOGERROR, "%s not found!\n", source);
 	}
 	else
 	{
 		//run script
 		if (PyRun_SimpleString(source) == -1)
 		{
-			OutputDebugString("Scriptresult: Error\n");
+			CLog::Log(LOGERROR, "Scriptresult: Error\n");
 			if (PyErr_Occurred()) PyErr_Print();
 		}
-		else OutputDebugString("Scriptresult: Succes\n");
+		else CLog::Log(LOGINFO, "Scriptresult: Succes\n");
 	}
 
 	// clear the thread state and release our hold on the global interpreter

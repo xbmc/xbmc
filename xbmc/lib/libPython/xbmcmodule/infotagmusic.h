@@ -1,4 +1,4 @@
-#include "..\python.h"
+#include "..\python\python.h"
 
 #pragma once
 
@@ -15,7 +15,8 @@ namespace PYXBMC
 
 	extern PyTypeObject InfoTagMusic_Type;
 	extern InfoTagMusic* InfoTagMusic_FromCMusicInfoTag(const MUSIC_INFO::CMusicInfoTag& infoTag);
-
+	
+  void initInfoTagMusic_Type();
 }
 
 #ifdef __cplusplus

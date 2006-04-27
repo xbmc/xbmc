@@ -158,6 +158,9 @@ void export_ws2_32()
   g_dlls.ws2_32.AddExport("getpeername", 5, (unsigned long)dllgetpeername);
   g_dlls.ws2_32.AddExport("getservbyport", 56, (unsigned long)dllgetservbyport);
   g_dlls.ws2_32.AddExport("gethostbyaddr", 51, (unsigned long)dllgethostbyaddr);
+  g_dlls.ws2_32.AddExport("getaddrinfo", 95, (unsigned long)dllgetaddrinfo);
+  g_dlls.ws2_32.AddExport("getnameinfo", 96, (unsigned long)dllgetnameinfo);
+  g_dlls.ws2_32.AddExport("freeaddrinfo", 94, (unsigned long)dllfreeaddrinfo);
 }
 
 /*

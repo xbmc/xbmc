@@ -1,4 +1,4 @@
-#include "..\python.h"
+#include "..\python\python.h"
 #include "GUIListItem.h"
 #pragma once
 
@@ -19,6 +19,8 @@ namespace PYXBMC
 	} ListItem;
 
 	extern ListItem* ListItem_FromString(string strLabel);
+	
+	void initListItem_Type();
 }
 
 #ifdef __cplusplus

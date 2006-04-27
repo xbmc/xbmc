@@ -1,6 +1,6 @@
 #pragma once
 #include "guiwindow.h"
-#include "..\python.h"
+#include "..\python\python.h"
 
 class PyXBMCAction
 {

@@ -114,4 +114,14 @@ namespace PYXBMC
 		}
 		return false;
 	}
+	
+	void PyInitializeTypeObject(PyTypeObject* type_object)
+	{
+	  static PyTypeObject py_type_object_header = { PyObject_HEAD_INIT(NULL) 0};
+	  int size = (long*)&(py_type_object_header.tp_name) - (long*)&py_type_object_header;
+	  
+	  memset(type_object, 0, sizeof(PyTypeObject));
+	  memcpy(type_object, &py_type_object_header, size);
+	}
+	
 }
