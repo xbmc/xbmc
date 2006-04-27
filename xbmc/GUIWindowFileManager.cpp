@@ -297,16 +297,34 @@ void CGUIWindowFileManager::UpdateButtons()
   SET_CONTROL_LABEL(CONTROL_CURRENTDIRLABEL_RIGHT, strDir);
 
   // update the number of items in each list
+  UpdateItemCounts();
+}
+
+void CGUIWindowFileManager::UpdateItemCounts()
+{
   for (int i = 0; i < 2; i++)
   {
-    int iItems = m_vecItems[i].Size();
-    if (iItems)
+    unsigned int selectedCount = 0;
+    unsigned int totalCount = 0;
+    __int64 selectedSize = 0;
+    __int64 totalSize = 0;
+    for (int j = 0; j < m_vecItems[i].Size(); j++)
     {
-      CFileItem* pItem = m_vecItems[i][0];
-      if (pItem->IsParentFolder()) iItems--;
+      CFileItem *item = m_vecItems[i][j];
+      if (item->IsParentFolder()) continue;
+      if (item->IsSelected())
+      {
+        selectedCount++;
+        selectedSize += item->m_dwSize;
+      }
+      totalCount++;
+      totalSize += item->m_dwSize;
     }
     CStdString items;
-    items.Format("%i %s", iItems, g_localizeStrings.Get(127).c_str());
+    if (selectedCount > 0)
+      items.Format("%i/%i %s (%s)", selectedCount, totalCount, g_localizeStrings.Get(127).c_str(), StringUtils::SizeToString(selectedSize).c_str());
+    else
+      items.Format("%i %s", totalCount, g_localizeStrings.Get(127).c_str());
     SET_CONTROL_LABEL(CONTROL_NUMFILES_LEFT + i, items);
   }
 }
@@ -553,6 +571,7 @@ void CGUIWindowFileManager::OnMark(int iList, int iItem)
     }
   }
 
+  UpdateItemCounts();
   // UpdateButtons();
 }
 

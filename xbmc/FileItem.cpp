@@ -1089,54 +1089,7 @@ void CFileItem::SetLabel(const CStdString &strLabel)
 
 void CFileItem::SetFileSizeLabel()
 {
-  SetLabel2(BuildFileSizeLabel());
-}
-
-CStdString CFileItem::BuildFileSizeLabel()
-{
-  CStdString strLabel;
-  // file < 1 kbyte?
-  if (m_dwSize < 1024)
-  {
-    //  substract the integer part of the float value
-    float fRemainder = (((float)m_dwSize) / 1024.0f) - floor(((float)m_dwSize) / 1024.0f);
-    float fToAdd = 0.0f;
-    if (fRemainder < 0.01f)
-      fToAdd = 0.1f;
-    strLabel.Format("%2.1f KB", (((float)m_dwSize) / 1024.0f) + fToAdd);
-    return strLabel;
-  }
-  const __int64 iOneMeg = 1024 * 1024;
-
-  // file < 1 megabyte?
-  if (m_dwSize < iOneMeg)
-  {
-    strLabel.Format("%02.1f KB", ((float)m_dwSize) / 1024.0f);
-    return strLabel;
-  }
-
-  // file < 1 GByte?
-  __int64 iOneGigabyte = iOneMeg;
-  iOneGigabyte *= (__int64)1000;
-  if (m_dwSize < iOneGigabyte)
-  {
-    strLabel.Format("%02.1f MB", ((float)m_dwSize) / ((float)iOneMeg));
-    return strLabel;
-  }
-  //file > 1 GByte
-  int iGigs = 0;
-  __int64 dwFileSize = m_dwSize;
-  while (dwFileSize >= iOneGigabyte)
-  {
-    dwFileSize -= iOneGigabyte;
-    iGigs++;
-  }
-  float fMegs = ((float)dwFileSize) / ((float)iOneMeg);
-  fMegs /= 1000.0f;
-  fMegs += iGigs;
-  strLabel.Format("%02.1f GB", fMegs);
-
-  return strLabel;
+  SetLabel2(StringUtils::SizeToString(m_dwSize));
 }
 
 CURL CFileItem::GetAsUrl() const
@@ -1271,12 +1224,12 @@ CStdString CFileItem::ParseFormat(const CStdString& strMask)
       if (nDuration > 0)
         StringUtils::SecondsToTimeString(nDuration, str);
       else if (m_dwSize > 0)
-        str=BuildFileSizeLabel();
+        str = StringUtils::SizeToString(m_dwSize);
       bDoneSomething = true;
     }
     else if (strMask[iPos2 + 1] == 'I')
     { // size
-      str=BuildFileSizeLabel();
+      str=StringUtils::SizeToString(m_dwSize);
       bDoneSomething = true;
     }
     else if (strMask[iPos2 + 1] == 'J' && m_stTime.wYear > 0)
