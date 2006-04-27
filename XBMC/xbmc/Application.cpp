@@ -2116,7 +2116,10 @@ bool CApplication::OnKey(CKey& key)
   if (action.wID == ACTION_SHOW_GUI)
   { // Switch to fullscreen mode if we can
     if (SwitchToFullScreen())
+    {
+      m_navigationTimer.StartZero();
       return true;
+    }
   }
 
   // handle global functions
@@ -2132,6 +2135,7 @@ bool CApplication::OnKey(CKey& key)
   else if (action.wID == ACTION_BUILT_IN_FUNCTION)
   {
     CUtil::ExecBuiltIn(action.strAction);
+    m_navigationTimer.StartZero();
     return true;
   }
   else if (action.wID == ACTION_POWERDOWN)
@@ -2159,7 +2163,11 @@ bool CApplication::OnKey(CKey& key)
   }
   // in normal case
   // just pass the action to the current window and let it handle it
-  if (m_gWindowManager.OnAction(action)) return true;
+  if (m_gWindowManager.OnAction(action))
+  {
+    m_navigationTimer.StartZero();
+    return true;
+  }
 
   /* handle extra global presses */
 
@@ -2343,7 +2351,7 @@ void CApplication::UpdateLCD()
     lTimeOut = 0;
   if ( ((long)GetTickCount() - lTickCount) >= lTimeOut)
   {
-    if (g_application.GlobalIdleTime() < 5)
+    if (g_application.NavigationIdleTime() < 5)
       g_lcd->Render(ILCD::LCD_MODE_NAVIGATION);
     else if (IsPlayingVideo())
       g_lcd->Render(ILCD::LCD_MODE_VIDEO);
@@ -4028,6 +4036,16 @@ int CApplication::GlobalIdleTime()
     m_idleTimer.StartZero();
   }
   return (int)m_idleTimer.GetElapsedSeconds();
+}
+
+float CApplication::NavigationIdleTime()
+{
+  if (!m_navigationTimer.IsRunning())
+  {
+    m_navigationTimer.Stop();
+    m_navigationTimer.StartZero();
+  }
+  return m_navigationTimer.GetElapsedSeconds();
 }
 
 void CApplication::DelayedPlayerRestart()
