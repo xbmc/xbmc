@@ -177,7 +177,7 @@ bool CPlayListPLS::Load(const CStdString& strFileName, bool bDeep)
   if (bDeep && item.IsInternetStream())
   {
     //load it from the url
-    if (!LoadFromWeb(item.m_strPath))
+    if (item.IsLastFM() || !LoadFromWeb(item.m_strPath))
     {
       CPlayListItem newItem(item.m_strPath, item.m_strPath, 0);
       Add(newItem);
