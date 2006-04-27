@@ -12,7 +12,7 @@
 extern "C" {
 	extern void initxbmc(void);
 	extern void initxbmcgui(void);
-	extern void free_arenas(void);
+	//extern void free_arenas(void);
 }
 
 typedef struct {
@@ -44,8 +44,6 @@ public:
 	int		ScriptsSize();
 	int		GetPythonScriptId(int scriptPosition); 
 	int   evalFile(const char *);
-	int   evalString(const char *);
-
 
 	bool	isRunning(int scriptId);
 	bool  isStopping(int scriptId);
@@ -68,11 +66,12 @@ private:
 	int								nextid;
 	PyThreadState*		mainThreadState;
 	DWORD							dThreadId;
-	bool							bInitialized;
+	bool							m_bInitialized;
 	bool							bThreadInitialize;
 	bool							bStartup;
 	HANDLE						m_hEvent;
-
+  int               m_iDllScriptCounter; // to keep track of the total scripts running that need the dll
+  HMODULE           m_hModule;
 	//Vector with list of threads used for running scripts
 	PyList vecPyList;
 	PlayerCallbackList vecPlayerCallbackList;

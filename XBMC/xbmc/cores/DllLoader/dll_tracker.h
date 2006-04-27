@@ -93,6 +93,8 @@ char* tracker_getdllname(unsigned long caller);
 // returns a function pointer if there is one available for it, or NULL if not ofund
 void* tracker_dll_get_function(DllLoader* pDll, char* sFunctionName);
 
+DllTrackInfo* tracker_get_dlltrackinfo_byobject(DllLoader* pDll);
+
 DllTrackInfo* tracker_get_dlltrackinfo(unsigned long caller);
 
 void tracker_dll_data_track(DllLoader* pDll, unsigned long addr);

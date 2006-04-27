@@ -1,4 +1,4 @@
-#include "..\python.h"
+#include "..\python\python.h"
 #include "PythonPlayer.h"
 #include "..\..\..\cores\PlayerCoreFactory.h"
 #pragma once
@@ -17,6 +17,7 @@ namespace PYXBMC
 	} Player;
 
 	extern PyTypeObject Player_Type;
+	void initPlayer_Type();
 }
 
 #ifdef __cplusplus

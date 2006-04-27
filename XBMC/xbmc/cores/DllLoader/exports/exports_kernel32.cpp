@@ -158,10 +158,16 @@ void export_kernel32()
   g_dlls.kernel32.AddExport("GetConsoleOutputCP", (unsigned long)dllGetConsoleOutputCP);
   g_dlls.kernel32.AddExport("SetConsoleCtrlHandler", (unsigned long)dllSetConsoleCtrlHandler);
   g_dlls.kernel32.AddExport("GetExitCodeThread", (unsigned long)GetExitCodeThread);
+  g_dlls.kernel32.AddExport("ResumeThread", (unsigned long)ResumeThread);
+  g_dlls.kernel32.AddExport("ExitThread", (unsigned long)ExitThread);
   g_dlls.kernel32.AddExport("VirtualQuery", (unsigned long)VirtualQuery);
   g_dlls.kernel32.AddExport("VirtualProtect", (unsigned long)VirtualProtect);
   g_dlls.kernel32.AddExport("UnhandledExceptionFilter", (unsigned long)UnhandledExceptionFilter);
   g_dlls.kernel32.AddExport("RaiseException", (unsigned long)RaiseException);
+  //g_dlls.kernel32.AddExport("FlsAlloc", (unsigned long)FlsAlloc);
+  //g_dlls.kernel32.AddExport("FlsGetValue", (unsigned long)FlsGetValue);
+  //g_dlls.kernel32.AddExport("FlsSetValue", (unsigned long)FlsSetValue);
+  //g_dlls.kernel32.AddExport("FlsFree", (unsigned long)FlsFree);
   g_dlls.kernel32.AddExport("DebugBreak", (unsigned long)DebugBreak);
   g_dlls.kernel32.AddExport("GetThreadTimes", (unsigned long)GetThreadTimes);
 }
