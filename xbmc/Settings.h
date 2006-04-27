@@ -499,6 +499,8 @@ protected:
   void LoadSkinSettings(const TiXmlElement* pElement);
   void SaveSkinSettings(TiXmlNode *pElement) const;
 
+  void LoadUserFolderLayout(const TiXmlElement *pRootElement);
+
   TiXmlDocument xbmcXml;  // for editing the xml file from within XBMC
   bool xbmcXmlLoaded;
 };
