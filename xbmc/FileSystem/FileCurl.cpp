@@ -563,9 +563,11 @@ bool CFileCurl::FillBuffer(unsigned int want, int waittime)
     
   // only attempt to fill buffer if transactions still running and buffer
   // doesnt exceed required size already
-  while (m_stillRunning && m_buffer.GetMaxReadSize() < want && m_buffer.GetMaxWriteSize() > 0)
+  while (m_buffer.GetMaxReadSize() < want && m_buffer.GetMaxWriteSize() > 0)
   {
     CURLMcode result = g_curlInterface.multi_perform(m_multiHandle, &m_stillRunning);
+    if( !m_stillRunning ) break;
+
     switch(result)
     {
       case CURLM_OK:
@@ -576,7 +578,6 @@ bool CFileCurl::FillBuffer(unsigned int want, int waittime)
         // wait until data is avialable or a timeout occours
         int rc = dllselect(maxfd + 1, &fdread, &fdwrite, &fdexcep, &timeout);
         if( rc == SOCKET_ERROR ) return false;
-        
       }
       break;
       case CURLM_CALL_MULTI_PERFORM:
