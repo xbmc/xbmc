@@ -1178,9 +1178,10 @@ void CGUIWindowBuddies::ChangeState(CGUIWindowBuddies::State aNewState)
 
       SET_CONTROL_LABEL( CONTROL_LABELBUDDYWIN, g_localizeStrings.Get(15016)); // Games
       SET_CONTROL_LABEL( CONTROL_BTNMODE, g_localizeStrings.Get(15017)); // View: Games
-      SET_CONTROL_LABEL( CONTROL_BTNPLAY, g_localizeStrings.Get(15018)); // Enter
+      SET_CONTROL_LABEL(CONTROL_BTNPLAY, g_localizeStrings.Get(15023)); // Play
       SET_CONTROL_LABEL( CONTROL_BTNADD, g_localizeStrings.Get(15019)); // Add
       SET_CONTROL_LABEL( CONTROL_BTNHOST, g_localizeStrings.Get(15020)); // Host
+      CONTROL_DISABLE(CONTROL_BTNPLAY);
       CONTROL_DISABLE(CONTROL_BTNADD);
       CONTROL_DISABLE(CONTROL_BTNHOST);
 
@@ -1218,6 +1219,7 @@ void CGUIWindowBuddies::ChangeState(CGUIWindowBuddies::State aNewState)
       SET_CONTROL_LABEL(CONTROL_BTNPLAY, g_localizeStrings.Get(15023)); // Play
       SET_CONTROL_LABEL(CONTROL_BTNADD, g_localizeStrings.Get(15024)); // Add
       SET_CONTROL_LABEL(CONTROL_BTNHOST, g_localizeStrings.Get(15025)); // Host
+      CONTROL_ENABLE(CONTROL_BTNPLAY);
       CONTROL_DISABLE(CONTROL_BTNADD);
       CONTROL_ENABLE(CONTROL_BTNHOST);
 
