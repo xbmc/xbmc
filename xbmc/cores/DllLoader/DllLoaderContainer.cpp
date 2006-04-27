@@ -2,7 +2,9 @@
 #include "../../stdafx.h"
 #include "DllLoaderContainer.h"
 
-#define ENV_PATH "Q:\\system\\;Q:\\system\\players\\mplayer\\;Q:\\system\\players\\dvdplayer\\;Q:\\system\\players\\paplayer\\"
+#include "dll_tracker.h" // for python unload hack
+
+#define ENV_PATH "Q:\\system\\;Q:\\system\\players\\mplayer\\;Q:\\system\\players\\dvdplayer\\;Q:\\system\\players\\paplayer\\;Q:\\system\\python\\"
 
 
 //Define this to get loggin on all calls to load/unload of dlls
@@ -30,7 +32,6 @@ void export_comctl32();
 void export_msvcrt();
 void export_msvcr71();
 void export_pncrt();
-void export_python23();
 
 DllLoaderContainer::DllLoaderContainer() :
     kernel32("kernel32.dll", false, true),
@@ -53,8 +54,7 @@ DllLoaderContainer::DllLoaderContainer() :
     comdlg32("comdlg32.dll", false, true),
     gdi32("gdi32.dll", false, true),
     comctl32("comctl32.dll", false, true),
-    pncrt("pncrt.dll", false, true),
-    python23("python23.dll", false, true)
+    pncrt("pncrt.dll", false, true)
 {
   m_iNrOfDlls = 0;
   m_bTrack = true;
@@ -69,7 +69,7 @@ DllLoaderContainer::DllLoaderContainer() :
   RegisterDll(&wininet); // nothing is exported in this dll, is this one really needed?
   RegisterDll(&advapi32); export_reg();
   RegisterDll(&ole32); export_ole32();
-  RegisterDll(&xbp); //export_xbp();
+  RegisterDll(&xbp); export_xbp();
   RegisterDll(&winmm); export_winmm();
   RegisterDll(&msdmo); export_msdmo();
   RegisterDll(&xbmc_vobsub); export_xbmc_vobsub();
@@ -80,7 +80,6 @@ DllLoaderContainer::DllLoaderContainer() :
   RegisterDll(&gdi32); export_gdi32();
   RegisterDll(&comctl32); export_comctl32();
   RegisterDll(&pncrt); export_pncrt();
-  RegisterDll(&python23); export_python23();
 }
   
 void DllLoaderContainer::Clear()
@@ -117,7 +116,8 @@ DllLoader* DllLoaderContainer::LoadModule(const char* sName, const char* sCurren
     strPath+=sName;
     pDll = g_dlls.GetModule(strPath.c_str());
   }
-  else
+  
+  if (!pDll)
   {
     pDll = g_dlls.GetModule(sName);
   }
@@ -261,10 +261,14 @@ DllLoader* DllLoaderContainer::GetModule(int iPos)
 
 void DllLoaderContainer::RegisterDll(DllLoader* pDll)
 {
-  if (m_iNrOfDlls < sizeof(m_dlls))
+  for (int i = 0; i < 64; i++)
   {
-    m_dlls[m_iNrOfDlls] = pDll;
-    m_iNrOfDlls++;
+    if (m_dlls[i] == NULL)
+    {
+      m_dlls[i] = pDll;
+      m_iNrOfDlls++;
+      break;
+    }
   }
 }
 
@@ -295,4 +299,43 @@ void DllLoaderContainer::UnRegisterDll(DllLoader* pDll)
       }
     }
   }
+}
+
+void DllLoaderContainer::UnloadPythonDlls()
+{
+  // unload all dlls that python24.dll could have loaded
+  for (int i = 0; m_dlls[i] != NULL && i < m_iNrOfDlls; i++)
+  {
+    char* name = m_dlls[i]->GetName();
+    if (strstr(name, ".pyd") != NULL)
+    {
+      DllLoader* pDll = m_dlls[i];
+      ReleaseModule(pDll);
+      i = 0;
+    }
+  }
+
+  // last dll to unload, python24.dll
+  for (int i = 0; m_dlls[i] != NULL && i < m_iNrOfDlls; i++)
+  {
+    char* name = m_dlls[i]->GetName();
+    if (strstr(name, "python24.dll") != NULL)
+    {
+      DllLoader* pDll = m_dlls[i];
+      pDll->IncrRef();
+      while (pDll->DecrRef() > 1) pDll->DecrRef();
+      
+      // since we freed all python extension dlls first, we have to remove any associations with them first
+      DllTrackInfo* info = tracker_get_dlltrackinfo_byobject(pDll);
+      if (info != NULL)
+      {
+        info->dllList.clear();
+      }
+      
+      ReleaseModule(pDll);
+      break;
+    }
+  }
+
+  
 }
