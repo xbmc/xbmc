@@ -449,7 +449,7 @@ int CXbmcWeb::xbmcCatalog( int eid, webs_t wp, char_t *parameter)
       }
       else
       {
-        if( selectionNumber <= iItemCount)
+        if( selectionNumber >= 0 && selectionNumber < iItemCount)
         {
           CFileItem *itm = webDirItems[selectionNumber];
           strcpy(buffer, itm->m_strPath);
@@ -478,7 +478,7 @@ int CXbmcWeb::xbmcCatalog( int eid, webs_t wp, char_t *parameter)
       }
       else
       {
-        if( selectionNumber <= iItemCount) {
+        if( selectionNumber >= 0 && selectionNumber < iItemCount) {
           CFileItem *itm = webDirItems[selectionNumber];
           if (itm->m_bIsFolder || itm->IsRAR() || itm->IsZIP())
           {
@@ -637,7 +637,7 @@ int CXbmcWeb::xbmcCatalog( int eid, webs_t wp, char_t *parameter)
       ( strstr( parameter, XBMC_CAT_QUE) != NULL))
     {
       selectionNumber = catalogNumber( parameter);
-      if( selectionNumber <= iItemCount)
+      if( selectionNumber < iItemCount)
       {
         CStdString strAction = parameter;
         strAction = strAction.substr(0, strAction.find(','));
