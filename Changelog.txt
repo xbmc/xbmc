@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 27-04-2006 fixed: Settings item didn't show on context menu when in the root bookmark listing.
  - 27-04-2006 removed: Unused "Enter" button in XLink Kai.
  - 27-04-2006 changed: volume up/down/mute mapped to remote 3/6/9 in keymap.
  - 27-04-2006 fixed: [ 1475599 ] Watched movie bug.
