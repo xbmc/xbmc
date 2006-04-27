@@ -194,3 +194,50 @@ void StringUtils::RemoveCRLF(CStdString& strLine)
     strLine = strLine.Left((int)strLine.size() - 1);
   }
 }
+
+CStdString StringUtils::SizeToString(__int64 size)
+{
+  CStdString strLabel;
+  // file < 1 kbyte?
+  if (size < 1024)
+  {
+    //  substract the integer part of the float value
+    float fRemainder = (((float)size) / 1024.0f) - floor(((float)size) / 1024.0f);
+    float fToAdd = 0.0f;
+    if (fRemainder < 0.01f)
+      fToAdd = 0.1f;
+    strLabel.Format("%2.1f KB", (((float)size) / 1024.0f) + fToAdd);
+    return strLabel;
+  }
+  const __int64 iOneMeg = 1024 * 1024;
+
+  // file < 1 megabyte?
+  if (size < iOneMeg)
+  {
+    strLabel.Format("%02.1f KB", ((float)size) / 1024.0f);
+    return strLabel;
+  }
+
+  // file < 1 GByte?
+  __int64 iOneGigabyte = iOneMeg;
+  iOneGigabyte *= (__int64)1000;
+  if (size < iOneGigabyte)
+  {
+    strLabel.Format("%02.1f MB", ((float)size) / ((float)iOneMeg));
+    return strLabel;
+  }
+  //file > 1 GByte
+  int iGigs = 0;
+  __int64 dwFileSize = size;
+  while (dwFileSize >= iOneGigabyte)
+  {
+    dwFileSize -= iOneGigabyte;
+    iGigs++;
+  }
+  float fMegs = ((float)dwFileSize) / ((float)iOneMeg);
+  fMegs /= 1000.0f;
+  fMegs += iGigs;
+  strLabel.Format("%02.1f GB", fMegs);
+
+  return strLabel;
+}
