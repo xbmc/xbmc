@@ -17,125 +17,6 @@ XBPython g_pythonParser;
 extern "C" HMODULE __stdcall dllLoadLibraryA(LPCSTR file);
 extern "C" BOOL __stdcall dllFreeLibrary(HINSTANCE hLibModule);
 
-/////////////////////////////
-
-#include "../../xbox/undocumented.h"
-#include "XbDm.h"
-#include <io.h>
-
-// internal structure of xbdm.dll
-// which represents the HANDLE to
-// a dll. Used for symbol loading.
-typedef struct _LDR_DATA_TABLE_ENTRY
-{
-  LIST_ENTRY InLoadOrderLinks;
-  LIST_ENTRY InMemoryOrderLinks;
-  LIST_ENTRY InInitializationOrderLinks;
-  void* DllBase;
-  void* EntryPoint;
-  ULONG SizeOfImage;
-  UNICODE_STRING FullDllName;
-  UNICODE_STRING BaseDllName;
-  ULONG Flags;
-  USHORT LoadCount;
-  USHORT TlsIndex;
-  LIST_ENTRY HashLinks;
-  void* SectionPointer;
-  ULONG CheckSum;
-  ULONG TimeDateStamp;
-  void* LoadedImports;
-} LDR_DATA_TABLE_ENTRY, *LPLDR_DATA_TABLE_ENTRY;
-
-// Raw offset within the xbdm.dll to the
-// FFinishImageLoad function.
-// Dll baseaddress + offset = function
-extern int finishimageloadOffsets[][2];
-
-// To get the checksum of xbdm.dll from an other xdk version then the ones above,
-// use dumpbin /HEADERS on it and look at the OPTIONAL HEADER VALUES for the checksum
-// To get the offset use dia2dump (installed with vs.net) and dump the xbdm.pdb 
-// of your xdk version to a textfile. Open the textfile and search for 
-// FFinishImageLoad until you get a result with an address in front of it, 
-// this is the offset you need.
-
-// Helper function to get the offset by using the checksum of the dll
-extern GetFFinishImageLoadOffset(int dllchecksum);
-
-
-typedef void (WINAPI *fnFFinishImageLoad)(LPLDR_DATA_TABLE_ENTRY pldteT, 
-                                          const char * szName, 
-                                          LPLDR_DATA_TABLE_ENTRY* ppldteout);
-
-
-
-void xb_load_symbols(HMODULE hModule, char* dllName)
-{
-  // don't load debug symbols unless we have a debugger present
-  // seems these calls break on some bioses. i suppose it could
-  // be related to if the bios has debug capabilities.
-  if (!DmIsDebuggerPresent())
-  {
-    return;
-  }
-
-  PDM_WALK_MODULES pWalkMod = NULL;
-  LPVOID pBaseAddress=NULL;
-  DMN_MODLOAD modLoad;
-  HRESULT error;
-
-  // Look for xbdm.dll, if its loaded...
-  while((error=DmWalkLoadedModules(&pWalkMod, &modLoad))==XBDM_NOERR)
-  {
-      if (stricmp(modLoad.Name, "xbdm.dll")==0)
-      {
-        // ... and get its base address
-        // where the dll is loaded into 
-        // memory.
-        pBaseAddress=modLoad.BaseAddress;
-        break;
-      }
-  }
-  if (pWalkMod)
-    DmCloseLoadedModules(pWalkMod);
-
-  if (pBaseAddress)
-  {
-    CoffLoader dllxbdm;
-    if (dllxbdm.ParseHeaders(pBaseAddress))
-    {
-      int offset=GetFFinishImageLoadOffset(dllxbdm.WindowsHeader->CheckSum);
-
-      if (offset==0)
-      {
-        CLog::DebugLog("DllLoader: Unable to load symbols for %s. No offset for xbdm.dll with checksum 0x%08X found", dllName, dllxbdm.WindowsHeader->CheckSum);
-        return;
-      }
-
-      // Get a function pointer to the unexported function FFinishImageLoad
-      fnFFinishImageLoad FFinishImageLoad=(fnFFinishImageLoad)((LPBYTE)pBaseAddress+offset);
-
-      // Prepare parameter for the function call
-      LDR_DATA_TABLE_ENTRY ldte;
-      ldte.DllBase=hModule; // Address where this dll is loaded into memory
-      char* szName=dllName; // Name of this dll without path
-      LPLDR_DATA_TABLE_ENTRY pldteout;
-
-      try
-      {
-        // Call FFinishImageLoad to register this dll to the debugger and load its symbols. 
-        FFinishImageLoad(&ldte, szName, &pldteout);
-      }
-      catch(...)
-      {
-        CLog::Log(LOGERROR, "DllLoader: Loading symbols for %s failed with an exception.", dllName);
-      }
-    }
-  }
-  else
-    CLog::DebugLog("DllLoader: Can't load symbols for %s. xbdm.dll is needed and not loaded", dllName);
-}
-
-///////////////////////
 
 XBPython::XBPython()
 {
@@ -252,13 +133,6 @@ void XBPython::Initialize()
 		    Finalize();
 		    return;
 		  }
-
-      static bool m_loadsymbolsforpython = false;
-      if (m_loadsymbolsforpython)
-      {
-        HMODULE h = (HMODULE)((DllLoader*)m_hModule)->hModule;
-        xb_load_symbols(h, PYTHON_DLL);
-      }
       
 		  // first we check if all necessary files are installed
 		  if (!FileExist("Q:\\system\\python\\python24.zlib"))// ||
