@@ -1,0 +1,57 @@
+This file contains mention of people that deserve thanks. 
+If you feel that you should be added, please email me 
+at <rimon AT acm DOT org>
+
+Thanks (in reverse-chronological order) to:
+
+Brandon Beck <bbeck@austin.rr.com>
+  For the daemon mode suggestion
+
+Conan C. Albrecht <conan@warp.byu.edu>
+  Much help with the tags, the built-in webserver, suggestions, 
+  bug reports, ...
+
+Fred Moscicki <fred@computronix.com>
+  Bug reports.
+
+Adrien Plisson <rien@yeepa.org>
+  Lots of bug reports, help with module development,
+  and input of many ideas.
+
+The NullSoft crew:
+  For NSIS SuperPiMP installer
+  http://www.nullsoft.com/free/nsis/
+
+Tino Lange <Tino.Lange@gmx.de>
+  Inspiring my work to get the Spyce engine and modules down from
+  Python 2.2 to Python 1.5.2.
+
+John J Smith <johnjsmith@rediffmail.com>
+  Finding bugs. Email discussions that led to improvements
+  in the Spyce line compacting mode, and the way modules behave
+  in included files.
+
+Piers Lauder <piers@cs.su.oz.au>
+  Email discussions that led to Python chunks (ala Poor Man's Zope),
+  filters (ala Cheetah), and some other ideas.
+
+The Cheetah team
+  http://www.cheetahtemplate.org/
+
+Natalya Katsnelson <nk74@cornell.edu>:
+  For the Spyce mascot, "Pilpel".
+
+Dave Wallace <dwallace@delanet.com>:
+  Provided initial idea in Webware's PSP implementation to add braces 
+  to Python code, solving the indentation problem. 
+
+Gregory Trubetskoy <grisha@modpython.org>:
+  For the mod_python project, upon which this work depends
+  http://www.modpython.org/
+
+The SourceForge team
+  http://www.sourceforge.net
+
+The Apache Team
+  http://www.apache.org/
+
