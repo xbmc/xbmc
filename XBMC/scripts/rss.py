@@ -6,10 +6,10 @@
 
 #get windows from key.h
 
-WINDOW_HOME				= 0
-WINDOW_PROGRAMS		= 1
-WINDOW_PICTURES		= 2
-WINDOW_FILES			= 3
+WINDOW_HOME			= 10000
+WINDOW_PROGRAMS		= 10001
+WINDOW_PICTURES		= 10002
+WINDOW_FILES		= 10003
 
 RSS_URL = 'http://www.xbox-scene.com/xbox1data/xbox-scene.xml'
 
