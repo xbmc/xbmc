@@ -327,19 +327,9 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
   //g_stSettings.m_bUseCDDB=GetBoolean(pRootElement, "CDDBEnabled");
   GetString(pRootElement, "IMDBAddress", g_stSettings.m_szIMDBurl, "akas.imdb.com");
 
-  GetString(pRootElement, "thumbnails", g_stSettings.szThumbnailsDirectory, "");
-  GetString(pRootElement, "shortcuts", g_stSettings.m_szShortcutDirectory, "");
-  GetString(pRootElement, "screenshots", g_stSettings.m_szScreenshotsDirectory, "");
-  GetString(pRootElement, "recordings", g_stSettings.m_szMusicRecordingDirectory, "");
-  GetString(pRootElement, "playlists", g_stSettings.m_szPlaylistsDirectory, "");
-
-  GetString(pRootElement, "albums", g_stSettings.m_szAlbumDirectory, "");
-  GetString(pRootElement, "subtitles", g_stSettings.m_szAlternateSubtitleDirectory, "");
-  GetString(pRootElement, "cachepath", g_stSettings.m_szCacheDirectory,"Z:\\");
-  GetString(pRootElement, "trainerpath", g_stSettings.m_szTrainerDirectory,"$HOME\\system\\trainers");
+  LoadUserFolderLayout(pRootElement);
 
   GetString(pRootElement, "pictureextensions", g_stSettings.m_szMyPicturesExtensions, ".bmp|.jpg|.png|.gif|.pcx|.tif|.jpeg");
-
   GetString(pRootElement, "musicextensions", g_stSettings.m_szMyMusicExtensions, ".ac3|.aac|.strm|.pls|.rm|.sc|.mpa|.wav|.wma|.ogg|.mp3|.mp2|.m3u");
   //  Internal file-types
   strcat(g_stSettings.m_szMyMusicExtensions, "|.oggstream"); //  bitstreams inside a ogg file
@@ -2414,5 +2404,52 @@ void CSettings::ResetSkinSettings()
       it2 = m_skinStrings.erase(it2);
     else
       it2++;
+  }
+}
+
+void CSettings::LoadUserFolderLayout(const TiXmlElement *pRootElement)
+{
+  GetString(pRootElement, "albums", g_stSettings.m_szAlbumDirectory, "");
+  GetString(pRootElement, "playlists", g_stSettings.m_szPlaylistsDirectory, "");
+  GetString(pRootElement, "recordings", g_stSettings.m_szMusicRecordingDirectory, "");
+  GetString(pRootElement, "thumbnails", g_stSettings.szThumbnailsDirectory, "");
+  GetString(pRootElement, "screenshots", g_stSettings.m_szScreenshotsDirectory, "");
+  GetString(pRootElement, "subtitles", g_stSettings.m_szAlternateSubtitleDirectory, "");
+  GetString(pRootElement, "cachepath", g_stSettings.m_szCacheDirectory,"Z:\\");
+  GetString(pRootElement, "shortcuts", g_stSettings.m_szShortcutDirectory, "");
+  GetString(pRootElement, "trainerpath", g_stSettings.m_szTrainerDirectory,"$HOME\\system\\trainers");
+
+  // check them all
+  if (g_stSettings.m_szAlbumDirectory[0] == 0)
+  {
+    strcpy(g_stSettings.m_szAlbumDirectory, "Q:\\albums");
+  }
+  if (g_stSettings.m_szPlaylistsDirectory[0] == 0)
+  {
+    // default to playlist subdir off of albums location like in the past
+    CStdString strDir;
+    CUtil::AddFileToFolder(g_stSettings.m_szAlbumDirectory, "playlists", strDir);
+    CUtil::AddSlashAtEnd(strDir);
+    strcpy(g_stSettings.m_szPlaylistsDirectory, strDir.c_str());
+  }
+  if (g_stSettings.m_szMusicRecordingDirectory[0] == 0)
+  {
+    strcpy(g_stSettings.m_szMusicRecordingDirectory, "Q:\\recordings");
+  }
+  if (g_stSettings.szThumbnailsDirectory[0] == 0)
+  {
+    strcpy(g_stSettings.szThumbnailsDirectory, "Q:\\thumbs");
+  }
+  if (g_stSettings.m_szScreenshotsDirectory[0] == 0)
+  {
+    strcpy(g_stSettings.m_szScreenshotsDirectory, "Q:\\screenshots");
+  }
+  if (g_stSettings.m_szAlternateSubtitleDirectory[0] == 0)
+  {
+    strcpy(g_stSettings.m_szAlternateSubtitleDirectory, "Q:\\subtitles");
+  }
+  if (g_stSettings.m_szShortcutDirectory[0] == 0 && !g_guiSettings.GetBool("MyPrograms.NoShortcuts"))
+  {
+    strcpy(g_stSettings.m_szShortcutDirectory, "Q:\\shortcuts");
   }
 }

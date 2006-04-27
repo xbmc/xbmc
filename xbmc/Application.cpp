@@ -1056,22 +1056,6 @@ HRESULT CApplication::Create()
 HRESULT CApplication::Initialize()
 {
   CLog::Log(LOGINFO, "creating subdirectories");
-  if (g_stSettings.m_szShortcutDirectory[0] == 0 && !g_guiSettings.GetBool("MyPrograms.NoShortcuts"))
-  {
-    strcpy(g_stSettings.m_szShortcutDirectory, "Q:\\shortcuts");
-  }
-  if (g_stSettings.m_szAlbumDirectory[0] == 0)
-  {
-    strcpy(g_stSettings.m_szAlbumDirectory, "Q:\\albums");
-  }
-  if (g_stSettings.m_szMusicRecordingDirectory[0] == 0)
-  {
-    strcpy(g_stSettings.m_szMusicRecordingDirectory, "Q:\\recordings");
-  }
-  if (g_stSettings.m_szScreenshotsDirectory[0] == 0)
-  {
-    strcpy(g_stSettings.m_szScreenshotsDirectory, "Q:\\screenshots");
-  }
 
   CLog::Log(LOGINFO, "  shortcuts folder:%s", g_stSettings.m_szShortcutDirectory);
   CLog::Log(LOGINFO, "  albums folder:%s", g_stSettings.m_szAlbumDirectory);
@@ -1095,10 +1079,6 @@ HRESULT CApplication::Initialize()
   CreateDirectory(g_stSettings.m_szMusicRecordingDirectory, NULL);
   CreateDirectory(g_stSettings.m_szScreenshotsDirectory, NULL);
 
-  if (g_stSettings.szThumbnailsDirectory[0] == 0)
-  {
-    strcpy(g_stSettings.szThumbnailsDirectory, "Q:\\thumbs");
-  }
   CLog::Log(LOGINFO, "  thumbnails folder:%s", g_stSettings.szThumbnailsDirectory);
   for (unsigned int hex=0; hex < 16; hex++)
   {
@@ -1110,14 +1090,6 @@ HRESULT CApplication::Initialize()
   }
 
   // create playlist folders
-  if (g_stSettings.m_szPlaylistsDirectory[0] == 0)
-  {
-    // default to playlist subdir off of albums location like in the past
-    CStdString strDir;
-    CUtil::AddFileToFolder(g_stSettings.m_szAlbumDirectory, "playlists", strDir);
-    CUtil::AddSlashAtEnd(strDir);
-    strcpy(g_stSettings.m_szPlaylistsDirectory, strDir.c_str());
-  }
   CLog::Log(LOGINFO, "  playlists folder:%s", g_stSettings.m_szPlaylistsDirectory);
   CreateDirectory(g_stSettings.m_szPlaylistsDirectory, NULL);
   CreateDirectory(CUtil::MusicPlaylistsLocation().c_str(), NULL);
@@ -1137,10 +1109,6 @@ HRESULT CApplication::Initialize()
   CreateDirectory("Q:\\visualisations", NULL);
   CreateDirectory("Q:\\sounds", NULL);
 
-  if (g_stSettings.m_szAlternateSubtitleDirectory[0] == 0)
-  {
-    strcpy(g_stSettings.m_szAlternateSubtitleDirectory, "Q:\\subtitles");
-  }
   CLog::Log(LOGINFO, "  subtitle folder:%s", g_stSettings.m_szAlternateSubtitleDirectory);
   CreateDirectory(g_stSettings.m_szAlternateSubtitleDirectory, NULL);
 
