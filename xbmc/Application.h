@@ -165,6 +165,8 @@ protected:
   bool ProcessKeyboard();
   bool ProcessRemote(float frameTime);
   bool ProcessGamepad(float frameTime);
+  float NavigationIdleTime();
+
   void InitBasicD3D();
   bool m_bXboxMediacenterLoaded;
   bool m_bSettingsLoaded;
@@ -187,6 +189,7 @@ protected:
   CXBStopWatch m_idleTimer;
   CXBStopWatch m_restartPlayerTimer;
   CXBStopWatch m_frameTime;
+  CXBStopWatch m_navigationTimer;
 };
 
 extern CApplication g_application;
