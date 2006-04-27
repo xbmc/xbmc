@@ -58,7 +58,6 @@ xcopy screensavers BUILD\screensavers /E /Q /I /Y
 xcopy visualisations BUILD\visualisations /E /Q /I /Y
 xcopy system BUILD\system /E /Q /I /Y
 rem %rar% x web\Project_Mayhem_webserver*.rar build\web\
-xcopy python BUILD\python /E /Q /I /Y
 xcopy media BUILD\media /E /Q /I /Y
 xcopy sounds BUILD\sounds /E /Q /I /Y
 del BUILD\media\dsstdfx.bin
