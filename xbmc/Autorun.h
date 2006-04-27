@@ -23,6 +23,7 @@ public:
   void Disable();
   bool IsEnabled();
 protected:
+  static void ExecuteXBE(const CStdString &xbeFile);
   void ExecuteAutorun();
   void RunXboxCd();
   void RunCdda();
