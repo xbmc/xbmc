@@ -117,9 +117,16 @@ void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecC
   {
     CStdString content = item.GetContentType();
 
-    if( content == "video/x-flv" // mplayer fails on these
-      || content == "audio/aacp") // mplayer has no support for AAC+         
+    if (content == "video/x-flv") // mplayer fails on these
       vecCores.push_back(EPC_DVDPLAYER);
+    else if (content == "audio/aacp") // mplayer has no support for AAC+         
+      vecCores.push_back(EPC_DVDPLAYER);
+    else if (content == "application/octet-stream")
+    {
+      //unknown contenttype, send mp2 to pap, mplayer fails
+      if( url.GetFileType() == "mp2")
+        vecCores.push_back(EPC_PAPLAYER);
+    }
 
     // allways add mplayer as a high prio player for internet streams
     vecCores.push_back(EPC_MPLAYER);
