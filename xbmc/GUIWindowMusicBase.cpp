@@ -888,13 +888,11 @@ void CGUIWindowMusicBase::UpdateButtons()
   g_graphicsContext.SendMessage(msg);
 
   // Add labels to the window selection
-  CStdString strItem = g_localizeStrings.Get(744); // Files
   CGUIMessage msg2(GUI_MSG_LABEL_ADD, GetID(), CONTROL_BTNTYPE);
-  msg2.SetLabel(strItem);
+  msg2.SetLabel(g_localizeStrings.Get(744)); // Files
   g_graphicsContext.SendMessage(msg2);
 
-  strItem = g_localizeStrings.Get(15100); // Library
-  msg2.SetLabel(strItem);
+  msg2.SetLabel(g_localizeStrings.Get(15100)); // Library
   g_graphicsContext.SendMessage(msg2);
 
   // Select the current window as default item
