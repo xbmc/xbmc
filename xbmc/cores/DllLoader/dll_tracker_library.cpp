@@ -79,7 +79,11 @@ extern "C" HMODULE __stdcall track_LoadLibraryExA(LPCSTR lpLibFileName, HANDLE h
   __asm mov eax, [ebp + 4]
   __asm mov loc, eax
 
-  HMODULE hHandle = dllLoadLibraryExA(lpLibFileName, hFile, dwFlags);
+  DllTrackInfo* pInfo = tracker_get_dlltrackinfo(loc);
+  char* path = NULL;
+  if (pInfo) path = pInfo->pDll->GetFileName();
+  
+  HMODULE hHandle = dllLoadLibraryExExtended(lpLibFileName, hFile, dwFlags, path);
   tracker_library_track(loc, hHandle);
   
   return hHandle;

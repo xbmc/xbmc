@@ -3120,6 +3120,21 @@ void CUtil::ClearCache()
   }
 }
 
+void CUtil::StatToStatI64(struct _stati64 *result, struct stat *stat)
+{
+  result->st_dev = stat->st_dev;
+  result->st_ino = stat->st_ino;
+  result->st_mode = stat->st_mode;
+  result->st_nlink = stat->st_nlink;
+  result->st_uid = stat->st_uid;
+  result->st_gid = stat->st_gid;
+  result->st_rdev = stat->st_rdev;
+  result->st_size = (__int64)stat->st_size;
+  result->st_atime = (long)(stat->st_atime & 0xFFFFFFFF);
+  result->st_mtime = (long)(stat->st_mtime & 0xFFFFFFFF);
+  result->st_ctime = (long)(stat->st_ctime & 0xFFFFFFFF);
+}
+
 void CUtil::Stat64ToStatI64(struct _stati64 *result, struct __stat64 *stat)
 {
   result->st_dev = stat->st_dev;

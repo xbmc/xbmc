@@ -1,4 +1,4 @@
-#include "..\python.h"
+#include "..\python\python.h"
 #include "GUIControl.h"
 #include "listitem.h"
 
@@ -171,6 +171,16 @@ namespace PYXBMC
 	CGUIControl* ControlCheckMark_Create(ControlCheckMark* pControl);
 	CGUIControl* ControlImage_Create(ControlImage* pControl);
 	CGUIControl* ControlList_Create(ControlList* pControl);
+	
+	void initControl_Type();
+  void initControlSpin_Type();
+  void initControlLabel_Type();
+  void initControlFadeLabel_Type();
+  void initControlTextBox_Type();
+  void initControlButton_Type();
+  void initControlCheckMark_Type();
+  void initControlList_Type();
+  void initControlImage_Type();
 }
 
 #ifdef __cplusplus
