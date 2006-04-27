@@ -28,4 +28,6 @@ protected:
   CStdString m_path;
   CStdString m_name;
   bool m_confirmed;
+
+  CStdString m_type;
 };
