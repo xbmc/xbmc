@@ -2,13 +2,7 @@
 #ifndef _EMU_SOCKET_H
 #define _EMU_SOCKET_H
 
-struct mphostent {
-	  char *h_name;	      /* official name of host */
-	  char **h_aliases;   /* alias list */
-	  short  h_addrtype;	  /* host address type	*/
-	  short  h_length;	    /* length of	address	*/
-	  char **h_addr_list; /* list of addresses	from name server */
-};
+#include "emu_socket\emu_socket.h"
 
 #ifdef __cplusplus
 extern "C"
@@ -44,7 +38,11 @@ extern "C"
   int __stdcall dllgetpeername(SOCKET s, struct sockaddr FAR *name, int FAR *namelen);
   struct servent* __stdcall dllgetservbyport(int port, const char* proto);
   struct mphostent* __stdcall dllgethostbyaddr(const char* addr, int len, int type);
-
+  
+  int __stdcall dllgetaddrinfo(const char* nodename, const char* servname, const struct addrinfo* hints, struct addrinfo** res);
+  int __stdcall dllgetnameinfo(const struct sockaddr *sa, size_t salen, char *host, size_t hostlen, char *serv, size_t servlen, int flags);
+  void __stdcall dllfreeaddrinfo(struct addrinfo *ai);
+  
 #ifdef __cplusplus
 }
 #endif

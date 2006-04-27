@@ -91,6 +91,18 @@ DllTrackInfo* tracker_get_dlltrackinfo(unsigned long caller)
   return NULL;
 }
 
+DllTrackInfo* tracker_get_dlltrackinfo_byobject(DllLoader* pDll)
+{
+  for (TrackedDllsIter it = g_trackedDlls.begin(); it != g_trackedDlls.end(); ++it)
+  {
+    if ((*it)->pDll == pDll)
+    {
+      return *it;
+    }
+  }
+  return NULL;
+}
+
 void tracker_dll_data_track(DllLoader* pDll, unsigned long addr)
 {
   for (TrackedDllsIter it = g_trackedDlls.begin(); it != g_trackedDlls.end(); ++it)

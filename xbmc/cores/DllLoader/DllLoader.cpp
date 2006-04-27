@@ -177,6 +177,12 @@ DllLoader::DllLoader(const char *sDll, bool bTrack, bool bSystemDll, bool bLoadS
   m_bLoadSymbols=bLoadSymbols;
 
   m_bUnloadSymbols=false;
+  
+  if (stricmp(sDll, "Q:\\system\\python\\python24.dll")==0 ||
+      strstr(sDll, ".pyd") != NULL)
+  {
+    //m_bLoadSymbols=true;
+  }
 }
 
 DllLoader::~DllLoader()
@@ -211,7 +217,7 @@ int DllLoader::Parse()
 {
   int iResult = 0;
   FILE* fp = fopen(m_sFileName, "rb");
-  
+
   if (fp)
   {
     if (CoffLoader::ParseCoff(fp))
@@ -236,7 +242,7 @@ int DllLoader::Parse()
   if (iResult == 0)
   {
     m_bTrack = false;
-  } 
+  }
   return iResult;
 }
 
@@ -662,7 +668,7 @@ bool DllLoader::Load()
     CLog::Log(LOGERROR, "Unable to open dll %s", GetFileName());
     return false;
   }
-
+  
   ResolveImports();
 
   LoadSymbols();

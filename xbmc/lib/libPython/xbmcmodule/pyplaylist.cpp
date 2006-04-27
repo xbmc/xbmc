@@ -2,8 +2,9 @@
 #include "..\..\..\playlistplayer.h"
 #include "..\..\..\util.h"
 #include "pyplaylist.h"
-#include "..\structmember.h"
+#include "..\python\structmember.h"
 #include "..\..\..\playlistfactory.h"
+#include "pyutil.h"
 
 #pragma code_seg("PY_TEXT")
 #pragma data_seg("PY_DATA")
@@ -331,89 +332,37 @@ namespace PYXBMC
 #pragma bss_seg()
 #pragma const_seg()
 
-	PyTypeObject PlayListItem_Type = {
-			PyObject_HEAD_INIT(NULL)
-			0,                         /*ob_size*/
-			"xbmc.PlayListItem",       /*tp_name*/
-			sizeof(PlayListItem),      /*tp_basicsize*/
-			0,                         /*tp_itemsize*/
-			(destructor)PlayListItem_Dealloc,/*tp_dealloc*/
-			0,                         /*tp_print*/
-			0,                         /*tp_getattr*/
-			0,                         /*tp_setattr*/
-			0,                         /*tp_compare*/
-			0,                         /*tp_repr*/
-			0,                         /*tp_as_number*/
-			0,                         /*tp_as_sequence*/
-			0,                         /*tp_as_mapping*/
-			0,                         /*tp_hash */
-			0,                         /*tp_call*/
-			0,                         /*tp_str*/
-			0,                         /*tp_getattro*/
-			0,                         /*tp_setattro*/
-			0,                         /*tp_as_buffer*/
-			Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE, /*tp_flags*/
-			playlistItem__doc__,       /* tp_doc */
-			0,		                     /* tp_traverse */
-			0,		                     /* tp_clear */
-			0,		                     /* tp_richcompare */
-			0,		                     /* tp_weaklistoffset */
-			0,		                     /* tp_iter */
-			0,		                     /* tp_iternext */
-			PlayListItem_methods,      /* tp_methods */
-			0,                         /* tp_members */
-			0,                         /* tp_getset */
-			0,                         /* tp_base */
-			0,                         /* tp_dict */
-			0,                         /* tp_descr_get */
-			0,                         /* tp_descr_set */
-			0,                         /* tp_dictoffset */
-			0,                         /* tp_init */
-			0,                         /* tp_alloc */
-			PlayListItem_New,          /* tp_new */
-	};
+	PyTypeObject PlayListItem_Type;
+	
+	void initPlayListItem_Type()
+	{
+	  PyInitializeTypeObject(&PlayListItem_Type);
+	  
+	  PlayListItem_Type.tp_name = "xbmc.PlayListItem";
+	  PlayListItem_Type.tp_basicsize = sizeof(PlayListItem);
+	  PlayListItem_Type.tp_dealloc = (destructor)PlayListItem_Dealloc;
+	  PlayListItem_Type.tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE;
+	  PlayListItem_Type.tp_doc = playlistItem__doc__;
+	  PlayListItem_Type.tp_methods = PlayListItem_methods;
+	  PlayListItem_Type.tp_base = 0;
+	  PlayListItem_Type.tp_new = PlayListItem_New;
+	}
 
-	PyTypeObject PlayList_Type = {
-			PyObject_HEAD_INIT(NULL)
-			0,                         /*ob_size*/
-			"xbmc.PlayList",           /*tp_name*/
-			sizeof(PlayList),          /*tp_basicsize*/
-			0,                         /*tp_itemsize*/
-			(destructor)PlayList_Dealloc,/*tp_dealloc*/
-			0,                         /*tp_print*/
-			0,                         /*tp_getattr*/
-			0,                         /*tp_setattr*/
-			0,                         /*tp_compare*/
-			0,                         /*tp_repr*/
-			0,                         /*tp_as_number*/
-			0,                         /*tp_as_sequence*/
-			&Playlist_as_mapping,      /*tp_as_mapping*/
-			0,                         /*tp_hash */
-			0,                         /*tp_call*/
-			0,                         /*tp_str*/
-			0,                         /*tp_getattro*/
-			0,                         /*tp_setattro*/
-			0,                         /*tp_as_buffer*/
-			Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE, /*tp_flags*/
-			playlist__doc__,           /* tp_doc */
-			0,		                     /* tp_traverse */
-			0,		                     /* tp_clear */
-			0,		                     /* tp_richcompare */
-			0,		                     /* tp_weaklistoffset */
-			0,		                     /* tp_iter */
-			0,		                     /* tp_iternext */
-			PlayList_methods,          /* tp_methods */
-			0,                         /* tp_members */
-			0,                         /* tp_getset */
-			0,                         /* tp_base */
-			0,                         /* tp_dict */
-			0,                         /* tp_descr_get */
-			0,                         /* tp_descr_set */
-			0,                         /* tp_dictoffset */
-			0,                         /* tp_init */
-			0,                         /* tp_alloc */
-			PlayList_New,              /* tp_new */
-	};
+	PyTypeObject PlayList_Type;
+
+	void initPlayList_Type()
+	{
+	  PyInitializeTypeObject(&PlayList_Type);
+	  
+	  PlayList_Type.tp_name = "xbmc.PlayList";
+	  PlayList_Type.tp_basicsize = sizeof(PlayList);
+	  PlayList_Type.tp_dealloc = (destructor)PlayList_Dealloc;
+	  PlayList_Type.tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE;
+	  PlayList_Type.tp_doc = playlist__doc__;
+	  PlayList_Type.tp_methods = PlayList_methods;
+	  PlayList_Type.tp_base = 0;
+	  PlayList_Type.tp_new = PlayList_New;
+	}
 }
 
 #ifdef __cplusplus

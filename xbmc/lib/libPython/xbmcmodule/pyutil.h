@@ -1,4 +1,4 @@
-#include "..\python.h"
+#include "..\python\python.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -16,6 +16,8 @@ namespace PYXBMC
 	void	PyGUIUnlock();
 	const char*	PyGetDefaultImage(char* controlType, char* textureType, char* cDefault);
 	bool	PyWindowIsNull(void* pWindow);
+	
+	void  PyInitializeTypeObject(PyTypeObject* type_object);
 }
 
 #ifdef __cplusplus

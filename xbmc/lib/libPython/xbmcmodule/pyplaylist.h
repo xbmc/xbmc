@@ -1,4 +1,4 @@
-#include "..\python.h"
+#include "..\python\python.h"
 #include "..\..\..\playlist.h"
 #pragma once
 
@@ -28,6 +28,8 @@ namespace PYXBMC
 		PLAYLIST::CPlayList::CPlayListItem* item;
 	} PlayListItem;
 
+  void initPlayList_Type();
+  void initPlayListItem_Type();
 
 }
 
