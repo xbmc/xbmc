@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 27-04-2006 changed: if contenttype indicate flv, skip probing in dvdplayer (skips one seek)
+ - 27-04-2006 fixed: curl (http, shout) would fail to seek after hitting eof. 
  - 27-04-2006 fixed: Unnessecary HEAD request to last.fm servers resulting in an error log
  - 27-04-2006 changed: removed old python copy-string from Build.bat since it's no longer needed
  - 27-04-2006 fixed: [ 1463526 ] shoutcast mp2 streaming broken
