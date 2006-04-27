@@ -4,8 +4,6 @@
 
 /* Include nearly all Python header files */
 
-#include "xbox_dll.h"
-
 #include "patchlevel.h"
 #include "pyconfig.h"
 
