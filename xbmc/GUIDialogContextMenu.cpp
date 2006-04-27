@@ -242,6 +242,8 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CFile
         }
       }
     }
+    int btn_Settings = pMenu->AddButton(5); // Settings
+
     // set the correct position
     pMenu->SetPosition(iPosX - pMenu->GetWidth() / 2, iPosY - pMenu->GetHeight() / 2);
     pMenu->DoModal(m_gWindowManager.GetActiveWindow());
@@ -402,33 +404,46 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CFile
       {
 	      CStdString strNewPW;
 	      CStdString strNewLockMode;
-		      switch (item->m_iLockMode)
-		      {
-		      case -1:  // 1: Numeric Password
-			      if (!CGUIDialogNumeric::ShowAndVerifyNewPassword(strNewPW))
-			      return false;
-			      else strNewLockMode = "1";
-			      break;
-		      case -2:  // 2: Gamepad Password
-			      if (!CGUIDialogGamepad::ShowAndVerifyNewPassword(strNewPW))
-			      return false;
-			      else strNewLockMode = "2";
-			      break;
-		      case -3:  // 3: Fulltext Password
-			      if (!CGUIDialogKeyboard::ShowAndVerifyNewPassword(strNewPW))
-			      return false;
-			      else strNewLockMode = "3";
-			      break;
-		      default:  // Not supported, abort
-			      return false;
-			      break;
-		      }
-		      // password ReSet and re-entry succeeded, write out the lock data
-		      g_settings.UpdateBookmark(strType, share->strName, "lockcode", strNewPW);
-		      g_settings.UpdateBookmark(strType, share->strName, "lockmode", strNewLockMode);
-		      g_settings.UpdateBookmark(strType, share->strName, "badpwdcount", "0");
-		      return true;
-      //}
+		    switch (item->m_iLockMode)
+		    {
+		    case -1:  // 1: Numeric Password
+			    if (!CGUIDialogNumeric::ShowAndVerifyNewPassword(strNewPW))
+			    return false;
+			    else strNewLockMode = "1";
+			    break;
+		    case -2:  // 2: Gamepad Password
+			    if (!CGUIDialogGamepad::ShowAndVerifyNewPassword(strNewPW))
+			    return false;
+			    else strNewLockMode = "2";
+			    break;
+		    case -3:  // 3: Fulltext Password
+			    if (!CGUIDialogKeyboard::ShowAndVerifyNewPassword(strNewPW))
+			    return false;
+			    else strNewLockMode = "3";
+			    break;
+		    default:  // Not supported, abort
+			    return false;
+			    break;
+		    }
+		    // password ReSet and re-entry succeeded, write out the lock data
+		    g_settings.UpdateBookmark(strType, share->strName, "lockcode", strNewPW);
+		    g_settings.UpdateBookmark(strType, share->strName, "lockmode", strNewLockMode);
+		    g_settings.UpdateBookmark(strType, share->strName, "badpwdcount", "0");
+		    return true;
+      }
+      else if (btn == btn_Settings)
+      { // Settings context - depends on where we are
+        if (!(g_guiSettings.GetInt("MasterLock.LockSettingsFileManager") & LOCK_MASK_SETTINGS) || g_passwordManager.CheckMasterLock())
+        {
+          if (strType == "video")
+            m_gWindowManager.ActivateWindow(WINDOW_SETTINGS_MYVIDEOS); 
+          else if (strType == "music")
+            m_gWindowManager.ActivateWindow(WINDOW_SETTINGS_MYMUSIC);
+          else if (strType == "myprograms")
+            m_gWindowManager.ActivateWindow(WINDOW_SETTINGS_MYPROGRAMS);
+          else if (strType == "pictures")
+            m_gWindowManager.ActivateWindow(WINDOW_SETTINGS_MYPICTURES);
+        }
       }
     }
   }
