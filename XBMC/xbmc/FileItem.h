@@ -123,7 +123,6 @@ public:
 
 private:
   CStdString ParseFormat(const CStdString& strMask);
-  CStdString BuildFileSizeLabel();
 
 public:
   CStdString m_strPath;            ///< complete path to item
