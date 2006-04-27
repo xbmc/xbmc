@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 27-04-2006 changed: removed the 'search imdb' item from context menu since it's not contextual. use the button on the left instead.
  - 27-04-2006 changed: XBE titles are now converted from string charset, rather from UTF16.
  - 27-04-2006 changed: Playlists location is now a bookmark in Music and Videos.
  - 27-04-2006 changed: switched info/title remote mappings in visualisation window.
