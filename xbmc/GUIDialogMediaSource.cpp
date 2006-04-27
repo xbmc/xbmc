@@ -96,8 +96,22 @@ void CGUIDialogMediaSource::OnPathBrowse()
   // Browse is called.  Open the filebrowser dialog.
   // Ignore current path is best at this stage??
   CStdString path;
-  bool allowNetworkShares = m_gWindowManager.GetActiveWindow() != WINDOW_PROGRAMS;
-  if (CGUIDialogFileBrowser::ShowAndGetShare(path, allowNetworkShares))
+  bool allowNetworkShares = (m_type == "myprograms");
+  CShare *extraShare = NULL;
+  // TODO 2.0: Fix up these strings
+  if (m_type == "music")
+  { // add the music playlist location
+    extraShare = new CShare();
+    extraShare->strPath = CUtil::MusicPlaylistsLocation();
+    extraShare->strName = g_localizeStrings.Get(136);       // Playlists (ideally this would be "Music Playlists")
+  }
+  else if (m_type == "video")
+  { // add the music playlist location
+    extraShare = new CShare();
+    extraShare->strPath = CUtil::VideoPlaylistsLocation();
+    extraShare->strName = g_localizeStrings.Get(136);       // Playlists (ideally this would be "Video Playlists")
+  }
+  if (CGUIDialogFileBrowser::ShowAndGetShare(path, allowNetworkShares, extraShare))
   {
     m_path = path;
     if (m_name.IsEmpty())
@@ -167,6 +181,7 @@ void CGUIDialogMediaSource::SetPathAndName(const CStdString &path, const CStdStr
 
 void CGUIDialogMediaSource::SetTypeOfMedia(const CStdString &type, bool editNotAdd)
 {
+  m_type = type;
   int typeStringID = -1;
   if (type == "music")
     typeStringID = 249; // "Music"
