@@ -1,5 +1,6 @@
 #include "../../../stdafx.h"
 #include "infotagmusic.h"
+#include "pyutil.h"
 
 #pragma code_seg("PY_TEXT")
 #pragma data_seg("PY_DATA")
@@ -126,47 +127,21 @@ namespace PYXBMC
 #pragma bss_seg()
 #pragma const_seg()
 
-	PyTypeObject InfoTagMusic_Type = {
-			PyObject_HEAD_INIT(NULL)
-			0,                         /*ob_size*/
-			"xbmc.InfoTagMusic",       /*tp_name*/
-			sizeof(InfoTagMusic),      /*tp_basicsize*/
-			0,                         /*tp_itemsize*/
-			(destructor)InfoTagMusic_Dealloc, /*tp_dealloc*/
-			0,                         /*tp_print*/
-			0,                         /*tp_getattr*/
-			0,                         /*tp_setattr*/
-			0,                         /*tp_compare*/
-			0,                         /*tp_repr*/
-			0,                         /*tp_as_number*/
-			0,                         /*tp_as_sequence*/
-			0,                         /*tp_as_mapping*/
-			0,                         /*tp_hash */
-			0,                         /*tp_call*/
-			0,                         /*tp_str*/
-			0,                         /*tp_getattro*/
-			0,                         /*tp_setattro*/
-			0,                         /*tp_as_buffer*/
-			Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE, /*tp_flags*/
-			musicInfoTag__doc__,       /* tp_doc */
-			0,		                     /* tp_traverse */
-			0,		                     /* tp_clear */
-			0,		                     /* tp_richcompare */
-			0,		                     /* tp_weaklistoffset */
-			0,		                     /* tp_iter */
-			0,		                     /* tp_iternext */
-			InfoTagMusic_methods,      /* tp_methods */
-			0,                         /* tp_members */
-			0,                         /* tp_getset */
-			0,                         /* tp_base */
-			0,                         /* tp_dict */
-			0,                         /* tp_descr_get */
-			0,                         /* tp_descr_set */
-			0,                         /* tp_dictoffset */
-			0,                         /* tp_init */
-			0,                         /* tp_alloc */
-			0,                         /* tp_new */
-	};
+	PyTypeObject InfoTagMusic_Type;
+	
+	void initInfoTagMusic_Type()
+	{
+	  PyInitializeTypeObject(&InfoTagMusic_Type);
+	  
+	  InfoTagMusic_Type.tp_name = "xbmc.InfoTagMusic";
+	  InfoTagMusic_Type.tp_basicsize = sizeof(InfoTagMusic);
+	  InfoTagMusic_Type.tp_dealloc = (destructor)InfoTagMusic_Dealloc;
+	  InfoTagMusic_Type.tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE;
+	  InfoTagMusic_Type.tp_doc = musicInfoTag__doc__;
+	  InfoTagMusic_Type.tp_methods = InfoTagMusic_methods;
+	  InfoTagMusic_Type.tp_base = 0;
+	  InfoTagMusic_Type.tp_new = 0;
+	}
 }
 
 #ifdef __cplusplus

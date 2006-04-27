@@ -1,4 +1,4 @@
-#include "..\python.h"
+#include "..\python\python.h"
 #include "window.h"
 #pragma once
 
@@ -23,6 +23,10 @@ namespace PYXBMC
 	extern PyTypeObject WindowDialog_Type;
 	extern PyTypeObject DialogProgress_Type;
 	extern PyTypeObject Dialog_Type;
+	
+	void initWindowDialog_Type();
+	void initDialogProgress_Type();
+	void initDialog_Type();
 }
 
 #ifdef __cplusplus

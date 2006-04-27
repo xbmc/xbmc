@@ -1,5 +1,5 @@
 #include "../../../stdafx.h"
-#include "..\python.h"
+#include "..\python\python.h"
 #include "player.h"
 #include "pyplaylist.h"
 #include "keyboard.h"
@@ -326,6 +326,13 @@ namespace PYXBMC
 		// init general xbmc modules
 		PyObject* pXbmcModule;
 
+    initKeyboard_Type();
+    initPlayer_Type();
+    initPlayList_Type();
+    initPlayListItem_Type();
+    initInfoTagMusic_Type();
+    initInfoTagVideo_Type();
+    
 		if (PyType_Ready(&Keyboard_Type) < 0 ||
 				PyType_Ready(&Player_Type) < 0 ||
 				PyType_Ready(&PlayList_Type) < 0 ||

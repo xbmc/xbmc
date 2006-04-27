@@ -115,7 +115,7 @@
 #if defined(_DEBUG) && !defined(USE_RELEASE_LIBS)
  #pragma comment (lib,"xbmc/lib/libXBMS/libXBMSd.lib")    // SECTIONNAME=LIBXBMS
  #pragma comment (lib,"xbmc/lib/libsmb/libsmbd.lib")      // SECTIONNAME=LIBSMB
- #pragma comment (lib,"xbmc/lib/libPython/pythond.lib")  // SECTIONNAME=PYTHON,PY_RW
+ //#pragma comment (lib,"xbmc/lib/libPython/pythond.lib")  // SECTIONNAME=PYTHON,PY_RW
  #pragma comment (lib,"xbmc/lib/libGoAhead/goaheadd.lib") // SECTIONNAME=LIBHTTP
  #pragma comment (lib,"xbmc/lib/sqlLite/libSQLite3d.lib")
  #pragma comment (lib,"xbmc/lib/libcdio/libcdiod.lib" )
@@ -132,7 +132,7 @@
 #else
  #pragma comment (lib,"xbmc/lib/libXBMS/libXBMS.lib")
  #pragma comment (lib,"xbmc/lib/libsmb/libsmb.lib")
- #pragma comment (lib,"xbmc/lib/libPython/python.lib")
+ //#pragma comment (lib,"xbmc/lib/libPython/python.lib")
  #pragma comment (lib,"xbmc/lib/libGoAhead/goahead.lib")
  #pragma comment (lib,"xbmc/lib/sqlLite/libSQLite3.lib")
  #pragma comment (lib,"xbmc/lib/libcdio/libcdio.lib")
@@ -612,6 +612,7 @@ LONG WINAPI CApplication::UnhandledExceptionFilter(struct _EXCEPTION_POINTERS *E
 }
 #include "xbox/undocumented.h"
 extern "C" HANDLE __stdcall KeGetCurrentThread(VOID);
+extern "C" void __stdcall init_emu_environ();
 
 HRESULT CApplication::Create()
 {
@@ -622,6 +623,8 @@ HRESULT CApplication::Create()
   //floating point precision to 24 bits (faster performance)
   _controlfp(_PC_24, _MCW_PC);
 
+  init_emu_environ();
+  
   CIoSupport helper;
   CStdString strExecutablePath;
   char szDevicePath[1024];

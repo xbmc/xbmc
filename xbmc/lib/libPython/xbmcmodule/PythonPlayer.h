@@ -1,6 +1,6 @@
 #pragma once
 
-#include "..\python.h"
+#include "..\python\python.h"
 #include "..\..\..\cores\IPlayer.h"
 
 int Py_XBMC_Event_OnPlayBackStarted(void* arg);
