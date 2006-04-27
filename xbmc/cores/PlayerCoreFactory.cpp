@@ -117,7 +117,8 @@ void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecC
   {
     CStdString content = item.GetContentType();
 
-    if (content == "video/x-flv") // mplayer fails on these
+    if (content == "video/x-flv" // mplayer fails on these
+     || content == "video/flv")
       vecCores.push_back(EPC_DVDPLAYER);
     else if (content == "audio/aacp") // mplayer has no support for AAC+         
       vecCores.push_back(EPC_DVDPLAYER);
