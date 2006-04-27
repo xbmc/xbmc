@@ -64,6 +64,7 @@ protected:
   bool CanNewFolder(int iList);
   void OnPopupMenu(int iList, int iItem);
   void ShowShareErrorMessage(CFileItem* pItem);
+  void UpdateItemCounts();
 
   CVirtualDirectory m_rootDir;
   CFileItemList m_vecItems[2];
