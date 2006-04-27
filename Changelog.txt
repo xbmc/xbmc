@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 27-04-2006 changed: removed old python copy-string from Build.bat since it's no longer needed
  - 27-04-2006 fixed: [ 1463526 ] shoutcast mp2 streaming broken
  - 27-04-2006 updated: python is updated to version 2.4.3 and now moved into a dll. Do not forget to update the system folder
  - 27-04-2006 fixed: [ 1475703 ] LCD and .xbe playing message
