@@ -1,4 +1,4 @@
-#include "..\python.h"
+#include "..\python\python.h"
 #include "GUIPythonWindow.h"
 #include "GUIPythonWindowDialog.h"
 #include "control.h"
@@ -34,6 +34,8 @@ namespace PYXBMC
 	extern PyMethodDef Window_methods[];
 	extern PyTypeObject Window_Type;
 
+  void initWindow_Type();
+  
 	bool Window_CreateNewWindow(Window* pWindow, bool bAsDialog);
 	void Window_Dealloc(Window* self);
 }

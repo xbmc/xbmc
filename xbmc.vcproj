@@ -65,7 +65,7 @@
 				IncludeDebugInfo="TRUE"
 				InsertFile=".\media\dsstdfx.bin,dsstdfx,r"
 				NoLibWarn="TRUE"
-				NoPreload="LIBXBMS;LIBSMB;ISO9660;PYTHON;PY_RW;LIBHTTP;LIBMP4;LIBXDAAP"
+				NoPreload="LIBXBMS;LIBSMB;ISO9660;LIBHTTP-;LIBMP4;LIBXDAAP"
 				TitleID="0xFACE008"
 				MediaTypes="0x80000007"
 				TitleName="Xbox Media Center Debug"/>
@@ -126,7 +126,7 @@
 				IncludeDebugInfo="TRUE"
 				InsertFile=".\media\dsstdfx.bin,dsstdfx,r"
 				NoLibWarn="TRUE"
-				NoPreload="LIBXBMS;LIBSMB;ISO9660;PYTHON;PY_RW;LIBHTTP;LIBMP4;LIBXDAAP"
+				NoPreload="LIBXBMS;LIBSMB;ISO9660;LIBHTTP;LIBMP4;LIBXDAAP"
 				TitleID="0xFACE008"
 				MediaTypes="0x80000007"
 				TitleName="Xbox Media Center Profile"/>
@@ -187,7 +187,7 @@
 				IncludeDebugInfo="TRUE"
 				InsertFile=".\media\dsstdfx.bin,dsstdfx,r"
 				NoLibWarn="TRUE"
-				NoPreload="LIBXBMS;LIBSMB;ISO9660;PYTHON;PY_RW;LIBHTTP;LIBMP4;LIBXDAAP"
+				NoPreload="LIBXBMS;LIBSMB;ISO9660;LIBHTTP;LIBMP4;LIBXDAAP"
 				TitleID="0xFACE008"
 				MediaTypes="0x80000007"
 				TitleName="Xbox Media Center Profile_FastCap"/>
@@ -257,7 +257,7 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				FileName="$(TargetDir)default.xbe"
 				StackSize="0x80000"
 				InsertFile=".\media\dsstdfx.bin,dsstdfx,r"
-				NoPreload="LIBXBMS;LIBSMB;ISO9660;PYTHON;PY_RW;LIBHTTP;LIBMP4;LIBXDAAP"
+				NoPreload="LIBXBMS;LIBSMB;ISO9660;LIBHTTP;LIBMP4;LIBXDAAP"
 				TitleID="0xFACE008"
 				MediaTypes="0x80000007"
 				TitleName="Xbox Media Center"
@@ -314,7 +314,7 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				Name="XboxImageTool"
 				StackSize="65536"
 				InsertFile=".\media\dsstdfx.bin,dsstdfx,r"
-				NoPreload="LIBXBMS;LIBSMB;ISO9660;PYTHON;PY_RW;LIBHTTP;LIBMP4;LIBXDAAP"
+				NoPreload="LIBXBMS;LIBSMB;ISO9660;LIBHTTP;LIBMP4;LIBXDAAP"
 				TitleID="0xFACE008"
 				MediaTypes="0x80000007"
 				TitleName="Xbox Media Center"/>
@@ -371,7 +371,7 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				IncludeDebugInfo="TRUE"
 				InsertFile=".\media\dsstdfx.bin,dsstdfx,r"
 				NoLibWarn="TRUE"
-				NoPreload="LIBXBMS;LIBSMB;ISO9660;PYTHON;PY_RW;LIBHTTP;LIBMP4;LIBXDAAP"
+				NoPreload="LIBXBMS;LIBSMB;ISO9660;LIBHTTP;LIBMP4;LIBXDAAP"
 				TitleID="0xFACE008"
 				MediaTypes="0x80000007"
 				TitleName="Xbox Media Center"/>
@@ -3201,6 +3201,56 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 							RelativePath=".\xbmc\cores\DllLoader\exports\emu_socket.h">
 						</File>
 					</Filter>
+					<Filter
+						Name="util"
+						Filter="">
+						<File
+							RelativePath=".\xbmc\cores\DllLoader\exports\util\EmuFileWrapper.cpp">
+						</File>
+						<File
+							RelativePath=".\xbmc\cores\DllLoader\exports\util\EmuFileWrapper.h">
+						</File>
+					</Filter>
+					<Filter
+						Name="emu_socket"
+						Filter="">
+						<File
+							RelativePath=".\xbmc\cores\DllLoader\exports\emu_socket\addrinfo.h">
+						</File>
+						<File
+							RelativePath=".\xbmc\cores\DllLoader\exports\emu_socket\addrsize.h">
+						</File>
+						<File
+							RelativePath=".\xbmc\cores\DllLoader\exports\emu_socket\bittypes.h">
+						</File>
+						<File
+							RelativePath=".\xbmc\cores\DllLoader\exports\emu_socket\emu_socket.h">
+						</File>
+						<File
+							RelativePath=".\xbmc\cores\DllLoader\exports\emu_socket\getaddrinfo.c">
+							<FileConfiguration
+								Name="Debug|Xbox">
+								<Tool
+									Name="VCCLCompilerTool"
+									CompileAs="1"/>
+							</FileConfiguration>
+						</File>
+						<File
+							RelativePath=".\xbmc\cores\DllLoader\exports\emu_socket\getnameinfo.c">
+						</File>
+						<File
+							RelativePath=".\xbmc\cores\DllLoader\exports\emu_socket\inet_aton.c">
+						</File>
+						<File
+							RelativePath=".\xbmc\cores\DllLoader\exports\emu_socket\inet_ntop.c">
+						</File>
+						<File
+							RelativePath=".\xbmc\cores\DllLoader\exports\emu_socket\inet_pton.c">
+						</File>
+						<File
+							RelativePath=".\xbmc\cores\DllLoader\exports\emu_socket\sockstorage.h">
+						</File>
+					</Filter>
 				</Filter>
 			</Filter>
 			<Filter
@@ -3240,6 +3290,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				</File>
 				<File
 					RelativePath=".\xbmc\lib\libPython\XBPython.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\lib\libPython\XBPythonDll.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\lib\libPython\XBPythonDll.h">
 				</File>
 				<File
 					RelativePath=".\xbmc\lib\libPython\XBPyThread.cpp">
@@ -3285,6 +3341,9 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					</File>
 					<File
 						RelativePath=".\xbmc\lib\libPython\xbmcmodule\dialog.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\lib\libPython\DllPython.h">
 					</File>
 					<File
 						RelativePath=".\xbmc\lib\libPython\xbmcmodule\GUIPythonWindow.cpp">
@@ -3357,6 +3416,238 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					</File>
 					<File
 						RelativePath=".\xbmc\lib\libPython\xbmcmodule\xbmcmodule.cpp">
+					</File>
+				</Filter>
+				<Filter
+					Name="python"
+					Filter="">
+					<File
+						RelativePath=".\xbmc\lib\libPython\python\abstract.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\lib\libPython\python\bitset.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\lib\libPython\python\boolobject.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\lib\libPython\python\bufferobject.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\lib\libPython\python\cellobject.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\lib\libPython\python\ceval.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\lib\libPython\python\classobject.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\lib\libPython\python\cobject.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\lib\libPython\python\codecs.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\lib\libPython\python\compile.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\lib\libPython\python\complexobject.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\lib\libPython\python\cStringIO.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\lib\libPython\python\datetime.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\lib\libPython\python\defines.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\lib\libPython\python\descrobject.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\lib\libPython\python\dictobject.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\lib\libPython\python\enumobject.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\lib\libPython\python\errcode.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\lib\libPython\python\eval.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\lib\libPython\python\fileobject.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\lib\libPython\python\floatobject.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\lib\libPython\python\frameobject.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\lib\libPython\python\funcobject.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\lib\libPython\python\genobject.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\lib\libPython\python\graminit.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\lib\libPython\python\grammar.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\lib\libPython\python\import.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\lib\libPython\python\intobject.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\lib\libPython\python\intrcheck.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\lib\libPython\python\iterobject.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\lib\libPython\python\listobject.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\lib\libPython\python\longintrepr.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\lib\libPython\python\longobject.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\lib\libPython\python\marshal.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\lib\libPython\python\metagrammar.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\lib\libPython\python\methodobject.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\lib\libPython\python\modsupport.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\lib\libPython\python\moduleobject.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\lib\libPython\python\node.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\lib\libPython\python\object.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\lib\libPython\python\objimpl.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\lib\libPython\python\opcode.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\lib\libPython\python\osdefs.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\lib\libPython\python\parsetok.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\lib\libPython\python\patchlevel.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\lib\libPython\python\pgen.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\lib\libPython\python\pgenheaders.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\lib\libPython\python\py_curses.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\lib\libPython\python\pyconfig.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\lib\libPython\python\pydebug.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\lib\libPython\python\pyerrors.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\lib\libPython\python\pyfpe.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\lib\libPython\python\pygetopt.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\lib\libPython\python\pymactoolbox.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\lib\libPython\python\pymem.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\lib\libPython\python\pyport.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\lib\libPython\python\pystate.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\lib\libPython\python\pystrtod.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\lib\libPython\python\Python.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\lib\libPython\python\pythonrun.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\lib\libPython\python\pythread.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\lib\libPython\python\rangeobject.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\lib\libPython\python\setobject.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\lib\libPython\python\sliceobject.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\lib\libPython\python\stringobject.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\lib\libPython\python\structmember.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\lib\libPython\python\structseq.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\lib\libPython\python\symtable.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\lib\libPython\python\sysmodule.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\lib\libPython\python\timefuncs.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\lib\libPython\python\token.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\lib\libPython\python\traceback.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\lib\libPython\python\tupleobject.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\lib\libPython\python\ucnhash.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\lib\libPython\python\unicodeobject.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\lib\libPython\python\weakrefobject.h">
 					</File>
 				</Filter>
 			</Filter>

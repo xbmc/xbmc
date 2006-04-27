@@ -1,6 +1,6 @@
 #include "../../../stdafx.h"
-#include "..\python.h"
-#include "..\structmember.h"
+#include "..\python\python.h"
+#include "..\python\structmember.h"
 #include "control.h"
 #include "window.h"
 #include "dialog.h"
@@ -63,16 +63,31 @@ namespace PYXBMC
 			"XBMC GUI Module"
 			"\n"
 			"");
-
+  
 	PyMODINIT_FUNC
 	initxbmcgui(void) 
 	{
 		// init xbmc gui modules
 		PyObject* pXbmcGuiModule;
-
+    
+    initWindow_Type();
+    initWindowDialog_Type();
+    initListItem_Type();
+    initControl_Type();
+    initControlSpin_Type();
+    initControlLabel_Type();
+    initControlFadeLabel_Type();
+    initControlTextBox_Type();
+    initControlButton_Type();
+    initControlCheckMark_Type();
+    initControlList_Type();
+    initControlImage_Type();
+    initDialog_Type();
+    initDialogProgress_Type();
+    
 		DialogProgress_Type.tp_new = PyType_GenericNew;
 		Dialog_Type.tp_new = PyType_GenericNew;
-
+		
 		if (PyType_Ready(&Window_Type) < 0 ||
 				PyType_Ready(&WindowDialog_Type) < 0 ||
 				PyType_Ready(&ListItem_Type) < 0 ||
@@ -123,7 +138,6 @@ namespace PYXBMC
 		PyModule_AddObject(pXbmcGuiModule, "Dialog", (PyObject *)&Dialog_Type);
 		PyModule_AddObject(pXbmcGuiModule, "DialogProgress", (PyObject *)&DialogProgress_Type);
 
-		// constants
 		PyModule_AddStringConstant(pXbmcGuiModule, "__author__",		PY_XBMC_AUTHOR);
 		PyModule_AddStringConstant(pXbmcGuiModule, "__date__",			"18 August 2004");
 		PyModule_AddStringConstant(pXbmcGuiModule, "__version__",		"1.1");

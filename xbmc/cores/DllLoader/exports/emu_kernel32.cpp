@@ -789,9 +789,14 @@ extern "C" BOOL WINAPI dllGetProcessAffinityMask(HANDLE hProcess, LPDWORD lpProc
   if (lpSystemAffinityMask)*lpSystemAffinityMask = 1;
   return 1;
 }
+//LOCALE_SISO639LANGNAME, LOCALE_IDEFAULTLANGUAGE, two types that python want to have implemented :-)
 extern "C" int WINAPI dllGetLocaleInfoA(LCID Locale, LCTYPE LCType, LPTSTR lpLCData, int cchData)
 {
-  not_implement("kernel32.dll fake function GetLocaleInfoA called\n");  //warning
+  if (Locale == LOCALE_SYSTEM_DEFAULT || Locale == LOCALE_USER_DEFAULT)
+  {
+  }
+  
+  not_implement("kernel32.dll incomplete function GetLocaleInfoA called\n");  //warning
   SetLastError(ERROR_INVALID_FUNCTION);
   return 0;
 }

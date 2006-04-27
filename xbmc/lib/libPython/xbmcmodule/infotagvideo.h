@@ -1,4 +1,4 @@
-#include "..\python.h"
+#include "..\python\python.h"
 #include "..\..\..\utils\IMDB.h"
 
 #pragma once
@@ -16,6 +16,7 @@ namespace PYXBMC
 
 	extern PyTypeObject InfoTagVideo_Type;
 	extern InfoTagVideo* InfoTagVideo_FromCIMDBMovie(const CIMDBMovie& infoTag);
+	void initInfoTagVideo_Type();
 }
 
 #ifdef __cplusplus

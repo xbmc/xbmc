@@ -171,8 +171,11 @@ extern "C"
   int __stdcall dllsocket(int af, int type, int protocol)
   {
     int iSocket = socket(af, type, protocol);
-
-    return AddSocket(iSocket);
+    if (iSocket != INVALID_SOCKET)
+    {
+      return AddSocket(iSocket);
+    }
+    return INVALID_SOCKET;
   }
 
   int __stdcall dllbind(int s, const struct sockaddr FAR * name, int namelen)
@@ -433,6 +436,24 @@ extern "C"
     return getpeername(socket, name, namelen);
   }
 
+  int getaddrinfo(const char *hostname, const char *servname, const struct addrinfo *hints, struct addrinfo **res);
+  int __stdcall dllgetaddrinfo(const char* nodename, const char* servname, const struct addrinfo* hints, struct addrinfo** res)
+  {
+    return getaddrinfo(nodename, servname, hints, res);
+  }
+
+  int getnameinfo(const struct sockaddr *sa, size_t salen, char *host, size_t hostlen, char *serv, size_t servlen, int flags);
+  int __stdcall dllgetnameinfo(const struct sockaddr *sa, size_t salen, char *host, size_t hostlen, char *serv, size_t servlen, int flags)
+  {
+    return getnameinfo(sa, salen, host, hostlen, serv, servlen, flags);
+  }
+  
+  void freeaddrinfo(struct addrinfo *ai);
+	void __stdcall dllfreeaddrinfo(struct addrinfo *ai)
+	{
+	  return freeaddrinfo(ai);
+	}
+	
 #ifdef __cplusplus
 }
 #endif

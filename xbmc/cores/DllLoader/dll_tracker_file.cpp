@@ -114,7 +114,7 @@ extern "C"
     __asm mov loc, eax
     
     tracker_file_free(loc, (unsigned)stream, FILE_XBMC_FOPEN);
-    stream = freopen(path, mode, stream);
+    stream = dll_freopen(path, mode, stream);
     if (stream) tracker_file_track(loc, (unsigned)stream, FILE_XBMC_FOPEN, path);
     return stream;
   }

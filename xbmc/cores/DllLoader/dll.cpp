@@ -18,8 +18,12 @@ char* getpath(char *buf, const char *full)
   else return NULL;
 }
 
-extern "C" HMODULE __stdcall dllLoadLibraryExtended(LPCSTR file, LPCSTR sourcedll)
+extern "C" HMODULE __stdcall dllLoadLibraryExtended(LPCSTR lib_file, LPCSTR sourcedll)
 {
+  char file[MAX_PATH + 1];
+  file[0] = 0;
+  strcpy(file, lib_file);
+  
   // we skip to the last backslash
   // this is effectively eliminating weird characters in
   // the text output windows
@@ -32,6 +36,14 @@ extern "C" HMODULE __stdcall dllLoadLibraryExtended(LPCSTR file, LPCSTR sourcedl
   strcpy(llibname, libname);
   strlwr(llibname);
 
+  // ws2_32.dll hack
+  // for libraries linked in visual.net with ws2_32.lib
+  if (strlen(file) > 2 && file[1] != ':' && strstr(file, ".dll") == NULL)
+  {
+    strcpy(file, libname);
+    strcat(file, ".dll");
+  }
+  
   CLog::Log(LOGDEBUG, "LoadLibraryA('%s')", libname);
   char* l = llibname;
   
@@ -85,9 +97,9 @@ extern "C" HMODULE __stdcall dllLoadLibraryA(LPCSTR file)
 #define LOAD_WITH_ALTERED_SEARCH_PATH 0x00000008
 #define LOAD_IGNORE_CODE_AUTHZ_LEVEL  0x00000010
 
-extern "C" HMODULE __stdcall dllLoadLibraryExA(LPCSTR lpLibFileName, HANDLE hFile, DWORD dwFlags)
+extern "C" HMODULE __stdcall dllLoadLibraryExExtended(LPCSTR lpLibFileName, HANDLE hFile, DWORD dwFlags, LPCSTR sourcedll)
 {
-  char strFlags[64];
+  char strFlags[512];
   strFlags[0] = '\0';
 
   if (dwFlags & DONT_RESOLVE_DLL_REFERENCES) strcat(strFlags, "\n - DONT_RESOLVE_DLL_REFERENCES");
@@ -97,7 +109,12 @@ extern "C" HMODULE __stdcall dllLoadLibraryExA(LPCSTR lpLibFileName, HANDLE hFil
 
   CLog::Log(LOGDEBUG, "LoadLibraryExA called with flags: %s", strFlags);
   
-  return dllLoadLibraryExtended(lpLibFileName, NULL);
+  return dllLoadLibraryExtended(lpLibFileName, sourcedll);
+}
+
+extern "C" HMODULE __stdcall dllLoadLibraryExA(LPCSTR lpLibFileName, HANDLE hFile, DWORD dwFlags)
+{
+  return dllLoadLibraryExExtended(lpLibFileName, hFile, dwFlags, NULL);
 }
 
 extern "C" BOOL __stdcall dllFreeLibrary(HINSTANCE hLibModule)

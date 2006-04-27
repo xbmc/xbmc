@@ -1,28 +1,154 @@
-#include "../../stdafx.h"
-#include "XBPython.h"
-#include "ActionManager.h"
 
-	 /* PY_RW stay's loaded as longs as m_pPythonParser != NULL.
-	  * When someone runs a script for the first time both sections PYTHON and PY_RW
-	  * are loaded. After that script has finished only section PYTHON is unloaded
-	  * and m_pPythonParser is 'not' deleted.
-		* Only delete m_pPythonParser and unload PY_RW if you don't want to use Python
-		* anymore
-		*/
+// python.h should always be included first before any other includes
+#include "../../stdafx.h"
+#include "python\python.h" 
+#include "..\..\cores\dllloader\dllloadercontainer.h"
+
+#include "XBPython.h"
+#include "XBPythonDll.h"
+#include "ActionManager.h"
 
 XBPython g_pythonParser;
 
+#define PYTHON_DLL "Q:\\system\\python\\python24.dll"
+#define PYTHON_LIBDIR "Q:\\system\\python\\lib\\"
+#define PYTHON_EXT "Q:\\system\\python\\lib\\*.pyd"
+
+extern "C" HMODULE __stdcall dllLoadLibraryA(LPCSTR file);
+extern "C" BOOL __stdcall dllFreeLibrary(HINSTANCE hLibModule);
+
+/////////////////////////////
+
+#include "../../xbox/undocumented.h"
+#include "XbDm.h"
+#include <io.h>
+
+// internal structure of xbdm.dll
+// which represents the HANDLE to
+// a dll. Used for symbol loading.
+typedef struct _LDR_DATA_TABLE_ENTRY
+{
+  LIST_ENTRY InLoadOrderLinks;
+  LIST_ENTRY InMemoryOrderLinks;
+  LIST_ENTRY InInitializationOrderLinks;
+  void* DllBase;
+  void* EntryPoint;
+  ULONG SizeOfImage;
+  UNICODE_STRING FullDllName;
+  UNICODE_STRING BaseDllName;
+  ULONG Flags;
+  USHORT LoadCount;
+  USHORT TlsIndex;
+  LIST_ENTRY HashLinks;
+  void* SectionPointer;
+  ULONG CheckSum;
+  ULONG TimeDateStamp;
+  void* LoadedImports;
+} LDR_DATA_TABLE_ENTRY, *LPLDR_DATA_TABLE_ENTRY;
+
+// Raw offset within the xbdm.dll to the
+// FFinishImageLoad function.
+// Dll baseaddress + offset = function
+extern int finishimageloadOffsets[][2];
+
+// To get the checksum of xbdm.dll from an other xdk version then the ones above,
+// use dumpbin /HEADERS on it and look at the OPTIONAL HEADER VALUES for the checksum
+// To get the offset use dia2dump (installed with vs.net) and dump the xbdm.pdb 
+// of your xdk version to a textfile. Open the textfile and search for 
+// FFinishImageLoad until you get a result with an address in front of it, 
+// this is the offset you need.
+
+// Helper function to get the offset by using the checksum of the dll
+extern GetFFinishImageLoadOffset(int dllchecksum);
+
+
+typedef void (WINAPI *fnFFinishImageLoad)(LPLDR_DATA_TABLE_ENTRY pldteT, 
+                                          const char * szName, 
+                                          LPLDR_DATA_TABLE_ENTRY* ppldteout);
+
+
+
+void xb_load_symbols(HMODULE hModule, char* dllName)
+{
+  // don't load debug symbols unless we have a debugger present
+  // seems these calls break on some bioses. i suppose it could
+  // be related to if the bios has debug capabilities.
+  if (!DmIsDebuggerPresent())
+  {
+    return;
+  }
+
+  PDM_WALK_MODULES pWalkMod = NULL;
+  LPVOID pBaseAddress=NULL;
+  DMN_MODLOAD modLoad;
+  HRESULT error;
+
+  // Look for xbdm.dll, if its loaded...
+  while((error=DmWalkLoadedModules(&pWalkMod, &modLoad))==XBDM_NOERR)
+  {
+      if (stricmp(modLoad.Name, "xbdm.dll")==0)
+      {
+        // ... and get its base address
+        // where the dll is loaded into 
+        // memory.
+        pBaseAddress=modLoad.BaseAddress;
+        break;
+      }
+  }
+  if (pWalkMod)
+    DmCloseLoadedModules(pWalkMod);
+
+  if (pBaseAddress)
+  {
+    CoffLoader dllxbdm;
+    if (dllxbdm.ParseHeaders(pBaseAddress))
+    {
+      int offset=GetFFinishImageLoadOffset(dllxbdm.WindowsHeader->CheckSum);
+
+      if (offset==0)
+      {
+        CLog::DebugLog("DllLoader: Unable to load symbols for %s. No offset for xbdm.dll with checksum 0x%08X found", dllName, dllxbdm.WindowsHeader->CheckSum);
+        return;
+      }
+
+      // Get a function pointer to the unexported function FFinishImageLoad
+      fnFFinishImageLoad FFinishImageLoad=(fnFFinishImageLoad)((LPBYTE)pBaseAddress+offset);
+
+      // Prepare parameter for the function call
+      LDR_DATA_TABLE_ENTRY ldte;
+      ldte.DllBase=hModule; // Address where this dll is loaded into memory
+      char* szName=dllName; // Name of this dll without path
+      LPLDR_DATA_TABLE_ENTRY pldteout;
+
+      try
+      {
+        // Call FFinishImageLoad to register this dll to the debugger and load its symbols. 
+        FFinishImageLoad(&ldte, szName, &pldteout);
+      }
+      catch(...)
+      {
+        CLog::Log(LOGERROR, "DllLoader: Loading symbols for %s failed with an exception.", dllName);
+      }
+    }
+  }
+  else
+    CLog::DebugLog("DllLoader: Can't load symbols for %s. xbdm.dll is needed and not loaded", dllName);
+}
+
+///////////////////////
+
 XBPython::XBPython()
 {
-	bInitialized = false;
+	m_bInitialized = false;
 	bThreadInitialize = false;
 	bStartup = true;
 	nextid = 0;
 	mainThreadState = NULL;
 	InitializeCriticalSection(&m_critSection);
-	m_hEvent = CreateEvent(NULL, false, false, NULL);
+	m_hEvent = CreateEvent(NULL, false, false, "pythonEvent");
 	dThreadId = GetCurrentThreadId();
 	vecPlayerCallbackList.clear();
+	m_iDllScriptCounter = 0;
 }
 
 bool XBPython::SendMessage(CGUIMessage& message)
@@ -33,39 +159,42 @@ bool XBPython::SendMessage(CGUIMessage& message)
 // message all registered callbacks that xbmc stopped playing
 void XBPython::OnPlayBackEnded()
 {
-	if (!bInitialized) return;
-
-	PlayerCallbackList::iterator it = vecPlayerCallbackList.begin();
-	while (it != vecPlayerCallbackList.end())
+	if (m_bInitialized)
 	{
-		((IPlayerCallback*)(*it))->OnPlayBackEnded();
-		it++;
+	  PlayerCallbackList::iterator it = vecPlayerCallbackList.begin();
+	  while (it != vecPlayerCallbackList.end())
+	  {
+		  ((IPlayerCallback*)(*it))->OnPlayBackEnded();
+		  it++;
+	  }
 	}
 }
 
 // message all registered callbacks that we started playing
 void XBPython::OnPlayBackStarted()
 {
-	if (!bInitialized) return;
-
-	PlayerCallbackList::iterator it = vecPlayerCallbackList.begin();
-	while (it != vecPlayerCallbackList.end())
+	if (m_bInitialized)
 	{
-		((IPlayerCallback*)(*it))->OnPlayBackStarted();
-		it++;
+	  PlayerCallbackList::iterator it = vecPlayerCallbackList.begin();
+	  while (it != vecPlayerCallbackList.end())
+	  {
+		  ((IPlayerCallback*)(*it))->OnPlayBackStarted();
+		  it++;
+	  }
 	}
 }
 
 // message all registered callbacks that user stopped playing
 void XBPython::OnPlayBackStopped()
 {
-	if (!bInitialized) return;
-
-	PlayerCallbackList::iterator it = vecPlayerCallbackList.begin();
-	while (it != vecPlayerCallbackList.end())
+	if (m_bInitialized)
 	{
-		((IPlayerCallback*)(*it))->OnPlayBackStopped();
-		it++;
+	  PlayerCallbackList::iterator it = vecPlayerCallbackList.begin();
+	  while (it != vecPlayerCallbackList.end())
+	  {
+		  ((IPlayerCallback*)(*it))->OnPlayBackStopped();
+		  it++;
+	  }
 	}
 }
 
@@ -108,25 +237,42 @@ bool XBPython::FileExist(const char* strFile)
  */
 void XBPython::Initialize()
 {
-	g_sectionLoader.Load("PYTHON");
-	if(!bInitialized)
+	m_iDllScriptCounter++;
+	EnterCriticalSection(&m_critSection);
+	if (!m_bInitialized)
 	{
-		if(dThreadId == GetCurrentThreadId())
+		if (dThreadId == GetCurrentThreadId())
 		{
-		  // first we check if all necessary files are installed
-		  if (!FileExist("Q:\\python\\python23.zlib") ||
-		      !FileExist("Q:\\python\\Lib\\_sre.pyd") ||
-		      !FileExist("Q:\\python\\Lib\\_ssl.pyd") ||
-		      !FileExist("Q:\\python\\Lib\\_symtable.pyd") ||
-		      !FileExist("Q:\\python\\Lib\\pyexpat.pyd") ||
-		      !FileExist("Q:\\python\\Lib\\unicodedata.pyd") ||
-		      !FileExist("Q:\\python\\Lib\\zlib.pyd"))
+		  //DllLoader* pDll = g_sectionLoader.LoadDLL(PYTHON_DLL);
+		  m_hModule = dllLoadLibraryA(PYTHON_DLL);
+		  DllLoader* pDll = (DllLoader*)m_hModule;
+		  if (!pDll || !python_load_dll(*pDll))
 		  {
-		    CLog::Log(LOGERROR, "Python: Missing files, unable to execute script");
+		    CLog::Log(LOGFATAL, "Python: error loading python24.dll");
+		    Finalize();
 		    return;
 		  }
-		  
-			g_sectionLoader.Load("PY_RW");
+
+      static bool m_loadsymbolsforpython = false;
+      if (m_loadsymbolsforpython)
+      {
+        HMODULE h = (HMODULE)((DllLoader*)m_hModule)->hModule;
+        xb_load_symbols(h, PYTHON_DLL);
+      }
+      
+		  // first we check if all necessary files are installed
+		  if (!FileExist("Q:\\system\\python\\python24.zlib"))// ||
+		      //!FileExist("Q:\\python\\Lib\\_sre.pyd") ||
+		      //!FileExist("Q:\\python\\Lib\\_ssl.pyd") ||
+		      //!FileExist("Q:\\python\\Lib\\_symtable.pyd") ||
+		      //!FileExist("Q:\\python\\Lib\\pyexpat.pyd") ||
+		      //!FileExist("Q:\\python\\Lib\\unicodedata.pyd") ||
+		      //!FileExist("Q:\\python\\Lib\\zlib.pyd"))
+		  {
+		    CLog::Log(LOGERROR, "Python: Missing files, unable to execute script");
+		    Finalize();
+		    return;
+		  }
 
 			Py_Initialize();
 			PyEval_InitThreads();
@@ -149,25 +295,29 @@ void XBPython::Initialize()
 					"print '-->Python Initialized<--'\n"
 					"") == -1)
 			{
-				OutputDebugString("Python Initialize Error\n");
+				CLog::Log(LOGFATAL, "Python Initialize Error");
 			}
 
 			mainThreadState = PyThreadState_Get();
 			// release the lock
 			PyEval_ReleaseLock();
 
-			bInitialized = true;
+			m_bInitialized = true;
 			bThreadInitialize = false;
 			PulseEvent(m_hEvent);
 		}
 		else
 		{
-			// only the main thread should initialize python, unload python again.
-			g_sectionLoader.Unload("PYTHON");
+			// only the main thread should initialize python.
+			m_iDllScriptCounter--;
 			bThreadInitialize = true;
+			
+			LeaveCriticalSection(&m_critSection);
 			WaitForSingleObject(m_hEvent, INFINITE);
+			EnterCriticalSection(&m_critSection);
 		}
 	}
+	LeaveCriticalSection(&m_critSection);
 }
 
 /**
@@ -175,15 +325,29 @@ void XBPython::Initialize()
  */
 void XBPython::Finalize()
 {
-	g_sectionLoader.Unload("PYTHON");
+	m_iDllScriptCounter--;
+	EnterCriticalSection(&m_critSection);
+	if (m_iDllScriptCounter == 0 && m_bInitialized)
+	{
+	  CLog::Log(LOGINFO, "Python, unloading python24.dll cause no scripts are running anymore");
+	  PyEval_AcquireLock();
+		PyThreadState_Swap(mainThreadState);
+		Py_Finalize();
+	  //g_sectionLoader.UnloadDLL(PYTHON_DLL);
+	  // first free all dlls loaded by python, after that python24.dll (this is done by UnloadPythonDlls
+	  //dllFreeLibrary(m_hModule);
+	  g_dlls.UnloadPythonDlls();
+	  m_hModule = NULL;
+	  
+	  m_bInitialized = false;
+	}
+	LeaveCriticalSection(&m_critSection);
 }
 
 void XBPython::FreeResources()
 {
-	if(bInitialized)
+	if (m_bInitialized)
 	{
-		g_sectionLoader.Load("PYTHON");
-
 		// cleanup threads that are still running
 		EnterCriticalSection(&m_critSection );
 		PyList::iterator it = vecPyList.begin();
@@ -211,10 +375,10 @@ void XBPython::FreeResources()
 		PyThreadState_Swap(mainThreadState);
 		Py_Finalize();
 		// free_arenas();
-
-		g_sectionLoader.Unload("PYTHON");
-		g_sectionLoader.Unload("PY_RW");
+    mainThreadState = NULL;
+		g_sectionLoader.UnloadDLL(PYTHON_DLL);
 	}
+	
 	CloseHandle(m_hEvent);
 	DeleteCriticalSection(&m_critSection);
 }
@@ -229,24 +393,25 @@ void XBPython::Process()
 		bStartup = false;
 		evalFile("Q:\\scripts\\autoexec.py");
 	}
-	if (!bInitialized) return;
-
-	EnterCriticalSection(&m_critSection );
-
-	PyList::iterator it = vecPyList.begin();
-	while (it != vecPyList.end())
+	
+	if (m_bInitialized)
 	{
-		//delete scripts which are done
-		if (it->bDone)
-		{
-			delete it->pyThread;
-			it = vecPyList.erase(it);
-			Finalize();
-		}
-		else ++it;
+	  EnterCriticalSection(&m_critSection);
+	  PyList::iterator it = vecPyList.begin();
+	  while (it != vecPyList.end())
+	  {
+		  //delete scripts which are done
+		  if (it->bDone)
+		  {
+			  delete it->pyThread;
+			  it = vecPyList.erase(it);
+			  Finalize();
+		  }
+		  else ++it;
+	  }
+	  LeaveCriticalSection(&m_critSection );
 	}
-
-	LeaveCriticalSection(&m_critSection );
+	
 }
 
 // execute script, returns -1 if script doesn't exist
@@ -257,7 +422,7 @@ int XBPython::evalFile(const char *src)
 
 	Initialize();
 
-  if (!bInitialized) return -1;
+  if (!m_bInitialized) return -1;
 
 	nextid++;
 	XBPyThread *pyThread = new XBPyThread(this, mainThreadState, nextid);
@@ -275,23 +440,6 @@ int XBPython::evalFile(const char *src)
 	return nextid;
 }
 
-int XBPython::evalString(const char *src)
-{
-  Initialize();
-  
-  if (!bInitialized) return -1;
-	/*
-	nextid++;
-	if (!Py_IsInitialized()) return -1;
-	XBPyThread *pyThread = new XBPyThread(this, mainThreadState, nextid);
-	pyThread->evalString(src);
-	//strcpy(strFile, "");
-	//addToList(pyThread);
-	return nextid;
-	*/
-	return 0;
-}
-
 void XBPython::setDone(int id)
 {
 	EnterCriticalSection(&m_critSection);
@@ -301,9 +449,9 @@ void XBPython::setDone(int id)
 		if (it->id == id)
 		{
 			if (it->pyThread->isStopping())
-				OutputDebugString("Python script interrupted by user\n");
+				CLog::Log(LOGINFO, "Python script interrupted by user");
 			else
-				OutputDebugString("Python script stopped\n");
+				CLog::Log(LOGINFO, "Python script stopped");
 			it->bDone = true;
 		}
 		++it;
@@ -319,7 +467,7 @@ void XBPython::stopScript(int id)
 	while (it != vecPyList.end())
 	{
 		if (it->id == id) {
-			Py_Output("Stopping script with id: %i\n", id);
+			CLog::Log(LOGINFO, "Stopping script with id: %i", id);
 			it->pyThread->stop();
 			LeaveCriticalSection(&m_critSection);
 			return;

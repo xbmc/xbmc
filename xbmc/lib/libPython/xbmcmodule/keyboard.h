@@ -1,4 +1,4 @@
-#include "..\python.h"
+#include "..\python\python.h"
 #include <string>
 #pragma once
 
@@ -15,6 +15,7 @@ namespace PYXBMC
 	} Keyboard;
 
 	extern PyTypeObject Keyboard_Type;
+	void initKeyboard_Type();
 }
 
 #ifdef __cplusplus

@@ -170,47 +170,21 @@ namespace PYXBMC
 #pragma bss_seg()
 #pragma const_seg()
 
-	PyTypeObject Keyboard_Type = {
-			PyObject_HEAD_INIT(NULL)
-			0,                         /*ob_size*/
-			"xbmc.Keyboard",             /*tp_name*/
-			sizeof(Keyboard),            /*tp_basicsize*/
-			0,                         /*tp_itemsize*/
-			(destructor)Keyboard_Dealloc,/*tp_dealloc*/
-			0,                         /*tp_print*/
-			0,                         /*tp_getattr*/
-			0,                         /*tp_setattr*/
-			0,                         /*tp_compare*/
-			0,                         /*tp_repr*/
-			0,                         /*tp_as_number*/
-			0,                         /*tp_as_sequence*/
-			0,                         /*tp_as_mapping*/
-			0,                         /*tp_hash */
-			0,                         /*tp_call*/
-			0,                         /*tp_str*/
-			0,                         /*tp_getattro*/
-			0,                         /*tp_setattro*/
-			0,                         /*tp_as_buffer*/
-			Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE, /*tp_flags*/
-			keyboard__doc__,           /* tp_doc */
-			0,		                     /* tp_traverse */
-			0,		                     /* tp_clear */
-			0,		                     /* tp_richcompare */
-			0,		                     /* tp_weaklistoffset */
-			0,		                     /* tp_iter */
-			0,		                     /* tp_iternext */
-			Keyboard_methods,          /* tp_methods */
-			0,                         /* tp_members */
-			0,                         /* tp_getset */
-			0,                         /* tp_base */
-			0,                         /* tp_dict */
-			0,                         /* tp_descr_get */
-			0,                         /* tp_descr_set */
-			0,                         /* tp_dictoffset */
-			0,                         /* tp_init */
-			0,                         /* tp_alloc */
-			Keyboard_New,                /* tp_new */
-	};
+	PyTypeObject Keyboard_Type;
+	
+  void initKeyboard_Type()
+	{
+	  PyInitializeTypeObject(&Keyboard_Type);
+	  
+	  Keyboard_Type.tp_name = "xbmc.Keyboard";
+	  Keyboard_Type.tp_basicsize = sizeof(Keyboard);
+	  Keyboard_Type.tp_dealloc = (destructor)Keyboard_Dealloc;
+	  Keyboard_Type.tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE;
+	  Keyboard_Type.tp_doc = keyboard__doc__;
+	  Keyboard_Type.tp_methods = Keyboard_methods;
+	  Keyboard_Type.tp_base = 0;
+	  Keyboard_Type.tp_new = Keyboard_New;
+	}
 }
 
 #ifdef __cplusplus

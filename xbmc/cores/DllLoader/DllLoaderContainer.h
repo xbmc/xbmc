@@ -20,7 +20,7 @@ public:
   DllLoader ws2_32;
   DllLoader wsock32;
   DllLoader ole32;
-  DllLoader xbp; // python dll
+  DllLoader xbp; // exports for python dll
   DllLoader winmm;
   DllLoader msdmo;
   DllLoader xbmc_vobsub;
@@ -33,7 +33,6 @@ public:
   DllLoader msvcrt;
   DllLoader msvcr71;
   DllLoader pncrt;
-  DllLoader python23;
   
   void Clear();
   HMODULE GetModuleAddress(const char* sName);
@@ -46,7 +45,7 @@ public:
 
   void RegisterDll(DllLoader* pDll);
   void UnRegisterDll(DllLoader* pDll);
-  
+  void UnloadPythonDlls();
 private:
   DllLoader* FindModule(const char* sName, const char* sCurrentDir, bool bLoadSymbols);
   DllLoader* LoadDll(const char* sName, bool bLoadSymbols);
