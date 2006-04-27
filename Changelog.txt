@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 27-04-2006 fixed: [ 1475843 ] Freezes with invalid call to xbmcCmds
  - 27-04-2006 fixed: Filemanager didn't show the number and size of the selected objects.
  - 25-04-2006 fixed: [ 1476206 ] zip files don't show subfolders in file manager
  - 25-04-2006 changed: Karaoke display now uses a linear texture (should be marginally faster + less memory)
