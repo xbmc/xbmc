@@ -468,7 +468,7 @@ bool CGUIMediaWindow::Update(const CStdString &strDirectory)
   if (strDirectory.IsEmpty())
     m_history.ClearPathHistory();
 
-  int iWindow = m_gWindowManager.GetActiveWindow();
+  int iWindow = GetID();
   bool bOkay = (iWindow == WINDOW_MUSIC_FILES || iWindow == WINDOW_VIDEOS || iWindow == WINDOW_FILES || iWindow == WINDOW_PICTURES);
   if (strDirectory.IsEmpty() && m_vecItems.IsEmpty() && bOkay) // add 'add source button'
   {
