@@ -714,10 +714,6 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem)
   if (GetID() == WINDOW_VIDEOS)
     btn_Query = pMenu->AddButton(13349);            // Query Info For All Files
 
-  int btn_Search_IMDb = 0;
-  if (!bIsGotoParent)
-    btn_Search_IMDb   = pMenu->AddButton(13348);  // Search IMDb...
-
   int btn_Mark_UnWatched = 0;
   int btn_Mark_Watched   = 0;
   int btn_Update_Title   = 0;
@@ -815,10 +811,6 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem)
     else if (btnid == btn_Query)
     {
       OnScan();
-    }
-    else if (btnid == btn_Search_IMDb)
-    {
-      OnManualIMDB();
     }
     else if (btnid == btn_Mark_UnWatched)
 	  {
