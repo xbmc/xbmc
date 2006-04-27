@@ -22,7 +22,7 @@ public:
 
   static bool ShowAndGetDirectory(VECSHARES &shares, const CStdString &heading, CStdString &path, bool bWriteOnly=false);
   static bool ShowAndGetFile(VECSHARES &shares, const CStdString &mask, const CStdString &heading, CStdString &path);
-  static bool ShowAndGetShare(CStdString &path, bool allowNetworkShares);
+  static bool ShowAndGetShare(CStdString &path, bool allowNetworkShares, CShare *additionalShare = NULL);
   static bool ShowAndGetImage(VECSHARES &shares, const CStdString &heading, CStdString &path);
 
   void SetShares(VECSHARES &shares);
