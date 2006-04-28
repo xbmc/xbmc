@@ -1078,7 +1078,7 @@ void CUtil::GetThumbnail(const CStdString& strFileName, CStdString& strThumb)
   if (item.IsXBE())
   {
     if (CUtil::GetXBEIcon(strFileName, strThumb) ) return ;
-    strThumb = "defaultProgamIcon.png";
+    strThumb = "defaultProgram.png";
     return ;
   }
 
@@ -1602,18 +1602,17 @@ bool CUtil::GetXBEIcon(const CStdString& strFilePath, CStdString& strIcon)
 
   bool bFoundThumbnail = false;
   CStdString szFileName;
-  szFileName.Format("E:\\UDATA\\%08x\\TitleImage.xbx", GetXbeID( strFilePath ) );
-  if (!CFile::Exists(szFileName))
+  //szFileName.Format("E:\\UDATA\\%08x\\TitleImage.xbx", GetXbeID( strFilePath ) );
+  //if (!CFile::Exists(szFileName))
+  // extract icon from .xbe
+  CXBE xbeReader;
+  ::DeleteFile("T:\\1.xpr");
+  if ( !xbeReader.ExtractIcon(strFilePath, "T:\\1.xpr"))
   {
-    // extract icon from .xbe
-    CXBE xbeReader;
-    ::DeleteFile("T:\\1.xpr");
-    if ( !xbeReader.ExtractIcon(strFilePath, "T:\\1.xpr"))
-    {
-      return false;
-    }
-    szFileName = "T:\\1.xpr";
+	strIcon = "defaultProgramBig.png";
+   return true;
   }
+  szFileName = "T:\\1.xpr";
 
   CXBPackedResource* pPackedResource = new CXBPackedResource();
   if ( SUCCEEDED( pPackedResource->Create( szFileName.c_str(), 1, NULL ) ) )
@@ -3930,6 +3929,9 @@ int CUtil::GetMatchingShare(const CStdString& strPath1, VECSHARES& vecShares, bo
   if (checkURL.GetProtocol().Equals("rar") || checkURL.GetProtocol().Equals("zip"))
     strPath = checkURL.GetHostName();
 
+  if (checkURL.GetProtocol() == "shout")
+    strPath = checkURL.GetHostName();
+
   // remove user details, and ensure path only uses forward slashes
   // and ends with a trailing slash so as not to match a substring
   CURL urlDest(strPath);
@@ -3966,10 +3968,18 @@ int CUtil::GetMatchingShare(const CStdString& strPath1, VECSHARES& vecShares, bo
 
     // does it match a bookmark name?
     //CLog::Log(LOGDEBUG,"CUtil::GetMatchingShare, comparing name [%s]", strName.c_str());
+    if (share.strPath.substr(0,8) == "shout://")
+    {
+      CURL url(share.strPath);
+      if (strPath.Equals(url.GetHostName()))
+        return i;
+    }
+    
     if (strPath.Equals(strName))
     {
       bIsBookmarkName = true;
       return i;
+
     }
 
     // doesnt match a name, so try the bookmark path
