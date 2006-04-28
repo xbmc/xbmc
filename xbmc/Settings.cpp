@@ -1957,6 +1957,7 @@ bool CSettings::DeleteBookmark(const CStdString &strType, const CStdString strNa
   // Return bookmark of
   if (breturn)
   {
+    bool found(false);  // for debugging
     TiXmlElement *pRootElement = xbmcXml.RootElement();
     TiXmlNode *pNode = NULL;
     TiXmlNode *pIt = NULL;
@@ -1975,6 +1976,7 @@ bool CSettings::DeleteBookmark(const CStdString &strType, const CStdString strNa
           pChild = pIt->FirstChild("path");
           if (pChild && pChild->FirstChild()->Value() == strPath)
           {
+            found = true;
             pNode->RemoveChild(pIt);
             break;
           }
@@ -1982,9 +1984,13 @@ bool CSettings::DeleteBookmark(const CStdString &strType, const CStdString strNa
         pIt = pIt->NextSibling("bookmark");
       }
     }
+    if (!found)
+      CLog::Log(LOGERROR, "Unable to find the bookmark %s with path %s for deletion from xboxmediacenter.xml", strName.c_str(), strPath.c_str());
     return xbmcXml.SaveFile();
   }
-  else return breturn;
+  else
+    CLog::Log(LOGERROR, "Unable to find the bookmark %s with path %s for deletion from our shares list", strName.c_str(), strPath.c_str());
+  return false;
 }
 
 bool CSettings::AddBookmark(const CStdString &strType, const CStdString &strName, const CStdString &strPath)
