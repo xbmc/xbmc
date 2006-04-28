@@ -1165,7 +1165,7 @@ CStdString CGUIInfoManager::GetMusicLabel(int item)
   case MUSICPLAYER_DURATION:
   case PLAYER_DURATION:
     {
-      CStdString strDuration = "00:00";
+      CStdString strDuration;
       if (tag.GetDuration() > 0)
         StringUtils::SecondsToTimeString(tag.GetDuration(), strDuration);
       else
@@ -1343,10 +1343,14 @@ int CGUIInfoManager::GetPlayTimeRemaining()
 CStdString CGUIInfoManager::GetCurrentPlayTimeRemaining()
 {
   CStdString strTime;
-  if (g_application.IsPlayingAudio())
-    StringUtils::SecondsToTimeString(GetPlayTimeRemaining(), strTime);
-  else if (g_application.IsPlayingVideo())
-    StringUtils::SecondsToTimeString(GetPlayTimeRemaining(), strTime, true);
+  int timeRemaining = GetPlayTimeRemaining();
+  if (timeRemaining)
+  {
+    if (g_application.IsPlayingAudio())
+      StringUtils::SecondsToTimeString(timeRemaining, strTime);
+    else if (g_application.IsPlayingVideo())
+      StringUtils::SecondsToTimeString(timeRemaining, strTime, true);
+  }
   return strTime;
 }
 
