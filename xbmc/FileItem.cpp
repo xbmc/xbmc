@@ -835,6 +835,8 @@ void CFileItem::SetThumb()
           SetThumbnailImage(strThumb);
         }
       }
+	  else if (IsXBE())
+		  SetIconImage("defaultProgram.png");
     }
   }
   else
