@@ -130,7 +130,7 @@
 
       <control>
         <description>Stacking</description>
-        <type>button</type>
+        <type>radiobutton</type>
         <id>7</id>
         <posx>50</posx>
         <posy>231</posy>
