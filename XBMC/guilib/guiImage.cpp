@@ -117,8 +117,13 @@ void CGUIImage::Render()
     if (m_bInvalidated) CalculateSize();
     // scale to screen output position
     if (m_fNW > m_dwWidth || m_fNH > m_dwHeight)
+    {
       if (!g_graphicsContext.SetViewPort((float)m_iPosX, (float)m_iPosY, (float)m_dwWidth, (float)m_dwHeight, true))
+      {
+        CGUIControl::Render();
         return;
+      }
+    }
     float x1 = floor(g_graphicsContext.ScaleFinalXCoord(m_fX, m_fY) + 0.5f) - 0.5f;
     float y1 = floor(g_graphicsContext.ScaleFinalYCoord(m_fX, m_fY) + 0.5f) - 0.5f;
     float x2 = floor(g_graphicsContext.ScaleFinalXCoord(m_fX + m_fNW, m_fY) + 0.5f) - 0.5f;
