@@ -1,3 +1,5 @@
+2006-07-28 fixed:	Minor cleanup of playlist info and duration info on visualisation if they are unknown.
+
 2006-04-27 fixed:	Removed Playlists button from Music and Video Files views (it's now a bookmark)
 
 2006-04-26 fixed:	[ 1476193 ] XBMC keyboard and default key behavior
