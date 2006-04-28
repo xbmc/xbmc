@@ -141,6 +141,9 @@ CSettings::CSettings(void)
   g_stSettings.m_bMyMusicOldUseTags = true;
   g_stSettings.m_bMyMusicOldFindThumbs = true;
 
+  g_stSettings.m_VisualitionLocked   = false;
+  g_stSettings.m_VisualisationPreset = -1;
+
   // Advanced settings
   g_advancedSettings.m_audioHeadRoom = 0;
 
@@ -1390,6 +1393,12 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile, const bool loadp
     GetInteger(pElement, "sortmethod", (int&)g_stSettings.m_MyProgramsSortMethod, SORT_METHOD_LABEL, SORT_METHOD_NONE, SORT_METHOD_MAX-1);
     GetInteger(pElement, "sortorder", (int&)g_stSettings.m_MyProgramsSortOrder, SORT_ORDER_ASC, SORT_ORDER_NONE, SORT_ORDER_DESC);
   }
+  pElement = pRootElement->FirstChildElement("visualisation");
+  if (pElement)
+  {
+    GetBoolean(pElement, "locked", g_stSettings.m_VisualitionLocked);
+    GetInteger(pElement, "preset", g_stSettings.m_VisualisationPreset, -1, -1, INT_MAX);
+  }
   LoadCalibration(pRootElement, strSettingsFile);
 
   g_guiSettings.LoadXML(pRootElement);
@@ -1673,6 +1682,13 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile, const bool savep
     SetFloat(pNode, setting + "whisper", g_stSettings.m_karaokeVoiceMask[i].whisper);
     SetFloat(pNode, setting + "robotic", g_stSettings.m_karaokeVoiceMask[i].robotic);
   }
+
+  TiXmlElement visNode("visualisation");
+  pNode = pRoot->InsertEndChild(visNode);
+  if (!pNode) return false;
+  SetBoolean(pNode, "locked", g_stSettings.m_VisualitionLocked);
+  SetInteger(pNode, "preset", g_stSettings.m_VisualisationPreset);
+
   SaveCalibration(pRoot);
 
   g_guiSettings.SaveXML(pRoot);
