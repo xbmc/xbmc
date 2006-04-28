@@ -173,7 +173,7 @@
       <width>200</width>
       <posx>660</posx>
       <posy>528</posy>
-      <label>$LOCALIZE[435] $INFO[musicplayer.Playlistposition] / $INFO[musicplayer.Playlistlength]</label>
+      <label>$INFO[musicplayer.Playlistposition,$LOCALIZE[435] ]$INFO[musicplayer.Playlistlength, / ]</label>
       <visible>Player.ShowInfo</visible>
       <animation effect="fade" time="1000">VisibleChange</animation>
       <align>right</align>
