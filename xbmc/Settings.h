@@ -439,7 +439,6 @@ public:
     int m_iPreMuteVolumeLevel;    // save the m_nVolumeLevel for proper restore
     bool m_bMute;
     int m_iSystemTimeTotalUp;    // Uptime in minutes!
-    char szScreenSaverSlideShowPath[1024];
 
     VOICE_MASK m_karaokeVoiceMask[4];
   };
@@ -474,6 +473,7 @@ protected:
   void GetFloat(const TiXmlElement* pRootElement, const CStdString& strTagName, float& fValue, const float fDefault, const float fMin, const float fMax);
   void GetString(const TiXmlElement* pRootElement, const CStdString& strTagName, CStdString& strValue, const CStdString& strDefaultValue);
   void GetString(const TiXmlElement* pRootElement, const CStdString& strTagName, char *szValue, const CStdString& strDefaultValue);
+  bool GetShare(const CStdString &category, const TiXmlNode *bookmark, CShare &share);
   void GetShares(const TiXmlElement* pRootElement, const CStdString& strTagName, VECSHARES& items, CStdString& strDefault);
   void ConvertHomeVar(CStdString& strText);
   // functions for writing xml files

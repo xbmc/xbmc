@@ -902,9 +902,9 @@ void CVideoDatabase::SetMovieInfo(const CStdString& strFilenameAndPath, CIMDBMov
     {
       m_pDS->close();
       CStdString strTmp = "";
-      strSQL=FormatSQL("insert into movieinfo ( idMovie,idDirector,strRuntime,fRating,iYear,strTitle,IMDBID,bWatched) values(%i,%i,'%s','%s',%i,'%s','%s','%s')",
+      strSQL=FormatSQL("insert into movieinfo ( idMovie,idDirector,strRuntime,fRating,iYear,strTitle,strGenre,IMDBID,bWatched) values(%i,%i,'%s','%s',%i,'%s','%s','%s','%s')",
                     lMovieId, lDirector, details.m_strRuntime.c_str(), strRating.c_str(),
-                    details.m_iYear, details.m_strTitle.c_str(),
+                    details.m_iYear, details.m_strTitle.c_str(), details.m_strGenre.c_str(),
                     details.m_strIMDBNumber.c_str(), "false" );
 
       m_pDS->exec(strSQL.c_str());
@@ -913,9 +913,9 @@ void CVideoDatabase::SetMovieInfo(const CStdString& strFilenameAndPath, CIMDBMov
     else
     {
       m_pDS->close();
-      strSQL=FormatSQL("update movieinfo set idDirector=%i, strRuntime='%s', fRating='%s', iYear=%i, strTitle='%s', IMDBID='%s', bWatched='false' where idMovie=%i",
+      strSQL=FormatSQL("update movieinfo set idDirector=%i, strRuntime='%s', fRating='%s', iYear=%i, strTitle='%s', strGenre='%s', IMDBID='%s', bWatched='false' where idMovie=%i",
                     lDirector, details.m_strRuntime.c_str(), strRating.c_str(),
-                    details.m_iYear, details.m_strTitle.c_str(),
+                    details.m_iYear, details.m_strTitle.c_str(), details.m_strGenre.c_str(),
                     details.m_strIMDBNumber.c_str(),
                     lMovieId);
       m_pDS->exec(strSQL.c_str());
@@ -1261,9 +1261,12 @@ void CVideoDatabase::GetMovies(VECMOVIES& movies)
     if (NULL == m_pDB.get()) return ;
     if (NULL == m_pDS.get()) return ;
 
+    DWORD time = timeGetTime();
     CStdString strSQL="select * from movie,movieinfo,actors,path,files where movieinfo.idmovie=movie.idmovie and movieinfo.iddirector=actors.idActor and movie.idpath=path.idpath and files.idmovie = movie.idmovie order by path.idpath";
     m_pDS->query( strSQL.c_str() );
 
+    CLog::Log(LOGDEBUG, "GetMovies query took %i ms", timeGetTime() - time);
+    time = timeGetTime();
     long lLastPathId = -1;
     while (!m_pDS->eof())
     {
@@ -1286,6 +1289,7 @@ void CVideoDatabase::GetMovies(VECMOVIES& movies)
       m_pDS->next();
     }
     m_pDS->close();
+    CLog::Log(LOGDEBUG, "Time taken for GetMovies(): %i", timeGetTime() - time);
   }
   catch (...)
   {
@@ -1373,6 +1377,21 @@ void CVideoDatabase::GetDVDLabel(long lMovieId, CStdString& strDVDLabel)
     CLog::Log(LOGERROR, "CVideoDatabase::GetDVDLabel() failed");
   }
 }
+/*
+CIMDBMovie CVideoDatabase::GetBrowseDetailsFromDataset(auto_ptr<Dataset> &pDS)
+{
+  CIMDBMovie details;
+  details.m_fRating = (float)atof(pDS->fv("movieinfo.fRating").get_asString().c_str()) ;
+  details.m_strDirector = pDS->fv("actors.strActor").get_asString();
+  details.m_strPictureURL = pDS->fv("movieinfo.strPictureURL").get_asString();
+  details.m_strTitle = pDS->fv("movieinfo.strTitle").get_asString();
+  details.m_strPath = pDS->fv("path.strPath").get_asString();
+  details.m_strDVDLabel = pDS->fv("movie.cdlabel").get_asString();
+  details.m_strIMDBNumber = pDS->fv("movieinfo.IMDBID").get_asString();
+  details.m_bWatched = pDS->fv("movieinfo.bWatched").get_asBool();
+  details.m_strFileNameAndPath = details.m_strPath + pDS->fv("files.strFileName").get_asString();
+  details.m_strSearchString.Format("%i", lMovieId);
+}*/
 
 CIMDBMovie CVideoDatabase::GetDetailsFromDataset(auto_ptr<Dataset> &pDS)
 {
@@ -1388,8 +1407,9 @@ CIMDBMovie CVideoDatabase::GetDetailsFromDataset(auto_ptr<Dataset> &pDS)
   details.m_strCast = pDS->fv("movieinfo.strCast").get_asString();
   details.m_iYear = pDS->fv("movieinfo.iYear").get_asLong();
   long lMovieId = pDS->fv("movieinfo.idMovie").get_asLong();
+  details.m_strGenre = pDS->fv("movieinfo.strGenre").get_asString();
   // Genre's are stored multiple times - we need to do a separate lookup for these
-  if (m_pDS2.get())
+/*  if (m_pDS2.get())
   {
     CStdString sql = FormatSQL("SELECT strGenre from genre join genrelinkmovie on genrelinkmovie.idGenre = genre.idGenre where genrelinkmovie.idMovie=%i", lMovieId);
     if (m_pDS2->query(sql.c_str()) && m_pDS2->num_rows() > 0)
@@ -1403,7 +1423,7 @@ CIMDBMovie CVideoDatabase::GetDetailsFromDataset(auto_ptr<Dataset> &pDS)
         details.m_strGenre.Delete(details.m_strGenre.size() - 1);
     }
     m_pDS2->close();
-  }
+  }*/
   details.m_strPictureURL = pDS->fv("movieinfo.strPictureURL").get_asString();
   details.m_strTitle = pDS->fv("movieinfo.strTitle").get_asString();
   details.m_strPath = pDS->fv("path.strPath").get_asString();
