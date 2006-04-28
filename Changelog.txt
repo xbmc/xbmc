@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 28-04-2006 removed: Return to My Music context menu item in Now Playing window, and made the "back" commands go to My Music instead of the previous window (eg Visualisation)
  - 28-04-2006 changed: B in now playing should return to My Music.  Back in Slideshow should stop the slideshow.
  - 28-04-2006 fixed: Player.Duration and Player.TimeRemaining would return 00:00 if duration was available.
  - 28-04-2006 fixed: Video database views with large numbers of videos took a long time (needs rescan if you want genre information in the skin using ListItem.Genre).
