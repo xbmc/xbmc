@@ -182,7 +182,19 @@ bool CGUIWindowVideoFiles::OnMessage(CGUIMessage& message)
 void CGUIWindowVideoFiles::UpdateButtons()
 {
   CGUIWindowVideoBase::UpdateButtons();
-  SET_CONTROL_LABEL(CONTROL_STACK, g_stSettings.m_iMyVideoStack + 14000);
+  const CGUIControl *stack = GetControl(CONTROL_STACK);
+  if (stack)
+  {
+    if (stack->GetControlType() == CGUIControl::GUICONTROL_RADIO)
+    {
+      SET_CONTROL_SELECTED(GetID(), CONTROL_STACK, g_stSettings.m_iMyVideoStack == STACK_SIMPLE);
+      SET_CONTROL_LABEL(CONTROL_STACK, 14000);  // Stack
+    }
+    else
+    {
+      SET_CONTROL_LABEL(CONTROL_STACK, g_stSettings.m_iMyVideoStack + 14000);
+    }
+  }
 }
 
 bool CGUIWindowVideoFiles::GetDirectory(const CStdString &strDirectory, CFileItemList &items)

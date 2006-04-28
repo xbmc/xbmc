@@ -5,6 +5,7 @@
 #include "GraphicContext.h"
 #include "../xbmc/utils/SingleLock.h"
 #include "../xbmc/StringUtils.h"
+#include "../xbmc/utils/charsetconverter.h"
 #include <XGraphics.h>
 
 
@@ -642,7 +643,11 @@ int CGUITextureManager::Load(const CStdString& strTextureName, DWORD dwColorKey)
     else
     {
       // normal picture
-      if ( D3DXCreateTextureFromFileEx(g_graphicsContext.Get3DDevice(), strPath.c_str(),
+      // convert from utf8
+      CStdString texturePath;
+      g_charsetConverter.utf8ToStringCharset(strPath, texturePath);
+
+      if ( D3DXCreateTextureFromFileEx(g_graphicsContext.Get3DDevice(), texturePath.c_str(),
                                        D3DX_DEFAULT, D3DX_DEFAULT, 1, 0, D3DFMT_LIN_A8R8G8B8, D3DPOOL_MANAGED,
                                        D3DX_FILTER_NONE , D3DX_FILTER_NONE, dwColorKey, &info, NULL, &pTexture) != D3D_OK)
       {
