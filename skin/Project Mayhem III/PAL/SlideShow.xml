@@ -145,7 +145,7 @@
       <width>430</width>
       <posx>180</posx>
       <posy>528</posy>
-      <label>$INFO[musicplayer.Time] / $INFO[musicplayer.Duration]</label>
+      <label>$INFO[musicplayer.Time]$INFO[musicplayer.Duration, / ]</label>
       <align>left</align>
       <font>font10</font>
       <visible>Player.HasMedia + Player.ShowInfo</visible>
@@ -159,7 +159,7 @@
       <width>100</width>
       <posx>660</posx>
       <posy>528</posy>
-      <label>Track $INFO[musicplayer.Playlistposition] / $INFO[musicplayer.Playlistlength]</label>
+      <label>$INFO[musicplayer.Playlistposition,Track ]$INFO[musicplayer.Playlistlength, / ]</label>
       <align>right</align>
       <font>font10</font>
       <visible>Player.HasMedia + Player.ShowInfo</visible>

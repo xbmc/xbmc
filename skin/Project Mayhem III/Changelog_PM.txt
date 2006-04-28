@@ -1,4 +1,5 @@
-2006-07-28 fixed:	Minor cleanup of playlist info and duration info on visualisation if they are unknown.
+2006-04-28 changed:	Stack button to a radio button.  Plus more cleanup of playlist and duration info.
+2006-04-28 fixed:	Minor cleanup of playlist info and duration info on visualisation if they are unknown.
 
 2006-04-27 fixed:	Removed Playlists button from Music and Video Files views (it's now a bookmark)
 

@@ -201,23 +201,12 @@
     </control>
 
     <control>
-      <description>suffix label</description>
-      <type>label</type>
-      <id>22</id>
-      <posx>568</posx>
-      <posy>60</posy>
-      <label>/</label>
-      <align>left</align>
-      <font>font10</font>
-    </control>
-
-    <control>
       <description>Duration Label</description>
       <type>label</type>
-      <id>999</id>
-      <posx>577</posx>
+      <id>0</id>
+      <posx>568</posx>
       <posy>60</posy>
-      <info>Player.Duration</info>
+      <label>$INFO[Player.Duration,/ ]</info>
       <font>font10</font>
       <align>left</align>
       <width>100</width>
