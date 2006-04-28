@@ -5,6 +5,9 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 29-04-2006 fixed: Deletion of stacked files didn't work.
+ - 29-04-2006 fixed: Thumbs for filenames with non-ascii characters didn't show in Album and Movie Info screens.
+ - 29-04-2006 changed: Stack button can now be a radiobutton.
  - 29-04-2006 fixed: my programs, wrong item could be selected after eject/load in context menu was used.
  - 29-04-2006 fixed: [ 1478235 ] Little XBMC info issues.
  - 28-04-2006 fixed: shoutcast servers that returned "playlist" as content-type wouldn't play.
