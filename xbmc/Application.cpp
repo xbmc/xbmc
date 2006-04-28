@@ -1462,13 +1462,13 @@ void CApplication::DimLCDOnPlayback(bool dim)
 
 void CApplication::StartServices()
 {
+  CheckDate();
   StartTimeServer();
   StartWebServer();
   StartFtpServer();
   StartKai();
   StartLEDControl(false);
-  CheckDate();
-
+  
   // Start Thread for DVD Mediatype detection
   CLog::Log(LOGNOTICE, "start dvd mediatype detection");
   m_DetectDVDType.Create( false);
