@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 29-04-2006 fixed: my programs, wrong item could be selected after eject/load in context menu was used.
  - 29-04-2006 fixed: [ 1478235 ] Little XBMC info issues.
  - 28-04-2006 fixed: shoutcast servers that returned "playlist" as content-type wouldn't play.
  - 28-04-2006 fixed: paplayer can record (mp3)shoutcast now too.
