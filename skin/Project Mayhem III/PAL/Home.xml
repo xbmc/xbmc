@@ -293,7 +293,7 @@
       <width>235</width>
       <posx>514</posx>
       <posy>415</posy>
-      <label>$INFO[VideoPlayer.Time] / $INFO[VideoPlayer.TimeRemaining]</label>
+      <label>$INFO[VideoPlayer.Time]$INFO[VideoPlayer.TimeRemaining, / ]</label>
       <align>right</align>
       <font>font10</font>
       <include>homevideoinfo</include>
