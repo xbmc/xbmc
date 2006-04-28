@@ -3102,6 +3102,10 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
   bool bResult = m_pPlayer->OpenFile(item, item.m_lStartOffset * 1000 / 75);
   if (bResult)
   {
+    // reset the screensaver
+    ResetScreenSaver();
+    ResetScreenSaverWindow();
+
     if ( IsPlayingVideo())
     {
       //pause video until screen is setup
@@ -3455,7 +3459,7 @@ void CApplication::ActivateScreenSaver()
   {
     // reset our codec info - don't want that on screen
     g_infoManager.SetShowCodec(false);
-    g_applicationMessenger.PictureSlideShow(g_stSettings.szScreenSaverSlideShowPath, true);
+    g_applicationMessenger.PictureSlideShow(g_guiSettings.GetString("ScreenSaver.SlideShowPath"), true);
     return;
   }
   else if (strScreenSaver == "Dim")
