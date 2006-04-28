@@ -124,20 +124,6 @@
         <onleft>50</onleft>
         <onright>50</onright>
         <onup>3</onup>
-        <ondown>13</ondown>
-        <include>buttonpanelslide</include>
-      </control>
-
-      <control>
-        <description>Playlists</description>
-        <type>button</type>
-        <id>13</id>
-        <posx>50</posx>
-        <posy>231</posy>
-        <label>136</label>
-        <onleft>50</onleft>
-        <onright>50</onright>
-        <onup>5</onup>
         <ondown>7</ondown>
         <include>buttonpanelslide</include>
       </control>
@@ -147,11 +133,11 @@
         <type>button</type>
         <id>7</id>
         <posx>50</posx>
-        <posy>268</posy>
+        <posy>231</posy>
         <label>346</label>
         <onleft>50</onleft>
         <onright>50</onright>
-        <onup>13</onup>
+        <onup>5</onup>
         <ondown>31</ondown>
         <include>buttonpanelslide</include>
       </control>
