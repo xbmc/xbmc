@@ -198,7 +198,7 @@ void CGUIVisualisationControl::Render()
     }
     else if (!m_currentVis.Equals(g_guiSettings.GetString("MyMusic.Visualisation")))
     { // vis changed - reload
-      g_stSettings.m_VisualisationPreset = -1
+      g_stSettings.m_VisualisationPreset = -1;
       g_stSettings.m_VisualitionLocked = false;
       m_bLockChanged = true;
 
