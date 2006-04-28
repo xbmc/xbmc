@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 29-04-2006 fixed: [ 1478235 ] Little XBMC info issues.
  - 28-04-2006 fixed: shoutcast servers that returned "playlist" as content-type wouldn't play.
  - 28-04-2006 fixed: paplayer can record (mp3)shoutcast now too.
  - 28-04-2006 removed: Return to My Music context menu item in Now Playing window, and made the "back" commands go to My Music instead of the previous window (eg Visualisation)
