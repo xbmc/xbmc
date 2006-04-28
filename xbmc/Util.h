@@ -335,6 +335,7 @@ public:
   //GeminiServer
   static bool IsLeapYear(int iLYear, int iLMonth, int iLTag, int &iMonMax, int &iWeekDay);
   static bool SetSysDateTimeYear(int iYear, int iMonth, int iDay, int iHour, int iMinute);
+  static int GMTZoneCalc(int iRescBiases, int iHour, int iMinute, int &iMinuteNew);
   static bool XboxAutoDetectionPing(bool bRefresh, CStdString strFTPUserName, CStdString strFTPPass, CStdString strNickName, int iFTPPort, CStdString &strHasClientIP, CStdString &strHasClientInfo, CStdString &strNewClientIP, CStdString &strNewClientInfo );
   static bool XboxAutoDetection();
   static bool IsFTP(const CStdString& strFile);
