@@ -35,7 +35,7 @@ bool CPlayListPLS::LoadPLSInfo(CStdString strFileName, const CStdString& content
   Clear();
 
   bool bShoutCast = false;
-  if ( content.Equals("audio/x-scpls") ) 
+  if ( content.Equals("audio/x-scpls") || content.Equals("playlist")) 
   {
     bShoutCast = true;
     if( strFileName.Left(8).Equals("shout://") )
@@ -221,7 +221,7 @@ bool CPlayListPLS::LoadFromWeb(CStdString& strURL)
     httpUtil.Get(strURL, strData);
     return LoadRAMInfo(strData);
   }
-  if (strContentType == "audio/x-scpls")
+  if (strContentType == "audio/x-scpls" || strContentType == "playlist")
   {
     return LoadPLSInfo(strURL, strContentType, true);
   }
