@@ -434,6 +434,10 @@ public:
     CStdString m_strSambaWinsServer;
     CStdString m_strSambaDosCodepage;
 
+    //vis
+    bool m_VisualitionLocked;
+    int  m_VisualisationPreset;
+
     int m_nVolumeLevel;                     // measured in milliBels -60dB -> 0dB range.
     int m_dynamicRangeCompressionLevel;     // measured in milliBels  0dB -> 30dB range.
     int m_iPreMuteVolumeLevel;    // save the m_nVolumeLevel for proper restore
