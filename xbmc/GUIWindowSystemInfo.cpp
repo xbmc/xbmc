@@ -172,7 +172,7 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
         SET_CONTROL_LABEL(40,"Hard Disk Information");
 
         CGUIDialogProgress&  pDlgProgress= *((CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS));
-        pDlgProgress.SetHeading("Hard Disk Information");
+		pDlgProgress.SetHeading("Hard Disk Information");
         pDlgProgress.SetLine(0, "Detecting Harddisk Information");
         pDlgProgress.SetLine(1, "");
         pDlgProgress.SetLine(2, "Please Wait");
@@ -834,11 +834,11 @@ bool CGUIWindowSystemInfo::GetATAValues(int i_lblp1, int i_lblp2, int i_lblp3, i
   {
     CStdString strHDDModelA, strHDDSerialA, strHDDFirmwareA, strHDDpwA, strHDDLockStateA;
 
-    CStdString lblhddm  = g_localizeStrings.Get(13154).c_str(); //"HDD Model";
-    CStdString lblhdds  = g_localizeStrings.Get(13155).c_str(); //"HDD Serial";
-    CStdString lblhddf  = g_localizeStrings.Get(13156).c_str(); //"HDD Firmware";
-    CStdString lblhddpw = g_localizeStrings.Get(13157).c_str(); //"HDD Password";
-    CStdString lblhddlk = g_localizeStrings.Get(13158).c_str(); //"HDD Lock State";
+    CStdString lblhddm  = g_localizeStrings.Get(13154); //"HDD Model";
+    CStdString lblhdds  = g_localizeStrings.Get(13155); //"HDD Serial";
+    CStdString lblhddf  = g_localizeStrings.Get(13156); //"HDD Firmware";
+    CStdString lblhddpw = g_localizeStrings.Get(13157); //"HDD Password";
+    CStdString lblhddlk = g_localizeStrings.Get(13158); //"HDD Lock State";
 
     //HDD Model
     strHDDModelA.Format("%s %s",lblhddm.c_str(),strHDDModel.c_str());
@@ -887,6 +887,7 @@ bool CGUIWindowSystemInfo::GetNetwork(int i_lblp1, int i_lblp2, int i_lblp3, int
   // Set Ethernet Link State
   DWORD dwnetstatus = XNetGetEthernetLinkStatus();
   CStdString linkStatus = g_localizeStrings.Get(151);
+  linkStatus += " ";
   if (dwnetstatus & XNET_ETHERNET_LINK_ACTIVE)
   {
     if (dwnetstatus & XNET_ETHERNET_LINK_100MBPS)
@@ -1144,7 +1145,7 @@ bool CGUIWindowSystemInfo::GetBuildTime(int label1, int label2, int label3)
   CStdString version, buildDate, mplayerVersion;
   version.Format("%s %s", g_localizeStrings.Get(144).c_str(), g_infoManager.GetVersion().c_str());
   buildDate.Format("XBMC %s (Compiled :%s)", version, g_infoManager.GetBuild().c_str());
-  mplayerVersion.Format("Mplayer Build:%s",strMplayerVersion.c_str());
+  mplayerVersion.Format("%s",strMplayerVersion.c_str());
   //SET_CONTROL_LABEL(label1, version);
   SET_CONTROL_LABEL(label2, buildDate);
   SET_CONTROL_LABEL(label3, mplayerVersion);
