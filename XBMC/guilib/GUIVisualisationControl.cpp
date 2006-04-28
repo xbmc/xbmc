@@ -67,6 +67,8 @@ CGUIVisualisationControl::CGUIVisualisationControl(DWORD dwParentID, DWORD dwCon
   m_pVisualisation = NULL;
   m_iNumBuffers = 0;
   m_currentVis = "";
+  m_bLocked = false;
+  m_bLockChanged = false;
   ControlType = GUICONTROL_VISUALISATION;
 }
 
@@ -76,6 +78,8 @@ CGUIVisualisationControl::~CGUIVisualisationControl(void)
 
 void CGUIVisualisationControl::FreeVisualisation()
 {
+  if (!m_bInitialized) return;
+  m_bInitialized = false;
   // tell our app that we're going
   CGUIMessage msg(GUI_MSG_VISUALISATION_UNLOADING, 0, 0);
   g_graphicsContext.SendMessage(msg);
@@ -83,11 +87,21 @@ void CGUIVisualisationControl::FreeVisualisation()
   CSingleLock lock (m_critSection);
 
   CLog::Log(LOGDEBUG, "FreeVisualisation() started");
-  m_bInitialized = false;
   if (g_application.m_pPlayer)
     g_application.m_pPlayer->UnRegisterAudioCallback();
   if (m_pVisualisation)
   {
+    //remember preset and lockstate
+    int np = 0;
+    char **presets = NULL;
+    m_pVisualisation->GetPresets(&presets, &g_stSettings.m_VisualisationPreset, &np, &g_stSettings.m_VisualitionLocked);
+    if (m_bLocked != g_stSettings.m_VisualitionLocked && m_bLockChanged)
+    {
+      g_settings.Save();
+      m_bLockChanged = false;
+      m_bLocked = g_stSettings.m_VisualitionLocked;
+    }
+
     OutputDebugString("Visualisation::Stop()\n");
     m_pVisualisation->Stop();
 
@@ -184,6 +198,10 @@ void CGUIVisualisationControl::Render()
     }
     else if (!m_currentVis.Equals(g_guiSettings.GetString("MyMusic.Visualisation")))
     { // vis changed - reload
+      g_stSettings.m_VisualisationPreset = -1
+      g_stSettings.m_VisualitionLocked = false;
+      m_bLockChanged = true;
+
       LoadVisualisation();
 
       if (g_guiSettings.GetBool("Karaoke.Enabled"))
@@ -235,6 +253,13 @@ void CGUIVisualisationControl::OnInitialize(int iChannels, int iSamplesPerSec, i
   m_pVisualisation->Start(m_iChannels, m_iSamplesPerSec, m_iBitsPerSample, strFile);
   if (!m_bInitialized)
   {
+    if (g_stSettings.m_VisualisationPreset != -1)
+    {
+      m_pVisualisation->OnAction(CVisualisation::VIS_ACTION_LOAD_PRESET, &g_stSettings.m_VisualisationPreset);
+      if (m_pVisualisation->IsLocked() != g_stSettings.m_VisualitionLocked)
+        m_pVisualisation->OnAction(CVisualisation::VIS_ACTION_LOCK_PRESET);
+      m_bLocked = g_stSettings.m_VisualitionLocked;
+    }
     UpdateAlbumArt();
   }
   m_bInitialized = true;
@@ -311,7 +336,10 @@ bool CGUIVisualisationControl::OnAction(const CAction &action)
   else if (action.wID == ACTION_VIS_PRESET_PREV)
     visAction = CVisualisation::VIS_ACTION_PREV_PRESET;
   else if (action.wID == ACTION_VIS_PRESET_LOCK)
+  {
     visAction = CVisualisation::VIS_ACTION_LOCK_PRESET;
+    m_bLockChanged = true;
+  }
   else if (action.wID == ACTION_VIS_PRESET_RANDOM)
     visAction = CVisualisation::VIS_ACTION_RANDOM_PRESET;
   else if (action.wID == ACTION_VIS_RATE_PRESET_PLUS)
@@ -349,7 +377,7 @@ bool CGUIVisualisationControl::OnMessage(CGUIMessage &message)
   }
   else if (message.GetMessage() == GUI_MSG_PLAYBACK_STARTED)
   {
-    if (UpdateAlbumArt()) return true;
+    if (IsVisible() && UpdateAlbumArt()) return true;
   }
   return CGUIControl::OnMessage(message);
 }
