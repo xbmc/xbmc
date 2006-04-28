@@ -1,3 +1,5 @@
+2006-04-27 fixed:	Removed Playlists button from Music and Video Files views (it's now a bookmark)
+
 2006-04-26 fixed:	[ 1476193 ] XBMC keyboard and default key behavior
 
 2006-04-24 fixed:	Same thing in Album and Movie Info screens.
