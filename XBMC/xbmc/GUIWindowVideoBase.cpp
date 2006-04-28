@@ -1157,6 +1157,7 @@ CStdString CGUIWindowVideoBase::GetnfoFile(CFileItem *item)
 
 void CGUIWindowVideoBase::SetDatabaseDirectory(const VECMOVIES &movies, CFileItemList &items)
 {
+  DWORD time = timeGetTime();
   for (int i = 0; i < (int)movies.size(); ++i)
   {
     CIMDBMovie movie = movies[i];
@@ -1201,6 +1202,7 @@ void CGUIWindowVideoBase::SetDatabaseDirectory(const VECMOVIES &movies, CFileIte
       m_vecItems.Add(pItem);
     }
   }
+  CLog::Log(LOGDEBUG, "Time taken for SetDatabaseDirectory(): %i", timeGetTime() - time);
 }
 
 void CGUIWindowVideoBase::ApplyIMDBThumbToFolder(const CStdString &folder, const CStdString &imdbThumb)
