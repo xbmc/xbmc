@@ -4146,74 +4146,112 @@ bool CUtil::IsLeapYear(int iLYear, int iLMonth, int iLTag, int &iMonMax, int &iW
 
 bool CUtil::SetSysDateTimeYear(int iYear, int iMonth, int iDay, int iHour, int iMinute)
 {
-  if (iHour == 0) iHour = 24;
-	//GeminiServer
-	TIME_ZONE_INFORMATION tziNew;
+ 	TIME_ZONE_INFORMATION tziNew;
 	SYSTEMTIME CurTime;
 	SYSTEMTIME NewTime;
 	GetLocalTime(&CurTime);
 	GetLocalTime(&NewTime);
 	int iRescBiases, iHourUTC;
+  int iMinuteNew;
 	
-  DWORD dwRet = GetTimeZoneInformation(&tziNew);  // Get TimeZone Informations  
-	int iGMTZone = (tziNew.Bias)/60;                // Cals the GMT Time
+  DWORD dwRet = GetTimeZoneInformation(&tziNew);  // Get TimeZone Informations 
+	float iGMTZone = (float(tziNew.Bias)/(60));     // Calc's the GMT Time
   
   CLog::Log(LOGDEBUG, "------------ TimeZone -------------");
-  CLog::Log(LOGDEBUG, "-      GMT Zone: GMT %i",iGMTZone);
-	CLog::Log(LOGDEBUG, "-          Bias: %i",tziNew.Bias);
-	CLog::Log(LOGDEBUG, "-  DaylightBias: %i",tziNew.DaylightBias);
+  CLog::Log(LOGDEBUG, "-      GMT Zone: GMT %.1f",iGMTZone);
+	CLog::Log(LOGDEBUG, "-          Bias: %i minutes",tziNew.Bias);
+  CLog::Log(LOGDEBUG, "-  DaylightBias: %i",tziNew.DaylightBias);
 	CLog::Log(LOGDEBUG, "-  StandardBias: %i",tziNew.StandardBias);
-	CLog::Log(LOGDEBUG, "--------------- END ---------------");
   
-	if (dwRet == TIME_ZONE_ID_STANDARD)
-	{
-    iHourUTC = ( ((iHour * 60) + tziNew.Bias) + tziNew.StandardBias ) / 60;
-    if (iHour == 24)  iHourUTC = iHourUTC - 24;                 // if iHour is 24h, we must prevent + 1day [+24h!] so -24h!
-	}
-	else if (dwRet == TIME_ZONE_ID_DAYLIGHT ) 
-	{
-    iHourUTC = ( ((iHour * 60) + tziNew.Bias) + tziNew.StandardBias + tziNew.DaylightBias) / 60;
-    if (iHour == 24)  iHourUTC = iHourUTC - 24;                 // if iHour is 24h, we must prevent + 1day [+24h!] so -24h!
+  switch (dwRet)
+  {
+    case TIME_ZONE_ID_STANDARD:
+      {
+        iRescBiases   = tziNew.Bias + tziNew.StandardBias;
+        CLog::Log(LOGDEBUG, "-   Timezone ID: 1, Standart");
+      }
+      break;
+    case TIME_ZONE_ID_DAYLIGHT:
+      {
+        iRescBiases   = tziNew.Bias + tziNew.StandardBias + tziNew.DaylightBias;
+        CLog::Log(LOGDEBUG, "-   Timezone ID: 2, Daylight");
+      }
+      break;
+    case TIME_ZONE_ID_UNKNOWN:
+      {
+        iRescBiases   = tziNew.Bias + tziNew.StandardBias;
+        CLog::Log(LOGDEBUG, "-   Timezone ID: 0, Unknown");
+      }
+      break;
+    case TIME_ZONE_ID_INVALID:
+      {
+        iRescBiases   = tziNew.Bias + tziNew.StandardBias;
+        CLog::Log(LOGDEBUG, "-   Timezone ID: Invalid");
+      }
+      break;
+    default: 
+      iRescBiases   = tziNew.Bias + tziNew.StandardBias;
   }
-	else if (dwRet == TIME_ZONE_ID_UNKNOWN || dwRet == TIME_ZONE_ID_INVALID)
-	{
-		if (iHour >12 )
-    {
-      if (tziNew.Bias < 0)                                      // Max -12h (-720 Minutes)
-      {
-         iHourUTC = ( ((iHour * 60) + tziNew.Bias) + tziNew.StandardBias ) / 60;
-      }
-      else if (tziNew.Bias > 0)                                 // Max +12h (720 Minutes)
-      {
-        iRescBiases = ((tziNew.Bias + tziNew.StandardBias) / 60);
-        iHourUTC    = iHour - abs(iRescBiases);                 // We must minus the Bias, to Prevent time > 23
-      }
-      else if (tziNew.Bias == 0 && iHour == 24 )iHourUTC = 0;   // GMT Zone 0
-    }
-    else if (iHour < 12 )
-    {
-      iRescBiases   = ((tziNew.Bias + tziNew.StandardBias )/ 60);
-      iHourUTC      = iHour + abs(iRescBiases);
-    }
-    else 
-    {
-      iHourUTC = ( ((iHour * 60) + tziNew.Bias) + tziNew.StandardBias ) / 60;
-      if (iHourUTC == 24) iHourUTC = 0;                         // if Hour is 24h Must be 0
-    }
-	}
+    CLog::Log(LOGDEBUG, "--------------- END ---------------");
+	
+  // Calculation
+  iHourUTC = GMTZoneCalc(iRescBiases, iHour, iMinute, iMinuteNew);
+  iMinute = iMinuteNew;
+  if(iHourUTC <0)
+  {
+    iDay = iDay - 1;
+    iHourUTC =iHourUTC + 24;
+  }
+  if(iHourUTC >23)
+  {
+    iDay = iDay + 1;
+    iHourUTC =iHourUTC - 24;
+  }
   
-  NewTime.wYear		= (WORD)iYear;    // Now Set the New-,Detected Time Values to System Time!
+  // Set the New-,Detected Time Values to System Time!
+  NewTime.wYear		= (WORD)iYear;    
 	NewTime.wMonth	= (WORD)iMonth;
 	NewTime.wDay		= (WORD)iDay;	
 	NewTime.wHour		= (WORD)iHourUTC;
-	NewTime.wMinute	= (WORD)iMinute;
+  NewTime.wMinute	= (WORD)iMinute;
 
 	FILETIME stNewTime, stCurTime;
 	SystemTimeToFileTime(&NewTime, &stNewTime);
 	SystemTimeToFileTime(&CurTime, &stCurTime);
-	NtSetSystemTime(&stNewTime, &stCurTime);
+	bool bReturn=NtSetSystemTime(&stNewTime, &stCurTime); //NtSetSystemTime(IN PLARGE_INTEGER SystemTime, OUT PLARGE_INTEGER PreviousTime OPTIONAL );
+  return bReturn;
+}
+int CUtil::GMTZoneCalc(int iRescBiases, int iHour, int iMinute, int &iMinuteNew)
+{
+  int iHourUTC, iTemp;
+  iMinuteNew = iMinute;
+  iTemp = iRescBiases/60;
+  
+  if (iRescBiases == 0 )return iHour;   // GMT Zone 0, no need calculate
+  if (iRescBiases > 0)
+    iHourUTC = iHour + abs(iTemp);
+  else 
+    iHourUTC = iHour - abs(iTemp);
 
-	return true;
+  if ((iTemp*60) != iRescBiases)
+  { 
+    if (iRescBiases > 0)
+      iMinuteNew = iMinute + abs(iTemp*60 - iRescBiases);
+    else
+      iMinuteNew = iMinute - abs(iTemp*60 - iRescBiases);
+    
+    if (iMinuteNew >= 60)
+    {
+      iMinuteNew = iMinuteNew -60;
+      iHourUTC = iHourUTC + 1;
+    }
+    else if (iMinuteNew < 0)
+    {
+      iMinuteNew = iMinuteNew +60;
+      iHourUTC = iHourUTC - 1;
+    }
+  }
+  return iHourUTC;
 }
 bool CUtil::XboxAutoDetectionPing(bool bRefresh, CStdString strFTPUserName, CStdString strFTPPass, CStdString strNickName, int iFTPPort, CStdString &strHasClientIP, CStdString &strHasClientInfo, CStdString &strNewClientIP, CStdString &strNewClientInfo )
 {
