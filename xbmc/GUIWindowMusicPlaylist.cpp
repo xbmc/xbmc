@@ -193,7 +193,7 @@ bool CGUIWindowMusicPlayList::OnAction(const CAction &action)
   }
   if (action.wID == ACTION_SHOW_PLAYLIST)
   {
-    m_gWindowManager.PreviousWindow();
+    m_gWindowManager.ChangeActiveWindow(WINDOW_MUSIC);
     return true;
   }
   if ((action.wID == ACTION_MOVE_ITEM_UP) || (action.wID == ACTION_MOVE_ITEM_DOWN))
@@ -735,7 +735,6 @@ void CGUIWindowMusicPlayList::OnPopupMenu(int iItem)
       pMenu->EnableButton(btn_MoveTo, false);     // cant move a song above the currently playing
     btn_Cancel = pMenu->AddButton(13253);         // cancel move
   }
-  int btn_Return = pMenu->AddButton(12010);     // return to my music
   if (g_partyModeManager.IsEnabled())
     btn_PartyMode = pMenu->AddButton(588);      // cancel party mode
 
@@ -776,12 +775,6 @@ void CGUIWindowMusicPlayList::OnPopupMenu(int iItem)
     else if (btnid == btn_Delete)
     {
       RemovePlayListItem(iItem);
-      return;
-    }
-    // return to my music
-    else if (btnid == btn_Return)
-    {
-      m_gWindowManager.ActivateWindow(WINDOW_MUSIC);
       return;
     }
     else if (btnid == btn_PartyMode)
