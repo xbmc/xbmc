@@ -1709,21 +1709,10 @@ bool CUtil::GetXBEDescription(const CStdString& strFileName, CStdString& strDesc
   fread(&HC, 1, sizeof(HC), hFile);
   fclose(hFile);
 
-  // Apparently, the XBE title is actually stored in the user charset
-  // (ie single byte characters) padded out to WCHAR.
-  // This has not yet been confirmed with Commercially available xbe's though.
+  // The XBE title is stored in WCHAR (UTF16) format
 
   // XBE titles can in fact use all 40 characters available to them,
   // and thus are not necessarily NULL terminated
-  CHAR TitleName[41];
-  WideCharToMultiByte(CP_ACP, 0, HC.TitleName, 40, TitleName, 41, NULL, NULL);
-  TitleName[40] = 0;
-  if (strlen(TitleName) > 0)
-  {
-    g_charsetConverter.stringCharsetToUtf8(TitleName, strDescription);
-    return true;
-  }
-  /* If it turns out that commerical XBEs actually use WCHAR then use this routine
   WCHAR TitleName[41];
   wcsncpy(TitleName, HC.TitleName, 40);
   TitleName[40] = 0;
@@ -1731,7 +1720,7 @@ bool CUtil::GetXBEDescription(const CStdString& strFileName, CStdString& strDesc
   {
     g_charsetConverter.utf16toUTF8(TitleName, strDescription);
     return true;
-  }*/
+  }
   strDescription = CUtil::GetFileName(strFileName);
   return false;
 }
@@ -1747,19 +1736,8 @@ bool CUtil::SetXBEDescription(const CStdString& strFileName, const CStdString& s
   fread(&HC, 1, sizeof(HC), hFile);
   fseek(hFile,HS.XbeHeaderSize, SEEK_SET);
 
-  // Apparently, the XBE title is actually stored in the user charset
-  // (ie single byte characters) padded out to WCHAR.
-  // This has not yet been confirmed with Commercially available xbe's though.
+  // The XBE title is stored in WCHAR (UTF16)
 
-  WCHAR TitleName[41];
-  CStdString shortDescription;
-  g_charsetConverter.utf8ToStringCharset(strDescription, shortDescription);
-  if (shortDescription.size() > 40)
-    shortDescription = shortDescription.Left(40);
-  MultiByteToWideChar(CP_ACP,0,shortDescription.c_str(),-1,TitleName,41);
-  wcsncpy(HC.TitleName, TitleName, 40);  // only allow 40 chars
-
-  /* If it turns out that commerical XBEs actually use WCHAR then use this routine
   CStdStringW shortDescription;
   g_charsetConverter.utf8ToUTF16(strDescription, shortDescription);
   if (shortDescription.size() > 40)
