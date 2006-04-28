@@ -75,63 +75,53 @@ bool CGraphicContext::SetViewPort(float fx, float fy , float fwidth, float fheig
   D3DVIEWPORT8 *oldviewport = new D3DVIEWPORT8;
   Get3DDevice()->GetViewport(oldviewport);
   // transform coordinates
-  fx = ScaleFinalXCoord(fx, fy);
-  fy = ScaleFinalYCoord(fx, fy);
+  ScaleFinalCoords(fx, fy);
   fwidth *= m_windowScaleX;
   fheight *= m_windowScaleY;
-  if (fx < 0) fx = 0;
-  if (fy < 0) fy = 0;
 
-  newviewport.X = (DWORD)fx;
-  newviewport.Y = (DWORD)fy;
-  newviewport.Width = (DWORD)(fwidth);
-  newviewport.Height = (DWORD)(fheight);
+  int newLeft = (int)(fx + 0.5f);
+  int newTop = (int)(fy + 0.5f);
+  int newRight = (int)(fx + fwidth + 0.5f);
+  int newBottom = (int)(fy + fheight + 0.5f);
   if (intersectPrevious)
   {
-    if (newviewport.X < oldviewport->X) newviewport.X = oldviewport->X;
-    if (newviewport.Y < oldviewport->Y) newviewport.Y = oldviewport->Y;
-    if (newviewport.X > oldviewport->X + oldviewport->Width || newviewport.Y > oldviewport->Y + oldviewport->Height)
-    {
+    // do the intersection
+    int oldLeft = (int)oldviewport->X;
+    int oldTop = (int)oldviewport->Y;
+    int oldRight = (int)oldviewport->X + oldviewport->Width;
+    int oldBottom = (int)oldviewport->Y + oldviewport->Height;
+    if (newLeft >= oldRight || newTop >= oldBottom || newRight <= oldLeft || newBottom <= oldTop)
+    { // empty intersection - return false to indicate no rendering should occur
       delete oldviewport;
       return false;
     }
-    if (newviewport.X + newviewport.Width > oldviewport->X + oldviewport->Width)
-      newviewport.Width = oldviewport->X + oldviewport->Width - newviewport.X;
-    if (newviewport.Y + newviewport.Height > oldviewport->Y + oldviewport->Height)
-      newviewport.Height = oldviewport->Y + oldviewport->Height - newviewport.Y;
+    // ok, they intersect, do the intersection
+    if (newLeft < oldLeft) newLeft = oldLeft;
+    if (newTop < oldTop) newTop = oldTop;
+    if (newRight > oldRight) newRight = oldRight;
+    if (newBottom > oldBottom) newBottom = oldBottom;
   }
-  // check range
-  if (newviewport.Width == 0 || newviewport.Height == 0)
-  {
+  // check range against screen size
+  if (newRight <= 0 || newBottom <= 0 || newTop >= m_iScreenHeight || newLeft >= m_iScreenWidth)
+  { // no intersection with the screen
     delete oldviewport;
     return false;
   }
-  if (newviewport.X + newviewport.Width > (DWORD)m_iScreenWidth)
-  {
-    if (newviewport.X >= (DWORD)m_iScreenWidth)
-    {
-      newviewport.X = m_iScreenWidth - 1;
-      newviewport.Width = 1;
-    }
-    else
-    {
-      newviewport.Width = m_iScreenWidth - newviewport.X;
-    }
-  }
-  if (newviewport.Y + newviewport.Height > (DWORD)m_iScreenHeight)
-  {
-    if (newviewport.Y >= (DWORD)m_iScreenHeight)
-    {
-      newviewport.Y = m_iScreenHeight - 1;
-      newviewport.Height = 1;
-    }
-    else
-    {
-      newviewport.Height = m_iScreenHeight-newviewport.Y;
-    }
-  }
+  // intersection with the screen
+  if (newLeft < 0) newLeft = 0;
+  if (newTop < 0) newTop = 0;
+  if (newRight > m_iScreenWidth) newRight = m_iScreenWidth;
+  if (newBottom > m_iScreenHeight) newBottom = m_iScreenHeight;
+
+  ASSERT(newLeft < newRight);
+  ASSERT(newTop < newBottom);
+
   newviewport.MinZ = 0.0f;
   newviewport.MaxZ = 1.0f;
+  newviewport.X = newLeft;
+  newviewport.Y = newTop;
+  newviewport.Width = newRight - newLeft;
+  newviewport.Height = newBottom - newTop;
   Get3DDevice()->SetViewport(&newviewport);
   m_viewStack.push(oldviewport);
   return true;
