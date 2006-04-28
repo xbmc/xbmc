@@ -1612,21 +1612,14 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     CStdString path = pSettingString->GetData();
     if (CGUIDialogFileBrowser::ShowAndGetDirectory(g_settings.m_vecMyPictureShares, g_localizeStrings.Get(pSettingString->m_iHeadingString), path))
     {
-      // pSettingString->SetData(path);
       // To Prevent: if Path is to long, goes out of screen
       CStdString StrOutput;
-      if (CUtil::MakeShortenPath(path, StrOutput, 30 )) pSettingString->SetData(StrOutput);
-      else pSettingString->SetData(path);
-      strcpy(g_stSettings.szScreenSaverSlideShowPath, path.c_str());
-      g_settings.Save();
-      //  
+      if (CUtil::MakeShortenPath(path, StrOutput, 30 ))
+        pSettingString->SetData(StrOutput);
+      else
+        pSettingString->SetData(path);
     }
   }
-  /* nothing needed here?
-  else if (strSetting == "Screensaver.SlideShowShuffle")
-  {
-  }
-  */
   else if (strSetting == "LED.Colour")
   { // Alter LED Colour immediately
     ILED::CLEDControl(((CSettingInt *)pSettingControl->GetSetting())->GetData());
