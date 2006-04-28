@@ -1,8 +1,6 @@
 #include "include.h"
 #include "GUIListItem.h"
 #include "GUIImage.h"
-#include "../xbmc/utils/charsetconverter.h"
-
 
 CGUIListItem::CGUIListItem(const CGUIListItem& item)
 {
@@ -67,7 +65,6 @@ const CStdString& CGUIListItem::GetLabel2() const
 void CGUIListItem::SetThumbnailImage(const CStdString& strThumbnail)
 {
   m_strThumbnailImage = strThumbnail;
-  g_charsetConverter.utf8ToStringCharset(m_strThumbnailImage);
 }
 
 const CStdString& CGUIListItem::GetThumbnailImage() const
@@ -78,7 +75,6 @@ const CStdString& CGUIListItem::GetThumbnailImage() const
 void CGUIListItem::SetIconImage(const CStdString& strIcon)
 {
   m_strIcon = strIcon;
-  g_charsetConverter.utf8ToStringCharset(m_strIcon);
 }
 
 const CStdString& CGUIListItem::GetIconImage() const
