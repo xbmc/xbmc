@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 28-04-2006 changed: Reverted the XBE title commit earlier.  They're now back to reading as UTF16 as they should be.
  - 28-04-2006 fixed: Viewport intersection wasn't working correctly, which meant some images with aspectratio set to scale could render outside their borders.
  - 27-04-2006 fixed: Big list view didn't show the thumb overlays.
  - 27-04-2006 fixed: Missing Database label message was not displayed correctly when GUI animations were performed.
