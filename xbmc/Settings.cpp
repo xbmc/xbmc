@@ -1972,7 +1972,6 @@ bool CSettings::DeleteBookmark(const CStdString &strType, const CStdString strNa
         TiXmlNode *pChild = pIt->FirstChild("name");
         if (pChild && pChild->FirstChild()->Value() == strName)
         {
-          pChild->FirstChild()->SetValue(strName);
           pChild = pIt->FirstChild("path");
           if (pChild && pChild->FirstChild()->Value() == strPath)
           {

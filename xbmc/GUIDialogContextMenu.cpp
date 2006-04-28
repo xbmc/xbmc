@@ -265,16 +265,15 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CFile
         // prompt user if they want to really delete the bookmark
         if (CGUIDialogYesNo::ShowAndGetInput(bMyProgramsMenu ? 758 : 751, 0, 750, 0))
         {
-          // delete this share
-          g_settings.DeleteBookmark(strType, share->strName, share->strPath);
-
-          // check default
+          // check default before we delete, as deletion will kill the share object
           if (!strDefault.IsEmpty())
           {
             if (share->strName.Equals(strDefault))
               ClearDefault(strType);
           }
-
+          
+          // delete this share
+          g_settings.DeleteBookmark(strType, share->strName, share->strPath);
           return true;
         }
       }
