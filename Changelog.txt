@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 29-04-2006 fixed: shoutcast urls now work with http api.
+ - 29-04-2006 fixed: (hopefully) [ 1476918 ] Thumbnail/Icon for all homebrew games uses Super Mario War
  - 29-04-2006 changed: visualisation preset and lockstate are now remembered between windows and sessions.
  - 29-04-2006 fixed: Deletion of stacked files didn't work.
  - 29-04-2006 fixed: Thumbs for filenames with non-ascii characters didn't show in Album and Movie Info screens.
