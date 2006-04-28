@@ -623,205 +623,9 @@ void CSettings::GetShares(const TiXmlElement* pRootElement, const CStdString& st
       CStdString strValue = pChild->Value();
       if (strValue == "bookmark")
       {
-        CLog::Log(LOGDEBUG,"    ---- BOOKMARK START ----");
-        const TiXmlNode *pNodeName = pChild->FirstChild("name");
-        CStdString strName = pNodeName->FirstChild()->Value();
-        CLog::Log(LOGDEBUG,"    Found name: %s", strName.c_str());
-
-        // get multiple paths
-        vector<CStdString> vecPaths;
-        const TiXmlNode *pPathName = pChild->FirstChild("path");
-        while (pPathName)
+        CShare share;
+        if (GetShare(strTagName, pChild, share))
         {
-          if (pPathName->FirstChild())
-          {
-            CStdString strPath = pPathName->FirstChild()->Value();
-            // make sure there are no virtualpaths or stack paths defined in xboxmediacenter.xml
-            CLog::Log(LOGDEBUG,"    Found path: %s", strPath.c_str());
-            if (!CUtil::IsVirtualPath(strPath) && !CUtil::IsStack(strPath))
-            {
-              // translate paths
-              CStdString strPathOld = strPath;
-              ConvertHomeVar(strPath);
-              if (!strPath.Equals(strPathOld))
-                CLog::Log(LOGDEBUG,"    -> Translated to path: %s", strPath.c_str());
-
-              // translate special tags
-              if (strPath.at(0) == '$')
-              {
-                strPath = CUtil::TranslateSpecialDir(strPath);
-                if (!strPath.IsEmpty())
-                  CLog::Log(LOGDEBUG,"    -> Translated to path: %s", strPath.c_str());
-                else
-                {
-                  CLog::Log(LOGERROR,"    -> Skipping invalid token: %s", strPathOld.c_str());
-                  pPathName = pPathName->NextSibling("path");
-                  continue;
-                }
-              }
-              vecPaths.push_back(strPath);
-            }
-            else
-              CLog::Log(LOGERROR,"    Invalid path type (%s) in bookmark", strPath.c_str());
-          }
-          pPathName = pPathName->NextSibling("path");
-        }
-        
-        const TiXmlNode *pCacheNode = pChild->FirstChild("cache");
-        const TiXmlNode *pDepthNode = pChild->FirstChild("depth");
-        const TiXmlNode *pLockMode = pChild->FirstChild("lockmode");
-        const TiXmlNode *pLockCode = pChild->FirstChild("lockcode");
-        const TiXmlNode *pBadPwdCount = pChild->FirstChild("badpwdcount");
-        const TiXmlNode *pThumbnailNode = pChild->FirstChild("thumbnail");
-
-        if (!strName.IsEmpty() && vecPaths.size() > 0)
-        {
-          CShare share;
-
-          CStdString strPath;
-          // disallowed for files, or theres only a single path in the vector
-          if ((strTagName.Equals("files")) || (vecPaths.size() == 1))
-            strPath = vecPaths[0];
-
-          // multiple paths?
-          else
-          {
-            // validate the paths
-            for (int j = 0; j < (int)vecPaths.size(); ++j)
-            {
-              CURL url(vecPaths[j]);
-              CStdString protocol = url.GetProtocol();
-              bool bIsInvalid = false;
-
-              // for my programs
-              if (strTagName.Equals("myprograms"))
-              {
-                // only allow HD
-                if (url.IsLocal())
-                  share.vecPaths.push_back(vecPaths[j]);
-                else
-                  bIsInvalid = true;
-              }
-
-              // for others
-              else
-              {
-                // only allow HD, SMB, and XBMS
-                if (url.IsLocal() || protocol.Equals("smb") || protocol.Equals("xbms"))
-                  share.vecPaths.push_back(vecPaths[j]);
-                else
-                  bIsInvalid = true;
-              }
-              
-              // error message
-              if (bIsInvalid)   
-                CLog::Log(LOGERROR,"    Invalid path type (%s) for multipath bookmark", vecPaths[j].c_str());
-            }
-
-            // no valid paths? skip to next bookmark
-            if (share.vecPaths.size() == 0)
-            {
-              CLog::Log(LOGERROR,"    Missing or invalid <name> and/or <path> in bookmark");
-              pChild = pChild->NextSibling();
-            }
-
-            // only one valid path? make it the strPath
-            else if (share.vecPaths.size() == 1)
-            {
-              strPath = share.vecPaths[0];
-              share.vecPaths.empty();
-            }
-
-            // multiple valid paths?
-            else
-            {
-              // if my programs, make a comma seperated path
-              if (strTagName.Equals("myprograms"))
-              {
-                for (int j = 0; j < (int)share.vecPaths.size(); ++j)
-                  strPath += share.vecPaths[j] + ",";
-                strPath.Delete(strPath.size()-1);
-              }
-              // otherwise make a virtualpath path
-              else
-                strPath.Format("virtualpath://%s/%s", strTagName.c_str(), strName.c_str());
-            }
-          }
-
-          share.strName = strName;
-          share.strPath = strPath;
-          share.m_iBufferSize = 0;
-          share.m_iDepthSize = 1;
-          share.m_iLockMode = LOCK_MODE_EVERYONE;
-          share.m_strLockCode = "";
-          share.m_iBadPwdCount = 0;
-
-          CLog::Log(LOGDEBUG,"      Adding bookmark:");
-          CLog::Log(LOGDEBUG,"        Name: %s", share.strName.c_str());
-          if (CUtil::IsVirtualPath(share.strPath))
-          {
-            for (int i = 0; i < (int)share.vecPaths.size(); ++i)
-              CLog::Log(LOGDEBUG,"        Path (%02i): %s", i+1, share.vecPaths.at(i).c_str());
-          }
-          else
-            CLog::Log(LOGDEBUG,"        Path: %s", share.strPath.c_str());
-
-          strPath = share.strPath;
-          strPath.ToUpper();
-          if (strPath.Left(12) == "VIRTUALPATH:")
-            share.m_iDriveType = SHARE_TYPE_VPATH;
-          else if (strPath.Left(4) == "UDF:")
-          {
-            share.m_iDriveType = SHARE_TYPE_VIRTUAL_DVD;
-            share.strPath = "D:\\";
-          }
-          else if (strPath.Left(11) == "SOUNDTRACK:")
-            share.m_iDriveType = SHARE_TYPE_LOCAL;
-          else if (CUtil::IsISO9660(share.strPath))
-            share.m_iDriveType = SHARE_TYPE_VIRTUAL_DVD;
-          else if (CUtil::IsDVD(share.strPath))
-            share.m_iDriveType = SHARE_TYPE_DVD;
-          else if (CUtil::IsRemote(share.strPath))
-            share.m_iDriveType = SHARE_TYPE_REMOTE;
-          else if (CUtil::IsHD(share.strPath))
-            share.m_iDriveType = SHARE_TYPE_LOCAL;
-          else
-            share.m_iDriveType = SHARE_TYPE_UNKNOWN;
-
-          if (pCacheNode)
-          {
-            share.m_iBufferSize = atoi( pCacheNode->FirstChild()->Value() );
-          }
-
-          if (pDepthNode)
-          {
-            share.m_iDepthSize = atoi( pDepthNode->FirstChild()->Value() );
-          }
-
-          if (pLockMode)
-          {
-            share.m_iLockMode = atoi( pLockMode->FirstChild()->Value() );
-          }
-
-          if (pLockCode)
-          {
-            share.m_strLockCode = pLockCode->FirstChild()->Value();
-          }
-
-          if (pBadPwdCount)
-          {
-            share.m_iBadPwdCount = atoi( pBadPwdCount->FirstChild()->Value() );
-          }
-
-          if (pThumbnailNode)
-          {
-            share.m_strThumbnailImage = pThumbnailNode->FirstChild()->Value();
-          }
-
-          // check - convert to url and back again to make sure strPath is accurate
-          // in terms of what we expect
-          CURL url(share.strPath);
-          url.GetURL(share.strPath);
           items.push_back(share);
         }
         else
@@ -848,6 +652,213 @@ void CSettings::GetShares(const TiXmlElement* pRootElement, const CStdString& st
   {
     CLog::Log(LOGERROR, "  <%s> tag is missing or XboxMediaCenter.xml is malformed", strTagName.c_str());
   }
+}
+
+bool CSettings::GetShare(const CStdString &category, const TiXmlNode *bookmark, CShare &share)
+{
+  CLog::Log(LOGDEBUG,"    ---- BOOKMARK START ----");
+  const TiXmlNode *pNodeName = bookmark->FirstChild("name");
+  CStdString strName;
+  if (pNodeName && pNodeName->FirstChild())
+  {
+    strName = pNodeName->FirstChild()->Value();
+    CLog::Log(LOGDEBUG,"    Found name: %s", strName.c_str());
+  }
+  // get multiple paths
+  vector<CStdString> vecPaths;
+  const TiXmlNode *pPathName = bookmark->FirstChild("path");
+  while (pPathName)
+  {
+    if (pPathName->FirstChild())
+    {
+      CStdString strPath = pPathName->FirstChild()->Value();
+      // make sure there are no virtualpaths or stack paths defined in xboxmediacenter.xml
+      CLog::Log(LOGDEBUG,"    Found path: %s", strPath.c_str());
+      if (!CUtil::IsVirtualPath(strPath) && !CUtil::IsStack(strPath))
+      {
+        // translate paths
+        CStdString strPathOld = strPath;
+        ConvertHomeVar(strPath);
+        if (!strPath.Equals(strPathOld))
+          CLog::Log(LOGDEBUG,"    -> Translated to path: %s", strPath.c_str());
+
+        // translate special tags
+        if (strPath.at(0) == '$')
+        {
+          strPath = CUtil::TranslateSpecialDir(strPath);
+          if (!strPath.IsEmpty())
+            CLog::Log(LOGDEBUG,"    -> Translated to path: %s", strPath.c_str());
+          else
+          {
+            CLog::Log(LOGERROR,"    -> Skipping invalid token: %s", strPathOld.c_str());
+            pPathName = pPathName->NextSibling("path");
+            continue;
+          }
+        }
+        vecPaths.push_back(strPath);
+      }
+      else
+        CLog::Log(LOGERROR,"    Invalid path type (%s) in bookmark", strPath.c_str());
+    }
+    pPathName = pPathName->NextSibling("path");
+  }
+  
+  const TiXmlNode *pCacheNode = bookmark->FirstChild("cache");
+  const TiXmlNode *pDepthNode = bookmark->FirstChild("depth");
+  const TiXmlNode *pLockMode = bookmark->FirstChild("lockmode");
+  const TiXmlNode *pLockCode = bookmark->FirstChild("lockcode");
+  const TiXmlNode *pBadPwdCount = bookmark->FirstChild("badpwdcount");
+  const TiXmlNode *pThumbnailNode = bookmark->FirstChild("thumbnail");
+
+  if (!strName.IsEmpty() && vecPaths.size() > 0)
+  {
+    CStdString strPath;
+    // disallowed for files, or theres only a single path in the vector
+    if ((category.Equals("files")) || (vecPaths.size() == 1))
+      strPath = vecPaths[0];
+
+    // multiple paths?
+    else
+    {
+      // validate the paths
+      for (int j = 0; j < (int)vecPaths.size(); ++j)
+      {
+        CURL url(vecPaths[j]);
+        CStdString protocol = url.GetProtocol();
+        bool bIsInvalid = false;
+
+        // for my programs
+        if (category.Equals("myprograms"))
+        {
+          // only allow HD
+          if (url.IsLocal())
+            share.vecPaths.push_back(vecPaths[j]);
+          else
+            bIsInvalid = true;
+        }
+
+        // for others
+        else
+        {
+          // only allow HD, SMB, and XBMS
+          if (url.IsLocal() || protocol.Equals("smb") || protocol.Equals("xbms"))
+            share.vecPaths.push_back(vecPaths[j]);
+          else
+            bIsInvalid = true;
+        }
+        
+        // error message
+        if (bIsInvalid)   
+          CLog::Log(LOGERROR,"    Invalid path type (%s) for multipath bookmark", vecPaths[j].c_str());
+      }
+
+      // no valid paths? skip to next bookmark
+      if (share.vecPaths.size() == 0)
+      {
+        CLog::Log(LOGERROR,"    Missing or invalid <name> and/or <path> in bookmark");
+        return false;
+      }
+
+      // only one valid path? make it the strPath
+      else if (share.vecPaths.size() == 1)
+      {
+        strPath = share.vecPaths[0];
+        share.vecPaths.empty();
+      }
+
+      // multiple valid paths?
+      else
+      {
+        // if my programs, make a comma seperated path
+        if (category.Equals("myprograms"))
+        {
+          for (int j = 0; j < (int)share.vecPaths.size(); ++j)
+            strPath += share.vecPaths[j] + ",";
+          strPath.Delete(strPath.size()-1);
+        }
+        // otherwise make a virtualpath path
+        else
+          strPath.Format("virtualpath://%s/%s", category.c_str(), strName.c_str());
+      }
+    }
+
+    share.strName = strName;
+    share.strPath = strPath;
+    share.m_iBufferSize = 0;
+    share.m_iDepthSize = 1;
+    share.m_iLockMode = LOCK_MODE_EVERYONE;
+    share.m_strLockCode = "";
+    share.m_iBadPwdCount = 0;
+
+    CLog::Log(LOGDEBUG,"      Adding bookmark:");
+    CLog::Log(LOGDEBUG,"        Name: %s", share.strName.c_str());
+    if (CUtil::IsVirtualPath(share.strPath))
+    {
+      for (int i = 0; i < (int)share.vecPaths.size(); ++i)
+        CLog::Log(LOGDEBUG,"        Path (%02i): %s", i+1, share.vecPaths.at(i).c_str());
+    }
+    else
+      CLog::Log(LOGDEBUG,"        Path: %s", share.strPath.c_str());
+
+    strPath = share.strPath;
+    strPath.ToUpper();
+    if (strPath.Left(12) == "VIRTUALPATH:")
+      share.m_iDriveType = SHARE_TYPE_VPATH;
+    else if (strPath.Left(4) == "UDF:")
+    {
+      share.m_iDriveType = SHARE_TYPE_VIRTUAL_DVD;
+      share.strPath = "D:\\";
+    }
+    else if (strPath.Left(11) == "SOUNDTRACK:")
+      share.m_iDriveType = SHARE_TYPE_LOCAL;
+    else if (CUtil::IsISO9660(share.strPath))
+      share.m_iDriveType = SHARE_TYPE_VIRTUAL_DVD;
+    else if (CUtil::IsDVD(share.strPath))
+      share.m_iDriveType = SHARE_TYPE_DVD;
+    else if (CUtil::IsRemote(share.strPath))
+      share.m_iDriveType = SHARE_TYPE_REMOTE;
+    else if (CUtil::IsHD(share.strPath))
+      share.m_iDriveType = SHARE_TYPE_LOCAL;
+    else
+      share.m_iDriveType = SHARE_TYPE_UNKNOWN;
+
+    if (pCacheNode)
+    {
+      share.m_iBufferSize = atoi( pCacheNode->FirstChild()->Value() );
+    }
+
+    if (pDepthNode)
+    {
+      share.m_iDepthSize = atoi( pDepthNode->FirstChild()->Value() );
+    }
+
+    if (pLockMode)
+    {
+      share.m_iLockMode = atoi( pLockMode->FirstChild()->Value() );
+    }
+
+    if (pLockCode)
+    {
+      share.m_strLockCode = pLockCode->FirstChild()->Value();
+    }
+
+    if (pBadPwdCount)
+    {
+      share.m_iBadPwdCount = atoi( pBadPwdCount->FirstChild()->Value() );
+    }
+
+    if (pThumbnailNode)
+    {
+      share.m_strThumbnailImage = pThumbnailNode->FirstChild()->Value();
+    }
+
+    // check - convert to url and back again to make sure strPath is accurate
+    // in terms of what we expect
+    CURL url(share.strPath);
+    url.GetURL(share.strPath);
+    return true;
+  }
+  return false;
 }
 
 void CSettings::GetString(const TiXmlElement* pRootElement, const CStdString& strTagName, CStdString &strValue, const CStdString& strDefaultValue)
@@ -1275,12 +1286,6 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile, const bool loadp
     GetString(pElement, "kaiarenapass", g_stSettings.szOnlineArenaPassword, "");
     GetString(pElement, "kaiarenadesc", g_stSettings.szOnlineArenaDescription, "");
   }
-  //screensaver
-  pElement = pRootElement->FirstChildElement("ScreenSaver");
-  if (pElement)
-  {
-    GetString(pElement, "ScreenSaverSlideShowPath", g_stSettings.szScreenSaverSlideShowPath, "");
-  }
   
   pElement = pRootElement->FirstChildElement("CDDARipper");
   if (pElement)
@@ -1583,7 +1588,6 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile, const bool savep
   TiXmlElement screensaverNode("ScreenSaver");
   pNode = pRoot->InsertEndChild(screensaverNode);
   if (!pNode) return false;
-  SetString(pNode, "ScreenSaverSlideShowPath", g_stSettings.szScreenSaverSlideShowPath);
   
   // Advanced Settings
   TiXmlElement audioNode("AudioSettings");
@@ -1840,42 +1844,48 @@ bool CSettings::UpdateBookmark(const CStdString &strType, const CStdString strOl
       break;
     }
   }
-  // Return bookmark of
+
+  // Update our XML file as well
   TiXmlElement *pRootElement = xbmcXml.RootElement();
   TiXmlNode *pNode = NULL;
   TiXmlNode *pIt = NULL;
 
   pNode = pRootElement->FirstChild(strType);
-
-  // if valid bookmark, find child at pos (id)
+  bool foundXML(false);
   if (pNode && breturn)
   {
     pIt = pNode->FirstChild("bookmark");
     while (pIt)
     {
-      TiXmlNode *pChild = pIt->FirstChild("name");
-      if (pChild && pChild->FirstChild()->Value() == strOldName)
+      CShare share;
+      if (GetShare(strType, pIt, share))
       {
-        pChild = pIt->FirstChild(strUpdateElement);
-        if (pChild)
+        if (share.strName == strOldName) // TODO: Should we be checking path here?
         {
-          pIt->FirstChild(strUpdateElement)->FirstChild()->SetValue(strUpdateText);
+          foundXML = true;
+          // check we have strUpdateElement ("name" or "path")
+          const TiXmlNode *pChild = pIt->FirstChild(strUpdateElement);
+          if (pChild)
+          { // we do, so update it
+            pIt->FirstChild(strUpdateElement)->FirstChild()->SetValue(strUpdateText);
+          }
+          else
+          { // we don't, so make a new one
+            TiXmlText xmlText(strUpdateText);
+            TiXmlElement eElement(strUpdateElement);
+            eElement.InsertEndChild(xmlText);
+            pIt->ToElement()->InsertEndChild(eElement);
+          }
+          break;
         }
-        else
-        {
-          TiXmlText xmlText(strUpdateText);
-          TiXmlElement eElement(strUpdateElement);
-          eElement.InsertEndChild(xmlText);
-          pIt->ToElement()->InsertEndChild(eElement);
-        }
-        break;
       }
-      else
-        pIt = pIt->NextSibling("bookmark");
+      pIt = pIt->NextSibling("bookmark");
     }
+    if (!foundXML)
+      CLog::Log(LOGERROR, "Unable to find bookmark with name %s to update the %s", strOldName.c_str(), strUpdateElement.c_str());
     return xbmcXml.SaveFile();
   }
-  return breturn;
+  return false;
 }
 
 bool CSettings::UpDateXbmcXML(const CStdString &strFirstChild, const CStdString &strChild, const CStdString &strChildValue)
@@ -1913,6 +1923,7 @@ bool CSettings::UpDateXbmcXML(const CStdString &strFirstChild, const CStdString 
     return xbmcXml.SaveFile();
   else return false;
 }
+
 bool CSettings::UpDateXbmcXML(const CStdString &strFirstChild, const CStdString &strFirstChildValue)
 {
   if (!LoadXml()) return false;
@@ -1934,15 +1945,16 @@ bool CSettings::UpDateXbmcXML(const CStdString &strFirstChild, const CStdString 
     return xbmcXml.SaveFile();
   }
   else return false;
-}  
+}
+
 bool CSettings::DeleteBookmark(const CStdString &strType, const CStdString strName, const CStdString strPath)
 {
-   bool breturn; breturn = false;
-   
   if (!LoadXml()) return false;
 
   VECSHARES *pShares = GetSharesFromType(strType);
   if (!pShares) return false;
+
+  bool found(false);
 
   for (IVECSHARES it = pShares->begin(); it != pShares->end(); it++)
   {
@@ -1950,14 +1962,14 @@ bool CSettings::DeleteBookmark(const CStdString &strType, const CStdString strNa
     {
       CLog::Log(LOGDEBUG,"found share, removing!");
       pShares->erase(it);
-      breturn = true;
+      found = true;
       break;
     }
   }
   // Return bookmark of
-  if (breturn)
+  if (found)
   {
-    bool found(false);  // for debugging
+    bool foundXML(false);  // for debugging
     TiXmlElement *pRootElement = xbmcXml.RootElement();
     TiXmlNode *pNode = NULL;
     TiXmlNode *pIt = NULL;
@@ -1970,13 +1982,12 @@ bool CSettings::DeleteBookmark(const CStdString &strType, const CStdString strNa
       pIt = pNode->FirstChild("bookmark");
       while (pIt)
       {
-        TiXmlNode *pChild = pIt->FirstChild("name");
-        if (pChild && pChild->FirstChild()->Value() == strName)
+        CShare share;
+        if (GetShare(strType, pIt, share))
         {
-          pChild = pIt->FirstChild("path");
-          if (pChild && pChild->FirstChild()->Value() == strPath)
+          if (share.strName == strName && share.strPath == strPath)
           {
-            found = true;
+            foundXML = true;
             pNode->RemoveChild(pIt);
             break;
           }
@@ -1984,7 +1995,7 @@ bool CSettings::DeleteBookmark(const CStdString &strType, const CStdString strNa
         pIt = pIt->NextSibling("bookmark");
       }
     }
-    if (!found)
+    if (!foundXML)
       CLog::Log(LOGERROR, "Unable to find the bookmark %s with path %s for deletion from xboxmediacenter.xml", strName.c_str(), strPath.c_str());
     return xbmcXml.SaveFile();
   }
