@@ -948,6 +948,9 @@ void CGUIWindowVideoBase::PlayMovie(const CFileItem *item)
 void CGUIWindowVideoBase::OnDeleteItem(int iItem)
 {
   if ( iItem < 0 || iItem >= m_vecItems.Size()) return;
+  // HACK: stacked files need to be treated as folders in order to be deleted
+  if (m_vecItems[iItem]->IsStack())
+    m_vecItems[iItem]->m_bIsFolder = true;
   if (!CGUIWindowFileManager::DeleteItem(m_vecItems[iItem]))
     return;
   Update(m_vecItems.m_strPath);
