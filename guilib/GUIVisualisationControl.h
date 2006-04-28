@@ -54,5 +54,7 @@ private:
   float m_fFreq[2*AUDIO_BUFFER_SIZE];         // Frequency data
   bool m_bCalculate_Freq;       // True if the vis wants freq data
   bool m_bInitialized;
+  bool m_bLocked;
+  bool m_bLockChanged;
   CStdString m_AlbumThumb;
 };
