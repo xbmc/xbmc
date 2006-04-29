@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 29-04-2006 fixed: ButtonScroller - focus wasn't set to defaultbutton.
  - 29-04-2006 fixed: visualisation preset and lockstate were not reset when switching between visualisations.
  - 29-04-2006 fixed: Possible crashes when accessing nonexistent seekbar.
  - 29-04-2006 fixed: [ 1478357 ] Umlaute in movie/music info and scripts
