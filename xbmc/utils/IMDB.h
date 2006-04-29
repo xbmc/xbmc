@@ -76,7 +76,6 @@ public:
 
 protected:
   void RemoveAllAfter(char* szMovie, const char* szSearch);
-  bool GetString(const TiXmlNode* pRootNode, const char* strTag, CStdString& strStringValue);
   CHTTP m_http;
 
   DllHtmlScraper m_dll;
