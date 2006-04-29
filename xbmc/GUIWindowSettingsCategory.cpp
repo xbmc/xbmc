@@ -1023,8 +1023,14 @@ void CGUIWindowSettingsCategory::UpdateSettings()
     }
     else if (strSetting == "ScreenSaver.SlideShowPath")
     {
-      CGUIControl *pControl = (CGUIControl *)GetControl(GetSetting(strSetting)->GetID());
+      CGUIButtonControl *pControl = (CGUIButtonControl *)GetControl(GetSetting(strSetting)->GetID());
       pControl->SetEnabled(g_guiSettings.GetString("ScreenSaver.Mode") == "SlideShow");
+      CStdString path = g_guiSettings.GetString("ScreenSaver.SlideShowPath");
+      CStdString shortPath;
+      if (CUtil::MakeShortenPath(path, shortPath, 30 ))
+        pControl->SetLabel2(shortPath);
+      else
+        pControl->SetLabel2(path);
     }
     else if (strSetting == "ScreenSaver.SlideShowShuffle")
     {
@@ -1613,10 +1619,10 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     if (CGUIDialogFileBrowser::ShowAndGetDirectory(g_settings.m_vecMyPictureShares, g_localizeStrings.Get(pSettingString->m_iHeadingString), path))
     {
       // To Prevent: if Path is to long, goes out of screen
-      CStdString StrOutput;
-      if (CUtil::MakeShortenPath(path, StrOutput, 30 ))
-        pSettingString->SetData(StrOutput);
-      else
+      //CStdString StrOutput;
+      //if (CUtil::MakeShortenPath(path, StrOutput, 30 ))
+      //  pSettingString->SetData(StrOutput);
+      //else
         pSettingString->SetData(path);
     }
   }

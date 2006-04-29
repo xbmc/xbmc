@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 29-04-2006 fixed: [ 1478872 ] slide show smb lookup uses shortened path then fails
  - 29-04-2006 fixed: 'movie information' was enabled in context menu for inappropriate entries in video database views.
  - 29-04-2006 fixed: visualisation transition on activate.
  - 29-04-2006 fixed: ButtonScroller - focus wasn't set to defaultbutton.
