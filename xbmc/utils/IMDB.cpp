@@ -7,6 +7,7 @@
 #include "../util.h"
 #include "HTMLUtil.h"
 #include "../FileSystem/FileCurl.h"
+#include "XMLUtils.h"
 
 using namespace HTML;
 
@@ -75,19 +76,6 @@ bool CIMDB::InternalFindMovie(const CStdString &strMovie, IMDB_MOVIELIST& moviel
     }
   }
   return true;
-}
-
-bool CIMDB::GetString(const TiXmlNode* pRootNode, const char* strTag, CStdString& strStringValue)
-{
-  const TiXmlNode* pNode = pRootNode->FirstChild(strTag );
-  if (!pNode) return false;
-  pNode = pNode->FirstChild();
-  if (pNode != NULL)
-  {
-    strStringValue = pNode->Value();
-    return true;
-  }
-  return false;
 }
 
 bool CIMDB::InternalGetDetails(const CIMDBUrl& url, CIMDBMovie& movieDetails)
@@ -199,22 +187,31 @@ bool CIMDB::ParseDetails(TiXmlDocument &doc, CIMDBMovie &movieDetails)
   }
 
   CStdString strTemp;
-  GetString(details, "title", movieDetails.m_strTitle);
-  if (GetString(details, "rating", strTemp)) movieDetails.m_fRating = (float)atof(strTemp);
-  if (GetString(details, "year", strTemp)) movieDetails.m_iYear = atoi(strTemp);
-  if (GetString(details, "top250", strTemp)) movieDetails.m_iTop250 = atoi(strTemp);
+  XMLUtils::GetString(details, "title", movieDetails.m_strTitle);
+  if (XMLUtils::GetString(details, "rating", strTemp)) movieDetails.m_fRating = (float)atof(strTemp);
+  if (XMLUtils::GetString(details, "year", strTemp)) movieDetails.m_iYear = atoi(strTemp);
+  if (XMLUtils::GetString(details, "top250", strTemp)) movieDetails.m_iTop250 = atoi(strTemp);
 
-  GetString(details, "votes", movieDetails.m_strVotes);
-  GetString(details, "cast", movieDetails.m_strCast);
-  GetString(details, "outline", movieDetails.m_strPlotOutline);
-  GetString(details, "runtime", movieDetails.m_strRuntime);
-  GetString(details, "thumb", movieDetails.m_strPictureURL);
-  GetString(details, "tagline", movieDetails.m_strTagLine);
-  GetString(details, "genre", movieDetails.m_strGenre);
-  GetString(details, "credits", movieDetails.m_strWritingCredits);
-  GetString(details, "director", movieDetails.m_strDirector);
-  GetString(details, "plot", movieDetails.m_strPlot);
+  XMLUtils::GetString(details, "votes", movieDetails.m_strVotes);
+  XMLUtils::GetString(details, "cast", movieDetails.m_strCast);
+  XMLUtils::GetString(details, "outline", movieDetails.m_strPlotOutline);
+  XMLUtils::GetString(details, "runtime", movieDetails.m_strRuntime);
+  XMLUtils::GetString(details, "thumb", movieDetails.m_strPictureURL);
+  XMLUtils::GetString(details, "tagline", movieDetails.m_strTagLine);
+  XMLUtils::GetString(details, "genre", movieDetails.m_strGenre);
+  XMLUtils::GetString(details, "credits", movieDetails.m_strWritingCredits);
+  XMLUtils::GetString(details, "director", movieDetails.m_strDirector);
+  XMLUtils::GetString(details, "plot", movieDetails.m_strPlot);
 
+  // convert to utf8
+  g_charsetConverter.stringCharsetToUtf8(movieDetails.m_strTitle);
+  g_charsetConverter.stringCharsetToUtf8(movieDetails.m_strCast);
+  g_charsetConverter.stringCharsetToUtf8(movieDetails.m_strPlotOutline);
+  g_charsetConverter.stringCharsetToUtf8(movieDetails.m_strTagLine);
+  g_charsetConverter.stringCharsetToUtf8(movieDetails.m_strGenre);
+  g_charsetConverter.stringCharsetToUtf8(movieDetails.m_strWritingCredits);
+  g_charsetConverter.stringCharsetToUtf8(movieDetails.m_strDirector);
+  g_charsetConverter.stringCharsetToUtf8(movieDetails.m_strPlot);
   return true;
 }
 
