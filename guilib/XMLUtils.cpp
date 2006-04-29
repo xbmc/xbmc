@@ -56,9 +56,13 @@ bool XMLUtils::GetString(const TiXmlNode* pRootNode, const char* strTag, CStdStr
   const TiXmlNode* pNode = pRootNode->FirstChild(strTag );
   if (!pNode) return false;
   pNode = pNode->FirstChild();
-  if (pNode != NULL) strStringValue = pNode->Value();
-  else strStringValue = "";
-  return true;
+  if (pNode != NULL)
+  {
+    strStringValue = pNode->Value();
+    return true;
+  }
+  strStringValue.Empty();
+  return false;
 }
 
 /*!

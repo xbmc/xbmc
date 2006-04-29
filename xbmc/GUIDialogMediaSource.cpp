@@ -96,7 +96,7 @@ void CGUIDialogMediaSource::OnPathBrowse()
   // Browse is called.  Open the filebrowser dialog.
   // Ignore current path is best at this stage??
   CStdString path;
-  bool allowNetworkShares = (m_type == "myprograms");
+  bool allowNetworkShares(m_type != "myprograms");
   CShare *extraShare = NULL;
   // TODO 2.0: Fix up these strings
   if (m_type == "music")
