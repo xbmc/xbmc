@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 29-04-2006 fixed: visualisation transition on activate.
  - 29-04-2006 fixed: ButtonScroller - focus wasn't set to defaultbutton.
  - 29-04-2006 fixed: visualisation preset and lockstate were not reset when switching between visualisations.
  - 29-04-2006 fixed: Possible crashes when accessing nonexistent seekbar.
