@@ -227,7 +227,7 @@ void CGUIButtonScroller::AllocResources()
     m_iDefaultSlot = m_iXMLDefaultSlot;
     Update();
   }
-  SetActiveButton(0);
+  SetActiveButton(m_iDefaultSlot);
 }
 
 void CGUIButtonScroller::FreeResources()
