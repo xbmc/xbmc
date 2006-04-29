@@ -687,7 +687,7 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem)
   if (!bIsGotoParent)
   {
     // turn off the query info button if we are in playlists view
-    if (GetID() != WINDOW_VIDEO_PLAYLIST)
+    if (GetID() != WINDOW_VIDEO_PLAYLIST && !(m_vecItems[iItem]->m_bIsFolder && GetID() != WINDOW_VIDEOS))
       btn_Show_Info = pMenu->AddButton(13346);
     
     // check to see if the Resume Video button is applicable
