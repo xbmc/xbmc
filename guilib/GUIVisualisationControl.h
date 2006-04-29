@@ -38,13 +38,10 @@ public:
   CVisualisation *GetVisualisation();
 private:
   void FreeVisualisation();
-  void LoadVisualisation(bool bNewVisualisation = false);
+  void LoadVisualisation();
   void CreateBuffers();
   void ClearBuffers();
   bool UpdateAlbumArt();
-  void PersistState();
-  void ReloadState();
-  void ResetState();
   CStdString      m_currentVis;
   CVisualisation* m_pVisualisation;
 
@@ -57,7 +54,5 @@ private:
   float m_fFreq[2*AUDIO_BUFFER_SIZE];         // Frequency data
   bool m_bCalculate_Freq;       // True if the vis wants freq data
   bool m_bInitialized;
-  bool m_bLocked;
-  bool m_bLockChanged;
   CStdString m_AlbumThumb;
 };
