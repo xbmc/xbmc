@@ -8,7 +8,6 @@ public:
   virtual ~CGUIWindowVideoFiles(void);
   virtual bool OnMessage(CGUIMessage& message);
   virtual bool OnAction(const CAction &action);
-  CFileItem CurrentDirectory() const { return m_vecItems;};
 
 private:
   virtual void SetIMDBThumbs(CFileItemList& items);
