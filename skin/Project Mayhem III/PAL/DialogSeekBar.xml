@@ -206,7 +206,7 @@
       <id>0</id>
       <posx>568</posx>
       <posy>60</posy>
-      <label>$INFO[Player.Duration,/ ]</info>
+      <label>$INFO[Player.Duration,/ ]</label>
       <font>font10</font>
       <align>left</align>
       <width>100</width>
