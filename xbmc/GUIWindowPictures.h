@@ -15,8 +15,6 @@ public:
   virtual ~CGUIWindowPictures(void);
   virtual bool OnMessage(CGUIMessage& message);
 
-  CFileItem CurrentDirectory() const { return m_vecItems;};
-
 protected:
   virtual bool OnClick(int iItem);
   virtual void UpdateButtons();
