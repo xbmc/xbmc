@@ -1377,21 +1377,6 @@ void CVideoDatabase::GetDVDLabel(long lMovieId, CStdString& strDVDLabel)
     CLog::Log(LOGERROR, "CVideoDatabase::GetDVDLabel() failed");
   }
 }
-/*
-CIMDBMovie CVideoDatabase::GetBrowseDetailsFromDataset(auto_ptr<Dataset> &pDS)
-{
-  CIMDBMovie details;
-  details.m_fRating = (float)atof(pDS->fv("movieinfo.fRating").get_asString().c_str()) ;
-  details.m_strDirector = pDS->fv("actors.strActor").get_asString();
-  details.m_strPictureURL = pDS->fv("movieinfo.strPictureURL").get_asString();
-  details.m_strTitle = pDS->fv("movieinfo.strTitle").get_asString();
-  details.m_strPath = pDS->fv("path.strPath").get_asString();
-  details.m_strDVDLabel = pDS->fv("movie.cdlabel").get_asString();
-  details.m_strIMDBNumber = pDS->fv("movieinfo.IMDBID").get_asString();
-  details.m_bWatched = pDS->fv("movieinfo.bWatched").get_asBool();
-  details.m_strFileNameAndPath = details.m_strPath + pDS->fv("files.strFileName").get_asString();
-  details.m_strSearchString.Format("%i", lMovieId);
-}*/
 
 CIMDBMovie CVideoDatabase::GetDetailsFromDataset(auto_ptr<Dataset> &pDS)
 {
@@ -1408,22 +1393,6 @@ CIMDBMovie CVideoDatabase::GetDetailsFromDataset(auto_ptr<Dataset> &pDS)
   details.m_iYear = pDS->fv("movieinfo.iYear").get_asLong();
   long lMovieId = pDS->fv("movieinfo.idMovie").get_asLong();
   details.m_strGenre = pDS->fv("movieinfo.strGenre").get_asString();
-  // Genre's are stored multiple times - we need to do a separate lookup for these
-/*  if (m_pDS2.get())
-  {
-    CStdString sql = FormatSQL("SELECT strGenre from genre join genrelinkmovie on genrelinkmovie.idGenre = genre.idGenre where genrelinkmovie.idMovie=%i", lMovieId);
-    if (m_pDS2->query(sql.c_str()) && m_pDS2->num_rows() > 0)
-    {
-      while (!m_pDS2->eof())
-      {
-        details.m_strGenre += m_pDS2->fv("strGenre").get_asString() + "/";
-        m_pDS2->next();
-      }
-      if (details.m_strGenre.size())
-        details.m_strGenre.Delete(details.m_strGenre.size() - 1);
-    }
-    m_pDS2->close();
-  }*/
   details.m_strPictureURL = pDS->fv("movieinfo.strPictureURL").get_asString();
   details.m_strTitle = pDS->fv("movieinfo.strTitle").get_asString();
   details.m_strPath = pDS->fv("path.strPath").get_asString();
