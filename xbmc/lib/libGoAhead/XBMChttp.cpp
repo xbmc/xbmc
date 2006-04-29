@@ -32,11 +32,11 @@
 #include "..\..\utils\MusicInfoScraper.h"
 #include "..\..\MusicDatabase.h"
 #include "..\..\GUIWindowSlideShow.h"
-#include "..\..\GUIWindowVideoFiles.h"
-#include "..\..\GUIWindowMusicNav.h"
+#include "..\..\GUIMediaWindow.h"
+//#include "..\..\GUIWindowMusicNav.h"
 #include "..\..\GUIWindowFileManager.h"
-#include "..\..\GUIWindowPictures.h"
-#include "..\..\GUIWindowPrograms.h"
+//#include "..\..\GUIWindowPictures.h"
+//#include "..\..\GUIWindowPrograms.h"
 #include "..\..\guilib\GUIButtonScroller.h"
 
 #define XML_MAX_INNERTEXT_SIZE 256
@@ -1349,12 +1349,24 @@ int CXbmcHttp::xbmcGetGUIDescription()
 int CXbmcHttp::xbmcGetGUIStatus()
 {
   CStdString output, tmp, strTmp;
-  output = closeTag+openTag+"MusicPath:" + ((CGUIWindowMusicNav *)m_gWindowManager.GetWindow(WINDOW_MUSIC_FILES))->CurrentDirectory().m_strPath;
-  output += closeTag+openTag+"VideoPath:" + ((CGUIWindowVideoFiles *)m_gWindowManager.GetWindow(WINDOW_VIDEOS))->CurrentDirectory().m_strPath;
-  output += closeTag+openTag+"PicturePath:" + ((CGUIWindowPictures *)m_gWindowManager.GetWindow(WINDOW_PICTURES))->CurrentDirectory().m_strPath;
-  output += closeTag+openTag+"ProgramsPath:" + ((CGUIWindowPrograms *)m_gWindowManager.GetWindow(WINDOW_PROGRAMS))->CurrentDirectory().m_strPath;
-  output += closeTag+openTag+"FilesPath1:" + ((CGUIWindowFileManager *)m_gWindowManager.GetWindow(WINDOW_FILES))->CurrentDirectory(0).m_strPath;
-  output += closeTag+openTag+"FilesPath1:" + ((CGUIWindowFileManager *)m_gWindowManager.GetWindow(WINDOW_FILES))->CurrentDirectory(1).m_strPath;
+  CGUIMediaWindow *mediaWindow = (CGUIMediaWindow *)m_gWindowManager.GetWindow(WINDOW_MUSIC_FILES);
+  if (mediaWindow)
+    output = closeTag+openTag+"MusicPath:" + mediaWindow->CurrentDirectory().m_strPath;
+  mediaWindow = (CGUIMediaWindow *)m_gWindowManager.GetWindow(WINDOW_VIDEOS);
+  if (mediaWindow)
+    output += closeTag+openTag+"VideoPath:" + mediaWindow->CurrentDirectory().m_strPath;
+  mediaWindow = (CGUIMediaWindow *)m_gWindowManager.GetWindow(WINDOW_PICTURES);
+  if (mediaWindow)
+    output += closeTag+openTag+"PicturePath:" + mediaWindow->CurrentDirectory().m_strPath;
+  mediaWindow = (CGUIMediaWindow *)m_gWindowManager.GetWindow(WINDOW_PROGRAMS);
+  if (mediaWindow)
+    output += closeTag+openTag+"ProgramsPath:" + mediaWindow->CurrentDirectory().m_strPath;
+  CGUIWindowFileManager *fileManager = (CGUIWindowFileManager *)m_gWindowManager.GetWindow(WINDOW_FILES);
+  if (fileManager)
+  {
+    output += closeTag+openTag+"FilesPath1:" + fileManager->CurrentDirectory(0).m_strPath;
+    output += closeTag+openTag+"FilesPath2:" + fileManager->CurrentDirectory(1).m_strPath;
+  }
   int iWin=m_gWindowManager.GetActiveWindow();
   CGUIWindow* pWindow=m_gWindowManager.GetWindow(iWin);  
   tmp.Format("%i", iWin);
