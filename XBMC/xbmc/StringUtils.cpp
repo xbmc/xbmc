@@ -39,7 +39,7 @@ int StringUtils::SplitString(const CStdString& input, const CStdString& delimite
     numFound++;
     positions.push_back(newPos);
     iPos = newPos;
-    newPos = input.Find (delimiter, iPos + sizeS2 + 1);
+    newPos = input.Find (delimiter, iPos + sizeS2);
   }
 
   for ( unsigned int i = 0; i <= positions.size(); i++ )

@@ -3,6 +3,8 @@
 #include "StringUtils.h"
 #include "SystemTime.h"
 #include "FileSystem/SmartPlaylistDirectory.h"
+#include "utils/CharsetConverter.h"
+#include "XMLUtils.h"
 
 typedef struct
 {
@@ -227,8 +229,12 @@ bool CSmartPlaylist::Load(const CStdString &path)
     TiXmlNode *parameter = rule->FirstChild();
     if (field && oper && parameter)
     { // valid rule
+      // TODO UTF8: We assume these are from string charset so far.
+      // Once they're constructible from the GUI, we'll check for encoding.
+      CStdString utf8Parameter;
+      g_charsetConverter.stringCharsetToUtf8(parameter->Value(), utf8Parameter);
       CSmartPlaylistRule rule;
-      rule.TranslateStrings(field, oper, parameter->Value());
+      rule.TranslateStrings(field, oper, utf8Parameter.c_str());
       m_playlistRules.push_back(rule);
     }
     rule = rule->NextSiblingElement("rule");
