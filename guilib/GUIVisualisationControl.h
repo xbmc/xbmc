@@ -38,10 +38,13 @@ public:
   CVisualisation *GetVisualisation();
 private:
   void FreeVisualisation();
-  void LoadVisualisation();
+  void LoadVisualisation(bool bNewVisualisation = false);
   void CreateBuffers();
   void ClearBuffers();
   bool UpdateAlbumArt();
+  void PersistState();
+  void ReloadState();
+  void ResetState();
   CStdString      m_currentVis;
   CVisualisation* m_pVisualisation;
 
