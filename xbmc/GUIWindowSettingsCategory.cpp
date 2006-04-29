@@ -1195,9 +1195,6 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
       pSettingString->SetData("None");
     else
       pSettingString->SetData(pControl->GetCurrentLabel() + ".vis");
-    //reset preset and lockstate
-    g_stSettings.m_VisualisationPreset = -1;
-    g_stSettings.m_VisualitionLocked   = false;
   }
   else if (strSetting == "MusicFiles.Repeat")
   {
