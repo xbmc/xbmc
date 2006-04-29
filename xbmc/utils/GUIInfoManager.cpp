@@ -588,7 +588,9 @@ string CGUIInfoManager::GetLabel(int info)
     break;
   case PLAYER_SEEKTIME:
     {
-      strLabel = ((CGUIDialogSeekBar*)m_gWindowManager.GetWindow(WINDOW_DIALOG_SEEK_BAR))->GetSeekTimeLabel();
+      CGUIDialogSeekBar *seekBar = (CGUIDialogSeekBar*)m_gWindowManager.GetWindow(WINDOW_DIALOG_SEEK_BAR);
+      if (seekBar)
+        strLabel = seekBar->GetSeekTimeLabel();
     }
     break;
   case LISTITEM_LABEL:
@@ -624,7 +626,10 @@ int CGUIInfoManager::GetInt(int info) const
     case PLAYER_PROGRESS:
       return (int)(g_application.GetPercentage());
     case PLAYER_SEEKBAR:
-      return (int)(((CGUIDialogSeekBar*)m_gWindowManager.GetWindow(WINDOW_DIALOG_SEEK_BAR))->GetPercentage());
+      {
+        CGUIDialogSeekBar *seekBar = (CGUIDialogSeekBar*)m_gWindowManager.GetWindow(WINDOW_DIALOG_SEEK_BAR);
+        return seekBar ? (int)seekBar->GetPercentage() : 0;
+      }
     case PLAYER_CACHING:
       return (int)(g_application.m_pPlayer->GetCacheLevel());
     }
@@ -774,7 +779,10 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow) const
       bReturn = g_application.m_pPlayer->IsCaching();
     break;
     case PLAYER_SEEKBAR:
-      bReturn = ((CGUIDialogSeekBar*)m_gWindowManager.GetWindow(WINDOW_DIALOG_SEEK_BAR))->IsRunning();
+      {
+        CGUIDialogSeekBar *seekBar = (CGUIDialogSeekBar*)m_gWindowManager.GetWindow(WINDOW_DIALOG_SEEK_BAR);
+        bReturn = seekBar ? seekBar->IsRunning() : false;
+      }
     break;
     case PLAYER_SEEKING:
       bReturn = m_playerSeeking;

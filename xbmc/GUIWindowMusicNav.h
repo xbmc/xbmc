@@ -11,8 +11,6 @@ public:
 
   virtual bool OnMessage(CGUIMessage& message);
   virtual void Render();
-  CFileItem CurrentDirectory() const { return m_vecItems;};
-
 
 protected:
   // override base class methods
