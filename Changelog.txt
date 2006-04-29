@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 29-04-2006 fixed: [ 1478357 ] Umlaute in movie/music info and scripts
+ - 29-04-2006 fixed: [ 1478354 ] Python "overlapping of lines"
  - 29-04-2006 fixed: shoutcast urls now work with http api.
  - 29-04-2006 fixed: (hopefully) [ 1476918 ] Thumbnail/Icon for all homebrew games uses Super Mario War
  - 29-04-2006 changed: visualisation preset and lockstate are now remembered between windows and sessions.

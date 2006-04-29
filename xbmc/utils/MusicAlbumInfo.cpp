@@ -168,7 +168,7 @@ bool CMusicAlbumInfo::Parse(const CStdString& strHTML, CHTTP& http)
         CHTMLRow row = table.GetRow(1);
         CStdString strReview = row.GetColumValue(0);
         util.RemoveTags(strReview);
-        util.ConvertHTMLToAnsi(strReview, m_strReview);
+        util.ConvertHTMLToUTF8(strReview, m_strReview);
       }
     }
   }
@@ -213,19 +213,19 @@ bool CMusicAlbumInfo::Parse(const CStdString& strHTML, CHTTP& http)
     {
       CStdString strValue = valueTable.GetRow(2).GetColumValue(0);
       util.RemoveTags(strValue);
-      util.ConvertHTMLToAnsi(strValue, m_strArtist);
+      util.ConvertHTMLToUTF8(strValue, m_strArtist);
     }
     if (strColumn.Find("Album") >= 0 && valueTable.GetRows() >= 2)
     {
       CStdString strValue = valueTable.GetRow(2).GetColumValue(0);
       util.RemoveTags(strValue);
-      util.ConvertHTMLToAnsi(strValue, m_strTitle);
+      util.ConvertHTMLToUTF8(strValue, m_strTitle);
     }
     if (strColumn.Find("Release Date") >= 0 && valueTable.GetRows() >= 2)
     {
       CStdString strValue = valueTable.GetRow(2).GetColumValue(0);
       util.RemoveTags(strValue);
-      util.ConvertHTMLToAnsi(strValue, m_strDateOfRelease);
+      util.ConvertHTMLToUTF8(strValue, m_strDateOfRelease);
 
       // extract the year out of something like "1998 (release)" or "12 feb 2003"
       int nPos = m_strDateOfRelease.Find("19");
@@ -288,7 +288,7 @@ bool CMusicAlbumInfo::Parse(const CStdString& strHTML, CHTTP& http)
 
         CStdString strValue = strHTML.Mid(iStartOfGenre, 1 + iEndOfGenre - iStartOfGenre);
         util.RemoveTags(strValue);
-        util.ConvertHTMLToAnsi(strValue, m_strGenre);
+        util.ConvertHTMLToUTF8(strValue, m_strGenre);
       }
 
       if (valueTable.GetRow(0).GetColumns() >= 2)
@@ -316,7 +316,7 @@ bool CMusicAlbumInfo::Parse(const CStdString& strHTML, CHTTP& http)
           }
 
           strStyles.TrimRight(", ");
-          util.ConvertHTMLToAnsi(strStyles, m_strStyles);
+          util.ConvertHTMLToUTF8(strStyles, m_strStyles);
         }
       }
     }
@@ -339,7 +339,7 @@ bool CMusicAlbumInfo::Parse(const CStdString& strHTML, CHTTP& http)
       }
 
       strMoods.TrimRight(", ");
-      util.ConvertHTMLToAnsi(strMoods, m_strTones);
+      util.ConvertHTMLToUTF8(strMoods, m_strTones);
     }
     if (strColumn.Find("Rating") >= 0)
     {
@@ -393,7 +393,7 @@ bool CMusicAlbumInfo::Parse(const CStdString& strHTML, CHTTP& http)
           strValue.Trim();
           if (strValue.Find("[*]") > -1)
             strValue.TrimRight("[*]");
-          util.ConvertHTMLToAnsi(strValue, strName);
+          util.ConvertHTMLToUTF8(strValue, strName);
 
           // Duration
           int iDuration = 0;
