@@ -67,46 +67,11 @@ CGUIVisualisationControl::CGUIVisualisationControl(DWORD dwParentID, DWORD dwCon
   m_pVisualisation = NULL;
   m_iNumBuffers = 0;
   m_currentVis = "";
-  m_bLocked = false;
-  m_bLockChanged = false;
   ControlType = GUICONTROL_VISUALISATION;
 }
 
 CGUIVisualisationControl::~CGUIVisualisationControl(void)
 {
-}
-
-void CGUIVisualisationControl::PersistState()
-{
-  if (!m_pVisualisation) return;
-  int np = 0;
-  char **presets = NULL;
-  m_pVisualisation->GetPresets(&presets, &g_stSettings.m_VisualisationPreset, &np, &g_stSettings.m_VisualitionLocked);
-  if (m_bLocked != g_stSettings.m_VisualitionLocked && m_bLockChanged)
-  {
-    g_settings.Save();
-    m_bLockChanged = false;
-    m_bLocked = g_stSettings.m_VisualitionLocked;
-  }
-}
-
-void CGUIVisualisationControl::ReloadState()
-{
-  if (!m_pVisualisation) return;
-  if (g_stSettings.m_VisualisationPreset != -1)
-  {
-    m_pVisualisation->OnAction(CVisualisation::VIS_ACTION_LOAD_PRESET, &g_stSettings.m_VisualisationPreset);
-  }
-  if (m_pVisualisation->IsLocked() != g_stSettings.m_VisualitionLocked)
-    m_pVisualisation->OnAction(CVisualisation::VIS_ACTION_LOCK_PRESET);
-  m_bLocked = g_stSettings.m_VisualitionLocked;
-}
-
-void CGUIVisualisationControl::ResetState()
-{
-  g_stSettings.m_VisualisationPreset = -1;
-  g_stSettings.m_VisualitionLocked = false;
-  m_bLockChanged = true;
 }
 
 void CGUIVisualisationControl::FreeVisualisation()
@@ -124,9 +89,6 @@ void CGUIVisualisationControl::FreeVisualisation()
     g_application.m_pPlayer->UnRegisterAudioCallback();
   if (m_pVisualisation)
   {
-    //remember preset and lockstate
-    PersistState();
-
     OutputDebugString("Visualisation::Stop()\n");
     m_pVisualisation->Stop();
 
@@ -143,12 +105,11 @@ void CGUIVisualisationControl::FreeVisualisation()
   CLog::Log(LOGDEBUG, "FreeVisualisation() done");
 }
 
-void CGUIVisualisationControl::LoadVisualisation(bool bNewVisualisation)
+void CGUIVisualisationControl::LoadVisualisation()
 {
   CSingleLock lock (m_critSection);
   if (m_pVisualisation)
     FreeVisualisation();
-  if (bNewVisualisation) ResetState();
 
   m_bInitialized = false;
 
@@ -184,9 +145,6 @@ void CGUIVisualisationControl::LoadVisualisation(bool bNewVisualisation)
 
     // Create new audio buffers
     CreateBuffers();
-
-    //restore preset and lockstate
-    ReloadState();
 
     m_globalvis = true;
   }
@@ -228,7 +186,7 @@ void CGUIVisualisationControl::Render()
     }
     else if (!m_currentVis.Equals(g_guiSettings.GetString("MyMusic.Visualisation")))
     { // vis changed - reload
-      LoadVisualisation(true);
+      LoadVisualisation();
 
       if (g_guiSettings.GetBool("Karaoke.Enabled"))
         g_application.m_CdgParser.Render();
@@ -355,10 +313,7 @@ bool CGUIVisualisationControl::OnAction(const CAction &action)
   else if (action.wID == ACTION_VIS_PRESET_PREV)
     visAction = CVisualisation::VIS_ACTION_PREV_PRESET;
   else if (action.wID == ACTION_VIS_PRESET_LOCK)
-  {
     visAction = CVisualisation::VIS_ACTION_LOCK_PRESET;
-    m_bLockChanged = true;
-  }
   else if (action.wID == ACTION_VIS_PRESET_RANDOM)
     visAction = CVisualisation::VIS_ACTION_RANDOM_PRESET;
   else if (action.wID == ACTION_VIS_RATE_PRESET_PLUS)
