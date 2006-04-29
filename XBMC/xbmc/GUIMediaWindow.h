@@ -18,6 +18,7 @@ public:
   virtual void OnWindowLoaded();
   virtual void OnWindowUnload();
   const CFileItem *GetCurrentListItem() const;
+  const CFileItem &CurrentDirectory() const { return m_vecItems;};
 
 protected:
   virtual void GoParentFolder();

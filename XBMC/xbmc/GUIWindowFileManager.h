@@ -17,7 +17,7 @@ public:
   virtual bool OnAction(const CAction &action);
   virtual void Render();
   virtual bool OnFileCallback(void* pContext, int ipercent);
-  CFileItem CurrentDirectory(int indx) const { return m_Directory[indx];};
+  const CFileItem &CurrentDirectory(int indx) const { return m_Directory[indx];};
 
   // static members for all windows to use
   static bool DeleteItem(const CFileItem *pItem);
