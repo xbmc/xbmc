@@ -33,6 +33,7 @@ bool CShortcut::Create(const CStdString& szPath)
     return false;
   const TiXmlNode *pChild = pRootElement->FirstChild();
 
+  m_strCustomGame.Empty();
   while (pChild > 0)
   {
     CStdString strValue = pChild->Value();
@@ -51,7 +52,18 @@ bool CShortcut::Create(const CStdString& szPath)
     {
       m_strParameters = pChild->FirstChild()->Value();
     }
+    if (strValue == "custom")
+    {
+      const TiXmlNode* pCustomElement = pChild->FirstChildElement();
+      while (pCustomElement > 0)
+      {
+        CStdString strCustomValue = pCustomElement->Value();
+        if (strCustomValue == "game")
+          m_strCustomGame = pCustomElement->FirstChild()->Value();
 
+        pCustomElement = pCustomElement->NextSibling();
+      }
+    }
 
     pChild = pChild->NextSibling();
 
