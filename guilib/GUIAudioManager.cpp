@@ -25,7 +25,6 @@ CGUIAudioManager::CGUIAudioManager()
 {
   m_lpDirectSound=NULL;
   m_lpActionSoundBuffer=NULL;
-  m_lpStartSoundBuffer=NULL;
   m_bEnabled=true;
   g_audioContext.SetSoundDeviceCallback(this);    
 }
@@ -57,9 +56,6 @@ void CGUIAudioManager::DeInitialize(int iDevice)
   //  Wait for finish when an action sound is playing
   while(IsPlaying(m_lpActionSoundBuffer));
   FreeBuffer(&m_lpActionSoundBuffer);
-
-  StopPlaying(m_lpStartSoundBuffer);
-  FreeBuffer(&m_lpStartSoundBuffer);
 
   soundBufferMap::iterator it=m_windowSoundBuffers.begin();
   while (it!=m_windowSoundBuffers.end())
@@ -146,10 +142,6 @@ void CGUIAudioManager::FreeUnused()
   //  Free sound buffer from actions
   if (!IsPlaying(m_lpActionSoundBuffer))
     FreeBuffer(&m_lpActionSoundBuffer);
-
-  //  Free sound buffer from the start sound
-  if (!IsPlaying(m_lpStartSoundBuffer))
-    FreeBuffer(&m_lpStartSoundBuffer);
 
   //  Free sound buffers from windows
   soundBufferMap::iterator it=m_windowSoundBuffers.begin();
@@ -450,9 +442,6 @@ void CGUIAudioManager::SetVolume(int iLevel)
 {
   if (m_lpActionSoundBuffer)
     m_lpActionSoundBuffer->SetVolume(iLevel);
-
-  if (m_lpStartSoundBuffer)
-    m_lpStartSoundBuffer->SetVolume(iLevel);
 
   soundBufferMap::iterator it=m_windowSoundBuffers.begin();
   while (it!=m_windowSoundBuffers.end())
