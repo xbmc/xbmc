@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 30-04-2006 fixed: playback of some mp3 files with unknown data before and in the first mp3-frames.
  - 30-04-2006 fixed: shortcuts didn't work in file manager or with xbmc.runxbe. also custom fields weren't read.
  - 30-04-2006 updated: lame to version 3.97beta2 (system/cdrip contains the updated dll)
  - 30-04-2006 changed: Music OSD keymap - CodecInfo & MusicInfo changed from global to local settings (Gamepad/Remote). Slidehow keymap fixed changed from 'Info' to 'CodecInfo' (Gamepad/Keyboard).
