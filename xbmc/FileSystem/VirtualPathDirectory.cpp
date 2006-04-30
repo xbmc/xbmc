@@ -32,7 +32,7 @@ bool CVirtualPathDirectory::GetDirectory(const CStdString& strPath, CFileItemLis
     dlgProgress->SetLine(2, "");
     dlgProgress->StartModal(m_gWindowManager.GetActiveWindow());
     dlgProgress->ShowProgressBar(true);
-    dlgProgress->SetProgressBarMax((int)share.vecPaths.size()*2);
+    dlgProgress->SetProgressMax((int)share.vecPaths.size()*2);
     dlgProgress->Progress();
   }
 
@@ -45,7 +45,7 @@ bool CVirtualPathDirectory::GetDirectory(const CStdString& strPath, CFileItemLis
       CStdString strStripped;
       url.GetURLWithoutUserDetails(strStripped);
       dlgProgress->SetLine(1, strStripped);
-      dlgProgress->StepProgressBar();
+      dlgProgress->SetProgressAdvance();
       dlgProgress->Progress();
     }
 
@@ -61,7 +61,7 @@ bool CVirtualPathDirectory::GetDirectory(const CStdString& strPath, CFileItemLis
 
     if (dlgProgress)
     {
-      dlgProgress->StepProgressBar();
+      dlgProgress->SetProgressAdvance();
       dlgProgress->Progress();
     }
   }
