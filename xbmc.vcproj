@@ -1245,6 +1245,9 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				RelativePath=".\xbmc\CueDocument.h">
 			</File>
 			<File
+				RelativePath=".\xbmc\xbox\custom_launch_params.h">
+			</File>
+			<File
 				RelativePath=".\xbmc\utils\DelayController.h">
 			</File>
 			<File

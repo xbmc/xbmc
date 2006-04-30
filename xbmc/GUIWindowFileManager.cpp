@@ -499,6 +499,8 @@ void CGUIWindowFileManager::OnStart(CFileItem *pItem)
       iRegion = 0;
     CUtil::RunXBE(pItem->m_strPath.c_str(),NULL,F_VIDEO(iRegion));
   }
+  else if (pItem->IsShortCut())
+    CUtil::RunShortcut(pItem->m_strPath);
   if (pItem->IsPicture())
   {
     CGUIWindowSlideShow *pSlideShow = (CGUIWindowSlideShow *)m_gWindowManager.GetWindow(WINDOW_SLIDESHOW);
