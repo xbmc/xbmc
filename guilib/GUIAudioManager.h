@@ -26,7 +26,6 @@ public:
 
           void        PlayActionSound(const CAction& action);
           void        PlayWindowSound(DWORD dwID, WINDOW_SOUND event);
-          void        PlayStartSound();
 
           void        FreeUnused();
 

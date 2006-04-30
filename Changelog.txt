@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 30-04-2006 changed: removed playing of start.wav, this can be done via startup.xml on window init
  - 30-04-2006 added: manual allmusic button to my music.
  - 30-04-2006 fixed: MakeShortenPath() truncates the last folder if necessary.
  - 30-04-2006 fixed: [ 1479081 ] filemanager bug when copying into a folder ending with spaces.
