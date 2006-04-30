@@ -329,17 +329,6 @@ void CGUIAudioManager::PlayWindowSound(DWORD dwID, WINDOW_SOUND event)
   }
 }
 
-// \brief Play the startup sound
-void CGUIAudioManager::PlayStartSound()
-{
-  if (g_guiSettings.GetString("LookAndFeel.SoundSkin")=="OFF")
-    return;
-
-  CStdString strFile="Q:\\media\\start.wav";
-  if (CreateBufferFromFile(strFile, &m_lpStartSoundBuffer))
-    Play(m_lpStartSoundBuffer);
-}
-
 // \brief Load the config file (sounds.xml) for nav sounds
 // Can be located in a folder "sounds" in the skin or from a
 // subfolder of the folder "sounds" in the root directory of
