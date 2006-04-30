@@ -480,6 +480,18 @@ void CGUIWindowMusicBase::ShowAlbumInfo(const CStdString& strAlbum, const CStdSt
   ShowAlbumInfo(strAlbum, "", strPath, bSaveDb, bSaveDirThumb, bRefresh);
 }
 
+void CGUIWindowMusicBase::OnManualAlbumInfo()
+{
+  CStdString strNewAlbum = "";
+  if (!CGUIDialogKeyboard::ShowAndGetInput(strNewAlbum, g_localizeStrings.Get(16011), false)) return;
+  if (strNewAlbum == "") return;
+
+  CStdString strNewArtist = "";
+  if (!CGUIDialogKeyboard::ShowAndGetInput(strNewArtist, g_localizeStrings.Get(16025), false)) return;
+
+  ShowAlbumInfo(strNewAlbum,strNewArtist,"",false,false,true);
+}
+
 void CGUIWindowMusicBase::ShowAlbumInfo(const CStdString& strAlbum, const CStdString& strArtist, const CStdString& strPath, bool bSaveDb, bool bSaveDirThumb, bool bRefresh)
 {
   bool bUpdate = false;
