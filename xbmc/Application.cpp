@@ -3159,12 +3159,6 @@ void CApplication::OnPlayBackEnded()
   g_pythonParser.OnPlayBackEnded();
 
   CLog::Log(LOGDEBUG, "Playback has finished");
-  if ((g_guiSettings.GetBool("MusicPlaylist.ClearPlaylistsOnEnd")) && (g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_MUSIC)) 
-  {
-    g_playlistPlayer.ClearPlaylist(PLAYLIST_MUSIC);
-    g_playlistPlayer.Reset();
-    g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_NONE);
-  } 
   
   CGUIMessage msg(GUI_MSG_PLAYBACK_ENDED, 0, 0, 0, 0, NULL);
   m_gWindowManager.SendThreadMessage(msg);
@@ -3849,6 +3843,14 @@ bool CApplication::OnMessage(CGUIMessage& message)
         g_settings.Save();  // save vis settings
         ResetScreenSaverWindow();
         m_gWindowManager.PreviousWindow();
+      }
+
+      // reset the audio playlist on finish
+      if (!IsPlayingAudio() && (g_guiSettings.GetBool("MusicPlaylist.ClearPlaylistsOnEnd")) && (g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_MUSIC)) 
+      {
+        g_playlistPlayer.ClearPlaylist(PLAYLIST_MUSIC);
+        g_playlistPlayer.Reset();
+        g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_NONE);
       }
 
       // DVD ejected while playing in vis ?
