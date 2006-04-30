@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 30-04-2006 changed: music info is now loaded via a thread, result is a smoother gui while loading and better ability to cancel
  - 30-04-2006 changed: removed playing of start.wav, this can be done via startup.xml on window init
  - 30-04-2006 added: manual allmusic button to my music.
  - 30-04-2006 fixed: MakeShortenPath() truncates the last folder if necessary.

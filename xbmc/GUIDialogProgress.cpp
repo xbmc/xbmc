@@ -10,6 +10,8 @@ CGUIDialogProgress::CGUIDialogProgress(void)
     : CGUIDialogBoxBase(WINDOW_DIALOG_PROGRESS, "DialogProgress.xml")
 {
   m_bCanceled = false;
+  m_iCurrent=0;
+  m_iMax=0;
 }
 
 CGUIDialogProgress::~CGUIDialogProgress(void)
@@ -41,9 +43,6 @@ void CGUIDialogProgress::StartModal(DWORD dwParentId)
   CGUIMessage msg(GUI_MSG_WINDOW_INIT, 0, 0);
   OnMessage(msg);
   ShowProgressBar(false);
-  SetPercentage(0);
-  m_iCurrent=0;
-  m_iMax=0;
 
   while (m_bRunning && IsAnimating(ANIM_TYPE_WINDOW_OPEN))
     Progress();
@@ -106,40 +105,43 @@ void CGUIDialogProgress::SetPercentage(int iPercentage)
 {
   if (iPercentage < 0) iPercentage = 0;
   if (iPercentage > 100) iPercentage = 100;
+
+  g_graphicsContext.Lock();
   CGUIProgressControl* pControl = (CGUIProgressControl*)GetControl(CONTROL_PROGRESS_BAR);
   if (pControl) pControl->SetPercentage((float)iPercentage);
+  g_graphicsContext.Unlock();
 }
 
-void CGUIDialogProgress::SetProgressBarMax(int iMax)
+void CGUIDialogProgress::SetProgressMax(int iMax)
 {
   m_iMax=iMax;
+  m_iCurrent=0;
 }
 
-void CGUIDialogProgress::StepProgressBar(int nSteps/*=1*/)
+void CGUIDialogProgress::SetProgressAdvance(int nSteps/*=1*/)
 {
-  if (m_iMax==0)
-    return;
-
   m_iCurrent+=nSteps;
 
   if (m_iCurrent>m_iMax)
     m_iCurrent=0;
 
   SetPercentage((m_iCurrent*100)/m_iMax);
+}
 
+bool CGUIDialogProgress::Abort()
+{
+  return m_bRunning ? m_bCanceled : false;
 }
 
 void CGUIDialogProgress::ShowProgressBar(bool bOnOff)
 {
   if (bOnOff)
   {
-    CGUIMessage msg(GUI_MSG_VISIBLE, GetID(), CONTROL_PROGRESS_BAR);
-    OnMessage(msg);
+    SET_CONTROL_VISIBLE(CONTROL_PROGRESS_BAR);
   }
   else
   {
-    CGUIMessage msg(GUI_MSG_HIDDEN, GetID(), CONTROL_PROGRESS_BAR);
-    OnMessage(msg);
+    SET_CONTROL_HIDDEN(CONTROL_PROGRESS_BAR);
   }
 }
 
@@ -151,6 +153,6 @@ void CGUIDialogProgress::SetHeading(const string& strLine)
 
 void CGUIDialogProgress::SetHeading(int iString)
 {
-  m_strHeading = g_localizeStrings.Get(iString);;
+  m_strHeading = g_localizeStrings.Get(iString);
   CGUIDialogBoxBase::SetHeading(m_strHeading);
 }

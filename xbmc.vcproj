@@ -1506,6 +1506,9 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				RelativePath=".\xbmc\cores\IPlayer.h">
 			</File>
 			<File
+				RelativePath=".\xbmc\IProgressCallback.h">
+			</File>
+			<File
 				RelativePath=".\xbmc\FileSystem\iso9660.h">
 			</File>
 			<File
