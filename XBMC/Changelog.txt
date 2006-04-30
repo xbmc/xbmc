@@ -5,7 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
- - 20-04-2006 fixed: Remove, Edit and Add Sources wouldn't be applied if the user ran as dash via the <home> tag (not recommended)
+ - 30-04-2006 fixed: If paplayer reached end of playback before a track was queued (eg in the case of a very short track being played) then the playlist was cleared when there were still items left to play.
+ - 30-04-2006 fixed: Remove, Edit and Add Sources wouldn't be applied if the user ran as dash via the <home> tag (not recommended)
  - 29-04-2006 fixed: [ 1478872 ] slide show smb lookup uses shortened path then fails
  - 29-04-2006 fixed: 'movie information' was enabled in context menu for inappropriate entries in video database views.
  - 29-04-2006 fixed: visualisation transition on activate.
