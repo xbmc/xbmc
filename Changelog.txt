@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 30-04-2006 updated: lame to version 3.97beta2 (system/cdrip contains the updated dll)
  - 30-04-2006 changed: Music OSD keymap - CodecInfo & MusicInfo changed from global to local settings (Gamepad/Remote). Slidehow keymap fixed changed from 'Info' to 'CodecInfo' (Gamepad/Keyboard).
  - 30-04-2006 changed: Slideshow keymap - Info button on remote now correctly shows image information.
  - 30-04-2006 changed: music info is now loaded via a thread, result is a smoother gui while loading and better ability to cancel
