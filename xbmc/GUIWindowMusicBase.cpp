@@ -1178,8 +1178,10 @@ void CGUIWindowMusicBase::OnPopupMenu(int iItem)
       btn_Scan = pMenu->AddButton(13352);         // Scan Folder to Database
   }
 
-  // Search is always visisble
-  int btn_Search = pMenu->AddButton(137);
+  int btn_Search = 0;
+  // Search is only visible in library view
+  if (GetID() != WINDOW_MUSIC_FILES)
+  pMenu->AddButton(137);
   
   // enable Rip CD Audio button if we have an audio disc
   int btn_Rip  = 0;
