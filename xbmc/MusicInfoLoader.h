@@ -1,7 +1,5 @@
-#include "BackgroundInfoLoader.h"
-
 #pragma once
-
+#include "BackgroundInfoLoader.h"
 #include "MusicDatabase.h"
 
 namespace MUSIC_INFO
@@ -18,14 +16,16 @@ public:
 protected:
   virtual void OnLoaderStart();
   virtual void OnLoaderFinish();
-  void LoadCache(const CStdString& strFileName, MAPFILEITEMS& items);
+  void LoadCache(const CStdString& strFileName, CFileItemList& items);
   void SaveCache(const CStdString& strFileName, CFileItemList& items);
 protected:
   CStdString m_strCacheFileName;
-  MAPFILEITEMS m_mapFileItems;
+  CFileItemList m_mapFileItems;
   IMAPFILEITEMS it;
   CSongMap m_songsMap;
   CStdString m_strPrevPath;
   CMusicDatabase m_musicDatabase;
+  int m_songsFromDb;
+  int m_taglessItems;
 };
 };
