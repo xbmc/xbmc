@@ -597,22 +597,11 @@ bool CGUIWindowFileManager::DoProcessFile(int iAction, const CStdString& strFile
           m_dlgProgress->Progress();
         }
 
-        CStdString strDestFileShortened = strDestFile;
-
-        // shorten file if filename length > 42 chars
-        if (g_guiSettings.GetBool("Servers.FTPAutoFatX"))
-        {
-          CUtil::ShortenFileName(strDestFileShortened);
-          for (int i = 0; i < (int)strDestFileShortened.size(); ++i)
-          {
-            if (strDestFileShortened.GetAt(i) == ',') strDestFileShortened.SetAt(i, '_');
-          }
-        }
         if (url.GetProtocol() == "rar://")
         {
           CStdString strOriginalCachePath = g_stSettings.m_szCacheDirectory;
           CStdString strDestPath;
-          CUtil::GetDirectory(strDestFileShortened,strDestPath);
+          CUtil::GetDirectory(strDestFile,strDestPath);
           strcpy(g_stSettings.m_szCacheDirectory,strDestPath.c_str());
           CLog::Log(LOGDEBUG, "CacheRarredFile: dest=%s, file=%s",strDestPath.c_str(), url.GetFileName().c_str());
           bool bResult = g_RarManager.CacheRarredFile(strDestPath,url.GetHostName(),url.GetFileName(),0,strDestPath,1);
@@ -620,7 +609,7 @@ bool CGUIWindowFileManager::DoProcessFile(int iAction, const CStdString& strFile
           return bResult;
         }
         else
-        if (!CFile::Cache(strFile.c_str(), strDestFileShortened.c_str(), this, NULL))
+        if (!CFile::Cache(strFile.c_str(), strDestFile.c_str(), this, NULL))
           return false;
     }
     break;
