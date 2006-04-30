@@ -1,6 +1,6 @@
-#include "utils/Thread.h"
-
 #pragma once
+#include "utils/Thread.h"
+#include "IProgressCallback.h"
 
 class IBackgroundLoaderObserver
 {
@@ -20,6 +20,7 @@ public:
   virtual void OnExit();
   virtual void Process();
   void SetObserver(IBackgroundLoaderObserver* pObserver);
+  void SetProgressCallback(IProgressCallback* pCallback);
   virtual bool LoadItem(CFileItem* pItem) { return false; };
 
 protected:
@@ -28,5 +29,6 @@ protected:
 protected:
   CFileItemList* m_pVecItems;
   IBackgroundLoaderObserver* m_pObserver;
+  IProgressCallback* m_pProgressCallback;
   bool m_bRunning;
 };

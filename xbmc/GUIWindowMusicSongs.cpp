@@ -297,125 +297,46 @@ void CGUIWindowMusicSongs::UpdateButtons()
 
 void CGUIWindowMusicSongs::OnRetrieveMusicInfo(CFileItemList& items)
 {
-  int nFolderCount = items.GetFolderCount();
-  // Skip items with folders only
-  if (nFolderCount == (int)items.Size() || items.IsMusicDb())
-    return ;
+  if (items.GetFolderCount()==items.Size() || items.IsMusicDb() || !g_guiSettings.GetBool("MusicFiles.UseTags"))
+    return;
 
-  CSongMap songsMap;
+  // Start the music info loader thread
+  m_musicInfoLoader.SetProgressCallback(m_dlgProgress);
+  m_musicInfoLoader.Load(items);
 
-  // get all information for all files in current directory from database
-//  m_musicdatabase.GetSongsByPath(m_vecItems.m_strPath, songsMap);
+  bool bShowProgress=!m_gWindowManager.IsRouted();
+  bool bProgressVisible=false;
 
-  // Nothing in database and id3 tags disabled; dont load tags from cdda files
-  if (/*songsMap.size() == 0 &&*/ !g_guiSettings.GetBool("MusicFiles.UseTags"))
-    return ;
+  DWORD dwTick=timeGetTime();
 
-  // get all information for all files in current directory from database
-  m_musicdatabase.GetSongsByPath(m_vecItems.m_strPath, songsMap);
-
-  // Do we have cached items
-  CFileItemList itemsMap(m_vecItems.m_strPath);
-  itemsMap.Load();
-  itemsMap.SetFastLookup(true);
-
-  bool bShowProgress = false;
-  bool bProgressVisible = false;
-  if (!m_gWindowManager.IsRouted())
-    bShowProgress = true;
-
-  DWORD dwTick = timeGetTime();
-  int iTaglessFiles = 0;
-
-  // for every file found, but skip folder
-  for (int i = 0; i < (int)items.Size(); ++i)
+  while (m_musicInfoLoader.IsLoading())
   {
-    CFileItem* pItem = items[i];
+    if (bShowProgress)
+    { // Do we have to init a progress dialog?
+      DWORD dwElapsed=timeGetTime()-dwTick;
 
-    // dont try reading tags for folders, playlists or shoutcast streams
-    if (pItem->m_bIsFolder || pItem->IsPlayList() || pItem->IsInternetStream())
-    {
-      iTaglessFiles++;
-      continue;
-    }
-
-    // is the tag for this file already loaded?
-    if (!pItem->m_musicInfoTag.Loaded())
-    {
-      // no, then we gonna load it.
-      CSong *pSong;
-      CFileItem* mapItem;
-
-      // Is items load from the database
-      if (NULL != (pSong = songsMap.Find(pItem->m_strPath)))
-      {
-        pItem->m_musicInfoTag.SetSong(*pSong);
-        pItem->SetThumbnailImage(pSong->strThumb);
-      } // Query map if we previously cached the file on HD
-      else if ((mapItem=itemsMap[pItem->m_strPath])!=NULL && CUtil::CompareSystemTime(&mapItem->m_stTime, &pItem->m_stTime) == 0)
-      {
-        pItem->m_musicInfoTag = mapItem->m_musicInfoTag;
-        pItem->SetThumbnailImage(mapItem->GetThumbnailImage());
-      } // if id3 tag scanning is turned on
-      else if (g_guiSettings.GetBool("MusicFiles.UseTags"))
-      {
-        // then parse tag from file
-        CMusicInfoTagLoaderFactory factory;
-        auto_ptr<IMusicInfoTagLoader> pLoader (factory.CreateLoader(pItem->m_strPath));
-        if (NULL != pLoader.get())
-          pLoader->Load(pItem->m_strPath, pItem->m_musicInfoTag); // get tag from file
+      if (!bProgressVisible && dwElapsed>1500 && m_dlgProgress)
+      { // tag loading takes more then 1.5 secs, show a progress dialog
+        CURL url(m_vecItems.m_strPath);
+        CStdString strStrippedPath;
+        url.GetURLWithoutUserDetails(strStrippedPath);
+        m_dlgProgress->SetHeading(189);
+        m_dlgProgress->SetLine(0, 505);
+        m_dlgProgress->SetLine(1, "");
+        m_dlgProgress->SetLine(2, strStrippedPath );
+        m_dlgProgress->StartModal(GetID());
+        m_dlgProgress->ShowProgressBar(true);
+        bProgressVisible = true;
       }
-    } // if (!tag.Loaded() )
 
-    // Should we init a progress dialog
-    if (bShowProgress && !bProgressVisible)
-    {
-      DWORD dwElapsed = timeGetTime() - dwTick;
-
-      // if tag loading took more then 1.5 secs. till now
-      // show the progress dialog
-      if (dwElapsed > 1500)
-      {
-        if (m_dlgProgress)
-        {
-          CURL url(m_vecItems.m_strPath);
-          CStdString strStrippedPath;
-          url.GetURLWithoutUserDetails(strStrippedPath);
-          m_dlgProgress->SetHeading(189);
-          m_dlgProgress->SetLine(0, 505);
-          m_dlgProgress->SetLine(1, "");
-          m_dlgProgress->SetLine(2, strStrippedPath );
-          m_dlgProgress->StartModal(GetID());
-          m_dlgProgress->ShowProgressBar(true);
-          m_dlgProgress->SetProgressBarMax(items.GetFileCount());
-          m_dlgProgress->StepProgressBar(i-iTaglessFiles);
-          m_dlgProgress->Progress();
-          bProgressVisible = true;
-        }
+      if (bProgressVisible && m_dlgProgress)
+      { // keep GUI alive
+        m_dlgProgress->Progress();
       }
-    }
+    } // if (bShowProgress)
+  } // while (m_musicInfoLoader.IsLoading())
 
-
-    if (bProgressVisible)
-    {
-      m_dlgProgress->StepProgressBar();
-      m_dlgProgress->Progress();
-    }
-
-    // Canceled by the user, finish
-    if (bProgressVisible && m_dlgProgress && m_dlgProgress->IsCanceled())
-      break;
-
-  } // for (int i=0; i < (int)items.size(); ++i)
-
-  // Save the hdd cache if there are more songs in this directory then loaded from database
-  if ((m_dlgProgress && !m_dlgProgress->IsCanceled()) && songsMap.Size() != (items.Size() - iTaglessFiles))
-    items.Save();
-
-  // cleanup cache loaded from HD
-  itemsMap.Clear();
-
-  if (bShowProgress && m_dlgProgress)
+  if (bProgressVisible && m_dlgProgress)
     m_dlgProgress->Close();
 }
 

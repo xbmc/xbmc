@@ -1,8 +1,9 @@
 #pragma once
 #include "GUIDialogBoxBase.h"
+#include "IProgressCallback.h"
 
 class CGUIDialogProgress :
-      public CGUIDialogBoxBase
+      public CGUIDialogBoxBase, public IProgressCallback
 {
 public:
   CGUIDialogProgress(void);
@@ -18,8 +19,12 @@ public:
   void ShowProgressBar(bool bOnOff);
   void SetHeading(const string& strLine);
   void SetHeading(int iString);             // for convenience to lookup in strings.xml
-  void SetProgressBarMax(int iMax);
-  void StepProgressBar(int nSteps=1);
+
+  // Implements IProgressCallback
+  virtual void SetProgressMax(int iMax);
+  virtual void SetProgressAdvance(int nSteps=1);
+  virtual bool Abort();
+
 protected:
   bool m_bCanceled;
   string m_strHeading;
