@@ -1,5 +1,6 @@
 #pragma once
 #include "GUIWindowMusicBase.h"
+#include "musicinfoloader.h"
 
 class CGUIWindowMusicSongs : public CGUIWindowMusicBase
 {
@@ -23,4 +24,5 @@ protected:
 
   void DeleteDirectoryCache();
   void DeleteRemoveableMediaDirectoryCache();
+  CMusicInfoLoader m_musicInfoLoader;
 };
