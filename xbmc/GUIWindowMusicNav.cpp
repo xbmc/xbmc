@@ -26,6 +26,7 @@ using namespace MUSICDATABASEDIRECTORY;
 
 #define CONTROL_FILTER            15
 #define CONTROL_BTNPARTYMODE      16
+#define CONTROL_BTNMANUALINFO     17
 
 CGUIWindowMusicNav::CGUIWindowMusicNav(void)
     : CGUIWindowMusicBase(WINDOW_MUSIC_NAV, "MyMusicNav.xml")
@@ -176,6 +177,10 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
           return true;
         }
         UpdateButtons();
+      }
+      else if (iControl == CONTROL_BTNMANUALINFO)
+      {
+        OnManualAlbumInfo();
       }
     }
     break;
