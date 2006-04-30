@@ -355,7 +355,6 @@ bool CGUIWindowPrograms::OnPopupMenu(int iItem)
         if (iRegion == VIDEO_NTSCM)
           strLaunch += " (NTSC-M)";
         if (iRegion == VIDEO_NTSCJ)
-
           strLaunch += " (NTSC-J)";
         if (iRegion == VIDEO_PAL50)
           strLaunch += " (PAL)";
@@ -972,45 +971,8 @@ bool CGUIWindowPrograms::OnClick(int iItem)
 
     if (pItem->IsShortCut())
     {
-      CShortcut shortcut;
-      if ( shortcut.Create(pItem->m_strPath))
-      {
-        CFileItem item(shortcut.m_strPath, false);
-        // if another shortcut is specified, load this up and use it
-        if (item.IsShortCut())
-        {
-          CHAR szNewPath[1024];
-          strcpy(szNewPath, szPath);
-          CHAR* szFile = strrchr(szNewPath, '\\');
-          strcpy(&szFile[1], shortcut.m_strPath.c_str());
-
-          CShortcut targetShortcut;
-          if (FAILED(targetShortcut.Create(szNewPath)))
-            return true;
-
-          shortcut.m_strPath = targetShortcut.m_strPath;
-        }
-
-        strcpy( szPath, shortcut.m_strPath.c_str() );
-
-        CHAR szMode[16];
-        strcpy( szMode, shortcut.m_strVideo.c_str() );
-        strlwr( szMode );
-
-        LPDWORD pdwVideo = (LPDWORD) 0x8005E760;
-        BOOL bRow = strstr(szMode, "pal") != NULL;
-        BOOL bJap = strstr(szMode, "ntsc-j") != NULL;
-        BOOL bUsa = strstr(szMode, "ntsc") != NULL;
-
-        if (bRow)
-          *pdwVideo = 0x00800300;
-        else if (bJap)
-          *pdwVideo = 0x00400200;
-        else if (bUsa)
-          *pdwVideo = 0x00400100;
-
-        strcat(szParameters, shortcut.m_strParameters.c_str());
-      }
+      CUtil::RunShortcut(pItem->m_strPath.c_str());
+      return false;
     }
    
     if (strlen(szParameters))

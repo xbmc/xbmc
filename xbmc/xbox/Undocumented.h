@@ -1451,6 +1451,7 @@ extern "C"
   extern INT WINAPI XNetSaveConfigParams(LPBYTE);
 
   extern INT WINAPI XWriteTitleInfoNoReboot(LPVOID, LPVOID, DWORD, DWORD, LPVOID);
+	extern INT WINAPI XWriteTitleInfoAndRebootA(LPVOID,LPVOID,DWORD,DWORD,LPVOID);
 
   extern DWORD* LaunchDataPage;
 }
