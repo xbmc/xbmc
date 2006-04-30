@@ -961,8 +961,67 @@ bool CUtil::RemoveTrainer()
   return Found;
 }
 
+void CUtil::RunShortcut(const char* szShortcutPath)
+{
+  CShortcut shortcut;
+  char szPath[1024];
+  char szParameters[1024];
+  if ( shortcut.Create(szShortcutPath))
+  {
+    CFileItem item(shortcut.m_strPath, false);
+    // if another shortcut is specified, load this up and use it
+    if (item.IsShortCut())
+    {
+      CHAR szNewPath[1024];
+      strcpy(szNewPath, szShortcutPath);
+      CHAR* szFile = strrchr(szNewPath, '\\');
+      strcpy(&szFile[1], shortcut.m_strPath.c_str());
 
-void CUtil::RunXBE(const char* szPath1, char* szParameters, F_VIDEO ForceVideo, F_COUNTRY ForceCountry) 
+      CShortcut targetShortcut;
+      if (FAILED(targetShortcut.Create(szNewPath)))
+        return;
+
+      shortcut.m_strPath = targetShortcut.m_strPath;
+    }
+
+    strcpy( szPath, shortcut.m_strPath.c_str() );
+
+    CHAR szMode[16];
+    strcpy( szMode, shortcut.m_strVideo.c_str() );
+    strlwr( szMode );
+
+    strcpy(szParameters, shortcut.m_strParameters.c_str());
+
+    BOOL bRow = strstr(szMode, "pal") != NULL;
+    BOOL bJap = strstr(szMode, "ntsc-j") != NULL;
+    BOOL bUsa = strstr(szMode, "ntsc") != NULL;
+
+    F_VIDEO video = VIDEO_NULL;
+    if (bRow)
+      video = VIDEO_PAL50;
+    if (bJap)
+      video = (F_VIDEO)CXBE::FilterRegion(VIDEO_NTSCJ);
+    if (bUsa)
+      video = (F_VIDEO)CXBE::FilterRegion(VIDEO_NTSCM);
+
+    CUSTOM_LAUNCH_DATA data;
+    if (!shortcut.m_strCustomGame.IsEmpty())
+    {
+      memset(&data,0,sizeof(CUSTOM_LAUNCH_DATA));
+      strcpy(data.szFilename,shortcut.m_strCustomGame.c_str());
+      CIoSupport support;
+      support.GetPartition("C:",data.szRemap_D_As);
+      strcpy(data.szLaunchXBEOnExit,CUtil::GetFileName(g_stSettings.szDashboard).c_str());
+      data.executionType = 0;
+      data.magic = GetXbeID(szPath);
+    }
+    
+    CUtil::RunXBE(szPath,strcmp(szParameters,"")?szParameters:NULL,video,COUNTRY_NULL,shortcut.m_strCustomGame.IsEmpty()?NULL:&data);
+  }
+}
+
+
+void CUtil::RunXBE(const char* szPath1, char* szParameters, F_VIDEO ForceVideo, F_COUNTRY ForceCountry, CUSTOM_LAUNCH_DATA* pData) 
 {
   /// \brief Runs an executable file
   /// \param szPath1 Path of executeable to run
@@ -1014,14 +1073,14 @@ void CUtil::RunXBE(const char* szPath1, char* szParameters, F_VIDEO ForceVideo, 
 
       g_application.Stop();
 
-      CUtil::LaunchXbe(szDevicePath, szXbePath, szParameters, ForceVideo, ForceCountry);
+      CUtil::LaunchXbe(szDevicePath, szXbePath, szParameters, ForceVideo, ForceCountry, pData);
     }
   }
   
   CLog::Log(LOGERROR, "Unable to run xbe : %s", szPath);
 }
 
-void CUtil::LaunchXbe(const char* szPath, const char* szXbe, const char* szParameters, F_VIDEO ForceVideo, F_COUNTRY ForceCountry)
+void CUtil::LaunchXbe(const char* szPath, const char* szXbe, const char* szParameters, F_VIDEO ForceVideo, F_COUNTRY ForceCountry, CUSTOM_LAUNCH_DATA* pData)
 {
   CLog::Log(LOGINFO, "launch xbe:%s %s", szPath, szXbe);
   CLog::Log(LOGINFO, " mount %s as D:", szPath);
@@ -1048,17 +1107,28 @@ void CUtil::LaunchXbe(const char* szPath, const char* szXbe, const char* szParam
       if( !bSuccessful )
         CLog::Log(LOGINFO,"AutoSwitch: Failed to set mode");
   }
-
-  if (szParameters == NULL)
+  if (pData)
   {
-    XLaunchNewImage(szXbe, NULL );
+    DWORD dwRegion = pData->magic;
+    pData->magic = CUSTOM_LAUNCH_MAGIC;
+    const char* xbe = szXbe+3;
+    CLog::Log(LOGINFO,"launching game %s from path %s",pData->szFilename,szPath);
+    helper.Unmount("D:");
+    XWriteTitleInfoAndRebootA( (char*)xbe, (char*)(CStdString("\\Device\\")+szPath).c_str(), LDT_TITLE, dwRegion, pData);
   }
   else
   {
-    LAUNCH_DATA LaunchData;
-    strcpy((char*)LaunchData.Data, szParameters);
+    if (szParameters == NULL)
+    {
+      XLaunchNewImage(szXbe, NULL );
+    }
+    else
+    {
+      LAUNCH_DATA LaunchData;
+      strcpy((char*)LaunchData.Data, szParameters);
 
-    XLaunchNewImage(szXbe, &LaunchData );
+      XLaunchNewImage(szXbe, &LaunchData );
+    }
   }
 }
 
@@ -3560,19 +3630,25 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     // only usefull if there is actualy a xbe to execute
     if (parameter.size() > 0)
     {
-	    int iRegion;
-	    if (g_guiSettings.GetBool("MyPrograms.GameAutoRegion"))
-	    {
-	      CXBE xbe;
-	      iRegion = xbe.ExtractGameRegion(parameter);
-	      if (iRegion < 1 || iRegion > 7)
-	        iRegion = 0;
-	      iRegion = xbe.FilterRegion(iRegion);
-	    }
-	    else
-	      iRegion = 0;
-	      
-	    CUtil::RunXBE(parameter.c_str(),NULL,F_VIDEO(iRegion));
+      CFileItem item(parameter);
+      if (item.IsShortCut())
+        CUtil::RunShortcut(parameter);
+      else if (item.IsXBE())
+      {
+        int iRegion;
+        if (g_guiSettings.GetBool("MyPrograms.GameAutoRegion"))
+        {
+          CXBE xbe;
+          iRegion = xbe.ExtractGameRegion(parameter);
+          if (iRegion < 1 || iRegion > 7)
+            iRegion = 0;
+          iRegion = xbe.FilterRegion(iRegion);
+        }
+        else
+          iRegion = 0;
+
+        CUtil::RunXBE(parameter.c_str(),NULL,F_VIDEO(iRegion));
+      }
     }
     else
     {
