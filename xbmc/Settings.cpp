@@ -204,23 +204,26 @@ bool CSettings::QuickXMLLoad(const CStdString &strElement, bool forceToQ /* = fa
   CStdString strValue;
   TiXmlElement* pRootElement = xbmcXml.RootElement();
   if (pRootElement) strValue = pRootElement->Value();
-  if ( strValue != "xboxmediacenter") return false;
-  //
+  if ( strValue != "xboxmediacenter")
+  {
+    CloseXml();
+    return false;
+  }
+  bool ret(false);
   if (strElement == "logpath" )
   {
     GetString(pRootElement, strElement, g_stSettings.m_szlogpath, "");
-    if (strlen(g_stSettings.m_szlogpath) > 1) return true;
+    if (strlen(g_stSettings.m_szlogpath) > 1)
+      ret = true;
   }
   else if (strElement == "home")
   {
     GetString(pRootElement, strElement, g_stSettings.szHomeDir, "");
-    if (strlen(g_stSettings.szHomeDir) > 1) return true;
+    if (strlen(g_stSettings.szHomeDir) > 1)
+      ret = true;
   }
-  return false;
-  
-  
-  //
-  
+  CloseXml();
+  return ret;
 }
 
 bool CSettings::Reset()
@@ -1808,6 +1811,12 @@ bool CSettings::LoadXml(bool forceToQ /* = false */)
     xbmcXmlLoaded = true;
   }
   return true;
+}
+
+void CSettings::CloseXml()
+{
+  xbmcXmlLoaded = false;
+  xbmcXml.Clear();
 }
 
 bool CSettings::UpdateBookmark(const CStdString &strType, const CStdString strOldName, const CStdString &strUpdateElement, const CStdString &strUpdateText)
