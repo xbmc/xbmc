@@ -692,11 +692,16 @@ void Xcddb::addTitle(const char *buffer)
     strcpy(title, value);
   }
 
-  // we use UTF-8 throughout
-  CStdString strArtist = artist;
+  CStdString strArtist=artist;
+  // You never know if you really get UTF-8 strings from cddb
+  if (!g_charsetConverter.isValidUtf8(strArtist)) 
+    g_charsetConverter.stringCharsetToUtf8(CStdString(artist), strArtist);
   m_mapArtists[trk_nr] = strArtist;
 
-  CStdString strTitle = title;
+  CStdString strTitle=title;
+  // You never know if you really get UTF-8 strings from cddb
+  if (!g_charsetConverter.isValidUtf8(strTitle)) 
+    g_charsetConverter.stringCharsetToUtf8(CStdString(title), strTitle);
   m_mapTitles[trk_nr] = strTitle;
 }
 
@@ -793,25 +798,51 @@ void Xcddb::parseData(const char *buffer)
         if (found)
         {
           CStdString strLine = (char*)(line + 7);
-          m_strDisk_artist = strLine.Left(i - 7);
-          m_strDisk_title = (char*)(line + i + 3);
+          CStdString strDisk_artist = strLine.Left(i - 7);
+          CStdString strDisk_title = (char*)(line + i + 3);
+
+          // You never know if you really get UTF-8 strings from cddb
+          if (!g_charsetConverter.isValidUtf8(strDisk_artist))
+            g_charsetConverter.stringCharsetToUtf8(strDisk_artist, m_strDisk_artist);
+          else
+            m_strDisk_artist=strDisk_artist;
+
+          // You never know if you really get UTF-8 strings from cddb
+          if (!g_charsetConverter.isValidUtf8(strDisk_title))
+            g_charsetConverter.stringCharsetToUtf8(strDisk_title, m_strDisk_title);
+          else
+            m_strDisk_title=strDisk_title;
         }
         else
         {
-          m_strDisk_title = (char*)(line + 7);
+          CStdString strDisk_title = (char*)(line + 7);
+          // You never know if you really get UTF-8 strings from cddb
+          if (!g_charsetConverter.isValidUtf8(strDisk_title))
+            g_charsetConverter.stringCharsetToUtf8(strDisk_title, m_strDisk_title);
+          else
+            m_strDisk_title=strDisk_title;
         }
       }
       else if (0 == strncmp(line, "DYEAR", 5))
       {
         CStdString strYear = (char*)(line + 5);
         strYear.TrimLeft("= ");
-        m_strYear = strYear;
+        // You never know if you really get UTF-8 strings from cddb
+        if (!g_charsetConverter.isValidUtf8(strYear))
+          g_charsetConverter.stringCharsetToUtf8(strYear, m_strYear);
+        else
+          m_strYear=strYear;
       }
       else if (0 == strncmp(line, "DGENRE", 6))
       {
         CStdString strGenre = (char*)(line + 6);
         strGenre.TrimLeft("= ");
-        m_strGenre = strGenre;
+
+        // You never know if you really get UTF-8 strings from cddb
+        if (!g_charsetConverter.isValidUtf8(strGenre))
+          g_charsetConverter.stringCharsetToUtf8(strGenre, m_strGenre);
+        else
+          m_strGenre=strGenre;
       }
       else if (0 == strncmp(line, "TTITLE", 6))
       {
@@ -830,7 +861,12 @@ void Xcddb::parseData(const char *buffer)
           {
             CStdString strYear;
             strYear = strExtd.Mid(iPos + 6, 4);
-            m_strYear = strYear;
+
+            // You never know if you really get UTF-8 strings from cddb
+            if (!g_charsetConverter.isValidUtf8(strYear))
+              g_charsetConverter.stringCharsetToUtf8(strYear, m_strYear);
+            else
+              m_strYear=strYear;
           }
         }
 
@@ -888,7 +924,14 @@ void Xcddb::addExtended(const char *buffer)
     return ;
   }
 
-  m_mapExtended_track[trk_nr] = value;
+  CStdString strValue;
+  CStdString strValueUtf8=value;
+  // You never know if you really get UTF-8 strings from cddb
+  if (!g_charsetConverter.isValidUtf8(strValueUtf8))
+    g_charsetConverter.stringCharsetToUtf8(strValueUtf8, strValue);
+  else
+    strValue=strValueUtf8;
+  m_mapExtended_track[trk_nr] = strValue;
 }
 
 //-------------------------------------------------------------------------------------------------------------------
