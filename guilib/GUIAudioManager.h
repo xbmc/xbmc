@@ -55,7 +55,6 @@ private:
   LPDIRECTSOUND8      m_lpDirectSound;
 
   LPDIRECTSOUNDBUFFER m_lpActionSoundBuffer;
-  LPDIRECTSOUNDBUFFER m_lpStartSoundBuffer;
   soundBufferMap      m_windowSoundBuffers;
 
   CStdString          m_strMediaDir;
