@@ -1901,8 +1901,11 @@ void CUtil::GetFatXQualifiedPath(CStdString& strFileNameAndPath)
   for (vector<CStdString>::iterator token=tokens.begin()+1;token != tokens.end();++token)
   {
     CStdString strToken = token->Left(42);
-    while (strToken[strToken.size()-1] == ' ')
-      strToken.erase(strToken.size()-1);
+    if (token->size() > 42)
+    { // remove any spaces as a result of truncation only
+      while (strToken[strToken.size()-1] == ' ')
+        strToken.erase(strToken.size()-1);
+    }
     CUtil::RemoveIllegalChars(strToken);
     strFileNameAndPath += "\\"+strToken;
   }
@@ -4654,8 +4657,6 @@ bool CUtil::MakeShortenPath(CStdString StrInput, CStdString& StrOutput, int iTex
   }
   while( iTextMaxLength < iStrInputSize )
   {
-    // Todo: if the last FolderName is to long, the text will not be cut! 
-    // So maybe, we can just show the root and then the folder.. but i leave it this way for now..
     nPos = StrInput.find_last_of( cDelim, nPos );
     nGreaterDelim = nPos;
     if ( nPos >= 0 ) nPos = StrInput.find_last_of( cDelim, nPos - 1 );
@@ -4663,6 +4664,22 @@ bool CUtil::MakeShortenPath(CStdString StrInput, CStdString& StrOutput, int iTex
     if ( nPos < 0 ) break;
     if ( nGreaterDelim > nPos ) StrInput.replace( nPos + 1, nGreaterDelim - nPos - 1, ".." );
     iStrInputSize = StrInput.size();
+  }
+  // replace any additional /../../ with just /../ if necessary
+  CStdString replaceDots;
+  replaceDots.Format("..%c..", cDelim);
+  while (StrInput.size() > (unsigned int)iTextMaxLength)
+    if (!StrInput.Replace(replaceDots, ".."))
+      break;
+  // finally, truncate our string to force inside our max text length,
+  // replacing the last 2 characters with ".."
+
+  // eg end up with:
+  // "smb://../Playboy Swimsuit Cal.."
+  if (iTextMaxLength > 2 && StrInput.size() > (unsigned int)iTextMaxLength)
+  {
+    StrInput = StrInput.Left(iTextMaxLength - 2);
+    StrInput += "..";
   }
   StrOutput = StrInput;
   return true;
