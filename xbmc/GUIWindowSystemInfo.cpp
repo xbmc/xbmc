@@ -422,7 +422,14 @@ void CGUIWindowSystemInfo::Render()
     SET_CONTROL_LABEL(5, strFreeMem);
 
     //Label 6: XBMC IP Adress
-    SET_CONTROL_LABEL(6, g_infoManager.GetLabel(NETWORK_IP_ADDRESS));
+    if (g_infoManager.GetLabel(NETWORK_IP_ADDRESS)=="")
+    {
+      SET_CONTROL_LABEL(6,g_localizeStrings.Get(416));
+    }
+    else
+    {
+      SET_CONTROL_LABEL(6, g_infoManager.GetLabel(NETWORK_IP_ADDRESS));
+    }
     
     // Label 7: Set Resolution Info
     CStdString strResol;
