@@ -3631,6 +3631,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     if (parameter.size() > 0)
     {
       CFileItem item(parameter);
+      item.m_strPath = parameter;
       if (item.IsShortCut())
         CUtil::RunShortcut(parameter);
       else if (item.IsXBE())

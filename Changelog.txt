@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 01-05-2006 fixed: really fixed xbmc.runxbe + .cut files.
  - 01-05-2006 changed: Keymap settings - Keyboard users have more control over fullscreen info. Changes also mean remote,gamepad,keyboard users have consistent buttons on all fullscreen media.
  - 01-05-2006 fixed: [ 1478394 ] "My Pictures" info-bar problem.
  - 30-04-2006 fixed: [ 1479326 ] No ip message when not connected
