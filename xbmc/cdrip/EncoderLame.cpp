@@ -77,9 +77,9 @@ bool CEncoderLame::Init(const char* strFile, int iInChannels, int iInRate, int i
     CStdString strSettings;
     switch (g_guiSettings.GetInt("CDDARipper.Quality"))
     {
-    case CDDARIP_QUALITY_MEDIUM: { strSettings = "--vbr-new --preset medium"; break;}  // 150-180kbps
-    case CDDARIP_QUALITY_STANDARD: { strSettings = "--vbr-new --preset standard"; break;}  // 170-210kbps
-    case CDDARIP_QUALITY_EXTREME: { strSettings = "--vbr-new --preset extreme"; break;} // 200-240kbps
+    case CDDARIP_QUALITY_MEDIUM: { strSettings = "--preset fast medium"; break;}  // 150-180kbps
+    case CDDARIP_QUALITY_STANDARD: { strSettings = "--preset fast standard"; break;}  // 170-210kbps
+    case CDDARIP_QUALITY_EXTREME: { strSettings = "--preset fast extreme"; break;} // 200-240kbps
     }
     parse_args_from_string(m_pGlobalFlags, strSettings.c_str(), m_inPath, m_outPath);
   }
