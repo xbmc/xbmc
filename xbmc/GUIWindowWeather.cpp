@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "GUIWindowWeather.h"
 #include "GUISpinControl.h"
+#include "GUISelectButtonControl.h"
 #include "Util.h"
 #include "Utils/Weather.h"
 
@@ -79,13 +80,64 @@ bool CGUIWindowWeather::OnMessage(CGUIMessage& message)
       }
       else if (iControl == CONTROL_SELECTLOCATION)
       {
-        CGUISpinControl *pTempSpin = (CGUISpinControl*)GetControl(iControl);
-        m_iCurWeather = pTempSpin->GetValue();
+        CGUIMessage msg(GUI_MSG_ITEM_SELECTED,GetID(),CONTROL_SELECTLOCATION);
+        m_gWindowManager.SendMessage(msg);
+        m_iCurWeather = msg.GetParam1();
+
+        CStdString strLabel=g_weatherManager.GetLocation(m_iCurWeather);
+        int iPos = strLabel.ReverseFind(", ");
+        if (iPos) 
+        {
+          CStdString strLabel2(strLabel);
+          strLabel = strLabel2.substr(0,iPos);
+        }
+
+        SET_CONTROL_LABEL(CONTROL_SELECTLOCATION,strLabel);
         Refresh();
       }
     }
     break;
+  case GUI_MSG_SCAN_FINISHED:
+    {
+      CGUIMessage msg(GUI_MSG_LABEL_RESET,GetID(),CONTROL_SELECTLOCATION);
+      g_graphicsContext.SendMessage(msg);
+      CGUIMessage msg2(GUI_MSG_LABEL_ADD,GetID(),CONTROL_SELECTLOCATION);
+
+      for (int i = 0; i < MAX_LOCATION; i++)
+      {
+        char *szLocation = g_weatherManager.GetLocation(i);
+        if (!szLocation) continue;
+        CStdString strLabel(szLocation);
+        if (strlen(szLocation) > 1) //got the location string yet?
+        {
+          int iPos = strLabel.ReverseFind(", ");
+          if (iPos) 
+          {
+            CStdString strLabel2(strLabel);
+            strLabel = strLabel2.substr(0,iPos);
+          }
+          msg2.SetParam1(i);
+          msg2.SetLabel(strLabel);
+          g_graphicsContext.SendMessage(msg2);
+        }
+        else
+        {
+          strLabel.Format("AreaCode %i", i + 1);
+
+          msg2.SetLabel(strLabel);
+          msg2.SetParam1(i);
+          g_graphicsContext.SendMessage(msg2);
+        }
+        if (i==m_iCurWeather)
+          SET_CONTROL_LABEL(CONTROL_SELECTLOCATION,strLabel);
+      }
+
+      CONTROL_SELECT_ITEM(CONTROL_SELECTLOCATION, m_iCurWeather);
+      Refresh();
+    }
+    break;
   }
+
   return CGUIWindow::OnMessage(message);
 }
 
@@ -93,6 +145,39 @@ void CGUIWindowWeather::OnInitWindow()
 {
   // call UpdateButtons() so that we start with our initial stuff already present
   UpdateButtons();
+  CGUIMessage msg(GUI_MSG_LABEL_RESET,GetID(),CONTROL_SELECTLOCATION);
+  g_graphicsContext.SendMessage(msg);
+  CGUIMessage msg2(GUI_MSG_LABEL_ADD,GetID(),CONTROL_SELECTLOCATION);
+
+  for (int i = 0; i < MAX_LOCATION; i++)
+  {
+    char *szLocation = g_weatherManager.GetLocation(i);
+    if (!szLocation) continue;
+    CStdString strLabel(szLocation);
+    if (strlen(szLocation) > 1) //got the location string yet?
+    {
+      int iPos = strLabel.ReverseFind(", ");
+      if (iPos) 
+      {
+        CStdString strLabel2(strLabel);
+        strLabel = strLabel2.substr(0,iPos);
+      }
+
+      msg2.SetLabel(strLabel);
+      g_graphicsContext.SendMessage(msg2);
+    }
+    else
+    {
+      strLabel.Format("AreaCode %i", i + 1);
+
+      msg2.SetLabel(strLabel);  
+      g_graphicsContext.SendMessage(msg2);
+    }
+    if (i==m_iCurWeather)
+      SET_CONTROL_LABEL(CONTROL_SELECTLOCATION,strLabel);
+  }
+
+  CONTROL_SELECT_ITEM(CONTROL_SELECTLOCATION, m_iCurWeather);
   CGUIWindow::OnInitWindow();
 }
 
@@ -136,30 +221,6 @@ void CGUIWindowWeather::UpdateButtons()
     SET_CONTROL_LABEL(CONTROL_LABELD0GEN + (i*10), g_weatherManager.m_dfForcast[i].m_szOverview);
     pImage = (CGUIImage *)GetControl(CONTROL_IMAGED0IMG + (i * 10));
     if (pImage) pImage->SetFileName(g_weatherManager.m_dfForcast[i].m_szIcon);
-  }
-
-  CGUISpinControl *pLocation = (CGUISpinControl *)GetControl(CONTROL_SELECTLOCATION);
-  if (pLocation)
-  {
-    pLocation->Clear();
-    for (int i = 0; i < MAX_LOCATION; i++)
-    {
-      char *szLocation = g_weatherManager.GetLocation(i);
-      if (strlen(szLocation) > 1) //got the location string yet?
-      {
-        CStdString strLabel = szLocation;
-        int iPos = strLabel.ReverseFind(", ");
-        if (iPos) strLabel = strLabel.Left(iPos); // strip off the country part
-        pLocation->AddLabel(strLabel, i);
-      }
-      else
-      {
-        CStdString strSetting;
-        strSetting.Format("Weather.AreaCode%i", i + 1);
-        pLocation->AddLabel(g_guiSettings.GetString(strSetting), i);
-      }
-    }
-    pLocation->SetValue(m_iCurWeather);
   }
 }
 
