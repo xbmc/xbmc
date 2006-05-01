@@ -1,10 +1,8 @@
-<?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?>
-
 <!-- Translation date: 03/16/2006 -->
 <!-- Based on 2006-03-12 build -->
 <!-- Translation by MVBM (T1000) -->
 <!-- Language: Portuguese Brazil (pt_BR )-->
-
+<?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?>
 <strings>
   <string><id>0</id><value>Programas</value></string>
   <string><id>1</id><value>Imagens</value></string>
@@ -130,7 +128,7 @@
   <string><id>188</id><value>Selecionar todos</value></string>
   <string><id>189</id><value>Procurando informações da mídia</value></string>
   <string><id>190</id><value>Salvar</value></string>
-  <string><id>191</id><value>Aletório</value></string>
+  <string><id>191</id><value>Aleatório</value></string>
   <string><id>192</id><value>Limpar</value></string>
   <string><id>193</id><value>Analizar</value></string>
   <string><id>194</id><value>Procurando...</value></string> 
@@ -658,6 +656,7 @@
   <string><id>1233</id><value>Programas &amp; Video &amp; Música</value></string>
   <string><id>1234</id><value>Programas &amp; Imagens &amp; Música</value></string>
   <string><id>1235</id><value>Programas &amp; Imagens &amp; Video</value></string>
+  <string><id>1236</id><value>- Tempo limite do Cliente</value></string>
 
   <string><id>1245</id><value>Nome de Usuário FTP</value></string>
   <string><id>1246</id><value>Senha de Usuário FTP</value></string>
@@ -939,7 +938,7 @@
   <string><id>13297</id><value>Xbox não Conectado. Veja suas configurações de Rede.</value></string>
   <string><id>13298</id><value>XBLIVE Key:</value></string>
   <string><id>13299</id><value>Temperatura Final:</value></string>
-  <string><id>13300</id><value>Velocidade da FAN:</value></string>
+  <string><id>13300</id><value>Velocidade da FAN</value></string>
   <string><id>13301</id><value>Controle de temperatura automática</value></string>
   <string><id>13302</id><value>Controle da Velocidade da FAN</value></string>
   <string><id>13303</id><value>Fonte da Skin</value></string>
@@ -1039,7 +1038,7 @@
   <string><id>13397</id><value>Ativar Subtítulos</value></string>
   <string><id>13398</id><value>Bookmarks</value></string>
   <string><id>13399</id><value>Ignorar "The" quando organizar</value></string>
-  <string><id>13400</id><value>Crossfade albumtracks</value></string>
+  <string><id>13400</id><value>Crossfade trilhas do álbum</value></string>
   <string><id>13401</id><value>Procurar por %s</value></string>
   <string><id>13402</id><value>Mostrar posição da trilha</value></string>
   <string><id>13403</id><value>Limpar Padrão</value></string>
@@ -1170,7 +1169,7 @@
   <string><id>15048</id><value>Digite uma descrição da sua arena.</value></string>
   <string><id>15049</id><value>Host Game</value></string>
   <string><id>15050</id><value>Host em uma arena privada</value></string>
-  <string><id>15051</id><value>Limite de Jogadores</value></string>
+  <string><id>15051</id><value>Nº de Jogadores</value></string>
   <string><id>15052</id><value>Senha</value></string>
   <string><id>15053</id><value>Descrição</value></string>
   <string><id>15054</id><value>Diálogo de Convite</value></string>
