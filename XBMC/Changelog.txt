@@ -5,6 +5,10 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 01-05-2006 updated: Portuguese (Brazil) language file (Thnx to mvbm)
+ - 01-05-2006 updated: German (Austrian) language file (Thnx to CEOMR)
+ - 01-05-2006 updated: Chinese (Traditional) language file (Thnx to omenpica)
+ - 01-05-2006 updated: Chinese (Simple) language file (Thnx to omenpica)
  - 01-05-2006 fixed: cd-ripper can't rip cd's whose cddb info contains none latin characters
  - 01-05-2006 changed: cd-ripper's lame encoder now uses --vbr-new for ripping in vbr mode
  - 01-05-2006 changed: cd-ripper now writes unicode tags
