@@ -2004,7 +2004,26 @@ void CUtil::ShortenFileName(CStdString& strFileNameAndPath)
     CUtil::GetExtension(strFileNameAndPath, strExtension);
     CStdString strPath = strFileNameAndPath.Left( strFileNameAndPath.size() - strFile.size() );
 
-    strFile = strFile.Left(42 - strExtension.size());
+    CRegExp reg;
+    CStdString strSearch=strFile; strSearch.ToLower();
+    reg.RegComp("([_\\-\\. ](cd|part)[0-9]*)[_\\-\\. ]");          // this is to ensure that cd1, cd2 or partXXX. do not
+    int matchPos = reg.RegFind(strSearch.c_str());                 // get cut from filenames when they are shortened.
+
+    CStdString strPartNumber;
+    char* szPart = reg.GetReplaceString("\\1");
+    strPartNumber = szPart;
+    free(szPart);
+
+    int partPos = 42 - strPartNumber.size() - strExtension.size();
+
+    if (matchPos > partPos )
+    {
+       strFile = strFile.Left(partPos);
+       strFile += strPartNumber;
+    } else
+    {
+       strFile = strFile.Left(42 - strExtension.size());
+    }
     strFile += strExtension;
 
     CStdString strNewFile = strPath;
