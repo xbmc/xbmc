@@ -5,7 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
- - 30-04-2006 fixed: [ 1478394 ] "My Pictures" info-bar problem.
+ - 01-05-2006 fixed: [ 1478394 ] "My Pictures" info-bar problem.
  - 30-04-2006 fixed: [ 1479326 ] No ip message when not connected
  - 30-04-2006 fixed: [ 1479638 ] "Settings" item in filemanagers contextmenu not working
  - 30-04-2006 fixed: cddb infomation may not be returned as utf-8, if this is the case the info will be converted from user charset to utf-8
