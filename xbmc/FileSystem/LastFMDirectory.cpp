@@ -517,6 +517,16 @@ bool CLastFMDirectory::GetDirectory(const CStdString& strPath, CFileItemList &it
   if (g_directoryCache.GetDirectory(strPath, items))
     return true;
 
+  if (!g_guiSettings.GetBool("FileLists.HideParentDirItems"))
+  {
+    CFileItem *pItem = new CFileItem("..");
+    pItem->m_strPath = "";
+    pItem->m_bIsFolder = true;
+    pItem->m_bIsShareOrDrive = false;
+    items.Add(pItem);
+  }
+
+
   if (m_objtype == "user")
     m_Error = GetUserInfo(items);
   else if (m_objtype == "tag")
