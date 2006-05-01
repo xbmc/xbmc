@@ -78,3 +78,5 @@
 //  dwParam2 = 0 or 1 or 2 (Off, Repeat All, Repeat One)
 #define GUI_MSG_PLAYLISTPLAYER_REPEAT   GUI_MSG_USER + 23
 
+// Message is sent by the background info loader when it is finished with fetching a weather location.
+#define GUI_MSG_WEATHER_FETCHED       GUI_MSG_USER + 24
