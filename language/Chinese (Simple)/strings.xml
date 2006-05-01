@@ -35,7 +35,7 @@
   <string><id>99</id><value>显示：自动大图标</value></string>
   <string><id>100</id><value>显示：图标</value></string>
   <string><id>101</id><value>显示：列表</value></string>
-  <string><id>102</id><value>扫描</value></string>
+  <string><id>102</id><value>扫瞄</value></string>
   <string><id>103</id><value>排序：名字</value></string>
   <string><id>104</id><value>排序：日期</value></string>
   <string><id>105</id><value>排序：大小</value></string>
@@ -60,7 +60,7 @@
   <string><id>124</id><value>移动这些文件？</value></string>
   <string><id>125</id><value>删除这些文件？</value></string>
   <string><id>126</id><value>状态</value></string>
-  <string><id>127</id><value>对象</value></string>
+  <string><id>127</id><value>对像</value></string>
   <string><id>128</id><value>一般设置</value></string>
   <string><id>129</id><value>幻灯片</value></string>
   <string><id>130</id><value>系统信息</value></string>
@@ -126,7 +126,7 @@
   <string><id>190</id><value>保存</value></string>
   <string><id>191</id><value>打乱次序</value></string>
   <string><id>192</id><value>清除</value></string>
-  <string><id>193</id><value>扫描</value></string>
+  <string><id>193</id><value>扫瞄</value></string>
   <string><id>194</id><value>查找…</value></string>
   <string><id>195</id><value>没有发现IMDb信息！</value></string>
   <string><id>196</id><value>选择影片：</value></string>
@@ -185,9 +185,9 @@
   <string><id>249</id><value>音乐</value></string>
   <string><id>250</id><value>视觉效果</value></string>
   <string><id>251</id><value>选择目的目录</value></string>
-  <string><id>252</id><value>- 输出到所有扬声器</value></string>
+  <string><id>252</id><value>输出到所有扬声器</value></string>
   <string><id>253</id><value>频道</value></string>
-  <string><id>254</id><value>- DD立体数码音效</value></string>
+  <string><id>254</id><value>DD立体数码音效</value></string>
   <string><id>255</id><value>CDDB</value></string>
   <string><id>256</id><value>从 CDDB 读取信息</value></string>
   <string><id>257</id><value>错误</value></string>
@@ -204,7 +204,7 @@
   <string><id>268</id><value>排序：自动运行</value></string>
   <string><id>269</id><value>排序：艺术家</value></string>
   <string><id>270</id><value>排序：专辑</value></string>
-  <string><id>271</id><value>Top 100</value></string>
+  <string><id>271</id><value>排行前 100</value></string>
   <string><id>272</id><value>左上部边框补偿</value></string>
   <string><id>273</id><value>右下部边框补偿</value></string>
   <string><id>274</id><value>字幕位置</value></string>
@@ -222,7 +222,7 @@
   <string><id>286</id><value>后期滤镜</value></string>
   <string><id>287</id><value>字幕</value></string>
   <string><id>288</id><value>字体</value></string>
-  <string><id>289</id><value>- 尺寸</value></string>
+  <string><id>289</id><value>尺寸</value></string>
   <string><id>290</id><value>动态压缩</value></string>
   <string><id>291</id><value>视频</value></string>
   <string><id>292</id><value>音频</value></string>
@@ -238,12 +238,12 @@
   <string><id>303</id><value>延迟</value></string>
   <string><id>304</id><value>语言</value></string>
   <string><id>305</id><value>开启</value></string>
-  <string><id>306</id><value>非隔行扫描</value></string>
-  <string><id>307</id><value>- 自动后处理</value></string>
-  <string><id>308</id><value>- 垂直分块滤镜</value></string>
-  <string><id>309</id><value>- 水平分块滤镜</value></string>
-  <string><id>310</id><value>- 自动亮度/对比度</value></string>
-  <string><id>311</id><value>- 消除瑕疵</value></string>
+  <string><id>306</id><value>非隔行扫瞄</value></string>
+  <string><id>307</id><value>自动后处理</value></string>
+  <string><id>308</id><value>垂直分块滤镜</value></string>
+  <string><id>309</id><value>水平分块滤镜</value></string>
+  <string><id>310</id><value>自动亮度/对比度</value></string>
+  <string><id>311</id><value>消除瑕疵</value></string>
   <string><id>312</id><value>(0=自动)</value></string>
   <string><id>313</id><value>清除数据库</value></string>
   <string><id>314</id><value>准备…</value></string>
@@ -296,7 +296,7 @@
   <string><id>361</id><value>幻灯片【循环】</value></string>
   <string><id>362</id><value>屏幕保护衰减级别(%)</value></string>
   <string><id>363</id><value>排序：文件</value></string>
-  <string><id>364</id><value>- AC3/DTS 数码音效</value></string>
+  <string><id>364</id><value>AC3/DTS 数码音效</value></string>
   <string><id>365</id><value>排序：名字</value></string>
   <string><id>366</id><value>排序：年</value></string>
   <string><id>367</id><value>排序：评分</value></string>
@@ -305,7 +305,7 @@
   <string><id>370</id><value>暴风雨</value></string>
   <string><id>371</id><value>局部</value></string>
   <string><id>372</id><value>大部分</value></string>
-  <string><id>373</id><value>阳光充足</value></string>
+  <string><id>373</id><value>晴朗</value></string>
   <string><id>374</id><value>阴</value></string>
   <string><id>375</id><value>雪</value></string>
   <string><id>376</id><value>雨</value></string>
@@ -320,14 +320,14 @@
   <string><id>385</id><value>转晴</value></string>
   <string><id>386</id><value>晴</value></string>
   <string><id>387</id><value>云</value></string>
-  <string><id>388</id><value>N/A</value></string>
-  <string><id>389</id><value>N/A</value></string>
-  <string><id>390</id><value>N/A</value></string>
-  <string><id>391</id><value>N/A</value></string>
-  <string><id>392</id><value>N/A</value></string>
-  <string><id>393</id><value>N/A</value></string>
-  <string><id>394</id><value>N/A</value></string>
-  <string><id>395</id><value>N/A</value></string>
+  <string><id>388</id><value>提早</value></string>
+  <string><id>389</id><value>阵雨</value></string>
+  <string><id>390</id><value>飘雪</value></string>
+  <string><id>391</id><value>低</value></string>
+  <string><id>392</id><value>中</value></string>
+  <string><id>393</id><value>高</value></string>
+  <string><id>394</id><value>雾</value></string>
+  <string><id>395</id><value>霾</value></string>
   <string><id>396</id><value>选择位置</value></string>
   <string><id>397</id><value>刷新时间</value></string>
   <string><id>398</id><value>温度单位</value></string>
@@ -405,7 +405,7 @@
   <string><id>470</id><value>改机者</value></string>
   <string><id>471</id><value>改机芯片</value></string>
   <string><id>472</id><value>视频播放工具条 超时</value></string>
-  <string><id>473</id><value>- 高质量取样</value></string>
+  <string><id>473</id><value>高质量取样</value></string>
   <string><id>474</id><value>关</value></string>
   <string><id>475</id><value>只有音乐</value></string>
   <string><id>476</id><value>音乐 &amp; 视频</value></string>
@@ -424,7 +424,7 @@
   <string><id>489</id><value>自动播放下一个项目</value></string>
   <string><id>490</id><value>自动选择歌曲的列表和图表</value></string>
   <string><id>491</id><value>使用大图标</value></string>
-  <string><id>492</id><value>放大.Vobsub字幕</value></string>
+  <string><id>492</id><value>Vobsub字幕比例</value></string>
   <string><id>493</id><value>高级选项 (适合专家！)</value></string>
   <string><id>494</id><value>总体音量 (dB)</value></string>
   <string><id>495</id><value>以桌面的解析度播放影片</value></string>
@@ -440,7 +440,7 @@
   <string><id>505</id><value>读取媒体信息…</value></string>
   <string><id>506</id><value>使用目录名称作描述</value></string>
   <string><id>507</id><value>排序：使用数</value></string>
-  <string><id>508</id><value>不使用 捷径及扫描</value></string>
+  <string><id>508</id><value>不使用 捷径及扫瞄</value></string>
   <string><id>509</id><value>缓存程序图标</value></string>
   <string><id>510</id><value>开启 可视化效果</value></string>
   <string><id>511</id><value>启用视频模式自动切换功能</value></string>
@@ -510,8 +510,8 @@
   <string><id>703</id><value>按 Yes 更新目前路径所有歌曲。</value></string>
   <string><id>704</id><value>按 No 只增新歌。</value></string>
   <string><id>705</id><value>网络</value></string>
-  <string><id>706</id><value>- HTTP代理服务器地址</value></string>
-  <string><id>707</id><value>- HTTP代理服务器端口</value></string>
+  <string><id>706</id><value>HTTP代理服务器地址</value></string>
+  <string><id>707</id><value>HTTP代理服务器端口</value></string>
   <string><id>708</id><value>启用HTTP代理服务器</value></string>
   <string><id>709</id><value>XLink Kai 账号</value></string>
   <string><id>710</id><value>XLink Kai 密码</value></string>
@@ -523,10 +523,10 @@
   <string><id>716</id><value>自动 (动态分配)</value></string>
   <string><id>717</id><value>手动 (静态分配)</value></string>
   <string><id>718</id><value>默认 (Dashboard)</value></string>
-  <string><id>719</id><value>- IP  地址</value></string>
-  <string><id>720</id><value>- 子网掩码</value></string>
-  <string><id>721</id><value>- 默认网关</value></string>
-  <string><id>722</id><value>- DNS服务器</value></string>
+  <string><id>719</id><value>IP  地址</value></string>
+  <string><id>720</id><value>子网掩码</value></string>
+  <string><id>721</id><value>默认网关</value></string>
+  <string><id>722</id><value>DNS服务器</value></string>
   <string><id>723</id><value>保存 &amp; 重启</value></string>
   <string><id>724</id><value>无效地址，正确格式为：AAA.BBB.CCC.DDD</value></string>
   <string><id>725</id><value>从0到255之间</value></string>
@@ -534,14 +534,14 @@
   <string><id>727</id><value>Web 服务器</value></string>
   <string><id>728</id><value>FTP 服务器</value></string>
   <string><id>729</id><value>互联网时间</value></string>
-  <string><id>730</id><value>- Web服务器端口</value></string>
-  <string><id>731</id><value>- 网络校时服务器地址</value></string>
+  <string><id>730</id><value>Web服务器端口</value></string>
+  <string><id>731</id><value>网络校时服务器地址</value></string>
   <string><id>732</id><value>保存 &amp; 应用</value></string>
-  <string><id>733</id><value>- Web服务器密码</value></string>
+  <string><id>733</id><value>Web服务器密码</value></string>
   <string><id>734</id><value>无密码</value></string>
-  <string><id>735</id><value>- 字符集</value></string>
-  <string><id>736</id><value>- 字形</value></string>
-  <string><id>737</id><value>- 颜色</value></string>
+  <string><id>735</id><value>字符集</value></string>
+  <string><id>736</id><value>字形</value></string>
+  <string><id>737</id><value>颜色</value></string>
   <string><id>738</id><value>常规</value></string>
   <string><id>739</id><value>粗体</value></string>
   <string><id>740</id><value>斜体</value></string>
@@ -568,7 +568,7 @@
   <string><id>761</id><value>白色</value></string>
   <string><id>762</id><value>蓝色</value></string>
   <string><id>763</id><value>亮绿</value></string>
-  <string><id>764</id><value>黄绿色</value></string>
+  <string><id>764</id><value>翠绿</value></string>
   <string><id>765</id><value>青色</value></string>
   <string><id>766</id><value>保留</value></string>
   <string><id>767</id><value>保留</value></string>
@@ -625,7 +625,7 @@
   <string><id>1206</id><value>SMB 共享群</value></string>
   <string><id>1207</id><value>SMB WINS-服务器</value></string>
   <string><id>1208</id><value>设置 模式</value></string>
-  <string><id>1209</id><value> SMB 共享设置成功！</value></string>
+  <string><id>1209</id><value>SMB 共享设置成功！</value></string>
   <string><id>1210</id><value>删除</value></string>
   <string><id>1211</id><value>音乐</value></string>
   <string><id>1212</id><value>视频</value></string>
@@ -652,9 +652,10 @@
   <string><id>1233</id><value>程序 &amp; 视频 &amp; 音乐</value></string>
   <string><id>1234</id><value>程序 &amp; 图片 &amp; 音乐</value></string>
   <string><id>1235</id><value>程序 &amp; 图片 &amp; 视频</value></string>
+  <string><id>1236</id><value>共享端连线逾时</value></string>
 
-  <string><id>1245</id><value> - FTP 用户名</value></string>
-  <string><id>1246</id><value> - FTP 密码</value></string>
+  <string><id>1245</id><value>FTP 用户名</value></string>
+  <string><id>1246</id><value>FTP 密码</value></string>
   <string><id>1247</id><value>FTP 服务器相应的用户名和密码设置成功！</value></string>
 
   <string><id>1250</id><value>自动检测</value></string>
@@ -718,9 +719,9 @@
   <string><id>10500</id><value>我的音乐/播放列表</value></string>
   <string><id>10501</id><value>我的音乐/文件</value></string>
   <string><id>10502</id><value>我的音乐/音乐库</value></string>
-  <string><id>10503</id><value>我的音乐/Top100</value></string>
-  <string><id>10504</id><value>Top 100（歌曲）</value></string> 
-  <string><id>10505</id><value>Top 100（专辑）</value></string> 
+  <string><id>10503</id><value>我的音乐/排行前 100</value></string>
+  <string><id>10504</id><value>排行前 100 歌曲</value></string> 
+  <string><id>10505</id><value>排行前 100 专辑</value></string> 
   <string><id>10506</id><value>我的程序</value></string>
   <string><id>10507</id><value>系统设置</value></string>
   <string><id>10508</id><value>天气预报</value></string>
@@ -730,7 +731,7 @@
   <string><id>10512</id><value>我的音乐 - 专辑</value></string>
   <string><id>10513</id><value>我的音乐 - 艺术家</value></string>
   <string><id>10514</id><value>我的音乐 - 流派</value></string>
-  <string><id>10515</id><value>我的音乐 - Top 100</value></string>
+  <string><id>10515</id><value>我的音乐 - 排行前 100</value></string>
   <string><id>10516</id><value>我的音乐 - 资料</value></string>
   <string><id>10517</id><value>我的音乐 - 正在播放的...</value></string>
   <string><id>10518</id><value>我的视频 - 演员</value></string>
@@ -757,7 +758,7 @@
   <string><id>12014</id><value>没有找到金手指</value></string> 
   <string><id>12015</id><value>金手指设置</value></string> 
   <string><id>12016</id><value>所有金手指信息丢失，更新金手指列表。</value></string> 
-  <string><id>12017</id><value>自动从上次中断的地方开始播放。</value></string>
+  <string><id>12017</id><value>自动从影片中断处开始播放</value></string>
   <string><id>12018</id><value>否</value></string>
   <string><id>12019</id><value>是</value></string>
   <string><id>12020</id><value>询问</value></string>
@@ -855,8 +856,8 @@
   <string><id>13000</id><value>系统</value></string>
   <string><id>13001</id><value>立即关闭硬盘</value></string>
   <string><id>13002</id><value>只有视频</value></string>
-  <string><id>13003</id><value>- 延迟</value></string>
-  <string><id>13004</id><value>- 最小影音文件时长</value></string>
+  <string><id>13003</id><value>延迟</value></string>
+  <string><id>13004</id><value>最小影音文件时长</value></string>
   <string><id>13005</id><value>关机</value></string>
   <string><id>13006</id><value>Dashboard</value></string>
 
@@ -900,7 +901,7 @@
   <string><id>13212</id><value>闹铃取消，剩余%i分%i秒。</value></string>
 
 
-  <string><id>13249</id><value>选择RAR文件里面的字幕</value></string>
+  <string><id>13249</id><value>选择RAR文件中的字幕</value></string>
   <string><id>13250</id><value>选择字幕…</value></string>
   <string><id>13251</id><value>移动该项目</value></string> 
   <string><id>13252</id><value>将项目移动至此</value></string> 
@@ -971,7 +972,7 @@
   <string><id>13334</id><value>编辑标签</value></string>
   <string><id>13335</id><value>设为默认</value></string>
   <string><id>13336</id><value>删除按键</value></string>
-  <string><id>13337</id><value>- 两声道PCM过滤</value></string>
+  <string><id>13337</id><value>两声道PCM过滤</value></string>
   <string><id>13338</id><value>前LED</value></string>
   <string><id>13339</id><value>前LED颜色</value></string>
   <string><id>13340</id><value>默认</value></string>
@@ -986,29 +987,29 @@
   <string><id>13349</id><value>查询所有文件信息</value></string>
   <string><id>13350</id><value>正在播放的列表</value></string>
   <string><id>13351</id><value>专辑信息</value></string>
-  <string><id>13352</id><value>扫描文件夹信息</value></string>
-  <string><id>13353</id><value>停止扫描</value></string>
+  <string><id>13352</id><value>扫瞄文件夹信息</value></string>
+  <string><id>13353</id><value>停止扫瞄</value></string>
   <string><id>13354</id><value>补偿方式</value></string>
-  <string><id>13355</id><value>低品质像素著色器</value></string>
+  <string><id>13355</id><value>低品质像素着色器</value></string>
   <string><id>13356</id><value>硬件重叠</value></string>
-  <string><id>13357</id><value>高品质像素著色器</value></string>
+  <string><id>13357</id><value>高品质像素着色器</value></string>
   <string><id>13358</id><value>播放项目</value></string>
   <string><id>13359</id><value>设置艺术家图示</value></string>
   <string><id>13360</id><value>建立图示</value></string>
   <string><id>13361</id><value>开启语音</value></string>
   <string><id>13362</id><value>语音特效</value></string>
-  <string><id>13363</id><value>- 开启低沉效果</value></string>
-  <string><id>13364</id><value>-- 低沉效果数值</value></string>
-  <string><id>13365</id><value>- 开启高音效果</value></string>
-  <string><id>13366</id><value>-- 高音效果数值</value></string>
-  <string><id>13367</id><value>- 开启悄悄话效果</value></string>
-  <string><id>13368</id><value>-- 悄悄话效果数值</value></string>
-  <string><id>13369</id><value>- 开启机械人效果</value></string>
-  <string><id>13370</id><value>-- 机械人效果数值</value></string>
-  <string><id>13371</id><value>- 语音端口 1</value></string>
-  <string><id>13372</id><value>- 语音端口 2</value></string>
-  <string><id>13373</id><value>- 语音端口 3</value></string>
-  <string><id>13374</id><value>- 语音端口 4</value></string>
+  <string><id>13363</id><value>开启低沉效果</value></string>
+  <string><id>13364</id><value>低沉效果数值</value></string>
+  <string><id>13365</id><value>开启高音效果</value></string>
+  <string><id>13366</id><value>高音效果数值</value></string>
+  <string><id>13367</id><value>开启悄悄话效果</value></string>
+  <string><id>13368</id><value>悄悄话效果数值</value></string>
+  <string><id>13369</id><value>开启机械人效果</value></string>
+  <string><id>13370</id><value>机械人效果数值</value></string>
+  <string><id>13371</id><value>语音端口 1</value></string>
+  <string><id>13372</id><value>语音端口 2</value></string>
+  <string><id>13373</id><value>语音端口 3</value></string>
+  <string><id>13374</id><value>语音端口 4</value></string>
   <string><id>13375</id><value>启用装置</value></string>
   <string><id>13376</id><value>音量</value></string>
   <string><id>13377</id><value>默认显示方式</value></string>
@@ -1021,7 +1022,7 @@
   <string><id>13384</id><value>语音特效 - 端口 3</value></string>
   <string><id>13385</id><value>语音特效 - 端口 4</value></string>
   <string><id>13386</id><value>使用时间搜寻</value></string>
-  <string><id>13387</id><value>右侧音轨命名模板</value></string>
+  <string><id>13387</id><value>音轨命名模板</value></string>
   <string><id>13388</id><value>预设</value></string>
   <string><id>13389</id><value>该可视化效果没有进行预先设置 </value></string>
   <string><id>13390</id><value>该可视化效果没有相应设置</value></string>
@@ -1041,8 +1042,8 @@
   <string><id>13404</id><value>恢复</value></string>
   <string><id>13405</id><value>取得方式</value></string>
 
-  <string><id>14000</id><value>堆栈【已关闭】</value></string>
-  <string><id>14001</id><value>堆栈【已开启】</value></string>
+  <string><id>14000</id><value>堆栈【已开启】</value></string>
+  <string><id>14001</id><value>堆栈【已关闭】</value></string>
   <string><id>14002</id><value>堆栈：模糊</value></string>
   <string><id>14003</id><value>下载播放列表文件…</value></string>
   <string><id>14004</id><value>下载流媒体列表…</value></string>
@@ -1053,9 +1054,9 @@
   <string><id>14009</id><value>游戏目录</value></string>
   <string><id>14010</id><value>自动切换为图标显示方式条件</value></string>
   <string><id>14011</id><value>允许自动切换为图标显示方式</value></string>
-  <string><id>14012</id><value>- 使用大图标</value></string>
-  <string><id>14013</id><value>- 切换条件</value></string>
-  <string><id>14014</id><value>- 比例</value></string>
+  <string><id>14012</id><value>使用大图标</value></string>
+  <string><id>14013</id><value>切换条件</value></string>
+  <string><id>14014</id><value>比例</value></string>
   <string><id>14015</id><value>没有文件且至少有一个图标</value></string>
   <string><id>14016</id><value>至少有一个文件和一个图标</value></string>
   <string><id>14017</id><value>图标所占比例</value></string>
@@ -1082,7 +1083,7 @@
   <string><id>14040</id><value>网络设置。你想现在就重启吗？</value></string>
   <string><id>14041</id><value>后处理</value></string>
   <string><id>14042</id><value>执行XLink Kai的IP地址</value></string>
-  <string><id>14043</id><value>- 播放时关机</value></string>
+  <string><id>14043</id><value>播放时关机</value></string>
   <string><id>14044</id><value>%i 分</value></string>
   <string><id>14045</id><value>%i 秒</value></string>
   <string><id>14046</id><value>%i 毫秒</value></string>
@@ -1094,9 +1095,9 @@
   <string><id>14052</id><value>日期显示格式</value></string>
   <string><id>14053</id><value>界面滤镜</value></string>
   <string><id>14054</id><value>启用互联网信息查询</value></string>
-  <string><id>14055</id><value>使用后台扫描</value></string>
-  <string><id>14056</id><value>停止扫描</value></string>
-  <string><id>14057</id><value>无法扫描媒体信息</value></string>
+  <string><id>14055</id><value>使用后台扫瞄</value></string>
+  <string><id>14056</id><value>停止扫瞄</value></string>
+  <string><id>14057</id><value>无法扫瞄媒体信息</value></string>
   <string><id>14058</id><value>电影胶片效果</value></string>
   <string><id>14059</id><value>远程共享时搜寻定制的缩略图</value></string>
   <string><id>14060</id><value>未知类型文件缓冲     - 互联网</value></string>
@@ -1109,7 +1110,7 @@
   <string><id>14067</id><value>设置日期（日/月/年）</value></string>
   <string><id>14068</id><value>输入IP地址</value></string>
   <string><id>14069</id><value>确定要设定这些参数吗？</value></string>
-  <string><id>14070</id><value> - 应用设置</value></string>
+  <string><id>14070</id><value>应用设置</value></string>
   <string><id>14071</id><value>允许重命名和删除文件</value></string> 
   <string><id>14072</id><value>启用XLink Kai</value></string>
   <string><id>14073</id><value>XLink Kai 没有被启用！</value></string>
@@ -1214,35 +1215,35 @@
   <string><id>15252</id><value>选择电台…</value></string>
   <string><id>15253</id><value>寻找相似的艺术家…</value></string>
   <string><id>15254</id><value>寻找相似的标记…</value></string>
-  <string><id>15255</id><value>你的设置 (%name%)</value></string>
-  <string><id>15256</id><value>Overall top tags</value></string>
-  <string><id>15257</id><value>Top artists for tag %name%</value></string>
-  <string><id>15258</id><value>Top albums for tag %name%</value></string>
-  <string><id>15259</id><value>Top tracks for tag %name%</value></string>
-  <string><id>15260</id><value>Listen to tag %name% last.fm radio</value></string>
-  <string><id>15261</id><value>Similar artists as %name%</value></string>
-  <string><id>15262</id><value>Top %name% albums</value></string>
-  <string><id>15263</id><value>Top %name% tracks</value></string>
-  <string><id>15264</id><value>Top %name% tags</value></string>
-  <string><id>15265</id><value>Biggest fans of %name%</value></string>
-  <string><id>15266</id><value>Listen to %name% fans last.fm radio</value></string>
-  <string><id>15267</id><value>Listen to %name% similar artists last.fm radio</value></string>
-  <string><id>15268</id><value>Top artists for user %name%</value></string>
-  <string><id>15269</id><value>Top albums for user %name%</value></string>
-  <string><id>15270</id><value>Top tracks for user %name%</value></string>
-  <string><id>15271</id><value>Friends of user %name%</value></string>
-  <string><id>15272</id><value>Neighbours of user %name%</value></string>
-  <string><id>15273</id><value>Weekly artist chart for %name%</value></string>
-  <string><id>15274</id><value>Weekly album chart for %name%</value></string>
-  <string><id>15275</id><value>Weekly track chart for %name%</value></string>
-  <string><id>15276</id><value>Listen to %name%'s neighbours last.fm radio</value></string>
-  <string><id>15277</id><value>Listen to %name%'s personal last.fm radio</value></string>
-  <string><id>15278</id><value>Listen to %name%'s loved tracks last.fm radio</value></string>
+  <string><id>15255</id><value>%name% 的设置</value></string>
+  <string><id>15256</id><value>所有排行</value></string>
+  <string><id>15257</id><value>%name% 艺术家排行</value></string>
+  <string><id>15258</id><value>%name% 专辑排行</value></string>
+  <string><id>15259</id><value>%name% 歌曲排行</value></string>
+  <string><id>15260</id><value>收听 %name% last.fm 电台</value></string>
+  <string><id>15261</id><value>%name% 同类型艺术家</value></string>
+  <string><id>15262</id><value>%name% 专辑排行</value></string>
+  <string><id>15263</id><value>%name% 歌曲排行</value></string>
+  <string><id>15264</id><value>%name% 标记排行</value></string>
+  <string><id>15265</id><value>%name% 最爱歌迷</value></string>
+  <string><id>15266</id><value>收听 %name% 歌迷 last.fm 电台</value></string>
+  <string><id>15267</id><value>收听 %name% 同类型艺术家 last.fm 电台</value></string>  
+  <string><id>15268</id><value>%name% 艺术家排行</value></string>
+  <string><id>15269</id><value>%name% 专辑排行</value></string>
+  <string><id>15270</id><value>%name% 歌曲排行</value></string>
+  <string><id>15271</id><value>%name% 好友</value></string>
+  <string><id>15272</id><value>%name% 同好</value></string>
+  <string><id>15273</id><value>%name% 艺术家周排行</value></string>
+  <string><id>15274</id><value>%name% 专辑周排行</value></string>
+  <string><id>15275</id><value>%name% 歌曲周排行</value></string>
+  <string><id>15276</id><value>收听 %name% 的同好 last.fm 电台</value></string>
+  <string><id>15277</id><value>收听 %name% 的个人 last.fm 电台</value></string>
+  <string><id>15278</id><value>收听 %name% 的最爱歌曲</value></string>
   <string><id>15279</id><value>正在从last.fm获取列表</value></string>
   <string><id>15280</id><value>不能从last.fm获取列表…</value></string>
   <string><id>15281</id><value>输入艺术家名字来寻找相关资料</value></string>
   <string><id>15282</id><value>输入一个标记来寻找其他相似的</value></string>
-  <string><id>15283</id><value>音轨最近被%name%听过</value></string>
+  <string><id>15283</id><value>%name% 最近听过的音轨</value></string>
 
   <string><id>15300</id><value>路径错误或无法找到！</value></string>
   <string><id>15301</id><value>无法连接服务器！</value></string>
@@ -1293,7 +1294,7 @@
   <string><id>16106</id><value>使用 NTSC-M &amp; NTSC-J制式</value></string>
   <string><id>16107</id><value>使用 NTSC-M制式</value></string>
   <string><id>16108</id><value>使用 NTSC-J制式</value></string>
-  <string><id>16109</id><value>使用PAL-60制式</value></string>
-  <string><id>16110</id><value> 60hz 游戏设置</value></string>
+  <string><id>16109</id><value>使用 PAL-60制式</value></string>
+  <string><id>16110</id><value>60hz 游戏设置</value></string>
 
 </strings>
