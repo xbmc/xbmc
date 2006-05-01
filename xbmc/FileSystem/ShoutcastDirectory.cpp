@@ -211,6 +211,15 @@ bool CShoutcastDirectory::GetDirectory(const CStdString& strPath, CFileItemList 
     return false;
   }
 
+  if (!g_guiSettings.GetBool("FileLists.HideParentDirItems"))
+  {
+    CFileItem *pItem = new CFileItem("..");
+    pItem->m_strPath = "";
+    pItem->m_bIsFolder = true;
+    pItem->m_bIsShareOrDrive = false;
+    items.Add(pItem);
+  }
+
   bool result;
   if( strcmp(root->Value(), "genrelist") == 0 )
     result = ParseGenres(root, items, url);
