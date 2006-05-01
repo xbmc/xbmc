@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 01-05-2006 fixed: inexact matches from allmusic.com where not converted to UTF-8
  - 01-05-2006 updated: Portuguese (Brazil) language file (Thnx to mvbm)
  - 01-05-2006 updated: German (Austrian) language file (Thnx to CEOMR)
  - 01-05-2006 updated: Chinese (Traditional) language file (Thnx to omenpica)
