@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 30-04-2006 fixed: [ 1479638 ] "Settings" item in filemanagers contextmenu not working
  - 30-04-2006 fixed: cddb infomation may not be returned as utf-8, if this is the case the info will be converted from user charset to utf-8
  - 30-04-2006 fixed: playback of some mp3 files with unknown data before and in the first mp3-frames.
  - 30-04-2006 fixed: shortcuts didn't work in file manager or with xbmc.runxbe. also custom fields weren't read.
