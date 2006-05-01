@@ -116,7 +116,7 @@ bool CGUIWindowSlideShow::IsPlaying() const
 
 void CGUIWindowSlideShow::Reset()
 {
-  g_infoManager.SetShowInfo(false);
+  g_infoManager.SetShowCodec(false);
   m_bSlideShow = false;
   m_bPause = false;
   m_bErrorMessage = false;
