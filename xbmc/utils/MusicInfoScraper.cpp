@@ -104,7 +104,7 @@ void CMusicInfoScraper::FindAlbuminfo()
       if (iCol == 1 && !strColum.IsEmpty())
       {
         CStdString strYear = "(" + strColum + ")";
-        util.ConvertHTMLToAnsi(strYear, strAlbumName);
+        util.ConvertHTMLToUTF8(strYear, strAlbumName);
       }
 
       // Artist
@@ -113,7 +113,7 @@ void CMusicInfoScraper::FindAlbuminfo()
         if (strColum != "&nbsp;")
         {
           util.RemoveTags(strColum);
-          util.ConvertHTMLToAnsi(strColum, strArtist1);
+          util.ConvertHTMLToUTF8(strColum, strArtist1);
           strAlbumName = "- " + strArtist1 + " " + strAlbumName;
         }
       }
@@ -124,7 +124,7 @@ void CMusicInfoScraper::FindAlbuminfo()
         CStdString strTemp = strColum;
         util.RemoveTags(strTemp);
 
-        util.ConvertHTMLToAnsi(strTemp, strAlbum1);
+        util.ConvertHTMLToUTF8(strTemp, strAlbum1);
         strAlbumName = strAlbum1 + " " + strAlbumName;
       }
       // Album URL
