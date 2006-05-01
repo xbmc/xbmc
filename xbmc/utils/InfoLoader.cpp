@@ -53,6 +53,11 @@ void CInfoLoader::LoaderFinished()
 {
   m_refreshTime = timeGetTime() + TimeToNextRefreshInMs();
   m_backgroundLoader = NULL;
+  if (m_type == "weather" && m_busy)
+  {
+    CGUIMessage msg(GUI_MSG_SCAN_FINISHED,0,WINDOW_WEATHER);
+    m_gWindowManager.SendMessage(msg);
+  }
   m_busy = false;
 }
 
