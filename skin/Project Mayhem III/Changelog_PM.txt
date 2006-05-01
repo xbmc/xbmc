@@ -1,3 +1,4 @@
+2006-05-01 fixed:       DialogScriptInfo window - Spincontrols were not positioned correctly.
 2006-04-28 changed:	Stack button to a radio button.  Plus more cleanup of playlist and duration info.
 2006-04-28 fixed:	Minor cleanup of playlist info and duration info on visualisation if they are unknown.
 
