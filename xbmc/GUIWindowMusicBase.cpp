@@ -1161,7 +1161,8 @@ void CGUIWindowMusicBase::OnPopupMenu(int iItem)
   // turn off info/play/queue if the current item is goto parent ..
   if (!bIsGotoParent)
   {
-    btn_Info = pMenu->AddButton(13351);
+    if (!m_vecItems[iItem]->IsPlayList())
+      btn_Info = pMenu->AddButton(13351);
 
     if (vecCores.size() >= 1)
       btn_PlayWith = pMenu->AddButton(15213);
