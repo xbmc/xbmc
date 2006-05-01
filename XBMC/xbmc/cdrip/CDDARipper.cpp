@@ -287,12 +287,17 @@ bool CCDDARipper::RipCD()
 
   // if album name from first item is set,
   // then we use this as the directory to place the new file in.
+  CStdString strAlbumDir;
   if (vecItems[0]->m_musicInfoTag.GetAlbum().size() > 0)
   {
-    strDirectory += CUtil::MakeLegalFileName(vecItems[0]->m_musicInfoTag.GetAlbum().c_str(), false, bIsFATX);
-    CUtil::AddDirectorySeperator(strDirectory);
+    if (bIsFATX)
+      strAlbumDir=CUtil::MakeLegalFileName(vecItems[0]->m_musicInfoTag.GetAlbum().c_str(), false, bIsFATX);
+    else
+      strAlbumDir=vecItems[0]->m_musicInfoTag.GetAlbum();
   }
-  else
+
+    // No legal fatx directory name or no album in tag
+  if (strAlbumDir.IsEmpty())
   {
     // create a directory based on current date
     SYSTEMTIME datetime;
@@ -306,13 +311,16 @@ bool CCDDARipper::RipCD()
         return false;
       if (!CFile::Exists(strDirectory + strDate))
       {
-        strDirectory += strDate;
-        CUtil::AddDirectorySeperator(strDirectory);
+        strAlbumDir=strDate;
         break;
       }
       iNumber++;
     }
   }
+
+  // construct directory where the tracks are stored
+  strDirectory += strAlbumDir;
+  CUtil::AddDirectorySeperator(strDirectory);
 
   // Create directory if it doesn't exist
   if (!CUtil::CreateDirectoryEx(strDirectory))
@@ -328,19 +336,28 @@ bool CCDDARipper::RipCD()
     // get track number from "cdda://local/01.cdda"
     iTrack = atoi(vecItems[i]->m_strPath.substr(13, vecItems[i]->m_strPath.size() - 13 - 5).c_str());
     // if title is set we use it, and modify it if needed
+    CStdString track;
     if (vecItems[i]->m_musicInfoTag.GetTitle().size() > 0)
     {
-      CStdString track;
-      // do we want to include the track number in the file name?
-      if (g_guiSettings.GetBool("CDDARipper.UseTrackNumber"))
-        track.Format("%02i %s", iTrack, vecItems[i]->m_musicInfoTag.GetTitle().c_str());
+      if (bIsFATX)
+        track=CUtil::MakeLegalFileName(vecItems[i]->m_musicInfoTag.GetTitle().c_str(), true, bIsFATX);
       else
-        track = vecItems[i]->m_musicInfoTag.GetTitle();
+        track=vecItems[i]->m_musicInfoTag.GetTitle();
 
-      strFile = strDirectory + CUtil::MakeLegalFileName((track + cExt).c_str(), true, bIsFATX);
+      // do we want to include the track number in the file name?
+      if (g_guiSettings.GetBool("CDDARipper.UseTrackNumber") && !track.IsEmpty())
+      {
+        CStdString strTitle=track;
+        track.Format("%02i %s", iTrack, strTitle.c_str());
+      }
     }
-    else
-      strFile.Format("%s%s%02i%s", strDirectory.c_str(), "Track-", iTrack, cExt);
+
+    // No legal fatx filename or no title in tag
+    if (track.IsEmpty())
+      track.Format("%s%02i", "Track", iTrack);
+
+    // construct filename
+    strFile=strDirectory+track+cExt;
 
     DWORD dwTick = timeGetTime();
 
