@@ -24,7 +24,9 @@ bool CEncoder::Init(const char* strFile, int iInChannels, int iInRate, int iInBi
 
 bool CEncoder::FileCreate(const char* filename)
 {
-  m_hFile = CreateFile(filename, GENERIC_WRITE | GENERIC_READ, FILE_SHARE_READ, NULL, CREATE_ALWAYS,
+  CStdString strFileName=filename;
+  g_charsetConverter.utf8ToStringCharset(strFileName);
+  m_hFile = CreateFile(strFileName.c_str(), GENERIC_WRITE | GENERIC_READ, FILE_SHARE_READ, NULL, CREATE_ALWAYS,
                        FILE_ATTRIBUTE_NORMAL | FILE_FLAG_SEQUENTIAL_SCAN, NULL);
 
   return (m_hFile != INVALID_HANDLE_VALUE);

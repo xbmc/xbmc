@@ -1,5 +1,6 @@
 #include "../stdafx.h"
 #include "EncoderLame.h"
+#include "../id3tag.h"
 
 // taken from Lame from main.c
 int CEncoderLame::parse_args_from_string(lame_global_flags * const gfp, const char *p,
@@ -76,9 +77,9 @@ bool CEncoderLame::Init(const char* strFile, int iInChannels, int iInRate, int i
     CStdString strSettings;
     switch (g_guiSettings.GetInt("CDDARipper.Quality"))
     {
-    case CDDARIP_QUALITY_MEDIUM: { strSettings = "--preset medium"; break;}  // 150-180kbps
-    case CDDARIP_QUALITY_STANDARD: { strSettings = "--preset standard"; break;}  // 170-210kbps
-    case CDDARIP_QUALITY_EXTREME: { strSettings = "--preset extreme"; break;} // 200-240kbps
+    case CDDARIP_QUALITY_MEDIUM: { strSettings = "--vbr-new --preset medium"; break;}  // 150-180kbps
+    case CDDARIP_QUALITY_STANDARD: { strSettings = "--vbr-new --preset standard"; break;}  // 170-210kbps
+    case CDDARIP_QUALITY_EXTREME: { strSettings = "--vbr-new --preset extreme"; break;} // 200-240kbps
     }
     parse_args_from_string(m_pGlobalFlags, strSettings.c_str(), m_inPath, m_outPath);
   }
@@ -87,9 +88,6 @@ bool CEncoderLame::Init(const char* strFile, int iInChannels, int iInRate, int i
   m_dll.lame_set_asm_optimizations(m_pGlobalFlags, SSE, 1);
   m_dll.lame_set_in_samplerate(m_pGlobalFlags, 44100);
 
-  // add id3v2 tags
-  // id3tag_add_v2(pGlobalFlags);
-
   // Now that all the options are set, lame needs to analyze them and
   // set some more internal options and check for problems
   if (m_dll.lame_init_params(m_pGlobalFlags) < 0)
@@ -97,15 +95,6 @@ bool CEncoderLame::Init(const char* strFile, int iInChannels, int iInRate, int i
     CLog::Log(LOGERROR, "Error: Cannot init Lame params");
     return false;
   }
-
-  // add tags
-  m_dll.id3tag_set_artist(m_pGlobalFlags, m_strArtist.c_str());
-  m_dll.id3tag_set_title(m_pGlobalFlags, m_strTitle.c_str());
-  m_dll.id3tag_set_album(m_pGlobalFlags, m_strAlbum.c_str());
-  m_dll.id3tag_set_year(m_pGlobalFlags, m_strYear.c_str());
-  m_dll.id3tag_set_comment(m_pGlobalFlags, m_strComment.c_str());
-  m_dll.id3tag_set_track(m_pGlobalFlags, m_strTrack.c_str());
-  m_dll.id3tag_set_genre(m_pGlobalFlags, m_strGenre.c_str());
 
   return true;
 }
@@ -157,8 +146,22 @@ bool CEncoderLame::Close()
 
   m_dll.lame_close(m_pGlobalFlags);
 
-  // unload tle lame dll
+  // unload the lame dll
   m_dll.Unload();
+
+  // Store a id3 tag in the ripped file
+  CID3Tag id3tag;
+  CMusicInfoTag tag;
+  tag.SetAlbum(m_strAlbum);
+  tag.SetArtist(m_strArtist);
+  tag.SetGenre(m_strGenre);
+  tag.SetTitle(m_strTitle);
+  tag.SetTrackNumber(atoi(m_strTrack.c_str()));
+  SYSTEMTIME time;
+  time.wYear=atoi(m_strYear.c_str());
+  tag.SetReleaseDate(time);
+  id3tag.SetMusicInfoTag(tag);
+  id3tag.Write(m_strFile);
 
   return true;
 }
