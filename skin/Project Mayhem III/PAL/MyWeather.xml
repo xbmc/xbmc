@@ -160,19 +160,21 @@
 
     <control>
       <description>weather location select</description>
-      <type>spincontrol</type>
-      <align>left</align>
-      <width>15</width>
-      <height>15</height>
+      <type>selectbutton</type>
+      <align>center</align>
+      <posx>226</posx>
+      <posy>130</posy>
+      <onleft>2</onleft>
+      <onright>2</onright>
+      <onup>2</onup>
+      <ondown>2</ondown>
+      <width>200</width>
+      <height>30</height>      
       <id>3</id>
       <posx>226</posx>
       <posy>130</posy>
       <font>font14</font>
       <reverse>yes</reverse>
-      <onup>2</onup>
-      <ondown>2</ondown>
-      <onleft>2</onleft>
-      <onright>2</onright>
       <disabledcolor>ffffffff</disabledcolor>
       <textoffsetx>0</textoffsetx>
       <textoffsety>0</textoffsety>
