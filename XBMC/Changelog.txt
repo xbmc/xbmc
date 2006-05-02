@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 02-05-2006 fixed: inexact matches returned from cddb may not be in utf-8, if this is the case the info will be converted from user charset to utf-8
  - 02-05-2006 fixed: Fatal Error Handler didn't recognise keypresses.
  - 02-05-2006 changed: Animation attributes can use float coordinates instead of just integer coordinates.
  - 02-05-2006 fixed: Image controls from python couldn't be set to preserve aspect ratio.
