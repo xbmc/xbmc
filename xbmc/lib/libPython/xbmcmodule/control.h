@@ -101,6 +101,7 @@ namespace PYXBMC
     PyObject_HEAD_XBMC_CONTROL
 		string strFileName;
 		DWORD strColorKey;
+    DWORD aspectRatio;
 	} ControlImage;
 
 	typedef struct {
