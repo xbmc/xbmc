@@ -18,8 +18,6 @@ bool CDirectoryCache::GetDirectory(const CStdString& strPath1, CFileItemList &it
 {
   CSingleLock lock (m_cs);
 
-  items.Clear();
-
   CStdString strPath = strPath1;
   if (CUtil::HasSlashAtEnd(strPath))
     strPath.Delete(strPath.size() - 1);
