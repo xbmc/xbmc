@@ -48,14 +48,14 @@ public:
 private:
   // animation variables
   float acceleration;
-  int startX;
-  int startY;
-  int endX;
-  int endY;
+  float startX;
+  float startY;
+  float endX;
+  float endY;
+  float centerX;
+  float centerY;
   int startAlpha;
   int endAlpha;
-  int centerX;
-  int centerY;
 
   // timing variables
   float amount;
