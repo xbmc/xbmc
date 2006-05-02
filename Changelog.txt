@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 02-05-2006 changed: Animation attributes can use float coordinates instead of just integer coordinates.
  - 02-05-2006 fixed: Image controls from python couldn't be set to preserve aspect ratio.
  - 02-05-2006 changed: my weather location selector (id=3) can now be a select button.
  - 01-05-2006 fixed: inexact matches from allmusic.com where not converted to UTF-8

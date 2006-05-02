@@ -403,6 +403,13 @@ void CGraphicContext::ScaleXCoord(long& x, RESOLUTION res)
   x = (long) ( (float(x)) * fPercentX + 0.5f);
 }
 
+void CGraphicContext::ScaleXCoord(float& x, RESOLUTION res)
+{
+  if (res == INVALID) return ;
+  float fPercentX = ((float)m_iScreenWidth ) / ((float)g_settings.m_ResInfo[res].iWidth);
+  x *= fPercentX;
+}
+
 void CGraphicContext::ScaleYCoord(DWORD& y, RESOLUTION res)
 {
   if (res == INVALID) return ;
@@ -422,6 +429,13 @@ void CGraphicContext::ScaleYCoord(long& y, RESOLUTION res)
   if (res == INVALID) return ;
   float fPercentY = ((float)m_iScreenHeight ) / ((float)g_settings.m_ResInfo[res].iHeight);
   y = (long) ( (float(y)) * fPercentY + 0.5f);
+}
+
+void CGraphicContext::ScaleYCoord(float& y, RESOLUTION res)
+{
+  if (res == INVALID) return ;
+  float fPercentY = ((float)m_iScreenHeight ) / ((float)g_settings.m_ResInfo[res].iHeight);
+  y *= fPercentY;
 }
 
 void CGraphicContext::ResetOverscan(RESOLUTION res, OVERSCAN &overscan)
