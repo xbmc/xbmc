@@ -1036,8 +1036,18 @@ void Xcddb::addInexactListLine(int line_cnt, const char *line, int len)
   sprintf(cddb_command, "cddb read %s %s", genre, discid);
 
   m_mapInexact_cddb_command_list[line_cnt] = cddb_command;
-  m_mapInexact_artist_list[line_cnt] = artist;
-  m_mapInexact_title_list[line_cnt] = title;
+
+  CStdString strArtist=artist;
+  // You never know if you really get UTF-8 strings from cddb
+  if (!g_charsetConverter.isValidUtf8(strArtist)) 
+    g_charsetConverter.stringCharsetToUtf8(CStdString(artist), strArtist);
+  m_mapInexact_artist_list[line_cnt] = strArtist;
+
+  CStdString strTitel=title;
+  // You never know if you really get UTF-8 strings from cddb
+  if (!g_charsetConverter.isValidUtf8(strTitel)) 
+    g_charsetConverter.stringCharsetToUtf8(CStdString(artist), strTitel);
+  m_mapInexact_title_list[line_cnt] = strTitel;
   // char log_string[1024];
   // sprintf(log_string,"%u: %s - %s",line_cnt,artist,title);
   // //writeLog(log_string);
