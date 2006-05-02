@@ -114,9 +114,11 @@ public:
   void ScaleXCoord(DWORD &x, RESOLUTION res);
   void ScaleXCoord(int &x, RESOLUTION res);
   void ScaleXCoord(long &x, RESOLUTION res);
+  void ScaleXCoord(float &x, RESOLUTION res);
   void ScaleYCoord(DWORD &x, RESOLUTION res);
   void ScaleYCoord(int &x, RESOLUTION res);
   void ScaleYCoord(long &x, RESOLUTION res);
+  void ScaleYCoord(float &x, RESOLUTION res);
   float GetPixelRatio(RESOLUTION iRes) const;
   void CaptureStateBlock();
   void ApplyStateBlock();
