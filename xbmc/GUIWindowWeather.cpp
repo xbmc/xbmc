@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "GUIWindowWeather.h"
-#include "GUISpinControl.h"
-#include "GUISelectButtonControl.h"
+#include "GUIImage.h"
 #include "Util.h"
 #include "Utils/Weather.h"
 
@@ -97,7 +96,7 @@ bool CGUIWindowWeather::OnMessage(CGUIMessage& message)
       }
     }
     break;
-  case GUI_MSG_SCAN_FINISHED:
+  case GUI_MSG_WEATHER_FETCHED:
     {
       CGUIMessage msg(GUI_MSG_LABEL_RESET,GetID(),CONTROL_SELECTLOCATION);
       g_graphicsContext.SendMessage(msg);
@@ -133,7 +132,6 @@ bool CGUIWindowWeather::OnMessage(CGUIMessage& message)
       }
 
       CONTROL_SELECT_ITEM(CONTROL_SELECTLOCATION, m_iCurWeather);
-      Refresh();
     }
     break;
   }
