@@ -24,8 +24,8 @@ namespace PYXBMC
 		self = (ControlImage*)type->tp_alloc(type, 0);
 		if (!self) return NULL;
 		
-		if (!PyArg_ParseTuple(args, "lllls|s", &self->dwPosX, &self->dwPosY, &self->dwWidth, &self->dwHeight,
-			&cImage, &cColorKey)) return NULL;
+		if (!PyArg_ParseTuple(args, "lllls|sl", &self->dwPosX, &self->dwPosY, &self->dwWidth, &self->dwHeight,
+			&cImage, &cColorKey, &self->aspectRatio)) return NULL;
 
 		// check if filename exists
 		self->strFileName = cImage;
@@ -46,6 +46,8 @@ namespace PYXBMC
 				pControl->dwPosX, pControl->dwPosY, pControl->dwWidth, pControl->dwHeight,
 				pControl->strFileName, pControl->strColorKey);
 
+    if (!pControl->pGUIControl && pControl->aspectRatio >= CGUIImage::ASPECT_RATIO_KEEP && pControl->aspectRatio <= CGUIImage::ASPECT_RATIO_STRETCH)
+      ((CGUIImage *)pControl->pGUIControl)->SetAspectRatio((CGUIImage::GUIIMAGE_ASPECT_RATIO)pControl->aspectRatio);
 		return pControl->pGUIControl;
 	}
 
@@ -56,10 +58,11 @@ namespace PYXBMC
 	PyDoc_STRVAR(controlImage__doc__,
 		"ControlImage class.\n"
 		"\n"
-		"ControlImage(int x, int y, int width, int height[, filename, ColorKey])\n"
+		"ControlImage(int x, int y, int width, int height[, filename, ColorKey, AspectRatio])\n"
 		"\n"
 		"filename  : image filename\n"
-		"ColorKey  : hexString (example, '0xFFFF3300')");
+		"ColorKey  : hexString (example, '0xFFFF3300')\n"
+    "AspectRatio : int (values 0 = scale down (black bars), 1 = scale up (crops), 2 = stretch (default)");
 
 // Restore code and data sections to normal.
 #pragma code_seg()
