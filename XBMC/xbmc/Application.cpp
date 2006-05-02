@@ -277,7 +277,7 @@ void CApplication::FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetw
   // g_LoadErrorStr should contain the reason
   CLog::Log(LOGWARNING, "Emergency recovery console starting...");
 
-  bool HaveGamepad = !InitD3D;
+  bool HaveGamepad = true; // should always have the gamepad when we get here
   if (InitD3D)
   {
     InitBasicD3D();
