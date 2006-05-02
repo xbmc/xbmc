@@ -481,6 +481,8 @@ bool CLastFMDirectory::GetTagInfo(CFileItemList &items)
 bool CLastFMDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
 {
   CStdString strURL = strPath;
+  CURL url(strURL);
+  strURL=url.GetFileName();
 
   // parse the URL, finding object type, name, and requested info
   CStdStringArray vecURLParts;
@@ -492,22 +494,22 @@ bool CLastFMDirectory::GetDirectory(const CStdString& strPath, CFileItemList &it
 
   switch(StringUtils::SplitString(strURL, "/", vecURLParts))
   {
-  case 2:
+  case 1:
     // simple lastfm:// root URL...
     g_directoryCache.Clear();
     break;
   // the following fallthru's are on purpose
-  case 6:
-    m_objrequest = vecURLParts[4];
   case 5:
-    m_objname = vecURLParts[3];
-    m_encodedobjname = vecURLParts[3];
+    m_objrequest = vecURLParts[3];
+  case 4:
+    m_objname = vecURLParts[2];
+    m_encodedobjname = vecURLParts[2];
     CUtil::URLEncode(m_encodedobjname);
     CUtil::UrlDecode(m_objname);
-  case 4:
-    m_objtype = vecURLParts[2];
   case 3:
-    if (vecURLParts[1] != "/xbmc")
+    m_objtype = vecURLParts[1];
+  case 2:
+    if (vecURLParts[0] != "xbmc")
       return false;
     break;
   default:
@@ -516,16 +518,6 @@ bool CLastFMDirectory::GetDirectory(const CStdString& strPath, CFileItemList &it
 
   if (g_directoryCache.GetDirectory(strPath, items))
     return true;
-
-  if (!g_guiSettings.GetBool("FileLists.HideParentDirItems"))
-  {
-    CFileItem *pItem = new CFileItem("..");
-    pItem->m_strPath = "";
-    pItem->m_bIsFolder = true;
-    pItem->m_bIsShareOrDrive = false;
-    items.Add(pItem);
-  }
-
 
   if (m_objtype == "user")
     m_Error = GetUserInfo(items);
