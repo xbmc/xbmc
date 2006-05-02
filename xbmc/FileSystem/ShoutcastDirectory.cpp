@@ -211,15 +211,6 @@ bool CShoutcastDirectory::GetDirectory(const CStdString& strPath, CFileItemList 
     return false;
   }
 
-  if (!g_guiSettings.GetBool("FileLists.HideParentDirItems"))
-  {
-    CFileItem *pItem = new CFileItem("..");
-    pItem->m_strPath = "";
-    pItem->m_bIsFolder = true;
-    pItem->m_bIsShareOrDrive = false;
-    items.Add(pItem);
-  }
-
   bool result;
   if( strcmp(root->Value(), "genrelist") == 0 )
     result = ParseGenres(root, items, url);
@@ -230,7 +221,9 @@ bool CShoutcastDirectory::GetDirectory(const CStdString& strPath, CFileItemList 
   g_directoryCache.ClearDirectory(strRoot);
   for( int i = 0; i <items.Size(); i++ )
   {
-    vecCacheItems.Add(new CFileItem( *items.Get(i) ));
+    CFileItem* pItem=items[i];
+    if (!pItem->IsParentFolder())
+      vecCacheItems.Add(new CFileItem( *pItem ));
   }
   g_directoryCache.SetDirectory(strRoot, vecCacheItems);
   if (dlgProgress) dlgProgress->Close();
