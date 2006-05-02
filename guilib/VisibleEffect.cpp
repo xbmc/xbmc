@@ -82,18 +82,18 @@ void CAnimation::Create(const TiXmlElement *node, RESOLUTION &res)
     const char *startPos = node->Attribute("start");
     if (startPos)
     {
-      startX = atoi(startPos);
+      startX = (float)atof(startPos);
       const char *comma = strstr(startPos, ",");
       if (comma)
-        startY = atoi(comma + 1);
+        startY = (float)atof(comma + 1);
     }
     const char *endPos = node->Attribute("end");
     if (endPos)
     {
-      endX = atoi(endPos);
+      endX = (float)atof(endPos);
       const char *comma = strstr(endPos, ",");
       if (comma)
-        endY = atoi(comma + 1);
+        endY = (float)atof(comma + 1);
     }
     // scale our parameters
     g_graphicsContext.ScaleXCoord(startX, res);
@@ -122,8 +122,9 @@ void CAnimation::Create(const TiXmlElement *node, RESOLUTION &res)
   }
   else if (effect == EFFECT_TYPE_ROTATE)
   {
-    if (node->Attribute("start")) node->Attribute("start", &startX);
-    if (node->Attribute("end")) node->Attribute("end", &endX);
+    double temp;
+    if (node->Attribute("start", &temp)) startX = (float)temp;
+    if (node->Attribute("end", &temp)) endX = (float)temp;
 
     // convert to a negative to account for our reversed vertical axis
     startX *= -1;
@@ -132,10 +133,10 @@ void CAnimation::Create(const TiXmlElement *node, RESOLUTION &res)
     const char *centerPos = node->Attribute("center");
     if (centerPos)
     {
-      centerX = atoi(centerPos);
+      centerX = (float)atof(centerPos);
       const char *comma = strstr(centerPos, ",");
       if (comma)
-        centerY = atoi(comma + 1);
+        centerY = (float)atof(comma + 1);
     }
   }
   else // if (effect == EFFECT_TYPE_ZOOM)
@@ -147,26 +148,26 @@ void CAnimation::Create(const TiXmlElement *node, RESOLUTION &res)
     const char *start = node->Attribute("start");
     if (start)
     {
-      startX = startY = atoi(start);
+      startX = startY = (float)atof(start);
       const char *comma = strstr(start, ",");
       if (comma)
-        startY = atoi(comma + 1);
+        startY = (float)atof(comma + 1);
     }
     const char *end = node->Attribute("end");
     if (end)
     {
-      endX = endY = atoi(end);
+      endX = endY = (float)atof(end);
       const char *comma = strstr(end, ",");
       if (comma)
-        endY = atoi(comma + 1);
+        endY = (float)atof(comma + 1);
     }
     const char *centerPos = node->Attribute("center");
     if (centerPos)
     {
-      centerX = atoi(centerPos);
+      centerX = (float)atof(centerPos);
       const char *comma = strstr(centerPos, ",");
       if (comma)
-        centerY = atoi(comma + 1);
+        centerY = (float)atof(comma + 1);
     }
   }
 }
@@ -274,18 +275,18 @@ TransformMatrix CAnimation::RenderAnimation()
     }
     else if (effect == EFFECT_TYPE_ROTATE)
     {
-      TransformMatrix translation1 = TransformMatrix::CreateTranslation((float)-centerX, (float)-centerY);
+      TransformMatrix translation1 = TransformMatrix::CreateTranslation(-centerX, -centerY);
       TransformMatrix rotation = TransformMatrix::CreateRotation(((endX - startX)*offset + startX) * DEGREE_TO_RADIAN);
-      TransformMatrix translation2 = TransformMatrix::CreateTranslation((float)centerX, (float)centerY);
+      TransformMatrix translation2 = TransformMatrix::CreateTranslation(centerX, centerY);
       return translation2 * rotation * translation1;
     }
     else if (effect == EFFECT_TYPE_ZOOM)
     {
       float scaleX = ((endX - startX)*offset + startX) * 0.01f;
       float scaleY = ((endY - startY)*offset + startY) * 0.01f;
-      TransformMatrix translation1 = TransformMatrix::CreateTranslation((float)-centerX, (float)-centerY);
+      TransformMatrix translation1 = TransformMatrix::CreateTranslation(-centerX, -centerY);
       TransformMatrix scaler = TransformMatrix::CreateScaler(scaleX, scaleY);
-      TransformMatrix translation2 = TransformMatrix::CreateTranslation((float)centerX, (float)centerY);
+      TransformMatrix translation2 = TransformMatrix::CreateTranslation(centerX, centerY);
       return translation2 * scaler * translation1;
     }
   }
