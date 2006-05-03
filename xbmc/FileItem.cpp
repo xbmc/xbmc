@@ -237,7 +237,7 @@ bool CFileItem::IsVideo() const
   CUtil::GetExtension(m_strPath, strExtension);
   if (strExtension.size() < 2) return false;
   strExtension.ToLower();
-  if ( strstr( g_stSettings.m_szMyVideoExtensions, strExtension.c_str() ) )
+  if (g_stSettings.m_videoExtensions.Find(strExtension) != -1)
     return true;
 
   return false;
@@ -254,7 +254,7 @@ bool CFileItem::IsAudio() const
   if (strExtension.size() < 2) return false;
   strExtension.ToLower();
 
-  if ( strstr( g_stSettings.m_szMyMusicExtensions, strExtension.c_str() ) )
+  if (g_stSettings.m_musicExtensions.Find(strExtension) != -1)
     return true;
 
   return false;
@@ -267,7 +267,7 @@ bool CFileItem::IsPicture() const
   if (strExtension.size() < 2) return false;
   strExtension.ToLower();
 
-  if ( strstr( g_stSettings.m_szMyPicturesExtensions, strExtension.c_str() ) )
+  if (g_stSettings.m_pictureExtensions.Find(strExtension) != -1)
     return true;
 
   if (strExtension == ".tbn") return true;
@@ -1832,7 +1832,7 @@ void CFileItemList::FilterCueItems()
               else
               { // try replacing the extension with one of our allowed ones.
                 CStdStringArray extensions;
-                StringUtils::SplitString(g_stSettings.m_szMyMusicExtensions, "|", extensions);
+                StringUtils::SplitString(g_stSettings.m_musicExtensions, "|", extensions);
                 for (unsigned int i = 0; i < extensions.size(); i++)
                 {
                   CUtil::ReplaceExtension(pItem->m_strPath, extensions[i], strMediaFile);

@@ -88,7 +88,7 @@ bool CPlayListM3U::Load(const CStdString& strFileName, bool bDeep)
         }
 
         // should substitition occur befor or after charset conversion??
-        if (CUtil::IsRemote(strBasePath) && g_settings.m_vecPathSubstitutions.size() > 0)
+        if (CUtil::IsRemote(strBasePath) && g_advancedSettings.m_pathSubstitutions.size() > 0)
           strFileName = CUtil::SubstitutePath(strFileName);
 
         // Get the full path file name and add it to the the play list

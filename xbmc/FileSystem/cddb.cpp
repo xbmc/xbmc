@@ -22,7 +22,7 @@ Xcddb::Xcddb()
     : m_cddb_socket(INVALID_SOCKET)
 {
   m_lastError = 0;
-  m_cddb_ip_adress = g_stSettings.m_szCDDBIpAdres;
+  m_cddb_ip_adress = g_advancedSettings.m_cddbAddress;
   cCacheDir = "";
   m_strNull = "";
 }
