@@ -159,6 +159,8 @@ CSettings::CSettings(void)
   g_advancedSettings.m_autoDetectPingTime = 30;
   g_advancedSettings.m_playCountMinimumPercent = 90.0f;
 
+  g_advancedSettings.m_cddbAddress = "freedb.freedb.org";
+  g_advancedSettings.m_imdbAddress = "akas.imdb.com";
   g_advancedSettings.m_autoDetectFG = true;
   g_advancedSettings.m_useFDrive = true;
   g_advancedSettings.m_useGDrive = false;
@@ -166,14 +168,16 @@ CSettings::CSettings(void)
   g_advancedSettings.m_cachePath = "Z:\\";
   g_advancedSettings.m_sambaDebugLevel = 0;
 
-  g_advancedSettings.m_displayRemoteCodes = false;
-
   g_advancedSettings.m_videoStackRegExps.push_back("[ _\\.-]+cd[ _\\.-]*([0-9a-d]+)");
   g_advancedSettings.m_videoStackRegExps.push_back("[ _\\.-]+dvd[ _\\.-]*([0-9a-d]+)");
   g_advancedSettings.m_videoStackRegExps.push_back("[ _\\.-]+part[ _\\.-]*([0-9a-d]+)");
   g_advancedSettings.m_videoStackRegExps.push_back("()[ _\\.-]+([0-9]*[abcd]+)(\\....)$");
   g_advancedSettings.m_videoStackRegExps.push_back("()[\\^ _\\.-]+([0-9]+)(\\....)$");
   g_advancedSettings.m_videoStackRegExps.push_back("([a-z])([0-9]+)(\\....)$");
+
+  g_advancedSettings.m_remoteRepeat = 480;
+  g_advancedSettings.m_controllerDeadzone = 0.2f;
+  g_advancedSettings.m_displayRemoteCodes = false;
 
   xbmcXmlLoaded = false;
 }
