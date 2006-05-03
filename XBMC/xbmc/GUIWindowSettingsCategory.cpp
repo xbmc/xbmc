@@ -808,6 +808,17 @@ void CGUIWindowSettingsCategory::CreateSettings()
                                           pControl->GetControlIdLeft(), pControl->GetControlIdRight());
   // update our settings (turns controls on/off as appropriate)
   UpdateSettings();
+  // check and update our control group, in case the first item(s) are disabled (otherwise
+  // we can't navigate to the controls from the buttons on the left)
+  for (int firstControl = CONTROL_START_CONTROL; firstControl < CONTROL_START_CONTROL + (int)m_vecSettings.size(); firstControl++)
+  {
+    const CGUIControl *control = GetControl(firstControl);
+    if (!control->IsDisabled())
+    {
+      m_vecGroups[1].m_lastControl = firstControl;
+      break;
+    }
+  }
 }
 
 void CGUIWindowSettingsCategory::UpdateSettings()
@@ -1025,12 +1036,6 @@ void CGUIWindowSettingsCategory::UpdateSettings()
     {
       CGUIButtonControl *pControl = (CGUIButtonControl *)GetControl(GetSetting(strSetting)->GetID());
       pControl->SetEnabled(g_guiSettings.GetString("ScreenSaver.Mode") == "SlideShow");
-      CStdString path = g_guiSettings.GetString("ScreenSaver.SlideShowPath");
-      CStdString shortPath;
-      if (CUtil::MakeShortenPath(path, shortPath, 30 ))
-        pControl->SetLabel2(shortPath);
-      else
-        pControl->SetLabel2(path);
     }
     else if (strSetting == "ScreenSaver.SlideShowShuffle")
     {
@@ -1268,22 +1273,12 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     }
   }
   else if (strSetting == "CDDARipper.Path")
-    {
-      CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
-      CStdString strPath = g_stSettings.m_strRipPath;
-      if (CGUIDialogFileBrowser::ShowAndGetDirectory(g_settings.m_vecMyFilesShares,g_localizeStrings.Get(607),strPath,true))
-      {
-        strcpy(g_stSettings.m_strRipPath,strPath.c_str());
-        
-        CStdString strOutput;
-        if (CUtil::MakeShortenPath(strPath, strOutput, 25 ))
-          pSettingString->SetData(strOutput);
-        else 
-          pSettingString->SetData(strPath);
-        
-        g_settings.Save();
-      }
-    }
+  {
+    CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
+    CStdString strPath = pSettingString->GetData();
+    if (CGUIDialogFileBrowser::ShowAndGetDirectory(g_settings.m_vecMyFilesShares,g_localizeStrings.Get(607),strPath,true))
+      pSettingString->SetData(strPath);
+  }
   else if (strSetting == "XLinkKai.Enabled")
   {
     if (g_guiSettings.GetBool("XLinkKai.Enabled"))
@@ -1578,14 +1573,6 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
       g_application.CancelDelayLoadSkin();
     }
   }
-  else if (strSetting == "LookAndFeel.StartUpWindow")
-  {
-    // Set the Current XML or Previos StartWindow state!
-    CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
-    CStdString startWindow;
-    startWindow.Format("%i", pControl->GetValue());
-    g_settings.UpDateXbmcXML("startwindow", startWindow);
-  }
   else if (strSetting == "UIFilters.Flicker" || strSetting == "UIFilters.Soften")
   { // reset display
     g_graphicsContext.SetGUIResolution(g_guiSettings.m_LookAndFeelResolution);
@@ -1617,14 +1604,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
     CStdString path = pSettingString->GetData();
     if (CGUIDialogFileBrowser::ShowAndGetDirectory(g_settings.m_vecMyPictureShares, g_localizeStrings.Get(pSettingString->m_iHeadingString), path))
-    {
-      // To Prevent: if Path is to long, goes out of screen
-      //CStdString StrOutput;
-      //if (CUtil::MakeShortenPath(path, StrOutput, 30 ))
-      //  pSettingString->SetData(StrOutput);
-      //else
-        pSettingString->SetData(path);
-    }
+      pSettingString->SetData(path);
   }
   else if (strSetting == "LED.Colour")
   { // Alter LED Colour immediately

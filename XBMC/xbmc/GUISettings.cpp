@@ -138,6 +138,19 @@ CStdString CSettingString::ToString()
   return m_strData;
 }
 
+void CSettingsGroup::GetCategories(vecSettingsCategory &vecCategories)
+{
+  vecCategories.clear();
+  for (unsigned int i = 0; i < m_vecCategories.size(); i++)
+  {
+    vecSettings settings;
+    // check whether we actually have these settings available.
+    g_guiSettings.GetSettingsGroup(m_vecCategories[i]->m_strCategory, settings);
+    if (settings.size())
+      vecCategories.push_back(m_vecCategories[i]);
+  }
+}
+
 // Settings are case sensitive
 CGUISettings::CGUISettings(void)
 {
@@ -239,7 +252,7 @@ CGUISettings::CGUISettings(void)
   AddInt(2, "CDDARipper.Encoder", 621, CDDARIP_ENCODER_LAME, CDDARIP_ENCODER_LAME, 1, CDDARIP_ENCODER_WAV, SPIN_CONTROL_TEXT);
   AddInt(3, "CDDARipper.Quality", 622, CDDARIP_QUALITY_CBR, CDDARIP_QUALITY_CBR, 1, CDDARIP_QUALITY_EXTREME, SPIN_CONTROL_TEXT);
   AddInt(4, "CDDARipper.Bitrate", 623, 192, 128, 32, 320, SPIN_CONTROL_INT_PLUS, MASK_KBPS);
-  AddString(5, "CDDARipper.Path", 607, "E:\\Music\\CD-Rips", BUTTON_CONTROL_MISC_INPUT, false, 607);
+  AddString(5, "CDDARipper.Path", 607, "E:\\Music\\CD-Rips", BUTTON_CONTROL_PATH_INPUT, false, 607);
 
   AddCategory(3, "MusicPlayer", 16003);
   AddString(1, "MusicPlayer.JumpToAudioHardware", 16001, "", BUTTON_CONTROL_STANDARD);
@@ -465,7 +478,7 @@ CGUISettings::CGUISettings(void)
   AddInt(4, "ScreenSaver.Time", 355, 3, 1, 1, 60, SPIN_CONTROL_INT_PLUS, MASK_MINS);
   AddSeparator(5, "ScreenSaver.Sep1");
   AddInt(6, "ScreenSaver.DimLevel", 362, 20, 10, 10, 80, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
-  AddString(7, "ScreenSaver.SlideShowPath", 774, "F:\\Pictures\\", BUTTON_CONTROL_MISC_INPUT, false, 774); // GeminiServer: PictureSlideShow
+  AddString(7, "ScreenSaver.SlideShowPath", 774, "F:\\Pictures\\", BUTTON_CONTROL_PATH_INPUT, false, 774); // GeminiServer: PictureSlideShow
   AddBool(8, "ScreenSaver.SlideShowShuffle", 191, false);
 
   AddCategory(7, "UIFilters", 14053);
@@ -721,7 +734,7 @@ void CGUISettings::GetSettingsGroup(const char *strGroup, vecSettings &settings)
   settings.clear();
   for (mapIter it = settingsMap.begin(); it != settingsMap.end(); it++)
   {
-    if ((*it).first.Left(strlen(strGroup)) == strGroup && (*it).second->GetOrder() >= 0)
+    if ((*it).first.Left(strlen(strGroup)) == strGroup && (*it).second->GetOrder() > 0)
       settings.push_back((*it).second);
   }
   // now order them...
@@ -738,11 +751,11 @@ void CGUISettings::LoadMasterLock(TiXmlElement *pRootElement)
     LoadFromXML(pRootElement, it);
 }
 
-void CGUISettings::LoadXML(TiXmlElement *pRootElement)
+void CGUISettings::LoadXML(TiXmlElement *pRootElement, bool hideSettings /* = false */)
 { // load our stuff...
   for (mapIter it = settingsMap.begin(); it != settingsMap.end(); it++)
   {
-    LoadFromXML(pRootElement, it);
+    LoadFromXML(pRootElement, it, hideSettings);
   }
   // Get hardware based stuff...
   CLog::Log(LOGNOTICE, "Getting hardware information now...");
@@ -784,7 +797,7 @@ void CGUISettings::LoadXML(TiXmlElement *pRootElement)
   SetBool("MasterLock.MasterUser", false);
 }
 
-void CGUISettings::LoadFromXML(TiXmlElement *pRootElement, mapIter &it)
+void CGUISettings::LoadFromXML(TiXmlElement *pRootElement, mapIter &it, bool hideSetting /* = false */)
 {
   CStdStringArray strSplit;
   StringUtils::SplitString((*it).first, ".", strSplit);
@@ -802,6 +815,8 @@ void CGUISettings::LoadFromXML(TiXmlElement *pRootElement, mapIter &it)
           if (strValue != "-")
           { // update our item
             (*it).second->FromString(strValue);
+            if (hideSetting)
+              (*it).second->SetHidden();
             CLog::Log(LOGDEBUG, "  %s: %s", (*it).first.c_str(), (*it).second->ToString().c_str());
           }
         }

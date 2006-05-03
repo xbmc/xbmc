@@ -374,19 +374,19 @@ int CXbmcHttp::xbmcGetMediaLocation(int numParas, CStdString paras[])
   case MUSIC:
     {
       pShares = &g_settings.m_vecMyMusicShares;
-      strMask = g_stSettings.m_szMyMusicExtensions;
+      strMask = g_stSettings.m_musicExtensions;
     }
     break;
   case VIDEO:
     {
       pShares = &g_settings.m_vecMyVideoShares;
-      strMask = g_stSettings.m_szMyVideoExtensions;
+      strMask = g_stSettings.m_videoExtensions;
     }
     break;
   case PICTURES:
     {
       pShares = &g_settings.m_vecMyPictureShares;
-      strMask = g_stSettings.m_szMyPicturesExtensions;
+      strMask = g_stSettings.m_pictureExtensions;
     }
     break;
   case FILES:

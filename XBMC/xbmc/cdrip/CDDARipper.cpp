@@ -190,7 +190,7 @@ bool CCDDARipper::RipTrack(CFileItem* pItem)
 {
   int iTrack = 0;
   CStdString strFile;
-  CStdString strDirectory = g_stSettings.m_strRipPath;
+  CStdString strDirectory = g_guiSettings.GetString("CDDARipper.Path");
   if (!CUtil::HasSlashAtEnd(strDirectory)) CUtil::AddDirectorySeperator(strDirectory);
   CFileItem ripPath(strDirectory, true);
   bool bIsFATX = !ripPath.IsSmb();
@@ -243,7 +243,7 @@ bool CCDDARipper::RipCD()
   int iTrack = 0;
   bool bResult = true;
   CStdString strFile;
-  CStdString strDirectory = g_stSettings.m_strRipPath;
+  CStdString strDirectory = g_guiSettings.GetString("CDDARipper.Path");
   if (!CUtil::HasSlashAtEnd(strDirectory)) CUtil::AddDirectorySeperator(strDirectory);
   CFileItem ripPath(strDirectory, true);
   bool bIsFATX = !ripPath.IsSmb();

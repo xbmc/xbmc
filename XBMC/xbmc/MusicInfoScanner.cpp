@@ -183,7 +183,7 @@ bool CMusicInfoScanner::DoScan(const CStdString& strDirectory)
   OutputDebugMem(format.c_str());
   // load subfolder
   CFileItemList items;
-  CDirectory::GetDirectory(strDirectory, items, g_stSettings.m_szMyMusicExtensions);
+  CDirectory::GetDirectory(strDirectory, items, g_stSettings.m_musicExtensions);
   // filter items in the sub dir (for .cue sheet support)
   items.FilterCueItems();
   items.Sort(SORT_METHOD_LABEL, SORT_ORDER_ASC);
@@ -318,7 +318,7 @@ int CMusicInfoScanner::CountFiles(const CStdString& strPath)
   int count=0;
   // load subfolder
   CFileItemList items;
-  CDirectory::GetDirectory(strPath, items, g_stSettings.m_szMyMusicExtensions, false);
+  CDirectory::GetDirectory(strPath, items, g_stSettings.m_musicExtensions, false);
   for (int i=0; i<items.Size(); ++i)
   {
     CFileItem* pItem=items[i];

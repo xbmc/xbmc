@@ -105,7 +105,7 @@ bool CGUIWindowVideoFiles::OnMessage(CGUIMessage& message)
         }
 
         // need file filters or GetDirectory in SetHistoryPath fails
-        m_rootDir.SetMask(g_stSettings.m_szMyVideoExtensions);
+        m_rootDir.SetMask(g_stSettings.m_videoExtensions);
         m_rootDir.SetShares(g_settings.m_vecMyVideoShares);
         SetHistoryForPath(m_vecItems.m_strPath);
       }
