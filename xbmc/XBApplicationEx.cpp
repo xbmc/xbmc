@@ -297,10 +297,10 @@ HRESULT CXBApplicationEx::RenderGradientBackground( DWORD dwTopColor,
 
 inline float DeadZone(float &f)
 {
-  if (f > g_stSettings.m_fAnalogDeadzoneController)
-    return (f - g_stSettings.m_fAnalogDeadzoneController)/(1.0f - g_stSettings.m_fAnalogDeadzoneController);
-  else if (f < -g_stSettings.m_fAnalogDeadzoneController)
-    return (f + g_stSettings.m_fAnalogDeadzoneController)/(1.0f - g_stSettings.m_fAnalogDeadzoneController);
+  if (f > g_advancedSettings.m_controllerDeadzone)
+    return (f - g_advancedSettings.m_controllerDeadzone)/(1.0f - g_advancedSettings.m_controllerDeadzone);
+  else if (f < -g_advancedSettings.m_controllerDeadzone)
+    return (f + g_advancedSettings.m_controllerDeadzone)/(1.0f - g_advancedSettings.m_controllerDeadzone);
   else
     return 0.0f;
 }

@@ -216,7 +216,7 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
           items.Clear();
         }
 
-        if (g_stSettings.m_bUseFDrive)
+        if (g_advancedSettings.m_useFDrive)
         {
           m_vecItems.m_strPath = "F:";
           rootDir.SetMask(".xbe");
@@ -224,7 +224,7 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
           OnScan(items, iTotalApps);
           items.Clear();
         }
-        if (g_stSettings.m_bUseGDrive)
+        if (g_advancedSettings.m_useGDrive)
         {
           m_vecItems.m_strPath = "G:";
           rootDir.SetMask(".xbe");
@@ -1189,7 +1189,7 @@ void CGUIWindowPrograms::PopulateTrainersList()
         {
           CFileItem* item = new CFileItem(*inArchives[j]);
           CStdString strPathInArchive = item->m_strPath;
-          item->m_strPath.Format("rar://%s,2,,%s,\\%s",g_stSettings.m_szCacheDirectory,archives[i]->m_strPath.c_str(),strPathInArchive.c_str());
+          item->m_strPath.Format("rar://%s,2,,%s,\\%s",g_advancedSettings.m_cachePath.c_str(),archives[i]->m_strPath.c_str(),strPathInArchive.c_str());
           trainers.Add(item);
         }
     }      

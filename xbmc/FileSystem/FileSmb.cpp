@@ -49,7 +49,7 @@ void CSMB::Init()
 
     // setup our context
     m_context = smbc_new_context();
-    m_context->debug = g_stSettings.m_iSambaDebugLevel;
+    m_context->debug = g_advancedSettings.m_sambaDebugLevel;
     m_context->callbacks.auth_fn = xb_smbc_auth;
 
     /* set connection timeout. since samba always tries two ports, divide this by two the correct value */

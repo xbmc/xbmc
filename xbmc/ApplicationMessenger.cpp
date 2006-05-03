@@ -197,7 +197,7 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
             strPath.Format("zip://Z:\\,2,,%s,\\",pMsg->strParam.c_str());
           else
             strPath.Format("rar://Z:\\,2,,%s,\\",pMsg->strParam.c_str());
-          CUtil::GetRecursiveListing(strPath,items,g_stSettings.m_szMyPicturesExtensions);
+          CUtil::GetRecursiveListing(strPath, items, g_stSettings.m_pictureExtensions);
           if (items.Size() > 0)
           {
             for (int i=0;i<items.Size();++i)
@@ -225,7 +225,7 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
 
         CFileItemList items;
         CStdString strPath = pMsg->strParam;
-        CUtil::GetRecursiveListing(strPath,items,g_stSettings.m_szMyPicturesExtensions);
+        CUtil::GetRecursiveListing(strPath, items, g_stSettings.m_pictureExtensions);
         if (items.Size() > 0)
         {
           for (int i=0;i<items.Size();++i)

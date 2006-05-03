@@ -127,7 +127,7 @@ CStdString CUtil::GetTitleFromPath(const CStdString& strFileNameAndPath)
 
 bool CUtil::GetVolumeFromFileName(const CStdString& strFileName, CStdString& strFileTitle, CStdString& strVolumeNumber)
 {
-  const CStdStringArray &regexps = g_settings.m_MyVideoStackRegExps;
+  const CStdStringArray &regexps = g_advancedSettings.m_videoStackRegExps;
 
   CStdString strFileNameTemp = strFileName;
   CStdString strFileNameLower = strFileName;
@@ -212,9 +212,9 @@ void CUtil::RemoveExtension(CStdString& strFileName)
     strExtension.ToLower();
 
     CStdString strFileMask;
-    strFileMask = g_stSettings.m_szMyMusicExtensions;
-    strFileMask += g_stSettings.m_szMyPicturesExtensions;
-    strFileMask += g_stSettings.m_szMyVideoExtensions;
+    strFileMask = g_stSettings.m_pictureExtensions;
+    strFileMask += g_stSettings.m_musicExtensions;
+    strFileMask += g_stSettings.m_videoExtensions;
     strFileMask += ".py|.xml|.milk|.xpr|.cdg";
 
     // Only remove if its a valid media extension
@@ -4157,7 +4157,7 @@ CStdString CUtil::TranslateSpecialDir(const CStdString &strSpecial)
     else if (strSpecial.Equals("$VIDEOPLAYLISTS"))
       strReturn = VideoPlaylistsLocation();
     else if (strSpecial.Equals("$CDRIPS"))
-      strReturn = g_stSettings.m_strRipPath;
+      strReturn = g_guiSettings.GetString("CDDARipper.Path");
   }
   /*
   if (strReturn.IsEmpty())
@@ -4689,10 +4689,10 @@ double CUtil::AlbumRelevance(const CStdString& strAlbumTemp1, const CStdString& 
 CStdString CUtil::SubstitutePath(const CStdString& strFileName)
 {
   // substitutes paths to correct issues with remote playlists containing full paths
-  for (unsigned int i = 0; i < g_settings.m_vecPathSubstitutions.size(); i++)
+  for (unsigned int i = 0; i < g_advancedSettings.m_pathSubstitutions.size(); i++)
   {
     vector<CStdString> vecSplit;
-    StringUtils::SplitString(g_settings.m_vecPathSubstitutions[i], " , ", vecSplit);
+    StringUtils::SplitString(g_advancedSettings.m_pathSubstitutions[i], " , ", vecSplit);
 
     // something is wrong, go to next substitution
     if (vecSplit.size() != 2)

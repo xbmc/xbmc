@@ -601,13 +601,13 @@ bool CGUIWindowFileManager::DoProcessFile(int iAction, const CStdString& strFile
 
         if (url.GetProtocol() == "rar://")
         {
-          CStdString strOriginalCachePath = g_stSettings.m_szCacheDirectory;
+          CStdString strOriginalCachePath = g_advancedSettings.m_cachePath;
           CStdString strDestPath;
           CUtil::GetDirectory(strDestFile,strDestPath);
-          strcpy(g_stSettings.m_szCacheDirectory,strDestPath.c_str());
+          g_advancedSettings.m_cachePath = strDestPath;
           CLog::Log(LOGDEBUG, "CacheRarredFile: dest=%s, file=%s",strDestPath.c_str(), url.GetFileName().c_str());
           bool bResult = g_RarManager.CacheRarredFile(strDestPath,url.GetHostName(),url.GetFileName(),0,strDestPath,1);
-          strcpy(g_stSettings.m_szCacheDirectory,strOriginalCachePath.c_str());
+          g_advancedSettings.m_cachePath = strOriginalCachePath;
           return bResult;
         }
         else
