@@ -500,6 +500,7 @@ bool CGUIWindowPrograms::OnPopupMenu(int iItem)
       m_dlgProgress->SetPercentage(0);
       m_dlgProgress->ShowProgressBar(true);
 
+      m_database.BeginTransaction();
       for (unsigned int i=0;i<m_vecPaths.size();++i)
       {
         if (m_dlgProgress->IsCanceled())
@@ -518,6 +519,7 @@ bool CGUIWindowPrograms::OnPopupMenu(int iItem)
         }
         Update(m_vecItems.m_strPath);
       }
+      m_database.CommitTransaction();
       m_dlgProgress->Close();
     }
   }
@@ -553,6 +555,7 @@ void CGUIWindowPrograms::LoadDirectory(const CStdString& strDirectory, int idept
   CAutoPtrFind hFind ( FindFirstFile(strSearchMask.c_str(), &wfd));
   if (!hFind.isValid())
     return ;
+  m_database.BeginTransaction();
   do
   {
     if (wfd.cFileName[0] != 0)
@@ -648,6 +651,7 @@ void CGUIWindowPrograms::LoadDirectory(const CStdString& strDirectory, int idept
     }
   }
   while (FindNextFile(hFind, &wfd));
+  m_database.CommitTransaction();
 }
 
 bool CGUIWindowPrograms::Update(const CStdString &strDirectory)
@@ -763,6 +767,7 @@ bool CGUIWindowPrograms::Update(const CStdString &strDirectory)
 
   m_iLastControl = GetFocusedControl();
 
+  m_database.BeginTransaction();
   if (!m_vecItems.IsVirtualDirectoryRoot())
   {
     for (int j = 0; j < (int)vecPaths.size(); j++)
@@ -853,7 +858,7 @@ bool CGUIWindowPrograms::Update(const CStdString &strDirectory)
       m_database.GetProgramsByBookmark(m_strBookmarkName, m_vecItems, idepth, bOnlyDefaultXBE);
     }
   }  
-  
+  m_database.CommitTransaction();
   //CUtil::ClearCache();
   m_vecItems.SetThumbs();
   CStdString strSelectedItem = m_history.GetSelectedItem(m_isRoot?"empty":strDirectory);
@@ -1167,69 +1172,87 @@ void CGUIWindowPrograms::PopulateTrainersList()
   m_dlgProgress->SetLine(2,"");
   m_dlgProgress->StartModal(GetID());
   m_dlgProgress->SetHeading(12012);
-  m_dlgProgress->ShowProgressBar(false);
+  m_dlgProgress->ShowProgressBar(true);
   m_dlgProgress->Progress();
   
+  bool bBreak=false;
   for (unsigned int i=0;i<vecTrainerPath.size();++i)
+  {
+    m_dlgProgress->SetPercentage((int)((float)i/(float)vecTrainerPath.size()*100.f));
+    CStdString strLine;
+    strLine.Format("%s %i / %i",g_localizeStrings.Get(12013).c_str(), i+1,vecTrainerPath.size());
+    m_dlgProgress->SetLine(1,strLine);
+    m_dlgProgress->Progress();
+    m_dlgProgress->Progress();
     if (!CFile::Exists(vecTrainerPath[i]))
       m_database.RemoveTrainer(vecTrainerPath[i]);
-
-  CLog::Log(LOGDEBUG,"trainerpath %s",g_stSettings.m_szTrainerDirectory);
-  directory.GetDirectory(g_stSettings.m_szTrainerDirectory,trainers,".xbtf|.etm");
-  directory.GetDirectory(g_stSettings.m_szTrainerDirectory,archives,".rar",false); // TODO: ZIP SUPPORT
-  for( int i=0;i<archives.Size();++i)
-  {
-    if (stricmp(CUtil::GetExtension(archives[i]->m_strPath),".rar") == 0)
-    {
-      g_RarManager.GetFilesInRar(inArchives,archives[i]->m_strPath,false);
-      CHDDirectory dir;
-      dir.SetMask(".xbtf|.etm");
-      for (int j=0;j<inArchives.Size();++j)
-        if (dir.IsAllowed(inArchives[j]->m_strPath))
-        {
-          CFileItem* item = new CFileItem(*inArchives[j]);
-          CStdString strPathInArchive = item->m_strPath;
-          item->m_strPath.Format("rar://%s,2,,%s,\\%s",g_advancedSettings.m_cachePath.c_str(),archives[i]->m_strPath.c_str(),strPathInArchive.c_str());
-          trainers.Add(item);
-        }
-    }      
-  }
-  if (!m_dlgProgress)
-    m_dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
-  m_dlgProgress->SetPercentage(0);
-  m_dlgProgress->ShowProgressBar(true);
-  
-  CLog::Log(LOGDEBUG,"# trainers %i",trainers.Size());
-  for (int i=0;i<trainers.Size();++i)
-  {
-    CLog::Log(LOGDEBUG,"found trainer %s",trainers[i]->m_strPath.c_str());
-    m_dlgProgress->SetPercentage((int)((float)(i)/trainers.Size()*100.f));
-    CStdString strLine;
-    strLine.Format("%s %i / %i",g_localizeStrings.Get(12013).c_str(), i+1,trainers.Size());
-
-    m_dlgProgress->SetLine(0,strLine);
-    m_dlgProgress->Progress();
-    if (m_database.HasTrainer(trainers[i]->m_strPath)) // skip existing trainers
-      continue;
-
-    CTrainer trainer;
-    if (trainer.Load(trainers[i]->m_strPath))
-    { 
-      m_dlgProgress->SetLine(1,trainer.GetName());
-      m_dlgProgress->SetLine(2,"");
-      m_dlgProgress->Progress();
-      unsigned int iTitle1, iTitle2, iTitle3;
-      trainer.GetTitleIds(iTitle1,iTitle2,iTitle3);
-      if (iTitle1)
-        m_database.AddTrainer(iTitle1,trainers[i]->m_strPath);
-      if (iTitle2)
-        m_database.AddTrainer(iTitle2,trainers[i]->m_strPath);
-      if (iTitle3)
-        m_database.AddTrainer(iTitle3,trainers[i]->m_strPath);
-    }
     if (m_dlgProgress->IsCanceled())
+    {
+      bBreak = true;
       break;
+    }
   }
+  if (!bBreak)
+  {
+    CLog::Log(LOGDEBUG,"trainerpath %s",g_stSettings.m_szTrainerDirectory);
+    directory.GetDirectory(g_stSettings.m_szTrainerDirectory,trainers,".xbtf|.etm");
+    directory.GetDirectory(g_stSettings.m_szTrainerDirectory,archives,".rar",false); // TODO: ZIP SUPPORT
+    for( int i=0;i<archives.Size();++i)
+    {
+      if (stricmp(CUtil::GetExtension(archives[i]->m_strPath),".rar") == 0)
+      {
+        g_RarManager.GetFilesInRar(inArchives,archives[i]->m_strPath,false);
+        CHDDirectory dir;
+        dir.SetMask(".xbtf|.etm");
+        for (int j=0;j<inArchives.Size();++j)
+          if (dir.IsAllowed(inArchives[j]->m_strPath))
+          {
+            CFileItem* item = new CFileItem(*inArchives[j]);
+            CStdString strPathInArchive = item->m_strPath;
+            item->m_strPath.Format("rar://%s,2,,%s,\\%s",g_advancedSettings.m_cachePath.c_str(),archives[i]->m_strPath.c_str(),strPathInArchive.c_str());
+            trainers.Add(item);
+          }
+      }      
+    }
+    if (!m_dlgProgress)
+      m_dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+    m_dlgProgress->SetPercentage(0);
+    m_dlgProgress->ShowProgressBar(true);
+
+    CLog::Log(LOGDEBUG,"# trainers %i",trainers.Size());
+    m_database.BeginTransaction();
+    for (int i=0;i<trainers.Size();++i)
+    {
+      CLog::Log(LOGDEBUG,"found trainer %s",trainers[i]->m_strPath.c_str());
+      m_dlgProgress->SetPercentage((int)((float)(i)/trainers.Size()*100.f));
+      CStdString strLine;
+      strLine.Format("%s %i / %i",g_localizeStrings.Get(12013).c_str(), i+1,trainers.Size());
+
+      m_dlgProgress->SetLine(0,strLine);
+      m_dlgProgress->Progress();
+      if (m_database.HasTrainer(trainers[i]->m_strPath)) // skip existing trainers
+        continue;
+
+      CTrainer trainer;
+      if (trainer.Load(trainers[i]->m_strPath))
+      { 
+        m_dlgProgress->SetLine(1,trainer.GetName());
+        m_dlgProgress->SetLine(2,"");
+        m_dlgProgress->Progress();
+        unsigned int iTitle1, iTitle2, iTitle3;
+        trainer.GetTitleIds(iTitle1,iTitle2,iTitle3);
+        if (iTitle1)
+          m_database.AddTrainer(iTitle1,trainers[i]->m_strPath);
+        if (iTitle2)
+          m_database.AddTrainer(iTitle2,trainers[i]->m_strPath);
+        if (iTitle3)
+          m_database.AddTrainer(iTitle3,trainers[i]->m_strPath);
+      }
+      if (m_dlgProgress->IsCanceled())
+        break;
+    }
+  }
+  m_database.CommitTransaction();
   m_dlgProgress->Close();
   
   SetOverlayIcons();

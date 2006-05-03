@@ -27,9 +27,10 @@ bool CGUIDialogTrainerSettings::OnMessage(CGUIMessage &message)
       CGUIDialogSettings::OnMessage(message);
       if (m_iTrainer && m_iTrainer <= (int)m_vecTrainers.size())
       {
+        m_database->BeginTransaction();
         if (m_bNeedSave)
           m_database->SetTrainerOptions(m_vecTrainers[m_iTrainer-1]->GetPath(),m_iTitleId,m_vecTrainers[m_iTrainer-1]->GetOptions(),m_vecTrainers[m_iTrainer-1]->GetNumberOfOptions());
-
+        
         if (m_strActive != m_vecTrainers[m_iTrainer-1]->GetPath())
         {
           m_database->SetTrainerActive(m_vecTrainers[m_iTrainer-1]->GetPath(),m_iTitleId,true);
@@ -37,6 +38,7 @@ bool CGUIDialogTrainerSettings::OnMessage(CGUIMessage &message)
         }
         else
           m_bNeedSave = false;
+        m_database->CommitTransaction();
       }
       else 
       {
@@ -49,7 +51,11 @@ bool CGUIDialogTrainerSettings::OnMessage(CGUIMessage &message)
       for (unsigned int i=0;i<m_vecTrainers.size();++i)
       {
         if (i != m_iTrainer-1 && m_bNeedSave)
+        {
+          m_database->BeginTransaction();
           m_database->SetTrainerActive(m_vecTrainers[i]->GetPath(),m_iTitleId,false);
+          m_database->CommitTransaction();
+        }
         delete m_vecTrainers[i];
       }
       m_vecTrainers.clear();
@@ -115,7 +121,11 @@ void CGUIDialogTrainerSettings::OnSettingChanged(unsigned int num)
   if (setting.id == 1)
   {
     if (m_iOldTrainer && m_bNeedSave)
+    {
+      m_database->BeginTransaction();
       m_database->SetTrainerOptions(m_vecTrainers[m_iOldTrainer-1]->GetPath(),m_iTitleId,m_vecTrainers[m_iOldTrainer-1]->GetOptions(), m_vecTrainers[m_iOldTrainer-1]->GetNumberOfOptions());
+      m_database->CommitTransaction();
+    }
 
     if (m_iTrainer)
       m_database->GetTrainerOptions(m_vecTrainers[m_iTrainer-1]->GetPath(),m_iTitleId,m_vecTrainers[m_iTrainer-1]->GetOptions(),m_vecTrainers[m_iTrainer-1]->GetNumberOfOptions());
