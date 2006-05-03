@@ -76,7 +76,7 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
         m_shares.push_back(share);
 
         // setup shares and file filters
-        m_rootDir.SetMask(g_stSettings.m_szMyMusicExtensions);
+        m_rootDir.SetMask(g_stSettings.m_musicExtensions);
         m_rootDir.SetShares(m_shares);
 
         m_vecItems.m_strPath = "";

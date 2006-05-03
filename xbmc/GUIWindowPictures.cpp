@@ -67,7 +67,7 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
         CLog::Log(LOGINFO, "Attempting to default to: %s", strDestination.c_str());
       }
       
-      m_rootDir.SetMask(g_stSettings.m_szMyPicturesExtensions);
+      m_rootDir.SetMask(g_stSettings.m_pictureExtensions);
       m_rootDir.SetShares(g_settings.m_vecMyPictureShares);
 
       for (unsigned int i=0;i<m_rootDir.GetNumberOfShares();++i)
@@ -530,10 +530,9 @@ void CGUIWindowPictures::OnItemLoaded(CFileItem *pItem)
   { // generate the thumb folder if necessary
     // we load the directory, grab 4 random thumb files (if available) and then generate
     // the thumb.
-//    if (pItem->IsRemote() && !pItem->IsOnDVD() && !g_guiSettings.GetBool("VideoFiles.FindRemoteThumbs")) return;
 
     CFileItemList items;
-    CDirectory::GetDirectory(pItem->m_strPath, items, g_stSettings.m_szMyPicturesExtensions, false, false);
+    CDirectory::GetDirectory(pItem->m_strPath, items, g_stSettings.m_pictureExtensions, false, false);
 
     // create the folder thumb by choosing 4 random thumbs within the folder and putting
     // them into one thumb.

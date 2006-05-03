@@ -1,7 +1,5 @@
 #pragma once
 
-#define CONFIG_VERSION 0x000F
-
 #include "Profile.h"
 #include "..\guilib\tinyxml/tinyxml.h"
 #include <vector>
@@ -146,7 +144,8 @@
 #define BUTTON_CONTROL_STANDARD   8
 #define BUTTON_CONTROL_IP_INPUT   9
 #define BUTTON_CONTROL_MISC_INPUT 10
-#define SEPARATOR_CONTROL 11
+#define BUTTON_CONTROL_PATH_INPUT 11
+#define SEPARATOR_CONTROL 12
 
 #define REPLAY_GAIN_NONE 0
 #define REPLAY_GAIN_ALBUM 1
@@ -175,6 +174,7 @@ public:
   const char *GetSetting() { return m_strSetting.c_str(); };
   int GetLabel() { return m_iLabel; };
   int GetOrder() const { return m_iOrder; };
+  void SetHidden() { m_iOrder = 0; };         // order 0 means it won't be shown in the GUI.
 private:
   int m_iControlType;
   int m_iLabel;
@@ -321,13 +321,8 @@ public:
     if (pCategory)
       m_vecCategories.push_back(pCategory);
   }
-  void GetCategories(vecSettingsCategory &vecCategories)
-  {
-    vecCategories.clear();
-    for (unsigned int i = 0; i < m_vecCategories.size(); i++)
-      vecCategories.push_back(m_vecCategories[i]);
-  };
-DWORD GetLabelID() { return m_dwLabelID; };
+  void GetCategories(vecSettingsCategory &vecCategories);
+  DWORD GetLabelID() { return m_dwLabelID; };
   DWORD GetGroupID() { return m_dwGroupID; };
 private:
   vecSettingsCategory m_vecCategories;
@@ -372,7 +367,7 @@ public:
   CSetting *GetSetting(const char *strSetting);
 
   void GetSettingsGroup(const char *strGroup, vecSettings &settings);
-  void LoadXML(TiXmlElement *pRootElement);
+  void LoadXML(TiXmlElement *pRootElement, bool hideSettings = false);
   void SaveXML(TiXmlNode *pRootNode);
   void LoadMasterLock(TiXmlElement *pRootElement);
 
@@ -388,7 +383,7 @@ private:
   typedef std::map<CStdString, CSetting*>::const_iterator constMapIter;
   std::map<CStdString, CSetting*> settingsMap;
   std::vector<CSettingsGroup *> settingsGroups;
-  void LoadFromXML(TiXmlElement *pRootElement, mapIter &it);
+  void LoadFromXML(TiXmlElement *pRootElement, mapIter &it, bool hideSetting = false);
 };
 
 extern class CGUISettings g_guiSettings;

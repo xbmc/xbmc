@@ -178,7 +178,7 @@ void CMediaMonitor::GetSharedMovies(VECSHARES& vecShares, MOVIELIST& movies)
 {
   DIRECTORY::CVirtualDirectory directory;
   directory.SetShares(vecShares);
-  directory.SetMask(g_stSettings.m_szMyVideoExtensions);
+  directory.SetMask(g_stSettings.m_videoExtensions);
   directory.SetAllowPrompting(false); // don't allow prompting - this is a background task!
 
   CStdString path;

@@ -560,21 +560,13 @@ int CXbmcConfiguration::SetOption( int eid, webs_t wp, CStdString& response, int
 bool CXbmcConfiguration::IsValidOption(char* option)
 {
 	if (!strcmp("home", option)) return true;
-	if (!strcmp("CDDBIpAdres", option)) return true;
-	if (!strcmp("useFDrive", option)) return true;
-	if (!strcmp("useFDrive", option)) return true;
 	if (!strcmp("dashboard", option)) return true;
 	if (!strcmp("dvdplayer", option)) return true;
 	if (!strcmp("subtitles", option)) return true;
-	if (!strcmp("startwindow", option)) return true;
-	if (!strcmp("pictureextensions", option)) return true;
-	if (!strcmp("musicextensions", option)) return true;
-	if (!strcmp("videoextensions", option)) return true;
 	if (!strcmp("thumbnails", option)) return true;
 	if (!strcmp("shortcuts", option)) return true;
 	if (!strcmp("albums", option)) return true;
 	if (!strcmp("recordings", option)) return true;
 	if (!strcmp("screenshots", option)) return true;
-	if (!strcmp("displayremotecodes", option)) return true;
 	return false;
 }
