@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 02-05-2006 fixed: slow database transactions in my programs.
  - 02-05-2006 changed: Added UserData/AdvancedSettings.xml loading ability, and moved a bunch of XBoxMediaCenter.xml settings into it.
  - 02-05-2006 fixed: last.fm directory broken
  - 02-05-2006 fixed: shoutcast and lastfm directories didn't honor hide/show parent folder item in a different way
