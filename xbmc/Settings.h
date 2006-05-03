@@ -254,38 +254,41 @@ public:
 
     int m_autoDetectPingTime;
     float m_playCountMinimumPercent;
+
+    CStdString m_cddbAddress;
+    CStdString m_imdbAddress;
+    bool m_autoDetectFG;
+    bool m_useFDrive;
+    bool m_useGDrive;
+    bool m_usePCDVDROM;
+    CStdString m_cachePath;
+    int m_sambaDebugLevel;
+    bool m_displayRemoteCodes;
+    CStdStringArray m_videoStackRegExps;
+    CStdStringArray m_pathSubstitutions;
+    int m_remoteRepeat;
+    float m_controllerDeadzone;
   };
   struct stSettings
   {
 public:
-    unsigned long dwFileVersion;
     char szHomeDir[1024];
 
+    CStdString m_pictureExtensions;
+    CStdString m_musicExtensions;
+    CStdString m_videoExtensions;
 
     char szDashboard[1024];
-    int m_iStartupWindow;
 
     char szThumbnailsDirectory[1024];
-    char m_szMyPicturesExtensions[512];
-    char m_szMyMusicExtensions[1024];
-    char m_szMyVideoExtensions[512];
     char m_szShortcutDirectory[256];
     char m_szAlbumDirectory[256];
     char m_szScreenshotsDirectory[256];
-    char m_szCacheDirectory[256];
     char m_szPlaylistsDirectory[256];
     char m_szTrainerDirectory[256];
 
-    int m_iRepeatDelayIR;
-    int m_iMoveDelayController;
-    int m_iRepeatDelayController;
-    float m_fAnalogDeadzoneController;
-
     int m_iLogLevel;
     char m_szlogpath[128];
-    bool m_bDisplayRemoteCodes;
-    bool m_bShowFreeMem;
-    bool m_bUnhandledExceptionToFatalError;
 
     char m_szDefaultPrograms[128];
     char m_szDefaultMusic[128];
@@ -293,10 +296,6 @@ public:
     char m_szDefaultFiles[128];
     char m_szDefaultVideos[128];
 
-    char m_szCDDBIpAdres[128];
-    char m_szIMDBurl[128];
-
-    char m_strRipPath[MAX_PATH + 1];
     char m_szMusicRecordingDirectory[128];
    
     bool m_bMyMusicSongInfoInVis;
@@ -410,21 +409,13 @@ public:
     char m_szMyVideoCleanTokens[256];
     char m_szMyVideoCleanSeparators[32];
 
-    bool m_bAutoDetectFG;
-    bool m_bUseFDrive;
-    bool m_bUseGDrive;
-    bool m_bUsePCDVDROM;
-    bool m_bDetectAsIso;
-
     char m_szAlternateSubtitleDirectory[128];
 
     char m_szExternalDVDPlayer[128];
-    char m_szExternalCDDAPlayer[128];
 
     char szOnlineArenaPassword[32]; // private arena password
     char szOnlineArenaDescription[64]; // private arena description
 
-    int m_iSambaDebugLevel;
     int m_iSambaTimeout;
     CStdString m_strSambaWorkgroup;
     CStdString m_strSambaIPAdress;
@@ -442,9 +433,6 @@ public:
 
     VOICE_MASK m_karaokeVoiceMask[4];
   };
-
-  CStdStringArray m_MyVideoStackRegExps;
-  CStdStringArray m_vecPathSubstitutions;
 
   std::map<int,std::pair<std::vector<int>,std::vector<string> > > m_mapRssUrls;
   std::map<CStdString, bool> m_skinSettings;
@@ -468,11 +456,10 @@ public:
   RESOLUTION_INFO m_ResInfo[10];
 
 protected:
-  void GetBoolean(const TiXmlElement* pRootElement, const CStdString& strTagName, bool& bValue);
-  void GetInteger(const TiXmlElement* pRootElement, const CStdString& strTagName, int& iValue, const int iDefault, const int iMin, const int iMax);
-  void GetFloat(const TiXmlElement* pRootElement, const CStdString& strTagName, float& fValue, const float fDefault, const float fMin, const float fMax);
-  void GetString(const TiXmlElement* pRootElement, const CStdString& strTagName, CStdString& strValue, const CStdString& strDefaultValue);
-  void GetString(const TiXmlElement* pRootElement, const CStdString& strTagName, char *szValue, const CStdString& strDefaultValue);
+  void GetInteger(const TiXmlElement* pRootElement, const char *strTagName, int& iValue, const int iDefault, const int iMin, const int iMax);
+  void GetFloat(const TiXmlElement* pRootElement, const char *strTagName, float& fValue, const float fDefault, const float fMin, const float fMax);
+  void GetString(const TiXmlElement* pRootElement, const char *strTagName, CStdString& strValue, const CStdString& strDefaultValue);
+  void GetString(const TiXmlElement* pRootElement, const char *strTagName, char *szValue, const CStdString& strDefaultValue);
   bool GetShare(const CStdString &category, const TiXmlNode *bookmark, CShare &share);
   void GetShares(const TiXmlElement* pRootElement, const CStdString& strTagName, VECSHARES& items, CStdString& strDefault);
   void ConvertHomeVar(CStdString& strText);
@@ -498,6 +485,9 @@ protected:
   // skin activated settings
   void LoadSkinSettings(const TiXmlElement* pElement);
   void SaveSkinSettings(TiXmlNode *pElement) const;
+
+  // Advanced settings
+  void LoadAdvancedSettings();
 
   void LoadUserFolderLayout(const TiXmlElement *pRootElement);
 

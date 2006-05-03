@@ -62,7 +62,7 @@ bool CGUIWindowMusicSongs::OnMessage(CGUIMessage& message)
         CLog::Log(LOGINFO, "Attempting to default to: %s", strDestination.c_str());
       }
 
-      m_rootDir.SetMask(g_stSettings.m_szMyMusicExtensions);
+      m_rootDir.SetMask(g_stSettings.m_musicExtensions);
       m_rootDir.SetShares(g_settings.m_vecMyMusicShares);
 
       // try to open the destination path

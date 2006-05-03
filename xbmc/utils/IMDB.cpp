@@ -239,7 +239,7 @@ bool CIMDB::LoadDetails(const CStdString& strIMDB, CIMDBMovie &movieDetails)
   pDlgProgress->Progress();
   CIMDBUrl url;
   url.m_strTitle = movieDetails.m_strTitle;
-  url.m_strURL.Format("http://%s/title/%s", g_stSettings.m_szIMDBurl, strIMDB.c_str());
+  url.m_strURL.Format("http://%s/title/%s", g_advancedSettings.m_imdbAddress.c_str(), strIMDB.c_str());
   bool ret = GetDetails(url, movieDetails, pDlgProgress);
   pDlgProgress->Close();
   return ret;
@@ -393,7 +393,7 @@ void CIMDB::GetURL(const CStdString &strMovie, CStdString& strURL)
 
   // sprintf(szURL,"http://us.imdb.com/Tsearch?title=%s", szMovie);
   // strURL = szURL;
-  strURL.Format("http://%s/Tsearch?title=%s", g_stSettings.m_szIMDBurl, szMovie);
+  strURL.Format("http://%s/Tsearch?title=%s", g_advancedSettings.m_imdbAddress.c_str(), szMovie);
 }
 
 // threaded functions

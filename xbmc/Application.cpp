@@ -329,8 +329,8 @@ void CApplication::FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetw
     helper.Remap("E:,Harddisk0\\Partition1");
     //Add. also Drive F/G
     /*
-    if ((g_stSettings.m_bAutoDetectFG && helper.IsDrivePresent("F:")) || g_stSettings.m_bUseFDrive) helper.Remap("F:,Harddisk0\\Partition6");
-    if ((g_stSettings.m_bAutoDetectFG && helper.IsDrivePresent("G:")) || g_stSettings.m_bUseGDrive) helper.Remap("G:,Harddisk0\\Partition7");
+    if ((g_advancedSettings.m_autoDetectFG && helper.IsDrivePresent("F:")) || g_advancedSettings.m_useFDrive) helper.Remap("F:,Harddisk0\\Partition6");
+    if ((g_advancedSettings.m_autoDetectFG && helper.IsDrivePresent("G:")) || g_advancedSettings.m_useGDrive) helper.Remap("G:,Harddisk0\\Partition7");
     */
 
   }
@@ -546,10 +546,10 @@ void CApplication::FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetw
       //Add. also Drive F/G
       /*
       CIoSupport helper;
-      if ((g_stSettings.m_bAutoDetectFG && helper.IsDrivePresent("F:")) || g_stSettings.m_bUseFDrive){
+      if ((g_advancedSettings.m_autoDetectFG && helper.IsDrivePresent("F:")) || g_advancedSettings.m_useFDrive){
         pUser->AddDirectory("F:\\", XBFILE_READ | XBFILE_WRITE | XBFILE_DELETE | XBFILE_APPEND | XBDIR_DELETE | XBDIR_CREATE | XBDIR_LIST | XBDIR_SUBDIRS);
       }
-      if ((g_stSettings.m_bAutoDetectFG && helper.IsDrivePresent("G:")) || g_stSettings.m_bUseGDrive){
+      if ((g_advancedSettings.m_autoDetectFG && helper.IsDrivePresent("G:")) || g_advancedSettings.m_useGDrive){
         pUser->AddDirectory("G:\\", XBFILE_READ | XBFILE_WRITE | XBFILE_DELETE | XBFILE_APPEND | XBDIR_DELETE | XBDIR_CREATE | XBDIR_LIST | XBDIR_SUBDIRS);
       }
       */
@@ -603,10 +603,7 @@ LONG WINAPI CApplication::UnhandledExceptionFilter(struct _EXCEPTION_POINTERS *E
                         pExceptionString, ExceptionInfo->ExceptionRecord->ExceptionCode,
                         ExceptionInfo->ExceptionRecord->ExceptionAddress);
 
-  if (!g_stSettings.m_bUnhandledExceptionToFatalError)
-    CLog::Log(LOGFATAL, "%s", g_LoadErrorStr.c_str());
-  else
-    g_application.FatalErrorHandler(false, true, true);
+  CLog::Log(LOGFATAL, "%s", g_LoadErrorStr.c_str());
 
   return ExceptionInfo->ExceptionRecord->ExceptionCode;
 }
@@ -658,8 +655,8 @@ HRESULT CApplication::Create()
         //We need to mount before we can start the log File!
         helper.Remap("C:,Harddisk0\\Partition2");
         helper.Remap("E:,Harddisk0\\Partition1");
-        if ((g_stSettings.m_bAutoDetectFG && helper.IsDrivePresent("F:")) || g_stSettings.m_bUseFDrive) helper.Remap("F:,Harddisk0\\Partition6");
-        if ((g_stSettings.m_bAutoDetectFG && helper.IsDrivePresent("G:")) || g_stSettings.m_bUseGDrive) helper.Remap("G:,Harddisk0\\Partition7");
+        if ((g_advancedSettings.m_autoDetectFG && helper.IsDrivePresent("F:")) || g_advancedSettings.m_useFDrive) helper.Remap("F:,Harddisk0\\Partition6");
+        if ((g_advancedSettings.m_autoDetectFG && helper.IsDrivePresent("G:")) || g_advancedSettings.m_useGDrive) helper.Remap("G:,Harddisk0\\Partition7");
         helper.Remap("X:,Harddisk0\\Partition3");
         helper.Remap("Y:,Harddisk0\\Partition4");
         helper.Remap("Z:,Harddisk0\\Partition5");
@@ -765,7 +762,6 @@ HRESULT CApplication::Create()
   if (m_DefaultGamepad.bAnalogButtons[XINPUT_GAMEPAD_X] && m_DefaultGamepad.bAnalogButtons[XINPUT_GAMEPAD_Y])
   {
     g_stSettings.m_iLogLevel = LOGDEBUG;
-    g_stSettings.m_bShowFreeMem = true;
     CLog::Log(LOGINFO, "Key combination detected for full debug logging (X+Y)");
   }
   
@@ -845,19 +841,19 @@ HRESULT CApplication::Create()
   CLog::Log(LOGINFO, "  map drive D:");
   helper.Remount("D:", "Cdrom0");
 
-  if ((g_stSettings.m_bAutoDetectFG && helper.IsDrivePresent("F:")) || g_stSettings.m_bUseFDrive)
+  if ((g_advancedSettings.m_autoDetectFG && helper.IsDrivePresent("F:")) || g_advancedSettings.m_useFDrive)
   {
     CLog::Log(LOGINFO, "  map drive F:");
     helper.Remap("F:,Harddisk0\\Partition6");
-    g_stSettings.m_bUseFDrive = true;
+    g_advancedSettings.m_useFDrive = true;
   }
 
   // used for the LBA-48 hack allowing >120 gig
-  if ((g_stSettings.m_bAutoDetectFG && helper.IsDrivePresent("G:")) || g_stSettings.m_bUseGDrive)
+  if ((g_advancedSettings.m_autoDetectFG && helper.IsDrivePresent("G:")) || g_advancedSettings.m_useGDrive)
   {
     CLog::Log(LOGINFO, "  map drive G:");
     helper.Remap("G:,Harddisk0\\Partition7");
-    g_stSettings.m_bUseGDrive = true;
+    g_advancedSettings.m_useGDrive = true;
   }
 
   helper.Remap("X:,Harddisk0\\Partition3");
@@ -1223,16 +1219,17 @@ HRESULT CApplication::Initialize()
   /* window id's 3000 - 3100 are reserved for python */
   g_DownloadManager.Initialize();
 
-  m_ctrDpad.SetDelays(g_stSettings.m_iMoveDelayController, g_stSettings.m_iRepeatDelayController);
+  m_ctrDpad.SetDelays(220, 220); //g_stSettings.m_iMoveDelayController, g_stSettings.m_iRepeatDelayController);
 
   SAFE_DELETE(m_splash);
 
   // We need to Popup the WindowHome to initiate the GUIWindowManger for MasterCode popup dialog!
   // Then we can start the StartUpWindow! To prevent BlackScreen if the target Window is Protected with MasterCode! 
-  if (g_stSettings.m_iStartupWindow != WINDOW_HOME)
-  {  
+  int startWindow = g_guiSettings.GetInt("LookAndFeel.StartUpWindow");
+  if (startWindow != WINDOW_HOME)
+  {
     m_gWindowManager.ActivateWindow(WINDOW_HOME);                       
-    m_gWindowManager.ActivateWindow(g_stSettings.m_iStartupWindow);
+    m_gWindowManager.ActivateWindow(startWindow);
   }
   else
   {
@@ -1263,7 +1260,7 @@ HRESULT CApplication::Initialize()
       dialog->SetLine(0, "Error while loading settings");
       dialog->SetLine(1, test);
       dialog->SetLine(2, "");;
-      dialog->DoModal(g_stSettings.m_iStartupWindow);
+      dialog->DoModal(m_gWindowManager.GetActiveWindow());
     }
   }
 
@@ -1938,7 +1935,7 @@ void CApplication::Render()
     g_graphicsContext.SetScalingResolution(g_graphicsContext.GetVideoResolution(), 0, 0, false);
 
     // If we have the remote codes enabled, then show them
-    if (g_stSettings.m_bDisplayRemoteCodes)
+    if (g_advancedSettings.m_displayRemoteCodes)
     {
       XBIR_REMOTE* pRemote = &m_DefaultIR_Remote;
       static iRemoteCode = 0;
@@ -1959,7 +1956,7 @@ void CApplication::Render()
           pFont->DrawText( 60, 60, 0xffffffff, 0, wszText);
 #else
 
-          if (g_stSettings.m_bShowFreeMem)
+          if (LOGDEBUG == g_stSettings.m_iLogLevel)
             pFont->DrawText( 60, 60, 0xffffffff, 0, wszText);
           else
             pFont->DrawText( 60, 40, 0xffffffff, 0, wszText);
@@ -1983,7 +1980,7 @@ void CApplication::Render()
 void CApplication::RenderMemoryStatus()
 {
 #ifndef _DEBUG
-  if (g_stSettings.m_bShowFreeMem)
+  if (LOGDEBUG == g_stSettings.m_iLogLevel)
 #endif
   {
     // reset the window scaling and fade status

@@ -1072,8 +1072,8 @@ void CControlSocket::ParseCommand()
 							{
 								// check it's available
 								if (drive > 'g' ||
-									(drive == 'f' && !g_stSettings.m_bUseFDrive) ||
-									(drive == 'g' && !g_stSettings.m_bUseGDrive))
+									(drive == 'f' && !g_advancedSettings.m_useFDrive) ||
+									(drive == 'g' && !g_advancedSettings.m_useGDrive))
 								{
 									if (!MU_IsDriveValid(drive))
 										continue;
