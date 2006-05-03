@@ -470,7 +470,7 @@ void CFileRar::Flush()
 void CFileRar::InitFromUrl(const CURL& url)
 {
   url.GetURL(m_strUrl);
-  m_strCacheDir = g_stSettings.m_szCacheDirectory;//url.GetDomain();
+  m_strCacheDir = g_advancedSettings.m_cachePath;//url.GetDomain();
   if (!CUtil::HasSlashAtEnd(m_strCacheDir))
     m_strCacheDir += "/"; // should work local and remote..
 	m_strRarPath = url.GetHostName();

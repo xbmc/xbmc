@@ -59,7 +59,7 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
 
   case GUI_MSG_WINDOW_INIT:
     {
-      m_rootDir.SetMask(g_stSettings.m_szMyVideoExtensions);
+      m_rootDir.SetMask(g_stSettings.m_videoExtensions);
       m_rootDir.SetShares(g_settings.m_vecMyVideoShares);
 
       m_database.Open();

@@ -36,12 +36,12 @@ void CDetectDVDMedia::OnStartup()
 
 void CDetectDVDMedia::Process()
 {
-  if (g_stSettings.m_bUsePCDVDROM)
+  if (g_advancedSettings.m_usePCDVDROM)
   {
     m_DriveState = DRIVE_CLOSED_MEDIA_PRESENT;
   }
 
-  while (( !m_bStop ) && (!g_stSettings.m_bUsePCDVDROM))
+  while (( !m_bStop ) && (!g_advancedSettings.m_usePCDVDROM))
   {
     Sleep(500);
     UpdateDvdrom();
@@ -201,15 +201,16 @@ void CDetectDVDMedia::DetectMediaType()
 
   if (m_pCdInfo->IsISOUDF(1))
   {
-    if (g_stSettings.m_bDetectAsIso)
+    // always detect as ISO
+    //if (g_stSettings.m_bDetectAsIso)
     {
       strNewUrl = "iso9660://";
       m_isoReader.Scan();
     }
-    else
+    /*else
     {
       strNewUrl = "D:\\";
-    }
+    }*/
   }
 
   CLog::Log(LOGINFO, "Using protocol %s", strNewUrl.c_str());
@@ -366,7 +367,7 @@ bool CDetectDVDMedia::IsDiscInDrive()
     bResult = false;
   }
 
-  if (g_stSettings.m_bUsePCDVDROM)
+  if (g_advancedSettings.m_usePCDVDROM)
   {
     // allow the application to poll once every five seconds
     if ((clock() - m_LastPoll) > 5000)

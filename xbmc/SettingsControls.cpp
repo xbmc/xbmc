@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "SettingsControls.h"
 #include "GUIDialogNumeric.h"
-
+#include "Util.h"
 
 CBaseSettingControl::CBaseSettingControl(DWORD dwID, CSetting *pSetting)
 {
@@ -154,6 +154,12 @@ void CButtonSettingControl::Update()
     strText.Empty();
     for (int i = 0; i < iNumChars; i++)
       strText += '*';
+  }
+  if (m_pSetting->GetControlType() == BUTTON_CONTROL_PATH_INPUT)
+  {
+    CStdString shortPath;
+    if (CUtil::MakeShortenPath(strText, shortPath, 30 ))
+      strText = shortPath;
   }
   m_pButton->SetLabel2(strText);
 }

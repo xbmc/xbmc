@@ -707,7 +707,7 @@ void CGUIWindowSlideShow::AddItems(const CStdString &strPath, bool bRecursive)
   IDirectory *pDir = CFactoryDirectory::Create(strPath);
   if (!pDir) return;
   CFileItemList items;
-  pDir->SetMask(g_stSettings.m_szMyPicturesExtensions);
+  pDir->SetMask(g_stSettings.m_pictureExtensions);
   bool bResult = pDir->GetDirectory(strPath, items);
   delete pDir;
   if (!bResult) return;

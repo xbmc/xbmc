@@ -71,7 +71,7 @@ bool CPlayListWPL::Load(const CStdString& strFileName, bool bDeep)
     CStdString strFileName = pMediaElement->Attribute("src");
     if (strFileName.size())
     {
-      if (CUtil::IsRemote(strBasePath) && g_settings.m_vecPathSubstitutions.size() > 0)
+      if (CUtil::IsRemote(strBasePath) && g_advancedSettings.m_pathSubstitutions.size() > 0)
         strFileName = CUtil::SubstitutePath(strFileName);
       CUtil::GetQualifiedFilename(strBasePath, strFileName);
       CStdString strDescription = CUtil::GetFileName(strFileName);

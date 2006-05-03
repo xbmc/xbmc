@@ -113,38 +113,31 @@ void CAutorun::RunCdda()
 {
   CFileItemList vecItems;
 
-  if (g_stSettings.m_szExternalCDDAPlayer[0])
+  auto_ptr<IDirectory> pDir ( CFactoryDirectory::Create( "cdda://local/" ) );
+  if ( !pDir->GetDirectory( "cdda://local/", vecItems ) )
+    return ;
+
+  if ( vecItems.Size() <= 0 )
+    return ;
+
+  //int nSize = g_playlistPlayer.GetPlaylist( PLAYLIST_MUSIC ).size();
+
+  g_playlistPlayer.ClearPlaylist(PLAYLIST_MUSIC);
+  for (int i = 0; i < vecItems.Size(); i++)
   {
-    CUtil::RunXBE(g_stSettings.m_szExternalCDDAPlayer);
+    CFileItem* pItem = vecItems[i];
+    CPlayList::CPlayListItem playlistItem;
+    playlistItem.SetFileName(pItem->m_strPath);
+    playlistItem.SetDescription(pItem->GetLabel());
+    playlistItem.SetDuration(pItem->m_musicInfoTag.GetDuration());
+    g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).Add(playlistItem);
   }
-  else
-  {
-    auto_ptr<IDirectory> pDir ( CFactoryDirectory::Create( "cdda://local/" ) );
-    if ( !pDir->GetDirectory( "cdda://local/", vecItems ) )
-      return ;
 
-    if ( vecItems.Size() <= 0 )
-      return ;
+  //CGUIMessage msg( GUI_MSG_PLAYLIST_CHANGED, 0, 0, 0, 0, NULL );
+  //m_gWindowManager.SendMessage( msg );
 
-    //int nSize = g_playlistPlayer.GetPlaylist( PLAYLIST_MUSIC ).size();
-
-    g_playlistPlayer.ClearPlaylist(PLAYLIST_MUSIC);
-    for (int i = 0; i < vecItems.Size(); i++)
-    {
-      CFileItem* pItem = vecItems[i];
-      CPlayList::CPlayListItem playlistItem;
-      playlistItem.SetFileName(pItem->m_strPath);
-      playlistItem.SetDescription(pItem->GetLabel());
-      playlistItem.SetDuration(pItem->m_musicInfoTag.GetDuration());
-      g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).Add(playlistItem);
-    }
-
-    //CGUIMessage msg( GUI_MSG_PLAYLIST_CHANGED, 0, 0, 0, 0, NULL );
-    //m_gWindowManager.SendMessage( msg );
-
-    g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_MUSIC);
-    g_playlistPlayer.Play();
-  }
+  g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_MUSIC);
+  g_playlistPlayer.Play();
 }
 
 void CAutorun::RunISOMedia()
@@ -390,29 +383,25 @@ bool CAutorun::PlayDisc()
   {
     CLog::Log(LOGDEBUG, "Playdisc called on an audio disk");
     CFileItemList vecItems;
-    if (g_stSettings.m_szExternalCDDAPlayer[0])
-      CUtil::RunXBE(g_stSettings.m_szExternalCDDAPlayer);
-    else
-    {
-      auto_ptr<IDirectory> pDir ( CFactoryDirectory::Create( "cdda://local/" ) );
-      if ( !pDir->GetDirectory( "cdda://local/", vecItems ) ) return false;
-      if ( vecItems.Size() <= 0 ) return false;
-      int nSize = g_playlistPlayer.GetPlaylist( PLAYLIST_MUSIC ).size();
-      for (int i = 0; i < vecItems.Size(); i++)
-      {
-        CFileItem* pItem = vecItems[i];
-        CPlayList::CPlayListItem playlistItem;
-        playlistItem.SetFileName(pItem->m_strPath);
-        playlistItem.SetDescription(pItem->GetLabel());
-        playlistItem.SetDuration(pItem->m_musicInfoTag.GetDuration());
-        g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).Add(playlistItem);
-      }
-      CGUIMessage msg( GUI_MSG_PLAYLIST_CHANGED, 0, 0, 0, 0, NULL );
-      m_gWindowManager.SendMessage( msg );
 
-      g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_MUSIC);
-      g_playlistPlayer.Play(nSize);
+    auto_ptr<IDirectory> pDir ( CFactoryDirectory::Create( "cdda://local/" ) );
+    if ( !pDir->GetDirectory( "cdda://local/", vecItems ) ) return false;
+    if ( vecItems.Size() <= 0 ) return false;
+    int nSize = g_playlistPlayer.GetPlaylist( PLAYLIST_MUSIC ).size();
+    for (int i = 0; i < vecItems.Size(); i++)
+    {
+      CFileItem* pItem = vecItems[i];
+      CPlayList::CPlayListItem playlistItem;
+      playlistItem.SetFileName(pItem->m_strPath);
+      playlistItem.SetDescription(pItem->GetLabel());
+      playlistItem.SetDuration(pItem->m_musicInfoTag.GetDuration());
+      g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).Add(playlistItem);
     }
+    CGUIMessage msg( GUI_MSG_PLAYLIST_CHANGED, 0, 0, 0, 0, NULL );
+    m_gWindowManager.SendMessage( msg );
+
+    g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_MUSIC);
+    g_playlistPlayer.Play(nSize);
   }
   else 
   {

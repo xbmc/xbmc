@@ -295,7 +295,7 @@ HRESULT CIoSupport::CloseTray()
 DWORD CIoSupport::GetTrayState()
 {
 #ifdef _XBOX
-  if (g_stSettings.m_bUsePCDVDROM)
+  if (g_advancedSettings.m_usePCDVDROM)
   {
     m_dwTrayState = TRAY_CLOSED_MEDIA_PRESENT;
   }
