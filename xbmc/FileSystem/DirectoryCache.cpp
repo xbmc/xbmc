@@ -181,17 +181,13 @@ void CDirectoryCache::InitThumbCache()
   if (g_directoryCache.m_thumbDirs.size() == 0)
   {
     // thumbnails directories
-    CStdString strThumb = g_stSettings.szThumbnailsDirectory;
-    g_directoryCache.m_thumbDirs.insert(strThumb);
-    strThumb += "\\imdb";
-    g_directoryCache.m_thumbDirs.insert(strThumb);
+    g_directoryCache.m_thumbDirs.insert(g_settings.GetThumbnailsFolder());
+    g_directoryCache.m_thumbDirs.insert(g_settings.GetIMDbThumbFolder());
     for (unsigned int hex=0; hex < 16; hex++)
     {
-      CStdString strThumbLoc = g_stSettings.szThumbnailsDirectory;
       CStdString strHex;
-      strHex.Format("%x",hex);
-      strThumbLoc += "\\" + strHex;
-      g_directoryCache.m_thumbDirs.insert(strThumbLoc);
+      strHex.Format("\\%x",hex);
+      g_directoryCache.m_thumbDirs.insert(g_settings.GetThumbnailsFolder() + strHex);
     }
   }
 
@@ -227,11 +223,8 @@ void CDirectoryCache::InitMusicThumbCache()
   if (g_directoryCache.m_musicThumbDirs.size() == 0)
   {
     // music thumbnails directories
-    CStdString strThumb = g_stSettings.m_szAlbumDirectory;
-    strThumb += "\\thumbs";
-    g_directoryCache.m_musicThumbDirs.insert(strThumb);
-    strThumb += "\\temp";
-    g_directoryCache.m_musicThumbDirs.insert(strThumb);
+    g_directoryCache.m_musicThumbDirs.insert(g_settings.GetMusicThumbFolder());
+    g_directoryCache.m_musicThumbDirs.insert(g_settings.GetTempMusicThumbFolder());
   }
 
   InitCache(g_directoryCache.m_musicThumbDirs);

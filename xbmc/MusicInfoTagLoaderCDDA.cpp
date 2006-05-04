@@ -28,9 +28,7 @@ bool CMusicInfoTagLoaderCDDA::Load(const CStdString& strFileName, CMusicInfoTag&
 
     // Prepare cddb
     Xcddb cddb;
-    CStdString strDir;
-    strDir.Format("%s\\cddb", g_stSettings.m_szAlbumDirectory);
-    cddb.setCacheDir(strDir);
+    cddb.setCacheDir(g_settings.GetCDDBFolder());
 
     int iTrack = atoi(strFileName.substr(13, strFileName.size() - 13 - 5).c_str());
 

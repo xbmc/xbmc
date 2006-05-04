@@ -150,10 +150,7 @@ void CUdpClient::Process()
 
         CStdString message = messageBuffer;
 
-        if (UDPCLIENT_DEBUG_LEVEL >= g_stSettings.m_iLogLevel)
-        {
-          CLog::Log(UDPCLIENT_DEBUG_LEVEL, "UDPCLIENT RX: %u\t\t<- '%s'", timeGetTime(), message.c_str() );
-        }
+        CLog::Log(UDPCLIENT_DEBUG_LEVEL, "UDPCLIENT RX: %u\t\t<- '%s'", timeGetTime(), message.c_str() );
 
         // NOTE: You should consider locking access to the screen device
         // or at least wait until after vertical refresh before firing off events
@@ -207,10 +204,7 @@ void CUdpClient::DispatchNextCommand()
   if (command.binarySize > 0)
   {
     // only perform the following if logging level at debug
-    if (UDPCLIENT_DEBUG_LEVEL >= g_stSettings.m_iLogLevel)
-    {
-      CLog::Log(UDPCLIENT_DEBUG_LEVEL, "UDPCLIENT TX: %u\t\t-> <binary payload %u bytes>", timeGetTime(), command.binarySize );
-    }
+    CLog::Log(UDPCLIENT_DEBUG_LEVEL, "UDPCLIENT TX: %u\t\t-> <binary payload %u bytes>", timeGetTime(), command.binarySize );
 
     do
     {
@@ -223,10 +217,7 @@ void CUdpClient::DispatchNextCommand()
   else
   {
     // only perform the following if logging level at debug
-    if (UDPCLIENT_DEBUG_LEVEL >= g_stSettings.m_iLogLevel)
-    {
-      CLog::Log(UDPCLIENT_DEBUG_LEVEL, "UDPCLIENT TX: %u\t\t-> '%s'", timeGetTime(), command.message.c_str() );
-    }
+    CLog::Log(UDPCLIENT_DEBUG_LEVEL, "UDPCLIENT TX: %u\t\t-> '%s'", timeGetTime(), command.message.c_str() );
 
     do
     {

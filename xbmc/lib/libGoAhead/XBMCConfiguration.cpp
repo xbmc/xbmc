@@ -560,8 +560,6 @@ int CXbmcConfiguration::SetOption( int eid, webs_t wp, CStdString& response, int
 bool CXbmcConfiguration::IsValidOption(char* option)
 {
 	if (!strcmp("home", option)) return true;
-	if (!strcmp("dashboard", option)) return true;
-	if (!strcmp("dvdplayer", option)) return true;
 	if (!strcmp("subtitles", option)) return true;
 	if (!strcmp("thumbnails", option)) return true;
 	if (!strcmp("shortcuts", option)) return true;

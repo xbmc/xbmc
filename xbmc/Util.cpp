@@ -1011,7 +1011,7 @@ void CUtil::RunShortcut(const char* szShortcutPath)
       strcpy(data.szFilename,shortcut.m_strCustomGame.c_str());
       CIoSupport support;
       support.GetPartition("C:",data.szRemap_D_As);
-      strcpy(data.szLaunchXBEOnExit,CUtil::GetFileName(g_stSettings.szDashboard).c_str());
+      strcpy(data.szLaunchXBEOnExit,CUtil::GetFileName(g_guiSettings.GetString("MyPrograms.Dashboard")).c_str());
       data.executionType = 0;
       data.magic = GetXbeID(szPath);
     }
@@ -1164,12 +1164,6 @@ void CUtil::GetThumbnail(const CStdString& strFileName, CStdString& strThumb)
     }
   }
 
-  /*
-  Crc32 crc;
-  crc.ComputeFromLowerCase(strFileName);
-  strThumb.Format("%s\\%x.tbn", g_stSettings.szThumbnailsDirectory, crc);
-  */
-
   GetCachedThumbnail(strFileName, strThumb);
 }
 
@@ -1179,7 +1173,7 @@ void CUtil::GetCachedThumbnail(const CStdString& strFileName, CStdString& strCac
   crc.ComputeFromLowerCase(strFileName);
   CStdString strHex;
   strHex.Format("%08x",crc);
-  strCachedThumb.Format("%s\\%s\\%s.tbn", g_stSettings.szThumbnailsDirectory, strHex.Left(1).c_str(), strHex.c_str());
+  strCachedThumb.Format("%s\\%s\\%s.tbn", g_settings.GetThumbnailsFolder().c_str(), strHex.Left(1).c_str(), strHex.c_str());
 }
 
 void CUtil::GetHomePath(CStdString& strPath)
@@ -1601,7 +1595,7 @@ void CUtil::GetSongInfo(const CStdString& strFileName, CStdString& strSongCacheN
 {
   Crc32 crc;
   crc.Compute(strFileName);
-  strSongCacheName.Format("%s\\songinfo\\%x.si", g_stSettings.m_szAlbumDirectory, crc);
+  strSongCacheName.Format("%s\\songinfo\\%x.si", g_settings.GetDatabaseFolder().c_str(), crc);
 }
 
 void CUtil::GetAlbumFolderThumb(const CStdString& strFileName, CStdString& strThumb, bool bTempDir /*=false*/)
@@ -1609,9 +1603,9 @@ void CUtil::GetAlbumFolderThumb(const CStdString& strFileName, CStdString& strTh
   Crc32 crc;
   crc.ComputeFromLowerCase(strFileName);
   if (bTempDir)
-    strThumb.Format("%s\\thumbs\\temp\\%x.tbn", g_stSettings.m_szAlbumDirectory, crc);
+    strThumb.Format("%s\\%x.tbn", g_settings.GetTempMusicThumbFolder().c_str(), crc);
   else
-    strThumb.Format("%s\\thumbs\\%x.tbn", g_stSettings.m_szAlbumDirectory, crc);
+    strThumb.Format("%s\\%x.tbn", g_settings.GetMusicThumbFolder().c_str(), crc);
 }
 
 void CUtil::GetAlbumThumb(const CStdString& strAlbumName, const CStdString& strFileName, CStdString& strThumb, bool bTempDir /*=false*/)
@@ -1641,11 +1635,6 @@ bool CUtil::GetXBEIcon(const CStdString& strFilePath, CStdString& strIcon)
 
   if (CUtil::IsOnDVD(strFilePath) || g_guiSettings.GetBool("MyPrograms.CacheProgramThumbs") )  // create CRC for DVD as we can't store default.tbn on DVD
   {
-    /*
-    Crc32 crc;
-    crc.Compute(strFilePath);
-    strIcon.Format("%s\\%x.tbn", g_stSettings.szThumbnailsDirectory, crc);
-    */
     GetCachedThumbnail(strFilePath, strIcon);
   }
   else
@@ -2089,7 +2078,7 @@ void CUtil::RemoveTempFiles()
   WIN32_FIND_DATA wfd;
 
   CStdString strAlbumDir;
-  strAlbumDir.Format("%s\\*.tmp", g_stSettings.m_szAlbumDirectory);
+  strAlbumDir.Format("%s\\*.tmp", g_settings.GetDatabaseFolder().c_str());
   memset(&wfd, 0, sizeof(wfd));
 
   CAutoPtrFind hFind( FindFirstFile(strAlbumDir.c_str(), &wfd));
@@ -2099,31 +2088,13 @@ void CUtil::RemoveTempFiles()
   {
     if ( !(wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) )
     {
-      string strFile = g_stSettings.m_szAlbumDirectory;
+      string strFile = g_settings.GetDatabaseFolder();
       strFile += "\\";
       strFile += wfd.cFileName;
       DeleteFile(strFile.c_str());
     }
   }
   while (FindNextFile(hFind, &wfd));
-
-  //CStdString strTempThumbDir;
-  //strTempThumbDir.Format("%s\\thumbs\\temp\\*.tbn",g_stSettings.m_szAlbumDirectory);
-  //memset(&wfd,0,sizeof(wfd));
-
-  //CAutoPtrFind hFind1( FindFirstFile(strTempThumbDir.c_str(),&wfd));
-  //if (!hFind1.isValid())
-  //  return ;
-  //do
-  //{
-  //  if ( !(wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) )
-  //  {
-  //    CStdString strFile;
-  //    strFile.Format("%s\\thumbs\\temp\\",g_stSettings.m_szAlbumDirectory);
-  //    strFile += wfd.cFileName;
-  //    DeleteFile(strFile.c_str());
-  //  }
-  //} while (FindNextFile(hFind1, &wfd));
 }
 
 void CUtil::DeleteTDATA()
@@ -2513,6 +2484,7 @@ void CUtil::AddFileToFolder(const CStdString& strFolder, const CStdString& strFi
   if (IsStack(strFolder))
     strResult = strResult.Mid(8);
 
+  // Add a slash to the end of the path if necessary
   if (!CUtil::HasSlashAtEnd(strResult))
   {
     if (strResult.Find("//") >= 0 )
@@ -2520,7 +2492,11 @@ void CUtil::AddFileToFolder(const CStdString& strFolder, const CStdString& strFi
     else
       strResult += "\\";
   }
-  strResult += strFile;
+  // Remove any slash at the start of the file
+  if (strFile.size() && strFile[0] == '/' || strFile[0] == '\\')
+    strResult += strFile.Mid(1);
+  else
+    strResult += strFile;
 	// re-add the stack:// protocol
   if (IsStack(strFolder))
     strResult = "stack://" + strResult;
@@ -2638,9 +2614,9 @@ bool CUtil::ThumbCached(const CStdString& strFileName)
 
 void CUtil::PlayDVD()
 {
-  if (g_stSettings.m_szExternalDVDPlayer[0] && strcmp(g_stSettings.m_szExternalDVDPlayer, "dvdplayerbeta") != 0)
+  if (g_guiSettings.GetBool("MyVideos.UseExternalDVDPlayer") && !g_guiSettings.GetString("MyVideos.ExternalDVDPlayer").IsEmpty())
   {
-    RunXBE(g_stSettings.m_szExternalDVDPlayer);
+    RunXBE(g_guiSettings.GetString("MyVideos.ExternalDVDPlayer").c_str());
   }
   else
   {
@@ -3012,7 +2988,7 @@ DWORD CUtil::SetUpNetwork( bool resetmode, struct network_info& networkinfo )
 
 void CUtil::GetVideoThumbnail(const CStdString& strIMDBID, CStdString& strThumb)
 {
-  strThumb.Format("%s\\imdb\\imdb%s.jpg", g_stSettings.szThumbnailsDirectory, strIMDBID.c_str());
+  strThumb.Format("%s\\imdb%s.jpg", g_settings.GetIMDbThumbFolder().c_str(), strIMDBID.c_str());
 }
 
 CStdString CUtil::GetNextFilename(const char* fn_template, int max)
@@ -3196,22 +3172,17 @@ void CUtil::TakeScreenshot()
 
 void CUtil::ClearCache()
 {
-  CStdString strThumb = g_stSettings.m_szAlbumDirectory;
-  strThumb += "\\thumbs";
-  g_directoryCache.ClearDirectory(strThumb);
-  g_directoryCache.ClearDirectory(strThumb + "\\temp");
+  g_directoryCache.ClearDirectory(g_settings.GetMusicThumbFolder());
+  g_directoryCache.ClearDirectory(g_settings.GetTempMusicThumbFolder());
 
-  strThumb = g_stSettings.szThumbnailsDirectory;
-  g_directoryCache.ClearDirectory(strThumb);
-  g_directoryCache.ClearDirectory(strThumb + "\\imdb");
+  g_directoryCache.ClearDirectory(g_settings.GetThumbnailsFolder());
+  g_directoryCache.ClearDirectory(g_settings.GetIMDbThumbFolder());
 
   for (unsigned int hex=0; hex < 16; hex++)
   {
-    CStdString strThumbLoc = g_stSettings.szThumbnailsDirectory;
     CStdString strHex;
-    strHex.Format("%x",hex);
-    strThumbLoc += "\\" + strHex;
-    g_directoryCache.ClearDirectory(strThumbLoc);
+    strHex.Format("\\%x",hex);
+    g_directoryCache.ClearDirectory(g_settings.GetThumbnailsFolder() + strHex);
   }
 }
 
@@ -3526,7 +3497,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   }
   else if (execute.Equals("dashboard"))
   {
-    RunXBE(g_stSettings.szDashboard);
+    RunXBE(g_guiSettings.GetString("MyPrograms.Dashboard").c_str());
   }
   else if (execute.Equals("restartapp"))
   {
@@ -4136,28 +4107,31 @@ CStdString CUtil::TranslateSpecialDir(const CStdString &strSpecial)
   CStdString strReturn;
   if (strSpecial[0] == '$')
   {
-    if (strSpecial.Equals("$HOME"))
-      strReturn = "Q:\\";
-    else if (strSpecial.Equals("$SUBTITLES"))
-      strReturn = g_stSettings.m_szAlternateSubtitleDirectory;
-    else if (strSpecial.Equals("$THUMBNAILS"))
-      strReturn = g_stSettings.szThumbnailsDirectory;
-    else if (strSpecial.Equals("$SHORTCUTS"))
-      strReturn = g_stSettings.m_szShortcutDirectory;
-    else if (strSpecial.Equals("$ALBUMS"))
-      strReturn = g_stSettings.m_szAlbumDirectory;
-    else if (strSpecial.Equals("$RECORDINGS"))
-      strReturn = g_stSettings.m_szMusicRecordingDirectory;
-    else if (strSpecial.Equals("$SCREENSHOTS"))
-      strReturn = g_stSettings.m_szScreenshotsDirectory;
-    else if (strSpecial.Equals("$PLAYLISTS"))
-      strReturn = g_stSettings.m_szPlaylistsDirectory;
-    else if (strSpecial.Equals("$MUSICPLAYLISTS"))
-      strReturn = MusicPlaylistsLocation();
-    else if (strSpecial.Equals("$VIDEOPLAYLISTS"))
-      strReturn = VideoPlaylistsLocation();
-    else if (strSpecial.Equals("$CDRIPS"))
-      strReturn = g_guiSettings.GetString("CDDARipper.Path");
+    if (strSpecial.Left(5).Equals("$HOME"))
+      CUtil::AddFileToFolder("Q:", strSpecial.Mid(5), strReturn);
+    else if (strSpecial.Left(10).Equals("$SUBTITLES"))
+      CUtil::AddFileToFolder(g_stSettings.m_szAlternateSubtitleDirectory, strSpecial.Mid(10), strReturn);
+    else if (strSpecial.Left(9).Equals("$USERDATA"))
+      CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), strSpecial.Mid(9), strReturn);
+    else if (strSpecial.Left(9).Equals("$DATABASE"))
+      CUtil::AddFileToFolder(g_settings.GetDatabaseFolder(), strSpecial.Mid(9), strReturn);
+    else if (strSpecial.Left(11).Equals("$THUMBNAILS"))
+      CUtil::AddFileToFolder(g_settings.GetThumbnailsFolder(), strSpecial.Mid(11), strReturn);
+
+    else if (strSpecial.Left(10).Equals("$SHORTCUTS"))
+      CUtil::AddFileToFolder(g_stSettings.m_szShortcutDirectory, strSpecial.Mid(10), strReturn);
+    else if (strSpecial.Left(11).Equals("$RECORDINGS"))
+      CUtil::AddFileToFolder(g_stSettings.m_szMusicRecordingDirectory, strSpecial.Mid(11), strReturn);
+    else if (strSpecial.Left(12).Equals("$SCREENSHOTS"))
+      CUtil::AddFileToFolder(g_stSettings.m_szScreenshotsDirectory, strSpecial.Mid(12), strReturn);
+    else if (strSpecial.Left(10).Equals("$PLAYLISTS"))
+      CUtil::AddFileToFolder(g_stSettings.m_szPlaylistsDirectory, strSpecial.Mid(10), strReturn);
+    else if (strSpecial.Left(15).Equals("$MUSICPLAYLISTS"))
+      CUtil::AddFileToFolder(MusicPlaylistsLocation(), strSpecial.Mid(15), strReturn);
+    else if (strSpecial.Left(15).Equals("$VIDEOPLAYLISTS"))
+      CUtil::AddFileToFolder(VideoPlaylistsLocation(), strSpecial.Mid(15), strReturn);
+    else if (strSpecial.Left(7).Equals("$CDRIPS"))
+      CUtil::AddFileToFolder(g_guiSettings.GetString("CDDARipper.Path"), strSpecial.Mid(7), strReturn);
   }
   /*
   if (strReturn.IsEmpty())
