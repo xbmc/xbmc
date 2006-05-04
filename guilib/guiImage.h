@@ -17,7 +17,7 @@
 class CGUIImage : public CGUIControl
 {
 public:
-  enum GUIIMAGE_ASPECT_RATIO { ASPECT_RATIO_KEEP = 0, ASPECT_RATIO_SCALE, ASPECT_RATIO_STRETCH };
+  enum GUIIMAGE_ASPECT_RATIO { ASPECT_RATIO_STRETCH = 0, ASPECT_RATIO_SCALE, ASPECT_RATIO_KEEP };
 
   CGUIImage(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strTexture, DWORD dwColorKey = 0);
   CGUIImage(const CGUIImage &left);
