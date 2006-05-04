@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 04-05-2006 added: Direct3d Setviewport export for dlls.
  - 04-05-2006 changed: Thumbs in My Videos are set via a background loader.
  - 04-05-2006 changed: IMDb thumbs are now cached in the usual method (no need for the separate imdb folder).  Will require rescanning.
  - 04-05-2006 changed: Removed <logpath> tag.  By default it logs in the XBMC folder, unless it's running off DVD, where it logs in TDATA. UserData is also moved to TDATA if running off DVD.
