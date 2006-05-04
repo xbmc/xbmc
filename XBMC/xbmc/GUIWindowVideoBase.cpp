@@ -1181,15 +1181,7 @@ void CGUIWindowVideoBase::SetDatabaseDirectory(const VECMOVIES &movies, CFileIte
       pItem->m_strPath = movie.m_strFileNameAndPath;
       pItem->m_bIsFolder = false;
       pItem->m_bIsShareOrDrive = false;
-      /*pItem->SetThumb();
-      
-      if (!pItem->HasThumbnail())
-      {
-        CStdString strThumb;
-        CUtil::GetVideoThumbnail(movie.m_strIMDBNumber, strThumb);
-        if (CFile::Exists(strThumb))
-          pItem->SetThumbnailImage(strThumb);
-      }*/
+
       pItem->m_fRating = movie.m_fRating;
       SYSTEMTIME time;
       time.wYear = movie.m_iYear;

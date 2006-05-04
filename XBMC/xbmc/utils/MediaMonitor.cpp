@@ -332,7 +332,6 @@ bool CMediaMonitor::imdb_GetMovieInfo(CStdString& strTitle, CIMDBMovie& aMovieRe
 bool CMediaMonitor::imdb_GetMovieArt(CStdString& strPath, CStdString& strPictureUrl, CStdString& strImagePath)
 {
   CStdString strThum;
-  //CUtil::GetVideoThumbnail(strIMDBNumber, strThum);
   CUtil::GetCachedThumbnail(strPath, strThum);
 
   if (CFile::Exists(strThum.c_str()))

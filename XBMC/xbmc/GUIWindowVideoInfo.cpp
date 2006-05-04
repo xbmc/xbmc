@@ -128,13 +128,6 @@ bool CGUIWindowVideoInfo::OnMessage(CGUIMessage& message)
       int iControl = message.GetSenderId();
       if (iControl == CONTROL_BTN_REFRESH)
       {
-        /*if ( m_pMovie->m_strPictureURL.size() )
-        {
-          CStdString strThumb;
-          CStdString strImage = m_pMovie->m_strIMDBNumber;
-          CUtil::GetVideoThumbnail(strImage, strThumb);
-          DeleteFile(strThumb.c_str());
-        }*/
         m_bRefresh = true;
         Close();
         return true;
@@ -264,7 +257,6 @@ void CGUIWindowVideoInfo::Update()
 
   strTmp = m_pMovie->m_strVotes; strTmp.Trim();
   SetLabel(CONTROL_VOTES, strTmp.c_str() );
-  //SetLabel(CONTROL_CAST, m_pMovie->m_strCast );
 
   CStdString strRating_And_Votes;
   if (strRating.Equals("0.0")) {strRating_And_Votes = m_pMovie->m_strVotes;}
@@ -366,10 +358,6 @@ void CGUIWindowVideoInfo::Refresh()
     {
       DownloadThumbnail(m_thumbNail);
     }
-
-    //CStdString strAlbum;
-    //CUtil::GetIMDBInfo(m_pMovie->m_strSearchString,strAlbum);
-    //m_pMovie->Save(strAlbum);
 
     if (!CFile::Exists(m_thumbNail) )
     {
