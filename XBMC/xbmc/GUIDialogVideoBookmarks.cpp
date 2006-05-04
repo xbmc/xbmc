@@ -180,7 +180,7 @@ void CGUIDialogVideoBookmarks::AddBookmark()
     // compute the thumb name + create the thumb image
     Crc32 crc;
     crc.ComputeFromLowerCase(g_application.CurrentFile());
-    bookmark.thumbNailImage.Format("%s\\bookmarks\\%08x_%i.jpg", g_stSettings.szThumbnailsDirectory, crc, m_vecItems.Size() + 1);
+    bookmark.thumbNailImage.Format("%s\\%08x_%i.jpg", g_settings.GetBookmarksThumbFolder().c_str(), crc, m_vecItems.Size() + 1);
     CPicture pic;
     if (!pic.CreateThumbnailFromSurface((BYTE *)lockedRect.pBits, width, height, lockedRect.Pitch, bookmark.thumbNailImage))
       bookmark.thumbNailImage.Empty();
