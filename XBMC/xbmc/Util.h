@@ -226,7 +226,7 @@ public:
   static void RunXBE(const char* szPath, char* szParameters = NULL, F_VIDEO ForceVideo=VIDEO_NULL, F_COUNTRY ForceCountry=COUNTRY_NULL, CUSTOM_LAUNCH_DATA* pData=NULL);
   static void LaunchXbe(const char* szPath, const char* szXbe, const char* szParameters, F_VIDEO ForceVideo=VIDEO_NULL, F_COUNTRY ForceCountry=COUNTRY_NULL, CUSTOM_LAUNCH_DATA* pData=NULL); 
   static void GetDirectory(const CStdString& strFilePath, CStdString& strDirectoryPath);
-  static void GetThumbnail(const CStdString& strFileName, CStdString& strThumb);
+  static void GetUserThumbnail(const CStdString& strFileName, CStdString& strThumb);
   static void GetCachedThumbnail(const CStdString& strFileName, CStdString& strCachedThumb);
   static void GetHomePath(CStdString& strPath);
   static bool InitializeNetwork(int iAssignment, const char* szLocalAddress, const char* szLocalSubnet, const char* szLocalGateway, const char* szNameServer);

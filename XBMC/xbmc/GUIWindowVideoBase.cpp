@@ -465,7 +465,7 @@ void CGUIWindowVideoBase::OnManualIMDB()
   if (!CGUIDialogKeyboard::ShowAndGetInput(strInput, g_localizeStrings.Get(16009), false)) return ;
 
   CStdString strThumb;
-  CUtil::GetThumbnail("Z:\\", strThumb);
+  CUtil::GetCachedThumbnail("Z:\\", strThumb);
   ::DeleteFile(strThumb.c_str());
 
   CFileItem item(strInput);

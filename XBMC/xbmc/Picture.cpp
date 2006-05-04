@@ -45,10 +45,10 @@ bool CPicture::CreateAlbumThumbnail(const CStdString& strFileName, const CStdStr
 
 bool CPicture::CreateThumbnail(const CStdString& strFileName)
 {
+  // does not check for existence, so always overwrites cached thumbs
   CStdString strThumbnail;
-  CUtil::GetThumbnail(strFileName, strThumbnail);
-  // TODO: Do we need to check existence here?
-  return DoCreateThumbnail(strFileName, strThumbnail ,true);
+  CUtil::GetCachedThumbnail(strFileName, strThumbnail);
+  return DoCreateThumbnail(strFileName, strThumbnail);
 }
 
 bool CPicture::DoCreateThumbnail(const CStdString& strFileName, const CStdString& strThumbFileName, bool checkExistence /*= false*/)
@@ -153,7 +153,7 @@ void CPicture::CreateFolderThumb(CStdString &strFolder, CStdString *strThumbs)
 { // we want to mold the thumbs together into one single one
   if (!m_dll.Load()) return;
   CStdString strFolderThumbnail;
-  CUtil::GetThumbnail(strFolder, strFolderThumbnail);
+  CUtil::GetCachedThumbnail(strFolder, strFolderThumbnail);
   if (CFile::Exists(strFolderThumbnail))
     return;
   CStdString strThumbnails[4];
@@ -165,7 +165,7 @@ void CPicture::CreateFolderThumb(CStdString &strFolder, CStdString *strThumbs)
     else
     {
       CreateThumbnail(strThumbs[i]);
-      CUtil::GetThumbnail(strThumbs[i], strThumbnails[i]);
+      CUtil::GetCachedThumbnail(strThumbs[i], strThumbnails[i]);
     }
     szThumbs[i] = strThumbnails[i].c_str();
   }

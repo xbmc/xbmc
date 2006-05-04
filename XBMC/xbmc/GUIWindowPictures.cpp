@@ -554,7 +554,7 @@ void CGUIWindowPictures::OnItemLoaded(CFileItem *pItem)
     if (items.Size() < 4)
     { // less than 4 items, so just grab a single random thumb
       CStdString folderThumb;
-      CUtil::GetThumbnail(pItem->m_strPath, folderThumb);
+      CUtil::GetCachedThumbnail(pItem->m_strPath, folderThumb);
       CPicture pic;
       pic.DoCreateThumbnail(items[0]->m_strPath, folderThumb);
     }
