@@ -717,9 +717,6 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\AutoSwitch.h">
 				</File>
 				<File
-					RelativePath=".\xbmc\BackgroundInfoLoader.cpp">
-				</File>
-				<File
 					RelativePath=".\xbmc\ButtonTranslator.cpp">
 				</File>
 				<File
@@ -835,9 +832,6 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				</File>
 				<File
 					RelativePath=".\xbmc\Picture.cpp">
-				</File>
-				<File
-					RelativePath=".\xbmc\PictureThumbLoader.cpp">
 				</File>
 				<File
 					RelativePath=".\xbmc\Profile.cpp">
@@ -1161,6 +1155,28 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\SlideShowPicture.h">
 				</File>
 			</Filter>
+			<Filter
+				Name="BackgroundLoaders"
+				Filter="">
+				<File
+					RelativePath=".\xbmc\BackgroundInfoLoader.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\BackgroundInfoLoader.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\PictureThumbLoader.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\PictureThumbLoader.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\ThumbLoader.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\ThumbLoader.h">
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -1204,9 +1220,6 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 			</File>
 			<File
 				RelativePath=".\xbmc\Autorun.h">
-			</File>
-			<File
-				RelativePath=".\xbmc\BackgroundInfoLoader.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\BuddyItem.h">
@@ -1594,9 +1607,6 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 			</File>
 			<File
 				RelativePath=".\xbmc\Picture.h">
-			</File>
-			<File
-				RelativePath=".\xbmc\PictureThumbLoader.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\cores\PlayerCoreFactory.h">

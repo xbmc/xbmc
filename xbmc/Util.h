@@ -303,7 +303,6 @@ public:
   static void ThumbCacheClear();
   static void PlayDVD();
   static DWORD SetUpNetwork( bool resetmode, struct network_info& networkinfo );
-  static void GetVideoThumbnail(const CStdString& strIMDBID, CStdString& strThumb);
   static CStdString GetNextFilename(const char* fn_template, int max);
   static void TakeScreenshot();
   static void TakeScreenshot(const char* fn, bool flash);

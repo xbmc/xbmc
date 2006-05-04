@@ -23,7 +23,6 @@ protected:
   bool MoveCurrentPlayListItem(int iItem, int iAction, bool bUpdate = true);
   void MoveItem(int iStart, int iDest);
 
-  virtual void OnPrepareFileItems(CFileItemList &items);
   void ShufflePlayList();
   void SavePlayList();
 

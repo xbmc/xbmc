@@ -353,12 +353,11 @@ CGUISettings::CGUISettings(void)
   AddInt(0, "Videos.BlackBarColour", 0, 0, 0, 1, 255, SPIN_CONTROL_INT);
 
   AddCategory(5, "VideoFiles", 744);
-  AddBool(1, "VideoFiles.FindRemoteThumbs", 14059, true);
-  AddSeparator(2, "VideoFiles.Sep1");
-  AddBool(3, "VideoFiles.UseAutoSwitching", 14011, false);
-  AddBool(4, "VideoFiles.AutoSwitchUseLargeThumbs", 14012, false);
-  AddInt(5, "VideoFiles.AutoSwitchMethod", 14013, 0, 0, 1, 2, SPIN_CONTROL_TEXT);
-  AddInt(6, "VideoFiles.AutoSwitchPercentage", 14014, 50, 0, 5, 100, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
+  AddBool(1, "VideoFiles.UseAutoSwitching", 14011, false);
+  AddBool(2, "VideoFiles.AutoSwitchUseLargeThumbs", 14012, false);
+  AddInt(3, "VideoFiles.AutoSwitchMethod", 14013, 0, 0, 1, 2, SPIN_CONTROL_TEXT);
+  AddInt(4, "VideoFiles.AutoSwitchPercentage", 14014, 50, 0, 5, 100, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
+  AddSeparator(5, "VideoFiles.Sep1");
   AddBool(7, "VideoFiles.AllowFileDeletion", 14071, false);
   AddBool(8,"VideoFiles.UnrollArchives",516, false);
 
