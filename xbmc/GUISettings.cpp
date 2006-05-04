@@ -183,7 +183,8 @@ CGUISettings::CGUISettings(void)
   AddSeparator(6,"MyPrograms.Sep1");
   AddBool(7, "MyPrograms.GameAutoRegion",511,false);
   AddInt(8, "MyPrograms.NTSCMode", 16110, 0, 0, 1, 3, SPIN_CONTROL_TEXT);
-  
+  AddString(9, "MyPrograms.Dashboard", 13006, "C:\\xboxdash.xbe", BUTTON_CONTROL_PATH_INPUT, false, 13006);
+
   AddCategory(1,"ProgramFiles",744);
   AddBool(1, "ProgramFiles.UseAutoSwitching", 14011, false);
   AddBool(2, "ProgramFiles.AutoSwitchUseLargeThumbs", 14012, false);
@@ -340,10 +341,14 @@ CGUISettings::CGUISettings(void)
   AddGroup(5, 3);
   AddCategory(5, "MyVideos", 16000);
   AddString(1, "MyVideos.Calibrate", 214, "", BUTTON_CONTROL_STANDARD);
-  AddSeparator(5, "MyVideos.Sep1");
-  AddInt(6, "MyVideos.OSDTimeout", 472, 5, 0, 1, 60, SPIN_CONTROL_INT_PLUS, MASK_SECS, TEXT_OFF);
-  AddSeparator(12, "MyVideos.Sep3");
-  AddBool(13, "MyVideos.IgnoreTheWhenSorting", 13399, true);
+  AddSeparator(2, "MyVideos.Sep1");
+  AddInt(3, "MyVideos.OSDTimeout", 472, 5, 0, 1, 60, SPIN_CONTROL_INT_PLUS, MASK_SECS, TEXT_OFF);
+  AddSeparator(4, "MyVideos.Sep2");
+  AddBool(5, "MyVideos.IgnoreTheWhenSorting", 13399, true);
+  AddSeparator(6, "MyVideos.Sep3");
+  // TODO 2.0: Get localized strings for these
+  AddBool(7, "MyVideos.UseExternalDVDPlayer", 0, false);
+  AddString(8, "MyVideos.ExternalDVDPlayer", 0, "",  BUTTON_CONTROL_PATH_INPUT, true, 0);
   // hidden setting for blackbars
   AddInt(0, "Videos.BlackBarColour", 0, 0, 0, 1, 255, SPIN_CONTROL_INT);
 

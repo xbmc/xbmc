@@ -22,8 +22,6 @@ CSettings::CSettings(void)
     g_graphicsContext.ResetOverscan((RESOLUTION)i, m_ResInfo[i].GUIOverscan);
   }
 
-  strcpy(g_stSettings.m_szExternalDVDPlayer, "");
-
   g_stSettings.m_iMyVideoStack = STACK_NONE;
 
   g_stSettings.m_bMyVideoCleanTitles = false;
@@ -38,7 +36,6 @@ CSettings::CSettings(void)
 
   g_stSettings.m_MyProgramsViewMethod = VIEW_METHOD_ICONS;
   g_stSettings.m_MyProgramsSortOrder = SORT_ORDER_ASC;
-  strcpy(g_stSettings.szDashboard, "C:\\xboxdash.xbe");
   strcpy(g_stSettings.m_szAlternateSubtitleDirectory, "");
   strcpy(g_stSettings.szOnlineArenaPassword, "");
   strcpy(g_stSettings.szOnlineArenaDescription, "It's Good To Play Together!");
@@ -112,13 +109,14 @@ CSettings::CSettings(void)
   g_stSettings.m_fZoomAmount = 1.0f;
   g_stSettings.m_fPixelRatio = 1.0f;
 
-  g_stSettings.m_iLogLevel = LOGINFO;
-
   g_stSettings.m_pictureExtensions = ".png|.jpg|.jpeg|.bmp|.gif|.ico|.tif|.tiff|.tga|.pcx|.cbz|.zip|.cbr|.rar|.m3u";
   g_stSettings.m_musicExtensions = ".nsv|.m4a|.flac|.aac|.strm|.pls|.rm|.mpa|.wav|.wma|.ogg|.mp3|.mp2|.m3u|.mod|.amf|.669|.dmf|.dsm|.far|.gdm|.imf|.it|.m15|.med|.okt|.s3m|.stm|.sfx|.ult|.uni|.xm|.sid|.ac3|.dts|.cue|.aif|.wpl|.ape|.mac|.mpc|.mp+|.mpp|.shn|.zip|.rar|.wv|.nsf|.spc|.gym|.adplug|.adx|.dsp|.adp|.ymf|.ast|.afc|.hps|.xsp";
   g_stSettings.m_videoExtensions = ".m4v|.3gp|.nsv|.ts|.ty|.strm|.rm|.rmvb|.m3u|.ifo|.mov|.qt|.divx|.xvid|.bivx|.vob|.nrg|.img|.iso|.pva|.wmv|.asf|.asx|.ogm|.m2v|.avi|.bin|.dat|.mpg|.mpeg|.mp4|.mkv|.avc|.vp3|.svq3|.nuv|.viv|.dv|.fli|.flv|.rar|.001|.wpl|.zip";
   // internal music extensions
   g_stSettings.m_musicExtensions += "|.sidstream|.oggstream|.nsfstream";
+
+  g_stSettings.m_userDataFolder = "Q:\\UserData"; // main user data folder
+  g_stSettings.m_logFolder = "Q:\\";              // log file location
 
   m_iLastLoadedProfileIndex = -1;
 
@@ -159,6 +157,7 @@ CSettings::CSettings(void)
   g_advancedSettings.m_autoDetectPingTime = 30;
   g_advancedSettings.m_playCountMinimumPercent = 90.0f;
 
+  g_advancedSettings.m_logLevel = LOG_LEVEL_NORMAL;
   g_advancedSettings.m_cddbAddress = "freedb.freedb.org";
   g_advancedSettings.m_imdbAddress = "akas.imdb.com";
   g_advancedSettings.m_autoDetectFG = true;
@@ -166,7 +165,6 @@ CSettings::CSettings(void)
   g_advancedSettings.m_useGDrive = false;
   g_advancedSettings.m_usePCDVDROM = false;
   g_advancedSettings.m_cachePath = "Z:\\";
-  g_advancedSettings.m_sambaDebugLevel = 0;
 
   g_advancedSettings.m_videoStackRegExps.push_back("[ _\\.-]+cd[ _\\.-]*([0-9a-d]+)");
   g_advancedSettings.m_videoStackRegExps.push_back("[ _\\.-]+dvd[ _\\.-]*([0-9a-d]+)");
@@ -216,13 +214,14 @@ bool CSettings::QuickXMLLoad(const CStdString &strElement, bool forceToQ /* = fa
     return false;
   }
   bool ret(false);
-  if (strElement == "logpath" )
+/*  if (strElement == "logpath" )
   {
-    GetString(pRootElement, strElement.c_str(), g_stSettings.m_szlogpath, "");
-    if (strlen(g_stSettings.m_szlogpath) > 1)
+    GetString(pRootElement, strElement.c_str(), g_stSettings.m_logFolder, "");
+    if (!g_stSettings.m_logFolder.IsEmpty())
       ret = true;
   }
-  else if (strElement == "home")
+  else*/
+  if (strElement == "home")
   {
     GetString(pRootElement, strElement.c_str(), g_stSettings.szHomeDir, "");
     if (strlen(g_stSettings.szHomeDir) > 1)
@@ -272,9 +271,7 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
     g_LoadErrorStr.Format("%s Doesn't contain <xboxmediacenter>", strXMLFile.c_str());
     return false;
   }
-
-  GetInteger(pRootElement, "loglevel", g_stSettings.m_iLogLevel, LOGWARNING, LOGDEBUG, LOGNONE);
-
+  /*
   TiXmlElement* pFileTypeIcons = pRootElement->FirstChildElement("filetypeicons");
   TiXmlNode* pFileType = pFileTypeIcons->FirstChild();
   while (pFileType)
@@ -285,7 +282,7 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
     icon.m_strIcon = pFileType->FirstChild()->Value();
     m_vecIcons.push_back(icon);
     pFileType = pFileType->NextSibling();
-  }
+  }*/
 
   TiXmlElement* pSambaElement = pRootElement->FirstChildElement("samba");
   if (pSambaElement)
@@ -308,7 +305,6 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
   {
     g_stSettings.szHomeDir[strlen(g_stSettings.szHomeDir) - 1] = 0;
   }
-  GetString(pRootElement, "dashboard", g_stSettings.szDashboard, "C:\\xboxdash.xbe");
 
   LoadUserFolderLayout(pRootElement);
 
@@ -353,36 +349,21 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
     }
   }
 
-  GetString(pRootElement, "dvdplayer", g_stSettings.m_szExternalDVDPlayer, "");
-
   CStdString strDir;
 
-  strDir = g_stSettings.m_szShortcutDirectory;
-  ConvertHomeVar(strDir);
+  strDir = CUtil::TranslateSpecialDir(g_stSettings.m_szShortcutDirectory);
   strcpy( g_stSettings.m_szShortcutDirectory, strDir.c_str() );
 
-  strDir = g_stSettings.szThumbnailsDirectory;
-  ConvertHomeVar(strDir);
-  strcpy( g_stSettings.szThumbnailsDirectory, strDir.c_str() );
-
-  strDir = g_stSettings.m_szAlbumDirectory;
-  ConvertHomeVar(strDir);
-  strcpy( g_stSettings.m_szAlbumDirectory, strDir.c_str() );
-
-  strDir = g_stSettings.m_szMusicRecordingDirectory;
-  ConvertHomeVar(strDir);
+  strDir = CUtil::TranslateSpecialDir(g_stSettings.m_szMusicRecordingDirectory);
   strcpy( g_stSettings.m_szMusicRecordingDirectory, strDir.c_str() );
 
-  strDir = g_stSettings.m_szScreenshotsDirectory;
-  ConvertHomeVar(strDir);
+  strDir = CUtil::TranslateSpecialDir(g_stSettings.m_szScreenshotsDirectory);
   strcpy( g_stSettings.m_szScreenshotsDirectory, strDir.c_str() );
 
-  strDir = g_stSettings.m_szPlaylistsDirectory;
-  ConvertHomeVar(strDir);
+  strDir = CUtil::TranslateSpecialDir(g_stSettings.m_szPlaylistsDirectory);
   strcpy( g_stSettings.m_szPlaylistsDirectory, strDir.c_str() );
   
-  strDir = g_stSettings.m_szTrainerDirectory;
-  ConvertHomeVar(strDir);
+  strDir = CUtil::TranslateSpecialDir(g_stSettings.m_szTrainerDirectory);
   strcpy( g_stSettings.m_szTrainerDirectory, strDir.c_str() );
 
   while ( CUtil::HasSlashAtEnd(g_stSettings.m_szScreenshotsDirectory) )
@@ -399,8 +380,7 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
   }
 
 
-  strDir = g_stSettings.m_szAlternateSubtitleDirectory;
-  ConvertHomeVar(strDir);
+  strDir = CUtil::TranslateSpecialDir(g_stSettings.m_szAlternateSubtitleDirectory);
   strcpy( g_stSettings.m_szAlternateSubtitleDirectory, strDir.c_str() );
 
   // parse my programs bookmarks...
@@ -570,15 +550,10 @@ bool CSettings::GetShare(const CStdString &category, const TiXmlNode *bookmark, 
       CLog::Log(LOGDEBUG,"    Found path: %s", strPath.c_str());
       if (!CUtil::IsVirtualPath(strPath) && !CUtil::IsStack(strPath))
       {
-        // translate paths
-        CStdString strPathOld = strPath;
-        ConvertHomeVar(strPath);
-        if (!strPath.Equals(strPathOld))
-          CLog::Log(LOGDEBUG,"    -> Translated to path: %s", strPath.c_str());
-
         // translate special tags
         if (strPath.at(0) == '$')
         {
+          CStdString strPathOld(strPath);
           strPath = CUtil::TranslateSpecialDir(strPath);
           if (!strPath.IsEmpty())
             CLog::Log(LOGDEBUG,"    -> Translated to path: %s", strPath.c_str());
@@ -1293,6 +1268,7 @@ void CSettings::LoadAdvancedSettings()
     GetFloat(pElement, "playcountminimumpercent", g_advancedSettings.m_playCountMinimumPercent, 10.0f, 1.0f, 100.0f);
   }
 
+  GetInteger(pRootElement, "loglevel", g_advancedSettings.m_logLevel, LOG_LEVEL_NORMAL, LOG_LEVEL_NORMAL, LOG_LEVEL_MAX);
   GetString(pRootElement, "cddbaddress", g_advancedSettings.m_cddbAddress, "freedb.freedb.org");
   GetString(pRootElement, "imdbaddress", g_advancedSettings.m_imdbAddress, "akas.imdb.com");
 
@@ -1314,10 +1290,9 @@ void CSettings::LoadAdvancedSettings()
   // TODO: Should cache path be given in terms of our predefined paths??
   //       Are we even going to have predefined paths??
   GetString(pRootElement, "cachepath", g_advancedSettings.m_cachePath,"Z:\\");
-  ConvertHomeVar(g_advancedSettings.m_cachePath);
+  g_advancedSettings.m_cachePath = CUtil::TranslateSpecialDir(g_advancedSettings.m_cachePath);
   CUtil::AddSlashAtEnd(g_advancedSettings.m_cachePath);
 
-  GetInteger(pRootElement, "smbdebuglevel", g_advancedSettings.m_sambaDebugLevel , 0, 0, 100);
   g_LangCodeExpander.LoadUserCodes(pRootElement->FirstChildElement("languagecodes"));
   // stacking regexps
   TiXmlElement* pVideoStacking = pRootElement->FirstChildElement("videostacking");
@@ -1969,7 +1944,6 @@ bool CSettings::AddBookmark(const CStdString &strType, const CStdString &strName
   }
 
   // translate dir
-  ConvertHomeVar(share.strPath);
   CStdString strPath1 = share.strPath;
   strPath1.ToUpper();
 
@@ -2257,7 +2231,7 @@ void CSettings::Clear()
   m_vecMyMusicShares.clear();
   m_vecMyVideoShares.clear();
   m_vecSambeShres.clear();
-  m_vecIcons.clear();
+//  m_vecIcons.clear();
   m_vecProfiles.clear();
   m_szMyVideoStackTokensArray.clear();
   m_szMyVideoCleanTokensArray.clear();
@@ -2365,35 +2339,25 @@ void CSettings::ResetSkinSettings()
 
 void CSettings::LoadUserFolderLayout(const TiXmlElement *pRootElement)
 {
-  GetString(pRootElement, "albums", g_stSettings.m_szAlbumDirectory, "");
   GetString(pRootElement, "playlists", g_stSettings.m_szPlaylistsDirectory, "");
   GetString(pRootElement, "recordings", g_stSettings.m_szMusicRecordingDirectory, "");
-  GetString(pRootElement, "thumbnails", g_stSettings.szThumbnailsDirectory, "");
   GetString(pRootElement, "screenshots", g_stSettings.m_szScreenshotsDirectory, "");
   GetString(pRootElement, "subtitles", g_stSettings.m_szAlternateSubtitleDirectory, "");
   GetString(pRootElement, "shortcuts", g_stSettings.m_szShortcutDirectory, "");
   GetString(pRootElement, "trainerpath", g_stSettings.m_szTrainerDirectory,"$HOME\\system\\trainers");
 
   // check them all
-  if (g_stSettings.m_szAlbumDirectory[0] == 0)
-  {
-    strcpy(g_stSettings.m_szAlbumDirectory, "Q:\\albums");
-  }
   if (g_stSettings.m_szPlaylistsDirectory[0] == 0)
   {
-    // default to playlist subdir off of albums location like in the past
+    // default to playlist subdir off of userdata location like in the past
     CStdString strDir;
-    CUtil::AddFileToFolder(g_stSettings.m_szAlbumDirectory, "playlists", strDir);
+    CUtil::AddFileToFolder(GetUserDataFolder(), "playlists", strDir);
     CUtil::AddSlashAtEnd(strDir);
     strcpy(g_stSettings.m_szPlaylistsDirectory, strDir.c_str());
   }
   if (g_stSettings.m_szMusicRecordingDirectory[0] == 0)
   {
     strcpy(g_stSettings.m_szMusicRecordingDirectory, "Q:\\recordings");
-  }
-  if (g_stSettings.szThumbnailsDirectory[0] == 0)
-  {
-    strcpy(g_stSettings.szThumbnailsDirectory, "Q:\\thumbs");
   }
   if (g_stSettings.m_szScreenshotsDirectory[0] == 0)
   {
@@ -2407,4 +2371,72 @@ void CSettings::LoadUserFolderLayout(const TiXmlElement *pRootElement)
   {
     strcpy(g_stSettings.m_szShortcutDirectory, "Q:\\shortcuts");
   }
+}
+
+CStdString CSettings::GetUserDataFolder() const
+{
+  return g_stSettings.m_userDataFolder;
+}
+
+CStdString CSettings::GetDatabaseFolder() const
+{
+  CStdString folder;
+  CUtil::AddFileToFolder(g_stSettings.m_userDataFolder, "Database", folder);
+  return folder;
+}
+
+CStdString CSettings::GetCDDBFolder() const
+{
+  CStdString folder;
+  CUtil::AddFileToFolder(g_stSettings.m_userDataFolder, "Database\\CDDB", folder);
+  return folder;
+}
+
+CStdString CSettings::GetIMDbFolder() const
+{
+  CStdString folder;
+  CUtil::AddFileToFolder(g_stSettings.m_userDataFolder, "Database\\IMDb", folder);
+  return folder;
+}
+
+CStdString CSettings::GetThumbnailsFolder() const
+{
+  CStdString folder;
+  CUtil::AddFileToFolder(g_stSettings.m_userDataFolder, "Thumbnails", folder);
+  return folder;
+}
+
+CStdString CSettings::GetMusicThumbFolder() const
+{
+  CStdString folder;
+  CUtil::AddFileToFolder(g_stSettings.m_userDataFolder, "Thumbnails\\Music", folder);
+  return folder;
+}
+
+CStdString CSettings::GetTempMusicThumbFolder() const
+{
+  CStdString folder;
+  CUtil::AddFileToFolder(g_stSettings.m_userDataFolder, "Thumbnails\\Music\\Temp", folder);
+  return folder;
+}
+
+CStdString CSettings::GetIMDbThumbFolder() const
+{
+  CStdString folder;
+  CUtil::AddFileToFolder(g_stSettings.m_userDataFolder, "Thumbnails\\IMDb", folder);
+  return folder;
+}
+
+CStdString CSettings::GetXLinkKaiThumbFolder() const
+{
+  CStdString folder;
+  CUtil::AddFileToFolder(g_stSettings.m_userDataFolder, "Thumbnails\\XLinkKai", folder);
+  return folder;
+}
+
+CStdString CSettings::GetBookmarksThumbFolder() const
+{
+  CStdString folder;
+  CUtil::AddFileToFolder(g_stSettings.m_userDataFolder, "Thumbnails\\Bookmarks", folder);
+  return folder;
 }

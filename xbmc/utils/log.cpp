@@ -31,7 +31,7 @@ void CLog::Close()
 
 void CLog::Log(int loglevel, const char *format, ... )
 {
-  if (loglevel >= g_stSettings.m_iLogLevel)
+  if (g_advancedSettings.m_logLevel >= LOG_LEVEL_NORMAL || loglevel >= LOGERROR)
   {
     CSingleLock waitLock(critSec);
     if (!fd)
@@ -39,7 +39,7 @@ void CLog::Log(int loglevel, const char *format, ... )
       CStdString LogFile;
       if (g_settings.QuickXMLLoad("logpath"))
       {
-        CStdString strLogPath = g_stSettings.m_szlogpath;        
+        CStdString strLogPath = g_stSettings.m_logFolder;        
         if (!strLogPath.IsEmpty() && CUtil::IsHD(strLogPath))
         {
           if( !CUtil::HasSlashAtEnd(strLogPath) )
@@ -167,7 +167,3 @@ void CLog::MemDump(BYTE *pData, int length)
   }
 }
 
-int CLog::GetLevel()
-{
-  return g_stSettings.m_iLogLevel;
-}
