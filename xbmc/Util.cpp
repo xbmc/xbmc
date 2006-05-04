@@ -1135,13 +1135,11 @@ void CUtil::LaunchXbe(const char* szPath, const char* szXbe, const char* szParam
 // GetUserThumbnail
 // Grabs a user thumbnail for a file (filename.tbn)
 // 1. Checks <filename>.tbn
-// 2. Checks for embedded xbe thumbs
-// 3. Checks shortcuts and uses the destination files thumb
+// 2. If it's a stacked file, it checks <firststackfile>.tbn (Videos)
+// 3. Checks for embedded xbe thumbs (Programs)
+// 4. Checks shortcuts and uses the destination files thumb (Programs)
 void CUtil::GetUserThumbnail(const CStdString& strFileName, CStdString& strThumb)
 {
-  strThumb = "";
-  CFileItem item(strFileName, false);
-
   CStdString strFile;
   CUtil::ReplaceExtension(strFileName, ".tbn", strFile);
   if (CFile::Exists(strFile))
@@ -1150,11 +1148,18 @@ void CUtil::GetUserThumbnail(const CStdString& strFileName, CStdString& strThumb
     return ;
   }
 
+  CFileItem item(strFileName, false);
+  if (item.IsStack())
+  {
+    CStackDirectory dir;
+    GetUserThumbnail(dir.GetFirstStackedFile(strFileName), strThumb);
+    return;
+  }
   if (item.IsXBE())
   {
     if (CUtil::GetXBEIcon(strFileName, strThumb) ) return ;
     strThumb = "defaultProgram.png";
-    return ;
+    return;
   }
 
   if (item.IsShortCut() )
@@ -1165,9 +1170,12 @@ void CUtil::GetUserThumbnail(const CStdString& strFileName, CStdString& strThumb
       CStdString strFile = shortcut.m_strPath;
 
       GetUserThumbnail(strFile, strThumb);
-      return ;
+      return;
     }
   }
+
+  // no thumb found
+  strThumb.Empty();
 }
 
 void CUtil::GetCachedThumbnail(const CStdString& strFileName, CStdString& strCachedThumb)
