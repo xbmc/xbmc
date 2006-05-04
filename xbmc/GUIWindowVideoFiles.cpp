@@ -683,8 +683,6 @@ void CGUIWindowVideoFiles::GetIMDBDetails(CFileItem *pItem, CIMDBUrl &url)
       strThumb = pItem->GetThumbnailImage();
       if (CFile::Exists(strThumb))
         return;
-//      CUtil::GetVideoThumbnail(movieDetails.m_strIMDBNumber, strThumb);
-//      ::DeleteFile(strThumb.c_str());
 
       CHTTP http;
       CStdString strExtension;
