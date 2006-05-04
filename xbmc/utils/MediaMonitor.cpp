@@ -238,7 +238,7 @@ void CMediaMonitor::UpdateObserver(Movie& aMovie, INT nIndex, bool bForceUpdate,
   {
     if (!details.m_strPictureURL.IsEmpty())
     {
-      imdb_GetMovieArt(details.m_strIMDBNumber, details.m_strPictureURL, strImagePath);
+      imdb_GetMovieArt(aMovie.strFilepath, details.m_strPictureURL, strImagePath);
     }
   }
   else
@@ -329,10 +329,11 @@ bool CMediaMonitor::imdb_GetMovieInfo(CStdString& strTitle, CIMDBMovie& aMovieRe
 }
 
 /// This method queries imdb for movie poster art associated with an imdb number
-bool CMediaMonitor::imdb_GetMovieArt(CStdString& strIMDBNumber, CStdString& strPictureUrl, CStdString& strImagePath)
+bool CMediaMonitor::imdb_GetMovieArt(CStdString& strPath, CStdString& strPictureUrl, CStdString& strImagePath)
 {
   CStdString strThum;
-  CUtil::GetVideoThumbnail(strIMDBNumber, strThum);
+  //CUtil::GetVideoThumbnail(strIMDBNumber, strThum);
+  CUtil::GetCachedThumbnail(strPath, strThum);
 
   if (CFile::Exists(strThum.c_str()))
   {
@@ -397,7 +398,7 @@ void CMediaMonitor::UpdateTitle(INT nIndex, CStdString& strTitle, CStdString& st
   {
     if (!details.m_strPictureURL.IsEmpty())
     {
-      imdb_GetMovieArt(details.m_strIMDBNumber, details.m_strPictureURL, strImagePath);
+      imdb_GetMovieArt(strFilepath, details.m_strPictureURL, strImagePath);
     }
   }
   else

@@ -182,7 +182,6 @@ void CDirectoryCache::InitThumbCache()
   {
     // thumbnails directories
     g_directoryCache.m_thumbDirs.insert(g_settings.GetThumbnailsFolder());
-    g_directoryCache.m_thumbDirs.insert(g_settings.GetIMDbThumbFolder());
     for (unsigned int hex=0; hex < 16; hex++)
     {
       CStdString strHex;

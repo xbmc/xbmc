@@ -2,8 +2,9 @@
 #include "GUIMediaWindow.h"
 #include "VideoDatabase.h"
 #include "playlistplayer.h"
+#include "ThumbLoader.h"
 
-class CGUIWindowVideoBase : public CGUIMediaWindow
+class CGUIWindowVideoBase : public CGUIMediaWindow, public IBackgroundLoaderObserver
 {
 public:
   CGUIWindowVideoBase(DWORD dwID, const CStdString &xmlFile);
@@ -18,9 +19,8 @@ private:
   bool IsCorrectDiskInDrive(const CStdString& strFileName, const CStdString& strDVDLabel);
 protected:
   virtual void UpdateButtons();
-
-  virtual void SetIMDBThumbs(CFileItemList& items) {};
-  void SetIMDBThumb(CFileItem *item, const CStdString &imdbNumber);
+  virtual bool Update(const CStdString &strDirectory);
+  virtual void OnItemLoaded(CFileItem* pItem) {};
 
   virtual void OnPopupMenu(int iItem);
   virtual void OnInfo(int iItem);
@@ -56,4 +56,6 @@ protected:
   bool m_bDisplayEmptyDatabaseMessage;
 
   int m_iShowMode;
+
+  CThumbLoader m_thumbLoader;
 };
