@@ -111,7 +111,7 @@ void CKaiItem::GetAvatarFilePath(CStdString& aFilePath)
   // Generate a unique identifier from player name
   Crc32 crc;
   crc.Compute(m_strName);
-  aFilePath.Format("%s\\kai\\avatar-%x.jpg", g_stSettings.szThumbnailsDirectory, crc);
+  aFilePath.Format("%s\\avatar-%x.jpg", g_settings.GetXLinkKaiThumbFolder().c_str(), crc);
 }
 
 void CKaiItem::OnFileComplete(TICKET aTicket, CStdString& aFilePath, INT aByteRxCount, Result aResult)

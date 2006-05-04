@@ -60,7 +60,7 @@ bool CMusicInfoTagLoaderSid::Load(const CStdString& strFileName, CMusicInfoTag& 
 		return( false );
 	}
 
-	sprintf(temp,"%s\\%s",g_stSettings.m_szAlbumDirectory,"stil.txt"); // changeme?
+	sprintf(temp,"%s\\%s",g_settings.GetDatabaseFolder().c_str(),"stil.txt"); // changeme?
 	std::ifstream f(temp); 
 	if( !f.good() ) {
 		CLog::Log(LOGINFO,"MusicInfoTagLoaderSid::Load(..) unable to locate stil.txt");
@@ -153,7 +153,7 @@ bool CMusicInfoTagLoaderSid::Load(const CStdString& strFileName, CMusicInfoTag& 
     }
   }
 
-	sprintf(temp,"%s\\%s",g_stSettings.m_szAlbumDirectory,"sidlist.csv"); // changeme?
+	sprintf(temp,"%s\\%s",g_settings.GetDatabaseFolder().c_str(),"sidlist.csv"); // changeme?
   std::ifstream f2(temp);
 	if( !f2.good() ) {
 		CLog::Log(LOGINFO,"MusicInfoTagLoaderSid::Load(..) unable to locate sidlist.csv");

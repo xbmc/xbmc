@@ -502,6 +502,7 @@ void CFileItem::FillInDefaultIcon()
   CStdString strExtension;
   if (!m_bIsFolder)
   {
+    /*
     CStdString strExtension;
     CUtil::GetExtension(m_strPath, strExtension);
 
@@ -514,7 +515,7 @@ void CFileItem::FillInDefaultIcon()
         SetIconImage(icon.m_strIcon);
         break;
       }
-    }
+    }*/
     // cache playlists
     if ( IsPlayList() )
     {

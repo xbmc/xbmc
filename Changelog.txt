@@ -5,6 +5,15 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 04-05-2006 changed: Removed <logpath> tag.  By default it logs in the XBMC folder, unless it's running off DVD, where it logs in TDATA. UserData is also moved to TDATA if running off DVD.
+ - 04-05-2006 changed: Moved albums/ and thumbs/ folders to UserData/ folder:
+               albums/*.db -> UserData/Database/*.db
+               albums/cddb -> UserData/Database/CDDB
+               albums/imdb -> UserData/Database/IMDb
+               albums/thumbs -> UserData/Thumbnails/Music
+               albums/playlist -> UserData/Playlists
+               thumbs/       -> UserData/Thumbnails/
+ - 03-05-2006 changed: Moved more settings from XBoxMediaCenter.xml. External DVDPlayer and Dashboard to GUI settings.
  - 02-05-2006 fixed: slow database transactions in my programs.
  - 02-05-2006 changed: Added UserData/AdvancedSettings.xml loading ability, and moved a bunch of XBoxMediaCenter.xml settings into it.
  - 02-05-2006 fixed: last.fm directory broken

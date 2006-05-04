@@ -2345,8 +2345,7 @@ bool CMusicDatabase::CleanupThumbs()
       return true;
     }
     // get albums dir
-    CStdString strThumbsDir;
-    strThumbsDir.Format("%s\\thumbs\\", g_stSettings.m_szAlbumDirectory);
+    CStdString strThumbsDir = g_settings.GetMusicThumbFolder();
     while (!m_pDS->eof())
     {
       CStdString strThumb = m_pDS->fv("strThumb").get_asString();
@@ -2603,15 +2602,13 @@ bool CMusicDatabase::LookupCDDBInfo(bool bRequery/*=false*/)
   if (bRequery)
   {
     CStdString strFile;
-    strFile.Format("%s\\cddb\\%x.cddb", g_stSettings.m_szAlbumDirectory, pCdInfo->GetCddbDiscId() );
+    strFile.Format("%s\\%x.cddb", g_settings.GetCDDBFolder().c_str(), pCdInfo->GetCddbDiscId());
     ::DeleteFile(strFile.c_str());
   }
 
   // Prepare cddb
   Xcddb cddb;
-  CStdString strDir;
-  strDir.Format("%s\\cddb", g_stSettings.m_szAlbumDirectory);
-  cddb.setCacheDir(strDir);
+  cddb.setCacheDir(g_settings.GetCDDBFolder());
 
   // Do we have to look for cddb information
   if (pCdInfo->HasCDDBInfo() && !cddb.isCDCached(pCdInfo))
@@ -2711,7 +2708,7 @@ void CMusicDatabase::DeleteCDDBInfo()
   memset(&wfd, 0, sizeof(wfd));
 
   CStdString strCDDBFileMask;
-  strCDDBFileMask.Format("%s\\cddb\\*.cddb", g_stSettings.m_szAlbumDirectory);
+  strCDDBFileMask.Format("%s\\*.cddb", g_settings.GetCDDBFolder().c_str());
 
   map<ULONG, CStdString> mapCDDBIds;
 
@@ -2728,8 +2725,7 @@ void CMusicDatabase::DeleteCDDBInfo()
   {
     pDlg->SetHeading(g_localizeStrings.Get(181).c_str());
     pDlg->Reset();
-    CStdString strDir;
-    strDir.Format("%s\\cddb", g_stSettings.m_szAlbumDirectory);
+    CStdString strDir = g_settings.GetCDDBFolder();
     do
     {
       if ( !(wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) )
@@ -2777,10 +2773,9 @@ void CMusicDatabase::DeleteCDDBInfo()
       if (it->second == strSelectedAlbum)
       {
         CStdString strFile;
-        strFile.Format("%s\\cddb\\%x.cddb", g_stSettings.m_szAlbumDirectory, it->first );
+        strFile.Format("%s\\%x.cddb", g_settings.GetCDDBFolder().c_str(), it->first );
         ::DeleteFile(strFile.c_str());
         break;
-
       }
     }
     mapCDDBIds.erase(mapCDDBIds.begin(), mapCDDBIds.end());
