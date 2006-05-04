@@ -23,6 +23,7 @@ CGUIDialogFileBrowser::CGUIDialogFileBrowser()
   m_browsingForFolders = 0;
   m_browsingForImages = false;
   m_addNetworkShareEnabled = false;
+  m_singleList = false;
   m_thumbLoader.SetObserver(this);
 }
 
@@ -194,40 +195,44 @@ void CGUIDialogFileBrowser::Update(const CStdString &strDirectory)
       m_history.SetSelectedItem(strSelectedItem, m_Directory.m_strPath);
     }
   }
-  ClearFileItems();
 
-  CStdString strParentPath;
-  bool bParentExists = CUtil::GetParentPath(strDirectory, strParentPath);
-
-  // check if current directory is a root share
-  if ( !m_rootDir.IsShare(strDirectory) )
+  if (!m_singleList)
   {
-    // no, do we got a parent dir?
-    if ( bParentExists )
+    ClearFileItems();
+
+    CStdString strParentPath;
+    bool bParentExists = CUtil::GetParentPath(strDirectory, strParentPath);
+
+    // check if current directory is a root share
+    if ( !m_rootDir.IsShare(strDirectory) )
     {
-      // yes
-      CFileItem *pItem = new CFileItem("..");
-      pItem->m_strPath = strParentPath;
-      pItem->m_bIsFolder = true;
-      pItem->m_bIsShareOrDrive = false;
-      m_vecItems.Add(pItem);
-      m_strParentPath = strParentPath;
+      // no, do we got a parent dir?
+      if ( bParentExists )
+      {
+        // yes
+        CFileItem *pItem = new CFileItem("..");
+        pItem->m_strPath = strParentPath;
+        pItem->m_bIsFolder = true;
+        pItem->m_bIsShareOrDrive = false;
+        m_vecItems.Add(pItem);
+        m_strParentPath = strParentPath;
+      }
     }
-  }
-  else
-  {
-    // yes, this is the root of a share
-    // add parent path to the virtual directory
-    CFileItem *pItem = new CFileItem("..");
-    pItem->m_strPath = "";
-    pItem->m_bIsShareOrDrive = false;
-    pItem->m_bIsFolder = true;
-    m_vecItems.Add(pItem);
-    m_strParentPath = "";
-  }
+    else
+    {
+      // yes, this is the root of a share
+      // add parent path to the virtual directory
+      CFileItem *pItem = new CFileItem("..");
+      pItem->m_strPath = "";
+      pItem->m_bIsShareOrDrive = false;
+      pItem->m_bIsFolder = true;
+      m_vecItems.Add(pItem);
+      m_strParentPath = "";
+    }
 
-  m_Directory.m_strPath = strDirectory;
-  m_rootDir.GetDirectory(strDirectory, m_vecItems);
+    m_Directory.m_strPath = strDirectory;
+    m_rootDir.GetDirectory(strDirectory, m_vecItems);
+  }
 
   m_vecItems.SetThumbs();
 
@@ -378,6 +383,26 @@ void CGUIDialogFileBrowser::OnWindowUnload()
 {
   CGUIDialog::OnWindowUnload();
   m_viewControl.Reset();
+}
+
+bool CGUIDialogFileBrowser::ShowAndGetImage(const CFileItemList &items, const CStdString &heading, CStdString &result)
+{
+  CStdString mask = ".png|.jpg|.bmp|.gif";
+  CGUIDialogFileBrowser *browser = (CGUIDialogFileBrowser *)m_gWindowManager.GetWindow(WINDOW_DIALOG_FILE_BROWSER);
+  if (!browser)
+    return false;
+  browser->m_browsingForImages = true;
+  browser->m_singleList = true;
+  browser->m_vecItems.Clear();
+  browser->m_vecItems.Append(items);
+  browser->SetHeading(heading);
+  browser->DoModal(m_gWindowManager.GetActiveWindow());
+  if (browser->IsConfirmed())
+  {
+    result = browser->m_selectedPath;
+    return true;
+  }
+  return false;
 }
 
 bool CGUIDialogFileBrowser::ShowAndGetImage(VECSHARES &shares, const CStdString &heading, CStdString &path)

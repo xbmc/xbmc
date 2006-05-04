@@ -10,6 +10,7 @@
 #include "GUIListControl.h"
 #include "GUIWindowVideoBase.h"
 #include "GUIWindowVideoFiles.h"
+#include "GUIDialogFileBrowser.h"
 
 #define CONTROL_TITLE    20
 #define CONTROL_DIRECTOR   21
@@ -147,13 +148,7 @@ bool CGUIWindowVideoInfo::OnMessage(CGUIMessage& message)
       }
       else if (iControl == CONTROL_BTN_GET_THUMB)
       {
-        DownloadThumbnail(m_thumbNail);
-        // tell our GUI to completely reload all controls (as some of them
-        // are likely to have had this image in use so will need refreshing)
-        CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_REFRESH_THUMBS, 0, NULL);
-        g_graphicsContext.SendMessage(msg);
-        // Update our screen
-        Update();
+        OnGetThumb();
       }
       else if (iControl == CONTROL_DISC)
       {
@@ -205,10 +200,7 @@ bool CGUIWindowVideoInfo::OnMessage(CGUIMessage& message)
 void CGUIWindowVideoInfo::SetMovie(CIMDBMovie& album, const CFileItem *item)
 {
   m_pMovie = &album;
-  if (item->HasThumbnail())
-    m_thumbNail = item->GetThumbnailImage();
-  else
-    CUtil::GetCachedThumbnail(item->m_strPath, m_thumbNail);
+  m_movieItem = *item;
 }
 
 void CGUIWindowVideoInfo::Update()
@@ -319,7 +311,7 @@ void CGUIWindowVideoInfo::Update()
   {
     CGUIImage* pImageControl = (CGUIImage*)pControl;
     pImageControl->FreeResources();
-    pImageControl->SetFileName(m_thumbNail);
+    pImageControl->SetFileName(m_movieItem.GetThumbnailImage());
   }
 }
 
@@ -354,15 +346,20 @@ void CGUIWindowVideoInfo::Refresh()
 
     CStdString strImage = m_pMovie->m_strPictureURL;
 
-    if (!CFile::Exists(m_thumbNail) && strImage.size() > 0)
+    CStdString thumbImage = m_movieItem.GetThumbnailImage();
+    if (!m_movieItem.HasThumbnail())
+      CUtil::GetCachedThumbnail(m_movieItem.m_strPath, thumbImage);
+    if (!CFile::Exists(thumbImage) && strImage.size() > 0)
     {
-      DownloadThumbnail(m_thumbNail);
+      DownloadThumbnail(thumbImage);
     }
 
-    if (!CFile::Exists(m_thumbNail) )
+    if (!CFile::Exists(thumbImage) )
     {
-      m_thumbNail = "";
+      thumbImage = "";
     }
+
+    m_movieItem.SetThumbnailImage(thumbImage);
 
     //OutputDebugString("update\n");
     Update();
@@ -453,8 +450,7 @@ void CGUIWindowVideoInfo::OnSearchItemFound(const CFileItem* pItem)
   long lMovieId = atol(pItem->m_strPath);
   CIMDBMovie movieDetails;
   m_database.GetMovieInfo(pItem->m_strPath, movieDetails, lMovieId);
-  m_Movie = movieDetails;
-  SetMovie(m_Movie, pItem);
+  SetMovie(movieDetails, pItem);
   Refresh();
 }
 
@@ -492,7 +488,7 @@ void CGUIWindowVideoInfo::OnInitWindow()
 //  CONTROL_DISABLE(10);
 }
 
-void CGUIWindowVideoInfo::DownloadThumbnail(const CStdString &thumb)
+bool CGUIWindowVideoInfo::DownloadThumbnail(const CStdString &thumb)
 {
   // TODO: This routine should be generalised to allow more than one
   // thumb to be downloaded (possibly from amazon.com or other sources)
@@ -500,7 +496,7 @@ void CGUIWindowVideoInfo::DownloadThumbnail(const CStdString &thumb)
   // and the downloaded thumbs available (possibly also with a generic
   // file browse option?)
   if (m_pMovie->m_strPictureURL.IsEmpty())
-    return;
+    return false;
   CHTTP http;
   CStdString strExtension;
   CUtil::GetExtension(m_pMovie->m_strPictureURL, strExtension);
@@ -520,4 +516,93 @@ void CGUIWindowVideoInfo::DownloadThumbnail(const CStdString &thumb)
     ::DeleteFile(thumb.c_str());
   }
   ::DeleteFile(strTemp.c_str());
+  return true;
+}
+
+// Get Thumb from user choice.
+// Options are:
+// 1.  Current thumb
+// 2.  IMDb thumb
+// 3.  Local thumb
+// 4.  No thumb (if no Local thumb is available)
+void CGUIWindowVideoInfo::OnGetThumb()
+{
+  CFileItemList items;
+
+  // Grab the thumbnail from the web
+  CStdString thumbFromWeb;
+  CUtil::AddFileToFolder(g_advancedSettings.m_cachePath, "imdbthumb.jpg", thumbFromWeb);
+  if (DownloadThumbnail(thumbFromWeb))
+  {
+    CFileItem *item = new CFileItem("thumb://IMDb", false);
+    item->SetThumbnailImage(thumbFromWeb);
+    item->SetLabel("IMDb Thumb");
+    items.Add(item);
+  }
+
+  if (CFile::Exists(m_movieItem.GetThumbnailImage()))
+  {
+    CFileItem *item = new CFileItem("thumb://Current", false);
+    item->SetThumbnailImage(m_movieItem.GetThumbnailImage());
+    item->SetLabel("Current Thumb");
+    items.Add(item);
+  }
+
+  CStdString localThumb, cachedLocalThumb;
+  CUtil::GetUserThumbnail(m_movieItem.m_strPath, localThumb);
+  if (CFile::Exists(localThumb))
+  {
+    CUtil::AddFileToFolder(g_advancedSettings.m_cachePath, "localthumb.jpg", cachedLocalThumb);
+    CPicture pic;
+    pic.DoCreateThumbnail(localThumb, cachedLocalThumb);
+    CFileItem *item = new CFileItem("thumb://Local", false);
+    item->SetThumbnailImage(cachedLocalThumb);
+    item->SetLabel("Local Thumb");
+    items.Add(item);
+  }
+  else
+  { // no local thumb exists, so we are just using the IMDb thumb or cached thumb
+    // which is probably the IMDb thumb.  These could be wrong, so allow the user
+    // to delete the incorrect thumb
+    if (0 == items.Size())
+    { // no cached thumb or no imdb thumb available
+      // TODO: tell user and return
+      return;
+    }
+    CFileItem *item = new CFileItem("thumb://None", false);
+    item->SetThumbnailImage("defaultVideoBig.png");
+    item->SetLabel("No Thumb");
+    items.Add(item);
+  }
+
+  CStdString result;
+  if (!CGUIDialogFileBrowser::ShowAndGetImage(items, "Choose Thumbnail", result))
+    return;   // user cancelled
+
+  if (result == "thumb://Current")
+    return;   // user chose the one they have
+
+  // delete the thumbnail if that's what the user wants, else overwrite with the
+  // new thumbnail
+  CStdString cachedThumb;
+  CUtil::GetCachedThumbnail(m_movieItem.m_strPath, cachedThumb);
+
+  if (result == "thumb://None")
+  { // delete any cached thumb
+    CFile::Delete(cachedThumb);
+    cachedThumb.Empty();
+  }
+  else if (result == "thumb://IMDb")
+    CFile::Cache(thumbFromWeb, cachedThumb);
+  else // if (result == "thumb://Local")
+    CFile::Cache(cachedLocalThumb, cachedThumb);
+
+  m_movieItem.SetThumbnailImage(cachedThumb);
+
+  // tell our GUI to completely reload all controls (as some of them
+  // are likely to have had this image in use so will need refreshing)
+  CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_REFRESH_THUMBS, 0, NULL);
+  g_graphicsContext.SendMessage(msg);
+  // Update our screen
+  Update();
 }
