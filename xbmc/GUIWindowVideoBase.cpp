@@ -43,6 +43,7 @@ CGUIWindowVideoBase::CGUIWindowVideoBase(DWORD dwID, const CStdString &xmlFile)
 {
   m_bDisplayEmptyDatabaseMessage = false;
   m_iShowMode = VIDEO_SHOW_ALL;
+  m_thumbLoader.SetObserver(this);
 }
 
 CGUIWindowVideoBase::~CGUIWindowVideoBase()
@@ -54,6 +55,8 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
   switch ( message.GetMessage() )
   {
   case GUI_MSG_WINDOW_DEINIT:
+    if (m_thumbLoader.IsLoading())
+      m_thumbLoader.StopThread();
     m_database.Close();
     break;
 
@@ -278,7 +281,7 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item)
   {
     CIMDBMovie movieDetails;
     m_database.GetMovieInfo(item->m_strPath, movieDetails);
-    pDlgInfo->SetMovie(movieDetails, item->GetThumbnailImage());
+    pDlgInfo->SetMovie(movieDetails, item);
     pDlgInfo->DoModal(GetID());
     item->SetThumbnailImage(pDlgInfo->GetThumbnail());
     if ( !pDlgInfo->NeedRefresh() ) return ;
@@ -398,7 +401,7 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item)
         if (item->m_strPath)
           m_database.SetMovieInfo(item->m_strPath, movieDetails);
 
-        pDlgInfo->SetMovie(movieDetails, item->GetThumbnailImage());
+        pDlgInfo->SetMovie(movieDetails, item);
         pDlgInfo->DoModal(GetID());
         item->SetThumbnailImage(pDlgInfo->GetThumbnail());
         needsRefresh = pDlgInfo->NeedRefresh();
@@ -1178,7 +1181,7 @@ void CGUIWindowVideoBase::SetDatabaseDirectory(const VECMOVIES &movies, CFileIte
       pItem->m_strPath = movie.m_strFileNameAndPath;
       pItem->m_bIsFolder = false;
       pItem->m_bIsShareOrDrive = false;
-      pItem->SetThumb();
+      /*pItem->SetThumb();
       
       if (!pItem->HasThumbnail())
       {
@@ -1186,7 +1189,7 @@ void CGUIWindowVideoBase::SetDatabaseDirectory(const VECMOVIES &movies, CFileIte
         CUtil::GetVideoThumbnail(movie.m_strIMDBNumber, strThumb);
         if (CFile::Exists(strThumb))
           pItem->SetThumbnailImage(strThumb);
-      }
+      }*/
       pItem->m_fRating = movie.m_fRating;
       SYSTEMTIME time;
       time.wYear = movie.m_iYear;
@@ -1229,14 +1232,16 @@ void CGUIWindowVideoBase::ApplyIMDBThumbToFolder(const CStdString &folder, const
   }
 }
 
-void CGUIWindowVideoBase::SetIMDBThumb(CFileItem *item, const CStdString &imdbNumber)
+bool CGUIWindowVideoBase::Update(const CStdString &strDirectory)
 {
-  if (!item->m_bIsFolder && !item->HasThumbnail())
-  {
-    CStdString strThumb;
-    CUtil::GetVideoThumbnail(imdbNumber, strThumb);
-    if (CFile::Exists(strThumb))
-      item->SetThumbnailImage(strThumb);
-  }
+  if (m_thumbLoader.IsLoading())
+    m_thumbLoader.StopThread();
+
+  if (!CGUIMediaWindow::Update(strDirectory))
+    return false;
+
+  m_thumbLoader.Load(m_vecItems);
+  return true;
 }
+
 

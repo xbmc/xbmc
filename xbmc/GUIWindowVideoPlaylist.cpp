@@ -223,11 +223,6 @@ void CGUIWindowVideoPlaylist::ClearPlayList()
   SET_CONTROL_FOCUS(CONTROL_BTNVIEWASICONS, 0);
 }
 
-void CGUIWindowVideoPlaylist::OnPrepareFileItems(CFileItemList &items)
-{
-  items.SetThumbs();
-}
-
 void CGUIWindowVideoPlaylist::UpdateButtons()
 {
   // Update playlist buttons

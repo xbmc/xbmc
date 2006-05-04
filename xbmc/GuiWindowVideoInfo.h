@@ -14,7 +14,7 @@ public:
   virtual ~CGUIWindowVideoInfo(void);
   virtual bool OnMessage(CGUIMessage& message);
   virtual void Render();
-  void SetMovie(CIMDBMovie& movie, const CStdString &thumbNail);
+  void SetMovie(CIMDBMovie& movie, const CFileItem *item);
   bool NeedRefresh() const;
   const CStdString &GetThumbnail() const { return m_thumbNail; };
 

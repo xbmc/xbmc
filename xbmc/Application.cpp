@@ -1091,7 +1091,6 @@ HRESULT CApplication::Initialize()
   CreateDirectory(g_settings.GetThumbnailsFolder().c_str(), NULL);
   CreateDirectory(g_settings.GetMusicThumbFolder().c_str(), NULL);
   CreateDirectory(g_settings.GetTempMusicThumbFolder().c_str(), NULL);
-  CreateDirectory(g_settings.GetIMDbThumbFolder().c_str(), NULL);
   CreateDirectory(g_settings.GetXLinkKaiThumbFolder().c_str(), NULL);
   CreateDirectory(g_settings.GetBookmarksThumbFolder().c_str(), NULL);
 

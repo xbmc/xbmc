@@ -2420,13 +2420,6 @@ CStdString CSettings::GetTempMusicThumbFolder() const
   return folder;
 }
 
-CStdString CSettings::GetIMDbThumbFolder() const
-{
-  CStdString folder;
-  CUtil::AddFileToFolder(g_stSettings.m_userDataFolder, "Thumbnails\\IMDb", folder);
-  return folder;
-}
-
 CStdString CSettings::GetXLinkKaiThumbFolder() const
 {
   CStdString folder;
