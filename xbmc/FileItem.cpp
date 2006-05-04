@@ -763,7 +763,6 @@ void CFileItem::SetThumb()
   // If it is on the DVD and is an XBE, let's grab get the thumbnail again
   if (!CFile::Exists(strCachedThumbnail) || (item.IsXBE() && item.IsOnDVD()) )
   {
-    if (IsRemote() && !IsOnDVD() && !g_guiSettings.GetBool("VideoFiles.FindRemoteThumbs")) return;
     // get the path for the  thumbnail
     CUtil::GetThumbnail( item.m_strPath, strThumb);
     // local cached thumb does not exists

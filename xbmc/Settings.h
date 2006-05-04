@@ -458,7 +458,6 @@ public:
   CStdString GetThumbnailsFolder() const;
   CStdString GetMusicThumbFolder() const;
   CStdString GetTempMusicThumbFolder() const;
-  CStdString GetIMDbThumbFolder() const;
   CStdString GetXLinkKaiThumbFolder() const;
   CStdString GetBookmarksThumbFolder() const;
   

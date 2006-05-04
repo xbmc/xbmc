@@ -128,13 +128,13 @@ bool CGUIWindowVideoInfo::OnMessage(CGUIMessage& message)
       int iControl = message.GetSenderId();
       if (iControl == CONTROL_BTN_REFRESH)
       {
-        if ( m_pMovie->m_strPictureURL.size() )
+        /*if ( m_pMovie->m_strPictureURL.size() )
         {
           CStdString strThumb;
           CStdString strImage = m_pMovie->m_strIMDBNumber;
           CUtil::GetVideoThumbnail(strImage, strThumb);
           DeleteFile(strThumb.c_str());
-        }
+        }*/
         m_bRefresh = true;
         Close();
         return true;
@@ -209,10 +209,13 @@ bool CGUIWindowVideoInfo::OnMessage(CGUIMessage& message)
   return CGUIDialog::OnMessage(message);
 }
 
-void CGUIWindowVideoInfo::SetMovie(CIMDBMovie& album, const CStdString &thumbNail)
+void CGUIWindowVideoInfo::SetMovie(CIMDBMovie& album, const CFileItem *item)
 {
   m_pMovie = &album;
-  m_thumbNail = thumbNail;
+  if (item->HasThumbnail())
+    m_thumbNail = item->GetThumbnailImage();
+  else
+    CUtil::GetCachedThumbnail(item->m_strPath, m_thumbNail);
 }
 
 void CGUIWindowVideoInfo::Update()
@@ -359,8 +362,6 @@ void CGUIWindowVideoInfo::Refresh()
 
     CStdString strImage = m_pMovie->m_strPictureURL;
 
-    if (m_thumbNail.IsEmpty() || !CFile::Exists(m_thumbNail))
-      CUtil::GetVideoThumbnail(m_pMovie->m_strIMDBNumber, m_thumbNail);
     if (!CFile::Exists(m_thumbNail) && strImage.size() > 0)
     {
       DownloadThumbnail(m_thumbNail);
@@ -465,7 +466,7 @@ void CGUIWindowVideoInfo::OnSearchItemFound(const CFileItem* pItem)
   CIMDBMovie movieDetails;
   m_database.GetMovieInfo(pItem->m_strPath, movieDetails, lMovieId);
   m_Movie = movieDetails;
-  SetMovie(m_Movie, pItem->GetThumbnailImage());
+  SetMovie(m_Movie, pItem);
   Refresh();
 }
 

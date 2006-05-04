@@ -1508,13 +1508,13 @@ void CGUIInfoManager::SetCurrentMovie(CFileItem &item)
   }
   // Find a thumb for this file.
   item.SetThumb();
-  if (!item.HasThumbnail())
+/*  if (!item.HasThumbnail())
   { // get IMDb thumb if we have one
     CStdString strThumb;
     CUtil::GetVideoThumbnail(m_currentMovie.m_strIMDBNumber, strThumb);
     if (CFile::Exists(strThumb))
       item.SetThumbnailImage(strThumb);
-  }
+  }*/
   // find a thumb for this stream
   if (item.IsInternetStream())
   {
