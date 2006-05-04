@@ -16,7 +16,7 @@ public:
   virtual void Render();
   void SetMovie(CIMDBMovie& movie, const CFileItem *item);
   bool NeedRefresh() const;
-  const CStdString &GetThumbnail() const { return m_thumbNail; };
+  const CStdString &GetThumbnail() const { return m_movieItem.GetThumbnailImage(); };
 
 protected:
   virtual void OnInitWindow();
@@ -30,11 +30,10 @@ protected:
   void DoSearch(CStdString& strSearch, CFileItemList& items);
   void OnSearchItemFound(const CFileItem* pItem);
   void Play(bool resume = false);
-  void DownloadThumbnail(const CStdString &thumb);
-
+  bool DownloadThumbnail(const CStdString &thumb);
+  void OnGetThumb();
   CIMDBMovie* m_pMovie;
-  CStdString m_thumbNail;
-  CIMDBMovie m_Movie;
+  CFileItem m_movieItem;
   bool m_bViewReview;
   bool m_bRefresh;
   vector<CStdString> m_vecStrCast;

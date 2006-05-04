@@ -764,7 +764,7 @@ void CFileItem::SetThumb()
   if (!CFile::Exists(strCachedThumbnail) || (item.IsXBE() && item.IsOnDVD()) )
   {
     // get the path for the  thumbnail
-    CUtil::GetThumbnail( item.m_strPath, strThumb);
+    CUtil::GetUserThumbnail( item.m_strPath, strThumb);
     // local cached thumb does not exists
     // check if strThumb exists
     if (CFile::Exists(strThumb))

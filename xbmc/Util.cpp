@@ -1132,7 +1132,12 @@ void CUtil::LaunchXbe(const char* szPath, const char* szXbe, const char* szParam
   }
 }
 
-void CUtil::GetThumbnail(const CStdString& strFileName, CStdString& strThumb)
+// GetUserThumbnail
+// Grabs a user thumbnail for a file (filename.tbn)
+// 1. Checks <filename>.tbn
+// 2. Checks for embedded xbe thumbs
+// 3. Checks shortcuts and uses the destination files thumb
+void CUtil::GetUserThumbnail(const CStdString& strFileName, CStdString& strThumb)
 {
   strThumb = "";
   CFileItem item(strFileName, false);
@@ -1159,12 +1164,10 @@ void CUtil::GetThumbnail(const CStdString& strFileName, CStdString& strThumb)
     {
       CStdString strFile = shortcut.m_strPath;
 
-      GetThumbnail(strFile, strThumb);
+      GetUserThumbnail(strFile, strThumb);
       return ;
     }
   }
-
-  GetCachedThumbnail(strFileName, strThumb);
 }
 
 void CUtil::GetCachedThumbnail(const CStdString& strFileName, CStdString& strCachedThumb)
