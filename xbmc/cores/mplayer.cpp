@@ -289,10 +289,10 @@ void CMPlayer::Options::GetOptions(int& argc, char* argv[])
     m_vecOptions.push_back("on:format=" + m_strHexRawAudioFormat); //0x2000
   }
 
-  if (CLog::GetLevel() == LOGDEBUG)
-    m_vecOptions.push_back("-v");
-  else
+  if (LOG_LEVEL_NORMAL == g_advancedSettings.m_logLevel)
     m_vecOptions.push_back("-quiet");
+  else
+    m_vecOptions.push_back("-v");
 
   if (m_bNoCache)
   {

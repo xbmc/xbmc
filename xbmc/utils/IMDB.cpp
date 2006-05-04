@@ -141,7 +141,7 @@ bool CIMDB::InternalGetDetails(const CIMDBUrl& url, CIMDBMovie& movieDetails)
   // save the xml file for later reading...
   CFile file;
   CStdString strXMLFile;
-  strXMLFile.Format("%s\\imdb\\%s.xml", g_stSettings.m_szAlbumDirectory, movieDetails.m_strIMDBNumber.c_str());
+  strXMLFile.Format("%s\\%s.xml", g_settings.GetIMDbFolder().c_str(), movieDetails.m_strIMDBNumber.c_str());
   if (file.OpenForWrite(strXMLFile))
   {
     file.Write(szXML, strlen(szXML));
@@ -218,7 +218,7 @@ bool CIMDB::ParseDetails(TiXmlDocument &doc, CIMDBMovie &movieDetails)
 bool CIMDB::LoadDetails(const CStdString& strIMDB, CIMDBMovie &movieDetails)
 {
   CStdString strXMLFile;
-  strXMLFile.Format("%s\\imdb\\%s.xml", g_stSettings.m_szAlbumDirectory, strIMDB.c_str());
+  strXMLFile.Format("%s\\%s.xml", g_settings.GetIMDbFolder().c_str(), strIMDB.c_str());
   TiXmlBase::SetCondenseWhiteSpace(false);
   TiXmlDocument doc;
   movieDetails.m_strIMDBNumber = strIMDB;

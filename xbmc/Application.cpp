@@ -635,14 +635,22 @@ HRESULT CApplication::Create()
   helper.Unmount("Q:");
   helper.Mount("Q:", szDevicePath);
 
+  // if we are running from DVD our UserData location will be TDATA
+  if (CUtil::IsDVD(strExecutablePath))
+  {
+    // TODO: Should we copy over any UserData folder from the DVD?
+    g_stSettings.m_userDataFolder = "T:\\";
+    g_stSettings.m_logFolder = "T:\\";
+  }
+
   // check logpath
   CStdString strLogFile, strLogFileOld;
-  strLogFile.Format("Q:\\xbmc.log");
-  strLogFileOld.Format("Q:\\xbmc.old.log");
+  strLogFile.Format("%sxbmc.log", g_stSettings.m_logFolder);
+  strLogFileOld.Format("%sxbmc.old.log", g_stSettings.m_logFolder);
 
-  if (g_settings.QuickXMLLoad("logpath", true))
+/*  if (g_settings.QuickXMLLoad("logpath", true))
   {
-    CStdString strLogPath = g_stSettings.m_szlogpath;
+    CStdString strLogPath = g_stSettings.m_logFolder;
     if (!strLogPath.IsEmpty())
     {
       //ensure there's a '\' on the end
@@ -665,7 +673,7 @@ HRESULT CApplication::Create()
         strLogFileOld.Format("%sxbmc.old.log", strLogPath.c_str());
       }
     }
-  }
+  }*/
   ::DeleteFile(strLogFileOld.c_str());
   ::MoveFile(strLogFile.c_str(), strLogFileOld.c_str());
   
@@ -761,7 +769,7 @@ HRESULT CApplication::Create()
   //Check for X+Y - if pressed, set debug log mode and mplayer debuging on
   if (m_DefaultGamepad.bAnalogButtons[XINPUT_GAMEPAD_X] && m_DefaultGamepad.bAnalogButtons[XINPUT_GAMEPAD_Y])
   {
-    g_stSettings.m_iLogLevel = LOGDEBUG;
+    g_advancedSettings.m_logLevel = LOG_LEVEL_DEBUG_FREEMEM;
     CLog::Log(LOGINFO, "Key combination detected for full debug logging (X+Y)");
   }
   
@@ -1053,32 +1061,44 @@ HRESULT CApplication::Initialize()
 {
   CLog::Log(LOGINFO, "creating subdirectories");
 
+  CLog::Log(LOGINFO, "userdata folder: %s", g_stSettings.m_userDataFolder.c_str());
   CLog::Log(LOGINFO, "  shortcuts folder:%s", g_stSettings.m_szShortcutDirectory);
-  CLog::Log(LOGINFO, "  albums folder:%s", g_stSettings.m_szAlbumDirectory);
   CLog::Log(LOGINFO, "  recording folder:%s", g_stSettings.m_szMusicRecordingDirectory);
   CLog::Log(LOGINFO, "  screenshots folder:%s", g_stSettings.m_szScreenshotsDirectory);
 
-  CreateDirectory(g_stSettings.szThumbnailsDirectory, NULL);
-  CStdString strThumbIMDB = g_stSettings.szThumbnailsDirectory;
-  strThumbIMDB += "\\imdb";
-  CreateDirectory(strThumbIMDB.c_str(), NULL);
-  CStdString strThumbKai = g_stSettings.szThumbnailsDirectory;
-  strThumbKai += "\\kai";
-  CreateDirectory(strThumbKai.c_str(), NULL);
-  CStdString strThumbBookmarks = g_stSettings.szThumbnailsDirectory;
-  strThumbBookmarks += "\\bookmarks";
-  CreateDirectory(strThumbBookmarks.c_str(), NULL);
-
   if (!g_guiSettings.GetBool("MyPrograms.NoShortcuts"))
     CreateDirectory(g_stSettings.m_szShortcutDirectory, NULL);
-  CreateDirectory(g_stSettings.m_szAlbumDirectory, NULL);
   CreateDirectory(g_stSettings.m_szMusicRecordingDirectory, NULL);
   CreateDirectory(g_stSettings.m_szScreenshotsDirectory, NULL);
 
-  CLog::Log(LOGINFO, "  thumbnails folder:%s", g_stSettings.szThumbnailsDirectory);
+  // UserData folder layout:
+  // UserData/
+  //   Database/
+  //     CDDb/
+  //     IMDb/
+  //   Thumbnails/
+  //     Music/
+  //       temp/
+  //     0 .. F/
+  //     IMDb/
+  //     XLinkKai/
+
+  CreateDirectory(g_settings.GetDatabaseFolder().c_str(), NULL);
+  CreateDirectory(g_settings.GetCDDBFolder().c_str(), NULL);
+  CreateDirectory(g_settings.GetIMDbFolder().c_str(), NULL);
+
+  // Thumbnails/
+  CreateDirectory(g_settings.GetThumbnailsFolder().c_str(), NULL);
+  CreateDirectory(g_settings.GetMusicThumbFolder().c_str(), NULL);
+  CreateDirectory(g_settings.GetTempMusicThumbFolder().c_str(), NULL);
+  CreateDirectory(g_settings.GetIMDbThumbFolder().c_str(), NULL);
+  CreateDirectory(g_settings.GetXLinkKaiThumbFolder().c_str(), NULL);
+  CreateDirectory(g_settings.GetBookmarksThumbFolder().c_str(), NULL);
+
+  CLog::Log(LOGINFO, "  thumbnails folder:%s", g_settings.GetThumbnailsFolder().c_str());
   for (unsigned int hex=0; hex < 16; hex++)
   {
-    CStdString strThumbLoc = g_stSettings.szThumbnailsDirectory;
+    CStdString strThumbLoc = g_settings.GetThumbnailsFolder();
     CStdString strHex;
     strHex.Format("%x",hex);
     strThumbLoc += "\\" + strHex;
@@ -1091,12 +1111,6 @@ HRESULT CApplication::Initialize()
   CreateDirectory(CUtil::MusicPlaylistsLocation().c_str(), NULL);
   CreateDirectory(CUtil::VideoPlaylistsLocation().c_str(), NULL);
 
-  // create album subfolders
-  string strAlbumDir = g_stSettings.m_szAlbumDirectory;
-  CreateDirectory((strAlbumDir + "\\cddb").c_str(), NULL);
-  CreateDirectory((strAlbumDir + "\\thumbs").c_str(), NULL); // contains the album thumbs
-  CreateDirectory((strAlbumDir + "\\thumbs\\temp").c_str(), NULL);
-  CreateDirectory((strAlbumDir + "\\imdb").c_str(), NULL);
   CreateDirectory("Q:\\python", NULL);
   CreateDirectory("Q:\\python\\Lib", NULL);
   CreateDirectory("Q:\\python\\temp", NULL);
@@ -1956,7 +1970,7 @@ void CApplication::Render()
           pFont->DrawText( 60, 60, 0xffffffff, 0, wszText);
 #else
 
-          if (LOGDEBUG == g_stSettings.m_iLogLevel)
+          if (LOG_LEVEL_DEBUG_FREEMEM <= g_advancedSettings.m_logLevel)
             pFont->DrawText( 60, 60, 0xffffffff, 0, wszText);
           else
             pFont->DrawText( 60, 40, 0xffffffff, 0, wszText);
@@ -1980,7 +1994,7 @@ void CApplication::Render()
 void CApplication::RenderMemoryStatus()
 {
 #ifndef _DEBUG
-  if (LOGDEBUG == g_stSettings.m_iLogLevel)
+  if (LOG_LEVEL_DEBUG_FREEMEM <= g_advancedSettings.m_logLevel)
 #endif
   {
     // reset the window scaling and fade status

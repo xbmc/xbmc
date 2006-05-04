@@ -26,6 +26,7 @@
 #include "GUIDialogFileBrowser.h"
 #include "GUIFontManager.h"
 #include "GUIDialogContextMenu.h"
+#include "MediaManager.h"
 
 #define CONTROL_GROUP_BUTTONS           0
 #define CONTROL_GROUP_SETTINGS          1
@@ -798,6 +799,19 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->AddLabel(g_localizeStrings.Get(12383), DATETIME_FORMAT_US );
       pControl->SetValue(pSettingInt->GetData());
     }
+    else if (strSetting == "MyVideos.ExternalDVDPlayer")
+    {
+      CSettingString *pSettingString = (CSettingString *)pSetting;
+      CGUIButtonControl *pControl = (CGUIButtonControl *)GetControl(GetSetting(strSetting)->GetID());
+      if (pSettingString->GetData().IsEmpty())
+        pControl->SetLabel2("Use XBMC");        // TODO 2.0: Localize this
+      pControl->SetLabel("External DVD Player");// TODO 2.0: Localize this
+    }
+    else if (strSetting == "MyVideos.UseExternalDVDPlayer")// TODO 2.0: Localize this
+    {
+      CGUIButtonControl *pControl = (CGUIButtonControl *)GetControl(GetSetting(strSetting)->GetID());
+      pControl->SetLabel("Use external DVD Player");// TODO 2.0: Localize this
+    }
   }
   // fix first and last navigation
   CGUIControl *pControl = (CGUIControl *)GetControl(CONTROL_START_CONTROL + (int)m_vecSettings.size() - 1);
@@ -1145,7 +1159,11 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
 		  if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("Autodetect.OnOff"));
     }
-
+    else if (strSetting == "MyVideos.ExternalDVDPlayer")
+    {
+      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+		  if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("MyVideos.UseExternalDVDPlayer"));
+    }
   }
 }
 
@@ -1193,7 +1211,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
   if (strSetting == "MyPrograms.UseDirectoryName")
   { // delete the program database.
     // TODO: Should this actually be done here??
-    CStdString programDatabase = g_stSettings.m_szAlbumDirectory;
+    CStdString programDatabase = g_settings.GetDatabaseFolder();
     programDatabase += PROGRAM_DATABASE_NAME;
     if (CFile::Exists(programDatabase))
       ::DeleteFile(programDatabase.c_str());
@@ -1604,6 +1622,26 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
     CStdString path = pSettingString->GetData();
     if (CGUIDialogFileBrowser::ShowAndGetDirectory(g_settings.m_vecMyPictureShares, g_localizeStrings.Get(pSettingString->m_iHeadingString), path))
+      pSettingString->SetData(path);
+  }
+  else if (strSetting == "MyVideos.ExternalDVDPlayer")
+  {
+    CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
+    CStdString path = pSettingString->GetData();
+    VECSHARES shares;
+    g_mediaManager.GetLocalDrives(shares);
+    // TODO 2.0: Localize this
+    if (CGUIDialogFileBrowser::ShowAndGetFile(shares, ".xbe", "DVD Player", path))
+      pSettingString->SetData(path);
+  }
+  else if (strSetting == "MyPrograms.Dashboard")
+  {
+    CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
+    CStdString path = pSettingString->GetData();
+    VECSHARES shares;
+    g_mediaManager.GetLocalDrives(shares);
+    // TODO 2.0: Localize this
+    if (CGUIDialogFileBrowser::ShowAndGetFile(shares, ".xbe", g_localizeStrings.Get(pSettingString->m_iHeadingString), path))
       pSettingString->SetData(path);
   }
   else if (strSetting == "LED.Colour")

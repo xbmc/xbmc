@@ -653,7 +653,7 @@ bool CScrobbler::ShouldSubmit()
 
 CStdString CScrobbler::GetTempFileName()
 {
-  CStdString strFileName = g_stSettings.m_szAlbumDirectory;
+  CStdString strFileName = g_stSettings.m_userDataFolder;
   strFileName+="\\Scrobbler.tmp";
 
   return strFileName;
