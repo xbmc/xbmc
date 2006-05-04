@@ -24,6 +24,7 @@ public:
   static bool ShowAndGetFile(VECSHARES &shares, const CStdString &mask, const CStdString &heading, CStdString &path);
   static bool ShowAndGetShare(CStdString &path, bool allowNetworkShares, CShare *additionalShare = NULL);
   static bool ShowAndGetImage(VECSHARES &shares, const CStdString &heading, CStdString &path);
+  static bool ShowAndGetImage(const CFileItemList &items, const CStdString &heading, CStdString &path);
 
   void SetShares(VECSHARES &shares);
 
@@ -49,6 +50,7 @@ protected:
   bool m_bConfirmed;
   bool m_addNetworkShareEnabled;
   bool m_browsingForImages;
+  bool m_singleList;              // if true, we have no shares or anything
 
   CPictureThumbLoader m_thumbLoader;
   CGUIViewControl m_viewControl;
