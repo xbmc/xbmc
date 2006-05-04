@@ -162,7 +162,7 @@ typedef std::vector<CShare>::iterator IVECSHARES;
 
 typedef std::vector<CProfile> VECPROFILES;
 typedef std::vector<CProfile>::iterator IVECPROFILES;
-
+/*
 class CFileTypeIcon
 {
 public:
@@ -173,7 +173,7 @@ public:
 };
 typedef std::vector<CFileTypeIcon> VECFILETYPEICONS;
 typedef std::vector<CFileTypeIcon>::iterator IVECFILETYPEICONS;
-
+*/
 struct VOICE_MASK {
   float energy;
   float pitch;
@@ -255,6 +255,7 @@ public:
     int m_autoDetectPingTime;
     float m_playCountMinimumPercent;
 
+    int m_logLevel;
     CStdString m_cddbAddress;
     CStdString m_imdbAddress;
     bool m_autoDetectFG;
@@ -262,7 +263,6 @@ public:
     bool m_useGDrive;
     bool m_usePCDVDROM;
     CStdString m_cachePath;
-    int m_sambaDebugLevel;
     bool m_displayRemoteCodes;
     CStdStringArray m_videoStackRegExps;
     CStdStringArray m_pathSubstitutions;
@@ -278,17 +278,14 @@ public:
     CStdString m_musicExtensions;
     CStdString m_videoExtensions;
 
-    char szDashboard[1024];
+    CStdString m_userDataFolder;
+    CStdString m_logFolder;
 
-    char szThumbnailsDirectory[1024];
     char m_szShortcutDirectory[256];
-    char m_szAlbumDirectory[256];
     char m_szScreenshotsDirectory[256];
     char m_szPlaylistsDirectory[256];
     char m_szTrainerDirectory[256];
 
-    int m_iLogLevel;
-    char m_szlogpath[128];
 
     char m_szDefaultPrograms[128];
     char m_szDefaultMusic[128];
@@ -411,8 +408,6 @@ public:
 
     char m_szAlternateSubtitleDirectory[128];
 
-    char m_szExternalDVDPlayer[128];
-
     char szOnlineArenaPassword[32]; // private arena password
     char szOnlineArenaDescription[64]; // private arena description
 
@@ -450,11 +445,23 @@ public:
   VECSHARES m_vecMyMusicShares;
   VECSHARES m_vecMyVideoShares;
   VECSHARES m_vecSambeShres;
-  VECFILETYPEICONS m_vecIcons;
+  //VECFILETYPEICONS m_vecIcons;
   VECPROFILES m_vecProfiles;
   int m_iLastLoadedProfileIndex;
   RESOLUTION_INFO m_ResInfo[10];
 
+  // utility functions for user data folders
+  CStdString GetUserDataFolder() const;
+  CStdString GetDatabaseFolder() const;
+  CStdString GetCDDBFolder() const;
+  CStdString GetIMDbFolder() const;
+  CStdString GetThumbnailsFolder() const;
+  CStdString GetMusicThumbFolder() const;
+  CStdString GetTempMusicThumbFolder() const;
+  CStdString GetIMDbThumbFolder() const;
+  CStdString GetXLinkKaiThumbFolder() const;
+  CStdString GetBookmarksThumbFolder() const;
+  
 protected:
   void GetInteger(const TiXmlElement* pRootElement, const char *strTagName, int& iValue, const int iDefault, const int iMin, const int iMax);
   void GetFloat(const TiXmlElement* pRootElement, const char *strTagName, float& fValue, const float fDefault, const float fMin, const float fMax);

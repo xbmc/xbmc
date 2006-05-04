@@ -60,9 +60,8 @@ bool CDatabase::Open()
     return true;
   }
 
-  CStdString strDatabase = g_stSettings.m_szAlbumDirectory;
-  strDatabase+="\\";
-  strDatabase+=m_strDatabaseFile;
+  CStdString strDatabase;
+  CUtil::AddFileToFolder(g_settings.GetDatabaseFolder(), m_strDatabaseFile, strDatabase);
 
   // test id dbs already exists, if not we need 2 create the tables
   bool bDatabaseExists = false;

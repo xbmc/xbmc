@@ -43,7 +43,7 @@ void CGUIDialogSubMenu::OnClickShutdown(CGUIMessage& aMessage)
 
 void CGUIDialogSubMenu::OnClickDashboard(CGUIMessage& aMessage)
 {
-  CUtil::RunXBE(g_stSettings.szDashboard);
+  CUtil::RunXBE(g_guiSettings.GetString("MyPrograms.Dashboard").c_str());
 }
 
 void CGUIDialogSubMenu::OnClickReboot(CGUIMessage& aMessage)

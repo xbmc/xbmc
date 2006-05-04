@@ -1005,7 +1005,7 @@ void CGUIWindowVideoBase::UpdateVideoTitle(int iItem)
 bool CGUIWindowVideoBase::UpdateVideoTitleXML(const CStdString strIMDBNumber, CStdString& strTitle)
 {
   CStdString strXMLFile;
-  strXMLFile.Format("%s\\imdb\\%s.xml", g_stSettings.m_szAlbumDirectory, strIMDBNumber.c_str());
+  CUtil::AddFileToFolder(g_settings.GetIMDbFolder(), strIMDBNumber + ".xml", strXMLFile);
   TiXmlBase::SetCondenseWhiteSpace(false);
   TiXmlDocument doc;
   if (!doc.LoadFile(strXMLFile))
