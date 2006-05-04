@@ -1080,9 +1080,9 @@ HRESULT CApplication::Initialize()
   //     Music/
   //       temp/
   //     0 .. F/
-  //     IMDb/
   //     XLinkKai/
 
+  CreateDirectory(g_settings.GetUserDataFolder().c_str(), NULL);
   CreateDirectory(g_settings.GetDatabaseFolder().c_str(), NULL);
   CreateDirectory(g_settings.GetCDDBFolder().c_str(), NULL);
   CreateDirectory(g_settings.GetIMDbFolder().c_str(), NULL);
