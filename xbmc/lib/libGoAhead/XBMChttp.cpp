@@ -1068,7 +1068,6 @@ int CXbmcHttp::xbmcGetMovieDetails(int numParas, CStdString paras[])
         if (strRating=="") strRating="0.0";
         output += closeTag+openTag+"Rating:" + strRating;
         output += closeTag+openTag+"Cast:" + aMovieRec.m_strCast;
-        //CUtil::GetVideoThumbnail(aMovieRec.m_strIMDBNumber,thumb);
         item->SetThumb();
         thumb = item->GetThumbnailImage();
         if (!CFile::Exists(thumb))
