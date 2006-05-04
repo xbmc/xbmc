@@ -1108,19 +1108,18 @@ int CXbmcHttp::xbmcGetCurrentlyPlaying()
     output+=closeTag+openTag+"Width:" + tmp ;
     tmp.Format("%i",height);
     output+=closeTag+openTag+"Height:" + tmp ;
-    CStdString thumb, picFn=pSlideShow->GetCurrentSlide();
-    CUtil::GetThumbnail(picFn,thumb);
-    if (!CFile::Exists(thumb))
+    CStdString picFn = pSlideShow->GetCurrentSlide();
+    CFileItem item(picFn, false);
+    item.SetThumb();
+    CStdString thumb = item.GetThumbnailImage();
+    if (autoGetPictureThumbs && !item.HasThumbnail())
     {
-      if (autoGetPictureThumbs)
-      {
-        CPicture pic;
-        pic.CreateThumbnail(picFn);
-        CUtil::GetThumbnail(picFn,thumb);
-      }
-      if (!CFile::Exists(thumb))
-        thumb = "[None] " + thumb;
+      CPicture pic;
+      pic.CreateThumbnail(picFn);
+      CUtil::GetCachedThumbnail(picFn,thumb);
     }
+    if (!item.HasThumbnail())
+      thumb = "[None] " + thumb;
     output+=closeTag+openTag+"Thumb:"+thumb;
     return SetResponse(output);
   }
