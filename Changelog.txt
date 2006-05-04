@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 04-05-2006 changed: Thumbs in My Videos are set via a background loader.
+ - 04-05-2006 changed: IMDb thumbs are now cached in the usual method (no need for the separate imdb folder).  Will require rescanning.
  - 04-05-2006 changed: Removed <logpath> tag.  By default it logs in the XBMC folder, unless it's running off DVD, where it logs in TDATA. UserData is also moved to TDATA if running off DVD.
  - 04-05-2006 changed: Moved albums/ and thumbs/ folders to UserData/ folder:
                albums/*.db -> UserData/Database/*.db
@@ -13,6 +15,7 @@ added/fixed: (dd-mm-yyyy) (please specify date in CET)
                albums/thumbs -> UserData/Thumbnails/Music
                albums/playlist -> UserData/Playlists
                thumbs/       -> UserData/Thumbnails/
+              Music will require rescanning to update the thumbs in the database.
  - 03-05-2006 changed: Moved more settings from XBoxMediaCenter.xml. External DVDPlayer and Dashboard to GUI settings.
  - 02-05-2006 fixed: slow database transactions in my programs.
  - 02-05-2006 changed: Added UserData/AdvancedSettings.xml loading ability, and moved a bunch of XBoxMediaCenter.xml settings into it.

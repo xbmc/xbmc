@@ -214,16 +214,8 @@ bool CGUIWindowVideoFiles::GetDirectory(const CStdString &strDirectory, CFileIte
 
 void CGUIWindowVideoFiles::OnPrepareFileItems(CFileItemList &items)
 {
-  items.SetThumbs();
-  SetIMDBThumbs(items);
   if (g_stSettings.m_bMyVideoCleanTitles)
     items.CleanFileNames();
-}
-
-void CGUIWindowVideoFiles::OnFinalizeFileItems(CFileItemList &items)
-{
-//  if (g_stSettings.m_bMyVideoCleanTitles)
-//    items.CleanFileNames();
 }
 
 bool CGUIWindowVideoFiles::OnClick(int iItem)
@@ -611,68 +603,6 @@ void CGUIWindowVideoFiles::GetStackedDirectory(const CStdString &strPath, CFileI
   //g_guiSettings.SetBool("VideoFiles.UnrollArchives",bUnroll);
 }
 
-void CGUIWindowVideoFiles::SetIMDBThumbs(CFileItemList& items)
-{
-  VECMOVIES movies;
-  m_database.GetMoviesByPath(m_vecItems.m_strPath, movies);
-  for (int x = 0; x < (int)items.Size(); ++x)
-  {
-    CFileItem* item = items[x];
-    if (!item->m_bIsFolder && !item->HasThumbnail())
-    {
-      // if a stack item, get first file
-      CStdString strPath = item->m_strPath;
-      if (item->IsStack())
-      {
-        CStackDirectory dir;
-        strPath = dir.GetFirstStackedFile(item->m_strPath);
-      }
-      CStdString strFile = CUtil::GetFileName(strPath);
-      //CLog::Log(LOGDEBUG,"Setting IMDB thumb for [%s] -> [%s]", pItem->m_strPath.c_str(), strFile.c_str());
-
-      if (strFile.size() > 0)
-      {
-        for (int i = 0; i < (int)movies.size(); ++i)
-        {
-          CIMDBMovie& info = movies[i];
-          CStdString strMovieFile = info.m_strFile;
-          if (strMovieFile[0] == '\\' || strMovieFile[0] == '/')
-            strMovieFile.Delete(0, 1);
-
-          // stacked items
-          CURL url(info.m_strPath);
-          if (url.GetProtocol().Equals("stack"))
-          {
-            CStdString strPathTemp = info.m_strPath;
-            CStdString strMoviePath;
-            CUtil::AddFileToFolder(strPathTemp, strMovieFile, strMoviePath);
-
-            // check all items in the stack
-            CFileItemList tempItems;
-            CStackDirectory dir;
-            dir.GetDirectory(strMoviePath, tempItems);
-            for (int j = 0; j < (int)tempItems.Size(); ++j)
-            {
-              CFileItem* tempItem = tempItems[j];
-              strMovieFile = CUtil::GetFileName(tempItem->m_strPath);
-              //CLog::Log(LOGDEBUG,"  Testing stack item [%s] -> [%s]", strFile.c_str(), strMovieFile.c_str());
-              if (strMovieFile.Equals(strFile))
-                break;
-            }
-          }
-          //CLog::Log(LOGDEBUG,"  Testing [%s] -> [%s]", info.m_strPath.c_str(), strMovieFile.c_str());
-
-          if (strMovieFile.Equals(strFile) /*|| pItem->GetLabel() == info.m_strTitle*/)
-          {
-            SetIMDBThumb(item, info.m_strIMDBNumber);
-            break;
-          }
-        }
-      }
-    }
-  }
-}
-
 void CGUIWindowVideoFiles::LoadPlayList(const CStdString& strPlayList)
 {
   // load a playlist like .m3u, .pls
@@ -749,8 +679,12 @@ void CGUIWindowVideoFiles::GetIMDBDetails(CFileItem *pItem, CIMDBUrl &url)
     CStdString strImage = movieDetails.m_strPictureURL;
     if (strImage.size() > 0 && movieDetails.m_strSearchString.size() > 0)
     {
-      CUtil::GetVideoThumbnail(movieDetails.m_strIMDBNumber, strThumb);
-      ::DeleteFile(strThumb.c_str());
+      pItem->SetThumb();
+      strThumb = pItem->GetThumbnailImage();
+      if (CFile::Exists(strThumb))
+        return;
+//      CUtil::GetVideoThumbnail(movieDetails.m_strIMDBNumber, strThumb);
+//      ::DeleteFile(strThumb.c_str());
 
       CHTTP http;
       CStdString strExtension;

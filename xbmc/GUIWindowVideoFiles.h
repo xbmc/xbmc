@@ -9,14 +9,11 @@ public:
   virtual bool OnMessage(CGUIMessage& message);
   virtual bool OnAction(const CAction &action);
 
-private:
-  virtual void SetIMDBThumbs(CFileItemList& items);
 protected:
   virtual bool GetDirectory(const CStdString &strDirectory, CFileItemList &items);
   virtual bool OnPlayMedia(int iItem);
   virtual void AddFileToDatabase(const CFileItem* pItem);
   virtual void OnPrepareFileItems(CFileItemList &items);
-  virtual void OnFinalizeFileItems(CFileItemList &items);
   virtual void UpdateButtons();
   virtual bool OnClick(int iItem);
   virtual void OnPopupMenu(int iItem);
