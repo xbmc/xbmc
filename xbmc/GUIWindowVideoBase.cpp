@@ -1236,4 +1236,8 @@ bool CGUIWindowVideoBase::Update(const CStdString &strDirectory)
   return true;
 }
 
+void CGUIWindowVideoBase::OnPrepareFileItems(CFileItemList &items)
+{
+  items.SetCachedVideoThumbs();
+}
 

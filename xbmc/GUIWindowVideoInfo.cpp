@@ -548,8 +548,8 @@ void CGUIWindowVideoInfo::OnGetThumb()
     items.Add(item);
   }
 
-  CStdString localThumb, cachedLocalThumb;
-  CUtil::GetUserThumbnail(m_movieItem.m_strPath, localThumb);
+  CStdString cachedLocalThumb;
+  CStdString localThumb(m_movieItem.GetUserVideoThumb());
   if (CFile::Exists(localThumb))
   {
     CUtil::AddFileToFolder(g_advancedSettings.m_cachePath, "localthumb.jpg", cachedLocalThumb);
@@ -584,8 +584,7 @@ void CGUIWindowVideoInfo::OnGetThumb()
 
   // delete the thumbnail if that's what the user wants, else overwrite with the
   // new thumbnail
-  CStdString cachedThumb;
-  CUtil::GetCachedThumbnail(m_movieItem.m_strPath, cachedThumb);
+  CStdString cachedThumb(m_movieItem.GetCachedVideoThumb());
 
   if (result == "thumb://None")
   { // delete any cached thumb
