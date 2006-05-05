@@ -2085,3 +2085,75 @@ bool CFileItemList::Save()
 
   return false;
 }
+
+void CFileItemList::SetCachedVideoThumbs()
+{
+  // TODO: Investigate caching time to see if it speeds things up
+  for (unsigned int i = 0; i < m_items.size(); ++i)
+  {
+    CFileItem* pItem = m_items[i];
+    pItem->SetCachedVideoThumb();
+  }
+}
+
+CStdString CFileItem::GetCachedVideoThumb()
+{
+  Crc32 crc;
+  // get the locally cached thumb
+  if (IsStack())
+  {
+    CStackDirectory dir;
+    crc.ComputeFromLowerCase(dir.GetFirstStackedFile(m_strPath));
+  }
+  else
+    crc.ComputeFromLowerCase(m_strPath);
+  CStdString thumb;
+  thumb.Format("%s\\%x.tbn", g_settings.GetVideoThumbFolder().c_str(), crc);
+  return thumb;
+}
+
+void CFileItem::SetCachedVideoThumb()
+{
+  CStdString cachedThumb(GetCachedVideoThumb());
+  if (CFile::Exists(cachedThumb))
+    SetThumbnailImage(cachedThumb);
+}
+
+CStdString CFileItem::GetUserVideoThumb()
+{
+  // 1. check <filename>.tbn or <foldername>.tbn
+  CStdString fileThumb;
+  if (IsStack())
+  {
+    CStackDirectory dir;
+    CUtil::ReplaceExtension(dir.GetFirstStackedFile(m_strPath), ".tbn", fileThumb);
+  }
+  else
+    CUtil::ReplaceExtension(m_strPath, ".tbn", fileThumb);
+  //CStdString fileThumb(CUtil::GetFileThumbnail(m_strPath));
+  if (CFile::Exists(fileThumb))
+    return fileThumb;
+  // 2. if a folder, check for folder.jpg
+  if (m_bIsFolder && !IsInternetStream())
+  {
+    CStdString folderThumb;
+    CUtil::AddFileToFolder(m_strPath, "folder.jpg", folderThumb);
+    if (CFile::Exists(folderThumb))
+      return folderThumb;
+  }
+  // No thumb found
+  return "";
+}
+
+void CFileItem::SetUserVideoThumb()
+{
+  // caches as the local thumb 
+  CStdString thumb(GetUserVideoThumb());
+  if (!thumb.IsEmpty())
+  {
+    CStdString cachedThumb(GetCachedVideoThumb());
+    CPicture pic;
+    pic.DoCreateThumbnail(thumb, cachedThumb);
+  }
+  SetCachedVideoThumb();
+}

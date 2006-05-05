@@ -766,6 +766,13 @@ HRESULT CApplication::Create()
   if (!m_bAllSettingsLoaded)
     FatalErrorHandler(true, true, true);
 
+  // Check for WHITE + Y for forced Error Handler (to recover if something screwy happens)
+  if (m_DefaultGamepad.bAnalogButtons[XINPUT_GAMEPAD_Y] && m_DefaultGamepad.bAnalogButtons[XINPUT_GAMEPAD_WHITE])
+  {
+    g_LoadErrorStr = "Key code detected for Error Recovery mode";
+    FatalErrorHandler(true, true, true);
+  }
+
   //Check for X+Y - if pressed, set debug log mode and mplayer debuging on
   if (m_DefaultGamepad.bAnalogButtons[XINPUT_GAMEPAD_X] && m_DefaultGamepad.bAnalogButtons[XINPUT_GAMEPAD_Y])
   {
@@ -1092,6 +1099,7 @@ HRESULT CApplication::Initialize()
   CreateDirectory(g_settings.GetMusicThumbFolder().c_str(), NULL);
   CreateDirectory(g_settings.GetTempMusicThumbFolder().c_str(), NULL);
   CreateDirectory(g_settings.GetXLinkKaiThumbFolder().c_str(), NULL);
+  CreateDirectory(g_settings.GetVideoThumbFolder().c_str(), NULL);
   CreateDirectory(g_settings.GetBookmarksThumbFolder().c_str(), NULL);
 
   CLog::Log(LOGINFO, "  thumbnails folder:%s", g_settings.GetThumbnailsFolder().c_str());
@@ -1236,7 +1244,7 @@ HRESULT CApplication::Initialize()
 
   // We need to Popup the WindowHome to initiate the GUIWindowManger for MasterCode popup dialog!
   // Then we can start the StartUpWindow! To prevent BlackScreen if the target Window is Protected with MasterCode! 
-  int startWindow = g_guiSettings.GetInt("LookAndFeel.StartUpWindow");
+  int startWindow = g_SkinInfo.GetStartWindow();
   if (startWindow != WINDOW_HOME)
   {
     m_gWindowManager.ActivateWindow(WINDOW_HOME);                       

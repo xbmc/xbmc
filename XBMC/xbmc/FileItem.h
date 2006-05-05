@@ -114,6 +114,16 @@ public:
   void FormatLabel2(const CStdString& strMask);
   bool IsLabelPreformated() const { return m_bLabelPreformated; }
   void SetLabelPreformated(bool bYesNo) { m_bLabelPreformated=bYesNo; }
+  // Video thumb functions
+
+  // Gets the cached video thumb filename (no existence checks)
+  CStdString GetCachedVideoThumb();
+  // Sets the cached video thumb for the item if it exists
+  void SetCachedVideoThumb();
+  // Gets the user video thumb, if it exists
+  CStdString GetUserVideoThumb();
+  // Caches the user video thumb and assigns it to the item
+  void SetUserVideoThumb();
 
   /* returns the content type of this item if known. will lookup for http streams */  
   const CStdString& GetContentType() const; 
@@ -231,6 +241,9 @@ public:
   bool Save();
   void SetCacheToDisc(bool bYesNo) { m_bCacheToDisc=bYesNo; }
   bool GetCacheToDisc() { return m_bCacheToDisc; }
+
+  void SetCachedVideoThumbs();
+
 private:
   void Sort(FILEITEMLISTCOMPARISONFUNC func);
   VECFILEITEMS m_items;
