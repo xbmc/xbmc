@@ -1110,12 +1110,6 @@ HRESULT CApplication::Initialize()
   CreateDirectory(CUtil::MusicPlaylistsLocation().c_str(), NULL);
   CreateDirectory(CUtil::VideoPlaylistsLocation().c_str(), NULL);
 
-  // create album subfolders
-  string strAlbumDir = g_stSettings.m_szAlbumDirectory;
-  CreateDirectory((strAlbumDir + "\\cddb").c_str(), NULL);
-  CreateDirectory((strAlbumDir + "\\thumbs").c_str(), NULL); // contains the album thumbs
-  CreateDirectory((strAlbumDir + "\\thumbs\\temp").c_str(), NULL);
-  CreateDirectory((strAlbumDir + "\\imdb").c_str(), NULL);
   CreateDirectory("Z:\\temp", NULL); // temp directory for python
   CreateDirectory("Q:\\scripts", NULL);
   CreateDirectory("Q:\\language", NULL);
