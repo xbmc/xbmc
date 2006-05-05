@@ -2,6 +2,7 @@
 #include "SkinInfo.h"
 #include "../xbmc/Util.h"
 #include "../xbmc/Settings.h"
+#include "GUIWindowManager.h"
 
 
 #define SKIN_MIN_VERSION 2.0
@@ -238,4 +239,14 @@ void CSkinInfo::LoadIncludes()
 void CSkinInfo::ResolveIncludes(TiXmlElement *node)
 {
   m_includes.ResolveIncludes(node);
+}
+
+int CSkinInfo::GetStartWindow()
+{
+  // TODO: Add checking with any <startwindow> blocks to make sure that this window
+  //       actually exists
+  int windowID = g_guiSettings.GetInt("LookAndFeel.StartUpWindow");
+  if (!m_gWindowManager.GetWindow(windowID))
+    return WINDOW_HOME;
+  return windowID;
 }

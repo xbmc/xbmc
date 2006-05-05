@@ -2427,9 +2427,16 @@ CStdString CSettings::GetXLinkKaiThumbFolder() const
   return folder;
 }
 
+CStdString CSettings::GetVideoThumbFolder() const
+{
+  CStdString folder;
+  CUtil::AddFileToFolder(g_stSettings.m_userDataFolder, "Thumbnails\\Video", folder);
+  return folder;
+}
+
 CStdString CSettings::GetBookmarksThumbFolder() const
 {
   CStdString folder;
-  CUtil::AddFileToFolder(g_stSettings.m_userDataFolder, "Thumbnails\\Bookmarks", folder);
+  CUtil::AddFileToFolder(g_stSettings.m_userDataFolder, "Thumbnails\\Video\\Bookmarks", folder);
   return folder;
 }

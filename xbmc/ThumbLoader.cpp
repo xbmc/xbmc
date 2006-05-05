@@ -12,7 +12,7 @@ CThumbLoader::~CThumbLoader()
 bool CThumbLoader::LoadItem(CFileItem* pItem)
 {
   if (pItem->m_bIsShareOrDrive) return true;
-  pItem->SetThumb();
-  pItem->FillInDefaultIcon();
+  if (!pItem->HasThumbnail())
+    pItem->SetUserVideoThumb();
   return true;
 };
