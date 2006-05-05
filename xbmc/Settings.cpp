@@ -1191,24 +1191,24 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile, const bool loadp
   return true;
 }
 
-#define ADVANCED_SETTINGS_XML "Q:\\Configuration\\AdvancedSettings.xml"
-
 void CSettings::LoadAdvancedSettings()
 {
+  CStdString advancedSettingsXML;
+  advancedSettingsXML.Format("%s\\AdvancedSettings.xml", GetUserDataFolder().c_str());
   TiXmlDocument advancedXML;
-  if (!CFile::Exists(ADVANCED_SETTINGS_XML))
+  if (!CFile::Exists(advancedSettingsXML))
     return;
 
-  if (!advancedXML.LoadFile(ADVANCED_SETTINGS_XML))
+  if (!advancedXML.LoadFile(advancedSettingsXML.c_str()))
   {
-    CLog::Log(LOGERROR, "Error loading %s, Line %d\n%s", ADVANCED_SETTINGS_XML, advancedXML.ErrorRow(), advancedXML.ErrorDesc());
+    CLog::Log(LOGERROR, "Error loading %s, Line %d\n%s", advancedSettingsXML.c_str(), advancedXML.ErrorRow(), advancedXML.ErrorDesc());
     return;
   }
 
   TiXmlElement *pRootElement = advancedXML.RootElement();
   if (!pRootElement || strcmpi(pRootElement->Value(),"advancedsettings") != 0)
   {
-    CLog::Log(LOGERROR, "Error loading %s, no <AdvancedSettings> node", ADVANCED_SETTINGS_XML);
+    CLog::Log(LOGERROR, "Error loading %s, no <AdvancedSettings> node", advancedSettingsXML.c_str());
     return;
   }
 
