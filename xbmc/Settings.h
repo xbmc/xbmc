@@ -458,8 +458,9 @@ public:
   CStdString GetThumbnailsFolder() const;
   CStdString GetMusicThumbFolder() const;
   CStdString GetTempMusicThumbFolder() const;
-  CStdString GetXLinkKaiThumbFolder() const;
+  CStdString GetVideoThumbFolder() const;
   CStdString GetBookmarksThumbFolder() const;
+  CStdString GetXLinkKaiThumbFolder() const;
   
 protected:
   void GetInteger(const TiXmlElement* pRootElement, const char *strTagName, int& iValue, const int iDefault, const int iMin, const int iMax);

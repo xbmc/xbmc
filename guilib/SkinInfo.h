@@ -18,10 +18,12 @@ public:
 
   double GetMinVersion();
   double GetVersion(){ return m_Version;};
+  int GetStartWindow();
 
   void ResolveIncludes(TiXmlElement *node);
 
   double GetEffectsSlowdown() const { return m_effectsSlowDown; };
+
 
 protected:
   void LoadIncludes();
