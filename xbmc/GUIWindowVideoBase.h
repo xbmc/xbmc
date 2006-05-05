@@ -21,6 +21,7 @@ protected:
   virtual void UpdateButtons();
   virtual bool Update(const CStdString &strDirectory);
   virtual void OnItemLoaded(CFileItem* pItem) {};
+  virtual void OnPrepareFileItems(CFileItemList &items);
 
   virtual void OnPopupMenu(int iItem);
   virtual void OnInfo(int iItem);
