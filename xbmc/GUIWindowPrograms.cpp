@@ -532,10 +532,21 @@ bool CGUIWindowPrograms::OnPopupMenu(int iItem)
 
 void CGUIWindowPrograms::LoadDirectory(const CStdString& strDirectory, int idepth)
 {
+    m_database.BeginTransaction();
+    LoadDirectory2(strDirectory,idepth);
+    m_database.CommitTransaction();
+}
+
+void CGUIWindowPrograms::LoadDirectory2(const CStdString& strDirectory, int idepth)
+{
   WIN32_FIND_DATA wfd;
   bool bOnlyDefaultXBE = g_guiSettings.GetBool("MyPrograms.DefaultXBEOnly");
   bool bFlattenDir = g_guiSettings.GetBool("MyPrograms.Flatten");
   bool bUseDirectoryName = g_guiSettings.GetBool("MyPrograms.UseDirectoryName");
+
+  CFileItemList items;
+  m_database.GetProgramsByPath(strDirectory,items,0,g_guiSettings.GetBool("MyPrograms.DefaultXBEOnly"));
+
 
   memset(&wfd, 0, sizeof(wfd));
   CStdString strRootDir = strDirectory;
@@ -555,7 +566,6 @@ void CGUIWindowPrograms::LoadDirectory(const CStdString& strDirectory, int idept
   CAutoPtrFind hFind ( FindFirstFile(strSearchMask.c_str(), &wfd));
   if (!hFind.isValid())
     return ;
-  m_database.BeginTransaction();
   do
   {
     if (wfd.cFileName[0] != 0)
@@ -590,12 +600,23 @@ void CGUIWindowPrograms::LoadDirectory(const CStdString& strDirectory, int idept
               }                                                 
             }                                                   
             if (!foundPath)                                     
-              LoadDirectory(file.m_strPath, idepth - 1);
+              LoadDirectory2(file.m_strPath, idepth - 1);
           }
         }
       }
       else
       {
+        int i;
+        for (i=0;i<items.Size();++i)
+        {
+          if (items[i]->m_strPath.CompareNoCase(file.m_strPath)==0)
+          {
+            m_vecItems.Add(items[i]);
+            break;
+          }
+        }
+        if (i < items.Size())
+          continue;
         if (bOnlyDefaultXBE ? fileName.IsDefaultXBE() : fileName.IsXBE())
         {
           CStdString strDescription;
@@ -651,7 +672,6 @@ void CGUIWindowPrograms::LoadDirectory(const CStdString& strDirectory, int idept
     }
   }
   while (FindNextFile(hFind, &wfd));
-  m_database.CommitTransaction();
 }
 
 bool CGUIWindowPrograms::Update(const CStdString &strDirectory)
@@ -839,7 +859,6 @@ bool CGUIWindowPrograms::Update(const CStdString &strDirectory)
         {
           for (int i = 0; i < (int)m_vecPaths1.size(); i++)
           { 
-            CLog::Log(LOGDEBUG, "Comparing %i item (%s) from m_vecPaths with %i item (%s) from m_vecPaths1", j, m_vecPaths[j].c_str(), i, m_vecPaths1[i].c_str());
             if (m_vecPaths1[i]==m_vecPaths[j])
             {
               found = true;
@@ -879,6 +898,7 @@ bool CGUIWindowPrograms::Update(const CStdString &strDirectory)
   SetOverlayIcons();
 
   m_guiState.reset(CGUIViewState::GetViewState(GetID(), m_vecItems));
+
   OnSort();
   UpdateButtons();
   m_viewControl.SetSelectedItem(strSelectedItem);
