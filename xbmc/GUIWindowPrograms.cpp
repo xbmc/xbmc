@@ -371,12 +371,7 @@ bool CGUIWindowPrograms::OnPopupMenu(int iItem)
       if (m_database.ItemHasTrainer(dwTitleId))
       {
         CStdString strOptions = g_localizeStrings.Get(12015);
-        if (CKaiClient::GetInstance()->IsEngineConnected())
-          strOptions += " (KAI)";
-
         btn_Trainers = pMenu->AddButton(strOptions); // trainer options
-        if (CKaiClient::GetInstance()->IsEngineConnected())
-          pMenu->EnableButton(btn_Trainers,false);
       }
     }
     int btn_ScanTrainers = pMenu->AddButton(12012);
@@ -979,13 +974,33 @@ bool CGUIWindowPrograms::OnClick(int iItem)
     else
       dwTitleId = CUtil::GetXbeID(pItem->m_strPath);
     CStdString strTrainer = m_database.GetActiveTrainer(dwTitleId);
-    if (strTrainer != "" && !CKaiClient::GetInstance()->IsEngineConnected())
+    if (strTrainer != "")
     {
-      CTrainer trainer;
-      if (trainer.Load(strTrainer))
+      bool bContinue=false;
+      if (CKaiClient::GetInstance()->IsEngineConnected())
       {
-        m_database.GetTrainerOptions(strTrainer,dwTitleId,trainer.GetOptions(),trainer.GetNumberOfOptions());
-        CUtil::InstallTrainer(trainer);
+        CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)m_gWindowManager.GetWindow(WINDOW_DIALOG_YES_NO);
+        pDialog->SetHeading(714);
+        pDialog->SetLine(0,"Use trainer or KAI?");
+        pDialog->SetLine(1, "Yes for trainer");
+        pDialog->SetLine(2, "No for KAI");
+        pDialog->DoModal(m_gWindowManager.GetActiveWindow());
+        if (pDialog->IsConfirmed())
+        {
+          while (CKaiClient::GetInstance()->GetCurrentVector().size() > 1)
+            CKaiClient::GetInstance()->ExitVector();
+        }
+        else
+          bContinue = true;
+      }
+      if (!bContinue)
+      {
+        CTrainer trainer;
+        if (trainer.Load(strTrainer))
+        {
+          m_database.GetTrainerOptions(strTrainer,dwTitleId,trainer.GetOptions(),trainer.GetNumberOfOptions());
+          CUtil::InstallTrainer(trainer);
+        }
       }
     }
 
