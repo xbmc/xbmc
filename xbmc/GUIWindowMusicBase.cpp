@@ -1310,7 +1310,9 @@ void CGUIWindowMusicBase::OnPopupMenu(int iItem)
       return;
     }
   }
-  m_vecItems[iItem]->Select(bSelected);
+  //NOTE: this can potentially (de)select the wrong item if the filelisting has changed because of an action above.
+  if (iItem < m_vecItems.Size())
+    m_vecItems[iItem]->Select(bSelected);
 }
 
 void CGUIWindowMusicBase::OnRipCD()
