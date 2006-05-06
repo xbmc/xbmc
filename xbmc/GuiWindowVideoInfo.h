@@ -32,7 +32,7 @@ protected:
   void Play(bool resume = false);
   bool DownloadThumbnail(const CStdString &thumb);
   void OnGetThumb();
-  CIMDBMovie* m_pMovie;
+  CIMDBMovie m_Movie;
   CFileItem m_movieItem;
   bool m_bViewReview;
   bool m_bRefresh;
