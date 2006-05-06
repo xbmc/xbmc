@@ -91,10 +91,6 @@
       <size>19</size>
     </font>
 
-    <font>
-      <name>font64</name>
-      <filename>common-font64.xpr</filename>
-    </font>
 
     <font>
       <name>matrix8</name>
