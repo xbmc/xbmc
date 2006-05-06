@@ -82,7 +82,12 @@ void rip_callback(int message, void *data)
 
 error_code filelib_write(char *buf, u_long size)
 {
-  while (m_ringbuf.GetMaxWriteSize() < (int)size) Sleep(100);
+  if ((int)size > m_ringbuf.Size())
+  {
+    CLog::Log(LOGERROR, "Shoutcast chunk too big: %i", size);
+    return SR_ERROR_BUFFER_FULL;
+  }
+  while (m_ringbuf.GetMaxWriteSize() < (int)size) Sleep(10);
   m_ringbuf.WriteBinary(buf, size);
   m_ripFile.Write( buf, size ); //will only write, if it has to
   return SR_SUCCESS;
@@ -103,7 +108,7 @@ CFileShoutcast::CFileShoutcast()
     m_fileState.bRipDone = false;
     m_fileState.bRipStarted = false;
     m_fileState.bRipError = false;
-    m_ringbuf.Create(1024*1024*5);
+    m_ringbuf.Create(1024*256);
     m_pShoutCastRipper = this;
   }
 }
@@ -307,7 +312,7 @@ unsigned int CFileShoutcast::Read(void* lpBuf, __int64 uiBufSize)
     OutputDebugString("Read done\n");
     return 0;
   }
-  while (m_ringbuf.GetMaxReadSize() <= 0) Sleep(100);
+  while (m_ringbuf.GetMaxReadSize() <= 0) Sleep(10);
   int iRead = m_ringbuf.GetMaxReadSize();
   if (iRead > uiBufSize) iRead = (int)uiBufSize;
   m_ringbuf.ReadBinary((char*)lpBuf, iRead);
