@@ -1507,7 +1507,7 @@ void CGUIInfoManager::SetCurrentMovie(CFileItem &item)
     m_currentMovie.m_strPath = item.m_strPath;
   }
   // Find a thumb for this file.
-  item.SetThumb();
+  item.SetVideoThumb();
 
   // find a thumb for this stream
   if (item.IsInternetStream())
@@ -1524,8 +1524,8 @@ void CGUIInfoManager::SetCurrentMovie(CFileItem &item)
     {
       CLog::Log(LOGDEBUG,"Streaming media detected... using %s to find a thumb", g_application.m_strPlayListFile.c_str());
       CFileItem thumbItem(g_application.m_strPlayListFile,false);
-      thumbItem.SetThumb();
-      if (CFile::Exists(thumbItem.GetThumbnailImage()))
+      thumbItem.SetVideoThumb();
+      if (thumbItem.HasThumbnail())
         item.SetThumbnailImage(thumbItem.GetThumbnailImage());
     }
   }

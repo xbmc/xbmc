@@ -2413,10 +2413,17 @@ CStdString CSettings::GetMusicThumbFolder() const
   return folder;
 }
 
-CStdString CSettings::GetTempMusicThumbFolder() const
+CStdString CSettings::GetMusicTempThumbFolder() const
 {
   CStdString folder;
   CUtil::AddFileToFolder(g_stSettings.m_userDataFolder, "Thumbnails\\Music\\Temp", folder);
+  return folder;
+}
+
+CStdString CSettings::GetMusicArtistThumbFolder() const
+{
+  CStdString folder;
+  CUtil::AddFileToFolder(g_stSettings.m_userDataFolder, "Thumbnails\\Music\\Artists", folder);
   return folder;
 }
 
@@ -2438,5 +2445,12 @@ CStdString CSettings::GetBookmarksThumbFolder() const
 {
   CStdString folder;
   CUtil::AddFileToFolder(g_stSettings.m_userDataFolder, "Thumbnails\\Video\\Bookmarks", folder);
+  return folder;
+}
+
+CStdString CSettings::GetPicturesThumbFolder() const
+{
+  CStdString folder;
+  CUtil::AddFileToFolder(g_stSettings.m_userDataFolder, "Thumbnails\\Pictures", folder);
   return folder;
 }
