@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 06-05-2006 fixed: New loglevels were slightly out (meant you always had full debug logging.)
+ - 06-05-2006 changed: Cleaned up more thumb related code (Picture thumbs are now in UserData/Thumbnails/Pictures/0..F/)
  - 05-05-2006 fixed: hopefully increased my programs speed a bit.
  - 05-05-2006 added: "Safe mode" key combination (WHITE + Y) on startup to invoke the fatal error handler (gives FTP access).  Thanks to Bizzeh.
  - 05-05-2006 changed: Cleaned up the video assigning code.  Video thumbnails are now stored in UserData/Thumbnails/Video.
