@@ -330,7 +330,7 @@ void CGUIWindowVideoFiles::OnInfo(int iItem)
   // setup our item with the label and thumb information
   CFileItem item(strFile, false);
   item.SetLabel(pItem->GetLabel());
-  item.SetThumb();
+  item.SetCachedVideoThumb();
   if (!item.HasThumbnail()) // inherit from the original item if it exists
     item.SetThumbnailImage(pItem->GetThumbnailImage());
 
@@ -680,10 +680,11 @@ void CGUIWindowVideoFiles::GetIMDBDetails(CFileItem *pItem, CIMDBUrl &url)
     CStdString strImage = movieDetails.m_strPictureURL;
     if (strImage.size() > 0 && movieDetails.m_strSearchString.size() > 0)
     {
-      pItem->SetThumb();
-      strThumb = pItem->GetThumbnailImage();
-      if (CFile::Exists(strThumb))
+      // check for a cached thumb or user thumb
+      pItem->SetVideoThumb();
+      if (pItem->HasThumbnail())
         return;
+      strThumb = pItem->GetCachedVideoThumb();
 
       CHTTP http;
       CStdString strExtension;

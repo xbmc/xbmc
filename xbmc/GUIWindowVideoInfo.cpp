@@ -348,7 +348,7 @@ void CGUIWindowVideoInfo::Refresh()
 
     CStdString thumbImage = m_movieItem.GetThumbnailImage();
     if (!m_movieItem.HasThumbnail())
-      CUtil::GetCachedThumbnail(m_movieItem.m_strPath, thumbImage);
+      thumbImage = m_movieItem.GetCachedVideoThumb();
     if (!CFile::Exists(thumbImage) && strImage.size() > 0)
     {
       DownloadThumbnail(thumbImage);

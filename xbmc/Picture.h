@@ -8,7 +8,6 @@ public:
   virtual ~CPicture(void);
   IDirect3DTexture8* Load(const CStdString& strFilename, int iMaxWidth = 128, int iMaxHeight = 128);
 
-  bool CreateThumbnail(const CStdString& strFileName);
   bool CreateExifThumbnail(const CStdString &strFile, const CStdString &strCachedThumb);
   bool CreateAlbumThumbnail(const CStdString& strFileName, const CStdString& strAlbum);
   bool CreateAlbumThumbnailFromMemory(const BYTE* pBuffer, int nBufSize, const CStdString& strExtension, const CStdString& strThumbFileName);
@@ -24,7 +23,7 @@ public:
 
   void RenderImage(IDirect3DTexture8* pTexture, float x, float y, float width, float height, int iTextureWidth, int iTextureHeight, int iTextureLeft = 0, int iTextureTop = 0, DWORD dwAlpha = 0xFF);
 
-  void CreateFolderThumb(CStdString &strFolder, CStdString *strThumbs);
+  void CreateFolderThumb(const CStdString *strThumbs, const CStdString &folderThumbnail);
   bool DoCreateThumbnail(const CStdString& strFileName, const CStdString& strThumbFileName, bool checkExistence = false);
 
 protected:

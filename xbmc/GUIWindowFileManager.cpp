@@ -369,12 +369,11 @@ bool CGUIWindowFileManager::Update(int iList, const CStdString &strDirectory)
     CFileItem *pItem = m_vecItems[iList][i];
     CStdString strExtension;
     CUtil::GetExtension(pItem->m_strPath, strExtension);
-    if (strExtension == ".tbn")
+    if (pItem->IsHD() && strExtension == ".tbn")
     {
-      pItem->SetThumb();
+      pItem->SetThumbnailImage(pItem->m_strPath);
     }
   }
-  // m_vecItems[iList].SetThumbs();
   m_vecItems[iList].FillInDefaultIcons();
 
   OnSort(iList);

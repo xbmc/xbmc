@@ -553,8 +553,7 @@ void CGUIWindowPictures::OnItemLoaded(CFileItem *pItem)
 
     if (items.Size() < 4)
     { // less than 4 items, so just grab a single random thumb
-      CStdString folderThumb;
-      CUtil::GetCachedThumbnail(pItem->m_strPath, folderThumb);
+      CStdString folderThumb(pItem->GetCachedPictureThumb());
       CPicture pic;
       pic.DoCreateThumbnail(items[0]->m_strPath, folderThumb);
     }
@@ -566,10 +565,10 @@ void CGUIWindowPictures::OnItemLoaded(CFileItem *pItem)
       for (int thumb = 0; thumb < 4; thumb++)
         strFiles[thumb] = items[thumb]->m_strPath;
       CPicture pic;
-      pic.CreateFolderThumb(pItem->m_strPath, strFiles);
+      pic.CreateFolderThumb(strFiles, pItem->GetCachedPictureThumb());
     }
     // refill in the icon to get it to update
-    pItem->SetThumb();
+    pItem->SetCachedPictureThumb();
     pItem->FillInDefaultIcon();
   }
 }
