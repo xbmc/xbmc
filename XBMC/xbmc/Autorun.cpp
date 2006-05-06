@@ -68,14 +68,34 @@ void CAutorun::ExecuteXBE(const CStdString &xbeFile)
   database.Open();
   DWORD dwTitleId = CUtil::GetXbeID(xbeFile);
   CStdString strTrainer = database.GetActiveTrainer(dwTitleId);
-  if (strTrainer != "" && !CKaiClient::GetInstance()->IsEngineConnected())
+  if (strTrainer != "")
   {
-    CTrainer trainer;
-    if (trainer.Load(strTrainer))
-    {
-      database.GetTrainerOptions(strTrainer,dwTitleId,trainer.GetOptions(),trainer.GetNumberOfOptions());
-      CUtil::InstallTrainer(trainer);
-    }
+      bool bContinue=false;
+      if (CKaiClient::GetInstance()->IsEngineConnected())
+      {
+        CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)m_gWindowManager.GetWindow(WINDOW_DIALOG_YES_NO);
+        pDialog->SetHeading(714);
+        pDialog->SetLine(0,"Use trainer or KAI?");
+        pDialog->SetLine(1, "Yes for trainer");
+        pDialog->SetLine(2, "No for KAI");
+        pDialog->DoModal(m_gWindowManager.GetActiveWindow());
+        if (pDialog->IsConfirmed())
+        {
+          while (CKaiClient::GetInstance()->GetCurrentVector().size() > 1)
+            CKaiClient::GetInstance()->ExitVector();
+        }
+        else
+          bContinue = true;
+      }
+      if (!bContinue)
+      {
+        CTrainer trainer;
+        if (trainer.Load(strTrainer))
+        {
+          database.GetTrainerOptions(strTrainer,dwTitleId,trainer.GetOptions(),trainer.GetNumberOfOptions());
+          CUtil::InstallTrainer(trainer);
+        }
+      }
   }
 
   database.Close();
