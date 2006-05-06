@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "GUIViewControl.h"
 #include "GUIThumbnailPanel.h"
-
+#include "Util.h"
 
 CGUIViewControl::CGUIViewControl(void)
 {
@@ -175,13 +175,15 @@ void CGUIViewControl::SetSelectedItem(int item)
 
 void CGUIViewControl::SetSelectedItem(const CStdString &itemPath)
 {
-  if (!m_fileItems)
+  if (!m_fileItems || itemPath == "")
     return;
 
   int item = -1;
   for (int i = 0; i < m_fileItems->Size(); ++i)
   {
-    if ((*m_fileItems)[i]->m_strPath.CompareNoCase(itemPath) == 0)
+    CStdString strPath =(*m_fileItems)[i]->m_strPath;
+    CUtil::RemoveSlashAtEnd(strPath);
+    if (strPath.CompareNoCase(itemPath) == 0)
     {
       item = i;
       break;

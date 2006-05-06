@@ -20,6 +20,7 @@ protected:
 
   void OnScan(CFileItemList& items, int& iTotalAppsFound) ;
   void LoadDirectory(const CStdString& strDirectory, int depth);
+  void LoadDirectory2(const CStdString& strDirectory, int depth);
   void DeleteThumbs(CFileItemList& items);
   int GetRegion(int iItem, bool bReload=false);
   void PopulateTrainersList();
