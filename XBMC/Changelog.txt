@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 05-05-2006 fixed: hopefully increased my programs speed a bit.
  - 05-05-2006 added: "Safe mode" key combination (WHITE + Y) on startup to invoke the fatal error handler (gives FTP access).  Thanks to Bizzeh.
  - 05-05-2006 changed: Cleaned up the video assigning code.  Video thumbnails are now stored in UserData/Thumbnails/Video.
  - 04-05-2006 changed: Cleaned up the IMDb thumb code a little.  GetThumb from the Movie Information page now allows users to select between the IMDb thumb and their local thumbs.
