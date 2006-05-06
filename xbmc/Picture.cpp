@@ -43,14 +43,6 @@ bool CPicture::CreateAlbumThumbnail(const CStdString& strFileName, const CStdStr
   return DoCreateThumbnail(strFileName, strThumbnail, true);
 }
 
-bool CPicture::CreateThumbnail(const CStdString& strFileName)
-{
-  // does not check for existence, so always overwrites cached thumbs
-  CStdString strThumbnail;
-  CUtil::GetCachedThumbnail(strFileName, strThumbnail);
-  return DoCreateThumbnail(strFileName, strThumbnail);
-}
-
 bool CPicture::DoCreateThumbnail(const CStdString& strFileName, const CStdString& strThumbFileName, bool checkExistence /*= false*/)
 {
   // don't create the thumb if it already exists
@@ -149,13 +141,9 @@ void CPicture::RenderImage(IDirect3DTexture8* pTexture, float x, float y, float 
   m_pVB->Release();
 }
 
-void CPicture::CreateFolderThumb(CStdString &strFolder, CStdString *strThumbs)
+void CPicture::CreateFolderThumb(const CStdString *strThumbs, const CStdString &folderThumbnail)
 { // we want to mold the thumbs together into one single one
   if (!m_dll.Load()) return;
-  CStdString strFolderThumbnail;
-  CUtil::GetCachedThumbnail(strFolder, strFolderThumbnail);
-  if (CFile::Exists(strFolderThumbnail))
-    return;
   CStdString strThumbnails[4];
   const char *szThumbs[4];
   for (int i=0; i < 4; i++)
@@ -164,14 +152,15 @@ void CPicture::CreateFolderThumb(CStdString &strFolder, CStdString *strThumbs)
       strThumbnails[i] = "";
     else
     {
-      CreateThumbnail(strThumbs[i]);
-      CUtil::GetCachedThumbnail(strThumbs[i], strThumbnails[i]);
+      CFileItem item(strThumbs[i], false);
+      strThumbnails[i] = item.GetCachedPictureThumb();
+      DoCreateThumbnail(strThumbs[i], strThumbnails[i], true);
     }
     szThumbs[i] = strThumbnails[i].c_str();
   }
-  if (!m_dll.CreateFolderThumbnail(szThumbs, strFolderThumbnail.c_str()))
+  if (!m_dll.CreateFolderThumbnail(szThumbs, folderThumbnail.c_str()))
   {
-    CLog::Log(LOGERROR, "PICTURE::CreateFolderThumb() failed for folder %s", strFolder.c_str());
+    CLog::Log(LOGERROR, "PICTURE::CreateFolderThumb() failed for folder thumb %s", folderThumbnail.c_str());
   }
 }
 

@@ -846,21 +846,24 @@ void CFileItem::SetThumb()
   }
 }
 
-void CFileItem::SetArtistThumb()
+CStdString CFileItem::GetCachedArtistThumb()
 {
-  CStdString strArtist = "artist" + GetLabel();
-  CStdString strThumb = "";
-  CUtil::GetCachedThumbnail(strArtist, strThumb);
+  Crc32 crc;
+  crc.ComputeFromLowerCase("artist" + GetLabel());
+  CStdString cachedThumb;
+  cachedThumb.Format("%s\\%08x.tbn", g_settings.GetMusicArtistThumbFolder().c_str(), crc);
+  return cachedThumb;
+}
 
-  if (CFile::Exists(strThumb))
+void CFileItem::SetCachedArtistThumb()
+{
+  CStdString thumb(GetCachedArtistThumb());
+  if (CFile::Exists(thumb))
   {
     // found it, we are finished.
-    SetIconImage(strThumb);
-    SetThumbnailImage(strThumb);
-    //CLog::Log(LOGDEBUG,"  Found cached artist [%s] thumb: %s",m_strPath.c_str(),strThumb.c_str());
+    SetThumbnailImage(thumb);
+//    SetIconImage(strThumb);
   }
-
-  return;
 }
 
 // set the album thumb for a file or folder
@@ -1708,6 +1711,10 @@ void CFileItemList::FillInDefaultIcons()
   }
 }
 
+// SetThumbs() is only used for:
+//  1. GUIDialogFileBrowser (probably not needed)
+//  2. GUIWindowPrograms    (replace with programs specific caching)
+//  3. GUIWindowScripts     (replace with scripts specific caching - use programs caching)
 void CFileItemList::SetThumbs()
 {
   //cache thumbnails directory
@@ -2096,10 +2103,29 @@ void CFileItemList::SetCachedVideoThumbs()
   }
 }
 
+CStdString CFileItem::GetCachedPictureThumb()
+{
+  // get the locally cached thumb
+  Crc32 crc;
+  crc.ComputeFromLowerCase(m_strPath);
+  CStdString hex;
+  hex.Format("%08x", crc);
+  CStdString thumb;
+  thumb.Format("%s\\%c\\%s.tbn", g_settings.GetPicturesThumbFolder().c_str(), hex[0], hex.c_str());
+  return thumb;
+}
+
+void CFileItem::SetCachedPictureThumb()
+{
+  CStdString cachedThumb(GetCachedPictureThumb());
+  if (CFile::Exists(cachedThumb))
+    SetThumbnailImage(cachedThumb);
+}
+
 CStdString CFileItem::GetCachedVideoThumb()
 {
-  Crc32 crc;
   // get the locally cached thumb
+  Crc32 crc;
   if (IsStack())
   {
     CStackDirectory dir;
@@ -2108,7 +2134,7 @@ CStdString CFileItem::GetCachedVideoThumb()
   else
     crc.ComputeFromLowerCase(m_strPath);
   CStdString thumb;
-  thumb.Format("%s\\%x.tbn", g_settings.GetVideoThumbFolder().c_str(), crc);
+  thumb.Format("%s\\%08x.tbn", g_settings.GetVideoThumbFolder().c_str(), crc);
   return thumb;
 }
 
@@ -2121,6 +2147,7 @@ void CFileItem::SetCachedVideoThumb()
 
 CStdString CFileItem::GetUserVideoThumb()
 {
+  if (m_bIsShareOrDrive) return "";
   // 1. check <filename>.tbn or <foldername>.tbn
   CStdString fileThumb;
   if (IsStack())
@@ -2143,6 +2170,14 @@ CStdString CFileItem::GetUserVideoThumb()
   }
   // No thumb found
   return "";
+}
+
+void CFileItem::SetVideoThumb()
+{
+  if (HasThumbnail()) return;
+  SetCachedVideoThumb();
+  if (!HasThumbnail())
+    SetUserVideoThumb();
 }
 
 void CFileItem::SetUserVideoThumb()

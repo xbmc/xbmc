@@ -464,11 +464,10 @@ void CGUIWindowVideoBase::OnManualIMDB()
   CStdString strInput;
   if (!CGUIDialogKeyboard::ShowAndGetInput(strInput, g_localizeStrings.Get(16009), false)) return ;
 
-  CStdString strThumb;
-  CUtil::GetCachedThumbnail("Z:\\", strThumb);
-  ::DeleteFile(strThumb.c_str());
-
   CFileItem item(strInput);
+  item.m_strPath = "Z:\\";
+  ::DeleteFile(item.GetCachedVideoThumb().c_str());
+
   ShowIMDB(&item);
   return ;
 }
@@ -1209,18 +1208,8 @@ void CGUIWindowVideoBase::ApplyIMDBThumbToFolder(const CStdString &folder, const
   if (CFile::Exists(imdbThumb))
   {
     CFileItem folderItem(folder, true);
-    if (folderItem.IsRemote() || folderItem.IsOnDVD())
-    {
-      CStdString strThumb;
-      CUtil::GetCachedThumbnail(folder, strThumb);
-      CFile::Cache(imdbThumb.c_str(), strThumb.c_str(), NULL, NULL);
-    }
-    else
-    {
-      CStdString strFolderImage;
-      CUtil::AddFileToFolder(folder, "folder.jpg", strFolderImage);
-      CFile::Cache(imdbThumb.c_str(), strFolderImage.c_str(), NULL, NULL);
-    }
+    CStdString strThumb(folderItem.GetCachedVideoThumb());
+    CFile::Cache(imdbThumb.c_str(), strThumb.c_str(), NULL, NULL);
   }
 }
 

@@ -106,7 +106,6 @@ public:
   void FillInDefaultIcon();
   void SetThumb();
   void SetMusicThumb();
-  void SetArtistThumb();
   void SetFileSizeLabel();
   virtual void SetLabel(const CStdString &strLabel);
   CURL GetAsUrl() const;
@@ -116,10 +115,19 @@ public:
   void SetLabelPreformated(bool bYesNo) { m_bLabelPreformated=bYesNo; }
   // Video thumb functions
 
-  // Gets the cached video thumb filename (no existence checks)
+  // Gets the cached thumb filename (no existence checks)
   CStdString GetCachedVideoThumb();
-  // Sets the cached video thumb for the item if it exists
+  CStdString GetCachedPictureThumb();
+  CStdString GetCachedArtistThumb();
+
+  // Sets the video thumb (cached first, else caches user thumb)
+  void SetVideoThumb();
+
+  // Sets the cached thumb for the item if it exists
   void SetCachedVideoThumb();
+  void SetCachedPictureThumb();
+  void SetCachedArtistThumb();
+
   // Gets the user video thumb, if it exists
   CStdString GetUserVideoThumb();
   // Caches the user video thumb and assigns it to the item
