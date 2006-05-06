@@ -517,14 +517,12 @@ void CGUIWindowMusicNav::SetArtistImage(int iItem)
     }
   }
 
-  if (CGUIDialogFileBrowser::ShowAndGetFile( g_settings.m_vecMyMusicShares, ".jpg|.tbn", "artist cover", strPicture))
+  // TODO 2.0: Localize this...
+  if (CGUIDialogFileBrowser::ShowAndGetImage(g_settings.m_vecMyMusicShares, "Artist Image", strPicture))
   {
-    CStdString strArtist = "artist" + pItem->GetLabel();
-    CStdString strDestThumb;
-    CUtil::GetCachedThumbnail(strArtist, strDestThumb);
+    CStdString thumb(pItem->GetCachedArtistThumb());
     CPicture picture;
-    CFile::Delete(strDestThumb); // remove old thumb
-    if (picture.DoCreateThumbnail(strPicture,strDestThumb))
+    if (picture.DoCreateThumbnail(strPicture, thumb))
     {
       CMusicDatabaseDirectory dir;
       dir.ClearDirectoryCache(m_vecItems.m_strPath);    

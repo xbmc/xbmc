@@ -331,14 +331,16 @@ bool CMediaMonitor::imdb_GetMovieInfo(CStdString& strTitle, CIMDBMovie& aMovieRe
 /// This method queries imdb for movie poster art associated with an imdb number
 bool CMediaMonitor::imdb_GetMovieArt(CStdString& strPath, CStdString& strPictureUrl, CStdString& strImagePath)
 {
-  CStdString strThum;
-  CUtil::GetCachedThumbnail(strPath, strThum);
+  CFileItem item(strPath, false);
+  item.SetVideoThumb();
 
-  if (CFile::Exists(strThum.c_str()))
+  if (item.HasThumbnail())
   {
-    strImagePath = strThum;
+    strImagePath = item.GetThumbnailImage();
     return true;
   }
+
+  CStdString strThum(item.GetCachedVideoThumb());
 
   CStdString strExtension;
   CUtil::GetExtension(strPictureUrl, strExtension);

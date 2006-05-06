@@ -1068,10 +1068,11 @@ int CXbmcHttp::xbmcGetMovieDetails(int numParas, CStdString paras[])
         if (strRating=="") strRating="0.0";
         output += closeTag+openTag+"Rating:" + strRating;
         output += closeTag+openTag+"Cast:" + aMovieRec.m_strCast;
-        item->SetThumb();
-        thumb = item->GetThumbnailImage();
-        if (!CFile::Exists(thumb))
-          thumb = "[None] " + thumb;
+        item->SetVideoThumb();
+        if (!item->HasThumbnail())
+          thumb = "[None]";
+        else
+          thumb = item->GetCachedVideoThumb();
         output += closeTag+openTag+"Thumb:" + thumb;
         m_database.Close();
         delete item;
@@ -1110,14 +1111,14 @@ int CXbmcHttp::xbmcGetCurrentlyPlaying()
     output+=closeTag+openTag+"Height:" + tmp ;
     CStdString picFn = pSlideShow->GetCurrentSlide();
     CFileItem item(picFn, false);
-    item.SetThumb();
-    CStdString thumb = item.GetThumbnailImage();
+    item.SetCachedPictureThumb();
     if (autoGetPictureThumbs && !item.HasThumbnail())
     {
       CPicture pic;
-      pic.CreateThumbnail(picFn);
-      CUtil::GetCachedThumbnail(picFn,thumb);
+      pic.DoCreateThumbnail(picFn, item.GetCachedPictureThumb());
+      item.SetCachedPictureThumb();
     }
+    CStdString thumb = item.GetCachedPictureThumb();
     if (!item.HasThumbnail())
       thumb = "[None] " + thumb;
     output+=closeTag+openTag+"Thumb:"+thumb;

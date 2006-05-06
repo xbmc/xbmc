@@ -223,7 +223,7 @@ void CDirectoryCache::InitMusicThumbCache()
   {
     // music thumbnails directories
     g_directoryCache.m_musicThumbDirs.insert(g_settings.GetMusicThumbFolder());
-    g_directoryCache.m_musicThumbDirs.insert(g_settings.GetTempMusicThumbFolder());
+    g_directoryCache.m_musicThumbDirs.insert(g_settings.GetMusicTempThumbFolder());
   }
 
   InitCache(g_directoryCache.m_musicThumbDirs);

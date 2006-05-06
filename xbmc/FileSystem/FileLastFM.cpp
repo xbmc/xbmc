@@ -456,7 +456,9 @@ bool CFileLastFM::RetreiveMetaData()
     CStdString cachedFile = "";
     if ((coverUrl != "") && (coverUrl.Find("noalbum") == -1) && (coverUrl.Right(1) != "/"))
     {
-      CUtil::GetCachedThumbnail(coverUrl, cachedFile);
+      Crc32 crc;
+      crc.ComputeFromLowerCase(coverUrl);
+      cachedFile.Format("%s\\%08x.tbn", g_settings.GetMusicTempThumbFolder().c_str(), crc);
       if (!CFile::Exists(cachedFile))
       {
         http.Download(coverUrl, cachedFile);
