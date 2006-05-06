@@ -722,7 +722,7 @@ void CFileItem::SetThumb()
   example:
   ERROR Texture manager unable to load file: Q:\skin\Project Mayhem\media\iso9660://somedir/somefile.tbn
   */
-  if (!IsRemote() && !IsISO9660())
+  /*if (!IsRemote() && !IsISO9660())
   {
     CStdString strFile;
     CUtil::ReplaceExtension(m_strPath, ".tbn", strFile);
@@ -731,7 +731,7 @@ void CFileItem::SetThumb()
       SetThumbnailImage(strFile);
       return;
     }
-  }
+  }*/
 
   // if this is a shortcut, then get the real filename
   CFileItem item;
