@@ -31,7 +31,7 @@ void CLog::Close()
 
 void CLog::Log(int loglevel, const char *format, ... )
 {
-  if (g_advancedSettings.m_logLevel >= LOG_LEVEL_NORMAL || loglevel >= LOGERROR)
+  if (g_advancedSettings.m_logLevel > LOG_LEVEL_NORMAL || loglevel >= LOGERROR)
   {
     CSingleLock waitLock(critSec);
     if (!fd)
