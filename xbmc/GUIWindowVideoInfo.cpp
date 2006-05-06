@@ -50,7 +50,6 @@ bool CGUIWindowVideoInfo::OnMessage(CGUIMessage& message)
   {
   case GUI_MSG_WINDOW_DEINIT:
     {
-      m_pMovie = NULL;
       m_database.Close();
     }
     break;
@@ -77,7 +76,7 @@ bool CGUIWindowVideoInfo::OnMessage(CGUIMessage& message)
       SET_CONTROL_HIDDEN(CONTROL_DISC);
       CONTROL_DISABLE(CONTROL_DISC);
       int iItem = 0;
-      CFileItem movie(m_pMovie->m_strPath, false);
+      CFileItem movie(m_Movie.m_strPath, false);
       if ( movie.IsOnDVD() )
       {
         SET_CONTROL_VISIBLE(CONTROL_DISC);
@@ -85,9 +84,9 @@ bool CGUIWindowVideoInfo::OnMessage(CGUIMessage& message)
         char szNumber[1024];
         int iPos = 0;
         bool bNumber = false;
-        for (int i = 0; i < (int)m_pMovie->m_strDVDLabel.size();++i)
+        for (int i = 0; i < (int)m_Movie.m_strDVDLabel.size();++i)
         {
-          char kar = m_pMovie->m_strDVDLabel.GetAt(i);
+          char kar = m_Movie.m_strDVDLabel.GetAt(i);
           if (kar >= '0' && kar <= '9' )
           {
             szNumber[iPos] = kar;
@@ -159,7 +158,7 @@ bool CGUIWindowVideoInfo::OnMessage(CGUIMessage& message)
         if (strItem != "HD" && strItem != "share")
         {
           long lMovieId;
-          sscanf(m_pMovie->m_strSearchString.c_str(), "%i", &lMovieId);
+          sscanf(m_Movie.m_strSearchString.c_str(), "%i", &lMovieId);
           if (lMovieId > 0)
           {
             CStdString label;
@@ -199,24 +198,23 @@ bool CGUIWindowVideoInfo::OnMessage(CGUIMessage& message)
 
 void CGUIWindowVideoInfo::SetMovie(CIMDBMovie& album, const CFileItem *item)
 {
-  m_pMovie = &album;
+  m_Movie = album;
   m_movieItem = *item;
 }
 
 void CGUIWindowVideoInfo::Update()
 {
-  if (!m_pMovie) return ;
   CStdString strTmp;
-  strTmp = m_pMovie->m_strTitle; strTmp.Trim();
+  strTmp = m_Movie.m_strTitle; strTmp.Trim();
   SetLabel(CONTROL_TITLE, strTmp.c_str() );
 
-  strTmp = m_pMovie->m_strDirector; strTmp.Trim();
+  strTmp = m_Movie.m_strDirector; strTmp.Trim();
   SetLabel(CONTROL_DIRECTOR, strTmp.c_str() );
 
-  strTmp = m_pMovie->m_strWritingCredits; strTmp.Trim();
+  strTmp = m_Movie.m_strWritingCredits; strTmp.Trim();
   SetLabel(CONTROL_CREDITS, strTmp.c_str() );
 
-  strTmp = m_pMovie->m_strGenre; strTmp.Trim();
+  strTmp = m_Movie.m_strGenre; strTmp.Trim();
   SetLabel(CONTROL_GENRE, strTmp.c_str() );
 
   {
@@ -224,7 +222,7 @@ void CGUIWindowVideoInfo::Update()
     OnMessage(msg1);
   }
   {
-    strTmp = m_pMovie->m_strTagLine; strTmp.Trim();
+    strTmp = m_Movie.m_strTagLine; strTmp.Trim();
     CGUIMessage msg1(GUI_MSG_LABEL_ADD, GetID(), CONTROL_TAGLINE);
     msg1.SetLabel( strTmp );
     OnMessage(msg1);
@@ -234,24 +232,24 @@ void CGUIWindowVideoInfo::Update()
     OnMessage(msg1);
   }
   {
-    strTmp = m_pMovie->m_strPlotOutline; strTmp.Trim();
+    strTmp = m_Movie.m_strPlotOutline; strTmp.Trim();
     CGUIMessage msg1(GUI_MSG_LABEL_ADD, GetID(), CONTROL_PLOTOUTLINE);
     msg1.SetLabel( strTmp );
     OnMessage(msg1);
   }
   CStdString strYear;
-  strYear.Format("%i", m_pMovie->m_iYear);
+  strYear.Format("%i", m_Movie.m_iYear);
   SetLabel(CONTROL_YEAR, strYear );
 
   CStdString strRating;
-  strRating.Format("%03.1f", m_pMovie->m_fRating);
+  strRating.Format("%03.1f", m_Movie.m_fRating);
   SetLabel(CONTROL_RATING, strRating );
 
-  strTmp = m_pMovie->m_strVotes; strTmp.Trim();
+  strTmp = m_Movie.m_strVotes; strTmp.Trim();
   SetLabel(CONTROL_VOTES, strTmp.c_str() );
 
   CStdString strRating_And_Votes;
-  if (strRating.Equals("0.0")) {strRating_And_Votes = m_pMovie->m_strVotes;}
+  if (strRating.Equals("0.0")) {strRating_And_Votes = m_Movie.m_strVotes;}
   else
     // if rating is 0 there are no votes so display not available message already set in Votes string
   {
@@ -259,15 +257,15 @@ void CGUIWindowVideoInfo::Update()
     SetLabel(CONTROL_RATING_AND_VOTES, strRating_And_Votes);
   }
 
-  strTmp = m_pMovie->m_strRuntime; strTmp.Trim();
+  strTmp = m_Movie.m_strRuntime; strTmp.Trim();
   SetLabel(CONTROL_RUNTIME, strTmp.c_str() );
 
   // setup plot text area
-  strTmp = m_pMovie->m_strPlot; strTmp.Trim();
+  strTmp = m_Movie.m_strPlot; strTmp.Trim();
   SET_CONTROL_LABEL(CONTROL_TEXTAREA, strTmp.c_str() );
 
   // setup cast list
-  strTmp = m_pMovie->m_strCast; strTmp.Trim();
+  strTmp = m_Movie.m_strCast; strTmp.Trim();
   m_vecStrCast.clear();
   vector<CStdString> vecCast;
   int iNumItems = StringUtils::SplitString(strTmp, "\n", vecCast);
@@ -296,7 +294,7 @@ void CGUIWindowVideoInfo::Update()
 
   // Check for resumability
   CGUIWindowVideoFiles *window = (CGUIWindowVideoFiles *)m_gWindowManager.GetWindow(WINDOW_VIDEOS);
-  CFileItem movie(m_pMovie->m_strPath, false);
+  CFileItem movie(m_Movie.m_strPath, false);
   if (window && window->GetResumeItemOffset(&movie))
   {
     CONTROL_ENABLE(CONTROL_BTN_RESUME);
@@ -344,7 +342,7 @@ void CGUIWindowVideoInfo::Refresh()
   {
     OutputDebugString("Refresh\n");
 
-    CStdString strImage = m_pMovie->m_strPictureURL;
+    CStdString strImage = m_Movie.m_strPictureURL;
 
     CStdString thumbImage = m_movieItem.GetThumbnailImage();
     if (!m_movieItem.HasThumbnail())
@@ -469,7 +467,7 @@ void CGUIWindowVideoInfo::AddItemsToList(const vector<CStdString> &vecStr)
 
 void CGUIWindowVideoInfo::Play(bool resume)
 {
-  CFileItem movie(m_pMovie->m_strPath, false);
+  CFileItem movie(m_Movie.m_strPath, false);
   CGUIWindowVideoFiles* pWindow = (CGUIWindowVideoFiles*)m_gWindowManager.GetWindow(WINDOW_VIDEOS);
   if (pWindow)
   {
@@ -495,15 +493,15 @@ bool CGUIWindowVideoInfo::DownloadThumbnail(const CStdString &thumb)
   // and then a thumb chooser should be presented, with the current thumb
   // and the downloaded thumbs available (possibly also with a generic
   // file browse option?)
-  if (m_pMovie->m_strPictureURL.IsEmpty())
+  if (m_Movie.m_strPictureURL.IsEmpty())
     return false;
   CHTTP http;
   CStdString strExtension;
-  CUtil::GetExtension(m_pMovie->m_strPictureURL, strExtension);
+  CUtil::GetExtension(m_Movie.m_strPictureURL, strExtension);
   CStdString strTemp = "Z:\\temp";
   strTemp += strExtension;
   ::DeleteFile(strTemp.c_str());
-  http.Download(m_pMovie->m_strPictureURL, strTemp);
+  http.Download(m_Movie.m_strPictureURL, strTemp);
 
   try
   {
