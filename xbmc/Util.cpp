@@ -1180,6 +1180,7 @@ void CUtil::GetUserThumbnail(const CStdString& strFileName, CStdString& strThumb
 
 void CUtil::GetCachedThumbnail(const CStdString& strFileName, CStdString& strCachedThumb)
 {
+  // TODO:
   Crc32 crc;
   if (IsStack(strFileName))
   {
@@ -1190,7 +1191,7 @@ void CUtil::GetCachedThumbnail(const CStdString& strFileName, CStdString& strCac
     crc.ComputeFromLowerCase(strFileName);
   CStdString strHex;
   strHex.Format("%08x",crc);
-  strCachedThumb.Format("%s\\%s\\%s.tbn", g_settings.GetThumbnailsFolder().c_str(), strHex.Left(1).c_str(), strHex.c_str());
+  strCachedThumb.Format("%s\\%s\\%s.tbn", g_settings.GetPicturesThumbFolder().c_str(), strHex.Left(1).c_str(), strHex.c_str());
 }
 
 void CUtil::GetHomePath(CStdString& strPath)
@@ -1620,7 +1621,7 @@ void CUtil::GetAlbumFolderThumb(const CStdString& strFileName, CStdString& strTh
   Crc32 crc;
   crc.ComputeFromLowerCase(strFileName);
   if (bTempDir)
-    strThumb.Format("%s\\%x.tbn", g_settings.GetTempMusicThumbFolder().c_str(), crc);
+    strThumb.Format("%s\\%x.tbn", g_settings.GetMusicTempThumbFolder().c_str(), crc);
   else
     strThumb.Format("%s\\%x.tbn", g_settings.GetMusicThumbFolder().c_str(), crc);
 }
@@ -3185,7 +3186,7 @@ void CUtil::TakeScreenshot()
 void CUtil::ClearCache()
 {
   g_directoryCache.ClearDirectory(g_settings.GetMusicThumbFolder());
-  g_directoryCache.ClearDirectory(g_settings.GetTempMusicThumbFolder());
+  g_directoryCache.ClearDirectory(g_settings.GetMusicTempThumbFolder());
 
   g_directoryCache.ClearDirectory(g_settings.GetThumbnailsFolder());
 
