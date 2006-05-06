@@ -15,7 +15,7 @@ CPictureThumbLoader::~CPictureThumbLoader()
 bool CPictureThumbLoader::LoadItem(CFileItem* pItem)
 {
   if (pItem->m_bIsShareOrDrive) return true;
-  pItem->SetThumb();
+  pItem->SetCachedPictureThumb();
   if (m_regenerateThumbs && pItem->HasThumbnail())
   {
     CFile::Delete(pItem->GetThumbnailImage());
@@ -24,10 +24,10 @@ bool CPictureThumbLoader::LoadItem(CFileItem* pItem)
   if ((pItem->IsPicture() && !pItem->IsZIP() && !pItem->IsRAR() && !pItem->IsCBZ() && !pItem->IsCBR() && !pItem->IsPlayList()) && !pItem->HasThumbnail())
   { // load the thumb from the image file
     CPicture pic;
-    pic.CreateThumbnail(pItem->m_strPath);
+    pic.DoCreateThumbnail(pItem->m_strPath, pItem->GetCachedPictureThumb());
   }
-  // refill in the icon to get it to update
-  pItem->SetThumb();
+  // refill in the thumb to get it to update
+  pItem->SetCachedPictureThumb();
   pItem->FillInDefaultIcon();
   return true;
 };
