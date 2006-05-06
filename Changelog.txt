@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 05-05-2006 changed: when viewing a .cbr/.cbz, move to top left corner on image change.
  - 05-05-2006 fixed: crash in my video info screen if you searched a movie by actor, then hit plot.
  - 06-05-2006 fixed: New loglevels were slightly out (meant you always had full debug logging.)
  - 06-05-2006 changed: Cleaned up more thumb related code (Picture thumbs are now in UserData/Thumbnails/Pictures/0..F/)

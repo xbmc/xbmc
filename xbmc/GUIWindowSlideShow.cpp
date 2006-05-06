@@ -662,6 +662,14 @@ void CGUIWindowSlideShow::OnLoadPic(int iPic, int iSlideNumber, D3DTexture *pTex
         m_Image[iPic].SetTexture(iSlideNumber, pTexture, iWidth, iHeight, iRotate, CSlideShowPic::EFFECT_NO_TIMEOUT);
       m_Image[iPic].SetOriginalSize(iOriginalWidth, iOriginalHeight, bFullSize);
       m_Image[iPic].Zoom(m_iZoomFactor, true);
+
+      if (CUtil::IsInRAR(m_vecSlides[m_iCurrentSlide]) || CUtil::IsInZIP(m_vecSlides[m_iCurrentSlide])) // move to top for cbr/cbz
+      {
+        CURL url(m_vecSlides[m_iCurrentSlide]);
+        CStdString strHostName = url.GetHostName();
+        if (CUtil::GetExtension(strHostName).Equals(".cbr", false) || CUtil::GetExtension(strHostName).Equals(".cbz", false))
+          m_Image[iPic].Move((float)m_Image[iPic].GetOriginalWidth(),(float)m_Image[iPic].GetOriginalHeight());
+      }
     }
   }
   else
