@@ -5,6 +5,10 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 07-05-2006 changed: Rss feed setup to UserData\RssFeeds.xml
+                       Keymap.xml to UserData\Keymap.xml
+                       System\LCD.xml to UserData\LCD.xml
+                       System\Partymode.xml to UserData\Partymode.xml
  - 07-05-2006 changed: Removed old thumb code.
  - 07-05-2006 changed: Background thumb loader for My Programs + changed My Programs + Kai thumb location.
  - 06-05-2006 fixed: Crash in my music if an action in the contextmenu caused the listing to change and the previous selected index was out of range in the new listing.

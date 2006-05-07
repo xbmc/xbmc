@@ -308,46 +308,7 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
 
   LoadUserFolderLayout(pRootElement);
 
-  // rss feeds
-  TiXmlElement* pRssFeeds = pRootElement->FirstChildElement("rss");
-  if (pRssFeeds)
-  {
-    g_settings.m_mapRssUrls.clear();
-    TiXmlElement* pSet = pRssFeeds->FirstChildElement("set");
-    while (pSet)
-    {
-      int iId;
-      if (pSet->QueryIntAttribute("id", &iId) == TIXML_SUCCESS)
-      {
-        std::vector<string> vecSet;
-        std::vector<int> vecIntervals;
-        TiXmlElement* pFeed = pSet->FirstChildElement("feed");
-        while (pFeed)
-        {
-          int iInterval;
-          if ( pFeed->QueryIntAttribute("updateinterval",&iInterval) != TIXML_SUCCESS)
-          {
-            iInterval=30; // default to 30 min
-            CLog::Log(LOGDEBUG,"no interval set, default to 30!");
-          }
-          if (pFeed->FirstChild())
-          {
-            // TODO: UTF-8: Do these URLs need to be converted to UTF-8?
-            //              What about the xml encoding?
-            CStdString strUrl = pFeed->FirstChild()->Value();
-            vecSet.push_back(strUrl);
-            vecIntervals.push_back(iInterval);
-          }
-          pFeed = pFeed->NextSiblingElement("feed");
-        }
-        g_settings.m_mapRssUrls.insert(std::make_pair<int,std::pair<std::vector<int>,std::vector<string> > >(iId,std::make_pair<std::vector<int>,std::vector<string> >(vecIntervals,vecSet)));
-      } 
-      else 
-        CLog::Log(LOGERROR,"found rss url set with no id in XboxMediaCenter.xml, ignored");
-
-      pSet = pSet->NextSiblingElement("set");
-    }
-  }
+  LoadRSSFeeds();
 
   CStdString strDir;
 
@@ -2460,4 +2421,63 @@ CStdString CSettings::GetXLinkKaiThumbFolder() const
   CStdString folder;
   CUtil::AddFileToFolder(g_stSettings.m_userDataFolder, "Thumbnails\\Programs\\XLinkKai", folder);
   return folder;
+}
+
+void CSettings::LoadRSSFeeds()
+{
+  CStdString rssXML;
+  rssXML.Format("%s\\RSSFeeds.xml", GetUserDataFolder().c_str());
+  TiXmlDocument rssDoc;
+  if (!CFile::Exists(rssXML))
+  { // set defaults, or assume no rss feeds??
+    return;
+  }
+  if (!rssDoc.LoadFile(rssXML.c_str()))
+  {
+    CLog::Log(LOGERROR, "Error loading %s, Line %d\n%s", rssXML.c_str(), rssDoc.ErrorRow(), rssDoc.ErrorDesc());
+    return;
+  }
+
+  TiXmlElement *pRootElement = rssDoc.RootElement();
+  if (!pRootElement || strcmpi(pRootElement->Value(),"rssfeeds") != 0)
+  {
+    CLog::Log(LOGERROR, "Error loading %s, no <rss> node", rssXML.c_str());
+    return;
+  }
+
+  g_settings.m_mapRssUrls.clear();
+  TiXmlElement* pSet = pRootElement->FirstChildElement("set");
+  while (pSet)
+  {
+    int iId;
+    if (pSet->QueryIntAttribute("id", &iId) == TIXML_SUCCESS)
+    {
+      std::vector<string> vecSet;
+      std::vector<int> vecIntervals;
+      TiXmlElement* pFeed = pSet->FirstChildElement("feed");
+      while (pFeed)
+      {
+        int iInterval;
+        if ( pFeed->QueryIntAttribute("updateinterval",&iInterval) != TIXML_SUCCESS)
+        {
+          iInterval=30; // default to 30 min
+          CLog::Log(LOGDEBUG,"no interval set, default to 30!");
+        }
+        if (pFeed->FirstChild())
+        {
+          // TODO: UTF-8: Do these URLs need to be converted to UTF-8?
+          //              What about the xml encoding?
+          CStdString strUrl = pFeed->FirstChild()->Value();
+          vecSet.push_back(strUrl);
+          vecIntervals.push_back(iInterval);
+        }
+        pFeed = pFeed->NextSiblingElement("feed");
+      }
+      g_settings.m_mapRssUrls.insert(std::make_pair<int,std::pair<std::vector<int>,std::vector<string> > >(iId,std::make_pair<std::vector<int>,std::vector<string> >(vecIntervals,vecSet)));
+    } 
+    else 
+      CLog::Log(LOGERROR,"found rss url set with no id in XboxMediaCenter.xml, ignored");
+
+    pSet = pSet->NextSiblingElement("set");
+  }
 }
