@@ -58,5 +58,5 @@ protected:
 
   int m_iShowMode;
 
-  CThumbLoader m_thumbLoader;
+  CVideoThumbLoader m_thumbLoader;
 };

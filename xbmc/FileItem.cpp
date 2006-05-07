@@ -2192,3 +2192,50 @@ void CFileItem::SetUserVideoThumb()
   }
   SetCachedVideoThumb();
 }
+
+CStdString CFileItem::GetCachedProgramThumb()
+{
+  // get the locally cached thumb
+  Crc32 crc;
+  crc.ComputeFromLowerCase(m_strPath);
+  CStdString thumb;
+  thumb.Format("%s\\%08x.tbn", g_settings.GetProgramsThumbFolder().c_str(), crc);
+  return thumb;
+}
+
+void CFileItem::SetCachedProgramThumb()
+{
+  CStdString thumb(GetCachedProgramThumb());
+  if (CFile::Exists(thumb))
+    SetThumbnailImage(thumb);
+}
+
+void CFileItem::SetUserProgramThumb()
+{
+  if (m_bIsShareOrDrive) return;
+
+  CStdString path(m_strPath);
+  if (IsShortCut())
+  {
+    CShortcut shortcut;
+    if ( shortcut.Create( m_strPath ) )
+      path = shortcut.m_strPath;
+  }
+  // 1.  Try <filename>.tbn
+  CStdString fileThumb;
+  CUtil::ReplaceExtension(m_strPath, ".tbn", fileThumb);
+  //CStdString fileThumb(CUtil::GetFileThumbnail(m_strPath));
+  CStdString thumb(GetCachedProgramThumb());
+  if (CFile::Exists(fileThumb))
+  { // cache
+    CPicture pic;
+    if (pic.DoCreateThumbnail(fileThumb, thumb))
+      SetThumbnailImage(thumb);
+  }
+  else if (IsXBE())
+  {
+    // 2. cache the xbe image
+    if (CUtil::GetXBEIcon(m_strPath, thumb))
+      SetThumbnailImage(thumb);
+  }
+}

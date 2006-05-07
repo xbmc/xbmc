@@ -2,9 +2,10 @@
 #include "GUIMediaWindow.h"
 #include "programdatabase.h"
 #include "GUIDialogProgress.h"
+#include "ThumbLoader.h"
 
 class CGUIWindowPrograms :
-      public CGUIMediaWindow
+      public CGUIMediaWindow, public IBackgroundLoaderObserver
 {
 public:
   CGUIWindowPrograms(void);
@@ -13,6 +14,7 @@ public:
   virtual bool OnPopupMenu(int iItem);
 
 protected:
+  virtual void OnItemLoaded(CFileItem* pItem) {};
   virtual void GoParentFolder();
   virtual bool OnClick(int iItem);
   virtual bool Update(const CStdString& strDirectory);
@@ -35,4 +37,6 @@ protected:
   CStdString m_strParentPath;
   bool m_isRoot;
   int m_iRegionSet; // for cd stuff
+
+  CProgramThumbLoader m_thumbLoader;
 };
