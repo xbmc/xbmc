@@ -1099,9 +1099,10 @@ HRESULT CApplication::Initialize()
   CreateDirectory(g_settings.GetMusicThumbFolder().c_str(), NULL);
   CreateDirectory(g_settings.GetMusicTempThumbFolder().c_str(), NULL);
   CreateDirectory(g_settings.GetMusicArtistThumbFolder().c_str(), NULL);
-  CreateDirectory(g_settings.GetXLinkKaiThumbFolder().c_str(), NULL);
   CreateDirectory(g_settings.GetVideoThumbFolder().c_str(), NULL);
   CreateDirectory(g_settings.GetBookmarksThumbFolder().c_str(), NULL);
+  CreateDirectory(g_settings.GetProgramsThumbFolder().c_str(), NULL);
+  CreateDirectory(g_settings.GetXLinkKaiThumbFolder().c_str(), NULL);
   CreateDirectory(g_settings.GetPicturesThumbFolder().c_str(), NULL);
   CLog::Log(LOGINFO, "  thumbnails folder:%s", g_settings.GetThumbnailsFolder().c_str());
   for (unsigned int hex=0; hex < 16; hex++)

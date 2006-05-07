@@ -2,10 +2,18 @@
 
 #pragma once
 
-class CThumbLoader : public CBackgroundInfoLoader
+class CVideoThumbLoader : public CBackgroundInfoLoader
 {
 public:
-  CThumbLoader();
-  virtual ~CThumbLoader();
+  CVideoThumbLoader();
+  virtual ~CVideoThumbLoader();
+  virtual bool LoadItem(CFileItem* pItem);
+};
+
+class CProgramThumbLoader : public CBackgroundInfoLoader
+{
+public:
+  CProgramThumbLoader();
+  virtual ~CProgramThumbLoader();
   virtual bool LoadItem(CFileItem* pItem);
 };

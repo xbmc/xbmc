@@ -30,6 +30,7 @@ using namespace DIRECTORY;
 CGUIWindowPrograms::CGUIWindowPrograms(void)
     : CGUIMediaWindow(WINDOW_PROGRAMS, "MyPrograms.xml")
 {
+  m_thumbLoader.SetObserver(this);
 }
 
 
@@ -43,6 +44,8 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
   {
   case GUI_MSG_WINDOW_DEINIT:
     {
+      if (m_thumbLoader.IsLoading())
+        m_thumbLoader.StopThread();
       m_database.Close();
     }
     break;
@@ -671,6 +674,8 @@ void CGUIWindowPrograms::LoadDirectory2(const CStdString& strDirectory, int idep
 
 bool CGUIWindowPrograms::Update(const CStdString &strDirectory)
 {
+  if (m_thumbLoader.IsLoading())
+    m_thumbLoader.StopThread();
   bool bFlattenDir = g_guiSettings.GetBool("MyPrograms.Flatten");
   bool bOnlyDefaultXBE = g_guiSettings.GetBool("MyPrograms.DefaultXBEOnly");
   bool bParentPath(false);
@@ -874,7 +879,6 @@ bool CGUIWindowPrograms::Update(const CStdString &strDirectory)
   }  
   m_database.CommitTransaction();
   //CUtil::ClearCache();
-  m_vecItems.SetThumbs();
   CStdString strSelectedItem = m_history.GetSelectedItem(m_isRoot?"empty":strDirectory);
   if (m_guiState.get() && m_guiState->HideExtensions())
     m_vecItems.RemoveExtensions();
@@ -898,6 +902,7 @@ bool CGUIWindowPrograms::Update(const CStdString &strDirectory)
   UpdateButtons();
   m_viewControl.SetSelectedItem(strSelectedItem);
 
+  m_thumbLoader.Load(m_vecItems);
   return true;
 }
 
@@ -1116,6 +1121,7 @@ void CGUIWindowPrograms::OnScan(CFileItemList& items, int& iTotalAppsFound)
   g_directoryCache.Clear();
 }
 
+// TODO 2.0: What does this routine do???
 void CGUIWindowPrograms::DeleteThumbs(CFileItemList& items)
 {
   CUtil::ClearCache();
