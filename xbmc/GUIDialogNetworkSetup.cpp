@@ -89,6 +89,8 @@ void CGUIDialogNetworkSetup::OnInitWindow()
   pSpin->AddLabel(CStdString("Windows Network (SMB)"), NET_PROTOCOL_SMB);
   pSpin->AddLabel(CStdString("XBMSP Server"), NET_PROTOCOL_XBMSP);
   pSpin->AddLabel(CStdString("FTP Server"), NET_PROTOCOL_FTP);
+  pSpin->AddLabel(CStdString("ITunes music share (DAAP)"), NET_PROTOCOL_DAAP);
+
   pSpin->SetValue(m_protocol);
   OnProtocolChange();
 }
@@ -118,7 +120,7 @@ void CGUIDialogNetworkSetup::OnServerBrowse()
 
 void CGUIDialogNetworkSetup::OnServerAddress()
 {
-  if (m_protocol == NET_PROTOCOL_XBMSP)
+  if (m_protocol == NET_PROTOCOL_XBMSP || m_protocol == NET_PROTOCOL_DAAP)
     CGUIDialogNumeric::ShowAndGetIPAddress(m_server, g_localizeStrings.Get(1016));
   else
     CGUIDialogKeyboard::ShowAndGetInput(m_server, g_localizeStrings.Get(1016), false);
@@ -172,6 +174,8 @@ void CGUIDialogNetworkSetup::OnProtocolChange()
     m_port = "21";
   else if (m_protocol == NET_PROTOCOL_XBMSP)
     m_port = "1400";
+  else if (m_protocol == NET_PROTOCOL_DAAP)
+    m_port = "3689";
   m_server.Empty();
   m_path.Empty();
   m_username.Empty();
@@ -204,8 +208,9 @@ void CGUIDialogNetworkSetup::UpdateButtons()
   {
     server->SetLabel2(m_server);
   }
+  // TODO: FIX BETTER DAAP SUPPORT
   // server browse should be disabled if we are in FTP
-  if (m_server.IsEmpty() && m_protocol == NET_PROTOCOL_FTP)
+  if (m_server.IsEmpty() && (m_protocol == NET_PROTOCOL_FTP || m_protocol == NET_PROTOCOL_DAAP))
   {
     CONTROL_DISABLE(CONTROL_SERVER_BROWSE);
   }
@@ -218,6 +223,7 @@ void CGUIDialogNetworkSetup::UpdateButtons()
   if (path)
   {
     path->SetLabel2(m_path);
+    path->SetEnabled(m_protocol != NET_PROTOCOL_DAAP);
   }
   // port
   CGUIButtonControl *port = (CGUIButtonControl *)GetControl(CONTROL_PORT_NUMBER);
@@ -230,8 +236,10 @@ void CGUIDialogNetworkSetup::UpdateButtons()
   CGUIButtonControl *username = (CGUIButtonControl *)GetControl(CONTROL_USERNAME);
   if (username)
   {
+    username->SetEnabled(m_protocol != NET_PROTOCOL_DAAP);
     username->SetLabel2(m_username);
   }
+  
   // password
   CGUIButtonControl *password = (CGUIButtonControl *)GetControl(CONTROL_PASSWORD);
   if (password)
@@ -239,6 +247,7 @@ void CGUIDialogNetworkSetup::UpdateButtons()
     CStdString asterix;
     asterix.append(m_password.size(), '*');
     password->SetLabel2(asterix);
+    password->SetEnabled(m_protocol != NET_PROTOCOL_DAAP);
   }
 }
 
@@ -251,6 +260,8 @@ CStdString CGUIDialogNetworkSetup::ConstructPath() const
     path = "xbms://";
   else if (m_protocol == NET_PROTOCOL_FTP)
     path = "ftp://";
+  else if (m_protocol == NET_PROTOCOL_DAAP)
+    path = "daap://";
   if (!m_username.IsEmpty())
   {
     path += m_username;
@@ -263,7 +274,8 @@ CStdString CGUIDialogNetworkSetup::ConstructPath() const
   }
   path += m_server;
   if ((m_protocol == NET_PROTOCOL_FTP && !m_port.IsEmpty() && atoi(m_port.c_str()) > 0)
-   || (m_protocol == NET_PROTOCOL_XBMSP && !m_port.IsEmpty() && atoi(m_port.c_str()) > 0 && !m_server.IsEmpty()))
+   || (m_protocol == NET_PROTOCOL_XBMSP && !m_port.IsEmpty() && atoi(m_port.c_str()) > 0 && !m_server.IsEmpty())
+   || (m_protocol == NET_PROTOCOL_DAAP && !m_port.IsEmpty() && atoi(m_port.c_str()) > 0 && !m_server.IsEmpty()))
   {
     path += ":";
     path += m_port;
@@ -284,6 +296,8 @@ void CGUIDialogNetworkSetup::SetPath(const CStdString &path)
     m_protocol = NET_PROTOCOL_XBMSP;
   else if (protocol == "ftp")
     m_protocol = NET_PROTOCOL_FTP;
+  else if (protocol == "daap")
+    m_protocol = NET_PROTOCOL_DAAP;
   else
     m_protocol = NET_PROTOCOL_SMB;  // default to smb
   m_username = url.GetUserName();
