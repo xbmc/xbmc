@@ -501,6 +501,8 @@ protected:
 
   void LoadUserFolderLayout(const TiXmlElement *pRootElement);
 
+  void LoadRSSFeeds();
+
   TiXmlDocument xbmcXml;  // for editing the xml file from within XBMC
   bool xbmcXmlLoaded;
 };
