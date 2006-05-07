@@ -1132,68 +1132,6 @@ void CUtil::LaunchXbe(const char* szPath, const char* szXbe, const char* szParam
   }
 }
 
-// GetUserThumbnail
-// Grabs a user thumbnail for a file (filename.tbn)
-// 1. Checks <filename>.tbn
-// 2. If it's a stacked file, it checks <firststackfile>.tbn (Videos)
-// 3. Checks for embedded xbe thumbs (Programs)
-// 4. Checks shortcuts and uses the destination files thumb (Programs)
-void CUtil::GetUserThumbnail(const CStdString& strFileName, CStdString& strThumb)
-{
-  CStdString strFile;
-  CUtil::ReplaceExtension(strFileName, ".tbn", strFile);
-  if (CFile::Exists(strFile))
-  {
-    strThumb = strFile;
-    return ;
-  }
-
-  CFileItem item(strFileName, false);
-  if (item.IsStack())
-  {
-    CStackDirectory dir;
-    GetUserThumbnail(dir.GetFirstStackedFile(strFileName), strThumb);
-    return;
-  }
-  if (item.IsXBE())
-  {
-    if (CUtil::GetXBEIcon(strFileName, strThumb) ) return ;
-    strThumb = "defaultProgramBig.png";
-    return;
-  }
-
-  if (item.IsShortCut() )
-  {
-    CShortcut shortcut;
-    if ( shortcut.Create( strFileName ) )
-    {
-      CStdString strFile = shortcut.m_strPath;
-
-      GetUserThumbnail(strFile, strThumb);
-      return;
-    }
-  }
-
-  // no thumb found
-  strThumb.Empty();
-}
-
-void CUtil::GetCachedThumbnail(const CStdString& strFileName, CStdString& strCachedThumb)
-{
-  // TODO:
-  Crc32 crc;
-  if (IsStack(strFileName))
-  {
-    CStackDirectory dir;
-    crc.ComputeFromLowerCase(dir.GetFirstStackedFile(strFileName));
-  }
-  else
-    crc.ComputeFromLowerCase(strFileName);
-  CStdString strHex;
-  strHex.Format("%08x",crc);
-  strCachedThumb.Format("%s\\%s\\%s.tbn", g_settings.GetPicturesThumbFolder().c_str(), strHex.Left(1).c_str(), strHex.c_str());
-}
-
 void CUtil::GetHomePath(CStdString& strPath)
 {
   char szXBEFileName[1024];
@@ -1870,56 +1808,6 @@ void CUtil::CreateShortcut(CFileItem* pItem)
       }
     }
   }
-}
-
-bool CUtil::GetFolderThumb(const CStdString& strFolder, CStdString& strThumb)
-{
-  // get the thumbnail for the folder contained in strFolder
-  // and return the filename of the thumbnail in strThumb
-  //
-  // if folder contains folder.jpg and is local on xbox HD then use it as the thumbnail
-  // if folder contains folder.jpg but is located on a share then cache the folder.jpg
-  // to q:\thumbs and return the cached image as a thumbnail
-  CStdString strFolderImage;
-  strThumb = "";
-  CUtil::AddFileToFolder(strFolder, "folder.jpg", strFolderImage);
-
-  CFileItem item(strFolder, true);
-  // remote or local file?
-  if (item.IsRemote() || item.IsOnDVD() || item.IsISO9660() )
-  {
-    // dont try to locate a folder.jpg for streams &  shoutcast
-    if (item.IsInternetStream())
-      return false;
-
-    CUtil::GetCachedThumbnail( strFolder, strThumb);
-    // if local cache of thumb doesnt exists yet
-    if (!CFile::Exists( strThumb) )
-    {
-      // then cache folder.jpg to xbox HD
-      if (CFile::Exists(strFolderImage))
-      {
-        CPicture pic;
-        if (pic.DoCreateThumbnail(strFolderImage, strThumb))
-          return true;
-      }
-    }
-    else
-    {
-      // else used the cached version
-      return true;
-    }
-  }
-  else if (CFile::Exists(strFolderImage) )
-  {
-    // is local, and folder.jpg exists. Use it
-    strThumb = strFolderImage;
-    return true;
-  }
-
-  // no thumb found
-  strThumb = "";
-  return false;
 }
 
 void CUtil::GetFatXQualifiedPath(CStdString& strFileNameAndPath)

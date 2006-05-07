@@ -691,161 +691,6 @@ void CFileItem::FillInDefaultIcon()
   }
 }
 
-// set the thumbnail for an file item
-void CFileItem::SetThumb()
-{
-  CStdString strThumb;
-
-  // if it already has a thumbnail, then return
-  if (HasThumbnail() || m_bIsShareOrDrive)
-    return;
-
-  if (m_strPath.substr(0,6) == "zip://" || m_strPath.substr(0,6) == "rar://")
-  {
-    CURL url(m_strPath);
-    if (url.GetFileName().IsEmpty())
-      return;
-  }
-
-  //  No thumb for parent folder items
-  if (IsParentFolder()) return ;
-
-  if (IsXBE() && m_bIsFolder) return ;  // case where we have multiple paths with XBE
-
-  /*
-  does anyone know what is this section of code is for?
-
-  it doesnt work when the path is an iso9660:// path
-  you get an error that the texture manager cannot open the file
-  somewhere m_strPath gets concatenated to the skin media directory
-  
-  example:
-  ERROR Texture manager unable to load file: Q:\skin\Project Mayhem\media\iso9660://somedir/somefile.tbn
-  */
-  /*if (!IsRemote() && !IsISO9660())
-  {
-    CStdString strFile;
-    CUtil::ReplaceExtension(m_strPath, ".tbn", strFile);
-    if (CFile::Exists(strFile))
-    {
-      SetThumbnailImage(strFile);
-      return;
-    }
-  }*/
-
-  // if this is a shortcut, then get the real filename
-  CFileItem item;
-  if (IsShortCut())
-  {
-    CShortcut shortcut;
-    if ( shortcut.Create( m_strPath ) )
-    {
-      item.m_strPath = shortcut.m_strPath;
-    }
-  }
-  else if (IsStack())
-  {
-    CStackDirectory dir;
-    item.m_strPath = dir.GetFirstStackedFile(m_strPath);
-  }
-  else
-    item.m_strPath = m_strPath;
-
-  // get filename of cached thumbnail like Q:\thumbs\00aed638.tbn
-  // NOTE: Thumbs for both files and folders are cached using the CRC of the
-  //       path of the item.
-  CStdString strCachedThumbnail;
-  CUtil::GetCachedThumbnail(item.m_strPath,strCachedThumbnail);
-
-  bool bGotIcon(false);
-
-  // does a cached thumbnail exists?
-  // If it is on the DVD and is an XBE, let's grab get the thumbnail again
-  if (!CFile::Exists(strCachedThumbnail) || (item.IsXBE() && item.IsOnDVD()) )
-  {
-    // get the path for the  thumbnail
-    CUtil::GetUserThumbnail( item.m_strPath, strThumb);
-    // local cached thumb does not exists
-    // check if strThumb exists
-    if (CFile::Exists(strThumb))
-    {
-      // yes, is it a local or remote file
-      if (CUtil::IsRemote(strThumb) || CUtil::IsOnDVD(strThumb) || CUtil::IsISO9660(strThumb) )
-      {
-        // remote file, then cache it...
-        if ( CFile::Cache(strThumb.c_str(), strCachedThumbnail.c_str(), NULL, NULL))
-        {
-          CLog::Log(LOGDEBUG,"  Cached thumb: %s",strCachedThumbnail.c_str());
-          // cache ok, then use it
-          SetThumbnailImage(strCachedThumbnail);
-          bGotIcon = true;
-        }
-      }
-      else
-      {
-        // local file, then use it
-        SetThumbnailImage(strThumb);
-        bGotIcon = true;
-      }
-    }
-    else
-    {
-      // strThumb doesnt exists either
-      // now check for filename.tbn or foldername.tbn
-      CStdString strThumbnailFileName;
-      if (m_bIsFolder)
-      {
-        strThumbnailFileName = m_strPath;
-        if (CUtil::HasSlashAtEnd(strThumbnailFileName))
-          strThumbnailFileName.Delete(strThumbnailFileName.size() - 1);
-        strThumbnailFileName += ".tbn";
-      }
-      else
-        CUtil::ReplaceExtension(item.m_strPath, ".tbn", strThumbnailFileName);
-
-      if (CFile::Exists(strThumbnailFileName))
-      {
-        //  local or remote ?
-        if (item.IsRemote() || item.IsOnDVD() || item.IsISO9660())
-        {
-          //  remote, cache thumb to hdd
-          if ( CFile::Cache(strThumbnailFileName.c_str(), strCachedThumbnail.c_str(), NULL, NULL))
-          {
-            SetThumbnailImage(strCachedThumbnail);
-            bGotIcon = true;
-          }
-        }
-        else
-        {
-          //  local, just use it
-          SetThumbnailImage(strThumbnailFileName);
-          bGotIcon = true;
-        }
-      }
-    }
-    // fill in the folder thumbs
-    if (!bGotIcon && !IsParentFolder())
-    {
-      // this is a folder ?
-      if (m_bIsFolder)
-      {
-        // yes, then get the folder thumbnail
-        if (CUtil::GetFolderThumb(m_strPath, strThumb))
-        {
-          SetThumbnailImage(strThumb);
-        }
-      }
-	  else if (IsXBE())
-		  SetIconImage("defaultProgram.png");
-    }
-  }
-  else
-  {
-    // yes local cached thumbnail exists, use it
-    SetThumbnailImage(strCachedThumbnail);
-  }
-}
-
 CStdString CFileItem::GetCachedArtistThumb()
 {
   Crc32 crc;
@@ -1711,24 +1556,6 @@ void CFileItemList::FillInDefaultIcons()
   }
 }
 
-// SetThumbs() is only used for:
-//  1. GUIDialogFileBrowser (probably not needed)
-//  2. GUIWindowPrograms    (replace with programs specific caching)
-//  3. GUIWindowScripts     (replace with scripts specific caching - use programs caching)
-void CFileItemList::SetThumbs()
-{
-  //cache thumbnails directory
-  g_directoryCache.InitThumbCache();
-
-  for (int i = 0; i < (int)m_items.size(); ++i)
-  {
-    CFileItem* pItem = m_items[i];
-    pItem->SetThumb();
-  }
-
-  g_directoryCache.ClearThumbCache();
-}
-
 void CFileItemList::SetMusicThumbs()
 {
   //cache thumbnails directory
@@ -2237,5 +2064,29 @@ void CFileItem::SetUserProgramThumb()
     // 2. cache the xbe image
     if (CUtil::GetXBEIcon(m_strPath, thumb))
       SetThumbnailImage(thumb);
+  }
+  else if (m_bIsFolder)
+  {
+    // 3. cache the folder image
+    CStdString folderThumb;
+    CUtil::AddFileToFolder(m_strPath, "folder.jpg", folderThumb);
+    if (CFile::Exists(folderThumb))
+    {
+      CPicture pic;
+      if (pic.DoCreateThumbnail(fileThumb, thumb))
+        SetThumbnailImage(thumb);
+    }
+  }
+}
+
+void CFileItemList::SetProgramThumbs()
+{
+  // TODO: Is there a speed up if we cache the program thumbs first?
+  for (unsigned int i = 0; i < m_items.size(); i++)
+  {
+    CFileItem *pItem = m_items[i];
+    pItem->SetCachedProgramThumb();
+    if (!pItem->HasThumbnail())
+      pItem->SetUserProgramThumb();
   }
 }
