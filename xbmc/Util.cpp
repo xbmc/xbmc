@@ -1158,7 +1158,7 @@ void CUtil::GetUserThumbnail(const CStdString& strFileName, CStdString& strThumb
   if (item.IsXBE())
   {
     if (CUtil::GetXBEIcon(strFileName, strThumb) ) return ;
-    strThumb = "defaultProgram.png";
+    strThumb = "defaultProgramBig.png";
     return;
   }
 
@@ -1643,56 +1643,18 @@ void CUtil::GetAlbumThumb(const CStdString& strAlbumName, const CStdString& strF
 
 bool CUtil::GetXBEIcon(const CStdString& strFilePath, CStdString& strIcon)
 {
-  // check if thumbnail already exists
-  if (CUtil::IsOnDVD(strFilePath) && !CDetectDVDMedia::IsDiscInDrive() )
-  {
-    strIcon = "defaultDVDEmpty.png";
-    return true;
-  }
-
-
-  if (CUtil::IsOnDVD(strFilePath) || g_guiSettings.GetBool("MyPrograms.CacheProgramThumbs") )  // create CRC for DVD as we can't store default.tbn on DVD
-  {
-    GetCachedThumbnail(strFilePath, strIcon);
-  }
-  else
-  {
-    CStdString strPath = "";
-    CStdString strFileName = "";
-    CStdString defaultTbn;
-    CUtil::Split(strFilePath, strPath, strFileName);
-    CUtil::ReplaceExtension(strFileName, ".tbn", defaultTbn);
-    if (CUtil::HasSlashAtEnd(strPath))
-      strPath.Delete(strPath.size() - 1);
-
-    strIcon.Format("%s\\%s", strPath.c_str(), defaultTbn.c_str());
-  }
-
-  if (CFile::Exists(strIcon) && !CUtil::IsOnDVD(strFilePath))   // always create thumbnail for DVD.
-  {
-    //yes, just return
-    return true;
-  }
-
-  // no, then create a new thumb
-  // Locate file ID and get TitleImage.xbx E:\UDATA\<ID>\TitleImage.xbx
-
-  bool bFoundThumbnail = false;
-  CStdString szFileName;
-  //szFileName.Format("E:\\UDATA\\%08x\\TitleImage.xbx", GetXbeID( strFilePath ) );
-  //if (!CFile::Exists(szFileName))
   // extract icon from .xbe
   CXBE xbeReader;
   ::DeleteFile("T:\\1.xpr");
-  if ( !xbeReader.ExtractIcon(strFilePath, "T:\\1.xpr"))
+  if (!xbeReader.ExtractIcon(strFilePath, "T:\\1.xpr"))
   {
-	strIcon = "defaultProgramBig.png";
-   return true;
+	  strIcon = "defaultProgramBig.png";
+    return true;
   }
-  szFileName = "T:\\1.xpr";
 
+  bool success(false);
   CXBPackedResource* pPackedResource = new CXBPackedResource();
-  if ( SUCCEEDED( pPackedResource->Create( szFileName.c_str(), 1, NULL ) ) )
+  if ( SUCCEEDED( pPackedResource->Create( "T:\\1.xpr", 1, NULL ) ) )
   {
     LPDIRECT3DTEXTURE8 pTexture;
     LPDIRECT3DTEXTURE8 m_pTexture;
@@ -1732,8 +1694,7 @@ bool CUtil::GetXBEIcon(const CStdString& strFilePath, CStdString& strIcon)
             DWORD strideScreen = rectLocked.Pitch;
             //mp_msg(0,0," strideScreen=%i\n", strideScreen);
             CPicture pic;
-            if (pic.CreateThumbnailFromSurface(pBuff, iHeight, iWidth, strideScreen, strIcon.c_str()))
-              bFoundThumbnail = true;
+            success = pic.CreateThumbnailFromSurface(pBuff, iHeight, iWidth, strideScreen, strIcon.c_str());
           }
           m_pTexture->UnlockRect(0);
         }
@@ -1745,8 +1706,7 @@ bool CUtil::GetXBEIcon(const CStdString& strFilePath, CStdString& strIcon)
     }
   }
   delete pPackedResource;
-  if (bFoundThumbnail) CUtil::ClearCache();
-  return bFoundThumbnail;
+  return success;
 }
 
 

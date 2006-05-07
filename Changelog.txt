@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 07-05-2006 changed: Background thumb loader for My Programs + changed My Programs + Kai thumb location.
  - 06-05-2006 fixed: Crash in my music if an action in the contextmenu caused the listing to change and the previous selected index was out of range in the new listing.
  - 06-05-2006 fixed: Insane shoutcast memory usage. (now uses 256KB instead of 5MB internally)
  - 06-05-2006 changed: you can now alter trainer settings while kai is running. upon launch you will be asked to choose between kai and trainers.
