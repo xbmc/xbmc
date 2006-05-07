@@ -1215,7 +1215,7 @@ void CGUIWindowMusicBase::OnPopupMenu(int iItem)
   int btn_Rename = 0; // Rename
   if (!bIsGotoParent)
   {
-    if (m_vecItems.m_strPath.Equals(CUtil::MusicPlaylistsLocation()) || g_guiSettings.GetBool("MusicFiles.AllowFileDeletion"))
+    if (m_vecItems.m_strPath.Equals(g_guiSettings.GetString("System.PlaylistsPath")) || g_guiSettings.GetBool("MusicFiles.AllowFileDeletion"))
     {
       btn_Delete = pMenu->AddButton(117);
       btn_Rename = pMenu->AddButton(118);

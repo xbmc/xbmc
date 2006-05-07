@@ -473,7 +473,7 @@ void CGUIDialogFileBrowser::SetHeading(const CStdString &heading)
   SET_CONTROL_LABEL(CONTROL_HEADING_LABEL, heading);
 }
 
-bool CGUIDialogFileBrowser::ShowAndGetShare(CStdString &path, bool allowNetworkShares, CShare *additionalShare /* = NULL */)
+bool CGUIDialogFileBrowser::ShowAndGetShare(CStdString &path, bool allowNetworkShares, VECSHARES* additionalShare /* = NULL */)
 {
   // Technique is
   // 1.  Show Filebrowser with currently defined local, and optionally the network locations.
@@ -496,7 +496,10 @@ bool CGUIDialogFileBrowser::ShowAndGetShare(CStdString &path, bool allowNetworkS
 
   // Now the additional share if appropriate
   if (additionalShare)
-    shares.push_back(*additionalShare);
+  {
+    for (unsigned int i=0;i<additionalShare->size();++i)
+    shares.push_back((*additionalShare)[i]);
+  }
 
   // Now add the network shares...
   if (allowNetworkShares)

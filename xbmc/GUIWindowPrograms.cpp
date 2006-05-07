@@ -11,6 +11,7 @@
 #include "GUIDialogContextMenu.h"
 #include "GUIDialogMediaSource.h"
 #include "GUIDialogTrainerSettings.h"
+#include "GUIDialogFileBrowser.h"
 #include "xbox/xbeheader.h"
 #include "SortFileItem.h"
 #include "utils/Trainer.h"
@@ -1235,9 +1236,9 @@ void CGUIWindowPrograms::PopulateTrainersList()
   }
   if (!bBreak)
   {
-    CLog::Log(LOGDEBUG,"trainerpath %s",g_stSettings.m_szTrainerDirectory);
-    directory.GetDirectory(g_stSettings.m_szTrainerDirectory,trainers,".xbtf|.etm");
-    directory.GetDirectory(g_stSettings.m_szTrainerDirectory,archives,".rar",false); // TODO: ZIP SUPPORT
+    CLog::Log(LOGDEBUG,"trainerpath %s",g_guiSettings.GetString("MyPrograms.TrainerPath").c_str());
+    directory.GetDirectory(g_guiSettings.GetString("MyPrograms.TrainerPath").c_str(),trainers,".xbtf|.etm");
+    directory.GetDirectory(g_guiSettings.GetString("MyPrograms.TrainerPath").c_str(),archives,".rar",false); // TODO: ZIP SUPPORT
     for( int i=0;i<archives.Size();++i)
     {
       if (stricmp(CUtil::GetExtension(archives[i]->m_strPath),".rar") == 0)
@@ -1259,7 +1260,7 @@ void CGUIWindowPrograms::PopulateTrainersList()
       m_dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
     m_dlgProgress->SetPercentage(0);
     m_dlgProgress->ShowProgressBar(true);
-
+  
     CLog::Log(LOGDEBUG,"# trainers %i",trainers.Size());
     m_database.BeginTransaction();
     for (int i=0;i<trainers.Size();++i)

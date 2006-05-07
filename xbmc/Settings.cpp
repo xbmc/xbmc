@@ -3,6 +3,7 @@
 #include "application.h"
 #include "util.h"
 #include "GUIWindowMusicBase.h"
+#include "GUIDialogFileBrowser.h"
 #include "utils/FanController.h"
 #include "LangCodeExpander.h"
 #include "ButtonTranslator.h"
@@ -46,9 +47,7 @@ CSettings::CSettings(void)
   strcpy( g_stSettings.m_szDefaultPictures, "");
   strcpy( g_stSettings.m_szDefaultFiles, "");
   strcpy( g_stSettings.m_szDefaultVideos, "");
-  strcpy (g_stSettings.m_szMusicRecordingDirectory, "");
-  strcpy(g_stSettings.m_szTrainerDirectory,"$HOME\\system\\trainers");
-
+  
   g_stSettings.m_bMyMusicSongInfoInVis = true;    // UNUSED - depreciated.
   g_stSettings.m_bMyMusicSongThumbInVis = false;  // used for music info in vis screen
 
@@ -314,24 +313,7 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
 
   strDir = CUtil::TranslateSpecialDir(g_stSettings.m_szShortcutDirectory);
   strcpy( g_stSettings.m_szShortcutDirectory, strDir.c_str() );
-
-  strDir = CUtil::TranslateSpecialDir(g_stSettings.m_szMusicRecordingDirectory);
-  strcpy( g_stSettings.m_szMusicRecordingDirectory, strDir.c_str() );
-
-  strDir = CUtil::TranslateSpecialDir(g_stSettings.m_szScreenshotsDirectory);
-  strcpy( g_stSettings.m_szScreenshotsDirectory, strDir.c_str() );
-
-  strDir = CUtil::TranslateSpecialDir(g_stSettings.m_szPlaylistsDirectory);
-  strcpy( g_stSettings.m_szPlaylistsDirectory, strDir.c_str() );
   
-  strDir = CUtil::TranslateSpecialDir(g_stSettings.m_szTrainerDirectory);
-  strcpy( g_stSettings.m_szTrainerDirectory, strDir.c_str() );
-
-  while ( CUtil::HasSlashAtEnd(g_stSettings.m_szScreenshotsDirectory) )
-  {
-    g_stSettings.m_szScreenshotsDirectory[strlen(g_stSettings.m_szScreenshotsDirectory) - 1] = 0;
-  }
-
   if (g_stSettings.m_szShortcutDirectory[0])
   {
     CShare share;
@@ -2300,30 +2282,18 @@ void CSettings::ResetSkinSettings()
 
 void CSettings::LoadUserFolderLayout(const TiXmlElement *pRootElement)
 {
-  GetString(pRootElement, "playlists", g_stSettings.m_szPlaylistsDirectory, "");
-  GetString(pRootElement, "recordings", g_stSettings.m_szMusicRecordingDirectory, "");
-  GetString(pRootElement, "screenshots", g_stSettings.m_szScreenshotsDirectory, "");
   GetString(pRootElement, "subtitles", g_stSettings.m_szAlternateSubtitleDirectory, "");
   GetString(pRootElement, "shortcuts", g_stSettings.m_szShortcutDirectory, "");
-  GetString(pRootElement, "trainerpath", g_stSettings.m_szTrainerDirectory,"$HOME\\system\\trainers");
 
   // check them all
-  if (g_stSettings.m_szPlaylistsDirectory[0] == 0)
+  if (g_guiSettings.GetString("System.PlaylistsPath") == "set default")
   {
-    // default to playlist subdir off of userdata location like in the past
     CStdString strDir;
     CUtil::AddFileToFolder(GetUserDataFolder(), "playlists", strDir);
     CUtil::AddSlashAtEnd(strDir);
-    strcpy(g_stSettings.m_szPlaylistsDirectory, strDir.c_str());
+    g_guiSettings.SetString("System.PlaylistsPath",strDir.c_str());
   }
-  if (g_stSettings.m_szMusicRecordingDirectory[0] == 0)
-  {
-    strcpy(g_stSettings.m_szMusicRecordingDirectory, "Q:\\recordings");
-  }
-  if (g_stSettings.m_szScreenshotsDirectory[0] == 0)
-  {
-    strcpy(g_stSettings.m_szScreenshotsDirectory, "Q:\\screenshots");
-  }
+
   if (g_stSettings.m_szAlternateSubtitleDirectory[0] == 0)
   {
     strcpy(g_stSettings.m_szAlternateSubtitleDirectory, "Q:\\subtitles");
