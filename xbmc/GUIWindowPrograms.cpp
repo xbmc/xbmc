@@ -702,12 +702,13 @@ bool CGUIWindowPrograms::Update(const CStdString &strDirectory)
       int j;
       for (j = 0; j < (int)vecShares.size(); j++)    // use the first folder image that we find in the vector of shares
       {
-        CFileItem item(vecShares[j], false);
+        CFileItem item(vecShares[j], true);
         if (!item.IsXBE())
         {
-          if (CUtil::GetFolderThumb(item.m_strPath, strThumb))
+          item.SetUserProgramThumb();
+          if (item.HasThumbnail())
           {
-            pItem->SetThumbnailImage(strThumb);
+            pItem->SetThumbnailImage(item.GetThumbnailImage());
             break;
           }
         }
@@ -1050,7 +1051,6 @@ void CGUIWindowPrograms::OnScan(CFileItemList& items, int& iTotalAppsFound)
   bool bScanSubDirs = true;
   bool bFound = false;
   DeleteThumbs(items);
-  //CUtil::SetThumbs(items);
   CUtil::CreateShortcuts(items);
   if ((int)m_vecItems.m_strPath.size() != 2) // true for C:, E:, F:, G:
   {

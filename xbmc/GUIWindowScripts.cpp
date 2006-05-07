@@ -100,7 +100,7 @@ bool CGUIWindowScripts::Update(const CStdString &strDirectory)
 
 void CGUIWindowScripts::OnPrepareFileItems(CFileItemList &items)
 {
-  items.SetThumbs();
+  items.SetProgramThumbs();
 }
 
 bool CGUIWindowScripts::OnPlayMedia(int iItem)
