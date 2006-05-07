@@ -2427,13 +2427,6 @@ CStdString CSettings::GetMusicArtistThumbFolder() const
   return folder;
 }
 
-CStdString CSettings::GetXLinkKaiThumbFolder() const
-{
-  CStdString folder;
-  CUtil::AddFileToFolder(g_stSettings.m_userDataFolder, "Thumbnails\\XLinkKai", folder);
-  return folder;
-}
-
 CStdString CSettings::GetVideoThumbFolder() const
 {
   CStdString folder;
@@ -2452,5 +2445,19 @@ CStdString CSettings::GetPicturesThumbFolder() const
 {
   CStdString folder;
   CUtil::AddFileToFolder(g_stSettings.m_userDataFolder, "Thumbnails\\Pictures", folder);
+  return folder;
+}
+
+CStdString CSettings::GetProgramsThumbFolder() const
+{
+  CStdString folder;
+  CUtil::AddFileToFolder(g_stSettings.m_userDataFolder, "Thumbnails\\Programs", folder);
+  return folder;
+}
+
+CStdString CSettings::GetXLinkKaiThumbFolder() const
+{
+  CStdString folder;
+  CUtil::AddFileToFolder(g_stSettings.m_userDataFolder, "Thumbnails\\Programs\\XLinkKai", folder);
   return folder;
 }

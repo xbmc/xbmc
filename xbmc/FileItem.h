@@ -119,6 +119,7 @@ public:
   CStdString GetCachedVideoThumb();
   CStdString GetCachedPictureThumb();
   CStdString GetCachedArtistThumb();
+  CStdString GetCachedProgramThumb();
 
   // Sets the video thumb (cached first, else caches user thumb)
   void SetVideoThumb();
@@ -127,11 +128,13 @@ public:
   void SetCachedVideoThumb();
   void SetCachedPictureThumb();
   void SetCachedArtistThumb();
+  void SetCachedProgramThumb();
 
   // Gets the user video thumb, if it exists
   CStdString GetUserVideoThumb();
   // Caches the user video thumb and assigns it to the item
   void SetUserVideoThumb();
+  void SetUserProgramThumb();
 
   /* returns the content type of this item if known. will lookup for http streams */  
   const CStdString& GetContentType() const; 
