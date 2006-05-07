@@ -891,7 +891,9 @@ HRESULT CApplication::Create()
   }
 
   CLog::Log(LOGINFO, "Checking skinpath existance, and existence of keymap.xml:%s...", (strHomePath + "\\skin").c_str());
-  if (!access(strHomePath + "\\skin", 0) && !access(strHomePath + "\\keymap.xml", 0))
+  CStdString keymapPath;
+  CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "Keymap.xml", keymapPath);
+  if (!access(strHomePath + "\\skin", 0) && !access(keymapPath.c_str(), 0))
   {
     // only remap if the new path is different than the original one
     if (strHomePath != "Q:" && !strHomePath.Equals(strExecutablePath, false))
@@ -925,7 +927,9 @@ HRESULT CApplication::Create()
     for (int i = 0; i < NUM_HOME_PATHS; i++)
     {
       strHomePath = szHomePaths[i];
-      if (!access(strHomePath + "\\skin", 0) && !access(strHomePath + "\\keymap.xml", 0))
+      CStdString keymapPath;
+      CUtil::AddFileToFolder(strHomePath, "UserData\\Keymap.xml", keymapPath);
+      if (!access(strHomePath + "\\skin", 0) && !access(keymapPath.c_str(), 0))
       {
         bFoundHomePath = true;
         break;
@@ -1502,7 +1506,9 @@ void CApplication::StartServices()
   if (g_lcd)
   {
     g_lcd->Initialize();
-    g_lcd->LoadSkin("Q:\\system\\lcd.xml");
+    CStdString lcdPath;
+    CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "LCD.xml", lcdPath);
+    g_lcd->LoadSkin(lcdPath);
   }
 
   if (g_guiSettings.GetBool("System.AutoTemperature"))

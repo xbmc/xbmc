@@ -18,11 +18,13 @@ bool CButtonTranslator::Load()
   // load our xml file, and fill up our mapping tables
   TiXmlDocument xmlDoc;
 
-  CLog::Log(LOGINFO, "Loading Q:\\keymap.xml");
   // Load the config file
-  if (!xmlDoc.LoadFile("Q:\\keymap.xml"))
+  CStdString keymapPath;
+  CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "Keymap.xml", keymapPath);
+  CLog::Log(LOGINFO, "Loading %s", keymapPath.c_str());
+  if (!xmlDoc.LoadFile(keymapPath))
   {
-    g_LoadErrorStr.Format("Q:\\keymap.xml, Line %d\n%s", xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
+    g_LoadErrorStr.Format("%s, Line %d\n%s", keymapPath.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
     return false;
   }
 
@@ -30,7 +32,7 @@ bool CButtonTranslator::Load()
   CStdString strValue = pRoot->Value();
   if ( strValue != "keymap")
   {
-    g_LoadErrorStr.Format("Q:\\keymap.xml Doesn't contain <keymap>");
+    g_LoadErrorStr.Format("%sl Doesn't contain <keymap>", keymapPath.c_str());
     return false;
   }
   // run through our window groups

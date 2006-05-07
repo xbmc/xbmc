@@ -27,7 +27,9 @@ bool CPartyModeManager::Enable()
 {
   // Filter using our PartyMode xml file
   CSmartPlaylist playlist;
-  if (playlist.Load("Q:\\system\\PartyMode.xml"))
+  CStdString partyModePath;
+  CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "PartyMode.xml", partyModePath);
+  if (playlist.Load(partyModePath))
     m_strCurrentFilter = playlist.GetWhereClause();
   else
     m_strCurrentFilter.Empty();
