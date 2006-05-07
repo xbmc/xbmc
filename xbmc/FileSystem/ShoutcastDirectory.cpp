@@ -187,6 +187,7 @@ bool CShoutcastDirectory::GetDirectory(const CStdString& strPath, CFileItemList 
     {
       dlgProgress->StartModal(m_gWindowManager.GetActiveWindow());
       dlgProgress->Progress();
+      dialogopen = true;
     }
 
     if (dlgProgress->IsCanceled())
