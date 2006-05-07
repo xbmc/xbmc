@@ -359,7 +359,7 @@ public:
   void AddHex(int iOrder, const char *strSetting, int iLabel, int fSetting, int iMin, int iStep, int iMax, int iControlType, const char *strFormat = NULL);
 
   void AddString(int iOrder, const char *strSetting, int iLabel, const char *strData, int iControlType = BUTTON_CONTROL_INPUT, bool bAllowEmpty = false, int iHeadingString = -1);
-  const CStdString &GetString(const char *strSetting) const;
+  const CStdString &GetString(const char *strSetting, bool bPrompt=true) const;
   void SetString(const char *strSetting, const char *strData);
 
   void AddSeparator(int iOrder, const char *strSetting);
