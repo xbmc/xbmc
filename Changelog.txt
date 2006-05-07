@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 07-05-2006 fixed: Progressdialog would popup repeatadly when retreiving a large shoutcast directory.
  - 07-05-2006 changed: Rss feed setup to UserData\RssFeeds.xml
                        Keymap.xml to UserData\Keymap.xml
                        System\LCD.xml to UserData\LCD.xml
