@@ -7,6 +7,7 @@
 #include "XBAudioConfig.h"
 #include "XBVideoConfig.h"
 #include <xfont.h>
+#include "GUIDialogFileBrowser.h"
 
 // String id's of the masks
 #define MASK_MINS   14044
@@ -515,6 +516,11 @@ CGUISettings::CGUISettings(void)
   AddInt(12,   "MasterLock.LockHomeMedia"    , 12374, LOCK_DISABLED, LOCK_DISABLED, 1, LOCK_MU_VI_PIC_PROG, SPIN_CONTROL_TEXT); // LockHomeMedia, for lock the Video/Music/Programs/Pictures
   // hidden mode setting
   AddInt(0,   "MasterUser.LockMode"       , 12364, LOCK_MODE_EVERYONE, LOCK_MODE_EVERYONE, 1, LOCK_MODE_QWERTY, SPIN_CONTROL_TEXT); // 0:always Unlocked, 1:Numeric, 2:Gamepad, 3:Text
+  //  TODO: localize 2.0
+  AddString(0,"MyPrograms.TrainerPath",12013,"select folder",BUTTON_CONTROL_PATH_INPUT,false);
+  AddString(0,"System.ScreenshotPath",12013,"select writable folder",BUTTON_CONTROL_PATH_INPUT,false);
+  AddString(0,"MyMusic.RecordingPath",12013,"select writable folder",BUTTON_CONTROL_PATH_INPUT,false);
+  AddString(0,"System.PlaylistsPath",12013,"set default",BUTTON_CONTROL_PATH_INPUT,false);
 }
 
 CGUISettings::~CGUISettings(void)
@@ -693,13 +699,40 @@ void CGUISettings::AddString(int iOrder, const char *strSetting, int iLabel, con
   settingsMap.insert(pair<CStdString, CSetting*>(strSetting, pSetting));
 }
 
-const CStdString &CGUISettings::GetString(const char *strSetting) const
+const CStdString &CGUISettings::GetString(const char *strSetting, bool bPrompt) const
 {
   ASSERT(settingsMap.size());
   constMapIter it = settingsMap.find(strSetting);
   if (it != settingsMap.end())
   {
-    return ((CSettingString *)(*it).second)->GetData();
+    CSettingString* result = ((CSettingString *)(*it).second);
+    if (result->GetData() == "select folder")
+    {
+      CStdString strData = "";
+      if (bPrompt)
+      {
+        if (CGUIDialogFileBrowser::ShowAndGetDirectory(g_settings.m_vecMyFilesShares,g_localizeStrings.Get(result->GetLabel()),strData,false))
+          result->SetData(strData);
+        else 
+          return __strEmpty__;
+      }
+      else
+        return __strEmpty__;
+    }
+    if (result->GetData() == "select writable folder")
+    {
+      CStdString strData = "";
+      if (bPrompt)
+      {
+        if (CGUIDialogFileBrowser::ShowAndGetDirectory(g_settings.m_vecMyFilesShares,g_localizeStrings.Get(result->GetLabel()),strData,true))
+        result->SetData(strData);
+      else
+        return __strEmpty__;
+      }
+      else
+        return __strEmpty__;
+    }
+    return result->GetData();
   }
   // Assert here and write debug output
   CLog::DebugLog("Error: Requested setting (%s) was not found.  It must be case-sensitive", strSetting);
@@ -750,7 +783,7 @@ void CGUISettings::LoadMasterLock(TiXmlElement *pRootElement)
   mapIter it = settingsMap.find("MasterUser.LockMode");
   if (it != settingsMap.end())
     LoadFromXML(pRootElement, it);
-  it = settingsMap.find("MasterLock.MasterCode");
+  it = settingsMap.find("MasterLofck.MasterCode");
   if (it != settingsMap.end())
     LoadFromXML(pRootElement, it);
 }

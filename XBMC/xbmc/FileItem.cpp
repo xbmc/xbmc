@@ -532,7 +532,7 @@ void CFileItem::FillInDefaultIcon()
           strFolder.Delete(strFolder.size() - 1);
 
         // skip playlists found in the playlist subfolders
-        CStdString strPlaylistFolder = g_stSettings.m_szPlaylistsDirectory;
+        CStdString strPlaylistFolder = g_guiSettings.GetString("System.PlaylistsPath");
         CUtil::AddSlashAtEnd(strPlaylistFolder);
         if (!strFolder.Left(strPlaylistFolder.size()).Equals(strPlaylistFolder))
         {

@@ -219,7 +219,7 @@ public:
   void SetSkinSetting(const char *setting, bool set);
   void ResetSkinSetting(const char *setting);
   void ResetSkinSettings();
-
+  
   struct AdvancedSettings
   {
 public:
@@ -282,10 +282,6 @@ public:
     CStdString m_logFolder;
 
     char m_szShortcutDirectory[256];
-    char m_szScreenshotsDirectory[256];
-    char m_szPlaylistsDirectory[256];
-    char m_szTrainerDirectory[256];
-
 
     char m_szDefaultPrograms[128];
     char m_szDefaultMusic[128];
@@ -293,8 +289,6 @@ public:
     char m_szDefaultFiles[128];
     char m_szDefaultVideos[128];
 
-    char m_szMusicRecordingDirectory[128];
-   
     bool m_bMyMusicSongInfoInVis;
     bool m_bMyMusicSongThumbInVis;
 

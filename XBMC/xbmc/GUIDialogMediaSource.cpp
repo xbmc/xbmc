@@ -97,21 +97,37 @@ void CGUIDialogMediaSource::OnPathBrowse()
   // Ignore current path is best at this stage??
   CStdString path;
   bool allowNetworkShares(m_type != "myprograms");
-  CShare *extraShare = NULL;
+  VECSHARES extraShares;
   // TODO 2.0: Fix up these strings
   if (m_type == "music")
   { // add the music playlist location
-    extraShare = new CShare();
-    extraShare->strPath = CUtil::MusicPlaylistsLocation();
-    extraShare->strName = g_localizeStrings.Get(136);       // Playlists (ideally this would be "Music Playlists")
+    CShare share1;
+    share1.strPath = CUtil::MusicPlaylistsLocation();
+    share1.strName = g_localizeStrings.Get(136);       // Playlists (ideally this would be "Music Playlists")
+    extraShares.push_back(share1);
+    if (g_guiSettings.GetString("MyMusic.RecordingPath",false) != "")
+    {
+      CShare share2;
+      share2.strPath = g_guiSettings.GetString("MyMusic.RecordingPath");
+      share2.strName = "Recordings"; // TODO: localize 2.0
+      extraShares.push_back(share2);
+    }
   }
   else if (m_type == "video")
   { // add the music playlist location
-    extraShare = new CShare();
-    extraShare->strPath = CUtil::VideoPlaylistsLocation();
-    extraShare->strName = g_localizeStrings.Get(136);       // Playlists (ideally this would be "Video Playlists")
+    CShare share1;
+    share1.strPath = CUtil::VideoPlaylistsLocation();
+    share1.strName = g_localizeStrings.Get(136);       // Playlists (ideally this would be "Video Playlists")
+    extraShares.push_back(share1);
   }
-  if (CGUIDialogFileBrowser::ShowAndGetShare(path, allowNetworkShares, extraShare))
+  if (m_type == "pictures" && g_guiSettings.GetString("System.ScreenshotPath",false)!= "")
+  {
+    CShare share1;
+    share1.strPath = g_guiSettings.GetString("System.ScreenshotPath");
+    share1.strName = "Screenshots"; // ideally this would be "Screenshots" :D - localize 2.0!
+    extraShares.push_back(share1);
+  }
+  if (CGUIDialogFileBrowser::ShowAndGetShare(path, allowNetworkShares, extraShares.size()==0?NULL:&extraShares))
   {
     m_path = path;
     if (m_name.IsEmpty())
