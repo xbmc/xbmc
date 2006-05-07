@@ -104,7 +104,6 @@ public:
   void RemoveExtension();
   void CleanFileName();
   void FillInDefaultIcon();
-  void SetThumb();
   void SetMusicThumb();
   void SetFileSizeLabel();
   virtual void SetLabel(const CStdString &strLabel);
@@ -232,7 +231,6 @@ public:
   void Reserve(int iCount);
   void Sort(SORT_METHOD sortMethod, SORT_ORDER sortOrder);
   void Randomize();
-  void SetThumbs();
   void SetMusicThumbs();
   void FillInDefaultIcons();
   int GetFolderCount() const;
@@ -254,6 +252,7 @@ public:
   bool GetCacheToDisc() { return m_bCacheToDisc; }
 
   void SetCachedVideoThumbs();
+  void SetProgramThumbs();
 
 private:
   void Sort(FILEITEMLISTCOMPARISONFUNC func);
