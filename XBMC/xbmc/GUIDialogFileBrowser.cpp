@@ -234,7 +234,7 @@ void CGUIDialogFileBrowser::Update(const CStdString &strDirectory)
     m_rootDir.GetDirectory(strDirectory, m_vecItems);
   }
 
-  m_vecItems.SetThumbs();
+  // No need to set thumbs
 
   m_vecItems.FillInDefaultIcons();
 
