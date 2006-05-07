@@ -112,6 +112,21 @@ void CGUIDialogMediaSource::OnPathBrowse()
       share2.strName = "Recordings"; // TODO: localize 2.0
       extraShares.push_back(share2);
     }
+    if (g_guiSettings.GetBool("Network.EnableInternet"))
+    {
+      CShare share3;
+      share3.strName = "Shoutcast";
+      share3.strPath = "shout://www.shoutcast.com/sbin/newxml.phtml";
+      extraShares.push_back(share3);
+
+      if (g_guiSettings.GetString("MyMusic.AudioScrobblerUserName") != "")
+      {
+        CShare share4;
+        share4.strName = "Last.FM";
+        share4.strPath = "lastfm://";
+        extraShares.push_back(share4);
+      }
+    }
   }
   else if (m_type == "video")
   { // add the music playlist location
@@ -119,6 +134,11 @@ void CGUIDialogMediaSource::OnPathBrowse()
     share1.strPath = CUtil::VideoPlaylistsLocation();
     share1.strName = g_localizeStrings.Get(136);       // Playlists (ideally this would be "Video Playlists")
     extraShares.push_back(share1);
+    
+    CShare share2;
+    share2.strPath = "rtv://*/";
+    share2.strName = "ReplayTV";
+    extraShares.push_back(share2);
   }
   if (m_type == "pictures" && g_guiSettings.GetString("System.ScreenshotPath",false)!= "")
   {
