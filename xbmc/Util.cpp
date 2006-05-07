@@ -3013,9 +3013,10 @@ void CUtil::TakeScreenshot(const char* fn, bool flashScreen)
 void CUtil::TakeScreenshot()
 {
   char fn[1024];
-  CStdString strDir = g_stSettings.m_szScreenshotsDirectory;
+  CStdString strDir = g_guiSettings.GetString("System.ScreenshotPath");
+  CUtil::RemoveSlashAtEnd(strDir);
 
-  if (strlen(g_stSettings.m_szScreenshotsDirectory))
+  if (strlen(strDir.c_str()))
   {
     sprintf(fn, "%s\\screenshot%%03d.bmp", strDir.c_str());
     strcpy(fn, CUtil::GetNextFilename(fn, 999).c_str());
@@ -3964,7 +3965,7 @@ int CUtil::GetMatchingShare(const CStdString& strPath1, VECSHARES& vecShares, bo
 
 CStdString CUtil::TranslateSpecialDir(const CStdString &strSpecial)
 {
-  CStdString strReturn;
+  CStdString strReturn=strSpecial;
   if (strSpecial[0] == '$')
   {
     if (strSpecial.Left(5).Equals("$HOME"))
@@ -3981,15 +3982,25 @@ CStdString CUtil::TranslateSpecialDir(const CStdString &strSpecial)
     else if (strSpecial.Left(10).Equals("$SHORTCUTS"))
       CUtil::AddFileToFolder(g_stSettings.m_szShortcutDirectory, strSpecial.Mid(10), strReturn);
     else if (strSpecial.Left(11).Equals("$RECORDINGS"))
-      CUtil::AddFileToFolder(g_stSettings.m_szMusicRecordingDirectory, strSpecial.Mid(11), strReturn);
+      CUtil::AddFileToFolder(g_guiSettings.GetString("MyMusic.RecordingPath"), strSpecial.Mid(11), strReturn);
     else if (strSpecial.Left(12).Equals("$SCREENSHOTS"))
-      CUtil::AddFileToFolder(g_stSettings.m_szScreenshotsDirectory, strSpecial.Mid(12), strReturn);
+      CUtil::AddFileToFolder(g_guiSettings.GetString("System.ScreenshotPath",false), strSpecial.Mid(12), strReturn);
     else if (strSpecial.Left(10).Equals("$PLAYLISTS"))
-      CUtil::AddFileToFolder(g_stSettings.m_szPlaylistsDirectory, strSpecial.Mid(10), strReturn);
+      CUtil::AddFileToFolder(g_guiSettings.GetString("System.PlaylistsPath",false), strSpecial.Mid(10), strReturn);
     else if (strSpecial.Left(15).Equals("$MUSICPLAYLISTS"))
-      CUtil::AddFileToFolder(MusicPlaylistsLocation(), strSpecial.Mid(15), strReturn);
+    {
+      if (g_guiSettings.GetString("System.PlaylistsPath",false) == "")
+        strReturn = "";
+      else
+        CUtil::AddFileToFolder(MusicPlaylistsLocation(), strSpecial.Mid(15), strReturn);
+    }
     else if (strSpecial.Left(15).Equals("$VIDEOPLAYLISTS"))
-      CUtil::AddFileToFolder(VideoPlaylistsLocation(), strSpecial.Mid(15), strReturn);
+    {
+      if (g_guiSettings.GetString("System.PlaylistsPath",false) == "")
+        strReturn = "";
+      else
+        CUtil::AddFileToFolder(VideoPlaylistsLocation(), strSpecial.Mid(15), strReturn);
+    }
     else if (strSpecial.Left(7).Equals("$CDRIPS"))
       CUtil::AddFileToFolder(g_guiSettings.GetString("CDDARipper.Path"), strSpecial.Mid(7), strReturn);
   }
@@ -4003,14 +4014,14 @@ CStdString CUtil::TranslateSpecialDir(const CStdString &strSpecial)
 CStdString CUtil::MusicPlaylistsLocation()
 {
   CStdString strReturn;
-  CUtil::AddFileToFolder(g_stSettings.m_szPlaylistsDirectory, "music", strReturn);
+  CUtil::AddFileToFolder(g_guiSettings.GetString("System.PlaylistsPath"), "music", strReturn);
   return strReturn;
 }
 
 CStdString CUtil::VideoPlaylistsLocation()
 {
   CStdString strReturn;
-  CUtil::AddFileToFolder(g_stSettings.m_szPlaylistsDirectory, "video", strReturn);
+  CUtil::AddFileToFolder(g_guiSettings.GetString("System.PlaylistsPath"), "video", strReturn);
   return strReturn;
 }
 
