@@ -46,7 +46,7 @@ ECHO Copying files...
 rmdir BUILD /S /Q
 md BUILD
 copy release\default.xbe BUILD
-xcopy UserData\ BUILD\UserData /Q /I /Y
+xcopy UserData BUILD\UserData /E /Q /I /Y
 copy *.xml BUILD\
 copy *.txt BUILD\
 xcopy "skin\Project Mayhem III\fonts" "BUILD\skin\Project Mayhem III\fonts" /E /Q /I /Y
