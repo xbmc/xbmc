@@ -112,6 +112,9 @@ void CGUIDialogMediaSource::OnPathBrowse()
       share2.strName = "Recordings"; // TODO: localize 2.0
       extraShares.push_back(share2);
     }
+    share1.strPath = "soundtrack://";
+    share1.strName = "MS Soundtracks";
+    extraShares.push_back(share1);
     if (g_guiSettings.GetBool("Network.EnableInternet"))
     {
       CShare share3;
