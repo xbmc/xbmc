@@ -400,24 +400,9 @@ bool CHTTP::Connect()
       service.sin_addr.s_addr = inet_addr(strIpAddress.c_str());
       if (service.sin_addr.s_addr == INADDR_NONE || strIpAddress == "")
       {
-        CLog::Log(LOGWARNING, "ERROR: Problem accessing the DNS. Defaulting to using hard-coded IP address for known Hosts.");
-        //    if (strcmp(m_strHostName.c_str(),"ia.imdb.com")==0)
-        //     service.sin_addr.s_addr = inet_addr("193.108.152.15");
-        if (strcmp(m_strHostName.c_str(), "us.imdb.com") == 0)
-          service.sin_addr.s_addr = inet_addr("207.171.166.140");
-        else if (strcmp(m_strHostName.c_str(), "www.imdb.com") == 0)
-          service.sin_addr.s_addr = inet_addr("207.171.166.140");
-        else if (strcmp(m_strHostName.c_str(), "www.allmusic.com") == 0)
-          service.sin_addr.s_addr = inet_addr("166.90.203.178");
-        else if (strcmp(m_strHostName.c_str(), "image.allmusic.com") == 0)
-          service.sin_addr.s_addr = inet_addr("166.90.203.162");
-        else if (strcmp(m_strHostName.c_str(), "xoap.weather.com") == 0)
-          service.sin_addr.s_addr = inet_addr("63.111.24.34");
-        else
-        {
-          WSASetLastError(WSAHOST_NOT_FOUND);
-          return false;
-        }
+        CLog::Log(LOGWARNING, "ERROR: Problem accessing the DNS.");
+        WSASetLastError(WSAHOST_NOT_FOUND);
+        return false;
       }
     }
     service.sin_port = htons(m_iPort);
