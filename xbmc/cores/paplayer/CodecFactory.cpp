@@ -23,6 +23,7 @@
 #include "AdplugCodec.h"
 #include "CubeCodec.h"
 #include "YMCodec.h"
+#include "WMACodec.h"
 
 ICodec* CodecFactory::CreateCodec(const CStdString& strFileType)
 {
@@ -66,6 +67,8 @@ ICodec* CodecFactory::CreateCodec(const CStdString& strFileType)
     return new CubeCodec();
   else if (strFileType.Equals("ym"))
     return new YMCodec();
+  else if (strFileType.Equals("wma"))
+    return new WMACodec();
 
   return NULL;
 }
