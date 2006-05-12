@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 12-05-2006 fixed: my programs always regenerated thumbs.
  - 12-05-2006 fixed: xbmc would crash when video finished playing over SMB.
  - 11-05-2006 changed: default log set to NOTICE instead of ERROR.
  - 07-05-2006 added: daap protocol to add network location dialog.
