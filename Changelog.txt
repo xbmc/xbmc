@@ -5,7 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
- - 07-07-2006 added: daap protocol to add network location dialog.
+ - 11-05-2006 changed: default log set to NOTICE instead of ERROR.
+ - 07-05-2006 added: daap protocol to add network location dialog.
  - 07-05-2006 added: shoutcast, last.fm, soundtracks and replaytv to add media source.
  - 07-05-2006 changed: moved screenshot-, recordings-, playlists- and trainerpaths from xboxmediacenter.xml.
  - 07-05-2006 fixed: Progressdialog would popup repeatadly when retreiving a large shoutcast directory.
