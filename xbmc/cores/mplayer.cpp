@@ -612,7 +612,6 @@ CMPlayer::~CMPlayer()
   
   save_registry(); // save registry to disk
   free_registry(); //free memory take by registry structures
-  smb.Purge(); // close any open smb sessions
 }
 bool CMPlayer::load()
 {
