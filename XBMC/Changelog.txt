@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 13-05-2006 added: wma codec to paplayer (builtin).
  - 12-05-2006 changed: removed hardcoded ip's. a DNS server is now required for all internet access in xbmc.
  - 12-05-2006 fixed: my programs always regenerated thumbs.
  - 12-05-2006 fixed: xbmc would crash when video finished playing over SMB.
