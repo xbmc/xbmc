@@ -895,6 +895,9 @@ bool CGUIWindowPrograms::Update(const CStdString &strDirectory)
   }
   if (i==m_vecItems.Size())
     strSelectedItem = "";
+
+  m_vecItems.SetCachedProgramThumbs();
+
   // set our overlay icons
   SetOverlayIcons();
 
@@ -903,7 +906,7 @@ bool CGUIWindowPrograms::Update(const CStdString &strDirectory)
   OnSort();
   UpdateButtons();
   m_viewControl.SetSelectedItem(strSelectedItem);
-
+  
   m_thumbLoader.Load(m_vecItems);
   return true;
 }

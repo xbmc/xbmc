@@ -252,6 +252,7 @@ public:
   bool GetCacheToDisc() { return m_bCacheToDisc; }
 
   void SetCachedVideoThumbs();
+  void SetCachedProgramThumbs();
   void SetProgramThumbs();
 
 private:

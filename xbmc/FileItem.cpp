@@ -1930,6 +1930,16 @@ void CFileItemList::SetCachedVideoThumbs()
   }
 }
 
+void CFileItemList::SetCachedProgramThumbs()
+{
+  // TODO: Investigate caching time to see if it speeds things up
+  for (unsigned int i = 0; i < m_items.size(); ++i)
+  {
+    CFileItem* pItem = m_items[i];
+    pItem->SetCachedProgramThumb();
+  }
+}
+
 CStdString CFileItem::GetCachedPictureThumb()
 {
   // get the locally cached thumb
