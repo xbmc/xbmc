@@ -105,8 +105,8 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
 {
   AVInputFormat* iformat = NULL;
   const char* strFile;
-  m_iCurrentPts = 0LL;
-  
+  m_iCurrentPts = 0LL;    
+
   if (!pInput) return false;
 
   if (!m_dllAvFormat.Load() || !m_dllAvCodec.Load()) return false;
@@ -122,32 +122,35 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
 
   m_pInput = pInput;
   strFile = m_pInput->GetFileName();
-  
-  /* check if we can get a hint from content */
-  if( m_pInput->GetContent().compare("audio/aacp") == 0 
-    || m_pInput->GetContent().compare("audio/aac") == 0 )
-  {
-    iformat = m_dllAvFormat.av_find_input_format("aac");
-  }
-  else if( m_pInput->GetContent().compare("audio/mpeg") == 0  )  
-  {
-    iformat = m_dllAvFormat.av_find_input_format("mp3");
-  }
-  else if( m_pInput->GetContent().compare("video/mpeg") == 0 )
-  {
-    iformat = m_dllAvFormat.av_find_input_format("mpeg");
-  }
-  else if( m_pInput->GetContent().compare("video/flv") == 0 
-    || m_pInput->GetContent().compare("video/x-flv") == 0 )
-  {
-    iformat = m_dllAvFormat.av_find_input_format("flv");
-  }
 
-  
-  if (m_pInput->IsStreamType(DVDSTREAM_TYPE_DVD) && iformat == NULL)
+  bool streaminfo; /* set to true if we want to look for streams before playback*/
+  if( m_pInput->IsStreamType(DVDSTREAM_TYPE_FILE) )
+    streaminfo = true;
+  else
+    streaminfo = false;
+
+  if( m_pInput->GetContent().length() > 0 )
   {
-    CLog::Log(LOGERROR, __FUNCTION__" - error opening ffmpeg's mpeg demuxer");
-    return false;
+    std::string content = m_pInput->GetContent();
+
+    /* check if we can get a hint from content */
+    if( content.compare("audio/aacp") == 0 )
+      iformat = m_dllAvFormat.av_find_input_format("aac");
+    else if( content.compare("audio/aac") == 0 )
+      iformat = m_dllAvFormat.av_find_input_format("aac");
+    else if( content.compare("audio/mpeg") == 0  )  
+      iformat = m_dllAvFormat.av_find_input_format("mp3");
+    else if( content.compare("video/mpeg") == 0 )
+      iformat = m_dllAvFormat.av_find_input_format("mpeg");
+    else if( content.compare("video/flv") == 0 )
+      iformat = m_dllAvFormat.av_find_input_format("flv");
+    else if( content.compare("video/x-flv") == 0 )
+      iformat = m_dllAvFormat.av_find_input_format("flv");
+
+    /* these are likely pure streams, and as such we don't */
+    /* want to try to look for streaminfo before playback */
+    if( iformat )
+      streaminfo = false;
   }
 
   if( iformat == NULL )
@@ -178,6 +181,9 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
       CLog::DebugLog("error probing input format, %s", strFile);
       return false;
     }
+
+    //TODO, push this data into the stream context
+    //      so we don't need to do the seek
   }
 
   // set this flag to avoid some input stream handling we don't want at this time
@@ -186,7 +192,7 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
   int iBufferSize = FFMPEG_FILE_BUFFER_SIZE;
   if (m_pInput->IsStreamType(DVDSTREAM_TYPE_DVD)) iBufferSize = FFMPEG_DVDNAV_BUFFER_SIZE;
 
-  if (!ContextInit(strFile, m_ffmpegBuffer, iBufferSize))
+  if (!ContextInit(strFile, m_ffmpegBuffer, iBufferSize, m_pInput->GetLength() > 0))
   {
     Dispose();
     return false;
@@ -202,12 +208,9 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
 
   // in combination with libdvdnav seek, av_find_stream_info wont work
   // so we do this for files only
-  if (m_pInput->IsStreamType(DVDSTREAM_TYPE_FILE))  
+  if (streaminfo)
   {
-    // disable the AVFMT_NOFILE just once, else ffmpeg isn't able to find stream info
-    if( m_pInput->GetLength() > 0 )
-      iformat->flags &= ~AVFMT_NOFILE;
-
+    iformat->flags &= ~AVFMT_NOFILE;
     int iErr = m_dllAvFormat.av_find_stream_info(m_pFormatContext);
     iformat->flags |= AVFMT_NOFILE;
 
@@ -261,7 +264,7 @@ void CDVDDemuxFFmpeg::Dispose()
  * Init Byte IO Context
  * We need this for ffmpeg, cause it's the best / only way for reading files
  */
-bool CDVDDemuxFFmpeg::ContextInit(const char* strFile, BYTE* buffer, int iBufferSize)
+bool CDVDDemuxFFmpeg::ContextInit(const char* strFile, BYTE* buffer, int iBufferSize, bool seekable)
 {
   if (m_pUrlContext) ContextDeInit();
 
@@ -276,7 +279,7 @@ bool CDVDDemuxFFmpeg::ContextInit(const char* strFile, BYTE* buffer, int iBuffer
   // initialize context
   m_pUrlContext->prot = &dvd_file_protocol;
   m_pUrlContext->flags = AVFMT_NOFILE; // we open and close the file ourself
-  m_pUrlContext->is_streamed = 0;      // default = not streamed
+  m_pUrlContext->is_streamed = seekable ? 0 : 1;      // default = not streamed
   m_pUrlContext->max_packet_size = 0;  // default: stream file
   m_pUrlContext->priv_data = (void*)m_pInput;
 
