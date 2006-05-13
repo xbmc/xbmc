@@ -61,8 +61,6 @@ namespace XFILE
 		virtual bool					OpenForWrite(const CURL& url, bool bBinary=true);
 		unsigned int					Write(void *lpBuf, __int64 uiBufSize);
 		
-		virtual bool          Delete(const char* strFileName);
-		virtual bool          Rename(const char* strFileName, const char* strNewFileName);
 	protected:
 		CStdString	m_strCacheDir;
 		CStdString	m_strRarPath;

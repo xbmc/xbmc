@@ -3,6 +3,12 @@
 #include "utils/RegExp.h"
 #include "util.h"
 
+CStdString URLEncodeInline(const CStdString& strData)
+{
+  CStdString buffer = strData;
+  CUtil::URLEncode(buffer);
+  return buffer;
+}
 
 CURL::CURL(const CStdString& strURL)
 {
@@ -23,6 +29,7 @@ CURL::CURL(const CStdString& strURL)
   //
   // first need 2 check if this is a protocol or just a normal drive & path
   if (!strURL.size()) return ;
+  if (strURL.Equals("?", true)) return;
   if (strURL[1] == ':')
   {
     // form is drive:directoryandfile
@@ -113,9 +120,6 @@ CURL::CURL(const CStdString& strURL)
     {
       int iSemiColon = strUserNamePassword.Find(";");
       
-      if (iSemiColon < 0) // also allow windows standard of DOMAIN\Username
-        iSemiColon = strUserNamePassword.Find("\\");
-
       if (iSemiColon >= 0)
       {
         m_strDomain = strUserNamePassword.Left(iSemiColon);
@@ -218,6 +222,10 @@ CURL::CURL(const CStdString& strURL)
 
   /* update extension */
   SetFileName(m_strFileName);
+
+  /* decode urlencoding on this stuff */
+  CUtil::UrlDecode(m_strUserName);
+  CUtil::UrlDecode(m_strPassword);
 }
 
 CURL::CURL(const CURL &url)
@@ -364,6 +372,18 @@ const char CURL::GetDirectorySeparator() const
 
 void CURL::GetURL(CStdString& strURL) const
 {
+  unsigned int sizeneed = m_strProtocol.length()
+                        + m_strDomain.length()
+                        + m_strUserName.length()
+                        + m_strPassword.length()
+                        + m_strHostName.length()
+                        + m_strFileName.length() 
+                        + m_strOptions.length();
+                        + 10;
+
+  if( strURL.capacity() < sizeneed )
+    strURL.reserve(sizeneed);
+
   if (m_strProtocol == "")
   {
     strURL = m_strFileName;
@@ -378,6 +398,17 @@ void CURL::GetURL(CStdString& strURL) const
 
 void CURL::GetURLWithoutUserDetails(CStdString& strURL) const
 {
+  unsigned int sizeneed = m_strProtocol.length()
+                        + m_strDomain.length()
+                        + m_strHostName.length()
+                        + m_strFileName.length() 
+                        + m_strOptions.length();
+                        + 10;
+
+  if( strURL.capacity() < sizeneed )
+    strURL.reserve(sizeneed);
+
+
   if (m_strProtocol == "")
   {
     strURL = m_strFileName;
@@ -421,6 +452,17 @@ void CURL::GetURLWithoutUserDetails(CStdString& strURL) const
 
 void CURL::GetURLWithoutFilename(CStdString& strURL) const
 {
+  unsigned int sizeneed = m_strProtocol.length()
+                        + m_strDomain.length()
+                        + m_strUserName.length()
+                        + m_strPassword.length()
+                        + m_strHostName.length()
+                        + 10;
+
+  if( strURL.capacity() < sizeneed )
+    strURL.reserve(sizeneed);
+
+
   if (m_strProtocol == "")
   {
     strURL = m_strFileName.substr(0, 2); // only copy 'e:'
@@ -428,12 +470,20 @@ void CURL::GetURLWithoutFilename(CStdString& strURL) const
   }
   if (m_strProtocol == "rar")
   {
-    strURL.Format("rar://%s,%i,%s,%s,\\",m_strDomain,m_iPort,m_strPassword,m_strHostName);
+    strURL.Format("rar://%s,%i,%s,%s,\\",
+      m_strDomain,
+      m_iPort,
+      URLEncodeInline(m_strPassword),
+      m_strHostName);
     return; 
   }
   if (m_strProtocol == "zip")
   {
-    strURL.Format("zip://%s,%i,%s,%s,\\",m_strDomain,m_iPort,m_strPassword,m_strHostName);
+    strURL.Format("zip://%s,%i,%s,%s,\\",
+      m_strDomain,
+      m_iPort,
+      URLEncodeInline(m_strPassword),
+      m_strHostName);
     return; 
   }
 
@@ -447,14 +497,14 @@ void CURL::GetURLWithoutFilename(CStdString& strURL) const
   }
   if (m_strUserName != "" && m_strPassword != "")
   {
-    strURL += m_strUserName;
+    strURL += URLEncodeInline(m_strUserName);
     strURL += ":";
-    strURL += m_strPassword;
+    strURL += URLEncodeInline(m_strPassword);
     strURL += "@";
   }
   else if (m_strUserName != "")
   {
-    strURL += m_strUserName;
+    strURL += URLEncodeInline(m_strUserName);
     strURL += ":";
     strURL += "@";
   }
