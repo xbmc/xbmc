@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 13-05-2006 changed: samba now allows domain\user type usernames. smb://workgroup;domain\user@computer/share. 
+                       workgroup is the workgroup of the computer (only needed for computername to ip lookup), domain is the logon domain of the user
  - 13-05-2006 fixed: files with short extensions could wrongfully get through directory masking.
  - 13-05-2006 added: wma codec to paplayer (builtin).
  - 12-05-2006 changed: removed hardcoded ip's. a DNS server is now required for all internet access in xbmc.
