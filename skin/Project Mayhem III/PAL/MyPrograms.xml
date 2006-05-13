@@ -129,6 +129,32 @@
       </control>
 
       <control>
+        <description>Kai disconnected icon</description>
+        <type>image</type>
+        <id>0</id>
+        <posx>173</posx>
+        <posy>201</posy>
+        <width>19</width>
+        <height>19</height>
+        <texture>Kai_disconnected.png</texture>
+	<visible>!System.KaiConnected</visible>
+        <include>buttonpanelslide</include>
+      </control>
+
+      <control>
+        <description>Kai connected icon</description>
+        <type>image</type>
+        <id>0</id>
+        <posx>173</posx>
+        <posy>201</posy>
+        <width>19</width>
+        <height>19</height>
+        <texture>Kai_connected.png</texture>
+	<visible>System.KaiConnected</visible>
+        <include>buttonpanelslide</include>
+      </control>
+
+      <control>
         <description>bookmark button 1</description>
         <type>button</type>
         <id>100</id>
