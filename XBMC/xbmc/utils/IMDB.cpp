@@ -432,6 +432,7 @@ bool CIMDB::FindMovie(const CStdString &strMovie, IMDB_MOVIELIST& movieList, CGU
         CloseThread();
         return false;
       }
+      Sleep(1);
     }
     // transfer to our movielist
     movieList.clear();
@@ -465,6 +466,7 @@ bool CIMDB::GetDetails(const CIMDBUrl &url, CIMDBMovie &movieDetails, CGUIDialog
         CloseThread();
         return false;
       }
+      Sleep(1);
     }
     movieDetails = m_movieDetails;
     CloseThread();
