@@ -448,6 +448,8 @@ bool CDVDInputStreamNavigator::SetActiveSubtitleStream(int iId, bool bDisplay)
   {
     if (!bDisplay) streamId |= 0x80;
     
+    CLog::Log(LOGDEBUG, __FUNCTION__" - id: %d, stream: %d", iId, streamId);
+
     return (DVDNAV_STATUS_OK == m_dll.dvdnav_subpicture_change(m_dvdnav, streamId));
   }
   return false; 
