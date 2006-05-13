@@ -188,10 +188,11 @@ bool CFile::Open(const CStdString& strFileName, bool bBinary)
         return false;
     }
    
-    m_pFile = CFileFactory::CreateLoader(strFileName);
+    CURL url(strFileName);
+
+    m_pFile = CFileFactory::CreateLoader(url);
     if (!m_pFile) return false;
 
-    CURL url(strFileName);
     return m_pFile->Open(url, bBinary);
   }
   catch(...)
@@ -205,10 +206,11 @@ bool CFile::OpenForWrite(const CStdString& strFileName, bool bBinary, bool bOver
 {
   try 
   {
-    m_pFile = CFileFactory::CreateLoader(strFileName);
+    CURL url(strFileName);
+
+    m_pFile = CFileFactory::CreateLoader(url);
     if (!m_pFile) return false;
 
-    CURL url(strFileName);
     return m_pFile->OpenForWrite(url, bBinary, bOverWrite);
   }
   catch(...)
@@ -230,10 +232,10 @@ bool CFile::Exists(const CStdString& strFileName)
     if (bPathInCache)
       return false;
 
-    auto_ptr<IFile> pFile(CFileFactory::CreateLoader(strFileName));
-    if (!pFile.get()) return false;
-
     CURL url(strFileName);
+
+    auto_ptr<IFile> pFile(CFileFactory::CreateLoader(url));
+    if (!pFile.get()) return false;
 
     return pFile->Exists(url);
   }
@@ -249,10 +251,10 @@ int CFile::Stat(const CStdString& strFileName, struct __stat64* buffer)
 {
   try
   {
-    auto_ptr<IFile> pFile(CFileFactory::CreateLoader(strFileName));
-    if (!pFile.get()) return false;
-
     CURL url(strFileName);
+
+    auto_ptr<IFile> pFile(CFileFactory::CreateLoader(url));
+    if (!pFile.get()) return false;
 
     return pFile->Stat(url, buffer);
   }
@@ -392,10 +394,12 @@ bool CFile::Delete(const CStdString& strFileName)
 {
   try
   {
-    auto_ptr<IFile> pFile(CFileFactory::CreateLoader(strFileName));
+    CURL url(strFileName);
+
+    auto_ptr<IFile> pFile(CFileFactory::CreateLoader(url));
     if (!pFile.get()) return false;
 
-    return pFile->Delete(strFileName);
+    return pFile->Delete(url);
   }
   catch(...)
   {
@@ -408,10 +412,13 @@ bool CFile::Rename(const CStdString& strFileName, const CStdString& strNewFileNa
 {
   try
   {
-    auto_ptr<IFile> pFile(CFileFactory::CreateLoader(strFileName));
+    CURL url(strFileName);
+    CURL urlnew(strNewFileName);
+
+    auto_ptr<IFile> pFile(CFileFactory::CreateLoader(url));
     if (!pFile.get()) return false;
 
-    return pFile->Rename(strFileName, strNewFileName);
+    return pFile->Rename(url, urlnew);
   }
   catch(...)
   {

@@ -1434,6 +1434,10 @@ int CUtil::GetDVDIfoTitle(const CStdString& strFile)
 void CUtil::UrlDecode(CStdString& strURLData)
 {
   CStdString strResult;
+  
+  /* resulet will always be less than source */
+  strResult.reserve( strURLData.length() );
+
   for (unsigned int i = 0; i < (int)strURLData.size(); ++i)
   {
     int kar = (unsigned char)strURLData[i];
@@ -1460,6 +1464,10 @@ void CUtil::UrlDecode(CStdString& strURLData)
 void CUtil::URLEncode(CStdString& strURLData)
 {
   CStdString strResult;
+
+  /* wonder what a good value is here is, depends on how often it occurs */  
+  strResult.reserve( strURLData.length() * 2 );
+
   for (int i = 0; i < (int)strURLData.size(); ++i)
   {
     int kar = (unsigned char)strURLData[i];

@@ -41,12 +41,30 @@ CFileHD::~CFileHD()
   if (m_hFile != INVALID_HANDLE_VALUE) Close();
 }
 //*********************************************************************************************
+CStdString CFileHD::GetLocal(const CURL &url)
+{
+  CStdString path( url.GetFileName() );
+
+  if( url.GetProtocol().Equals("file", false) )
+  {
+    /* should we handle direct device paths here too? */
+    /* i'm not even sure if that is supported by the functions used */
+    if( path[1] == '/' )
+      path[1] = ':';
+    else
+      CLog::Log(LOGERROR, __FUNCTION__" - Unsupported url %s", path.c_str());
+  }
+
+  path.Replace('/', '\\');
+
+  g_charsetConverter.utf8ToStringCharset(path);
+  return path;
+}
+
+//*********************************************************************************************
 bool CFileHD::Open(const CURL& url, bool bBinary)
 {
-  CStdString strFile(url.GetFileName());
-  strFile.Replace("/", "\\");
-
-  g_charsetConverter.utf8ToStringCharset(strFile);
+  CStdString strFile = GetLocal(url);
 
   m_hFile.attach(CreateFile(strFile.c_str(), GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, 0, NULL));
   if (!m_hFile.isValid()) return false;
@@ -62,10 +80,7 @@ bool CFileHD::Open(const CURL& url, bool bBinary)
 
 bool CFileHD::Exists(const CURL& url)
 {
-  CStdString strFile(url.GetFileName());
-  strFile.Replace("/", "\\");
-
-  g_charsetConverter.utf8ToStringCharset(strFile);
+  CStdString strFile = GetLocal(url);
 
   struct __stat64 buffer;
   return (_stat64(strFile.c_str(), &buffer)==0);
@@ -73,10 +88,7 @@ bool CFileHD::Exists(const CURL& url)
 
 int CFileHD::Stat(const CURL& url, struct __stat64* buffer)
 {
-  CStdString strFile(url.GetFileName());
-  strFile.Replace("/", "\\");
-
-  g_charsetConverter.utf8ToStringCharset(strFile);
+  CStdString strFile = GetLocal(url);
 
   return _stat64(strFile.c_str(), buffer);
 }
@@ -86,13 +98,7 @@ int CFileHD::Stat(const CURL& url, struct __stat64* buffer)
 bool CFileHD::OpenForWrite(const CURL& url, bool bBinary, bool bOverWrite)
 {
   // make sure it's a legal FATX filename (we are writing to the harddisk)
-  CStdString strPath;
-  url.GetURL(strPath);
-
-  // replace '/' with '\\' before GetFatXQualifiedPath() to prevent unnecessary logging of truncate messages.
-  strPath.Replace("/", "\\");
-
-  g_charsetConverter.utf8ToStringCharset(strPath);
+  CStdString strPath = GetLocal(url);
 
   if (g_guiSettings.GetBool("Servers.FTPAutoFatX")) // allow overriding
   {
@@ -256,20 +262,17 @@ bool CFileHD::ReadString(char *szLine, int iLineLength)
   return false;
 }
 
-bool CFileHD::Delete(const char* strFileName)
+bool CFileHD::Delete(const CURL& url)
 {
-  CStdString strFile=strFileName;
-  g_charsetConverter.utf8ToStringCharset(strFile);
+  CStdString strFile=GetLocal(url);
 
   return ::DeleteFile(strFile.c_str()) ? true : false;
 }
 
-bool CFileHD::Rename(const char* strFileName, const char* strNewFileName)
+bool CFileHD::Rename(const CURL& url, const CURL& urlnew)
 {
-  CStdString strFile=strFileName;
-  g_charsetConverter.utf8ToStringCharset(strFile);
-  CStdString strNewFile=strNewFileName;
-  g_charsetConverter.utf8ToStringCharset(strNewFile);
+  CStdString strFile=GetLocal(url);
+  CStdString strNewFile=GetLocal(urlnew);
 
   return ::MoveFile(strFile.c_str(), strNewFile.c_str()) ? true : false;
 }
