@@ -1,5 +1,14 @@
+2006-05-08 added:	KAI connection indicator to the KAI button in My Programs
+
+2006-05-08 added:	OFF texture for radiobuttons
+2006-05-08 added:	new overlays for "Watched", "Unwatched", "ZIP", "RAR" and "Locked"
+2006-05-08 changed:	Trainer Overlays
+2006-05-08 changed:	weather location selection
+
 2006-05-06 fixed:	Removed references to common-font64.xpr in font.xml files.
+
 2006-05-01 fixed:       DialogScriptInfo window - Spincontrols were not positioned correctly.
+
 2006-04-28 changed:	Stack button to a radio button.  Plus more cleanup of playlist and duration info.
 2006-04-28 fixed:	Minor cleanup of playlist info and duration info on visualisation if they are unknown.
 
