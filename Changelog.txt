@@ -5,6 +5,10 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 13-05-2006 changed: libcurl will now follow 2 redirects on connection
+ - 13-05-2006 fixed: flv streams would start very slowly in dvd player due to it trying to find all streams before starting to play. 
+                     (flv streams distributed with Content-Disposition will still fail used on some of google video's backup servers)
+ - 13-05-2006 fixed: don't do tumbnail lookup on internet streams, slows startup
  - 13-05-2006 changed: samba now allows domain\user type usernames. smb://workgroup;domain\user@computer/share. 
                        workgroup is the workgroup of the computer (only needed for computername to ip lookup), domain is the logon domain of the user
  - 13-05-2006 fixed: files with short extensions could wrongfully get through directory masking.
