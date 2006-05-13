@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 13-05-2006 changed: don't show zoom overlay in slideshow when viewing comics.
  - 13-05-2006 fixed: Keymap.xml - <Remote> Volume now works in VideoPlaylist/MusicPlayList & MyFiles. MoveItemUp(2), MoveItemDown(5). MyFiles : Highlight(1), Copy(4), Move(7).
  - 13-05-2006 fixed: Directorylisting in my music fileview was very slow because main thread wasn't leaving much cputime for the MusicInfoLoader. + very minor speedimprovement for imdb and allmusic lookups.
  - 13-05-2006 fixed: Scripts window would not show .py files.
