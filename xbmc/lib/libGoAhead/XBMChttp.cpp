@@ -1846,7 +1846,7 @@ int CXbmcHttp::xbmcLookupAlbum(int numParas, CStdString paras[])
     try
     {
       scraper.FindAlbuminfo(paras[0]);
-      while (!scraper.Completed()) {}
+      while (!scraper.Completed()) {Sleep(1);}
       if (scraper.Successfull())
       {
         // did we found at least 1 album?
