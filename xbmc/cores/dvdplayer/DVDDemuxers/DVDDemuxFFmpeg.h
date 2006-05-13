@@ -65,7 +65,7 @@ protected:
   void Lock()   { EnterCriticalSection(&m_critSection); }
   void Unlock() { LeaveCriticalSection(&m_critSection); }
 
-  bool ContextInit(const char* strFile, BYTE* buffer, int iBufferSize);
+  bool ContextInit(const char* strFile, BYTE* buffer, int iBufferSize, bool seekable);
   void ContextDeInit();
 
   CRITICAL_SECTION m_critSection;

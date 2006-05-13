@@ -222,7 +222,10 @@ void CFileCurl::SetCommonOptions()
   g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_HEADER, FALSE);
   
   g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_FTP_USE_EPSV, 0); // turn off epsv
+  
+  // Allow us to follow two redirects
   g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_FOLLOWLOCATION, TRUE);
+  g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_MAXREDIRS, 2);
 
   // When using multiple threads you should set the CURLOPT_NOSIGNAL option to
   // TRUE for all handles. Everything will work fine except that timeouts are not
@@ -375,6 +378,9 @@ bool CFileCurl::Exists(const CURL& url)
 
 __int64 CFileCurl::Seek(__int64 iFilePosition, int iWhence)
 {
+  /* if we don't have a filesize this is most likely unseekable */
+  if( m_fileSize == 0 ) return -1;
+
   __int64 nextPos = m_filePos;
 	switch(iWhence) 
 	{

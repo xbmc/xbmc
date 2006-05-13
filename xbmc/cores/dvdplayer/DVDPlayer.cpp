@@ -242,6 +242,10 @@ void CDVDPlayer::Process()
   if (audio_index >= 0) OpenAudioStream(audio_index);
   if (video_index >= 0) OpenVideoStream(video_index);
 
+  // it's demuxers job to fail if it can't find any streams in file
+  // if streams can't be found by probing the file, is stram we should still
+  // try to play abit since streams may be found later
+#if 0 
   // if we use libdvdnav, streaminfo is not avaiable, we will find this later on
   if (m_CurrentVideo.id < 0 && m_CurrentAudio.id < 0 &&
       m_pInputStream->IsStreamType(DVDSTREAM_TYPE_FILE) &&
@@ -250,6 +254,7 @@ void CDVDPlayer::Process()
     CLog::Log(LOGERROR, "%s: could not open codecs\n", m_filename.c_str());
     return;
   }
+#endif
 
   // we are done initializing now, set the readyevent
   SetEvent(m_hReadyEvent);
