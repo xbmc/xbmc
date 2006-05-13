@@ -53,7 +53,6 @@
 #define CONTROL_KAI_TAB_CHAT 3083    // Chat tab button
 
 #define KAI_XBOX_ROOT  "Arena/XBox"
-#define KAI_VECTOR_MAP_XML  "Q:\\kai-vectors.xml"
 
 bool CGUIWindowBuddies::SortGames(CGUIItem* pStart, CGUIItem* pEnd)
 {
@@ -308,7 +307,9 @@ void CGUIWindowBuddies::OnInitWindow()
     {
       if (m_vectors.IsEmpty())
       {
-        m_vectors.Load(KAI_VECTOR_MAP_XML);
+        CStdString kaiVectors;
+        CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "kai-vectors.xml", kaiVectors);
+        m_vectors.Load(kaiVectors);
         QueryInstalledGames();
       }
 
@@ -853,7 +854,9 @@ void CGUIWindowBuddies::Render()
   if (m_dwArenaUpdateTimer % 3000 == 0)
   {
     // Save the vector table (if it changed).
-    m_vectors.Save(KAI_VECTOR_MAP_XML);
+    CStdString kaiVectors;
+    CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "kai-vectors.xml", kaiVectors);
+    m_vectors.Save(kaiVectors);
 
     // Sort the arena.
     m_arena.Sort();

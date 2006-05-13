@@ -2566,7 +2566,7 @@ void CGUIWindowSettingsCategory::FillInVoiceMasks(DWORD dwPort, CSetting *pSetti
 
   //find masks in xml...
   TiXmlDocument xmlDoc;
-  if ( !xmlDoc.LoadFile( "Q:\\voicemasks.xml" ) ) return ;
+  if ( !xmlDoc.LoadFile( "Q:\\system\\voicemasks.xml" ) ) return ;
   TiXmlElement* pRootElement = xmlDoc.RootElement();
   CStdString strValue = pRootElement->Value();
   if ( strValue != "VoiceMasks") return ;
@@ -2620,7 +2620,7 @@ void CGUIWindowSettingsCategory::FillInVoiceMaskValues(DWORD dwPort, CSetting *p
 
   //find mask values in xml...
   TiXmlDocument xmlDoc;
-  if ( !xmlDoc.LoadFile( "Q:\\voicemasks.xml" ) ) return ;
+  if ( !xmlDoc.LoadFile( "Q:\\system\\voicemasks.xml" ) ) return ;
   TiXmlElement* pRootElement = xmlDoc.RootElement();
   CStdString strValue = pRootElement->Value();
   if ( strValue != "VoiceMasks") return ;
