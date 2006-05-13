@@ -459,9 +459,8 @@ int CFileSMB::Write(const void* lpBuf, __int64 uiBufSize)
   return (int)dwNumberOfBytesWritten;
 }
 
-bool CFileSMB::Delete(const char* strFileName)
+bool CFileSMB::Delete(const CURL& url)
 {
-  CURL url(strFileName);
   CStdString strFile = g_passwordManager.GetSMBAuthFilename(smb.URLEncode(url));
 
   CSingleLock lock(smb);
@@ -470,13 +469,10 @@ bool CFileSMB::Delete(const char* strFileName)
   return (result == 0);
 }
 
-bool CFileSMB::Rename(const char* strFileName, const char* strNewFileName)
+bool CFileSMB::Rename(const CURL& url, const CURL& urlnew)
 {
-  CURL strold(strFileName);
-  CURL strnew(strNewFileName);
-
-  CStdString strFile = g_passwordManager.GetSMBAuthFilename(smb.URLEncode(strFileName));
-  CStdString strFileNew = g_passwordManager.GetSMBAuthFilename(smb.URLEncode(strNewFileName));
+  CStdString strFile = g_passwordManager.GetSMBAuthFilename(smb.URLEncode(url));
+  CStdString strFileNew = g_passwordManager.GetSMBAuthFilename(smb.URLEncode(urlnew));
 
   CSingleLock lock(smb);
   smb.Init();

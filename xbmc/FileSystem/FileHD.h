@@ -34,9 +34,10 @@ public:
 
   virtual bool OpenForWrite(const CURL& url, bool bBinary = true, bool bOverWrite = false);
 
-  virtual bool Delete(const char* strFileName);
-  virtual bool Rename(const char* strFileName, const char* strNewFileName);
+  virtual bool Delete(const CURL& url);
+  virtual bool Rename(const CURL& url, const CURL& urlnew);
 protected:
+  CStdString GetLocal(const CURL &url); /* crate a properly format path from an url */
   CAutoPtrHandle m_hFile;
   __int64 m_i64FileLength;
   __int64 m_i64FilePos;
