@@ -17,12 +17,13 @@ namespace PYXBMC
 	PyObject* ListItem_New(PyTypeObject *type, PyObject *args, PyObject *kwds)
 	{
 		ListItem *self;
-        static char *keywords[] = {
-            "label", "label2", "iconImage", "thumbnailImage", NULL };
-		char* cLabel = NULL;
-        char* cLabel2 = NULL;
-        char* cIconImage = NULL;
-        char* cThumbnailImage = NULL;
+    static char *keywords[] = {
+        "label", "label2", "iconImage", "thumbnailImage", NULL };
+
+    PyObject* label = NULL;
+    PyObject* label2 = NULL;
+    char* cIconImage = NULL;
+    char* cThumbnailImage = NULL;
 
 		// allocate new object
 		self = (ListItem*)type->tp_alloc(type, 0);
@@ -33,10 +34,10 @@ namespace PYXBMC
 		if (!PyArg_ParseTupleAndKeywords(
             args,
             kwds,
-            "|ssss",
+            "|OOss",
             keywords,
-            &cLabel,
-            &cLabel2,
+            &label,
+            &label2,
             &cIconImage,
             &cThumbnailImage))
         {
@@ -51,13 +52,14 @@ namespace PYXBMC
             Py_DECREF( self );
             return NULL;
         }
-        if (cLabel)
+        CStdString utf8String;
+        if (label && PyGetUnicodeString(utf8String, label, 1))
         {
-            self->item->SetLabel( cLabel );
+            self->item->SetLabel( utf8String );
         }
-        if (cLabel2)
+        if (label2 && PyGetUnicodeString(utf8String, label2, 1))
         {
-            self->item->SetLabel2( cLabel2 );
+            self->item->SetLabel2( utf8String );
         }
         if (cIconImage)
         {
