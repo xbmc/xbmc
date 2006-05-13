@@ -32,7 +32,7 @@ bool IDirectory::IsAllowed(const CStdString& strFile)
   strExtension.ToLower();
   int i = m_strFileMask.Find(strExtension.c_str());
   bool bOkay = true;
-  if (i+strExtension.size() != m_strFileMask.size()-1 && i >= 0)
+  if (i+strExtension.size() < m_strFileMask.size()-1 && i >= 0)
   {
     char c = m_strFileMask[i+strExtension.size()];
     if (c != '|')
