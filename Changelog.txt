@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 13-05-2006 fixed: Scripts window would not show .py files.
  - 13-05-2006 changed: libcurl will now follow 2 redirects on connection
  - 13-05-2006 fixed: flv streams would start very slowly in dvd player due to it trying to find all streams before starting to play. 
                      (flv streams distributed with Content-Disposition will still fail used on some of google video's backup servers)
