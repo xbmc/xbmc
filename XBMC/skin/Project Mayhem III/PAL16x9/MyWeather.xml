@@ -159,20 +159,45 @@
     </control>
 
     <control>
-      <description>Location Button</description>
-      <type>selectbutton</type>
-      <align>center</align>
+      <description>weather location select spincontrol</description>
+      <type>spincontrol</type>
+      <align>left</align>
+      <width>17</width>
+      <height>17</height>
       <id>3</id>
-      <posx>212</posx>
-      <posy>119</posy>
-      <onleft>2</onleft>
-      <onright>2</onright>
+      <posx>216</posx>
+      <posy>128</posy>
+      <font>-</font>
+      <reverse>yes</reverse>
       <onup>2</onup>
       <ondown>2</ondown>
-      <width>200</width>
-      <height>30</height>
+      <onleft>2</onleft>
+      <onright>2</onright>
+      <disabledcolor>ffffffff</disabledcolor>
+      <textoffsetx>0</textoffsetx>
+      <textoffsety>0</textoffsety>
+      <aligny>center</aligny>
       <include>contentpanelslide</include>
-      </control>
+    </control>
+
+    <control>
+      <description>weather location select label</description>
+      <type>label</type>
+      <align>left</align>
+      <width>350</width>
+      <height>15</height>
+      <id>0</id>
+      <posx>256</posx>
+      <posy>127</posy>
+      <font>font14</font>
+      <reverse>yes</reverse>
+      <disabledcolor>ffffffff</disabledcolor>
+      <textoffsetx>0</textoffsetx>
+      <textoffsety>0</textoffsety>
+      <aligny>center</aligny>
+      <include>contentpanelslide</include>
+      <info>Weather.Location</info>
+    </control>
 
     <control>
       <description>update time label</description>
