@@ -992,6 +992,7 @@ bool CGUIWindowMusicBase::FindAlbumInfo(const CStdString& strAlbum, const CStdSt
           scraper.Cancel();
         m_dlgProgress->Progress();
       }
+      Sleep(1);
     }
 
     if (scraper.Successfull())
@@ -1093,6 +1094,7 @@ bool CGUIWindowMusicBase::FindAlbumInfo(const CStdString& strAlbum, const CStdSt
               scraper.Cancel();
             m_dlgProgress->Progress();
           }
+          Sleep(1);
         }
 
         if (scraper.Successfull())
