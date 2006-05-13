@@ -62,8 +62,8 @@ public:
   virtual int Write(const void* lpBuf, __int64 uiBufSize);
 
   virtual bool OpenForWrite(const CURL& url, bool bBinary = true, bool bOverWrite = false);
-  virtual bool Delete(const char* strFileName);
-  virtual bool Rename(const char* strFileName, const char* strNewFileName);
+  virtual bool Delete(const CURL& url);
+  virtual bool Rename(const CURL& url, const CURL& urlnew);
   virtual char GetDirectorySeperator() { return '/'; }
 
 protected:
