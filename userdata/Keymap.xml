@@ -143,9 +143,12 @@
     <remote>
       <zero>Delete</zero>
       <one>Highlight</one>
-      <two>Copy</two>
-      <three>Move</three>
+      <four>Copy</four>
+      <seven>Move</seven>
       <clear>Delete</clear>
+      <three>VolumeUp</three>
+      <six>VolumeDown</six>
+      <nine>Mute</nine>
     </remote>
 
     <keyboard>
@@ -170,8 +173,11 @@
       <back>Playlist</back> <!-- Close playlist -->
       <clear>Delete</clear>
       <zero>Delete</zero>
-      <three>MoveItemUp</three>
-      <nine>MoveItemDown</nine>
+      <two>MoveItemUp</two>
+      <five>MoveItemDown</five>
+      <three>VolumeUp</three>
+      <six>VolumeDown</six>
+      <nine>Mute</nine>
     </remote>
 
     <keyboard>
@@ -606,8 +612,11 @@
       <back>Playlist</back> <!-- Close playlist -->
       <clear>Delete</clear>
       <zero>Delete</zero>
-      <three>MoveItemUp</three>
-      <nine>MoveItemDown</nine>
+      <two>MoveItemUp</two>
+      <five>MoveItemDown</five>
+      <three>VolumeUp</three>
+      <six>VolumeDown</six>
+      <nine>Mute</nine>
     </remote>
 
     <keyboard>
