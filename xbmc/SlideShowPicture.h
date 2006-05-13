@@ -45,7 +45,8 @@ public:
 
   void Move(float dX, float dY);
   float GetZoom() const { return m_fZoomAmount;};
-
+  
+  bool m_bIsComic;
 private:
   void Process();
   void Render(float *x, float *y, D3DTexture *pTexture, DWORD dwColor, _D3DFILLMODE fillmode = D3DFILL_SOLID );
