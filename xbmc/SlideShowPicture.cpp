@@ -475,7 +475,7 @@ void CSlideShowPic::Render()
   Render(x, y, m_pImage, (m_dwAlpha << 24) | 0xFFFFFF);
 
   // now render the image in the top right corner if we're zooming
-  if (m_fZoomAmount == 1) return ;
+  if (m_fZoomAmount == 1 || m_bIsComic) return ;
 
   float sx[4], sy[4];
   sx[0] = -m_fWidth * co + m_fHeight * si;
