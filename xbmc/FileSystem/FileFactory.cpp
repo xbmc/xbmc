@@ -30,6 +30,11 @@ CFileFactory::~CFileFactory()
 IFile* CFileFactory::CreateLoader(const CStdString& strFileName)
 {
   CURL url(strFileName);
+  return CreateLoader(url);
+}
+
+IFile* CFileFactory::CreateLoader(const CURL& url)
+{
   CStdString strProtocol = url.GetProtocol();
   strProtocol.MakeLower();
 
@@ -47,6 +52,7 @@ IFile* CFileFactory::CreateLoader(const CStdString& strFileName)
   else if (strProtocol == "rar") return new CFileRar();
   else if (strProtocol == "ftp") return new CFileFTP();
   else if (strProtocol == "musicdb") return new CFileMusicDatabase();
+  else if (strProtocol == "file") return new CFileHD();
 //  else if (strProtocol == "ftp") return new CFileCurl();
   else return new CFileHD();
 }

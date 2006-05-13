@@ -37,8 +37,8 @@ public:
   virtual int GetChunkSize() { return 16384; }
   virtual bool SkipNext(){return false;}
 
-  virtual bool Delete(const char* strFileName) { return false; }
-  virtual bool Rename(const char* strFileName, const char* strNewFileName) { return false; }
+  virtual bool Delete(const CURL& url) { return false; }
+  virtual bool Rename(const CURL& url, const CURL& urlnew) { return false; }
 
   void* Object;
 };

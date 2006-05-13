@@ -452,16 +452,6 @@ int CFileRar::Write(const void* lpBuf, __int64 uiBufSize)
   return -1;
 }
 
-bool CFileRar::Delete(const char* strFileName)
-{
-  return false;
-}
-
-bool CFileRar::Rename(const char* strFileName, const char* strNewFileName)
-{
-	return false;
-}
-
 void CFileRar::Flush()
 {
 	if (m_bUseFile)
