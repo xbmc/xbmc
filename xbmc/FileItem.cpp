@@ -1985,6 +1985,7 @@ void CFileItem::SetCachedVideoThumb()
 CStdString CFileItem::GetUserVideoThumb()
 {
   if (m_bIsShareOrDrive) return "";
+  if (IsInternetStream()) return "";
   // 1. check <filename>.tbn or <foldername>.tbn
   CStdString fileThumb;
   if (IsStack())
@@ -1998,7 +1999,7 @@ CStdString CFileItem::GetUserVideoThumb()
   if (CFile::Exists(fileThumb))
     return fileThumb;
   // 2. if a folder, check for folder.jpg
-  if (m_bIsFolder && !IsInternetStream())
+  if (m_bIsFolder)
   {
     CStdString folderThumb;
     CUtil::AddFileToFolder(m_strPath, "folder.jpg", folderThumb);
