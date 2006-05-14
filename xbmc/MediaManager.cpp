@@ -120,3 +120,44 @@ bool CMediaManager::AddNetworkLocation(const CStdString &path)
   m_locations.push_back(location);
   return SaveSources();
 }
+
+bool CMediaManager::HasLocation(const CStdString& path)
+{
+  for (unsigned int i=0;i<m_locations.size();++i)
+  {
+    if (m_locations[i].path == path)
+      return true;
+  }
+
+  return false;
+}
+
+
+bool CMediaManager::RemoveLocation(const CStdString& path)
+{
+  for (unsigned int i=0;i<m_locations.size();++i)
+  {
+    if (m_locations[i].path == path)
+    {
+      // prompt for bookmarks, remove, cancel, 
+      m_locations.erase(m_locations.begin()+i);
+      return SaveSources();
+    }
+  }
+
+  return false;
+}
+
+bool CMediaManager::SetLocationPath(const CStdString& oldPath, const CStdString& newPath)
+{
+  for (unsigned int i=0;i<m_locations.size();++i)
+  {
+    if (m_locations[i].path == oldPath)
+    {
+      m_locations[i].path = newPath;
+      return SaveSources();
+    }
+  }
+
+  return false;
+}
