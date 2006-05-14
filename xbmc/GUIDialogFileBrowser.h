@@ -37,6 +37,7 @@ protected:
   void ClearFileItems();
   void Update(const CStdString &strDirectory);
   bool HaveDiscOrConnection( CStdString& strPath, int iDriveType );
+  bool OnPopupMenu(int iItem);
   void OnAddNetworkLocation();
 
   VECSHARES m_shares;

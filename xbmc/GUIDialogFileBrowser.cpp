@@ -5,6 +5,7 @@
 #include "GUIDialogNetworkSetup.h"
 #include "GUIListControl.h"
 #include "GUIThumbnailPanel.h"
+#include "GUIDialogContextMenu.h"
 #include "MediaManager.h"
 #include "AutoSwitch.h"
 
@@ -38,6 +39,15 @@ bool CGUIDialogFileBrowser::OnAction(const CAction &action)
     GoParentFolder();
     return true;
   }
+  if ((action.wID == ACTION_CONTEXT_MENU || action.wID == ACTION_MOUSE_RIGHT_CLICK) && m_Directory.m_strPath.IsEmpty())
+  {
+    int iItem = m_viewControl.GetSelectedItem();  
+    if (g_mediaManager.HasLocation(m_selectedPath))
+      return OnPopupMenu(iItem);
+    
+    return false;
+  }
+  
   return CGUIDialog::OnAction(action);
 }
 
@@ -458,6 +468,7 @@ bool CGUIDialogFileBrowser::ShowAndGetFile(VECSHARES &shares, const CStdString &
 
   browser->m_rootDir.SetMask(strMask);
   browser->m_selectedPath = path;
+  browser->m_addNetworkShareEnabled = false;
   browser->DoModal(m_gWindowManager.GetActiveWindow());
   if (browser->IsConfirmed())
   {
@@ -557,6 +568,77 @@ void CGUIDialogFileBrowser::OnAddNetworkLocation()
   m_addNetworkShareEnabled = true;
   m_selectedPath = "";
   DoModal(m_gWindowManager.GetActiveWindow());
+}
+
+bool CGUIDialogFileBrowser::OnPopupMenu(int iItem)
+{
+  CGUIDialogContextMenu* pMenu = (CGUIDialogContextMenu*)m_gWindowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
+  if (!pMenu)
+    return false;
+  
+  int iPosX = 200, iPosY = 100;
+  CGUIListControl *pList = (CGUIListControl *)GetControl(CONTROL_LIST);
+  if (pList)
+  {
+    iPosX = pList->GetXPosition() + pList->GetWidth() / 2;
+    iPosY = pList->GetYPosition() + pList->GetHeight() / 2;
+  }
+
+  pMenu->Initialize();
+  
+  int btn_Edit = pMenu->AddButton(1027);
+  int btn_Remove = pMenu->AddButton(522);
+
+  pMenu->SetPosition(iPosX, iPosY);
+  pMenu->DoModal(GetID());
+
+  int btnid = pMenu->GetButton();
+  if (btnid == btn_Edit)
+  {
+    CStdString strOldPath=m_selectedPath,newPath=m_selectedPath;
+    VECSHARES shares=m_shares;
+    if (CGUIDialogNetworkSetup::ShowAndGetNetworkAddress(newPath))
+    {
+      g_mediaManager.SetLocationPath(strOldPath,newPath);
+      for (unsigned int i=0;i<shares.size();++i)
+      {
+        if (shares[i].strPath == strOldPath)
+        {
+          shares[i].strName = newPath;
+          shares[i].strPath = newPath;
+          break;
+        }
+      }
+      // re-open our dialog
+      SetShares(shares);
+      m_rootDir.SetMask("/");
+      m_browsingForFolders = true;
+      m_addNetworkShareEnabled = true;
+      m_selectedPath = newPath;
+      DoModal(m_gWindowManager.GetActiveWindow());    
+    }
+  }
+  if (btnid == btn_Remove)
+  {
+    g_mediaManager.RemoveLocation(m_selectedPath);
+    for (unsigned int i=0;i<m_shares.size();++i)
+    {
+      if (m_shares[i].strPath == m_selectedPath)
+      {
+        m_shares.erase(m_shares.begin()+i);
+        break;
+      }
+    }
+    m_rootDir.SetShares(m_shares);
+    m_rootDir.SetMask("/");
+    m_browsingForFolders = true;
+    m_addNetworkShareEnabled = true;
+    m_selectedPath = "";
+
+    Update(m_Directory.m_strPath);
+  }
+  
+  return true;
 }
 
 const CFileItem *CGUIDialogFileBrowser::GetCurrentListItem() const
