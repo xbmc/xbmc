@@ -1143,76 +1143,74 @@ void CGUIWindowFileManager::OnPopupMenu(int list, int item)
     // load our menu
     pMenu->Initialize();
     // add the needed buttons
-    pMenu->AddButton(188); // SelectAll
-    pMenu->AddButton(118); // Rename
-    pMenu->AddButton(117); // Delete
-    pMenu->AddButton(115); // Copy
-    pMenu->AddButton(116); // Move
-    pMenu->AddButton(119); // New Folder
-    pMenu->AddButton(13393); // Calculate Size
-    pMenu->EnableButton(1, item >= 0);
-    pMenu->EnableButton(2, item >= 0 && CanRename(list) && !m_vecItems[list][item]->IsParentFolder());
-    pMenu->EnableButton(3, item >= 0 && CanDelete(list) && showEntry);
-    pMenu->EnableButton(4, item >= 0 && CanCopy(list) && showEntry);
-    pMenu->EnableButton(5, item >= 0 && CanMove(list) && showEntry);
-    pMenu->EnableButton(6, CanNewFolder(list));
-    pMenu->EnableButton(7, item >=0 && m_vecItems[list][item]->m_bIsFolder && !m_vecItems[list][item]->IsParentFolder());
+    int btn_SelectAll = pMenu->AddButton(188); // SelectAll
+    int btn_Rename = pMenu->AddButton(118); // Rename
+    int btn_Delete = pMenu->AddButton(117); // Delete
+    int btn_Copy = pMenu->AddButton(115); // Copy
+    int btn_Move = pMenu->AddButton(116); // Move
+    int btn_NewFolder = pMenu->AddButton(119); // New Folder
+    int btn_Size = pMenu->AddButton(13393); // Calculate Size
+    int btn_Settings = pMenu->AddButton(5);
+    pMenu->EnableButton(btn_SelectAll, item >= 0);
+    pMenu->EnableButton(btn_Rename, item >= 0 && CanRename(list) && !m_vecItems[list][item]->IsParentFolder());
+    pMenu->EnableButton(btn_Delete, item >= 0 && CanDelete(list) && showEntry);
+    pMenu->EnableButton(btn_Copy, item >= 0 && CanCopy(list) && showEntry);
+    pMenu->EnableButton(btn_Move, item >= 0 && CanMove(list) && showEntry);
+    pMenu->EnableButton(btn_NewFolder, CanNewFolder(list));
+    pMenu->EnableButton(btn_Size, item >=0 && m_vecItems[list][item]->m_bIsFolder && !m_vecItems[list][item]->IsParentFolder());
     // position it correctly
     pMenu->SetPosition(iPosX - pMenu->GetWidth() / 2, iPosY - pMenu->GetHeight() / 2);
     pMenu->DoModal(GetID());
-    switch (pMenu->GetButton())
+    int btnid = pMenu->GetButton();
+    if (btnid == btn_SelectAll)
     {
-    case 1:
       OnSelectAll(list);
       bDeselect=false;
-      break;
-    case 2:
+    }
+    if (btnid == btn_Rename)
       OnRename(list);
-      break;
-    case 3:
+    if (btnid == btn_Delete)
       OnDelete(list);
-      break;
-    case 4:
+    if (btnid == btn_Copy)
       OnCopy(list);
-      break;
-    case 5:
+    if (btnid == btn_Move)
       OnMove(list);
-      break;
-    case 6:
+    if (btnid == btn_NewFolder)
       OnNewFolder(list);
-      break;
-    case 7:
+    if (btnid == btn_Size)
+    {
+      // setup the progress dialog, and show it
+      CGUIDialogProgress *progress = (CGUIDialogProgress *)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+      if (progress)
       {
-        // setup the progress dialog, and show it
-        CGUIDialogProgress *progress = (CGUIDialogProgress *)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
-        if (progress)
-        {
-          progress->SetHeading(13394);
-          for (int i=0; i < 3; i++)
-            progress->SetLine(i, "");
-          progress->StartModal(GetID());
-        }
+        progress->SetHeading(13394);
+        for (int i=0; i < 3; i++)
+          progress->SetLine(i, "");
+        progress->StartModal(GetID());
+      }
 
-        //  Calculate folder size for each selected item
-        for (int i=0; i<m_vecItems[list].Size(); ++i)
+      //  Calculate folder size for each selected item
+      for (int i=0; i<m_vecItems[list].Size(); ++i)
+      {
+        CFileItem* pItem=m_vecItems[list][i];
+        if (pItem->m_bIsFolder && pItem->IsSelected())
         {
-          CFileItem* pItem=m_vecItems[list][i];
-          if (pItem->m_bIsFolder && pItem->IsSelected())
+          __int64 folderSize = CalculateFolderSize(pItem->m_strPath, progress);
+          if (folderSize >= 0)
           {
-            __int64 folderSize = CalculateFolderSize(pItem->m_strPath, progress);
-            if (folderSize >= 0)
-            {
-              pItem->m_dwSize = folderSize;
-              pItem->SetFileSizeLabel();
-            }
+            pItem->m_dwSize = folderSize;
+            pItem->SetFileSizeLabel();
           }
         }
-        if (progress) progress->Close();
       }
-      break;
-    default:
-      break;
+      if (progress) progress->Close();
     }
+    if (btnid == btn_Settings)
+    {
+      if (!(g_guiSettings.GetInt("MasterLock.LockSettingsFileManager") & LOCK_MASK_SETTINGS) || g_passwordManager.CheckMasterLock()) 
+        m_gWindowManager.ActivateWindow(WINDOW_SETTINGS_MENU); 
+    }
+
     if (bDeselect && item >= 0)
     { // deselect item as we didn't do anything
       m_vecItems[list][item]->Select(false);
