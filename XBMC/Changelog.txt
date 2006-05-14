@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+ - 14-05-2006 added: you can now edit and remove customly added network locations in add source wizard.
  - 13-05-2006 changed: VoiceMasks.xml to System/ and KaiVectors.xml removed from CVS.
  - 13-05-2006 changed: don't show zoom overlay in slideshow when viewing comics.
  - 13-05-2006 fixed: [ 1483011 ] ControlListItem not able to display german umlaute
