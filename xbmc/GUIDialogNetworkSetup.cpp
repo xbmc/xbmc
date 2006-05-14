@@ -19,6 +19,7 @@
 CGUIDialogNetworkSetup::CGUIDialogNetworkSetup(void)
     : CGUIDialog(WINDOW_DIALOG_NETWORK_SETUP, "DialogNetworkSetup.xml")
 {
+  m_protocol = NET_PROTOCOL_SMB;
 }
 
 CGUIDialogNetworkSetup::~CGUIDialogNetworkSetup()
@@ -40,7 +41,13 @@ bool CGUIDialogNetworkSetup::OnMessage(CGUIMessage& message)
     {
       int iControl = message.GetSenderId();
       if (iControl == CONTROL_PROTOCOL)
+      {
+        m_server.Empty();
+        m_path.Empty();
+        m_username.Empty();
+        m_password.Empty();
         OnProtocolChange();
+      }
       else if (iControl == CONTROL_SERVER_BROWSE)
         OnServerBrowse();
       else if (iControl == CONTROL_SERVER_ADDRESS)
@@ -84,7 +91,7 @@ void CGUIDialogNetworkSetup::OnInitWindow()
   CGUISpinControlEx *pSpin = (CGUISpinControlEx *)GetControl(CONTROL_PROTOCOL);
   if (!pSpin)
     return;
-  m_protocol = NET_PROTOCOL_SMB;
+
   pSpin->Clear();
   pSpin->AddLabel(CStdString("Windows Network (SMB)"), NET_PROTOCOL_SMB);
   pSpin->AddLabel(CStdString("XBMSP Server"), NET_PROTOCOL_XBMSP);
@@ -176,10 +183,7 @@ void CGUIDialogNetworkSetup::OnProtocolChange()
     m_port = "1400";
   else if (m_protocol == NET_PROTOCOL_DAAP)
     m_port = "3689";
-  m_server.Empty();
-  m_path.Empty();
-  m_username.Empty();
-  m_password.Empty();
+
   UpdateButtons();
 }
 

@@ -22,6 +22,9 @@ public:
   void GetNetworkLocations(VECSHARES &locations);
 
   bool AddNetworkLocation(const CStdString &path);
+  bool HasLocation(const CStdString& path);
+  bool RemoveLocation(const CStdString& path);
+  bool SetLocationPath(const CStdString& oldPath, const CStdString& newPath);
 protected:
   vector<CNetworkLocation> m_locations;
 };
