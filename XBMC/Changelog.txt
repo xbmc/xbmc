@@ -5,7 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
- - 14-05-2006 fixed: forgot to make playlist paths
+ - 15-05-2006 fixed: volume control with remote now functions under Now Playing window.
+ - 15-05-2006 fixed: forgot to make playlist paths
  - 14-05-2006 fixed: settings entry didn't show in file manager context menu.
  - 14-05-2006 added: you can now edit and remove customly added network locations in add source wizard.
  - 13-05-2006 changed: VoiceMasks.xml to System/ and KaiVectors.xml removed from CVS.
