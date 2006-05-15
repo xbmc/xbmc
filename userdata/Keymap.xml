@@ -198,6 +198,9 @@
     <remote>
       <zero>Queue</zero>
       <star>Queue</star>
+      <three>VolumeUp</three>
+      <six>VolumeDown</six>
+      <nine>Mute</nine>
     </remote>
 
     <keyboard>
@@ -216,6 +219,9 @@
     <remote>
       <zero>Queue</zero>
       <star>Queue</star>
+      <three>VolumeUp</three>
+      <six>VolumeDown</six>
+      <nine>Mute</nine>
     </remote>
 
     <keyboard>
@@ -575,6 +581,9 @@
     <remote>
       <zero>Delete</zero>
       <clear>Delete</clear>
+      <three>VolumeUp</three>
+      <six>VolumeDown</six>
+      <nine>Mute</nine>
     </remote>
 
     <keyboard>
@@ -592,6 +601,9 @@
     <remote>
       <zero>Queue</zero>
       <star>Queue</star>
+      <three>VolumeUp</three>
+      <six>VolumeDown</six>
+      <nine>Mute</nine>
     </remote>
 
     <keyboard>
