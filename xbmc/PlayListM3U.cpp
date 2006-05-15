@@ -4,6 +4,7 @@
 #include "filesystem/file.h"
 #include "util.h"
 #include "utils/RegExp.h"
+#include "cores/dllloader/exports/emu_msvcrt.h"
 
 using namespace PLAYLIST;
 using namespace XFILE;
@@ -115,22 +116,26 @@ void CPlayListM3U::Save(const CStdString& strFileName) const
   // force HD saved playlists into fatx compliance
   if (CUtil::IsHD(strPlaylist))
     CUtil::GetFatXQualifiedPath(strPlaylist);
-  FILE *fd = fopen(strPlaylist.c_str(), "w+");
-  if (!fd)
+    CFile file;
+  if (!file.OpenForWrite(strPlaylist,false,true))
   {
     CLog::Log(LOGERROR, "Could not save M3U playlist: [%s]", strPlaylist.c_str());
     return ;
   }
-  fprintf(fd, "%s\n", M3U_START_MARKER);
+  CStdString strLine;
+  strLine.Format("%s\n",M3U_START_MARKER);
+  file.Write(strLine.c_str(),strLine.size());
   for (int i = 0; i < (int)m_vecItems.size(); ++i)
   {
     const CPlayListItem& item = m_vecItems[i];
     CStdString strDescription=item.GetDescription();
     g_charsetConverter.utf8ToStringCharset(strDescription);
-    fprintf(fd, "%s:%i,%s\n", M3U_INFO_MARKER, item.GetDuration() / 1000, strDescription.c_str() );
+    strLine.Format( "%s:%i,%s\n", M3U_INFO_MARKER, item.GetDuration() / 1000, strDescription.c_str() );
+    file.Write(strLine.c_str(),strLine.size());
     CStdString strFileName=item.GetFileName();
     g_charsetConverter.utf8ToStringCharset(strFileName);
-    fprintf(fd, "%s\n", strFileName.c_str() );
+    strLine.Format("%s\n",strFileName.c_str());
+    file.Write(strLine.c_str(),strLine.size());
   }
-  fclose(fd);
+  file.Close();
 }
