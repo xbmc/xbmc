@@ -2292,6 +2292,20 @@ void CSettings::LoadUserFolderLayout(const TiXmlElement *pRootElement)
     CUtil::AddFileToFolder(GetUserDataFolder(), "playlists", strDir);
     CUtil::AddSlashAtEnd(strDir);
     g_guiSettings.SetString("System.PlaylistsPath",strDir.c_str());
+    CDirectory::Create(strDir);
+    CStdString strDir2;
+    CUtil::AddFileToFolder(strDir,"music",strDir2);
+      CDirectory::Create(strDir2);
+    CUtil::AddFileToFolder(strDir,"video",strDir2);
+      CDirectory::Create(strDir2);
+  }
+  else
+  {
+    CStdString strDir2;
+    CUtil::AddFileToFolder(g_guiSettings.GetString("System.PlaylistsPath"),"music",strDir2);
+    CDirectory::Create(strDir2);
+    CUtil::AddFileToFolder(g_guiSettings.GetString("System.PlaylistsPath"),"video",strDir2);
+    CDirectory::Create(strDir2);
   }
 
   if (g_stSettings.m_szAlternateSubtitleDirectory[0] == 0)
