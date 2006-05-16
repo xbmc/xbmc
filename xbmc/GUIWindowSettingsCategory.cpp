@@ -1316,6 +1316,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
   {
     g_lcd->Stop();
     CLCDFactory factory;
+    delete g_lcd;
     g_lcd = factory.Create();
     g_lcd->Initialize();
   }

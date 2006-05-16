@@ -63,6 +63,7 @@ void CX3LCD::Initialize()
     CLog::Log(LOGINFO, "lcd not used");
     return;
 	}
+  ILCD::Initialize();
 	Create();
 }
 
