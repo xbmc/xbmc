@@ -121,6 +121,7 @@ void CSmartXXLCD::Initialize()
     CLog::Log(LOGINFO, "lcd not used");
     return;
   }
+  ILCD::Initialize();
   Create();
   
 }
