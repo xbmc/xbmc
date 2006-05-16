@@ -1,6 +1,7 @@
 #include "../stdafx.h"
 #include "lcd.h"
 #include "GUIInfoManager.h"
+#include "../Util.h"
 
 void ILCD::StringToLCDCharSet(CStdString& strText)
 {
@@ -123,6 +124,13 @@ CStdString ILCD::GetProgressBar(double tCurrent, double tTotal)
     return strProgressBar;
   }
   else return "";
+}
+
+void ILCD::Initialize()
+{
+  CStdString lcdPath;
+  CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "LCD.xml", lcdPath);
+  LoadSkin(lcdPath);
 }
 
 void ILCD::LoadSkin(const CStdString &xmlFile)
